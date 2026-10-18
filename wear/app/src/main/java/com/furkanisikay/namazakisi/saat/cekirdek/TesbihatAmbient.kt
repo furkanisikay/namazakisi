@@ -5,52 +5,18 @@ package com.furkanisikay.namazakisi.saat.cekirdek
  *
  * Ambient'te ekran kısılır, dokunuş ve taç olayı uygulamaya GELMEZ; kullanıcı yalnız
  * nerede kaldığını görür (o anki faz + sayı). Sayım ambient'ten çıkınca sürer.
- *
- * Kaydırma (burn-in): OLED'de aynı pikselleri dakikalarca yakmamak için içerik her
- * ambient güncellemesinde (≈ dakikada bir) birkaç dp kaydırılır. Wear OS 6+ (API 36)
- * sistemi içeriği KENDİSİ kaydırır ve uygulamanın ayrıca kaydırmamasını ister → orada
- * kaydırma YOK (çift kaydırma içeriği kenara taşır).
+ * Burn-in kaydırması ana ekranla ortaktır: `AmbientKaydirma`.
  */
 object TesbihatAmbient {
-    /** Kaydırma genliği (dp): kenardan ~10 px güvenli pay korunur, göz fark etmez. */
-    const val KAYDIRMA_DP = 4
+    /** Kaydırma kuralı ana ekranla ORTAK: `AmbientKaydirma` (davranış aynı). */
+    const val KAYDIRMA_DP = AmbientKaydirma.KAYDIRMA_DP
 
-    /** Sistemin kendi burn-in kaydırmasını yaptığı ilk API (Wear OS 6). */
-    const val SISTEM_KAYDIRMA_API = 36
+    const val SISTEM_KAYDIRMA_API = AmbientKaydirma.SISTEM_KAYDIRMA_API
 
-    data class Kaydirma(val xDp: Int, val yDp: Int) {
-        companion object {
-            val YOK = Kaydirma(0, 0)
-        }
-    }
+    fun sistemKaydiriyor(sdk: Int): Boolean = AmbientKaydirma.sistemKaydiriyor(sdk)
 
-    /**
-     * Merkez + çevresindeki sekiz nokta: art arda iki adım asla aynı yerde değildir,
-     * dokuz dakikada tüm noktalar dolaşılır (piksel başına süre ~1/9'a iner).
-     */
-    private val DESEN = listOf(
-        Kaydirma(0, 0),
-        Kaydirma(KAYDIRMA_DP, 0),
-        Kaydirma(KAYDIRMA_DP, KAYDIRMA_DP),
-        Kaydirma(0, KAYDIRMA_DP),
-        Kaydirma(-KAYDIRMA_DP, KAYDIRMA_DP),
-        Kaydirma(-KAYDIRMA_DP, 0),
-        Kaydirma(-KAYDIRMA_DP, -KAYDIRMA_DP),
-        Kaydirma(0, -KAYDIRMA_DP),
-        Kaydirma(KAYDIRMA_DP, -KAYDIRMA_DP),
-    )
-
-    /** Sistem içeriği kendisi kaydırıyor mu? (API 36+) */
-    fun sistemKaydiriyor(sdk: Int): Boolean = sdk >= SISTEM_KAYDIRMA_API
-
-    /**
-     * @param adim ambient'e girişten bu yana kaçıncı güncelleme (0 = giriş anı)
-     * @param burnInKorumasi cihaz burn-in koruması istiyor mu (`AmbientDetails`)
-     */
-    fun kaydirma(adim: Int, burnInKorumasi: Boolean, sdk: Int): Kaydirma {
-        if (!burnInKorumasi || sistemKaydiriyor(sdk)) return Kaydirma.YOK
-        return DESEN[Math.floorMod(adim, DESEN.size)]
-    }
+    fun kaydirma(adim: Int, burnInKorumasi: Boolean, sdk: Int): AmbientKaydirma.Kaydirma =
+        AmbientKaydirma.kaydirma(adim, burnInKorumasi, sdk)
 
     /**
      * Ambient'te gösterilecek metin. `sayi` null ise büyük rakam çizilmez (tehlil tek

@@ -1,6 +1,6 @@
 package com.furkanisikay.namazakisi.saat.cekirdek
 
-import com.furkanisikay.namazakisi.saat.cekirdek.TesbihatAmbient.Kaydirma
+import com.furkanisikay.namazakisi.saat.cekirdek.AmbientKaydirma.Kaydirma
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
