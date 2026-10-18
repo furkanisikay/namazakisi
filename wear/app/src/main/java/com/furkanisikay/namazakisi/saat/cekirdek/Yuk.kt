@@ -53,7 +53,41 @@ data class PlanKaydi(
      * EKLEMELİ opsiyonel alan: eski saat yok sayar, sürüm ARTIRILMAZ.
      */
     val adim: Int? = null,
+    /**
+     * ÇÖZÜLMÜŞ sesli anons cümlesi (saat W3, fikir 9) — yalnız adımın sesli kanalı
+     * açıkken. Saat telefon yanında değilken (ya da kullanıcı "saatte" seçtiyse) bunu
+     * kendi hoparlöründen okur. EKLEMELİ opsiyonel alan.
+     */
+    val anons: String? = null,
 )
+
+/**
+ * Saatte SESSİZ UYANDIRMA (saat W3, fikir 2): sabahın gerçek alarm tetiği ya da
+ * teheccüd uyandırması. Kimlik telefondaki alarmla AYNI — saat kapatınca telefon
+ * yedeğini bununla iptal eder. Yalnız kullanıcı "saat"/"ikisi" seçtiyse yükte yer alır.
+ */
+data class UyandirmaKaydi(
+    val id: String,
+    /** Özgün tetik anı (epoch ms) */
+    val ms: Long,
+    /** Bu andan sonra çalınmaz (vakit / pencere sonu) */
+    val sonMs: Long,
+    val tarih: String,
+    /** "imsak" (farz: Kıldım = sabah kaydı) | "teheccud" (nafile: Kıldım FARZ YAZMAZ) */
+    val tur: String,
+    val baslik: String,
+    val govde: String,
+) {
+    val nafile: Boolean get() = tur == "teheccud"
+}
+
+/** Muhafız anonsunun yeri (saat W3, fikir 9) — telefondaki `AnonsYeri`. */
+object AnonsYerleri {
+    const val OTOMATIK = "otomatik"
+    const val TELEFON = "telefon"
+    const val SAAT = "saat"
+    val HEPSI = setOf(OTOMATIK, TELEFON, SAAT)
+}
 
 /** Telefonun Now Bar zaman çizelgesinden öne çıkan bir dilim (issue #282 ikinci aşama). */
 data class CanliPencere(
@@ -97,6 +131,10 @@ data class Yuk(
     val canli: CanliSecim? = null,
     /** Kıble konumu (opsiyonel; bozuksa yalnız bu alan null — bkz. `YukCozucu.konumCoz`). */
     val konum: Konum? = null,
+    /** Saatte sessiz uyandırma (opsiyonel, saat W3); kronolojik. Yoksa boş. */
+    val uyandirma: List<UyandirmaKaydi> = emptyList(),
+    /** Muhafız anonsunun yeri (opsiyonel, saat W3). Yoksa (eski telefon) saat konuşmaz. */
+    val anonsYeri: String? = null,
 )
 
 sealed class CozumSonucu {
@@ -132,7 +170,11 @@ object YukCozucu {
             }.sortedBy { it.tarih }
             val plan = if (surum >= 2) planiCoz(o.getJSONArray("muhafiz")) else emptyList()
             val canli = if (o.has("canli")) canliCoz(o.getJSONObject("canli")) else null
-            CozumSonucu.Basarili(Yuk(surum, o.getString("konumAdi"), kerahat, gunler, plan, canli, konumCoz(o.opt("konum"))))
+            val uyandirma = if (o.has("uyandirma")) uyandirmaCoz(o.getJSONArray("uyandirma")) else emptyList()
+            val anonsYeri = if (o.has("anonsYeri")) o.getString("anonsYeri").also { require(it in AnonsYerleri.HEPSI) } else null
+            CozumSonucu.Basarili(
+                Yuk(surum, o.getString("konumAdi"), kerahat, gunler, plan, canli, konumCoz(o.opt("konum")), uyandirma, anonsYeri),
+            )
         } catch (_: Exception) {
             CozumSonucu.Gecersiz
         }
@@ -186,6 +228,20 @@ object YukCozucu {
         return CanliSecim(vakitler, pencereler)
     }
 
+    /** Opsiyonel `uyandirma`: varsa TAM doğrulanır (JS `wearUyandirmaGecerliMi` ile aynı katılık). */
+    private fun uyandirmaCoz(dizi: JSONArray): List<UyandirmaKaydi> =
+        (0 until dizi.length()).map { i ->
+            val k = dizi.getJSONObject(i)
+            val tarih = k.getString("tarih")
+            val tur = k.getString("tur")
+            val ms = k.getLong("ms")
+            val sonMs = k.getLong("sonMs")
+            require(TARIH.matches(tarih))
+            require(tur == "imsak" || tur == "teheccud")
+            require(sonMs > ms)
+            UyandirmaKaydi(k.getString("id"), ms, sonMs, tarih, tur, k.getString("baslik"), k.getString("govde"))
+        }.sortedBy { it.ms }
+
     /** Tek bozuk kayıt tüm yükü reddeder (JS `wearYukuGecerliMi` ile aynı katılık). */
     private fun planiCoz(dizi: JSONArray): List<PlanKaydi> =
         (0 until dizi.length()).map { i ->
@@ -210,6 +266,8 @@ object YukCozucu {
                 titresim = k.getBoolean("titresim"),
                 acil = k.getBoolean("acil"),
                 adim = adim,
+                // JS `typeof === 'string'`: `getString` sayıyı da dizeye çevirirdi.
+                anons = if (k.has("anons")) k.get("anons").let { require(it is String); it } else null,
             )
         }.sortedBy { it.ms }
 }

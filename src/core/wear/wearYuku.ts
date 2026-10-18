@@ -29,6 +29,8 @@ import {
     wearMuhafizPlaniOlustur,
     type WearMuhafizKaydi,
 } from './wearMuhafizPlani';
+import { wearUyandirmaGecerliMi, type WearUyandirmaKaydi } from './wearUyandirma';
+import type { AnonsYeri } from '../saat/saatAyarlari';
 
 export const WEAR_YUK_SURUMU = 2;
 
@@ -99,6 +101,16 @@ export interface WearYuku {
     canli?: WearCanli;
     /** Kıble için YAKLAŞIK konum (opsiyonel, saat yenileme W2) — bkz. `wearKonumuOlustur`. */
     konum?: WearKonum;
+    /**
+     * Saatte SESSİZ UYANDIRMA (saat W3, fikir 2) — yalnız kullanıcı "saat"/"ikisi"
+     * seçtiyse yazılır (`wearUyandirma.ts`). EKLEMELİ OPSİYONEL: sürüm 2 kalır.
+     */
+    uyandirma?: WearUyandirmaKaydi[];
+    /**
+     * Muhafız anonsu nerede konuşsun? (saat W3, fikir 9) Alan YOKSA (eski telefon) saat
+     * hiç konuşmaz — eski davranış. EKLEMELİ OPSİYONEL.
+     */
+    anonsYeri?: AnonsYeri;
 }
 
 /**
@@ -169,6 +181,10 @@ export interface WearYukGirdisi {
      * orada). Apple Watch'a gönderilmez: kullanılmayan konum cihazdan çıkmasın.
      */
     kibleKonumu?: boolean;
+    /** Saatin uyandırma listesi (yalnız Wear OS ve kullanıcı saati seçtiyse). */
+    uyandirma?: WearUyandirmaKaydi[];
+    /** Anons yeri (yalnız Wear OS). */
+    anonsYeri?: AnonsYeri;
 }
 
 export function wearYukuOlustur(g: WearYukGirdisi): WearYuku {
@@ -199,6 +215,8 @@ export function wearYukuOlustur(g: WearYukGirdisi): WearYuku {
         gunler,
         muhafiz: [],
         ...(g.canli ? { canli: g.canli } : {}),
+        ...(g.uyandirma ? { uyandirma: g.uyandirma } : {}),
+        ...(g.anonsYeri ? { anonsYeri: g.anonsYeri } : {}),
     };
     const konum = g.kibleKonumu ? wearKonumuOlustur(g.koordinat) : undefined;
     if (konum) taban.konum = konum;
@@ -225,6 +243,8 @@ export function planiSigdir(
     return taban;
 }
 
+const ANONS_YERLERI: readonly AnonsYeri[] = ['otomatik', 'telefon', 'saat'];
+
 /** Sözleşme doğrulayıcısı — Kotlin `YukCozucu`nun aynası (ortak örnek dosyayla test edilir). */
 export function wearYukuGecerliMi(y: unknown): y is WearYuku {
     if (!y || typeof y !== 'object') return false;
@@ -242,7 +262,11 @@ export function wearYukuGecerliMi(y: unknown): y is WearYuku {
             Array.isArray(g.kilinan) &&
             g.kilinan.every((a) => typeof a === 'string' && a !== 'gunes' && WEAR_VAKITLER.includes(a as VakitAdi))
         );
-    }) && muhafizPlaniGecerliMi(o.surum, o.muhafiz) && canliGecerliMi(o.canli);
+    }) &&
+        muhafizPlaniGecerliMi(o.surum, o.muhafiz) &&
+        canliGecerliMi(o.canli) &&
+        wearUyandirmaGecerliMi(o.uyandirma) &&
+        (o.anonsYeri === undefined || ANONS_YERLERI.includes(o.anonsYeri as AnonsYeri));
 }
 
 const CANLI_VAKITLERI = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] as const;
@@ -292,7 +316,9 @@ function muhafizPlaniGecerliMi(surum: number, plan: unknown): boolean {
             typeof r.acil === 'boolean' &&
             // Eklemeli opsiyonel alan (issue #274): yoksa eski telefon yükü.
             (r.adim === undefined ||
-                (Number.isInteger(r.adim) && (r.adim as number) >= 0 && (r.adim as number) < MUHAFIZ_MAKS_ADIM))
+                (Number.isInteger(r.adim) && (r.adim as number) >= 0 && (r.adim as number) < MUHAFIZ_MAKS_ADIM)) &&
+            // Eklemeli opsiyonel alan (saat W3): çözülmüş anons cümlesi.
+            (r.anons === undefined || typeof r.anons === 'string')
         );
     });
 }
