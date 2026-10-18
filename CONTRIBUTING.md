@@ -16,7 +16,7 @@ Namaz Akışı projesine katkı yaptığınız için teşekkürler! 🎉
 
 ### Özellik İsteği
 
-1. [Discussions](https://github.com/furkanisikay/namazakisi/discussions) bölümünde tartışmaya açın.
+1. [Issues](https://github.com/furkanisikay/namazakisi/issues) bölümünde bir öneri açın.
 2. Özelliğin neden gerekli olduğunu açıklayın.
 3. Topluluk geri bildirimi bekleyin.
 
