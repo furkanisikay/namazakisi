@@ -296,19 +296,19 @@ describe('MuhafizAyarlariSayfasi', () => {
   });
 
   // ── Katman 3 ──────────────────────────────────────────────────────────────
-  it('adıma dokununca detay modalı kanallar/eşik/sıklık ile açılır', async () => {
-    const { getByText, getByLabelText, queryByText } = await kur();
+  it('adıma dokununca detay modalı NE ZAMAN / NASIL (iki anahtar) / Gelişmiş ile açılır', async () => {
+    const { getByText, getByLabelText, getByTestId, queryByText } = await kur();
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
-    expect(getByText('NASIL UYARSIN')).toBeTruthy();
     expect(getByText('KAÇ DK KALA')).toBeTruthy();
-    expect(getByText('SIKLIK')).toBeTruthy();
-    expect(getByText('BİLDİRİM SESİ')).toBeTruthy();
-    // Faz 5: TTS bağlandı → "yakında" rozeti YOK, modlar sade etikette
-    expect(getByLabelText('Sesli anons')).toBeTruthy();
-    expect(getByLabelText('İkisi de')).toBeTruthy();
-    expect(queryByText('yakında')).toBeNull();
+    expect(getByText('NASIL')).toBeTruthy();
+    // Birleşik modül: dört kart yerine iki BAĞIMSIZ anahtar; ses satırı bildirimin altında.
+    expect(getByTestId('adim-bildirim-anahtari')).toBeTruthy();
+    expect(getByTestId('adim-sesli-anahtari')).toBeTruthy();
+    expect(getByLabelText(/^Bildirim sesi:/)).toBeTruthy();
+    expect(getByTestId('adim-gelismis')).toBeTruthy();
+    expect(queryByText('NASIL UYARSIN')).toBeNull();
   });
 
   it('eşik stepper sınırları komşu seviyeye göre kısıtlanır (spec 4.2)', async () => {
@@ -336,19 +336,46 @@ describe('MuhafizAyarlariSayfasi', () => {
   });
 
   it('kanal değişikliği yoğunluğu "ozel" YAPMAZ (zamanlama ekseni değil)', async () => {
-    const { getByText, getByLabelText } = await kur();
+    const { getByText, getByLabelText, getByTestId } = await kur({ sesliOnayi: true });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
-    fireEvent.press(getByLabelText('Kapalı'));
+    fireEvent(getByTestId('adim-sesli-anahtari'), 'valueChange', true);
 
     expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({});
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ bildirim: true, sesli: true });
     expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalled();
     // ...ama yedeklenir: preset yoğunluğunda yapılan kanal/ses değişikliği de kullanıcı
     // emeğidir; yedeklenmezse sonraki preset dokunuşu onu UYARISIZ siler ve "Özel"
     // seçeneği görünmediği için geri dönüş kalmaz.
     expect(ozelMatrisYedegiGuncelle).toHaveBeenCalledWith(yeni);
+  });
+
+  it('BİRLEŞİK MODÜL: adımda sesli okuma İLK kez açılırken muhafızın rızası sorulur; onay adımla BİRLİKTE yazılır', async () => {
+    const { getByText, getByLabelText, getByTestId, queryByText } = await kur();
+    fireEvent.press(getByText('Öğle'));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
+    fireEvent(getByTestId('adim-sesli-anahtari'), 'valueChange', true);
+    // Rıza yokken hiçbir şey yazılmaz; "Sesli olmadan" da yazmaz.
+    expect(getByText('Sesli anons açılsın mı?')).toBeTruthy();
+    expect(matrisiGuncelle).not.toHaveBeenCalled();
+    fireEvent.press(getByLabelText('Sesli olmadan uygula'));
+    expect(queryByText('Sesli anons açılsın mı?')).toBeNull();
+    expect(matrisiGuncelle).not.toHaveBeenCalled();
+
+    fireEvent(getByTestId('adim-sesli-anahtari'), 'valueChange', true);
+    fireEvent.press(getByLabelText('Sesli anonsu açın'));
+    expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ sesliOnayi: true });
+    const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ bildirim: true, sesli: true });
+  });
+
+  it('BİRLEŞİK MODÜL: "Hatırlatma ekleyin" yeni adımın detayını açar', async () => {
+    const { getByText, getByLabelText, getByTestId } = await kur();
+    fireEvent.press(getByText('Öğle'));
+    fireEvent.press(getByLabelText('Öğle vaktine hatırlatma ekleyin'));
+    expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
+    expect(getByTestId('adim-bildirim-anahtari')).toBeTruthy();
   });
 
   // ── Adım aç/kapa anahtarı (Katman 2) ──────────────────────────────────────
@@ -404,18 +431,13 @@ describe('MuhafizAyarlariSayfasi', () => {
    * açtığında kurduğu küme yerine yalnız bildirime düşer — aynı görünür eylem iki
    * yoldan farklı sonuç verir.
    */
-  it('modaldan "Kapalı" seçmek de kanal hafızasını yazar (anahtarla aynı davranır)', async () => {
-    const matris = varsayilanMatris();
-    matris.ogle.seviyeler[0].kanallar = { bildirim: true, sesli: true };
-    const { getByText, getByLabelText } = await kur({ matris });
+  it('son açık kanal modaldan KAPATILAMAZ — adımı kapatmanın yeri liste anahtarı', async () => {
+    const { getByText, getByLabelText, getByTestId } = await kur();
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
-    fireEvent.press(getByLabelText('Kapalı'));
-
-    const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({});
-    expect(yeni.ogle.seviyeler[0].oncekiKanallar).toEqual({ bildirim: true, sesli: true });
+    expect(getByTestId('adim-bildirim-anahtari').props.disabled).toBe(true);
+    expect(getByText('Bu hatırlatmayı kapatmak için listedeki anahtarı kullanın.')).toBeTruthy();
   });
 
   // ── Titreşim kanalı (Faz 6) ───────────────────────────────────────────────
@@ -438,14 +460,14 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalled();
   });
 
-  it('çip değiştirmek AÇIK titreşimi korur (bağımsız eksen)', async () => {
+  it('sesli okumayı açmak AÇIK titreşimi korur (bağımsız eksen)', async () => {
     const matris = varsayilanMatris();
     matris.ogle.seviyeler[0].kanallar = { bildirim: true, titresim: true };
-    const { getByText, getByLabelText } = await kur({ matris });
+    const { getByText, getByLabelText, getByTestId } = await kur({ matris, sesliOnayi: true });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
-    fireEvent.press(getByLabelText('İkisi de'));
+    fireEvent(getByTestId('adim-sesli-anahtari'), 'valueChange', true);
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
     expect(yeni.ogle.seviyeler[0].kanallar).toEqual({
@@ -455,36 +477,38 @@ describe('MuhafizAyarlariSayfasi', () => {
     });
   });
 
-  it('"Kapalı" çipi titreşimi de kapatır (adım gerçekten kapanmalı)', async () => {
+  it('bildirim kapanınca titreşim de düşer (titreşim bildirimin alt özelliği)', async () => {
     const matris = varsayilanMatris();
-    matris.ogle.seviyeler[0].kanallar = { bildirim: true, titresim: true };
-    const { getByText, getByLabelText } = await kur({ matris });
+    matris.ogle.seviyeler[0].kanallar = { bildirim: true, sesli: true, titresim: true };
+    matris.ogle.seviyeler[0].anonsMetni = '{vakit} vakti çıkıyor, son {süre} dakika.';
+    const { getByText, getByLabelText, getByTestId } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
-    fireEvent.press(getByLabelText('Kapalı'));
+    fireEvent(getByTestId('adim-bildirim-anahtari'), 'valueChange', false);
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({});
-    expect(yeni.ogle.seviyeler[0].oncekiKanallar).toEqual({ bildirim: true, titresim: true });
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ sesli: true });
   });
 
-  it('modaldan kapalılıktan çıkınca bayat kanal hafızası temizlenir', async () => {
+  it('modaldan "Açın" hafızadaki kanalları geri getirir, bayat hafıza temizlenir', async () => {
     const matris = varsayilanMatris();
     matris.ogle.seviyeler[0] = {
       ...matris.ogle.seviyeler[0],
       kanallar: {},
       oncekiKanallar: { bildirim: true, sesli: true },
     };
-    const { getByText, getByLabelText } = await kur({ matris });
+    const { getByText, getByLabelText, getByTestId } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
-    fireEvent.press(getByLabelText('Bildirim'));
+    fireEvent.press(getByTestId('adim-ac-dugmesi'));
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ bildirim: true });
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ bildirim: true, sesli: true });
     expect(yeni.ogle.seviyeler[0].oncekiKanallar).toBeUndefined();
+    // Muhafızda boş metin SESSİZDİR → geri açılan sesli adımın kutusu şablonla dolar.
+    expect(yeni.ogle.seviyeler[0].anonsMetni).toContain('{vakit}');
   });
 
   it('adım anahtarı yoğunluğu "ozel" YAPMAZ ama yedeklenir ve plan tazelenir', async () => {
@@ -503,42 +527,43 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(mockMuhafizPlanla).toHaveBeenCalled();
   });
 
-  it('sesli moda geçince anons metni boş bırakılmaz (şablonla ön-doldurulur)', async () => {
-    const { getByText, getByLabelText } = await kur();
+  it('sesli okumaya geçince anons metni boş bırakılmaz (şablonla ön-doldurulur)', async () => {
+    const { getByText, getByLabelText, getByTestId } = await kur({ sesliOnayi: true });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
-    fireEvent.press(getByLabelText('Sesli anons'));
+    fireEvent(getByTestId('adim-sesli-anahtari'), 'valueChange', true);
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ sesli: true });
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ bildirim: true, sesli: true });
     expect(yeni.ogle.seviyeler[0].anonsMetni).toContain('{vakit}');
   });
 
-  it('sessiz adımda eşik/sıklık alanları gizlenir', async () => {
+  it('kapalı adımda eşik/kanal alanları gizlenir, "Açın" düğmesi görünür', async () => {
     const matris = varsayilanMatris();
     matris.ogle.seviyeler[0].kanallar = {};
-    const { getByText, getByLabelText, queryByText } = await kur({ matris });
+    const { getByText, getByLabelText, getByTestId, queryByText } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
     expect(queryByText('KAÇ DK KALA')).toBeNull();
-    expect(queryByText('SIKLIK')).toBeNull();
-    expect(getByText(/Bu adım kapalı/)).toBeTruthy();
+    expect(queryByText('NASIL')).toBeNull();
+    expect(getByText(/Bu hatırlatma kapalı/)).toBeTruthy();
+    expect(getByTestId('adim-ac-dugmesi')).toBeTruthy();
   });
 
   it('sesli modda anons metni düzenlenebilir ve örnek okunuş gösterilir', async () => {
     const matris = varsayilanMatris();
     matris.ogle.seviyeler[0].kanallar = { bildirim: true, sesli: true };
     matris.ogle.seviyeler[0].anonsMetni = '{vakit} vakti çıkıyor, son {süre} dakika.';
-    const { getByText, getByLabelText } = await kur({ matris });
+    const { getByText, getByLabelText, getByTestId } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
-    expect(getByText('SESLİ ANONS METNİ')).toBeTruthy();
+    expect(getByTestId('anons-metni-editoru')).toBeTruthy();
     // {vakit}/{süre} çözülmüş önizleme (eşik 45)
-    expect(getByText('Öğle vakti çıkıyor, son 45 dakika.')).toBeTruthy();
+    expect(getByTestId('anons-okunus').props.children).toBe('Öğle vakti çıkıyor, son 45 dakika.');
 
-    const kutu = getByLabelText('Sesli anons metni');
+    const kutu = getByLabelText('Sesli okuma metni');
     fireEvent.changeText(kutu, 'Kalk, {vakit} namazına {süre} dakika.');
     // Yazarken diske yazılmaz — yalnız düzenleme bitince
     expect(matrisiGuncelle).not.toHaveBeenCalled();
@@ -831,12 +856,12 @@ describe('MuhafizAyarlariSayfasi', () => {
 
     it('Türkçe paketi YOKSA sesli adımda kibar uyarı gösterir (engellemez)', async () => {
       ttsDurumu.destekli = false;
-      const { getByText, getByLabelText } = await detayiAc({ matris: sesliMatris() });
+      const { getByText, getByLabelText, getByTestId } = await detayiAc({ matris: sesliMatris() });
 
       expect(getByText(/Türkçe konuşma paketi bulunamadı/)).toBeTruthy();
-      // Engelleme YOK: kanal çipleri hâlâ seçilebilir, ayar kutusu duruyor
-      expect(getByLabelText('Sesli anons')).toBeTruthy();
-      expect(getByLabelText('Sesli anons metni')).toBeTruthy();
+      // Engelleme YOK: kanal anahtarları hâlâ değiştirilebilir, metin kutusu duruyor
+      expect(getByTestId('adim-sesli-anahtari')).toBeTruthy();
+      expect(getByLabelText('Sesli okuma metni')).toBeTruthy();
     });
 
     it('Türkçe paketi VARSA uyarı gösterilmez', async () => {

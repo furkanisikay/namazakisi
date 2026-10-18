@@ -36,6 +36,7 @@ import { VAKIT_ADLARI } from '../utils/muhafizMetinYardimcisi';
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
 import { alarmPayinaSigdir } from '../hatirlatma/ekPlan';
+import { adimAnonsMetni } from '../hatirlatma/anonsYerTutucu';
 import {
     CAMIYE_GIT_VAKITLERI,
     type CamiyeGitAyarlari,
@@ -133,7 +134,15 @@ export function camiyeGitPlaniOlustur(
                     oncedenDk: uyari.kalanDk,
                     giris,
                     ...camiyeGitMetniOlustur(vakit, uyari.kalanDk, ayarlar),
-                    uyari: { ...uyari, anonsMetni: camiyeGitAnonsMetni(vakit, uyari.kalanDk, ayarlar) },
+                    uyari: {
+                        ...uyari,
+                        // Kullanıcının metni (yer tutucular bu vakte göre); boşsa otomatik cümle.
+                        anonsMetni: adimAnonsMetni(
+                            uyari.anonsMetni,
+                            { vakit: VAKIT_ADLARI[vakit], sureDk: uyari.kalanDk },
+                            () => camiyeGitAnonsMetni(vakit, uyari.kalanDk, ayarlar)
+                        ),
+                    },
                 });
             }
         }

@@ -30,9 +30,9 @@ export function seviyeOzetiOlustur(
   const bildirim = kanalAcikMi(seviye.kanallar, 'bildirim');
   const sesli = kanalAcikMi(seviye.kanallar, 'sesli');
   const parcalar = [esikIfadesi(seviye.esikDk, yon)];
-  if (bildirim && sesli) parcalar.push('bildirim + sesli anons', sesAdi(seviye));
+  if (bildirim && sesli) parcalar.push('bildirim + sesli okuma', sesAdi(seviye));
   else if (bildirim) parcalar.push('bildirim', sesAdi(seviye));
-  else if (sesli) parcalar.push('sesli anons');
+  else if (sesli) parcalar.push('sesli okuma');
   // Titresim BAGIMSIZ bir kanaldir (Faz 6): otekilerin yerine gecmez, yanina
   // eklenir. Yalniz titresimle kurulmus adim da mesrudur ve KAPALI degildir.
   if (kanalAcikMi(seviye.kanallar, 'titresim')) parcalar.push('titreşim');

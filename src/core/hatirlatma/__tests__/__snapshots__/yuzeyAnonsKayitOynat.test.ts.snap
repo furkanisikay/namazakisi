@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ek hatırlatma yüzeyleri — boş metinli sesli adım = bugünkü otomatik cümle (kayıt-oynat) camiye gitme 1`] = `
+[
+  "camiye_git_<GUN>_aksam | bildirim+sesli | sesli=true | Akşam vaktine 40 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_aksam_10 | bildirim+titresim | sesli=false | Akşam vaktine 10 dakika kaldı. Camiye yola çık.",
+  "camiye_git_<GUN>_aksam_15 | bildirim+titresim | sesli=false | Akşam vaktine 15 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_aksam_25 | sesli | sesli=true | Akşam vaktine 25 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_aksam_5 | bildirim+titresim | sesli=false | Akşam vaktine 5 dakika kaldı. Camiye yola çık.",
+  "camiye_git_<GUN>_ikindi | bildirim+sesli | sesli=true | İkindi vaktine 40 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_ikindi_10 | bildirim+titresim | sesli=false | İkindi vaktine 10 dakika kaldı. Camiye yola çık.",
+  "camiye_git_<GUN>_ikindi_15 | bildirim+titresim | sesli=false | İkindi vaktine 15 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_ikindi_25 | sesli | sesli=true | İkindi vaktine 25 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_ikindi_5 | bildirim+titresim | sesli=false | İkindi vaktine 5 dakika kaldı. Camiye yola çık.",
+  "camiye_git_<GUN>_imsak | bildirim+sesli | sesli=true | Sabah vaktine 40 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_imsak_10 | bildirim+titresim | sesli=false | Sabah vaktine 10 dakika kaldı. Camiye yola çık.",
+  "camiye_git_<GUN>_imsak_15 | bildirim+titresim | sesli=false | Sabah vaktine 15 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_imsak_25 | sesli | sesli=true | Sabah vaktine 25 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_imsak_5 | bildirim+titresim | sesli=false | Sabah vaktine 5 dakika kaldı. Camiye yola çık.",
+  "camiye_git_<GUN>_ogle | bildirim+sesli | sesli=true | Öğle vaktine 40 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_ogle_10 | bildirim+titresim | sesli=false | Öğle vaktine 10 dakika kaldı. Camiye yola çık.",
+  "camiye_git_<GUN>_ogle_15 | bildirim+titresim | sesli=false | Öğle vaktine 15 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_ogle_25 | sesli | sesli=true | Öğle vaktine 25 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_ogle_5 | bildirim+titresim | sesli=false | Öğle vaktine 5 dakika kaldı. Camiye yola çık.",
+  "camiye_git_<GUN>_yatsi | bildirim+sesli | sesli=true | Yatsı vaktine 40 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_yatsi_10 | bildirim+titresim | sesli=false | Yatsı vaktine 10 dakika kaldı. Camiye yola çık.",
+  "camiye_git_<GUN>_yatsi_15 | bildirim+titresim | sesli=false | Yatsı vaktine 15 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_yatsi_25 | sesli | sesli=true | Yatsı vaktine 25 dakika kaldı. Hazırlan, camiye yola çık.",
+  "camiye_git_<GUN>_yatsi_5 | bildirim+titresim | sesli=false | Yatsı vaktine 5 dakika kaldı. Camiye yola çık.",
+]
+`;
+
+exports[`Ek hatırlatma yüzeyleri — boş metinli sesli adım = bugünkü otomatik cümle (kayıt-oynat) cuma 1`] = `
+[
+  "cuma_hatirlatma_<GUN> | bildirim+sesli | sesli=true | Cuma için öğle vaktine 1 saat 30 dakika kaldı. Hazırlan, camiye yola çık.",
+  "cuma_hatirlatma_<GUN>_10 | bildirim+titresim | sesli=false | Cuma için öğle vaktine 10 dakika kaldı. Hazırlan, camiye yola çık.",
+  "cuma_hatirlatma_<GUN>_15 | bildirim+titresim | sesli=false | Cuma için öğle vaktine 15 dakika kaldı. Hazırlan, camiye yola çık.",
+  "cuma_hatirlatma_<GUN>_20 | bildirim+titresim | sesli=false | Cuma için öğle vaktine 20 dakika kaldı. Hazırlan, camiye yola çık.",
+  "cuma_hatirlatma_<GUN>_45 | sesli | sesli=true | Cuma için öğle vaktine 45 dakika kaldı. Hazırlan, camiye yola çık.",
+  "cuma_hatirlatma_<GUN>_5 | bildirim+titresim | sesli=false | Cuma için öğle vaktine 5 dakika kaldı. Hazırlan, camiye yola çık.",
+]
+`;
+
+exports[`Ek hatırlatma yüzeyleri — boş metinli sesli adım = bugünkü otomatik cümle (kayıt-oynat) nafile — kuşluk (giriş), evvâbîn (çıkış), teheccüd (son üçte bir) 1`] = `
+[
+  "nafile_<GUN>_evvabin_15 | bildirim+titresim | sesli=false | Evvâbîn için 15 dakika var.",
+  "nafile_<GUN>_evvabin_25 | sesli | sesli=true | Evvâbîn için 25 dakika var.",
+  "nafile_<GUN>_evvabin_40 | bildirim+sesli | sesli=true | Evvâbîn için 40 dakika var.",
+  "nafile_<GUN>_evvabin_5 | bildirim+titresim | sesli=false | Evvâbîn için vakit sürüyor.",
+  "nafile_<GUN>_kusluk_110 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_111 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_134 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_135 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_14 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_15 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_158 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_159 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_182 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_183 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_206 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_207 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_230 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_231 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_254 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_255 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_278 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_279 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_302 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_303 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_326 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_327 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_350 | bildirim+titresim | sesli=false | Kuşluk vakti girdi. İki rekât için güzel bir an.",
+  "nafile_<GUN>_kusluk_351 | bildirim+titresim | sesli=false | Kuşluk vakti girdi. İki rekât için güzel bir an.",
+  "nafile_<GUN>_kusluk_38 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_380 | sesli | sesli=true | Kuşluk vakti girdi. İki rekât için güzel bir an.",
+  "nafile_<GUN>_kusluk_381 | sesli | sesli=true | Kuşluk vakti girdi. İki rekât için güzel bir an.",
+  "nafile_<GUN>_kusluk_39 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_405 | bildirim+sesli | sesli=true | Kuşluk vakti girdi. İki rekât için güzel bir an.",
+  "nafile_<GUN>_kusluk_406 | bildirim+sesli | sesli=true | Kuşluk vakti girdi. İki rekât için güzel bir an.",
+  "nafile_<GUN>_kusluk_62 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_63 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_86 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_kusluk_87 | bildirim+titresim | sesli=false | Kuşluk vakti sürüyor.",
+  "nafile_<GUN>_teheccud_113 | sesli | sesli=true | Teheccüd vakti. Gecenin son üçte biri girdi.",
+  "nafile_<GUN>_teheccud_114 | sesli | sesli=true | Teheccüd vakti. Gecenin son üçte biri girdi.",
+  "nafile_<GUN>_teheccud_13 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 13 dakika kaldı.",
+  "nafile_<GUN>_teheccud_132 | bildirim+sesli | sesli=true | Teheccüd vakti. Gecenin son üçte biri girdi.",
+  "nafile_<GUN>_teheccud_133 | bildirim+sesli | sesli=true | Teheccüd vakti. Gecenin son üçte biri girdi.",
+  "nafile_<GUN>_teheccud_14 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 14 dakika kaldı.",
+  "nafile_<GUN>_teheccud_23 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 23 dakika kaldı.",
+  "nafile_<GUN>_teheccud_24 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 24 dakika kaldı.",
+  "nafile_<GUN>_teheccud_3 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 3 dakika kaldı.",
+  "nafile_<GUN>_teheccud_33 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 33 dakika kaldı.",
+  "nafile_<GUN>_teheccud_34 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 34 dakika kaldı.",
+  "nafile_<GUN>_teheccud_4 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 4 dakika kaldı.",
+  "nafile_<GUN>_teheccud_43 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 43 dakika kaldı.",
+  "nafile_<GUN>_teheccud_44 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 44 dakika kaldı.",
+  "nafile_<GUN>_teheccud_53 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 53 dakika kaldı.",
+  "nafile_<GUN>_teheccud_54 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 54 dakika kaldı.",
+  "nafile_<GUN>_teheccud_63 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 63 dakika kaldı.",
+  "nafile_<GUN>_teheccud_64 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 64 dakika kaldı.",
+  "nafile_<GUN>_teheccud_73 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 73 dakika kaldı.",
+  "nafile_<GUN>_teheccud_74 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 74 dakika kaldı.",
+  "nafile_<GUN>_teheccud_83 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 83 dakika kaldı.",
+  "nafile_<GUN>_teheccud_84 | bildirim+titresim | sesli=false | Teheccüd vakti. İmsaka 84 dakika kaldı.",
+  "nafile_<GUN>_teheccud_93 | bildirim+titresim | sesli=false | Teheccüd vakti. Gecenin son üçte biri girdi.",
+  "nafile_<GUN>_teheccud_94 | bildirim+titresim | sesli=false | Teheccüd vakti. Gecenin son üçte biri girdi.",
+]
+`;
+
+exports[`Ek hatırlatma yüzeyleri — boş metinli sesli adım = bugünkü otomatik cümle (kayıt-oynat) takvim çakışması — "once" ve "kapliyor" 1`] = `
+[
+  "takvim_cakisma_<GUN>_ikindi | bildirim+sesli | sesli=true | Takviminizdeki bir etkinlik ikindi vaktine denk geliyor. Etkinlikten önce kılmayı unutmayın.",
+  "takvim_cakisma_<GUN>_ikindi_10 | bildirim+titresim | sesli=false | Takviminizdeki bir etkinlik ikindi vaktine denk geliyor. Etkinlikten önce kılmayı unutmayın.",
+  "takvim_cakisma_<GUN>_ikindi_15 | bildirim+titresim | sesli=false | Takviminizdeki bir etkinlik ikindi vaktine denk geliyor. Etkinlikten önce kılmayı unutmayın.",
+  "takvim_cakisma_<GUN>_ikindi_30 | sesli | sesli=true | Takviminizdeki bir etkinlik ikindi vaktine denk geliyor. Etkinlikten önce kılmayı unutmayın.",
+  "takvim_cakisma_<GUN>_ikindi_5 | bildirim+titresim | sesli=false | Takviminizdeki bir etkinlik ikindi vaktine denk geliyor. Etkinlikten önce kılmayı unutmayın.",
+  "takvim_cakisma_<GUN>_ogle | bildirim+sesli | sesli=true | Takviminizdeki bir etkinlik öğle vaktine denk geliyor. Ara verip kılmayı unutmayın.",
+  "takvim_cakisma_<GUN>_ogle_10 | bildirim+titresim | sesli=false | Takviminizdeki bir etkinlik öğle vaktine denk geliyor. Ara verip kılmayı unutmayın.",
+  "takvim_cakisma_<GUN>_ogle_15 | bildirim+titresim | sesli=false | Takviminizdeki bir etkinlik öğle vaktine denk geliyor. Ara verip kılmayı unutmayın.",
+  "takvim_cakisma_<GUN>_ogle_5 | bildirim+titresim | sesli=false | Takviminizdeki bir etkinlik öğle vaktine denk geliyor. Ara verip kılmayı unutmayın.",
+]
+`;
+
+exports[`Ek hatırlatma yüzeyleri — boş metinli sesli adım = bugünkü otomatik cümle (kayıt-oynat) yatış — yatsı hatırlatması + muhasebe (tek / çoklu) 1`] = `
+{
+  "coklu": [
+    "muhasebe_<GUN> | bildirim+sesli | sesli=true | Bugün 4 vakit işaretlenmemiş görünüyor.",
+    "muhasebe_<GUN>_10 | bildirim+titresim | sesli=false | Bugün 4 vakit işaretlenmemiş görünüyor.",
+    "muhasebe_<GUN>_15 | bildirim+titresim | sesli=false | Bugün 4 vakit işaretlenmemiş görünüyor.",
+    "muhasebe_<GUN>_30 | sesli | sesli=true | Bugün 4 vakit işaretlenmemiş görünüyor.",
+    "muhasebe_<GUN>_5 | bildirim+titresim | sesli=false | Bugün 4 vakit işaretlenmemiş görünüyor.",
+  ],
+  "tek": [
+    "muhafiz_<GUN>_vakit_ogle_muhasebe | bildirim+sesli | sesli=true | Bugün öğle vakti işaretlenmemiş görünüyor.",
+    "muhafiz_<GUN>_vakit_ogle_muhasebe_10 | bildirim+titresim | sesli=false | Bugün öğle vakti işaretlenmemiş görünüyor.",
+    "muhafiz_<GUN>_vakit_ogle_muhasebe_15 | bildirim+titresim | sesli=false | Bugün öğle vakti işaretlenmemiş görünüyor.",
+    "muhafiz_<GUN>_vakit_ogle_muhasebe_30 | sesli | sesli=true | Bugün öğle vakti işaretlenmemiş görünüyor.",
+    "muhafiz_<GUN>_vakit_ogle_muhasebe_5 | bildirim+titresim | sesli=false | Bugün öğle vakti işaretlenmemiş görünüyor.",
+  ],
+  "yatsi": [
+    "muhafiz_<GUN>_vakit_yatsi_yatis | bildirim+sesli | sesli=true | Yatmadan önce yatsıyı kıl.",
+    "muhafiz_<GUN>_vakit_yatsi_yatis_10 | bildirim+titresim | sesli=false | Yatmadan önce yatsıyı kıl.",
+    "muhafiz_<GUN>_vakit_yatsi_yatis_15 | bildirim+titresim | sesli=false | Yatmadan önce yatsıyı kıl.",
+    "muhafiz_<GUN>_vakit_yatsi_yatis_30 | sesli | sesli=true | Yatmadan önce yatsıyı kıl.",
+    "muhafiz_<GUN>_vakit_yatsi_yatis_5 | bildirim+titresim | sesli=false | Yatmadan önce yatsıyı kıl.",
+  ],
+}
+`;

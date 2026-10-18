@@ -2,7 +2,7 @@
  * Yon secicisinin KENDINI ANLATMASI — kart entegrasyonu.
  *
  * Kullanici "Vakit cikarken / Vakit girer girmez" seceneginin ne demek oldugunu
- * ekranda anlayamiyordu. Kart artik (a) iki cipte de kisa aciklama, (b) vaktin
+ * ekranda anlayamiyordu. Kart artik (a) parcali secici + secili yonun kisa satiri, (b) vaktin
  * bugunku penceresinde hatirlatmalarin nereye dustugunu gosteren zaman seridi,
  * (c) "?" ile iki yonu yan yana gosteren bilgi modali cizer.
  */
@@ -86,11 +86,14 @@ beforeEach(() => {
 });
 
 describe('PencereKarti — zaman seridi', () => {
-    it('iki cipte de kisa aciklama gorunur (secmeden karsilastirilabilir)', () => {
+    it('yön PARÇALI seçicide (iki seçenek seçilebilir); seçili yönün kısa açıklaması tek satır', () => {
         const ekran = kur(true);
         for (const secenek of YON_SECENEKLERI) {
-            expect(ekran.getByText(secenek.kisaAciklama)).toBeTruthy();
+            expect(ekran.getByLabelText(`${secenek.etiket} — ${secenek.aciklama}`)).toBeTruthy();
         }
+        // Karşılaştırma '?' modalında (iki yön yan yana); kartta yalnız seçilinin satırı.
+        expect(ekran.getByText(YON_SECENEKLERI[0].kisaAciklama)).toBeTruthy();
+        expect(ekran.queryByText(YON_SECENEKLERI[1].kisaAciklama)).toBeNull();
     });
 
     it('pencere biliniyorsa serit + veriden uretilen cumle cizilir', () => {
@@ -130,6 +133,8 @@ describe('PencereKarti — YÖN SABİT ek hatırlatma yüzeyi (plan §3.3)', () 
     const ekTanim = (pencere?: { baslangic: Date; bitis: Date }) =>
         ekHatirlatmaPencereTanimi({
             kaynak: 'cuma',
+            yuzey: 'cuma',
+            anonsVakitAdi: 'Cuma',
             baslik: 'Cuma namazı',
             baslikKucuk: 'cuma namazı',
             ikon: 'mosque',

@@ -4,18 +4,18 @@
  * Başlık navigasyon header'ındadır (AGENTS.md: sayfa başlığı TEK yerde) — gövde
  * yalnız kısa bir açıklama satırıyla başlar.
  *
- * Her nafile kartı ORTAK hatırlatma bileşeninden gelir (`PencereKarti` +
- * `AdimDetayModal` + `nafilePencereTanimi`; AGENTS.md: "yeni hatırlatma yüzeyi
- * için ayrı ekran YAZMA"): yön, zaman şeridi, en fazla 3 adım, her adımın
- * sıklığı ve kanalları (bildirim / sesli anons / ikisi + titreşim). Teheccüd
- * ayrıca pencere (son üçte bir / yatsıdan) ve uyandırma sesi taşır.
+ * Her nafile kartının gövdesi BİRLEŞİK hatırlatma modülüdür (`HatirlatmaModulu` +
+ * `nafilePencereTanimi`; AGENTS.md: "yeni hatırlatma yüzeyi için ayrı ekran YAZMA"): yön,
+ * zaman şeridi, en fazla 3 adım (birden çok adımda aç/kapa anahtarı), her adımın tekrarı,
+ * Bildirim + Sesli okuma anahtarları, titreşim ve sesli okuma METNİ (`{vakit}` = nafilenin
+ * adı). Teheccüd ayrıca pencere (son üçte bir / yatsıdan) ve uyandırma sesi taşır.
  *
- * SESLİ ANONS RIZASI (`NafileAyarlari.sesliOnayi`, muhafızınkinden AYRI): bir
- * adımda sesli kanal İLK kez açılırken `SesliOnayModal`; reddedilirse adım
- * bildirimle kalır, geri tuşu hiçbir şey yazmaz.
+ * SESLİ OKUMA RIZASI (`NafileAyarlari.sesliOnayi`, muhafızınkinden AYRI): bir adımda sesli
+ * okuma İLK kez açılırken adım detayının içinde `SesliOnayModal`; reddedilirse adım
+ * kurulu kanallarıyla kalır, geri tuşu hiçbir şey yazmaz.
  */
 import * as React from 'react';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
@@ -33,13 +33,12 @@ import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
 import { useNafilePencereleri } from '../hooks/useNafilePencereleri';
 import { BildirimButceKarti } from '../components/bildirim/BildirimButceKarti';
 import { Anahtar } from '../components/common/Anahtar';
-import { PencereKarti } from '../components/hatirlatma/PencereKarti';
-import { AdimDetayModal } from '../components/hatirlatma/AdimDetayModal';
-import { AkisOnizlemeModal } from '../components/hatirlatma/AkisOnizlemeModal';
+import { HatirlatmaModulu } from '../components/hatirlatma/HatirlatmaModulu';
+import type { AdimRizasi } from '../components/hatirlatma/AdimDetayModal';
 import { nafilePencereTanimi, type PencereTanimi } from '../components/hatirlatma/pencereTanimi';
-import { SesliOnayModal } from './MuhafizAyarlari/SesliOnayModal';
+import type { HatirlatmaIslemleri } from '../hooks/useHatirlatmaDuzenleyici';
 import type { ButceOnerisi } from '../../core/bildirim/butceOnerileri';
-import type { SeviyeAyari, VakitMuhafizAyari } from '../../core/muhafiz/matrisTipleri';
+import type { VakitMuhafizAyari } from '../../core/muhafiz/matrisTipleri';
 import type { PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import {
     NAFILE_ADLARI,
@@ -93,11 +92,13 @@ const turDegisikligi = (tur: NafileTuru, ayar: Partial<NafileHatirlatmaAyari>): 
 
 type AyarNavigasyonu = { navigate: (ekran: string) => void };
 
-interface SesliBekleyen {
-    tur: NafileTuru;
-    indeks: number;
-    seviye: SeviyeAyari;
-}
+/** Bir nafilenin adım dönüşümleri (nafile kısıtları; yeni adım bugünkü pencereye sığdırılır). */
+const nafileIslemleri = (pencereUzunluguDk: number | undefined): HatirlatmaIslemleri<NafileHatirlatmaAyari> => ({
+    adimlar: (a) => a.adimlar,
+    ekle: (a) => nafileAdimEkle(a, pencereUzunluguDk),
+    guncelle: (a, i, seviye) => nafileAdimGuncelle(a, i, seviye),
+    sil: (a, i) => nafileAdimSil(a, i),
+});
 
 export const NafileAyarlariSayfasi: React.FC = () => {
     const renkler = useRenkler();
@@ -106,10 +107,6 @@ export const NafileAyarlariSayfasi: React.FC = () => {
     const { pencereler } = useNafilePencereleri();
     const yetenekler = usePlatformYetenekleri();
     const ttsDestekli = useTurkceTtsDestegi();
-    const [detay, setDetay] = useState<{ tur: NafileTuru; indeks: number } | null>(null);
-    const [sesliBekleyen, setSesliBekleyen] = useState<SesliBekleyen | null>(null);
-    /** "Akışı önizle" (her hatırlatma yüzeyinde ortak) — gerçek bildirim GÖNDERMEZ. */
-    const [onizleme, setOnizleme] = useState<NafileTuru | null>(null);
     const navigation = useNavigation() as unknown as AyarNavigasyonu | undefined;
 
     /**
@@ -189,7 +186,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                 adimSayisi: ayar.adimlar.length,
                 pencere,
                 yetenekler,
-                anonsOrnegiOlustur: (s) =>
+                otomatikAnons: (s) =>
                     nafileAnonsOrnegi(k.tur, ayar.yon, s.esikDk, {
                         pencereUzunluguDk: uzunluk,
                         teheccudPenceresi,
@@ -215,56 +212,15 @@ export const NafileAyarlariSayfasi: React.FC = () => {
 
     const vakitAyari = (ayar: NafileHatirlatmaAyari): VakitMuhafizAyari => ({ yon: ayar.yon, seviyeler: ayar.adimlar });
 
-    const adimEkle = (tur: NafileTuru) => {
-        const ayar = nafileAyariniAl(ayarlar, tur);
-        const yeni = nafileAdimEkle(ayar, tanimlar[tur].pencereUzunluguDk);
-        if (yeni === ayar) return;
-        if (!ayariYaz(tur, yeni)) return;
-        // Yeni adımın detayını aç (prototip): dizide eski eşiklerde olmayan tek adım.
-        const eskiEsikler = new Set(ayar.adimlar.map((a) => a.esikDk));
-        const indeks = yeni.adimlar.findIndex((a) => !eskiEsikler.has(a.esikDk));
-        if (indeks >= 0) setDetay({ tur, indeks });
-    };
-
     const yonDegistir = (tur: NafileTuru, yon: PencereYonu) =>
         ayariYaz(tur, nafileYonunuDegistir(nafileAyariniAl(ayarlar, tur), yon));
 
-    /** `AlarmOnayModal` onaylandı; rıza bir sonraki adım yazımıyla birlikte kaydedilir. */
-    const alarmOnayiBekliyor = useRef(false);
-
-    /** Adım detayındaki değişiklik — sesli kanal ilk kez açılıyorsa önce rıza. */
-    const adimDegistir = (tur: NafileTuru, indeks: number, seviye: SeviyeAyari) => {
-        const ayar = nafileAyariniAl(ayarlar, tur);
-        const eski = ayar.adimlar[indeks];
-        if (!eski) return;
-        if (alarmOnayiBekliyor.current) {
-            alarmOnayiBekliyor.current = false;
-            ayariYaz(tur, nafileAdimGuncelle(ayar, indeks, seviye), { alarmOnayi: true });
-            return;
-        }
-        const sesliAciliyor = seviye.kanallar?.sesli === true && eski.kanallar?.sesli !== true;
-        if (sesliAciliyor && ayarlar.sesliOnayi !== true) {
-            setSesliBekleyen({ tur, indeks, seviye });
-            return;
-        }
-        ayariYaz(tur, nafileAdimGuncelle(ayar, indeks, seviye));
-    };
-
-    const sesliOnayla = () => {
-        if (!sesliBekleyen) return;
-        const { tur, indeks, seviye } = sesliBekleyen;
-        setSesliBekleyen(null);
-        ayariYaz(tur, nafileAdimGuncelle(nafileAyariniAl(ayarlar, tur), indeks, seviye), { sesliOnayi: true });
-    };
-
-    /** "Sesli olmadan": adım bildirimle kalır (titreşim korunur). */
-    const sesliOlmadan = () => {
-        if (!sesliBekleyen) return;
-        const { tur, indeks, seviye } = sesliBekleyen;
-        setSesliBekleyen(null);
-        const kanallar = { ...seviye.kanallar, sesli: false, bildirim: true };
-        ayariYaz(tur, nafileAdimGuncelle(nafileAyariniAl(ayarlar, tur), indeks, { ...seviye, kanallar }));
-    };
+    /** Her nafilenin adım dönüşümleri (bugünkü pencere uzunluğuyla). */
+    const islemler = useMemo(() => {
+        const sonuc = {} as Record<NafileTuru, HatirlatmaIslemleri<NafileHatirlatmaAyari>>;
+        for (const k of KARTLAR) sonuc[k.tur] = nafileIslemleri(tanimlar[k.tur].pencereUzunluguDk);
+        return sonuc;
+    }, [tanimlar]);
 
     const bolumBasligi = (metin: string) => (
         <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
@@ -437,14 +393,23 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                 {ayar.aktif && (
                     <View className="px-4 pb-4 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
                         {k.tur === 'teheccud' ? teheccudPenceresiSecici() : <View className="h-3" />}
-                        <PencereKarti
+                        <HatirlatmaModulu<NafileHatirlatmaAyari>
                             tanim={tanim}
-                            ayar={vakitAyari(ayar)}
+                            deger={ayar}
+                            islemler={islemler[k.tur]}
+                            // Rıza adım yazımıyla BİRLİKTE (iki eşzamanlı thunk birbirini ezerdi).
+                            yaz={(yeni, riza: AdimRizasi) => ayariYaz(k.tur, yeni, riza)}
+                            ttsDestekli={ttsDestekli}
+                            // Rızalar nafilenin KENDİ kaydı (muhafızınki taşınmaz).
+                            sesliOnayiVar={ayarlar.sesliOnayi === true}
+                            alarmOnayiVar={ayarlar.alarmOnayi === true}
+                            sesliOnayMetinleri={{
+                                altBaslik: 'Nafile hatırlatmasında sesli okuma',
+                                kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',
+                            }}
+                            silinebilirMi={(a) => a.adimlar.length > 1}
                             karsiYonAyari={vakitAyari(nafileYonunuDegistir(ayar, karsiYon))}
-                            onAdimSec={(indeks) => setDetay({ tur: k.tur, indeks })}
-                            onAdimEkle={() => adimEkle(k.tur)}
                             onYonDegistir={(yon) => yonDegistir(k.tur, yon)}
-                            onAkisiOnizle={() => setOnizleme(k.tur)}
                             stil="gomulu"
                         />
                         {k.tur === 'teheccud' && uyandirmaSatiri()}
@@ -459,8 +424,6 @@ export const NafileAyarlariSayfasi: React.FC = () => {
             </View>
         );
     };
-
-    const detayAyari = detay ? nafileAyariniAl(ayarlar, detay.tur) : null;
 
     return (
         <View style={{ flex: 1 }}>
@@ -485,59 +448,6 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                 <View className="mt-2">{bolumBasligi('GECE')}</View>
                 {kart(KARTLAR[2])}
             </ScrollView>
-
-            {detay && detayAyari && (
-                <AdimDetayModal
-                    gorunur
-                    tanim={tanimlar[detay.tur]}
-                    seviyeler={detayAyari.adimlar}
-                    indeks={detay.indeks}
-                    ttsDestekli={ttsDestekli}
-                    onDegistir={(s: SeviyeAyari) => adimDegistir(detay.tur, detay.indeks, s)}
-                    onSil={
-                        detayAyari.adimlar.length > 1
-                            ? () => {
-                                ayariYaz(detay.tur, nafileAdimSil(detayAyari, detay.indeks));
-                                setDetay(null);
-                            }
-                            : undefined
-                    }
-                    onKapat={() => setDetay(null)}
-                    // Gerçek alarm rızası (#74) — nafilenin KENDİ kaydı (muhafızınki taşınmaz).
-                    alarmOnayiVar={ayarlar.alarmOnayi === true}
-                    onAlarmOnayiVer={() => {
-                        // Ayrı bir yazım DEĞİL: modal onaydan hemen sonra anahtarı yazar
-                        // (`onDegistir`); iki eşzamanlı thunk aynı eski durumu birleştirip
-                        // birbirini ezerdi. Rıza o yazımla BİRLİKTE gider (`adimDegistir`).
-                        alarmOnayiBekliyor.current = true;
-                    }}
-                />
-            )}
-
-            {onizleme && (
-                <AkisOnizlemeModal
-                    gorunur
-                    tanim={tanimlar[onizleme]}
-                    ayar={vakitAyari(nafileAyariniAl(ayarlar, onizleme))}
-                    ttsDestekli={ttsDestekli}
-                    onKapat={() => setOnizleme(null)}
-                />
-            )}
-
-            <SesliOnayModal
-                gorunur={sesliBekleyen !== null}
-                altBaslik="Nafile hatırlatmasında sesli anons"
-                kapatmaNotu="Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz."
-                ornekMetin={
-                    sesliBekleyen
-                        ? tanimlar[sesliBekleyen.tur].anonsOrnegiOlustur?.(sesliBekleyen.seviye) ?? ''
-                        : ''
-                }
-                ttsDestekli={ttsDestekli}
-                onOnayla={sesliOnayla}
-                onSessizUygula={sesliOlmadan}
-                onIptal={() => setSesliBekleyen(null)}
-            />
 
             {/* Rehber sayfası + GERİ AL şeridi kaydırılan içeriğin DIŞINDA (şerit sabit kalsın) */}
             {rehber.ogeler}

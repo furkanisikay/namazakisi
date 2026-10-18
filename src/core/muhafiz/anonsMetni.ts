@@ -67,8 +67,18 @@ export function anonsMetniniCoz(
   olcuDk: number,
   yon: PencereYonu = VARSAYILAN_PENCERE_YONU
 ): string {
-  return sablon
+  const metin = sablon
     .split('{vakit}').join(VAKIT_ADLARI_ANONS[vakit])
     .split('{süre}').join(String(olcuDk))
     .split('{yön}').join(YON_IFADESI[yon]);
+  // Bilinmeyen `{…}` (yazım hatası, başka yüzeyden taşınan metin) BOŞA indirgenir — TTS
+  // "süslü parantez" okumasın; ek yüzeylerin `anonsCoz`'uyla aynı kural. Temizlik YALNIZ
+  // bilinmeyen yer tutucu varken yapılır: bilinenleri taşıyan metinler birebir aynı kalır
+  // (kayıt-oynat). Sonuç boşsa muhafız SESSİZ kalır (bilinçli).
+  if (!/\{[^{}]*\}/.test(metin)) return metin;
+  return metin
+    .replace(/\{[^{}]*\}/g, '')
+    .replace(/[ \t]{2,}/g, ' ')
+    .replace(/[ \t]+([.,;:!?])/g, '$1')
+    .trim();
 }

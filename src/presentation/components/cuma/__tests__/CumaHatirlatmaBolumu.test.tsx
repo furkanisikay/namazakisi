@@ -121,18 +121,18 @@ describe('CumaHatirlatmaBolumu', () => {
             return ekran;
         };
 
-        it('STANDART yetenekler: Kapalı / Bildirim / Sesli anons / İkisi de ve GERÇEK ALARM', () => {
+        it('STANDART yetenekler: Bildirim + Sesli okuma anahtarları, Gelişmiş bölümünde tekrar ve GERÇEK ALARM', () => {
             const ekran = ac(ACIK);
-            expect(ekran.getByLabelText('Kapalı')).toBeTruthy();
-            expect(ekran.getByLabelText('Bildirim')).toBeTruthy();
-            expect(ekran.getByLabelText('Sesli anons')).toBeTruthy();
-            expect(ekran.getByLabelText('İkisi de')).toBeTruthy();
+            expect(ekran.getByTestId('adim-bildirim-anahtari')).toBeTruthy();
+            expect(ekran.getByTestId('adim-sesli-anahtari')).toBeTruthy();
+            fireEvent.press(ekran.getByTestId('adim-gelismis'));
+            expect(ekran.getByTestId('adim-tekrar-anahtari')).toBeTruthy();
             expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
         });
 
         it('sesli İLK kez: CUMANIN rızası sorulur; onay rızayı adımla BİRLİKTE yazar', () => {
             const ekran = ac(ACIK);
-            fireEvent.press(ekran.getByLabelText('İkisi de'));
+            fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             expect(guncelleMock).not.toHaveBeenCalled();
             expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
             fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
@@ -142,18 +142,37 @@ describe('CumaHatirlatmaBolumu', () => {
             expect(d.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
         });
 
-        it('"Sesli olmadan" adımı bildirimle bırakır ve rıza YAZMAZ', () => {
+        it('"Sesli olmadan" HİÇBİR ŞEY yazmaz: adım bildirimle kalır, rıza yazılmaz', () => {
             const ekran = ac(ACIK);
-            fireEvent.press(ekran.getByLabelText('Sesli anons'));
+            fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             fireEvent.press(ekran.getByLabelText('Sesli olmadan uygula'));
+            // Adım kurulu kanallarıyla kalır (yalnız bildirim) — yazılacak bir değişiklik yok.
+            expect(ekran.getByTestId('adim-sesli-anahtari').props.value).toBe(false);
             ekran.unmount();
-            const d = guncelleMock.mock.calls[0][0];
-            expect(d.adimlar[0].kanallar).toEqual({ bildirim: true });
-            expect(d).not.toHaveProperty('sesliOnayi');
+            expect(guncelleMock).not.toHaveBeenCalled();
+        });
+
+        it('BİRLEŞİK MODÜL: sesli okuma METNİ düzenlenir, {vakit} = Cuma okunur ve kaydedilir', () => {
+            const sesli = cumaAyarlariniNormalize({
+                aktif: true,
+                sesliOnayi: true,
+                adimlar: [{ esikDk: 60, kanallar: { bildirim: true, sesli: true } }],
+            });
+            const ekran = ac(sesli);
+            // Boş metin = otomatik cuma cümlesi (eski kayıt birebir).
+            expect(ekran.getByTestId('anons-okunus').props.children).toMatch(/^Cuma için öğle vaktine/);
+            const kutu = ekran.getByLabelText('Sesli okuma metni');
+            fireEvent.changeText(kutu, '{vakit} namazına {süre} dakika.');
+            expect(ekran.getByTestId('anons-okunus').props.children).toBe('Cuma namazına 60 dakika.');
+            fireEvent(kutu, 'endEditing');
+            ekran.unmount();
+            const d = guncelleMock.mock.calls.at(-1)[0];
+            expect(d.adimlar[0].anonsMetni).toBe('{vakit} namazına {süre} dakika.');
         });
 
         it('gerçek alarm İLK kez: cumanın kendi rızası; onay ANAHTARLA BİRLİKTE yazılır', async () => {
             const ekran = ac(ACIK);
+            fireEvent.press(ekran.getByTestId('adim-gelismis'));
             fireEvent(ekran.getByTestId('adim-alarm-anahtari'), 'valueChange', true);
             expect(guncelleMock).not.toHaveBeenCalled();
             fireEvent.press(ekran.getByLabelText('Alarmı açın'));

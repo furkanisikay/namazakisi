@@ -185,14 +185,15 @@ describe('CamiyeGitBolumu', () => {
         expect(ekran.getByText('Camide kılacağım akışı')).toBeTruthy();
     });
 
-    it('STANDART yetenekler adım detayında: kanal çipleri + GERÇEK ALARM; sesli rıza KENDİ alanına yazılır', async () => {
+    it('STANDART yetenekler adım detayında: iki kanal anahtarı + GERÇEK ALARM; sesli rıza KENDİ alanına yazılır', async () => {
         mockDisk = camiyeGitAyarlariniNormalize({ aktif: true });
         const ekran = kur();
         fireEvent.press(await ekran.findByLabelText(/^Hatırlatma — düzenleyin/));
-        expect(ekran.getByLabelText('Kapalı')).toBeTruthy();
-        expect(ekran.getByLabelText('Sesli anons')).toBeTruthy();
+        // Birleşik modül: iki ANA anahtar + "Gelişmiş" bölümünde gerçek alarm.
+        expect(ekran.getByTestId('adim-bildirim-anahtari')).toBeTruthy();
+        fireEvent.press(ekran.getByTestId('adim-gelismis'));
         expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
-        fireEvent.press(ekran.getByLabelText('İkisi de'));
+        fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
         expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
         fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
         await waitFor(() => expect(mockDisk.sesliOnayi).toBe(true));

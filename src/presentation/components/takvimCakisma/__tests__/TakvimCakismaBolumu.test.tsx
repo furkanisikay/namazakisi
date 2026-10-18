@@ -173,15 +173,16 @@ describe('TakvimCakismaBolumu', () => {
         expect(ekran.getByText('Takvim çakışması akışı')).toBeTruthy();
     });
 
-    it('STANDART yetenekler adım detayında: kanal çipleri + GERÇEK ALARM; sesli rıza KENDİ alanına, adsız örnekle', async () => {
+    it('STANDART yetenekler adım detayında: iki kanal anahtarı + GERÇEK ALARM; sesli rıza KENDİ alanına, adsız örnekle', async () => {
         mockDisk = takvimCakismaAyarlariniNormalize({ aktif: true, rizaZamani: '2026-10-01T00:00:00.000Z' });
         mockIzinDurumu.mockResolvedValue('verildi');
         const ekran = kur();
         fireEvent.press(await ekran.findByLabelText(/^Hatırlatma — düzenleyin/));
-        expect(ekran.getByLabelText('Kapalı')).toBeTruthy();
-        expect(ekran.getByLabelText('Sesli anons')).toBeTruthy();
+        // Birleşik modül: iki ANA anahtar + "Gelişmiş" bölümünde gerçek alarm.
+        expect(ekran.getByTestId('adim-bildirim-anahtari')).toBeTruthy();
+        fireEvent.press(ekran.getByTestId('adim-gelismis'));
         expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
-        fireEvent.press(ekran.getByLabelText('İkisi de'));
+        fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
         expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
         expect(ekran.getAllByText(/Takviminizdeki bir etkinlik öğle vaktine denk geliyor/).length).toBeGreaterThan(0);
         fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));

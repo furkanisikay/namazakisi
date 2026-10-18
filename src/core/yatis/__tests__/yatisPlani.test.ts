@@ -487,3 +487,45 @@ describe('yatisPlaniOlustur — adım dizisi (plan §5.3)', () => {
         }
     });
 });
+
+describe('SESLİ OKUMA {süre} kayan tetikte yatışa GERÇEKTEN kalan dakika (Opus incelemesi #2)', () => {
+    // Haziran: İstanbul yatsısı ~22:00. Boylam makinenin UTC farkına göre kaydırılır (CI UTC).
+    const h = (gun: number, saat: number, dk = 0) => new Date(2026, 5, gun, saat, dk);
+    const yerelFark = -h(15, 0).getTimezoneOffset() / 60;
+    const koord = { lat: ISTANBUL.lat, lng: ISTANBUL.lng + (yerelFark - 3) * 15 };
+    const giris = namazGunuVakitleri(koord, h(15, 0)).yatsi.giris;
+    // Yatış dakikası 5'lik ızgaraya oturur (normalize) → test anları da ızgarada kurulur.
+    const BES = 5 * 60_000;
+    const girisDk = Math.ceil(giris.getTime() / BES) * BES;
+    const kur = (yatis: Date, anonsMetni: string) =>
+        yatisPlaniOlustur({
+            koordinat: koord,
+            ayarlar: yatisAyarlariniNormalize({
+                ...AYAR,
+                saat: yatis.getHours(),
+                dakika: yatis.getMinutes(),
+                adimlar: [{ esikDk: 60, kanallar: { bildirim: true, sesli: true }, anonsMetni }],
+            }),
+            simdi: h(15, 9),
+            gunSayisi: 1,
+        });
+
+    it('yatış 20:30 (yatsıdan önce), adım 60: tetik yatışı GEÇER → `{süre}` anlamsız, otomatik cümle', () => {
+        const yatis = new Date(girisDk - 90 * 60_000); // ≈20:30
+        const plan = kur(yatis, 'Yatmana {süre} dakika kaldı, yatsıyı kıl.');
+        expect(plan.length).toBeGreaterThan(0);
+        expect(plan[0].zaman.getTime()).toBeGreaterThan(yatis.getTime());
+        expect(plan[0].uyari.anonsMetni).toBe('Yatmadan önce yatsıyı kıl.');
+        expect(plan[0].uyari.anonsMetni).not.toMatch(/-\d|60 dakika/);
+    });
+
+    it('yatış yatsıdan sonra, adım 60: kayan tetikte `{süre}` = yatış − tetik (eşik 60 DEĞİL)', () => {
+        const yatis = new Date(girisDk + 30 * 60_000);
+        const plan = kur(yatis, 'Yatmana {süre} dakika kaldı.');
+        const sure = Math.round((yatis.getTime() - plan[0].zaman.getTime()) / 60_000);
+        expect(plan[0].zaman.getTime()).toBeGreaterThan(giris.getTime());
+        expect(sure).toBeGreaterThan(0);
+        expect(sure).toBeLessThan(30);
+        expect(plan[0].uyari.anonsMetni).toBe(`Yatmana ${sure} dakika kaldı.`);
+    });
+});

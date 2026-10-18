@@ -30,13 +30,13 @@ describe('seviyeOzetiOlustur', () => {
     expect(seviyeOzetiOlustur(temel({ bildirimSesi: 'melodi' })))
       .toBe('30 dk kala · bildirim · Uygulama sesi');
   });
-  test('bildirim + sesli: "bildirim + sesli anons" + ses adı', () => {
+  test('bildirim + sesli: "bildirim + sesli okuma" + ses adı', () => {
     expect(seviyeOzetiOlustur(temel({ kanallar: { bildirim: true, sesli: true }, esikDk: 15, bildirimSesi: OZEL_SES, sesAdi: 'Melodi 3' })))
-      .toBe('15 dk kala · bildirim + sesli anons · Melodi 3');
+      .toBe('15 dk kala · bildirim + sesli okuma · Melodi 3');
   });
-  test('sesli: yalnız sesli anons (ses adı yok)', () => {
+  test('sesli: yalnız sesli okuma (ses adı yok)', () => {
     expect(seviyeOzetiOlustur(temel({ kanallar: { sesli: true }, esikDk: 8 })))
-      .toBe('8 dk kala · sesli anons');
+      .toBe('8 dk kala · sesli okuma');
   });
 
   // FAZ 6 — titreşim kanalı özette görünür; yoksa kullanıcı ayarı yaptığını

@@ -30,7 +30,7 @@ export function vakitOzetiOlustur(vakitAyari: VakitMuhafizAyari): string {
   const kanalOzeti = bildirimVar && sesliVar
     ? 'Sesli + bildirim'
     : sesliVar
-      ? 'Sadece sesli anons'
+      ? 'Yalnız sesli okuma'
       : 'Sadece bildirim';
 
   const yon = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;

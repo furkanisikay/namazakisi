@@ -43,10 +43,16 @@ export const seviyeyiKapat = (seviye: SeviyeAyari): SeviyeAyari => {
  *
  * `yon` VAKTIN penceresinin yonudur (`VakitMuhafizAyari.yon`): giris yonunde
  * cikis dilli sablonla doldurmak, vakit YENI GIRMISKEN "son 42 dakika" dedirtir.
+ *
+ * `doldur` (birlesik hatirlatma modulu §4.1): DOLDURMA yalniz MUHAFIZDA anlamlidir —
+ * orada bos metin SESSIZDIR. Ek yuzeylerde ve nafilede bos metin "otomatik cumle"dir;
+ * muhafiz sablonuyla (`{vakit}` farz vaktine kurulu, "vakit cikiyor" dili) doldurmak
+ * yanlis cumle okuturdu → cagiran `false` gecer ve kutu BOS kalir.
  */
 export const seviyeyiAc = (
   seviye: SeviyeAyari,
-  yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+  yon: PencereYonu = VARSAYILAN_PENCERE_YONU,
+  doldur = true
 ): SeviyeAyari => {
   if (seviyeAcikMi(seviye)) return seviye;
 
@@ -62,7 +68,7 @@ export const seviyeyiAc = (
     ...kalan,
     kanallar,
     anonsMetni:
-      sesliAnonsGerekliMi(kanallar) && !seviye.anonsMetni
+      doldur && sesliAnonsGerekliMi(kanallar) && !seviye.anonsMetni
         ? varsayilanAnonsMetni(yon)
         : seviye.anonsMetni,
   };

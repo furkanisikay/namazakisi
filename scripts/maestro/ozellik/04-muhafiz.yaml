@@ -43,6 +43,15 @@ appId: com.furkanisikay.namazakisi
     timeout: 3000
 - takeScreenshot: ozk/08-adim-detay
 
+# Gercek alarm "Gelişmiş" bolumundedir (nazik ton + tek atis adimda kapali baslar).
+- scrollUntilVisible:
+    element:
+      id: "adim-gelismis"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    id: "adim-gelismis"
 - scrollUntilVisible:
     element:
       id: "adim-alarm-anahtari"

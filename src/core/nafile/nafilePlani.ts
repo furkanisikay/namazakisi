@@ -23,9 +23,11 @@ import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
 import type { PencereYonu } from '../muhafiz/pencereTipleri';
 import { gununNafilePencereleri, type NafileKoordinat } from './gunVakitleri';
 import { alarmPayinaSigdir, ekAlarmKurarMi, ekAnonsAlarmiKurarMi } from '../hatirlatma/ekPlan';
+import { adimAnonsMetni } from '../hatirlatma/anonsYerTutucu';
 import { teheccudPenceresiniUygula, type NafilePencere } from './nafileVakitleri';
 import { nafileAnonsMetni, nafileBildirimMetni } from './nafileMetinleri';
 import {
+    NAFILE_ADLARI,
     nafileAyariniAl,
     type NafileAyarlari,
     type NafileTuru,
@@ -216,7 +218,16 @@ export function nafilePlaniOlustur(
                     uyandirma,
                     yon: ayar.yon,
                     son: p.bitis,
-                    uyari: { ...t.uyari, anonsMetni: nafileAnonsMetni(girdi) },
+                    uyari: {
+                        ...t.uyari,
+                        // Kullanıcının metni (`{süre}` ölçüdür: girişte geçen, çıkışta kalan dk);
+                        // boşsa bugünkü otomatik nafile cümlesi.
+                        anonsMetni: adimAnonsMetni(
+                            t.uyari.anonsMetni,
+                            { vakit: NAFILE_ADLARI[p.tur], sureDk: t.uyari.olcuDk, yon: ayar.yon },
+                            () => nafileAnonsMetni(girdi)
+                        ),
+                    },
                 });
             }
         }
