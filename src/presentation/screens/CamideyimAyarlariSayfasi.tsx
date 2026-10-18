@@ -24,7 +24,6 @@ import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { AyarKutusu } from '../components/ayar/AyarKutusu';
 import { KonumIzniDisclosureModali } from '../components/KonumIzniDisclosureModali';
 import { useCamideyim } from '../hooks/useCamideyim';
-import { useAppSelector } from '../store/hooks';
 import {
     IZLENEN_CAMI_SAYISI,
     ALAN_ADIM_M,
@@ -101,9 +100,6 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
     const renkler = useRenkler();
     const navigation = useNavigation<NativeStackNavigationProp<AyarlarStackParamList>>();
     const c = useCamideyim();
-    // "Hatırlatmalar sessiz gelsin" açıklaması yalnız muhafız açıkken anlamlı (muhafız
-    // durumu açılışta yüklenir; bilinmiyorsa açıklama kalır).
-    const muhafizAktif = useAppSelector((s) => (s as { muhafiz?: { aktif?: boolean } }).muhafiz?.aktif ?? null);
     const { ayarlar, durum } = c;
     const [disclosure, setDisclosure] = useState(false);
     const [izinUyarisi, setIzinUyarisi] = useState(false);
@@ -564,11 +560,7 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
                         <AyarKutusu
                             ikon="volume-mute"
                             baslik="Hatırlatmalar sessiz gelsin"
-                            aciklama={
-                                muhafizAktif === false
-                                    ? undefined
-                                    : 'Hatırlatmalar gelmeye devam eder; sesli okuma susar ve Rahatsız Etmeyin delinmez'
-                            }
+                            aciklama="Tüm hatırlatmalar (muhafız, cuma, nafile, yatış, takvim…) gelmeye devam eder; sesli okuma ve gerçek alarm susar, Rahatsız Etmeyin delinmez"
                             deger={ayarlar.sessiz}
                             onDegis={(v) => c.guncelle({ sessiz: v })}
                         />
