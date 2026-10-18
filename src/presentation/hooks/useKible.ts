@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { AppState, Linking } from 'react-native';
 import * as Location from 'expo-location';
 import { Coordinates, Qibla } from 'adhan';
@@ -44,6 +44,36 @@ export function kalibrasyonIpucu(dogruluk: number | null): 'belirgin' | 'sonuk' 
 }
 
 /**
+ * Pusula doğruluğu KARARLI hâle gelmeden ekrana yazılmaz (kalibrasyon ipucu titremesin).
+ *
+ * Başlık izlemesi açılırken ilk okumalar çoğu cihazda `accuracy: 0` (henüz kalibre
+ * edilmedi) gelir, birkaç yüz ms sonra gerçek değere oturur → ipucu bir an "belirgin"
+ * yanıp söner. Bir değer ancak aynı değer en az `DOGRULUK_KARARLI_OKUMA` kez ve en az
+ * `DOGRULUK_KARARLI_MS` boyunca üst üste geldiyse kabul edilir; o zamana kadar önceki
+ * kabul edilen değer (ilk açılışta `null` → sönük ipucu) kalır.
+ *
+ * Manyetometrenin kendi doğruluğu ayrı okunamaz: expo-sensors `MagnetometerMeasurement`
+ * yalnız x/y/z/zaman taşır; tek kaynak expo-location başlık okumasının `accuracy`'sidir.
+ */
+export const DOGRULUK_KARARLI_OKUMA = 3;
+export const DOGRULUK_KARARLI_MS = 1000;
+
+export interface DogrulukIzi {
+    aday: number | null;
+    ilkMs: number;
+    sayi: number;
+}
+
+export const BOS_DOGRULUK_IZI: DogrulukIzi = { aday: null, ilkMs: 0, sayi: 0 };
+
+/** Saf adım: yeni okuma → güncel iz + (kararlıysa) kabul edilecek değer, değilse `null`. */
+export function dogrulukAdimi(iz: DogrulukIzi, okuma: number, simdiMs: number): { iz: DogrulukIzi; kararli: number | null } {
+    const yeni: DogrulukIzi = iz.aday === okuma ? { ...iz, sayi: iz.sayi + 1 } : { aday: okuma, ilkMs: simdiMs, sayi: 1 };
+    const kararli = yeni.sayi >= DOGRULUK_KARARLI_OKUMA && simdiMs - yeni.ilkMs >= DOGRULUK_KARARLI_MS ? okuma : null;
+    return { iz: yeni, kararli };
+}
+
+/**
  * Custom hook that calculates the Qibla direction using device sensors.
  * Uses expo-location for true heading (accounts for magnetic declination)
  * and adhan library for Qibla angle calculation.
@@ -59,6 +89,7 @@ export const useKible = (): UseKibleSonuc => {
   const [pusulaDogrulugu, setPusulaDogrulugu] = useState<number | null>(null);
   const [pusulaVar, setPusulaVar] = useState<boolean | null>(null);
   const [deneme, setDeneme] = useState(0);
+  const dogrulukIzi = useRef<DogrulukIzi>(BOS_DOGRULUK_IZI);
 
   // Manyetometre var mı? (expo-sensors tembel: yoksa ya da patlarsa bilinmiyor.)
   useEffect(() => {
@@ -121,10 +152,11 @@ export const useKible = (): UseKibleSonuc => {
             : headingData.magHeading;
 
           setPusulaYonelimi(heading);
-          if (typeof headingData.accuracy === 'number') {
-            const d = headingData.accuracy;
-            // Doğruluk değişince çizilir (her başlık okumasında değil).
-            setPusulaDogrulugu((o) => (o === d ? o : d));
+          if (typeof headingData.accuracy === 'number' && Number.isFinite(headingData.accuracy)) {
+            // İz ref'te tutulur (okumalar saniyede çok kez gelir); yalnız KARARLI değer çizilir.
+            const { iz, kararli } = dogrulukAdimi(dogrulukIzi.current, headingData.accuracy, Date.now());
+            dogrulukIzi.current = iz;
+            if (kararli !== null) setPusulaDogrulugu((o) => (o === kararli ? o : kararli));
           }
         });
       } catch (err: unknown) {

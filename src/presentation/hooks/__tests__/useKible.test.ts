@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react-native';
-import { kalibrasyonIpucu, useKible } from '../useKible';
+import { BOS_DOGRULUK_IZI, DOGRULUK_KARARLI_MS, dogrulukAdimi, kalibrasyonIpucu, useKible } from '../useKible';
 import * as Location from 'expo-location';
 import { Magnetometer } from 'expo-sensors';
 
@@ -320,13 +320,53 @@ describe('useKible Hook', () => {
     expect(result.current.izinTekrarSorulabilir).toBe(false);
   });
 
-  it('pusula doğruluğu başlık okumasından gelir', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
-    const { result } = renderHook(() => useKible());
-    await waitFor(() => expect(headingCallback).not.toBeNull());
-    act(() => headingCallback?.({ trueHeading: 10, magHeading: 10, accuracy: 1 }));
-    expect(result.current.pusulaDogrulugu).toBe(1);
+  it('pusula doğruluğu başlık okumasından gelir — yalnız KARARLI olunca; ilk 0 okumaları ipucunu yakıp söndürmez', async () => {
+    let simdi = 1_000_000;
+    const saat = jest.spyOn(Date, 'now').mockImplementation(() => simdi);
+    try {
+      (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+      (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+      const { result } = renderHook(() => useKible());
+      await waitFor(() => expect(headingCallback).not.toBeNull());
+      const oku = (accuracy: number, ilerleMs: number) =>
+        act(() => {
+          simdi += ilerleMs;
+          headingCallback?.({ trueHeading: 10, magHeading: 10, accuracy });
+        });
+      // Açılış patlaması: art arda 0'lar (300 ms) → kabul EDİLMEZ, ipucu sönük kalır.
+      for (let i = 0; i < 4; i++) oku(0, 100);
+      expect(result.current.pusulaDogrulugu).toBeNull();
+      // Gerçek değer oturur ve 1 sn boyunca sürer → kabul edilir.
+      oku(3, 100);
+      oku(3, 500);
+      expect(result.current.pusulaDogrulugu).toBeNull();
+      oku(3, 600);
+      expect(result.current.pusulaDogrulugu).toBe(3);
+      // Tek bir anlık 0 kabul edilen değeri BOZMAZ.
+      oku(0, 100);
+      oku(3, 100);
+      expect(result.current.pusulaDogrulugu).toBe(3);
+    } finally {
+      saat.mockRestore();
+    }
+  });
+});
+
+describe('dogrulukAdimi (saf)', () => {
+  it('aynı değer hem birkaç okuma hem kısa süre boyunca sürmeden kararlı sayılmaz', () => {
+    let iz = BOS_DOGRULUK_IZI;
+    const adim = (okuma: number, ms: number) => {
+      const r = dogrulukAdimi(iz, okuma, ms);
+      iz = r.iz;
+      return r.kararli;
+    };
+    expect(adim(1, 0)).toBeNull();
+    expect(adim(1, 2000)).toBeNull(); // süre yetti ama yalnız 2 okuma
+    expect(adim(1, 2001)).toBe(1); // 3. okuma
+    expect(adim(2, 2002)).toBeNull(); // değer değişti → sayaç baştan
+    expect(adim(2, 2003)).toBeNull();
+    expect(adim(2, 2004)).toBeNull(); // 3 okuma ama süre yetmedi
+    expect(adim(2, 2002 + DOGRULUK_KARARLI_MS)).toBe(2);
   });
 });
 
