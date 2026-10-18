@@ -5,6 +5,20 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.39.0] - 2026-10-18
+
+### Eklendi
+- [wear] kıble kare hattı, tohum konumu, gizlilik metni ve AGENTS.md
+- [wear] kıble komplikasyonu (statik açı, dokunuş pusulayı açar)
+- [wear] saatin kendi kıble pusulası ve ana ekran girişi
+- [wear] kıble hizalama kararı (histerezis, süzgeç, eğim, kalibrasyon)
+- [wear] kıble açısı telefonla ikiz (adhan Qibla, ortak fikstür)
+- [wear] yüke opsiyonel kıble konumu (1 ondalık, gevşek doğrulama)
+
+### Düzeltildi
+- [wear] kıble karesinde bayat döküm, gizlilik metninde aktarım yolu
+- [wear] 08-kible sensör tespiti bayat ekran dökümüyle karar vermez
+
 ## [0.38.0] - 2026-10-18
 
 ### Eklendi
