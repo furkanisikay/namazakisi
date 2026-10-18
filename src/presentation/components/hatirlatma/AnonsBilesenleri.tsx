@@ -9,6 +9,9 @@ import { useRenkler } from '../../../core/theme';
 import { adimiOnizle } from '../../../domain/services/AnonsOnizlemeServisi';
 import type { UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
+import { BOS_CIHAZ_DURUMU, durumNotu } from '../../../core/cihaz/durumNotlari';
+import { surumuOku } from '../../../domain/services/CihazDurumOkuyucu';
+import { DurumSatiri } from '../ortak/DurumSatiri';
 
 /**
  * Cihazda Turkce konusma paketi yoksa gosterilen kibar bilgilendirme.
@@ -17,32 +20,17 @@ import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafi
  * `destekli === null` (henuz bilinmiyor/sorgulanamadi) iken hicbir sey cizilmez;
  * yanlis alarm vermek, uyariyi hic vermemekten kotudur.
  *
- * RENK: `renkler.uyari` (#FFC107 sari-amber) yalniz DEKORATIF kullanilir (ikon +
- * %15 zemin tonu); govde metni `renkler.metin` ile cizilir → kontrast tabani tema
- * token'indan gelir (AGENTS.md kontrast tuzagi).
+ * Android'de tek dokunus cozum: "Türkçe sesi indirin" sistemin TTS veri indirme
+ * ekranini acar (`DurumEylemleri.ttsIndir`); iPhone'da ekran yolu yazilir. Metin ve
+ * eylem tek kaynaktan: `core/cihaz/durumNotlari` ('turkceTts').
  */
 export const TurkceTtsUyarisi: React.FC<{ destekli: boolean | null }> = ({ destekli }) => {
-    const renkler = useRenkler();
     if (destekli !== false) return null;
-
+    const not = durumNotu('turkceTts', { ...BOS_CIHAZ_DURUMU, surum: surumuOku(), turkceTts: destekli });
+    if (!not) return null;
     return (
-        <View
-            className="flex-row items-start p-3 rounded-xl mt-1"
-            style={{ backgroundColor: `${renkler.uyari}15` }}
-            accessibilityRole="alert"
-        >
-            <FontAwesome5
-                name="exclamation-triangle"
-                size={13}
-                color={renkler.uyari}
-                solid
-                style={{ marginRight: 8, marginTop: 1 }}
-            />
-            <Text className="flex-1 text-xs leading-4" style={{ color: renkler.metin }}>
-                Cihazınızda Türkçe konuşma paketi bulunamadı; sesli anons çalışmayabilir.
-                Telefonunuzun ayarlarından Türkçe konuşma sesini indirebilirsiniz.
-                Ayarlarınız yine de kaydedilir.
-            </Text>
+        <View className="mt-1" accessibilityRole="alert">
+            <DurumSatiri durum={not} />
         </View>
     );
 };

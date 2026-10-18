@@ -159,8 +159,11 @@ export function durumNotu(kosul: DurumKosulu, d: CihazDurumu): DurumNotu | null 
         case 'turkceTts':
             if (d.turkceTts !== false) return null;
             return android
-                ? { tip: 'uyari', metin: 'Telefonunuzda Türkçe konuşma sesi yok.', eylem: 'ttsIndir' }
-                : { tip: 'uyari', metin: 'Telefonunuzda Türkçe konuşma sesi yok; Ayarlar > Erişilebilirlik > Seslendirme bölümünden indirebilirsiniz.' };
+                ? { tip: 'uyari', metin: 'Türkçe konuşma paketi bulunamadı; sesli okuma duyulmayabilir.', eylem: 'ttsIndir' }
+                : {
+                      tip: 'uyari',
+                      metin: 'Türkçe konuşma paketi bulunamadı; sesli okuma duyulmayabilir. Ayarlar > Erişilebilirlik > Seslendirme bölümünden indirebilirsiniz.',
+                  };
         case 'alarmSesi':
             return android && d.alarmSesiAcik === false
                 ? { tip: 'uyari', metin: 'Alarm ses düzeyiniz kapalı; uyandırma duyulmaz.', eylem: 'sesAyarlari' }

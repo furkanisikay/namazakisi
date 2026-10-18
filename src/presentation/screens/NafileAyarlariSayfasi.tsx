@@ -59,6 +59,9 @@ import {
 import { NAFILE_ACIKLAMALARI, nafileAnonsMetni, nafileBildirimMetni } from '../../core/nafile/nafileMetinleri';
 import { nafileAnonsOrnegi, nafilePencereUzunluguDk } from '../../core/nafile/nafilePlani';
 import { teheccudPenceresiniUygula, type NafilePencere } from '../../core/nafile/nafileVakitleri';
+import { useCihazDurumu } from '../hooks/useCihazDurumu';
+import { durumNotu } from '../../core/cihaz/durumNotlari';
+import { DurumSatiri } from '../components/ortak/DurumSatiri';
 
 const saatMetni = (t: Date): string =>
     `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`;
@@ -100,8 +103,12 @@ const nafileIslemleri = (pencereUzunluguDk: number | undefined): HatirlatmaIslem
     sil: (a, i) => nafileAdimSil(a, i),
 });
 
+const SES_ALANLARI = ['alarmSesiAcik'] as const;
+
 export const NafileAyarlariSayfasi: React.FC = () => {
     const renkler = useRenkler();
+    // Teheccüd uyandırması alarm sesiyle çalar: alarm ses düzeyi 0 ise SÖYLE (ölç, varsayma).
+    const { durum: cihaz } = useCihazDurumu(SES_ALANLARI, Platform.OS === 'android');
     const dispatch = useAppDispatch();
     const ayarlar = useAppSelector((s) => s.nafile.ayarlar);
     const { pencereler } = useNafilePencereleri();
@@ -312,30 +319,33 @@ export const NafileAyarlariSayfasi: React.FC = () => {
     };
 
     const uyandirmaSatiri = () => (
-        <View
-            className="flex-row items-center mt-2 p-3.5 rounded-2xl border"
-            style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }}
-        >
-            <View className="flex-1 pr-3">
-                <Text className="text-sm font-medium" style={{ color: renkler.metin }}>
-                    Uyandırma sesi
-                </Text>
-                <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                    {Platform.OS === 'ios'
-                        ? 'Odak modunu deler. Telefonun sessiz anahtarı açıksa ses çıkmaz.'
-                        : 'Alarm sesiyle çalar, sessiz modu deler. Alarm ses düzeyiniz kapalıysa duyulmaz.'}
-                </Text>
+        <>
+            <View
+                className="flex-row items-center mt-2 p-3.5 rounded-2xl border"
+                style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }}
+            >
+                <View className="flex-1 pr-3">
+                    <Text className="text-sm font-medium" style={{ color: renkler.metin }}>
+                        Uyandırma sesi
+                    </Text>
+                    <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                        {Platform.OS === 'ios'
+                            ? 'Odak modunu deler. Telefonun sessiz anahtarı açıksa ses çıkmaz.'
+                            : 'Alarm sesiyle çalar, sessiz modu deler.'}
+                    </Text>
+                </View>
+                <Anahtar
+                    value={ayarlar.teheccud.uyandirma}
+                    onValueChange={(v) => {
+                        guncelle({ teheccud: { uyandirma: v } });
+                    }}
+                    trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                    thumbColor={ayarlar.teheccud.uyandirma ? renkler.birincil : '#f4f3f4'}
+                    accessibilityLabel="Teheccüd uyandırması"
+                />
             </View>
-            <Anahtar
-                value={ayarlar.teheccud.uyandirma}
-                onValueChange={(v) => {
-                    guncelle({ teheccud: { uyandirma: v } });
-                }}
-                trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-                thumbColor={ayarlar.teheccud.uyandirma ? renkler.birincil : '#f4f3f4'}
-                accessibilityLabel="Teheccüd uyandırması"
-            />
-        </View>
+            {ayarlar.teheccud.uyandirma && <DurumSatiri durum={durumNotu('alarmSesi', cihaz)} style={{ marginTop: 8 }} />}
+        </>
     );
 
     /**
