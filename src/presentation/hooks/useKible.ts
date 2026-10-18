@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { AppState, Linking } from 'react-native';
 import * as Location from 'expo-location';
 import { Coordinates, Qibla } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
@@ -20,6 +21,26 @@ interface UseKibleSonuc {
   yukleniyor: boolean;
   /** Error message if initialization failed. */
   hata: string | null;
+  /**
+   * İzin reddedildiyse sistem diyaloğu yeniden açılabilir mi (`canAskAgain`)?
+   * `false` → yalnız Ayarlar; `null` → bilinmiyor / izin sorunu yok.
+   */
+  izinTekrarSorulabilir: boolean | null;
+  /**
+   * Pusula doğruluğu (expo `accuracy`, iki platformda 0–3; 3 en iyi). Okunamadıysa `null`.
+   * Kalibrasyon ipucu buna bağlıdır: ≤ 1 → belirgin, ≥ 2 → gizli, null → sönük ipucu.
+   */
+  pusulaDogrulugu: number | null;
+  /** Cihazda manyetometre var mı? `false` → pusula hiç çalışmaz (harita modu önerilir). */
+  pusulaVar: boolean | null;
+  /** İzni yeniden ister (sorulabiliyorsa diyalog, değilse uygulama ayarları). */
+  izinIste: () => Promise<void>;
+}
+
+/** Kalibrasyon ipucunun hâli: belirgin (doğruluk düşük), sönük (bilinmiyor), yok. */
+export function kalibrasyonIpucu(dogruluk: number | null): 'belirgin' | 'sonuk' | null {
+  if (dogruluk === null || !Number.isFinite(dogruluk)) return 'sonuk';
+  return dogruluk <= 1 ? 'belirgin' : null;
 }
 
 /**
@@ -34,6 +55,28 @@ export const useKible = (): UseKibleSonuc => {
   const [kibleAcisi, setKibleAcisi] = useState(0);
   const [yukleniyor, setYukleniyor] = useState(true);
   const [hata, setHata] = useState<string | null>(null);
+  const [izinTekrarSorulabilir, setIzinTekrarSorulabilir] = useState<boolean | null>(null);
+  const [pusulaDogrulugu, setPusulaDogrulugu] = useState<number | null>(null);
+  const [pusulaVar, setPusulaVar] = useState<boolean | null>(null);
+  const [deneme, setDeneme] = useState(0);
+
+  // Manyetometre var mı? (expo-sensors tembel: yoksa ya da patlarsa bilinmiyor.)
+  useEffect(() => {
+    let iptal = false;
+    try {
+      const { Magnetometer } = require('expo-sensors') as typeof import('expo-sensors');
+      void Magnetometer.isAvailableAsync?.()
+        .then((v) => {
+          if (!iptal && typeof v === 'boolean') setPusulaVar(v);
+        })
+        .catch(() => undefined);
+    } catch {
+      // bilinmiyor
+    }
+    return () => {
+      iptal = true;
+    };
+  }, []);
 
   useEffect(() => {
     let headingSubscription: { remove: () => void } | null = null;
@@ -42,14 +85,19 @@ export const useKible = (): UseKibleSonuc => {
     const servisiBaslat = async () => {
       try {
         // Konum izinlerini kontrol et
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
+        const izin = await Location.requestForegroundPermissionsAsync();
+        if (izin.status !== 'granted') {
           if (isMounted) {
-            setHata('Konum izni verilmedi. Kıble yönünü hesaplamak için konum izni gereklidir.');
+            setIzinTekrarSorulabilir(typeof izin.canAskAgain === 'boolean' ? izin.canAskAgain : null);
+            setHata('Kıble yönünü bulmak için konum izni gerekiyor.');
           }
           return;
         }
-        if (isMounted) setIzinVerildi(true);
+        if (isMounted) {
+          setIzinVerildi(true);
+          setIzinTekrarSorulabilir(null);
+          setHata(null);
+        }
 
         // Mevcut konumu al
         const location = await Location.getCurrentPositionAsync({
@@ -73,6 +121,11 @@ export const useKible = (): UseKibleSonuc => {
             : headingData.magHeading;
 
           setPusulaYonelimi(heading);
+          if (typeof headingData.accuracy === 'number') {
+            const d = headingData.accuracy;
+            // Doğruluk değişince çizilir (her başlık okumasında değil).
+            setPusulaDogrulugu((o) => (o === d ? o : d));
+          }
         });
       } catch (err: unknown) {
         const hataMesaji = (err as Error)?.message || '';
@@ -100,7 +153,35 @@ export const useKible = (): UseKibleSonuc => {
         headingSubscription.remove();
       }
     };
-  }, []);
+  }, [deneme]);
+
+  // Ayarlar'dan dönen kullanıcı izni vermiş olabilir: izin hatasındayken yeniden dene.
+  useEffect(() => {
+    if (izinVerildi || izinTekrarSorulabilir === null) return;
+    let abonelik: { remove(): void } | undefined;
+    try {
+      abonelik = AppState.addEventListener('change', (d) => {
+        if (d === 'active') setDeneme((n) => n + 1);
+      });
+    } catch {
+      // AppState'siz ortam
+    }
+    return () => abonelik?.remove();
+  }, [izinVerildi, izinTekrarSorulabilir]);
+
+  const izinIste = useCallback(async () => {
+    if (izinTekrarSorulabilir === false) {
+      try {
+        await Linking.openSettings();
+      } catch {
+        // açılamadı
+      }
+      return;
+    }
+    setYukleniyor(true);
+    setHata(null);
+    setDeneme((n) => n + 1);
+  }, [izinTekrarSorulabilir]);
 
   // Hedef acisi: Kullanicinin telefonunu cevirmesi gereken yon
   // Pusula Yonelimi: Gercek kuzey (0) ne tarafta (heading)
@@ -119,5 +200,9 @@ export const useKible = (): UseKibleSonuc => {
     izinVerildi,
     yukleniyor,
     hata,
+    izinTekrarSorulabilir,
+    pusulaDogrulugu,
+    pusulaVar,
+    izinIste,
   };
 };

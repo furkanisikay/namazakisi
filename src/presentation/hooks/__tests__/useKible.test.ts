@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react-native';
-import { useKible } from '../useKible';
+import { kalibrasyonIpucu, useKible } from '../useKible';
 import * as Location from 'expo-location';
 import { Magnetometer } from 'expo-sensors';
 
@@ -311,5 +311,31 @@ describe('useKible Hook', () => {
 
     // Pusula hala baslangic degerinde (0) kalmali; gec callback ezmemeli.
     expect(result.current.pusulaYonelimi).toBe(0);
+  });
+
+  it('izin reddinde tekrar sorulabilirlik açığa çıkar (düğme "İzin verin" / "Ayarları açın")', async () => {
+    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: false });
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+    expect(result.current.izinTekrarSorulabilir).toBe(false);
+  });
+
+  it('pusula doğruluğu başlık okumasından gelir', async () => {
+    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(headingCallback).not.toBeNull());
+    act(() => headingCallback?.({ trueHeading: 10, magHeading: 10, accuracy: 1 }));
+    expect(result.current.pusulaDogrulugu).toBe(1);
+  });
+});
+
+describe('kalibrasyonIpucu', () => {
+  it('doğruluğa bağlı: düşük → belirgin, iyi → yok, bilinmiyor → sönük', () => {
+    expect(kalibrasyonIpucu(0)).toBe('belirgin');
+    expect(kalibrasyonIpucu(1)).toBe('belirgin');
+    expect(kalibrasyonIpucu(2)).toBeNull();
+    expect(kalibrasyonIpucu(3)).toBeNull();
+    expect(kalibrasyonIpucu(null)).toBe('sonuk');
   });
 });
