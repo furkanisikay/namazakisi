@@ -1,6 +1,6 @@
 /**
  * Cuma namazı hatırlatması bölümü (issue #173; ortak hatırlatma yüzeyleri plan §5.1) —
- * Bildirim Ayarları'nda, yatış hatırlatmasının üstünde.
+ * Hatırlatmalar > "Cuma namazı" ayrıntı sayfasında.
  *
  * BİRLEŞİK HATIRLATMA MODÜLÜ (`HatirlatmaModulu` + `useHatirlatmaDuzenleyici`; AGENTS.md:
  * "yeni hatırlatma yüzeyi için ayrı ekran YAZMA") — muhafız ve nafileyle AYNI yetenekler:
@@ -93,7 +93,12 @@ function buCumaninPenceresi(
 /** Cumanın adım dönüşümleri (kısıtlarıyla) — modül düzeyinde, referans sabit. */
 const CUMA_ISLEMLERI = ekAdimIslemleri<CumaHatirlatmaAyarlari>(CUMA_ADIM_KISITLARI);
 
-export const CumaHatirlatmaBolumu: React.FC = () => {
+export interface CumaHatirlatmaBolumuProps {
+    /** Ayrıntı sayfasında başlık header'dadır (AGENTS.md: başlık TEK yerde). */
+    baslikGizle?: boolean;
+}
+
+export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ baslikGizle = false }) => {
     const renkler = useRenkler();
     const dispatch = useAppDispatch();
     const kayitli = useAppSelector((s) => s.cumaHatirlatma.ayarlar);
@@ -219,9 +224,11 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
 
     return (
         <View className="mb-6">
-            <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
-                CUMA NAMAZI
-            </Text>
+            {!baslikGizle && (
+                <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
+                    CUMA NAMAZI
+                </Text>
+            )}
 
             <View className="rounded-xl overflow-hidden shadow-sm" style={{ backgroundColor: renkler.kartArkaplan }}>
                 <View className="flex-row items-center p-4">

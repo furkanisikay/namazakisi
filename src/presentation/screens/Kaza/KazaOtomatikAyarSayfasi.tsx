@@ -181,7 +181,7 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
           <TouchableOpacity
             onPress={() =>
               (navigation as unknown as { navigate: (ad: string, p?: object) => void }).navigate('Ayarlar', {
-                screen: 'SeferilikAyarlari',
+                screen: 'NamazVakitleriAyarlari',
               })
             }
             accessibilityRole="button"

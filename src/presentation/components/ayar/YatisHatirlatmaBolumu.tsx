@@ -1,5 +1,5 @@
 /**
- * Bildirim Ayarları > "Yatış hatırlatması" bölümü (issue #290; ortak hatırlatma yüzeyleri
+ * Hatırlatmalar > "Yatmadan önce" ayrıntısı (eski Bildirim Ayarları bölümü) (issue #290; ortak hatırlatma yüzeyleri
  * plan §5.3).
  *
  * Kullanıcı her zamanki yatış saatini girer; yatıştan önce hatırlatma: yatsı kılınmadıysa
@@ -96,7 +96,12 @@ function buGecePenceresi(a: Pick<YatisAyarlari, 'saat' | 'dakika'>, simdi: Date)
     return { baslangic: new Date(yatis.getTime() - YATIS_ONCE_MAX_DK * 60000), bitis: yatis };
 }
 
-export const YatisHatirlatmaBolumu: React.FC = () => {
+export interface YatisHatirlatmaBolumuProps {
+    /** Ayrıntı sayfasında başlık header'dadır (AGENTS.md: başlık TEK yerde). */
+    baslikGizle?: boolean;
+}
+
+export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ baslikGizle = false }) => {
     const renkler = useRenkler();
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
@@ -322,9 +327,11 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
 
     return (
         <View className="mb-6">
-            <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
-                YATIŞ HATIRLATMASI
-            </Text>
+            {!baslikGizle && (
+                <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
+                    YATIŞ HATIRLATMASI
+                </Text>
+            )}
 
             <View className="rounded-xl overflow-hidden shadow-sm" style={{ backgroundColor: renkler.kartArkaplan }}>
                 <View className="flex-row items-center p-4">

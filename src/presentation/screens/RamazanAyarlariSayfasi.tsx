@@ -19,16 +19,12 @@ import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
-  iftarSayacAyariniGuncelle,
   iftarSayacAyarlariniYukle,
 } from '../store/iftarSayacSlice';
 import {
-  sahurSayacAyariniGuncelle,
   sahurSayacAyarlariniYukle,
 } from '../store/sahurSayacSlice';
-import { IftarSayacBildirimServisi } from '../../domain/services/IftarSayacBildirimServisi';
-import { SahurSayacBildirimServisi } from '../../domain/services/SahurSayacBildirimServisi';
-import { store } from '../store/store';
+import { useRamazanSayaclari } from '../hooks/useRamazanSayaclari';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
@@ -72,32 +68,16 @@ const RamazanAyarlariIcerik: React.FC = () => {
     }).start();
   }, [dispatch, fadeAnim]);
 
+  // Yazma yolu Hatırlatmalar sayfasıyla ORTAK (`useRamazanSayaclari`: thunk + yeniden planlama).
+  const ramazan = useRamazanSayaclari();
   const handleSayacToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
-    await dispatch(iftarSayacAyariniGuncelle({ aktif: yeniDeger }));
-
-    // Bildirim servisini güncelle
-    const konumState = store.getState().konum;
-    if (konumState.koordinatlar) {
-      await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
-        aktif: yeniDeger,
-        koordinatlar: konumState.koordinatlar,
-      });
-    }
+    await ramazan.iftarDegistir(yeniDeger);
   };
 
   const handleSahurSayacToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
-    await dispatch(sahurSayacAyariniGuncelle({ aktif: yeniDeger }));
-
-    // Bildirim servisini güncelle
-    const konumState = store.getState().konum;
-    if (konumState.koordinatlar) {
-      await SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({
-        aktif: yeniDeger,
-        koordinatlar: konumState.koordinatlar,
-      });
-    }
+    await ramazan.sahurDegistir(yeniDeger);
   };
 
   const iftarRenk = '#E65100';

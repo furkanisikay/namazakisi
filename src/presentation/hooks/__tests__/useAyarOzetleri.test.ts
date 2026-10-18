@@ -97,7 +97,7 @@ describe('useAyarOzetleri', () => {
     expect(result.current.ozetler.takvim).toBe('Açık');
     expect(result.current.ozetler.muhafiz).toBe('Açık · normal yoğunluk');
     expect(result.current.ozetler.bildirim).toBe('2 vakit · cuma hatırlatması açık');
-    expect(result.current.ozetler.seri).toBe('Tam gün: 4 namaz · gün sonu açık');
+    expect(result.current.ozetler.seri).toBe('Tam gün: 4 namaz');
     expect(result.current.ozetler.ramazan).toBe('İftar sayacı açık');
     expect(result.current.ozetler.gorunum).toBe('Açık tema · Zümrüt');
     expect(result.current.ozetler.hakkinda).toMatch(/^Sürüm .+ · güncel$/);

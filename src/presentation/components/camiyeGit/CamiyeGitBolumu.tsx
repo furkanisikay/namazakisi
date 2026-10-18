@@ -1,6 +1,6 @@
 /**
  * "Camide kılacağım" ayar bölümü (issue #292; ortak hatırlatma yüzeyleri plan §5.2) —
- * Bildirim Ayarları sayfasında, cuma kartının hemen altında.
+ * Hatırlatmalar > "Camiye gitme vakti" ayrıntı sayfasında.
  *
  * ORTAK BİLEŞEN (AGENTS.md: "yeni hatırlatma yüzeyi için ayrı ekran YAZMA"): beş vakit TEK
  * adım dizisini paylaşır → TEK `PencereKarti` (`stil="gomulu"`), adım detayı
@@ -323,7 +323,7 @@ export const CamiyeGitBolumu: React.FC = () => {
                 kaynak: 'camiyeGit',
                 yuzey: 'camiyeGit',
                 anonsVakitAdi: VAKIT_ADLARI[ornekVakit],
-                baslik: 'Camide kılacağım',
+                baslik: 'Camiye gitme vakti',
                 baslikKucuk: 'camiye gitme',
                 ikon: 'walking',
                 vakit: ornekVakit,
@@ -379,7 +379,7 @@ export const CamiyeGitBolumu: React.FC = () => {
                     </View>
                     <View className="flex-1">
                         <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                            Camide kılacağım
+                            Camiye gitme vakti
                         </Text>
                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                             Ezandan, camiye yürüme süreniz kadar önce hatırlatalım
@@ -390,7 +390,7 @@ export const CamiyeGitBolumu: React.FC = () => {
                         onValueChange={anaAnahtar}
                         trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                         thumbColor={ayarlar.aktif ? renkler.birincil : '#f4f3f4'}
-                        accessibilityLabel="Camide kılacağım hatırlatması"
+                        accessibilityLabel="Camiye gitme vakti hatırlatması"
                     />
                 </View>
 

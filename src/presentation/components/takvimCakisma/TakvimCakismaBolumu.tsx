@@ -1,6 +1,6 @@
 /**
  * Takvim çakışması uyarısı ayar bölümü (issue #291; ortak hatırlatma yüzeyleri plan §5.4) —
- * Bildirim Ayarları'nda, "Camide kılacağım" kartının altında.
+ * Hatırlatmalar > "Toplantı çakışırsa" ayrıntı sayfasında.
  *
  * ORTAK BİLEŞEN (AGENTS.md: "yeni hatırlatma yüzeyi için ayrı ekran YAZMA"): uyarının adımları
  * TEK `PencereKarti` (`stil="gomulu"`), adım detayı `AdimDetayModal`, önizleme
@@ -114,7 +114,16 @@ function ornekCakisma() {
     };
 }
 
-export const TakvimCakismaBolumu: React.FC = () => {
+export interface TakvimCakismaBolumuProps {
+    /**
+     * Hatırlatmalar sayfasındaki anahtar "açın" dediğinde (`ac` parametresi): bölüm açılır
+     * açılmaz açma akışı başlar — açıklama (rıza) modalı + sistem izni. Özellik rızasız
+     * AÇILAMAZ (normalize rızasız "açık"ı kapalı okur), bu yüzden anahtar doğrudan yazamaz.
+     */
+    acilistaAc?: boolean;
+}
+
+export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilistaAc = false }) => {
     const renkler = useRenkler();
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
@@ -225,6 +234,14 @@ export const TakvimCakismaBolumu: React.FC = () => {
         },
         [butonTiklandiFeedback, yaz]
     );
+
+    // Hatırlatmalar sayfasından "aç" isteğiyle gelindiyse açıklamayı bir kez göster.
+    const acilisIstegiIslendi = useRef(false);
+    useEffect(() => {
+        if (!acilistaAc || acilisIstegiIslendi.current || ayarlar.aktif) return;
+        acilisIstegiIslendi.current = true;
+        setRizaAcik(true);
+    }, [acilistaAc, ayarlar.aktif]);
 
     /**
      * İzni ister; verilirse `verilince` çalışır, verilmezse doğru yolu gösterir.

@@ -90,15 +90,15 @@ describe('bildirimOzeti', () => {
 });
 
 describe('seriOzeti', () => {
-  it('gün sonu açık', () => {
+  it('gün sonu açıkken de yalnız eşiği söyler (gün sonu Hatırlatmalar sayfasında)', () => {
     expect(seriOzeti({ tamGunEsigi: 5, gunSonuBildirimAktif: true })).toBe(
-      'Tam gün: 5 namaz · gün sonu açık'
+      'Tam gün: 5 namaz'
     );
   });
 
-  it('gün sonu kapalı', () => {
+  it('gün sonu kapalıyken de yalnız eşiği söyler', () => {
     expect(seriOzeti({ tamGunEsigi: 3, gunSonuBildirimAktif: false })).toBe(
-      'Tam gün: 3 namaz · gün sonu kapalı'
+      'Tam gün: 3 namaz'
     );
   });
 });

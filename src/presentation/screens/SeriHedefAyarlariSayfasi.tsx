@@ -1,6 +1,8 @@
 /**
- * Seri ve Hedef Ayarlari Sayfasi
- * Tam gun esigi, gun bitis saati ve ozel gun modu ayarlari
+ * Seri hedefi sayfası — tam gün eşiği ve seriyi sıfırlama.
+ * Sade tasarım (Dalga 3): özel gün Hatırlatmalar sayfasına (hatırlatmaları da durdurur),
+ * "Kurulumu yeniden başlat" Yardım sayfasına taşındı; gün sonu hatırlatması
+ * Hatırlatmalar > Günü tamamlamadıysam'dadır.
  * 
  * NativeWind + Expo Vector Icons ile guncellenmis versiyon
  */
@@ -15,23 +17,14 @@ import {
   Animated,
   Easing,
 } from 'react-native';
-import { Anahtar } from '../components/common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { useNavigation, CommonActions } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   seriAyarlariniGuncelle,
   seriStateSifirla,
-  ozelGunModuDurumunuGuncelle,
-  ozelGunBaslat,
 } from '../store/seriSlice';
-import { OzelGunTakvimi } from '../components';
-import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
-import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
-import { OZEL_GUN_RENGI } from '../../core/constants/OzelGunRengi';
 import { BildirimModali, BildirimTipi } from '../components/common/BildirimModali';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
@@ -257,11 +250,8 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
   const renkler = useRenkler();
   const scrollRef = useVurguKurulumu();
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
-  const { butonTiklandiFeedback } = useFeedback();
 
-  const { ayarlar: seriAyarlari, ozelGunAyarlari } = useAppSelector((state) => state.seri);
-  const [takvimGorunur, setTakvimGorunur] = useState(false);
+  const { ayarlar: seriAyarlari } = useAppSelector((state) => state.seri);
 
   // Alert.alert yerine tema-uyumlu bildirim/onay modalı
   const [bildirim, setBildirim] = useState<SeriBildirimi>({
@@ -303,25 +293,6 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
     dispatch(seriAyarlariniGuncelle({ ayarlar: { tamGunEsigi: esik } }));
   };
 
-  const handleOzelGunModuToggle = async (yeniDeger: boolean) => {
-    await butonTiklandiFeedback();
-    dispatch(ozelGunModuDurumunuGuncelle({ aktif: yeniDeger }));
-  };
-
-  const handleMazeretBaslat = (baslangic: Date, bitis: Date) => {
-    dispatch(
-      ozelGunBaslat({
-        baslangicTarihi: tarihiISOFormatinaCevir(baslangic),
-        bitisTarihi: tarihiISOFormatinaCevir(bitis),
-      })
-    );
-    setTakvimGorunur(false);
-    basariBildiriminiGoster(
-      'Başarılı',
-      'Özel gün modu başlatıldı. Seriniz seçilen tarihler arasında dondurulacak, namaz hatırlatmaları da duracaktır.'
-    );
-  };
-
   const handleSeriSifirla = () => {
     setBildirim({
       gorunur: true,
@@ -335,28 +306,6 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
       onBirincil: () => {
         dispatch(seriStateSifirla());
         basariBildiriminiGoster('Başarılı', 'Seri verileriniz sıfırlandı.');
-      },
-    });
-  };
-
-  const handleKurulumSifirla = () => {
-    setBildirim({
-      gorunur: true,
-      tip: 'bilgi',
-      baslik: 'Kurulumu Sıfırla',
-      mesaj: 'Kurulum sihirbazı yeniden başlatılacak. Namaz, seri ve puan verileriniz korunacaktır. Devam etmek istiyor musunuz?',
-      birincilEtiket: 'Sihirbazı Aç',
-      birincilIkon: 'magic',
-      kapatEtiketi: 'İptal',
-      onBirincil: async () => {
-        bildirimKapat();
-        await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI);
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'KurulumSihirbazi' }],
-          })
-        );
       },
     });
   };
@@ -394,86 +343,13 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
           </AyarCapasi>
         </View>
 
-        {/* Ozel Gun Modu Bolumu */}
-        <View className="mb-6">
-          <Text
-            className="text-xs font-bold tracking-wider mb-3"
-            style={{ color: renkler.metinIkincil }}
-          >
-            ÖZEL GÜN MODU
-          </Text>
-
-          <AyarCapasi id="ozelGunModu">
-            <View
-              className="flex-row items-center p-4 rounded-xl mb-2"
-              style={{ backgroundColor: renkler.kartArkaplan }}
-            >
-              <View
-                className="w-10 h-10 rounded-full items-center justify-center mr-3"
-                style={{ backgroundColor: '#FFC0CB20' }}
-              >
-                <FontAwesome5 name="magic" size={18} color={OZEL_GUN_RENGI} solid />
-              </View>
-              <View className="flex-1">
-                <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                  Özel Gün Modu
-                </Text>
-                <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                  Özel günlerde seriyi dondurma imkanı sağlar. Bu günlerde namaz hatırlatmaları da durur.
-                </Text>
-              </View>
-              <Anahtar
-                value={ozelGunAyarlari.ozelGunModuAktif}
-                onValueChange={handleOzelGunModuToggle}
-                trackColor={{ false: renkler.sinir, true: '#FFC0CB' }}
-                thumbColor={ozelGunAyarlari.ozelGunModuAktif ? OZEL_GUN_RENGI : '#f4f3f4'}
-              />
-            </View>
-          </AyarCapasi>
-
-          {ozelGunAyarlari.ozelGunModuAktif && !ozelGunAyarlari.aktifOzelGun && (
-            <TouchableOpacity
-              className="py-3.5 rounded-xl items-center flex-row justify-center gap-2"
-              style={{ backgroundColor: OZEL_GUN_RENGI }}
-              onPress={() => setTakvimGorunur(true)}
-              activeOpacity={0.8}
-              accessibilityRole="button"
-              accessibilityLabel="Özel Gün Başlat"
-            >
-              <FontAwesome5 name="calendar-plus" size={16} color="#FFFFFF" />
-              <Text className="text-base font-bold text-white">
-                Özel Gün Başlat
-              </Text>
-            </TouchableOpacity>
-          )}
-
-          {ozelGunAyarlari.aktifOzelGun && (
-            <View
-              className="p-4 rounded-xl border"
-              style={{ backgroundColor: '#FFF0F5', borderColor: '#FFC0CB' }}
-            >
-              <View className="flex-row items-center gap-2 mb-2">
-                <FontAwesome5 name="check-circle" size={16} color={OZEL_GUN_RENGI} solid />
-                <Text className="text-sm font-bold" style={{ color: OZEL_GUN_RENGI }}>
-                  Aktif Özel Gün
-                </Text>
-              </View>
-              <Text className="text-sm" style={{ color: '#AD1457' }}>
-                {new Date(ozelGunAyarlari.aktifOzelGun.baslangicTarihi).toLocaleDateString('tr-TR')}{' '}
-                -{' '}
-                {new Date(ozelGunAyarlari.aktifOzelGun.bitisTarihi).toLocaleDateString('tr-TR')}
-              </Text>
-            </View>
-          )}
-        </View>
-
         {/* Tehlikeli Bolge */}
         <View className="mb-6">
           <Text
             className="text-xs font-bold tracking-wider mb-3"
             style={{ color: '#DC2626' }}
           >
-            TEHLİKELİ BÖLGE
+            SIFIRLAMA
           </Text>
 
           <TouchableOpacity
@@ -499,39 +375,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
             </View>
             <FontAwesome5 name="chevron-right" size={14} color="#DC2626" />
           </TouchableOpacity>
-
-          <TouchableOpacity
-            className="flex-row items-center p-4 rounded-xl mt-2"
-            style={{ backgroundColor: '#FFF7ED' }}
-            onPress={handleKurulumSifirla}
-            activeOpacity={0.7}
-            accessibilityRole="button"
-            accessibilityLabel="Kurulum Sihirbazını Yeniden Çalıştır"
-          >
-            <View
-              className="w-10 h-10 rounded-full items-center justify-center mr-3"
-              style={{ backgroundColor: '#EA580C20' }}
-            >
-              <FontAwesome5 name="redo-alt" size={18} color="#EA580C" />
-            </View>
-            <View className="flex-1">
-              <Text className="text-base font-semibold" style={{ color: '#EA580C' }}>
-                Kurulum Sihirbazını Yeniden Çalıştır
-              </Text>
-              <Text className="text-xs mt-0.5" style={{ color: '#EA580C', opacity: 0.8 }}>
-                Verileriniz silinmez, yalnızca kurulum ekranı açılır
-              </Text>
-            </View>
-            <FontAwesome5 name="chevron-right" size={14} color="#EA580C" />
-          </TouchableOpacity>
         </View>
-
-        {/* Ozel Gun Takvimi Modal */}
-        <OzelGunTakvimi
-          gorunur={takvimGorunur}
-          onKapat={() => setTakvimGorunur(false)}
-          onBaslat={handleMazeretBaslat}
-        />
 
         {/* Bildirim/onay modalı — Alert.alert yerine tema-uyumlu modal */}
         <BildirimModali

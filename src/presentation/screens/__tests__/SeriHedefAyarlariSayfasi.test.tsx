@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
@@ -125,18 +124,9 @@ describe('SeriHedefAyarlariSayfasi', () => {
     expect(seriStateSifirla).not.toHaveBeenCalled();
   });
 
-  it('"Kurulum Sihirbazını Yeniden Çalıştır"a basınca onay modalı açılır ve onayda kurulum bayrağı silinir', async () => {
-    const navDispatch = jest.fn();
-    (useNavigation as jest.Mock).mockReturnValue({ dispatch: navDispatch });
-
-    const { getByText, getByLabelText } = SayfaYukle();
-    fireEvent.press(getByText('Kurulum Sihirbazını Yeniden Çalıştır'));
-    expect(getByText('Kurulumu Sıfırla')).toBeTruthy();
-
-    fireEvent.press(getByLabelText('Sihirbazı Aç'));
-    await waitFor(() => {
-      expect(AsyncStorage.removeItem).toHaveBeenCalledTimes(1);
-      expect(navDispatch).toHaveBeenCalledTimes(1);
-    });
+  it('kurulum ve özel gün bu sayfada YOK (Yardım / Hatırlatmalar sayfalarına taşındı)', () => {
+    const { queryByText } = SayfaYukle();
+    expect(queryByText('Kurulum Sihirbazını Yeniden Çalıştır')).toBeNull();
+    expect(queryByText(/Özel gün/)).toBeNull();
   });
 });

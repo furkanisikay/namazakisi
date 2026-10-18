@@ -19,6 +19,8 @@ import { DEPOLAMA_ANAHTARLARI, UYGULAMA } from '../../core/constants/UygulamaSab
 import { izinDurumunuOku, type BildirimIzinDurumu } from '../../domain/services/BildirimIzinOkuyucu';
 import { vakitBildirimAyarlariniYukle } from '../store/vakitBildirimSlice';
 import { takvimAyarlariniYukle } from '../store/takvimSlice';
+import { takvimCakismaAyarlariniYukle } from '../store/takvimCakismaSlice';
+import { hatirlatmalarOzeti } from '../../core/hatirlatma/hatirlatmaOzetleri';
 import {
   konumOzeti,
   takvimOzeti,
@@ -36,6 +38,8 @@ import { konumMetniHesapla } from '../../core/ayarlar/konumMetni';
 import type { SistemDurumu } from './useSistemDurumu';
 
 export interface AyarOzetleri {
+  /** Ayarlar kökündeki "Hatırlatmalar" satırı (Dalga 3): düzey + açık diğerleri. */
+  hatirlatmalar: string;
   konum: string;
   takvim: string;
   muhafiz: string;
@@ -79,6 +83,10 @@ export function useAyarOzetleri(sistem?: Pick<SistemDurumu, 'pil' | 'tamAlarm'>)
   const sahurAktif = useAppSelector((s) => s.sahurSayac.ayarlar.aktif);
   const nafileAyarlari = useAppSelector((s) => s.nafile.ayarlar);
   const takvimAktif = useAppSelector((s) => s.takvim.ayarlar.aktif);
+  // Savunmalı (dar test mağazaları): yoksa kapalı sayılır.
+  const camiyeGitAktif = useAppSelector((s) => s.camiyeGit?.ayarlar?.aktif === true);
+  const yatisAktif = useAppSelector((s) => s.yatisHatirlatma?.ayarlar?.aktif === true);
+  const takvimCakismaAktif = useAppSelector((s) => s.takvimCakisma?.ayarlar?.aktif === true);
   const guncellemeMevcut = useAppSelector((s) => s.guncelleme.guncellemeMevcut);
 
   const [asyncVeri, setAsyncVeri] = useState<AsyncOzetVerisi>(ASYNC_VARSAYILAN);
@@ -103,6 +111,8 @@ export function useAyarOzetleri(sistem?: Pick<SistemDurumu, 'pil' | 'tamAlarm'>)
       // focus'ta idempotent şekilde tazelenir.
       dispatch(vakitBildirimAyarlariniYukle());
       dispatch(takvimAyarlariniYukle());
+      // Takvim çakışması da açılışta yüklenmez; "Hatırlatmalar" özeti onu sayar.
+      dispatch(takvimCakismaAyarlariniYukle());
 
       (async () => {
         const [izinDurumu, sonDisaAktarmaISO] = await Promise.all([
@@ -142,7 +152,23 @@ export function useAyarOzetleri(sistem?: Pick<SistemDurumu, 'pil' | 'tamAlarm'>)
     simdi,
   });
 
+  const nafileAcik =
+    nafileAyarlari.hatirlatmalar.kusluk.aktif ||
+    nafileAyarlari.hatirlatmalar.evvabin.aktif ||
+    nafileAyarlari.teheccud.aktif;
+  const digerAcikSayisi = [
+    acikVakitBildirimSayisi > 0,
+    cumaAktif,
+    camiyeGitAktif,
+    yatisAktif,
+    takvimCakismaAktif,
+    nafileAcik,
+    iftarAktif || sahurAktif,
+    seriAyarlari.gunSonuBildirimAktif,
+  ].filter(Boolean).length;
+
   const ozetler: AyarOzetleri = {
+    hatirlatmalar: hatirlatmalarOzeti(muhafizAktif, muhafizYogunluk, digerAcikSayisi),
     konum: konumOzeti(konumGirdisi),
     takvim: takvimOzeti(takvimAktif),
     muhafiz: muhafizOzeti({ aktif: muhafizAktif, yogunluk: muhafizYogunluk }),

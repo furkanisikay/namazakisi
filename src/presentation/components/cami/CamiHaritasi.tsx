@@ -317,6 +317,17 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
             );
         }
         if (!secili) {
+            // Bu sürümde cami verisi yoksa harita boş görünür; nedenini söyle (eksikti).
+            if (c.durum?.veriVar === false) {
+                return (
+                    <View className="flex-row items-center" testID="harita-veri-yok">
+                        <FontAwesome5 name="info-circle" size={14} color={renkler.bilgi} solid style={{ marginRight: 8 }} />
+                        <Text className="text-sm flex-1" style={{ color: renkler.metin }}>
+                            Bu sürümde cami verisi yok; eklediğiniz yerler yine algılanır.
+                        </Text>
+                    </View>
+                );
+            }
             return (
                 <View className="flex-row items-center" testID="harita-ipucu">
                     <FontAwesome5 name="hand-pointer" size={14} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
