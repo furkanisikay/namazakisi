@@ -55,7 +55,10 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq osmium-tool
-          python3 -m pip install --quiet 'osmium==4.3.1'
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/python" -m pip install --quiet 'osmium==4.3.1'
+          # -I kullanıcı site-packages'ını yok sayar; venv içindeki kurulum görünür kalır.
+          echo "PYTHON_OSM=$RUNNER_TEMP/venv/bin/python" >> "$GITHUB_ENV"
 
       - name: 🌍 Geofabrik PBF indir (+ MD5 doğrula)
         run: |
@@ -71,7 +74,7 @@ jobs:
         run: |
           osmium tags-filter "$RUNNER_TEMP/osm/turkey.osm.pbf" nwr/amenity=place_of_worship \
             -o "$RUNNER_TEMP/osm/suzulmus.osm.pbf" --overwrite
-          python3 -I scripts/camiler/cami_verisi_uret.py \
+          "$PYTHON_OSM" -I scripts/camiler/cami_verisi_uret.py \
             "$RUNNER_TEMP/osm/suzulmus.osm.pbf" "$CIKTI" --ozet "$RUNNER_TEMP/ozet.json"
           KAYIT=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['kayit'])" "$RUNNER_TEMP/ozet.json")
           BAYT=$(stat -c %s "$CIKTI")
