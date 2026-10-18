@@ -24,6 +24,10 @@ import {
     DUZEY_ADLARI,
     DUZEY_IKONLARI,
     HATIRLATMA_DUZEYLERI,
+    OZEL_DUZEY_ACIKLAMASI,
+    OZEL_DUZEY_ADI,
+    OZEL_DUZEY_CUMLESI,
+    OZEL_DUZEY_IKONU,
     duzeyCumlesi,
     duzeyiOlc,
     duzeyKisaAciklamasi,
@@ -35,6 +39,9 @@ import { HATIRLATMA_PRESETLERI } from '../../store/muhafizSlice';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 
 export type { HatirlatmaDuzeyi };
+
+/** Seçicinin değeri: dört düzey + (yalnız Hatırlatmalar/muhafız ekranında) kendi ayarı. */
+export type DuzeySecimi = HatirlatmaDuzeyi | 'ozel';
 
 /** Preset'ler sabit → ölçü bir kez (modül yüklenirken değil, ilk kullanımda). */
 let olculer: Record<HatirlatmaDuzeyi, DuzeyOlcusu | null> | null = null;
@@ -63,8 +70,13 @@ export function sesliBilgiGosterildiMi(duzey: HatirlatmaDuzeyi, sesliBilgiGoster
 export { sesliBilgiMetni };
 
 export interface DuzeySeciciProps {
-    secili: HatirlatmaDuzeyi;
-    onSec: (duzey: HatirlatmaDuzeyi) => void;
+    secili: DuzeySecimi;
+    onSec: (duzey: DuzeySecimi) => void;
+    /**
+     * Beşinci kart "Kendi ayarınız" görünsün mü (kaydedilmiş özel ayar varken).
+     * Sihirbaz vermez; `secili === 'ozel'` iken verilmese de çizilir.
+     */
+    ozelGoster?: boolean;
     /** Sesli düzeyde bilgilendirme maddesi gösterilsin mi (varsayılan evet). */
     sesliBilgiGoster?: boolean;
     style?: StyleProp<ViewStyle>;
@@ -74,24 +86,37 @@ export interface DuzeySeciciProps {
 export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function DuzeySecici({
     secili,
     onSec,
+    ozelGoster = false,
     sesliBilgiGoster = true,
     style,
     testID,
 }) {
     const renkler = useRenkler();
     const o = duzeyOlculeri();
-    const secenekler = React.useMemo<Secenek<HatirlatmaDuzeyi>[]>(
-        () =>
-            HATIRLATMA_DUZEYLERI.map((d) => ({
-                deger: d,
+    const ozelVar = ozelGoster || secili === 'ozel';
+    const secenekler = React.useMemo<Secenek<DuzeySecimi>[]>(
+        () => [
+            ...HATIRLATMA_DUZEYLERI.map((d) => ({
+                deger: d as DuzeySecimi,
                 etiket: DUZEY_ADLARI[d],
                 aciklama: duzeyKisaAciklamasi(d, o[d]),
                 ikon: DUZEY_IKONLARI[d],
             })),
-        [o],
+            ...(ozelVar
+                ? [
+                      {
+                          deger: 'ozel' as DuzeySecimi,
+                          etiket: OZEL_DUZEY_ADI,
+                          aciklama: secili === 'ozel' ? OZEL_DUZEY_ACIKLAMASI.secili : OZEL_DUZEY_ACIKLAMASI.geri,
+                          ikon: OZEL_DUZEY_IKONU,
+                      },
+                  ]
+                : []),
+        ],
+        [o, ozelVar, secili],
     );
-    const cumle = duzeyCumlesi(secili, o[secili]);
-    const sesliBilgi = sesliBilgiGosterildiMi(secili, sesliBilgiGoster);
+    const cumle = secili === 'ozel' ? OZEL_DUZEY_CUMLESI : duzeyCumlesi(secili, o[secili]);
+    const sesliBilgi = secili !== 'ozel' && sesliBilgiGosterildiMi(secili, sesliBilgiGoster);
     const bilgiMetni = sesliBilgiMetni(usePlatformYetenekleri().sessizligiDelebilir);
     // Madde göründüğü/değiştiği an ekran okuyucuya söylenir (yalnız görsel kalmasın).
     React.useEffect(() => {

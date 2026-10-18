@@ -63,3 +63,17 @@ describe('DuzeySecici', () => {
         expect(sesliBilgiGosterildiMi('normal', false)).toBe(false);
     });
 });
+
+describe('DuzeySecici — "Kendi ayarınız" (Dalga 3)', () => {
+    it('yalnız istenince ya da seçiliyken beşinci kart olur; seçiliyken cümle kendi ayarını söyler', () => {
+        const onSec = jest.fn();
+        const { queryByLabelText, getByLabelText, getByText, rerender } = render(<DuzeySecici secili="normal" onSec={onSec} />);
+        expect(queryByLabelText(/^Kendi ayarınız\./)).toBeNull();
+        rerender(<DuzeySecici secili="normal" onSec={onSec} ozelGoster />);
+        fireEvent.press(getByLabelText(/^Kendi ayarınız\./));
+        expect(onSec).toHaveBeenCalledWith('ozel');
+        rerender(<DuzeySecici secili="ozel" onSec={onSec} />);
+        expect(getByLabelText(/^Kendi ayarınız\./).props.accessibilityState).toMatchObject({ selected: true });
+        expect(getByText('Her vakit sizin ayarladığınız gibi hatırlatılır.')).toBeTruthy();
+    });
+});

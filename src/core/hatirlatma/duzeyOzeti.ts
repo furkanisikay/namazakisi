@@ -50,6 +50,18 @@ export function duzeyiOlc(seviyeler: PresetSeviyeleri): DuzeyOlcusu {
     return { ilkDk, uyariSayisi: plan.length, sesliSayisi, sesli: presetSesliIceriyorMu(seviyeler) };
 }
 
+/**
+ * "Kendi ayarınız" (muhafız `yogunluk === 'ozel'`): kullanıcının vakit vakit kurduğu
+ * düzen. Sihirbazda yer almaz; Hatırlatmalar sayfası ve muhafız ayrıntısında yalnız
+ * kaydedilmiş bir özel ayar varken BEŞİNCİ kart olarak görünür (hiçbir kartın seçili
+ * olmaması "ne seçili?" sorusunu cevapsız bırakırdı).
+ */
+export const OZEL_DUZEY_ADI = 'Kendi ayarınız';
+export const OZEL_DUZEY_IKONU = 'sliders-h';
+/** Kart altı (≤ 6 kelime): seçiliyken ve değilken. */
+export const OZEL_DUZEY_ACIKLAMASI = { secili: 'Vakit vakit siz ayarladınız', geri: 'Kaydettiğiniz ayara dönün' };
+export const OZEL_DUZEY_CUMLESI = 'Her vakit sizin ayarladığınız gibi hatırlatılır.';
+
 /** Seçicinin altındaki tek cümle (≤ 12 kelime). */
 export function duzeyCumlesi(duzey: HatirlatmaDuzeyi, olcu: DuzeyOlcusu | null): string {
     if (duzey === 'kapali' || !olcu) return 'Vakit çıkmadan hatırlatma gelmez.';

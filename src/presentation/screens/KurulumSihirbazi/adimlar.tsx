@@ -278,7 +278,8 @@ export const DuzeyAdimi: React.FC<{
     <View>
         <Illustrasyon ikon="shield-alt" rozet="bell" />
         <AdimBasligi baslik="Ne kadar hatırlatalım?" alt="Vakit çıkmadan önce gelen hatırlatmalar." />
-        <DuzeySecici secili={duzey} onSec={onDuzey} testID="duzey-secici" />
+        {/* Sihirbazda "Kendi ayarınız" kartı yoktur (`ozelGoster` verilmez) → 'ozel' gelmez. */}
+        <DuzeySecici secili={duzey} onSec={(d) => d !== 'ozel' && onDuzey(d)} testID="duzey-secici" />
         <View style={{ marginTop: 24 }}>
             <BolumBasligi metin="Görünüm" />
             <AnahtarSatiri
