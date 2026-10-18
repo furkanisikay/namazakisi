@@ -155,6 +155,13 @@ jest.mock('../../store/muhafizSlice', () => {
   };
 });
 
+// TEK RIZA (Dalga 3): sesli/alarm onayı ORTAK kayda yazılır (muhafızın alanına değil).
+jest.mock('../../store/hatirlatmaRizaSlice', () => ({
+  hatirlatmaRizalariniYukle: jest.fn(() => ({ type: 'riza/yukle' })),
+  hatirlatmaRizasiVer: jest.fn((d: unknown) => ({ type: 'riza/ver', payload: d })),
+}));
+const { hatirlatmaRizasiVer: rizaVerMock } = jest.requireMock('../../store/hatirlatmaRizaSlice');
+
 const mockRenkler = {
   arkaplan: '#ffffff',
   kartArkaplan: '#f0f0f0',
@@ -365,7 +372,8 @@ describe('MuhafizAyarlariSayfasi', () => {
 
     fireEvent(getByTestId('adim-sesli-anahtari'), 'valueChange', true);
     fireEvent.press(getByLabelText('Sesli anonsu açın'));
-    expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ sesliOnayi: true });
+    expect(rizaVerMock).toHaveBeenCalledWith({ sesliOnayi: true });
+    expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalledWith(expect.objectContaining({ sesliOnayi: true }));
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
     expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ bildirim: true, sesli: true });
   });
@@ -712,7 +720,8 @@ describe('MuhafizAyarlariSayfasi', () => {
       expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
       expect(yeni.ogle.seviyeler[3].esikDk).toBe(6);
       expect(yeni.ogle.seviyeler[3].anonsMetni).toContain('{vakit}');
-      expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'yogun', sesliOnayi: true });
+      expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'yogun' });
+      expect(rizaVerMock).toHaveBeenCalledWith({ sesliOnayi: true });
     });
 
     it('reddedilince preset YİNE uygulanır ama sesli hücreler bildirime düşer', async () => {
@@ -817,10 +826,8 @@ describe('MuhafizAyarlariSayfasi', () => {
       await act(async () => { fireEvent.press(getByLabelText('Sesli anonsu açın')); });
       const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
       expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true }); // sesli GERÇEKTEN açıldı
-      expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({
-        yogunluk: 'normal',
-        sesliOnayi: true,
-      });
+      expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'normal' });
+      expect(rizaVerMock).toHaveBeenCalledWith({ sesliOnayi: true });
     });
 
     it('ZATEN SEÇİLİ preset + onay VARSA dokunuş hiçbir şey yapmaz', async () => {

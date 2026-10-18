@@ -39,6 +39,7 @@ import { Anahtar } from '../common/Anahtar';
 import { BildirimModali } from '../common/BildirimModali';
 import { HatirlatmaModulu, ekAdimIslemleri } from '../hatirlatma/HatirlatmaModulu';
 import type { AdimRizasi } from '../hatirlatma/AdimDetayModal';
+import { useGenelRiza } from '../../hooks/useGenelRiza';
 import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
@@ -120,6 +121,7 @@ export const TakvimCakismaBolumu: React.FC = () => {
     const kayitli = useAppSelector((s) => s.takvimCakisma.ayarlar);
     const yetenekler = usePlatformYetenekleri();
     const ttsDestekli = useTurkceTtsDestegi();
+    const genelRiza = useGenelRiza();
 
     const [rizaAcik, setRizaAcik] = useState(false);
     const [izinHatasi, setIzinHatasi] = useState<IzinHatasi>(null);
@@ -336,9 +338,14 @@ export const TakvimCakismaBolumu: React.FC = () => {
 
     /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
     const modulYaz = useCallback(
-        (yeni: TakvimCakismaAyarlari, riza: AdimRizasi): boolean =>
-            guncelle(yeni, riza, riza.sesliOnayi === true || riza.alarmOnayi === true),
-        [guncelle]
+        (yeni: TakvimCakismaAyarlari, riza: AdimRizasi): boolean => {
+            const rizaVar = riza.sesliOnayi === true || riza.alarmOnayi === true;
+            const yazildi = guncelle(yeni, {}, rizaVar);
+            // TEK RIZA (Dalga 3): onay yüzeyin kendi alanına değil ORTAK kayda yazılır.
+            if (yazildi && rizaVar) genelRiza.ver(riza);
+            return yazildi;
+        },
+        [guncelle, genelRiza]
     );
     const enErkenDk = Math.max(...ayarlar.adimlar.map((a) => a.esikDk));
 
@@ -435,8 +442,8 @@ export const TakvimCakismaBolumu: React.FC = () => {
                                 yaz={modulYaz}
                                 ttsDestekli={ttsDestekli}
                                 // Rızalar bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
-                                sesliOnayiVar={ayarlar.sesliOnayi === true}
-                                alarmOnayiVar={ayarlar.alarmOnayi === true}
+                                sesliOnayiVar={genelRiza.sesli}
+                                alarmOnayiVar={genelRiza.alarm}
                                 sesliOnayMetinleri={{
                                     altBaslik: 'Takvim çakışması uyarısında sesli okuma',
                                     kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',

@@ -69,12 +69,13 @@ jest.mock('../../../../domain/services/TakvimEtkinlikOkuyucu', () => ({
 }));
 
 import { TakvimCakismaBolumu, TAKVIM_CAKISMA_YON_GEREKCESI } from '../TakvimCakismaBolumu';
+import rizaReducer from '../../../store/hatirlatmaRizaSlice';
 
 const KONUM = { lat: 41.0, lng: 29.0 };
 
 const kur = () => {
     const store = configureStore({
-        reducer: { takvimCakisma: takvimCakismaReducer, konum: () => ({ koordinatlar: KONUM }) },
+        reducer: { takvimCakisma: takvimCakismaReducer, hatirlatmaRiza: rizaReducer, konum: () => ({ koordinatlar: KONUM }) },
     });
     const ekran = render(
         <Provider store={store}>
@@ -173,7 +174,7 @@ describe('TakvimCakismaBolumu', () => {
         expect(ekran.getByText('Takvim çakışması akışı')).toBeTruthy();
     });
 
-    it('STANDART yetenekler adım detayında: iki kanal anahtarı + GERÇEK ALARM; sesli rıza KENDİ alanına, adsız örnekle', async () => {
+    it('STANDART yetenekler adım detayında: iki kanal anahtarı + GERÇEK ALARM; sesli rıza ORTAK kayda (tek rıza), adsız örnekle', async () => {
         mockDisk = takvimCakismaAyarlariniNormalize({ aktif: true, rizaZamani: '2026-10-01T00:00:00.000Z' });
         mockIzinDurumu.mockResolvedValue('verildi');
         const ekran = kur();
@@ -186,8 +187,9 @@ describe('TakvimCakismaBolumu', () => {
         expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
         expect(ekran.getAllByText(/Takviminizdeki bir etkinlik öğle vaktine denk geliyor/).length).toBeGreaterThan(0);
         fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
-        await waitFor(() => expect(mockDisk.sesliOnayi).toBe(true));
-        expect(mockDisk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
+        await waitFor(() => expect(mockDisk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true }));
+        expect(ekran.store.getState().hatirlatmaRiza.kayit.sesliOnayi).toBe(true);
+        expect(mockDisk.sesliOnayi).toBeUndefined();
         // Takvim rızası korunur (sesli rızası ayrı alan).
         expect(mockDisk.rizaZamani).toBe('2026-10-01T00:00:00.000Z');
         expect(mockDisk.aktif).toBe(true);

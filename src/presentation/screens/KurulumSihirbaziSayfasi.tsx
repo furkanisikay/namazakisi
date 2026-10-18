@@ -32,6 +32,7 @@ import { Logger } from '../../core/utils/Logger';
 import { tumVakitBildirimAyarlariniGuncelle } from '../store/vakitBildirimSlice';
 import { muhafizAyarlariniGuncelle, presetAyarlariniOlustur } from '../store/muhafizSlice';
 import { konumAyarlariniGuncelle } from '../store/konumSlice';
+import { hatirlatmaRizasiVer } from '../store/hatirlatmaRizaSlice';
 import { sadeGorunumuAyarla } from '../store/sadeGorunumSlice';
 import type { AppDispatch } from '../store/store';
 import type { RootStackParamList } from '../../navigation/AppNavigator';
@@ -269,6 +270,11 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                         ...presetAyarlariniOlustur(duzey, sesliBilgiGosterildiMi(duzey)),
                     }),
                 );
+            }
+            // TEK RIZA (Dalga 3): bilgi maddesi ekranda gösterildiyse onay ORTAK kayda da
+            // yazılır (muhafızın kendi alanı geriye uyum için `presetAyarlariniOlustur`'da kalır).
+            if (duzey !== 'kapali' && sesliBilgiGosterildiMi(duzey)) {
+                dispatch(hatirlatmaRizasiVer({ sesliOnayi: true }));
             }
             if (sade) {
                 try {

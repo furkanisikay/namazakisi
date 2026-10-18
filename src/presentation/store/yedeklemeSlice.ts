@@ -33,6 +33,7 @@ import { CamiyeGitHatirlatmaServisi } from '../../domain/services/CamiyeGitHatir
 import { nafileAyarlariniYukle } from './nafileSlice';
 import { nowBarAyarlariniYukle } from './nowBarSlice';
 import { sadeGorunumAyarlariniYukle } from './sadeGorunumSlice';
+import { hatirlatmaRizalariniYukle } from './hatirlatmaRizaSlice';
 import { seferilikYukle } from './seferilikSlice';
 import { NafileHatirlatmaServisi } from '../../domain/services/NafileHatirlatmaServisi';
 import { gunSonuHatirlatmalariniGuncelle } from '../../domain/services/GunSonuHatirlaticiServisi';
@@ -94,6 +95,8 @@ export const iceAktarmayiUygula = createAsyncThunk(
       dispatch(nowBarAyarlariniYukle()),
       // Sade görünüm (issue #295): `condition` yüklüyse atlar → zorla tazele.
       dispatch(sadeGorunumAyarlariniYukle({ zorla: true })),
+      // Tek rıza (Dalga 3): aynı `condition` deseni → zorla tazele.
+      dispatch(hatirlatmaRizalariniYukle({ zorla: true })),
       // Seferîlik bilgi kartı (issue #296): aynı `condition` deseni → zorla tazele.
       dispatch(seferilikYukle({ zorla: true })),
       dispatch(takvimAyarlariniYukle()),

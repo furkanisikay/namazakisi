@@ -227,6 +227,10 @@ export const DEPOLAMA_ANAHTARLARI = {
   KAZA_ONERI_KAYDI: '@namaz_akisi/kaza_oneri_kaydi',
   // Sade görünüm (issue #295) — YEDEKLENİR (beyaz listenin ÜÇ yerinde).
   SADE_GORUNUM_AYARLARI: 'sade_gorunum_ayarlari',
+  // TEK RIZA (sade tasarım, Dalga 3): sesli okuma + gerçek alarm onayı BİR KEZ, tüm
+  // hatırlatmalar için. Eski yüzey kayıtlarından bir kez göç eder (`core/hatirlatma/rizalar`).
+  // YEDEKLENİR (beyaz listenin ÜÇ yerinde).
+  HATIRLATMA_RIZALARI: 'hatirlatma_rizalari',
   // Seferîlik bilgi kartı (issue #296) — ayar (kart açık, mezhep, ikamet yeri)
   // YEDEKLENİR (beyaz listenin ÜÇ yerinde); "bu yolculukta kapattım" hafızası
   // cihaza özgü → yedeklemeye GİRMEZ.

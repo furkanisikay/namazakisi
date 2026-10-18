@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import camiyeGitReducer from '../../../store/camiyeGitSlice';
+import rizaReducer from '../../../store/hatirlatmaRizaSlice';
 import {
     camiyeGitAyarlariniNormalize,
     type CamiyeGitAyarlari,
@@ -86,6 +87,7 @@ const kur = (cumaAktif = false) => {
             camiyeGit: camiyeGitReducer,
             cumaHatirlatma: () => ({ ayarlar: { aktif: cumaAktif, oncedenDk: 60, siklik: 'birkez' } }),
             konum: () => ({ koordinatlar: KONUM }),
+            hatirlatmaRiza: rizaReducer,
         },
     });
     const ekran = render(
@@ -185,7 +187,7 @@ describe('CamiyeGitBolumu', () => {
         expect(ekran.getByText('Camide kılacağım akışı')).toBeTruthy();
     });
 
-    it('STANDART yetenekler adım detayında: iki kanal anahtarı + GERÇEK ALARM; sesli rıza KENDİ alanına yazılır', async () => {
+    it('STANDART yetenekler adım detayında: iki kanal anahtarı + GERÇEK ALARM; sesli rıza ORTAK kayda (tek rıza) yazılır', async () => {
         mockDisk = camiyeGitAyarlariniNormalize({ aktif: true });
         const ekran = kur();
         fireEvent.press(await ekran.findByLabelText(/^Hatırlatma — düzenleyin/));
@@ -196,8 +198,9 @@ describe('CamiyeGitBolumu', () => {
         fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
         expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
         fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
-        await waitFor(() => expect(mockDisk.sesliOnayi).toBe(true));
-        expect(mockDisk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
+        await waitFor(() => expect(mockDisk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true }));
+        expect(ekran.store.getState().hatirlatmaRiza.kayit.sesliOnayi).toBe(true);
+        expect(mockDisk.sesliOnayi).toBeUndefined();
     });
 
     it('yürüme süresi değişince adımların TÜMÜ aynı farkla kayar', async () => {

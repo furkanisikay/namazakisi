@@ -65,6 +65,7 @@ import { ParcaliSecici } from '../components/hatirlatma/ParcaliSecici';
 /** Yoğunluk seçicinin değerleri — üç hazır yoğunluk + kaydedilmiş özel ayar. */
 type YogunlukSecimi = PresetYogunlugu | 'ozel';
 import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
+import { useGenelRiza } from '../hooks/useGenelRiza';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
@@ -122,6 +123,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     const konumAyarlari = useAppSelector((state) => state.konum);
     const sayacAyarlari = useAppSelector((state) => state.vakitSayac?.ayarlar);
     const konumMetni = useKonumMetni(konumAyarlari);
+    // TEK RIZA (Dalga 3): sesli okuma / gerçek alarm onayı tüm hatırlatmalar için ortak.
+    const genelRiza = useGenelRiza();
 
     const [acikVakit, setAcikVakit] = useState<MuhafizVakti | null>(null);
     const [presetOnayi, setPresetOnayi] = useState<PresetYogunlugu | null>(null);
@@ -424,12 +427,12 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                 yeni.seviyeler.some((x, i) => !!eski[i] && adimKapaliMi(eski[i].kanallar) && !adimKapaliMi(x.kanallar));
             const yeniMatris = { ...matris, [vakit]: yeni };
             if (artis && !rehber.degisikligiDene({ matris: yeniMatris })) return false;
-            if (riza.alarmOnayi) dispatch(muhafizAyarlariniGuncelle({ alarmOnayi: true }));
-            if (riza.sesliOnayi) dispatch(muhafizAyarlariniGuncelle({ sesliOnayi: true }));
+            // Rıza (tek rıza, Dalga 3) ORTAK kayda gider; yüzeyin kendi alanına yazılmaz.
+            genelRiza.ver(riza);
             matrisiYaz(yeniMatris);
             return true;
         },
-        [matris, matrisiYaz, rehber, dispatch]
+        [matris, matrisiYaz, rehber, genelRiza]
     );
 
     /** Adım detayı açıldı — kapanışta sığma simülasyonu için önceki hâli sakla. */
@@ -484,25 +487,13 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             dispatch(
                 matrisiGuncelle(presetUygula(matris, preset.seviyeler, sesliIzinVar, yogunluk))
             );
-            dispatch(
-                muhafizAyarlariniGuncelle(
-                    // Onay yalnız VERİLDİĞİNDE kalıcılaşır; "sesli olmadan uygula"
-                    // bir daha sorulmasını engellemez (bilinçli).
-                    sesliIzinVar && !muhafizAyarlari.sesliOnayi
-                        ? { yogunluk, sesliOnayi: true }
-                        : { yogunluk }
-                )
-            );
+            dispatch(muhafizAyarlariniGuncelle({ yogunluk }));
+            // Onay yalnız VERİLDİĞİNDE kalıcılaşır (ORTAK kayda — tek rıza); "sesli
+            // olmadan uygula" bir daha sorulmasını engellemez (bilinçli).
+            if (sesliIzinVar && !genelRiza.sesli) genelRiza.ver({ sesliOnayi: true });
             planlamayiKuyrugaAl();
         },
-        [
-            butonTiklandiFeedback,
-            dispatch,
-            matris,
-            muhafizAyarlari.yogunluk,
-            muhafizAyarlari.sesliOnayi,
-            planlamayiKuyrugaAl,
-        ]
+        [butonTiklandiFeedback, dispatch, matris, muhafizAyarlari.yogunluk, genelRiza, planlamayiKuyrugaAl]
     );
 
     /**
@@ -512,13 +503,13 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     const presetiBaslat = useCallback(
         (yogunluk: PresetYogunlugu) => {
             const sesliVar = presetSesliIceriyorMu(HATIRLATMA_PRESETLERI[yogunluk].seviyeler);
-            if (sesliVar && !muhafizAyarlari.sesliOnayi) {
+            if (sesliVar && !genelRiza.sesli) {
                 setSesliOnayi(yogunluk);
                 return;
             }
             void presetiUygula(yogunluk, sesliVar);
         },
-        [muhafizAyarlari.sesliOnayi, presetiUygula]
+        [genelRiza.sesli, presetiUygula]
     );
 
     const yogunlukSec = useCallback(
@@ -530,7 +521,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                 // düşmüştür ve sessiz dönseydik kullanıcının sesliyi açmasının yolu
                 // KALMAZDI (tek kaçış başka bir preset'e geçip zamanlamayı ezmek).
                 const sesliVar = presetSesliIceriyorMu(HATIRLATMA_PRESETLERI[yogunluk].seviyeler);
-                if (sesliVar && !muhafizAyarlari.sesliOnayi) setSesliOnayi(yogunluk);
+                if (sesliVar && !genelRiza.sesli) setSesliOnayi(yogunluk);
                 return;
             }
             // Elle ayarlanmış zamanlama varsa (yogunluk === 'ozel') önce onay iste.
@@ -540,7 +531,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             }
             presetiBaslat(yogunluk);
         },
-        [muhafizAyarlari.yogunluk, muhafizAyarlari.sesliOnayi, presetiBaslat]
+        [muhafizAyarlari.yogunluk, genelRiza.sesli, presetiBaslat]
     );
 
     /** Onay modalındaki örnek okunuş — seçilen preset'in sesli adımının eşiğiyle. */
@@ -802,8 +793,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                 islemler={vakitIslemleri[vakit]}
                                 yaz={(yeni, riza) => vakitYaz(vakit, yeni, riza)}
                                 ttsDestekli={ttsDestekli}
-                                sesliOnayiVar={muhafizAyarlari.sesliOnayi === true}
-                                alarmOnayiVar={muhafizAyarlari.alarmOnayi === true}
+                                sesliOnayiVar={genelRiza.sesli}
+                                alarmOnayiVar={genelRiza.alarm}
                                 sesliOnayMetinleri={{ altBaslik: `${VAKIT_ADLARI[vakit]} vaktinde sesli okuma` }}
                                 silinebilirMi={adimSilinebilirMi}
                                 adimAnahtari="herZaman"

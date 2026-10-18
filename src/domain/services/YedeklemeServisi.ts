@@ -117,6 +117,7 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     takvimCakisma,
     kazaAyarlari,
     mezhep,
+    hatirlatmaRizalari,
   ] = await Promise.all([
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_AYARLARI),
@@ -147,6 +148,8 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     // YedekBirlestirmeServisi + yedeklemeSlice.
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.KAZA_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI),
+    // Tek rıza (sade tasarım, Dalga 3) — beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.HATIRLATMA_RIZALARI),
   ]);
   return {
     muhafiz,
@@ -169,6 +172,7 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     takvimCakisma,
     kazaAyarlari,
     mezhep,
+    hatirlatmaRizalari,
   };
 };
 

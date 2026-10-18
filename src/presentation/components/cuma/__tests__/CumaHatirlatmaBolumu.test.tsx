@@ -2,8 +2,8 @@
  * CumaHatirlatmaBolumu — ortak hatırlatma bileşenleriyle cuma (plan §5.1).
  *
  * Ölçülen: muhafız/nafileyle AYNI yetenekler (kanal çipleri + gerçek alarm + adım ekleme +
- * akış önizlemesi), yön istisnasının gerekçesi EKRANDA, cumanın KENDİ rızaları (sesli /
- * alarm) adım yazımıyla BİRLİKTE gider, debounce'lu yazma ekrandan çıkışta kaybolmaz.
+ * akış önizlemesi), yön istisnasının gerekçesi EKRANDA, rıza (sesli / alarm) TEK RIZA'dır
+ * (ortak kayıt; başka bir hatırlatmada verilen onay burada da geçerli), debounce'lu yazma ekrandan çıkışta kaybolmaz.
  * Sahte zamanlayıcı KULLANILMAZ (AGENTS.md CI asılma tuzağı): debounce'lu yol unmount
  * ile boşaltılır.
  */
@@ -20,6 +20,12 @@ jest.mock('../../../../core/theme', () => ({ useRenkler: jest.fn() }));
 jest.mock('../../../store/cumaHatirlatmaSlice', () => ({
     cumaHatirlatmaAyariniGuncelle: jest.fn((d: unknown) => ({ type: 'cuma/guncelle', payload: d })),
 }));
+// TEK RIZA (Dalga 3): onay ORTAK kayda yazılır.
+jest.mock('../../../store/hatirlatmaRizaSlice', () => ({
+    hatirlatmaRizalariniYukle: jest.fn(() => ({ type: 'riza/yukle' })),
+    hatirlatmaRizasiVer: jest.fn((d: unknown) => ({ type: 'riza/ver', payload: d })),
+}));
+const { hatirlatmaRizasiVer: rizaVerMock } = jest.requireMock('../../../store/hatirlatmaRizaSlice');
 const mockButceKutusu: { deger: unknown } = { deger: null };
 jest.mock('../../../hooks/useBildirimButcesi', () => {
     const gercek = jest.requireActual('../../../hooks/useBildirimButcesi');
@@ -130,7 +136,7 @@ describe('CumaHatirlatmaBolumu', () => {
             expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
         });
 
-        it('sesli İLK kez: CUMANIN rızası sorulur; onay rızayı adımla BİRLİKTE yazar', () => {
+        it('sesli İLK kez: rıza sorulur; onay ORTAK kayda (tek rıza), adım cumaya yazılır', () => {
             const ekran = ac(ACIK);
             fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             expect(guncelleMock).not.toHaveBeenCalled();
@@ -138,7 +144,8 @@ describe('CumaHatirlatmaBolumu', () => {
             fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
             expect(guncelleMock).toHaveBeenCalledTimes(1);
             const d = guncelleMock.mock.calls[0][0];
-            expect(d.sesliOnayi).toBe(true);
+            expect(d.sesliOnayi).toBeUndefined();
+            expect(rizaVerMock).toHaveBeenCalledWith({ sesliOnayi: true });
             expect(d.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
         });
 
@@ -170,7 +177,7 @@ describe('CumaHatirlatmaBolumu', () => {
             expect(d.adimlar[0].anonsMetni).toBe('{vakit} namazına {süre} dakika.');
         });
 
-        it('gerçek alarm İLK kez: cumanın kendi rızası; onay ANAHTARLA BİRLİKTE yazılır', async () => {
+        it('gerçek alarm İLK kez: rıza sorulur; onay ORTAK kayda, anahtar cumaya yazılır', async () => {
             const ekran = ac(ACIK);
             fireEvent.press(ekran.getByTestId('adim-gelismis'));
             fireEvent(ekran.getByTestId('adim-alarm-anahtari'), 'valueChange', true);
@@ -178,7 +185,8 @@ describe('CumaHatirlatmaBolumu', () => {
             fireEvent.press(ekran.getByLabelText('Alarmı açın'));
             await waitFor(() => expect(guncelleMock).toHaveBeenCalledTimes(1));
             const d = guncelleMock.mock.calls[0][0];
-            expect(d.alarmOnayi).toBe(true);
+            expect(d.alarmOnayi).toBeUndefined();
+            expect(rizaVerMock).toHaveBeenCalledWith({ alarmOnayi: true });
             expect(d.adimlar[0].kanallar).toEqual({ bildirim: true, alarm: true });
         });
     });
@@ -202,5 +210,27 @@ describe('CumaHatirlatmaBolumu', () => {
         expect(mockNavigate).toHaveBeenCalledWith('MuhafizAyarlari');
         ekran.unmount();
         expect(guncelleMock).not.toHaveBeenCalled();
+    });
+});
+
+describe('CumaHatirlatmaBolumu — TEK RIZA (Dalga 3)', () => {
+    it('başka bir hatırlatmada (muhafız) verilmiş sesli onay cumada da geçerlidir: modal ÇIKMAZ', () => {
+        (useAppDispatch as jest.Mock).mockReturnValue(jest.fn());
+        (useAppSelector as jest.Mock).mockImplementation((sec: (s: unknown) => unknown) =>
+            sec({
+                cumaHatirlatma: { ayarlar: ACIK },
+                muhafiz: { sesliOnayi: true },
+                konum: { koordinatlar: { lat: 41.0082, lng: 28.9784 } },
+            })
+        );
+        (useRenkler as jest.Mock).mockReturnValue(RENKLER);
+        const ekran = render(<CumaHatirlatmaBolumu />);
+        fireEvent.press(ekran.getByLabelText(/^Hatırlatma — düzenleyin/));
+        fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
+        expect(ekran.queryByText('Sesli anons açılsın mı?')).toBeNull();
+        ekran.unmount();
+        const d = guncelleMock.mock.calls.at(-1)[0];
+        expect(d.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
+        expect(rizaVerMock).not.toHaveBeenCalled();
     });
 });

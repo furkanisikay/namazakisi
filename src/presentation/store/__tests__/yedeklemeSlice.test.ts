@@ -111,6 +111,9 @@ jest.mock('../sadeGorunumSlice', () => ({
 jest.mock('../seferilikSlice', () => ({
   seferilikYukle: jest.fn(() => ({ type: 'seferilik/yukle' })),
 }));
+jest.mock('../hatirlatmaRizaSlice', () => ({
+  hatirlatmaRizalariniYukle: jest.fn(() => ({ type: 'hatirlatmaRiza/yukle' })),
+}));
 const mockNafileGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
 jest.mock('../../../domain/services/NafileHatirlatmaServisi', () => ({
   NafileHatirlatmaServisi: {
@@ -267,6 +270,15 @@ describe('yedeklemeSlice', () => {
       const { seferilikYukle } = jest.requireMock('../seferilikSlice');
       expect(seferilikYukle).toHaveBeenCalledWith({ zorla: true });
       expect(cagriSirasi).toContain('seferilik/yukle');
+    });
+
+    it('tek rıza kaydı (Dalga 3) ZORLA yeniden yüklenir', async () => {
+      const cagriSirasi: string[] = [];
+      (birlestirmePlaniOlustur as jest.Mock).mockReturnValue({ a: 1 });
+      await calistir(dispatchYap(cagriSirasi), getStateYap());
+      const { hatirlatmaRizalariniYukle } = jest.requireMock('../hatirlatmaRizaSlice');
+      expect(hatirlatmaRizalariniYukle).toHaveBeenCalledWith({ zorla: true });
+      expect(cagriSirasi).toContain('hatirlatmaRiza/yukle');
     });
 
     it('store tazeleme spec §10 sırasında: konum İLK, reconcile SIRALI ve seriVerileriniYukle SONRASI', async () => {

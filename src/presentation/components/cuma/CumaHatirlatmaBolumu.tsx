@@ -30,6 +30,7 @@ import { Anahtar } from '../common/Anahtar';
 import { HatirlatmaModulu, ekAdimIslemleri } from '../hatirlatma/HatirlatmaModulu';
 import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
 import type { AdimRizasi } from '../hatirlatma/AdimDetayModal';
+import { useGenelRiza } from '../../hooks/useGenelRiza';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
 import { useBildirimButcesi } from '../../hooks/useBildirimButcesi';
@@ -99,6 +100,7 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
     const koordinat = useAppSelector((s) => s.konum?.koordinatlar);
     const yetenekler = usePlatformYetenekleri();
     const ttsDestekli = useTurkceTtsDestegi();
+    const genelRiza = useGenelRiza();
 
     // ── Taslak + debounce'lu yazma ──
     const [taslak, setTaslak] = useState<CumaHatirlatmaAyarlari | null>(null);
@@ -205,9 +207,14 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
 
     /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
     const modulYaz = useCallback(
-        (yeni: CumaHatirlatmaAyarlari, riza: AdimRizasi): boolean =>
-            guncelle(yeni, riza, riza.sesliOnayi === true || riza.alarmOnayi === true),
-        [guncelle]
+        (yeni: CumaHatirlatmaAyarlari, riza: AdimRizasi): boolean => {
+            const rizaVar = riza.sesliOnayi === true || riza.alarmOnayi === true;
+            const yazildi = guncelle(yeni, {}, rizaVar);
+            // TEK RIZA (Dalga 3): onay yüzeyin kendi alanına değil ORTAK kayda yazılır.
+            if (yazildi && rizaVar) genelRiza.ver(riza);
+            return yazildi;
+        },
+        [guncelle, genelRiza]
     );
 
     return (
@@ -252,8 +259,8 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
                             yaz={modulYaz}
                             ttsDestekli={ttsDestekli}
                             // Rızalar cumanın KENDİ kaydı (muhafızınki taşınmaz).
-                            sesliOnayiVar={ayarlar.sesliOnayi === true}
-                            alarmOnayiVar={ayarlar.alarmOnayi === true}
+                            sesliOnayiVar={genelRiza.sesli}
+                            alarmOnayiVar={genelRiza.alarm}
                             sesliOnayMetinleri={{
                                 altBaslik: 'Cuma hatırlatmasında sesli okuma',
                                 kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',
