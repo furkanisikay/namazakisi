@@ -364,7 +364,7 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                 <View className="items-center py-8">
                                     <FontAwesome5 name="bell-slash" size={28} color={renkler.metinIkincil} />
                                     <Text className="text-sm text-center mt-3 leading-5" style={{ color: renkler.metinIkincil }}>
-                                        Bu vakit için etkinlik oluşturulmayacak.{'\n'}Ayarlamak için yukarıdan aç.
+                                        Bu vakit için etkinlik oluşturulmayacak.{'\n'}Ayarlamak için yukarıdan açın.
                                     </Text>
                                 </View>
                             )}
@@ -552,10 +552,10 @@ const TakvimAyarlariIcerik: React.FC = () => {
                         </View>
                         <View className="flex-1">
                             <Text className="text-base font-semibold" style={{ color: ayarlar.aktif ? '#FFF' : renkler.metin }}>
-                                Takvim Entegrasyonu
+                                Takvime aktarma
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: ayarlar.aktif ? 'rgba(255,255,255,0.75)' : renkler.metinIkincil }}>
-                                {ayarlar.aktif ? 'Aktif — etkinlikler oluşturulabilir' : 'Namaz vakitlerini takvime ekle'}
+                                {ayarlar.aktif ? 'Açık — etkinlikler oluşturulabilir' : 'Namaz vakitlerini takviminize ekleyin'}
                             </Text>
                         </View>
                         <Anahtar
@@ -654,7 +654,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                     VAKİT AYARLARI
                                 </Text>
                                 <Text className="text-xs mb-2" style={{ color: renkler.metinIkincil }}>
-                                    Ayarlamak için bir vakte dokun
+                                    Ayarlamak için bir vakte dokunun
                                 </Text>
                                 {VAKIT_SIRASI.map((vakit, idx) => (
                                     <VakitSatiri

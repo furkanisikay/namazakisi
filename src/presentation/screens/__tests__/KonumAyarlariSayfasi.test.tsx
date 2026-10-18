@@ -114,13 +114,13 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
 
   it('hatasız render olur', async () => {
     const { getByText } = SayfaYukle();
-    await waitFor(() => expect(getByText('Konum Ayarları')).toBeTruthy());
+    await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
   });
 
   it('takip başlatılamazsa "İzin Gerekli" onay modalı (Alert DEĞİL) gösterilir', async () => {
     servisMock.baslat.mockResolvedValue(false);
     const { getByText, UNSAFE_getByType } = SayfaYukle();
-    await waitFor(() => expect(getByText('Konum Ayarları')).toBeTruthy());
+    await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
 
     // Seyahatte otomatik güncelleme switch'ini AÇ
     fireEvent(UNSAFE_getByType(Switch), 'valueChange', true);
@@ -134,7 +134,7 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
   it('"Ayarlara Git"e basınca Linking.openSettings çağrılır', async () => {
     servisMock.baslat.mockResolvedValue(false);
     const { getByText, getByLabelText, UNSAFE_getByType } = SayfaYukle();
-    await waitFor(() => expect(getByText('Konum Ayarları')).toBeTruthy());
+    await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
 
     fireEvent(UNSAFE_getByType(Switch), 'valueChange', true);
     await waitFor(() => expect(getByText('Ayarlara Git')).toBeTruthy());
@@ -147,7 +147,7 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
     servisMock.baslat.mockRejectedValue(new Error('boom'));
     const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const { getByText, UNSAFE_getByType } = SayfaYukle();
-    await waitFor(() => expect(getByText('Konum Ayarları')).toBeTruthy());
+    await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
 
     fireEvent(UNSAFE_getByType(Switch), 'valueChange', true);
 
@@ -171,7 +171,7 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
 
       const { getByText } = SayfaYukle();
 
-      await waitFor(() => expect(getByText('Konum Ayarları')).toBeTruthy());
+      await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
     });
 
     it('çapalanan kontrol vurgu parametresiyle de görünür kalır', async () => {
@@ -241,7 +241,7 @@ describe('KonumAyarlariSayfasi — konum değişince bildir anahtarı', () => {
     jest.replaceProperty(Platform, 'OS', 'ios');
     const { queryByLabelText, getByText } = kur();
 
-    await waitFor(() => expect(getByText('Konum Ayarları')).toBeTruthy());
+    await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
     expect(queryByLabelText('Konum değişince bildir')).toBeNull();
   });
 });

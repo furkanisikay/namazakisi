@@ -137,12 +137,6 @@ const RamazanAyarlariIcerik: React.FC = () => {
               <FontAwesome5 name="moon" size={28} color={iftarRenk} solid />
             </View>
             <Text
-              className="text-lg font-bold mb-1"
-              style={{ color: iftarRenk }}
-            >
-              Ramazan Özel
-            </Text>
-            <Text
               className="text-xs text-center"
               style={{ color: renkler.metinIkincil }}
             >
@@ -189,7 +183,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   className="text-xs mt-0.5"
                   style={{ color: renkler.metinIkincil }}
                 >
-                  Bildirim menüsünde iftar vaktine geri sayım göster
+                  Bildirimlerde iftara kalan süreyi görürsünüz
                 </Text>
               </View>
               <Anahtar
@@ -270,7 +264,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   className="text-xs mt-0.5"
                   style={{ color: renkler.metinIkincil }}
                 >
-                  Bildirim menüsünde gece boyu sahur vaktine geri sayım göster
+                  Gece boyunca bildirimlerde sahura kalan süreyi görürsünüz
                 </Text>
               </View>
               <Anahtar
