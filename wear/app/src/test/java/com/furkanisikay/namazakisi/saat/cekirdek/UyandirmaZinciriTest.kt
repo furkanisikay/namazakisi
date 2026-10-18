@@ -57,4 +57,36 @@ class UyandirmaZinciriTest {
         assertEquals(plan, AlarmZinciri.siradaki(eski, emptySet(), imsak.ms - 1))
         assertFalse(UyandirmaZinciri.bastirilanlar(eski).isNotEmpty())
     }
+
+    /** NÖBETÇİ (inceleme bulgusu 1): erteleme yükten BAĞIMSIZ — yeni yük kaydı taşımasa da çalar. */
+    @Test
+    fun ertelenenKayitYuktenDusseDeCalar() {
+        val hedef = UyandirmaZinciri.erteleHedefi(teheccud, teheccud.ms)!!
+        val yeniYuk = yuk.copy(uyandirma = yuk.uyandirma.filter { it.id != teheccud.id })
+        val d = UyandirmaZinciri.Durum(
+            ertelenen = mapOf(teheccud.id to hedef),
+            calinan = mapOf(teheccud.id to teheccud.ms),
+            ertelenenKayitlar = mapOf(teheccud.id to teheccud),
+        )
+        assertEquals(hedef, UyandirmaZinciri.siradaki(yeniYuk, emptySet(), d, teheccud.ms + 1)!!.ms)
+        assertEquals(teheccud, UyandirmaZinciri.calacak(yeniYuk, emptySet(), d, hedef)!!.kayit)
+        // Yük hiç yokken bile.
+        assertEquals(teheccud, UyandirmaZinciri.calacak(null, emptySet(), d, hedef)!!.kayit)
+        // Kayıt saklı ama erteleme haritasında yoksa (kapandı) çalmaz.
+        assertNull(UyandirmaZinciri.calacak(yeniYuk, emptySet(), d.copy(ertelenen = emptyMap()), hedef))
+    }
+
+    /** NÖBETÇİ (inceleme bulgusu 8): teheccüd Kıldım o gecenin TÜM teheccüd uyandırmalarını kapsar. */
+    @Test
+    fun teheccudKildimGeceninTumunuKapsar() {
+        val tekrar = teheccud.copy(id = teheccud.id.substringBeforeLast('_') + "_5", ms = teheccud.ms + 10 * 60_000)
+        val baskaGece = teheccud.copy(id = "nafile_2099-01-01_teheccud_5", tarih = "2099-01-01")
+        val y = yuk.copy(uyandirma = yuk.uyandirma + tekrar + baskaGece)
+        val kapsam = UyandirmaZinciri.kildimKapsami(y, teheccud)
+        assertTrue(teheccud.id in kapsam && tekrar.id in kapsam)
+        assertFalse(baskaGece.id in kapsam)
+        assertFalse(imsak.id in kapsam)
+        // Sabah (farz) yalnız kendisi.
+        assertEquals(setOf(imsak.id), UyandirmaZinciri.kildimKapsami(y, imsak))
+    }
 }

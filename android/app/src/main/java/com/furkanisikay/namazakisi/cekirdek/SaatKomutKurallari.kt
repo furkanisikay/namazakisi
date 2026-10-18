@@ -20,6 +20,14 @@ object SaatKomutKurallari {
     const val UYANDIRMA_KAPANDI_YOLU = "/namazakisi/uyandirma/kapandi"
     const val CAMI_DURUM_YOLU = "/namazakisi/camidurum"
 
+    /**
+     * Telefon → saat (TEK YÖNLÜ mesaj, saat W3 / inceleme bulgusu 7): telefondaki uyandırma
+     * alarmı ("ikisi" ya da saatin yedeği) telefonda Kapat/Kıldım/Ertele ile susturulunca
+     * saatteki titreşim de durur — saatte kapatınca telefonun yedeğinin iptali ile simetrik.
+     * Gövde = kimlik (UTF-8).
+     */
+    const val TELEFONDA_KAPANDI_YOLU = "/namazakisi/uyandirma/telefondaKapandi"
+
     /** Bilekten açılan Namaz modu en fazla bu kadar sürer (vaktin sonu daha erkense o). */
     const val SAAT_MODU_AZAMI_MS = 30 * 60_000L
 
@@ -54,6 +62,14 @@ object SaatKomutKurallari {
         }
     }
 
+    /**
+     * Bilekten açılan modun KAPANIŞ anı (inceleme bulgusu 3): bu kaynağın plan zinciri ya da
+     * cami üst süresi gibi kendi zamanlaması yok → kapanış alarmı bitişten hemen sonraya
+     * kurulur (bitiş anında kaynak zaten geçersizdir; +1 sn saat sapmasına pay). Kapatma
+     * isteğinde alarm yok.
+     */
+    fun kapanisAlarmiMs(istek: ModIstegi): Long? = if (istek.ac) istek.bitisMs + 1_000L else null
+
     data class CamiCevabi(val cevap: String, val yerId: String)
 
     /** `{"cevap":"evet"|"hayir"|"camiDegil","yerId":…}` — yer kimliği ZORUNLU (bayat cevap ayıklansın). */
@@ -64,21 +80,81 @@ object SaatKomutKurallari {
         return CamiCevabi(cevap, yer)
     }
 
-    data class UyandirmaIstegi(val id: String, val islem: String) {
+    /**
+     * Saatte ertelenen/kapatılan uyandırmanın telefon yedeği (JS `uyandirmaTelefonMs` ile
+     * AYNI kural; sabitler JS `SAAT_YEDEK_GECIKMESI_DK` / `SAAT_YEDEK_SON_PAYI_MS` ile
+     * ortak fikstürde kilitli): ertelemeden sonra telefon daima YEDEKTİR.
+     */
+    const val YEDEK_GECIKMESI_MS = 3 * 60_000L
+    const val YEDEK_SON_PAYI_MS = 30_000L
+
+    /** `sonMs` yoksa (eski saat) kaydın ömrü — en uzun pencere (yatsı) bile buna sığar. */
+    const val VARSAYILAN_OMUR_MS = 12 * 60 * 60_000L
+
+    data class UyandirmaIstegi(val id: String, val islem: String, val hedefMs: Long? = null, val sonMs: Long? = null) {
         val nafile: Boolean get() = id.startsWith("nafile_")
+
+        /** Ertelenen uyandırmanın telefon yedeği; ertele değilse null. */
+        val yedekMs: Long?
+            get() = if (islem == "ertele" && hedefMs != null) {
+                minOf(hedefMs + YEDEK_GECIKMESI_MS, (sonMs ?: Long.MAX_VALUE) - YEDEK_SON_PAYI_MS)
+            } else {
+                null
+            }
     }
 
     /**
-     * `{"id":…,"islem":"kapat"|"ertele"|"kildim"}` — kimlik YALNIZ uyandırma kimliği olabilir
-     * (sabahın muhafız kimliği ya da teheccüd nafile kimliği): saat başka bir planı susturamaz.
+     * `{"id":…,"islem":"kapat"|"ertele"|"kildim","hedefMs"?,"sonMs"?}` — kimlik YALNIZ
+     * uyandırma kimliği olabilir (sabahın muhafız kimliği ya da teheccüd nafile kimliği):
+     * saat başka bir planı susturamaz. "ertele" saatin yeni anını (`hedefMs`) TAŞIMAK
+     * ZORUNDADIR — taşımazsa geçersizdir (telefon yedeği nereye kuracağını bilemez).
      */
     fun uyandirmaIstegi(json: String?): UyandirmaIstegi? {
         val o = nesne(json) ?: return null
         val islem = o.optString("islem").takeIf { it == "kapat" || it == "ertele" || it == "kildim" } ?: return null
         val id = o.optString("id")
-        val gecerli = Regex("""^muhafiz_\d{4}-\d{2}-\d{2}_vakit_imsak_seviye_[1-4]_dk_\d+$""").matches(id) ||
+        if (!uyandirmaKimligiMi(id)) return null
+        val hedef = o.optLong("hedefMs", 0L).takeIf { it > 0L }
+        val son = o.optLong("sonMs", 0L).takeIf { it > 0L }
+        if (islem == "ertele" && (hedef == null || (son != null && hedef >= son))) return null
+        return UyandirmaIstegi(id, islem, hedef, son)
+    }
+
+    /** Uyandırma olabilecek kimlik mi? (sabahın muhafız kimliği ya da teheccüd nafile kimliği) */
+    fun uyandirmaKimligiMi(id: String): Boolean =
+        Regex("""^muhafiz_\d{4}-\d{2}-\d{2}_vakit_imsak_seviye_[1-4]_dk_\d+$""").matches(id) ||
             Regex("""^nafile_\d{4}-\d{2}-\d{2}_teheccud_\d+$""").matches(id)
-        return if (gecerli) UyandirmaIstegi(id, islem) else null
+
+    /**
+     * Telefonun uyandırma CEVAP deposu (`SaatUyandirmaDeposu`, SharedPreferences) — SAF
+     * dönüşümler. Kayıt: kimlik → `{islem, hedefMs?, sonMs}`. JS planlama turu bunu okur
+     * (`saatUyandirmaDurumlariniCoz`): kapatılan yedek yeniden KURULMAZ, ertelenen saatin
+     * yeni anının ardına kurulur. Ömrü dolan (`sonMs` geçen) kayıt her yazım/okumada düşer.
+     * "kildim" de "kapat" olarak saklanır (yedek artık hiç çalmamalı).
+     */
+    fun depoyaYaz(mevcut: String?, istek: UyandirmaIstegi, simdiMs: Long): String {
+        val o = depoyuSuz(mevcut, simdiMs)
+        val kayit = JSONObject()
+            .put("islem", if (istek.islem == "ertele") "ertele" else "kapat")
+            .put("sonMs", istek.sonMs ?: (simdiMs + VARSAYILAN_OMUR_MS))
+        if (istek.islem == "ertele" && istek.hedefMs != null) kayit.put("hedefMs", istek.hedefMs)
+        o.put(istek.id, kayit)
+        return o.toString()
+    }
+
+    /** Depodan ömrü dolmamış, biçimi sağlam kayıtlar. */
+    fun depoyuSuz(ham: String?, simdiMs: Long): JSONObject {
+        val giris = nesne(ham) ?: return JSONObject()
+        val cikis = JSONObject()
+        giris.keys().forEach { id ->
+            val k = giris.optJSONObject(id) ?: return@forEach
+            val son = k.optLong("sonMs", 0L)
+            val islem = k.optString("islem")
+            if (son <= simdiMs || (islem != "kapat" && islem != "ertele")) return@forEach
+            if (islem == "ertele" && k.optLong("hedefMs", 0L) <= 0L) return@forEach
+            cikis.put(id, k)
+        }
+        return cikis
     }
 
     /** Cevap gövdesi: `{"sonuc":…}` (+ açıldıysa `bitisMs`). */

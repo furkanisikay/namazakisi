@@ -301,6 +301,39 @@ describe('saat W3 alanları (uyandirma, anonsYeri, kayıt anons) — eklemeli op
         }
     });
 
+    test('NÖBETÇİ (inceleme bulgusu 9): sınır uyandırma listesini ve anons metinlerini de ÖLÇER', () => {
+        const uyandirma = Array.from({ length: 6 }, (_, i) => ({
+            id: `muhafiz_${BUGUN}_vakit_imsak_seviye_2_dk_${25 + i}`,
+            ms: IMSAK_ONCESI + i * 60_000,
+            sonMs: IMSAK_ONCESI + 60 * 60_000,
+            tarih: BUGUN,
+            tur: 'imsak' as const,
+            baslik: 'Sabah · uyanın',
+            govde: 'x'.repeat(400),
+        }));
+        const temel = { koordinat: ISTANBUL, bugunIso: BUGUN, konumAdi: 'x', kilinanlar: {}, uyandirma };
+        const tam = wearYukuOlustur(temel);
+        const tamBayt = utf8BaytUzunlugu(JSON.stringify(tam));
+        // Muhafız planı olmasa da sınır uygulanır: en UZAK uyandırmalar düşer, en yakın kalır.
+        const kisa = wearYukuOlustur({ ...temel, baytSiniri: tamBayt - 500 });
+        expect(utf8BaytUzunlugu(JSON.stringify(kisa))).toBeLessThanOrEqual(tamBayt - 500);
+        expect(kisa.uyandirma!.length).toBeLessThan(uyandirma.length);
+        expect(kisa.uyandirma![0].id).toBe(uyandirma[0].id);
+        expect(wearYukuGecerliMi(kisa)).toBe(true);
+        // Muhafız planı varken önce plan düşer (anons metinleri dahil ölçülür), uyandırma korunur.
+        const planli = wearYukuOlustur({
+            ...temel,
+            muhafiz: { aktif: true, matris: yogunMatris(), simdiMs: IMSAK_ONCESI, kilinanlar: {} },
+            baytSiniri: tamBayt + 2_000,
+        });
+        expect(utf8BaytUzunlugu(JSON.stringify(planli))).toBeLessThanOrEqual(tamBayt + 2_000);
+        expect(planli.uyandirma).toHaveLength(uyandirma.length);
+        // Hiçbiri sığmazsa alan tümden düşer (vakitler yine gider).
+        const hic = wearYukuOlustur({ ...temel, baytSiniri: 100 });
+        expect('uyandirma' in hic).toBe(false);
+        expect(hic.gunler).toHaveLength(WEAR_GUN_SAYISI);
+    });
+
     test('alan verilmezse yükte HİÇ yer almaz (eski saat birebir)', () => {
         const y = wearYukuOlustur({ koordinat: ISTANBUL, bugunIso: BUGUN, konumAdi: 'x', kilinanlar: {} });
         expect('uyandirma' in y).toBe(false);

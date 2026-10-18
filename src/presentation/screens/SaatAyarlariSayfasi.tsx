@@ -35,7 +35,7 @@ const UYANDIRMA_SECENEKLERI: Secenek<UyandirmaYeri>[] = [
         deger: 'saat',
         ikon: 'clock',
         baslik: 'Saatte, sessizce',
-        aciklama: `Yalnız bileğiniz titrer, yanınızda uyuyan uyanmaz. Saatte kapatmazsanız telefonunuz ${SAAT_YEDEK_GECIKMESI_DK} dakika sonra yedek olarak çalar.`,
+        aciklama: `Yalnız bileğiniz titrer, yanınızda uyuyan uyanmaz. Saatte kapatmazsanız telefonunuz ${SAAT_YEDEK_GECIKMESI_DK} dakika sonra yedek olarak çalar. Saatinizde Namaz Akışı yoksa ya da güncel değilse telefonunuz her sabah ${SAAT_YEDEK_GECIKMESI_DK} dakika geç çalar.`,
     },
     {
         deger: 'ikisi',
@@ -56,7 +56,8 @@ const ANONS_SECENEKLERI: Secenek<AnonsYeri>[] = [
         deger: 'saat',
         ikon: 'clock',
         baslik: 'Yalnız saatte',
-        aciklama: 'Anonsu her zaman saatiniz okur, telefonunuz konuşmaz.',
+        aciklama:
+            'Anonsu her zaman saatiniz okur, telefonunuz konuşmaz. Saatiniz şarjdayken, telefonunuzla bağlantısı yokken ya da saatte Namaz Akışı yoksa anons hiç duyulmaz; bunu istemiyorsanız ilk seçeneği kullanın.',
     },
     {
         deger: 'telefon',
@@ -151,8 +152,9 @@ export const SaatAyarlariSayfasi: React.FC = () => {
                     )}
                 </AyarGrubu>
                 <Text className="text-xs leading-5 mx-4 -mt-4 mb-6" style={{ color: renkler.metinIkincil }}>
-                    Yalnız sesli anonsu açık hatırlatmalar okunur. İki cihaz aynı cümleyi birlikte okumaz. Saatinizde
-                    hoparlör ya da Türkçe ses yoksa saat yalnız titreşir.
+                    Yalnız sesli anonsu açık hatırlatmalar okunur. İki cihaz aynı cümleyi birlikte okumaz. Camideyken ya
+                    da Namaz modu açıkken saatiniz de konuşmaz. Saatinizde hoparlör ya da Türkçe ses yoksa saat yalnız
+                    titreşir.
                 </Text>
 
                 <AyarGrubu baslik="Bilekten yapabilecekleriniz">

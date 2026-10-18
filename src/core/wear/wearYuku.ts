@@ -220,27 +220,37 @@ export function wearYukuOlustur(g: WearYukGirdisi): WearYuku {
     };
     const konum = g.kibleKonumu ? wearKonumuOlustur(g.koordinat) : undefined;
     if (konum) taban.konum = konum;
-    if (!g.muhafiz) return taban;
-
-    const gruplar = wearMuhafizPlaniOlustur({ koordinat: g.koordinat, bugunIso: g.bugunIso, ...g.muhafiz });
+    const gruplar = g.muhafiz ? wearMuhafizPlaniOlustur({ koordinat: g.koordinat, bugunIso: g.bugunIso, ...g.muhafiz }) : [];
     return planiSigdir(taban, gruplar, g.baytSiniri ?? WEAR_YUK_BAYT_SINIRI);
 }
 
 /**
- * Planı bayt sınırına sığdırır: sığmıyorsa EN UZAKTAKİ vakit penceresi düşer
- * (kronolojik kesme — yakın uyarılar korunur, kısalan ufku sonraki gönderim
- * tamamlar). Hiçbir pencere sığmazsa plan boş gider; vakitler yine gider.
+ * Yükü bayt sınırına sığdırır. Ölçülen şey yükün TAMAMIDIR — muhafız kayıtlarının
+ * çözülmüş anons metinleri (`anons`) ve uyandırma listesi (saat W3) dahil (inceleme
+ * bulgusu 9). Sığmıyorsa önce EN UZAKTAKİ muhafız vakit penceresi düşer (kronolojik
+ * kesme — yakın uyarılar korunur, kısalan ufku sonraki gönderim tamamlar); plan tümden
+ * düştüğü hâlde sığmıyorsa en uzak UYANDIRMA kayıtları da düşer (uyandırma muhafızdan
+ * değerlidir: en son o gider). Vakitler daima gider.
  */
 export function planiSigdir(
     taban: WearYuku,
     gruplar: readonly WearMuhafizKaydi[][],
     baytSiniri: number
 ): WearYuku {
-    for (let n = gruplar.length; n >= 0; n--) {
+    const sigar = (y: WearYuku): boolean => utf8BaytUzunlugu(JSON.stringify(y)) <= baytSiniri;
+    for (let n = gruplar.length; n > 0; n--) {
         const aday: WearYuku = { ...taban, muhafiz: gruplar.slice(0, n).flat().sort((a, b) => a.ms - b.ms) };
-        if (n === 0 || utf8BaytUzunlugu(JSON.stringify(aday)) <= baytSiniri) return aday;
+        if (sigar(aday)) return aday;
     }
-    return taban;
+    const plansiz: WearYuku = { ...taban, muhafiz: [] };
+    if (!plansiz.uyandirma || sigar(plansiz)) return plansiz;
+    const uyandirma = [...plansiz.uyandirma].sort((a, b) => a.ms - b.ms);
+    for (let n = uyandirma.length - 1; n > 0; n--) {
+        const aday: WearYuku = { ...plansiz, uyandirma: uyandirma.slice(0, n) };
+        if (sigar(aday)) return aday;
+    }
+    const { uyandirma: _dusen, ...uyandirmasiz } = plansiz;
+    return uyandirmasiz;
 }
 
 const ANONS_YERLERI: readonly AnonsYeri[] = ['otomatik', 'telefon', 'saat'];

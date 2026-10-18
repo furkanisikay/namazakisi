@@ -86,6 +86,43 @@ describe('wearUyandirmaListesiOlustur', () => {
     });
 });
 
+describe('NÖBETÇİ (inceleme bulgusu 1) — kayıt pencere sonuna kadar taşınır, saatin cevabı uygulanır', () => {
+    const girdi = (simdiMs: number, uyandirmaDurumlari?: Parameters<typeof wearUyandirmaListesiOlustur>[0]['uyandirmaDurumlari']) =>
+        wearUyandirmaListesiOlustur({
+            koordinat: ISTANBUL,
+            bugunIso: BUGUN,
+            simdiMs,
+            uyandirmaDurumlari,
+            muhafiz: { aktif: true, matris: alarmliMatris(), kilinanlar: {} },
+        });
+    const ilk = girdi(IMSAK_ONCESI)[0];
+
+    it('tetik anı GEÇTİKTEN sonra gelen yük kaydı yine taşır (saat ertelemesini unutmasın)', () => {
+        const sonra = girdi(ilk.ms + 5 * 60_000);
+        expect(sonra.find((k) => k.id === ilk.id)?.ms).toBe(ilk.ms);
+        expect(girdi(ilk.sonMs + 1_000).some((k) => k.id === ilk.id)).toBe(false);
+    });
+
+    it('saatte kapatılan kayıt gönderilmez; ertelenen yeni anıyla gider', () => {
+        expect(girdi(ilk.ms + 60_000, { [ilk.id]: { islem: 'kapat' } }).some((k) => k.id === ilk.id)).toBe(false);
+        const hedef = ilk.ms + 10 * 60_000;
+        const ertelendi = girdi(ilk.ms + 60_000, { [ilk.id]: { islem: 'ertele', hedefMs: hedef } });
+        expect(ertelendi.find((k) => k.id === ilk.id)?.ms).toBe(hedef);
+    });
+
+    it('teheccüd: geçmiş tetik de pencere sonuna kadar taşınır', () => {
+        const ayar: NafileAyarlari = {
+            ...VARSAYILAN_NAFILE_AYARLARI,
+            teheccud: { ...VARSAYILAN_NAFILE_AYARLARI.teheccud, aktif: true, uyandirma: true },
+        };
+        const temel = { koordinat: ISTANBUL, bugunIso: BUGUN };
+        const once = wearUyandirmaListesiOlustur({ ...temel, simdiMs: bugunImsak.giris.getTime() + 3 * 60 * 60 * 1000, nafile: { ayarlar: ayar } });
+        const k = once[0];
+        const sonra = wearUyandirmaListesiOlustur({ ...temel, simdiMs: k.ms + 60_000, nafile: { ayarlar: ayar } });
+        expect(sonra.find((x) => x.id === k.id)?.ms).toBe(k.ms);
+    });
+});
+
 describe('saat ayarları ve kapılar', () => {
     it('normalize bozuk kaydı varsayılana düşürür (asla fırlatmaz)', () => {
         expect(saatAyarlariniNormalize(null)).toEqual(VARSAYILAN_SAAT_AYARLARI);

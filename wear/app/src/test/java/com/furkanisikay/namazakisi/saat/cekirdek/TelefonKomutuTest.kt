@@ -57,4 +57,33 @@ class TelefonKomutuTest {
         assertEquals("Bu yer bir daha cami sayılmaz", TelefonKomutu.camiMetni("camiDegil", "tamam"))
         assertEquals("Bu soru artık geçerli değil", TelefonKomutu.camiMetni("evet", "gecersiz"))
     }
+
+    /** Saatin uyandırma cevabı, telefonun okuduğu fikstürle birebir (ertelemede hedef + son taşınır). */
+    @Test
+    fun uyandirmaCevabiFiksturleAyni() {
+        val dizi = fikstur.getJSONArray("uyandirma")
+        for (i in 0 until dizi.length()) {
+            val o = dizi.getJSONObject(i)
+            val uretilen = JSONObject(
+                TelefonKomutu.uyandirmaKapandi(
+                    o.getString("id"),
+                    o.getString("islem"),
+                    o.getLong("sonMs"),
+                    if (o.has("hedefMs")) o.getLong("hedefMs") else null,
+                ),
+            )
+            val beklenen = JSONObject(o.toString()).apply { remove("yedekMs") }
+            assertTrue("#$i $uretilen", ayni(uretilen, beklenen))
+        }
+    }
+
+    /** NÖBETÇİ (inceleme bulgusu 7): telefonda susturulan uyandırma yolu iki tarafta aynı; yalnız uyandırma kimliği. */
+    @Test
+    fun telefondaKapandiYoluVeKimlikKapisi() {
+        assertEquals(fikstur.getString("telefondaKapandiYolu"), TelefonKomutu.TELEFONDA_KAPANDI_YOLU)
+        val dizi = fikstur.getJSONArray("uyandirma")
+        for (i in 0 until dizi.length()) assertTrue(UyandirmaZinciri.uyandirmaKimligiMi(dizi.getJSONObject(i).getString("id")))
+        assertTrue(!UyandirmaZinciri.uyandirmaKimligiMi("muhafiz_2026-10-12_vakit_ogle_seviye_2_dk_25"))
+        assertTrue(!UyandirmaZinciri.uyandirmaKimligiMi("nafile_2026-10-12_kusluk_45"))
+    }
 }

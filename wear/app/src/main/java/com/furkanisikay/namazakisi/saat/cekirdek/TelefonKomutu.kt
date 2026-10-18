@@ -13,6 +13,8 @@ import org.json.JSONObject
  * telefondaki native depodur (`CamiDepo`, `NamazModu`), saat kopya tutmaz.
  */
 object TelefonKomutu {
+    /** Telefon → saat: telefonda susturulan uyandırma (telefon `SaatKomutKurallari.TELEFONDA_KAPANDI_YOLU`). */
+    const val TELEFONDA_KAPANDI_YOLU = "/namazakisi/uyandirma/telefondaKapandi"
     const val NAMAZ_MODU_YOLU = "/namazakisi/namazmodu"
     const val CAMI_CEVAP_YOLU = "/namazakisi/cami/cevap"
     const val UYANDIRMA_KAPANDI_YOLU = "/namazakisi/uyandirma/kapandi"
@@ -44,7 +46,15 @@ object TelefonKomutu {
 
     fun camiCevap(cevap: String, yerId: String): String = JSONObject().put("cevap", cevap).put("yerId", yerId).toString()
 
-    fun uyandirmaKapandi(id: String, islem: String): String = JSONObject().put("id", id).put("islem", islem).toString()
+    /**
+     * Uyandırma cevabı (telefon `SaatKomutKurallari.uyandirmaIstegi`). `sonMs` daima, `hedefMs`
+     * yalnız ertelemede: telefon yedeğini SİLMEZ, `hedefMs + 3 dk`'ya taşır ve cevabı pencere
+     * sonuna kadar saklar (JS planlama turu yedeği yeniden kurmasın / eski anına çekmesin).
+     */
+    fun uyandirmaKapandi(id: String, islem: String, sonMs: Long, hedefMs: Long? = null): String =
+        JSONObject().put("id", id).put("islem", islem).put("sonMs", sonMs)
+            .apply { if (hedefMs != null) put("hedefMs", hedefMs) }
+            .toString()
 
     data class Sonuc(val sonuc: String, val bitisMs: Long? = null)
 

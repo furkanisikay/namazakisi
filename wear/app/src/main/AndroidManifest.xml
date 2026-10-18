@@ -93,6 +93,11 @@
                 <!-- Saat W3: Camideyim / Namaz modu gösterimi (telefon SaatDurumu). -->
                 <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/camidurum" />
             </intent-filter>
+            <!-- Saat W3: telefonda susturulan uyandırma bilekte de dursun (TelefonKomutu.TELEFONDA_KAPANDI_YOLU). -->
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/uyandirma/telefondaKapandi" />
+            </intent-filter>
         </service>
 
         <receiver android:name=".hatirlatma.MuhafizAlarmAlicisi" android:exported="false" />

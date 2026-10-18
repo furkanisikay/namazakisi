@@ -70,7 +70,7 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         // iOS gerçek alarm (AlarmKit, #74): teslimci de aynı durumu `hazirla`da okur.
         guvenli('alarmkit', () => alarmKitDurumu()),
         // Saat iş bölümü (saat W3): muhafız/nafile servisleriyle AYNI kayıt.
-        guvenli('saat', () => LocalSaatAyarlariServisi.oku()),
+        guvenli('saat', () => LocalSaatAyarlariServisi.teslimBaglaminiOku()),
     ]);
     // Takvim çakışması (issue #291): yalnız AÇIKKEN takvim okunur; servisle AYNI
     // okuyucu + süzgeç. İzin yoksa servis de hiçbir şey kurmaz → null.

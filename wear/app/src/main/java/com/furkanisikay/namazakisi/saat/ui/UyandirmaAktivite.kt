@@ -24,6 +24,7 @@ import androidx.wear.compose.material3.Text
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.UyandirmaZinciri
 import com.furkanisikay.namazakisi.saat.hatirlatma.UyandirmaAlicisi
+import com.furkanisikay.namazakisi.saat.hatirlatma.UyandirmaDeposu
 import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 
 /**
@@ -39,7 +40,10 @@ class UyandirmaAktivite : ComponentActivity() {
         setShowWhenLocked(true)
         setTurnScreenOn(true)
         val id = intent.getStringExtra(UyandirmaAlicisi.ID)
-        val kayit = YukDeposu(this).yuk()?.uyandirma?.firstOrNull { it.id == id }
+        val yuk = YukDeposu(this).yuk()
+        // Ertelenen kayıt yeni yükte olmayabilir → saklanan kopyadan (inceleme bulgusu 1).
+        val kayit = yuk?.uyandirma?.firstOrNull { it.id == id }
+            ?: id?.let { UyandirmaDeposu(this).durum(yuk).ertelenenKayitlar[it] }
         if (id == null || kayit == null) {
             finish()
             return

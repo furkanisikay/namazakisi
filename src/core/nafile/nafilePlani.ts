@@ -26,7 +26,7 @@ import { alarmPayinaSigdir, ekAlarmKurarMi, ekAnonsAlarmiKurarMi } from '../hati
 import { adimAnonsMetni } from '../hatirlatma/anonsYerTutucu';
 import { teheccudPenceresiniUygula, type NafilePencere } from './nafileVakitleri';
 import { nafileAnonsMetni, nafileBildirimMetni } from './nafileMetinleri';
-import { SAAT_YEDEK_GECIKMESI_DK, telefonYedegiGecikirMi, type SaatAyarlari } from '../saat/saatAyarlari';
+import { saatUyandiriyorMu, uyandirmaTelefonMs, type SaatTeslimBaglami } from '../saat/saatAyarlari';
 import { nafileUyandirmasiMi } from '../saat/uyandirmaKapisi';
 import {
     NAFILE_ADLARI,
@@ -78,9 +78,18 @@ export interface NafilePlanSecenekleri {
     kilindiMi?: (gunIso: string, tur: NafileTuru) => boolean;
     /**
      * Saat iş bölümü (saat W3). Uyandırma "saatte" ise teheccüd uyandırması telefonda
-     * YEDEKTİR ve `SAAT_YEDEK_GECIKMESI_DK` sonra çalar. Servis ve defter aynı değeri geçer.
+     * YEDEKTİR ve `SAAT_YEDEK_GECIKMESI_DK` sonra çalar; saatte kapatılan/ertelenen
+     * uyandırmanın cevabı (`uyandirmaDurumlari`) da buradan gelir. Servis ve defter aynı
+     * değeri geçer.
      */
-    saat?: SaatAyarlari;
+    saat?: SaatTeslimBaglami;
+    /**
+     * Geçmiş tetikleri de pencerenin SONUNA kadar tut (saat yükünün uyandırma listesi):
+     * saat ertelemeyi ve geç gelen yükü kendisi değerlendirir; telefon kaydı tetik anı
+     * geçti diye düşürseydi yeniden gönderilen yük saatin ertelemesini unuttururdu.
+     * Servis ve defter bunu VERMEZ (geçmiş tetik kurulmaz).
+     */
+    pencereSonunaKadarTut?: boolean;
 }
 
 /** Ayarın plan ufku — tek kaynak (servis ve defter bunu kullanır). */
@@ -126,15 +135,6 @@ export interface PencereTetigi {
     uyari: UyariPlani;
     /** Adımın ilk tetiği mi (tekrar değil)? Nass yalnız ilk tetikte. */
     ilk: boolean;
-}
-
-/**
- * Saat W3 yedeği: uyandırma saatteyken telefonun tetiği birkaç dakika SONRA çalar
- * (kimlik değişmez); pencere sonunu geçmez.
- */
-function yedekZamani(zaman: Date, son: Date, kaydir: boolean): Date {
-    if (!kaydir) return zaman;
-    return new Date(Math.min(zaman.getTime() + SAAT_YEDEK_GECIKMESI_DK * DK, son.getTime() - 30 * 1000));
 }
 
 /** Pencere uzunluğu (dk) — motorun dakika tamsayısı. */
@@ -190,7 +190,8 @@ export function nafilePlaniOlustur(
 ): NafileBildirimPlani[] {
     const { gunduzGunSayisi, teheccudGeceSayisi, alarmButcesi } = secenekler;
     const kilindiMi = secenekler.kilindiMi ?? (() => false);
-    const yedekGecikir = telefonYedegiGecikirMi(secenekler.saat);
+    const saat = secenekler.saat;
+    const saatUyandirir = !!saat && saatUyandiriyorMu(saat);
     const planlar: NafileBildirimPlani[] = [];
 
     // Dün (gece yarısı sonrası teheccüd) → bugün + teheccudGeceSayisi - 1
@@ -216,7 +217,19 @@ export function nafilePlaniOlustur(
             const uyandirma = teheccud?.uyandirma === true;
 
             for (const t of nafilePencereTetikleri(ayar, p)) {
-                if (t.zaman.getTime() <= simdi.getTime()) continue;
+                const id = `${nafileKimlikOneki(iso, p.tur)}${t.uyari.kalanDk}`;
+                // Saat W3 — teheccüd uyandırması: telefonun anı TEK kuraldan (saatte
+                // kapatıldıysa kurulmaz, ertelendiyse saatin yeni anının ardına, "saat"
+                // seçiliyse yedek). Geçmiş süzgeci KAYDIRILMIŞ ana uygulanır: özgün an
+                // geçmişken yedeği gelecekte olan tetik bir planlama turunda silinmesin.
+                const zamanMs =
+                    saatUyandirir && nafileUyandirmasiMi({ tur: p.tur, uyandirma, uyari: t.uyari })
+                        ? uyandirmaTelefonMs(saat, id, t.zaman.getTime(), p.bitis.getTime())
+                        : t.zaman.getTime();
+                if (zamanMs === null) continue;
+                if (secenekler.pencereSonunaKadarTut ? p.bitis.getTime() <= simdi.getTime() : zamanMs <= simdi.getTime()) {
+                    continue;
+                }
                 const girdi = {
                     tur: p.tur,
                     son: p.bitis,
@@ -227,10 +240,10 @@ export function nafilePlaniOlustur(
                     uyandirma,
                 };
                 planlar.push({
-                    id: `${nafileKimlikOneki(iso, p.tur)}${t.uyari.kalanDk}`,
+                    id,
                     tur: p.tur,
                     tarih: iso,
-                    zaman: yedekZamani(t.zaman, p.bitis, yedekGecikir && nafileUyandirmasiMi({ tur: p.tur, uyandirma, uyari: t.uyari })),
+                    zaman: new Date(zamanMs),
                     ...nafileBildirimMetni(girdi),
                     uyandirma,
                     yon: ayar.yon,

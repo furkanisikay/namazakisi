@@ -11,6 +11,15 @@
     { "istek": { "islem": "kapat" }, "kapat": true },
     { "istek": { "islem": "sil" }, "gecersiz": true }
   ],
+  "telefondaKapandiYolu": "/namazakisi/uyandirma/telefondaKapandi",
+  "yedekGecikmesiDk": 3,
+  "yedekSonPayiMs": 30000,
+  "uyandirma": [
+    { "id": "muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25", "islem": "ertele", "hedefMs": 1791800600000, "sonMs": 1791801500000, "yedekMs": 1791800780000 },
+    { "id": "muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25", "islem": "ertele", "hedefMs": 1791801400000, "sonMs": 1791801500000, "yedekMs": 1791801470000 },
+    { "id": "nafile_2026-10-12_teheccud_120", "islem": "kildim", "sonMs": 1791810000000 },
+    { "id": "muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25", "islem": "kapat", "sonMs": 1791801500000 }
+  ],
   "durum": {
     "camide": { "yerId": "osm:n123", "ad": "Fatih Camii", "bitisMs": 1791805000000 },
     "soru": null,

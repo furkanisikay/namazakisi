@@ -83,6 +83,15 @@ class WearSenkronModulu(reactContext: ReactApplicationContext) : ReactContextBas
         SaatDurumu.gonder(reactApplicationContext) { promise.resolve(null) }
     }
 
+    /**
+     * Saatte uyandırmaya verilen cevaplar (saat W3; `SaatUyandirmaDeposu`). JS planlama turu
+     * okur: kapatılan yedek yeniden kurulmaz, ertelenen saatin yeni anının ardına kurulur.
+     */
+    @ReactMethod
+    fun saatUyandirmaDurumlari(promise: Promise) {
+        promise.resolve(SaatUyandirmaDeposu.oku(reactApplicationContext))
+    }
+
     @ReactMethod
     fun bekleyenleriAl(promise: Promise) {
         promise.resolve(KildimKuyrugu.tumu(reactApplicationContext))

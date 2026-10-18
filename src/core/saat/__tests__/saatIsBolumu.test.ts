@@ -11,7 +11,17 @@ import type { MuhafizMatrisi } from '../../muhafiz/matrisTipleri';
 import { nafilePlaniOlustur } from '../../nafile/nafilePlani';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../nafile/nafileTipleri';
 import { bildirimDefteriOlustur } from '../../bildirim/bildirimDefteri';
-import { SAAT_YEDEK_GECIKMESI_DK, VARSAYILAN_SAAT_AYARLARI, type SaatAyarlari } from '../saatAyarlari';
+import {
+    SAAT_YEDEK_GECIKMESI_DK,
+    SAAT_YEDEK_SON_PAYI_MS,
+    VARSAYILAN_SAAT_AYARLARI,
+    saatUyandirmaDurumlariniCoz,
+    uyandirmaTelefonMs,
+    type SaatAyarlari,
+    type SaatTeslimBaglami,
+} from '../saatAyarlari';
+import * as fs from 'fs';
+import * as path from 'path';
 import { tarihiISOFormatinaCevir } from '../../utils/TarihYardimcisi';
 
 const ISTANBUL = { lat: 41.0082, lng: 28.9784 };
@@ -100,7 +110,9 @@ describe('nafile üreticisi — teheccüd uyandırması yedeği', () => {
         ...VARSAYILAN_NAFILE_AYARLARI,
         teheccud: { ...VARSAYILAN_NAFILE_AYARLARI.teheccud, aktif: true, uyandirma: true },
     };
+    // Öğlen: teheccüd tetiği "şimdi"nin 3 dk gerisinde olamaz (kayan pencere testi oynamasın).
     const an = new Date();
+    an.setHours(12, 0, 0, 0);
     const bugun = tarihiISOFormatinaCevir(an);
 
     it('saatte: teheccüd tetikleri +3 dk (kimlik aynı); varsayılanda birebir', () => {
@@ -116,6 +128,120 @@ describe('nafile üreticisi — teheccüd uyandırması yedeği', () => {
         for (const [i, p] of ham.entries()) {
             expect(kayik[i].zaman.getTime() - p.zaman.getTime()).toBe(SAAT_YEDEK_GECIKMESI_DK * DK);
             expect(kayik[i].zaman.getTime()).toBeLessThan(p.son.getTime());
+        }
+    });
+});
+
+describe('uyandirmaTelefonMs — telefonun uyandırma anı TEK kural', () => {
+    const T = 1_000_000_000_000;
+    const SON = T + 60 * DK;
+    it('saat uyandırmıyorsa özgün an (cevaplar yok sayılır)', () => {
+        const b: SaatTeslimBaglami = { ...VARSAYILAN_SAAT_AYARLARI, uyandirmaDurumlari: { x: { islem: 'kapat' } } };
+        expect(uyandirmaTelefonMs(b, 'x', T, SON)).toBe(T);
+        expect(uyandirmaTelefonMs(undefined, 'x', T, SON)).toBe(T);
+    });
+    it('saatte: +gecikme, pencere sonundan pay kadar önceyle sınırlı', () => {
+        expect(uyandirmaTelefonMs(SAATTE, 'x', T, SON)).toBe(T + SAAT_YEDEK_GECIKMESI_DK * DK);
+        expect(uyandirmaTelefonMs(SAATTE, 'x', T, T + DK)).toBe(T + DK - SAAT_YEDEK_SON_PAYI_MS);
+    });
+    it('ikisi: özgün an; saatte ertelenince telefon yine YEDEK olur', () => {
+        const ikisi: SaatTeslimBaglami = { uyandirmaYeri: 'ikisi', anonsYeri: 'otomatik' };
+        expect(uyandirmaTelefonMs(ikisi, 'x', T, SON)).toBe(T);
+        const ertelendi = { ...ikisi, uyandirmaDurumlari: { x: { islem: 'ertele' as const, hedefMs: T + 10 * DK } } };
+        expect(uyandirmaTelefonMs(ertelendi, 'x', T, SON)).toBe(T + (10 + SAAT_YEDEK_GECIKMESI_DK) * DK);
+    });
+    it('saatte kapatılan kurulmaz; başka kimliğe dokunmaz', () => {
+        const b: SaatTeslimBaglami = { ...SAATTE, uyandirmaDurumlari: { x: { islem: 'kapat' } } };
+        expect(uyandirmaTelefonMs(b, 'x', T, SON)).toBeNull();
+        expect(uyandirmaTelefonMs(b, 'y', T, SON)).toBe(T + SAAT_YEDEK_GECIKMESI_DK * DK);
+    });
+    it('native deponun bozuk öğeleri atlanır', () => {
+        expect(
+            saatUyandirmaDurumlariniCoz({
+                a: { islem: 'kapat' },
+                b: { islem: 'ertele', hedefMs: 5 },
+                c: { islem: 'ertele' },
+                d: 'x',
+                e: { islem: 'baska' },
+            })
+        ).toEqual({ a: { islem: 'kapat' }, b: { islem: 'ertele', hedefMs: 5 } });
+        expect(saatUyandirmaDurumlariniCoz(null)).toEqual({});
+        expect(saatUyandirmaDurumlariniCoz([1])).toEqual({});
+    });
+});
+
+describe('NÖBETÇİ (inceleme bulgusu 1-2) — planlama turu telefonun yedeğini SİLMEZ', () => {
+    const taslak = simdi();
+    const imsak = muhafizVakitleriniHesapla(ISTANBUL, taslak).find((v) => v.vakit === 'imsak')!;
+    const tamPlan = vakitTeslimAdaylari(matris(), imsak, taslak);
+    const alarm = tamPlan.find((a) => a.uyari.alarm === true)!;
+    const T = alarm.zaman.getTime();
+
+    it('[T, T+3 dk) içindeki tur: yedek T+3 dk anında hâlâ kurulu (varsayılanda zaten çalmış)', () => {
+        for (const ofset of [1_000, 1 * DK, 2 * DK + 30_000]) {
+            const an = new Date(T + ofset);
+            const plan = vakitTeslimAdaylari(matris(), imsak, an, SAATTE);
+            const yedek = plan.find((a) => a.id === alarm.id);
+            expect(yedek?.zaman.getTime()).toBe(T + SAAT_YEDEK_GECIKMESI_DK * DK);
+            expect(vakitTeslimAdaylari(matris(), imsak, an).some((a) => a.id === alarm.id)).toBe(false);
+        }
+    });
+
+    it('saatte KAPATILDI: tur yedeği yeniden kurmaz', () => {
+        const b: SaatTeslimBaglami = { ...SAATTE, uyandirmaDurumlari: { [alarm.id]: { islem: 'kapat' } } };
+        expect(vakitTeslimAdaylari(matris(), imsak, new Date(T + DK), b).some((a) => a.id === alarm.id)).toBe(false);
+    });
+
+    it('saatte ERTELENDİ: tur yedeği saatin yeni anının ardına kurar (özgün an çoktan geçmiş olsa da)', () => {
+        const hedef = T + 12 * DK;
+        const b: SaatTeslimBaglami = { ...SAATTE, uyandirmaDurumlari: { [alarm.id]: { islem: 'ertele', hedefMs: hedef } } };
+        const yedek = vakitTeslimAdaylari(matris(), imsak, new Date(T + 8 * DK), b).find((a) => a.id === alarm.id);
+        expect(yedek?.zaman.getTime()).toBe(hedef + SAAT_YEDEK_GECIKMESI_DK * DK);
+    });
+
+    it('geçmiş diğer tetikler kayan taramada da kurulmaz (yalnız yedek geri gelir)', () => {
+        const an = new Date(T + DK);
+        const ids = vakitTeslimAdaylari(matris(), imsak, an, SAATTE).map((a) => a.id);
+        const gelecek = tamPlan.filter((a) => a.zaman.getTime() > an.getTime() || a.id === alarm.id).map((a) => a.id);
+        expect(ids.sort()).toEqual(gelecek.sort());
+    });
+
+    it('nafile: teheccüd yedeği [T, T+3 dk) içinde silinmez; kapatılan/ertelenen kuralı aynı', () => {
+        const ayar: NafileAyarlari = {
+            ...VARSAYILAN_NAFILE_AYARLARI,
+            teheccud: { ...VARSAYILAN_NAFILE_AYARLARI.teheccud, aktif: true, uyandirma: true },
+        };
+        const oglen = new Date();
+        oglen.setHours(12, 0, 0, 0);
+        const bugun = tarihiISOFormatinaCevir(oglen);
+        const sec = (saat?: SaatTeslimBaglami) => ({ gunduzGunSayisi: 1, teheccudGeceSayisi: 1, saat });
+        const ilk = nafilePlaniOlustur(ISTANBUL, ayar, oglen, bugun, () => false, sec()).find((p) => p.tur === 'teheccud')!;
+        const t = ilk.zaman.getTime();
+        const an = new Date(t + DK);
+        const plan = nafilePlaniOlustur(ISTANBUL, ayar, an, bugun, () => false, sec(SAATTE));
+        expect(plan.find((p) => p.id === ilk.id)?.zaman.getTime()).toBe(t + SAAT_YEDEK_GECIKMESI_DK * DK);
+        const kapali = nafilePlaniOlustur(ISTANBUL, ayar, an, bugun, () => false, sec({ ...SAATTE, uyandirmaDurumlari: { [ilk.id]: { islem: 'kapat' } } }));
+        expect(kapali.some((p) => p.id === ilk.id)).toBe(false);
+        const ertele = nafilePlaniOlustur(ISTANBUL, ayar, new Date(t + 9 * DK), bugun, () => false, sec({ ...SAATTE, uyandirmaDurumlari: { [ilk.id]: { islem: 'ertele', hedefMs: t + 10 * DK } } }));
+        expect(ertele.find((p) => p.id === ilk.id)?.zaman.getTime()).toBe(t + (10 + SAAT_YEDEK_GECIKMESI_DK) * DK);
+    });
+});
+
+describe('SÖZLEŞME — telefon native deposuyla aynı yedek kuralı (saat-komut-ornekleri.json)', () => {
+    const fikstur = JSON.parse(
+        fs.readFileSync(path.join(__dirname, '../../../../wear/app/src/test/resources/saat-komut-ornekleri.json'), 'utf8')
+    ) as {
+        yedekGecikmesiDk: number;
+        yedekSonPayiMs: number;
+        uyandirma: { id: string; islem: string; hedefMs?: number; sonMs: number; yedekMs?: number }[];
+    };
+
+    it('sabitler ve ertelenen yedeğin anı Kotlin SaatKomutKurallari ile birebir', () => {
+        expect(fikstur.yedekGecikmesiDk).toBe(SAAT_YEDEK_GECIKMESI_DK);
+        expect(fikstur.yedekSonPayiMs).toBe(SAAT_YEDEK_SON_PAYI_MS);
+        for (const u of fikstur.uyandirma.filter((x) => x.islem === 'ertele')) {
+            const b: SaatTeslimBaglami = { ...SAATTE, uyandirmaDurumlari: { [u.id]: { islem: 'ertele', hedefMs: u.hedefMs! } } };
+            expect(uyandirmaTelefonMs(b, u.id, 0, u.sonMs)).toBe(u.yedekMs);
         }
     });
 });

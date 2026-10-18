@@ -263,7 +263,7 @@ export class NafileHatirlatmaServisi {
         const ozelGundeMi = await ozelGunSuzgeciniOku();
         const kilinan = await LocalNafileServisi.getKilinanlar();
         // Saat iş bölümü (saat W3): uyandırma saatteyse teheccüd uyandırması telefonda yedek.
-        const saat = await LocalSaatAyarlariServisi.oku();
+        const saat = await LocalSaatAyarlariServisi.teslimBaglaminiOku();
 
         const simdi = new Date();
         const secenekler = {

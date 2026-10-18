@@ -42,7 +42,7 @@ import { bekleyenErtelemeleriOku, ertelemeDinleyicisiEkle } from './muhafizErtel
 import { saatKoprusu } from '../../../modules/expo-siri-kisayollari/src';
 import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
-import { saatUyandiriyorMu } from '../../core/saat/saatAyarlari';
+import { saatUyandiriyorMu, type SaatTeslimBaglami } from '../../core/saat/saatAyarlari';
 import { wearUyandirmaListesiOlustur, type WearUyandirmaKaydi } from '../../core/wear/wearUyandirma';
 
 interface WearSenkronModulu {
@@ -157,11 +157,11 @@ export class WearSenkronServisi {
             }
 
             // Saat iş bölümü (saat W3): uyandırma listesi ve anons yeri (yalnız Wear OS).
-            const saat = wear ? await LocalSaatAyarlariServisi.oku() : null;
+            const saat = wear ? await LocalSaatAyarlariServisi.teslimBaglaminiOku() : null;
             const muhafiz = wear ? await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar) : undefined;
             const uyandirma =
                 saat && saatUyandiriyorMu(saat)
-                    ? await this.uyandirmaListesiniHazirla(konum.koordinat, bugun, muhafiz)
+                    ? await this.uyandirmaListesiniHazirla(konum.koordinat, bugun, muhafiz, saat.uyandirmaDurumlari)
                     : undefined;
             const json = JSON.stringify(
                 wearYukuOlustur({
@@ -238,7 +238,8 @@ export class WearSenkronServisi {
     private async uyandirmaListesiniHazirla(
         koordinat: { lat: number; lng: number },
         bugun: string,
-        muhafiz: WearYukGirdisi['muhafiz']
+        muhafiz: WearYukGirdisi['muhafiz'],
+        uyandirmaDurumlari: SaatTeslimBaglami['uyandirmaDurumlari']
     ): Promise<WearUyandirmaKaydi[] | undefined> {
         try {
             const [nafileAyarlari, nafileKilinan] = await Promise.all([
@@ -249,6 +250,7 @@ export class WearSenkronServisi {
                 koordinat,
                 bugunIso: bugun,
                 simdiMs: Date.now(),
+                uyandirmaDurumlari,
                 muhafiz,
                 nafile: {
                     ayarlar: nafileAyarlari,

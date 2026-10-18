@@ -38,7 +38,7 @@ import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
 import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
 import { alarmErtelemeleriniOku } from './muhafizErtelemeDurumu';
 import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
-import type { SaatAyarlari } from '../../core/saat/saatAyarlari';
+import type { SaatTeslimBaglami } from '../../core/saat/saatAyarlari';
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -69,7 +69,7 @@ export class ArkaplanMuhafizServisi {
     /** Bildirim kategorileri bu süreçte kaydedildi mi (L7 — düğmesiz bildirim olmasın). */
     private kategorilerKayitli = false;
     /** Bu turun saat iş bölümü ayarı (saat W3) — üreticiye geçer (defterle parite). */
-    private saatAyarlari: SaatAyarlari | undefined;
+    private saatAyarlari: SaatTeslimBaglami | undefined;
 
     private constructor() { }
 
@@ -186,7 +186,7 @@ export class ArkaplanMuhafizServisi {
         const ozelGundeMi = await ozelGunSuzgeciniOku();
         // Saat iş bölümü (saat W3): sabah uyandırması saatteyse telefonda yedek, anons
         // "yalnız saatte" ise telefon TTS planlamaz. Okuyucu asla fırlatmaz.
-        this.saatAyarlari = await LocalSaatAyarlariServisi.oku();
+        this.saatAyarlari = await LocalSaatAyarlariServisi.teslimBaglaminiOku();
 
         const planGirdisi = {
             matris: this.ayarlar.matris,

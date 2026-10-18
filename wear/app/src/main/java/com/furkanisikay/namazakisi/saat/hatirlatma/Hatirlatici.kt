@@ -15,6 +15,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.AnonsKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.PlanKaydi
 import com.furkanisikay.namazakisi.saat.cekirdek.UyandirmaZinciri
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
+import com.furkanisikay.namazakisi.saat.telefon.CamiDurumDeposu
 import com.furkanisikay.namazakisi.saat.telefon.TelefonIstemcisi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -193,15 +194,21 @@ class MuhafizAlarmAlicisi : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val metin = Hatirlatici.tetiklendi(context)?.anons ?: return
         val yer = YukDeposu(context).yuk()?.anonsYeri
-        val sorulmali = AnonsKarari.telefonSorulmaliMi(yer, metin)
-        // Konuşma ihtimali yoksa (telefon seçili / eski telefon) hiç bekletme.
-        if (!sorulmali && !AnonsKarari.saatKonusurMu(yer, metin, yakindaTelefon = false, hoparlor = true)) return
+        // Camideyken / Namaz modu açıkken saat de susar (telefondaki camide kapısının ikizi).
+        val sessiz = try {
+            AnonsKarari.sessizMi(CamiDurumDeposu(context).durum(), System.currentTimeMillis())
+        } catch (_: Exception) {
+            false
+        }
+        val sorulmali = AnonsKarari.telefonSorulmaliMi(yer, metin, sessiz)
+        // Konuşma ihtimali yoksa (telefon seçili / eski telefon / camide) hiç bekletme.
+        if (!sorulmali && !AnonsKarari.saatKonusurMu(yer, metin, yakindaTelefon = false, hoparlor = true, sessiz = sessiz)) return
         val app = context.applicationContext
         val sonuc = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
                 val yakinda = sorulmali && TelefonIstemcisi.yakindaTelefonVarMi(app)
-                if (AnonsKarari.saatKonusurMu(yer, metin, yakinda, SaatAnonsu.hoparlorVarMi(app))) {
+                if (AnonsKarari.saatKonusurMu(yer, metin, yakinda, SaatAnonsu.hoparlorVarMi(app), sessiz)) {
                     suspendCancellableCoroutine { devam -> SaatAnonsu.konus(app, metin) { if (devam.isActive) devam.resume(Unit) } }
                 }
             } catch (e: Exception) {

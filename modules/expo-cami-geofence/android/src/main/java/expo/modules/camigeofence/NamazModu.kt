@@ -48,6 +48,10 @@ object NamazModu {
     private const val ONCEKI_FILTRE = "onceki_filtre"
     private const val AZAMI_KAPATILAN = 30
 
+    /** Plan dışı kaynağın (saat W3: bilekten açılan mod) KAPANIŞ alarmı — `NamazModuAlicisi`. */
+    const val ACTION_SURE = "expo.modules.camigeofence.MOD_SURE"
+    private const val SURE_ISTEK_KODU = 7331
+
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(DOSYA, Context.MODE_PRIVATE)
     private fun nm(ctx: Context) = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -200,6 +204,17 @@ object NamazModu {
         // denemesi başarısız olmuş olabilir) yeniden kapatmayı dene.
         if (k.length() == 0 && prefs(ctx).getBoolean(BIZ_ACTIK, false)) sistemeUygula(ctx, false)
     }
+
+    /**
+     * Bitişini kendi zamanlaması OLMAYAN bir kaynak (saat W3: bilekten açılan mod) için
+     * tek kapanış alarmı (inceleme bulgusu 3). Plan kaynağının kapanışını plan zinciri,
+     * caminin üst süresini `CamiDurumu` kurar; saatinkini kimse kurmuyordu → mod bitişte
+     * değil ancak bir sonraki yoklamada (15 dk görevi, açılış) kapanıyordu. Alarm
+     * `suresiGecenleriTemizle`'yi koşar (son kaynak düşünce sistem modu kapanır). Tek
+     * istek kodu: yeniden kurmak öncekinin yerine geçer.
+     */
+    fun kapanisAlarmiKur(ctx: Context, zamanMs: Long) =
+        PlanliAlarm.kur(ctx, zamanMs, PlanliAlarm.pendingIntent(ctx, NamazModuAlicisi::class.java, ACTION_SURE, SURE_ISTEK_KODU))
 
     @Synchronized
     fun aktifMi(ctx: Context): Boolean {

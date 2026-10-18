@@ -10,6 +10,7 @@ import com.furkanisikay.namazakisi.kildim.BildirimErteleIsleyici
 import com.furkanisikay.namazakisi.kildim.BildirimKildimIsleyici
 import com.furkanisikay.namazakisi.kildim.KildimKuyrugu
 import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
+import com.furkanisikay.namazakisi.wear.SaatUyandirmaHaberi
 import expo.modules.notifications.service.delegates.ExpoSchedulingDelegate
 
 /**
@@ -31,6 +32,13 @@ object MuhafizAlarmEylemleri {
         // Her eylemde ilk iş sesi kesmek: bildirim kalkınca insistent ses durur.
         MuhafizAlarmBildirimi.kaldir(context, yuk.kimlik)
         MuhafizAlarmAlici.susturmayiIptalEt(context, yuk.kimlik)
+        // Saat W3: bu bir uyandırmaysa saatteki titreşim de dursun (saatte kapatınca
+        // telefon yedeğinin iptaliyle simetrik). Uyandırma değilse hiçbir şey yapmaz.
+        try {
+            SaatUyandirmaHaberi.telefondaKapandi(context, yuk.kimlik)
+        } catch (e: Exception) {
+            Log.w(TAG, "Saate haber verilemedi", e)
+        }
         when (eylem) {
             MuhafizAlarmAlici.EYLEM_KILDIM -> kildim(context, yuk)
             MuhafizAlarmAlici.EYLEM_ERTELE -> ertele(context, yuk)

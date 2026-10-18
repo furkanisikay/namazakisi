@@ -22,10 +22,10 @@ import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from './penc
 import { pencereUzunluguDkHesapla } from './pencereUzunlugu';
 import { muhafizBildirimIdOlustur } from './anonsKimligi';
 import {
-    SAAT_YEDEK_GECIKMESI_DK,
+    saatUyandiriyorMu,
     telefonAnonsuKonusurMu,
-    telefonYedegiGecikirMi,
-    type SaatAyarlari,
+    uyandirmaTelefonMs,
+    type SaatTeslimBaglami,
 } from '../saat/saatAyarlari';
 import { muhafizUyandirmasiMi } from '../saat/uyandirmaKapisi';
 
@@ -176,7 +176,7 @@ export interface MuhafizPlanGirdisi {
      * Saat iş bölümü (saat W3). Verilmezse bugünkü davranış: telefon uyandırır ve konuşur.
      * Servis ve bildirim defteri AYNI değeri geçer (parite) — bkz. `vakitTeslimAdaylari`.
      */
-    saat?: SaatAyarlari;
+    saat?: SaatTeslimBaglami;
     vakitler: MuhafizVakitZamani[];
     simdi: Date;
     /** Vaktin kendi gününe göre kılınmış mı? (`kilinanVakitleriAl` ile beslenir) */
@@ -200,7 +200,7 @@ export function vakitTeslimAdaylari(
     matris: MuhafizMatrisi,
     vakit: MuhafizVakitZamani,
     simdi: Date,
-    saat?: SaatAyarlari
+    saat?: SaatTeslimBaglami
 ): MuhafizTeslimAdayi[] {
     const cikisMs = vakit.cikis.getTime();
     if (cikisMs <= simdi.getTime()) return [];
@@ -221,23 +221,32 @@ export function vakitTeslimAdaylari(
 
     const adaylar: MuhafizTeslimAdayi[] = [];
     const anonsKonusur = telefonAnonsuKonusurMu(saat);
-    const yedekGecikir = telefonYedegiGecikirMi(saat);
-    for (const ham of vakitUyariPlaniOlustur(vakitAyari, suankiOlcu, { pencereUzunluguDk })) {
-        let zaman = new Date(cikisMs - ham.kalanDk * 60 * 1000);
-        // Geçmişe düşen (dakika yuvarlaması) atlanır.
-        if (zaman.getTime() <= simdi.getTime()) continue;
+    // Saat W3: uyandırma saatteyse telefonun yedeği özgün andan SONRA çalar (ya da saatte
+    // ertelendiyse çok daha sonra). Motor taramayı "şu anki ölçü"den başlatır → özgün anı
+    // geçmişte kalmış ama yedeği hâlâ gelecekte olan tetik HİÇ üretilmezdi ve [T, T+3 dk)
+    // içindeki bir planlama turu yedeği sessizce silerdi. Bu yüzden saat uyandırırken
+    // pencerenin TAMAMI taranır ve geçmiş süzgeci KAYDIRILMIŞ ana uygulanır. Varsayılan
+    // yol (saat kapalı) birebir eskisi: tarama başlangıcı ve süzgeç değişmez.
+    const saatUyandirir = !!saat && saatUyandiriyorMu(saat);
+    const tarama = saatUyandirir ? (yon === 'girisindenItibaren' ? 1 : Number.MAX_SAFE_INTEGER) : suankiOlcu;
+    for (const ham of vakitUyariPlaniOlustur(vakitAyari, tarama, { pencereUzunluguDk })) {
+        const ozgunMs = cikisMs - ham.kalanDk * 60 * 1000;
+        const id = muhafizBildirimIdOlustur(vakit.vakit, ham.seviye, vakit.tarih, ham.kalanDk);
+        // Saat W3 — uyandırma: telefonun anı TEK kuraldan (`uyandirmaTelefonMs`): saatte
+        // kapatıldıysa kurulmaz, ertelendiyse saatin yeni anının ardına, "saat" seçiliyse
+        // birkaç dakika sonraya YEDEK. Kimlik DEĞİŞMEZ (kalanDk'dan türer).
+        const zamanMs =
+            saatUyandirir && muhafizUyandirmasiMi(vakit.vakit, ham)
+                ? uyandirmaTelefonMs(saat, id, ozgunMs, cikisMs)
+                : ozgunMs;
+        // Geçmişe düşen (dakika yuvarlaması) atlanır — kaydırılmış ana göre.
+        if (zamanMs === null || zamanMs <= simdi.getTime()) continue;
         // Saat W3 — anons "yalnız saatte": telefon TTS planlamaz (çift konuşma yok).
         // Bayrak burada kapanır ki teslimci, ön plan ve defter AYNI cevabı görsün.
         const uyari = anonsKonusur || !ham.sesliAnons ? ham : { ...ham, sesliAnons: false };
-        // Saat W3 — uyandırma "saatte": sabahın gerçek alarmı telefonda YEDEKTİR, birkaç
-        // dakika SONRA çalar (saatte kapatılınca kimlikle iptal edilir). Kimlik DEĞİŞMEZ
-        // (kalanDk'dan türer); vakit çıkışını geçmez (çıkıştan sonra alarm zaten çalmaz).
-        if (yedekGecikir && muhafizUyandirmasiMi(vakit.vakit, ham)) {
-            zaman = new Date(Math.min(zaman.getTime() + SAAT_YEDEK_GECIKMESI_DK * 60 * 1000, cikisMs - 30 * 1000));
-        }
         adaylar.push({
-            id: muhafizBildirimIdOlustur(vakit.vakit, uyari.seviye, vakit.tarih, uyari.kalanDk),
-            zaman,
+            id,
+            zaman: new Date(zamanMs),
             uyari,
             vakit,
             muhafizVakti,

@@ -145,6 +145,23 @@ object AnonsZamanlayici {
         return gelecek.size
     }
 
+    /**
+     * Kayıtlı bir anonsu AYNI kimlik ve AYNI metinle yeni ana taşır (saat W3: saatte
+     * ertelenen uyandırmanın telefon yedeği). Metin kendi kaydından okunur — çağıranın
+     * metni bilmesine gerek yok. Kayıt yoksa ya da yeni an geçmişse hiçbir şey yapmaz.
+     * @return taşındıysa true
+     */
+    fun yenidenZamanla(context: Context, id: String, yeniTetikMs: Long): Boolean = synchronized(kilit) {
+        val metin = try {
+            detayOku(context).optJSONObject(id)?.optString("m", "").orEmpty()
+        } catch (_: Exception) {
+            ""
+        }
+        if (metin.isBlank() || yeniTetikMs <= System.currentTimeMillis()) return@synchronized false
+        planla(context, id, yeniTetikMs, metin)
+        detayOku(context).optJSONObject(id)?.optLong("t", 0L) == yeniTetikMs
+    }
+
     fun iptal(context: Context, id: String) {
         synchronized(kilit) {
             if (id.isEmpty()) return

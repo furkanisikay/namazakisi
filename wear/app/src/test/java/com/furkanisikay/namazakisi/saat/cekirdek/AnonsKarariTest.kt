@@ -28,4 +28,21 @@ class AnonsKarariTest {
         assertFalse(AnonsKarari.telefonSorulmaliMi(AnonsYerleri.SAAT, metin))
         assertTrue(AnonsKarari.telefonSorulmaliMi(AnonsYerleri.OTOMATIK, metin))
     }
+
+    /** NÖBETÇİ (inceleme bulgusu 4): camideyken / Namaz modu açıkken saat konuşmaz. */
+    @Test
+    fun camidekenYaDaModAcikkenKonusmaz() {
+        val simdi = 1_000_000L
+        val camide = TelefonKomutu.CamiDurumu(TelefonKomutu.CamiDurumu.Yer("osm:n1", "Fatih Camii", simdi + 60_000), null, null)
+        val mod = TelefonKomutu.CamiDurumu(null, null, simdi + 60_000)
+        val soru = TelefonKomutu.CamiDurumu(null, TelefonKomutu.CamiDurumu.Yer("osm:n1", "Fatih Camii", simdi + 60_000), null)
+        assertTrue(AnonsKarari.sessizMi(camide, simdi))
+        assertTrue(AnonsKarari.sessizMi(mod, simdi))
+        // Yalnız soru (henüz camide değil) ve süresi geçmiş durum susturmaz.
+        assertFalse(AnonsKarari.sessizMi(soru, simdi))
+        assertFalse(AnonsKarari.sessizMi(mod, simdi + 60_000))
+        assertFalse(AnonsKarari.sessizMi(null, simdi))
+        assertFalse(AnonsKarari.saatKonusurMu(AnonsYerleri.SAAT, metin, yakindaTelefon = false, hoparlor = true, sessiz = true))
+        assertFalse(AnonsKarari.telefonSorulmaliMi(AnonsYerleri.OTOMATIK, metin, sessiz = true))
+    }
 }

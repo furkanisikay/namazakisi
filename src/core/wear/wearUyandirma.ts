@@ -10,12 +10,18 @@
  *
  * Kimlik telefondakiyle AYNIDIR: saat "kapattım" dediğinde telefon yedeğini bu kimlikle
  * iptal eder. Zaman ise ÖZGÜN andır (telefonun yedeği +3 dk kaydırılmış olsa da).
+ *
+ * Kayıtlar tetik anı geçince DÜŞMEZ, pencere sonuna (`sonMs`) kadar taşınır: saat geç
+ * tetiği tolerans kuralıyla zaten çalmaz, ama yük ertelemeden sonra yeniden gelirse
+ * kaydın kaybolması saatin ertelemesini unutturuyordu. Saatin cevabı (telefonun native
+ * deposu, `uyandirmaDurumlari`) da uygulanır: kapatılan gönderilmez, ertelenen yeni anıyla.
  */
 import type { VakitAdi } from '../types';
 import type { NafileKoordinat } from '../nafile/gunVakitleri';
 import type { NafileAyarlari, NafileTuru } from '../nafile/nafileTipleri';
 import { nafilePlaniOlustur } from '../nafile/nafilePlani';
 import type { MuhafizMatrisi } from '../muhafiz/matrisTipleri';
+import type { SaatUyandirmaDurumu } from '../saat/saatAyarlari';
 import { muhafizUyandirmasiMi, nafileUyandirmasiMi } from '../saat/uyandirmaKapisi';
 import { ertelemeSusturuyorMu } from '../muhafiz/erteleme';
 import { WEAR_PLAN_UFKU_MS, pencereninUyarilari, vakitPencereleriniOlustur } from './wearMuhafizPlani';
@@ -41,6 +47,8 @@ export interface WearUyandirmaGirdisi {
     bugunIso: string;
     simdiMs: number;
     ufukMs?: number;
+    /** Saatte verilmiş cevaplar (telefonun native deposu): kapatılan atlanır, ertelenen yeni anıyla. */
+    uyandirmaDurumlari?: Readonly<Record<string, SaatUyandirmaDurumu>>;
     muhafiz?: {
         aktif: boolean;
         matris: MuhafizMatrisi;
@@ -61,6 +69,12 @@ export function wearUyandirmaListesiOlustur(g: WearUyandirmaGirdisi): WearUyandi
     const ufukMs = g.ufukMs ?? WEAR_PLAN_UFKU_MS;
     const ufuk = g.simdiMs + ufukMs;
     const liste: WearUyandirmaKaydi[] = [];
+    /** Saatin cevabını uygula: kapatıldıysa null, ertelendiyse yeni an. */
+    const an = (id: string, ms: number): number | null => {
+        const d = g.uyandirmaDurumlari?.[id];
+        if (d?.islem === 'kapat') return null;
+        return d?.islem === 'ertele' ? d.hedefMs : ms;
+    };
 
     const m = g.muhafiz;
     if (m?.aktif) {
@@ -70,11 +84,13 @@ export function wearUyandirmaListesiOlustur(g: WearUyandirmaGirdisi): WearUyandi
             if (p.cikis.getTime() <= g.simdiMs || p.giris.getTime() >= ufuk) continue;
             if ((m.kilinanlar[p.tarih] ?? []).includes('imsak') || m.ozelGundeMi?.(p.tarih)) continue;
             for (const { kayit, uyari } of pencereninUyarilari(p, m.matris)) {
-                if (!muhafizUyandirmasiMi('imsak', uyari) || kayit.ms <= g.simdiMs) continue;
-                if (ertelemeSusturuyorMu(m.ertelemeler, kayit.tarih, kayit.vakit, kayit.ms)) continue;
+                if (!muhafizUyandirmasiMi('imsak', uyari)) continue;
+                const ms = an(kayit.id, kayit.ms);
+                if (ms === null || ms >= p.cikis.getTime()) continue;
+                if (ertelemeSusturuyorMu(m.ertelemeler, kayit.tarih, kayit.vakit, ms)) continue;
                 liste.push({
                     id: kayit.id,
-                    ms: kayit.ms,
+                    ms,
                     sonMs: p.cikis.getTime(),
                     tarih: kayit.tarih,
                     tur: 'imsak',
@@ -94,13 +110,15 @@ export function wearUyandirmaListesiOlustur(g: WearUyandirmaGirdisi): WearUyandi
             new Date(g.simdiMs),
             g.bugunIso,
             n.ozelGundeMi ?? (() => false),
-            { gunduzGunSayisi: 0, teheccudGeceSayisi: 2, kilindiMi: n.kilindiMi }
+            { gunduzGunSayisi: 0, teheccudGeceSayisi: 2, kilindiMi: n.kilindiMi, pencereSonunaKadarTut: true }
         );
         for (const p of planlar) {
             if (!nafileUyandirmasiMi(p) || p.zaman.getTime() >= ufuk) continue;
+            const ms = an(p.id, p.zaman.getTime());
+            if (ms === null || ms >= p.son.getTime()) continue;
             liste.push({
                 id: p.id,
-                ms: p.zaman.getTime(),
+                ms,
                 sonMs: p.son.getTime(),
                 tarih: p.tarih,
                 tur: 'teheccud',
