@@ -5,6 +5,34 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.42.0] - 2026-10-18
+
+### Eklendi
+- [arayuz] ortak bileşenler ve hareket kitaplığı (sade tasarım, Dalga 1)
+- [cihaz] cihaz durum katmanı ve küçük native köprüler
+
+### Düzeltildi
+- [izin] konum izni durum satırı açıklama adımından geçer; bildirim izni Android 12 ve öncesinde sistem ayarını açar
+- [arayuz] geri al bandı modal içinden çağrılabilir (yerel host yığını), Android'de tek duyuru
+- [izin] izin akışı ayrılınca bekleme zamanlayıcısı temizlenir, sistem diyaloğu açılmaz
+- [cihaz] Samsung, Türkçe ses ve iCloud hesabı okunamazsa bilinmiyor (null) — yanlış uyarı/gizleme yok
+- [kible] öne gelişte konum izni istenmez, yalnız okunur (izin penceresi döngüsü)
+- [kible] pusula doğruluğu kararlı olmadan çizilmez; açılıştaki 0 okumaları ipucunu yakıp söndürmez
+- [camideyim] sessiz gelsin açıklaması her zaman görünür ve ek hatırlatmaları da kapsar
+- [cihaz] iOS Türkçe ses satırında sürüme göre değişen tam menü yolu yazılmaz
+- [namaz-modu] üreticiye göre değişen menü adları yerine genel Rahatsız Etmeyin/mod ifadesi
+- [alarm] AlarmKit desteklenmiyor/bilinmiyor iken sürüm iddiasız ve alarm ekranı vaatsiz metin
+- [arayuz] geri al bandı hareket ayarı değişince takılmaz; cihaz alanları zorunlu
+- [metin] "sen" dili, tekrarlanan başlıklar ve ölü süre etiketleri
+- [kurulum] sihirbaz mevcut bildirim ve konum iznini okur
+- [metin] Camideyim sessiz notu ve eşitleme engelleri önceden
+- [ses] Türkçe ses indirme tek dokunuş, teheccüd alarm ses düzeyi ölçülür
+- [kible] konum izni tek dokunuşla, kalibrasyon ipucu pusula doğruluğuna bağlı
+- [metin] Namaz modu, otomasyon, bileklik ve takvim metinleri cihaza göre
+- [canli] canlı sayaç metinleri cihazı ölçerek konuşur
+- [alarm] sürüm ve izne göre doğru alarm/anons metinleri
+- [neler-yeni] gerçek alarmı desteklemeyen iPhone'a alarm vaat etme
+
 ## [0.41.3] - 2026-10-18
 
 ### Düzeltildi
