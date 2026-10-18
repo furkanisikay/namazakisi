@@ -1,5 +1,4 @@
 import {
-  CANLI_GUNCELLEME_BILGI_METNI,
   canliGuncellemeyeUygunMu,
   iftarCanliYukuOlustur,
   ilerlemeBolumleriOlustur,
@@ -23,10 +22,6 @@ describe('canliGuncelleme — hangi sayaç öne çıkar', () => {
     expect(canliGuncellemeyeUygunMu('iftar')).toBe(true);
     expect(canliGuncellemeyeUygunMu('sahur')).toBe(true);
     expect(canliGuncellemeyeUygunMu('seri')).toBe(false);
-  });
-
-  test('bilgi satırı kibar ve Android 16+ der', () => {
-    expect(CANLI_GUNCELLEME_BILGI_METNI).toBe("Android 16+ cihazlarda sayaç durum çubuğunda ve Now Bar'da görünür.");
   });
 });
 

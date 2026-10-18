@@ -26,6 +26,10 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
   canliDurumu: () => mockCanliDurumu(),
   canliAyarlariniAc: () => mockCanliAyarlariniAc(),
 }));
+const mockCihaz: { surum: unknown; samsung: boolean | null; esliSaat: string | null } = { surum: null, samsung: null, esliSaat: null };
+jest.mock('../../hooks/useCihazDurumu', () => ({
+  useCihazDurumu: () => ({ durum: mockCihaz, yenile: jest.fn() }),
+}));
 const mockNowBarDegistiUygula = jest.fn();
 jest.mock('../../../domain/services/NowBarDegisikligiServisi', () => ({
   nowBarDegistiUygula: () => mockNowBarDegistiUygula(),
@@ -65,6 +69,9 @@ describe('NowBarAyarlariSayfasi', () => {
     mockCanliDurumu.mockResolvedValue('acik');
     mockCanliAyarlariniAc.mockResolvedValue('canli');
     mockNowBarDegistiUygula.mockResolvedValue(undefined);
+    mockCihaz.surum = { platform: 'android', ana: 36, alt: 0, tam: '16' };
+    mockCihaz.samsung = null;
+    mockCihaz.esliSaat = null;
   });
 
   it('politika satırı her durumda görünür; başlık gövdede tekrarlanmaz', async () => {
@@ -85,10 +92,27 @@ describe('NowBarAyarlariSayfasi', () => {
     await waitFor(() => expect(mockCanliAyarlariniAc).toHaveBeenCalled());
   });
 
-  it('Android 16 öncesinde açıklayıcı bilgi gösterilir', async () => {
+  it('Android 16 öncesinde GERÇEK sürümle söylenir; Wear cümlesi yalnız bağlı saat varken', async () => {
+    mockCanliDurumu.mockResolvedValue('desteklenmiyor');
+    mockCihaz.surum = { platform: 'android', ana: 34, alt: 0, tam: '14' };
+    const ekran = await kur();
+    expect(ekran.getByText('Bu telefonda canlı sayaç yok')).toBeTruthy();
+    expect(ekran.getByText(/bu telefon Android 14/)).toBeTruthy();
+    expect(ekran.queryByText(/Wear OS/)).toBeNull();
+    expect(ekran.queryByLabelText('Sistem ayarlarını açın')).toBeNull();
+  });
+
+  it('Android 16+ cihazda "desteklenmiyor" (geçici hata) → sürüm cümlesi YOK (sus)', async () => {
     mockCanliDurumu.mockResolvedValue('desteklenmiyor');
     const ekran = await kur();
-    expect(ekran.getByText('Android 16 ve üstünde çalışır')).toBeTruthy();
+    expect(ekran.queryByText(/Android 16 ile gelir/)).toBeNull();
+    expect(ekran.queryByText('Bu telefonda canlı sayaç yok')).toBeNull();
+  });
+
+  it('"Now Bar" adı yalnız Samsung cihazda geçer', async () => {
+    const ekran = await kur();
+    expect(ekran.queryByText(/Now Bar'da görünür/)).toBeNull();
+    expect(ekran.getByText(/zamanı gelince durum çubuğunda görünür/)).toBeTruthy();
   });
 
   it('her vakit ayrı açılır/kapanır; seri varsayılan kapalı ve ayrıntısı gizli', async () => {

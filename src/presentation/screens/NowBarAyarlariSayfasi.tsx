@@ -30,6 +30,8 @@ import {
   NOW_BAR_SON_DK_ADIM,
   NOW_BAR_SON_DK_MAX,
   NOW_BAR_SON_DK_MIN,
+  NOW_BAR_VAKITLERI,
+  vakitSayacGereksinimNotu,
   type NowBarOgeAyari,
   type NowBarOgesi,
 } from '../../core/sayac/nowBar';
@@ -39,6 +41,11 @@ import {
   type CanliDurum,
 } from '../../../modules/expo-countdown-notification/src';
 import { canliEtkinlikIzniAcik } from '../../../modules/expo-siri-kisayollari/src';
+import { useCihazDurumu } from '../hooks/useCihazDurumu';
+import { canliYuzeyAdi, type CihazDurumu } from '../../core/cihaz/durumNotlari';
+import { androidApiEnAz } from '../../core/cihaz/surum';
+import { muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
+import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import {
   IOS_CANLI_AZAMI_SURE_MS,
   iosBaslangicSecenekleri,
@@ -80,28 +87,40 @@ function useCanliDurum(): [CanliDurum | null, () => void] {
   return [durum, oku];
 }
 
-const DURUM_METINLERI: Record<CanliDurum, { baslik: string; aciklama: string; ikon: string }> = {
-  acik: {
-    baslik: 'Canlı güncellemeler açık',
-    aciklama: 'Açtığınız öğeler zamanı gelince durum çubuğunda ve Now Bar\'da görünür.',
-    ikon: 'check-circle',
-  },
-  kapali: {
-    baslik: 'Canlı güncellemeler kapalı',
-    aciklama:
-      'Telefonunuzun ayarlarında bu uygulama için canlı güncellemeler kapalı. Sayaçlar sıradan bildirim olarak görünür.',
-    ikon: 'pause-circle',
-  },
-  desteklenmiyor: {
-    baslik: 'Android 16 ve üstünde çalışır',
-    aciklama:
-      'Bu telefonda sayaçlar sıradan bildirim olarak görünür. Wear OS saatiniz yine buradaki seçiminizi kullanır.',
+type DurumMetni = { baslik: string; aciklama: string; ikon: string };
+
+/** Android canlı güncelleme Android 16 (API 36) ile geldi. */
+const CANLI_API = 36;
+
+/**
+ * Android durum kartının metni — ÖLÇEREK (sade tasarım). "Now Bar" adı yalnız Samsung'da
+ * geçer; "Android 16 ve üstünde çalışır" yalnız sürüm GERÇEKTEN eskiyse (gerçek sürümle)
+ * söylenir; API 36+ cihazda `desteklenmiyor` geçici hata/eski ikili demektir → kart
+ * satırı yok (`null`). Wear OS cümlesi yalnız bağlı bir saat varken.
+ */
+export function androidDurumMetni(durum: CanliDurum, cihaz: Pick<CihazDurumu, 'surum' | 'samsung' | 'esliSaat'>): DurumMetni | null {
+  const yuzey = canliYuzeyAdi(cihaz.samsung);
+  if (durum === 'acik') {
+    return { baslik: 'Canlı güncellemeler açık', aciklama: `Açtığınız öğeler zamanı gelince ${yuzey} görünür.`, ikon: 'check-circle' };
+  }
+  if (durum === 'kapali') {
+    return {
+      baslik: 'Canlı güncellemeler kapalı',
+      aciklama: 'Telefonunuzun ayarlarında bu uygulama için canlı güncellemeler kapalı. Sayaçlar sıradan bildirim olarak görünür.',
+      ikon: 'pause-circle',
+    };
+  }
+  if (androidApiEnAz(cihaz.surum, CANLI_API) !== false) return null;
+  const saat = cihaz.esliSaat === 'esli' ? ' Wear OS saatiniz yine buradaki seçiminizi kullanır.' : '';
+  return {
+    baslik: 'Bu telefonda canlı sayaç yok',
+    aciklama: `Canlı sayaçlar Android 16 ile gelir; bu telefon Android ${cihaz.surum?.tam ?? ''}. Sayaçlar sıradan bildirim olarak görünür.${saat}`,
     ikon: 'info-circle',
-  },
-};
+  };
+}
 
 /** iOS (#295): canlı etkinlik metinleri (iPhone'da "Now Bar" yoktur). */
-const IOS_DURUM_METINLERI: Record<CanliDurum, { baslik: string; aciklama: string; ikon: string }> = {
+const IOS_DURUM_METINLERI: Partial<Record<CanliDurum, DurumMetni>> = {
   acik: {
     baslik: 'Canlı etkinlikler açık',
     aciklama: 'Açtığınız öğeler zamanı gelince kilit ekranında ve Dinamik Ada\'da görünür.',
@@ -112,11 +131,7 @@ const IOS_DURUM_METINLERI: Record<CanliDurum, { baslik: string; aciklama: string
     aciklama: 'iPhone ayarlarında bu uygulama için canlı etkinlikler kapalı. Açmak için ayarları kullanabilirsiniz.',
     ikon: 'pause-circle',
   },
-  desteklenmiyor: {
-    baslik: 'Bu iPhone\'da kullanılamıyor',
-    aciklama: 'Canlı etkinlikler iOS 16.2 ve üstünde çalışır.',
-    ikon: 'info-circle',
-  },
+  // `desteklenmiyor` iPhone'da "bilinmiyor" demektir (dağıtım hedefi zaten iOS 16.4): SUS.
 };
 
 /** iOS'ta zamanlanmış başlatma yoktur (#295) — ekran bunu açıkça söyler (sessiz sapma yok). */
@@ -128,11 +143,17 @@ export const IOS_CANLI_SINIR_NOTU = `Canlı etkinlik yalnız uygulama açıkken 
 
 const iosMu = (): boolean => Platform.OS === 'ios';
 
+const CIHAZ_ALANLARI = ['samsung', 'esliSaat'] as const;
+
 export const NowBarAyarlariSayfasi: React.FC = () => {
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
   const { ayarlar, yuklendi } = useAppSelector((s) => s.nowBar);
   const [durum, durumuOku] = useCanliDurum();
+  const { durum: cihaz } = useCihazDurumu(CIHAZ_ALANLARI, !iosMu());
+  // Vakit "Sayaçla" notu için (ikisi de açılışta yüklenir; yoksa bilinmiyor → not yok).
+  const sayacAktif = useAppSelector((s) => (s as { vakitSayac?: { ayarlar?: { aktif?: boolean } } }).vakitSayac?.ayarlar?.aktif ?? null);
+  const muhafiz = useAppSelector((s) => (s as { muhafiz?: { aktif?: boolean; matris?: MuhafizMatrisi } }).muhafiz);
   const zamanlayici = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -178,7 +199,8 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
       .catch(() => undefined);
   }, [durumuOku]);
   const ios = iosMu();
-  const metinler = ios ? IOS_DURUM_METINLERI : DURUM_METINLERI;
+  const durumMetni: DurumMetni | null = durum ? (ios ? (IOS_DURUM_METINLERI[durum] ?? null) : androidDurumMetni(durum, cihaz)) : null;
+  const uyarilanlar = muhafiz?.aktif && muhafiz.matris ? muhafizUyarilanVakitleriBul(muhafiz.matris) : null;
   const gruplar = ios
     ? GRUPLAR.map((g) => ({ ...g, ogeler: g.ogeler.filter(iosCanliOgesiMi) })).filter((g) => g.ogeler.length > 0)
     : GRUPLAR;
@@ -198,7 +220,7 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
       <Text className="text-sm mb-5" style={{ color: renkler.metinIkincil }}>
         {ios
           ? 'Kilit ekranında ve Dinamik Ada\'da hangi geri sayımın görüneceğini seçebilirsiniz. Aynı anda yalnız biri görünür: vakit çıkışı, cuma, nafile sırasıyla.'
-          : 'Durum çubuğunda ve Now Bar\'da hangi geri sayımın görüneceğini seçebilirsiniz. Aynı anda yalnız biri öne çıkar: vakit çıkışı, iftar, sahur, cuma, nafile, seri sırasıyla.'}
+          : `${cihaz.samsung === true ? "Durum çubuğunda ve Now Bar'da" : 'Durum çubuğunda'} hangi geri sayımın görüneceğini seçebilirsiniz. Aynı anda yalnız biri öne çıkar: vakit çıkışı, iftar, sahur, cuma, nafile, seri sırasıyla.`}
       </Text>
 
       {/* Durum kartı + çip önizlemesi (imza öğesi) */}
@@ -208,15 +230,15 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
             className="w-10 h-10 rounded-full items-center justify-center mr-3"
             style={{ backgroundColor: `${durumRengi}20` }}
           >
-            <FontAwesome5 name={durum ? metinler[durum].ikon : 'circle-notch'} size={17} color={durumRengi} solid />
+            <FontAwesome5 name={durumMetni ? durumMetni.ikon : 'stopwatch'} size={17} color={durumRengi} solid />
           </View>
           <View className="flex-1">
             <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-              {durum ? metinler[durum].baslik : 'Denetleniyor…'}
+              {durumMetni ? durumMetni.baslik : ios ? 'Canlı etkinlikler' : 'Canlı sayaçlar'}
             </Text>
-            {durum && (
+            {durumMetni && (
               <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                {metinler[durum].aciklama}
+                {durumMetni.aciklama}
               </Text>
             )}
           </View>
@@ -236,7 +258,7 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
           </View>
         )}
 
-        {durum !== 'acik' && durum !== null && !(ios && durum === 'desteklenmiyor') && (
+        {durum === 'kapali' && (
           <TouchableOpacity
             className="flex-row items-center justify-center mt-4 py-3 rounded-2xl border"
             style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir, minHeight: 44 }}
@@ -265,7 +287,19 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
             {grup.baslik}
           </Text>
           {grup.ogeler.map((oge) => (
-            <OgeKarti key={oge} oge={oge} ayar={ayarlar.ogeler[oge]} onDegis={guncelle} kartStili={kartStili} ios={ios} />
+            <OgeKarti
+              key={oge}
+              oge={oge}
+              ayar={ayarlar.ogeler[oge]}
+              onDegis={guncelle}
+              kartStili={kartStili}
+              ios={ios}
+              gereksinim={
+                (NOW_BAR_VAKITLERI as readonly string[]).includes(oge)
+                  ? vakitSayacGereksinimNotu(sayacAktif, uyarilanlar ? (uyarilanlar as readonly string[]).includes(oge) : null)
+                  : NOW_BAR_OGE_BILGILERI[oge].sayacGereksinimi ?? null
+              }
+            />
           ))}
         </View>
       ))}
@@ -280,7 +314,9 @@ const OgeKarti: React.FC<{
   kartStili: object;
   /** iOS: "sayaçla" yok (sayaç bildirimi yok); kayıttaki "sayaçla" son dakikalar sayılır. */
   ios: boolean;
-}> = ({ oge, ayar, onDegis, kartStili, ios }) => {
+  /** "Sayaçla" seçiliyken gösterilecek tek cümle; `null` → satır yok (sorun yok/bilinmiyor). */
+  gereksinim: string | null;
+}> = ({ oge, ayar, onDegis, kartStili, ios, gereksinim }) => {
   const renkler = useRenkler();
   const bilgi = NOW_BAR_OGE_BILGILERI[oge];
   const secenekler = ios ? iosBaslangicSecenekleri(oge) : NOW_BAR_BASLANGICLARI[oge];
@@ -365,11 +401,11 @@ const OgeKarti: React.FC<{
             </View>
           )}
 
-          {!ios && bilgi.sayacGereksinimi && (ayar.baslangic === 'sayacla' || !NOW_BAR_BASLANGICLARI[oge].includes('girince')) && (
+          {!ios && gereksinim && (ayar.baslangic === 'sayacla' || !NOW_BAR_BASLANGICLARI[oge].includes('girince')) && (
             <View className="flex-row items-start mt-3 gap-2">
               <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
               <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
-                {bilgi.sayacGereksinimi}
+                {gereksinim}
               </Text>
             </View>
           )}

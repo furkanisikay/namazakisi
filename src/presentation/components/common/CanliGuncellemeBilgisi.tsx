@@ -1,25 +1,30 @@
 /**
- * Sayaç ayarlarındaki "Live Update" bilgi satırı (issue #282).
+ * Sayaç ayarlarındaki canlı güncelleme satırı (issue #282) — ÖLÇEREK konuşur.
  *
- * Uygulama içinde AYAR YOKTUR: öne çıkarmayı kullanıcı sistem ayarlarından
- * ("Canlı güncellemeler") yönetir. Satır yalnız Android'de çizilir (iOS'ta sayaç
- * bildirimi yok). Metin tek kaynaktan: `CANLI_GUNCELLEME_BILGI_METNI`.
+ * Eskiden her Android'e "Android 16+ cihazlarda … Now Bar'da görünür" yazıyordu: Android
+ * 14'te gereksiz, Samsung olmayan telefonda yanlış ("Now Bar" yalnız Samsung'da),
+ * kullanıcı sistem ayarında kapattıysa da eksikti. Şimdi:
+ *   - açık ya da bu telefonda yok ya da bilinmiyor → HİÇBİR ŞEY çizilmez;
+ *   - kapalı → sebep + "Ayarları açın" (tek dokunuş, `DurumSatiri`).
+ * Yalnız Android'de çizilir (iOS'ta sayaç bildirimi yok).
  */
 import * as React from 'react';
-import { Platform, Text, View } from 'react-native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { useRenkler } from '../../../core/theme';
-import { CANLI_GUNCELLEME_BILGI_METNI } from '../../../core/sayac/canliGuncelleme';
+import { Platform, View } from 'react-native';
+import { useCihazDurumu } from '../../hooks/useCihazDurumu';
+import { durumNotu } from '../../../core/cihaz/durumNotlari';
+import { DurumSatiri } from '../ortak/DurumSatiri';
+
+const ALANLAR = ['canliGuncelleme'] as const;
 
 export const CanliGuncellemeBilgisi: React.FC = () => {
-  const renkler = useRenkler();
-  if (Platform.OS !== 'android') return null;
+  const android = Platform.OS === 'android';
+  const { durum } = useCihazDurumu(ALANLAR, android);
+  if (!android) return null;
+  const not = durumNotu('canliGuncelleme', durum);
+  if (!not) return null;
   return (
-    <View className="flex-row items-start mt-2 gap-2" testID="canli-guncelleme-bilgisi">
-      <FontAwesome5 name="mobile-alt" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
-      <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
-        {CANLI_GUNCELLEME_BILGI_METNI}
-      </Text>
+    <View className="mt-2" testID="canli-guncelleme-bilgisi">
+      <DurumSatiri durum={not} />
     </View>
   );
 };

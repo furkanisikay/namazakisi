@@ -4,6 +4,7 @@ import {
   NOW_BAR_OGE_BILGILERI,
   NOW_BAR_ONCELIK,
   NOW_BAR_POLITIKA_UYARISI,
+  vakitSayacGereksinimNotu,
   VARSAYILAN_NOW_BAR_AYARLARI,
   acikOgeSayisi,
   nowBarAyariniBirlestir,
@@ -40,6 +41,13 @@ describe('Now Bar seçimi — varsayılan ilk aşamanın davranışıdır', () =
     expect(p.sahur).toBeLessThan(p.cuma);
     expect(p.cuma).toBeLessThan(p.kusluk);
     expect(p.teheccud).toBeLessThan(p.seri);
+  });
+
+  test('vakit "Sayaçla" notu ölçerek konuşur: sorun yoksa ya da bilinmiyorsa satır yok', () => {
+    expect(vakitSayacGereksinimNotu(true, false)).toBeNull();
+    expect(vakitSayacGereksinimNotu(null, null)).toBeNull();
+    expect(vakitSayacGereksinimNotu(false, true)).toContain('Vakit sayacı kapalı');
+    expect(vakitSayacGereksinimNotu(true, true)).toContain('Namaz Muhafızı bu vakti uyardığı');
   });
 
   test('politika uyarısı sahibin istediği cümle', () => {
