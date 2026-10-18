@@ -91,6 +91,22 @@ class KomplikasyonCizelgesiTest {
         assertTrue(kutuphaneyeUygun(plan))
     }
 
+    /** Tile tavanı: en yakın N aralık, kesintisiz; tavan tazeliğin çok üstünde. */
+    @Test
+    fun tileTavaniEnYakinAraliklariKesintisizVerir() {
+        val yuk = (YukCozucu.coz(
+            javaClass.classLoader!!.getResource("ornek-yuk.json")!!.readText()
+        ) as CozumSonucu.Basarili).yuk
+        val ilk = VakitHesabi.tumVakitler(yuk).first().ms
+        val tum = ZamanCizelgesi.araliklar(yuk, ilk - 60_000L)
+        val kesik = ZamanCizelgesi.araliklar(yuk, ilk - 60_000L, maksGirdi = 5)
+        assertEquals(tum.take(5), kesik)
+        kesik.zipWithNext { a, b -> assertEquals(a.bitis, b.baslangic) }
+        // 6 sınır/gün: tavanın kapsadığı süre tazelik aralığının en az 8 katı olmalı.
+        val kapsamMs = ZamanCizelgesi.TILE_MAKS_GIRDI / 6 * 24L * 60 * 60 * 1000
+        assertTrue(kapsamMs >= 8 * ZamanCizelgesi.TILE_TAZELIK_MS)
+    }
+
     // --- Vaktin çıkışına kalan ----------------------------------------------------
 
     @Test

@@ -49,16 +49,16 @@ class VakitTileServisi : TileService() {
     private fun tileOlustur(yuk: Yuk?, simdi: Long): TileBuilders.Tile {
         val cizelge = TimelineBuilders.Timeline.Builder()
         // GEÇERLİLİK SÜRESİZ YEDEK GİRDİ: yük yoksa ya da zaman çizelgesindeki tüm
-        // girdiler geçmişte kaldıysa (telefon günlerce veri göndermedi) tile boş
-        // kalmaz, kullanıcıyı telefona yönlendirir.
+        // girdiler geçmişte kaldıysa tile boş kalmaz. Yük varken girdiler ancak tavan
+        // (≈4 gün) boyunca tazelik gelmezse biter → uygulamaya yönlendirir.
         cizelge.addTimelineEntry(
             TimelineBuilders.TimelineEntry.Builder()
-                .setLayout(LayoutElementBuilders.Layout.fromLayoutElement(bosDuzen()))
+                .setLayout(LayoutElementBuilders.Layout.fromLayoutElement(bosDuzen(yuk != null)))
                 .build()
         )
         if (yuk != null) {
             val tum = VakitHesabi.tumVakitler(yuk)
-            for (a in ZamanCizelgesi.araliklar(yuk, simdi)) {
+            for (a in ZamanCizelgesi.araliklar(yuk, simdi, maksGirdi = ZamanCizelgesi.TILE_MAKS_GIRDI)) {
                 val sonrakiler = tum.drop(tum.indexOf(a.siradaki) + 1).take(SONRAKI_SAYISI)
                 cizelge.addTimelineEntry(
                     TimelineBuilders.TimelineEntry.Builder()
@@ -76,18 +76,24 @@ class VakitTileServisi : TileService() {
         return TileBuilders.Tile.Builder()
             .setResourcesVersion(KAYNAK_SURUMU)
             .setTileTimeline(cizelge.build())
-            // Asıl yenilemeyi telefon verisi tetikler (Senkron.yuzeyleriTazele); 12 saatlik
-            // tazelik yalnız güvenlik ağıdır (çizelge yeniden kurulur, pil maliyeti ihmal edilebilir).
-            .setFreshnessIntervalMillis(TAZELIK_MS)
+            // Asıl yenilemeyi telefon verisi tetikler (Senkron.yuzeyleriTazele); tazelik
+            // girdi tavanının ufkunu diskteki yükle kaydırır (telefon susarken de dolu kalır).
+            .setFreshnessIntervalMillis(ZamanCizelgesi.TILE_TAZELIK_MS)
             .build()
     }
 
-    private fun bosDuzen(): LayoutElementBuilders.LayoutElement =
+    private fun bosDuzen(yukVar: Boolean): LayoutElementBuilders.LayoutElement =
         kutu(
             LayoutElementBuilders.Column.Builder()
                 .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
                 .addContent(TileOrtak.metin("Namaz Akışı", 18f, SaatPaleti.METIN, true))
-                .addContent(TileOrtak.metin("Telefonunuzda uygulamayı açın", 13f, SaatPaleti.METIN2))
+                .addContent(
+                    TileOrtak.metin(
+                        if (yukVar) "Vakitler için dokunun" else "Telefonunuzda uygulamayı açın",
+                        13f,
+                        SaatPaleti.METIN2,
+                    )
+                )
                 .build(),
             "Namaz Akışı'nı açın",
         )
@@ -146,7 +152,6 @@ class VakitTileServisi : TileService() {
 
     companion object {
         private const val KAYNAK_SURUMU = "1"
-        private const val TAZELIK_MS = 12L * 60 * 60 * 1000
         private const val SONRAKI_SAYISI = 2
     }
 }
