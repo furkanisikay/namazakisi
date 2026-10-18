@@ -43,6 +43,13 @@ export interface EsitlemeAkisModaliProps {
   hata: string | null;
   onRizaVer: () => void;
   onSaglayiciSec: (kimlik: SaglayiciKimligi) => void;
+  /**
+   * Seçmeden ÖNCE bilinen engeller (ör. iCloud'a giriş yapılmamış): düğme pasif olur,
+   * sebep altında yazılır. Bilinmeyen durumda boş bırakın (sus).
+   */
+  saglayiciEngelleri?: Partial<Record<SaglayiciKimligi, string>>;
+  /** Cihaz çevrimdışı: bağlanma düğmeleri pasif, sebep söylenir. `null`/undefined = bilinmiyor. */
+  cevrimdisi?: boolean | null;
   onParola: (parola: string) => void;
   onUnuttum: () => void;
   onSifirlaOnay: () => void;
@@ -151,6 +158,8 @@ export const EsitlemeAkisModali: React.FC<EsitlemeAkisModaliProps> = ({
   hata,
   onRizaVer,
   onSaglayiciSec,
+  saglayiciEngelleri,
+  cevrimdisi,
   onParola,
   onUnuttum,
   onSifirlaOnay,
@@ -256,16 +265,33 @@ export const EsitlemeAkisModali: React.FC<EsitlemeAkisModaliProps> = ({
               <Text className="text-sm leading-5 mb-1" style={{ color: renkler.metinIkincil }}>
                 Verilerinizin saklanacağı kendi hesabınızı seçin. Hesabınıza bağlanmanız istenecek.
               </Text>
-              {saglayicilar.map((s) => (
-                <Dugme
-                  key={s.kimlik}
-                  etiket={s.ad}
-                  ikon={s.kimlik === 'googleDrive' ? 'cloud-upload-alt' : 'cloud'}
-                  birincil
-                  pasif={mesgul}
-                  onPress={() => onSaglayiciSec(s.kimlik)}
-                />
-              ))}
+              {cevrimdisi === true ? (
+                <Text className="text-sm leading-5 mt-3" style={{ color: renkler.metin }} accessibilityLiveRegion="polite">
+                  Çevrimdışısınız; internete bağlanınca devam edebilirsiniz.
+                </Text>
+              ) : null}
+              {saglayicilar.map((s) => {
+                const engel = saglayiciEngelleri?.[s.kimlik];
+                const kapali = mesgul || cevrimdisi === true || !!engel;
+                return (
+                  <View key={s.kimlik}>
+                    <Dugme
+                      etiket={s.ad}
+                      ikon={s.kimlik === 'googleDrive' ? 'cloud-upload-alt' : 'cloud'}
+                      birincil
+                      pasif={kapali}
+                      onPress={() => {
+                        if (!kapali) onSaglayiciSec(s.kimlik);
+                      }}
+                    />
+                    {engel ? (
+                      <Text className="text-sm leading-5 mt-2" style={{ color: renkler.metin }}>
+                        {engel}
+                      </Text>
+                    ) : null}
+                  </View>
+                );
+              })}
               {mesgul ? (
                 <View className="items-center py-2 mt-2">
                   <ActivityIndicator color={renkler.birincil} />

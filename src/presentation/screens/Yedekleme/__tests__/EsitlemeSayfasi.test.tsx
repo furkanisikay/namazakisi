@@ -116,6 +116,23 @@ describe('EsitlemeSayfasi', () => {
     expect(mockKisaBildirim).toHaveBeenCalled();
   });
 
+  it('iCloud hesabı yoksa seçmeden ÖNCE söylenir ve düğme pasif kalır', async () => {
+    const ic = require('../../../../../modules/expo-icloud-esitleme/src');
+    ic.icloudModuluVarMi.mockReturnValue(true);
+    ic.icloudHesapVarMi.mockResolvedValue(false);
+    mockKanca.saglayicilar = [
+      { kimlik: 'googleDrive', ad: 'Google Drive' },
+      { kimlik: 'icloud', ad: 'iCloud' },
+    ];
+    const { getByLabelText, getByText, findByText } = render(<EsitlemeSayfasi />);
+    fireEvent(getByLabelText('Cihazlar arası eşitleme'), 'valueChange', true);
+    fireEvent.press(getByText('Anladım, devam edin'));
+    await findByText(/iCloud'a giriş yapılmamış/);
+    fireEvent.press(getByText('iCloud'));
+    expect(mockKanca.baglan).not.toHaveBeenCalled();
+    ic.icloudModuluVarMi.mockReturnValue(false);
+  });
+
   it('kısa parola kabul edilmez', async () => {
     const { getByLabelText, getByText, findByText } = render(<EsitlemeSayfasi />);
     fireEvent(getByLabelText('Cihazlar arası eşitleme'), 'valueChange', true);
