@@ -256,7 +256,6 @@ function hedefler(v) {
         {
             dosya: 'docs/index.md',
             bolgeler: {
-                surum: () => surumSatiri(v),
                 magaza: () => magaza(v),
                 'ekran-goruntuleri': () => {
                     const parca = GRUPLAR.filter((g) => g.bolum === 'magaza')

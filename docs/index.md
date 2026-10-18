@@ -7,10 +7,6 @@ title: Namaz Akışı
 Gizlilik odaklı, tamamen çevrimdışı ibadet asistanı.
 
 <!-- OTOMATIK bölgeler scripts/belgeleri-guncelle.js ile üretilir; elle düzenlemeyin. -->
-<!-- OTOMATIK:BASLA surum -->
-Güncel sürüm: **0.41.1** · Mağazada: App Store: **0.30.1**
-<!-- OTOMATIK:BITIR surum -->
-
 <!-- OTOMATIK:BASLA magaza -->
 <p>
   <a href="https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi"><img alt="Google Play'den edinin" height="60" src="https://play.google.com/intl/en_us/badges/static/images/badges/tr_badge_web_generic.png"></a>
