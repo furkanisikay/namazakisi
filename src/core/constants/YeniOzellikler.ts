@@ -73,7 +73,7 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
-    // Sade tasarım (Dalga 2; Dalga 3 genişletecek). Bugünkü kullanıcıya anlamlı olanı söyler.
+    // Sade tasarım (Dalga 2 + 3). Bugünkü kullanıcıya anlamlı olanı söyler.
     {
         id: 'sade-kurulum-ve-ana-ekran',
         platformlar: ['android', 'ios'],
@@ -81,16 +81,23 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         tarih: '2026-10-18',
         baslik: 'Daha sade uygulama',
         aciklama:
-            'Ana ekranda aynı anda tek uyarı görünür; vakit kartında tek düğme var: "Kıldım".',
+            'Tüm hatırlatmalar tek sayfada, ayarlar görevlere göre gruplandı; ana ekranda tek uyarı ve tek düğme: "Kıldım".',
         detayAciklama:
-            'Kerahat, vakit çıkıyor, toparlanma ve yolculuk uyarıları artık vakit kartının üstünde üst üste yığılmaz: en önemlisi görünür, diğerlerine "+1 daha" ile ulaşırsınız. Vakit çıkmak üzereyken kerahat vakti de başladıysa ikisi tek kartta görünür. Vakit kartındaki "Kıldım" düğmesine dokunduğunuzda düğme "Kılındı"ya dönüşür. Vaktin durumu her yerde aynı adla yazılır: Kılındı, Kılınmadı, Vakti geldi, Henüz girmedi.',
+            'Ayarlar artık ne yapmak istediğinize göre sıralı: Hatırlatmalar, Namaz vakitleri, Görünüm, Saat ve widget, Yedek, Yardım. Hatırlatmalar sayfasında en üstte "Ne kadar hatırlatalım?" sorusu var; altında her hatırlatma tek satır ve bir anahtar: vakit girince, vakit çıkmadan, cuma, camiye gitme vakti, yatmadan önce, toplantı çakışırsa, nafile, Ramazan, günü tamamlamadıysam ve özel gün. Ayrıntılı ayar "Kendim ayarlayayım" altında durur. Sesli okuma ve alarm izni bir kez sorulur, tüm hatırlatmalarda geçerlidir. Ana ekranda uyarılar üst üste yığılmaz; vakit kartındaki "Kıldım" düğmesi "Kılındı"ya dönüşür.',
         detaylar: [
-            'Ana ekranda tek uyarı alanı, diğerleri "+1 daha" ile',
-            'Tek düğme: "Kıldım" → "Kılındı"',
+            'Tüm hatırlatmalar tek sayfada, her biri tek satır',
+            'Sesli okuma ve alarm izni bir kez, her hatırlatmada geçerli',
+            'Mezhep "Namaz vakitleri"nde, özel gün "Hatırlatmalar"da, kurulum "Yardım"da',
+            "Android'de camide ve namaz vakitlerinde sessize alma tek sayfada: Namazda sessiz",
+            'Ana ekranda tek uyarı alanı ve tek düğme: "Kıldım" → "Kılındı"',
             'Durum adları her yerde aynı: Kılındı, Kılınmadı, Vakti geldi, Henüz girmedi',
             'Gün batarken bugünün ikindisini henüz kılmadıysanız bunu hatırlatır',
+            'Ayarlarınız aynen korundu',
         ],
         ikon: 'leaf',
+        hedefSayfa: 'Hatirlatmalar',
+        ctaEtiketi: 'Hatırlatmalara bakın',
+        kartGoster: true,
     },
     // Cihazlar arası eşitleme (#288). Yalnız Android: Drive yetkisi yerleşik Google
     // hesabı onayıyla alınır. iOS'ta iCloud yolu ayrı bayrağa bağlı ve henüz açık değil.
@@ -160,7 +167,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         detayAciklama:
             'Bir hatırlatmanın ayarı üç bölümden oluşur: ne zaman gelsin, nasıl uyarsın ve isteğe bağlı gelişmiş ayarlar (tekrar, ton). "Bildirim" ve "Sesli okuma" birbirinden bağımsız açılıp kapanır. Sesli okunan cümleyi her hatırlatmada kendiniz yazabilirsiniz: vakit adı ve dakika gibi parçaları dokunarak eklersiniz, "Dinle" ile nasıl okunacağını duyarsınız. Namaz muhafızı dışındaki hatırlatmalarda cümleyi boş bırakırsanız hatırlatmanın kendi cümlesi okunur; muhafızda boş bırakılan adım sesli okumaz. Cuma, camiye gitme, yatış ve takvim uyarısında en fazla üç hatırlatma kurabilirsiniz; "Akışı önizle" hangi saatlerde hatırlatılacağınızı gösterir.',
         ikon: 'sliders-h',
-        hedefSayfa: 'BildirimAyarlari',
+        hedefSayfa: 'Hatirlatmalar',
         ctaEtiketi: 'İnceleyin',
         kartGoster: true,
         detaylar: [
@@ -183,9 +190,9 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Her cuma, öğle vaktinden istediğiniz kadar önce hatırlatalım — camiye rahatça yetişin.',
         detayAciklama:
-            `Cuma hatırlatması vakit çıkarken değil, öğle vakti girmeden önce gelir: camiye gitmek için yola çıkacak zamana ihtiyacınız var. En fazla üç hatırlatma kurabilir, her birinin öğleden ne kadar önce geleceğini (15 dakika ile 3 saat arası) ve camiye çıkana kadar tekrarlanıp tekrarlanmayacağını seçersiniz. Hatırlatma açıkken ana ekranda cuma günü öğle namazı "Cuma" olarak görünür. Cuma öğlenin yerine geçtiği için ayrı bir kayıt tutulmaz; kıldığınızda öğle namazını işaretlersiniz. Özellik varsayılan olarak kapalıdır, Bildirim Ayarları'ndan açabilirsiniz.`,
+            `Cuma hatırlatması vakit çıkarken değil, öğle vakti girmeden önce gelir: camiye gitmek için yola çıkacak zamana ihtiyacınız var. En fazla üç hatırlatma kurabilir, her birinin öğleden ne kadar önce geleceğini (15 dakika ile 3 saat arası) ve camiye çıkana kadar tekrarlanıp tekrarlanmayacağını seçersiniz. Hatırlatma açıkken ana ekranda cuma günü öğle namazı "Cuma" olarak görünür. Cuma öğlenin yerine geçtiği için ayrı bir kayıt tutulmaz; kıldığınızda öğle namazını işaretlersiniz. Özellik varsayılan olarak kapalıdır, Ayarlar › Hatırlatmalar'dan açabilirsiniz.`,
         ikon: 'mosque',
-        hedefSayfa: 'BildirimAyarlari',
+        hedefSayfa: 'CumaHatirlatmaAyarlari',
         ctaEtiketi: 'Hatırlatmayı açın',
         kartGoster: true,
         detaylar: [
@@ -208,7 +215,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         detayAciklama:
             `Bildirim ayarlarındaki "Camide kılacağım" bölümünden vakitleri tek tek seçebilir, yürüme süresini ve abdest için hazırlık payını belirleyebilirsiniz. En fazla üç hatırlatma kurabilirsiniz; yürüme ya da hazırlık sürenizi değiştirdiğinizde hepsi aynı farkla kayar. Cuma hatırlatmanız açıksa cuma günü öğle için ayrıca hatırlatılmazsınız.`,
         ikon: 'walking',
-        hedefSayfa: 'BildirimAyarlari',
+        hedefSayfa: 'CamiyeGitAyarlari',
         ctaEtiketi: 'Vakitlerinizi seçin',
         kartGoster: false,
         detaylar: [
@@ -230,7 +237,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         detayAciklama:
             'Yatsı vakti saatlerce sürer ve muhafızın "vakit çıkıyor" uyarısı sabaha kalır; asıl kayıp çoğu zaman uykuya dalmaktır. Yatış saatinizden belirlediğiniz süre önce hatırlatma gelir: yatsıyı işaretlemediyseniz yatsı hatırlatması, işaretlediyseniz günün muhasebesi ("Bugün 4/5 · öğle işaretlenmemiş"). En fazla üç hatırlatma kurabilirsiniz; tekrarlar aynı içeriği taşır. Tek eksik varsa bildirimden "Kıldım" diyebilir ya da kaza defterinize ekleyebilirsiniz. Özel gün aralığında gönderilmez.',
         ikon: 'bed',
-        hedefSayfa: 'BildirimAyarlari',
+        hedefSayfa: 'YatisHatirlatmaAyarlari',
         ctaEtiketi: 'Yatış saatinizi girin',
         kartGoster: true,
         detaylar: [
@@ -251,7 +258,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         detayAciklama:
             'Bildirim ayarlarındaki "Takvim çakışması uyarısı"nı açtığınızda, bir etkinlik bittiğinde vaktin çıkmasına 10 dakikadan az kalıyorsa etkinlikten önce uyarılırsınız; vakti baştan sona kaplayan etkinliklerde ara verip kılmayı planlamanız için haber verilir. En fazla üç hatırlatma kurabilir, etkinlik başlayana kadar tekrarlatabilirsiniz; namazı kıldığınızda kalanlar iptal edilir. Özellik varsayılan olarak kapalıdır ve açarken nelerin okunduğunu açıkça gösteririz: takviminiz yalnızca bu cihazda okunur, hiçbir yere gönderilmez ve saklanmaz.',
         ikon: 'calendar-times',
-        hedefSayfa: 'BildirimAyarlari',
+        hedefSayfa: 'TakvimCakismaAyarlari',
         ctaEtiketi: 'İnceleyin',
         kartGoster: false,
         detaylar: [
@@ -407,9 +414,9 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Hatırlatma başlıkları vakit adı ve kalan süreyle başlar: "Yatsı · 25 dk kaldı". Galaxy Fit, Mi Band gibi küçük ekranlarda bile önemli kısım görünür.',
         detayAciklama:
-            'Bileklikler telefon bildiriminin başlığından yalnız ilk birkaç kelimeyi gösterir. Namaz muhafızı, cuma, camiye gidiş, erteleme ve yatmadan önce hatırlatmalarının başlıkları bu yüzden vakit adı ve süreyle başlar. "Öğle vakti girdi" gibi vakit bildirimleri aynı kalır; otomasyonlarınız çalışmaya devam eder. Bildirimler sayfasındaki rehber, bilekliğinize yalnız namaz hatırlatmalarının gitmesi için neler yapabileceğinizi anlatır.',
+            'Bileklikler telefon bildiriminin başlığından yalnız ilk birkaç kelimeyi gösterir. Namaz muhafızı, cuma, camiye gidiş, erteleme ve yatmadan önce hatırlatmalarının başlıkları bu yüzden vakit adı ve süreyle başlar. "Öğle vakti girdi" gibi vakit bildirimleri aynı kalır; otomasyonlarınız çalışmaya devam eder. Saat ve widget sayfasındaki rehber, bilekliğinize yalnız namaz hatırlatmalarının gitmesi için neler yapabileceğinizi anlatır.',
         ikon: 'clock',
-        hedefSayfa: 'BildirimAyarlari',
+        hedefSayfa: 'SaatVeWidgetAyarlari',
         ctaEtiketi: 'Rehberi inceleyin',
         kartGoster: false,
         detaylar: [
@@ -656,7 +663,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         detayAciklama:
             'Özel gün modu serinizi dondurmakla kalmaz: seçtiğiniz tarihler boyunca vakit bildirimleri, namaz muhafızı ve sesli okumaları, vakit sayacı ve nafile hatırlatmaları da gönderilmez. Tarihler bittiğinde hatırlatmalar sizin bir şey yapmanıza gerek kalmadan geri gelir.',
         ikon: 'bell-slash',
-        hedefSayfa: 'SeriHedefAyarlari',
+        hedefSayfa: 'OzelGunAyarlari',
         ctaEtiketi: 'Özel gün ayarını açın',
         kartGoster: false,
         detaylar: [
