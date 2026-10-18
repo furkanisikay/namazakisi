@@ -4,8 +4,10 @@ appId: com.furkanisikay.namazakisi
 ---
 - launchApp:
     stopApp: true
+# Ana ekran capasi: header'daki seri dugmesi ("Seri: N gün"). Kıble Dalga 4'ten
+# beri sekmedir; header'daki "Kıble yönünü bul" kisayolu kalkti.
 - extendedWaitUntil:
-    visible: "Kıble yönünü bul"
+    visible: "Seri: .*"
     timeout: 90000
 - repeat:
     while:
@@ -18,9 +20,17 @@ appId: com.furkanisikay.namazakisi
     timeout: 3000
 - takeScreenshot: kareler/07-kaza
 
-- tapOn: "İstatistik"
+- tapOn: "İlerleme"
 # AYLIK: haftalik gorunum icinde bulunulan haftayi gosterir ve hafta basinda
-# yalnizca bugun dolu kaliyor.
+# yalnizca bugun dolu kaliyor. Kilma orani bolumu seri panelinin ALTINDA →
+# once secici ortalanir (gok paneli parlamasi durulmaz: settle zaman asimi sart).
+- scrollUntilVisible:
+    element:
+      text: "Aylık"
+    direction: DOWN
+    centerElement: true
+    timeout: 120000
+    waitToSettleTimeoutMs: 1500
 - tapOn: "Aylık"
 - waitForAnimationToEnd:
     timeout: 4000

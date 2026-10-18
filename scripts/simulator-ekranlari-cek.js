@@ -10,8 +10,9 @@
  * yanlis yere basar, etiket tabanli betik ise acikca "bulunamadi" der.
  *
  * Etiketler kodda dogrulandi:
- *   - Kible dugmesi   "Kıble yönünü bul"            (HomeHeader)
- *   - Seri ekrani     "İstatistik" sekmesi          (IstatistikSayfasi acilista Seri alt sekmesinde)
+ *   - Kible           "Kıble" sekmesi               (Dalga 4: Kıble kendi sekmesinde)
+ *   - Seri ekrani     "İlerleme" sekmesi            (IlerlemeSayfasi: gok paneli sayfanin en ustunde)
+ *   - Aylik oran      "Aylık" secici cipi           (IlerlemeSayfasi > Kılma oranı, seri panelinin altinda)
  *   - Hatirlatmalar   "Hatırlatmalar. …"            (AyarlarSayfasi)
  *   - Muhafiz satiri  "Vakit çıkmadan. …"           (HatirlatmalarSayfasi)
  *   - Vakit kartlari  "Kendim ayarlayayım" katinda  (MuhafizAyarlariSayfasi, testID kendim-ayarlayayim)
@@ -253,9 +254,9 @@ function cek(ad) {
     cek('01-ana-ekran');
     let a;
 
-    // --- Seri (Istatistik sekmesi acilista Seri alt sekmesinde durur) ---
+    // --- Seri (Ilerleme sekmesinin en ustu: gok paneli) ---
     a = await agac('seri-oncesi');
-    if (await dokun(a, SEKME('İstatistik'), 'istatistik sekmesi', { bekle: 3500 })) {
+    if (await dokun(a, SEKME('İlerleme'), 'ilerleme sekmesi', { bekle: 3500 })) {
         // Gok panelindeki yildizlar SIRAYLA animasyonla belirir; erken cekilen kare
         // haritayi yarim gosterir: baslik "25 günlük seri" derken harita 18'den
         // sonrasini bos birakiyordu (yasandi).
@@ -329,12 +330,12 @@ function cek(ad) {
         cek('07-kaza');
     }
     a = await agac('istatistik-oncesi');
-    if (await dokun(a, SEKME('İstatistik'), 'istatistik sekmesi', { bekle: 3000 })) {
-        a = await agac('istatistik-sekmeleri');
+    if (await dokun(a, SEKME('İlerleme'), 'ilerleme sekmesi', { bekle: 3000 })) {
         // AYLIK, haftalik degil: haftalik gorunum icinde bulunulan haftayi
         // gosterir ve hafta basinda (pazartesi) yalnizca bugun dolu, "%9 basari"
-        // gorunuyordu. Etiket ", Aylık": ikonun bos etiketi virgulle ekleniyor.
-        if (await dokun(a, /(^|, )Aylık$/, 'aylik sekmesi', { bekle: 4000 })) {
+        // gorunuyordu. Kılma oranı seri panelinin ALTINDA → kaydirarak bulunur.
+        // Etiket ", Aylık": ikonun bos etiketi virgulle eklenebiliyor.
+        if (await kaydirarakDokun(/(^|, )Aylık$/, 'aylik secici', 'aylik', { bekle: 4000 })) {
             await agac('aylik');
             cek('08-istatistik');
         }
@@ -350,7 +351,7 @@ function cek(ad) {
         if (!(await dokun(katman, KAPATILACAK, `kible oncesi katman ${tur + 1}`, { bekle: 2000 }))) break;
     }
     a = await agac('kible-oncesi');
-    if (await dokun(a, /kıble yönünü bul/i, 'kible dugmesi', { bekle: 3500 })) {
+    if (await dokun(a, SEKME('Kıble'), 'kible sekmesi', { bekle: 3500 })) {
         // Konum izni is akista verilmis olmali; yine de guvenlik agi.
         for (let tur = 0; tur < 2; tur++) {
             const katman = await agac(`kible-izin-${tur}`);

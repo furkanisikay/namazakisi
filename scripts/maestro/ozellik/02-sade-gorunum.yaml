@@ -1,6 +1,6 @@
 # tohum: sade
-# Sade gorunum: ana ekranin yerine tek ekran (sekme cubugu gizli). "Kıble
-# yönünü bul" burada YOK — ortak acilis akisi kullanilamaz.
+# Sade gorunum: ana ekranin yerine tek ekran (sekme cubugu gizli). Ana ekran
+# capasi ("Seri: N gün" header dugmesi) burada YOK — ortak acilis akisi kullanilamaz.
 appId: com.furkanisikay.namazakisi
 ---
 - launchApp:

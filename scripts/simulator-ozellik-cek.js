@@ -187,6 +187,9 @@ async function bolum(ad, fn) {
         const a = await agac('kaza-oncesi');
         if (!(await dokun(a, SEKME('Kaza'), 'kaza sekmesi', { bekle: 3000 }))) return;
         cek('19-kaza');
+        // "Her farzla bir kaza" Dalga 4'ten beri kokte degil: Diger > Kaza ayarlari.
+        if (!(await dokun(await agac('kaza-diger'), /^Diğer: hedef/i, 'kaza diger menusu', { bekle: 2000 }))) return;
+        if (!(await dokun(await agac('kaza-diger-acik'), /^Kaza ayarları/i, 'kaza ayarlari', { bekle: 3000 }))) return;
         if (await getir(/^Her farzdan sonra kaza önerin(?: \||$)/i, 'her-farzla', { ust: 0.3, alt: 0.65 })) cek('20-kaza-her-farzla');
     });
 
