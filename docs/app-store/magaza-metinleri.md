@@ -101,7 +101,7 @@ tanı e-postası ancak kullanıcı düğmeye basarsa ve içeriği ekranda göste
 sonra açılıyor (kişisel ibadet verisi içermez).
 
 **Wear OS saat kıblesi (yalnız Play):** telefon, kullanıcının kendi Wear OS saatine
-Data Layer üzerinden 1 ondalığa yuvarlanmış (≈11 km) konum gönderir; sunucu yok,
+Data Layer üzerinden 1 ondalığa yuvarlanmış (≈11 km) konum gönderir; geliştirici sunucusu yok (Bluetooth bağlı değilken Data Layer Google bulutu üzerinden eşitleyebilir),
 saat konum izni istemez. Apple Watch'a konum GİTMEZ (orada kıble yok) → App Store
 beyanı değişmez. Play Data Safety: Google'ın "kullanıcının kendi cihazları arasında,
 geliştiriciye ulaşmadan" aktarımı "paylaşım/toplama" saymadığını sahibin Play Console

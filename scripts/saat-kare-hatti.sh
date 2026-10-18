@@ -186,9 +186,13 @@ adb shell am start -W -n "$PAKET/$SINIF.ui.KibleAktivite"
 hazir_bekle 'Kıble|kıble|sensörü' || true
 if kare 08-kible 3; then
   # Onceki ekranin dokumu kalmasin: dump basarisizsa bayat metinle karar verilmez.
+  # Cihazdaki dosya da silinir: dump basarisiz olursa `exec-out cat` eskisini getirirdi.
   rm -f /tmp/saat-ui.xml
+  adb shell rm -f /data/local/tmp/ui.xml || true
   dump_al
-  if grep -q 'sensörü bulunmuyor' /tmp/saat-ui.xml; then
+  if [ ! -s /tmp/saat-ui.xml ]; then
+    echo "UYARI: 08-kible ekran dokumu alinamadi — sensor durumu belirsiz, kare yine de saklandi"
+  elif grep -q 'sensörü bulunmuyor' /tmp/saat-ui.xml; then
     echo "UYARI: 08-kible pusula sensoru yok (emulator) — kare silindi"
     rm -f "$CIKIS/08-kible.png"
   fi

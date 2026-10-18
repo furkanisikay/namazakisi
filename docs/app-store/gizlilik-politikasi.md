@@ -27,9 +27,10 @@ Namaz vakitleri bulunduğunuz yerin enlem ve boylamından hesaplanır. Konumunuz
 - telefonunuzun içinde kalır, **hiçbir sunucuya gönderilmez**,
 - Wear OS saat uygulamasını kullanıyorsanız, saatteki kıble pusulası için
   **yaklaşık** konumunuz (yaklaşık 11 km hassasiyetle yuvarlanmış enlem ve boylam)
-  telefonunuzdan **yalnızca kendi saatinize**, iki cihazınız arasındaki doğrudan
-  bağlantıyla aktarılır; saat konum izni istemez ve bu bilgi saatten de hiçbir
-  yere gönderilmez,
+  telefonunuzdan **yalnızca kendi saatinize**, Google'ın Wear OS veri eşitlemesiyle
+  aktarılır (cihazlar Bluetooth ile bağlı değilken bu eşitleme Google'ın altyapısı
+  üzerinden geçebilir); geliştiriciye ulaşmaz, saat konum izni istemez ve bu bilgi
+  saatten de hiçbir yere gönderilmez,
 - dilerseniz hiç verilmeyebilir: konumu kapatıp şehrinizi elle seçebilirsiniz.
 
 Konum izni vermezseniz uygulama çalışmaya devam eder.
