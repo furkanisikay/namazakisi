@@ -291,11 +291,11 @@ function cek(ad) {
             // ona basmak adimi kapatir — bu yuzden kalip "düzenleyin" ile kesinlestirildi.
             a = await agac('adim-oncesi');
             if (await dokun(a, /hatırlatma.* — düzenleyin/i, 'adim satiri', { bekle: 3000 })) {
-                // "İkisi de" kanalini sec: sheet sesli anons metni ve "Dinle"
-                // dugmesiyle dolar. Yalniz bildirim seciliyken sheet'in alt yarisi
-                // BOS kaliyordu ve kare zayif gorunuyordu.
+                // "Gelişmiş" bolumunu ac: sheet tekrar/ton/alarm satirlariyla dolar.
+                // (Birlesik modul: kanal kartlari yerine anahtar var; `idb ui tap`
+                // UISwitch'i toggle etmez, bu yuzden anahtar yerine bolum acilir.)
                 const sheet = await agac('adim-kanal-oncesi');
-                await dokun(sheet, /^İkisi de$/i, 'ikisi de kanali', { bekle: 2500 });
+                await dokun(sheet, /^Gelişmiş ayarlar/i, 'gelismis bolumu', { bekle: 2500 });
                 await agac('adim-detay');
                 cek('03-adim-detay');
 

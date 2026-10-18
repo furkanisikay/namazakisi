@@ -152,6 +152,24 @@ describe('CumaHatirlatmaBolumu', () => {
             expect(guncelleMock).not.toHaveBeenCalled();
         });
 
+        it('BİRLEŞİK MODÜL: sesli okuma METNİ düzenlenir, {vakit} = Cuma okunur ve kaydedilir', () => {
+            const sesli = cumaAyarlariniNormalize({
+                aktif: true,
+                sesliOnayi: true,
+                adimlar: [{ esikDk: 60, kanallar: { bildirim: true, sesli: true } }],
+            });
+            const ekran = ac(sesli);
+            // Boş metin = otomatik cuma cümlesi (eski kayıt birebir).
+            expect(ekran.getByTestId('anons-okunus').props.children).toMatch(/^Cuma için öğle vaktine/);
+            const kutu = ekran.getByLabelText('Sesli okuma metni');
+            fireEvent.changeText(kutu, '{vakit} namazına {süre} dakika.');
+            expect(ekran.getByTestId('anons-okunus').props.children).toBe('Cuma namazına 60 dakika.');
+            fireEvent(kutu, 'endEditing');
+            ekran.unmount();
+            const d = guncelleMock.mock.calls.at(-1)[0];
+            expect(d.adimlar[0].anonsMetni).toBe('{vakit} namazına {süre} dakika.');
+        });
+
         it('gerçek alarm İLK kez: cumanın kendi rızası; onay ANAHTARLA BİRLİKTE yazılır', async () => {
             const ekran = ac(ACIK);
             fireEvent.press(ekran.getByTestId('adim-gelismis'));

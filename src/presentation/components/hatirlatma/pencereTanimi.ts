@@ -39,6 +39,8 @@ import { anonsMetniniCoz, anonsSablonlari } from '../../../core/muhafiz/anonsMet
 import {
     ANONS_SOZLUKLERI,
     anonsCoz,
+    anonsMetniDoluMu,
+    type AnonsBaglami,
     type HatirlatmaYuzeyi,
     type YerTutucu,
 } from '../../../core/hatirlatma/anonsYerTutucu';
@@ -312,12 +314,11 @@ export interface PencereTanimi {
     /** Siklik (bir kez / tekrarli) secimi gosterilsin mi? */
     siklikSecimiVar: boolean;
     /**
-     * Anons metni SERBESTCE yazilabilir mi? (Standart EVET; iOS ve nafile istisna.)
-     *
-     * iOS'ta HAYIR: metin calisma aninda seslendirilemez (arka planda kod
-     * calistirilamaz), anons on-kayitli sabit bir klip olur → kutu salt okunur
-     * gosterilir. Matristeki `anonsMetni` SILINMEZ, yalnizca duzenlenemez;
-     * kullanici yedegini Android'e tasirsa metni geri kazanir.
+     * Sesli okuma metni SERBESTÇE yazılabilir mi? HER yüzeyde evet (birleşik hatırlatma
+     * modülü — eski "ek yüzeyde/nafilede metin yazılmaz" istisnası KALKTI); değer platform
+     * yeteneğinden (`yetenekler.serbestAnonsMetni`) gelir ve iki platformda da `true`dur:
+     * iOS'ta metin PLANLAMADA cihazda sentezlenip bildirimin sesi olur (Faz 2). `false` ise
+     * editör yerine salt okunur "Telefonunuz şöyle okur" çizilir (geriye uyum).
      */
     anonsMetniDuzenlenebilir: boolean;
     /**
@@ -416,7 +417,7 @@ export interface PencereTanimi {
  * alarm ya da tekrar eklenip ötekine eklenmemesi kabul edilmez. Her pencere
  * tanımı bu nesneyi YAYAR; bir yeteneği kapatmak, gerekçesi yanında yazan AÇIK
  * bir istisnadır (yorum zorunlu). Platform yeteneği olmayanlar (iOS'ta ses
- * seçici, titreşim, serbest anons metni) `yetenekler`den türetilir — o da
+ * seçici ve titreşim) `yetenekler`den türetilir — o da
  * istisna değil, cihazın gerçeğidir.
  *
  * Nöbetçi: `pencereTanimi.test.ts > YETENEK STANDARDI`.
@@ -586,6 +587,24 @@ export function vakitPencereTanimi(
 }
 
 /**
+ * Akış önizlemesinin ANONS satırı adımın KENDİ metnini okusun (plan üreticisiyle aynı kural:
+ * dolu metin yüzeyin bağlamıyla çözülür, boşsa yüzeyin otomatik cümlesi). Önizleme ile cihazda
+ * duyulan ayrışmasın.
+ */
+function ozelMetinliOnizleme(
+    taban: PencereTanimi['onizlemeMetni'],
+    baglam: (adim: UyariPlani) => AnonsBaglami,
+    okunur = true
+): PencereTanimi['onizlemeMetni'] {
+    if (!taban) return undefined;
+    return (adim, ilk) => {
+        const metin = taban(adim, ilk);
+        if (!okunur || !anonsMetniDoluMu(adim.anonsMetni)) return metin;
+        return { ...metin, anons: anonsCoz(adim.anonsMetni, baglam(adim)) };
+    };
+}
+
+/**
  * EK HATIRLATMA YÜZEYİ (cuma; sonra camiye gitme, yatış, takvim) için pencere tanımı —
  * ortak hatırlatma yüzeyleri plan §3.3.
  *
@@ -593,14 +612,16 @@ export function vakitPencereTanimi(
  * kanal çipleri (bildirim / sesli anons / ikisi / kapalı), bildirim sesi, titreşim,
  * gerçek alarm + kapsamı, tekrar, 1..`maksAdim` adım, akış önizlemesi.
  *
- * STANDART İSTİSNALARI (gerekçeli, sahip kararları K3–K5):
+ * STANDART İSTİSNALARI (gerekçeli, sahip kararları K3–K4):
  * - YÖN SABİT (K3): her yüzeyin tek anlamlı yönü var (cuma/camiye gitme "vakit GİRMEDEN
  *   önce", yatış "yatıştan önce", takvim "etkinlikten önce"); seçici yerine
  *   `yonSabitGerekcesi` ekranda yazılır.
  * - TON YOK (K4): her adım nazik, acil kanal yok (Rahatsız Etmeyin delinmez).
- * - ANONS METNİ yazılmaz (K5): muhafız şablonları `{vakit}` + "vakit çıkıyor" dilinde;
- *   cümle bağlamdan üretilir, `anonsOrnegiOlustur` "Telefonunuz şöyle okur" gösterir.
  * - Ön plan banner'ı yok (olgu): ön plan muhafızı yalnız farz izler.
+ *
+ * SESLİ OKUMA METNİ her yüzeyde YAZILIR (eski K5 kararı geri alındı): yer tutucular yüzeyin
+ * sözlüğünden (`ANONS_SOZLUKLERI[yuzey]` — takvimde etkinlik adı YOK); boş metin =
+ * otomatik cümle (`otomatikAnons`). Önizleme de adımın metnini okur (plan üreticisiyle aynı).
  */
 export function ekHatirlatmaPencereTanimi(secenekler: {
     kaynak: string;
@@ -609,6 +630,11 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
     /** Önizlemede `{vakit}`'in okunduğu ad ("Cuma", "Öğle", "Yatsı"). */
     anonsVakitAdi: string;
     anonsNotu?: string;
+    /**
+     * Akış önizlemesinde kullanıcının metni okunur mu? (yatış: yalnız yatsı hatırlatmasında —
+     * muhasebe daima otomatik cümledir; plan üreticisiyle aynı kural.) Varsayılan `true`.
+     */
+    ozelMetinOnizlemedeOkunur?: boolean;
     baslik: string;
     baslikKucuk: string;
     ikon: string;
@@ -649,7 +675,6 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
         yonSecilebilir: false,
         yonSabitGerekcesi: secenekler.yonSabitGerekcesi,
         tonSecilebilir: false,
-        anonsMetniDuzenlenebilir: false,
         bosMetinOtomatik: true,
         onPlanBanneriVar: false,
         kaynak: secenekler.kaynak,
@@ -666,7 +691,11 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
         anonsCoz: (sablon, seviye) => anonsCoz(sablon, { vakit: secenekler.anonsVakitAdi, sureDk: seviye.esikDk }),
         otomatikAnons: secenekler.otomatikAnons,
         anonsNotu: secenekler.anonsNotu,
-        onizlemeMetni: secenekler.onizlemeMetni,
+        onizlemeMetni: ozelMetinliOnizleme(
+            secenekler.onizlemeMetni,
+            (adim) => ({ vakit: secenekler.anonsVakitAdi, sureDk: adim.olcuDk }),
+            secenekler.ozelMetinOnizlemedeOkunur ?? true
+        ),
         onizlemeOzeti: secenekler.onizlemeOzeti,
         yetenekler,
         esikAdimDk: secenekler.esikAdimDk,
@@ -715,9 +744,10 @@ export function cevrilemeyenAnonsVarMi(seviyeler: SeviyeAyari[], yon: PencereYon
  * STANDART İSTİSNALARI (gerekçeli):
  * - TON YOK: nafile gönüllü ibadettir; "sert/acil" ton ve acil kanal (Rahatsız
  *   Etmeyin'i deler) davet değil ısrar olur (#273 fıkıh kararı).
- * - Anons metni yazılmaz: muhafız şablonları `{vakit}` ile FARZ vaktine kuruludur;
- *   nafile cümlesi bağlamdan üretilir (`anonsOrnegiOlustur` gösterir).
  * - Ön plan banner'ı yok (olgu, yetenek değil): ön plan muhafızı yalnız farz izler.
+ *
+ * Sesli okuma metni YAZILIR (eski istisna kalktı): `{vakit}` nafilenin adıdır (muhafız
+ * şablonları gibi farz vaktine değil), boş metin = bağlamsal otomatik cümle.
  * `pencere` verilirse zaman şeridi bugünün penceresini çizer.
  */
 export function nafilePencereTanimi(secenekler: {
@@ -751,7 +781,6 @@ export function nafilePencereTanimi(secenekler: {
         ...platformaGoreStandart(yetenekler),
         // İSTİSNALAR — gerekçe fonksiyonun belgesinde.
         tonSecilebilir: false,
-        anonsMetniDuzenlenebilir: false,
         bosMetinOtomatik: true,
         onPlanBanneriVar: false,
         kaynak: secenekler.kaynak,
@@ -771,7 +800,11 @@ export function nafilePencereTanimi(secenekler: {
         anonsCoz: (sablon, seviye) =>
             anonsCoz(sablon, { vakit: secenekler.baslik, sureDk: seviye.esikDk, yon: secenekler.yon }),
         otomatikAnons: secenekler.otomatikAnons,
-        onizlemeMetni: secenekler.onizlemeMetni,
+        onizlemeMetni: ozelMetinliOnizleme(secenekler.onizlemeMetni, (adim) => ({
+            vakit: secenekler.baslik,
+            sureDk: adim.olcuDk,
+            yon: secenekler.yon,
+        })),
         onizlemeOzeti: secenekler.onizlemeOzeti,
         yetenekler,
         esikAdimDk: ESIK_ADIM_DK,

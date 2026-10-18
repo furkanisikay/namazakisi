@@ -35,11 +35,18 @@ appId: com.furkanisikay.namazakisi
     timeout: 20000
 - takeScreenshot: kareler/02-muhafiz-zaman-seridi
 
-# "İkisi de" secilince sheet sesli anons metniyle dolar; yalniz bildirimde alt
-# yarisi bos kaliyordu.
+# "Sesli okuma" anahtari acilinca sheet sesli okuma editoruyle dolar (birlesik
+# hatirlatma modulu: dort kanal karti yerine iki anahtar). Riza kaydi yoksa once
+# onay modali cikar — onaylanir.
 - tapOn:
     text: "1\\. hatırlatma.*düzenleyin.*"
-- tapOn: "İkisi de"
+- tapOn:
+    id: "adim-sesli-anahtari"
+- runFlow:
+    when:
+      visible: "Sesli anonsu açın"
+    commands:
+      - tapOn: "Sesli anonsu açın"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: kareler/03-adim-detay

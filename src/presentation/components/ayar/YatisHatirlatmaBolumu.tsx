@@ -210,11 +210,13 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
                 kaynak: 'yatis',
                 yuzey: 'yatis',
                 anonsVakitAdi: 'Yatsı',
-                anonsNotu: 'Gün sonu muhasebesi daima otomatik cümleyle okunur.',
+                anonsNotu: 'Kendi metniniz yalnız yatsı hatırlatmasında okunur; gün sonu muhasebesi daima otomatik cümleyle okunur.',
+                // Plan üreticisiyle aynı kural: muhasebe içeriği kullanıcının metnini KULLANMAZ.
+                ozelMetinOnizlemedeOkunur: ornek?.tur === 'yatsi',
                 baslik: 'Yatış hatırlatması',
                 baslikKucuk: 'yatış hatırlatması',
                 ikon: 'bed',
-                // Kimlik yatsıdır; anons metni içerikten gelir (yer tutucusuz).
+                // Kimlik yatsıdır; boş sesli okuma metni içerikten gelir (otomatik cümle).
                 vakit: 'yatsi',
                 yonSabitGerekcesi: YATIS_YON_GEREKCESI,
                 adimSayisi: ayarlar.adimlar.length,
