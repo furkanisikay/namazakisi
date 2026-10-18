@@ -25,6 +25,20 @@ describe('alarmOnayMaddeleri', () => {
         expect(m).not.toContain('30 saniyelik');
     });
 
+    it('iOS + AlarmKit yok: sürüm cümlesi yalnız gerçekten eski sürümde', () => {
+        expect(metin(alarmOnayMaddeleri('ios', 'desteklenmiyor', { iosSurum: 18 }))).toContain('bu iPhone iOS 18');
+        for (const iosSurum of [26, null]) {
+            const m = metin(alarmOnayMaddeleri('ios', 'desteklenmiyor', { iosSurum }));
+            expect(m).not.toContain('iOS 26');
+            expect(m).not.toMatch(/güncelle/i);
+        }
+    });
+
+    it('Android: tam ekran izni kapalıysa "tam ekran açılır" vaadi yerine izin şartı', () => {
+        expect(metin(alarmOnayMaddeleri('android', null, { tamEkran: false }))).toContain('ayrıca izin vermeniz gerekir');
+        expect(metin(alarmOnayMaddeleri('android', null, { tamEkran: true }))).toContain('tam ekran açılır');
+    });
+
     it('iOS + izin reddedilmiş: Ayarlar yönlendirmesi', () => {
         expect(metin(alarmOnayMaddeleri('ios', 'reddedildi'))).toContain('Ayarlar');
     });

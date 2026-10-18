@@ -53,6 +53,7 @@ import { AlarmOnayModal } from './AlarmOnayModal';
 import { AlarmBilgiSatirlari, alarmNotlariniOlustur } from './AlarmBilgiSatirlari';
 import { SesliOnayModal } from '../../screens/MuhafizAyarlari/SesliOnayModal';
 import { useAlarmIzinleri } from '../../hooks/useAlarmIzinleri';
+import { useCihazDurumu } from '../../hooks/useCihazDurumu';
 import {
     acilTonSecilebilirMi,
     etkinKademe,
@@ -94,6 +95,20 @@ import {
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
 /** Adım yazımıyla BİRLİKTE kaydedilecek rıza (yüzeyin kendi kaydı). */
+
+const DND_ALANLARI = ['dndErisimi'] as const;
+
+/**
+ * Acil ton örneğinin altındaki ek cümle. iPhone'da acil ton Odak'ı/sessizi delmez
+ * (`AdimNotlari` bunu zaten söyler) → yok. Android'de Rahatsız Etmeyin'i ancak erişim
+ * VERİLMİŞSE deler; erişim yoksa doğrusu söylenir, bilinmiyorsa eski temkinli cümle.
+ */
+export function acilTonOrnekNotu(ton: string, platform: string, dndErisimi: boolean | null): string {
+    if (ton !== 'acil' || platform !== 'android') return '';
+    if (dndErisimi === false) return ' · Bildirim ekranın üstünde kalır; Rahatsız Etmeyin açıkken susar.';
+    return ' · Bildirim ekranın üstünde kalır; Rahatsız Etmeyin modunu delebilir.';
+}
+
 export interface AdimRizasi {
     sesliOnayi?: true;
     alarmOnayi?: true;
@@ -232,6 +247,10 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
             (tanim.yetenekler.platform === 'ios' || alarmAcikMi),
         tanim.yetenekler.platform
     );
+    // Rahatsız Etmeyin erişimi: acil ton örneğindeki "delebilir" cümlesi yalnız erişim
+    // varken doğrudur (Android `setBypassDnd` erişimsiz sessizce yok sayılır).
+    const { durum: cihaz } = useCihazDurumu(DND_ALANLARI, gorunur && tanim.yetenekler.platform === 'android');
+    const iosSurum = cihaz.surum?.platform === 'ios' ? cihaz.surum.ana : null;
 
     const [metinTaslak, setMetinTaslak] = useState(seviye?.anonsMetni ?? '');
     /** Ses secici acik mi? Cift dokunusa karsi butonu kilitler (bkz. `sesiSec`). */
@@ -733,9 +752,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                     />
                                                     <Text className="flex-1 text-xs leading-4" style={{ color: renkler.metin }}>
                                                         {basligiOlustur(tanim.vakit, kademeSeviyeNo(etkinTon), seviye.esikDk, tanim.yon)}
-                                                        {etkinTon === 'acil'
-                                                            ? ' · Bildirim ekranın üstünde kalır; Rahatsız Etmeyin modunu delebilir.'
-                                                            : ''}
+                                                        {acilTonOrnekNotu(etkinTon, tanim.yetenekler.platform, cihaz.dndErisimi)}
                                                     </Text>
                                                 </View>
                                             </>
@@ -795,7 +812,9 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                         {seviye.alarmKapsami === 'hepsi' && (
                                                             <Text className="text-xs mt-2" style={{ color: renkler.metinIkincil }}>
                                                                 {ALARM_KAPSAMI_NOTU}
-                                                                {tanim.yetenekler.platform === 'ios' ? ` ${IOS_ALARM_KAPSAMI_NOTU}` : ''}
+                                                                {tanim.yetenekler.platform === 'ios' && alarmIzinleri.alarmKit === 'izinli'
+                                                                    ? ` ${IOS_ALARM_KAPSAMI_NOTU}`
+                                                                    : ''}
                                                             </Text>
                                                         )}
                                                     </View>
@@ -807,9 +826,11 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                             tamEkran: alarmIzinleri.tamEkran,
                                                             tamAlarm: alarmIzinleri.tamAlarm,
                                                             alarmKit: alarmIzinleri.alarmKit,
+                                                            iosSurum,
                                                         })}
                                                         onIzinAyari={() => void alarmIzinleri.ayariAc()}
                                                         onAlarmIzni={() => void alarmIzinleri.izinIste()}
+                                                        onTamAlarm={() => void alarmIzinleri.tamAlarmAyariAc()}
                                                     />
                                                 )}
                                             </AnahtarSatiri>
@@ -850,6 +871,8 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                         gorunur
                         platform={tanim.yetenekler.platform}
                         alarmKit={alarmIzinleri.alarmKit}
+                        iosSurum={iosSurum}
+                        tamEkran={alarmIzinleri.tamEkran}
                         onOnayla={() => {
                             setAlarmOnayAcik(false);
                             if (tanim.yetenekler.platform !== 'ios') {

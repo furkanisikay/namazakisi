@@ -10,6 +10,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Linking } from 'react-native';
+import { alarmIzniAyariniAc } from '../../domain/services/SistemDurumuOkuyucu';
 import {
     tamAlarmIzniVarMi,
     tamEkranAyariniAc,
@@ -38,7 +39,14 @@ export interface AlarmIzinleri {
      * ekranın kendi planlaması koşmaz. Sonuç durum döner (Android'de `null`).
      */
     izinIste: (yenidenPlanla?: boolean) => Promise<AlarmKitDurumu | null>;
+    /**
+     * Android 12+: "Alarmlar ve hatırlatıcılar" (tam alarm) izin ekranını açar; dönüşte
+     * durum yeniden okunur. iOS'ta etkisizdir.
+     */
+    tamAlarmAyariAc: () => Promise<void>;
 }
+
+type Donus = 'ayar' | 'tamAlarm' | null;
 
 /** Muhafızı mevcut ayarlarla yeniden planlar (tembel: servis native köprü grafiği çeker). */
 function muhafiziYenidenPlanla(): void {
@@ -55,7 +63,7 @@ export function useAlarmIzinleri(etkin: boolean, platform: MuhafizPlatformu = 'a
     const [tamEkran, setTamEkran] = useState<boolean | null>(null);
     const [tamAlarm, setTamAlarm] = useState<boolean | null>(null);
     const [alarmKit, setAlarmKit] = useState<AlarmKitDurumu | null>(null);
-    const donusBekleniyor = useRef(false);
+    const donusBekleniyor = useRef<Donus>(null);
     const ios = platform === 'ios';
 
     const oku = useCallback(async (): Promise<boolean | null> => {
@@ -92,7 +100,17 @@ export function useAlarmIzinleri(etkin: boolean, platform: MuhafizPlatformu = 'a
     useEffect(() => {
         const abonelik = AppState.addEventListener('change', async (durum) => {
             if (durum !== 'active' || !donusBekleniyor.current) return;
-            donusBekleniyor.current = false;
+            const neden = donusBekleniyor.current;
+            donusBekleniyor.current = null;
+            if (neden === 'tamAlarm') {
+                const alarm = await tamAlarmIzniVarMi();
+                setTamAlarm(alarm);
+                if (alarm === true) {
+                    muhafiziYenidenPlanla();
+                    kisaBildirimGoster('Alarm artık tam saatinde kurulacak');
+                }
+                return;
+            }
             if ((await oku()) !== true) return;
             if (ios) {
                 muhafiziYenidenPlanla();
@@ -105,7 +123,7 @@ export function useAlarmIzinleri(etkin: boolean, platform: MuhafizPlatformu = 'a
     }, [oku, ios]);
 
     const ayariAc = useCallback(async () => {
-        donusBekleniyor.current = true;
+        donusBekleniyor.current = 'ayar';
         let acildi = false;
         if (ios) {
             try {
@@ -118,7 +136,7 @@ export function useAlarmIzinleri(etkin: boolean, platform: MuhafizPlatformu = 'a
             acildi = await tamEkranAyariniAc();
         }
         if (!acildi) {
-            donusBekleniyor.current = false;
+            donusBekleniyor.current = null;
             kisaBildirimGoster('Ayar ekranı açılamadı; telefonunuzun Ayarlar bölümünden açabilirsiniz.', true);
         }
     }, [ios]);
@@ -135,5 +153,11 @@ export function useAlarmIzinleri(etkin: boolean, platform: MuhafizPlatformu = 'a
         [ios]
     );
 
-    return { tamEkran, tamAlarm, alarmKit, ayariAc, izinIste };
+    const tamAlarmAyariAc = useCallback(async () => {
+        if (ios) return;
+        donusBekleniyor.current = 'tamAlarm';
+        await alarmIzniAyariniAc();
+    }, [ios]);
+
+    return { tamEkran, tamAlarm, alarmKit, ayariAc, izinIste, tamAlarmAyariAc };
 }

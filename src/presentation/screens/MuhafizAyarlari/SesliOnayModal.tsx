@@ -15,7 +15,7 @@
  */
 import * as React from 'react';
 import { useEffect } from 'react';
-import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleSheet, Platform } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
@@ -47,22 +47,28 @@ export interface SesliOnayModalProps {
     onIptal: () => void;
 }
 
-const MADDELER: { ikon: string; metin: string }[] = [
-    {
-        ikon: 'volume-up',
-        // Yon-bagimsiz: "son dakikalarinda" giris yonunde YANLISTI (orada vakit
-        // girdikten sonra, gecen sureyi soyler).
-        metin: 'Yalnızca ayarladığınız adımlarda, kalan ya da geçen süreyi sesli olarak söyler.',
-    },
-    {
-        ikon: 'bell-slash',
-        metin: 'Alarm gibi davranır: telefonunuz sessizde veya Rahatsız Etmeyin modundayken de duyulur.',
-    },
-    {
-        ikon: 'mobile-alt',
-        metin: 'Bildirim de gönderilir; sesi duymazsanız ekranda izi kalır.',
-    },
-];
+/**
+ * Rıza maddeleri — platforma göre. iPhone'da anons bildirimin SESİDİR: sessiz anahtarı
+ * açıkken duyulmaz (Android'deki gibi alarm olarak çalmaz). İki platforma aynı cümleyi
+ * söylemek iPhone kullanıcısına yanlış bilgi veriyordu.
+ */
+export function sesliOnayMaddeleri(platform: string): { ikon: string; metin: string }[] {
+    return [
+        {
+            ikon: 'volume-up',
+            // Yon-bagimsiz: "son dakikalarinda" giris yonunde YANLISTI (orada vakit
+            // girdikten sonra, gecen sureyi soyler).
+            metin: 'Yalnızca ayarladığınız adımlarda, kalan ya da geçen süreyi sesli olarak söyler.',
+        },
+        platform === 'ios'
+            ? { ikon: 'bell-slash', metin: "iPhone'da bildirim sesi olarak çalar; sessiz anahtarı açıkken duyulmaz." }
+            : { ikon: 'bell-slash', metin: 'Alarm gibi davranır: telefonunuz sessizde veya Rahatsız Etmeyin modundayken de duyulur.' },
+        {
+            ikon: 'mobile-alt',
+            metin: 'Bildirim de gönderilir; sesi duymazsanız ekranda izi kalır.',
+        },
+    ];
+}
 
 export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
     gorunur,
@@ -129,7 +135,7 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                         </View>
                     </View>
 
-                    {MADDELER.map(({ ikon, metin }) => (
+                    {sesliOnayMaddeleri(Platform.OS).map(({ ikon, metin }) => (
                         <View key={ikon} className="flex-row items-start mb-2.5">
                             <FontAwesome5
                                 name={ikon}
