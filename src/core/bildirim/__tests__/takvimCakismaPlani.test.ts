@@ -11,6 +11,7 @@ import {
     takvimCakismaKokuneAitMi,
     takvimCakismaMetniOlustur,
     takvimCakismaPlaniOlustur,
+    takvimCakismaTetigi,
     vakitCakismasiniBul,
     type HamTakvimEtkinligi,
     type TakvimEtkinligi,
@@ -462,5 +463,55 @@ describe('ORTAK MODEL (plan §5.4): adım dizisi, göç, gizlilik', () => {
         expect(takvimCakismaKokuneAitMi(`${kok}_20`, kok)).toBe(true);
         expect(takvimCakismaKokuneAitMi(`${TAKVIM_CAKISMA_ID_ONEKI}2026-10-12_oglex`, kok)).toBe(false);
         expect(takvimCakismaKokuneAitMi(`${TAKVIM_CAKISMA_ID_ONEKI}2026-10-12_ikindi`, kok)).toBe(false);
+    });
+});
+
+describe('SESLİ OKUMA {süre} — asla negatif (Opus incelemesi #1)', () => {
+    const SIMDI = new Date(2026, 9, 12, 7, 0);
+    const gun = new Date(2026, 9, 12);
+    const pt = new PrayerTimes(new Coordinates(ISTANBUL.lat, ISTANBUL.lng), gun, CalculationMethod.Turkey());
+    // 09:00–16:25 toplantı: öğleyi tümden kaplar (kapliyor).
+    const toplanti: TakvimEtkinligi = {
+        baslangicMs: new Date(2026, 9, 12, 9, 0).getTime(),
+        bitisMs: new Date(2026, 9, 12, 16, 25).getTime(),
+        baslik: null,
+    };
+
+    it('kapliyor: {süre} vakit GİRİŞİNE kalan dakika (çapaya göre "-174" DEĞİL)', () => {
+        const plan = takvimCakismaPlaniOlustur({
+            koordinat: ISTANBUL,
+            ayarlar: { aktif: true, adimlar: [{ ...ekAdim(30), kanallar: { bildirim: true, sesli: true }, anonsMetni: '{vakit} için {süre} dakika.' }] },
+            simdi: SIMDI,
+            gunSayisi: 1,
+            etkinlikler: [toplanti],
+        });
+        const ogle = plan.find((k) => k.vakit === 'ogle');
+        expect(ogle?.tur).toBe('kapliyor');
+        const beklenen = Math.round((pt.dhuhr.getTime() - ogle!.zaman.getTime()) / DK);
+        expect(beklenen).toBeGreaterThan(0);
+        expect(ogle?.uyari.anonsMetni).toBe(`Öğle için ${beklenen} dakika.`);
+        expect(ogle?.uyari.anonsMetni).not.toMatch(/-\d/);
+    });
+
+    it('takvimCakismaTetigi: once → etkinliğe, kapliyor → girişe kalan; hiçbir girdide negatif yok', () => {
+        const giris = Date.UTC(2026, 9, 12, 10, 0);
+        expect(takvimCakismaTetigi({ tur: 'once', girisMs: giris, blokBaslangicMs: giris + 60 * DK }, 30)).toEqual({
+            zamanMs: giris + 30 * DK,
+            sureDk: 30,
+        });
+        // once, tabana (girişe) kenetlenen: etkinliğe 15 dk.
+        expect(takvimCakismaTetigi({ tur: 'once', girisMs: giris, blokBaslangicMs: giris + 15 * DK }, 60).sureDk).toBe(15);
+        // kapliyor, blok 4 sa önce: tetik giriş − 60, ölçü 60.
+        expect(takvimCakismaTetigi({ tur: 'kapliyor', girisMs: giris, blokBaslangicMs: giris - 240 * DK }, 30)).toEqual({
+            zamanMs: giris - 60 * DK,
+            sureDk: 60,
+        });
+        for (const k of [1, 10, 30, 60, 120]) {
+            for (const fark of [-600, -61, -30, 0, 15, 90]) {
+                for (const tur of ['once', 'kapliyor'] as const) {
+                    expect(takvimCakismaTetigi({ tur, girisMs: giris, blokBaslangicMs: giris + fark * DK }, k).sureDk).toBeGreaterThanOrEqual(0);
+                }
+            }
+        }
     });
 });

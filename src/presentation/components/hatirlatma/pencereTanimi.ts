@@ -39,7 +39,7 @@ import { anonsMetniniCoz, anonsSablonlari } from '../../../core/muhafiz/anonsMet
 import {
     ANONS_SOZLUKLERI,
     anonsCoz,
-    anonsMetniDoluMu,
+    cozulmusAnonsVeyaNull,
     type AnonsBaglami,
     type HatirlatmaYuzeyi,
     type YerTutucu,
@@ -599,8 +599,10 @@ function ozelMetinliOnizleme(
     if (!taban) return undefined;
     return (adim, ilk) => {
         const metin = taban(adim, ilk);
-        if (!okunur || !anonsMetniDoluMu(adim.anonsMetni)) return metin;
-        return { ...metin, anons: anonsCoz(adim.anonsMetni, baglam(adim)) };
+        if (!okunur) return metin;
+        // Çözüm boş kalırsa (yalnız bilinmeyen yer tutucu) otomatik cümle — planlayıcıyla aynı.
+        const cozulmus = cozulmusAnonsVeyaNull(adim.anonsMetni, baglam(adim));
+        return cozulmus === null ? metin : { ...metin, anons: cozulmus };
     };
 }
 
@@ -658,8 +660,15 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
     otomatikAnons?: (seviye: SeviyeAyari) => string;
     onizlemeMetni?: PencereTanimi['onizlemeMetni'];
     onizlemeOzeti?: PencereTanimi['onizlemeOzeti'];
+    /**
+     * `{süre}` ölçüsü (adımın "kaç dk önce" değerinden). Verilmezse adımın kendi değeri.
+     * Takvim çakışmasında ölçü etkinliğe/vakit girişine kalan süredir ve planlayıcıyla AYNI
+     * fonksiyondan (`takvimCakismaTetigi`) gelir — editör/önizleme ile cihaz ayrışmasın.
+     */
+    anonsSuresiDk?: (kalanDk: number) => number;
 }): PencereTanimi {
     const yetenekler = secenekler.yetenekler ?? ANDROID_YETENEKLERI;
+    const sure = secenekler.anonsSuresiDk ?? ((dk: number) => dk);
     const sozluk = ANONS_SOZLUKLERI[secenekler.yuzey];
     const pencereUzunluguDk = secenekler.pencere
         ? Math.round((secenekler.pencere.bitis.getTime() - secenekler.pencere.baslangic.getTime()) / 60000)
@@ -688,12 +697,12 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
         adimBilgileri,
         anonsYerTutuculari: sozluk.yerTutucular,
         anonsSablonlari: sozluk.sablonlar,
-        anonsCoz: (sablon, seviye) => anonsCoz(sablon, { vakit: secenekler.anonsVakitAdi, sureDk: seviye.esikDk }),
+        anonsCoz: (sablon, seviye) => anonsCoz(sablon, { vakit: secenekler.anonsVakitAdi, sureDk: sure(seviye.esikDk) }),
         otomatikAnons: secenekler.otomatikAnons,
         anonsNotu: secenekler.anonsNotu,
         onizlemeMetni: ozelMetinliOnizleme(
             secenekler.onizlemeMetni,
-            (adim) => ({ vakit: secenekler.anonsVakitAdi, sureDk: adim.olcuDk }),
+            (adim) => ({ vakit: secenekler.anonsVakitAdi, sureDk: sure(adim.olcuDk) }),
             secenekler.ozelMetinOnizlemedeOkunur ?? true
         ),
         onizlemeOzeti: secenekler.onizlemeOzeti,

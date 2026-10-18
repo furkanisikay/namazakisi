@@ -304,8 +304,7 @@ export function takvimCakismaPlaniOlustur(g: TakvimCakismaPlanGirdisi): TakvimCa
             const karar = vakitCakismasiniBul(aralik, bloklar);
             if (!karar) continue;
             const { blok, tur } = karar;
-            const capaMs = tur === 'once' ? blok.baslangicMs : Math.min(blok.baslangicMs, aralik.girisMs);
-            const tabanMs = tur === 'once' ? aralik.girisMs : aralik.girisMs - KAPLIYOR_AZAMI_ONCELIK_DK * DK;
+            const tetikGirdisi = { tur, girisMs: aralik.girisMs, blokBaslangicMs: blok.baslangicMs };
             const cikis = new Date(Math.max(blok.baslangicMs, aralik.girisMs));
             const ortak = {
                 vakit,
@@ -324,21 +323,21 @@ export function takvimCakismaPlaniOlustur(g: TakvimCakismaPlanGirdisi): TakvimCa
             // ses/alarm en güçlü adımdan) — ilkini tutmak güçlü kanalı (alarm) düşürürdü.
             const anlar = new Map<number, { sira: number; uyari: UyariPlani }>();
             for (const [sira, uyari] of adimPlani.entries()) {
-                const zamanMs = Math.max(capaMs - uyari.kalanDk * DK, tabanMs);
+                const { zamanMs } = takvimCakismaTetigi(tetikGirdisi, uyari.kalanDk);
                 if (zamanMs <= simdiMs) continue;
                 const mevcut = anlar.get(zamanMs);
                 if (mevcut) mevcut.uyari = ayniAnaDusenleriBirlestir(mevcut.uyari, uyari);
                 else anlar.set(zamanMs, { sira, uyari });
             }
             for (const [zamanMs, { sira, uyari }] of anlar) {
-                // Kullanıcının metni: `{süre}` etkinliğe (çapaya) GERÇEKTEN kalan dakika
-                // (tabana kenetlenen tetikte eşik değil). Bağlamda etkinlik ADI YOKTUR —
-                // tip taşımaz, ad hiçbir yer tutucuyla okunamaz (gizlilik). Boşsa otomatik.
+                // Kullanıcının metni: `{süre}` = `takvimCakismaTetigi` ölçüsü (önizlemeyle AYNI
+                // kural; asla negatif değil). Bağlamda etkinlik ADI YOKTUR — tip taşımaz, ad
+                // hiçbir yer tutucuyla okunamaz (gizlilik). Boşsa otomatik.
                 const adimUyarisi: UyariPlani = {
                     ...uyari,
                     anonsMetni: adimAnonsMetni(
                         uyari.anonsMetni,
-                        { vakit: VAKIT_ADLARI[vakit], sureDk: Math.round((capaMs - zamanMs) / DK) },
+                        { vakit: VAKIT_ADLARI[vakit], sureDk: takvimCakismaTetigi(tetikGirdisi, uyari.kalanDk).sureDk },
                         () => anons
                     ),
                 };
@@ -358,6 +357,29 @@ export function takvimCakismaPlaniOlustur(g: TakvimCakismaPlanGirdisi): TakvimCa
     }
     plan.sort((a, b) => a.zaman.getTime() - b.zaman.getTime());
     return alarmPayinaSigdir(plan, g.alarmButcesi);
+}
+
+/**
+ * Bir çakışma adımının TETİK anı ve sesli okumadaki `{süre}` ölçüsü — planlayıcı ve ekran
+ * önizlemesi AYNI kuraldan beslenir.
+ *
+ * Tetik `max(çapa − kalanDk, taban)`: `once`'ta çapa blok başı, taban vakit girişi;
+ * `kapliyor`'da çapa `min(blok, giriş)`, taban `giriş − KAPLIYOR_AZAMI_ONCELIK_DK`.
+ *
+ * `{süre}` "kaç dakika sonra çakışma başlıyor"dur: `once`'ta ETKİNLİĞİN başına, `kapliyor`'da
+ * VAKİT GİRİŞİNE kalan dakika (etkinlik çoktan başlamış olabilir — çapaya göre ölçmek
+ * "-174 dakika" okuturdu). Tetik her iki türde de o andan önce kurulduğu için ölçü pozitiftir;
+ * yine de 0'ın altına inmez.
+ */
+export function takvimCakismaTetigi(
+    c: { tur: CakismaTuru; girisMs: number; blokBaslangicMs: number },
+    kalanDk: number
+): { zamanMs: number; sureDk: number } {
+    const capaMs = c.tur === 'once' ? c.blokBaslangicMs : Math.min(c.blokBaslangicMs, c.girisMs);
+    const tabanMs = c.tur === 'once' ? c.girisMs : c.girisMs - KAPLIYOR_AZAMI_ONCELIK_DK * DK;
+    const zamanMs = Math.max(capaMs - kalanDk * DK, tabanMs);
+    const olcuAniMs = c.tur === 'once' ? c.blokBaslangicMs : c.girisMs;
+    return { zamanMs, sureDk: Math.max(0, Math.round((olcuAniMs - zamanMs) / DK)) };
 }
 
 /** Bu servisin bildirim kimliği mi? */

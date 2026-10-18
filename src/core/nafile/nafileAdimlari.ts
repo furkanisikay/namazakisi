@@ -18,6 +18,7 @@
 import type { SeviyeAyari, Siklik, UyariKanallari, VakitMuhafizAyari } from '../muhafiz/matrisTipleri';
 import type { PencereYonu } from '../muhafiz/pencereTipleri';
 import { kronolojikSirala } from '../muhafiz/aktifSeviye';
+import { adimKapaliMi } from '../muhafiz/kanalKumesi';
 import { ESIK_MUTLAK_MIN } from '../muhafiz/esikSinirlari';
 import {
     adimAlarmSesleri,
@@ -236,6 +237,9 @@ const yapisalYuk = (a: NafileHatirlatmaAyari): YapisalYuk => {
     const y: YapisalYuk = { adim: 0, sesli: 0, tekrarli: 0, yogunluk: 0 };
     if (!a.aktif) return y;
     for (const s of a.adimlar) {
+        // Kapalı adım hiçbir şey kurmaz → yük sayılmaz; geri AÇMAK böylece kapıdan geçer
+        // (ortak `adimDizisi.yapisalYuk` ile aynı kural).
+        if (adimKapaliMi(s.kanallar)) continue;
         y.adim++;
         if (s.kanallar?.sesli === true) y.sesli++;
         if (s.siklik !== 'birkez') {

@@ -36,7 +36,9 @@ export function imlecteEkle(metin: string, ek: string, secim: { start: number; e
     const sonra = metin.slice(son);
     const solBosluk = once.length > 0 && !/\s$/.test(once) ? ' ' : '';
     const sagBosluk = sonra.length > 0 && !/^[\s.,;:!?]/.test(sonra) ? ' ' : '';
-    return `${once}${solBosluk}${ek}${sagBosluk}${sonra}`.slice(0, ANONS_METIN_UST_SINIRI);
+    const yeni = `${once}${solBosluk}${ek}${sagBosluk}${sonra}`;
+    // Sığmıyorsa HİÇ ekleme: kesmek yarım bir yer tutucu (`{sü`) bırakır, TTS onu okurdu.
+    return yeni.length > ANONS_METIN_UST_SINIRI ? metin : yeni;
 }
 
 /** Editörün küçük seçim çipi (≥44dp). */
@@ -98,11 +100,10 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
     // Muhafızda "Otomatik" = ilk şablon → listede ikinci kez gösterilmez.
     const sablonlar = otomatikBos ? tanim.anonsSablonlari : tanim.anonsSablonlari.filter((s) => s !== otomatikMetin);
     const dolu = anonsMetniDoluMu(taslak);
-    const okunacak = dolu
-        ? tanim.anonsCoz(taslak, seviye)
-        : otomatikBos
-          ? tanim.otomatikAnons?.(seviye) ?? ''
-          : '';
+    // Planlayıcıyla AYNI kural: çözüm boş kalırsa (ör. yalnız bilinmeyen yer tutucu) ek
+    // yüzeyde otomatik cümle okunur; muhafızda boş = sessiz.
+    const cozulmus = dolu ? tanim.anonsCoz(taslak, seviye) : '';
+    const okunacak = cozulmus.length > 0 ? cozulmus : otomatikBos ? tanim.otomatikAnons?.(seviye) ?? '' : '';
     const otomatikSecili = otomatikBos ? !dolu : taslak === otomatikMetin;
 
     const cipEkle = (anahtar: string) => {
@@ -237,8 +238,8 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
             </View>
             <Text className="text-[11px] mt-1.5 leading-4" style={{ color: renkler.metinIkincil }}>
                 {otomatikBos
-                    ? 'Boş bırakırsanız hatırlatmanın otomatik cümlesi okunur.'
-                    : 'Boş bırakırsanız bu hatırlatma sesli okumaz.'}
+                    ? 'Boş bırakırsanız (ya da metinde okunacak bir şey kalmazsa) hatırlatmanın otomatik cümlesi okunur.'
+                    : 'Boş bırakırsanız (ya da metinde okunacak bir şey kalmazsa) bu hatırlatma sesli okumaz.'}
                 {tanim.anonsNotu ? ` ${tanim.anonsNotu}` : ''}
             </Text>
         </View>

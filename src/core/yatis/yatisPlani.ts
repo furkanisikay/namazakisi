@@ -386,6 +386,17 @@ type YatisTetigi = { sira: number; uyari: UyariPlani; zaman: Date };
  * Ufuk özel günden bağımsız seçilir, sonra özel günler elenir (gün sonu
  * deseni): aralık dışı günlerin bildirimleri birebir aynı kalır.
  */
+
+/**
+ * Yatsı hatırlatmasının sesli okuma metni. Yatsı girişine kayan tetik yatış saatini GEÇMİŞ
+ * olabilir (yazın erken yatış): o anda "{süre} dakika" anlamını yitirir (0) → metin `{süre}`
+ * içeriyorsa otomatik cümle okunur; "Yatmana 0 dakika kaldı" demektense.
+ */
+export function yatisAdimAnonsu(metin: string | undefined, sureDk: number, otomatik: string): string {
+    if (sureDk <= 0 && typeof metin === 'string' && metin.includes('{süre}')) return otomatik;
+    return adimAnonsMetni(metin, { vakit: 'Yatsı', sureDk }, () => otomatik);
+}
+
 export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {
     const { ayarlar, simdi } = g;
     if (!ayarlar.aktif || (!ayarlar.yatsiHatirlatmasi && !ayarlar.muhasebe)) return [];
@@ -450,7 +461,12 @@ export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {
         }
         if (!icerik) continue;
         const otomatikAnons = icerik.anons;
+        // Yatış anı (kaymadan önceki tetik + kalan dk). Kayan tetikte `{süre}` eşik değil,
+        // o anda yatışa GERÇEKTEN kalan dakikadır.
+        const ilkTetik = a.tetikler[0];
+        const yatisMs = ilkTetik.zaman.getTime() + ilkTetik.uyari.kalanDk * 60_000;
         for (const t of kaymis.slice(baslangic)) {
+            const sureDk = Math.max(0, Math.round((yatisMs - t.zaman.getTime()) / 60_000));
             plan.push({
                 ...icerik,
                 kimlik: t.sira === 0 ? icerik.kimlik : `${icerik.kimlik}_${t.uyari.kalanDk}`,
@@ -465,7 +481,7 @@ export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {
                     ...t.uyari,
                     anonsMetni:
                         icerik.tur === 'yatsi'
-                            ? adimAnonsMetni(t.uyari.anonsMetni, { vakit: 'Yatsı', sureDk: t.uyari.kalanDk }, () => otomatikAnons)
+                            ? yatisAdimAnonsu(t.uyari.anonsMetni, sureDk, otomatikAnons)
                             : icerik.anons,
                 },
             });

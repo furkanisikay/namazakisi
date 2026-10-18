@@ -59,6 +59,7 @@ import {
 import {
     KILMA_PAYI_DK,
     takvimCakismaAnonsMetni,
+    takvimCakismaTetigi,
     takvimCakismaMetniOlustur,
 } from '../../../core/bildirim/takvimCakismaPlani';
 import { adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
@@ -325,6 +326,8 @@ export const TakvimCakismaBolumu: React.FC = () => {
                     ...takvimCakismaMetniOlustur(ornek, { baslikGoster: false }),
                     anons: ornekAnons,
                 }),
+                // `{süre}` planlayıcıyla AYNI kuraldan (örnek çakışma üzerinde).
+                anonsSuresiDk: (kalanDk) => takvimCakismaTetigi(ornek, kalanDk).sureDk,
                 onizlemeOzeti: (adet) =>
                     `Bir etkinlik vaktin sonunu kapladığında ${adet} uyarı alırsınız (örnek: öğle vakti)`,
             }),

@@ -47,6 +47,16 @@ const kanalGucu = (u: UyariPlani): number => {
 };
 
 /**
+ * Birleşik tetiğin OKUNACAK metni sesli kanalı açık adımdan gelir: en güçlü adım (ör. sesli
+ * kanalı kapalı bir gerçek alarm) okunacak metni taşımıyor olabilir; onun metnini almak sesli
+ * adımın kullanıcının yazdığı cümlesini sessizce değiştirirdi.
+ */
+function anonsKaynagi(guclu: UyariPlani, diger: UyariPlani): UyariPlani {
+    if (guclu.kanallar?.sesli === true) return guclu;
+    return diger.kanallar?.sesli === true ? diger : guclu;
+}
+
+/**
  * AYNI ANA düşen iki tetiği TEK uyarıda BİRLEŞTİRİR (SAF). Ek yüzeylerde tetik bir tabana
  * kenetlenebilir (takvim `kapliyor`: giriş − 60 dk; yatış: yatsı girişi kayması) ve farklı
  * adımlar aynı dakikaya düşer. Eskiden motor sırasındaki İLKİ (en uzak eşik = çoğu zaman
@@ -54,8 +64,8 @@ const kanalGucu = (u: UyariPlani): number => {
  * tabana düşünce yalnız bildirim kuruluyor, alarm SESSİZCE kayboluyordu.
  *
  * Kural: kanallar OR'lanır (bildirim/sesli/titreşim/alarm), gerçek alarm anı (`alarm`)
- * herhangi biri taşıyorsa kalır; ses, ses adı, anons metni, ton ve aciliyet EN GÜÇLÜ
- * adımdan gelir (alarm > sesli > bildirim > titreşim; eşitlikte önceki). Zamanlama
+ * herhangi biri taşıyorsa kalır; ses, ses adı, ton ve aciliyet EN GÜÇLÜ
+ * adımdan gelir (okunacak metin ise sesli kanalı AÇIK adımdan — `anonsKaynagi`) (alarm > sesli > bildirim > titreşim; eşitlikte önceki). Zamanlama
  * kimliği (`kalanDk`, `olcuDk`, `adimIndeks`) ÖNCEKİNİN kalır — kayıt kimliği ve sırası
  * değişmez. Defter aynı üreticiyi koştuğu için sayım da birleşmiş uyarıdan yapılır.
  */
@@ -72,7 +82,7 @@ export function ayniAnaDusenleriBirlestir(onceki: UyariPlani, yeni: UyariPlani):
         kanallar,
         seviye: guclu.seviye,
         bildirimSesi: guclu.bildirimSesi,
-        anonsMetni: guclu.anonsMetni,
+        anonsMetni: anonsKaynagi(guclu, guclu === yeni ? onceki : yeni).anonsMetni,
         sesliAnons: onceki.sesliAnons || yeni.sesliAnons,
     };
     if (guclu.sesAdi !== undefined) birlesik.sesAdi = guclu.sesAdi;

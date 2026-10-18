@@ -45,7 +45,7 @@ import { sesSec } from '../../../../modules/expo-countdown-notification/src';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import { SesSecimSatiri } from './SesSecimSatiri';
 import { varsayilanAnonsMetni } from '../../../core/muhafiz/anonsMetni';
-import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
+import { esikSinirlariniHesapla, komsuyaKilitliSinirlar } from '../../../core/muhafiz/esikSinirlari';
 import { TurkceTtsUyarisi } from './AnonsBilesenleri';
 import { AnonsMetniEditoru } from './AnonsMetniEditoru';
 import { AdimNotlari, adimNotlariniOlustur } from './AdimNotlari';
@@ -285,12 +285,14 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     // Ekranda görünen ton = motorun kullandığı ton (acil kısıtı dahil).
     const etkinTon = etkinKademe(seviye, tanim.yon);
     const acilSecilebilir = acilTonSecilebilirMi(seviye.esikDk, tanim.yon);
-    const sinirlar =
-        tanim.esikSinirlari ??
-        esikSinirlariniHesapla(seviyeler, indeks, {
-            pencereUzunluguDk: tanim.pencereUzunluguDk,
-            yon: tanim.yon,
-        });
+    // Sabit sınırlı yüzeyde de seçici KOMŞU adımlara kilitlenir: iki adım aynı eşiğe çekilip
+    // biri normalize'da sessizce düşmesin (metniyle birlikte).
+    const sinirlar = tanim.esikSinirlari
+        ? komsuyaKilitliSinirlar(tanim.esikSinirlari, seviyeler, indeks, tanim.esikAdimDk)
+        : esikSinirlariniHesapla(seviyeler, indeks, {
+              pencereUzunluguDk: tanim.pencereUzunluguDk,
+              yon: tanim.yon,
+          });
     const notlar = adimNotlariniOlustur(seviye, seviyeler, {
         pencereAdi: tanim.baslikKucuk,
         pencereUzunluguDk: tanim.pencereUzunluguDk,
@@ -317,7 +319,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
         const doldur = !tanim.bosMetinOtomatik && kanal === 'sesli' && acik && !seviye.anonsMetni;
         const anonsMetni = doldur ? varsayilanAnonsMetni(tanim.yon) : seviye.anonsMetni;
         const yeni: SeviyeAyari = { ...seviye, kanallar, anonsMetni };
-        if (kanal === 'sesli' && acik && sesliOnayiVar === false) {
+        if (kanal === 'sesli' && acik && sesliOnayiVar !== true) {
             setSesliBekleyen(yeni);
             return;
         }

@@ -70,7 +70,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Namaz muhafızı, nafile, cuma, camiye gitme, yatış ve takvim hatırlatmaları artık aynı ekranı kullanır. Bildirim ve sesli okuma iki ayrı anahtar; sesli okunan cümleyi her yerde kendiniz yazabilirsiniz.',
         detayAciklama:
-            'Bir hatırlatmanın ayarı üç bölümden oluşur: ne zaman gelsin, nasıl uyarsın ve isteğe bağlı gelişmiş ayarlar (tekrar, ton, gerçek alarm). "Bildirim" ve "Sesli okuma" birbirinden bağımsız açılıp kapanır; Android\'de bildirim sesini ve titreşimi bildirimin hemen altında seçersiniz. Sesli okunan cümleyi artık her hatırlatmada yazabilirsiniz: vakit adı ve dakika gibi parçaları dokunarak eklersiniz, "Dinle" ile nasıl okunacağını duyarsınız. Boş bırakırsanız hatırlatmanın kendi cümlesi okunur. Takvim uyarısında etkinliğinizin adı hiçbir zaman okunmaz. Mevcut ayarlarınız aynen korundu.',
+            'Bir hatırlatmanın ayarı üç bölümden oluşur: ne zaman gelsin, nasıl uyarsın ve isteğe bağlı gelişmiş ayarlar (tekrar, ton, gerçek alarm). "Bildirim" ve "Sesli okuma" birbirinden bağımsız açılıp kapanır; Android\'de bildirim sesini ve titreşimi bildirimin hemen altında seçersiniz. Sesli okunan cümleyi artık her hatırlatmada yazabilirsiniz: vakit adı ve dakika gibi parçaları dokunarak eklersiniz, "Dinle" ile nasıl okunacağını duyarsınız. Namaz muhafızı dışındaki hatırlatmalarda boş bırakırsanız hatırlatmanın kendi cümlesi okunur; muhafızda boş bırakılan adım sesli okumaz. Takvim uyarısında etkinliğinizin adı hiçbir zaman okunmaz. Mevcut ayarlarınız aynen korundu.',
         ikon: 'sliders-h',
         hedefSayfa: 'BildirimAyarlari',
         ctaEtiketi: 'İnceleyin',

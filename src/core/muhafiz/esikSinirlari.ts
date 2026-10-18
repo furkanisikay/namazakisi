@@ -99,3 +99,35 @@ export function esikSinirlariniHesapla(
   // kilitlemek yerine daralt (min'e sabitle).
   return { min, max: Math.max(min, hamMax) };
 }
+
+/**
+ * Sabit sınırlı yüzeylerde (cuma, camiye gitme, yatış, takvim) eşik seçicisini KOMŞU
+ * adımlara kilitler. Ek yüzeylerin normalize'ı eşikleri tekilleştirir: iki adım aynı eşiğe
+ * çekilseydi biri (metni ve kanallarıyla) SESSİZCE düşerdi. Muhafızdaki
+ * `esikSinirlariniHesapla` kuralının ikizi; tek fark sınırların yüzeyin `esikAdimDk`
+ * ızgarasına oturmasıdır (stepper ızgara dışı değer üretmesin). Kapalı adımlar da kilitler
+ * (geri açıldığında çakışmasın). Izgarada yer kalmazsa adımın kendi değerine sabitlenir.
+ */
+export function komsuyaKilitliSinirlar(
+  taban: EsikSinirlari,
+  seviyeler: SeviyeAyari[],
+  indeks: number,
+  adimDk: number
+): EsikSinirlari {
+  if (indeks < 0 || indeks >= seviyeler.length) return taban;
+  const esik = seviyeler[indeks].esikDk;
+  const adim = Math.max(1, adimDk);
+  let alt = -Infinity;
+  let ust = Infinity;
+  for (let i = 0; i < seviyeler.length; i++) {
+    const diger = seviyeler[i].esikDk;
+    if (i === indeks || !Number.isFinite(diger)) continue;
+    if (diger < esik && diger > alt) alt = diger;
+    if (diger > esik && diger < ust) ust = diger;
+    // Eşit eşikli (bozuk/eski) komşu: seçici o değerden uzaklaşabilsin, kilitlenmesin.
+  }
+  const min = Number.isFinite(alt) ? Math.max(taban.min, Math.ceil((alt + 1) / adim) * adim) : taban.min;
+  const max = Number.isFinite(ust) ? Math.min(taban.max, Math.floor((ust - 1) / adim) * adim) : taban.max;
+  if (min > max) return { min: Math.min(esik, taban.max), max: Math.min(esik, taban.max) };
+  return { min, max };
+}

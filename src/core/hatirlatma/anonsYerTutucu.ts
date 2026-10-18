@@ -81,7 +81,21 @@ export const anonsMetniDoluMu = (metin: string | undefined | null): metin is str
  * Otomatik cümle tembel üretilir (dolu metinde hiç hesaplanmaz).
  */
 export function adimAnonsMetni(metin: string | undefined, baglam: AnonsBaglami, otomatik: () => string): string {
-    return anonsMetniDoluMu(metin) ? anonsCoz(metin, baglam) : otomatik();
+    const cozulmus = anonsMetniDoluMu(metin) ? anonsCoz(metin, baglam) : '';
+    // Yer tutucular boşa çözülüp okunacak bir şey kalmadıysa (ör. yalnız `{etkinlik}`) otomatik
+    // cümleye düşülür — sessiz kalmak "metnim çalışmıyor" hissi verirdi. (Muhafız bu yolu
+    // KULLANMAZ: orada boş = sessiz, bilinçli.)
+    return cozulmus.length > 0 ? cozulmus : otomatik();
+}
+
+/**
+ * Önizleme/editör yardımcısı: metin dolu ve çözümü BOŞ DEĞİLSE çözülmüş hâli, aksi halde
+ * `null` (çağıran otomatik cümleyi gösterir) — `adimAnonsMetni` ile aynı kural.
+ */
+export function cozulmusAnonsVeyaNull(metin: string | undefined, baglam: AnonsBaglami): string | null {
+    if (!anonsMetniDoluMu(metin)) return null;
+    const cozulmus = anonsCoz(metin, baglam);
+    return cozulmus.length > 0 ? cozulmus : null;
 }
 
 const VAKIT: YerTutucu = { anahtar: '{vakit}', etiket: 'Vakit adı' };
@@ -143,7 +157,7 @@ export const ANONS_SOZLUKLERI: Record<HatirlatmaYuzeyi, YuzeySozlugu> = {
         sablonlar: [
             'Takviminizdeki bir etkinlik {vakit} vaktine denk geliyor.',
             '{vakit} vakti bir etkinlikle çakışıyor; önce kılmayı unutmayın.',
-            'Etkinliğinize {süre} dakika var; {vakit} namazını unutmayın.',
+            '{süre} dakika sonra {vakit} vakti etkinliğinizle çakışıyor; namazı unutmayın.',
         ],
     },
 };

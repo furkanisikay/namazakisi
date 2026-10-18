@@ -38,6 +38,9 @@ jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({
 jest.mock('../../../../domain/services/AnonsOnizlemeServisi', () => ({ adimiOnizle: jest.fn() }));
 
 import { AdimDetayModal } from '../AdimDetayModal';
+import { imlecteEkle } from '../AnonsMetniEditoru';
+import { SayisalSecici } from '../../common/SayisalSecici';
+import { ANONS_METIN_UST_SINIRI } from '../../../../core/muhafiz/ios/anonsKlibi';
 import {
     kanalAnahtariniUygula,
     vakitPencereTanimi,
@@ -102,6 +105,7 @@ function kur(tanim: PencereTanimi, seviye: SeviyeAyari, ek: Partial<React.Compon
             seviyeler={[seviye]}
             indeks={0}
             ttsDestekli={null}
+            sesliOnayiVar
             onDegistir={onDegistir}
             onKapat={jest.fn()}
             {...ek}
@@ -272,5 +276,44 @@ describe('AdimDetayModal — SESLİ OKUMA METNİ her yüzeyde', () => {
         expect(ekran.getByTestId('anons-okunus').props.children).toMatch(/bu hatırlatma sesli okumaz/);
         fireEvent.press(ekran.getByLabelText(/^Otomatik cümle/));
         expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ anonsMetni: varsayilanAnonsMetni('cikisaDogru') }));
+    });
+});
+
+describe('Opus incelemesi — ekran nöbetçileri', () => {
+    test('#9 rıza bilgisi VERİLMEMİŞSE (undefined) sesli açmak önce onay ister', () => {
+        const { ekran, onDegistir } = kur(NAFILE, adim({ bildirim: true }), { sesliOnayiVar: undefined });
+        fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
+        expect(onDegistir).not.toHaveBeenCalled();
+        expect(ekran.getByLabelText(/sesli olmadan/i)).toBeTruthy();
+    });
+
+    test('#8 imlecteEkle: sığmayan çip HİÇ eklenmez (yarım `{sü` kalmaz), sığan eklenir', () => {
+        const dolu = 'a'.repeat(ANONS_METIN_UST_SINIRI - 3);
+        expect(imlecteEkle(dolu, '{süre}', null)).toBe(dolu);
+        expect(imlecteEkle('Kalk', '{vakit}', null)).toBe('Kalk {vakit}');
+    });
+
+    test('#6 ek yüzeyde yer tutucular boşa çözülürse ÖRNEK OKUNUŞ otomatik cümledir', () => {
+        const { ekran } = kur(CUMA, adim({ sesli: true }, { anonsMetni: '{etkinlik}' }));
+        expect(ekran.getByTestId('anons-okunus').props.children).toBe('Cuma için öğle vaktine 30 dakika kaldı.');
+    });
+
+    test('#10 sabit sınırlı yüzeyde eşik seçicisi KOMŞU adımlara kilitlenir', () => {
+        const onDegistir = jest.fn();
+        const ekran = render(
+            <AdimDetayModal
+                gorunur
+                tanim={CUMA}
+                seviyeler={[adim({ bildirim: true }, { esikDk: 120 }), adim({ bildirim: true }, { esikDk: 60 })]}
+                indeks={1}
+                ttsDestekli={null}
+                sesliOnayiVar
+                onDegistir={onDegistir}
+                onKapat={jest.fn()}
+            />
+        );
+        const secici = ekran.UNSAFE_getAllByType(SayisalSecici).find((x) => x.props.deger === 60)!;
+        expect(secici.props.min).toBe(15);
+        expect(secici.props.max).toBe(105);
     });
 });

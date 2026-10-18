@@ -20,6 +20,7 @@ import {
     type NafileAyarlari,
     type NafileHatirlatmaAyari,
 } from '../nafileTipleri';
+import type { SeviyeAyari } from '../../muhafiz/matrisTipleri';
 
 const V = VARSAYILAN_NAFILE_AYARLARI;
 const ac = (a: NafileHatirlatmaAyari): NafileHatirlatmaAyari => ({ ...a, aktif: true });
@@ -170,6 +171,14 @@ describe('nafileYukuArtiyorMu — bütçe kapısı yalnız YAPISAL artışta (Fa
     ])('ARTIRIR: %s', (_ad, yeni) => {
         const eski = _ad === 'günü gününe kapatma' ? { ...temel, gunuGununeKur: true } : temel;
         expect(nafileYukuArtiyorMu(eski, yeni as NafileAyarlari)).toBe(true);
+    });
+
+    it('KAPALI adımı geri AÇMAK artırır, kapatmak artırmaz (Opus incelemesi #3)', () => {
+        const kapali = { ...nafileAdimi(5), kanallar: {}, oncekiKanallar: { bildirim: true } };
+        const iki = (ikinci: SeviyeAyari) => kuslukla({ adimlar: [nafileAdimi(15), ikinci] });
+        const acik = { ...nafileAdimi(5), kanallar: { bildirim: true } };
+        expect(nafileYukuArtiyorMu(iki(kapali), iki(acik))).toBe(true);
+        expect(nafileYukuArtiyorMu(iki(acik), iki(kapali))).toBe(false);
     });
 
     it('tekrar aralığını kısaltma ARTIRIR, uzatma artırmaz', () => {
