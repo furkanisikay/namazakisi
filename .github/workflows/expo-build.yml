@@ -13,6 +13,12 @@
 #   android-build.yml APK + GitHub Release'i halleder
 #   Bu workflow sadece AAB → internal track yapar
 #
+# Telefon AAB derleyicisi (aab_derleyici): otomatik = EAS dener; EAS build'i
+#   olusmazsa (ucretsiz plan aylik Android kotasi) ya da hata verirse AYNI iste
+#   GitHub'da Gradle `:app:bundleRelease` ile derler, EAS'teki yukleme anahtariyla
+#   imzalar ve Play API ile internal'a yukler. eas = yalniz EAS, github = yalniz Gradle.
+#   Telefon paketi hicbir yoldan uretilemezse is KIRMIZI biter.
+#
 # versionCode: Build aninda timestamp (date +%s) ile atanir
 #   → Hem test hem master buildleri ayni internal track'e gider,
 #     tek monoton dizi gerekir; timestamp her zaman artar.
@@ -46,6 +52,12 @@ on:
         required: false
         default: true
         type: boolean
+      aab_derleyici:
+        description: 'Telefon AAB derleyicisi — otomatik: EAS dener, kota/hata olursa GitHub (Gradle)'
+        required: false
+        default: 'otomatik'
+        type: choice
+        options: ['otomatik', 'eas', 'github']
       sadece_submit:
         description: 'Yeni build YAPMA — EAS’teki son başarılı build’i internal track’e gönder'
         required: false
@@ -89,6 +101,11 @@ on:
       internal_a_gonder:
         type: boolean
         default: true
+      # otomatik: EAS dener; kota/hata (FINISHED degil ve kuyrukta da degil) ise
+      # telefon AAB'sini GitHub'da Gradle ile derler (asagidaki 'GitHub yedegi').
+      aab_derleyici:
+        type: string
+        default: 'otomatik'
       # iOS RELEASE ZINCIRINE DAHIL DEGIL (bilincli): master'a her merge bir
       # release kesiyor; her birinde iOS build'i harcamak hem kuyrugu hem
       # kotayi tuketir. iOS build'i MANUEL dispatch ile alinir.
@@ -241,7 +258,7 @@ jobs:
       # AAB Build (production — Play Store)
       # ==========================================
       - name: 🤖 AAB Build (production profili)
-        if: inputs.build_aab == true && inputs.sadece_submit != true
+        if: inputs.build_aab == true && inputs.sadece_submit != true && inputs.aab_derleyici != 'github'
         id: aab_build
         # JOB'U DUSURME. EAS kuyrugu uzayinca bu adim zaman asimina ugrayabilir ama
         # build EAS SUNUCULARINDA calismaya devam eder ve cogu zaman BASARIYLA BITER.
@@ -252,10 +269,14 @@ jobs:
         timeout-minutes: 200
         run: |
           echo "📦 AAB build başlatılıyor (production, versionCode ${{ steps.vc.outputs.code }})..."
+          # Cikti dosyaya da yazilir: EAS ucretsiz plan kotasi dolunca build EAS'te
+          # HIC OLUSMAZ ve tek iz bu mesajdir (asagida aranir). `shell:` verilmeyen
+          # adimda varsayilan `bash -e` pipefail ICERMEZ → tee hatayi yutardi.
+          set -o pipefail
           eas build \
             --platform android \
             --profile production \
-            --non-interactive
+            --non-interactive 2>&1 | tee /tmp/eas-aab.log
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
@@ -263,7 +284,7 @@ jobs:
       # Gercek build durumu — EAS kaynakli (adim timeout'undan BAGIMSIZ)
       # ==========================================
       - name: 🔎 EAS build durumunu doğrula
-        if: inputs.build_aab == true && inputs.sadece_submit != true
+        if: inputs.build_aab == true && inputs.sadece_submit != true && inputs.aab_derleyici != 'github'
         id: build_durum
         run: |
           echo "🔎 EAS'teki son Android build sorgulanıyor (beklenen versionCode: ${{ steps.vc.outputs.code }})..."
@@ -282,14 +303,177 @@ jobs:
             } catch { console.log('OKUNAMADI'); }
           ")
 
+          # Kota: EAS ucretsiz planin aylik Android hakki bittiyse build EAS'te
+          # OLUSMAZ, liste bir onceki build'i doner → eskiden yalniz "ESLESMEDI"
+          # yaziyordu ve sebep gorunmuyordu (0.41.2–0.42.0 Play'e hic gitmedi).
+          if [ "$DURUM" != "FINISHED" ] && grep -qi "free plan" /tmp/eas-aab.log 2>/dev/null; then
+            DURUM="KOTA"
+            SIFIRLANMA=$(grep -oiE "reset[^.]*" /tmp/eas-aab.log | head -1 || true)
+            echo "::warning title=EAS kotası doldu::Android derleme hakkı bitti (${SIFIRLANMA:-sıfırlanma tarihi okunamadı})."
+          fi
+
           echo "📊 Son build durumu: $DURUM"
           echo "durum=$DURUM" >> $GITHUB_OUTPUT
 
           if [ "$DURUM" != "FINISHED" ]; then
-            echo "⚠️ Build tamamlanmadı ($DURUM) — internal submit atlanacak."
+            echo "⚠️ EAS build tamamlanmadı ($DURUM) — EAS submit atlanacak."
           fi
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      # ==========================================
+      # AAB yolu karari: eas | github | atla
+      # ==========================================
+      # github: girdi 'github' ya da (otomatik ve EAS build'i hic olusmadi/bozuldu).
+      # Kuyrukta/derleniyor (IN_QUEUE, IN_PROGRESS, NEW) iken GitHub'a DUSULMEZ:
+      # EAS build'i sonradan biterse ayni surumun iki paketi olurdu; o durumda eski
+      # davranis (atla; biten build `sadece_submit` ile gonderilir).
+      - name: 🧭 AAB yolu
+        if: inputs.build_aab == true && inputs.sadece_submit != true
+        id: aab_yol
+        run: |
+          MOD="${{ inputs.aab_derleyici }}"
+          DURUM="${{ steps.build_durum.outputs.durum }}"
+          if [ "$MOD" = "github" ]; then
+            YOL=github
+          elif [ "$DURUM" = "FINISHED" ]; then
+            YOL=eas
+          elif [ "$MOD" = "otomatik" ]; then
+            case "$DURUM" in
+              IN_QUEUE|IN_PROGRESS|NEW|PENDING_CANCEL) YOL=atla ;;
+              *) YOL=github ;;
+            esac
+          else
+            YOL=atla
+          fi
+          echo "🧭 derleyici=$MOD · EAS durumu=${DURUM:--} → yol=$YOL"
+          echo "yol=$YOL" >> "$GITHUB_OUTPUT"
+
+      # ==========================================
+      # GitHub yedegi: telefon AAB'si Gradle ile (yol=github)
+      # ==========================================
+      # android-build.yml APK yolunun ikizi: PREBUILD YOK (android/ git'te), Hermes +
+      # JS bundle'i RN gradle eklentisi bundleRelease icinde uretir. Imza = Play
+      # YUKLEME anahtari (yalniz EAS'te; saat_tv isiyle ayni betik, parmak izi
+      # dogrulamali). ANDROID_KEYSTORE_BASE64 (APK anahtari) KULLANILMAZ.
+      # versionCode yukaridaki `vc` adiminin degeri (build.gradle'a zaten yazildi).
+      - name: ☕ Java 17 (GitHub yedeği)
+        if: steps.aab_yol.outputs.yol == 'github'
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🐘 Gradle (GitHub yedeği)
+        if: steps.aab_yol.outputs.yol == 'github'
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: 🤖 Android SDK (GitHub yedeği)
+        if: steps.aab_yol.outputs.yol == 'github'
+        uses: android-actions/setup-android@v4
+
+      - name: 🔑 Yükleme anahtarı (EAS) — GitHub yedeği
+        if: steps.aab_yol.outputs.yol == 'github'
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: node scripts/eas-yukleme-anahtari.js "$RUNNER_TEMP/yukleme.jks"
+
+      # Yama YALNIZ bu derleme icin: yamasiz build.gradle saklanip derlemeden sonra
+      # geri konur (android-build.yml deseni; release commit'ine sizmasin).
+      - name: 🔧 build.gradle imza yaması (GitHub yedeği)
+        if: steps.aab_yol.outputs.yol == 'github'
+        run: |
+          cp android/app/build.gradle "$RUNNER_TEMP/build.gradle.imzasiz"
+          cat << 'EOF' > "$RUNNER_TEMP/imza-yamasi.js"
+          const fs = require('fs');
+          const yol = 'android/app/build.gradle';
+          const once = fs.readFileSync(yol, 'utf8');
+          const yukleme = `
+                  yukleme {
+                      if (project.hasProperty('yuklemeKeystore')) {
+                          storeFile file(project.property('yuklemeKeystore'))
+                          storeType project.findProperty('yuklemeKeystoreTuru') ?: 'jks'
+                          storePassword project.property('yuklemeKeystoreParolasi')
+                          keyAlias project.property('yuklemeAnahtarAdi')
+                          keyPassword project.property('yuklemeAnahtarParolasi')
+                      }
+                  }`;
+          let s = once.replace(/(signingConfigs\s*\{)/, '$1' + yukleme);
+          s = s.replace(
+            /(buildTypes\s*\{[\s\S]*?release\s*\{[\s\S]*?)signingConfig signingConfigs\.debug/,
+            '$1signingConfig signingConfigs.yukleme'
+          );
+          if (s === once || !s.includes('signingConfig signingConfigs.yukleme') || !s.includes('yukleme {')) {
+            console.error('build.gradle yamasi uygulanamadi (signingConfigs / buildTypes.release bulunamadi)');
+            process.exit(1);
+          }
+          fs.writeFileSync(yol, s);
+          console.log('✅ release = yukleme imzasi (yalniz bu derleme)');
+          EOF
+          node "$RUNNER_TEMP/imza-yamasi.js"
+
+      - name: ⚡ Gradle optimizasyonları (GitHub yedeği)
+        if: steps.aab_yol.outputs.yol == 'github'
+        run: |
+          cat >> android/gradle.properties << 'EOF'
+
+          # CI Build optimizations
+          org.gradle.caching=true
+          org.gradle.parallel=true
+          org.gradle.configuration-cache=true
+          org.gradle.configuration-cache.problems=warn
+          org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError
+          kotlin.daemon.jvmargs=-Xmx2g
+          EOF
+
+      - name: 🏗️ AAB (bundleRelease) — GitHub yedeği
+        if: steps.aab_yol.outputs.yol == 'github'
+        id: gh_aab
+        timeout-minutes: 60
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon :app:bundleRelease
+
+      - name: ↩️ İmza yamasını geri al
+        if: always() && steps.aab_yol.outputs.yol == 'github'
+        run: |
+          if [ -f "$RUNNER_TEMP/build.gradle.imzasiz" ]; then
+            cp "$RUNNER_TEMP/build.gradle.imzasiz" android/app/build.gradle
+            echo "✅ build.gradle imza yamasından arındırıldı"
+          fi
+
+      # Imza ozellikleri okunmazsa bundleRelease debug anahtariyla imzalar; Play onu
+      # ancak yuklemeden sonra reddeder. Burada erken ve acik dussun. JS bundle'i
+      # (Hermes bayt kodu) da pakette olmali — yoksa uygulama acilista coker.
+      - name: 🔏 İmza + paket denetimi (GitHub yedeği)
+        if: steps.aab_yol.outputs.yol == 'github' && steps.gh_aab.outcome == 'success'
+        id: gh_imza
+        run: |
+          set -euo pipefail
+          AAB=android/app/build/outputs/bundle/release/app-release.aab
+          [ -f "$AAB" ] || { echo "❌ AAB üretilmedi"; ls -la android/app/build/outputs/bundle/release/ || true; exit 1; }
+          IZ=$(keytool -printcert -jarfile "$AAB" | awk '/SHA256:/{print $2; exit}' | tr -d ':' | tr 'A-F' 'a-f')
+          if [ "$IZ" != "$YUKLEME_SHA256" ]; then
+            echo "❌ AAB yükleme anahtarıyla imzalı değil"; exit 1
+          fi
+          unzip -l "$AAB" | grep -q "base/assets/index.android.bundle" || { echo "❌ JS bundle (index.android.bundle) pakette yok"; exit 1; }
+          VN=$(grep -m1 'versionName' android/app/build.gradle | sed -E 's/.*"([^"]*)".*/\1/')
+          VC=$(grep -m1 'versionCode' android/app/build.gradle | tr -dc '0-9')
+          echo "✅ imzalı (${IZ:0:8}…) · versionCode $VC · versionName $VN · $(du -h "$AAB" | cut -f1)"
+          echo "ad=$VN" >> "$GITHUB_OUTPUT"
+
+      - name: 🧹 Anahtarı sil
+        if: always() && steps.aab_yol.outputs.yol == 'github'
+        run: rm -f "$RUNNER_TEMP/yukleme.jks"
+
+      - name: 📦 AAB'yi sakla (GitHub yedeği)
+        if: steps.gh_imza.outcome == 'success'
+        uses: actions/upload-artifact@v7
+        with:
+          name: telefon-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 7
 
       # ==========================================
       # iOS buildNumber = timestamp (versionCode'un ikizi)
@@ -441,7 +625,8 @@ jobs:
         if: |
           inputs.internal_a_gonder == true &&
           (inputs.sadece_submit == true ||
-           (inputs.build_aab == true && steps.build_durum.outputs.durum == 'FINISHED'))
+           (inputs.build_aab == true &&
+            (steps.aab_yol.outputs.yol == 'eas' || steps.gh_imza.outcome == 'success')))
         id: gsa
         env:
           GSA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
@@ -456,12 +641,13 @@ jobs:
             echo "✅ Google Service Account mevcut"
           fi
 
-      - name: 🚀 Internal Track'e Gönder
+      - name: 🚀 Internal Track'e Gönder (EAS)
+        id: eas_submit
         if: |
           inputs.internal_a_gonder == true &&
           steps.gsa.outputs.available == 'true' &&
           (inputs.sadece_submit == true ||
-           (inputs.build_aab == true && steps.build_durum.outputs.durum == 'FINISHED'))
+           (inputs.build_aab == true && steps.aab_yol.outputs.yol == 'eas'))
         run: |
           echo "📤 Play Store internal track'e gönderiliyor..."
           eas submit \
@@ -472,11 +658,29 @@ jobs:
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
+      # GitHub yedeginin paketi: Play Developer API ile dogrudan internal'a. Surum adi
+      # = versionName ("0.42.0") — EAS submit'in Play'de biraktigi adla AYNI bicim;
+      # `uretime-al` (internal'da ad.includes(surum)) ve `tv-ekle` ("+TV" izi) buna dayanir.
+      # Kanaldaki onceki surum (TV paketi dahil) EAS submit'teki gibi yer degistirir;
+      # TV'yi `tv_telefon_kanalina` isi bu isten SONRA yeniden ekler.
+      - name: 🚀 Internal Track'e Gönder (GitHub yedeği)
+        id: gh_submit
+        if: |
+          inputs.internal_a_gonder == true &&
+          steps.gsa.outputs.available == 'true' &&
+          steps.gh_imza.outcome == 'success'
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+        run: |
+          node scripts/play-magaza.js aab-yukle \
+            --dosya android/app/build/outputs/bundle/release/app-release.aab \
+            --kanal internal \
+            --ad "${{ steps.gh_imza.outputs.ad }}"
+
       - name: ⚠️ Submit atlandı — Secret eksik
         if: |
           inputs.build_aab == true &&
           inputs.internal_a_gonder == true &&
-          steps.build_durum.outputs.durum == 'FINISHED' &&
           steps.gsa.outputs.available == 'false'
         run: |
           echo "⚠️ Internal submit atlandı — GOOGLE_SERVICE_ACCOUNT eksik"
@@ -496,7 +700,28 @@ jobs:
 
           # Adimin outcome'u DEGIL, EAS'ten okunan gercek durum (adim timeout olsa da
           # build bitmis olabilir — v0.23.27 dersi).
-          AAB_DURUM="${{ inputs.sadece_submit == true && '⏭️ Sadece gönder' || (inputs.build_aab == true && (steps.build_durum.outputs.durum == 'FINISHED' && '✅ Başarılı' || format('❌ {0}', steps.build_durum.outputs.durum)) || '⏭️ Seçilmedi') }}"
+          EAS_D="${{ steps.build_durum.outputs.durum }}"
+          YOL="${{ steps.aab_yol.outputs.yol }}"
+          GH_AAB="${{ steps.gh_imza.outcome }}"
+          if [ "${{ inputs.sadece_submit }}" = "true" ]; then
+            AAB_DURUM="⏭️ Sadece gönder"
+          elif [ "${{ inputs.build_aab }}" != "true" ]; then
+            AAB_DURUM="⏭️ Seçilmedi"
+          else
+            case "$EAS_D" in
+              FINISHED) EAS_METIN="✅ EAS" ;;
+              KOTA) EAS_METIN="❌ EAS kotası doldu (ücretsiz plan aylık Android hakkı)" ;;
+              "") EAS_METIN="⏭️ EAS denenmedi" ;;
+              *) EAS_METIN="❌ EAS: ${EAS_D}" ;;
+            esac
+            if [ "$YOL" = "github" ]; then
+              [ "$GH_AAB" = "success" ] && AAB_DURUM="${EAS_METIN} → ✅ GitHub (Gradle)" || AAB_DURUM="${EAS_METIN} → ❌ GitHub (Gradle) başarısız"
+            elif [ "$YOL" = "atla" ]; then
+              AAB_DURUM="${EAS_METIN} → ⏳ GitHub yedeği yok (EAS kuyruğunda; biterse sadece_submit)"
+            else
+              AAB_DURUM="${EAS_METIN}"
+            fi
+          fi
           APK_DURUM="${{ inputs.build_apk == true && (steps.apk_build.outcome == 'success' && '✅ Başarılı' || (steps.apk_build.outcome == 'skipped' && '⏭️ Atlandı' || '❌ Başarısız')) || '⏭️ Seçilmedi' }}"
           # iOS de AAB gibi: adimin outcome'u DEGIL, EAS'ten okunan gercek durum.
           IOS_DURUM="${{ inputs.build_ios == true && (steps.ios_durum.outputs.durum == 'FINISHED' && '✅ Başarılı' || format('❌ {0}', steps.ios_durum.outputs.durum)) || '⏭️ Seçilmedi' }}"
@@ -508,12 +733,19 @@ jobs:
             TESTFLIGHT_DURUM="⚠️ ASC_API_KEY eksik"
           fi
 
-          if [ "${{ steps.gsa.outputs.available }}" == "true" ]; then
-            SUBMIT_DURUM="✅ Gönderildi"
-          elif [ "${{ inputs.internal_a_gonder }}" != "true" ]; then
+          # Adimlarin GERCEK sonucu (eskiden secret varligi "Gönderildi" sayiliyordu).
+          if [ "${{ inputs.internal_a_gonder }}" != "true" ]; then
             SUBMIT_DURUM="⏭️ Seçilmedi"
-          else
+          elif [ "${{ steps.eas_submit.outcome }}" = "success" ]; then
+            SUBMIT_DURUM="✅ Gönderildi (EAS submit)"
+          elif [ "${{ steps.gh_submit.outcome }}" = "success" ]; then
+            SUBMIT_DURUM="✅ Gönderildi (Play API, GitHub yedeği)"
+          elif [ "${{ steps.eas_submit.outcome }}" = "failure" ] || [ "${{ steps.gh_submit.outcome }}" = "failure" ]; then
+            SUBMIT_DURUM="❌ Gönderim başarısız"
+          elif [ "${{ steps.gsa.outputs.available }}" = "false" ]; then
             SUBMIT_DURUM="⚠️ Secret eksik"
+          else
+            SUBMIT_DURUM="❌ Gönderilmedi (paket yok)"
           fi
 
           {
@@ -537,6 +769,32 @@ jobs:
             echo "---"
             echo "[📱 Expo Dashboard — Builds](https://expo.dev/accounts/furkanisikay/projects/namazakisi/builds)"
           } >> $GITHUB_STEP_SUMMARY
+
+      # ==========================================
+      # Kirmizi kapi: telefon AAB'si teslim edilmediyse is DUSER
+      # ==========================================
+      # Eskiden EAS kotasi dolunca adim continue-on-error ile yesil kaliyor, ozet
+      # yalniz "ESLESMEDI" diyordu → uc surum Play'e sessizce gitmedi. Tek istisna:
+      # EAS build'i hala kuyrukta/derleniyor (yol=atla ve durum kuyruk durumu) —
+      # bitince `sadece_submit` ile gonderilir; uyari yeter.
+      - name: 🚦 AAB teslim kapısı
+        if: always() && inputs.build_aab == true && inputs.sadece_submit != true
+        run: |
+          YOL="${{ steps.aab_yol.outputs.yol }}"
+          DURUM="${{ steps.build_durum.outputs.durum }}"
+          if [ "$YOL" = "eas" ] || [ "${{ steps.gh_imza.outcome }}" = "success" ]; then
+            echo "✅ Telefon AAB'si üretildi (yol=$YOL)"
+            exit 0
+          fi
+          if [ "$YOL" = "atla" ]; then
+            case "$DURUM" in
+              IN_QUEUE|IN_PROGRESS|NEW|PENDING_CANCEL)
+                echo "::warning title=AAB beklemede::EAS build'i hâlâ $DURUM — bitince sadece_submit=true ile gönderin."
+                exit 0 ;;
+            esac
+          fi
+          echo "::error title=Telefon AAB'si üretilmedi::EAS durumu=${DURUM:--}, yol=${YOL:--}. Play'e telefon paketi GİTMEDİ."
+          exit 1
 
   # ========================================================================
   # Saat (Wear OS) + Android TV → Play form faktörü kanalları
@@ -679,7 +937,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   # Android TV: Play'de ayrı kanal YOK, telefonla aynı `internal` kanalında yaşar.
-  # Telefon gönderimi (build işi, eas submit) sürümü yeniden kurar; TV paketi ondan
+  # Telefon gönderimi (build işi: eas submit ya da GitHub yedeğinin aab-yukle'si) sürümü yeniden kurar; TV paketi ondan
   # SONRA o sürüme ek paket olarak eklenir — önce eklenseydi eas submit onu düşürürdü.
   tv_telefon_kanalina:
     name: 📺 TV → internal (telefon sürümüne ek)

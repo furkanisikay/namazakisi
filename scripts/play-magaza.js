@@ -15,7 +15,9 @@
  * `aab-yukle`: saat (Wear OS) ve TV paketlerini AYNI uygulama kaydinin form faktoru
  * kanallarina yukler. Kanal adi `<onek>:<kanal>` bicimindedir (Play Developer API,
  * "Form factor tracks": wear, tv, automotive) → `wear:internal`, `tv:internal`.
- * Telefon AAB'si bu yoldan GITMEZ (EAS submit).
+ * Telefon AAB'si normalde EAS submit ile gider; EAS derleyemezse (ucretsiz plan
+ * kotasi) expo-build.yml GitHub'da derleyip bu yoldan `--kanal internal` ile yukler.
+ * Sürüm adi versionName olmali ("0.42.0"): `uretime-al` ve `tv-ekle` ona dayanir.
  *
  * Kimlik: GOOGLE_SERVICE_ACCOUNT ortam degiskeni (service account JSON icerigi).
  * Anahtar icerigi asla yazdirilmaz.
@@ -337,8 +339,9 @@ function playMetinleri() {
             // Android TV Play'de AYRI kanal almaz: telefonla AYNI kanalda (internal) yaşar.
             // TV AAB'si, kanaldaki telefon sürümüne EK paket olarak eklenir (leanback
             // required → yalnız TV'ye; telefon paketiyle cihaz kümesi çakışmaz). Önceki TV
-            // kodu sürüm adındaki "+TV <kod>" izinden bulunup çıkarılır; EAS telefon
-            // gönderimi sürümü yeniden kurunca iz kaybolur ve TV yeniden eklenir.
+            // kodu sürüm adındaki "+TV <kod>" izinden bulunup çıkarılır; telefon
+            // gönderimi (EAS submit ya da GitHub yedeğinin `aab-yukle --kanal internal`'ı)
+            // sürümü yeniden kurunca iz kaybolur ve TV yeniden eklenir.
             const dosya = arg('dosya');
             const kanal = arg('kanal') || 'internal';
             if (!dosya || !fs.existsSync(dosya)) throw new Error('--dosya gerekli (var olan bir .aab)');
@@ -371,9 +374,13 @@ function playMetinleri() {
             const dosya = arg('dosya');
             const kanal = arg('kanal');
             if (!dosya || !fs.existsSync(dosya)) throw new Error('--dosya gerekli (var olan bir .aab)');
-            // Yalniz form faktoru kanallari: telefon kanallarina bu yoldan yazmak
-            // EAS'in yukledigi telefon surumunu kanaldan dusururdu.
-            if (!/^(wear|tv):[a-z0-9-]+$/.test(kanal || '')) throw new Error('--kanal wear:<kanal> ya da tv:<kanal> olmali');
+            // Form faktoru kanallari (wear:/tv:) ya da YALNIZ telefonun `internal`
+            // kanali (expo-build.yml GitHub yedegi; EAS submit ile ayni etki: kanaldaki
+            // surum yer degistirir). Telefon production/alpha/beta bu yoldan YAZILMAZ —
+            // uretime gecis `uretime-al` ile, internal'daki surumden yapilir.
+            if (!/^((wear|tv):[a-z0-9-]+|internal)$/.test(kanal || '')) {
+                throw new Error('--kanal wear:<kanal>, tv:<kanal> ya da (telefon) internal olmali');
+            }
             const y = await paketYukle(editId, dosya);
             if (y.kod >= 300 || !y.j || !y.j.versionCode) {
                 throw new Error('paket yuklenemedi: ' + y.kod + ' ' + JSON.stringify(y.j).slice(0, 300));

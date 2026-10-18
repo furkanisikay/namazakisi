@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Play YUKLEME anahtarini EAS kimlik bilgilerinden indirir (saat + TV AAB'leri icin).
+ * Play YUKLEME anahtarini EAS kimlik bilgilerinden indirir (saat + TV AAB'leri ve
+ * EAS derleyemezse GitHub'da derlenen telefon AAB'si icin — expo-build.yml).
  *
  * Neden: telefon AAB'si EAS'te imzalanir ve yukleme anahtari YALNIZ orada durur
  * (GitHub'da keystore secret'i yok). Play App Signing ayni uygulama kaydinin tum
