@@ -12,6 +12,10 @@ jest.mock('@expo/vector-icons', () => {
     const { Text } = require('react-native');
     return { FontAwesome5: (props: { name: string }) => <Text>{`ikon:${props.name}`}</Text> };
 });
+const mockCihaz: { samsung: boolean | null } = { samsung: null };
+jest.mock('../../hooks/useCihazDurumu', () => ({
+    useCihazDurumu: () => ({ durum: mockCihaz, yenile: jest.fn() }),
+}));
 const mockNavigate = jest.fn();
 jest.mock('@react-navigation/native', () => ({
     useNavigation: () => ({ navigate: mockNavigate }),
@@ -39,6 +43,7 @@ describe('OtomasyonRehberiSayfasi', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.replaceProperty(Platform, 'OS', 'android');
+        mockCihaz.samsung = null;
     });
 
     it('Rutinler sekmesi anahtar kelimeleri ve kısayol adımını gösterir', () => {
@@ -47,7 +52,7 @@ describe('OtomasyonRehberiSayfasi', () => {
         expect(ekran.getByText('vakti girdi')).toBeTruthy();
         expect(ekran.getByText('Camidesiniz')).toBeTruthy();
         expect(ekran.getByTestId('rehber-rutin-kildim')).toBeTruthy();
-        expect(ekran.getByText(/One UI 8/)).toBeTruthy();
+        expect(ekran.getByText(/Bazı One UI sürümlerinde/)).toBeTruthy();
         expect(ekran.queryByText('%vakit')).toBeNull();
     });
 
@@ -59,6 +64,14 @@ describe('OtomasyonRehberiSayfasi', () => {
         expect(ekran.getByTestId('rehber-eklenti-kildim')).toBeTruthy();
         expect(ekran.queryByText('Öğle vakti girdi')).toBeNull();
         expect(ekran.getByTestId('rehber-sekme-eklenti').props.accessibilityState).toEqual({ selected: true });
+    });
+
+    it('Samsung DEĞİLSE Rutinler sekmesi yok, yalnız eklenti rehberi', () => {
+        mockCihaz.samsung = false;
+        const ekran = kur();
+        expect(ekran.queryByTestId('rehber-sekme-rutinler')).toBeNull();
+        expect(ekran.getByTestId('rehber-eklenti-kildim')).toBeTruthy();
+        expect(ekran.queryByText('Öğle vakti girdi')).toBeNull();
     });
 
     it('güven listesine götürür', () => {

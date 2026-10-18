@@ -17,6 +17,7 @@ import {
     Easing,
     Dimensions,
     StyleSheet,
+    Platform,
 } from 'react-native';
 import { Anahtar } from '../components/common/Anahtar';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -610,7 +611,9 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                             Cihazınızda düzenlenebilir takvim bulunamadı.
                                         </Text>
                                         <Text className="text-xs text-center mt-1" style={{ color: renkler.metinIkincil }}>
-                                            Cihazınıza bir Google veya iCloud hesabı ekleyin.
+                                            {Platform.OS === 'ios'
+                                                ? "Ayarlar'dan iCloud'a giriş yapıp takvimi açın."
+                                                : 'Telefonunuza bir Google hesabı ekleyin.'}
                                         </Text>
                                     </View>
                                 ) : (
