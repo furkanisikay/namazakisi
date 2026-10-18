@@ -37,6 +37,7 @@ import {
     type PencereTanimi,
 } from './pencereTanimi';
 import { ZamanSeridi } from './ZamanSeridi';
+import { ParcaliSecici } from './ParcaliSecici';
 import { BildirimModali } from '../common/BildirimModali';
 import {
     saatMetni,
@@ -468,47 +469,20 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                         <FontAwesome5 name="question-circle" size={15} color={renkler.metinIkincil} />
                                     </TouchableOpacity>
                                 </View>
-                                <View className="flex-row gap-2 mb-2">
-                                    {YON_SECENEKLERI.map((secenek) => {
-                                        const secili = tanim.yon === secenek.yon;
-                                        return (
-                                            <TouchableOpacity
-                                                key={secenek.yon}
-                                                className="flex-1 items-center py-3 px-2 rounded-2xl border"
-                                                style={{
-                                                    minHeight: 44,
-                                                    backgroundColor: secili ? `${renkler.birincil}15` : renkler.arkaplan,
-                                                    borderColor: secili ? renkler.birincil : renkler.sinir,
-                                                    borderWidth: secili ? 2 : 1,
-                                                }}
-                                                onPress={() => onYonDegistir?.(secenek.yon)}
-                                                activeOpacity={0.7}
-                                                accessibilityRole="button"
-                                                accessibilityState={{ selected: secili }}
-                                                accessibilityLabel={`${secenek.etiket} — ${secenek.aciklama}`}
-                                            >
-                                                <FontAwesome5
-                                                    name={secenek.ikon}
-                                                    size={14}
-                                                    color={secili ? renkler.birincil : renkler.metinIkincil}
-                                                    solid
-                                                />
-                                                <Text
-                                                    className="text-xs font-semibold mt-1.5 text-center"
-                                                    style={{ color: secili ? renkler.birincil : renkler.metin }}
-                                                >
-                                                    {secenek.etiket}
-                                                </Text>
-                                                <Text
-                                                    className="text-[11px] mt-0.5 text-center"
-                                                    style={{ color: renkler.metinIkincil }}
-                                                >
-                                                    {secenek.kisaAciklama}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        );
-                                    })}
-                                </View>
+                                {/* Parçalı kısa seçici (eskiden iki büyük kart) + seçili yönün tek satırı. */}
+                                <ParcaliSecici
+                                    secenekler={YON_SECENEKLERI.map((secenek) => ({
+                                        deger: secenek.yon,
+                                        etiket: secenek.etiket,
+                                        ikon: secenek.ikon,
+                                        erisimEtiketi: `${secenek.etiket} — ${secenek.aciklama}`,
+                                    }))}
+                                    secili={tanim.yon}
+                                    onSec={(yon) => onYonDegistir?.(yon)}
+                                />
+                                <Text className="text-xs mt-1.5 mb-2 leading-4" style={{ color: renkler.metinIkincil }}>
+                                    {YON_SECENEKLERI.find((x) => x.yon === tanim.yon)?.kisaAciklama}
+                                </Text>
                                 </>
                             )}
                             {seritCizilir && pencere ? (

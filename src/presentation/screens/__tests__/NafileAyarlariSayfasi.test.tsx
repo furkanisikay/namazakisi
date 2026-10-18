@@ -166,17 +166,18 @@ describe('NafileAyarlariSayfasi', () => {
             return ekran;
         };
 
-        it('STANDART yetenekler: Kapalı / Bildirim / Sesli anons / İkisi de ve GERÇEK ALARM', () => {
+        it('STANDART yetenekler: Bildirim + Sesli okuma anahtarları; Gelişmiş bölümünde tekrar ve GERÇEK ALARM', () => {
             const ekran = ac(KUSLUK);
-            expect(ekran.getByLabelText('Kapalı')).toBeTruthy();
-            expect(ekran.getByLabelText('Bildirim')).toBeTruthy();
-            expect(ekran.getByLabelText('Sesli anons')).toBeTruthy();
-            expect(ekran.getByLabelText('İkisi de')).toBeTruthy();
+            expect(ekran.getByTestId('adim-bildirim-anahtari')).toBeTruthy();
+            expect(ekran.getByTestId('adim-sesli-anahtari')).toBeTruthy();
+            fireEvent.press(ekran.getByTestId('adim-gelismis'));
+            expect(ekran.getByTestId('adim-tekrar-anahtari')).toBeTruthy();
             expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
         });
 
         it('gerçek alarm ilk kez açılırken NAFİLENİN kendi rızası sorulur; onay rızayı ANAHTARLA BİRLİKTE yazar', async () => {
             const ekran = ac(KUSLUK);
+            fireEvent.press(ekran.getByTestId('adim-gelismis'));
             fireEvent(ekran.getByTestId('adim-alarm-anahtari'), 'valueChange', true);
             // Rıza yokken anahtar doğrudan yazılmaz.
             expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
@@ -190,7 +191,7 @@ describe('NafileAyarlariSayfasi', () => {
 
         it('sesli İLK kez seçilince onay sorulur, ayar YAZILMAZ; "Sesli olmadan" adımı bildirimle bırakır', () => {
             const ekran = ac(KUSLUK);
-            fireEvent.press(ekran.getByLabelText('İkisi de'));
+            fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
             expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
             fireEvent.press(ekran.getByLabelText('Sesli olmadan uygula'));
@@ -201,16 +202,16 @@ describe('NafileAyarlariSayfasi', () => {
 
         it('onaylanınca adım sesli olur ve rıza AYRI (nafile) kaydına yazılır', () => {
             const ekran = ac(KUSLUK);
-            fireEvent.press(ekran.getByLabelText('Sesli anons'));
+            fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
             const d = (nafileAyariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
             expect(d.sesliOnayi).toBe(true);
-            expect(d.hatirlatmalar.kusluk.adimlar[0].kanallar).toEqual({ sesli: true });
+            expect(d.hatirlatmalar.kusluk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
         });
 
         it('rıza zaten varsa doğrudan yazılır', () => {
             const ekran = ac({ ...KUSLUK, sesliOnayi: true });
-            fireEvent.press(ekran.getByLabelText('İkisi de'));
+            fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             expect(ekran.queryByText('Sesli anons açılsın mı?')).toBeNull();
             const d = (nafileAyariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
             expect(d.hatirlatmalar.kusluk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });

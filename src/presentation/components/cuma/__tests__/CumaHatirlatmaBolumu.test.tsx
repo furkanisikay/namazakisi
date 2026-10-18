@@ -121,18 +121,18 @@ describe('CumaHatirlatmaBolumu', () => {
             return ekran;
         };
 
-        it('STANDART yetenekler: Kapalı / Bildirim / Sesli anons / İkisi de ve GERÇEK ALARM', () => {
+        it('STANDART yetenekler: Bildirim + Sesli okuma anahtarları, Gelişmiş bölümünde tekrar ve GERÇEK ALARM', () => {
             const ekran = ac(ACIK);
-            expect(ekran.getByLabelText('Kapalı')).toBeTruthy();
-            expect(ekran.getByLabelText('Bildirim')).toBeTruthy();
-            expect(ekran.getByLabelText('Sesli anons')).toBeTruthy();
-            expect(ekran.getByLabelText('İkisi de')).toBeTruthy();
+            expect(ekran.getByTestId('adim-bildirim-anahtari')).toBeTruthy();
+            expect(ekran.getByTestId('adim-sesli-anahtari')).toBeTruthy();
+            fireEvent.press(ekran.getByTestId('adim-gelismis'));
+            expect(ekran.getByTestId('adim-tekrar-anahtari')).toBeTruthy();
             expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
         });
 
         it('sesli İLK kez: CUMANIN rızası sorulur; onay rızayı adımla BİRLİKTE yazar', () => {
             const ekran = ac(ACIK);
-            fireEvent.press(ekran.getByLabelText('İkisi de'));
+            fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             expect(guncelleMock).not.toHaveBeenCalled();
             expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
             fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
@@ -144,7 +144,7 @@ describe('CumaHatirlatmaBolumu', () => {
 
         it('"Sesli olmadan" adımı bildirimle bırakır ve rıza YAZMAZ', () => {
             const ekran = ac(ACIK);
-            fireEvent.press(ekran.getByLabelText('Sesli anons'));
+            fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             fireEvent.press(ekran.getByLabelText('Sesli olmadan uygula'));
             ekran.unmount();
             const d = guncelleMock.mock.calls[0][0];
@@ -154,6 +154,7 @@ describe('CumaHatirlatmaBolumu', () => {
 
         it('gerçek alarm İLK kez: cumanın kendi rızası; onay ANAHTARLA BİRLİKTE yazılır', async () => {
             const ekran = ac(ACIK);
+            fireEvent.press(ekran.getByTestId('adim-gelismis'));
             fireEvent(ekran.getByTestId('adim-alarm-anahtari'), 'valueChange', true);
             expect(guncelleMock).not.toHaveBeenCalled();
             fireEvent.press(ekran.getByLabelText('Alarmı açın'));

@@ -37,7 +37,7 @@ import { camiyeGitAyariniGuncelle, camiyeGitAyarlariniYukle } from '../../store/
 import { Anahtar } from '../common/Anahtar';
 import { SayisalSecici } from '../common/SayisalSecici';
 import { PencereKarti } from '../hatirlatma/PencereKarti';
-import { AdimDetayModal } from '../hatirlatma/AdimDetayModal';
+import { AdimDetayModal, type AdimRizasi } from '../hatirlatma/AdimDetayModal';
 import { AkisOnizlemeModal } from '../hatirlatma/AkisOnizlemeModal';
 import { ekHatirlatmaPencereTanimi, VAKIT_ADLARI_KUCUK } from '../hatirlatma/pencereTanimi';
 import { SesliOnayModal } from '../../screens/MuhafizAyarlari/SesliOnayModal';
@@ -325,6 +325,8 @@ export const CamiyeGitBolumu: React.FC = () => {
         () =>
             ekHatirlatmaPencereTanimi({
                 kaynak: 'camiyeGit',
+                yuzey: 'camiyeGit',
+                anonsVakitAdi: VAKIT_ADLARI[ornekVakit],
                 baslik: 'Camide kılacağım',
                 baslikKucuk: 'camiye gitme',
                 ikon: 'walking',
@@ -346,7 +348,7 @@ export const CamiyeGitBolumu: React.FC = () => {
                     ? `${pencere.bugun ? 'Bugün' : 'Yarın'} ${VAKIT_ADLARI_KUCUK[pencere.vakit]} için`
                     : undefined,
                 yetenekler,
-                anonsOrnegiOlustur: (s) => camiyeGitAnonsMetni(ornekVakit, s.esikDk, sure),
+                otomatikAnons: (s) => camiyeGitAnonsMetni(ornekVakit, s.esikDk, sure),
                 onizlemeMetni: (adim) => ({
                     ...camiyeGitMetniOlustur(ornekVakit, adim.kalanDk, sure),
                     anons: camiyeGitAnonsMetni(ornekVakit, adim.kalanDk, sure),
@@ -582,7 +584,11 @@ export const CamiyeGitBolumu: React.FC = () => {
                     seviyeler={ayarlar.adimlar}
                     indeks={detay}
                     ttsDestekli={ttsDestekli}
-                    onDegistir={(s: SeviyeAyari) => adimDegistir(detay, s)}
+                    onDegistir={(s: SeviyeAyari, riza?: AdimRizasi) => {
+                        // Gerçek alarm rızası (#74) adım yazımıyla BİRLİKTE kaydedilir.
+                        if (riza?.alarmOnayi) alarmOnayiBekliyor.current = true;
+                        adimDegistir(detay, s);
+                    }}
                     onSil={
                         ayarlar.adimlar.length > 1
                             ? () => {
@@ -598,9 +604,6 @@ export const CamiyeGitBolumu: React.FC = () => {
                     }}
                     // Gerçek alarm rızası (#74) — bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
                     alarmOnayiVar={ayarlar.alarmOnayi === true}
-                    onAlarmOnayiVer={() => {
-                        alarmOnayiBekliyor.current = true;
-                    }}
                 />
             )}
 

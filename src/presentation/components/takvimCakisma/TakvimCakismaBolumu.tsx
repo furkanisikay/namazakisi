@@ -38,7 +38,7 @@ import { takvimCakismaAyariniGuncelle, takvimCakismaAyarlariniYukle } from '../.
 import { Anahtar } from '../common/Anahtar';
 import { BildirimModali } from '../common/BildirimModali';
 import { PencereKarti } from '../hatirlatma/PencereKarti';
-import { AdimDetayModal } from '../hatirlatma/AdimDetayModal';
+import { AdimDetayModal, type AdimRizasi } from '../hatirlatma/AdimDetayModal';
 import { AkisOnizlemeModal } from '../hatirlatma/AkisOnizlemeModal';
 import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
 import { SesliOnayModal } from '../../screens/MuhafizAyarlari/SesliOnayModal';
@@ -306,6 +306,8 @@ export const TakvimCakismaBolumu: React.FC = () => {
         () =>
             ekHatirlatmaPencereTanimi({
                 kaynak: 'takvimCakisma',
+                yuzey: 'takvim',
+                anonsVakitAdi: 'Öğle',
                 baslik: 'Takvim çakışması',
                 baslikKucuk: 'takvim çakışması',
                 ikon: 'calendar-times',
@@ -324,7 +326,7 @@ export const TakvimCakismaBolumu: React.FC = () => {
                 esikBirimi: 'dk önce',
                 yetenekler,
                 // Anons ADSIZDIR — ayar ne olursa olsun (gizlilik).
-                anonsOrnegiOlustur: () => ornekAnons,
+                otomatikAnons: () => ornekAnons,
                 onizlemeMetni: () => ({
                     ...takvimCakismaMetniOlustur(ornek, { baslikGoster: false }),
                     anons: ornekAnons,
@@ -514,7 +516,11 @@ export const TakvimCakismaBolumu: React.FC = () => {
                     seviyeler={ayarlar.adimlar}
                     indeks={detay}
                     ttsDestekli={ttsDestekli}
-                    onDegistir={(s: SeviyeAyari) => adimDegistir(detay, s)}
+                    onDegistir={(s: SeviyeAyari, riza?: AdimRizasi) => {
+                        // Gerçek alarm rızası (#74) adım yazımıyla BİRLİKTE kaydedilir.
+                        if (riza?.alarmOnayi) alarmOnayiBekliyor.current = true;
+                        adimDegistir(detay, s);
+                    }}
                     onSil={
                         ayarlar.adimlar.length > 1
                             ? () => {
@@ -530,9 +536,6 @@ export const TakvimCakismaBolumu: React.FC = () => {
                     }}
                     // Gerçek alarm rızası (#74) — bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
                     alarmOnayiVar={ayarlar.alarmOnayi === true}
-                    onAlarmOnayiVer={() => {
-                        alarmOnayiBekliyor.current = true;
-                    }}
                 />
             )}
 

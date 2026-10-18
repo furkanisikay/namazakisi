@@ -60,6 +60,10 @@ import { vaktinYonunuDegistir } from '../../core/muhafiz/matrisIslemleri';
 import type { PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { SesliOnayModal } from './MuhafizAyarlari/SesliOnayModal';
 import { YOGUNLUK_BILGILERI } from './MuhafizAyarlari/sabitler';
+import { ParcaliSecici } from '../components/hatirlatma/ParcaliSecici';
+
+/** Yoğunluk seçicinin değerleri — üç hazır yoğunluk + kaydedilmiş özel ayar. */
+type YogunlukSecimi = PresetYogunlugu | 'ozel';
 import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
@@ -778,73 +782,37 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                     : 'Tüm vakitlerin zamanlamasını tek dokunuşla ayarlayın.'}
                             </Text>
 
-                            <View className="flex-row gap-2.5">
-                                {YOGUNLUK_BILGILERI.map(({ id, etiket, ikon }) => {
-                                    const preset = HATIRLATMA_PRESETLERI[id];
-                                    const seciliMi = muhafizAyarlari.yogunluk === id;
-                                    return (
-                                        <TouchableOpacity
-                                            key={id}
-                                            className="flex-1 items-center py-4 px-2 rounded-xl border-2"
-                                            style={{
-                                                backgroundColor: seciliMi ? renkler.birincil : 'transparent',
-                                                borderColor: seciliMi ? renkler.birincil : renkler.sinir,
-                                            }}
-                                            onPress={() => yogunlukSec(id)}
-                                            activeOpacity={0.7}
-                                            accessibilityRole="button"
-                                            accessibilityState={{ selected: seciliMi }}
-                                            accessibilityLabel={`${etiket} yoğunluk — ${preset.aciklama}`}
-                                        >
-                                            <FontAwesome5 name={ikon} size={18} color={seciliMi ? '#FFF' : renkler.metin} />
-                                            <Text
-                                                className="text-sm font-bold mt-1.5"
-                                                style={{ color: seciliMi ? '#FFF' : renkler.metin }}
-                                            >
-                                                {etiket}
-                                            </Text>
-                                            <Text
-                                                className="text-[10px] mt-0.5 text-center"
-                                                style={{ color: seciliMi ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }}
-                                            >
-                                                {preset.aciklama}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    );
-                                })}
-                                {/* "Özel" — yalnızca daha önce yedeklenmiş GEÇERLİ bir özel
-                                    yapılandırma VARSA görünür (spec: yoksa gizli, boş buton
-                                    gösterme). Bozuk yedek gösterilseydi dokunuşta matrise
-                                    yazılır ve ekran her açılışta çökerdi. */}
-                                {matrisGecerliMi(muhafizAyarlari.ozelMatrisYedegi) && (
-                                    <TouchableOpacity
-                                        className="flex-1 items-center py-4 px-2 rounded-xl border-2"
-                                        style={{
-                                            backgroundColor: ozelMi ? renkler.birincil : 'transparent',
-                                            borderColor: ozelMi ? renkler.birincil : renkler.sinir,
-                                        }}
-                                        onPress={ozelSec}
-                                        activeOpacity={0.7}
-                                        accessibilityRole="button"
-                                        accessibilityState={{ selected: ozelMi }}
-                                        accessibilityLabel="Özel yoğunluk — kaydedilmiş ayarlarınıza dönün"
-                                    >
-                                        <FontAwesome5 name="sliders-h" size={18} color={ozelMi ? '#FFF' : renkler.metin} />
-                                        <Text
-                                            className="text-sm font-bold mt-1.5"
-                                            style={{ color: ozelMi ? '#FFF' : renkler.metin }}
-                                        >
-                                            Özel
-                                        </Text>
-                                        <Text
-                                            className="text-[10px] mt-0.5 text-center"
-                                            style={{ color: ozelMi ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }}
-                                        >
-                                            Kaydedilmiş ayarlarınız
-                                        </Text>
-                                    </TouchableOpacity>
-                                )}
-                            </View>
+                            {/* Parçalı kısa seçici (eskiden üç büyük kart); seçili yoğunluğun
+                                açıklaması altında TEK satır. "Özel" yalnız GEÇERLİ bir özel yedek
+                                VARSA görünür — bozuk yedek dokunuşta matrise yazılır ve ekran her
+                                açılışta çökerdi. */}
+                            <ParcaliSecici<YogunlukSecimi>
+                                secenekler={[
+                                    ...YOGUNLUK_BILGILERI.map(({ id, etiket, ikon }) => ({
+                                        deger: id as YogunlukSecimi,
+                                        etiket,
+                                        ikon,
+                                        erisimEtiketi: `${etiket} yoğunluk — ${HATIRLATMA_PRESETLERI[id].aciklama}`,
+                                    })),
+                                    ...(matrisGecerliMi(muhafizAyarlari.ozelMatrisYedegi)
+                                        ? [
+                                            {
+                                                deger: 'ozel' as YogunlukSecimi,
+                                                etiket: 'Özel',
+                                                ikon: 'sliders-h',
+                                                erisimEtiketi: 'Özel yoğunluk — kaydedilmiş ayarlarınıza dönün',
+                                            },
+                                        ]
+                                        : []),
+                                ]}
+                                secili={muhafizAyarlari.yogunluk as YogunlukSecimi}
+                                onSec={(deger) => (deger === 'ozel' ? ozelSec() : yogunlukSec(deger))}
+                            />
+                            <Text testID="yogunluk-aciklamasi" className="text-xs mt-2" style={{ color: renkler.metinIkincil }}>
+                                {ozelMi
+                                    ? 'Kaydedilmiş özel ayarlarınız.'
+                                    : (HATIRLATMA_PRESETLERI[muhafizAyarlari.yogunluk as PresetYogunlugu]?.aciklama ?? '')}
+                            </Text>
                         </View>
                         </AyarCapasi>
 
@@ -914,16 +882,18 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                     seviyeler={matris[detay.vakit].seviyeler}
                     indeks={detay.indeks}
                     ttsDestekli={ttsDestekli}
-                    onDegistir={(yeniSeviye) => seviyeGuncelle(detay.vakit, detay.indeks, yeniSeviye)}
+                    onDegistir={(yeniSeviye, riza) => {
+                        // Gerçek alarm rızası (issue #74) — yalnız onay modalında verilir.
+                        if (riza?.alarmOnayi) dispatch(muhafizAyarlariniGuncelle({ alarmOnayi: true }));
+                        seviyeGuncelle(detay.vakit, detay.indeks, yeniSeviye);
+                    }}
                     onKapat={detayiKapat}
                     onSil={
                         adimSilinebilirMi(matris[detay.vakit])
                             ? () => adimSilVakitten(detay.vakit, detay.indeks)
                             : undefined
                     }
-                    // Gerçek alarm rızası (issue #74) — yalnız onay modalında yazılır.
                     alarmOnayiVar={muhafizAyarlari.alarmOnayi === true}
-                    onAlarmOnayiVer={() => dispatch(muhafizAyarlariniGuncelle({ alarmOnayi: true }))}
                 />
             )}
 

@@ -1,0 +1,276 @@
+/**
+ * NÖBETÇİ — birleşik hatırlatma modülü, adım detayı (plan §3.3, §5).
+ *
+ * - İki ana anahtar (Bildirim / Sesli okuma) her kombinasyonda ESKİ dört çipin ürettiği
+ *   kümeyi üretir; üretilen her küme `kanallarNormalize` çıktısıyla aynıdır (tablo testi).
+ * - Son açık kanal kapatılamaz (anahtar devre dışı + nedeni yazılı).
+ * - Titreşim satırı yalnız bildirim açıkken.
+ * - "Gelişmiş" kapalı başlar; değiştirilmiş adımda açık başlar, başlık özetler.
+ * - Sesli okuma editörü HER yüzey tanımında çizilir; metin düzenlenip kaydedilir.
+ * - Sesli rıza modal ağacının içinde; red / geri tuşu hiçbir şey yazmaz.
+ *
+ * Jest `Platform.OS` varsayılanı 'ios' — tanımlar yetenekleri AÇIKÇA alır (Android).
+ */
+import React from 'react';
+import { fireEvent, render } from '@testing-library/react-native';
+
+jest.mock('@expo/vector-icons/FontAwesome5', () => {
+    const { Text } = require('react-native');
+    return (props: { name: string }) => <Text>{props.name}</Text>;
+});
+jest.mock('../../../../core/theme', () => ({
+    useRenkler: () => ({
+        kartArkaplan: '#FFFFFF',
+        arkaplan: '#FAFAFA',
+        sinir: '#E0E0E0',
+        birincil: '#4CAF50',
+        metin: '#212121',
+        metinIkincil: '#757575',
+        uyari: '#FFC107',
+        durum: { bilgi: '#2196F3', dikkat: '#E65100', uyari: '#FFC107', basarili: '#4CAF50', hata: '#F44336' },
+    }),
+}));
+jest.mock('../../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
+jest.mock('../../../../../modules/expo-countdown-notification/src', () => ({ sesSec: jest.fn() }));
+jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({
+    OnizlemeSesServisi: { temizle: jest.fn(), bildirimSesiniCal: jest.fn() },
+}));
+jest.mock('../../../../domain/services/AnonsOnizlemeServisi', () => ({ adimiOnizle: jest.fn() }));
+
+import { AdimDetayModal } from '../AdimDetayModal';
+import {
+    kanalAnahtariniUygula,
+    vakitPencereTanimi,
+    ekHatirlatmaPencereTanimi,
+    nafilePencereTanimi,
+    type AnaKanal,
+    type PencereTanimi,
+} from '../pencereTanimi';
+import type { SeviyeAyari, UyariKanallari } from '../../../../core/muhafiz/matrisTipleri';
+import { VARSAYILAN_SES } from '../../../../core/muhafiz/matrisTipleri';
+import { kanallarNormalize } from '../../../../core/hatirlatma/adimDizisi';
+import { ANDROID_YETENEKLERI } from '../../../../core/muhafiz/ios/platformYetenekleri';
+import { varsayilanAnonsMetni } from '../../../../core/muhafiz/anonsMetni';
+
+const adim = (kanallar: UyariKanallari, ek: Partial<SeviyeAyari> = {}): SeviyeAyari => ({
+    kademe: 'nazik',
+    kanallar,
+    esikDk: 30,
+    siklik: 'birkez',
+    bildirimSesi: VARSAYILAN_SES,
+    anonsMetni: '',
+    ...ek,
+});
+
+const MUHAFIZ = vakitPencereTanimi('ikindi', 'cikisaDogru', 180, ANDROID_YETENEKLERI);
+const CUMA = ekHatirlatmaPencereTanimi({
+    kaynak: 'cuma',
+    yuzey: 'cuma',
+    anonsVakitAdi: 'Cuma',
+    baslik: 'Cuma namazı',
+    baslikKucuk: 'cuma namazı',
+    ikon: 'mosque',
+    vakit: 'ogle',
+    yonSabitGerekcesi: 'Öğleden önce.',
+    adimSayisi: 1,
+    maksAdim: 3,
+    esikSinirlari: { min: 15, max: 180 },
+    esikAdimDk: 15,
+    tekrarMinDk: 5,
+    tekrarMaxDk: 60,
+    varsayilanTekrarDk: 15,
+    yetenekler: ANDROID_YETENEKLERI,
+    otomatikAnons: (s) => `Cuma için öğle vaktine ${s.esikDk} dakika kaldı.`,
+});
+const NAFILE = nafilePencereTanimi({
+    kaynak: 'nafile:kusluk',
+    baslik: 'Kuşluk',
+    baslikKucuk: 'kuşluk',
+    ikon: 'sun',
+    yon: 'girisindenItibaren',
+    adimSayisi: 1,
+    yetenekler: ANDROID_YETENEKLERI,
+    otomatikAnons: () => 'Kuşluk vakti girdi.',
+});
+
+function kur(tanim: PencereTanimi, seviye: SeviyeAyari, ek: Partial<React.ComponentProps<typeof AdimDetayModal>> = {}) {
+    const onDegistir = jest.fn();
+    const ekran = render(
+        <AdimDetayModal
+            gorunur
+            tanim={tanim}
+            seviyeler={[seviye]}
+            indeks={0}
+            ttsDestekli={null}
+            onDegistir={onDegistir}
+            onKapat={jest.fn()}
+            {...ek}
+        />
+    );
+    return { ekran, onDegistir };
+}
+
+describe('kanalAnahtariniUygula — TABLO: anahtarlar eski çip kümelerini üretir', () => {
+    const DURUMLAR: UyariKanallari[] = [
+        { bildirim: true },
+        { sesli: true },
+        { bildirim: true, sesli: true },
+        { bildirim: true, titresim: true },
+        { bildirim: true, sesli: true, titresim: true, alarm: true },
+        { sesli: true, alarm: true },
+    ];
+    const KANALLAR: AnaKanal[] = ['bildirim', 'sesli'];
+
+    test.each(DURUMLAR)('%j: her geçiş geçerli küme üretir (kanallarNormalize ile aynı)', (durum) => {
+        for (const kanal of KANALLAR) {
+            for (const acik of [true, false]) {
+                const sonuc = kanalAnahtariniUygula(durum, kanal, acik);
+                expect(kanallarNormalize(sonuc)).toEqual(sonuc);
+                // Hiçbir geçiş adımı KAPATMAZ (kapatmanın yeri liste anahtarı).
+                expect(sonuc.bildirim === true || sonuc.sesli === true).toBe(true);
+            }
+        }
+    });
+
+    test('eski dört çipin kümeleri birebir', () => {
+        // Bildirim → İkisi de
+        expect(kanalAnahtariniUygula({ bildirim: true }, 'sesli', true)).toEqual({ bildirim: true, sesli: true });
+        // İkisi de → Sesli anons
+        expect(kanalAnahtariniUygula({ bildirim: true, sesli: true }, 'bildirim', false)).toEqual({ sesli: true });
+        // İkisi de → Bildirim
+        expect(kanalAnahtariniUygula({ bildirim: true, sesli: true }, 'sesli', false)).toEqual({ bildirim: true });
+    });
+
+    test('son açık kanal kapatılamaz → AYNI referans; bildirim kapanınca titreşim de düşer', () => {
+        const k = { bildirim: true, titresim: true };
+        expect(kanalAnahtariniUygula(k, 'bildirim', false)).toBe(k);
+        expect(kanalAnahtariniUygula({ bildirim: true, sesli: true, titresim: true }, 'bildirim', false)).toEqual({
+            sesli: true,
+        });
+    });
+});
+
+describe('AdimDetayModal — NASIL (iki anahtar)', () => {
+    test('Bildirim açıkken Sesli okumayı açmak {bildirim, sesli} yazar', () => {
+        const { ekran, onDegistir } = kur(CUMA, adim({ bildirim: true }));
+        fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
+        expect(onDegistir).toHaveBeenCalledWith(
+            expect.objectContaining({ kanallar: { bildirim: true, sesli: true }, anonsMetni: '' })
+        );
+    });
+
+    test('son açık kanal anahtarı DEVRE DIŞI ve nedeni yazılı', () => {
+        const { ekran } = kur(CUMA, adim({ bildirim: true }));
+        expect(ekran.getByTestId('adim-bildirim-anahtari').props.disabled).toBe(true);
+        expect(ekran.getByText('Bu hatırlatmayı kapatmak için listedeki anahtarı kullanın.')).toBeTruthy();
+        expect(ekran.getByTestId('adim-sesli-anahtari').props.disabled).toBeFalsy();
+    });
+
+    test('titreşim satırı yalnız bildirim açıkken', () => {
+        expect(kur(CUMA, adim({ bildirim: true })).ekran.queryByTestId('adim-titresim-anahtari')).toBeTruthy();
+        expect(kur(CUMA, adim({ sesli: true })).ekran.queryByTestId('adim-titresim-anahtari')).toBeNull();
+    });
+
+    test('MUHAFIZ: sesli açılırken boş kutu yön-uygun şablonla dolar (boş = sessiz)', () => {
+        const { ekran, onDegistir } = kur(MUHAFIZ, adim({ bildirim: true }));
+        fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
+        expect(onDegistir).toHaveBeenCalledWith(
+            expect.objectContaining({ anonsMetni: varsayilanAnonsMetni('cikisaDogru') })
+        );
+    });
+
+    test('kapalı adım: "Açın" düğmesi hafızadaki kanalları geri getirir; ek yüzeyde metin BOŞ kalır', () => {
+        const { ekran, onDegistir } = kur(CUMA, adim({}, { oncekiKanallar: { sesli: true } }));
+        fireEvent.press(ekran.getByTestId('adim-ac-dugmesi'));
+        expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ kanallar: { sesli: true }, anonsMetni: '' }));
+    });
+});
+
+describe('AdimDetayModal — sesli rıza (modal ağacının içinde)', () => {
+    test('rıza yoksa önce onay; "Sesli olmadan" hiçbir şey yazmaz; onay rızayla BİRLİKTE yazar', () => {
+        const { ekran, onDegistir } = kur(NAFILE, adim({ bildirim: true }), { sesliOnayiVar: false });
+        fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
+        expect(onDegistir).not.toHaveBeenCalled();
+        fireEvent.press(ekran.getByLabelText(/sesli olmadan/i));
+        expect(onDegistir).not.toHaveBeenCalled();
+
+        fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
+        fireEvent.press(ekran.getByLabelText(/^Sesli okumayı açın|^Sesli anonsu açın|Onayla/i));
+        expect(onDegistir).toHaveBeenCalledWith(
+            expect.objectContaining({ kanallar: { bildirim: true, sesli: true } }),
+            { sesliOnayi: true }
+        );
+    });
+});
+
+describe('AdimDetayModal — GELİŞMİŞ', () => {
+    test('varsayılan adımda KAPALI başlar', () => {
+        const { ekran } = kur(CUMA, adim({ bildirim: true }));
+        expect(ekran.queryByTestId('adim-gelismis-icerik')).toBeNull();
+        fireEvent.press(ekran.getByTestId('adim-gelismis'));
+        expect(ekran.getByTestId('adim-tekrar-anahtari')).toBeTruthy();
+    });
+
+    test('tekrarlı / alarmlı adımda AÇIK başlar ve başlık özetler', () => {
+        const { ekran } = kur(CUMA, adim({ bildirim: true, alarm: true }, { siklik: { herDk: 15 } }), {
+            alarmOnayiVar: true,
+        });
+        expect(ekran.getByTestId('adim-gelismis-icerik')).toBeTruthy();
+        expect(ekran.getByText('her 15 dk · Gerçek alarm açık')).toBeTruthy();
+    });
+
+    test('muhafızda nazik olmayan ton Gelişmiş\'i açar ve özetlenir; ton yalnız muhafızda', () => {
+        const { ekran } = kur(MUHAFIZ, adim({ bildirim: true }, { kademe: 'uyari', esikDk: 25 }));
+        expect(ekran.getByText('Uyarı tonu')).toBeTruthy();
+        expect(ekran.getByLabelText('Uyarı ton')).toBeTruthy();
+        const cuma = kur(CUMA, adim({ bildirim: true }, { siklik: { herDk: 15 } }));
+        expect(cuma.ekran.queryByLabelText('Uyarı ton')).toBeNull();
+    });
+
+    test('Tekrarla anahtarı tek atış ↔ tekrar yazar', () => {
+        const { ekran, onDegistir } = kur(CUMA, adim({ bildirim: true }));
+        fireEvent.press(ekran.getByTestId('adim-gelismis'));
+        fireEvent(ekran.getByTestId('adim-tekrar-anahtari'), 'valueChange', true);
+        expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ siklik: { herDk: 15 } }));
+    });
+});
+
+describe('AdimDetayModal — SESLİ OKUMA METNİ her yüzeyde', () => {
+    test.each([
+        ['muhafız', MUHAFIZ],
+        ['nafile', NAFILE],
+        ['cuma', CUMA],
+    ] as const)('%s: sesli adımda editör çizilir, yer tutucu çipi var', (_ad, tanim) => {
+        const editorlu = { ...tanim, anonsMetniDuzenlenebilir: true };
+        const { ekran } = kur(editorlu, adim({ bildirim: true, sesli: true }));
+        expect(ekran.getByTestId('anons-metni-editoru')).toBeTruthy();
+        expect(ekran.getByLabelText('Ekleyin: Dakika')).toBeTruthy();
+    });
+
+    test('metin yazılıp düzenleme bitince kaydedilir; okunuş yüzeyin bağlamıyla çözülür', () => {
+        const { ekran, onDegistir } = kur({ ...CUMA, anonsMetniDuzenlenebilir: true }, adim({ bildirim: true, sesli: true }));
+        const kutu = ekran.getByTestId('anons-metni-kutusu');
+        fireEvent.changeText(kutu, '{vakit} için {süre} dakika.');
+        expect(ekran.getByTestId('anons-okunus').props.children).toBe('Cuma için 30 dakika.');
+        fireEvent(kutu, 'endEditing');
+        expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ anonsMetni: '{vakit} için {süre} dakika.' }));
+    });
+
+    test('ek yüzeyde boş metin = otomatik cümle (okunuşta görünür), "Otomatik" kutuyu boşaltır', () => {
+        const { ekran, onDegistir } = kur(
+            { ...CUMA, anonsMetniDuzenlenebilir: true },
+            adim({ bildirim: true, sesli: true }, { anonsMetni: 'Benim cümlem' })
+        );
+        fireEvent.press(ekran.getByLabelText(/^Otomatik cümle/));
+        expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ anonsMetni: '' }));
+        const bos = kur({ ...CUMA, anonsMetniDuzenlenebilir: true }, adim({ bildirim: true, sesli: true }));
+        expect(bos.ekran.getByTestId('anons-okunus').props.children).toBe('Cuma için öğle vaktine 30 dakika kaldı.');
+    });
+
+    test('muhafızda boş metin = SESSİZ; "Otomatik" şablonu kutuya YAZAR', () => {
+        const { ekran, onDegistir } = kur(MUHAFIZ, adim({ bildirim: true, sesli: true }));
+        expect(ekran.getByTestId('anons-okunus').props.children).toMatch(/bu hatırlatma sesli okumaz/);
+        fireEvent.press(ekran.getByLabelText(/^Otomatik cümle/));
+        expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ anonsMetni: varsayilanAnonsMetni('cikisaDogru') }));
+    });
+});

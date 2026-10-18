@@ -34,8 +34,14 @@ import { MUHAFIZ_MAKS_ADIM } from '../../../core/muhafiz/matrisTipleri';
 import type { EsikSinirlari } from '../../../core/muhafiz/esikSinirlari';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
-import { modKanallaraCevir, kanalAcikMi, adimKapaliMi } from '../../../core/muhafiz/kanalKumesi';
-import { anonsSablonlari } from '../../../core/muhafiz/anonsMetni';
+import { kanalAcikMi } from '../../../core/muhafiz/kanalKumesi';
+import { anonsMetniniCoz, anonsSablonlari } from '../../../core/muhafiz/anonsMetni';
+import {
+    ANONS_SOZLUKLERI,
+    anonsCoz,
+    type HatirlatmaYuzeyi,
+    type YerTutucu,
+} from '../../../core/hatirlatma/anonsYerTutucu';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 import {
     ANDROID_YETENEKLERI,
@@ -96,73 +102,86 @@ export const MUHAFIZ_ADIM_BILGILERI: AdimBilgisi[] = [
     SEVIYE_BILGILERI.acil,
 ];
 
-export interface KanalCipi {
-    id: 'kapali' | 'bildirim' | 'sesli' | 'ikisi';
-    etiket: string;
-    ikon: string;
-    /** Cipe dokunuldugunda hucreye yazilacak KANAL KUMESI. */
-    kanallar: UyariKanallari;
+/**
+ * "NASIL" bölümünün iki ANA anahtarı (birleşik hatırlatma modülü §3.3).
+ *
+ * Eskiden dört kartlı tek seçimdi (Kapalı / Bildirim / Sesli anons / İkisi de) — iki
+ * bağımsız evet/hayır sorusunun dört bileşimi (NN/g: bağımsız seçenek = anahtar). Veri
+ * modeli DEĞİŞMEDİ (`UyariKanallari` zaten küme): anahtarların ürettiği kümeler eski
+ * dört kartın ürettikleriyle birebir aynıdır (`{bildirim}`, `{sesli}`, `{bildirim,sesli}`
+ * + bağımsız titreşim/alarm). "Kapalı" artık kanal değil, listedeki adım anahtarıdır.
+ */
+export type AnaKanal = 'bildirim' | 'sesli';
+
+export const BILDIRIM_ETIKETI = 'Bildirim';
+export const BILDIRIM_ACIKLAMASI = 'Ekranda bildirim olarak gelir.';
+export const SESLI_ETIKETI = 'Sesli okuma';
+export const SESLI_ACIKLAMASI = 'Telefonunuz hatırlatmayı sesli okur.';
+/** Son açık ana kanalın anahtarı devre dışıyken altında yazılan neden. */
+export const SON_KANAL_NOTU = 'Bu hatırlatmayı kapatmak için listedeki anahtarı kullanın.';
+
+/** Bu ana kanal adımın SON açık ana kanalı mı? (kapatılamaz — kapatmanın yeri liste anahtarı) */
+export function sonAcikAnaKanalMi(kanallar: UyariKanallari | undefined, kanal: AnaKanal): boolean {
+    const diger: AnaKanal = kanal === 'bildirim' ? 'sesli' : 'bildirim';
+    return kanalAcikMi(kanallar, kanal) && !kanalAcikMi(kanallar, diger);
 }
 
 /**
- * "Nasil uyarsin" cipleri (Faz 2: kanal kumesi).
- *
- * Cipler BILDIRIM/SESLI eksenini sunar (birbirinin yerine gecen dort bilesim).
- * `titresim` bu eksende DEGILDIR: Faz 6'da bagimsiz bir ANAHTAR olarak eklendi,
- * cip olsaydi her bilesimin titresimli/titresimsiz ikizi gerekir ve cip sayisi
- * ikiye katlanirdi — bu tam olarak `UyariModu` enum'unu kumeye cevirmemizin
- * gerekcesiydi (spec 6). Bu yuzden cip yuklerinde `titresim` HIC yazmaz ve secim
- * kontrolu `kanalCipiSeciliMi` ile yalniz iki eksene bakar.
+ * Ana kanal anahtarını uygular (SAF). Kurallar:
+ * - SON açık ana kanal kapatılamaz → AYNI referans döner (adımın aç/kapa'sı liste anahtarıdır;
+ *   `seviyeyiKapat` + `oncekiKanallar` hafızası orada).
+ * - Bildirim kapanınca TİTREŞİM de düşer (titreşim bildirimin alt özelliğidir; ekranda da
+ *   yalnız bildirim açıkken görünür). Gerçek ALARM kalır (sesli açık → tekrarlar okunur).
+ * - Kapalı kanal ANAHTAR SİLİNEREK yazılır: üretilen küme eski çiplerin kümeleriyle ve
+ *   `kanallarNormalize` çıktısıyla birebir aynı kalsın.
  */
-export const KANAL_CIPLERI: KanalCipi[] = [
-    // etiket "Kapalı": bu cip bir ses secimi DEGIL, bir kapatma eylemidir
-    // (AdimDetayModal 'kapali' icin seviyeyiKapat() cagirir).
-    { id: 'kapali', etiket: 'Kapalı', ikon: 'bell-slash', kanallar: modKanallaraCevir('sessiz') },
-    { id: 'bildirim', etiket: 'Bildirim', ikon: 'bell', kanallar: modKanallaraCevir('bildirim') },
-    { id: 'sesli', etiket: 'Sesli anons', ikon: 'volume-up', kanallar: modKanallaraCevir('sesli') },
-    { id: 'ikisi', etiket: 'İkisi de', ikon: 'bullhorn', kanallar: modKanallaraCevir('ikisi') },
-];
+export function kanalAnahtariniUygula(
+    mevcut: UyariKanallari | undefined,
+    kanal: AnaKanal,
+    acik: boolean
+): UyariKanallari {
+    const temel: UyariKanallari = { ...(mevcut ?? {}) };
+    if (acik) {
+        if (kanalAcikMi(temel, kanal)) return mevcut ?? temel;
+        return { ...temel, [kanal]: true };
+    }
+    if (!kanalAcikMi(temel, kanal) || sonAcikAnaKanalMi(temel, kanal)) return mevcut ?? temel;
+    const sonuc: UyariKanallari = {};
+    if (kanal !== 'bildirim' && kanalAcikMi(temel, 'bildirim')) sonuc.bildirim = true;
+    if (kanal !== 'sesli' && kanalAcikMi(temel, 'sesli')) sonuc.sesli = true;
+    if (kanal !== 'bildirim' && kanalAcikMi(temel, 'titresim')) sonuc.titresim = true;
+    if (kanalAcikMi(temel, 'alarm')) sonuc.alarm = true;
+    return sonuc;
+}
 
 /**
- * Cip SECILI mi? (Faz 6)
- *
- * `kanallarEsitMi` TAM kume karsilastirir; titresim bagimsiz eksen oldugu icin
- * onu da sayarsa titresimi acan kullanicinin secili cipi "kaybolur" (hicbir cip
- * secili gorunmez). Bu yuzden karsilastirma cip ekseniyle SINIRLIDIR.
- *
- * 'kapali' cipi istisna DEGIL: adim gercekten kapaliysa (titresim dahil hicbir
- * kanal acik degil) secili gorunur — `adimKapaliMi` tek kapisindan gecer.
+ * "Gelişmiş" bölümü açık mı başlar? Adımda bu bölümdeki bir ayar varsayılandan farklıysa
+ * (tekrar, nazik olmayan ton, gerçek alarm) — gizli bir seçim kapalı başlığın altında kalmasın.
  */
-export function kanalCipiSeciliMi(
-    secili: UyariKanallari | undefined,
-    cip: KanalCipi
+export function gelismisAcikBaslarMi(
+    seviye: SeviyeAyari,
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'>
 ): boolean {
-    if (cip.id === 'kapali') return adimKapaliMi(secili);
     return (
-        kanalAcikMi(secili, 'bildirim') === kanalAcikMi(cip.kanallar, 'bildirim') &&
-        kanalAcikMi(secili, 'sesli') === kanalAcikMi(cip.kanallar, 'sesli') &&
-        !adimKapaliMi(secili)
+        seviye.siklik !== 'birkez' ||
+        (tanim.tonSecilebilir === true && etkinKademe(seviye, tanim.yon) !== 'nazik') ||
+        kanalAcikMi(seviye.kanallar, 'alarm')
     );
 }
 
-/**
- * Cipe dokununca yazilacak kume — ACIK titresim KORUNUR (bagimsiz eksen).
- *
- * 'kapali' cipi ISTISNADIR: orada titresim de dusurulur, yoksa "kapattim ama
- * hala titriyor" olurdu (ve adim `adimKapaliMi` kapisindan gecmedigi icin
- * `seviyeyiKapat` yolu hic calismaz, kanal hafizasi da yazilmazdi).
- */
-export function cipKanallariniBirlestir(
-    mevcut: UyariKanallari | undefined,
-    cip: KanalCipi
-): UyariKanallari {
-    if (cip.id === 'kapali') return { ...cip.kanallar };
-    // GERCEK ALARM (issue #74) da titresim gibi bagimsiz eksendir → korunur.
-    return {
-        ...cip.kanallar,
-        ...(kanalAcikMi(mevcut, 'titresim') ? { titresim: true } : {}),
-        ...(kanalAcikMi(mevcut, 'alarm') ? { alarm: true } : {}),
-    };
+/** "Gelişmiş" başlığının özeti ("her 5 dk · Uyarı tonu · Gerçek alarm açık"); hepsi varsayılansa ''. */
+export function gelismisOzetiOlustur(
+    seviye: SeviyeAyari,
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'>
+): string {
+    const parcalar: string[] = [];
+    if (seviye.siklik !== 'birkez') parcalar.push(`her ${seviye.siklik.herDk} dk`);
+    if (tanim.tonSecilebilir === true) {
+        const ton = etkinKademe(seviye, tanim.yon);
+        if (ton !== 'nazik') parcalar.push(`${TON_ETIKETLERI[ton]} tonu`);
+    }
+    if (kanalAcikMi(seviye.kanallar, 'alarm')) parcalar.push('Gerçek alarm açık');
+    return parcalar.join(' · ');
 }
 
 /** Titresim anahtarinin ekran metinleri (kibar "siz"). */
@@ -347,14 +366,22 @@ export interface PencereTanimi {
     esikErisimAdi?: string;
     /** Esik degerinin birimi ("dk kala"); verilmezse yonden turetilir. */
     esikBirimi?: string;
-    /** "Kapalı" kanal çipi gösterilsin mi? */
-    kapaliCipiVar: boolean;
+    /** Sesli okuma editöründe çip olarak eklenen yer tutucular (yüzeye özgü, güvenli). */
+    anonsYerTutuculari: YerTutucu[];
+    /** Editördeki hazır cümleler (yüzeye ve — muhafızda — yöne uygun). */
+    anonsSablonlari: string[];
     /**
-     * Sesli adımda serbest anons metni YERİNE gösterilecek örnek cümle ("Telefonunuz
-     * şöyle okur"). Verilirse anons editörü çizilmez — metin bağlamdan üretilir
-     * (nafile: muhafızın `{vakit}` şablonları farz vaktine kurulu).
+     * Önizleme çözücüsü: şablonu bu yüzeyin bağlamıyla okunacak cümleye çevirir (adımın
+     * eşiği ölçü sayılır). Planlayıcıyla AYNI kural — ekranda duyulan, cihazda okunandır.
      */
-    anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+    anonsCoz: (sablon: string, seviye: SeviyeAyari) => string;
+    /**
+     * BOŞ metnin okunacak OTOMATİK cümlesi (yalnız `bosMetinOtomatik` yüzeylerde; yüzeyin
+     * plan üreticisinin cümlesiyle aynı kaynak). Muhafızda yoktur (boş = sessiz).
+     */
+    otomatikAnons?: (seviye: SeviyeAyari) => string;
+    /** Editörün altına yazılan yüzeye özgü not (yatış: muhasebe daima otomatik). */
+    anonsNotu?: string;
     /**
      * "Akışı önizle"de bir tetiğin GERÇEK metni (ek hatırlatma yüzeyleri, nafile). Verilmezse
      * muhafızın vakit metinleri (`basligiOlustur` / `bildirimGovdesiOlustur` + anons şablonu)
@@ -400,7 +427,6 @@ export const STANDART_YETENEKLER = {
     sesSecimiVar: true,
     siklikSecimiVar: true,
     alarmSecilebilir: true,
-    kapaliCipiVar: true,
     titresimSecilebilir: true,
     anonsMetniDuzenlenebilir: true,
 } as const;
@@ -543,6 +569,10 @@ export function vakitPencereTanimi(
         maksAdim: MUHAFIZ_MAKS_ADIM,
         tonSecilebilir: true,
         bosMetinOtomatik: false,
+        anonsYerTutuculari: ANONS_SOZLUKLERI.muhafiz.yerTutucular,
+        anonsSablonlari: anonsSablonlari(yon),
+        // Teslimciyle AYNI çözücü (muhafız: `{vakit}` farz vaktinin adı).
+        anonsCoz: (sablon, seviye) => anonsMetniniCoz(sablon, vakit, seviye.esikDk, yon),
         onPlanBanneriVar: true,
         pencereUzunluguDk,
         adimBilgileri: MUHAFIZ_ADIM_BILGILERI,
@@ -574,6 +604,11 @@ export function vakitPencereTanimi(
  */
 export function ekHatirlatmaPencereTanimi(secenekler: {
     kaynak: string;
+    /** Sesli okuma sözlüğü (yer tutucular + hazır cümleler). */
+    yuzey: Exclude<HatirlatmaYuzeyi, 'muhafiz' | 'nafile'>;
+    /** Önizlemede `{vakit}`'in okunduğu ad ("Cuma", "Öğle", "Yatsı"). */
+    anonsVakitAdi: string;
+    anonsNotu?: string;
     baslik: string;
     baslikKucuk: string;
     ikon: string;
@@ -594,11 +629,12 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
     pencere?: { baslangic: Date; bitis: Date };
     seritGunEtiketi?: string;
     yetenekler?: PlatformYetenekleri;
-    anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+    otomatikAnons?: (seviye: SeviyeAyari) => string;
     onizlemeMetni?: PencereTanimi['onizlemeMetni'];
     onizlemeOzeti?: PencereTanimi['onizlemeOzeti'];
 }): PencereTanimi {
     const yetenekler = secenekler.yetenekler ?? ANDROID_YETENEKLERI;
+    const sozluk = ANONS_SOZLUKLERI[secenekler.yuzey];
     const pencereUzunluguDk = secenekler.pencere
         ? Math.round((secenekler.pencere.bitis.getTime() - secenekler.pencere.baslangic.getTime()) / 60000)
         : undefined;
@@ -625,7 +661,11 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
         maksAdim: secenekler.maksAdim,
         pencereUzunluguDk,
         adimBilgileri,
-        anonsOrnegiOlustur: secenekler.anonsOrnegiOlustur,
+        anonsYerTutuculari: sozluk.yerTutucular,
+        anonsSablonlari: sozluk.sablonlar,
+        anonsCoz: (sablon, seviye) => anonsCoz(sablon, { vakit: secenekler.anonsVakitAdi, sureDk: seviye.esikDk }),
+        otomatikAnons: secenekler.otomatikAnons,
+        anonsNotu: secenekler.anonsNotu,
         onizlemeMetni: secenekler.onizlemeMetni,
         onizlemeOzeti: secenekler.onizlemeOzeti,
         yetenekler,
@@ -689,7 +729,7 @@ export function nafilePencereTanimi(secenekler: {
     adimSayisi: number;
     pencere?: { baslangic: Date; bitis: Date };
     yetenekler?: PlatformYetenekleri;
-    anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+    otomatikAnons?: (seviye: SeviyeAyari) => string;
     onizlemeMetni?: PencereTanimi['onizlemeMetni'];
     onizlemeOzeti?: PencereTanimi['onizlemeOzeti'];
 }): PencereTanimi {
@@ -725,7 +765,12 @@ export function nafilePencereTanimi(secenekler: {
         maksAdim: NAFILE_MAKS_ADIM,
         pencereUzunluguDk,
         adimBilgileri,
-        anonsOrnegiOlustur: secenekler.anonsOrnegiOlustur,
+        anonsYerTutuculari: ANONS_SOZLUKLERI.nafile.yerTutucular,
+        anonsSablonlari: ANONS_SOZLUKLERI.nafile.sablonlar,
+        // Planlayıcıyla aynı bağlam: `{vakit}` nafilenin adı, `{süre}` ölçü, `{yön}` yön.
+        anonsCoz: (sablon, seviye) =>
+            anonsCoz(sablon, { vakit: secenekler.baslik, sureDk: seviye.esikDk, yon: secenekler.yon }),
+        otomatikAnons: secenekler.otomatikAnons,
         onizlemeMetni: secenekler.onizlemeMetni,
         onizlemeOzeti: secenekler.onizlemeOzeti,
         yetenekler,

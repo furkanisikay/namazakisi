@@ -201,12 +201,14 @@ describe('YatisHatirlatmaBolumu', () => {
             expect(ekran.getAllByText(/^Yatsı · yatmadan önce kıl/).length).toBeGreaterThan(0);
         });
 
-        it('STANDART yetenekler: kanal çipleri + gerçek alarm; sesli rıza YATIŞIN kendi alanına adımla birlikte yazılır', async () => {
+        it('STANDART yetenekler: iki kanal anahtarı + gerçek alarm; sesli rıza YATIŞIN kendi alanına adımla birlikte yazılır', async () => {
             const ekran = kur({ aktif: true });
             fireEvent.press(ekran.getByLabelText(/^Hatırlatma — düzenleyin/));
-            expect(ekran.getByLabelText('Kapalı')).toBeTruthy();
+            // Birleşik modül: iki ANA anahtar + "Gelişmiş" bölümünde gerçek alarm.
+            expect(ekran.getByTestId('adim-bildirim-anahtari')).toBeTruthy();
+            fireEvent.press(ekran.getByTestId('adim-gelismis'));
             expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
-            fireEvent.press(ekran.getByLabelText('İkisi de'));
+            fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             expect(mockKaydet).not.toHaveBeenCalled();
             fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
             await waitFor(() => expect(mockKaydet).toHaveBeenCalledTimes(1));

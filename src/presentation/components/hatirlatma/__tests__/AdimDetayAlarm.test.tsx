@@ -4,8 +4,8 @@
  * - Yalniz muhafiz vakitlerinde (`alarmSecilebilir`) ve adim ACIKKEN gorunur.
  * - Riza yoksa anahtar once `AlarmOnayModal`'i acar; "Vazgec" HICBIR SEY yazmaz,
  *   onay rizayi yazar VE alarmi acar. Riza varsa dogrudan yazar.
- * - Kanal cipi degisince acik alarm KORUNUR (titresim gibi bagimsiz eksen);
- *   'kapali' cipi alarmi da dusurur.
+ * - Ana kanal anahtari degisince acik alarm KORUNUR (titresim gibi bagimsiz eksen).
+ * - Alarm "Gelişmiş" bolumundedir; alarmli adimda bolum ACIK baslar.
  */
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
@@ -34,7 +34,7 @@ jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({
 }));
 
 import { AdimDetayModal } from '../AdimDetayModal';
-import { cipKanallariniBirlestir, KANAL_CIPLERI, vakitPencereTanimi, ekHatirlatmaPencereTanimi } from '../pencereTanimi';
+import { kanalAnahtariniUygula, vakitPencereTanimi, ekHatirlatmaPencereTanimi } from '../pencereTanimi';
 import type { SeviyeAyari, UyariKanallari } from '../../../../core/muhafiz/matrisTipleri';
 import { VARSAYILAN_SES } from '../../../../core/muhafiz/matrisTipleri';
 
@@ -49,7 +49,6 @@ const adim = (kanallar: UyariKanallari): SeviyeAyari => ({
 
 function kur(kanallar: UyariKanallari, alarmOnayiVar: boolean) {
     const onDegistir = jest.fn();
-    const onAlarmOnayiVer = jest.fn();
     const ekran = render(
         <AdimDetayModal
             gorunur
@@ -60,31 +59,31 @@ function kur(kanallar: UyariKanallari, alarmOnayiVar: boolean) {
             onDegistir={onDegistir}
             onKapat={jest.fn()}
             alarmOnayiVar={alarmOnayiVar}
-            onAlarmOnayiVer={onAlarmOnayiVer}
         />
     );
-    return { ekran, onDegistir, onAlarmOnayiVer };
+    return { ekran, onDegistir };
 }
 
 describe('Gerçek alarm anahtarı', () => {
     test('rıza yoksa önce onay modalı; "Vazgeç" hiçbir şey yazmaz', () => {
-        const { ekran, onDegistir, onAlarmOnayiVer } = kur({ bildirim: true }, false);
+        const { ekran, onDegistir } = kur({ bildirim: true }, false);
         fireEvent(ekran.getByLabelText('Gerçek alarm'), 'valueChange', true);
         expect(ekran.getByText('Gerçek alarm açılsın mı?')).toBeTruthy();
         expect(onDegistir).not.toHaveBeenCalled();
 
         fireEvent.press(ekran.getByLabelText('Vazgeç'));
         expect(onDegistir).not.toHaveBeenCalled();
-        expect(onAlarmOnayiVer).not.toHaveBeenCalled();
     });
 
     test('onay rızayı yazar VE alarmı açar (diğer kanallar korunur)', () => {
-        const { ekran, onDegistir, onAlarmOnayiVer } = kur({ bildirim: true, titresim: true }, false);
+        const { ekran, onDegistir } = kur({ bildirim: true, titresim: true }, false);
         fireEvent(ekran.getByLabelText('Gerçek alarm'), 'valueChange', true);
         fireEvent.press(ekran.getByLabelText('Alarmı açın'));
-        expect(onAlarmOnayiVer).toHaveBeenCalledTimes(1);
+        // Rıza adım yazımıyla BİRLİKTE gelir (iki eşzamanlı yazım birbirini ezmesin).
+        expect(onDegistir).toHaveBeenCalledTimes(1);
         expect(onDegistir).toHaveBeenCalledWith(
-            expect.objectContaining({ kanallar: { bildirim: true, titresim: true, alarm: true } })
+            expect.objectContaining({ kanallar: { bildirim: true, titresim: true, alarm: true } }),
+            { alarmOnayi: true }
         );
     });
 
@@ -92,12 +91,13 @@ describe('Gerçek alarm anahtarı', () => {
         const acik = kur({ bildirim: true }, true);
         fireEvent(acik.ekran.getByLabelText('Gerçek alarm'), 'valueChange', true);
         expect(acik.ekran.queryByText('Gerçek alarm açılsın mı?')).toBeNull();
-        expect(acik.onDegistir).toHaveBeenCalledWith(expect.objectContaining({ kanallar: { bildirim: true, alarm: true } }));
+        expect(acik.onDegistir).toHaveBeenCalledWith(expect.objectContaining({ kanallar: { bildirim: true, alarm: true } }), undefined);
 
         const kapat = kur({ bildirim: true, alarm: true }, false);
         fireEvent(kapat.ekran.getByLabelText('Gerçek alarm'), 'valueChange', false);
         expect(kapat.ekran.queryByText('Gerçek alarm açılsın mı?')).toBeNull();
-        expect(kapat.onDegistir).toHaveBeenCalledWith(expect.objectContaining({ kanallar: { bildirim: true, alarm: false } }));
+        // Kapalı kanal ANAHTAR SİLİNEREK yazılır (küme `kanallarNormalize` çıktısıyla aynı).
+        expect(kapat.onDegistir).toHaveBeenCalledWith(expect.objectContaining({ kanallar: { bildirim: true } }), undefined);
     });
 
     test('kapalı adımda anahtar gösterilmez', () => {
@@ -109,6 +109,8 @@ describe('Gerçek alarm anahtarı', () => {
         expect(vakitPencereTanimi('ogle').alarmSecilebilir).toBe(true);
         const cuma = ekHatirlatmaPencereTanimi({
             kaynak: 'cuma',
+            yuzey: 'cuma',
+            anonsVakitAdi: 'Cuma',
             baslik: 'Cuma namazı',
             baslikKucuk: 'cuma namazı',
             ikon: 'mosque',
@@ -164,17 +166,17 @@ describe('Alarm kapsamı ("Yalnız ilk uyarıda" / "Her uyarıda")', () => {
     });
 });
 
-describe('cipKanallariniBirlestir — alarm bağımsız eksen', () => {
-    const cip = (id: string) => KANAL_CIPLERI.find((c) => c.id === id)!;
-    test('çip değişince açık alarm korunur', () => {
-        expect(cipKanallariniBirlestir({ bildirim: true, alarm: true }, cip('ikisi'))).toEqual({
+describe('kanalAnahtariniUygula — alarm bağımsız eksen', () => {
+    test('ana kanal değişince açık alarm korunur', () => {
+        expect(kanalAnahtariniUygula({ bildirim: true, alarm: true }, 'sesli', true)).toEqual({
             bildirim: true,
             sesli: true,
             alarm: true,
         });
-    });
-    test("'kapalı' çipi alarmı da düşürür (yoksa 'kapattım ama çalıyor')", () => {
-        expect(cipKanallariniBirlestir({ bildirim: true, alarm: true }, cip('kapali'))).toEqual({});
+        expect(kanalAnahtariniUygula({ bildirim: true, sesli: true, alarm: true }, 'bildirim', false)).toEqual({
+            sesli: true,
+            alarm: true,
+        });
     });
 });
 
@@ -201,7 +203,6 @@ describe('iPhone — AlarmKit izni (iOS 26, issue #74)', () => {
                 onDegistir={onDegistir}
                 onKapat={jest.fn()}
                 alarmOnayiVar={alarmOnayiVar}
-                onAlarmOnayiVer={jest.fn()}
             />
         );
         return { ekran, onDegistir };
@@ -216,7 +217,10 @@ describe('iPhone — AlarmKit izni (iOS 26, issue #74)', () => {
         fireEvent.press(ekran.getByLabelText('Alarmı açın'));
         expect(onDegistir).not.toHaveBeenCalled();
         await waitFor(() =>
-            expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ kanallar: { bildirim: true, alarm: true } }))
+            expect(onDegistir).toHaveBeenCalledWith(
+                expect.objectContaining({ kanallar: { bildirim: true, alarm: true } }),
+                { alarmOnayi: true }
+            )
         );
         expect(alarmKit.alarmKitIzniIste).toHaveBeenCalledTimes(1);
     });

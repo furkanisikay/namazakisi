@@ -34,7 +34,7 @@ import { useNafilePencereleri } from '../hooks/useNafilePencereleri';
 import { BildirimButceKarti } from '../components/bildirim/BildirimButceKarti';
 import { Anahtar } from '../components/common/Anahtar';
 import { PencereKarti } from '../components/hatirlatma/PencereKarti';
-import { AdimDetayModal } from '../components/hatirlatma/AdimDetayModal';
+import { AdimDetayModal, type AdimRizasi } from '../components/hatirlatma/AdimDetayModal';
 import { AkisOnizlemeModal } from '../components/hatirlatma/AkisOnizlemeModal';
 import { nafilePencereTanimi, type PencereTanimi } from '../components/hatirlatma/pencereTanimi';
 import { SesliOnayModal } from './MuhafizAyarlari/SesliOnayModal';
@@ -189,7 +189,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                 adimSayisi: ayar.adimlar.length,
                 pencere,
                 yetenekler,
-                anonsOrnegiOlustur: (s) =>
+                otomatikAnons: (s) =>
                     nafileAnonsOrnegi(k.tur, ayar.yon, s.esikDk, {
                         pencereUzunluguDk: uzunluk,
                         teheccudPenceresi,
@@ -493,7 +493,11 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                     seviyeler={detayAyari.adimlar}
                     indeks={detay.indeks}
                     ttsDestekli={ttsDestekli}
-                    onDegistir={(s: SeviyeAyari) => adimDegistir(detay.tur, detay.indeks, s)}
+                    onDegistir={(s: SeviyeAyari, riza?: AdimRizasi) => {
+                        // Gerçek alarm rızası (#74) adım yazımıyla BİRLİKTE kaydedilir.
+                        if (riza?.alarmOnayi) alarmOnayiBekliyor.current = true;
+                        adimDegistir(detay.tur, detay.indeks, s);
+                    }}
                     onSil={
                         detayAyari.adimlar.length > 1
                             ? () => {
@@ -505,12 +509,6 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                     onKapat={() => setDetay(null)}
                     // Gerçek alarm rızası (#74) — nafilenin KENDİ kaydı (muhafızınki taşınmaz).
                     alarmOnayiVar={ayarlar.alarmOnayi === true}
-                    onAlarmOnayiVer={() => {
-                        // Ayrı bir yazım DEĞİL: modal onaydan hemen sonra anahtarı yazar
-                        // (`onDegistir`); iki eşzamanlı thunk aynı eski durumu birleştirip
-                        // birbirini ezerdi. Rıza o yazımla BİRLİKTE gider (`adimDegistir`).
-                        alarmOnayiBekliyor.current = true;
-                    }}
                 />
             )}
 
@@ -530,7 +528,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                 kapatmaNotu="Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz."
                 ornekMetin={
                     sesliBekleyen
-                        ? tanimlar[sesliBekleyen.tur].anonsOrnegiOlustur?.(sesliBekleyen.seviye) ?? ''
+                        ? tanimlar[sesliBekleyen.tur].otomatikAnons?.(sesliBekleyen.seviye) ?? ''
                         : ''
                 }
                 ttsDestekli={ttsDestekli}

@@ -29,13 +29,17 @@ import type { PencereYonu } from '../../../../core/muhafiz/pencereTipleri';
 
 const YONLER: PencereYonu[] = ['cikisaDogru', 'girisindenItibaren'];
 
+/** Karşılaştırma için fonksiyon alanları (çözücüler) çıkarılır; davranışları ayrıca ölçülür. */
+const veri = (t: PencereTanimi) =>
+    Object.fromEntries(Object.entries(t).filter(([, d]) => typeof d !== 'function'));
+
 describe('ANDROID REGRESYON — yetenek parametresi ciktiyi DEGISTIRMEZ', () => {
     test('her vakit ve her yon icin varsayilan cikti == ANDROID_YETENEKLERI ciktisi', () => {
         for (const vakit of MUHAFIZ_VAKITLERI as MuhafizVakti[]) {
             for (const yon of YONLER) {
                 const varsayilan = vakitPencereTanimi(vakit, yon, 120);
                 const acikAndroid = vakitPencereTanimi(vakit, yon, 120, ANDROID_YETENEKLERI);
-                expect(varsayilan).toEqual(acikAndroid);
+                expect(veri(varsayilan)).toEqual(veri(acikAndroid));
             }
         }
     });
@@ -89,6 +93,8 @@ describe('cuma (ekHatirlatmaPencereTanimi)', () => {
     const cuma = () =>
         ekHatirlatmaPencereTanimi({
             kaynak: 'cuma',
+            yuzey: 'cuma',
+            anonsVakitAdi: 'Cuma',
             baslik: 'Cuma namazı',
             baslikKucuk: 'cuma namazı',
             ikon: 'mosque',
@@ -167,6 +173,8 @@ describe('YETENEK STANDARDI — ek hatırlatma yüzeyi', () => {
     const ek = (yetenekler: PlatformYetenekleri = ANDROID_YETENEKLERI) =>
         ekHatirlatmaPencereTanimi({
             kaynak: 'cuma',
+            yuzey: 'cuma',
+            anonsVakitAdi: 'Cuma',
             baslik: 'Cuma namazı',
             baslikKucuk: 'cuma namazı',
             ikon: 'mosque',

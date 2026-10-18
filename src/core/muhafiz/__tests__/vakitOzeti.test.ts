@@ -25,9 +25,9 @@ describe('vakitOzetiOlustur', () => {
       .toBe('Sadece bildirim · 45 dk kala başlar');
   });
 
-  test('yalnız sesli kanalı → "Sadece sesli anons"', () => {
+  test('yalnız sesli kanalı → "Yalnız sesli okuma"', () => {
     expect(vakitOzetiOlustur(vakit(sv(30, SESLI), sv(10, SESLI))))
-      .toBe('Sadece sesli anons · 30 dk kala başlar');
+      .toBe('Yalnız sesli okuma · 30 dk kala başlar');
   });
 
   test('bildirim + sesli karışımı → "Sesli + bildirim"', () => {

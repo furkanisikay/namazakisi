@@ -13,9 +13,7 @@
 import type {
     MuhafizVakti,
     SeviyeKademe,
-    UyariKanallari,
 } from '../../../core/muhafiz/matrisTipleri';
-import { modKanallaraCevir } from '../../../core/muhafiz/kanalKumesi';
 
 /**
  * CUMLE ICINDE gecen kucuk harfli vakit adlari ("… yatsı bugün 6 sa 40 dk").
@@ -45,35 +43,6 @@ export const SEVIYE_BILGILERI: Record<SeviyeKademe, SeviyeBilgisi> = {
     sert: { baslik: 'Sert uyarı', ikon: 'fire-alt', renk: '#F44336' },
     acil: { baslik: 'Acil', ikon: 'exclamation-circle', renk: '#D32F2F' },
 };
-
-export interface KanalCipi {
-    id: 'kapali' | 'bildirim' | 'sesli' | 'ikisi';
-    etiket: string;
-    ikon: string;
-    /** Cipe dokunuldugunda hucreye yazilacak KANAL KUMESI. */
-    kanallar: UyariKanallari;
-}
-
-/**
- * "Nasil uyarsin" cipleri (Faz 2: kanal kumesi).
- *
- * Cipler kumenin bugun kullanilan DORT bilesimini sunar; `titresim` kanali
- * SEMADA ACIK ama ekranda GOSTERILMEZ (Faz 6 / A7 baglayacak) — bu yuzden hicbir
- * cip onu yazmaz ve mevcut secim kontrolu de yalniz bildirim/sesli eksenine bakar.
- *
- * Faz 5: sesli ciplerdeki "yakinda" rozeti KALDIRILDI — native anons zinciri
- * (exact alarm -> AnonsReceiver -> TTS) Faz 4'te devreye girdi, sesli kanal artik
- * gercekten calisiyor. Cihazda Turkce konusma paketi yoksa engelleme YAPILMAZ,
- * yalniz bilgilendirme bandi gosterilir (bkz. `useTurkceTtsDestegi`).
- */
-export const KANAL_CIPLERI: KanalCipi[] = [
-    // etiket "Kapalı": bu cip bir ses secimi DEGIL, bir kapatma eylemidir
-    // (SeviyeDetayModal 'kapali' icin seviyeyiKapat() cagirir).
-    { id: 'kapali', etiket: 'Kapalı', ikon: 'bell-slash', kanallar: modKanallaraCevir('sessiz') },
-    { id: 'bildirim', etiket: 'Bildirim', ikon: 'bell', kanallar: modKanallaraCevir('bildirim') },
-    { id: 'sesli', etiket: 'Sesli anons', ikon: 'volume-up', kanallar: modKanallaraCevir('sesli') },
-    { id: 'ikisi', etiket: 'İkisi de', ikon: 'bullhorn', kanallar: modKanallaraCevir('ikisi') },
-];
 
 /** "Akisi onizle" tarama siniri — bir vaktin en genis penceresini kapsar (dk). */
 export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;

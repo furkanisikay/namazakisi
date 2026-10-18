@@ -29,7 +29,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { cumaHatirlatmaAyariniGuncelle } from '../../store/cumaHatirlatmaSlice';
 import { Anahtar } from '../common/Anahtar';
 import { PencereKarti } from '../hatirlatma/PencereKarti';
-import { AdimDetayModal } from '../hatirlatma/AdimDetayModal';
+import { AdimDetayModal, type AdimRizasi } from '../hatirlatma/AdimDetayModal';
 import { AkisOnizlemeModal } from '../hatirlatma/AkisOnizlemeModal';
 import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
 import { SesliOnayModal } from '../../screens/MuhafizAyarlari/SesliOnayModal';
@@ -180,6 +180,8 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
         () =>
             ekHatirlatmaPencereTanimi({
                 kaynak: 'cuma',
+                yuzey: 'cuma',
+                anonsVakitAdi: 'Cuma',
                 baslik: 'Cuma namazı',
                 baslikKucuk: 'cuma namazı',
                 ikon: 'mosque',
@@ -200,7 +202,7 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
                 pencere: pencere ? { baslangic: pencere.baslangic, bitis: pencere.bitis } : undefined,
                 seritGunEtiketi: pencere?.bugun ? 'Bugün' : 'Bu cuma',
                 yetenekler,
-                anonsOrnegiOlustur: (s) => cumaAnonsMetni(s.esikDk),
+                otomatikAnons: (s) => cumaAnonsMetni(s.esikDk),
                 onizlemeMetni: (adim, ilk) => ({ ...cumaBildirimMetni(adim.kalanDk, ilk), anons: cumaAnonsMetni(adim.kalanDk) }),
                 onizlemeOzeti: (adet) => `Öğle vaktinden önce ${adet} hatırlatma alırsınız`,
             }),
@@ -327,7 +329,11 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
                     seviyeler={ayarlar.adimlar}
                     indeks={detay}
                     ttsDestekli={ttsDestekli}
-                    onDegistir={(s: SeviyeAyari) => adimDegistir(detay, s)}
+                    onDegistir={(s: SeviyeAyari, riza?: AdimRizasi) => {
+                        // Gerçek alarm rızası (#74) adım yazımıyla BİRLİKTE kaydedilir.
+                        if (riza?.alarmOnayi) alarmOnayiBekliyor.current = true;
+                        adimDegistir(detay, s);
+                    }}
                     onSil={
                         ayarlar.adimlar.length > 1
                             ? () => {
@@ -343,9 +349,6 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
                     }}
                     // Gerçek alarm rızası (#74) — cumanın KENDİ kaydı (muhafızınki taşınmaz).
                     alarmOnayiVar={ayarlar.alarmOnayi === true}
-                    onAlarmOnayiVer={() => {
-                        alarmOnayiBekliyor.current = true;
-                    }}
                 />
             )}
 

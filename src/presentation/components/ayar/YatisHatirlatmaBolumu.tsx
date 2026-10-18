@@ -30,7 +30,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { yatisHatirlatmaAyariniGuncelle } from '../../store/yatisHatirlatmaSlice';
 import { Anahtar } from '../common/Anahtar';
 import { PencereKarti } from '../hatirlatma/PencereKarti';
-import { AdimDetayModal } from '../hatirlatma/AdimDetayModal';
+import { AdimDetayModal, type AdimRizasi } from '../hatirlatma/AdimDetayModal';
 import { AkisOnizlemeModal } from '../hatirlatma/AkisOnizlemeModal';
 import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
 import { SesliOnayModal } from '../../screens/MuhafizAyarlari/SesliOnayModal';
@@ -214,6 +214,9 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
         () =>
             ekHatirlatmaPencereTanimi({
                 kaynak: 'yatis',
+                yuzey: 'yatis',
+                anonsVakitAdi: 'Yatsı',
+                anonsNotu: 'Gün sonu muhasebesi daima otomatik cümleyle okunur.',
                 baslik: 'Yatış hatırlatması',
                 baslikKucuk: 'yatış hatırlatması',
                 ikon: 'bed',
@@ -234,7 +237,7 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
                 pencere,
                 seritGunEtiketi: 'Bu gece',
                 yetenekler,
-                anonsOrnegiOlustur: () => ornek?.anons ?? '',
+                otomatikAnons: () => ornek?.anons ?? '',
                 onizlemeMetni: () => ({
                     baslik: ornek?.baslik ?? '',
                     govde: ornek?.govde ?? '',
@@ -473,7 +476,11 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
                     seviyeler={ayarlar.adimlar}
                     indeks={detay}
                     ttsDestekli={ttsDestekli}
-                    onDegistir={(s: SeviyeAyari) => adimDegistir(detay, s)}
+                    onDegistir={(s: SeviyeAyari, riza?: AdimRizasi) => {
+                        // Gerçek alarm rızası (#74) adım yazımıyla BİRLİKTE kaydedilir.
+                        if (riza?.alarmOnayi) alarmOnayiBekliyor.current = true;
+                        adimDegistir(detay, s);
+                    }}
                     onSil={
                         ayarlar.adimlar.length > 1
                             ? () => {
@@ -489,9 +496,6 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
                     }}
                     // Gerçek alarm rızası (#74) — yatışın KENDİ kaydı (muhafızınki taşınmaz).
                     alarmOnayiVar={ayarlar.alarmOnayi === true}
-                    onAlarmOnayiVer={() => {
-                        alarmOnayiBekliyor.current = true;
-                    }}
                 />
             )}
 
