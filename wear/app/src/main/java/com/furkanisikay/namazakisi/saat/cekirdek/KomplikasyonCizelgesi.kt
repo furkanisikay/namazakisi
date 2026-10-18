@@ -84,9 +84,15 @@ object KalanSure {
      * @param siradakiVakit aralığın sonundaki vakit
      * @param bitisSaati sıradaki vaktin saati ("15:42")
      */
+    /**
+     * Sayılan anın TEK kuralı: farz vakti sürüyorsa ÇIKIŞ, değilse (güneş→öğle ya da
+     * önceki vakit bilinmiyor) GİRİŞ. `VakitHesabi.sayilanAn` de bunu okur.
+     */
+    fun mod(simdikiVakit: String?): Mod =
+        if (simdikiVakit != null && simdikiVakit != "gunes") Mod.CIKIS else Mod.GIRIS
+
     fun gosterim(simdikiVakit: String?, siradakiVakit: String, bitisSaati: String): Gosterim {
-        val farzSuruyor = simdikiVakit != null && simdikiVakit != "gunes"
-        return if (farzSuruyor) {
+        return if (mod(simdikiVakit) == Mod.CIKIS) {
             val ad = kisaAd(simdikiVakit!!)
             Gosterim(
                 Mod.CIKIS, ad, "$ad · ^1 kaldı",

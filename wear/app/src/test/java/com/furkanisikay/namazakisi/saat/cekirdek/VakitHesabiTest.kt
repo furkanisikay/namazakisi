@@ -86,4 +86,95 @@ class VakitHesabiTest {
         assertEquals("2 sa", VakitHesabi.kalanMetni(120 * dk))
         assertEquals("1 sa 5 dk", VakitHesabi.kalanMetni(65 * dk))
     }
+
+    // --- sayilanAn: ana ekran, tile ve komplikasyonun TEK kuralı ---
+
+    @Test
+    fun farzSurerkenVaktinCikisinaSayar() {
+        val an = v(bugun, "ogle") + 10 * dk
+        val s = VakitHesabi.sayilanAn(yuk, an)!!
+        assertEquals(KalanSure.Mod.CIKIS, s.mod)
+        assertEquals("ogle", s.vakit)
+        assertEquals(bugun.tarih, s.tarih)
+        assertEquals(v(bugun, "ogle"), s.baslangic)
+        assertEquals(v(bugun, "ikindi"), s.hedef)
+        assertEquals(v(bugun, "ikindi") - an, s.kalanMs(an))
+        val oran = s.kalanOran(an)
+        assertTrue(oran > 0.8f && oran < 1f)
+    }
+
+    @Test
+    fun gunestenOgleyeOgleninGirisineSayar() {
+        val an = v(bugun, "gunes") + 30 * dk
+        val s = VakitHesabi.sayilanAn(yuk, an)!!
+        assertEquals(KalanSure.Mod.GIRIS, s.mod)
+        assertEquals("ogle", s.vakit)
+        assertEquals(v(bugun, "gunes"), s.baslangic)
+        assertEquals(v(bugun, "ogle"), s.hedef)
+        assertFalse("girişe sayarken acil ton yok", s.acilMi(v(bugun, "ogle") - dk))
+    }
+
+    @Test
+    fun geceYarisindanSonraYatsiDuneAitVeImsakaSayar() {
+        val an = v(bugun, "imsak") - 60 * dk
+        val s = VakitHesabi.sayilanAn(yuk, an)!!
+        assertEquals(KalanSure.Mod.CIKIS, s.mod)
+        assertEquals("yatsi", s.vakit)
+        assertEquals(dun.tarih, s.tarih)
+        assertEquals(v(bugun, "imsak"), s.hedef)
+    }
+
+    @Test
+    fun yukunIlkAnindaSiradakininGirisineSayarVeYayDolu() {
+        val an = v(dun, "imsak") - 10 * dk
+        val s = VakitHesabi.sayilanAn(yuk, an)!!
+        assertEquals(KalanSure.Mod.GIRIS, s.mod)
+        assertEquals("imsak", s.vakit)
+        assertNull(s.baslangic)
+        assertEquals(1f, s.kalanOran(an), 0f)
+    }
+
+    @Test
+    fun yukBitinceSayilanAnYok() {
+        val son = yuk.gunler.last()
+        assertNull(VakitHesabi.sayilanAn(yuk, v(son, "yatsi") + dk))
+    }
+
+    @Test
+    fun sonOnBesDakikaAcil() {
+        val hedef = v(bugun, "ikindi")
+        val s = VakitHesabi.sayilanAn(yuk, v(bugun, "ogle") + dk)!!
+        assertFalse(s.acilMi(hedef - (SaatPaleti.ACIL_ESIK_DK + 1) * dk))
+        assertTrue(s.acilMi(hedef - SaatPaleti.ACIL_ESIK_DK * dk))
+        assertTrue(s.acilMi(hedef - dk))
+    }
+
+    @Test
+    fun kerahatBandiYalnizIkindininSonGurubDakikasi() {
+        val ikindi = VakitHesabi.sayilanAn(yuk, v(bugun, "ikindi") + dk)!!
+        assertEquals(
+            (v(bugun, "aksam") - yuk.kerahat.gurubDk * dk) to v(bugun, "aksam"),
+            VakitHesabi.kerahatBandi(yuk, ikindi),
+        )
+        assertNull(VakitHesabi.kerahatBandi(yuk, VakitHesabi.sayilanAn(yuk, v(bugun, "ogle") + dk)!!))
+    }
+
+    @Test
+    fun sayilanAnKomplikasyonGosterimiyleAyniModu() {
+        // Komplikasyon etiketleri (KalanSure.gosterim) ile ekran AYNI kuralı okumalı.
+        for (a in ZamanCizelgesi.araliklar(yuk, v(dun, "imsak") - dk)) {
+            val s = VakitHesabi.sayilanAn(a.onceki, a.siradaki)
+            val g = KalanSure.gosterim(a.onceki?.vakit, a.siradaki.vakit, "00:00")
+            assertEquals(g.mod, s.mod)
+            assertEquals(a.siradaki.ms, s.hedef)
+        }
+    }
+
+    @Test
+    fun kalanSesliMetni() {
+        assertEquals("1 dakikadan az", VakitHesabi.kalanSesliMetni(30_000))
+        assertEquals("58 dakika", VakitHesabi.kalanSesliMetni(58 * dk))
+        assertEquals("2 saat", VakitHesabi.kalanSesliMetni(120 * dk))
+        assertEquals("1 saat 58 dakika", VakitHesabi.kalanSesliMetni(118 * dk + 59_000))
+    }
 }

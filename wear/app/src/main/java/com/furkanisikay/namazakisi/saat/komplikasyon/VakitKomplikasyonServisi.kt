@@ -88,11 +88,12 @@ class VakitKomplikasyonServisi : GuvenliKomplikasyonServisi() {
         val bitis = a.siradaki.ms
         val saat = VakitHesabi.saat(bitis)
         val g = KalanSure.gosterim(a.onceki?.vakit, a.siradaki.vakit, saat)
+        // Sayılan an ana ekran ve tile ile AYNI kuraldan (tek kaynak).
+        val sayilan = VakitHesabi.sayilanAn(a.onceki, a.siradaki)
         val aciklama = duz(g.aciklama)
         val dokunus = KomplikasyonOrtak.uygulamayiAc(this)
         // İkon: sayılan şeyin vakti (çıkışta şu anki vakit, girişte gelecek vakit).
-        val ikonVakti = if (g.mod == KalanSure.Mod.CIKIS) a.onceki?.vakit ?: a.siradaki.vakit else a.siradaki.vakit
-        val ikon = KomplikasyonOrtak.vakitIkonu(ikonVakti)
+        val ikon = KomplikasyonOrtak.vakitIkonu(sayilan.vakit)
         val kronometre = sayac(bitis, TimeDifferenceStyle.STOPWATCH)
         return when (tur) {
             ComplicationType.SHORT_TEXT ->
@@ -108,7 +109,7 @@ class VakitKomplikasyonServisi : GuvenliKomplikasyonServisi() {
                     .setTapAction(dokunus)
                     .build()
             ComplicationType.RANGED_VALUE -> {
-                val bas = a.onceki?.ms ?: a.baslangic
+                val bas = sayilan.baslangic ?: a.baslangic
                 val uzunluk = (bitis - bas).coerceAtLeast(1L).toFloat()
                 val deger = ((an - bas) / uzunluk).coerceIn(0f, 1f)
                 RangedValueComplicationData.Builder(deger, 0f, 1f, aciklama)
