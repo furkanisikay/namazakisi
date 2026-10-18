@@ -31,6 +31,10 @@ Namaz vakitleri bulunduğunuz yerin enlem ve boylamından hesaplanır. Konumunuz
   aktarılır (cihazlar Bluetooth ile bağlı değilken bu eşitleme Google'ın altyapısı
   üzerinden geçebilir); geliştiriciye ulaşmaz, saat konum izni istemez ve bu bilgi
   saatten de hiçbir yere gönderilmez,
+- Camideyim'i kullanıyorsanız, camide olduğunuz bilgisi (caminin adı, durumun bitiş
+  saati ve "Camide misiniz?" sorusu) ile Namaz modunun bitiş saati de aynı yolla
+  **yalnızca kendi saatinize** gider; saatten verdiğiniz cevap ("Burası cami değil")
+  yalnız telefonunuza döner. Bu bilgiler de geliştiriciye ulaşmaz,
 - dilerseniz hiç verilmeyebilir: konumu kapatıp şehrinizi elle seçebilirsiniz.
 
 Konum izni vermezseniz uygulama çalışmaya devam eder.
