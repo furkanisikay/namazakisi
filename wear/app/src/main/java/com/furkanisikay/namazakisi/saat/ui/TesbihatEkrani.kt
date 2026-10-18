@@ -219,6 +219,7 @@ private fun TesbihatHalkasi(durum: Tesbihat.Durum) {
     val doluluk = remember { List(TesbihatYaylari.YAY_SAYISI) { Animatable(hedefler[it]) } }
     val parlama = remember { Animatable(0f) }
     var parlayan by remember { mutableStateOf<Int?>(null) }
+    val parlamaSahibi = remember { arrayOfNulls<Any>(1) }
     val son = remember { longArrayOf(0L, durum.toplam.toLong()) }
     LaunchedEffect(durum.toplam) {
         val an = SystemClock.uptimeMillis()
@@ -230,10 +231,20 @@ private fun TesbihatHalkasi(durum: Tesbihat.Durum) {
             launch { if (hizli) doluluk[i].snapTo(h) else doluluk[i].animateTo(h, tween(ILERLEME_MS)) }
         }
         if (biten != null && !azalt) {
-            parlayan = biten
-            parlama.snapTo(0f)
-            parlama.animateTo(1f, tween(PARLAMA_MS))
-            parlayan = null
+            // Hızlı çevirmede bir sonraki sayım bu effect'i iptal eder: `finally` olmadan
+            // `parlayan` kalır ve yay kalın donardı. Kalınlık `parlayan == null` iken
+            // kullanılmaz; değer de sonraki parlamanın başında sıfırlanır. Sahiplik
+            // belirteci: iptal edilen eski parlamanın `finally`'si, yerine başlamış YENİ
+            // parlamayı silmesin.
+            val bu = Any()
+            parlamaSahibi[0] = bu
+            try {
+                parlayan = biten
+                parlama.snapTo(0f)
+                parlama.animateTo(1f, tween(PARLAMA_MS))
+            } finally {
+                if (parlamaSahibi[0] === bu) parlayan = null
+            }
         }
     }
     val iz = renk(SaatPaleti.IZ)
