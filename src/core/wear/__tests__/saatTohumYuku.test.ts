@@ -5,7 +5,7 @@
  * zarar SESSIZDIR: Kotlin `YukCozucu` gecersiz yuku reddeder, saat "telefonunuzda
  * Namaz Akışı'nı açın" der ve hat yine "success" ile bos kareler uretir.
  */
-import { wearYukuGecerliMi, WEAR_GUN_SAYISI, WEAR_KERAHAT_DK, WEAR_YUK_SURUMU } from '../wearYuku';
+import { wearKonumuOlustur, wearYukuGecerliMi, WEAR_GUN_SAYISI, WEAR_KERAHAT_DK, WEAR_YUK_SURUMU } from '../wearYuku';
 import { gunVakitleriniHesapla } from '../../nafile/gunVakitleri';
 
 const { tohumYuku, tercihXml, istanbulGunu, KOORDINAT } = require('../../../../scripts/saat/saat-tohum-yuku');
@@ -21,6 +21,10 @@ describe('saat tohum yuku', () => {
         expect(yuk.surum).toBe(WEAR_YUK_SURUMU);
         expect(yuk.gunler).toHaveLength(WEAR_GUN_SAYISI);
         expect(yuk.kerahatDk).toEqual(WEAR_KERAHAT_DK);
+    });
+
+    it('kible konumu telefonun yuvarlama kuraliyla birebir (1 ondalik)', () => {
+        expect(tohumYuku(OGLEDEN_SONRA).konum).toEqual(wearKonumuOlustur(KOORDINAT));
     });
 
     it('vakitler telefonun hesabiyla birebir (her gun)', () => {

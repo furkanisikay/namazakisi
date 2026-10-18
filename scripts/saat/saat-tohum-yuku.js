@@ -82,6 +82,9 @@ function tohumYuku(simdiMs = Date.now()) {
     return {
         surum: 2,
         konumAdi: KONUM_ADI,
+        // Kible (saat W2): telefonla ayni kural — 1 ondaliga yuvarlanmis yaklasik konum
+        // (`wearKonumuOlustur`; testte karsilastirilir).
+        konum: { lat: Math.round(KOORDINAT.lat * 10) / 10, lng: Math.round(KOORDINAT.lng * 10) / 10 },
         // KAZA_SABITLERI.MEKRUH_TOLERANS_DK / ISTIVA (testte karsilastirilir).
         kerahatDk: { suruk: 20, istiva: 5, gurub: 20 },
         gunler,

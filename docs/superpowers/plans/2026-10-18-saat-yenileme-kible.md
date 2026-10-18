@@ -123,7 +123,7 @@ Bedel: telefon günlerce görünmezse kıble son bilinen konumla hesaplanır (yo
 
 ### B2. Yük alanı (sözleşme)
 
-- `wearYuku.ts`: `konum?: { lat: number; lng: number }`, **4 ondalığa yuvarlanır** (≈ 11 m; kıble hatası ihmal edilir) — yuvarlama şart: kayan nokta gürültüsü her gönderimi "yeni" yapardı (AGENTS "yüke zaman damgası koyma" dersiyle aynı mekanizma). `{0,0}` "yapılandırılmadı" nöbetçisi → alan YAZILMAZ. Kaynak `wearYukuOlustur` girdisindeki `koordinat` (zaten var).
+- `wearYuku.ts`: `konum?: { lat: number; lng: number }`, **1 ondalığa yuvarlanır** (≈ 11 km; kıble hatası ≈ 0,1°, ihmal edilir; AGENTS güvenlik kuralı koordinatı en fazla `toFixed(1)` ister — inceleme düzeltmesi, eski taslak 4 ondalıktı) — yuvarlama şart: kayan nokta gürültüsü her gönderimi "yeni" yapardı (AGENTS "yüke zaman damgası koyma" dersiyle aynı mekanizma). `{0,0}` "yapılandırılmadı" nöbetçisi → alan YAZILMAZ. Kaynak `wearYukuOlustur` girdisindeki `koordinat` (zaten var).
 - Doğrulama **gevşek** (bilinçli sapma): `canli` bozuksa tüm yük `Gecersiz` olur; `konum` bozuksa (aralık dışı, sayı değil) yalnız `konum = null` — kıble ikincildir, vakit gösterimi ayakta kalmalı. JS `wearYukGecerliMi` ile Kotlin `YukCozucu` bu kuralı AYNI uygular.
 - `Yuk.kt`: `val konum: Konum? = null`. Sürüm **2** kalır.
 - Fikstür `wear/app/src/test/resources/ornek-yuk.json`'a `konum` eklenir; ayrıca `konum`suz bir varyant (geriye uyum) ve bozuk `konum`lu bir varyant (yük geçerli, konum null) test edilir — JS ve JVM tarafında.
@@ -148,7 +148,7 @@ Bedel: telefon günlerce görünmezse kıble son bilinen konumla hesaplanır (yo
 
 ### B5. Hizalama kararı + titreşim
 
-- **yeni** `cekirdek/KibleKarari.kt` (saf): girdi kıble açısı + gerçek yön → `hedefAcisi` (cihaza göre, 0 = kıble önde), `hizali` durumu **histerezisli**: ≤ 5° girer, > 10° çıkar (telefonun `KIBLE_HIZALAMA_ESIGI` 10). JVM `KibleKarariTest` (sınırlar, 359/1 sarması, histerezis titremesi).
+- **yeni** `cekirdek/KibleKarari.kt` (saf): girdi kıble açısı + gerçek yön → `hedefAcisi` (cihaza göre, 0 = kıble önde), `hizali` durumu **histerezisli**: < 10° girer (telefonun `KIBLE_HIZALAMA_ESIGI` 10 ile AYNI — iki cihaz aynı anda "kıble yönündesiniz" demeli), > 15° çıkar (inceleme düzeltmesi; eski taslak 5°/10° idi). JVM `KibleKarariTest` (sınırlar, 359/1 sarması, histerezis titremesi).
 - Titreşim: hizaya **girişte bir kez** (`VibrationEffect.EFFECT_CLICK` / `HapticFeedbackType.Confirm`), çıkıp yeniden girmeden tekrar etmez; ambient'te yok.
 - Görünüm: halka (kuzey işaretli, dönen) + Kâbe işaretli sabit hedef oku; hizalıyken ok ve halka eylem yeşili, ortada "Kıble yönündesiniz". Altta "Kıble 151° · Fatih". TalkBack: "Kıble 40 derece sağınızda" — dakika değil **10°'lik adımlarla** güncellenen açıklama (her sensör olayında okumasın).
 

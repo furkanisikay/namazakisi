@@ -19,6 +19,7 @@
 #   sayac dugumu   "<Vakit> vaktinin cikmasina|girmesine ..."
 #   ana ekran Kildim  "<Vakit> vaktini kildim olarak isaretleyin"
 #   onay katmani      kenar dugmesi "Kıldım"
+#   kible ekrani      "Kıble ..." (pusula), sensorsuz: "... sensörü bulunmuyor ..." (KibleEkrani)
 set -euo pipefail
 
 ETIKET="${1:?profil etiketi (yuvarlak|kare) gerekli}"
@@ -171,6 +172,25 @@ adb shell am start -W -n "$PAKET/$SINIF.ui.TesbihatAktivite"
 hazir_bekle 'Sübhânallah|Sayın|sayacı' || sleep 5
 for _ in $(seq 1 21); do dokun_merkez; sleep 0.3; done
 kare 04-tesbihat 2 || true
+
+# --- 08: kible pusulasi ---
+# Konum tohum yukunden gelir (`konum`, 1 ondalik). Emulator sensorleri konsoldan
+# beslenir: yuz yukari yatay, saat kuzeye bakiyor (Istanbul alani: yatay ~26 uT
+# kuzeye, dusey ~39 uT asagi). Emulatorun donme vektoru sunup sunmadigi
+# DOGRULANMADI: sunmazsa ivme+manyetik yedek yolu cizer; hicbiri yoksa ekran
+# "pusula sensoru bulunmuyor" der → kare UYARI ile silinir (magazaya konmaz).
+adb emu sensor set acceleration 0:0:9.8 || true
+adb emu sensor set magnetic-field 0:26:-39 || true
+adb shell am force-stop "$PAKET"
+adb shell am start -W -n "$PAKET/$SINIF.ui.KibleAktivite"
+hazir_bekle 'Kıble|kıble|sensörü' || true
+if kare 08-kible 3; then
+  dump_al
+  if grep -q 'sensörü bulunmuyor' /tmp/saat-ui.xml; then
+    echo "UYARI: 08-kible pusula sensoru yok (emulator) — kare silindi"
+    rm -f "$CIKIS/08-kible.png"
+  fi
+fi
 
 # --- 05 / 06: tile'lar ---
 # `add-tile` DEBUG_SURFACE, `show-tile` ise DEBUG_SYSUI eylemidir (ilk kosuda
