@@ -73,6 +73,25 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Sade tasarım, Dalga 2: 5 adımlı kurulum + ana ekranda tek durum alanı.
+    {
+        id: 'sade-kurulum-ve-ana-ekran',
+        platformlar: ['android', 'ios'],
+        surum: '0.42.0',
+        tarih: '2026-10-18',
+        baslik: 'Daha sade kurulum ve ana ekran',
+        aciklama:
+            'Ana ekranda aynı anda tek uyarı görünür; vakit kartında tek düğme var: "Kıldım". Kurulum beş adıma indi.',
+        detayAciklama:
+            'Kerahat, vakit çıkıyor, toparlanma ve yolculuk uyarıları artık vakit kartının üstünde üst üste yığılmaz: en önemlisi görünür, diğerlerine "+1 daha" ile ulaşırsınız. Vakit kartındaki "Kıldım" düğmesine dokunduğunuzda düğme "Kılındı"ya dönüşür. Vaktin durumu her yerde aynı adla yazılır: Kılındı, Vakti geldi, Henüz girmedi. Yeni kurulum beş adımdır: konum, bildirim izni ve hatırlatma düzeyi (Kapalı, Hafif, Normal, Yoğun); tema ve diğer ayarları istediğiniz zaman Ayarlar\'dan değiştirebilirsiniz.',
+        detaylar: [
+            'Ana ekranda tek uyarı alanı, diğerleri "+1 daha" ile',
+            'Tek düğme: "Kıldım" → "Kılındı"',
+            'Durum adları her yerde aynı: Kılındı, Vakti geldi, Henüz girmedi',
+            'Beş adımlı kurulum, koyu temaya uyar',
+        ],
+        ikon: 'leaf',
+    },
     // Cihazlar arası eşitleme (#288). Yalnız Android: Drive yetkisi yerleşik Google
     // hesabı onayıyla alınır. iOS'ta iCloud yolu ayrı bayrağa bağlı ve henüz açık değil.
     {
