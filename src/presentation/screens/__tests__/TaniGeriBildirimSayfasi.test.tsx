@@ -24,21 +24,21 @@ jest.mock('@expo/vector-icons', () => {
 describe('TaniGeriBildirimSayfasi', () => {
   test('Sorun Bildir butonu görünür', () => {
     const { getByText } = render(<TaniGeriBildirimSayfasi />);
-    expect(getByText('Sorun Bildir')).toBeTruthy();
+    expect(getByText('Sorun bildirin')).toBeTruthy();
   });
 
-  test('Sorun algılandığında hatırlat toggle görünür', () => {
+  test('Sorun olunca hatırlatın toggle görünür', () => {
     const { getByText } = render(<TaniGeriBildirimSayfasi />);
-    expect(getByText('Sorun algılandığında hatırlat')).toBeTruthy();
+    expect(getByText('Sorun olunca hatırlatın')).toBeTruthy();
   });
 
-  test('Gönderilecek bilgiyi önizle butonu görünür', () => {
+  test('Gönderilecek bilgiyi görün butonu görünür', () => {
     const { getByText } = render(<TaniGeriBildirimSayfasi />);
-    expect(getByText('Gönderilecek bilgiyi önizle')).toBeTruthy();
+    expect(getByText('Gönderilecek bilgiyi görün')).toBeTruthy();
   });
 
-  test('Tanı kayıtlarını görüntüle butonu görünür', () => {
+  test('Tanı kayıtlarını açın butonu görünür', () => {
     const { getByText } = render(<TaniGeriBildirimSayfasi />);
-    expect(getByText('Tanı kayıtlarını görüntüle')).toBeTruthy();
+    expect(getByText('Tanı kayıtlarını açın')).toBeTruthy();
   });
 });

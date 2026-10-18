@@ -631,7 +631,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                         activeOpacity={0.8}
                         accessibilityRole="switch"
                         accessibilityState={{ checked: ayarlar.aktif }}
-                        accessibilityLabel="Vakitleri takvime ekleyin"
+                        accessibilityLabel="Takvime ekleme"
                     >
                         <View
                             className="w-11 h-11 rounded-xl items-center justify-center mr-3"
@@ -646,7 +646,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                         </View>
                         <View className="flex-1">
                             <Text className="text-base font-semibold" style={{ color: ayarlar.aktif ? renkler.birincilMetin : renkler.metin }}>
-                                Vakitleri takvime ekleyin
+                                Takvime ekleme
                             </Text>
                             <Text className="text-sm mt-0.5" style={{ color: ayarlar.aktif ? `${renkler.birincilMetin}C0` : renkler.metinIkincil }}>
                                 {ayarlar.aktif ? 'Açık' : 'Kapalı'}
@@ -657,7 +657,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                             onValueChange={anaAnahtariDegistir}
                             trackColor={{ false: renkler.sinir, true: `${renkler.birincilMetin}66` }}
                             thumbColor={renkler.birincilMetin}
-                            accessibilityLabel="Vakitleri takvime ekleyin"
+                            accessibilityLabel="Takvime ekleme"
                         />
                     </TouchableOpacity>
                     </AyarCapasi>

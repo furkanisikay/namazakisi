@@ -95,7 +95,7 @@ describe('TakvimAyarlariSayfasi — izin akışı', () => {
     await act(async () => {
       await Promise.resolve();
     });
-    fireEvent.press(getAllByLabelText('Vakitleri takvime ekleyin')[0]);
+    fireEvent.press(getAllByLabelText('Takvime ekleme')[0]);
     expect(getByTestId('takvim-riza-modali')).toBeTruthy();
     expect(mockIste).not.toHaveBeenCalled();
     expect(mockDispatch).not.toHaveBeenCalledWith({ type: 'takvim/guncelle', payload: { aktif: true } });

@@ -32,6 +32,10 @@ import { VurguSaglayici } from '../../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../../components/ayar/AyarCapasi';
 import { kullanilabilirSaglayicilar } from '../../../domain/services/esitlemeSaglayicilari';
+import { Depolama } from '../../../data/local/Depolama';
+import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
+import { yedeklemeOzeti } from '../../../core/ayarlar/ozetler';
+import { BolumBasligi } from '../../components/ortak/BolumBasligi';
 
 /**
  * Büyük aksiyon kartı — birincil eylem (yedek oluştur) ve ikincil eylem
@@ -128,6 +132,16 @@ const YedeklemeIcerik: React.FC = () => {
   const [yedekleniyor, setYedekleniyor] = useState(false);
   // Yedek hatası: Alert yerine tema-uyumlu BildirimModali gösterilir.
   const [hataModaliGorunur, setHataModaliGorunur] = useState(false);
+  // Durum kartı: son dışa aktarma ("yedek alındı" DEĞİL — paylaşımın kaydedildiği bilinemez).
+  const [sonDisaAktarma, setSonDisaAktarma] = useState<string | null>(null);
+  const sonDisaAktarmayiOku = React.useCallback(() => {
+    Depolama.oku<string>(DEPOLAMA_ANAHTARLARI.SON_DISA_AKTARMA)
+      .then((d) => setSonDisaAktarma(typeof d === 'string' ? d : null))
+      .catch(() => undefined);
+  }, []);
+  useEffect(() => {
+    sonDisaAktarmayiOku();
+  }, [sonDisaAktarmayiOku]);
 
   // Giriş animasyonu (Kurulum Sihirbazı / Ramazan deseni — 300ms cubic fade)
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -148,6 +162,7 @@ const YedeklemeIcerik: React.FC = () => {
     setYedekleniyor(true);
     try {
       await yedeginiPaylas();
+      sonDisaAktarmayiOku();
     } catch (error) {
       Logger.error('YedeklemeSayfasi', 'Yedek oluşturulamadı', error);
       await hataFeedback();
@@ -157,7 +172,7 @@ const YedeklemeIcerik: React.FC = () => {
     }
   };
 
-  // "Tekrar dene" — modalı kapatıp yeniden yedek oluşturmayı dener.
+  // "Tekrar deneyin" — modalı kapatıp yeniden yedek oluşturmayı dener.
   const handleTekrarDene = async () => {
     setHataModaliGorunur(false);
     await handleYedekOlustur();
@@ -189,82 +204,47 @@ const YedeklemeIcerik: React.FC = () => {
         showsVerticalScrollIndicator={false}
       >
         <Animated.View style={{ opacity: fadeAnim }}>
-          {/* Bilgi Kartı */}
+          {/* DURUM KARTI — son dışa aktarma + tek cümle güvence */}
           <View
-            className="rounded-2xl p-5 mb-6"
-            style={{ backgroundColor: renkler.kartArkaplan }}
+            testID="yedek-durum-karti"
+            className="p-5 mb-6"
+            style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24 }}
           >
-            <View className="flex-row items-center mb-3">
+            <View className="flex-row items-center">
               <View
                 className="w-12 h-12 rounded-2xl items-center justify-center mr-3.5"
                 style={{ backgroundColor: `${renkler.birincil}15` }}
               >
-                <FontAwesome5
-                  name="shield-alt"
-                  size={20}
-                  color={renkler.birincil}
-                  solid
-                />
+                <FontAwesome5 name="shield-alt" size={20} color={renkler.birincil} solid />
               </View>
               <View className="flex-1">
-                <Text
-                  className="text-base font-bold"
-                  style={{ color: renkler.metin }}
-                >
-                  Verileriniz güvende
+                <Text className="text-base font-bold" style={{ color: renkler.metin }}>
+                  Son dışa aktarma
                 </Text>
-                <Text
-                  className="text-xs mt-0.5"
-                  style={{ color: renkler.metinIkincil }}
-                >
-                  Tek dosyada, şifreli yedek
+                <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
+                  {yedeklemeOzeti(sonDisaAktarma, new Date())}
                 </Text>
               </View>
             </View>
-
-            <Text
-              className="text-sm leading-5"
-              style={{ color: renkler.metinIkincil }}
-            >
-              Tüm namaz kayıtlarınız, istatistikleriniz, rozetleriniz ve
-              ayarlarınız tek bir şifreli dosyaya yedeklenir. Yedeğinizi güvenle
-              saklayabilir, yeni cihazınıza taşıyabilirsiniz.
-            </Text>
-
-            {/* Şifreleme satırı */}
             <View
               className="flex-row items-center mt-4 pt-4 border-t"
               style={{ borderTopColor: `${renkler.sinir}80` }}
             >
-              <FontAwesome5
-                name="lock"
-                size={13}
-                color={renkler.basarili}
-                solid
-              />
-              <Text
-                className="text-xs ml-2 flex-1"
-                style={{ color: renkler.metinIkincil }}
-              >
-                Yedeğiniz şifrelenir; içeriği yalnızca bu uygulama ile açılır.
+              <FontAwesome5 name="lock" size={13} color={renkler.basarili} solid />
+              <Text className="text-sm ml-2 flex-1" style={{ color: renkler.metinIkincil }}>
+                Kayıtlar, rozetler ve ayarlar tek şifreli dosyada.
               </Text>
             </View>
           </View>
 
-          {/* Aksiyonlar başlığı */}
-          <Text
-            className="text-xs font-bold tracking-wider mb-3"
-            style={{ color: renkler.metinIkincil }}
-          >
-            İŞLEMLER
-          </Text>
+          <BolumBasligi metin="İşlemler" />
 
           {/* Yedek oluştur */}
           <AyarCapasi id="disaAktar">
             <AksiyonKarti
               ikon="cloud-upload-alt"
-              baslik="Yedek oluştur"
-              aciklama="Verilerinizi şifreli bir dosyaya aktarıp paylaşın."
+              baslik="Yedek oluşturun"
+              aciklama="Dosyayı kaydedin ya da paylaşın."
               onPress={handleYedekOlustur}
               yukleniyor={yedekleniyor}
             />
@@ -274,8 +254,8 @@ const YedeklemeIcerik: React.FC = () => {
           <AyarCapasi id="iceAktar">
             <AksiyonKarti
               ikon="cloud-download-alt"
-              baslik="İçe aktar / Geri yükle"
-              aciklama="Bir yedek dosyasından verilerinizi geri yükleyin."
+              baslik="Yedekten geri yükleyin"
+              aciklama="Bir yedek dosyasını seçin; hiçbir kayıt silinmez."
               onPress={handleIceAktar}
               pasif={yedekleniyor}
             />
@@ -287,7 +267,7 @@ const YedeklemeIcerik: React.FC = () => {
             <AksiyonKarti
               ikon="sync-alt"
               baslik="Cihazlar arası eşitleme"
-              aciklama="Kayıtlarınızı kendi bulut hesabınız üzerinden, uçtan uca şifreli olarak eşitleyin."
+              aciklama="Kendi bulut hesabınızla, şifreli olarak."
               onPress={handleEsitleme}
               pasif={yedekleniyor}
             />
@@ -300,8 +280,8 @@ const YedeklemeIcerik: React.FC = () => {
         gorunur={hataModaliGorunur}
         tip="hata"
         baslik="Yedek oluşturulamadı"
-        mesaj="Yedeğiniz oluşturulurken bir sorun oluştu. Lütfen tekrar deneyin veya daha sonra yeniden deneyiniz."
-        birincilEtiket="Tekrar dene"
+        mesaj="Yedek dosyası hazırlanamadı. Tekrar deneyin."
+        birincilEtiket="Tekrar deneyin"
         onBirincil={handleTekrarDene}
         onKapat={() => setHataModaliGorunur(false)}
       />

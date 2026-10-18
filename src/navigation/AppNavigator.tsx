@@ -130,7 +130,7 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   SaatVeWidgetAyarlari: { component: SaatVeWidgetSayfasi, options: { title: 'Saat ve widget' } },
   Yardim: { component: YardimSayfasi, options: { title: 'Yardım' } },
   Camilerim: { component: CamilerimSayfasi, options: { title: 'Camilerim' } },
-  KonumAyarlari: { component: KonumAyarlariSayfasi, options: { title: 'Konum Ayarları' } },
+  KonumAyarlari: { component: KonumAyarlariSayfasi, options: { title: 'Konum' } },
   GorünumAyarlari: { component: GorunumAyarlariSayfasi, options: { title: 'Görünüm' } },
   // Eski "Bildirimler" rotası (Neler Yeni, eski bağlantılar) Hatırlatmalar sayfasını açar.
   BildirimAyarlari: { component: HatirlatmalarSayfasi, options: { title: 'Hatırlatmalar' } },
@@ -142,7 +142,8 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   // iOS (#295): ayni secim canli etkinlik (Dinamik Ada / kilit ekrani) olarak calisir.
   NowBarAyarlari: {
     component: NowBarAyarlariSayfasi,
-    options: { title: Platform.OS === 'ios' ? 'Canlı Etkinlikler' : 'Now Bar ve Canlı Sayaçlar' },
+    // Ad marka terimi DEĞİL (Now Bar yalnız Samsung'da); kök satırıyla aynı ad.
+    options: { title: Platform.OS === 'ios' ? 'Canlı etkinlikler' : 'Canlı sayaçlar' },
   },
   // Camideyim + Namaz modu TEK sayfa ("Namazda sessiz"); iki eski rota da onu açar
   // (derin bağlantı `namazakisi://camideyim` ve saat W3 çalışmaya devam eder).
@@ -152,13 +153,13 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   SaatAyarlari: { component: SaatAyarlariSayfasi, options: { title: 'Akıllı saat' } },
   KildimUygulamalari: { component: KildimUygulamalariSayfasi, options: { title: 'Kıldım İşaretleyen Uygulamalar' } },
   OtomasyonRehberi: { component: OtomasyonRehberiSayfasi, options: { title: 'Otomasyonlarla Kullanın' } },
-  DebugLogs: { component: DebugLogsSayfasi, options: { title: 'Debug Logları' } },
-  TakvimAyarlari: { component: TakvimAyarlariSayfasi, options: { title: 'Takvim Entegrasyonu' } },
+  DebugLogs: { component: DebugLogsSayfasi, options: { title: 'Tanı kayıtları' } },
+  TakvimAyarlari: { component: TakvimAyarlariSayfasi, options: { title: 'Vakitleri takvime ekleyin' } },
   SeferilikAyarlari: { component: SeferilikAyarlariSayfasi, options: { title: 'Yolculuk Bilgisi' } },
   NelerYeni: { component: NelerYeniSayfasi, options: { title: 'Neler Yeni' } },
-  YedeklemeAktarim: { component: YedeklemeSayfasi, options: { title: 'Yedekleme & Aktarım' } },
+  YedeklemeAktarim: { component: YedeklemeSayfasi, options: { title: 'Yedek ve eşitleme' } },
   IceAktarmaSihirbazi: { component: IceAktarmaSihirbaziSayfasi, options: { headerShown: false } },
-  EsitlemeAyarlari: { component: EsitlemeSayfasi, options: { title: 'Cihazlar Arası Eşitleme' } },
+  EsitlemeAyarlari: { component: EsitlemeSayfasi, options: { title: 'Cihazlar arası eşitleme' } },
   TaniGeriBildirim: { component: TaniGeriBildirimSayfasi, options: { title: 'Tanı ve Geri Bildirim' } },
 };
 

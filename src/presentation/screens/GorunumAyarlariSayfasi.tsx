@@ -21,6 +21,7 @@ import { useFeedback } from '../../core/feedback';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
+import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { Anahtar } from '../components/common/Anahtar';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { useSadeGorunum } from '../hooks/useSadeGorunum';
@@ -240,12 +241,7 @@ const GorünumAyarlariIcerik: React.FC = () => {
       <Animated.View style={{ opacity: fadeAnim }}>
         {/* Sade Görünüm Bölümü (issue #295) */}
         <View className="mb-8">
-          <Text
-            className="text-xs font-bold tracking-wider mb-4"
-            style={{ color: renkler.metinIkincil }}
-          >
-            SADE GÖRÜNÜM
-          </Text>
+          <BolumBasligi metin="Sade görünüm" ikon="eye" />
           <AyarCapasi id="sadeGorunum">
             <SadeGorunumSecici />
           </AyarCapasi>
@@ -253,12 +249,7 @@ const GorünumAyarlariIcerik: React.FC = () => {
 
         {/* Tema Modu Bolumu */}
         <View className="mb-8">
-          <Text
-            className="text-xs font-bold tracking-wider mb-4"
-            style={{ color: renkler.metinIkincil }}
-          >
-            TEMA MODU
-          </Text>
+          <BolumBasligi metin="Tema" ikon="adjust" />
           <AyarCapasi id="tema">
             <TemaModuSecici />
           </AyarCapasi>
@@ -266,12 +257,7 @@ const GorünumAyarlariIcerik: React.FC = () => {
 
         {/* Renk Paleti Bolumu */}
         <View className="mb-8">
-          <Text
-            className="text-xs font-bold tracking-wider mb-4"
-            style={{ color: renkler.metinIkincil }}
-          >
-            RENK PALETI
-          </Text>
+          <BolumBasligi metin="Renk" ikon="palette" />
           <AyarCapasi id="palet">
             <RenkPaletiSecici />
           </AyarCapasi>
