@@ -11,7 +11,7 @@
  * açıklama modalı açılmaz (aynı şeyi iki kez okutmuyoruz).
  */
 import * as React from 'react';
-import { FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { AccessibilityInfo, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { TURKIYE_ILLERI_OFFLINE, type Il } from '../../../domain/services/TurkiyeKonumServisi';
@@ -97,6 +97,10 @@ export const Madde: React.FC<{ ikon: string; metin: string }> = ({ ikon, metin }
 export const SonucSatiri: React.FC<{ tip: 'basari' | 'uyari'; metin: string; testID?: string }> = ({ tip, metin, testID }) => {
     const renkler = useRenkler();
     const renk = tip === 'basari' ? renkler.basarili : renkler.dikkat;
+    // `accessibilityLiveRegion` yalnız Android'de çalışır; VoiceOver için açık duyuru.
+    React.useEffect(() => {
+        AccessibilityInfo.announceForAccessibility?.(metin);
+    }, [metin]);
     return (
         <View
             testID={testID}
