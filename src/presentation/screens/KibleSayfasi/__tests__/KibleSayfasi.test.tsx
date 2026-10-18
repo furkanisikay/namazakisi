@@ -28,7 +28,7 @@ jest.mock('@expo/vector-icons', () => {
 });
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
   const { Text } = require('react-native');
-  return (props: any) => <Text>{props.name}</Text>;
+  return (props: { name: string }) => <Text>{props.name}</Text>;
 });
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children, ...props }: any) => {

@@ -18,7 +18,7 @@ export type KazaStackParamList = {
 
 export const KAZA_EKRAN_BASLIKLARI: Record<Exclude<keyof KazaStackParamList, 'KazaDefteriAna'>, string> = {
   KazaGecmisi: 'Hareket Geçmişi',
-  KazaOtomatikAyar: 'Otomatik Kaza Ekleme',
+  KazaOtomatikAyar: 'Kaza ayarları',
   KazaTemizlik: 'Kayıtları Temizleyin',
   KazaYenidenHesapla: 'Yeniden Hesapla',
 };

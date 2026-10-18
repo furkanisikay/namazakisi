@@ -1,8 +1,12 @@
 /**
- * Kaza Defteri Sayfası (Kaza Defteri 2.0 — sekme kökü, kendi başlığını taşır)
- * Kaza namazı takibi: borç ekleme, tamamlama, motivasyon, mekruh vakit uyarısı,
- * otomatik ekleme durumu, kontrol bekleyen günler, fazla kılınan, bozuk kayıt
- * uyarısı. Sayılar diskteki hareket defterinden TÜRER (slice).
+ * Kaza Defteri Sayfası (Kaza Defteri 2.0 — sekme kökü, kendi başlığını taşır).
+ *
+ * Sade tasarım Dalga 4: kökte YALNIZ büyük "kalan" kartı, uyarı bantları ve vakit
+ * satırları (her satırda tek eylem adı: "Kıldım"; borç ekleme küçük "+"). Seyrek
+ * kullanılanlar — günlük hedef, tempo, yeniden hesaplama, hareket geçmişi, kaza
+ * ayarları (otomatik ekleme + "her farzla bir kaza"), temizlik — tek "Diğer"
+ * menüsünde (`KazaDigerMenusu`). Yalnız SUNUM değişti: thunk'lar ve defter modeli aynı.
+ * Sayılar diskteki hareket defterinden TÜRER (slice).
  */
 
 import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
@@ -31,10 +35,7 @@ import {
   fazlayiSifirla,
   gunlukHedefiGuncelle,
   gizlemeToggle,
-  kazaOneriAyarlariniYukle,
-  kazaOneriAyarlariniGuncelle,
 } from '../store/kazaSlice';
-import { Anahtar } from '../components/common/Anahtar';
 import { useRenkler } from '../../core/theme';
 import { KazaNamazAdi } from '../../core/types/KazaTipleri';
 import {
@@ -48,6 +49,8 @@ import { SayiGirisModali } from '../components/common/SayiGirisModali';
 import { BildirimModali } from '../components/common/BildirimModali';
 import { KazaBekleyenGunlerModal } from '../components/kaza/KazaBekleyenGunlerModal';
 import { KazaBant } from '../components/kaza/KazaOrtak';
+import { KazaDigerMenusu, type KazaDigerSatiri } from '../components/kaza/KazaDigerMenusu';
+import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { gunMetni, saatMetni } from '../components/kaza/kazaMetinleri';
 import type { KazaStackParamList } from '../../navigation/kazaEkranlari';
 
@@ -59,7 +62,8 @@ type ModalTipi =
   | { tip: 'gunlukHedef' }
   | { tip: 'sihirbaz'; adim: 1 | 2 | 3 }
   | { tip: 'bekleyenGunler' }
-  | { tip: 'fazlaSifirla' };
+  | { tip: 'fazlaSifirla' }
+  | { tip: 'diger' };
 
 // ==================== NAMAZ SIRASI & İKON ====================
 
@@ -72,11 +76,6 @@ const NAMAZ_IKONLARI: Record<KazaNamazAdi, string> = {
   Vitir: 'star-half-alt',
 };
 
-const DEFTER_BAGLANTILARI = [
-  { ikon: 'history', metin: 'Hareket geçmişi', hedef: 'KazaGecmisi' },
-  { ikon: 'robot', metin: 'Otomatik kaza ekleme', hedef: 'KazaOtomatikAyar' },
-  { ikon: 'broom', metin: 'Kayıtları temizleyin', hedef: 'KazaTemizlik' },
-] as const;
 
 /** '201 kılındı · 30 elle, 12 otomatik eklendi' */
 function kaynakOzetiMetni(ozet: { kilinan: number; elle: number; otomatik: number; bildirim: number }): string {
@@ -93,6 +92,9 @@ function otomatikCipMetni(aktif: boolean, sonTarama: string | null): string {
   if (!aktif) return 'Otomatik ekleme kapalı';
   return sonTarama ? `Otomatik ekleme açık · son tarama ${saatMetni(sonTarama)}` : 'Otomatik ekleme açık';
 }
+
+/** "Diğer"den açılan modal, menü TAMAMEN kapandıktan sonra açılır (iOS iki modalı üst üste sunamaz). */
+const MENU_KAPANIS_MS = Platform.OS === 'ios' ? 450 : 250;
 
 function bekleyenGunlerMetni(gunler: readonly string[]): string {
   if (gunler.length === 1) return `${gunMetni(gunler[0])} gününde hiç işaret yok`;
@@ -111,9 +113,6 @@ export const KazaDefteriSayfasi: React.FC = () => {
   const bozukAylar = useAppSelector((s) => s.kaza.bozukAylar) ?? [];
   const eskiKayitBozuk = useAppSelector((s) => s.kaza.eskiKayitBozuk) === true;
   const sonTarama = useAppSelector((s) => s.kaza.sonTarama) ?? null;
-  // "Her farzdan sonra kaza önerin" (issue #294) — eski test/mock state'inde alan olmayabilir.
-  const oneriAyarlari = useAppSelector((s) => s.kaza.oneriAyarlari);
-  const oneriAyarlariYuklendi = useAppSelector((s) => s.kaza.oneriAyarlariYuklendi);
   const koordinatlar = useAppSelector((s) => s.konum.koordinatlar);
 
   // Modal state
@@ -158,21 +157,28 @@ export const KazaDefteriSayfasi: React.FC = () => {
       setAktifModal(null);
     }
   }, [aktifModal]);
-  useDonanimGeriTusu(aktifModal !== null && aktifModal.tip !== 'bekleyenGunler', handleModalGeri);
+  // Bekleyen günler ve "Diğer" menüsü kendi geri tuşu kancasını taşır.
+  useDonanimGeriTusu(
+    aktifModal !== null && aktifModal.tip !== 'bekleyenGunler' && aktifModal.tip !== 'diger',
+    handleModalGeri
+  );
+
+  // "Diğer" menüsünden bir modala geçiş: menü kapanır, modal kapanış bittikten sonra açılır.
+  const menuZamanlayici = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (menuZamanlayici.current) clearTimeout(menuZamanlayici.current);
+  }, []);
+  const menudenModalAc = useCallback((sonraki: ModalTipi) => {
+    setAktifModal(null);
+    if (menuZamanlayici.current) clearTimeout(menuZamanlayici.current);
+    menuZamanlayici.current = setTimeout(() => setAktifModal(sonraki), MENU_KAPANIS_MS);
+  }, []);
 
   // ==================== YÜKLEME ====================
 
   useEffect(() => {
     dispatch(kazaVerileriniYukle());
-    dispatch(kazaOneriAyarlariniYukle());
   }, [dispatch]);
-
-  const oneriAyariniDegistir = useCallback(
-    (acik: boolean) => {
-      dispatch(kazaOneriAyarlariniGuncelle({ farzSonrasiOner: acik }));
-    },
-    [dispatch]
-  );
 
   // Mekruh vakit kontrolü — her dakika güncelle
   useEffect(() => {
@@ -313,6 +319,40 @@ export const KazaDefteriSayfasi: React.FC = () => {
     );
   }
 
+  // "Diğer" menüsü: en sık kullanılan üstte, geri dönüşlü işlem (temizlik) en altta.
+  const sayfayaGit = (ad: 'KazaGecmisi' | 'KazaOtomatikAyar' | 'KazaTemizlik') => {
+    setAktifModal(null);
+    navigation.navigate(ad);
+  };
+  const digerSatirlari: KazaDigerSatiri[] = [
+    {
+      anahtar: 'hedef',
+      ikon: 'flag',
+      baslik: 'Günlük hedef',
+      alt: kazaDurumu.gunlukHedef > 0 ? `Günde ${kazaDurumu.gunlukHedef} kaza` : 'Belirlenmedi',
+      onPress: () => {
+        setModalGirdi(kazaDurumu.gunlukHedef > 0 ? String(kazaDurumu.gunlukHedef) : '');
+        menudenModalAc({ tip: 'gunlukHedef' });
+      },
+    },
+    {
+      anahtar: 'hesapla',
+      ikon: 'calculator',
+      baslik: kazaDurumu.taban ? 'Yeniden hesaplayın' : 'Kazamı hesaplayın',
+      alt: 'Doğum yılı ve tahminle başlangıç sayısı',
+      onPress: () => menudenModalAc({ tip: 'sihirbaz', adim: 1 }),
+    },
+    { anahtar: 'gecmis', ikon: 'history', baslik: 'Hareket geçmişi', onPress: () => sayfayaGit('KazaGecmisi') },
+    {
+      anahtar: 'ayarlar',
+      ikon: 'cog',
+      baslik: 'Kaza ayarları',
+      alt: kazaDurumu.otomatik ? otomatikCipMetni(kazaDurumu.otomatik.aktif, sonTarama) : undefined,
+      onPress: () => sayfayaGit('KazaOtomatikAyar'),
+    },
+    { anahtar: 'temizlik', ikon: 'broom', baslik: 'Kayıtları temizleyin', tehlikeli: true, onPress: () => sayfayaGit('KazaTemizlik') },
+  ];
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: renkler.arkaplan }]} edges={['top']}>
       {/* BAŞLIK */}
@@ -322,15 +362,6 @@ export const KazaDefteriSayfasi: React.FC = () => {
           <Text style={styles.baslikMetin}>Kaza Defteri</Text>
         </View>
         <View style={styles.baslikSagButonlar}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('KazaGecmisi')}
-            style={styles.ikonButon}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            accessibilityRole="button"
-            accessibilityLabel="Hareket geçmişini açın"
-          >
-            <FontAwesome5 name="history" size={18} color="#fff" />
-          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => dispatch(gizlemeToggle())}
             style={styles.ikonButon}
@@ -343,6 +374,16 @@ export const KazaDefteriSayfasi: React.FC = () => {
               size={18}
               color="#fff"
             />
+          </TouchableOpacity>
+          <TouchableOpacity
+            testID="kaza-diger-dugmesi"
+            onPress={() => setAktifModal({ tip: 'diger' })}
+            style={styles.ikonButon}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityRole="button"
+            accessibilityLabel="Diğer: hedef, geçmiş, ayarlar"
+          >
+            <FontAwesome5 name="ellipsis-h" size={18} color="#fff" />
           </TouchableOpacity>
         </View>
       </View>
@@ -453,38 +494,36 @@ export const KazaDefteriSayfasi: React.FC = () => {
             </TouchableOpacity>
           )}
 
-          {/* Tahmini bitiş tarihi */}
-          {istatistik?.tahminiTamamlanmaTarihi && (
-            <View style={styles.tahminiSatir}>
-              <FontAwesome5 name="bullseye" size={12} color={renkler.metinIkincil} />
-              <Text style={[styles.tahminiMetin, { color: renkler.metinIkincil }]}>
-                Mevcut temponuzda:{' '}
-                <Text style={{ fontWeight: '700', color: renkler.metin }}>
-                  {tahminiTarihiFormatla(istatistik.tahminiTamamlanmaTarihi)}
+          {/* Günlük hedef (yalnız belirlenmişse; düzenleme "Diğer"de) */}
+          {kazaDurumu.gunlukHedef > 0 && (
+            <View
+              testID="kaza-gunluk-hedef"
+              accessible
+              accessibilityLabel={`Bugün ${kazaDurumu.gunlukTamamlanan} / ${kazaDurumu.gunlukHedef} kaza`}
+              style={styles.gunlukHedefOzet}
+            >
+              <View style={styles.gunlukHedefSatir}>
+                <Text style={[styles.gunlukHedefSayilar, { color: renkler.metin }]}>
+                  Bugün {kazaDurumu.gunlukTamamlanan} / {kazaDurumu.gunlukHedef} kaza
                 </Text>
-                {' '}bitiş
-              </Text>
+                {kazaDurumu.gunlukTamamlanan >= kazaDurumu.gunlukHedef && (
+                  <FontAwesome5 name="check-circle" size={14} color={renkler.birincil} solid />
+                )}
+              </View>
+              <View style={[styles.progressKonteyner, { backgroundColor: renkler.sinir }]}>
+                <View
+                  style={[
+                    styles.progressDolgu,
+                    {
+                      backgroundColor: gunlukIlerlemeYuzdesi >= 1 ? renkler.basarili : renkler.birincil,
+                      width: `${gunlukIlerlemeYuzdesi * 100}%`,
+                    },
+                  ]}
+                />
+              </View>
             </View>
           )}
         </Animated.View>
-
-        {/* OTOMATİK EKLEME ÇİPİ */}
-        {kazaDurumu.otomatik && (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('KazaOtomatikAyar')}
-            accessibilityRole="button"
-            accessibilityLabel={`${otomatikCipMetni(kazaDurumu.otomatik.aktif, sonTarama)}. Ayarı açın`}
-            style={[styles.otoCip, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}
-          >
-            <View style={[styles.oneriIkon, { backgroundColor: `${renkler.bilgi}20` }]}>
-              <FontAwesome5 name="robot" size={13} color={renkler.bilgi} />
-            </View>
-            <Text style={[styles.otoCipMetin, { color: renkler.metin }]}>
-              {otomatikCipMetni(kazaDurumu.otomatik.aktif, sonTarama)}
-            </Text>
-            <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
-          </TouchableOpacity>
-        )}
 
         {/* KONTROL BEKLEYEN GÜNLER ("Bana sorun") */}
         {(kazaDurumu.bekleyenGunler?.length ?? 0) > 0 && (
@@ -514,161 +553,8 @@ export const KazaDefteriSayfasi: React.FC = () => {
           </View>
         )}
 
-        {/* MOTİVASYON KARTI */}
-        {kazaDurumu.toplamKalan > 0 && motivasyonOnerileri.length > 0 && (
-          <View
-            style={[
-              styles.motivasyonKart,
-              { backgroundColor: renkler.kartArkaplan, borderColor: renkler.birincil + '40' },
-            ]}
-          >
-            <View style={styles.motivasyonBaslik}>
-              <FontAwesome5 name="lightbulb" size={14} color={renkler.birincil} />
-              <Text style={[styles.motivasyonBaslikMetin, { color: renkler.birincil }]}>
-                Küçük Adımlarla Büyük Hedef
-              </Text>
-            </View>
-
-            {aktifOneri && (
-              <Text style={[styles.motivasyonAciklama, { color: renkler.metin }]}>
-                {aktifOneri.aciklama}
-              </Text>
-            )}
-
-            {/* Senaryo butonları */}
-            <View style={styles.senaryoButonlar}>
-              {motivasyonOnerileri.map((oneri, index) => (
-                <TouchableOpacity
-                  key={oneri.kazaAdediPerVakit}
-                  onPress={() => setMotivasyonIndex(index)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Vakit başına ${oneri.kazaAdediPerVakit} kaza`}
-                  accessibilityState={{ selected: motivasyonIndex === index }}
-                  style={[
-                    styles.senaryoButon,
-                    {
-                      backgroundColor:
-                        motivasyonIndex === index
-                          ? renkler.birincil
-                          : renkler.arkaplan,
-                      borderColor: renkler.birincil,
-                    },
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.senaryoButonMetin,
-                      {
-                        color:
-                          motivasyonIndex === index ? '#fff' : renkler.birincil,
-                      },
-                    ]}
-                  >
-                    {oneri.kazaAdediPerVakit}/vakit
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {/* GÜNLÜK HEDEF */}
-        <View
-          style={[
-            styles.gunlukHedefKart,
-            { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir },
-          ]}
-        >
-          <View style={styles.gunlukHedefUst}>
-            <Text style={[styles.gunlukHedefEtiket, { color: renkler.metin }]}>
-              Günlük Hedef
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                setModalGirdi(
-                  kazaDurumu.gunlukHedef > 0
-                    ? String(kazaDurumu.gunlukHedef)
-                    : ''
-                );
-                setAktifModal({ tip: 'gunlukHedef' });
-              }}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              accessibilityRole="button"
-              accessibilityLabel="Günlük hedefi düzenleyin"
-            >
-              <FontAwesome5 name="edit" size={14} color={renkler.metinIkincil} />
-            </TouchableOpacity>
-          </View>
-
-          {kazaDurumu.gunlukHedef > 0 ? (
-            <>
-              <View style={styles.gunlukHedefSatir}>
-                <Text style={[styles.gunlukHedefSayilar, { color: renkler.metinIkincil }]}>
-                  {kazaDurumu.gunlukTamamlanan} / {kazaDurumu.gunlukHedef} kaza
-                </Text>
-                {kazaDurumu.gunlukTamamlanan >= kazaDurumu.gunlukHedef && (
-                  <View style={[styles.hedefTamamBadge, { backgroundColor: renkler.birincil + '20' }]}>
-                    <FontAwesome5 name="check-circle" size={12} color={renkler.birincil} />
-                    <Text style={[styles.hedefTamamMetin, { color: renkler.birincil }]}>
-                      Tamamlandı!
-                    </Text>
-                  </View>
-                )}
-              </View>
-              <View style={[styles.progressKonteyner, { backgroundColor: renkler.sinir }]}>
-                <View
-                  style={[
-                    styles.progressDolgu,
-                    {
-                      backgroundColor:
-                        gunlukIlerlemeYuzdesi >= 1 ? renkler.basarili : renkler.birincil,
-                      width: `${gunlukIlerlemeYuzdesi * 100}%`,
-                    },
-                  ]}
-                />
-              </View>
-            </>
-          ) : (
-            <Text style={[styles.hedefsizMetin, { color: renkler.metinIkincil }]}>
-              Henüz günlük hedef belirlenmedi. Düzenle butonuna dokunun.
-            </Text>
-          )}
-        </View>
-
-        {/* HER FARZLA BİR KAZA (issue #294) — yalnız borcu olan kullanıcıya görünür */}
-        {oneriAyarlariYuklendi && oneriAyarlari && kazaDurumu.toplamKalan > 0 && (
-          <View
-            style={[
-              styles.oneriKart,
-              { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir },
-            ]}
-          >
-            <View style={[styles.oneriIkon, { backgroundColor: renkler.birincil + '20' }]}>
-              <FontAwesome5 name="link" size={14} color={renkler.birincil} />
-            </View>
-            <View style={styles.oneriMetinler}>
-              <Text style={[styles.gunlukHedefEtiket, { color: renkler.metin }]}>
-                Her farzla bir kaza
-              </Text>
-              <Text style={[styles.hedefsizMetin, { color: renkler.metinIkincil }]}>
-                Ana ekranda bir farzı kıldım olarak işaretlediğinizde bir kaza kılmayı önerir.
-                Kerahat vaktinde sorulmaz.
-              </Text>
-            </View>
-            <Anahtar
-              value={oneriAyarlari.farzSonrasiOner}
-              onValueChange={oneriAyariniDegistir}
-              trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-              thumbColor={oneriAyarlari.farzSonrasiOner ? renkler.birincil : '#f4f3f4'}
-              accessibilityLabel="Her farzdan sonra kaza önerin"
-            />
-          </View>
-        )}
-
         {/* NAMAZ KARTLARI */}
-        <View style={styles.namazKartlarBaslik}>
-          <Text style={[styles.bolumBasligi, { color: renkler.metin }]}>Namaz Bazında Takip</Text>
-        </View>
+        <BolumBasligi metin="Vakit vakit" ikon="list" style={{ marginTop: 8, marginBottom: 8 }} />
 
         {kazaDurumu.namazlar.map((namaz) => (
           <View
@@ -756,40 +642,6 @@ export const KazaDefteriSayfasi: React.FC = () => {
           </View>
         ))}
 
-        {/* DEFTER BAĞLANTILARI */}
-        {DEFTER_BAGLANTILARI.map((b) => (
-          <TouchableOpacity
-            key={b.hedef}
-            onPress={() => navigation.navigate(b.hedef)}
-            accessibilityRole="button"
-            accessibilityLabel={b.metin}
-            style={[styles.otoCip, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}
-          >
-            <View style={[styles.oneriIkon, { backgroundColor: `${renkler.birincil}20` }]}>
-              <FontAwesome5 name={b.ikon} size={13} color={renkler.birincil} />
-            </View>
-            <Text style={[styles.otoCipMetin, { color: renkler.metin }]}>{b.metin}</Text>
-            <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
-          </TouchableOpacity>
-        ))}
-
-        {/* SİHİRBAZ BUTONU */}
-        <TouchableOpacity
-          onPress={() =>
-            setAktifModal({ tip: 'sihirbaz', adim: 1 })
-          }
-          style={[
-            styles.sihirbazButon,
-            { borderColor: renkler.birincil, backgroundColor: renkler.kartArkaplan },
-          ]}
-          accessibilityRole="button"
-        >
-          <FontAwesome5 name="magic" size={16} color={renkler.birincil} />
-          <Text style={[styles.sihirbazButonMetin, { color: renkler.birincil }]}>
-            {kazaDurumu.taban ? 'Yeniden hesaplayın' : 'Hesaplama sihirbazı ile başlayın'}
-          </Text>
-        </TouchableOpacity>
-
         <View style={{ height: 32 }} />
       </ScrollView>
 
@@ -798,10 +650,10 @@ export const KazaDefteriSayfasi: React.FC = () => {
       {/* BORÇ EKLE MODAL */}
       <SayiGirisModali
         gorunur={aktifModal?.tip === 'borcEkle'}
-        baslik={`Borç Ekle — ${aktifModal?.tip === 'borcEkle' ? aktifModal.namazAdi : ''}`}
-        aciklama="Kaç kaza eklenmesini istiyorsunuz?"
+        baslik={`Kaza ekleyin — ${aktifModal?.tip === 'borcEkle' ? aktifModal.namazAdi : ''}`}
+        aciklama="Deftere kaç kaza eklensin?"
         placeholder="Örn: 100"
-        onayMetni="Ekle"
+        onayMetni="Ekleyin"
         deger={modalGirdi}
         onDegisim={setModalGirdi}
         onIptal={() => { setAktifModal(null); setModalGirdi(''); }}
@@ -811,10 +663,10 @@ export const KazaDefteriSayfasi: React.FC = () => {
       {/* TOPLU TAMAMLA MODAL */}
       <SayiGirisModali
         gorunur={aktifModal?.tip === 'topluTamamla'}
-        baslik={aktifModal?.tip === 'topluTamamla' ? `Toplu Tamamla — ${aktifModal.namazAdi}` : 'Toplu Tamamla'}
+        baslik={aktifModal?.tip === 'topluTamamla' ? `Kıldım — ${aktifModal.namazAdi}` : 'Kıldım'}
         aciklama="Kaç kaza kıldınız?"
         placeholder="Örn: 5"
-        onayMetni="Kaydet"
+        onayMetni="Kıldım"
         deger={modalGirdi}
         onDegisim={setModalGirdi}
         onIptal={() => { setAktifModal(null); setModalGirdi(''); }}
@@ -824,8 +676,8 @@ export const KazaDefteriSayfasi: React.FC = () => {
       {/* GÜNLÜK HEDEF MODAL */}
       <SayiGirisModali
         gorunur={aktifModal?.tip === 'gunlukHedef'}
-        baslik="Günlük Hedef"
-        aciklama="Günlük kaç kaza kılmayı hedefliyorsunuz? (0 = hedefsiz)"
+        baslik="Günlük hedef"
+        aciklama="Günde kaç kaza kılmayı hedefliyorsunuz? (0 = hedefsiz)"
         placeholder="Örn: 3"
         onayMetni="Kaydet"
         deger={modalGirdi}
@@ -857,7 +709,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
             <View style={styles.sihirbazBaslikSatir}>
               <FontAwesome5 name="magic" size={18} color={renkler.birincil} />
               <Text style={[styles.modalBaslik, { color: renkler.metin, marginLeft: 8 }]}>
-                Hesaplama Sihirbazı
+                Kazamı hesaplayın
               </Text>
             </View>
 
@@ -905,7 +757,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     accessibilityRole="button"
                     accessibilityLabel="İleri"
                   >
-                    <Text style={styles.modalOnayMetin}>İleri →</Text>
+                    <Text style={styles.modalOnayMetin}>İleri</Text>
                   </TouchableOpacity>
                 </View>
               </>
@@ -955,7 +807,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     accessibilityRole="button"
                     accessibilityLabel="Geri"
                   >
-                    <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>← Geri</Text>
+                    <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>Geri</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => setAktifModal({ tip: 'sihirbaz', adim: 3 })}
@@ -963,7 +815,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     accessibilityRole="button"
                     accessibilityLabel="İleri"
                   >
-                    <Text style={styles.modalOnayMetin}>İleri →</Text>
+                    <Text style={styles.modalOnayMetin}>İleri</Text>
                   </TouchableOpacity>
                 </View>
               </>
@@ -1016,7 +868,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     accessibilityRole="button"
                     accessibilityLabel="Geri"
                   >
-                    <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>← Geri</Text>
+                    <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>Geri</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={handleSihirbazTamamla}
@@ -1031,6 +883,56 @@ export const KazaDefteriSayfasi: React.FC = () => {
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* DİĞER MENÜSÜ — seyrek kullanılan her şey tek yerde */}
+      <KazaDigerMenusu
+        gorunur={aktifModal?.tip === 'diger'}
+        onKapat={() => setAktifModal(null)}
+        ust={
+          kazaDurumu.toplamKalan > 0 && motivasyonOnerileri.length > 0 ? (
+            <View testID="kaza-tempo" style={[styles.motivasyonKart, { backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }]}>
+              <BolumBasligi metin="Tempo" ikon="bullseye" />
+              {istatistik?.tahminiTamamlanmaTarihi ? (
+                <Text style={[styles.motivasyonAciklama, { color: renkler.metin }]}>
+                  Bu tempoyla bitiş:{' '}
+                  <Text style={{ fontWeight: '700' }}>{tahminiTarihiFormatla(istatistik.tahminiTamamlanmaTarihi)}</Text>
+                </Text>
+              ) : null}
+              {aktifOneri && (
+                <Text style={[styles.motivasyonAciklama, { color: renkler.metin }]}>{aktifOneri.aciklama}</Text>
+              )}
+              <View style={styles.senaryoButonlar}>
+                {motivasyonOnerileri.map((oneri, index) => (
+                  <TouchableOpacity
+                    key={oneri.kazaAdediPerVakit}
+                    onPress={() => setMotivasyonIndex(index)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Vakit başına ${oneri.kazaAdediPerVakit} kaza`}
+                    accessibilityState={{ selected: motivasyonIndex === index }}
+                    style={[
+                      styles.senaryoButon,
+                      {
+                        backgroundColor: motivasyonIndex === index ? renkler.birincil : renkler.kartArkaplan,
+                        borderColor: renkler.birincil,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.senaryoButonMetin,
+                        { color: motivasyonIndex === index ? renkler.birincilMetin : renkler.metin },
+                      ]}
+                    >
+                      {oneri.kazaAdediPerVakit}/vakit
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          ) : null
+        }
+        satirlar={digerSatirlari}
+      />
 
       {/* KONTROL BEKLEYEN GÜNLER */}
       <KazaBekleyenGunlerModal
@@ -1238,6 +1140,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 14,
     marginBottom: 12,
+  },
+  gunlukHedefOzet: {
+    marginTop: 12,
   },
   gunlukHedefUst: {
     flexDirection: 'row',
