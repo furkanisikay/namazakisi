@@ -14,4 +14,6 @@
     <string name="tesbihat_adi">Tesbihat</string>
     <string name="tesbihat_kanal_adi">Tesbihat</string>
     <string name="tesbihat_kanal_aciklama">Yarım kalan tesbihata kadrandan dönmek için sessiz simge</string>
+    <string name="kible_adi">Kıble</string>
+    <string name="kible_komplikasyon_adi">Kıble</string>
 </resources>

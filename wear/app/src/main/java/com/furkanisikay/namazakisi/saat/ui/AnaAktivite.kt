@@ -155,6 +155,7 @@ class AnaAktivite : ComponentActivity() {
                         kapsam.launch { Senkron.kildimGonder(this@AnaAktivite, tarih, vakit) }
                     },
                     onTesbihat = { startActivity(Intent(this@AnaAktivite, TesbihatAktivite::class.java)) },
+                    onKible = { startActivity(Intent(this@AnaAktivite, KibleAktivite::class.java)) },
                 )
             }
         }

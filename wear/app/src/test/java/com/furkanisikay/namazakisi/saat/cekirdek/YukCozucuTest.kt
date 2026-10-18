@@ -34,6 +34,34 @@ class YukCozucuTest {
         assertTrue(yuk.plan[0].ms < acil.ms)
         // Adım sırası (issue #274) — eklemeli opsiyonel alan.
         assertEquals(listOf(0, 3), yuk.plan.map { it.adim })
+        // Kıble konumu (saat W2) — eklemeli opsiyonel alan, 1 ondalık.
+        assertEquals(Konum(41.0, 29.0), yuk.konum)
+    }
+
+    @Test
+    fun konumOpsiyonelVeGevsekDogrulanir() {
+        // Eski telefon: alan yok → yük geçerli, konum null.
+        val eski = org.json.JSONObject(ornek())
+        eski.remove("konum")
+        assertEquals(null, (YukCozucu.coz(eski.toString()) as CozumSonucu.Basarili).yuk.konum)
+        // Bozuk konum YÜKÜ düşürmez, yalnız kıble düşer (JS `wearKonumuCoz` ile aynı).
+        val bozuklar = listOf<Any>(
+            org.json.JSONObject("""{"lat":"41","lng":29}"""),
+            org.json.JSONObject("""{"lat":91,"lng":29}"""),
+            org.json.JSONObject("""{"lat":41,"lng":181}"""),
+            org.json.JSONObject("""{"lat":0,"lng":0}"""),
+            org.json.JSONObject("""{"lat":41}"""),
+            "x",
+            org.json.JSONObject.NULL,
+        )
+        for (bozuk in bozuklar) {
+            val o = org.json.JSONObject(ornek())
+            o.put("konum", bozuk)
+            val s = YukCozucu.coz(o.toString())
+            assertTrue("konum=$bozuk yükü düşürmemeli", s is CozumSonucu.Basarili)
+            assertEquals("konum=$bozuk", null, (s as CozumSonucu.Basarili).yuk.konum)
+        }
+        assertEquals(Konum(-33.9, 151.2), YukCozucu.konumCoz(org.json.JSONObject("""{"lat":-33.9,"lng":151.2}""")))
     }
 
     @Test

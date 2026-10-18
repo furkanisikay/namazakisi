@@ -1,6 +1,10 @@
 {
   "surum": 2,
   "konumAdi": "Fatih, İstanbul",
+  "konum": {
+    "lat": 41,
+    "lng": 29
+  },
   "kerahatDk": {
     "suruk": 20,
     "istiva": 5,

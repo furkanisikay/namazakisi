@@ -14,6 +14,7 @@ import com.furkanisikay.namazakisi.saat.komplikasyon.GunDagilimiYedekKomplikasyo
 import com.furkanisikay.namazakisi.saat.komplikasyon.GunlukIlerlemeKomplikasyonServisi
 import com.furkanisikay.namazakisi.saat.komplikasyon.GunlukIlerlemeYedekKomplikasyonServisi
 import com.furkanisikay.namazakisi.saat.komplikasyon.KerahatKomplikasyonServisi
+import com.furkanisikay.namazakisi.saat.komplikasyon.KibleKomplikasyonServisi
 import com.furkanisikay.namazakisi.saat.komplikasyon.VakitKomplikasyonServisi
 import com.furkanisikay.namazakisi.saat.tile.BugunTileServisi
 import com.furkanisikay.namazakisi.saat.tile.VakitTileServisi
@@ -54,6 +55,8 @@ object Senkron {
         GunDagilimiKomplikasyonServisi::class.java,
         GunDagilimiYedekKomplikasyonServisi::class.java,
         KerahatKomplikasyonServisi::class.java,
+        // Kıble açısı yalnız konumla değişir; yeni yük (konum) gelince tazelenmeli.
+        KibleKomplikasyonServisi::class.java,
     )
 
     /** Tile ve komplikasyonları tazele (zaman çizelgeleri yeniden kurulur). */

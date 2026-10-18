@@ -100,6 +100,13 @@ uygulamadan hiçbir yere gönderilmiyor; analitik/izleme SDK'sı yok; hesap yok;
 tanı e-postası ancak kullanıcı düğmeye basarsa ve içeriği ekranda gösterildikten
 sonra açılıyor (kişisel ibadet verisi içermez).
 
+**Wear OS saat kıblesi (yalnız Play):** telefon, kullanıcının kendi Wear OS saatine
+Data Layer üzerinden 1 ondalığa yuvarlanmış (≈11 km) konum gönderir; geliştirici sunucusu yok (Bluetooth bağlı değilken Data Layer Google bulutu üzerinden eşitleyebilir),
+saat konum izni istemez. Apple Watch'a konum GİTMEZ (orada kıble yok) → App Store
+beyanı değişmez. Play Data Safety: Google'ın "kullanıcının kendi cihazları arasında,
+geliştiriciye ulaşmadan" aktarımı "paylaşım/toplama" saymadığını sahibin Play Console
+yardım metniyle bir kez doğrulaması önerilir (risk, karar değil).
+
 **DİKKAT — tek ağ çağrısı:** manuel konum seçiminde il/ilçe listesi
 `turkiyeapi.dev` adresinden çekiliyor (`TurkiyeKonumServisi`). Bu istek kullanıcı
 verisi GÖNDERMEZ, yalnız şehir listesi indirir ve çevrimdışı yedeği vardır. Veri
@@ -201,7 +208,7 @@ RAMAZAN
 İftar ve sahura kalan süreyi bildirimde geri sayımla gösterir.
 
 GİZLİLİK
-Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik bulunmaz. Konumunuzu yalnızca vakit hesabı için kullanır ve telefonunuzdan dışarı çıkarmaz. Verilerinizi şifreli bir dosyaya yedekleyip başka bir cihaza taşıyabilirsiniz.
+Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik bulunmaz. Konumunuzu yalnızca vakit ve kıble hesabı için kullanır, hiçbir sunucuya göndermez; Wear OS saatinizdeki kıble pusulası için saatinize yalnızca yaklaşık konum aktarılır. Verilerinizi şifreli bir dosyaya yedekleyip başka bir cihaza taşıyabilirsiniz.
 
 AÇIK KAYNAK
 Namaz Akışı'nı sadaka-i cariye niyetiyle geliştiriyorum. Uygulama ücretsizdir ve kaynak kodları GNU GPLv3 lisansıyla herkese açıktır:
