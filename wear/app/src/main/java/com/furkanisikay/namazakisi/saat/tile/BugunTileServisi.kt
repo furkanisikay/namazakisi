@@ -441,8 +441,8 @@ class BugunTileServisi : TileService() {
          */
         private const val KISAYOL_YUKSEKLIK_DP = 22f
 
-        /** "Kıldım" hapı: tile'ın birincil eylemi. */
-        private const val DUGME_YUKSEKLIK_DP = 40f
+        /** "Kıldım" hapı: tile'ın birincil eylemi, dokunma hedefi 48 dp (Wear yönergesi). */
+        private const val DUGME_YUKSEKLIK_DP = 48f
 
         /**
          * Girdi tavanı: her girdi tam bir düzen taşır (yük 31 gün ≈ 186 sınır).

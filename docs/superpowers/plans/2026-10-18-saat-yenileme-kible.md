@@ -203,7 +203,7 @@ Sensör yalnız ekran açık + etkileşimli + RESUMED iken. Ekranın kendi zaman
 |---|---|---|
 | `01-ana-ekran` | `hazir_bekle 'çıkmasına\|girmesine\|telefonunuzda'` | Eski `Sıradaki\|Dokunarak` desenleri kalkar |
 | `02-vakitler` | kaydırma aynı | Şerit + "kaldı" görünmeli |
-| `03-kildim-onayi` | `bul_ve_dokun 'Kıldım'` (ana ekran düğmesinin açıklaması: "<Vakit> vaktini kıldım olarak işaretleyin") | Eski `Dokunarak işaretleyin` kalkar |
+| `03-kildim-onayi` | ana aktivite yeniden açılır, `bul_ve_dokun 'kıldım olarak işaretleyin'` (ana ekran düğmesinin açıklaması "<Vakit> vaktini kıldım olarak işaretleyin"; desen büyük/küçük harfe duyarlı) | Eski `Dokunarak işaretleyin` kalkar |
 | `04-tesbihat` | aynı | Üç yay |
 | `05-tile-bugun`, `06-tile-vakit` | aynı | Yeni düzen |
 | **yeni** `07-ana-ambient` | `adb shell input keyevent KEYCODE_SLEEP` sonrası (ambient emülatörde destekleniyorsa; desteklenmezse `UYARI` ile atlanır) | W1 |

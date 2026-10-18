@@ -9,6 +9,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,7 +36,10 @@ import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -95,6 +99,10 @@ fun KildimOnayi(
 
     BackHandler(enabled = !onaylandi) { kapat() }
 
+    // Taç olayları odaklı öğeye gider: katman açıkken arkadaki liste kaymasın.
+    val odak = remember { FocusRequester() }
+    LaunchedEffect(Unit) { odak.requestFocus() }
+
     // Sonuç: aynı katmanda dönüşüm, sonra kapanış.
     val tik = remember { Animatable(0f) }
     LaunchedEffect(onaylandi) {
@@ -136,6 +144,9 @@ fun KildimOnayi(
                 ) { _, fark -> surukleme = (surukleme + fark).coerceAtLeast(0f) }
             }
             .offset { IntOffset(surukleme.roundToInt(), 0) }
+            .onRotaryScrollEvent { true }
+            .focusRequester(odak)
+            .focusable()
             .semantics {
                 paneTitle = "Kıldım onayı"
                 customActions = listOf(CustomAccessibilityAction("Vazgeçin") { kapat(); true })
