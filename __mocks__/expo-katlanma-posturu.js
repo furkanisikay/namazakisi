@@ -13,10 +13,12 @@
  */
 const katlanmaModuluVarMi = jest.fn().mockReturnValue(false);
 const sonPostur = jest.fn().mockReturnValue(null);
+const menteseVarMi = jest.fn().mockReturnValue(null);
 const posturDinle = jest.fn().mockImplementation(() => ({ remove: jest.fn() }));
 
 module.exports = {
     katlanmaModuluVarMi,
     sonPostur,
     posturDinle,
+    menteseVarMi,
 };

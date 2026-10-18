@@ -12,6 +12,7 @@ import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.furkanisikay.namazakisi.kildim.KildimKuyrugu
+import com.furkanisikay.namazakisi.cekirdek.CihazDurumKurallari
 
 /**
  * JS ↔ Wear OS köprüsü (issue #269). JS adı: `NativeModules.WearSenkron`.
@@ -90,6 +91,30 @@ class WearSenkronModulu(reactContext: ReactApplicationContext) : ReactContextBas
     @ReactMethod
     fun saatUyandirmaDurumlari(promise: Promise) {
         promise.resolve(SaatUyandirmaDeposu.oku(reactApplicationContext))
+    }
+
+    /**
+     * Şu an BAĞLI bir Wear OS saati var mı? (Sade tasarım: "Wear OS saatiniz…" cümlesi
+     * yalnız saat sahibine söylensin.) İzin GEREKMEZ (`NodeClient.getConnectedNodes`).
+     * Dönüş `CihazDurumKurallari`: "esli" | "esliDegil" | "yok" | null (bilinmiyor).
+     * Eşli ama o an bağlı olmayan saat "esliDegil" görünür — metin bunu hesaba katar.
+     */
+    @ReactMethod
+    fun esliSaatDurumu(promise: Promise) {
+        try {
+            if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(reactApplicationContext) != ConnectionResult.SUCCESS) {
+                promise.resolve(CihazDurumKurallari.saatDurumu(true, null))
+                return
+            }
+            Wearable.getNodeClient(reactApplicationContext).connectedNodes
+                .addOnSuccessListener { dugumler -> promise.resolve(CihazDurumKurallari.saatDurumu(false, dugumler.size)) }
+                .addOnFailureListener { e ->
+                    val wearYok = e is ApiException && e.statusCode in WEAR_YOK_DURUMLARI
+                    promise.resolve(CihazDurumKurallari.saatDurumu(wearYok, null))
+                }
+        } catch (_: Throwable) {
+            promise.resolve(null)
+        }
     }
 
     @ReactMethod

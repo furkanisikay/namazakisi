@@ -1,6 +1,8 @@
 package expo.modules.katlanmaposturu
 
 import android.app.Activity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import android.view.View
 import androidx.window.layout.FoldingFeature
@@ -52,6 +54,18 @@ class ExpoKatlanmaPosturuModule : Module() {
 
         // Yalnız bellekteki alanı okur — JS thread'inde senkron çağrı güvenli.
         Function("sonDurum") { son }
+
+        // Cihazda menteşe açısı algılayıcısı var mı (katlanabilir mi)? İzin gerekmez.
+        // `FEATURE_SENSOR_HINGE_ANGLE` API 30'da geldi; altında bilinmiyor (null).
+        // `sonDurum` yalnız menteşe pencereyi keserken veri verir (kapalı Fold'un dış
+        // ekranında yok) — "katlanabilir mi?" sorusunu o cevaplayamaz.
+        Function("menteseVarMi") {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                null
+            } else {
+                appContext.reactContext?.packageManager?.hasSystemFeature(PackageManager.FEATURE_SENSOR_HINGE_ANGLE)
+            }
+        }
 
         OnStartObserving {
             kapsam.launch {

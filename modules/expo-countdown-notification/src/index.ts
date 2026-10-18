@@ -116,6 +116,9 @@ interface CountdownNativeModule {
     pilOptimizasyonuMuafMi(): Promise<boolean | null>;
     pilAyarlariniAc(): Promise<string | null>;
     samsungMu(): boolean;
+    /** Sade tasarım (Dalga 1) — eski native ikili TAŞIMAZ (opsiyonel). */
+    androidTamSurum?(): number | null;
+    alarmSesDuzeyi?(): Promise<number>;
 }
 
 /**
@@ -391,6 +394,34 @@ export function samsungMu(): boolean {
         return ExpoCountdownNotification.samsungMu() === true;
     } catch {
         return false;
+    }
+}
+
+/**
+ * Android tam sürümü (`SDK_INT_FULL`, API 36+; QPR2 = 3600001). Bilinmiyorsa `null`.
+ * Ayrıştırma saf çekirdekte: `core/cihaz/surum.ts > androidTamSurumCoz`.
+ */
+export function androidTamSurum(): number | null {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.androidTamSurum) return null;
+    try {
+        const deger = ExpoCountdownNotification.androidTamSurum();
+        return typeof deger === 'number' ? deger : null;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Alarm ses düzeyi 0'dan büyük mü (STREAM_ALARM)? Android dışında, eski ikilide ve
+ * okunamazsa `null` (bilinmiyor → ekran susar).
+ */
+export async function alarmSesiAcikMi(): Promise<boolean | null> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.alarmSesDuzeyi) return null;
+    try {
+        const duzey = await ExpoCountdownNotification.alarmSesDuzeyi();
+        return typeof duzey === 'number' && duzey >= 0 ? duzey > 0 : null;
+    } catch {
+        return null;
     }
 }
 

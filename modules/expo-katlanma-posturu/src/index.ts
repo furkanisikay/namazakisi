@@ -25,6 +25,7 @@ interface Abonelik {
 
 interface KatlanmaNativeModulu {
     sonDurum?(): HamPostur | null;
+    menteseVarMi?(): boolean | null;
     addListener?(olay: string, dinleyici: (veri: HamPostur) => void): Abonelik;
 }
 
@@ -39,6 +40,19 @@ export function katlanmaModuluVarMi(): boolean {
 export function sonPostur(): HamPostur | null {
     try {
         return modul?.sonDurum?.() ?? null;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Cihazda menteşe algılayıcısı var mı (katlanabilir telefon)? iOS'ta, köprüsüz build'de,
+ * Android 11 altında ve hata durumunda `null` (bilinmiyor).
+ */
+export function menteseVarMi(): boolean | null {
+    try {
+        const deger = modul?.menteseVarMi?.();
+        return typeof deger === 'boolean' ? deger : null;
     } catch {
         return null;
     }
