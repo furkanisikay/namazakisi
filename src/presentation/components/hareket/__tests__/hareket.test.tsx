@@ -4,7 +4,7 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 
 jest.mock('@expo/vector-icons/FontAwesome5', () => 'FontAwesome5');
 jest.mock('../../../../core/theme', () => ({
-    useRenkler: () => ({ birincil: '#4CAF50', birincilMetin: '#FFFFFF', basarili: '#4CAF50', metin: '#212121' }),
+    useRenkler: () => ({ birincil: '#4CAF50', birincilMetin: '#FFFFFF', basarili: '#4CAF50', metin: '#212121', metinIkincil: '#757575' }),
 }));
 const mockAzalt = { deger: false };
 jest.mock('../../../hooks/useHareketAzalt', () => ({ useHareketAzalt: () => mockAzalt.deger }));
@@ -75,8 +75,16 @@ describe('KildimDugmesi', () => {
         expect(getByLabelText('Kılındı').props.accessibilityState).toMatchObject({ disabled: true });
         const onGeriAl = jest.fn();
         rerender(<KildimDugmesi kilindi onKildim={jest.fn()} onGeriAl={onGeriAl} />);
-        fireEvent.press(getByLabelText('Kılındı'));
+        fireEvent.press(getByLabelText('Kılındı, geri almak için dokunun'));
         expect(onGeriAl).toHaveBeenCalledTimes(1);
+    });
+
+    it('KONTRAST: yeşil zeminde metin beyaz DEĞİL, ölçülmüş koyu renk (beyaz ≈ 2.8:1)', () => {
+        const { getByText } = render(<KildimDugmesi kilindi onKildim={jest.fn()} />);
+        expect(getByText('Kılındı').props.style).toEqual(expect.arrayContaining([expect.objectContaining({ color: '#212121' })]));
+        expect(getByText('Kılındı olarak işaretle').props.style).toEqual(
+            expect.arrayContaining([expect.objectContaining({ color: '#212121' })]),
+        );
     });
 });
 

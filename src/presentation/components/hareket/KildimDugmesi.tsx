@@ -26,12 +26,15 @@ import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { EGRI, SURE, YAY } from './sureler';
 import { NAMAZ_EYLEMI } from '../../../core/vakit/durumSozlugu';
+import { kildimDugmesiRenkleri } from '../../../core/anaEkran/kildimDugmesiRenkleri';
 
 export const KILDIM_DUGMESI_YUKSEKLIK = 56;
 const IKON = 20;
 
 /** Kılınmamışken düğmede yazan (eski kartın metni, sentence case). */
 export const KILDIM_ISARETLE_METNI = 'Kılındı olarak işaretle';
+/** Kılınmışken (geri alınabilirse) ekran okuyucu etiketi: durum + ne olacağı. */
+export const KILDIM_GERI_AL_ETIKETI = `${NAMAZ_EYLEMI.kilindi}, geri almak için dokunun`;
 /** Geri almada ekran okuyucuya duyurulan. */
 export const KILDIM_GERI_ALINDI_METNI = 'İşaret kaldırıldı';
 
@@ -108,9 +111,17 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
         }
     }, [kilindi, kimlik, azalt, gecis, isaret, halka]);
 
-    const durumMetni = kilindi ? NAMAZ_EYLEMI.kilindi : KILDIM_ISARETLE_METNI;
-    const etiket = vakitAdi ? `${vakitAdi} — ${durumMetni}` : durumMetni;
     const dokunulabilir = !devreDisi && (!kilindi || !!onGeriAl);
+    // Etiket DURUMU söyler; kılınmış ve geri alınabilirse ne olacağını da (ipucu kapalı olabilir).
+    const durumMetni = !kilindi ? KILDIM_ISARETLE_METNI : onGeriAl ? KILDIM_GERI_AL_ETIKETI : NAMAZ_EYLEMI.kilindi;
+    const etiket = vakitAdi ? `${vakitAdi} — ${durumMetni}` : durumMetni;
+    // Metin rengi zemine göre ÖLÇÜLÜR (beyaz yeşil/turuncu zeminde AA'yı tutmaz).
+    const { isaretleMetin, kilindiMetin } = kildimDugmesiRenkleri({
+        birincil: renkler.birincil,
+        basarili: renkler.basarili,
+        metinIkincil: renkler.metinIkincil,
+        birincilMetin: renkler.birincilMetin,
+    });
 
     return (
         <TouchableOpacity
@@ -121,7 +132,6 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
             accessibilityRole="button"
             accessibilityLabel={etiket}
             accessibilityState={{ checked: kilindi, disabled: !dokunulabilir }}
-            accessibilityHint={kilindi && onGeriAl ? 'Dokunursanız işaret kaldırılır' : undefined}
             style={[styles.kap, devreDisi && !kilindi ? { opacity: 0.5 } : null]}
         >
             {/* Zemin: birincil hap, üstünde yeşil hap opaklıkla gelir. */}
@@ -141,8 +151,8 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
                     },
                 ]}
             >
-                <FontAwesome5 name="pray" size={IKON} color={renkler.birincilMetin} />
-                <Text style={[styles.yazi, { color: renkler.birincilMetin }]}>{KILDIM_ISARETLE_METNI}</Text>
+                <FontAwesome5 name="pray" size={IKON} color={isaretleMetin} />
+                <Text style={[styles.yazi, { color: isaretleMetin }]}>{KILDIM_ISARETLE_METNI}</Text>
             </Animated.View>
 
             {/* Kılınmış içerik: ✓ yayla oturur (halka bir kez), "Kılındı" aşağıdan gelir. */}
@@ -161,7 +171,7 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
                         style={[
                             styles.halka,
                             {
-                                borderColor: renkler.birincilMetin,
+                                borderColor: kilindiMetin,
                                 opacity: halka.interpolate({ inputRange: [0, 0.05, 1], outputRange: [0, 0.7, 0] }),
                                 transform: [{ scale: halka.interpolate({ inputRange: [0, 1], outputRange: [1, 2.2] }) }],
                             },
@@ -175,10 +185,10 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
                             ],
                         }}
                     >
-                        <FontAwesome5 name="check-circle" size={IKON} color={renkler.birincilMetin} solid />
+                        <FontAwesome5 name="check-circle" size={IKON} color={kilindiMetin} solid />
                     </Animated.View>
                 </View>
-                <Text style={[styles.yazi, { color: renkler.birincilMetin }]}>{NAMAZ_EYLEMI.kilindi}</Text>
+                <Text style={[styles.yazi, { color: kilindiMetin }]}>{NAMAZ_EYLEMI.kilindi}</Text>
             </Animated.View>
         </TouchableOpacity>
     );

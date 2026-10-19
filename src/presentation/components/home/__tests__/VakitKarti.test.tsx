@@ -81,7 +81,7 @@ describe('VakitKarti Bileşeni', () => {
     const { getByLabelText, queryByTestId } = render(
       <VakitKarti {...varsayilanProps} tamamlandi={true} onTamamla={onTamamla} onGeriAl={onGeriAl} kilitli={false} />,
     );
-    const dugme = getByLabelText('Öğle — Kılındı');
+    const dugme = getByLabelText('Öğle — Kılındı, geri almak için dokunun');
     expect(dugme.props.accessibilityState).toMatchObject({ checked: true, disabled: false });
     fireEvent.press(dugme);
     expect(onGeriAl).toHaveBeenCalledTimes(1);

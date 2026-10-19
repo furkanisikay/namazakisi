@@ -7,6 +7,7 @@ import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { NAMAZ_DURUMLARI } from '../../../core/vakit/durumSozlugu';
 import { KildimDugmesi, KILDIM_DUGMESI_YUKSEKLIK } from '../hareket/KildimDugmesi';
+import { kildimDugmesiRenkleri } from '../../../core/anaEkran/kildimDugmesiRenkleri';
 
 interface VakitKartiProps {
     vakitBilgisi: VakitBilgisi | null;
@@ -79,6 +80,13 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     gorunenVakitAdi
 }) => {
     const renkler = useRenkler();
+    // Gri "Henüz girmedi" düğmesinin metni zemine göre ölçülür (koyu temada gri açıktır).
+    const { girmediMetin } = kildimDugmesiRenkleri({
+        birincil: renkler.birincil,
+        basarili: renkler.basarili,
+        metinIkincil: renkler.metinIkincil,
+        birincilMetin: renkler.birincilMetin,
+    });
     const ikonAdi = getVakitIkonu(suankiVakitAdi);
     const baslikAdi = gorunenVakitAdi ?? suankiVakitAdi;
     const konumYenilenebilir = konumModu === 'oto' && !!onKonumYenile;
@@ -108,7 +116,8 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                         {!kilitli && (
                             <View className="h-2 w-2 rounded-full" style={{ backgroundColor: renkler.birincil }} />
                         )}
-                        <Text className="text-xs font-bold" style={{ color: kilitli ? renkler.metinIkincil : renkler.birincil }}>
+                        {/* Metin daima tema metni: birincil renkli küçük metin açık zeminde AA'yı tutmaz. */}
+                        <Text className="text-xs font-bold" style={{ color: renkler.metin }}>
                             {kilitli ? 'SIRADAKİ VAKİT' : 'ŞU ANKİ VAKİT'}
                         </Text>
                     </View>
@@ -193,15 +202,15 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                 {kilitli ? (
                     <View
                         className="w-full rounded-2xl flex-row items-center justify-center gap-3"
-                        style={{ height: KILDIM_DUGMESI_YUKSEKLIK, backgroundColor: renkler.metinIkincil, opacity: 0.7 }}
+                        style={{ height: KILDIM_DUGMESI_YUKSEKLIK, backgroundColor: renkler.metinIkincil }}
                         accessible
                         accessibilityRole="button"
                         accessibilityLabel={NAMAZ_DURUMLARI.girmedi.etiket}
                         accessibilityState={{ disabled: true }}
                         testID="vakit-karti-girmedi"
                     >
-                        <FontAwesome5 name="clock" size={20} color={renkler.birincilMetin} />
-                        <Text className="font-bold text-lg" style={{ color: renkler.birincilMetin }}>
+                        <FontAwesome5 name="clock" size={20} color={girmediMetin} />
+                        <Text className="font-bold text-lg" style={{ color: girmediMetin }}>
                             {NAMAZ_DURUMLARI.girmedi.etiket}
                         </Text>
                     </View>
@@ -223,7 +232,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                     <View className="flex-row items-center justify-center mt-4 gap-2" testID="vakit-karti-tesvik">
                         <FontAwesome5 name="star" size={10} color={renkler.birincil} />
                         <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                            <Text className="font-bold" style={{ color: renkler.birincil }}>+{PUAN_DEGERLERI.namaz_kilindi} puan</Text>
+                            <Text className="font-bold" style={{ color: renkler.metin }}>+{PUAN_DEGERLERI.namaz_kilindi} puan</Text>
                             {' · Serinizi koruyun'}
                         </Text>
                     </View>
