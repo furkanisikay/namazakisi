@@ -44,6 +44,7 @@ import {
     type YerKaydi,
 } from '../../core/cami/camiTipleri';
 import { SinirAyari } from '../components/cami/SinirAyari';
+import { YakinCamilerOnizlemesi } from '../components/cami/YakinCamilerOnizlemesi';
 import { mesafeM } from '../../core/cami/geometri';
 import type { OlaySatiri } from '../../core/cami/olayMetinleri';
 import { camidenCik } from '../../../modules/expo-cami-geofence/src';
@@ -447,26 +448,28 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                             testID="namaz-modu-ana"
                         />
                     </View>
-                    {ayarlar.aktif ? (
-                        <View style={ayrac}>
-                            <TouchableOpacity
-                                testID="camilerim"
-                                onPress={() => navigation.navigate('Camilerim')}
-                                activeOpacity={0.7}
-                                accessibilityRole="button"
-                                accessibilityLabel={`Camilerim. ${haritaOzeti}`}
-                                style={{ flexDirection: 'row', alignItems: 'center', minHeight: 56, paddingVertical: 10 }}
-                            >
-                                <IkonCipi ikon="map-marked-alt" />
-                                <View style={{ flex: 1, marginLeft: 14 }}>
-                                    <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>Camilerim</Text>
-                                    <Text style={{ fontSize: 14, marginTop: 2, color: renkler.metinIkincil }}>{haritaOzeti}</Text>
-                                </View>
-                                <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} style={{ marginHorizontal: 8 }} />
-                            </TouchableOpacity>
-                        </View>
-                    ) : null}
+                    {/* Camideyim kapalıyken de açılır: harita keşif içindir, izin istemez, izleme başlatmaz. */}
+                    <View style={ayrac}>
+                        <TouchableOpacity
+                            testID="camilerim"
+                            onPress={() => navigation.navigate('Camilerim')}
+                            activeOpacity={0.7}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Camilerim. ${haritaOzeti}`}
+                            style={{ flexDirection: 'row', alignItems: 'center', minHeight: 56, paddingVertical: 10 }}
+                        >
+                            <IkonCipi ikon="map-marked-alt" />
+                            <View style={{ flex: 1, marginLeft: 14 }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>Camilerim</Text>
+                                <Text style={{ fontSize: 14, marginTop: 2, color: renkler.metinIkincil }}>{haritaOzeti}</Text>
+                            </View>
+                            <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} style={{ marginHorizontal: 8 }} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
+
+                {/* Görsel anlatı: yakındaki camilerin mini önizlemesi (dokununca harita). */}
+                <YakinCamilerOnizlemesi merkez={c.merkez} onAc={() => navigation.navigate('Camilerim')} />
 
                 {/* ── Durum: düzeltilebilir sorunlar sebep + tek düğme ── */}
                 {izinEksik ? (

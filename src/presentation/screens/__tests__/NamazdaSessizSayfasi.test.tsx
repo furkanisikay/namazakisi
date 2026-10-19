@@ -253,17 +253,33 @@ describe('NamazdaSessizSayfasi — Camiye girince', () => {
         expect(k.namazModuAyarlariniYaz).not.toHaveBeenCalled();
     });
 
-    it('"Camilerim" satırı yalnız açıkken görünür ve harita alt sayfasına gider', async () => {
-        const kapali = render(<NamazdaSessizSayfasi />);
-        await bosalt();
-        expect(kapali.queryByTestId('camilerim')).toBeNull();
-        kapali.unmount();
-
-        k.ayarlariAl.mockResolvedValue({ aktif: true });
+    it('"Camilerim" satırı Camideyim KAPALIYKEN de görünür (keşif) ve izin istemeden haritaya gider', async () => {
         const e = render(<NamazdaSessizSayfasi />);
         await waitFor(() => expect(e.getByTestId('camilerim')).toBeTruthy());
         fireEvent.press(e.getByTestId('camilerim'));
         expect(mockNavigate).toHaveBeenCalledWith('Camilerim');
+        expect(L.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
+        expect(L.requestBackgroundPermissionsAsync).not.toHaveBeenCalled();
+        expect(k.ayarlariYaz).not.toHaveBeenCalled();
+    });
+
+    it('mini önizleme: "Yakınınızda N cami" (2 km içi) sayar, dokununca harita açılır', async () => {
+        k.yakinCamiler.mockResolvedValue([
+            { id: 'osm:w1', ad: 'A', lat: 41.011, lng: 28.972, yaricapM: 29, poligonVar: true, mesafeM: 137 },
+            { id: 'osm:n2', ad: 'B', lat: 41.02, lng: 28.98, yaricapM: 0, poligonVar: false, mesafeM: 1400 },
+            { id: 'osm:n3', ad: 'C', lat: 41.05, lng: 28.99, yaricapM: 0, poligonVar: false, mesafeM: 4700 },
+        ]);
+        const e = render(<NamazdaSessizSayfasi />);
+        await waitFor(() => expect(e.getByTestId('yakin-camiler-onizleme')).toBeTruthy());
+        expect(e.getByText('Yakınınızda 2 cami')).toBeTruthy();
+        fireEvent.press(e.getByTestId('yakin-camiler-onizleme'));
+        expect(mockNavigate).toHaveBeenCalledWith('Camilerim');
+    });
+
+    it('mini önizleme: yakında hiç cami yoksa (veri yok) kart çizilmez', async () => {
+        const e = render(<NamazdaSessizSayfasi />);
+        await bosalt();
+        expect(e.queryByTestId('yakin-camiler-onizleme')).toBeNull();
     });
 
     it('iç sekme çubuğu YOK (harita ayrı sayfa, ayrıntılar katlı)', async () => {

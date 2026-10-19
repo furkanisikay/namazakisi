@@ -256,3 +256,41 @@ export function basilanKume(
     }
     return null;
 }
+
+/** "Yakınınızda N cami" sayımının yarıçapı (m) — önizleme kartı. */
+export const ONIZLEME_SAYIM_M = 2000;
+/** Mini önizlemenin çizdiği kare alanın yarı genişliği (m). */
+export const ONIZLEME_YARI_GENISLIK_M = 1000;
+
+export interface OnizlemeNoktasi {
+    id: string;
+    /** 0 (sol) … 1 (sağ) */
+    x: number;
+    /** 0 (üst = kuzey) … 1 (alt) */
+    y: number;
+}
+
+/**
+ * Yakın camilerin merkezin çevresindeki kare alanda göreli konumu (mini önizleme).
+ * Yerel metre izdüşümü (boylam × cos enlem) — kuzey yukarıda. Kare dışındakiler atılır.
+ */
+export function onizlemeNoktalari(
+    merkez: { lat: number; lng: number },
+    camiler: readonly { id: string; lat: number; lng: number }[],
+    yariGenislikM: number = ONIZLEME_YARI_GENISLIK_M
+): OnizlemeNoktasi[] {
+    const cosLat = Math.cos((merkez.lat * Math.PI) / 180);
+    const mPerDeg = (DUNYA_YARICAPI_M * Math.PI) / 180;
+    const sonuc: OnizlemeNoktasi[] = [];
+    for (const c of camiler) {
+        const dx = (c.lng - merkez.lng) * mPerDeg * cosLat;
+        const dy = (c.lat - merkez.lat) * mPerDeg;
+        if (Math.abs(dx) > yariGenislikM || Math.abs(dy) > yariGenislikM) continue;
+        sonuc.push({ id: c.id, x: 0.5 + dx / (2 * yariGenislikM), y: 0.5 - dy / (2 * yariGenislikM) });
+    }
+    return sonuc;
+}
+
+/** Sayım: native'in verdiği uzaklıkla `yaricapM` içindeki camiler. */
+export const yakinCamiSayisi = (camiler: readonly { mesafeM: number }[], yaricapM: number = ONIZLEME_SAYIM_M): number =>
+    camiler.filter((c) => Number.isFinite(c.mesafeM) && c.mesafeM <= yaricapM).length;

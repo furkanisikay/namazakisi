@@ -167,4 +167,44 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
     return depo;
 }
 
-module.exports = { ozellikTohumVerisi, VARYANTLAR, TEMALAR, yogunMuhafizMatrisi };
+/**
+ * Camideyim (yalniz Android) ayarlari AsyncStorage'da DEGIL, native
+ * SharedPreferences'tadir (`CamiDepo`: dosya `namazakisi_cami`, anahtar `ayarlar`,
+ * JSON dize). Ozellik turu harita ve sinir ayari karelerini alabilsin diye ACIK
+ * tohumlanir; sekil `camideyimAyarlariniNormalize`'dan DEGISMEDEN gecmeli
+ * (nobetci `ozellikTohumu.test.ts`).
+ */
+function camideyimNativeAyarlari() {
+    return {
+        aktif: true,
+        beklemeDk: 3,
+        vakitKapisi: true,
+        namazModu: true,
+        sessiz: true,
+        kildimSor: true,
+        izlemeKapsami: 'yakindakiler',
+        acilisBicimi: 'akilli',
+        yerler: {},
+    };
+}
+
+const xmlKacis = (s) =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/** `shared_prefs/namazakisi_cami.xml` icerigi (Android SharedPreferences bicimi). */
+function camideyimTercihXml() {
+    return [
+        "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>",
+        '<map>',
+        `    <string name="ayarlar">${xmlKacis(JSON.stringify(camideyimNativeAyarlari()))}</string>`,
+        '</map>',
+        '',
+    ].join('\n');
+}
+
+module.exports = { ozellikTohumVerisi, VARYANTLAR, TEMALAR, yogunMuhafizMatrisi, camideyimNativeAyarlari, camideyimTercihXml };
+
+// Hat betigi: `node scripts/ozellik-tohum-verisi.js --cami-xml > /tmp/namazakisi_cami.xml`
+if (require.main === module && process.argv.includes('--cami-xml')) {
+    process.stdout.write(camideyimTercihXml());
+}

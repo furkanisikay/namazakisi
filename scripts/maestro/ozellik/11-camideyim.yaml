@@ -2,6 +2,8 @@
 # Namazda sessiz (yalniz Android): Camideyim + Namaz modu tek sayfa; ayrintilar
 # katli (testID `sessiz-ayrintilar`), harita "Camilerim" alt sayfasinda. Harita
 # karolari agdan (OpenFreeMap) iner; `waitForAnimationToEnd` zaman asimi hata DEGILDIR.
+# Camideyim ACIK tohumlanir (native SharedPreferences `namazakisi_cami.xml`, hat
+# betigi `tohumla`); "Camilerim" ve mini onizleme kapaliyken de gorunur.
 appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _ayarlar.yaml
@@ -33,3 +35,34 @@ appId: com.furkanisikay.namazakisi
 - waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: ozk/27-camideyim-nasil
+# Sinir ayari: listedeki en yakin camiyi ac. Bina siniri olan camide "Bina siniri"
+# kipi + %100-%300 olcek stepper'i gorunur; iki kez buyutulur (%120). Yakindaki ilk
+# kaydin poligonu yoksa yalniz "Daire" stepper'i cikar — kare yine alinir.
+- scrollUntilVisible:
+    element:
+      id: "cami-osm:.*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    id: "cami-osm:.*"
+    index: 0
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
+    text: ".*bina sınırı büyütme artır"
+    optional: true
+- tapOn:
+    text: ".*bina sınırı büyütme artır"
+    optional: true
+- waitForAnimationToEnd:
+    timeout: 3000
+- scrollUntilVisible:
+    element:
+      id: "liste-sinir-.*-ayari"
+    direction: DOWN
+    timeout: 60000
+    waitToSettleTimeoutMs: 1500
+    centerElement: true
+    optional: true
+- takeScreenshot: ozk/27b-camideyim-sinir

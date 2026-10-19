@@ -6,6 +6,8 @@ import {
     gorunenAlanM,
     haritaKatmanlariOlustur,
     haritaYerleriniBirlestir,
+    onizlemeNoktalari,
+    yakinCamiSayisi,
     type HaritaYeri,
 } from '../haritaVerisi';
 import { mesafeM } from '../geometri';
@@ -162,5 +164,25 @@ describe('harita katmanları', () => {
         expect(basilanYerKimligi([{ properties: { id: 'osm:w1' } }])).toBe('osm:w1');
         expect(basilanYerKimligi([{ properties: null }, {}])).toBeNull();
         expect(basilanYerKimligi(undefined)).toBeNull();
+    });
+});
+
+describe('mini önizleme', () => {
+    it('kuzeydeki cami yukarıda, doğudaki sağda; kare dışı atılır', () => {
+        const m = { lat: 41, lng: 29 };
+        const derece = 500 / 111195.08;
+        const n = onizlemeNoktalari(m, [
+            { id: 'kuzey', lat: 41 + derece, lng: 29 },
+            { id: 'dogu', lat: 41, lng: 29 + derece / Math.cos((41 * Math.PI) / 180) },
+            { id: 'uzak', lat: 41.05, lng: 29 },
+        ]);
+        expect(n.map((p) => p.id)).toEqual(['kuzey', 'dogu']);
+        expect(n[0].x).toBeCloseTo(0.5, 5);
+        expect(n[0].y).toBeCloseTo(0.25, 3);
+        expect(n[1].x).toBeCloseTo(0.75, 3);
+    });
+
+    it('sayım 2 km içindekileri sayar', () => {
+        expect(yakinCamiSayisi([{ mesafeM: 100 }, { mesafeM: 2000 }, { mesafeM: 2001 }, { mesafeM: NaN }])).toBe(2);
     });
 });
