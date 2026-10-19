@@ -43,7 +43,6 @@ updates:
       - dependency-name: "react-native-reanimated"
       - dependency-name: "react-native-svg"
       - dependency-name: "react-native-view-shot"
-      - dependency-name: "react-native-webview"
       - dependency-name: "react-native-worklets"
       # SDK'ya dolaylı kilitli (bundledNativeModules'ta yok ama sürümü SDK'dan gelir):
       # react-test-renderer peer `react@^<kendi sürümü>` ister (PR #258 ERESOLVE),
