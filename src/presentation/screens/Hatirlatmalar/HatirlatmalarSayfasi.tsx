@@ -46,6 +46,7 @@ import { useBildirimButcesi } from '../../hooks/useBildirimButcesi';
 import { useButceRehberi } from '../../hooks/useButceRehberi';
 import { useMuhafizPlanlama } from '../../hooks/useMuhafizPlanlama';
 import { useMuhafizDuzeyi } from '../../hooks/useMuhafizDuzeyi';
+import { useGenelRiza } from '../../hooks/useGenelRiza';
 import { useRamazanSayaclari } from '../../hooks/useRamazanSayaclari';
 import { useCihazDurumu } from '../../hooks/useCihazDurumu';
 import { durumNotu } from '../../../core/cihaz/durumNotlari';
@@ -129,6 +130,8 @@ const HatirlatmalarIcerik: React.FC = () => {
     const { butonTiklandiFeedback } = useFeedback();
 
     const muhafiz = useAppSelector((s) => s.muhafiz);
+    // Düzey kartı "sesli" sözünü rızaya bağlar (rıza yoksa düzey sesliyi bildirimle kurar).
+    const genelRiza = useGenelRiza();
     const konum = useAppSelector((s) => s.konum);
     const sayac = useAppSelector((s) => s.vakitSayac?.ayarlar);
     const vakitBildirim = useAppSelector((s) => s.vakitBildirim.ayarlar);
@@ -278,6 +281,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                         onSec={duzey.sec}
                         ozelGoster={duzey.ozelVar}
                         sesliBilgiGoster={false}
+                        sesliIzinVar={genelRiza.sesli}
                         testID="hatirlatma-duzeyi"
                     />
                     {/* Görsel anlatı: girişte ve düzey değişince BİR KEZ (ayar ekranı — döngü yok). */}

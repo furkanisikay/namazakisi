@@ -168,6 +168,7 @@ describe('CumaHatirlatmaBolumu', () => {
             const ekran = ac(sesli);
             // Boş metin = otomatik cuma cümlesi (eski kayıt birebir).
             expect(ekran.getByTestId('anons-okunus').props.children).toMatch(/^Cuma için öğle vaktine/);
+            fireEvent.press(ekran.getByLabelText('Metni değiştirin'));
             const kutu = ekran.getByLabelText('Sesli okuma metni');
             fireEvent.changeText(kutu, '{vakit} namazına {süre} dakika.');
             expect(ekran.getByTestId('anons-okunus').props.children).toBe('Cuma namazına 60 dakika.');

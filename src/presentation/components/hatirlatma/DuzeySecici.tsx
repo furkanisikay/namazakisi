@@ -79,6 +79,11 @@ export interface DuzeySeciciProps {
     ozelGoster?: boolean;
     /** Sesli düzeyde bilgilendirme maddesi gösterilsin mi (varsayılan evet). */
     sesliBilgiGoster?: boolean;
+    /**
+     * Sesli okuma rızası var mı? `false` iken kartlar ve cümle "sesli" DEMEZ (rıza yoksa
+     * düzey sesli adımları bildirimle kurar). Sihirbaz vermez: rıza maddesini kendisi gösterir.
+     */
+    sesliIzinVar?: boolean;
     style?: StyleProp<ViewStyle>;
     testID?: string;
 }
@@ -88,6 +93,7 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
     onSec,
     ozelGoster = false,
     sesliBilgiGoster = true,
+    sesliIzinVar = true,
     style,
     testID,
 }) {
@@ -99,7 +105,7 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
             ...HATIRLATMA_DUZEYLERI.map((d) => ({
                 deger: d as DuzeySecimi,
                 etiket: DUZEY_ADLARI[d],
-                aciklama: duzeyKisaAciklamasi(d, o[d]),
+                aciklama: duzeyKisaAciklamasi(d, o[d], sesliIzinVar),
                 ikon: DUZEY_IKONLARI[d],
             })),
             ...(ozelVar
@@ -113,9 +119,9 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                   ]
                 : []),
         ],
-        [o, ozelVar, secili],
+        [o, ozelVar, secili, sesliIzinVar],
     );
-    const cumle = secili === 'ozel' ? OZEL_DUZEY_CUMLESI : duzeyCumlesi(secili, o[secili]);
+    const cumle = secili === 'ozel' ? OZEL_DUZEY_CUMLESI : duzeyCumlesi(secili, o[secili], sesliIzinVar);
     const sesliBilgi = secili !== 'ozel' && sesliBilgiGosterildiMi(secili, sesliBilgiGoster);
     const bilgiMetni = sesliBilgiMetni(usePlatformYetenekleri().sessizligiDelebilir);
     // Madde göründüğü/değiştiği an ekran okuyucuya söylenir (yalnız görsel kalmasın).

@@ -90,6 +90,13 @@ export const ANDROID_MUHAFIZ_PAYI = ANDROID_TOPLAM_TAVANI - ANDROID_DIGER_PAYI;
  */
 export const ANDROID_UYARI_ESIGI = 400;
 
+/**
+ * iOS'ta rehber kartı YALNIZ bu doluluktan itibaren (ya da aşımda) görünür. Eskiden
+ * herkese "39 / 64. iPhone sınırı 64." gösteriliyordu; sınır aşılmamışken bu uyarı
+ * değil gürültüydü ("Sınır mı doldu?" — persona çalışması 2026-10-19, D11).
+ */
+export const IOS_KART_ORANI = 0.75;
+
 /** Kartın turuncuya döndüğü doluluk oranı (sınıra yaklaşma). */
 export const YAKINLIK_ORANI = 0.85;
 

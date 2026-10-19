@@ -79,6 +79,7 @@ import {
     IOS_ALARMKIT_NAFILE_PAYI,
     ANDROID_UYARI_ESIGI,
     YAKINLIK_ORANI,
+    IOS_KART_ORANI,
     platformSiniri,
     type BildirimPlatformu,
 } from './butceSabitleri';
@@ -468,7 +469,7 @@ export interface DefterOzeti {
     durum: ButceDurumu;
     /** 0..1 — çubuk doluluğu. */
     oran: number;
-    /** Kart görünsün mü? iOS: daima; Android: yalnız 400+ ya da aşımda. */
+    /** Kart görünsün mü? iOS: yalnız %75+ (`IOS_KART_ORANI`) ya da aşımda; Android: yalnız 400+ ya da aşımda. */
     kartGorunur: boolean;
     /**
      * Bugünün planından kalan yere ayrıca kurulan bütçe artığı (iOS: yarının imsağı).
@@ -519,7 +520,8 @@ export function defterOzeti(kayitlar: readonly DefterKaydi[], platform: Bildirim
         gelmeyecek,
         durum,
         oran: sinir > 0 ? Math.min(1, toplam / sinir) : 0,
-        kartGorunur: platform === 'ios' ? toplam > 0 || gelmeyecek > 0 : durum !== 'normal',
+        kartGorunur:
+            platform === 'ios' ? gelmeyecek > 0 || toplam >= sinir * IOS_KART_ORANI : durum !== 'normal',
         yedek: kayitlar.filter((k) => k.yedek && (platform === 'android' || k.tur === 'bildirim')).length,
     };
 }

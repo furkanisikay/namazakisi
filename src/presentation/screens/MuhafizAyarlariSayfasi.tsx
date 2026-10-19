@@ -397,6 +397,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         ozelGoster={duzey.ozelVar}
                         // Sesli onay modalla alınır (TEK RIZA); ayrı bilgi maddesi gerekmez.
                         sesliBilgiGoster={false}
+                        sesliIzinVar={genelRiza.sesli}
                         testID="muhafiz-duzey"
                     />
                     {/* Görsel anlatı: seçilen düzeyin uyarıları zaman rayında — girişte ve

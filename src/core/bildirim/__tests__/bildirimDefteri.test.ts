@@ -78,8 +78,12 @@ describe('defterOzeti — iOS', () => {
         expect(o.durum).toBe('normal');
     });
 
-    it('kart iOS\'ta daima görünür (hiç bildirim yoksa gizli)', () => {
-        expect(defterOzeti(n(3), 'ios').kartGorunur).toBe(true);
+    it('kart iOS\'ta yalnız sınıra yaklaşınca ya da aşımda görünür', () => {
+        // D11 (persona çalışması 2026-10-19): kart iOS'ta YALNIZ %75+ ya da aşımda görünür.
+        expect(defterOzeti(n(3), 'ios').kartGorunur).toBe(false);
+        expect(defterOzeti(n(39), 'ios').kartGorunur).toBe(false);
+        expect(defterOzeti(n(47), 'ios').kartGorunur).toBe(false);
+        expect(defterOzeti(n(48), 'ios').kartGorunur).toBe(true); // 64 × 0,75
         expect(defterOzeti([], 'ios').kartGorunur).toBe(false);
     });
 });

@@ -604,6 +604,8 @@ describe('MuhafizAyarlariSayfasi', () => {
     // {vakit}/{süre} çözülmüş önizleme (eşik 45)
     expect(getByTestId('anons-okunus').props.children).toBe('Öğle vakti çıkıyor, son 45 dakika.');
 
+    // Ham şablonlu kutu "Metni değiştir" arkasında (ilk görünümde çözülmüş cümle).
+    fireEvent.press(getByLabelText('Metni değiştirin'));
     const kutu = getByLabelText('Sesli okuma metni');
     fireEvent.changeText(kutu, 'Kalk, {vakit} namazına {süre} dakika.');
     // Yazarken diske yazılmaz — yalnız düzenleme bitince
@@ -894,9 +896,9 @@ describe('MuhafizAyarlariSayfasi', () => {
       const { getByText, getByLabelText, getByTestId } = await detayiAc({ matris: sesliMatris() });
 
       expect(getByText(/Türkçe konuşma paketi bulunamadı/)).toBeTruthy();
-      // Engelleme YOK: kanal anahtarları hâlâ değiştirilebilir, metin kutusu duruyor
+      // Engelleme YOK: kanal anahtarları hâlâ değiştirilebilir, metin düzenlenebilir
       expect(getByTestId('adim-sesli-anahtari')).toBeTruthy();
-      expect(getByLabelText('Sesli okuma metni')).toBeTruthy();
+      expect(getByLabelText('Metni değiştirin')).toBeTruthy();
     });
 
     it('Türkçe paketi VARSA uyarı gösterilmez', async () => {
@@ -1435,15 +1437,14 @@ describe('MuhafizAyarlariSayfasi', () => {
       expect(getByTestId('bildirim-butce-cubuk', { includeHiddenElements: true }).props.style.backgroundColor).toBe('#F44336');
     });
 
-    it('sınırın altında kart sakin (birincil renk), iPhone sınırı yazılır', async () => {
+    it('sınırın çok altında (iPhone, %75 altı) kart HİÇ görünmez (D11)', async () => {
       const hafif = matrisKur(() => ({
         seviyeler: [{ kademe: 'sert', esikDk: 10, siklik: 'birkez', kanallar: { bildirim: true }, bildirimSesi: 'varsayilan', anonsMetni: '' }],
       }));
       butceKur(hafif);
-      const { getByText, getByTestId } = await kur({ matris: hafif });
-      expect(getByText('Bekleyen bildirimleriniz')).toBeTruthy();
-      expect(getByText('iPhone sınırı 64. Ayrıntı için dokunun.')).toBeTruthy();
-      expect(getByTestId('bildirim-butce-cubuk', { includeHiddenElements: true }).props.style.backgroundColor).toBe('#4CAF50');
+      const { queryByTestId, queryByText } = await kur({ matris: hafif });
+      expect(queryByTestId('bildirim-butce-karti')).toBeNull();
+      expect(queryByText('Bekleyen bildirimleriniz')).toBeNull();
     });
 
     it('karta dokununca kaynak dökümü ve ölçülmüş öneriler görünür', async () => {
