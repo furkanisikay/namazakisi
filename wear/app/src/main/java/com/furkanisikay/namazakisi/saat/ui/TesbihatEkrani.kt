@@ -91,7 +91,12 @@ fun TesbihatEkrani(
                 modifier = Modifier
                     .fillMaxSize()
                     .onRotaryScrollEvent { olay ->
-                        if (!durum.tamamMi && tac.olay(olay.verticalScrollPixels, olay.uptimeMillis)) onSay()
+                        // Saat yönü sayar, ters yön son sayımı geri alır (tamamken de: 100 → 99).
+                        when (tac.olay(olay.verticalScrollPixels, olay.uptimeMillis)) {
+                            TacBiriktirici.Adim.SAY -> if (!durum.tamamMi) onSay()
+                            TacBiriktirici.Adim.GERI_AL -> if (durum.toplam > 0) onGeriAl()
+                            TacBiriktirici.Adim.YOK -> Unit
+                        }
                         true
                     }
                     .focusRequester(odak)

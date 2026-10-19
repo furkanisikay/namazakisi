@@ -6,8 +6,13 @@ import WatchKit
 // yazilir, 90 dk'dan eski oturum acilista sifirdan baslar.
 //
 // Sayim: ekrana dokunma ya da Digital Crown. Taç `TacBiriktirici`'den gecer (ayni yonde
-// esik, olay basina en cok bir sayim, iki sayim arasi >= 120 ms) — ham donusu dogrudan
-// sayima baglamak hizli savurusta cift sayardi.
+// esik, olay basina en cok bir adim, iki adim arasi >= 120 ms) — ham donusu dogrudan
+// sayima baglamak hizli savurusta cift sayardi. YON ANLAMLIDIR: pozitif donus sayar,
+// ters donus son sayimi geri alir (eskiden iki yon de sayiyordu).
+//
+// Tasma: 40/41 mm ekranda halka + baslik + tehlil metni + dugme sigmiyordu. Tamamlaninca
+// halka kuculur, tehlil metni en cok 3 satir ve olcekli; yazi boyu buyutulse de
+// `minimumScaleFactor` + `lineLimit` metni keser, ekrani tasirmaz.
 struct TesbihatEkrani: View {
     @State private var durum = Tesbihat.Durum()
     @State private var tac: Double = 0
@@ -20,7 +25,7 @@ struct TesbihatEkrani: View {
                 .onTapGesture { say() }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Tesbihat.kisaMetin(durum))
-                .accessibilityHint("Saymak için dokunun ya da Digital Crown'u çevirin")
+                .accessibilityHint("Saymak için dokunun ya da Digital Crown'u çevirin; ters yöne çevirmek geri alır")
                 .accessibilityAddTraits(.isButton)
                 .accessibilityAction { say() }
             if durum.tamamMi {
@@ -40,7 +45,11 @@ struct TesbihatEkrani: View {
             isHapticFeedbackEnabled: false
         )
         .onChange(of: tac) { eski, yeni in
-            if biriktirici.olay(yeni - eski, zamanMs: SaatDeposu.simdiMs()) { say() }
+            switch biriktirici.olay(yeni - eski, zamanMs: SaatDeposu.simdiMs()) {
+            case .say: say()
+            case .geriAl: geriAl()
+            case .yok: break
+            }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -60,7 +69,7 @@ struct TesbihatEkrani: View {
     }
 
     private var sayac: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 2) {
             ZStack {
                 Circle()
                     .stroke(Color.secondary.opacity(0.3), lineWidth: 6)
@@ -68,30 +77,43 @@ struct TesbihatEkrani: View {
                     .trim(from: 0, to: CGFloat(durum.fazIlerlemesi))
                     .stroke(SaatGorunum.yesil, style: StrokeStyle(lineWidth: 6, lineCap: .round))
                     .rotationEffect(.degrees(-90))
-                VStack(spacing: 0) {
-                    Text("\(durum.fazSayisi)")
-                        .font(.system(size: 32, weight: .semibold, design: .rounded))
-                        .monospacedDigit()
-                    Text("/ \(durum.faz.hedef)")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                if durum.tamamMi {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 26, weight: .bold))
+                        .foregroundStyle(SaatGorunum.yesil)
+                } else {
+                    VStack(spacing: 0) {
+                        Text("\(durum.fazSayisi)")
+                            .font(.system(size: 32, weight: .semibold, design: .rounded))
+                            .monospacedDigit()
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                        Text("/ \(durum.faz.hedef)")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
                 }
             }
-            .frame(width: 92, height: 92)
-            Text(durum.faz.ad)
+            .frame(width: durum.tamamMi ? 52 : 92, height: durum.tamamMi ? 52 : 92)
+            Text(durum.tamamMi ? "Tamamlandı" : durum.faz.ad)
                 .font(.headline)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
             if durum.tamamMi {
                 Text(Tesbihat.tehlilMetni)
                     .font(.caption2)
                     .multilineTextAlignment(.center)
-                    .lineLimit(4)
-                    .minimumScaleFactor(0.6)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.5)
             } else {
                 Text("\(durum.toplam)/\(Tesbihat.toplamHedef)")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
         }
+        .padding(.horizontal, 4)
     }
 
     private func say() {

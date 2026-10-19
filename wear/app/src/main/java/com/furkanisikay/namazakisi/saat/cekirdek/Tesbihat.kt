@@ -108,33 +108,40 @@ object Tesbihat {
 /**
  * Taç/çerçeve (rotary) dönüşünü sayıma çevirir — SAF, JVM testli.
  *
- * - Bir sayım için aynı YÖNDE `esikPiksel` kadar dönüş birikmeli; yön değişince birikim
- *   sıfırlanır (titreyen el ileri-geri küçük hareketlerle sayım üretmesin).
- * - Bir olay en fazla BİR sayım üretir ve sayımdan sonra birikim atılır: tek bir hızlı
- *   savuruş (büyük piksel değeri) birden çok sayıma dönüşmez.
- * - İki sayım arası en az `enAzAralikMs`: aynı çentiğin art arda gelen iki olayı çift
- *   saymasın. Bu aralıkta eşiği aşan dönüş YUTULUR (sayım yerine hiçbir şey): kullanıcı
- *   her sayımı titreşimle hisseder, eksik sayım fark edilir; fazlası edilmez.
- * - İki yön de sayar (çerçeveyi hangi yöne çevireceğini kullanıcı seçer).
+ * YÖN ANLAMLIDIR (sahip geri bildirimi, v0.51): saat yönü (pozitif `verticalScrollPixels`,
+ * listeyi aşağı kaydıran yön) SAYAR, ters yön SON SAYIMI GERİ ALIR. Eskiden iki yön de
+ * sayıyordu; tespihi geri çekmenin doğal karşılığı olan ters çevirme bir sayım daha
+ * ekliyordu ve geri almanın tek yolu ekrandaki küçük düğmeydi.
+ *
+ * - Bir adım için aynı YÖNDE `esikPiksel` kadar dönüş birikmeli; yön değişince birikim
+ *   sıfırlanır (titreyen el ileri-geri küçük hareketlerle sayım/geri alma üretmesin).
+ * - Bir olay en fazla BİR adım üretir ve adımdan sonra birikim atılır: tek bir hızlı
+ *   savuruş (büyük piksel değeri) birden çok adıma dönüşmez.
+ * - İki adım arası en az `enAzAralikMs` (yönden bağımsız): aynı çentiğin art arda gelen
+ *   iki olayı çift saymasın. Bu aralıkta eşiği aşan dönüş YUTULUR: kullanıcı her adımı
+ *   titreşimle hisseder, eksik adım fark edilir; fazlası edilmez.
  */
 class TacBiriktirici(
     private val esikPiksel: Float,
     private val enAzAralikMs: Long = EN_AZ_ARALIK_MS,
 ) {
-    private var birikim = 0f
-    private var sonSayimMs: Long? = null
+    /** Bir taç olayının sonucu. */
+    enum class Adim { YOK, SAY, GERI_AL }
 
-    /** @return bu olay bir sayım üretti mi */
-    fun olay(piksel: Float, zamanMs: Long): Boolean {
-        if (piksel == 0f || piksel.isNaN()) return false
+    private var birikim = 0f
+    private var sonAdimMs: Long? = null
+
+    fun olay(piksel: Float, zamanMs: Long): Adim {
+        if (piksel == 0f || piksel.isNaN()) return Adim.YOK
         if (birikim != 0f && sign(piksel) != sign(birikim)) birikim = 0f
         birikim += piksel
-        if (abs(birikim) < esikPiksel) return false
+        if (abs(birikim) < esikPiksel) return Adim.YOK
+        val yon = if (birikim > 0f) Adim.SAY else Adim.GERI_AL
         birikim = 0f
-        val son = sonSayimMs
-        if (son != null && zamanMs >= son && zamanMs - son < enAzAralikMs) return false
-        sonSayimMs = zamanMs
-        return true
+        val son = sonAdimMs
+        if (son != null && zamanMs >= son && zamanMs - son < enAzAralikMs) return Adim.YOK
+        sonAdimMs = zamanMs
+        return yon
     }
 
     companion object {

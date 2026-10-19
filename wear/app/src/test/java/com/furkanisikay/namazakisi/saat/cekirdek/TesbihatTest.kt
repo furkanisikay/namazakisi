@@ -119,47 +119,78 @@ class TesbihatTest {
 
     // --- Taç / çerçeve ---------------------------------------------------------
 
+    private val SAY = TacBiriktirici.Adim.SAY
+    private val GERI = TacBiriktirici.Adim.GERI_AL
+    private val YOK = TacBiriktirici.Adim.YOK
+
     @Test
     fun tacEsikDolunacaSayar() {
         val t = TacBiriktirici(esikPiksel = 10f)
-        assertFalse(t.olay(4f, 0))
-        assertFalse(t.olay(4f, 10))
-        assertTrue(t.olay(4f, 20))
-        // Birikim atıldı: hemen ardından küçük hareket sayım üretmez.
-        assertFalse(t.olay(4f, 400))
+        assertEquals(YOK, t.olay(4f, 0))
+        assertEquals(YOK, t.olay(4f, 10))
+        assertEquals(SAY, t.olay(4f, 20))
+        // Birikim atıldı: hemen ardından küçük hareket adım üretmez.
+        assertEquals(YOK, t.olay(4f, 400))
     }
 
     @Test
     fun tekBuyukSavurusTekSayim() {
         val t = TacBiriktirici(esikPiksel = 10f)
-        assertTrue(t.olay(95f, 0))
+        assertEquals(SAY, t.olay(95f, 0))
         // Kalan 85 piksel taşınmaz.
-        assertFalse(t.olay(1f, 500))
+        assertEquals(YOK, t.olay(1f, 500))
+    }
+
+    @Test
+    fun tersYonSaymazGeriAlir() {
+        // REGRESYON (sahip geri bildirimi): eskiden ters yön de SAYIYORDU.
+        val t = TacBiriktirici(esikPiksel = 10f)
+        assertEquals(GERI, t.olay(-12f, 0))
+        assertEquals(SAY, t.olay(12f, 500))
+        assertEquals(YOK, t.olay(-4f, 1_000))
+        assertEquals(GERI, t.olay(-7f, 1_010)) // birikim -11
     }
 
     @Test
     fun yonDegisinceBirikimSifirlanir() {
         val t = TacBiriktirici(esikPiksel = 10f)
-        assertFalse(t.olay(8f, 0))
-        assertFalse(t.olay(-3f, 10))
-        assertFalse(t.olay(-6f, 20))
-        assertTrue(t.olay(-2f, 30)) // -11: ters yön de sayar
+        assertEquals(YOK, t.olay(8f, 0))
+        assertEquals(YOK, t.olay(-3f, 10))
+        assertEquals(YOK, t.olay(-6f, 20))
+        // -11: önceki +8 taşınmadı (yoksa -1 olurdu ve hiçbir şey olmazdı); ters yön GERİ ALIR.
+        assertEquals(GERI, t.olay(-2f, 30))
     }
 
     @Test
-    fun ciftSayimAraligiIcindekiSayimYutulur() {
+    fun titreyenElIleriGeriHicbirSeyUretmez() {
+        val t = TacBiriktirici(esikPiksel = 10f)
+        var z = 0L
+        repeat(40) { i -> assertEquals(YOK, t.olay(if (i % 2 == 0) 6f else -6f, z)); z += 15 }
+    }
+
+    @Test
+    fun ciftSayimAraligiIcindekiAdimYutulur() {
         val t = TacBiriktirici(esikPiksel = 10f, enAzAralikMs = 120)
-        assertTrue(t.olay(10f, 1_000))
-        assertFalse(t.olay(10f, 1_050))
-        assertTrue(t.olay(10f, 1_200))
+        assertEquals(SAY, t.olay(10f, 1_000))
+        assertEquals(YOK, t.olay(10f, 1_050))
+        assertEquals(SAY, t.olay(10f, 1_200))
+    }
+
+    @Test
+    fun aralikIkiYondeDeGecerli() {
+        // Sayımdan hemen sonra ters savuruş (ör. bezelin geri yaylanması) geri almaz.
+        val t = TacBiriktirici(esikPiksel = 10f, enAzAralikMs = 120)
+        assertEquals(SAY, t.olay(10f, 1_000))
+        assertEquals(YOK, t.olay(-10f, 1_060))
+        assertEquals(GERI, t.olay(-10f, 1_300))
     }
 
     @Test
     fun sifirVeNaNYokSayilir() {
         val t = TacBiriktirici(esikPiksel = 10f)
-        assertFalse(t.olay(0f, 0))
-        assertFalse(t.olay(Float.NaN, 0))
-        assertTrue(t.olay(10f, 0))
+        assertEquals(YOK, t.olay(0f, 0))
+        assertEquals(YOK, t.olay(Float.NaN, 0))
+        assertEquals(SAY, t.olay(10f, 0))
     }
 
     // --- Haptik ----------------------------------------------------------------
