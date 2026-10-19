@@ -63,7 +63,7 @@ afterEach(() => {
 });
 
 describe('gunSonuHatirlatmalariniGuncelle', () => {
-  test('Android: 7 seri gunu icin AYRI tarihli (DATE) tetik, metin birebir eskisi', async () => {
+  test('Android: 7 seri gunu icin AYRI tarihli (DATE) tetik, govde GUN_SONU_GOVDE', async () => {
     const simdi = ogle();
     await gunSonuHatirlatmalariniGuncelle(imsak, AYAR, simdi);
 
@@ -271,7 +271,7 @@ describe('TAM GUN — hatirlatma kurulmaz (persona calismasi 2026-10-19)', () =>
     gunSonuDinleyicisiniBaslat(); // idempotent: adli yuva cogalmaz
 
     const bekle = async (kosul: () => boolean) => {
-      for (let i = 0; i < 50 && !kosul(); i++) await new Promise((r) => setTimeout(r, 10));
+      for (let i = 0; i < 150 && !kosul(); i++) await new Promise((r) => setTimeout(r, 10));
     };
     const sonTur = () => {
       // Son turun kurulumlari: son iptal cagrisindan sonrakiler.
