@@ -147,4 +147,66 @@ object KibleKarari {
             dolu = false
         }
     }
+
+    /**
+     * UYARLAMALI açı süzgeci (kıble cilası): sabit `alfa` ya titremeyi bırakır (yüksek alfa)
+     * ya da bilek dönerken ok geride kalır (düşük alfa). Burada ağırlık, yeni örneğin süzülmüş
+     * yönden SAPMASIYLA büyür: < [SAKIN_DERECE] sapma (el titremesi, sensör gürültüsü) neredeyse
+     * yok sayılır ([EN_AZ_ALFA]), ≥ [HIZLI_DERECE] sapma (gerçek dönüş) hemen izlenir
+     * ([EN_FAZLA_ALFA]); arası doğrusal. Sin/cos uzayında çalışır (359 → 1 dolaşmaz).
+     * Ekrandaki yay animasyonu bunun ÜSTÜNE kısa bir yumuşatma ekler; ikisi birlikte ayarlı.
+     * Değerler `SENSOR_DELAY_UI` (≈ 15 Hz) içindir: en düşük ağırlıkta son 3° ≈ 0,8 sn'de
+     * oturur, hızlı dönüşte gecikme sabit 0,25 alfanın yaklaşık yarısıdır.
+     */
+    class UyarlamaliAciSuzgeci {
+        private var s = 0.0
+        private var c = 0.0
+        private var dolu = false
+
+        fun ekle(derece: Double): Double {
+            val r = Math.toRadians(derece)
+            if (!dolu) {
+                s = sin(r)
+                c = cos(r)
+                dolu = true
+                return Kible.dereceSar(derece)
+            }
+            val simdiki = Kible.dereceSar(Math.toDegrees(atan2(s, c)))
+            val fark = sapma(derece - simdiki)
+            val alfa = alfa(fark)
+            s += alfa * (sin(r) - s)
+            c += alfa * (cos(r) - c)
+            return Kible.dereceSar(Math.toDegrees(atan2(s, c)))
+        }
+
+        fun sifirla() {
+            dolu = false
+        }
+
+        companion object {
+            const val SAKIN_DERECE = 2.0
+            const val HIZLI_DERECE = 25.0
+            const val EN_AZ_ALFA = 0.15
+            const val EN_FAZLA_ALFA = 0.6
+
+            /** Sapmaya göre ağırlık (saf, test edilir). */
+            fun alfa(sapmaDerece: Double): Double {
+                val t = ((sapmaDerece - SAKIN_DERECE) / (HIZLI_DERECE - SAKIN_DERECE)).coerceIn(0.0, 1.0)
+                return EN_AZ_ALFA + (EN_FAZLA_ALFA - EN_AZ_ALFA) * t
+            }
+        }
+    }
+
+    /**
+     * Ekranın büyük satırı: hangi yöne, ne kadar dönülmeli? ("Sağa 35°", "Sola 120°",
+     * arkadaysa "Arkanızda"). 5°'lik adımla (her sensör olayında rakam titremesin).
+     * Hizadayken çağıran "Kıble yönündesiniz" yazar.
+     */
+    fun donusMetni(hedef: Double): String {
+        val s = sapma(hedef)
+        if (s >= 175.0) return "Arkanızda"
+        val adim = ((s / 5.0).roundToInt() * 5).coerceAtLeast(5)
+        val taraf = if (Kible.dereceSar(hedef) <= 180.0) "Sağa" else "Sola"
+        return "$taraf $adim°"
+    }
 }

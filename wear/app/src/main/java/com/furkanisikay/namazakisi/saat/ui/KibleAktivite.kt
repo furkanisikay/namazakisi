@@ -34,7 +34,7 @@ import com.furkanisikay.namazakisi.saat.veri.YukDeposu
  */
 class KibleAktivite : ComponentActivity() {
     private lateinit var pusula: KiblePusulasi
-    private val suzgec = KibleKarari.AciSuzgeci()
+    private val suzgec = KibleKarari.UyarlamaliAciSuzgeci()
     private var titresim: Vibrator? = null
 
     private var konum: Konum? = null
@@ -142,6 +142,7 @@ class KibleAktivite : ComponentActivity() {
             hedefCizim = onceki?.let { KibleKarari.enKisaYol(it.hedefCizim, hedef) } ?: hedef,
             hizali = hiza.hizali,
             erisim = KibleKarari.erisimMetni(hedef, hiza.hizali),
+            donus = KibleKarari.donusMetni(hedef),
             egimIpucu = KibleKarari.egimIpucu(o.egim),
             kalibrasyon = o.kalibrasyon,
         )

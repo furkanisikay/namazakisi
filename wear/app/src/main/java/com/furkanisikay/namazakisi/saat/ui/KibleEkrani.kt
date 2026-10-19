@@ -1,6 +1,19 @@
 package com.furkanisikay.namazakisi.saat.ui
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.spring
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextOverflow
+import com.furkanisikay.namazakisi.saat.cekirdek.Kible
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -32,7 +45,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.CompactButton
-import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
@@ -61,6 +73,8 @@ sealed interface KibleGorunumu {
         val hizali: Boolean,
         /** TalkBack — 10°'lik adımlarla değişir. */
         val erisim: String,
+        /** Büyük satır: "Sağa 35°" (5°'lik adım, `KibleKarari.donusMetni`). */
+        val donus: String,
         val egimIpucu: Boolean,
         val kalibrasyon: Boolean,
     ) : KibleGorunumu
@@ -74,9 +88,11 @@ const val KIBLE_SENSOR_YOK_METNI =
     "Bu saatte pusula sensörü bulunmuyor. Kıble yönünü telefonunuzdan görebilirsiniz."
 
 /**
- * Kıble pusulası: kenarda dönen halka (kuzey işaretli), üstte saatin baktığı yönü
- * gösteren sabit çentik ve halkada Kâbe işareti. İşaret çentiğe gelince (hizada)
- * ikisi de eylem yeşili olur ve ortada "Kıble yönündesiniz" yazar. Kibar "siz".
+ * Kıble pusulası: kenarda dönen kadran (5°'lik çentikler, K/D/G/B), üstte saatin baktığı
+ * yönü gösteren sabit işaret, halkada Kâbe ve baktığınız yönden Kâbe'ye en kısa yolu
+ * gösteren altın yay; ortada "Sağa 35°". Kâbe işarete gelince (hizada) halka yeşile döner,
+ * hâle yayılır, Kâbe bir kez oturur ve ortada "Kıble yönündesiniz" yazar (titreşim aynı
+ * an, bir kez). Açılar yumuşak süzülür (uyarlamalı süzgeç + kısa yay). Kibar "siz".
  */
 @Composable
 fun KibleEkrani(
@@ -141,6 +157,15 @@ fun KibleEkrani(
 
 @Composable
 private fun PusulaIcerigi(g: KibleGorunumu.Pusula) {
+    val azalt = hareketAzaltilmis()
+    // Sensör ≈ 15 Hz gelir; her örnekte açı sıçramasın diye çizim açıları kısa, aşmasız bir
+    // yayla hedefe süzülür (uyarlamalı süzgecin ÜSTÜNE ≈ 100 ms). Değerler sarılmamış
+    // (`enKisaYol`) olduğu için 359 → 1 geçişinde yay dolaşmaz. Azaltılmış harekette anında.
+    val yay: AnimationSpec<Float> = if (azalt) snap() else spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)
+    val yon by animateFloatAsState(g.yonCizim.toFloat(), yay, label = "kibleYon")
+    val hedef by animateFloatAsState(g.hedefCizim.toFloat(), yay, label = "kibleHedef")
+    // Hizada iç zemine yeşil hâle yumuşakça gelir/gider (olay tetikli, 300 ms; sonra durağan).
+    val hale by animateFloatAsState(if (g.hizali) 1f else 0f, if (azalt) snap() else tween(300), label = "kibleHale")
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -150,33 +175,39 @@ private fun PusulaIcerigi(g: KibleGorunumu.Pusula) {
                 contentDescription = "${g.erisim}. Kıble ${derece(g.kibleAcisi)} derece, ${g.konumAdi}"
             },
     ) {
-        Halka(yonCizim = g.yonCizim, hedefCizim = g.hedefCizim, hizali = g.hizali, vurgu = hizaVurgusu(g.hizali))
+        Halka(
+            yonCizim = yon.toDouble(),
+            hedefCizim = hedef.toDouble(),
+            hizali = g.hizali,
+            vurgu = hizaVurgusu(g.hizali),
+            kabeOturma = kabeOturmasi(g.hizali),
+            hale = hale,
+        )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp),
+            modifier = Modifier.fillMaxWidth(guvenliGenislikOrani(yuvarlakOran = 0.58f, kareOran = 0.64f)),
         ) {
-            if (g.hizali) {
+            Crossfade(targetState = g.hizali, animationSpec = tween(if (azalt) 0 else 250), label = "kibleBaslik") { hizali ->
                 Text(
-                    "Kıble yönündesiniz",
-                    style = MaterialTheme.typography.titleMedium,
+                    if (hizali) "Kıble yönündesiniz" else g.donus,
+                    style = RAKAM,
+                    fontSize = sinirliBoyut(if (hizali) 0.068f else 0.095f),
                     fontWeight = FontWeight.SemiBold,
-                    color = renk(SaatPaleti.EYLEM),
+                    color = renk(if (hizali) SaatPaleti.EYLEM else SaatPaleti.METIN),
                     textAlign = TextAlign.Center,
-                )
-            } else {
-                Text(
-                    "${derece(g.kibleAcisi)}°",
-                    style = MaterialTheme.typography.displaySmall,
-                    color = renk(SaatPaleti.METIN),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
             Text(
-                "Kıble · ${g.konumAdi}",
-                style = MaterialTheme.typography.labelSmall,
+                "Kıble ${derece(g.kibleAcisi)}° · ${g.konumAdi}",
+                fontSize = sinirliBoyut(0.046f),
                 color = renk(SaatPaleti.METIN2),
                 textAlign = TextAlign.Center,
-                maxLines = 2,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
             // Uyarılar tek satırda, öncelik sırasıyla: kalibrasyon yönü bozar, eğim azaltır.
             val ipucu = when {
@@ -187,10 +218,12 @@ private fun PusulaIcerigi(g: KibleGorunumu.Pusula) {
             if (ipucu != null) {
                 Text(
                     ipucu,
-                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = sinirliBoyut(0.044f),
                     color = renk(SaatPaleti.KERAHAT),
                     textAlign = TextAlign.Center,
                     maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 2.dp),
                 )
             }
         }
@@ -202,15 +235,24 @@ private fun Mesaj(metin: String, alt: String? = null) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 28.dp),
+        modifier = Modifier.fillMaxWidth(guvenliGenislikOrani()),
     ) {
-        Text(metin, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
+        Text(
+            metin,
+            fontSize = sinirliBoyut(0.058f),
+            color = renk(SaatPaleti.METIN),
+            textAlign = TextAlign.Center,
+            maxLines = 5,
+            overflow = TextOverflow.Ellipsis,
+        )
         if (alt != null) {
             Text(
                 alt,
-                style = MaterialTheme.typography.labelSmall,
+                fontSize = sinirliBoyut(0.046f),
                 color = renk(SaatPaleti.METIN2),
                 textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(top = 6.dp),
             )
         }
@@ -218,60 +260,139 @@ private fun Mesaj(metin: String, alt: String? = null) {
 }
 
 /**
- * Halka: kuzey işareti `-yon` kadar döner (dünya sabit, saat döner); Kâbe işareti
- * `hedef` açısında; üstteki sabit çentik saatin baktığı yöndür. Dekoratif — anlam
- * `PusulaIcerigi`'nin tek erişim düğümünde.
+ * Pusula kadranı (dekoratif — anlam `PusulaIcerigi`'nin tek erişim düğümünde):
+ *  - Dünya sabit katman `-yon` kadar döner: 5°'de bir çentik, 30°'de uzun çentik, ana
+ *    yönlerde K/D/G/B harfleri (harfler dik kalır), kuzeyde üçgen.
+ *  - Üstte sabit "baktığınız yön" işareti (aşağı bakan üçgen).
+ *  - Halka izinde, baktığınız yönden Kâbe'ye EN KISA yoldan altın bir yay: hangi yöne ve ne
+ *    kadar döneceğiniz bakışta okunur; hizaya geldikçe kısalır, hizada halka yeşile döner.
+ *  - Kâbe işareti: siyah küp, altın kenar ve kuşak (kiswe); hizada yeşil olur ve bir kez
+ *    yaylanarak "oturur".
+ * Yuvarlak ve kare ekranda çember ekranın kısa kenarına sığar (kenar payı sabit).
  */
 @Composable
-private fun Halka(yonCizim: Double, hedefCizim: Double?, hizali: Boolean, vurgu: Float = 0f) {
+private fun Halka(
+    yonCizim: Double,
+    hedefCizim: Double?,
+    hizali: Boolean,
+    vurgu: Float = 0f,
+    kabeOturma: Float = 1f,
+    hale: Float = 0f,
+) {
     val iz = renk(SaatPaleti.IZ)
     val ikincil = renk(SaatPaleti.METIN2)
     val metin = renk(SaatPaleti.METIN)
     val eylem = renk(SaatPaleti.EYLEM)
-    Canvas(Modifier.fillMaxSize().padding(6.dp)) {
+    val altin = renk(SaatPaleti.KERAHAT)
+    val zemin = renk(SaatPaleti.ZEMIN)
+    val olcucu = rememberTextMeasurer()
+    val harfStili = TextStyle(fontSize = sabitBoyut(0.045f), fontWeight = FontWeight.SemiBold)
+    val harfler = remember(harfStili) { YON_HARFLERI.map { olcucu.measure(it, harfStili) } }
+    Canvas(Modifier.fillMaxSize().padding(4.dp)) {
         val r = min(size.width, size.height) / 2f
         val merkez = center
         val kalinlik = 6.dp.toPx()
-        drawCircle(iz, radius = r - kalinlik / 2f, style = Stroke(kalinlik))
+        val izYaricap = r - kalinlik / 2f
+
+        // Hizada iç zemine yumuşak yeşil hâle (radyal; dekoratif, metin rengi değişmez).
+        if (hale > 0f) {
+            drawCircle(
+                Brush.radialGradient(
+                    listOf(eylem.copy(alpha = 0.28f * hale), eylem.copy(alpha = 0f)),
+                    center = merkez,
+                    radius = r,
+                ),
+                radius = r - kalinlik,
+                center = merkez,
+            )
+        }
+        // İz: hizadayken yeşile yakın ton.
+        drawCircle(if (hizali) eylem.copy(alpha = 0.45f) else iz, radius = izYaricap, style = Stroke(kalinlik))
         // Hizaya giriş vurgusu: yeşil halka bir kez dolup içe doğru söner (0 ve 1'de çizim yok).
         if (vurgu > 0f && vurgu < 1f) {
             val kalin = kalinlik * (1f + 2f * (1f - vurgu))
             drawCircle(eylem.copy(alpha = 1f - vurgu), radius = r - kalin / 2f, style = Stroke(kalin))
         }
-        // Dünya sabit işaretler: 30°'de bir çentik, kuzeyde belirgin üçgen.
+
+        // Baktığınız yönden Kâbe'ye en kısa yol (işaretli derece: + sağ, − sol).
+        if (hedefCizim != null && !hizali) {
+            val h = Kible.dereceSar(hedefCizim)
+            val isaretli = if (h > 180.0) h - 360.0 else h
+            drawArc(
+                altin.copy(alpha = 0.9f),
+                startAngle = -90f,
+                sweepAngle = isaretli.toFloat(),
+                useCenter = false,
+                topLeft = Offset(merkez.x - izYaricap, merkez.y - izYaricap),
+                size = Size(izYaricap * 2, izYaricap * 2),
+                style = Stroke(kalinlik * 0.55f, cap = StrokeCap.Round),
+            )
+        }
+
+        // Dünya sabit işaretler (kadran). Çentikler `rotate` ile, harfler dik çizilir.
+        val icKenar = r - kalinlik - 2.dp.toPx()
         rotate(-yonCizim.toFloat(), merkez) {
-            for (i in 0 until 12) {
-                val aci = Math.toRadians(i * 30.0)
-                val uzun = i % 3 == 0
-                val ic = r - kalinlik - (if (uzun) 10.dp.toPx() else 5.dp.toPx())
+            for (i in 0 until 72) {
+                val aci = Math.toRadians(i * 5.0)
+                val uzun = i % 6 == 0
+                val boy = if (uzun) 7.dp.toPx() else 3.dp.toPx()
                 drawLine(
-                    ikincil,
-                    nokta(merkez, ic, aci),
-                    nokta(merkez, r - kalinlik, aci),
-                    strokeWidth = (if (uzun) 2.dp else 1.dp).toPx(),
+                    if (uzun) ikincil else ikincil.copy(alpha = 0.55f),
+                    nokta(merkez, icKenar - boy, aci),
+                    nokta(merkez, icKenar, aci),
+                    strokeWidth = (if (uzun) 1.5.dp else 1.dp).toPx(),
                     cap = StrokeCap.Round,
                 )
             }
-            ucgen(merkez, r - kalinlik - 12.dp.toPx(), 0.0, 7.dp.toPx(), metin)
+            ucgen(merkez, icKenar - 8.dp.toPx(), 0.0, 5.dp.toPx(), metin)
         }
-        // Saatin baktığı yön: üstte sabit çentik.
-        drawLine(
-            if (hizali) eylem else metin,
-            Offset(merkez.x, merkez.y - r),
-            Offset(merkez.x, merkez.y - r + kalinlik + 8.dp.toPx()),
-            strokeWidth = 3.dp.toPx(),
-            cap = StrokeCap.Round,
+        val harfYaricap = icKenar - 21.dp.toPx()
+        harfler.forEachIndexed { i, sonuc ->
+            if (i == 0) return@forEachIndexed // Kuzey zaten üçgenle işaretli; "K" üçgenin altında.
+            val aci = Math.toRadians(i * 90.0 - yonCizim)
+            val yer = nokta(merkez, harfYaricap, aci)
+            drawText(
+                sonuc,
+                color = ikincil,
+                topLeft = Offset(yer.x - sonuc.size.width / 2f, yer.y - sonuc.size.height / 2f),
+            )
+        }
+        val kAci = Math.toRadians(-yonCizim)
+        val kYer = nokta(merkez, harfYaricap - 2.dp.toPx(), kAci)
+        drawText(
+            harfler[0],
+            color = metin,
+            topLeft = Offset(kYer.x - harfler[0].size.width / 2f, kYer.y - harfler[0].size.height / 2f),
         )
+
+        // Baktığınız yön: üstte sabit, aşağı bakan üçgen (halkanın dışına taşmaz).
+        val ust = Offset(merkez.x, merkez.y - r + kalinlik + 1.dp.toPx())
+        val yari = 6.dp.toPx()
+        drawPath(
+            Path().apply {
+                moveTo(ust.x - yari, merkez.y - r)
+                lineTo(ust.x + yari, merkez.y - r)
+                lineTo(ust.x, ust.y + 4.dp.toPx())
+                close()
+            },
+            if (hizali) eylem else metin,
+        )
+
         if (hedefCizim != null) {
-            // Kâbe işareti: halkanın üzerinde dolu kare + içe bakan ok.
+            // Kâbe: siyah küp + kenar + kuşak; halkanın üzerinde, kıble açısında.
             val aci = Math.toRadians(hedefCizim)
-            val renk = if (hizali) eylem else renk(SaatPaleti.KERAHAT)
-            val yer = nokta(merkez, r - kalinlik / 2f, aci)
-            val yari = 7.dp.toPx()
+            val vurguRengi = if (hizali) eylem else altin
+            val yer = nokta(merkez, izYaricap, aci)
+            val kenar = 8.dp.toPx() * kabeOturma
             rotate(hedefCizim.toFloat(), yer) {
-                drawRect(renk, topLeft = Offset(yer.x - yari, yer.y - yari), size = Size(yari * 2, yari * 2))
+                val sol = Offset(yer.x - kenar, yer.y - kenar)
+                val boyut = Size(kenar * 2, kenar * 2)
+                drawRect(zemin, topLeft = sol, size = boyut)
+                drawRect(vurguRengi, topLeft = sol, size = boyut, style = Stroke(1.5.dp.toPx()))
+                // Kuşak (kiswe şeridi): üst üçte birde.
+                val kusakY = yer.y - kenar * 0.35f
+                drawLine(vurguRengi, Offset(sol.x, kusakY), Offset(sol.x + kenar * 2, kusakY), strokeWidth = 2.dp.toPx())
             }
-            ucgen(merkez, r - kalinlik - 14.dp.toPx(), hedefCizim, 8.dp.toPx(), renk)
         }
     }
 }
@@ -296,7 +417,25 @@ private fun hizaVurgusu(hizali: Boolean): Float {
     return vurgu.value
 }
 
+/** Hizaya girişte Kâbe işareti bir kez büyüyüp yaylanarak oturur (ölçek 1,35 → 1); çıkışta yok. */
+@Composable
+private fun kabeOturmasi(hizali: Boolean): Float {
+    val azalt = hareketAzaltilmis()
+    val olcek = remember { Animatable(1f) }
+    LaunchedEffect(hizali) {
+        if (hizali && !azalt) {
+            olcek.snapTo(KABE_OTURMA_OLCEGI)
+            olcek.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMediumLow))
+        } else {
+            olcek.snapTo(1f)
+        }
+    }
+    return olcek.value
+}
+
 private const val HIZA_VURGU_MS = 700
+private const val KABE_OTURMA_OLCEGI = 1.35f
+private val YON_HARFLERI = listOf("K", "D", "G", "B")
 
 /** Merkezden `yaricap` uzaklıkta, kuzeyden saat yönünde `aci` (radyan) noktası. */
 private fun nokta(merkez: Offset, yaricap: Float, aci: Double): Offset =
