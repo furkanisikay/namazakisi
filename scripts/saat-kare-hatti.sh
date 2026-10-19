@@ -173,6 +173,19 @@ hazir_bekle 'Sübhânallah|Sayın|sayacı' || sleep 5
 for _ in $(seq 1 21); do dokun_merkez; sleep 0.3; done
 kare 04-tesbihat 2 || true
 
+# --- 09: tesbihat TAMAM (bitis ekrani; yuvarlak/kare ekranda tasma denetimi) ---
+# 99 dokunus yerine durum dogrudan tohumlanir: `saat_tesbihat` (TesbihatDeposu) toplam=100,
+# son dokunus = cihazin simdiki ani (90 dk'dan eski oturum acilista sifirlanir). Uygulama
+# ONCE durdurulur, yoksa bellekteki prefs dosyanin ustune yazar.
+adb shell am force-stop "$PAKET"
+SIMDI_MS="$(adb shell date +%s | tr -d '\r')000"
+printf "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n    <int name=\"toplam\" value=\"100\" />\n    <long name=\"son_dokunus_ms\" value=\"%s\" />\n</map>\n" "$SIMDI_MS" > /tmp/saat_tesbihat.xml
+adb push /tmp/saat_tesbihat.xml /data/local/tmp/saat_tesbihat.xml
+adb shell run-as "$PAKET" cp /data/local/tmp/saat_tesbihat.xml shared_prefs/saat_tesbihat.xml
+adb shell am start -W -n "$PAKET/$SINIF.ui.TesbihatAktivite"
+hazir_bekle 'Tamamlandı|tamamlandı' || sleep 5
+kare 09-tesbihat-tamam 2 || true
+
 # --- 08: kible pusulasi ---
 # Konum tohum yukunden gelir (`konum`, 1 ondalik). Emulator sensorleri konsoldan
 # beslenir: yuz yukari yatay, saat kuzeye bakiyor (Istanbul alani: yatay ~26 uT

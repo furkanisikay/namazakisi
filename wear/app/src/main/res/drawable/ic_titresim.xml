@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Titreşim açık: cihaz gövdesi + iki yanda titreşim dalgaları. Kıble "titreşimle yönlendirme"
+     düğmesi. Tek renk (içerik rengiyle boyanır). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd"
+        android:pathData="M8.5,3h7a1.5,1.5 0,0 1,1.5 1.5v15a1.5,1.5 0,0 1,-1.5 1.5h-7a1.5,1.5 0,0 1,-1.5 -1.5v-15a1.5,1.5 0,0 1,1.5 -1.5ZM9,5v14h6V5Z" />
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round"
+        android:pathData="M4.5,8l-1.5,2 1.5,2 -1.5,2 1.5,2M19.5,8l1.5,2 -1.5,2 1.5,2 -1.5,2" />
+</vector>
