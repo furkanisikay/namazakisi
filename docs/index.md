@@ -13,7 +13,7 @@ Gizlilik odaklı, tamamen çevrimdışı ibadet asistanı.
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.46.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.30.1**
+Kaynak koddaki sürüm: **0.47.1** · Mağazada: Google Play: **0.45.0** · App Store: **0.30.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## Ekran görüntüleri
