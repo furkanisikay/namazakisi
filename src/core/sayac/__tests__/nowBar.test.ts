@@ -5,6 +5,8 @@ import {
   NOW_BAR_ONCELIK,
   NOW_BAR_POLITIKA_UYARISI,
   vakitSayacGereksinimNotu,
+  etkinVakitBaslangici,
+  nowBarEtkinAyarlari,
   VARSAYILAN_NOW_BAR_AYARLARI,
   acikOgeSayisi,
   nowBarAyariniBirlestir,
@@ -46,8 +48,21 @@ describe('Now Bar seçimi — varsayılan ilk aşamanın davranışıdır', () =
   test('vakit "Sayaçla" notu ölçerek konuşur: sorun yoksa ya da bilinmiyorsa satır yok', () => {
     expect(vakitSayacGereksinimNotu(true, false)).toBeNull();
     expect(vakitSayacGereksinimNotu(null, null)).toBeNull();
-    expect(vakitSayacGereksinimNotu(false, true)).toContain('Vakit sayacı kapalı');
+    // Sayaç kapalıyken kart başına not YOK (sayfanın üstünde tek satır).
+    expect(vakitSayacGereksinimNotu(false, true)).toBeNull();
     expect(vakitSayacGereksinimNotu(true, true)).toContain('Namaz Muhafızı bu vakti uyardığı');
+  });
+
+  test('vakit sayacı KAPALIYKEN "Sayaçla" etkin olarak "Vakit girince"; bilinmiyorsa seçim değişmez', () => {
+    expect(etkinVakitBaslangici('sayacla', false)).toBe('girince');
+    expect(etkinVakitBaslangici('sayacla', null)).toBe('sayacla');
+    expect(etkinVakitBaslangici('sayacla', true)).toBe('sayacla');
+    expect(etkinVakitBaslangici('sonDk', false)).toBe('sonDk');
+    const etkin = nowBarEtkinAyarlari(VARSAYILAN_NOW_BAR_AYARLARI, false);
+    expect(etkin.ogeler.ogle.baslangic).toBe('girince');
+    // Vakit DIŞI öğelere dokunulmaz (iftarın "sayaçla"sı kendi sayacına bağlıdır).
+    expect(etkin.ogeler.iftar.baslangic).toBe(VARSAYILAN_NOW_BAR_AYARLARI.ogeler.iftar.baslangic);
+    expect(nowBarEtkinAyarlari(VARSAYILAN_NOW_BAR_AYARLARI, true)).toBe(VARSAYILAN_NOW_BAR_AYARLARI);
   });
 
   test('politika uyarısı sahibin istediği cümle', () => {

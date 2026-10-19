@@ -18,9 +18,15 @@ jest.mock('react-native', () => ({ Platform: { OS: 'android' }, AppState: { curr
 
 const mockCanliDurumu = jest.fn();
 const mockCanliPlaniKur = jest.fn();
+const mockCanliTaniHam = jest.fn();
 jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
   canliDurumu: (...a: unknown[]) => mockCanliDurumu(...a),
   canliPlaniKur: (...a: unknown[]) => mockCanliPlaniKur(...a),
+  canliTaniHam: (...a: unknown[]) => mockCanliTaniHam(...a),
+}));
+const mockLogInfo = jest.fn();
+jest.mock('../../../core/utils/Logger', () => ({
+  Logger: { info: (...a: unknown[]) => mockLogInfo(...a), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
 }));
 
 const mockKilinan = jest.fn();
@@ -74,7 +80,73 @@ describe('CanliSayacPlanlayici', () => {
     mockCanliDurumu.mockResolvedValue('acik');
     mockCanliPlaniKur.mockResolvedValue(true);
     mockKilinan.mockResolvedValue([]);
+    mockCanliTaniHam.mockResolvedValue(null);
     canliSaatDinleyicisiniAyarla(null);
+  });
+
+  const yedekAdayi = () =>
+    aday({
+      oge: 'ikindi',
+      kaynak: 'nowBar',
+      sayacYedegi: true,
+      id: `sayac_${bugunuAl()}_ikindi`,
+      kanalId: 'canli_sayac',
+      tema: 'vakit',
+      hedefteKaybol: true,
+    });
+  const taniJsonu = (ek: Record<string, unknown>) =>
+    JSON.stringify({ sdkInt: 36, samsung: true, planOlaySayisi: 0, aktifBildirimler: [], bayrakOkunabilir: true, ...ek });
+
+  test('SAHA: muhafızın bastırdığı vaktin YEDEĞİ, hiç ölçüm yokken bir kez plana girer', async () => {
+    mockCanliTaniHam.mockResolvedValue(taniJsonu({ sonOlcum: null }));
+    await p.kaynakBildir('vakitSayac', [yedekAdayi()]);
+    expect(sonPlan()).toEqual([
+      expect.objectContaining({ id: `sayac_${bugunuAl()}_ikindi`, eylem: 'oneCikar', kaynak: 'nowBar' }),
+    ]);
+  });
+
+  test('yedek: bayrak okunamıyorsa (tanı yok / yansıma başarısız) plana GİRMEZ', async () => {
+    mockCanliTaniHam.mockResolvedValue(null);
+    await p.kaynakBildir('vakitSayac', [yedekAdayi()]);
+    expect(sonPlan()).toEqual([]);
+    mockCanliTaniHam.mockResolvedValue(taniJsonu({ bayrakOkunabilir: false }));
+    await p.kaynakBildir('vakitSayac', [yedekAdayi()]);
+    expect(sonPlan()).toEqual([]);
+  });
+
+  test('yedek: "öne çıkarmadı" ölçümünden sonra kurulmaz; yeniden deneme hakkıyla bir kez daha girer', async () => {
+    mockCanliTaniHam.mockResolvedValue(taniJsonu({ sonOlcum: { deger: false, olcumMs: Date.now() - 1000 } }));
+    await p.kaynakBildir('vakitSayac', [yedekAdayi()]);
+    expect(sonPlan()).toEqual([]);
+    await p.yedekYenidenDene();
+    expect(sonPlan()).toEqual([expect.objectContaining({ eylem: 'oneCikar', kaynak: 'nowBar' })]);
+  });
+
+  test('yedek OLMAYAN adaylar (gerçek sayaç, planlayıcının "girince/son dk" adayları) ölçümden ETKİLENMEZ', async () => {
+    mockCanliTaniHam.mockResolvedValue(taniJsonu({ sonOlcum: { deger: false, olcumMs: Date.now() } }));
+    await p.kaynakBildir('iftarSayac', [aday()]);
+    expect(sonPlan()).toEqual([expect.objectContaining({ id: 'iftar_sayac_x', eylem: 'oneCikar' })]);
+  });
+
+  test('Now Bar tanısı tanı loguna yazılır, aynı teşhis TEKRAR yazılmaz', async () => {
+    mockCanliTaniHam.mockResolvedValue(
+      JSON.stringify({
+        sdkInt: 36,
+        samsung: true,
+        oneUi: '8.0',
+        izinVar: true,
+        planOlaySayisi: 1,
+        gosterilenler: [],
+        sonGosterim: { zamanMs: 0, id: 'x', tema: 'iftar', kanalId: 'k', kanalOnemi: 3, oneCikarilabilir: true, izinVar: true, oneCikarildi: false },
+        aktifBildirimler: [],
+      })
+    );
+    await p.kaynakBildir('iftarSayac', [aday()]);
+    await p.kaynakBildir('iftarSayac', [aday()]);
+    const tanilar = mockLogInfo.mock.calls.filter((c) => String(c[1]).startsWith('Now Bar tanisi'));
+    expect(tanilar).toHaveLength(1);
+    expect(String(tanilar[0][1])).toContain('ureticiEngeli');
+    expect(String(tanilar[0][1])).toContain('One UI 8.0');
   });
 
   test('devralma yalnız öne çıkarma AÇIK ve öğe açıkken', async () => {

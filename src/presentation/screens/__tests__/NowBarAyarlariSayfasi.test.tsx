@@ -22,13 +22,21 @@ jest.mock('@expo/vector-icons/FontAwesome5', () => {
 });
 const mockCanliDurumu = jest.fn();
 const mockCanliAyarlariniAc = jest.fn();
+const mockCanliTaniHam = jest.fn();
 jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
   canliDurumu: () => mockCanliDurumu(),
   canliAyarlariniAc: () => mockCanliAyarlariniAc(),
+  canliTaniHam: () => mockCanliTaniHam(),
 }));
 const mockCihaz: { surum: unknown; samsung: boolean | null; esliSaat: string | null } = { surum: null, samsung: null, esliSaat: null };
 jest.mock('../../hooks/useCihazDurumu', () => ({
   useCihazDurumu: () => ({ durum: mockCihaz, yenile: jest.fn() }),
+}));
+const mockNavigate = jest.fn();
+jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
+const mockYedekYenidenDene = jest.fn(async () => undefined);
+jest.mock('../../../domain/services/CanliSayacPlanlayici', () => ({
+  CanliSayacPlanlayici: { getInstance: () => ({ yedekYenidenDene: () => mockYedekYenidenDene() }) },
 }));
 const mockNowBarDegistiUygula = jest.fn();
 jest.mock('../../../domain/services/NowBarDegisikligiServisi', () => ({
@@ -48,10 +56,10 @@ const RENKLER = {
 };
 
 const dispatch = jest.fn();
-const kur = async (ayarlar: NowBarAyarlari = VARSAYILAN_NOW_BAR_AYARLARI) => {
+const kur = async (ayarlar: NowBarAyarlari = VARSAYILAN_NOW_BAR_AYARLARI, ek: Record<string, unknown> = {}) => {
   (useAppDispatch as jest.Mock).mockReturnValue(dispatch);
   (useAppSelector as jest.Mock).mockImplementation((sec: (s: unknown) => unknown) =>
-    sec({ nowBar: { ayarlar, yuklendi: true } })
+    sec({ nowBar: { ayarlar, yuklendi: true }, ...ek })
   );
   (useRenkler as jest.Mock).mockReturnValue(RENKLER);
   const ekran = render(<NowBarAyarlariSayfasi />);
@@ -68,20 +76,84 @@ describe('NowBarAyarlariSayfasi', () => {
     jest.replaceProperty(Platform, 'OS', 'android');
     mockCanliDurumu.mockResolvedValue('acik');
     mockCanliAyarlariniAc.mockResolvedValue('canli');
+    mockCanliTaniHam.mockResolvedValue(null);
     mockNowBarDegistiUygula.mockResolvedValue(undefined);
     mockCihaz.surum = { platform: 'android', ana: 36, alt: 0, tam: '16' };
     mockCihaz.samsung = null;
     mockCihaz.esliSaat = null;
   });
 
-  it('politika satırı her durumda görünür; başlık gövdede tekrarlanmaz', async () => {
+  it('Android: politika cümlesi ana kartta YOK (tanı ayrıntısında); başlık gövdede tekrarlanmaz', async () => {
     const ekran = await kur();
-    expect(ekran.getByTestId('now-bar-politika').props.children).toBe(
-      'Google sürekli açık kartları önermez; telefonunuz öne çıkarmayı geri çekebilir.'
-    );
+    expect(ekran.queryByTestId('now-bar-politika')).toBeNull();
     expect(ekran.queryByText('Now Bar ve Canlı Sayaçlar')).toBeNull();
     expect(ekran.getByText('Canlı güncellemeler açık')).toBeTruthy();
     expect(ekran.queryByLabelText('Sistem ayarlarını açın')).toBeNull();
+  });
+
+  it('vakit sayacı KAPALIYKEN: üstte TEK satır + "Açın"; "Sayaçla" devre dışı, etkin seçim "Vakit girince"', async () => {
+    const ekran = await kur(VARSAYILAN_NOW_BAR_AYARLARI, { vakitSayac: { ayarlar: { aktif: false } } });
+    expect(ekran.getAllByTestId('now-bar-sayac-kapali')).toHaveLength(1);
+    expect(ekran.queryByText(/Vakit sayacı kapalı olduğu için/)).toBeNull();
+    const sayacla = ekran.getByLabelText('Öğle: Sayaçla');
+    expect(sayacla.props.accessibilityState).toMatchObject({ selected: false, disabled: true });
+    expect(ekran.getByLabelText('Öğle: Vakit girince').props.accessibilityState).toMatchObject({ selected: true });
+    fireEvent.press(ekran.getByLabelText('Vakit sayacını açın'));
+    expect(mockNavigate).toHaveBeenCalledWith('BildirimAyarlari');
+  });
+
+  it('vakit sayacı açıkken tek satır YOK ve "Sayaçla" seçili kalır', async () => {
+    const ekran = await kur(VARSAYILAN_NOW_BAR_AYARLARI, { vakitSayac: { ayarlar: { aktif: true } } });
+    expect(ekran.queryByTestId('now-bar-sayac-kapali')).toBeNull();
+    expect(ekran.getByLabelText('Öğle: Sayaçla').props.accessibilityState).toMatchObject({ selected: true });
+  });
+
+  it('tanı okunamazsa (eski ikili) tanı kartı HİÇ çizilmez', async () => {
+    const ekran = await kur();
+    expect(ekran.queryByTestId('now-bar-tani')).toBeNull();
+  });
+
+  it('SAHA: şartlar tamam ama sistem öne çıkarmadı (Samsung) → teşhis + geliştirici seçeneği yönlendirmesi + ayrıntılar', async () => {
+    mockCanliTaniHam.mockResolvedValue(
+      JSON.stringify({
+        sdkInt: 36,
+        sdkTam: 3600000,
+        samsung: true,
+        oneUi: '8.0',
+        izinVar: true,
+        planOlaySayisi: 2,
+        sonrakiAlarmMs: null,
+        sonPlanMs: null,
+        gosterilenler: ['sayac_2026-10-19_ikindi'],
+        sonGosterim: {
+          zamanMs: 0,
+          id: 'sayac_2026-10-19_ikindi',
+          tema: 'vakit',
+          kanalId: 'canli_sayac',
+          kanalOnemi: 3,
+          oneCikarilabilir: true,
+          izinVar: true,
+          oneCikarildi: false,
+          hata: null,
+        },
+        aktifBildirimler: [],
+      })
+    );
+    const ekran = await kur();
+    await waitFor(() => expect(ekran.getByTestId('now-bar-tani')).toBeTruthy());
+    expect(ekran.getByTestId('now-bar-tani-teshis').props.children).toContain("Now Bar'a almadı");
+    expect(ekran.getByTestId('now-bar-tani-samsung').props.children).toContain('Live notifications for all apps');
+    expect(ekran.queryByTestId('now-bar-tani-ayrinti')).toBeNull();
+    expect(ekran.getByTestId('now-bar-tani-teshis').props.children).toContain('bir kez daha denenir');
+    fireEvent.press(ekran.getByLabelText('Tanı ayrıntılarını gösterin'));
+    await waitFor(() => expect(ekran.getByTestId('now-bar-tani-ayrinti')).toBeTruthy());
+    expect(ekran.getByText(/sistem öne çıkardı: hayır/)).toBeTruthy();
+    // Politika cümlesi ayrıntıya taşındı (görsel inceleme).
+    expect(ekran.getByTestId('now-bar-politika').props.children).toBe(
+      'Google sürekli açık kartları önermez; telefonunuz öne çıkarmayı geri çekebilir.'
+    );
+    // Tanıyı yenilemek muhafız yedeğine bir deneme hakkı daha verir (sahip kararı).
+    expect(mockYedekYenidenDene).toHaveBeenCalled();
   });
 
   it('sistemde kapalıyken "Sistem ayarlarını açın" eylemi çıkar ve ayarı açar', async () => {

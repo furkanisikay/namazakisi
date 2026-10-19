@@ -128,6 +128,22 @@ object CanliPlan {
         }
     }
 
+    /** Tanı özeti (salt okur): saklı plan, sıradaki alarm, son uygulama anı, gösterilenler. */
+    data class TaniOzeti(val olaySayisi: Int, val sonrakiAlarmMs: Long?, val sonMs: Long?, val gosterilenler: Set<String>)
+
+    @Synchronized
+    fun taniOzeti(context: Context): TaniOzeti {
+        val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val plan = CanliPlanKurallari.planiCoz(prefs.getString(ANAHTAR_PLAN, null))
+        val son = prefs.getLong(ANAHTAR_SON, Long.MIN_VALUE).takeIf { it != Long.MIN_VALUE }
+        return TaniOzeti(
+            olaySayisi = plan.size,
+            sonrakiAlarmMs = CanliPlanKurallari.sonrakiAlarm(plan, System.currentTimeMillis()),
+            sonMs = son,
+            gosterilenler = prefs.getStringSet(ANAHTAR_GOSTERILEN, emptySet())?.toSet() ?: emptySet(),
+        )
+    }
+
     private fun uygula(context: Context, olay: PlanOlayi, izin: Boolean) {
         try {
             when (CanliPlanKurallari.karar(olay, izin)) {

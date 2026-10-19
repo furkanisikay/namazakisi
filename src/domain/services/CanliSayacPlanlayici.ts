@@ -45,7 +45,7 @@ import {
   type PlanGunu,
   type SaatCanliPenceresi,
 } from '../../core/sayac/canliSayacPlani';
-import { nowBarVaktiMi, type NowBarAyarlari, type NowBarOgesi, type NowBarVakti } from '../../core/sayac/nowBar';
+import { nowBarEtkinAyarlari, nowBarVaktiMi, type NowBarAyarlari, type NowBarOgesi, type NowBarVakti } from '../../core/sayac/nowBar';
 import type { VakitAdi } from '../../core/types';
 import { LocalNowBarServisi } from '../../data/local/LocalNowBarServisi';
 import {
@@ -54,7 +54,14 @@ import {
   localTarihAraligindakiNamazlariGetir,
 } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
-import { canliDurumu, canliPlaniKur, type CanliDurum } from '../../../modules/expo-countdown-notification/src';
+import { canliDurumu, canliPlaniKur, canliTaniHam, type CanliDurum } from '../../../modules/expo-countdown-notification/src';
+import {
+  canliTaniCoz,
+  canliTaniSatirlari,
+  canliTeshisi,
+  yedekGosterilsinMi,
+  type CanliTani,
+} from '../../core/sayac/canliTani';
 import { canliSaatPayiDegisti } from './canliSaatGozlemcisi';
 import { iosCanliEtkinlikDurumu } from '../../core/sayac/iosCanliEtkinlik';
 import { widgetKilinanlariOlustur, widgetKoduVakitAdina } from '../../core/widget/widgetYuku';
@@ -100,6 +107,8 @@ export class CanliSayacPlanlayici {
   private zincir: Promise<void> = Promise.resolve();
   /** Son saate giden pay (değişmediyse saat yeniden gönderilmez). */
   private sonSaatJson: string | null = null;
+  /** Son loglanan Now Bar teşhisi (aynısı tekrar yazılmaz). */
+  private sonTeshis: string | null = null;
 
   private constructor() { }
 
@@ -254,12 +263,20 @@ export class CanliSayacPlanlayici {
           return { tarih, vakitler: gunVakitleriniHesapla(koordinat, tarih) };
         })
       : [];
+    // Vakit sayacı KAPALIYKEN "Sayaçla" etkin olarak "Vakit girince"dir (görsel inceleme):
+    // dayandığı sayaç yok, aksi halde o vakit telefonda hiç görünmezdi. Saat ham seçimi kullanır.
+    const telefonAyarlari = nowBarEtkinAyarlari(ayarlar, await this.vakitSayacAktifOku());
     const kendi = gunler.length
-      ? nowBarAdaylariniOlustur({ ayarlar, simdiMs: simdi, gunler, kilinmisMi, ozelGundeMi })
+      ? nowBarAdaylariniOlustur({ ayarlar: telefonAyarlari, simdiMs: simdi, gunler, kilinmisMi, ozelGundeMi })
       : [];
+    // Muhafız bastırmasından gelen yedekler yalnız ölçüm izin verirse (sahip kararı,
+    // `yedekGosterilsinMi`). Tanı yalnız öne çıkarma AÇIKKEN okunur (binder turu).
+    const tani = durum === 'acik' ? await this.taniOku() : null;
+    const yedekIzni = durum === 'acik' && yedekGosterilsinMi(tani, await this.yeniDenemeOku());
     const sayaclar = Object.values(kaynaklar)
       .flat()
       .filter((a) => a.hedefMs > simdi)
+      .filter((a) => yedekIzni || a.sayacYedegi !== true)
       // Kılınmış vaktin sayaç penceresi (bildirildikten sonra kılındıysa) düşer.
       .filter((a) => !(nowBarVaktiMi(a.oge) && a.canli.kildim && kilinmisMi(a.canli.kildim.tarih, a.oge)));
     const adaylar = [...sayaclar, ...kendi];
@@ -267,12 +284,75 @@ export class CanliSayacPlanlayici {
     // Telefon: yalnız öne çıkarma AÇIKKEN plan kurulur; değilse eski plan temizlenir
     // (sayaçlar bu durumda devralınmaz, kendi yollarındadır).
     if (durum !== 'desteklenmiyor' && typeof canliPlaniKur === 'function') {
-      const olaylar = durum === 'acik' ? canliZamanCizelgesiOlustur(adaylar, ayarlar, simdi) : [];
+      const olaylar = durum === 'acik' ? canliZamanCizelgesiOlustur(adaylar, telefonAyarlari, simdi) : [];
       await canliPlaniKur(canliPlanJsonuOlustur(olaylar));
       Logger.info('CanliSayac', `Now Bar plani kuruldu: ${olaylar.length} olay`);
+      this.taniyiLogla(durum, tani, yedekIzni);
     }
 
     await this.saatPayiniYaz(adaylar, ayarlar, simdi);
+  }
+
+  /**
+   * Tanı raporu bu satırı taşır (saha: "saatte görünüyor, telefonda görünmüyor").
+   * Yalnız teşhis DEĞİŞİNCE yazılır: plan sık yenilenir, 500 satırlık tampon dolmasın.
+   */
+  private taniyiLogla(durum: CanliDurum, tani: CanliTani | null, yedekIzni: boolean): void {
+    try {
+      const teshis = canliTeshisi(durum, tani);
+      const anahtar = `${teshis.tip}|${yedekIzni}`;
+      if (anahtar === this.sonTeshis) return;
+      this.sonTeshis = anahtar;
+      Logger.info(
+        'CanliSayac',
+        `Now Bar tanisi: ${teshis.tip} · yedek ${yedekIzni ? 'acik' : 'kapali'} | ${canliTaniSatirlari(durum, tani).join(' | ')}`
+      );
+    } catch {
+      // Tanı hiçbir zaman planlamayı bozmaz.
+    }
+  }
+
+  private async taniOku(): Promise<CanliTani | null> {
+    if (typeof canliTaniHam !== 'function') return null;
+    try {
+      return canliTaniCoz(await canliTaniHam());
+    } catch {
+      return null;
+    }
+  }
+
+  /** Vakit sayacı açık mı (ham depo; arka planda Redux yok). Okunamazsa bilinmiyor (`null`). */
+  private async vakitSayacAktifOku(): Promise<boolean | null> {
+    try {
+      const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.VAKIT_SAYAC_AYARLARI);
+      if (!ham) return null;
+      const aktif = (JSON.parse(ham) as { aktif?: unknown } | null)?.aktif;
+      return typeof aktif === 'boolean' ? aktif : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private async yeniDenemeOku(): Promise<number | null> {
+    try {
+      const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.CANLI_YEDEK_YENI_DENEME);
+      const n = ham === null ? NaN : Number(ham);
+      return Number.isFinite(n) ? n : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Kullanıcı ayarlardan döndü / tanıyı yeniledi: "öne çıkarmadı" ölçümünden sonra
+   * Now Bar yedeği BİR KEZ daha denensin (yeni ölçüm gelince kural yine karar verir).
+   */
+  public yedekYenidenDene(): Promise<void> {
+    if (Platform.OS !== 'android') return Promise.resolve();
+    return this.sirala(async () => {
+      await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.CANLI_YEDEK_YENI_DENEME, String(Date.now()));
+      await this.planla();
+    });
   }
 
   /** Saatin payı telefonun desteğinden BAĞIMSIZDIR (saat kendi yüzeyini çizer). */
@@ -324,5 +404,6 @@ export class CanliSayacPlanlayici {
   public __testIcinSifirla(): void {
     this.zincir = Promise.resolve();
     this.sonSaatJson = null;
+    this.sonTeshis = null;
   }
 }

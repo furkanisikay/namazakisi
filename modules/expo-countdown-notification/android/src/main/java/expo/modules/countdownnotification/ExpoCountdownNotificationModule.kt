@@ -8,6 +8,7 @@ import android.os.Build
 import android.content.Context
 import android.util.Log
 import expo.modules.countdownnotification.cekirdek.CanliGuncellemeKurallari
+import expo.modules.countdownnotification.cekirdek.CanliTaniKurallari
 import expo.modules.countdownnotification.cekirdek.CihazKurallari
 import android.media.AudioManager
 
@@ -115,6 +116,23 @@ class ExpoCountdownNotificationModule : Module() {
                     else -> "kapali"
                 }
             )
+        }
+
+        /**
+         * Now Bar / Live Update TANISI (salt okur, JSON). Saha raporu: "saatte görünüyor,
+         * telefonda görünmüyor" — ekran ve tanı raporu sistemin bildirimi GERÇEKTEN öne
+         * çıkarıp çıkarmadığını (`FLAG_PROMOTED_ONGOING`) görsün. Binder çağrıları →
+         * AsyncFunction. Kişisel veri yok (kimlik, sayı, bayrak, zaman).
+         */
+        AsyncFunction("canliTani") { promise: Promise ->
+            val context = appContext.reactContext
+            val json = try {
+                if (context == null) null else canliTaniJsonu(context)
+            } catch (e: Throwable) {
+                Log.w("ExpoCountdown", "Canli tani okunamadi", e)
+                null
+            }
+            promise.resolve(json)
         }
 
         /** JS'in hesapladığı olay listesini saklar, şu anki hâli uygular, zinciri kurar. */
@@ -413,12 +431,72 @@ class ExpoCountdownNotificationModule : Module() {
         }
     }
 
+    private fun canliTaniJsonu(context: Context): String {
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+        val plan = CanliPlan.taniOzeti(context)
+        val izleme = (plan.gosterilenler + CanliGuncelleme.kayitliIdler(context)).toSortedSet()
+        val aktif = izleme.mapNotNull { id ->
+            val bildirimId = CountdownNotificationHelper.generateNotificationId(id)
+            val gorunuyor = try {
+                nm.activeNotifications.any { it.id == bildirimId }
+            } catch (_: Throwable) {
+                false
+            }
+            if (gorunuyor) id to CanliGuncelleme.olc(context, nm, bildirimId) else null
+        }
+        val izinVar = if (Build.VERSION.SDK_INT >= 36) {
+            context.checkSelfPermission("android.permission.POST_PROMOTED_NOTIFICATIONS") ==
+                android.content.pm.PackageManager.PERMISSION_GRANTED
+        } else {
+            null
+        }
+        return CanliTaniKurallari.taniJsonu(
+            sdkInt = Build.VERSION.SDK_INT,
+            sdkTam = if (Build.VERSION.SDK_INT >= CihazKurallari.TAM_SURUM_API) {
+                CihazKurallari.tamSurum(Build.VERSION.SDK_INT) { tamSurumOku() }
+            } else {
+                null
+            },
+            samsung = PilAyarlari.samsungMu(),
+            oneUi = CanliTaniKurallari.oneUiSurumu(sistemOzelligi("ro.build.version.oneui")),
+            izinVar = izinVar,
+            planOlaySayisi = plan.olaySayisi,
+            sonrakiAlarmMs = plan.sonrakiAlarmMs,
+            sonPlanMs = plan.sonMs,
+            gosterilenler = plan.gosterilenler,
+            sonGosterim = CanliGuncelleme.sonGosterim(context),
+            aktifBildirimler = aktif,
+            bayrakOkunabilir = CanliGuncelleme.bayrakOkunabilirMi(),
+            // Ölçümler yukarıda (aktif + son gösterim) yazıldıktan SONRA okunur.
+            sonOlcum = CanliGuncelleme.sonOlcum(context),
+        )
+    }
+
+    /** Gizli `android.os.SystemProperties` — yansıma; her hata null (tanı asla fırlatmaz). */
+    private fun sistemOzelligi(ad: String): String? = try {
+        Class.forName("android.os.SystemProperties")
+            .getMethod("get", String::class.java)
+            .invoke(null, ad) as? String
+    } catch (_: Throwable) {
+        null
+    }
+
     /** `canliAyarlariniAc` gövdesi (sıralı yedekler; `resolveActivity` KULLANILMAZ — AGENTS.md). */
     private fun canliAyarEkraniniAc(context: Context): String? {
         val paket = context.packageName
         val adaylar = mutableListOf<Pair<String, Intent>>()
         if (Build.VERSION.SDK_INT >= 36) {
-            // API 36 `Settings.ACTION_APP_NOTIFICATION_PROMOTION_SETTINGS` (eski SDK ile de derlensin diye dize).
+            // Belgelenmiş eylem `Settings.ACTION_MANAGE_APP_PROMOTED_NOTIFICATIONS`
+            // (developer.android.com "Live update"); dize değeri tahmin edilmez, YANSIMAYLA
+            // okunur (bu SDK'da yoksa atlanır). Eski dize yedek olarak denenmeye devam eder.
+            val belgeli = try {
+                android.provider.Settings::class.java.getField("ACTION_MANAGE_APP_PROMOTED_NOTIFICATIONS").get(null) as? String
+            } catch (_: Throwable) {
+                null
+            }
+            if (belgeli != null) {
+                adaylar += "canli" to Intent(belgeli).putExtra("android.provider.extra.APP_PACKAGE", paket)
+            }
             adaylar += "canli" to Intent("android.settings.APP_NOTIFICATION_PROMOTION_SETTINGS")
                 .putExtra("android.provider.extra.APP_PACKAGE", paket)
         }

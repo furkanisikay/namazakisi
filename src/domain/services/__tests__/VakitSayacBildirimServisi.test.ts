@@ -762,6 +762,57 @@ describe('VakitSayacBildirimServisi — Now Bar planlayıcısı (issue #282 ikin
     expect(mockStartCountdown).toHaveBeenCalledWith(expect.objectContaining({ canli: undefined }));
   });
 
+  it('SAHA ("saatte görünüyor, telefonda görünmüyor"): muhafızın uyardığı vakit Now Bar YEDEĞİ olarak bildirilir, sayaç bildirimi YİNE kurulmaz (#90)', async () => {
+    saatiDondur(new OriginalDate('2026-02-19T14:45:00'));
+    karar.mockResolvedValue({ devralir: true, oneCikar: true });
+
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: TUM_VAKITLER_30,
+      muhafizAktif: true,
+    });
+
+    // #90 korunur: hiçbir sayaç bildirimi yok.
+    expect(mockStartCountdown).not.toHaveBeenCalled();
+    expect(notifee.createTriggerNotification).not.toHaveBeenCalled();
+    const adaylar = bildir.mock.calls[0][1] as {
+      oge: string;
+      kaynak: string;
+      kanalId: string;
+      sayacYedegi?: true;
+      baslangicMs: number;
+      hedefMs: number;
+      id: string;
+    }[];
+    const ogle = adaylar.find((a) => a.oge === 'ogle');
+    expect(ogle).toMatchObject({
+      kaynak: 'nowBar',
+      kanalId: 'canli_sayac',
+      sayacYedegi: true,
+      // Sayacın başlayacağı AYNI an, aynı kimlik (Kıldım iptali aynen çalışır).
+      baslangicMs: mockPrayerTimes.asr.getTime() - 30 * 60_000,
+      hedefMs: mockPrayerTimes.asr.getTime(),
+      id: `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`,
+    });
+  });
+
+  it('muhafız kapalıyken yedek ÜRETİLMEZ (gerçek sayaç adayı yeterli)', async () => {
+    saatiDondur(new OriginalDate('2026-02-19T14:45:00'));
+    karar.mockResolvedValue({ devralir: false, oneCikar: true });
+
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: TUM_VAKITLER_30,
+      muhafizAktif: false,
+    });
+
+    const adaylar = bildir.mock.calls[0][1] as { kaynak: string; sayacYedegi?: true }[];
+    expect(adaylar.length).toBeGreaterThan(0);
+    expect(adaylar.every((a) => a.kaynak === 'sayac' && a.sayacYedegi === undefined)).toBe(true);
+  });
+
   it('sayaç kapalıyken planlayıcıya "aday yok" bildirilir', async () => {
     await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
       aktif: false,
