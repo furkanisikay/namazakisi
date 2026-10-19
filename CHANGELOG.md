@@ -5,6 +5,14 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.47.0] - 2026-10-19
+
+### Eklendi
+- [arayuz] görsel anlatı geri — sihirbaz sahneleri, canlı düzey önizlemesi, tek döngü kapısı
+
+### Düzeltildi
+- [arayuz] düzey önizlemesi sesli rıza yokken sesli nokta göstermez
+
 ## [0.46.0] - 2026-10-19
 
 ### Eklendi
