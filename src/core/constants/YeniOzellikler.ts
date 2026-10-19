@@ -73,6 +73,27 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Kıble ekranı: kendi kamera görünümümüz + 3B pusula (Google kıble bulucu kaldırıldı).
+    {
+        id: 'kible-kamera-ve-3b-pusula',
+        platformlar: ['android', 'ios'],
+        surum: '0.52.0',
+        tarih: '2026-10-19',
+        baslik: 'Kıbleyi Kamerayla Bulun',
+        aciklama:
+            'Kıble sekmesinde telefonunuzu dik tutup kamerayla çevrenize bakın: Kâbe işareti kıble yönünde belirir, yanında Kâbe’ye uzaklığınız yazar. Pusula açılır açılmaz döner ve titremeden akar.',
+        detayAciklama:
+            'Kamera görünümünde Kâbe işareti ekranın dışındaysa kenardaki ok hangi yöne döneceğinizi gösterir; işaret ortadaki halkaya oturunca halka yeşile döner ve telefon bir kez titrer. İnternet gerekmez, görüntü kaydedilmez. Kamerasız Pusula görünümünde telefonu düz tuttuğunuzda klasik pusula görürsünüz; dikleştirdikçe pusula ufka yatar ve Kâbe küpü kıble yönünde ayağa kalkar. Yön kayıyorsa telefonunuzu havada 8 çizer gibi birkaç kez hareket ettirin. Ekran okuyucu açıksa yön "Kıble 30° sağınızda" diye okunur.',
+        detaylar: [
+            'Kamerada Kâbe işareti ve Kâbe’ye uzaklık',
+            'Ekran dışındaysa "sağa/sola dönün" okları',
+            'Hizalanınca yeşil halka ve tek titreşim',
+            'Telefonu dikleştirince ufka yatan 3B pusula',
+            'Açılır açılmaz çalışan, titremeyen pusula',
+            'İnternetsiz; görüntü kaydedilmez',
+        ],
+        ikon: 'kaaba',
+    },
     // Sade tasarım (Dalga 2 + 3 + 4). Bugünkü kullanıcıya anlamlı olanı söyler.
     {
         id: 'sade-kurulum-ve-ana-ekran',

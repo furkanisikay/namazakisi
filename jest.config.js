@@ -31,6 +31,8 @@ module.exports = {
   moduleNameMapper: {
     "^expo-notifications$": "<rootDir>/__mocks__/expo-notifications.js",
     "^expo-location$": "<rootDir>/__mocks__/expo-location.js",
+    // Kamera (kıble kamera görünümü) native köprüdür.
+    "^expo-camera$": "<rootDir>/__mocks__/expo-camera.js",
     // expo-audio native EventEmitter'a dokunur → import eden suite hiç çalışmadan
     // patlar (AGENTS.md requireNativeModule tuzağı). Global mock ile ses çalan
     // servisi DOLAYLI yükleyen testler de ayakta kalır.

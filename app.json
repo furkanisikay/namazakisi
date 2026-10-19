@@ -70,6 +70,15 @@
         }
       ],
       [
+        "expo-camera",
+        {
+          "cameraPermission": "Kıble yönünü kamera görüntüsü üzerinde göstermek için kameranız kullanılır. Görüntü kaydedilmez ve cihazınızdan çıkmaz.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": false
+        }
+      ],
+      [
         "expo-notifications",
         {
           "sounds": [

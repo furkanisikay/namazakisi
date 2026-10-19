@@ -1,304 +1,292 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, fireEvent, act, waitFor } from '@testing-library/react-native';
 import { KibleSayfasi } from '../KibleSayfasi';
-import { guvenilirKibleHostuMu, disaAktarilabilirUrlMu } from '../WebPusulaView';
 import { useKible } from '../../../hooks/useKible';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import { useRenkler } from '../../../../core/theme';
+import { HaptikServisi } from '../../../../core/feedback/HaptikServisi';
 
-// Mocklar
-jest.mock('expo-sensors', () => ({
-  Magnetometer: {
-    setUpdateInterval: jest.fn(),
-    addListener: jest.fn(() => ({ remove: jest.fn() })),
-  },
-}));
-jest.mock('adhan', () => ({
-  Coordinates: jest.fn(),
-  Qibla: jest.fn(() => 150),
-}));
-jest.mock('../../../hooks/useKible');
+jest.mock('../../../hooks/useKible', () => {
+  const gercek = jest.requireActual('../../../hooks/useKible');
+  return { ...gercek, useKible: jest.fn() };
+});
 jest.mock('@react-navigation/native');
+const mockKonum = {
+  konumModu: 'manuel',
+  gpsAdres: null,
+  seciliIlceAdi: 'Fatih',
+  seciliIlAdi: 'İstanbul',
+};
+jest.mock('../../../store/hooks', () => ({
+  useAppSelector: (sec: (s: unknown) => unknown) => sec({ konum: mockKonum }),
+}));
 jest.mock('../../../../core/theme');
+jest.mock('../../../../core/feedback/HaptikServisi', () => ({
+  HaptikServisi: { basariTitresimi: jest.fn(() => Promise.resolve()) },
+}));
 jest.mock('@expo/vector-icons', () => {
-  const { View, Text } = require('react-native');
-  return {
-    FontAwesome5: (props: any) => <Text>{props.name}</Text>,
-  };
+  const { Text } = require('react-native');
+  return { FontAwesome5: (props: { name: string }) => <Text>{props.name}</Text> };
 });
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
   const { Text } = require('react-native');
   return (props: { name: string }) => <Text>{props.name}</Text>;
 });
 jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: ({ children, ...props }: any) => {
+  SafeAreaView: ({ children, ...props }: { children?: React.ReactNode }) => {
     const { View } = require('react-native');
     return <View {...props}>{children}</View>;
   },
 }));
-jest.mock('react-native-webview', () => {
-  const { View } = require('react-native');
-  return {
-    WebView: (props: any) => <View testID="mock-webview" {...props} />,
-  };
-});
+// Düz dize bileşenler (nativewind/jest-hoist: fabrikada createElement YOK — AGENTS.md).
+jest.mock('react-native-svg', () => ({
+  __esModule: true,
+  default: 'Svg',
+  Svg: 'Svg',
+  Circle: 'Circle',
+  Line: 'Line',
+  Path: 'Path',
+  G: 'G',
+  Text: 'SvgText',
+  Defs: 'Defs',
+  RadialGradient: 'RadialGradient',
+  Stop: 'Stop',
+}));
 jest.mock('react-native-reanimated', () => {
   const Reanimated = require('react-native-reanimated/mock');
-  Reanimated.default.call = () => { };
+  Reanimated.default.call = () => {};
   return Reanimated;
 });
 
+const kamera = require('expo-camera');
+
+const mockRenkler = {
+  arkaplan: '#ffffff',
+  kartArkaplan: '#f0f0f0',
+  birincil: '#2E7D32',
+  birincilMetin: '#ffffff',
+  metin: '#333333',
+  metinIkincil: '#666666',
+  sinir: '#cccccc',
+  hata: '#ff0000',
+  dikkat: '#E65100',
+};
+
+const ozet = (o: Partial<{ hazir: boolean; baslik: number; fark: number | null; hizali: boolean; dik: boolean }> = {}) => ({
+  hazir: true,
+  baslik: 140,
+  fark: 12,
+  hizali: false,
+  dik: false,
+  ...o,
+});
+
+function kibleDurumu(ek: Record<string, unknown> = {}) {
+  return {
+    kibleAcisi: 151.6,
+    konum: { lat: 41.0082, lng: 28.9784 },
+    ozet: ozet(),
+    abone: jest.fn(() => () => undefined),
+    vektorGuvenilir: true,
+    izinVerildi: true,
+    yukleniyor: false,
+    hata: null,
+    izinTekrarSorulabilir: null,
+    pusulaDogrulugu: 3,
+    pusulaVar: true,
+    izinIste: jest.fn(),
+    ...ek,
+  };
+}
+
+const AsyncStorage = require('@react-native-async-storage/async-storage');
+
 describe('KibleSayfasi', () => {
-  const mockNavigation = {
-    goBack: jest.fn(),
-    navigate: jest.fn(),
-  };
-
-  const mockRenkler = {
-    arkaplan: '#ffffff',
-    kartArkaplan: '#f0f0f0',
-    birincil: '#000000',
-    birincilMetin: '#ffffff',
-    metin: '#333333',
-    metinIkincil: '#666666',
-    sinir: '#cccccc',
-    hata: '#ff0000',
-  };
-
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
-    (useNavigation as jest.Mock).mockReturnValue(mockNavigation);
+    // Kayıtlı görünüm testler arası sızmasın (Kamera seçen test sonrakini Kamera'da açardı).
+    await AsyncStorage.clear?.();
     (useIsFocused as jest.Mock).mockReturnValue(true);
     (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
-    (useKible as jest.Mock).mockReturnValue({
-      kibleAcisi: 150,
-      pusulaYonelimi: 0,
-      hedefAcisi: 150,
-      izinVerildi: true,
-      yukleniyor: false,
-      hata: null,
-    });
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu());
+    kamera.__izinAyarla({ granted: false, canAskAgain: true, status: 'undetermined' });
   });
 
-  it('sayfa hatasız render olmalıdır', () => {
-    const { getByText } = render(<KibleSayfasi />);
+  it('başlık ve iki mod; varsayılan Pusula (internetsiz, kamerasız)', () => {
+    const { getByText, getByLabelText, getByTestId, queryByTestId } = render(<KibleSayfasi />);
     expect(getByText('Kıble')).toBeTruthy();
-  });
-
-  it('sekme kökü: geri düğmesi YOK, iki modun farkı tek cümleyle yazılır', () => {
-    const { queryByTestId, getByTestId } = render(<KibleSayfasi />);
+    expect(getByLabelText('Pusula modu').props.accessibilityState).toEqual({ selected: true });
+    expect(getByLabelText('Kamera modu')).toBeTruthy();
+    expect(getByTestId('kible-mod-aciklamasi').props.children).toContain('çentiğe');
     expect(queryByTestId('back-button')).toBeNull();
-    expect(getByTestId('kible-mod-aciklamasi').props.children).toMatch(/Telefonu düz tutun/);
   });
 
-  it('sekme odakta değilken pusula ÇİZİLMEZ (algılayıcı ve WebView arka planda çalışmasın)', () => {
+  it('dış site / WebView YOK: kamera modu kendi görünümümüz', () => {
+    const { getByLabelText, getByTestId, queryByTestId } = render(<KibleSayfasi />);
+    fireEvent.press(getByLabelText('Kamera modu'));
+    expect(queryByTestId('mock-webview')).toBeNull();
+    expect(getByTestId('kible-mod-aciklamasi').props.children).toContain('dik tutun');
+  });
+
+  it('odakta değilken hiçbir görünüm çizilmez ve sensörler kapalı istenir', () => {
     (useIsFocused as jest.Mock).mockReturnValue(false);
-    const { queryByText } = render(<KibleSayfasi />);
-    expect(queryByText('Kıble Yönü')).toBeNull();
-    expect(useKible).not.toHaveBeenCalled();
+    const { queryByTestId } = render(<KibleSayfasi />);
+    expect(useKible).toHaveBeenCalledWith(false);
+    expect(queryByTestId('kible-yon-cumlesi')).toBeNull();
   });
 
-  it('konum izni kapalıysa açıklamalı izin satırı çıkar (diyalog doğrudan açılmaz)', () => {
-    (useKible as jest.Mock).mockReturnValue({
-      kibleAcisi: 0, pusulaYonelimi: 0, hedefAcisi: 0, izinVerildi: false, yukleniyor: false,
-      hata: 'Kıble yönünü bulmak için konum izni gerekiyor.', izinTekrarSorulabilir: true, izinIste: jest.fn(),
-    });
-    const { getByTestId, getByLabelText } = render(<KibleSayfasi />);
+  it('pusula: yön cümlesi, mesafe ve kıble açısı', () => {
+    const { getByTestId, getByText } = render(<KibleSayfasi />);
+    expect(getByTestId('kible-yon-cumlesi').props.children).toBe('Kıble 12° sağınızda');
+    expect(getByText(/Kâbe 2\.\d{3} km uzakta, kuzeyden 152°/)).toBeTruthy();
+    expect(getByTestId('kible-kabe-isareti')).toBeTruthy();
+  });
+
+  it('ilk yön okuması gelmeden "hazırlanıyor"; konum yoksa "konumunuz alınıyor"', () => {
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ ozet: ozet({ hazir: false }) }));
+    const a = render(<KibleSayfasi />);
+    expect(a.getByTestId('kible-yon-cumlesi').props.children).toBe('Pusula hazırlanıyor…');
+    a.unmount();
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ kibleAcisi: null, konum: null, ozet: ozet({ fark: null }) }));
+    const b = render(<KibleSayfasi />);
+    expect(b.getByTestId('kible-yon-cumlesi').props.children).toBe('Konumunuz alınıyor…');
+  });
+
+  it('hizalıyken onay işareti ve titreşim YALNIZ girişte bir kez', () => {
+    const { rerender, getByTestId, queryByTestId } = render(<KibleSayfasi />);
+    expect(queryByTestId('kible-hiza-onayi')).toBeNull();
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ ozet: ozet({ fark: 2, hizali: true }) }));
+    rerender(<KibleSayfasi />);
+    expect(getByTestId('kible-yon-cumlesi').props.children).toBe('Kıble yönündesiniz');
+    expect(getByTestId('kible-hiza-onayi')).toBeTruthy();
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ ozet: ozet({ fark: 3, hizali: true, baslik: 149 }) }));
+    rerender(<KibleSayfasi />);
+    expect(HaptikServisi.basariTitresimi).toHaveBeenCalledTimes(1);
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ ozet: ozet({ fark: 20, hizali: false }) }));
+    rerender(<KibleSayfasi />);
+    expect(HaptikServisi.basariTitresimi).toHaveBeenCalledTimes(1); // çıkışta titreşim yok
+  });
+
+  it('telefon dikken pusulada "Kamerayla görün" önerisi kamera moduna geçirir', () => {
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ ozet: ozet({ dik: true }) }));
+    const { getByLabelText } = render(<KibleSayfasi />);
+    fireEvent.press(getByLabelText('Kamerayla görün'));
+    expect(getByLabelText('Kamera modu').props.accessibilityState).toEqual({ selected: true });
+  });
+
+  it('kalibrasyon ipucu doğruluğa bağlı', () => {
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaDogrulugu: 1 }));
+    const { getByTestId } = render(<KibleSayfasi />);
+    expect(getByTestId('kible-kalibrasyon-belirgin')).toBeTruthy();
+  });
+
+  it('konum izni kapalıysa açıklamalı izin satırı (diyalog doğrudan açılmaz)', () => {
+    (useKible as jest.Mock).mockReturnValue(
+      kibleDurumu({ izinVerildi: false, hata: 'Kıble yönünü bulmak için konum izni gerekiyor.', izinTekrarSorulabilir: true }),
+    );
+    const { getByTestId } = render(<KibleSayfasi />);
     expect(getByTestId('kible-izin-satiri')).toBeTruthy();
-    expect(getByLabelText('İzin verin')).toBeTruthy();
   });
 
-  it('varsayılan olarak Native Pusula (offline) modu açılmalıdır', () => {
-    const { getByText } = render(<KibleSayfasi />);
-    // NativePusulaView içindeki metinler
-    expect(getByText('Kıble Yönü')).toBeTruthy();
-    expect(getByText(/Kabe Açısı/)).toBeTruthy();
+  it('yükleniyor ve genel hata', () => {
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ yukleniyor: true }));
+    const a = render(<KibleSayfasi />);
+    expect(a.getByText('Pusula başlatılıyor…')).toBeTruthy();
+    a.unmount();
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ hata: 'Kıble servisi başlatılamadı.' }));
+    const b = render(<KibleSayfasi />);
+    expect(b.getByText('Kıble servisi başlatılamadı.')).toBeTruthy();
   });
 
-  it('sekmeler arasında geçiş yapılabilmelidir (Native -> Web)', async () => {
-    const { getByText, getByTestId, queryByText } = render(<KibleSayfasi />);
-
-    // Web sekmesine tıkla
-    const webTab = getByText('Kamera');
-    fireEvent.press(webTab);
-
-    // Native view gitmeli, Web view gelmeli
-    await waitFor(() => {
-      expect(queryByText('Kıble Yönü')).toBeNull(); // Native başlık yok
-      expect(getByTestId('mock-webview')).toBeTruthy();
-    });
+  it('pusula algılayıcısı yoksa TAM statik pusula: kuzey yukarı, Kâbe 152°, büyük açı + yer, tek bilgi satırı', () => {
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaVar: false, ozet: ozet({ hazir: false, fark: null }) }));
+    const { getByTestId, queryByTestId, getByText, queryByLabelText, UNSAFE_root } = render(<KibleSayfasi />);
+    expect(getByTestId('kible-statik-aci').props.children).toEqual([152, '°']);
+    expect(getByText(/^Fatih, İstanbul, Kâbe 2\.\d{3} km uzakta$/)).toBeTruthy();
+    expect(getByTestId('kible-kabe-isareti')).toBeTruthy();
+    // Yön harfleri SVG'de kadranla dönmez: ayrı, dik duran metin katmanı (G baş aşağı olmasın).
+    const harfler = UNSAFE_root.findAll((n: { type: unknown; props: { children?: unknown } }) => n.type === 'SvgText');
+    expect(harfler.length).toBe(0);
+    for (const h of ['K', 'D', 'G', 'B']) expect(getByText(h)).toBeTruthy();
+    expect(getByTestId('kible-statik-bilgi').props.children).toBe('Bu cihazda pusula yok; kuzeye göre yönü gösteriyoruz.');
+    // Duruma uymayan yönerge ("çentiğe gelince…") ve dönen pusula ipuçları YOK.
+    expect(queryByTestId('kible-mod-aciklamasi')).toBeNull();
+    expect(queryByTestId('kible-yon-cumlesi')).toBeNull();
+    expect(queryByLabelText('Kamerayla görün')).toBeNull();
   });
 
-  it('hata durumunda hata mesajını göstermelidir (Native Mod)', () => {
-    (useKible as jest.Mock).mockReturnValue({
-      yukleniyor: false,
-      hata: 'Sensör hatası',
-      izinVerildi: true,
-    });
-
-    const { getByText } = render(<KibleSayfasi />);
-    expect(getByText('Sensör hatası')).toBeTruthy();
+  it('yükleme ve hata ekranında mod açıklaması gizli; normalde tek satır', () => {
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ yukleniyor: true }));
+    const a = render(<KibleSayfasi />);
+    expect(a.queryByTestId('kible-mod-aciklamasi')).toBeNull();
+    a.unmount();
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu());
+    const b = render(<KibleSayfasi />);
+    expect(b.getByTestId('kible-mod-aciklamasi').props.numberOfLines).toBe(1);
   });
 
-  it('yükleniyor durumunu göstermelidir (Native Mod)', () => {
-    (useKible as jest.Mock).mockReturnValue({
-      yukleniyor: true,
-      hata: null,
-    });
-
-    const { getByText } = render(<KibleSayfasi />);
-    expect(getByText('Pusula başlatılıyor...')).toBeTruthy();
-  });
-
-  // hizalandiMi gostergesi: NativePusulaView'de uygulamanin cekirdek vaadi.
-  // Uretim mantigi: hizalandiMi = hedefAcisi < 10 || hedefAcisi > 350 (KIBLE_HIZALAMA_ESIGI = 10).
-  // hedefAcisi 0 = telefon Kabe'ye dönük demektir; bu esik o aninda kullaniciya geri bildirim verir.
-  describe('Kıble hizalama göstergesi (✓ Kıble yönündesiniz)', () => {
-    const kibleVarsayilan = {
-      kibleAcisi: 150,
-      pusulaYonelimi: 0,
-      izinVerildi: true,
-      yukleniyor: false,
-      hata: null,
-    };
-
-    it('hedefAcisi eşik altında (5°) iken hizalama mesajını göstermelidir', () => {
-      (useKible as jest.Mock).mockReturnValue({ ...kibleVarsayilan, hedefAcisi: 5 });
-      const { getByText } = render(<KibleSayfasi />);
-      expect(getByText('✓ Kıble yönündesiniz')).toBeTruthy();
-    });
-
-    it('hedefAcisi üst eşik üstünde (358°) iken hizalama mesajını göstermelidir (0/360 sınırı)', () => {
-      // 358 > (360 - 10) dalini korur; modüler sarma sonrasi Kabe'ye yakinligi dogru yakalanmali.
-      (useKible as jest.Mock).mockReturnValue({ ...kibleVarsayilan, hedefAcisi: 358 });
-      const { getByText } = render(<KibleSayfasi />);
-      expect(getByText('✓ Kıble yönündesiniz')).toBeTruthy();
-    });
-
-    it('hedefAcisi eşik dışında (150°) iken hizalama mesajını GÖSTERMEMELİDİR', () => {
-      (useKible as jest.Mock).mockReturnValue({ ...kibleVarsayilan, hedefAcisi: 150 });
-      const { queryByText } = render(<KibleSayfasi />);
-      expect(queryByText('✓ Kıble yönündesiniz')).toBeNull();
-    });
-
-    it('hedefAcisi tam eşikte (10°) iken hizalama mesajını GÖSTERMEMELİDİR (< katı eşitsizlik)', () => {
-      // Uretim `hedefAcisi < 10` kullanir; 10 esik DAHIL DEGIL. < yerine <= regresyonu burada yakalanir.
-      (useKible as jest.Mock).mockReturnValue({ ...kibleVarsayilan, hedefAcisi: 10 });
-      const { queryByText } = render(<KibleSayfasi />);
-      expect(queryByText('✓ Kıble yönündesiniz')).toBeNull();
-    });
-
-    it('hedefAcisi tam üst eşikte (350°) iken hizalama mesajını GÖSTERMEMELİDİR (> katı eşitsizlik)', () => {
-      // Uretim `hedefAcisi > 350` kullanir; 350 esik DAHIL DEGIL. > yerine >= regresyonu burada yakalanir.
-      (useKible as jest.Mock).mockReturnValue({ ...kibleVarsayilan, hedefAcisi: 350 });
-      const { queryByText } = render(<KibleSayfasi />);
-      expect(queryByText('✓ Kıble yönündesiniz')).toBeNull();
-    });
-  });
-
-  // guvenilirKibleHostuMu: WebPusulaView navigasyon güvenlik filtresi.
-  // Yalnızca Google servislerine ve about:blank'e izin verir; diğerleri reddedilir.
-  describe('guvenilirKibleHostuMu — navigasyon güvenlik filtresi', () => {
-    // --- İzin verilen URL'ler ---
-    it('qiblafinder.withgoogle.com adresine izin vermelidir', () => {
-      expect(guvenilirKibleHostuMu('https://qiblafinder.withgoogle.com/intl/tr/')).toBe(true);
-    });
-
-    it('*.google.com alt alan adlarına izin vermelidir', () => {
-      expect(guvenilirKibleHostuMu('https://maps.google.com/path')).toBe(true);
-    });
-
-    it('*.gstatic.com adreslerine izin vermelidir', () => {
-      expect(guvenilirKibleHostuMu('https://fonts.gstatic.com/s/font.woff2')).toBe(true);
-    });
-
-    it('*.googleapis.com adreslerine izin vermelidir', () => {
-      expect(guvenilirKibleHostuMu('https://maps.googleapis.com/api')).toBe(true);
-    });
-
-    it('*.googleusercontent.com adreslerine izin vermelidir', () => {
-      expect(guvenilirKibleHostuMu('https://lh3.googleusercontent.com/photo.jpg')).toBe(true);
-    });
-
-    it('about:blank adresine izin vermelidir', () => {
-      expect(guvenilirKibleHostuMu('about:blank')).toBe(true);
-    });
-
-    // --- Reddedilen URL'ler ---
-    it('evil.com adresini reddetmelidir', () => {
-      expect(guvenilirKibleHostuMu('https://evil.com/attack')).toBe(false);
-    });
-
-    it('google.com gibi görünen sahte alanı reddetmelidir (evil.google.com.tr)', () => {
-      expect(guvenilirKibleHostuMu('https://evil.google.com.tr/')).toBe(false);
-    });
-
-    it('http (şifresiz) adresleri reddetmelidir', () => {
-      expect(guvenilirKibleHostuMu('http://qiblafinder.withgoogle.com/intl/tr/')).toBe(false);
-    });
-
-    it('geçersiz URL dizisini reddetmelidir', () => {
-      expect(guvenilirKibleHostuMu('bu-gecersiz-bir-url')).toBe(false);
-    });
-
-    it('boş dizeyi reddetmelidir', () => {
-      expect(guvenilirKibleHostuMu('')).toBe(false);
-    });
-
-    it('javascript: şemasını reddetmelidir', () => {
-      expect(guvenilirKibleHostuMu('javascript:alert(1)')).toBe(false);
-    });
-  });
-
-  // disaAktarilabilirUrlMu: WebView'den reddedilen URL'lerin sistem tarayıcısına
-  // devredilip devredilemeyeceğini belirler — yalnızca http(s) dışarı açılır.
-  describe('disaAktarilabilirUrlMu — harici tarayıcıya devretme filtresi', () => {
-    it('https URL dışarıda açılabilmelidir', () => {
-      expect(disaAktarilabilirUrlMu('https://ornek.com/sayfa')).toBe(true);
-    });
-
-    it('http URL dışarıda açılabilmelidir', () => {
-      expect(disaAktarilabilirUrlMu('http://ornek.com/sayfa')).toBe(true);
-    });
-
-    it('javascript: şeması Linking.openURL\'e geçirilmemelidir', () => {
-      expect(disaAktarilabilirUrlMu('javascript:alert(1)')).toBe(false);
-    });
-
-    it('intent: şeması Linking.openURL\'e geçirilmemelidir', () => {
-      expect(disaAktarilabilirUrlMu('intent://evil#Intent;scheme=http;end')).toBe(false);
-    });
-
-    it('file: şeması Linking.openURL\'e geçirilmemelidir', () => {
-      expect(disaAktarilabilirUrlMu('file:///etc/passwd')).toBe(false);
-    });
-
-    it('geçersiz URL reddedilmelidir', () => {
-      expect(disaAktarilabilirUrlMu('bu-gecersiz-bir-url')).toBe(false);
-    });
-  });
-
-  // Kabe gostergesi ve Kabe Acisi degeri: NativePusulaView, kullaniciya kibleAcisi'ni
-  // "Kabe Açısı: {Math.round(kibleAcisi)}°" olarak gosterir ve kaaba ikonunu render eder.
-  describe('Kabe göstergesi ve açı gösterimi', () => {
-    it('Kabe açısını Math.round ile yuvarlayarak göstermelidir', () => {
-      // 151.62 -> 152 (yuvarlama yukari). Yanlis yuvarlama/format regresyonu yakalanir.
-      (useKible as jest.Mock).mockReturnValue({
-        kibleAcisi: 151.62,
-        pusulaYonelimi: 0,
-        hedefAcisi: 151.62,
-        izinVerildi: true,
-        yukleniyor: false,
-        hata: null,
+  describe('son seçilen görünüm', () => {
+    it('seçim kaydedilir; kamera izni varsa açılışta Kamera geri gelir', async () => {
+      kamera.__izinAyarla({ granted: true, canAskAgain: true, status: 'granted' });
+      const ilk = render(<KibleSayfasi />);
+      await act(async () => {
+        fireEvent.press(ilk.getByLabelText('Kamera modu'));
       });
-      const { getByText } = render(<KibleSayfasi />);
-      expect(getByText('Kabe Açısı: 152°')).toBeTruthy();
+      expect(await AsyncStorage.getItem('@namaz_akisi/kible_modu')).toBe('kamera');
+      ilk.unmount();
+      const ikinci = render(<KibleSayfasi />);
+      await waitFor(() => expect(ikinci.getByLabelText('Kamera modu').props.accessibilityState).toEqual({ selected: true }));
     });
 
-    it('Kabe yön ikonunu (kaaba) render etmelidir', () => {
-      const { getByText } = render(<KibleSayfasi />);
-      // Mock FontAwesome5, ikonu name metni olarak render eder; kaaba gostergesinin varligini dogrular.
-      expect(getByText('kaaba')).toBeTruthy();
+    it('kamera izni yoksa kayıt Kamera olsa da Pusula açılır (diyalog kendiliğinden çıkmaz)', async () => {
+      await AsyncStorage.setItem('@namaz_akisi/kible_modu', 'kamera');
+      const { getByLabelText } = render(<KibleSayfasi />);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(getByLabelText('Pusula modu').props.accessibilityState).toEqual({ selected: true });
+      expect(kamera.__istek).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('kamera modu', () => {
+    it('izin yoksa önce açıklama; "Kamerayı açın" sistem iznini ister', async () => {
+      const { getByLabelText, getByText } = render(<KibleSayfasi />);
+      fireEvent.press(getByLabelText('Kamera modu'));
+      expect(getByText('Kıbleyi kamerayla görün')).toBeTruthy();
+      expect(kamera.__istek).not.toHaveBeenCalled();
+      await act(async () => {
+        fireEvent.press(getByLabelText('Kamerayı açın'));
+      });
+      expect(kamera.__istek).toHaveBeenCalledTimes(1);
+    });
+
+    it('izin kalıcı reddedildiyse Ayarlar + pusulaya dönüş', () => {
+      kamera.__izinAyarla({ granted: false, canAskAgain: false, status: 'denied' });
+      const { getByLabelText, getByText } = render(<KibleSayfasi />);
+      fireEvent.press(getByLabelText('Kamera modu'));
+      expect(getByText('Kamera izni kapalı')).toBeTruthy();
+      expect(getByLabelText('Ayarları açın')).toBeTruthy();
+      fireEvent.press(getByLabelText('Pusulayı kullanın'));
+      expect(getByLabelText('Pusula modu').props.accessibilityState).toEqual({ selected: true });
+    });
+
+    it('izin varken kamera önizlemesi + Kâbe işareti; dik değilse "dik tutun"', () => {
+      kamera.__izinAyarla({ granted: true, canAskAgain: true, status: 'granted' });
+      const { getByLabelText, getByTestId, UNSAFE_root } = render(<KibleSayfasi />);
+      fireEvent.press(getByLabelText('Kamera modu'));
+      expect(UNSAFE_root.findAll((n: { type: unknown }) => n.type === 'CameraView').length).toBeGreaterThan(0);
+      expect(getByTestId('kamera-kabe-isareti')).toBeTruthy();
+      expect(getByTestId('kamera-yon-cumlesi').props.children).toBe('Telefonunuzu dik tutun');
+    });
+
+    it('eksenler bu cihazda güvenilmezse kamera görünümü açılmaz, pusula önerilir', () => {
+      kamera.__izinAyarla({ granted: true, canAskAgain: true, status: 'granted' });
+      (useKible as jest.Mock).mockReturnValue(kibleDurumu({ vektorGuvenilir: false }));
+      const { getByLabelText, getByText, UNSAFE_root } = render(<KibleSayfasi />);
+      fireEvent.press(getByLabelText('Kamera modu'));
+      expect(getByText('Kamera görünümü bu telefonda kullanılamıyor')).toBeTruthy();
+      expect(UNSAFE_root.findAll((n: { type: unknown }) => n.type === 'CameraView').length).toBe(0);
     });
   });
 });

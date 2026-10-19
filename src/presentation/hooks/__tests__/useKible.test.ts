@@ -1,321 +1,326 @@
 import { renderHook, act, waitFor } from '@testing-library/react-native';
 import { AppState } from 'react-native';
-import { BOS_DOGRULUK_IZI, DOGRULUK_KARARLI_MS, dogrulukAdimi, kalibrasyonIpucu, useKible } from '../useKible';
+import {
+  BOS_DOGRULUK_IZI,
+  DOGRULUK_KARARLI_MS,
+  KibleKaresi,
+  OZET_ARALIGI_MS,
+  dogrulukAdimi,
+  kalibrasyonIpucu,
+  useKible,
+} from '../useKible';
 import * as Location from 'expo-location';
-import { Magnetometer } from 'expo-sensors';
 
-// Mocklar
 jest.mock('expo-location', () => ({
   requestForegroundPermissionsAsync: jest.fn(),
   getForegroundPermissionsAsync: jest.fn(),
   getCurrentPositionAsync: jest.fn(),
+  getLastKnownPositionAsync: jest.fn(),
   watchHeadingAsync: jest.fn(),
-  Accuracy: {
-    Balanced: 3,
-  },
+  Accuracy: { Balanced: 3 },
 }));
+
+type Dinleyici = (e: { x: number; y: number; z: number }) => void;
+const mockSensor = {
+  hareket: null as ((e: unknown) => void) | null,
+  manyetik: null as Dinleyici | null,
+  hareketKaldir: jest.fn(),
+  manyetikKaldir: jest.fn(),
+};
 jest.mock('expo-sensors', () => ({
+  DeviceMotion: {
+    setUpdateInterval: jest.fn(),
+    addListener: jest.fn((cb: (e: unknown) => void) => {
+      mockSensor.hareket = cb;
+      return { remove: mockSensor.hareketKaldir };
+    }),
+  },
   Magnetometer: {
     setUpdateInterval: jest.fn(),
-    addListener: jest.fn(() => ({ remove: jest.fn() })),
-    removeAllListeners: jest.fn(),
+    // Çözülmeyen söz: test gövdesi bittikten sonra state yazıp act gürültüsü üretmesin.
+    isAvailableAsync: jest.fn(() => new Promise(() => undefined)),
+    addListener: jest.fn((cb: Dinleyici) => {
+      mockSensor.manyetik = cb;
+      return { remove: mockSensor.manyetikKaldir };
+    }),
   },
 }));
 
-// Adhan kutuphanesini mocklamaya gerek yok, hesaplamalari (pure function) test edebiliriz
-// veya sabit bir konum verip beklenen kible acisini kontrol edebiliriz.
-// Adhan'in Qibla fonksiyonu deterministiktir.
+/** Düz telefon, üst kenar `h`° (manyetik) — `kible.test.ts` ile aynı duruş üreticisi. */
+function duzOkuma(h: number) {
+  const r = (h * Math.PI) / 180;
+  const s = Math.sin(r);
+  const c = Math.cos(r);
+  const alan = { e: 0, n: 27, u: -40 };
+  return {
+    asagi: { x: 0, y: 0, z: -9.81 },
+    manyetik: { x: alan.e * c - alan.n * s, y: alan.e * s + alan.n * c, z: alan.u },
+  };
+}
 
-describe('useKible Hook', () => {
+describe('useKible', () => {
   let headingCallback: ((data: any) => void) | null = null;
+  const headingKaldir = jest.fn();
+  let simdi = 1_000_000;
+  let saat: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
     headingCallback = null;
-
-    // watchHeadingAsync mock - callback'i yakala
+    mockSensor.hareket = null;
+    mockSensor.manyetik = null;
+    simdi = 1_000_000;
+    saat = jest.spyOn(Date, 'now').mockImplementation(() => simdi);
     (Location.watchHeadingAsync as jest.Mock).mockImplementation(async (cb) => {
       headingCallback = cb;
-      return { remove: jest.fn() };
+      return { remove: headingKaldir };
     });
+    (Location.getLastKnownPositionAsync as jest.Mock).mockResolvedValue(null);
   });
+  afterEach(() => saat.mockRestore());
 
-  it('baslangicta yukleniyor durumunda olmalidir', () => {
-    (Location.getForegroundPermissionsAsync as jest.Mock).mockReturnValue(new Promise(() => { })); // Asili kalsin
+  /** Bir sensör turu: önce manyetik, sonra hareket (hesap hareket olayında yapılır). */
+  const sur = (h: number, ilerleMs = 20) =>
+    act(() => {
+      simdi += ilerleMs;
+      const o = duzOkuma(h);
+      mockSensor.manyetik?.(o.manyetik);
+      mockSensor.hareket?.({ accelerationIncludingGravity: o.asagi });
+    });
+
+  it('başlangıçta yükleniyor', () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockReturnValue(new Promise(() => {}));
     const { result } = renderHook(() => useKible());
     expect(result.current.yukleniyor).toBe(true);
   });
 
-  it('konum izni verilmezse hata dondurmelidir', async () => {
+  it('konum izni yoksa hata döner ve sensör açılmaz', async () => {
     (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied' });
-
     const { result } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(result.current.yukleniyor).toBe(false);
-    });
-
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
     expect(result.current.hata).toBeTruthy();
     expect(result.current.izinVerildi).toBe(false);
+    expect(mockSensor.hareket).toBeNull();
+    expect(Location.watchHeadingAsync).not.toHaveBeenCalled();
   });
 
-  it('izin verilip konum alindiginda izinVerildi true, hata null olmali ve kible acisi hesaplanmalidir', async () => {
+  it('KÖK NEDEN: GPS sabitlemesi BEKLENMEDEN sensörler açılır ve yükleme biter', async () => {
     (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
-      coords: {
-        latitude: 21.4225,
-        longitude: 39.8262,
-      },
-    });
-
+    (Location.getCurrentPositionAsync as jest.Mock).mockReturnValue(new Promise(() => {})); // GPS hiç gelmiyor
     const { result } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(result.current.yukleniyor).toBe(false);
-    });
-
-    expect(result.current.izinVerildi).toBe(true);
-    expect(result.current.hata).toBeNull();
-
-    // Test adi "kible acisini hesaplamalidir" diyor; govde de bunu gercekten dogrulasin.
-    // Kabe'ye cok yakin bu koordinat icin adhan fiziki referans degeri 324.89...'dur
-    // (Qibla(21.4225, 39.8262) === 324.8923). Boylece izin/konum yolunun sonunda
-    // gercekten bir aci hesaplandigi (0'da kalmadigi) kanitlanir.
-    expect(result.current.kibleAcisi).toBeCloseTo(324.89, 1);
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+    await waitFor(() => expect(Location.watchHeadingAsync).toHaveBeenCalled());
+    expect(mockSensor.hareket).not.toBeNull();
+    expect(mockSensor.manyetik).not.toBeNull();
+    expect(result.current.kibleAcisi).toBeNull();
   });
 
-  it('Istanbul icin kible acisini dogru hesaplamalidir', async () => {
+  it('son bilinen konum ANINDA kıble açısını verir; taze konum sonra inceltir', async () => {
     (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
-      coords: {
-        latitude: 41.0082,
-        longitude: 28.9784,
-      },
-    });
-
+    (Location.getLastKnownPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41.0082, longitude: 28.9784 } });
+    let tazeCoz: (v: unknown) => void = () => undefined;
+    (Location.getCurrentPositionAsync as jest.Mock).mockReturnValue(new Promise((r) => (tazeCoz = r)));
     const { result } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(result.current.kibleAcisi).toBeGreaterThan(0);
-    });
-
-    // adhan deterministiktir; gevsek aralik yerine fiziki referans degere siki bagla.
-    // Bagimsiz dogrulama: Qibla(new Coordinates(41.0082, 28.9784)) === 151.6206...
-    expect(result.current.kibleAcisi).toBeCloseTo(151.62, 1);
+    // Qibla(41.0082, 28.9784) === 151.6206 (adhan fiziki referans)
+    await waitFor(() => expect(result.current.kibleAcisi).toBeCloseTo(151.62, 1));
+    await act(async () => tazeCoz({ coords: { latitude: 52.52, longitude: 13.405 } }));
+    await waitFor(() => expect(result.current.kibleAcisi).toBeCloseTo(136.68, 1)); // Berlin
+    expect(result.current.konum).toEqual({ lat: 52.52, lng: 13.405 });
   });
 
-  it('Berlin icin kible acisini dogru hesaplamalidir', async () => {
+  it.each([
+    [21.4225, 39.8262, 324.89],
+    [-33.8688, 151.2093, 277.5],
+  ])('kıble açısı adhan ile (%d, %d → %d°)', async (lat, lng, beklenen) => {
     (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
-      coords: { latitude: 52.52, longitude: 13.405 },
-    });
-
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: lat, longitude: lng } });
     const { result } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(result.current.kibleAcisi).toBeGreaterThan(0);
-    });
-
-    // adhan fiziki referans deger: Qibla(52.52, 13.405) === 136.6849...
-    // Ikinci konum, hesabin tek koordinata ezberlenmedigini (gercekten enlem/boylama
-    // bagli oldugunu) kanitlar.
-    expect(result.current.kibleAcisi).toBeCloseTo(136.68, 1);
+    await waitFor(() => expect(result.current.kibleAcisi).not.toBeNull());
+    expect(result.current.kibleAcisi!).toBeCloseTo(beklenen, 0);
   });
 
-  it('Sydney icin kible acisini dogru hesaplamalidir (guney yarimkure, Mekke batida)', async () => {
+  it('vektör yolu: kare aboneye gider, gerçek kuzey = manyetik + sapma; fark kıble − yön', async () => {
     (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
-      coords: { latitude: -33.8688, longitude: 151.2093 },
-    });
-
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41.0082, longitude: 28.9784 } });
     const { result } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(result.current.kibleAcisi).toBeGreaterThan(0);
-    });
-
-    // adhan fiziki referans deger: Qibla(-33.8688, 151.2093) === 277.4996...
-    // Sydney'den Mekke bati-kuzeybati yondedir; bu anchor great-circle yonelimini
-    // (sadece "kuzeydogu civari" degil) gercekten dogrular.
-    expect(result.current.kibleAcisi).toBeCloseTo(277.50, 1);
-  });
-
-  it('heading verisi geldiginde pusula yonelimini guncellemelidir', async () => {
-    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
-      coords: { latitude: 41, longitude: 29 },
-    });
-
-    const { result } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(Location.watchHeadingAsync).toHaveBeenCalled();
-    });
-
+    await waitFor(() => expect(result.current.kibleAcisi).not.toBeNull());
+    await waitFor(() => expect(headingCallback).not.toBeNull());
+    const kareler: KibleKaresi[] = [];
     act(() => {
-      // trueHeading 90 derece (doguya bakiyor)
-      if (headingCallback) {
-        headingCallback({ trueHeading: 90, magHeading: 92 });
-      }
+      result.current.abone((k) => kareler.push(k));
     });
-
-    // trueHeading kullanilmali (manyetik sapma duzeltmesi dahil)
-    expect(result.current.pusulaYonelimi).toBeCloseTo(90, 0);
+    // Sapma: gerçek 106, manyetik 100 → +6°
+    act(() => headingCallback?.({ trueHeading: 106, magHeading: 100, accuracy: 3 }));
+    for (let i = 0; i < 40; i++) sur(140);
+    const son = kareler[kareler.length - 1];
+    expect(son.baslik).toBeCloseTo(146, 0);
+    expect(son.fark!).toBeCloseTo(151.62 - 146, 0);
+    expect(son.taban).not.toBeNull();
+    expect(son.dikOrani).toBe(0);
   });
 
-  it('trueHeading negatifse magHeading kullanilmalidir', async () => {
+  it('TAKILMA KÖK NEDENİ: 50 Hz sensör akışı React state\'ini ~4/sn\'den sık YAZMAZ', async () => {
     (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
-      coords: { latitude: 41, longitude: 29 },
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41.0082, longitude: 28.9784 } });
+    let render = 0;
+    const { result } = renderHook(() => {
+      render += 1;
+      return useKible();
     });
+    await waitFor(() => expect(result.current.kibleAcisi).not.toBeNull());
+    await waitFor(() => expect(mockSensor.hareket).not.toBeNull());
+    sur(0);
+    const once = render;
+    // 1 saniyede 50 farklı okuma (yön sürekli değişiyor)
+    for (let i = 0; i < 50; i++) sur(i * 2);
+    const sure = 1000;
+    expect(render - once).toBeLessThanOrEqual(Math.ceil(sure / OZET_ARALIGI_MS) + 2);
+  });
 
+  it('hizaya girince özet HEMEN (kısma beklemeden) güncellenir', async () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41.0082, longitude: 28.9784 } });
     const { result } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(Location.watchHeadingAsync).toHaveBeenCalled();
-    });
-
+    await waitFor(() => expect(result.current.kibleAcisi).not.toBeNull());
+    await waitFor(() => expect(mockSensor.hareket).not.toBeNull());
+    for (let i = 0; i < 50; i++) sur(140); // fark ≈ 11,6° → hizada değil
+    expect(result.current.ozet.hizali).toBe(false);
+    let son: KibleKaresi | null = null;
     act(() => {
-      // trueHeading negatif (kullanilabilir degil), magHeading kullanilmali
-      if (headingCallback) {
-        headingCallback({ trueHeading: -1, magHeading: 45 });
-      }
+      result.current.abone((k) => (son = k));
     });
-
-    expect(result.current.pusulaYonelimi).toBeCloseTo(45, 0);
+    // Her adımda derece değişir (özet sık yazılmak ister); hizaya girdiği İLK karede özet
+    // kısma penceresini beklemeden hizalı olmalı.
+    let girdi = false;
+    for (let i = 0; i < 60 && !girdi; i++) {
+      sur(152, 8);
+      if (son && Math.abs((son as KibleKaresi).fark!) < 10) {
+        girdi = true;
+        expect(result.current.ozet.hizali).toBe(true);
+      }
+    }
+    expect(girdi).toBe(true);
   });
 
-  it('hedefAcisi cihaz-goreli aciyi (kibleAcisi - pusulaYonelimi) dogru hesaplamalidir', async () => {
+  it('manyetometre susarsa yön konum servisinden gelir (kamera tabanı yok)', async () => {
     (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
-      coords: { latitude: 41.0082, longitude: 28.9784 },
-    });
-
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41.0082, longitude: 28.9784 } });
     const { result } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(result.current.kibleAcisi).toBeGreaterThan(0);
-    });
-
-    // Istanbul icin kibleAcisi ~151.62 (adhan fiziki referans).
-    // Pusula doguya (90 derece) bakiyorsa, Kabe'nin cihaza gore acisi:
-    // hedefAcisi = kibleAcisi - pusulaYonelimi = 151.62 - 90 = ~61.62
+    await waitFor(() => expect(headingCallback).not.toBeNull());
+    const kareler: KibleKaresi[] = [];
     act(() => {
-      if (headingCallback) {
-        headingCallback({ trueHeading: 90, magHeading: 90 });
-      }
+      result.current.abone((k) => kareler.push(k));
     });
-
-    expect(result.current.pusulaYonelimi).toBeCloseTo(90, 0);
-    // Pusula uygulamasinin asil ciktisi: kullanicinin telefonu cevirmesi gereken aci.
-    // Bu, uretimdeki useMemo'nun pozitif (wraparound'suz) dalini dogrular.
-    expect(result.current.hedefAcisi).toBeCloseTo(61.62, 1);
-  });
-
-  it('hedefAcisi negatif olunca 0-360 araligina normalize edilmelidir (wraparound)', async () => {
-    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
-      coords: { latitude: 41.0082, longitude: 28.9784 },
-    });
-
-    const { result } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(result.current.kibleAcisi).toBeGreaterThan(0);
-    });
-
-    // Istanbul kibleAcisi ~151.62. Pusula 200 derece (guney-batiya) bakiyorsa
-    // ham hesap: 151.62 - 200 = -48.38 (NEGATIF).
-    // Uretimdeki 'if (aci < 0) aci += 360' dali olmadan kullaniciya negatif/yanlis
-    // yon gosterilirdi. Beklenen normalize sonuc: -48.38 + 360 = ~311.62.
-    act(() => {
-      if (headingCallback) {
-        headingCallback({ trueHeading: 200, magHeading: 200 });
-      }
-    });
-
-    expect(result.current.pusulaYonelimi).toBeCloseTo(200, 0);
-    // Negatif wraparound dali bozulursa bu deger 0'in altina duser ve test FAIL eder.
-    expect(result.current.hedefAcisi).toBeGreaterThanOrEqual(0);
-    expect(result.current.hedefAcisi).toBeLessThan(360);
-    expect(result.current.hedefAcisi).toBeCloseTo(311.62, 1);
-  });
-
-  it('konum servisi kullanilamiyorsa ozel kullanici mesaji dondurmelidir', async () => {
-    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(
-      new Error('Current location is unavailable. Make sure that location services are enabled.'),
-    );
-
-    const { result } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(result.current.yukleniyor).toBe(false);
-    });
-
-    // Catch dalinda 'location is unavailable'/'location services' ozel mesaja gider.
-    expect(result.current.hata).toBe(
-      'Konum servislerine erişilemiyor. Lütfen cihazınızın konum ayarlarını kontrol edin.',
-    );
-    // Izin verilmisti, ama konum alinamadi -> aci hesaplanmadan kalir.
-    expect(result.current.izinVerildi).toBe(true);
-    expect(result.current.kibleAcisi).toBe(0);
-  });
-
-  it('genel bir hatada (konum servisi disi) genel kible hata mesaji dondurmelidir', async () => {
-    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(
-      new Error('beklenmedik bir sorun olustu'),
-    );
-
-    const { result } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(result.current.yukleniyor).toBe(false);
-    });
-
-    // 'location' anahtarlarini icermeyen hata -> genel mesaj dali.
-    expect(result.current.hata).toBe('Kıble servisi başlatılamadı.');
-  });
-
-  it('unmount sonrasi gelen heading callback state guncellememeli ve remove cagrilmalidir', async () => {
-    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
-      coords: { latitude: 41.0082, longitude: 28.9784 },
-    });
-
-    // Bu testte remove spy'ini yakalayabilmek icin watchHeadingAsync'i ozel kuruyoruz.
-    const removeSpy = jest.fn();
-    (Location.watchHeadingAsync as jest.Mock).mockImplementation(async (cb) => {
-      headingCallback = cb;
-      return { remove: removeSpy };
-    });
-
-    const { result, unmount } = renderHook(() => useKible());
-
-    await waitFor(() => {
-      expect(Location.watchHeadingAsync).toHaveBeenCalled();
-    });
-
-    // Unmount: cleanup isMounted=false yapmali ve subscription'i kaldirmali.
-    unmount();
-    expect(removeSpy).toHaveBeenCalledTimes(1);
-
-    // Unmount sonrasi gec gelen bir heading callback'i state'i ASLA guncellememeli
-    // (isMounted guard'i). Bu cagri uyari/crash uretmemeli.
-    expect(() => {
+    for (let i = 0; i < 10; i++) {
       act(() => {
-        if (headingCallback) {
-          headingCallback({ trueHeading: 123, magHeading: 123 });
-        }
+        simdi += 50;
+        headingCallback?.({ trueHeading: 200, magHeading: 194, accuracy: 2 });
       });
-    }).not.toThrow();
-
-    // Pusula hala baslangic degerinde (0) kalmali; gec callback ezmemeli.
-    expect(result.current.pusulaYonelimi).toBe(0);
+    }
+    const son = kareler[kareler.length - 1];
+    expect(son.baslik).toBeCloseTo(200, 0);
+    expect(son.taban).toBeNull();
   });
 
-  it('öne gelişte izin İSTENMEZ, yalnız okunur; verildiyse servis yeniden başlar (izin penceresi döngüsü yok)', async () => {
+  it('eksen denetimi: düz tutuşta platform pusulasıyla sürekli uyuşmazlık → konum yönüne düşer', async () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41.0082, longitude: 28.9784 } });
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(headingCallback).not.toBeNull());
+    await waitFor(() => expect(mockSensor.hareket).not.toBeNull());
+    for (let i = 0; i < 60; i++) {
+      act(() => headingCallback?.({ trueHeading: 300, magHeading: 300, accuracy: 3 }));
+      sur(120); // vektör 120 diyor, platform 300: 180° ters
+    }
+    expect(result.current.vektorGuvenilir).toBe(false);
+    const kareler: KibleKaresi[] = [];
+    act(() => {
+      result.current.abone((k) => kareler.push(k));
+    });
+    for (let i = 0; i < 20; i++) {
+      act(() => headingCallback?.({ trueHeading: 300, magHeading: 300, accuracy: 3 }));
+      sur(120);
+    }
+    expect(Math.abs(kareler[kareler.length - 1].baslik - 300)).toBeLessThan(2);
+    expect(kareler[kareler.length - 1].taban).toBeNull();
+  });
+
+  it('uyuşan eksenler kamera görünümünü doğrular', async () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41.0082, longitude: 28.9784 } });
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(headingCallback).not.toBeNull());
+    await waitFor(() => expect(mockSensor.hareket).not.toBeNull());
+    for (let i = 0; i < 50; i++) {
+      act(() => headingCallback?.({ trueHeading: 126, magHeading: 120, accuracy: 3 }));
+      sur(120);
+    }
+    expect(result.current.vektorGuvenilir).toBe(true);
+  });
+
+  it('aktif değilken (sekme odakta değil) hiçbir sensör açılmaz', async () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+    const { result } = renderHook(() => useKible(false));
+    await waitFor(() => expect(result.current.izinVerildi).toBe(true));
+    expect(mockSensor.hareket).toBeNull();
+    expect(Location.watchHeadingAsync).not.toHaveBeenCalled();
+  });
+
+  it('uygulama arka plana gidince sensörler kapanır, öne gelince yeniden açılır', async () => {
+    const handlerlar: Array<(d: string) => void> = [];
+    const ekle = jest.spyOn(AppState, 'addEventListener').mockImplementation(((_t: string, h: (d: string) => void) => {
+      handlerlar.push(h);
+      return { remove: jest.fn() };
+    }) as never);
+    try {
+      (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+      (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+      renderHook(() => useKible());
+      await waitFor(() => expect(Location.watchHeadingAsync).toHaveBeenCalledTimes(1));
+      await act(async () => handlerlar.forEach((h) => h('background')));
+      expect(mockSensor.hareketKaldir).toHaveBeenCalled();
+      expect(mockSensor.manyetikKaldir).toHaveBeenCalled();
+      expect(headingKaldir).toHaveBeenCalled();
+      await act(async () => handlerlar.forEach((h) => h('active')));
+      await waitFor(() => expect(Location.watchHeadingAsync).toHaveBeenCalledTimes(2));
+    } finally {
+      ekle.mockRestore();
+    }
+  });
+
+  it('unmount sonrası abonelikler kaldırılır', async () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+    const { unmount } = renderHook(() => useKible());
+    await waitFor(() => expect(headingCallback).not.toBeNull());
+    unmount();
+    expect(headingKaldir).toHaveBeenCalled();
+    expect(mockSensor.hareketKaldir).toHaveBeenCalled();
+    expect(() => headingCallback?.({ trueHeading: 10, magHeading: 10, accuracy: 3 })).not.toThrow();
+  });
+
+  it('konum servisi kullanılamıyorsa özel kullanıcı mesajı', async () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(new Error('Current location is unavailable.'));
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(result.current.hata).toBeTruthy());
+    expect(result.current.hata).toContain('Konum servislerine erişilemiyor');
+  });
+
+  it('genel hatada genel mesaj; son bilinen konum varsa hata YOK', async () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(new Error('patladı'));
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(result.current.hata).toBe('Kıble servisi başlatılamadı.'));
+
+    (Location.getLastKnownPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+    const ikinci = renderHook(() => useKible());
+    await waitFor(() => expect(ikinci.result.current.kibleAcisi).not.toBeNull());
+    expect(ikinci.result.current.hata).toBeNull();
+  });
+
+  it('öne gelişte izin İSTENMEZ, yalnız okunur; verildiyse servis yeniden başlar', async () => {
     const handlerlar: Array<(d: string) => void> = [];
     const ekle = jest.spyOn(AppState, 'addEventListener').mockImplementation(((_t: string, h: (d: string) => void) => {
       handlerlar.push(h);
@@ -325,23 +330,16 @@ describe('useKible Hook', () => {
       (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: true });
       const { result } = renderHook(() => useKible());
       await waitFor(() => expect(result.current.yukleniyor).toBe(false));
-      await waitFor(() => expect(handlerlar.length).toBeGreaterThan(0));
-      // Dalga 4: açılışta da diyalog açılmaz — izin yalnız okunur.
       expect(Location.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
-
-      // Reddedilmişken öne geliş: yalnız OKU, diyalog açma.
       await act(async () => {
-        handlerlar[handlerlar.length - 1]('active');
+        handlerlar.forEach((h) => h('active'));
         await Promise.resolve();
       });
-      expect(Location.getForegroundPermissionsAsync).toHaveBeenCalled();
       expect(Location.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
-
-      // Ayarlar'dan izin verip dönen kullanıcı: servis yeniden başlar.
       (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
       (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
       await act(async () => {
-        handlerlar[handlerlar.length - 1]('active');
+        handlerlar.forEach((h) => h('active'));
         await Promise.resolve();
       });
       await waitFor(() => expect(result.current.izinVerildi).toBe(true));
@@ -350,7 +348,7 @@ describe('useKible Hook', () => {
     }
   });
 
-  it('izinIste diyalog AÇMAZ, durumu yeniden okur (istek ekrandaki açıklamalı akıştadır)', async () => {
+  it('izinIste diyalog AÇMAZ, durumu yeniden okur', async () => {
     (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: true });
     const { result } = renderHook(() => useKible());
     await waitFor(() => expect(result.current.yukleniyor).toBe(false));
@@ -363,42 +361,33 @@ describe('useKible Hook', () => {
     expect(Location.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
   });
 
-  it('izin reddinde tekrar sorulabilirlik açığa çıkar (düğme "İzin verin" / "Ayarları açın")', async () => {
+  it('izin reddinde tekrar sorulabilirlik açığa çıkar', async () => {
     (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: false });
     const { result } = renderHook(() => useKible());
     await waitFor(() => expect(result.current.yukleniyor).toBe(false));
     expect(result.current.izinTekrarSorulabilir).toBe(false);
   });
 
-  it('pusula doğruluğu başlık okumasından gelir — yalnız KARARLI olunca; ilk 0 okumaları ipucunu yakıp söndürmez', async () => {
-    let simdi = 1_000_000;
-    const saat = jest.spyOn(Date, 'now').mockImplementation(() => simdi);
-    try {
-      (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-      (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
-      const { result } = renderHook(() => useKible());
-      await waitFor(() => expect(headingCallback).not.toBeNull());
-      const oku = (accuracy: number, ilerleMs: number) =>
-        act(() => {
-          simdi += ilerleMs;
-          headingCallback?.({ trueHeading: 10, magHeading: 10, accuracy });
-        });
-      // Açılış patlaması: art arda 0'lar (300 ms) → kabul EDİLMEZ, ipucu sönük kalır.
-      for (let i = 0; i < 4; i++) oku(0, 100);
-      expect(result.current.pusulaDogrulugu).toBeNull();
-      // Gerçek değer oturur ve 1 sn boyunca sürer → kabul edilir.
-      oku(3, 100);
-      oku(3, 500);
-      expect(result.current.pusulaDogrulugu).toBeNull();
-      oku(3, 600);
-      expect(result.current.pusulaDogrulugu).toBe(3);
-      // Tek bir anlık 0 kabul edilen değeri BOZMAZ.
-      oku(0, 100);
-      oku(3, 100);
-      expect(result.current.pusulaDogrulugu).toBe(3);
-    } finally {
-      saat.mockRestore();
-    }
+  it('pusula doğruluğu yalnız KARARLI olunca yazılır', async () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(headingCallback).not.toBeNull());
+    const oku = (accuracy: number, ilerleMs: number) =>
+      act(() => {
+        simdi += ilerleMs;
+        headingCallback?.({ trueHeading: 10, magHeading: 10, accuracy });
+      });
+    for (let i = 0; i < 4; i++) oku(0, 100);
+    expect(result.current.pusulaDogrulugu).toBeNull();
+    oku(3, 100);
+    oku(3, 500);
+    expect(result.current.pusulaDogrulugu).toBeNull();
+    oku(3, 600);
+    expect(result.current.pusulaDogrulugu).toBe(3);
+    oku(0, 100);
+    oku(3, 100);
+    expect(result.current.pusulaDogrulugu).toBe(3);
   });
 });
 
@@ -411,11 +400,11 @@ describe('dogrulukAdimi (saf)', () => {
       return r.kararli;
     };
     expect(adim(1, 0)).toBeNull();
-    expect(adim(1, 2000)).toBeNull(); // süre yetti ama yalnız 2 okuma
-    expect(adim(1, 2001)).toBe(1); // 3. okuma
-    expect(adim(2, 2002)).toBeNull(); // değer değişti → sayaç baştan
+    expect(adim(1, 2000)).toBeNull();
+    expect(adim(1, 2001)).toBe(1);
+    expect(adim(2, 2002)).toBeNull();
     expect(adim(2, 2003)).toBeNull();
-    expect(adim(2, 2004)).toBeNull(); // 3 okuma ama süre yetmedi
+    expect(adim(2, 2004)).toBeNull();
     expect(adim(2, 2002 + DOGRULUK_KARARLI_MS)).toBe(2);
   });
 });

@@ -86,7 +86,7 @@ Geçmiyorsa iş **bitmemiştir** — düzelt, çözemiyorsan açıkça raporla. 
 - Harici URL açmadan önce doğrula (`guvenilirBaglantiMi`: https + domain beyaz listesi).
 - Loglar cihazda tutulur ve `DebugLogsSayfasi`/tanı raporuyla paylaşılabilir: hassas veri yazma; koordinat en fazla `toFixed(1)`; token redakte.
 - Manifest: `allowBackup="false"`; kullanılmayan izinler (`RECORD_AUDIO`, `SYSTEM_ALERT_WINDOW`, eski depolama, `ACTIVITY_RECOGNITION` — `expo-sensors` adımsayarı ekler, `Pedometer` kullanılırsa geri alınmalı; kullanılmayan FGS türleri) `tools:node="remove"` ile engelli. Yeni kütüphane eklerken izin sızıntısını `aapt2 dump permissions <apk>` ile kontrol et. Ayrıntı: [android-native](docs/ajan/android-native.md).
-- WebView'de `geolocationEnabled` açıksa `onShouldStartLoadWithRequest` ile host beyaz listesi zorunlu; dış linkler `Linking.openURL` (örnek: `WebPusulaView.tsx`).
+- WebView eklenirse (bugün YOK; kıble kendi kodumuz): `geolocationEnabled` açıksa `onShouldStartLoadWithRequest` ile host beyaz listesi zorunlu, dış linkler `Linking.openURL`.
 - CI: `ci.yml` üst seviye `contents: read`; yazma izni yalnız `auto-release` işinde.
 
 ## Reçete — Yeni özellik duyurusu ("Neler Yeni")
@@ -122,6 +122,7 @@ Setup: `npm ci` (Node 20; `postinstall: patch-package` atlanmamalı) · Doğrula
 | [hatirlatma-yuzeyleri](docs/ajan/hatirlatma-yuzeyleri.md) | Ortak hatırlatma modülü (`components/hatirlatma`), cuma, camiye gitme, yatış/muhasebe, takvim çakışması, nafile, özel gün susturma, gün sonu, bildirim sınırı rehberi |
 | [gercek-alarm](docs/ajan/gercek-alarm.md) | Gerçek alarm kanalı (Android tam ekran alarm, iOS AlarmKit), yarının imsağı |
 | [kaza-seri-puan](docs/ajan/kaza-seri-puan.md) | Puanlama, seri/toparlanma, Kaza Defteri 2.0, depolama göçü, Seri sekmesi/SVG, seri sayacı |
+| [kible](docs/ajan/kible.md) | Kıble ekranı: gecikme/takılma kök nedenleri, sensör vektör tabanı, eksen denetimi, 3B pusula, kamera görünümü ve izni |
 | [konum-geofence](docs/ajan/konum-geofence.md) | Konum takibi (geofence), konum yenileme, konum yayma listesi, seferîlik kartı |
 | [ana-ekran-ve-ayarlar](docs/ajan/ana-ekran-ve-ayarlar.md) | AnaSayfa pager/gün navigasyonu, kerahat, stepper, Ayarlar ve slice hidrasyonu, sade görünüm, katlanabilir/tablet, güncelleme sistemi, tanı akışı |
 | [android-native](docs/ajan/android-native.md) | Widget, hızlı ayarlar, kısayollar, "Kıldım" kuyruğu ve güven listesi, otomasyon, AppFunctions, Samsung/pil, Live Update/Now Bar, erteleme YOK kararı |

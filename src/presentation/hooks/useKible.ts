@@ -1,43 +1,72 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { AppState } from 'react-native';
 import * as Location from 'expo-location';
 import { Coordinates, Qibla } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
+import { AcisalSuzgec, aciFarki, aciNormalize, hizalandiMi } from '../../core/kible/acilar';
+import {
+  BAKIS_VEKTORU,
+  DunyaTabani,
+  EksenDenetimi,
+  VektorSuzgeci,
+  azimut,
+  dikOrani,
+  dunyaTabaniKur,
+  egimDerece,
+} from '../../core/kible/cihazYonelimi';
 
 /**
- * Qibla direction hook result interface.
- * Contains compass orientation, qibla angle, and device-relative target angle.
+ * Bir sensör karesinin özeti. Saniyede ~50 kez üretilir ve React state'ine YAZILMAZ:
+ * çizim katmanı (`abone`) bunu doğrudan Reanimated shared value'lara aktarır. Eskiden her
+ * yön okuması `setState` ile tüm ekranı yeniden çiziyordu (60 Hz React render → takılma).
  */
+export interface KibleKaresi {
+  /** Süzülmüş gerçek-kuzey yönü [0,360) — telefonun baktığı yön. */
+  baslik: number;
+  /** Sarmasız birikimli yön (döndürme animasyonu tur atmasın). */
+  surekliBaslik: number;
+  /** Kıble − yön, (−180,180]. Kıble açısı henüz bilinmiyorsa null. */
+  fark: number | null;
+  /** 0 = düz, 1 = dik (yumuşak geçiş oranı). */
+  dikOrani: number;
+  /** Ekranın yukarıya göre açısı (derece) ya da bilinmiyor. */
+  egim: number | null;
+  /** Kamera izdüşümü için manyetik taban; vektör yolu güvenilmezse null. */
+  taban: DunyaTabani | null;
+  /** Gerçek − manyetik kuzey (derece; doğu pozitif). */
+  manyetikSapma: number;
+}
+
+/** Ekranda metin olarak görünenler — yalnız DEĞİŞİNCE ve en çok ~4/sn yazılır. */
+export interface KibleOzeti {
+  /** İlk yön okuması geldi mi? Gelmeden kadran "hazırlanıyor" çizilir. */
+  hazir: boolean;
+  baslik: number;
+  fark: number | null;
+  hizali: boolean;
+  dik: boolean;
+}
+
 interface UseKibleSonuc {
-  /** Qibla angle from true north (0-360 degrees). */
-  kibleAcisi: number;
-  /** Current compass heading - true north relative (0-360 degrees). */
-  pusulaYonelimi: number;
-  /** Device-relative angle to Kaaba (0 = pointing at Kaaba). */
-  hedefAcisi: number;
-  /** Whether location permission was granted. */
+  /** Kıble açısı (gerçek kuzeye göre). Konum henüz okunmadıysa null. */
+  kibleAcisi: number | null;
+  /** Kıble açısının hesaplandığı konum (mesafe için). */
+  konum: { lat: number; lng: number } | null;
+  ozet: KibleOzeti;
+  /** Kare aboneliği (çizim katmanı). Dönen fonksiyon aboneliği kaldırır. */
+  abone: (dinleyici: (kare: KibleKaresi) => void) => () => void;
+  /**
+   * Kamera görünümü bu cihazda güvenle açılabilir mi? `false` = eksen denetimi düz tutuşta
+   * platform pusulasıyla sürekli uyuşmazlık buldu (yön konum servisine düştü); `null` = henüz
+   * yeterli kanıt yok ya da manyetometre yok.
+   */
+  vektorGuvenilir: boolean | null;
   izinVerildi: boolean;
-  /** Whether the hook is still initializing. */
   yukleniyor: boolean;
-  /** Error message if initialization failed. */
   hata: string | null;
-  /**
-   * İzin reddedildiyse sistem diyaloğu yeniden açılabilir mi (`canAskAgain`)?
-   * `false` → yalnız Ayarlar; `null` → bilinmiyor / izin sorunu yok.
-   */
   izinTekrarSorulabilir: boolean | null;
-  /**
-   * Pusula doğruluğu (expo `accuracy`, iki platformda 0–3; 3 en iyi). Okunamadıysa `null`.
-   * Kalibrasyon ipucu buna bağlıdır: ≤ 1 → belirgin, ≥ 2 → gizli, null → sönük ipucu.
-   */
   pusulaDogrulugu: number | null;
-  /** Cihazda manyetometre var mı? `false` → pusula hiç çalışmaz (harita modu önerilir). */
   pusulaVar: boolean | null;
-  /**
-   * İzin durumunu YENİDEN OKUR ve verildiyse pusulayı başlatır. Diyalog AÇMAZ: izin
-   * isteği ekrandaki `DurumSatiri` (açıklama → sistem diyaloğu, `useIzinAkisi`)
-   * üzerinden yapılır, bu çağrı onun `onSonra`'sıdır. (Ad geriye uyumluluk için.)
-   */
   izinIste: () => Promise<void>;
 }
 
@@ -49,84 +78,140 @@ export function kalibrasyonIpucu(dogruluk: number | null): 'belirgin' | 'sonuk' 
 
 /**
  * Pusula doğruluğu KARARLI hâle gelmeden ekrana yazılmaz (kalibrasyon ipucu titremesin).
- *
- * Başlık izlemesi açılırken ilk okumalar çoğu cihazda `accuracy: 0` (henüz kalibre
- * edilmedi) gelir, birkaç yüz ms sonra gerçek değere oturur → ipucu bir an "belirgin"
- * yanıp söner. Bir değer ancak aynı değer en az `DOGRULUK_KARARLI_OKUMA` kez ve en az
- * `DOGRULUK_KARARLI_MS` boyunca üst üste geldiyse kabul edilir; o zamana kadar önceki
- * kabul edilen değer (ilk açılışta `null` → sönük ipucu) kalır.
- *
- * Manyetometrenin kendi doğruluğu ayrı okunamaz: expo-sensors `MagnetometerMeasurement`
- * yalnız x/y/z/zaman taşır; tek kaynak expo-location başlık okumasının `accuracy`'sidir.
+ * Başlık izlemesi açılırken ilk okumalar çoğu cihazda `accuracy: 0` gelir, birkaç yüz ms
+ * sonra gerçek değere oturur. Bir değer ancak en az `DOGRULUK_KARARLI_OKUMA` kez ve en az
+ * `DOGRULUK_KARARLI_MS` boyunca üst üste geldiyse kabul edilir.
  */
 export const DOGRULUK_KARARLI_OKUMA = 3;
 export const DOGRULUK_KARARLI_MS = 1000;
 
 export interface DogrulukIzi {
-    aday: number | null;
-    ilkMs: number;
-    sayi: number;
+  aday: number | null;
+  ilkMs: number;
+  sayi: number;
 }
 
 export const BOS_DOGRULUK_IZI: DogrulukIzi = { aday: null, ilkMs: 0, sayi: 0 };
 
 /** Saf adım: yeni okuma → güncel iz + (kararlıysa) kabul edilecek değer, değilse `null`. */
 export function dogrulukAdimi(iz: DogrulukIzi, okuma: number, simdiMs: number): { iz: DogrulukIzi; kararli: number | null } {
-    const yeni: DogrulukIzi = iz.aday === okuma ? { ...iz, sayi: iz.sayi + 1 } : { aday: okuma, ilkMs: simdiMs, sayi: 1 };
-    const kararli = yeni.sayi >= DOGRULUK_KARARLI_OKUMA && simdiMs - yeni.ilkMs >= DOGRULUK_KARARLI_MS ? okuma : null;
-    return { iz: yeni, kararli };
+  const yeni: DogrulukIzi = iz.aday === okuma ? { ...iz, sayi: iz.sayi + 1 } : { aday: okuma, ilkMs: simdiMs, sayi: 1 };
+  const kararli = yeni.sayi >= DOGRULUK_KARARLI_OKUMA && simdiMs - yeni.ilkMs >= DOGRULUK_KARARLI_MS ? okuma : null;
+  return { iz: yeni, kararli };
+}
+
+/** Sensör örnekleme aralığı (ms). Ekran odaktayken; ~50 Hz akıcı ama pil dostu. */
+export const SENSOR_ARALIGI_MS = 20;
+/** Yön süzgecinin zaman sabiti: titremeyi yutar, dönüşte ~0,1 sn gecikir. */
+export const YON_SUZGECI_TAU_MS = 110;
+/** Yerçekimi/manyetik vektör süzgeci (el titremesi, anlık ivme). */
+export const VEKTOR_SUZGECI_TAU_MS = 70;
+/** Özet (metin) yazım aralığı — ekran okuyucu ve derece yazısı için yeter. */
+export const OZET_ARALIGI_MS = 250;
+/** Manyetometre bu kadar susarsa vektör yolu bayat sayılır, yön konum servisine düşer. */
+const MANYETIK_BAYAT_MS = 600;
+
+const BOS_OZET: KibleOzeti = { hazir: false, baslik: 0, fark: null, hizali: false, dik: false };
+
+type Abonelik = { remove: () => void } | null | undefined;
+
+function sensorleriYukle(): typeof import('expo-sensors') | null {
+  try {
+    return require('expo-sensors') as typeof import('expo-sensors');
+  } catch {
+    return null;
+  }
 }
 
 /**
- * Custom hook that calculates the Qibla direction using device sensors.
- * Uses expo-location for true heading (accounts for magnetic declination)
- * and adhan library for Qibla angle calculation.
- * @returns {UseKibleSonuc} Qibla direction data including compass heading and target angle.
+ * Kıble yönü: kıble açısı (adhan) + cihazın gerçek-kuzey yönü.
+ *
+ * GECİKME KÖK NEDENİ (düzeltildi): yön aboneliği önceden `getCurrentPositionAsync` (GPS
+ * sabitlemesi, kapalı alanda 5–20 sn) BİTTİKTEN SONRA açılıyordu ve ekran o süre boyunca
+ * "başlatılıyor" yazıyordu. Şimdi izin okunur okunmaz sensörler açılır; kıble açısı önce
+ * son bilinen konumdan (anında) hesaplanır, taze konum gelince sessizce inceltilir.
+ *
+ * YÖN KAYNAĞI: `DeviceMotion` yerçekimi + `Magnetometer` vektörlerinden kendi tabanımız
+ * (telefon dikken de doğru — kamera görünümü buna dayanır); manyetik sapma ve doğruluk
+ * expo-location başlık okumasından. Manyetometre yoksa ya da eksen denetimi bozuksa yön
+ * doğrudan expo-location'a düşer (düz tutuşta doğru, kamera görünümü kapanır).
+ *
+ * `aktif` false iken (sekme odakta değil) hiçbir sensör çalışmaz; uygulama arka plana
+ * gidince de durur (pil).
  */
-export const useKible = (): UseKibleSonuc => {
+export const useKible = (aktif = true): UseKibleSonuc => {
   const [izinVerildi, setIzinVerildi] = useState(false);
-  const [pusulaYonelimi, setPusulaYonelimi] = useState(0);
-  const [kibleAcisi, setKibleAcisi] = useState(0);
+  const [kibleAcisi, setKibleAcisi] = useState<number | null>(null);
+  const [konum, setKonum] = useState<{ lat: number; lng: number } | null>(null);
   const [yukleniyor, setYukleniyor] = useState(true);
   const [hata, setHata] = useState<string | null>(null);
   const [izinTekrarSorulabilir, setIzinTekrarSorulabilir] = useState<boolean | null>(null);
   const [pusulaDogrulugu, setPusulaDogrulugu] = useState<number | null>(null);
   const [pusulaVar, setPusulaVar] = useState<boolean | null>(null);
+  const [vektorGuvenilir, setVektorGuvenilir] = useState<boolean | null>(null);
+  const [ozet, setOzet] = useState<KibleOzeti>(BOS_OZET);
   const [deneme, setDeneme] = useState(0);
+  const [onPlanda, setOnPlanda] = useState(true);
+
   const dogrulukIzi = useRef<DogrulukIzi>(BOS_DOGRULUK_IZI);
+  const dinleyiciler = useRef(new Set<(k: KibleKaresi) => void>());
+  const kibleRef = useRef<number | null>(null);
+  const sonKare = useRef<KibleKaresi | null>(null);
+
+  const abone = useCallback((dinleyici: (k: KibleKaresi) => void) => {
+    dinleyiciler.current.add(dinleyici);
+    if (sonKare.current) dinleyici(sonKare.current);
+    return () => {
+      dinleyiciler.current.delete(dinleyici);
+    };
+  }, []);
+
+  // Uygulama arka plandayken sensör yok (sekme odakta kalsa bile).
+  useEffect(() => {
+    let abonelik: Abonelik;
+    try {
+      abonelik = AppState.addEventListener('change', (d) => setOnPlanda(d === 'active'));
+    } catch {
+      // AppState'siz ortam
+    }
+    return () => abonelik?.remove();
+  }, []);
 
   // Manyetometre var mı? (expo-sensors tembel: yoksa ya da patlarsa bilinmiyor.)
   useEffect(() => {
     let iptal = false;
-    try {
-      const { Magnetometer } = require('expo-sensors') as typeof import('expo-sensors');
-      void Magnetometer.isAvailableAsync?.()
-        .then((v) => {
-          if (!iptal && typeof v === 'boolean') setPusulaVar(v);
-        })
-        .catch(() => undefined);
-    } catch {
-      // bilinmiyor
-    }
+    const s = sensorleriYukle();
+    void s?.Magnetometer?.isAvailableAsync?.()
+      .then((v) => {
+        if (!iptal && typeof v === 'boolean') setPusulaVar(v);
+      })
+      .catch(() => undefined);
     return () => {
       iptal = true;
     };
   }, []);
 
+  // 1) İzin + kıble açısı. Sensörlerden BAĞIMSIZ: kıble açısı gelmeden de kadran döner.
   useEffect(() => {
-    let headingSubscription: { remove: () => void } | null = null;
     let isMounted = true;
+    const kibleYaz = (lat: number, lng: number) => {
+      if (!isMounted || !Number.isFinite(lat) || !Number.isFinite(lng)) return;
+      const aci = Qibla(new Coordinates(lat, lng));
+      kibleRef.current = aci;
+      setKibleAcisi(aci);
+      setKonum({ lat, lng });
+    };
 
-    const servisiBaslat = async () => {
+    const baslat = async () => {
       try {
-        // Konum izni yalnız OKUNUR (sade tasarım Dalga 4): Kıble artık bir sekme ve ilk
-        // odakta açıklamasız sistem diyaloğu fırlatmak Play'in "önce açıklama" kuralına
-        // aykırıdır. İzin yoksa ekran `DurumSatiri` ile açıklama → istek akışını sunar.
+        // Konum izni yalnız OKUNUR (sade tasarım Dalga 4): ilk odakta açıklamasız sistem
+        // diyaloğu Play'in "önce açıklama" kuralına aykırıdır; ekran `DurumSatiri` sunar.
         const izin = await Location.getForegroundPermissionsAsync();
         if (izin.status !== 'granted') {
           if (isMounted) {
             setIzinTekrarSorulabilir(typeof izin.canAskAgain === 'boolean' ? izin.canAskAgain : null);
             setHata('Kıble yönünü bulmak için konum izni gerekiyor.');
+            setYukleniyor(false);
           }
           return;
         }
@@ -134,74 +219,228 @@ export const useKible = (): UseKibleSonuc => {
           setIzinVerildi(true);
           setIzinTekrarSorulabilir(null);
           setHata(null);
+          // Sensörler bu noktada açılır (2. effect `izinVerildi`'ye bağlı) — GPS BEKLENMEZ.
+          setYukleniyor(false);
         }
 
-        // Mevcut konumu al
-        const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Balanced,
-        });
-
-        // Adhan kutuphanesi ile Kible acisini hesapla (Gercek Kuzey'e gore)
-        const coords = new Coordinates(location.coords.latitude, location.coords.longitude);
-        const qiblaAngle = Qibla(coords);
-        if (isMounted) setKibleAcisi(qiblaAngle);
-
-        // Gercek kuzey yonelimini al (manyetik sapmayi otomatik duzeltir)
-        // watchHeadingAsync trueHeading degerini dondurur
-        headingSubscription = await Location.watchHeadingAsync((headingData) => {
-          if (!isMounted) return;
-
-          // trueHeading manyetik sapmayi hesaba katarak gercek kuzeye gore aci verir
-          // magHeading ise sadece manyetik kuzeye goredir
-          const heading = headingData.trueHeading >= 0
-            ? headingData.trueHeading
-            : headingData.magHeading;
-
-          setPusulaYonelimi(heading);
-          if (typeof headingData.accuracy === 'number' && Number.isFinite(headingData.accuracy)) {
-            // İz ref'te tutulur (okumalar saniyede çok kez gelir); yalnız KARARLI değer çizilir.
-            const { iz, kararli } = dogrulukAdimi(dogrulukIzi.current, headingData.accuracy, Date.now());
-            dogrulukIzi.current = iz;
-            if (kararli !== null) setPusulaDogrulugu((o) => (o === kararli ? o : kararli));
+        // Son bilinen konum anında gelir; kıble açısı ≈11 km hatada bile ~0,1° değişir.
+        let sonBilinenVar = false;
+        try {
+          const son = await Location.getLastKnownPositionAsync?.();
+          if (son?.coords) {
+            kibleYaz(son.coords.latitude, son.coords.longitude);
+            sonBilinenVar = true;
           }
-        });
+        } catch {
+          // son bilinen konum yok — taze konumu bekle
+        }
+
+        try {
+          const taze = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+          kibleYaz(taze.coords.latitude, taze.coords.longitude);
+        } catch (err) {
+          if (sonBilinenVar) {
+            Logger.warn('Kible', 'Taze konum alinamadi, son bilinen konum kullaniliyor');
+            return;
+          }
+          throw err;
+        }
       } catch (err: unknown) {
         const hataMesaji = (err as Error)?.message || '';
         if (hataMesaji.includes('location is unavailable') || hataMesaji.includes('location services')) {
           Logger.warn('Kible', 'Konum servisi kullanilamiyor', hataMesaji);
-          if (isMounted) {
-            setHata('Konum servislerine erişilemiyor. Lütfen cihazınızın konum ayarlarını kontrol edin.');
-          }
+          if (isMounted) setHata('Konum servislerine erişilemiyor. Lütfen cihazınızın konum ayarlarını kontrol edin.');
         } else {
           Logger.error('Kible', 'Kible servisi hatasi', err);
-          if (isMounted) {
-            setHata('Kıble servisi başlatılamadı.');
-          }
+          if (isMounted) setHata('Kıble servisi başlatılamadı.');
         }
-      } finally {
         if (isMounted) setYukleniyor(false);
       }
     };
 
-    servisiBaslat();
-
+    void baslat();
     return () => {
       isMounted = false;
-      if (headingSubscription) {
-        headingSubscription.remove();
-      }
     };
   }, [deneme]);
 
+  // 2) Sensörler: yalnız izin varken, ekran etkin ve uygulama ön plandayken.
+  const calisiyor = izinVerildi && aktif && onPlanda;
+  useEffect(() => {
+    if (!calisiyor) return;
+    let isMounted = true;
+    const abonelikler: Abonelik[] = [];
+    const yerCekimi = new VektorSuzgeci(VEKTOR_SUZGECI_TAU_MS);
+    const manyetik = new VektorSuzgeci(VEKTOR_SUZGECI_TAU_MS);
+    const yonSuzgeci = new AcisalSuzgec(YON_SUZGECI_TAU_MS);
+    const denetim = new EksenDenetimi();
+    let sonManyetikMs = -Infinity;
+    let konumBasligi: { gercek: number; manyetik: number; ms: number } | null = null;
+    let manyetikSapma = 0;
+    let eksenBozuk = false;
+    let guvenYazildi: boolean | null = null;
+    let hizali = false;
+    let sonOzetMs = -Infinity;
+    let sonOzet: KibleOzeti = BOS_OZET;
+    const simdi = () => Date.now();
+
+    const ozetYaz = (o: KibleOzeti, zorla: boolean) => {
+      const t = simdi();
+      if (!zorla && t - sonOzetMs < OZET_ARALIGI_MS) return;
+      if (
+        o.hazir === sonOzet.hazir &&
+        o.baslik === sonOzet.baslik &&
+        o.fark === sonOzet.fark &&
+        o.hizali === sonOzet.hizali &&
+        o.dik === sonOzet.dik
+      ) {
+        return;
+      }
+      sonOzetMs = t;
+      sonOzet = o;
+      setOzet(o);
+    };
+
+    const yay = (gercekYon: number, egim: number | null, taban: DunyaTabani | null) => {
+      const t = simdi();
+      const baslik = yonSuzgeci.ekle(gercekYon, t);
+      const kible = kibleRef.current;
+      const fark = kible === null ? null : aciFarki(kible, baslik);
+      const yeniHizali = fark === null ? false : hizalandiMi(hizali, fark);
+      const oran = dikOrani(egim);
+      const kare: KibleKaresi = {
+        baslik,
+        surekliBaslik: yonSuzgeci.surekli,
+        fark,
+        dikOrani: oran,
+        egim,
+        taban,
+        manyetikSapma,
+      };
+      sonKare.current = kare;
+      dinleyiciler.current.forEach((d) => {
+        try {
+          d(kare);
+        } catch {
+          // bir çizim dinleyicisi patlarsa diğerleri sürsün
+        }
+      });
+      const durumDegisti = yeniHizali !== hizali || (oran >= 0.5) !== sonOzet.dik || !sonOzet.hazir;
+      hizali = yeniHizali;
+      ozetYaz(
+        { hazir: true, baslik: Math.round(baslik) % 360, fark: fark === null ? null : Math.round(fark), hizali, dik: oran >= 0.5 },
+        durumDegisti,
+      );
+    };
+
+    const hesapla = () => {
+      if (!isMounted) return;
+      const g = yerCekimi.deger;
+      const egim = g ? egimDerece(g) : null;
+      const m = manyetik.deger;
+      const t = simdi();
+      const vektorTaze = !!g && !!m && t - sonManyetikMs < MANYETIK_BAYAT_MS;
+      const taban = vektorTaze ? dunyaTabaniKur(g!, m!) : null;
+      const manyetikYon = taban ? azimut(taban, BAKIS_VEKTORU) : null;
+
+      // Eksen denetimi: düz tutuşta platform pusulasıyla karşılaştır (yalnız taze okumada).
+      if (manyetikYon !== null && egim !== null && egim < 30 && konumBasligi && t - konumBasligi.ms < 500) {
+        denetim.ekle(Math.abs(aciFarki(manyetikYon, konumBasligi.manyetik)));
+        if (denetim.bozuk && !eksenBozuk) {
+          eksenBozuk = true;
+          Logger.warn('Kible', 'Vektor yonu platform pusulasiyla uyusmuyor; konum servisi yonune dusuldu');
+        }
+        const guven = denetim.bozuk ? false : denetim.dogrulandi ? true : null;
+        if (guven !== guvenYazildi) {
+          guvenYazildi = guven;
+          setVektorGuvenilir(guven);
+        }
+      }
+
+      if (manyetikYon !== null && !eksenBozuk) {
+        yay(aciNormalize(manyetikYon + manyetikSapma), egim, taban);
+      } else if (konumBasligi && t - konumBasligi.ms < 1500) {
+        yay(konumBasligi.gercek, egim, null);
+      }
+    };
+
+    const baslat = async () => {
+      const s = sensorleriYukle();
+      if (s?.DeviceMotion) {
+        try {
+          s.DeviceMotion.setUpdateInterval?.(SENSOR_ARALIGI_MS);
+          abonelikler.push(
+            s.DeviceMotion.addListener((e) => {
+              const a = e?.accelerationIncludingGravity;
+              if (!a) return;
+              yerCekimi.ekle({ x: a.x, y: a.y, z: a.z }, simdi());
+              hesapla();
+            }),
+          );
+        } catch (err) {
+          Logger.warn('Kible', 'Hareket algilayicisi baslatilamadi', err);
+        }
+      }
+      if (s?.Magnetometer) {
+        try {
+          s.Magnetometer.setUpdateInterval?.(SENSOR_ARALIGI_MS);
+          abonelikler.push(
+            s.Magnetometer.addListener((e) => {
+              if (!e || !Number.isFinite(e.x)) return;
+              sonManyetikMs = simdi();
+              manyetik.ekle({ x: e.x, y: e.y, z: e.z }, sonManyetikMs);
+            }),
+          );
+        } catch (err) {
+          Logger.warn('Kible', 'Manyetometre baslatilamadi', err);
+        }
+      }
+      try {
+        const abonelik = await Location.watchHeadingAsync((h) => {
+          if (!isMounted) return;
+          const mag = typeof h.magHeading === 'number' ? h.magHeading : -1;
+          const ger = typeof h.trueHeading === 'number' && h.trueHeading >= 0 ? h.trueHeading : mag;
+          if (ger >= 0) {
+            if (h.trueHeading >= 0 && mag >= 0) manyetikSapma = aciFarki(h.trueHeading, mag);
+            konumBasligi = { gercek: ger, manyetik: mag >= 0 ? mag : ger, ms: simdi() };
+            // Vektör yolu yoksa (manyetometre/hareket algılayıcısı açılamadı) yön buradan.
+            if (simdi() - sonManyetikMs >= MANYETIK_BAYAT_MS || eksenBozuk) hesapla();
+          }
+          if (typeof h.accuracy === 'number' && Number.isFinite(h.accuracy)) {
+            const { iz, kararli } = dogrulukAdimi(dogrulukIzi.current, h.accuracy, simdi());
+            dogrulukIzi.current = iz;
+            if (kararli !== null) setPusulaDogrulugu((o) => (o === kararli ? o : kararli));
+          }
+        });
+        if (isMounted) abonelikler.push(abonelik);
+        else abonelik?.remove();
+      } catch (err) {
+        Logger.warn('Kible', 'Yon izlemesi baslatilamadi', err);
+      }
+    };
+
+    void baslat();
+    return () => {
+      isMounted = false;
+      abonelikler.forEach((a) => a?.remove());
+    };
+  }, [calisiyor]);
+
+  // Kıble açısı sonradan gelirse (taze konum) son kare yeni farkla yeniden yayılsın.
+  useEffect(() => {
+    const k = sonKare.current;
+    if (!k || kibleAcisi === null) return;
+    const kare = { ...k, fark: aciFarki(kibleAcisi, k.baslik) };
+    sonKare.current = kare;
+    dinleyiciler.current.forEach((d) => d(kare));
+  }, [kibleAcisi]);
+
   // Ayarlar'dan dönen kullanıcı izni vermiş olabilir. Öne gelişte izin yalnız OKUNUR
-  // (`getForegroundPermissionsAsync`, diyalog açmaz) ve ancak VERİLMİŞSE servis yeniden
-  // başlatılır. Eskiden doğrudan `setDeneme` çağrılıyordu → servis `request…` ile sistem
-  // diyaloğunu açıyor, diyalog kapanınca uygulama yine 'active' oluyor ve pencere döngüye
-  // giriyordu (reddeden kullanıcı izin penceresinden çıkamıyordu).
+  // (diyalog açmaz) ve ancak VERİLMİŞSE servis yeniden başlatılır (izin penceresi döngüsü dersi).
   useEffect(() => {
     if (izinVerildi || izinTekrarSorulabilir === null) return;
     let iptal = false;
-    let abonelik: { remove(): void } | undefined;
+    let abonelik: Abonelik;
     try {
       abonelik = AppState.addEventListener('change', (d) => {
         if (d !== 'active') return;
@@ -229,20 +468,12 @@ export const useKible = (): UseKibleSonuc => {
     setDeneme((n) => n + 1);
   }, []);
 
-  // Hedef acisi: Kullanicinin telefonunu cevirmesi gereken yon
-  // Pusula Yonelimi: Gercek kuzey (0) ne tarafta (heading)
-  // Kible Acisi: Kuzey'e gore Kabe (orn: 150 derece)
-  // Kabe'nin telefona gore acisi = kibleAcisi - pusulaYonelimi
-  const hedefAcisi = useMemo(() => {
-    let aci = kibleAcisi - pusulaYonelimi;
-    if (aci < 0) aci += 360;
-    return aci;
-  }, [kibleAcisi, pusulaYonelimi]);
-
   return {
     kibleAcisi,
-    pusulaYonelimi,
-    hedefAcisi,
+    konum,
+    ozet,
+    abone,
+    vektorGuvenilir,
     izinVerildi,
     yukleniyor,
     hata,
