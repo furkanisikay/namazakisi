@@ -198,6 +198,28 @@ describe('muhafizSlice', () => {
             expect(matrisYapisiGecerliMi(state.matris)).toBe(true);
         });
 
+        it('GECE SESSİZLİĞİ açıkça taşınır; alanı olmayan eski kayıtta KAPALI kalır (göç yok)', async () => {
+            mockStore.set(ANAHTAR, JSON.stringify({ presetGocuYapildi: true, kapaliAdimTemizligiYapildi: true }));
+            const s1 = yeniStore();
+            await s1.dispatch(muhafizAyarlariniYukle());
+            expect((s1.getState().muhafiz as MuhafizAyarlari).geceSessizligi).toBeUndefined();
+
+            mockStore.set(
+                ANAHTAR,
+                JSON.stringify({
+                    presetGocuYapildi: true,
+                    kapaliAdimTemizligiYapildi: true,
+                    geceSessizligi: { aktif: true, baslangicSaat: 22, baslangicDakika: 30 },
+                    varsayilanOnerisiGoruldu: true,
+                })
+            );
+            const s2 = yeniStore();
+            await s2.dispatch(muhafizAyarlariniYukle());
+            const st = s2.getState().muhafiz as MuhafizAyarlari;
+            expect(st.geceSessizligi).toEqual({ aktif: true, baslangicSaat: 22, baslangicDakika: 30 });
+            expect(st.varsayilanOnerisiGoruldu).toBe(true);
+        });
+
         it('fulfilled: eksik alanlar ?? ile initialState varsayılanından doldurulur', async () => {
             // Diskte yalnızca 'gelismisMod' var; diğer TÜM alanlar (aktif dahil) varsayılana
             // düşmeli — her bir alanın ?? sol-tarafı null/undefined dalını kapsar.
