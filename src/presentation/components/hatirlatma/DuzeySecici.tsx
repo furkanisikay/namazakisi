@@ -43,6 +43,11 @@ export type { HatirlatmaDuzeyi };
 /** Seçicinin değeri: dört düzey + (yalnız Hatırlatmalar/muhafız ekranında) kendi ayarı. */
 export type DuzeySecimi = HatirlatmaDuzeyi | 'ozel';
 
+/** Eski düzey (varsayılanlar değişmeden önceki kayıt): seçili kartın altyazısı ve cümlesi. */
+export const ESKI_DUZEY_ACIKLAMASI = 'Önceki ayarınız';
+export const eskiDuzeyCumlesi = (ad: string): string =>
+    `Önceki ${ad} ayarınız sürüyor. Güncel ${ad} için karta dokunun.`;
+
 /** Preset'ler sabit → ölçü bir kez (modül yüklenirken değil, ilk kullanımda). */
 let olculer: Record<HatirlatmaDuzeyi, DuzeyOlcusu | null> | null = null;
 export function duzeyOlculeri(): Record<HatirlatmaDuzeyi, DuzeyOlcusu | null> {
@@ -84,6 +89,11 @@ export interface DuzeySeciciProps {
      * düzey sesli adımları bildirimle kurar). Sihirbaz vermez: rıza maddesini kendisi gösterir.
      */
     sesliIzinVar?: boolean;
+    /**
+     * Seçili düzey eski tablolarla kurulu (varsayılanlar değişti, mevcut kayıt korunur).
+     * Seçili kart ve cümle yeni sayıyı SÖYLEMEZ — kullanıcının gerçek planı o değildir.
+     */
+    eskiDuzey?: boolean;
     style?: StyleProp<ViewStyle>;
     testID?: string;
 }
@@ -94,6 +104,7 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
     ozelGoster = false,
     sesliBilgiGoster = true,
     sesliIzinVar = true,
+    eskiDuzey = false,
     style,
     testID,
 }) {
@@ -105,7 +116,8 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
             ...HATIRLATMA_DUZEYLERI.map((d) => ({
                 deger: d as DuzeySecimi,
                 etiket: DUZEY_ADLARI[d],
-                aciklama: duzeyKisaAciklamasi(d, o[d], sesliIzinVar),
+                aciklama:
+                    eskiDuzey && d === secili ? ESKI_DUZEY_ACIKLAMASI : duzeyKisaAciklamasi(d, o[d], sesliIzinVar),
                 ikon: DUZEY_IKONLARI[d],
             })),
             ...(ozelVar
@@ -119,9 +131,14 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                   ]
                 : []),
         ],
-        [o, ozelVar, secili, sesliIzinVar],
+        [o, ozelVar, secili, sesliIzinVar, eskiDuzey],
     );
-    const cumle = secili === 'ozel' ? OZEL_DUZEY_CUMLESI : duzeyCumlesi(secili, o[secili], sesliIzinVar);
+    const cumle =
+        secili === 'ozel'
+            ? OZEL_DUZEY_CUMLESI
+            : eskiDuzey && secili !== 'kapali'
+              ? eskiDuzeyCumlesi(DUZEY_ADLARI[secili])
+              : duzeyCumlesi(secili, o[secili], sesliIzinVar);
     const sesliBilgi = secili !== 'ozel' && sesliBilgiGosterildiMi(secili, sesliBilgiGoster);
     const bilgiMetni = sesliBilgiMetni(usePlatformYetenekleri().sessizligiDelebilir);
     // Madde göründüğü/değiştiği an ekran okuyucuya söylenir (yalnız görsel kalmasın).

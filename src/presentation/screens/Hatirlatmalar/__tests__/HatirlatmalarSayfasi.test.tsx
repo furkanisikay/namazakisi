@@ -47,9 +47,10 @@ jest.mock('../../../../core/theme', () => ({
     }),
 }));
 jest.mock('../../../../core/feedback', () => ({ useFeedback: () => ({ butonTiklandiFeedback: jest.fn() }) }));
+const mockMatrisCoz = jest.fn((_k: unknown): unknown => ({}));
 jest.mock('../../../../core/muhafiz/motorAdaptoru', () => ({
     ...jest.requireActual('../../../../core/muhafiz/motorAdaptoru'),
-    muhafizMatrisiniCoz: () => ({}),
+    muhafizMatrisiniCoz: (k: unknown) => mockMatrisCoz(k),
 }));
 
 // Ağır kancalar: sayfanın sözleşmesini ölçüyoruz, kancaların kendisini değil (kendi testleri var).
@@ -300,5 +301,49 @@ describe('HatirlatmalarSayfasi — gece sessizliği', () => {
                 payload: { geceSessizligi: { aktif: true, baslangicSaat: 22, baslangicDakika: 30 } },
             })
         );
+    });
+});
+
+describe('HatirlatmalarSayfasi — "Daha az bildirim" önerisi (mevcut kullanıcı, bir kez)', () => {
+    const { presetMatrisiOlustur } = jest.requireActual('../../../../core/muhafiz/matrisIslemleri');
+    const { HATIRLATMA_PRESETLERI: P, ESKI_PRESET_SEVIYELERI: ESKI } = jest.requireActual('../../../store/muhafizSlice');
+    const eylemler = () => mockDispatch.mock.calls.map((c) => c[0] as { type?: string; payload?: Record<string, unknown> });
+
+    afterEach(() => mockMatrisCoz.mockImplementation(() => ({})));
+
+    it('eski Normal kaydında görünür; uygulayınca Normal + gece sessiz yazılır, "Geri al" önceki hâli BİREBİR yazar', () => {
+        const eski = presetMatrisiOlustur(ESKI.normal, false);
+        mockMatrisCoz.mockImplementation(() => eski);
+        const e = render(<HatirlatmalarSayfasi />);
+        fireEvent.press(e.getByTestId('varsayilan-oneri-uygula'));
+        const matrisEylemi = eylemler().find((a) => a.type === 'muhafiz/matrisiGuncelle') as unknown as { payload: { ogle: { seviyeler: unknown[] } } };
+        expect(matrisEylemi.payload.ogle.seviyeler).toHaveLength(3);
+        expect(eylemler()).toContainEqual(
+            expect.objectContaining({
+                payload: {
+                    yogunluk: 'normal',
+                    geceSessizligi: { aktif: true, baslangicSaat: 23, baslangicDakika: 0 },
+                    varsayilanOnerisiGoruldu: true,
+                },
+            })
+        );
+        mockDispatch.mockClear();
+        mockGeriAl.mock.calls[0][0].geriAl();
+        expect(eylemler()).toContainEqual(expect.objectContaining({ type: 'muhafiz/matrisiGuncelle', payload: eski }));
+        expect(eylemler()).toContainEqual(expect.objectContaining({ payload: { yogunluk: 'normal', geceSessizligi: undefined } }));
+    });
+
+    it('"Kapatın" kartı kalıcı gizler', () => {
+        const e = render(<HatirlatmalarSayfasi />);
+        fireEvent.press(e.getByTestId('varsayilan-oneri-kapat'));
+        expect(eylemler()).toContainEqual(expect.objectContaining({ payload: { varsayilanOnerisiGoruldu: true } }));
+    });
+
+    it('görülmüşse ya da zaten önerilen ayardaysa görünmez', () => {
+        durumKur({ muhafiz: { aktif: true, yogunluk: 'normal', varsayilanOnerisiGoruldu: true } });
+        expect(render(<HatirlatmalarSayfasi />).queryByTestId('varsayilan-oneri-karti')).toBeNull();
+        mockMatrisCoz.mockImplementation(() => presetMatrisiOlustur(P.normal.seviyeler, false));
+        durumKur({ muhafiz: { aktif: true, yogunluk: 'normal', geceSessizligi: { aktif: true, baslangicSaat: 23, baslangicDakika: 0 } } });
+        expect(render(<HatirlatmalarSayfasi />).queryByTestId('varsayilan-oneri-karti')).toBeNull();
     });
 });

@@ -420,11 +420,12 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         // Sesli onay modalla alınır (TEK RIZA); ayrı bilgi maddesi gerekmez.
                         sesliBilgiGoster={false}
                         sesliIzinVar={genelRiza.sesli}
+                        eskiDuzey={duzey.eskiDuzey}
                         testID="muhafiz-duzey"
                     />
                     {/* Görsel anlatı: seçilen düzeyin uyarıları zaman rayında — girişte ve
                         düzey değişince BİR KEZ oynar (ayar ekranında döngü yok). */}
-                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="muhafiz-duzey-onizlemesi" /> : null}
+                    {duzey.secili !== 'ozel' && !duzey.eskiDuzey ? <DuzeyOnizlemesi duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="muhafiz-duzey-onizlemesi" /> : null}
                 </View>
                 </AyarCapasi>
                 </AyarCapasi>

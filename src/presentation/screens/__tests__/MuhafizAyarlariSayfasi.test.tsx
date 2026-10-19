@@ -901,8 +901,15 @@ describe('MuhafizAyarlariSayfasi', () => {
       expect(rizaVerMock).toHaveBeenCalledWith({ sesliOnayi: true });
     });
 
+    // Güncel düzey tablolarıyla kurulu matris (eski kayıt DEĞİL — o "önceki ayarınız"dır).
+    const guncelMatris = (y: 'hafif' | 'normal' | 'yogun', sesli = false) => {
+      const { presetMatrisiOlustur } = require('../../../core/muhafiz/matrisIslemleri');
+      const { HATIRLATMA_PRESETLERI: P } = jest.requireActual('../../store/muhafizSlice');
+      return presetMatrisiOlustur(P[y].seviyeler, sesli);
+    };
+
     it('ZATEN SEÇİLİ preset + onay VARSA dokunuş hiçbir şey yapmaz', async () => {
-      const { getByLabelText, queryByText } = await kur({ yogunluk: 'normal', sesliOnayi: true });
+      const { getByLabelText, queryByText } = await kur({ yogunluk: 'normal', sesliOnayi: true, matris: guncelMatris('normal', true) });
       await act(async () => { fireEvent.press(getByLabelText(/^Normal\./)); });
 
       expect(queryByText('Sesli okuma açılsın mı?')).toBeNull();
@@ -910,11 +917,21 @@ describe('MuhafizAyarlariSayfasi', () => {
     });
 
     it('ZATEN SEÇİLİ sessiz preset (hafif) dokunuşu onay istemez', async () => {
-      const { getByLabelText, queryByText } = await kur({ yogunluk: 'hafif' });
+      const { getByLabelText, queryByText } = await kur({ yogunluk: 'hafif', matris: guncelMatris('hafif') });
       await act(async () => { fireEvent.press(getByLabelText(/^Hafif\./)); });
 
       expect(queryByText('Sesli okuma açılsın mı?')).toBeNull();
       expect(matrisiGuncelle).not.toHaveBeenCalled();
+    });
+
+    it('ESKİ DÜZEY: önceki Hafif kaydı yeni sayıyı SÖYLEMEZ; karta dokunmak güncel Hafif\'i uygular', async () => {
+      // Varsayılan fikstür eski (v1) tablolarla kurulu → "önceki ayarınız".
+      const { getByLabelText, getByText } = await kur({ yogunluk: 'hafif' });
+      expect(getByLabelText(/^Hafif\. Önceki ayarınız/)).toBeTruthy();
+      expect(getByText('Önceki Hafif ayarınız sürüyor. Güncel Hafif için karta dokunun.')).toBeTruthy();
+      await act(async () => { fireEvent.press(getByLabelText(/^Hafif\./)); });
+      const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+      expect(yeni.ogle.seviyeler).toHaveLength(1);
     });
   });
 

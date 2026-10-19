@@ -53,6 +53,8 @@ import { durumNotu } from '../../../core/cihaz/durumNotlari';
 import { muhafizMatrisiniCoz } from '../../../core/muhafiz/motorAdaptoru';
 import { DuzeySecici } from '../../components/hatirlatma/DuzeySecici';
 import { GeceSessizligiSatiri } from '../../components/hatirlatma/GeceSessizligiSatiri';
+import { VarsayilanOneriKarti } from '../../components/hatirlatma/VarsayilanOneriKarti';
+import { useVarsayilanOnerisi } from '../../hooks/useVarsayilanOnerisi';
 import { muhafizAyarlariniGuncelle } from '../../store/muhafizSlice';
 import { geceSessizliginiNormalize, type GeceSessizligi } from '../../../core/muhafiz/geceSessizligi';
 import { DuzeyOnizlemesi } from '../../components/hatirlatma/DuzeyOnizlemesi';
@@ -166,6 +168,7 @@ const HatirlatmalarIcerik: React.FC = () => {
         sayacAyarlari: sayac,
     });
     const duzey = useMuhafizDuzeyi(planlamayiKuyrugaAl);
+    const oneri = useVarsayilanOnerisi(planlamayiKuyrugaAl);
 
     // ── Bildirim sınırı: yapısal artan açma burada da simüle edilir ──
     const butce = useBildirimButcesi();
@@ -285,6 +288,8 @@ const HatirlatmalarIcerik: React.FC = () => {
             >
                 <DurumSatiri durum={durumNotu('bildirimIzni', cihaz)} onSonra={cihazYenile} style={{ marginBottom: 12 }} />
 
+                {oneri.goster ? <VarsayilanOneriKarti onUygula={oneri.uygula} onKapat={oneri.kapat} /> : null}
+
                 <AyarCapasi id="muhafizYogunluk">
                     <BolumBasligi metin="Ne kadar hatırlatalım?" />
                     <DuzeySecici
@@ -293,10 +298,12 @@ const HatirlatmalarIcerik: React.FC = () => {
                         ozelGoster={duzey.ozelVar}
                         sesliBilgiGoster={false}
                         sesliIzinVar={genelRiza.sesli}
+                        eskiDuzey={duzey.eskiDuzey}
                         testID="hatirlatma-duzeyi"
                     />
-                    {/* Görsel anlatı: girişte ve düzey değişince BİR KEZ (ayar ekranı — döngü yok). */}
-                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="hatirlatma-duzey-onizlemesi" /> : null}
+                    {/* Görsel anlatı: girişte ve düzey değişince BİR KEZ (ayar ekranı — döngü yok).
+                        Eski düzeyde çizilmez: resim yeni düzeyi gösterirdi (sessiz sapma). */}
+                    {duzey.secili !== 'ozel' && !duzey.eskiDuzey ? <DuzeyOnizlemesi duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="hatirlatma-duzey-onizlemesi" /> : null}
                 </AyarCapasi>
 
                 <BildirimButceKarti ozet={butce.ozet} onPress={rehber.karttanAc} />

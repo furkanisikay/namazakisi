@@ -77,14 +77,18 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
         id: 'sade-kurulum-ve-ana-ekran',
         platformlar: ['android', 'ios'],
-        surum: '0.46.0',
+        surum: '0.48.0',
         tarih: '2026-10-19',
         baslik: 'Daha sade uygulama',
         aciklama:
-            'Yeni sekmeler: Bugün, Kıble, Kaza, İlerleme, Ayarlar. Tüm hatırlatmalar tek sayfada; vakit kartında işaretleme ve geri alma tek dokunuşla.',
+            'Daha az bildirim, gece sessiz saatler ve tüm hatırlatmalar tek sayfada. Yeni sekmeler: Bugün, Kıble, Kaza, İlerleme, Ayarlar.',
         detayAciklama:
-            'Ayarlar artık ne yapmak istediğinize göre sıralı: Hatırlatmalar, Namaz vakitleri, Görünüm, Saat ve widget, Yedek, Yardım. Hatırlatmalar sayfasında en üstte "Ne kadar hatırlatalım?" sorusu var; altında her hatırlatma tek satır ve bir anahtar: vakit girince, vakit çıkmadan, cuma, camiye gitme vakti, yatmadan önce, toplantı çakışırsa, nafile, Ramazan, günü tamamlamadıysam ve özel gün. Ayrıntılı ayar "Kendim ayarlayayım" altında durur. Sesli okuma ve alarm izni bir kez sorulur, tüm hatırlatmalarda geçerlidir. Ana ekranda uyarılar üst üste yığılmaz; vakit kartı bildiğiniz görünümünde; "Kılındı olarak işaretle" düğmesi dokununca yumuşakça "Kılındı"ya dönüşür, yanlışlıkla işaretlediyseniz aynı düğmeye bir kez daha dokunarak geri alabilirsiniz. Alttaki sekmeler de sadeleşti: Kıble artık kendi sekmesinde; seri, kılma oranı ve rozetler tek "İlerleme" sekmesinde. Kaza defterinde kalan sayı ve vakit satırları öne çıktı; hedef, tempo, yeniden hesaplama ve geçmiş "Diğer" menüsünde. Vakitleri takvime ekledikten sonra ayar değiştirirseniz "Şimdi aktarın" bandı çıkar (bir sonraki aktarımınızdan itibaren).',
+            'Ayarlar artık ne yapmak istediğinize göre sıralı: Hatırlatmalar, Namaz vakitleri, Görünüm, Saat ve widget, Yedek, Yardım. Hatırlatmalar sayfasında en üstte "Ne kadar hatırlatalım?" sorusu var; altında her hatırlatma tek satır ve bir anahtar: vakit girince, vakit çıkmadan, gece sessiz saatler, cuma, camiye gitme vakti, yatmadan önce, toplantı çakışırsa, nafile, Ramazan, günü tamamlamadıysam ve özel gün. Normal düzey artık vakit başına üç hatırlatma gönderir ve telefonu titretir; sesli okuma yalnız siz açarsanız konuşur. Gece sessiz saatlerde (varsayılan 23:00 ile imsak arası) vakit çıkmadan hatırlatması gelmez; kurduğunuz sabah alarmı yine çalar. "Vakit çıkmadan" sayfasında her vakit için ayrı düzey seçebilirsiniz, örneğin akşam için Hafif. Mevcut ayarlarınız değişmedi: Hatırlatmalar sayfasındaki "Daha az bildirim" önerisiyle tek dokunuşta geçebilir, isterseniz geri alabilirsiniz. Ayrıntılı ayar "Kendim ayarlayayım" altında durur. Sesli okuma ve alarm izni bir kez sorulur, tüm hatırlatmalarda geçerlidir. Ana ekranda uyarılar üst üste yığılmaz; vakit kartı bildiğiniz görünümünde; "Kılındı olarak işaretle" düğmesi dokununca yumuşakça "Kılındı"ya dönüşür, yanlışlıkla işaretlediyseniz aynı düğmeye bir kez daha dokunarak geri alabilirsiniz. Alttaki sekmeler de sadeleşti: Kıble artık kendi sekmesinde; seri, kılma oranı ve rozetler tek "İlerleme" sekmesinde. Kaza defterinde kalan sayı ve vakit satırları öne çıktı; hedef, tempo, yeniden hesaplama ve geçmiş "Diğer" menüsünde. Vakitleri takvime ekledikten sonra ayar değiştirirseniz "Şimdi aktarın" bandı çıkar (bir sonraki aktarımınızdan itibaren).',
         detaylar: [
+            'Normal düzey: vakit başına üç hatırlatma, titreşimli; sesli okuma yalnız siz açarsanız',
+            'Gece sessiz saatler: 23:00 ile imsak arası hatırlatma gelmez (saati siz seçersiniz)',
+            'Her vakit için ayrı düzey: örneğin akşam Hafif, diğerleri Normal',
+            'Kurulumda kısa sorular: Kıldım\'ı işaretleyecek misiniz, sabah alarmı, cuma',
             'Tüm hatırlatmalar tek sayfada, her biri tek satır',
             'Sesli okuma ve alarm izni bir kez, her hatırlatmada geçerli',
             'Mezhep "Namaz vakitleri"nde, özel gün "Hatırlatmalar"da, kurulum "Yardım"da',
