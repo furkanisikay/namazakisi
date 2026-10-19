@@ -43,41 +43,66 @@ export interface EskiSeviyeDegerleri {
  * PRESET TASARIMI — neden boyle (kanit temelli):
  *
  * - Her EK hatirlatmada kabul olasiligi ~%30 duser (PMC5387195; 112 klinisyen,
- *   1,26M uyari, 3,5 yil) → tekrar korlestirir. Eski 'yogun' preset vakit basina
- *   15 bildirim uretiyordu (gunde 75); son 9'u kanitli bicimde etkisizdi.
+ *   1,26M uyari, 3,5 yil) → tekrar korlestirir.
  * - Kip (modalite) degisimi tekrardan cok daha etkili: tahliye deneyinde harekete
  *   gecme suresi yalniz ZIL ile 8 dk 15 sn, KONUSAN anons ile 1 dk 15 sn
  *   (Proulx & Sime, 1991, IAFSS).
- * → Cozum: tekrari kes, son adimda KANAL degistir (sesli anons ekle).
  *
- * Uretilen uyari sayilari (motorla dogrulandi, `matrisIslemleri.test.ts`):
- *   hafif 4/vakit (0 sesli) · normal 6/vakit (1 sesli) · yogun 7/vakit (2 sesli)
+ * VARSAYILANLAR (persona calismasi 2026-10-19, sahip karari): uygulamayi kuran ve
+ * ayarlara hic bakmayan kisi cogu zaman "Kildim"a da basmaz → uyarilar kesilmez.
+ * Bu yuzden duzeyler TEKRARSIZDIR: hafif 1 · normal 3 · yogun 5 uyari/vakit
+ * (motorla olculur, `duzeyOzeti.test.ts`). Normal ve yogunda titresim ACIK (sessizdeki
+ * telefonda fark edilen tek kanal). Sesli okuma preset'te tanimli kalir ama yalniz
+ * acik RIZAYLA (`sesliIzinVar`) acilir; sihirbaz onu ayri bir kartta sorar.
  *
  * 'hafif' KASTEN sessizdir: hafifi secen kullanici tam da sesin sorun oldugu
- * ortamdaki kisidir; sesli eklemek bu preset'in tek ayirt edici ozelligini yok eder.
- * Sesli adimlarda BILDIRIM kanali da acik birakilir — ses tek kanal olmamali; TTS
- * yoksa/sessizse gorsel iz kalmali.
+ * ortamdaki kisidir. Sesli adimlarda BILDIRIM kanali da acik birakilir — ses tek kanal
+ * olmamali; TTS yoksa/sessizse gorsel iz kalmali.
  */
 const HAFIF_SEVIYELERI: PresetSeviyeleri = [
-    { kademe: 'nazik', esikDk: 30, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
-    { kademe: 'uyari', esikDk: 10, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
-    { kademe: 'sert', esikDk: 5, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
-    { kademe: 'acil', esikDk: 2, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    { kademe: 'uyari', esikDk: 15, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
 ];
 
 const NORMAL_SEVIYELERI: PresetSeviyeleri = [
-    { kademe: 'nazik', esikDk: 45, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
-    { kademe: 'uyari', esikDk: 25, siklik: { herDk: 10 }, kanallar: { bildirim: true }, acilKanal: false },
-    { kademe: 'sert', esikDk: 10, siklik: { herDk: 5 }, kanallar: { bildirim: true }, acilKanal: false },
-    { kademe: 'acil', esikDk: 3, siklik: 'birkez', kanallar: { bildirim: true, sesli: true }, acilKanal: false },
+    { kademe: 'uyari', esikDk: 25, siklik: 'birkez', kanallar: { bildirim: true, titresim: true }, acilKanal: false },
+    { kademe: 'sert', esikDk: 10, siklik: 'birkez', kanallar: { bildirim: true, titresim: true }, acilKanal: false },
+    { kademe: 'acil', esikDk: 3, siklik: 'birkez', kanallar: { bildirim: true, sesli: true, titresim: true }, acilKanal: false },
 ];
 
 const YOGUN_SEVIYELERI: PresetSeviyeleri = [
-    { kademe: 'nazik', esikDk: 60, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
-    { kademe: 'uyari', esikDk: 30, siklik: { herDk: 10 }, kanallar: { bildirim: true }, acilKanal: false },
-    { kademe: 'sert', esikDk: 15, siklik: { herDk: 5 }, kanallar: { bildirim: true }, acilKanal: false },
-    { kademe: 'acil', esikDk: 6, siklik: { herDk: 3 }, kanallar: { bildirim: true, sesli: true }, acilKanal: true },
+    { kademe: 'nazik', esikDk: 45, siklik: 'birkez', kanallar: { bildirim: true, titresim: true }, acilKanal: false },
+    { kademe: 'uyari', esikDk: 25, siklik: 'birkez', kanallar: { bildirim: true, titresim: true }, acilKanal: false },
+    { kademe: 'sert', esikDk: 15, siklik: 'birkez', kanallar: { bildirim: true, titresim: true }, acilKanal: false },
+    { kademe: 'acil', esikDk: 6, siklik: 'birkez', kanallar: { bildirim: true, sesli: true, titresim: true }, acilKanal: true },
+    { kademe: 'acil', esikDk: 2, siklik: 'birkez', kanallar: { bildirim: true, sesli: true, titresim: true }, acilKanal: true },
 ];
+
+/**
+ * ESKI (v1) DUZEY TABLOLARI — DONDURULMUS. Yalniz bir kerelik preset gocu
+ * (`presetGocunuUygula`, bayragi olmayan cok eski kayitlar) ve "eski duzey"
+ * tanimasi okur: varsayilanlar degisti diye mevcut kullanicinin plani DEGISMEMELI
+ * (sahip karari). Yeni bir yuzey bunlari YAZMAZ. Nobetci: `muhafizSlice.test.ts > ESKI KAYIT`.
+ */
+export const ESKI_PRESET_SEVIYELERI: Record<'hafif' | 'normal' | 'yogun', PresetSeviyeleri> = {
+    hafif: [
+        { kademe: 'nazik', esikDk: 30, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+        { kademe: 'uyari', esikDk: 10, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+        { kademe: 'sert', esikDk: 5, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+        { kademe: 'acil', esikDk: 2, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    ],
+    normal: [
+        { kademe: 'nazik', esikDk: 45, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+        { kademe: 'uyari', esikDk: 25, siklik: { herDk: 10 }, kanallar: { bildirim: true }, acilKanal: false },
+        { kademe: 'sert', esikDk: 10, siklik: { herDk: 5 }, kanallar: { bildirim: true }, acilKanal: false },
+        { kademe: 'acil', esikDk: 3, siklik: 'birkez', kanallar: { bildirim: true, sesli: true }, acilKanal: false },
+    ],
+    yogun: [
+        { kademe: 'nazik', esikDk: 60, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+        { kademe: 'uyari', esikDk: 30, siklik: { herDk: 10 }, kanallar: { bildirim: true }, acilKanal: false },
+        { kademe: 'sert', esikDk: 15, siklik: { herDk: 5 }, kanallar: { bildirim: true }, acilKanal: false },
+        { kademe: 'acil', esikDk: 6, siklik: { herDk: 3 }, kanallar: { bildirim: true, sesli: true }, acilKanal: true },
+    ],
+};
 
 /**
  * Eski global `seviyeN` alanlari preset'in ILK DORT KRONOLOJIK adimindan
@@ -124,9 +149,9 @@ const presetOlustur = (
  * Preset ayarlari - kullanici basitce secsin
  */
 export const HATIRLATMA_PRESETLERI: Record<Exclude<HatirlatmaYogunlugu, 'ozel'>, HatirlatmaPreseti> = {
-    hafif: presetOlustur('Yalnız bildirim', '🔔', HAFIF_SEVIYELERI),
-    normal: presetOlustur('Dengeli · sesli', '🔔🔔', NORMAL_SEVIYELERI),
-    yogun: presetOlustur('Israrcı · sesli', '🔔🔔🔔', YOGUN_SEVIYELERI),
+    hafif: presetOlustur('Tek hatırlatma', '🔔', HAFIF_SEVIYELERI),
+    normal: presetOlustur('Dengeli', '🔔🔔', NORMAL_SEVIYELERI),
+    yogun: presetOlustur('Israrcı', '🔔🔔🔔', YOGUN_SEVIYELERI),
 };
 
 /**
@@ -225,7 +250,8 @@ function presetGocunuUygula(
     // 'ozel' (veya diskte bozuk/bilinmeyen yoğunluk): DOKUNMA.
     if (!presetliYogunlukMu(yogunluk)) return {};
 
-    const preset = HATIRLATMA_PRESETLERI[yogunluk];
+    // DONDURULMUS v1 tablo: varsayilanlar sonradan degisti; eski kaydin plani degismemeli.
+    const preset = presetOlustur('', '', ESKI_PRESET_SEVIYELERI[yogunluk]);
     return {
         esikler: preset.esikler,
         sikliklar: preset.sikliklar,

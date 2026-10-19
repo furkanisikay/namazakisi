@@ -18,6 +18,7 @@ import reducer, {
     ozelMatrisYedegiGuncelle,
     ozelYogunluguGeriYukle,
     HATIRLATMA_PRESETLERI,
+    ESKI_PRESET_SEVIYELERI,
     presetAyarlariniOlustur,
     MuhafizAyarlari,
 } from '../muhafizSlice';
@@ -209,8 +210,10 @@ describe('muhafizSlice', () => {
             expect(state.gelismisMod).toBe(true); // diskten gelen
             expect(state.aktif).toBe(false); // varsayılan (aktif eksik -> ?? sağ taraf)
             expect(state.yogunluk).toBe('normal'); // varsayılan
-            expect(state.esikler).toEqual(HATIRLATMA_PRESETLERI.normal.esikler); // varsayılan
-            expect(state.sikliklar).toEqual(HATIRLATMA_PRESETLERI.normal.sikliklar); // varsayılan
+            // Bayrağı olmayan ESKİ kayıt → bir kerelik göç DONDURULMUŞ v1 'normal' tablosunu yazar
+            // (varsayılanlar sonradan değişti; eski kaydın planı değişmemeli).
+            expect(state.esikler).toEqual({ seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 });
+            expect(state.sikliklar).toEqual({ seviye1: 45, seviye2: 10, seviye3: 5, seviye4: 3 });
         });
 
         it('fulfilled: aktif=false diskte olsa bile ?? ile EZİLMEZ (yanlış-pozitif null guard)', async () => {
@@ -583,9 +586,10 @@ describe('HATIRLATMA_PRESETLERI — üretilen uyarı sayıları', () => {
     };
 
     test.each([
-        ['hafif', 4, 0],
-        ['normal', 6, 1],
-        ['yogun', 7, 2],
+        // Varsayılan düzeyler TEKRARSIZ (persona çalışması 2026-10-19): 1 / 3 / 5.
+        ['hafif', 1, 0],
+        ['normal', 3, 1],
+        ['yogun', 5, 2],
     ] as const)('%s: %i bildirim, %i sesli anons (vakit başına)', (yogunluk, toplam, sesli) => {
         const adimlar = plan(yogunluk);
         expect(adimlar).toHaveLength(toplam);
@@ -609,16 +613,18 @@ describe('HATIRLATMA_PRESETLERI — üretilen uyarı sayıları', () => {
                 // Hiçbir hücre YALNIZ sesli değildir
                 expect(adim.kanallar.sesli === true && !adim.kanallar.bildirim).toBe(false);
             }
-            expect(seviyeler[seviyeler.length - 1].kanallar).toEqual({ bildirim: true, sesli: true });
+            expect(seviyeler[seviyeler.length - 1].kanallar).toEqual({ bildirim: true, sesli: true, titresim: true });
         }
     });
 
-    test('eşikler kesin azalan sıradadır (nazik → acil)', () => {
+    test('eşikler kesin azalan sıradadır ve ton geri gitmez', () => {
+        const tonSirasi = (k: string) => SEVIYE_KADEMELERI.indexOf(k as (typeof SEVIYE_KADEMELERI)[number]);
         for (const yogunluk of ['hafif', 'normal', 'yogun'] as const) {
             const s = HATIRLATMA_PRESETLERI[yogunluk].seviyeler;
             const esikler = s.map((a) => a.esikDk);
-            // Ton sırası da korunur (bugünkü preset'ler nazik → acil, 4 adım).
-            expect(s.map((a) => a.kademe)).toEqual(SEVIYE_KADEMELERI);
+            for (let i = 1; i < s.length; i++) {
+                expect(tonSirasi(s[i].kademe)).toBeGreaterThanOrEqual(tonSirasi(s[i - 1].kademe));
+            }
             for (let i = 1; i < esikler.length; i++) {
                 expect(esikler[i]).toBeLessThan(esikler[i - 1]);
             }
@@ -629,22 +635,29 @@ describe('HATIRLATMA_PRESETLERI — üretilen uyarı sayıları', () => {
         // Aciliyet artık `acilKanal` alanında; eskiden `bildirimSesi: 'alarm'` ile
         // taşınıyordu ve preset her uygulandığında kullanıcının seçtiği sesi silerdi.
         expect(HATIRLATMA_PRESETLERI.yogun.seviyeler[3].acilKanal).toBe(true);
-        expect(HATIRLATMA_PRESETLERI.normal.seviyeler[3].acilKanal).toBe(false);
+        expect(HATIRLATMA_PRESETLERI.normal.seviyeler[2].acilKanal).toBe(false);
         // Preset ARTIK SES YAZMAZ — kullanıcı seçimi korunsun diye.
         expect(HATIRLATMA_PRESETLERI.yogun.seviyeler[3]).not.toHaveProperty('bildirimSesi');
     });
 
     test("eski `sikliklar` alanı 'birkez'i eşiğe eşitleyerek türetilir", () => {
         // Eski şemada 'birkez' yok; esik === siklik eski motorda da tek atış demek.
+        // Eksik adımlar son adımla doldurulur (`eskiDegerler`).
         expect(HATIRLATMA_PRESETLERI.hafif.sikliklar).toEqual({
-            seviye1: 30, seviye2: 10, seviye3: 5, seviye4: 2,
+            seviye1: 15, seviye2: 15, seviye3: 15, seviye4: 15,
         });
         expect(HATIRLATMA_PRESETLERI.normal.sikliklar).toEqual({
-            seviye1: 45, seviye2: 10, seviye3: 5, seviye4: 3,
+            seviye1: 25, seviye2: 10, seviye3: 3, seviye4: 3,
         });
         expect(HATIRLATMA_PRESETLERI.yogun.sikliklar).toEqual({
-            seviye1: 60, seviye2: 10, seviye3: 5, seviye4: 3,
+            seviye1: 45, seviye2: 25, seviye3: 15, seviye4: 6,
         });
+    });
+
+    test('ESKI KAYIT: dondurulmuş v1 tabloları eski sayıları üretmeye devam eder (4 / 6 / 7)', () => {
+        const say = (y: 'hafif' | 'normal' | 'yogun') =>
+            vakitUyariPlaniOlustur(presetMatrisiOlustur(ESKI_PRESET_SEVIYELERI[y], true).ogle, TARAMA_SINIRI_DK).length;
+        expect([say('hafif'), say('normal'), say('yogun')]).toEqual([4, 6, 7]);
     });
 });
 
@@ -657,7 +670,7 @@ describe('presetAyarlariniOlustur (sihirbaz yolu)', () => {
     test('sesli preset matrisi KANALLARIYLA birlikte üretir + onayı işaretler', () => {
         const ayar = presetAyarlariniOlustur('yogun');
         for (const v of MUHAFIZ_VAKITLERI) {
-            expect(ayar.matris![v].seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
+            expect(ayar.matris![v].seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true, titresim: true });
             expect(ayar.matris![v].seviyeler[3].anonsMetni).not.toBe('');
         }
         expect(ayar.sesliOnayi).toBe(true);
@@ -697,8 +710,8 @@ describe('presetAyarlariniOlustur (sihirbaz yolu)', () => {
             ...presetAyarlariniOlustur('normal'),
         }));
 
-        expect(sonra.matris!.imsak.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
-        expect(sonra.matris!.imsak.seviyeler[3].esikDk).toBe(3);
+        expect(sonra.matris!.imsak.seviyeler[2].kanallar).toEqual({ bildirim: true, sesli: true, titresim: true });
+        expect(sonra.matris!.imsak.seviyeler[2].esikDk).toBe(3);
         expect(sonra.sesliOnayi).toBe(true);
     });
 });
@@ -1047,8 +1060,9 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
         await store.dispatch(muhafizAyarlariniYukle());
 
         const state = store.getState().muhafiz as MuhafizAyarlari;
-        expect(state.esikler).toEqual(HATIRLATMA_PRESETLERI.yogun.esikler);
-        expect(state.sikliklar).toEqual(HATIRLATMA_PRESETLERI.yogun.sikliklar);
+        // DONDURULMUŞ v1 'yogun' tablosu (eski kaydın planı değişmez).
+        expect(state.esikler).toEqual({ seviye1: 60, seviye2: 30, seviye3: 15, seviye4: 6 });
+        expect(state.sikliklar).toEqual({ seviye1: 60, seviye2: 10, seviye3: 5, seviye4: 3 });
     });
 
     it('taze kurulum bayrakla başlar — göç hiç tetiklenmez', () => {

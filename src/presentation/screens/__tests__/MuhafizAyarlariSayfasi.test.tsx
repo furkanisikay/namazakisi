@@ -628,26 +628,27 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(queryByText('Sesli okuma açılsın mı?')).toBeNull();
     expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-    expect(yeni.ogle.seviyeler[0].esikDk).toBe(30); // hafif preset
+    expect(yeni.ogle.seviyeler[0].esikDk).toBe(15); // hafif preset (tek adım)
     expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'hafif' });
   });
 
   it('preset KANALLARI ve ACİLİYETİ yazar; kullanıcının SEÇTİĞİ SESİ KORUR', async () => {
     const matris = varsayilanMatris();
-    matris.ogle.seviyeler[3].kanallar = {};
-    matris.ogle.seviyeler[3].acilKanal = true;
-    matris.ogle.seviyeler[3].bildirimSesi = OZEL_SES;
-    matris.ogle.seviyeler[3].sesAdi = 'Hızır';
+    matris.ogle.seviyeler[0].kanallar = {};
+    matris.ogle.seviyeler[0].acilKanal = true;
+    matris.ogle.seviyeler[0].bildirimSesi = OZEL_SES;
+    matris.ogle.seviyeler[0].sesAdi = 'Hızır';
     const { getByLabelText } = await kur({ matris });
     await act(async () => { fireEvent.press(getByLabelText(/^Hafif\./)); });
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-    expect(yeni.ogle.seviyeler[3].esikDk).toBe(2);
-    expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true }); // 'sessiz' ezildi
-    expect(yeni.ogle.seviyeler[3].acilKanal).toBe(false); // aciliyet yapışmadı
+    expect(yeni.ogle.seviyeler).toHaveLength(1); // adım sayısı preset'ten
+    expect(yeni.ogle.seviyeler[0].esikDk).toBe(15);
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ bildirim: true }); // 'sessiz' ezildi
+    expect(yeni.ogle.seviyeler[0].acilKanal).toBe(false); // aciliyet yapışmadı
     // Kullanıcının müziği preset'e dokununca SİLİNMEZ (mimarinin temel sözü).
-    expect(yeni.ogle.seviyeler[3].bildirimSesi).toBe(OZEL_SES);
-    expect(yeni.ogle.seviyeler[3].sesAdi).toBe('Hızır');
+    expect(yeni.ogle.seviyeler[0].bildirimSesi).toBe(OZEL_SES);
+    expect(yeni.ogle.seviyeler[0].sesAdi).toBe('Hızır');
   });
 
   it('kullanıcının anons metni preset uygulanınca korunur', async () => {
@@ -754,7 +755,7 @@ describe('MuhafizAyarlariSayfasi', () => {
       await act(async () => { fireEvent.press(getByLabelText('Sesli okumayı açın')); });
 
       const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-      expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
+      expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true, titresim: true });
       expect(yeni.ogle.seviyeler[3].esikDk).toBe(6);
       expect(yeni.ogle.seviyeler[3].anonsMetni).toContain('{vakit}');
       expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'yogun' });
@@ -769,8 +770,8 @@ describe('MuhafizAyarlariSayfasi', () => {
       expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
       const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
       // Sesli kanal KAPATILIR ama adım susturulmaz: bildirim kanalı açık kalır
-      expect(yeni.ogle.seviyeler[3].kanallar).toMatchObject({ bildirim: true, sesli: false });
-      expect(yeni.ogle.seviyeler[3].esikDk).toBe(3); // zamanlama yine uygulandı
+      expect(yeni.ogle.seviyeler[2].kanallar).toMatchObject({ bildirim: true, sesli: false });
+      expect(yeni.ogle.seviyeler[2].esikDk).toBe(3); // zamanlama yine uygulandı
       // Onay verilmedi → kalıcılaşmaz, bir dahaki sefere yine sorulur
       expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'normal' });
     });
@@ -781,7 +782,7 @@ describe('MuhafizAyarlariSayfasi', () => {
 
       expect(queryByText('Sesli okuma açılsın mı?')).toBeNull();
       const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-      expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
+      expect(yeni.ogle.seviyeler[2].kanallar).toEqual({ bildirim: true, sesli: true, titresim: true });
       // Zaten onaylı → tekrar yazılmaz
       expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'normal' });
     });
@@ -856,7 +857,7 @@ describe('MuhafizAyarlariSayfasi', () => {
 
       await act(async () => { fireEvent.press(getByLabelText('Sesli okumayı açın')); });
       const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-      expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true }); // sesli GERÇEKTEN açıldı
+      expect(yeni.ogle.seviyeler[2].kanallar).toEqual({ bildirim: true, sesli: true, titresim: true }); // sesli GERÇEKTEN açıldı
       expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'normal' });
       expect(rizaVerMock).toHaveBeenCalledWith({ sesliOnayi: true });
     });
