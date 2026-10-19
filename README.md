@@ -83,10 +83,6 @@ Kaynak koddaki sürüm: **0.52.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/11-muhafiz-butce-karti.webp" width="160" alt="Muhafız bütçe kartı" title="Muhafız bütçe kartı">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/12-bildirim-siniri-rehberi.webp" width="160" alt="Bildirim sınırı rehberi" title="Bildirim sınırı rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/13-bildirim-ayarlari.webp" width="160" alt="Bildirim ayarları" title="Bildirim ayarları">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/14-cuma.webp" width="160" alt="Cuma" title="Cuma">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/15-yatis.webp" width="160" alt="Yatış" title="Yatış">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/16-camiye-git.webp" width="160" alt="Camiye git" title="Camiye git">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/17-bileklik-rehberi.webp" width="160" alt="Bileklik rehberi" title="Bileklik rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/18-nafile.webp" width="160" alt="Nafile" title="Nafile">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/19-nafile-teheccud.webp" width="160" alt="Nafile teheccüd" title="Nafile teheccüd">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/20-now-bar.webp" width="160" alt="Now bar" title="Now bar">
@@ -118,10 +114,6 @@ Kaynak koddaki sürüm: **0.52.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/11-muhafiz-butce-karti.webp" width="160" alt="Muhafız bütçe kartı" title="Muhafız bütçe kartı">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/12-bildirim-siniri-rehberi.webp" width="160" alt="Bildirim sınırı rehberi" title="Bildirim sınırı rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/13-bildirim-ayarlari.webp" width="160" alt="Bildirim ayarları" title="Bildirim ayarları">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/14-cuma.webp" width="160" alt="Cuma" title="Cuma">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/15-yatis.webp" width="160" alt="Yatış" title="Yatış">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/16-camiye-git.webp" width="160" alt="Camiye git" title="Camiye git">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/17-bileklik-rehberi.webp" width="160" alt="Bileklik rehberi" title="Bileklik rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/18-nafile.webp" width="160" alt="Nafile" title="Nafile">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/19-nafile-teheccud.webp" width="160" alt="Nafile teheccüd" title="Nafile teheccüd">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/20-now-bar.webp" width="160" alt="Now bar" title="Now bar">
