@@ -26,6 +26,8 @@
  * (`muhafizBildirimIdOlustur`, kalanDk etkin çıkışa göre) dört yerde aynıdır.
  */
 
+import { GECE_CAPASI_ANONS_SABLONU } from '../utils/muhafizMetinYardimcisi';
+
 export interface GeceSessizligi {
     aktif: boolean;
     /** Başlangıç saati (0–23). 12'den küçükse gece yarısından SONRA başlar. */
@@ -95,6 +97,8 @@ export interface SessizlikPenceresi {
     tarih: string;
     giris?: Date;
     cikis: Date;
+    /** Uyarlama sonucu: çıkış sessizlik başlangıcına çekildi (metin/ton çapa dilinde). */
+    geceCapasi?: true;
 }
 
 /**
@@ -106,13 +110,32 @@ export interface SessizlikPenceresi {
 export function geceSessizliginePencereyiUyarla<T extends SessizlikPenceresi>(
     ayar: GeceSessizligi | null | undefined,
     pencere: T
-): T | null {
+): (T & { geceCapasi?: true }) | null {
     if (!ayar?.aktif || pencere.vakit !== 'yatsi') return pencere;
     const bas = geceBaslangicMs(pencere.tarih, ayar);
     if (bas >= pencere.cikis.getTime()) return pencere;
     if (pencere.giris && pencere.giris.getTime() >= bas) return null;
-    return { ...pencere, cikis: new Date(bas) };
+    return { ...pencere, cikis: new Date(bas), geceCapasi: true };
 }
+
+/**
+ * Çapalı pencerenin UYARISI: acil ton ve acil kanal YOK (acil penceresi gerçek çıkışa
+ * göredir; çapalı adım Rahatsız Etmeyin'i delmez), ton en fazla "uyarı" (2) — iOS'ta
+ * kesinti seviyesi de buna bağlı. Sesli okuma çapa şablonunu okur. Ton kimliğin
+ * parçası olduğu için (`muhafizBildirimIdOlustur`) bu uyarlama arka plan, ön plan ve
+ * saatte AYNI fonksiyondan yapılır. Gerçek alarm alanına dokunulmaz.
+ */
+export function geceCapasiUyarisi<U extends { seviye: number; acilKanal?: boolean; anonsMetni: string }>(uyari: U): U {
+    return {
+        ...uyari,
+        seviye: Math.min(uyari.seviye, GECE_CAPASI_EN_SERT_TON),
+        acilKanal: false,
+        anonsMetni: GECE_CAPASI_ANONS_SABLONU,
+    };
+}
+
+/** Çapalı adımın en sert tonu (2 = "uyarı"; 3 sert ve 4 acil "vakit çıkıyor" dilidir). */
+export const GECE_CAPASI_EN_SERT_TON = 2;
 
 /** Ekran metni: "23:00" */
 export function geceBaslangicMetni(ayar: Pick<GeceSessizligi, 'baslangicSaat' | 'baslangicDakika'>): string {

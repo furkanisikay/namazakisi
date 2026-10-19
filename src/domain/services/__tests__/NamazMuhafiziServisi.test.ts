@@ -1221,8 +1221,9 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             await geceYaz(true);
             await muhafiz.acilistaKilinanlariYukle();
             muhafiz.baslat(bildirimSpx);
-            // Çapasız (imsağa 5 sa) hiçbir eşik tutmazdı; çapalı çıkışa 10 dk = 3. adım konuşur.
-            expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 3, expect.any(String));
+            // Çapasız (imsağa 5 sa) hiçbir eşik tutmazdı; çapalı çıkışa 10 dk = 3. adım konuşur —
+            // ama ÇAPA DİLİNDE: ton en fazla 2, "vakit çıkıyor" yok (arka planla aynı metin).
+            expect(bildirimSpx).toHaveBeenCalledWith('Gece sessizliğine 10 dk var; yatmadan yatsını kıl.', 2, expect.any(String));
         });
 
         it('kapalıyken (alan yok = mevcut kullanıcı) uyarı eskisi gibi gelir', async () => {

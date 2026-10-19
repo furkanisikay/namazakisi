@@ -35,6 +35,7 @@ import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServ
 import type { SaatTeslimBaglami } from '../../core/saat/saatAyarlari';
 import type { GeceSessizligi } from '../../core/muhafiz/geceSessizligi';
 import { geceSessizliginiOku } from '../../data/local/LocalGeceSessizligiOkuyucu';
+import { geceCapasiBasligi, geceCapasiGovdesi } from '../../core/utils/muhafizMetinYardimcisi';
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -242,8 +243,13 @@ export class ArkaplanMuhafizServisi {
             // METIN `olcuDk` ile uretilir (`kalanDk` ZAMANLAMA alanidir): giris
             // yonunde ikisi farklidir ve kalanDk verilirse basligi "YATSI ·
             // 655 dk · VAKİT ÇIKIYOR" gibi ters bir cumle olur.
-            const baslik = basligiOlustur(vakit.vakit, seviye, uyari.olcuDk, yon);
-            const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye, yon, uyari.olcuDk);
+            // Gece sessizliği çapası: vakit çıkmıyor, sessizlik başlıyor → çapa dili (tek kaynak).
+            const baslik = vakit.geceCapasi
+                ? geceCapasiBasligi(vakit.vakit)
+                : basligiOlustur(vakit.vakit, seviye, uyari.olcuDk, yon);
+            const mesaj = vakit.geceCapasi
+                ? geceCapasiGovdesi(uyari.kalanDk)
+                : this.bildirimMesajiOlustur(vakit.vakit, seviye, yon, uyari.olcuDk);
 
             // TESLIM platforma gore ayrisir (Android: kanal + TTS alarmi,
             // iOS: kesinti seviyesi + paket sesi). Id paylasilan yardimcidan gelir

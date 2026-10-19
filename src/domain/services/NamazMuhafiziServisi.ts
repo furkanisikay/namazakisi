@@ -6,10 +6,12 @@ import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunKapisiniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { geceSessizliginiOku } from '../../data/local/LocalGeceSessizligiOkuyucu';
 import {
+    geceCapasiUyarisi,
     geceSessizligiSusturuyorMu,
     geceSessizliginePencereyiUyarla,
     type GeceSessizligi,
 } from '../../core/muhafiz/geceSessizligi';
+import { geceCapasiGovdesi } from '../../core/utils/muhafizMetinYardimcisi';
 import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 import { telefonAnonsuKonusurMu, type SaatAyarlari } from '../../core/saat/saatAyarlari';
 import { ozelGunAktifMi, type OzelGunKapisiGirdisi } from '../../core/seri/ozelGunKapisi';
@@ -318,7 +320,13 @@ export class NamazMuhafiziServisi {
         if (!seviyeTetiklenirMi(kazanan, olcuDk, vakitAyari.seviyeler, { yon, pencereUzunluguDk })) return;
 
         // TON: acil kısıtı (son 15 dk, yalnız çıkış yönü) plan ile AYNI kapıdan.
-        const aktifSeviye = etkinSeviyeNo(kazanan, yon);
+        // Gece sessizliği çapası: ton en fazla "uyarı", acil yok, anons çapa şablonu — arka
+        // planla AYNI saf uyarlama (`geceCapasiUyarisi`) → kimlik ve metin aynı.
+        const capa = etkin.geceCapasi
+            ? geceCapasiUyarisi({ seviye: etkinSeviyeNo(kazanan, yon), acilKanal: false, anonsMetni: kazanan.anonsMetni ?? '' })
+            : null;
+        const aktifSeviye = (capa ? capa.seviye : etkinSeviyeNo(kazanan, yon)) as SeviyeNo;
+        const anonsSeviyesi: SeviyeAyari = capa ? { ...kazanan, anonsMetni: capa.anonsMetni } : kazanan;
 
         // GERCEK ALARM (issue #74) — CIFT SES KURALI: adimin ilk tetiginde sistem alarmi
         // uygulama acikken de calar (kendi sesi + titresimi). On plan o dakikada ne anons
@@ -334,7 +342,7 @@ export class NamazMuhafiziServisi {
 
         if (!sistemAlarmi) {
             // Faz 5: uygulama ACIKKEN de sesli anons konussun.
-            this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs, yon, vakitGunu);
+            this.onPlanAnonsuPlanla(vakit as MuhafizVakti, anonsSeviyesi, aktifSeviye, kalanDk, kalanSureMs, yon, vakitGunu);
 
             // Faz 6: uygulama ACIKKEN bildirim golgeligine bir sey dusmez (banner
             // ekranda cizilir) → KANAL titresimi de islemez. On planda titresimi
@@ -344,7 +352,7 @@ export class NamazMuhafiziServisi {
         }
 
         if (this.onBildirim) {
-            const mesaj = this.seviyeMesajiOlustur(vakit, aktifSeviye, olcuDk, yon);
+            const mesaj = capa ? geceCapasiGovdesi(kalanDk) : this.seviyeMesajiOlustur(vakit, aktifSeviye, olcuDk, yon);
             // Dördüncü argüman YALNIZ alarm anında: alarm kanalı kapalı akış birebir eski çağrı.
             if (sistemAlarmi) this.onBildirim(mesaj, aktifSeviye, kazanan.bildirimSesi, true);
             else this.onBildirim(mesaj, aktifSeviye, kazanan.bildirimSesi);

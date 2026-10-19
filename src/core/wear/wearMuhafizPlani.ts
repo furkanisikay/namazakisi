@@ -32,7 +32,13 @@ import { VARSAYILAN_PENCERE_YONU } from '../muhafiz/pencereTipleri';
 import { pencereUzunluguDkHesapla } from '../muhafiz/pencereUzunlugu';
 import { muhafizBildirimIdOlustur } from '../muhafiz/anonsKimligi';
 import { kimliktenOran, muhafizGovdesiSec } from '../muhafiz/muhafizGovdesi';
-import { geceSessizligiSusturuyorMu, geceSessizliginePencereyiUyarla, type GeceSessizligi } from '../muhafiz/geceSessizligi';
+import {
+    geceCapasiUyarisi,
+    geceSessizligiSusturuyorMu,
+    geceSessizliginePencereyiUyarla,
+    type GeceSessizligi,
+} from '../muhafiz/geceSessizligi';
+import { geceCapasiBasligi, geceCapasiGovdesi } from '../utils/muhafizMetinYardimcisi';
 
 /** Plan ufku: 2 gün. Bağlantısız bir gece + ertesi gün kapsanır. */
 export const WEAR_PLAN_UFKU_MS = 48 * 60 * 60 * 1000;
@@ -76,6 +82,8 @@ export interface VakitPenceresi {
     tarih: string;
     giris: Date;
     cikis: Date;
+    /** Gece sessizliği çapası (telefonla aynı metin/ton/kimlik). */
+    geceCapasi?: true;
 }
 
 export interface WearMuhafizGirdisi {
@@ -153,7 +161,8 @@ export function pencereninUyarilari(
         pencereUzunluguDk,
     });
     const cikisMs = pencere.cikis.getTime();
-    return plan.map((u) => {
+    return plan.map((motor) => {
+        const u = pencere.geceCapasi ? geceCapasiUyarisi(motor) : motor;
         const id = muhafizBildirimIdOlustur(pencere.vakit, u.seviye, pencere.tarih, u.kalanDk);
         const anons =
             sesliAnonsGerekliMi(u.kanallar) && u.anonsMetni.trim().length > 0
@@ -165,8 +174,10 @@ export function pencereninUyarilari(
             tarih: pencere.tarih,
             vakit: pencere.vakit,
             seviye: u.seviye,
-            baslik: basligiOlustur(pencere.vakit, u.seviye, u.olcuDk, yon),
-            govde: muhafizGovdesiSec(pencere.vakit, u.seviye, yon, () => kimliktenOran(id), u.olcuDk),
+            baslik: pencere.geceCapasi ? geceCapasiBasligi(pencere.vakit) : basligiOlustur(pencere.vakit, u.seviye, u.olcuDk, yon),
+            govde: pencere.geceCapasi
+                ? geceCapasiGovdesi(u.kalanDk)
+                : muhafizGovdesiSec(pencere.vakit, u.seviye, yon, () => kimliktenOran(id), u.olcuDk),
             titresim: titresimGerekliMi(u.kanallar),
             acil: muhafizAcilKanalMi(u.seviye, u.bildirimSesi, u.acilKanal),
             adim: u.adimIndeks,

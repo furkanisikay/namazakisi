@@ -28,7 +28,12 @@ import {
     type SaatTeslimBaglami,
 } from '../saat/saatAyarlari';
 import { muhafizUyandirmasiMi } from '../saat/uyandirmaKapisi';
-import { geceSessizligiSusturuyorMu, geceSessizliginePencereyiUyarla, type GeceSessizligi } from './geceSessizligi';
+import {
+    geceCapasiUyarisi,
+    geceSessizligiSusturuyorMu,
+    geceSessizliginePencereyiUyarla,
+    type GeceSessizligi,
+} from './geceSessizligi';
 
 /** Bir vaktin bugünkü penceresi. `tarih` vaktin AİT OLDUĞU gündür (yatsı dün olabilir). */
 export interface MuhafizVakitZamani {
@@ -43,6 +48,8 @@ export interface MuhafizVakitZamani {
      * vaktin uyarıları BÜTÇE ARTIĞIDIR ([yarininImsagiKipi]).
      */
     yarininImsagi?: true;
+    /** Gece sessizliği çapası: çıkış sessizlik başlangıcıdır (`geceSessizliginePencereyiUyarla`). */
+    geceCapasi?: true;
 }
 
 /** Teslimciye gidecek tek bir uyarının metinsiz hâli. */
@@ -241,7 +248,9 @@ export function vakitTeslimAdaylari(
     // yol (saat kapalı) birebir eskisi: tarama başlangıcı ve süzgeç değişmez.
     const saatUyandirir = !!saat && saatUyandiriyorMu(saat);
     const tarama = saatUyandirir ? (yon === 'girisindenItibaren' ? 1 : Number.MAX_SAFE_INTEGER) : suankiOlcu;
-    for (const ham of vakitUyariPlaniOlustur(vakitAyari, tarama, { pencereUzunluguDk })) {
+    for (const motor of vakitUyariPlaniOlustur(vakitAyari, tarama, { pencereUzunluguDk })) {
+        // Çapalı yatsı: ton/acil/anons çapa diline (kimlik de buradan → ön plan ve saatle aynı).
+        const ham = vakit.geceCapasi ? geceCapasiUyarisi(motor) : motor;
         const ozgunMs = cikisMs - ham.kalanDk * 60 * 1000;
         const id = muhafizBildirimIdOlustur(vakit.vakit, ham.seviye, vakit.tarih, ham.kalanDk);
         // Saat W3 — uyandırma: telefonun anı TEK kuraldan (`uyandirmaTelefonMs`): saatte

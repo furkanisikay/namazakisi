@@ -183,3 +183,24 @@ export function bildirimGovdesiOlustur(
       return "Kıldıysan 'Kıldım'a bas; kılmadıysan hemen namaza dur.";
   }
 }
+
+/**
+ * GECE SESSİZLİĞİ ÇAPASI METİNLERİ (yatsı uyarısı sessizlik başlangıcına çapalandığında).
+ *
+ * Çapalı uyarıda vakit ÇIKMIYOR — yalnız gece sessizliği başlıyor. "Vakit çıkıyor",
+ * "son N dakika", "kaçıyor" ve vaktin sonuna özgü nass bu yüzden KULLANILMAZ (yalan olur).
+ * Kayıt ibadete çağrıdır ("sen" + emir), suçlama yok. Başlık önden okunur (vakit adı başta).
+ * Telefon (arka plan + ön plan) ve saat yükü bu üç değerden üretir. Nöbetçi:
+ * `geceSessizligi.test.ts > ÇAPALI METİN`.
+ */
+export function geceCapasiBasligi(vakit: VakitAdi): string {
+    return `${VAKIT_ADLARI[vakit]} · uyumadan önce kıl ⏰`;
+}
+
+/** Gövde — `kalanDk` sessizliğin başlangıcına kalan dakikadır (vaktin çıkışına DEĞİL). */
+export function geceCapasiGovdesi(kalanDk: number): string {
+    return `Gece sessizliğine ${kalanDk} dk var; yatmadan yatsını kıl.`;
+}
+
+/** Sesli okuma şablonu ({vakit}, {süre} yer tutucuları `anonsMetniniCoz` ile çözülür). */
+export const GECE_CAPASI_ANONS_SABLONU = 'Gece sessizliğine {süre} dakika var. Yatmadan {vakit} namazını kıl.';

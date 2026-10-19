@@ -12,6 +12,9 @@ import {
     geceSessizliginiNormalize,
 } from '../geceSessizligi';
 import { muhafizBildirimIdOlustur } from '../anonsKimligi';
+import { muhafizAcilKanalMi } from '../motorAdaptoru';
+import { anonsMetniniCoz } from '../anonsMetni';
+import { geceCapasiBasligi, geceCapasiGovdesi } from '../../utils/muhafizMetinYardimcisi';
 import { muhafizTeslimPlaniOlustur, vakitTeslimAdaylari, type MuhafizVakitZamani } from '../muhafizTeslimPlani';
 import { presetMatrisiOlustur } from '../matrisIslemleri';
 import { HATIRLATMA_PRESETLERI } from '../../../presentation/store/muhafizSlice';
@@ -143,5 +146,52 @@ describe('geceSessizliginePencereyiUyarla — yatsı çapası', () => {
         const kisa = { ...yatsi, cikis: yerel(21, 22, 30) };
         expect(geceSessizliginePencereyiUyarla(ACIK, kisa)).toBe(kisa);
         expect(geceSessizliginePencereyiUyarla(ACIK, { ...yatsi, giris: yerel(21, 23, 0) })).toBeNull();
+    });
+});
+
+/**
+ * NÖBETÇİ — ÇAPALI METİN: çapalı yatsıda vakit ÇIKMIYOR; "vakit çıkıyor / son N dakika /
+ * kaçıyor" ve vakte-sona özgü dil YALAN olur. Acil ton ve acil kanal (DND delme) yok.
+ */
+describe('ÇAPALI METİN — yasaklı ifade yok, acil kanal yok', () => {
+    const YASAK = /çıkıyor|ÇIKIYOR|son \d+ dakika|kaçıyor|KAÇIYOR|daralıyor/;
+    const yatsi: MuhafizVakitZamani = { vakit: 'yatsi', giris: yerel(21, 22, 38), cikis: yerel(22, 3, 24), tarih: '2026-06-21' };
+    // Eski kayıt gibi acilKanal tanımsız + yoğun düzey (acil adımlar) — en kötü durum.
+    const matris = presetMatrisiOlustur(HATIRLATMA_PRESETLERI.yogun.seviyeler, true);
+    for (const s of matris.yatsi.seviyeler) delete (s as { acilKanal?: boolean }).acilKanal;
+
+    it('telefon planı: ton ≤ 2, acil kanal yok, anons ve metin çapa dilinde', () => {
+        const plan = muhafizTeslimPlaniOlustur({ matris, vakitler: [yatsi], simdi: yerel(21, 20, 0), geceSessizligi: ACIK });
+        expect(plan.length).toBeGreaterThan(0);
+        for (const a of plan) {
+            expect(a.uyari.seviye).toBeLessThanOrEqual(2);
+            expect(muhafizAcilKanalMi(a.uyari.seviye, a.uyari.bildirimSesi, a.uyari.acilKanal)).toBe(false);
+            expect(a.id).toBe(muhafizBildirimIdOlustur('yatsi', a.uyari.seviye, '2026-06-21', a.uyari.kalanDk));
+            const okunus = anonsMetniniCoz(a.uyari.anonsMetni, 'yatsi', a.uyari.olcuDk, a.yon);
+            for (const metin of [geceCapasiBasligi('yatsi'), geceCapasiGovdesi(a.uyari.kalanDk), okunus]) {
+                expect(metin).not.toMatch(YASAK);
+            }
+        }
+    });
+
+    it('saat yükü aynı kimliği ve aynı metni taşır', () => {
+        const kayitlar = wearMuhafizPlaniOlustur({
+            koordinat: { lat: 41.01, lng: 28.97 },
+            bugunIso: '2026-06-21',
+            simdiMs: yerel(21, 12, 0).getTime(),
+            aktif: true,
+            matris,
+            kilinanlar: {},
+            geceSessizligi: ACIK,
+        })
+            .flat()
+            .filter((k) => k.vakit === 'yatsi' && k.tarih === '2026-06-21');
+        expect(kayitlar.length).toBeGreaterThan(0);
+        for (const k of kayitlar) {
+            expect(k.seviye).toBeLessThanOrEqual(2);
+            expect(k.acil).toBe(false);
+            expect(k.baslik).toBe(geceCapasiBasligi('yatsi'));
+            for (const m of [k.baslik, k.govde, k.anons ?? '']) expect(m).not.toMatch(YASAK);
+        }
     });
 });
