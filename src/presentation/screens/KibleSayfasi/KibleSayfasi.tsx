@@ -10,6 +10,8 @@ import { useKibleGeriBildirimi } from '../../hooks/useKibleGeriBildirimi';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { DurumSatiri } from '../../components/ortak/DurumSatiri';
 import { Depolama } from '../../../data/local/Depolama';
+import { useAppSelector } from '../../store/hooks';
+import { konumMetniHesapla } from '../../../core/ayarlar/konumMetni';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { PusulaGorunumu } from './PusulaGorunumu';
 import { KameraGorunumu } from './KameraGorunumu';
@@ -25,13 +27,13 @@ const SEKMELER: Array<{ key: Mod; label: string; a11yLabel: string; aciklama: st
     key: 'pusula',
     label: 'Pusula',
     a11yLabel: 'Pusula modu',
-    aciklama: 'Kâbe işareti üstteki çentiğe gelince kıble yönündesiniz. Telefonu dikleştirince pusula ufka yatar.',
+    aciklama: 'Kâbe işareti üstteki çentiğe gelince kıble yönündesiniz.',
   },
   {
     key: 'kamera',
     label: 'Kamera',
     a11yLabel: 'Kamera modu',
-    aciklama: 'Telefonu dik tutup çevrenize bakın; Kâbe işareti kıble yönünde belirir. İnternet gerekmez.',
+    aciklama: 'Telefonu dik tutun; Kâbe işareti kıble yönünde belirir.',
   },
 ];
 
@@ -48,6 +50,19 @@ export const KibleSayfasi = () => {
   const odakta = useIsFocused();
   const hareketAzalt = useHareketAzalt();
   const kible = useKible(odakta);
+  const konumKaydi = useAppSelector((s) => s.konum);
+  // Yalnız gerçek bir yer adı (yer tutucu metinler — "Konum seçilmedi" vb. — gösterilmez).
+  const yerAdi = (() => {
+    if (!konumKaydi) return null;
+    const ad = konumMetniHesapla({
+      konumModu: konumKaydi.konumModu,
+      gpsAdres: konumKaydi.gpsAdres,
+      seciliIlceAdi: konumKaydi.seciliIlceAdi,
+      seciliIlAdi: konumKaydi.seciliIlAdi,
+    });
+    return ['Konum seçilmedi', 'Konum takip ediliyor', 'GPS konumu alındı'].includes(ad) ? null : ad;
+  })();
+  const pusulaYok = kible.pusulaVar === false;
   const aktifSekme = SEKMELER.find((t) => t.key === mod) ?? SEKMELER[0];
   useKibleGeriBildirimi(kible.ozet, odakta && kible.izinVerildi);
 
@@ -107,18 +122,6 @@ export const KibleSayfasi = () => {
         )}
       </View>
     );
-  } else if (kible.pusulaVar === false && mod === 'pusula') {
-    govde = (
-      <View style={styles.orta}>
-        <FontAwesome5 name="compass" size={32} color={renkler.metinIkincil} />
-        <Text style={[styles.hataMetni, { color: renkler.metin, marginTop: 12 }]}>Bu telefonda pusula algılayıcısı yok.</Text>
-        {kible.kibleAcisi !== null && (
-          <Text style={[styles.bilgiMetni, { color: renkler.metinIkincil }]}>
-            Kıble, kuzeyden saat yönünde {Math.round(kible.kibleAcisi)}°.
-          </Text>
-        )}
-      </View>
-    );
   } else if (mod === 'kamera') {
     govde = (
       <KameraGorunumu
@@ -141,7 +144,9 @@ export const KibleSayfasi = () => {
         abone={kible.abone}
         pusulaDogrulugu={kible.pusulaDogrulugu}
         hareketAzalt={hareketAzalt}
-        onKameraya={kameraya}
+        onKameraya={pusulaYok ? undefined : kameraya}
+        statik={pusulaYok}
+        yerAdi={yerAdi}
       />
     );
   }
@@ -175,9 +180,18 @@ export const KibleSayfasi = () => {
             </TouchableOpacity>
           ))}
         </View>
-        <Text testID="kible-mod-aciklamasi" style={[styles.modAciklama, { color: renkler.metinIkincil }]}>
-          {aktifSekme.aciklama}
-        </Text>
+        {/* Tek satır, yalnız işe yaradığında: yükleme/hata/izin ekranında ve pusulasız cihazda
+            (statik kadran kendi bilgi satırını taşır) gizli — duruma uymayan yönerge yalan olurdu. */}
+        {odakta && !kible.yukleniyor && !kible.hata && !(pusulaYok && mod === 'pusula') && (
+          <Text
+            testID="kible-mod-aciklamasi"
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={[styles.modAciklama, { color: renkler.metinIkincil }]}
+          >
+            {aktifSekme.aciklama}
+          </Text>
+        )}
       </View>
 
       <View style={styles.content}>{govde}</View>

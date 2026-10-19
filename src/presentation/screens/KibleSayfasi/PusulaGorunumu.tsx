@@ -30,10 +30,19 @@ export const PusulaGorunumu: React.FC<{
   pusulaDogrulugu: number | null;
   hareketAzalt: boolean;
   onKameraya?: () => void;
-}> = ({ kibleAcisi, konum, ozet, abone, pusulaDogrulugu, hareketAzalt, onKameraya }) => {
+  /**
+   * Cihazda pusula algılayıcısı yok: kadran KUZEY YUKARI sabit çizilir, Kâbe kıble açısında
+   * durur, dönen hiçbir şey yoksa da ekran tam bir pusuladır (mağaza karesi simülatörde
+   * bu dalı çeker). Yön cümlesi yerine büyük açı + yer adı.
+   */
+  statik?: boolean;
+  /** Konumun görünen adı ("Fatih, İstanbul") ya da bilinmiyor. */
+  yerAdi?: string | null;
+}> = ({ kibleAcisi, konum, ozet, abone, pusulaDogrulugu, hareketAzalt, onKameraya, statik = false, yerAdi = null }) => {
   const renkler = useRenkler();
   const { width, height } = useWindowDimensions();
-  const S = Math.min(width * KADRAN_ORANI, height * 0.46, 420);
+  // Kadran ekranın görsel merkezini doldurur: üst/alt metinler sabit yükseklikte, gerisi kadran.
+  const S = Math.min(width * KADRAN_ORANI, height * 0.52, 440);
   const R = S * 0.4; // kadrandaki Kâbe noktasının yarıçapı (KadranCizimi: y=20/200)
   const KABE = Math.round(S * 0.13);
 
@@ -47,11 +56,13 @@ export const PusulaGorunumu: React.FC<{
 
   useEffect(
     () =>
-      abone((k) => {
+      statik
+        ? undefined
+        : abone((k) => {
         surekli.value = k.surekliBaslik;
         dik.value = k.dikOrani;
       }),
-    [abone, surekli, dik],
+    [abone, surekli, dik, statik],
   );
 
   const kadranStili = useAnimatedStyle(() => ({
@@ -88,7 +99,11 @@ export const PusulaGorunumu: React.FC<{
   const ipucu = kalibrasyonIpucu(pusulaDogrulugu);
   const vurgu = ozet.hizali ? renkler.birincil : renkler.metinIkincil;
   const mesafe = konum ? mesafeMetni(kabeyeMesafeKm(konum.lat, konum.lng)) : null;
-  const cumle = !ozet.hazir
+  const cumle = statik
+    ? kibleAcisi === null
+      ? 'Konumunuz alınıyor…'
+      : `Kıble kuzeyden ${Math.round(kibleAcisi)}°`
+    : !ozet.hazir
     ? 'Pusula hazırlanıyor…'
     : kibleAcisi === null || ozet.fark === null
       ? 'Konumunuz alınıyor…'
@@ -97,14 +112,24 @@ export const PusulaGorunumu: React.FC<{
   return (
     <View style={styles.kap}>
       <View style={styles.ust}>
-        <Text
-          testID="kible-yon-cumlesi"
-          style={[styles.cumle, { color: ozet.hizali ? renkler.birincil : renkler.metin }]}
-          accessibilityRole="header"
-        >
-          {cumle}
-        </Text>
-        {kibleAcisi !== null && (
+        {statik && kibleAcisi !== null ? (
+          <Text testID="kible-statik-aci" style={[styles.buyukAci, { color: renkler.metin }]} accessibilityLabel={cumle}>
+            {Math.round(kibleAcisi)}°
+          </Text>
+        ) : (
+          <Text
+            testID="kible-yon-cumlesi"
+            style={[styles.cumle, { color: ozet.hizali ? renkler.birincil : renkler.metin }]}
+            accessibilityRole="header"
+          >
+            {cumle}
+          </Text>
+        )}
+        {statik && kibleAcisi !== null ? (
+          <Text style={[styles.alt, { color: renkler.metinIkincil }]}>
+            {[yerAdi, mesafe ? `Kâbe ${mesafe} uzakta` : null].filter(Boolean).join(', ') || 'Kuzeyden saat yönünde'}
+          </Text>
+        ) : kibleAcisi !== null && (
           <Text style={[styles.alt, { color: renkler.metinIkincil }]}>
             {mesafe ? `Kâbe ${mesafe} uzakta, ` : ''}kuzeyden {Math.round(kibleAcisi)}°
           </Text>
@@ -120,13 +145,15 @@ export const PusulaGorunumu: React.FC<{
           <Text style={[styles.ufukMetni, { color: renkler.metinIkincil }]}>ufuk</Text>
         </Animated.View>
 
-        {/* Sabit çentik: telefonun baktığı yön */}
-        <View style={[styles.centik, { top: S * 0.06 - 14 }]}>
-          <FontAwesome5 name="caret-down" size={30} color={vurgu} />
-        </View>
+        {/* Sabit çentik: telefonun baktığı yön (statikte anlamsız: kadran kuzey yukarı). */}
+        {!statik && (
+          <View style={[styles.centik, { top: S * 0.06 - 14 }]}>
+            <FontAwesome5 name="caret-down" size={30} color={vurgu} />
+          </View>
+        )}
 
         <Animated.View
-          style={[{ width: S, height: S, marginTop: S * 0.12, opacity: ozet.hazir ? 1 : 0.35 }, kadranStili]}
+          style={[{ width: S, height: S, marginTop: S * 0.12, opacity: ozet.hazir || statik ? 1 : 0.35 }, kadranStili]}
         >
           <KadranCizimi
             boyut={S}
@@ -139,7 +166,7 @@ export const PusulaGorunumu: React.FC<{
           />
         </Animated.View>
 
-        {kibleAcisi !== null && ozet.hazir && (
+        {kibleAcisi !== null && (ozet.hazir || statik) && (
           <Animated.View
             pointerEvents="none"
             testID="kible-kabe-isareti"
@@ -149,6 +176,7 @@ export const PusulaGorunumu: React.FC<{
           </Animated.View>
         )}
 
+        {!statik && (
         <View pointerEvents="none" style={[styles.merkez, { top: S * 0.12 + S / 2 - S * 0.17, left: S / 2 - S * 0.17 }]}>
           <HizaHalkasi
             hizali={ozet.hizali}
@@ -158,9 +186,19 @@ export const PusulaGorunumu: React.FC<{
             hareketAzalt={hareketAzalt}
           />
         </View>
+        )}
       </View>
 
-      {ipucu === 'belirgin' && (
+      {statik && (
+        <View style={styles.statikBilgi}>
+          <FontAwesome5 name="info-circle" size={13} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
+          <Text testID="kible-statik-bilgi" style={[styles.bilgiSatiri, { color: renkler.metinIkincil }]}>
+            Bu cihazda pusula yok; kuzeye göre yönü gösteriyoruz.
+          </Text>
+        </View>
+      )}
+
+      {!statik && ipucu === 'belirgin' && (
         <View
           testID="kible-kalibrasyon-belirgin"
           accessible
@@ -173,12 +211,12 @@ export const PusulaGorunumu: React.FC<{
           </Text>
         </View>
       )}
-      {ipucu === 'sonuk' && (
+      {!statik && ipucu === 'sonuk' && (
         <Text style={[styles.bilgi, { color: renkler.metinIkincil }]}>
-          Yön kayıyorsa telefonunuzu havada 8 çizer gibi hareket ettirin; mıknatıs ve metallerden uzak durun.
+          Yön kayıyorsa telefonunuzu havada 8 çizer gibi hareket ettirin.
         </Text>
       )}
-      {ozet.dik && onKameraya && (
+      {!statik && ozet.dik && onKameraya && (
         <TouchableOpacity
           onPress={onKameraya}
           accessibilityRole="button"
@@ -194,7 +232,10 @@ export const PusulaGorunumu: React.FC<{
 };
 
 const styles = StyleSheet.create({
-  kap: { flex: 1, alignItems: 'center', paddingHorizontal: 16, paddingBottom: 16 },
+  kap: { flex: 1, alignItems: 'center', justifyContent: 'space-evenly', paddingHorizontal: 16, paddingBottom: 16 },
+  buyukAci: { fontSize: 44, fontWeight: '800', textAlign: 'center', fontVariant: ['tabular-nums'], letterSpacing: -1 },
+  statikBilgi: { flexDirection: 'row', alignItems: 'center', maxWidth: 340 },
+  bilgiSatiri: { fontSize: 13, textAlign: 'center' },
   ust: { alignItems: 'center', minHeight: 64, justifyContent: 'center', marginTop: 4 },
   cumle: { fontSize: 22, fontWeight: '700', textAlign: 'center', fontVariant: ['tabular-nums'] },
   alt: { fontSize: 14, marginTop: 4, textAlign: 'center', fontVariant: ['tabular-nums'] },

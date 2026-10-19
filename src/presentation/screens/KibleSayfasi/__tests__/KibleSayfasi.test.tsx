@@ -11,6 +11,15 @@ jest.mock('../../../hooks/useKible', () => {
   return { ...gercek, useKible: jest.fn() };
 });
 jest.mock('@react-navigation/native');
+const mockKonum = {
+  konumModu: 'manuel',
+  gpsAdres: null,
+  seciliIlceAdi: 'Fatih',
+  seciliIlAdi: 'İstanbul',
+};
+jest.mock('../../../store/hooks', () => ({
+  useAppSelector: (sec: (s: unknown) => unknown) => sec({ konum: mockKonum }),
+}));
 jest.mock('../../../../core/theme');
 jest.mock('../../../../core/feedback/HaptikServisi', () => ({
   HaptikServisi: { basariTitresimi: jest.fn(() => Promise.resolve()) },
@@ -116,7 +125,7 @@ describe('KibleSayfasi', () => {
     const { getByLabelText, getByTestId, queryByTestId } = render(<KibleSayfasi />);
     fireEvent.press(getByLabelText('Kamera modu'));
     expect(queryByTestId('mock-webview')).toBeNull();
-    expect(getByTestId('kible-mod-aciklamasi').props.children).toContain('İnternet gerekmez');
+    expect(getByTestId('kible-mod-aciklamasi').props.children).toContain('dik tutun');
   });
 
   it('odakta değilken hiçbir görünüm çizilmez ve sensörler kapalı istenir', () => {
@@ -189,11 +198,27 @@ describe('KibleSayfasi', () => {
     expect(b.getByText('Kıble servisi başlatılamadı.')).toBeTruthy();
   });
 
-  it('pusula algılayıcısı yoksa açıyı sözle verir', () => {
-    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaVar: false }));
-    const { getByText } = render(<KibleSayfasi />);
-    expect(getByText('Bu telefonda pusula algılayıcısı yok.')).toBeTruthy();
-    expect(getByText('Kıble, kuzeyden saat yönünde 152°.')).toBeTruthy();
+  it('pusula algılayıcısı yoksa TAM statik pusula: kuzey yukarı, Kâbe 152°, büyük açı + yer, tek bilgi satırı', () => {
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaVar: false, ozet: ozet({ hazir: false, fark: null }) }));
+    const { getByTestId, queryByTestId, getByText, queryByLabelText } = render(<KibleSayfasi />);
+    expect(getByTestId('kible-statik-aci').props.children).toEqual([152, '°']);
+    expect(getByText(/^Fatih, İstanbul, Kâbe 2\.\d{3} km uzakta$/)).toBeTruthy();
+    expect(getByTestId('kible-kabe-isareti')).toBeTruthy();
+    expect(getByTestId('kible-statik-bilgi').props.children).toBe('Bu cihazda pusula yok; kuzeye göre yönü gösteriyoruz.');
+    // Duruma uymayan yönerge ("çentiğe gelince…") ve dönen pusula ipuçları YOK.
+    expect(queryByTestId('kible-mod-aciklamasi')).toBeNull();
+    expect(queryByTestId('kible-yon-cumlesi')).toBeNull();
+    expect(queryByLabelText('Kamerayla görün')).toBeNull();
+  });
+
+  it('yükleme ve hata ekranında mod açıklaması gizli; normalde tek satır', () => {
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ yukleniyor: true }));
+    const a = render(<KibleSayfasi />);
+    expect(a.queryByTestId('kible-mod-aciklamasi')).toBeNull();
+    a.unmount();
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu());
+    const b = render(<KibleSayfasi />);
+    expect(b.getByTestId('kible-mod-aciklamasi').props.numberOfLines).toBe(1);
   });
 
   describe('son seçilen görünüm', () => {
