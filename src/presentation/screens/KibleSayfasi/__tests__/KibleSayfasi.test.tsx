@@ -200,10 +200,14 @@ describe('KibleSayfasi', () => {
 
   it('pusula algılayıcısı yoksa TAM statik pusula: kuzey yukarı, Kâbe 152°, büyük açı + yer, tek bilgi satırı', () => {
     (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaVar: false, ozet: ozet({ hazir: false, fark: null }) }));
-    const { getByTestId, queryByTestId, getByText, queryByLabelText } = render(<KibleSayfasi />);
+    const { getByTestId, queryByTestId, getByText, queryByLabelText, UNSAFE_root } = render(<KibleSayfasi />);
     expect(getByTestId('kible-statik-aci').props.children).toEqual([152, '°']);
     expect(getByText(/^Fatih, İstanbul, Kâbe 2\.\d{3} km uzakta$/)).toBeTruthy();
     expect(getByTestId('kible-kabe-isareti')).toBeTruthy();
+    // Yön harfleri SVG'de kadranla dönmez: ayrı, dik duran metin katmanı (G baş aşağı olmasın).
+    const harfler = UNSAFE_root.findAll((n: { type: unknown; props: { children?: unknown } }) => n.type === 'SvgText');
+    expect(harfler.length).toBe(0);
+    for (const h of ['K', 'D', 'G', 'B']) expect(getByText(h)).toBeTruthy();
     expect(getByTestId('kible-statik-bilgi').props.children).toBe('Bu cihazda pusula yok; kuzeye göre yönü gösteriyoruz.');
     // Duruma uymayan yönerge ("çentiğe gelince…") ve dönen pusula ipuçları YOK.
     expect(queryByTestId('kible-mod-aciklamasi')).toBeNull();

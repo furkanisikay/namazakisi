@@ -1,5 +1,10 @@
 import React from 'react';
-import Svg, { Circle, Defs, Line, RadialGradient, Stop, Text as SvgText, G } from 'react-native-svg';
+import Svg, { Circle, Defs, Line, Path, RadialGradient, Stop, G } from 'react-native-svg';
+
+/** Kadran birimiyle (viewBox 0–200) yerleşim: Kâbe küpü merkezi, ışın ucu, yön harfleri. */
+export const KABE_HALKA_R = 50;
+export const KIBLE_ISIN_UCU = 41;
+export const HARF_HALKA_R = 71;
 
 /**
  * Pusula kadranının STATİK çizimi (viewBox 0–200). Dönmez, eğilmez: hareket onu saran
@@ -11,9 +16,13 @@ export const KadranCizimi: React.FC<{
   zemin: string;
   cizgi: string;
   metin: string;
+  /** Kuzey işaret çizgisinin rengi. */
   kuzey: string;
   vurgu: string;
-  /** Kıble açısı (gerçek kuzeye göre) ya da bilinmiyor. */
+  /**
+   * Kıble açısı (gerçek kuzeye göre) ya da bilinmiyor. Yön harfleri (K/D/G/B) burada
+   * ÇİZİLMEZ: kadranla dönerlerdi; `PusulaGorunumu` onları dik duran ayrı katmanda çizer.
+   */
   kibleAcisi: number | null;
 }> = React.memo(({ boyut, zemin, cizgi, metin, kuzey, vurgu, kibleAcisi }) => {
   const isaretler = [];
@@ -35,12 +44,6 @@ export const KadranCizimi: React.FC<{
       />,
     );
   }
-  const harfler: Array<[string, number]> = [
-    ['K', 0],
-    ['D', 90],
-    ['G', 180],
-    ['B', 270],
-  ];
   return (
     <Svg width={boyut} height={boyut} viewBox="0 0 200 200">
       <Defs>
@@ -51,26 +54,18 @@ export const KadranCizimi: React.FC<{
         </RadialGradient>
       </Defs>
       <Circle cx={100} cy={100} r={97} fill="url(#kadranZemin)" stroke={cizgi} strokeWidth={1.2} />
-      <Circle cx={100} cy={100} r={64} fill="none" stroke={cizgi} strokeWidth={0.6} strokeDasharray="2 4" />
+      <Circle cx={100} cy={100} r={60} fill="none" stroke={cizgi} strokeWidth={0.6} />
       {isaretler}
-      {harfler.map(([h, a]) => (
-        <G key={h} transform={`rotate(${a} 100 100)`}>
-          <SvgText
-            x={100}
-            y={36}
-            fill={a === 0 ? kuzey : metin}
-            fontSize={a === 0 ? 15 : 13}
-            fontWeight="700"
-            textAnchor="middle"
-          >
-            {h}
-          </SvgText>
-        </G>
-      ))}
       {kibleAcisi !== null && (
+        // Düz, kalın kıble ışını: merkezden çıkar, ucu Kâbe'nin hemen önünde ok başıyla biter
+        // (Kâbe küpü r=KABE_HALKA_R'de, kardeş katmanda durur). Dış halkada küçük işaret.
         <G transform={`rotate(${kibleAcisi} 100 100)`}>
-          <Line x1={100} y1={100} x2={100} y2={26} stroke={vurgu} strokeWidth={2.2} strokeLinecap="round" strokeDasharray="1 5" />
-          <Circle cx={100} cy={20} r={4} fill={vurgu} />
+          <Line x1={100} y1={92} x2={100} y2={100 - KIBLE_ISIN_UCU} stroke={vurgu} strokeWidth={3.2} strokeLinecap="round" />
+          <Path
+            d={`M100 ${100 - KIBLE_ISIN_UCU - 6} L94.5 ${100 - KIBLE_ISIN_UCU + 3} L105.5 ${100 - KIBLE_ISIN_UCU + 3} Z`}
+            fill={vurgu}
+          />
+          <Path d="M100 9 L95.5 3 L104.5 3 Z" fill={vurgu} />
         </G>
       )}
       <Circle cx={100} cy={100} r={3.5} fill={metin} />
