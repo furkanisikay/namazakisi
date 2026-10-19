@@ -166,7 +166,7 @@ describe('AdimDetayModal — NASIL (iki anahtar)', () => {
     test('son açık kanal anahtarı DEVRE DIŞI ve nedeni yazılı', () => {
         const { ekran } = kur(CUMA, adim({ bildirim: true }));
         expect(ekran.getByTestId('adim-bildirim-anahtari').props.disabled).toBe(true);
-        expect(ekran.getByText('Bu hatırlatmayı kapatmak için listedeki anahtarı kullanın.')).toBeTruthy();
+        expect(ekran.getByText('Kapatmak için listedeki anahtarı kullanın.')).toBeTruthy();
         expect(ekran.getByTestId('adim-sesli-anahtari').props.disabled).toBeFalsy();
     });
 
@@ -248,11 +248,30 @@ describe('AdimDetayModal — SESLİ OKUMA METNİ her yüzeyde', () => {
         const editorlu = { ...tanim, anonsMetniDuzenlenebilir: true };
         const { ekran } = kur(editorlu, adim({ bildirim: true, sesli: true }));
         expect(ekran.getByTestId('anons-metni-editoru')).toBeTruthy();
+        // İlk görünüm: ham şablon kutusu ve çipler "Metni değiştir" arkasında.
+        expect(ekran.queryByTestId('anons-metni-kutusu')).toBeNull();
+        fireEvent.press(ekran.getByLabelText('Metni değiştirin'));
         expect(ekran.getByLabelText('Ekleyin: Dakika')).toBeTruthy();
+    });
+
+    test('İLK GÖRÜNÜM: ham {vakit}/{süre} şablonu ekranda görünmez, çözülmüş cümle görünür', () => {
+        const { ekran } = kur(MUHAFIZ, adim({ bildirim: true, sesli: true }, { anonsMetni: varsayilanAnonsMetni('cikisaDogru') }));
+        const okunus = String(ekran.getByTestId('anons-okunus').props.children);
+        expect(okunus).not.toMatch(/[{}]/);
+        expect(ekran.queryByTestId('anons-metni-kutusu')).toBeNull();
+        const gorunenler = ekran.UNSAFE_root.findAll((n) => typeof n.props?.children === 'string')
+            .map((n) => n.props.children as string);
+        for (const metin of gorunenler) expect(metin).not.toMatch(/\{(vakit|süre|yön)\}/);
+    });
+
+    test('kullanıcının KENDİ metni varsa düzenleyici açık başlar', () => {
+        const { ekran } = kur({ ...MUHAFIZ, anonsMetniDuzenlenebilir: true }, adim({ bildirim: true, sesli: true }, { anonsMetni: 'Kalk {vakit}' }));
+        expect(ekran.getByTestId('anons-metni-kutusu')).toBeTruthy();
     });
 
     test('metin yazılıp düzenleme bitince kaydedilir; okunuş yüzeyin bağlamıyla çözülür', () => {
         const { ekran, onDegistir } = kur({ ...CUMA, anonsMetniDuzenlenebilir: true }, adim({ bildirim: true, sesli: true }));
+        fireEvent.press(ekran.getByLabelText('Metni değiştirin'));
         const kutu = ekran.getByTestId('anons-metni-kutusu');
         fireEvent.changeText(kutu, '{vakit} için {süre} dakika.');
         expect(ekran.getByTestId('anons-okunus').props.children).toBe('Cuma için 30 dakika.');
@@ -274,6 +293,7 @@ describe('AdimDetayModal — SESLİ OKUMA METNİ her yüzeyde', () => {
     test('muhafızda boş metin = SESSİZ; "Otomatik" şablonu kutuya YAZAR', () => {
         const { ekran, onDegistir } = kur(MUHAFIZ, adim({ bildirim: true, sesli: true }));
         expect(ekran.getByTestId('anons-okunus').props.children).toMatch(/bu hatırlatma sesli okumaz/);
+        fireEvent.press(ekran.getByLabelText('Metni değiştirin'));
         fireEvent.press(ekran.getByLabelText(/^Otomatik cümle/));
         expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ anonsMetni: varsayilanAnonsMetni('cikisaDogru') }));
     });

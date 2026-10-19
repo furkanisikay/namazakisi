@@ -8,7 +8,7 @@
 
 import notifee, { AndroidImportance, AndroidStyle } from '@notifee/react-native';
 import { zamanTetigiOlustur } from './notifeeTetik';
-import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
+import { bugunuAl, dunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Logger } from '../../core/utils/Logger';
@@ -366,11 +366,12 @@ export class VakitSayacBildirimServisi {
     }
   }
 
-  public async vakitSayaciniIptalEt(vakit: VakitAdi): Promise<void> {
-    const bugun = bugunuAl();
-    const dun = dunuAl();
+  public async vakitSayaciniIptalEt(vakit: VakitAdi, gunTarihi?: string): Promise<void> {
+    // `gunTarihi` = isaretlenen namaz gunu: gecmis bir gunu isaretlemek bugunun
+    // sayacini kapatmasin. Verilmezse eski davranis (bugun + dun).
+    const tarihler = gunTarihi ? [gunTarihi, gunEkle(gunTarihi, -1)] : [bugunuAl(), dunuAl()];
 
-    for (const tarih of [bugun, dun]) {
+    for (const tarih of tarihler) {
       const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}${tarih}_${vakit}`;
       try {
         stopCountdown(bildirimId); // native foreground countdown'u da durdur (toplu temizlemeyle tutarli)

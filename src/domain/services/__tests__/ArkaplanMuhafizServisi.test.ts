@@ -88,7 +88,7 @@ jest.mock('adhan', () => {
 
 import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
 import { PrayerTimes } from 'adhan';
-import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
+import { bugunuAl, dunuAl, gunEkle } from '../../../core/utils/TarihYardimcisi';
 import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
 import { muhafizKanalIdOlustur } from '../../../core/muhafiz/sesKimligi';
@@ -926,6 +926,78 @@ describe('ArkaplanMuhafizServisi - Kullanici tetikli akislar (kildim/kilmadim)',
             (c) => c[0].identifier?.includes('_vakit_aksam')
         ).length;
         expect(yenidenPlanlanan).toBeGreaterThan(0);
+    });
+
+    describe('NOBETCI: kilinmislik GOSTERILEN gunun (namaz gunu) tarihine yazilir', () => {
+        /** Bellek-ici depo: okuma/yazma ayni anahtar uzayini gorsun. */
+        const depoKur = (baslangic: Record<string, string> = {}) => {
+            const depo: Record<string, string> = { ...baslangic };
+            (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) =>
+                Promise.resolve(key in depo ? depo[key] : null)
+            );
+            (AsyncStorage.setItem as jest.Mock).mockImplementation((key: string, deger: string) => {
+                depo[key] = deger;
+                return Promise.resolve(null);
+            });
+            return depo;
+        };
+        const anahtar = (tarih: string) => `muhafiz_ayarlari_kilinan_${tarih}`;
+
+        beforeEach(async () => {
+            await servis.yapilandirVePlanla({
+                aktif: true,
+                koordinatlar: { lat: 41.0, lng: 29.0 },
+                matris: STANDART_MATRIS,
+            });
+            (Notifications.cancelScheduledNotificationAsync as jest.Mock).mockClear();
+        });
+
+        test('gecmis bir gunu isaretlemek BUGUNUN kilinmisligini yazmaz, bugunun uyarilarini iptal etmez', async () => {
+            const bugun = bugunuAl();
+            const ikiGunOnce = gunEkle(bugun, -2);
+            (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+                { identifier: `muhafiz_${bugun}_vakit_ogle_seviye_2_dk_20` },
+            ]);
+            const depo = depoKur();
+
+            await servis.vakitBildirimleriniIptalEt('ogle', ikiGunOnce);
+
+            expect(JSON.parse(depo[anahtar(ikiGunOnce)])).toEqual(['ogle']);
+            expect(depo[anahtar(bugun)]).toBeUndefined();
+            expect(Notifications.cancelScheduledNotificationAsync).not.toHaveBeenCalledWith(
+                `muhafiz_${bugun}_vakit_ogle_seviye_2_dk_20`
+            );
+        });
+
+        test('gece yarisi dali: aktif gun DUN iken yatsi DUNE yazilir ve dunun yatsi uyarisi iptal edilir', async () => {
+            const dun = dunuAl();
+            (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+                { identifier: `muhafiz_${dun}_vakit_yatsi_seviye_4_dk_3` },
+            ]);
+            const depo = depoKur();
+
+            await servis.vakitBildirimleriniIptalEt('yatsi', dun);
+
+            expect(JSON.parse(depo[anahtar(dun)])).toEqual(['yatsi']);
+            expect(depo[anahtar(bugunuAl())]).toBeUndefined();
+            expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith(
+                `muhafiz_${dun}_vakit_yatsi_seviye_4_dk_3`
+            );
+        });
+
+        test('gecmis gunu GERI ALMAK bugunun kilinmisligini silmez', async () => {
+            const bugun = bugunuAl();
+            const dun = dunuAl();
+            const depo = depoKur({
+                [anahtar(bugun)]: JSON.stringify(['ogle']),
+                [anahtar(dun)]: JSON.stringify(['ogle']),
+            });
+
+            await servis.vakitKilindisiniGeriAl('ogle', dun);
+
+            expect(JSON.parse(depo[anahtar(dun)])).toEqual([]);
+            expect(JSON.parse(depo[anahtar(bugun)])).toEqual(['ogle']);
+        });
     });
 });
 

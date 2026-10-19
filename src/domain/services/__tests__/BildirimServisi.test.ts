@@ -522,7 +522,7 @@ describe('BildirimServisi', () => {
 
       // Callback cagrildi ama hataya ragmen bildirim iptal islemi de yapildi
       expect(mockCallback).toHaveBeenCalled();
-      expect(mockVakitBildirimleriniIptalEt).toHaveBeenCalledWith('yatsi');
+      expect(mockVakitBildirimleriniIptalEt).toHaveBeenCalledWith('yatsi', '2026-02-13');
     });
 
     it('callback dogru tarih ve namazAdi ile cagrilmali (tum vakitler)', async () => {
@@ -1038,10 +1038,10 @@ describe('BildirimServisi', () => {
       // Metot kendisi reject ETMEMELI
       await expect(servis.vakitKilindiTemizle('ogle', '2026-02-13')).resolves.toBeUndefined();
 
-      // Muhafiz iptali cagrildi (ve reddetti) — yine de
-      expect(mockVakitBildirimleriniIptalEt).toHaveBeenCalledWith('ogle');
+      // Muhafiz iptali cagrildi (ve reddetti) — yine de. Tarih = isaretlenen namaz gunu (bugun DEGIL).
+      expect(mockVakitBildirimleriniIptalEt).toHaveBeenCalledWith('ogle', '2026-02-13');
       // Sayac iptali izole sekilde calisti
-      expect(mockSayacIptal).toHaveBeenCalledWith('ogle');
+      expect(mockSayacIptal).toHaveBeenCalledWith('ogle', '2026-02-13');
       // Bildirim merkezindeki ogle bildirimi yine de dismiss edildi
       expect(Notifications.dismissNotificationAsync).toHaveBeenCalledWith(
         'muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_20'

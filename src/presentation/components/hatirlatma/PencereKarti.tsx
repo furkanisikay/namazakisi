@@ -286,13 +286,10 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                     />
                                 </View>
                                 <View className="flex-1">
+                                    {/* Ton ADI ekranda yazılmaz (persona çalışması 2026-10-19: jargon);
+                                        sertlik çubuk rengi/ikonla görünür, ekran okuyucu etiketinde kalır. */}
                                     <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
                                         {adimBasligi}
-                                        {tonEtiketi && (
-                                            <Text className="text-xs font-normal" style={{ color: renkler.metinIkincil }}>
-                                                {` · ${tonEtiketi}`}
-                                            </Text>
-                                        )}
                                     </Text>
                                     <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                                         {ozetMetni}

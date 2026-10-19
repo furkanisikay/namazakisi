@@ -40,6 +40,9 @@ describe('duzeyCumlesi', () => {
     it('kısa açıklama', () => {
         expect(duzeyKisaAciklamasi('yogun', duzeyiOlc(HATIRLATMA_PRESETLERI.yogun.seviyeler))).toBe('Vakit başına 7 uyarı, sesli');
         expect(duzeyKisaAciklamasi('kapali', null)).toBe('Hatırlatma yok');
+        // Rıza yoksa sesli adım bildirimle kurulur → "sesli" denmez (D9).
+        expect(duzeyKisaAciklamasi('yogun', duzeyiOlc(HATIRLATMA_PRESETLERI.yogun.seviyeler), false)).toBe('Vakit başına 7 uyarı');
+        expect(duzeyCumlesi('normal', duzeyiOlc(HATIRLATMA_PRESETLERI.normal.seviyeler), false)).toMatch(/Sesli okuma yok\.$/);
     });
 });
 

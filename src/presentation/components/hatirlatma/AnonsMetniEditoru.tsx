@@ -10,6 +10,12 @@
  *  - ek yüzey / nafile: boş = otomatik cümle → "Otomatik" kutuyu BOŞALTIR;
  *  - muhafız: boş = SESSİZ → "Otomatik" yön-uygun şablonu kutuya YAZAR (boş bırakmaz).
  *
+ * İLK GÖRÜNÜM = ÇÖZÜLMÜŞ CÜMLE (persona çalışması 2026-10-19): kullanıcı önce telefonun
+ * GERÇEKTE ne okuyacağını görür ("Öğle vakti çıkıyor, son 25 dakika.") + Dinle. Ham şablon
+ * (`{vakit}`/`{süre}`) içeren kutu, çipler ve hazır cümleler "Metni değiştir" arkasındadır —
+ * süslü parantezler "bunu mu okuyacak?" kaygısı yaratıyordu. Kullanıcının kendi yazdığı metin
+ * varsa (otomatik/şablon değil) düzenleyici AÇIK başlar.
+ *
  * Metin her tuşta değil düzenleme bitince yazılır (`onCommit`) — her karakterde tüm ayar
  * diske gitmesin. Çip/hazır cümle dokunuşu hemen yazar.
  */
@@ -105,6 +111,14 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
     const cozulmus = dolu ? tanim.anonsCoz(taslak, seviye) : '';
     const okunacak = cozulmus.length > 0 ? cozulmus : otomatikBos ? tanim.otomatikAnons?.(seviye) ?? '' : '';
     const otomatikSecili = otomatikBos ? !dolu : taslak === otomatikMetin;
+    // Kullanıcının kendi yazdığı metin → düzenleyici açık başlar (gizlenmesin).
+    const kendiMetni = dolu && taslak !== otomatikMetin && !tanim.anonsSablonlari.includes(taslak);
+    const [duzenleAcik, setDuzenleAcik] = useState(kendiMetni);
+    // Yer tutucusu ham şablon DEĞİL, bu adımda okunacak cümle.
+    const ilkSablon = tanim.anonsSablonlari[0] ?? '';
+    const yerTutucu = otomatikBos
+        ? `Boş bırakırsanız: ${tanim.otomatikAnons?.(seviye) ?? ''}`
+        : tanim.anonsCoz(ilkSablon, seviye) || ilkSablon;
 
     const cipEkle = (anahtar: string) => {
         const yeni = imlecteEkle(taslak, anahtar, secim);
@@ -138,114 +152,135 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
         );
     }
 
+    const okunusKutusu = (
+        <View className="p-3 rounded-2xl" style={{ backgroundColor: `${renkler.birincil}10` }}>
+            <Text className="text-[10px] font-semibold tracking-wider mb-1" style={{ color: renkler.metinIkincil }}>
+                TELEFONUNUZ ŞÖYLE OKUR
+            </Text>
+            {okunacak ? (
+                <View className="flex-row items-center">
+                    <Text testID="anons-okunus" className="flex-1 text-sm pr-3" style={{ color: renkler.metin }}>
+                        {okunacak}
+                    </Text>
+                    <DinleButonu
+                        kanallar={seviye.kanallar}
+                        bildirimSesi={seviye.bildirimSesi}
+                        cozulmusMetin={okunacak}
+                        erisimEtiketi={
+                            kanalAcikMi(seviye.kanallar, 'bildirim')
+                                ? 'Bildirim sesini ve örnek okunuşu dinleyin'
+                                : 'Örnek okunuşu dinleyin'
+                        }
+                    />
+                </View>
+            ) : (
+                <Text testID="anons-okunus" className="text-xs leading-4" style={{ color: renkler.metin }}>
+                    Metin boş: bu hatırlatma sesli okumaz.
+                </Text>
+            )}
+        </View>
+    );
+
     return (
         <View testID="anons-metni-editoru" className="mt-2">
-            <Text className="text-xs mb-1.5" style={{ color: renkler.metinIkincil }}>
-                Telefonunuz şöyle okur:
-            </Text>
-            <TextInput
-                value={taslak}
-                onChangeText={onTaslak}
-                onSelectionChange={(e) => setSecim(e.nativeEvent.selection)}
-                onEndEditing={() => onCommit(taslak)}
-                onBlur={() => onCommit(taslak)}
-                // iOS bildirim sesi 30 sn'yi aşarsa HİÇ çalmaz; sınır iki platformda aynı.
-                maxLength={ANONS_METIN_UST_SINIRI}
-                multiline
-                placeholder={otomatikBos ? `Boş bırakırsanız: ${tanim.otomatikAnons?.(seviye) ?? ''}` : tanim.anonsSablonlari[0]}
-                placeholderTextColor={renkler.metinIkincil}
-                accessibilityLabel="Sesli okuma metni"
-                testID="anons-metni-kutusu"
-                className="text-sm p-3.5 rounded-2xl border"
-                style={{
-                    backgroundColor: renkler.kartArkaplan,
-                    borderColor: renkler.sinir,
-                    color: renkler.metin,
-                    minHeight: 80,
-                    textAlignVertical: 'top',
-                }}
-            />
+            {okunusKutusu}
 
-            {/* Yer tutucular — imlecin olduğu yere eklenir. */}
-            <Text className="text-[11px] mt-2.5 mb-1" style={{ color: renkler.metinIkincil }}>
-                Ekleyin:
-            </Text>
-            <View className="flex-row flex-wrap" style={{ marginHorizontal: -3 }}>
-                {tanim.anonsYerTutuculari.map((y) => (
-                    <Cip
-                        key={y.anahtar}
-                        etiket={y.etiket}
-                        ikon="plus"
-                        onPress={() => cipEkle(y.anahtar)}
-                        erisim={`Ekleyin: ${y.etiket}`}
-                    />
-                ))}
-            </View>
-
-            {/* Hazır cümleler — "Otomatik" ilk sırada. */}
-            <Text className="text-[11px] mt-1 mb-1" style={{ color: renkler.metinIkincil }}>
-                Hazır cümleler:
-            </Text>
-            <View className="flex-row flex-wrap" style={{ marginHorizontal: -3 }}>
-                <Cip
-                    etiket={OTOMATIK_ETIKETI}
-                    ikon="magic"
-                    secili={otomatikSecili}
-                    onPress={() => sablonSec(otomatikMetin)}
-                    erisim={
-                        otomatikBos
-                            ? 'Otomatik cümle: hatırlatmanın kendi cümlesi okunur'
-                            : `Otomatik cümle: ${otomatikMetin}`
-                    }
-                />
-                {sablonlar.map((sablon) => {
-                    // Çipte ham yer tutucu ({süre}…) değil, bu adımda okunacak cümle görünür.
-                    const gorunen = tanim.anonsCoz(sablon, seviye) || sablon;
-                    return (
-                        <Cip
-                            key={sablon}
-                            etiket={gorunen}
-                            secili={taslak === sablon}
-                            onPress={() => sablonSec(sablon)}
-                            erisim={`Hazır cümle: ${gorunen}`}
-                        />
-                    );
-                })}
-            </View>
-
-            {/* Gerçek okunuş + Dinle */}
-            <View className="p-3 rounded-2xl mt-1" style={{ backgroundColor: `${renkler.birincil}10` }}>
-                <Text className="text-[10px] font-semibold tracking-wider mb-1" style={{ color: renkler.metinIkincil }}>
-                    ÖRNEK OKUNUŞ
+            <TouchableOpacity
+                testID="anons-metni-degistir"
+                className="flex-row items-center mt-1"
+                style={{ minHeight: 44 }}
+                onPress={() => setDuzenleAcik((a) => !a)}
+                activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityState={{ expanded: duzenleAcik }}
+                accessibilityLabel="Metni değiştirin"
+            >
+                <FontAwesome5 name="pen" size={11} color={renkler.birincil} style={{ marginRight: 8 }} solid />
+                <Text className="text-xs font-semibold flex-1" style={{ color: renkler.birincil }}>
+                    Metni değiştir
                 </Text>
-                {okunacak ? (
-                    <View className="flex-row items-center">
-                        <Text testID="anons-okunus" className="flex-1 text-sm pr-3" style={{ color: renkler.metin }}>
-                            {okunacak}
-                        </Text>
-                        <DinleButonu
-                            kanallar={seviye.kanallar}
-                            bildirimSesi={seviye.bildirimSesi}
-                            cozulmusMetin={okunacak}
-                            erisimEtiketi={
-                                kanalAcikMi(seviye.kanallar, 'bildirim')
-                                    ? 'Bildirim sesini ve örnek okunuşu dinleyin'
-                                    : 'Örnek okunuşu dinleyin'
+                <FontAwesome5 name={duzenleAcik ? 'chevron-up' : 'chevron-down'} size={11} color={renkler.metinIkincil} />
+            </TouchableOpacity>
+
+            {duzenleAcik && (
+                <View testID="anons-metni-duzenleyici">
+                    <TextInput
+                        value={taslak}
+                        onChangeText={onTaslak}
+                        onSelectionChange={(e) => setSecim(e.nativeEvent.selection)}
+                        onEndEditing={() => onCommit(taslak)}
+                        onBlur={() => onCommit(taslak)}
+                        // iOS bildirim sesi 30 sn'yi aşarsa HİÇ çalmaz; sınır iki platformda aynı.
+                        maxLength={ANONS_METIN_UST_SINIRI}
+                        multiline
+                        placeholder={yerTutucu}
+                        placeholderTextColor={renkler.metinIkincil}
+                        accessibilityLabel="Sesli okuma metni"
+                        testID="anons-metni-kutusu"
+                        className="text-sm p-3.5 rounded-2xl border"
+                        style={{
+                            backgroundColor: renkler.kartArkaplan,
+                            borderColor: renkler.sinir,
+                            color: renkler.metin,
+                            minHeight: 80,
+                            textAlignVertical: 'top',
+                        }}
+                    />
+
+                    {/* Yer tutucular — imlecin olduğu yere eklenir. */}
+                    <Text className="text-[11px] mt-2.5 mb-1" style={{ color: renkler.metinIkincil }}>
+                        Ekleyin:
+                    </Text>
+                    <View className="flex-row flex-wrap" style={{ marginHorizontal: -3 }}>
+                        {tanim.anonsYerTutuculari.map((y) => (
+                            <Cip
+                                key={y.anahtar}
+                                etiket={y.etiket}
+                                ikon="plus"
+                                onPress={() => cipEkle(y.anahtar)}
+                                erisim={`Ekleyin: ${y.etiket}`}
+                            />
+                        ))}
+                    </View>
+
+                    {/* Hazır cümleler — "Otomatik" ilk sırada. */}
+                    <Text className="text-[11px] mt-1 mb-1" style={{ color: renkler.metinIkincil }}>
+                        Hazır cümleler:
+                    </Text>
+                    <View className="flex-row flex-wrap" style={{ marginHorizontal: -3 }}>
+                        <Cip
+                            etiket={OTOMATIK_ETIKETI}
+                            ikon="magic"
+                            secili={otomatikSecili}
+                            onPress={() => sablonSec(otomatikMetin)}
+                            erisim={
+                                otomatikBos
+                                    ? 'Otomatik cümle: hatırlatmanın kendi cümlesi okunur'
+                                    : `Otomatik cümle: ${tanim.anonsCoz(otomatikMetin, seviye) || otomatikMetin}`
                             }
                         />
+                        {sablonlar.map((sablon) => {
+                            // Çipte ham yer tutucu ({süre}…) değil, bu adımda okunacak cümle görünür.
+                            const gorunen = tanim.anonsCoz(sablon, seviye) || sablon;
+                            return (
+                                <Cip
+                                    key={sablon}
+                                    etiket={gorunen}
+                                    secili={taslak === sablon}
+                                    onPress={() => sablonSec(sablon)}
+                                    erisim={`Hazır cümle: ${gorunen}`}
+                                />
+                            );
+                        })}
                     </View>
-                ) : (
-                    <Text testID="anons-okunus" className="text-xs leading-4" style={{ color: renkler.metin }}>
-                        {`Metin boş: bu hatırlatma sesli okumaz. “${OTOMATIK_ETIKETI}”e dokunarak bir cümle ekleyebilirsiniz.`}
+                    <Text className="text-[11px] mt-1.5 leading-4" style={{ color: renkler.metinIkincil }}>
+                        {otomatikBos
+                            ? 'Boş bırakırsanız hatırlatmanın kendi cümlesi okunur.'
+                            : 'Boş bırakırsanız bu hatırlatma sesli okumaz.'}
+                        {tanim.anonsNotu ? ` ${tanim.anonsNotu}` : ''}
                     </Text>
-                )}
-            </View>
-            <Text className="text-[11px] mt-1.5 leading-4" style={{ color: renkler.metinIkincil }}>
-                {otomatikBos
-                    ? 'Boş bırakırsanız (ya da metinde okunacak bir şey kalmazsa) hatırlatmanın otomatik cümlesi okunur.'
-                    : 'Boş bırakırsanız (ya da metinde okunacak bir şey kalmazsa) bu hatırlatma sesli okumaz.'}
-                {tanim.anonsNotu ? ` ${tanim.anonsNotu}` : ''}
-            </Text>
+                </View>
+            )}
         </View>
     );
 };

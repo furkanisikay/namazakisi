@@ -15,6 +15,9 @@
  *   gider"; Meryem 19:59 "namazı zayi ettiler") SAHİH OLSA BİLE bu kişiye
  *   YANLIŞ HEDEFTİR — havuza girmez. Buhârî'nin kendisi ayrımı yapar: fevt
  *   (kaçırma) hadisi 552'de, terk hadisi 553'te ayrı bablardadır.
+ * • KORKU/SUÇLAMA YOK: "şeytana uyma", "son namazın olabilir", "kaza etmek
+ *   zorunda kalırsın" gibi ifadeler kaldırıldı; nöbetçi test yasaklı ifadeleri
+ *   tarar (`yasakliIfadeler`). Sertlik vurgudan gelir, suçlamadan değil.
  * • VAKTE ÖZGÜ nassı `vakitler` ile kısıtla. Kısıtlamazsan yanlış vakitte
  *   çıkar (yaşandı: "münafıklara en ağır gelen yatsı ve sabah namazıdır"
  *   öğle/ikindi/akşam bildirimlerinde de çıkıyordu).
@@ -98,12 +101,15 @@ export const SEYTANLA_MUCADELE_ICERIGI: MucadeleIcerigi[] = [
     // ── Seviye 3: sert ──────────────────────────────────────────────────────
     {
         id: 'fisilti',
-        metin: 'Şeytan şu an sana "Sonra kılarsın" diye fısıldıyor. Onu dinleme!',
+        // Korku/suçlama dozu düşürüldü (persona çalışması 2026-10-19): iç ses
+        // "sonra kılarım" ertelemesine konuşur, kişiyi şeytana uymakla suçlamaz.
+        metin: '"Sonra kılarım" deme; vakit bitmek üzere, şimdi kılabilirsin.',
         siddetSeviyesi: 3, // kendi sözümüz
     },
     {
         id: 'omur',
-        metin: 'Vakit geçiyor, ömür bitiyor. Bu namaz son namazın olabilir.',
+        // "Bu namaz son namazın olabilir" ölüm korkusu kaldırıldı (yeni başlayanı caydırıyordu).
+        metin: 'Vakit geçiyor; bu namazı vaktinde kılmak için hâlâ fırsatın var.',
         siddetSeviyesi: 3, // kendi sözümüz
     },
     {
@@ -116,7 +122,10 @@ export const SEYTANLA_MUCADELE_ICERIGI: MucadeleIcerigi[] = [
     {
         id: 'namaza-dur',
         // "secdeye kapan" DEĞİL: secde namazın içindeki rükün, başlangıcı değil.
-        metin: 'Hemen namaza dur — sonra kaza etmek zorunda kalırsın.',
+        // Kılınmış olabilme ihtimaline saygı (persona çalışması 2026-10-19): uyarı
+        // yalnız "Kıldım" işaretlenince iptal olur; camide kılıp işaretlemeyene
+        // "kaza etmek zorunda kalırsın" demek yanlış hedefti.
+        metin: "Kıldıysan 'Kıldım'a bas; kılmadıysan hemen namaza dur.",
         siddetSeviyesi: 4, // kendi sözümüz
     },
     {

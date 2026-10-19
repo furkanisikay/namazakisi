@@ -32,11 +32,16 @@ const cubukRengi = (ekran: ReturnType<typeof render>) =>
 describe('BildirimButceKarti', () => {
     beforeEach(() => (useRenkler as jest.Mock).mockReturnValue(RENKLER));
 
-    it('iOS normal: birincil renk, sayı ve sınır', () => {
-        const ekran = render(<BildirimButceKarti ozet={defterOzeti(kayitlar(40), 'ios')} onPress={jest.fn()} />);
+    it('iOS normal (%75–%85): birincil renk, sayı ve sınır', () => {
+        const ekran = render(<BildirimButceKarti ozet={defterOzeti(kayitlar(50), 'ios')} onPress={jest.fn()} />);
         expect(cubukRengi(ekran)).toBe('#4CAF50');
         expect(ekran.getByText('Bekleyen bildirimleriniz')).toBeTruthy();
-        expect(ekran.getByTestId('bildirim-butce-sayi').props.children.join('')).toBe('40 / 64');
+        expect(ekran.getByTestId('bildirim-butce-sayi').props.children.join('')).toBe('50 / 64');
+    });
+
+    it('iOS %75 altında kart HİÇ çizilmez (D11: sınır aşılmamışken gürültü)', () => {
+        const ekran = render(<BildirimButceKarti ozet={defterOzeti(kayitlar(39), 'ios')} onPress={jest.fn()} />);
+        expect(ekran.queryByTestId('bildirim-butce-karti')).toBeNull();
     });
 
     it('iOS %85 üstü: TURUNCU (durum.dikkat — sarı-amber uyari DEĞİL)', () => {

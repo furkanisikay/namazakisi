@@ -4,14 +4,18 @@
  * Hatirlatma DAILY'den TARIHLI tetiklere gecti: ozel gun kapisi tarih ister.
  * Kilitlenenler: (a) her seri gunu kendi ERTESI imsagina gore kurulur,
  * (b) ozel gun gunleri atlanir ve aralik DISINDAKI tetikler birebir aynidir,
- * (c) metin eski DAILY bildirimle birebir ayni (SERI_SOZU dahil).
+ * (c) metin: 🚨 yok, ayar satiriyla eslesen baslik, SERI_SOZU korunur (2026-10-19
+ *     bilincli degisiklik — eski "birebir eski DAILY" nobetcisi kaldirildi),
+ * (d) TAM gune tetik KURULMAZ (persona calismasi: gun tamken gece ses cikariyordu).
  * `simdi` ve imsak saglayicisi enjekte — sabit tarih, gercek konum yok.
  */
 import {
   GUN_SONU_BASLIK,
   GUN_SONU_GOVDE,
   GUN_SONU_ID_ONEKI,
+  gunSonuKimligindenGun,
   gunSonuPlaniOlustur,
+  gunTamYuklemi,
   type GunSonuPlanAyarlari,
 } from '../gunSonuPlani';
 import { ozelGunAktifMi } from '../ozelGunKapisi';
@@ -159,11 +163,57 @@ describe('gunSonuPlaniOlustur — ozel gun kapisi (NOBETCI)', () => {
 });
 
 describe('gun sonu bildirim metni (NOBETCI)', () => {
-  test('eski DAILY bildirimle birebir aynidir — seri hadisi korunur', () => {
-    expect(GUN_SONU_BASLIK).toBe('🚨 Seri Hatırlatıcı');
+  test('telas simgesi yok, baslik ayar satiriyla eslesir, seri hadisi korunur', () => {
+    // 2026-10-19 BILINCLI degisiklik: "🚨 Seri Hatırlatıcı" gece telas yaratiyordu
+    // ve ayar satiri ("Günü tamamlamadıysam") ile eslesmiyordu.
+    expect(GUN_SONU_BASLIK).toBe('Günü tamamlamadınız · seri');
+    expect(GUN_SONU_BASLIK).not.toMatch(/🚨/u);
     expect(GUN_SONU_GOVDE).toBe(
-      `Gün bitmek üzere! Serinizi bozmamak için bugünkü namazlarınızı girmeyi unutmayın.\n\n«${SERI_SOZU.metin}» (${SERI_SOZU.kaynak})`
+      `Kıldığınız namazları gün bitmeden işaretlerseniz seriniz sürer.
+
+«${SERI_SOZU.metin}» (${SERI_SOZU.kaynak})`
     );
     expect(GUN_SONU_GOVDE).toContain('Allah katında amellerin en sevimlisi, az da olsa devamlı olanıdır.');
+  });
+});
+
+describe('TAM GUN — hatirlatma kurulmaz (NOBETCI)', () => {
+  const ogle = new Date(2026, 9, 13, 12, 0);
+
+  test('bugun tamsa bugunun tetigi yok; ufuk KAYMAZ (diger gunler birebir)', () => {
+    const tumu = gunSonuPlaniOlustur({ simdi: ogle, ayarlar: OTOMATIK, imsakSaglayici, gunSayisi: 7 });
+    const bugun = iso(ogle);
+    const kapili = gunSonuPlaniOlustur({
+      simdi: ogle,
+      ayarlar: OTOMATIK,
+      imsakSaglayici,
+      gunSayisi: 7,
+      gunTamMi: (g) => g === bugun,
+    });
+    expect(kapili.map((t) => t.seriGunu)).toEqual(tumu.map((t) => t.seriGunu).filter((g) => g !== bugun));
+    expect(kapili).toHaveLength(6);
+  });
+
+  test('gunTamYuklemi: esik kadar FARKLI vakit tam sayilir, tekrarlar sayilmaz', () => {
+    const tamMi = gunTamYuklemi(
+      { '2026-10-13': ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'], '2026-10-14': ['imsak', 'imsak', 'ogle', 'ikindi', 'aksam'] },
+      5
+    );
+    expect(tamMi('2026-10-13')).toBe(true);
+    expect(tamMi('2026-10-14')).toBe(false);
+    expect(tamMi('2026-10-15')).toBe(false);
+  });
+
+  test('gunTamYuklemi: kullanicinin esigi (3) uygulanir; gecersiz esik 5e duser', () => {
+    const k = { g: ['imsak', 'ogle', 'ikindi'] };
+    expect(gunTamYuklemi(k, 3)('g')).toBe(true);
+    expect(gunTamYuklemi(k, undefined)('g')).toBe(false);
+    expect(gunTamYuklemi(k, Number.NaN)('g')).toBe(false);
+  });
+
+  test('gunSonuKimligindenGun: yalniz tarihli kimligi cozer', () => {
+    expect(gunSonuKimligindenGun(`${GUN_SONU_ID_ONEKI}2026-10-13`)).toBe('2026-10-13');
+    expect(gunSonuKimligindenGun('gun_sonu_hatirlatici')).toBeNull();
+    expect(gunSonuKimligindenGun('cuma_hatirlatma_2026-10-16')).toBeNull();
   });
 });

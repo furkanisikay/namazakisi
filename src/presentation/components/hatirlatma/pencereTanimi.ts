@@ -120,7 +120,7 @@ export const BILDIRIM_ACIKLAMASI = 'Ekranda bildirim olarak gelir.';
 export const SESLI_ETIKETI = 'Sesli okuma';
 export const SESLI_ACIKLAMASI = 'Telefonunuz hatırlatmayı sesli okur.';
 /** Son açık ana kanalın anahtarı devre dışıyken altında yazılan neden. */
-export const SON_KANAL_NOTU = 'Bu hatırlatmayı kapatmak için listedeki anahtarı kullanın.';
+export const SON_KANAL_NOTU = 'Kapatmak için listedeki anahtarı kullanın.';
 
 /** Bu ana kanal adımın SON açık ana kanalı mı? (kapatılamaz — kapatmanın yeri liste anahtarı) */
 export function sonAcikAnaKanalMi(kanallar: UyariKanallari | undefined, kanal: AnaKanal): boolean {
@@ -193,7 +193,7 @@ export const TITRESIM_ACIKLAMASI = 'Uyarı gelince cihazınız da titrer.';
 /** Gercek alarm anahtarinin ekran metinleri (issue #74, kibar "siz"). */
 export const ALARM_ETIKETI = 'Gerçek alarm';
 export const ALARM_ACIKLAMASI =
-    'Bu adımın ilk hatırlatmasında telefonunuzun alarmı çalar; tekrarlar normal bildirimle gelir.';
+    'İlk hatırlatmada telefonunuzun alarmı çalar; tekrarlar bildirimle gelir.';
 
 /** Alarm kapsamı seçimi (issue #74 — "Yalnız ilk uyarıda" / "Her uyarıda"). */
 export const ALARM_KAPSAMI_SECENEKLERI: { kapsam: AlarmKapsami; etiket: string; ikon: string }[] = [

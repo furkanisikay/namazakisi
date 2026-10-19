@@ -27,6 +27,7 @@ import { alarmKitDurumu } from '../../../modules/expo-muhafiz-alarmkit/src';
 import { LocalTakvimCakismaServisi } from '../../data/local/LocalTakvimCakismaServisi';
 import { TAKVIM_CAKISMA_PLAN_GUN_SAYISI } from '../../core/bildirim/takvimCakismaPlani';
 import { cakismaEtkinlikleriniOku, okumaAraligi } from './TakvimEtkinlikOkuyucu';
+import { gunSonuKilinanlariOku, gunSonuPlanGunSayisi } from './GunSonuHatirlaticiServisi';
 
 /** Defterin muhafız/nafile/konum DIŞINDAKİ girdileri. */
 export type DefterDisGirdisi = Pick<
@@ -35,6 +36,7 @@ export type DefterDisGirdisi = Pick<
     | 'cuma'
     | 'camiyeGit'
     | 'gunSonu'
+    | 'gunSonuKilinan'
     | 'yatis'
     | 'takvimCakisma'
     | 'kilinan'
@@ -92,6 +94,10 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         cuma,
         camiyeGit,
         gunSonu: seri,
+        // Servisle AYNI okuyucu (yalnız namaz kaydı) — tam güne tetik sayılmaz.
+        gunSonuKilinan: seri?.gunSonuBildirimAktif
+            ? (await guvenli('gun sonu kilinan', () => gunSonuKilinanlariOku(gunSonuPlanGunSayisi()))) ?? undefined
+            : undefined,
         yatis,
         takvimCakisma,
         kilinan,

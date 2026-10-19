@@ -117,6 +117,10 @@ if (Platform.OS === 'android') {
     import('./src/domain/services/YatisHatirlatmaServisi')
         .then(({ YatisHatirlatmaServisi }) => YatisHatirlatmaServisi.getInstance().baslat())
         .catch(() => undefined);
+    // Gün sonu seri hatırlatması: gün headless "Kıldım" ile tamamlanınca o günün tetiği kalksın.
+    import('./src/domain/services/GunSonuHatirlaticiServisi')
+        .then(({ gunSonuDinleyicisiniBaslat }) => gunSonuDinleyicisiniBaslat())
+        .catch(() => undefined);
     // Takvim çakışması (issue #291): kılınan vaktin uyarısı headless'ta da iptal edilsin.
     import('./src/domain/services/TakvimCakismaServisi')
         .then(({ TakvimCakismaServisi }) => TakvimCakismaServisi.getInstance().baslat())

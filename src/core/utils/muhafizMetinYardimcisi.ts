@@ -140,7 +140,7 @@ export const GIRIS_ICERIK_HAVUZU: Record<MuhafizSeviye, string[]> = {
   ],
   3: [
     'Namazı geciktirdikçe kaçırmaya yaklaşırsın; hemen kıl.',
-    'Şeytan şu an sana "Sonra kılarsın" diye fısıldıyor. Onu dinleme!',
+    '"Sonra kılarım" deme; şimdi kılabilirsin.',
     'Birkaç dakika sonra "keşke" demek yerine şimdi kalk.',
   ],
   4: [
@@ -178,8 +178,8 @@ export function bildirimGovdesiOlustur(
     case 2:
       return 'Namazı sona bırakma; şimdi kılmak için vakit uygun.';
     case 3:
-      return 'Şeytana uyma, namazı kıl!';
+      return 'Vakit bitmek üzere; şimdi kılabilirsin.';
     case 4:
-      return 'Hemen namaza dur — sonra kaza etmek zorunda kalırsın.';
+      return "Kıldıysan 'Kıldım'a bas; kılmadıysan hemen namaza dur.";
   }
 }

@@ -5,15 +5,22 @@
  *   - eski DAILY kimligi (`gun_sonu_hatirlatici`) HER turda iptal edilir (goc);
  *   - ozel gundeki seri gunlerine tetik kurulmaz, digerleri kurulur;
  *   - plan ufku platforma gore (Android 7, iOS 3 — iOS 64 bekleyen siniri);
- *   - kapali ayar → yalniz iptal; konum yokken kurulu plan EZILMEZ.
+ *   - kapali ayar → yalniz iptal; konum yokken kurulu plan EZILMEZ;
+ *   - TAM gune (namaz kaydi >= esik) tetik KURULMAZ; kayit
+ *     degisince dinleyici yeniden planlar (iki yon: tamamlama + geri alma).
  *
  * jest'te `Platform.OS` varsayilani 'ios'tur (AGENTS.md) → platform ACIKCA ayarlanir.
  */
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
-import { gunSonuHatirlatmalariniGuncelle, type GunSonuAyarlari } from '../GunSonuHatirlaticiServisi';
-import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
+import {
+  gunSonuDinleyicisiniBaslat,
+  gunSonuHatirlatmalariniGuncelle,
+  type GunSonuAyarlari,
+} from '../GunSonuHatirlaticiServisi';
+import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../../core/constants/UygulamaSabitleri';
+import { kayitDegistiDinleyicisiEkle, localNamazDurumunuGuncelle } from '../../../data/local/LocalNamazServisi';
 import { GUN_SONU_GOVDE } from '../../../core/seri/gunSonuPlani';
 import { gunEkle, tarihiISOFormatinaCevir } from '../../../core/utils/TarihYardimcisi';
 
@@ -56,7 +63,7 @@ afterEach(() => {
 });
 
 describe('gunSonuHatirlatmalariniGuncelle', () => {
-  test('Android: 7 seri gunu icin AYRI tarihli (DATE) tetik, metin birebir eskisi', async () => {
+  test('Android: 7 seri gunu icin AYRI tarihli (DATE) tetik, govde GUN_SONU_GOVDE', async () => {
     const simdi = ogle();
     await gunSonuHatirlatmalariniGuncelle(imsak, AYAR, simdi);
 
@@ -189,5 +196,102 @@ describe('gunSonuHatirlatmalariniGuncelle', () => {
     zamanla.mockRejectedValueOnce(new Error('x'));
     await expect(gunSonuHatirlatmalariniGuncelle(imsak, AYAR, ogle())).resolves.toBeUndefined();
     expect(zamanla).toHaveBeenCalledTimes(7);
+  });
+});
+
+const TUM_NAMAZLAR = [NamazAdi.Sabah, NamazAdi.Ogle, NamazAdi.Ikindi, NamazAdi.Aksam, NamazAdi.Yatsi];
+
+describe('TAM GUN — hatirlatma kurulmaz (persona calismasi 2026-10-19)', () => {
+  afterEach(() => kayitDegistiDinleyicisiEkle('gunSonu', null));
+
+  const bugunKimligi = () => `gun_sonu_hatirlatici_${tarihiISOFormatinaCevir(ogle())}`;
+
+  test('NOBETCI: bugun bes vakit de isaretliyse bugunun tetigi YOK, digerleri kurulur', async () => {
+    const bugun = tarihiISOFormatinaCevir(ogle());
+    for (const ad of TUM_NAMAZLAR) await localNamazDurumunuGuncelle(bugun, ad, true);
+
+    await gunSonuHatirlatmalariniGuncelle(imsak, AYAR, ogle());
+
+    const kimlikler = kurulanlar().map((i) => i.identifier);
+    expect(kimlikler).not.toContain(bugunKimligi());
+    expect(kimlikler).toHaveLength(6); // ufuk kaymaz: 7 gunden yalniz bugun dustu
+  });
+
+  test('eksik gunde (4/5) tetik kurulur', async () => {
+    const bugun = tarihiISOFormatinaCevir(ogle());
+    for (const ad of TUM_NAMAZLAR.slice(0, 4)) await localNamazDurumunuGuncelle(bugun, ad, true);
+
+    await gunSonuHatirlatmalariniGuncelle(imsak, AYAR, ogle());
+    expect(kurulanlar().map((i) => i.identifier)).toContain(bugunKimligi());
+  });
+
+  test('kilinmislik YALNIZ kayittan: muhafiz diski tek basina gunu TAM yapmaz (seri kayittan turer)', async () => {
+    // Geri alma yarisinin nobetcisi: kayit "kilmadim" yazildiginda muhafiz diski henuz
+    // temizlenmemis olabilir; birlesim okunsaydi gun tam sanilir, tetik kurulmazdi.
+    const bugun = tarihiISOFormatinaCevir(ogle());
+    for (const ad of TUM_NAMAZLAR.slice(0, 3)) await localNamazDurumunuGuncelle(bugun, ad, true);
+    await AsyncStorage.setItem(
+      `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${bugun}`,
+      JSON.stringify(['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'])
+    );
+
+    await gunSonuHatirlatmalariniGuncelle(imsak, AYAR, ogle());
+    expect(kurulanlar().map((i) => i.identifier)).toContain(bugunKimligi());
+  });
+
+  test('kullanicinin esigi (tamGunEsigi 3) uygulanir', async () => {
+    const bugun = tarihiISOFormatinaCevir(ogle());
+    for (const ad of TUM_NAMAZLAR.slice(0, 3)) await localNamazDurumunuGuncelle(bugun, ad, true);
+
+    await gunSonuHatirlatmalariniGuncelle(imsak, { ...AYAR, tamGunEsigi: 3 }, ogle());
+    expect(kurulanlar().map((i) => i.identifier)).not.toContain(bugunKimligi());
+  });
+
+  test('konum yokken plan korunur AMA tam gunun tetigi iptal edilir', async () => {
+    const bugun = tarihiISOFormatinaCevir(ogle());
+    for (const ad of TUM_NAMAZLAR) await localNamazDurumunuGuncelle(bugun, ad, true);
+    const yarin = `gun_sonu_hatirlatici_${gunEkle(bugun, 1)}`;
+    bekleyenler.mockResolvedValue([{ identifier: bugunKimligi() }, { identifier: yarin }]);
+
+    await gunSonuHatirlatmalariniGuncelle(null, AYAR, ogle());
+
+    expect(zamanla).not.toHaveBeenCalled();
+    const iptalEdilenler = iptal.mock.calls.map((c) => c[0]);
+    expect(iptalEdilenler).toEqual([bugunKimligi()]);
+    expect(iptalEdilenler).not.toContain(yarin);
+  });
+
+  test('DINLEYICI: son vakit isaretlenince yeniden planlar (bugun duser), geri alininca geri gelir', async () => {
+    const bugun = tarihiISOFormatinaCevir(ogle());
+    // Dinleyici koordinati HAM depodan okur (headless'ta hesaplayici bos).
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI,
+      JSON.stringify({ koordinatlar: { lat: 41.0082, lng: 28.9784 } })
+    );
+    for (const ad of TUM_NAMAZLAR.slice(0, 4)) await localNamazDurumunuGuncelle(bugun, ad, true);
+    gunSonuDinleyicisiniBaslat();
+    gunSonuDinleyicisiniBaslat(); // idempotent: adli yuva cogalmaz
+
+    const bekle = async (kosul: () => boolean) => {
+      for (let i = 0; i < 150 && !kosul(); i++) await new Promise((r) => setTimeout(r, 10));
+    };
+    const sonTur = () => {
+      // Son turun kurulumlari: son iptal cagrisindan sonrakiler.
+      return kurulanlar().map((i) => i.identifier);
+    };
+    const gunAnahtariVarMi = () => sonTur().some((k) => k.startsWith('gun_sonu_hatirlatici_'));
+
+    zamanla.mockClear();
+    await localNamazDurumunuGuncelle(bugun, NamazAdi.Yatsi, true);
+    await bekle(gunAnahtariVarMi);
+    // Dinleyici GERCEKTEN yeniden planladi (bos sonuc "hic kosmadi" ile karismasin).
+    expect(gunAnahtariVarMi()).toBe(true);
+    // Gercek takvim gunu (simdi = gercek saat) — bugunun kimligi yalniz gun tamamsa dusmeli.
+    expect(sonTur().filter((k) => k.endsWith(bugun))).toEqual([]);
+
+    zamanla.mockClear();
+    await localNamazDurumunuGuncelle(bugun, NamazAdi.Yatsi, false);
+    await bekle(gunAnahtariVarMi);
+    expect(sonTur().some((k) => k.endsWith(bugun))).toBe(true);
   });
 });

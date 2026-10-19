@@ -29,6 +29,15 @@ describe('DuzeySecici', () => {
         expect(getByLabelText(/^Hafif\./).props.accessibilityState).toMatchObject({ selected: true });
     });
 
+    it('NÖBETÇİ (D9): sesli okuma RIZASI yoksa kart ve cümle "sesli" DEMEZ (vakit satırıyla tutarlı)', () => {
+        const { getByText, getByLabelText, queryByText } = render(
+            <DuzeySecici secili="normal" onSec={jest.fn()} sesliBilgiGoster={false} sesliIzinVar={false} />
+        );
+        expect(getByText('Çıkmadan 45 dk önce başlar, 6 uyarı. Sesli okuma yok.')).toBeTruthy();
+        expect(queryByText(/sesli okur/)).toBeNull();
+        expect(getByLabelText(/^Yoğun\./).props.accessibilityLabel).not.toMatch(/sesli/);
+    });
+
     it('sesli bilgi yalnız sesli düzeyde ve izin verildiyse görünür', () => {
         const { queryByTestId, rerender } = render(<DuzeySecici secili="yogun" onSec={jest.fn()} />);
         expect(queryByTestId('duzey-sesli-bilgi')).toBeTruthy();

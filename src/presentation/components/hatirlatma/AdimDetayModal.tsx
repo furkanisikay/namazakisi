@@ -454,9 +454,8 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                     {adimBasligi}
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                    {tanim.tonSecilebilir
-                                        ? `${tanim.baslik} vakti · ${TON_ETIKETLERI[etkinTon]}`
-                                        : tanim.baslik}
+                                    {/* Ton adı başlıkta YAZILMAZ (jargon); sertlik "Gelişmiş"te seçilir. */}
+                                    {tanim.tonSecilebilir ? `${tanim.baslik} vakti` : tanim.baslik}
                                 </Text>
                             </View>
                             <TouchableOpacity

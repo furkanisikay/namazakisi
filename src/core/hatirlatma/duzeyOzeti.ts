@@ -87,10 +87,17 @@ export const OZEL_DUZEY_IKONU = 'sliders-h';
 export const OZEL_DUZEY_ACIKLAMASI = { secili: 'Vakit vakit siz ayarladınız', geri: 'Kaydettiğiniz ayara dönün' };
 export const OZEL_DUZEY_CUMLESI = 'Her vakit sizin ayarladığınız gibi hatırlatılır.';
 
-/** Seçicinin altındaki tek cümle (≤ 12 kelime). */
-export function duzeyCumlesi(duzey: HatirlatmaDuzeyi, olcu: DuzeyOlcusu | null): string {
+/**
+ * Seçicinin altındaki tek cümle (≤ 12 kelime).
+ *
+ * `sesliIzinVar` (varsayılan evet): sesli okuma RIZASI yoksa düzey sesli adımları
+ * bildirimle kurar (`presetUygula(…, false)`) → kart da "sesli" DEMEZ. Aksi halde
+ * kart "sesli" derken vakit satırı "Sadece bildirim" diyordu (persona çalışması D9).
+ * Sihirbaz rıza maddesini ekranda gösterdiği için varsayılanı kullanır.
+ */
+export function duzeyCumlesi(duzey: HatirlatmaDuzeyi, olcu: DuzeyOlcusu | null, sesliIzinVar = true): string {
     if (duzey === 'kapali' || !olcu) return 'Vakit çıkmadan hatırlatma gelmez.';
-    const ses = olcu.sesli ? 'Son dakikada sesli okur.' : 'Sesli okuma yok.';
+    const ses = olcu.sesli && sesliIzinVar ? 'Son dakikada sesli okur.' : 'Sesli okuma yok.';
     return `Çıkmadan ${olcu.ilkDk} dk önce başlar, ${olcu.uyariSayisi} uyarı. ${ses}`;
 }
 
@@ -107,7 +114,7 @@ export function sesliBilgiMetni(sessizligiDelebilir: boolean): string {
 }
 
 /** Seçenek kartındaki kısa açıklama (≤ 6 kelime). */
-export function duzeyKisaAciklamasi(duzey: HatirlatmaDuzeyi, olcu: DuzeyOlcusu | null): string {
+export function duzeyKisaAciklamasi(duzey: HatirlatmaDuzeyi, olcu: DuzeyOlcusu | null, sesliIzinVar = true): string {
     if (duzey === 'kapali' || !olcu) return 'Hatırlatma yok';
-    return `Vakit başına ${olcu.uyariSayisi} uyarı${olcu.sesli ? ', sesli' : ''}`;
+    return `Vakit başına ${olcu.uyariSayisi} uyarı${olcu.sesli && sesliIzinVar ? ', sesli' : ''}`;
 }
