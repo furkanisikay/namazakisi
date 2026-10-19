@@ -157,10 +157,12 @@ describe('METİN = (TON, ÖLÇÜ) — issue #274', () => {
 
   test('erken sert/acil gövde nötr havuzdan, son dakika gövdesi değişmez', () => {
     expect(GIRIS_ICERIK_HAVUZU[4]).toContain(bildirimGovdesiOlustur(4, 'cikisaDogru', 90));
+    // 2026-10-19: kılınmış olabilme ihtimaline saygılı (persona çalışması) — "kaza etmek
+    // zorunda kalırsın" kaldırıldı; "sen" + emir kaydı korunur.
     expect(bildirimGovdesiOlustur(4, 'cikisaDogru', 5)).toBe(
-      'Hemen namaza dur — sonra kaza etmek zorunda kalırsın.'
+      "Kıldıysan 'Kıldım'a bas; kılmadıysan hemen namaza dur."
     );
-    expect(bildirimGovdesiOlustur(4)).toBe('Hemen namaza dur — sonra kaza etmek zorunda kalırsın.');
+    expect(bildirimGovdesiOlustur(4)).toBe("Kıldıysan 'Kıldım'a bas; kılmadıysan hemen namaza dur.");
   });
 
   test('erken sert/acil gövdesi VAKTE ÖZGÜ NASS taşımaz ve tek rastgele çağrı yapar', () => {

@@ -535,7 +535,7 @@ export class NamazMuhafiziServisi {
      */
     private getRandomIcerik(vakit: VakitAdi, seviye: 1 | 2 | 3 | 4): string {
         const uygunIcerikler = uygunIcerikleriBul(vakit, seviye);
-        if (uygunIcerikler.length === 0) return "Şeytana uyma, namazı kıl.";
+        if (uygunIcerikler.length === 0) return 'Vakit bitmek üzere; şimdi kılabilirsin.';
 
         const random = Math.floor(Math.random() * uygunIcerikler.length);
         return icerikMetniOlustur(uygunIcerikler[random]);
