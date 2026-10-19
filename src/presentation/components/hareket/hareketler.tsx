@@ -1,7 +1,8 @@
 /**
  * Küçük fiil animasyonları (sade tasarım, Dalga 1). Hepsi olayla başlar, < 1 sn biter,
  * yalnız transform/opaklık kullanır (native driver) ve "Animasyonları azalt"ta son
- * kareye atlar. Boşta sıfır hareket: hiçbiri döngü kurmaz.
+ * kareye atlar. Buradakiler olay sahneleridir, döngü kurmaz; tanıtım/sihirbaz ekranlarında
+ * görünürken oynayan döngüler ayrı kapıdan geçer (`dongu.ts`, sahip kararı 2026-10-19).
  *
  *  - `useSecimGecisi(secili)`  → 0..1 değer; seçili dolgu katmanının OPAKLIĞI (150 ms).
  *                                 Renk animasyonu native driver'da yok; iki katmanın

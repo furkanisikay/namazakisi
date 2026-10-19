@@ -2,7 +2,7 @@
  * Düzey özeti motorun gerçek planından ölçülür — elle yazılmış sayı yok.
  * Nöbetçi: preset değişirse (muhafizSlice) kullanıcıya görünen cümle de değişmeli.
  */
-import { duzeyCumlesi, duzeyiOlc, duzeyKisaAciklamasi, sesliBilgiMetni } from '../duzeyOzeti';
+import { duzeyCumlesi, duzeyiOlc, duzeyKisaAciklamasi, duzeyOnizlemeAdimlari, sesliBilgiMetni } from '../duzeyOzeti';
 import { HATIRLATMA_PRESETLERI } from '../../../presentation/store/muhafizSlice';
 
 describe('duzeyiOlc', () => {
@@ -40,5 +40,30 @@ describe('duzeyCumlesi', () => {
     it('kısa açıklama', () => {
         expect(duzeyKisaAciklamasi('yogun', duzeyiOlc(HATIRLATMA_PRESETLERI.yogun.seviyeler))).toBe('Vakit başına 7 uyarı, sesli');
         expect(duzeyKisaAciklamasi('kapali', null)).toBe('Hatırlatma yok');
+    });
+});
+
+describe('duzeyOnizlemeAdimlari', () => {
+    it('ölçüyle AYNI planı verir (sayı, ilk eşik, sesli sayısı) ve kronolojiktir', () => {
+        for (const y of ['hafif', 'normal', 'yogun'] as const) {
+            const s = HATIRLATMA_PRESETLERI[y].seviyeler;
+            const adimlar = duzeyOnizlemeAdimlari(s);
+            const olcu = duzeyiOlc(s);
+            expect(adimlar).toHaveLength(olcu.uyariSayisi);
+            expect(adimlar[0].kalanDk).toBe(olcu.ilkDk);
+            expect(adimlar.filter((a) => a.sesli)).toHaveLength(olcu.sesliSayisi);
+            for (let i = 1; i < adimlar.length; i++) expect(adimlar[i].kalanDk).toBeLessThan(adimlar[i - 1].kalanDk);
+        }
+    });
+
+    it('sesli izin yokken sesli nokta YOK, uyarı sayısı aynı (sesli hücre bildirime düşer)', () => {
+        const s = HATIRLATMA_PRESETLERI.normal.seviyeler;
+        const izinsiz = duzeyOnizlemeAdimlari(s, false);
+        expect(izinsiz.some((a) => a.sesli)).toBe(false);
+        expect(izinsiz).toHaveLength(duzeyOnizlemeAdimlari(s).length);
+    });
+
+    it('kapalı düzeyde nokta yok', () => {
+        expect(duzeyOnizlemeAdimlari(null)).toEqual([]);
     });
 });

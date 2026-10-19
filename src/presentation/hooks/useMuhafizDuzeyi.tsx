@@ -72,6 +72,11 @@ export interface MuhafizDuzeyi {
     aktifiDegistir: (acik: boolean) => void;
     /** Sesli onay modalı — çağıranın ağacına koyulur. */
     modal: React.ReactNode;
+    /**
+     * Kurulu planda sesli okuyan bir adım var mı (düzey önizlemesi için). Rıza yoksa
+     * preset sesli hücreleri bildirime düşürür; düzey adı yine "Normal" kalır.
+     */
+    sesliAcik: boolean;
 }
 
 export function useMuhafizDuzeyi(planla: () => void): MuhafizDuzeyi {
@@ -89,6 +94,10 @@ export function useMuhafizDuzeyi(planla: () => void): MuhafizDuzeyi {
 
     const secili: DuzeySecimi = !muhafiz.aktif ? 'kapali' : (muhafiz.yogunluk as DuzeySecimi);
     const ozelVar = muhafiz.yogunluk === 'ozel' || matrisGecerliMi(muhafiz.ozelMatrisYedegi);
+    const sesliAcik = useMemo(
+        () => Object.values(matris ?? {}).some((v) => v?.seviyeler?.some((sv) => sv?.kanallar?.sesli === true)),
+        [matris]
+    );
 
     const geriYukle = useCallback(
         (a: Anlik) => {
@@ -203,5 +212,5 @@ export function useMuhafizDuzeyi(planla: () => void): MuhafizDuzeyi {
         />
     ) : null;
 
-    return { secili, ozelVar, sec, aktifiDegistir, modal };
+    return { secili, ozelVar, sec, aktifiDegistir, modal, sesliAcik };
 }

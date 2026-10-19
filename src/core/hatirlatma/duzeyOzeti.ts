@@ -50,6 +50,31 @@ export function duzeyiOlc(seviyeler: PresetSeviyeleri): DuzeyOlcusu {
     return { ilkDk, uyariSayisi: plan.length, sesliSayisi, sesli: presetSesliIceriyorMu(seviyeler) };
 }
 
+/** Düzey önizlemesindeki tek uyarı (görsel anlatı). */
+export interface DuzeyOnizlemeAdimi {
+    /** Vaktin çıkmasına kaç dk kala. */
+    kalanDk: number;
+    /** Sertlik (1 nazik … 4 acil). */
+    seviye: number;
+    /** Sesli okunur mu. */
+    sesli: boolean;
+}
+
+/**
+ * Düzey önizlemesinin noktaları — `duzeyiOlc` ile AYNI yoldan (motorun plan üreticisi),
+ * kronolojik (en erken önce). Elle yazılmış tablo YOK: preset değişirse resim de değişir.
+ *
+ * `sesliIzinVar` false iken sesli hücreler `presetUygula`'daki gibi yalnız bildirime düşer
+ * (sesli okuma rızası yok ya da kullanıcı sesliyi kapattı) → önizleme "sesli" nokta GÖSTERMEZ.
+ */
+export function duzeyOnizlemeAdimlari(seviyeler: PresetSeviyeleri | null, sesliIzinVar = true): DuzeyOnizlemeAdimi[] {
+    if (!seviyeler) return [];
+    const vakit = presetMatrisiOlustur(seviyeler, sesliIzinVar).ogle;
+    return vakitUyariPlaniOlustur(vakit, Number.MAX_SAFE_INTEGER)
+        .map((u) => ({ kalanDk: u.kalanDk, seviye: u.seviye, sesli: sesliAnonsGerekliMi(u.kanallar) }))
+        .sort((a, b) => b.kalanDk - a.kalanDk);
+}
+
 /**
  * "Kendi ayarınız" (muhafız `yogunluk === 'ozel'`): kullanıcının vakit vakit kurduğu
  * düzen. Sihirbazda yer almaz; Hatırlatmalar sayfası ve muhafız ayrıntısında yalnız
