@@ -134,13 +134,13 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         id: 'wear-kadran-yuzeyleri',
         oncekiIdler: ['wear-tesbihat', 'saat-is-bolumu'],
         platformlar: ['android'],
-        surum: '0.42.0',
+        surum: '0.47.0',
         tarih: '2026-10-18',
         baslik: 'Wear OS Saatinizde Namaz Akışı',
         aciklama:
             'Galaxy Watch gibi Wear OS saatinizde vakti ve kalan süreyi kadranda görür, bilekten "Kıldım" der, tesbihat sayarsınız. Uyandırmanın ve sesli okumanın saatte mi telefonda mı olacağını siz seçersiniz.',
         detayAciklama:
-            `Kadranı özelleştirirken bir yuvaya Namaz Akışı'nı seçebilirsiniz: vaktin çıkmasına kalan süre, bugün kılınan vakit sayısı, günün beş vaktinin dağılımı ya da kerahat vakti. Kalan süre artık çubuksuz, düz metin olarak görünür ("Öğle 1:23"); kadranınızda bu yuva boş kaldıysa "Kalan süre"yi yeniden seçin. Güneş bir namaz vakti olmadığı için listede ve sıradaki vakitte artık görünmez; sabah vaktinde sıradaki namaz öğledir. "Bugün" kutucuğunda beş vakti tek bakışta görür, kıldığınız vakte iki kez dokunarak işaretlersiniz; kılmadığınız bir vaktin son dakikalarında kadranda bir sayaç belirir. Tesbihat sayacında ekrana dokunarak ya da tacı çevirerek sayarsınız; her 33'te saat belirgin şekilde titrer, ekran kapansa da kaldığınız yerden sürdürürsünüz. Ayarlar > Saat'ten uyandırmanın ve sesli okumanın nerede duyulacağını seçersiniz: uyandırmayı saate verirseniz yanınızda uyuyan uyanmaz, saatte kapatmazsanız telefonunuz 3 dakika sonra yedek olarak çalar. Saatteki düğmeyle Namaz modunu açabilir, Camideyim sorusunu bilekten cevaplayabilirsiniz.`,
+            `Kadranı özelleştirirken bir yuvaya Namaz Akışı'nı seçebilirsiniz: vaktin çıkmasına kalan süre, bugün kılınan vakit sayısı, günün beş vaktinin dağılımı ya da kerahat vakti. "Kalan süre" yuvası yalnız süreyi gösterir ("Öğle 1:23"); çıkış saati ve sıradaki namaz için ayrı "Vakit çıkış saati" ve "Sıradaki namaz" yuvaları var; kadranınızda bu yuva boş kaldıysa "Kalan süre"yi yeniden seçin. Güneş bir namaz vakti olmadığı için listede ve sıradaki vakitte artık görünmez; sabah vaktinde sıradaki namaz öğledir. "Bugün" kutucuğunda beş vakti tek bakışta görür, kıldığınız vakte iki kez dokunarak işaretlersiniz; kılmadığınız bir vaktin son dakikalarında kadranda bir sayaç belirir. Tesbihat sayacında ekrana dokunarak ya da tacı çevirerek sayarsınız; her 33'te saat belirgin şekilde titrer, ekran kapansa da kaldığınız yerden sürdürürsünüz. Ayarlar > Saat'ten uyandırmanın ve sesli okumanın nerede duyulacağını seçersiniz: uyandırmayı saate verirseniz yanınızda uyuyan uyanmaz, saatte kapatmazsanız telefonunuz 3 dakika sonra yedek olarak çalar. Saatteki düğmeyle Namaz modunu açabilir, Camideyim sorusunu bilekten cevaplayabilirsiniz.`,
         detaylar: [
             'Kadranda çubuksuz kalan süre, günlük ilerleme, gün dağılımı ve kerahat yuvaları',
             '"Bugün" kutucuğunda iki dokunuşla işaretleme',

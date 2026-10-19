@@ -43,32 +43,37 @@ object KomplikasyonCizelgesi {
 /**
  * "Vaktin çıkışına kalan süre" komplikasyonunun ETİKETLERİ — SAF.
  *
+ * SAHİP KARARI: bu komplikasyon YALNIZ kalan süreyi taşır. Çıkış saati ("çıkış 15:42")
+ * ve sıradaki vakit burada YAZILMAZ — kadran yuvası dardır, en önemli ifade olan süre
+ * sığmıyordu. O bilgiler AYRI kaynaklardadır (`VakitSiniri`: "Vakit çıkış saati",
+ * "Sıradaki namaz").
+ *
  * Geri sayım her zaman aralığın sonuna (sıradaki vaktin girişi = şu anki vaktin
  * çıkışı) kurulur; değişen yalnız neyin sayıldığıdır:
  *  - Farz vakti sürüyorsa (sabah, öğle, ikindi, akşam, yatsı) → o vaktin ÇIKIŞI:
- *    başlık vaktin adı ("Öğle"), uzun metin "Öğle · 1 sa 12 dk kaldı".
+ *    kısa başlık vaktin adı ("Öğle"), uzun başlık "Öğle çıkışına".
  *  - Güneş doğduktan öğleye kadar farz vakti YOK → öğlenin GİRİŞİ: "Öğleye".
  *  - Önceki vakit bilinmiyorsa (yükün ilk anı) → sıradakinin girişi.
  *
- * Adlar SABİT haritadan gelir (`toUpperCase`/ek üretimi yok — Türkçe İ tuzağı).
- * Kısa başlıklar en fazla 6 karakterdir (SHORT_TEXT başlığı ~7 karakter taşır).
+ * Metin (sistemin çizdiği süre) iki türde de YALNIZ süredir; başlık en fazla
+ * "<vakit> çıkışına" kadar kısa bir yönlendirmedir. Adlar SABİT haritadan gelir
+ * (`toUpperCase`/ek üretimi yok — Türkçe İ tuzağı). Kısa başlıklar en fazla 6
+ * karakterdir (SHORT_TEXT başlığı ~7 karakter taşır).
  */
 object KalanSure {
     enum class Mod { CIKIS, GIRIS }
 
     data class Gosterim(
         val mod: Mod,
-        /** SHORT_TEXT başlığı (≤ 6 karakter) */
+        /** SHORT_TEXT başlığı (≤ 6 karakter): vaktin adı */
         val kisaBaslik: String,
-        /** LONG_TEXT şablonu — `^1` sistemin çizdiği süredir */
-        val uzunSablon: String,
         /**
-         * LONG_TEXT başlığı: çıkışa sayarken "çıkış 06:45", girişe sayarken "Öğle 12:58".
-         * Çıkışta sıradaki vaktin ADI yazılmaz — sabahta o ad "Güneş" olurdu ve güneş
-         * namaz değildir, yalnız sabahın çıkış sınırıdır.
+         * LONG_TEXT başlığı: çıkışa sayarken "Öğle çıkışına", girişe sayarken "Öğleye".
+         * Saat YOK. Metin satırı yalnız süredir → kadran ikisini yan yana çizerse
+         * "Öğle çıkışına 1 sa 12 dk", yalnız metni çizerse "1 sa 12 dk" okunur.
          */
         val uzunBaslik: String,
-        /** Ekran okuyucu açıklaması (süre hariç) */
+        /** Ekran okuyucu açıklaması (süre hariç, saat yok) */
         val aciklama: String,
     )
 
@@ -85,11 +90,8 @@ object KalanSure {
 
     fun kisaAd(vakit: String): String = KISA[vakit] ?: vakit
 
-    /**
-     * @param simdikiVakit aralığın başındaki vakit (yoksa null)
-     * @param siradakiVakit aralığın sonundaki vakit
-     * @param bitisSaati sıradaki vaktin saati ("15:42")
-     */
+    fun yonelme(vakit: String): String = YONELME[vakit] ?: kisaAd(vakit)
+
     /**
      * Sayılan anın TEK kuralı: farz vakti sürüyorsa ÇIKIŞ, değilse (güneş→öğle ya da
      * önceki vakit bilinmiyor) GİRİŞ. `VakitHesabi.sayilanAn` de bunu okur.
@@ -97,21 +99,60 @@ object KalanSure {
     fun mod(simdikiVakit: String?): Mod =
         if (simdikiVakit != null && simdikiVakit != "gunes") Mod.CIKIS else Mod.GIRIS
 
-    fun gosterim(simdikiVakit: String?, siradakiVakit: String, bitisSaati: String): Gosterim {
+    /**
+     * @param simdikiVakit aralığın başındaki vakit (yoksa null)
+     * @param siradakiVakit aralığın sonundaki vakit
+     */
+    fun gosterim(simdikiVakit: String?, siradakiVakit: String): Gosterim {
         return if (mod(simdikiVakit) == Mod.CIKIS) {
             val ad = kisaAd(simdikiVakit!!)
-            Gosterim(
-                Mod.CIKIS, ad, "$ad · ^1 kaldı", "çıkış $bitisSaati",
-                "$ad vaktinin çıkmasına kalan süre; çıkış $bitisSaati",
-            )
+            Gosterim(Mod.CIKIS, ad, "$ad çıkışına", "$ad vaktinin çıkmasına kalan süre")
         } else {
-            val yonelme = YONELME[siradakiVakit] ?: kisaAd(siradakiVakit)
+            val yon = yonelme(siradakiVakit)
             // "İkindiye"/"Yatsıya" 6 karakteri aşar → kısa başlıkta yalnız ad.
-            val kisa = if (yonelme.length <= 6) yonelme else kisaAd(siradakiVakit)
-            Gosterim(
-                Mod.GIRIS, kisa, "$yonelme ^1", "${kisaAd(siradakiVakit)} $bitisSaati",
-                "${kisaAd(siradakiVakit)} vaktine kalan süre, giriş $bitisSaati",
-            )
+            val kisa = if (yon.length <= 6) yon else kisaAd(siradakiVakit)
+            Gosterim(Mod.GIRIS, kisa, yon, "${kisaAd(siradakiVakit)} vaktine kalan süre")
         }
+    }
+}
+
+/**
+ * "Vakit çıkış saati" ve "Sıradaki namaz" komplikasyonlarının ETİKETLERİ — SAF.
+ *
+ * Kalan süre komplikasyonundan AYRILAN bilgiler buradadır (sahip kararı: her yuva tek
+ * bilgi taşır). İkisi de saat dizesini metin olarak verir; geri sayım YOK.
+ */
+object VakitSiniri {
+    data class Etiket(
+        /** SHORT_TEXT başlığı (≤ 6 karakter) */
+        val kisaBaslik: String,
+        /** SHORT_TEXT metni: yalnız saat ("15:42") */
+        val kisaMetin: String,
+        /** LONG_TEXT metni: "Öğle çıkışı 15:42" */
+        val uzunMetin: String,
+        val aciklama: String,
+    )
+
+    /**
+     * Sayılan sınırın saati: farz sürüyorsa o vaktin ÇIKIŞI ("Çıkış" / "Öğle çıkışı 15:42"),
+     * güneş→öğle arasında öğlenin GİRİŞİ ("Giriş" / "Öğle girişi 13:05"). Kural
+     * `KalanSure.mod` ile AYNI — iki yuva aynı anı anlatır.
+     */
+    fun cikisSaati(simdikiVakit: String?, siradakiVakit: String, saat: String): Etiket =
+        if (KalanSure.mod(simdikiVakit) == KalanSure.Mod.CIKIS) {
+            val ad = KalanSure.kisaAd(simdikiVakit!!)
+            Etiket("Çıkış", saat, "$ad çıkışı $saat", "$ad vaktinin çıkış saati $saat")
+        } else {
+            val ad = KalanSure.kisaAd(siradakiVakit)
+            Etiket("Giriş", saat, "$ad girişi $saat", "$ad vaktinin giriş saati $saat")
+        }
+
+    /**
+     * Sıradaki NAMAZ: "İkindi" / "15:42". Güneş namaz değildir; çağıran aralıkları
+     * `ZamanCizelgesi.araliklar(yalnizNamaz = true)` ile kurar (sabahta sıradaki öğledir).
+     */
+    fun siradaki(vakit: String, saat: String): Etiket {
+        val ad = KalanSure.kisaAd(vakit)
+        return Etiket(ad, saat, "Sıradaki: $ad $saat", "Sıradaki namaz $ad, giriş $saat")
     }
 }

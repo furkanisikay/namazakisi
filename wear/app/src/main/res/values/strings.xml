@@ -4,6 +4,8 @@
     <string name="tile_adi">Sıradaki vakit</string>
     <string name="tile_aciklama">Sıradaki namaz vakti ve saati</string>
     <string name="komplikasyon_adi">Kalan süre</string>
+    <string name="cikis_saati_komplikasyon_adi">Vakit çıkış saati</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Sıradaki namaz</string>
     <string name="bugun_tile_adi">Bugün</string>
     <string name="bugun_tile_aciklama">Bugünün beş vakti; kıldığınızı iki dokunuşla işaretleyin</string>
     <string name="ilerleme_komplikasyon_adi">Günlük ilerleme</string>

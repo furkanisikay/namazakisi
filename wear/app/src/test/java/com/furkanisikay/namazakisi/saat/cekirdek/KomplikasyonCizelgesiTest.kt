@@ -110,47 +110,63 @@ class KomplikasyonCizelgesiTest {
 
     // --- Vaktin çıkışına kalan ----------------------------------------------------
 
+    /** Saat biçimi ("15:42") — kalan süre yuvasının hiçbir metninde geçmemeli. */
+    private val SAAT = Regex("""\d{1,2}:\d{2}""")
+
+    private fun saatYok(g: KalanSure.Gosterim) {
+        for (m in listOf(g.kisaBaslik, g.uzunBaslik, g.aciklama)) {
+            assertFalse("saat sızdı: $m", SAAT.containsMatchIn(m))
+            assertFalse("çıkış saati sızdı: $m", m.contains("çıkış "))
+        }
+    }
+
     @Test
     fun farzSurerkenCikisaKalanVeVaktinAdi() {
-        val g = KalanSure.gosterim("ogle", "ikindi", "15:42")
+        val g = KalanSure.gosterim("ogle", "ikindi")
         assertEquals(KalanSure.Mod.CIKIS, g.mod)
         assertEquals("Öğle", g.kisaBaslik)
-        assertEquals("Öğle · ^1 kaldı", g.uzunSablon)
-        assertTrue(g.aciklama.startsWith("Öğle vaktinin çıkmasına kalan süre"))
+        assertEquals("Öğle çıkışına", g.uzunBaslik)
+        assertEquals("Öğle vaktinin çıkmasına kalan süre", g.aciklama)
     }
 
     @Test
     fun sabahVaktiGunesteCikar_yatsiImsakta() {
-        assertEquals("Sabah", KalanSure.gosterim("imsak", "gunes", "07:01").kisaBaslik)
-        assertEquals("Yatsı", KalanSure.gosterim("yatsi", "imsak", "05:40").kisaBaslik)
-        assertEquals("İkindi · ^1 kaldı", KalanSure.gosterim("ikindi", "aksam", "18:20").uzunSablon)
+        assertEquals("Sabah", KalanSure.gosterim("imsak", "gunes").kisaBaslik)
+        assertEquals("Yatsı", KalanSure.gosterim("yatsi", "imsak").kisaBaslik)
+        assertEquals("İkindi çıkışına", KalanSure.gosterim("ikindi", "aksam").uzunBaslik)
     }
 
     @Test
     fun gunesOgleArasiFarzYok_ogleyeKalan() {
-        val g = KalanSure.gosterim("gunes", "ogle", "13:05")
+        val g = KalanSure.gosterim("gunes", "ogle")
         assertEquals(KalanSure.Mod.GIRIS, g.mod)
         assertEquals("Öğleye", g.kisaBaslik)
-        assertEquals("Öğleye ^1", g.uzunSablon)
-        assertEquals("Öğle 13:05", g.uzunBaslik)
+        assertEquals("Öğleye", g.uzunBaslik)
     }
 
     @Test
-    fun uzunBaslikta_gunesNamazAdiGibiGorunmez() {
-        // Sabah vakti güneşte çıkar; başlık "Güneş 07:01" değil "çıkış 07:01".
-        val sabah = KalanSure.gosterim("imsak", "gunes", "07:01")
-        assertEquals("çıkış 07:01", sabah.uzunBaslik)
+    fun sabahtaGunesNamazAdiGibiGorunmez() {
+        val sabah = KalanSure.gosterim("imsak", "gunes")
+        assertEquals("Sabah çıkışına", sabah.uzunBaslik)
         assertFalse(sabah.aciklama.contains("Güneş"))
-        assertEquals("çıkış 15:42", KalanSure.gosterim("ogle", "ikindi", "15:42").uzunBaslik)
+    }
+
+    /** SAHİP KARARI: kalan süre yuvası YALNIZ süre taşır — çıkış saati hiçbir türde yok. */
+    @Test
+    fun kalanSureYuvasindaCikisSaatiYok() {
+        val vakitler = listOf("imsak", "gunes", "ogle", "ikindi", "aksam", "yatsi")
+        for (onceki in vakitler + listOf<String?>(null)) {
+            for (siradaki in vakitler) saatYok(KalanSure.gosterim(onceki, siradaki))
+        }
     }
 
     @Test
     fun oncekiBilinmiyorsaSiradakininGirisi() {
-        val g = KalanSure.gosterim(null, "ikindi", "15:42")
+        val g = KalanSure.gosterim(null, "ikindi")
         assertEquals(KalanSure.Mod.GIRIS, g.mod)
-        // "İkindiye" 8 karakter → kısa başlıkta yalnız ad; uzun metinde tam hâl.
+        // "İkindiye" 8 karakter → kısa başlıkta yalnız ad; uzun başlıkta tam hâl.
         assertEquals("İkindi", g.kisaBaslik)
-        assertEquals("İkindiye ^1", g.uzunSablon)
+        assertEquals("İkindiye", g.uzunBaslik)
     }
 
     @Test
@@ -158,11 +174,48 @@ class KomplikasyonCizelgesiTest {
         val vakitler = listOf("imsak", "gunes", "ogle", "ikindi", "aksam", "yatsi")
         for (onceki in vakitler + listOf<String?>(null)) {
             for (siradaki in vakitler) {
-                val b = KalanSure.gosterim(onceki, siradaki, "00:00").kisaBaslik
+                val b = KalanSure.gosterim(onceki, siradaki).kisaBaslik
                 assertTrue("$onceki→$siradaki: $b", b.length <= 6)
+                assertTrue(VakitSiniri.cikisSaati(onceki, siradaki, "00:00").kisaBaslik.length <= 6)
             }
+            if (onceki != null) assertTrue(VakitSiniri.siradaki(onceki, "00:00").kisaBaslik.length <= 6)
         }
         // toUpperCase/toLowerCase tuzağı: noktalı İ sabit haritadan gelir.
         assertEquals("İkindi", KalanSure.kisaAd("ikindi"))
+    }
+
+    // --- Ayrı yuvalar: çıkış saati, sıradaki namaz ------------------------------
+
+    @Test
+    fun cikisSaatiYuvasiAyniAniAnlatir() {
+        val c = VakitSiniri.cikisSaati("ogle", "ikindi", "15:42")
+        assertEquals("Çıkış", c.kisaBaslik)
+        assertEquals("15:42", c.kisaMetin)
+        assertEquals("Öğle çıkışı 15:42", c.uzunMetin)
+        // Güneş→öğle: farz yok → öğlenin girişi; güneş namaz adı gibi görünmez.
+        val g = VakitSiniri.cikisSaati("gunes", "ogle", "13:05")
+        assertEquals("Giriş", g.kisaBaslik)
+        assertEquals("Öğle girişi 13:05", g.uzunMetin)
+        assertEquals("Sabah çıkışı 07:01", VakitSiniri.cikisSaati("imsak", "gunes", "07:01").uzunMetin)
+    }
+
+    @Test
+    fun siradakiNamazYuvasi() {
+        val s = VakitSiniri.siradaki("ikindi", "15:42")
+        assertEquals("İkindi", s.kisaBaslik)
+        assertEquals("15:42", s.kisaMetin)
+        assertEquals("Sıradaki: İkindi 15:42", s.uzunMetin)
+    }
+
+    /** "Sıradaki namaz" yuvası güneşi atlar: sabah vaktinde sıradaki öğledir. */
+    @Test
+    fun siradakiNamazCizelgesindeGunesYok() {
+        val yuk = (YukCozucu.coz(
+            javaClass.classLoader!!.getResource("ornek-yuk.json")!!.readText()
+        ) as CozumSonucu.Basarili).yuk
+        val ilk = VakitHesabi.tumVakitler(yuk).first().ms
+        val araliklar = ZamanCizelgesi.araliklar(yuk, ilk - 60_000L, yalnizNamaz = true)
+        assertTrue(araliklar.isNotEmpty())
+        assertTrue(araliklar.none { it.siradaki.vakit == "gunes" })
     }
 }
