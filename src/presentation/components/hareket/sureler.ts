@@ -2,7 +2,8 @@
  * Hareket sözlüğü — süre ve eğriler TEK yerde (sade tasarım, Dalga 1).
  *
  * Kurallar (motion-choreography + plan): hareket bir OLAYLA başlar ve ~1 sn içinde
- * biter; boşta sıfır hareket (sonsuz döngü yalnız gerçek bekleme); yalnız transform
+ * biter; sonsuz döngü yalnız gerçek beklemede ve tanıtım/sihirbaz/boş durum ekranında görünürken
+ * (`dongu.ts` kapısı: odak + ön plan + hareket azaltılmamış — sahip kararı 2026-10-19); yalnız transform
  * ve opaklık (`useNativeDriver: true`); "Animasyonları azalt" açıksa sahne son
  * karesine atlar; bilgi hiçbir zaman yalnız hareketle verilmez (metin de değişir).
  */

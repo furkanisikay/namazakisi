@@ -51,6 +51,7 @@ import { useCihazDurumu } from '../../hooks/useCihazDurumu';
 import { durumNotu } from '../../../core/cihaz/durumNotlari';
 import { muhafizMatrisiniCoz } from '../../../core/muhafiz/motorAdaptoru';
 import { DuzeySecici } from '../../components/hatirlatma/DuzeySecici';
+import { DuzeyOnizlemesi } from '../../components/hatirlatma/DuzeyOnizlemesi';
 import { AnahtarSatiri } from '../../components/ortak/AnahtarSatiri';
 import { BolumBasligi } from '../../components/ortak/BolumBasligi';
 import { DurumSatiri } from '../../components/ortak/DurumSatiri';
@@ -279,6 +280,8 @@ const HatirlatmalarIcerik: React.FC = () => {
                         sesliBilgiGoster={false}
                         testID="hatirlatma-duzeyi"
                     />
+                    {/* Görsel anlatı: girişte ve düzey değişince BİR KEZ (ayar ekranı — döngü yok). */}
+                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi duzey={duzey.secili} testID="hatirlatma-duzey-onizlemesi" /> : null}
                 </AyarCapasi>
 
                 <BildirimButceKarti ozet={butce.ozet} onPress={rehber.karttanAc} />

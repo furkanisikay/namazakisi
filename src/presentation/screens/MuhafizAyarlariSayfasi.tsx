@@ -46,6 +46,7 @@ import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
 import { useGenelRiza } from '../hooks/useGenelRiza';
 import { useMuhafizPlanlama } from '../hooks/useMuhafizPlanlama';
 import { useMuhafizDuzeyi } from '../hooks/useMuhafizDuzeyi';
+import { DuzeyOnizlemesi } from '../components/hatirlatma/DuzeyOnizlemesi';
 import { DuzeySecici } from '../components/hatirlatma/DuzeySecici';
 import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
@@ -398,6 +399,9 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         sesliBilgiGoster={false}
                         testID="muhafiz-duzey"
                     />
+                    {/* Görsel anlatı: seçilen düzeyin uyarıları zaman rayında — girişte ve
+                        düzey değişince BİR KEZ oynar (ayar ekranında döngü yok). */}
+                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi duzey={duzey.secili} testID="muhafiz-duzey-onizlemesi" /> : null}
                 </View>
                 </AyarCapasi>
                 </AyarCapasi>

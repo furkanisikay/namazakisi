@@ -1,8 +1,10 @@
 /**
  * Kurulum sihirbazı adımları (sade tasarım, Dalga 2) — 5 adım, salt görünüm.
  *
- * Her adım aynı iskeleti izler: TEK resim (FontAwesome5 kompozisyonu) → başlık
- * (≤ 4 kelime) → bir cümle → en fazla üç ikonlu madde → adımın kendi içeriği.
+ * Her adım aynı iskeleti izler: CANLI resim (`sahneler.tsx`; görünürken yumuşak döngü,
+ * arka planda/odak dışında/"Animasyonları azalt"ta durur) → başlık (≤ 4 kelime) → bir
+ * cümle → en fazla üç ikonlu madde → adımın kendi içeriği. Sadeleştirme metni kısaltır,
+ * görsel anlatıyı SİLMEZ (sahip kararı 2026-10-19).
  * Düğmeler sayfanın altındadır (`KurulumSihirbaziSayfasi`). Renkler yalnız tema
  * token'ı (`useRenkler`); sihirbaz koyu temada da koyu çizilir.
  *
@@ -16,7 +18,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { TURKIYE_ILLERI_OFFLINE, type Il } from '../../../domain/services/TurkiyeKonumServisi';
 import { AnahtarSatiri, BolumBasligi } from '../../components/ortak';
-import { BasariIsareti } from '../../components/hareket';
+import { DuzeyOnizlemesi } from '../../components/hatirlatma/DuzeyOnizlemesi';
+import { BildirimSahnesi, HazirSahnesi, HosgeldinizSahnesi, KonumSahnesi } from './sahneler';
 import { DuzeySecici, type HatirlatmaDuzeyi } from '../../components/hatirlatma/DuzeySecici';
 import { DUZEY_ADLARI } from '../../../core/hatirlatma/duzeyOzeti';
 import type { IzinDurumu } from '../../../core/cihaz/durumNotlari';
@@ -24,50 +27,6 @@ import type { IzinSonucu } from '../../components/ortak';
 import type { KonumDurumu } from './tipler';
 
 // ─── Ortak parçalar ──────────────────────────────────────────────────────────
-
-/** Adımın tek resmi: tonlu daire içinde ana ikon + köşede küçük rozet ikonu. Dekoratif. */
-export const Illustrasyon: React.FC<{ ikon: string; rozet?: string }> = ({ ikon, rozet }) => {
-    const renkler = useRenkler();
-    return (
-        <View
-            importantForAccessibility="no-hide-descendants"
-            accessibilityElementsHidden
-            style={{ alignSelf: 'center', width: 120, height: 120, marginTop: 8, marginBottom: 20 }}
-        >
-            <View
-                style={{
-                    width: 120,
-                    height: 120,
-                    borderRadius: 60,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: renkler.birincil + '20',
-                }}
-            >
-                <FontAwesome5 name={ikon} size={50} color={renkler.birincil} solid />
-            </View>
-            {rozet ? (
-                <View
-                    style={{
-                        position: 'absolute',
-                        right: 0,
-                        bottom: 4,
-                        width: 44,
-                        height: 44,
-                        borderRadius: 22,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: renkler.kartArkaplan,
-                        borderWidth: 2,
-                        borderColor: renkler.birincil + '40',
-                    }}
-                >
-                    <FontAwesome5 name={rozet} size={18} color={renkler.birincil} solid />
-                </View>
-            ) : null}
-        </View>
-    );
-};
 
 export const AdimBasligi: React.FC<{ baslik: string; alt?: string }> = ({ baslik, alt }) => {
     const renkler = useRenkler();
@@ -129,7 +88,7 @@ export const SonucSatiri: React.FC<{ tip: 'basari' | 'uyari'; metin: string; tes
 
 export const HosgeldinizAdimi: React.FC = () => (
     <View>
-        <Illustrasyon ikon="mosque" rozet="moon" />
+        <HosgeldinizSahnesi />
         <AdimBasligi baslik="Namaz Akışı" alt="Vakitleri bilin, kıldığınızı tek dokunuşla işaretleyin." />
         <Madde ikon="map-marker-alt" metin="Bulunduğunuz yerin vakitleri" />
         <Madde ikon="bell" metin="Vakit çıkmadan önce hatırlatma" />
@@ -233,7 +192,7 @@ export const KonumAdimi: React.FC<KonumAdimiProps> = ({ durum, konumBilgi, izin,
 
     return (
         <View>
-            <Illustrasyon ikon="map-marker-alt" rozet="compass" />
+            <KonumSahnesi alindi={durum === 'alindi'} />
             <AdimBasligi baslik="Konumunuz" alt="Namaz vakitleri ve kıble yönü konumunuza göre hesaplanır." />
             <Madde ikon="mobile-alt" metin="Konumunuz sunucularımıza gönderilmez, üçüncü taraflarla paylaşılmaz." />
             <Madde ikon="ban" metin="Reklam ya da takip için kullanılmaz." />
@@ -253,7 +212,7 @@ export const KonumAdimi: React.FC<KonumAdimiProps> = ({ durum, konumBilgi, izin,
 
 export const BildirimAdimi: React.FC<{ izin: IzinDurumu | null; izinSonucu: IzinSonucu | null }> = ({ izin, izinSonucu }) => (
     <View>
-        <Illustrasyon ikon="bell" rozet="clock" />
+        <BildirimSahnesi izinVar={izin === 'verildi'} />
         <AdimBasligi baslik="Bildirimler" alt="Vakit girince ve çıkmadan önce haber verelim." />
         <Madde ikon="mosque" metin="Yalnız namaz için kullanılır." />
         <Madde ikon="ban" metin="Reklam bildirimi gönderilmez." />
@@ -276,8 +235,10 @@ export const DuzeyAdimi: React.FC<{
     onSade: (acik: boolean) => void;
 }> = ({ duzey, onDuzey, sade, onSade }) => (
     <View>
-        <Illustrasyon ikon="shield-alt" rozet="bell" />
         <AdimBasligi baslik="Ne kadar hatırlatalım?" alt="Vakit çıkmadan önce gelen hatırlatmalar." />
+        {/* Canlı önizleme: seçilen düzeyin gerçek uyarıları zaman rayında (görünürken döngü). */}
+        <DuzeyOnizlemesi duzey={duzey} dongu testID="duzey-onizlemesi" />
+        <View style={{ height: 12 }} />
         {/* Sihirbazda "Kendi ayarınız" kartı yoktur (`ozelGoster` verilmez) → 'ozel' gelmez. */}
         <DuzeySecici secili={duzey} onSec={(d) => d !== 'ozel' && onDuzey(d)} testID="duzey-secici" />
         <View style={{ marginTop: 24 }}>
@@ -305,9 +266,6 @@ export interface HazirOzeti {
 
 export const HazirAdimi: React.FC<{ ozet: HazirOzeti; hata: string | null }> = ({ ozet, hata }) => {
     const renkler = useRenkler();
-    const [goster, setGoster] = React.useState(false);
-    // Başarı işareti adıma girişte BİR KEZ çizilir (sonsuz halka yok).
-    React.useEffect(() => setGoster(true), []);
     const satirlar: { ikon: string; metin: string }[] = [
         { ikon: 'map-marker-alt', metin: ozet.konum || 'Konum seçilmedi' },
         {
@@ -319,9 +277,8 @@ export const HazirAdimi: React.FC<{ ozet: HazirOzeti; hata: string | null }> = (
     ];
     return (
         <View>
-            <View style={{ alignSelf: 'center', marginTop: 8, marginBottom: 20 }}>
-                <BasariIsareti goster={goster} boyut={96} />
-            </View>
+            {/* Kutlama adıma girişte BİR KEZ oynar (✓ + saçılan noktalar). */}
+            <HazirSahnesi />
             <AdimBasligi baslik="Her şey hazır" alt="Ayarları istediğiniz zaman değiştirebilirsiniz." />
             <View
                 style={{

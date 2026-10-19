@@ -10,7 +10,7 @@
  * "Aylık" etiketi ekrandakiyle birebir: mağaza betikleri (Maestro, simülatör) onu arar.
  */
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Animated, Easing, View, Text } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { NAMAZ_ISIMLERI } from '../../../core/constants/UygulamaSabitleri';
@@ -19,6 +19,27 @@ import type { AylikIstatistik, HaftalikIstatistik } from '../../../core/types';
 import { BolumBasligi } from '../../components/ortak/BolumBasligi';
 import { SecenekListesi } from '../../components/ortak/SecenekListesi';
 import { BosDurum, Yukleniyor } from '../../components/ortak/BosDurum';
+import { useHareketAzalt } from '../../hooks/useHareketAzalt';
+
+/**
+ * Görsel anlatı (sahip kararı 2026-10-19): çubuklar dönem açılınca BİR KEZ tabandan
+ * büyür (`scaleY`/`scaleX` + `transformOrigin` — yükseklik/genişlik animasyonu DEĞİL,
+ * native driver). Döngü yok; "Animasyonları azalt"ta son karede doğar.
+ */
+function useGirisBuyumesi(): Animated.Value {
+  const azalt = useHareketAzalt();
+  const deger = React.useRef(new Animated.Value(azalt ? 1 : 0)).current;
+  React.useEffect(() => {
+    if (azalt) {
+      deger.setValue(1);
+      return;
+    }
+    const a = Animated.timing(deger, { toValue: 1, duration: 600, delay: 80, easing: Easing.out(Easing.cubic), useNativeDriver: true });
+    a.start();
+    return () => a.stop();
+  }, [azalt, deger]);
+  return deger;
+}
 
 export type KilmaOraniDonemi = 'haftalik' | 'aylik';
 
@@ -106,6 +127,7 @@ const Cubuk: React.FC<{ renkler: Renkler; baslik: string; mevcut: number; hedef:
   renk,
 }) => {
   const yuzde = hedef > 0 ? Math.min((mevcut / hedef) * 100, 100) : 0;
+  const buyume = useGirisBuyumesi();
   return (
     <View style={{ marginBottom: 14 }} accessible accessibilityLabel={`${baslik}: ${mevcut} / ${hedef}`}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -115,7 +137,7 @@ const Cubuk: React.FC<{ renkler: Renkler; baslik: string; mevcut: number; hedef:
         </Text>
       </View>
       <View style={{ height: 6, borderRadius: 3, overflow: 'hidden', backgroundColor: renkler.sinir }}>
-        <View style={{ height: '100%', borderRadius: 3, width: `${yuzde}%`, backgroundColor: renk }} />
+        <Animated.View style={{ height: '100%', borderRadius: 3, width: `${yuzde}%`, backgroundColor: renk, transformOrigin: 'left', transform: [{ scaleX: buyume }] }} />
       </View>
     </View>
   );
@@ -127,6 +149,7 @@ const HaftalikIcerik: React.FC<{ istatistik: HaftalikIstatistik; renkler: Renkle
   tamGunEsigi,
 }) => {
   const hedef = haftalikHedefHesapla(istatistik.gunlukVeriler, tamGunEsigi);
+  const buyume = useGirisBuyumesi();
   return (
     <View>
       <Kart renkler={renkler}>
@@ -143,7 +166,7 @@ const HaftalikIcerik: React.FC<{ istatistik: HaftalikIstatistik; renkler: Renkle
                 accessibilityLabel={`${gun.gunAdi}: ${gun.tamamlananNamaz} / ${gun.toplamNamaz}`}
               >
                 <View style={{ width: 24, height: 80, borderRadius: 6, justifyContent: 'flex-end', overflow: 'hidden', backgroundColor: renkler.sinir }}>
-                  <View style={{ width: '100%', borderRadius: 6, height: `${yuzde}%`, backgroundColor: barRenk }} />
+                  <Animated.View style={{ width: '100%', borderRadius: 6, height: `${yuzde}%`, backgroundColor: barRenk, transformOrigin: 'bottom', transform: [{ scaleY: buyume }] }} />
                 </View>
                 <Text style={{ fontSize: 12, fontWeight: '600', marginTop: 4, color: renkler.metin }}>{gun.gunAdi}</Text>
                 <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>
@@ -179,7 +202,9 @@ const HaftalikIcerik: React.FC<{ istatistik: HaftalikIstatistik; renkler: Renkle
   );
 };
 
-const AylikIcerik: React.FC<{ istatistik: AylikIstatistik; renkler: Renkler }> = ({ istatistik, renkler }) => (
+const AylikIcerik: React.FC<{ istatistik: AylikIstatistik; renkler: Renkler }> = ({ istatistik, renkler }) => {
+  const buyume = useGirisBuyumesi();
+  return (
   <View>
     <Kart renkler={renkler}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
@@ -207,7 +232,7 @@ const AylikIcerik: React.FC<{ istatistik: AylikIstatistik; renkler: Renkler }> =
           >
             <Text style={{ width: 64, fontSize: 14, fontWeight: '600', color: renkler.metin }}>{namazAdi}</Text>
             <View style={{ flex: 1, height: 8, borderRadius: 4, marginHorizontal: 12, overflow: 'hidden', backgroundColor: renkler.sinir }}>
-              <View style={{ height: '100%', borderRadius: 4, width: `${yuzde}%`, backgroundColor: renkler.birincil }} />
+              <Animated.View style={{ height: '100%', borderRadius: 4, width: `${yuzde}%`, backgroundColor: renkler.birincil, transformOrigin: 'left', transform: [{ scaleX: buyume }] }} />
             </View>
             <Text style={{ width: 44, fontSize: 14, fontWeight: '700', textAlign: 'right', color: renkler.metin }}>%{yuzde}</Text>
           </View>
@@ -215,4 +240,6 @@ const AylikIcerik: React.FC<{ istatistik: AylikIstatistik; renkler: Renkler }> =
       })}
     </Kart>
   </View>
-);
+
+  );
+};

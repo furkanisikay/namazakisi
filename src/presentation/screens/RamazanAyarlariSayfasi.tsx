@@ -33,6 +33,7 @@ import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
 import { BolumBasligi } from '../components/ortak/BolumBasligi';
+import { TanitimResmi } from '../components/hareket/TanitimResmi';
 
 /**
  * Ramazan Ayarlari Sayfasi
@@ -97,6 +98,18 @@ const RamazanAyarlariIcerik: React.FC = () => {
       showsVerticalScrollIndicator={false}
     >
       <Animated.View style={{ opacity: fadeAnim }}>
+        {/* Görsel anlatı: hilal ve yıldızlar girişte bir kez belirir (başlık header'da). */}
+        <TanitimResmi
+          ikon="moon"
+          renk={iftarRenk}
+          eslik={[
+            { ikon: 'star', x: -70, y: -30, boyut: 10 },
+            { ikon: 'star', x: 64, y: -40, boyut: 13 },
+            { ikon: 'star', x: 74, y: 22, boyut: 9 },
+          ]}
+          style={{ marginBottom: 12 }}
+          testID="ramazan-tanitim-resmi"
+        />
         {/* İftar Sayacı Ayarı */}
         <View className="mb-6">
           <BolumBasligi metin="İftar" ikon="moon" />
