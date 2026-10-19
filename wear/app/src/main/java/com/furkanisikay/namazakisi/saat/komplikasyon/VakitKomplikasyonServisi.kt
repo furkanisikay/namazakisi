@@ -22,6 +22,10 @@ import java.util.concurrent.TimeUnit
 /**
  * Kadran komplikasyonu (issue #269): VAKTİN ÇIKIŞINA kalan süre, CANLI, DÜZ METİN.
  *
+ * YALNIZ SÜRE (sahip kararı): çıkış saati ve sıradaki vakit bu yuvaya YAZILMAZ — dar
+ * yuvada kalan süre görünmez oluyordu. O bilgiler ayrı kaynaklardadır:
+ * `VakitCikisSaatiKomplikasyonServisi`, `SiradakiNamazKomplikasyonServisi`.
+ *
  * Geri sayım `TimeDifferenceComplicationText` ile SİSTEM tarafından çizilir —
  * uygulama her dakika uyanmaz; vakit sınırlarında zaman çizelgesi bir sonraki
  * girdiye geçer. Etiketler `KalanSure`'den: farz vakti sürüyorsa başlık o vaktin
@@ -35,8 +39,8 @@ import java.util.concurrent.TimeUnit
  *  - SHORT_TEXT: "1:23" (sa:dk; son saatte "0:23") + kısa ad ("Öğle"). Dakika
  *    çözünürlüklü: "1:12" daima sa:dk okunur (eskiden son saatte dk:sn idi, iki biçim
  *    aynı görünüyordu).
- *  - LONG_TEXT: "Öğle · 1 sa 12 dk kaldı" + başlıkta "çıkış 15:42" (girişe sayarken
- *    "Öğle 12:58"); güneş namaz adı gibi görünmez.
+ *  - LONG_TEXT: metin yalnız süre ("1 sa 12 dk"), başlık "Öğle çıkışına" (girişe
+ *    sayarken "Öğleye"); saat YOK.
  *  - MONOCHROMATIC_IMAGE / SMALL_IMAGE: yalnız ikon kabul eden yuvalar (issue #281).
  */
 class VakitKomplikasyonServisi : GuvenliKomplikasyonServisi() {
@@ -82,16 +86,14 @@ class VakitKomplikasyonServisi : GuvenliKomplikasyonServisi() {
     }
 
     /** Dakika çözünürlüklü geri sayım: kronometre "1:23"/"0:23", diğer stiller "1 sa 23 dk". */
-    private fun sayac(hedefMs: Long, stil: TimeDifferenceStyle, sablon: String? = null): ComplicationText =
+    private fun sayac(hedefMs: Long, stil: TimeDifferenceStyle): ComplicationText =
         TimeDifferenceComplicationText.Builder(stil, CountDownTimeReference(Instant.ofEpochMilli(hedefMs)))
-            .apply { if (sablon != null) setText(sablon) }
             .setMinimumTimeUnit(TimeUnit.MINUTES)
             .build()
 
     private fun veri(tur: ComplicationType, a: ZamanCizelgesi.Aralik): ComplicationData? {
         val bitis = a.siradaki.ms
-        val saat = VakitHesabi.saat(bitis)
-        val g = KalanSure.gosterim(a.onceki?.vakit, a.siradaki.vakit, saat)
+        val g = KalanSure.gosterim(a.onceki?.vakit, a.siradaki.vakit)
         // Sayılan an ana ekran ve tile ile AYNI kuraldan (tek kaynak).
         val sayilan = VakitHesabi.sayilanAn(a.onceki, a.siradaki)
         val aciklama = duz(g.aciklama)
@@ -106,7 +108,7 @@ class VakitKomplikasyonServisi : GuvenliKomplikasyonServisi() {
                     .setTapAction(dokunus)
                     .build()
             ComplicationType.LONG_TEXT ->
-                LongTextComplicationData.Builder(sayac(bitis, TimeDifferenceStyle.SHORT_DUAL_UNIT, g.uzunSablon), aciklama)
+                LongTextComplicationData.Builder(sayac(bitis, TimeDifferenceStyle.SHORT_DUAL_UNIT), aciklama)
                     .setTitle(duz(g.uzunBaslik))
                     .setMonochromaticImage(KomplikasyonOrtak.monokrom(this, ikon))
                     .setTapAction(dokunus)

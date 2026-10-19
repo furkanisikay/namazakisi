@@ -197,7 +197,7 @@ class VakitHesabiTest {
         // Komplikasyon etiketleri (KalanSure.gosterim) ile ekran AYNI kuralı okumalı.
         for (a in ZamanCizelgesi.araliklar(yuk, v(dun, "imsak") - dk)) {
             val s = VakitHesabi.sayilanAn(a.onceki, a.siradaki)
-            val g = KalanSure.gosterim(a.onceki?.vakit, a.siradaki.vakit, "00:00")
+            val g = KalanSure.gosterim(a.onceki?.vakit, a.siradaki.vakit)
             assertEquals(g.mod, s.mod)
             assertEquals(a.siradaki.ms, s.hedef)
         }

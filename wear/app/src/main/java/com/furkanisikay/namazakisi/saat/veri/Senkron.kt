@@ -18,6 +18,8 @@ import com.furkanisikay.namazakisi.saat.komplikasyon.GunlukIlerlemeKomplikasyonS
 import com.furkanisikay.namazakisi.saat.komplikasyon.GunlukIlerlemeYedekKomplikasyonServisi
 import com.furkanisikay.namazakisi.saat.komplikasyon.KerahatKomplikasyonServisi
 import com.furkanisikay.namazakisi.saat.komplikasyon.KibleKomplikasyonServisi
+import com.furkanisikay.namazakisi.saat.komplikasyon.SiradakiNamazKomplikasyonServisi
+import com.furkanisikay.namazakisi.saat.komplikasyon.VakitCikisSaatiKomplikasyonServisi
 import com.furkanisikay.namazakisi.saat.komplikasyon.VakitKomplikasyonServisi
 import com.furkanisikay.namazakisi.saat.tile.BugunTileServisi
 import com.furkanisikay.namazakisi.saat.tile.VakitTileServisi
@@ -53,6 +55,8 @@ object Senkron {
      */
     private val KOMPLIKASYONLAR = listOf(
         VakitKomplikasyonServisi::class.java,
+        VakitCikisSaatiKomplikasyonServisi::class.java,
+        SiradakiNamazKomplikasyonServisi::class.java,
         GunlukIlerlemeKomplikasyonServisi::class.java,
         GunlukIlerlemeYedekKomplikasyonServisi::class.java,
         GunDagilimiKomplikasyonServisi::class.java,
