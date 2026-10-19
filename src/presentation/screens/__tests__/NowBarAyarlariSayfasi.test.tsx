@@ -32,6 +32,10 @@ const mockCihaz: { surum: unknown; samsung: boolean | null; esliSaat: string | n
 jest.mock('../../hooks/useCihazDurumu', () => ({
   useCihazDurumu: () => ({ durum: mockCihaz, yenile: jest.fn() }),
 }));
+const mockYedekYenidenDene = jest.fn(async () => undefined);
+jest.mock('../../../domain/services/CanliSayacPlanlayici', () => ({
+  CanliSayacPlanlayici: { getInstance: () => ({ yedekYenidenDene: () => mockYedekYenidenDene() }) },
+}));
 const mockNowBarDegistiUygula = jest.fn();
 jest.mock('../../../domain/services/NowBarDegisikligiServisi', () => ({
   nowBarDegistiUygula: () => mockNowBarDegistiUygula(),
@@ -123,9 +127,12 @@ describe('NowBarAyarlariSayfasi', () => {
     expect(ekran.getByTestId('now-bar-tani-teshis').props.children).toContain("Now Bar'a almadı");
     expect(ekran.getByTestId('now-bar-tani-samsung').props.children).toContain('Live notifications for all apps');
     expect(ekran.queryByTestId('now-bar-tani-ayrinti')).toBeNull();
+    expect(ekran.getByTestId('now-bar-tani-teshis').props.children).toContain('bir kez daha denenir');
     fireEvent.press(ekran.getByLabelText('Tanı ayrıntılarını gösterin'));
     await waitFor(() => expect(ekran.getByTestId('now-bar-tani-ayrinti')).toBeTruthy());
     expect(ekran.getByText(/sistem öne çıkardı: hayır/)).toBeTruthy();
+    // Tanıyı yenilemek muhafız yedeğine bir deneme hakkı daha verir (sahip kararı).
+    expect(mockYedekYenidenDene).toHaveBeenCalled();
   });
 
   it('sistemde kapalıyken "Sistem ayarlarını açın" eylemi çıkar ve ayarı açar', async () => {

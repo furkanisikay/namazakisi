@@ -181,6 +181,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   CANLI_SAYAC_KAYNAKLARI: '@namaz_akisi/canli_sayac_kaynaklari',
   // Planlayıcının saate (Wear OS) giden çıktısı; WearSenkronServisi okur. Yedeklenmez.
   CANLI_SAAT_VERISI: '@namaz_akisi/canli_saat_verisi',
+  // Now Bar YEDEĞİ için kullanıcının verdiği son "yeniden dene" anı (ms). Cihaza özgü, yedeklenmez.
+  CANLI_YEDEK_YENI_DENEME: '@namaz_akisi/canli_yedek_yeni_deneme',
   // Nafile "Kıldım" (issue #273): o günün o nafilesinin kalan hatırlatmaları
   // yeniden planlanmasın diye { 'YYYY-MM-DD': NafileTuru[] }. Kayıt/puan/seri
   // DEĞİLDİR, yalnız susturma hafızası; birkaç günde budanır. Cihaza özgü →

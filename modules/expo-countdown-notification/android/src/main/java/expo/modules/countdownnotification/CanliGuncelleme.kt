@@ -52,6 +52,7 @@ object CanliGuncelleme {
      */
     private const val TANI_PREFS = "expo_countdown_canli_tani"
     private const val TANI_SON = "son"
+    private const val TANI_OLCUM = "olcum"
 
     /** API 36 (Android 16 / Baklava). `VERSION_CODES.BAKLAVA` yerine sayı: eski SDK'larla da derlensin. */
     private const val API_36 = 36
@@ -117,9 +118,10 @@ object CanliGuncelleme {
                     kanalOnemi = kanalOnemi(nm, bildirim.channelId),
                     oneCikarilabilir = oneCikarilabilir,
                     izinVar = destekleniyorMu(context),
-                    // Gönderim asenkrondur: bayrak çoğu zaman sonradan (`sonGosterim`) okunur.
-                    // Yoksa aynı kimliğin önceki ölçümü korunur (dakikalık tazelemede kaybolmasın).
-                    oneCikarildi = oneCikarmaDurumu(nm, bildirimId) ?: oncekiOlcum(context, durum.id),
+                    // Gönderim asenkrondur: anında okuma ESKİ gönderimin bayrağını verebilir →
+                    // burada ölçülmez; canlı ölçüm `olc` ile (tazeleme / tanı anında) yapılır.
+                    // Görünüm için aynı kimliğin önceki değeri taşınır.
+                    oneCikarildi = oncekiOlcum(context, durum.id),
                 )
             )
             tazelemeyiKur(context, durum.id, CanliGuncellemeKurallari.sonrakiTazelemeMs(simdi, durum.hedefMs))
@@ -152,7 +154,7 @@ object CanliGuncelleme {
      * Bildirim bulunamazsa / API < 36 ise null.
      */
     fun oneCikarmaDurumu(nm: NotificationManager, bildirimId: Int): Boolean? {
-        if (Build.VERSION.SDK_INT < API_36) return null
+        if (!bayrakOkunabilirMi()) return null
         return try {
             val sbn = nm.activeNotifications.firstOrNull { it.id == bildirimId } ?: return null
             CanliTaniKurallari.oneCikarildiMi(sbn.notification.flags, oneCikarmaBayragi())
@@ -174,6 +176,30 @@ object CanliGuncelleme {
     }
 
     private fun oneCikarmaBayragi(): Int = oneCikarmaBayragiDegeri
+
+    /** Bayrak bu cihazda okunabiliyor mu? (API 36+ ve sabit yansımayla bulundu.) */
+    fun bayrakOkunabilirMi(): Boolean = Build.VERSION.SDK_INT >= API_36 && oneCikarmaBayragi() != 0
+
+    /**
+     * Canlı ölçüm: görünen bildirimin bayrağını okur ve CİHAZ düzeyindeki son ölçüm
+     * olarak saklar (öne çıkarma engeli öğeye değil uygulamaya/cihaza bağlıdır). JS
+     * Now Bar yedeğini bu ölçüme göre gösterir ya da göstermez
+     * (`core/sayac/canliTani.ts > yedekGosterilsinMi`).
+     */
+    fun olc(context: Context, nm: NotificationManager, bildirimId: Int): Boolean? {
+        val deger = oneCikarmaDurumu(nm, bildirimId) ?: return null
+        try {
+            context.getSharedPreferences(TANI_PREFS, Context.MODE_PRIVATE).edit()
+                .putString(TANI_OLCUM, CanliTaniKurallari.olcumJsonu(CanliTaniKurallari.Olcum(deger, System.currentTimeMillis())))
+                .apply()
+        } catch (_: Throwable) {
+        }
+        return deger
+    }
+
+    fun sonOlcum(context: Context): CanliTaniKurallari.Olcum? = CanliTaniKurallari.olcumOku(
+        context.getSharedPreferences(TANI_PREFS, Context.MODE_PRIVATE).getString(TANI_OLCUM, null)
+    )
 
     private fun kanalOnemi(nm: NotificationManager, kanalId: String?): Int? {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || kanalId.isNullOrEmpty()) return null
@@ -203,7 +229,7 @@ object CanliGuncelleme {
             context.getSharedPreferences(TANI_PREFS, Context.MODE_PRIVATE).getString(TANI_SON, null)
         ) ?: return null
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val canli = oneCikarmaDurumu(nm, CountdownNotificationHelper.generateNotificationId(kayit.id))
+        val canli = olc(context, nm, CountdownNotificationHelper.generateNotificationId(kayit.id))
         val guncel = CanliTaniKurallari.bayrakIsle(kayit, canli)
         if (guncel != kayit) taniKaydet(context, guncel)
         return guncel

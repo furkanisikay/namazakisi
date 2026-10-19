@@ -442,7 +442,7 @@ class ExpoCountdownNotificationModule : Module() {
             } catch (_: Throwable) {
                 false
             }
-            if (gorunuyor) id to CanliGuncelleme.oneCikarmaDurumu(nm, bildirimId) else null
+            if (gorunuyor) id to CanliGuncelleme.olc(context, nm, bildirimId) else null
         }
         val izinVar = if (Build.VERSION.SDK_INT >= 36) {
             context.checkSelfPermission("android.permission.POST_PROMOTED_NOTIFICATIONS") ==
@@ -466,6 +466,9 @@ class ExpoCountdownNotificationModule : Module() {
             gosterilenler = plan.gosterilenler,
             sonGosterim = CanliGuncelleme.sonGosterim(context),
             aktifBildirimler = aktif,
+            bayrakOkunabilir = CanliGuncelleme.bayrakOkunabilirMi(),
+            // Ölçümler yukarıda (aktif + son gösterim) yazıldıktan SONRA okunur.
+            sonOlcum = CanliGuncelleme.sonOlcum(context),
         )
     }
 

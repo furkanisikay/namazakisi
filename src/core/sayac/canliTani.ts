@@ -43,6 +43,28 @@ export interface CanliTani {
   gosterilenler: string[];
   sonGosterim: CanliTaniGosterimi | null;
   aktifBildirimler: { id: string; oneCikarildi: boolean | null }[];
+  /** `FLAG_PROMOTED_ONGOING` bu cihazda okunabiliyor mu (API 36 + yansıma başarılı). */
+  bayrakOkunabilir: boolean;
+  /** Cihaz düzeyindeki son CANLI ölçüm; hiç ölçülmediyse null. */
+  sonOlcum: { deger: boolean; olcumMs: number } | null;
+}
+
+/**
+ * Muhafız bastırmasından gelen Now Bar YEDEĞİ gösterilsin mi? (Sahip kararı.)
+ *  - Bayrak okunamıyorsa (eski ikili, yansıma başarısız, tanı yok) → HAYIR: ölçemediğimiz
+ *    gürültüyü almayız.
+ *  - Son ölçüm "öne çıkardı" → EVET.
+ *  - Hiç ölçüm yok → EVET: bir kez gösterilir ve ölçülür (ölçüm gelince bu kural karar verir).
+ *  - Son ölçüm "öne çıkarmadı" → yalnız kullanıcı o ölçümden SONRA yeniden deneme
+ *    hakkı verdiyse (ayarlardan dönüş / tanı yenileme) EVET; yeni ölçüm gelince yine karar.
+ * "Vakit girince" / "Son dakikalar" adaylarına UYGULANMAZ (kullanıcı onları açıkça seçti).
+ */
+export function yedekGosterilsinMi(tani: CanliTani | null, yeniDenemeMs: number | null): boolean {
+  if (!tani || !tani.bayrakOkunabilir) return false;
+  const olcum = tani.sonOlcum;
+  if (!olcum) return true;
+  if (olcum.deger) return true;
+  return yeniDenemeMs !== null && yeniDenemeMs > olcum.olcumMs;
 }
 
 /** `NotificationManager.IMPORTANCE_MIN` — öne çıkarma bu önemde OLMAZ. */
@@ -68,6 +90,14 @@ function gosterimCoz(o: unknown): CanliTaniGosterimi | null {
     oneCikarildi: mantik(g.oneCikarildi),
     hata: metinMi(g.hata),
   };
+}
+
+function olcumCoz(o: unknown): { deger: boolean; olcumMs: number } | null {
+  if (!o || typeof o !== 'object') return null;
+  const r = o as Record<string, unknown>;
+  const deger = mantik(r.deger);
+  const olcumMs = sayi(r.olcumMs);
+  return deger === null || olcumMs === null ? null : { deger, olcumMs };
 }
 
 /** Native JSON'u çözer; bozuksa `null`. Asla fırlatmaz. */
@@ -97,6 +127,8 @@ export function canliTaniCoz(ham: string | null | undefined): CanliTani | null {
           return id ? { id, oneCikarildi: mantik(r?.oneCikarildi) } : null;
         })
         .filter((a): a is { id: string; oneCikarildi: boolean | null } => a !== null),
+      bayrakOkunabilir: o.bayrakOkunabilir === true,
+      sonOlcum: olcumCoz(o.sonOlcum),
     };
   } catch {
     return null;
@@ -126,6 +158,10 @@ export interface CanliTeshis {
 /** Samsung One UI 8 için ekranda gösterilen yönlendirme (ikincil kaynaklara dayanır). */
 export const SAMSUNG_CANLI_BILDIRIM_IPUCU =
   'Samsung, One UI 8\'de başka uygulamaların canlı bildirimlerini Now Bar\'a almayı Geliştirici seçenekleri\'ndeki "Live notifications for all apps" (tüm uygulamalar için canlı bildirimler) ayarına bağlayabiliyor. Bu ayarı açıp bir sonraki geri sayımda yeniden bakabilirsiniz. Geliştirici seçenekleri, Ayarlar > Telefon hakkında > Yazılım bilgileri\'nde "Yapım numarası"na yedi kez dokunarak açılır.';
+
+/** `yedekGosterilsinMi` "hayır" ölçümünde yedeği durdurur — kart bunu söyler (sessiz sapma yok). */
+export const YEDEK_DURDU_NOTU =
+  'Namaz Muhafızı\'nın uyardığı vakitlerin geri sayımı bu yüzden gösterilmiyor; ayarı değiştirip uygulamaya döndüğünüzde bir kez daha denenir.';
 
 const saatMetni = (ms: number): string => {
   const d = new Date(ms);
@@ -159,13 +195,15 @@ export function canliTeshisi(durum: CanliDurum, tani: CanliTani | null): CanliTe
   if (son && (!son.oneCikarilabilir || son.kanalOnemi === ONEM_MIN)) {
     return yok('sartEksik', 'Geri sayım bildirimi öne çıkarma şartlarını karşılamadı; lütfen sorunu bize bildirin.');
   }
-  const olculen = canli?.oneCikarildi ?? son?.oneCikarildi ?? null;
+  const olculen = canli?.oneCikarildi ?? tani.sonOlcum?.deger ?? son?.oneCikarildi ?? null;
   if (olculen === false) {
     return {
       tip: 'ureticiEngeli',
-      metin: tani.samsung
-        ? 'Uygulama geri sayımı öne çıkarmayı istedi ve şartlar tamam, ancak telefonunuz onu Now Bar\'a almadı.'
-        : 'Uygulama geri sayımı öne çıkarmayı istedi ve şartlar tamam, ancak telefonunuz onu öne çıkarmadı.',
+      metin: `${
+        tani.samsung
+          ? 'Uygulama geri sayımı öne çıkarmayı istedi ve şartlar tamam, ancak telefonunuz onu Now Bar\'a almadı.'
+          : 'Uygulama geri sayımı öne çıkarmayı istedi ve şartlar tamam, ancak telefonunuz onu öne çıkarmadı.'
+      } ${YEDEK_DURDU_NOTU}`,
       samsungIpucu: tani.samsung,
     };
   }
@@ -194,6 +232,9 @@ export function canliTaniSatirlari(durum: CanliDurum, tani: CanliTani | null): s
     `Durum: ${durum}`,
     `Android API: ${tani.sdkTam ?? tani.sdkInt}${tani.samsung ? ` · Samsung${tani.oneUi ? ` One UI ${tani.oneUi}` : ''}` : ''}`,
     `Öne çıkarma izni (manifest): ${evetHayir(tani.izinVar)}`,
+    `Bayrak okunabilir: ${evetHayir(tani.bayrakOkunabilir)} · son ölçüm: ${
+      tani.sonOlcum ? `${evetHayir(tani.sonOlcum.deger)} (${saatMetni(tani.sonOlcum.olcumMs)})` : 'yok'
+    }`,
     `Plan: ${tani.planOlaySayisi} olay${tani.sonrakiAlarmMs !== null ? ` · sıradaki ${saatMetni(tani.sonrakiAlarmMs)}` : ''}${
       tani.sonPlanMs !== null ? ` · son uygulama ${saatMetni(tani.sonPlanMs)}` : ''
     }`,

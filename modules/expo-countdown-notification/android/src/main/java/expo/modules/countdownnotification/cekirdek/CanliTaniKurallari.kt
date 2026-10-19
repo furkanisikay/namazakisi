@@ -29,6 +29,22 @@ object CanliTaniKurallari {
         val hata: String? = null,
     )
 
+    /** Cihaz düzeyindeki son CANLI ölçüm (görünen bildirimin bayrağı okunduğu an). */
+    data class Olcum(val deger: Boolean, val olcumMs: Long)
+
+    fun olcumJsonu(o: Olcum): String = JSONObject().put("deger", o.deger).put("olcumMs", o.olcumMs).toString()
+
+    fun olcumOku(ham: String?): Olcum? {
+        if (ham.isNullOrEmpty()) return null
+        return try {
+            val o = JSONObject(ham)
+            if (!o.has("deger") || !o.has("olcumMs")) return null
+            Olcum(o.getBoolean("deger"), o.getLong("olcumMs"))
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     /** Sistemin yazdığı bayrak bildirim bayraklarında var mı? */
     fun oneCikarildiMi(bayraklar: Int, oneCikarmaBayragi: Int): Boolean =
         oneCikarmaBayragi != 0 && (bayraklar and oneCikarmaBayragi) == oneCikarmaBayragi
@@ -87,7 +103,11 @@ object CanliTaniKurallari {
         gosterilenler: Collection<String>,
         sonGosterim: GosterimKaydi?,
         aktifBildirimler: List<Pair<String, Boolean?>>,
+        bayrakOkunabilir: Boolean = false,
+        sonOlcum: Olcum? = null,
     ): String = JSONObject()
+        .put("bayrakOkunabilir", bayrakOkunabilir)
+        .put("sonOlcum", sonOlcum?.let { JSONObject().put("deger", it.deger).put("olcumMs", it.olcumMs) } ?: JSONObject.NULL)
         .put("sdkInt", sdkInt)
         .put("sdkTam", sdkTam ?: JSONObject.NULL)
         .put("samsung", samsung)

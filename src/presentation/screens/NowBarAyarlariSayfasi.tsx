@@ -111,14 +111,23 @@ function useCanliTani(durum: CanliDurum | null): [CanliTani | null, () => void] 
     if (durum !== null) oku();
   }, [durum, oku]);
   // Ayarlardan (ör. Samsung geliştirici seçeneği) dönünce durum aynı kalsa da
-  // yeniden ölç: görünen sayacın bayrağı o an değişmiş olabilir.
+  // yeniden ölç ve muhafız YEDEĞİNE bir deneme hakkı daha ver (sahip kararı).
+  const yenidenDene = useCallback(() => {
+    oku();
+    if (Platform.OS !== 'android') return;
+    // TEMBEL: planlayıcı native köprüleri çeker (AGENTS.md tembel require).
+    const { CanliSayacPlanlayici } = require('../../domain/services/CanliSayacPlanlayici') as typeof import(
+      '../../domain/services/CanliSayacPlanlayici'
+    );
+    CanliSayacPlanlayici.getInstance().yedekYenidenDene().catch(() => undefined);
+  }, [oku]);
   useEffect(() => {
     const abone = AppState.addEventListener('change', (s) => {
-      if (s === 'active') oku();
+      if (s === 'active') yenidenDene();
     });
     return () => abone.remove();
-  }, [oku]);
-  return [tani, oku];
+  }, [yenidenDene]);
+  return [tani, yenidenDene];
 }
 
 type DurumMetni = { baslik: string; aciklama: string; ikon: string };

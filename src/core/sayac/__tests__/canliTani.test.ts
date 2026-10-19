@@ -1,4 +1,4 @@
-import { canliTaniCoz, canliTaniSatirlari, canliTeshisi, type CanliTani } from '../canliTani';
+import { canliTaniCoz, canliTaniSatirlari, canliTeshisi, yedekGosterilsinMi, type CanliTani } from '../canliTani';
 
 const taban: CanliTani = {
   sdkInt: 36,
@@ -12,7 +12,29 @@ const taban: CanliTani = {
   gosterilenler: [],
   sonGosterim: null,
   aktifBildirimler: [],
+  bayrakOkunabilir: true,
+  sonOlcum: null,
 };
+
+describe('yedekGosterilsinMi (sahip kararı: muhafız yedeği yalnız ölçüm izin verirse)', () => {
+  it('bayrak okunamıyorsa ya da tanı yoksa GÖSTERİLMEZ (gürültü riski alınmaz)', () => {
+    expect(yedekGosterilsinMi(null, null)).toBe(false);
+    expect(yedekGosterilsinMi({ ...taban, bayrakOkunabilir: false }, Date.now())).toBe(false);
+  });
+  it('hiç ölçüm yoksa bir kez gösterilir (ölçülsün diye)', () => {
+    expect(yedekGosterilsinMi(taban, null)).toBe(true);
+  });
+  it('son ölçüm "öne çıkardı" → gösterilir', () => {
+    expect(yedekGosterilsinMi({ ...taban, sonOlcum: { deger: true, olcumMs: 100 } }, null)).toBe(true);
+  });
+  it('son ölçüm "öne çıkarmadı" → kurulmaz; ölçümden SONRA verilen yeniden deneme hakkıyla bir kez daha', () => {
+    const hayir = { ...taban, sonOlcum: { deger: false, olcumMs: 100 } };
+    expect(yedekGosterilsinMi(hayir, null)).toBe(false);
+    expect(yedekGosterilsinMi(hayir, 50)).toBe(false); // hak eski ölçümden önce verilmiş
+    expect(yedekGosterilsinMi(hayir, 100)).toBe(false);
+    expect(yedekGosterilsinMi(hayir, 150)).toBe(true);
+  });
+});
 
 const gosterim = {
   zamanMs: 0,
@@ -40,8 +62,14 @@ describe('canliTaniCoz', () => {
       gosterilenler: ['a', 7],
       sonGosterim: { ...gosterim, kanalOnemi: null, oneCikarildi: null },
       aktifBildirimler: [{ id: 'a', oneCikarildi: true }, { oneCikarildi: false }],
+      bayrakOkunabilir: true,
+      sonOlcum: { deger: false, olcumMs: 7 },
     });
     const t = canliTaniCoz(ham)!;
+    expect(t.bayrakOkunabilir).toBe(true);
+    expect(t.sonOlcum).toEqual({ deger: false, olcumMs: 7 });
+    // Eski ikili alanları göndermezse güvenli taraf: okunamaz, ölçüm yok.
+    expect(canliTaniCoz('{"sdkInt":36}')).toMatchObject({ bayrakOkunabilir: false, sonOlcum: null });
     expect(t.sdkTam).toBeNull();
     expect(t.gosterilenler).toEqual(['a']);
     expect(t.sonGosterim?.oneCikarildi).toBeNull();

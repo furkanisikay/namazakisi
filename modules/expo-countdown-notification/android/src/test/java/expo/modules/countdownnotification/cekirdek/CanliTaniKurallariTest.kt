@@ -76,6 +76,24 @@ class CanliTaniKurallariTest {
     }
 
     @Test
+    fun olcumGidisDonusVeTaniAlani() {
+        val o = CanliTaniKurallari.Olcum(false, 42L)
+        assertEquals(o, k.olcumOku(k.olcumJsonu(o)))
+        assertNull(k.olcumOku("{}"))
+        assertNull(k.olcumOku("{"))
+        val t = JSONObject(
+            k.taniJsonu(36, null, true, null, true, 0, null, null, emptyList(), null, emptyList(), true, o)
+        )
+        assertTrue(t.getBoolean("bayrakOkunabilir"))
+        assertEquals(42L, t.getJSONObject("sonOlcum").getLong("olcumMs"))
+        assertFalse(t.getJSONObject("sonOlcum").getBoolean("deger"))
+        // Varsayılanlar: okunamaz + ölçüm yok (eski çağıran güvenli tarafa düşer).
+        val v = JSONObject(k.taniJsonu(36, null, false, null, null, 0, null, null, emptyList(), null, emptyList()))
+        assertFalse(v.getBoolean("bayrakOkunabilir"))
+        assertTrue(v.isNull("sonOlcum"))
+    }
+
+    @Test
     fun oneUiSurumuCozulur() {
         assertEquals("8.0", k.oneUiSurumu("80000"))
         assertEquals("6.1", k.oneUiSurumu("60101"))

@@ -84,21 +84,48 @@ describe('CanliSayacPlanlayici', () => {
     canliSaatDinleyicisiniAyarla(null);
   });
 
-  test('SAHA: muhafızın bastırdığı vaktin YEDEĞİ (varsayılan "Sayaçla") plana öne çıkan olay olarak girer', async () => {
-    await p.kaynakBildir('vakitSayac', [
-      aday({
-        oge: 'ikindi',
-        kaynak: 'nowBar',
-        sayacYedegi: true,
-        id: `sayac_${bugunuAl()}_ikindi`,
-        kanalId: 'canli_sayac',
-        tema: 'vakit',
-        hedefteKaybol: true,
-      }),
-    ]);
+  const yedekAdayi = () =>
+    aday({
+      oge: 'ikindi',
+      kaynak: 'nowBar',
+      sayacYedegi: true,
+      id: `sayac_${bugunuAl()}_ikindi`,
+      kanalId: 'canli_sayac',
+      tema: 'vakit',
+      hedefteKaybol: true,
+    });
+  const taniJsonu = (ek: Record<string, unknown>) =>
+    JSON.stringify({ sdkInt: 36, samsung: true, planOlaySayisi: 0, aktifBildirimler: [], bayrakOkunabilir: true, ...ek });
+
+  test('SAHA: muhafızın bastırdığı vaktin YEDEĞİ, hiç ölçüm yokken bir kez plana girer', async () => {
+    mockCanliTaniHam.mockResolvedValue(taniJsonu({ sonOlcum: null }));
+    await p.kaynakBildir('vakitSayac', [yedekAdayi()]);
     expect(sonPlan()).toEqual([
       expect.objectContaining({ id: `sayac_${bugunuAl()}_ikindi`, eylem: 'oneCikar', kaynak: 'nowBar' }),
     ]);
+  });
+
+  test('yedek: bayrak okunamıyorsa (tanı yok / yansıma başarısız) plana GİRMEZ', async () => {
+    mockCanliTaniHam.mockResolvedValue(null);
+    await p.kaynakBildir('vakitSayac', [yedekAdayi()]);
+    expect(sonPlan()).toEqual([]);
+    mockCanliTaniHam.mockResolvedValue(taniJsonu({ bayrakOkunabilir: false }));
+    await p.kaynakBildir('vakitSayac', [yedekAdayi()]);
+    expect(sonPlan()).toEqual([]);
+  });
+
+  test('yedek: "öne çıkarmadı" ölçümünden sonra kurulmaz; yeniden deneme hakkıyla bir kez daha girer', async () => {
+    mockCanliTaniHam.mockResolvedValue(taniJsonu({ sonOlcum: { deger: false, olcumMs: Date.now() - 1000 } }));
+    await p.kaynakBildir('vakitSayac', [yedekAdayi()]);
+    expect(sonPlan()).toEqual([]);
+    await p.yedekYenidenDene();
+    expect(sonPlan()).toEqual([expect.objectContaining({ eylem: 'oneCikar', kaynak: 'nowBar' })]);
+  });
+
+  test('yedek OLMAYAN adaylar (gerçek sayaç, planlayıcının "girince/son dk" adayları) ölçümden ETKİLENMEZ', async () => {
+    mockCanliTaniHam.mockResolvedValue(taniJsonu({ sonOlcum: { deger: false, olcumMs: Date.now() } }));
+    await p.kaynakBildir('iftarSayac', [aday()]);
+    expect(sonPlan()).toEqual([expect.objectContaining({ id: 'iftar_sayac_x', eylem: 'oneCikar' })]);
   });
 
   test('Now Bar tanısı tanı loguna yazılır, aynı teşhis TEKRAR yazılmaz', async () => {
