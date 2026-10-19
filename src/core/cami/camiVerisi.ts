@@ -8,7 +8,7 @@
  * kaydı o alanı boş bırakır, tüm veriyi düşürmez).
  */
 import { ARAMA_AZAMI_M, type CamiKaydi, type LatLng } from './camiTipleri';
-import { mesafeM } from './geometri';
+import { mesafeM, poligonuOnar } from './geometri';
 
 export const NACM_SIHIR = 'NACM';
 export const NACM_SURUM = 1;
@@ -141,7 +141,8 @@ export function camiVerisiniCoz(veri: Uint8Array): CamiVerisi | null {
                 lat: latE6 / 1e6,
                 lng: lngE6 / 1e6,
                 yaricapM: yaricap,
-                poligon,
+                // Kendini kesen halka (eski üretici çıktısı) dış bürüne onarılır — Kotlin ikiziyle aynı.
+                poligon: poligon ? poligonuOnar(poligon) : null,
             };
         };
 

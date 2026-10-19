@@ -9,6 +9,8 @@ import {
     BEKLEME_MAX_DK,
     BEKLEME_MIN_DK,
     BEKLEME_VARSAYILAN_DK,
+    OLCEK_MAX,
+    OLCEK_MIN,
     type YerDurumu,
     type YerKaydi,
 } from './camiTipleri';
@@ -53,6 +55,9 @@ function yerNormalize(ham: unknown): YerKaydi | null {
     const y: YerKaydi = { durum };
     const alan = sayi(ham.alanM);
     if (alan != null) y.alanM = Math.min(ALAN_MAX_M, Math.max(ALAN_MIN_M, alan));
+    // Ölçekli bina sınırı daireyle birlikte yazılmaz (native `CamiDepo.normalize` aynası).
+    const olcek = sayi(ham.olcek);
+    if (y.alanM == null && olcek != null && olcek > OLCEK_MIN) y.olcek = Math.min(OLCEK_MAX, olcek);
     if (typeof ham.ad === 'string') y.ad = ham.ad.slice(0, 120);
     const lat = sayi(ham.lat);
     const lng = sayi(ham.lng);
@@ -91,7 +96,10 @@ export function camideyimAyarlariniNormalize(ham: unknown): CamideyimAyarlari {
 /** Kullanıcı yeri kimliği — zaman damgası tabanlı, yeterince tekil. */
 export const kullaniciYeriKimligi = (simdiMs: number): string => `kendi:${simdiMs.toString(36)}`;
 
-/** Bir yerin durumunu değiştirir; "normal" ve ek bilgisi olmayan kayıt silinir (harita şişmesin). */
+/**
+ * Bir yerin durumunu değiştirir; "normal" ve ek bilgisi olmayan kayıt silinir (harita şişmesin).
+ * `undefined` verilen alan SİLİNİR ("Özgün sınıra dön" = `{ alanM: undefined, olcek: undefined }`).
+ */
 export function yerDurumunuAyarla(
     yerler: Readonly<Record<string, YerKaydi>>,
     id: string,
@@ -99,7 +107,10 @@ export function yerDurumunuAyarla(
 ): Record<string, YerKaydi> {
     const yeni = { ...yerler };
     const birlesik: YerKaydi = { ...(yerler[id] ?? { durum: 'normal' }), ...degisiklik };
-    if (birlesik.durum === 'normal' && !birlesik.kendi && birlesik.alanM == null) {
+    for (const anahtar of Object.keys(birlesik) as (keyof YerKaydi)[]) {
+        if (birlesik[anahtar] === undefined) delete birlesik[anahtar];
+    }
+    if (birlesik.durum === 'normal' && !birlesik.kendi && birlesik.alanM == null && birlesik.olcek == null) {
         delete yeni[id];
     } else {
         yeni[id] = birlesik;

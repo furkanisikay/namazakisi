@@ -7,7 +7,10 @@
  * gosterir — hat yine "basarili" der. Bu test her degerin uygulamanin KENDI
  * okuma yolundan DEGISMEDEN gectigini dogrular.
  */
+import * as fs from 'fs';
+import * as path from 'path';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { camideyimAyarlariniNormalize } from '../../cami/camideyimAyarlari';
 import { DEPOLAMA_ANAHTARLARI } from '../../constants/UygulamaSabitleri';
 import { LocalNafileServisi } from '../../../data/local/LocalNafileServisi';
 import { LocalYatisHatirlatmaServisi } from '../../../data/local/LocalYatisHatirlatmaServisi';
@@ -106,5 +109,31 @@ describe('ozellik turu tohumu', () => {
                 expect(plan.length).toBeGreaterThanOrEqual(55);
             }
         });
+    });
+});
+
+describe('ozellik turu tohumu — Camideyim (native SharedPreferences)', () => {
+    const { camideyimNativeAyarlari, camideyimTercihXml } = require('../../../../scripts/ozellik-tohum-verisi');
+
+    it('Camideyim ACIK tohumlanir ve uygulamanin normalize yolundan DEGISMEDEN gecer', () => {
+        const ham = camideyimNativeAyarlari();
+        expect(ham.aktif).toBe(true);
+        expect(camideyimAyarlariniNormalize(ham)).toEqual(ham);
+    });
+
+    it('XML: CamiDepo dosya/anahtar adlari tutar ve kacislanmis JSON geri cozulur', () => {
+        const kok = path.join(__dirname, '../../../..');
+        const kt = fs.readFileSync(
+            path.join(kok, 'modules/expo-cami-geofence/android/src/main/java/expo/modules/camigeofence/CamiDepo.kt'),
+            'utf8'
+        );
+        expect(kt).toContain('private const val DOSYA = "namazakisi_cami"');
+        expect(kt).toContain('private const val AYARLAR = "ayarlar"');
+        expect(fs.readFileSync(path.join(kok, 'scripts/android-ozellik-hatti.sh'), 'utf8')).toContain('shared_prefs/namazakisi_cami.xml');
+        const xml: string = camideyimTercihXml();
+        const m = xml.match(/<string name="ayarlar">([^<]*)<\/string>/);
+        expect(m).not.toBeNull();
+        const cozulmus = m![1].replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+        expect(JSON.parse(cozulmus)).toEqual(camideyimNativeAyarlari());
     });
 });

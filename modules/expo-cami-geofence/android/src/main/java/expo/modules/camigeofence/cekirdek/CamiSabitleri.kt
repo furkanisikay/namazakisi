@@ -25,6 +25,9 @@ object CamiSabitleri {
     const val ALAN_MIN_M = 10.0
     const val ALAN_MAX_M = 150.0
     const val POLIGON_TAMPON_M = 10.0
+    /** Bina sınırı ölçeği (JS `OLCEK_MIN`/`OLCEK_MAX`); etkin üst sınır `ALAN_MAX_M / yarıçap` ile kısılır. */
+    const val OLCEK_MIN = 1.0
+    const val OLCEK_MAX = 3.0
     const val AZAMI_DOGRULUK_M = 30.0
 
     const val IZLENEN_CAMI_SAYISI = 25

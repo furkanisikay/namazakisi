@@ -34,7 +34,8 @@ APK=$(find android -name '*.apk' -path '*debug*' | head -1)
 [ -z "$APK" ] && { echo "debug APK bulunamadi"; exit 1; }
 adb install -r "$APK"
 
-for izin in POST_NOTIFICATIONS ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION; do
+# ACCESS_BACKGROUND_LOCATION: Camideyim acik tohumlandigi icin ("Her zaman" yoksa sayfa izin uyarisi gosterir).
+for izin in POST_NOTIFICATIONS ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION ACCESS_BACKGROUND_LOCATION; do
   adb shell pm grant "$PAKET" "android.permission.$izin" || true
 done
 adb emu geo fix 28.9784 41.0082 || true
@@ -99,6 +100,12 @@ tohumla() {
   adb push /tmp/RKStorage /data/local/tmp/RKStorage >/dev/null
   adb shell run-as "$PAKET" cp /data/local/tmp/RKStorage databases/RKStorage
   adb shell run-as "$PAKET" rm -f databases/RKStorage-journal databases/RKStorage-wal databases/RKStorage-shm || true
+  # Camideyim ayarlari native SharedPreferences'tadir (CamiDepo) — harita ve sinir
+  # ayari kareleri icin ACIK tohumlanir.
+  node scripts/ozellik-tohum-verisi.js --cami-xml > /tmp/namazakisi_cami.xml
+  adb push /tmp/namazakisi_cami.xml /data/local/tmp/namazakisi_cami.xml >/dev/null
+  adb shell run-as "$PAKET" mkdir -p shared_prefs
+  adb shell run-as "$PAKET" cp /data/local/tmp/namazakisi_cami.xml shared_prefs/namazakisi_cami.xml
 }
 
 # Ilk acilis Metro paketini derler (minify): sonraki akislarin beklemesi kisalsin.

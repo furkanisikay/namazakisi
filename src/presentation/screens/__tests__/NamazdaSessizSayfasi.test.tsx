@@ -163,6 +163,21 @@ describe('NamazdaSessizSayfasi — Camiye girince', () => {
         expect((k.ayarlariYaz.mock.calls[0][0] as { yerler: unknown }).yerler).toEqual({ 'osm:w1': { durum: 'haric', ad: 'Kare Camii' } });
     });
 
+    it('REGRESYON (liste): eski metre stepper\'ı yerine ortak sınır ayarı; daireden özgün sınıra dönülür', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true, yerler: { 'osm:w1': { durum: 'normal', alanM: 50 } } });
+        k.yakinCamiler.mockResolvedValue([
+            { id: 'osm:w1', ad: 'Kare Camii', lat: 41.011, lng: 28.972, yaricapM: 29, poligonVar: true, mesafeM: 137 },
+        ]);
+        const e = render(<NamazdaSessizSayfasi />);
+        await ayrintilariAc(e);
+        await waitFor(() => expect(e.getByText('Kare Camii')).toBeTruthy());
+        fireEvent.press(e.getByTestId('cami-osm:w1'));
+        expect(e.getByTestId('liste-sinir-osm:w1-ayari')).toBeTruthy();
+        fireEvent.press(e.getByTestId('liste-sinir-osm:w1-ozgun'));
+        await waitFor(() => expect(k.ayarlariYaz).toHaveBeenCalled());
+        expect((k.ayarlariYaz.mock.calls.at(-1)![0] as { yerler: unknown }).yerler).toEqual({});
+    });
+
     it('son algılamalar (ayrıntılar katında): neden algılanmadığını yazar', async () => {
         k.ayarlariAl.mockResolvedValue({ aktif: true });
         k.gunlukAl.mockResolvedValue([{ zamanMs: Date.now(), tur: 'olcum', sonuc: 'supheli', dogrulukM: 48 }]);
@@ -238,17 +253,33 @@ describe('NamazdaSessizSayfasi — Camiye girince', () => {
         expect(k.namazModuAyarlariniYaz).not.toHaveBeenCalled();
     });
 
-    it('"Camilerim" satırı yalnız açıkken görünür ve harita alt sayfasına gider', async () => {
-        const kapali = render(<NamazdaSessizSayfasi />);
-        await bosalt();
-        expect(kapali.queryByTestId('camilerim')).toBeNull();
-        kapali.unmount();
-
-        k.ayarlariAl.mockResolvedValue({ aktif: true });
+    it('"Camilerim" satırı Camideyim KAPALIYKEN de görünür (keşif) ve izin istemeden haritaya gider', async () => {
         const e = render(<NamazdaSessizSayfasi />);
         await waitFor(() => expect(e.getByTestId('camilerim')).toBeTruthy());
         fireEvent.press(e.getByTestId('camilerim'));
         expect(mockNavigate).toHaveBeenCalledWith('Camilerim');
+        expect(L.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
+        expect(L.requestBackgroundPermissionsAsync).not.toHaveBeenCalled();
+        expect(k.ayarlariYaz).not.toHaveBeenCalled();
+    });
+
+    it('mini önizleme: "Yakınınızda N cami" (2 km içi) sayar, dokununca harita açılır', async () => {
+        k.yakinCamiler.mockResolvedValue([
+            { id: 'osm:w1', ad: 'A', lat: 41.011, lng: 28.972, yaricapM: 29, poligonVar: true, mesafeM: 137 },
+            { id: 'osm:n2', ad: 'B', lat: 41.02, lng: 28.98, yaricapM: 0, poligonVar: false, mesafeM: 1400 },
+            { id: 'osm:n3', ad: 'C', lat: 41.05, lng: 28.99, yaricapM: 0, poligonVar: false, mesafeM: 4700 },
+        ]);
+        const e = render(<NamazdaSessizSayfasi />);
+        await waitFor(() => expect(e.getByTestId('yakin-camiler-onizleme')).toBeTruthy());
+        expect(e.getByText('Yakınınızda 2 cami')).toBeTruthy();
+        fireEvent.press(e.getByTestId('yakin-camiler-onizleme'));
+        expect(mockNavigate).toHaveBeenCalledWith('Camilerim');
+    });
+
+    it('mini önizleme: yakında hiç cami yoksa (veri yok) kart çizilmez', async () => {
+        const e = render(<NamazdaSessizSayfasi />);
+        await bosalt();
+        expect(e.queryByTestId('yakin-camiler-onizleme')).toBeNull();
     });
 
     it('iç sekme çubuğu YOK (harita ayrı sayfa, ayrıntılar katlı)', async () => {
@@ -269,13 +300,78 @@ describe('NamazdaSessizSayfasi — Camiye girince', () => {
         const e = render(<CamilerimSayfasi />);
         await waitFor(() => expect(e.getByTestId('cami-haritasi')).toBeTruthy());
         expect(e.getByText(/© OpenStreetMap katkıcıları/)).toBeTruthy();
-        const kaynak = e.UNSAFE_root.findAll((n) => (n.type as unknown) === 'GeoJSONSource' && n.props.id === 'cami-noktalari')[0];
+        // Ayarsız cami KÜME kaynağındadır (uzakta kümelenir, yakında ikonla tek tek görünür).
+        const kaynak = e.UNSAFE_root.findAll((n) => (n.type as unknown) === 'GeoJSONSource' && n.props.id === 'cami-kumeleri')[0];
+        expect(kaynak.props.cluster).toBe(true);
         await waitFor(() => expect(kaynak.props.data.features).toHaveLength(1));
-        act(() => kaynak.props.onPress({ nativeEvent: { features: [{ properties: { id: 'osm:w1' } }] } }));
+        expect(k.yakinCamiler).toHaveBeenCalledWith(41.01, 28.97, 150);
+        expect(e.getByText('Camiye dokunun')).toBeTruthy();
+        // Lejant varsayılan KAPALI; '?' ile açılır.
+        expect(e.queryByTestId('harita-lejant')).toBeNull();
+        fireEvent.press(e.getByTestId('harita-lejant-dugmesi'));
+        expect(e.getByTestId('harita-lejant')).toBeTruthy();
+        await act(async () => {
+            await kaynak.props.onPress({ nativeEvent: { features: [{ properties: { id: 'osm:w1' } }] } });
+        });
         await waitFor(() => expect(e.getByTestId('harita-yer-paneli')).toBeTruthy());
         fireEvent.press(e.getByLabelText('Kare Camii: cami değil'));
         await waitFor(() => expect(k.ayarlariYaz).toHaveBeenCalled());
         expect((k.ayarlariYaz.mock.calls[0][0] as { yerler: unknown }).yerler).toEqual({ 'osm:w1': { durum: 'haric', ad: 'Kare Camii' } });
+    });
+
+    const KARE: [number, number][] = [
+        [41.01082, 28.971762],
+        [41.01082, 28.972238],
+        [41.01118, 28.972238],
+        [41.01118, 28.971762],
+    ];
+
+    const kareyiSec = async (ayarlar: Record<string, unknown>) => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true, yerler: ayarlar });
+        k.yakinCamiler.mockResolvedValue([
+            { id: 'osm:w1', ad: 'Kare Camii', lat: 41.011, lng: 28.972, yaricapM: 29, poligonVar: true, mesafeM: 137, poligon: KARE },
+        ]);
+        L.getForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' } as never);
+        const e = render(<CamilerimSayfasi />);
+        await waitFor(() => expect(e.getByTestId('cami-haritasi')).toBeTruthy());
+        await waitFor(() =>
+            expect(e.UNSAFE_root.findAll((n) => (n.type as unknown) === 'GeoJSONSource' && n.props.data?.features?.length > 0).length).toBeGreaterThan(0)
+        );
+        const kaynak = e.UNSAFE_root.findAll(
+            (n) => (n.type as unknown) === 'GeoJSONSource' && (n.props.id === 'cami-noktalari' || n.props.id === 'cami-kumeleri') && n.props.data.features.length > 0
+        )[0];
+        await act(async () => {
+            await kaynak.props.onPress({ nativeEvent: { features: [{ properties: { id: 'osm:w1' } }] } });
+        });
+        await waitFor(() => expect(e.getByTestId('harita-sinir-ayari')).toBeTruthy());
+        return e;
+    };
+
+    it('SINIR: poligonlu camide varsayılan "Bina sınırı" kipi; büyütme ölçek yazar, poligonu daireye ÇEVİRMEZ', async () => {
+        const e = await kareyiSec({});
+        expect(e.getByTestId('harita-sinir-aciklama').props.children.join('')).toMatch('Caminin kendi bina sınırı kullanılıyor.');
+        expect(e.queryByTestId('harita-sinir-ozgun')).toBeNull();
+        fireEvent.press(e.getByLabelText('Kare Camii bina sınırı büyütme artır'));
+        await waitFor(() => expect(k.ayarlariYaz).toHaveBeenCalled(), { timeout: 3000 });
+        const yer = (k.ayarlariYaz.mock.calls.at(-1)![0] as { yerler: Record<string, unknown> }).yerler['osm:w1'];
+        expect(yer).toEqual({ durum: 'normal', olcek: 1.1 });
+    });
+
+    it('REGRESYON: daireye çevrilmiş bina sınırı "Özgün bina sınırına dönün" ile geri gelir', async () => {
+        const e = await kareyiSec({ 'osm:w1': { durum: 'favori', alanM: 60 } });
+        expect(e.getByTestId('harita-sinir-kip-daire').props.accessibilityState.selected).toBe(true);
+        fireEvent.press(e.getByTestId('harita-sinir-ozgun'));
+        await waitFor(() => expect(k.ayarlariYaz).toHaveBeenCalled());
+        const yer = (k.ayarlariYaz.mock.calls.at(-1)![0] as { yerler: Record<string, unknown> }).yerler['osm:w1'];
+        expect(yer).toEqual({ durum: 'favori' });
+    });
+
+    it('SINIR: "Daire" kipi mevcut alandan başlar ve ölçeği siler', async () => {
+        const e = await kareyiSec({ 'osm:w1': { durum: 'normal', olcek: 2 } });
+        fireEvent.press(e.getByTestId('harita-sinir-kip-daire'));
+        await waitFor(() => expect(k.ayarlariYaz).toHaveBeenCalled());
+        const yer = (k.ayarlariYaz.mock.calls.at(-1)![0] as { yerler: Record<string, unknown> }).yerler['osm:w1'];
+        expect(yer).toEqual({ durum: 'normal', alanM: 60 });
     });
 
     it('Camilerim (harita): "Yer ekleyin" haritanın ortasındaki noktayı adıyla ekler', async () => {

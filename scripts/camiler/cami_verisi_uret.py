@@ -97,28 +97,78 @@ def dis_burun(noktalar: list) -> list:
     return alt[:-1] + ust[:-1]
 
 
+def _capraz(o, a, b) -> float:
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+
+def _kesisir(a, b, c, d) -> bool:
+    """[a,b] ve [c,d] doğru parçaları İÇTEN kesişiyor mu (uç dokunuşu sayılmaz)."""
+    d1, d2 = _capraz(c, d, a), _capraz(c, d, b)
+    d3, d4 = _capraz(a, b, c), _capraz(a, b, d)
+    return ((d1 > 0 > d2) or (d1 < 0 < d2)) and ((d3 > 0 > d4) or (d3 < 0 < d4))
+
+
+def kendini_kesiyor_mu(halka: list) -> bool:
+    """Kapalı halkanın komşu olmayan iki kenarı kesişiyor mu? (JS `kendiniKesiyorMu` ikizi.)"""
+    n = len(halka)
+    for i in range(n):
+        for j in range(i + 2, n):
+            if i == 0 and j == n - 1:
+                continue
+            if _kesisir(halka[i], halka[(i + 1) % n], halka[j], halka[(j + 1) % n]):
+                return True
+    return False
+
+
+def _yeni_kenar_kesisir(halka: list, i: int) -> bool:
+    """i. köşe silinince oluşacak [i-1, i+1] kenarı başka bir kenarı keser mi?"""
+    n = len(halka)
+    a, b = halka[(i - 1) % n], halka[(i + 1) % n]
+    for j in range(n):
+        k = (j + 1) % n
+        # Silinen köşeye ya da yeni kenarın uçlarına bağlı kenarlar atlanır.
+        if j in ((i - 2) % n, (i - 1) % n, i, (i + 1) % n):
+            continue
+        if _kesisir(a, b, halka[j], halka[k]):
+            return True
+    return False
+
+
+def visvalingam(halka: list, azami: int) -> list | None:
+    """
+    Visvalingam–Whyatt: en küçük etkili alanlı köşeyi (komşularıyla üçgen) tek tek
+    siler, KENDİNİ KESEN halka üretecek silmeyi atlar. Douglas-Peucker'ın aksine
+    köşe sayısını hedefe tam indirir ve alanı korur. (Eski DP, eps'i 1,6 kat
+    sıçratarak 12'nin altına inerken Ayasofya'yı 84 → 6 köşeye düşürüp köşeleri
+    kesen, oklu bir şekil üretiyordu — #297 harita karesi.) Silinebilir köşe
+    kalmazsa None.
+    """
+    h = list(halka)
+    while len(h) > azami:
+        n = len(h)
+        adaylar = sorted(range(n), key=lambda i: abs(_capraz(h[(i - 1) % n], h[i], h[(i + 1) % n])))
+        for i in adaylar:
+            if n - 1 >= 3 and not _yeni_kenar_kesisir(h, i):
+                del h[i]
+                break
+        else:
+            return None
+    return h
+
+
 def halkayi_basitlestir(halka_xy: list) -> list:
-    """Kapalı halkayı (son nokta tekrarsız) en fazla AZAMI_KOSE köşeye indirir."""
-    if len(halka_xy) <= AZAMI_KOSE:
+    """Kapalı halkayı (son nokta tekrarsız) en fazla AZAMI_KOSE köşeye indirir; sonuç kendini KESMEZ."""
+    if len(halka_xy) <= AZAMI_KOSE and not kendini_kesiyor_mu(halka_xy):
         return list(halka_xy)
-    kapali = list(halka_xy) + [halka_xy[0]]
-    eps = 0.5
-    while eps <= 64:
-        sonuc = douglas_peucker(kapali, eps)[:-1]
-        if 3 <= len(sonuc) <= AZAMI_KOSE:
+    # Eş doğrusal / santimetrik çıkıntıları ucuzca at (VW'yi binlerce köşede koşturmayalım).
+    on = douglas_peucker(list(halka_xy) + [halka_xy[0]], 0.3)[:-1]
+    if len(on) >= 3 and not kendini_kesiyor_mu(on):
+        sonuc = visvalingam(on, AZAMI_KOSE)
+        if sonuc and len(sonuc) >= 3 and not kendini_kesiyor_mu(sonuc):
             return sonuc
-        eps *= 1.6
+    # Yedek: dış bürün (konveks → silme kendini kesemez).
     zarf = dis_burun(halka_xy)
-    if len(zarf) <= AZAMI_KOSE:
-        return zarf
-    kapali = zarf + [zarf[0]]
-    eps = 1.0
-    while eps <= 500:
-        sonuc = douglas_peucker(kapali, eps)[:-1]
-        if 3 <= len(sonuc) <= AZAMI_KOSE:
-            return sonuc
-        eps *= 1.6
-    return zarf[:AZAMI_KOSE]
+    return visvalingam(zarf, AZAMI_KOSE) or zarf[:AZAMI_KOSE]
 
 
 def alan_ve_agirlik_merkezi(halka_xy: list) -> tuple[float, float, float]:

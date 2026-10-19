@@ -42,7 +42,15 @@ object GuvenPuani {
         val ozel = yer.ozelAlanM
         if ((ozel != null && ozel > 0) || yer.kaynak == "kendi") return "kullaniciAlani"
         val pol = yer.poligon
-        if (pol != null && pol.size >= 3) return if (Geometri.noktaPoligondaMi(lat, lng, pol)) "poligonIci" else "tampon"
+        if (pol != null && pol.size >= 3) {
+            if (Geometri.noktaPoligondaMi(lat, lng, pol)) return "poligonIci"
+            // Ölçekli bina sınırı: yalnız büyütülmüş bantta → kullanıcının kendi alanı (JS ile aynı).
+            if (Geometri.etkinOlcek(yer.ozelOlcek, yer.yaricapM) > CamiSabitleri.OLCEK_MIN) {
+                val buyuk = Geometri.etkinPoligon(yer)
+                if (buyuk != null && Geometri.noktaPoligondaMi(lat, lng, buyuk)) return "kullaniciAlani"
+            }
+            return "tampon"
+        }
         return if (Geometri.mesafeM(lat, lng, yer.lat, yer.lng) <= Geometri.alanYaricapiM(null, yer.yaricapM) / 2) "noktaMerkez" else "noktaKenar"
     }
 

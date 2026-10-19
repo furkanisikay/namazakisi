@@ -77,7 +77,7 @@ object CamiKarar {
     }
 
     fun geofenceYaricapiM(yer: IzlenenYer): Double =
-        max(CamiSabitleri.GEOFENCE_YARICAPI_M, Geometri.alanYaricapiM(yer.ozelAlanM, yer.yaricapM) + CamiSabitleri.GEOFENCE_ALAN_PAYI_M)
+        max(CamiSabitleri.GEOFENCE_YARICAPI_M, Geometri.alanYaricapiM(yer.ozelAlanM, yer.yaricapM, yer.ozelOlcek) + CamiSabitleri.GEOFENCE_ALAN_PAYI_M)
 
     /** JS `izlenecekleriSec` ikizi. */
     fun izlenecekleriSec(
@@ -96,7 +96,11 @@ object CamiKarar {
             val ayar = yerler[kayit.id]
             if (ayar?.durum == "haric") continue
             izlenenler.add(
-                IzlenenYer(kayit.id, kayit.ad, kayit.lat, kayit.lng, kayit.yaricapM, kayit.poligon, ayar?.alanM, "osm", ayar?.durum == "favori")
+                IzlenenYer(
+                    kayit.id, kayit.ad, kayit.lat, kayit.lng, kayit.yaricapM, kayit.poligon, ayar?.alanM, "osm", ayar?.durum == "favori",
+                    // Ölçek yalnız poligonlu kayıtta ve daire seçilmemişken anlamlıdır (JS ile aynı).
+                    ozelOlcek = if (ayar?.alanM == null && kayit.poligon != null) ayar?.olcek else null,
+                )
             )
             eklenen.add(kayit.id)
             if (izlenenler.size == k) kinci = Geometri.mesafeM(lat, lng, kayit.lat, kayit.lng)

@@ -35,18 +35,16 @@ import { useCamideyim } from '../hooks/useCamideyim';
 import { useNamazModu } from '../hooks/useNamazModu';
 import {
     IZLENEN_CAMI_SAYISI,
-    ALAN_ADIM_M,
-    ALAN_MAX_M,
-    ALAN_MIN_M,
     BEKLEME_MAX_DK,
     BEKLEME_MIN_DK,
     KAPI_CUMA_ONCE_DK,
     KAPI_CUMA_SONRA_DK,
     KAPI_ONCE_DK,
     KAPI_SONRA_DK,
-    VARSAYILAN_ALAN_M,
     type YerKaydi,
 } from '../../core/cami/camiTipleri';
+import { SinirAyari } from '../components/cami/SinirAyari';
+import { YakinCamilerOnizlemesi } from '../components/cami/YakinCamilerOnizlemesi';
 import { mesafeM } from '../../core/cami/geometri';
 import type { OlaySatiri } from '../../core/cami/olayMetinleri';
 import { camidenCik } from '../../../modules/expo-cami-geofence/src';
@@ -113,6 +111,26 @@ const NASIL_CALISIR = [
     { ikon: 'crosshairs', metin: 'Konum bir kez ölçülür, caminin alanıyla karşılaştırılır.' },
     { ikon: 'balance-scale', metin: 'Vakte yakınlık ve hızınıza bakılır; önünden geçmek sayılmaz.' },
 ];
+
+/** Küçük ikonlu sayı çipi (ör. ★ 2) — "·" ayraçlı metin yerine. */
+const SayiCipi: React.FC<{ ikon: string; sayi: number }> = ({ ikon, sayi }) => {
+    const renkler = useRenkler();
+    return (
+        <View
+            style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingHorizontal: 8,
+                paddingVertical: 2,
+                borderRadius: 10,
+                backgroundColor: `${renkler.birincil}18`,
+            }}
+        >
+            <FontAwesome5 name={ikon} size={10} color={renkler.birincil} solid style={{ marginRight: 4 }} />
+            <Text style={{ fontSize: 13, fontWeight: '600', color: renkler.metin }}>{sayi}</Text>
+        </View>
+    );
+};
 
 export const NamazdaSessizSayfasi: React.FC = () => {
     const renkler = useRenkler();
@@ -248,7 +266,12 @@ export const NamazdaSessizSayfasi: React.FC = () => {
 
     const secilenSayisi = Object.values(ayarlar.yerler).filter((y) => y.kendi || y.durum === 'favori').length;
     const yerSay = (kosul: (y: YerKaydi) => boolean) => Object.values(ayarlar.yerler).filter(kosul).length;
-    const haritaOzeti = `${yerSay((y) => y.durum === 'favori')} favori · ${yerSay((y) => y.kendi === true)} sizin yeriniz`;
+    const favoriSayisi = yerSay((y) => y.durum === 'favori');
+    const kendiSayisi = yerSay((y) => y.kendi === true);
+    // Ekran okuyucu metni; ekranda sayılar ikonlu çip olarak çizilir ("·" ayracı YOK), ikisi 0 ise hiç.
+    const haritaOzeti = [favoriSayisi > 0 ? `${favoriSayisi} favori` : null, kendiSayisi > 0 ? `${kendiSayisi} eklediğiniz yer` : null]
+        .filter(Boolean)
+        .join(', ');
     const ornekler = guvenOrnekleriOlustur(ayarlar);
     const kartStili = { backgroundColor: renkler.kartArkaplan, borderRadius: 24 };
     const ayrac = { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: renkler.sinir };
@@ -281,8 +304,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
         const ad = y.ad || (kendi ? 'Eklediğim yer' : 'Adı bilinmeyen cami');
         const etiketler = [mesafeMetni(y.mesafe), kendi ? 'sizin yeriniz' : null, favori ? 'favori' : null, haric ? 'cami değil' : null]
             .filter(Boolean)
-            .join(' · ');
-        const alan = ayar?.alanM ?? (y.yaricapM > 0 ? y.yaricapM : VARSAYILAN_ALAN_M);
+            .join(', ');
         return (
             <View key={y.id} className="rounded-2xl border mb-2" style={{ borderColor: renkler.sinir, backgroundColor: renkler.arkaplan }}>
                 <TouchableOpacity
@@ -313,35 +335,22 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                 Burada hiçbir zaman "camidesiniz" denmez.
                             </Text>
                         ) : (
-                            <>
-                                <View className="flex-row items-center justify-between mb-1">
-                                    <View className="flex-1 pr-2">
-                                        <Text className="text-sm font-medium" style={{ color: renkler.metin }}>
-                                            Algılama alanı
-                                        </Text>
-                                        <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                                            Bu alanın içindeyseniz camide sayılırsınız
-                                        </Text>
-                                    </View>
-                                    <SayisalSecici
-                                        deger={alan}
-                                        min={ALAN_MIN_M}
-                                        max={ALAN_MAX_M}
-                                        adim={ALAN_ADIM_M}
-                                        birim="m"
-                                        onChange={(v) => c.yerGuncelle(y.id, { alanM: v })}
-                                        renk={renkler.birincil}
-                                        aciklama={`${ad} alanı`}
-                                    />
-                                </View>
-                                {y.poligonVar && (
-                                    <Text className="text-xs mb-1" style={{ color: renkler.metinIkincil }}>
-                                        {ayar?.alanM == null
-                                            ? 'Şu an caminin bina sınırı kullanılıyor; alan seçerseniz onun yerine geçer.'
-                                            : 'Seçtiğiniz alan bina sınırının yerine kullanılıyor.'}
-                                    </Text>
-                                )}
-                            </>
+                            // Harita paneliyle AYNI bileşen: tek metre stepper'ı eskiden poligonu
+                            // sessizce daireye çeviriyor, geri dönüş yolu bırakmıyordu.
+                            <SinirAyari
+                                girdi={{
+                                    poligonVar: y.poligonVar,
+                                    yaricapM: y.yaricapM,
+                                    alanM: ayar?.alanM ?? null,
+                                    olcek: ayar?.olcek ?? null,
+                                    kendi,
+                                }}
+                                ad={ad}
+                                onDegistir={(d) => {
+                                    c.yerGuncelle(y.id, d).catch(() => undefined);
+                                }}
+                                testIDOnEki={`liste-sinir-${y.id}`}
+                            />
                         )}
                         <View className="flex-row gap-2 mt-2">
                             {kendi ? (
@@ -464,26 +473,33 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                             testID="namaz-modu-ana"
                         />
                     </View>
-                    {ayarlar.aktif ? (
-                        <View style={ayrac}>
-                            <TouchableOpacity
-                                testID="camilerim"
-                                onPress={() => navigation.navigate('Camilerim')}
-                                activeOpacity={0.7}
-                                accessibilityRole="button"
-                                accessibilityLabel={`Camilerim. ${haritaOzeti}`}
-                                style={{ flexDirection: 'row', alignItems: 'center', minHeight: 56, paddingVertical: 10 }}
-                            >
-                                <IkonCipi ikon="map-marked-alt" />
-                                <View style={{ flex: 1, marginLeft: 14 }}>
-                                    <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>Camilerim</Text>
-                                    <Text style={{ fontSize: 14, marginTop: 2, color: renkler.metinIkincil }}>{haritaOzeti}</Text>
-                                </View>
-                                <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} style={{ marginHorizontal: 8 }} />
-                            </TouchableOpacity>
-                        </View>
-                    ) : null}
+                    {/* Camideyim kapalıyken de açılır: harita keşif içindir, izin istemez, izleme başlatmaz. */}
+                    <View style={ayrac}>
+                        <TouchableOpacity
+                            testID="camilerim"
+                            onPress={() => navigation.navigate('Camilerim')}
+                            activeOpacity={0.7}
+                            accessibilityRole="button"
+                            accessibilityLabel={haritaOzeti ? `Camilerim. ${haritaOzeti}` : 'Camilerim, yakındaki camilerin haritası'}
+                            style={{ flexDirection: 'row', alignItems: 'center', minHeight: 56, paddingVertical: 10 }}
+                        >
+                            <IkonCipi ikon="map-marked-alt" />
+                            <View style={{ flex: 1, marginLeft: 14 }}>
+                                <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>Camilerim</Text>
+                                {favoriSayisi > 0 || kendiSayisi > 0 ? (
+                                    <View style={{ flexDirection: 'row', gap: 6, marginTop: 4 }} testID="camilerim-sayilari">
+                                        {favoriSayisi > 0 ? <SayiCipi ikon="star" sayi={favoriSayisi} /> : null}
+                                        {kendiSayisi > 0 ? <SayiCipi ikon="home" sayi={kendiSayisi} /> : null}
+                                    </View>
+                                ) : null}
+                            </View>
+                            <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} style={{ marginHorizontal: 8 }} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
+
+                {/* Görsel anlatı: yakındaki camilerin mini önizlemesi (dokununca harita). */}
+                <YakinCamilerOnizlemesi merkez={c.merkez} onAc={() => navigation.navigate('Camilerim')} />
 
                 {/* ── Durum: düzeltilebilir sorunlar sebep + tek düğme ── */}
                 {izinEksik ? (

@@ -111,6 +111,11 @@ object CamiDepo {
                 if (y.has("alanM") && !y.isNull("alanM")) {
                     temiz.put("alanM", y.optDouble("alanM", CamiSabitleri.VARSAYILAN_ALAN_M).coerceIn(CamiSabitleri.ALAN_MIN_M, CamiSabitleri.ALAN_MAX_M))
                 }
+                // Ölçekli bina sınırı (daireyle birlikte yazılmaz: alanM varsa ölçek atılır).
+                if (!temiz.has("alanM") && y.has("olcek") && !y.isNull("olcek")) {
+                    val olcek = y.optDouble("olcek", Double.NaN)
+                    if (!olcek.isNaN() && olcek > CamiSabitleri.OLCEK_MIN) temiz.put("olcek", olcek.coerceAtMost(CamiSabitleri.OLCEK_MAX))
+                }
                 if (y.has("ad")) temiz.put("ad", y.optString("ad").take(120))
                 val lat = y.optDouble("lat", Double.NaN)
                 val lng = y.optDouble("lng", Double.NaN)

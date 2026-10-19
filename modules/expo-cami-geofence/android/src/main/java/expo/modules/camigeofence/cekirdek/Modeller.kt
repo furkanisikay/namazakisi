@@ -24,12 +24,15 @@ data class IzlenenYer(
     val ozelAlanM: Double?,
     val kaynak: String,
     val favori: Boolean,
+    /** Bina sınırı ölçeği (JS `ozelOlcek`); yoksa özgün sınır. Eski kayıtta alan yoktur. */
+    val ozelOlcek: Double? = null,
 ) {
     fun json(): JSONObject = JSONObject()
         .put("id", id).put("ad", ad).put("lat", lat).put("lng", lng).put("yaricapM", yaricapM)
         .put("poligon", poligon?.let { p -> JSONArray().apply { p.forEach { put(JSONArray().put(it[0]).put(it[1])) } } } ?: JSONObject.NULL)
         .put("ozelAlanM", ozelAlanM ?: JSONObject.NULL)
         .put("kaynak", kaynak).put("favori", favori)
+        .also { o -> ozelOlcek?.let { o.put("ozelOlcek", it) } }
 
     companion object {
         fun coz(o: JSONObject): IzlenenYer? = try {
@@ -43,6 +46,7 @@ data class IzlenenYer(
                 ozelAlanM = if (o.isNull("ozelAlanM")) null else o.optDouble("ozelAlanM").takeIf { !it.isNaN() },
                 kaynak = o.optString("kaynak", "osm"),
                 favori = o.optBoolean("favori", false),
+                ozelOlcek = if (!o.has("ozelOlcek") || o.isNull("ozelOlcek")) null else o.optDouble("ozelOlcek").takeIf { !it.isNaN() },
             )
         } catch (_: Exception) {
             null
@@ -66,6 +70,8 @@ data class YerKaydi(
     val lat: Double?,
     val lng: Double?,
     val kendi: Boolean,
+    /** Bina sınırı ölçeği (JS `YerKaydi.olcek`); `alanM` varsa yok sayılır. */
+    val olcek: Double? = null,
 ) {
     companion object {
         fun coz(o: JSONObject): YerKaydi = YerKaydi(
@@ -75,6 +81,7 @@ data class YerKaydi(
             lat = if (o.has("lat") && !o.isNull("lat")) o.optDouble("lat").takeIf { !it.isNaN() } else null,
             lng = if (o.has("lng") && !o.isNull("lng")) o.optDouble("lng").takeIf { !it.isNaN() } else null,
             kendi = o.optBoolean("kendi", false),
+            olcek = if (o.has("olcek") && !o.isNull("olcek")) o.optDouble("olcek").takeIf { !it.isNaN() } else null,
         )
 
         fun haritaCoz(o: JSONObject?): Map<String, YerKaydi> {

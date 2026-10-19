@@ -1000,6 +1000,269 @@
         "tarih": "2026-10-16",
         "cuma": false
       }
+    },
+    {
+      "ad": "olcekli bina siniri x2: kenardan 15 m disarisi algilanir",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.0113148,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false,
+          "ozelOlcek": 2.0
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "yerId": "osm:w9100000001",
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "olcek x1 eski davranis: kenardan 15 m disarida",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.0113148,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false,
+          "ozelOlcek": 1.0
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "disarida",
+        "yerId": "osm:w9100000001",
+        "mesafeM": 5,
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "olcek daireyi ezmez: ozel alan 10 m + olcek 2",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.0111349,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": 10,
+          "kaynak": "osm",
+          "favori": false,
+          "ozelOlcek": 2.0
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "disarida",
+        "yerId": "osm:w9100000001",
+        "mesafeM": 5,
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "olcek buyuk binada kisilir: yaricap 100 m, olcek 3 -> 1.5",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.0114047,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 100,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false,
+          "ozelOlcek": 3.0
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "disarida",
+        "yerId": "osm:w9100000001",
+        "mesafeM": 5,
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
     }
   ],
   "yenileme": [

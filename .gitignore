@@ -96,3 +96,7 @@ android/.kotlin/
 /tv/app/build/
 /tv/.kotlin/
 /tv/local.properties
+
+# Python bayt kodu (scripts/camiler üreticisi yerelde koşturulunca)
+__pycache__/
+*.pyc

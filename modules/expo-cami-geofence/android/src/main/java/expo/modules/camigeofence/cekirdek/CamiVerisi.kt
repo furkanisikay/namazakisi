@@ -69,7 +69,8 @@ class CamiVerisi private constructor(
             }
         }
         val harf = when (tur) { 1 -> "w"; 2 -> "r"; else -> "n" }
-        return CamiKaydi("osm:$harf${(idUst shl 32) or idAlt}", ad, latE6 / 1e6, lngE6 / 1e6, yaricap.toDouble(), poligon)
+        // Kendini kesen halka (eski üretici çıktısı) dış bürüne onarılır — JS ikiziyle aynı.
+        return CamiKaydi("osm:$harf${(idUst shl 32) or idAlt}", ad, latE6 / 1e6, lngE6 / 1e6, yaricap.toDouble(), poligon?.let { Geometri.poligonuOnar(it) })
     }
 
     /** En yakın K kayıt (mesafeye göre artan). JS `enYakinlar` ile birebir. */

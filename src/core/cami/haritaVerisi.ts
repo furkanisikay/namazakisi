@@ -3,20 +3,36 @@
  *
  * Harita bileşeni (MapLibre) yalnız GeoJSON çizer; hangi yerin hangi alanla, hangi
  * renk sınıfıyla görüneceği burada hesaplanır ve test edilir. Algılama alanı
- * native karar katmanıyla AYNI kuraldan gelir (`alanYaricapiM`, `geofenceYaricapiM`):
- * kullanıcı alanı poligonu ezer; poligon yoksa daire. Haritada görünen şekil ile
- * kararın kullandığı şekil ayrışırsa kullanıcı yanlış alanı ayarlar.
+ * native karar katmanıyla AYNI kuraldan gelir (`alanYaricapiM`, `etkinPoligon`,
+ * `geofenceYaricapiM`): kullanıcı dairesi poligonu ezer; yoksa (ölçekli) bina
+ * sınırı; poligon yoksa daire. Haritada görünen şekil ile kararın kullandığı şekil
+ * ayrışırsa kullanıcı yanlış alanı ayarlar.
+ *
+ * KÜMELEME: yakındaki "sıradan" camiler (ayarı olmayan, seçili olmayan) ayrı bir
+ * nokta kaynağına (`kumeNoktalari`) gider ve harita onları uzakta kümeler; seçili,
+ * favori, hariç, kendi ya da sınırı ayarlanmış yerler kümelenmez (`noktalar`) —
+ * kullanıcının dokunduğu/ayarladığı yer kümenin içinde kaybolmasın.
  */
 import type { Feature, FeatureCollection, Point, Polygon, Position } from 'geojson';
 import { geofenceYaricapiM } from './camiKarar';
-import { DUNYA_YARICAPI_M, alanYaricapiM } from './geometri';
+import { DUNYA_YARICAPI_M, alanYaricapiM, etkinPoligon } from './geometri';
 import type { LatLng, YerKaydi } from './camiTipleri';
 
 /** Anahtarsız vektör karolar (OpenFreeMap; © OpenMapTiles, veri © OpenStreetMap katkıcıları). */
 export const HARITA_STILI_ACIK = 'https://tiles.openfreemap.org/styles/liberty';
 export const HARITA_STILI_KOYU = 'https://tiles.openfreemap.org/styles/dark';
-/** Haritada aynı anda gösterilen en yakın cami sayısı (native sorgu tavanı 150). */
-export const HARITA_CAMI_SAYISI = 60;
+/**
+ * Haritada aynı anda gösterilen en yakın cami sayısı = native sorgu tavanı (150).
+ * Eskiden 60'tı: sık camili mahallede listede görünen camilerin bir kısmı haritada yoktu.
+ */
+export const HARITA_CAMI_SAYISI = 150;
+/** Bu yakınlığın altında alan şekilleri çizilmez (şehir ölçeğinde 150 dış çizgi haritayı boğar). */
+export const HARITA_ALAN_ASGARI_YAKINLIK = 15;
+/**
+ * Kümeleme bu yakınlığa kadar sürer; sonrasında her cami tek tek görünür. Alan şekillerinin
+ * eşiğinden (15) KÜÇÜK olmalı: yoksa dış çizgiler, işareti hâlâ kümenin içindeki camiler için çizilirdi.
+ */
+export const HARITA_KUME_AZAMI_YAKINLIK = 14;
 /** Açılış yakınlığı: birkaç sokak görünsün, 10–150 m'lik alanlar seçilebilsin. */
 export const HARITA_BASLANGIC_YAKINLIGI = 16;
 
@@ -30,8 +46,10 @@ export interface HaritaYeri {
     /** OSM kaydının kendi yarıçapı (0 = nokta → varsayılan alan) */
     yaricapM: number;
     poligon: LatLng[] | null;
-    /** Kullanıcının seçtiği alan (m) — poligonu ezer */
+    /** Kullanıcının seçtiği DAİRE (m) — poligonu ezer */
     alanM: number | null;
+    /** Bina sınırı ölçeği (1–3) — yalnız poligonlu ve daire seçilmemiş kayıtta */
+    olcek: number | null;
     tur: HaritaYeriTuru;
     favori: boolean;
 }
@@ -66,6 +84,7 @@ export function haritaYerleriniBirlestir(
             yaricapM: c.yaricapM,
             poligon: c.poligon && c.poligon.length >= 3 ? c.poligon : null,
             alanM: ayar?.alanM ?? null,
+            olcek: ayar?.alanM == null && c.poligon && c.poligon.length >= 3 ? (ayar?.olcek ?? null) : null,
             tur: ayar?.durum === 'haric' ? 'haric' : 'cami',
             favori: ayar?.durum === 'favori',
         });
@@ -82,6 +101,7 @@ export function haritaYerleriniBirlestir(
             yaricapM: 0,
             poligon: null,
             alanM: ayar.alanM ?? null,
+            olcek: null,
             tur: ayar.durum === 'haric' ? 'haric' : ayar.kendi ? 'kendi' : 'cami',
             favori: ayar.durum === 'favori',
         });
@@ -101,24 +121,45 @@ export function daireHalkasi(lat: number, lng: number, yaricapM: number, kenar =
     return halka;
 }
 
-/** Kararın kullandığı algılama alanı: kullanıcı alanı > bina poligonu > varsayılan daire. */
+const alanGirdisi = (y: HaritaYeri) => ({
+    lat: y.lat,
+    lng: y.lng,
+    yaricapM: y.yaricapM,
+    poligon: y.poligon,
+    ozelAlanM: y.alanM,
+    ozelOlcek: y.olcek,
+});
+
+const kapaliHalka = (poligon: readonly LatLng[]): Position[] => {
+    const halka: Position[] = poligon.map(([la, ln]) => [ln, la]);
+    halka.push(halka[0]);
+    return halka;
+};
+
+/** Kararın kullandığı algılama alanı: kullanıcı dairesi > (ölçekli) bina poligonu > varsayılan daire. */
 export function alanHalkasi(y: HaritaYeri): Position[] {
-    if (y.alanM == null && y.poligon) {
-        const halka: Position[] = y.poligon.map(([la, ln]) => [ln, la]);
-        halka.push(halka[0]);
-        return halka;
-    }
-    return daireHalkasi(y.lat, y.lng, alanYaricapiM({ ozelAlanM: y.alanM, yaricapM: y.yaricapM }));
+    const poligon = etkinPoligon(alanGirdisi(y));
+    if (poligon) return kapaliHalka(poligon);
+    return daireHalkasi(y.lat, y.lng, alanYaricapiM(alanGirdisi(y)));
 }
 
 export interface HaritaKatmanlari {
     alanlar: FeatureCollection<Polygon>;
     uyandirma: FeatureCollection<Polygon>;
+    /** Seçili yerin ÖZGÜN bina sınırı (ölçekli ya da daireye çevrilmişken karşılaştırma için). */
+    ozgunSinir: FeatureCollection<Polygon>;
+    /** Kümelenmeyen noktalar (seçili / favori / hariç / kendi / sınırı ayarlı). */
     noktalar: FeatureCollection<Point>;
+    /** Kümelenen sıradan camiler. */
+    kumeNoktalari: FeatureCollection<Point>;
 }
 
 /** Bir yerin ekranda görünen algılama alanı yarıçapı (m) — panel stepper'ı için. */
-export const gorunenAlanM = (y: HaritaYeri): number => alanYaricapiM({ ozelAlanM: y.alanM, yaricapM: y.yaricapM });
+export const gorunenAlanM = (y: HaritaYeri): number => alanYaricapiM(alanGirdisi(y));
+
+/** Yer kümelenmeye uygun mu? (Kullanıcının ilgilendiği hiçbir şey yoksa.) */
+export const kumelenirMi = (y: HaritaYeri, seciliId: string | null): boolean =>
+    y.id !== seciliId && y.tur === 'cami' && !y.favori && y.alanM == null && y.olcek == null;
 
 /**
  * Harita katmanları. Uyandırma çemberi (telefonun ilk uyandığı ~100 m çevre) yalnız
@@ -142,22 +183,43 @@ export function haritaKatmanlariOlustur(yerler: readonly HaritaYeri[], seciliId:
                   geometry: {
                       type: 'Polygon',
                       coordinates: [
-                          daireHalkasi(secili.lat, secili.lng, geofenceYaricapiM({ ozelAlanM: secili.alanM, yaricapM: secili.yaricapM })),
+                          daireHalkasi(
+                              secili.lat,
+                              secili.lng,
+                              geofenceYaricapiM({ ozelAlanM: secili.alanM, yaricapM: secili.yaricapM, ozelOlcek: secili.olcek })
+                          ),
                       ],
                   },
               },
           ]
         : [];
-    const noktalar: Feature<Point>[] = yerler.map((y) => ({
-        type: 'Feature',
-        id: y.id,
-        properties: ozellik(y),
-        geometry: { type: 'Point', coordinates: [y.lng, y.lat] },
-    }));
+    const noktalar: Feature<Point>[] = [];
+    const kumeNoktalari: Feature<Point>[] = [];
+    for (const y of yerler) {
+        (kumelenirMi(y, seciliId) ? kumeNoktalari : noktalar).push({
+            type: 'Feature',
+            id: y.id,
+            properties: ozellik(y),
+            geometry: { type: 'Point', coordinates: [y.lng, y.lat] },
+        });
+    }
+    const ozgun: Feature<Polygon>[] =
+        secili && secili.poligon && secili.poligon.length >= 3 && (secili.alanM != null || secili.olcek != null)
+            ? [
+                  {
+                      type: 'Feature',
+                      id: `${secili.id}#ozgun`,
+                      properties: { id: secili.id },
+                      geometry: { type: 'Polygon', coordinates: [kapaliHalka(secili.poligon)] },
+                  },
+              ]
+            : [];
     return {
         alanlar: { type: 'FeatureCollection', features: alanlar },
         uyandirma: { type: 'FeatureCollection', features: uyandirma },
+        ozgunSinir: { type: 'FeatureCollection', features: ozgun },
         noktalar: { type: 'FeatureCollection', features: noktalar },
+        kumeNoktalari: { type: 'FeatureCollection', features: kumeNoktalari },
     };
 }
 
@@ -169,3 +231,97 @@ export function basilanYerKimligi(ozellikler: readonly { properties?: unknown }[
     }
     return null;
 }
+
+export interface BasilanKume {
+    kumeId: number;
+    lat: number;
+    lng: number;
+    adet: number;
+}
+
+/**
+ * MapLibre basma olayında KÜME var mı? (`cluster: true` + `cluster_id`.) Dokunulan
+ * kümeye yaklaşılır; tek tek camiye dokunuş `basilanYerKimligi` ile çözülür.
+ */
+export function basilanKume(
+    ozellikler: readonly { properties?: unknown; geometry?: unknown }[] | undefined
+): BasilanKume | null {
+    for (const o of ozellikler ?? []) {
+        const p = o?.properties as { cluster?: unknown; cluster_id?: unknown; point_count?: unknown } | null | undefined;
+        if (!p || p.cluster !== true || typeof p.cluster_id !== 'number') continue;
+        const g = o.geometry as { type?: unknown; coordinates?: unknown } | null | undefined;
+        const k = g?.coordinates;
+        if (!Array.isArray(k) || typeof k[0] !== 'number' || typeof k[1] !== 'number') continue;
+        return { kumeId: p.cluster_id, lng: k[0], lat: k[1], adet: typeof p.point_count === 'number' ? p.point_count : 0 };
+    }
+    return null;
+}
+
+/** "Yakınınızda N cami" sayımının yarıçapı (m) — önizleme kartı. */
+export const ONIZLEME_SAYIM_M = 2000;
+/** Mini önizlemede ölçeği belirleyen küme: en yakın bu kadar cami… */
+export const ONIZLEME_KUME_SAYISI = 30;
+/** …ama görünen yarıçap bu aralıkta kalır (m): sık mahallede en az 250 m, seyrek yerde en çok 1 km. */
+export const ONIZLEME_YARICAP_MIN_M = 250;
+export const ONIZLEME_YARICAP_MAX_M = 1000;
+/** Dekor halkaları (m). */
+export const ONIZLEME_HALKALARI_M = [250, 500] as const;
+
+export interface OnizlemeYerlesimi {
+    /** Kullanıcı/ayarlı konum: DAİMA alanın tam ortası (px). */
+    merkez: { sol: number; ust: number };
+    noktalar: { id: string; sol: number; ust: number }[];
+    /** Halka yarıçapları (px), `ONIZLEME_HALKALARI_M` sırasıyla. */
+    halkalarPx: number[];
+    /** Ölçeği kuran yarıçap (m) — dikey yarı yüksekliğe denk gelir. */
+    yaricapM: number;
+}
+
+/**
+ * Mini önizleme yerleşimi (px). Konum ortada, tek (izotrop) ölçek, kuzey yukarı.
+ *
+ * Ölçek AYKIRI noktaya göre değil, en yakın `ONIZLEME_KUME_SAYISI` camiye göre kurulur:
+ * o kümenin en uzağı (250 m–1 km'ye kenetli) kartın DİKEY yarısına sığar; kart enine
+ * uzun olduğu için yatayda bunun birkaç katı görünür (noktalar yatay dağılır). Alanın
+ * dışına düşen camiler çizilmez (yoksayılır, kırpılmaz). Eski sürüm 2 km içindeki EN
+ * UZAK noktayı sığdırıyordu → 124 nokta ortada minik bir yığına sıkışıyordu (kare 25).
+ */
+export function onizlemeYerlesimi(
+    merkez: { lat: number; lng: number },
+    camiler: readonly { id: string; lat: number; lng: number }[],
+    genislikPx: number,
+    yukseklikPx: number,
+    payPx: number = 10
+): OnizlemeYerlesimi {
+    const ortaX = genislikPx / 2;
+    const ortaY = yukseklikPx / 2;
+    const cosLat = Math.cos((merkez.lat * Math.PI) / 180);
+    const mPerDeg = (DUNYA_YARICAPI_M * Math.PI) / 180;
+    const yerel = camiler
+        .map((c) => {
+            const dx = (c.lng - merkez.lng) * mPerDeg * cosLat;
+            const dy = (c.lat - merkez.lat) * mPerDeg;
+            return { id: c.id, dx, dy, m: Math.hypot(dx, dy) };
+        })
+        .sort((x, y) => x.m - y.m);
+    const kumeninEnUzagi = yerel.length ? yerel[Math.min(ONIZLEME_KUME_SAYISI, yerel.length) - 1].m : ONIZLEME_YARICAP_MIN_M;
+    const yaricapM = Math.min(ONIZLEME_YARICAP_MAX_M, Math.max(ONIZLEME_YARICAP_MIN_M, kumeninEnUzagi));
+    const pxPerM = Math.max(1, ortaY - payPx) / yaricapM;
+    const noktalar: OnizlemeYerlesimi['noktalar'] = [];
+    for (const c of yerel) {
+        const sol = ortaX + c.dx * pxPerM;
+        const ust = ortaY - c.dy * pxPerM;
+        if (sol < payPx || sol > genislikPx - payPx || ust < payPx || ust > yukseklikPx - payPx) continue;
+        noktalar.push({ id: c.id, sol, ust });
+    }
+    return {
+        merkez: { sol: ortaX, ust: ortaY },
+        noktalar,
+        halkalarPx: ONIZLEME_HALKALARI_M.map((m) => m * pxPerM),
+        yaricapM,
+    };
+}
+
+/** Sayım: native'in verdiği uzaklıkla `yaricapM` içindeki camiler. */
+export const yakinCamiSayisi = (camiler: readonly { mesafeM: number }[], yaricapM: number = ONIZLEME_SAYIM_M): number =>
+    camiler.filter((c) => Number.isFinite(c.mesafeM) && c.mesafeM <= yaricapM).length;

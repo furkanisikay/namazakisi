@@ -152,14 +152,14 @@ export function yenilemeKarari(
 }
 
 /** Telefona bildirilecek geofence yarıçapı (m): büyük alanlı yerde pay bırakılır. */
-export function geofenceYaricapiM(yer: Pick<IzlenenYer, 'ozelAlanM' | 'yaricapM'>): number {
+export function geofenceYaricapiM(yer: Pick<IzlenenYer, 'ozelAlanM' | 'yaricapM' | 'ozelOlcek'>): number {
     return Math.max(GEOFENCE_YARICAPI_M, alanYaricapiM(yer) + GEOFENCE_ALAN_PAYI_M);
 }
 
 /**
  * İzlenecek yerleri seçer: en yakın K (hariç tutulanlar atlanır) + favoriler ve
  * kullanıcı yerleri (mesafeden bağımsız, ek kotayla). Kullanıcının alan ayarı
- * `ozelAlanM` olarak işlenir.
+ * `ozelAlanM`, bina sınırı ölçeği `ozelOlcek` olarak işlenir.
  *
  * @param enYakinOsm mesafeye göre sıralı OSM kayıtları (hariç payı için K'dan fazla istenmeli)
  */
@@ -181,6 +181,8 @@ export function izlenecekleriSec(
         izlenenler.push({
             ...kayit,
             ozelAlanM: ayar?.alanM ?? null,
+            // Ölçek yalnız poligonlu kayıtta ve daire seçilmemişken anlamlıdır.
+            ozelOlcek: ayar?.alanM == null && kayit.poligon && ayar?.olcek != null ? ayar.olcek : null,
             kaynak: 'osm',
             favori: ayar?.durum === 'favori',
         });
