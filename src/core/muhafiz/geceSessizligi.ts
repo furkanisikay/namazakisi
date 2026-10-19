@@ -5,7 +5,7 @@
  * uyarıları GELMEZ. Gerekçe uykudur: yatsının çıkışı imsak olduğu için çıkış yönlü yatsı
  * uyarıları gece 02:00–05:00 arasına düşüyor, kullanıcıyı ve ev halkını uyandırıyordu.
  *
- * KURAL TEK YERDE (`ertelemeSusturuyorMu` emsali) ve DÖRT tüketici aynı fonksiyondan geçer:
+ * KURAL TEK YERDE ve DÖRT tüketici aynı fonksiyondan geçer:
  *   - arka plan planı + bildirim defteri → `vakitTeslimAdaylari` (`muhafizTeslimPlani.ts`)
  *   - ön plan banner/ses/anons → `NamazMuhafiziServisi.kontrolEt`
  *   - saatin hazır planı → `wearMuhafizPlaniOlustur`
