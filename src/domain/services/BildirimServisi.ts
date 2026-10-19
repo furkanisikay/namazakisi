@@ -484,8 +484,9 @@ export class BildirimServisi {
   public async vakitKilindiTemizle(vakit: string, tarih: string): Promise<void> {
     const gorevler: Promise<void>[] = [this.vakitBildirimleriniKapat(vakit, tarih)];
     if (isVakitAdi(vakit)) {
-      gorevler.push(ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit));
-      gorevler.push(VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit));
+      // `tarih` = isaretlenen namaz gunu: kilinmislik ONA yazilir (bugune degil).
+      gorevler.push(ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit, tarih));
+      gorevler.push(VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit, tarih));
     }
     await Promise.allSettled(gorevler);
   }

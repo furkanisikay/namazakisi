@@ -206,6 +206,20 @@ describe('VakitSayacBildirimServisi', () => {
     expect(bitisCalls.length).toBeGreaterThan(0);
   });
 
+  it('NOBETCI: gecmis bir gunu isaretlemek BUGUNUN sayacini iptal etmez', async () => {
+    const servis = VakitSayacBildirimServisi.getInstance();
+    const { bugunuAl, gunEkle } = jest.requireActual('../../../core/utils/TarihYardimcisi');
+    const bugun: string = bugunuAl();
+    const ikiGunOnce: string = gunEkle(bugun, -2);
+    (notifee.cancelTriggerNotification as jest.Mock).mockClear();
+
+    await servis.vakitSayaciniIptalEt('ogle', ikiGunOnce);
+
+    const iptaller = (notifee.cancelTriggerNotification as jest.Mock).mock.calls.map((c: unknown[]) => c[0] as string);
+    expect(iptaller).toContain(`sayac_${ikiGunOnce}_ogle`);
+    expect(iptaller.some((id) => id.includes(bugun))).toBe(false);
+  });
+
   it('iOS: yapilandirVePlanla erken donmeli, kanal/trigger/countdown OLUSTURULMAMALI', async () => {
     const reactNative = jest.requireMock('react-native');
     reactNative.Platform.OS = 'ios';

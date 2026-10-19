@@ -158,9 +158,9 @@ export interface DefterGirdisi {
     nafile?: NafileAyarlari | null;
     gunSonu?: (GunSonuPlanAyarlari & { gunSonuBildirimAktif: boolean }) | null;
     /**
-     * Gün sonu için seri günü → kılınmış vakitler: namaz kaydı ∪ muhafız kılınmışlığı
-     * (servisin `gunSonuKilinanlariOku`'su ile AYNI). Tam güne tetik sayılmaz.
-     * `kilinan`'dan AYRI: muhafız/sayaç yalnız muhafız diskini okur, onların paritesi bozulmasın.
+     * Gün sonu için seri günü → kılınmış vakitler: YALNIZ namaz kaydı (seri motoruyla
+     * aynı kaynak; servisin `gunSonuKilinanlariOku`'su ile AYNI). Tam güne tetik sayılmaz.
+     * `kilinan`'dan AYRI: muhafız/sayaç muhafız diskini okur, onların paritesi bozulmasın.
      */
     gunSonuKilinan?: Record<string, readonly VakitAdi[]>;
     /** Yatış hatırlatması + gün sonu muhasebesi (issue #290). */

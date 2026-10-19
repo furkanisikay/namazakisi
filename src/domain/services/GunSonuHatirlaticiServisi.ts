@@ -19,8 +19,8 @@
  *
  * TAM GUNE HATIRLATMA YOK (persona calismasi 2026-10-19): govde "isaretleyin"
  * der; gun zaten tamsa (kilinan >= `tamGunEsigi`) anlamsizdir ve gece imsaktan
- * once ses cikarip kullaniciyi uyandiriyordu. Kilinmislik = namaz kaydi ∪
- * muhafiz kilinmisligi (yatis deseni); defter (#298) AYNI birlesimi okur.
+ * once ses cikarip kullaniciyi uyandiriyordu. Kilinmislik = YALNIZ namaz kaydi
+ * (seri motoruyla ayni kaynak; bkz. `gunSonuKilinanlariOku`); defter (#298) AYNI okuyucuyu kullanir.
  *
  * STORE'A BAGLI DEGILDIR: ayar verilmezse ham depolamadan okunur (arka planda
  * Redux yoktur). Imsak kaynagi koordinat (arka plan/headless) ya da hazir bir
@@ -31,7 +31,7 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Logger } from '../../core/utils/Logger';
 import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../core/constants/UygulamaSabitleri';
-import { bugunuAl, dunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
+import { gunEkle, tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 import type { VakitAdi } from '../../core/types';
 import {
   GUN_SONU_BASLIK,
@@ -48,7 +48,6 @@ import type { ImsakSaglayici } from '../../core/seri/seriGunSonu';
 import { localSeriAyarlariniGetir } from '../../data/local/LocalSeriServisi';
 import {
   kayitDegistiDinleyicisiEkle,
-  kilinanVakitleriAl,
   localTarihAraligindakiNamazlariGetir,
 } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
@@ -82,17 +81,26 @@ const NAMAZDAN_VAKTE: Partial<Record<string, VakitAdi>> = {
 };
 
 /**
- * Seri gunu → kilinmis vakitler. Namaz kaydi (`namaz_gun_*`) ∪ muhafiz
- * kilinmisligi (dun/bugun). Pencere: dun (gece yarisi sonrasi) .. son plan gunu.
+ * Seri gunu → kilinmis vakitler, YALNIZ namaz kaydindan (`namaz_gun_*`).
+ * Pencere: dun (gece yarisi sonrasi) .. son plan gunu; "bugun" enjekte `simdi`den.
+ *
+ * MUHAFIZ KILINMISLIGI KATILMAZ (bilincli): (1) seri motoru tam gunu kayittan
+ * turetir — hatirlatma "isaretlerseniz seriniz surer" der, muhafiz diskinde olup
+ * kayitta olmayan vakit seriyi KURTARMAZ; (2) geri almada kayit once yazilir ve
+ * dinleyici hemen kosar, muhafiz diski ise ARDINDAN temizlenir → birlesim bayat
+ * "kilindi"yi okuyup geri alinan gunun tetigini kurmazdi (yaris). Her "Kildim"
+ * yolu (ana ekran, bildirim, saat, widget) zaten kaydi yazar.
  * Okuma hatasi BOS sayilir: tam gun yanlislikla "eksik" gorunur ve hatirlatma
- * kurulur — sessizce dusurmekten iyidir.
+ * kurulur — sessizce dusurmekten iyidir. Defter (#298) AYNI okuyucuyu kullanir.
  */
-export async function gunSonuKilinanlariOku(gunSayisi: number): Promise<Record<string, VakitAdi[]>> {
+export async function gunSonuKilinanlariOku(
+  gunSayisi: number,
+  simdi: Date = new Date()
+): Promise<Record<string, VakitAdi[]>> {
   const sonuc: Record<string, VakitAdi[]> = {};
-  const bugun = bugunuAl();
-  const dun = dunuAl();
+  const bugun = tarihiISOFormatinaCevir(simdi);
   try {
-    const yanit = await localTarihAraligindakiNamazlariGetir(dun, gunEkle(bugun, gunSayisi + 1));
+    const yanit = await localTarihAraligindakiNamazlariGetir(gunEkle(bugun, -1), gunEkle(bugun, gunSayisi + 1));
     for (const gun of yanit.veri ?? []) {
       sonuc[gun.tarih] = gun.namazlar
         .filter((n) => n.tamamlandi)
@@ -101,10 +109,6 @@ export async function gunSonuKilinanlariOku(gunSayisi: number): Promise<Record<s
     }
   } catch (error) {
     Logger.warn('GunSonuHatirlatici', 'Namaz kayitlari okunamadi', error);
-  }
-  for (const tarih of [dun, bugun]) {
-    const muhafiz = await kilinanVakitleriAl(tarih).catch(() => [] as VakitAdi[]);
-    sonuc[tarih] = [...new Set([...(sonuc[tarih] ?? []), ...muhafiz])];
   }
   return sonuc;
 }
@@ -220,7 +224,7 @@ async function planlamayiCalistir(
 
   const saglayici = saglayiciyaCevir(imsakKaynagi);
   const gunSayisi = gunSonuPlanGunSayisi();
-  const tamMi = gunTamYuklemi(await gunSonuKilinanlariOku(gunSayisi), ayarlar.tamGunEsigi);
+  const tamMi = gunTamYuklemi(await gunSonuKilinanlariOku(gunSayisi, simdi), ayarlar.tamGunEsigi);
 
   // Otomatik modda konum yoksa ve zaten TARIHLI bir plan kuruluysa onu koru:
   // gecici bir koordinat okuma hatasi (headless yol) imsak-temelli dogru plani
@@ -262,7 +266,11 @@ async function planlamayiCalistir(
   }
 }
 
-/** Konum anahtari birincil, eski kayitlar icin muhafiz blob'u yedek (`arkaplandaKoordinatOku` ile ayni). */
+/**
+ * Konum anahtari birincil, eski kayitlar icin muhafiz blob'u yedek. `ArkaplanGorevServisi.
+ * arkaplandaKoordinatOku`'nun IKIZI: o modulu import etmek native kopru grafigini (gorev
+ * yoneticisi, muhafiz) bu servise ve onu yukleyen her teste cekerdi. Kural degisirse ikisini birlikte degistir.
+ */
 async function hamKoordinatOku(): Promise<{ lat: number; lng: number } | null> {
   for (const anahtar of [DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI, DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI]) {
     try {

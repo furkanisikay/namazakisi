@@ -7,7 +7,7 @@
  */
 
 import * as Notifications from 'expo-notifications';
-import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
+import { bugunuAl, dunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
 import { Coordinates, PrayerTimes } from 'adhan';
 import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -297,12 +297,18 @@ export class ArkaplanMuhafizServisi {
     /**
      * Belirli bir vakit icin tum bildirimleri iptal et
      * (Namaz kilindigi zaman cagirilir)
+     *
+     * @param tarih Isaretlenen NAMAZ GUNU (YYYY-MM-DD; ana ekranda gosterilen gun,
+     *   bildirim yolunda kimlikteki gun). VERILMELI: verilmezse tarih `new Date()`'ten
+     *   tahmin edilir ve gecmis bir gunu isaretlemek BUGUNUN kilinmisligini yazar —
+     *   bugunun muhafizi, saat plani ve gun sonu hatirlatmasi o vakti "kilinmis" sanir
+     *   (yasanmis hata). Gece yarisindan sonra yatsi icin cagiran zaten DUNU verir.
+     *   Iptal kumesi `[tarih, tarih-1]`: tarih bugunse eskisiyle birebir; gecmis bir
+     *   gunde bugunun planli uyarilarina DOKUNMAZ.
      */
-    public async vakitBildirimleriniIptalEt(vakit: VakitAdi): Promise<void> {
-        // Hem bugun hem de dun icin iptal et (gece yarisi gecisleri icin)
-        const bugun = bugunuAl();
-        const dun = dunuAl();
-        const tarihler = [bugun, dun];
+    public async vakitBildirimleriniIptalEt(vakit: VakitAdi, tarih?: string): Promise<void> {
+        // Tarih yoksa hem bugun hem de dun icin iptal et (gece yarisi gecisleri icin)
+        const tarihler = tarih ? [tarih, gunEkle(tarih, -1)] : [bugunuAl(), dunuAl()];
 
         // Gerçek alarmlar (issue #74) expo listesinde yoktur (alarm o tetiğin bildiriminin
         // YERİNE geçer) → önekle native kayıttan iptal edilir.
@@ -333,9 +339,8 @@ export class ArkaplanMuhafizServisi {
             }
         }
 
-        // Iptal edilen vakti dogru tarihe kaydet
-        const now = new Date();
-        const kayitTarihi = this.vakitIcinDogruTarihiAl(vakit, now);
+        // Iptal edilen vakti dogru tarihe kaydet: verilen namaz gunu, yoksa tahmin.
+        const kayitTarihi = tarih ?? this.vakitIcinDogruTarihiAl(vakit, new Date());
         await this.kilinanVaktiKaydetTarihli(vakit, kayitTarihi);
     }
 
@@ -440,11 +445,12 @@ export class ArkaplanMuhafizServisi {
      * Kilinan vakti listeden kaldir ve bildirimleri yeniden planla
      * Kullanici "kilmadim" sectiginde cagrilir
      * @param vakit Kaldirilacak vakit
+     * @param gunTarihi Geri alinan NAMAZ GUNU (bkz. `vakitBildirimleriniIptalEt`):
+     *   verilmezse tahmin edilir ve gecmis gunu geri almak BUGUNUN kilinmisligini silerdi.
      */
-    public async vakitKilindisiniGeriAl(vakit: VakitAdi): Promise<void> {
+    public async vakitKilindisiniGeriAl(vakit: VakitAdi, gunTarihi?: string): Promise<void> {
         // Dogru tarihi bul
-        const now = new Date();
-        const tarih = this.vakitIcinDogruTarihiAl(vakit, now);
+        const tarih = gunTarihi ?? this.vakitIcinDogruTarihiAl(vakit, new Date());
 
         try {
             const anahtar = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${tarih}`;

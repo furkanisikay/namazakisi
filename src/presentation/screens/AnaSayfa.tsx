@@ -598,7 +598,11 @@ export const AnaSayfa: React.FC = () => {
     const vakitAdi = vakitDonusumu[namazAdi];
 
     if (tamamlandi) {
-      try { if (vakitAdi) NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(vakitAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
+      // On plan muhafizinin bellek-ici haritasi YALNIZ aktif gunu tutar: gecmis bir gunu
+      // isaretlemek bugunun uyarisini susturmamali.
+      if (mevcutTarih === aktifGun) {
+        try { if (vakitAdi) NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(vakitAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
+      }
 
       // Zamanlanmış/aktif tüm vakit bildirimlerini temizle
       if (vakitAdi) {
@@ -607,8 +611,11 @@ export const AnaSayfa: React.FC = () => {
     } else {
       // Namaz kilmadim - bildirimleri yeniden aktif et
       if (vakitAdi) {
-        try { NamazMuhafiziServisi.getInstance().namazKilindiTemizle(vakitAdi); } catch (e) { }
-        try { await ArkaplanMuhafizServisi.getInstance().vakitKilindisiniGeriAl(vakitAdi); } catch (e) { }
+        if (mevcutTarih === aktifGun) {
+          try { NamazMuhafiziServisi.getInstance().namazKilindiTemizle(vakitAdi); } catch (e) { }
+        }
+        // Gosterilen gunun kilinmisligi geri alinir (bugununki DEGIL).
+        try { await ArkaplanMuhafizServisi.getInstance().vakitKilindisiniGeriAl(vakitAdi, mevcutTarih); } catch (e) { }
 
         // Sayac aktifse yeniden planla
         try {

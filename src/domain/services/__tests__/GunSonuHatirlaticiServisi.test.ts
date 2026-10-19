@@ -6,7 +6,7 @@
  *   - ozel gundeki seri gunlerine tetik kurulmaz, digerleri kurulur;
  *   - plan ufku platforma gore (Android 7, iOS 3 — iOS 64 bekleyen siniri);
  *   - kapali ayar → yalniz iptal; konum yokken kurulu plan EZILMEZ;
- *   - TAM gune (kayit ∪ muhafiz kilinmisligi >= esik) tetik KURULMAZ; kayit
+ *   - TAM gune (namaz kaydi >= esik) tetik KURULMAZ; kayit
  *     degisince dinleyici yeniden planlar (iki yon: tamamlama + geri alma).
  *
  * jest'te `Platform.OS` varsayilani 'ios'tur (AGENTS.md) → platform ACIKCA ayarlanir.
@@ -225,16 +225,18 @@ describe('TAM GUN — hatirlatma kurulmaz (persona calismasi 2026-10-19)', () =>
     expect(kurulanlar().map((i) => i.identifier)).toContain(bugunKimligi());
   });
 
-  test('kilinmislik = kayit ∪ muhafiz diski (biri eksik olsa da tam sayilir)', async () => {
+  test('kilinmislik YALNIZ kayittan: muhafiz diski tek basina gunu TAM yapmaz (seri kayittan turer)', async () => {
+    // Geri alma yarisinin nobetcisi: kayit "kilmadim" yazildiginda muhafiz diski henuz
+    // temizlenmemis olabilir; birlesim okunsaydi gun tam sanilir, tetik kurulmazdi.
     const bugun = tarihiISOFormatinaCevir(ogle());
     for (const ad of TUM_NAMAZLAR.slice(0, 3)) await localNamazDurumunuGuncelle(bugun, ad, true);
     await AsyncStorage.setItem(
       `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${bugun}`,
-      JSON.stringify(['aksam', 'yatsi'])
+      JSON.stringify(['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'])
     );
 
     await gunSonuHatirlatmalariniGuncelle(imsak, AYAR, ogle());
-    expect(kurulanlar().map((i) => i.identifier)).not.toContain(bugunKimligi());
+    expect(kurulanlar().map((i) => i.identifier)).toContain(bugunKimligi());
   });
 
   test('kullanicinin esigi (tamGunEsigi 3) uygulanir', async () => {

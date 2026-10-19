@@ -93,7 +93,8 @@ import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { bildirimDefteriOlustur, defterOzeti, iosYedekleriSigdir, type DefterGirdisi, type DefterKaynagi } from '../../../core/bildirim/bildirimDefteri';
 import { butceOnerileriOlustur } from '../../../core/bildirim/butceOnerileri';
-import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
+import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../../core/constants/UygulamaSabitleri';
+import { localNamazDurumunuGuncelle } from '../../../data/local/LocalNamazServisi';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../../core/nafile/nafileTipleri';
 import { nafileAyarlariniNormalize } from '../../../data/local/LocalNafileServisi';
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../../core/utils/vakitSayacYardimcisi';
@@ -147,6 +148,12 @@ beforeEach(() => {
     (AsyncStorage.setItem as jest.Mock).mockImplementation(async (k: string, v: string) => {
         disk.set(k, v);
     });
+    // Aralık okuması (namaz kaydı) multiGet ile gelir → o da AYNI diske bağlı (her testte
+    // açıkça kurulur; `clearAllMocks` uygulamayı silmez, sızıntı olmasın).
+    (AsyncStorage.getAllKeys as jest.Mock).mockImplementation(async () => [...disk.keys()]);
+    (AsyncStorage.multiGet as jest.Mock).mockImplementation(async (ks: string[]) =>
+        ks.map((k) => [k, disk.get(k) ?? null])
+    );
     (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
     (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValue('id');
     jest.replaceProperty(Platform, 'OS', 'android');
@@ -822,11 +829,10 @@ describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
 
     it.each(['ios', 'android'] as const)('gün sonu: BUGÜN TAMSA ikisi de bugünü atlar (%s)', async (platform) => {
         jest.replaceProperty(Platform, 'OS', platform);
-        // Muhafız kılınmışlığı (servis + defter AYNI okuyucudan: kayıt ∪ muhafız).
-        disk.set(
-            `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_2026-10-13`,
-            JSON.stringify(['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'])
-        );
+        // Namaz kaydı (servis + defter AYNI okuyucudan; seri motoruyla aynı kaynak).
+        for (const ad of [NamazAdi.Sabah, NamazAdi.Ogle, NamazAdi.Ikindi, NamazAdi.Aksam, NamazAdi.Yatsi]) {
+            await localNamazDurumunuGuncelle('2026-10-13', ad, true);
+        }
         const ayar = {
             gunSonuBildirimAktif: true,
             gunSonuBildirimModu: 'otomatik' as const,

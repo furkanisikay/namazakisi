@@ -94,7 +94,7 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         cuma,
         camiyeGit,
         gunSonu: seri,
-        // Servisle AYNI okuyucu (namaz kaydı ∪ muhafız) — tam güne tetik sayılmaz.
+        // Servisle AYNI okuyucu (yalnız namaz kaydı) — tam güne tetik sayılmaz.
         gunSonuKilinan: seri?.gunSonuBildirimAktif
             ? (await guvenli('gun sonu kilinan', () => gunSonuKilinanlariOku(gunSonuPlanGunSayisi()))) ?? undefined
             : undefined,
