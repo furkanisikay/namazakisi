@@ -785,6 +785,48 @@ describe('AnaSayfa', () => {
       const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onTamamla?: unknown };
       expect(son.onTamamla).toBe(ilk.onTamamla);
     });
+
+    it('vakit kartından GERİ ALMA: aynı işaretleme yolu, false yönü; geri çağrı kararlı', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      await kur(bugunuAl());
+      const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as {
+        onGeriAl?: () => void; kayitKimligi?: string;
+      };
+      expect(son.kayitKimligi).toBe(`${bugunuAl()}_Öğle`);
+      await act(async () => {
+        son.onGeriAl?.();
+        await Promise.resolve();
+      });
+      const { namazDurumunuDegistir } = jest.requireMock('../../store/namazSlice');
+      expect(namazDurumunuDegistir).toHaveBeenCalledWith({ tarih: bugunuAl(), namazAdi: 'Öğle', tamamlandi: false });
+      const sayi = mockVakitKartiProplari.length;
+      await waitFor(() => expect(mockVakitKartiProplari.length).toBeGreaterThan(sayi));
+      const sonraki = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onGeriAl?: unknown };
+      expect(sonraki.onGeriAl).toBe(son.onGeriAl);
+    });
+
+    it('NÖBETÇİ: KERAHAT vaktinde karttan geri alma onay modalı AÇMAZ, doğrudan kaldırır; öneri yalnız iptal (false) ile çağrılır', async () => {
+      const { mekruhVakitKontrolEt } = jest.requireMock('../../../domain/services/KazaHesaplayiciServisi');
+      (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: true, aciklama: 'gurub' });
+      try {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        await kur(bugunuAl());
+        mockKerahatModalProplari.length = 0;
+        const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onGeriAl?: () => void };
+        await act(async () => {
+          son.onGeriAl?.();
+          await Promise.resolve();
+        });
+        expect(mockKerahatModalProplari.some((p) => p.gorunur)).toBe(false);
+        const { namazDurumunuDegistir } = jest.requireMock('../../store/namazSlice');
+        expect(namazDurumunuDegistir).toHaveBeenCalledWith({ tarih: bugunuAl(), namazAdi: 'Öğle', tamamlandi: false });
+        expect(mockKazaDegerlendir).not.toHaveBeenCalledWith(expect.objectContaining({ tamamlandi: true }));
+      } finally {
+        (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: false, aciklama: null });
+      }
+    });
   });
 
   // ── Sade görünüm (issue #295) ─────────────────────────────────────────────

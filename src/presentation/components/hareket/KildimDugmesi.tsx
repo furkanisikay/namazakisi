@@ -1,37 +1,56 @@
 /**
- * Dönüşen "Kıldım" düğmesi — fiil: işaretle (sade tasarım, Dalga 1).
+ * Ana ekran vakit kartının "Kıldım" düğmesi — eski kartın görünümü, dönüşerek.
  *
- * Düğme kaybolup yerine bir onay gelmez; düğmenin KENDİSİ dönüşür (motion-choreography
- * "süreklilik"). Üç perde, toplam ~850 ms:
- *   1. hazırlık (180 ms): yeşil hap ortasına doğru daireye büzülür, "Kıldım" yazısı söner;
- *   2. eylem (yay ~420 ms): dairenin içinde ✓ yayla oturur, çevresinde halka BİR KEZ açılıp söner;
- *   3. sonuç (240 ms): daire sola kayar, yanına "Kılındı" gelir — ve öyle KALIR (kalıcı iz).
+ * Görünüm eski karttaki gibidir: tam genişlik, köşeleri yuvarlak dolu düğme; kılınmamışken
+ * birincil renkte "🙏 Kılındı olarak işaretle", kılınmışken yeşil "✓ Kılındı". ✓ düğmenin
+ * İÇİNDE, metnin yanında ortalı durur (Dalga 2'nin "daire sola kayar, yazı zeminsiz kalır"
+ * son karesi sahibin geri bildirimiyle kaldırıldı).
  *
- * Yalnız transform + opaklık (native driver; genişlik/köşe animasyonu YOK — hap → daire
- * `scaleX` ile taklit edilir). Animasyon YALNIZ `kilindi` false → true geçişinde oynar:
- * ekran açıldığında zaten kılınmış vakit son karesinde doğar (ana ekran saniyede bir
- * çizilir; her çizimde oynasaydı boşta hareket olurdu). "Animasyonları azalt" açıkken
- * son kareye atlar. Bilgi hareketle sınırlı değildir: metin "Kılındı" olur ve ekran
- * okuyucuya duyurulur.
+ * Geçiş (motion-choreography "süreklilik" — düğme kaybolmaz, kendisi dönüşür), ~700 ms:
+ *   1. hazırlık (180 ms): eski içerik yukarı kayarak söner, zemin yeşile döner (iki hap
+ *      katmanı arasında opaklık çaprazı; `backgroundColor` native driver'da animasyonlanamaz);
+ *   2. eylem (yay): ✓ ikonun yerinde yayla oturur, çevresinde halka BİR KEZ açılıp söner;
+ *   3. sonuç: "Kılındı" aşağıdan gelir ve öyle KALIR.
+ * Geri almada (kılındı → kılınmadı) aynı yol kısaltılmış süreyle tersine oynar, halka yok.
+ *
+ * Kurallar: yalnız transform + opaklık (native driver). Animasyon YALNIZ gerçek geçişte
+ * oynar — ilk çizimde ve `kimlik` (vakit/gün) değiştiğinde değer son karesine ATLAR: ana
+ * ekran saniyede bir çizilir, vakit değişince (öğle kılındı → ikindi kılınmadı) ters geçiş
+ * oynasaydı kullanıcı geri alma yaptığını sanardı. "Animasyonları azalt" açıksa son kare.
+ * Bilgi hareketle sınırlı değildir: metin değişir ve ekran okuyucuya duyurulur.
  */
 import * as React from 'react';
-import { AccessibilityInfo, Animated, StyleSheet, Text, TouchableOpacity, type LayoutChangeEvent } from 'react-native';
+import { AccessibilityInfo, Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { EGRI, SURE, YAY } from './sureler';
 import { NAMAZ_EYLEMI } from '../../../core/vakit/durumSozlugu';
+import { kildimDugmesiRenkleri } from '../../../core/anaEkran/kildimDugmesiRenkleri';
 
-const DAIRE = 48;
+export const KILDIM_DUGMESI_YUKSEKLIK = 56;
+const IKON = 20;
+
+/** Kılınmamışken düğmede yazan (eski kartın metni, sentence case). */
+export const KILDIM_ISARETLE_METNI = 'Kılındı olarak işaretle';
+/** Kılınmışken (geri alınabilirse) ekran okuyucu etiketi: durum + ne olacağı. */
+export const KILDIM_GERI_AL_ETIKETI = `${NAMAZ_EYLEMI.kilindi}, geri almak için dokunun`;
+/** Geri almada ekran okuyucuya duyurulan. */
+export const KILDIM_GERI_ALINDI_METNI = 'İşaret kaldırıldı';
 
 export interface KildimDugmesiProps {
     kilindi: boolean;
-    /** Kılınmadıyken dokununca. */
+    /** Kılınmamışken dokununca. */
     onKildim: () => void;
-    /** Kılındıyken dokununca (geri alma); verilmezse kılınmış düğme dokunulmaz. */
+    /** Kılınmışken dokununca (geri alma); verilmezse kılınmış düğme dokunulmaz. */
     onGeriAl?: () => void;
-    /** Ekran okuyucu etiketine eklenir: "Öğle — Kıldım". */
+    /** Ekran okuyucu etiketine eklenir: "Öğle — Kılındı olarak işaretle". */
     vakitAdi?: string;
+    /**
+     * Gösterilen kaydın kimliği (ör. "<gün>_<vakit>"). Değişirse durum değişimi animasyonsuz
+     * uygulanır: yeni vakit/gün gerçek bir işaretleme değildir.
+     */
+    kimlik?: string;
     devreDisi?: boolean;
     testID?: string;
 }
@@ -41,152 +60,164 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
     onKildim,
     onGeriAl,
     vakitAdi,
+    kimlik,
     devreDisi = false,
     testID,
 }) {
     const renkler = useRenkler();
     const azalt = useHareketAzalt();
-    const [genislik, setGenislik] = React.useState(160);
     const baslangic = kilindi ? 1 : 0;
-    const buzul = React.useRef(new Animated.Value(baslangic)).current;
-    const daire = React.useRef(new Animated.Value(baslangic)).current;
-    const halka = React.useRef(new Animated.Value(baslangic)).current;
-    const sonuc = React.useRef(new Animated.Value(baslangic)).current;
-    const onceki = React.useRef(kilindi);
+    /** Zemin + metin çaprazı (0 = kılınmadı, 1 = kılındı). */
+    const gecis = React.useRef(new Animated.Value(baslangic)).current;
+    /** ✓ ölçeği (yay). */
+    const isaret = React.useRef(new Animated.Value(baslangic)).current;
+    /** Halka: 0 → 1 bir kez; dinlenmede 0 (görünmez). */
+    const halka = React.useRef(new Animated.Value(0)).current;
+    const onceki = React.useRef({ kilindi, kimlik });
 
     React.useEffect(() => {
         const eski = onceki.current;
-        onceki.current = kilindi;
-        if (eski === kilindi) return;
-        const degerler = [buzul, daire, halka, sonuc];
-        if (!kilindi || azalt) {
-            // Geri alma ya da azaltılmış hareket: son kareye/başa anında.
-            degerler.forEach((d) => d.setValue(kilindi ? 1 : 0));
-            if (kilindi) AccessibilityInfo.announceForAccessibility?.(NAMAZ_EYLEMI.kilindi);
+        onceki.current = { kilindi, kimlik };
+        if (eski.kilindi === kilindi) return;
+        const hedef = kilindi ? 1 : 0;
+        const gercekGecis = eski.kimlik === kimlik;
+        if (!gercekGecis || azalt) {
+            gecis.setValue(hedef);
+            isaret.setValue(hedef);
+            halka.setValue(0);
+            if (gercekGecis) {
+                AccessibilityInfo.announceForAccessibility?.(kilindi ? NAMAZ_EYLEMI.kilindi : KILDIM_GERI_ALINDI_METNI);
+            }
             return;
         }
-        degerler.forEach((d) => d.setValue(0));
-        Animated.sequence([
-            Animated.timing(buzul, { toValue: 1, duration: SURE.buzulme, easing: EGRI.cikis, useNativeDriver: true }),
-            Animated.parallel([
-                Animated.spring(daire, { toValue: 1, ...YAY }),
-                Animated.timing(halka, { toValue: 1, duration: SURE.halka, easing: EGRI.giris, useNativeDriver: true }),
-            ]),
-            Animated.timing(sonuc, { toValue: 1, duration: SURE.basariIcerik, easing: EGRI.giris, useNativeDriver: true }),
-        ]).start();
-        AccessibilityInfo.announceForAccessibility?.(NAMAZ_EYLEMI.kilindi);
-    }, [kilindi, azalt, buzul, daire, halka, sonuc]);
+        if (kilindi) {
+            isaret.setValue(0);
+            halka.setValue(0);
+            Animated.sequence([
+                Animated.timing(gecis, { toValue: 1, duration: SURE.buzulme, easing: EGRI.giris, useNativeDriver: true }),
+                Animated.parallel([
+                    Animated.spring(isaret, { toValue: 1, ...YAY }),
+                    Animated.timing(halka, { toValue: 1, duration: SURE.halka, easing: EGRI.giris, useNativeDriver: true }),
+                ]),
+            ]).start(() => halka.setValue(0));
+            AccessibilityInfo.announceForAccessibility?.(NAMAZ_EYLEMI.kilindi);
+        } else {
+            halka.setValue(0);
+            Animated.sequence([
+                Animated.timing(isaret, { toValue: 0, duration: SURE.durum, easing: EGRI.cikis, useNativeDriver: true }),
+                Animated.timing(gecis, { toValue: 0, duration: SURE.buzulme, easing: EGRI.giris, useNativeDriver: true }),
+            ]).start();
+            AccessibilityInfo.announceForAccessibility?.(KILDIM_GERI_ALINDI_METNI);
+        }
+    }, [kilindi, kimlik, azalt, gecis, isaret, halka]);
 
-    const olcu = (e: LayoutChangeEvent) => {
-        const w = Math.round(e.nativeEvent.layout.width);
-        if (w > 0 && w !== genislik) setGenislik(w);
-    };
-
-    const dairePayi = Math.max(0, genislik / 2 - DAIRE / 2);
-    const etiket = vakitAdi ? `${vakitAdi} — ${kilindi ? NAMAZ_EYLEMI.kilindi : NAMAZ_EYLEMI.kildim}` : kilindi ? NAMAZ_EYLEMI.kilindi : NAMAZ_EYLEMI.kildim;
     const dokunulabilir = !devreDisi && (!kilindi || !!onGeriAl);
+    // Etiket DURUMU söyler; kılınmış ve geri alınabilirse ne olacağını da (ipucu kapalı olabilir).
+    const durumMetni = !kilindi ? KILDIM_ISARETLE_METNI : onGeriAl ? KILDIM_GERI_AL_ETIKETI : NAMAZ_EYLEMI.kilindi;
+    const etiket = vakitAdi ? `${vakitAdi} — ${durumMetni}` : durumMetni;
+    // Metin rengi zemine göre ÖLÇÜLÜR (beyaz yeşil/turuncu zeminde AA'yı tutmaz).
+    const { isaretleMetin, kilindiMetin } = kildimDugmesiRenkleri({
+        birincil: renkler.birincil,
+        basarili: renkler.basarili,
+        metinIkincil: renkler.metinIkincil,
+        birincilMetin: renkler.birincilMetin,
+    });
 
     return (
         <TouchableOpacity
             testID={testID}
-            onLayout={olcu}
             onPress={kilindi ? onGeriAl : onKildim}
             disabled={!dokunulabilir}
             activeOpacity={0.85}
             accessibilityRole="button"
             accessibilityLabel={etiket}
             accessibilityState={{ checked: kilindi, disabled: !dokunulabilir }}
-            accessibilityHint={kilindi && onGeriAl ? 'Dokunursanız işaret kaldırılır' : undefined}
             style={[styles.kap, devreDisi && !kilindi ? { opacity: 0.5 } : null]}
         >
-            {/* Hap: ortasına doğru daireye büzülür. */}
+            {/* Zemin: birincil hap, üstünde yeşil hap opaklıkla gelir. */}
+            <View style={[StyleSheet.absoluteFill, styles.hap, { backgroundColor: renkler.birincil }]} />
             <Animated.View
-                style={[
-                    StyleSheet.absoluteFill,
-                    styles.hap,
-                    {
-                        backgroundColor: renkler.birincil,
-                        opacity: buzul.interpolate({ inputRange: [0, 0.9, 1], outputRange: [1, 1, 0] }),
-                        transform: [{ scaleX: buzul.interpolate({ inputRange: [0, 1], outputRange: [1, DAIRE / genislik] }) }],
-                    },
-                ]}
-            />
-            <Animated.View
-                pointerEvents="none"
-                style={[styles.ortala, { opacity: buzul.interpolate({ inputRange: [0, 0.4], outputRange: [1, 0], extrapolate: 'clamp' }) }]}
-            >
-                <FontAwesome5 name="check" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
-                <Text style={[styles.yazi, { color: renkler.birincilMetin }]}>{NAMAZ_EYLEMI.kildim}</Text>
-            </Animated.View>
-
-            {/* Halka: bir kez açılıp söner. */}
-            <Animated.View
-                pointerEvents="none"
-                style={[
-                    styles.daire,
-                    {
-                        borderWidth: 2,
-                        borderColor: renkler.basarili,
-                        opacity: halka.interpolate({ inputRange: [0, 0.05, 1], outputRange: [0, 0.6, 0] }),
-                        transform: [
-                            { translateX: sonuc.interpolate({ inputRange: [0, 1], outputRange: [0, -dairePayi] }) },
-                            { scale: halka.interpolate({ inputRange: [0, 1], outputRange: [1, 1.8] }) },
-                        ],
-                    },
-                ]}
+                style={[StyleSheet.absoluteFill, styles.hap, { backgroundColor: renkler.basarili, opacity: gecis }]}
             />
 
-            {/* Daire + ✓: yayla oturur, sonra sola kayar. */}
-            <Animated.View
-                pointerEvents="none"
-                style={[
-                    styles.daire,
-                    {
-                        backgroundColor: renkler.basarili,
-                        opacity: buzul.interpolate({ inputRange: [0, 0.8, 1], outputRange: [0, 0, 1] }),
-                        transform: [
-                            { translateX: sonuc.interpolate({ inputRange: [0, 1], outputRange: [0, -dairePayi] }) },
-                            { scale: daire.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1] }) },
-                        ],
-                    },
-                ]}
-            >
-                <FontAwesome5 name="check" size={18} color={renkler.birincilMetin} solid />
-            </Animated.View>
-
-            {/* Sonuç: "Kılındı" kalır. */}
+            {/* Kılınmamış içerik: yukarı kayarak söner. */}
             <Animated.View
                 pointerEvents="none"
                 style={[
                     styles.ortala,
                     {
-                        paddingLeft: DAIRE,
-                        opacity: sonuc,
-                        transform: [{ translateX: sonuc.interpolate({ inputRange: [0, 1], outputRange: [8, 0] }) }],
+                        opacity: gecis.interpolate({ inputRange: [0, 0.6], outputRange: [1, 0], extrapolate: 'clamp' }),
+                        transform: [{ translateY: gecis.interpolate({ inputRange: [0, 1], outputRange: [0, -8] }) }],
                     },
                 ]}
             >
-                <Text style={[styles.yazi, { color: renkler.metin }]}>{NAMAZ_EYLEMI.kilindi}</Text>
+                <FontAwesome5 name="pray" size={IKON} color={isaretleMetin} />
+                <Text style={[styles.yazi, { color: isaretleMetin }]}>{KILDIM_ISARETLE_METNI}</Text>
+            </Animated.View>
+
+            {/* Kılınmış içerik: ✓ yayla oturur (halka bir kez), "Kılındı" aşağıdan gelir. */}
+            <Animated.View
+                pointerEvents="none"
+                style={[
+                    styles.ortala,
+                    {
+                        opacity: gecis.interpolate({ inputRange: [0.4, 1], outputRange: [0, 1], extrapolate: 'clamp' }),
+                        transform: [{ translateY: gecis.interpolate({ inputRange: [0, 1], outputRange: [8, 0] }) }],
+                    },
+                ]}
+            >
+                <View style={styles.ikonKutusu}>
+                    <Animated.View
+                        style={[
+                            styles.halka,
+                            {
+                                borderColor: kilindiMetin,
+                                opacity: halka.interpolate({ inputRange: [0, 0.05, 1], outputRange: [0, 0.7, 0] }),
+                                transform: [{ scale: halka.interpolate({ inputRange: [0, 1], outputRange: [1, 2.2] }) }],
+                            },
+                        ]}
+                    />
+                    <Animated.View
+                        style={{
+                            transform: [
+                                { scale: isaret.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) },
+                                { rotate: isaret.interpolate({ inputRange: [0, 1], outputRange: ['-30deg', '0deg'] }) },
+                            ],
+                        }}
+                    >
+                        <FontAwesome5 name="check-circle" size={IKON} color={kilindiMetin} solid />
+                    </Animated.View>
+                </View>
+                <Text style={[styles.yazi, { color: kilindiMetin }]}>{NAMAZ_EYLEMI.kilindi}</Text>
             </Animated.View>
         </TouchableOpacity>
     );
 });
 
 const styles = StyleSheet.create({
-    kap: { height: DAIRE, minWidth: 140, justifyContent: 'center', alignItems: 'center' },
-    hap: { borderRadius: DAIRE / 2 },
-    ortala: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-    daire: {
+    kap: { height: KILDIM_DUGMESI_YUKSEKLIK, alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center' },
+    hap: { borderRadius: 16 },
+    ortala: {
         position: 'absolute',
-        width: DAIRE,
-        height: DAIRE,
-        borderRadius: DAIRE / 2,
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        alignSelf: 'center',
+        gap: 12,
     },
-    yazi: { fontSize: 16, fontWeight: '700' },
+    ikonKutusu: { width: IKON + 4, height: IKON + 4, alignItems: 'center', justifyContent: 'center' },
+    halka: {
+        position: 'absolute',
+        width: IKON + 4,
+        height: IKON + 4,
+        borderRadius: (IKON + 4) / 2,
+        borderWidth: 2,
+    },
+    yazi: { fontSize: 18, fontWeight: '700' },
 });
 
-/** Test/kanıt için: sahne kaç ms sürer (perdelerin toplamı, yay hariç tahmini). */
-export const KILDIM_SAHNE_SURESI_MS = SURE.buzulme + SURE.halka + SURE.basariIcerik;
+/** Test/kanıt için: ileri sahne kaç ms sürer (yay hariç tahmini). */
+export const KILDIM_SAHNE_SURESI_MS = SURE.buzulme + SURE.halka;

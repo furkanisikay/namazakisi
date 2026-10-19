@@ -40,17 +40,15 @@ describe('VakitKarti Bileşeni', () => {
       .findAll((dugum) => (dugum.type as unknown as string) === 'FontAwesome5')
       .map((dugum) => dugum.props.name as string);
 
-  it('aktif vakitte durum "Vakti geldi", başlık, aralık, sayaç ve TEK eylem "Kıldım"', () => {
-    const { getByText, getByLabelText, queryByText } = render(<VakitKarti {...varsayilanProps} kilitli={false} />);
-    expect(getByLabelText('Vakti geldi')).toBeTruthy();
+  it('eski kart: "ŞU ANKİ VAKİT" rozeti, başlık, aralık, sayaç, tam genişlik işaretleme düğmesi ve tek satır teşvik', () => {
+    const { getByText, getByLabelText, getByTestId } = render(<VakitKarti {...varsayilanProps} kilitli={false} />);
+    expect(getByText('ŞU ANKİ VAKİT')).toBeTruthy();
     expect(getByText('Öğle')).toBeTruthy();
     expect(getByText('13:00 - 16:30')).toBeTruthy();
     expect(getByText('01:30:00')).toBeTruthy();
-    expect(getByText('Kalan süre')).toBeTruthy();
-    expect(getByLabelText('Öğle — Kıldım')).toBeTruthy();
-    // Oyunlaştırma metni ana eylemin dibinden kalktı.
-    expect(queryByText(/puan/)).toBeNull();
-    expect(queryByText(/Serinizi/)).toBeNull();
+    expect(getByText('KALAN SÜRE')).toBeTruthy();
+    expect(getByLabelText('Öğle — Kılındı olarak işaretle')).toBeTruthy();
+    expect(getByTestId('vakit-karti-tesvik')).toBeTruthy();
   });
 
   it('konumMetni verilince konum rozetini gösterir, verilmeyince göstermez', () => {
@@ -60,38 +58,45 @@ describe('VakitKarti Bileşeni', () => {
     expect(queryByText('Nilüfer, Bursa')).toBeTruthy();
   });
 
-  it('"Kıldım"a basınca onTamamla bir kez çağrılır', () => {
+  it('düğmeye basınca onTamamla bir kez çağrılır', () => {
     const onTamamla = jest.fn();
     const { getByLabelText } = render(<VakitKarti {...varsayilanProps} onTamamla={onTamamla} kilitli={false} />);
-    fireEvent.press(getByLabelText('Öğle — Kıldım'));
+    fireEvent.press(getByLabelText('Öğle — Kılındı olarak işaretle'));
     expect(onTamamla).toHaveBeenCalledTimes(1);
   });
 
-  it('kilitli (vakit girmedi) modda "Henüz girmedi" der ve işaretleme düğmesi çizmez', () => {
-    const { getByLabelText, queryByLabelText, getByText } = render(<VakitKarti {...varsayilanProps} kilitli={true} />);
-    expect(getByLabelText('Henüz girmedi')).toBeTruthy();
-    expect(getByText('Vakti girince işaretleyebilirsiniz')).toBeTruthy();
-    expect(queryByLabelText('Öğle — Kıldım')).toBeNull();
-  });
-
-  it('kılındığında durum "Kılındı" olur ve düğme tekrar işaretlemez', () => {
-    const onTamamla = jest.fn();
-    const { getAllByLabelText, getByLabelText } = render(
-      <VakitKarti {...varsayilanProps} tamamlandi={true} onTamamla={onTamamla} kilitli={false} />,
+  it('kilitli (vakit girmedi) modda "SIRADAKİ VAKİT" + gri "Henüz girmedi" düğmesi, işaretleme yok', () => {
+    const { getByLabelText, queryByLabelText, getByText, queryByTestId } = render(
+      <VakitKarti {...varsayilanProps} kilitli={true} />,
     );
-    expect(getAllByLabelText('Kılındı').length).toBeGreaterThan(0);
-    const dugme = getByLabelText('Öğle — Kılındı');
-    expect(dugme.props.accessibilityState).toMatchObject({ checked: true, disabled: true });
-    fireEvent.press(dugme);
-    expect(onTamamla).not.toHaveBeenCalled();
+    expect(getByText('SIRADAKİ VAKİT')).toBeTruthy();
+    expect(getByLabelText('Henüz girmedi').props.accessibilityState).toMatchObject({ disabled: true });
+    expect(queryByLabelText('Öğle — Kılındı olarak işaretle')).toBeNull();
+    expect(queryByTestId('vakit-karti-tesvik')).toBeNull();
   });
 
-  it('NÖBETÇİ: kayıt gösterilen güne ait değilse Kıldım düğmesi DOĞMAZ (bayat veriyle animasyon/duyuru yok)', () => {
+  it('kılındığında düğme "Kılındı" olur ve AYNI karttan geri alınır (onGeriAl)', () => {
+    const onTamamla = jest.fn();
+    const onGeriAl = jest.fn();
+    const { getByLabelText, queryByTestId } = render(
+      <VakitKarti {...varsayilanProps} tamamlandi={true} onTamamla={onTamamla} onGeriAl={onGeriAl} kilitli={false} />,
+    );
+    const dugme = getByLabelText('Öğle — Kılındı, geri almak için dokunun');
+    expect(dugme.props.accessibilityState).toMatchObject({ checked: true, disabled: false });
+    fireEvent.press(dugme);
+    expect(onGeriAl).toHaveBeenCalledTimes(1);
+    expect(onTamamla).not.toHaveBeenCalled();
+    // Kılınmışken teşvik satırı yok.
+    expect(queryByTestId('vakit-karti-tesvik')).toBeNull();
+  });
+
+  it('NÖBETÇİ: kayıt gösterilen güne ait değilse düğme DOĞMAZ (bayat veriyle animasyon/duyuru yok)', () => {
     const { queryByLabelText, getByTestId, rerender } = render(
       <VakitKarti {...varsayilanProps} kilitli={false} kayitHazir={false} />,
     );
-    expect(queryByLabelText('Öğle — Kıldım')).toBeNull();
-    expect(getByTestId('vakit-karti-kayit-bekleniyor')).toBeTruthy();
+    expect(queryByLabelText('Öğle — Kılındı olarak işaretle')).toBeNull();
+    // Yer tutucu düğmeyle aynı yükseklikte: kayıt gelince kart zıplamaz.
+    expect(getByTestId('vakit-karti-kayit-bekleniyor').props.style).toMatchObject({ height: 56 });
     // Kayıt gelince düğme DOĞRU değerle doğar (kılınmışsa doğrudan "Kılındı", geçişsiz).
     rerender(<VakitKarti {...varsayilanProps} kilitli={false} kayitHazir tamamlandi />);
     expect(queryByLabelText('Öğle — Kılındı')).toBeTruthy();
@@ -102,7 +107,7 @@ describe('VakitKarti Bileşeni', () => {
       <VakitKarti {...varsayilanProps} gorunenVakitAdi="Cuma" kilitli={false} />,
     );
     expect(getByText('Cuma')).toBeTruthy();
-    expect(getByLabelText('Cuma — Kıldım')).toBeTruthy();
+    expect(getByLabelText('Cuma — Kılındı olarak işaretle')).toBeTruthy();
   });
 
   // getVakitIkonu eşlemesi (üretim satır 21-32) — vakit adına göre ana ikon seçimi.
