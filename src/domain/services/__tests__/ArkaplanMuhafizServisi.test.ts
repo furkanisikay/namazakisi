@@ -1201,7 +1201,7 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
             .map((c) => c[0])
             .filter((b) => b.identifier.includes('_vakit_aksam_'));
 
-    test('L7: bildirim KATEGORİLERİ planlamadan ÖNCE kaydedilir, süreçte BİR kez', async () => {
+    test('L7: bildirim KATEGORİLERİ planlamadan ÖNCE kaydedilir (eski ertele kategorileri yalnız Kıldım ile yeniden tanımlanır), süreçte BİR kez', async () => {
         (ArkaplanMuhafizServisi as unknown as { instance?: unknown }).instance = undefined;
         servis = ArkaplanMuhafizServisi.getInstance();
         await planla(OZEL_SES);
