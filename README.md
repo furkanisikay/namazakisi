@@ -93,9 +93,8 @@ Kaynak koddaki sürüm: **0.45.0** · Mağazada: Google Play: **0.42.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/21-now-bar-alt.webp" width="160" alt="Now bar alt" title="Now bar alt">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/22-otomasyon-rehberi.webp" width="160" alt="Otomasyon rehberi" title="Otomasyon rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/23-otomasyon-rehberi-alt.webp" width="160" alt="Otomasyon rehberi alt" title="Otomasyon rehberi alt">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/24-kildim-uygulamalari.webp" width="160" alt="Kıldım uygulamaları" title="Kıldım uygulamaları">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/25-camideyim-ayarlar.webp" width="160" alt="Camideyim ayarlar" title="Camideyim ayarlar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/26-camideyim-harita.webp" width="160" alt="Camideyim harita" title="Camideyim harita">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/27-camideyim-nasil.webp" width="160" alt="Camideyim nasıl" title="Camideyim nasıl">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/28-kaza.webp" width="160" alt="Kaza" title="Kaza">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
@@ -129,9 +128,8 @@ Kaynak koddaki sürüm: **0.45.0** · Mağazada: Google Play: **0.42.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/21-now-bar-alt.webp" width="160" alt="Now bar alt" title="Now bar alt">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/22-otomasyon-rehberi.webp" width="160" alt="Otomasyon rehberi" title="Otomasyon rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/23-otomasyon-rehberi-alt.webp" width="160" alt="Otomasyon rehberi alt" title="Otomasyon rehberi alt">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/24-kildim-uygulamalari.webp" width="160" alt="Kıldım uygulamaları" title="Kıldım uygulamaları">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/25-camideyim-ayarlar.webp" width="160" alt="Camideyim ayarlar" title="Camideyim ayarlar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/26-camideyim-harita.webp" width="160" alt="Camideyim harita" title="Camideyim harita">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/27-camideyim-nasil.webp" width="160" alt="Camideyim nasıl" title="Camideyim nasıl">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/28-kaza.webp" width="160" alt="Kaza" title="Kaza">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
