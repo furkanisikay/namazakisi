@@ -113,8 +113,8 @@ object CamiDepo {
                 }
                 // Ölçekli bina sınırı (daireyle birlikte yazılmaz: alanM varsa ölçek atılır).
                 if (!temiz.has("alanM") && y.has("olcek") && !y.isNull("olcek")) {
-                    val k = y.optDouble("olcek", Double.NaN)
-                    if (!k.isNaN() && k > CamiSabitleri.OLCEK_MIN) temiz.put("olcek", k.coerceAtMost(CamiSabitleri.OLCEK_MAX))
+                    val olcek = y.optDouble("olcek", Double.NaN)
+                    if (!olcek.isNaN() && olcek > CamiSabitleri.OLCEK_MIN) temiz.put("olcek", olcek.coerceAtMost(CamiSabitleri.OLCEK_MAX))
                 }
                 if (y.has("ad")) temiz.put("ad", y.optString("ad").take(120))
                 val lat = y.optDouble("lat", Double.NaN)

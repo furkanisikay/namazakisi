@@ -91,8 +91,13 @@ export function useCamideyim(): CamideyimDurumu {
      * "Burası cami değil" doğrudan native'e yazar) → bellekteki kopya bayat olabilir.
      * Bayat kopyayla bütün kaydı yazmak öteki örneğin favori/kendi yer/"cami değil"
      * değişikliklerini EZERDİ (Opus incelemesi). Okuma başarısızsa bellekteki kopyaya düşülür.
+     *
+     * Aynı örnekteki yazımlar SIRAYA girer: iki yazım eşzamanlı koşsaydı ikisi de aynı
+     * tabanı okur, sonra yazan öncekinin değişikliğini düşürürdü (harita: bir yerin
+     * bekleyen sınırı yazılırken öteki yere anında sınır değişikliği).
      */
-    const yaz = useCallback(
+    const yazimKuyrugu = useRef<Promise<unknown>>(Promise.resolve());
+    const yazIc = useCallback(
         async (degistir: (a: CamideyimAyarlari) => CamideyimAyarlari): Promise<string> => {
             let taban = ayarlarRef.current;
             try {
@@ -109,6 +114,17 @@ export function useCamideyim(): CamideyimDurumu {
             return sonuc;
         },
         [merkez, yenile]
+    );
+    const yaz = useCallback(
+        (degistir: (a: CamideyimAyarlari) => CamideyimAyarlari): Promise<string> => {
+            const is = yazimKuyrugu.current.then(
+                () => yazIc(degistir),
+                () => yazIc(degistir)
+            );
+            yazimKuyrugu.current = is.catch(() => undefined);
+            return is;
+        },
+        [yazIc]
     );
 
     const guncelle = useCallback(

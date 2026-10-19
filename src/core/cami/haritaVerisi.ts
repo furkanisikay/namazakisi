@@ -27,9 +27,12 @@ export const HARITA_STILI_KOYU = 'https://tiles.openfreemap.org/styles/dark';
  */
 export const HARITA_CAMI_SAYISI = 150;
 /** Bu yakınlığın altında alan şekilleri çizilmez (şehir ölçeğinde 150 dış çizgi haritayı boğar). */
-export const HARITA_ALAN_ASGARI_YAKINLIK = 14;
-/** Kümeleme bu yakınlığa kadar sürer; sonrasında her cami tek tek görünür. */
-export const HARITA_KUME_AZAMI_YAKINLIK = 15;
+export const HARITA_ALAN_ASGARI_YAKINLIK = 15;
+/**
+ * Kümeleme bu yakınlığa kadar sürer; sonrasında her cami tek tek görünür. Alan şekillerinin
+ * eşiğinden (15) KÜÇÜK olmalı: yoksa dış çizgiler, işareti hâlâ kümenin içindeki camiler için çizilirdi.
+ */
+export const HARITA_KUME_AZAMI_YAKINLIK = 14;
 /** Açılış yakınlığı: birkaç sokak görünsün, 10–150 m'lik alanlar seçilebilsin. */
 export const HARITA_BASLANGIC_YAKINLIGI = 16;
 

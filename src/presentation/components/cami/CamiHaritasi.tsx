@@ -700,7 +700,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                 {/* Lejant */}
                 <View className="absolute left-3 top-3 px-2.5 py-2" style={etiketKutusu} pointerEvents="none">
                     {[
-                        { etiket: 'Cami (sayı: birden çok)', renk: renkler.birincil },
+                        { etiket: 'Cami', renk: renkler.birincil },
                         { etiket: 'Sizin yeriniz', renk: renkler.durum.bilgi },
                         { etiket: 'Cami değil', renk: renkler.metinIkincil },
                     ].map((l) => (
@@ -711,6 +711,15 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                             </Text>
                         </View>
                     ))}
+                    <View className="flex-row items-center" style={{ marginVertical: 1 }}>
+                        <View
+                            className="w-2.5 h-2.5 rounded-full mr-1.5"
+                            style={{ borderWidth: 2, borderColor: renkler.birincil, backgroundColor: renkler.kartArkaplan }}
+                        />
+                        <Text className="text-[11px]" style={{ color: renkler.metin }}>
+                            Sayılı daire: birden çok cami
+                        </Text>
+                    </View>
                     <View className="flex-row items-center" style={{ marginVertical: 1 }}>
                         <View
                             className="w-2.5 h-2.5 rounded-full mr-1.5"
