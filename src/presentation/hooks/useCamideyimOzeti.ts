@@ -22,10 +22,10 @@ export function camideyimOzetiOlustur(
     const cami = !a.aktif
         ? 'Kapalı'
         : durum?.camide
-          ? `Camidesiniz · ${durum.camide.ad || 'Cami'}`
+          ? 'Şu an camidesiniz'
           : durum && durum.izin !== 'tamam'
             ? 'Konum izni gerekiyor'
-            : `Açık · en az ${a.beklemeDk} dk`;
+            : `Camide ${a.beklemeDk} dk kalınca`;
     const m = durum?.namazModu;
     const namazModu = !m?.ayarlar?.etkin
         ? 'Kapalı'

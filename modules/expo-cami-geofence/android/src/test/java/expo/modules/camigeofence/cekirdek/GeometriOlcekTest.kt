@@ -35,6 +35,23 @@ class GeometriOlcekTest {
     }
 
     @Test
+    fun poligonOnarimFiksturu() {
+        val vakalar = fikstur.getJSONArray("onarim")
+        for (i in 0 until vakalar.length()) {
+            val v = vakalar.getJSONObject(i)
+            val pol = poligon(v.getJSONArray("poligon"))
+            assertEquals(v.getString("ad"), v.getBoolean("kendiniKeser"), Geometri.kendiniKesiyorMu(pol))
+            val sonuc = Geometri.poligonuOnar(pol)
+            val beklenen = poligon(v.getJSONArray("beklenen"))
+            assertEquals(v.getString("ad"), beklenen.size, sonuc.size)
+            for (j in beklenen.indices) {
+                assertEquals(v.getString("ad"), beklenen[j][0], sonuc[j][0], 1e-9)
+                assertEquals(v.getString("ad"), beklenen[j][1], sonuc[j][1], 1e-9)
+            }
+        }
+    }
+
+    @Test
     fun etkinOlcekFiksturu() {
         val vakalar = fikstur.getJSONArray("etkinOlcek")
         for (i in 0 until vakalar.length()) {

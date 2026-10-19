@@ -259,36 +259,42 @@ export function basilanKume(
 
 /** "Yakınınızda N cami" sayımının yarıçapı (m) — önizleme kartı. */
 export const ONIZLEME_SAYIM_M = 2000;
-/** Mini önizlemenin çizdiği kare alanın yarı genişliği (m). */
-export const ONIZLEME_YARI_GENISLIK_M = 1000;
-
-export interface OnizlemeNoktasi {
-    id: string;
-    /** 0 (sol) … 1 (sağ) */
-    x: number;
-    /** 0 (üst = kuzey) … 1 (alt) */
-    y: number;
+export interface OnizlemeYerlesimi {
+    /** Kullanıcı/ayarlı konum: DAİMA alanın tam ortası (px). */
+    merkez: { sol: number; ust: number };
+    noktalar: { id: string; sol: number; ust: number }[];
 }
 
 /**
- * Yakın camilerin merkezin çevresindeki kare alanda göreli konumu (mini önizleme).
- * Yerel metre izdüşümü (boylam × cos enlem) — kuzey yukarıda. Kare dışındakiler atılır.
+ * Mini önizleme yerleşimi (px). Kullanıcı konumu ortada; `azamiM` içindeki camilerin
+ * HEPSİ kenar payı (`payPx`) içinde kalacak tek bir (izotrop) ölçek seçilir — kırpma
+ * yok, yön korunur (kuzey yukarı). Eski hâl %-konumlu ve sabit ±1 km'lik kareye
+ * göreydi: noktalar kenara yığılıyor, üst sıradakiler kesiliyordu (özellik turu karesi 25).
  */
-export function onizlemeNoktalari(
+export function onizlemeYerlesimi(
     merkez: { lat: number; lng: number },
-    camiler: readonly { id: string; lat: number; lng: number }[],
-    yariGenislikM: number = ONIZLEME_YARI_GENISLIK_M
-): OnizlemeNoktasi[] {
+    camiler: readonly { id: string; lat: number; lng: number; mesafeM?: number }[],
+    genislikPx: number,
+    yukseklikPx: number,
+    payPx: number = 14,
+    azamiM: number = ONIZLEME_SAYIM_M
+): OnizlemeYerlesimi {
+    const ortaX = genislikPx / 2;
+    const ortaY = yukseklikPx / 2;
     const cosLat = Math.cos((merkez.lat * Math.PI) / 180);
     const mPerDeg = (DUNYA_YARICAPI_M * Math.PI) / 180;
-    const sonuc: OnizlemeNoktasi[] = [];
-    for (const c of camiler) {
-        const dx = (c.lng - merkez.lng) * mPerDeg * cosLat;
-        const dy = (c.lat - merkez.lat) * mPerDeg;
-        if (Math.abs(dx) > yariGenislikM || Math.abs(dy) > yariGenislikM) continue;
-        sonuc.push({ id: c.id, x: 0.5 + dx / (2 * yariGenislikM), y: 0.5 - dy / (2 * yariGenislikM) });
-    }
-    return sonuc;
+    const yerel = camiler
+        .map((c) => ({ id: c.id, dx: (c.lng - merkez.lng) * mPerDeg * cosLat, dy: (c.lat - merkez.lat) * mPerDeg }))
+        .filter((c) => Math.hypot(c.dx, c.dy) <= azamiM);
+    const yariX = Math.max(1, ortaX - payPx);
+    const yariY = Math.max(1, ortaY - payPx);
+    const enX = Math.max(1, ...yerel.map((c) => Math.abs(c.dx)));
+    const enY = Math.max(1, ...yerel.map((c) => Math.abs(c.dy)));
+    const pxPerM = Math.min(yariX / enX, yariY / enY);
+    return {
+        merkez: { sol: ortaX, ust: ortaY },
+        noktalar: yerel.map((c) => ({ id: c.id, sol: ortaX + c.dx * pxPerM, ust: ortaY - c.dy * pxPerM })),
+    };
 }
 
 /** Sayım: native'in verdiği uzaklıkla `yaricapM` içindeki camiler. */

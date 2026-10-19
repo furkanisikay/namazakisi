@@ -6,7 +6,7 @@ import {
     gorunenAlanM,
     haritaKatmanlariOlustur,
     haritaYerleriniBirlestir,
-    onizlemeNoktalari,
+    onizlemeYerlesimi,
     yakinCamiSayisi,
     type HaritaYeri,
 } from '../haritaVerisi';
@@ -168,18 +168,41 @@ describe('harita katmanları', () => {
 });
 
 describe('mini önizleme', () => {
-    it('kuzeydeki cami yukarıda, doğudaki sağda; kare dışı atılır', () => {
-        const m = { lat: 41, lng: 29 };
-        const derece = 500 / 111195.08;
-        const n = onizlemeNoktalari(m, [
+    const derece = 500 / 111195.08;
+    const m = { lat: 41, lng: 29 };
+    const dogu = (km: number) => (km * 2 * derece) / Math.cos((41 * Math.PI) / 180);
+
+    it('kullanıcı konumu DAİMA ortada; kuzeydeki yukarıda, doğudaki sağda', () => {
+        const y = onizlemeYerlesimi(m, [
             { id: 'kuzey', lat: 41 + derece, lng: 29 },
-            { id: 'dogu', lat: 41, lng: 29 + derece / Math.cos((41 * Math.PI) / 180) },
-            { id: 'uzak', lat: 41.05, lng: 29 },
-        ]);
-        expect(n.map((p) => p.id)).toEqual(['kuzey', 'dogu']);
-        expect(n[0].x).toBeCloseTo(0.5, 5);
-        expect(n[0].y).toBeCloseTo(0.25, 3);
-        expect(n[1].x).toBeCloseTo(0.75, 3);
+            { id: 'dogu', lat: 41, lng: 29 + dogu(0.5) },
+        ], 300, 112);
+        expect(y.merkez).toEqual({ sol: 150, ust: 56 });
+        const [k, d] = y.noktalar;
+        expect(k.sol).toBeCloseTo(150, 5);
+        expect(k.ust).toBeLessThan(56);
+        expect(d.sol).toBeGreaterThan(150);
+        expect(d.ust).toBeCloseTo(56, 5);
+    });
+
+    it('REGRESYON (kare 25): batıya yığılmış camiler de kenar payı içinde kalır, kırpılmaz; ölçek izotrop', () => {
+        const camiler = [
+            { id: 'a', lat: 41 + 2 * derece, lng: 29 - dogu(1.6) },
+            { id: 'b', lat: 41 - 2 * derece, lng: 29 - dogu(0.9) },
+            { id: 'c', lat: 41 + derece, lng: 29 + dogu(0.2) },
+            { id: 'uzak', lat: 41.2, lng: 29 },
+        ];
+        const y = onizlemeYerlesimi(m, camiler, 320, 112, 14);
+        expect(y.noktalar.map((n) => n.id)).toEqual(['a', 'b', 'c']);
+        for (const n of y.noktalar) {
+            expect(n.sol).toBeGreaterThanOrEqual(14 - 1e-9);
+            expect(n.sol).toBeLessThanOrEqual(306 + 1e-9);
+            expect(n.ust).toBeGreaterThanOrEqual(14 - 1e-9);
+            expect(n.ust).toBeLessThanOrEqual(98 + 1e-9);
+        }
+        // İzotrop: 'c' (doğu 200 m, kuzey 500 m) — iki eksende aynı px/m.
+        const c = y.noktalar[2];
+        expect((c.sol - 160) / 200).toBeCloseTo((56 - c.ust) / 500, 6);
     });
 
     it('sayım 2 km içindekileri sayar', () => {

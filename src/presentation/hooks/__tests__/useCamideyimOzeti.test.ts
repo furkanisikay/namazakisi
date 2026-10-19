@@ -23,11 +23,11 @@ const durum = (ek: object = {}) => ({
 describe('camideyimOzetiOlustur', () => {
     it('kapalı / açık / izin eksik / camide', () => {
         expect(camideyimOzetiOlustur(null, null)).toEqual({ cami: 'Kapalı', namazModu: 'Kapalı' });
-        expect(camideyimOzetiOlustur({ aktif: true, beklemeDk: 4 }, durum()).cami).toBe('Açık · en az 4 dk');
+        expect(camideyimOzetiOlustur({ aktif: true, beklemeDk: 4 }, durum()).cami).toBe('Camide 4 dk kalınca');
         expect(camideyimOzetiOlustur({ aktif: true }, durum({ izin: 'arkaPlanYok' })).cami).toBe('Konum izni gerekiyor');
         expect(
             camideyimOzetiOlustur({ aktif: true }, durum({ camide: { yerId: 'x', ad: 'Kare Camii' } })).cami
-        ).toBe('Camidesiniz · Kare Camii');
+        ).toBe('Şu an camidesiniz');
     });
 
     it('Namaz modu: erişim, etkin tetikler', () => {

@@ -49,6 +49,45 @@ object Geometri {
         return icinde
     }
 
+    private fun capraz(o: DoubleArray, a: DoubleArray, b: DoubleArray): Double =
+        (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+    /** JS `kendiniKesiyorMu`: komşu olmayan iki kenar içten kesişiyor mu (uç dokunuşu sayılmaz). */
+    fun kendiniKesiyorMu(poligon: List<DoubleArray>): Boolean {
+        val n = poligon.size
+        if (n < 4) return false
+        val p = poligon.map { yerelXy(poligon[0][0], poligon[0][1], it[0], it[1]) }
+        for (i in 0 until n) {
+            for (j in i + 2 until n) {
+                if (i == 0 && j == n - 1) continue
+                val a = p[i]; val b = p[(i + 1) % n]; val c = p[j]; val d = p[(j + 1) % n]
+                val d1 = capraz(c, d, a); val d2 = capraz(c, d, b); val d3 = capraz(a, b, c); val d4 = capraz(a, b, d)
+                if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) return true
+            }
+        }
+        return false
+    }
+
+    /** JS `disBurun`: Andrew monoton zinciri, saat yönü tersi; köşeler girdinin alt kümesi. */
+    fun disBurun(poligon: List<DoubleArray>): List<DoubleArray> {
+        if (poligon.size < 3) return poligon
+        val sirali = poligon.map { it to yerelXy(poligon[0][0], poligon[0][1], it[0], it[1]) }
+            .sortedWith(compareBy<Pair<DoubleArray, DoubleArray>>({ it.second[0] }, { it.second[1] }))
+        fun zincir(sira: List<Pair<DoubleArray, DoubleArray>>): List<Pair<DoubleArray, DoubleArray>> {
+            val z = ArrayList<Pair<DoubleArray, DoubleArray>>()
+            for (s in sira) {
+                while (z.size >= 2 && capraz(z[z.size - 2].second, z[z.size - 1].second, s.second) <= 0) z.removeAt(z.size - 1)
+                z.add(s)
+            }
+            z.removeAt(z.size - 1)
+            return z
+        }
+        return (zincir(sirali) + zincir(sirali.reversed())).map { it.first }
+    }
+
+    /** JS `poligonuOnar`: kendini kesen halka dış bürüne çevrilir, sağlam halka aynen döner. */
+    fun poligonuOnar(poligon: List<DoubleArray>): List<DoubleArray> = if (kendiniKesiyorMu(poligon)) disBurun(poligon) else poligon
+
     fun poligonaUzaklikM(lat: Double, lng: Double, poligon: List<DoubleArray>): Double {
         if (poligon.isEmpty()) return Double.POSITIVE_INFINITY
         val lat0 = poligon[0][0]

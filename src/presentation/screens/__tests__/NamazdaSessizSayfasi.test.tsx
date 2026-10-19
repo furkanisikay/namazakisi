@@ -305,7 +305,11 @@ describe('NamazdaSessizSayfasi — Camiye girince', () => {
         expect(kaynak.props.cluster).toBe(true);
         await waitFor(() => expect(kaynak.props.data.features).toHaveLength(1));
         expect(k.yakinCamiler).toHaveBeenCalledWith(41.01, 28.97, 150);
-        expect(e.getByText(/yakınınızdaki 1 cami görünüyor/)).toBeTruthy();
+        expect(e.getByText('Camiye dokunun')).toBeTruthy();
+        // Lejant varsayılan KAPALI; '?' ile açılır.
+        expect(e.queryByTestId('harita-lejant')).toBeNull();
+        fireEvent.press(e.getByTestId('harita-lejant-dugmesi'));
+        expect(e.getByTestId('harita-lejant')).toBeTruthy();
         await act(async () => {
             await kaynak.props.onPress({ nativeEvent: { features: [{ properties: { id: 'osm:w1' } }] } });
         });

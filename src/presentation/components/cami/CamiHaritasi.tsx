@@ -100,6 +100,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
     const cRef = useRef(c);
     cRef.current = c;
     const [solgun, setSolgun] = useState(false);
+    const [lejantAcik, setLejantAcik] = useState(false);
     const hareketAzalt = useHareketAzalt();
     const kumeKaynagi = useRef<GeoJSONSourceRef>(null);
     const yakinlik = useRef<number>(HARITA_BASLANGIC_YAKINLIGI);
@@ -410,13 +411,11 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                     </View>
                 );
             }
-            const camiSayisi = yerler.filter((y) => y.tur !== 'kendi').length;
             return (
                 <View className="flex-row items-center" testID="harita-ipucu">
                     <FontAwesome5 name="hand-pointer" size={14} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
                     <Text className="text-sm flex-1" style={{ color: renkler.metinIkincil }}>
-                        {camiSayisi > 0 ? `Haritada yakınınızdaki ${camiSayisi} cami görünüyor. ` : ''}
-                        Bir camiye dokunun; sayılı daireler birden çok camiyi toplar, dokununca yaklaşır.
+                        Camiye dokunun
                     </Text>
                 </View>
             );
@@ -428,7 +427,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
         const uzaklik = referans ? mesafeYazisi(mesafeM(referans.lat, referans.lng, secili.lat, secili.lng)) : null;
         const altYazi = [uzaklik ? `${uzaklik} uzakta` : null, kendi ? 'sizin eklediğiniz yer' : 'OpenStreetMap', haric ? 'cami değil' : null, secili.favori ? 'favori' : null]
             .filter(Boolean)
-            .join(' · ');
+            .join(', ');
         const renk = haric ? renkler.metinIkincil : kendi ? renkler.durum.bilgi : renkler.birincil;
         return (
             <View testID="harita-yer-paneli">
@@ -697,39 +696,52 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                     ) : null}
                 </Harita>
 
-                {/* Lejant */}
-                <View className="absolute left-3 top-3 px-2.5 py-2" style={etiketKutusu} pointerEvents="none">
-                    {[
-                        { etiket: 'Cami', renk: renkler.birincil },
-                        { etiket: 'Sizin yeriniz', renk: renkler.durum.bilgi },
-                        { etiket: 'Cami değil', renk: renkler.metinIkincil },
-                    ].map((l) => (
-                        <View key={l.etiket} className="flex-row items-center" style={{ marginVertical: 1 }}>
-                            <View className="w-2.5 h-2.5 rounded-full mr-1.5" style={{ backgroundColor: l.renk }} />
+                {/* Lejant: varsayılan KAPALI ("?" düğmesi) — açık hâli haritanın çeyreğini kaplıyordu. */}
+                <TouchableOpacity
+                    testID="harita-lejant-dugmesi"
+                    className="absolute left-3 top-3 w-11 h-11 rounded-full items-center justify-center"
+                    style={{ backgroundColor: renkler.kartArkaplan }}
+                    onPress={() => setLejantAcik((a) => !a)}
+                    accessibilityRole="button"
+                    accessibilityState={{ expanded: lejantAcik }}
+                    accessibilityLabel={lejantAcik ? 'İşaretlerin açıklamasını kapatın' : 'İşaretlerin açıklamasını gösterin'}
+                >
+                    <FontAwesome5 name={lejantAcik ? 'times' : 'question'} size={14} color={renkler.metin} />
+                </TouchableOpacity>
+                {lejantAcik && (
+                    <View testID="harita-lejant" className="absolute left-3 px-2.5 py-2" style={[etiketKutusu, { top: 64 }]} pointerEvents="none">
+                        {[
+                            { etiket: 'Cami', renk: renkler.birincil },
+                            { etiket: 'Sizin yeriniz', renk: renkler.durum.bilgi },
+                            { etiket: 'Cami değil', renk: renkler.metinIkincil },
+                        ].map((l) => (
+                            <View key={l.etiket} className="flex-row items-center" style={{ marginVertical: 1 }}>
+                                <View className="w-2.5 h-2.5 rounded-full mr-1.5" style={{ backgroundColor: l.renk }} />
+                                <Text className="text-[11px]" style={{ color: renkler.metin }}>
+                                    {l.etiket}
+                                </Text>
+                            </View>
+                        ))}
+                        <View className="flex-row items-center" style={{ marginVertical: 1 }}>
+                            <View
+                                className="w-2.5 h-2.5 rounded-full mr-1.5"
+                                style={{ borderWidth: 2, borderColor: renkler.birincil, backgroundColor: renkler.kartArkaplan }}
+                            />
                             <Text className="text-[11px]" style={{ color: renkler.metin }}>
-                                {l.etiket}
+                                Sayılı daire: birden çok cami
                             </Text>
                         </View>
-                    ))}
-                    <View className="flex-row items-center" style={{ marginVertical: 1 }}>
-                        <View
-                            className="w-2.5 h-2.5 rounded-full mr-1.5"
-                            style={{ borderWidth: 2, borderColor: renkler.birincil, backgroundColor: renkler.kartArkaplan }}
-                        />
-                        <Text className="text-[11px]" style={{ color: renkler.metin }}>
-                            Sayılı daire: birden çok cami
-                        </Text>
+                        <View className="flex-row items-center" style={{ marginVertical: 1 }}>
+                            <View
+                                className="w-2.5 h-2.5 rounded-full mr-1.5"
+                                style={{ borderWidth: 1, borderStyle: 'dashed', borderColor: renkler.metinIkincil }}
+                            />
+                            <Text className="text-[11px]" style={{ color: renkler.metin }}>
+                                Uyanma çevresi
+                            </Text>
+                        </View>
                     </View>
-                    <View className="flex-row items-center" style={{ marginVertical: 1 }}>
-                        <View
-                            className="w-2.5 h-2.5 rounded-full mr-1.5"
-                            style={{ borderWidth: 1, borderStyle: 'dashed', borderColor: renkler.metinIkincil }}
-                        />
-                        <Text className="text-[11px]" style={{ color: renkler.metin }}>
-                            Uyanma çevresi
-                        </Text>
-                    </View>
-                </View>
+                )}
 
                 {/* Eylemler */}
                 <View className="absolute right-3 top-3 items-end">

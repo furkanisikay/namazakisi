@@ -1,23 +1,18 @@
 /**
  * "Yakınınızda N cami" — Namazda sessiz sayfasının mini harita önizlemesi.
  *
- * Gerçek harita (MapLibre + karolar) bu karta pahalıdır; burada yalnız yakın camilerin
- * merkeze göre konumu nokta olarak çizilir (saf `onizlemeNoktalari`). Dokununca tam
- * harita (`Camilerim`) açılır. Camideyim KAPALIYKEN de görünür: keşif içindir, izin
- * istemez, izleme başlatmaz. Veri native `yakinCamiler` sorgusundan (en çok 150).
+ * Gerçek harita (MapLibre + karolar) bu karta pahalıdır; burada yalnız 2 km içindeki
+ * camilerin konuma göre yeri nokta olarak çizilir. Yerleşim saf `onizlemeYerlesimi`'nden
+ * gelir: konum DAİMA ortada, tüm noktalar kenar payı içinde (kırpma yok), tek ölçek.
+ * Dokununca tam harita (`Camilerim`) açılır. Camideyim KAPALIYKEN de görünür: keşif
+ * içindir, izin istemez, izleme başlatmaz. Veri native `yakinCamiler` (en çok 150).
  */
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
-import {
-    HARITA_CAMI_SAYISI,
-    ONIZLEME_SAYIM_M,
-    ONIZLEME_YARI_GENISLIK_M,
-    onizlemeNoktalari,
-    yakinCamiSayisi,
-} from '../../../core/cami/haritaVerisi';
+import { HARITA_CAMI_SAYISI, ONIZLEME_SAYIM_M, onizlemeYerlesimi, yakinCamiSayisi } from '../../../core/cami/haritaVerisi';
 import * as kopru from '../../../../modules/expo-cami-geofence/src';
 
 interface Props {
@@ -26,10 +21,8 @@ interface Props {
 }
 
 const ALAN_YUKSEKLIGI = 112;
-/** Dikeyde 2 km (±1 km) sığar; ölçek her iki eksende aynı (izotrop). */
-const PIKSEL_BASINA_M = (2 * ONIZLEME_YARI_GENISLIK_M) / ALAN_YUKSEKLIGI;
-/** 500 m'lik dekor halkası (çap, px). */
-const HALKA_CAPI = 1000 / PIKSEL_BASINA_M;
+const NOKTA = 9;
+const KONUM = 14;
 
 export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
     const renkler = useRenkler();
@@ -52,22 +45,14 @@ export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
         };
     }, [lat, lng]);
 
-    // Yatayda genişlik kadar metre görünür (kart enine uzun); dikeyde ±1 km.
-    const noktalar = useMemo(() => {
-        if (lat == null || lng == null || !camiler || genislik <= 0) return [];
-        const yariX = Math.max(ONIZLEME_YARI_GENISLIK_M, (genislik / 2) * PIKSEL_BASINA_M);
-        return onizlemeNoktalari({ lat, lng }, camiler, yariX)
-            .map((n) => ({
-                id: n.id,
-                sol: genislik / 2 + ((n.x - 0.5) * 2 * yariX) / PIKSEL_BASINA_M,
-                ust: ALAN_YUKSEKLIGI / 2 + ((n.y - 0.5) * 2 * yariX) / PIKSEL_BASINA_M,
-            }))
-            .filter((n) => n.ust >= 0 && n.ust <= ALAN_YUKSEKLIGI);
-    }, [lat, lng, camiler, genislik]);
+    const yerlesim = useMemo(
+        () => (lat != null && lng != null && camiler && genislik > 0 ? onizlemeYerlesimi({ lat, lng }, camiler, genislik, ALAN_YUKSEKLIGI) : null),
+        [lat, lng, camiler, genislik]
+    );
     if (!merkez || camiler == null || camiler.length === 0) return null;
     const sayi = yakinCamiSayisi(camiler);
     const baslik = sayi > 0 ? `Yakınınızda ${sayi} cami` : 'Yakındaki camiler';
-    const alt = `${ONIZLEME_SAYIM_M / 1000} km içinde · haritada görün, sınırlarını ayarlayın`;
+    const alt = `${ONIZLEME_SAYIM_M / 1000} km içinde`;
 
     return (
         <TouchableOpacity
@@ -75,7 +60,7 @@ export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
             onPress={onAc}
             activeOpacity={0.8}
             accessibilityRole="button"
-            accessibilityLabel={`${baslik}. Haritayı açın.`}
+            accessibilityLabel={`${baslik}, ${alt}. Haritayı açın.`}
             style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, marginTop: 12, overflow: 'hidden' }}
         >
             <View
@@ -84,56 +69,38 @@ export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
                 importantForAccessibility="no-hide-descendants"
                 accessibilityElementsHidden
             >
-                {/* 500 m halkası (yalnız dekor). */}
-                <View
-                    style={{
-                        position: 'absolute',
-                        left: '50%',
-                        top: '50%',
-                        width: HALKA_CAPI,
-                        height: HALKA_CAPI,
-                        marginLeft: -HALKA_CAPI / 2,
-                        marginTop: -HALKA_CAPI / 2,
-                        borderRadius: HALKA_CAPI / 2,
-                        borderWidth: 1,
-                        borderStyle: 'dashed',
-                        borderColor: renkler.sinir,
-                    }}
-                />
-                {noktalar.map((n) => (
+                {yerlesim?.noktalar.map((n) => (
                     <View
                         key={n.id}
                         style={{
                             position: 'absolute',
-                            left: n.sol,
-                            top: n.ust,
-                            width: 9,
-                            height: 9,
-                            marginLeft: -4.5,
-                            marginTop: -4.5,
-                            borderRadius: 4.5,
+                            left: n.sol - NOKTA / 2,
+                            top: n.ust - NOKTA / 2,
+                            width: NOKTA,
+                            height: NOKTA,
+                            borderRadius: NOKTA / 2,
                             backgroundColor: renkler.birincil,
                             borderWidth: 1.5,
                             borderColor: renkler.kartArkaplan,
                         }}
                     />
                 ))}
-                {/* Siz / ayarlı konum */}
-                <View
-                    style={{
-                        position: 'absolute',
-                        left: '50%',
-                        top: '50%',
-                        width: 14,
-                        height: 14,
-                        marginLeft: -7,
-                        marginTop: -7,
-                        borderRadius: 7,
-                        backgroundColor: renkler.durum.bilgi,
-                        borderWidth: 2.5,
-                        borderColor: renkler.kartArkaplan,
-                    }}
-                />
+                {yerlesim ? (
+                    <View
+                        testID="yakin-camiler-konum"
+                        style={{
+                            position: 'absolute',
+                            left: yerlesim.merkez.sol - KONUM / 2,
+                            top: yerlesim.merkez.ust - KONUM / 2,
+                            width: KONUM,
+                            height: KONUM,
+                            borderRadius: KONUM / 2,
+                            backgroundColor: renkler.durum.bilgi,
+                            borderWidth: 2.5,
+                            borderColor: renkler.kartArkaplan,
+                        }}
+                    />
+                ) : null}
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12 }}>
                 <View

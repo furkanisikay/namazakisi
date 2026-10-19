@@ -6,7 +6,8 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { alanDisiUzaklikM, alanYaricapiM, etkinOlcek, etkinPoligon, mesafeM, poligonuOlcekle } from '../geometri';
+import { alanDisiUzaklikM, alanYaricapiM, etkinOlcek, etkinPoligon, kendiniKesiyorMu, mesafeM, poligonuOlcekle, poligonuOnar } from '../geometri';
+import { camiVerisiniCoz } from '../camiVerisi';
 import type { IzlenenYer, LatLng } from '../camiTipleri';
 import {
     OZGUN_SINIR_DEGISIKLIGI,
@@ -50,6 +51,39 @@ describe('poligonuOlcekle — ortak fikstür', () => {
         const once = (v.poligon as LatLng[]).map(([la, ln]) => mesafeM(v.lat, v.lng, la, ln));
         const sonra = poligonuOlcekle(v.poligon, v.lat, v.lng, v.k).map(([la, ln]) => mesafeM(v.lat, v.lng, la, ln));
         sonra.forEach((m, i) => expect(m / once[i]).toBeCloseTo(v.k, 3));
+    });
+});
+
+describe('poligon onarımı — ortak fikstür + GERÇEK veri nöbetçisi', () => {
+    it.each(fikstur.onarim as { ad: string; poligon: LatLng[]; kendiniKeser: boolean; beklenen: LatLng[] }[])('$ad', (v) => {
+        expect(kendiniKesiyorMu(v.poligon)).toBe(v.kendiniKeser);
+        expect(poligonuOnar(v.poligon)).toEqual(v.beklenen);
+    });
+
+    const binYolu = path.join(__dirname, '../../../../assets/camiler/tr.bin');
+    const veri = fs.existsSync(binYolu) ? camiVerisiniCoz(new Uint8Array(fs.readFileSync(binYolu))) : null;
+
+    (veri ? it : it.skip)('tr.bin: okunan HİÇBİR poligon kendini kesmez (eski üretici çıktısı onarılır)', () => {
+        let bozuk = 0;
+        for (let i = 0; i < veri!.kayitSayisi; i++) {
+            const p = veri!.kayit(i).poligon;
+            if (p && kendiniKesiyorMu(p)) bozuk++;
+        }
+        expect(bozuk).toBe(0);
+    });
+
+    (veri ? it : it.skip)('Ayasofya (sahip karesi 26): %100 ve ölçekli hâli kendini kesmez; ölçek şekli korur', () => {
+        const ayasofya = veri!.enYakinlar(41.0082, 28.9784, 5, 1000).find((e) => e.kayit.id === 'osm:w109862851')!.kayit;
+        expect(ayasofya.poligon).not.toBeNull();
+        for (const k of [1, 1.5, 1.875]) {
+            const buyuk = etkinPoligon({ ...ayasofya, ozelAlanM: null, ozelOlcek: k })!;
+            expect(kendiniKesiyorMu(buyuk)).toBe(false);
+            ayasofya.poligon!.forEach(([la, ln], i) => {
+                const once = mesafeM(ayasofya.lat, ayasofya.lng, la, ln);
+                const sonra = mesafeM(ayasofya.lat, ayasofya.lng, buyuk[i][0], buyuk[i][1]);
+                expect(sonra / once).toBeCloseTo(etkinOlcek(k, ayasofya.yaricapM), 3);
+            });
+        }
     });
 });
 

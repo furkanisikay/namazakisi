@@ -48,6 +48,57 @@ export function noktaPoligondaMi(lat: number, lng: number, poligon: readonly Lat
     return icinde;
 }
 
+const capraz = (o: readonly number[], a: readonly number[], b: readonly number[]): number =>
+    (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+
+/**
+ * Halkanın komşu olmayan iki kenarı İÇTEN kesişiyor mu? (Uç dokunuşu sayılmaz.)
+ * Üretici (`cami_verisi_uret.py > kendini_kesiyor_mu`) ve Kotlin `Geometri` ile aynı kural.
+ */
+export function kendiniKesiyorMu(poligon: readonly LatLng[]): boolean {
+    const n = poligon.length;
+    if (n < 4) return false;
+    const [lat0, lng0] = poligon[0];
+    const p = poligon.map(([la, ln]) => yerelXy(lat0, lng0, la, ln));
+    for (let i = 0; i < n; i++) {
+        for (let j = i + 2; j < n; j++) {
+            if (i === 0 && j === n - 1) continue;
+            const a = p[i], b = p[(i + 1) % n], c = p[j], d = p[(j + 1) % n];
+            const d1 = capraz(c, d, a), d2 = capraz(c, d, b), d3 = capraz(a, b, c), d4 = capraz(a, b, d);
+            if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) return true;
+        }
+    }
+    return false;
+}
+
+/** Dış bürün (Andrew, saat yönü tersi) — köşeler girdinin alt kümesidir. */
+export function disBurun(poligon: readonly LatLng[]): LatLng[] {
+    if (poligon.length < 3) return [...poligon];
+    const [lat0, lng0] = poligon[0];
+    const noktalar = poligon
+        .map((q) => ({ q, xy: yerelXy(lat0, lng0, q[0], q[1]) }))
+        .sort((a, b) => a.xy[0] - b.xy[0] || a.xy[1] - b.xy[1]);
+    const zincir = (sira: typeof noktalar) => {
+        const z: typeof noktalar = [];
+        for (const s of sira) {
+            while (z.length >= 2 && capraz(z[z.length - 2].xy, z[z.length - 1].xy, s.xy) <= 0) z.pop();
+            z.push(s);
+        }
+        z.pop();
+        return z;
+    };
+    return [...zincir(noktalar), ...zincir([...noktalar].reverse())].map((s) => s.q);
+}
+
+/**
+ * Veriden okunan poligonun ONARIMI: kendini kesen halka (eski üreticinin nadir
+ * basitleştirme çıktısı) ışın atma testinde "içeriyi" anlamsız böler ve haritada
+ * düğümlü çizilir → dış bürüne çevrilir. Sağlam halka AYNEN döner.
+ */
+export function poligonuOnar(poligon: readonly LatLng[]): LatLng[] {
+    return kendiniKesiyorMu(poligon) ? disBurun(poligon) : [...poligon];
+}
+
 /** Noktanın poligon kenarlarına en kısa uzaklığı (m). */
 export function poligonaUzaklikM(lat: number, lng: number, poligon: readonly LatLng[]): number {
     if (poligon.length === 0) return Infinity;
