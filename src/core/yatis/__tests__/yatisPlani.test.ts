@@ -19,7 +19,7 @@ import {
     type VakitPenceresi,
     type YatisAyarlari,
 } from '../yatisPlani';
-import { muhafizPlanKimligiMi } from '../../muhafiz/erteleme';
+import { muhafizPlanKimligiMi } from '../../muhafiz/planKimligi';
 import { yatisAyarlariniNormalize } from '../yatisAyarlari';
 import { tarihiISOFormatinaCevir } from '../../utils/TarihYardimcisi';
 import type { VakitAdi } from '../../types';

@@ -104,17 +104,13 @@ object MuhafizAlarmKurallari {
 
     /**
      * Kilit ekranına bakan herkes, cepte yanlış bir dokunuş ibadet kaydı yazmamalı
-     * (`KilitEkraniKarari`). "Kapat" ve "Ertele" kayıt değildir → kilitliyken de çalışır.
+     * (`KilitEkraniKarari`). "Kapat" kayıt değildir → kilitliyken de çalışır.
      */
     fun kildimYolu(kilitli: Boolean, kilitAcmaDestegi: Boolean): KildimYolu = when {
         !kilitli -> KildimYolu.DOGRUDAN
         kilitAcmaDestegi -> KildimYolu.KILIDI_AC
         else -> KildimYolu.GIZLE
     }
-
-    /** "10 dk ertele" düğmesi gösterilsin mi? Bildirim ertelemesiyle AYNI kural. */
-    fun ertelemeDugmesiVarMi(simdiMs: Long, sinirMs: Long): Boolean =
-        sinirMs > 0L && ErtelemeKurallari.secenekler(simdiMs, sinirMs).isNotEmpty()
 
     /** Çalma süresi doldu mu? (Tam ekran etkinliği kendini kapatır.) */
     fun calmaBittiMi(baslangicMs: Long, simdiMs: Long): Boolean = simdiMs - baslangicMs >= CALMA_SURESI_MS
@@ -153,12 +149,12 @@ object MuhafizAlarmKurallari {
         /**
          * NAFİLE alarmı mı? (`nafile_<gün>_<tür>_<k>` kimliği — issue #74 nafilede de
          * standart yetenek.) `null` = muhafız. "Kıldım" bu alana göre YOL SEÇER: nafile
-         * FARZ kuyruğuna ASLA yazmaz, ertelenmez, otomasyon "vakit çıkıyor" olayı doğurmaz.
+         * FARZ kuyruğuna ASLA yazmaz, otomasyon "vakit çıkıyor" olayı doğurmaz.
          */
         val nafileTuru: String? = null,
         /**
          * BİLGİ alarmı mı? (`tur: "bilgi"` — cuma, camiye gitme, takvim çakışması; ortak
-         * hatırlatma yüzeyleri plan §4.2.) Yalnız "Kapat": Kıldım ve Ertele YOK, otomasyon
+         * hatırlatma yüzeyleri plan §4.2.) Yalnız "Kapat": Kıldım YOK, otomasyon
          * olayı doğmaz. `cikisMs` pencerenin SONUDUR (öğle girişi / vakit girişi / etkinlik
          * başı) → geç tetik / "vakit çıktı" kuralı [tetikKarari] değişmeden uygulanır.
          */
@@ -176,15 +172,14 @@ object MuhafizAlarmKurallari {
         val vakitAdi: String,
         val tarih: String,
         val cikisMs: Long,
-        val erteleSinirMs: Long,
         val seviye: Int,
         val alarmKanalId: String,
         val alarmKanalAdi: String,
         /** Kullanıcının seçtiği `content://` ses; yoksa sistemin varsayılan ALARM sesi. */
         val sesUri: String?,
-        /** Normal muhafız kanalı — ertelenen kopya ve "normal bildirime düşüş" buradan. */
+        /** Normal muhafız kanalı — "normal bildirime düşüş" buradan. */
         val kanalId: String,
-        /** Muhafız bildiriminin `data` nesnesi (ertelenen kopyanın gövdesi). */
+        /** Muhafız bildiriminin `data` nesnesi (normal bildirime düşüşün gövdesi). */
         val veri: JSONObject,
     )
 
@@ -237,8 +232,8 @@ object MuhafizAlarmKurallari {
                 vakitAdi = o.optString("vakitAdi", ""),
                 tarih = vakit?.tarih ?: nafile?.tarih ?: o.optString("tarih", ""),
                 cikisMs = o.optLong("cikisMs", 0L),
-                // Nafile ve bilgi alarmı ertelenmez (fıkhi sınır muhafızın vaktine kuruludur).
-                erteleSinirMs = if (nafile != null || bilgi) 0L else o.optLong("erteleSinirMs", 0L),
+                // ERTELE YOK (sahip kararı 2026-10-19): güncelleme öncesi yükteki
+                // `erteleSinirMs` alanı OKUNMAZ (yok sayılır).
                 seviye = o.optInt("seviye", 1),
                 alarmKanalId = alarmKanalId,
                 alarmKanalAdi = o.optString("alarmKanalAdi", "").ifBlank { "Namaz alarmı" },

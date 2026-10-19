@@ -1,9 +1,9 @@
 {
-  "aciklama": "Teslim sahipligi (ortak hatirlatma yuzeyleri, plan 4.1). JS core/muhafiz/teslimSahipligi.ts ve Kotlin cekirdek/TeslimSahipligi.kt her kimlik icin AYNI sonucu vermeli. Muhafiz turu yatis/muhasebe kimliklerini (muhafiz_ uzayinda) ASLA silmez.",
+  "aciklama": "Teslim sahipligi (ortak hatirlatma yuzeyleri, plan 4.1). JS core/muhafiz/teslimSahipligi.ts ve Kotlin cekirdek/TeslimSahipligi.kt her kimlik icin AYNI sonucu vermeli. Muhafiz turu yatis/muhasebe kimliklerini (muhafiz_ uzayinda) ASLA silmez. Kaldirilan Ertele'nin (#289) _ertele artiklari muhafiz acikken de silinir (goc).",
   "ornekler": [
     { "kimlik": "muhafiz_2026-10-13_vakit_yatsi_seviye_2_dk_45", "muhafiz_plan": true, "muhafiz_tumu": true, "yatis": false },
     { "kimlik": "muhafiz_2026-10-13_vakit_imsak_seviye_1_dk_-3", "muhafiz_plan": true, "muhafiz_tumu": true, "yatis": false },
-    { "kimlik": "muhafiz_2026-10-13_vakit_ogle_ertele", "muhafiz_plan": false, "muhafiz_tumu": true, "yatis": false },
+    { "kimlik": "muhafiz_2026-10-13_vakit_ogle_ertele", "muhafiz_plan": true, "muhafiz_tumu": true, "yatis": false },
     { "kimlik": "muhafiz_2026-10-13_vakit_yatsi_yatis", "muhafiz_plan": false, "muhafiz_tumu": false, "yatis": true },
     { "kimlik": "muhafiz_2026-10-13_vakit_yatsi_yatis_15", "muhafiz_plan": false, "muhafiz_tumu": false, "yatis": true },
     { "kimlik": "muhafiz_2026-10-13_vakit_ogle_muhasebe", "muhafiz_plan": false, "muhafiz_tumu": false, "yatis": true },

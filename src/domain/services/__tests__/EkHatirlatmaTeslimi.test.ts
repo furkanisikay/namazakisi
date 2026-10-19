@@ -206,7 +206,7 @@ describe('Android — ek hatırlatma teslimi', () => {
         const yuk = mockKopru.planla.mock.calls[0][0] as Record<string, unknown>;
         expect(yuk.tur).toBe('bilgi');
         expect(yuk.cikisMs).toBe(te.cikis!.getTime());
-        expect(yuk.erteleSinirMs).toBe(0);
+        expect(yuk).not.toHaveProperty('erteleSinirMs');
         expect(yuk.vakitAdi).toBe('Cuma');
         expect(yuk.veri).toEqual({ tip: 'cuma_hatirlatma' });
         // Alarm o tetiğin bildiriminin YERİNE geçer.

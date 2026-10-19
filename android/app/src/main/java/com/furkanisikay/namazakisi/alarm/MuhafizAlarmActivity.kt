@@ -37,7 +37,7 @@ import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari.KildimYolu
  *
  * KİLİT EKRANINDA "KILDIM" KAYIT YAZMAZ (M4 — #295 `KilitEkraniKarari`): kilitliyken önce
  * kilit açtırılır (API 26+ `requestDismissKeyguard`), yalnız başarıda işaretlenir; daha
- * eski sürümde kilitliyken düğme gizlenir. "Kapat" ve "Ertele" kayıt değildir, kilitliyken
+ * eski sürümde kilitliyken düğme gizlenir. "Kapat" kayıt değildir, kilitliyken
  * de çalışır. Kilit açma iptal edilirse alarm yine susar ve aynı içerik sessiz bildirim
  * olarak kalır (oradaki "Kıldım" da kilit açtırır) — kişi işaretlemeyi kaybetmez.
  *
@@ -277,14 +277,8 @@ class MuhafizAlarmActivity : Activity() {
                 LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT),
             )
         }
+        // ERTELE YOK (sahip kararı 2026-10-19, eski #289): yalnız "Kıldım" ve "Kapat".
         val satir = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        val ertelenir = MuhafizAlarmKurallari.ertelemeDugmesiVarMi(System.currentTimeMillis(), yuk.erteleSinirMs)
-        if (ertelenir) {
-            satir.addView(
-                dugme(getString(R.string.alarm_ertele), dolu = false, eylem = MuhafizAlarmAlici.EYLEM_ERTELE),
-                LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply { marginEnd = dp(12) },
-            )
-        }
         satir.addView(
             dugme(getString(R.string.alarm_kapat), dolu = false, eylem = MuhafizAlarmAlici.EYLEM_KAPAT),
             LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f),

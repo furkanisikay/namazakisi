@@ -26,7 +26,7 @@ export type { AlarmKitDurumu, AlarmKitKaydi, AlarmKitYuku };
  * Uygulama açıkken alarm düğmesine basılınca gelen olayın türü. `nafileKildim`: nafile
  * alarmındaki "Kıldım" (FARZ yazmaz; `alarmKitNafileKildimleriniAl` boşaltılmalı).
  */
-export type AlarmDegisiklikTuru = 'ertele' | 'kildim' | 'nafileKildim';
+export type AlarmDegisiklikTuru = 'kildim' | 'nafileKildim';
 
 interface Abonelik {
     remove(): void;
@@ -133,13 +133,13 @@ export async function alarmKitNafileKildimleriniAl(): Promise<{ tarih: string; t
     }
 }
 
-/** Uygulama açıkken alarm düğmesi ("10 dk ertele", "Kıldım") işlendi. */
+/** Uygulama açıkken alarm düğmesi ("Kıldım") işlendi. Erteleme YOK (sahip kararı 2026-10-19). */
 export function alarmDegisikliginiDinle(fn: (tur: AlarmDegisiklikTuru) => void): () => void {
     const m = modul();
     if (!m) return () => undefined;
     try {
         const abonelik = m.addListener('onAlarmDegisikligi', (veri) => {
-            if (veri?.tur === 'ertele' || veri?.tur === 'kildim' || veri?.tur === 'nafileKildim') fn(veri.tur);
+            if (veri?.tur === 'kildim' || veri?.tur === 'nafileKildim') fn(veri.tur);
         });
         return () => abonelik.remove();
     } catch {

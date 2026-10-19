@@ -147,15 +147,15 @@ object MuhafizAlarmBildirimi {
             .build()
 
     /**
-     * Kilit ekranında gösterilen sürüm: başlık + metin + (varsa) "Ertele" ve "Kapat",
-     * "Kıldım" YOK. Kapat ve ertele kayıt değildir; alarmı kilit açmadan susturmak olağandır.
+     * Kilit ekranında gösterilen sürüm: başlık + metin + (varsa) "Kapat", "Kıldım" YOK.
+     * Kapat kayıt değildir; alarmı kilit açmadan susturmak olağandır. ERTELE YOK (sahip
+     * kararı 2026-10-19, eski #289).
      */
     private fun herkeseAcikSurum(
         context: Context,
         kanal: String,
         yuk: MuhafizAlarmKurallari.Yuk,
         hamYuk: String,
-        simdiMs: Long,
         kapatVar: Boolean,
     ): Notification =
         NotificationCompat.Builder(context, kanal)
@@ -163,9 +163,6 @@ object MuhafizAlarmBildirimi {
             .setContentTitle(yuk.baslik)
             .setContentText(yuk.metin)
             .apply {
-                if (MuhafizAlarmKurallari.ertelemeDugmesiVarMi(simdiMs, yuk.erteleSinirMs)) {
-                    addAction(0, context.getString(R.string.alarm_ertele), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_ERTELE, yuk, hamYuk))
-                }
                 if (kapatVar) {
                     addAction(0, context.getString(R.string.alarm_kapat), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
                 }
@@ -181,7 +178,7 @@ object MuhafizAlarmBildirimi {
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
-    private fun temelOlustur(context: Context, kanal: String, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String, simdiMs: Long) =
+    private fun temelOlustur(context: Context, kanal: String, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String) =
         NotificationCompat.Builder(context, kanal)
             .setSmallIcon(R.drawable.ic_alarm_muhafiz)
             .setContentTitle(yuk.baslik)
@@ -194,19 +191,16 @@ object MuhafizAlarmBildirimi {
             .apply {
                 // Bilgi alarmında (cuma/camiye gitme/takvim) kılınacak namaz yoktur.
                 if (MuhafizAlarmKurallari.kildimDugmesiVarMi(yuk)) addAction(kildimEylemi(context, yuk, hamYuk))
-                if (MuhafizAlarmKurallari.ertelemeDugmesiVarMi(simdiMs, yuk.erteleSinirMs)) {
-                    addAction(0, context.getString(R.string.alarm_ertele), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_ERTELE, yuk, hamYuk))
-                }
             }
 
     /** Çalan alarm: tam ekran + insistent + ongoing. */
     fun calanGoster(context: Context, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String, baslangicMs: Long) {
         kanaliGarantile(context, yuk.alarmKanalId, yuk.alarmKanalAdi, yuk.sesUri)
         val ekran = ekranIntenti(context, hamYuk, yuk.kimlik, baslangicMs)
-        val bildirim = temelOlustur(context, yuk.alarmKanalId, yuk, hamYuk, baslangicMs)
+        val bildirim = temelOlustur(context, yuk.alarmKanalId, yuk, hamYuk)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setPublicVersion(herkeseAcikSurum(context, yuk.alarmKanalId, yuk, hamYuk, baslangicMs, kapatVar = true))
+            .setPublicVersion(herkeseAcikSurum(context, yuk.alarmKanalId, yuk, hamYuk, kapatVar = true))
             .setOngoing(true)
             .setAutoCancel(false)
             .setContentIntent(ekran)
@@ -234,10 +228,9 @@ object MuhafizAlarmBildirimi {
      */
     fun normalGoster(context: Context, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String, sessiz: Boolean) {
         val kanal = mevcutKanal(context, yuk.kanalId)
-        val simdi = System.currentTimeMillis()
-        val bildirim = temelOlustur(context, kanal, yuk, hamYuk, simdi)
+        val bildirim = temelOlustur(context, kanal, yuk, hamYuk)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
-            .setPublicVersion(herkeseAcikSurum(context, kanal, yuk, hamYuk, simdi, kapatVar = false))
+            .setPublicVersion(herkeseAcikSurum(context, kanal, yuk, hamYuk, kapatVar = false))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setSilent(sessiz)

@@ -41,7 +41,7 @@ sonraki sürümde üslup kayar.
 - Camideyim: camide telefonunuz sessize alınır.
 - Kaza Defteri yenilendi.
 - Widget ve hızlı ayardan tek dokunuşla "Kıldım".
-- Hatırlatmayı erteleyin, özel günlerde durdurun.
+- Hatırlatmaları özel günlerde durdurun.
 - Sade görünüm.
 ```
 
@@ -100,7 +100,6 @@ yalnız iOS 26 ve sonrasında çalıştığı için öyle yazıldı.
 
 ```
 - Her vakit için kendi hatırlatma akışınızı kurabilirsiniz: 1 ile 6 arası hatırlatma, her biri için bildirim ya da sesli anons.
-- Hatırlatmayı 10 ya da 20 dakika erteleyebilirsiniz.
 - iOS 26 ve sonrasında seçtiğiniz hatırlatma adımı gerçek bir alarm olarak çalabilir.
 - Cuma namazı, camiye zamanında yetişme ve yatmadan önce hatırlatma eklendi.
 - Takviminizdeki bir toplantı vaktin sonuna denk gelirse önceden haber veriyoruz. Takviminiz yalnız telefonunuzda okunur.

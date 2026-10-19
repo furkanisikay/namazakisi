@@ -127,7 +127,7 @@ object MuhafizAlarmZamanlayici {
         kayittanCikar(context, kimlik)
     }
 
-    /** Koşula uyan kayıtlı alarmların hepsini iptal eder ("Kıldım", ertele, yeniden planlama). */
+    /** Koşula uyan kayıtlı alarmların hepsini iptal eder ("Kıldım", yeniden planlama). */
     fun eslesenleriIptalEt(context: Context, esles: (String) -> Boolean): List<String> {
         val secilen = synchronized(kilit) { kayitOku(context).keys().asSequence().filter(esles).toList() }
         secilen.forEach { iptal(context, it) }

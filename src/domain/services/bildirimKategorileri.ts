@@ -3,9 +3,8 @@
  *
  * `BildirimServisi.baslatBildirimDinleyicisi` (index.ts, her JS bağlamı) ve
  * `ArkaplanMuhafizServisi.planla` (planlamadan ÖNCE, idempotent) çağırır.
- * Neden ikinci çağıran: güncelleme sonrası yeni bir kategori (ör. "Ertele" #289
- * `muhafiz_ertele1/2_category`) ancak bu fonksiyon koşunca vardır; dinleyici
- * kurulumu planlamayla YARIŞIR (dinamik import). Kategorisi kayıtlı olmayan
+ * Neden ikinci çağıran: güncelleme sonrası yeni ya da değişen bir kategori ancak bu
+ * fonksiyon koşunca vardır; dinleyici kurulumu planlamayla YARIŞIR (dinamik import). Kategorisi kayıtlı olmayan
  * bildirim düğmesiz gösterilir — sessiz kayıp. Kayıt ucuz ve idempotenttir.
  *
  * Sıra SABİT (testler ilk çağrının muhafız kategorisi olduğuna bakar).
@@ -14,8 +13,10 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
-import { ERTELEME_EYLEMLERI, ERTELEME_KATEGORILERI } from '../../core/muhafiz/erteleme';
 import { MUHASEBE_KATEGORILERI } from '../../core/yatis/yatisPlani';
+
+/** Kaldırılan "Ertele"nin (#289) kategori kimlikleri — yalnız göç için. */
+const ESKI_ERTELE_KATEGORILERI = ['muhafiz_ertele1_category', 'muhafiz_ertele2_category'] as const;
 
 export async function bildirimKategorileriniKaydet(): Promise<void> {
   // Muhafiz kategorisi - "Kildim" aksiyonu ile
@@ -34,22 +35,19 @@ export async function bildirimKategorileriniKaydet(): Promise<void> {
     },
   ]);
 
-  // "Ertele" (issue #289): düğme kümesi sınıra kalan süreden seçilir
-  // (`core/muhafiz/erteleme.ts > ertelemeKategorisi`). Uygulamayı AÇMAZ:
-  // Android'de native işlenir (`BildirimErteleIsleyici`); iOS'ta yanıt
-  // işleyicisi arka planda çalışırsa kurulur (cihazda doğrulanmadı).
   const kildim = {
     identifier: BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM,
     buttonTitle: '✅ Kıldım',
     options: { opensAppToForeground: Platform.OS === 'ios' },
   };
-  const ertele = (dk: 10 | 20) => ({
-    identifier: ERTELEME_EYLEMLERI[dk],
-    buttonTitle: `${dk} dk ertele`,
-    options: { opensAppToForeground: false },
-  });
-  await Notifications.setNotificationCategoryAsync(ERTELEME_KATEGORILERI.TEK, [kildim, ertele(10)]);
-  await Notifications.setNotificationCategoryAsync(ERTELEME_KATEGORILERI.IKI, [kildim, ertele(10), ertele(20)]);
+
+  // ERTELE YOK (sahip kararı 2026-10-19, eski #289): güncelleme ÖNCESİ planlanmış
+  // bildirimler hâlâ eski ertele kategorilerini taşıyabilir. Kategori gösterim anında
+  // çözüldüğü için o kimlikler YALNIZ "Kıldım" ile yeniden tanımlanır → bir sonraki
+  // planlama turuna kadar düşen eski bildirim de ertele düğmesi göstermez.
+  for (const eskiKategori of ESKI_ERTELE_KATEGORILERI) {
+    await Notifications.setNotificationCategoryAsync(eskiKategori, [kildim]);
+  }
 
   // Gün sonu muhasebesi (issue #290).
   await Notifications.setNotificationCategoryAsync(MUHASEBE_KATEGORILERI.TEK, [

@@ -41,7 +41,7 @@ import { TakvimCakismaServisi, takvimCakismaTeslimcisiniAyarla } from '../Takvim
 import { takvimIzinDurumunuOku, takvimIzniIste } from '../TakvimEtkinlikOkuyucu';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { UYGULAMA_TAKVIM_NOTU } from '../../../core/takvimCakisma/takvimCakismaAyarlari';
-import { gurubKerahatiBaslangiciMs } from '../../../core/muhafiz/erteleme';
+import { gurubKerahatiBaslangiciMs } from '../../../core/vakit/kerahat';
 import { bugunuAl } from '../../../core/utils/TarihYardimcisi';
 import * as LocalNamazServisi from '../../../data/local/LocalNamazServisi';
 

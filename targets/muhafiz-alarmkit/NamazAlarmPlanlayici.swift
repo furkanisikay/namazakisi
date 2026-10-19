@@ -119,18 +119,15 @@ enum NamazAlarmCekirdegi {
         try? AlarmManager.shared.cancel(id: id)
 
         // Durdurma dugmesini SISTEM cizer (iOS 26.1+ etiketi degistirilemez) → durdurmak
-        // namazi KILINDI SAYMAZ. Ikinci dugme: sinira yer varsa "10 dk ertele", yoksa
-        // "Kildim" (bildirimdeki kuralla ayni — `AlarmKurallari.ikincilDugme`).
+        // namazi KILINDI SAYMAZ. Ikinci dugme daima "Kildim": ERTELE YOK (sahip karari
+        // 2026-10-19, eski #289) — erteleyen kisi unutur, son dakikada yetismez.
         //
         // BILGI alarmi (cuma, camiye gitme, takvim — `AlarmKurallari.alarmTuru`) vakit GIRMEDEN
         // calar: ikinci dugme YOK (yalniz sistemin "Durdur"u); "Kildim" FARZ'i yazardi.
         let bilgiMi = AlarmKurallari.alarmTuru(kayit.kimlik) == "bilgi"
-        let erteleMi = !bilgiMi && AlarmKurallari.ikincilDugme(tetikMs: kayit.tetikMs, erteleSinirMs: kayit.erteleSinirMs) == "ertele"
         let ikinciDugme: AlarmButton? = bilgiMi
             ? nil
-            : erteleMi
-                ? AlarmButton(text: "10 dk ertele", textColor: .white, systemImageName: "clock.arrow.circlepath")
-                : AlarmButton(text: "Kıldım", textColor: .white, systemImageName: "checkmark")
+            : AlarmButton(text: "Kıldım", textColor: .white, systemImageName: "checkmark")
         // Baslik DINAMIK metindir: `LocalizedStringResource(stringLiteral:)` onu bir
         // YERELLESTIRME ANAHTARI sayardi. Interpolasyonla anahtar "%@" olur, deger aynen
         // gosterilir (yerellestirme tablosunda karsiligi aranmaz).
@@ -147,13 +144,10 @@ enum NamazAlarmCekirdegi {
             metadata: NamazAlarmVerisi(kimlik: kayit.kimlik),
             tintColor: renk
         )
-        // Üçlü `? :` iki farklı intent tipini ortak varoluşsal tipe yükseltmez (derleme hatası);
-        // açık if/else ile atanır.
+        // Açık if/else: varoluşsal tipe yükseltme üçlü `? :` ile derlenmeyebilir.
         let ikinciNiyet: (any LiveActivityIntent)?
         if bilgiMi {
             ikinciNiyet = nil
-        } else if erteleMi {
-            ikinciNiyet = NamazAlarmErteleIntent(kimlik: kayit.kimlik)
         } else {
             ikinciNiyet = NamazAlarmKildimIntent(kimlik: kayit.kimlik)
         }
@@ -175,8 +169,8 @@ enum NamazAlarmCekirdegi {
         }
     }
 
-    /// `calaniDurdur == false` (PLANLAMA turu: yeniden planlama, muhafiz kapatma, erteleme
-    /// araligi): o an CALAN alarm ATLANIR — Android kurali "planlama turu calan alarmi
+    /// `calaniDurdur == false` (PLANLAMA turu: yeniden planlama, muhafiz kapatma):
+    /// o an CALAN alarm ATLANIR — Android kurali "planlama turu calan alarmi
     /// susturmaz". JS secimi zaten haric tutar; burada iptal aninin GUNCEL durumu bir kez
     /// daha uygulanir (okuma ile iptal arasinda calmaya baslayan alarm). Yalniz "Kildim"
     /// `true` gecer: calani once durdurur, sonra iptal eder.
@@ -199,7 +193,7 @@ enum NamazAlarmCekirdegi {
         return (canli, calan)
     }
 
-    /// Calan alarmi susturur ve kaydini dusurur (durdur / ertele / kildim ortak ilk adim).
+    /// Calan alarmi susturur ve kaydini dusurur (durdur / kildim ortak ilk adim).
     static func kapat(_ kimlik: String) -> AlarmKaydi? {
         let id = AlarmKurallari.uuid(kimlik)
         try? AlarmManager.shared.stop(id: id)
@@ -207,45 +201,6 @@ enum NamazAlarmCekirdegi {
         let kayit = AlarmDeposu.varsayilan.kayit(kimlik)
         AlarmDeposu.varsayilan.sil([kimlik])
         return kayit
-    }
-
-    /// "10 dk ertele" (issue #289 kurallari): sinira kadar TEK bir yeni alarm; o ana
-    /// kadarki planli uyarilar (alarm + bildirim) susar. JS etkin ertelemeyi alarm
-    /// kaydindan okur (`alarmKitErtelemeleri`), yeniden planlama araliga uyari kurmaz.
-    static func ertele(_ kimlik: String) async {
-        // HER dalda duyurulur: kayit bulunamasa ya da sinira yer kalmasa da alarm
-        // SUSTURULDU (`kapat`) — uygulama aciksa JS planini/ekranini tazelemeli.
-        defer { MuhafizAlarmOlaylari.duyur("ertele") }
-        guard let kayit = kapat(kimlik) else { return }
-        guard let hedef = AlarmKurallari.ertelemeHedefi(
-            simdiMs: simdiMs(),
-            sureDk: AlarmKurallari.erteleDk,
-            sinirMs: kayit.erteleSinirMs
-        ) else { return }
-
-        iptalEt(
-            AlarmDeposu.varsayilan.susturulacaklar(tarih: kayit.tarih, vakit: kayit.vakit, hedefMs: hedef),
-            calaniDurdur: false
-        )
-        await bildirimleriSustur(tarih: kayit.tarih, vakit: kayit.vakit, cikisMs: kayit.cikisMs, hedefMs: hedef)
-
-        let yeni = AlarmKaydi(
-            kimlik: AlarmKurallari.ertelemeKimligi(tarih: kayit.tarih, vakit: kayit.vakit),
-            tetikMs: hedef,
-            baslik: AlarmKurallari.ertelemeBasligi(
-                sablon: kayit.ertelemeBasligi,
-                cikisMs: kayit.cikisMs,
-                hedefMs: hedef
-            ) ?? kayit.baslik,
-            vakit: kayit.vakit,
-            tarih: kayit.tarih,
-            cikisMs: kayit.cikisMs,
-            erteleSinirMs: kayit.erteleSinirMs,
-            ertelemeBasligi: kayit.ertelemeBasligi
-        )
-        if !(await planla(yeni)) {
-            NSLog("%@", "[NamazAlarm] Ertelenen alarm kurulamadi \(yeni.kimlik)")
-        }
     }
 
     /// "Kildim": ortak "Kildim" kuyruguna yazar (JS kaydi `KildimKuyruguServisi` ile
@@ -273,19 +228,7 @@ enum NamazAlarmCekirdegi {
         MuhafizAlarmOlaylari.duyur("kildim")
     }
 
-    /// Erteleme araligindaki PLAN bildirimleri (`_seviye_N_dk_K`, tetik = cikis − K dk).
-    static func bildirimleriSustur(tarih: String, vakit: String, cikisMs: Int64, hedefMs: Int64) async {
-        let merkez = UNUserNotificationCenter.current()
-        let onek = AlarmKurallari.vakitOneki(tarih: tarih, vakit: vakit) + "_"
-        let bekleyenler = await merkez.pendingNotificationRequests()
-        let susacaklar = bekleyenler.map(\.identifier).filter { id in
-            guard id.hasPrefix(onek), let dk = AlarmKurallari.kalanDk(id) else { return false }
-            return AlarmKurallari.ertelemedeSusturulurMu(tetikMs: cikisMs - dk * 60_000, hedefMs: hedefMs)
-        }
-        if !susacaklar.isEmpty { merkez.removePendingNotificationRequests(withIdentifiers: susacaklar) }
-    }
-
-    /// Vaktin bekleyen ve gosterilen TUM muhafiz bildirimleri (plan, erteleme...).
+    /// Vaktin bekleyen ve gosterilen TUM muhafiz bildirimleri (plan, yatis...).
     static func bildirimleriKaldir(onek: String) async {
         let merkez = UNUserNotificationCenter.current()
         let bekleyen = await merkez.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix(onek) }

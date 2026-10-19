@@ -74,7 +74,7 @@ class MuhafizAlarmModulu(reactContext: ReactApplicationContext) : ReactContextBa
     /**
      * Bir teslim SAHİPLİĞİNİN (ortak hatırlatma yüzeyleri, plan §4.1) bekleyen sesli anons
      * ve/veya gerçek alarm kayıtlarını iptal eder: `muhafiz_plan` (muhafız açık — yalnız plan
-     * kimlikleri), `muhafiz_tumu` (muhafız kapalı — erteleme dahil, YATIŞ HARİÇ), `yatis`.
+     * kimlikleri), `muhafiz_tumu` (muhafız kapalı — YATIŞ HARİÇ), `yatis`.
      * Önek yetmez: yatış/muhasebe kimlikleri `muhafiz_` uzayındadır; önekle silmek her
      * muhafız turunda onları da silerdi. Kural `cekirdek/TeslimSahipligi` (JVM testi). Çalan
      * alarma dokunmaz (planlama iptali). Silinen kayıt sayısını döndürür.

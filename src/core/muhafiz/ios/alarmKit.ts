@@ -20,12 +20,6 @@
  * yalnız kararlı ve çakışmaya dayanıklı bir eşleme.
  */
 import type { VakitAdi } from '../../types';
-import {
-    ertelemeAnahtari,
-    ertelemeKimliginiCoz,
-    ertelemeSecenekleri,
-    ertelemeTeslimBilgisi,
-} from '../erteleme';
 
 /** AlarmKit izin/destek durumu — Swift `NamazAlarmPlanlayici.durum()` ile AYNI dizeler. */
 export type AlarmKitDurumu = 'desteklenmiyor' | 'belirsiz' | 'izinli' | 'reddedildi';
@@ -38,9 +32,6 @@ export function alarmKitDurumunuCoz(ham: unknown): AlarmKitDurumu {
         ? (ham as AlarmKitDurumu)
         : 'desteklenmiyor';
 }
-
-/** Alarm ekranındaki tek erteleme süresi (dk). AlarmKit yalnız BİR ikincil düğme sunar. */
-export const ALARMKIT_ERTELE_DK = 10;
 
 function fnv1a32(girdi: string): number {
     let h = 0x811c9dc5;
@@ -62,27 +53,19 @@ export function alarmKitUuid(kimlik: string): string {
     return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }
 
-/**
- * Alarm ekranının ikincil düğmesi. AlarmKit durdurma düğmesini SİSTEM çizer ("Durdur");
- * biz yalnız ikinci düğmeyi seçeriz:
- *   - Sınıra en az `ERTELEME_EN_AZ_DK` varsa "10 dk ertele" (bildirimdeki kuralla AYNI —
- *     `ertelemeSecenekleri`);
- *   - yoksa "Kıldım".
- * Durdurmak namazı KILINDI SAYMAZ (yalnız susturur) — "Kıldım" bilinçli bir dokunuştur.
- */
-export function alarmKitIkincilDugme(tetikMs: number, erteleSinirMs: number): 'ertele' | 'kildim' {
-    return erteleSinirMs > 0 && ertelemeSecenekleri(tetikMs, erteleSinirMs).length > 0 ? 'ertele' : 'kildim';
-}
-
 const VAKIT_KIMLIGI = /^muhafiz_\d{4}-\d{2}-\d{2}_vakit_[a-z]+(?:_|$)/;
 const NAFILE_KIMLIGI = /^nafile_\d{4}-\d{2}-\d{2}_(kusluk|evvabin|teheccud)_[^_]+$/;
 
 /**
  * Alarmın TÜRÜ kimlikten (ortak hatırlatma yüzeyleri, plan §4.2) — Swift
  * `AlarmKurallari.alarmTuru`, ortak fikstür `alarmkit-ornek.json > turler`:
- * muhafız uzayı (plan, erteleme, yatış) → `vakit`; nafile → `nafile`; geri kalan
+ * muhafız uzayı (plan, yatış) → `vakit`; nafile → `nafile`; geri kalan
  * (cuma, camiye gitme, takvim, çoklu muhasebe) → `bilgi`. Bilgi alarmında İKİNCİL DÜĞME
  * YOKTUR (yalnız sistemin "Durdur"u): vakit girmeden çalar, "Kıldım" FARZ'ı yazardı.
+ *
+ * Vakit ve nafile alarmında ikincil düğme daima "Kıldım"dır (Swift `NamazAlarmPlanlayici`).
+ * ERTELE YOK (sahip kararı 2026-10-19, eski #289): erteleyen kişi unutur, son dakikada
+ * abdest/mescit yetişmez. Durdurmak namazı KILINDI SAYMAZ (yalnız susturur).
  */
 export function alarmKitTuru(kimlik: string): 'vakit' | 'nafile' | 'bilgi' {
     if (VAKIT_KIMLIGI.test(kimlik)) return 'vakit';
@@ -100,10 +83,6 @@ export interface AlarmKitYuku {
     /** Vaktin ait olduğu namaz günü (YYYY-MM-DD) — kimlikle aynı. */
     tarih: string;
     cikisMs: number;
-    /** `ertelemeSiniriMs`; 0 = erteleme yok. */
-    erteleSinirMs: number;
-    /** `ertelemeBasligiSablonu` — ertelenen alarmın başlığı basış anında doldurulur. */
-    ertelemeBasligi: string;
 }
 
 export interface AlarmKitYukuGirdisi {
@@ -112,14 +91,13 @@ export interface AlarmKitYukuGirdisi {
     baslik: string;
     vakit: VakitAdi;
     tarih: string;
-    /** Vaktin çıkışı (ms); yoksa erteleme sunulmaz (alarmın ikinci düğmesi "Kıldım"). */
+    /** Vaktin çıkışı (ms); bilinmiyorsa 0 yazılır. */
     cikisMs?: number | null;
 }
 
-/** Teslimden native yükü kurar — erteleme alanları bildirimle AYNI kaynaktan (`ertelemeTeslimBilgisi`). */
+/** Teslimden native yükü kurar. */
 export function alarmKitYukuOlustur(g: AlarmKitYukuGirdisi): AlarmKitYuku {
     const cikisMs = typeof g.cikisMs === 'number' && Number.isFinite(g.cikisMs) ? g.cikisMs : null;
-    const ertele = cikisMs !== null ? ertelemeTeslimBilgisi(g.vakit, cikisMs, g.tetikMs).veri : null;
     return {
         kimlik: g.kimlik,
         tetikMs: g.tetikMs,
@@ -127,8 +105,6 @@ export function alarmKitYukuOlustur(g: AlarmKitYukuGirdisi): AlarmKitYuku {
         vakit: g.vakit,
         tarih: g.tarih,
         cikisMs: cikisMs ?? 0,
-        erteleSinirMs: ertele?.erteleSinirMs ?? 0,
-        ertelemeBasligi: ertele?.ertelemeBasligi ?? '',
     };
 }
 
@@ -163,7 +139,7 @@ export function alarmKitKayitlariniCoz(ham: unknown): AlarmKitKaydi[] {
 
 /**
  * İptal edilecek alarm kimlikleri. PLANLAMA turu (`calaniDurdur === false`: yeniden
- * planlama, muhafız kapatma, erteleme aralığı) o an ÇALAN alarma DOKUNMAZ — Android
+ * planlama, muhafız kapatma) o an ÇALAN alarma DOKUNMAZ — Android
  * kuralının ikizi ("planlama turu çalan alarmı susturmaz"); 15 dk'lık arka plan turu ya
  * da ekrandaki bir ayar değişikliği kullanıcının uyanmak için kurduğu alarmı
  * kesmemeli. Yalnız "Kıldım" (`true`) çalanı da susturur. Swift ikizi
@@ -177,18 +153,4 @@ export function alarmKitIptalSecimi(
     calaniDurdur: boolean
 ): string[] {
     return kayitlar.filter((k) => secici(k.kimlik) && (calaniDurdur || k.caliyor !== true)).map((k) => k.kimlik);
-}
-
-/**
- * Kurulu ertelenmiş ALARMLARDAN etkin ertelemeler (`<gün>_<vakit>` → hedef ms) —
- * `etkinErtelemeler`'in (bekleyen bildirimler) AlarmKit ikizi. Yeniden planlama,
- * ön plan banner'ı ve saatin planı bu aralığa uyarı koymaz.
- */
-export function alarmKitErtelemeleri(kayitlar: readonly AlarmKitKaydi[]): Record<string, number> {
-    const sonuc: Record<string, number> = {};
-    for (const k of kayitlar) {
-        const coz = ertelemeKimliginiCoz(k.kimlik);
-        if (coz) sonuc[ertelemeAnahtari(coz.tarih, coz.vakit)] = k.tetikMs;
-    }
-    return sonuc;
 }

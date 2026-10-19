@@ -420,7 +420,7 @@ export const BILDIRIM_SABITLERI = {
   // Muhafiz aksiyonlari
   AKSIYONLAR: {
     KILDIM: 'kildim_action',
-    // Gün sonu muhasebesi (issue #290). Erteleme eylemleri: `core/muhafiz/erteleme.ts`.
+    // Gün sonu muhasebesi (issue #290). Muhafızda ERTELE YOK (sahip kararı 2026-10-19).
     KAZAYA_EKLE: 'kazaya_ekle_action',
     INCELE: 'incele_action',
   },

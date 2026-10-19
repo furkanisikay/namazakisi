@@ -44,7 +44,7 @@ export function alarmOnayMaddeleri(
 ): { ikon: string; metin: string }[] {
     const ortak = {
         ikon: 'check-circle',
-        metin: 'Alarm ekranından tek dokunuşla "Kıldım" diyebilir ya da 10 dakika erteleyebilirsiniz.',
+        metin: 'Alarm ekranından tek dokunuşla "Kıldım" diyebilir ya da alarmı kapatabilirsiniz.',
     };
     if (platform === 'ios' && iosAlarmKitVarMi(alarmKit)) {
         return [
@@ -62,7 +62,7 @@ export function alarmOnayMaddeleri(
                   : { ikon: 'shield-alt', metin: 'Alarm izni verilmiş; ek bir adım gerekmez.' },
             {
                 ikon: 'check-circle',
-                metin: 'Alarm ekranından durdurabilir ya da 10 dakika erteleyebilirsiniz; vaktin çıkmasına az kaldıysa ikinci düğme "Kıldım" olur.',
+                metin: 'Alarm ekranından durdurabilir ya da "Kıldım" diyebilirsiniz.',
             },
         ];
     }
@@ -95,7 +95,7 @@ export function alarmOnayMaddeleri(
                         : "iPhone'da sessiz anahtarı açıkken ses duyulmaz.",
             },
             {
-                // Bu dalda alarm ekranı YOK: "alarm ekranından Kıldım/ertele" yalan olurdu.
+                // Bu dalda alarm ekranı YOK: "alarm ekranından Kıldım" yalan olurdu.
                 // Bildirim düğmeleri yüzeye göre değişir (cuma/takvimde Kıldım yok) → kesin yazılmaz.
                 ikon: 'bell',
                 metin: 'Alarm ekranı açılmaz; hatırlatma bildirim olarak gelir, dokunarak uygulamayı açabilirsiniz.',

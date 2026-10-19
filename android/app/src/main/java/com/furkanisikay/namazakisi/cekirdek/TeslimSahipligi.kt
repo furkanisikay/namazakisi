@@ -11,10 +11,13 @@ package com.furkanisikay.namazakisi.cekirdek
  * turunda silerdi → muhafız PLAN kimliğiyle, kapalıyken de "yatış hariç" temizler.
  */
 object TeslimSahipligi {
-    /** Muhafız açık: yalnız plan kimlikleri (erteleme ve yatış korunur). */
+    /**
+     * Muhafız açık: plan kimlikleri (yatış korunur) + kaldırılan Ertele'nin (#289)
+     * güncelleme öncesi `_ertele` artıkları — bir sonraki planlama turunda silinsinler.
+     */
     const val MUHAFIZ_PLAN = "muhafiz_plan"
 
-    /** Muhafız kapalı: muhafız sahipli her şey (plan ∪ erteleme) — yatış HARİÇ. */
+    /** Muhafız kapalı: muhafız sahipli her şey — yatış HARİÇ. */
     const val MUHAFIZ_TUMU = "muhafiz_tumu"
 
     /** Yatış hatırlatması + gün sonu muhasebesi. */
@@ -30,7 +33,7 @@ object TeslimSahipligi {
 
     /** Bu kimlik bu sahipliğe mi ait? Bilinmeyen sahip HİÇBİR şeyle eşleşmez (toplu silme kazası olmasın). */
     fun eslesir(sahip: String, kimlik: String): Boolean = when (sahip) {
-        MUHAFIZ_PLAN -> ErtelemeKurallari.planKimligiMi(kimlik)
+        MUHAFIZ_PLAN -> MuhafizPlanKimligi.planKimligiMi(kimlik) || MuhafizPlanKimligi.eskiErtelemeKimligiMi(kimlik)
         MUHAFIZ_TUMU -> kimlik.startsWith(MUHAFIZ_ONEKI) && !yatisKimligiMi(kimlik)
         YATIS -> yatisKimligiMi(kimlik)
         else -> false

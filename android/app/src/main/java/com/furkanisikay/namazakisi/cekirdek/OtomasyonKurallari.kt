@@ -338,9 +338,9 @@ object OtomasyonKurallari {
      * "girişten itibaren" kurulmuş muhafızda da doğru anı verir.
      */
     fun cikiyorOlayi(kimlik: String, sonCikiyor: String?): CikiyorOlayi? {
-        if (!ErtelemeKurallari.planKimligiMi(kimlik)) return null
+        if (!MuhafizPlanKimligi.planKimligiMi(kimlik)) return null
         val v = BildirimKildimKurallari.vakitCoz(kimlik) ?: return null
-        val kalan = ErtelemeKurallari.kimliktenKalanDk(kimlik) ?: return null
+        val kalan = MuhafizPlanKimligi.kimliktenKalanDk(kimlik) ?: return null
         if (kalan < 1 || kalan > CIKIYOR_ESIK_DK) return null
         val kod = VakitKodlari.widgetKodu(v.vakit) ?: return null
         if (kildimKimligi(v.tarih, kod) == sonCikiyor) return null

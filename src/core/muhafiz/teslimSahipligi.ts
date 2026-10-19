@@ -10,13 +10,17 @@
  * Önek yetmez: yatış/muhasebe kimlikleri (#290) muhafızın `muhafiz_` uzayındadır
  * (native "Kıldım" o önekle hepsini kapsar). Bu yüzden muhafız ÖNEKLE değil plan
  * kimliğiyle (`muhafizPlanKimligiMi`) temizler; muhafız KAPALIYKEN muhafız sahipli her
- * şeyi (plan ∪ erteleme) siler ama yatış kimliklerine DOKUNMAZ.
+ * şeyi siler ama yatış kimliklerine DOKUNMAZ.
+ *
+ * GÖÇ: kaldırılan "Ertele"nin (#289, sahip kararı 2026-10-19) güncelleme öncesi kurulmuş
+ * `_ertele` artıkları muhafız AÇIKKEN de muhafıza aittir (`MUHAFIZ_PLAN` = plan ∪ eski
+ * erteleme) → bir sonraki planlama turunda anons/alarm kayıtlarından silinir.
  *
  * İKİZ: Kotlin `cekirdek/TeslimSahipligi.kt` — native iptal (`MuhafizAlarm.sahipliIptalEt`)
  * aynı kuralı uygular. İkisi de `android/app/src/test/resources/teslim-sahipligi-ornekleri.json`
  * örneğini kabul eder; birini değiştiren üçünü değiştirir.
  */
-import { muhafizPlanKimligiMi } from './erteleme';
+import { eskiErtelemeKimligiMi, muhafizPlanKimligiMi } from './planKimligi';
 
 /** Native sahiplik adları — Kotlin `TeslimSahipligi` sabitleri. */
 export const NATIVE_SAHIP = {
@@ -47,7 +51,7 @@ export const yatisSahipliMi = (kimlik: string): boolean =>
 export function nativeSahipEslesir(sahip: string, kimlik: string): boolean {
     switch (sahip) {
         case NATIVE_SAHIP.MUHAFIZ_PLAN:
-            return muhafizPlanKimligiMi(kimlik);
+            return muhafizPlanKimligiMi(kimlik) || eskiErtelemeKimligiMi(kimlik);
         case NATIVE_SAHIP.MUHAFIZ_TUMU:
             return kimlik.startsWith(MUHAFIZ_ONEKI) && !yatisSahipliMi(kimlik);
         case NATIVE_SAHIP.YATIS:
@@ -59,7 +63,7 @@ export function nativeSahipEslesir(sahip: string, kimlik: string): boolean {
 
 /**
  * Bu sahipliğin native adı — önekli sahiplik `null` (native önekli iptal yolları zaten var).
- * `muhafizAcik === false` muhafızda "muhafız sahipli her şey" (erteleme dahil) demektir.
+ * `muhafizAcik === false` muhafızda "muhafız sahipli her şey" (yatış hariç) demektir.
  */
 export function nativeSahipAdi(s: TeslimSahipligi, muhafizAcik = true): NativeSahip | null {
     if (s.tur === 'muhafiz') return muhafizAcik ? NATIVE_SAHIP.MUHAFIZ_PLAN : NATIVE_SAHIP.MUHAFIZ_TUMU;
@@ -89,7 +93,7 @@ const VAKIT_ONEKI_DESENI = /^(muhafiz_\d{4}-\d{2}-\d{2}_vakit_[a-z]+)/;
  * Bildirim merkezindeki GÖSTERİM GRUBU (plan §4.5): aynı gruptan yeni bir bildirim gelince
  * eskisi kaldırılır (tekrar tetikleri üst üste birikmesin). `null` = gruplanmaz.
  *
- * Muhafız (plan + erteleme) vakit önekiyle gruplanır (`muhafiz_<gün>_vakit_<v>`). YATIŞ /
+ * Muhafız planı vakit önekiyle gruplanır (`muhafiz_<gün>_vakit_<v>`). YATIŞ /
  * MUHASEBE (#290) aynı `muhafiz_` uzayında yaşar ama KENDİ grubundadır: eskiden önekle
  * gruplandığı için yatışın bir tekrarı muhafızın aynı günkü yatsı uyarısını (ve tersi)
  * kapatırdı. Yatış grubu `_<kalanDk>` eki soyulmuş köktür → yatışın tekrarları yalnız

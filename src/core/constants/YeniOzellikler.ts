@@ -308,7 +308,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'İstediğiniz hatırlatma adımında "Gerçek alarm"ı açın: o adımda telefonunuzun alarmı çalar, sessiz moddayken de duyulur.',
         detayAciklama:
-            'Bir hatırlatma adımına dokunup "Gerçek alarm" anahtarını açabilirsiniz; örneğin sabah için vakit girer girmez, öğle için vaktin çıkmasına 20 dakika kala. Alarmın yalnız adımın ilk uyarısında mı yoksa her tekrarında mı çalacağını seçersiniz; diğer tekrarlar normal bildirimle gelir. Alarm ekranında "Kıldım" ya da "10 dk ertele" düğmesini görürsünüz; vaktin çıkmasına az kaldıysa erteleme yerine "Kıldım" çıkar. "Akışı önizle" alarmın çalacağı saatleri ayrıca gösterir.',
+            'Bir hatırlatma adımına dokunup "Gerçek alarm" anahtarını açabilirsiniz; örneğin sabah için vakit girer girmez, öğle için vaktin çıkmasına 20 dakika kala. Alarmın yalnız adımın ilk uyarısında mı yoksa her tekrarında mı çalacağını seçersiniz; diğer tekrarlar normal bildirimle gelir. Alarm ekranında "Kıldım" düğmesini görürsünüz. "Akışı önizle" alarmın çalacağı saatleri ayrıca gösterir.',
         ikon: 'clock',
         hedefSayfa: 'MuhafizAyarlari',
         ctaEtiketi: 'Alarmı kurun',
@@ -417,7 +417,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Hatırlatma başlıkları vakit adı ve kalan süreyle başlar: "Yatsı · 25 dk kaldı". Galaxy Fit, Mi Band gibi küçük ekranlarda bile önemli kısım görünür.',
         detayAciklama:
-            'Bileklikler telefon bildiriminin başlığından yalnız ilk birkaç kelimeyi gösterir. Namaz muhafızı, cuma, camiye gidiş, erteleme ve yatmadan önce hatırlatmalarının başlıkları bu yüzden vakit adı ve süreyle başlar. "Öğle vakti girdi" gibi vakit bildirimleri aynı kalır; otomasyonlarınız çalışmaya devam eder. Saat ve widget sayfasındaki rehber, bilekliğinize yalnız namaz hatırlatmalarının gitmesi için neler yapabileceğinizi anlatır.',
+            'Bileklikler telefon bildiriminin başlığından yalnız ilk birkaç kelimeyi gösterir. Namaz muhafızı, cuma, camiye gidiş ve yatmadan önce hatırlatmalarının başlıkları bu yüzden vakit adı ve süreyle başlar. "Öğle vakti girdi" gibi vakit bildirimleri aynı kalır; otomasyonlarınız çalışmaya devam eder. Saat ve widget sayfasındaki rehber, bilekliğinize yalnız namaz hatırlatmalarının gitmesi için neler yapabileceğinizi anlatır.',
         ikon: 'clock',
         hedefSayfa: 'SaatVeWidgetAyarlari',
         ctaEtiketi: 'Rehberi inceleyin',
@@ -493,22 +493,6 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Kaza defteriniz boşsa hiç sorulmaz',
             'Aynı vakit için günde en fazla bir kez sorulur',
         ],
-    },
-    // Muhafız bildiriminde "Ertele" (#289) — kart kapalı (yalnız "Neler Yeni").
-    {
-        id: 'muhafiz-ertele',
-        platformlar: ['android', 'ios'],
-        surum: '0.31.0',
-        tarih: '2026-10-13',
-        baslik: 'Hatırlatmayı Erteleyin',
-        aciklama:
-            'Muhafız bildiriminden "10 dk ertele" ya da "20 dk ertele" diyerek hatırlatmayı kapatıp unutmak yerine somut bir zamana taşıyabilirsiniz.',
-        detayAciklama:
-            'Ertelediğinizde o vaktin arada kalan uyarıları susar ve hatırlatma seçtiğiniz anda aynı ses ve tonla geri gelir. Erteleme vaktin çıkmasına 3 dakika kalanı asla geçmez; ikindide sınır, güneşin sararmaya başladığı kerahat vaktidir. Vaktin sonuna çok az kaldıysa erteleme düğmesi gösterilmez. Bildirimden "Kıldım" dediğinizde ertelenen hatırlatma da iptal olur.',
-        ikon: 'clock',
-        hedefSayfa: 'MuhafizAyarlari',
-        ctaEtiketi: 'Muhafızı inceleyin',
-        kartGoster: false,
     },
     // Siri, Kısayollar ve Odak filtresi (#279) — yalnız iPhone; kart kapalı.
     {

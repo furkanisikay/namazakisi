@@ -33,6 +33,13 @@ describe('teslimSahipligi — Kotlin ikiziyle ortak örnek', () => {
         expect(kapali('muhafiz_2026-10-13_vakit_yatsi_yatis')).toBe(false);
     });
 
+    it('GÖÇ: kaldırılan Ertele artığı muhafız AÇIKKEN de muhafıza ait (planlama turu siler)', () => {
+        const acik = sahipligiEslestir({ tur: 'muhafiz' });
+        expect(acik('muhafiz_2026-10-13_vakit_ogle_ertele')).toBe(true);
+        expect(acik('muhafiz_2026-10-13_vakit_yatsi_yatis')).toBe(false);
+        expect(acik('muhafiz_2026-10-13_vakit_ogle_muhasebe')).toBe(false);
+    });
+
     it('önekli sahiplik: boş önek hiçbir şeyle eşleşmez', () => {
         expect(sahipligiEslestir(onekSahipligi(''))('cuma_hatirlatma_x')).toBe(false);
         expect(sahipligiEslestir(onekSahipligi('cuma_hatirlatma_'))('cuma_hatirlatma_x')).toBe(true);
@@ -40,7 +47,7 @@ describe('teslimSahipligi — Kotlin ikiziyle ortak örnek', () => {
 });
 
 describe('gosterimGrubu — bildirim merkezi gruplaması (plan §4.5)', () => {
-    it('muhafız plan + erteleme vakit önekinde birleşir', () => {
+    it('muhafız planı (ve eski erteleme artığı) vakit önekinde birleşir', () => {
         expect(gosterimGrubu('muhafiz_2026-10-13_vakit_yatsi_seviye_1_dk_45')).toBe('muhafiz_2026-10-13_vakit_yatsi');
         expect(gosterimGrubu('muhafiz_2026-10-13_vakit_yatsi_ertele')).toBe('muhafiz_2026-10-13_vakit_yatsi');
     });

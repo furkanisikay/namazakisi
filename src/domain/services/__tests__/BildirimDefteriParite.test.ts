@@ -555,7 +555,7 @@ describe('nafile: defter = servisin kurduğu', () => {
             // Muhafız yükü ASLA: Kıldım FARZ yazardı.
             expect(yuk.veri.tip).toBe('nafile');
             expect(yuk.vakitAdi).toBe('Kuşluk');
-            expect(yuk.erteleSinirMs).toBe(0);
+            expect(yuk).not.toHaveProperty('erteleSinirMs');
             expect(yuk.cikisMs).toBeGreaterThan(yuk.tetikMs);
         } finally {
             delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
@@ -636,7 +636,7 @@ describe('nafile: defter = servisin kurduğu', () => {
             expect(onekliSay('nafile_')).toBe(say(g, 'nafile'));
             const yuk = alarmKit.alarmKitPlanla.mock.calls[0][0];
             expect(yuk.kimlik).toMatch(/^nafile_/);
-            expect(yuk.erteleSinirMs).toBe(0);
+            expect(yuk).not.toHaveProperty('erteleSinirMs');
         } finally {
             alarmKit.alarmKitDurumu.mockResolvedValue('desteklenmiyor');
             alarmKit.alarmKitPlanla.mockResolvedValue(false);
@@ -708,7 +708,7 @@ describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
             expect(yuk.tur).toBe('bilgi');
             expect(yuk.veri).toEqual({ tip: 'cuma_hatirlatma' });
             expect(yuk.vakitAdi).toBe('Cuma');
-            expect(yuk.erteleSinirMs).toBe(0);
+            expect(yuk).not.toHaveProperty('erteleSinirMs');
             expect(yuk.kanalId).toBe('vakit_bildirim');
             // Pencere sonu = öğle girişi (60 dk sonra).
             expect(yuk.cikisMs - yuk.tetikMs).toBe(60 * 60000);
@@ -790,7 +790,7 @@ describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
             expect(yuk.tur).toBe('bilgi');
             expect(yuk.veri).toMatchObject({ tip: 'camiye_git' });
             expect(yuk.vakitAdi).toMatch(/· camiye$/);
-            expect(yuk.erteleSinirMs).toBe(0);
+            expect(yuk).not.toHaveProperty('erteleSinirMs');
             expect(yuk.kanalId).toBe('vakit_bildirim');
             // Pencere sonu = vaktin girişi (30 dk sonra).
             expect(yuk.cikisMs - yuk.tetikMs).toBe(30 * 60000);
@@ -910,7 +910,7 @@ describe('yatış hatırlatması + gün sonu muhasebesi (issue #290): defter = s
             expect(yuk.tur).toBe('vakit');
             expect(yuk.veri).toMatchObject({ tip: 'yatis', vakit: 'yatsi' });
             expect(yuk.vakitAdi).toBe('Yatsı');
-            expect(yuk.erteleSinirMs).toBe(0);
+            expect(yuk).not.toHaveProperty('erteleSinirMs');
             expect(yuk.kanalId).toBe('muhafiz');
         } finally {
             delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
@@ -1012,7 +1012,7 @@ describe('takvim çakışması (issue #291): defter = servisin kurduğu', () => 
             expect(yuk.tur).toBe('bilgi');
             expect(yuk.veri).toEqual({ tip: 'takvim_cakisma', vakit: 'ikindi', tarih: expect.any(String) });
             expect(yuk.vakitAdi).toBe('Takvim');
-            expect(yuk.erteleSinirMs).toBe(0);
+            expect(yuk).not.toHaveProperty('erteleSinirMs');
             expect(yuk.kanalId).toBe('vakit_bildirim');
             // Pencere sonu = blok başı (tetikten 30 dk sonra).
             expect(yuk.cikisMs - yuk.tetikMs).toBe(30 * 60000);

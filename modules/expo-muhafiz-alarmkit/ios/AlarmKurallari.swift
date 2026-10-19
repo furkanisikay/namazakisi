@@ -4,29 +4,20 @@ import Foundation
  * iOS GERCEK ALARM (AlarmKit, issue #74) — SAF kurallar, yalniz Foundation.
  *
  * IKIZLER (ortak fikstur, biri degisirse hepsi birlikte):
- *   - `src/core/muhafiz/ios/alarmKit.ts`  ↔ `test/alarmkit-ornek.json` (UUID, ikincil dugme,
+ *   - `src/core/muhafiz/ios/alarmKit.ts`  ↔ `test/alarmkit-ornek.json` (UUID, alarm turu,
  *     calan alarmi koruyan iptal secimi)
- *   - `src/core/muhafiz/erteleme.ts`      ↔ `android/app/src/test/resources/erteleme-ornekleri.json`
- *     (erteleme hedefi, baslik, kimlikler, susturma — Kotlin `ErtelemeKurallari` ile ayni)
+ *   - `src/core/muhafiz/planKimligi.ts`   ↔ `android/app/src/test/resources/muhafiz-plan-kimligi-ornekleri.json`
+ *     (plan kimligi + eski erteleme artigi — Kotlin `MuhafizPlanKimligi` ile ayni)
+ *
+ * ERTELE YOK (sahip karari 2026-10-19, eski #289): alarm ekraninin ikincil dugmesi
+ * vakit alarminda daima "Kildim"dir.
  *
  * Linux'taki swift.org arac zinciriyle de derlenir (`test/main.swift`); bu yuzden
  * iOS'a ozgu hicbir cerceve import EDILMEZ.
  */
 public enum AlarmKurallari {
-    /// Alarm ekranindaki erteleme suresi (dk) — JS `ALARMKIT_ERTELE_DK`.
-    public static let erteleDk: Int64 = 10
-    /// JS `ERTELEME_EN_AZ_DK`.
-    static let enAzErteleDk: Int64 = 5
-    /// JS `ERTELEME_EN_AZ_GECIKME_MS`.
-    static let enAzGecikmeMs: Int64 = 60_000
-    /// JS `ERTELEME_CAKISMA_PAYI_MS`.
-    static let cakismaPayiMs: Int64 = 60_000
-    static let dakikaMs: Int64 = 60_000
-    static let sureYerTutucu = "{sure}"
-
     static let muhafizOneki = "muhafiz_"
     static let vakitAraci = "_vakit_"
-    static let ertelemeEki = "_ertele"
 
     // MARK: - Kimlik → UUID
 
@@ -65,65 +56,18 @@ public enum AlarmKurallari {
         return UUID(uuidString: uuidMetni(kimlik)) ?? UUID()
     }
 
-    // MARK: - Erteleme (JS `erteleme.ts` ikizi)
-
-    /// `ertelemeSecenekleri(tetik, sinir)` bos DEGIL mi?
-    public static func ertelemeSecenegiVarMi(tetikMs: Int64, sinirMs: Int64) -> Bool {
-        let kalanDk = (Double(sinirMs - tetikMs) / Double(dakikaMs)).rounded(.down)
-        return kalanDk.isFinite && kalanDk >= Double(enAzErteleDk)
-    }
-
-    /// Alarm ekraninin ikincil dugmesi: "ertele" ya da "kildim". JS `alarmKitIkincilDugme`.
-    public static func ikincilDugme(tetikMs: Int64, erteleSinirMs: Int64) -> String {
-        return erteleSinirMs > 0 && ertelemeSecenegiVarMi(tetikMs: tetikMs, sinirMs: erteleSinirMs) ? "ertele" : "kildim"
-    }
-
-    /// JS `ertelemeHedefiHesapla`: `simdi + sure`, siniri gecmez; sinira 1 dk'dan az kaldiysa `nil`.
-    public static func ertelemeHedefi(simdiMs: Int64, sureDk: Int64, sinirMs: Int64) -> Int64? {
-        let hedef = min(simdiMs + sureDk * dakikaMs, sinirMs)
-        return hedef - simdiMs >= enAzGecikmeMs ? hedef : nil
-    }
-
-    /// JS `sureMetni` — "25 dk" / "1 sa" / "1 sa 5 dk".
-    public static func sureMetni(_ dk: Double) -> String {
-        let d = max(0, Int64(dk.rounded(.down)))
-        let sa = d / 60
-        let kalan = d % 60
-        if sa == 0 { return "\(kalan) dk" }
-        return kalan == 0 ? "\(sa) sa" : "\(sa) sa \(kalan) dk"
-    }
-
-    /// JS `ertelemeBasligiOlustur`: sablon yoksa `nil` (cagiran asil basligi korur).
-    public static func ertelemeBasligi(sablon: String?, cikisMs: Int64, hedefMs: Int64) -> String? {
-        guard let sablon, sablon.contains(sureYerTutucu) else { return nil }
-        return sablon.replacingOccurrences(
-            of: sureYerTutucu,
-            with: sureMetni(Double(cikisMs - hedefMs) / Double(dakikaMs))
-        )
-    }
-
-    /// `muhafiz_<tarih>_vakit_<vakit>_ertele` — JS `ertelemeKimligi`.
-    public static func ertelemeKimligi(tarih: String, vakit: String) -> String {
-        return "\(muhafizOneki)\(tarih)\(vakitAraci)\(vakit)\(ertelemeEki)"
-    }
-
     /// `muhafiz_<tarih>_vakit_<vakit>` — "Kildim" onek iptalinin onegi.
     public static func vakitOneki(tarih: String, vakit: String) -> String {
         return "\(muhafizOneki)\(tarih)\(vakitAraci)\(vakit)"
     }
 
-    /// JS `ertelemedeSusturulurMu`.
-    public static func ertelemedeSusturulurMu(tetikMs: Int64, hedefMs: Int64) -> Bool {
-        return tetikMs < hedefMs + cakismaPayiMs
-    }
-
-    // MARK: - Kimlik desenleri (JS `erteleme.ts`)
+    // MARK: - Kimlik desenleri (JS `planKimligi.ts`)
 
     private static let planDeseni = try! NSRegularExpression(
         pattern: "^muhafiz_\\d{4}-\\d{2}-\\d{2}_vakit_[a-z]+_seviye_\\d+_dk_(-?\\d+)$"
     )
-    private static let ertelemeDeseni = try! NSRegularExpression(
-        pattern: "^muhafiz_(\\d{4}-\\d{2}-\\d{2})_vakit_([a-z]+)_ertele$"
+    private static let eskiErtelemeDeseni = try! NSRegularExpression(
+        pattern: "^muhafiz_\\d{4}-\\d{2}-\\d{2}_vakit_[a-z]+_ertele$"
     )
     private static let nafileDeseni = try! NSRegularExpression(
         pattern: "^nafile_(\\d{4}-\\d{2}-\\d{2})_(kusluk|evvabin|teheccud)_[^_]+$"
@@ -154,12 +98,13 @@ public enum AlarmKurallari {
         return Int64(ilk)
     }
 
-    public static func ertelemeKimligiMi(_ kimlik: String) -> Bool {
-        return eslesme(ertelemeDeseni, kimlik) != nil
+    /// Kaldirilan Ertele'nin (#289) guncelleme oncesi artigi mi? JS `eskiErtelemeKimligiMi`.
+    public static func eskiErtelemeKimligiMi(_ kimlik: String) -> Bool {
+        return eslesme(eskiErtelemeDeseni, kimlik) != nil
     }
 
     /// Iptal edilecek kimlikler. PLANLAMA turu (`calaniDurdur == false`: yeniden planlama,
-    /// muhafiz kapatma, erteleme araligi) o an CALAN alarma DOKUNMAZ — Android kurali
+    /// muhafiz kapatma) o an CALAN alarma DOKUNMAZ — Android kurali
     /// ("planlama turu calan alarmi susturmaz"); yalniz "Kildim" (`true`) calani da susturur.
     /// JS `alarmKitIptalSecimi` (ortak fikstur `alarmkit-ornek.json > iptalSecimi`).
     public static func iptalSecimi(kimlikler: [String], calanUuidler: Set<String>, calaniDurdur: Bool) -> [String] {
@@ -182,7 +127,7 @@ public enum AlarmKurallari {
     }
 
     /// Alarmin TURU kimlikten (ortak hatirlatma yuzeyleri, plan 4.2) — JS `alarmKitTuru`.
-    /// Muhafiz uzayi (plan, erteleme, yatis) "vakit", nafile "nafile", geri kalan (cuma,
+    /// Muhafiz uzayi (plan, yatis) "vakit", nafile "nafile", geri kalan (cuma,
     /// camiye gitme, takvim, coklu muhasebe) "bilgi": bilgi alarminda IKINCIL DUGME YOK —
     /// vakit girmeden calar, "Kildim" FARZ'i yazardi.
     public static func alarmTuru(_ kimlik: String) -> String {
@@ -191,7 +136,7 @@ public enum AlarmKurallari {
         return "bilgi"
     }
 
-    /// Muhafiz kimliginin (plan, erteleme, yatis...) namaz gunu + vakti.
+    /// Muhafiz kimliginin (plan, yatis...) namaz gunu + vakti.
     public static func kimliktenVakit(_ kimlik: String) -> (tarih: String, vakit: String)? {
         guard let g = eslesme(vakitDeseni, kimlik), g.count == 2 else { return nil }
         return (g[0], g[1])

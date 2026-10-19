@@ -8,20 +8,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {
     alarmKitDurumunuCoz,
-    alarmKitErtelemeleri,
-    alarmKitIkincilDugme,
     alarmKitIptalSecimi,
     alarmKitKayitlariniCoz,
     alarmKitTuru,
     alarmKitUuid,
     alarmKitYukuOlustur,
 } from '../alarmKit';
-import { ertelemeBasligiSablonu, ertelemeSiniriMs, gurubKerahatiBaslangiciMs } from '../../erteleme';
 
 const FIKSTUR = path.join(__dirname, '../../../../../modules/expo-muhafiz-alarmkit/test/alarmkit-ornek.json');
 const fikstur = JSON.parse(fs.readFileSync(FIKSTUR, 'utf8')) as {
     uuidler: { kimlik: string; uuid: string }[];
-    dugmeler: { ad: string; tetikMs: number; erteleSinirMs: number; beklenen: 'ertele' | 'kildim' }[];
     turler: { kimlik: string; beklenen: 'vakit' | 'nafile' | 'bilgi' }[];
     iptalSecimi: {
         ad: string;
@@ -68,12 +64,6 @@ describe('alarmKitUuid — Swift ikiziyle ortak fikstür', () => {
     });
 });
 
-describe('alarmKitIkincilDugme — bildirimdeki erteleme kuralıyla AYNI', () => {
-    test.each(fikstur.dugmeler)('$ad → $beklenen', ({ tetikMs, erteleSinirMs, beklenen }) => {
-        expect(alarmKitIkincilDugme(tetikMs, erteleSinirMs)).toBe(beklenen);
-    });
-});
-
 describe('alarmKitTuru — bilgi alarmında ikincil düğme YOK (Swift ikiziyle ortak fikstür)', () => {
     test.each(fikstur.turler)('$kimlik → $beklenen', ({ kimlik, beklenen }) => {
         expect(alarmKitTuru(kimlik)).toBe(beklenen);
@@ -84,7 +74,7 @@ describe('alarmKitYukuOlustur', () => {
     const cikis = new Date(2026, 9, 13, 16, 0).getTime();
     const tetik = cikis - 45 * 60_000;
 
-    test('erteleme alanları bildirimle AYNI kaynaktan (ikindide kerahat sınırı)', () => {
+    test('yük: kimlik, tetik, başlık, vakit, tarih, çıkış — erteleme alanı YOK (sahip kararı 2026-10-19)', () => {
         const yuk = alarmKitYukuOlustur({
             kimlik: 'muhafiz_2026-10-13_vakit_ikindi_seviye_1_dk_45',
             tetikMs: tetik,
@@ -100,17 +90,12 @@ describe('alarmKitYukuOlustur', () => {
             vakit: 'ikindi',
             tarih: '2026-10-13',
             cikisMs: cikis,
-            erteleSinirMs: ertelemeSiniriMs('ikindi', cikis),
-            ertelemeBasligi: ertelemeBasligiSablonu('İkindi'),
         });
-        expect(yuk.erteleSinirMs).toBe(gurubKerahatiBaslangiciMs(cikis));
     });
 
-    test('çıkış bilinmiyorsa erteleme YOK (ikinci düğme "Kıldım")', () => {
+    test('çıkış bilinmiyorsa 0 yazılır', () => {
         const yuk = alarmKitYukuOlustur({ kimlik: 'k', tetikMs: tetik, baslik: 'b', vakit: 'ogle', tarih: '2026-10-13' });
-        expect(yuk.erteleSinirMs).toBe(0);
-        expect(yuk.ertelemeBasligi).toBe('');
-        expect(alarmKitIkincilDugme(yuk.tetikMs, yuk.erteleSinirMs)).toBe('kildim');
+        expect(yuk.cikisMs).toBe(0);
     });
 });
 
@@ -138,14 +123,5 @@ describe('köprü verisi çözümü', () => {
         ]);
         expect(alarmKitKayitlariniCoz('{bozuk')).toEqual([]);
         expect(alarmKitKayitlariniCoz({ kimlik: 'a' })).toEqual([]);
-    });
-
-    test('ertelemeler: yalnız ertelenmiş alarm kimlikleri, namaz günü + vakit anahtarıyla', () => {
-        expect(
-            alarmKitErtelemeleri([
-                { kimlik: 'muhafiz_2026-10-12_vakit_yatsi_ertele', tetikMs: 500 },
-                { kimlik: 'muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45', tetikMs: 100 },
-            ])
-        ).toEqual({ '2026-10-12_yatsi': 500 });
     });
 });

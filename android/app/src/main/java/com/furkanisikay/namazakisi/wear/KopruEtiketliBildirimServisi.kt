@@ -9,9 +9,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.furkanisikay.namazakisi.cekirdek.ErtelemeKurallari
-import com.furkanisikay.namazakisi.kildim.BildirimErteleIsleyici
+import com.furkanisikay.namazakisi.cekirdek.MuhafizPlanKimligi
 import com.furkanisikay.namazakisi.kildim.BildirimKildimIsleyici
+import com.furkanisikay.namazakisi.kildim.EskiErteleYaniti
 import com.furkanisikay.namazakisi.kildim.NafileKildimIsleyici
 import com.furkanisikay.namazakisi.otomasyon.OtomasyonOlaylari
 import expo.modules.notifications.notifications.model.Notification
@@ -40,7 +40,7 @@ import expo.modules.notifications.service.interfaces.PresentationDelegate
  * kendi alıcısı yapar, iki kez kurulmasın.
  *
  * Etiket yalnız muhafız PLAN kimliklerine (`muhafiz_..._seviye_N_dk_K`,
- * `anonsKimligi.ts`) basılır; aynı uzaydaki erteleme ve yatış/muhasebe
+ * `anonsKimligi.ts`) basılır; aynı uzaydaki yatış/muhasebe
  * bildirimleri saatte kurulmadığı için köprülenir. Saat tarafında dışlama ancak saatin kendi planı VE bildirim izni varken
  * açılır; yoksa köprü bildirimi tek uyarı olarak kalır.
  *
@@ -75,12 +75,12 @@ class KopruEtiketliBildirimServisi : NotificationsService() {
     override fun onReceiveNotificationResponse(context: Context, intent: Intent) {
         val islendi = try {
             val zamanlama = getSchedulingDelegate(context)
-            // "Ertele" (issue #289) da AYNI gerekçeyle native işlenir: erteleme JS'i
-            // beklemeden kurulmalı, aradaki uyarılar susmalı.
             BildirimKildimIsleyici.isle(context, intent, zamanlama) ||
                 // Nafile "Kıldım" (issue #273): ayrı kuyruk — farz kaydı ASLA yazılmaz.
                 NafileKildimIsleyici.isle(context, intent, zamanlama) ||
-                BildirimErteleIsleyici.isle(context, intent, zamanlama)
+                // ERTELE YOK (sahip kararı 2026-10-19): güncelleme öncesi bildirimdeki
+                // eski "Ertele" basışı yalnız bildirimi kapatır (göç).
+                EskiErteleYaniti.isle(context, intent)
         } catch (_: Exception) {
             false
         }
@@ -107,10 +107,10 @@ class KopruEtiketliBildirimServisi : NotificationsService() {
             // Otomasyon "vakit çıkıyor" olayı (issue #278): muhafızın ≤45 dk kala ilk
             // plan bildirimi. Ayrı alarm yok; koşul paketi yoksa hiçbir şey yapmaz.
             OtomasyonOlaylari.muhafizUyarisi(context, kimlik)
-            // Yalnız muhafız PLANI: saat yalnız planı kendi kurar. Erteleme (#289)
-            // ve yatış/muhasebe (#290) aynı `muhafiz_` uzayında ama saatte YOK →
-            // köprüyle gelmeleri gerekir, etiket basılırsa bilekte hiç görünmezlerdi.
-            if (ErtelemeKurallari.planKimligiMi(kimlik)) {
+            // Yalnız muhafız PLANI: saat yalnız planı kendi kurar. Yatış/muhasebe (#290)
+            // aynı `muhafiz_` uzayında ama saatte YOK → köprüyle gelmeleri gerekir,
+            // etiket basılırsa bilekte hiç görünmezlerdi.
+            if (MuhafizPlanKimligi.planKimligiMi(kimlik)) {
                 try {
                     koprulemeEtiketiEkle(context, bildirim)
                 } catch (_: Exception) {

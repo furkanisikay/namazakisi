@@ -26,38 +26,6 @@
       "uuid": "55edc429-4feb-8c20-91f2-3b0b53efff9a"
     }
   ],
-  "dugmeler": [
-    {
-      "ad": "sinira 45 dk",
-      "tetikMs": 1800000000000,
-      "erteleSinirMs": 1800002700000,
-      "beklenen": "ertele"
-    },
-    {
-      "ad": "sinira tam 5 dk",
-      "tetikMs": 1800000000000,
-      "erteleSinirMs": 1800000300000,
-      "beklenen": "ertele"
-    },
-    {
-      "ad": "sinira 4 dk 59 sn",
-      "tetikMs": 1800000000000,
-      "erteleSinirMs": 1800000299000,
-      "beklenen": "kildim"
-    },
-    {
-      "ad": "sinir gecmis",
-      "tetikMs": 1800000000000,
-      "erteleSinirMs": 1799999940000,
-      "beklenen": "kildim"
-    },
-    {
-      "ad": "erteleme yok (sinir 0)",
-      "tetikMs": 1800000000000,
-      "erteleSinirMs": 0,
-      "beklenen": "kildim"
-    }
-  ],
   "turler": [
     { "kimlik": "muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45", "beklenen": "vakit" },
     { "kimlik": "muhafiz_2026-10-13_vakit_ogle_ertele", "beklenen": "vakit" },
@@ -88,6 +56,15 @@
       ],
       "calaniDurdur": true,
       "beklenen": ["muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45", "muhafiz_2026-10-13_vakit_ogle_ertele"]
+    },
+    {
+      "ad": "goc: CALAN eski _ertele alarmi planlama turunda korunur, bekleyeni silinir",
+      "kayitlar": [
+        { "kimlik": "muhafiz_2026-10-13_vakit_ogle_ertele", "caliyor": true },
+        { "kimlik": "muhafiz_2026-10-13_vakit_ikindi_ertele", "caliyor": false }
+      ],
+      "calaniDurdur": false,
+      "beklenen": ["muhafiz_2026-10-13_vakit_ikindi_ertele"]
     },
     {
       "ad": "calan yoksa hepsi",

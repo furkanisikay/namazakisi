@@ -22,7 +22,7 @@
  *     arada namaz kılınamaz; ayrı ayrı bakılsaydı art arda toplantılar hiçbir
  *     zaman "çakışma" sayılmazdı.
  *  3. Vaktin SON UYGUN ANI: çıkış. İkindide çıkış değil gurub kerahatinin
- *     başlangıcı (`gurubKerahatiBaslangiciMs` — kaza ve erteleme ile TEK kaynak):
+ *     başlangıcı (`gurubKerahatiBaslangiciMs` — kaza ile TEK kaynak):
  *     ikindiyi güneşin sararmasına bırakmak da bir kayıptır.
  *  4. Çakışma: blok `sonAn − PAY`'den ÖNCE başlar ve `sonAn − PAY`'den SONRA
  *     biter. Blok vaktin son dakikalarında başlıyorsa (sonAn − PAY sonrası)
@@ -69,7 +69,7 @@ import type { VakitAdi } from '../types';
 import type { BildirimPlatformu } from './butceSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { VAKIT_ADLARI } from '../utils/muhafizMetinYardimcisi';
-import { gurubKerahatiBaslangiciMs } from '../muhafiz/erteleme';
+import { gurubKerahatiBaslangiciMs } from '../vakit/kerahat';
 import { UYGULAMA_TAKVIM_NOTU, type TakvimCakismaAyarlari } from '../takvimCakisma/takvimCakismaAyarlari';
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
