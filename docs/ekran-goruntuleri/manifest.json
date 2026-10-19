@@ -2,7 +2,7 @@
   "aciklama": "Otomatik uretilir (scripts/belge-gorselleri.js). Elle duzenlemeyin.",
   "magaza": {
     "appStore": {
-      "surum": "0.30.1"
+      "surum": "0.41.1"
     },
     "googlePlay": {
       "uretim": "0.45.0",
