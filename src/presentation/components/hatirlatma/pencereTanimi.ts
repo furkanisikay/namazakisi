@@ -167,10 +167,12 @@ export function kanalAnahtariniUygula(
  */
 export function gelismisAcikBaslarMi(
     seviye: SeviyeAyari,
-    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'>
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'> & { pencereUzunluguDk?: number },
+    kardesler: SeviyeAyari[] = [seviye]
 ): boolean {
     return (
-        seviye.siklik !== 'birkez' ||
+        // GERÇEK tekrar (tek atışın `herDk = esikDk` türevi açtırmaz — anahtarla aynı kapı).
+        gercekTekrarDk(seviye, kardesler, tanim.yon, tanim.pencereUzunluguDk) !== null ||
         (tanim.tonSecilebilir === true && etkinKademe(seviye, tanim.yon) !== 'nazik')
     );
 }

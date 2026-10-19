@@ -94,6 +94,7 @@ import {
 } from './pencereTanimi';
 
 import { adimOzetiOlustur } from '../../../core/muhafiz/seviyeOzeti';
+import { gercekTekrarDk } from '../../../core/muhafiz/planButcesi';
 import { kalanDkAni, saatMetni } from '../../../core/muhafiz/zamanSeridi';
 import { KANAL_IKONLARI, OzetCipleri } from './OzetCipleri';
 import { AdimOnizlemeKarti } from './AdimOnizlemeKarti';
@@ -248,7 +249,7 @@ const KanalKarosu: React.FC<{
     return (
         // KOMPAKT (görsel inceleme 2026-10): ikon + ad + anahtar TEK satır; 2 sütunlu ızgara.
         <View
-            className="flex-row items-center pl-2.5 pr-1.5 rounded-2xl border"
+            className="flex-row items-center px-2.5 rounded-2xl border"
             style={{
                 width: '48.5%',
                 minHeight: 56,
@@ -266,7 +267,7 @@ const KanalKarosu: React.FC<{
             <Text className="text-[13px] font-semibold flex-1" style={{ color: renkler.metin }} numberOfLines={2}>
                 {etiket}
             </Text>
-            <View style={{ minHeight: 44, justifyContent: 'center' }}>
+            <View style={{ minHeight: 44, justifyContent: 'center', marginLeft: 6, flexShrink: 0 }}>
                 <Anahtar
                     value={deger}
                     onValueChange={onDegis}
@@ -323,7 +324,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     const [seciciAcik, setSeciciAcik] = useState(false);
     /** Gelişmiş bölüm açık mı? Değiştirilmiş adımda açık başlar. */
     const [gelismisAcik, setGelismisAcik] = useState(() =>
-        seviye ? gelismisAcikBaslarMi(seviye, tanim) : false
+        seviye ? gelismisAcikBaslarMi(seviye, tanim, seviyeler) : false
     );
 
     // Modal acilinca / baska adima gecince taslagi tazele
@@ -333,7 +334,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
 
     // Başka adıma geçince Gelişmiş'in açıklığı o adıma göre yeniden kurulur — yalnız
     // adım/yüzey değişiminde (her değişiklikte değil: kullanıcı kapatmış olabilir).
-    const acilistaGelismis = seviye ? gelismisAcikBaslarMi(seviye, tanim) : false;
+    const acilistaGelismis = seviye ? gelismisAcikBaslarMi(seviye, tanim, seviyeler) : false;
     const gelismisAnahtari = `${gorunur}|${tanim.kaynak}|${indeks}`;
     const [sonGelismisAnahtari, setSonGelismisAnahtari] = useState(gelismisAnahtari);
     if (sonGelismisAnahtari !== gelismisAnahtari) {
@@ -389,8 +390,13 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     const titresimliMi = kanalAcikMi(seviye.kanallar, 'titresim');
     const alarmliMi = kanalAcikMi(seviye.kanallar, 'alarm');
     const sesliMi = sesliAnonsGerekliMi(seviye.kanallar);
-    const tekrarliMi = seviye.siklik !== 'birkez';
-    const tekrarDk = seviye.siklik === 'birkez' ? tanim.varsayilanTekrarDk : seviye.siklik.herDk;
+    // "Tekrarla" anahtarı GERÇEK tekrardan beslenir (çip ile aynı kapı `gercekTekrarDk`): hazır
+    // düzeylerin tek atış türevi `herDk = esikDk` ikinci tetik doğurmaz → anahtar KAPALI görünür.
+    // Açmak makul varsayılanı yazar, kapatmak 'birkez' yazar; yalnız görüntü yazılmaz (plan aynı).
+    const tekrarliMi =
+        seviye.siklik !== 'birkez' &&
+        gercekTekrarDk(seviye, seviyeler, tanim.yon, tanim.pencereUzunluguDk) !== null;
+    const tekrarDk = tekrarliMi && seviye.siklik !== 'birkez' ? seviye.siklik.herDk : tanim.varsayilanTekrarDk;
 
     /**
      * Ana kanal anahtarı (Bildirim / Sesli okuma). Sesli okuma İLK açılırken (rıza kaydı

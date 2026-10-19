@@ -1472,9 +1472,11 @@ describe('MuhafizAyarlariSayfasi', () => {
     });
 
     it('ton çipi tonu ve aciliyeti birlikte yazar; acil 15 dk üstünde seçilemez', async () => {
-      const { getByText, getByLabelText } = await kur();
+      const { getByText, getByLabelText, getByTestId, queryByTestId } = await kur();
       fireEvent.press(getByText('Öğle'));
       fireEvent.press(getByLabelText(/^1\. hatırlatma, Nazik — düzenleyin/));
+      // Gelişmiş yalnız GERÇEK tekrar / nazik dışı tonda açık başlar; kapalıysa açılır.
+      if (!queryByTestId('adim-gelismis-icerik')) fireEvent.press(getByTestId('adim-gelismis'));
 
       // 45 dk kala: acil çipi devre dışı + açıklama.
       expect(getByText('“Acil” yalnız vaktin son 15 dakikasında seçilebilir.')).toBeTruthy();

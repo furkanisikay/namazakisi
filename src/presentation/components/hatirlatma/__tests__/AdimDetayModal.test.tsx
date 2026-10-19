@@ -282,6 +282,17 @@ describe('AdimDetayModal — GELİŞMİŞ', () => {
         expect(cuma.ekran.queryByLabelText('Sertlik: Uyarı')).toBeNull();
     });
 
+    test('REGRESYON: tek atış türevi (herDk = esikDk) "Tekrarla"yı KAPALI gösterir; açmak varsayılanı, kapatmak birkez yazar', () => {
+        const { ekran, onDegistir } = kur(CUMA, adim({ bildirim: true }, { esikDk: 30, siklik: { herDk: 30 } }));
+        // Gerçek tekrar yok → Gelişmiş kapalı başlar; açınca anahtar kapalı.
+        expect(ekran.queryByTestId('adim-gelismis-icerik')).toBeNull();
+        fireEvent.press(ekran.getByTestId('adim-gelismis'));
+        expect(ekran.getByTestId('adim-tekrar-anahtari').props.value).toBe(false);
+        expect(ekran.queryByLabelText(/Tekrar aralığı/)).toBeNull();
+        fireEvent(ekran.getByTestId('adim-tekrar-anahtari'), 'valueChange', true);
+        expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ siklik: { herDk: 15 } }));
+    });
+
     test('Tekrarla anahtarı tek atış ↔ tekrar yazar', () => {
         const { ekran, onDegistir } = kur(CUMA, adim({ bildirim: true }));
         fireEvent.press(ekran.getByTestId('adim-gelismis'));
