@@ -13,6 +13,7 @@ import {
 import {
   VARSAYILAN_NOW_BAR_AYARLARI,
   nowBarAyariniBirlestir,
+  nowBarEtkinAyarlari,
   type NowBarAyarlari,
   type NowBarOgesi,
 } from '../nowBar';
@@ -297,6 +298,15 @@ describe('sayaç YEDEĞİ (muhafızın uyardığı vakit — saha: "saatte gör�
     const simdi = an('2026-10-16', '09:00');
     const ikindi = yedek('ikindi', an('2026-10-16', '17:35'), an('2026-10-16', '18:20'));
     expect(canliZamanCizelgesiOlustur([ikindi], a, simdi)).toEqual([]);
+  });
+
+  test('telefonda vakit sayacı kapalıyken üretilen etkin "girince" adayı da saate GİTMEZ (saat ham "Sayaçla"yı kullanır)', () => {
+    const simdi = an('2026-10-16', '10:00');
+    const etkin = nowBarEtkinAyarlari(VARSAYILAN_NOW_BAR_AYARLARI, false);
+    const telefon = adaylar(etkin, simdi);
+    expect(telefon.some((a) => a.oge === 'ogle')).toBe(true);
+    expect(canliZamanCizelgesiOlustur(telefon, etkin, simdi).some((o) => o.id.endsWith('_ogle'))).toBe(true);
+    expect(saatPencereleriniOlustur(telefon, VARSAYILAN_NOW_BAR_AYARLARI, simdi).some((p) => p.oge === 'ogle')).toBe(false);
   });
 
   test('yedek saate GİTMEZ (saat o vakti muhafız planından gösterir)', () => {

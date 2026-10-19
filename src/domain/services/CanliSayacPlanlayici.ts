@@ -45,7 +45,7 @@ import {
   type PlanGunu,
   type SaatCanliPenceresi,
 } from '../../core/sayac/canliSayacPlani';
-import { nowBarVaktiMi, type NowBarAyarlari, type NowBarOgesi, type NowBarVakti } from '../../core/sayac/nowBar';
+import { nowBarEtkinAyarlari, nowBarVaktiMi, type NowBarAyarlari, type NowBarOgesi, type NowBarVakti } from '../../core/sayac/nowBar';
 import type { VakitAdi } from '../../core/types';
 import { LocalNowBarServisi } from '../../data/local/LocalNowBarServisi';
 import {
@@ -263,8 +263,11 @@ export class CanliSayacPlanlayici {
           return { tarih, vakitler: gunVakitleriniHesapla(koordinat, tarih) };
         })
       : [];
+    // Vakit sayacı KAPALIYKEN "Sayaçla" etkin olarak "Vakit girince"dir (görsel inceleme):
+    // dayandığı sayaç yok, aksi halde o vakit telefonda hiç görünmezdi. Saat ham seçimi kullanır.
+    const telefonAyarlari = nowBarEtkinAyarlari(ayarlar, await this.vakitSayacAktifOku());
     const kendi = gunler.length
-      ? nowBarAdaylariniOlustur({ ayarlar, simdiMs: simdi, gunler, kilinmisMi, ozelGundeMi })
+      ? nowBarAdaylariniOlustur({ ayarlar: telefonAyarlari, simdiMs: simdi, gunler, kilinmisMi, ozelGundeMi })
       : [];
     // Muhafız bastırmasından gelen yedekler yalnız ölçüm izin verirse (sahip kararı,
     // `yedekGosterilsinMi`). Tanı yalnız öne çıkarma AÇIKKEN okunur (binder turu).
@@ -281,7 +284,7 @@ export class CanliSayacPlanlayici {
     // Telefon: yalnız öne çıkarma AÇIKKEN plan kurulur; değilse eski plan temizlenir
     // (sayaçlar bu durumda devralınmaz, kendi yollarındadır).
     if (durum !== 'desteklenmiyor' && typeof canliPlaniKur === 'function') {
-      const olaylar = durum === 'acik' ? canliZamanCizelgesiOlustur(adaylar, ayarlar, simdi) : [];
+      const olaylar = durum === 'acik' ? canliZamanCizelgesiOlustur(adaylar, telefonAyarlari, simdi) : [];
       await canliPlaniKur(canliPlanJsonuOlustur(olaylar));
       Logger.info('CanliSayac', `Now Bar plani kuruldu: ${olaylar.length} olay`);
       this.taniyiLogla(durum, tani, yedekIzni);
@@ -313,6 +316,18 @@ export class CanliSayacPlanlayici {
     if (typeof canliTaniHam !== 'function') return null;
     try {
       return canliTaniCoz(await canliTaniHam());
+    } catch {
+      return null;
+    }
+  }
+
+  /** Vakit sayacı açık mı (ham depo; arka planda Redux yok). Okunamazsa bilinmiyor (`null`). */
+  private async vakitSayacAktifOku(): Promise<boolean | null> {
+    try {
+      const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.VAKIT_SAYAC_AYARLARI);
+      if (!ham) return null;
+      const aktif = (JSON.parse(ham) as { aktif?: unknown } | null)?.aktif;
+      return typeof aktif === 'boolean' ? aktif : null;
     } catch {
       return null;
     }

@@ -18,6 +18,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, Linking, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../core/theme';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { nowBarAyarlariniYukle, nowBarOgesiniGuncelle } from '../store/nowBarSlice';
@@ -31,6 +32,8 @@ import {
   NOW_BAR_SON_DK_MAX,
   NOW_BAR_SON_DK_MIN,
   NOW_BAR_VAKITLERI,
+  VAKIT_SAYACI_KAPALI_NOTU,
+  etkinVakitBaslangici,
   vakitSayacGereksinimNotu,
   type NowBarOgeAyari,
   type NowBarOgesi,
@@ -200,6 +203,7 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
   const sayacAktif = useAppSelector((s) => (s as { vakitSayac?: { ayarlar?: { aktif?: boolean } } }).vakitSayac?.ayarlar?.aktif ?? null);
   const muhafiz = useAppSelector((s) => (s as { muhafiz?: { aktif?: boolean; matris?: MuhafizMatrisi } }).muhafiz);
   const zamanlayici = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navigation = useNavigation() as unknown as { navigate: (ekran: string) => void } | undefined;
 
   useEffect(() => {
     if (!yuklendi) dispatch(nowBarAyarlariniYukle());
@@ -255,6 +259,11 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
     durum === 'acik' ? renkler.durum.basarili : durum === 'kapali' ? renkler.durum.dikkat : renkler.durum.bilgi;
   const ilkAcik = gruplar.flatMap((g) => g.ogeler).find((o) => ayarlar.ogeler[o].acik);
   // Tanı yalnız Android'de ve durum bilinince (desteklenmiyorsa söyleyecek yeni şey yok).
+  // Vakit sayacı kapalıyken TEK satır (yalnız "Sayaçla" seçili açık bir vakit varsa).
+  const sayacKapaliNotu =
+    !ios &&
+    sayacAktif === false &&
+    NOW_BAR_VAKITLERI.some((v) => ayarlar.ogeler[v].acik && ayarlar.ogeler[v].baslangic === 'sayacla');
   // Tanı okunamadıysa (eski ikili) kart hiç çizilmez — "desteklenmiyor" demek durum kartıyla çelişirdi.
   const teshis = !ios && tani && durum && durum !== 'desteklenmiyor' ? canliTeshisi(durum, tani) : null;
 
@@ -322,13 +331,40 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
           </TouchableOpacity>
         )}
 
-        <View className="flex-row items-start mt-4 gap-2">
-          <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
-          <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }} testID="now-bar-politika">
-            {ios ? IOS_CANLI_SINIR_NOTU : NOW_BAR_POLITIKA_UYARISI}
-          </Text>
-        </View>
+        {/* Android'de politika cümlesi tanı ayrıntısındadır (görsel inceleme: kullanıcıya gereksiz). */}
+        {ios && (
+          <View className="flex-row items-start mt-4 gap-2">
+            <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
+            <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }} testID="now-bar-politika">
+              {IOS_CANLI_SINIR_NOTU}
+            </Text>
+          </View>
+        )}
       </View>
+
+      {sayacKapaliNotu && (
+        <View
+          className="mb-6 px-4 py-3 flex-row items-center"
+          style={kartStili}
+          testID="now-bar-sayac-kapali"
+        >
+          <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
+          <Text className="text-xs flex-1 pr-2" style={{ color: renkler.metin }}>
+            {VAKIT_SAYACI_KAPALI_NOTU}
+          </Text>
+          <TouchableOpacity
+            className="px-3 rounded-2xl border items-center justify-center"
+            style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir, minHeight: 44, minWidth: 44 }}
+            onPress={() => navigation?.navigate('BildirimAyarlari')}
+            accessibilityRole="button"
+            accessibilityLabel="Vakit sayacını açın"
+          >
+            <Text className="text-xs font-semibold" style={{ color: renkler.birincil }}>
+              Açın
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {teshis && (
         <View className="mb-6 p-4" style={kartStili} testID="now-bar-tani">
@@ -372,6 +408,9 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
                   {s}
                 </Text>
               ))}
+              <Text className="text-xs mt-2" style={{ color: renkler.metinIkincil }} testID="now-bar-politika">
+                {NOW_BAR_POLITIKA_UYARISI}
+              </Text>
             </View>
           )}
         </View>
@@ -390,6 +429,7 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
               onDegis={guncelle}
               kartStili={kartStili}
               ios={ios}
+              sayacKapali={!ios && sayacAktif === false && (NOW_BAR_VAKITLERI as readonly string[]).includes(oge)}
               gereksinim={
                 (NOW_BAR_VAKITLERI as readonly string[]).includes(oge)
                   ? vakitSayacGereksinimNotu(sayacAktif, uyarilanlar ? (uyarilanlar as readonly string[]).includes(oge) : null)
@@ -412,11 +452,15 @@ const OgeKarti: React.FC<{
   ios: boolean;
   /** "Sayaçla" seçiliyken gösterilecek tek cümle; `null` → satır yok (sorun yok/bilinmiyor). */
   gereksinim: string | null;
-}> = ({ oge, ayar, onDegis, kartStili, ios, gereksinim }) => {
+  /** Vakit sayacı kapalı (yalnız vakit öğesi): "Sayaçla" devre dışı, etkin seçim "Vakit girince". */
+  sayacKapali: boolean;
+}> = ({ oge, ayar, onDegis, kartStili, ios, gereksinim, sayacKapali }) => {
   const renkler = useRenkler();
   const bilgi = NOW_BAR_OGE_BILGILERI[oge];
   const secenekler = ios ? iosBaslangicSecenekleri(oge) : NOW_BAR_BASLANGICLARI[oge];
-  const etkinBaslangic = ios ? iosEtkinBaslangic(ayar) : ayar.baslangic;
+  const etkinBaslangic = ios
+    ? iosEtkinBaslangic(ayar)
+    : etkinVakitBaslangici(ayar.baslangic, sayacKapali ? false : null);
   return (
     <View className="mb-3 overflow-hidden" style={kartStili} testID={`now-bar-oge-${oge}`}>
       <View className="flex-row items-center p-4">
@@ -452,6 +496,7 @@ const OgeKarti: React.FC<{
             {secenekler.map((b) => {
               const secili = etkinBaslangic === b;
               const etiket = bilgi.baslangicEtiketleri[b] ?? b;
+              const kapali = sayacKapali && b === 'sayacla';
               return (
                 <TouchableOpacity
                   key={b}
@@ -461,11 +506,13 @@ const OgeKarti: React.FC<{
                     borderColor: secili ? renkler.birincil : renkler.sinir,
                     borderWidth: secili ? 2 : 1,
                     minHeight: 44,
+                    opacity: kapali ? 0.45 : 1,
                   }}
                   onPress={() => onDegis(oge, { baslangic: b })}
+                  disabled={kapali || undefined}
                   activeOpacity={0.7}
                   accessibilityRole="button"
-                  accessibilityState={{ selected: secili }}
+                  accessibilityState={kapali ? { selected: secili, disabled: true } : { selected: secili }}
                   accessibilityLabel={`${bilgi.ad}: ${etiket}`}
                 >
                   <Text className="text-xs font-semibold" style={{ color: secili ? renkler.birincil : renkler.metin }}>

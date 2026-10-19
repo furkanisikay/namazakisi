@@ -32,6 +32,8 @@ const mockCihaz: { surum: unknown; samsung: boolean | null; esliSaat: string | n
 jest.mock('../../hooks/useCihazDurumu', () => ({
   useCihazDurumu: () => ({ durum: mockCihaz, yenile: jest.fn() }),
 }));
+const mockNavigate = jest.fn();
+jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
 const mockYedekYenidenDene = jest.fn(async () => undefined);
 jest.mock('../../../domain/services/CanliSayacPlanlayici', () => ({
   CanliSayacPlanlayici: { getInstance: () => ({ yedekYenidenDene: () => mockYedekYenidenDene() }) },
@@ -54,10 +56,10 @@ const RENKLER = {
 };
 
 const dispatch = jest.fn();
-const kur = async (ayarlar: NowBarAyarlari = VARSAYILAN_NOW_BAR_AYARLARI) => {
+const kur = async (ayarlar: NowBarAyarlari = VARSAYILAN_NOW_BAR_AYARLARI, ek: Record<string, unknown> = {}) => {
   (useAppDispatch as jest.Mock).mockReturnValue(dispatch);
   (useAppSelector as jest.Mock).mockImplementation((sec: (s: unknown) => unknown) =>
-    sec({ nowBar: { ayarlar, yuklendi: true } })
+    sec({ nowBar: { ayarlar, yuklendi: true }, ...ek })
   );
   (useRenkler as jest.Mock).mockReturnValue(RENKLER);
   const ekran = render(<NowBarAyarlariSayfasi />);
@@ -81,14 +83,29 @@ describe('NowBarAyarlariSayfasi', () => {
     mockCihaz.esliSaat = null;
   });
 
-  it('politika satırı her durumda görünür; başlık gövdede tekrarlanmaz', async () => {
+  it('Android: politika cümlesi ana kartta YOK (tanı ayrıntısında); başlık gövdede tekrarlanmaz', async () => {
     const ekran = await kur();
-    expect(ekran.getByTestId('now-bar-politika').props.children).toBe(
-      'Google sürekli açık kartları önermez; telefonunuz öne çıkarmayı geri çekebilir.'
-    );
+    expect(ekran.queryByTestId('now-bar-politika')).toBeNull();
     expect(ekran.queryByText('Now Bar ve Canlı Sayaçlar')).toBeNull();
     expect(ekran.getByText('Canlı güncellemeler açık')).toBeTruthy();
     expect(ekran.queryByLabelText('Sistem ayarlarını açın')).toBeNull();
+  });
+
+  it('vakit sayacı KAPALIYKEN: üstte TEK satır + "Açın"; "Sayaçla" devre dışı, etkin seçim "Vakit girince"', async () => {
+    const ekran = await kur(VARSAYILAN_NOW_BAR_AYARLARI, { vakitSayac: { ayarlar: { aktif: false } } });
+    expect(ekran.getAllByTestId('now-bar-sayac-kapali')).toHaveLength(1);
+    expect(ekran.queryByText(/Vakit sayacı kapalı olduğu için/)).toBeNull();
+    const sayacla = ekran.getByLabelText('Öğle: Sayaçla');
+    expect(sayacla.props.accessibilityState).toMatchObject({ selected: false, disabled: true });
+    expect(ekran.getByLabelText('Öğle: Vakit girince').props.accessibilityState).toMatchObject({ selected: true });
+    fireEvent.press(ekran.getByLabelText('Vakit sayacını açın'));
+    expect(mockNavigate).toHaveBeenCalledWith('BildirimAyarlari');
+  });
+
+  it('vakit sayacı açıkken tek satır YOK ve "Sayaçla" seçili kalır', async () => {
+    const ekran = await kur(VARSAYILAN_NOW_BAR_AYARLARI, { vakitSayac: { ayarlar: { aktif: true } } });
+    expect(ekran.queryByTestId('now-bar-sayac-kapali')).toBeNull();
+    expect(ekran.getByLabelText('Öğle: Sayaçla').props.accessibilityState).toMatchObject({ selected: true });
   });
 
   it('tanı okunamazsa (eski ikili) tanı kartı HİÇ çizilmez', async () => {
@@ -131,6 +148,10 @@ describe('NowBarAyarlariSayfasi', () => {
     fireEvent.press(ekran.getByLabelText('Tanı ayrıntılarını gösterin'));
     await waitFor(() => expect(ekran.getByTestId('now-bar-tani-ayrinti')).toBeTruthy());
     expect(ekran.getByText(/sistem öne çıkardı: hayır/)).toBeTruthy();
+    // Politika cümlesi ayrıntıya taşındı (görsel inceleme).
+    expect(ekran.getByTestId('now-bar-politika').props.children).toBe(
+      'Google sürekli açık kartları önermez; telefonunuz öne çıkarmayı geri çekebilir.'
+    );
     // Tanıyı yenilemek muhafız yedeğine bir deneme hakkı daha verir (sahip kararı).
     expect(mockYedekYenidenDene).toHaveBeenCalled();
   });

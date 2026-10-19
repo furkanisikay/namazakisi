@@ -397,7 +397,11 @@ export function saatPencereleriniOlustur(
   ayarlar: NowBarAyarlari,
   simdiMs: number
 ): SaatCanliPenceresi[] {
-  const saatAdaylari = adaylar.filter((a) => !(sayactanMi(a) && nowBarVaktiMi(a.oge)));
+  // "Sayaçla" seçili vakit saatte kendi son dakikalarıyla gösterilir → o vaktin HİÇBİR
+  // adayı (sayaç, yedek, telefonda vakit sayacı kapalıyken etkin "girince") saate girmez.
+  const saatAdaylari = adaylar.filter(
+    (a) => !(nowBarVaktiMi(a.oge) && (sayactanMi(a) || ayarlar.ogeler[a.oge].baslangic === 'sayacla'))
+  );
   const olaylar = canliZamanCizelgesiOlustur(saatAdaylari, ayarlar, simdiMs);
   const pencereler: SaatCanliPenceresi[] = [];
   const acik = new Map<string, SaatCanliPenceresi>();

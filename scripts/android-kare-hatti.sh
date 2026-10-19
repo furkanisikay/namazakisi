@@ -79,6 +79,10 @@ adb shell run-as "$PAKET" cp /data/local/tmp/tercihler.xml "shared_prefs/${PAKET
 # responding" penceresi uygulamanin ustune acilip TUM akislari dusurdu (b830769).
 adb shell settings put global hide_error_dialogs 1 || true
 
+# Gercek bildirimlerin heads-up bandi karenin ustune binmesin (ozellik hattinda
+# 20-now-bar karesinde yasandi). Bildirimler kurulur, yalniz ekrana inmez.
+adb shell settings put global heads_up_notifications_enabled 0 || true
+
 adb shell settings put global sysui_demo_allowed 1
 DEMO="adb shell am broadcast -a com.android.systemui.demo -e command"
 $DEMO enter
