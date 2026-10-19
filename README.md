@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.52.1-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.53.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.52.1** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
+Kaynak koddaki sürüm: **0.53.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -91,6 +91,8 @@ Kaynak koddaki sürüm: **0.52.1** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/23-otomasyon-rehberi-alt.webp" width="160" alt="Otomasyon rehberi alt" title="Otomasyon rehberi alt">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/24-kildim-uygulamalari.webp" width="160" alt="Kıldım uygulamaları" title="Kıldım uygulamaları">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/25-camideyim-ayarlar.webp" width="160" alt="Camideyim ayarlar" title="Camideyim ayarlar">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/26-camideyim-harita.webp" width="160" alt="Camideyim harita" title="Camideyim harita">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/27-camideyim-nasil.webp" width="160" alt="Camideyim nasıl" title="Camideyim nasıl">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/28-kaza.webp" width="160" alt="Kaza" title="Kaza">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
@@ -122,6 +124,8 @@ Kaynak koddaki sürüm: **0.52.1** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/23-otomasyon-rehberi-alt.webp" width="160" alt="Otomasyon rehberi alt" title="Otomasyon rehberi alt">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/24-kildim-uygulamalari.webp" width="160" alt="Kıldım uygulamaları" title="Kıldım uygulamaları">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/25-camideyim-ayarlar.webp" width="160" alt="Camideyim ayarlar" title="Camideyim ayarlar">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/26-camideyim-harita.webp" width="160" alt="Camideyim harita" title="Camideyim harita">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/27-camideyim-nasil.webp" width="160" alt="Camideyim nasıl" title="Camideyim nasıl">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/28-kaza.webp" width="160" alt="Kaza" title="Kaza">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
