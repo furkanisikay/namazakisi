@@ -5,6 +5,17 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.53.0] - 2026-10-19
+
+### Eklendi
+- [camideyim] Camilerim kapalıyken de açılır, yakın camilerin mini önizlemesi; özellik turu Camideyim'i açık tohumlar
+- [camideyim] haritada tüm yakın camiler (kümeli) + ölçekli bina sınırı + özgün sınıra dönüş
+
+### Düzeltildi
+- [camideyim] mini önizleme ölçeği en yakın 30 camiye göre, yatay dağılır; küçük saydam noktalar + 250/500 m halkaları
+- [camideyim] bozuk bina çokgeni (VW basitleştirme + onarım), katlanır lejant, ortalanmış mini önizleme, '·' ayraçları kalktı
+- [camideyim] sınır yazımları sıraya alındı, küme/alan yakınlık eşikleri hizalandı
+
 ## [0.52.1] - 2026-10-19
 
 ### Düzeltildi
