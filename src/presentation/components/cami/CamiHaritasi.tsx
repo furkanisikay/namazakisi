@@ -1,14 +1,17 @@
 /**
  * Camideyim haritası (issue #297 Faz 2) — MapLibre + OpenFreeMap (anahtarsız karolar).
  *
- * Gösterilen: yakındaki camiler ve kullanıcının kendi yerleri, her birinin ALGILAMA
- * ALANI (dolgu: bina sınırı ya da daire), seçili yerin 100 m'lik UYANDIRMA çemberi
- * (kesikli — telefonun ilk uyandığı çevre) ve kullanıcının konumu. Bir yere
- * dokununca alt panel: alan (10–150 m), Favori, Cami değil / Geri alın, (kendi
- * yerinde) Sil. "Yer ekleyin": haritanın ortasına iğne, ad girilir, eklenir.
+ * Gösterilen: haritanın ortasına en yakın 150 cami (cami ikonuyla; uzaklaştıkça
+ * KÜMELENİR — kümeye dokununca yaklaşılır) ve kullanıcının kendi yerleri, her birinin
+ * ALGILAMA ALANI (dolgu: (ölçekli) bina sınırı ya da daire; şehir ölçeğinde çizilmez),
+ * seçili yerin 100 m'lik UYANDIRMA çemberi (kesikli) ve — sınırı değiştirilmişse —
+ * ÖZGÜN bina sınırı (kesikli), kullanıcının konumu. Bir yere dokununca alt panel:
+ * sınır biçimi (Bina sınırı %100–%300 / Daire 10–150 m) + "Özgün sınıra dönün",
+ * Favori, Cami değil / Geri alın, (kendi yerinde) Sil. "Yer ekleyin": haritanın
+ * ortasına iğne, ad girilir, eklenir.
  *
  * Çizilen şekiller saf `core/cami/haritaVerisi`'nden gelir — native karar katmanıyla
- * AYNI alan kuralı (kullanıcı alanı > bina poligonu > daire). Ayar yazımı
+ * AYNI alan kuralı (kullanıcı dairesi > ölçekli bina poligonu > daire). Ayar yazımı
  * `useCamideyim` üzerinden native'e gider (tek doğru kaynak SharedPreferences).
  *
  * Konum İSTENMEZ: izin zaten verilmişse kullanıcının noktası çizilir, yoksa harita
@@ -22,29 +25,35 @@ import * as Location from 'expo-location';
 import {
     Camera,
     GeoJSONSource,
+    Images,
     Layer,
     Map as Harita,
     type CameraRef,
     type Expression,
+    type GeoJSONSourceRef,
     type ViewStateChangeEvent,
 } from '@maplibre/maplibre-react-native';
 import type { NativeSyntheticEvent } from 'react-native';
 import { useRenkler, useTema } from '../../../core/theme';
-import { SayisalSecici } from '../common/SayisalSecici';
 import { kisaBildirimGoster } from '../common/KisaBildirim';
+import { SinirAyari } from './SinirAyari';
+import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import {
+    HARITA_ALAN_ASGARI_YAKINLIK,
     HARITA_BASLANGIC_YAKINLIGI,
     HARITA_CAMI_SAYISI,
+    HARITA_KUME_AZAMI_YAKINLIK,
     HARITA_STILI_ACIK,
     HARITA_STILI_KOYU,
+    basilanKume,
     basilanYerKimligi,
-    gorunenAlanM,
     haritaKatmanlariOlustur,
     haritaYerleriniBirlestir,
     type HaritaKaynakCami,
     type HaritaYeri,
 } from '../../../core/cami/haritaVerisi';
-import { ALAN_ADIM_M, ALAN_MAX_M, ALAN_MIN_M } from '../../../core/cami/camiTipleri';
+import type { YerKaydi } from '../../../core/cami/camiTipleri';
+import { yerDurumunuAyarla } from '../../../core/cami/camideyimAyarlari';
 import { mesafeM } from '../../../core/cami/geometri';
 import type { CamideyimDurumu } from '../../hooks/useCamideyim';
 import * as kopru from '../../../../modules/expo-cami-geofence/src';
@@ -52,8 +61,16 @@ import * as kopru from '../../../../modules/expo-cami-geofence/src';
 /** Harita kaydırıldıktan sonra yakın camiler yeniden sorgulanmadan önce beklenen süre ve mesafe. */
 const SORGU_GECIKMESI_MS = 600;
 const SORGU_ESIK_M = 300;
-/** Alan stepper'ı: her basışta geofence yeniden kurulmasın diye yazım ertelenir. */
+/** Sınır stepper'ı: her basışta geofence yeniden kurulmasın diye yazım ertelenir. */
 const ALAN_YAZIM_GECIKMESI_MS = 700;
+/** Kip seçimi / "Özgün sınıra dönün" gibi tek dokunuşlu eylemler hemen yazılır. */
+const ANINDA_YAZIM_MS = 0;
+/** Sınır değişince alanın kısa süre solup yeniden belirmesi (MapLibre özellik geçişi). */
+const SINIR_GECIS_MS = 220;
+/** Harita cami ikonu (beyaz siluet; renkli dairenin üstüne çizilir — `scripts/harita/cami-ikonu-uret.js`). */
+const CAMI_IKONU = require('../../../../assets/harita/cami-ikonu.png');
+/** Küme yazısı: OpenFreeMap stillerinin glif yığını (liberty + dark aynı yazı ailesini taşır). */
+const KUME_YAZI_TIPI = ['Noto Sans Bold'];
 
 export const mesafeYazisi = (m: number): string =>
     m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1).replace('.', ',')} km`;
@@ -78,7 +95,15 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
     const [ekleme, setEkleme] = useState(false);
     const [eklemeAdi, setEklemeAdi] = useState('');
     const [ekleniyor, setEkleniyor] = useState(false);
-    const [taslakAlan, setTaslakAlan] = useState<{ id: string; alanM: number } | null>(null);
+    const [taslak, setTaslak] = useState<{ id: string; d: Partial<YerKaydi> } | null>(null);
+    const taslakRef = useRef<{ id: string; d: Partial<YerKaydi> } | null>(null);
+    const cRef = useRef(c);
+    cRef.current = c;
+    const [solgun, setSolgun] = useState(false);
+    const hareketAzalt = useHareketAzalt();
+    const kumeKaynagi = useRef<GeoJSONSourceRef>(null);
+    const yakinlik = useRef<number>(HARITA_BASLANGIC_YAKINLIGI);
+    const gecisZamanlayici = useRef<ReturnType<typeof setTimeout> | null>(null);
     const gorunumMerkezi = useRef<Nokta | null>(c.merkez);
     const sorguZamanlayici = useRef<ReturnType<typeof setTimeout> | null>(null);
     const alanZamanlayici = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -129,13 +154,14 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
     useEffect(
         () => () => {
             if (sorguZamanlayici.current) clearTimeout(sorguZamanlayici.current);
-            if (alanZamanlayici.current) clearTimeout(alanZamanlayici.current);
+            if (gecisZamanlayici.current) clearTimeout(gecisZamanlayici.current);
         },
         []
     );
 
     const bolgeDegisti = useCallback((e: NativeSyntheticEvent<ViewStateChangeEvent>) => {
         const merkez = e?.nativeEvent?.center;
+        if (typeof e?.nativeEvent?.zoom === 'number') yakinlik.current = e.nativeEvent.zoom;
         if (!Array.isArray(merkez)) return;
         const yeni = { lat: merkez[1], lng: merkez[0] };
         gorunumMerkezi.current = yeni;
@@ -147,11 +173,12 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
         }, SORGU_GECIKMESI_MS);
     }, []);
 
+    // Yazım ertelenirken haritada sonuç HEMEN görünsün: taslak, ayarlara aynı birleştirme
+    // kuralıyla (`yerDurumunuAyarla`) uygulanır — native'e gidecek kayıtla birebir.
     const yerler = useMemo<HaritaYeri[]>(() => {
-        const liste = haritaYerleriniBirlestir(yakinlar, c.ayarlar.yerler);
-        if (!taslakAlan) return liste;
-        return liste.map((y) => (y.id === taslakAlan.id ? { ...y, alanM: taslakAlan.alanM } : y));
-    }, [yakinlar, c.ayarlar.yerler, taslakAlan]);
+        const ayarlar = taslak ? yerDurumunuAyarla(c.ayarlar.yerler, taslak.id, taslak.d) : c.ayarlar.yerler;
+        return haritaYerleriniBirlestir(yakinlar, ayarlar);
+    }, [yakinlar, c.ayarlar.yerler, taslak]);
 
     const katmanlar = useMemo(() => haritaKatmanlariOlustur(yerler, ekleme ? null : seciliId), [yerler, seciliId, ekleme]);
     const secili = ekleme ? undefined : yerler.find((y) => y.id === seciliId);
@@ -160,6 +187,27 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
         const id = basilanYerKimligi(e?.nativeEvent?.features);
         if (id) setSeciliId(id);
     }, []);
+
+    // Kümeye dokunuş: kümenin açıldığı yakınlığa uç; tek camiye dokunuş seçer.
+    const kumeBasildi = useCallback(
+        async (e: NativeSyntheticEvent<{ features: { properties?: unknown; geometry?: unknown }[] }>) => {
+            const kume = basilanKume(e?.nativeEvent?.features);
+            if (!kume) {
+                const id = basilanYerKimligi(e?.nativeEvent?.features);
+                if (id) setSeciliId(id);
+                return;
+            }
+            let hedef = Math.min(HARITA_KUME_AZAMI_YAKINLIK + 1, yakinlik.current + 2);
+            try {
+                const z = await kumeKaynagi.current?.getClusterExpansionZoom(kume.kumeId);
+                if (typeof z === 'number' && Number.isFinite(z)) hedef = z + 0.5;
+            } catch {
+                // Native sorgu yoksa iki kademe yaklaşılır.
+            }
+            kamera.current?.flyTo({ center: [kume.lng, kume.lat], zoom: hedef, duration: hareketAzalt ? 0 : 500 });
+        },
+        [hareketAzalt]
+    );
 
     // Tema rengi ifadeleri (dekoratif dolgu/çizgi; metin daima tema token'ı).
     const turRengi = useMemo<Expression>(
@@ -178,18 +226,52 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
         [kullanici]
     );
 
-    const alanDegis = useCallback(
-        (y: HaritaYeri, alanM: number) => {
-            setTaslakAlan({ id: y.id, alanM });
+    // Sınır değişince alan kısa süre solup yeniden belirir (geometri tween edilemez;
+    // MapLibre yalnız boya özelliklerini geçişler). Hareket azaltılmışsa geçiş yok.
+    const gecisiBaslat = useCallback(() => {
+        if (hareketAzalt) return;
+        setSolgun(true);
+        if (gecisZamanlayici.current) clearTimeout(gecisZamanlayici.current);
+        gecisZamanlayici.current = setTimeout(() => setSolgun(false), SINIR_GECIS_MS);
+    }, [hareketAzalt]);
+
+    /** Bekleyen taslağı HEMEN yazar (başka yere geçince / ekrandan çıkınca kaybolmasın). */
+    const taslagiYaz = useCallback(() => {
+        if (alanZamanlayici.current) {
+            clearTimeout(alanZamanlayici.current);
+            alanZamanlayici.current = null;
+        }
+        const t = taslakRef.current;
+        if (!t) return;
+        cRef.current
+            .yerGuncelle(t.id, t.d)
+            .finally(() => {
+                // Yazım sürerken yeni bir değişiklik geldiyse onun taslağı kalır.
+                if (taslakRef.current === t) {
+                    taslakRef.current = null;
+                    setTaslak(null);
+                }
+            })
+            .catch(() => undefined);
+    }, []);
+
+    const sinirDegis = useCallback(
+        (y: HaritaYeri, d: Partial<YerKaydi>, aninda: boolean) => {
+            gecisiBaslat();
+            const onceki = taslakRef.current;
+            if (onceki && onceki.id !== y.id) taslagiYaz();
+            // Aynı yere art arda gelen değişiklikler TEK yazımda birleşir.
+            const t = { id: y.id, d: taslakRef.current?.id === y.id ? { ...taslakRef.current.d, ...d } : d };
+            taslakRef.current = t;
+            setTaslak(t);
             if (alanZamanlayici.current) clearTimeout(alanZamanlayici.current);
-            alanZamanlayici.current = setTimeout(() => {
-                c.yerGuncelle(y.id, { alanM })
-                    .finally(() => setTaslakAlan((t) => (t?.id === y.id ? null : t)))
-                    .catch(() => undefined);
-            }, ALAN_YAZIM_GECIKMESI_MS);
+            alanZamanlayici.current = setTimeout(taslagiYaz, aninda ? ANINDA_YAZIM_MS : ALAN_YAZIM_GECIKMESI_MS);
         },
-        [c]
+        [gecisiBaslat, taslagiYaz]
     );
+
+    // Ekrandan çıkışta bekleyen sınır yazımı düşmesin (eskiden zamanlayıcı yalnız iptal ediliyordu).
+    useEffect(() => () => taslagiYaz(), [taslagiYaz]);
 
     const favoriDegis = useCallback(
         (y: HaritaYeri) => {
@@ -328,11 +410,13 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                     </View>
                 );
             }
+            const camiSayisi = yerler.filter((y) => y.tur !== 'kendi').length;
             return (
                 <View className="flex-row items-center" testID="harita-ipucu">
                     <FontAwesome5 name="hand-pointer" size={14} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
                     <Text className="text-sm flex-1" style={{ color: renkler.metinIkincil }}>
-                        Bir camiye dokunun. Renkli alan, içindeyken "camidesiniz" denen yerdir.
+                        {camiSayisi > 0 ? `Haritada yakınınızdaki ${camiSayisi} cami görünüyor. ` : ''}
+                        Bir camiye dokunun; sayılı daireler birden çok camiyi toplar, dokununca yaklaşır.
                     </Text>
                 </View>
             );
@@ -374,26 +458,19 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                         Burada hiçbir zaman "camidesiniz" denmez.
                     </Text>
                 ) : (
-                    <View className="flex-row items-center justify-between mb-2">
-                        <View className="flex-1 pr-2">
-                            <Text className="text-sm font-medium" style={{ color: renkler.metin }}>
-                                Algılama alanı
-                            </Text>
-                            <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                                {secili.alanM == null && secili.poligon
-                                    ? 'Şu an bina sınırı kullanılıyor; alan seçerseniz onun yerine geçer.'
-                                    : 'Bu alanın içindeyseniz camide sayılırsınız'}
-                            </Text>
-                        </View>
-                        <SayisalSecici
-                            deger={gorunenAlanM(secili)}
-                            min={ALAN_MIN_M}
-                            max={ALAN_MAX_M}
-                            adim={ALAN_ADIM_M}
-                            birim="m"
-                            onChange={(v) => alanDegis(secili, v)}
-                            renk={renkler.birincil}
-                            aciklama={`${ad} alanı`}
+                    <View className="mb-2">
+                        <SinirAyari
+                            girdi={{
+                                poligonVar: !!secili.poligon,
+                                yaricapM: secili.yaricapM,
+                                alanM: secili.alanM,
+                                olcek: secili.olcek,
+                                kendi,
+                            }}
+                            ad={ad}
+                            // Stepper ertelenir; kip / özgün sınır tek dokunuştur, hemen yazılır.
+                            onDegistir={(d, aninda) => sinirDegis(secili, d, aninda)}
+                            testIDOnEki="harita-sinir"
                         />
                     </View>
                 )}
@@ -469,19 +546,42 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                         ref={kamera}
                         initialViewState={{ center: [baslangic.lng, baslangic.lat], zoom: HARITA_BASLANGIC_YAKINLIGI }}
                     />
+                    <Images images={{ 'cami-ikonu': CAMI_IKONU }} />
                     <GeoJSONSource id="cami-alanlari" data={katmanlar.alanlar} onPress={kaynakBasildi}>
                         <Layer
                             id="cami-alan-dolgu"
                             type="fill"
+                            minzoom={HARITA_ALAN_ASGARI_YAKINLIK}
                             style={{
                                 fillColor: turRengi,
-                                fillOpacity: ['case', ['==', ['get', 'tur'], 'haric'], 0.08, 0.2],
+                                fillOpacity: [
+                                    'case',
+                                    ['==', ['get', 'tur'], 'haric'],
+                                    0.08,
+                                    ['==', ['get', 'secili'], 1],
+                                    solgun ? 0.04 : 0.28,
+                                    0.2,
+                                ],
+                                fillOpacityTransition: { duration: hareketAzalt ? 0 : SINIR_GECIS_MS, delay: 0 },
                             }}
                         />
                         <Layer
                             id="cami-alan-cizgi"
                             type="line"
-                            style={{ lineColor: turRengi, lineWidth: ['case', ['==', ['get', 'secili'], 1], 2.5, 1] }}
+                            minzoom={HARITA_ALAN_ASGARI_YAKINLIK}
+                            style={{
+                                lineColor: turRengi,
+                                lineWidth: ['case', ['==', ['get', 'secili'], 1], solgun ? 1 : 2.5, 1],
+                                lineWidthTransition: { duration: hareketAzalt ? 0 : SINIR_GECIS_MS, delay: 0 },
+                            }}
+                        />
+                    </GeoJSONSource>
+                    <GeoJSONSource id="cami-ozgun-sinir" data={katmanlar.ozgunSinir}>
+                        <Layer
+                            id="cami-ozgun-sinir-cizgi"
+                            type="line"
+                            minzoom={HARITA_ALAN_ASGARI_YAKINLIK}
+                            style={{ lineColor: renkler.metin, lineWidth: 1.2, lineDasharray: [1, 2], lineOpacity: 0.7 }}
                         />
                     </GeoJSONSource>
                     <GeoJSONSource id="cami-uyandirma" data={katmanlar.uyandirma}>
@@ -491,15 +591,76 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                             style={{ lineColor: renkler.metinIkincil, lineWidth: 1.2, lineDasharray: [2, 2] }}
                         />
                     </GeoJSONSource>
+                    {/* Sıradaki camiler: uzaktan KÜMELENİR (sayılı daire), yakında tek tek ikonlu. */}
+                    <GeoJSONSource
+                        ref={kumeKaynagi}
+                        id="cami-kumeleri"
+                        data={katmanlar.kumeNoktalari}
+                        cluster
+                        clusterRadius={44}
+                        clusterMaxZoom={HARITA_KUME_AZAMI_YAKINLIK}
+                        onPress={kumeBasildi}
+                        hitbox={{ top: 12, right: 12, bottom: 12, left: 12 }}
+                    >
+                        <Layer
+                            id="cami-kume-daire"
+                            type="circle"
+                            filter={['has', 'point_count']}
+                            style={{
+                                circleRadius: ['step', ['get', 'point_count'], 15, 10, 18, 50, 22],
+                                circleColor: renkler.kartArkaplan,
+                                circleStrokeColor: renkler.birincil,
+                                circleStrokeWidth: 3,
+                            }}
+                        />
+                        <Layer
+                            id="cami-kume-sayi"
+                            type="symbol"
+                            filter={['has', 'point_count']}
+                            style={{
+                                textField: ['get', 'point_count_abbreviated'],
+                                textFont: KUME_YAZI_TIPI,
+                                textSize: 13,
+                                textColor: renkler.metin,
+                                textAllowOverlap: true,
+                                textIgnorePlacement: true,
+                            }}
+                        />
+                        <Layer
+                            id="cami-kume-tek"
+                            type="circle"
+                            filter={['!', ['has', 'point_count']]}
+                            style={{ circleRadius: 11, circleColor: turRengi, circleStrokeColor: renkler.kartArkaplan, circleStrokeWidth: 2 }}
+                        />
+                        <Layer
+                            id="cami-kume-tek-ikon"
+                            type="symbol"
+                            filter={['!', ['has', 'point_count']]}
+                            style={{ iconImage: 'cami-ikonu', iconSize: 0.26, iconAllowOverlap: true, iconIgnorePlacement: true }}
+                        />
+                    </GeoJSONSource>
+                    {/* Seçili / favori / hariç / kendi / sınırı ayarlı yerler: kümelenmez, hep görünür. */}
                     <GeoJSONSource id="cami-noktalari" data={katmanlar.noktalar} onPress={kaynakBasildi} hitbox={{ top: 12, right: 12, bottom: 12, left: 12 }}>
                         <Layer
                             id="cami-nokta"
                             type="circle"
                             style={{
-                                circleRadius: ['case', ['==', ['get', 'secili'], 1], 9, 7],
+                                circleRadius: ['case', ['==', ['get', 'secili'], 1], 14, 11],
                                 circleColor: turRengi,
                                 circleStrokeColor: renkler.kartArkaplan,
-                                circleStrokeWidth: 2,
+                                circleStrokeWidth: ['case', ['==', ['get', 'secili'], 1], 3, 2],
+                            }}
+                        />
+                        <Layer
+                            id="cami-nokta-ikon"
+                            type="symbol"
+                            filter={['!=', ['get', 'tur'], 'kendi']}
+                            style={{
+                                iconImage: 'cami-ikonu',
+                                iconSize: ['case', ['==', ['get', 'secili'], 1], 0.32, 0.26],
+                                iconOpacity: ['case', ['==', ['get', 'tur'], 'haric'], 0.6, 1],
+                                iconAllowOverlap: true,
+                                iconIgnorePlacement: true,
                             }}
                         />
                         <Layer
@@ -507,9 +668,9 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                             type="circle"
                             filter={['==', ['get', 'favori'], 1]}
                             style={{
-                                circleRadius: 3.5,
+                                circleRadius: 4,
                                 circleColor: renkler.durum.uyari,
-                                circleTranslate: [7, -7],
+                                circleTranslate: [9, -9],
                                 circleStrokeColor: renkler.kartArkaplan,
                                 circleStrokeWidth: 1,
                             }}
@@ -539,7 +700,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                 {/* Lejant */}
                 <View className="absolute left-3 top-3 px-2.5 py-2" style={etiketKutusu} pointerEvents="none">
                     {[
-                        { etiket: 'Cami', renk: renkler.birincil },
+                        { etiket: 'Cami (sayı: birden çok)', renk: renkler.birincil },
                         { etiket: 'Sizin yeriniz', renk: renkler.durum.bilgi },
                         { etiket: 'Cami değil', renk: renkler.metinIkincil },
                     ].map((l) => (

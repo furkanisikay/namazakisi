@@ -52,9 +52,12 @@ object IzlemeKarari {
         }
     }
 
-    /** İzlenen kümenin karşılaştırma imzası (sıradan bağımsız): kimlik + geofence yarıçapı. */
+    /**
+     * İzlenen kümenin karşılaştırma imzası (sıradan bağımsız): kimlik + geofence yarıçapı
+     * (+ varsa bina sınırı ölçeği — ölçeği olmayan yerin imzası eskisiyle birebir aynı).
+     */
     fun imza(yerler: List<IzlenenYer>): List<String> =
-        yerler.map { "${it.id}|${Math.round(CamiKarar.geofenceYaricapiM(it))}" }.sorted()
+        yerler.map { y -> "${y.id}|${Math.round(CamiKarar.geofenceYaricapiM(y))}" + (y.ozelOlcek?.let { "|o$it" } ?: "") }.sorted()
 
     /** true → kayda HİÇ dokunma (yalnız PERİYODİK yolda). */
     fun dokunmaMi(kip: IzlemeKipi, kayitCanli: Boolean, secim: MerkezSecimi, eskiImza: List<String>, yeniImza: List<String>): Boolean =

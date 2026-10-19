@@ -64,6 +64,8 @@ module.exports = {
     // transform override'ı RN preset'inin varlık dönüştürücüsünü devre dışı
     // bıraktığı için ham mp3 require'ı SyntaxError verir.
     "\\.(mp3|wav|m4a|ogg)$": "<rootDir>/__mocks__/sesDosyasiMock.js",
+    // Aynı sebeple görsel varlıklar (harita cami ikonu `require('...png')`).
+    "\\.(png|jpg|jpeg)$": "<rootDir>/__mocks__/sesDosyasiMock.js",
   },
   // Expo modullerini transform et
   transformIgnorePatterns: [

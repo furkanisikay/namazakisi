@@ -5,6 +5,9 @@
  * ölçeğinde hata santimetre düzeyi).
  */
 import {
+    ALAN_MAX_M,
+    OLCEK_MAX,
+    OLCEK_MIN,
     POLIGON_TAMPON_M,
     VARSAYILAN_ALAN_M,
     type IzlenenYer,
@@ -64,28 +67,73 @@ export function poligonaUzaklikM(lat: number, lng: number, poligon: readonly Lat
     return enKisa;
 }
 
-/** Yerin algılama alanının "yarıçapı" (m) — daire alanlarda doğrudan, poligonda kaydın yarıçapı. */
-export function alanYaricapiM(yer: Pick<IzlenenYer, 'ozelAlanM' | 'yaricapM'>): number {
+/**
+ * Ölçek katsayısının ETKİN değeri: [1, 3] ve büyük binada `ALAN_MAX_M / yarıçap`
+ * ile kısılır (yarıçapı 100 m olan külliye en fazla ×1,5 — ×3 komşuları yutardı).
+ * Geçersiz/eksik değer 1 (özgün sınır) demektir. Kotlin ikizi `Geometri.etkinOlcek`.
+ */
+export function etkinOlcek(olcek: number | null | undefined, yaricapM: number): number {
+    if (olcek == null || !Number.isFinite(olcek) || olcek <= OLCEK_MIN) return OLCEK_MIN;
+    const ust = yaricapM > 0 ? Math.max(OLCEK_MIN, Math.min(OLCEK_MAX, ALAN_MAX_M / yaricapM)) : OLCEK_MAX;
+    return Math.min(olcek, ust);
+}
+
+/**
+ * Poligonu (lat0, lng0) merkezinden k katı büyütür. Yerel eşdikdörtgen izdüşümde
+ * (boylam farkı cos(enlem) ile metreye çevrilir) ölçeklenip geri çevrilir — böylece
+ * merkezden her köşenin METRE uzaklığı tam k katına çıkar. k ≤ 1 → aynı poligon.
+ */
+export function poligonuOlcekle(poligon: readonly LatLng[], lat0: number, lng0: number, k: number): LatLng[] {
+    if (!(k > 1) || !Number.isFinite(k)) return poligon.map(([la, ln]) => [la, ln] as LatLng);
+    const cosLat = Math.max(1e-9, Math.cos(rad(lat0)));
+    return poligon.map(([la, ln]) => {
+        const [x, y] = yerelXy(lat0, lng0, la, ln);
+        const lat = lat0 + ((y * k) / DUNYA_YARICAPI_M) * (180 / Math.PI);
+        const lng = lng0 + ((x * k) / (DUNYA_YARICAPI_M * cosLat)) * (180 / Math.PI);
+        return [lat, lng] as LatLng;
+    });
+}
+
+type AlanGirdisi = Pick<IzlenenYer, 'ozelAlanM' | 'yaricapM'> & { ozelOlcek?: number | null };
+
+/**
+ * Yerin algılama alanının "yarıçapı" (m) — daire alanlarda doğrudan, poligonda
+ * kaydın (çevrel) yarıçapı × etkin ölçek.
+ */
+export function alanYaricapiM(yer: AlanGirdisi): number {
     if (yer.ozelAlanM != null && yer.ozelAlanM > 0) return yer.ozelAlanM;
-    return yer.yaricapM > 0 ? yer.yaricapM : VARSAYILAN_ALAN_M;
+    return yer.yaricapM > 0 ? yer.yaricapM * etkinOlcek(yer.ozelOlcek, yer.yaricapM) : VARSAYILAN_ALAN_M;
+}
+
+/**
+ * Kararın kullandığı poligon: kullanıcı daire seçtiyse YOK; poligon varsa ölçek
+ * uygulanmış hâli (ölçek yoksa özgün). Kotlin ikizi `Geometri.etkinPoligon`.
+ */
+export function etkinPoligon(yer: Pick<IzlenenYer, 'lat' | 'lng' | 'yaricapM' | 'poligon' | 'ozelAlanM' | 'ozelOlcek'>): LatLng[] | null {
+    if (yer.ozelAlanM != null && yer.ozelAlanM > 0) return null;
+    if (!yer.poligon || yer.poligon.length < 3) return null;
+    const k = etkinOlcek(yer.ozelOlcek, yer.yaricapM);
+    return k > OLCEK_MIN ? poligonuOlcekle(yer.poligon, yer.lat, yer.lng, k) : [...yer.poligon];
 }
 
 /**
  * Nokta yerin algılama alanında mı? Döner: alanın DIŞINDAKİ uzaklık (m); içindeyse 0.
  *
  * Kural sırası (Kotlin ile birebir):
- *  1. Kullanıcı alan seçtiyse → o yarıçapta daire (poligonu ezer).
- *  2. Poligon varsa → içinde ya da kenara ≤ POLIGON_TAMPON_M.
+ *  1. Kullanıcı DAİRE seçtiyse (`ozelAlanM`) → o yarıçapta daire (poligonu ezer).
+ *  2. Poligon varsa → (ölçek varsa büyütülmüş) poligonun içinde ya da kenara ≤ POLIGON_TAMPON_M.
  *  3. Yoksa → kaydın yarıçapı (node: 25 m) daire.
+ * Ölçek alanı OLMAYAN eski kayıt birebir eski davranışı verir.
  */
 export function alanDisiUzaklikM(yer: IzlenenYer, lat: number, lng: number): number {
     const merkezeUzaklik = mesafeM(lat, lng, yer.lat, yer.lng);
     if (yer.ozelAlanM != null && yer.ozelAlanM > 0) {
         return Math.max(0, merkezeUzaklik - yer.ozelAlanM);
     }
-    if (yer.poligon && yer.poligon.length >= 3) {
-        if (noktaPoligondaMi(lat, lng, yer.poligon)) return 0;
-        return Math.max(0, poligonaUzaklikM(lat, lng, yer.poligon) - POLIGON_TAMPON_M);
+    const poligon = etkinPoligon(yer);
+    if (poligon) {
+        if (noktaPoligondaMi(lat, lng, poligon)) return 0;
+        return Math.max(0, poligonaUzaklikM(lat, lng, poligon) - POLIGON_TAMPON_M);
     }
     return Math.max(0, merkezeUzaklik - alanYaricapiM(yer));
 }

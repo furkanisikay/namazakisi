@@ -1,5 +1,6 @@
 import {
     alanHalkasi,
+    basilanKume,
     basilanYerKimligi,
     daireHalkasi,
     gorunenAlanM,
@@ -50,9 +51,21 @@ describe('algılama alanı şekli kararla aynı kuraldan gelir', () => {
         yaricapM: 0,
         poligon: null,
         alanM: null,
+        olcek: null,
         tur: 'cami',
         favori: false,
         ...d,
+    });
+
+    it('ölçekli bina sınırı: köşeler merkezden k katı uzakta; daire seçiliyse ölçek yok sayılır', () => {
+        const ozgun = alanHalkasi(yer({ poligon: KARE, yaricapM: 29 }));
+        const buyuk = alanHalkasi(yer({ poligon: KARE, yaricapM: 29, olcek: 2 }));
+        expect(buyuk).toHaveLength(5);
+        const u = ([ln, la]: number[]) => mesafeM(41.011, 28.972, la, ln);
+        expect(u(buyuk[0]) / u(ozgun[0])).toBeCloseTo(2, 3);
+        expect(gorunenAlanM(yer({ poligon: KARE, yaricapM: 29, olcek: 2 }))).toBe(58);
+        const daire = alanHalkasi(yer({ poligon: KARE, yaricapM: 29, olcek: 2, alanM: 40 }));
+        for (const p of daire) expect(u(p)).toBeCloseTo(40, 0);
     });
 
     it('poligon varsa ve alan seçilmemişse bina sınırı (kapalı halka, [boylam, enlem])', () => {
@@ -95,6 +108,54 @@ describe('harita katmanları', () => {
 
     it('hariç tutulan yerin uyandırma çemberi çizilmez (izlenmiyor)', () => {
         expect(haritaKatmanlariOlustur(yerler, 'osm:n2').uyandirma.features).toHaveLength(0);
+    });
+
+    it('KÜMELEME: ayarsız camiler küme kaynağına, seçili / hariç / ayarlı yerler kümelenmeyen kaynağa', () => {
+        const liste = haritaYerleriniBirlestir(
+            [
+                { id: 'osm:w1', ad: 'Kare', lat: 41.011, lng: 28.972, yaricapM: 29, poligon: KARE },
+                { id: 'osm:n2', ad: 'Nokta', lat: 41.02, lng: 28.98, yaricapM: 0 },
+                { id: 'osm:n3', ad: 'Üç', lat: 41.03, lng: 28.99, yaricapM: 0 },
+                { id: 'osm:n4', ad: 'Dört', lat: 41.04, lng: 28.99, yaricapM: 0 },
+            ],
+            { 'osm:n2': { durum: 'haric' }, 'osm:n4': { durum: 'normal', alanM: 40 } }
+        );
+        const k = haritaKatmanlariOlustur(liste, null);
+        expect(k.kumeNoktalari.features.map((f) => f.properties?.id)).toEqual(['osm:w1', 'osm:n3']);
+        expect(k.noktalar.features.map((f) => f.properties?.id)).toEqual(['osm:n2', 'osm:n4']);
+        // Seçilen cami kümeden çıkar (kümenin içinde kaybolmasın).
+        const s = haritaKatmanlariOlustur(liste, 'osm:w1');
+        expect(s.kumeNoktalari.features.map((f) => f.properties?.id)).toEqual(['osm:n3']);
+        expect(s.noktalar.features.map((f) => f.properties?.id)).toContain('osm:w1');
+    });
+
+    it('özgün bina sınırı yalnız seçili yerin sınırı değiştirilmişken çizilir', () => {
+        const ayarsiz = haritaKatmanlariOlustur(yerler, 'osm:w1');
+        expect(ayarsiz.ozgunSinir.features).toHaveLength(0);
+        const olcekli = haritaYerleriniBirlestir(
+            [{ id: 'osm:w1', ad: 'Kare', lat: 41.011, lng: 28.972, yaricapM: 29, poligon: KARE }],
+            { 'osm:w1': { durum: 'normal', olcek: 1.5 } }
+        );
+        expect(olcekli[0].olcek).toBe(1.5);
+        const k = haritaKatmanlariOlustur(olcekli, 'osm:w1');
+        expect(k.ozgunSinir.features).toHaveLength(1);
+        expect(k.ozgunSinir.features[0].geometry.coordinates[0][0]).toEqual([28.971762, 41.01082]);
+    });
+
+    it('poligonsuz kayıtta ölçek ayarı haritaya taşınmaz', () => {
+        const y = haritaYerleriniBirlestir([{ id: 'osm:n2', ad: 'Nokta', lat: 41.02, lng: 28.98, yaricapM: 0 }], {
+            'osm:n2': { durum: 'normal', olcek: 2 },
+        });
+        expect(y[0].olcek).toBeNull();
+    });
+
+    it('basılan KÜME çözülür; tek nokta küme sayılmaz', () => {
+        expect(
+            basilanKume([{ properties: { cluster: true, cluster_id: 7, point_count: 12 }, geometry: { type: 'Point', coordinates: [28.97, 41.01] } }])
+        ).toEqual({ kumeId: 7, lng: 28.97, lat: 41.01, adet: 12 });
+        expect(basilanKume([{ properties: { id: 'osm:w1' }, geometry: { type: 'Point', coordinates: [28.97, 41.01] } }])).toBeNull();
+        expect(basilanKume([{ properties: { cluster: true, cluster_id: 7 } }])).toBeNull();
+        expect(basilanKume(undefined)).toBeNull();
     });
 
     it('basılan özellikten yer kimliği çözülür', () => {

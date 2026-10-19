@@ -37,7 +37,7 @@ import {
     type KapiPenceresi,
 } from './camiTipleri';
 import { camiKarariVer, kapiPenceresiniBul, type KararGirdisi } from './camiKarar';
-import { alanYaricapiM, mesafeM, noktaPoligondaMi } from './geometri';
+import { alanYaricapiM, etkinOlcek, etkinPoligon, mesafeM, noktaPoligondaMi } from './geometri';
 
 const DK = 60_000;
 
@@ -88,10 +88,21 @@ export function zamanSinifiBul(simdiMs: number, pencere: KapiPenceresi | null): 
  * Konum alanın İÇİNDEYKEN (karar "camide") nerede duruyor? Sıra alan testiyle
  * aynı: kullanıcı alanı poligonu ezer; poligon yoksa nokta yarıçapının yarısı
  * "merkez" sayılır.
+ *
+ * ÖLÇEKLİ bina sınırı: özgün binanın içi yine `poligonIci`; yalnız büyütülmüş
+ * bantta duran kullanıcının kendi çizdiği alandadır → `kullaniciAlani`; ikisinin de
+ * dışında (tampon) `tampon`. Kotlin ikizi `GuvenPuani.yerSinifi`.
  */
 export function yerSinifiBul(yer: IzlenenYer, lat: number, lng: number): YerSinifi {
     if ((yer.ozelAlanM != null && yer.ozelAlanM > 0) || yer.kaynak === 'kendi') return 'kullaniciAlani';
-    if (yer.poligon && yer.poligon.length >= 3) return noktaPoligondaMi(lat, lng, yer.poligon) ? 'poligonIci' : 'tampon';
+    if (yer.poligon && yer.poligon.length >= 3) {
+        if (noktaPoligondaMi(lat, lng, yer.poligon)) return 'poligonIci';
+        if (etkinOlcek(yer.ozelOlcek, yer.yaricapM) > 1) {
+            const buyuk = etkinPoligon(yer);
+            if (buyuk && noktaPoligondaMi(lat, lng, buyuk)) return 'kullaniciAlani';
+        }
+        return 'tampon';
+    }
     return mesafeM(lat, lng, yer.lat, yer.lng) <= alanYaricapiM(yer) / 2 ? 'noktaMerkez' : 'noktaKenar';
 }
 

@@ -68,9 +68,39 @@ object Geometri {
         return enKisa
     }
 
-    fun alanYaricapiM(ozelAlanM: Double?, yaricapM: Double): Double {
+    /** JS `etkinOlcek`: [1, 3], büyük binada `ALAN_MAX_M / yarıçap` ile kısılır; geçersiz → 1. */
+    fun etkinOlcek(olcek: Double?, yaricapM: Double): Double {
+        if (olcek == null || olcek.isNaN() || olcek.isInfinite() || olcek <= CamiSabitleri.OLCEK_MIN) return CamiSabitleri.OLCEK_MIN
+        val ust = if (yaricapM > 0) max(CamiSabitleri.OLCEK_MIN, min(CamiSabitleri.OLCEK_MAX, CamiSabitleri.ALAN_MAX_M / yaricapM)) else CamiSabitleri.OLCEK_MAX
+        return min(olcek, ust)
+    }
+
+    /** JS `poligonuOlcekle`: merkezden k katı, yerel metre izdüşümünde (enlem düzeltmeli). */
+    fun poligonuOlcekle(poligon: List<DoubleArray>, lat0: Double, lng0: Double, k: Double): List<DoubleArray> {
+        if (!(k > 1.0) || k.isInfinite()) return poligon.map { doubleArrayOf(it[0], it[1]) }
+        val cosLat = max(1e-9, cos(rad(lat0)))
+        return poligon.map {
+            val xy = yerelXy(lat0, lng0, it[0], it[1])
+            doubleArrayOf(
+                lat0 + Math.toDegrees(xy[1] * k / DUNYA_YARICAPI_M),
+                lng0 + Math.toDegrees(xy[0] * k / (DUNYA_YARICAPI_M * cosLat)),
+            )
+        }
+    }
+
+    fun alanYaricapiM(ozelAlanM: Double?, yaricapM: Double, ozelOlcek: Double? = null): Double {
         if (ozelAlanM != null && ozelAlanM > 0) return ozelAlanM
-        return if (yaricapM > 0) yaricapM else CamiSabitleri.VARSAYILAN_ALAN_M
+        return if (yaricapM > 0) yaricapM * etkinOlcek(ozelOlcek, yaricapM) else CamiSabitleri.VARSAYILAN_ALAN_M
+    }
+
+    /** JS `etkinPoligon`: daire seçildiyse null; poligon varsa ölçek uygulanmış hâli. */
+    fun etkinPoligon(yer: IzlenenYer): List<DoubleArray>? {
+        val ozel = yer.ozelAlanM
+        if (ozel != null && ozel > 0) return null
+        val pol = yer.poligon ?: return null
+        if (pol.size < 3) return null
+        val k = etkinOlcek(yer.ozelOlcek, yer.yaricapM)
+        return if (k > CamiSabitleri.OLCEK_MIN) poligonuOlcekle(pol, yer.lat, yer.lng, k) else pol
     }
 
     /** Alanın DIŞINDAKİ uzaklık (m); içindeyse 0. Kural sırası JS ile birebir. */
@@ -78,8 +108,8 @@ object Geometri {
         val merkez = mesafeM(lat, lng, yer.lat, yer.lng)
         val ozel = yer.ozelAlanM
         if (ozel != null && ozel > 0) return max(0.0, merkez - ozel)
-        val pol = yer.poligon
-        if (pol != null && pol.size >= 3) {
+        val pol = etkinPoligon(yer)
+        if (pol != null) {
             if (noktaPoligondaMi(lat, lng, pol)) return 0.0
             return max(0.0, poligonaUzaklikM(lat, lng, pol) - CamiSabitleri.POLIGON_TAMPON_M)
         }

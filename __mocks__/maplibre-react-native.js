@@ -13,6 +13,7 @@ module.exports = {
   Camera: 'Camera',
   GeoJSONSource: 'GeoJSONSource',
   Layer: 'Layer',
+  Images: 'Images',
   Marker: 'Marker',
   UserLocation: 'UserLocation',
   NativeUserLocation: 'NativeUserLocation',

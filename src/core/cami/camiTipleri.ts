@@ -22,6 +22,15 @@ export const VARSAYILAN_ALAN_M = 25;
 export const ALAN_MIN_M = 10;
 export const ALAN_MAX_M = 150;
 export const ALAN_ADIM_M = 5;
+/**
+ * Bina sınırını ÖLÇEKLİ büyütme katsayısı (poligon, kaydın merkezinden k katı).
+ * 1 = özgün sınır. Etkin üst sınır ayrıca `ALAN_MAX_M / kaydın yarıçapı` ile
+ * kısılır (`etkinOlcek`): büyük külliyede ×3 komşu camileri yutmasın.
+ */
+export const OLCEK_MIN = 1;
+export const OLCEK_MAX = 3;
+/** Ekrandaki adım (%10). */
+export const OLCEK_ADIM = 0.1;
 /** "Bulunduğum yeri ekle" ile eklenen yerin başlangıç alanı (m). */
 export const KULLANICI_YERI_ALAN_M = 20;
 /** Bina poligonunun dışına taşan avlu/giriş için tolerans (m). */
@@ -101,6 +110,7 @@ export interface CamiKaydi {
 /**
  * İzlenen (geofence'i kurulan) yer — karar fonksiyonunun girdisi.
  * Kullanıcının alan ayarı burada `ozelAlanM` olarak gelir ve poligonu ezer.
+ * `ozelOlcek` yalnız poligonlu kayıtta anlamlıdır: bina sınırı merkezden k katı.
  */
 export interface IzlenenYer {
     id: string;
@@ -110,6 +120,8 @@ export interface IzlenenYer {
     yaricapM: number;
     poligon: LatLng[] | null;
     ozelAlanM: number | null;
+    /** Bina sınırının ölçek katsayısı (1–3); yoksa/1 → özgün sınır. Eski kayıtta alan yoktur. */
+    ozelOlcek?: number | null;
     kaynak: 'osm' | 'kendi';
     favori: boolean;
 }
@@ -122,7 +134,10 @@ export type YerDurumu = 'normal' | 'favori' | 'haric';
  */
 export interface YerKaydi {
     durum: YerDurumu;
+    /** DAİRE modu: kullanıcının seçtiği yarıçap (m). Varsa bina sınırını ezer. */
     alanM?: number;
+    /** BİNA SINIRI (ölçekli) modu: poligonun büyütme katsayısı (1–3). `alanM` ile birlikte yazılmaz. */
+    olcek?: number;
     ad?: string;
     lat?: number;
     lng?: number;

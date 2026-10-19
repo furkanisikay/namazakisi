@@ -35,18 +35,15 @@ import { useCamideyim } from '../hooks/useCamideyim';
 import { useNamazModu } from '../hooks/useNamazModu';
 import {
     IZLENEN_CAMI_SAYISI,
-    ALAN_ADIM_M,
-    ALAN_MAX_M,
-    ALAN_MIN_M,
     BEKLEME_MAX_DK,
     BEKLEME_MIN_DK,
     KAPI_CUMA_ONCE_DK,
     KAPI_CUMA_SONRA_DK,
     KAPI_ONCE_DK,
     KAPI_SONRA_DK,
-    VARSAYILAN_ALAN_M,
     type YerKaydi,
 } from '../../core/cami/camiTipleri';
+import { SinirAyari } from '../components/cami/SinirAyari';
 import { mesafeM } from '../../core/cami/geometri';
 import type { OlaySatiri } from '../../core/cami/olayMetinleri';
 import { camidenCik } from '../../../modules/expo-cami-geofence/src';
@@ -282,7 +279,6 @@ export const NamazdaSessizSayfasi: React.FC = () => {
         const etiketler = [mesafeMetni(y.mesafe), kendi ? 'sizin yeriniz' : null, favori ? 'favori' : null, haric ? 'cami değil' : null]
             .filter(Boolean)
             .join(' · ');
-        const alan = ayar?.alanM ?? (y.yaricapM > 0 ? y.yaricapM : VARSAYILAN_ALAN_M);
         return (
             <View key={y.id} className="rounded-2xl border mb-2" style={{ borderColor: renkler.sinir, backgroundColor: renkler.arkaplan }}>
                 <TouchableOpacity
@@ -313,35 +309,22 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                 Burada hiçbir zaman "camidesiniz" denmez.
                             </Text>
                         ) : (
-                            <>
-                                <View className="flex-row items-center justify-between mb-1">
-                                    <View className="flex-1 pr-2">
-                                        <Text className="text-sm font-medium" style={{ color: renkler.metin }}>
-                                            Algılama alanı
-                                        </Text>
-                                        <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                                            Bu alanın içindeyseniz camide sayılırsınız
-                                        </Text>
-                                    </View>
-                                    <SayisalSecici
-                                        deger={alan}
-                                        min={ALAN_MIN_M}
-                                        max={ALAN_MAX_M}
-                                        adim={ALAN_ADIM_M}
-                                        birim="m"
-                                        onChange={(v) => c.yerGuncelle(y.id, { alanM: v })}
-                                        renk={renkler.birincil}
-                                        aciklama={`${ad} alanı`}
-                                    />
-                                </View>
-                                {y.poligonVar && (
-                                    <Text className="text-xs mb-1" style={{ color: renkler.metinIkincil }}>
-                                        {ayar?.alanM == null
-                                            ? 'Şu an caminin bina sınırı kullanılıyor; alan seçerseniz onun yerine geçer.'
-                                            : 'Seçtiğiniz alan bina sınırının yerine kullanılıyor.'}
-                                    </Text>
-                                )}
-                            </>
+                            // Harita paneliyle AYNI bileşen: tek metre stepper'ı eskiden poligonu
+                            // sessizce daireye çeviriyor, geri dönüş yolu bırakmıyordu.
+                            <SinirAyari
+                                girdi={{
+                                    poligonVar: y.poligonVar,
+                                    yaricapM: y.yaricapM,
+                                    alanM: ayar?.alanM ?? null,
+                                    olcek: ayar?.olcek ?? null,
+                                    kendi,
+                                }}
+                                ad={ad}
+                                onDegistir={(d) => {
+                                    c.yerGuncelle(y.id, d).catch(() => undefined);
+                                }}
+                                testIDOnEki={`liste-sinir-${y.id}`}
+                            />
                         )}
                         <View className="flex-row gap-2 mt-2">
                             {kendi ? (
