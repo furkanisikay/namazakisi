@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.45.0** · Mağazada: Google Play: **0.42.0** · App Store: **0.30.1**
+Kaynak koddaki sürüm: **0.45.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.30.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -255,7 +255,7 @@ Kareler mağazadaki listelerle (Google Play, App Store) ve uygulamanın ekran g�
 <!-- OTOMATIK:BASLA platformlar -->
 | Cihaz | Durum |
 |---|---|
-| 📱 Android telefon, tablet ve katlanabilir | [Google Play](https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi) · 0.42.0 |
+| 📱 Android telefon, tablet ve katlanabilir | [Google Play](https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi) · 0.45.0 |
 | 🍏 iPhone | [App Store](https://apps.apple.com/tr/app/id6813061360) · 0.30.1 |
 | ⌚ Wear OS saat | Google Play'de yayında (telefon uygulamasıyla birlikte) |
 | 📺 Android TV | Google Play |
