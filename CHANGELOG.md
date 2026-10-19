@@ -5,6 +5,14 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.46.0] - 2026-10-19
+
+### Eklendi
+- [ana-ekran] vakit kartı eski görünümüne döner, Kıldım dönüşerek ve kartta geri alınır
+
+### Düzeltildi
+- [ana-ekran] Kıldım düğmesi metni zemine göre ölçülür, geri alma etiketi durumu söyler
+
 ## [0.45.0] - 2026-10-18
 
 ### Eklendi
