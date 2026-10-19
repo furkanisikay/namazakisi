@@ -5,6 +5,15 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.47.1] - 2026-10-19
+
+### Düzeltildi
+- [muhafiz] kılınmışlık gösterilen namaz gününe yazılır; gün sonu yalnız kayıttan okur
+- [hatirlatma] ton adları ekrandan kalktı, metinler kısaltıldı
+- [hatirlatma] ham şablon, sesli rıza ve iOS bütçe kartı ekranda düzeltildi
+- [metin] suçlayıcı nasslar ve korku dili hatırlatmalardan çıkarıldı
+- [seri] gün tamamlanmışsa gün sonu hatırlatması kurulmaz
+
 ## [0.47.0] - 2026-10-19
 
 ### Eklendi
