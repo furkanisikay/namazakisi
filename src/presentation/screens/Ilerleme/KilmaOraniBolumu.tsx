@@ -240,6 +240,5 @@ const AylikIcerik: React.FC<{ istatistik: AylikIstatistik; renkler: Renkler }> =
       })}
     </Kart>
   </View>
-
   );
 };

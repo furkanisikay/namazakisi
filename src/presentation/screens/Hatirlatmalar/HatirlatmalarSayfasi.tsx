@@ -281,7 +281,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                         testID="hatirlatma-duzeyi"
                     />
                     {/* Görsel anlatı: girişte ve düzey değişince BİR KEZ (ayar ekranı — döngü yok). */}
-                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi duzey={duzey.secili} testID="hatirlatma-duzey-onizlemesi" /> : null}
+                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="hatirlatma-duzey-onizlemesi" /> : null}
                 </AyarCapasi>
 
                 <BildirimButceKarti ozet={butce.ozet} onPress={rehber.karttanAc} />

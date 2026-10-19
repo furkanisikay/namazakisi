@@ -5,7 +5,7 @@
  */
 import * as React from 'react';
 import { Animated } from 'react-native';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
     const { Text } = require('react-native');
@@ -70,5 +70,30 @@ describe('Kurulum sahneleri', () => {
         const normal = render(<DuzeyOnizlemesi duzey="normal" dongu />);
         expect(normal.getByText('45 dk önce', G)).toBeTruthy();
         expect(normal.getByText('Vakit çıkar', G)).toBeTruthy();
+    });
+
+    it('düzey önizlemesi motorun planını çizer; sesli izin yokken sesli nokta YOK', () => {
+        const { duzeyOnizlemeAdimlari } = require('../../../../core/hatirlatma/duzeyOzeti');
+        const { HATIRLATMA_PRESETLERI } = require('../../../store/muhafizSlice');
+        const plan = duzeyOnizlemeAdimlari(HATIRLATMA_PRESETLERI.normal.seviyeler);
+        const sesliPlan = plan.filter((a: { sesli: boolean }) => a.sesli).length;
+        expect(sesliPlan).toBeGreaterThan(0);
+
+        const olc = (r: ReturnType<typeof render>) => {
+            // Ray genişliği ölçülünce noktalar çizilir (ölçü yokken boş).
+            const ray = r.getByTestId('duzey-onizleme-ray', G);
+            fireEvent(ray, 'layout', { nativeEvent: { layout: { width: 300, height: 36 } } });
+        };
+        const izinli = render(<DuzeyOnizlemesi duzey="normal" />);
+        olc(izinli);
+        expect(izinli.queryAllByTestId('duzey-onizleme-nokta-sesli', G)).toHaveLength(sesliPlan);
+        expect(izinli.queryAllByTestId(/duzey-onizleme-nokta/, G)).toHaveLength(plan.length);
+        expect(izinli.getByText('sesli', G)).toBeTruthy();
+
+        const izinsiz = render(<DuzeyOnizlemesi duzey="normal" sesliAcik={false} />);
+        olc(izinsiz);
+        expect(izinsiz.queryAllByTestId('duzey-onizleme-nokta-sesli', G)).toHaveLength(0);
+        expect(izinsiz.queryAllByTestId('duzey-onizleme-nokta', G)).toHaveLength(plan.length);
+        expect(izinsiz.queryByText('sesli', G)).toBeNull();
     });
 });

@@ -11,6 +11,8 @@
  *    ayar ekranında (`dongu={false}`) düzey değişince BİR KEZ geçer.
  *  - Seçim değişince sahne baştan kurulur.
  *  - Kapalı düzey: sakin dinlenme resmi (ay + boş ray), hareket yok.
+ *  - `sesliAcik={false}` (sesli rıza yok / sesli kapatılmış): sesli hücreler bildirime düşer,
+ *    "sesli" nokta ve açıklaması ÇİZİLMEZ — resim cihazın kuracağı planla ayrışmasın.
  *  - Dekoratiftir (ekran okuyucudan gizli): bilgi seçicinin altındaki cümlede yazılıdır.
  *  - Yalnız transform/opaklık, native driver; renkler tema token'ı.
  */
@@ -32,10 +34,12 @@ export interface DuzeyOnizlemesiProps {
     duzey: HatirlatmaDuzeyi;
     /** true: görünürken döngü (sihirbaz); false: değişimde bir kez (ayar ekranı). */
     dongu?: boolean;
+    /** Sesli okuma gerçekten açık mı (varsayılan evet: sihirbaz rızayı bu adımda alır). */
+    sesliAcik?: boolean;
     testID?: string;
 }
 
-export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(function DuzeyOnizlemesi({ duzey, dongu = false, testID }) {
+export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(function DuzeyOnizlemesi({ duzey, dongu = false, sesliAcik = true, testID }) {
     const renkler = useRenkler();
     const azalt = useHareketAzalt();
     const donguAcik = useDonguAcik();
@@ -43,8 +47,8 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
     const ilerleme = React.useRef(new Animated.Value(1)).current;
 
     const adimlar = React.useMemo(
-        () => duzeyOnizlemeAdimlari(duzey === 'kapali' ? null : HATIRLATMA_PRESETLERI[duzey].seviyeler),
-        [duzey],
+        () => duzeyOnizlemeAdimlari(duzey === 'kapali' ? null : HATIRLATMA_PRESETLERI[duzey].seviyeler, sesliAcik),
+        [duzey, sesliAcik],
     );
     const ilkDk = adimlar[0]?.kalanDk ?? 0;
     const kapali = adimlar.length === 0;
@@ -99,7 +103,7 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
                 backgroundColor: renkler.kartArkaplan,
             }}
         >
-            <View onLayout={onLayout} style={{ height: 36, justifyContent: 'center' }}>
+            <View testID="duzey-onizleme-ray" onLayout={onLayout} style={{ height: 36, justifyContent: 'center' }}>
                 {/* Ray */}
                 <View style={{ position: 'absolute', left: raySol, right: raySol, height: 4, borderRadius: 2, backgroundColor: renkler.sinir }} />
                 {kapali ? (
@@ -128,6 +132,7 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
                             return (
                                 <Animated.View
                                     key={`${a.kalanDk}-${i}`}
+                                    testID={a.sesli ? 'duzey-onizleme-nokta-sesli' : 'duzey-onizleme-nokta'}
                                     style={{
                                         position: 'absolute',
                                         left: x,

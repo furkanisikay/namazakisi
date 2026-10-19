@@ -401,7 +401,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                     />
                     {/* Görsel anlatı: seçilen düzeyin uyarıları zaman rayında — girişte ve
                         düzey değişince BİR KEZ oynar (ayar ekranında döngü yok). */}
-                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi duzey={duzey.secili} testID="muhafiz-duzey-onizlemesi" /> : null}
+                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="muhafiz-duzey-onizlemesi" /> : null}
                 </View>
                 </AyarCapasi>
                 </AyarCapasi>

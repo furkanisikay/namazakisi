@@ -56,6 +56,13 @@ describe('duzeyOnizlemeAdimlari', () => {
         }
     });
 
+    it('sesli izin yokken sesli nokta YOK, uyarı sayısı aynı (sesli hücre bildirime düşer)', () => {
+        const s = HATIRLATMA_PRESETLERI.normal.seviyeler;
+        const izinsiz = duzeyOnizlemeAdimlari(s, false);
+        expect(izinsiz.some((a) => a.sesli)).toBe(false);
+        expect(izinsiz).toHaveLength(duzeyOnizlemeAdimlari(s).length);
+    });
+
     it('kapalı düzeyde nokta yok', () => {
         expect(duzeyOnizlemeAdimlari(null)).toEqual([]);
     });
