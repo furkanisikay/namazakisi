@@ -110,6 +110,14 @@ function useCanliTani(durum: CanliDurum | null): [CanliTani | null, () => void] 
   useEffect(() => {
     if (durum !== null) oku();
   }, [durum, oku]);
+  // Ayarlardan (ör. Samsung geliştirici seçeneği) dönünce durum aynı kalsa da
+  // yeniden ölç: görünen sayacın bayrağı o an değişmiş olabilir.
+  useEffect(() => {
+    const abone = AppState.addEventListener('change', (s) => {
+      if (s === 'active') oku();
+    });
+    return () => abone.remove();
+  }, [oku]);
   return [tani, oku];
 }
 

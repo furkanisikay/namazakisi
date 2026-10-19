@@ -161,13 +161,27 @@ object CanliGuncelleme {
         }
     }
 
-    @RequiresApi(API_36)
-    private fun oneCikarmaBayragi(): Int = Notification.FLAG_PROMOTED_ONGOING
+    /**
+     * `Notification.FLAG_PROMOTED_ONGOING` (API 36). YANSIMAYLA okunur: sabitin derleme
+     * SDK'sındaki varlığı yerelde doğrulanamadı; yoksa 0 → "öne çıkarıldı" asla denmez.
+     */
+    private val oneCikarmaBayragiDegeri: Int by lazy {
+        try {
+            Notification::class.java.getField("FLAG_PROMOTED_ONGOING").getInt(null)
+        } catch (_: Throwable) {
+            0
+        }
+    }
 
-    private fun kanalOnemi(nm: NotificationManager, kanalId: String?): Int? = try {
-        if (kanalId.isNullOrEmpty()) null else nm.getNotificationChannel(kanalId)?.importance
-    } catch (_: Throwable) {
-        null
+    private fun oneCikarmaBayragi(): Int = oneCikarmaBayragiDegeri
+
+    private fun kanalOnemi(nm: NotificationManager, kanalId: String?): Int? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || kanalId.isNullOrEmpty()) return null
+        return try {
+            nm.getNotificationChannel(kanalId)?.importance
+        } catch (_: Throwable) {
+            null
+        }
     }
 
     private fun taniKaydet(context: Context, kayit: CanliTaniKurallari.GosterimKaydi) {
