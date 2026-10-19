@@ -20,10 +20,10 @@ beforeEach(() => {
 afterEach(() => jest.restoreAllMocks());
 
 describe('KildimDugmesi', () => {
-    it('kılınmamışken "Kıldım", basınca onKildim', () => {
+    it('kılınmamışken "Kılındı olarak işaretle", basınca onKildim', () => {
         const onKildim = jest.fn();
         const { getByLabelText } = render(<KildimDugmesi kilindi={false} onKildim={onKildim} vakitAdi="Öğle" />);
-        fireEvent.press(getByLabelText('Öğle — Kıldım'));
+        fireEvent.press(getByLabelText('Öğle — Kılındı olarak işaretle'));
         expect(onKildim).toHaveBeenCalled();
     });
 
@@ -37,11 +37,28 @@ describe('KildimDugmesi', () => {
     it('false → true geçişinde sahne BİR KEZ oynar ve "Kılındı" duyurulur; yeniden çizim tekrar oynatmaz', () => {
         const sira = jest.spyOn(Animated, 'sequence');
         const duyuru = AccessibilityInfo.announceForAccessibility as jest.Mock;
-        const { rerender } = render(<KildimDugmesi kilindi={false} onKildim={jest.fn()} />);
-        rerender(<KildimDugmesi kilindi onKildim={jest.fn()} />);
-        rerender(<KildimDugmesi kilindi onKildim={jest.fn()} />);
+        const { rerender } = render(<KildimDugmesi kilindi={false} onKildim={jest.fn()} kimlik="a" />);
+        rerender(<KildimDugmesi kilindi onKildim={jest.fn()} kimlik="a" />);
+        rerender(<KildimDugmesi kilindi onKildim={jest.fn()} kimlik="a" />);
         expect(sira).toHaveBeenCalledTimes(1);
         expect(duyuru).toHaveBeenCalledWith('Kılındı');
+    });
+
+    it('geri almada (true → false) ters geçiş oynar ve kaldırma duyurulur', () => {
+        const sira = jest.spyOn(Animated, 'sequence');
+        const { rerender } = render(<KildimDugmesi kilindi onKildim={jest.fn()} onGeriAl={jest.fn()} kimlik="a" />);
+        rerender(<KildimDugmesi kilindi={false} onKildim={jest.fn()} onGeriAl={jest.fn()} kimlik="a" />);
+        expect(sira).toHaveBeenCalledTimes(1);
+        expect(AccessibilityInfo.announceForAccessibility).toHaveBeenCalledWith('İşaret kaldırıldı');
+    });
+
+    it('NÖBETÇİ: kimlik (vakit/gün) değişince durum değişimi animasyonsuz ve duyurusuz uygulanır', () => {
+        const sira = jest.spyOn(Animated, 'sequence');
+        (AccessibilityInfo.announceForAccessibility as jest.Mock).mockClear();
+        const { rerender } = render(<KildimDugmesi kilindi onKildim={jest.fn()} kimlik="2026-10-19_Öğle" />);
+        rerender(<KildimDugmesi kilindi={false} onKildim={jest.fn()} kimlik="2026-10-19_İkindi" />);
+        expect(sira).not.toHaveBeenCalled();
+        expect(AccessibilityInfo.announceForAccessibility).not.toHaveBeenCalled();
     });
 
     it('animasyonları azalt: sahne oynamaz, bilgi yine duyurulur', () => {
@@ -53,9 +70,13 @@ describe('KildimDugmesi', () => {
         expect(AccessibilityInfo.announceForAccessibility).toHaveBeenCalledWith('Kılındı');
     });
 
-    it('kılınmışken geri alma yoksa dokunulmaz', () => {
-        const { getByLabelText } = render(<KildimDugmesi kilindi onKildim={jest.fn()} />);
+    it('kılınmışken geri alma verilmezse dokunulmaz; verilirse geri alır', () => {
+        const { getByLabelText, rerender } = render(<KildimDugmesi kilindi onKildim={jest.fn()} />);
         expect(getByLabelText('Kılındı').props.accessibilityState).toMatchObject({ disabled: true });
+        const onGeriAl = jest.fn();
+        rerender(<KildimDugmesi kilindi onKildim={jest.fn()} onGeriAl={onGeriAl} />);
+        fireEvent.press(getByLabelText('Kılındı'));
+        expect(onGeriAl).toHaveBeenCalledTimes(1);
     });
 });
 

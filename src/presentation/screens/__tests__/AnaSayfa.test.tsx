@@ -785,6 +785,26 @@ describe('AnaSayfa', () => {
       const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onTamamla?: unknown };
       expect(son.onTamamla).toBe(ilk.onTamamla);
     });
+
+    it('vakit kartından GERİ ALMA: aynı işaretleme yolu, false yönü; geri çağrı kararlı', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      await kur(bugunuAl());
+      const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as {
+        onGeriAl?: () => void; kayitKimligi?: string;
+      };
+      expect(son.kayitKimligi).toBe(`${bugunuAl()}_Öğle`);
+      await act(async () => {
+        son.onGeriAl?.();
+        await Promise.resolve();
+      });
+      const { namazDurumunuDegistir } = jest.requireMock('../../store/namazSlice');
+      expect(namazDurumunuDegistir).toHaveBeenCalledWith({ tarih: bugunuAl(), namazAdi: 'Öğle', tamamlandi: false });
+      const sayi = mockVakitKartiProplari.length;
+      await waitFor(() => expect(mockVakitKartiProplari.length).toBeGreaterThan(sayi));
+      const sonraki = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onGeriAl?: unknown };
+      expect(sonraki.onGeriAl).toBe(son.onGeriAl);
+    });
   });
 
   // ── Sade görünüm (issue #295) ─────────────────────────────────────────────

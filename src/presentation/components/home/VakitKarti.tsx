@@ -4,9 +4,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../../core/theme';
 import { VakitBilgisi } from '../../../domain/services/NamazVaktiHesaplayiciServisi';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
-import { namazDurumuSec } from '../../../core/vakit/durumSozlugu';
-import { DurumRozeti } from '../ortak/DurumRozeti';
-import { KildimDugmesi } from '../hareket/KildimDugmesi';
+import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
+import { NAMAZ_DURUMLARI } from '../../../core/vakit/durumSozlugu';
+import { KildimDugmesi, KILDIM_DUGMESI_YUKSEKLIK } from '../hareket/KildimDugmesi';
 
 interface VakitKartiProps {
     vakitBilgisi: VakitBilgisi | null;
@@ -22,6 +22,13 @@ interface VakitKartiProps {
      */
     kayitHazir?: boolean;
     onTamamla: () => void;
+    /**
+     * Kılınmışken düğmeye dokununca (geri alma — kartın kendisinden, listeye inmeden).
+     * Verilmezse kılınmış düğme dokunulmaz.
+     */
+    onGeriAl?: () => void;
+    /** Gösterilen kaydın kimliği ("<gün>_<vakit>"); değişince düğme animasyonsuz güncellenir. */
+    kayitKimligi?: string;
     kilitli?: boolean;
     konumModu?: 'oto' | 'manuel';
     konumMetni?: string; // "Nilüfer, Bursa"
@@ -62,6 +69,8 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     tamamlandi,
     kayitHazir = true,
     onTamamla,
+    onGeriAl,
+    kayitKimligi,
     kilitli = false,
     konumModu,
     konumMetni,
@@ -92,8 +101,17 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
             <View className="p-6 text-center items-center">
                 {/* Badge Satırı: Şu Anki Vakit + Konum */}
                 <View className="flex-row items-center gap-2 mb-4">
-                    {/* Durum dili tek sözlükten: Kılındı / Vakti geldi / Henüz girmedi. */}
-                    <DurumRozeti durum={namazDurumuSec(tamamlandi, !kilitli)} />
+                    {/* Eski kartın rozeti. Nokta STATİK: boşta sıfır hareket (eski `animate-ping`
+                        sonsuz döngüydü). Kılındı bilgisini düğme taşır; rozet tekrar etmez. */}
+                    <View className="flex-row items-center gap-2 px-3 py-1 rounded-full"
+                        style={{ backgroundColor: kilitli ? renkler.metinIkincil + '15' : renkler.birincil + '15' }}>
+                        {!kilitli && (
+                            <View className="h-2 w-2 rounded-full" style={{ backgroundColor: renkler.birincil }} />
+                        )}
+                        <Text className="text-xs font-bold" style={{ color: kilitli ? renkler.metinIkincil : renkler.birincil }}>
+                            {kilitli ? 'SIRADAKİ VAKİT' : 'ŞU ANKİ VAKİT'}
+                        </Text>
+                    </View>
 
                     {konumMetni && (() => {
                         const cipIcerigi = (
@@ -164,26 +182,50 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                     <Text className="text-5xl font-mono font-bold tracking-tighter tabular-nums" style={{ color: renkler.metin }}>
                         {kalanSureStr}
                     </Text>
-                    <Text className="text-sm font-semibold mt-2" style={{ color: renkler.metinIkincil }}>
-                        Kalan süre
+                    <Text className="text-xs font-semibold tracking-widest mt-2" style={{ color: renkler.metinIkincil }}>
+                        KALAN SÜRE
                     </Text>
                 </View>
 
-                {/* Tek eylem: "Kıldım" → (dönüşerek) "Kılındı". Vakit girmediyse düğme yok. */}
+                {/* Eski kartın düğmesi: "Kılındı olarak işaretle" ⇄ "✓ Kılındı", dönüşerek.
+                    Geri alma da buradan (tek dokunuş; namazToggle yolu). Vakit girmediyse
+                    eski gri düğme (dokunulmaz); metni durum sözlüğünden ("Henüz girmedi"). */}
                 {kilitli ? (
-                    <Text className="text-sm text-center" style={{ color: renkler.metin }}>
-                        Vakti girince işaretleyebilirsiniz
-                    </Text>
+                    <View
+                        className="w-full rounded-2xl flex-row items-center justify-center gap-3"
+                        style={{ height: KILDIM_DUGMESI_YUKSEKLIK, backgroundColor: renkler.metinIkincil, opacity: 0.7 }}
+                        accessible
+                        accessibilityRole="button"
+                        accessibilityLabel={NAMAZ_DURUMLARI.girmedi.etiket}
+                        accessibilityState={{ disabled: true }}
+                        testID="vakit-karti-girmedi"
+                    >
+                        <FontAwesome5 name="clock" size={20} color={renkler.birincilMetin} />
+                        <Text className="font-bold text-lg" style={{ color: renkler.birincilMetin }}>
+                            {NAMAZ_DURUMLARI.girmedi.etiket}
+                        </Text>
+                    </View>
                 ) : !kayitHazir ? (
-                    <View testID="vakit-karti-kayit-bekleniyor" style={{ alignSelf: 'stretch', height: 48 }} />
+                    <View testID="vakit-karti-kayit-bekleniyor" style={{ alignSelf: 'stretch', height: KILDIM_DUGMESI_YUKSEKLIK }} />
                 ) : (
-                    <View style={{ alignSelf: 'stretch' }}>
-                        <KildimDugmesi
-                            kilindi={tamamlandi}
-                            onKildim={onTamamla}
-                            vakitAdi={baslikAdi}
-                            testID="vakit-karti-kildim"
-                        />
+                    <KildimDugmesi
+                        kilindi={tamamlandi}
+                        onKildim={onTamamla}
+                        onGeriAl={onGeriAl}
+                        kimlik={kayitKimligi}
+                        vakitAdi={baslikAdi}
+                        testID="vakit-karti-kildim"
+                    />
+                )}
+
+                {/* Eski kartın teşvik satırı — tek satır, yalnız işaretlenebilirken. */}
+                {!tamamlandi && !kilitli && kayitHazir && (
+                    <View className="flex-row items-center justify-center mt-4 gap-2" testID="vakit-karti-tesvik">
+                        <FontAwesome5 name="star" size={10} color={renkler.birincil} />
+                        <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
+                            <Text className="font-bold" style={{ color: renkler.birincil }}>+{PUAN_DEGERLERI.namaz_kilindi} puan</Text>
+                            {' · Serinizi koruyun'}
+                        </Text>
                     </View>
                 )}
             </View>

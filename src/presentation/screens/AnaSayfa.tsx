@@ -679,6 +679,21 @@ export const AnaSayfa: React.FC = () => {
   suankiVakitTamamlaRef.current = suankiVakitTamamla;
   const handleSuankiKildim = useCallback(() => suankiVakitTamamlaRef.current(), []);
 
+  // Vakit kartından GERİ ALMA (kılındı → kılınmadı): kullanıcı listeye inmeden işareti
+  // kaldırabilsin. Aynı `namazToggle` yolu (false yönü kerahat onayı istemez; muhafız ve
+  // sayaç geri alımı namazIsaretle'de). Ref ile referans-kararlı (saniyelik çizim).
+  const suankiVakitGeriAl = () => {
+    if (vakitBilgisi && vakitBilgisi.vakit) {
+      const namazAdi = servisToNamazAdi[vakitBilgisi.vakit];
+      if (namazAdi) {
+        namazToggle(namazAdi, false);
+      }
+    }
+  };
+  const suankiVakitGeriAlRef = useRef(suankiVakitGeriAl);
+  suankiVakitGeriAlRef.current = suankiVakitGeriAl;
+  const handleSuankiGeriAl = useCallback(() => suankiVakitGeriAlRef.current(), []);
+
   // Toplu islemler gunlukNamazlar'i degistirir -> useEffect (seriKontrolet -> reconcile) otomatik kosar
   const tumunuTamamla = () => dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
   const tumunuSifirla = () => dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
@@ -860,6 +875,8 @@ export const AnaSayfa: React.FC = () => {
             tamamlandi={suankiVakitTamamlandi}
             kayitHazir={gunlukNamazlar.tarih === sayfaTarihi}
             onTamamla={handleSuankiKildim}
+            onGeriAl={handleSuankiGeriAl}
+            kayitKimligi={`${sayfaTarihi}_${suankiVakitAdi}`}
             kilitli={kilitli}
             konumModu={konumAyarlari.konumModu}
             konumMetni={konumMetni}
