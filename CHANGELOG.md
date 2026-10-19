@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.48.0] - 2026-10-19
+
+### Eklendi
+- [saat] kalan süre komplikasyonu yalnız süreyi gösterir; çıkış saati ve sıradaki namaz ayrı kaynak
+
 ## [0.47.1] - 2026-10-19
 
 ### Düzeltildi
