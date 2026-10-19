@@ -20,4 +20,11 @@
   <color name="widget_my_ikincil">@color/widget_acik_ikincil</color>
   <color name="widget_my_vurgu">@color/widget_acik_vurgu</color>
   <color name="widget_my_vurgu_ustu">@color/widget_acik_vurgu_ustu</color>
+  <!-- Klasik (yeşil) widget'lar: Widget 1.0 (0.21) görünümü, sahip isteğiyle geri geldi.
+       Değerler eski düzenlerdeki sabit renklerin aynısıdır. -->
+  <color name="widget_klasik_zemin">#E0215732</color>
+  <color name="widget_klasik_metin">#FFFFFF</color>
+  <color name="widget_klasik_metin_soluk">#CCFFFFFF</color>
+  <color name="widget_klasik_vurgu">#FFD700</color>
+  <color name="widget_klasik_satir_aktif">#BB000000</color>
 </resources>

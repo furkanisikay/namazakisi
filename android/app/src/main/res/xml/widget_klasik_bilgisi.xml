@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Klasik (yeşil) 1×1 widget — Widget 1.0 (0.21) ölçüleri. Widget 2.0 sağlayıcılarından
+  AYRIDIR: onların sınıf adı korunup düzeni değişince eski görünüm kaybolmuştu.
+  Yapılandırma yok (sabit yeşil görünüm), kilit ekranı kategorisi yok (eskisi gibi).
+  previewLayout API 31+ seçicide gerçek görünümü gösterir; öncesinde uygulama simgesi.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_klasik_aciklama"
+    android:initialLayout="@layout/widget_klasik"
+    android:minHeight="72dp"
+    android:minWidth="72dp"
+    android:previewLayout="@layout/widget_klasik"
+    android:resizeMode="none"
+    android:targetCellHeight="1"
+    android:targetCellWidth="1"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen" />

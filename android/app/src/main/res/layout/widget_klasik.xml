@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Klasik (yeşil) 1×1 widget — Widget 1.0 görünümü. Kalan süre dakikalık alarm yerine
+  sistemin çizdiği `Chronometer` ile akar (Widget 2.0 kuralı); örnek metin
+  (`klasik_kalan_metin`) yalnız seçici önizlemesinde ve veri yokken görünür.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/klasik_kok"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/widget_klasik_zemin"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/klasik_vakit_adi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="öğleye:"
+        android:textColor="@color/widget_klasik_metin"
+        android:textSize="10sp"
+        android:maxLines="1"
+        android:fontFamily="sans-serif" />
+
+    <TextView
+        android:id="@+id/klasik_kalan_metin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="02:45"
+        android:textColor="@color/widget_klasik_metin"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:fontFamily="sans-serif-medium" />
+
+    <Chronometer
+        android:id="@+id/klasik_kalan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:textColor="@color/widget_klasik_metin"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:fontFamily="sans-serif-medium" />
+
+</LinearLayout>
