@@ -13,7 +13,7 @@ Gizlilik odaklı, tamamen çevrimdışı ibadet asistanı.
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.45.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.30.1**
+Kaynak koddaki sürüm: **0.46.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.30.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## Ekran görüntüleri
@@ -70,7 +70,7 @@ Kaynak koddaki sürüm: **0.45.0** · Mağazada: Google Play: **0.45.0** · App 
 ## Özellikler
 
 <!-- OTOMATIK:BASLA yenilikler -->
-- **Daha sade uygulama** — Yeni sekmeler: Bugün, Kıble, Kaza, İlerleme, Ayarlar. Tüm hatırlatmalar tek sayfada; ana ekranda tek düğme: "Kıldım". <sub>Android · iOS · 0.45.0</sub>
+- **Daha sade uygulama** — Yeni sekmeler: Bugün, Kıble, Kaza, İlerleme, Ayarlar. Tüm hatırlatmalar tek sayfada; vakit kartında işaretleme ve geri alma tek dokunuşla. <sub>Android · iOS · 0.46.0</sub>
 - **Verileriniz Tüm Cihazlarınızda** — Kıldığınız namazları, seri ve kaza defterinizi kendi Google Drive alanınızda saklayıp diğer telefonunuz ya da tabletinizle eşitleyebilirsiniz. Veriler sizin belirlediğiniz parolayla şifrelenir. <sub>Android · 0.42.0</sub>
 - **Wear OS Saatinizde Namaz Akışı** — Galaxy Watch gibi Wear OS saatinizde vakti ve kalan süreyi kadranda görür, bilekten "Kıldım" der, tesbihat sayarsınız. Uyandırmanın ve sesli okumanın saatte mi telefonda mı olacağını siz seçersiniz. <sub>Android · 0.42.0</sub>
 - **Tüm Hatırlatmalar Aynı Ekranda** — Namaz muhafızı, nafile, cuma, camiye gitme, yatış ve takvim hatırlatmaları aynı ekranı ve aynı seçenekleri kullanır: birden çok hatırlatma, tekrar ve sesli okuma. <sub>Android · iOS · 0.40.0</sub>
