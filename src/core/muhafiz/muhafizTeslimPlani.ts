@@ -240,8 +240,7 @@ export function vakitTeslimAdaylari(
 
     const adaylar: MuhafizTeslimAdayi[] = [];
     const anonsKonusur = telefonAnonsuKonusurMu(saat);
-    // Saat W3: uyandırma saatteyse telefonun yedeği özgün andan SONRA çalar (ya da saatte
-    // ertelendiyse çok daha sonra). Motor taramayı "şu anki ölçü"den başlatır → özgün anı
+    // Saat W3: uyandırma saatteyse telefonun yedeği özgün andan SONRA çalar. Motor taramayı "şu anki ölçü"den başlatır → özgün anı
     // geçmişte kalmış ama yedeği hâlâ gelecekte olan tetik HİÇ üretilmezdi ve [T, T+3 dk)
     // içindeki bir planlama turu yedeği sessizce silerdi. Bu yüzden saat uyandırırken
     // pencerenin TAMAMI taranır ve geçmiş süzgeci KAYDIRILMIŞ ana uygulanır. Varsayılan
@@ -254,8 +253,7 @@ export function vakitTeslimAdaylari(
         const ozgunMs = cikisMs - ham.kalanDk * 60 * 1000;
         const id = muhafizBildirimIdOlustur(vakit.vakit, ham.seviye, vakit.tarih, ham.kalanDk);
         // Saat W3 — uyandırma: telefonun anı TEK kuraldan (`uyandirmaTelefonMs`): saatte
-        // kapatıldıysa kurulmaz, ertelendiyse saatin yeni anının ardına, "saat" seçiliyse
-        // birkaç dakika sonraya YEDEK. Kimlik DEĞİŞMEZ (kalanDk'dan türer).
+        // kapatıldıysa kurulmaz, "saat" seçiliyse birkaç dakika sonraya YEDEK. Kimlik DEĞİŞMEZ (kalanDk'dan türer).
         const zamanMs =
             saatUyandirir && muhafizUyandirmasiMi(vakit.vakit, ham)
                 ? uyandirmaTelefonMs(saat, id, ozgunMs, cikisMs)

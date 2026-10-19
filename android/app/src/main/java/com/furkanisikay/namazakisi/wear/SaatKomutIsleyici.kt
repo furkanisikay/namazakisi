@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.furkanisikay.namazakisi.alarm.MuhafizAlarmTemizligi
-import com.furkanisikay.namazakisi.alarm.MuhafizAlarmZamanlayici
 import com.furkanisikay.namazakisi.cekirdek.NafileKildimKurallari
 import com.furkanisikay.namazakisi.cekirdek.SaatKomutKurallari
 import com.furkanisikay.namazakisi.kildim.NafileKildimIsleyici
@@ -14,10 +13,7 @@ import expo.modules.camigeofence.CamiDurumu
 import expo.modules.camigeofence.CamiEylemAlicisi
 import expo.modules.camigeofence.NamazModu
 import expo.modules.countdownnotification.AnonsZamanlayici
-import expo.modules.notifications.notifications.model.NotificationRequest
-import expo.modules.notifications.notifications.triggers.DateTrigger
 import expo.modules.notifications.service.delegates.ExpoSchedulingDelegate
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -31,11 +27,11 @@ import java.util.Locale
  *    ve kapatma → `CamiEylemAlicisi.MODU_KAPAT` (bildirimdeki "Modu kapat" ile aynı gövde).
  *  - Camideyim cevabı → `CamiDurumu.soruyuKabulEt/Reddet`, `CAMI_DEGIL` (tek doğru kaynak
  *    `CamiDepo`; saat kopya tutmaz).
- *  - Uyandırma kapandı → cevap `SaatUyandirmaDeposu`'na yazılır (JS turu ona uyar);
- *    kapatıldıysa telefondaki YEDEĞİN tam kimlikle iptali, ertelendiyse yedeğin AYNI
- *    kimlikle saatin yeni anının ardına taşınması; teheccüd "Kıldım"ı
- *    `NafileKildimIsleyici` (FARZ YAZMAZ). Sabahın "Kıldım"ı saatten olağan farz yolundan
- *    (DataItem kuyruğu) ayrıca gelir.
+ *  - Uyandırma kapandı → cevap `SaatUyandirmaDeposu`'na yazılır (JS turu ona uyar) ve
+ *    telefondaki YEDEK tam kimlikle iptal edilir; teheccüd "Kıldım"ı
+ *    `NafileKildimIsleyici` (FARZ YAZMAZ). ERTELE YOK (sahip kararı 2026-10-19): eski
+ *    saatin `ertele`'si yalnız "tamam" alır — yedek planlandığı anında çalar.
+ *    Sabahın "Kıldım"ı saatten olağan farz yolundan (DataItem kuyruğu) ayrıca gelir.
  * Kurallar SAF `SaatKomutKurallari`'nda. Asla fırlatmaz.
  */
 object SaatKomutIsleyici {
@@ -99,9 +95,12 @@ object SaatKomutIsleyici {
 
     private fun uyandirmaKapandi(ctx: Context, metin: String?): String {
         val u = SaatKomutKurallari.uyandirmaIstegi(metin) ?: return SaatKomutKurallari.cevap("gecersiz")
+        // Eski saatin "10 dk ertele"si (göç): saatte susturuldu ama kişi uyandığını onaylamadı
+        // → telefon yedeği planlandığı gibi çalsın; ne depoya yazılır ne yedek taşınır/silinir.
+        if (u.eskiErtele) return tamam()
         // Cevap ÖNCE kalıcılaşır: JS planlama turu yedeği bu kayda göre kurar (kapatılanı
-        // yeniden kurmaz, ertelenenin anını korur). Yazılamazsa tur yedeği bir kez daha
-        // kurabilir — sessiz kayıp değil, fazladan uyarı.
+        // yeniden kurmaz). Yazılamazsa tur yedeği bir kez daha kurabilir — sessiz kayıp
+        // değil, fazladan uyarı.
         try {
             SaatUyandirmaDeposu.yaz(ctx, u)
         } catch (e: Exception) {
@@ -110,44 +109,8 @@ object SaatKomutIsleyici {
         if (u.islem == "kildim" && u.nafile) {
             NafileKildimKurallari.nafileCoz(u.id)?.let { NafileKildimIsleyici.nafileIsle(ctx, it, ExpoSchedulingDelegate(ctx)) }
         }
-        val yedek = u.yedekMs
-        if (yedek != null && yedek > System.currentTimeMillis()) yedegiErtele(ctx, u.id, yedek) else yedegiIptalEt(ctx, u.id)
+        yedegiIptalEt(ctx, u.id)
         return tamam()
-    }
-
-    /**
-     * Saatte ERTELENEN uyandırma: telefon yedeği SİLİNMEZ, AYNI kimlikle saatin yeni anının
-     * `YEDEK_GECIKMESI` sonrasına taşınır (inceleme bulgusu 1: eskiden silinirdi ve saat
-     * ertelenen anda çalamazsa — şarj, yük kaybı — kimse uyanmazdı). Üç biçim de ayrı ayrı:
-     * gerçek alarm (yükteki `tetikMs` de güncellenir — yoksa alıcı "10 dk geç" sayıp normal
-     * bildirime düşerdi), expo bildirimi, TTS anonsu. Gösterilen (o an çalan, `ikisi`) kopya
-     * kaldırılır. Hiçbiri bulunamazsa JS'in sonraki turu depodaki cevaba göre kurar.
-     */
-    private fun yedegiErtele(ctx: Context, id: String, yedekMs: Long) {
-        try {
-            MuhafizAlarmZamanlayici.yukAl(ctx, id)?.let { yuk ->
-                val yeni = JSONObject(yuk).put("tetikMs", yedekMs).toString()
-                if (!MuhafizAlarmZamanlayici.planla(ctx, id, yedekMs, yeni)) MuhafizAlarmZamanlayici.iptal(ctx, id)
-            }
-        } catch (e: Exception) {
-            Log.w(TAG, "Yedek alarm ertelenemedi", e)
-        }
-        try {
-            val zamanlama = ExpoSchedulingDelegate(ctx)
-            zamanlama.getScheduledNotification(id)?.let { istek ->
-                KopruEtiketliBildirimServisi.eskiExpoTetiginiIptalEt(ctx, id)
-                val kanal = istek.trigger?.getNotificationChannel()
-                zamanlama.scheduleNotification(NotificationRequest(id, istek.content, DateTrigger(kanal, yedekMs)))
-            }
-        } catch (e: Exception) {
-            Log.w(TAG, "Yedek bildirim ertelenemedi", e)
-        }
-        try {
-            AnonsZamanlayici.yenidenZamanla(ctx, id, yedekMs)
-        } catch (e: Exception) {
-            Log.w(TAG, "Yedek anons ertelenemedi", e)
-        }
-        gosterileniKaldir(ctx, id)
     }
 
     /**

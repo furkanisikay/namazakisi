@@ -86,7 +86,7 @@ class WearSenkronModulu(reactContext: ReactApplicationContext) : ReactContextBas
 
     /**
      * Saatte uyandırmaya verilen cevaplar (saat W3; `SaatUyandirmaDeposu`). JS planlama turu
-     * okur: kapatılan yedek yeniden kurulmaz, ertelenen saatin yeni anının ardına kurulur.
+     * okur: kapatılan yedek yeniden kurulmaz (ertele YOK).
      */
     @ReactMethod
     fun saatUyandirmaDurumlari(promise: Promise) {

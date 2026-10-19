@@ -103,7 +103,7 @@ object Hatirlatici {
                 val bekleyen = depo.bekleyenler()
                 try {
                     UyandirmaZinciri.calacak(yuk, bekleyen, uyandirma.durum(yuk), simdi, sarjda)?.let {
-                        UyandirmaBildirimi.cal(app, it.kayit, simdi)
+                        UyandirmaBildirimi.cal(app, it.kayit)
                         uyandirma.calindi(it.kayit.id, it.ms)
                     }
                 } catch (e: Exception) {

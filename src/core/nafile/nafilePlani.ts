@@ -78,15 +78,15 @@ export interface NafilePlanSecenekleri {
     kilindiMi?: (gunIso: string, tur: NafileTuru) => boolean;
     /**
      * Saat iş bölümü (saat W3). Uyandırma "saatte" ise teheccüd uyandırması telefonda
-     * YEDEKTİR ve `SAAT_YEDEK_GECIKMESI_DK` sonra çalar; saatte kapatılan/ertelenen
+     * YEDEKTİR ve `SAAT_YEDEK_GECIKMESI_DK` sonra çalar; saatte kapatılan
      * uyandırmanın cevabı (`uyandirmaDurumlari`) da buradan gelir. Servis ve defter aynı
      * değeri geçer.
      */
     saat?: SaatTeslimBaglami;
     /**
      * Geçmiş tetikleri de pencerenin SONUNA kadar tut (saat yükünün uyandırma listesi):
-     * saat ertelemeyi ve geç gelen yükü kendisi değerlendirir; telefon kaydı tetik anı
-     * geçti diye düşürseydi yeniden gönderilen yük saatin ertelemesini unuttururdu.
+     * saat geç gelen yükü kendi tolerans kuralıyla değerlendirir; telefon kaydı tetik anı
+     * geçti diye düşürseydi geç gelen yük uyandırmayı kaybettirirdi.
      * Servis ve defter bunu VERMEZ (geçmiş tetik kurulmaz).
      */
     pencereSonunaKadarTut?: boolean;
@@ -219,8 +219,7 @@ export function nafilePlaniOlustur(
             for (const t of nafilePencereTetikleri(ayar, p)) {
                 const id = `${nafileKimlikOneki(iso, p.tur)}${t.uyari.kalanDk}`;
                 // Saat W3 — teheccüd uyandırması: telefonun anı TEK kuraldan (saatte
-                // kapatıldıysa kurulmaz, ertelendiyse saatin yeni anının ardına, "saat"
-                // seçiliyse yedek). Geçmiş süzgeci KAYDIRILMIŞ ana uygulanır: özgün an
+                // kapatıldıysa kurulmaz, "saat" seçiliyse yedek). Geçmiş süzgeci KAYDIRILMIŞ ana uygulanır: özgün an
                 // geçmişken yedeği gelecekte olan tetik bir planlama turunda silinmesin.
                 const zamanMs =
                     saatUyandirir && nafileUyandirmasiMi({ tur: p.tur, uyandirma, uyari: t.uyari })

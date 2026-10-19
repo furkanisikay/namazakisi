@@ -97,17 +97,15 @@ describe('NÖBETÇİ (inceleme bulgusu 1) — kayıt pencere sonuna kadar taşı
         });
     const ilk = girdi(IMSAK_ONCESI)[0];
 
-    it('tetik anı GEÇTİKTEN sonra gelen yük kaydı yine taşır (saat ertelemesini unutmasın)', () => {
+    it('tetik anı GEÇTİKTEN sonra gelen yük kaydı yine taşır (geç gelen yük uyandırmayı kaybetmesin)', () => {
         const sonra = girdi(ilk.ms + 5 * 60_000);
         expect(sonra.find((k) => k.id === ilk.id)?.ms).toBe(ilk.ms);
         expect(girdi(ilk.sonMs + 1_000).some((k) => k.id === ilk.id)).toBe(false);
     });
 
-    it('saatte kapatılan kayıt gönderilmez; ertelenen yeni anıyla gider', () => {
+    it('saatte kapatılan kayıt gönderilmez; kapatılmayan özgün anıyla gider (ertele YOK)', () => {
         expect(girdi(ilk.ms + 60_000, { [ilk.id]: { islem: 'kapat' } }).some((k) => k.id === ilk.id)).toBe(false);
-        const hedef = ilk.ms + 10 * 60_000;
-        const ertelendi = girdi(ilk.ms + 60_000, { [ilk.id]: { islem: 'ertele', hedefMs: hedef } });
-        expect(ertelendi.find((k) => k.id === ilk.id)?.ms).toBe(hedef);
+        expect(girdi(ilk.ms + 60_000, {}).find((k) => k.id === ilk.id)?.ms).toBe(ilk.ms);
     });
 
     it('teheccüd: geçmiş tetik de pencere sonuna kadar taşınır', () => {

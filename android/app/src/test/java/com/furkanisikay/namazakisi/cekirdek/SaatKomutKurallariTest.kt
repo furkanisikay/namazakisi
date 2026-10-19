@@ -70,7 +70,7 @@ class SaatKomutKurallariTest {
     }
 
     @Test
-    fun uyandirmaFiksturuSaatinYazdiginiOkurVeYedekAniniAyniKuralleHesaplar() {
+    fun uyandirmaFiksturuSaatinYazdiginiOkur() {
         assertEquals(fikstur.getLong("yedekGecikmesiDk") * 60_000L, SaatKomutKurallari.YEDEK_GECIKMESI_MS)
         assertEquals(fikstur.getLong("yedekSonPayiMs"), SaatKomutKurallari.YEDEK_SON_PAYI_MS)
         val dizi = fikstur.getJSONArray("uyandirma")
@@ -78,33 +78,51 @@ class SaatKomutKurallariTest {
             val o = dizi.getJSONObject(i)
             val istek = SaatKomutKurallari.uyandirmaIstegi(o.toString())!!
             assertEquals("#$i", o.getString("islem"), istek.islem)
-            assertEquals("#$i", if (o.has("yedekMs")) o.getLong("yedekMs") else null, istek.yedekMs)
+            // ERTELE YOK: yalnız fikstürdeki eski saat kaydı "eski ertele" sayılır.
+            assertEquals("#$i", o.optBoolean("eskiSaat", false), istek.eskiErtele)
         }
     }
 
+    /**
+     * NÖBETÇİ — GÖÇ (ertele YOK, 2026-10-19): eski saatin `ertele`'si (hedefli ya da hedefsiz)
+     * reddedilmez ama depoya YAZILMAZ → JS turu yedeği özgün anında kurar; güncelleme
+     * öncesinden kalan `ertele` kaydı da süzgeçte düşer.
+     */
     @Test
-    fun erteleHedefsizGecersiz() {
-        assertNull(SaatKomutKurallari.uyandirmaIstegi("""{"id":"nafile_2026-10-12_teheccud_45","islem":"ertele"}"""))
-        assertNull(SaatKomutKurallari.uyandirmaIstegi("""{"id":"nafile_2026-10-12_teheccud_45","islem":"ertele","hedefMs":9,"sonMs":9}"""))
+    fun eskiErteleDepoyaYazilmazEskiKayitDuser() {
+        val hedefsiz = SaatKomutKurallari.uyandirmaIstegi("""{"id":"nafile_2026-10-12_teheccud_45","islem":"ertele"}""")!!
+        assertTrue(hedefsiz.eskiErtele)
+        val hedefli = SaatKomutKurallari.uyandirmaIstegi(
+            """{"id":"nafile_2026-10-12_teheccud_45","islem":"ertele","hedefMs":1000,"sonMs":5000}""",
+        )!!
+        assertTrue(hedefli.eskiErtele)
+        assertEquals(0, JSONObject(SaatKomutKurallari.depoyaYaz(null, hedefli, 100)).length())
+        val eskiDepo = """{"nafile_2026-10-12_teheccud_45":{"islem":"ertele","hedefMs":1000,"sonMs":5000},""" +
+            """"muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25":{"islem":"kapat","sonMs":9000}}"""
+        assertEquals(
+            listOf("muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25"),
+            SaatKomutKurallari.depoyuSuz(eskiDepo, 300).keys().asSequence().toList(),
+        )
+        // Eski ertele mevcut kapatma kaydını da SİLMEZ.
+        assertTrue(JSONObject(SaatKomutKurallari.depoyaYaz(eskiDepo, hedefli, 300)).has("muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25"))
     }
 
     /** NÖBETÇİ (inceleme bulgusu 1): cevap kalıcıdır, JS turu okur; ömrü dolan düşer. */
     @Test
     fun depoCevabiSaklarOmruDolaniDusurur() {
-        val ertele = SaatKomutKurallari.uyandirmaIstegi(
-            """{"id":"nafile_2026-10-12_teheccud_45","islem":"ertele","hedefMs":1000,"sonMs":5000}""",
+        val kapat = SaatKomutKurallari.uyandirmaIstegi(
+            """{"id":"nafile_2026-10-12_teheccud_45","islem":"kapat","sonMs":5000}""",
         )!!
         val kildim = SaatKomutKurallari.uyandirmaIstegi(
             """{"id":"muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25","islem":"kildim","sonMs":9000}""",
         )!!
-        var depo = SaatKomutKurallari.depoyaYaz(null, ertele, 100)
+        var depo = SaatKomutKurallari.depoyaYaz(null, kapat, 100)
         depo = SaatKomutKurallari.depoyaYaz(depo, kildim, 200)
         val o = SaatKomutKurallari.depoyuSuz(depo, 300)
-        assertEquals("ertele", o.getJSONObject("nafile_2026-10-12_teheccud_45").getString("islem"))
-        assertEquals(1000L, o.getJSONObject("nafile_2026-10-12_teheccud_45").getLong("hedefMs"))
+        assertEquals("kapat", o.getJSONObject("nafile_2026-10-12_teheccud_45").getString("islem"))
         // "Kıldım" da yedeği bir daha kurdurmaz.
         assertEquals("kapat", o.getJSONObject("muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25").getString("islem"))
-        // Pencere bitince (5000) erteleme kaydı düşer, diğeri kalır.
+        // Pencere bitince (5000) o kayıt düşer, diğeri kalır.
         val sonra = SaatKomutKurallari.depoyuSuz(depo, 6000)
         assertEquals(listOf("muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25"), sonra.keys().asSequence().toList())
         // sonMs'siz (eski saat) kayıt varsayılan ömürle yaşar.

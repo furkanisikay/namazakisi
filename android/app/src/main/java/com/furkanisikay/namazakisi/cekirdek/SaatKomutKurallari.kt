@@ -22,7 +22,7 @@ object SaatKomutKurallari {
 
     /**
      * Telefon → saat (TEK YÖNLÜ mesaj, saat W3 / inceleme bulgusu 7): telefondaki uyandırma
-     * alarmı ("ikisi" ya da saatin yedeği) telefonda Kapat/Kıldım/Ertele ile susturulunca
+     * alarmı ("ikisi" ya da saatin yedeği) telefonda Kapat/Kıldım ile susturulunca
      * saatteki titreşim de durur — saatte kapatınca telefonun yedeğinin iptali ile simetrik.
      * Gövde = kimlik (UTF-8).
      */
@@ -81,9 +81,9 @@ object SaatKomutKurallari {
     }
 
     /**
-     * Saatte ertelenen/kapatılan uyandırmanın telefon yedeği (JS `uyandirmaTelefonMs` ile
-     * AYNI kural; sabitler JS `SAAT_YEDEK_GECIKMESI_DK` / `SAAT_YEDEK_SON_PAYI_MS` ile
-     * ortak fikstürde kilitli): ertelemeden sonra telefon daima YEDEKTİR.
+     * Saat uyandırırken telefon yedeğinin gecikmesi ve pencere sonu payı (JS
+     * `uyandirmaTelefonMs` ile AYNI kural; sabitler JS `SAAT_YEDEK_GECIKMESI_DK` /
+     * `SAAT_YEDEK_SON_PAYI_MS` ile ortak fikstürde kilitli).
      */
     const val YEDEK_GECIKMESI_MS = 3 * 60_000L
     const val YEDEK_SON_PAYI_MS = 30_000L
@@ -91,33 +91,32 @@ object SaatKomutKurallari {
     /** `sonMs` yoksa (eski saat) kaydın ömrü — en uzun pencere (yatsı) bile buna sığar. */
     const val VARSAYILAN_OMUR_MS = 12 * 60 * 60_000L
 
-    data class UyandirmaIstegi(val id: String, val islem: String, val hedefMs: Long? = null, val sonMs: Long? = null) {
+    data class UyandirmaIstegi(val id: String, val islem: String, val sonMs: Long? = null) {
         val nafile: Boolean get() = id.startsWith("nafile_")
 
-        /** Ertelenen uyandırmanın telefon yedeği; ertele değilse null. */
-        val yedekMs: Long?
-            get() = if (islem == "ertele" && hedefMs != null) {
-                minOf(hedefMs + YEDEK_GECIKMESI_MS, (sonMs ?: Long.MAX_VALUE) - YEDEK_SON_PAYI_MS)
-            } else {
-                null
-            }
+        /**
+         * ERTELE YOK (sahip kararı 2026-10-19, muhafızla aynı): güncelleme öncesi saat hâlâ
+         * `ertele` gönderebilir. Anlamı "saatte susturuldu ama kişi uyandığını onaylamadı" →
+         * telefon yedeğine DOKUNULMAZ (planlandığı anında çalar), depoya YAZILMAZ ve yeni
+         * anına öksüz bir erteleme alarmı KURULMAZ.
+         */
+        val eskiErtele: Boolean get() = islem == "ertele"
     }
 
     /**
-     * `{"id":…,"islem":"kapat"|"ertele"|"kildim","hedefMs"?,"sonMs"?}` — kimlik YALNIZ
-     * uyandırma kimliği olabilir (sabahın muhafız kimliği ya da teheccüd nafile kimliği):
-     * saat başka bir planı susturamaz. "ertele" saatin yeni anını (`hedefMs`) TAŞIMAK
-     * ZORUNDADIR — taşımazsa geçersizdir (telefon yedeği nereye kuracağını bilemez).
+     * `{"id":…,"islem":"kapat"|"kildim","sonMs"?}` — kimlik YALNIZ uyandırma kimliği olabilir
+     * (sabahın muhafız kimliği ya da teheccüd nafile kimliği): saat başka bir planı
+     * susturamaz. Eski saatin `ertele`'si (`hedefMs`'li ya da değil) GEÇERLİ sayılır ama
+     * yalnız `eskiErtele` olarak işlenir (yedek değişmez); reddedilseydi eski saat
+     * kullanıcıya hata gösterirdi.
      */
     fun uyandirmaIstegi(json: String?): UyandirmaIstegi? {
         val o = nesne(json) ?: return null
         val islem = o.optString("islem").takeIf { it == "kapat" || it == "ertele" || it == "kildim" } ?: return null
         val id = o.optString("id")
         if (!uyandirmaKimligiMi(id)) return null
-        val hedef = o.optLong("hedefMs", 0L).takeIf { it > 0L }
         val son = o.optLong("sonMs", 0L).takeIf { it > 0L }
-        if (islem == "ertele" && (hedef == null || (son != null && hedef >= son))) return null
-        return UyandirmaIstegi(id, islem, hedef, son)
+        return UyandirmaIstegi(id, islem, son)
     }
 
     /** Uyandırma olabilecek kimlik mi? (sabahın muhafız kimliği ya da teheccüd nafile kimliği) */
@@ -127,31 +126,30 @@ object SaatKomutKurallari {
 
     /**
      * Telefonun uyandırma CEVAP deposu (`SaatUyandirmaDeposu`, SharedPreferences) — SAF
-     * dönüşümler. Kayıt: kimlik → `{islem, hedefMs?, sonMs}`. JS planlama turu bunu okur
-     * (`saatUyandirmaDurumlariniCoz`): kapatılan yedek yeniden KURULMAZ, ertelenen saatin
-     * yeni anının ardına kurulur. Ömrü dolan (`sonMs` geçen) kayıt her yazım/okumada düşer.
-     * "kildim" de "kapat" olarak saklanır (yedek artık hiç çalmamalı).
+     * dönüşümler. Kayıt: kimlik → `{islem:"kapat", sonMs}`. JS planlama turu bunu okur
+     * (`saatUyandirmaDurumlariniCoz`): kapatılan yedek yeniden KURULMAZ. Ömrü dolan (`sonMs`
+     * geçen) kayıt her yazım/okumada düşer. "kildim" de "kapat" olarak saklanır (yedek artık
+     * hiç çalmamalı). Eski `ertele` isteği YAZILMAZ; güncelleme öncesinden kalan `ertele`
+     * kaydı da süzgeçte DÜŞER (yedek özgün anına döner — JS ikizi aynı kayıtları atlar).
      */
     fun depoyaYaz(mevcut: String?, istek: UyandirmaIstegi, simdiMs: Long): String {
         val o = depoyuSuz(mevcut, simdiMs)
+        if (istek.eskiErtele) return o.toString()
         val kayit = JSONObject()
-            .put("islem", if (istek.islem == "ertele") "ertele" else "kapat")
+            .put("islem", "kapat")
             .put("sonMs", istek.sonMs ?: (simdiMs + VARSAYILAN_OMUR_MS))
-        if (istek.islem == "ertele" && istek.hedefMs != null) kayit.put("hedefMs", istek.hedefMs)
         o.put(istek.id, kayit)
         return o.toString()
     }
 
-    /** Depodan ömrü dolmamış, biçimi sağlam kayıtlar. */
+    /** Depodan ömrü dolmamış, biçimi sağlam `kapat` kayıtları. */
     fun depoyuSuz(ham: String?, simdiMs: Long): JSONObject {
         val giris = nesne(ham) ?: return JSONObject()
         val cikis = JSONObject()
         giris.keys().forEach { id ->
             val k = giris.optJSONObject(id) ?: return@forEach
             val son = k.optLong("sonMs", 0L)
-            val islem = k.optString("islem")
-            if (son <= simdiMs || (islem != "kapat" && islem != "ertele")) return@forEach
-            if (islem == "ertele" && k.optLong("hedefMs", 0L) <= 0L) return@forEach
+            if (son <= simdiMs || k.optString("islem") != "kapat") return@forEach
             cikis.put(id, k)
         }
         return cikis
