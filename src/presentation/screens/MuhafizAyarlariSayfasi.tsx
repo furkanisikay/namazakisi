@@ -104,7 +104,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     const kendimOzeti =
         muhafizAyarlari.yogunluk === 'ozel'
             ? 'Kendi ayarınız kullanılıyor'
-            : 'Vakit vakit zaman, sertlik ve sesli okuma';
+            : 'Her vakti ayrı ayarlayın';
     /** Adım detayı açılırken matris + yoğunluk (kapanışta sığma simülasyonu için). */
     const detayOncesiRef = useRef<{
         matris: MuhafizMatrisi;

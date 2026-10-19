@@ -218,8 +218,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                 style={{ marginRight: 8, marginTop: 1 }}
                             />
                             <Text className="flex-1 text-xs leading-4" style={{ color: renkler.metinIkincil }}>
-                                Bu bir önizlemedir; bildirim gönderilmez. Bir adımın nasıl duyulacağını
-                                denemek için “Dinle” düğmesine dokunun.
+                                Önizlemedir, bildirim gönderilmez. Duymak için “Dinle”ye dokunun.
                                 {girisYonu && sesliAdimVar ? ` ${GIRIS_SESLI_GECIKME_NOTU}` : ''}
                             </Text>
                         </View>
@@ -240,10 +239,13 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                     const ozelMetin = ozelMetinler?.[sira] ?? null;
                                     const kademe = SEVIYE_KADEMELERI[adim.seviye - 1];
                                     const bilgi = tanim.adimBilgileri[adim.seviye - 1] ?? tanim.adimBilgileri[0];
-                                    // Issue #274: ton sırayı ima etmez → "N. hatırlatma · Ton".
+                                    // Issue #274: ton sırayı ima etmez. Ton ADI ekranda yazılmaz
+                                    // (persona çalışması 2026-10-19: "Nazik/Uyarı/Sert/Acil" jargon);
+                                    // sertlik renk/ikonla görünür, ekran okuyucuya etikette söylenir.
                                     const adimEtiketi = tanim.tonSecilebilir
-                                        ? `${adim.adimIndeks + 1}. hatırlatma · ${TON_ETIKETLERI[kademe]}`
+                                        ? `${adim.adimIndeks + 1}. hatırlatma`
                                         : bilgi.baslik;
+                                    const tonErisim = tanim.tonSecilebilir ? `, ${TON_ETIKETLERI[kademe]}` : '';
                                     const seviye = adim.seviye as MuhafizSeviye;
                                     const anonsMetni = ozelMetin
                                         ? adim.sesliAnons
@@ -272,7 +274,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                 borderLeftColor: bilgi.renk,
                                             }}
                                             accessible
-                                            accessibilityLabel={`${esikIfadesi(adim.olcuDk, tanim.yon)}, ${adimEtiketi}${alarmEtiketi ? `, ${alarmEtiketi}` : ''}`}
+                                            accessibilityLabel={`${esikIfadesi(adim.olcuDk, tanim.yon)}, ${adimEtiketi}${tonErisim}${alarmEtiketi ? `, ${alarmEtiketi}` : ''}`}
                                         >
                                             {/* Adim basligi: olcu rozeti + kademe */}
                                             <View className="flex-row items-center mb-2">

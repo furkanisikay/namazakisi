@@ -276,7 +276,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     const ekran = render(<MuhafizAyarlariSayfasi />);
     await act(async () => { await Promise.resolve(); });
     expect(ekran.queryByText('İkindi')).toBeNull();
-    expect(ekran.getByText('Vakit vakit zaman, sertlik ve sesli okuma')).toBeTruthy();
+    expect(ekran.getByText('Her vakti ayrı ayarlayın')).toBeTruthy();
     fireEvent.press(ekran.getByTestId('kendim-ayarlayayim'));
     expect(ekran.getByText('İkindi')).toBeTruthy();
   });
@@ -309,6 +309,9 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(getByLabelText(/^2\. hatırlatma, Uyarı/)).toBeTruthy();
     expect(getByLabelText(/^3\. hatırlatma, Sert/)).toBeTruthy();
     expect(getByLabelText(/^4\. hatırlatma, Acil/)).toBeTruthy();
+    // Persona çalışması 2026-10-19: ton ADI ekranda yazılmaz (jargon) — yalnız ekran
+    // okuyucu etiketinde (renk/ikonun karşılığı) kalır.
+    expect(queryByText(/Nazik|Sert$|· Acil|· Uyarı/)).toBeNull();
     expect(getByText('Tüm vakitlere uygula')).toBeTruthy();
     // Adım özeti seviyeOzetiOlustur'dan gelir
     expect(getByText('45 dk kala · bildirim · Uygulama sesi')).toBeTruthy();
@@ -478,7 +481,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik — düzenleyin/));
 
     expect(getByTestId('adim-bildirim-anahtari').props.disabled).toBe(true);
-    expect(getByText('Bu hatırlatmayı kapatmak için listedeki anahtarı kullanın.')).toBeTruthy();
+    expect(getByText('Kapatmak için listedeki anahtarı kullanın.')).toBeTruthy();
   });
 
   // ── Titreşim kanalı (Faz 6) ───────────────────────────────────────────────

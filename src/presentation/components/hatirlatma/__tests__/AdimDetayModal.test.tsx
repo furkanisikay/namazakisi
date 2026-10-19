@@ -166,7 +166,7 @@ describe('AdimDetayModal — NASIL (iki anahtar)', () => {
     test('son açık kanal anahtarı DEVRE DIŞI ve nedeni yazılı', () => {
         const { ekran } = kur(CUMA, adim({ bildirim: true }));
         expect(ekran.getByTestId('adim-bildirim-anahtari').props.disabled).toBe(true);
-        expect(ekran.getByText('Bu hatırlatmayı kapatmak için listedeki anahtarı kullanın.')).toBeTruthy();
+        expect(ekran.getByText('Kapatmak için listedeki anahtarı kullanın.')).toBeTruthy();
         expect(ekran.getByTestId('adim-sesli-anahtari').props.disabled).toBeFalsy();
     });
 
