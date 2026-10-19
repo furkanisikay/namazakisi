@@ -58,6 +58,15 @@
       "beklenen": ["muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45", "muhafiz_2026-10-13_vakit_ogle_ertele"]
     },
     {
+      "ad": "goc: CALAN eski _ertele alarmi planlama turunda korunur, bekleyeni silinir",
+      "kayitlar": [
+        { "kimlik": "muhafiz_2026-10-13_vakit_ogle_ertele", "caliyor": true },
+        { "kimlik": "muhafiz_2026-10-13_vakit_ikindi_ertele", "caliyor": false }
+      ],
+      "calaniDurdur": false,
+      "beklenen": ["muhafiz_2026-10-13_vakit_ikindi_ertele"]
+    },
+    {
       "ad": "calan yoksa hepsi",
       "kayitlar": [
         { "kimlik": "muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45", "caliyor": false }
