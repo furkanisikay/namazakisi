@@ -10,6 +10,7 @@ import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
+import com.furkanisikay.namazakisi.saat.cekirdek.AnonsKarari.SesDurumu
 import com.furkanisikay.namazakisi.saat.cekirdek.ElSikisma
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
@@ -20,6 +21,9 @@ import java.util.concurrent.atomic.AtomicReference
  * burası yalnız donanım yoklaması + TTS.
  *
  * - Önce `FEATURE_AUDIO_OUTPUT`, sonra `TYPE_BUILTIN_SPEAKER` (Google'ın önerdiği sıra).
+ * - Paket görünürlüğü: manifestte `TTS_SERVICE` `<queries>` girdisi (Android 11+ için
+ *   `TextToSpeech` belgesinin istediği). Yoksa motor görünmeyebilir, `onInit` hata döner ve
+ *   saat SESSİZCE hiç konuşmaz. Sonuç `son_durum` olarak yazılır, ana ekran nedeni söyler.
  * - `Locale.forLanguageTag("tr-TR")` (JDK21'de `Locale(…)` kurucusu kullanımdan kalktı);
  *   Türkçe ses yoksa sessizce vazgeçilir (bildirim zaten titreşti) ve bir bayrak yazılır —
  *   ana ekran bunu kibarca söyler.
@@ -38,6 +42,7 @@ object SaatAnonsu {
     private const val ZAMAN_ASIMI_MS = ElSikisma.ANONS_ZAMAN_ASIMI_MS
     private const val PREFS = "saat_anons"
     private const val TURKCE_YOK = "turkce_yok"
+    private const val SON_DURUM = "son_durum"
 
     fun hoparlorVarMi(context: Context): Boolean {
         if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_AUDIO_OUTPUT)) return false
@@ -45,40 +50,63 @@ object SaatAnonsu {
         return am.getDevices(AudioManager.GET_DEVICES_OUTPUTS).any { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER }
     }
 
-    /** Son denemede Türkçe ses bulunamadı mı? (ekrandaki bilgi satırı) */
-    fun turkceYok(context: Context): Boolean =
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(TURKCE_YOK, false)
+    /** Son denemede Türkçe ses bulunamadı mı? */
+    fun turkceYok(context: Context): Boolean = sonDurum(context) == SesDurumu.TURKCE_YOK
 
-    fun konus(context: Context, metin: String, bitti: () -> Unit) {
+    /**
+     * Son konuşma denemesinin sonucu (ana ekranın bilgi satırı). Eski sürümün yazdığı
+     * `turkce_yok` bayrağı da okunur: güncellemeden sonra ilk denemeye kadar satır kaybolmasın.
+     */
+    fun sonDurum(context: Context): SesDurumu {
+        val p = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val d = SesDurumu.coz(p.getString(SON_DURUM, null))
+        return if (d == SesDurumu.BILINMIYOR && p.getBoolean(TURKCE_YOK, false)) SesDurumu.TURKCE_YOK else d
+    }
+
+    private fun durumYaz(app: Context, d: SesDurumu) {
+        app.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putString(SON_DURUM, d.kod)
+            .putBoolean(TURKCE_YOK, d == SesDurumu.TURKCE_YOK)
+            .apply()
+    }
+
+    /**
+     * @param bitti HER yolda tam bir kez, ana iş parçacığında, denemenin sonucuyla çağrılır
+     *   (zaman aşımı `HATA`); sonuç diske de yazılır.
+     */
+    fun konus(context: Context, metin: String, bitti: (SesDurumu) -> Unit) {
         val app = context.applicationContext
         val tamam = AtomicBoolean(false)
         val ana = Handler(Looper.getMainLooper())
         val tts = AtomicReference<TextToSpeech?>(null)
         val initDurumu = java.util.concurrent.atomic.AtomicInteger(Int.MIN_VALUE)
         val elSikisma = ElSikisma()
-        fun bitir() {
+        fun bitir(sonuc: SesDurumu) {
             if (!tamam.compareAndSet(false, true)) return
+            durumYaz(app, sonuc)
             ana.post {
                 try {
                     tts.get()?.shutdown()
                 } catch (_: Exception) {
                     // zaten kapalı
                 }
-                bitti()
+                bitti(sonuc)
             }
         }
         fun basla() {
             val t = tts.get()
             if (initDurumu.get() != TextToSpeech.SUCCESS || t == null) {
-                bitir()
+                // Motor yok ya da bağlanamadı (Android 11+ paket görünürlüğü: manifestteki
+                // TTS_SERVICE `<queries>` girdisi olmadan motorlar hiç görünmez).
+                Log.w(TAG, "TTS baslatilamadi: onInit=${initDurumu.get()}")
+                bitir(SesDurumu.MOTOR_YOK)
                 return
             }
             try {
                 val dil = t.setLanguage(Locale.forLanguageTag("tr-TR"))
                 val yok = dil == TextToSpeech.LANG_MISSING_DATA || dil == TextToSpeech.LANG_NOT_SUPPORTED
-                app.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean(TURKCE_YOK, yok).apply()
                 if (yok) {
-                    bitir()
+                    bitir(SesDurumu.TURKCE_YOK)
                     return
                 }
                 t.setAudioAttributes(
@@ -89,18 +117,23 @@ object SaatAnonsu {
                 )
                 t.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) = Unit
-                    override fun onDone(utteranceId: String?) = bitir()
+                    override fun onDone(utteranceId: String?) = bitir(SesDurumu.KONUSTU)
                     @Deprecated("Deprecated in Java")
-                    override fun onError(utteranceId: String?) = bitir()
-                    override fun onError(utteranceId: String?, errorCode: Int) = bitir()
+                    override fun onError(utteranceId: String?) = bitir(SesDurumu.HATA)
+                    override fun onError(utteranceId: String?, errorCode: Int) {
+                        Log.w(TAG, "TTS hata kodu $errorCode")
+                        bitir(SesDurumu.HATA)
+                    }
                 })
-                if (t.speak(metin, TextToSpeech.QUEUE_FLUSH, null, "saat_anons") != TextToSpeech.SUCCESS) bitir()
+                if (t.speak(metin, TextToSpeech.QUEUE_FLUSH, null, "saat_anons") != TextToSpeech.SUCCESS) {
+                    bitir(SesDurumu.HATA)
+                }
             } catch (e: Exception) {
                 Log.w(TAG, "TTS konusamadi", e)
-                bitir()
+                bitir(SesDurumu.HATA)
             }
         }
-        ana.postDelayed({ bitir() }, ZAMAN_ASIMI_MS)
+        ana.postDelayed({ bitir(SesDurumu.HATA) }, ZAMAN_ASIMI_MS)
         try {
             val yeni = TextToSpeech(app) { durum ->
                 initDurumu.set(durum)
@@ -111,7 +144,7 @@ object SaatAnonsu {
             if (elSikisma.isaretle()) ana.post { basla() }
         } catch (e: Exception) {
             Log.w(TAG, "TTS baslatilamadi", e)
-            bitir()
+            bitir(SesDurumu.MOTOR_YOK)
         }
     }
 }

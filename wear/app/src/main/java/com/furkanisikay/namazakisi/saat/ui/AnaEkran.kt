@@ -72,8 +72,15 @@ fun AnaEkran(
     onCamiCevap: (cevap: String, yerId: String) -> Unit = { _, _ -> },
     /** Telefona istek sürüyor (düğmeler kilitli, çift dokunuş olmasın). */
     istekSuruyor: Boolean = false,
-    /** Saat anons edecekken Türkçe ses bulunamadı (saat W3, fikir 9) — kibar bilgi satırı. */
-    turkceSesYok: Boolean = false,
+    /**
+     * Saat sesli anonsu (saat W3, fikir 9): konuşamıyorsa nedeni (hoparlör / motor / Türkçe
+     * ses yok) — kibar bilgi satırı; null = sorun yok ya da saat bu ayarla konuşmaz.
+     */
+    sesBilgisi: String? = null,
+    /** "Sesi deneyin" düğmesinin açıklaması (ör. otomatik ayarda telefon yanındayken susar). */
+    sesAciklamasi: String? = null,
+    /** Saat bu ayarla konuşabiliyorsa deneme (null = düğme yok). */
+    onSesDene: (() -> Unit)? = null,
 ) {
     val liste = rememberTransformingLazyColumnState()
     val donusum = rememberTransformationSpec()
@@ -173,10 +180,8 @@ fun AnaEkran(
                     if (yuk != null && guncellemeGerekli) {
                         item(key = "guncelleme") { BilgiMetni(GUNCELLEME_METNI) }
                     }
-                    if (turkceSesYok) {
-                        item(key = "turkce_ses") {
-                            BilgiMetni("Saatinizde Türkçe ses yok; sesli anonslar yalnız titreşimle bildirilir.")
-                        }
+                    if (sesBilgisi != null) {
+                        item(key = "ses_bilgisi") { BilgiMetni(sesBilgisi) }
                     }
                     if (yuk != null && !bildirimIzni) {
                         item(key = "izin") {
@@ -217,6 +222,20 @@ fun AnaEkran(
                             modifier = Modifier.semantics { contentDescription = "Kıble pusulasını açın" },
                             label = { Text("Kıble") },
                         )
+                    }
+                    // Sesli okuma denemesi: vakit beklemeden "saat konuşuyor mu?" sorusunu cevaplar.
+                    if (onSesDene != null) {
+                        item(key = "ses_dene") {
+                            CompactButton(
+                                onClick = onSesDene,
+                                colors = ButtonDefaults.filledTonalButtonColors(),
+                                modifier = Modifier.semantics { contentDescription = "Saatin sesli okumasını deneyin" },
+                                label = { Text("Sesi deneyin") },
+                            )
+                        }
+                        if (sesAciklamasi != null) {
+                            item(key = "ses_aciklama") { BilgiMetni(sesAciklamasi) }
+                        }
                     }
                     // Saate sığmayan ekranlar telefonda açılır (yalnız gezinme bağlantıları).
                     item(key = "telefonda") { BilgiMetni("Telefonda açın", Modifier.padding(top = 8.dp)) }
