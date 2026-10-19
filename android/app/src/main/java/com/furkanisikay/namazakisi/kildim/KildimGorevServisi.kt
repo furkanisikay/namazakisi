@@ -18,10 +18,7 @@ class KildimGorevServisi : HeadlessJsTaskService() {
     override fun getTaskConfig(intent: Intent?): HeadlessJsTaskConfig =
         HeadlessJsTaskConfig(
             GOREV_ADI,
-            Arguments.createMap().apply {
-                // Muhafız ertelemesi (issue #289): JS kuyruğa ek olarak saatin planını tazeler.
-                intent?.getStringExtra(EK_NEDEN)?.let { putString(EK_NEDEN, it) }
-            },
+            Arguments.createMap(),
             ZAMAN_ASIMI_MS,
             true
         )
@@ -29,11 +26,5 @@ class KildimGorevServisi : HeadlessJsTaskService() {
     companion object {
         const val GOREV_ADI = "KildimKuyrugu"
         private const val ZAMAN_ASIMI_MS = 30_000L
-
-        /** Görev verisindeki neden alanı — JS `index.ts` okur. */
-        const val EK_NEDEN = "neden"
-
-        /** JS `ERTELEME_GOREV_NEDENI` ile AYNI. */
-        const val NEDEN_ERTELE = "ertele"
     }
 }

@@ -32,7 +32,6 @@ import { VARSAYILAN_PENCERE_YONU } from '../muhafiz/pencereTipleri';
 import { pencereUzunluguDkHesapla } from '../muhafiz/pencereUzunlugu';
 import { muhafizBildirimIdOlustur } from '../muhafiz/anonsKimligi';
 import { kimliktenOran, muhafizGovdesiSec } from '../muhafiz/muhafizGovdesi';
-import { ertelemeSusturuyorMu } from '../muhafiz/erteleme';
 
 /** Plan ufku: 2 gün. Bağlantısız bir gece + ertesi gün kapsanır. */
 export const WEAR_PLAN_UFKU_MS = 48 * 60 * 60 * 1000;
@@ -92,14 +91,6 @@ export interface WearMuhafizGirdisi {
      * saat de planlamamalı. Verilmezse kapı kapalı sayılır.
      */
     ozelGundeMi?: (tarih: string) => boolean;
-    /**
-     * Etkin ERTELEMELER (issue #289, `etkinErtelemeler`): `<gün>_<vakit>` → hedef ms.
-     * Ertelenen aralığın kayıtları saate GİTMEZ — telefonun arka planı ve ön planı
-     * aynı kuralla (`ertelemeSusturuyorMu`) susar; saat de susmalı. Yük şeması
-     * DEĞİŞMEZ (süzme telefonda). Ertelenen kopyanın kendisi plan kimliği taşımadığı
-     * için köprüyle bileğe gider.
-     */
-    ertelemeler?: Readonly<Record<string, number>>;
     ufukMs?: number;
 }
 
@@ -192,11 +183,7 @@ export function wearMuhafizPlaniOlustur(g: WearMuhafizGirdisi): WearMuhafizKaydi
         .filter((p) => p.cikis.getTime() > g.simdiMs && p.giris.getTime() < ufuk)
         .filter((p) => !(g.kilinanlar[p.tarih] ?? []).includes(p.vakit))
         .filter((p) => !g.ozelGundeMi?.(p.tarih))
-        .map((p) =>
-            pencereninKayitlari(p, g.matris).filter(
-                (k) => !ertelemeSusturuyorMu(g.ertelemeler, k.tarih, k.vakit, k.ms)
-            )
-        )
+        .map((p) => pencereninKayitlari(p, g.matris))
         .filter((kayitlar) => kayitlar.length > 0);
 }
 

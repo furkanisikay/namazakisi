@@ -32,7 +32,7 @@ on:
       - 'plugins/withSiriKisayollari.js'
       - 'modules/expo-muhafiz-alarmkit/**'
       - 'plugins/withMuhafizAlarmKit.js'
-      - 'android/app/src/test/resources/erteleme-ornekleri.json'
+      - 'android/app/src/test/resources/muhafiz-plan-kimligi-ornekleri.json'
       - 'plugins/withNamazWidget.js'
       - 'plugins/withNamazSaat.js'
       - 'wear/app/src/test/resources/ornek-yuk.json'
@@ -72,7 +72,7 @@ jobs:
             modules/expo-siri-kisayollari/test/siri-ornek.json \
             modules/expo-siri-kisayollari/test/widget-ios-ornek.json
 
-      # Gerçek alarm (AlarmKit, issue #74): UUID + erteleme kuralları — JS/Kotlin ile ortak fikstür.
+      # Gerçek alarm (AlarmKit, issue #74): UUID + plan kimliği — JS/Kotlin ile ortak fikstür.
       - name: 🧪 AlarmKurallari + AlarmDeposu (ortak fikstür)
         run: |
           set -eo pipefail
@@ -82,7 +82,7 @@ jobs:
             modules/expo-muhafiz-alarmkit/test/main.swift
           "$RUNNER_TEMP/alarmkit-test" \
             modules/expo-muhafiz-alarmkit/test/alarmkit-ornek.json \
-            android/app/src/test/resources/erteleme-ornekleri.json
+            android/app/src/test/resources/muhafiz-plan-kimligi-ornekleri.json
 
       # Apple Watch (#285): yük çözücü + ekran kararı + ileti + tesbihat — Wear ortak fikstürü.
       - name: 🧪 Saat çekirdeği (Wear ortak yük fikstürü)

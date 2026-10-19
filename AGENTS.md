@@ -62,6 +62,7 @@ Geçmiyorsa iş **bitmemiştir** — düzelt, çözemiyorsan açıkça raporla. 
 - **Ana ekran saniyede bir yeniden çizilir (geri sayım):** oraya geçen her geri çağrı `useCallback`, her nesne/tarih `useMemo` ya da dize olmalı (yeni referans `React.memo`'yu ve effect bağımlılıklarını kırar).
 - **Expo modülü `Function` JS thread'inde SENKRON koşar:** I/O, binder, MediaPlayer gibi ağır işi `AsyncFunction` yap, JS tarafında `await`le (ANR).
 - **Kullanıcıya görünen sessiz sapma bırakma:** sistem bir ayarı uygulayamıyorsa (sınır, izin, platform) ekran bunu bir bilgi satırıyla söyler.
+- **Erteleme bilinçli olarak YOK (sahip kararı 2026-10-19):** muhafızın amacı erteleme alışkanlığını önlemektir; erteleyen kişi unutur, son dakikada abdest/mescit yetişmez. Bildirimde ve gerçek alarmda yalnız "Kıldım" (alarmda ayrıca "Kapat"). Eski #289 "Ertele"yi geri ekleme; güncelleme öncesi `_ertele` artıklarının göçü: [android-native](docs/ajan/android-native.md).
 - **Plan/teslim kuralı üreticide:** bildirim planına yeni eleme/kesme kuralı ekliyorsan servise değil saf plan üreticisine koy (bildirim defteri ve önizleme aynı üreticiden beslenir).
 - **Yeni ayar anahtarı yedeklenecekse beyaz listenin ÜÇ yerine** eklenir (`YedeklemeServisi.ayarlariTopla`, `YedekBirlestirmeServisi.AYAR_ANAHTARLARI`, `yedeklemeSlice` yükleme zinciri). Ayrıntı: [yedekleme-esitleme](docs/ajan/yedekleme-esitleme.md).
 
@@ -123,7 +124,7 @@ Setup: `npm ci` (Node 20; `postinstall: patch-package` atlanmamalı) · Doğrula
 | [kaza-seri-puan](docs/ajan/kaza-seri-puan.md) | Puanlama, seri/toparlanma, Kaza Defteri 2.0, depolama göçü, Seri sekmesi/SVG, seri sayacı |
 | [konum-geofence](docs/ajan/konum-geofence.md) | Konum takibi (geofence), konum yenileme, konum yayma listesi, seferîlik kartı |
 | [ana-ekran-ve-ayarlar](docs/ajan/ana-ekran-ve-ayarlar.md) | AnaSayfa pager/gün navigasyonu, kerahat, stepper, Ayarlar ve slice hidrasyonu, sade görünüm, katlanabilir/tablet, güncelleme sistemi, tanı akışı |
-| [android-native](docs/ajan/android-native.md) | Widget, hızlı ayarlar, kısayollar, "Kıldım" kuyruğu ve güven listesi, otomasyon, AppFunctions, Samsung/pil, Live Update/Now Bar, ertele |
+| [android-native](docs/ajan/android-native.md) | Widget, hızlı ayarlar, kısayollar, "Kıldım" kuyruğu ve güven listesi, otomasyon, AppFunctions, Samsung/pil, Live Update/Now Bar, erteleme YOK kararı |
 | [camideyim](docs/ajan/camideyim.md) | Camideyim, Namaz modu, cami verisi, güven puanı, harita |
 | [wear-tv](docs/ajan/wear-tv.md) | Wear OS saat uygulaması, Android TV panosu, saat/TV dağıtımı |
 | [ios](docs/ajan/ios.md) | iOS teslim katmanı, Siri/Odak, widget + canlı etkinlik, Apple Watch, App Store Connect ve TestFlight hattı |

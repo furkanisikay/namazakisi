@@ -246,7 +246,7 @@ describe('IosMuhafizTeslimcisi', () => {
         expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(10);
     });
 
-    test('ayni `muhafiz_` uzayindaki ERTELEME ve YATIS bildirimleri muhafiz disi sayilir (#289/#290)', async () => {
+    test('ayni `muhafiz_` uzayindaki eski ERTELEME artigi ve YATIS bildirimleri muhafiz disi sayilir (#290)', async () => {
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
             // Kimlikler TEKİL (iOS bekleyen listesi kimliğe göre tekildir; bütçe kimlikle sayar).
             ...Array.from({ length: 28 }, (_, i) => ({ identifier: `muhafiz_2026-01-${String(i + 1).padStart(2, '0')}_vakit_yatsi_yatis` })),
@@ -710,18 +710,6 @@ describe('IosMuhafizTeslimcisi — Odak filtresi (issue #279)', () => {
         expect(planlanan()[0].sound).toBe(IOS_BILDIRIM_SESI);
     });
 
-    test('ERTELE kopyası sessizliği KAYBETMEZ: data `odakSessiz` + TABAN seviye taşır (basışta yeniden değerlendirilir)', async () => {
-        odakKur(true, Date.now() - 60_000);
-        const t = new IosMuhafizTeslimcisi();
-        await t.hazirla(BOS_MATRIS);
-        const zaman = Date.now() + 2 * 60 * 1000;
-        await t.uyariPlanla({ ...teslimKur({ seviye: 3 }, zaman), cikis: new Date(zaman + 60 * 60 * 1000) });
-        const c = planlanan()[0];
-        expect(c.interruptionLevel).toBe('passive');
-        expect(c.data.odakSessiz).toBe(true);
-        expect(c.data.kesintiSeviyesi).toBe('timeSensitive');
-    });
-
     test('bozuk filtre kaydı hatırlatmaları susturmaz', async () => {
         siriKoprusu.siriOdakDurumuAl.mockResolvedValue('{bozuk');
         const t = new IosMuhafizTeslimcisi();
@@ -771,7 +759,7 @@ describe('IosMuhafizTeslimcisi — GERÇEK ALARM / AlarmKit (iOS 26, issue #74)'
         alarmKoprusu.alarmKitKayitlari.mockResolvedValue([]);
     });
 
-    test('izinliyken alarm tetiği SİSTEM ALARMI olur: bildirim kurulmaz, yük erteleme sınırını taşır', async () => {
+    test('izinliyken alarm tetiği SİSTEM ALARMI olur: bildirim kurulmaz, yük erteleme alanı TAŞIMAZ', async () => {
         const t = new IosMuhafizTeslimcisi();
         await t.hazirla(BOS_MATRIS);
         const teslim = alarmTeslimi();
@@ -786,9 +774,10 @@ describe('IosMuhafizTeslimcisi — GERÇEK ALARM / AlarmKit (iOS 26, issue #74)'
             vakit: 'aksam',
             tarih: '2026-01-01',
             cikisMs: teslim.cikis.getTime(),
-            erteleSinirMs: teslim.cikis.getTime() - 3 * 60_000,
         });
-        expect(yuk.ertelemeBasligi).toContain('{sure}');
+        // ERTELE YOK (sahip kararı 2026-10-19).
+        expect(yuk).not.toHaveProperty('erteleSinirMs');
+        expect(yuk).not.toHaveProperty('ertelemeBasligi');
     });
 
     test('AlarmKit 64 bildirim bütçesine SAYILMAZ: slot dolu olsa da alarm kurulur', async () => {
@@ -844,16 +833,17 @@ describe('IosMuhafizTeslimcisi — GERÇEK ALARM / AlarmKit (iOS 26, issue #74)'
         expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
     });
 
-    test('hazirla: önceki turun PLAN alarmları iptal, erteleme KORUNUR (muhafız açık)', async () => {
+    /** Alarm köprüsü zincirinin (`alarmIsi`) bitmesini bekler — ateşle-unut iptaller için. */
+    const zinciriBekle = (t: IosMuhafizTeslimcisi) =>
+        (t as unknown as { alarmIsi(is: () => Promise<void>): Promise<void> }).alarmIsi(async () => undefined);
+
+    test('hazirla: önceki turun PLAN alarmları + eski _ertele artığı iptal (muhafız açık, göç)', async () => {
         const t = new IosMuhafizTeslimcisi();
         await t.hazirla(BOS_MATRIS);
-        expect(alarmKoprusu.alarmKitIptalEt).toHaveBeenCalledWith([
-            'muhafiz_2026-01-01_vakit_aksam_seviye_1_dk_45',
-            'muhafiz_2026-01-01_vakit_yatsi_seviye_2_dk_30',
-        ], false);
+        expect(alarmKoprusu.alarmKitIptalEt).toHaveBeenCalledWith(KAYITLAR.map((k) => k.kimlik), false);
     });
 
-    test('hazirla(): muhafız KAPALI → ertelenmiş dahil HEPSİ iptal, alarm kurulmaz', async () => {
+    test('hazirla(): muhafız KAPALI → muhafız sahipli HEPSİ iptal, alarm kurulmaz', async () => {
         const t = new IosMuhafizTeslimcisi();
         await t.hazirla();
         expect(alarmKoprusu.alarmKitIptalEt).toHaveBeenCalledWith(KAYITLAR.map((k) => k.kimlik), false);
@@ -861,25 +851,24 @@ describe('IosMuhafizTeslimcisi — GERÇEK ALARM / AlarmKit (iOS 26, issue #74)'
         expect(alarmKoprusu.alarmKitPlanla).not.toHaveBeenCalled();
     });
 
-    test('uygulama içi "Kıldım": vaktin alarmları önekle (plan + erteleme)', async () => {
+    test('uygulama içi "Kıldım": vaktin alarmları önekle (plan + eski erteleme artığı)', async () => {
         const t = new IosMuhafizTeslimcisi();
         t.vakitYanKanallariniIptalEt('muhafiz_2026-01-01_vakit_aksam');
-        await t.secilenYanKanallariIptalEt(() => false); // zincirin bitmesini bekle
+        await zinciriBekle(t);
         expect(alarmKoprusu.alarmKitIptalEt).toHaveBeenCalledWith([
             'muhafiz_2026-01-01_vakit_aksam_seviye_1_dk_45',
             'muhafiz_2026-01-01_vakit_aksam_ertele',
         ], true);
     });
 
-    test('yeniden planlama (tumYanKanallariIptalEt) yalnız PLAN alarmlarını siler; tekil iptal kimlikle; SIRA korunur', async () => {
+    test('yeniden planlama (tumYanKanallariIptalEt) PLAN + eski _ertele alarmlarını siler; tekil iptal kimlikle; SIRA korunur', async () => {
         const t = new IosMuhafizTeslimcisi();
         t.tumYanKanallariIptalEt();
         t.yanKanaliIptalEt(ALARM_ID);
-        await t.secilenYanKanallariIptalEt(() => false);
+        await zinciriBekle(t);
         expect(alarmKoprusu.alarmKitIptalEt.mock.calls).toEqual([
-            [['muhafiz_2026-01-01_vakit_aksam_seviye_1_dk_45', 'muhafiz_2026-01-01_vakit_yatsi_seviye_2_dk_30'], false],
+            [KAYITLAR.map((k) => k.kimlik), false],
             [[ALARM_ID]],
-            [[], false],
         ]);
     });
 
@@ -893,10 +882,7 @@ describe('IosMuhafizTeslimcisi — GERÇEK ALARM / AlarmKit (iOS 26, issue #74)'
         test('hazirla (muhafız açık) çalanı İPTAL ETMEZ', async () => {
             const t = new IosMuhafizTeslimcisi();
             await t.hazirla(BOS_MATRIS);
-            expect(alarmKoprusu.alarmKitIptalEt).toHaveBeenCalledWith(
-                ['muhafiz_2026-01-01_vakit_yatsi_seviye_2_dk_30'],
-                false
-            );
+            expect(alarmKoprusu.alarmKitIptalEt).toHaveBeenCalledWith(DIGER.map((k) => k.kimlik), false);
         });
 
         test('muhafız KAPATILINCA bile çalan korunur (yalnız bekleyenler silinir)', async () => {
@@ -908,10 +894,10 @@ describe('IosMuhafizTeslimcisi — GERÇEK ALARM / AlarmKit (iOS 26, issue #74)'
             );
         });
 
-        test('yeniden planlama ve erteleme aralığı çalanı atlar', async () => {
+        test('yeniden planlama çalanı atlar', async () => {
             const t = new IosMuhafizTeslimcisi();
             t.tumYanKanallariIptalEt();
-            await t.secilenYanKanallariIptalEt((k) => k.includes('_aksam_'));
+            await zinciriBekle(t);
             for (const [kimlikler, calaniDurdur] of alarmKoprusu.alarmKitIptalEt.mock.calls) {
                 expect(kimlikler).not.toContain(CALAN.kimlik);
                 expect(calaniDurdur).toBe(false);
@@ -921,7 +907,7 @@ describe('IosMuhafizTeslimcisi — GERÇEK ALARM / AlarmKit (iOS 26, issue #74)'
         test('uygulama içi "Kıldım" çalanı da SUSTURUR', async () => {
             const t = new IosMuhafizTeslimcisi();
             t.vakitYanKanallariniIptalEt('muhafiz_2026-01-01_vakit_aksam');
-            await t.secilenYanKanallariIptalEt(() => false);
+            await zinciriBekle(t);
             expect(alarmKoprusu.alarmKitIptalEt).toHaveBeenCalledWith(
                 [CALAN.kimlik, 'muhafiz_2026-01-01_vakit_aksam_ertele'],
                 true

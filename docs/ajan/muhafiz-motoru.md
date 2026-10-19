@@ -132,6 +132,6 @@ Katmanlar: saf `core/muhafiz/*` (motorAdaptoru, kanalKumesi, aktifSeviye, planBu
 
 ## Başlık biçimi (issue #287)
 
-- **Hatırlatma başlıkları ÖNDEN okunur: `<Vakit> · <N> dk …` ile başlar, ton ikonu SONDA.** Bileklikler başlığın ilk ~16 karakterini gösterir (`BANT_GORUNUR_KARAKTER`). Örnekler (`basligiOlustur`): çıkış `Yatsı · 25 dk kaldı ⏰`, giriş `Yatsı · 12 dk oldu · …`, acil `İKİNDİ · 3 dk · VAKİT ÇIKIYOR 🚨` (büyük ad `VAKIT_ADLARI_BUYUK`). Aynı biçim: erteleme (`ertelemeBasligiSablonu`; Kotlin yalnız `{sure}` doldurur, `erteleme-ornekleri.json` + JS eşitlik testi), cuma (`cumaBasligiOlustur`), camiye git, yatış. Nöbetçi: `muhafizMetinYardimcisi.test.ts > bileklik önden okuma`.
+- **Hatırlatma başlıkları ÖNDEN okunur: `<Vakit> · <N> dk …` ile başlar, ton ikonu SONDA.** Bileklikler başlığın ilk ~16 karakterini gösterir (`BANT_GORUNUR_KARAKTER`). Örnekler (`basligiOlustur`): çıkış `Yatsı · 25 dk kaldı ⏰`, giriş `Yatsı · 12 dk oldu · …`, acil `İKİNDİ · 3 dk · VAKİT ÇIKIYOR 🚨` (büyük ad `VAKIT_ADLARI_BUYUK`). Aynı biçim: cuma (`cumaBasligiOlustur`), camiye git, yatış. Nöbetçi: `muhafizMetinYardimcisi.test.ts > bileklik önden okuma`.
 - **İstisna: "Öğle vakti girdi" (`vakitGirdiBasligi`) DEĞİŞMEZ** — Samsung Rutinler anahtar kelimesidir. Wear `ornek-yuk.json` başlıkları örnek veridir.
 - **Bileklik rehberi (`components/bildirim/BileklikRehberKarti`) kategori ekranını `Linking.sendIntent('android.settings.APP_NOTIFICATION_SETTINGS', …)` ile açar, hatada `Linking.openSettings`** (bileklik uygulamaları kanal bazında süzmez; native köprü gerekmez).

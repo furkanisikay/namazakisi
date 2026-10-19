@@ -158,8 +158,6 @@ export interface WearMuhafizYukGirdisi {
     kilinanlar: Record<string, readonly VakitAdi[]>;
     /** Özel gün kapısı — o günün pencereleri planlanmaz (bkz. `WearMuhafizGirdisi`). */
     ozelGundeMi?: (tarih: string) => boolean;
-    /** Etkin ertelemeler — ertelenen aralığın kayıtları süzülür (bkz. `WearMuhafizGirdisi`). */
-    ertelemeler?: Readonly<Record<string, number>>;
     ufukMs?: number;
 }
 

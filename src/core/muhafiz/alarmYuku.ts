@@ -67,10 +67,10 @@ export function alarmKanallariniCikar(matris: MuhafizMatrisi | undefined): strin
 
 /**
  * Alarm yükünün TÜRÜ (ortak hatırlatma yüzeyleri, plan §4.2) — Kotlin `TUR_*`.
- * - `vakit`: farz vakit (muhafız, yatış) — "Kıldım" FARZ'ı yazar, ertelenebilir.
- * - `nafile`: nafile alarmı — kendi Kıldım yolu, ertelenmez.
+ * - `vakit`: farz vakit (muhafız, yatış) — "Kıldım" FARZ'ı yazar.
+ * - `nafile`: nafile alarmı — kendi Kıldım yolu.
  * - `bilgi`: vakit GİRMEDEN çalan hatırlatma (cuma, camiye gitme, takvim): yalnız "Kapat";
- *   Kıldım ve Ertele YOK, otomasyon "vakit çıkıyor" olayı doğmaz. `cikisMs` pencerenin
+ *   Kıldım YOK, otomasyon "vakit çıkıyor" olayı doğmaz. `cikisMs` pencerenin
  *   SONUDUR (öğle girişi / vakit girişi / etkinlik başı) → Kotlin geç tetik kuralı aynen.
  * Alan YOKSA Kotlin kimlikten çözer (güncelleme öncesi kurulmuş alarmlar ölmesin —
  * `ALARM_YUK_SURUMU` bu yüzden ARTMADI).
@@ -92,14 +92,12 @@ export interface AlarmYukuGirdisi {
     /** Vaktin ait olduğu gün (YYYY-MM-DD) — kimlikle aynı. */
     tarih: string;
     cikisMs: number;
-    /** Ertele üst sınırı (`ertelemeSiniriMs`); 0 = ertele düğmesi yok. */
-    erteleSinirMs: number;
     seviye: number;
     bildirimSesi: string;
     sesAdi?: string;
-    /** Adımın NORMAL muhafız kanalı (ertelenen kopya + normal bildirime düşüş). */
+    /** Adımın NORMAL muhafız kanalı (normal bildirime düşüş). */
     kanalId: string;
-    /** Muhafız bildiriminin `data` nesnesi (ertelenen kopyanın gövdesi). */
+    /** Muhafız bildiriminin `data` nesnesi (normal bildirime düşüşün gövdesi). */
     veri: Record<string, unknown>;
     /** Yük türü — verilmezse YAZILMAZ (muhafız/nafile yükü birebir eskisi). */
     tur?: AlarmTuru;
@@ -121,7 +119,6 @@ export interface AlarmYuku {
     vakitAdi: string;
     tarih: string;
     cikisMs: number;
-    erteleSinirMs: number;
     seviye: number;
     alarmKanalId: string;
     alarmKanalAdi: string;
@@ -146,7 +143,6 @@ export function alarmYukuOlustur(g: AlarmYukuGirdisi): AlarmYuku {
         vakitAdi: g.vakitAdi ?? VAKIT_ADLARI[g.vakit] ?? '',
         tarih: g.tarih,
         cikisMs: g.cikisMs,
-        erteleSinirMs: g.erteleSinirMs,
         seviye: g.seviye,
         alarmKanalId: alarmKanalIdOlustur(ses),
         alarmKanalAdi: alarmKanalAdiOlustur(ses, g.sesAdi),

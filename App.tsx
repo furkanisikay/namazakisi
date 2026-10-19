@@ -7,7 +7,6 @@
 import React, { useEffect } from 'react';
 import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager, DeviceEventEmitter } from 'react-native';
 import { WearSenkronServisi } from './src/domain/services/WearSenkronServisi';
-import { MUHAFIZ_ERTELENDI_OLAYI, ertelemeDegistiBildir } from './src/domain/services/muhafizErtelemeDurumu';
 import { KildimKuyruguServisi, KILDIM_KUYRUGU_OLAYI } from './src/domain/services/KildimKuyruguServisi';
 import { CamideyimServisi } from './src/domain/services/CamideyimServisi';
 import { camiOlayiniDinle } from './modules/expo-cami-geofence/src';
@@ -351,15 +350,11 @@ const AppIcerik: React.FC = () => {
     const wearAbonelik = DeviceEventEmitter.addListener(KILDIM_KUYRUGU_OLAYI, () => {
       KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
     });
-    // Muhafız "Ertele" (issue #289) uygulama AÇIKKEN native işlenince: ön plan banner'ı
-    // ve saatin planı ertelemeyi öğrensin (gözlemci: NamazMuhafiziServisi + WearSenkronServisi).
-    const ertelemeAbonelik = DeviceEventEmitter.addListener(MUHAFIZ_ERTELENDI_OLAYI, ertelemeDegistiBildir);
-    // iOS gerçek alarm (AlarmKit, #74) ekranından "10 dk ertele": aynı gözlemci. ("Kıldım"
-    // Siri kuyruğuna yazar → aşağıdaki Siri olayı işler.)
+    // iOS gerçek alarm (AlarmKit, #74): farz "Kıldım" Siri kuyruğuna yazar → aşağıdaki
+    // Siri olayı işler.
     const alarmAboneligiKaldir = alarmDegisikliginiDinle((tur) => {
-      if (tur === 'ertele') ertelemeDegistiBildir();
       // Nafile alarmındaki "Kıldım" (FARZ yazmaz): susturma hafızası hemen yazılsın.
-      else if (tur === 'nafileKildim') NafileHatirlatmaServisi.getInstance().alarmKildimleriniIsle().catch(() => {});
+      if (tur === 'nafileKildim') NafileHatirlatmaServisi.getInstance().alarmKildimleriniIsle().catch(() => {});
     });
 
     // Camideyim olayları (uygulama AÇIKKEN native yayar): camiye girişte/çıkışta
@@ -469,7 +464,6 @@ const AppIcerik: React.FC = () => {
     return () => {
       appStateListener.remove();
       wearAbonelik.remove();
-      ertelemeAbonelik.remove();
       camiAbonelik.remove();
       siriAboneligiKaldir();
       alarmAboneligiKaldir();

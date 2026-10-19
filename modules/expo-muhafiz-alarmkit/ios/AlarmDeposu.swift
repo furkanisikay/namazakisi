@@ -10,10 +10,6 @@ public struct AlarmKaydi: Codable, Equatable {
     /// Vaktin ait oldugu namaz gunu (YYYY-MM-DD).
     public let tarih: String
     public let cikisMs: Int64
-    /// `ertelemeSiniriMs`; 0 = erteleme yok.
-    public let erteleSinirMs: Int64
-    /// `ertelemeBasligiSablonu` (`{sure}` yer tutuculu).
-    public let ertelemeBasligi: String
 
     public init(
         kimlik: String,
@@ -21,9 +17,7 @@ public struct AlarmKaydi: Codable, Equatable {
         baslik: String,
         vakit: String,
         tarih: String,
-        cikisMs: Int64,
-        erteleSinirMs: Int64,
-        ertelemeBasligi: String
+        cikisMs: Int64
     ) {
         self.kimlik = kimlik
         self.tetikMs = tetikMs
@@ -31,14 +25,13 @@ public struct AlarmKaydi: Codable, Equatable {
         self.vakit = vakit
         self.tarih = tarih
         self.cikisMs = cikisMs
-        self.erteleSinirMs = erteleSinirMs
-        self.ertelemeBasligi = ertelemeBasligi
     }
 
     /// AlarmKit kimligi (kimlikten deterministik).
     public var uuidMetni: String { AlarmKurallari.uuidMetni(kimlik) }
 
-    /// JSON'dan cozer; bozuk/eksik alan `nil` (planlama yapilmaz).
+    /// JSON'dan cozer; bozuk/eksik alan `nil` (planlama yapilmaz). Guncelleme oncesi
+    /// kayitlardaki eski erteleme alanlari (`erteleSinirMs`, `ertelemeBasligi`) yok sayilir.
     public static func coz(_ json: String) -> AlarmKaydi? {
         guard let veri = json.data(using: .utf8) else { return nil }
         return try? JSONDecoder().decode(AlarmKaydi.self, from: veri)
@@ -49,9 +42,8 @@ public struct AlarmKaydi: Codable, Equatable {
  * AlarmKit alarm KAYIT DEFTERI (issue #74) — yalniz Foundation.
  *
  * NEDEN VAR: AlarmKit'in `Alarm` nesnesi yalniz `id` (UUID) ve durum tasir; bizim
- * kimligimizi (`muhafiz_<gun>_vakit_<vakit>_...`), tetik anini ve "Ertele"nin ihtiyac
- * duydugu siniri BILMEZ. "Kildim" onek iptali, erteleme araligi susturmasi ve JS'in
- * etkin ertelemeleri okumasi bu kayittan beslenir. Kayit ile sistem ayrisabilir
+ * kimligimizi (`muhafiz_<gun>_vakit_<vakit>_...`) ve tetik anini BILMEZ. "Kildim" onek
+ * iptali ve JS'in planlama turundaki iptal secimi bu kayittan beslenir. Kayit ile sistem ayrisabilir
  * (alarm caldi ve bitti, kullanici durdurdu) → okuyan `buda` ile sistemdeki canli
  * listeye indirger.
  *
@@ -161,18 +153,6 @@ public final class AlarmDeposu: @unchecked Sendable {
     /// Onekle baslayan kayitlarin kimlikleri ("Kildim": `muhafiz_<gun>_vakit_<vakit>`).
     public func onekliKimlikler(_ onek: String) -> [String] {
         return kayitlar().map(\.kimlik).filter { $0.hasPrefix(onek) }
-    }
-
-    /// Erteleme suresince susacak PLAN alarmlari: ayni vakit, tetik < hedef + pay.
-    public func susturulacaklar(tarih: String, vakit: String, hedefMs: Int64) -> [String] {
-        let onek = AlarmKurallari.vakitOneki(tarih: tarih, vakit: vakit) + "_"
-        return kayitlar()
-            .filter {
-                $0.kimlik.hasPrefix(onek)
-                    && AlarmKurallari.planKimligiMi($0.kimlik)
-                    && AlarmKurallari.ertelemedeSusturulurMu(tetikMs: $0.tetikMs, hedefMs: hedefMs)
-            }
-            .map(\.kimlik)
     }
 
     /// JS'e giden canli kayit listesi (`[{kimlik, tetikMs, caliyor?}]`). `caliyor` yalniz o an

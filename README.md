@@ -292,7 +292,7 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 - **Toplantı Vakte Denk Gelirse Haber Verelim** — Takviminizdeki bir etkinlik bir namaz vaktinin sonunu kaplıyorsa, etkinlik başlamadan önce "toplantıdan önce kılın" diye uyaralım. <sub>Android · iOS · 0.37.0</sub>
 
 <details>
-<summary>Diğer 26 özellik</summary>
+<summary>Diğer 25 özellik</summary>
 
 - **Nafile Namaz Vakitleri** — Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, namaz hatırlatmasındaki gibi birden çok hatırlatma kurabilirsiniz. <sub>Android · iOS · 0.34.0</sub>
 - **Hatırlatmalarda Gerçek Alarm** — İstediğiniz hatırlatma adımında "Gerçek alarm"ı açın: o adımda telefonunuzun alarmı çalar, sessiz moddayken de duyulur. <sub>Android · iOS · 0.34.0</sub>
@@ -302,7 +302,6 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 - **Sade Görünüm** — Ana ekranda yalnız şu anki vakit, kalan süre ve büyük bir "Kıldım" düğmesi: büyüklerimiz için tek bakışta anlaşılan, dokununca sesli okunan bir ekran. <sub>Android · iOS · 0.31.0</sub>
 - **Otomasyonlarla Kullanın** — Vakit girince telefonunuz sessize alınsın, camiye girince bir şey kapansın: Samsung Rutinler, Tasker ve MacroDroid ile Namaz Akışı'nı birlikte kullanabilirsiniz. <sub>Android · 0.31.0</sub>
 - **Her Farzla Bir Kaza** — Kaza borcunuz varsa, ana ekranda bir farzı kıldım olarak işaretlediğinizde bir kaza kılmanızı öneririz; tek dokunuşla defterinizden düşebilirsiniz. <sub>Android · iOS · 0.31.0</sub>
-- **Hatırlatmayı Erteleyin** — Muhafız bildiriminden "10 dk ertele" ya da "20 dk ertele" diyerek hatırlatmayı kapatıp unutmak yerine somut bir zamana taşıyabilirsiniz. <sub>Android · iOS · 0.31.0</sub>
 - **iPhone'da Siri, Kısayollar ve Odak** — Siri'ye sıradaki namazı sorabilir, kıldığınız vakti sesinizle işaretleyebilir ve "Namaz" Odağınızda hatırlatmaları sessize alabilirsiniz. <sub>iOS · 0.31.0</sub>
 - **Geri Sayım Durum Çubuğunda ve Now Bar'da** — Vaktin son dakikaları, iftar ve sahur sayacı durum çubuğunda kalan süreyle görünür; Samsung cihazlarda Now Bar'a da taşınır. Neyin ne zaman görüneceğini siz seçersiniz. <sub>Android · 0.31.0</sub>
 - **Bildirim Sınırı Rehberi** — Telefonunuzun bekletebildiği bildirim sayısı sınırlıdır; uygulama sınıra yaklaştığınızda sizi önceden uyarır ve yer açmanın en kolay yollarını önerir. <sub>Android · iOS · 0.31.0</sub>

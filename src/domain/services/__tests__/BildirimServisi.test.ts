@@ -59,10 +59,6 @@ jest.mock('../../../core/utils/TarihYardimcisi', () => ({
   }),
 }));
 
-const mockErtelemeIsle = jest.fn().mockResolvedValue(true);
-jest.mock('../MuhafizErtelemeServisi', () => ({
-  muhafizErtelemesiniIsle: (...a: unknown[]) => mockErtelemeIsle(...a),
-}));
 const mockKazayaBorcEkle = jest.fn().mockResolvedValue({ basarili: true });
 jest.mock('../../../data/local/LocalKazaServisi', () => ({
   localKazayaBorcEkle: (...a: unknown[]) => mockKazayaBorcEkle(...a),
@@ -1050,9 +1046,9 @@ describe('BildirimServisi', () => {
   });
 });
 
-// ==================== ERTELE (#289) + GÜN SONU MUHASEBESİ (#290) ====================
+// ==================== ESKİ ERTELE (göç) + GÜN SONU MUHASEBESİ (#290) ====================
 
-describe('BildirimServisi — Ertele ve muhasebe eylemleri', () => {
+describe('BildirimServisi — eski Ertele ve muhasebe eylemleri', () => {
   let servis: BildirimServisi;
 
   beforeEach(async () => {
@@ -1069,21 +1065,17 @@ describe('BildirimServisi — Ertele ve muhasebe eylemleri', () => {
     notification: { date, request: { identifier: kimlik, content: { title: 'Başlık', body: 'Gövde', data } } },
   });
 
-  it('ertele eylemi JS yoluna (MuhafizErtelemeServisi) gider, namaz İŞARETLENMEZ', async () => {
+  it('GÖÇ: güncelleme öncesi bildirimdeki "Ertele" yalnız bildirimi kapatır — erteleme kurulmaz, namaz İŞARETLENMEZ', async () => {
     await servis.arkaplanYanitiniIsle(
       yuk('muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45', 'ertele_10', { tip: 'muhafiz', vakit: 'ogle', tarih: '2026-10-13' })
     );
-    expect(mockErtelemeIsle).toHaveBeenCalledWith(
-      expect.objectContaining({ kimlik: 'muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45', eylem: 'ertele_10', baslik: 'Başlık', govde: 'Gövde' })
+    await servis.arkaplanYanitiniIsle(
+      yuk('muhafiz_2026-10-13_vakit_ogle_ertele', 'ertele_20', { tip: 'muhafiz', vakit: 'ogle', tarih: '2026-10-13' })
     );
+    expect(Notifications.dismissNotificationAsync).toHaveBeenCalledWith('muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45');
+    expect(Notifications.dismissNotificationAsync).toHaveBeenCalledWith('muhafiz_2026-10-13_vakit_ogle_ertele');
+    expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
     expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
-  });
-
-  it('ertelenmiş kopya (SABİT kimlik) yeniden ertelenebilir — tekilleştirme gösterilme anını da katar', async () => {
-    const data = { tip: 'muhafiz', vakit: 'ogle', tarih: '2026-10-13' };
-    await servis.arkaplanYanitiniIsle(yuk('muhafiz_2026-10-13_vakit_ogle_ertele', 'ertele_10', data, 1000));
-    await servis.arkaplanYanitiniIsle(yuk('muhafiz_2026-10-13_vakit_ogle_ertele', 'ertele_10', data, 2000));
-    expect(mockErtelemeIsle).toHaveBeenCalledTimes(2);
   });
 
   it('yatış hatırlatmasındaki "Kıldım" yatsıyı işaretler', async () => {
@@ -1122,19 +1114,20 @@ describe('BildirimServisi — Ertele ve muhasebe eylemleri', () => {
     expect(mockKazayaBorcEkle).toHaveBeenCalledTimes(1);
   });
 
-  it('kategoriler: ertele (tek/iki) ve muhasebe (tek/çoklu) kaydedilir; ertele uygulamayı AÇMAZ', async () => {
+  it('kategoriler: muhafız yalnız "Kıldım"; eski ertele kategorileri yalnız "Kıldım" ile yeniden tanımlanır; muhasebe (tek/çoklu)', async () => {
     (Notifications.getLastNotificationResponseAsync as jest.Mock).mockResolvedValue(null);
     await servis.baslatBildirimDinleyicisi();
     const kategoriler = Object.fromEntries(
       (Notifications.setNotificationCategoryAsync as jest.Mock).mock.calls.map((c) => [c[0], c[1]])
     );
-    expect(kategoriler.muhafiz_ertele2_category.map((a: { identifier: string }) => a.identifier)).toEqual([
-      'kildim_action',
-      'ertele_10',
-      'ertele_20',
-    ]);
-    expect(kategoriler.muhafiz_ertele1_category.map((a: { identifier: string }) => a.identifier)).toEqual(['kildim_action', 'ertele_10']);
-    expect(kategoriler.muhafiz_ertele2_category[1].options.opensAppToForeground).toBe(false);
+    const kimlikler = (ad: string) => kategoriler[ad].map((a: { identifier: string }) => a.identifier);
+    expect(kimlikler('muhafiz_category')).toEqual(['kildim_action']);
+    expect(kimlikler('muhafiz_ertele1_category')).toEqual(['kildim_action']);
+    expect(kimlikler('muhafiz_ertele2_category')).toEqual(['kildim_action']);
+    // Hiçbir kategoride ertele düğmesi YOK (sahip kararı 2026-10-19).
+    for (const eylemler of Object.values(kategoriler) as Array<Array<{ identifier: string }>>) {
+      expect(eylemler.some((a) => a.identifier.startsWith('ertele'))).toBe(false);
+    }
     expect(kategoriler.muhasebe_tek_category.map((a: { identifier: string }) => a.identifier)).toEqual(['kildim_action', 'kazaya_ekle_action']);
     expect(kategoriler.muhasebe_coklu_category[0].options.opensAppToForeground).toBe(true);
   });

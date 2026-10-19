@@ -138,9 +138,10 @@ describe('alarmlı tetik', () => {
         expect(yuk.tetikMs).toBe(teslim.zaman.getTime());
         expect(yuk.alarmKanalId).toBe(ALARM_KANAL_TABANI);
         expect(yuk.vakitAdi).toBe('İkindi');
-        // Ertele bilgisi muhafız bildirimiyle AYNI kaynaktan (çıkış − 3 dk; ikindide gurub).
-        expect(yuk.erteleSinirMs).toBeGreaterThan(0);
-        expect(yuk.veri).toMatchObject({ tip: 'muhafiz', vakit: 'ikindi', tarih: '2026-01-01', kanalId: yuk.kanalId });
+        // ERTELE YOK (sahip kararı 2026-10-19): yükte ve veride erteleme alanı yok.
+        expect(yuk).not.toHaveProperty('erteleSinirMs');
+        expect(yuk.veri).toMatchObject({ tip: 'muhafiz', vakit: 'ikindi', tarih: '2026-01-01' });
+        expect(yuk.veri).not.toHaveProperty('erteleSinirMs');
         expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
         expect(mockPlanlaAnons).not.toHaveBeenCalled();
     });
@@ -213,7 +214,7 @@ describe('hazırlık ve temizlik', () => {
     test('muhafız kapalıyken (matrissiz) alarmlar ve hash\'li kanallar temizlenir', async () => {
         const t = new AndroidMuhafizTeslimcisi();
         await t.hazirla();
-        // Kapalıyken erteleme dahil muhafız sahipli her şey — yatış HARİÇ.
+        // Kapalıyken muhafız sahipli her şey — yatış HARİÇ.
         expect(mockKopru.sahipliIptal).toHaveBeenCalledWith('muhafiz_tumu', { anons: false, alarm: true });
         expect(mockKopru.kanalTemizle).toHaveBeenCalledWith([]);
     });

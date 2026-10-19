@@ -8,12 +8,11 @@ import type { VakitAdi } from '../../core/types';
 import { VakitSayacBildirimServisi } from './VakitSayacBildirimServisi';
 import { gunEkle } from '../../core/utils/TarihYardimcisi';
 import { Logger } from '../../core/utils/Logger';
-import { eylemSuresiDk } from '../../core/muhafiz/erteleme';
+import { eskiErteleEylemiMi } from '../../core/muhafiz/planKimligi';
 import { gosterimGrubu } from '../../core/muhafiz/teslimSahipligi';
 import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
 import { VAKIT_ADINDAN_KAZAYA, isoGunMu, type KazaVakti } from '../../core/kaza/kazaHareketi';
 import { localKazayaBorcEkle } from '../../data/local/LocalKazaServisi';
-import { muhafizErtelemesiniIsle } from './MuhafizErtelemeServisi';
 
 /**
  * Vakit adi donusturme - ArkaplanMuhafizServisi'nin kullandigi format ile NamazAdi enum arasinda
@@ -206,12 +205,7 @@ export class BildirimServisi {
     await this.yanitiIsle(
       notification.request.identifier,
       actionIdentifier,
-      notification.request.content.data as MuhafizYanitVerisi,
-      {
-        baslik: notification.request.content.title,
-        govde: notification.request.content.body,
-        tarihMs: notification.date,
-      }
+      notification.request.content.data as MuhafizYanitVerisi
     );
   }
 
@@ -225,10 +219,9 @@ export class BildirimServisi {
     const y = (yuk ?? {}) as {
       actionIdentifier?: string;
       notification?: {
-        date?: number;
         request?: {
           identifier?: string;
-          content?: { data?: unknown; dataString?: string; title?: string | null; body?: string | null };
+          content?: { data?: unknown; dataString?: string };
         };
       };
     };
@@ -244,28 +237,18 @@ export class BildirimServisi {
       }
     }
     if (!veri || typeof veri !== 'object') return;
-    await this.yanitiIsle(istek.identifier, aksiyon, veri as MuhafizYanitVerisi, {
-      baslik: istek.content?.title,
-      govde: istek.content?.body,
-      tarihMs: y.notification?.date,
-    });
+    await this.yanitiIsle(istek.identifier, aksiyon, veri as MuhafizYanitVerisi);
   }
 
   private async yanitiIsle(
     bildirimId: string,
     actionIdentifier: string,
-    data: MuhafizYanitVerisi,
-    icerik: { baslik?: string | null; govde?: string | null; tarihMs?: number } = {}
+    data: MuhafizYanitVerisi
   ): Promise<void> {
     // Ayni yaniti tekrar isleme: listener + cold-start + (Android) arka plan gorevi
     // ayni yaniti uc kez teslim edebilir. Bellek-ici koruma headless surecte
     // sifirlandigi icin son islenen kimlik DISKTE de tutulur.
-    // Ertelenen kopya vakit basina SABIT kimlik tasir (yeniden ertelenebilir) →
-    // ertelemede kimlige bildirimin gosterilme ani da katilir; yoksa ikinci
-    // erteleme "zaten islendi" sanilirdi.
-    const ertelemeMi = eylemSuresiDk(actionIdentifier) !== null;
-    const yanitId =
-      bildirimId + '_' + actionIdentifier + (ertelemeMi && icerik.tarihMs ? '_' + icerik.tarihMs : '');
+    const yanitId = bildirimId + '_' + actionIdentifier;
     if (this.islenmisYanitId === yanitId || (await this.diskteIslenmisMi(yanitId))) {
       Logger.info('BildirimServisi', 'Yanit zaten islendi, atlaniyor:', yanitId);
       return;
@@ -307,16 +290,15 @@ export class BildirimServisi {
       await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ISLENMIS_BILDIRIM_YANITI, yanitId).catch(() => undefined);
     };
 
-    // "Ertele" (issue #289) — Android'de native islenir; buraya yalniz iOS'ta ya
-    // da native yol isleyemediginde gelinir.
-    if (ertelemeMi && tip === 'muhafiz') {
-      await muhafizErtelemesiniIsle({
-        kimlik: bildirimId,
-        eylem: actionIdentifier,
-        baslik: icerik.baslik,
-        govde: icerik.govde,
-        data: data as Record<string, unknown>,
-      });
+    // ERTELE YOK (sahip kararı 2026-10-19, eski #289): güncelleme ÖNCESİ gösterilmiş
+    // bildirimdeki "Ertele" basışı yalnız bildirimi kapatır — erteleme KURULMAZ, namaz
+    // işaretlenmez. Android'de native yol bunu zaten yapar; buraya iOS'ta gelinir.
+    if (eskiErteleEylemiMi(actionIdentifier)) {
+      try {
+        await Notifications.dismissNotificationAsync(bildirimId);
+      } catch {
+        // Bildirim zaten kalkmış olabilir.
+      }
       await islendi();
       return;
     }

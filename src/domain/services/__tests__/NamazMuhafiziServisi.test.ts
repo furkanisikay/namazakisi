@@ -1150,115 +1150,24 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
     // Aralık aktifken ön planda banner, ses, titreşim ve sesli anons YOKTUR;
     // açık bir banner varsa bir kez temizlenir.
     /**
-     * ERTELE (issue #289) — ön plan muhafızı ertelemeyi BİLMELİ. Bilmezse uygulama
-     * açıkken (ya da ertelendikten sonra açılınca) banner + ses + titreşim sürer ve
-     * ön plan, native'in az önce iptal ettiği TTS anonsunu AYNI kimlikle yeniden
-     * kurar → "ertele çalışmıyor". Kaynak: bekleyen bildirimlerdeki ertelenen kopya.
+     * ERTELE YOK (sahip kararı 2026-10-19, eski #289). Güncelleme öncesi kurulmuş bir
+     * `_ertele` kopyası bekleyenlerde dursa bile ön plan muhafızı SUSMAZ: erteleme
+     * alışkanlığına kapı açan hiçbir yol kalmamalı.
      */
-    describe('erteleme (#289)', () => {
+    describe('erteleme yok', () => {
         const Notifications = require('expo-notifications');
         const DK = 60 * 1000;
-        // Saati bugünün öğlesine sabitle: testler `Date.now() + 10 dk` kurar ve
-        // 23:50'de koşunca hedef ertesi güne taşar (gün anahtarı ayrışır, test düşer).
-        beforeEach(() => {
-            const ogle = new Date();
-            ogle.setHours(12, 0, 0, 0);
-            jest.setSystemTime(ogle);
-        });
-        const sesliTitresimliMatris = () => {
-            const matris = tekDuzeMatris(VARSAYILAN_TANIM);
-            matris.ogle.seviyeler[3] = {
-                ...matris.ogle.seviyeler[3],
-                kanallar: { bildirim: true, sesli: true, titresim: true },
-                anonsMetni: '{vakit} vakti çıkıyor.',
-            };
-            return matris;
-        };
-        const ertelemeKopyasi = (hedefMs: number, tarih = bugunuAl(), vakit = 'ogle') => ({
-            identifier: `muhafiz_${tarih}_vakit_${vakit}_ertele`,
-            content: { data: { ertelemeHedefMs: hedefMs } },
-        });
 
         afterEach(() => {
             Notifications.getAllScheduledNotificationsAsync.mockReset();
         });
 
-        it('etkin erteleme varken banner, ses, titreşim ve anons ÜRETİLMEZ (açılış hidrasyonu)', async () => {
-            const simdi = Date.now();
-            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([ertelemeKopyasi(simdi + 10 * DK)]);
-            muhafiz.yapilandir(sesliTitresimliMatris());
-            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 4 * DK });
-
-            await muhafiz.acilistaKilinanlariYukle();
-            muhafiz.baslat(bildirimSpx);
-
-            expect(bildirimSpx).toHaveBeenCalledTimes(1);
-            expect(bildirimSpx).toHaveBeenCalledWith('', 0);
-            expect(mockPlanlaAnons).not.toHaveBeenCalled();
-            expect(Vibration.vibrate).not.toHaveBeenCalled();
-        });
-
-        it('erteleme hedefinden (+ çakışma payı) SONRA uyarılar aynen geri gelir', async () => {
-            const simdi = Date.now();
-            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([ertelemeKopyasi(simdi + 10 * DK)]);
-            muhafiz.yapilandir(sesliTitresimliMatris());
-            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 14 * DK });
-            await muhafiz.acilistaKilinanlariYukle();
-            muhafiz.baslat(bildirimSpx);
-            expect(mockPlanlaAnons).not.toHaveBeenCalled();
-
-            // Kopya tetiklendi → bekleyenlerden düştü. Hedef + 2 dk: kural artık susturmaz.
-            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([]);
-            jest.setSystemTime(simdi + 12 * DK);
-            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 2 * DK });
-            await muhafiz.ertelemeDurumunuYukle();
-
-            expect(bildirimSpx).toHaveBeenLastCalledWith(expect.any(String), 4, expect.any(String));
-            expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
-            expect(Vibration.vibrate).toHaveBeenCalled();
-        });
-
-        it('hedef dakikası çakışma payı içinde susar — kopya bekleyenlerden düşse bile (arka planla AYNI kural)', async () => {
-            const simdi = Date.now();
-            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([ertelemeKopyasi(simdi + 10 * DK)]);
-            muhafiz.yapilandir(sesliTitresimliMatris());
-            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 14 * DK });
-            await muhafiz.acilistaKilinanlariYukle();
-            muhafiz.baslat(bildirimSpx);
-
-            // Hedef anı: kopya tetiklendi (listede yok) ama bu dakikanın uyarısı
-            // `ertelemedeSusturulurMu` ile susar → önbellek eski girdiyi korumalı.
-            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([]);
-            jest.setSystemTime(simdi + 10 * DK);
-            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 4 * DK });
-            await muhafiz.ertelemeDurumunuYukle();
-
-            expect(mockPlanlaAnons).not.toHaveBeenCalled();
-            expect(bildirimSpx).not.toHaveBeenCalledWith(expect.any(String), 4, expect.any(String));
-        });
-
-        it('erteleme SONRADAN kurulunca ("ertelendi" gözlemcisi) açık banner HEMEN kalkar', async () => {
-            const { ertelemeDegistiBildir } = require('../muhafizErtelemeDurumu');
-            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([]);
-            muhafiz.yapilandir(sesliTitresimliMatris());
-            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 4 * DK });
-            muhafiz.baslat(bildirimSpx);
-            expect(bildirimSpx).toHaveBeenLastCalledWith(expect.any(String), 4, expect.any(String));
-            expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
-
-            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([ertelemeKopyasi(Date.now() + 10 * DK)]);
-            ertelemeDegistiBildir();
-            // Gözlemci ateşle-unut: mikro görevleri boşalt (okuma zinciri birkaç adım).
-            await new Promise((r) => jest.requireActual('timers').setImmediate(r));
-
-            expect(bildirimSpx).toHaveBeenLastCalledWith('', 0);
-            jest.advanceTimersByTime(60 * 1000);
-            expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
-        });
-
-        it('başka vaktin ertelemesi bu vakti SUSTURMAZ', async () => {
+        it('bekleyen eski _ertele kopyası banner/anonsu SUSTURMAZ', async () => {
             Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([
-                ertelemeKopyasi(Date.now() + 10 * DK, bugunuAl(), 'ikindi'),
+                {
+                    identifier: `muhafiz_${bugunuAl()}_vakit_ogle_ertele`,
+                    content: { data: { ertelemeHedefMs: Date.now() + 10 * DK } },
+                },
             ]);
             mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 45 * DK });
 

@@ -1,0 +1,19 @@
+{
+  "_aciklama": "Muhafiz PLAN kimligi ikiz sozlesmesi: JS core/muhafiz/planKimligi.ts ile Kotlin cekirdek/MuhafizPlanKimligi.kt AYNI ciktiyi vermeli. eskiErtelemeMi / eskiErteleMi: kaldirilan Ertele ozelliginin (#289, sahip karari 2026-10-19) guncelleme oncesi kurulmus artiklari - yalniz temizlik icin taninir.",
+  "kimlikler": [
+    { "kimlik": "muhafiz_2026-10-13_vakit_ikindi_seviye_2_dk_25", "planMi": true, "kalanDk": 25, "eskiErtelemeMi": false },
+    { "kimlik": "muhafiz_2026-10-12_vakit_yatsi_seviye_4_dk_3", "planMi": true, "kalanDk": 3, "eskiErtelemeMi": false },
+    { "kimlik": "muhafiz_2026-10-13_vakit_imsak_seviye_1_dk_-3", "planMi": true, "kalanDk": -3, "eskiErtelemeMi": false },
+    { "kimlik": "muhafiz_2026-10-13_vakit_ikindi_ertele", "planMi": false, "kalanDk": null, "eskiErtelemeMi": true },
+    { "kimlik": "muhafiz_2026-10-13_vakit_yatsi_yatis", "planMi": false, "kalanDk": null, "eskiErtelemeMi": false },
+    { "kimlik": "muhafiz_2026-10-13_vakit_ogle_muhasebe", "planMi": false, "kalanDk": null, "eskiErtelemeMi": false },
+    { "kimlik": "muhafiz_anons_onizleme", "planMi": false, "kalanDk": null, "eskiErtelemeMi": false },
+    { "kimlik": "muhasebe_2026-10-13", "planMi": false, "kalanDk": null, "eskiErtelemeMi": false }
+  ],
+  "eylemler": [
+    { "eylem": "ertele_10", "eskiErteleMi": true },
+    { "eylem": "ertele_20", "eskiErteleMi": true },
+    { "eylem": "kildim_action", "eskiErteleMi": false },
+    { "eylem": "ertele_15", "eskiErteleMi": false }
+  ]
+}

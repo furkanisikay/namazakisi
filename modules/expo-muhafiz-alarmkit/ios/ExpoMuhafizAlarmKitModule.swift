@@ -30,7 +30,7 @@ import Foundation
     func canliUuidler(_ tamam: @escaping ([String]?, [String]) -> Void)
 }
 
-/// Ana hedefteki intent'ler JS'e haber verir (uygulama aciksa): `["tur": "ertele"|"kildim"|"nafileKildim"]`.
+/// Ana hedefteki intent'ler JS'e haber verir (uygulama aciksa): `["tur": "kildim"|"nafileKildim"]`.
 public enum MuhafizAlarmOlaylari {
     public static let degisiklik = Notification.Name("NamazAkisiAlarmDegisikligi")
 

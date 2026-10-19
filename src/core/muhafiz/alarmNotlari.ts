@@ -75,7 +75,7 @@ function iosNotlari(durum: AlarmKitDurumu | null | undefined, iosSurum: number |
                 {
                     tip: 'bilgi',
                     metin:
-                        'Alarm ekranında durdurabilir ya da 10 dakika erteleyebilirsiniz; vaktin çıkmasına az kaldıysa ikinci düğme "Kıldım" olur ve kilit açıkken işaretler.',
+                        'Alarm ekranında durdurabilir ya da "Kıldım" diyebilirsiniz; "Kıldım" kilit açıkken işaretler.',
                 },
                 {
                     tip: 'bilgi',

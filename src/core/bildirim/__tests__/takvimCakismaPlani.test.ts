@@ -18,7 +18,7 @@ import {
 } from '../takvimCakismaPlani';
 import { UYGULAMA_TAKVIM_NOTU, takvimCakismaAyarlariniNormalize } from '../../takvimCakisma/takvimCakismaAyarlari';
 import { ekAdim } from '../../hatirlatma/adimDizisi';
-import { gurubKerahatiBaslangiciMs } from '../../muhafiz/erteleme';
+import { gurubKerahatiBaslangiciMs } from '../../vakit/kerahat';
 import { tarihiISOFormatinaCevir } from '../../utils/TarihYardimcisi';
 
 const DK = 60_000;

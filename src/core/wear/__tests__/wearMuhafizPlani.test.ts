@@ -19,7 +19,6 @@ import {
 } from '../wearMuhafizPlani';
 import { kimliktenOran, muhafizGovdesiSec } from '../../muhafiz/muhafizGovdesi';
 import { gunEkle } from '../../utils/TarihYardimcisi';
-import { ertelemedeSusturulurMu } from '../../muhafiz/erteleme';
 
 const ISTANBUL = { lat: 41.0082, lng: 28.9784 };
 const BUGUN = '2026-10-12';
@@ -158,21 +157,6 @@ describe('wearMuhafizPlaniOlustur', () => {
         expect(anahtarlar).not.toContain(`${gunEkle(BUGUN, -1)}_yatsi`);
         expect(anahtarlar[0]).toBe(`${BUGUN}_imsak`);
         expect(wearMuhafizPlaniOlustur({ ...temel, simdiMs: IMSAK_ONCESI, ozelGundeMi: () => true })).toEqual([]);
-    });
-
-    it('ERTELEME (#289): ertelenen aralığın kayıtları saate GİTMEZ — telefonla AYNI kural', () => {
-        const simdi = bugunOgle.cikis.getTime() - 50 * 60_000;
-        const hedef = bugunOgle.cikis.getTime() - 15 * 60_000;
-        const ertelemeler = { [`${BUGUN}_ogle`]: hedef };
-        const tum = wearMuhafizPlaniOlustur({ ...temel, simdiMs: simdi });
-        const suzulmus = wearMuhafizPlaniOlustur({ ...temel, simdiMs: simdi, ertelemeler });
-        const ogle = (g: typeof tum) => g.flat().filter((k) => k.vakit === 'ogle' && k.tarih === BUGUN);
-        const beklenen = ogle(tum).filter((k) => !ertelemedeSusturulurMu(k.ms, hedef));
-        expect(beklenen.length).toBeGreaterThan(0);
-        expect(beklenen.length).toBeLessThan(ogle(tum).length);
-        expect(ogle(suzulmus)).toEqual(beklenen);
-        // Diğer vakitlere dokunulmaz.
-        expect(suzulmus.flat().filter((k) => k.vakit !== 'ogle')).toEqual(tum.flat().filter((k) => k.vakit !== 'ogle'));
     });
 
     it('bitmiş vakit planlanmaz; süren vaktin geçmiş dakikaları kalır (içerik vakit bitene dek sabit)', () => {

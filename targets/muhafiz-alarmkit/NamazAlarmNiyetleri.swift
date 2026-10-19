@@ -34,7 +34,12 @@ struct NamazAlarmDurdurIntent: LiveActivityIntent {
     }
 }
 
-/// "10 dk ertele" — sinira kadar tek bir yeni alarm (issue #289 kurallari).
+/// ESKI "10 dk ertele" dugmesi — ERTELE YOK (sahip karari 2026-10-19, eski #289).
+///
+/// Tip YALNIZ GOC icin durur: guncelleme ONCESI kurulmus bir alarmin ikincil dugmesi bu
+/// intent'le kodlanmistir; tip kalkarsa basis cozulemez. Artik yalniz "Durdur" gibi
+/// susturur — yeni alarm KURULMAZ. Yeni alarmlar bu intent'i hic tasimaz; planlama turu
+/// eski alarmlari zaten "Kildim" dugmeli yenileriyle degistirir.
 @available(iOS 26.0, *)
 struct NamazAlarmErteleIntent: LiveActivityIntent {
     static let title: LocalizedStringResource = "Namaz alarmını ertele"
@@ -53,7 +58,7 @@ struct NamazAlarmErteleIntent: LiveActivityIntent {
     }
 
     func perform() async throws -> some IntentResult {
-        await NamazAlarmCekirdegi.ertele(kimlik)
+        _ = NamazAlarmCekirdegi.kapat(kimlik)
         return .result()
     }
 }
@@ -63,7 +68,7 @@ struct NamazAlarmErteleIntent: LiveActivityIntent {
 /// KILIT ACILMADAN KAYIT YAZILMAZ (Android M4 ikizi: tam ekran alarmda kilitliyken
 /// `requestDismissKeyguard`, bildirimde `setAuthenticationRequired`). Kilit ekranindaki
 /// alarmdan "Kıldım"a basan kisi once Face ID / kod ile kilidi acar; kilitli telefonu
-/// eline alan baskasi ibadet kaydi yazamaz. "Durdur" ve "10 dk ertele" KAYIT DEGILDIR,
+/// eline alan baskasi ibadet kaydi yazamaz. "Durdur" KAYIT DEGILDIR,
 /// kilitliyken calismaya devam eder (varsayilan `alwaysAllowed`).
 @available(iOS 26.0, *)
 struct NamazAlarmKildimIntent: LiveActivityIntent {

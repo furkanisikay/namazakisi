@@ -69,7 +69,18 @@ describe('withMuhafizAlarmKit eklentisi', () => {
         expect(planlayici).not.toContain('struct NamazAlarmVerisi');
     });
 
-    it('kilit ekranında "Kıldım" kilit açtırır; Durdur/Ertele kilitliyken çalışır (Android M4 ikizi)', () => {
+    it('ERTELE YOK: planlayıcı ikincil düğmeye ertele niyeti KOYMAZ; eski niyet (göç) yalnız susturur', () => {
+        const planlayici = fs.readFileSync(path.join(KOK, 'targets/muhafiz-alarmkit/NamazAlarmPlanlayici.swift'), 'utf8');
+        expect(planlayici).not.toContain('NamazAlarmErteleIntent');
+        expect(planlayici).not.toMatch(/func ertele\(/);
+        const niyetler = fs.readFileSync(path.join(KOK, 'targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift'), 'utf8');
+        const eski = niyetler.slice(niyetler.indexOf('struct NamazAlarmErteleIntent'));
+        expect(eski.slice(eski.indexOf('func perform'), eski.indexOf('return .result()'))).toContain(
+            'NamazAlarmCekirdegi.kapat(kimlik)'
+        );
+    });
+
+    it('kilit ekranında "Kıldım" kilit açtırır; Durdur (ve eski Ertele) kilitliyken çalışır (Android M4 ikizi)', () => {
         const niyetler = fs.readFileSync(path.join(KOK, 'targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift'), 'utf8');
         const blok = (ad: string) => niyetler.slice(niyetler.indexOf(`struct ${ad}`), niyetler.indexOf('func perform', niyetler.indexOf(`struct ${ad}`)));
         expect(blok('NamazAlarmKildimIntent')).toContain('authenticationPolicy: IntentAuthenticationPolicy = .requiresAuthentication');

@@ -32,7 +32,6 @@ import { alarmGerekliMi, muhafizKanaliSec, titresimGerekliMi } from '../../core/
 import { alarmKanallariniCikar, alarmYukuOlustur } from '../../core/muhafiz/alarmYuku';
 import { titresimDeseniAl } from '../../core/muhafiz/titresimDeseni';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
-import { ertelemeTeslimBilgisi } from '../../core/muhafiz/erteleme';
 import {
     planlaAnons,
     iptalEtAnons,
@@ -272,7 +271,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     /**
      * Gerçek alarmı kurar. `false` → çağıran normal bildirim + anons yoluna düşer.
      * Özel teslim (nafile) ancak `ozel.alarmAdi` taşıyorsa alarm kurar: yükü (`veri`)
-     * kendi `data`sıdır — muhafız yükü ASLA (Kıldım FARZ yazardı) — ertelemesi yoktur.
+     * kendi `data`sıdır — muhafız yükü ASLA (Kıldım FARZ yazardı).
      */
     private async alarmPlanla(teslim: UyariTeslimi): Promise<boolean> {
         const { id, baslik, mesaj, zaman, uyari, vakit, tarih, ozel, cikis } = teslim;
@@ -290,8 +289,6 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
             uyari.acilKanal,
             titresimGerekliMi(uyari.kanallar)
         );
-        // Özel teslim (nafile) ertelenmez: "10 dk ertele" muhafızın fıkhi sınırına kurulu.
-        const ertele = cikis && !ozel ? ertelemeTeslimBilgisi(vakit, cikis.getTime(), zaman.getTime()) : null;
         const kuruldu = await nativeAlarmPlanla(
             alarmYukuOlustur({
                 kimlik: id,
@@ -303,16 +300,14 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                 tarih,
                 // Bilgi türünde (cuma/camiye gitme/takvim) `cikis` pencerenin SONUDUR.
                 cikisMs: cikis?.getTime() ?? 0,
-                erteleSinirMs: ertele?.veri.erteleSinirMs ?? 0,
                 seviye: uyari.seviye,
                 bildirimSesi: uyari.bildirimSesi,
                 sesAdi: uyari.sesAdi,
                 // Normal bildirime düşüşün kanalı: özel teslimin zorladığı kanal önce, sonra
                 // yüzeyin varsayılan kanalı (göçten gelen kayıt bugünkü kanalında kalsın).
                 kanalId: ozelKanalSec(teslim, kanalId),
-                // Ertelenen kopyanın gövdesi — muhafız bildirimiyle AYNI `data` (Kıldım,
-                // erteleme ve JS `etkinErtelemeler` aynı alanları okur). Özel teslimde
-                // kendi yükü (nafile: `{tip:'nafile'}`).
+                // Normal bildirime düşüşün gövdesi — muhafız bildirimiyle AYNI `data`
+                // (Kıldım aynı alanları okur). Özel teslimde kendi yükü (nafile: `{tip:'nafile'}`).
                 veri: ozel ? { ...ozel.veri } : {
                     tip: 'muhafiz',
                     seviye: uyari.seviye,
@@ -322,7 +317,6 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     bildirimSesi: uyari.bildirimSesi,
                     sesliAnons: uyari.sesliAnons,
                     anonsMetni: uyari.anonsMetni,
-                    ...(ertele ? { ...ertele.veri, kanalId } : {}),
                 },
                 ...(ozel?.alarmTuru ? { tur: ozel.alarmTuru } : {}),
                 ...(ozel?.alarmKilinmisligaBagli === true ? { kilinmisligaBagli: true } : {}),
@@ -406,18 +400,12 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                 this.camideMi(zaman) ? false : uyari.acilKanal,
                 titresimli
             );
-            // "Ertele" (issue #289): düğme kümesi sınıra kalan süreden; native basış
-            // yolu (`BildirimErteleIsleyici`) sınırı ve kanalı `data`dan okur.
-            // Muhafız DIŞI teslim (`ozel`, nafile #273) ertele taşımaz.
-            const ertele = teslim.cikis && !ozel
-                ? ertelemeTeslimBilgisi(vakit, teslim.cikis.getTime(), zaman.getTime())
-                : null;
-
             // Kategori: özel teslim `null` verirse HİÇ yazılmaz (cuma "Kıldım" FARZ yazmasın).
+            // Muhafız yalnız "Kıldım" taşır — ERTELE YOK (sahip kararı 2026-10-19, eski #289).
             const kategori =
                 ozel && ozel.kategori !== undefined
                     ? ozel.kategori
-                    : (ertele?.kategori ?? BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ);
+                    : BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ;
 
             await Notifications.scheduleNotificationAsync({
                 identifier: id,
@@ -444,7 +432,6 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                         bildirimSesi: uyari.bildirimSesi,
                         sesliAnons: uyari.sesliAnons,
                         anonsMetni: uyari.anonsMetni,
-                        ...(ertele ? { ...ertele.veri, kanalId } : {}),
                     },
                 },
                 trigger: {

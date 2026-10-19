@@ -1,5 +1,5 @@
 {
-  "aciklama": "Gercek alarm (issue #74) sozlesmesi. JS (core/muhafiz/alarmYuku.ts) 'girdi'den 'yuk'u BIREBIR uretir; Kotlin (cekirdek/MuhafizAlarmKurallari) 'yuk'u cozer ve 'kararlar'/'erteleme'/'kanallar'i dogrular. Birini degistiren ucunu degistirir.",
+  "aciklama": "Gercek alarm (issue #74) sozlesmesi. JS (core/muhafiz/alarmYuku.ts) 'girdi'den 'yuk'u BIREBIR uretir; Kotlin (cekirdek/MuhafizAlarmKurallari) 'yuk'u cozer ve 'kararlar'/'kanallar'i dogrular. Erteleme YOK (sahip karari 2026-10-19): yukte erteleSinirMs alani yazilmaz, eski yukteki alan yok sayilir. Birini degistiren ucunu degistirir.",
   "girdi": {
     "kimlik": "muhafiz_2026-10-13_vakit_imsak_seviye_1_dk_88",
     "tetikMs": 1791000000000,
@@ -8,7 +8,6 @@
     "vakit": "imsak",
     "tarih": "2026-10-13",
     "cikisMs": 1791005280000,
-    "erteleSinirMs": 1791005100000,
     "seviye": 1,
     "bildirimSesi": "content://media/external/audio/media/12",
     "sesAdi": "Ezan",
@@ -25,7 +24,6 @@
     "vakitAdi": "Sabah",
     "tarih": "2026-10-13",
     "cikisMs": 1791005280000,
-    "erteleSinirMs": 1791005100000,
     "seviye": 1,
     "alarmKanalId": "namaz_alarm_8e1cdbd8",
     "alarmKanalAdi": "Namaz alarmı · Ezan",
@@ -34,7 +32,7 @@
     "veri": { "tip": "muhafiz", "seviye": 1, "vakit": "imsak", "tarih": "2026-10-13" }
   },
   "nafile": {
-    "aciklama": "Nafile alarmi (issue #74 standart yetenek): kimlik nafile_ onekli, yuk NAFILE yuku, erteleme yok. Kotlin nafileTuru'nu kimlikten cozer.",
+    "aciklama": "Nafile alarmi (issue #74 standart yetenek): kimlik nafile_ onekli, yuk NAFILE yuku. Kotlin nafileTuru'nu kimlikten cozer.",
     "girdi": {
       "kimlik": "nafile_2026-10-13_teheccud_1",
       "tetikMs": 1791020000000,
@@ -44,7 +42,6 @@
       "vakitAdi": "Teheccüd",
       "tarih": "2026-10-13",
       "cikisMs": 1791030000000,
-      "erteleSinirMs": 0,
       "seviye": 1,
       "bildirimSesi": "varsayilan",
       "kanalId": "nafile_uyandirma",
@@ -60,7 +57,6 @@
       "vakitAdi": "Teheccüd",
       "tarih": "2026-10-13",
       "cikisMs": 1791030000000,
-      "erteleSinirMs": 0,
       "seviye": 1,
       "alarmKanalId": "namaz_alarm",
       "alarmKanalAdi": "Namaz alarmı",
@@ -80,7 +76,6 @@
       "vakitAdi": "Cuma",
       "tarih": "2026-10-16",
       "cikisMs": 1791023600000,
-      "erteleSinirMs": 0,
       "seviye": 1,
       "bildirimSesi": "varsayilan",
       "kanalId": "vakit_bildirim",
@@ -97,7 +92,6 @@
       "vakitAdi": "Cuma",
       "tarih": "2026-10-16",
       "cikisMs": 1791023600000,
-      "erteleSinirMs": 0,
       "seviye": 1,
       "alarmKanalId": "namaz_alarm",
       "alarmKanalAdi": "Namaz alarmı",
@@ -118,7 +112,6 @@
       "vakitAdi": "Takvim",
       "tarih": "2026-10-16",
       "cikisMs": 1791023600000,
-      "erteleSinirMs": 0,
       "seviye": 1,
       "bildirimSesi": "varsayilan",
       "kanalId": "vakit_bildirim",
@@ -136,7 +129,6 @@
       "vakitAdi": "Takvim",
       "tarih": "2026-10-16",
       "cikisMs": 1791023600000,
-      "erteleSinirMs": 0,
       "seviye": 1,
       "alarmKanalId": "namaz_alarm",
       "alarmKanalAdi": "Namaz alarmı",
@@ -160,11 +152,5 @@
     { "ad": "cami bitti", "tetikMs": 1000000, "simdiMs": 1000500, "cikisMs": 9000000, "camiSessizBitisMs": 1000500, "beklenen": "CAL" },
     { "ad": "vakit cikti", "tetikMs": 1000000, "simdiMs": 9000000, "cikisMs": 9000000, "camiSessizBitisMs": 0, "beklenen": "ATLA" },
     { "ad": "cikis bilinmiyor", "tetikMs": 1000000, "simdiMs": 1000500, "cikisMs": 0, "camiSessizBitisMs": 0, "beklenen": "CAL" }
-  ],
-  "erteleme": [
-    { "ad": "bol vakit", "simdiMs": 0, "sinirMs": 1800000, "beklenen": true },
-    { "ad": "5 dk", "simdiMs": 0, "sinirMs": 300000, "beklenen": true },
-    { "ad": "5 dk alti", "simdiMs": 0, "sinirMs": 299999, "beklenen": false },
-    { "ad": "sinir yok", "simdiMs": 0, "sinirMs": 0, "beklenen": false }
   ]
 }

@@ -56,23 +56,12 @@ if (Platform.OS === 'android') {
 // değildir: kuyruk ön plana gelişte ve 15 dk'lık arka plan görevinde de boşalır.
 if (Platform.OS === 'android') {
     try {
-        AppRegistry.registerHeadlessTask('KildimKuyrugu', () => async (veri?: { neden?: string }) => {
+        AppRegistry.registerHeadlessTask('KildimKuyrugu', () => async () => {
             try {
                 const { KildimKuyruguServisi } = await import('./src/domain/services/KildimKuyruguServisi');
                 await KildimKuyruguServisi.getInstance().bekleyenleriIsle();
             } catch {
                 // Kuyruk native tarafta korunur; ön plan / 15 dk görevi yeniden dener.
-            }
-            // Muhafız ertelemesi (issue #289): native `BildirimErteleIsleyici` uygulama
-            // kapalıyken bu görevi `neden=ertele` ile başlatır → saatin hazır planı
-            // ertelenen aralıktan arındırılsın (bilekte uyarı sürmesin).
-            if (veri?.neden === 'ertele') {
-                try {
-                    const { WearSenkronServisi } = await import('./src/domain/services/WearSenkronServisi');
-                    await WearSenkronServisi.getInstance().gonder();
-                } catch {
-                    // Saat bir sonraki gönderimde (açılış / 15 dk görevi) süzülmüş planı alır.
-                }
             }
         });
     } catch {

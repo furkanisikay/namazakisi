@@ -223,9 +223,9 @@ function fikstürMatrisi(): MuhafizMatrisi {
 }
 
 /**
- * `data` icindeki MUTLAK zaman alanlari (Ertele, issue #289: `cikisMs`,
- * `erteleSinirMs`) da "cikisa kalan dakika"ya cevrilir — yoksa snapshot her
- * kosuda degisirdi.
+ * `data` icindeki MUTLAK zaman alanlari (`...Ms`) "cikisa kalan dakika"ya cevrilir —
+ * yoksa snapshot her kosuda degisirdi. (Kaldirilan Ertele'nin `cikisMs`/`erteleSinirMs`
+ * alanlari artik yazilmiyor; normalizasyon ileride eklenecek zaman alani icin durur.)
  */
 function veriyiNormalize(data: Record<string, unknown> | undefined, cikisMs: number) {
     if (!data) return data;

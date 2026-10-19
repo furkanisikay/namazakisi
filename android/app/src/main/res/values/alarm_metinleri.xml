@@ -4,7 +4,6 @@
 <resources>
     <string name="alarm_baslik">Namaz alarmı</string>
     <string name="alarm_kildim">Kıldım</string>
-    <string name="alarm_ertele">10 dk ertele</string>
     <string name="alarm_kapat">Kapat</string>
     <string name="alarm_kanal_aciklamasi">Seçtiğiniz hatırlatma adımlarında çalan gerçek alarm</string>
 </resources>

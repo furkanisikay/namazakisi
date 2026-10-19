@@ -442,8 +442,8 @@ describe('ArkaplanMuhafizServisi - Bildirim icerigi (oncelik/kanal/data)', () =>
 
         const bugun = bugunuAl();
         for (const b of bildirimler) {
-            // Kategori sınıra kalan süreye göre ertele düğmesi taşır (issue #289).
-            expect(b.content.categoryIdentifier).toMatch(/^muhafiz_(ertele[12]_)?category$/);
+            // Yalnız "Kıldım" — ERTELE YOK (sahip kararı 2026-10-19).
+            expect(b.content.categoryIdentifier).toBe('muhafiz_category');
             expect(b.content.data.tip).toBe('muhafiz');
             // Tek planlanabilir vakit 'aksam' ve bugune ait.
             expect(b.content.data.vakit).toBe('aksam');
@@ -1201,7 +1201,7 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
             .map((c) => c[0])
             .filter((b) => b.identifier.includes('_vakit_aksam_'));
 
-    test('L7: bildirim KATEGORİLERİ ("Ertele" düğmeleri) planlamadan ÖNCE kaydedilir, süreçte BİR kez', async () => {
+    test('L7: bildirim KATEGORİLERİ planlamadan ÖNCE kaydedilir, süreçte BİR kez', async () => {
         (ArkaplanMuhafizServisi as unknown as { instance?: unknown }).instance = undefined;
         servis = ArkaplanMuhafizServisi.getInstance();
         await planla(OZEL_SES);
@@ -1442,7 +1442,11 @@ describe('ArkaplanMuhafizServisi — giriş yönü (Faz 1)', () => {
     });
 });
 
-describe('ArkaplanMuhafizServisi — Ertele (issue #289)', () => {
+/**
+ * ERTELE YOK (sahip kararı 2026-10-19, eski #289). Güncelleme ÖNCESİ kurulmuş `_ertele`
+ * kopyaları bir sonraki planlama turunda silinir (göç) ve hiçbir uyarıyı SUSTURMAZ.
+ */
+describe('ArkaplanMuhafizServisi — eski Ertele artıkları (göç)', () => {
     let servis: ArkaplanMuhafizServisi;
     const bugun = bugunuAl();
 
@@ -1457,28 +1461,30 @@ describe('ArkaplanMuhafizServisi — Ertele (issue #289)', () => {
     const iptaller = () => (Notifications.cancelScheduledNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
     const planlananlar = () => (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
 
-    test('yeniden planlama ERTELEMEYI ve YATIS bildirimini silmez; yalniz plan kimliklerini temizler', async () => {
+    test('muhafız AÇIKKEN yeniden planlama eski _ertele kopyasını SİLER, YATIŞ bildirimine dokunmaz', async () => {
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
             { identifier: `muhafiz_${bugun}_vakit_aksam_seviye_2_dk_20` },
             { identifier: `muhafiz_${bugun}_vakit_aksam_ertele`, content: { data: { ertelemeHedefMs: Date.now() + 10 * 60000 } } },
             { identifier: `muhafiz_${bugun}_vakit_yatsi_yatis` },
         ]);
         await servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 }, matris: STANDART_MATRIS });
-        expect(iptaller()).toEqual([`muhafiz_${bugun}_vakit_aksam_seviye_2_dk_20`]);
+        expect(iptaller()).toEqual([
+            `muhafiz_${bugun}_vakit_aksam_seviye_2_dk_20`,
+            `muhafiz_${bugun}_vakit_aksam_ertele`,
+        ]);
     });
 
-    test('ertelenen vakitte hedef ana kadarki uyarilar KURULMAZ (15 dk gorevi susturulanlari geri getirmesin)', async () => {
-        const hedef = Date.now() + 12 * 60000; // cikisa ~18 dk kala
+    test('eski _ertele kopyası uyarıları SUSTURMAZ (aralık yine planlanır)', async () => {
+        const hedef = Date.now() + 12 * 60000;
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
             { identifier: `muhafiz_${bugun}_vakit_aksam_ertele`, content: { data: { ertelemeHedefMs: hedef } } },
         ]);
         await servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 }, matris: STANDART_MATRIS });
         const zamanlar = planlananlar().map((p) => (p.trigger.date as Date).getTime());
-        expect(zamanlar.length).toBeGreaterThan(0);
-        for (const z of zamanlar) expect(z).toBeGreaterThanOrEqual(hedef + 60000);
+        expect(zamanlar.some((z) => z < hedef)).toBe(true);
     });
 
-    test('muhafiz KAPATILINCA erteleme de iptal edilir, yatis bildirimi KORUNUR', async () => {
+    test('muhafız KAPATILINCA eski _ertele kopyası silinir, yatış bildirimi KORUNUR', async () => {
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
             { identifier: `muhafiz_${bugun}_vakit_aksam_ertele`, content: { data: { ertelemeHedefMs: Date.now() + 60000 } } },
             { identifier: `muhafiz_${bugun}_vakit_yatsi_yatis` },
@@ -1487,7 +1493,7 @@ describe('ArkaplanMuhafizServisi — Ertele (issue #289)', () => {
         expect(iptaller()).toEqual([`muhafiz_${bugun}_vakit_aksam_ertele`]);
     });
 
-    test('"Kildim" (vakit iptali) ertelenmis kopyayi DA iptal eder', async () => {
+    test('"Kildim" (vakit iptali) eski _ertele kopyasını DA iptal eder', async () => {
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
             { identifier: `muhafiz_${bugun}_vakit_aksam_ertele` },
             { identifier: `muhafiz_${bugun}_vakit_ikindi_ertele` },
@@ -1496,13 +1502,14 @@ describe('ArkaplanMuhafizServisi — Ertele (issue #289)', () => {
         expect(iptaller()).toEqual([`muhafiz_${bugun}_vakit_aksam_ertele`]);
     });
 
-    test('bildirim ertele verisi tasir: cikis, fikhi sinir (cikis − 3 dk), kanal', async () => {
+    test('ERTELE YOK (sahip kararı 2026-10-19): bildirim yalnız "Kıldım" kategorisi taşır, erteleme verisi YOK', async () => {
         await servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 }, matris: STANDART_MATRIS });
-        const p = planlananlar()[0];
-        const cikis = (PrayerTimes as jest.Mock).mock.results[0].value.isha.getTime();
-        expect(p.content.data.cikisMs).toBe(cikis);
-        expect(p.content.data.erteleSinirMs).toBe(cikis - 3 * 60000);
-        expect(p.content.data.kanalId).toBe(p.trigger.channelId);
-        expect(p.content.data.ertelemeBasligi).toContain('Akşam');
+        expect(planlananlar().length).toBeGreaterThan(0);
+        for (const p of planlananlar()) {
+            expect(p.content.categoryIdentifier).toBe('muhafiz_category');
+            for (const alan of ['erteleSinirMs', 'ertelemeBasligi', 'cikisMs', 'kanalId']) {
+                expect(p.content.data).not.toHaveProperty(alan);
+            }
+        }
     });
 });

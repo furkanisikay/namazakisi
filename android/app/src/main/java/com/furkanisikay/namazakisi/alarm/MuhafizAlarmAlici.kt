@@ -23,7 +23,9 @@ import java.util.concurrent.Executors
  *  - TETIK   : `setAlarmClock` çaldı → karar ([MuhafizAlarmKurallari.tetikKarari]) →
  *              çalan alarm ya da normal bildirim; çalıyorsa süre sonunda SUSTUR kurulur.
  *  - SUSTUR  : çalma süresi doldu → bildirim hâlâ duruyorsa sessiz NORMAL bildirime çevrilir.
- *  - KILDIM / ERTELE / KAPAT : bildirim düğmeleri (tam ekran etkinliği aynı gövdeyi çağırır).
+ *  - KILDIM / KAPAT : bildirim düğmeleri (tam ekran etkinliği aynı gövdeyi çağırır).
+ *    ESKI_ERTELE yalnız göç içindir: güncelleme öncesi gösterilmiş alarm bildiriminin
+ *    "Ertele" düğmesi KAPAT gibi susturur (ERTELE YOK, sahip kararı 2026-10-19).
  *  - BOOT_COMPLETED / MY_PACKAGE_REPLACED : kayıtlı alarmlar yeniden kurulur.
  *
  * İŞ ANA THREAD'DE YAPILMAZ (M3): "Kıldım" expo mağazasını okuyup yazar, widget'ı tazeler,
@@ -73,7 +75,7 @@ class MuhafizAlarmAlici : BroadcastReceiver() {
             when (intent.action) {
                 MuhafizAlarmZamanlayici.EYLEM_TETIK -> tetik(context, intent)
                 EYLEM_SUSTUR -> sustur(context, intent)
-                EYLEM_KILDIM, EYLEM_ERTELE, EYLEM_KAPAT -> {
+                EYLEM_KILDIM, ESKI_EYLEM_ERTELE, EYLEM_KAPAT -> {
                     val ham = intent.getStringExtra(EK_YUK) ?: return
                     MuhafizAlarmEylemleri.uygula(context, intent.action ?: return, ham)
                 }
@@ -132,7 +134,7 @@ class MuhafizAlarmAlici : BroadcastReceiver() {
     private fun sustur(context: Context, intent: Intent) {
         val ham = intent.getStringExtra(EK_YUK) ?: return
         val yuk = MuhafizAlarmKurallari.yukCoz(ham) ?: return
-        // Kullanıcı bu arada Kıldım/Ertele/Kapat dediyse bildirim yoktur → dokunma.
+        // Kullanıcı bu arada Kıldım/Kapat dediyse bildirim yoktur → dokunma.
         if (!MuhafizAlarmBildirimi.gosteriliyorMu(context, yuk.kimlik)) return
         // İptal ŞART: insistent ses ancak bildirim kalkınca kesin durur; ardından aynı
         // içerik sessiz NORMAL bildirim olarak kalır ("Kıldım" düğmesiyle birlikte).
@@ -145,7 +147,12 @@ class MuhafizAlarmAlici : BroadcastReceiver() {
 
         const val EYLEM_SUSTUR = "com.furkanisikay.namazakisi.MUHAFIZ_ALARM_SUSTUR"
         const val EYLEM_KILDIM = "com.furkanisikay.namazakisi.MUHAFIZ_ALARM_KILDIM"
-        const val EYLEM_ERTELE = "com.furkanisikay.namazakisi.MUHAFIZ_ALARM_ERTELE"
+        /**
+         * GÖÇ: güncelleme ÖNCESİ gösterilmiş alarm bildirimindeki "10 dk ertele"
+         * PendingIntent'i bu eylemi taşır. Listeden düşseydi basış hiçbir şey yapmaz,
+         * insistent ses 2 dk sürerdi → [MuhafizAlarmEylemleri] onu KAPAT gibi işler.
+         */
+        const val ESKI_EYLEM_ERTELE = "com.furkanisikay.namazakisi.MUHAFIZ_ALARM_ERTELE"
         const val EYLEM_KAPAT = "com.furkanisikay.namazakisi.MUHAFIZ_ALARM_KAPAT"
         const val EK_YUK = "yuk"
 

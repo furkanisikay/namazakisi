@@ -205,7 +205,7 @@ class OtomasyonKurallariTest {
         assertNull(k.cikiyorOlayi("muhafiz_2026-10-13_vakit_imsak_seviye_2_dk_25", "2026-10-13_sabah"))
         assertNull(k.cikiyorOlayi("muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_60", null))
         assertNotNull(k.cikiyorOlayi("muhafiz_2026-10-13_vakit_ogle_seviye_2_dk_25", null))
-        // Erteleme / yatış bildirimleri ve vakit bildirimi olay değildir.
+        // Eski erteleme artığı / yatış bildirimleri ve vakit bildirimi olay değildir.
         assertNull(k.cikiyorOlayi("muhafiz_2026-10-13_vakit_ogle_ertele", null))
         assertNull(k.cikiyorOlayi("vakit_bildirim_ogle_2026-10-13", null))
         assertNull(k.cikiyorOlayi("muhafiz_2026-10-13_vakit_ogle_seviye_4_dk_0", null))

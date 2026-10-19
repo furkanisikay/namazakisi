@@ -70,6 +70,14 @@ describe('alarmOnayMaddeleri', () => {
         }
     });
 
+    it('ERTELE YOK (sahip kararı 2026-10-19): hiçbir maddede erteleme vaadi yok', () => {
+        for (const platform of ['ios', 'android'] as const) {
+            for (const durum of ['belirsiz', 'izinli', 'reddedildi', 'desteklenmiyor', null] as const) {
+                expect(metin(alarmOnayMaddeleri(platform, durum))).not.toMatch(/ertele/i);
+            }
+        }
+    });
+
     it('Android maddeleri AlarmKit durumundan etkilenmez', () => {
         expect(alarmOnayMaddeleri('android', 'izinli')).toEqual(alarmOnayMaddeleri('android'));
     });

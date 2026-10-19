@@ -59,9 +59,8 @@ export interface UyariTeslimi {
     tarih: string;
     yon: PencereYonu;
     /**
-     * Vaktin cikisi — "Ertele" (issue #289) ust siniri ve ertelenen kopyanin
-     * basligi buradan turer. Verilmezse bildirim ertele dugmesi TASIMAZ
-     * (tarihsel davranis; eski el yapimi teslimler/testler).
+     * Vaktin cikisi (penceresinin sonu) — gercek alarmin gec tetik kapisi (`cikisMs`)
+     * buradan turer. Verilmeyebilir (eski el yapimi teslimler/testler).
      */
     cikis?: Date;
     /**
@@ -100,7 +99,7 @@ export interface OzelTeslim {
      * Bildirim KATEGORİSİ (eylem düğmeleri). `null` = kategori YOK: cuma / camiye gitme /
      * takvim bildiriminde muhafız kategorisinin "Kıldım" düğmesi FARZ namazı yazardı
      * (vakit girmeden gelen hatırlatmada kılınacak bir şey yoktur). `undefined` = muhafız
-     * davranışı (`MUHAFIZ` ya da ertele kategorisi — nafile bunu kullanır).
+     * davranışı (`MUHAFIZ` kategorisi — nafile bunu kullanır).
      */
     kategori?: string | null;
     /**
@@ -117,8 +116,8 @@ export interface OzelTeslim {
     varsayilanSistemSesi?: boolean;
     /**
      * Gerçek alarmın TÜRÜ (Android yükü, plan §4.2). `bilgi` = vakit GİRMEDEN çalan
-     * hatırlatma (cuma, camiye gitme, takvim): alarm ekranında yalnız "Kapat"; "Kıldım" /
-     * "Ertele" YOK, otomasyon olayı doğmaz; `UyariTeslimi.cikis` pencerenin SONUDUR (geç
+     * hatırlatma (cuma, camiye gitme, takvim): alarm ekranında yalnız "Kapat"; "Kıldım"
+     * YOK, otomasyon olayı doğmaz; `UyariTeslimi.cikis` pencerenin SONUDUR (geç
      * tetik orada atlanır). Verilmezse yükte alan yoktur, native kimlikten çözer (muhafız/nafile).
      */
     alarmTuru?: AlarmTuru;
@@ -167,13 +166,6 @@ export interface MuhafizTeslimcisi {
      * Opsiyonel: iOS'ta ve el yapimi teslimcilerde is yoktur.
      */
     vakitYanKanallariniIptalEt?(onek: string): void;
-
-    /**
-     * Kimligi seciciyi saglayan yan kanallari iptal et — bildirimdeki "Ertele"nin JS yolu
-     * (iOS) susturulan araliktaki GERCEK ALARMLARI (AlarmKit, issue #74) da kaldirsin.
-     * Opsiyonel: Android'de erteleme native islenir ve alarm kaydini kendisi tarar.
-     */
-    secilenYanKanallariIptalEt?(secici: (kimlik: string) => boolean): Promise<void>;
 
     /**
      * Planlama turu BITTIKTEN sonra calisir (muhafiz kapaliyken de). iOS'ta

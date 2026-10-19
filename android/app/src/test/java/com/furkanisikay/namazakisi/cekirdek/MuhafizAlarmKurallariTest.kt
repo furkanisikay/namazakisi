@@ -30,7 +30,6 @@ class MuhafizAlarmKurallariTest {
         assertEquals("Sabah", yuk.vakitAdi)
         assertEquals(1791000000000L, yuk.tetikMs)
         assertEquals(1791005280000L, yuk.cikisMs)
-        assertEquals(1791005100000L, yuk.erteleSinirMs)
         assertEquals("namaz_alarm_8e1cdbd8", yuk.alarmKanalId)
         assertEquals("content://media/external/audio/media/12", yuk.sesUri)
         assertEquals("muhafiz_1234abcd", yuk.kanalId)
@@ -40,7 +39,7 @@ class MuhafizAlarmKurallariTest {
     @Test
     fun nafileYukuNafileYolunaGider() {
         // Sahip kararı: gerçek alarm nafilede de standart yetenektir. Kimlik YOLU belirler:
-        // Kıldım farz kuyruğuna ASLA gitmemeli (vakit boş), ertelenmez (sınır 0).
+        // Kıldım farz kuyruğuna ASLA gitmemeli (vakit boş).
         val yuk = MuhafizAlarmKurallari.yukCoz(ornek.getJSONObject("nafile").getJSONObject("yuk").toString())
         assertNotNull(yuk)
         yuk!!
@@ -48,12 +47,7 @@ class MuhafizAlarmKurallariTest {
         assertEquals("2026-10-13", yuk.tarih)
         assertEquals("", yuk.vakit)
         assertEquals("Teheccüd", yuk.vakitAdi)
-        assertEquals(0L, yuk.erteleSinirMs)
         assertEquals("nafile", yuk.veri.getString("tip"))
-        assertFalse(MuhafizAlarmKurallari.ertelemeDugmesiVarMi(0L, yuk.erteleSinirMs))
-        // Elle sınır yazılmış olsa bile nafile ertelenmez.
-        val sinirli = JSONObject(ornek.getJSONObject("nafile").getJSONObject("yuk").toString()).put("erteleSinirMs", 9_000_000L)
-        assertEquals(0L, MuhafizAlarmKurallari.yukCoz(sinirli.toString())!!.erteleSinirMs)
         // Muhafız yükünde alan YOK.
         assertNull(MuhafizAlarmKurallari.yukCoz(ornek.getJSONObject("yuk").toString())!!.nafileTuru)
     }
@@ -73,9 +67,6 @@ class MuhafizAlarmKurallariTest {
         assertEquals("vakit_bildirim", yuk.kanalId)
         assertFalse(MuhafizAlarmKurallari.kildimDugmesiVarMi(yuk))
         assertFalse(MuhafizAlarmKurallari.otomasyonOlayiDogarMi(yuk))
-        // Elle sınır yazılmış olsa bile bilgi alarmı ertelenmez.
-        val sinirli = JSONObject(ornek.getJSONObject("bilgi").getJSONObject("yuk").toString()).put("erteleSinirMs", 9_000_000L)
-        assertEquals(0L, MuhafizAlarmKurallari.yukCoz(sinirli.toString())!!.erteleSinirMs)
         // Kuyrukta bekleme kuralı bilgi alarmını kılınmış SAYMAZ (vakit boş).
         assertFalse(MuhafizAlarmKurallari.kuyruktaKilindiMi(yuk.tarih, yuk.vakit, setOf("2026-10-16_ogle")))
     }
@@ -164,16 +155,13 @@ class MuhafizAlarmKurallariTest {
     }
 
     @Test
-    fun ertelemeDugmesiBildirimErtelemesiyleAyni() {
-        val d = ornek.getJSONArray("erteleme")
-        for (i in 0 until d.length()) {
-            val o = d.getJSONObject(i)
-            assertEquals(
-                o.getString("ad"),
-                o.getBoolean("beklenen"),
-                MuhafizAlarmKurallari.ertelemeDugmesiVarMi(o.getLong("simdiMs"), o.getLong("sinirMs")),
-            )
-        }
+    fun eskiYuktekiErtelemeAlaniYokSayilir() {
+        // ERTELE YOK (sahip kararı 2026-10-19): güncelleme öncesi kurulmuş alarmın yükü
+        // `erteleSinirMs` taşır — yük yine çözülür, alarm çalar.
+        val eski = JSONObject(ornek.getJSONObject("yuk").toString()).put("erteleSinirMs", 1791005100000L)
+        val yuk = MuhafizAlarmKurallari.yukCoz(eski.toString())
+        assertNotNull(yuk)
+        assertEquals("muhafiz_2026-10-13_vakit_imsak_seviye_1_dk_88", yuk!!.kimlik)
     }
 
     @Test
@@ -236,7 +224,6 @@ class MuhafizAlarmKurallariTest {
         assertEquals("2026-10-16", yuk.tarih)
         // Düğmeler yine yok (bilgi alarmı).
         assertFalse(MuhafizAlarmKurallari.kildimDugmesiVarMi(yuk))
-        assertEquals(0L, yuk.erteleSinirMs)
         assertTrue(MuhafizAlarmKurallari.kuyrukDenetlenirMi(yuk))
         val kuyruk = KildimKuyruguKurallari.ekle(emptyList(), "2026-10-16", "ogle", KildimKuyruguKurallari.KAYNAK_WEAR)!!
         val bekleyen = KildimKuyruguKurallari.bekleyenKimlikler(kuyruk)

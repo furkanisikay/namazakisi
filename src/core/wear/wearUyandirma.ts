@@ -23,7 +23,6 @@ import { nafilePlaniOlustur } from '../nafile/nafilePlani';
 import type { MuhafizMatrisi } from '../muhafiz/matrisTipleri';
 import type { SaatUyandirmaDurumu } from '../saat/saatAyarlari';
 import { muhafizUyandirmasiMi, nafileUyandirmasiMi } from '../saat/uyandirmaKapisi';
-import { ertelemeSusturuyorMu } from '../muhafiz/erteleme';
 import { WEAR_PLAN_UFKU_MS, pencereninUyarilari, vakitPencereleriniOlustur } from './wearMuhafizPlani';
 
 export type WearUyandirmaTuru = 'imsak' | 'teheccud';
@@ -54,7 +53,6 @@ export interface WearUyandirmaGirdisi {
         matris: MuhafizMatrisi;
         kilinanlar: Record<string, readonly VakitAdi[]>;
         ozelGundeMi?: (tarih: string) => boolean;
-        ertelemeler?: Readonly<Record<string, number>>;
     };
     nafile?: {
         ayarlar: NafileAyarlari;
@@ -87,7 +85,6 @@ export function wearUyandirmaListesiOlustur(g: WearUyandirmaGirdisi): WearUyandi
                 if (!muhafizUyandirmasiMi('imsak', uyari)) continue;
                 const ms = an(kayit.id, kayit.ms);
                 if (ms === null || ms >= p.cikis.getTime()) continue;
-                if (ertelemeSusturuyorMu(m.ertelemeler, kayit.tarih, kayit.vakit, ms)) continue;
                 liste.push({
                     id: kayit.id,
                     ms,

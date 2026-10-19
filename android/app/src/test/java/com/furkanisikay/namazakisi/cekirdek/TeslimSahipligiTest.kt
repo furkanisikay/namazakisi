@@ -43,7 +43,7 @@ class TeslimSahipligiTest {
     @Test
     fun muhafizTuruYatisiSilmez() {
         // §4.6 nöbetçisi: plan kimliği yüklemi yatış kimliğini plan SAYMAZ.
-        assertFalse(ErtelemeKurallari.planKimligiMi("muhafiz_2026-10-13_vakit_yatsi_yatis"))
+        assertFalse(MuhafizPlanKimligi.planKimligiMi("muhafiz_2026-10-13_vakit_yatsi_yatis"))
         assertFalse(TeslimSahipligi.eslesir(TeslimSahipligi.MUHAFIZ_TUMU, "muhafiz_2026-10-13_vakit_yatsi_yatis_30"))
     }
 }
