@@ -259,41 +259,66 @@ export function basilanKume(
 
 /** "Yakınınızda N cami" sayımının yarıçapı (m) — önizleme kartı. */
 export const ONIZLEME_SAYIM_M = 2000;
+/** Mini önizlemede ölçeği belirleyen küme: en yakın bu kadar cami… */
+export const ONIZLEME_KUME_SAYISI = 30;
+/** …ama görünen yarıçap bu aralıkta kalır (m): sık mahallede en az 250 m, seyrek yerde en çok 1 km. */
+export const ONIZLEME_YARICAP_MIN_M = 250;
+export const ONIZLEME_YARICAP_MAX_M = 1000;
+/** Dekor halkaları (m). */
+export const ONIZLEME_HALKALARI_M = [250, 500] as const;
+
 export interface OnizlemeYerlesimi {
     /** Kullanıcı/ayarlı konum: DAİMA alanın tam ortası (px). */
     merkez: { sol: number; ust: number };
     noktalar: { id: string; sol: number; ust: number }[];
+    /** Halka yarıçapları (px), `ONIZLEME_HALKALARI_M` sırasıyla. */
+    halkalarPx: number[];
+    /** Ölçeği kuran yarıçap (m) — dikey yarı yüksekliğe denk gelir. */
+    yaricapM: number;
 }
 
 /**
- * Mini önizleme yerleşimi (px). Kullanıcı konumu ortada; `azamiM` içindeki camilerin
- * HEPSİ kenar payı (`payPx`) içinde kalacak tek bir (izotrop) ölçek seçilir — kırpma
- * yok, yön korunur (kuzey yukarı). Eski hâl %-konumlu ve sabit ±1 km'lik kareye
- * göreydi: noktalar kenara yığılıyor, üst sıradakiler kesiliyordu (özellik turu karesi 25).
+ * Mini önizleme yerleşimi (px). Konum ortada, tek (izotrop) ölçek, kuzey yukarı.
+ *
+ * Ölçek AYKIRI noktaya göre değil, en yakın `ONIZLEME_KUME_SAYISI` camiye göre kurulur:
+ * o kümenin en uzağı (250 m–1 km'ye kenetli) kartın DİKEY yarısına sığar; kart enine
+ * uzun olduğu için yatayda bunun birkaç katı görünür (noktalar yatay dağılır). Alanın
+ * dışına düşen camiler çizilmez (yoksayılır, kırpılmaz). Eski sürüm 2 km içindeki EN
+ * UZAK noktayı sığdırıyordu → 124 nokta ortada minik bir yığına sıkışıyordu (kare 25).
  */
 export function onizlemeYerlesimi(
     merkez: { lat: number; lng: number },
-    camiler: readonly { id: string; lat: number; lng: number; mesafeM?: number }[],
+    camiler: readonly { id: string; lat: number; lng: number }[],
     genislikPx: number,
     yukseklikPx: number,
-    payPx: number = 14,
-    azamiM: number = ONIZLEME_SAYIM_M
+    payPx: number = 10
 ): OnizlemeYerlesimi {
     const ortaX = genislikPx / 2;
     const ortaY = yukseklikPx / 2;
     const cosLat = Math.cos((merkez.lat * Math.PI) / 180);
     const mPerDeg = (DUNYA_YARICAPI_M * Math.PI) / 180;
     const yerel = camiler
-        .map((c) => ({ id: c.id, dx: (c.lng - merkez.lng) * mPerDeg * cosLat, dy: (c.lat - merkez.lat) * mPerDeg }))
-        .filter((c) => Math.hypot(c.dx, c.dy) <= azamiM);
-    const yariX = Math.max(1, ortaX - payPx);
-    const yariY = Math.max(1, ortaY - payPx);
-    const enX = Math.max(1, ...yerel.map((c) => Math.abs(c.dx)));
-    const enY = Math.max(1, ...yerel.map((c) => Math.abs(c.dy)));
-    const pxPerM = Math.min(yariX / enX, yariY / enY);
+        .map((c) => {
+            const dx = (c.lng - merkez.lng) * mPerDeg * cosLat;
+            const dy = (c.lat - merkez.lat) * mPerDeg;
+            return { id: c.id, dx, dy, m: Math.hypot(dx, dy) };
+        })
+        .sort((x, y) => x.m - y.m);
+    const kumeninEnUzagi = yerel.length ? yerel[Math.min(ONIZLEME_KUME_SAYISI, yerel.length) - 1].m : ONIZLEME_YARICAP_MIN_M;
+    const yaricapM = Math.min(ONIZLEME_YARICAP_MAX_M, Math.max(ONIZLEME_YARICAP_MIN_M, kumeninEnUzagi));
+    const pxPerM = Math.max(1, ortaY - payPx) / yaricapM;
+    const noktalar: OnizlemeYerlesimi['noktalar'] = [];
+    for (const c of yerel) {
+        const sol = ortaX + c.dx * pxPerM;
+        const ust = ortaY - c.dy * pxPerM;
+        if (sol < payPx || sol > genislikPx - payPx || ust < payPx || ust > yukseklikPx - payPx) continue;
+        noktalar.push({ id: c.id, sol, ust });
+    }
     return {
         merkez: { sol: ortaX, ust: ortaY },
-        noktalar: yerel.map((c) => ({ id: c.id, sol: ortaX + c.dx * pxPerM, ust: ortaY - c.dy * pxPerM })),
+        noktalar,
+        halkalarPx: ONIZLEME_HALKALARI_M.map((m) => m * pxPerM),
+        yaricapM,
     };
 }
 

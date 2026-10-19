@@ -1,9 +1,11 @@
 /**
  * "Yakınınızda N cami" — Namazda sessiz sayfasının mini harita önizlemesi.
  *
- * Gerçek harita (MapLibre + karolar) bu karta pahalıdır; burada yalnız 2 km içindeki
- * camilerin konuma göre yeri nokta olarak çizilir. Yerleşim saf `onizlemeYerlesimi`'nden
- * gelir: konum DAİMA ortada, tüm noktalar kenar payı içinde (kırpma yok), tek ölçek.
+ * Gerçek harita (MapLibre + karolar) bu karta pahalıdır; burada yakın camilerin konuma
+ * göre yeri küçük, hafif saydam noktalarla çizilir. Yerleşim saf `onizlemeYerlesimi`'nden
+ * gelir: konum DAİMA ortada, ölçek en yakın ~30 camiye göre (250 m–1 km), kart enine
+ * uzun olduğu için noktalar yatay dağılır; 250/500 m kesikli halkalar ölçeği anlatır.
+ * Başlıktaki sayı (2 km içi) çizilen noktalardan BAĞIMSIZDIR.
  * Dokununca tam harita (`Camilerim`) açılır. Camideyim KAPALIYKEN de görünür: keşif
  * içindir, izin istemez, izleme başlatmaz. Veri native `yakinCamiler` (en çok 150).
  */
@@ -20,9 +22,9 @@ interface Props {
     onAc: () => void;
 }
 
-const ALAN_YUKSEKLIGI = 112;
-const NOKTA = 9;
-const KONUM = 14;
+const ALAN_YUKSEKLIGI = 120;
+const NOKTA = 6;
+const KONUM = 12;
 
 export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
     const renkler = useRenkler();
@@ -69,6 +71,23 @@ export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
                 importantForAccessibility="no-hide-descendants"
                 accessibilityElementsHidden
             >
+                {yerlesim?.halkalarPx.map((r) => (
+                    <View
+                        key={`halka-${r}`}
+                        style={{
+                            position: 'absolute',
+                            left: yerlesim.merkez.sol - r,
+                            top: yerlesim.merkez.ust - r,
+                            width: 2 * r,
+                            height: 2 * r,
+                            borderRadius: r,
+                            borderWidth: 1,
+                            borderStyle: 'dashed',
+                            borderColor: renkler.metinIkincil,
+                            opacity: 0.45,
+                        }}
+                    />
+                ))}
                 {yerlesim?.noktalar.map((n) => (
                     <View
                         key={n.id}
@@ -80,8 +99,7 @@ export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
                             height: NOKTA,
                             borderRadius: NOKTA / 2,
                             backgroundColor: renkler.birincil,
-                            borderWidth: 1.5,
-                            borderColor: renkler.kartArkaplan,
+                            opacity: 0.7,
                         }}
                     />
                 ))}
@@ -96,7 +114,7 @@ export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
                             height: KONUM,
                             borderRadius: KONUM / 2,
                             backgroundColor: renkler.durum.bilgi,
-                            borderWidth: 2.5,
+                            borderWidth: 2,
                             borderColor: renkler.kartArkaplan,
                         }}
                     />
