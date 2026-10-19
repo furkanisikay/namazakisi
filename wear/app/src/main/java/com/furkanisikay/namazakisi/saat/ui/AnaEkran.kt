@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.res.painterResource
+import com.furkanisikay.namazakisi.saat.R
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +27,7 @@ import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.CompactButton
+import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
@@ -124,6 +128,7 @@ fun AnaEkran(
                                     g = gorunum,
                                     saniyeGoster = saniyeGoster,
                                     onKildim = { onay = gorunum.satir },
+                                    ortuluMu = onay != null,
                                     modifier = Modifier.fillMaxWidth().height(ekran.screenHeightDp.dp),
                                 )
                                 yuk == null && guncellemeGerekli -> BilgiMetni(GUNCELLEME_METNI, Modifier.padding(horizontal = 16.dp))
@@ -211,6 +216,7 @@ fun AnaEkran(
                             onClick = onTesbihat,
                             colors = ButtonDefaults.filledTonalButtonColors(),
                             modifier = Modifier.semantics { contentDescription = "Tesbihat sayacını açın" },
+                            icon = { DugmeIkonu(R.drawable.ic_tesbihat) },
                             label = { Text("Tesbihat") },
                         )
                     }
@@ -220,6 +226,7 @@ fun AnaEkran(
                             onClick = onKible,
                             colors = ButtonDefaults.filledTonalButtonColors(),
                             modifier = Modifier.semantics { contentDescription = "Kıble pusulasını açın" },
+                            icon = { DugmeIkonu(R.drawable.ic_kible) },
                             label = { Text("Kıble") },
                         )
                     }
@@ -281,6 +288,12 @@ fun AnaEkran(
  * Telefon saatin tanımadığı DAHA YENİ bir şema gönderdi → güncellenmesi gereken SAAT
  * uygulamasıdır (eski metin telefonu işaret ediyordu).
  */
+/** Liste düğmelerinin simgesi: tile'daki kısayollarla aynı tek renkli çizim (dekoratif). */
+@Composable
+private fun DugmeIkonu(kaynak: Int) {
+    Icon(painterResource(kaynak), contentDescription = null, modifier = Modifier.size(18.dp))
+}
+
 private const val GUNCELLEME_METNI = "Saatinizdeki Namaz Akışı'nı güncelleyin."
 
 private val TELEFON_EKRANLARI = listOf(

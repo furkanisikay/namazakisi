@@ -3,6 +3,8 @@ package com.furkanisikay.namazakisi.saat.ui
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -31,6 +33,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -159,6 +162,8 @@ fun VakitSayaci(
     saniyeGoster: Boolean,
     onKildim: () -> Unit,
     modifier: Modifier = Modifier,
+    /** Üstünde "Kıldım" onay katmanı açık mı? (nokta dolma vuruşu katman kapanınca oynar) */
+    ortuluMu: Boolean = false,
 ) {
     val azalt = hareketAzaltilmis()
     // Açılışta 600 ms, vakit değişince 450 ms yeniden çizim (olay tetikli; boşta hareket yok).
@@ -239,7 +244,7 @@ fun VakitSayaci(
             }
             if (g.noktalar.isNotEmpty()) {
                 Spacer(Modifier.height(4.dp))
-                GunNoktalari(g.noktalar, g.aktifNokta, renk)
+                GunNoktalari(g.noktalar, g.aktifNokta, renk, ortuluMu)
             }
         }
     }
@@ -277,12 +282,36 @@ private fun KildimDugmesi(dugme: AnaEkranKarari.Dugme, g: AnaEkranKarari.Gorunum
     }
 }
 
-/** Beş farz: kılınan dolu yeşil, şu anki vakit tonunda halka, diğerleri sönük. */
+/**
+ * Beş farz: kılınan dolu yeşil, şu anki vakit tonunda halka, diğerleri sönük.
+ * Bir nokta KILINDI'ya geçince bir kez yaylanarak dolar (ölçek 1,7 → 1, olay tetikli;
+ * ekran açılışında zaten kılınmış noktalar oynamaz, boşta hareket yok). Kılınmışlık
+ * "Kıldım" onay katmanının ALTINDA yazılır → vuruş katman kapanana kadar bekletilir,
+ * yoksa kimse görmeden oynayıp biterdi.
+ */
 @Composable
-private fun GunNoktalari(haller: List<GunDurumu.Hal>, aktif: Int?, aktifRenk: Color) {
+private fun GunNoktalari(haller: List<GunDurumu.Hal>, aktif: Int?, aktifRenk: Color, ortuluMu: Boolean) {
+    val azalt = hareketAzaltilmis()
     Row(horizontalArrangement = Arrangement.spacedBy(5.dp), modifier = Modifier.clearAndSetSemantics { }) {
         haller.forEachIndexed { i, hal ->
-            val m = Modifier.size(7.dp)
+            val dolu = hal == GunDurumu.Hal.KILINDI
+            val olcek = remember(i) { Animatable(1f) }
+            // [0] önceki dolu hali, [1] oynatılmayı bekleyen vuruş var mı
+            val iz = remember(i) { booleanArrayOf(dolu, false) }
+            if (dolu && !iz[0]) iz[1] = true
+            if (!dolu) iz[1] = false
+            iz[0] = dolu
+            LaunchedEffect(dolu, ortuluMu) {
+                if (!iz[1] || ortuluMu) return@LaunchedEffect
+                iz[1] = false
+                if (azalt) return@LaunchedEffect
+                olcek.snapTo(NOKTA_DOLMA_OLCEGI)
+                olcek.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMediumLow))
+            }
+            val m = Modifier.size(7.dp).graphicsLayer {
+                scaleX = olcek.value
+                scaleY = olcek.value
+            }
             when {
                 hal == GunDurumu.Hal.KILINDI -> Box(m.background(renk(SaatPaleti.EYLEM), CircleShape))
                 i == aktif -> Box(
@@ -295,3 +324,5 @@ private fun GunNoktalari(haller: List<GunDurumu.Hal>, aktif: Int?, aktifRenk: Co
         }
     }
 }
+
+private const val NOKTA_DOLMA_OLCEGI = 1.7f
