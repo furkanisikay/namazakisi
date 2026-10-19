@@ -5,6 +5,14 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.52.1] - 2026-10-19
+
+### Düzeltildi
+- [nowbar] sayac kapaliyken tek not ve etkin 'Vakit girince', kisa aciklamalar, politika ayrintida, kare hattinda heads-up kapali
+- [nowbar] muhafiz yedegi yalniz olcum izin verirse gosterilir
+- [nowbar] tani bayragi yansimayla okunur, kanal onemi API 26 kapisi, donuste yeniden olcum
+- [nowbar] muhafızın uyardığı vakit telefonda öne çıksın + Now Bar tanısı
+
 ## [0.52.0] - 2026-10-19
 
 ### Eklendi
