@@ -4,7 +4,7 @@ title: Gizlilik Politikası — Namaz Akışı
 
 # Gizlilik Politikası — Namaz Akışı
 
-**Son güncelleme:** 18 Ekim 2026
+**Son güncelleme:** 19 Ekim 2026
 
 Namaz Akışı, hiçbir kişisel verinizi toplamaz, saklamaz veya üçüncü taraflarla
 paylaşmaz. Uygulamayı kullanmak için hesap açmanız gerekmez.
@@ -74,7 +74,14 @@ kullanılmaz.
 ### Hareket ve pusula sensörleri
 
 Kıble pusulası (telefonda ve Wear OS saatte), yönü göstermek için cihazın pusula
-sensörünü kullanır. Bu veri anlık olarak ekranda kullanılır, kaydedilmez.
+ve hareket sensörlerini kullanır. Bu veri anlık olarak ekranda kullanılır, kaydedilmez.
+
+### Kamera
+
+Kıble ekranının isteğe bağlı **Kamera** görünümü, Kâbe yönünü kamera görüntüsünün
+üzerinde gösterir. Kamera izni yalnızca bu görünümü açtığınızda istenir. Görüntü
+yalnızca ekranda gösterilir; fotoğraf ya da video **kaydedilmez**, telefonunuzdan
+çıkmaz ve hiçbir yere gönderilmez. İzni vermezseniz kıble pusulası kamerasız çalışır.
 
 ## İnternet kullanımı
 
