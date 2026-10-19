@@ -23,6 +23,18 @@ describe('adimOzetiOlustur — yapısal özet (ekran: zaman + ikon çipleri)', (
     expect(adimOzetiOlustur(temel({ siklik: { herDk: 5 } })).tekrarDk).toBe(5);
     expect(adimOzetiOlustur(temel({})).tekrarDk).toBeUndefined();
   });
+  test('REGRESYON: tek atışın türevi herDk = esikDk tekrar DEĞİLDİR (rozet çizilmez)', () => {
+    expect(adimOzetiOlustur(temel({ esikDk: 25, siklik: { herDk: 25 } })).tekrarDk).toBeUndefined();
+    expect(adimOzetiOlustur(temel({ esikDk: 3, siklik: { herDk: 3 } })).tekrarDk).toBeUndefined();
+  });
+  test('aralık adımın segmentinden küçük değilse tekrar doğmaz (kardeş bağlamı)', () => {
+    const ust = temel({ esikDk: 25, siklik: { herDk: 15 } });
+    const alt = temel({ esikDk: 10 });
+    // 25 → 10 arası 15 dk: ikinci tetik 10'da olurdu ama orada alt adım kazanır.
+    expect(adimOzetiOlustur(ust, 'cikisaDogru', { kardesler: [ust, alt] }).tekrarDk).toBeUndefined();
+    const sik = temel({ esikDk: 25, siklik: { herDk: 5 } });
+    expect(adimOzetiOlustur(sik, 'cikisaDogru', { kardesler: [sik, alt] }).tekrarDk).toBe(5);
+  });
   test('ses adı yalnız bildirim açıkken (sesli okumanın sesi yoktur)', () => {
     expect(adimOzetiOlustur(temel({ kanallar: { sesli: true } })).sesAdi).toBeUndefined();
   });

@@ -15,6 +15,7 @@ import type { PencereYonu } from './pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { sesGorunenAdi } from './sesKimligi';
 import { adimKapaliMi, kanalAcikMi } from './kanalKumesi';
+import { gercekTekrarDk } from './planButcesi';
 
 /** Ozette gosterilen kanallar — GOSTERIM SIRASI budur (bildirim, sesli, titresim, alarm). */
 export type OzetKanali = 'bildirim' | 'sesli' | 'titresim' | 'alarm';
@@ -57,15 +58,27 @@ export function acikOzetKanallari(kanallar: SeviyeAyari['kanallar'] | undefined)
   return OZET_KANAL_SIRASI.filter((k) => kanalAcikMi(kanallar, k));
 }
 
+/** Tekrarın GERÇEKTEN doğup doğmadığını bilmek için bağlam (kardeş adımlar + pencere). */
+export interface OzetBaglami {
+  kardesler?: SeviyeAyari[];
+  pencereUzunluguDk?: number;
+}
+
 export function adimOzetiOlustur(
   seviye: SeviyeAyari,
-  yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+  yon: PencereYonu = VARSAYILAN_PENCERE_YONU,
+  baglam: OzetBaglami = {}
 ): AdimOzeti {
   const kapali = adimKapaliMi(seviye.kanallar);
   const kanallar = kapali ? [] : acikOzetKanallari(seviye.kanallar);
   const ozet: AdimOzeti = { kapali, zaman: esikIfadesi(seviye.esikDk, yon), kanallar, kademe: seviye.kademe };
   if (kanallar.includes('bildirim')) ozet.sesAdi = sesGorunenAdi(seviye.bildirimSesi, seviye.sesAdi);
-  if (!kapali && seviye.siklik !== 'birkez') ozet.tekrarDk = seviye.siklik.herDk;
+  // Rozet yalnız GERÇEK tekrarda: aralık segmentten küçük değilse ikinci tetik hiç doğmaz
+  // (hazır düzeylerin 'birkez' türevi herDk = esikDk böyledir).
+  const tekrar = kapali
+    ? null
+    : gercekTekrarDk(seviye, baglam.kardesler ?? [seviye], yon, baglam.pencereUzunluguDk);
+  if (tekrar !== null) ozet.tekrarDk = tekrar;
   return ozet;
 }
 
@@ -90,9 +103,10 @@ export function kanalListesiMetni(kanallar: readonly OzetKanali[], sesAdi?: stri
  */
 export function seviyeOzetiOlustur(
   seviye: SeviyeAyari,
-  yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+  yon: PencereYonu = VARSAYILAN_PENCERE_YONU,
+  baglam: OzetBaglami = {}
 ): string {
-  const ozet = adimOzetiOlustur(seviye, yon);
+  const ozet = adimOzetiOlustur(seviye, yon, baglam);
   if (ozet.kapali) return 'Kapalı — uyarı almazsınız';
   const govde = `${ozet.zaman}: ${kanalListesiMetni(ozet.kanallar, ozet.sesAdi)}`;
   return ozet.tekrarDk ? `${govde}; ${ozet.tekrarDk} dakikada bir tekrarlanır` : govde;

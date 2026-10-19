@@ -149,6 +149,31 @@ export function etkinSiklikHesapla(
 }
 
 /**
+ * Adim GERCEKTEN tekrarliyor mu? Tekrarliysa ETKIN araligi (dk), degilse `null`.
+ *
+ * Ekran ozeti icin ("↻ N dk" rozeti): `siklik` nesne olsa bile aralik adimin kazandigi
+ * segmentten kucuk degilse ikinci tetik HIC dogmaz (hazir duzeylerin `'birkez'` turevi
+ * `herDk = esikDk` boyledir) — rozet yalan soylerdi (gorsel inceleme 2026-10). Aralik
+ * motorla AYNI hesaptan (`adimEtkinSikligi`): butceyle seyreltilmisse seyreltilmis deger.
+ * Kardesler verilmezse adim tek basina degerlendirilir.
+ */
+export function gercekTekrarDk(
+  seviye: SeviyeAyari,
+  kardesler: SeviyeAyari[] = [seviye],
+  yon: 'cikisaDogru' | 'girisindenItibaren' = 'cikisaDogru',
+  pencereUzunluguDk?: number
+): number | null {
+  if (seviye.siklik === 'birkez') return null;
+  const segment =
+    yon === 'girisindenItibaren'
+      ? girisSegmentiHesapla(kardesler, seviye, pencereUzunluguDk)
+      : cikisSegmentiHesapla(kardesler, seviye);
+  const etkin = adimEtkinSikligi(seviye, kardesler, yon, pencereUzunluguDk);
+  if (etkin === 'birkez' || !Number.isFinite(etkin.herDk) || etkin.herDk <= 0) return null;
+  return etkin.herDk < segment ? etkin.herDk : null;
+}
+
+/**
  * Bir adimin ETKIN sikligi — `seviyeTetiklenirMi` ve ekran notu (`AdimNotlari`)
  * AYNI hesaptan gecsin diye tek yer. Segment yone gore, butce kardeslerden.
  */

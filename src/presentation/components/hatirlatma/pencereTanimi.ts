@@ -36,6 +36,7 @@ import type { EsikSinirlari } from '../../../core/muhafiz/esikSinirlari';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
 import { kanalAcikMi } from '../../../core/muhafiz/kanalKumesi';
+import { gercekTekrarDk } from '../../../core/muhafiz/planButcesi';
 import { anonsMetniniCoz, anonsSablonlari } from '../../../core/muhafiz/anonsMetni';
 import {
     ANONS_SOZLUKLERI,
@@ -186,10 +187,13 @@ export interface GelismisOzeti {
 
 export function gelismisOzetiVerisi(
     seviye: SeviyeAyari,
-    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'>
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'> & { pencereUzunluguDk?: number },
+    kardesler: SeviyeAyari[] = [seviye]
 ): GelismisOzeti {
     const ozet: GelismisOzeti = {};
-    if (seviye.siklik !== 'birkez') ozet.tekrarDk = seviye.siklik.herDk;
+    // Rozet yalnız GERÇEK tekrarda (motorun etkin aralığı segmentten küçükse).
+    const tekrar = gercekTekrarDk(seviye, kardesler, tanim.yon, tanim.pencereUzunluguDk);
+    if (tekrar !== null) ozet.tekrarDk = tekrar;
     if (tanim.tonSecilebilir === true) {
         const ton = etkinKademe(seviye, tanim.yon);
         if (ton !== 'nazik') ozet.ton = ton;
@@ -203,9 +207,10 @@ export function gelismisOzetiVerisi(
  */
 export function gelismisOzetiOlustur(
     seviye: SeviyeAyari,
-    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'>
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'> & { pencereUzunluguDk?: number },
+    kardesler: SeviyeAyari[] = [seviye]
 ): string {
-    const o = gelismisOzetiVerisi(seviye, tanim);
+    const o = gelismisOzetiVerisi(seviye, tanim, kardesler);
     const parcalar: string[] = [];
     if (o.tekrarDk) parcalar.push(`her ${o.tekrarDk} dk tekrar`);
     if (o.ton) parcalar.push(`${TON_ETIKETLERI[o.ton]} sertliği`);

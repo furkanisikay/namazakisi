@@ -30,6 +30,7 @@ import {
     OZEL_DUZEY_CUMLESI,
     OZEL_DUZEY_IKONU,
     duzeyCumlesi,
+    duzeyFarki,
     duzeyiOlc,
     duzeyKisaAciklamasi,
     sesliBilgiMetni,
@@ -125,6 +126,10 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
         () => (eskiGoster && eskiSeviyeler ? duzeyiOlc(eskiSeviyeler) : null),
         [eskiGoster, eskiSeviyeler],
     );
+    // Düğme yalnız kurulu plan güncel düzeyden GERÇEKTEN farklıysa (gerçek plan ölçülemiyorsa
+    // eski davranış: düğme görünür, fark sözcüğü yok).
+    const fark = eskiGoster && eskiOlcu ? duzeyFarki(eskiOlcu, o[secili as HatirlatmaDuzeyi]) : null;
+    const guncelleGoster = eskiGoster && (eskiOlcu ? fark !== null : true);
     const secenekler = React.useMemo<Secenek<DuzeySecimi>[]>(
         () => [
             ...HATIRLATMA_DUZEYLERI.map((d) => ({
@@ -178,13 +183,13 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                 <FontAwesome5 name="clock" size={13} color={renkler.birincil} solid style={{ width: 22, marginTop: 3 }} />
                 <Text style={{ flex: 1, fontSize: 15, lineHeight: 21, color: renkler.metin }}>{cumle}</Text>
             </View>
-            {eskiGoster ? (
+            {guncelleGoster ? (
                 <TouchableOpacity
                     testID="duzey-guncelle"
                     onPress={() => onSec(secili)}
                     activeOpacity={0.75}
                     accessibilityRole="button"
-                    accessibilityLabel={`${ESKI_DUZEY_GUNCELLE}: güncel ${DUZEY_ADLARI[secili as HatirlatmaDuzeyi]} düzey`}
+                    accessibilityLabel={`${ESKI_DUZEY_GUNCELLE}: güncel ${DUZEY_ADLARI[secili as HatirlatmaDuzeyi]} düzey${fark ? `, ${fark} uyarı` : ''}`}
                     style={{
                         alignSelf: 'flex-start',
                         flexDirection: 'row',
@@ -201,6 +206,14 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                 >
                     <FontAwesome5 name="sync-alt" size={12} color={renkler.birincil} style={{ marginRight: 8 }} />
                     <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.birincil }}>{ESKI_DUZEY_GUNCELLE}</Text>
+                    {fark ? (
+                        <View
+                            testID="duzey-guncelle-fark"
+                            style={{ marginLeft: 8, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10, backgroundColor: `${renkler.birincil}20` }}
+                        >
+                            <Text style={{ fontSize: 12, fontWeight: '600', color: renkler.metin }}>{fark}</Text>
+                        </View>
+                    ) : null}
                 </TouchableOpacity>
             ) : null}
             {sesliBilgi ? (

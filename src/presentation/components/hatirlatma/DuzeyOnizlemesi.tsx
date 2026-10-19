@@ -43,29 +43,38 @@ export interface DuzeyEtiketi {
 /** Etiket genişliği tahmini (12 px yazı + ikon): binme denetimi için yeterli. */
 const etiketGenisligi = (metin: string): number => 16 + metin.length * 6.5;
 
+/** Etiket satırının sağındaki "Vakit çıkar" yazısı (bayrağın altında) için ayrılan yer. */
+export const VAKIT_CIKAR_METNI = 'Vakit çıkar';
+export const VAKIT_CIKAR_GENISLIGI = VAKIT_CIKAR_METNI.length * 6.5 + 4;
+
 /**
- * Her noktanın altına "N dk" etiketi; ilk nokta "N dk önce" (ekseni anlatır). Etiket
- * noktanın altında ortalanır, kart kenarına kenetlenir; bir öncekine binecekse ATLANIR.
+ * Her noktanın altına AYNI biçimde "N dk" etiketi (görsel inceleme 2026-10: ilk etiket "N dk
+ * önce" diye ayrışıyordu). Etiket noktanın altında ortalanır; sol kenara ve sağdaki
+ * `sagRezerv` alanına ("Vakit çıkar", aynı satır) kenetlenir; bir öncekine binecekse ATLANIR.
  */
 export function duzeyEtiketleriniYerlestir(
     adimlar: readonly { kalanDk: number; sesli: boolean }[],
     genislik: number,
     raySol: number,
     ilkDk: number,
+    sagRezerv = 0,
 ): DuzeyEtiketi[] {
     if (genislik <= 0 || ilkDk <= 0) return [];
     const ray = Math.max(0, genislik - raySol * 2);
     const sonuc: DuzeyEtiketi[] = [];
-    let sonSag = -Infinity;
-    adimlar.forEach((a, i) => {
-        const metin = i === 0 ? `${a.kalanDk} dk önce` : `${a.kalanDk} dk`;
+    // Sağdan sola: en acil (vakit çıkarken) uyarının etiketi önceliklidir; sıkışınca
+    // soldaki (erken) etiket atlanır.
+    let solSinir = Infinity;
+    for (let i = adimlar.length - 1; i >= 0; i--) {
+        const a = adimlar[i];
+        const metin = `${a.kalanDk} dk`;
         const w = etiketGenisligi(metin);
         const merkez = raySol + (1 - a.kalanDk / ilkDk) * ray;
-        const sol = Math.min(Math.max(0, merkez - w / 2), Math.max(0, genislik - w));
-        if (sol < sonSag + 4) return;
-        sonuc.push({ kalanDk: a.kalanDk, metin, sesli: a.sesli, sol, genislik: w });
-        sonSag = sol + w;
-    });
+        const sol = Math.min(Math.max(0, merkez - w / 2), Math.max(0, genislik - sagRezerv - w));
+        if (sol + w > solSinir - 4) continue;
+        sonuc.unshift({ kalanDk: a.kalanDk, metin, sesli: a.sesli, sol, genislik: w });
+        solSinir = sol;
+    }
     return sonuc;
 }
 
@@ -133,7 +142,7 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
     const rayGenislik = Math.max(0, genislik - raySol * 2);
     const konum = (kalanDk: number) => (ilkDk > 0 ? 1 - kalanDk / ilkDk : 0);
     const etiketler = React.useMemo(
-        () => duzeyEtiketleriniYerlestir(adimlar, genislik, raySol, ilkDk),
+        () => duzeyEtiketleriniYerlestir(adimlar, genislik, raySol, ilkDk, VAKIT_CIKAR_GENISLIGI),
         [adimlar, genislik, ilkDk],
     );
 
@@ -213,11 +222,17 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
                     </>
                 ) : null}
             </View>
-            {/* Noktaların ALTINDA kısa etiketler: kanal ikonu (zil / hoparlör) + "25 dk".
-                İlk etiket ekseni de anlatır ("25 dk önce"); birbirine binen etiket atlanır
-                (sık tekrarlarda yalnız ilk nokta etiketlenir). */}
+            {/* Noktaların ALTINDA kısa etiketler, hepsi AYNI biçimde: kanal ikonu (zil / hoparlör)
+                + "25 dk". "Vakit çıkar" aynı satırda, bayrağın altında sağa yaslı. Birbirine
+                binen etiket atlanır (sık tekrarlarda yalnız ilk nokta etiketlenir). */}
             {!kapali && genislik > 0 ? (
                 <View style={{ height: 22, marginTop: 4 }}>
+                    <Text
+                        style={{ position: 'absolute', right: 0, top: 3, fontSize: 12, color: renkler.metinIkincil }}
+                        numberOfLines={1}
+                    >
+                        {VAKIT_CIKAR_METNI}
+                    </Text>
                     {etiketler.map((e) => (
                         <View
                             key={`e-${e.kalanDk}-${e.sol}`}
@@ -238,13 +253,15 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
                     ))}
                 </View>
             ) : null}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
-                {/* Yerleşim ölçülmeden (ilk kare) ilk eşik yine yazılı kalır. */}
-                <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>
-                    {kapali ? 'Hatırlatma yok' : etiketler.length === 0 ? `${ilkDk} dk önce` : ''}
-                </Text>
-                {!kapali ? <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>Vakit çıkar</Text> : null}
-            </View>
+            {/* Kapalı düzey ya da yerleşim ölçülmeden (ilk kare): sabit metin satırı. */}
+            {kapali || genislik === 0 ? (
+                <View style={{ flexDirection: 'row', justifyContent: kapali ? 'center' : 'space-between', marginTop: 6 }}>
+                    <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>
+                        {kapali ? 'Hatırlatma yok' : `${ilkDk} dk`}
+                    </Text>
+                    {!kapali ? <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>{VAKIT_CIKAR_METNI}</Text> : null}
+                </View>
+            ) : null}
         </View>
     );
 });

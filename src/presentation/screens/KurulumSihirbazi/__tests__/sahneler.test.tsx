@@ -68,7 +68,7 @@ describe('Kurulum sahneleri', () => {
         const kapali = render(<DuzeyOnizlemesi duzey="kapali" dongu />);
         expect(kapali.getByText('Hatırlatma yok', G)).toBeTruthy();
         const normal = render(<DuzeyOnizlemesi duzey="normal" dongu />);
-        expect(normal.getByText('25 dk önce', G)).toBeTruthy();
+        expect(normal.getByText('25 dk', G)).toBeTruthy();
         expect(normal.getByText('Vakit çıkar', G)).toBeTruthy();
     });
 
@@ -91,7 +91,7 @@ describe('Kurulum sahneleri', () => {
         // Noktaların altında kısa etiketler: kanal ikonu (sesliyse hoparlör) + "N dk".
         expect(izinli.queryAllByTestId('duzey-onizleme-etiket', G).length).toBeGreaterThan(0);
         expect(izinli.getAllByText('volume-up', G).length).toBeGreaterThan(0);
-        expect(izinli.getByText('25 dk önce', G)).toBeTruthy();
+        expect(izinli.getByText('25 dk', G)).toBeTruthy();
 
         const izinsiz = render(<DuzeyOnizlemesi duzey="normal" sesliAcik={false} />);
         olc(izinsiz);

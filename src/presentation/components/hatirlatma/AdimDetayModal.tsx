@@ -243,32 +243,30 @@ const KanalKarosu: React.FC<{
     testID: string;
     /** Karo şu an seçilemez (titreşim: bildirim kapalıyken) — soluk, nedeni ipucunda. */
     devreDisi?: boolean;
-    /** Izgara sütun sayısı: karolar aynı genişlik ve AYNI yükseklikte. */
-    sutun: number;
-}> = ({ ikon, renk, etiket, ipucu, deger, onDegis, testID, devreDisi = false, sutun }) => {
+}> = ({ ikon, renk, etiket, ipucu, deger, onDegis, testID, devreDisi = false }) => {
     const renkler = useRenkler();
     return (
+        // KOMPAKT (görsel inceleme 2026-10): ikon + ad + anahtar TEK satır; 2 sütunlu ızgara.
         <View
-            className="p-3 rounded-2xl border"
+            className="flex-row items-center pl-2.5 pr-1.5 rounded-2xl border"
             style={{
-                width: sutun === 3 ? '31.5%' : '48.5%',
-                minHeight: 112,
-                justifyContent: 'space-between',
+                width: '48.5%',
+                minHeight: 56,
                 opacity: devreDisi ? 0.5 : 1,
                 backgroundColor: deger ? `${renk}10` : renkler.arkaplan,
                 borderColor: deger ? `${renk}80` : renkler.sinir,
             }}
         >
             <View
-                className="w-9 h-9 rounded-xl items-center justify-center"
+                className="w-7 h-7 rounded-lg items-center justify-center mr-2"
                 style={{ backgroundColor: deger ? `${renk}20` : renkler.sinir }}
             >
-                <FontAwesome5 name={ikon} size={14} color={deger ? renk : renkler.metinIkincil} solid />
+                <FontAwesome5 name={ikon} size={12} color={deger ? renk : renkler.metinIkincil} solid />
             </View>
-            <Text className="text-sm font-semibold mt-2" style={{ color: renkler.metin }} numberOfLines={2}>
+            <Text className="text-[13px] font-semibold flex-1" style={{ color: renkler.metin }} numberOfLines={2}>
                 {etiket}
             </Text>
-            <View className="flex-row justify-end mt-1" style={{ minHeight: 44, alignItems: 'center' }}>
+            <View style={{ minHeight: 44, justifyContent: 'center' }}>
                 <Anahtar
                     value={deger}
                     onValueChange={onDegis}
@@ -427,8 +425,6 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
         }
         anaKanaliAyarla(kanal, acik);
     };
-    const kanalKaroSayisi = 2 + (tanim.titresimSecilebilir ? 1 : 0) + (tanim.alarmSecilebilir === true ? 1 : 0);
-    const kanalSutunu = kanalKaroSayisi === 3 ? 3 : 2;
     /** Gelişmiş'te gösterilecek bir şey var mı (tekrar ya da sertlik)? Yoksa bölüm çizilmez. */
     const gelismisVar = tanim.siklikSecimiVar !== false || tanim.tonSecilebilir === true;
 
@@ -498,9 +494,9 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
         }
     };
 
-    const gelismisOzeti = gelismisOzetiOlustur(seviye, tanim);
-    const gelismisVerisi = gelismisOzetiVerisi(seviye, tanim);
-    const ozet = adimOzetiOlustur(seviye, tanim.yon);
+    const gelismisOzeti = gelismisOzetiOlustur(seviye, tanim, seviyeler);
+    const gelismisVerisi = gelismisOzetiVerisi(seviye, tanim, seviyeler);
+    const ozet = adimOzetiOlustur(seviye, tanim.yon, { kardesler: seviyeler, pencereUzunluguDk: tanim.pencereUzunluguDk });
     // Canlı önizleme: adımın ilk tetiği motorun planından, metin yüzeyin üreticisinden.
     const ornek = adimOrnekTetigi(tanim, seviyeler, indeks);
     const onizleme = adimOnizlemeIcerigi(tanim, ornek.tetik);
@@ -645,15 +641,14 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                 {tanim.kanalSecimiVar && (
                                     <GirisKademesi sira={2}>
                                         <BolumBasligi metin="NASIL" />
-                                        {/* Tutarlı ızgara: karolar eşit genişlik ve yükseklikte (3 karo →
-                                            tek satır, 2/4 karo → iki sütun). Titreşim ve gerçek alarm da
+                                        {/* Kompakt 2 sütunlu ızgara: karolar eşit genişlik ve yükseklikte
+                                            (ikon + ad + anahtar tek satır). Titreşim ve gerçek alarm da
                                             burada; titreşim bildirim kapalıyken soluk (bildirimin alt özelliği). */}
                                         <View
                                             className="flex-row flex-wrap"
                                             style={{ justifyContent: 'space-between', rowGap: 8 }}
                                         >
                                             <KanalKarosu
-                                                sutun={kanalSutunu}
                                                 ikon={KANAL_IKONLARI.bildirim}
                                                 renk={bilgi.renk}
                                                 etiket={BILDIRIM_ETIKETI}
@@ -663,7 +658,6 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                 testID="adim-bildirim-anahtari"
                                             />
                                             <KanalKarosu
-                                                sutun={kanalSutunu}
                                                 ikon={KANAL_IKONLARI.sesli}
                                                 renk={bilgi.renk}
                                                 etiket={SESLI_ETIKETI}
@@ -676,7 +670,6 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                 ayarına bağlıdır, uygulama adım başına kontrol edemez. */}
                                             {tanim.titresimSecilebilir && (
                                                 <KanalKarosu
-                                                    sutun={kanalSutunu}
                                                     ikon={KANAL_IKONLARI.titresim}
                                                     renk={bilgi.renk}
                                                     etiket={TITRESIM_ETIKETI}
@@ -690,7 +683,6 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                             {/* GERÇEK ALARM (issue #74) — onay akışı aynı (`alarmiAyarla`). */}
                                             {tanim.alarmSecilebilir === true && (
                                                 <KanalKarosu
-                                                    sutun={kanalSutunu}
                                                     ikon={KANAL_IKONLARI.alarm}
                                                     renk={bilgi.renk}
                                                     etiket={ALARM_ETIKETI}

@@ -290,8 +290,9 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
             yetenekler: tanim.yetenekler,
         });
         const notMetni = notlar.map((n) => n.metin).join(' ');
-        const ozet = adimOzetiOlustur(seviye, tanim.yon);
-        const ozetMetni = seviyeOzetiOlustur(seviye, tanim.yon);
+        const baglam = { kardesler: ayar.seviyeler, pencereUzunluguDk: tanim.pencereUzunluguDk };
+        const ozet = adimOzetiOlustur(seviye, tanim.yon, baglam);
+        const ozetMetni = seviyeOzetiOlustur(seviye, tanim.yon, baglam);
         return (
             // Switch, satırı saran Touchable'ın İÇİNDE değil KARDEŞİDİR:
             // Touchable varsayılan `accessible` ile çocuklarını tek bir
