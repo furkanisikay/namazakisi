@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.52.0] - 2026-10-19
+
+### Eklendi
+- feat(saat)!: saat uyandırmasındaki "10 dk ertele" kaldırıldı — yalnız Kıldım / Kapat
+
 ## [0.51.0] - 2026-10-19
 
 ### Eklendi
