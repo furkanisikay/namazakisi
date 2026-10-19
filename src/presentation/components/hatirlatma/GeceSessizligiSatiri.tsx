@@ -51,7 +51,7 @@ export const GeceSessizligiSatiri: React.FC<GeceSessizligiSatiriProps> = ({ ayar
                 gorunur={acik}
                 tip="bilgi"
                 baslik="Gece sessiz saatler"
-                mesaj="Seçtiğiniz saatten imsağa kadar vakit çıkmadan hatırlatması gelmez. Kurduğunuz alarm yine çalar."
+                mesaj="Seçtiğiniz saatten imsağa kadar vakit çıkmadan hatırlatması gelmez. Yatsı hatırlatmaları ve yatsıya kurduğunuz alarm sessizlik başlamadan önce gelir. Diğer alarmlarınız yine çalar."
                 icerik={
                     <View
                         accessibilityRole="radiogroup"

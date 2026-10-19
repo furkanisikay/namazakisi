@@ -174,6 +174,16 @@ describe('ÇAPALI METİN — yasaklı ifade yok, acil kanal yok', () => {
         }
     });
 
+    it('GİRİŞ YÖNLÜ yatsıda anonsun süresi sessizliğe KALAN dakikadır (girişten geçen değil)', () => {
+        const giris = presetMatrisiOlustur(HATIRLATMA_PRESETLERI.normal.seviyeler, true);
+        giris.yatsi = { ...giris.yatsi, yon: 'girisindenItibaren', seviyeler: [{ ...giris.yatsi.seviyeler[0], esikDk: 5 }] };
+        const plan = muhafizTeslimPlaniOlustur({ matris: giris, vakitler: [yatsi], simdi: yerel(21, 20, 0), geceSessizligi: ACIK });
+        expect(plan).toHaveLength(1);
+        // 22:38 + 5 dk = 22:43 → sessizliğe (23:00) 17 dk.
+        expect(plan[0].uyari.kalanDk).toBe(17);
+        expect(anonsMetniniCoz(plan[0].uyari.anonsMetni, 'yatsi', plan[0].uyari.olcuDk, plan[0].yon)).toContain('17 dakika');
+    });
+
     it('saat yükü aynı kimliği ve aynı metni taşır', () => {
         const kayitlar = wearMuhafizPlaniOlustur({
             koordinat: { lat: 41.01, lng: 28.97 },

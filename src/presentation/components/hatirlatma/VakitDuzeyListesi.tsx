@@ -43,9 +43,11 @@ export interface VakitDuzeyListesiProps {
     geceSessiz?: boolean;
     /** Bugün yatsı sessizlikten SONRA giriyor (yatsı hatırlatması gelmez — söylenir). */
     yatsiDustu?: boolean;
+    /** Bugün akşamın sonu sessizliğe denk geliyor (akşamın son uyarıları gelmez — söylenir). */
+    aksamKesiliyor?: boolean;
 }
 
-export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, onSec, geceSessiz = false, yatsiDustu = false }) => {
+export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, onSec, geceSessiz = false, yatsiDustu = false, aksamKesiliyor = false }) => {
     const renkler = useRenkler();
     return (
         <View
@@ -80,6 +82,11 @@ export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, on
                                 {yatsiDustu
                                     ? 'Bugün yatsı gece sessizliğinden sonra giriyor; yatsı hatırlatması gelmez.'
                                     : 'Yatsı uyarıları gece sessizliğinden önce gelir.'}
+                            </Text>
+                        ) : null}
+                        {vakit === 'aksam' && geceSessiz && aksamKesiliyor ? (
+                            <Text testID="vakit-duzey-aksam-gece" style={{ fontSize: 14, lineHeight: 20, marginTop: 8, color: renkler.metin }}>
+                                Bugün akşamın son dakikaları gece sessizliğine denk geliyor; o dakikalarda hatırlatma gelmez.
                             </Text>
                         ) : null}
                     </View>

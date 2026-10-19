@@ -107,7 +107,10 @@ export const ESKI_PRESET_SEVIYELERI: Record<'hafif' | 'normal' | 'yogun', Preset
 
 /**
  * Eski global `seviyeN` alanlari preset'in ILK DORT KRONOLOJIK adimindan
- * turetilir (eksikse son adim tekrarlanir). Bugun her preset tam 4 adimdir.
+ * turetilir (eksikse son adim tekrarlanir). Yeni duzeyler 1/3/5 adimdir → hafif
+ * [15,15,15,15] gibi tekrarli esikler uretir; bu alanlar yalniz eski surum okuyuculari
+ * icindir (motor `matris`ten okur; matrissiz eski kayit `eskidenMatriseGoc` + tekillik
+ * gocuyle cozulur).
  */
 const eskiDegerler = (
     s: PresetSeviyeleri,

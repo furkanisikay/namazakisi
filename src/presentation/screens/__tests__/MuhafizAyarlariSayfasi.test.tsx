@@ -659,6 +659,19 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(getByText('Yatsı uyarıları gece sessizliğinden önce gelir.')).toBeTruthy();
   });
 
+  it('YAZ + erken sessizlik (21:00): akşamın kesileceği ve yatsının düşeceği SÖYLENİR', async () => {
+    const g = (saat: number, dakika: number) => new Date(2026, 5, 21, saat, dakika, 0, 0);
+    vakitKutusu.vakitler = { imsak: g(3, 20), gunes: g(5, 30), ogle: g(13, 10), ikindi: g(17, 10), aksam: g(20, 40), yatsi: g(22, 15) };
+    try {
+      const { getByTestId } = await kur({ geceSessizligi: { aktif: true, baslangicSaat: 21, baslangicDakika: 0 } });
+      fireEvent.press(getByTestId('kendim-ayarlayayim'));
+      expect(getByTestId('vakit-duzey-aksam-gece')).toBeTruthy();
+      expect(getByTestId('vakit-duzey-yatsi-gece').props.children).toMatch(/yatsı hatırlatması gelmez/);
+    } finally {
+      vakitKutusu.vakitler = null;
+    }
+  });
+
   // ── Yoğunluk preset'i ─────────────────────────────────────────────────────
   it('sesli içermeyen preset (hafif) doğrudan uygulanır — onay istenmez', async () => {
     const { getByLabelText, queryByText } = await kur();

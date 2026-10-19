@@ -29,7 +29,7 @@ import type { MuhafizMatrisi, MuhafizVakti, VakitMuhafizAyari } from '../../core
 import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
 import { presetVakteUygula, tumVakitlereUygula, zamanlamaDegistiMi } from '../../core/muhafiz/matrisIslemleri';
 import { VakitDuzeyListesi, ortakDuzeyiBul, type VakitDuzeyi } from '../components/hatirlatma/VakitDuzeyListesi';
-import { geceSessizliginePencereyiUyarla, geceSessizliginiNormalize } from '../../core/muhafiz/geceSessizligi';
+import { geceBaslangicMs, geceSessizliginePencereyiUyarla, geceSessizliginiNormalize } from '../../core/muhafiz/geceSessizligi';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { adimKapaliMi } from '../../core/muhafiz/kanalKumesi';
 import { adimEkle, adimSil, adimSilinebilirMi } from '../../core/muhafiz/adimDuzenleme';
@@ -187,18 +187,24 @@ const MuhafizAyarlariIcerik: React.FC = () => {
      * yoksa şerit imsağa kala uyarı gösterirken telefon 23:00'e kala konuşurdu. Yatsı sessizlikten
      * sonra giriyorsa (`yatsiDustu`) satır bunu söyler.
      */
-    const geceSessizligi = geceSessizliginiNormalize(muhafizAyarlari.geceSessizligi);
-    const { vakitPencereleri, vakitPencereAnlari, yatsiDustu } = useMemo(() => {
+    const geceSessizligi = useMemo(() => geceSessizliginiNormalize(muhafizAyarlari.geceSessizligi), [muhafizAyarlari.geceSessizligi]);
+    const { vakitPencereleri, vakitPencereAnlari, yatsiDustu, aksamKesiliyor } = useMemo(() => {
+        const isoGun = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         const yatsi = hamAnlar.yatsi;
-        if (!yatsi || !geceSessizligi?.aktif) return { vakitPencereleri: hamPencereler, vakitPencereAnlari: hamAnlar, yatsiDustu: false };
+        const aksam = hamAnlar.aksam;
+        // Akşamın çıkışı (yatsı girişi) sessizlikten sonraysa (yaz, erken başlangıç) akşamın son
+        // uyarıları sessizliğe düşer ve GELMEZ (çapa yalnız yatsıda) — satır bunu söyler.
+        const aksamKesiliyor =
+            geceSessizligi?.aktif === true && !!aksam && aksam.bitis.getTime() > geceBaslangicMs(isoGun(aksam.baslangic), geceSessizligi);
+        if (!yatsi || !geceSessizligi?.aktif) return { vakitPencereleri: hamPencereler, vakitPencereAnlari: hamAnlar, yatsiDustu: false, aksamKesiliyor };
         const b = yatsi.baslangic;
-        const tarih = `${b.getFullYear()}-${String(b.getMonth() + 1).padStart(2, '0')}-${String(b.getDate()).padStart(2, '0')}`;
-        const etkin = geceSessizliginePencereyiUyarla(geceSessizligi, { vakit: 'yatsi', tarih, giris: b, cikis: yatsi.bitis });
-        if (!etkin) return { vakitPencereleri: hamPencereler, vakitPencereAnlari: hamAnlar, yatsiDustu: true };
+        const etkin = geceSessizliginePencereyiUyarla(geceSessizligi, { vakit: 'yatsi', tarih: isoGun(b), giris: b, cikis: yatsi.bitis });
+        if (!etkin) return { vakitPencereleri: hamPencereler, vakitPencereAnlari: hamAnlar, yatsiDustu: true, aksamKesiliyor };
         return {
             vakitPencereleri: { ...hamPencereler, yatsi: pencereUzunluguDkHesapla(b, etkin.cikis) },
             vakitPencereAnlari: { ...hamAnlar, yatsi: { baslangic: b, bitis: etkin.cikis } },
             yatsiDustu: false,
+            aksamKesiliyor,
         };
     }, [hamPencereler, hamAnlar, geceSessizligi]);
 
@@ -466,6 +472,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                     onSec={vakitDuzeyiSec}
                                     geceSessiz={geceSessizligi?.aktif === true}
                                     yatsiDustu={yatsiDustu}
+                                    aksamKesiliyor={aksamKesiliyor}
                                 />
                             </>
                         ) : null}

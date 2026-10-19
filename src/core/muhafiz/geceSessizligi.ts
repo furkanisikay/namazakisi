@@ -125,9 +125,15 @@ export function geceSessizliginePencereyiUyarla<T extends SessizlikPenceresi>(
  * parçası olduğu için (`muhafizBildirimIdOlustur`) bu uyarlama arka plan, ön plan ve
  * saatte AYNI fonksiyondan yapılır. Gerçek alarm alanına dokunulmaz.
  */
-export function geceCapasiUyarisi<U extends { seviye: number; acilKanal?: boolean; anonsMetni: string }>(uyari: U): U {
+export function geceCapasiUyarisi<
+    U extends { seviye: number; acilKanal?: boolean; anonsMetni: string; kalanDk?: number; olcuDk?: number },
+>(uyari: U): U {
     return {
         ...uyari,
+        // Çapa şablonunun {süre}'si sessizliğe KALAN dakikadır. Teslimci/saat anonsu
+        // `olcuDk` ile çözer; giriş yönlü yatsıda olcuDk "girişten geçen" olurdu → eşitlenir.
+        // (Çıkış yönünde ikisi zaten aynıdır; başlık/gövde çapa metninden gelir.)
+        ...(typeof uyari.kalanDk === 'number' ? { olcuDk: uyari.kalanDk } : {}),
         seviye: Math.min(uyari.seviye, GECE_CAPASI_EN_SERT_TON),
         acilKanal: false,
         anonsMetni: GECE_CAPASI_ANONS_SABLONU,
