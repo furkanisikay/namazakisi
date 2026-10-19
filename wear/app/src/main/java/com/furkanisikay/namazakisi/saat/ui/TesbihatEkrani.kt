@@ -160,7 +160,8 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
     // Sayım "vuruşu": rakam bir kez hafifçe büyüyüp yaylanarak yerine oturur (olay tetikli;
     // hızlı çevirmede — önceki sayımdan < 120 ms — atlanır, boşta hareket yok).
     val vurus = remember { Animatable(1f) }
-    val sonVurus = remember { longArrayOf(0L) }
+    // Açılış anıyla başlar: ilk kompozisyon "hızlı" sayılır, ekran açılırken rakam vurmaz.
+    val sonVurus = remember { longArrayOf(SystemClock.uptimeMillis()) }
     LaunchedEffect(durum.toplam) {
         val an = SystemClock.uptimeMillis()
         val hizli = azalt || an - sonVurus[0] < ILERLEME_MS

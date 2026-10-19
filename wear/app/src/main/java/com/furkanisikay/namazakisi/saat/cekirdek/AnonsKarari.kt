@@ -84,8 +84,8 @@ object AnonsKarari {
      * izleniminin en olası nedeni budur, ekran bunu açıkça söyler.
      */
     fun yerAciklamasi(anonsYeri: String?): String? = when (anonsYeri) {
-        AnonsYerleri.OTOMATIK -> "Telefonunuz yanınızdayken sesli okumayı telefonunuz yapar; saatiniz yalnız telefon uzaktayken konuşur."
-        AnonsYerleri.SAAT -> "Sesli okumayı saatiniz yapar."
+        AnonsYerleri.OTOMATIK -> "Telefonunuz yanınızdayken sesli okumayı telefonunuz yapar; saatiniz yalnız telefon uzaktayken konuşur. Yalnız sesli anonsu açık hatırlatmalar okunur."
+        AnonsYerleri.SAAT -> "Sesli okumayı saatiniz yapar. Yalnız sesli anonsu açık hatırlatmalar okunur."
         else -> null
     }
 
