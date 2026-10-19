@@ -5,6 +5,11 @@
   <!-- Samsung Flex Window (Z Flip kapak ekranı) widget'ı (issue #283) -->
   <string name="widget_kapak_adi">Kapak ekranı vakitleri</string>
   <string name="widget_kapak_aciklama">Galaxy Z Flip kapak ekranı için günün vakitleri ve geri sayım</string>
+  <!-- Klasik (yeşil) widget'lar: Widget 1.0 görünümü, ayrı sağlayıcılar -->
+  <string name="widget_klasik_adi">Namaz Akışı — Klasik</string>
+  <string name="widget_klasik_aciklama">Yeşil klasik görünüm: sıradaki vakte kalan süre</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klasik geniş</string>
+  <string name="widget_klasik_genis_aciklama">Yeşil klasik görünüm: geri sayım ve günün vakitleri</string>
   <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
   <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
 

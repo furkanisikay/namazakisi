@@ -16,6 +16,7 @@ import android.widget.RemoteViews
 import com.furkanisikay.namazakisi.R
 import com.furkanisikay.namazakisi.cekirdek.KildimDurumu
 import com.furkanisikay.namazakisi.cekirdek.KilitEkraniKarari
+import com.furkanisikay.namazakisi.cekirdek.KlasikWidgetKarari
 import com.furkanisikay.namazakisi.cekirdek.SinirAlarmi
 import com.furkanisikay.namazakisi.cekirdek.SureGosterimi
 import com.furkanisikay.namazakisi.cekirdek.VakitCizelgesi
@@ -62,6 +63,8 @@ object WidgetGuncelleyici {
         NamazWidget::class.java,
         NamazGenisBoyutWidget::class.java,
         NamazKapakWidget::class.java,
+        NamazKlasikWidget::class.java,
+        NamazKlasikGenisWidget::class.java,
     )
 
     private data class Palet(val zemin: Int, val metin: Int, val ikincil: Int, val vurgu: Int, val vurguUstu: Int)
@@ -144,12 +147,15 @@ object WidgetGuncelleyici {
         id: Int,
         anlik: WidgetVeriDeposu.Anlik,
     ): RemoteViews {
+        val saglayici = yonetici.getAppWidgetInfo(id)?.provider?.className
+        // Klasik (yeşil) widget'lar: sabit tek düzen, boyut haritası ve ayar YOK.
+        if (saglayici == NamazKlasikWidget::class.java.name) return klasikCiz(context, genis = false, anlik)
+        if (saglayici == NamazKlasikGenisWidget::class.java.name) return klasikCiz(context, genis = true, anlik)
         val ayar = WidgetVeriDeposu.ayar(context, id)
         val secenek = yonetici.getAppWidgetOptions(id)
         // Kilit ekranı / hub (issue #295): communal ana bilgisayarı KEYGUARD kategorisiyle
         // bağlar; orada widget salt okunur (yayın niyeti kilit açılmadan işlerdi).
         // Samsung Flex Window (issue #283) sağlayıcısı kategoriden bağımsız salt okunur.
-        val saglayici = yonetici.getAppWidgetInfo(id)?.provider?.className
         val kapakEkrani = saglayici == NamazKapakWidget::class.java.name
         val kilitEkrani = KilitEkraniKarari.saltOkunurMu(
             secenek.getInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY, 0),
@@ -264,6 +270,63 @@ object WidgetGuncelleyici {
         v.setContentDescription(R.id.widget_kildim, KilitEkraniKarari.erisimMetni(ad, a.kildim, kilitEkrani, kapakEkrani))
 
         if (duzen == WidgetDuzeni.GENIS) listeyiCiz(context, v, a, p)
+        return v
+    }
+
+    // --- Klasik (yeşil) widget'lar -------------------------------------------------------
+
+    private val KLASIK_SATIRLAR = mapOf(
+        VakitKodlari.SABAH to Triple(R.id.klasik_satir_sabah, R.id.klasik_sabah_ad, R.id.klasik_sabah_saat),
+        VakitKodlari.GUNES to Triple(R.id.klasik_satir_gunes, R.id.klasik_gunes_ad, R.id.klasik_gunes_saat),
+        VakitKodlari.OGLE to Triple(R.id.klasik_satir_ogle, R.id.klasik_ogle_ad, R.id.klasik_ogle_saat),
+        VakitKodlari.IKINDI to Triple(R.id.klasik_satir_ikindi, R.id.klasik_ikindi_ad, R.id.klasik_ikindi_saat),
+        VakitKodlari.AKSAM to Triple(R.id.klasik_satir_aksam, R.id.klasik_aksam_ad, R.id.klasik_aksam_saat),
+        VakitKodlari.YATSI to Triple(R.id.klasik_satir_yatsi, R.id.klasik_yatsi_ad, R.id.klasik_yatsi_saat),
+    )
+
+    /**
+     * Widget 1.0 görünümü. Kalan süre "sıradaki vakit girişine" (güneş dahil) sayar ve
+     * eskisi gibi dakikalık alarmla değil `Chronometer` ile akar; sınır alarmı her
+     * girişte (güneş dahil) zaten uyandığı için hedef doğru anda yenilenir. Kararlar
+     * `KlasikWidgetKarari`'nda (JVM testli). Dokunuş = uygulamayı aç (Kıldım yok).
+     */
+    private fun klasikCiz(context: Context, genis: Boolean, a: WidgetVeriDeposu.Anlik): RemoteViews {
+        val v = RemoteViews(context.packageName, if (genis) R.layout.widget_klasik_genis else R.layout.widget_klasik)
+        val kok = if (genis) R.id.klasik_genis_kok else R.id.klasik_kok
+        val adId = if (genis) R.id.klasik_genis_vakit_adi else R.id.klasik_vakit_adi
+        val metinId = if (genis) R.id.klasik_genis_kalan_metin else R.id.klasik_kalan_metin
+        val sayacId = if (genis) R.id.klasik_genis_kalan else R.id.klasik_kalan
+        uygulamayiAcan(context)?.let { v.setOnClickPendingIntent(kok, it) }
+
+        val sonraki = KlasikWidgetKarari.sonrakiGiris(a.vakitler, a.simdiMs)
+        if (sonraki == null) {
+            v.setTextViewText(adId, if (genis) "--" else "uygulamayı açın")
+            v.setTextViewText(metinId, "--:--")
+            v.setViewVisibility(metinId, View.VISIBLE)
+            v.setViewVisibility(sayacId, View.GONE)
+            v.setContentDescription(kok, "Namaz vakitleri için uygulamayı açın")
+        } else {
+            v.setTextViewText(adId, KlasikWidgetKarari.yonelmeHali(sonraki.kod, buyukHarf = genis))
+            v.setChronometer(sayacId, SystemClock.elapsedRealtime() + (sonraki.ms - a.simdiMs), null, true)
+            v.setChronometerCountDown(sayacId, true)
+            v.setViewVisibility(sayacId, View.VISIBLE)
+            v.setViewVisibility(metinId, View.GONE)
+            v.setContentDescription(
+                kok,
+                "Sıradaki vakit ${VakitKodlari.gorunenAd(sonraki.kod)}, giriş ${saatMetni(sonraki.ms)}",
+            )
+        }
+        if (!genis) return v
+
+        for (satir in KlasikWidgetKarari.satirlar(a.vakitler, a.simdiMs)) {
+            val (satirId, satirAdId, saatId) = KLASIK_SATIRLAR[satir.kod] ?: continue
+            v.setTextViewText(satirAdId, KlasikWidgetKarari.satirAdi(satir.kod))
+            v.setTextViewText(saatId, satir.ms?.let { saatMetni(it) } ?: "--:--")
+            v.setInt(satirId, "setBackgroundResource", if (satir.aktif) R.drawable.widget_klasik_satir_aktif else 0)
+            val renk = if (satir.aktif) R.color.widget_klasik_metin else R.color.widget_klasik_metin_soluk
+            metinRengi(context, v, satirAdId, renk)
+            metinRengi(context, v, saatId, renk)
+        }
         return v
     }
 

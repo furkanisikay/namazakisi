@@ -708,7 +708,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Ana ekran widget\'ından, hızlı ayarlar kutusundan ya da uygulama kısayolundan, uygulamayı açmadan vakti görüp "Kıldım" diyebilirsiniz.',
         detayAciklama:
-            'Widget küçük başlar, büyüttükçe daha çok şey gösterir: 1×1 boyutta içinde bulunduğunuz vakti ve çıkış saatini, 2×2 boyutta kalan süreyi ve "Kıldım" düğmesini, 4×2 boyutta günün beş vaktini görürsünüz. Kalan süre hiçbir zaman eskimez; çıkış saati her boyutta yazılıdır. Widget\'a uzun basıp "Düzenle" ile zemini, opaklığı ve büyük yazılacak bilgiyi seçebilirsiniz. Bildirim panelinin hızlı ayarlarına "Kıldım" kutusunu ekleyebilir, uygulama simgesine uzun basarak Kıble, Kaza defteri ve "Şu anki vakti kıldım" kısayollarını kullanabilirsiniz. Eklemek için ana ekranınıza uzun basın, "Widget\'lar" bölümünden Namaz Akışı\'nı seçin.',
+            'Widget küçük başlar, büyüttükçe daha çok şey gösterir: 1×1 boyutta içinde bulunduğunuz vakti ve çıkış saatini, 2×2 boyutta kalan süreyi ve "Kıldım" düğmesini, 4×2 boyutta günün beş vaktini görürsünüz. Kalan süre hiçbir zaman eskimez; çıkış saati her boyutta yazılıdır. Widget\'a uzun basıp "Düzenle" ile zemini, opaklığı ve büyük yazılacak bilgiyi seçebilirsiniz. Eski yeşil görünümü sevenler için "Namaz Akışı — Klasik" widget\'ları da listede: küçük olan sıradaki vakte kalan süreyi, geniş olan geri sayımla birlikte günün vakitlerini gösterir. Bildirim panelinin hızlı ayarlarına "Kıldım" kutusunu ekleyebilir, uygulama simgesine uzun basarak Kıble, Kaza defteri ve "Şu anki vakti kıldım" kısayollarını kullanabilirsiniz. Eklemek için ana ekranınıza uzun basın, "Widget\'lar" bölümünden Namaz Akışı\'nı seçin.',
         ikon: 'th-large',
         kartGoster: true,
         detaylar: [
@@ -716,6 +716,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Güneş doğduktan öğleye kadar işaretleme kapalıdır; sıradaki vakit gösterilir',
             'Bu yollar yalnızca işaretler; geri almak için uygulamayı kullanabilirsiniz',
             'Widget dakikada bir uyanmaz, pilinizi korur',
+            'Yeşil klasik widget\'lar da seçilebilir',
         ],
     },
     {

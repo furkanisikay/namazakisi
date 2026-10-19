@@ -5,4 +5,11 @@
   <color name="widget_my_ikincil">@color/widget_koyu_ikincil</color>
   <color name="widget_my_vurgu">@color/widget_koyu_vurgu</color>
   <color name="widget_my_vurgu_ustu">@color/widget_koyu_vurgu_ustu</color>
+  <!-- Klasik widget gece de AYNI yeşildir (kimliği bu renk); anahtarlar gece karşılığı
+       açıkça dursun diye tekrarlanır. -->
+  <color name="widget_klasik_zemin">#E0215732</color>
+  <color name="widget_klasik_metin">#FFFFFF</color>
+  <color name="widget_klasik_metin_soluk">#CCFFFFFF</color>
+  <color name="widget_klasik_vurgu">#FFD700</color>
+  <color name="widget_klasik_satir_aktif">#BB000000</color>
 </resources>
