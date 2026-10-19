@@ -4,6 +4,12 @@
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+  <!-- Kıble kamera görünümü (issue: kıble AR). İzin yalnız Kamera sekmesi açılınca istenir;
+       görüntü kaydedilmez. Kamerasız cihazlar (TV, bazı tabletler) Play'de filtrelenmesin:
+       CAMERA izni tek başına android.hardware.camera özelliğini ZORUNLU ima eder. -->
+  <uses-permission android:name="android.permission.CAMERA"/>
+  <uses-feature android:name="android.hardware.camera" android:required="false"/>
+  <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
   <uses-permission android:name="android.permission.READ_CALENDAR"/>
   <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
   <uses-permission android:name="android.permission.INTERNET"/>
@@ -313,6 +319,9 @@
          startLocationUpdatesAsync yok, geofence onu kullanmaz. Bildirimi kalsaydı Play
          FGS beyanı isterdi. Bkz. üstteki FOREGROUND_SERVICE_LOCATION notu. -->
     <service android:name="expo.modules.location.services.LocationTaskService" tools:node="remove"/>
+    <!-- expo-camera kütüphane manifesti barkod modülünü (ML Kit) bildirir; kamera yalnız önizleme
+         için kullanılır, barkod okunmaz (gradle.properties: expo.camera.barcode-scanner-enabled=false). -->
+    <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" tools:node="remove"/>
     <service android:name="expo.modules.audio.service.AudioControlsService" tools:node="remove"/>
     <service android:name="expo.modules.audio.service.AudioRecordingService" tools:node="remove"/>
     <!-- Android AppFunctions (issue #94): asistanın okuduğu uygulama açıklaması. Servisin kendisi

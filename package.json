@@ -45,6 +45,7 @@
     "expo-background-fetch": "~57.0.21",
     "expo-blur": "~57.0.3",
     "expo-calendar": "~57.0.5",
+    "expo-camera": "~57.0.6",
     "expo-crypto": "~57.0.4",
     "expo-document-picker": "~57.0.3",
     "expo-file-system": "~57.0.7",
