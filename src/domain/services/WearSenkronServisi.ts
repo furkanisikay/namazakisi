@@ -21,6 +21,7 @@
  * kılınmışlık `LocalNamazServisi`'nden okunur. Saat köprüsü yoksa no-op.
  */
 import { NativeModules, Platform } from 'react-native';
+import { geceSessizliginiOku } from '../../data/local/LocalGeceSessizligiOkuyucu';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Logger } from '../../core/utils/Logger';
 import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../core/constants/UygulamaSabitleri';
@@ -219,7 +220,9 @@ export class WearSenkronServisi {
         }
         // Özel gün (issue #272): telefon o günün muhafızını planlamaz → saat de planlamaz.
         const ozelGundeMi = await ozelGunSuzgeciniOku();
-        return { aktif: durum.aktif, matris: durum.matris, simdiMs: Date.now(), kilinanlar, ozelGundeMi };
+        // Gece sessizliği: telefonun arka planı ve ön planıyla AYNI kural ve kaynak.
+        const geceSessizligi = await geceSessizliginiOku();
+        return { aktif: durum.aktif, matris: durum.matris, simdiMs: Date.now(), kilinanlar, ozelGundeMi, geceSessizligi };
     }
 
     /**

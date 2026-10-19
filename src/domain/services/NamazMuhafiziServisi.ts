@@ -4,6 +4,8 @@ import { Logger } from '../../core/utils/Logger';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunKapisiniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { geceSessizliginiOku } from '../../data/local/LocalGeceSessizligiOkuyucu';
+import { geceSessizligiSusturuyorMu, type GeceSessizligi } from '../../core/muhafiz/geceSessizligi';
 import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 import { telefonAnonsuKonusurMu, type SaatAyarlari } from '../../core/saat/saatAyarlari';
 import { ozelGunAktifMi, type OzelGunKapisiGirdisi } from '../../core/seri/ozelGunKapisi';
@@ -88,6 +90,13 @@ export class NamazMuhafiziServisi {
      */
     private saatAyarlari: SaatAyarlari | null = null;
 
+    /**
+     * Gece sessizliği (arka planla AYNI kural, `geceSessizligiSusturuyorMu`). BELLEK-İÇİ
+     * önbellek: açılışta hydrate edilir, her tick arka planda tazelenir (ateşle-unut —
+     * ekranda değişen ayar en geç bir dakikada ön plana da yansır).
+     */
+    private geceSessizligi: GeceSessizligi | undefined;
+
     private constructor() {
         this.hesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
     }
@@ -125,6 +134,7 @@ export class NamazMuhafiziServisi {
         this.temizlenenVakitler = {};
         this.ozelGun = null;
         this.saatAyarlari = null;
+        this.geceSessizligi = undefined;
         this.matris = VARSAYILAN_MATRIS;
         this.onBildirim = null;
     }
@@ -171,6 +181,8 @@ export class NamazMuhafiziServisi {
         // Okuyucu asla fırlatmaz.
         this.ozelGun = await ozelGunKapisiniOku();
         await this.saatAyarlariniYukle();
+        // Gece sessizliği de: ilk `kontrolEt` gece yarısı açılışta konuşmasın.
+        await this.geceSessizliginiYukle();
         try {
             const bugunTarih = new Date();
             const dunTarih = new Date();
@@ -209,12 +221,20 @@ export class NamazMuhafiziServisi {
         this.saatAyarlari = await LocalSaatAyarlariServisi.oku();
     }
 
+    /** Gece sessizliği ayarını diskten tazeler (okuyucu asla fırlatmaz). */
+    public async geceSessizliginiYukle(): Promise<void> {
+        this.geceSessizligi = await geceSessizliginiOku();
+    }
+
     public async ozelGunDurumunuYukle(): Promise<void> {
         this.ozelGun = await ozelGunKapisiniOku();
         if (this.intervalId) this.kontrolEt();
     }
 
     private kontrolEt() {
+        // Gece sessizliği bir sonraki tick için arka planda tazelenir (ateşle-unut).
+        void this.geceSessizliginiYukle();
+
         const vakitBilgisi = this.hesaplayici.getSuankiVakitBilgisi();
         if (!vakitBilgisi) return;
 
@@ -267,6 +287,13 @@ export class NamazMuhafiziServisi {
                 ? olcuDkHesapla({ kaynak: `vakit:${vakit}`, baslangic: giris, bitis: cikis, yon }, new Date())
                 : kalanDk;
 
+        // Planın bu dakikaya kurduğu uyarının ANI (arka planla aynı): çıkışta
+        // `çıkış − kalanDk`, girişte `giriş + olcuDk`. Gece sessizliği kapısı buna bakar.
+        const tetikMs =
+            yon === 'girisindenItibaren' && giris
+                ? giris.getTime() + olcuDk * 60 * 1000
+                : cikis.getTime() - kalanDk * 60 * 1000;
+
         // Sessiz (mod='sessiz') seviye pencere sağlamaz; o aralıkta bir üst
         // (daha nazik) seviye aktifse onun sıklığı işler.
         const kazanan = aktifSeviyeyiBul(vakitAyari, olcuDk);
@@ -289,6 +316,11 @@ export class NamazMuhafiziServisi {
         // ayrica SART: arka plan o tetige anons KURMADI (alarm onun yerine gecti), on plan
         // ayni kimlikle kursaydi alarmin ustune TTS konusurdu.
         const sistemAlarmi = alarmAniMi(kazanan, olcuDk);
+
+        // GECE SESSİZLİĞİ: arka plan bu tetiği hiç kurmadı (`vakitTeslimAdaylari`, aynı
+        // kural, aynı tetik anı ve namaz günü) → ön plan da banner/ses/anons vermez.
+        // Gerçek alarm muaf (kullanıcının bilerek kurduğu uyandırma).
+        if (geceSessizligiSusturuyorMu(this.geceSessizligi, vakitGunu, tetikMs, sistemAlarmi)) return;
 
         if (!sistemAlarmi) {
             // Faz 5: uygulama ACIKKEN de sesli anons konussun.

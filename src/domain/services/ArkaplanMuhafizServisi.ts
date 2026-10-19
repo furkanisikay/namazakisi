@@ -33,6 +33,8 @@ import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
 import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
 import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 import type { SaatTeslimBaglami } from '../../core/saat/saatAyarlari';
+import type { GeceSessizligi } from '../../core/muhafiz/geceSessizligi';
+import { geceSessizliginiOku } from '../../data/local/LocalGeceSessizligiOkuyucu';
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -62,6 +64,11 @@ export class ArkaplanMuhafizServisi {
     private kategorilerKayitli = false;
     /** Bu turun saat iş bölümü ayarı (saat W3) — üreticiye geçer (defterle parite). */
     private saatAyarlari: SaatTeslimBaglami | undefined;
+    /**
+     * Bu turun gece sessizliği (diskten; ham okuyan tüketiciler alanı ayrıca geçmek
+     * zorunda kalmasın). Defter aynı alanı store'dan geçer → parite.
+     */
+    private geceSessizligi: GeceSessizligi | undefined;
 
     private constructor() { }
 
@@ -177,6 +184,7 @@ export class ArkaplanMuhafizServisi {
         // Saat iş bölümü (saat W3): sabah uyandırması saatteyse telefonda yedek, anons
         // "yalnız saatte" ise telefon TTS planlamaz. Okuyucu asla fırlatmaz.
         this.saatAyarlari = await LocalSaatAyarlariServisi.teslimBaglaminiOku();
+        this.geceSessizligi = await geceSessizliginiOku();
 
         const planGirdisi = {
             matris: this.ayarlar.matris,
@@ -219,7 +227,13 @@ export class ArkaplanMuhafizServisi {
     private async vakitIcinBildirimPlanla(vakit: VakitZamani): Promise<void> {
         if (!this.ayarlar) return;
 
-        const adaylar = vakitTeslimAdaylari(this.ayarlar.matris, vakit, new Date(), this.saatAyarlari);
+        const adaylar = vakitTeslimAdaylari(
+            this.ayarlar.matris,
+            vakit,
+            new Date(),
+            this.saatAyarlari,
+            this.geceSessizligi
+        );
         for (const aday of adaylar) {
             const { uyari, yon } = aday;
             const seviye = uyari.seviye as MuhafizSeviye;

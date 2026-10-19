@@ -28,6 +28,7 @@ import {
     type SaatTeslimBaglami,
 } from '../saat/saatAyarlari';
 import { muhafizUyandirmasiMi } from '../saat/uyandirmaKapisi';
+import { geceSessizligiSusturuyorMu, type GeceSessizligi } from './geceSessizligi';
 
 /** Bir vaktin bugünkü penceresi. `tarih` vaktin AİT OLDUĞU gündür (yatsı dün olabilir). */
 export interface MuhafizVakitZamani {
@@ -183,6 +184,11 @@ export interface MuhafizPlanGirdisi {
     kilindiMi?: (tarih: string, vakit: VakitAdi) => boolean;
     /** Özel gün kapısı (issue #272) — vaktin GÜNÜNE uygulanır. */
     ozelGundeMi?: (tarih: string) => boolean;
+    /**
+     * Gece sessizliği (`geceSessizligi.ts`) — gece penceresine düşen uyarı KURULMAZ
+     * (gerçek alarm hariç). Servis ve defter AYNI değeri geçer (parite).
+     */
+    geceSessizligi?: GeceSessizligi;
 }
 
 /** Planlanacak (gelecekte, kılınmamış, özel gün olmayan) vakitler — sıra korunur. */
@@ -200,7 +206,8 @@ export function vakitTeslimAdaylari(
     matris: MuhafizMatrisi,
     vakit: MuhafizVakitZamani,
     simdi: Date,
-    saat?: SaatTeslimBaglami
+    saat?: SaatTeslimBaglami,
+    geceSessizligi?: GeceSessizligi
 ): MuhafizTeslimAdayi[] {
     const cikisMs = vakit.cikis.getTime();
     if (cikisMs <= simdi.getTime()) return [];
@@ -241,6 +248,8 @@ export function vakitTeslimAdaylari(
                 : ozgunMs;
         // Geçmişe düşen (dakika yuvarlaması) atlanır — kaydırılmış ana göre.
         if (zamanMs === null || zamanMs <= simdi.getTime()) continue;
+        // Gece sessizliği: kaydırılmış (gerçek) ana uygulanır; gerçek alarm muaf.
+        if (geceSessizligiSusturuyorMu(geceSessizligi, vakit.tarih, zamanMs, ham.alarm)) continue;
         // Saat W3 — anons "yalnız saatte": telefon TTS planlamaz (çift konuşma yok).
         // Bayrak burada kapanır ki teslimci, ön plan ve defter AYNI cevabı görsün.
         const uyari = anonsKonusur || !ham.sesliAnons ? ham : { ...ham, sesliAnons: false };
@@ -259,7 +268,7 @@ export function vakitTeslimAdaylari(
 /** Bütün turun teslim adayları, teslimcinin göreceği SIRAYLA. */
 export function muhafizTeslimPlaniOlustur(girdi: MuhafizPlanGirdisi): MuhafizTeslimAdayi[] {
     return planlanacakMuhafizVakitleri(girdi).flatMap((v) =>
-        vakitTeslimAdaylari(girdi.matris, v, girdi.simdi, girdi.saat)
+        vakitTeslimAdaylari(girdi.matris, v, girdi.simdi, girdi.saat, girdi.geceSessizligi)
     );
 }
 

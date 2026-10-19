@@ -24,6 +24,7 @@ import {
     presetZamanlamasiniUygula,
 } from '../../core/muhafiz/matrisIslemleri';
 import { matrisGecerliMi, matrisYapisiGecerliMi } from '../../core/muhafiz/motorAdaptoru';
+import { geceSessizliginiNormalize, type GeceSessizligi } from '../../core/muhafiz/geceSessizligi';
 
 /**
  * Hatirlatma yogunlugu preset tipleri
@@ -213,6 +214,18 @@ export interface MuhafizAyarlari {
      * temizlenir, sonra kullanıcının bilerek kapattığı adım bir daha silinmez.
      */
     kapaliAdimTemizligiYapildi?: boolean;
+    /**
+     * GECE SESSİZLİĞİ (`core/muhafiz/geceSessizligi.ts`): başlangıçtan imsağa kadar muhafız
+     * uyarısı gelmez (gerçek alarm hariç). Yeni kurulumda sihirbaz AÇIK yazar; alanı
+     * olmayan mevcut kayıt KAPALI sayılır (göç yok — ekranda öneri var). Arka plan
+     * servisleri aynı alanı diskten okur (`LocalGeceSessizligiOkuyucu`).
+     */
+    geceSessizligi?: GeceSessizligi;
+    /**
+     * "Daha az bildirim: önerilen ayarlar" kartı kapatıldı/uygulandı mı? Cihaza özgü bir
+     * görüldü işaretidir; kart bir kez gösterilir.
+     */
+    varsayilanOnerisiGoruldu?: boolean;
 }
 
 type PresetliYogunluk = Exclude<HatirlatmaYogunlugu, 'ozel'>;
@@ -443,6 +456,10 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     // alarmOnayi (issue #74): aynı tuzak — taşınmazsa onay her açılışta
                     // kaybolur ve alarm anahtarı her seferinde yeniden onay ister.
                     alarmOnayi: parsed.alarmOnayi === true ? true : undefined,
+                    // Gece sessizliği: AÇIKÇA taşınır (opsiyonel alan tuzağı) ve doğrulanır;
+                    // alan yoksa undefined = kapalı (mevcut kullanıcı göçle susturulmaz).
+                    geceSessizligi: geceSessizliginiNormalize(parsed.geceSessizligi),
+                    varsayilanOnerisiGoruldu: parsed.varsayilanOnerisiGoruldu === true ? true : undefined,
                     presetGocuYapildi: true,
                     kapaliAdimTemizligiYapildi: true,
                 };

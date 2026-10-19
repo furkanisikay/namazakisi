@@ -272,3 +272,33 @@ describe('HatirlatmalarSayfasi', () => {
         await waitFor(() => expect(e.getByLabelText('Özel gün. Şu an sürüyor')).toBeTruthy());
     });
 });
+
+describe('HatirlatmalarSayfasi — gece sessizliği', () => {
+    it('alanı olmayan (mevcut) kayıtta KAPALI görünür ve özet ne kazanacağını söyler', () => {
+        const e = render(<HatirlatmalarSayfasi />);
+        expect(e.getByLabelText('Gece sessiz saatler. Kapalı · açarsanız gece uyarı gelmez')).toBeTruthy();
+    });
+
+    it('anahtar muhafız kaydına yazar (23:00 varsayılan)', () => {
+        const e = render(<HatirlatmalarSayfasi />);
+        fireEvent(e.getByLabelText('Gece sessiz saatler'), 'valueChange', true);
+        expect(mockDispatch).toHaveBeenCalledWith(
+            expect.objectContaining({
+                payload: { geceSessizligi: { aktif: true, baslangicSaat: 23, baslangicDakika: 0 } },
+            })
+        );
+    });
+
+    it('başlangıç saati seçilip kaydedilir', () => {
+        durumKur({ muhafiz: { aktif: true, yogunluk: 'normal', geceSessizligi: { aktif: true, baslangicSaat: 23, baslangicDakika: 0 } } });
+        const e = render(<HatirlatmalarSayfasi />);
+        fireEvent.press(e.getByLabelText(/^Gece sessiz saatler\. 23:00/));
+        fireEvent.press(e.getByTestId('gece-baslangic-22:30'));
+        fireEvent.press(e.getByLabelText('Kaydedin'));
+        expect(mockDispatch).toHaveBeenCalledWith(
+            expect.objectContaining({
+                payload: { geceSessizligi: { aktif: true, baslangicSaat: 22, baslangicDakika: 30 } },
+            })
+        );
+    });
+});

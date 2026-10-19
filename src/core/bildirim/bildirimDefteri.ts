@@ -35,6 +35,7 @@ import { Coordinates, PrayerTimes } from 'adhan';
 import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
 import type { VakitAdi } from '../types';
 import type { MuhafizMatrisi } from '../muhafiz/matrisTipleri';
+import type { GeceSessizligi } from '../muhafiz/geceSessizligi';
 import {
     alarmKurarMi,
     anonsAlarmiKurarMi,
@@ -150,7 +151,7 @@ export interface DefterGirdisi {
     kilinan?: Record<string, readonly VakitAdi[]>;
     /** Özel gün kapısı (issue #272). */
     ozelGundeMi?: (iso: string) => boolean;
-    muhafiz?: { aktif: boolean; matris: MuhafizMatrisi } | null;
+    muhafiz?: { aktif: boolean; matris: MuhafizMatrisi; geceSessizligi?: GeceSessizligi } | null;
     vakitBildirimi?: VakitBildirimPlanAyarlari | null;
     cuma?: CumaPlanAyarlari | null;
     /** "Camide kılacağım" (issue #292). Cuma öğlesi çakışması `cuma.aktif`'ten okunur. */
@@ -228,6 +229,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
     // ── Muhafız (+ Android sesli anons alarmları) ──
     if (koordinat && g.muhafiz?.aktif) {
         const matris = g.muhafiz.matris;
+        const geceSessizligi = g.muhafiz.geceSessizligi;
         guvenli(() => {
             // Servisle AYNI ufuk: yarının imsağı dahil (issue #74 M2; iOS'ta bütçe artığı).
             // Sayaç planı aşağıda yarınsız `vakitler`'i kullanır — onun ufku ayrıdır.
@@ -243,6 +245,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 kilindiMi,
                 ozelGundeMi,
                 saat: g.saat ?? undefined,
+                geceSessizligi,
             })) {
                 // Gerçek alarm (issue #74) Android'de o tetiğin bildirimi + anonsunun
                 // YERİNE geçer → tek alarm sayılır. iOS'ta AlarmKit izinliyse yine alarm

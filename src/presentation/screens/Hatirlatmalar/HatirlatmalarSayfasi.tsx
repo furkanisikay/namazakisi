@@ -52,6 +52,9 @@ import { useCihazDurumu } from '../../hooks/useCihazDurumu';
 import { durumNotu } from '../../../core/cihaz/durumNotlari';
 import { muhafizMatrisiniCoz } from '../../../core/muhafiz/motorAdaptoru';
 import { DuzeySecici } from '../../components/hatirlatma/DuzeySecici';
+import { GeceSessizligiSatiri } from '../../components/hatirlatma/GeceSessizligiSatiri';
+import { muhafizAyarlariniGuncelle } from '../../store/muhafizSlice';
+import { geceSessizliginiNormalize, type GeceSessizligi } from '../../../core/muhafiz/geceSessizligi';
 import { DuzeyOnizlemesi } from '../../components/hatirlatma/DuzeyOnizlemesi';
 import { AnahtarSatiri } from '../../components/ortak/AnahtarSatiri';
 import { BolumBasligi } from '../../components/ortak/BolumBasligi';
@@ -245,6 +248,14 @@ const HatirlatmalarIcerik: React.FC = () => {
         dispatch(takvimCakismaAyariniGuncelle({ aktif: false }));
     };
 
+    // Gece sessizliği muhafız kaydında yaşar; servisler aynı alanı diskten okur.
+    const geceSessizligi = geceSessizliginiNormalize(muhafiz.geceSessizligi);
+    const geceDegistir = (yeni: GeceSessizligi) => {
+        void butonTiklandiFeedback();
+        dispatch(muhafizAyarlariniGuncelle({ geceSessizligi: yeni }));
+        planlamayiKuyrugaAl();
+    };
+
     const ramazanAcik = ramazan.iftar || ramazan.sahur;
     const ramazanDegistir = (v: boolean) => {
         void butonTiklandiFeedback();
@@ -314,6 +325,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                                 testID="satir-vakit-cikmadan"
                             />
                         </AyarCapasi>
+                        <GeceSessizligiSatiri ayar={geceSessizligi} onDegistir={geceDegistir} />
                         <AnahtarSatiri
                             ikon="mosque"
                             baslik="Cuma namazı"
