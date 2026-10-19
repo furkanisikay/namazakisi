@@ -54,7 +54,8 @@ import {
   localTarihAraligindakiNamazlariGetir,
 } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
-import { canliDurumu, canliPlaniKur, type CanliDurum } from '../../../modules/expo-countdown-notification/src';
+import { canliDurumu, canliPlaniKur, canliTaniHam, type CanliDurum } from '../../../modules/expo-countdown-notification/src';
+import { canliTaniCoz, canliTaniSatirlari, canliTeshisi } from '../../core/sayac/canliTani';
 import { canliSaatPayiDegisti } from './canliSaatGozlemcisi';
 import { iosCanliEtkinlikDurumu } from '../../core/sayac/iosCanliEtkinlik';
 import { widgetKilinanlariOlustur, widgetKoduVakitAdina } from '../../core/widget/widgetYuku';
@@ -100,6 +101,8 @@ export class CanliSayacPlanlayici {
   private zincir: Promise<void> = Promise.resolve();
   /** Son saate giden pay (değişmediyse saat yeniden gönderilmez). */
   private sonSaatJson: string | null = null;
+  /** Son loglanan Now Bar teşhisi (aynısı tekrar yazılmaz). */
+  private sonTeshis: string | null = null;
 
   private constructor() { }
 
@@ -270,9 +273,27 @@ export class CanliSayacPlanlayici {
       const olaylar = durum === 'acik' ? canliZamanCizelgesiOlustur(adaylar, ayarlar, simdi) : [];
       await canliPlaniKur(canliPlanJsonuOlustur(olaylar));
       Logger.info('CanliSayac', `Now Bar plani kuruldu: ${olaylar.length} olay`);
+      await this.taniyiLogla(durum);
     }
 
     await this.saatPayiniYaz(adaylar, ayarlar, simdi);
+  }
+
+  /**
+   * Tanı raporu bu satırı taşır (saha: "saatte görünüyor, telefonda görünmüyor").
+   * Yalnız teşhis DEĞİŞİNCE yazılır: plan sık yenilenir, 500 satırlık tampon dolmasın.
+   */
+  private async taniyiLogla(durum: CanliDurum): Promise<void> {
+    if (typeof canliTaniHam !== 'function') return;
+    try {
+      const tani = canliTaniCoz(await canliTaniHam());
+      const teshis = canliTeshisi(durum, tani);
+      if (teshis.tip === this.sonTeshis) return;
+      this.sonTeshis = teshis.tip;
+      Logger.info('CanliSayac', `Now Bar tanisi: ${teshis.tip} | ${canliTaniSatirlari(durum, tani).join(' | ')}`);
+    } catch {
+      // Tanı hiçbir zaman planlamayı bozmaz.
+    }
   }
 
   /** Saatin payı telefonun desteğinden BAĞIMSIZDIR (saat kendi yüzeyini çizer). */
@@ -324,5 +345,6 @@ export class CanliSayacPlanlayici {
   public __testIcinSifirla(): void {
     this.zincir = Promise.resolve();
     this.sonSaatJson = null;
+    this.sonTeshis = null;
   }
 }

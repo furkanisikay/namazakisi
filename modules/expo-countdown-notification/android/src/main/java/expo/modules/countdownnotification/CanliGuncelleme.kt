@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import expo.modules.countdownnotification.cekirdek.CanliGuncellemeKurallari
 import expo.modules.countdownnotification.cekirdek.CanliGuncellemeKurallari.Durum
+import expo.modules.countdownnotification.cekirdek.CanliTaniKurallari
 
 /**
  * Android 16 "Live Update" ikiz yolu — issue #282 (durum çubuğu çipi + One UI 8 Now Bar).
@@ -43,6 +44,14 @@ object CanliGuncelleme {
 
     private const val TAG = "CanliGuncelleme"
     private const val PREFS = "expo_countdown_canli"
+
+    /**
+     * Tanı kaydı AYRI dosyada: `PREFS`'in anahtarları sayaç kimlikleridir
+     * (`kayitliIdler` hepsini sayar), oraya tanı anahtarı yazılırsa `stopAll` onu
+     * sayaç sanardı.
+     */
+    private const val TANI_PREFS = "expo_countdown_canli_tani"
+    private const val TANI_SON = "son"
 
     /** API 36 (Android 16 / Baklava). `VERSION_CODES.BAKLAVA` yerine sayı: eski SDK'larla da derlensin. */
     private const val API_36 = 36
@@ -90,19 +99,100 @@ object CanliGuncelleme {
             val simdi = System.currentTimeMillis()
             if (durum.hedefMs <= simdi) return false
             val bildirim = olustur(context, durum, simdi)
-            if (!bildirim.hasPromotableCharacteristics()) {
+            val oneCikarilabilir = bildirim.hasPromotableCharacteristics()
+            if (!oneCikarilabilir) {
                 Log.w(TAG, "Bildirim one cikarilabilir degil (sartlardan biri eksik): ${durum.tema}")
             }
             kaydet(context, durum)
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            nm.notify(CountdownNotificationHelper.generateNotificationId(durum.id), bildirim)
+            val bildirimId = CountdownNotificationHelper.generateNotificationId(durum.id)
+            nm.notify(bildirimId, bildirim)
+            taniKaydet(
+                context,
+                CanliTaniKurallari.GosterimKaydi(
+                    zamanMs = simdi,
+                    id = durum.id,
+                    tema = durum.tema,
+                    kanalId = bildirim.channelId ?: "",
+                    kanalOnemi = kanalOnemi(nm, bildirim.channelId),
+                    oneCikarilabilir = oneCikarilabilir,
+                    izinVar = destekleniyorMu(context),
+                    // Gönderim asenkrondur: bayrak çoğu zaman sonradan (`sonGosterim`) okunur.
+                    // Yoksa aynı kimliğin önceki ölçümü korunur (dakikalık tazelemede kaybolmasın).
+                    oneCikarildi = oneCikarmaDurumu(nm, bildirimId) ?: oncekiOlcum(context, durum.id),
+                )
+            )
             tazelemeyiKur(context, durum.id, CanliGuncellemeKurallari.sonrakiTazelemeMs(simdi, durum.hedefMs))
             true
         } catch (e: Exception) {
             Log.w(TAG, "Canli guncelleme gosterilemedi", e)
+            taniKaydet(
+                context,
+                CanliTaniKurallari.GosterimKaydi(
+                    zamanMs = System.currentTimeMillis(), id = durum.id, tema = durum.tema,
+                    kanalId = durum.kanalId, kanalOnemi = null, oneCikarilabilir = false,
+                    izinVar = destekleniyorMu(context), oneCikarildi = null,
+                    hata = e.javaClass.simpleName,
+                )
+            )
             temizle(context, durum.id)
             false
         }
+    }
+
+    // ------------------------------------------------------------------
+    // TANI (saha raporu: "saatte görünüyor, telefonda görünmüyor")
+    // ------------------------------------------------------------------
+
+    /**
+     * Gönderilmiş bildirimi sistem öne çıkardı mı? `FLAG_PROMOTED_ONGOING`'i SİSTEM
+     * yazar; tek gerçek odur (`canPostPromotedNotifications` ve
+     * `hasPromotableCharacteristics` true olsa bile üretici ek ölçüt koyabilir —
+     * Samsung One UI 8'de üçüncü taraf uygulamalar için geliştirici seçeneği bildirildi).
+     * Bildirim bulunamazsa / API < 36 ise null.
+     */
+    fun oneCikarmaDurumu(nm: NotificationManager, bildirimId: Int): Boolean? {
+        if (Build.VERSION.SDK_INT < API_36) return null
+        return try {
+            val sbn = nm.activeNotifications.firstOrNull { it.id == bildirimId } ?: return null
+            CanliTaniKurallari.oneCikarildiMi(sbn.notification.flags, oneCikarmaBayragi())
+        } catch (_: Throwable) {
+            null
+        }
+    }
+
+    @RequiresApi(API_36)
+    private fun oneCikarmaBayragi(): Int = Notification.FLAG_PROMOTED_ONGOING
+
+    private fun kanalOnemi(nm: NotificationManager, kanalId: String?): Int? = try {
+        if (kanalId.isNullOrEmpty()) null else nm.getNotificationChannel(kanalId)?.importance
+    } catch (_: Throwable) {
+        null
+    }
+
+    private fun taniKaydet(context: Context, kayit: CanliTaniKurallari.GosterimKaydi) {
+        try {
+            context.getSharedPreferences(TANI_PREFS, Context.MODE_PRIVATE).edit()
+                .putString(TANI_SON, CanliTaniKurallari.kaydiJsonaCevir(kayit).toString()).apply()
+        } catch (_: Throwable) {
+        }
+    }
+
+    private fun oncekiOlcum(context: Context, id: String): Boolean? =
+        CanliTaniKurallari.kaydiJsondanOku(
+            context.getSharedPreferences(TANI_PREFS, Context.MODE_PRIVATE).getString(TANI_SON, null)
+        )?.takeIf { it.id == id }?.oneCikarildi
+
+    /** Son gösterim kaydı; bayrak o an okunabiliyorsa CANLI değerle güncellenir. */
+    fun sonGosterim(context: Context): CanliTaniKurallari.GosterimKaydi? {
+        val kayit = CanliTaniKurallari.kaydiJsondanOku(
+            context.getSharedPreferences(TANI_PREFS, Context.MODE_PRIVATE).getString(TANI_SON, null)
+        ) ?: return null
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val canli = oneCikarmaDurumu(nm, CountdownNotificationHelper.generateNotificationId(kayit.id))
+        val guncel = CanliTaniKurallari.bayrakIsle(kayit, canli)
+        if (guncel != kayit) taniKaydet(context, guncel)
+        return guncel
     }
 
     /** Dakikalık tazeleme alarmı geldi: saklı durumdan yeniden çiz. */
@@ -125,6 +215,9 @@ object CanliGuncelleme {
             temizle(context, id)
             return
         }
+        // Tanı: yeniden çizmeden ÖNCE önceki gönderimin bayrağını kaydet (anında okuma
+        // gönderim asenkron olduğu için çoğu zaman boş döner).
+        sonGosterim(context)
         goster(context, durum)
     }
 

@@ -38,8 +38,16 @@ import {
 import {
   canliAyarlariniAc,
   canliDurumu,
+  canliTaniHam,
   type CanliDurum,
 } from '../../../modules/expo-countdown-notification/src';
+import {
+  SAMSUNG_CANLI_BILDIRIM_IPUCU,
+  canliTaniCoz,
+  canliTaniSatirlari,
+  canliTeshisi,
+  type CanliTani,
+} from '../../core/sayac/canliTani';
 import { canliEtkinlikIzniAcik } from '../../../modules/expo-siri-kisayollari/src';
 import { useCihazDurumu } from '../hooks/useCihazDurumu';
 import { canliYuzeyAdi, type CihazDurumu } from '../../core/cihaz/durumNotlari';
@@ -85,6 +93,24 @@ function useCanliDurum(): [CanliDurum | null, () => void] {
     return () => abone.remove();
   }, [oku]);
   return [durum, oku];
+}
+
+/**
+ * Android Now Bar tanısı (saha: "saatte görünüyor, telefonda görünmüyor"). Durumla
+ * birlikte okunur; köprü fonksiyonu yoksa (eski ikili / dar mock) hiç okunmaz.
+ */
+function useCanliTani(durum: CanliDurum | null): [CanliTani | null, () => void] {
+  const [tani, setTani] = useState<CanliTani | null>(null);
+  const oku = useCallback(() => {
+    if (Platform.OS !== 'android' || typeof canliTaniHam !== 'function') return;
+    canliTaniHam()
+      .then((ham) => setTani(canliTaniCoz(ham)))
+      .catch(() => setTani(null));
+  }, []);
+  useEffect(() => {
+    if (durum !== null) oku();
+  }, [durum, oku]);
+  return [tani, oku];
 }
 
 type DurumMetni = { baslik: string; aciklama: string; ikon: string };
@@ -150,6 +176,8 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
   const dispatch = useAppDispatch();
   const { ayarlar, yuklendi } = useAppSelector((s) => s.nowBar);
   const [durum, durumuOku] = useCanliDurum();
+  const [tani, taniyiOku] = useCanliTani(durum);
+  const [taniAcik, setTaniAcik] = useState(false);
   const { durum: cihaz } = useCihazDurumu(CIHAZ_ALANLARI, !iosMu());
   // Vakit "Sayaçla" notu için (ikisi de açılışta yüklenir; yoksa bilinmiyor → not yok).
   const sayacAktif = useAppSelector((s) => (s as { vakitSayac?: { ayarlar?: { aktif?: boolean } } }).vakitSayac?.ayarlar?.aktif ?? null);
@@ -209,6 +237,9 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
   const durumRengi =
     durum === 'acik' ? renkler.durum.basarili : durum === 'kapali' ? renkler.durum.dikkat : renkler.durum.bilgi;
   const ilkAcik = gruplar.flatMap((g) => g.ogeler).find((o) => ayarlar.ogeler[o].acik);
+  // Tanı yalnız Android'de ve durum bilinince (desteklenmiyorsa söyleyecek yeni şey yok).
+  // Tanı okunamadıysa (eski ikili) kart hiç çizilmez — "desteklenmiyor" demek durum kartıyla çelişirdi.
+  const teshis = !ios && tani && durum && durum !== 'desteklenmiyor' ? canliTeshisi(durum, tani) : null;
 
   return (
     <ScrollView
@@ -281,6 +312,53 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
           </Text>
         </View>
       </View>
+
+      {teshis && (
+        <View className="mb-6 p-4" style={kartStili} testID="now-bar-tani">
+          <View className="flex-row items-start gap-2">
+            <FontAwesome5
+              name={teshis.tip === 'oneCikti' ? 'check-circle' : 'stethoscope'}
+              size={13}
+              color={teshis.tip === 'oneCikti' ? renkler.durum.basarili : renkler.metinIkincil}
+              style={{ marginTop: 2 }}
+              solid
+            />
+            <Text className="text-sm flex-1" style={{ color: renkler.metin }} testID="now-bar-tani-teshis">
+              {teshis.metin}
+            </Text>
+          </View>
+          {teshis.samsungIpucu && (
+            <Text className="text-xs mt-3" style={{ color: renkler.metinIkincil }} testID="now-bar-tani-samsung">
+              {SAMSUNG_CANLI_BILDIRIM_IPUCU}
+            </Text>
+          )}
+          <TouchableOpacity
+            className="flex-row items-center justify-center mt-3 py-2.5 rounded-2xl border"
+            style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir, minHeight: 44 }}
+            onPress={() => {
+              if (!taniAcik) taniyiOku();
+              setTaniAcik((a) => !a);
+            }}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: taniAcik }}
+            accessibilityLabel={taniAcik ? 'Tanı ayrıntılarını gizleyin' : 'Tanı ayrıntılarını gösterin'}
+          >
+            <FontAwesome5 name={taniAcik ? 'chevron-up' : 'chevron-down'} size={11} color={renkler.birincil} style={{ marginRight: 8 }} />
+            <Text className="text-xs font-semibold" style={{ color: renkler.metin }}>
+              {taniAcik ? 'Ayrıntıları gizleyin' : 'Ayrıntıları gösterin'}
+            </Text>
+          </TouchableOpacity>
+          {taniAcik && durum && (
+            <View className="mt-3" testID="now-bar-tani-ayrinti">
+              {canliTaniSatirlari(durum, tani).map((s) => (
+                <Text key={s} className="text-xs mb-1" style={{ color: renkler.metinIkincil }} selectable>
+                  {s}
+                </Text>
+              ))}
+            </View>
+          )}
+        </View>
+      )}
 
       {gruplar.map((grup) => (
         <View key={grup.baslik} className="mb-2">

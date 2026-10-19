@@ -69,7 +69,17 @@ export interface CanliAday {
   tema: CanliTema;
   hedefteKaybol: boolean;
   canli: CanliGuncellemeYuku;
+  /**
+   * Muhafız bu vakti uyardığı için sayaç BİLDİRİMİ kurulmayan vaktin, sayaç
+   * servisince bildirilen yalnız-Now Bar adayı (`kaynak: 'nowBar'`). Sayaç adayı
+   * gibi yalnız "Sayaçla" seçiliyken kullanılır ve saate gitmez (saat o vakti
+   * muhafız planından gösterir).
+   */
+  sayacYedegi?: true;
 }
+
+/** Sayaç servisinden gelen (gerçek ya da yedek) vakit adayı mı? */
+const sayactanMi = (a: CanliAday): boolean => a.kaynak === 'sayac' || a.sayacYedegi === true;
 
 export type CanliEylem = 'oneCikar' | 'normal' | 'gizle';
 
@@ -274,7 +284,7 @@ export const kazananSirasi = (a: EtkinAday, b: EtkinAday): number =>
 export function etkinAdaylar(adaylar: readonly CanliAday[], ayarlar: NowBarAyarlari, simdiMs: number): EtkinAday[] {
   const kimlikle = new Map<string, EtkinAday>();
   for (const aday of adaylar) {
-    if (aday.kaynak === 'sayac' && !sayacAdayiKullanilirMi(aday, ayarlar)) continue;
+    if (sayactanMi(aday) && !sayacAdayiKullanilirMi(aday, ayarlar)) continue;
     const secim = secimliBaslangic(aday, ayarlar);
     if (secim === null || aday.hedefMs <= simdiMs) continue;
     const etkin = { aday, bas: Math.max(secim, simdiMs) };
@@ -387,7 +397,7 @@ export function saatPencereleriniOlustur(
   ayarlar: NowBarAyarlari,
   simdiMs: number
 ): SaatCanliPenceresi[] {
-  const saatAdaylari = adaylar.filter((a) => !(a.kaynak === 'sayac' && nowBarVaktiMi(a.oge)));
+  const saatAdaylari = adaylar.filter((a) => !(sayactanMi(a) && nowBarVaktiMi(a.oge)));
   const olaylar = canliZamanCizelgesiOlustur(saatAdaylari, ayarlar, simdiMs);
   const pencereler: SaatCanliPenceresi[] = [];
   const acik = new Map<string, SaatCanliPenceresi>();

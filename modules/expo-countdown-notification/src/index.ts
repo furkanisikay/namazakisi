@@ -113,6 +113,8 @@ interface CountdownNativeModule {
     canliDurumu?(): Promise<string>;
     canliPlaniKur?(json: string): Promise<void>;
     canliAyarlariniAc?(): Promise<string | null>;
+    /** Now Bar tanısı (JSON) — eski native ikili TAŞIMAZ (opsiyonel). */
+    canliTani?(): Promise<string | null>;
     pilOptimizasyonuMuafMi(): Promise<boolean | null>;
     pilAyarlariniAc(): Promise<string | null>;
     samsungMu(): boolean | null;
@@ -317,6 +319,22 @@ export async function canliDurumu(): Promise<CanliDurum> {
         return sonuc === 'acik' || sonuc === 'kapali' ? sonuc : 'desteklenmiyor';
     } catch {
         return 'desteklenmiyor';
+    }
+}
+
+/**
+ * Now Bar / Live Update tanisinin HAM JSON'u (alanlar Kotlin
+ * `cekirdek/CanliTaniKurallari.taniJsonu` ile kilitli; cozumu
+ * `src/core/sayac/canliTani.ts > canliTaniCoz`). Android disi, eski native ikili
+ * ya da hata → `null`. Asla firlatmaz.
+ */
+export async function canliTaniHam(): Promise<string | null> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.canliTani) return null;
+    try {
+        const sonuc = await ExpoCountdownNotification.canliTani();
+        return typeof sonuc === 'string' ? sonuc : null;
+    } catch {
+        return null;
     }
 }
 

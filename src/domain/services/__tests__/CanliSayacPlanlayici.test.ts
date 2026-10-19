@@ -18,9 +18,15 @@ jest.mock('react-native', () => ({ Platform: { OS: 'android' }, AppState: { curr
 
 const mockCanliDurumu = jest.fn();
 const mockCanliPlaniKur = jest.fn();
+const mockCanliTaniHam = jest.fn();
 jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
   canliDurumu: (...a: unknown[]) => mockCanliDurumu(...a),
   canliPlaniKur: (...a: unknown[]) => mockCanliPlaniKur(...a),
+  canliTaniHam: (...a: unknown[]) => mockCanliTaniHam(...a),
+}));
+const mockLogInfo = jest.fn();
+jest.mock('../../../core/utils/Logger', () => ({
+  Logger: { info: (...a: unknown[]) => mockLogInfo(...a), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
 }));
 
 const mockKilinan = jest.fn();
@@ -74,7 +80,46 @@ describe('CanliSayacPlanlayici', () => {
     mockCanliDurumu.mockResolvedValue('acik');
     mockCanliPlaniKur.mockResolvedValue(true);
     mockKilinan.mockResolvedValue([]);
+    mockCanliTaniHam.mockResolvedValue(null);
     canliSaatDinleyicisiniAyarla(null);
+  });
+
+  test('SAHA: muhafızın bastırdığı vaktin YEDEĞİ (varsayılan "Sayaçla") plana öne çıkan olay olarak girer', async () => {
+    await p.kaynakBildir('vakitSayac', [
+      aday({
+        oge: 'ikindi',
+        kaynak: 'nowBar',
+        sayacYedegi: true,
+        id: `sayac_${bugunuAl()}_ikindi`,
+        kanalId: 'canli_sayac',
+        tema: 'vakit',
+        hedefteKaybol: true,
+      }),
+    ]);
+    expect(sonPlan()).toEqual([
+      expect.objectContaining({ id: `sayac_${bugunuAl()}_ikindi`, eylem: 'oneCikar', kaynak: 'nowBar' }),
+    ]);
+  });
+
+  test('Now Bar tanısı tanı loguna yazılır, aynı teşhis TEKRAR yazılmaz', async () => {
+    mockCanliTaniHam.mockResolvedValue(
+      JSON.stringify({
+        sdkInt: 36,
+        samsung: true,
+        oneUi: '8.0',
+        izinVar: true,
+        planOlaySayisi: 1,
+        gosterilenler: [],
+        sonGosterim: { zamanMs: 0, id: 'x', tema: 'iftar', kanalId: 'k', kanalOnemi: 3, oneCikarilabilir: true, izinVar: true, oneCikarildi: false },
+        aktifBildirimler: [],
+      })
+    );
+    await p.kaynakBildir('iftarSayac', [aday()]);
+    await p.kaynakBildir('iftarSayac', [aday()]);
+    const tanilar = mockLogInfo.mock.calls.filter((c) => String(c[1]).startsWith('Now Bar tanisi'));
+    expect(tanilar).toHaveLength(1);
+    expect(String(tanilar[0][1])).toContain('ureticiEngeli');
+    expect(String(tanilar[0][1])).toContain('One UI 8.0');
   });
 
   test('devralma yalnız öne çıkarma AÇIK ve öğe açıkken', async () => {

@@ -22,9 +22,11 @@ jest.mock('@expo/vector-icons/FontAwesome5', () => {
 });
 const mockCanliDurumu = jest.fn();
 const mockCanliAyarlariniAc = jest.fn();
+const mockCanliTaniHam = jest.fn();
 jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
   canliDurumu: () => mockCanliDurumu(),
   canliAyarlariniAc: () => mockCanliAyarlariniAc(),
+  canliTaniHam: () => mockCanliTaniHam(),
 }));
 const mockCihaz: { surum: unknown; samsung: boolean | null; esliSaat: string | null } = { surum: null, samsung: null, esliSaat: null };
 jest.mock('../../hooks/useCihazDurumu', () => ({
@@ -68,6 +70,7 @@ describe('NowBarAyarlariSayfasi', () => {
     jest.replaceProperty(Platform, 'OS', 'android');
     mockCanliDurumu.mockResolvedValue('acik');
     mockCanliAyarlariniAc.mockResolvedValue('canli');
+    mockCanliTaniHam.mockResolvedValue(null);
     mockNowBarDegistiUygula.mockResolvedValue(undefined);
     mockCihaz.surum = { platform: 'android', ana: 36, alt: 0, tam: '16' };
     mockCihaz.samsung = null;
@@ -82,6 +85,47 @@ describe('NowBarAyarlariSayfasi', () => {
     expect(ekran.queryByText('Now Bar ve Canlı Sayaçlar')).toBeNull();
     expect(ekran.getByText('Canlı güncellemeler açık')).toBeTruthy();
     expect(ekran.queryByLabelText('Sistem ayarlarını açın')).toBeNull();
+  });
+
+  it('tanı okunamazsa (eski ikili) tanı kartı HİÇ çizilmez', async () => {
+    const ekran = await kur();
+    expect(ekran.queryByTestId('now-bar-tani')).toBeNull();
+  });
+
+  it('SAHA: şartlar tamam ama sistem öne çıkarmadı (Samsung) → teşhis + geliştirici seçeneği yönlendirmesi + ayrıntılar', async () => {
+    mockCanliTaniHam.mockResolvedValue(
+      JSON.stringify({
+        sdkInt: 36,
+        sdkTam: 3600000,
+        samsung: true,
+        oneUi: '8.0',
+        izinVar: true,
+        planOlaySayisi: 2,
+        sonrakiAlarmMs: null,
+        sonPlanMs: null,
+        gosterilenler: ['sayac_2026-10-19_ikindi'],
+        sonGosterim: {
+          zamanMs: 0,
+          id: 'sayac_2026-10-19_ikindi',
+          tema: 'vakit',
+          kanalId: 'canli_sayac',
+          kanalOnemi: 3,
+          oneCikarilabilir: true,
+          izinVar: true,
+          oneCikarildi: false,
+          hata: null,
+        },
+        aktifBildirimler: [],
+      })
+    );
+    const ekran = await kur();
+    await waitFor(() => expect(ekran.getByTestId('now-bar-tani')).toBeTruthy());
+    expect(ekran.getByTestId('now-bar-tani-teshis').props.children).toContain("Now Bar'a almadı");
+    expect(ekran.getByTestId('now-bar-tani-samsung').props.children).toContain('Live notifications for all apps');
+    expect(ekran.queryByTestId('now-bar-tani-ayrinti')).toBeNull();
+    fireEvent.press(ekran.getByLabelText('Tanı ayrıntılarını gösterin'));
+    await waitFor(() => expect(ekran.getByTestId('now-bar-tani-ayrinti')).toBeTruthy());
+    expect(ekran.getByText(/sistem öne çıkardı: hayır/)).toBeTruthy();
   });
 
   it('sistemde kapalıyken "Sistem ayarlarını açın" eylemi çıkar ve ayarı açar', async () => {

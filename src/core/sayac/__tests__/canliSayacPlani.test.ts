@@ -265,3 +265,43 @@ describe('saat (Wear OS)', () => {
     expect(p[0]).toMatchObject({ oge: 'ogle', ad: 'Öğle', tarih: '2026-10-16', vakit: 'ogle', oncelik: 1 });
   });
 });
+
+describe('sayaç YEDEĞİ (muhafızın uyardığı vakit — saha: "saatte görünüyor, telefonda görünmüyor")', () => {
+  const yedek = (oge: NowBarOgesi, bas: number, hedef: number): CanliAday => ({
+    ...sayacAdayi(oge, `sayac_2026-10-16_${oge}`, bas, hedef),
+    kaynak: 'nowBar',
+    kanalId: CANLI_SAYAC_KANALI,
+    hedefteKaybol: true,
+    sayacYedegi: true,
+  });
+
+  test('varsayılan "Sayaçla" seçiminde yedek sayaç zamanında ÖNE ÇIKAR', () => {
+    const simdi = an('2026-10-16', '09:00');
+    const ikindi = yedek('ikindi', an('2026-10-16', '17:35'), an('2026-10-16', '18:20'));
+    const olaylar = canliZamanCizelgesiOlustur([ikindi], VARSAYILAN_NOW_BAR_AYARLARI, simdi);
+    expect(olaylar.map((o) => [o.anMs, o.id, o.eylem])).toEqual([
+      [an('2026-10-16', '17:35'), 'sayac_2026-10-16_ikindi', 'oneCikar'],
+    ]);
+  });
+
+  test('yarışı kaybeden yedek SIRADAN sayaç olmaz, GİZLENİR (sayaç bildirimi #90 ile bastırılmıştı)', () => {
+    const simdi = an('2026-10-16', '09:00');
+    const ogle = sayacAdayi('ogle', 'sayac_2026-10-16_ogle', an('2026-10-16', '15:00'), an('2026-10-16', '15:40'));
+    const ikindiYedek = yedek('ikindi', an('2026-10-16', '15:10'), an('2026-10-16', '18:20'));
+    const olaylar = canliZamanCizelgesiOlustur([ogle, ikindiYedek], VARSAYILAN_NOW_BAR_AYARLARI, simdi);
+    expect(olaylar.some((o) => o.id === ikindiYedek.id && o.eylem === 'normal')).toBe(false);
+  });
+
+  test('"Vakit girince" seçiliyse yedek kullanılmaz (planlayıcının kendi adayı geçerli)', () => {
+    const a = ayarla({ ikindi: { baslangic: 'girince' } });
+    const simdi = an('2026-10-16', '09:00');
+    const ikindi = yedek('ikindi', an('2026-10-16', '17:35'), an('2026-10-16', '18:20'));
+    expect(canliZamanCizelgesiOlustur([ikindi], a, simdi)).toEqual([]);
+  });
+
+  test('yedek saate GİTMEZ (saat o vakti muhafız planından gösterir)', () => {
+    const simdi = an('2026-10-16', '09:00');
+    const ikindi = yedek('ikindi', an('2026-10-16', '17:35'), an('2026-10-16', '18:20'));
+    expect(saatPencereleriniOlustur([ikindi], VARSAYILAN_NOW_BAR_AYARLARI, simdi)).toEqual([]);
+  });
+});

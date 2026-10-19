@@ -21,7 +21,7 @@ import { sayacEsigiAl, sayacVakitleriniSec } from '../../core/bildirim/sayacPlan
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { vakitCanliYukuOlustur, type CanliGuncellemeYuku } from '../../core/sayac/canliGuncelleme';
-import type { CanliAday } from '../../core/sayac/canliSayacPlani';
+import { CANLI_SAYAC_KANALI, type CanliAday } from '../../core/sayac/canliSayacPlani';
 import { CanliSayacPlanlayici, type CanliOgeKarari } from './CanliSayacPlanlayici';
 
 const VAKIT_ADLARI: Record<VakitAdi, string> = {
@@ -122,15 +122,27 @@ export class VakitSayacBildirimServisi {
     };
     const ozelGundeMi = await ozelGunSuzgeciniOku();
 
-    const gelecekVakitler = sayacVakitleriniSec({
+    const secimGirdisi = {
       vakitler,
       simdi,
       baslangicEsikleri: ayarlar.baslangicEsikleri,
       muhafizAktif: ayarlar.muhafizAktif,
       muhafizUyarilanVakitler: ayarlar.muhafizUyarilanVakitler,
-      kilindiMi: (tarih, vakit) => (kilinanMap[tarih] || []).includes(vakit),
+      kilindiMi: (tarih: string, vakit: VakitAdi) => (kilinanMap[tarih] || []).includes(vakit),
       ozelGundeMi,
-    });
+    };
+    const gelecekVakitler = sayacVakitleriniSec(secimGirdisi);
+
+    // Now Bar YEDEĞİ (saha raporu: "saatte görünüyor, telefonda görünmüyor"): muhafız
+    // bir vakti uyardığında sayaç BİLDİRİMİ kurulmaz (#90 çakışması). Now Bar'ın
+    // varsayılanı "Sayaçla" olduğu için muhafızı açık her kullanıcıda o vakitler
+    // telefonda HİÇ öne çıkmıyordu; saat ise aynı vakti muhafız planından gösteriyordu.
+    // Bastırılan vakitler, sayacın başlayacağı AYNI anda, yalnız Now Bar adayı
+    // (kaynak 'nowBar' → yarışı kaybedince GİZLENİR, sıradan sayaç bildirimi olmaz)
+    // olarak bildirilir. Sayaç bildirimi yine kurulmaz; #90 korunur.
+    const nowBarYedekleri = sayacVakitleriniSec({ ...secimGirdisi, muhafizAktif: false }).filter(
+      (v) => !gelecekVakitler.some((g) => g.tarih === v.tarih && g.vakit === v.vakit)
+    );
 
     // Now Bar (issue #282 ikinci aşama): pencereler planlayıcıya bildirilir —
     // kendi bildirimini kurmadan ÖNCE (plan, önceki turdan kalan aynı kimlikli
@@ -139,7 +151,10 @@ export class VakitSayacBildirimServisi {
     for (const v of gelecekVakitler) {
       if (!kararlar.has(v.vakit)) kararlar.set(v.vakit, await this.canliKarari(v.vakit));
     }
-    await this.canliKaynagiBildir(gelecekVakitler.map((v) => this.canliAdayi(v)));
+    await this.canliKaynagiBildir([
+      ...gelecekVakitler.map((v) => this.canliAdayi(v)),
+      ...nowBarYedekleri.map((v) => this.nowBarYedekAdayi(v)),
+    ]);
 
     if (gelecekVakitler.length === 0) {
       Logger.info('VakitSayac', 'Gelecek veya kılınmamış vakit bulunamadı');
@@ -206,6 +221,20 @@ export class VakitSayacBildirimServisi {
       tema: 'vakit',
       hedefteKaybol: false,
       canli: this.canliYuku(vakit),
+    };
+  }
+
+  /**
+   * Muhafızın bastırdığı vaktin YALNIZ Now Bar adayı: aynı kimlik (Kıldım iptali aynen
+   * çalışır), aynı başlangıç; kanal Now Bar'ın kendi kanalı, hedefte kaybolur.
+   */
+  private nowBarYedekAdayi(vakit: VakitZamani): CanliAday {
+    return {
+      ...this.canliAdayi(vakit),
+      kaynak: 'nowBar',
+      kanalId: CANLI_SAYAC_KANALI,
+      hedefteKaybol: true,
+      sayacYedegi: true,
     };
   }
 

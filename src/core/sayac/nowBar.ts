@@ -304,7 +304,9 @@ export function vakitSayacGereksinimNotu(
     return 'Vakit sayacı kapalı olduğu için "Sayaçla" görünmez. Bildirimler bölümünden açabilir ya da "Vakit girince"yi seçebilirsiniz.';
   }
   if (muhafizBuVaktiUyariyor === true) {
-    return 'Namaz Muhafızı bu vakti uyardığı için sayaç çıkmaz; görmek için "Vakit girince" ya da "Son dakikalar"ı seçin.';
+    // Sayaç BİLDİRİMİ bastırılır (#90) ama Now Bar adayı yine bildirilir
+    // (`VakitSayacBildirimServisi.nowBarYedekAdayi`): geri sayım aynı anda öne çıkar.
+    return 'Namaz Muhafızı bu vakti uyardığı için ayrı bir sayaç bildirimi çıkmaz; geri sayım, sayacın başlayacağı anda yalnız öne çıkan sayaç olarak görünür.';
   }
   return null;
 }
