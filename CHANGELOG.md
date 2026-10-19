@@ -5,6 +5,21 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.51.0] - 2026-10-19
+
+### Eklendi
+- [muhafiz] gece sessizliğinde yatsı uyarıları sessizlik başlangıcına çapalanır
+- [hatirlatma] mevcut kullanıcıya 'Daha az bildirim' önerisi; eski düzey ekranda dürüst
+- [muhafiz] vakit başına düzey — Vakit çıkmadan sayfasında her vakte Hafif/Normal/Yoğun
+- [kurulum] düzey adımına kartlar — Kıldım sorusu, sesli okuma (açık rıza), sabah alarmı, gece sessiz, cuma
+- [muhafiz] gece sessiz saatler — gece başlangıcından imsağa muhafız uyarısı gelmez
+- [muhafiz] varsayılan düzeyler tekrarsız (1/3/5), Normal'de titreşim; eski düzey tabloları göç için donduruldu
+
+### Düzeltildi
+- [muhafiz] gece sessizliği incelemesi — çapa anonsunda süre kalan dakika, akşam kesilmesi ekranda söylenir
+- [muhafiz] çapalı yatsı uyarısı çapa dilinde — 'vakit çıkıyor' yok, acil kanal yok
+- [hatirlatma] eski düzeyde önizleme gerçek adımları çizer; gece sessizliği servis nöbetçisi
+
 ## [0.50.0] - 2026-10-19
 
 ### Eklendi
