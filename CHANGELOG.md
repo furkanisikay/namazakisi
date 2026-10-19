@@ -8,6 +8,18 @@ Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına day
 ## [0.52.0] - 2026-10-19
 
 ### Eklendi
+- [kible] son seçilen görünümü hatırla
+- [kible] gecikmesiz/takılmasız yön, 3B pusula ve kendi kamera görünümümüz
+- [kible] saf açı, yönelim ve kamera izdüşümü çekirdeği
+- feat(saat)!: saat uyandırmasındaki "10 dk ertele" kaldırıldı — yalnız Kıldım / Kapat
+
+### Düzeltildi
+- [kible] dik okunan yön harfleri, halka içinde Kâbe, düz kıble ışını
+- [kible] pusulasız cihazda tam statik pusula, tek satır açıklama
+
+## [0.52.0] - 2026-10-19
+
+### Eklendi
 - feat(saat)!: saat uyandırmasındaki "10 dk ertele" kaldırıldı — yalnız Kıldım / Kapat
 
 ## [0.51.0] - 2026-10-19
