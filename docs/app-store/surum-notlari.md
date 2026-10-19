@@ -17,6 +17,19 @@ sonraki sürümde üslup kayar.
 
 ## Google Play
 
+#### 0.45.0
+
+Üretimdeki önceki sürüm 0.30.1 (0.42.0 incelemedeyken yerine geçti); not 0.31.0 ile 0.45.0 arasını kapsar.
+
+```
+- Daha sade tasarım: Bugün, Kıble, Kaza, İlerleme ve Ayarlar sekmeleri; 5 adımlı kurulum.
+- Tüm hatırlatmalar tek sayfada: cuma, camiye gitme, yatış, toplantı, nafile. Sesli okuma metnini siz yazın.
+- Namazda sessiz: camide ve namaz vakitlerinde telefonunuz sessize alınır.
+- Wear OS saat uygulaması ve Android TV vakit panosu.
+- Kaza Defteri yenilendi. Cihazlar arası şifreli eşitleme (Google Drive).
+- Widget ve hızlı ayardan tek dokunuşla "Kıldım".
+```
+
 #### 0.42.0
 
 Üretimdeki önceki sürüm 0.30.1; not 0.31.0 ile 0.42.0 arasını kapsar.
