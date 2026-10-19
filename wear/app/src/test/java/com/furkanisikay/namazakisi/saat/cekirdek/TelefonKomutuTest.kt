@@ -58,23 +58,24 @@ class TelefonKomutuTest {
         assertEquals("Bu soru artık geçerli değil", TelefonKomutu.camiMetni("evet", "gecersiz"))
     }
 
-    /** Saatin uyandırma cevabı, telefonun okuduğu fikstürle birebir (ertelemede hedef + son taşınır). */
+    /**
+     * Saatin uyandırma cevabı, telefonun okuduğu fikstürle birebir. ERTELE YOK (2026-10-19):
+     * `eskiSaat` kaydı güncelleme öncesi saatin cevabıdır, yeni saat onu ÜRETMEZ (atlanır;
+     * telefonun onu yok saydığı `SaatKomutKurallariTest`'te). Fikstürde en az bir yeni kayıt olmalı.
+     */
     @Test
     fun uyandirmaCevabiFiksturleAyni() {
         val dizi = fikstur.getJSONArray("uyandirma")
+        var yeni = 0
         for (i in 0 until dizi.length()) {
             val o = dizi.getJSONObject(i)
-            val uretilen = JSONObject(
-                TelefonKomutu.uyandirmaKapandi(
-                    o.getString("id"),
-                    o.getString("islem"),
-                    o.getLong("sonMs"),
-                    if (o.has("hedefMs")) o.getLong("hedefMs") else null,
-                ),
-            )
-            val beklenen = JSONObject(o.toString()).apply { remove("yedekMs") }
-            assertTrue("#$i $uretilen", ayni(uretilen, beklenen))
+            if (o.optBoolean("eskiSaat", false)) continue
+            assertTrue("#$i", o.getString("islem") == "kapat" || o.getString("islem") == "kildim")
+            val uretilen = JSONObject(TelefonKomutu.uyandirmaKapandi(o.getString("id"), o.getString("islem"), o.getLong("sonMs")))
+            assertTrue("#$i $uretilen", ayni(uretilen, o))
+            yeni++
         }
+        assertTrue(yeni > 0)
     }
 
     /** NÖBETÇİ (inceleme bulgusu 7): telefonda susturulan uyandırma yolu iki tarafta aynı; yalnız uyandırma kimliği. */

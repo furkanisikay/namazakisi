@@ -34,18 +34,21 @@ export const SAAT_YEDEK_SON_PAYI_MS = 30 * 1000;
 
 /**
  * Saatte bir uyandırmaya verilen cevap (saat W3). Telefonun NATIVE deposunda tutulur
- * (`SaatUyandirmaDeposu.kt`; saatin "kapandı/ertelendi" mesajı JS'i beklemeden işlenir)
- * ve planlama turu onu okur. Okunmazsa her planlama turu kapatılan yedeği aynı kimlikle
- * YENİDEN kurar, ertelenen yedeği eski anına geri çekerdi.
+ * (`SaatUyandirmaDeposu.kt`; saatin "kapandı" mesajı JS'i beklemeden işlenir) ve planlama
+ * turu onu okur. Okunmazsa her planlama turu kapatılan yedeği aynı kimlikle YENİDEN kurardı.
+ *
+ * ERTELE YOK (sahip kararı 2026-10-19, muhafızla aynı): saatte "10 dk ertele" kaldırıldı.
+ * Güncelleme öncesinden kalan `ertele` kaydı YOK SAYILIR → telefon yedeği planlandığı
+ * (özgün) anında çalar; kişi uyandığını onaylamadı.
  */
-export type SaatUyandirmaDurumu = { islem: 'kapat' } | { islem: 'ertele'; hedefMs: number };
+export type SaatUyandirmaDurumu = { islem: 'kapat' };
 
 /** Plan üreticilerinin gördüğü saat bağlamı: ayar + saatin uyandırma cevapları. */
 export interface SaatTeslimBaglami extends SaatAyarlari {
     uyandirmaDurumlari?: Readonly<Record<string, SaatUyandirmaDurumu>>;
 }
 
-/** Native deponun JSON'u (kimlik → `{islem, hedefMs?}`); bozuk öğe atlanır, asla fırlatmaz. */
+/** Native deponun JSON'u (kimlik → `{islem}`); bozuk ve eski `ertele` öğesi atlanır, asla fırlatmaz. */
 export function saatUyandirmaDurumlariniCoz(ham: unknown): Record<string, SaatUyandirmaDurumu> {
     const sonuc: Record<string, SaatUyandirmaDurumu> = {};
     if (!ham || typeof ham !== 'object' || Array.isArray(ham)) return sonuc;
@@ -53,9 +56,6 @@ export function saatUyandirmaDurumlariniCoz(ham: unknown): Record<string, SaatUy
         const o = deger && typeof deger === 'object' ? (deger as Record<string, unknown>) : null;
         if (!o) continue;
         if (o.islem === 'kapat') sonuc[id] = { islem: 'kapat' };
-        else if (o.islem === 'ertele' && typeof o.hedefMs === 'number' && Number.isFinite(o.hedefMs)) {
-            sonuc[id] = { islem: 'ertele', hedefMs: o.hedefMs };
-        }
     }
     return sonuc;
 }
@@ -64,8 +64,6 @@ export function saatUyandirmaDurumlariniCoz(ham: unknown): Record<string, SaatUy
  * Bir UYANDIRMA tetiğinin telefondaki anı — TEK KURAL (muhafız + nafile üreticileri ve
  * native `SaatUyandirmaDeposu`'nun yeniden kurduğu an aynı olmalı). `null` = kurulmaz.
  *  - saatte KAPATILDI → telefon da çalmaz (ikinci kez uyandırmaz);
- *  - saatte ERTELENDİ → telefon yedeği saatin yeni anından `SAAT_YEDEK_GECIKMESI_DK` sonra
- *    (ertelemeden sonra telefon daima yedektir, `ikisi` seçili olsa da);
  *  - değilse: `saat` seçiliyse özgün an + gecikme, aksi halde özgün an.
  * Hepsi pencere sonundan `SAAT_YEDEK_SON_PAYI_MS` önceyle sınırlanır (gecikmeli olanlar).
  */
@@ -79,7 +77,6 @@ export function uyandirmaTelefonMs(
     const sinir = sonMs - SAAT_YEDEK_SON_PAYI_MS;
     const d = baglam && saatUyandiriyorMu(baglam) ? baglam.uyandirmaDurumlari?.[id] : undefined;
     if (d?.islem === 'kapat') return null;
-    if (d?.islem === 'ertele') return Math.min(d.hedefMs + gecikme, sinir);
     return telefonYedegiGecikirMi(baglam) ? Math.min(ozgunMs + gecikme, sinir) : ozgunMs;
 }
 

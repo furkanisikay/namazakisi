@@ -12,9 +12,9 @@
  * iptal eder. Zaman ise ÖZGÜN andır (telefonun yedeği +3 dk kaydırılmış olsa da).
  *
  * Kayıtlar tetik anı geçince DÜŞMEZ, pencere sonuna (`sonMs`) kadar taşınır: saat geç
- * tetiği tolerans kuralıyla zaten çalmaz, ama yük ertelemeden sonra yeniden gelirse
- * kaydın kaybolması saatin ertelemesini unutturuyordu. Saatin cevabı (telefonun native
- * deposu, `uyandirmaDurumlari`) da uygulanır: kapatılan gönderilmez, ertelenen yeni anıyla.
+ * tetiği tolerans kuralıyla değerlendirir (geç gelen yük kaydı kaybetmesin). Saatin cevabı
+ * (telefonun native deposu, `uyandirmaDurumlari`) da uygulanır: kapatılan gönderilmez.
+ * Ertele YOK (sahip kararı 2026-10-19).
  */
 import type { VakitAdi } from '../types';
 import type { NafileKoordinat } from '../nafile/gunVakitleri';
@@ -46,7 +46,7 @@ export interface WearUyandirmaGirdisi {
     bugunIso: string;
     simdiMs: number;
     ufukMs?: number;
-    /** Saatte verilmiş cevaplar (telefonun native deposu): kapatılan atlanır, ertelenen yeni anıyla. */
+    /** Saatte verilmiş cevaplar (telefonun native deposu): kapatılan atlanır. */
     uyandirmaDurumlari?: Readonly<Record<string, SaatUyandirmaDurumu>>;
     muhafiz?: {
         aktif: boolean;
@@ -67,12 +67,8 @@ export function wearUyandirmaListesiOlustur(g: WearUyandirmaGirdisi): WearUyandi
     const ufukMs = g.ufukMs ?? WEAR_PLAN_UFKU_MS;
     const ufuk = g.simdiMs + ufukMs;
     const liste: WearUyandirmaKaydi[] = [];
-    /** Saatin cevabını uygula: kapatıldıysa null, ertelendiyse yeni an. */
-    const an = (id: string, ms: number): number | null => {
-        const d = g.uyandirmaDurumlari?.[id];
-        if (d?.islem === 'kapat') return null;
-        return d?.islem === 'ertele' ? d.hedefMs : ms;
-    };
+    /** Saatin cevabını uygula: kapatıldıysa null, değilse özgün an. */
+    const an = (id: string, ms: number): number | null => (g.uyandirmaDurumlari?.[id]?.islem === 'kapat' ? null : ms);
 
     const m = g.muhafiz;
     if (m?.aktif) {

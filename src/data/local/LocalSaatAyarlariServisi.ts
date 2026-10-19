@@ -35,7 +35,7 @@ export const LocalSaatAyarlariServisi = {
     /**
      * Plan üreticilerinin bağlamı: ayar + saatte verilmiş uyandırma cevapları (yalnız
      * Android, yalnız saat uyandırırken). Cevaplar telefonun NATIVE deposundadır — saatin
-     * "kapandı/ertelendi" mesajı JS'i beklemeden orada işlenir. Okunamazsa yalnız ayar
+     * "kapandı" mesajı JS'i beklemeden orada işlenir. Okunamazsa yalnız ayar
      * döner (asla reddetmez): en kötü ihtimalle bir yedek bir kez daha çalar.
      */
     teslimBaglaminiOku: async (): Promise<SaatTeslimBaglami> => {

@@ -144,18 +144,16 @@ describe('uyandirmaTelefonMs — telefonun uyandırma anı TEK kural', () => {
         expect(uyandirmaTelefonMs(SAATTE, 'x', T, SON)).toBe(T + SAAT_YEDEK_GECIKMESI_DK * DK);
         expect(uyandirmaTelefonMs(SAATTE, 'x', T, T + DK)).toBe(T + DK - SAAT_YEDEK_SON_PAYI_MS);
     });
-    it('ikisi: özgün an; saatte ertelenince telefon yine YEDEK olur', () => {
+    it('ikisi: özgün an', () => {
         const ikisi: SaatTeslimBaglami = { uyandirmaYeri: 'ikisi', anonsYeri: 'otomatik' };
         expect(uyandirmaTelefonMs(ikisi, 'x', T, SON)).toBe(T);
-        const ertelendi = { ...ikisi, uyandirmaDurumlari: { x: { islem: 'ertele' as const, hedefMs: T + 10 * DK } } };
-        expect(uyandirmaTelefonMs(ertelendi, 'x', T, SON)).toBe(T + (10 + SAAT_YEDEK_GECIKMESI_DK) * DK);
     });
     it('saatte kapatılan kurulmaz; başka kimliğe dokunmaz', () => {
         const b: SaatTeslimBaglami = { ...SAATTE, uyandirmaDurumlari: { x: { islem: 'kapat' } } };
         expect(uyandirmaTelefonMs(b, 'x', T, SON)).toBeNull();
         expect(uyandirmaTelefonMs(b, 'y', T, SON)).toBe(T + SAAT_YEDEK_GECIKMESI_DK * DK);
     });
-    it('native deponun bozuk öğeleri atlanır', () => {
+    it('native deponun bozuk öğeleri ve (ertele YOK göçü) eski `ertele` kaydı atlanır', () => {
         expect(
             saatUyandirmaDurumlariniCoz({
                 a: { islem: 'kapat' },
@@ -164,7 +162,7 @@ describe('uyandirmaTelefonMs — telefonun uyandırma anı TEK kural', () => {
                 d: 'x',
                 e: { islem: 'baska' },
             })
-        ).toEqual({ a: { islem: 'kapat' }, b: { islem: 'ertele', hedefMs: 5 } });
+        ).toEqual({ a: { islem: 'kapat' } });
         expect(saatUyandirmaDurumlariniCoz(null)).toEqual({});
         expect(saatUyandirmaDurumlariniCoz([1])).toEqual({});
     });
@@ -192,11 +190,14 @@ describe('NÖBETÇİ (inceleme bulgusu 1-2) — planlama turu telefonun yedeğin
         expect(vakitTeslimAdaylari(matris(), imsak, new Date(T + DK), b).some((a) => a.id === alarm.id)).toBe(false);
     });
 
-    it('saatte ERTELENDİ: tur yedeği saatin yeni anının ardına kurar (özgün an çoktan geçmiş olsa da)', () => {
-        const hedef = T + 12 * DK;
-        const b: SaatTeslimBaglami = { ...SAATTE, uyandirmaDurumlari: { [alarm.id]: { islem: 'ertele', hedefMs: hedef } } };
-        const yedek = vakitTeslimAdaylari(matris(), imsak, new Date(T + 8 * DK), b).find((a) => a.id === alarm.id);
-        expect(yedek?.zaman.getTime()).toBe(hedef + SAAT_YEDEK_GECIKMESI_DK * DK);
+    it('GÖÇ (ertele YOK): eski saatin `ertele` cevabı yedeği TAŞIMAZ — yedek özgün anında (T+3 dk) kalır', () => {
+        // Native depo eski `ertele` kaydını çözümde düşürür; çözümden geçmiş bağlam boştur.
+        const b: SaatTeslimBaglami = {
+            ...SAATTE,
+            uyandirmaDurumlari: saatUyandirmaDurumlariniCoz({ [alarm.id]: { islem: 'ertele', hedefMs: T + 12 * DK } }),
+        };
+        const yedek = vakitTeslimAdaylari(matris(), imsak, new Date(T + DK), b).find((a) => a.id === alarm.id);
+        expect(yedek?.zaman.getTime()).toBe(T + SAAT_YEDEK_GECIKMESI_DK * DK);
     });
 
     it('geçmiş diğer tetikler kayan taramada da kurulmaz (yalnız yedek geri gelir)', () => {
@@ -206,7 +207,7 @@ describe('NÖBETÇİ (inceleme bulgusu 1-2) — planlama turu telefonun yedeğin
         expect(ids.sort()).toEqual(gelecek.sort());
     });
 
-    it('nafile: teheccüd yedeği [T, T+3 dk) içinde silinmez; kapatılan/ertelenen kuralı aynı', () => {
+    it('nafile: teheccüd yedeği [T, T+3 dk) içinde silinmez; kapatılan kuralı aynı', () => {
         const ayar: NafileAyarlari = {
             ...VARSAYILAN_NAFILE_AYARLARI,
             teheccud: { ...VARSAYILAN_NAFILE_AYARLARI.teheccud, aktif: true, uyandirma: true },
@@ -222,8 +223,6 @@ describe('NÖBETÇİ (inceleme bulgusu 1-2) — planlama turu telefonun yedeğin
         expect(plan.find((p) => p.id === ilk.id)?.zaman.getTime()).toBe(t + SAAT_YEDEK_GECIKMESI_DK * DK);
         const kapali = nafilePlaniOlustur(ISTANBUL, ayar, an, bugun, () => false, sec({ ...SAATTE, uyandirmaDurumlari: { [ilk.id]: { islem: 'kapat' } } }));
         expect(kapali.some((p) => p.id === ilk.id)).toBe(false);
-        const ertele = nafilePlaniOlustur(ISTANBUL, ayar, new Date(t + 9 * DK), bugun, () => false, sec({ ...SAATTE, uyandirmaDurumlari: { [ilk.id]: { islem: 'ertele', hedefMs: t + 10 * DK } } }));
-        expect(ertele.find((p) => p.id === ilk.id)?.zaman.getTime()).toBe(t + (10 + SAAT_YEDEK_GECIKMESI_DK) * DK);
     });
 });
 
@@ -233,15 +232,24 @@ describe('SÖZLEŞME — telefon native deposuyla aynı yedek kuralı (saat-komu
     ) as {
         yedekGecikmesiDk: number;
         yedekSonPayiMs: number;
-        uyandirma: { id: string; islem: string; hedefMs?: number; sonMs: number; yedekMs?: number }[];
+        uyandirma: { id: string; islem: string; hedefMs?: number; sonMs: number; eskiSaat?: boolean }[];
     };
 
-    it('sabitler ve ertelenen yedeğin anı Kotlin SaatKomutKurallari ile birebir', () => {
+    it('sabitler Kotlin SaatKomutKurallari ile birebir', () => {
         expect(fikstur.yedekGecikmesiDk).toBe(SAAT_YEDEK_GECIKMESI_DK);
         expect(fikstur.yedekSonPayiMs).toBe(SAAT_YEDEK_SON_PAYI_MS);
-        for (const u of fikstur.uyandirma.filter((x) => x.islem === 'ertele')) {
-            const b: SaatTeslimBaglami = { ...SAATTE, uyandirmaDurumlari: { [u.id]: { islem: 'ertele', hedefMs: u.hedefMs! } } };
-            expect(uyandirmaTelefonMs(b, u.id, 0, u.sonMs)).toBe(u.yedekMs);
+    });
+
+    it('GÖÇ: eski saatin `ertele` cevabı telefonda yok sayılır — yedek özgün kuralla (Kotlin ikizi)', () => {
+        const eskiler = fikstur.uyandirma.filter((x) => x.islem === 'ertele');
+        expect(eskiler.length).toBeGreaterThan(0);
+        for (const u of eskiler) {
+            expect(u.eskiSaat).toBe(true);
+            const b: SaatTeslimBaglami = {
+                ...SAATTE,
+                uyandirmaDurumlari: saatUyandirmaDurumlariniCoz({ [u.id]: { islem: 'ertele', hedefMs: u.hedefMs } }),
+            };
+            expect(uyandirmaTelefonMs(b, u.id, 0, u.sonMs)).toBe(SAAT_YEDEK_GECIKMESI_DK * DK);
         }
     });
 });

@@ -22,15 +22,13 @@ import androidx.wear.compose.material3.CompactButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
-import com.furkanisikay.namazakisi.saat.cekirdek.UyandirmaZinciri
 import com.furkanisikay.namazakisi.saat.hatirlatma.UyandirmaAlicisi
-import com.furkanisikay.namazakisi.saat.hatirlatma.UyandirmaDeposu
 import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 
 /**
  * Sessiz uyandırma ekranı (saat W3, fikir 2) — bildirime dokununca açılır, kilit
- * ekranının üstünde ve ekranı uyandırarak. Üç büyük düğme: Kıldım / 10 dk ertele / Kapat
- * (ertele yalnız pencerenin sonuna yeterli zaman varsa). Düğme işi `UyandirmaAlicisi`'ne
+ * ekranının üstünde ve ekranı uyandırarak. İki büyük düğme: Kıldım / Kapat (ERTELE YOK,
+ * sahip kararı 2026-10-19). Düğme işi `UyandirmaAlicisi`'ne
  * devreder (tek gövde) ve ekran kapanır. Uyandırma metni ibadete çağrıdır ("sen" + emir
  * kipi telefonda üretilir); düğmeler arayüz dilidir.
  */
@@ -40,15 +38,11 @@ class UyandirmaAktivite : ComponentActivity() {
         setShowWhenLocked(true)
         setTurnScreenOn(true)
         val id = intent.getStringExtra(UyandirmaAlicisi.ID)
-        val yuk = YukDeposu(this).yuk()
-        // Ertelenen kayıt yeni yükte olmayabilir → saklanan kopyadan (inceleme bulgusu 1).
-        val kayit = yuk?.uyandirma?.firstOrNull { it.id == id }
-            ?: id?.let { UyandirmaDeposu(this).durum(yuk).ertelenenKayitlar[it] }
+        val kayit = YukDeposu(this).yuk()?.uyandirma?.firstOrNull { it.id == id }
         if (id == null || kayit == null) {
             finish()
             return
         }
-        val erteleVar = UyandirmaZinciri.erteleHedefi(kayit, System.currentTimeMillis()) != null
         fun gonder(islem: String) {
             sendBroadcast(Intent(this, UyandirmaAlicisi::class.java).setAction(islem).putExtra(UyandirmaAlicisi.ID, id))
             finish()
@@ -76,14 +70,6 @@ class UyandirmaAktivite : ComponentActivity() {
                                 modifier = Modifier.semantics { contentDescription = "Kıldım. Uyandırmayı kapatır" },
                                 label = { Text("Kıldım") },
                             )
-                            if (erteleVar) {
-                                CompactButton(
-                                    onClick = { gonder(UyandirmaAlicisi.ERTELE) },
-                                    colors = ButtonDefaults.filledTonalButtonColors(),
-                                    modifier = Modifier.semantics { contentDescription = "10 dakika ertele" },
-                                    label = { Text("10 dk ertele") },
-                                )
-                            }
                             CompactButton(
                                 onClick = { gonder(UyandirmaAlicisi.KAPAT) },
                                 colors = ButtonDefaults.filledTonalButtonColors(),

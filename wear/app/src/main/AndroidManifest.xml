@@ -102,7 +102,7 @@
 
         <receiver android:name=".hatirlatma.MuhafizAlarmAlicisi" android:exported="false" />
         <receiver android:name=".hatirlatma.KildimAlicisi" android:exported="false" />
-        <!-- Saat W3 (fikir 2): sessiz uyandırma düğmeleri (Kapat / 10 dk ertele / Kıldım). -->
+        <!-- Saat W3 (fikir 2): sessiz uyandırma düğmeleri (Kapat / Kıldım; ertele YOK). -->
         <receiver android:name=".hatirlatma.UyandirmaAlicisi" android:exported="false" />
         <!-- Android yeniden başlatmada tüm alarmları siler; saat/saat dilimi değişimi sıradakini kaydırır. -->
         <receiver android:name=".hatirlatma.YenidenKurAlicisi" android:exported="false">

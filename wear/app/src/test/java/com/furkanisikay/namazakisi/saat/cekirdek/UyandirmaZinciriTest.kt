@@ -34,15 +34,20 @@ class UyandirmaZinciriTest {
         assertEquals(teheccud, UyandirmaZinciri.calacak(yuk, bekleyen, d, teheccud.ms)!!.kayit)
     }
 
+    /**
+     * NÖBETÇİ — ERTELE YOK (sahip kararı 2026-10-19): çalınmış uyandırma aynı kimlikle
+     * BİR DAHA çalmaz ve yeni bir ana kaymaz; sıradaki, yükteki bir sonraki tetiktir.
+     */
     @Test
-    fun erteleYeniAnaTasirSonaYakinErtelenmez() {
-        val hedef = UyandirmaZinciri.erteleHedefi(teheccud, teheccud.ms)!!
-        assertEquals(teheccud.ms + UyandirmaZinciri.ERTELEME_MS, hedef)
-        val d = UyandirmaZinciri.Durum(ertelenen = mapOf(teheccud.id to hedef), calinan = mapOf(teheccud.id to teheccud.ms))
-        assertEquals(hedef, UyandirmaZinciri.siradaki(yuk, emptySet(), d, teheccud.ms + 1)!!.ms)
-        assertEquals(teheccud, UyandirmaZinciri.calacak(yuk, emptySet(), d, hedef)!!.kayit)
-        // Pencere sonuna 10 dk'dan az kaldıysa ertele sunulmaz.
-        assertNull(UyandirmaZinciri.erteleHedefi(teheccud, teheccud.sonMs - 5 * 60_000))
+    fun calinanUyandirmaYenidenCalmazVeKaymaz() {
+        val d = UyandirmaZinciri.Durum(calinan = mapOf(teheccud.id to teheccud.ms))
+        for (dk in listOf(1L, 5L, 10L)) {
+            assertNull(UyandirmaZinciri.calacak(yuk, emptySet(), d, teheccud.ms + dk * 60_000))
+        }
+        UyandirmaZinciri.siradaki(yuk, emptySet(), d, teheccud.ms + 1)?.let {
+            assertTrue(it.kayit.id != teheccud.id)
+            assertEquals(it.kayit.ms, it.ms)
+        }
     }
 
     @Test
@@ -56,24 +61,6 @@ class UyandirmaZinciriTest {
         val eski = y.copy(uyandirma = emptyList())
         assertEquals(plan, AlarmZinciri.siradaki(eski, emptySet(), imsak.ms - 1))
         assertFalse(UyandirmaZinciri.bastirilanlar(eski).isNotEmpty())
-    }
-
-    /** NÖBETÇİ (inceleme bulgusu 1): erteleme yükten BAĞIMSIZ — yeni yük kaydı taşımasa da çalar. */
-    @Test
-    fun ertelenenKayitYuktenDusseDeCalar() {
-        val hedef = UyandirmaZinciri.erteleHedefi(teheccud, teheccud.ms)!!
-        val yeniYuk = yuk.copy(uyandirma = yuk.uyandirma.filter { it.id != teheccud.id })
-        val d = UyandirmaZinciri.Durum(
-            ertelenen = mapOf(teheccud.id to hedef),
-            calinan = mapOf(teheccud.id to teheccud.ms),
-            ertelenenKayitlar = mapOf(teheccud.id to teheccud),
-        )
-        assertEquals(hedef, UyandirmaZinciri.siradaki(yeniYuk, emptySet(), d, teheccud.ms + 1)!!.ms)
-        assertEquals(teheccud, UyandirmaZinciri.calacak(yeniYuk, emptySet(), d, hedef)!!.kayit)
-        // Yük hiç yokken bile.
-        assertEquals(teheccud, UyandirmaZinciri.calacak(null, emptySet(), d, hedef)!!.kayit)
-        // Kayıt saklı ama erteleme haritasında yoksa (kapandı) çalmaz.
-        assertNull(UyandirmaZinciri.calacak(yeniYuk, emptySet(), d.copy(ertelenen = emptyMap()), hedef))
     }
 
     /** NÖBETÇİ (inceleme bulgusu 8): teheccüd Kıldım o gecenin TÜM teheccüd uyandırmalarını kapsar. */

@@ -47,14 +47,12 @@ object TelefonKomutu {
     fun camiCevap(cevap: String, yerId: String): String = JSONObject().put("cevap", cevap).put("yerId", yerId).toString()
 
     /**
-     * Uyandırma cevabı (telefon `SaatKomutKurallari.uyandirmaIstegi`). `sonMs` daima, `hedefMs`
-     * yalnız ertelemede: telefon yedeğini SİLMEZ, `hedefMs + 3 dk`'ya taşır ve cevabı pencere
-     * sonuna kadar saklar (JS planlama turu yedeği yeniden kurmasın / eski anına çekmesin).
+     * Uyandırma cevabı (telefon `SaatKomutKurallari.uyandirmaIstegi`): `kapat` | `kildim` +
+     * `sonMs` (telefon cevabı pencere sonuna kadar saklar; JS planlama turu kapatılan yedeği
+     * yeniden kurmasın). ERTELE YOK (2026-10-19): `ertele` artık üretilmez.
      */
-    fun uyandirmaKapandi(id: String, islem: String, sonMs: Long, hedefMs: Long? = null): String =
-        JSONObject().put("id", id).put("islem", islem).put("sonMs", sonMs)
-            .apply { if (hedefMs != null) put("hedefMs", hedefMs) }
-            .toString()
+    fun uyandirmaKapandi(id: String, islem: String, sonMs: Long): String =
+        JSONObject().put("id", id).put("islem", islem).put("sonMs", sonMs).toString()
 
     data class Sonuc(val sonuc: String, val bitisMs: Long? = null)
 

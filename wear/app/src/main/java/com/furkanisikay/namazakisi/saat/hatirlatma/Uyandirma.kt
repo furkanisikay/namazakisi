@@ -28,24 +28,20 @@ import kotlinx.coroutines.withTimeoutOrNull
 import org.json.JSONObject
 
 /**
- * Saat-yerel uyandırma durumu (saat W3, fikir 2): kapatılan kimlikler, ertelemeler, son
- * çalınan anlar. Yükte artık olmayan kimlikler her okumada ayıklanır (sınırsız büyümez) —
- * ERTELENENLER HARİÇ: ertelenen kayıt kendisiyle birlikte saklanır ve pencere sonuna
- * (`sonMs`) kadar yükten bağımsız yaşar (inceleme bulgusu 1: yeniden gelen yük kaydı
- * taşımazsa erteleme unutuluyor, bilek hiç titremiyordu).
+ * Saat-yerel uyandırma durumu (saat W3, fikir 2): kapatılan kimlikler ve son çalınan anlar.
+ * Yükte artık olmayan kimlikler her okumada ayıklanır (sınırsız büyümez).
+ *
+ * ERTELE YOK (sahip kararı 2026-10-19): güncelleme öncesinden kalan erteleme anahtarları
+ * (`ertelenen`, `ertelenen_kayit`) OKUNMAZ ve ilk `ayikla`'da (her tazeleme) SİLİNİR.
  */
 class UyandirmaDeposu(context: Context) {
     private val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
-    fun durum(yuk: Yuk?, simdi: Long = System.currentTimeMillis()): UyandirmaZinciri.Durum {
-        val saklanan = ertelenenKayitlar().filterValues { it.sonMs > simdi }
-        val gecerli = (yuk?.uyandirma?.mapTo(HashSet()) { it.id } ?: HashSet()) + saklanan.keys
-        val ertelenen = harita(ERTELENEN).filterKeys { it in gecerli }
+    fun durum(yuk: Yuk?): UyandirmaZinciri.Durum {
+        val gecerli = yuk?.uyandirma?.mapTo(HashSet()) { it.id } ?: HashSet()
         return UyandirmaZinciri.Durum(
             kapatilan = (prefs.getStringSet(KAPATILAN, emptySet()) ?: emptySet()).filterTo(HashSet()) { it in gecerli },
-            ertelenen = ertelenen,
             calinan = harita(CALINAN).filterKeys { it in gecerli },
-            ertelenenKayitlar = saklanan.filterKeys { it in ertelenen },
         )
     }
 
@@ -53,45 +49,18 @@ class UyandirmaDeposu(context: Context) {
         prefs.edit { putStringSet(KAPATILAN, (prefs.getStringSet(KAPATILAN, emptySet()) ?: emptySet()) + id) }
     }
 
-    fun ertele(kayit: UyandirmaKaydi, hedefMs: Long) = synchronized(KILIT) {
-        yaz(ERTELENEN, harita(ERTELENEN) + (kayit.id to hedefMs))
-        val k = JSONObject(prefs.getString(ERTELENEN_KAYIT, "{}") ?: "{}")
-        k.put(kayit.id, kayitJson(kayit))
-        prefs.edit { putString(ERTELENEN_KAYIT, k.toString()) }
-    }
-
     fun calindi(id: String, ms: Long) = synchronized(KILIT) { yaz(CALINAN, harita(CALINAN) + (id to ms)) }
 
-    /** Yükte artık olmayan (ertelenen hariç) ve ömrü dolan kimlikleri at (tazelemede). */
+    /** Yükte artık olmayan kimlikleri at (tazelemede); eski erteleme anahtarlarını SİL (göç). */
     fun ayikla(yuk: Yuk?) = synchronized(KILIT) {
         val d = durum(yuk)
-        val k = JSONObject()
-        d.ertelenenKayitlar.values.forEach { k.put(it.id, kayitJson(it)) }
         prefs.edit {
             putStringSet(KAPATILAN, d.kapatilan)
-            putString(ERTELENEN, JSONObject(d.ertelenen as Map<*, *>).toString())
             putString(CALINAN, JSONObject(d.calinan as Map<*, *>).toString())
-            putString(ERTELENEN_KAYIT, k.toString())
+            remove(ESKI_ERTELENEN)
+            remove(ESKI_ERTELENEN_KAYIT)
         }
     }
-
-    private fun ertelenenKayitlar(): Map<String, UyandirmaKaydi> = try {
-        val o = JSONObject(prefs.getString(ERTELENEN_KAYIT, "{}") ?: "{}")
-        o.keys().asSequence().mapNotNull { id ->
-            try {
-                val k = o.getJSONObject(id)
-                id to UyandirmaKaydi(id, k.getLong("ms"), k.getLong("sonMs"), k.getString("tarih"), k.getString("tur"), k.getString("baslik"), k.getString("govde"))
-            } catch (_: Exception) {
-                null
-            }
-        }.toMap()
-    } catch (_: Exception) {
-        emptyMap()
-    }
-
-    private fun kayitJson(k: UyandirmaKaydi) = JSONObject()
-        .put("ms", k.ms).put("sonMs", k.sonMs).put("tarih", k.tarih).put("tur", k.tur)
-        .put("baslik", k.baslik).put("govde", k.govde)
 
     private fun harita(anahtar: String): Map<String, Long> = try {
         val o = JSONObject(prefs.getString(anahtar, "{}") ?: "{}")
@@ -106,8 +75,9 @@ class UyandirmaDeposu(context: Context) {
         private val KILIT = Any()
         private const val PREFS = "saat_uyandirma"
         private const val KAPATILAN = "kapatilan"
-        private const val ERTELENEN = "ertelenen"
-        private const val ERTELENEN_KAYIT = "ertelenen_kayit"
+        /** Göç: güncelleme öncesi erteleme anahtarları (yalnız silinir). */
+        private const val ESKI_ERTELENEN = "ertelenen"
+        private const val ESKI_ERTELENEN_KAYIT = "ertelenen_kayit"
         private const val CALINAN = "calinan"
     }
 }
@@ -129,7 +99,7 @@ object UyandirmaBildirimi {
 
     fun etiket(id: String) = "uyandirma_$id"
 
-    fun cal(context: Context, kayit: UyandirmaKaydi, simdi: Long) {
+    fun cal(context: Context, kayit: UyandirmaKaydi) {
         if (!MuhafizBildirimci.bildirimIzniVar(context)) return
         kanaliGarantile(context)
         val ac = PendingIntent.getActivity(
@@ -148,10 +118,7 @@ object UyandirmaBildirimi {
             .setTimeoutAfter(UyandirmaZinciri.CALMA_SURESI_MS)
             .setContentIntent(ac)
             .addAction(0, "Kapat", eylem(context, kayit.id, UyandirmaAlicisi.KAPAT))
-        if (UyandirmaZinciri.erteleHedefi(kayit, simdi) != null) {
-            b.addAction(0, "10 dk ertele", eylem(context, kayit.id, UyandirmaAlicisi.ERTELE))
-        }
-        b.addAction(0, "Kıldım", eylem(context, kayit.id, UyandirmaAlicisi.KILDIM))
+            .addAction(0, "Kıldım", eylem(context, kayit.id, UyandirmaAlicisi.KILDIM))
         val n = b.build().apply { flags = flags or Notification.FLAG_INSISTENT }
         try {
             NotificationManagerCompat.from(context).notify(etiket(kayit.id), BILDIRIM_NO, n)
@@ -184,7 +151,7 @@ object UyandirmaBildirimi {
 }
 
 /**
- * Uyandırma düğmeleri: Kapat / 10 dk ertele / Kıldım. Saat-yerel durumu yazar, zinciri
+ * Uyandırma düğmeleri: Kapat / Kıldım (ERTELE YOK, 2026-10-19). Saat-yerel durumu yazar, zinciri
  * tazeler ve telefona "kapandı" der (telefon yedeğini iptal eder; teheccüdde "Kıldım"ı
  * nafile yolundan işler — FARZ YAZMAZ). Sabahın "Kıldım"ı olağan farz kuyruğundan gider.
  * Telefona ulaşılamazsa yedek çalar (bilinçli: kimse uyanmadan kalmasın).
@@ -209,28 +176,22 @@ class UyandirmaAlicisi : BroadcastReceiver() {
     private suspend fun isle(app: Context, id: String, islem: String) {
         val depo = UyandirmaDeposu(app)
         val yuk = YukDeposu(app).yuk()
-        val durum = depo.durum(yuk)
-        // Kayıt yükte yoksa (ertelenmiş, telefon süzdü) saklanan kopyadan.
-        val kayit = yuk?.uyandirma?.firstOrNull { it.id == id } ?: durum.ertelenenKayitlar[id]
+        val kayit = yuk?.uyandirma?.firstOrNull { it.id == id }
         UyandirmaBildirimi.kaldir(app, id)
+        if (islem == ESKI_ERTELE) {
+            // GÖÇ (ertele YOK): güncelleme öncesi gösterilmiş bildirimdeki "10 dk ertele".
+            // Saatte susturuldu ama kişi uyandığını onaylamadı → telefona HİÇBİR ŞEY
+            // gönderilmez, telefon yedeği planlandığı gibi çalar; saatte de yeniden çalmaz
+            // (aynı an `calinan`da).
+            Hatirlatici.tazele(app)
+            return
+        }
         val simdi = System.currentTimeMillis()
         val sonMs = kayit?.sonMs ?: (simdi + 60 * 60_000L)
-        var hedefMs: Long? = null
         val telefonIslemi = when (islem) {
-            ERTELE -> {
-                val hedef = kayit?.let { UyandirmaZinciri.erteleHedefi(it, simdi) }
-                if (hedef != null && kayit != null) {
-                    depo.ertele(kayit, hedef)
-                    hedefMs = hedef
-                    "ertele"
-                } else {
-                    depo.kapat(id)
-                    "kapat"
-                }
-            }
             KILDIM -> {
                 // Teheccüd: o gecenin TÜM teheccüd uyandırmaları (tekrarlar dahil) susar.
-                val kapsam = if (kayit != null) UyandirmaZinciri.kildimKapsami(yuk, kayit, durum.ertelenenKayitlar.values) else setOf(id)
+                val kapsam = if (kayit != null) UyandirmaZinciri.kildimKapsami(yuk, kayit) else setOf(id)
                 kapsam.forEach { depo.kapat(it); if (it != id) UyandirmaBildirimi.kaldir(app, it) }
                 // Sabah = FARZ: olağan kalıcı kuyruk (telefon uzaktaysa bağlanınca iletir).
                 if (kayit != null && !kayit.nafile) Senkron.kildimGonder(app, kayit.tarih, "imsak")
@@ -253,14 +214,15 @@ class UyandirmaAlicisi : BroadcastReceiver() {
         TelefonIstemcisi.gonder(
             app,
             TelefonKomutu.UYANDIRMA_KAPANDI_YOLU,
-            TelefonKomutu.uyandirmaKapandi(id, telefonIslemi, sonMs, hedefMs),
+            TelefonKomutu.uyandirmaKapandi(id, telefonIslemi, sonMs),
         )
     }
 
     companion object {
         const val ID = "id"
         const val KAPAT = "com.furkanisikay.namazakisi.saat.UYANDIRMA_KAPAT"
-        const val ERTELE = "com.furkanisikay.namazakisi.saat.UYANDIRMA_ERTELE"
+        /** Göç: güncelleme öncesi bildirimin "10 dk ertele" eylemi (yalnız yakalanır). */
+        const val ESKI_ERTELE = "com.furkanisikay.namazakisi.saat.UYANDIRMA_ERTELE"
         const val KILDIM = "com.furkanisikay.namazakisi.saat.UYANDIRMA_KILDIM"
     }
 }

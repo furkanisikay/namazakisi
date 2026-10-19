@@ -4,12 +4,12 @@ import android.content.Context
 import com.furkanisikay.namazakisi.cekirdek.SaatKomutKurallari
 
 /**
- * Saatte uyandırmaya verilen CEVAPLAR (saat W3) — kimlik → kapatıldı / ertelendi.
+ * Saatte uyandırmaya verilen CEVAPLAR (saat W3) — kimlik → kapatıldı. (Ertele YOK, sahip
+ * kararı 2026-10-19: güncelleme öncesinden kalan `ertele` kaydı süzgeçte düşer.)
  *
- * Neden telefon tarafında da kalıcı: saat "kapattım/erteledim" dediğinde telefon yedeğini
- * native olarak iptal eder ya da yeni ana taşır; ama JS planlama turu (15 dk görevi,
- * açılış, konum yayması) aynı kimliği plandan YENİDEN üretir. Bu depo okunmasaydı tur
- * kapatılan yedeği tekrar kurar, ertelenen yedeği eski anına geri çekerdi. JS onu
+ * Neden telefon tarafında da kalıcı: saat "kapattım" dediğinde telefon yedeğini native
+ * olarak iptal eder; ama JS planlama turu (15 dk görevi, açılış, konum yayması) aynı
+ * kimliği plandan YENİDEN üretir. Bu depo okunmasaydı tur kapatılan yedeği tekrar kurardı. JS onu
  * `WearSenkron.saatUyandirmaDurumlari()` ile okur (`LocalSaatAyarlariServisi.teslimBaglaminiOku`).
  * Kurallar SAF `SaatKomutKurallari.depoyaYaz/depoyuSuz`'da (JVM testi); ömrü dolan kayıt düşer.
  */
