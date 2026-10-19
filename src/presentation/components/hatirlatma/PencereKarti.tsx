@@ -302,7 +302,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                 className="rounded-2xl border"
                 style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }}
             >
-                <View className="flex-row items-center pr-3">
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingRight: 12, minHeight: 56 }}>
                     <TouchableOpacity
                         className="flex-row items-center flex-1 py-2.5 pl-3 pr-2"
                         style={{ minHeight: 56 }}
@@ -348,15 +348,20 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                     </TouchableOpacity>
 
                     {onAdimAcKapa && etkilesimli && (
-                        <Anahtar
-                            value={acik}
-                            onValueChange={(deger) => onAdimAcKapa(indeks, deger)}
-                            trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}
-                            thumbColor={acik ? bilgi.renk : '#f4f3f4'}
-                            accessibilityRole="switch"
-                            accessibilityState={{ checked: acik }}
-                            accessibilityLabel={`${adimBasligi} — açın veya kapatın`}
-                        />
+                        // Ayrı kutu: iOS UISwitch (51×31, Android'den büyük) satırın üstüne
+                        // yapışıp kart çizgisini aşıyordu (iPhone karesi 14-cuma). Kutu dikeyde
+                        // ortalar ve kartın iç dolgusunda tutar; ok (>) ile aynı eksende.
+                        <View style={{ alignSelf: 'center', justifyContent: 'center', minHeight: 44, paddingVertical: 6 }}>
+                            <Anahtar
+                                value={acik}
+                                onValueChange={(deger) => onAdimAcKapa(indeks, deger)}
+                                trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}
+                                thumbColor={acik ? bilgi.renk : '#f4f3f4'}
+                                accessibilityRole="switch"
+                                accessibilityState={{ checked: acik }}
+                                accessibilityLabel={`${adimBasligi} — açın veya kapatın`}
+                            />
+                        </View>
                     )}
                 </View>
 

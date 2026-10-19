@@ -65,7 +65,7 @@ const oneriUygulanmaz = (): boolean => false;
 
 /** Yön sabit gerekçesi (plan §3.3) — kartta seçici yerine yazılır. */
 export const CUMA_YON_GEREKCESI =
-    'Hatırlatma öğle vaktinden ÖNCE gelir; vakit girdikten sonra cuma için geç olur.';
+    'Hatırlatma öğle vaktinden önce gelir.';
 
 /** Bu cumanın (öğlesi henüz geçmemiş ilk cuma) penceresi: [öğle − 180 dk, öğle]. */
 function buCumaninPenceresi(
@@ -278,11 +278,11 @@ export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ basl
                             stil="gomulu"
                         />
 
-                        <View className="flex-row items-start mt-4 gap-2">
-                            <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
-                            <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
-                                Camiye yetişecek zamanı siz belirleyin. Cuma, öğle namazının yerine geçtiği için
-                                ayrı bir kayıt tutulmaz; işaretlemeyi öğle namazından yaparsınız.
+                        {/* Alt not tek kısa satır (görsel inceleme 2026-10: üç satırlık açıklama). */}
+                        <View className="flex-row items-center mt-4 gap-2">
+                            <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} />
+                            <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }} numberOfLines={1}>
+                                Kılınca öğle namazını işaretleyin.
                             </Text>
                         </View>
                     </View>

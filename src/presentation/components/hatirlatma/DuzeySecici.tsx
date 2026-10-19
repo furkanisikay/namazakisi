@@ -128,7 +128,7 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
     );
     // Düğme yalnız kurulu plan güncel düzeyden GERÇEKTEN farklıysa (gerçek plan ölçülemiyorsa
     // eski davranış: düğme görünür, fark sözcüğü yok).
-    const fark = eskiGoster && eskiOlcu ? duzeyFarki(eskiOlcu, o[secili as HatirlatmaDuzeyi]) : null;
+    const fark = eskiGoster && eskiOlcu ? duzeyFarki(eskiOlcu, o[secili as HatirlatmaDuzeyi], sesliIzinVar) : null;
     const guncelleGoster = eskiGoster && (eskiOlcu ? fark !== null : true);
     const secenekler = React.useMemo<Secenek<DuzeySecimi>[]>(
         () => [
@@ -189,7 +189,7 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                     onPress={() => onSec(secili)}
                     activeOpacity={0.75}
                     accessibilityRole="button"
-                    accessibilityLabel={`${ESKI_DUZEY_GUNCELLE}: güncel ${DUZEY_ADLARI[secili as HatirlatmaDuzeyi]} düzey${fark ? `, ${fark} uyarı` : ''}`}
+                    accessibilityLabel={`${ESKI_DUZEY_GUNCELLE}: güncel ${DUZEY_ADLARI[secili as HatirlatmaDuzeyi]} düzey${fark ? `, ${fark}` : ''}`}
                     style={{
                         alignSelf: 'flex-start',
                         flexDirection: 'row',

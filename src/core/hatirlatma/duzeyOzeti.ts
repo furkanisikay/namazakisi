@@ -56,11 +56,23 @@ export function duzeyiOlc(seviyeler: PresetSeviyeleri): DuzeyOlcusu {
  * okuma. Ölçüler aynıysa `null` → düğme GÖSTERİLMEZ (görsel inceleme 2026-10: kart "3 uyarı"
  * derken altında boşuna bir güncelleme düğmesi duruyordu).
  */
-export function duzeyFarki(eski: DuzeyOlcusu | null, yeni: DuzeyOlcusu | null): string | null {
+export function duzeyFarki(
+    eski: DuzeyOlcusu | null,
+    yeni: DuzeyOlcusu | null,
+    /**
+     * Sesli okuma rızası var mı? YOKSA güncel düzey sesli adımları bildirime düşürür
+     * (`presetUygula(…, false)`) → sesli farkı SAYILMAZ, düğme yanlış vaat etmesin.
+     */
+    sesliIzinVar = true,
+): string | null {
     if (!eski || !yeni) return null;
-    if (yeni.uyariSayisi !== eski.uyariSayisi) return yeni.uyariSayisi < eski.uyariSayisi ? 'daha az' : 'daha çok';
-    if (yeni.ilkDk !== eski.ilkDk) return yeni.ilkDk > eski.ilkDk ? 'daha erken' : 'daha geç';
-    if (yeni.sesliSayisi !== eski.sesliSayisi) return yeni.sesliSayisi > eski.sesliSayisi ? 'sesli' : 'sessiz';
+    // Fark çipi YÖN bildirir ("+ sesli okuma"); "sesli" tek başına, hemen üstteki "Sesli okuma
+    // yok" cümlesiyle çelişir gibi okunuyordu (iPhone karesi 06).
+    if (yeni.uyariSayisi !== eski.uyariSayisi) return yeni.uyariSayisi < eski.uyariSayisi ? 'daha az uyarı' : 'daha çok uyarı';
+    if (yeni.ilkDk !== eski.ilkDk) return yeni.ilkDk > eski.ilkDk ? 'daha erken başlar' : 'daha geç başlar';
+    if (sesliIzinVar && yeni.sesliSayisi !== eski.sesliSayisi) {
+        return yeni.sesliSayisi > eski.sesliSayisi ? '+ sesli okuma' : 'sesli okumasız';
+    }
     return null;
 }
 

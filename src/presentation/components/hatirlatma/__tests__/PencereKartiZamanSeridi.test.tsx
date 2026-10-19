@@ -128,7 +128,7 @@ describe('PencereKarti — zaman seridi', () => {
 });
 
 describe('PencereKarti — YÖN SABİT ek hatırlatma yüzeyi (plan §3.3)', () => {
-    const GEREKCE = 'Hatırlatma öğle vaktinden ÖNCE gelir; vakit girdikten sonra cuma için geç olur.';
+    const GEREKCE = 'Hatırlatma öğle vaktinden önce gelir.';
     const OGLE = new Date(2026, 9, 16, 13, 0);
     const ekTanim = (pencere?: { baslangic: Date; bitis: Date }) =>
         ekHatirlatmaPencereTanimi({

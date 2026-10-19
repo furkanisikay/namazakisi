@@ -228,7 +228,7 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
             {!kapali && genislik > 0 ? (
                 <View style={{ height: 22, marginTop: 4 }}>
                     <Text
-                        style={{ position: 'absolute', right: 0, top: 3, fontSize: 12, color: renkler.metinIkincil }}
+                        style={{ position: 'absolute', right: 0, top: 0, fontSize: 12, color: renkler.metinIkincil }}
                         numberOfLines={1}
                     >
                         {VAKIT_CIKAR_METNI}
