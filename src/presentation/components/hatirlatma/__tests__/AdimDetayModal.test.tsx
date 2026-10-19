@@ -220,12 +220,46 @@ describe('AdimDetayModal — GELİŞMİŞ', () => {
             alarmOnayiVar: true,
         });
         expect(ekran.getByTestId('adim-gelismis-icerik')).toBeTruthy();
-        expect(ekran.getByText('her 15 dk · Gerçek alarm açık')).toBeTruthy();
+        // Özet ikon çipidir (orta noktalı metin yok); tam cümle başlığın etiketinde.
+        expect(ekran.getByLabelText('Gelişmiş ayarlar: her 15 dk tekrar, gerçek alarm açık')).toBeTruthy();
+        // Çipler ekran okuyucudan gizlidir (etiket zaten tam cümle) → gizlileri de ara.
+        const gizli = { includeHiddenElements: true };
+        expect(ekran.getByTestId('adim-gelismis-ozet-alarm', gizli)).toBeTruthy();
+        expect(ekran.getByText('15 dk', gizli)).toBeTruthy();
+        // (Önizlemedeki bildirim BAŞLIĞI "Cuma · 30 dk kaldı …" gerçek bildirim metnidir, özet değil.)
+        expect(ekran.queryByText(/her \d+ dk ·|· Gerçek alarm/)).toBeNull();
+    });
+
+    test('canlı önizleme gerçek bildirim başlığını gösterir ve dokununca adımı çalar', () => {
+        const { adimiOnizle } = jest.requireMock('../../../../domain/services/AnonsOnizlemeServisi');
+        const { ekran } = kur(MUHAFIZ, adim({ bildirim: true }, { esikDk: 45 }));
+        expect(ekran.getByText('Telefonunuz böyle uyaracak')).toBeTruthy();
+        expect(ekran.getByText('İkindi · 45 dk kaldı ⏰')).toBeTruthy();
+        fireEvent.press(ekran.getByTestId('adim-onizleme-dinle'));
+        expect(adimiOnizle).toHaveBeenCalledWith(expect.objectContaining({ kanallar: { bildirim: true } }));
+    });
+
+    test('başlık ZAMANDIR ve eşik değişince canlı güncellenir', () => {
+        const { ekran } = kur(CUMA, adim({ bildirim: true }, { esikDk: 30 }));
+        expect(ekran.getByText('30 dk kala')).toBeTruthy();
+        ekran.rerender(
+            <AdimDetayModal
+                gorunur
+                tanim={CUMA}
+                seviyeler={[adim({ bildirim: true }, { esikDk: 45 })]}
+                indeks={0}
+                ttsDestekli={null}
+                sesliOnayiVar
+                onDegistir={jest.fn()}
+                onKapat={jest.fn()}
+            />
+        );
+        expect(ekran.getByText('45 dk kala')).toBeTruthy();
     });
 
     test('muhafızda nazik olmayan ton Gelişmiş\'i açar ve özetlenir; sertlik yalnız muhafızda', () => {
         const { ekran } = kur(MUHAFIZ, adim({ bildirim: true }, { kademe: 'uyari', esikDk: 25 }));
-        expect(ekran.getByText('sertlik: Uyarı')).toBeTruthy();
+        expect(ekran.getByLabelText('Gelişmiş ayarlar: Uyarı sertliği')).toBeTruthy();
         expect(ekran.getByLabelText('Sertlik: Uyarı')).toBeTruthy();
         const cuma = kur(CUMA, adim({ bildirim: true }, { siklik: { herDk: 15 } }));
         expect(cuma.ekran.queryByLabelText('Sertlik: Uyarı')).toBeNull();

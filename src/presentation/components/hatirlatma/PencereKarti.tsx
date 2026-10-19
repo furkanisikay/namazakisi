@@ -16,10 +16,15 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Anahtar } from '../common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
-import type { VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
+import type { SeviyeAyari, VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
-import { seviyeOzetiOlustur } from '../../../core/muhafiz/seviyeOzeti';
-import { vakitOzetiOlustur, aktifSeviyeSayisi } from '../../../core/muhafiz/vakitOzeti';
+import { adimOzetiOlustur, seviyeOzetiOlustur } from '../../../core/muhafiz/seviyeOzeti';
+import { vakitOzetiOlustur, vakitOzetiVerisi, aktifSeviyeSayisi } from '../../../core/muhafiz/vakitOzeti';
+import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
+import { adimAnahtarlariniGuncelle, type AdimAnahtarDurumu } from '../../../core/hatirlatma/adimAnahtarlari';
+import { useHareketAzalt } from '../../hooks/useHareketAzalt';
+import { OzetCipleri } from './OzetCipleri';
+import { RAY_KADEME_MS, RayEkleSatiri, RaySatiri } from './AdimRayi';
 import { seviyeAcikMi } from '../../../core/muhafiz/seviyeAcKapa';
 import { tonGeriGidenAdim } from '../../../core/muhafiz/adimDuzenleme';
 import { etkinKademe } from '../../../core/muhafiz/motorAdaptoru';
@@ -106,6 +111,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
 
     const tekAdimli = tanim.maksAdim === 1;
     const ozet = vakitOzetiOlustur(ayar);
+    const vakitOzeti = vakitOzetiVerisi(ayar);
     const aktifSayi = aktifSeviyeSayisi(ayar);
     const tamamenKapali = aktifSayi === 0;
     const gomulu = stil === 'gomulu';
@@ -231,129 +237,215 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
         });
     };
 
+    // ── Adım rayı: kararlı satır anahtarları (ekle/sil animasyonu yanlış satırda oynamasın) ──
+    const gorunenSeviyeler = ayar.seviyeler.slice(0, tanim.maksAdim);
+    const esikAnahtari = gorunenSeviyeler.map((s) => s.esikDk).join(',');
+    const anahtarDurumu = React.useRef<AdimAnahtarDurumu | null>(null);
+    const oncekiSeviyeler = React.useRef<SeviyeAyari[]>(gorunenSeviyeler);
+    const anahtarlar = useMemo(() => {
+        const yeni = adimAnahtarlariniGuncelle(anahtarDurumu.current, gorunenSeviyeler.map((s) => s.esikDk));
+        anahtarDurumu.current = yeni;
+        return yeni;
+        // Eşik dizisi değişmedikçe anahtarlar değişmez.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [esikAnahtari]);
+    // Silinen satırın görsel hayaleti: silmenin algılandığı çizimde bir önceki listeden
+    // YAKALANIR (sonraki çizimlerde liste değişse de hayaletin içeriği sabit kalır).
+    const hayalet = React.useRef<{ anahtar: string; seviye: SeviyeAyari | undefined } | null>(null);
+    if (anahtarlar.sonSilinen && hayalet.current?.anahtar !== anahtarlar.sonSilinen.anahtar) {
+        hayalet.current = {
+            anahtar: anahtarlar.sonSilinen.anahtar,
+            seviye: oncekiSeviyeler.current[anahtarlar.sonSilinen.indeks],
+        };
+    }
+    const hayaletSeviye = hayalet.current?.seviye;
+    useEffect(() => {
+        oncekiSeviyeler.current = gorunenSeviyeler;
+    });
+    const hareketAzalt = useHareketAzalt();
+    const [bitenHayalet, setBitenHayalet] = useState<string | null>(null);
+    const hayaletGorunur =
+        !hareketAzalt &&
+        !!anahtarlar.sonSilinen &&
+        !!hayaletSeviye &&
+        bitenHayalet !== anahtarlar.sonSilinen.anahtar;
+
+    // Akordiyon KULLANICI tarafından açılınca satırlar kademeli gelir (ilk çizimde değil).
+    const oncekiGovde = React.useRef(govdeGorunur);
+    const kademeliAcilis = govdeGorunur && !oncekiGovde.current;
+    useEffect(() => {
+        oncekiGovde.current = govdeGorunur;
+    }, [govdeGorunur]);
+
+    /** Bir adım satırının kart içeriği (zaman başlık, kanallar ikon çipi). */
+    const adimKarti = (seviye: SeviyeAyari, indeks: number, etkilesimli: boolean) => {
+        const bilgi = adimBilgisiAl(tanim, seviye, indeks);
+        const adimBasligi = adimBasligiOlustur(tanim, seviye, indeks);
+        const tonEtiketi = tanim.tonSecilebilir ? TON_ETIKETLERI[etkinKademe(seviye, tanim.yon)] : null;
+        const acik = seviyeAcikMi(seviye);
+        const notlar = adimNotlariniOlustur(seviye, ayar.seviyeler, {
+            pencereAdi: tanim.baslikKucuk,
+            pencereUzunluguDk: tanim.pencereUzunluguDk,
+            yon: tanim.yon,
+            yetenekler: tanim.yetenekler,
+        });
+        const notMetni = notlar.map((n) => n.metin).join(' ');
+        const ozet = adimOzetiOlustur(seviye, tanim.yon);
+        const ozetMetni = seviyeOzetiOlustur(seviye, tanim.yon);
+        return (
+            // Switch, satırı saran Touchable'ın İÇİNDE değil KARDEŞİDİR:
+            // Touchable varsayılan `accessible` ile çocuklarını tek bir
+            // erişilebilirlik düğümüne düzleştirir → içine konan switch
+            // TalkBack'te ayrıca odaklanamaz, dokunma hedefleri de çakışır.
+            <View
+                className="rounded-2xl border"
+                style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }}
+            >
+                <View className="flex-row items-center pr-3">
+                    <TouchableOpacity
+                        className="flex-row items-center flex-1 py-2.5 pl-3 pr-2"
+                        style={{ minHeight: 56 }}
+                        disabled={!etkilesimli}
+                        onPress={() => onAdimSec(indeks)}
+                        activeOpacity={0.7}
+                        accessibilityRole="button"
+                        // Önek SABİT ("1. hatırlatma, Nazik — düzenleyin" / "Hatırlatma — düzenleyin"):
+                        // ekran testleri ve Maestro/simülatör betikleri buna bağlıdır.
+                        accessibilityLabel={`${adimBasligi}${tonEtiketi ? `, ${tonEtiketi}` : ''} — düzenleyin. ${ozetMetni}${notMetni ? `. ${notMetni}` : ''}`}
+                    >
+                        <View className="flex-1">
+                            {/* Başlık = ZAMAN. Ton ADI ve sıra numarası yazılmaz: sertlik
+                                düğümün renginden, sıra raydan okunur (etikette kalır). */}
+                            <Text className="text-base font-bold" style={{ color: renkler.metin }}>
+                                {ozet.zaman}
+                            </Text>
+                            <View className="mt-1">
+                                {ozet.kapali ? (
+                                    <View className="flex-row items-center">
+                                        <FontAwesome5
+                                            name="bell-slash"
+                                            size={10}
+                                            color={renkler.metinIkincil}
+                                            style={{ marginRight: 5 }}
+                                        />
+                                        <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
+                                            Kapalı
+                                        </Text>
+                                    </View>
+                                ) : (
+                                    <OzetCipleri
+                                        kanallar={ozet.kanallar}
+                                        renk={bilgi.renk}
+                                        tekrarDk={ozet.tekrarDk}
+                                        sesAdi={ozelSesMi(seviye.bildirimSesi) ? ozet.sesAdi : undefined}
+                                        boyut="kucuk"
+                                    />
+                                )}
+                            </View>
+                        </View>
+                        <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
+                    </TouchableOpacity>
+
+                    {onAdimAcKapa && etkilesimli && (
+                        <Anahtar
+                            value={acik}
+                            onValueChange={(deger) => onAdimAcKapa(indeks, deger)}
+                            trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}
+                            thumbColor={acik ? bilgi.renk : '#f4f3f4'}
+                            accessibilityRole="switch"
+                            accessibilityState={{ checked: acik }}
+                            accessibilityLabel={`${adimBasligi} — açın veya kapatın`}
+                        />
+                    )}
+                </View>
+
+                {/* Sessiz sapma birakma (Faz 0): pencereye sigmayan adim
+                    ve butce ile seyreltilen siklik burada gorunur olur. */}
+                {notlar.length > 0 && (
+                    <View className="px-3 pb-2.5">
+                        <AdimNotlari notlar={notlar} />
+                    </View>
+                )}
+            </View>
+        );
+    };
+
+    // Görünen satırlar: gerçek adımlar + (varsa) silinenin hayaleti eski yerinde.
+    type RaySatirVerisi = { anahtar: string; seviye: SeviyeAyari; indeks: number; hayalet: boolean };
+    const raySatirlari: RaySatirVerisi[] = gorunenSeviyeler.map((seviye, indeks) => ({
+        anahtar: anahtarlar.anahtarlar[indeks] ?? `adim-x${indeks}`,
+        seviye,
+        indeks,
+        hayalet: false,
+    }));
+    if (hayaletGorunur && anahtarlar.sonSilinen && hayaletSeviye) {
+        raySatirlari.splice(Math.min(anahtarlar.sonSilinen.indeks, raySatirlari.length), 0, {
+            anahtar: anahtarlar.sonSilinen.anahtar,
+            seviye: hayaletSeviye,
+            indeks: anahtarlar.sonSilinen.indeks,
+            hayalet: true,
+        });
+    }
+    const ekleRayda = !!onAdimEkle && eklenebilir;
+
     const adimlar = (
         <>
-            {ayar.seviyeler.slice(0, tanim.maksAdim).map((seviye, indeks) => {
-                const bilgi = adimBilgisiAl(tanim, seviye, indeks);
-                const adimBasligi = adimBasligiOlustur(tanim, seviye, indeks);
-                const tonEtiketi = tanim.tonSecilebilir
-                    ? TON_ETIKETLERI[etkinKademe(seviye, tanim.yon)]
-                    : null;
-                const acik = seviyeAcikMi(seviye);
-                const notlar = adimNotlariniOlustur(seviye, ayar.seviyeler, {
-                    pencereAdi: tanim.baslikKucuk,
-                    pencereUzunluguDk: tanim.pencereUzunluguDk,
-                    yon: tanim.yon,
-                    yetenekler: tanim.yetenekler,
-                });
-                const notMetni = notlar.map((n) => n.metin).join(' ');
-                const ozetMetni = seviyeOzetiOlustur(seviye, tanim.yon);
+            {raySatirlari.map((satir, sira) => {
+                const bilgi = adimBilgisiAl(tanim, satir.seviye, satir.indeks);
+                const sonuncu = sira === raySatirlari.length - 1;
                 return (
-                    // Switch, satırı saran Touchable'ın İÇİNDE değil KARDEŞİDİR:
-                    // Touchable varsayılan `accessible` ile çocuklarını tek bir
-                    // erişilebilirlik düğümüne düzleştirir → içine konan switch
-                    // TalkBack'te ayrıca odaklanamaz, dokunma hedefleri de çakışır.
-                    <View
-                        key={`adim-${indeks}`}
-                        className="rounded-xl border mb-2"
-                        style={{
-                            backgroundColor: renkler.arkaplan,
-                            borderColor: renkler.sinir,
-                            borderLeftWidth: 4,
-                            borderLeftColor: acik ? bilgi.renk : renkler.sinir,
-                        }}
+                    <RaySatiri
+                        key={satir.anahtar}
+                        ilk={sira === 0}
+                        son={sonuncu && !ekleRayda}
+                        renk={bilgi.renk}
+                        acik={seviyeAcikMi(satir.seviye)}
+                        girisGecikmesiMs={
+                            satir.hayalet
+                                ? null
+                                : kademeliAcilis
+                                  ? sira * RAY_KADEME_MS
+                                  : satir.anahtar === anahtarlar.sonEklenen
+                                    ? 0
+                                    : null
+                        }
+                        onCikti={satir.hayalet ? () => setBitenHayalet(satir.anahtar) : undefined}
                     >
-                        <View className="flex-row items-center pr-3">
-                            <TouchableOpacity
-                                className="flex-row items-center flex-1 p-3"
-                                // Soluklaştırma YALNIZ bilgi bölümüne uygulanır; kapalı
-                                // adımı yeniden açacak kontrol tam opak kalmalı.
-                                style={{ opacity: acik ? 1 : 0.65 }}
-                                onPress={() => onAdimSec(indeks)}
-                                activeOpacity={0.7}
-                                accessibilityRole="button"
-                                accessibilityLabel={`${adimBasligi}${tonEtiketi ? `, ${tonEtiketi}` : ''} — düzenleyin. ${ozetMetni}${notMetni ? `. ${notMetni}` : ''}`}
-                            >
-                                <View
-                                    className="w-9 h-9 rounded-xl items-center justify-center mr-3"
-                                    style={{ backgroundColor: acik ? `${bilgi.renk}20` : renkler.sinir }}
-                                >
-                                    <FontAwesome5
-                                        name={acik ? bilgi.ikon : 'bell-slash'}
-                                        size={14}
-                                        color={acik ? bilgi.renk : renkler.metinIkincil}
-                                        solid
-                                    />
-                                </View>
-                                <View className="flex-1">
-                                    {/* Ton ADI ekranda yazılmaz (persona çalışması 2026-10-19: jargon);
-                                        sertlik çubuk rengi/ikonla görünür, ekran okuyucu etiketinde kalır. */}
-                                    <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                        {adimBasligi}
-                                    </Text>
-                                    <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                        {ozetMetni}
-                                    </Text>
-                                </View>
-                                <FontAwesome5
-                                    name="chevron-right"
-                                    size={12}
-                                    color={renkler.metinIkincil}
-                                    style={{ marginRight: 4 }}
-                                />
-                            </TouchableOpacity>
-
-                            {onAdimAcKapa && (
-                                <Anahtar
-                                    value={acik}
-                                    onValueChange={(deger) => onAdimAcKapa(indeks, deger)}
-                                    trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}
-                                    thumbColor={acik ? bilgi.renk : '#f4f3f4'}
-                                    accessibilityRole="switch"
-                                    accessibilityState={{ checked: acik }}
-                                    accessibilityLabel={`${adimBasligi} — açın veya kapatın`}
-                                />
-                            )}
-                        </View>
-
-                        {/* Sessiz sapma birakma (Faz 0): pencereye sigmayan adim
-                            ve butce ile seyreltilen siklik burada gorunur olur. */}
-                        {notlar.length > 0 && (
-                            <View className="px-3 pb-2.5">
-                                <AdimNotlari notlar={notlar} />
-                            </View>
-                        )}
-                    </View>
+                        {adimKarti(satir.seviye, satir.indeks, !satir.hayalet)}
+                    </RaySatiri>
                 );
             })}
 
             {/* Ton geri gidiyor notu — engel değil, bilgi (issue #274) */}
             {tonGeriNumara > 0 && (
-                <AdimNotlari notlar={[{ tip: 'bilgi', metin: tonGeriNotuOlustur(tonGeriNumara) }]} />
+                <View className="mb-2" style={{ marginLeft: 24 }}>
+                    <AdimNotlari notlar={[{ tip: 'bilgi', metin: tonGeriNotuOlustur(tonGeriNumara) }]} />
+                </View>
             )}
 
-            {/* + Hatırlatma ekleyin — en fazla `maksAdim` */}
+            {/* + Hatırlatma ekleyin — rayın devamı, en fazla `maksAdim` */}
             {onAdimEkle &&
                 (eklenebilir ? (
-                    <TouchableOpacity
-                        className="flex-row items-center justify-center rounded-xl mb-2"
-                        style={{
-                            minHeight: 48,
-                            borderWidth: 1,
-                            borderStyle: 'dashed',
-                            borderColor: renkler.birincil,
-                            backgroundColor: renkler.arkaplan,
-                        }}
-                        onPress={onAdimEkle}
-                        activeOpacity={0.7}
-                        accessibilityRole="button"
-                        accessibilityLabel={`${tanim.baslik} vaktine hatırlatma ekleyin`}
-                    >
-                        <FontAwesome5 name="plus" size={12} color={renkler.birincil} style={{ marginRight: 8 }} />
-                        <Text className="text-sm font-semibold" style={{ color: renkler.birincil }}>
-                            Hatırlatma ekleyin
-                        </Text>
-                    </TouchableOpacity>
+                    <RayEkleSatiri ilk={raySatirlari.length === 0}>
+                        <TouchableOpacity
+                            className="flex-row items-center rounded-2xl px-3"
+                            style={{
+                                minHeight: 48,
+                                borderWidth: 1,
+                                borderStyle: 'dashed',
+                                borderColor: renkler.birincil,
+                                backgroundColor: renkler.arkaplan,
+                            }}
+                            onPress={onAdimEkle}
+                            activeOpacity={0.7}
+                            accessibilityRole="button"
+                            accessibilityLabel={`${tanim.baslik} vaktine hatırlatma ekleyin`}
+                        >
+                            <Text className="text-sm font-semibold" style={{ color: renkler.birincil }}>
+                                Hatırlatma ekleyin
+                            </Text>
+                        </TouchableOpacity>
+                    </RayEkleSatiri>
                 ) : (
                     <Text className="text-xs text-center mb-2" style={{ color: renkler.metinIkincil }}>
                         {adimSiniriNotu(tanim.maksAdim)}
@@ -400,9 +492,15 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                         <Text className="text-base font-bold" style={{ color: renkler.metin }}>
                             {tanim.baslik}
                         </Text>
-                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                            {ozet}
-                        </Text>
+                        {/* Özet: ilk uyarının anı + kullanılan kanallar (ikon çipi; tam cümle etikette). */}
+                        <View className="flex-row items-center flex-wrap mt-1" style={{ gap: 6 }}>
+                            <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
+                                {vakitOzeti.kapali ? 'Kapalı' : `${vakitOzeti.baslangic} başlar`}
+                            </Text>
+                            {!vakitOzeti.kapali && (
+                                <OzetCipleri kanallar={vakitOzeti.kanallar} renk={renkler.birincil} boyut="kucuk" />
+                            )}
+                        </View>
                     </View>
 
                     <View
@@ -538,15 +636,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                         </>
                     )}
 
-                    {!tekAdimli && (
-                        <Text
-                            className="text-[11px] font-semibold tracking-wider mb-2.5"
-                            style={{ color: renkler.metinIkincil }}
-                        >
-                            {tanim.tonSecilebilir ? 'HATIRLATMALAR' : 'HATIRLATMA ADIMLARI'}
-                        </Text>
-                    )}
-
+                    {/* Ayrı "HATIRLATMALAR" başlığı yok: ray kendini anlatır. */}
                     {adimlar}
 
                     {/* Akisi onizle (spec 3.4) — gercek bildirim GONDERMEZ */}

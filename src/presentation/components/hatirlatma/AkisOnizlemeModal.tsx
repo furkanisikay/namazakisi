@@ -36,7 +36,8 @@ import {
     bildirimGovdesiOlustur,
     type MuhafizSeviye,
 } from '../../../core/utils/muhafizMetinYardimcisi';
-import { seviyeOzetiOlustur, esikIfadesi } from '../../../core/muhafiz/seviyeOzeti';
+import { acikOzetKanallari, esikIfadesi, kanalListesiMetni } from '../../../core/muhafiz/seviyeOzeti';
+import { OzetCipleri } from './OzetCipleri';
 import { SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
 import { ZamanSeridi } from './ZamanSeridi';
@@ -246,6 +247,10 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                         ? `${adim.adimIndeks + 1}. hatırlatma`
                                         : bilgi.baslik;
                                     const tonErisim = tanim.tonSecilebilir ? `, ${TON_ETIKETLERI[kademe]}` : '';
+                                    // Alarm yalnız planın işaretlediği tetikte çalar; diğer tetikler bildirimdir.
+                                    const tetikKanallari = acikOzetKanallari(adim.kanallar).filter(
+                                        (k) => k !== 'alarm' || adim.alarm === true
+                                    );
                                     const seviye = adim.seviye as MuhafizSeviye;
                                     const anonsMetni = ozelMetin
                                         ? adim.sesliAnons
@@ -274,36 +279,34 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                 borderLeftColor: bilgi.renk,
                                             }}
                                             accessible
-                                            accessibilityLabel={`${esikIfadesi(adim.olcuDk, tanim.yon)}, ${adimEtiketi}${tonErisim}${alarmEtiketi ? `, ${alarmEtiketi}` : ''}`}
+                                            accessibilityLabel={`${esikIfadesi(adim.olcuDk, tanim.yon)}, ${adimEtiketi}${tonErisim}, ${kanalListesiMetni(tetikKanallari)}${alarmEtiketi ? `, ${alarmEtiketi}` : ''}`}
                                         >
-                                            {/* Adim basligi: olcu rozeti + kademe */}
+                                            {/* Adım başlığı: SAAT büyük, yönlü ifade küçük ("45 dk" tek
+                                                başına giriş yönünde belirsizdi — kala mı, sonra mı?);
+                                                kanallar sağda ikon çipi. Orta noktalı metin yok. */}
                                             <View className="flex-row items-center mb-2">
                                                 <View
-                                                    className="px-2 py-0.5 rounded-lg mr-2.5"
-                                                    style={{ backgroundColor: `${bilgi.renk}20` }}
-                                                >
-                                                    <Text className="text-[11px] font-bold" style={{ color: renkler.metin }}>
-                                                        {/* Saat + yonlu ifade: "45 dk" tek basina giris
-                                                            yonunde belirsizdi (kala mi, sonra mi?). */}
-                                                        {tanim.pencere
-                                                            ? `${saatMetni(kalanDkAni(tanim.pencere.bitis, adim.kalanDk))} · `
-                                                            : ''}
+                                                    className="w-2.5 h-2.5 rounded-full mr-2"
+                                                    style={{ backgroundColor: bilgi.renk }}
+                                                />
+                                                <View className="flex-1 flex-row items-baseline flex-wrap" style={{ gap: 6 }}>
+                                                    {tanim.pencere && (
+                                                        <Text className="text-base font-bold" style={{ color: renkler.metin }}>
+                                                            {saatMetni(kalanDkAni(tanim.pencere.bitis, adim.kalanDk))}
+                                                        </Text>
+                                                    )}
+                                                    <Text
+                                                        className={tanim.pencere ? 'text-xs' : 'text-sm font-bold'}
+                                                        style={{ color: tanim.pencere ? renkler.metinIkincil : renkler.metin }}
+                                                    >
                                                         {esikIfadesi(adim.olcuDk, tanim.yon)}
                                                     </Text>
                                                 </View>
-                                                <FontAwesome5
-                                                    name={bilgi.ikon}
-                                                    size={12}
-                                                    color={bilgi.renk}
-                                                    solid
-                                                    style={{ marginRight: 6 }}
+                                                <OzetCipleri
+                                                    kanallar={tetikKanallari}
+                                                    renk={bilgi.renk}
+                                                    boyut="kucuk"
                                                 />
-                                                <Text
-                                                    className="text-xs font-semibold flex-1"
-                                                    style={{ color: renkler.metinIkincil }}
-                                                >
-                                                    {adimEtiketi}
-                                                </Text>
                                             </View>
 
                                             {alarmEtiketi && (
@@ -335,20 +338,6 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                 {ozelMetin ? ozelMetin.govde : bildirimGovdesiOlustur(seviye, tanim.yon, adim.olcuDk)}
                                             </Text>
 
-                                            {/* Ayar ozeti (kanallar · ses) */}
-                                            <Text className="text-[11px] mt-2" style={{ color: renkler.metinIkincil }}>
-                                                {seviyeOzetiOlustur(
-                                                    {
-                                                        kademe,
-                                                        kanallar: adim.kanallar,
-                                                        esikDk: adim.olcuDk,
-                                                        siklik: 'birkez',
-                                                        bildirimSesi: adim.bildirimSesi,
-                                                        anonsMetni: adim.anonsMetni,
-                                                    },
-                                                    tanim.yon
-                                                )}
-                                            </Text>
 
                                             {/* Sesli anons — cozulmus metin */}
                                             {anonsMetni && (

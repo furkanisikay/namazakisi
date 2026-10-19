@@ -314,7 +314,7 @@ describe('alarm notları — sessiz sapma yok', () => {
 });
 
 describe('seviye özeti', () => {
-    test('alarm açık adımda "alarm" yüzü görünür', () => {
-        expect(seviyeOzetiOlustur(adim(10, { bildirim: true, alarm: true }))).toBe('10 dk kala · bildirim · Uygulama sesi · alarm');
+    test('alarm açık adımda "gerçek alarm" söylenir', () => {
+        expect(seviyeOzetiOlustur(adim(10, { bildirim: true, alarm: true }))).toBe('10 dk kala: bildirim (Uygulama sesi) ve gerçek alarm');
     });
 });

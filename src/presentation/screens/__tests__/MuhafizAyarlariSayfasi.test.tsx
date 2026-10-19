@@ -251,14 +251,16 @@ describe('MuhafizAyarlariSayfasi', () => {
 
   // ── Katman 1 ──────────────────────────────────────────────────────────────
   it('5 vakit satırını dinamik özetiyle listeler', async () => {
-    const { getByText, getAllByText } = await kur();
+    const { getByText, getAllByText, getAllByLabelText } = await kur();
     expect(getByText('Sabah')).toBeTruthy();
     expect(getByText('Öğle')).toBeTruthy();
     expect(getByText('İkindi')).toBeTruthy();
     expect(getByText('Akşam')).toBeTruthy();
     expect(getByText('Yatsı')).toBeTruthy();
-    // Göç varsayılanı: yalnız bildirim kanalı açık, en erken eşik 45
-    expect(getAllByText('Sadece bildirim · 45 dk kala başlar')).toHaveLength(5);
+    // Göç varsayılanı: yalnız bildirim kanalı açık, en erken eşik 45. Kanal ikon çipiyle
+    // görünür; tam cümle satırın erişilebilirlik etiketindedir (`·` ayraçlı metin yok).
+    expect(getAllByText('45 dk kala başlar')).toHaveLength(5);
+    expect(getAllByLabelText(/vakti hatırlatma ayarları\. 45 dk kala başlar: bildirim$/)).toHaveLength(5);
   });
 
   it('muhafız kapalıyken düzey "Kapalı" seçilidir ve vakit listesi gösterilmez', async () => {
@@ -316,8 +318,11 @@ describe('MuhafizAyarlariSayfasi', () => {
     // okuyucu etiketinde (renk/ikonun karşılığı) kalır.
     expect(queryByText(/Nazik|Sert$|· Acil|· Uyarı/)).toBeNull();
     expect(getByText('Tüm vakitlere uygula')).toBeTruthy();
-    // Adım özeti seviyeOzetiOlustur'dan gelir
-    expect(getByText('45 dk kala · bildirim · Uygulama sesi')).toBeTruthy();
+    // Adım satırının başlığı ZAMANDIR; kanallar ikon çipi, tam cümle etikette.
+    expect(getByText('45 dk kala')).toBeTruthy();
+    expect(getByLabelText(/^1\. hatırlatma, Nazik — düzenleyin\. 45 dk kala: bildirim \(Uygulama sesi\)/)).toBeTruthy();
+    // Sıra numarası ekranda yazılmaz (ray anlatır), yalnız etikette.
+    expect(queryByText(/^1\. hatırlatma/)).toBeNull();
   });
 
   it('"Tüm vakitlere uygula" önce onay ister, onaylanınca matrisi kopyalar', async () => {

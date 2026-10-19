@@ -277,7 +277,7 @@ describe('HatirlatmalarSayfasi', () => {
 describe('HatirlatmalarSayfasi — gece sessizliği', () => {
     it('alanı olmayan (mevcut) kayıtta KAPALI görünür ve özet ne kazanacağını söyler', () => {
         const e = render(<HatirlatmalarSayfasi />);
-        expect(e.getByLabelText('Gece sessiz saatler. Kapalı · açarsanız gece uyarı gelmez')).toBeTruthy();
+        expect(e.getByLabelText('Gece sessiz saatler. Kapalı. Açarsanız gece uyarı gelmez')).toBeTruthy();
     });
 
     it('anahtar muhafız kaydına yazar (23:00 varsayılan)', () => {

@@ -2,7 +2,7 @@
  * NOBETCI — "Akışı önizle" GERÇEK ALARM tetiklerini gösterir (issue #74).
  *
  * Önizleme motorun planından beslenir; planın `alarm: true` işaretlediği tetik
- * "Alarm çalar · SS:DD" etiketini (ekran okuyucuda da) taşımalı — "her uyarıda"
+ * "Alarm çalar: SS:DD" etiketini (ekran okuyucuda da) taşımalı — "her uyarıda"
  * kapsamında tekrarlar da. Alarmsız tetikte etiket YOK.
  */
 import React from 'react';
@@ -59,22 +59,22 @@ const kur = (ayar: VakitMuhafizAyari) =>
     );
 
 describe('Akışı önizle — gerçek alarm', () => {
-    it('alarmlı adımın İLK tetiği "Alarm çalar · 13:52" der; alarmsız adımda etiket yok', () => {
+    it('alarmlı adımın İLK tetiği "Alarm çalar: 13:52" der; alarmsız adımda etiket yok', () => {
         const ekran = kur({
             seviyeler: [adim(30), adim(8, { kanallar: { bildirim: true, alarm: true }, siklik: { herDk: 4 } })],
         });
-        expect(ekran.getAllByText('Alarm çalar · 13:52')).toHaveLength(1);
+        expect(ekran.getAllByText('Alarm çalar: 13:52')).toHaveLength(1);
         expect(ekran.getAllByTestId('onizleme-alarm')).toHaveLength(1);
         // Ekran okuyucu da duyar.
-        expect(ekran.getByLabelText(/Alarm çalar · 13:52/)).toBeTruthy();
+        expect(ekran.getByLabelText(/Alarm çalar: 13:52/)).toBeTruthy();
     });
 
     it('"Her uyarıda": tekrarlar da alarm olarak gösterilir', () => {
         const ekran = kur({
             seviyeler: [adim(8, { kanallar: { bildirim: true, alarm: true }, siklik: { herDk: 4 }, alarmKapsami: 'hepsi' })],
         });
-        expect(ekran.getByText('Alarm çalar · 13:52')).toBeTruthy();
-        expect(ekran.getByText('Alarm çalar · 13:56')).toBeTruthy();
+        expect(ekran.getByText('Alarm çalar: 13:52')).toBeTruthy();
+        expect(ekran.getByText('Alarm çalar: 13:56')).toBeTruthy();
     });
 
     it('alarm kanalı kapalıysa hiçbir tetikte etiket yok', () => {
