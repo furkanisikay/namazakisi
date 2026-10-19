@@ -14,6 +14,7 @@ import com.furkanisikay.namazakisi.saat.R
 import android.os.Build
 import android.os.Bundle
 import com.furkanisikay.namazakisi.saat.cekirdek.CanliGosterim
+import com.furkanisikay.namazakisi.saat.cekirdek.CanliIkon
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
@@ -52,8 +53,8 @@ object SonDakikalarBildirimi {
     private const val EKSTRA_ONE_CIKAR = "android.requestPromotedOngoing"
     private const val API_36 = 36
 
-    /** Vakit dışı öğelerin ikonu: o öğenin bağlı olduğu vakit. */
-    private val OGE_IKON_VAKTI = mapOf(
+    /** Vakit dışı öğelerin VURGU RENGİ: o öğenin bağlı olduğu vakit (ikon `CanliIkon`'dan). */
+    private val OGE_RENK_VAKTI = mapOf(
         "iftar" to "aksam",
         "sahur" to "imsak",
         "cuma" to "ogle",
@@ -76,6 +77,9 @@ object SonDakikalarBildirimi {
         NotificationManagerCompat.from(context).cancel(ETIKET, BILDIRIM_NO)
     }
 
+    private fun vurguRengi(p: CanliGosterim.Gosterim): Long =
+        if (p.sonDakikalar) SaatPaleti.ACIL else SaatPaleti.vakitRengi(p.vakit ?: OGE_RENK_VAKTI[p.oge])
+
     private fun kanaliGarantile(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
         if (nm.getNotificationChannel(KANAL) != null) return
@@ -90,7 +94,9 @@ object SonDakikalarBildirimi {
 
     private fun goster(context: Context, p: CanliGosterim.Gosterim, simdi: Long) {
         kanaliGarantile(context)
-        val ikon = KomplikasyonOrtak.vakitIkonu(p.vakit ?: OGE_IKON_VAKTI[p.oge] ?: p.oge)
+        // İkon TEK BAŞINA anlam taşır (Now Bar saatte önce yalnız ikonla görünür): çıkan
+        // vakitte vaktin simgesi + kum saati, cuma cami, seri alev… (`CanliIkon`, JVM testli).
+        val ikon = KomplikasyonOrtak.canliIkonu(CanliIkon.anahtar(p.oge, p.vakit, p.sonDakikalar))
         val ac = PendingIntent.getActivity(
             context, 0, Intent(context, AnaAktivite::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
@@ -100,9 +106,10 @@ object SonDakikalarBildirimi {
         val govde = if (p.sonDakikalar) "Çıkış: ${VakitHesabi.saat(p.bitis)}" else "Bitiş: ${VakitHesabi.saat(p.bitis)}"
         val bildirim = NotificationCompat.Builder(context, KANAL)
             .setSmallIcon(ikon)
-            // Vurgu rengi vaktin tonu (SaatPaleti — ana ekranla aynı dil). Renklendirme
-            // (setColorized) YOK: Live Update şartı.
-            .setColor(SaatPaleti.int(SaatPaleti.vakitRengi(p.vakit ?: OGE_IKON_VAKTI[p.oge])))
+            // Vurgu rengi: son dakikalarda acil tonu (ana ekrandaki son-dakika rengiyle aynı),
+            // değilse vaktin tonu (SaatPaleti). Sistem simgeyi bu renkle boyayabilir — gri
+            // zeminde gri simge kalmasın. Renklendirme (setColorized) YOK: Live Update şartı.
+            .setColor(SaatPaleti.int(vurguRengi(p)))
             .setContentTitle(baslik)
             .setContentText(govde)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)

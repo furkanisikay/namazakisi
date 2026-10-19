@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İkindi vakti çıkıyor: vaktin kendi simgesi (%66, sol üst) + kum saati rozeti.
+     Tek renk (sistem boyar); canlı sayaç / Now Bar ve acil muhafız bildirimi.
+     Vakit simgesi ic_vakit_ikindi.xml ile AYNI yol verisidir — o değişirse bunu da güncelleyin. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <group android:scaleX="0.66" android:scaleY="0.66">
+        <path android:fillColor="#FFFFFFFF" android:pathData="M12,10a4.5,4.5 0,1 0,0.01 0z" />
+        <path android:strokeColor="#FFFFFFFF" android:strokeWidth="2" android:strokeLineCap="round"
+            android:pathData="M12,4v2M3.5,14.5h2M18.5,14.5h2M6,8.5l1.4,1.4M18,8.5l-1.4,1.4M3,21.5h18" />
+    </group>
+    <!-- Kum saati rozeti: daire içinde boş kum saati (evenOdd ile oyulmuş), altta biriken kum.
+         Simgenin kendisi kadranda ya da Now Bar'da YALNIZ başına da "bu vakit çıkıyor" der. -->
+    <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd"
+        android:pathData="M12.6,18.2a5.6,5.6 0,1 0,11.2 0a5.6,5.6 0,1 0,-11.2 0ZM15.5,14.9H20.9L18.2,18.2Z M18.2,18.2L20.9,21.5H15.5Z M18.2,19.8L19.6,21.5H16.8Z M15.1,13.9h6.2v0.8h-6.2Z M15.1,21.7h6.2v0.8h-6.2Z" />
+</vector>

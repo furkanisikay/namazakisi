@@ -26,7 +26,25 @@ object KomplikasyonOrtak {
         "ogle" -> R.drawable.ic_vakit_ogle
         "ikindi" -> R.drawable.ic_vakit_ikindi
         "aksam" -> R.drawable.ic_vakit_aksam
+        "yatsi" -> R.drawable.ic_vakit_yatsi
         else -> R.drawable.ic_vakit
+    }
+
+    /**
+     * `CanliIkon` anahtarı → simge (canlı sayaç, Now Bar, muhafız bildirimi). Açık eşleme
+     * (`getIdentifier` DEĞİL: kaynak küçültme adla aranan simgeyi silebilir). Her anahtarın
+     * dosyası `CanliIkonTest.herAnahtarinDrawableDosyasiVar` ile korunur.
+     */
+    fun canliIkonu(anahtar: String): Int = when (anahtar) {
+        "cikiyor_imsak" -> R.drawable.ic_cikiyor_imsak
+        "cikiyor_ogle" -> R.drawable.ic_cikiyor_ogle
+        "cikiyor_ikindi" -> R.drawable.ic_cikiyor_ikindi
+        "cikiyor_aksam" -> R.drawable.ic_cikiyor_aksam
+        "cikiyor_yatsi" -> R.drawable.ic_cikiyor_yatsi
+        "cami" -> R.drawable.ic_cami
+        "seri" -> R.drawable.ic_seri
+        "teheccud" -> R.drawable.ic_teheccud
+        else -> vakitIkonu(anahtar.removePrefix("vakit_"))
     }
 
     fun monokrom(context: Context, ikon: Int): MonochromaticImage =
