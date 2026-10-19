@@ -3,7 +3,8 @@
  *  - izin ÖNCE okunur; zaten verilmişse sistem diyaloğu HİÇ açılmaz,
  *  - otomatik ilerleme yok (izin/konum sonrası aynı adımda kalınır),
  *  - kayıt yalnız son düğmede; bayrak en son; hata ekranda,
- *  - sesli okuma rızası yalnız bilgilendirme maddesi görüldüyse yazılır.
+ *  - sesli okuma KAPALI başlar; rıza yalnız kartı AÇIKÇA açılırsa yazılır (persona 2026-10-19),
+ *  - gece sessizliği yeni kurulumda AÇIK yazılır; sabah alarmı rıza modalıyla açılır.
  */
 import React from 'react';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
@@ -40,6 +41,8 @@ const mockAlaniOku = jest.fn();
 jest.mock('../../../domain/services/CihazDurumOkuyucu', () => ({ alaniOku: (a: string) => mockAlaniOku(a) }));
 jest.mock('../../../core/utils/Logger', () => ({ Logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() } }));
 jest.mock('../../store/sadeGorunumSlice', () => ({ sadeGorunumuAyarla: (a: boolean) => ({ type: 'test/sade', payload: a }) }));
+jest.mock('../../store/hatirlatmaRizaSlice', () => ({ hatirlatmaRizasiVer: (a: unknown) => ({ type: 'test/riza', payload: a }) }));
+jest.mock('../../store/cumaHatirlatmaSlice', () => ({ cumaHatirlatmaAyariniGuncelle: (a: unknown) => ({ type: 'test/cuma', payload: a }) }));
 
 import { KurulumSihirbaziSayfasi, zamanAsimiyla, GPS_ZAMAN_ASIMI_MS } from '../KurulumSihirbaziSayfasi';
 
@@ -53,6 +56,12 @@ const kur = async () => {
     });
     return ekran;
 };
+
+const rizaEylemleri = () =>
+    mockDispatch.mock.calls
+        .map((c) => c[0] as { type?: string; payload?: Record<string, unknown> })
+        .filter((a) => a?.type === 'test/riza')
+        .map((a) => a.payload);
 
 const muhafizEylemi = () =>
     mockDispatch.mock.calls
@@ -153,17 +162,29 @@ describe('KurulumSihirbaziSayfasi', () => {
         expect(konum).toBeTruthy();
     });
 
-    it('Normal düzey: sesli bilgi görünür → rıza yazılır; bayrak EN SON; ana ekrana geçilir', async () => {
+    it('Normal düzey: sesli okuma VARSAYILAN KAPALI → rıza yazılmaz; gece sessiz açık; bayrak EN SON', async () => {
         const e = await kur();
         await duzeyeGit(e);
-        expect(e.getByTestId('duzey-sesli-bilgi')).toBeTruthy();
+        // Düzey seçicinin altındaki eski "bilgi maddesi = rıza" yolu kalktı.
+        expect(e.queryByTestId('duzey-sesli-bilgi')).toBeNull();
+        expect(e.getByTestId('kart-sesli-bilgi')).toBeTruthy();
         fireEvent.press(e.getByTestId('devam'));
         await waitFor(() => e.getByTestId('tamamla'));
         expect(AsyncStorage.setItem).not.toHaveBeenCalled();
         fireEvent.press(e.getByTestId('tamamla'));
         await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith('MainTabs'));
         const m = muhafizEylemi();
-        expect(m?.payload).toMatchObject({ aktif: true, yogunluk: 'normal', sesliOnayi: true });
+        expect(m?.payload).toMatchObject({
+            aktif: true,
+            yogunluk: 'normal',
+            geceSessizligi: { aktif: true, baslangicSaat: 23, baslangicDakika: 0 },
+            varsayilanOnerisiGoruldu: true,
+        });
+        expect(m?.payload?.sesliOnayi).toBeUndefined();
+        const matris = m?.payload?.matris as { ogle: { seviyeler: { kanallar: Record<string, boolean> }[] } };
+        expect(matris.ogle.seviyeler).toHaveLength(3);
+        expect(matris.ogle.seviyeler.some((a) => a.kanallar.sesli)).toBe(false);
+        expect(rizaEylemleri()).toEqual([]);
         expect(AsyncStorage.setItem).toHaveBeenCalledWith('@namaz_akisi/ilk_kurulum_tamamlandi', 'true');
         const bayrakSirasi = (AsyncStorage.setItem as jest.Mock).mock.invocationCallOrder[0];
         expect(Math.max(...mockDispatch.mock.invocationCallOrder)).toBeLessThan(bayrakSirasi);
@@ -188,7 +209,7 @@ describe('KurulumSihirbaziSayfasi', () => {
     it('sade görünüm anahtarı açılırsa ayar yazılır', async () => {
         const e = await kur();
         await duzeyeGit(e);
-        fireEvent(e.getByRole('switch'), 'valueChange', true);
+        fireEvent(e.getByTestId('sade-anahtari'), 'valueChange', true);
         fireEvent.press(e.getByTestId('devam'));
         await waitFor(() => e.getByText('Sade görünüm açık'));
         fireEvent.press(e.getByTestId('tamamla'));
@@ -204,6 +225,8 @@ describe('KurulumSihirbaziSayfasi', () => {
         fireEvent.press(e.getByTestId('tamamla'));
         await waitFor(() => expect(navigation.replace).toHaveBeenCalled());
         expect(mockDispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'test/sade' }));
+        // Cuma varsayılan KAPALI: kaydına dokunulmaz.
+        expect(mockDispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'test/cuma' }));
     });
 
     it('kayıt hatası ekranda yazılır, ana ekrana geçilmez', async () => {
@@ -238,7 +261,7 @@ describe('KurulumSihirbaziSayfasi', () => {
         }));
         const e = await kur();
         await duzeyeGit(e);
-        fireEvent(e.getByRole('switch'), 'valueChange', true);
+        fireEvent(e.getByTestId('sade-anahtari'), 'valueChange', true);
         fireEvent.press(e.getByTestId('devam'));
         await waitFor(() => e.getByTestId('tamamla'));
         fireEvent.press(e.getByTestId('tamamla'));
@@ -303,5 +326,69 @@ describe('zamanAsimiyla (GPS)', () => {
     });
     it('zamanında gelen sonucu geçirir', async () => {
         await expect(zamanAsimiyla(Promise.resolve(5), 1000)).resolves.toBe(5);
+    });
+});
+
+describe('KurulumSihirbaziSayfasi — düzey adımı kartları (persona 2026-10-19)', () => {
+    const tamamla = async (e: Awaited<ReturnType<typeof kur>>) => {
+        fireEvent.press(e.getByTestId('devam'));
+        await waitFor(() => e.getByTestId('tamamla'));
+        fireEvent.press(e.getByTestId('tamamla'));
+        await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith('MainTabs'));
+    };
+
+    it('sesli okuma kartı AÇIKÇA açılırsa rıza yazılır ve sesli adım kurulur', async () => {
+        const e = await kur();
+        await duzeyeGit(e);
+        fireEvent(e.getByTestId('kart-sesli'), 'valueChange', true);
+        await tamamla(e);
+        const m = muhafizEylemi();
+        expect(m?.payload?.sesliOnayi).toBe(true);
+        const matris = m?.payload?.matris as { ogle: { seviyeler: { kanallar: Record<string, boolean> }[] } };
+        expect(matris.ogle.seviyeler[2].kanallar.sesli).toBe(true);
+        expect(rizaEylemleri()).toEqual([{ sesliOnayi: true }]);
+    });
+
+    it('"Kıldığınızı işaretler misiniz? Hayır" → Hafif düzey + açıklama', async () => {
+        const e = await kur();
+        await duzeyeGit(e);
+        fireEvent.press(e.getByTestId('kart-isaretler-hayir'));
+        expect(e.getByTestId('kart-isaretler-not')).toBeTruthy();
+        expect(e.getByLabelText(/^Hafif\./).props.accessibilityState).toMatchObject({ selected: true });
+        await tamamla(e);
+        expect(muhafizEylemi()?.payload).toMatchObject({ aktif: true, yogunluk: 'hafif' });
+    });
+
+    it('gece sessizliği kapatılırsa kaydı kapalı yazılır', async () => {
+        const e = await kur();
+        await duzeyeGit(e);
+        fireEvent(e.getByTestId('kart-gece'), 'valueChange', false);
+        await tamamla(e);
+        expect(muhafizEylemi()?.payload?.geceSessizligi).toMatchObject({ aktif: false });
+    });
+
+    it('sabah alarmı rıza modalı ONAYLANMADAN açılmaz; onaylanınca sabahın ilk adımı alarm olur', async () => {
+        const e = await kur();
+        await duzeyeGit(e);
+        fireEvent(e.getByTestId('kart-sabah-alarm'), 'valueChange', true);
+        // Vazgeç → hiçbir şey yazılmaz
+        fireEvent.press(e.getByLabelText('Vazgeç'));
+        expect(e.getByTestId('kart-sabah-alarm').props.value).toBe(false);
+        fireEvent(e.getByTestId('kart-sabah-alarm'), 'valueChange', true);
+        fireEvent.press(e.getByLabelText('Alarmı açın'));
+        await waitFor(() => expect(e.getByTestId('kart-sabah-alarm').props.value).toBe(true));
+        await tamamla(e);
+        const matris = muhafizEylemi()?.payload?.matris as { imsak: { seviyeler: { kanallar: Record<string, boolean> }[] } };
+        expect(matris.imsak.seviyeler[0].kanallar.alarm).toBe(true);
+        expect(matris.imsak.seviyeler.slice(1).some((a) => a.kanallar.alarm)).toBe(false);
+        expect(rizaEylemleri()).toEqual([{ alarmOnayi: true }]);
+    });
+
+    it('cuma kartı açılırsa cuma hatırlatması yazılır', async () => {
+        const e = await kur();
+        await duzeyeGit(e);
+        fireEvent(e.getByTestId('kart-cuma'), 'valueChange', true);
+        await tamamla(e);
+        expect(mockDispatch).toHaveBeenCalledWith({ type: 'test/cuma', payload: { aktif: true } });
     });
 });

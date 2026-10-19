@@ -211,6 +211,18 @@ export function presetVakteUygula(
 }
 
 /**
+ * "Sabah beni uyandırsın" (kurulum sihirbazı): sabahın kronolojik İLK adımı gerçek
+ * alarm olur. RIZA çağıranın işidir — yalnız `AlarmOnayModal` onaylandıysa çağrılır
+ * (preset/göç alarm AÇMAZ kuralı bozulmasın). Adım yoksa matris aynen döner.
+ */
+export function sabahAlarminiAc(matris: MuhafizMatrisi): MuhafizMatrisi {
+  const imsak = matris.imsak;
+  if (!imsak || imsak.seviyeler.length === 0) return matris;
+  const seviyeler = imsak.seviyeler.map((s, i) => (i === 0 ? { ...s, kanallar: kanalAc(s.kanallar, 'alarm') } : s));
+  return { ...matris, imsak: { ...imsak, seviyeler } };
+}
+
+/**
  * Bu vaktin ZAMANLAMASI (esik + siklik, adim sayisi dahil) verilen preset'in bu vakte
  * uygulanmis hâliyle ayni mi? Yon hesaba katilir (giris yonlu vakit giris tablosuyla
  * karsilastirilir). Saklanan bir alan yok — duzey her zaman matristen TURETILIR.
