@@ -8,8 +8,10 @@ import {
     geceBaslangicMs,
     geceBaslangicMetni,
     geceSessizligiSusturuyorMu,
+    geceSessizliginePencereyiUyarla,
     geceSessizliginiNormalize,
 } from '../geceSessizligi';
+import { muhafizBildirimIdOlustur } from '../anonsKimligi';
 import { muhafizTeslimPlaniOlustur, vakitTeslimAdaylari, type MuhafizVakitZamani } from '../muhafizTeslimPlani';
 import { presetMatrisiOlustur } from '../matrisIslemleri';
 import { HATIRLATMA_PRESETLERI } from '../../../presentation/store/muhafizSlice';
@@ -70,9 +72,33 @@ describe('vakitTeslimAdaylari — gece sessizliği (arka plan + defter AYNI üre
         expect(adaylar[0].uyari.alarm).toBe(true);
     });
 
-    it('plan girdisinden de geçer (muhafizTeslimPlaniOlustur → defter)', () => {
+    it('YATSI ÇAPASI (plan girdisi → servis + defter): 25/10/3 sessizlik başlangıcına göre kurulur', () => {
         const plan = muhafizTeslimPlaniOlustur({ matris, vakitler: [yatsi], simdi, geceSessizligi: ACIK });
-        expect(plan).toHaveLength(0);
+        expect(plan.map((a) => a.zaman.getTime())).toEqual([
+            yerel(21, 22, 35).getTime(),
+            yerel(21, 22, 50).getTime(),
+            yerel(21, 22, 57).getTime(),
+        ]);
+        // Kimlik biçimi aynı; kalanDk ETKİN çıkışa göre (ön plan ve saat de böyle üretir).
+        expect(plan.map((a) => a.id)).toEqual([
+            muhafizBildirimIdOlustur('yatsi', plan[0].uyari.seviye, '2026-06-21', 25),
+            muhafizBildirimIdOlustur('yatsi', plan[1].uyari.seviye, '2026-06-21', 10),
+            muhafizBildirimIdOlustur('yatsi', plan[2].uyari.seviye, '2026-06-21', 3),
+        ]);
+    });
+
+    it('sessizlik KAPALIYKEN plan birebir eskisi (imsağa kala)', () => {
+        const plan = muhafizTeslimPlaniOlustur({ matris, vakitler: [yatsi], simdi });
+        expect(plan.map((a) => a.zaman.getTime())).toEqual([
+            yerel(22, 2, 59).getTime(),
+            yerel(22, 3, 14).getTime(),
+            yerel(22, 3, 21).getTime(),
+        ]);
+    });
+
+    it('yatsı sessizlikten SONRA giriyorsa o gece yatsı uyarısı yok', () => {
+        const gec = { ...yatsi, giris: yerel(21, 23, 10) };
+        expect(muhafizTeslimPlaniOlustur({ matris, vakitler: [gec], simdi, geceSessizligi: ACIK })).toHaveLength(0);
     });
 });
 
@@ -89,6 +115,33 @@ describe('saatin hazır planı (Wear) — telefonla AYNI kural', () => {
         const yatsiSayisi = (plan: ReturnType<typeof wearMuhafizPlaniOlustur>) =>
             plan.flat().filter((k) => k.vakit === 'yatsi' && k.tarih === '2026-06-21').length;
         expect(yatsiSayisi(wearMuhafizPlaniOlustur(g))).toBe(3);
-        expect(yatsiSayisi(wearMuhafizPlaniOlustur({ ...g, geceSessizligi: ACIK }))).toBe(0);
+        // Çapa: saat de yatsıyı 23:00'e göre alır (telefonla aynı anlar).
+        const anlar = wearMuhafizPlaniOlustur({ ...g, geceSessizligi: ACIK })
+            .flat()
+            .filter((k) => k.vakit === 'yatsi' && k.tarih === '2026-06-21')
+            .map((k) => k.ms);
+        expect(anlar).toEqual([yerel(21, 22, 35).getTime(), yerel(21, 22, 50).getTime(), yerel(21, 22, 57).getTime()]);
+    });
+});
+
+describe('geceSessizliginePencereyiUyarla — yatsı çapası', () => {
+    const yatsi = { vakit: 'yatsi', tarih: '2026-06-21', giris: yerel(21, 20, 0), cikis: yerel(22, 4, 0) };
+
+    it('kapalıyken ve yatsı dışı vakitte AYNI nesne (plan birebir eskisi)', () => {
+        expect(geceSessizliginePencereyiUyarla(undefined, yatsi)).toBe(yatsi);
+        const aksam = { ...yatsi, vakit: 'aksam' };
+        expect(geceSessizliginePencereyiUyarla(ACIK, aksam)).toBe(aksam);
+    });
+
+    it('etkin çıkış = sessizlik başlangıcı; gece yarısı sonrası başlangıç ertesi takvim günü', () => {
+        expect(geceSessizliginePencereyiUyarla(ACIK, yatsi)?.cikis).toEqual(yerel(21, 23, 0));
+        const a = { aktif: true, baslangicSaat: 0, baslangicDakika: 30 };
+        expect(geceSessizliginePencereyiUyarla(a, yatsi)?.cikis).toEqual(yerel(22, 0, 30));
+    });
+
+    it('sessizlik çıkıştan sonra başlıyorsa dokunmaz; yatsı sessizlikten sonra giriyorsa null', () => {
+        const kisa = { ...yatsi, cikis: yerel(21, 22, 30) };
+        expect(geceSessizliginePencereyiUyarla(ACIK, kisa)).toBe(kisa);
+        expect(geceSessizliginePencereyiUyarla(ACIK, { ...yatsi, giris: yerel(21, 23, 0) })).toBeNull();
     });
 });

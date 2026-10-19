@@ -29,7 +29,7 @@ import type { MuhafizMatrisi, MuhafizVakti, VakitMuhafizAyari } from '../../core
 import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
 import { presetVakteUygula, tumVakitlereUygula, zamanlamaDegistiMi } from '../../core/muhafiz/matrisIslemleri';
 import { VakitDuzeyListesi, ortakDuzeyiBul, type VakitDuzeyi } from '../components/hatirlatma/VakitDuzeyListesi';
-import { geceSessizliginiNormalize } from '../../core/muhafiz/geceSessizligi';
+import { geceSessizliginePencereyiUyarla, geceSessizliginiNormalize } from '../../core/muhafiz/geceSessizligi';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { adimKapaliMi } from '../../core/muhafiz/kanalKumesi';
 import { adimEkle, adimSil, adimSilinebilirMi } from '../../core/muhafiz/adimDuzenleme';
@@ -138,7 +138,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
      * Konum/vakit hesabı yoksa (`getGunlukVakitler` null) harita BOŞ kalır ve
      * ekran eski davranışa döner — yanlış alarm vermektense sessiz kalırız.
      */
-    const { vakitPencereleri, vakitPencereAnlari } = useMemo(() => {
+    const { vakitPencereleri: hamPencereler, vakitPencereAnlari: hamAnlar } = useMemo(() => {
         const bos = {
             vakitPencereleri: {} as Partial<Record<MuhafizVakti, number>>,
             vakitPencereAnlari: {} as Partial<Record<MuhafizVakti, { baslangic: Date; bitis: Date }>>,
@@ -180,6 +180,27 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             return bos;
         }
     }, []);
+
+    /**
+     * GECE SESSİZLİĞİ — YATSI ÇAPASI: motor yatsıyı etkin pencereyle (`geceSessizliginePencereyiUyarla`)
+     * planladığı için ekran da (eşik tavanı, zaman şeridi, akış önizlemesi) AYNI pencereyi kullanır;
+     * yoksa şerit imsağa kala uyarı gösterirken telefon 23:00'e kala konuşurdu. Yatsı sessizlikten
+     * sonra giriyorsa (`yatsiDustu`) satır bunu söyler.
+     */
+    const geceSessizligi = geceSessizliginiNormalize(muhafizAyarlari.geceSessizligi);
+    const { vakitPencereleri, vakitPencereAnlari, yatsiDustu } = useMemo(() => {
+        const yatsi = hamAnlar.yatsi;
+        if (!yatsi || !geceSessizligi?.aktif) return { vakitPencereleri: hamPencereler, vakitPencereAnlari: hamAnlar, yatsiDustu: false };
+        const b = yatsi.baslangic;
+        const tarih = `${b.getFullYear()}-${String(b.getMonth() + 1).padStart(2, '0')}-${String(b.getDate()).padStart(2, '0')}`;
+        const etkin = geceSessizliginePencereyiUyarla(geceSessizligi, { vakit: 'yatsi', tarih, giris: b, cikis: yatsi.bitis });
+        if (!etkin) return { vakitPencereleri: hamPencereler, vakitPencereAnlari: hamAnlar, yatsiDustu: true };
+        return {
+            vakitPencereleri: { ...hamPencereler, yatsi: pencereUzunluguDkHesapla(b, etkin.cikis) },
+            vakitPencereAnlari: { ...hamAnlar, yatsi: { baslangic: b, bitis: etkin.cikis } },
+            yatsiDustu: false,
+        };
+    }, [hamPencereler, hamAnlar, geceSessizligi]);
 
     /**
      * Ekranda yapılan değişikliği GERÇEK plana yansıtır (debounce'lu; çıkışta hemen) —
@@ -443,7 +464,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                 <VakitDuzeyListesi
                                     matris={matris}
                                     onSec={vakitDuzeyiSec}
-                                    geceSessiz={geceSessizliginiNormalize(muhafizAyarlari.geceSessizligi)?.aktif === true}
+                                    geceSessiz={geceSessizligi?.aktif === true}
+                                    yatsiDustu={yatsiDustu}
                                 />
                             </>
                         ) : null}

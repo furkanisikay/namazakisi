@@ -652,10 +652,11 @@ describe('MuhafizAyarlariSayfasi', () => {
   });
 
   it('gece sessizliği açıkken yatsı satırı gece uyarılarının gelmeyeceğini söyler', async () => {
-    const { getByTestId, queryByTestId } = await kur({ geceSessizligi: { aktif: true, baslangicSaat: 23, baslangicDakika: 0 } });
+    const { getByTestId, getByText, queryByTestId } = await kur({ geceSessizligi: { aktif: true, baslangicSaat: 23, baslangicDakika: 0 } });
     expect(queryByTestId('vakit-duzey-listesi')).toBeNull(); // ayrıntı açıkken orta katman gizli
     fireEvent.press(getByTestId('kendim-ayarlayayim'));
     expect(getByTestId('vakit-duzey-yatsi-gece')).toBeTruthy();
+    expect(getByText('Yatsı uyarıları gece sessizliğinden önce gelir.')).toBeTruthy();
   });
 
   // ── Yoğunluk preset'i ─────────────────────────────────────────────────────

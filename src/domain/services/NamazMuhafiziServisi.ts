@@ -5,7 +5,11 @@ import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunKapisiniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { geceSessizliginiOku } from '../../data/local/LocalGeceSessizligiOkuyucu';
-import { geceSessizligiSusturuyorMu, type GeceSessizligi } from '../../core/muhafiz/geceSessizligi';
+import {
+    geceSessizligiSusturuyorMu,
+    geceSessizliginePencereyiUyarla,
+    type GeceSessizligi,
+} from '../../core/muhafiz/geceSessizligi';
 import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 import { telefonAnonsuKonusurMu, type SaatAyarlari } from '../../core/saat/saatAyarlari';
 import { ozelGunAktifMi, type OzelGunKapisiGirdisi } from '../../core/seri/ozelGunKapisi';
@@ -238,8 +242,7 @@ export class NamazMuhafiziServisi {
         const vakitBilgisi = this.hesaplayici.getSuankiVakitBilgisi();
         if (!vakitBilgisi) return;
 
-        const { vakit, kalanSureMs, giris } = vakitBilgisi;
-        const kalanDk = Math.floor(kalanSureMs / (1000 * 60));
+        const { vakit, giris } = vakitBilgisi;
 
         // Eğer bu vakit zaten kılındıysa banner'ı temizle (sadece bir kez) ve rahatsız etme
         const bugun = new Date().toDateString();
@@ -249,8 +252,15 @@ export class NamazMuhafiziServisi {
         // Kapı vaktin GÜNÜNE bakar — gece yarısından sonraki yatsı DÜNE aittir
         // (arka planla aynı tarih kuralı: `muhafizVaktiTarihiniSec`).
         const simdi = new Date();
-        const cikisAni = vakitBilgisi.saat ?? new Date(simdi.getTime() + kalanSureMs);
+        const cikisAni = vakitBilgisi.saat ?? new Date(simdi.getTime() + vakitBilgisi.kalanSureMs);
         const vakitGunu = muhafizVaktiTarihiniSec(vakit, simdi, cikisAni, bugunuAl(), dunuAl());
+        // YATSI ÇAPASI (gece sessizliği): etkin çıkış = min(çıkış, sessizlik başlangıcı); yatsı
+        // sessizlikten sonra giriyorsa o gece uyarı yok. Arka planla AYNI saf fonksiyon →
+        // kalanDk (ve dolayısıyla bildirim/anons kimliği) iki tarafta aynı.
+        const etkin = geceSessizliginePencereyiUyarla(this.geceSessizligi, { vakit, tarih: vakitGunu, giris, cikis: cikisAni });
+        if (!etkin) return;
+        const kalanSureMs = etkin.cikis.getTime() - simdi.getTime();
+        const kalanDk = Math.floor(kalanSureMs / (1000 * 60));
         if (ozelGunAktifMi(vakitGunu, this.ozelGun)) {
             const ozelAnahtar = `ozel_${vakitAnahtari}`;
             if (!this.temizlenenVakitler[ozelAnahtar] && this.onBildirim) {
@@ -280,7 +290,7 @@ export class NamazMuhafiziServisi {
         // (yapılandırılmamış/eski kayıt) pencere bilinmez ve motor giriş yönünde
         // hiç tetiklenmez; çıkış yönü etkilenmez.
         const yon: PencereYonu = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
-        const cikis = vakitBilgisi.saat ?? new Date(Date.now() + kalanSureMs);
+        const cikis = etkin.cikis;
         const pencereUzunluguDk = giris ? pencereUzunluguDkHesapla(giris, cikis) : undefined;
         const olcuDk =
             yon === 'girisindenItibaren' && giris
@@ -324,7 +334,7 @@ export class NamazMuhafiziServisi {
 
         if (!sistemAlarmi) {
             // Faz 5: uygulama ACIKKEN de sesli anons konussun.
-            this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs, yon);
+            this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs, yon, vakitGunu);
 
             // Faz 6: uygulama ACIKKEN bildirim golgeligine bir sey dusmez (banner
             // ekranda cizilir) → KANAL titresimi de islemez. On planda titresimi
@@ -405,7 +415,9 @@ export class NamazMuhafiziServisi {
         seviyeNo: SeviyeNo,
         kalanDk: number,
         kalanSureMs: number,
-        yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+        yon: PencereYonu = VARSAYILAN_PENCERE_YONU,
+        /** Vaktin namaz günü — yatsı çapasında etkin çıkış "bugün" olduğu için tahmin EDİLMEZ. */
+        vakitGunu?: string
     ): void {
         if (yon === 'girisindenItibaren') return;
         // iOS: ON PLANDA ANONS PLANLANMAZ — CIFT SES KURALI.
@@ -424,7 +436,7 @@ export class NamazMuhafiziServisi {
         try {
             const simdi = new Date();
             const cikis = new Date(simdi.getTime() + kalanSureMs);
-            const tarih = muhafizVaktiTarihiniSec(vakit, simdi, cikis, bugunuAl(), dunuAl());
+            const tarih = vakitGunu ?? muhafizVaktiTarihiniSec(vakit, simdi, cikis, bugunuAl(), dunuAl());
             const id = muhafizBildirimIdOlustur(vakit, seviyeNo, tarih, kalanDk);
             const metin = anonsMetniniCoz(seviye.anonsMetni, vakit, kalanDk);
 

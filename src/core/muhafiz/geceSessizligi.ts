@@ -17,6 +17,13 @@
  * gerekmez; ertesi sabahın uyarıları ertesi namaz gününe aittir ve pencereye girmez.
  *
  * GERÇEK ALARM MUAFTIR: alarm kullanıcının bilerek kurduğu uyandırmadır (rızalı, issue #74).
+ *
+ * YATSI ÇAPASI (sahip kararı 2026-10-19): sessizlik açıkken yatsının ETKİN çıkışı
+ * `min(gerçek çıkış, sessizlik başlangıcı)`dır (`geceSessizliginePencereyiUyarla`) — eşikler
+ * (25/10/3) o ana göre kurulur, kişi yatmadan önce uyarılır (23:00 → 22:35/22:50/22:57).
+ * Yatsı sessizlikten SONRA giriyorsa (yaz / yüksek enlem) pencere DÜŞER (`null`) ve ekran
+ * bunu söyler. Arka plan, ön plan, defter ve saat AYNI etkin pencereyi kullanır → kimlik
+ * (`muhafizBildirimIdOlustur`, kalanDk etkin çıkışa göre) dört yerde aynıdır.
  */
 
 export interface GeceSessizligi {
@@ -80,6 +87,31 @@ export function geceSessizligiSusturuyorMu(
 ): boolean {
     if (!ayar?.aktif || alarm === true) return false;
     return tetikMs >= geceBaslangicMs(namazGunu, ayar);
+}
+
+/** Gece sessizliğinin uyarladığı pencere (vakit adı + namaz günü + giriş/çıkış). */
+export interface SessizlikPenceresi {
+    vakit: string;
+    tarih: string;
+    giris?: Date;
+    cikis: Date;
+}
+
+/**
+ * Yatsının ETKİN penceresi. Sessizlik kapalıysa, vakit yatsı değilse ya da sessizlik
+ * çıkıştan sonra başlıyorsa AYNI nesne döner (plan birebir eskisi). Yatsı sessizlikten
+ * sonra (ya da tam o anda) giriyorsa `null` (o gecenin yatsı hatırlatması yok).
+ * Giriş bilinmiyorsa (eski kayıt) sessizlikten önce girdiği varsayılır.
+ */
+export function geceSessizliginePencereyiUyarla<T extends SessizlikPenceresi>(
+    ayar: GeceSessizligi | null | undefined,
+    pencere: T
+): T | null {
+    if (!ayar?.aktif || pencere.vakit !== 'yatsi') return pencere;
+    const bas = geceBaslangicMs(pencere.tarih, ayar);
+    if (bas >= pencere.cikis.getTime()) return pencere;
+    if (pencere.giris && pencere.giris.getTime() >= bas) return null;
+    return { ...pencere, cikis: new Date(bas) };
 }
 
 /** Ekran metni: "23:00" */

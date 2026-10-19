@@ -192,6 +192,8 @@ export class ArkaplanMuhafizServisi {
             simdi,
             kilindiMi: (tarih: string, vakit: VakitAdi) => (kilinanVakitlerMap[tarih] || []).includes(vakit),
             ozelGundeMi,
+            // Yatsı çapası: listedeki yatsı penceresi ETKİN çıkışla gelir (defterle aynı).
+            geceSessizligi: this.geceSessizligi,
         };
         const gelecekVakitler = planlanacakMuhafizVakitleri(planGirdisi);
 

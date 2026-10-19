@@ -28,7 +28,7 @@ import {
     type SaatTeslimBaglami,
 } from '../saat/saatAyarlari';
 import { muhafizUyandirmasiMi } from '../saat/uyandirmaKapisi';
-import { geceSessizligiSusturuyorMu, type GeceSessizligi } from './geceSessizligi';
+import { geceSessizligiSusturuyorMu, geceSessizliginePencereyiUyarla, type GeceSessizligi } from './geceSessizligi';
 
 /** Bir vaktin bugünkü penceresi. `tarih` vaktin AİT OLDUĞU gündür (yatsı dün olabilir). */
 export interface MuhafizVakitZamani {
@@ -196,9 +196,14 @@ export function planlanacakMuhafizVakitleri(girdi: MuhafizPlanGirdisi): MuhafizV
     const { vakitler, simdi } = girdi;
     const kilindiMi = girdi.kilindiMi ?? (() => false);
     const ozelGundeMi = girdi.ozelGundeMi ?? (() => false);
-    return vakitler.filter(
-        (v) => v.cikis.getTime() > simdi.getTime() && !ozelGundeMi(v.tarih) && !kilindiMi(v.tarih, v.vakit)
-    );
+    // Gece sessizliği: yatsının etkin çıkışı sessizlik başlangıcıdır (ya da yatsı düşer).
+    // ÖNCE uyarlanır ki "gelecekte mi" süzgeci etkin çıkışa baksın. Kapalıyken aynı nesne.
+    return vakitler
+        .map((v) => geceSessizliginePencereyiUyarla(girdi.geceSessizligi, v))
+        .filter(
+            (v): v is MuhafizVakitZamani =>
+                v !== null && v.cikis.getTime() > simdi.getTime() && !ozelGundeMi(v.tarih) && !kilindiMi(v.tarih, v.vakit)
+        );
 }
 
 /** Tek bir vaktin teslim adayları (`ArkaplanMuhafizServisi.vakitIcinBildirimPlanla`'nın saf çekirdeği). */

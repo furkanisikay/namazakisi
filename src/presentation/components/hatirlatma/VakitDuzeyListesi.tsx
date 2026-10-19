@@ -39,11 +39,13 @@ export function ortakDuzeyiBul(matris: MuhafizMatrisi): VakitDuzeyi | null {
 export interface VakitDuzeyListesiProps {
     matris: MuhafizMatrisi;
     onSec: (vakit: MuhafizVakti, duzey: VakitDuzeyi) => void;
-    /** Gece sessizliği açık mı (çıkış yönlü yatsının gece uyarıları gelmez — söylenir). */
+    /** Gece sessizliği açık mı (yatsı uyarıları sessizliğin başlangıcına çapalanır — söylenir). */
     geceSessiz?: boolean;
+    /** Bugün yatsı sessizlikten SONRA giriyor (yatsı hatırlatması gelmez — söylenir). */
+    yatsiDustu?: boolean;
 }
 
-export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, onSec, geceSessiz = false }) => {
+export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, onSec, geceSessiz = false, yatsiDustu = false }) => {
     const renkler = useRenkler();
     return (
         <View
@@ -52,7 +54,7 @@ export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, on
         >
             {MUHAFIZ_VAKITLERI.map((vakit, i) => {
                 const secili = vakitDuzeyiniBul(matris, vakit);
-                const yatsiGece = vakit === 'yatsi' && geceSessiz && (matris.yatsi?.yon ?? 'cikisaDogru') === 'cikisaDogru';
+                const yatsiGece = vakit === 'yatsi' && geceSessiz;
                 return (
                     <View key={vakit} style={{ paddingVertical: 10, borderTopWidth: i > 0 ? 0.5 : 0, borderTopColor: renkler.sinir }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
@@ -75,7 +77,9 @@ export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, on
                         />
                         {yatsiGece ? (
                             <Text testID="vakit-duzey-yatsi-gece" style={{ fontSize: 14, lineHeight: 20, marginTop: 8, color: renkler.metin }}>
-                                Gece sessiz saatler açık: yatsının gece kalan hatırlatmaları gelmez.
+                                {yatsiDustu
+                                    ? 'Bugün yatsı gece sessizliğinden sonra giriyor; yatsı hatırlatması gelmez.'
+                                    : 'Yatsı uyarıları gece sessizliğinden önce gelir.'}
                             </Text>
                         ) : null}
                     </View>

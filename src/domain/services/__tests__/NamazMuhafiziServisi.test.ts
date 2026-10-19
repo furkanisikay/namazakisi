@@ -1207,6 +1207,24 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             expect(mockPlanlaAnons).not.toHaveBeenCalled();
         });
 
+        it('YATSI ÇAPASI: 22:50’de yatsı (imsağa saatler var) sessizliğe 10 dk kala uyarır', async () => {
+            const simdi = new Date();
+            simdi.setHours(22, 50, 0, 0);
+            jest.setSystemTime(simdi);
+            const giris = new Date(simdi.getTime() - 2 * 60 * 60 * 1000);
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'yatsi',
+                giris,
+                kalanSureMs: 5 * 60 * 60 * 1000,
+                saat: new Date(simdi.getTime() + 5 * 60 * 60 * 1000),
+            });
+            await geceYaz(true);
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+            // Çapasız (imsağa 5 sa) hiçbir eşik tutmazdı; çapalı çıkışa 10 dk = 3. adım konuşur.
+            expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 3, expect.any(String));
+        });
+
         it('kapalıyken (alan yok = mevcut kullanıcı) uyarı eskisi gibi gelir', async () => {
             await geceYaz(false);
             await muhafiz.acilistaKilinanlariYukle();
