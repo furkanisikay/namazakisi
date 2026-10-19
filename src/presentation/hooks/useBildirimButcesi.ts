@@ -17,6 +17,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { useAppSelector } from '../store/hooks';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
+import { geceSessizliginiNormalize } from '../../core/muhafiz/geceSessizligi';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import type { NafileAyarlari } from '../../core/nafile/nafileTipleri';
 import {
@@ -154,7 +155,9 @@ export function useBildirimButcesi(): BildirimButcesi {
             // `dakika` her tick'te memo'yu yeniden kurar; an yine gerçek saattir.
             simdi: new Date(Math.max(Date.now(), dakika * 60_000)),
             koordinat: koordinat ?? null,
-            muhafiz: muhafiz && matris ? { aktif: muhafiz.aktif, matris } : null,
+            muhafiz: muhafiz && matris
+                ? { aktif: muhafiz.aktif, matris, geceSessizligi: geceSessizliginiNormalize(muhafiz.geceSessizligi) }
+                : null,
             nafile: nafile ?? null,
             vakitSayaci: sayac ? { aktif: sayac.aktif === true, sayacBaslangicSeviyesi: sayac.sayacBaslangicSeviyesi } : null,
         };

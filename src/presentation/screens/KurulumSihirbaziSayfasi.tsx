@@ -13,8 +13,10 @@
  *    Yalnız `ILK_KURULUM_TAMAMLANDI` yazımı ölümcüldür (hata ekranda, "Tekrar deneyin");
  *    vakit bildirimi ve sade görünüm yazımı başarısızsa loglanıp geçilir — kullanıcı
  *    kurulumda takılı kalmasın. "Kaydedildi" denmez, kayıt bitince ana ekrana geçilir.
- *  - Sesli okuma rızası (`sesliOnayi`) yalnız bilgilendirme maddesi EKRANDA
- *    gösterildiyse yazılır (`sesliBilgiGosterildiMi`; `presetAyarlariniOlustur` sözleşmesi).
+ *  - Düzey adımı varsayılanları (persona çalışması 2026-10-19): sesli okuma KAPALI başlar
+ *    ve yalnız ayrı kartında AÇIKÇA açılırsa (açıklama kartta yazılıyken) rıza yazılır;
+ *    gece sessizliği AÇIK; sabah alarmı `AlarmOnayModal` onayıyla açılır; cuma KAPALI.
+ *    "Kıldığınızı işaretler misiniz? Hayır" → Hafif (uyarılar kılınmışlıkla susar).
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Animated, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
@@ -42,9 +44,25 @@ import { useIzinAkisi } from '../components/ortak';
 import { EGRI, SURE } from '../components/hareket';
 import { useHareketAzalt } from '../hooks/useHareketAzalt';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
-import { sesliBilgiGosterildiMi, type HatirlatmaDuzeyi } from '../components/hatirlatma/DuzeySecici';
+import { type HatirlatmaDuzeyi } from '../components/hatirlatma/DuzeySecici';
 import { KURULUM_ADIMLARI, type KonumDurumu, type KurulumAdimi } from './KurulumSihirbazi/tipler';
-import { BildirimAdimi, DuzeyAdimi, HazirAdimi, HosgeldinizAdimi, KonumAdimi } from './KurulumSihirbazi/adimlar';
+import {
+    BildirimAdimi,
+    DuzeyAdimi,
+    HazirAdimi,
+    HosgeldinizAdimi,
+    KonumAdimi,
+    VARSAYILAN_KURULUM_SECIMLERI,
+    type KurulumSecimleri,
+} from './KurulumSihirbazi/adimlar';
+import { cumaHatirlatmaAyariniGuncelle } from '../store/cumaHatirlatmaSlice';
+import { sabahAlarminiAc } from '../../core/muhafiz/matrisIslemleri';
+import { VARSAYILAN_GECE_SESSIZLIGI } from '../../core/muhafiz/geceSessizligi';
+import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
+import { sesliBilgiMetni } from '../../core/hatirlatma/duzeyOzeti';
+import { AlarmOnayModal } from '../components/hatirlatma/AlarmOnayModal';
+import { useAlarmIzinleri } from '../hooks/useAlarmIzinleri';
+import { usePlatformYetenekleri } from '../hooks/usePlatformYetenekleri';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'KurulumSihirbazi'>;
 
@@ -99,6 +117,20 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     // Düzey + sade görünüm
     const [duzey, setDuzey] = useState<HatirlatmaDuzeyi>('normal');
     const [sade, setSade] = useState(false);
+    const [secimler, setSecimler] = useState<KurulumSecimleri>(VARSAYILAN_KURULUM_SECIMLERI);
+    const secimDegistir = useCallback((d: Partial<KurulumSecimleri>) => setSecimler((s) => ({ ...s, ...d })), []);
+    const isaretlerSec = useCallback((d: 'evet' | 'hayir') => {
+        setSecimler((s) => ({ ...s, isaretler: d }));
+        // Kıldım'a basmayan kişide uyarı zinciri hiç kesilmez → tek hatırlatma (Hafif).
+        // "Evet"e dönünce yalnız Hayır'ın kurduğu Hafif Normal'e döner; kullanıcının
+        // kendi seçtiği düzey (Yoğun, Kapalı) ezilmez.
+        if (d === 'hayir') setDuzey('hafif');
+        else setDuzey((onceki) => (onceki === 'hafif' ? 'normal' : onceki));
+    }, []);
+    const yetenekler = usePlatformYetenekleri();
+    const alarmIzinleri = useAlarmIzinleri(adim === 'duzey', yetenekler.platform);
+    const [alarmOnayAcik, setAlarmOnayAcik] = useState(false);
+    const sesliOrnek = useMemo(() => anonsMetniniCoz(ANONS_SABLONLARI[0], 'ogle', 3), []);
 
     // Kayıt
     const [kaydediliyor, setKaydediliyor] = useState(false);
@@ -251,30 +283,35 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             Logger.error('KurulumSihirbazi', 'Vakit bildirimi ayarı yazılamadı', error);
         }
         try {
-            if (duzey === 'kapali') {
-                // Kapalı seçen kişi sesli okuma maddesini HİÇ görmez → rıza yazılmaz.
-                dispatch(
-                    muhafizAyarlariniGuncelle({
-                        aktif: false,
-                        yogunluk: 'normal',
-                        gelismisMod: false,
-                        ...presetAyarlariniOlustur('normal', false),
-                    }),
-                );
-            } else {
-                dispatch(
-                    muhafizAyarlariniGuncelle({
-                        aktif: true,
-                        yogunluk: duzey,
-                        gelismisMod: false,
-                        ...presetAyarlariniOlustur(duzey, sesliBilgiGosterildiMi(duzey)),
-                    }),
-                );
-            }
-            // TEK RIZA (Dalga 3): bilgi maddesi ekranda gösterildiyse onay ORTAK kayda da
-            // yazılır (muhafızın kendi alanı geriye uyum için `presetAyarlariniOlustur`'da kalır).
-            if (duzey !== 'kapali' && sesliBilgiGosterildiMi(duzey)) {
-                dispatch(hatirlatmaRizasiVer({ sesliOnayi: true }));
+            const muhafizAcik = duzey !== 'kapali';
+            // Sesli okuma rızası YALNIZ kart açıkça açıldıysa (açıklama kartta yazılıyken).
+            const sesliRiza = muhafizAcik && secimler.sesli && (duzey === 'normal' || duzey === 'yogun');
+            const sabahAlarm = muhafizAcik && secimler.sabahAlarm;
+            const preset = presetAyarlariniOlustur(muhafizAcik ? duzey : 'normal', sesliRiza);
+            dispatch(
+                muhafizAyarlariniGuncelle({
+                    aktif: muhafizAcik,
+                    yogunluk: muhafizAcik ? duzey : 'normal',
+                    gelismisMod: false,
+                    ...preset,
+                    matris: sabahAlarm && preset.matris ? sabahAlarminiAc(preset.matris) : preset.matris,
+                    // Yeni kurulumda varsayılan AÇIK (kapatılırsa kaydı yine yazılır).
+                    geceSessizligi: { ...VARSAYILAN_GECE_SESSIZLIGI, aktif: secimler.gece },
+                    // Yeni kurulum zaten önerilen ayarlarla başlar → öneri kartı gösterilmez.
+                    varsayilanOnerisiGoruldu: true,
+                }),
+            );
+            // TEK RIZA (Dalga 3): onay ORTAK kayda yazılır (muhafızın kendi alanı geriye
+            // uyum için `presetAyarlariniOlustur`'da kalır).
+            if (sesliRiza) dispatch(hatirlatmaRizasiVer({ sesliOnayi: true }));
+            if (sabahAlarm) dispatch(hatirlatmaRizasiVer({ alarmOnayi: true }));
+            if (secimler.cuma) {
+                try {
+                    await dispatch(cumaHatirlatmaAyariniGuncelle({ aktif: true })).unwrap();
+                } catch (error) {
+                    // Ölümcül değil: Hatırlatmalar'dan açılabilir.
+                    Logger.error('KurulumSihirbazi', 'Cuma hatırlatması yazılamadı', error);
+                }
             }
             if (sade) {
                 try {
@@ -292,7 +329,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             setKayitHatasi('Ayarlar kaydedilemedi. Tekrar deneyin.');
             setKaydediliyor(false);
         }
-    }, [dispatch, duzey, sade, navigation]);
+    }, [dispatch, duzey, sade, secimler, navigation]);
 
     // ─── Düğmeler ────────────────────────────────────────────────────────────
     const birincil = (etiket: string, ikon: string, onPress: () => void, testID?: string, mesgul = false, kapali = false) => (
@@ -407,8 +444,8 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     };
 
     const hazirOzeti = useMemo(
-        () => ({ konum: konumBilgi, bildirim: bildirimIzin.durum === 'verildi', duzey, sade }),
-        [konumBilgi, bildirimIzin.durum, duzey, sade],
+        () => ({ konum: konumBilgi, bildirim: bildirimIzin.durum === 'verildi', duzey, sade, secimler }),
+        [konumBilgi, bildirimIzin.durum, duzey, sade, secimler],
     );
 
     const icerik = (): React.ReactNode => {
@@ -430,7 +467,20 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             case 'bildirim':
                 return <BildirimAdimi izin={bildirimIzin.durum} izinSonucu={bildirimIzin.sonuc} />;
             case 'duzey':
-                return <DuzeyAdimi duzey={duzey} onDuzey={setDuzey} sade={sade} onSade={setSade} />;
+                return (
+                    <DuzeyAdimi
+                        duzey={duzey}
+                        onDuzey={setDuzey}
+                        secimler={secimler}
+                        onIsaretler={isaretlerSec}
+                        onSecim={secimDegistir}
+                        onSabahAlarmiIste={() => setAlarmOnayAcik(true)}
+                        sesliBilgi={sesliBilgiMetni(yetenekler.sessizligiDelebilir)}
+                        sesliOrnek={sesliOrnek}
+                        sade={sade}
+                        onSade={setSade}
+                    />
+                );
             case 'hazir':
                 return <HazirAdimi ozet={hazirOzeti} hata={kayitHatasi} />;
         }
@@ -497,6 +547,24 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             </Animated.View>
 
             <View style={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 }}>{dugmeler()}</View>
+
+            {/* "Sabah beni uyandırsın" rızası: onaylanmadan anahtar AÇILMAZ (geri tuşu = vazgeç). */}
+            {alarmOnayAcik ? (
+                <AlarmOnayModal
+                    gorunur
+                    platform={yetenekler.platform}
+                    alarmKit={alarmIzinleri.alarmKit}
+                    tamEkran={alarmIzinleri.tamEkran}
+                    onOnayla={() => {
+                        setAlarmOnayAcik(false);
+                        // iOS: sistem alarm izni (AlarmKit) burada istenir; sonuç ne olursa olsun
+                        // seçim yazılır (izin yoksa aynı tetik bildirim olarak gelir).
+                        if (yetenekler.platform === 'ios') void alarmIzinleri.izinIste(false);
+                        secimDegistir({ sabahAlarm: true });
+                    }}
+                    onIptal={() => setAlarmOnayAcik(false)}
+                />
+            ) : null}
         </SafeAreaView>
     );
 };

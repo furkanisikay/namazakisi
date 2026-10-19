@@ -22,6 +22,7 @@ import type { VakitAdi } from '../types';
 import { KAZA_SABITLERI } from '../constants/UygulamaSabitleri';
 import { gunEkle } from '../utils/TarihYardimcisi';
 import { gunVakitleriniHesapla, type NafileKoordinat } from '../nafile/gunVakitleri';
+import type { GeceSessizligi } from '../muhafiz/geceSessizligi';
 import type { MuhafizMatrisi } from '../muhafiz/matrisTipleri';
 import { MUHAFIZ_MAKS_ADIM } from '../muhafiz/matrisTipleri';
 import {
@@ -158,6 +159,8 @@ export interface WearMuhafizYukGirdisi {
     kilinanlar: Record<string, readonly VakitAdi[]>;
     /** Özel gün kapısı — o günün pencereleri planlanmaz (bkz. `WearMuhafizGirdisi`). */
     ozelGundeMi?: (tarih: string) => boolean;
+    /** Gece sessizliği — gece penceresinin kayıtları süzülür (bkz. `WearMuhafizGirdisi`). */
+    geceSessizligi?: GeceSessizligi;
     ufukMs?: number;
 }
 

@@ -33,6 +33,9 @@ import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
 import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
 import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 import type { SaatTeslimBaglami } from '../../core/saat/saatAyarlari';
+import type { GeceSessizligi } from '../../core/muhafiz/geceSessizligi';
+import { geceSessizliginiOku } from '../../data/local/LocalGeceSessizligiOkuyucu';
+import { geceCapasiBasligi, geceCapasiGovdesi } from '../../core/utils/muhafizMetinYardimcisi';
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -62,6 +65,11 @@ export class ArkaplanMuhafizServisi {
     private kategorilerKayitli = false;
     /** Bu turun saat iş bölümü ayarı (saat W3) — üreticiye geçer (defterle parite). */
     private saatAyarlari: SaatTeslimBaglami | undefined;
+    /**
+     * Bu turun gece sessizliği (diskten; ham okuyan tüketiciler alanı ayrıca geçmek
+     * zorunda kalmasın). Defter aynı alanı store'dan geçer → parite.
+     */
+    private geceSessizligi: GeceSessizligi | undefined;
 
     private constructor() { }
 
@@ -177,6 +185,7 @@ export class ArkaplanMuhafizServisi {
         // Saat iş bölümü (saat W3): sabah uyandırması saatteyse telefonda yedek, anons
         // "yalnız saatte" ise telefon TTS planlamaz. Okuyucu asla fırlatmaz.
         this.saatAyarlari = await LocalSaatAyarlariServisi.teslimBaglaminiOku();
+        this.geceSessizligi = await geceSessizliginiOku();
 
         const planGirdisi = {
             matris: this.ayarlar.matris,
@@ -184,6 +193,8 @@ export class ArkaplanMuhafizServisi {
             simdi,
             kilindiMi: (tarih: string, vakit: VakitAdi) => (kilinanVakitlerMap[tarih] || []).includes(vakit),
             ozelGundeMi,
+            // Yatsı çapası: listedeki yatsı penceresi ETKİN çıkışla gelir (defterle aynı).
+            geceSessizligi: this.geceSessizligi,
         };
         const gelecekVakitler = planlanacakMuhafizVakitleri(planGirdisi);
 
@@ -219,15 +230,26 @@ export class ArkaplanMuhafizServisi {
     private async vakitIcinBildirimPlanla(vakit: VakitZamani): Promise<void> {
         if (!this.ayarlar) return;
 
-        const adaylar = vakitTeslimAdaylari(this.ayarlar.matris, vakit, new Date(), this.saatAyarlari);
+        const adaylar = vakitTeslimAdaylari(
+            this.ayarlar.matris,
+            vakit,
+            new Date(),
+            this.saatAyarlari,
+            this.geceSessizligi
+        );
         for (const aday of adaylar) {
             const { uyari, yon } = aday;
             const seviye = uyari.seviye as MuhafizSeviye;
             // METIN `olcuDk` ile uretilir (`kalanDk` ZAMANLAMA alanidir): giris
             // yonunde ikisi farklidir ve kalanDk verilirse basligi "YATSI ·
             // 655 dk · VAKİT ÇIKIYOR" gibi ters bir cumle olur.
-            const baslik = basligiOlustur(vakit.vakit, seviye, uyari.olcuDk, yon);
-            const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye, yon, uyari.olcuDk);
+            // Gece sessizliği çapası: vakit çıkmıyor, sessizlik başlıyor → çapa dili (tek kaynak).
+            const baslik = vakit.geceCapasi
+                ? geceCapasiBasligi(vakit.vakit)
+                : basligiOlustur(vakit.vakit, seviye, uyari.olcuDk, yon);
+            const mesaj = vakit.geceCapasi
+                ? geceCapasiGovdesi(uyari.kalanDk)
+                : this.bildirimMesajiOlustur(vakit.vakit, seviye, yon, uyari.olcuDk);
 
             // TESLIM platforma gore ayrisir (Android: kanal + TTS alarmi,
             // iOS: kesinti seviyesi + paket sesi). Id paylasilan yardimcidan gelir

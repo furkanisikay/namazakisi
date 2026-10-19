@@ -6,18 +6,18 @@ import { duzeyCumlesi, duzeyiOlc, duzeyKisaAciklamasi, duzeyOnizlemeAdimlari, se
 import { HATIRLATMA_PRESETLERI } from '../../../presentation/store/muhafizSlice';
 
 describe('duzeyiOlc', () => {
-    it('hazır düzeyleri motorla ölçer (hafif 4 / normal 6 / yoğun 7)', () => {
-        expect(duzeyiOlc(HATIRLATMA_PRESETLERI.hafif.seviyeler)).toEqual({ ilkDk: 30, uyariSayisi: 4, sesliSayisi: 0, sesli: false });
-        expect(duzeyiOlc(HATIRLATMA_PRESETLERI.normal.seviyeler)).toEqual({ ilkDk: 45, uyariSayisi: 6, sesliSayisi: 1, sesli: true });
-        expect(duzeyiOlc(HATIRLATMA_PRESETLERI.yogun.seviyeler)).toEqual({ ilkDk: 60, uyariSayisi: 7, sesliSayisi: 2, sesli: true });
+    it('hazır düzeyleri motorla ölçer (hafif 1 / normal 3 / yoğun 5 — tekrarsız)', () => {
+        expect(duzeyiOlc(HATIRLATMA_PRESETLERI.hafif.seviyeler)).toEqual({ ilkDk: 15, uyariSayisi: 1, sesliSayisi: 0, sesli: false });
+        expect(duzeyiOlc(HATIRLATMA_PRESETLERI.normal.seviyeler)).toEqual({ ilkDk: 25, uyariSayisi: 3, sesliSayisi: 1, sesli: true });
+        expect(duzeyiOlc(HATIRLATMA_PRESETLERI.yogun.seviyeler)).toEqual({ ilkDk: 45, uyariSayisi: 5, sesliSayisi: 2, sesli: true });
     });
 });
 
 describe('duzeyCumlesi', () => {
     it('ölçüden tek cümle üretir', () => {
         const olcu = duzeyiOlc(HATIRLATMA_PRESETLERI.normal.seviyeler);
-        expect(duzeyCumlesi('normal', olcu)).toBe('Çıkmadan 45 dk önce başlar, 6 uyarı. Son dakikada sesli okur.');
-        expect(duzeyCumlesi('hafif', duzeyiOlc(HATIRLATMA_PRESETLERI.hafif.seviyeler))).toBe('Çıkmadan 30 dk önce başlar, 4 uyarı. Sesli okuma yok.');
+        expect(duzeyCumlesi('normal', olcu)).toBe('Çıkmadan 25 dk önce başlar, 3 uyarı. Son dakikada sesli okur.');
+        expect(duzeyCumlesi('hafif', duzeyiOlc(HATIRLATMA_PRESETLERI.hafif.seviyeler))).toBe('Çıkmadan 15 dk önce bir kez hatırlatır. Sesli okuma yok.');
         expect(duzeyCumlesi('kapali', null)).toBe('Vakit çıkmadan hatırlatma gelmez.');
     });
 
@@ -38,10 +38,10 @@ describe('duzeyCumlesi', () => {
     });
 
     it('kısa açıklama', () => {
-        expect(duzeyKisaAciklamasi('yogun', duzeyiOlc(HATIRLATMA_PRESETLERI.yogun.seviyeler))).toBe('Vakit başına 7 uyarı, sesli');
+        expect(duzeyKisaAciklamasi('yogun', duzeyiOlc(HATIRLATMA_PRESETLERI.yogun.seviyeler))).toBe('Vakit başına 5 uyarı, sesli');
         expect(duzeyKisaAciklamasi('kapali', null)).toBe('Hatırlatma yok');
         // Rıza yoksa sesli adım bildirimle kurulur → "sesli" denmez (D9).
-        expect(duzeyKisaAciklamasi('yogun', duzeyiOlc(HATIRLATMA_PRESETLERI.yogun.seviyeler), false)).toBe('Vakit başına 7 uyarı');
+        expect(duzeyKisaAciklamasi('yogun', duzeyiOlc(HATIRLATMA_PRESETLERI.yogun.seviyeler), false)).toBe('Vakit başına 5 uyarı');
         expect(duzeyCumlesi('normal', duzeyiOlc(HATIRLATMA_PRESETLERI.normal.seviyeler), false)).toMatch(/Sesli okuma yok\.$/);
     });
 });

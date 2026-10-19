@@ -827,6 +827,40 @@ describe('ArkaplanMuhafizServisi - Gece yarisi: dun-yatsi gecisi', () => {
         );
         expect(yanlisTarihliDunYatsi.length).toBe(0);
     });
+
+    /**
+     * NÖBETÇİ — GECE SESSİZLİĞİ servis katmanında: servis ayarı DİSKTEN okuyup üreticiye
+     * (`vakitTeslimAdaylari`) geçirmeli. Parametre düşerse saf testler yeşil kalır ama
+     * telefon gece konuşur.
+     */
+    test('gece sessizliği açıkken dünün yatsısının gece uyarıları KURULMAZ', async () => {
+        (PrayerTimes as jest.Mock).mockImplementation(() => {
+            const now = new Date();
+            return {
+                fajr: new Date(now.getTime() + 30 * 60 * 1000),
+                sunrise: new Date(now.getTime() + 90 * 60 * 1000),
+                dhuhr: new Date(now.getTime() + 5 * 60 * 60 * 1000),
+                asr: new Date(now.getTime() + 8 * 60 * 60 * 1000),
+                maghrib: new Date(now.getTime() + 11 * 60 * 60 * 1000),
+                isha: new Date(now.getTime() - 2 * 60 * 60 * 1000),
+            };
+        });
+        const AsyncStorage = require('@react-native-async-storage/async-storage');
+        (AsyncStorage.getItem as jest.Mock).mockImplementation(async (anahtar: string) =>
+            anahtar === 'muhafiz_ayarlari'
+                ? JSON.stringify({ geceSessizligi: { aktif: true, baslangicSaat: 23, baslangicDakika: 0 } })
+                : null
+        );
+        try {
+            await servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41.0, lng: 29.0 }, matris: STANDART_MATRIS });
+        } finally {
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+        }
+        const dunYatsi = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
+            .map((c) => c[0])
+            .filter((b) => b.content.data.vakit === 'yatsi' && b.content.data.tarih === dunuAl());
+        expect(dunYatsi).toHaveLength(0);
+    });
 });
 
 describe('ArkaplanMuhafizServisi - Kullanici tetikli akislar (kildim/kilmadim)', () => {

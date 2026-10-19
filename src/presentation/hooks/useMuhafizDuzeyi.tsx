@@ -30,7 +30,7 @@ import {
     type HatirlatmaYogunlugu,
 } from '../store/muhafizSlice';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
-import { presetSesliIceriyorMu, presetUygula } from '../../core/muhafiz/matrisIslemleri';
+import { presetSesliIceriyorMu, presetUygula, type PresetSeviyeleri } from '../../core/muhafiz/matrisIslemleri';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { matrisGecerliMi } from '../../core/muhafiz/motorAdaptoru';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
@@ -41,6 +41,7 @@ import { useTurkceTtsDestegi } from './useTurkceTtsDestegi';
 import { geriAlBandiGoster } from '../components/ortak/GeriAlBandi';
 import { SesliOnayModal } from '../screens/MuhafizAyarlari/SesliOnayModal';
 import type { DuzeySecimi } from '../components/hatirlatma/DuzeySecici';
+import { ortakDuzeyiBul } from '../components/hatirlatma/VakitDuzeyListesi';
 
 type PresetDuzey = 'hafif' | 'normal' | 'yogun';
 
@@ -77,6 +78,17 @@ export interface MuhafizDuzeyi {
      * preset sesli hücreleri bildirime düşürür; düzey adı yine "Normal" kalır.
      */
     sesliAcik: boolean;
+    /**
+     * Seçili hazır düzey ESKİ tablolarla mı kurulu? (varsayılanlar değişti, mevcut kayıt
+     * göçle değişmez.) Ekran o kartın sayısını SÖYLEMEZ, "önceki ayarınız" der; karta
+     * dokunmak güncel düzeyi uygular.
+     */
+    eskiDuzey: boolean;
+    /**
+     * Eski düzeyde önizlemenin çizeceği GERÇEK adımlar (öğle satırı); güncel düzeyde
+     * `undefined` (önizleme hazır düzeyin tablosunu çizer).
+     */
+    onizlemeSeviyeleri?: PresetSeviyeleri;
 }
 
 export function useMuhafizDuzeyi(planla: () => void): MuhafizDuzeyi {
@@ -93,6 +105,10 @@ export function useMuhafizDuzeyi(planla: () => void): MuhafizDuzeyi {
     );
 
     const secili: DuzeySecimi = !muhafiz.aktif ? 'kapali' : (muhafiz.yogunluk as DuzeySecimi);
+    const eskiDuzey = useMemo(
+        () => muhafiz.aktif && presetMi(muhafiz.yogunluk as DuzeySecimi) && ortakDuzeyiBul(matris) !== muhafiz.yogunluk,
+        [matris, muhafiz.aktif, muhafiz.yogunluk]
+    );
     const ozelVar = muhafiz.yogunluk === 'ozel' || matrisGecerliMi(muhafiz.ozelMatrisYedegi);
     const sesliAcik = useMemo(
         () => Object.values(matris ?? {}).some((v) => v?.seviyeler?.some((sv) => sv?.kanallar?.sesli === true)),
@@ -157,7 +173,8 @@ export function useMuhafizDuzeyi(planla: () => void): MuhafizDuzeyi {
             }
             if (!presetMi(d)) return;
             const sesliVar = presetSesliIceriyorMu(HATIRLATMA_PRESETLERI[d].seviyeler);
-            if (d === muhafiz.yogunluk) {
+            // Eski düzeydeki kartına dokunmak GÜNCEL düzeyi uygular (aşağıdaki normal yol).
+            if (d === muhafiz.yogunluk && !eskiDuzey) {
                 if (!muhafiz.aktif) {
                     void butonTiklandiFeedback();
                     dispatch(muhafizAyarlariniGuncelle({ aktif: true }));
@@ -174,7 +191,7 @@ export function useMuhafizDuzeyi(planla: () => void): MuhafizDuzeyi {
             }
             presetiUygula(d, sesliVar);
         },
-        [butonTiklandiFeedback, dispatch, genelRiza.sesli, muhafiz.aktif, muhafiz.yogunluk, planla, presetiUygula]
+        [butonTiklandiFeedback, dispatch, eskiDuzey, genelRiza.sesli, muhafiz.aktif, muhafiz.yogunluk, planla, presetiUygula]
     );
 
     const aktifiDegistir = useCallback(
@@ -212,5 +229,20 @@ export function useMuhafizDuzeyi(planla: () => void): MuhafizDuzeyi {
         />
     ) : null;
 
-    return { secili, ozelVar, sec, aktifiDegistir, modal, sesliAcik };
+    const onizlemeSeviyeleri = useMemo<PresetSeviyeleri | undefined>(
+        () =>
+            eskiDuzey && matris?.ogle?.seviyeler
+                ? matris.ogle.seviyeler.map((s) => ({
+                      kademe: s.kademe,
+                      esikDk: s.esikDk,
+                      siklik: s.siklik,
+                      kanallar: s.kanallar,
+                      // Üç durumlu alan (undefined = eski kayıt) önizlemede "acil değil" sayılır.
+                      acilKanal: s.acilKanal === true,
+                  }))
+                : undefined,
+        [eskiDuzey, matris]
+    );
+
+    return { secili, ozelVar, sec, aktifiDegistir, modal, sesliAcik, eskiDuzey, onizlemeSeviyeleri };
 }

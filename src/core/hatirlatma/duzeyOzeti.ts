@@ -98,6 +98,7 @@ export const OZEL_DUZEY_CUMLESI = 'Her vakit sizin ayarladığınız gibi hatır
 export function duzeyCumlesi(duzey: HatirlatmaDuzeyi, olcu: DuzeyOlcusu | null, sesliIzinVar = true): string {
     if (duzey === 'kapali' || !olcu) return 'Vakit çıkmadan hatırlatma gelmez.';
     const ses = olcu.sesli && sesliIzinVar ? 'Son dakikada sesli okur.' : 'Sesli okuma yok.';
+    if (olcu.uyariSayisi === 1) return `Çıkmadan ${olcu.ilkDk} dk önce bir kez hatırlatır. ${ses}`;
     return `Çıkmadan ${olcu.ilkDk} dk önce başlar, ${olcu.uyariSayisi} uyarı. ${ses}`;
 }
 

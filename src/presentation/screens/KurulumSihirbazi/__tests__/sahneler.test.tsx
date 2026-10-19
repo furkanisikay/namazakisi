@@ -68,7 +68,7 @@ describe('Kurulum sahneleri', () => {
         const kapali = render(<DuzeyOnizlemesi duzey="kapali" dongu />);
         expect(kapali.getByText('Hatırlatma yok', G)).toBeTruthy();
         const normal = render(<DuzeyOnizlemesi duzey="normal" dongu />);
-        expect(normal.getByText('45 dk önce', G)).toBeTruthy();
+        expect(normal.getByText('25 dk önce', G)).toBeTruthy();
         expect(normal.getByText('Vakit çıkar', G)).toBeTruthy();
     });
 

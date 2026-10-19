@@ -167,26 +167,78 @@ export function presetUygula(
 ): MuhafizMatrisi {
   const sonuc = derinKopya(matris);
   for (const v of MUHAFIZ_VAKITLERI) {
-    const giris = girisZamanlamasiVarsa(sonuc[v], v, yogunluk);
-    const mevcut = sonuc[v].seviyeler;
-    // ADIM SAYISI PRESET'TEN gelir (issue #274): kullanici 6 adim kurmus olsa da
-    // preset kendi adimlarini yazar. Ses/anons INDEKSLE korunur; preset daha
-    // fazla adim tasiyorsa eksik hucre taban hucreden kurulur.
-    sonuc[v].seviyeler = seviyeler.map((preset, i) =>
-      seviyeyeUygula(
-        mevcut[i] ?? bosHucre(preset.kademe, preset.esikDk),
-        preset,
-        sesliIzinVar,
-        sonuc[v].yon,
-        giris?.[i]
-      )
-    );
-    // Preset zamanlamayi ezdi → ayrilan yonun yedegi BAYAT. Birakilsaydi
-    // "ozel cikis → girise gec → preset → cikisa don" zincirinde kullaniciya
-    // silinmis olmasi gereken eski ozel ayari geri verirdik.
-    sonuc[v].yonYedegi = undefined;
+    sonuc[v] = presetVakteUygula(sonuc[v], v, seviyeler, sesliIzinVar, yogunluk);
   }
   return sonuc;
+}
+
+/**
+ * Hazir yogunlugu TEK VAKTE uygular (vakit basina duzey — "Aksam: Hafif"). `presetUygula`
+ * bunu bes kez cagirir; ikiz yazma yok. Sozlesme ayni: yon KORUNUR (giris yonlu vakit
+ * kendi giris tablosunu alir), anons/ses/gercek alarm korunur, yon yedegi silinir.
+ */
+export function presetVakteUygula(
+  vakitAyari: VakitMuhafizAyari,
+  vakit: MuhafizVakti,
+  seviyeler: PresetSeviyeleri,
+  sesliIzinVar: boolean,
+  yogunluk?: unknown
+): VakitMuhafizAyari {
+  const sonuc = derinKopya(vakitAyari);
+  const girisTablo = girisZamanlamasiVarsa(sonuc, vakit, yogunluk);
+  // Giris tablosu dort adimdir; preset farkli uzunluktaysa (hafif 1, yogun 5) tablo adim
+  // sayisina UYDURULUR — konumsal okuma eksik adimda cikis esigine duser ve giris
+  // yonunde kesin artan sirayi bozardi.
+  const giris = girisTablo ? zamanlamayiUyarla(girisTablo, seviyeler.length, 'girisindenItibaren') : undefined;
+  const mevcut = sonuc.seviyeler;
+  // ADIM SAYISI PRESET'TEN gelir (issue #274): kullanici 6 adim kurmus olsa da
+  // preset kendi adimlarini yazar. Ses/anons INDEKSLE korunur; preset daha
+  // fazla adim tasiyorsa eksik hucre taban hucreden kurulur.
+  sonuc.seviyeler = seviyeler.map((preset, i) =>
+    seviyeyeUygula(
+      mevcut[i] ?? bosHucre(preset.kademe, preset.esikDk),
+      preset,
+      sesliIzinVar,
+      sonuc.yon,
+      giris?.[i]
+    )
+  );
+  // Preset zamanlamayi ezdi → ayrilan yonun yedegi BAYAT. Birakilsaydi
+  // "ozel cikis → girise gec → preset → cikisa don" zincirinde kullaniciya
+  // silinmis olmasi gereken eski ozel ayari geri verirdik.
+  sonuc.yonYedegi = undefined;
+  return sonuc;
+}
+
+/**
+ * "Sabah beni uyandırsın" (kurulum sihirbazı): sabahın kronolojik İLK adımı gerçek
+ * alarm olur. RIZA çağıranın işidir — yalnız `AlarmOnayModal` onaylandıysa çağrılır
+ * (preset/göç alarm AÇMAZ kuralı bozulmasın). Adım yoksa matris aynen döner.
+ */
+export function sabahAlarminiAc(matris: MuhafizMatrisi): MuhafizMatrisi {
+  const imsak = matris.imsak;
+  if (!imsak || imsak.seviyeler.length === 0) return matris;
+  const seviyeler = imsak.seviyeler.map((s, i) => (i === 0 ? { ...s, kanallar: kanalAc(s.kanallar, 'alarm') } : s));
+  return { ...matris, imsak: { ...imsak, seviyeler } };
+}
+
+/**
+ * Bu vaktin ZAMANLAMASI (esik + siklik, adim sayisi dahil) verilen preset'in bu vakte
+ * uygulanmis hâliyle ayni mi? Yon hesaba katilir (giris yonlu vakit giris tablosuyla
+ * karsilastirilir). Saklanan bir alan yok — duzey her zaman matristen TURETILIR.
+ */
+export function vakitPresetleUyumluMu(
+  vakitAyari: VakitMuhafizAyari,
+  vakit: MuhafizVakti,
+  seviyeler: PresetSeviyeleri,
+  yogunluk?: unknown
+): boolean {
+  const beklenen = presetVakteUygula(vakitAyari, vakit, seviyeler, false, yogunluk).seviyeler;
+  const mevcut = vakitAyari.seviyeler;
+  if (beklenen.length !== mevcut.length) return false;
+  return beklenen.every(
+    (b, i) => b.esikDk === mevcut[i].esikDk && siklikDk(b.siklik) === siklikDk(mevcut[i].siklik)
+  );
 }
 
 /** Vakit giris yonlu ise o vaktin giris tablosu, degilse `undefined`. */

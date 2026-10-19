@@ -27,7 +27,9 @@ import {
 import { BildirimModali } from '../components/common/BildirimModali';
 import type { MuhafizMatrisi, MuhafizVakti, VakitMuhafizAyari } from '../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
-import { tumVakitlereUygula, zamanlamaDegistiMi } from '../../core/muhafiz/matrisIslemleri';
+import { presetVakteUygula, tumVakitlereUygula, zamanlamaDegistiMi } from '../../core/muhafiz/matrisIslemleri';
+import { VakitDuzeyListesi, ortakDuzeyiBul, type VakitDuzeyi } from '../components/hatirlatma/VakitDuzeyListesi';
+import { geceBaslangicMs, geceSessizliginePencereyiUyarla, geceSessizliginiNormalize } from '../../core/muhafiz/geceSessizligi';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { adimKapaliMi } from '../../core/muhafiz/kanalKumesi';
 import { adimEkle, adimSil, adimSilinebilirMi } from '../../core/muhafiz/adimDuzenleme';
@@ -136,7 +138,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
      * Konum/vakit hesabı yoksa (`getGunlukVakitler` null) harita BOŞ kalır ve
      * ekran eski davranışa döner — yanlış alarm vermektense sessiz kalırız.
      */
-    const { vakitPencereleri, vakitPencereAnlari } = useMemo(() => {
+    const { vakitPencereleri: hamPencereler, vakitPencereAnlari: hamAnlar } = useMemo(() => {
         const bos = {
             vakitPencereleri: {} as Partial<Record<MuhafizVakti, number>>,
             vakitPencereAnlari: {} as Partial<Record<MuhafizVakti, { baslangic: Date; bitis: Date }>>,
@@ -178,6 +180,33 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             return bos;
         }
     }, []);
+
+    /**
+     * GECE SESSİZLİĞİ — YATSI ÇAPASI: motor yatsıyı etkin pencereyle (`geceSessizliginePencereyiUyarla`)
+     * planladığı için ekran da (eşik tavanı, zaman şeridi, akış önizlemesi) AYNI pencereyi kullanır;
+     * yoksa şerit imsağa kala uyarı gösterirken telefon 23:00'e kala konuşurdu. Yatsı sessizlikten
+     * sonra giriyorsa (`yatsiDustu`) satır bunu söyler.
+     */
+    const geceSessizligi = useMemo(() => geceSessizliginiNormalize(muhafizAyarlari.geceSessizligi), [muhafizAyarlari.geceSessizligi]);
+    const { vakitPencereleri, vakitPencereAnlari, yatsiDustu, aksamKesiliyor } = useMemo(() => {
+        const isoGun = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        const yatsi = hamAnlar.yatsi;
+        const aksam = hamAnlar.aksam;
+        // Akşamın çıkışı (yatsı girişi) sessizlikten sonraysa (yaz, erken başlangıç) akşamın son
+        // uyarıları sessizliğe düşer ve GELMEZ (çapa yalnız yatsıda) — satır bunu söyler.
+        const aksamKesiliyor =
+            geceSessizligi?.aktif === true && !!aksam && aksam.bitis.getTime() > geceBaslangicMs(isoGun(aksam.baslangic), geceSessizligi);
+        if (!yatsi || !geceSessizligi?.aktif) return { vakitPencereleri: hamPencereler, vakitPencereAnlari: hamAnlar, yatsiDustu: false, aksamKesiliyor };
+        const b = yatsi.baslangic;
+        const etkin = geceSessizliginePencereyiUyarla(geceSessizligi, { vakit: 'yatsi', tarih: isoGun(b), giris: b, cikis: yatsi.bitis });
+        if (!etkin) return { vakitPencereleri: hamPencereler, vakitPencereAnlari: hamAnlar, yatsiDustu: true, aksamKesiliyor };
+        return {
+            vakitPencereleri: { ...hamPencereler, yatsi: pencereUzunluguDkHesapla(b, etkin.cikis) },
+            vakitPencereAnlari: { ...hamAnlar, yatsi: { baslangic: b, bitis: etkin.cikis } },
+            yatsiDustu: false,
+            aksamKesiliyor,
+        };
+    }, [hamPencereler, hamAnlar, geceSessizligi]);
 
     /**
      * Ekranda yapılan değişikliği GERÇEK plana yansıtır (debounce'lu; çıkışta hemen) —
@@ -377,6 +406,26 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         planlamayiKuyrugaAl();
     }, [matris, rehber, dispatch, muhafizAyarlari.yogunluk, planlamayiKuyrugaAl]);
 
+    /**
+     * VAKİT BAŞINA DÜZEY: hazır düzey YALNIZ o vakte uygulanır (`presetVakteUygula`; yön,
+     * ses, anons, gerçek alarm korunur). Sesli adım rıza yoksa bildirimle kurulur. Yapısal
+     * artış (adım sayısı) sığma simülasyonundan geçer. Genel düzey türetilir: beş vakit
+     * aynı hazır düzeydeyse o, değilse "Kendi ayarınız" (önceki matris özel yedeğe yazılır).
+     */
+    const vakitDuzeyiSec = useCallback(
+        (vakit: MuhafizVakti, d: VakitDuzeyi) => {
+            const yeniVakit = presetVakteUygula(matris[vakit], vakit, HATIRLATMA_PRESETLERI[d].seviyeler, genelRiza.sesli, d);
+            const yeni = { ...matris, [vakit]: yeniVakit };
+            if (yeniVakit.seviyeler.length > matris[vakit].seviyeler.length && !rehber.degisikligiDene({ matris: yeni })) return;
+            dispatch(matrisiGuncelle(yeni));
+            const ortak = ortakDuzeyiBul(yeni) ?? 'ozel';
+            if (ortak !== muhafizAyarlari.yogunluk) dispatch(muhafizAyarlariniGuncelle({ yogunluk: ortak }));
+            dispatch(ozelMatrisYedegiGuncelle(yeni));
+            planlamayiKuyrugaAl();
+        },
+        [dispatch, genelRiza.sesli, matris, muhafizAyarlari.yogunluk, planlamayiKuyrugaAl, rehber]
+    );
+
     const tumVakitlereUygulaOnayla = useCallback(() => {
         if (!tumuneOnayi) return;
         matrisiYaz(tumVakitlereUygula(matris, tumuneOnayi));
@@ -398,11 +447,12 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         // Sesli onay modalla alınır (TEK RIZA); ayrı bilgi maddesi gerekmez.
                         sesliBilgiGoster={false}
                         sesliIzinVar={genelRiza.sesli}
+                        eskiDuzey={duzey.eskiDuzey}
                         testID="muhafiz-duzey"
                     />
                     {/* Görsel anlatı: seçilen düzeyin uyarıları zaman rayında — girişte ve
                         düzey değişince BİR KEZ oynar (ayar ekranında döngü yok). */}
-                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="muhafiz-duzey-onizlemesi" /> : null}
+                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi seviyeler={duzey.onizlemeSeviyeleri} duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="muhafiz-duzey-onizlemesi" /> : null}
                 </View>
                 </AyarCapasi>
                 </AyarCapasi>
@@ -412,6 +462,21 @@ const MuhafizAyarlariIcerik: React.FC = () => {
 
                 {muhafizAyarlari.aktif && (
                     <>
+                        {/* ── VAKİT VAKİT — tek vakte düzey (ayrıntıya girmeden). Orta katman:
+                            "Kendim ayarlayayım" açılınca vakit kartları onun yerini alır. ── */}
+                        {!kendimAcik ? (
+                            <>
+                                <BolumBasligi metin="Vakit vakit" />
+                                <VakitDuzeyListesi
+                                    matris={matris}
+                                    onSec={vakitDuzeyiSec}
+                                    geceSessiz={geceSessizligi?.aktif === true}
+                                    yatsiDustu={yatsiDustu}
+                                    aksamKesiliyor={aksamKesiliyor}
+                                />
+                            </>
+                        ) : null}
+
                         {/* ── KENDİM AYARLAYAYIM — vakit vakit adımlar (gelişmiş katı) ──
                             Kapalı başlar (kendi ayarınız varken açık); kapalıyken özet görünür. */}
                         <TouchableOpacity

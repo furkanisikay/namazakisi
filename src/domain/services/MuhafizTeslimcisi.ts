@@ -42,6 +42,8 @@ export interface VakitZamani {
     tarih: string;
     /** Plana SONA eklenen yarinin imsagi mi? (`MuhafizVakitZamani.yarininImsagi`) */
     yarininImsagi?: true;
+    /** Gece sessizliği çapası (MuhafizVakitZamani.geceCapasi): metin/ton çapa dilinde. */
+    geceCapasi?: true;
 }
 
 /** Cihaza teslim edilecek TEK bir uyari. */

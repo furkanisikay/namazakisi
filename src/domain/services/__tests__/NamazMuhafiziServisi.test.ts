@@ -1178,6 +1178,63 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         });
     });
 
+    /**
+     * GECE SESSİZLİĞİ — ön plan arka planla AYNI kuralı uygular (`geceSessizligiSusturuyorMu`):
+     * arka plan gece penceresine uyarı kurmaz; ön plan da banner/ses/anons vermemeli.
+     */
+    describe('gece sessizliği', () => {
+        const geceYaz = (aktif: boolean) =>
+            AsyncStorage.setItem(
+                DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI,
+                JSON.stringify({ geceSessizligi: { aktif, baslangicSaat: 23, baslangicDakika: 0 } })
+            );
+        beforeEach(() => {
+            const gece = new Date();
+            gece.setHours(1, 0, 0, 0);
+            jest.setSystemTime(gece);
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'yatsi', kalanSureMs: 45 * 60 * 1000 });
+        });
+        afterEach(async () => {
+            await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
+        });
+
+        it('açıkken gece yarısından sonraki yatsı uyarısı ÇIKMAZ (açılış hidrasyonu)', async () => {
+            await geceYaz(true);
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).not.toHaveBeenCalledWith(expect.stringContaining('45 dakika'), expect.anything(), expect.anything());
+            expect(mockPlanlaAnons).not.toHaveBeenCalled();
+        });
+
+        it('YATSI ÇAPASI: 22:50’de yatsı (imsağa saatler var) sessizliğe 10 dk kala uyarır', async () => {
+            const simdi = new Date();
+            simdi.setHours(22, 50, 0, 0);
+            jest.setSystemTime(simdi);
+            const giris = new Date(simdi.getTime() - 2 * 60 * 60 * 1000);
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'yatsi',
+                giris,
+                kalanSureMs: 5 * 60 * 60 * 1000,
+                saat: new Date(simdi.getTime() + 5 * 60 * 60 * 1000),
+            });
+            await geceYaz(true);
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+            // Çapasız (imsağa 5 sa) hiçbir eşik tutmazdı; çapalı çıkışa 10 dk = 3. adım konuşur —
+            // ama ÇAPA DİLİNDE: ton en fazla 2, "vakit çıkıyor" yok (arka planla aynı metin).
+            expect(bildirimSpx).toHaveBeenCalledWith('Gece sessizliğine 10 dk var; yatmadan yatsını kıl.', 2, expect.any(String));
+        });
+
+        it('kapalıyken (alan yok = mevcut kullanıcı) uyarı eskisi gibi gelir', async () => {
+            await geceYaz(false);
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledWith(expect.stringContaining('45 dakika'), 1, expect.any(String));
+        });
+    });
+
     describe('özel gün kapısı', () => {
         const ozelGunYaz = (bas: string, bit: string) =>
             AsyncStorage.setItem(

@@ -37,6 +37,16 @@ export function vakitCikmadanOzeti(aktif: boolean, yogunluk: string): string {
     return ad ? `${ad} düzey` : 'Açık';
 }
 
+/**
+ * Gece sessizliği satırı. Kapalıyken öneri cümlesi (mevcut kullanıcı göçle açılmaz;
+ * satır ne kazanacağını söyler).
+ */
+export function geceSessizligiOzeti(ayar: { aktif: boolean; baslangicSaat: number; baslangicDakika: number } | undefined): string {
+    if (!ayar?.aktif) return 'Kapalı · açarsanız gece uyarı gelmez';
+    const s = `${String(ayar.baslangicSaat).padStart(2, '0')}:${String(ayar.baslangicDakika).padStart(2, '0')}`;
+    return `${s} – imsak arası uyarı gelmez`;
+}
+
 /** Adımların en erken eşiği (dk) — "ne kadar önce başlar". */
 export function enErkenEsik(adimlar: ReadonlyArray<{ esikDk: number }> | undefined): number | null {
     if (!adimlar || adimlar.length === 0) return null;

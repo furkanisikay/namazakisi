@@ -28,6 +28,12 @@ import {
     type SaatTeslimBaglami,
 } from '../saat/saatAyarlari';
 import { muhafizUyandirmasiMi } from '../saat/uyandirmaKapisi';
+import {
+    geceCapasiUyarisi,
+    geceSessizligiSusturuyorMu,
+    geceSessizliginePencereyiUyarla,
+    type GeceSessizligi,
+} from './geceSessizligi';
 
 /** Bir vaktin bugünkü penceresi. `tarih` vaktin AİT OLDUĞU gündür (yatsı dün olabilir). */
 export interface MuhafizVakitZamani {
@@ -42,6 +48,8 @@ export interface MuhafizVakitZamani {
      * vaktin uyarıları BÜTÇE ARTIĞIDIR ([yarininImsagiKipi]).
      */
     yarininImsagi?: true;
+    /** Gece sessizliği çapası: çıkış sessizlik başlangıcıdır (`geceSessizliginePencereyiUyarla`). */
+    geceCapasi?: true;
 }
 
 /** Teslimciye gidecek tek bir uyarının metinsiz hâli. */
@@ -183,6 +191,11 @@ export interface MuhafizPlanGirdisi {
     kilindiMi?: (tarih: string, vakit: VakitAdi) => boolean;
     /** Özel gün kapısı (issue #272) — vaktin GÜNÜNE uygulanır. */
     ozelGundeMi?: (tarih: string) => boolean;
+    /**
+     * Gece sessizliği (`geceSessizligi.ts`) — gece penceresine düşen uyarı KURULMAZ
+     * (gerçek alarm hariç). Servis ve defter AYNI değeri geçer (parite).
+     */
+    geceSessizligi?: GeceSessizligi;
 }
 
 /** Planlanacak (gelecekte, kılınmamış, özel gün olmayan) vakitler — sıra korunur. */
@@ -190,9 +203,14 @@ export function planlanacakMuhafizVakitleri(girdi: MuhafizPlanGirdisi): MuhafizV
     const { vakitler, simdi } = girdi;
     const kilindiMi = girdi.kilindiMi ?? (() => false);
     const ozelGundeMi = girdi.ozelGundeMi ?? (() => false);
-    return vakitler.filter(
-        (v) => v.cikis.getTime() > simdi.getTime() && !ozelGundeMi(v.tarih) && !kilindiMi(v.tarih, v.vakit)
-    );
+    // Gece sessizliği: yatsının etkin çıkışı sessizlik başlangıcıdır (ya da yatsı düşer).
+    // ÖNCE uyarlanır ki "gelecekte mi" süzgeci etkin çıkışa baksın. Kapalıyken aynı nesne.
+    return vakitler
+        .map((v) => geceSessizliginePencereyiUyarla(girdi.geceSessizligi, v))
+        .filter(
+            (v): v is MuhafizVakitZamani =>
+                v !== null && v.cikis.getTime() > simdi.getTime() && !ozelGundeMi(v.tarih) && !kilindiMi(v.tarih, v.vakit)
+        );
 }
 
 /** Tek bir vaktin teslim adayları (`ArkaplanMuhafizServisi.vakitIcinBildirimPlanla`'nın saf çekirdeği). */
@@ -200,7 +218,8 @@ export function vakitTeslimAdaylari(
     matris: MuhafizMatrisi,
     vakit: MuhafizVakitZamani,
     simdi: Date,
-    saat?: SaatTeslimBaglami
+    saat?: SaatTeslimBaglami,
+    geceSessizligi?: GeceSessizligi
 ): MuhafizTeslimAdayi[] {
     const cikisMs = vakit.cikis.getTime();
     if (cikisMs <= simdi.getTime()) return [];
@@ -229,7 +248,9 @@ export function vakitTeslimAdaylari(
     // yol (saat kapalı) birebir eskisi: tarama başlangıcı ve süzgeç değişmez.
     const saatUyandirir = !!saat && saatUyandiriyorMu(saat);
     const tarama = saatUyandirir ? (yon === 'girisindenItibaren' ? 1 : Number.MAX_SAFE_INTEGER) : suankiOlcu;
-    for (const ham of vakitUyariPlaniOlustur(vakitAyari, tarama, { pencereUzunluguDk })) {
+    for (const motor of vakitUyariPlaniOlustur(vakitAyari, tarama, { pencereUzunluguDk })) {
+        // Çapalı yatsı: ton/acil/anons çapa diline (kimlik de buradan → ön plan ve saatle aynı).
+        const ham = vakit.geceCapasi ? geceCapasiUyarisi(motor) : motor;
         const ozgunMs = cikisMs - ham.kalanDk * 60 * 1000;
         const id = muhafizBildirimIdOlustur(vakit.vakit, ham.seviye, vakit.tarih, ham.kalanDk);
         // Saat W3 — uyandırma: telefonun anı TEK kuraldan (`uyandirmaTelefonMs`): saatte
@@ -241,6 +262,8 @@ export function vakitTeslimAdaylari(
                 : ozgunMs;
         // Geçmişe düşen (dakika yuvarlaması) atlanır — kaydırılmış ana göre.
         if (zamanMs === null || zamanMs <= simdi.getTime()) continue;
+        // Gece sessizliği: kaydırılmış (gerçek) ana uygulanır; gerçek alarm muaf.
+        if (geceSessizligiSusturuyorMu(geceSessizligi, vakit.tarih, zamanMs, ham.alarm)) continue;
         // Saat W3 — anons "yalnız saatte": telefon TTS planlamaz (çift konuşma yok).
         // Bayrak burada kapanır ki teslimci, ön plan ve defter AYNI cevabı görsün.
         const uyari = anonsKonusur || !ham.sesliAnons ? ham : { ...ham, sesliAnons: false };
@@ -259,7 +282,7 @@ export function vakitTeslimAdaylari(
 /** Bütün turun teslim adayları, teslimcinin göreceği SIRAYLA. */
 export function muhafizTeslimPlaniOlustur(girdi: MuhafizPlanGirdisi): MuhafizTeslimAdayi[] {
     return planlanacakMuhafizVakitleri(girdi).flatMap((v) =>
-        vakitTeslimAdaylari(girdi.matris, v, girdi.simdi, girdi.saat)
+        vakitTeslimAdaylari(girdi.matris, v, girdi.simdi, girdi.saat, girdi.geceSessizligi)
     );
 }
 

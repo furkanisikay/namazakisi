@@ -52,6 +52,11 @@ import { useCihazDurumu } from '../../hooks/useCihazDurumu';
 import { durumNotu } from '../../../core/cihaz/durumNotlari';
 import { muhafizMatrisiniCoz } from '../../../core/muhafiz/motorAdaptoru';
 import { DuzeySecici } from '../../components/hatirlatma/DuzeySecici';
+import { GeceSessizligiSatiri } from '../../components/hatirlatma/GeceSessizligiSatiri';
+import { VarsayilanOneriKarti } from '../../components/hatirlatma/VarsayilanOneriKarti';
+import { useVarsayilanOnerisi } from '../../hooks/useVarsayilanOnerisi';
+import { muhafizAyarlariniGuncelle } from '../../store/muhafizSlice';
+import { geceSessizliginiNormalize, type GeceSessizligi } from '../../../core/muhafiz/geceSessizligi';
 import { DuzeyOnizlemesi } from '../../components/hatirlatma/DuzeyOnizlemesi';
 import { AnahtarSatiri } from '../../components/ortak/AnahtarSatiri';
 import { BolumBasligi } from '../../components/ortak/BolumBasligi';
@@ -163,6 +168,7 @@ const HatirlatmalarIcerik: React.FC = () => {
         sayacAyarlari: sayac,
     });
     const duzey = useMuhafizDuzeyi(planlamayiKuyrugaAl);
+    const oneri = useVarsayilanOnerisi(planlamayiKuyrugaAl);
 
     // ── Bildirim sınırı: yapısal artan açma burada da simüle edilir ──
     const butce = useBildirimButcesi();
@@ -245,6 +251,14 @@ const HatirlatmalarIcerik: React.FC = () => {
         dispatch(takvimCakismaAyariniGuncelle({ aktif: false }));
     };
 
+    // Gece sessizliği muhafız kaydında yaşar; servisler aynı alanı diskten okur.
+    const geceSessizligi = geceSessizliginiNormalize(muhafiz.geceSessizligi);
+    const geceDegistir = (yeni: GeceSessizligi) => {
+        void butonTiklandiFeedback();
+        dispatch(muhafizAyarlariniGuncelle({ geceSessizligi: yeni }));
+        planlamayiKuyrugaAl();
+    };
+
     const ramazanAcik = ramazan.iftar || ramazan.sahur;
     const ramazanDegistir = (v: boolean) => {
         void butonTiklandiFeedback();
@@ -274,6 +288,8 @@ const HatirlatmalarIcerik: React.FC = () => {
             >
                 <DurumSatiri durum={durumNotu('bildirimIzni', cihaz)} onSonra={cihazYenile} style={{ marginBottom: 12 }} />
 
+                {oneri.goster ? <VarsayilanOneriKarti onUygula={oneri.uygula} onKapat={oneri.kapat} kendiAyari={muhafiz.yogunluk === 'ozel'} /> : null}
+
                 <AyarCapasi id="muhafizYogunluk">
                     <BolumBasligi metin="Ne kadar hatırlatalım?" />
                     <DuzeySecici
@@ -282,10 +298,12 @@ const HatirlatmalarIcerik: React.FC = () => {
                         ozelGoster={duzey.ozelVar}
                         sesliBilgiGoster={false}
                         sesliIzinVar={genelRiza.sesli}
+                        eskiDuzey={duzey.eskiDuzey}
                         testID="hatirlatma-duzeyi"
                     />
-                    {/* Görsel anlatı: girişte ve düzey değişince BİR KEZ (ayar ekranı — döngü yok). */}
-                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="hatirlatma-duzey-onizlemesi" /> : null}
+                    {/* Görsel anlatı: girişte ve düzey değişince BİR KEZ (ayar ekranı — döngü yok).
+                        Eski düzeyde kullanıcının GERÇEK adımlarını çizer (yeni tabloyu değil). */}
+                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi seviyeler={duzey.onizlemeSeviyeleri} duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="hatirlatma-duzey-onizlemesi" /> : null}
                 </AyarCapasi>
 
                 <BildirimButceKarti ozet={butce.ozet} onPress={rehber.karttanAc} />
@@ -314,6 +332,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                                 testID="satir-vakit-cikmadan"
                             />
                         </AyarCapasi>
+                        <GeceSessizligiSatiri ayar={geceSessizligi} onDegistir={geceDegistir} />
                         <AnahtarSatiri
                             ikon="mosque"
                             baslik="Cuma namazı"

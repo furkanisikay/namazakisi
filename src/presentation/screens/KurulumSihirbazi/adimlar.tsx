@@ -22,6 +22,7 @@ import { DuzeyOnizlemesi } from '../../components/hatirlatma/DuzeyOnizlemesi';
 import { BildirimSahnesi, HazirSahnesi, HosgeldinizSahnesi, KonumSahnesi } from './sahneler';
 import { DuzeySecici, type HatirlatmaDuzeyi } from '../../components/hatirlatma/DuzeySecici';
 import { DUZEY_ADLARI } from '../../../core/hatirlatma/duzeyOzeti';
+import { AnahtarKarti, DinleDugmesi, SoruKarti } from './secenekKartlari';
 import type { IzinDurumu } from '../../../core/cihaz/durumNotlari';
 import type { IzinSonucu } from '../../components/ortak';
 import type { KonumDurumu } from './tipler';
@@ -228,19 +229,130 @@ export const BildirimAdimi: React.FC<{ izin: IzinDurumu | null; izinSonucu: Izin
 
 // ─── 4. Hatırlatma düzeyi ────────────────────────────────────────────────────
 
+/**
+ * Düzey adımındaki seçimler (persona çalışması 2026-10-19). Hepsi ayarlara hiç
+ * bakmayacak kişi için en iyi varsayılanla başlar: Kıldım'ı işaretler · sesli okuma
+ * KAPALI (rıza ister) · gece sessiz AÇIK · sabah alarmı KAPALI · cuma KAPALI.
+ */
+export interface KurulumSecimleri {
+    isaretler: 'evet' | 'hayir';
+    sesli: boolean;
+    gece: boolean;
+    sabahAlarm: boolean;
+    cuma: boolean;
+}
+
+export const VARSAYILAN_KURULUM_SECIMLERI: KurulumSecimleri = {
+    isaretler: 'evet',
+    sesli: false,
+    gece: true,
+    sabahAlarm: false,
+    cuma: false,
+};
+
+const ISARETLER_SECENEKLERI = [
+    { deger: 'evet', etiket: 'Evet', ikon: 'check' },
+    { deger: 'hayir', etiket: 'Hayır', ikon: 'times' },
+] as const;
+
 export const DuzeyAdimi: React.FC<{
     duzey: HatirlatmaDuzeyi;
     onDuzey: (d: HatirlatmaDuzeyi) => void;
+    secimler: KurulumSecimleri;
+    onIsaretler: (d: 'evet' | 'hayir') => void;
+    onSecim: (degisiklik: Partial<KurulumSecimleri>) => void;
+    /** "Sabah beni uyandırsın" açılırken rıza modalı (çağıranda). */
+    onSabahAlarmiIste: () => void;
+    /** Sesli okumanın platforma göre doğru açıklaması (rıza bunun ekranda görünmesine dayanır). */
+    sesliBilgi: string;
+    /** "Dinleyin" için çözülmüş örnek cümle. */
+    sesliOrnek: string;
     sade: boolean;
     onSade: (acik: boolean) => void;
-}> = ({ duzey, onDuzey, sade, onSade }) => (
+}> = ({ duzey, onDuzey, secimler, onIsaretler, onSecim, onSabahAlarmiIste, sesliBilgi, sesliOrnek, sade, onSade }) => {
+    const renkler = useRenkler();
+    const acik = duzey !== 'kapali';
+    const sesliVar = duzey === 'normal' || duzey === 'yogun';
+    return (
     <View>
         <AdimBasligi baslik="Ne kadar hatırlatalım?" alt="Vakit çıkmadan önce gelen hatırlatmalar." />
-        {/* Canlı önizleme: seçilen düzeyin gerçek uyarıları zaman rayında (görünürken döngü). */}
-        <DuzeyOnizlemesi duzey={duzey} dongu testID="duzey-onizlemesi" />
+        <SoruKarti
+            ikon="check-circle"
+            baslik="Kıldığınızı işaretler misiniz?"
+            aciklama="Kıldım'a basınca o namazın hatırlatmaları durur."
+            secenekler={ISARETLER_SECENEKLERI}
+            secili={secimler.isaretler}
+            onSec={(d) => onIsaretler(d === 'hayir' ? 'hayir' : 'evet')}
+            not={
+                secimler.isaretler === 'hayir'
+                    ? 'İşaretlemezseniz hatırlatmalar susmaz. Bu yüzden vakit başına tek hatırlatma seçildi.'
+                    : null
+            }
+            testID="kart-isaretler"
+        />
         <View style={{ height: 12 }} />
-        {/* Sihirbazda "Kendi ayarınız" kartı yoktur (`ozelGoster` verilmez) → 'ozel' gelmez. */}
-        <DuzeySecici secili={duzey} onSec={(d) => d !== 'ozel' && onDuzey(d)} testID="duzey-secici" />
+        {/* Canlı önizleme: seçilen düzeyin gerçek uyarıları zaman rayında (görünürken döngü). */}
+        <DuzeyOnizlemesi duzey={duzey} sesliAcik={secimler.sesli} dongu testID="duzey-onizlemesi" />
+        <View style={{ height: 12 }} />
+        {/* Sihirbazda "Kendi ayarınız" kartı yoktur (`ozelGoster` verilmez) → 'ozel' gelmez.
+            Sesli okuma ayrı kartta, açık rızayla sorulur (`sesliBilgiGoster={false}`). */}
+        <DuzeySecici
+            secili={duzey}
+            onSec={(d) => d !== 'ozel' && onDuzey(d)}
+            sesliBilgiGoster={false}
+            sesliIzinVar={secimler.sesli}
+            testID="duzey-secici"
+        />
+        {acik && sesliVar ? (
+            <AnahtarKarti
+                ikon="volume-up"
+                tur="dalga"
+                baslik="Telefon vakti sesli söylesin mi?"
+                aciklama="Son hatırlatmada vakti sesle okur."
+                deger={secimler.sesli}
+                onDegistir={(v) => onSecim({ sesli: v })}
+                testID="kart-sesli"
+                ek={
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                        <Text testID="kart-sesli-bilgi" style={{ flex: 1, fontSize: 14, lineHeight: 20, color: renkler.metin, marginRight: 10 }}>
+                            {sesliBilgi}
+                        </Text>
+                        <DinleDugmesi metin={sesliOrnek} />
+                    </View>
+                }
+            />
+        ) : null}
+        {acik ? (
+            <AnahtarKarti
+                ikon="bell"
+                tur="salla"
+                baslik="Sabah beni uyandırsın"
+                aciklama="Sabahın ilk hatırlatması alarm olarak çalar."
+                deger={secimler.sabahAlarm}
+                onDegistir={(v) => (v ? onSabahAlarmiIste() : onSecim({ sabahAlarm: false }))}
+                testID="kart-sabah-alarm"
+            />
+        ) : null}
+        {acik ? (
+            <AnahtarKarti
+                ikon="moon"
+                tur="salin"
+                baslik="Gece sessiz olsun"
+                aciklama="23:00'ten imsağa kadar hatırlatma gelmez."
+                deger={secimler.gece}
+                onDegistir={(v) => onSecim({ gece: v })}
+                testID="kart-gece"
+            />
+        ) : null}
+        <AnahtarKarti
+            ikon="mosque"
+            tur="nabiz"
+            baslik="Cumayı hatırlat"
+            aciklama="Cuma günü öğleden 1 saat önce hatırlatır."
+            deger={secimler.cuma}
+            onDegistir={(v) => onSecim({ cuma: v })}
+            testID="kart-cuma"
+        />
         <View style={{ marginTop: 24 }}>
             <BolumBasligi metin="Görünüm" />
             <AnahtarSatiri
@@ -253,7 +365,8 @@ export const DuzeyAdimi: React.FC<{
             />
         </View>
     </View>
-);
+    );
+};
 
 // ─── 5. Hazır ────────────────────────────────────────────────────────────────
 
@@ -262,6 +375,7 @@ export interface HazirOzeti {
     bildirim: boolean | null;
     duzey: HatirlatmaDuzeyi;
     sade: boolean;
+    secimler: KurulumSecimleri;
 }
 
 export const HazirAdimi: React.FC<{ ozet: HazirOzeti; hata: string | null }> = ({ ozet, hata }) => {
@@ -273,6 +387,12 @@ export const HazirAdimi: React.FC<{ ozet: HazirOzeti; hata: string | null }> = (
             metin: ozet.bildirim ? 'Bildirimler açık' : 'Bildirimler kapalı',
         },
         { ikon: 'shield-alt', metin: `Hatırlatma: ${DUZEY_ADLARI[ozet.duzey]}` },
+        ...(ozet.duzey !== 'kapali' && ozet.secimler.sesli && (ozet.duzey === 'normal' || ozet.duzey === 'yogun')
+            ? [{ ikon: 'volume-up', metin: 'Sesli okuma açık' }]
+            : []),
+        ...(ozet.duzey !== 'kapali' && ozet.secimler.sabahAlarm ? [{ ikon: 'bell', metin: 'Sabah alarmı açık' }] : []),
+        ...(ozet.duzey !== 'kapali' && ozet.secimler.gece ? [{ ikon: 'moon', metin: 'Gece 23:00 – imsak sessiz' }] : []),
+        ...(ozet.secimler.cuma ? [{ ikon: 'mosque', metin: 'Cuma hatırlatması açık' }] : []),
         ...(ozet.sade ? [{ ikon: 'compress-alt', metin: 'Sade görünüm açık' }] : []),
     ];
     return (

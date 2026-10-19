@@ -32,6 +32,13 @@ import { VARSAYILAN_PENCERE_YONU } from '../muhafiz/pencereTipleri';
 import { pencereUzunluguDkHesapla } from '../muhafiz/pencereUzunlugu';
 import { muhafizBildirimIdOlustur } from '../muhafiz/anonsKimligi';
 import { kimliktenOran, muhafizGovdesiSec } from '../muhafiz/muhafizGovdesi';
+import {
+    geceCapasiUyarisi,
+    geceSessizligiSusturuyorMu,
+    geceSessizliginePencereyiUyarla,
+    type GeceSessizligi,
+} from '../muhafiz/geceSessizligi';
+import { geceCapasiBasligi, geceCapasiGovdesi } from '../utils/muhafizMetinYardimcisi';
 
 /** Plan ufku: 2 gün. Bağlantısız bir gece + ertesi gün kapsanır. */
 export const WEAR_PLAN_UFKU_MS = 48 * 60 * 60 * 1000;
@@ -75,6 +82,8 @@ export interface VakitPenceresi {
     tarih: string;
     giris: Date;
     cikis: Date;
+    /** Gece sessizliği çapası (telefonla aynı metin/ton/kimlik). */
+    geceCapasi?: true;
 }
 
 export interface WearMuhafizGirdisi {
@@ -91,6 +100,11 @@ export interface WearMuhafizGirdisi {
      * saat de planlamamalı. Verilmezse kapı kapalı sayılır.
      */
     ozelGundeMi?: (tarih: string) => boolean;
+    /**
+     * Gece sessizliği — telefonla AYNI kural (`geceSessizligiSusturuyorMu`): gece
+     * penceresindeki uyarı saate de GİTMEZ (gerçek alarm hariç). Yük şeması değişmez.
+     */
+    geceSessizligi?: GeceSessizligi;
     ufukMs?: number;
 }
 
@@ -147,7 +161,8 @@ export function pencereninUyarilari(
         pencereUzunluguDk,
     });
     const cikisMs = pencere.cikis.getTime();
-    return plan.map((u) => {
+    return plan.map((motor) => {
+        const u = pencere.geceCapasi ? geceCapasiUyarisi(motor) : motor;
         const id = muhafizBildirimIdOlustur(pencere.vakit, u.seviye, pencere.tarih, u.kalanDk);
         const anons =
             sesliAnonsGerekliMi(u.kanallar) && u.anonsMetni.trim().length > 0
@@ -159,8 +174,10 @@ export function pencereninUyarilari(
             tarih: pencere.tarih,
             vakit: pencere.vakit,
             seviye: u.seviye,
-            baslik: basligiOlustur(pencere.vakit, u.seviye, u.olcuDk, yon),
-            govde: muhafizGovdesiSec(pencere.vakit, u.seviye, yon, () => kimliktenOran(id), u.olcuDk),
+            baslik: pencere.geceCapasi ? geceCapasiBasligi(pencere.vakit) : basligiOlustur(pencere.vakit, u.seviye, u.olcuDk, yon),
+            govde: pencere.geceCapasi
+                ? geceCapasiGovdesi(u.kalanDk)
+                : muhafizGovdesiSec(pencere.vakit, u.seviye, yon, () => kimliktenOran(id), u.olcuDk),
             titresim: titresimGerekliMi(u.kanallar),
             acil: muhafizAcilKanalMi(u.seviye, u.bildirimSesi, u.acilKanal),
             adim: u.adimIndeks,
@@ -180,10 +197,17 @@ export function wearMuhafizPlaniOlustur(g: WearMuhafizGirdisi): WearMuhafizKaydi
     // Dün (gece yarısı sonrası yatsı) + bugün + ufkun kapsadığı günler + 1 tampon.
     const gunSayisi = Math.ceil((g.ufukMs ?? WEAR_PLAN_UFKU_MS) / (24 * 60 * DK_MS)) + 2;
     return vakitPencereleriniOlustur(g.koordinat, g.bugunIso, gunSayisi)
+        // Yatsı çapası — telefonla AYNI etkin pencere (kimlik paritesi).
+        .map((p) => geceSessizliginePencereyiUyarla(g.geceSessizligi, p))
+        .filter((p): p is VakitPenceresi => p !== null)
         .filter((p) => p.cikis.getTime() > g.simdiMs && p.giris.getTime() < ufuk)
         .filter((p) => !(g.kilinanlar[p.tarih] ?? []).includes(p.vakit))
         .filter((p) => !g.ozelGundeMi?.(p.tarih))
-        .map((p) => pencereninKayitlari(p, g.matris))
+        .map((p) =>
+            pencereninUyarilari(p, g.matris)
+                .filter(({ kayit: k, uyari }) => !geceSessizligiSusturuyorMu(g.geceSessizligi, k.tarih, k.ms, uyari.alarm))
+                .map(({ kayit }) => kayit)
+        )
         .filter((kayitlar) => kayitlar.length > 0);
 }
 

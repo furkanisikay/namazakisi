@@ -179,6 +179,22 @@ describe('muhafız: defter = teslimcinin kurduğu', () => {
         expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
     });
 
+    it('GECE SESSİZLİĞİ: servis diskten, defter store’dan okur — sayı ve yatsı çapası birebir', async () => {
+        const gece = { aktif: true, baslangicSaat: 21, baslangicDakika: 30 };
+        disk.set(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI, JSON.stringify({ aktif: true, matris, geceSessizligi: gece }));
+        muhafizTeslimcisiniAyarla(new AndroidMuhafizTeslimcisi());
+        await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: ISTANBUL, matris });
+
+        const g = temelGirdi('android', { muhafiz: { aktif: true, matris, geceSessizligi: gece } });
+        expect(onekliSay('muhafiz_')).toBe(say(g, 'muhafiz'));
+        expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
+        // Yatsı çapalı: hiçbir uyarı sessizlik başlangıcından sonra kurulmaz.
+        const sinir = new Date(2026, 9, 13, 21, 30, 0).getTime();
+        const yatsilar = planlananlar().filter((p) => String(p.identifier).includes('_vakit_yatsi_'));
+        expect(yatsilar.length).toBeGreaterThan(0);
+        for (const p of yatsilar) expect(new Date(p.trigger.date).getTime()).toBeLessThan(sinir);
+    });
+
     it('Android AKŞAM (issue #74 M2): yarının imsağı da kurulur, defter onu da sayar', async () => {
         const aksam = new Date(2026, 9, 13, 21, 0, 0);
         zamanDegilYalnizTarih(aksam);

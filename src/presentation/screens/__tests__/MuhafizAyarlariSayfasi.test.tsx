@@ -275,9 +275,12 @@ describe('MuhafizAyarlariSayfasi', () => {
     const { MuhafizAyarlariSayfasi } = require('../MuhafizAyarlariSayfasi');
     const ekran = render(<MuhafizAyarlariSayfasi />);
     await act(async () => { await Promise.resolve(); });
-    expect(ekran.queryByText('İkindi')).toBeNull();
+    // Kapalıyken orta katman ("Vakit vakit" düzey listesi) görünür, vakit kartları değil.
+    expect(ekran.getByTestId('vakit-duzey-listesi')).toBeTruthy();
+    expect(ekran.queryByText('Tüm vakitlere uygula')).toBeNull();
     expect(ekran.getByText('Her vakti ayrı ayarlayın')).toBeTruthy();
     fireEvent.press(ekran.getByTestId('kendim-ayarlayayim'));
+    expect(ekran.queryByTestId('vakit-duzey-listesi')).toBeNull();
     expect(ekran.getByText('İkindi')).toBeTruthy();
   });
 
@@ -619,6 +622,56 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(yeni.ogle.seviyeler[0].anonsMetni).toBe('Kalk, {vakit} namazına {süre} dakika.');
   });
 
+  // ── Vakit vakit düzey (persona 2026-10-19) ───────────────────────────────
+  it('VAKİT BAŞINA DÜZEY: "Akşam: Hafif" yalnız akşamı yazar, yön korunur, genel düzey "Kendi ayarınız" olur', async () => {
+    const matris = varsayilanMatris();
+    matris.aksam = { ...matris.aksam, yon: 'girisindenItibaren' };
+    const { getByLabelText, getByTestId } = await kur({ matris });
+    fireEvent.press(getByTestId('kendim-ayarlayayim')); // orta katmana dön
+    await act(async () => { fireEvent.press(getByLabelText('Akşam: Hafif')); });
+
+    const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(yeni.aksam.seviyeler).toHaveLength(1);
+    expect(yeni.aksam.yon).toBe('girisindenItibaren');
+    expect(yeni.ogle).toEqual(matris.ogle);
+    expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'ozel' });
+  });
+
+  it('VAKİT BAŞINA DÜZEY: beş vakit aynı düzeye gelince genel düzey o olur', async () => {
+    const { presetMatrisiOlustur } = require('../../../core/muhafiz/matrisIslemleri');
+    const { HATIRLATMA_PRESETLERI: P } = jest.requireActual('../../store/muhafizSlice');
+    const matris = presetMatrisiOlustur(P.hafif.seviyeler, false);
+    matris.aksam = presetMatrisiOlustur(P.normal.seviyeler, false).aksam;
+    const { getByLabelText, getByTestId } = await kur({ matris, yogunluk: 'ozel' });
+    fireEvent.press(getByTestId('kendim-ayarlayayim'));
+    expect(getByLabelText('Akşam: Normal').props.accessibilityState).toMatchObject({ selected: true });
+    expect(getByLabelText('Öğle: Hafif').props.accessibilityState).toMatchObject({ selected: true });
+    expect(getByTestId('vakit-duzey-listesi')).toBeTruthy();
+    await act(async () => { fireEvent.press(getByLabelText('Akşam: Hafif')); });
+    expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'hafif' });
+  });
+
+  it('gece sessizliği açıkken yatsı satırı gece uyarılarının gelmeyeceğini söyler', async () => {
+    const { getByTestId, getByText, queryByTestId } = await kur({ geceSessizligi: { aktif: true, baslangicSaat: 23, baslangicDakika: 0 } });
+    expect(queryByTestId('vakit-duzey-listesi')).toBeNull(); // ayrıntı açıkken orta katman gizli
+    fireEvent.press(getByTestId('kendim-ayarlayayim'));
+    expect(getByTestId('vakit-duzey-yatsi-gece')).toBeTruthy();
+    expect(getByText('Yatsı uyarıları gece sessizliğinden önce gelir.')).toBeTruthy();
+  });
+
+  it('YAZ + erken sessizlik (21:00): akşamın kesileceği ve yatsının düşeceği SÖYLENİR', async () => {
+    const g = (saat: number, dakika: number) => new Date(2026, 5, 21, saat, dakika, 0, 0);
+    vakitKutusu.vakitler = { imsak: g(3, 20), gunes: g(5, 30), ogle: g(13, 10), ikindi: g(17, 10), aksam: g(20, 40), yatsi: g(22, 15) };
+    try {
+      const { getByTestId } = await kur({ geceSessizligi: { aktif: true, baslangicSaat: 21, baslangicDakika: 0 } });
+      fireEvent.press(getByTestId('kendim-ayarlayayim'));
+      expect(getByTestId('vakit-duzey-aksam-gece')).toBeTruthy();
+      expect(getByTestId('vakit-duzey-yatsi-gece').props.children).toMatch(/yatsı hatırlatması gelmez/);
+    } finally {
+      vakitKutusu.vakitler = null;
+    }
+  });
+
   // ── Yoğunluk preset'i ─────────────────────────────────────────────────────
   it('sesli içermeyen preset (hafif) doğrudan uygulanır — onay istenmez', async () => {
     const { getByLabelText, queryByText } = await kur();
@@ -628,26 +681,27 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(queryByText('Sesli okuma açılsın mı?')).toBeNull();
     expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-    expect(yeni.ogle.seviyeler[0].esikDk).toBe(30); // hafif preset
+    expect(yeni.ogle.seviyeler[0].esikDk).toBe(15); // hafif preset (tek adım)
     expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'hafif' });
   });
 
   it('preset KANALLARI ve ACİLİYETİ yazar; kullanıcının SEÇTİĞİ SESİ KORUR', async () => {
     const matris = varsayilanMatris();
-    matris.ogle.seviyeler[3].kanallar = {};
-    matris.ogle.seviyeler[3].acilKanal = true;
-    matris.ogle.seviyeler[3].bildirimSesi = OZEL_SES;
-    matris.ogle.seviyeler[3].sesAdi = 'Hızır';
+    matris.ogle.seviyeler[0].kanallar = {};
+    matris.ogle.seviyeler[0].acilKanal = true;
+    matris.ogle.seviyeler[0].bildirimSesi = OZEL_SES;
+    matris.ogle.seviyeler[0].sesAdi = 'Hızır';
     const { getByLabelText } = await kur({ matris });
     await act(async () => { fireEvent.press(getByLabelText(/^Hafif\./)); });
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-    expect(yeni.ogle.seviyeler[3].esikDk).toBe(2);
-    expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true }); // 'sessiz' ezildi
-    expect(yeni.ogle.seviyeler[3].acilKanal).toBe(false); // aciliyet yapışmadı
+    expect(yeni.ogle.seviyeler).toHaveLength(1); // adım sayısı preset'ten
+    expect(yeni.ogle.seviyeler[0].esikDk).toBe(15);
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ bildirim: true }); // 'sessiz' ezildi
+    expect(yeni.ogle.seviyeler[0].acilKanal).toBe(false); // aciliyet yapışmadı
     // Kullanıcının müziği preset'e dokununca SİLİNMEZ (mimarinin temel sözü).
-    expect(yeni.ogle.seviyeler[3].bildirimSesi).toBe(OZEL_SES);
-    expect(yeni.ogle.seviyeler[3].sesAdi).toBe('Hızır');
+    expect(yeni.ogle.seviyeler[0].bildirimSesi).toBe(OZEL_SES);
+    expect(yeni.ogle.seviyeler[0].sesAdi).toBe('Hızır');
   });
 
   it('kullanıcının anons metni preset uygulanınca korunur', async () => {
@@ -754,7 +808,7 @@ describe('MuhafizAyarlariSayfasi', () => {
       await act(async () => { fireEvent.press(getByLabelText('Sesli okumayı açın')); });
 
       const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-      expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
+      expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true, titresim: true });
       expect(yeni.ogle.seviyeler[3].esikDk).toBe(6);
       expect(yeni.ogle.seviyeler[3].anonsMetni).toContain('{vakit}');
       expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'yogun' });
@@ -769,8 +823,8 @@ describe('MuhafizAyarlariSayfasi', () => {
       expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
       const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
       // Sesli kanal KAPATILIR ama adım susturulmaz: bildirim kanalı açık kalır
-      expect(yeni.ogle.seviyeler[3].kanallar).toMatchObject({ bildirim: true, sesli: false });
-      expect(yeni.ogle.seviyeler[3].esikDk).toBe(3); // zamanlama yine uygulandı
+      expect(yeni.ogle.seviyeler[2].kanallar).toMatchObject({ bildirim: true, sesli: false });
+      expect(yeni.ogle.seviyeler[2].esikDk).toBe(3); // zamanlama yine uygulandı
       // Onay verilmedi → kalıcılaşmaz, bir dahaki sefere yine sorulur
       expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'normal' });
     });
@@ -781,7 +835,7 @@ describe('MuhafizAyarlariSayfasi', () => {
 
       expect(queryByText('Sesli okuma açılsın mı?')).toBeNull();
       const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-      expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
+      expect(yeni.ogle.seviyeler[2].kanallar).toEqual({ bildirim: true, sesli: true, titresim: true });
       // Zaten onaylı → tekrar yazılmaz
       expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'normal' });
     });
@@ -856,13 +910,20 @@ describe('MuhafizAyarlariSayfasi', () => {
 
       await act(async () => { fireEvent.press(getByLabelText('Sesli okumayı açın')); });
       const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
-      expect(yeni.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true }); // sesli GERÇEKTEN açıldı
+      expect(yeni.ogle.seviyeler[2].kanallar).toEqual({ bildirim: true, sesli: true, titresim: true }); // sesli GERÇEKTEN açıldı
       expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'normal' });
       expect(rizaVerMock).toHaveBeenCalledWith({ sesliOnayi: true });
     });
 
+    // Güncel düzey tablolarıyla kurulu matris (eski kayıt DEĞİL — o "önceki ayarınız"dır).
+    const guncelMatris = (y: 'hafif' | 'normal' | 'yogun', sesli = false) => {
+      const { presetMatrisiOlustur } = require('../../../core/muhafiz/matrisIslemleri');
+      const { HATIRLATMA_PRESETLERI: P } = jest.requireActual('../../store/muhafizSlice');
+      return presetMatrisiOlustur(P[y].seviyeler, sesli);
+    };
+
     it('ZATEN SEÇİLİ preset + onay VARSA dokunuş hiçbir şey yapmaz', async () => {
-      const { getByLabelText, queryByText } = await kur({ yogunluk: 'normal', sesliOnayi: true });
+      const { getByLabelText, queryByText } = await kur({ yogunluk: 'normal', sesliOnayi: true, matris: guncelMatris('normal', true) });
       await act(async () => { fireEvent.press(getByLabelText(/^Normal\./)); });
 
       expect(queryByText('Sesli okuma açılsın mı?')).toBeNull();
@@ -870,11 +931,23 @@ describe('MuhafizAyarlariSayfasi', () => {
     });
 
     it('ZATEN SEÇİLİ sessiz preset (hafif) dokunuşu onay istemez', async () => {
-      const { getByLabelText, queryByText } = await kur({ yogunluk: 'hafif' });
+      const { getByLabelText, queryByText } = await kur({ yogunluk: 'hafif', matris: guncelMatris('hafif') });
       await act(async () => { fireEvent.press(getByLabelText(/^Hafif\./)); });
 
       expect(queryByText('Sesli okuma açılsın mı?')).toBeNull();
       expect(matrisiGuncelle).not.toHaveBeenCalled();
+    });
+
+    it('ESKİ DÜZEY: önceki Hafif kaydı yeni sayıyı SÖYLEMEZ; karta dokunmak güncel Hafif\'i uygular', async () => {
+      // Varsayılan fikstür eski (v1) tablolarla kurulu → "önceki ayarınız".
+      const { getByLabelText, getByText } = await kur({ yogunluk: 'hafif' });
+      expect(getByLabelText(/^Hafif\. Önceki ayarınız/)).toBeTruthy();
+      expect(getByText('Önceki Hafif ayarınız sürüyor. Güncel Hafif için karta dokunun.')).toBeTruthy();
+      // Görsel anlatı silinmez: resim kullanıcının GERÇEK (eski) adımlarını çizer (fikstürün ilk eşiği 45 dk; yeni Hafif 15 derdi).
+      expect(getByText('45 dk önce', { includeHiddenElements: true })).toBeTruthy();
+      await act(async () => { fireEvent.press(getByLabelText(/^Hafif\./)); });
+      const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+      expect(yeni.ogle.seviyeler).toHaveLength(1);
     });
   });
 
