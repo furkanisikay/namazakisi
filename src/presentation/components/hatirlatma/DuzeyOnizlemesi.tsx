@@ -22,6 +22,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { duzeyOnizlemeAdimlari, type HatirlatmaDuzeyi } from '../../../core/hatirlatma/duzeyOzeti';
 import { HATIRLATMA_PRESETLERI } from '../../store/muhafizSlice';
+import type { PresetSeviyeleri } from '../../../core/muhafiz/matrisIslemleri';
 import { useDonguAcik, useDonguAnimasyonu } from '../hareket/dongu';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 
@@ -36,10 +37,15 @@ export interface DuzeyOnizlemesiProps {
     dongu?: boolean;
     /** Sesli okuma gerçekten açık mı (varsayılan evet: sihirbaz rızayı bu adımda alır). */
     sesliAcik?: boolean;
+    /**
+     * Verilirse resim hazır düzey yerine BU adımlardan çizilir (eski düzey: kullanıcının
+     * gerçek planı yeni düzeyin tablosu değildir — resim kartın cümlesiyle aynı şeyi söylesin).
+     */
+    seviyeler?: PresetSeviyeleri;
     testID?: string;
 }
 
-export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(function DuzeyOnizlemesi({ duzey, dongu = false, sesliAcik = true, testID }) {
+export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(function DuzeyOnizlemesi({ duzey, dongu = false, sesliAcik = true, seviyeler, testID }) {
     const renkler = useRenkler();
     const azalt = useHareketAzalt();
     const donguAcik = useDonguAcik();
@@ -47,8 +53,9 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
     const ilerleme = React.useRef(new Animated.Value(1)).current;
 
     const adimlar = React.useMemo(
-        () => duzeyOnizlemeAdimlari(duzey === 'kapali' ? null : HATIRLATMA_PRESETLERI[duzey].seviyeler, sesliAcik),
-        [duzey, sesliAcik],
+        () =>
+            duzeyOnizlemeAdimlari(duzey === 'kapali' ? null : (seviyeler ?? HATIRLATMA_PRESETLERI[duzey].seviyeler), sesliAcik),
+        [duzey, sesliAcik, seviyeler],
     );
     const ilkDk = adimlar[0]?.kalanDk ?? 0;
     const kapali = adimlar.length === 0;

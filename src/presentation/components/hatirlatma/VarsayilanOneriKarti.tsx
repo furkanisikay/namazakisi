@@ -8,7 +8,11 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { IkonCipi } from '../ortak/IkonCipi';
 
-export const VarsayilanOneriKarti: React.FC<{ onUygula: () => void; onKapat: () => void }> = ({ onUygula, onKapat }) => {
+export const VarsayilanOneriKarti: React.FC<{ onUygula: () => void; onKapat: () => void; kendiAyari?: boolean }> = ({
+    onUygula,
+    onKapat,
+    kendiAyari = false,
+}) => {
     const renkler = useRenkler();
     return (
         <View
@@ -30,6 +34,7 @@ export const VarsayilanOneriKarti: React.FC<{ onUygula: () => void; onKapat: () 
                     </Text>
                     <Text style={{ fontSize: 14, lineHeight: 20, marginTop: 2, color: renkler.metin }}>
                         Önerilen ayar: vakit başına 3 hatırlatma, gece 23:00 – imsak sessiz.
+                        {kendiAyari ? ' Kendi ayarınız saklanır, "Kendi ayarınız" ile geri dönebilirsiniz.' : ''}
                     </Text>
                 </View>
             </View>

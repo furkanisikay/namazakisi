@@ -288,7 +288,7 @@ const HatirlatmalarIcerik: React.FC = () => {
             >
                 <DurumSatiri durum={durumNotu('bildirimIzni', cihaz)} onSonra={cihazYenile} style={{ marginBottom: 12 }} />
 
-                {oneri.goster ? <VarsayilanOneriKarti onUygula={oneri.uygula} onKapat={oneri.kapat} /> : null}
+                {oneri.goster ? <VarsayilanOneriKarti onUygula={oneri.uygula} onKapat={oneri.kapat} kendiAyari={muhafiz.yogunluk === 'ozel'} /> : null}
 
                 <AyarCapasi id="muhafizYogunluk">
                     <BolumBasligi metin="Ne kadar hatırlatalım?" />
@@ -302,8 +302,8 @@ const HatirlatmalarIcerik: React.FC = () => {
                         testID="hatirlatma-duzeyi"
                     />
                     {/* Görsel anlatı: girişte ve düzey değişince BİR KEZ (ayar ekranı — döngü yok).
-                        Eski düzeyde çizilmez: resim yeni düzeyi gösterirdi (sessiz sapma). */}
-                    {duzey.secili !== 'ozel' && !duzey.eskiDuzey ? <DuzeyOnizlemesi duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="hatirlatma-duzey-onizlemesi" /> : null}
+                        Eski düzeyde kullanıcının GERÇEK adımlarını çizer (yeni tabloyu değil). */}
+                    {duzey.secili !== 'ozel' ? <DuzeyOnizlemesi seviyeler={duzey.onizlemeSeviyeleri} duzey={duzey.secili} sesliAcik={duzey.sesliAcik} testID="hatirlatma-duzey-onizlemesi" /> : null}
                 </AyarCapasi>
 
                 <BildirimButceKarti ozet={butce.ozet} onPress={rehber.karttanAc} />

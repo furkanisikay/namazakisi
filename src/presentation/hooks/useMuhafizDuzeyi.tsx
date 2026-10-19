@@ -30,7 +30,7 @@ import {
     type HatirlatmaYogunlugu,
 } from '../store/muhafizSlice';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
-import { presetSesliIceriyorMu, presetUygula } from '../../core/muhafiz/matrisIslemleri';
+import { presetSesliIceriyorMu, presetUygula, type PresetSeviyeleri } from '../../core/muhafiz/matrisIslemleri';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { matrisGecerliMi } from '../../core/muhafiz/motorAdaptoru';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
@@ -84,6 +84,11 @@ export interface MuhafizDuzeyi {
      * dokunmak güncel düzeyi uygular.
      */
     eskiDuzey: boolean;
+    /**
+     * Eski düzeyde önizlemenin çizeceği GERÇEK adımlar (öğle satırı); güncel düzeyde
+     * `undefined` (önizleme hazır düzeyin tablosunu çizer).
+     */
+    onizlemeSeviyeleri?: PresetSeviyeleri;
 }
 
 export function useMuhafizDuzeyi(planla: () => void): MuhafizDuzeyi {
@@ -224,5 +229,20 @@ export function useMuhafizDuzeyi(planla: () => void): MuhafizDuzeyi {
         />
     ) : null;
 
-    return { secili, ozelVar, sec, aktifiDegistir, modal, sesliAcik, eskiDuzey };
+    const onizlemeSeviyeleri = useMemo<PresetSeviyeleri | undefined>(
+        () =>
+            eskiDuzey && matris?.ogle?.seviyeler
+                ? matris.ogle.seviyeler.map((s) => ({
+                      kademe: s.kademe,
+                      esikDk: s.esikDk,
+                      siklik: s.siklik,
+                      kanallar: s.kanallar,
+                      // Üç durumlu alan (undefined = eski kayıt) önizlemede "acil değil" sayılır.
+                      acilKanal: s.acilKanal === true,
+                  }))
+                : undefined,
+        [eskiDuzey, matris]
+    );
+
+    return { secili, ozelVar, sec, aktifiDegistir, modal, sesliAcik, eskiDuzey, onizlemeSeviyeleri };
 }

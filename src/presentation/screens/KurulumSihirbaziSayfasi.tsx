@@ -122,8 +122,10 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     const isaretlerSec = useCallback((d: 'evet' | 'hayir') => {
         setSecimler((s) => ({ ...s, isaretler: d }));
         // Kıldım'a basmayan kişide uyarı zinciri hiç kesilmez → tek hatırlatma (Hafif).
-        // "Evet"e dönünce varsayılan Normal geri gelir (kullanıcı düzeyi yine seçebilir).
-        setDuzey(d === 'hayir' ? 'hafif' : 'normal');
+        // "Evet"e dönünce yalnız Hayır'ın kurduğu Hafif Normal'e döner; kullanıcının
+        // kendi seçtiği düzey (Yoğun, Kapalı) ezilmez.
+        if (d === 'hayir') setDuzey('hafif');
+        else setDuzey((onceki) => (onceki === 'hafif' ? 'normal' : onceki));
     }, []);
     const yetenekler = usePlatformYetenekleri();
     const alarmIzinleri = useAlarmIzinleri(adim === 'duzey', yetenekler.platform);

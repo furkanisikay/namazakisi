@@ -929,6 +929,8 @@ describe('MuhafizAyarlariSayfasi', () => {
       const { getByLabelText, getByText } = await kur({ yogunluk: 'hafif' });
       expect(getByLabelText(/^Hafif\. Önceki ayarınız/)).toBeTruthy();
       expect(getByText('Önceki Hafif ayarınız sürüyor. Güncel Hafif için karta dokunun.')).toBeTruthy();
+      // Görsel anlatı silinmez: resim kullanıcının GERÇEK (eski) adımlarını çizer (fikstürün ilk eşiği 45 dk; yeni Hafif 15 derdi).
+      expect(getByText('45 dk önce', { includeHiddenElements: true })).toBeTruthy();
       await act(async () => { fireEvent.press(getByLabelText(/^Hafif\./)); });
       const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
       expect(yeni.ogle.seviyeler).toHaveLength(1);
