@@ -819,6 +819,31 @@ describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
         const g = temelGirdi(platform, { gunSonu: ayar });
         expect(onekliSay('gun_sonu_hatirlatici_')).toBe(say(g, 'gunSonu'));
     });
+
+    it.each(['ios', 'android'] as const)('gün sonu: BUGÜN TAMSA ikisi de bugünü atlar (%s)', async (platform) => {
+        jest.replaceProperty(Platform, 'OS', platform);
+        // Muhafız kılınmışlığı (servis + defter AYNI okuyucudan: kayıt ∪ muhafız).
+        disk.set(
+            `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_2026-10-13`,
+            JSON.stringify(['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'])
+        );
+        const ayar = {
+            gunSonuBildirimAktif: true,
+            gunSonuBildirimModu: 'otomatik' as const,
+            bildirimImsakOncesiDk: 30,
+            bildirimSaati: 4,
+            bildirimDakikasi: 0,
+            tamGunEsigi: 5,
+        };
+        disk.set(DEPOLAMA_ANAHTARLARI.SERI_AYARLARI, JSON.stringify(ayar));
+        await gunSonuHatirlatmalariniGuncelle(ISTANBUL, ayar, new Date(SABAH));
+        const dis = await defterDisGirdisiniOku();
+        const g = temelGirdi(platform, { gunSonu: ayar, gunSonuKilinan: dis.gunSonuKilinan });
+        const ufuk = platform === 'ios' ? 3 : 7;
+        expect(onekliSay('gun_sonu_hatirlatici_')).toBe(ufuk - 1);
+        expect(onekliSay('gun_sonu_hatirlatici_2026-10-13')).toBe(0);
+        expect(say(g, 'gunSonu')).toBe(ufuk - 1);
+    });
 });
 
 describe('yatış hatırlatması + gün sonu muhasebesi (issue #290): defter = servisin kurduğu', () => {

@@ -13,6 +13,7 @@
 import { SERI_SOZU } from '../data/SeriSozu';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import type { ImsakSaglayici } from './seriGunSonu';
+import { gunTamMi } from './gunTamMi';
 
 /** Eski DAILY bildirimin kimligi; yeni tetikler bunu ONEK olarak tasir. */
 export const GUN_SONU_ESKI_ID = 'gun_sonu_hatirlatici';
@@ -41,7 +42,12 @@ export interface GunSonuPlanAyarlari {
   bildirimImsakOncesiDk: number;
   bildirimSaati: number;
   bildirimDakikasi: number;
+  /** Tam gun esigi (`SeriAyarlari.tamGunEsigi`); yoksa 5. */
+  tamGunEsigi?: number;
 }
+
+/** Esik okunamazsa seri motorunun varsayilani. */
+export const VARSAYILAN_TAM_GUN_ESIGI = 5;
 
 export interface GunSonuTetigi {
   /** Bildirimin ait oldugu SERI gunu (YYYY-MM-DD) — ozel gun kapisi buna bakar. */
@@ -52,9 +58,15 @@ export interface GunSonuTetigi {
   kimlik: string;
 }
 
-/** Bildirim icerigi — eski DAILY bildirimle BIREBIR ayni (nobetci test). */
-export const GUN_SONU_BASLIK = '🚨 Seri Hatırlatıcı';
-export const GUN_SONU_GOVDE = `Gün bitmek üzere! Serinizi bozmamak için bugünkü namazlarınızı girmeyi unutmayın.\n\n«${SERI_SOZU.metin}» (${SERI_SOZU.kaynak})`;
+/**
+ * Bildirim icerigi. Hatirlatma artik YALNIZ gun tamamlanmamisken gelir
+ * (`gunTamMi`), bu yuzden baslik durumu soyler. Eski "🚨 Seri Hatırlatıcı"
+ * gece telas yaratiyordu (persona calismasi 2026-10-19: "bir sey mi oldu?") ve
+ * ayar satirinin adiyla ("Günü tamamlamadıysam") eslesmiyordu. Kibar "siz":
+ * bu bir isaretleme hatirlatmasidir, ibadete cagri degil.
+ */
+export const GUN_SONU_BASLIK = 'Günü tamamlamadınız · seri';
+export const GUN_SONU_GOVDE = `Kıldığınız namazları gün bitmeden işaretlerseniz seriniz sürer.\n\n«${SERI_SOZU.metin}» (${SERI_SOZU.kaynak})`;
 
 const gecerliTarihMi = (t: unknown): t is Date =>
   t instanceof Date && Number.isFinite(t.getTime());
@@ -132,9 +144,17 @@ export function gunSonuPlaniOlustur(girdi: {
   imsakSaglayici: ImsakSaglayici;
   gunSayisi: number;
   gunAtlanirMi?: (seriGunu: string) => boolean;
+  /**
+   * O seri gunu ZATEN tam mi? (kilinan sayisi >= `tamGunEsigi`). Tam gune
+   * hatirlatma kurulmaz: govde "isaretlemeyi unutmayin" der, her sey
+   * isaretliyken anlamsizdir. Yuklemi cagiran kurar (servis + defter AYNI
+   * kaynaktan: namaz kaydi ∪ muhafiz kilinmisligi).
+   */
+  gunTamMi?: (seriGunu: string) => boolean;
 }): GunSonuTetigi[] {
   const { simdi, ayarlar, imsakSaglayici, gunSayisi } = girdi;
   const gunAtlanirMi = girdi.gunAtlanirMi ?? (() => false);
+  const gunTamMi = girdi.gunTamMi ?? (() => false);
   if (!gecerliTarihMi(simdi) || !(gunSayisi > 0)) return [];
 
   const bugun = gunKaydir(simdi, 0);
@@ -151,5 +171,27 @@ export function gunSonuPlaniOlustur(girdi: {
   return adaylar
     .sort((a, b) => a.an.getTime() - b.an.getTime())
     .slice(0, gunSayisi)
-    .filter((t) => !gunAtlanirMi(t.seriGunu));
+    .filter((t) => !gunAtlanirMi(t.seriGunu) && !gunTamMi(t.seriGunu));
+}
+
+/** Tetik kimliginden seri gununu okur (`gun_sonu_hatirlatici_<YYYY-MM-DD>`); degilse null. */
+export function gunSonuKimligindenGun(kimlik: string): string | null {
+  if (!kimlik.startsWith(GUN_SONU_ID_ONEKI)) return null;
+  const gun = kimlik.slice(GUN_SONU_ID_ONEKI.length);
+  return /^\d{4}-\d{2}-\d{2}$/.test(gun) ? gun : null;
+}
+
+/**
+ * Kilinanlar + esikten "bu seri gunu tam mi?" yuklemi. Servis ve defter AYNI
+ * kurali kullanir (seri motoru `gunTamMi` ile ayni esik). Esik gecersizse 5.
+ */
+export function gunTamYuklemi(
+  kilinanlar: Readonly<Record<string, readonly string[]>>,
+  tamGunEsigi: number | undefined
+): (seriGunu: string) => boolean {
+  const esik =
+    typeof tamGunEsigi === 'number' && Number.isFinite(tamGunEsigi) && tamGunEsigi > 0
+      ? tamGunEsigi
+      : VARSAYILAN_TAM_GUN_ESIGI;
+  return (gun) => gunTamMi(new Set(kilinanlar[gun] ?? []).size, esik);
 }

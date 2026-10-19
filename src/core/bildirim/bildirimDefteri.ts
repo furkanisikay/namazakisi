@@ -48,7 +48,7 @@ import { kullanilabilirSlotHesapla, yedekKapasitesiHesapla } from '../muhafiz/io
 import { nafileAlarmKurarMi, nafileAnonsAlarmiKurarMi, nafilePlaniOlustur, nafilePlanSecenekleri } from '../nafile/nafilePlani';
 import type { NafileAyarlari } from '../nafile/nafileTipleri';
 import type { SaatTeslimBaglami } from '../saat/saatAyarlari';
-import { gunSonuPlaniOlustur, GUN_SONU_PLAN_GUN_SAYISI, type GunSonuPlanAyarlari } from '../seri/gunSonuPlani';
+import { gunSonuPlaniOlustur, gunTamYuklemi, GUN_SONU_PLAN_GUN_SAYISI, type GunSonuPlanAyarlari } from '../seri/gunSonuPlani';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { YATIS_PLAN_GUN_SAYISI, yatisPlaniOlustur, type YatisAyarlari } from '../yatis/yatisPlani';
 import { muhafizUyarilanVakitleriBul, sayacBaslangicEsikleriHesapla } from '../utils/vakitSayacYardimcisi';
@@ -156,6 +156,12 @@ export interface DefterGirdisi {
     camiyeGit?: CamiyeGitPlanAyarlari | null;
     nafile?: NafileAyarlari | null;
     gunSonu?: (GunSonuPlanAyarlari & { gunSonuBildirimAktif: boolean }) | null;
+    /**
+     * Gün sonu için seri günü → kılınmış vakitler: namaz kaydı ∪ muhafız kılınmışlığı
+     * (servisin `gunSonuKilinanlariOku`'su ile AYNI). Tam güne tetik sayılmaz.
+     * `kilinan`'dan AYRI: muhafız/sayaç yalnız muhafız diskini okur, onların paritesi bozulmasın.
+     */
+    gunSonuKilinan?: Record<string, readonly VakitAdi[]>;
     /** Yatış hatırlatması + gün sonu muhasebesi (issue #290). */
     yatis?: YatisAyarlari | null;
     /**
@@ -349,6 +355,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 imsakSaglayici: (t: Date) => (konum ? new PrayerTimes(konum, t, params).fajr ?? null : null),
                 gunSayisi: GUN_SONU_PLAN_GUN_SAYISI[g.platform],
                 gunAtlanirMi: ozelGundeMi,
+                gunTamMi: gunTamYuklemi(g.gunSonuKilinan ?? {}, ayar.tamGunEsigi),
             });
             for (const t of plan) ekle('gunSonu', t.an.getTime());
         });

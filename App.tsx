@@ -28,7 +28,7 @@ import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildi
 import { SahurSayacBildirimServisi } from './src/domain/services/SahurSayacBildirimServisi';
 import { SeriSayacBildirimServisi } from './src/domain/services/SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './src/domain/services/SeriSayacHazirlayici';
-import { gunSonuHatirlatmalariniGuncelle } from './src/domain/services/GunSonuHatirlaticiServisi';
+import { gunSonuDinleyicisiniBaslat, gunSonuHatirlatmalariniGuncelle } from './src/domain/services/GunSonuHatirlaticiServisi';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { CumaHatirlatmaServisi } from './src/domain/services/CumaHatirlatmaServisi';
 import { cumaHatirlatmaAyarlariniYukle } from './src/presentation/store/cumaHatirlatmaSlice';
@@ -325,6 +325,8 @@ const AppIcerik: React.FC = () => {
         CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
         // Yatış hatırlatması (issue #290): kılınmışlık değişince muhasebe içeriği tazelenir.
         YatisHatirlatmaServisi.getInstance().baslat();
+        // Gün sonu seri hatırlatması: gün tamamlanınca o günün tetiği kalkar.
+        gunSonuDinleyicisiniBaslat();
         // iOS canlı etkinlik (#295): yalnız uygulama açıkken başlatılabilir → açılışta eşitle,
         // kılınmışlık değişince ("Kıldım") tazele. Android'de no-op (planı sayaçlar kurar).
         if (Platform.OS === 'ios') {
