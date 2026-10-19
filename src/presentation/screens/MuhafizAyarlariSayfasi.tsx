@@ -27,7 +27,9 @@ import {
 import { BildirimModali } from '../components/common/BildirimModali';
 import type { MuhafizMatrisi, MuhafizVakti, VakitMuhafizAyari } from '../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
-import { tumVakitlereUygula, zamanlamaDegistiMi } from '../../core/muhafiz/matrisIslemleri';
+import { presetVakteUygula, tumVakitlereUygula, zamanlamaDegistiMi } from '../../core/muhafiz/matrisIslemleri';
+import { VakitDuzeyListesi, ortakDuzeyiBul, type VakitDuzeyi } from '../components/hatirlatma/VakitDuzeyListesi';
+import { geceSessizliginiNormalize } from '../../core/muhafiz/geceSessizligi';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { adimKapaliMi } from '../../core/muhafiz/kanalKumesi';
 import { adimEkle, adimSil, adimSilinebilirMi } from '../../core/muhafiz/adimDuzenleme';
@@ -377,6 +379,26 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         planlamayiKuyrugaAl();
     }, [matris, rehber, dispatch, muhafizAyarlari.yogunluk, planlamayiKuyrugaAl]);
 
+    /**
+     * VAKİT BAŞINA DÜZEY: hazır düzey YALNIZ o vakte uygulanır (`presetVakteUygula`; yön,
+     * ses, anons, gerçek alarm korunur). Sesli adım rıza yoksa bildirimle kurulur. Yapısal
+     * artış (adım sayısı) sığma simülasyonundan geçer. Genel düzey türetilir: beş vakit
+     * aynı hazır düzeydeyse o, değilse "Kendi ayarınız" (önceki matris özel yedeğe yazılır).
+     */
+    const vakitDuzeyiSec = useCallback(
+        (vakit: MuhafizVakti, d: VakitDuzeyi) => {
+            const yeniVakit = presetVakteUygula(matris[vakit], vakit, HATIRLATMA_PRESETLERI[d].seviyeler, genelRiza.sesli, d);
+            const yeni = { ...matris, [vakit]: yeniVakit };
+            if (yeniVakit.seviyeler.length > matris[vakit].seviyeler.length && !rehber.degisikligiDene({ matris: yeni })) return;
+            dispatch(matrisiGuncelle(yeni));
+            const ortak = ortakDuzeyiBul(yeni) ?? 'ozel';
+            if (ortak !== muhafizAyarlari.yogunluk) dispatch(muhafizAyarlariniGuncelle({ yogunluk: ortak }));
+            dispatch(ozelMatrisYedegiGuncelle(yeni));
+            planlamayiKuyrugaAl();
+        },
+        [dispatch, genelRiza.sesli, matris, muhafizAyarlari.yogunluk, planlamayiKuyrugaAl, rehber]
+    );
+
     const tumVakitlereUygulaOnayla = useCallback(() => {
         if (!tumuneOnayi) return;
         matrisiYaz(tumVakitlereUygula(matris, tumuneOnayi));
@@ -412,6 +434,19 @@ const MuhafizAyarlariIcerik: React.FC = () => {
 
                 {muhafizAyarlari.aktif && (
                     <>
+                        {/* ── VAKİT VAKİT — tek vakte düzey (ayrıntıya girmeden). Orta katman:
+                            "Kendim ayarlayayım" açılınca vakit kartları onun yerini alır. ── */}
+                        {!kendimAcik ? (
+                            <>
+                                <BolumBasligi metin="Vakit vakit" />
+                                <VakitDuzeyListesi
+                                    matris={matris}
+                                    onSec={vakitDuzeyiSec}
+                                    geceSessiz={geceSessizliginiNormalize(muhafizAyarlari.geceSessizligi)?.aktif === true}
+                                />
+                            </>
+                        ) : null}
+
                         {/* ── KENDİM AYARLAYAYIM — vakit vakit adımlar (gelişmiş katı) ──
                             Kapalı başlar (kendi ayarınız varken açık); kapalıyken özet görünür. */}
                         <TouchableOpacity

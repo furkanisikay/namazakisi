@@ -275,9 +275,12 @@ describe('MuhafizAyarlariSayfasi', () => {
     const { MuhafizAyarlariSayfasi } = require('../MuhafizAyarlariSayfasi');
     const ekran = render(<MuhafizAyarlariSayfasi />);
     await act(async () => { await Promise.resolve(); });
-    expect(ekran.queryByText('İkindi')).toBeNull();
+    // Kapalıyken orta katman ("Vakit vakit" düzey listesi) görünür, vakit kartları değil.
+    expect(ekran.getByTestId('vakit-duzey-listesi')).toBeTruthy();
+    expect(ekran.queryByText('Tüm vakitlere uygula')).toBeNull();
     expect(ekran.getByText('Her vakti ayrı ayarlayın')).toBeTruthy();
     fireEvent.press(ekran.getByTestId('kendim-ayarlayayim'));
+    expect(ekran.queryByTestId('vakit-duzey-listesi')).toBeNull();
     expect(ekran.getByText('İkindi')).toBeTruthy();
   });
 
@@ -617,6 +620,42 @@ describe('MuhafizAyarlariSayfasi', () => {
     fireEvent(kutu, 'endEditing');
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
     expect(yeni.ogle.seviyeler[0].anonsMetni).toBe('Kalk, {vakit} namazına {süre} dakika.');
+  });
+
+  // ── Vakit vakit düzey (persona 2026-10-19) ───────────────────────────────
+  it('VAKİT BAŞINA DÜZEY: "Akşam: Hafif" yalnız akşamı yazar, yön korunur, genel düzey "Kendi ayarınız" olur', async () => {
+    const matris = varsayilanMatris();
+    matris.aksam = { ...matris.aksam, yon: 'girisindenItibaren' };
+    const { getByLabelText, getByTestId } = await kur({ matris });
+    fireEvent.press(getByTestId('kendim-ayarlayayim')); // orta katmana dön
+    await act(async () => { fireEvent.press(getByLabelText('Akşam: Hafif')); });
+
+    const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(yeni.aksam.seviyeler).toHaveLength(1);
+    expect(yeni.aksam.yon).toBe('girisindenItibaren');
+    expect(yeni.ogle).toEqual(matris.ogle);
+    expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'ozel' });
+  });
+
+  it('VAKİT BAŞINA DÜZEY: beş vakit aynı düzeye gelince genel düzey o olur', async () => {
+    const { presetMatrisiOlustur } = require('../../../core/muhafiz/matrisIslemleri');
+    const { HATIRLATMA_PRESETLERI: P } = jest.requireActual('../../store/muhafizSlice');
+    const matris = presetMatrisiOlustur(P.hafif.seviyeler, false);
+    matris.aksam = presetMatrisiOlustur(P.normal.seviyeler, false).aksam;
+    const { getByLabelText, getByTestId } = await kur({ matris, yogunluk: 'ozel' });
+    fireEvent.press(getByTestId('kendim-ayarlayayim'));
+    expect(getByLabelText('Akşam: Normal').props.accessibilityState).toMatchObject({ selected: true });
+    expect(getByLabelText('Öğle: Hafif').props.accessibilityState).toMatchObject({ selected: true });
+    expect(getByTestId('vakit-duzey-listesi')).toBeTruthy();
+    await act(async () => { fireEvent.press(getByLabelText('Akşam: Hafif')); });
+    expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'hafif' });
+  });
+
+  it('gece sessizliği açıkken yatsı satırı gece uyarılarının gelmeyeceğini söyler', async () => {
+    const { getByTestId, queryByTestId } = await kur({ geceSessizligi: { aktif: true, baslangicSaat: 23, baslangicDakika: 0 } });
+    expect(queryByTestId('vakit-duzey-listesi')).toBeNull(); // ayrıntı açıkken orta katman gizli
+    fireEvent.press(getByTestId('kendim-ayarlayayim'));
+    expect(getByTestId('vakit-duzey-yatsi-gece')).toBeTruthy();
   });
 
   // ── Yoğunluk preset'i ─────────────────────────────────────────────────────
