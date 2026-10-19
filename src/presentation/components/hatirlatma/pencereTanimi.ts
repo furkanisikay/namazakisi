@@ -125,8 +125,6 @@ export const BILDIRIM_ETIKETI = 'Bildirim';
 export const BILDIRIM_ACIKLAMASI = 'Ekranda bildirim olarak gelir.';
 export const SESLI_ETIKETI = 'Sesli okuma';
 export const SESLI_ACIKLAMASI = 'Telefonunuz hatırlatmayı sesli okur.';
-/** Son açık ana kanalın anahtarı devre dışıyken altında yazılan neden. */
-export const SON_KANAL_NOTU = 'Kapatmak için listedeki anahtarı kullanın.';
 
 /** Bu ana kanal adımın SON açık ana kanalı mı? (kapatılamaz — kapatmanın yeri liste anahtarı) */
 export function sonAcikAnaKanalMi(kanallar: UyariKanallari | undefined, kanal: AnaKanal): boolean {
@@ -172,24 +170,25 @@ export function gelismisAcikBaslarMi(
 ): boolean {
     return (
         seviye.siklik !== 'birkez' ||
-        (tanim.tonSecilebilir === true && etkinKademe(seviye, tanim.yon) !== 'nazik') ||
-        kanalAcikMi(seviye.kanallar, 'alarm')
+        (tanim.tonSecilebilir === true && etkinKademe(seviye, tanim.yon) !== 'nazik')
     );
 }
 
-/** "Gelişmiş" başlığının yapısal özeti — ekranda ikon çipi, varsayılan değerler yer almaz. */
+/**
+ * "Gelişmiş" başlığının yapısal özeti — ekranda ikon çipi, varsayılan değerler yer almaz.
+ * Gerçek alarm artık "Nasıl" ızgarasında görünür (görsel inceleme 2026-10), Gelişmiş'te değil.
+ */
 export interface GelismisOzeti {
     tekrarDk?: number;
     /** Nazik dışındaki ETKİN ton (yalnız ton seçilebilen pencerede). */
     ton?: SeviyeKademe;
-    alarm: boolean;
 }
 
 export function gelismisOzetiVerisi(
     seviye: SeviyeAyari,
     tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'>
 ): GelismisOzeti {
-    const ozet: GelismisOzeti = { alarm: kanalAcikMi(seviye.kanallar, 'alarm') };
+    const ozet: GelismisOzeti = {};
     if (seviye.siklik !== 'birkez') ozet.tekrarDk = seviye.siklik.herDk;
     if (tanim.tonSecilebilir === true) {
         const ton = etkinKademe(seviye, tanim.yon);
@@ -210,7 +209,6 @@ export function gelismisOzetiOlustur(
     const parcalar: string[] = [];
     if (o.tekrarDk) parcalar.push(`her ${o.tekrarDk} dk tekrar`);
     if (o.ton) parcalar.push(`${TON_ETIKETLERI[o.ton]} sertliği`);
-    if (o.alarm) parcalar.push('gerçek alarm açık');
     return parcalar.join(', ');
 }
 

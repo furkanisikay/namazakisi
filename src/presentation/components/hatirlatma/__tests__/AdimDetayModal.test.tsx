@@ -18,6 +18,10 @@ jest.mock('@expo/vector-icons/FontAwesome5', () => {
     const { Text } = require('react-native');
     return (props: { name: string }) => <Text>{props.name}</Text>;
 });
+jest.mock('@expo/vector-icons', () => {
+    const { Text } = require('react-native');
+    return { FontAwesome5: (props: { name: string }) => <Text>{props.name}</Text> };
+});
 jest.mock('../../../../core/theme', () => ({
     useRenkler: () => ({
         kartArkaplan: '#FFFFFF',
@@ -163,16 +167,26 @@ describe('AdimDetayModal — NASIL (iki anahtar)', () => {
         );
     });
 
-    test('son açık kanal anahtarı DEVRE DIŞI ve nedeni yazılı', () => {
-        const { ekran } = kur(CUMA, adim({ bildirim: true }));
-        expect(ekran.getByTestId('adim-bildirim-anahtari').props.disabled).toBe(true);
-        expect(ekran.getByText('Kapatmak için listedeki anahtarı kullanın.')).toBeTruthy();
-        expect(ekran.getByTestId('adim-sesli-anahtari').props.disabled).toBeFalsy();
+    test('son açık kanal da kapatılabilir: onay sonrası adım kapanır (hafıza korunur); "Vazgeç" bir şey yazmaz', () => {
+        const { ekran, onDegistir } = kur(CUMA, adim({ bildirim: true, titresim: true }));
+        expect(ekran.getByTestId('adim-bildirim-anahtari').props.disabled).toBeFalsy();
+        expect(ekran.queryByText(/listedeki anahtarı/)).toBeNull();
+
+        fireEvent(ekran.getByTestId('adim-bildirim-anahtari'), 'valueChange', false);
+        expect(ekran.getByText('Bu hatırlatma kapansın mı?')).toBeTruthy();
+        fireEvent.press(ekran.getByLabelText('Vazgeç'));
+        expect(onDegistir).not.toHaveBeenCalled();
+
+        fireEvent(ekran.getByTestId('adim-bildirim-anahtari'), 'valueChange', false);
+        fireEvent.press(ekran.getByLabelText('Kapatın'));
+        expect(onDegistir).toHaveBeenCalledWith(
+            expect.objectContaining({ kanallar: {}, oncekiKanallar: { bildirim: true, titresim: true } })
+        );
     });
 
-    test('titreşim satırı yalnız bildirim açıkken', () => {
-        expect(kur(CUMA, adim({ bildirim: true })).ekran.queryByTestId('adim-titresim-anahtari')).toBeTruthy();
-        expect(kur(CUMA, adim({ sesli: true })).ekran.queryByTestId('adim-titresim-anahtari')).toBeNull();
+    test('ızgara tutarlı: titreşim karosu her zaman görünür, bildirim kapalıyken seçilemez', () => {
+        expect(kur(CUMA, adim({ bildirim: true })).ekran.getByTestId('adim-titresim-anahtari').props.disabled).toBeFalsy();
+        expect(kur(CUMA, adim({ sesli: true })).ekran.getByTestId('adim-titresim-anahtari').props.disabled).toBe(true);
     });
 
     test('MUHAFIZ: sesli açılırken boş kutu yön-uygun şablonla dolar (boş = sessiz)', () => {
@@ -221,11 +235,14 @@ describe('AdimDetayModal — GELİŞMİŞ', () => {
         });
         expect(ekran.getByTestId('adim-gelismis-icerik')).toBeTruthy();
         // Özet ikon çipidir (orta noktalı metin yok); tam cümle başlığın etiketinde.
-        expect(ekran.getByLabelText('Gelişmiş ayarlar: her 15 dk tekrar, gerçek alarm açık')).toBeTruthy();
+        expect(ekran.getByLabelText('Gelişmiş ayarlar: her 15 dk tekrar')).toBeTruthy();
         // Çipler ekran okuyucudan gizlidir (etiket zaten tam cümle) → gizlileri de ara.
         const gizli = { includeHiddenElements: true };
-        expect(ekran.getByTestId('adim-gelismis-ozet-alarm', gizli)).toBeTruthy();
+        expect(ekran.getByTestId('adim-gelismis-ozet', gizli)).toBeTruthy();
         expect(ekran.getByText('15 dk', gizli)).toBeTruthy();
+        // Gerçek alarm Gelişmiş'te değil, Nasıl ızgarasında; açıkken ayrıntısı görünür.
+        expect(ekran.getByTestId('adim-alarm-anahtari').props.value).toBe(true);
+        expect(ekran.getByTestId('adim-alarm-ayrinti')).toBeTruthy();
         // (Önizlemedeki bildirim BAŞLIĞI "Cuma · 30 dk kaldı …" gerçek bildirim metnidir, özet değil.)
         expect(ekran.queryByText(/her \d+ dk ·|· Gerçek alarm/)).toBeNull();
     });

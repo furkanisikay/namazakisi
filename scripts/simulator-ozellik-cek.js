@@ -139,8 +139,7 @@ async function bolum(ad, fn) {
         if (await getir(/ilk hatırlatma/i, 'serit', { ust: 0.3, alt: 0.55 })) cek('07-muhafiz-zaman-seridi');
         if (!(await kaydirarakDokun(/1\. hatırlatma.*düzenleyin/i, 'ilk adim', 'ilk-adim', { bekle: 3000 }))) return;
         cek('08-adim-detay');
-        // Gercek alarm "Gelişmiş" bolumundedir (nazik adimda kapali baslar).
-        await dokun(await agac('gelismis-oncesi'), /^Gelişmiş ayarlar/i, 'gelismis bolumu', { bekle: 2000 });
+        // Gercek alarm "Nasıl" izgarasindaki karodur (Gelişmiş'i acmak gerekmez).
         const anahtar = await getir(/adim-alarm-anahtari/, 'alarm-anahtari', { ust: 0.3, alt: 0.75 });
         cek('09-adim-detay-anahtarlar');
         if (!anahtar) return;

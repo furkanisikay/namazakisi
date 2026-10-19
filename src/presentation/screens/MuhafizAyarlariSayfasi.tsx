@@ -448,6 +448,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         sesliBilgiGoster={false}
                         sesliIzinVar={genelRiza.sesli}
                         eskiDuzey={duzey.eskiDuzey}
+                        eskiSeviyeler={duzey.onizlemeSeviyeleri}
                         testID="muhafiz-duzey"
                     />
                     {/* Görsel anlatı: seçilen düzeyin uyarıları zaman rayında — girişte ve
@@ -466,10 +467,15 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                             "Kendim ayarlayayım" açılınca vakit kartları onun yerini alır. ── */}
                         {!kendimAcik ? (
                             <>
-                                <BolumBasligi metin="Vakit vakit" />
+                                <BolumBasligi metin="Her vakit için" />
                                 <VakitDuzeyListesi
                                     matris={matris}
                                     onSec={vakitDuzeyiSec}
+                                    // "Özel": o vaktin adımlarını açar (Kendim ayarlayayım katı).
+                                    onOzel={(vakit) => {
+                                        setKendimAcik(true);
+                                        setAcikVakit(vakit);
+                                    }}
                                     geceSessiz={geceSessizligi?.aktif === true}
                                     yatsiDustu={yatsiDustu}
                                     aksamKesiliyor={aksamKesiliyor}

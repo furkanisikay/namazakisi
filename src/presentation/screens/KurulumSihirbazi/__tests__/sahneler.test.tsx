@@ -88,12 +88,15 @@ describe('Kurulum sahneleri', () => {
         olc(izinli);
         expect(izinli.queryAllByTestId('duzey-onizleme-nokta-sesli', G)).toHaveLength(sesliPlan);
         expect(izinli.queryAllByTestId(/duzey-onizleme-nokta/, G)).toHaveLength(plan.length);
-        expect(izinli.getByText('sesli', G)).toBeTruthy();
+        // Noktaların altında kısa etiketler: kanal ikonu (sesliyse hoparlör) + "N dk".
+        expect(izinli.queryAllByTestId('duzey-onizleme-etiket', G).length).toBeGreaterThan(0);
+        expect(izinli.getAllByText('volume-up', G).length).toBeGreaterThan(0);
+        expect(izinli.getByText('25 dk önce', G)).toBeTruthy();
 
         const izinsiz = render(<DuzeyOnizlemesi duzey="normal" sesliAcik={false} />);
         olc(izinsiz);
         expect(izinsiz.queryAllByTestId('duzey-onizleme-nokta-sesli', G)).toHaveLength(0);
         expect(izinsiz.queryAllByTestId('duzey-onizleme-nokta', G)).toHaveLength(plan.length);
-        expect(izinsiz.queryByText('sesli', G)).toBeNull();
+        expect(izinsiz.queryByText('volume-up', G)).toBeNull();
     });
 });

@@ -39,6 +39,8 @@ export function ortakDuzeyiBul(matris: MuhafizMatrisi): VakitDuzeyi | null {
 export interface VakitDuzeyListesiProps {
     matris: MuhafizMatrisi;
     onSec: (vakit: MuhafizVakti, duzey: VakitDuzeyi) => void;
+    /** "Özel" parçasına dokunuş: o vaktin adımlarını açar (verilmezse dokunuş bir şey yapmaz). */
+    onOzel?: (vakit: MuhafizVakti) => void;
     /** Gece sessizliği açık mı (yatsı uyarıları sessizliğin başlangıcına çapalanır — söylenir). */
     geceSessiz?: boolean;
     /** Bugün yatsı sessizlikten SONRA giriyor (yatsı hatırlatması gelmez — söylenir). */
@@ -47,7 +49,7 @@ export interface VakitDuzeyListesiProps {
     aksamKesiliyor?: boolean;
 }
 
-export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, onSec, geceSessiz = false, yatsiDustu = false, aksamKesiliyor = false }) => {
+export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, onSec, onOzel, geceSessiz = false, yatsiDustu = false, aksamKesiliyor = false }) => {
     const renkler = useRenkler();
     return (
         <View
@@ -59,23 +61,30 @@ export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, on
                 const yatsiGece = vakit === 'yatsi' && geceSessiz;
                 return (
                     <View key={vakit} style={{ paddingVertical: 10, borderTopWidth: i > 0 ? 0.5 : 0, borderTopColor: renkler.sinir }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-                            <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: renkler.metin }}>{VAKIT_ADLARI[vakit]}</Text>
-                            {secili === null ? (
-                                <Text testID={`vakit-duzey-${vakit}-ozel`} style={{ fontSize: 14, color: renkler.metin }}>
-                                    Kendi ayarınız
-                                </Text>
-                            ) : null}
-                        </View>
+                        <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin, marginBottom: 8 }}>
+                            {VAKIT_ADLARI[vakit]}
+                        </Text>
+                        {/* Dört parça: hazır üç düzey + "Özel". Vaktin zamanlaması hazır bir düzeye
+                            uymuyorsa "Özel" SEÇİLİ görünür (eskiden hiçbir parça seçili değildi ve
+                            sağda ayrı bir "Kendi ayarınız" yazısı duruyordu). */}
                         <ParcaliSecici
-                            secenekler={DUZEYLER.map((d) => ({
-                                deger: d,
-                                etiket: DUZEY_ADLARI[d],
-                                erisimEtiketi: `${VAKIT_ADLARI[vakit]}: ${DUZEY_ADLARI[d]}`,
-                                testID: `vakit-duzey-${vakit}-${d}`,
-                            }))}
-                            secili={secili}
-                            onSec={(d) => onSec(vakit, d)}
+                            boyut="buyuk"
+                            secenekler={[
+                                ...DUZEYLER.map((d) => ({
+                                    deger: d as VakitDuzeyi | 'ozel',
+                                    etiket: DUZEY_ADLARI[d],
+                                    erisimEtiketi: `${VAKIT_ADLARI[vakit]}: ${DUZEY_ADLARI[d]}`,
+                                    testID: `vakit-duzey-${vakit}-${d}`,
+                                })),
+                                {
+                                    deger: 'ozel' as const,
+                                    etiket: 'Özel',
+                                    erisimEtiketi: `${VAKIT_ADLARI[vakit]}: özel ayar${onOzel ? ', adımları düzenleyin' : ''}`,
+                                    testID: `vakit-duzey-${vakit}-ozel`,
+                                },
+                            ]}
+                            secili={secili ?? 'ozel'}
+                            onSec={(d) => (d === 'ozel' ? onOzel?.(vakit) : onSec(vakit, d))}
                         />
                         {yatsiGece ? (
                             <Text testID="vakit-duzey-yatsi-gece" style={{ fontSize: 14, lineHeight: 20, marginTop: 8, color: renkler.metin }}>

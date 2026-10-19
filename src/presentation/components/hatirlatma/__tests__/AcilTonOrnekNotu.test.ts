@@ -1,4 +1,5 @@
 jest.mock('@expo/vector-icons/FontAwesome5', () => 'FontAwesome5');
+jest.mock('@expo/vector-icons', () => ({ FontAwesome5: 'FontAwesome5' }));
 jest.mock('../../../../../modules/expo-countdown-notification/src', () => ({ sesSec: jest.fn() }));
 
 import { acilTonOrnekNotu } from '../AdimDetayModal';

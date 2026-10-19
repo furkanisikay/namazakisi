@@ -58,7 +58,8 @@ import {
     etkinKademe,
     sesliAnonsGerekliMi,
 } from '../../../core/muhafiz/motorAdaptoru';
-import { seviyeyiAc } from '../../../core/muhafiz/seviyeAcKapa';
+import { seviyeyiAc, seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
+import { BildirimModali } from '../common/BildirimModali';
 import { tonSecimiUygula } from '../../../core/muhafiz/adimDuzenleme';
 import {
     SEVIYE_BILGILERI,
@@ -70,7 +71,6 @@ import {
     BILDIRIM_ETIKETI,
     SESLI_ACIKLAMASI,
     SESLI_ETIKETI,
-    SON_KANAL_NOTU,
     TITRESIM_ACIKLAMASI,
     TITRESIM_ETIKETI,
     ALARM_ETIKETI,
@@ -241,27 +241,34 @@ const KanalKarosu: React.FC<{
     deger: boolean;
     onDegis: (v: boolean) => void;
     testID: string;
+    /** Karo şu an seçilemez (titreşim: bildirim kapalıyken) — soluk, nedeni ipucunda. */
     devreDisi?: boolean;
-    devreDisiNotu?: string;
-}> = ({ ikon, renk, etiket, ipucu, deger, onDegis, testID, devreDisi = false, devreDisiNotu }) => {
+    /** Izgara sütun sayısı: karolar aynı genişlik ve AYNI yükseklikte. */
+    sutun: number;
+}> = ({ ikon, renk, etiket, ipucu, deger, onDegis, testID, devreDisi = false, sutun }) => {
     const renkler = useRenkler();
     return (
         <View
             className="p-3 rounded-2xl border"
             style={{
-                flexGrow: 1,
-                flexBasis: '45%',
+                width: sutun === 3 ? '31.5%' : '48.5%',
+                minHeight: 112,
+                justifyContent: 'space-between',
+                opacity: devreDisi ? 0.5 : 1,
                 backgroundColor: deger ? `${renk}10` : renkler.arkaplan,
                 borderColor: deger ? `${renk}80` : renkler.sinir,
             }}
         >
-            <View className="flex-row items-center justify-between" style={{ minHeight: 44 }}>
-                <View
-                    className="w-9 h-9 rounded-xl items-center justify-center"
-                    style={{ backgroundColor: deger ? `${renk}20` : renkler.sinir }}
-                >
-                    <FontAwesome5 name={ikon} size={14} color={deger ? renk : renkler.metinIkincil} solid />
-                </View>
+            <View
+                className="w-9 h-9 rounded-xl items-center justify-center"
+                style={{ backgroundColor: deger ? `${renk}20` : renkler.sinir }}
+            >
+                <FontAwesome5 name={ikon} size={14} color={deger ? renk : renkler.metinIkincil} solid />
+            </View>
+            <Text className="text-sm font-semibold mt-2" style={{ color: renkler.metin }} numberOfLines={2}>
+                {etiket}
+            </Text>
+            <View className="flex-row justify-end mt-1" style={{ minHeight: 44, alignItems: 'center' }}>
                 <Anahtar
                     value={deger}
                     onValueChange={onDegis}
@@ -271,18 +278,10 @@ const KanalKarosu: React.FC<{
                     accessibilityRole="switch"
                     accessibilityState={{ checked: deger, disabled: devreDisi }}
                     accessibilityLabel={etiket}
-                    accessibilityHint={devreDisi && devreDisiNotu ? devreDisiNotu : ipucu}
+                    accessibilityHint={ipucu}
                     testID={testID}
                 />
             </View>
-            <Text className="text-sm font-semibold mt-1.5" style={{ color: renkler.metin }}>
-                {etiket}
-            </Text>
-            {devreDisi && !!devreDisiNotu && (
-                <Text className="text-[11px] mt-0.5 leading-4" style={{ color: renkler.metinIkincil }}>
-                    {devreDisiNotu}
-                </Text>
-            )}
         </View>
     );
 };
@@ -306,6 +305,8 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     const [alarmOnayAcik, setAlarmOnayAcik] = useState(false);
     /** Sesli okuma rızası bekleyen adım (onaylanınca yazılır). */
     const [sesliBekleyen, setSesliBekleyen] = useState<SeviyeAyari | null>(null);
+    /** Son açık kanal kapatılırken "hatırlatma kapansın mı?" onayı. */
+    const [kapatOnayi, setKapatOnayi] = useState(false);
     const alarmAcikMi = gorunur && kanalAcikMi(seviye?.kanallar, 'alarm');
     // iOS'ta AlarmKit durumu rıza modalının metnini de belirler → adım detayı açıkken okunur.
     const alarmIzinleri = useAlarmIzinleri(
@@ -412,6 +413,24 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
         if (doldur) setMetinTaslak(anonsMetni);
         onDegistir(yeni);
     };
+
+    /**
+     * Karodaki ana kanal anahtarı. SON açık ana kanal da kapatılabilir (görsel inceleme
+     * 2026-10: devre dışı anahtar + "listedeki anahtarı kullanın" cümlesi kafa karıştırıyordu):
+     * önce kısa bir onay, onaylanınca adım listedeki anahtarla AYNI yoldan kapanır
+     * (`seviyeyiKapat` — kanal hafızası korunur, "Açın" geri getirir).
+     */
+    const anaKanalDegis = (kanal: AnaKanal, acik: boolean) => {
+        if (!acik && sonAcikAnaKanalMi(seviye.kanallar, kanal)) {
+            setKapatOnayi(true);
+            return;
+        }
+        anaKanaliAyarla(kanal, acik);
+    };
+    const kanalKaroSayisi = 2 + (tanim.titresimSecilebilir ? 1 : 0) + (tanim.alarmSecilebilir === true ? 1 : 0);
+    const kanalSutunu = kanalKaroSayisi === 3 ? 3 : 2;
+    /** Gelişmiş'te gösterilecek bir şey var mı (tekrar ya da sertlik)? Yoksa bölüm çizilmez. */
+    const gelismisVar = tanim.siklikSecimiVar !== false || tanim.tonSecilebilir === true;
 
     /** Titreşim: bildirimin alt özelliği (bağımsız kanal; yalnız bildirim açıkken görünür). */
     const titresimiAyarla = (acik: boolean) => {
@@ -626,41 +645,59 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                 {tanim.kanalSecimiVar && (
                                     <GirisKademesi sira={2}>
                                         <BolumBasligi metin="NASIL" />
-                                        <View className="flex-row flex-wrap" style={{ gap: 8 }}>
+                                        {/* Tutarlı ızgara: karolar eşit genişlik ve yükseklikte (3 karo →
+                                            tek satır, 2/4 karo → iki sütun). Titreşim ve gerçek alarm da
+                                            burada; titreşim bildirim kapalıyken soluk (bildirimin alt özelliği). */}
+                                        <View
+                                            className="flex-row flex-wrap"
+                                            style={{ justifyContent: 'space-between', rowGap: 8 }}
+                                        >
                                             <KanalKarosu
+                                                sutun={kanalSutunu}
                                                 ikon={KANAL_IKONLARI.bildirim}
                                                 renk={bilgi.renk}
                                                 etiket={BILDIRIM_ETIKETI}
                                                 ipucu={BILDIRIM_ACIKLAMASI}
                                                 deger={bildirimliMi}
-                                                onDegis={(v) => anaKanaliAyarla('bildirim', v)}
-                                                devreDisi={sonAcikAnaKanalMi(seviye.kanallar, 'bildirim')}
-                                                devreDisiNotu={SON_KANAL_NOTU}
+                                                onDegis={(v) => anaKanalDegis('bildirim', v)}
                                                 testID="adim-bildirim-anahtari"
                                             />
                                             <KanalKarosu
+                                                sutun={kanalSutunu}
                                                 ikon={KANAL_IKONLARI.sesli}
                                                 renk={bilgi.renk}
                                                 etiket={SESLI_ETIKETI}
                                                 ipucu={SESLI_ACIKLAMASI}
                                                 deger={sesliMi}
-                                                onDegis={(v) => anaKanaliAyarla('sesli', v)}
-                                                devreDisi={sonAcikAnaKanalMi(seviye.kanallar, 'sesli')}
-                                                devreDisiNotu={SON_KANAL_NOTU}
+                                                onDegis={(v) => anaKanalDegis('sesli', v)}
                                                 testID="adim-sesli-anahtari"
                                             />
-                                            {/* TİTREŞİM — bildirimin alt özelliği. PLATFORM KAPISI: iOS'ta
-                                                bildirim haptiği sistem ayarına bağlıdır, uygulama adım
-                                                başına kontrol edemez. */}
-                                            {bildirimliMi && tanim.titresimSecilebilir && (
+                                            {/* TİTREŞİM — PLATFORM KAPISI: iOS'ta bildirim haptiği sistem
+                                                ayarına bağlıdır, uygulama adım başına kontrol edemez. */}
+                                            {tanim.titresimSecilebilir && (
                                                 <KanalKarosu
+                                                    sutun={kanalSutunu}
                                                     ikon={KANAL_IKONLARI.titresim}
                                                     renk={bilgi.renk}
                                                     etiket={TITRESIM_ETIKETI}
-                                                    ipucu={TITRESIM_ACIKLAMASI}
+                                                    ipucu={bildirimliMi ? TITRESIM_ACIKLAMASI : 'Bildirim açıkken seçilebilir.'}
                                                     deger={titresimliMi}
                                                     onDegis={titresimiAyarla}
+                                                    devreDisi={!bildirimliMi}
                                                     testID="adim-titresim-anahtari"
+                                                />
+                                            )}
+                                            {/* GERÇEK ALARM (issue #74) — onay akışı aynı (`alarmiAyarla`). */}
+                                            {tanim.alarmSecilebilir === true && (
+                                                <KanalKarosu
+                                                    sutun={kanalSutunu}
+                                                    ikon={KANAL_IKONLARI.alarm}
+                                                    renk={bilgi.renk}
+                                                    etiket={ALARM_ETIKETI}
+                                                    ipucu={alarmAciklamasiOlustur(alarmliMi ? seviye.alarmKapsami : undefined)}
+                                                    deger={alarmliMi}
+                                                    onDegis={alarmiAyarla}
+                                                    testID="adim-alarm-anahtari"
                                                 />
                                             )}
                                         </View>
@@ -721,11 +758,82 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                     />
                                                 </View>
                                             )}
+
+                                            {/* GERÇEK ALARM (issue #74) — ızgaradaki karo açınca kapsam + izin notları.
+                                                Onay akışı aynı (`alarmiAyarla` → `AlarmOnayModal`). KAPSAM: alan yalnız
+                                                "hepsi" iken yazılır — "ilk" alanı SİLER. */}
+                                            {tanim.alarmSecilebilir === true && alarmliMi && (
+                                                <View
+                                                    testID="adim-alarm-ayrinti"
+                                                    className="mt-3 p-3 rounded-2xl border"
+                                                    style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }}
+                                                >
+                                                    <Text className="text-xs mb-2 leading-4" style={{ color: renkler.metinIkincil }}>
+                                                        {alarmAciklamasiOlustur(seviye.alarmKapsami)}
+                                                    </Text>
+                                                    <View className="flex-row gap-2">
+                                                        {ALARM_KAPSAMI_SECENEKLERI.map((s) => {
+                                                            const secili = (seviye.alarmKapsami ?? 'ilk') === s.kapsam;
+                                                            return (
+                                                                <TouchableOpacity
+                                                                    key={s.kapsam}
+                                                                    testID={`alarm-kapsami-${s.kapsam}`}
+                                                                    className="flex-1 flex-row items-center justify-center py-2.5 px-2 rounded-2xl border"
+                                                                    style={{
+                                                                        minHeight: 44,
+                                                                        backgroundColor: secili ? `${bilgi.renk}15` : renkler.kartArkaplan,
+                                                                        borderColor: secili ? bilgi.renk : renkler.sinir,
+                                                                        borderWidth: secili ? 2 : 1,
+                                                                    }}
+                                                                    onPress={() => alarmKapsaminiYaz(s.kapsam)}
+                                                                    activeOpacity={0.7}
+                                                                    accessibilityRole="button"
+                                                                    accessibilityState={{ selected: secili }}
+                                                                    accessibilityLabel={`Alarm: ${s.etiket}`}
+                                                                >
+                                                                    <FontAwesome5
+                                                                        name={s.ikon}
+                                                                        size={12}
+                                                                        color={secili ? bilgi.renk : renkler.metinIkincil}
+                                                                        style={{ marginRight: 6 }}
+                                                                    />
+                                                                    <Text
+                                                                        className="text-xs font-semibold"
+                                                                        style={{ color: secili ? bilgi.renk : renkler.metin }}
+                                                                    >
+                                                                        {s.etiket}
+                                                                    </Text>
+                                                                </TouchableOpacity>
+                                                            );
+                                                        })}
+                                                    </View>
+                                                    {seviye.alarmKapsami === 'hepsi' && (
+                                                        <Text className="text-xs mt-2" style={{ color: renkler.metinIkincil }}>
+                                                            {ALARM_KAPSAMI_NOTU}
+                                                            {tanim.yetenekler.platform === 'ios' && alarmIzinleri.alarmKit === 'izinli'
+                                                                ? ` ${IOS_ALARM_KAPSAMI_NOTU}`
+                                                                : ''}
+                                                        </Text>
+                                                    )}
+                                                    <AlarmBilgiSatirlari
+                                                        notlar={alarmNotlariniOlustur({
+                                                            platform: tanim.yetenekler.platform,
+                                                            tamEkran: alarmIzinleri.tamEkran,
+                                                            tamAlarm: alarmIzinleri.tamAlarm,
+                                                            alarmKit: alarmIzinleri.alarmKit,
+                                                            iosSurum,
+                                                        })}
+                                                        onIzinAyari={() => void alarmIzinleri.ayariAc()}
+                                                        onAlarmIzni={() => void alarmIzinleri.izinIste()}
+                                                        onTamAlarm={() => void alarmIzinleri.tamAlarmAyariAc()}
+                                                    />
+                                                </View>
+                                            )}
                                     </GirisKademesi>
                                 )}
 
                                 {/* ── GELİŞMİŞ ── açılır bölüm (aynı sayfa — yeni bir gezinme seviyesi değil) */}
-                                <GirisKademesi sira={3}>
+                                {gelismisVar && (<GirisKademesi sira={3}>
                                 <TouchableOpacity
                                     className="flex-row items-center mt-4 py-2"
                                     style={{ minHeight: 48 }}
@@ -742,28 +850,28 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                         color={renkler.metinIkincil}
                                         style={{ width: 18 }}
                                     />
-                                    <View className="flex-1">
-                                        <Text className="text-[11px] font-semibold tracking-wider" style={{ color: renkler.metinIkincil }}>
-                                            GELİŞMİŞ
+                                    {/* Başlık solda, seçim özeti (çip) AYNI satırda sağda. */}
+                                    <Text
+                                        className="text-[11px] font-semibold tracking-wider flex-1"
+                                        style={{ color: renkler.metinIkincil }}
+                                    >
+                                        GELİŞMİŞ
+                                    </Text>
+                                    {gelismisOzeti ? (
+                                        // Seçim varsa ikon çipiyle özetlenir (tam cümle etikette).
+                                        <OzetCipleri
+                                            kanallar={[]}
+                                            renk={bilgi.renk}
+                                            tekrarDk={gelismisVerisi.tekrarDk}
+                                            ton={gelismisVerisi.ton ? SEVIYE_BILGILERI[gelismisVerisi.ton] : undefined}
+                                            boyut="kucuk"
+                                            testID="adim-gelismis-ozet"
+                                        />
+                                    ) : (
+                                        <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
+                                            {tanim.tonSecilebilir ? 'Tekrar, sertlik' : 'Tekrar'}
                                         </Text>
-                                        {gelismisOzeti ? (
-                                            // Seçim varsa ikon çipiyle özetlenir (tam cümle etikette).
-                                            <View className="mt-1">
-                                                <OzetCipleri
-                                                    kanallar={gelismisVerisi.alarm ? ['alarm'] : []}
-                                                    renk={bilgi.renk}
-                                                    tekrarDk={gelismisVerisi.tekrarDk}
-                                                    ton={gelismisVerisi.ton ? SEVIYE_BILGILERI[gelismisVerisi.ton] : undefined}
-                                                    boyut="kucuk"
-                                                    testID="adim-gelismis-ozet"
-                                                />
-                                            </View>
-                                        ) : (
-                                            <Text className="text-xs mt-0.5" style={{ color: renkler.metin }}>
-                                                {tanim.tonSecilebilir ? 'Tekrar, sertlik, gerçek alarm' : 'Tekrar, gerçek alarm'}
-                                            </Text>
-                                        )}
-                                    </View>
+                                    )}
                                 </TouchableOpacity>
 
                                 {gelismisAcik && (
@@ -861,87 +969,10 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                             </>
                                         )}
 
-                                        {/* GERÇEK ALARM (issue #74) — bağımsız kanal, bağımsız anahtar. */}
-                                        {tanim.alarmSecilebilir === true && (
-                                            <AnahtarSatiri
-                                                ikon="clock"
-                                                renk={bilgi.renk}
-                                                etiket={ALARM_ETIKETI}
-                                                aciklama={alarmAciklamasiOlustur(alarmliMi ? seviye.alarmKapsami : undefined)}
-                                                deger={alarmliMi}
-                                                onDegis={alarmiAyarla}
-                                                testID="adim-alarm-anahtari"
-                                            >
-                                                {/* KAPSAM: yalnız ilk uyarıda (varsayılan) / her uyarıda. Alan
-                                                    yalnız "hepsi" iken yazılır — "ilk" alanı SİLER. */}
-                                                {alarmliMi && (
-                                                    <View className="mt-3">
-                                                        <View className="flex-row gap-2">
-                                                            {ALARM_KAPSAMI_SECENEKLERI.map((s) => {
-                                                                const secili = (seviye.alarmKapsami ?? 'ilk') === s.kapsam;
-                                                                return (
-                                                                    <TouchableOpacity
-                                                                        key={s.kapsam}
-                                                                        testID={`alarm-kapsami-${s.kapsam}`}
-                                                                        className="flex-1 flex-row items-center justify-center py-2.5 px-2 rounded-2xl border"
-                                                                        style={{
-                                                                            minHeight: 44,
-                                                                            backgroundColor: secili ? `${bilgi.renk}15` : renkler.kartArkaplan,
-                                                                            borderColor: secili ? bilgi.renk : renkler.sinir,
-                                                                            borderWidth: secili ? 2 : 1,
-                                                                        }}
-                                                                        onPress={() => alarmKapsaminiYaz(s.kapsam)}
-                                                                        activeOpacity={0.7}
-                                                                        accessibilityRole="button"
-                                                                        accessibilityState={{ selected: secili }}
-                                                                        accessibilityLabel={`Alarm: ${s.etiket}`}
-                                                                    >
-                                                                        <FontAwesome5
-                                                                            name={s.ikon}
-                                                                            size={12}
-                                                                            color={secili ? bilgi.renk : renkler.metinIkincil}
-                                                                            style={{ marginRight: 6 }}
-                                                                        />
-                                                                        <Text
-                                                                            className="text-xs font-semibold"
-                                                                            style={{ color: secili ? bilgi.renk : renkler.metin }}
-                                                                        >
-                                                                            {s.etiket}
-                                                                        </Text>
-                                                                    </TouchableOpacity>
-                                                                );
-                                                            })}
-                                                        </View>
-                                                        {seviye.alarmKapsami === 'hepsi' && (
-                                                            <Text className="text-xs mt-2" style={{ color: renkler.metinIkincil }}>
-                                                                {ALARM_KAPSAMI_NOTU}
-                                                                {tanim.yetenekler.platform === 'ios' && alarmIzinleri.alarmKit === 'izinli'
-                                                                    ? ` ${IOS_ALARM_KAPSAMI_NOTU}`
-                                                                    : ''}
-                                                            </Text>
-                                                        )}
-                                                    </View>
-                                                )}
-                                                {alarmliMi && (
-                                                    <AlarmBilgiSatirlari
-                                                        notlar={alarmNotlariniOlustur({
-                                                            platform: tanim.yetenekler.platform,
-                                                            tamEkran: alarmIzinleri.tamEkran,
-                                                            tamAlarm: alarmIzinleri.tamAlarm,
-                                                            alarmKit: alarmIzinleri.alarmKit,
-                                                            iosSurum,
-                                                        })}
-                                                        onIzinAyari={() => void alarmIzinleri.ayariAc()}
-                                                        onAlarmIzni={() => void alarmIzinleri.izinIste()}
-                                                        onTamAlarm={() => void alarmIzinleri.tamAlarmAyariAc()}
-                                                    />
-                                                )}
-                                            </AnahtarSatiri>
-                                        )}
                                     </View>
                                     </GirisKademesi>
                                 )}
-                                </GirisKademesi>
+                                </GirisKademesi>)}
                             </>
                         )}
 
@@ -989,6 +1020,24 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                             void alarmIzinleri.izinIste(false).finally(() => alarmiYaz(true, { alarmOnayi: true }));
                         }}
                         onIptal={() => setAlarmOnayAcik(false)}
+                    />
+                )}
+
+                {/* Son kanal kapatma onayı — modal ağacının içinde (iOS iki kardeş modal sunamaz). */}
+                {kapatOnayi && (
+                    <BildirimModali
+                        gorunur
+                        tip="bilgi"
+                        baslik="Bu hatırlatma kapansın mı?"
+                        mesaj="Hiçbir uyarı yolu açık kalmıyor. Ayarlarınız saklanır; dilediğiniz zaman yeniden açabilirsiniz."
+                        birincilEtiket="Kapatın"
+                        birincilIkon="bell-slash"
+                        onBirincil={() => {
+                            setKapatOnayi(false);
+                            onDegistir(seviyeyiKapat(seviye));
+                        }}
+                        onKapat={() => setKapatOnayi(false)}
+                        kapatEtiketi="Vazgeç"
                     />
                 )}
 

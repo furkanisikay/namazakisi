@@ -16,7 +16,8 @@
  * TÜRETİLMEZ.
  */
 import * as React from 'react';
-import { AccessibilityInfo, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { AccessibilityInfo, Text, TouchableOpacity, View, type StyleProp, type ViewStyle } from 'react-native';
+import type { PresetSeviyeleri } from '../../../core/muhafiz/matrisIslemleri';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { SecenekListesi, type Secenek } from '../ortak/SecenekListesi';
@@ -43,10 +44,15 @@ export type { HatirlatmaDuzeyi };
 /** Seçicinin değeri: dört düzey + (yalnız Hatırlatmalar/muhafız ekranında) kendi ayarı. */
 export type DuzeySecimi = HatirlatmaDuzeyi | 'ozel';
 
-/** Eski düzey (varsayılanlar değişmeden önceki kayıt): seçili kartın altyazısı ve cümlesi. */
+/**
+ * Eski düzey (varsayılanlar değişmeden önceki kayıt). Kart ve cümle kullanıcının GERÇEK
+ * planını sayar (`eskiSeviyeler` ölçülür) — yeni düzeyin sayısı SÖYLENMEZ; açıklama cümlesi
+ * yok, yalnız küçük bir "Yeni öneriyi uygulayın" düğmesi (görsel inceleme 2026-10: "Önceki
+ * Normal ayarınız sürüyor. Güncel Normal için karta dokunun." anlaşılmıyordu).
+ * Gerçek plan ölçülemezse yedek altyazı.
+ */
 export const ESKI_DUZEY_ACIKLAMASI = 'Önceki ayarınız';
-export const eskiDuzeyCumlesi = (ad: string): string =>
-    `Önceki ${ad} ayarınız sürüyor. Güncel ${ad} için karta dokunun.`;
+export const ESKI_DUZEY_GUNCELLE = 'Yeni öneriyi uygulayın';
 
 /** Preset'ler sabit → ölçü bir kez (modül yüklenirken değil, ilk kullanımda). */
 let olculer: Record<HatirlatmaDuzeyi, DuzeyOlcusu | null> | null = null;
@@ -94,6 +100,8 @@ export interface DuzeySeciciProps {
      * Seçili kart ve cümle yeni sayıyı SÖYLEMEZ — kullanıcının gerçek planı o değildir.
      */
     eskiDuzey?: boolean;
+    /** Eski düzeyde kullanıcının GERÇEK adımları (öğle satırı) — kart ve cümle bunu sayar. */
+    eskiSeviyeler?: PresetSeviyeleri;
     style?: StyleProp<ViewStyle>;
     testID?: string;
 }
@@ -105,19 +113,29 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
     sesliBilgiGoster = true,
     sesliIzinVar = true,
     eskiDuzey = false,
+    eskiSeviyeler,
     style,
     testID,
 }) {
     const renkler = useRenkler();
     const o = duzeyOlculeri();
     const ozelVar = ozelGoster || secili === 'ozel';
+    const eskiGoster = eskiDuzey && secili !== 'kapali' && secili !== 'ozel';
+    const eskiOlcu = React.useMemo(
+        () => (eskiGoster && eskiSeviyeler ? duzeyiOlc(eskiSeviyeler) : null),
+        [eskiGoster, eskiSeviyeler],
+    );
     const secenekler = React.useMemo<Secenek<DuzeySecimi>[]>(
         () => [
             ...HATIRLATMA_DUZEYLERI.map((d) => ({
                 deger: d as DuzeySecimi,
                 etiket: DUZEY_ADLARI[d],
                 aciklama:
-                    eskiDuzey && d === secili ? ESKI_DUZEY_ACIKLAMASI : duzeyKisaAciklamasi(d, o[d], sesliIzinVar),
+                    eskiGoster && d === secili
+                        ? eskiOlcu
+                            ? duzeyKisaAciklamasi(d, eskiOlcu, sesliIzinVar)
+                            : ESKI_DUZEY_ACIKLAMASI
+                        : duzeyKisaAciklamasi(d, o[d], sesliIzinVar),
                 ikon: DUZEY_IKONLARI[d],
             })),
             ...(ozelVar
@@ -131,13 +149,15 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                   ]
                 : []),
         ],
-        [o, ozelVar, secili, sesliIzinVar, eskiDuzey],
+        [o, ozelVar, secili, sesliIzinVar, eskiGoster, eskiOlcu],
     );
     const cumle =
         secili === 'ozel'
             ? OZEL_DUZEY_CUMLESI
-            : eskiDuzey && secili !== 'kapali'
-              ? eskiDuzeyCumlesi(DUZEY_ADLARI[secili])
+            : eskiGoster
+              ? eskiOlcu
+                  ? duzeyCumlesi(secili, eskiOlcu, sesliIzinVar)
+                  : `Önceki ${DUZEY_ADLARI[secili]} ayarınız kullanılıyor.`
               : duzeyCumlesi(secili, o[secili], sesliIzinVar);
     const sesliBilgi = secili !== 'ozel' && sesliBilgiGosterildiMi(secili, sesliBilgiGoster);
     const bilgiMetni = sesliBilgiMetni(usePlatformYetenekleri().sessizligiDelebilir);
@@ -158,6 +178,31 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                 <FontAwesome5 name="clock" size={13} color={renkler.birincil} solid style={{ width: 22, marginTop: 3 }} />
                 <Text style={{ flex: 1, fontSize: 15, lineHeight: 21, color: renkler.metin }}>{cumle}</Text>
             </View>
+            {eskiGoster ? (
+                <TouchableOpacity
+                    testID="duzey-guncelle"
+                    onPress={() => onSec(secili)}
+                    activeOpacity={0.75}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${ESKI_DUZEY_GUNCELLE}: güncel ${DUZEY_ADLARI[secili as HatirlatmaDuzeyi]} düzey`}
+                    style={{
+                        alignSelf: 'flex-start',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        minHeight: 44,
+                        marginTop: 8,
+                        marginLeft: 26,
+                        paddingHorizontal: 14,
+                        borderRadius: 14,
+                        borderWidth: 1,
+                        borderColor: renkler.birincil,
+                        backgroundColor: renkler.kartArkaplan,
+                    }}
+                >
+                    <FontAwesome5 name="sync-alt" size={12} color={renkler.birincil} style={{ marginRight: 8 }} />
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.birincil }}>{ESKI_DUZEY_GUNCELLE}</Text>
+                </TouchableOpacity>
+            ) : null}
             {sesliBilgi ? (
                 <View
                     testID="duzey-sesli-bilgi"

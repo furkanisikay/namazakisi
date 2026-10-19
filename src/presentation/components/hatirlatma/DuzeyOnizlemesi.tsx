@@ -31,6 +31,44 @@ const BEKLEME_MS = 900;
 /** Nokta çapı sertliğe göre (1 nazik … 4 acil). */
 const CAP = [0, 10, 12, 14, 16];
 
+/** Nokta etiketinin yerleşimi (saf — test edilebilir). */
+export interface DuzeyEtiketi {
+    kalanDk: number;
+    metin: string;
+    sesli: boolean;
+    sol: number;
+    genislik: number;
+}
+
+/** Etiket genişliği tahmini (12 px yazı + ikon): binme denetimi için yeterli. */
+const etiketGenisligi = (metin: string): number => 16 + metin.length * 6.5;
+
+/**
+ * Her noktanın altına "N dk" etiketi; ilk nokta "N dk önce" (ekseni anlatır). Etiket
+ * noktanın altında ortalanır, kart kenarına kenetlenir; bir öncekine binecekse ATLANIR.
+ */
+export function duzeyEtiketleriniYerlestir(
+    adimlar: readonly { kalanDk: number; sesli: boolean }[],
+    genislik: number,
+    raySol: number,
+    ilkDk: number,
+): DuzeyEtiketi[] {
+    if (genislik <= 0 || ilkDk <= 0) return [];
+    const ray = Math.max(0, genislik - raySol * 2);
+    const sonuc: DuzeyEtiketi[] = [];
+    let sonSag = -Infinity;
+    adimlar.forEach((a, i) => {
+        const metin = i === 0 ? `${a.kalanDk} dk önce` : `${a.kalanDk} dk`;
+        const w = etiketGenisligi(metin);
+        const merkez = raySol + (1 - a.kalanDk / ilkDk) * ray;
+        const sol = Math.min(Math.max(0, merkez - w / 2), Math.max(0, genislik - w));
+        if (sol < sonSag + 4) return;
+        sonuc.push({ kalanDk: a.kalanDk, metin, sesli: a.sesli, sol, genislik: w });
+        sonSag = sol + w;
+    });
+    return sonuc;
+}
+
 export interface DuzeyOnizlemesiProps {
     duzey: HatirlatmaDuzeyi;
     /** true: görünürken döngü (sihirbaz); false: değişimde bir kez (ayar ekranı). */
@@ -94,6 +132,10 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
     const raySol = 4;
     const rayGenislik = Math.max(0, genislik - raySol * 2);
     const konum = (kalanDk: number) => (ilkDk > 0 ? 1 - kalanDk / ilkDk : 0);
+    const etiketler = React.useMemo(
+        () => duzeyEtiketleriniYerlestir(adimlar, genislik, raySol, ilkDk),
+        [adimlar, genislik, ilkDk],
+    );
 
     return (
         <View
@@ -171,17 +213,37 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
                     </>
                 ) : null}
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
+            {/* Noktaların ALTINDA kısa etiketler: kanal ikonu (zil / hoparlör) + "25 dk".
+                İlk etiket ekseni de anlatır ("25 dk önce"); birbirine binen etiket atlanır
+                (sık tekrarlarda yalnız ilk nokta etiketlenir). */}
+            {!kapali && genislik > 0 ? (
+                <View style={{ height: 22, marginTop: 4 }}>
+                    {etiketler.map((e) => (
+                        <View
+                            key={`e-${e.kalanDk}-${e.sol}`}
+                            testID="duzey-onizleme-etiket"
+                            style={{ position: 'absolute', left: e.sol, width: e.genislik, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+                        >
+                            <FontAwesome5
+                                name={e.sesli ? 'volume-up' : 'bell'}
+                                size={9}
+                                color={renkler.birincil}
+                                solid
+                                style={{ marginRight: 3 }}
+                            />
+                            <Text style={{ fontSize: 12, color: renkler.metin }} numberOfLines={1}>
+                                {e.metin}
+                            </Text>
+                        </View>
+                    ))}
+                </View>
+            ) : null}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
+                {/* Yerleşim ölçülmeden (ilk kare) ilk eşik yine yazılı kalır. */}
                 <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>
-                    {kapali ? 'Hatırlatma yok' : `${ilkDk} dk önce`}
+                    {kapali ? 'Hatırlatma yok' : etiketler.length === 0 ? `${ilkDk} dk önce` : ''}
                 </Text>
-                {!kapali && adimlar.some((a) => a.sesli) ? (
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: renkler.birincil, marginRight: 5 }} />
-                        <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>sesli</Text>
-                    </View>
-                ) : null}
-                <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>Vakit çıkar</Text>
+                {!kapali ? <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>Vakit çıkar</Text> : null}
             </View>
         </View>
     );
