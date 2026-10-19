@@ -121,6 +121,28 @@ fun sabitBoyut(oran: Float): androidx.compose.ui.unit.TextUnit {
     return (genislik * oran / yogunluk.fontScale).sp
 }
 
+/**
+ * Ekran genişliğine göre yazı boyu, kullanıcının yazı ölçeğine [enFazlaOlcek]'e kadar
+ * uyar (ör. 1.15×): büyük yazı tercihi bir ölçüde işler ama 1.3–2.0 ölçekte metin yuvarlak
+ * ekranın kenarına taşmaz. Rakam gibi tamamen sabit boy için [sabitBoyut].
+ */
+@Composable
+fun sinirliBoyut(oran: Float, enFazlaOlcek: Float = YAZI_OLCEGI_TAVANI): androidx.compose.ui.unit.TextUnit {
+    val genislik = LocalConfiguration.current.screenWidthDp
+    val olcek = LocalDensity.current.fontScale
+    return (genislik * oran * min(olcek, enFazlaOlcek) / olcek).sp
+}
+
+const val YAZI_OLCEGI_TAVANI = 1.15f
+
+/**
+ * Metin sütununun ekran genişliğine oranı (güvenli bölge): yuvarlak ekranda dairenin iç
+ * karesi ≈ %71 (köşeye yazılan harfi daire keser), kare ekranda kenar payı yeter.
+ */
+@Composable
+fun guvenliGenislikOrani(yuvarlakOran: Float = 0.70f, kareOran: Float = 0.84f): Float =
+    if (LocalConfiguration.current.isScreenRound) yuvarlakOran else kareOran
+
 /** Rakamlar sabit genişlikli (saniye değişince satır oynamasın). */
 val RAKAM = TextStyle(fontFeatureSettings = "tnum")
 
