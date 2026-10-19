@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, act } from '@testing-library/react-native';
+import { render, fireEvent, act, waitFor } from '@testing-library/react-native';
 import { KibleSayfasi } from '../KibleSayfasi';
 import { useKible } from '../../../hooks/useKible';
 import { useIsFocused } from '@react-navigation/native';
@@ -90,9 +90,13 @@ function kibleDurumu(ek: Record<string, unknown> = {}) {
   };
 }
 
+const AsyncStorage = require('@react-native-async-storage/async-storage');
+
 describe('KibleSayfasi', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    // Kayıtlı görünüm testler arası sızmasın (Kamera seçen test sonrakini Kamera'da açardı).
+    await AsyncStorage.clear?.();
     (useIsFocused as jest.Mock).mockReturnValue(true);
     (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
     (useKible as jest.Mock).mockReturnValue(kibleDurumu());
@@ -190,6 +194,30 @@ describe('KibleSayfasi', () => {
     const { getByText } = render(<KibleSayfasi />);
     expect(getByText('Bu telefonda pusula algılayıcısı yok.')).toBeTruthy();
     expect(getByText('Kıble, kuzeyden saat yönünde 152°.')).toBeTruthy();
+  });
+
+  describe('son seçilen görünüm', () => {
+    it('seçim kaydedilir; kamera izni varsa açılışta Kamera geri gelir', async () => {
+      kamera.__izinAyarla({ granted: true, canAskAgain: true, status: 'granted' });
+      const ilk = render(<KibleSayfasi />);
+      await act(async () => {
+        fireEvent.press(ilk.getByLabelText('Kamera modu'));
+      });
+      expect(await AsyncStorage.getItem('@namaz_akisi/kible_modu')).toBe('kamera');
+      ilk.unmount();
+      const ikinci = render(<KibleSayfasi />);
+      await waitFor(() => expect(ikinci.getByLabelText('Kamera modu').props.accessibilityState).toEqual({ selected: true }));
+    });
+
+    it('kamera izni yoksa kayıt Kamera olsa da Pusula açılır (diyalog kendiliğinden çıkmaz)', async () => {
+      await AsyncStorage.setItem('@namaz_akisi/kible_modu', 'kamera');
+      const { getByLabelText } = render(<KibleSayfasi />);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(getByLabelText('Pusula modu').props.accessibilityState).toEqual({ selected: true });
+      expect(kamera.__istek).not.toHaveBeenCalled();
+    });
   });
 
   describe('kamera modu', () => {

@@ -235,6 +235,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Dalga 3): açınca geri gelsin. Ekran hafızası, cihaza özgü → yedeklemeye GİRMEZ.
   // `vakitGirince`: beş vakit seçimi; `namazVakitlerinde`: Namaz modu cuma/vakit tetikleri.
   KAPATMA_ONCESI_SECIM: '@namaz_akisi/kapatma_oncesi_secim',
+  // Kıble ekranında son seçilen görünüm ('pusula' | 'kamera'). Ekran hafızası, cihaza
+  // özgü (kamera izni cihaza bağlı) → yedeklemeye GİRMEZ.
+  KIBLE_MODU: '@namaz_akisi/kible_modu',
   // Seferîlik bilgi kartı (issue #296) — ayar (kart açık, mezhep, ikamet yeri)
   // YEDEKLENİR (beyaz listenin ÜÇ yerinde); "bu yolculukta kapattım" hafızası
   // cihaza özgü → yedeklemeye GİRMEZ.

@@ -1,13 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Camera } from 'expo-camera';
 import { useRenkler } from '../../../core/theme';
 import { useKible } from '../../hooks/useKible';
 import { useKibleGeriBildirimi } from '../../hooks/useKibleGeriBildirimi';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { DurumSatiri } from '../../components/ortak/DurumSatiri';
+import { Depolama } from '../../../data/local/Depolama';
+import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { PusulaGorunumu } from './PusulaGorunumu';
 import { KameraGorunumu } from './KameraGorunumu';
 
@@ -40,7 +43,7 @@ const SEKMELER: Array<{ key: Mod; label: string; a11yLabel: string; aciklama: st
  * YALNIZ sekme odaktayken (ve uygulama ön plandayken — `useKible`) çalışır.
  */
 export const KibleSayfasi = () => {
-  const [mod, setMod] = useState<Mod>('pusula');
+  const [mod, setModHam] = useState<Mod>('pusula');
   const renkler = useRenkler();
   const odakta = useIsFocused();
   const hareketAzalt = useHareketAzalt();
@@ -48,8 +51,32 @@ export const KibleSayfasi = () => {
   const aktifSekme = SEKMELER.find((t) => t.key === mod) ?? SEKMELER[0];
   useKibleGeriBildirimi(kible.ozet, odakta && kible.izinVerildi);
 
-  const pusulaya = useCallback(() => setMod('pusula'), []);
-  const kameraya = useCallback(() => setMod('kamera'), []);
+  // Son seçilen görünüm hatırlanır (yol haritası 3.4: kamera birincil yol). İlk açılış
+  // daima Pusula — emülatör/simülatör kare hatları ve kamerasız cihazlar bunu görür; Kamera
+  // ancak kullanıcı onu seçtiyse VE kamera izni zaten verilmişse açılışta geri gelir
+  // (izin diyaloğu ekrana kendiliğinden fırlamaz).
+  const setMod = useCallback((yeni: Mod) => {
+    setModHam(yeni);
+    void Depolama.hamYaz(DEPOLAMA_ANAHTARLARI.KIBLE_MODU, yeni).catch(() => undefined);
+  }, []);
+  useEffect(() => {
+    let iptal = false;
+    void (async () => {
+      try {
+        if ((await Depolama.ham(DEPOLAMA_ANAHTARLARI.KIBLE_MODU)) !== 'kamera') return;
+        const izin = await Camera.getCameraPermissionsAsync();
+        if (!iptal && izin?.granted) setModHam('kamera');
+      } catch {
+        // okunamadı → Pusula
+      }
+    })();
+    return () => {
+      iptal = true;
+    };
+  }, []);
+
+  const pusulaya = useCallback(() => setMod('pusula'), [setMod]);
+  const kameraya = useCallback(() => setMod('kamera'), [setMod]);
 
   let govde: React.ReactNode;
   if (!odakta) {
