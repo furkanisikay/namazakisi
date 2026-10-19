@@ -77,7 +77,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
         id: 'sade-kurulum-ve-ana-ekran',
         platformlar: ['android', 'ios'],
-        surum: '0.47.0',
+        surum: '0.50.0',
         tarih: '2026-10-19',
         baslik: 'Daha sade uygulama',
         aciklama:
