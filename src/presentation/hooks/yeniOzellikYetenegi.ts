@@ -27,6 +27,8 @@ const YETENEKLER: Record<YeniOzellikYetenegi, () => boolean> = {
   },
   // Drive eşitlemesi (#288): yalnız köprüyü taşıyan Android build'i + Google Play hizmetleri.
   googleDrive: () => Platform.OS === 'android' && googleYetkisiKullanilabilirMi(),
+  // iPad düzeni: yalnız iPad'de (iPhone kullanıcısına tablet duyurusu gösterilmez).
+  ipad: () => Platform.OS === 'ios' && (Platform as { isPad?: boolean }).isPad === true,
 };
 
 export function yeniOzellikGorunurMu(ozellik: YeniOzellik): boolean {

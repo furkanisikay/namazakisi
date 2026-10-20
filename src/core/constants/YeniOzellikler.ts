@@ -28,7 +28,7 @@
  * Duyurunun yalnız özelliği taşıyan cihazda görünmesi için yetenek anahtarı.
  * Çözümü sunum katmanındadır (`presentation/hooks/yeniOzellikYetenegi.ts`).
  */
-export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive';
+export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive' | 'ipad';
 
 /** Duyurunun görüneceği platformlar. */
 export type YeniOzellikPlatformu = 'android' | 'ios';
@@ -728,6 +728,26 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Bu tarihlerde vakit, muhafız, sayaç ve nafile hatırlatmaları gelmez',
             'Tarihler bitince hatırlatmalar kendiliğinden geri gelir',
         ],
+    },
+    // iPad desteği (Apple eşitliği): Android tablet düzeninin (#283) iPad ikizi. Postür ve
+    // kapak ekranı cümleleri yok; iPad'de uygulama yalnız dikey ve tam ekran açılır.
+    {
+        id: 'ipad-duzeni',
+        platformlar: ['ios'],
+        surum: '0.55.0',
+        tarih: '2026-10-20',
+        baslik: "iPad'de Geniş Düzen",
+        aciklama:
+            "Namaz Akışı artık iPad'de ekranın tamamını kullanır: solda vakit kartı ve geri sayım, sağda günlük akış.",
+        detayAciklama:
+            "iPad'de ana ekran iki sütunda açılır; şu anki vakti ve günün tüm vakitlerini aynı anda görürsünüz. Ayar ekranları ortada okunaklı bir genişlikte durur. Kayıtlarınız ve ayarlarınız iPhone'dakiyle aynı şekilde çalışır.",
+        ikon: 'tablet-alt',
+        detaylar: [
+            'Solda vakit kartı ve geri sayım, sağda günlük akış',
+            'Ayar ekranları ortada okunaklı genişlikte',
+            'Uygulama dikey ve tam ekran açılır',
+        ],
+        yetenek: 'ipad',
     },
     // Katlanabilir ve tablet düzeni (#283) + masaüstü postürü ve Flex Window widget'ı
     // (ikinci aşama). Yalnız Android: postür ve kapak ekranı cümleleri iPad'de geçersiz olurdu.

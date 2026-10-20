@@ -15,6 +15,9 @@ name: 📸 iOS Ekran Görüntüleri
 #           `ios-ozellik-kareleri`; scripts/simulator-ozellik-cek.js). ASC'ye
 #           GONDERILMEZ.
 #   ikisi   — ikisi de, ayni derlemeyle.
+#   ipad    — magaza kareleri iPad Pro 13" simulatorunde (2064x2752; uygulama iPad'de
+#           calistigi icin App Store'da ZORUNLU set). Artifact `ios-ipad-ekran-goruntuleri`;
+#           ASC'ye `tur=asc asc_islem=ekran-yukle asc_ipad_run_id=<bu kosu>` ile gider.
 #   saat    — YALNIZ Apple Watch kareleri (ayri is `saat-kareler`; artifact
 #           `ios-saat-kareleri`). iPhone isi bu degerde HIC kosmaz; saat hedefi
 #           (`NAMAZ_IOS_SAAT=1`) yalniz bu yolda acilir. ASC'ye GONDERILMEZ.
@@ -38,7 +41,7 @@ on:
         required: false
         default: false
       tur:
-        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | saat (Apple Watch) | asc (kare yok, App Store Connect işlemi)'
+        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | ipad (iPad 13" mağaza kareleri) | saat (Apple Watch) | asc (kare yok, App Store Connect işlemi)'
         type: choice
         required: false
         default: 'magaza'
@@ -46,6 +49,7 @@ on:
           - magaza
           - ozellik
           - ikisi
+          - ipad
           - saat
           - asc
       asc_islem:
@@ -67,6 +71,10 @@ on:
         default: ''
       asc_kare_run_id:
         description: 'ekran-yukle için mağaza karelerini üreten iOS Ekran Görüntüleri çalışma kimliği'
+        required: false
+        default: ''
+      asc_ipad_run_id:
+        description: 'ekran-yukle için iPad karelerini üreten çalışma kimliği (tur=ipad; boş = iPad kareleri yüklenmez)'
         required: false
         default: ''
       asc_saat_run_id:
@@ -123,6 +131,11 @@ jobs:
         run: |
           set -eo pipefail
           ISTENEN="${{ inputs.cihaz }}"
+          if [ "${{ inputs.tur }}" = "ipad" ]; then
+            # iPad 13" (M4/M5) = 2064x2752, App Store'un zorunlu iPad seti.
+            [ -z "$ISTENEN" ] && ISTENEN=$(xcrun simctl list devicetypes | grep -oE 'iPad Pro 13-inch \(M[0-9]+\)' | tail -1)
+            [ -z "$ISTENEN" ] && ISTENEN="iPad Pro 13-inch (M4)"
+          fi
           if [ -z "$ISTENEN" ]; then
             ISTENEN=$(xcrun simctl list devicetypes | grep -oE 'iPhone 1[6-9] Pro Max' | tail -1)
           fi
@@ -139,7 +152,7 @@ jobs:
           if [ -z "$UDID" ]; then
             RT=$(xcrun simctl list runtimes -j | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const r=JSON.parse(d).runtimes.filter(x=>x.platform==="iOS"&&x.isAvailable);console.log(r[r.length-1].identifier)})')
             DT=$(xcrun simctl list devicetypes -j | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const t=JSON.parse(d).devicetypes.find(x=>x.name===process.argv[1]);console.log(t?t.identifier:"")});' "$ISTENEN")
-            [ -z "$DT" ] && { echo "Cihaz tipi bulunamadı: $ISTENEN"; xcrun simctl list devicetypes | grep iPhone; exit 1; }
+            [ -z "$DT" ] && { echo "Cihaz tipi bulunamadı: $ISTENEN"; xcrun simctl list devicetypes | grep -E 'iPhone|iPad'; exit 1; }
             UDID=$(xcrun simctl create "magaza-kare" "$DT" "$RT")
           fi
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
@@ -253,13 +266,15 @@ jobs:
         run: |
           # Magazaya giden kare ham ekran goruntusu DEGIL, basligi ve cihaz
           # cercevesi olan mockup'tir. Adimlar Chrome'u headless kullanir.
-          node scripts/magaza-mockup.js kareler mockup --platform ios
+          PLATFORM=ios
+          [ "${{ inputs.tur }}" = "ipad" ] && PLATFORM=ipad
+          node scripts/magaza-mockup.js kareler mockup --platform "$PLATFORM"
 
       - name: ⬆️ Kareleri, mockup'ları ve erişilebilirlik ağaçlarını yükle
         if: ${{ always() && inputs.tur != 'ozellik' }}
         uses: actions/upload-artifact@v7
         with:
-          name: ios-ekran-goruntuleri
+          name: ${{ inputs.tur == 'ipad' && 'ios-ipad-ekran-goruntuleri' || 'ios-ekran-goruntuleri' }}
           path: |
             kareler/
             mockup/
@@ -269,7 +284,7 @@ jobs:
       # --- OZELLIK TURU (magaza turuna dokunmaz; ayri klasor + ayri artifact) ---
       # Magaza adimi dustuyse de kossun (`!cancelled()`): iki tur bagimsiz.
       - name: 🧭 Özellik turu
-        if: ${{ !cancelled() && inputs.tur != 'magaza' }}
+        if: ${{ !cancelled() && (inputs.tur == 'ozellik' || inputs.tur == 'ikisi') }}
         run: |
           set -eo pipefail
           idb connect "${{ steps.sim.outputs.udid }}" || true
@@ -283,11 +298,11 @@ jobs:
           done
 
       - name: 🧾 Özellik kareleri özeti
-        if: ${{ always() && inputs.tur != 'magaza' }}
+        if: ${{ always() && (inputs.tur == 'ozellik' || inputs.tur == 'ikisi') }}
         run: node scripts/ozellik-kare-ozeti.js kareler-ozellik ios | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: ⬆️ Özellik karelerini yükle
-        if: ${{ always() && inputs.tur != 'magaza' }}
+        if: ${{ always() && (inputs.tur == 'ozellik' || inputs.tur == 'ikisi') }}
         uses: actions/upload-artifact@v7
         with:
           name: ios-ozellik-kareleri
@@ -304,7 +319,10 @@ jobs:
           ASC_KEY_ISSUER_ID: ${{ secrets.ASC_KEY_ISSUER_ID }}
           ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
         # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
-        run: node scripts/app-store-ekran-goruntuleri.js mockup --degistir
+        run: |
+          TIP=APP_IPHONE_67
+          [ "${{ inputs.tur }}" = "ipad" ] && TIP=APP_IPAD_PRO_3GEN_129
+          node scripts/app-store-ekran-goruntuleri.js mockup --tip "$TIP" --degistir
 
   # --- APPLE WATCH TURU (issue #285) — iPhone isinden BAGIMSIZ, yalniz `tur: saat` ---
   # Yalniz saat hedefleri derlenir (`-target NamazSaat -sdk watchsimulator`): saat
@@ -415,6 +433,15 @@ jobs:
           run-id: ${{ inputs.asc_kare_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: 📱 iPad karelerini indir
+        if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_ipad_run_id != '' }}
+        uses: actions/download-artifact@v8
+        with:
+          name: ios-ipad-ekran-goruntuleri
+          path: indirilen-ipad
+          run-id: ${{ inputs.asc_ipad_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: ⌚ Apple Watch karelerini indir
         if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_saat_run_id != '' }}
         uses: actions/download-artifact@v8
@@ -436,6 +463,11 @@ jobs:
           elif [ "$ISLEM" = "ekran-yukle" ]; then
             # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
             node scripts/app-store-ekran-goruntuleri.js indirilen/mockup --degistir
+            # iPad 13" (2064x2752) = APP_IPAD_PRO_3GEN_129. supportsTablet acikken ZORUNLU;
+            # eksikse incelemeye-gonder bunu soyler.
+            if [ -d indirilen-ipad ]; then
+              node scripts/app-store-ekran-goruntuleri.js indirilen-ipad/mockup --tip APP_IPAD_PRO_3GEN_129 --degistir
+            fi
             # Apple Watch kareleri (Ultra 3 simülatörü 422x514 = APP_WATCH_ULTRA).
             if [ -d indirilen-saat ]; then
               node scripts/app-store-ekran-goruntuleri.js indirilen-saat --tip APP_WATCH_ULTRA --degistir

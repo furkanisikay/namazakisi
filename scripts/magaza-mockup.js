@@ -4,13 +4,14 @@
  * birlikte tasarlanmis bir tuvale yerlestirir ve Chromium ile PNG'ye render eder.
  *
  * Kullanim:
- *   node scripts/magaza-mockup.js <kareler> <cikis> --platform ios|android
+ *   node scripts/magaza-mockup.js <kareler> <cikis> --platform ios|ipad|android
  *
  * Tarayici: TARAYICI ortam degiskeni (varsayilan: Windows'ta Edge, digerlerinde
  * google-chrome). Harici bagimlilik yok; headless ekran goruntusu yeterli.
  *
  * Boyutlar:
  *   ios      1320x2868  (iPhone 6.9", App Store'un zorunlu seti)
+ *   ipad     2064x2752  (iPad 13"; uygulama iPad'de calistigi icin App Store'da ZORUNLU)
  *   android  1080x1920  (Play telefon karesinde en-boy orani en fazla 2:1)
  *
  * Metinler iki magazada AYNI: iki kanalda farkli vaat vermeyelim.
@@ -28,6 +29,9 @@ const BOYUT = {
     // Ic yaricap da KUCUK: Android durum cubugu kenara dayali, buyuk yaricap
     // "9:41"in ilk rakamini kesiyordu.
     ios: { gen: 1320, yuk: 2868, olcek: 1, cihazGen: 1012, icYaricap: 92 },
+    // iPad: tuval 3:4. Cihaz iPhone'dakinden DAR tutulur: iPad ekrani 3:4 oldugu icin
+    // ayni oranda genis cihaz tuvalin altindan tasip sekme cubugunu kesiyordu.
+    ipad: { gen: 2064, yuk: 2752, olcek: 2064 / 1320, cihazGen: 770, icYaricap: 30 },
     android: { gen: 1080, yuk: 1920, olcek: 1080 / 1320, cihazGen: 890, icYaricap: 40 },
 };
 
@@ -190,7 +194,7 @@ const cikis = argv[1];
 const pi = argv.indexOf('--platform');
 const platform = pi >= 0 ? argv[pi + 1] : 'ios';
 if (!kaynak || !cikis || !BOYUT[platform]) {
-    console.error('Kullanim: node scripts/magaza-mockup.js <kareler> <cikis> --platform ios|android');
+    console.error('Kullanim: node scripts/magaza-mockup.js <kareler> <cikis> --platform ios|ipad|android');
     process.exit(1);
 }
 fs.mkdirSync(cikis, { recursive: true });

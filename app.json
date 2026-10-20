@@ -8,7 +8,8 @@
     "userInterfaceStyle": "light",
     "scheme": "namazakisi",
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
+      "requireFullScreen": true,
       "bundleIdentifier": "com.furkanisikay.namazakisi",
       "infoPlist": {
         "UIDesignRequiresCompatibility": true,

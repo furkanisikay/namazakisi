@@ -60,6 +60,22 @@ describe('yeni özellik yeteneği — Google Drive eşitlemesi (#288)', () => {
   });
 });
 
+describe('yeni özellik yeteneği — iPad düzeni', () => {
+  const ipad = YENI_OZELLIKLER.find((o) => o.id === 'ipad-duzeni')!;
+
+  it('yalnız iPad\'de görünür; iPhone ve Android\'de görünmez', () => {
+    expect(ipad.yetenek).toBe('ipad');
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    const isPad = jest.spyOn(Platform as { isPad: boolean }, 'isPad', 'get').mockReturnValue(false);
+    expect(yeniOzellikGorunurMu(ipad)).toBe(false);
+    isPad.mockReturnValue(true);
+    expect(yeniOzellikGorunurMu(ipad)).toBe(true);
+    jest.replaceProperty(Platform, 'OS', 'android');
+    expect(yeniOzellikGorunurMu(ipad)).toBe(false);
+    isPad.mockRestore();
+  });
+});
+
 describe('yeni özellik yeteneği — Apple Watch (#285)', () => {
   const saat = YENI_OZELLIKLER.find((o) => o.id === 'apple-watch-uygulamasi')!;
   afterEach(() => siri.saatUygulamasiDestekli.mockReturnValue(false));
