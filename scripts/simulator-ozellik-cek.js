@@ -157,7 +157,13 @@ async function bolum(ad, fn) {
         }
         if (onay) {
             cek('10-alarm-onay');
-            await dokun(await agac('alarm-onay-kapat'), /^Vazgeç$/, 'vazgec');
+            // Pazarlama "Sabah namazina uyanin": anahtar ACIK hali. AlarmKit izin diyalogu
+            // cikarsa bolum sonu temizAcilis uygulamayi kapatip onu da kaldirir.
+            if (await dokun(await agac('alarm-onay-ac'), /^Alarmı açın$/, 'alarmi ac', { bekle: 2500 })) {
+                const izin = bul(await agac('alarm-izin'), /^(Allow|İzin Ver)$/i);
+                if (izin) await dokun(await agac('alarm-izin-2'), /^(Allow|İzin Ver)$/i, 'alarm izni', { bekle: 2000 });
+                cek('10b-alarm-acik');
+            }
         } else {
             console.error('  alarm onay modali acilamadi (UISwitch idb ile degismedi)');
         }

@@ -89,9 +89,15 @@ function cerceve(tur, gorsel, gen, k, z, secenek = {}) {
     const { kirpAlt = 0, boyut } = secenek;
     // Ham karenin en-boy orani (kirpilmis); boyut verilmezse 9:19.5 varsayilir.
     const oran = boyut ? (boyut.yuk * (1 - kirpAlt)) / boyut.gen : 2.1;
+    // `gorsel`: ekran goruntusu adresi ya da { html } (ekranin cizimi; ornegin alarm).
+    const ic =
+        gorsel && typeof gorsel === 'object'
+            ? `<div style="position:absolute;inset:0">${gorsel.html}</div>`
+            : `<img src="${gorsel}" style="position:absolute;left:0;top:0;width:100%;display:block">`;
     const ekran = (yaricap) =>
         `<div style="position:relative;width:100%;height:${(oran * 100).toFixed(3)}%;padding-top:${(oran * 100).toFixed(3)}%;border-radius:${yaricap}px;overflow:hidden;background:#000">` +
-        `<img src="${gorsel}" style="position:absolute;left:0;top:0;width:100%;display:block"></div>`;
+        ic +
+        `</div>`;
     const golge = `0 ${60 * k}px ${120 * k}px ${z.cihazGolge}, 0 ${10 * k}px ${30 * k}px ${z.cihazGolge}`;
     if (tur === 'tv') {
         const cerc = Math.max(4, 14 * k);
@@ -180,6 +186,46 @@ function bildirimHtml(bildirim, gen, k, ikonUrl) {
         `<span style="font-size:${34 * k}px;font-weight:600;color:#4A5F50">Namaz Akışı · şimdi</span></div>` +
         `<div style="margin-top:${18 * k}px;font-size:${42 * k}px;font-weight:800;color:#12301B;line-height:1.25">${esc(bildirim.baslik)}</div>` +
         `<div style="margin-top:${8 * k}px;font-size:${37 * k}px;font-weight:500;color:#33463A;line-height:1.38">${esc(bildirim.govde)}</div>` +
+        `</div>`
+    );
+}
+
+/**
+ * Calan gercek alarm ekraninin SADE cizimi (ekran goruntusu alinamaz: kilit ekrani /
+ * tam ekran alarm). Metinler uygulamanin gercek alarm yukunden:
+ *   iOS  — AlarmKit sistem ekrani: baslik = alarm kaydinin basligi, dugmeler "Kıldım" +
+ *          sistemin "Durdur"u (targets/muhafiz-alarmkit/NamazAlarmPlanlayici.swift).
+ *   Android — MuhafizAlarmActivity: vakit adi, saat, baslik, metin, "Kıldım" / "Kapat"
+ *          (android/.../alarm/MuhafizAlarmActivity.kt; gece renkleri alarm_renkleri.xml).
+ * `g`: ekran genisligi (px). Cizim ekranin tamamini kaplar.
+ */
+function alarmEkrani(a, platform, g) {
+    const p = g / 400;
+    const yazi = "font-family:-apple-system,'SF Pro Display',Roboto,'Segoe UI',sans-serif";
+    if (platform === 'ios') {
+        return (
+            `<div style="position:absolute;inset:0;${yazi};background:radial-gradient(120% 70% at 50% 0%, #2C4A36 0%, #0D1A12 55%, #050806 100%);color:#fff;text-align:center">` +
+            `<div style="margin-top:${78 * p}px;font-size:${17 * p}px;font-weight:600;opacity:0.85">${esc(a.tarih)}</div>` +
+            `<div style="font-size:${96 * p}px;font-weight:600;letter-spacing:-0.02em;line-height:1">${esc(a.saat)}</div>` +
+            `<div style="position:absolute;left:${16 * p}px;right:${16 * p}px;top:${300 * p}px;padding:${18 * p}px;border-radius:${26 * p}px;background:rgba(255,255,255,0.14);text-align:left">` +
+            `<div style="font-size:${13 * p}px;font-weight:600;opacity:0.75">Alarm</div>` +
+            `<div style="margin-top:${4 * p}px;font-size:${22 * p}px;font-weight:700">${esc(a.baslik)}</div>` +
+            `<div style="display:flex;gap:${10 * p}px;margin-top:${16 * p}px">` +
+            `<div style="flex:1;height:${46 * p}px;border-radius:999px;background:#4CAF50;display:flex;align-items:center;justify-content:center;font-size:${17 * p}px;font-weight:700">✓ Kıldım</div>` +
+            `<div style="flex:1;height:${46 * p}px;border-radius:999px;background:rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;font-size:${17 * p}px;font-weight:700">■ Durdur</div>` +
+            `</div></div></div>`
+        );
+    }
+    return (
+        `<div style="position:absolute;inset:0;${yazi};background:#121613;color:#F1F5F1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:${70 * p}px ${24 * p}px ${36 * p}px">` +
+        `<div style="width:${80 * p}px;height:${80 * p}px;border-radius:50%;background:#1E2420;display:flex;align-items:center;justify-content:center">${ikon('alarm', '#81C784', 44 * p)}</div>` +
+        `<div style="margin-top:${16 * p}px;font-size:${30 * p}px;font-weight:700">${esc(a.vakitAdi)}</div>` +
+        `<div style="font-size:${64 * p}px;font-weight:300;line-height:1.05">${esc(a.saat)}</div>` +
+        `<div style="margin-top:${14 * p}px;font-size:${17 * p}px;font-weight:700">${esc(a.baslik)}</div>` +
+        `<div style="margin-top:${6 * p}px;font-size:${14 * p}px;color:#B3BDB5">${esc(a.metin)}</div>` +
+        `<div style="flex:1"></div>` +
+        `<div style="width:100%;height:${52 * p}px;border-radius:${26 * p}px;background:#81C784;color:#0B1F0D;display:flex;align-items:center;justify-content:center;font-size:${19 * p}px;font-weight:700">Kıldım</div>` +
+        `<div style="margin-top:${12 * p}px;width:100%;height:${48 * p}px;border-radius:${24 * p}px;border:${1.5 * p}px solid #36403A;background:#1E2420;display:flex;align-items:center;justify-content:center;font-size:${16 * p}px;font-weight:600">Kapat</div>` +
         `</div>`
     );
 }
@@ -288,7 +334,7 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
 
     if (yer === 'cihaz' || yer === 'liste') {
         const g = gorseller[0];
-        let cihazGen = 900 * k;
+        let cihazGen = (kare.cihazGen || 900) * k;
         let ust = cihazUst;
         let liste = '';
         if (yer === 'liste') {
@@ -332,6 +378,17 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
         alan =
             `<div style="position:absolute;left:${(gen - kg) / 2}px;top:${ust}px">${takvimGunu(kare.takvim, kg, k, kartYuk)}</div>` +
             `<div style="position:absolute;left:${(gen - 1120 * k) / 2}px;top:${cihazUst - 20 * k}px">${bildirimHtml(kare.bildirim, 1120 * k, k, ikonUrl)}</div>`;
+    } else if (yer === 'alarm') {
+        // Buyuk telefon: calan alarm (cizim). Kucuk telefon: adim penceresi (gercek alarm acik).
+        const platform = b.platform;
+        const boyut = platform === 'ios' ? { gen: 1320, yuk: 2868 } : { gen: 1080, yuk: 2400 };
+        // Alarm ekraninin dugmeleri altta: telefon tuvale BUTUN sigar (tasmaz).
+        const buyukGen = Math.min(820 * k, (yuk - cihazUst - 90 * k) / (boyut.yuk / boyut.gen) + 32 * k);
+        const ekranGen = buyukGen - 32 * k;
+        alan += `<div style="position:absolute;left:${90 * k}px;top:${cihazUst}px">${cerceve('telefon', { html: alarmEkrani(kare.alarm, platform, ekranGen) }, buyukGen, k, z, { boyut, yaricap: platform === 'ios' ? 96 * k : 60 * k })}</div>`;
+        const kucuk = gorseller[0];
+        if (kucuk)
+            alan += `<div style="position:absolute;right:${70 * k}px;top:${cihazUst + 260 * k}px">${cerceve('telefon', kucuk.url, 440 * k, k, z, { boyut: kucuk.boyut, yaricap: kucuk.cihaz === 'androidTelefon' ? 40 * k : 60 * k })}</div>`;
     } else if (yer === 'telefonSaat') {
         const tel = gorseller.find((g) => g.cihaz === 'iphone' || g.cihaz === 'androidTelefon');
         const saat = gorseller.find((g) => g.cihaz === 'appleWatch');
@@ -452,7 +509,7 @@ function saatKaresi(kare, b, gorseller, cihazTuru) {
 }
 
 function sayfaUret(kare, set, gorseller, ikonUrl) {
-    if (set.yon === 'dikey') return dikey(kare, set.boyut, gorseller, ikonUrl);
+    if (set.yon === 'dikey') return dikey(kare, { ...set.boyut, platform: set.platform }, gorseller, ikonUrl);
     if (set.yon === 'yatay') return yatay(kare, set.boyut, gorseller, set.cihaz);
     return saatKaresi(kare, set.boyut, gorseller, set.cihaz);
 }

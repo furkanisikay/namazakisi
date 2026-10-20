@@ -57,8 +57,18 @@ const ORTAK = {
         alt: 'Vakit her gün kayar; alarm her sabah kendini ona göre kurar.',
         zemin: 'gece',
         vakit: 0,
-        kaynak: ['10-alarm-onay.png', '09-adim-detay-anahtarlar.png', '03-adim-detay.png'],
-        rozet: { ikon: 'alarm', metin: 'Alarm gibi çalar', yer: 'sol', y: 0.18 },
+        // Uyanma ani: calan alarm (cizim, gercek metinler; sablon.js > alarmEkrani) +
+        // kucuk uygulama ekrani: adim penceresinde "Gerçek alarm" ACIK (ozellik turu 10b).
+        yerlesim: 'alarm',
+        kaynak: ['10b-alarm-acik.png', '08-adim-detay.png'],
+        // Sabah, 25 dk kala adimi (zaman seridi karesi: ilk hatirlatma 06:49, gunes 07:14).
+        alarm: {
+            saat: '06:49',
+            tarih: 'Pazartesi, 19 Ekim',
+            vakitAdi: 'Sabah',
+            baslik: 'Sabah · 25 dk kaldı ⏰',
+            metin: 'Vakit daralmaya başladı, fırsat varken kıl.',
+        },
         iddialar: ['alarm'],
     },
     kible: {
@@ -219,7 +229,9 @@ const SETLER = {
                 vakit: 1,
                 // Alttaki "namaz modu açılmalı" bandı ilk kurulum adımıdır; kesilir.
                 kaynak: ['25-camideyim-ayarlar.png'],
-                gorunur: 0.58,
+                // Telefon buyuk: alttaki kurulum bandi tuvalin altinda kalir, ekran alt
+                // kenara tasar (soluklastirma yok).
+                cihazGen: 1150,
                 rozet: { ikon: 'ay', metin: 'Rahatsız Etmeyin açıldı', yer: 'sag', y: 0.5 },
                 iddialar: ['camideyim'],
             }),

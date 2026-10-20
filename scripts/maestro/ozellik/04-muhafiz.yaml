@@ -75,4 +75,10 @@ appId: com.furkanisikay.namazakisi
     visible: "Alarmı açın"
     timeout: 10000
 - takeScreenshot: ozk/10-alarm-onay
-- tapOn: "Vazgeç"
+
+# Pazarlama "Sabah namazina uyanin": adim penceresinde gercek alarm anahtari ACIK.
+# Akisin son adimi; sonraki akis zaten yeniden tohumlar (rıza kaydi tasinmaz).
+- tapOn: "Alarmı açın"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/10b-alarm-acik
