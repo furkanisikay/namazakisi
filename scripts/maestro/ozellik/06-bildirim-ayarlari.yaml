@@ -15,6 +15,16 @@ appId: com.furkanisikay.namazakisi
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/13-bildirim-ayarlari
+# Satirlar sayfanin ALTINDA (ustte varsayilan oneri karti + duzey onizlemesi, #351):
+# her biri once ortalanarak kaydirilir. Sira sayfadaki sirayla AYNI (cuma, camiye
+# gitme, yatis) — yalniz asagi kaydirildigi icin ustte kalan satir bulunamazdi.
+- scrollUntilVisible:
+    element:
+      id: "satir-cuma"
+    direction: DOWN
+    centerElement: true
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
 - tapOn:
     id: "satir-cuma"
 - waitForAnimationToEnd:
@@ -23,20 +33,9 @@ appId: com.furkanisikay.namazakisi
 - back
 - scrollUntilVisible:
     element:
-      id: "satir-yatis"
-    direction: DOWN
-    timeout: 300000
-    waitToSettleTimeoutMs: 1500
-- tapOn:
-    id: "satir-yatis"
-- waitForAnimationToEnd:
-    timeout: 3000
-- takeScreenshot: ozk/15-yatis
-- back
-- scrollUntilVisible:
-    element:
       id: "satir-camiye-git"
     direction: DOWN
+    centerElement: true
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
@@ -44,6 +43,19 @@ appId: com.furkanisikay.namazakisi
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/16-camiye-git
+- back
+- scrollUntilVisible:
+    element:
+      id: "satir-yatis"
+    direction: DOWN
+    centerElement: true
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    id: "satir-yatis"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/15-yatis
 - back
 - back
 - scrollUntilVisible:
