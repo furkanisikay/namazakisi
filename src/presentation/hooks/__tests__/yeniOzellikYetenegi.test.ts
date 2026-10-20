@@ -60,6 +60,26 @@ describe('yeni özellik yeteneği — Google Drive eşitlemesi (#288)', () => {
   });
 });
 
+describe('yeni özellik yeteneği — Kontrol Merkezi', () => {
+  const kontrol = YENI_OZELLIKLER.find((o) => o.id === 'ios-kontrol-merkezi-kildim')!;
+  afterEach(() => siri.canliEtkinlikDestekli.mockReturnValue(false));
+
+  it('yalnız uzantılı build + iOS 18 üstünde görünür', () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    siri.canliEtkinlikDestekli.mockReturnValue(true);
+    const surum = jest.spyOn(Platform, 'Version', 'get').mockReturnValue('17.5');
+    expect(yeniOzellikGorunurMu(kontrol)).toBe(false);
+    surum.mockReturnValue('18.0');
+    expect(yeniOzellikGorunurMu(kontrol)).toBe(true);
+    siri.canliEtkinlikDestekli.mockReturnValue(false);
+    expect(yeniOzellikGorunurMu(kontrol)).toBe(false);
+    jest.replaceProperty(Platform, 'OS', 'android');
+    siri.canliEtkinlikDestekli.mockReturnValue(true);
+    expect(yeniOzellikGorunurMu(kontrol)).toBe(false);
+    surum.mockRestore();
+  });
+});
+
 describe('yeni özellik yeteneği — iPad düzeni', () => {
   const ipad = YENI_OZELLIKLER.find((o) => o.id === 'ipad-duzeni')!;
 

@@ -27,6 +27,12 @@ const YETENEKLER: Record<YeniOzellikYetenegi, () => boolean> = {
   },
   // Drive eşitlemesi (#288): yalnız köprüyü taşıyan Android build'i + Google Play hizmetleri.
   googleDrive: () => Platform.OS === 'android' && googleYetkisiKullanilabilirMi(),
+  // Kontrol Merkezi kontrolü: widget uzantısını taşıyan build + kontrolleri destekleyen iOS (18+).
+  kontrolMerkezi: () => {
+    if (Platform.OS !== 'ios' || !canliEtkinlikDestekli()) return false;
+    const ana = parseInt(String(Platform.Version), 10);
+    return Number.isFinite(ana) && ana >= 18;
+  },
   // iPad düzeni: yalnız iPad'de (iPhone kullanıcısına tablet duyurusu gösterilmez).
   ipad: () => Platform.OS === 'ios' && (Platform as { isPad?: boolean }).isPad === true,
 };

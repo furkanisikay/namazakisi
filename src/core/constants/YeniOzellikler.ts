@@ -28,7 +28,7 @@
  * Duyurunun yalnız özelliği taşıyan cihazda görünmesi için yetenek anahtarı.
  * Çözümü sunum katmanındadır (`presentation/hooks/yeniOzellikYetenegi.ts`).
  */
-export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive' | 'ipad';
+export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive' | 'ipad' | 'kontrolMerkezi';
 
 /** Duyurunun görüneceği platformlar. */
 export type YeniOzellikPlatformu = 'android' | 'ios';
@@ -568,8 +568,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
         id: 'ios-siri-kisayollar-odak',
         platformlar: ['ios'],
-        surum: '0.31.0',
-        tarih: '2026-10-13',
+        surum: '0.57.0',
+        tarih: '2026-10-20',
         baslik: "iPhone'da Siri, Kısayollar ve Odak",
         aciklama:
             "Siri'ye sıradaki namazı sorabilir, kıldığınız vakti sesinizle işaretleyebilir ve \"Namaz\" Odağınızda hatırlatmaları sessize alabilirsiniz.",
@@ -581,6 +581,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Siri sıradaki namazı ve giriş saatini söyler',
             '"Şu anki vakti kıldım" onayınızla işaretler',
             'Odak filtresi açıkken hatırlatmalar en fazla 3 saat sessiz gelir',
+            'Kısayollar için yeni eylemler: sıradaki vaktin adı, sıradaki vakte kalan dakika, şu anki vakit kılındı mı',
+            'Bu eylemlerle "Eğer" bloğu kurup kendi otomasyonunuzu yazabilirsiniz',
         ],
     },
     // Android canlı sayaç: durum çubuğu + Samsung Now Bar (#282) ve öğe seçimi (ikinci aşama).
@@ -727,6 +729,27 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Serinizin dondurulması aynen sürer',
             'Bu tarihlerde vakit, muhafız, sayaç ve nafile hatırlatmaları gelmez',
             'Tarihler bitince hatırlatmalar kendiliğinden geri gelir',
+        ],
+    },
+    // Kontrol Merkezi "Kıldım" kontrolü (Android hızlı ayar kutusu ikizi). Yalnız kontrolü
+    // taşıyan build'de ve kontrolleri destekleyen iPhone'larda görünür.
+    {
+        id: 'ios-kontrol-merkezi-kildim',
+        platformlar: ['ios'],
+        surum: '0.57.0',
+        tarih: '2026-10-20',
+        baslik: "Kontrol Merkezi'nden Kıldım",
+        aciklama:
+            "Kontrol Merkezi'ne, kilit ekranına ya da Eylem düğmesine \"Vakti kıldım\" kontrolünü ekleyerek içinde bulunduğunuz vakti tek dokunuşla işaretleyebilirsiniz.",
+        detayAciklama:
+            "Kontrol Merkezi'ni açıp düzenleyin, \"Namaz Akışı\" altından \"Vakti kıldım\"ı seçin. Kontrolde o anki vaktin adı yazar; dokununca vakit kılındı olarak işaretlenir. Kilit ekranından dokunduğunuzda önce telefonunuzun kilidini açmanız istenir. Kılınacak vakit yoksa kontrol bunu söyler ve hiçbir şey işaretlemez.",
+        ikon: 'check-circle',
+        kartGoster: false,
+        yetenek: 'kontrolMerkezi',
+        detaylar: [
+            'Kontrol Merkezi, kilit ekranı ve Eylem düğmesi',
+            'O anki vaktin adı kontrolün üstünde yazar',
+            'Kilit ekranında işaretlemeden önce kilit açılır',
         ],
     },
     // iPad desteği (Apple eşitliği): Android tablet düzeninin (#283) iPad ikizi. Postür ve
