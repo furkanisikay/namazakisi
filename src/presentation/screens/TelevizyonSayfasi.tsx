@@ -27,7 +27,7 @@ import { TvEslemeServisi, type GonderimSonucu } from '../../domain/services/TvEs
 import { TelevizyonSahnesi, type SahneDurumu } from '../components/tv/TelevizyonSahnesi';
 import type { TvDerinParametreleri } from '../../navigation/ayarlarEkranlari';
 
-type Hata = Exclude<GonderimSonucu, 'tamam'> | 'gecersizQr' | 'tarayiciYok';
+type Hata = Exclude<GonderimSonucu, 'tamam'> | 'gecersizQr' | 'tarayiciYok' | 'kameraIzniYok';
 
 const HATA_METNI: Record<Hata, string> = {
     ulasilamadi:
@@ -37,7 +37,9 @@ const HATA_METNI: Record<Hata, string> = {
     reddedildi: 'TV konumu kabul etmedi. Konumunuzu yenileyip yeniden deneyin.',
     gecersizQr:
         "Bu kare kod Namaz Akışı TV'ye ait değil. TV'deki “Vakitleri telefonunuzdan alın” ekranındaki kodu okutun.",
-    tarayiciYok: "Kamera tarayıcısı bu telefonda açılamadı. Aşağıdaki 7 haneli kodu TV'ye girin.",
+    tarayiciYok: "Kamera bu telefonda açılamadı. Aşağıdaki 7 haneli kodu TV'ye girin.",
+    kameraIzniYok:
+        "Kodu okumak için kamera izni gerekir. Telefon ayarlarından kamerayı açın ya da aşağıdaki 7 haneli kodu TV'ye girin.",
 };
 
 type Rota = { params?: TvDerinParametreleri };
@@ -115,9 +117,9 @@ export const TelevizyonSayfasi: React.FC = () => {
             setDurum('hazir');
             const okuma = await TvEslemeServisi.qrOku();
             if (okuma.tur === 'okundu') await metniIsle(okuma.metin);
-            else if (okuma.tur === 'tarayiciYok') {
+            else if (okuma.tur === 'tarayiciYok' || okuma.tur === 'kameraIzniYok') {
                 setDurum('hata');
-                setHata('tarayiciYok');
+                setHata(okuma.tur);
                 koduGoster();
             }
         } finally {

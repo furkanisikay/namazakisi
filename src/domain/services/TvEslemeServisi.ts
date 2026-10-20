@@ -1,8 +1,9 @@
 /**
  * Telefondan Android TV'ye konum aktarma (QR yolu) — orkestrasyon.
  *
- * Akış: TV ekranda QR gösterir → `qrOku()` okur (Android: Google kod tarayıcı, kamera izni
- * istemez; iOS: sistemin VisionKit tarayıcısı, Kıble için zaten tanımlı kamera izniyle) →
+ * Akış: TV ekranda QR gösterir → `qrOku()` okur (Android: kendi tarayıcımız — CameraX + ZXing,
+ * cihaz içi, ML Kit YOK; iOS: sistemin VisionKit tarayıcısı; ikisi de Kıble için zaten
+ * bildirili kamera iznini kullanır) →
  * `tvQrCoz` güvenlik süzgecinden geçer (yalnız özel IPv4) → `konumuGonder` aynı Wi-Fi'deki
  * TV'ye tek bir istek yollar. Sunucu/bulut YOK; veri evin yerel ağından çıkmaz.
  *
@@ -22,7 +23,11 @@ import {
 import { Logger } from '../../core/utils/Logger';
 
 export type GonderimSonucu = 'tamam' | 'ulasilamadi' | 'suresiDoldu' | 'reddedildi';
-export type OkumaSonucu = { tur: 'okundu'; metin: string } | { tur: 'iptal' } | { tur: 'tarayiciYok' };
+export type OkumaSonucu =
+    | { tur: 'okundu'; metin: string }
+    | { tur: 'iptal' }
+    | { tur: 'tarayiciYok' }
+    | { tur: 'kameraIzniYok' };
 
 const ZAMAN_ASIMI_MS = 6000;
 // iOS ilk bağlantıda 'yerel ağ' izni sorar; soru açıkken istekler düşer. Kullanıcının
@@ -32,15 +37,19 @@ const DENEME_ARASI_MS = Platform.OS === 'ios' ? 2000 : 1500;
 
 const bekle = (ms: number) => new Promise<void>((cozul) => setTimeout(cozul, ms));
 
-async function iosQrOku(): Promise<OkumaSonucu> {
-    // Tembel yükleme: expo-camera yalnız iOS tarama anında gerekir (jest/Android yolu çekmesin).
-    const { CameraView, Camera } = require('expo-camera') as typeof import('expo-camera');
+/** Kamera izni (Kıble ile ortak). Tembel yükleme: expo-camera yalnız tarama anında gerekir. */
+async function kameraIzniVarMi(): Promise<boolean> {
     try {
+        const { Camera } = require('expo-camera') as typeof import('expo-camera');
         const izin = await Camera.requestCameraPermissionsAsync();
-        if (!izin.granted) return { tur: 'tarayiciYok' };
+        return izin.granted === true;
     } catch {
-        return { tur: 'tarayiciYok' };
+        return false;
     }
+}
+
+async function iosQrOku(): Promise<OkumaSonucu> {
+    const { CameraView } = require('expo-camera') as typeof import('expo-camera');
     return new Promise<OkumaSonucu>((cozul) => {
         let bitti = false;
         const abonelik = CameraView.onModernBarcodeScanned((olay) => {
@@ -72,6 +81,7 @@ export const TvEslemeServisi = {
     },
 
     async qrOku(): Promise<OkumaSonucu> {
+        if (!(await kameraIzniVarMi())) return { tur: 'kameraIzniYok' };
         if (Platform.OS === 'ios') return iosQrOku();
         try {
             const metin = await TvKopru.qrOku();

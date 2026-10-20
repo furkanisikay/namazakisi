@@ -9,6 +9,7 @@ import { TelevizyonSayfasi } from '../TelevizyonSayfasi';
 import { useRenkler } from '../../../core/theme';
 
 const kopru = require('../../../../modules/expo-tv-esleme/src');
+const kamera = require('expo-camera');
 
 const mockRoute: { params?: Record<string, string> } = {};
 const mockNavigate = jest.fn();
@@ -47,6 +48,7 @@ describe('TelevizyonSayfasi', () => {
         (useRenkler as jest.Mock).mockReturnValue({
             arkaplan: '#fff', kartArkaplan: '#f0f0f0', birincil: '#4CAF50', metin: '#333', metinIkincil: '#666', sinir: '#ccc', hata: '#F44336',
         });
+        kamera.__izinAyarla({ granted: true, status: 'granted' });
         kopru.tvEslemeModuluVarMi.mockReturnValue(true);
         kopru.qrOku.mockResolvedValue(QR);
         kopru.tvyeGonder.mockResolvedValue('{"ok":true}');
@@ -84,6 +86,14 @@ describe('TelevizyonSayfasi', () => {
         const { getByTestId } = render(<TelevizyonSayfasi />);
         fireEvent.press(getByTestId('tv-kodu-okut'));
         await waitFor(() => expect(getByTestId('tv-sonuc').props.children).toMatch(/süresi doldu/));
+    });
+
+    it('kamera izni yoksa tarayıcı açılmaz; izin ya da kod yolu söylenir', async () => {
+        kamera.__izinAyarla({ granted: false, status: 'denied' });
+        const { getByTestId } = render(<TelevizyonSayfasi />);
+        fireEvent.press(getByTestId('tv-kodu-okut'));
+        await waitFor(() => expect(getByTestId('tv-sonuc').props.children).toMatch(/kamera izni gerekir/));
+        expect(kopru.qrOku).not.toHaveBeenCalled();
     });
 
     it('iptal edilen taramada hiçbir şey olmaz', async () => {

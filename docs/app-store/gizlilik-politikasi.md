@@ -4,7 +4,7 @@ title: Gizlilik Politikası — Namaz Akışı
 
 # Gizlilik Politikası — Namaz Akışı
 
-**Son güncelleme:** 19 Ekim 2026
+**Son güncelleme:** 20 Ekim 2026
 
 Namaz Akışı, hiçbir kişisel verinizi toplamaz, saklamaz veya üçüncü taraflarla
 paylaşmaz. Uygulamayı kullanmak için hesap açmanız gerekmez.
@@ -82,6 +82,21 @@ Kıble ekranının isteğe bağlı **Kamera** görünümü, Kâbe yönünü kame
 üzerinde gösterir. Kamera izni yalnızca bu görünümü açtığınızda istenir. Görüntü
 yalnızca ekranda gösterilir; fotoğraf ya da video **kaydedilmez**, telefonunuzdan
 çıkmaz ve hiçbir yere gönderilmez. İzni vermezseniz kıble pusulası kamerasız çalışır.
+
+Aynı izin, **Televizyonda gösterin** sayfasında televizyonunuzun ekranındaki kare kodu
+okumak için de kullanılır. Kod telefonunuzun içinde çözülür; görüntü kaydedilmez ve hiçbir
+yere gönderilmez.
+
+### Televizyona konum aktarma (isteğe bağlı)
+
+Evdeki Android TV'de vakitleri sizin konumunuza göre göstermek için telefonunuzun
+konumunu (koordinat ve "Kadıköy, İstanbul" gibi yer adı) **evinizin Wi-Fi ağı içinde,
+doğrudan televizyona** gönderebilirsiniz. Bu aktarım yalnızca siz televizyondaki kodu
+okuttuğunuzda yapılır; arada sunucu yoktur, hesap açılmaz, veri internete çıkmaz.
+Televizyon uygulaması yalnızca eşleştirme ekranı açıkken ve yalnızca evinizin yerel
+ağında dinler, her seferinde yeni bir tek kullanımlık anahtar kullanır. Wi-Fi
+kullanmak istemezseniz televizyona 7 haneli bir kodu kumandayla girebilirsiniz; bu yolda
+hiçbir ağ kullanılmaz. iPhone ilk aktarımda "yerel ağ" izni sorar.
 
 ## İnternet kullanımı
 

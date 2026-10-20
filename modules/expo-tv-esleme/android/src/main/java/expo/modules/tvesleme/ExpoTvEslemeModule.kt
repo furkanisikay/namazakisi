@@ -1,10 +1,5 @@
 package expo.modules.tvesleme
 
-import com.google.android.gms.common.moduleinstall.ModuleInstall
-import com.google.android.gms.common.moduleinstall.ModuleInstallRequest
-import com.google.mlkit.vision.barcode.common.Barcode
-import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
-import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
@@ -15,10 +10,8 @@ import java.net.Socket
 /**
  * Android TV eşleştirmesi (telefon tarafı) — iki iş:
  *
- * 1. `qrOku`: Google kod tarayıcı (Play hizmetleri). Kamera izni İSTEMEZ; tarama arayüzünü
- *    Play hizmetleri çizer, yalnız okunan metin döner. İptal → `null`. Tarayıcı modülü cihazda
- *    yoksa önce indirilir. Play hizmetleri olmayan cihazda (`TARAYICI_YOK`) ekran kodla
- *    aktarmayı önerir.
+ * 1. `qrOku`: kendi tarayıcımız (`QrTaramaActivity`: CameraX + ZXing, cihaz içi; ML Kit YOK).
+ *    İptal → `null`. Kamera açılamazsa `TARAYICI_YOK` → ekran kodla aktarmayı önerir.
  *
  * 2. `gonder`: aynı yerel ağdaki TV'ye ham soketle tek bir HTTP POST. Neden ham soket:
  *    uygulamanın ağ güvenliği yapılandırması düz metin HTTP'ye izin VERMEZ (doğru olan bu)
@@ -27,41 +20,45 @@ import java.net.Socket
  *    konumu internete yollatamaz. Yanıt 2 KB ile, süre parametreyle sınırlı.
  */
 class ExpoTvEslemeModule : Module() {
+    /** Ana thread (OnActivityResult) ile modül kuyruğu arasında görünür olsun. */
+    @Volatile
+    private var bekleyenOkuma: Promise? = null
+
     override fun definition() = ModuleDefinition {
         Name("ExpoTvEsleme")
 
         AsyncFunction("qrOku") { promise: Promise ->
-            val baglam = appContext.currentActivity ?: appContext.reactContext
-            if (baglam == null) {
-                promise.reject("TARAYICI_YOK", "Bağlam yok", null)
+            val aktivite = appContext.currentActivity
+            if (aktivite == null) {
+                promise.reject("TARAYICI_YOK", "Etkinlik yok", null)
+                return@AsyncFunction
+            }
+            // Yeniden-giriş: ikinci çağrı ilk promise'i sahipsiz bırakmasın (SesSecici dersi).
+            if (bekleyenOkuma != null) {
+                promise.resolve(null)
                 return@AsyncFunction
             }
             try {
-                val secenek = GmsBarcodeScannerOptions.Builder()
-                    .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
-                    .build()
-                val tarayici = GmsBarcodeScanning.getClient(baglam, secenek)
-                val baslat = {
-                    tarayici.startScan()
-                        .addOnSuccessListener { promise.resolve(it.rawValue) }
-                        .addOnCanceledListener { promise.resolve(null) }
-                        .addOnFailureListener { promise.reject("TARAYICI_YOK", it.message, it) }
-                }
-                val kurulum = ModuleInstall.getClient(baglam)
-                kurulum.areModulesAvailable(tarayici)
-                    .addOnSuccessListener { yanit ->
-                        if (yanit.areModulesAvailable()) {
-                            baslat()
-                        } else {
-                            kurulum.installModules(ModuleInstallRequest.newBuilder().addApi(tarayici).build())
-                                .addOnSuccessListener { baslat() }
-                                .addOnFailureListener { promise.reject("TARAYICI_YOK", it.message, it) }
-                        }
-                    }
-                    .addOnFailureListener { promise.reject("TARAYICI_YOK", it.message, it) }
-            } catch (e: Throwable) {
-                // Play hizmetleri yok (Huawei vb.) ya da sınıf yüklenemedi.
+                bekleyenOkuma = promise
+                aktivite.startActivityForResult(QrTaramaActivity.niyet(aktivite), QrTaramaActivity.ISTEK_KODU)
+            } catch (e: Exception) {
+                bekleyenOkuma = null
                 promise.reject("TARAYICI_YOK", e.message, e)
+            }
+        }
+
+        OnActivityResult { _, payload ->
+            if (payload.requestCode != QrTaramaActivity.ISTEK_KODU) return@OnActivityResult
+            val promise = bekleyenOkuma ?: return@OnActivityResult
+            bekleyenOkuma = null
+            try {
+                when (payload.resultCode) {
+                    android.app.Activity.RESULT_OK -> promise.resolve(payload.data?.getStringExtra(QrTaramaActivity.EKSTRA_METIN))
+                    android.app.Activity.RESULT_FIRST_USER -> promise.reject("TARAYICI_YOK", "Kamera açılamadı", null)
+                    else -> promise.resolve(null)
+                }
+            } catch (e: Exception) {
+                promise.resolve(null)
             }
         }
 

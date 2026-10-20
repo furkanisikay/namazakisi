@@ -73,13 +73,25 @@ repositories {
 dependencies {
   implementation project(':expo-modules-core')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.23"
-  // Google kod tarayıcı (TV eşleştirme QR'ı). Kamera İZNİ İSTEMEZ: tarama arayüzünü Google
-  // Play hizmetleri kendi sürecinde çizer, uygulamaya yalnız okunan metin döner; model
-  // ilk kullanımda Play hizmetlerince indirilir (APK'ya ML Kit modeli GİRMEZ). expo-camera
-  // bu sürüme `compileOnly` bağlıdır (gradle.properties: barcode-scanner-enabled=false);
-  // burada aynı sürüm `implementation` olur ama expo-camera'nın tarayıcısı yine kapalı
-  // kalır (o ayrıca demetlenmiş `barcode-scanning` sınıfını arar).
-  implementation "com.google.android.gms:play-services-code-scanner:16.1.0"
+  // TV eşleştirme QR'ı KENDİ tarayıcımızla okunur: CameraX önizleme + ZXing çözücü
+  // (Apache-2.0, saf Java). Google kod tarayıcı / ML Kit BİLİNÇLİ olarak KULLANILMADI:
+  // ML Kit cihaz/uygulama/kullanım verisini Google'a gönderir (Play Data Safety beyanı
+  // gerektirirdi; "veri cihazdan çıkmaz" duruşu bozulurdu) ve Play hizmetleri olmayan
+  // telefonda (Huawei) hiç çalışmazdı. CameraX sürümü expo-camera ile AYNI (1.6.0):
+  // tek kopya derlenir. Kamera izni Kıble için zaten bildirili; yeni izin YOK.
+  def camerax = "1.6.0"
+  implementation "androidx.camera:camera-core:${camerax}"
+  implementation "androidx.camera:camera-camera2:${camerax}"
+  implementation "androidx.camera:camera-lifecycle:${camerax}"
+  implementation "androidx.camera:camera-view:${camerax}"
+  implementation "androidx.appcompat:appcompat:1.7.1"
+  implementation "com.google.zxing:core:3.5.3"
+}
+
+// expo-camera ile aynı düzeltme: RN Gradle eklentisinin çektiği Guava listenablefuture'ı
+// boş 9999.0 sürümüne zorlar; CameraX gerçek ListenableFuture sınıfını ister.
+configurations.configureEach {
+  resolutionStrategy.force "com.google.guava:listenablefuture:1.0"
 }
 
 def safeExtGet(prop, fallback) {
