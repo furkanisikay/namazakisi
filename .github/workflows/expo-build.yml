@@ -538,6 +538,11 @@ jobs:
           EXPO_ASC_ISSUER_ID: ${{ secrets.ASC_KEY_ISSUER_ID }}
           EXPO_APPLE_TEAM_ID: 5486BAC22V
           EXPO_APPLE_TEAM_TYPE: INDIVIDUAL
+          # EAS yetenek esitlemesi iCloud'u yalniz `icloud-container-identifiers`
+          # entitlement'ina esler; uygulama yalniz KV deposu kullandigi icin
+          # esitleme App ID'deki iCloud'u KAPATIR (2026-10-20 yasandi). Yetenekler
+          # Apple'da elle/ASC API ile (scripts/asc-icloud.js) yonetilir.
+          EXPO_NO_CAPABILITY_SYNC: '1'
 
       - name: 🔎 iOS build durumunu doğrula
         if: inputs.build_ios == true && inputs.sadece_submit != true

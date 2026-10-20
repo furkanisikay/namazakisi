@@ -1,17 +1,19 @@
 /**
  * Expo Config Plugin — iCloud cihazlar arası eşitleme (issue #288).
  *
- * VARSAYILAN KAPALI ve app.json'a EKLENMEDİ: iCloud anahtar-değer deposu
- * `com.apple.developer.ubiquity-kvstore-identifier` entitlement'ını ister; bu da
- * App ID'de iCloud capability'si + yenilenmiş imza profili demektir. EAS
- * `--non-interactive` iOS build'i profili Apple oturumu olmadan yenileyemez →
- * entitlement habersiz eklenirse iOS yayın hattı kırılır.
+ * AÇIK (2026-10-20). Entitlement yalnız anahtar-değer deposudur
+ * (`com.apple.developer.ubiquity-kvstore-identifier`); App ID'de ICLOUD yeteneği
+ * (ICLOUD_VERSION=XCODE_6, kapsayıcısız) gerekir — Apple profile yetenek açıkken
+ * `ubiquity-kvstore-identifier = <takım>.*` yazar.
  *
- * Sahip etkinleştirmek için (sırayla):
- *   1. developer.apple.com > Identifiers > com.furkanisikay.namazakisi > iCloud
- *      (Key-value storage) capability'sini açın.
- *   2. `eas credentials -p ios` ile imza profilini etkileşimli yenileyin.
- *   3. app.json > plugins'e `["./plugins/withIcloudEsitleme", { "etkin": true }]` ekleyin.
+ * TUZAK: EAS'in yetenek eşitlemesi iCloud'u yalnız
+ * `com.apple.developer.icloud-container-identifiers` entitlement'ına eşler ve
+ * Apple ID ile yapılan her etkileşimli build'de eşleştiremediği iCloud'u App ID'de
+ * KAPATIR (profil iCloud'suz çıkar). Bu yüzden etkileşimli build'i
+ * `EXPO_NO_CAPABILITY_SYNC=1` ile çalıştırın; CI (`expo-build.yml`) bunu zaten
+ * yazar. Yetenek kapandıysa: `ios-ekran-goruntuleri.yml` tur=asc,
+ * asc_islem=icloud-ac (`scripts/asc-icloud.js`), sonra EAS'teki ana profil
+ * kaydını silip yeniden build alın (ayrıntı: docs/ajan/ios.md).
  *
  * Bayrak açıkken: entitlement eklenir ve `extra.icloudEsitlemeEtkin = true` yazılır
  * (JS `esitlemeYapilandirmasi.icloudEsitlemeEtkinMi` bunu okur; kapalıyken iCloud
