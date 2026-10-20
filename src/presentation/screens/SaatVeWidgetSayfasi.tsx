@@ -57,17 +57,6 @@ const SaatVeWidgetIcerik: React.FC = () => {
             />
         );
     }
-    // Android TV panosu iki platformdan da kurulur (iPhone + Android TV de olur).
-    satirlar.push(
-        <AyarSatiri
-            key="tv"
-            varyant="navigasyon"
-            ikon={<FontAwesome5 name="tv" size={18} color={ikon} />}
-            baslik="Televizyonda gösterin"
-            ozet="Konumunuzu evdeki Android TV'ye aktarın"
-            onPress={() => navigation.navigate('TelevizyonAyarlari')}
-        />
-    );
     if (nowBar.kullanilabilir) {
         satirlar.push(
             <AyarSatiri

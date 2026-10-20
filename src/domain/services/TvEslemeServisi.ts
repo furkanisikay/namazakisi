@@ -25,8 +25,10 @@ export type GonderimSonucu = 'tamam' | 'ulasilamadi' | 'suresiDoldu' | 'reddedil
 export type OkumaSonucu = { tur: 'okundu'; metin: string } | { tur: 'iptal' } | { tur: 'tarayiciYok' };
 
 const ZAMAN_ASIMI_MS = 6000;
-const DENEME_SAYISI = 3;
-const DENEME_ARASI_MS = 1500;
+// iOS ilk bağlantıda 'yerel ağ' izni sorar; soru açıkken istekler düşer. Kullanıcının
+// soruyu okuyup yanıtlaması için iOS'ta deneme penceresi uzun (≈ 16 sn) tutulur.
+const DENEME_SAYISI = Platform.OS === 'ios' ? 8 : 3;
+const DENEME_ARASI_MS = Platform.OS === 'ios' ? 2000 : 1500;
 
 const bekle = (ms: number) => new Promise<void>((cozul) => setTimeout(cozul, ms));
 

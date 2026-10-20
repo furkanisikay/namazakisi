@@ -31,7 +31,8 @@ type Hata = Exclude<GonderimSonucu, 'tamam'> | 'gecersizQr' | 'tarayiciYok';
 
 const HATA_METNI: Record<Hata, string> = {
     ulasilamadi:
-        "TV'ye ulaşılamadı. Telefon ile TV aynı Wi-Fi ağında olmalı; misafir ağı ya da VPN bağlantıyı engelleyebilir. Olmazsa aşağıdaki kodu TV'ye girin.",
+        "TV'ye ulaşılamadı. Telefon ile TV aynı Wi-Fi ağında olmalı; misafir ağı ya da VPN bağlantıyı engelleyebilir. Olmazsa aşağıdaki kodu TV'ye girin." +
+        (Platform.OS === 'ios' ? ' iPhone yerel ağ izni sorduysa izin verip yeniden okutun.' : ''),
     suresiDoldu: "Bu kare kodun süresi doldu. TV'de ekranı yeniden açın ve yeni kodu okutun.",
     reddedildi: 'TV konumu kabul etmedi. Konumunuzu yenileyip yeniden deneyin.',
     gecersizQr:
@@ -193,6 +194,11 @@ export const TelevizyonSayfasi: React.FC = () => {
                         <View style={{ flex: 1 }}>
                             <Text style={{ fontSize: 13, color: renkler.metinIkincil }}>TV'ye gidecek konum</Text>
                             <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin, marginTop: 2 }}>{konumAdi}</Text>
+                            {konum.konumModu === 'oto' ? (
+                                <Text style={{ fontSize: 13, lineHeight: 18, color: renkler.metinIkincil, marginTop: 4 }}>
+                                    Şu an bulunduğunuz yer gider. TV başka bir şehirdeyse TV'de ili kendiniz seçin.
+                                </Text>
+                            ) : null}
                         </View>
                     </View>
 
