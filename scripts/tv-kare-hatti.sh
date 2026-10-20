@@ -77,4 +77,33 @@ else
   adb shell dumpsys dreams 2>/dev/null | head -30 || true
 fi
 
+# --- VIDEO: D-pad odak hareketi (odak halkası + büyüme, il ızgarası), en gayret ---
+# Emulator `disable-animations: true` ile açılır; kayıt için animator ölçeği yalnız
+# burada 1 yapılır. Vakit değişimi geçişi (zemin 600 ms) zamana bağlı olduğu için
+# kayda alınamaz; yalnız kullanıcı olayıyla başlayan odak geçişleri kaydedilir.
+VIDEO="videolar-tv"
+mkdir -p "$VIDEO"
+adb shell input keyevent KEYCODE_WAKEUP || true
+adb shell settings put global animator_duration_scale 1 || true
+adb shell am force-stop "$PAKET"
+adb shell am start -W -n "$PAKET/$SINIF.ui.PanoActivity"
+sleep 5
+adb shell rm -f /sdcard/odak.mp4 || true
+adb shell screenrecord --time-limit 12 /sdcard/odak.mp4 &
+KAYIT=$!
+sleep 1.5
+tus KEYCODE_DPAD_DOWN 1.5
+tus KEYCODE_DPAD_CENTER 2.5
+tus KEYCODE_DPAD_RIGHT 1
+tus KEYCODE_DPAD_DOWN 1
+tus KEYCODE_BACK 2
+wait "$KAYIT" || true
+sleep 1
+if adb pull /sdcard/odak.mp4 "$VIDEO/tv-odak.mp4" >/dev/null 2>&1 && [ -s "$VIDEO/tv-odak.mp4" ]; then
+  echo "video: $VIDEO/tv-odak.mp4"
+else
+  echo "UYARI: tv odak videosu alinamadi"
+fi
+adb shell settings put global animator_duration_scale 0 || true
+
 ls -la "$CIKIS"

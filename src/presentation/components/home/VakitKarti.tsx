@@ -8,6 +8,7 @@ import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { NAMAZ_DURUMLARI } from '../../../core/vakit/durumSozlugu';
 import { KildimDugmesi, KILDIM_DUGMESI_YUKSEKLIK } from '../hareket/KildimDugmesi';
 import { kildimDugmesiRenkleri } from '../../../core/anaEkran/kildimDugmesiRenkleri';
+import { BirimliSure } from '../common/BirimliSure';
 
 interface VakitKartiProps {
     vakitBilgisi: VakitBilgisi | null;
@@ -188,11 +189,17 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
 
                 {/* Sayaç */}
                 <View className="my-6 items-center">
-                    <Text className="text-5xl font-mono font-bold tracking-tighter tabular-nums" style={{ color: renkler.metin }}>
-                        {kalanSureStr}
-                    </Text>
-                    <Text className="text-xs font-semibold tracking-widest mt-2" style={{ color: renkler.metinIkincil }}>
-                        KALAN SÜRE
+                    {/* Birimli: "01:09:09" duvar saati gibi okunuyordu (saat/TV ile aynı dil). */}
+                    <BirimliSure
+                        sure={kalanSureStr}
+                        rakamBoyu={48}
+                        birimRengi={renkler.metinIkincil}
+                        style={{ color: renkler.metin, fontWeight: '800', letterSpacing: -1 }}
+                        adjustsFontSizeToFit
+                        minimumFontScale={0.6}
+                    />
+                    <Text className="text-sm font-medium mt-1" style={{ color: renkler.metinIkincil }}>
+                        Kalan süre
                     </Text>
                 </View>
 
