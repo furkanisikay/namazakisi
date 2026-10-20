@@ -128,7 +128,7 @@ export const KibleMiniKarti: React.FC<KoordinatProps> = React.memo(({ lat, lng }
 });
 KibleMiniKarti.displayName = 'KibleMiniKarti';
 
-const GUL = 220;
+const GUL = 260;
 const gulStili = StyleSheet.create({
     gul: { width: GUL, height: GUL, borderRadius: GUL / 2, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
     harf: { position: 'absolute', fontSize: 14, fontWeight: '700' },
@@ -138,7 +138,7 @@ const gulStili = StyleSheet.create({
     bati: { left: 14 },
     // Tam boy katman merkezden döner; ibre üst yarıdadır (dönmeden önce kuzeyi gösterir).
     ibreKatmani: { position: 'absolute', width: GUL, height: GUL, alignItems: 'center' },
-    kabe: { marginTop: 30, width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
-    ibre: { width: 4, height: GUL / 2 - 30 - 44, borderRadius: 2 },
+    kabe: { marginTop: 14, width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+    ibre: { width: 4, height: GUL / 2 - 14 - 44, borderRadius: 2 },
     merkez: { width: 12, height: 12, borderRadius: 6 },
 });
