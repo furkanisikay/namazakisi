@@ -67,6 +67,7 @@ jobs:
             modules/expo-siri-kisayollari/ios/SiriDeposu.swift \
             modules/expo-siri-kisayollari/ios/WidgetKarari.swift \
             modules/expo-siri-kisayollari/ios/SessizlikKarari.swift \
+            modules/expo-siri-kisayollari/ios/OtomasyonKarari.swift \
             modules/expo-siri-kisayollari/test/main.swift
           "$RUNNER_TEMP/siri-test" \
             android/app/src/test/resources/widget-ornek.json \
@@ -132,7 +133,7 @@ jobs:
         run: |
           set -eo pipefail
           PBX=$(ls -d ios/*.xcodeproj | head -1)/project.pbxproj
-          for f in NamazIntentleri NamazKisayollari NamazOdakFiltresi NamazSessizlikIntentleri NamazAlarmPlanlayici NamazAlarmNiyetleri; do
+          for f in NamazIntentleri NamazKisayollari NamazOdakFiltresi NamazSessizlikIntentleri NamazAlarmPlanlayici NamazAlarmNiyetleri NamazOtomasyonIntentleri; do
             grep -q "$f.swift in Sources" "$PBX" || { echo "$f.swift ana hedefin Sources fazında yok"; exit 1; }
           done
           grep -q 'developmentRegion = tr;' "$PBX" || { echo "Geliştirme bölgesi tr değil (Türkçe Siri ifadeleri eşleşmez)"; exit 1; }
@@ -176,7 +177,7 @@ jobs:
           META="$APP/Metadata.appintents"
           [ -d "$META" ] || { echo "Metadata.appintents YOK — Siri/Kısayollar intent'leri göremez"; ls "$APP"; exit 1; }
           ls -la "$META"
-          for ad in SiradakiNamazIntent SimdikiVaktiKildimIntent KibleyiAcIntent NamazOdakFiltresi NamazSessizligiIntent NamazSessizligiBitisiIntent KildimDugmesiIntent NamazAlarmDurdurIntent NamazAlarmErteleIntent NamazAlarmKildimIntent; do
+          for ad in SiradakiNamazIntent SimdikiVaktiKildimIntent KibleyiAcIntent NamazOdakFiltresi NamazSessizligiIntent NamazSessizligiBitisiIntent KildimDugmesiIntent NamazAlarmDurdurIntent NamazAlarmErteleIntent NamazAlarmKildimIntent SiradakiVakitAdiIntent SiradakiVakteKalanDakikaIntent SimdikiVakitKilindiMiIntent; do
             grep -rqa "$ad" "$META" || { echo "Metadata'da $ad yok"; exit 1; }
           done
           echo "✅ Metadata.appintents Siri, widget ve alarm intent'lerini taşıyor"

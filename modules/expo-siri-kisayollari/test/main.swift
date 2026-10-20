@@ -375,6 +375,29 @@ for d in sessizlik.sessizlik.durumlar {
     )
 }
 
+// MARK: - 8) Kisayollar otomasyon degerleri (OtomasyonKarari) — Android %vakit/%kalandk ikizi
+
+if let ogle = widget.vakitler.first(where: { $0.vakit == "ogle" }) {
+    let sirali = widget.vakitler.sorted { $0.ms < $1.ms }
+    // Ogleye 90 sn kala: siradaki ogle, kalan YUKARI yuvarlanir → 2 dk.
+    let s1 = OtomasyonKarari.siradakiVakit(widget.vakitler, simdiMs: ogle.ms - 90_000)
+    esitMi(s1?.kod ?? "-", "ogle", "otomasyon: siradaki vakit kodu")
+    esitMi(s1?.ad ?? "-", "Öğle", "otomasyon: siradaki vakit adi")
+    esitMi(s1?.kalanDk ?? -1, 2, "otomasyon: kalan dakika yukari yuvarlanir (90 sn → 2)")
+    esitMi(OtomasyonKarari.siradakiVakit(widget.vakitler, simdiMs: ogle.ms - 59_000)?.kalanDk ?? -1, 1, "otomasyon: 59 sn kala 1 dk (0 degil)")
+    // Cizelge bittikten sonra siradaki yok → nil (uygulama acilmali).
+    esitMi(OtomasyonKarari.siradakiVakit(widget.vakitler, simdiMs: (sirali.last?.ms ?? 0) + 1) == nil, true, "otomasyon: cizelge sonunda nil")
+    // Kilindi mi: ogle icinde kilinmamis false, kayitta true, kuyrukta true.
+    let icinde = ogle.ms + 60_000
+    esitMi(OtomasyonKarari.simdikiVakitKilindiMi(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [], simdiMs: icinde), false, "otomasyon: kilinmamis vakit false")
+    esitMi(OtomasyonKarari.simdikiVakitKilindiMi(vakitler: widget.vakitler, kilinanlar: [ogle.tarih: ["ogle"]], bekleyenler: [], simdiMs: icinde), true, "otomasyon: kayitta true")
+    esitMi(OtomasyonKarari.simdikiVakitKilindiMi(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [SiriBekleyenKildim(tarih: ogle.tarih, vakit: "ogle")], simdiMs: icinde), true, "otomasyon: kuyrukta true")
+    // Ilk vakitten once kilinacak vakit yok → nil.
+    esitMi(OtomasyonKarari.simdikiVakitKilindiMi(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [], simdiMs: (sirali.first?.ms ?? 0) - 1) == nil, true, "otomasyon: vakit yokken nil")
+} else {
+    hatalar.append("widget fiksturunde ogle yok (otomasyon)")
+}
+
 // MARK: - Sonuc
 
 if hatalar.isEmpty {
