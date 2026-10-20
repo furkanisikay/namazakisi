@@ -5,6 +5,22 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.55.0] - 2026-10-20
+
+### Eklendi
+- [ios] widget, Apple Watch ve iCloud eşitlemesi açıldı
+- [saat] ana ekranda kılınan vakit noktası bir kez dolar, kısayollar simgeli
+- [saat] kıble pusulası yumuşak dönüyor ve yönü bakışta söylüyor
+- [saat] Now Bar ve sürekli etkinlik simgeleri tek başına anlam taşıyor
+
+### Düzeltildi
+- [saat] Kâbe küpü dolu antrasit gövdeli; tesbihat bitişi kare ekranda halkaya binmiyor
+- [saat] kıble ve Bugün tile görsel incelemesi; tesbihat bitiş karesi
+- [saat] tesbihat açılışta rakam vurmaz; ses açıklaması sesli adım şartını söyler
+- [saat] saat anonsu motoru görebiliyor, konuşamayınca nedenini söylüyor
+- [saat] tesbihat yazıları yuvarlak/kare ekranda ve büyük yazıda taşmıyor
+- [saat] taç ters yöne çevrilince sayım geri alınır
+
 ## [0.54.0] - 2026-10-20
 
 ### Eklendi
