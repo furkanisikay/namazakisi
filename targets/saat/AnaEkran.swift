@@ -63,11 +63,14 @@ struct AnaEkran: View {
                 icerik(simdi: baglam.date, yenileme: baglanti.yenileme)
             }
             .navigationTitle("Namaz Akışı")
-            .navigationDestination(isPresented: $tesbihatAcik) {
-                TesbihatEkrani()
-            }
-            .navigationDestination(isPresented: $kibleAcik) {
-                KibleEkrani(konum: SaatDeposu.varsayilan.yuk()?.konum)
+            // TEK `navigationDestination(isPresented:)`: ayni gorunume iki tane baglamak
+            // simulatorde acilisi kilitledi (kible karesi acilis ekraninda kaldi).
+            .navigationDestination(isPresented: acilisSayfasi) {
+                if kibleAcik {
+                    KibleEkrani(konum: SaatDeposu.varsayilan.yuk()?.konum)
+                } else {
+                    TesbihatEkrani()
+                }
             }
         }
         .fullScreenCover(isPresented: uyandirmaAcik) {
@@ -91,6 +94,19 @@ struct AnaEkran: View {
             // watchOS: akilli alarm oturumu YALNIZ etkin uygulamada kurulabilir.
             uyandirici.kur()
         }
+    }
+
+    /// Yalniz simulator kare cekimi (tesbihat / kible dogrudan acilir).
+    private var acilisSayfasi: Binding<Bool> {
+        Binding(
+            get: { tesbihatAcik || kibleAcik },
+            set: { acik in
+                if !acik {
+                    tesbihatAcik = false
+                    kibleAcik = false
+                }
+            }
+        )
     }
 
     private var uyandirmaAcik: Binding<Bool> {

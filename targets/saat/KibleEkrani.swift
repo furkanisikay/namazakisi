@@ -30,8 +30,11 @@ final class SaatPusulasi: NSObject, ObservableObject, CLLocationManagerDelegate 
 
     func baslat() {
         if let sabit = SaatSimulatorTohumu.kibleYonu {
-            yon = sabit
-            gercekKuzey = true
+            // Gorunum guncellemesi icinde yayin yapma: bir sonraki turda yaz.
+            DispatchQueue.main.async {
+                self.yon = sabit
+                self.gercekKuzey = true
+            }
             return
         }
         guard CLLocationManager.headingAvailable() else { return }
