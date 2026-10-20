@@ -252,6 +252,7 @@ fun SureGosterimi(
     saniyeRengi: Color,
     rakamStili: TextStyle = RAKAM,
     rakamAgirligi: FontWeight = FontWeight.SemiBold,
+    birimAgirligi: FontWeight = FontWeight.Normal,
 ) {
     val rakamBoyu = sabitBoyut(if (sayac.haneSayisi(saniyeGoster) >= 4) 0.165f else 0.20f)
     val birimBoyu = sabitBoyut(0.072f)
@@ -269,6 +270,7 @@ fun SureGosterimi(
             Text(
                 p.birim,
                 fontSize = birimBoyu,
+                fontWeight = birimAgirligi,
                 color = if (p.saniye) saniyeRengi else birimRengi,
                 maxLines = 1,
                 modifier = Modifier.padding(start = 2.dp, bottom = if (p.saniye) 3.dp else 6.dp),

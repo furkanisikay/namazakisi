@@ -90,6 +90,7 @@ fun AnaAmbientEkrani(g: AnaEkranKarari.Gorunum?, bilgi: String, ambient: Ambient
                         saniyeRengi = ikincil,
                         rakamStili = RAKAM.copy(drawStyle = Stroke(width = 2f)),
                         rakamAgirligi = FontWeight.Medium,
+                        birimAgirligi = FontWeight.Light,
                     )
                     Text(
                         g.altYazi,
