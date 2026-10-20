@@ -32,7 +32,7 @@ on:
         required: false
         default: ''
       kare_run_id:
-        description: 'Görseller için android-ekran-goruntuleri çalışma kimliği (boş = yalnız metin)'
+        description: 'Görseller için android-ekran-goruntuleri çalışma kimliği (tur=ikisi önerilir; boş = yalnız metin)'
         required: false
         default: ''
       cihaz_run_id:
@@ -135,11 +135,15 @@ jobs:
         run: |
           set -eo pipefail
           if [ "${{ inputs.mod }}" = "yaz" ] && [ -n "${{ inputs.kare_run_id }}" ]; then
+            # yaz mevcut telefon karelerini SILER: eksik set (ozellik/saat kareleri
+            # indirilmedi) magazadaki tam seti sessizce kucultmesin.
+            ADET=$(ls pazarlama/play-telefon/*.png 2>/dev/null | grep -v one-cikan | wc -l)
+            [ "$ADET" -ge 8 ] || { echo "::error::Yalniz $ADET telefon gorseli var (8 gerekir). kare_run_id = tur=ikisi kosusu, cihaz_run_id = tur=cihazlar kosusu verin."; exit 1; }
             node scripts/play-magaza.js yaz --gorseller pazarlama/play-telefon --tablet pazarlama/play-tablet
           elif [ "${{ inputs.mod }}" = "cihaz-kareleri" ]; then
             # Saat: Play kare (1:1) ister → yuvarlak profil; TV: 16:9 kareler.
             mkdir -p saat tv
-            [ -d indirilen-saat ] && find indirilen-saat -path '*yuvarlak*' -name '[0-9][0-9]-*.png' -exec cp {} saat/ \;
+            [ -d indirilen-saat ] && find indirilen-saat -path '*yuvarlak*' -name '[0-9][0-9]-*.png' -not -path '*pazarlama*' -exec cp {} saat/ \;
             if [ "${{ inputs.tv_pazarlama }}" = "true" ] && ls pazarlama/tv/*.png >/dev/null 2>&1; then
               cp pazarlama/tv/*.png tv/
             elif [ -d indirilen-tv ]; then

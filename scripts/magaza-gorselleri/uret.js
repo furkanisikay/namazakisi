@@ -47,10 +47,16 @@ function pngleriTara(kokler) {
     return liste;
 }
 
-/** Aday siralamasi: acik tema > koyu; sonra en yeni. */
-function adayPuani(a) {
+/**
+ * Aday siralamasi: Android telefonda magaza turunun 1080x1920 karesi (Play orani) >
+ * ozellik turunun 1080x2400'u; sonra acik tema > koyu; en son en yeni dosya. CI'da
+ * artifact indirme mtime'i indirme anina cektigi icin mtime TEK BASINA belirleyici
+ * olmamali — yoksa ayni gorsel kosudan kosuya farkli kareyle uretilirdi.
+ */
+function adayPuani(a, cihaz) {
     const yol = a.yol.toLowerCase();
-    return (yol.includes('koyu') ? 0 : 2) + (yol.includes('acik') ? 1 : 0);
+    const magazaOrani = cihaz === 'androidTelefon' && a.boyut.yuk === 1920 ? 4 : 0;
+    return magazaOrani + (yol.includes('koyu') ? 0 : 2) + (yol.includes('acik') ? 1 : 0);
 }
 
 function kareBul(dizin, cihaz, adlar) {
@@ -59,7 +65,7 @@ function kareBul(dizin, cihaz, adlar) {
     for (const ad of adlar) {
         const adaylar = dizin.filter((p) => p.ad === ad && uygun(p.boyut.gen, p.boyut.yuk));
         if (adaylar.length) {
-            adaylar.sort((x, y) => adayPuani(y) - adayPuani(x) || y.mtime - x.mtime);
+            adaylar.sort((x, y) => adayPuani(y, cihaz) - adayPuani(x, cihaz) || y.mtime - x.mtime);
             const s = adaylar[0];
             return { cihaz, yol: s.yol, url: dosyaUrl(s.yol), boyut: s.boyut };
         }

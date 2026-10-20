@@ -64,7 +64,7 @@ on:
         required: false
         default: ''
       asc_kare_run_id:
-        description: 'ekran-yukle için mağaza karelerini üreten iOS Ekran Görüntüleri çalışma kimliği'
+        description: 'ekran-yukle için mağaza karelerini üreten iOS Ekran Görüntüleri çalışma kimliği (tur=ikisi; pazarlama seti en az 8 görsel ister)'
         required: false
         default: ''
       asc_saat_run_id:
@@ -322,6 +322,10 @@ jobs:
           # Pazarlama seti varsa o, yoksa magaza mockup'lari (ust duzeydeki .png'ler).
           KLASOR=mockup
           ls pazarlama/iphone/*.png >/dev/null 2>&1 && KLASOR=pazarlama/iphone
+          # --degistir mevcut seti SILER: eksik bir set (tur=magaza: ozellik kareleri
+          # yok) magazadaki tam seti sessizce kucultmesin.
+          ADET=$(ls "$KLASOR"/*.png 2>/dev/null | wc -l)
+          [ "$ADET" -ge 8 ] || { echo "::error::Yalniz $ADET gorsel var (en az 8). tur=ikisi ile kosun."; exit 1; }
           node scripts/app-store-ekran-goruntuleri.js "$KLASOR" --degistir
 
   # --- APPLE WATCH TURU (issue #285) — iPhone isinden BAGIMSIZ, yalniz `tur: saat` ---
@@ -478,6 +482,8 @@ jobs:
             # Pazarlama seti (kosuda uretildiyse) once; yoksa magaza mockup'lari.
             KLASOR=indirilen/mockup
             ls indirilen-pazarlama/iphone/*.png >/dev/null 2>&1 && KLASOR=indirilen-pazarlama/iphone
+            ADET=$(ls "$KLASOR"/*.png 2>/dev/null | wc -l)
+            [ "$ADET" -ge 8 ] || { echo "::error::Yalniz $ADET gorsel var (en az 8). Kareleri tur=ikisi ile ceken kosuyu verin."; exit 1; }
             node scripts/app-store-ekran-goruntuleri.js "$KLASOR" --degistir
             # Apple Watch kareleri (Ultra 3 simülatörü 422x514 = APP_WATCH_ULTRA).
             if [ -d indirilen-saat ]; then

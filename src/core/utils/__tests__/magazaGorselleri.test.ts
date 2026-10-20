@@ -234,6 +234,16 @@ describe('magaza pazarlama gorselleri — ham kare secimi', () => {
         expect(kareBul(dizin, 'androidTelefon', ['01-ana-ekran.png']).yol).toContain('telefon-acik');
     });
 
+    it('Android telefonda magaza karesini (1080x1920) ozellik karesine (1080x2400) tercih eder', () => {
+        // CI'da indirme mtime'i rastgeledir: tercih mtime'a kalsaydi gorsel kosudan kosuya degisirdi.
+        const ek = path.join(kok, 'magaza/01-ana-ekran.png');
+        sahtePng(ek, 1080, 1920);
+        fs.utimesSync(ek, new Date(2000, 0, 1), new Date(2000, 0, 1));
+        const dizin = pngleriTara([kok]);
+        expect(kareBul(dizin, 'androidTelefon', ['01-ana-ekran.png']).boyut).toEqual({ gen: 1080, yuk: 1920 });
+        fs.rmSync(ek);
+    });
+
     it('onceki uretimin mockup/pazarlama ciktisini ham kare saymaz', () => {
         const dizin = pngleriTara([kok]);
         expect(kareBul(dizin, 'androidTelefon', ['02-muhafiz-zaman-seridi.png'])).toBeNull();
