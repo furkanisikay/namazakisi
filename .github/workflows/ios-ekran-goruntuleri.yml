@@ -433,7 +433,7 @@ jobs:
       - name: 📸 Kareleri çek
         env:
           SAAT_APP: ${{ steps.saat_derleme.outputs.app }}
-        run: bash scripts/simulator-saat-cek.sh kareler-saat "$SAAT_APP"
+        run: bash scripts/simulator-saat-cek.sh kareler-saat "$SAAT_APP" videolar-saat
 
       - name: ⬆️ Saat karelerini yükle
         if: ${{ always() }}
@@ -441,6 +441,16 @@ jobs:
         with:
           name: ios-saat-kareleri
           path: kareler-saat/
+          retention-days: 14
+          if-no-files-found: warn
+
+      # Animasyon kayitlari (simctl recordVideo) AYRI artifact: ASC kare yuklemesi bunlari gormesin.
+      - name: ⬆️ Saat animasyon videolarını yükle
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-saat-videolari
+          path: videolar-saat/
           retention-days: 14
           if-no-files-found: warn
 

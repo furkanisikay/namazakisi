@@ -184,6 +184,32 @@ for k in $KARELER; do
   rm -f "$HAM" "$CIKTI/$AD.jpg"
 done
 
+# --- Animasyon videolari (istege bagli 3. arguman: video dizini) -------------------
+# Hareket yalniz olayla baslar (uyandirma ekrani acilinca ikon BIR KEZ seker) → acilisi
+# kaydetmek animasyonu gosterir. Videolar ayri dizindedir: ASC'ye kare olarak gitmesin.
+VIDEO="${3:-}"
+if [ -n "$VIDEO" ]; then
+  mkdir -p "$VIDEO"
+  for v in "uyandirma-acilisi:uyandirma" "kible-acilisi:kible" "ana-acilisi:ana"; do
+    IFS=: read -r AD EKRAN <<<"$v"
+    xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
+    sleep 1
+    xcrun simctl io "$SAAT" recordVideo --codec=h264 --force "$VIDEO/$AD.mp4" >/dev/null 2>&1 &
+    KAYIT=$!
+    sleep 2
+    SIMCTL_CHILD_TZ="$TZ_ADI" \
+      SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="122" \
+      xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1 || echo "UYARI: $AD videosu için uygulama başlatılamadı"
+    sleep 7
+    kill -INT "$KAYIT" 2>/dev/null || true
+    wait "$KAYIT" 2>/dev/null || true
+    if [ -s "$VIDEO/$AD.mp4" ]; then echo "video: $AD.mp4 ($(du -h "$VIDEO/$AD.mp4" | cut -f1))"; else echo "UYARI: $AD videosu yok"; fi
+  done
+fi
+
 # --- Ozet -------------------------------------------------------------------------
 {
   echo "### ⌚ Apple Watch kareleri"

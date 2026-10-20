@@ -444,6 +444,11 @@ if argumanlar.count >= 3, let kibleMetni = try? String(contentsOfFile: argumanla
             continue
         }
         let aci = Kible.aci(enlem: lat, boylam: lng)
+        // Kabe'nin kendisi dejeneredir (atan2(0, 0)): yalniz "sonlu ve [0,360)" aranir (Wear `KibleTest` ile ayni).
+        if (o["ad"] as? String) == "Kâbe" {
+            if !(aci.isFinite && aci >= 0 && aci < 360) { hatalar.append("kible Kâbe dejenere degil: \(aci)") } else { gecen += 1 }
+            continue
+        }
         if abs(aci - beklenen) <= 1e-9 { gecen += 1 } else { hatalar.append("kible \(o["ad"] ?? "?"): \(aci) != \(beklenen)") }
         if !(aci >= 0 && aci < 360) { hatalar.append("kible [0,360) disinda: \(aci)") }
     }
