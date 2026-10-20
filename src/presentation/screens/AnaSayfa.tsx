@@ -24,6 +24,8 @@ import { SadeGorunum } from '../components/sade/SadeGorunum';
 import { GunSayfasiDuzeni } from '../components/home/GunSayfasiDuzeni';
 import { MasaustuGeriSayim } from '../components/home/MasaustuGeriSayim';
 import { SeferilikBilgiKarti, useSeferilikKartiGorunur } from '../components/home/SeferilikBilgiKarti';
+import { useKurulumOnarimi } from '../hooks/useKurulumOnarimi';
+import { ONARIM_METINLERI } from '../../core/anaEkran/kurulumOnarimi';
 import { DurumAlani, DurumSeridi, type DurumAlaniOgesi } from '../components/home/DurumAlani';
 import { durumlariBirlestir } from '../../core/anaEkran/durumAlani';
 import { kerahatMetniSec, type KerahatTuru } from '../../core/anaEkran/kerahatNotu';
@@ -96,6 +98,9 @@ export const AnaSayfa: React.FC = () => {
   // Seferîlik kartı (issue #296) tek durum alanında yalnız "kazanan" uyarıyken çizilir;
   // diskteki konumu işleme (ilk ikamet / eve dönüş) bu kancada KOŞULSUZ sürer.
   const seferilikGorunur = useSeferilikKartiGorunur();
+  // Proaktif onarım (bildirim / tam zamanlı alarm izni sonradan kapatıldıysa): ayarlara hiç
+  // bakmayan kullanıcı da görsün diye ana ekrandaki tek durum alanında.
+  const onarim = useKurulumOnarimi();
 
   // Stabil callbackler (gereksiz re-render önlemek için)
   const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
@@ -752,6 +757,42 @@ export const AnaSayfa: React.FC = () => {
                   <Text style={{ fontSize: 13, lineHeight: 18, color: renkler.metin }}>{`Kerahat vakti: ${kerahatMetni}`}</Text>
                 </View>
               ) : undefined
+            }
+          />
+        ),
+      });
+    }
+    if (onarim.sorun) {
+      const m = ONARIM_METINLERI[onarim.sorun];
+      ogeler.push({
+        anahtar: 'kurulum',
+        ozet: 'izin kapalı',
+        dugum: (
+          <DurumSeridi
+            testID="durum-kurulum"
+            ikon={onarim.sorun === 'bildirimIzni' ? 'bell-slash' : 'clock'}
+            renk={renkler.hata}
+            baslik={m.baslik}
+            metin={m.metin}
+            alt={
+              <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <TouchableOpacity
+                  testID="durum-kurulum-onar"
+                  onPress={onarim.onar}
+                  accessibilityRole="button"
+                  style={{ minHeight: 44, paddingHorizontal: 16, borderRadius: 12, backgroundColor: renkler.birincil, justifyContent: 'center', marginRight: 10 }}
+                >
+                  <Text style={{ color: '#FFFFFF', fontWeight: '700', fontSize: 14 }}>{m.eylem}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  testID="durum-kurulum-ertele"
+                  onPress={onarim.ertele}
+                  accessibilityRole="button"
+                  style={{ minHeight: 44, paddingHorizontal: 12, justifyContent: 'center' }}
+                >
+                  <Text style={{ color: renkler.metinIkincil, fontSize: 14 }}>Şimdi değil</Text>
+                </TouchableOpacity>
+              </View>
             }
           />
         ),

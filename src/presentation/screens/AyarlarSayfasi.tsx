@@ -84,6 +84,7 @@ const VAKIT_SAYFALARI: readonly AyarlarEkranAdi[] = [
 const CIHAZ_SAYFALARI: readonly AyarlarEkranAdi[] = [
   'SaatVeWidgetAyarlari',
   'SaatAyarlari',
+  'TelevizyonAyarlari',
   'NowBarAyarlari',
   'OtomasyonRehberi',
   'KildimUygulamalari',

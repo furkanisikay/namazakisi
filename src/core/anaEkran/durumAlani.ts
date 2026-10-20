@@ -6,15 +6,18 @@
  * (şu anki vakit + Kıldım) değil uyarılardı. Artık aynı anda yalnız EN ÖNEMLİ olan
  * görünür, diğerleri "+N daha" işaretinin arkasında bekler.
  *
- * Öncelik (sahip onaylı plan): kerahat > muhafız > toparlanma > seferîlik. Muhafız ile
+ * Öncelik (sahip onaylı plan): kerahat > muhafız > toparlanma > seferîlik. `kurulum`
+ * (bildirim / tam zamanlı hatırlatma izni sonradan kapatılmış — proaktif onarım) muhafızın
+ * hemen ardındadır: o an kerahat/muhafız zamana bağlıdır, izin onarımı birkaç dakika bekleyebilir;
+ * ama toparlanma ve yolculuk bilgisinden önemlidir (izin yoksa HİÇBİR hatırlatma gelmez). Muhafız ile
  * kerahat birlikteyse TEK kartta birleşir (`durumlariBirlestir`), muhafız önde.
  * Sade görünüme dönüş bir UYARI değil kalıcı gezinme bağlantısıdır → alana girmez
  * (başlığın altında küçük bağlantı; "+N daha" arkasında kaybolmasın).
  */
 
-export type DurumAnahtari = 'kerahat' | 'muhafiz' | 'toparlanma' | 'seferilik';
+export type DurumAnahtari = 'kerahat' | 'muhafiz' | 'kurulum' | 'toparlanma' | 'seferilik';
 
-export const DURUM_ONCELIGI: readonly DurumAnahtari[] = ['kerahat', 'muhafiz', 'toparlanma', 'seferilik'];
+export const DURUM_ONCELIGI: readonly DurumAnahtari[] = ['kerahat', 'muhafiz', 'kurulum', 'toparlanma', 'seferilik'];
 
 export interface DurumSecimi {
     /** Görünen tek uyarı (yoksa `null` → alan hiç çizilmez). */
