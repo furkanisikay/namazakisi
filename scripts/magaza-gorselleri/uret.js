@@ -127,7 +127,8 @@ function uret(secenek) {
     if (enEski !== null && Number.isNaN(enEski)) throw new Error('--en-eski gecersiz tarih');
     const kapi = { enEski, tarihsiz };
     const uyarilanlar = new Set();
-    const setAdlari = secenek.set || Object.keys(SETLER);
+    // Kosullu set (gelecek cihaz) yalniz acikca istenirse ya da kosulu verilirse.
+    const setAdlari = secenek.set || Object.keys(SETLER).filter((a) => !SETLER[a].kosul || kosul.includes(SETLER[a].kosul));
     if (duz && setAdlari.length !== 1) throw new Error('--duz yalniz tek setle kullanilir');
     const dizin = pngleriTara(kaynak);
     const tarayici = tarayiciBul();

@@ -72,7 +72,8 @@ describe('magaza pazarlama gorselleri — boyutlar', () => {
     });
 
     it('magazanin kare sinirlari: Play telefon <= 8 yuklenen, App Store <= 10', () => {
-        const yuklenen = (s: Set) => s.kareler.filter((k) => !k.magazaDisi);
+        // Kosullu (gelecek ozellik) kareler acilinca galeri yeniden secilir.
+        const yuklenen = (s: Set) => s.kareler.filter((k) => !k.magazaDisi && !k.kosul);
         expect(yuklenen(SETLER['play-telefon']).length).toBeLessThanOrEqual(8);
         expect(yuklenen(SETLER['play-tablet']).length).toBeLessThanOrEqual(8);
         expect(yuklenen(SETLER.iphone).length).toBeLessThanOrEqual(10);
@@ -102,12 +103,17 @@ describe('magaza pazarlama gorselleri — DOGRULUK (platform suzgeci)', () => {
 
     it('App Store metinlerinde Android-ozel sozcuk YOK', () => {
         const yasak = /camiye gir|camide telefon|rahatsız etmeyin|wear os|android|drive|televizyon|tablet|eşitle|widget|otomasyon/i;
-        for (const [, s] of appStore) for (const k of s.kareler) for (const m of metinleri(k)) expect(m).not.toMatch(yasak);
+        // Kosullu kareler (iOS camideyim, iCloud esitleme) ozellik iOS'a gelince acilir.
+        for (const [, s] of appStore) for (const k of s.kareler.filter((x) => !x.kosul)) for (const m of metinleri(k)) expect(m).not.toMatch(yasak);
     });
 
     it('Apple Watch yalniz GOSTERIR: hatirlatma/uyandirma/alarm vaadi yok', () => {
         const saatKareleri = appStore.flatMap(([, s]) =>
-            s.kareler.filter((k) => s.cihaz === 'appleWatch' || (k.katmanlar || []).some((c) => c.cihaz === 'appleWatch'))
+            s.kareler.filter(
+                (k) =>
+                    k.kosul !== 'appleWatchUyandirma' &&
+                    (s.cihaz === 'appleWatch' || (k.katmanlar || []).some((c) => c.cihaz === 'appleWatch'))
+            )
         );
         expect(saatKareleri.length).toBeGreaterThan(0);
         for (const k of saatKareleri) {
@@ -121,7 +127,7 @@ describe('magaza pazarlama gorselleri — DOGRULUK (platform suzgeci)', () => {
         const saat = app.expo.plugins.find((p: unknown) => Array.isArray(p) && p[0] === './plugins/withNamazSaat');
         const saatKaresi = SETLER.iphone.kareler.filter((k: Kare) => (k.katmanlar || []).some((c) => c.cihaz === 'appleWatch'));
         if (!saat || saat[1].etkin !== true) {
-            saatKaresi.forEach((k: Kare) => expect(k.kosul).toBe('appleWatchYayinda'));
+            saatKaresi.forEach((k: Kare) => expect(['appleWatchYayinda', 'appleWatchUyandirma']).toContain(k.kosul));
             expect(SETLER['apple-watch'].yukleme).toBe(false);
         }
     });
@@ -129,6 +135,13 @@ describe('magaza pazarlama gorselleri — DOGRULUK (platform suzgeci)', () => {
     it('iOS gercek alarm vaadi iOS 26 dipnotunu tasir', () => {
         const sabah = SETLER.iphone.kareler.find((k: Kare) => k.iddialar.includes('alarm'));
         expect(sabah.dipnot).toMatch(/iOS 26/);
+    });
+
+    it('gelecek ozellikler varsayilan KAPALI (kosul olmadan uretilmez)', () => {
+        for (const ad of ['ipad', 'apple-tv', 'android-auto']) expect(SETLER[ad].kosul).toBeTruthy();
+        const kosullu = SETLER.iphone.kareler.filter((k: Kare) => /camide|uyandirma|esitleme/.test(k.ad));
+        expect(kosullu.length).toBe(3);
+        kosullu.forEach((k: Kare) => expect(k.kosul).toBeTruthy());
     });
 
     it('Play Wear OS seti magazaya yuklenmez (cerceve/metin yasak)', () => {

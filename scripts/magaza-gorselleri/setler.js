@@ -26,6 +26,11 @@ const CIHAZ_TURLERI = {
     tv: (g, y) => g === 1920 && y === 1080,
     wearYuvarlak: (g, y) => g === y && g === 454,
     wearKare: (g, y) => g === y && g === 384,
+    // GELECEK cihazlar (setleri kosullu). Apple TV / Android Auto olculeri Android TV ile
+    // cakisabilir: ham kareyi ayri klasorden verin.
+    ipad: (g, y) => g === 2064 && y === 2752,
+    appleTv: (g, y) => g === 1920 && y === 1080,
+    androidAuto: (g, y) => g > y && g >= 800 && !(g === 1920 && y === 1080),
     appleWatch: (g, y) =>
         [
             [422, 514],
@@ -193,6 +198,41 @@ const SETLER = {
                 ],
                 iddialar: ['apple-watch-gosterim'],
             }),
+            // --- GELECEK OZELLIKLER (varsayilan KAPALI; `--kosul` ile acilir) ---
+            // Ozellik master'a girip kodda DOGRULANINCA kosul kaldirilir ve galeri 10
+            // kareye indirilir (App Store siniri; test yalniz kosulsuz kareleri sayar).
+            // Kaynak kare adlari TAHMINDIR: hat karesi gelince guncelleyin.
+            kare('11-camide', {
+                baslik: 'Camide iPhone\u2019unuz\nçalmaz',
+                alt: 'Camiye girdiğinizde sessize geçer, çıkınca eski hâline döner.',
+                zemin: 'acik',
+                vakit: 1,
+                kosul: 'iosCamideyim',
+                kaynak: ['25-camideyim-ayarlar.png', '23-camideyim.png'],
+                iddialar: ['ios-camideyim'],
+            }),
+            kare('12-saat-uyandirma', {
+                baslik: 'Bilekte sessiz\nuyandırma',
+                alt: 'Sabah alarmı Apple Watch\u2019unuzu titretir, yanınızdakini uyandırmaz.',
+                zemin: 'gece',
+                vakit: 0,
+                yerlesim: 'telefonSaat',
+                kosul: 'appleWatchUyandirma',
+                katmanlar: [
+                    { cihaz: 'iphone', kaynak: ['01-ana-ekran.png'] },
+                    { cihaz: 'appleWatch', kaynak: ['05-uyandirma.png', '01-ana.png'] },
+                ],
+                iddialar: ['apple-watch-uyandirma'],
+            }),
+            kare('13-esitleme', {
+                baslik: 'Cihazlarınız\nbirbirini görür',
+                alt: 'Kayıtlarınız iCloud üzerinden uçtan uca şifreli eşitlenir.',
+                zemin: 'acik',
+                vakit: 2,
+                kosul: 'icloudEsitleme',
+                kaynak: ['esitleme.png', '04-ayarlar.png'],
+                iddialar: ['icloud-esitleme'],
+            }),
         ],
     },
     'apple-watch': {
@@ -335,6 +375,16 @@ const SETLER = {
                 kaynak: ['02-il-secimi.png'],
                 iddialar: ['tv'],
             }),
+            // GELECEK: telefonla esleme (varsayilan KAPALI). Kare adi tahmin.
+            kare('03-eslestirme', {
+                baslik: 'Telefonunuzla\neşleştirin',
+                alt: 'Konum ve ayarlar telefondan bir dokunuşla gelir.',
+                zemin: 'gece',
+                vakit: 2,
+                kosul: 'tvEslestirme',
+                kaynak: ['04-eslestirme.png'],
+                iddialar: ['tv', 'tv-eslestirme'],
+            }),
         ],
     },
     wear: {
@@ -353,6 +403,44 @@ const SETLER = {
             kare('03-kible', { baslik: 'Kıble bileğinizde', zemin: 'gece', kaynak: ['08-kible.png'], iddialar: ['wear-kible'] }),
             kare('04-tesbihat', { baslik: 'Tesbihatı bilekte sayın', zemin: 'gece', kaynak: ['04-tesbihat.png'], iddialar: ['wear-gosterim'] }),
         ],
+    },
+    // --- GELECEK SETLER (set duzeyinde `kosul`; acilmadan HIC uretilmez) ---
+    // Boyutlar magaza sartindan; ham kare hatlari henuz yok. Acmadan once: hat karesi,
+    // CIHAZ_TURLERI ayrimi (Apple TV ile Android TV ayni 1920x1080 -> klasorle ayirin),
+    // yukleyici turu (ASC APP_IPAD_PRO_3GEN_129 / APP_APPLE_TV; Play Android Auto).
+    ipad: {
+        magaza: 'appstore',
+        platform: 'ios',
+        kosul: 'ipadDestegi',
+        boyut: { gen: 2064, yuk: 2752 },
+        yon: 'dikey',
+        cihaz: 'ipad',
+        yukleme: false,
+        yuklenmezNedeni: 'iPad desteği henüz yok (app.json supportsTablet: false).',
+        kareler: [],
+    },
+    'apple-tv': {
+        magaza: 'appstore',
+        platform: 'ios',
+        kosul: 'appleTv',
+        boyut: { gen: 1920, yuk: 1080 },
+        yon: 'yatay',
+        cihaz: 'appleTv',
+        yukleme: false,
+        yuklenmezNedeni: 'Apple TV uygulaması henüz yok.',
+        kareler: [],
+    },
+    'android-auto': {
+        magaza: 'play',
+        platform: 'android',
+        kosul: 'androidAuto',
+        // Play Android Auto karesi icin olcu DOGRULANMADI; acmadan once Play Console'dan bakin.
+        boyut: { gen: 1920, yuk: 1080 },
+        yon: 'yatay',
+        cihaz: 'androidAuto',
+        yukleme: false,
+        yuklenmezNedeni: 'Android Auto desteği henüz yok.',
+        kareler: [],
     },
 };
 
