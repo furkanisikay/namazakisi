@@ -65,7 +65,7 @@
       [
         "./plugins/withIcloudEsitleme",
         {
-          "etkin": false
+          "etkin": true
         }
       ],
       [
