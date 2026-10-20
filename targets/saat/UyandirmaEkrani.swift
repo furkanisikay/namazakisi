@@ -57,6 +57,11 @@ struct UyandirmaEkrani: View {
             }
             .padding(.horizontal, 2)
         }
+        // Tam ekran kapagin sistem "X"i uyandirmayi cevapsiz kapatirdi: kapatmanin tek yolu
+        // "Kapat" (telefonun yedegini de susturur). Zemin opak — alttaki liste parlamasin.
+        .background(Color.black.ignoresSafeArea())
+        .toolbar(.hidden, for: .navigationBar)
+        .interactiveDismissDisabled()
         .onAppear {
             if !hareketAzalt { seke += 1 }
         }
