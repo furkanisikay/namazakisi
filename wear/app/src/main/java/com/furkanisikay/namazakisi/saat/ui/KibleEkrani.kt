@@ -311,7 +311,7 @@ private fun Halka(
     val metin = renk(SaatPaleti.METIN)
     val eylem = renk(SaatPaleti.EYLEM)
     val altin = renk(SaatPaleti.KERAHAT)
-    val zemin = renk(SaatPaleti.ZEMIN)
+    val kabeGovde = renk(SaatPaleti.KABE)
     val olcucu = rememberTextMeasurer()
     val harfStili = TextStyle(fontSize = sabitBoyut(0.045f), fontWeight = FontWeight.SemiBold)
     val harfler = remember(harfStili) { YON_HARFLERI.map { olcucu.measure(it, harfStili) } }
@@ -408,7 +408,8 @@ private fun Halka(
         )
 
         if (hedefCizim != null) {
-            // Kâbe: siyah küp + kenar + kuşak; halkanın üzerinde, kıble açısında.
+            // Kâbe: antrasit dolu küp + ince açık kenar + dolu altın kuşak + küçük kapı;
+            // halkanın içinde, kıble açısında.
             val aci = Math.toRadians(hedefCizim)
             val vurguRengi = if (hizali) eylem else altin
             val kenar = 10.dp.toPx() * kabeOturma
@@ -417,11 +418,25 @@ private fun Halka(
             rotate(hedefCizim.toFloat(), yer) {
                 val sol = Offset(yer.x - kenar, yer.y - kenar)
                 val boyut = Size(kenar * 2, kenar * 2)
-                drawRect(zemin, topLeft = sol, size = boyut)
-                drawRect(vurguRengi, topLeft = sol, size = boyut, style = Stroke(2.dp.toPx()))
-                // Kuşak (kiswe şeridi): üst üçte birde.
-                val kusakY = yer.y - kenar * 0.35f
-                drawLine(vurguRengi, Offset(sol.x, kusakY), Offset(sol.x + kenar * 2, kusakY), strokeWidth = 3.dp.toPx())
+                drawRect(kabeGovde, topLeft = sol, size = boyut)
+                drawRect(
+                    if (hizali) eylem else metin.copy(alpha = 0.6f),
+                    topLeft = sol,
+                    size = boyut,
+                    style = Stroke(1.dp.toPx()),
+                )
+                // Kuşak (kiswe şeridi): üst üçte birde, DOLU bant.
+                drawRect(
+                    vurguRengi,
+                    topLeft = Offset(sol.x, yer.y - kenar * 0.52f),
+                    size = Size(kenar * 2, kenar * 0.32f),
+                )
+                // Kapı: alt kenarda, ortanın biraz sağında küçük altın dikdörtgen.
+                drawRect(
+                    vurguRengi,
+                    topLeft = Offset(yer.x + kenar * 0.12f, yer.y + kenar * 0.28f),
+                    size = Size(kenar * 0.42f, kenar * 0.72f),
+                )
             }
         }
     }

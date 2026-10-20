@@ -56,4 +56,12 @@ class SaatPaletiTest {
         assertEquals(SaatPaleti.METIN, SaatPaleti.vakitRengi("yok"))
         assertEquals(SaatPaleti.METIN, SaatPaleti.vakitRengi(null))
     }
+
+    @Test
+    fun kabeGovdesiZemindenAyrilirKusakUstundeBelirgin() {
+        // Gövde saf siyah olsaydı işaret boş çerçeveye benzerdi (görsel inceleme).
+        assertTrue(SaatPaleti.kontrast(SaatPaleti.KABE, SaatPaleti.ZEMIN) >= 1.3)
+        enAz(SaatPaleti.KERAHAT, SaatPaleti.KABE, 3.0, "altın kuşak")
+        enAz(SaatPaleti.EYLEM, SaatPaleti.KABE, 3.0, "hizada yeşil kuşak")
+    }
 }

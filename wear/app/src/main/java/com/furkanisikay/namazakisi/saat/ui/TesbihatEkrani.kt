@@ -42,7 +42,9 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.StrokeJoin
@@ -176,7 +178,7 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth(guvenliGenislikOrani()),
+        modifier = Modifier.fillMaxWidth(guvenliGenislikOrani(kareOran = HALKA_ICI_KARE_ORANI)),
     ) {
         if (durum.faz == Tesbihat.Faz.TEHLIL) {
             // Yüzü tamamlayan tek söz: rakam yerine metnin kendisi okunur. Boyu yazı ölçeğinden
@@ -249,12 +251,20 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
     }
     val yesil = renk(SaatPaleti.EYLEM)
     val ust = renk(SaatPaleti.EYLEM_USTU)
+    // Kare ekran (384 px ≈ 192 dp) küçüktür ve halka yine DAİREDİR: sabit 44 dp onay işareti
+    // + metin + 48 dp dokunma payılı düğme dairenin iç karesine sığmıyor, düğme alttaki
+    // yeşil yayın üstüne biniyordu. Onay işareti ekran genişliğiyle ölçeklenir ve sütun
+    // hafifçe yukarı alınır (alt yay, üstteki boşluktan daha geniştir).
+    val genislik = LocalConfiguration.current.screenWidthDp
+    val isaretBoyu = (genislik * 0.17f).coerceAtMost(44f).dp
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth(guvenliGenislikOrani()),
+        modifier = Modifier
+            .fillMaxWidth(guvenliGenislikOrani(kareOran = HALKA_ICI_KARE_ORANI))
+            .offset(y = -(genislik * 0.03f).dp),
     ) {
-        Canvas(Modifier.size(44.dp).clearAndSetSemantics { }) {
+        Canvas(Modifier.size(isaretBoyu).clearAndSetSemantics { }) {
             val h = halka.value
             // 0 ve 1'de çizilmez: halka yalnız sahne sürerken vardır (boşta sıfır çizim).
             if (h > 0f && h < 1f) {
@@ -275,7 +285,7 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
             olcu.getSegment(0f, olcu.length * tik.value, parca, true)
             drawPath(parca, ust, style = Stroke(width = 3.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round))
         }
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(2.dp))
         Text(
             "Tamamlandı",
             fontSize = sinirliBoyut(0.085f),
@@ -293,7 +303,7 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(2.dp))
         CompactButton(
             onClick = onYenidenBasla,
             colors = ButtonDefaults.buttonColors(containerColor = yesil, contentColor = ust),
@@ -304,6 +314,9 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
 }
 
 private const val VURUS_OLCEGI = 1.12f
+
+/** Halka ekran kare olsa da dairedir → kare ekranda da dairenin iç karesi (≈ %71) güvenli. */
+private const val HALKA_ICI_KARE_ORANI = 0.70f
 private const val BITIS_TIK_MS = 300
 private const val BITIS_HALKA_MS = 520
 

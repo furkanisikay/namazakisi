@@ -38,6 +38,13 @@ object SaatPaleti {
     /** Kerahat bandı ve kerahat uyarı satırı */
     const val KERAHAT = 0xFFFFCA28L
 
+    /**
+     * Kıble pusulasındaki Kâbe küpünün GÖVDESİ (dekoratif, metin değil). Saf siyah olsaydı
+     * siyah zeminde yalnız altın kontur kalır, işaret boş bir çerçeveye benzerdi; antrasit
+     * zeminden ayrılır, altın kuşak/kapı üstünde belirgin kalır (`SaatPaletiTest`).
+     */
+    const val KABE = 0xFF2B2B2BL
+
     // Ambient: renk yok, yalnız beyaz/gri tonları (düşük güç).
     const val AMBIENT_METIN = 0xFFE8E8E8L
     const val AMBIENT_IKINCIL = 0xFFBDBDBDL
