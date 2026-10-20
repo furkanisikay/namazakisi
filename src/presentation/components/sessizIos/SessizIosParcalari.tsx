@@ -55,18 +55,19 @@ export const OdakSemasi: React.FC = () => {
             className="p-5 items-center"
             style={{ backgroundColor: `${renkler.birincil}12`, borderRadius: 24 }}
         >
-            <View className="flex-row" style={{ gap: 10 }}>
-                <View className="items-center">
+            {/* Eşit genişlikli iki kolon: bağ çizgileri %25 ve %75'te durur, yatay bağ tam
+                onların arasında kalır (çip genişliğinden bağımsız). */}
+            <View className="flex-row" style={{ alignSelf: 'stretch' }}>
+                <View className="items-center" style={{ flex: 1 }}>
                     <Cip ikon="map-marker-alt" metin="Camiye varınca" renkler={renkler} />
                     <Bag renk={cizgi} />
                 </View>
-                <View className="items-center">
+                <View className="items-center" style={{ flex: 1 }}>
                     <Cip ikon="clock" metin="Vakit girince" renkler={renkler} />
                     <Bag renk={cizgi} />
                 </View>
             </View>
-            {/* İki kolun buluştuğu yatay bağ */}
-            <View style={{ width: '62%', height: 2, backgroundColor: cizgi, borderRadius: 1 }} />
+            <View style={{ width: '50%', height: 2, backgroundColor: cizgi, borderRadius: 1 }} />
             <Bag renk={cizgi} />
             {/* iPhone Denetim Merkezi'ndeki Odak düğmesinin sade karşılığı */}
             <View
