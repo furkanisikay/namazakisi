@@ -92,7 +92,8 @@ fun KodGirisEkrani(
     onGeri: () -> Unit,
 ) {
     BackHandler(onBack = onGeri)
-    val animasyon = remember { animasyonAcik(LocalContext.current.applicationContext) }
+    val baglam = LocalContext.current
+    val animasyon = remember { animasyonAcik(baglam.applicationContext) }
     val yogunluk = LocalDensity.current
 
     var haneler by remember { mutableStateOf("") }
