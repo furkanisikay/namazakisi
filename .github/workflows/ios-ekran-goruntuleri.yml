@@ -173,6 +173,13 @@ jobs:
           if [ "${{ inputs.tur }}" = "ipad" ]; then
             TERCIH="$HOME/Library/Developer/CoreSimulator/Devices/$UDID/data/Library/Preferences/.GlobalPreferences.plist"
             xcrun simctl shutdown "$UDID" || true
+            # iOS simulatoru dosyayi ilk acilista HER ZAMAN olusturmuyor (yasandi); cihazin
+            # veri dizini varsa PlistBuddy dosyayi kendisi olusturur. Veri dizinini elle
+            # kurmak cihazi bozar (saat hatti dersi) → yalniz dizin varken.
+            if [ ! -f "$TERCIH" ] && [ -d "$(dirname "$(dirname "$(dirname "$TERCIH")")")" ]; then
+              mkdir -p "$(dirname "$TERCIH")"
+              /usr/libexec/PlistBuddy -c "Add :AppleLocale string tr_TR" "$TERCIH" || true
+            fi
             if [ -f "$TERCIH" ]; then
               /usr/libexec/PlistBuddy -c "Delete :AppleLanguages" "$TERCIH" >/dev/null 2>&1 || true
               /usr/libexec/PlistBuddy -c "Add :AppleLanguages array" -c "Add :AppleLanguages:0 string tr-TR" "$TERCIH"
@@ -194,6 +201,10 @@ jobs:
         run: npx expo prebuild --platform ios --no-install
         env:
           EXPO_NO_TELEMETRY: '1'
+          # Derleme `-sdk iphonesimulator` ile: app.json'da saat bayragi acikken watchOS
+          # hedefi iOS SDK'siyla derlenip duserdi. Telefon/iPad karelerinde saat gerekmez
+          # (saat kareleri ayri `saat-kareler` isinde).
+          NAMAZ_IOS_SAAT: '0'
 
       - name: 🧩 CocoaPods
         working-directory: ios
