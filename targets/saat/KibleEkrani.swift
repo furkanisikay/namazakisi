@@ -51,10 +51,6 @@ final class SaatPusulasi: NSObject, ObservableObject, CLLocationManagerDelegate 
             self.yon = deger
         }
     }
-
-    func locationManagerShouldDisplayHeadingCalibration(_ manager: CLLocationManager) -> Bool {
-        return true
-    }
 }
 
 struct KibleEkrani: View {

@@ -6,7 +6,6 @@
  */
 import { wearYukuGecerliMi } from '../wearYuku';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { uret } = require('../../../../scripts/saat-tohum-yuku');
 
 describe('Apple Watch kare tohumu', () => {

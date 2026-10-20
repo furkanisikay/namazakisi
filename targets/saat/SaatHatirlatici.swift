@@ -70,7 +70,7 @@ final class SaatHatirlatici: NSObject, UNUserNotificationCenterDelegate, @unchec
         } else {
             secilen = []
         }
-        let istenen = Dictionary(uniqueKeysWithValues: secilen.map { ($0.id, $0) })
+        let istenen = Dictionary(secilen.map { ($0.id, $0) }, uniquingKeysWith: { ilk, _ in ilk })
         let bitti = DispatchSemaphore(value: 0)
         merkez.getPendingNotificationRequests { bekleyen in
             let bizim = bekleyen.filter { $0.identifier.hasPrefix(SaatHatirlatmaPlani.kimlikOneki) }
