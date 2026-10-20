@@ -170,7 +170,8 @@ jobs:
         working-directory: ios
         run: |
           set -eo pipefail
-          APP=$(find build -name '*.app' -maxdepth 6 -not -path '*.dSYM*' | head -1)
+          # Saat hedefi açıkken build/ altında NamazSaat.app (watchsimulator) da var → yalnız iPhone ürünü.
+          APP=$(find build -path '*-iphonesimulator/*' -name '*.app' -maxdepth 6 -not -path '*.dSYM*' -not -path '*/Watch/*' | head -1)
           [ -z "$APP" ] && { echo "Derleme .app üretmedi"; exit 1; }
           META="$APP/Metadata.appintents"
           [ -d "$META" ] || { echo "Metadata.appintents YOK — Siri/Kısayollar intent'leri göremez"; ls "$APP"; exit 1; }
