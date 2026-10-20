@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.54.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.56.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.54.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
+Kaynak koddaki sürüm: **0.56.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -213,6 +213,8 @@ Kaynak koddaki sürüm: **0.54.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/cihaz/wear-yuvarlak/05-tile-bugun.webp" width="150" alt="Tile bugün" title="Tile bugün">
   <img src="docs/ekran-goruntuleri/cihaz/wear-yuvarlak/06-tile-vakit.webp" width="150" alt="Tile vakit" title="Tile vakit">
   <img src="docs/ekran-goruntuleri/cihaz/wear-yuvarlak/07-ana-ambient.webp" width="150" alt="Ana ambient" title="Ana ambient">
+  <img src="docs/ekran-goruntuleri/cihaz/wear-yuvarlak/08-kible.webp" width="150" alt="Kıble" title="Kıble">
+  <img src="docs/ekran-goruntuleri/cihaz/wear-yuvarlak/09-tesbihat-tamam.webp" width="150" alt="Tesbihat tamam" title="Tesbihat tamam">
 </p>
 
 </details>
@@ -228,6 +230,20 @@ Kaynak koddaki sürüm: **0.54.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/cihaz/wear-kare/05-tile-bugun.webp" width="150" alt="Tile bugün" title="Tile bugün">
   <img src="docs/ekran-goruntuleri/cihaz/wear-kare/06-tile-vakit.webp" width="150" alt="Tile vakit" title="Tile vakit">
   <img src="docs/ekran-goruntuleri/cihaz/wear-kare/07-ana-ambient.webp" width="150" alt="Ana ambient" title="Ana ambient">
+  <img src="docs/ekran-goruntuleri/cihaz/wear-kare/08-kible.webp" width="150" alt="Kıble" title="Kıble">
+  <img src="docs/ekran-goruntuleri/cihaz/wear-kare/09-tesbihat-tamam.webp" width="150" alt="Tesbihat tamam" title="Tesbihat tamam">
+</p>
+
+</details>
+
+<details>
+<summary><b>Apple Watch</b></summary>
+
+<p>
+  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/01-ana.webp" width="150" alt="Ana" title="Ana">
+  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/02-vakitler.webp" width="150" alt="Vakitler" title="Vakitler">
+  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/03-kildim-onayi.webp" width="150" alt="Kıldım onayı" title="Kıldım onayı">
+  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/04-tesbihat.webp" width="150" alt="Tesbihat" title="Tesbihat">
 </p>
 
 </details>
@@ -255,8 +271,8 @@ Kareler mağazadaki listelerle (Google Play, App Store) ve uygulamanın ekran g�
 | 🍏 iPhone | [App Store](https://apps.apple.com/tr/app/id6813061360) · 0.41.1 |
 | ⌚ Wear OS saat | Google Play'de yayında (telefon uygulamasıyla birlikte) |
 | 📺 Android TV | Google Play |
-| ⌚ Apple Watch | Geliştiriliyor — henüz mağazada değil |
-| 🔒 iPhone kilit ekranı, widget ve Dinamik Ada | Geliştiriliyor — henüz mağazada değil |
+| ⌚ Apple Watch | App Store (iPhone uygulamasıyla birlikte) |
+| 🔒 iPhone kilit ekranı, widget ve Dinamik Ada | App Store |
 <!-- OTOMATIK:BITIR platformlar -->
 
 ---
@@ -288,12 +304,14 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 - **Yatmadan Önce Hatırlatma** — Her zamanki yatış saatinizi girin; yatsıyı işaretlemediyseniz uyumadan önce hatırlatalım, gün sonunda eksik vakitlerinizi tek bildirimde görün. <sub>Android · iOS · 0.37.0</sub>
 
 <details>
-<summary>Diğer 26 özellik</summary>
+<summary>Diğer 28 özellik</summary>
 
 - **Toplantı Vakte Denk Gelirse Haber Verelim** — Takviminizdeki bir etkinlik bir namaz vaktinin sonunu kaplıyorsa, etkinlik başlamadan önce "toplantıdan önce kılın" diye uyaralım. <sub>Android · iOS · 0.37.0</sub>
 - **Nafile Namaz Vakitleri** — Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, namaz hatırlatmasındaki gibi birden çok hatırlatma kurabilirsiniz. <sub>Android · iOS · 0.34.0</sub>
 - **Hatırlatmalarda Gerçek Alarm** — İstediğiniz hatırlatma adımında "Gerçek alarm"ı açın: o adımda telefonunuzun alarmı çalar, sessiz moddayken de duyulur. <sub>Android · iOS · 0.34.0</sub>
 - **Kaza Defteri Her Hareketi Hatırlıyor** — Eklediğiniz, kıldığınız ve bildirimden gelen her kaza ayrı bir satır olarak saklanır; yeniden hesapladığınızda emeğiniz kaybolmaz. İsterseniz kılınmayan farzlar namaz günü bitince kendiliğinden eklenir. <sub>Android · iOS · 0.33.0</sub>
+- **Namaz Akışı Apple Watch'ta** — İçinde bulunulan vakti ve çıkışına kalan süreyi bileğinizden görebilir, namazınızı saatten "Kıldım" diyerek işaretleyebilirsiniz. <sub>iOS · 0.31.0</sub>
+- **iPhone'da Kilit Ekranı ve Dinamik Ada** — Vakti ve çıkışına kalan süreyi kilit ekranına, StandBy'a ve ana ekrana widget olarak ekleyebilirsiniz; vakit çıkarken geri sayım Dinamik Ada'da görünür. <sub>iOS · 0.31.0</sub>
 - **Yolculukta Bilgi Kartı** — İkamet yerinizden yaklaşık 90 km uzaklaştığınızda ana ekranda, Diyanet'in yolculuk (seferîlik) fetvalarını mezhebinize göre özetleyen kısa bir bilgi kartı görürsünüz. <sub>Android · iOS · 0.31.0</sub>
 - **Bilekliğinizde Tek Bakışta Okunur** — Hatırlatma başlıkları vakit adı ve kalan süreyle başlar: "Yatsı · 25 dk kaldı". Galaxy Fit, Mi Band gibi küçük ekranlarda bile önemli kısım görünür. <sub>Android · 0.31.0</sub>
 - **Sade Görünüm** — Ana ekranda yalnız şu anki vakit, kalan süre ve büyük bir "Kıldım" düğmesi: büyüklerimiz için tek bakışta anlaşılan, dokununca sesli okunan bir ekran. <sub>Android · iOS · 0.31.0</sub>

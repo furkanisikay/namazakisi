@@ -13,7 +13,7 @@ Gizlilik odaklı, tamamen çevrimdışı ibadet asistanı.
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.54.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
+Kaynak koddaki sürüm: **0.56.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## Ekran görüntüleri
@@ -80,12 +80,14 @@ Kaynak koddaki sürüm: **0.54.0** · Mağazada: Google Play: **0.45.0** · App 
 - **Yatmadan Önce Hatırlatma** — Her zamanki yatış saatinizi girin; yatsıyı işaretlemediyseniz uyumadan önce hatırlatalım, gün sonunda eksik vakitlerinizi tek bildirimde görün. <sub>Android · iOS · 0.37.0</sub>
 
 <details>
-<summary>Diğer 26 özellik</summary>
+<summary>Diğer 28 özellik</summary>
 
 - **Toplantı Vakte Denk Gelirse Haber Verelim** — Takviminizdeki bir etkinlik bir namaz vaktinin sonunu kaplıyorsa, etkinlik başlamadan önce "toplantıdan önce kılın" diye uyaralım. <sub>Android · iOS · 0.37.0</sub>
 - **Nafile Namaz Vakitleri** — Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, namaz hatırlatmasındaki gibi birden çok hatırlatma kurabilirsiniz. <sub>Android · iOS · 0.34.0</sub>
 - **Hatırlatmalarda Gerçek Alarm** — İstediğiniz hatırlatma adımında "Gerçek alarm"ı açın: o adımda telefonunuzun alarmı çalar, sessiz moddayken de duyulur. <sub>Android · iOS · 0.34.0</sub>
 - **Kaza Defteri Her Hareketi Hatırlıyor** — Eklediğiniz, kıldığınız ve bildirimden gelen her kaza ayrı bir satır olarak saklanır; yeniden hesapladığınızda emeğiniz kaybolmaz. İsterseniz kılınmayan farzlar namaz günü bitince kendiliğinden eklenir. <sub>Android · iOS · 0.33.0</sub>
+- **Namaz Akışı Apple Watch'ta** — İçinde bulunulan vakti ve çıkışına kalan süreyi bileğinizden görebilir, namazınızı saatten "Kıldım" diyerek işaretleyebilirsiniz. <sub>iOS · 0.31.0</sub>
+- **iPhone'da Kilit Ekranı ve Dinamik Ada** — Vakti ve çıkışına kalan süreyi kilit ekranına, StandBy'a ve ana ekrana widget olarak ekleyebilirsiniz; vakit çıkarken geri sayım Dinamik Ada'da görünür. <sub>iOS · 0.31.0</sub>
 - **Yolculukta Bilgi Kartı** — İkamet yerinizden yaklaşık 90 km uzaklaştığınızda ana ekranda, Diyanet'in yolculuk (seferîlik) fetvalarını mezhebinize göre özetleyen kısa bir bilgi kartı görürsünüz. <sub>Android · iOS · 0.31.0</sub>
 - **Bilekliğinizde Tek Bakışta Okunur** — Hatırlatma başlıkları vakit adı ve kalan süreyle başlar: "Yatsı · 25 dk kaldı". Galaxy Fit, Mi Band gibi küçük ekranlarda bile önemli kısım görünür. <sub>Android · 0.31.0</sub>
 - **Sade Görünüm** — Ana ekranda yalnız şu anki vakit, kalan süre ve büyük bir "Kıldım" düğmesi: büyüklerimiz için tek bakışta anlaşılan, dokununca sesli okunan bir ekran. <sub>Android · iOS · 0.31.0</sub>

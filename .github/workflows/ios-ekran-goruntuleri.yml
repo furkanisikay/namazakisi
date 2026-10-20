@@ -49,7 +49,7 @@ on:
           - saat
           - asc
       asc_islem:
-        description: 'tur=asc için: durum | surum-hazirla | ekran-yukle | build-bagla | incelemeye-gonder'
+        description: 'tur=asc için: durum | surum-hazirla | ekran-yukle | build-bagla | incelemeye-gonder | icloud-durum | icloud-ac (yalnız App ID iCloud yeteneği)'
         type: choice
         required: false
         default: 'durum'
@@ -59,6 +59,8 @@ on:
           - ekran-yukle
           - build-bagla
           - incelemeye-gonder
+          - icloud-durum
+          - icloud-ac
       asc_surum:
         description: 'tur=asc için sürüm (boş = app.json)'
         required: false
@@ -181,18 +183,20 @@ jobs:
           echo "workspace=$WS scheme=$SCHEME"
           # Release: JS paketi uygulamanin icine gomulur (Metro sunucusu gerekmez).
           # CODE_SIGNING_ALLOWED=NO: simulator build'i imza istemez.
+          # `-sdk iphonesimulator` VERILMEZ: Apple Watch hedefi (withNamazSaat etkin) varken
+          # tum hedeflerin SDKROOT'unu ezer, watchOS kodu iPhone SDK'siyla derlenip duser.
           xcodebuild \
             -workspace "$WS" \
             -scheme "$SCHEME" \
             -configuration Release \
-            -sdk iphonesimulator \
             -derivedDataPath build \
             -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
             CODE_SIGNING_ALLOWED=NO \
             -quiet
           # .app'i BURADA dogrula: eksikligini bir sonraki adimda fark etmek,
           # hatayi urettigi adimdan koparir.
-          APP=$(find build -name '*.app' -maxdepth 5 -not -path '*.dSYM*' | head -1)
+          # Saat hedefi açıkken build/ altında NamazSaat.app (watchsimulator) da var → yalnız iPhone ürünü.
+          APP=$(find build -path '*-iphonesimulator/*' -name '*.app' -maxdepth 5 -not -path '*.dSYM*' -not -path '*/Watch/*' | head -1)
           [ -z "$APP" ] && { echo "Derleme .app uretmedi"; find build -maxdepth 4 -name '*.app*' -print; exit 1; }
           echo "uretilen: $APP"
 
@@ -212,7 +216,7 @@ jobs:
         run: |
           set -eo pipefail
           UDID="${{ steps.sim.outputs.udid }}"
-          APP=$(find ios/build -name '*.app' -maxdepth 5 -not -path '*.dSYM*' | head -1)
+          APP=$(find ios/build -path '*-iphonesimulator/*' -name '*.app' -maxdepth 5 -not -path '*.dSYM*' -not -path '*/Watch/*' | head -1)
           [ -z "$APP" ] && { echo ".app bulunamadı"; exit 1; }
           echo "app: $APP"
           xcrun simctl install "$UDID" "$APP"
@@ -426,7 +430,10 @@ jobs:
           SURUM: ${{ inputs.asc_surum }}
         run: |
           set -eo pipefail
-          if [ "$ISLEM" = "ekran-yukle" ]; then
+          if [ "$ISLEM" = "icloud-durum" ] || [ "$ISLEM" = "icloud-ac" ]; then
+            # Yalniz ana App ID'nin ICLOUD yetenegi (scripts/asc-icloud.js).
+            node scripts/asc-icloud.js "${ISLEM#icloud-}"
+          elif [ "$ISLEM" = "ekran-yukle" ]; then
             # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
             node scripts/app-store-ekran-goruntuleri.js indirilen/mockup --degistir
             # Apple Watch kareleri (Ultra 3 simülatörü 422x514 = APP_WATCH_ULTRA).

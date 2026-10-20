@@ -40,6 +40,7 @@ import {
   NafileAyarlariSayfasi,
   NowBarAyarlariSayfasi,
   NamazdaSessizSayfasi,
+  NamazdaSessizIosSayfasi,
   SaatAyarlariSayfasi,
   KildimUygulamalariSayfasi,
   OtomasyonRehberiSayfasi,
@@ -147,8 +148,9 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   },
   // Camideyim + Namaz modu TEK sayfa ("Namazda sessiz"); iki eski rota da onu açar
   // (derin bağlantı `namazakisi://camideyim` ve saat W3 çalışmaya devam eder).
-  CamideyimAyarlari: { component: NamazdaSessizSayfasi, options: { title: 'Namazda sessiz' } },
-  NamazModuAyarlari: { component: NamazdaSessizSayfasi, options: { title: 'Namazda sessiz' } },
+  // iPhone'da Camideyim modülü yok; aynı rota Odak + Kısayollar kurulum rehberini açar.
+  CamideyimAyarlari: { component: Platform.OS === 'ios' ? NamazdaSessizIosSayfasi : NamazdaSessizSayfasi, options: { title: 'Namazda sessiz' } },
+  NamazModuAyarlari: { component: Platform.OS === 'ios' ? NamazdaSessizIosSayfasi : NamazdaSessizSayfasi, options: { title: 'Namazda sessiz' } },
   // Wear OS saati ile iş bölümü (saat W3) — listede yalnız Android'de görünür.
   SaatAyarlari: { component: SaatAyarlariSayfasi, options: { title: 'Akıllı saat' } },
   KildimUygulamalari: { component: KildimUygulamalariSayfasi, options: { title: 'Kıldım İşaretleyen Uygulamalar' } },

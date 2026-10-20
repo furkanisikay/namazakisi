@@ -62,6 +62,8 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
       'hutbe',
       'camilerim',
       'harita',
+      'odak',
+      'kısayollar',
     ],
     sayfa: 'CamideyimAyarlari',
     grup: 'Namaz',
