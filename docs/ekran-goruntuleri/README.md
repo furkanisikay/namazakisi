@@ -2,7 +2,7 @@
 
 <!-- Bu sayfa scripts/belgeleri-guncelle.js ile üretilir; elle düzenlemeyin (kaynak: scripts/belge-gorsel-gruplari.js + manifest.json). -->
 
-Güncel sürüm: **0.54.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**. Mağaza kareleri Google Play ve App Store'daki güncel listelerden, diğerleri uygulamanın ekran görüntüsü hatlarından (yalnız ana dala girmiş sürümler) gelir.
+Güncel sürüm: **0.55.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**. Mağaza kareleri Google Play ve App Store'daki güncel listelerden, diğerleri uygulamanın ekran görüntüsü hatlarından (yalnız ana dala girmiş sürümler) gelir.
 
 ## Mağazalarda
 
@@ -91,14 +91,22 @@ Güncel sürüm: **0.54.0** · Mağazada: Google Play: **0.45.0** · App Store: 
 
 <table>
   <tr><td align="center"><img src="./cihaz/wear-yuvarlak/01-ana-ekran.webp" width="150" alt="Ana ekran" title="Ana ekran"><br><sub>Ana ekran</sub></td><td align="center"><img src="./cihaz/wear-yuvarlak/02-vakitler.webp" width="150" alt="Vakitler" title="Vakitler"><br><sub>Vakitler</sub></td><td align="center"><img src="./cihaz/wear-yuvarlak/03-kildim-onayi.webp" width="150" alt="Kıldım onayı" title="Kıldım onayı"><br><sub>Kıldım onayı</sub></td><td align="center"><img src="./cihaz/wear-yuvarlak/04-tesbihat.webp" width="150" alt="Tesbihat" title="Tesbihat"><br><sub>Tesbihat</sub></td></tr>
-  <tr><td align="center"><img src="./cihaz/wear-yuvarlak/05-tile-bugun.webp" width="150" alt="Tile bugün" title="Tile bugün"><br><sub>Tile bugün</sub></td><td align="center"><img src="./cihaz/wear-yuvarlak/06-tile-vakit.webp" width="150" alt="Tile vakit" title="Tile vakit"><br><sub>Tile vakit</sub></td><td align="center"><img src="./cihaz/wear-yuvarlak/07-ana-ambient.webp" width="150" alt="Ana ambient" title="Ana ambient"><br><sub>Ana ambient</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/wear-yuvarlak/05-tile-bugun.webp" width="150" alt="Tile bugün" title="Tile bugün"><br><sub>Tile bugün</sub></td><td align="center"><img src="./cihaz/wear-yuvarlak/06-tile-vakit.webp" width="150" alt="Tile vakit" title="Tile vakit"><br><sub>Tile vakit</sub></td><td align="center"><img src="./cihaz/wear-yuvarlak/07-ana-ambient.webp" width="150" alt="Ana ambient" title="Ana ambient"><br><sub>Ana ambient</sub></td><td align="center"><img src="./cihaz/wear-yuvarlak/08-kible.webp" width="150" alt="Kıble" title="Kıble"><br><sub>Kıble</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/wear-yuvarlak/09-tesbihat-tamam.webp" width="150" alt="Tesbihat tamam" title="Tesbihat tamam"><br><sub>Tesbihat tamam</sub></td></tr>
 </table>
 
 ### Wear OS — kare saat
 
 <table>
   <tr><td align="center"><img src="./cihaz/wear-kare/01-ana-ekran.webp" width="150" alt="Ana ekran" title="Ana ekran"><br><sub>Ana ekran</sub></td><td align="center"><img src="./cihaz/wear-kare/02-vakitler.webp" width="150" alt="Vakitler" title="Vakitler"><br><sub>Vakitler</sub></td><td align="center"><img src="./cihaz/wear-kare/03-kildim-onayi.webp" width="150" alt="Kıldım onayı" title="Kıldım onayı"><br><sub>Kıldım onayı</sub></td><td align="center"><img src="./cihaz/wear-kare/04-tesbihat.webp" width="150" alt="Tesbihat" title="Tesbihat"><br><sub>Tesbihat</sub></td></tr>
-  <tr><td align="center"><img src="./cihaz/wear-kare/05-tile-bugun.webp" width="150" alt="Tile bugün" title="Tile bugün"><br><sub>Tile bugün</sub></td><td align="center"><img src="./cihaz/wear-kare/06-tile-vakit.webp" width="150" alt="Tile vakit" title="Tile vakit"><br><sub>Tile vakit</sub></td><td align="center"><img src="./cihaz/wear-kare/07-ana-ambient.webp" width="150" alt="Ana ambient" title="Ana ambient"><br><sub>Ana ambient</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/wear-kare/05-tile-bugun.webp" width="150" alt="Tile bugün" title="Tile bugün"><br><sub>Tile bugün</sub></td><td align="center"><img src="./cihaz/wear-kare/06-tile-vakit.webp" width="150" alt="Tile vakit" title="Tile vakit"><br><sub>Tile vakit</sub></td><td align="center"><img src="./cihaz/wear-kare/07-ana-ambient.webp" width="150" alt="Ana ambient" title="Ana ambient"><br><sub>Ana ambient</sub></td><td align="center"><img src="./cihaz/wear-kare/08-kible.webp" width="150" alt="Kıble" title="Kıble"><br><sub>Kıble</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/wear-kare/09-tesbihat-tamam.webp" width="150" alt="Tesbihat tamam" title="Tesbihat tamam"><br><sub>Tesbihat tamam</sub></td></tr>
+</table>
+
+### Apple Watch
+
+<table>
+  <tr><td align="center"><img src="./cihaz/apple-watch/01-ana.webp" width="150" alt="Ana" title="Ana"><br><sub>Ana</sub></td><td align="center"><img src="./cihaz/apple-watch/02-vakitler.webp" width="150" alt="Vakitler" title="Vakitler"><br><sub>Vakitler</sub></td><td align="center"><img src="./cihaz/apple-watch/03-kildim-onayi.webp" width="150" alt="Kıldım onayı" title="Kıldım onayı"><br><sub>Kıldım onayı</sub></td><td align="center"><img src="./cihaz/apple-watch/04-tesbihat.webp" width="150" alt="Tesbihat" title="Tesbihat"><br><sub>Tesbihat</sub></td></tr>
 </table>
 
 ### Android TV

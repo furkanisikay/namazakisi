@@ -555,31 +555,39 @@
       "ogeler": [
         {
           "dosya": "01-ana-ekran.webp",
-          "kimlik": "240:073761c5902f43c8a543dfe56aa18e2977d5bac337b1b105eae898690303c7c6"
+          "kimlik": "240:ee26f59cfbbea3ae918529732fc78ed4638508dd359a57db21d60157b37fa648"
         },
         {
           "dosya": "02-vakitler.webp",
-          "kimlik": "240:4fb18adb73f704285a5756b103611978e61d0fb5cd6f2e26a57c43e2465d965b"
+          "kimlik": "240:117d146506f7d21d620b347043fc59b01a920b35591a5d73c732a85d7b4bfe5a"
         },
         {
           "dosya": "03-kildim-onayi.webp",
-          "kimlik": "240:05b80799bd44747df3aebfd7a4666467c618c6cc2107560ff8d0c2bf8786c021"
+          "kimlik": "240:08909c63443f66fdd38a93dee887017073961edd49d059935cdd730fba134881"
         },
         {
           "dosya": "04-tesbihat.webp",
-          "kimlik": "240:42ae32e5bcbea48b5fe2adc3fe0c3ffea5ae7ee770bc41d3148d0e6f53fa36f0"
+          "kimlik": "240:0d9fa7b37601e94267795abe67533e573b523004233543fad943b425678495e0"
         },
         {
           "dosya": "05-tile-bugun.webp",
-          "kimlik": "240:f289299b066d05d3f2afad2a51aea704aa3f58054d57fcd8fe162a4534c8fa00"
+          "kimlik": "240:eb0b58e7960ca95621756fa3febdde116edb633f81c003c9a2bce0217d325de5"
         },
         {
           "dosya": "06-tile-vakit.webp",
-          "kimlik": "240:68213d77cc9ff73af822871e283a71e5d5943901fd0ed5d56d856b9b2fde5e0a"
+          "kimlik": "240:b45677ee9aad31a797942abf08eaa63a932fe91bdd61483f3c0aa202e2c994c2"
         },
         {
           "dosya": "07-ana-ambient.webp",
-          "kimlik": "240:5607e0ec7891847148e5bd42762bc1a3fb3969be2ccecc529d61da3b2893e78b"
+          "kimlik": "240:54c7b5b154896f5091cebb45b436903823e6db29a7023b3bb4f74075427ed49d"
+        },
+        {
+          "dosya": "08-kible.webp",
+          "kimlik": "240:f29b1dad05362444544aa17c49cc1c81d6aa9a97bb2b494520a871b296af5400"
+        },
+        {
+          "dosya": "09-tesbihat-tamam.webp",
+          "kimlik": "240:a889212bafd2feb7ec7a900ef2f48c720d376a1714b154f530b15065d873120a"
         }
       ]
     },
@@ -587,31 +595,39 @@
       "ogeler": [
         {
           "dosya": "01-ana-ekran.webp",
-          "kimlik": "240:4c9ddb65163ea86417527da8dfeaaef564f5ceb581cd06fbc423354b4fcfe9d2"
+          "kimlik": "240:0106eee5ba101cc94ce09fe3d41a55463066cd8ede816bad205078a79ae06c4a"
         },
         {
           "dosya": "02-vakitler.webp",
-          "kimlik": "240:4b604f9ec508250eefe9d8450b3574dafd7abad6afb53650ae42d9232d2976ad"
+          "kimlik": "240:259ab95e47da8d1785f34ec8dc601dcb5c3de490962a927e4521311bbd4c9213"
         },
         {
           "dosya": "03-kildim-onayi.webp",
-          "kimlik": "240:8ac92bb7fedef8a642e0dfd686daff37a1d4ddfc2f0ef890012c1f349aec944b"
+          "kimlik": "240:b7b5d792ec61d09650763ac605d6d48aa41e0163d2d525784ff11a37787f9efe"
         },
         {
           "dosya": "04-tesbihat.webp",
-          "kimlik": "240:ed78a7f9d9f2996ca05873d8d279d3355fab615cb6aaf78083eb7ed87d72eb7d"
+          "kimlik": "240:3f985857b77970b6a06b5d1e35f1c0bb905a292afb231250509137b6359241eb"
         },
         {
           "dosya": "05-tile-bugun.webp",
-          "kimlik": "240:6d9428e3758184f014268042a25fe27db02f6e6470ae6565116b7e0a8a695ab1"
+          "kimlik": "240:b0ad8d6308e78fbfeb6fea1afac88296f195b5db96e17e076a8c0295a1f9d74a"
         },
         {
           "dosya": "06-tile-vakit.webp",
-          "kimlik": "240:0ac73579c476336853c996469b50b7e394c18d715b7548b04bef4d9659d76a2c"
+          "kimlik": "240:f0083cb934a72fb6be211d9338f32ecf66a6271e8edd58a2a489b7f1ce7201c1"
         },
         {
           "dosya": "07-ana-ambient.webp",
-          "kimlik": "240:8cb9850312b41a9752484544a25af0ddf6799c73a109c55e4a4236bcbe47f363"
+          "kimlik": "240:2f0b665d568a4087a595af51ab74e8ee8230381e5cb0e5d70d15ad1d453fcf79"
+        },
+        {
+          "dosya": "08-kible.webp",
+          "kimlik": "240:310e98d914353771c683aa14a129d35f1e39f7efe520a045602515623aeba375"
+        },
+        {
+          "dosya": "09-tesbihat-tamam.webp",
+          "kimlik": "240:65fc92b6bced5983d2838177b8d1288a7c4f0852577a772571bedfbe351ce23d"
         }
       ]
     },
@@ -639,7 +655,7 @@
       "ogeler": [
         {
           "dosya": "01-pano.webp",
-          "kimlik": "640:b1563a59ea6aa7608dd4ddd24c7e7b41ddb82075395268704e6a3e5fc88b8018"
+          "kimlik": "640:81d0b8223832dcf2fc3c886a7be8c671c62cdd9edb71c310edbfa6d84b47ba7f"
         },
         {
           "dosya": "02-il-secimi.webp",
@@ -647,7 +663,7 @@
         },
         {
           "dosya": "03-ekran-koruyucu.webp",
-          "kimlik": "640:5b6c10b7dd6a502baf3319e1b8a2277f98f89f77c1b7f0f0a09554055b1bcbfd"
+          "kimlik": "640:45921412a47174e074a355158f9bcff4dfa79586b8f33281f6934351f3ffd169"
         }
       ]
     }
