@@ -13,12 +13,22 @@ import {
  * TV Kotlin ikiziyle (`EslemeKodu.kt`, `EslemeProtokolu.kt`) ORTAK fikstür.
  * Beklenenler bağımsız bir Python Damm uygulamasıyla elle hesaplandı.
  */
-const fikstur = JSON.parse(
+interface KodOrnegi { ad: string; lat: number; lng: number; kod: string; cozulenLat: number; cozulenLng: number }
+interface Fikstur {
+    kodlar: KodOrnegi[];
+    bolgeDisi: { ad: string; lat: number; lng: number }[];
+    gecersizKodlar: { kod: string; neden: string }[];
+    qrGecerli: { metin: string; adres: string; port: number; anahtar: string }[];
+    qrGecersiz: { metin: string; neden: string }[];
+    istekAnahtari: string;
+}
+
+const fikstur: Fikstur = JSON.parse(
     fs.readFileSync(path.join(__dirname, '../../../../tv/app/src/test/resources/esleme-ornekleri.json'), 'utf8'),
 );
 
 describe('TV eşleştirme kodu', () => {
-    it.each(fikstur.kodlar)('$ad → $kod', (o: { lat: number; lng: number; kod: string; cozulenLat: number; cozulenLng: number }) => {
+    it.each(fikstur.kodlar)('$ad → $kod', (o) => {
         expect(konumuKodla(o.lat, o.lng)).toBe(o.kod);
         const c = koduCoz(o.kod);
         expect(c).not.toBeNull();
@@ -30,7 +40,7 @@ describe('TV eşleştirme kodu', () => {
         expect(konumuKodla(o.lat, o.lng)).toBeNull();
     });
 
-    it.each(fikstur.gecersizKodlar)('$kod reddedilir ($neden)', (o: { kod: string }) => {
+    it.each(fikstur.gecersizKodlar)('$kod reddedilir ($neden)', (o) => {
         expect(koduCoz(o.kod)).toBeNull();
     });
 
@@ -58,12 +68,12 @@ describe('TV eşleştirme kodu', () => {
 });
 
 describe('TV QR bağlantısı', () => {
-    it.each(fikstur.qrGecerli)('$metin', (o: { metin: string; adres: string; port: number; anahtar: string }) => {
+    it.each(fikstur.qrGecerli)('$metin', (o) => {
         expect(tvQrCoz(o.metin)).toEqual({ adres: o.adres, port: o.port, anahtar: o.anahtar });
         expect(tvBaglantisiMi(o.metin)).toBe(true);
     });
 
-    it.each(fikstur.qrGecersiz)('$neden', (o: { metin: string }) => {
+    it.each(fikstur.qrGecersiz)('$neden', (o) => {
         expect(tvQrCoz(o.metin)).toBeNull();
     });
 
