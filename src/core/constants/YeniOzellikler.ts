@@ -734,7 +734,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
         id: 'ipad-duzeni',
         platformlar: ['ios'],
-        surum: '0.55.0',
+        surum: '0.57.0',
         tarih: '2026-10-20',
         baslik: "iPad'de Geniş Düzen",
         aciklama:

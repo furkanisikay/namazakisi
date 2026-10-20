@@ -134,11 +134,11 @@ Yeni bir Android özelliği eklerken bu tabloya bak; iOS karşılığı yoksa "n
 |---|---|---|---|---|
 | Tablet düzeni (`useEkranSinifi`, iki bölme, `OkunabilirGenislik`) | ✅ | 🟡 iPad açık, yalnız dikey tam ekran (`requireFullScreen`) | Evet; yatay + Split View ayrı iş | Küçük (yapıldı) |
 | Katlanabilir postür, kapak widget'ı | ✅ | — | iPhone katlanmaz | — |
-| TV panosu | ✅ Android TV | 🟡 tvOS hedefi bayrak arkasında (`withNamazTV`) | Evet, SwiftUI tvOS uygulaması | Büyük |
+| TV panosu | ✅ Android TV | 🟡 tvOS hedefi bayrak arkasında (`withNamazTV`) | Evet, SwiftUI tvOS uygulaması | Büyük (derlenir, kare alınır; mağaza adımları sahipte) |
 | Canlı sayaç (Now Bar / Canlı Etkinlik) | ✅ vakit, iftar, sahur, cuma, nafile, seri | 🟡 vakit/cuma/nafile; iftar, sahur, seri YOK | Kısmen: etkinlik arka planda İSTENEMEZ (push-to-start sunucu ister) | Orta |
 | Geri sayım bildirimi (vakit/iftar/sahur/seri sayacı) | ✅ chronometer'lı bildirim | ❌ | Hayır: iOS bildiriminde canlı sayaç yok (Canlı Etkinlik tek yol) | — |
-| Hızlı ayar kutusu ↔ Kontrol Merkezi | ✅ `KildimKutusuServisi` | 🟡 `NamazKildimKontrolu` (iOS 18 ControlWidget, widget bayrağıyla) | Evet (iOS 18+) | Küçük (yapıldı) |
-| Ana ekran widget'ları | ✅ küçük/geniş + kilit ekranı | 🟡 küçük/orta + kilit aksesuarları + StandBy (bayrak arkasında) | Evet | — |
+| Hızlı ayar kutusu ↔ Kontrol Merkezi | ✅ `KildimKutusuServisi` | ✅ `NamazKildimKontrolu` (iOS 18 ControlWidget, widget uzantısında) | Evet (iOS 18+) | Küçük (yapıldı) |
+| Ana ekran widget'ları | ✅ küçük/geniş + kilit ekranı | ✅ küçük/orta + kilit aksesuarları + StandBy | Evet | — |
 | Uygulama simgesi kısayolları (`shortcuts.xml`) | ✅ | ❌ | Evet: `UIApplicationShortcutItems` (ana ekran hızlı eylemleri) | Küçük |
 | Otomasyon eylemleri (Tasker/Rutinler ↔ Kısayollar) | ✅ "Kıldım", koşul "camide/vakit" | ✅ "Sıradaki namaz" (değer döndürür), "Kıldım", "Kıbleyi aç" | Evet | — |
 | Otomasyon TETİĞİ ("vakit girdi/çıkıyor", "camidesiniz") | ✅ Locale olayı + bildirim anahtar kelimesi | ❌ | HAYIR: üçüncü taraf uygulama Kısayollar'a kişisel otomasyon tetiği tanımlayamaz. Yedek: Kısayollar "Günün saati" tetiği + "Sıradaki namaz" eylemi | — |
@@ -151,8 +151,8 @@ Yeni bir Android özelliği eklerken bu tabloya bak; iOS karşılığı yoksa "n
 | Bildirim kanalı, pil rehberi, Play güncellemesi | ✅ | — | iOS'ta karşılığı yok | — |
 | Bileklik dostu başlık rehberi | ✅ | — | iPhone bildirimleri Apple Watch'a yansır | — |
 | Arka plan konum takibi (geofence) + konum değişim bildirimi | ✅ | ❌ (bilinçli) | "Always" izni App Review riski | — |
-| Cihazlar arası eşitleme | 🟡 Drive (istemci kimliği yapılandırılmadı) | 🟡 iCloud KV (ayrı iş) | Evet | — |
-| Saat uygulaması | ✅ Wear OS | 🟡 Apple Watch bayrak arkasında (ayrı iş) | Evet | — |
+| Cihazlar arası eşitleme | 🟡 Drive (istemci kimliği yapılandırılmadı) | ✅ iCloud KV | Evet | — |
+| Saat uygulaması | ✅ Wear OS | ✅ Apple Watch (bayrak açık; ayrıntılar saat işinde) | Evet | — |
 | Temalı (tek renk) uygulama simgesi | ✅ | ❌ | Evet: iOS 18 koyu/renklendirilmiş simge (`ios.icon` nesnesi) | Küçük (varlık üretimi) |
 
 ## Apple TV panosu (Android TV `tv/` ikizi)
