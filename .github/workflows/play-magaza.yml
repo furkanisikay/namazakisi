@@ -36,9 +36,14 @@ on:
         required: false
         default: ''
       cihaz_run_id:
-        description: 'cihaz-kareleri için android-ekran-goruntuleri (tur=saat|tv|cihazlar) çalışma kimliği'
+        description: 'Saat/TV kareleri için android-ekran-goruntuleri (tur=saat|tv|cihazlar) çalışma kimliği (cihaz-kareleri ve pazarlama görsellerindeki saat/TV kareleri)'
         required: false
         default: ''
+      tv_pazarlama:
+        description: 'cihaz-kareleri: TV için ham kare yerine pazarlama görselini yükle'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -68,29 +73,20 @@ jobs:
           run-id: ${{ inputs.kare_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🎨 Mockup ve öne çıkan görsel üret
+      # Ozellik turu kareleri (camideyim, alarm, tablet ...) ayni kosuda tur=ikisi ile
+      # cekildiyse pazarlama setine girer; yoksa o gorseller atlanir.
+      - name: 🧭 Özellik karelerini indir
         if: ${{ inputs.kare_run_id != '' }}
-        run: |
-          set -eo pipefail
-          # Artifact duzeni kosuya gore degisebiliyor (disaridaki bir yol eklenince
-          # upload-artifact ortak koku degistirip kareleri alt klasore itti).
-          # Duz bir kareler/ klasoru kur; Maestro'nun ara kopyalarini alma.
-          mkdir -p kareler
-          find indirilen -name '[0-9][0-9]-*.png' -not -path '*takeScreenshot*' -exec cp {} kareler/ \;
-          ls kareler/*.png
-          node scripts/magaza-mockup.js kareler mockup --platform android --one-cikan
-          ls -la mockup
-
-      - name: ⬆️ Mockup'ları yükle (önizleme)
-        if: ${{ inputs.kare_run_id != '' }}
-        uses: actions/upload-artifact@v7
+        continue-on-error: true
+        uses: actions/download-artifact@v8
         with:
-          name: play-mockuplari
-          path: mockup/
-          retention-days: 14
+          name: android-ozellik-kareleri
+          path: indirilen-ozellik
+          run-id: ${{ inputs.kare_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⌚ Saat karelerini indir
-        if: ${{ inputs.mod == 'cihaz-kareleri' && inputs.cihaz_run_id != '' }}
+        if: ${{ inputs.cihaz_run_id != '' }}
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
@@ -100,7 +96,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📺 TV karelerini indir
-        if: ${{ inputs.mod == 'cihaz-kareleri' && inputs.cihaz_run_id != '' }}
+        if: ${{ inputs.cihaz_run_id != '' }}
         continue-on-error: true
         uses: actions/download-artifact@v8
         with:
@@ -109,18 +105,42 @@ jobs:
           run-id: ${{ inputs.cihaz_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Pazarlama gorselleri (baslik + anlati + gercek ekran) TUM indirilen karelerden:
+      # telefon (en fazla 8), tablet (7" + 10"), TV ve one cikan gorsel. Kareler
+      # degisince gorseller de kendiliginden degisir (scripts/magaza-gorselleri/).
+      - name: 🎨 Pazarlama görselleri ve öne çıkan görsel
+        if: ${{ inputs.kare_run_id != '' }}
+        run: |
+          set -eo pipefail
+          KAYNAK="--kaynak indirilen"
+          for d in indirilen-ozellik indirilen-saat indirilen-tv; do [ -d "$d" ] && KAYNAK="$KAYNAK --kaynak $d"; done
+          node scripts/magaza-gorselleri/uret.js $KAYNAK --cikis pazarlama --set play-telefon,play-tablet,tv --one-cikan | tee -a "$GITHUB_STEP_SUMMARY"
+          ls -la pazarlama/*
+
+      - name: ⬆️ Pazarlama görsellerini yükle (önizleme)
+        if: ${{ inputs.kare_run_id != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: play-pazarlama
+          path: pazarlama/
+          retention-days: 14
+
       - name: 🏪 Play kaydını ${{ inputs.mod }}
         env:
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
         run: |
           set -eo pipefail
           if [ "${{ inputs.mod }}" = "yaz" ] && [ -n "${{ inputs.kare_run_id }}" ]; then
-            node scripts/play-magaza.js yaz --gorseller mockup
+            node scripts/play-magaza.js yaz --gorseller pazarlama/play-telefon --tablet pazarlama/play-tablet
           elif [ "${{ inputs.mod }}" = "cihaz-kareleri" ]; then
             # Saat: Play kare (1:1) ister → yuvarlak profil; TV: 16:9 kareler.
             mkdir -p saat tv
             [ -d indirilen-saat ] && find indirilen-saat -path '*yuvarlak*' -name '[0-9][0-9]-*.png' -exec cp {} saat/ \;
-            [ -d indirilen-tv ] && find indirilen-tv -name '[0-9][0-9]-*.png' -exec cp {} tv/ \;
+            if [ "${{ inputs.tv_pazarlama }}" = "true" ] && ls pazarlama/tv/*.png >/dev/null 2>&1; then
+              cp pazarlama/tv/*.png tv/
+            elif [ -d indirilen-tv ]; then
+              find indirilen-tv -name '[0-9][0-9]-*.png' -not -path '*pazarlama*' -exec cp {} tv/ \;
+            fi
             ls -la saat tv
             node scripts/play-magaza.js cihaz-kareleri --saat saat --tv tv
           elif [ "${{ inputs.mod }}" = "uretime-al" ]; then

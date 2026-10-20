@@ -218,6 +218,22 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      # Pazarlama gorselleri ONIZLEMESI. Saat/TV karesi isteyen telefon gorselleri
+      # (cihazlar, bilek, kible) burada atlanir: o kareler ayri islerde cekilir.
+      # Tam set + Play'e yukleme play-magaza.yml'de (tum artifact'lar orada birlesir).
+      - name: 🎨 Pazarlama görselleri (önizleme)
+        if: ${{ !cancelled() }}
+        run: node scripts/magaza-gorselleri/uret.js --kaynak kareler --kaynak kareler-ozellik --cikis pazarlama --set play-telefon,play-tablet | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ⬆️ Pazarlama görsellerini yükle
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-pazarlama
+          path: pazarlama/
+          retention-days: 14
+          if-no-files-found: warn
+
       - name: 🪵 Maestro çıktısını yükle (hata ayıklama)
         if: always()
         uses: actions/upload-artifact@v7
@@ -314,6 +330,20 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      # Play'e GITMEZ (Wear OS kurali: cerceve/metin yasak).
+      - name: 🎨 Pazarlama görselleri (önizleme)
+        if: ${{ !cancelled() }}
+        run: node scripts/magaza-gorselleri/uret.js --kaynak kareler-saat --cikis pazarlama --set wear | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ⬆️ Pazarlama görsellerini yükle
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-saat-pazarlama
+          path: pazarlama/
+          retention-days: 14
+          if-no-files-found: warn
+
   # --- ANDROID TV (bagimsiz; `tv/` ayri Gradle koku) ---
   tv:
     name: 📺 TV kareleri (Android TV)
@@ -374,5 +404,19 @@ jobs:
         with:
           name: android-tv-kareleri
           path: kareler-tv/
+          retention-days: 14
+          if-no-files-found: warn
+
+      # Play'e GITMEZ (TV icin acik kural yok; yukleme play-magaza.yml > tv_pazarlama ile).
+      - name: 🎨 Pazarlama görselleri (önizleme)
+        if: ${{ !cancelled() }}
+        run: node scripts/magaza-gorselleri/uret.js --kaynak kareler-tv --cikis pazarlama --set tv | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ⬆️ Pazarlama görsellerini yükle
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-tv-pazarlama
+          path: pazarlama/
           retention-days: 14
           if-no-files-found: warn

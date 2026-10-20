@@ -293,6 +293,24 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      # --- PAZARLAMA GORSELLERI (baslik + anlati + gercek ekran) ---
+      # Magaza ve ozellik turunun kareleri BIRLIKTE okunur (tur=ikisi en dolu seti
+      # verir); ham karesi olmayan gorsel atlanir ve ozette "eksik" yazar.
+      - name: 🎨 Pazarlama görselleri
+        if: ${{ !cancelled() }}
+        run: |
+          set -eo pipefail
+          node scripts/magaza-gorselleri/uret.js --kaynak kareler --kaynak kareler-ozellik --cikis pazarlama --set iphone | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ⬆️ Pazarlama görsellerini yükle
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-pazarlama
+          path: pazarlama/
+          retention-days: 14
+          if-no-files-found: warn
+
       - name: 🏪 App Store Connect'e yükle
         if: ${{ inputs.asc_yukle && inputs.tur != 'ozellik' }}
         env:
@@ -300,7 +318,11 @@ jobs:
           ASC_KEY_ISSUER_ID: ${{ secrets.ASC_KEY_ISSUER_ID }}
           ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
         # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
-        run: node scripts/app-store-ekran-goruntuleri.js mockup --degistir
+        run: |
+          # Pazarlama seti varsa o, yoksa magaza mockup'lari (ust duzeydeki .png'ler).
+          KLASOR=mockup
+          ls pazarlama/iphone/*.png >/dev/null 2>&1 && KLASOR=pazarlama/iphone
+          node scripts/app-store-ekran-goruntuleri.js "$KLASOR" --degistir
 
   # --- APPLE WATCH TURU (issue #285) — iPhone isinden BAGIMSIZ, yalniz `tur: saat` ---
   # Yalniz saat hedefleri derlenir (`-target NamazSaat -sdk watchsimulator`): saat
@@ -380,6 +402,21 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      # Apple Watch pazarlama seti yalniz ONIZLEME: saat hedefi app.json'da etkin:false
+      # oldugu surece ASC'ye ham saat kareleri gider (setler.js > apple-watch).
+      - name: 🎨 Apple Watch pazarlama görselleri
+        if: ${{ !cancelled() }}
+        run: node scripts/magaza-gorselleri/uret.js --kaynak kareler-saat --cikis pazarlama-saat --set apple-watch | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ⬆️ Apple Watch pazarlama görsellerini yükle
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-saat-pazarlama
+          path: pazarlama-saat/
+          retention-days: 14
+          if-no-files-found: warn
+
   # --- APP STORE CONNECT ISLEMI — kare cekilmez, yalniz `tur: asc` ---
   asc:
     name: 🏪 App Store Connect (${{ inputs.asc_islem }})
@@ -411,6 +448,16 @@ jobs:
           run-id: ${{ inputs.asc_kare_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: 🎨 Pazarlama görsellerini indir
+        if: ${{ inputs.asc_islem == 'ekran-yukle' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: ios-pazarlama
+          path: indirilen-pazarlama
+          run-id: ${{ inputs.asc_kare_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: ⌚ Apple Watch karelerini indir
         if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_saat_run_id != '' }}
         uses: actions/download-artifact@v8
@@ -428,7 +475,10 @@ jobs:
           set -eo pipefail
           if [ "$ISLEM" = "ekran-yukle" ]; then
             # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
-            node scripts/app-store-ekran-goruntuleri.js indirilen/mockup --degistir
+            # Pazarlama seti (kosuda uretildiyse) once; yoksa magaza mockup'lari.
+            KLASOR=indirilen/mockup
+            ls indirilen-pazarlama/iphone/*.png >/dev/null 2>&1 && KLASOR=indirilen-pazarlama/iphone
+            node scripts/app-store-ekran-goruntuleri.js "$KLASOR" --degistir
             # Apple Watch kareleri (Ultra 3 simülatörü 422x514 = APP_WATCH_ULTRA).
             if [ -d indirilen-saat ]; then
               node scripts/app-store-ekran-goruntuleri.js indirilen-saat --tip APP_WATCH_ULTRA --degistir
