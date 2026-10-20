@@ -76,23 +76,23 @@ if [ -n "$IOS_RT" ] && [ -n "$TELEFON_TIPI" ]; then
   # Esleme: saat uygulamasi telefona bagli (`WKRunsIndependentlyOfCompanionApp=false`).
   xcrun simctl pair "$SAAT" "$TELEFON" || echo "UYARI: esleme yapilamadi (saat tek basina denenecek)"
   xcrun simctl boot "$TELEFON" || true
+  # Saat uygulamasi esine bagli: yarim acilmis telefon test edilmemis bir sebep olurdu.
+  xcrun simctl bootstatus "$TELEFON" -b >/dev/null 2>&1 || echo "UYARI: eş telefon açılışı bitmedi"
 fi
-# Saati acar ve sistem uygulamasinin gercekten ayaga kalkmasini bekler. Yuklu runner'da
-# acilis "Waiting on System App"ta takilip `Status=4294967295, isTerminal=YES` ile
-# BITEBILIYOR: o cihazda `simctl launch` her denemede
-# FBSOpenApplicationServiceErrorDomain code=4 verir ve tek kare cekilemez (yasandi,
-# run 39426364399). Bu durumda kapatip yeniden acilir.
+# Saati acar ve bootstatus'un BASARIYLA bitmesini bekler; basarisizsa kapatip yeniden
+# acar. DIKKAT: izlenen her acilis `Status=4294967295, isTerminal=YES … Finished` ile
+# biter — bu NORMAL tamamlanmadir, hata sayma (yalniz cikis kodu).
 saatiAc() {
   local deneme cikti kod
   for deneme in 1 2 3; do
     xcrun simctl boot "$SAAT" >/dev/null 2>&1 || true
     cikti=$(xcrun simctl bootstatus "$SAAT" -b 2>&1)
     kod=$?
-    if [ "$kod" -eq 0 ] && ! grep -q 'Status=4294967295' <<<"$cikti"; then
+    if [ "$kod" -eq 0 ]; then
       echo "saat açıldı (deneme $deneme)"
       return 0
     fi
-    echo "UYARI: saat açılışı yarım kaldı (deneme $deneme, kod $kod) — kapatılıp yeniden açılıyor"
+    echo "UYARI: saat açılışı başarısız (deneme $deneme, kod $kod) — kapatılıp yeniden açılıyor"
     tail -3 <<<"$cikti"
     xcrun simctl shutdown "$SAAT" >/dev/null 2>&1 || true
     sleep 5
@@ -103,6 +103,9 @@ saatiAc() {
 # Uygulama acilmadiginda (code=4) sebebi loga dussun: cokme raporu + sistem gunlugu.
 tani() {
   echo "::group::Tanı: $1"
+  xcrun simctl list pairs || true
+  xcrun simctl list devices -j | json 'Object.values(j.devices).flat().filter(d=>/^magaza-saat/.test(d.name)).map(d=>d.name+": "+d.state).join("\n")' || true
+  echo "uygulama kabı: $(xcrun simctl get_app_container "$SAAT" "$BUNDLE" 2>&1 || true)"
   ls -t "$HOME/Library/Logs/DiagnosticReports" 2>/dev/null | grep -i 'namaz' | head -3 | while read -r f; do
     echo "--- çökme raporu: $f"
     head -60 "$HOME/Library/Logs/DiagnosticReports/$f"
@@ -133,7 +136,7 @@ for k in $KARELER; do
   xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
   sleep 1
   ACILDI=0
-  for deneme in 1 2; do
+  for deneme in 1 2 3 4; do
     if SIMCTL_CHILD_TZ="$TZ_ADI" \
       SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
@@ -142,7 +145,7 @@ for k in $KARELER; do
       ACILDI=1
       break
     fi
-    sleep 15
+    sleep 30
   done
   if [ "$ACILDI" -ne 1 ]; then
     tani "$AD"
