@@ -5,6 +5,14 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.57.0] - 2026-10-20
+
+### Eklendi
+- [ios] Namazda sessiz — Odak + Kısayollar kurulum rehberi
+
+### Düzeltildi
+- [ios] Odak şemasında yatay bağ iki kolun ortasında dursun
+
 ## [0.56.0] - 2026-10-20
 
 ### Eklendi
