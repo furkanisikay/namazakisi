@@ -34,6 +34,8 @@ final class SaatHatirlatici: NSObject, UNUserNotificationCenterDelegate, @unchec
 
     /// Ilk acilista izin sorulur (saatte bildirim izni telefondan ayridir).
     func izinIste() {
+        // Simulator kare cekimi: izin penceresi ekrani ortmesin (cihazda acilisEkrani daima nil).
+        if SaatSimulatorTohumu.acilisEkrani != nil { return }
         merkez.getNotificationSettings { ayar in
             guard ayar.authorizationStatus == .notDetermined else { return }
             self.merkez.requestAuthorization(options: [.alert, .sound]) { verildi, _ in
