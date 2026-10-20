@@ -78,6 +78,9 @@ class YakinCamilerEkrani(carContext: CarContext) : Screen(carContext) {
     init {
         lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStart(owner: LifecycleOwner) {
+                // Konum bulunamadıysa ekran her görünür olduğunda yeniden dener (API < 5
+                // hostlarda yenileme düğmesi yoktur).
+                if (sonuc is Sonuc.KonumYok) yenidenAra()
                 ana.removeCallbacks(tazele)
                 ana.postDelayed(tazele, gecikme())
             }
@@ -112,11 +115,13 @@ class YakinCamilerEkrani(carContext: CarContext) : Screen(carContext) {
         if (s is Sonuc.Yukleniyor) aramayiBaslat()
 
         // Konum yokken de AYNI şablon (boş liste + ileti): ayrı bir şablona geçmek host'un
-        // adım bütçesini harcardı; başlıktaki yenileme düğmesi aramayı yeniden başlatır.
+        // adım bütçesini harcardı; başlıktaki yenileme düğmesi (API ≥ 5) aramayı yeniden başlatır.
         val sablon = PlaceListMapTemplate.Builder()
             .setTitle(baslik)
             .setHeaderAction(Action.APP_ICON)
-            .setOnContentRefreshListener { yenidenAra() }
+        // Yenileme düğmesi Car API 5 ister (AAR'da @RequiresCarApi(5)); minCarApiLevel 1
+        // beyan ettiğimiz için eski hostta koşulsuz vermek şablonu geçersiz kılardı.
+        if (carContext.carAppApiLevel >= 5) sablon.setOnContentRefreshListener { yenidenAra() }
         return when (s) {
             is Sonuc.Yukleniyor -> sablon.setLoading(true).build()
             is Sonuc.KonumYok -> sablon
@@ -126,7 +131,11 @@ class YakinCamilerEkrani(carContext: CarContext) : Screen(carContext) {
                 val liste = ItemList.Builder().setNoItemsMessage(AracKarari.CAMI_YOK_METNI)
                 s.camiler.forEach { liste.addItem(satir(it)) }
                 sablon
-                    .setAnchor(Place.Builder(CarLocation.create(s.konum.lat, s.konum.lng)).build())
+                    .setAnchor(
+                        Place.Builder(CarLocation.create(s.konum.lat, s.konum.lng))
+                            .setMarker(PlaceMarker.Builder().build())
+                            .build(),
+                    )
                     .setItemList(liste.build())
                     .build()
             }
