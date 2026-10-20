@@ -176,12 +176,24 @@ for k in $KARELER; do
     continue
   fi
   sleep "$BEKLE"
+  if [ "$EKRAN" = "kible" ]; then
+    echo "::group::Kıble açılış günlüğü"
+    xcrun simctl spawn "$SAAT" log show --style compact --last 25s --predicate 'process CONTAINS "NamazSaat"' 2>/dev/null | tail -60 || true
+    echo "::endgroup::"
+  fi
   HAM="$CIKTI/$AD.ham.png"
   xcrun simctl io "$SAAT" screenshot --type=png "$HAM" || { echo "UYARI: $AD çekilemedi"; continue; }
   # App Store alfa kanali kabul etmez → JPEG'den gecirip alfasiz PNG yap.
   sips -s format jpeg -s formatOptions best "$HAM" --out "$CIKTI/$AD.jpg" >/dev/null
   sips -s format png "$CIKTI/$AD.jpg" --out "$CIKTI/$AD.png" >/dev/null
   rm -f "$HAM" "$CIKTI/$AD.jpg"
+done
+
+# --- Tani: cokme raporlari (bir kare acilis ekraninda kaldiysa nedeni buradadir) ----
+for rapor in $(ls -t "$HOME/Library/Logs/DiagnosticReports/" 2>/dev/null | grep -i "NamazSaat" | head -2); do
+  echo "::group::Çökme raporu: $rapor"
+  head -c 6000 "$HOME/Library/Logs/DiagnosticReports/$rapor"
+  echo "::endgroup::"
 done
 
 # --- Animasyon videolari (istege bagli 3. arguman: video dizini) -------------------
