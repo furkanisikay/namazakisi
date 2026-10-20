@@ -161,7 +161,8 @@ describe('NafileAyarlariSayfasi', () => {
         const ekran = kur({ ...VARSAYILAN_NAFILE_AYARLARI, hatirlatmalar: { ...VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar, kusluk } });
         expect(ekran.queryByLabelText('Kuşluk vaktine hatırlatma ekleyin')).toBeNull();
         expect(ekran.getByText('Bir vakit için en fazla 3 hatırlatma kurabilirsiniz.')).toBeTruthy();
-        expect(ekran.getAllByText('2. hatırlatma').length).toBeGreaterThan(0);
+        // Sıra numarası ekranda değil, satır etiketinde (zaman çizelgesi rayı).
+        expect(ekran.getAllByLabelText(/^2\. hatırlatma — düzenleyin/).length).toBeGreaterThan(0);
     });
 
     describe('adım detayı + sesli anons rızası', () => {

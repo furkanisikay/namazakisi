@@ -27,6 +27,7 @@ import type {
 import {
     ACIL_TON_UST_DK,
     etkinKademe,
+    kademeSeviyeNo,
     vakitUyariPlaniOlustur,
     type UyariPlani,
 } from '../../../core/muhafiz/motorAdaptoru';
@@ -35,6 +36,7 @@ import type { EsikSinirlari } from '../../../core/muhafiz/esikSinirlari';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
 import { kanalAcikMi } from '../../../core/muhafiz/kanalKumesi';
+import { gercekTekrarDk } from '../../../core/muhafiz/planButcesi';
 import { anonsMetniniCoz, anonsSablonlari } from '../../../core/muhafiz/anonsMetni';
 import {
     ANONS_SOZLUKLERI,
@@ -44,7 +46,12 @@ import {
     type HatirlatmaYuzeyi,
     type YerTutucu,
 } from '../../../core/hatirlatma/anonsYerTutucu';
-import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
+import {
+    VAKIT_ADLARI,
+    basligiOlustur,
+    bildirimGovdesiOlustur,
+    type MuhafizSeviye,
+} from '../../../core/utils/muhafizMetinYardimcisi';
 import {
     ANDROID_YETENEKLERI,
     type PlatformYetenekleri,
@@ -119,8 +126,6 @@ export const BILDIRIM_ETIKETI = 'Bildirim';
 export const BILDIRIM_ACIKLAMASI = 'Ekranda bildirim olarak gelir.';
 export const SESLI_ETIKETI = 'Sesli okuma';
 export const SESLI_ACIKLAMASI = 'Telefonunuz hatırlatmayı sesli okur.';
-/** Son açık ana kanalın anahtarı devre dışıyken altında yazılan neden. */
-export const SON_KANAL_NOTU = 'Kapatmak için listedeki anahtarı kullanın.';
 
 /** Bu ana kanal adımın SON açık ana kanalı mı? (kapatılamaz — kapatmanın yeri liste anahtarı) */
 export function sonAcikAnaKanalMi(kanallar: UyariKanallari | undefined, kanal: AnaKanal): boolean {
@@ -162,28 +167,56 @@ export function kanalAnahtariniUygula(
  */
 export function gelismisAcikBaslarMi(
     seviye: SeviyeAyari,
-    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'>
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'> & { pencereUzunluguDk?: number },
+    kardesler: SeviyeAyari[] = [seviye]
 ): boolean {
     return (
-        seviye.siklik !== 'birkez' ||
-        (tanim.tonSecilebilir === true && etkinKademe(seviye, tanim.yon) !== 'nazik') ||
-        kanalAcikMi(seviye.kanallar, 'alarm')
+        // GERÇEK tekrar (tek atışın `herDk = esikDk` türevi açtırmaz — anahtarla aynı kapı).
+        gercekTekrarDk(seviye, kardesler, tanim.yon, tanim.pencereUzunluguDk) !== null ||
+        (tanim.tonSecilebilir === true && etkinKademe(seviye, tanim.yon) !== 'nazik')
     );
 }
 
-/** "Gelişmiş" başlığının özeti ("her 5 dk · sertlik: Uyarı · Gerçek alarm açık"); hepsi varsayılansa ''. */
-export function gelismisOzetiOlustur(
+/**
+ * "Gelişmiş" başlığının yapısal özeti — ekranda ikon çipi, varsayılan değerler yer almaz.
+ * Gerçek alarm artık "Nasıl" ızgarasında görünür (görsel inceleme 2026-10), Gelişmiş'te değil.
+ */
+export interface GelismisOzeti {
+    tekrarDk?: number;
+    /** Nazik dışındaki ETKİN ton (yalnız ton seçilebilen pencerede). */
+    ton?: SeviyeKademe;
+}
+
+export function gelismisOzetiVerisi(
     seviye: SeviyeAyari,
-    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'>
-): string {
-    const parcalar: string[] = [];
-    if (seviye.siklik !== 'birkez') parcalar.push(`her ${seviye.siklik.herDk} dk`);
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'> & { pencereUzunluguDk?: number },
+    kardesler: SeviyeAyari[] = [seviye]
+): GelismisOzeti {
+    const ozet: GelismisOzeti = {};
+    // Rozet yalnız GERÇEK tekrarda (motorun etkin aralığı segmentten küçükse).
+    const tekrar = gercekTekrarDk(seviye, kardesler, tanim.yon, tanim.pencereUzunluguDk);
+    if (tekrar !== null) ozet.tekrarDk = tekrar;
     if (tanim.tonSecilebilir === true) {
         const ton = etkinKademe(seviye, tanim.yon);
-        if (ton !== 'nazik') parcalar.push(`sertlik: ${TON_ETIKETLERI[ton]}`);
+        if (ton !== 'nazik') ozet.ton = ton;
     }
-    if (kanalAcikMi(seviye.kanallar, 'alarm')) parcalar.push('Gerçek alarm açık');
-    return parcalar.join(' · ');
+    return ozet;
+}
+
+/**
+ * "Gelişmiş" başlığının ekran okuyucu cümlesi ("her 5 dk tekrar, Uyarı sertliği, gerçek
+ * alarm açık"); hepsi varsayılansa ''. Ekranda aynı bilgi ikon çipleriyle görünür.
+ */
+export function gelismisOzetiOlustur(
+    seviye: SeviyeAyari,
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'> & { pencereUzunluguDk?: number },
+    kardesler: SeviyeAyari[] = [seviye]
+): string {
+    const o = gelismisOzetiVerisi(seviye, tanim, kardesler);
+    const parcalar: string[] = [];
+    if (o.tekrarDk) parcalar.push(`her ${o.tekrarDk} dk tekrar`);
+    if (o.ton) parcalar.push(`${TON_ETIKETLERI[o.ton]} sertliği`);
+    return parcalar.join(', ');
 }
 
 /** Titresim anahtarinin ekran metinleri (kibar "siz"). */
@@ -208,10 +241,10 @@ export const alarmAciklamasiOlustur = (kapsam: AlarmKapsami | undefined): string
         : ALARM_ACIKLAMASI;
 
 /**
- * Önizlemede GERÇEK ALARM çalan tetiğin etiketi ("Alarm çalar · 13:52"). Saat
- * bilinmiyorsa (pencere yok) yalnız "Alarm çalar". Ekran okuyucu da aynısını okur.
+ * Önizlemede GERÇEK ALARM çalan tetiğin etiketi ("Alarm çalar: 13:52" — saate hal eki
+ * eklenmez). Saat bilinmiyorsa (pencere yok) yalnız "Alarm çalar". Ekran okuyucu da aynısını okur.
  */
-export const alarmOnizlemeEtiketi = (saat?: string): string => (saat ? `Alarm çalar · ${saat}` : 'Alarm çalar');
+export const alarmOnizlemeEtiketi = (saat?: string): string => (saat ? `Alarm çalar: ${saat}` : 'Alarm çalar');
 
 /** "Her uyarıda" seçiliyken bedeli. iPhone satırı yalnız iOS'ta eklenir. */
 export const ALARM_KAPSAMI_NOTU = 'Her alarm tam ekran açılır ve bildirim sınırına sayılır.';
@@ -249,6 +282,71 @@ export function pencerePlaniOlustur(
         girisYonu ? ONIZLEME_GIRIS_BASLANGIC_DK : ONIZLEME_TARAMA_SINIRI_DK,
         { pencereUzunluguDk: tanim.pencereUzunluguDk }
     );
+}
+
+/**
+ * Adım detayındaki CANLI MİNİ ÖNİZLEMENİN içeriği ("telefonunuz böyle uyaracak").
+ *
+ * Ayrı bir metin yolu KURMAZ: adımın İLK tetiği motorun planından (`pencerePlaniOlustur`,
+ * "Akışı önizle" ile aynı dizi) alınır; metin yüzeyin kendi üreticisinden
+ * (`tanim.onizlemeMetni`) ya da muhafızın vakit dilinden (`basligiOlustur` /
+ * `bildirimGovdesiOlustur` / `anonsMetniniCoz`) gelir. Adım bugün plana girmiyorsa
+ * (pencere bilinmiyor ya da adım pencereye sığmıyor) aynı alanlarla kurulmuş örnek
+ * tetik kullanılır — önizleme ayarı anlatır, saati değil.
+ */
+export interface AdimOnizlemeIcerigi {
+    baslik: string;
+    govde: string;
+    /** Çözülmüş sesli okuma metni; sesli kanal kapalıysa ya da metin boşsa null. */
+    anons: string | null;
+}
+
+export function adimOrnekTetigi(
+    tanim: Pick<PencereTanimi, 'yon' | 'pencereUzunluguDk'>,
+    seviyeler: SeviyeAyari[],
+    indeks: number
+): { tetik: UyariPlani; plandan: boolean } {
+    const plan = pencerePlaniOlustur({ yon: tanim.yon, seviyeler }, tanim);
+    const gercek = plan.find((p) => p.adimIndeks === indeks);
+    if (gercek) return { tetik: gercek, plandan: true };
+    const s = seviyeler[indeks];
+    const kalanDk =
+        tanim.yon === 'girisindenItibaren' && tanim.pencereUzunluguDk
+            ? Math.max(1, tanim.pencereUzunluguDk - s.esikDk)
+            : s.esikDk;
+    const tetik: UyariPlani = {
+        kalanDk,
+        olcuDk: s.esikDk,
+        seviye: kademeSeviyeNo(etkinKademe(s, tanim.yon)),
+        adimIndeks: indeks,
+        kanallar: s.kanallar,
+        bildirimSesi: s.bildirimSesi,
+        sesAdi: s.sesAdi,
+        acilKanal: s.acilKanal,
+        anonsMetni: s.anonsMetni,
+        sesliAnons: kanalAcikMi(s.kanallar, 'sesli'),
+    };
+    return { tetik, plandan: false };
+}
+
+/** `tetik` = `adimOrnekTetigi(...).tetik` (çağıran saati yalnız `plandan` iken gösterir). */
+export function adimOnizlemeIcerigi(
+    tanim: Pick<PencereTanimi, 'yon' | 'vakit' | 'onizlemeMetni'>,
+    tetik: UyariPlani
+): AdimOnizlemeIcerigi {
+    if (tanim.onizlemeMetni) {
+        const m = tanim.onizlemeMetni(tetik, true);
+        return { baslik: m.baslik, govde: m.govde, anons: tetik.sesliAnons ? m.anons : null };
+    }
+    const seviye = tetik.seviye as MuhafizSeviye;
+    return {
+        baslik: basligiOlustur(tanim.vakit, seviye, tetik.olcuDk, tanim.yon),
+        govde: bildirimGovdesiOlustur(seviye, tanim.yon, tetik.olcuDk),
+        anons:
+            tetik.sesliAnons && tetik.anonsMetni.trim().length > 0
+                ? anonsMetniniCoz(tetik.anonsMetni, tanim.vakit, tetik.olcuDk, tanim.yon)
+                : null,
+    };
 }
 
 // NOT: "bu adim sesli anons/bildirim sesi calar mi?" kurali BURADA DEGIL —

@@ -31,6 +31,57 @@ const BEKLEME_MS = 900;
 /** Nokta çapı sertliğe göre (1 nazik … 4 acil). */
 const CAP = [0, 10, 12, 14, 16];
 
+/** Nokta etiketinin yerleşimi (saf — test edilebilir). */
+export interface DuzeyEtiketi {
+    kalanDk: number;
+    metin: string;
+    sesli: boolean;
+    sol: number;
+    genislik: number;
+    /** Etiket satırı (0 = ilk satır). Binen etiket ATLANMAZ, bir alt satıra kayar. */
+    satir: number;
+}
+
+/** Etiket genişliği tahmini (12 px yazı + ikon): binme denetimi için yeterli. */
+const etiketGenisligi = (metin: string): number => 16 + metin.length * 6.5;
+
+/** Bayrağın ÜSTÜNDE duran pencere sonu yazısı (etiket satırında yer kaplamaz). */
+export const VAKIT_CIKAR_METNI = 'Vakit çıkar';
+/** Bir etiket satırının yüksekliği (dp). */
+export const ETIKET_SATIRI_DP = 18;
+
+/**
+ * Her noktanın altına AYNI biçimde "N dk" etiketi. Etiket noktanın altında ortalanır, kart
+ * kenarlarına kenetlenir. HİÇBİR ETİKET ATLANMAZ (görsel inceleme 2026-10: ortadaki "10 dk"
+ * kayboluyordu): bir öncekine binecek etiket, sığdığı ilk alt satıra kayar (gerekirse yeni
+ * satır açılır).
+ */
+export function duzeyEtiketleriniYerlestir(
+    adimlar: readonly { kalanDk: number; sesli: boolean }[],
+    genislik: number,
+    raySol: number,
+    ilkDk: number,
+): DuzeyEtiketi[] {
+    if (genislik <= 0 || ilkDk <= 0) return [];
+    const ray = Math.max(0, genislik - raySol * 2);
+    const sonuc: DuzeyEtiketi[] = [];
+    const satirSonlari: number[] = [];
+    for (const a of adimlar) {
+        const metin = `${a.kalanDk} dk`;
+        const w = etiketGenisligi(metin);
+        const merkez = raySol + (1 - a.kalanDk / ilkDk) * ray;
+        const sol = Math.min(Math.max(0, merkez - w / 2), Math.max(0, genislik - w));
+        let satir = satirSonlari.findIndex((sag) => sol >= sag + 4);
+        if (satir === -1) {
+            satir = satirSonlari.length;
+            satirSonlari.push(-Infinity);
+        }
+        satirSonlari[satir] = sol + w;
+        sonuc.push({ kalanDk: a.kalanDk, metin, sesli: a.sesli, sol, genislik: w, satir });
+    }
+    return sonuc;
+}
+
 export interface DuzeyOnizlemesiProps {
     duzey: HatirlatmaDuzeyi;
     /** true: görünürken döngü (sihirbaz); false: değişimde bir kez (ayar ekranı). */
@@ -94,6 +145,11 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
     const raySol = 4;
     const rayGenislik = Math.max(0, genislik - raySol * 2);
     const konum = (kalanDk: number) => (ilkDk > 0 ? 1 - kalanDk / ilkDk : 0);
+    const etiketler = React.useMemo(
+        () => duzeyEtiketleriniYerlestir(adimlar, genislik, raySol, ilkDk),
+        [adimlar, genislik, ilkDk],
+    );
+    const etiketSatiri = etiketler.reduce((n, e) => Math.max(n, e.satir + 1), 0);
 
     return (
         <View
@@ -110,6 +166,20 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
                 backgroundColor: renkler.kartArkaplan,
             }}
         >
+            {/* "Vakit çıkar" bayrağın ÜSTÜNDE, sağa yaslı — etiket satırında yer kaplamaz. */}
+            {!kapali && genislik > 0 ? (
+                // Yazı bayrağın SOLUNDA, ikisi tek satırda rayın sağ ucunun üstünde (bayrak
+                // eskiden rayın içinde mutlak konumluydu ve yazı onun üstüne biniyordu).
+                <View
+                    testID="duzey-onizleme-vakit-cikar"
+                    style={{ alignSelf: 'flex-end', flexDirection: 'row', alignItems: 'center', marginBottom: -2 }}
+                >
+                    <Text style={{ fontSize: 12, color: renkler.metinIkincil }} numberOfLines={1}>
+                        {VAKIT_CIKAR_METNI}
+                    </Text>
+                    <FontAwesome5 name="flag-checkered" size={12} color={renkler.metinIkincil} style={{ marginLeft: 5 }} />
+                </View>
+            ) : null}
             <View testID="duzey-onizleme-ray" onLayout={onLayout} style={{ height: 36, justifyContent: 'center' }}>
                 {/* Ray */}
                 <View style={{ position: 'absolute', left: raySol, right: raySol, height: 4, borderRadius: 2, backgroundColor: renkler.sinir }} />
@@ -164,25 +234,50 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
                                 />
                             );
                         })}
-                        {/* Vaktin çıkışı */}
-                        <View style={{ position: 'absolute', right: 0, top: -2 }}>
-                            <FontAwesome5 name="flag-checkered" size={12} color={renkler.metinIkincil} />
-                        </View>
                     </>
                 ) : null}
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
-                <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>
-                    {kapali ? 'Hatırlatma yok' : `${ilkDk} dk önce`}
-                </Text>
-                {!kapali && adimlar.some((a) => a.sesli) ? (
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: renkler.birincil, marginRight: 5 }} />
-                        <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>sesli</Text>
-                    </View>
-                ) : null}
-                <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>Vakit çıkar</Text>
-            </View>
+            {/* Noktaların ALTINDA kısa etiketler, hepsi AYNI biçimde: kanal ikonu (zil / hoparlör)
+                + "25 dk". Hiçbiri atlanmaz: binen etiket bir alt satıra kayar. */}
+            {!kapali && genislik > 0 ? (
+                <View style={{ height: Math.max(1, etiketSatiri) * ETIKET_SATIRI_DP + 2, marginTop: 4 }}>
+                    {etiketler.map((e) => (
+                        <View
+                            key={`e-${e.kalanDk}-${e.sol}`}
+                            testID="duzey-onizleme-etiket"
+                            style={{
+                                position: 'absolute',
+                                left: e.sol,
+                                top: e.satir * ETIKET_SATIRI_DP,
+                                width: e.genislik,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <FontAwesome5
+                                name={e.sesli ? 'volume-up' : 'bell'}
+                                size={9}
+                                color={renkler.birincil}
+                                solid
+                                style={{ marginRight: 3 }}
+                            />
+                            <Text style={{ fontSize: 12, color: renkler.metin }} numberOfLines={1}>
+                                {e.metin}
+                            </Text>
+                        </View>
+                    ))}
+                </View>
+            ) : null}
+            {/* Kapalı düzey ya da yerleşim ölçülmeden (ilk kare): sabit metin satırı. */}
+            {kapali || genislik === 0 ? (
+                <View style={{ flexDirection: 'row', justifyContent: kapali ? 'center' : 'space-between', marginTop: 6 }}>
+                    <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>
+                        {kapali ? 'Hatırlatma yok' : `${ilkDk} dk`}
+                    </Text>
+                    {!kapali ? <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>{VAKIT_CIKAR_METNI}</Text> : null}
+                </View>
+            ) : null}
         </View>
     );
 });

@@ -42,7 +42,7 @@ export function vakitCikmadanOzeti(aktif: boolean, yogunluk: string): string {
  * satır ne kazanacağını söyler).
  */
 export function geceSessizligiOzeti(ayar: { aktif: boolean; baslangicSaat: number; baslangicDakika: number } | undefined): string {
-    if (!ayar?.aktif) return 'Kapalı · açarsanız gece uyarı gelmez';
+    if (!ayar?.aktif) return 'Kapalı. Açarsanız gece uyarı gelmez';
     const s = `${String(ayar.baslangicSaat).padStart(2, '0')}:${String(ayar.baslangicDakika).padStart(2, '0')}`;
     return `${s} – imsak arası uyarı gelmez`;
 }
@@ -60,7 +60,7 @@ export function cumaOzeti(aktif: boolean, adimlar?: ReadonlyArray<{ esikDk: numb
     return dk == null ? 'Açık' : `Öğleden ${dk} dk önce`;
 }
 
-/** Camiye gitme vakti: "Öğle, akşam · 20 dk önce". */
+/** Camiye gitme vakti: "Öğle, akşam: 20 dk önce" (orta nokta ayracı yok — görsel dil kuralı). */
 export function camiyeGitOzeti(
     aktif: boolean,
     vakitler: Partial<Record<VakitAnahtari, boolean>>,
@@ -70,7 +70,7 @@ export function camiyeGitOzeti(
     const liste = vakitListesi(vakitler);
     if (!liste) return 'Vakit seçilmedi';
     const dk = enErkenEsik(adimlar);
-    return dk == null ? liste : `${liste} · ${dk} dk önce`;
+    return dk == null ? liste : `${liste}: ${dk} dk önce`;
 }
 
 /** Yatmadan önce: "Yatış 23:00". */
@@ -103,10 +103,10 @@ export function ozelGunOzeti(modAktif: boolean, suruyor: boolean): string {
 
 /**
  * Ayarlar kökündeki "Hatırlatmalar" satırı: düzey + açık diğer hatırlatma sayısı.
- * "Normal düzey · 3 hatırlatma daha" / hiçbiri yoksa "Kapalı".
+ * "Normal düzey, 3 hatırlatma daha" / hiçbiri yoksa "Kapalı".
  */
 export function hatirlatmalarOzeti(muhafizAktif: boolean, yogunluk: string, digerAcikSayisi: number): string {
     const duzey = muhafizAktif ? vakitCikmadanOzeti(true, yogunluk) : null;
     if (!duzey) return digerAcikSayisi === 0 ? 'Kapalı' : `${digerAcikSayisi} hatırlatma açık`;
-    return digerAcikSayisi === 0 ? duzey : `${duzey} · ${digerAcikSayisi} hatırlatma daha`;
+    return digerAcikSayisi === 0 ? duzey : `${duzey}, ${digerAcikSayisi} hatırlatma daha`;
 }

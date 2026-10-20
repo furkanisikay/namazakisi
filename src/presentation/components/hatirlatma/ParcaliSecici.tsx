@@ -28,10 +28,13 @@ export interface ParcaliSeciciProps<T extends string> {
     /** Seçili değer; hiçbiri seçili değilse `null`. */
     secili: T | null;
     onSec: (deger: T) => void;
+    /** `'buyuk'`: kısa etiketli seçimler (düzey) — okunur 14 px yazı, 48 dp parça. */
+    boyut?: 'normal' | 'buyuk';
 }
 
-export function ParcaliSecici<T extends string>({ secenekler, secili, onSec }: ParcaliSeciciProps<T>) {
+export function ParcaliSecici<T extends string>({ secenekler, secili, onSec, boyut = 'normal' }: ParcaliSeciciProps<T>) {
     const renkler = useRenkler();
+    const buyuk = boyut === 'buyuk';
     return (
         <View
             className="flex-row rounded-2xl border p-1"
@@ -45,7 +48,7 @@ export function ParcaliSecici<T extends string>({ secenekler, secili, onSec }: P
                         key={s.deger}
                         testID={s.testID}
                         className="flex-1 flex-row items-center justify-center rounded-xl px-1.5"
-                        style={{ minHeight: 44, backgroundColor: seciliMi ? renkler.birincil : 'transparent' }}
+                        style={{ minHeight: buyuk ? 48 : 44, backgroundColor: seciliMi ? renkler.birincil : 'transparent' }}
                         onPress={() => onSec(s.deger)}
                         activeOpacity={0.75}
                         accessibilityRole="button"
@@ -62,7 +65,7 @@ export function ParcaliSecici<T extends string>({ secenekler, secili, onSec }: P
                             />
                         )}
                         <Text
-                            className="text-xs font-semibold"
+                            className={buyuk ? 'text-sm font-semibold' : 'text-xs font-semibold'}
                             numberOfLines={1}
                             style={{ color: seciliMi ? '#FFFFFF' : renkler.metin }}
                         >

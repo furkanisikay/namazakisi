@@ -251,14 +251,16 @@ describe('MuhafizAyarlariSayfasi', () => {
 
   // ── Katman 1 ──────────────────────────────────────────────────────────────
   it('5 vakit satırını dinamik özetiyle listeler', async () => {
-    const { getByText, getAllByText } = await kur();
+    const { getByText, getAllByText, getAllByLabelText } = await kur();
     expect(getByText('Sabah')).toBeTruthy();
     expect(getByText('Öğle')).toBeTruthy();
     expect(getByText('İkindi')).toBeTruthy();
     expect(getByText('Akşam')).toBeTruthy();
     expect(getByText('Yatsı')).toBeTruthy();
-    // Göç varsayılanı: yalnız bildirim kanalı açık, en erken eşik 45
-    expect(getAllByText('Sadece bildirim · 45 dk kala başlar')).toHaveLength(5);
+    // Göç varsayılanı: yalnız bildirim kanalı açık, en erken eşik 45. Kanal ikon çipiyle
+    // görünür; tam cümle satırın erişilebilirlik etiketindedir (`·` ayraçlı metin yok).
+    expect(getAllByText('45 dk kala başlar')).toHaveLength(5);
+    expect(getAllByLabelText(/vakti hatırlatma ayarları\. 45 dk kala başlar: bildirim$/)).toHaveLength(5);
   });
 
   it('muhafız kapalıyken düzey "Kapalı" seçilidir ve vakit listesi gösterilmez', async () => {
@@ -316,8 +318,11 @@ describe('MuhafizAyarlariSayfasi', () => {
     // okuyucu etiketinde (renk/ikonun karşılığı) kalır.
     expect(queryByText(/Nazik|Sert$|· Acil|· Uyarı/)).toBeNull();
     expect(getByText('Tüm vakitlere uygula')).toBeTruthy();
-    // Adım özeti seviyeOzetiOlustur'dan gelir
-    expect(getByText('45 dk kala · bildirim · Uygulama sesi')).toBeTruthy();
+    // Adım satırının başlığı ZAMANDIR; kanallar ikon çipi, tam cümle etikette.
+    expect(getByText('45 dk kala')).toBeTruthy();
+    expect(getByLabelText(/^1\. hatırlatma, Nazik — düzenleyin\. 45 dk kala: bildirim \(Uygulama sesi\)/)).toBeTruthy();
+    // Sıra numarası ekranda yazılmaz (ray anlatır), yalnız etikette.
+    expect(queryByText(/^1\. hatırlatma/)).toBeNull();
   });
 
   it('"Tüm vakitlere uygula" önce onay ister, onaylanınca matrisi kopyalar', async () => {
@@ -478,13 +483,20 @@ describe('MuhafizAyarlariSayfasi', () => {
    * açtığında kurduğu küme yerine yalnız bildirime düşer — aynı görünür eylem iki
    * yoldan farklı sonuç verir.
    */
-  it('son açık kanal modaldan KAPATILAMAZ — adımı kapatmanın yeri liste anahtarı', async () => {
-    const { getByText, getByLabelText, getByTestId } = await kur();
+  it('son açık kanal modalda da kapatılabilir: önce onay, onaylanınca adım kapanır (kanal hafızasıyla)', async () => {
+    const { getByText, getByLabelText, getByTestId, queryByText } = await kur();
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik — düzenleyin/));
 
-    expect(getByTestId('adim-bildirim-anahtari').props.disabled).toBe(true);
-    expect(getByText('Kapatmak için listedeki anahtarı kullanın.')).toBeTruthy();
+    // Anahtar devre dışı DEĞİL (görsel inceleme 2026-10) ve açıklama cümlesi yok.
+    expect(getByTestId('adim-bildirim-anahtari').props.disabled).toBeFalsy();
+    expect(queryByText('Kapatmak için listedeki anahtarı kullanın.')).toBeNull();
+    fireEvent(getByTestId('adim-bildirim-anahtari'), 'valueChange', false);
+    expect(getByText('Bu hatırlatma kapansın mı?')).toBeTruthy();
+    fireEvent.press(getByLabelText('Kapatın'));
+    const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls.at(-1)[0];
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({});
+    expect(yeni.ogle.seviyeler[0].oncekiKanallar).toEqual({ bildirim: true });
   });
 
   // ── Titreşim kanalı (Faz 6) ───────────────────────────────────────────────
@@ -635,6 +647,17 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(yeni.aksam.yon).toBe('girisindenItibaren');
     expect(yeni.ogle).toEqual(matris.ogle);
     expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'ozel' });
+  });
+
+  it('VAKİT BAŞINA DÜZEY: hazır düzeye uymayan vakitte "Özel" SEÇİLİ; dokununca o vaktin adımları açılır', async () => {
+    const matris = varsayilanMatris(); // eski (v1) tablolar → hazır düzeylere uymaz
+    const { getByLabelText, getByTestId, queryByTestId, findByLabelText } = await kur({ matris });
+    fireEvent.press(getByTestId('kendim-ayarlayayim')); // orta katmana dön
+    expect(getByLabelText(/^Akşam: özel ayar/).props.accessibilityState).toMatchObject({ selected: true });
+    expect(getByLabelText('Akşam: Hafif').props.accessibilityState).toMatchObject({ selected: false });
+    fireEvent.press(getByLabelText(/^Akşam: özel ayar/));
+    expect(queryByTestId('vakit-duzey-listesi')).toBeNull();
+    expect(await findByLabelText(/^1\. hatırlatma, .* — düzenleyin/)).toBeTruthy();
   });
 
   it('VAKİT BAŞINA DÜZEY: beş vakit aynı düzeye gelince genel düzey o olur', async () => {
@@ -938,14 +961,16 @@ describe('MuhafizAyarlariSayfasi', () => {
       expect(matrisiGuncelle).not.toHaveBeenCalled();
     });
 
-    it('ESKİ DÜZEY: önceki Hafif kaydı yeni sayıyı SÖYLEMEZ; karta dokunmak güncel Hafif\'i uygular', async () => {
-      // Varsayılan fikstür eski (v1) tablolarla kurulu → "önceki ayarınız".
-      const { getByLabelText, getByText } = await kur({ yogunluk: 'hafif' });
-      expect(getByLabelText(/^Hafif\. Önceki ayarınız/)).toBeTruthy();
-      expect(getByText('Önceki Hafif ayarınız sürüyor. Güncel Hafif için karta dokunun.')).toBeTruthy();
+    it('ESKİ DÜZEY: kart GERÇEK planı sayar, açıklama cümlesi yok, "Yeni öneriyi uygulayın" güncel Hafif\'i uygular', async () => {
+      // Varsayılan fikstür eski (v1) tablolarla kurulu.
+      const { getByLabelText, getByTestId, getByText, queryByText } = await kur({ yogunluk: 'hafif' });
+      // Kullanıcının gerçek (eski) planı sayılır; yeni Hafif'in sayısı söylenmez.
+      expect(getByLabelText(/^Hafif\. Vakit başına \d+ uyarı/)).toBeTruthy();
+      expect(queryByText(/karta dokunun/)).toBeNull();
+      expect(getByTestId('duzey-guncelle')).toBeTruthy();
       // Görsel anlatı silinmez: resim kullanıcının GERÇEK (eski) adımlarını çizer (fikstürün ilk eşiği 45 dk; yeni Hafif 15 derdi).
-      expect(getByText('45 dk önce', { includeHiddenElements: true })).toBeTruthy();
-      await act(async () => { fireEvent.press(getByLabelText(/^Hafif\./)); });
+      expect(getByText('45 dk', { includeHiddenElements: true })).toBeTruthy();
+      await act(async () => { fireEvent.press(getByTestId('duzey-guncelle')); });
       const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
       expect(yeni.ogle.seviyeler).toHaveLength(1);
     });
@@ -1447,9 +1472,11 @@ describe('MuhafizAyarlariSayfasi', () => {
     });
 
     it('ton çipi tonu ve aciliyeti birlikte yazar; acil 15 dk üstünde seçilemez', async () => {
-      const { getByText, getByLabelText } = await kur();
+      const { getByText, getByLabelText, getByTestId, queryByTestId } = await kur();
       fireEvent.press(getByText('Öğle'));
       fireEvent.press(getByLabelText(/^1\. hatırlatma, Nazik — düzenleyin/));
+      // Gelişmiş yalnız GERÇEK tekrar / nazik dışı tonda açık başlar; kapalıysa açılır.
+      if (!queryByTestId('adim-gelismis-icerik')) fireEvent.press(getByTestId('adim-gelismis'));
 
       // 45 dk kala: acil çipi devre dışı + açıklama.
       expect(getByText('“Acil” yalnız vaktin son 15 dakikasında seçilebilir.')).toBeTruthy();

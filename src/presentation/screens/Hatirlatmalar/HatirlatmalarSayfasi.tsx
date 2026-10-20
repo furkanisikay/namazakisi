@@ -299,6 +299,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                         sesliBilgiGoster={false}
                         sesliIzinVar={genelRiza.sesli}
                         eskiDuzey={duzey.eskiDuzey}
+                        eskiSeviyeler={duzey.onizlemeSeviyeleri}
                         testID="hatirlatma-duzeyi"
                     />
                     {/* Görsel anlatı: girişte ve düzey değişince BİR KEZ (ayar ekranı — döngü yok).

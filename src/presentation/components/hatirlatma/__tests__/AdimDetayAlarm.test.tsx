@@ -5,11 +5,16 @@
  * - Riza yoksa anahtar once `AlarmOnayModal`'i acar; "Vazgec" HICBIR SEY yazmaz,
  *   onay rizayi yazar VE alarmi acar. Riza varsa dogrudan yazar.
  * - Ana kanal anahtari degisince acik alarm KORUNUR (titresim gibi bagimsiz eksen).
- * - Alarm "Gelişmiş" bolumundedir; alarmli adimda bolum ACIK baslar.
+ * - Alarm "Nasıl" ızgarasındaki karodur (görsel inceleme 2026-10; eskiden "Gelişmiş"te
+ *   gizliydi); açıkken kapsam + izin notları ızgaranın altında.
  */
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 
+jest.mock('@expo/vector-icons', () => {
+    const { Text } = require('react-native');
+    return { FontAwesome5: (props: { name: string }) => <Text>{props.name}</Text> };
+});
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
     const { Text } = require('react-native');
     return (props: { name: string }) => <Text>{props.name}</Text>;

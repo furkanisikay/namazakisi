@@ -2,6 +2,7 @@ import {
     camiyeGitOzeti,
     cumaOzeti,
     enErkenEsik,
+    geceSessizligiOzeti,
     gunSonuOzeti,
     hatirlatmalarOzeti,
     ozelGunOzeti,
@@ -44,7 +45,7 @@ describe('hatirlatmaOzetleri — tek cümlelik canlı özetler', () => {
         expect(cumaOzeti(true, [])).toBe('Açık');
         expect(camiyeGitOzeti(false, { ogle: true })).toBe('Kapalı');
         expect(camiyeGitOzeti(true, {})).toBe('Vakit seçilmedi');
-        expect(camiyeGitOzeti(true, { ogle: true, aksam: true }, [{ esikDk: 20 }])).toBe('Öğle, akşam · 20 dk önce');
+        expect(camiyeGitOzeti(true, { ogle: true, aksam: true }, [{ esikDk: 20 }])).toBe('Öğle, akşam: 20 dk önce');
     });
 
     it('yatış, takvim, gün sonu, özel gün', () => {
@@ -63,7 +64,7 @@ describe('hatirlatmaOzetleri — tek cümlelik canlı özetler', () => {
         expect(hatirlatmalarOzeti(false, 'normal', 0)).toBe('Kapalı');
         expect(hatirlatmalarOzeti(false, 'normal', 2)).toBe('2 hatırlatma açık');
         expect(hatirlatmalarOzeti(true, 'yogun', 0)).toBe('Yoğun düzey');
-        expect(hatirlatmalarOzeti(true, 'normal', 3)).toBe('Normal düzey · 3 hatırlatma daha');
+        expect(hatirlatmalarOzeti(true, 'normal', 3)).toBe('Normal düzey, 3 hatırlatma daha');
     });
 
     it('teknik terim yok (kanal / ton / TTS / {süre})', () => {
@@ -74,5 +75,14 @@ describe('hatirlatmaOzetleri — tek cümlelik canlı özetler', () => {
             hatirlatmalarOzeti(true, 'normal', 1),
         ].join(' ');
         expect(hepsi).not.toMatch(/kanal|\bton\b|TTS|\{süre\}/i);
+    });
+
+    it('orta nokta ayracı (·) yok — görsel dil kuralı', () => {
+        const hepsi = [
+            geceSessizligiOzeti(undefined),
+            camiyeGitOzeti(true, { ogle: true, aksam: true }, [{ esikDk: 10 }]),
+            hatirlatmalarOzeti(true, 'normal', 2),
+        ].join(' ');
+        expect(hepsi).not.toContain('·');
     });
 });

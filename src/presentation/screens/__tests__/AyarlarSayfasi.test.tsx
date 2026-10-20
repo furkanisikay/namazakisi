@@ -162,7 +162,7 @@ describe('AyarlarSayfasi', () => {
   it('Hatırlatmalar satırı canlı özeti gösterir (düzey + açık diğer hatırlatmalar)', async () => {
     const { getByLabelText } = render(<AyarlarSayfasi />);
 
-    expect(getByLabelText(/^Hatırlatmalar\. Normal düzey · \d+ hatırlatma daha$/)).toBeTruthy();
+    expect(getByLabelText(/^Hatırlatmalar\. Normal düzey, \d+ hatırlatma daha$/)).toBeTruthy();
 
     await act(async () => {
       await Promise.resolve();

@@ -132,15 +132,18 @@ async function bolum(ad, fn) {
         if (!(await hatirlatmalaraGit('muhafiz-hub'))) return;
         if (!(await kaydirarakDokun(/^Vakit çıkmadan\./i, 'vakit cikmadan satiri', 'muhafiz-satiri', { bekle: 3000 }))) return;
         cek('06-muhafiz');
-        // Vakit vakit ayar "Kendim ayarlayayim" katinda.
-        if (!(await kaydirarakDokun(/kendim-ayarlayayim|^Kendim ayarlayayım/i, 'kendim ayarlayayim', 'kendim', { bekle: 2000 }))) return;
-        let a = await agac('muhafiz');
-        if (!(await dokun(a, /sabah vakti hatırlatma/i, 'sabah vakit karti', { bekle: 2500 }))) return;
+        // Sabah'in "Ozel" parcasi "Kendim ayarlayayim" katini ve Sabah kartini BIRLIKTE acar.
+        // (Sayfanin dibindeki "Kendim ayarlayayim" satiri getir bandinin [0.12, 0.8] altinda
+        // kaliyordu: sayfa sona dayandigi icin kaydirilamaz → 07/08 cekilmiyordu.) Yedek yol:
+        // eski satir + Sabah kartina dokunus.
+        if (!(await kaydirarakDokun(/vakit-duzey-imsak-ozel/, 'sabah ozel parcasi', 'sabah-ozel', { bekle: 2500 }))) {
+            if (!(await kaydirarakDokun(/kendim-ayarlayayim|^Kendim ayarlayayım/i, 'kendim ayarlayayim', 'kendim', { bekle: 2000 }))) return;
+            if (!(await dokun(await agac('muhafiz'), /sabah vakti hatırlatma/i, 'sabah vakit karti', { bekle: 2500 }))) return;
+        }
         if (await getir(/ilk hatırlatma/i, 'serit', { ust: 0.3, alt: 0.55 })) cek('07-muhafiz-zaman-seridi');
         if (!(await kaydirarakDokun(/1\. hatırlatma.*düzenleyin/i, 'ilk adim', 'ilk-adim', { bekle: 3000 }))) return;
         cek('08-adim-detay');
-        // Gercek alarm "Gelişmiş" bolumundedir (nazik adimda kapali baslar).
-        await dokun(await agac('gelismis-oncesi'), /^Gelişmiş ayarlar/i, 'gelismis bolumu', { bekle: 2000 });
+        // Gercek alarm "Nasıl" izgarasindaki karodur (Gelişmiş'i acmak gerekmez).
         const anahtar = await getir(/adim-alarm-anahtari/, 'alarm-anahtari', { ust: 0.3, alt: 0.75 });
         cek('09-adim-detay-anahtarlar');
         if (!anahtar) return;
