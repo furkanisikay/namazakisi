@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.56.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.57.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.56.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
+Kaynak koddaki sürüm: **0.57.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -184,8 +184,11 @@ Kaynak koddaki sürüm: **0.56.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/02-ana-nafile-zinciri.webp" width="160" alt="Ana nafile zinciri" title="Ana nafile zinciri">
   <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/03-sade-gorunum.webp" width="160" alt="Sade görünüm" title="Sade görünüm">
   <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/04-ayarlar.webp" width="160" alt="Ayarlar" title="Ayarlar">
-  <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/05-ayarlar-alt.webp" width="160" alt="Ayarlar alt" title="Ayarlar alt">
   <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/06-muhafiz.webp" width="160" alt="Muhafız" title="Muhafız">
+  <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/07-muhafiz-zaman-seridi.webp" width="160" alt="Muhafız zaman şeridi" title="Muhafız zaman şeridi">
+  <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/08-adim-detay.webp" width="160" alt="Adım detay" title="Adım detay">
+  <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/09-adim-detay-anahtarlar.webp" width="160" alt="Adım detay anahtarlar" title="Adım detay anahtarlar">
+  <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/10-alarm-onay.webp" width="160" alt="Alarm onay" title="Alarm onay">
   <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/11-muhafiz-butce-karti.webp" width="160" alt="Muhafız bütçe kartı" title="Muhafız bütçe kartı">
   <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/12-bildirim-siniri-rehberi.webp" width="160" alt="Bildirim sınırı rehberi" title="Bildirim sınırı rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/13-bildirim-ayarlari.webp" width="160" alt="Bildirim ayarları" title="Bildirim ayarları">
@@ -196,8 +199,10 @@ Kaynak koddaki sürüm: **0.56.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/18-nafile-teheccud.webp" width="160" alt="Nafile teheccüd" title="Nafile teheccüd">
   <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/19-kaza.webp" width="160" alt="Kaza" title="Kaza">
   <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/20-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
-  <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/21-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
   <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/22-seferilik.webp" width="160" alt="Seferîlik" title="Seferîlik">
+  <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/23-namazda-sessiz.webp" width="160" alt="Namazda sessiz" title="Namazda sessiz">
+  <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/24-namazda-sessiz-camiler.webp" width="160" alt="Namazda sessiz camiler" title="Namazda sessiz camiler">
+  <img src="docs/ekran-goruntuleri/uygulama/iphone-acik/25-namazda-sessiz-vakit.webp" width="160" alt="Namazda sessiz vakit" title="Namazda sessiz vakit">
 </p>
 
 </details>
@@ -294,6 +299,7 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 ### 🆕 Son Eklenenler
 
 <!-- OTOMATIK:BASLA yenilikler -->
+- **Camide telefonunuz sessize geçsin** — Namaz odağını bir kez kurun: camiye ya da kendi belirlediğiniz bir yere varınca iPhone sessize geçer, ayrılınca eski hâline döner. <sub>iOS · 0.55.0</sub>
 - **Kıbleyi Kamerayla Bulun** — Kıble sekmesinde telefonunuzu dik tutup kamerayla çevrenize bakın: Kâbe işareti kıble yönünde belirir, yanında Kâbe’ye uzaklığınız yazar. Pusula açılır açılmaz döner ve titremeden akar. <sub>Android · iOS · 0.52.0</sub>
 - **Daha sade uygulama** — Daha az bildirim, gece sessiz saatler ve tüm hatırlatmalar tek sayfada. Yeni sekmeler: Bugün, Kıble, Kaza, İlerleme, Ayarlar. <sub>Android · iOS · 0.50.0</sub>
 - **Verileriniz Tüm Cihazlarınızda** — Kıldığınız namazları, seri ve kaza defterinizi kendi Google Drive alanınızda saklayıp diğer telefonunuz ya da tabletinizle eşitleyebilirsiniz. Veriler sizin belirlediğiniz parolayla şifrelenir. <sub>Android · 0.42.0</sub>
@@ -301,11 +307,11 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 - **Tüm Hatırlatmalar Aynı Ekranda** — Namaz muhafızı, nafile, cuma, camiye gitme, yatış ve takvim hatırlatmaları aynı ekranı ve aynı seçenekleri kullanır: birden çok hatırlatma, tekrar ve sesli okuma. <sub>Android · iOS · 0.40.0</sub>
 - **Cuma Namazı Hatırlatması** — Her cuma, öğle vaktinden istediğiniz kadar önce hatırlatalım — camiye rahatça yetişin. <sub>Android · iOS · 0.37.0</sub>
 - **Camiye Zamanında Yetişin** — Camide kılmak istediğiniz vakitleri seçin; ezandan, camiye yürüme süreniz kadar önce hatırlatalım. <sub>Android · iOS · 0.37.0</sub>
-- **Yatmadan Önce Hatırlatma** — Her zamanki yatış saatinizi girin; yatsıyı işaretlemediyseniz uyumadan önce hatırlatalım, gün sonunda eksik vakitlerinizi tek bildirimde görün. <sub>Android · iOS · 0.37.0</sub>
 
 <details>
-<summary>Diğer 28 özellik</summary>
+<summary>Diğer 29 özellik</summary>
 
+- **Yatmadan Önce Hatırlatma** — Her zamanki yatış saatinizi girin; yatsıyı işaretlemediyseniz uyumadan önce hatırlatalım, gün sonunda eksik vakitlerinizi tek bildirimde görün. <sub>Android · iOS · 0.37.0</sub>
 - **Toplantı Vakte Denk Gelirse Haber Verelim** — Takviminizdeki bir etkinlik bir namaz vaktinin sonunu kaplıyorsa, etkinlik başlamadan önce "toplantıdan önce kılın" diye uyaralım. <sub>Android · iOS · 0.37.0</sub>
 - **Nafile Namaz Vakitleri** — Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, namaz hatırlatmasındaki gibi birden çok hatırlatma kurabilirsiniz. <sub>Android · iOS · 0.34.0</sub>
 - **Hatırlatmalarda Gerçek Alarm** — İstediğiniz hatırlatma adımında "Gerçek alarm"ı açın: o adımda telefonunuzun alarmı çalar, sessiz moddayken de duyulur. <sub>Android · iOS · 0.34.0</sub>
