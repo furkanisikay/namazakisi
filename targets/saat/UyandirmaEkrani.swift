@@ -18,18 +18,20 @@ struct UyandirmaEkrani: View {
     private var ad: String { kayit.nafile ? "Teheccüd" : "Sabah" }
 
     var body: some View {
+        // 41 mm'de KAYDIRMADAN sigar: baslik tek satir (ikon + ad), saat 32 pt, iki dugme
+        // yan yana ("Kildim" genis, "Kapat" ikon). ScrollView yalniz cok buyuk yazi boyutu icin.
         ScrollView {
-            VStack(spacing: 6) {
-                Image(systemName: ikon)
-                    .font(.system(size: 30, weight: .semibold))
-                    .foregroundStyle(SaatGorunum.yesil)
-                    .symbolEffect(.bounce, value: seke)
-                    .accessibilityHidden(true)
-                Text(ad)
-                    .font(.headline)
-                    .lineLimit(1)
+            VStack(spacing: 4) {
+                Label {
+                    Text(ad).lineLimit(1)
+                } icon: {
+                    Image(systemName: ikon)
+                        .foregroundStyle(SaatGorunum.yesil)
+                        .symbolEffect(.bounce, value: seke)
+                }
+                .font(.headline)
                 Text(Date(), style: .time)
-                    .font(.system(size: 40, weight: .semibold, design: .rounded))
+                    .font(.system(size: 32, weight: .semibold, design: .rounded))
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
@@ -37,23 +39,28 @@ struct UyandirmaEkrani: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .accessibilityLabel(kayit.nafile ? "İmsak \(SaatDeposu.saatMetni(kayit.sonMs))" : "Vaktin sonu \(SaatDeposu.saatMetni(kayit.sonMs))")
-                Button {
-                    uyandirici.kildim()
-                } label: {
-                    Label("Kıldım", systemImage: "checkmark")
-                        .frame(maxWidth: .infinity)
+                HStack(spacing: 6) {
+                    Button {
+                        uyandirici.kildim()
+                    } label: {
+                        Label("Kıldım", systemImage: "checkmark")
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .tint(SaatGorunum.yesil)
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityLabel("\(ad) namazını kıldım olarak işaretleyin")
+                    Button {
+                        uyandirici.kapat()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.body.weight(.semibold))
+                    }
+                    .frame(width: 52)
+                    .accessibilityLabel("Uyandırmayı kapatın")
                 }
-                .tint(SaatGorunum.yesil)
-                .buttonStyle(.borderedProminent)
                 .padding(.top, 4)
-                .accessibilityLabel("\(ad) namazını kıldım olarak işaretleyin")
-                Button {
-                    uyandirici.kapat()
-                } label: {
-                    Label("Kapat", systemImage: "xmark")
-                        .frame(maxWidth: .infinity)
-                }
-                .accessibilityLabel("Uyandırmayı kapatın")
             }
             .padding(.horizontal, 2)
         }

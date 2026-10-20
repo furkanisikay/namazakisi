@@ -16,9 +16,10 @@ public enum Kible {
     public static let kabeEnlem = 21.4225241
     public static let kabeBoylam = 39.8261818
 
-    /// Hizaya GIRIS: telefonla AYNI esik (10°). Cikis 15° (histerezis — yazi yanip sonmesin).
-    public static let hizaGirisDerece = 10.0
-    public static let hizaCikisDerece = 15.0
+    /// Hizaya GIRIS ±5° (sahip karari, Apple Watch kibleyi daha dar gosterir; Wear/telefon 10°).
+    /// Cikis 8° (histerezis — yazi ve yesil halka yanip sonmesin).
+    public static let hizaGirisDerece = 5.0
+    public static let hizaCikisDerece = 8.0
 
     public static func aci(enlem: Double, boylam: Double) -> Double {
         let terim1 = sin(radyan(kabeBoylam) - radyan(boylam))

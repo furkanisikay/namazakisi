@@ -128,7 +128,7 @@ echo "saat paketi: $BUNDLE"
 # --- Kareler ----------------------------------------------------------------------
 # ad:ekran:bekleme(sn)
 # Kible: simulatorde pusula yok → sabit yon (`NAMAZ_SAAT_TOHUM_YON`, Istanbul kiblesi
-# ~152° → "Saga 30°"). Uyandirma: akilli alarm oturumu simulatorde tetiklenmez →
+# ~152° → hizada (yesil halka)). Uyandirma: akilli alarm oturumu simulatorde tetiklenmez →
 # ekran yukun ilk uyandirma kaydiyla, oturumsuz cizilir.
 KARELER="01-ana:ana:12 02-vakitler:vakitler:8 03-kildim-onayi:onay:8 04-tesbihat:tesbihat:8 05-kible:kible:14 06-uyandirma:uyandirma:8"
 BEKLENEN=0
@@ -144,7 +144,7 @@ for k in $KARELER; do
       SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
-      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="122" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
       xcrun simctl launch "$SAAT" "$BUNDLE"; then
       ACILDI=1
       break
@@ -213,7 +213,7 @@ if [ -n "$VIDEO" ]; then
       SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
-      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="122" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
       xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1 || echo "UYARI: $AD videosu için uygulama başlatılamadı"
     sleep 12
     kill -INT "$KAYIT" 2>/dev/null || true

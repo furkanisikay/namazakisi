@@ -76,7 +76,10 @@ struct KibleEkrani: View {
                     sabitAci(kibleAcisi)
                 }
             } else {
-                BilgiKarti(ikon: "location.slash", metin: "Kıble için iPhone'unuzda konumunuzu ayarlayın.")
+                BilgiKarti(
+                    ikon: "location.slash",
+                    metin: "Kıble için konum gerekir. iPhone'unuzda Namaz Akışı'nı açıp konumunuzu ayarlayın; saat bir dakika içinde alır."
+                )
             }
         }
         .navigationTitle("Kıble")
@@ -105,12 +108,10 @@ struct KibleEkrani: View {
             ZStack {
                 Circle()
                     .stroke(hizali ? SaatGorunum.yesil : Color.secondary.opacity(0.35), lineWidth: hizali ? 4 : 2)
-                // Ust ortadaki sabit isaret: saatin baktigi yon.
-                Capsule()
-                    .fill(Color.primary)
-                    .frame(width: 3, height: 10)
-                    .offset(y: -50)
-                // Kabe oku: kiblenin saate gore acisi.
+                // Halkanin tepesinde Kabe isareti: saatin baktigi yon. Ok ona donunce kible.
+                KabeIsareti(hizali: hizali)
+                    .offset(y: -55)
+                // Ok: kiblenin saate gore acisi (0 = tam tepede, Kabe isaretinde).
                 Image(systemName: "location.north.fill")
                     .font(.system(size: 34, weight: .semibold))
                     .foregroundStyle(hizali ? SaatGorunum.yesil : Color.primary)
@@ -118,6 +119,8 @@ struct KibleEkrani: View {
                     .opacity(pusula.yon == nil ? 0.3 : 1)
             }
             .frame(width: 110, height: 110)
+            .padding(.top, 8)
+            .animation(hareketAzalt ? nil : .easeOut(duration: 0.25), value: hizali)
             .accessibilityHidden(true)
 
             if pusula.yon == nil {
@@ -152,20 +155,30 @@ struct KibleEkrani: View {
         )
     }
 
-    /// Pusulasiz saat: yalniz aci (kuzeyden saat yonunde).
+    /// Pusulasiz saat: kuzeye gore yon kadrani (N tepede) + aci. Kullanici saati kuzeye
+    /// cevirip oku izler; yon yine NET gosterilir.
     private func sabitAci(_ aci: Double) -> some View {
-        VStack(spacing: 6) {
-            Image(systemName: "location.north.line.fill")
-                .font(.title2)
-                .foregroundStyle(SaatGorunum.yesil)
-                .rotationEffect(.degrees(aci))
-                .accessibilityHidden(true)
+        VStack(spacing: 4) {
+            ZStack {
+                Circle().stroke(Color.secondary.opacity(0.35), lineWidth: 2)
+                Text("K")
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(.secondary)
+                    .offset(y: -40)
+                Image(systemName: "location.north.fill")
+                    .font(.system(size: 28, weight: .semibold))
+                    .foregroundStyle(SaatGorunum.yesil)
+                    .rotationEffect(.degrees(aci))
+            }
+            .frame(width: 96, height: 96)
+            .accessibilityHidden(true)
             Text("\(Int(aci.rounded()))°")
-                .font(.system(size: 36, weight: .semibold, design: .rounded))
+                .font(.system(.title3, design: .rounded).weight(.semibold))
                 .monospacedDigit()
-            Label("Kuzeyden saat yönünde", systemImage: "safari")
-                .font(.footnote)
+            Text("Saatinizi kuzeye çevirin, oku izleyin")
+                .font(.caption2)
                 .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(0.7)
         }
@@ -192,5 +205,29 @@ struct BilgiKarti: View {
         }
         .padding(.horizontal, 6)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+/// Kabe isareti: kup (koyu) + altin kusak. Hizalaninca kenari yesil yanar. Dekoratif.
+private struct KabeIsareti: View {
+    let hizali: Bool
+    private static let altin = Color(red: 0xD4 / 255.0, green: 0xAF / 255.0, blue: 0x37 / 255.0)
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: 2.5)
+            .fill(Color(white: 0.18))
+            .frame(width: 16, height: 16)
+            .overlay(
+                Rectangle()
+                    .fill(Self.altin)
+                    .frame(height: 3)
+                    .offset(y: -3.5)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 2.5)
+                    .stroke(hizali ? SaatGorunum.yesil : Color.white.opacity(0.55), lineWidth: hizali ? 2 : 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 2.5))
+            .accessibilityHidden(true)
     }
 }
