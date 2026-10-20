@@ -161,7 +161,6 @@ jobs:
             -workspace "$WS" \
             -scheme "$SCHEME" \
             -configuration Debug \
-            -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \

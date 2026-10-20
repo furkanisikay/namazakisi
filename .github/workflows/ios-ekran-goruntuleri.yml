@@ -183,11 +183,12 @@ jobs:
           echo "workspace=$WS scheme=$SCHEME"
           # Release: JS paketi uygulamanin icine gomulur (Metro sunucusu gerekmez).
           # CODE_SIGNING_ALLOWED=NO: simulator build'i imza istemez.
+          # `-sdk iphonesimulator` VERILMEZ: Apple Watch hedefi (withNamazSaat etkin) varken
+          # tum hedeflerin SDKROOT'unu ezer, watchOS kodu iPhone SDK'siyla derlenip duser.
           xcodebuild \
             -workspace "$WS" \
             -scheme "$SCHEME" \
             -configuration Release \
-            -sdk iphonesimulator \
             -derivedDataPath build \
             -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
             CODE_SIGNING_ALLOWED=NO \
