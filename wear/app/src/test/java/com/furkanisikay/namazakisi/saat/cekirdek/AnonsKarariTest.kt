@@ -1,6 +1,9 @@
 package com.furkanisikay.namazakisi.saat.cekirdek
 
+import com.furkanisikay.namazakisi.saat.cekirdek.AnonsKarari.SesDurumu
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -44,5 +47,50 @@ class AnonsKarariTest {
         assertFalse(AnonsKarari.sessizMi(null, simdi))
         assertFalse(AnonsKarari.saatKonusurMu(AnonsYerleri.SAAT, metin, yakindaTelefon = false, hoparlor = true, sessiz = true))
         assertFalse(AnonsKarari.telefonSorulmaliMi(AnonsYerleri.OTOMATIK, metin, sessiz = true))
+    }
+
+    // --- Ses durumu ve ekran metinleri (sahip geri bildirimi: "saatte TTS çalışmadı") ---
+
+    @Test
+    fun sesDurumuKodlariGidipGelir() {
+        for (d in AnonsKarari.SesDurumu.entries) assertEquals(d, AnonsKarari.SesDurumu.coz(d.kod))
+        assertEquals(AnonsKarari.SesDurumu.BILINMIYOR, AnonsKarari.SesDurumu.coz(null))
+        assertEquals(AnonsKarari.SesDurumu.BILINMIYOR, AnonsKarari.SesDurumu.coz("baska"))
+    }
+
+    @Test
+    fun bilgiMetniYalnizSaatKonusacakkenVeNedeniSoyler() {
+        // Saat bu ayarla hiç konuşmayacak: bilgi satırı yok.
+        assertNull(AnonsKarari.bilgiMetni(AnonsYerleri.TELEFON, false, SesDurumu.MOTOR_YOK))
+        assertNull(AnonsKarari.bilgiMetni(null, true, SesDurumu.TURKCE_YOK))
+        // Konuşabilir ama engel var.
+        assertTrue(AnonsKarari.bilgiMetni(AnonsYerleri.SAAT, false, SesDurumu.KONUSTU)!!.contains("hoparlör"))
+        assertTrue(AnonsKarari.bilgiMetni(AnonsYerleri.OTOMATIK, true, SesDurumu.MOTOR_YOK)!!.contains("motoru"))
+        assertTrue(AnonsKarari.bilgiMetni(AnonsYerleri.OTOMATIK, true, SesDurumu.TURKCE_YOK)!!.contains("Türkçe"))
+        // Sorun yok ya da henüz denenmedi: sessiz.
+        assertNull(AnonsKarari.bilgiMetni(AnonsYerleri.SAAT, true, SesDurumu.KONUSTU))
+        assertNull(AnonsKarari.bilgiMetni(AnonsYerleri.SAAT, true, SesDurumu.BILINMIYOR))
+    }
+
+    @Test
+    fun otomatikAciklamasiTelefonYanindayKenSaatinSustugunuSoyler() {
+        assertTrue(AnonsKarari.yerAciklamasi(AnonsYerleri.OTOMATIK)!!.contains("telefon uzaktayken"))
+        assertNull(AnonsKarari.yerAciklamasi(AnonsYerleri.TELEFON))
+        assertTrue(AnonsKarari.saatKonusabilir(AnonsYerleri.OTOMATIK))
+        assertTrue(AnonsKarari.saatKonusabilir(AnonsYerleri.SAAT))
+        assertFalse(AnonsKarari.saatKonusabilir(AnonsYerleri.TELEFON))
+        assertFalse(AnonsKarari.saatKonusabilir(null))
+    }
+
+    @Test
+    fun arayuzMetinleriSenDiliTasimaz() {
+        val metinler = listOfNotNull(
+            AnonsKarari.yerAciklamasi(AnonsYerleri.OTOMATIK),
+            AnonsKarari.DENEME_METNI,
+            AnonsKarari.bilgiMetni(AnonsYerleri.SAAT, false, SesDurumu.KONUSTU),
+            AnonsKarari.bilgiMetni(AnonsYerleri.SAAT, true, SesDurumu.MOTOR_YOK),
+        ) + SesDurumu.entries.map { AnonsKarari.denemeSonucu(it, true) }
+        val sen = Regex("(^|\\s)(sen|senin|seni)(\\s|$)", RegexOption.IGNORE_CASE)
+        for (m in metinler) assertFalse(m, sen.containsMatchIn(m))
     }
 }

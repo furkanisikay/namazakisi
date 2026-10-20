@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.res.painterResource
+import com.furkanisikay.namazakisi.saat.R
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +27,7 @@ import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.CompactButton
+import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.ScreenScaffold
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
@@ -72,8 +76,15 @@ fun AnaEkran(
     onCamiCevap: (cevap: String, yerId: String) -> Unit = { _, _ -> },
     /** Telefona istek sürüyor (düğmeler kilitli, çift dokunuş olmasın). */
     istekSuruyor: Boolean = false,
-    /** Saat anons edecekken Türkçe ses bulunamadı (saat W3, fikir 9) — kibar bilgi satırı. */
-    turkceSesYok: Boolean = false,
+    /**
+     * Saat sesli anonsu (saat W3, fikir 9): konuşamıyorsa nedeni (hoparlör / motor / Türkçe
+     * ses yok) — kibar bilgi satırı; null = sorun yok ya da saat bu ayarla konuşmaz.
+     */
+    sesBilgisi: String? = null,
+    /** "Sesi deneyin" düğmesinin açıklaması (ör. otomatik ayarda telefon yanındayken susar). */
+    sesAciklamasi: String? = null,
+    /** Saat bu ayarla konuşabiliyorsa deneme (null = düğme yok). */
+    onSesDene: (() -> Unit)? = null,
 ) {
     val liste = rememberTransformingLazyColumnState()
     val donusum = rememberTransformationSpec()
@@ -117,6 +128,7 @@ fun AnaEkran(
                                     g = gorunum,
                                     saniyeGoster = saniyeGoster,
                                     onKildim = { onay = gorunum.satir },
+                                    ortuluMu = onay != null,
                                     modifier = Modifier.fillMaxWidth().height(ekran.screenHeightDp.dp),
                                 )
                                 yuk == null && guncellemeGerekli -> BilgiMetni(GUNCELLEME_METNI, Modifier.padding(horizontal = 16.dp))
@@ -173,10 +185,8 @@ fun AnaEkran(
                     if (yuk != null && guncellemeGerekli) {
                         item(key = "guncelleme") { BilgiMetni(GUNCELLEME_METNI) }
                     }
-                    if (turkceSesYok) {
-                        item(key = "turkce_ses") {
-                            BilgiMetni("Saatinizde Türkçe ses yok; sesli anonslar yalnız titreşimle bildirilir.")
-                        }
+                    if (sesBilgisi != null) {
+                        item(key = "ses_bilgisi") { BilgiMetni(sesBilgisi) }
                     }
                     if (yuk != null && !bildirimIzni) {
                         item(key = "izin") {
@@ -206,6 +216,7 @@ fun AnaEkran(
                             onClick = onTesbihat,
                             colors = ButtonDefaults.filledTonalButtonColors(),
                             modifier = Modifier.semantics { contentDescription = "Tesbihat sayacını açın" },
+                            icon = { DugmeIkonu(R.drawable.ic_tesbihat) },
                             label = { Text("Tesbihat") },
                         )
                     }
@@ -215,8 +226,23 @@ fun AnaEkran(
                             onClick = onKible,
                             colors = ButtonDefaults.filledTonalButtonColors(),
                             modifier = Modifier.semantics { contentDescription = "Kıble pusulasını açın" },
+                            icon = { DugmeIkonu(R.drawable.ic_kible) },
                             label = { Text("Kıble") },
                         )
+                    }
+                    // Sesli okuma denemesi: vakit beklemeden "saat konuşuyor mu?" sorusunu cevaplar.
+                    if (onSesDene != null) {
+                        item(key = "ses_dene") {
+                            CompactButton(
+                                onClick = onSesDene,
+                                colors = ButtonDefaults.filledTonalButtonColors(),
+                                modifier = Modifier.semantics { contentDescription = "Saatin sesli okumasını deneyin" },
+                                label = { Text("Sesi deneyin") },
+                            )
+                        }
+                        if (sesAciklamasi != null) {
+                            item(key = "ses_aciklama") { BilgiMetni(sesAciklamasi) }
+                        }
                     }
                     // Saate sığmayan ekranlar telefonda açılır (yalnız gezinme bağlantıları).
                     item(key = "telefonda") { BilgiMetni("Telefonda açın", Modifier.padding(top = 8.dp)) }
@@ -262,6 +288,12 @@ fun AnaEkran(
  * Telefon saatin tanımadığı DAHA YENİ bir şema gönderdi → güncellenmesi gereken SAAT
  * uygulamasıdır (eski metin telefonu işaret ediyordu).
  */
+/** Liste düğmelerinin simgesi: tile'daki kısayollarla aynı tek renkli çizim (dekoratif). */
+@Composable
+private fun DugmeIkonu(kaynak: Int) {
+    Icon(painterResource(kaynak), contentDescription = null, modifier = Modifier.size(18.dp))
+}
+
 private const val GUNCELLEME_METNI = "Saatinizdeki Namaz Akışı'nı güncelleyin."
 
 private val TELEFON_EKRANLARI = listOf(

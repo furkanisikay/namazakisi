@@ -28,7 +28,7 @@ import com.furkanisikay.namazakisi.saat.telefon.TelefondaAc
 import com.furkanisikay.namazakisi.saat.telefon.CamiDurumDeposu
 import com.furkanisikay.namazakisi.saat.telefon.TelefonIstemcisi
 import com.furkanisikay.namazakisi.saat.cekirdek.TelefonKomutu
-import com.furkanisikay.namazakisi.saat.cekirdek.AnonsYerleri
+import com.furkanisikay.namazakisi.saat.cekirdek.AnonsKarari
 import com.furkanisikay.namazakisi.saat.hatirlatma.SaatAnonsu
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.hatirlatma.Hatirlatici
@@ -159,6 +159,10 @@ class AnaAktivite : ComponentActivity() {
             }
             val cami = remember(camiSurum, simdi / 30_000) { camiDepo.durum(simdi) }
             var istekSuruyor by remember { mutableStateOf(false) }
+            // Sesli okuma denemesi (saat W3): sonuç diske yazılır, bilgi satırı yeniden okunur.
+            var sesSurum by remember { mutableIntStateOf(0) }
+            var sesDeneniyor by remember { mutableStateOf(false) }
+            val hoparlor = remember { SaatAnonsu.hoparlorVarMi(this@AnaAktivite) }
 
             // `surum` değişince depo yeniden okunur (her saniye değil — yalnız veri değişince).
             val yuk = remember(surum) { depo.yuk() }
@@ -190,9 +194,27 @@ class AnaAktivite : ComponentActivity() {
                     onKible = { startActivity(Intent(this@AnaAktivite, KibleAktivite::class.java)) },
                     onTelefondaAc = { TelefondaAc.ac(this@AnaAktivite, it) },
                     cami = cami,
-                    turkceSesYok = remember(surum) {
-                        val yer = yuk?.anonsYeri
-                        (yer == AnonsYerleri.OTOMATIK || yer == AnonsYerleri.SAAT) && SaatAnonsu.turkceYok(this@AnaAktivite)
+                    sesBilgisi = remember(surum, sesSurum) {
+                        AnonsKarari.bilgiMetni(yuk?.anonsYeri, hoparlor, SaatAnonsu.sonDurum(this@AnaAktivite))
+                    },
+                    sesAciklamasi = AnonsKarari.yerAciklamasi(yuk?.anonsYeri),
+                    onSesDene = if (AnonsKarari.saatKonusabilir(yuk?.anonsYeri) && hoparlor) {
+                        {
+                            if (!sesDeneniyor) {
+                                sesDeneniyor = true
+                                SaatAnonsu.konus(this@AnaAktivite, AnonsKarari.DENEME_METNI) { sonuc ->
+                                    sesDeneniyor = false
+                                    sesSurum++
+                                    TelefondaAc.onay(
+                                        this@AnaAktivite,
+                                        sonuc == AnonsKarari.SesDurumu.KONUSTU,
+                                        AnonsKarari.denemeSonucu(sonuc, hoparlor = true),
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        null
                     },
                     istekSuruyor = istekSuruyor,
                     onNamazModu = {

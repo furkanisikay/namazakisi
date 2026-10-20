@@ -11,6 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.wear.ongoing.OngoingActivity
 import androidx.wear.ongoing.Status
 import com.furkanisikay.namazakisi.saat.R
+import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.TelefonKomutu
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.hatirlatma.MuhafizBildirimci
@@ -72,7 +73,8 @@ object CamideBildirimi {
         )
         val metin = durum.modBitisMs?.let { "Namaz modu · bitiş ${VakitHesabi.saat(it)}" } ?: camide.ad
         val bildirim = NotificationCompat.Builder(context, KANAL)
-            .setSmallIcon(R.drawable.ic_vakit)
+            .setSmallIcon(R.drawable.ic_cami)
+            .setColor(SaatPaleti.int(SaatPaleti.EYLEM))
             .setContentTitle("Camidesiniz")
             .setContentText(metin)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
@@ -83,7 +85,7 @@ object CamideBildirimi {
             .setTimeoutAfter(camide.bitisMs - simdi)
             .setContentIntent(ac)
         OngoingActivity.Builder(context, ETIKET, BILDIRIM_NO, bildirim)
-            .setStaticIcon(R.drawable.ic_vakit)
+            .setStaticIcon(R.drawable.ic_cami)
             .setTouchIntent(ac)
             .setStatus(Status.Builder().addTemplate("#d#").addPart("d", Status.TextPart("Camidesiniz")).build())
             .setTitle("Camidesiniz")

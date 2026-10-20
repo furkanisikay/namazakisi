@@ -107,4 +107,65 @@ class KibleKarariTest {
         // Hizada W2'nin tek onayı korunur: sürekli tık YOK.
         org.junit.Assert.assertNull(KibleKarari.yonlendirmeAraligiMs(3.0, hizali = true))
     }
+
+    // --- Uyarlamalı süzgeç (kıble cilası) -------------------------------------------
+
+    @Test
+    fun uyarlamaliAlfaSapmaylaBuyur() {
+        val a = KibleKarari.UyarlamaliAciSuzgeci
+        assertEquals(a.EN_AZ_ALFA, a.alfa(0.0), 1e-12)
+        assertEquals(a.EN_AZ_ALFA, a.alfa(a.SAKIN_DERECE), 1e-12)
+        assertEquals(a.EN_FAZLA_ALFA, a.alfa(a.HIZLI_DERECE), 1e-12)
+        assertEquals(a.EN_FAZLA_ALFA, a.alfa(170.0), 1e-12)
+        assertTrue(a.alfa(10.0) > a.alfa(5.0))
+    }
+
+    @Test
+    fun uyarlamaliSuzgecTitremeyiBastirir() {
+        val f = KibleKarari.UyarlamaliAciSuzgeci()
+        f.ekle(100.0)
+        var enUzak = 0.0
+        // ±2° el titremesi: çıktı 100°'den 0,5°'den fazla oynamaz (sabit 0,25 alfa ≈ 1°+ oynatırdı).
+        repeat(60) { i ->
+            val cikti = f.ekle(if (i % 2 == 0) 102.0 else 98.0)
+            enUzak = maxOf(enUzak, KibleKarari.sapma(cikti - 100.0))
+        }
+        assertTrue("en uzak=$enUzak", enUzak < 0.5)
+    }
+
+    @Test
+    fun uyarlamaliSuzgecGercekDonusuHizliIzler() {
+        val hizli = KibleKarari.UyarlamaliAciSuzgeci()
+        val sabit = KibleKarari.AciSuzgeci()
+        hizli.ekle(0.0)
+        sabit.ekle(0.0)
+        var h = 0.0
+        var s = 0.0
+        repeat(6) {
+            h = hizli.ekle(90.0)
+            s = sabit.ekle(90.0)
+        }
+        // 6 örnekte (≈ 0,1 sn) uyarlamalı süzgeç hedefe sabitten daha çok yaklaşır.
+        assertTrue("uyarlamali=$h sabit=$s", KibleKarari.sapma(90.0 - h) < KibleKarari.sapma(90.0 - s))
+        assertTrue("uyarlamali=$h", KibleKarari.sapma(90.0 - h) < 10.0)
+    }
+
+    @Test
+    fun uyarlamaliSuzgecSarmadaDolasmaz() {
+        val f = KibleKarari.UyarlamaliAciSuzgeci()
+        f.ekle(358.0)
+        repeat(30) { f.ekle(2.0) }
+        val c = f.ekle(2.0)
+        // 358 → 2 dönüşü 4°'lik kısa yoldan; 180 civarına uğramaz.
+        assertTrue("cikti=$c", KibleKarari.sapma(c - 2.0) < 2.0)
+    }
+
+    @Test
+    fun donusMetniYonVeBesDerecelikAdim() {
+        assertEquals("Sağa 35°", KibleKarari.donusMetni(33.0))
+        assertEquals("Sola 90°", KibleKarari.donusMetni(270.0))
+        assertEquals("Sağa 5°", KibleKarari.donusMetni(1.0))
+        assertEquals("Arkanızda", KibleKarari.donusMetni(178.0))
+        assertEquals("Sola 10°", KibleKarari.donusMetni(-11.0))
+    }
 }

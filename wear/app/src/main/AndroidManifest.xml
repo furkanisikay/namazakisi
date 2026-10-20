@@ -22,6 +22,17 @@
          eski sistem bilinmeyen izni yok sayar. -->
     <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
 
+    <!--
+      Saat anonsu (TextToSpeech): Android 11+ paket görünürlüğünde metin okuma motorları
+      ancak bu sorgu bildirilirse görünür (TextToSpeech belgesi). Yoksa onInit hata döner,
+      saat sessizce hiç konuşmaz. İzin DEĞİLDİR; Data Safety beyanı değişmez.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
     <!-- Play: saat uygulaması olduğunu bildirir (required=false VERİLMEZ). -->
     <uses-feature android:name="android.hardware.type.watch" />
 

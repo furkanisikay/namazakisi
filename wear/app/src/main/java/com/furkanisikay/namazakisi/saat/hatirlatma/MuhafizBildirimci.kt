@@ -7,8 +7,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.furkanisikay.namazakisi.saat.R
+import com.furkanisikay.namazakisi.saat.cekirdek.CanliIkon
 import com.furkanisikay.namazakisi.saat.cekirdek.PlanKaydi
+import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
+import com.furkanisikay.namazakisi.saat.komplikasyon.KomplikasyonOrtak
 import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
 
 /**
@@ -78,7 +80,9 @@ object MuhafizBildirimci {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         val bildirim = NotificationCompat.Builder(context, k.id)
-            .setSmallIcon(R.drawable.ic_vakit)
+            // Vaktin simgesi; acil uyarıda kum saatli ("vakit çıkıyor") — `CanliIkon`.
+            .setSmallIcon(KomplikasyonOrtak.canliIkonu(CanliIkon.muhafiz(kayit.vakit, kayit.acil)))
+            .setColor(SaatPaleti.int(if (kayit.acil) SaatPaleti.ACIL else SaatPaleti.vakitRengi(kayit.vakit)))
             .setContentTitle(kayit.baslik)
             .setContentText(kayit.govde)
             .setStyle(NotificationCompat.BigTextStyle().bigText(kayit.govde))

@@ -232,14 +232,16 @@ do {
 
 do {
     let t = TacBiriktirici(esik: 1.0)
-    esitMi(t.olay(0.4, zamanMs: 0), false, "esik altinda sayim yok")
-    esitMi(t.olay(0.7, zamanMs: 10), true, "ayni yonde birikim sayar")
-    esitMi(t.olay(1.5, zamanMs: 50), false, "120 ms icinde ikinci sayim yutulur")
-    esitMi(t.olay(1.5, zamanMs: 300), true, "aralik sonrasi sayar")
-    esitMi(t.olay(-0.6, zamanMs: 600), false, "ters yon birikimi")
-    esitMi(t.olay(0.6, zamanMs: 610), false, "yon degisince birikim sifirlanir")
-    esitMi(t.olay(5.0, zamanMs: 900), true, "hizli savurus tek sayim")
-    esitMi(t.olay(0, zamanMs: 1000), false, "sifir olay")
+    esitMi(t.olay(0.4, zamanMs: 0), .yok, "esik altinda adim yok")
+    esitMi(t.olay(0.7, zamanMs: 10), .say, "ayni yonde birikim sayar")
+    esitMi(t.olay(1.5, zamanMs: 50), .yok, "120 ms icinde ikinci adim yutulur")
+    esitMi(t.olay(1.5, zamanMs: 300), .say, "aralik sonrasi sayar")
+    esitMi(t.olay(-0.6, zamanMs: 600), .yok, "ters yon birikimi")
+    esitMi(t.olay(0.6, zamanMs: 610), .yok, "yon degisince birikim sifirlanir")
+    esitMi(t.olay(5.0, zamanMs: 900), .say, "hizli savurus tek adim")
+    esitMi(t.olay(0, zamanMs: 1000), .yok, "sifir olay")
+    esitMi(t.olay(-1.2, zamanMs: 1200), .geriAl, "ters yon GERI ALIR (eskiden sayardi)")
+    esitMi(t.olay(-0.5, zamanMs: 1250), .yok, "geri almadan sonra birikim atildi")
 }
 
 // MARK: - 7) Saat deposu (yeni yuk, surum, bekleyen)

@@ -10,6 +10,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.wear.ongoing.OngoingActivity
 import androidx.wear.ongoing.Status
 import com.furkanisikay.namazakisi.saat.R
+import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.Tesbihat
 import com.furkanisikay.namazakisi.saat.hatirlatma.MuhafizBildirimci
 import com.furkanisikay.namazakisi.saat.ui.TesbihatAktivite
@@ -46,6 +47,8 @@ object TesbihatEtkinligi {
         val metin = Tesbihat.kisaMetin(durum)
         val bildirim = NotificationCompat.Builder(context, KANAL)
             .setSmallIcon(R.drawable.ic_tesbihat)
+            // Eylem yeşili vurgu: sistem simgeyi boyarsa gri zeminde gri kalmasın.
+            .setColor(SaatPaleti.int(SaatPaleti.EYLEM))
             .setContentTitle(context.getString(R.string.tesbihat_adi))
             .setContentText(metin)
             .setCategory(NotificationCompat.CATEGORY_STOPWATCH)

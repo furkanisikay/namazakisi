@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Seri: alev (içi oyulmuş çekirdek). Seri günü sonu canlı sayacı. Tek renk (sistem boyar). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd"
+        android:pathData="M12.2,1.8C12.9,5 17.8,8.3 17.8,14.2A5.8,5.8 0,0 1,6.2 14.2C6.2,11.4 7.6,9.4 9,8.2C9.1,10 9.9,11.2 11,11.8C10.5,8.4 11.1,4.6 12.2,1.8Z
+            M12,14.2C13.3,15.3 14.2,16.4 14.2,17.6A2.2,2.2 0,0 1,9.8 17.6C9.8,16.4 10.7,15.3 12,14.2Z" />
+</vector>

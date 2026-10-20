@@ -79,32 +79,36 @@ public enum Tesbihat {
 
 /**
  * Digital Crown donusunu sayima cevirir (Kotlin `TacBiriktirici` ikizi):
- *  - ayni YONDE `esik` kadar birikim bir sayim uretir; yon degisince birikim sifirlanir,
- *  - bir olay en fazla BIR sayim uretir (hizli savurus tek sayim),
- *  - iki sayim arasi en az `enAzAralikMs` (ayni centigin iki olayi cift saymasin).
+ *  - YON ANLAMLIDIR: pozitif donus (saat yonu / yukari) SAYAR, ters donus son sayimi
+ *    GERI ALIR (eskiden iki yon de sayiyordu),
+ *  - ayni YONDE `esik` kadar birikim bir adim uretir; yon degisince birikim sifirlanir,
+ *  - bir olay en fazla BIR adim uretir (hizli savurus tek adim),
+ *  - iki adim arasi en az `enAzAralikMs`, yonden bagimsiz (ayni centigin iki olayi cift saymasin).
  */
+public enum TacAdimi: Equatable { case yok, say, geriAl }
+
 public final class TacBiriktirici {
     public static let enAzAralikMs: Int64 = 120
 
     private let esik: Double
     private let enAzAralik: Int64
     private var birikim: Double = 0
-    private var sonSayimMs: Int64?
+    private var sonAdimMs: Int64?
 
     public init(esik: Double, enAzAralikMs: Int64 = TacBiriktirici.enAzAralikMs) {
         self.esik = esik
         self.enAzAralik = enAzAralikMs
     }
 
-    /// - Returns: bu olay bir sayim uretti mi
-    public func olay(_ delta: Double, zamanMs: Int64) -> Bool {
-        if delta == 0 || delta.isNaN { return false }
+    public func olay(_ delta: Double, zamanMs: Int64) -> TacAdimi {
+        if delta == 0 || delta.isNaN { return .yok }
         if birikim != 0 && (delta > 0) != (birikim > 0) { birikim = 0 }
         birikim += delta
-        if abs(birikim) < esik { return false }
+        if abs(birikim) < esik { return .yok }
+        let yon: TacAdimi = birikim > 0 ? .say : .geriAl
         birikim = 0
-        if let son = sonSayimMs, zamanMs >= son, zamanMs - son < enAzAralik { return false }
-        sonSayimMs = zamanMs
-        return true
+        if let son = sonAdimMs, zamanMs >= son, zamanMs - son < enAzAralik { return .yok }
+        sonAdimMs = zamanMs
+        return yon
     }
 }

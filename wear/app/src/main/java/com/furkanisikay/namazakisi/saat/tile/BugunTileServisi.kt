@@ -242,7 +242,7 @@ class BugunTileServisi : TileService() {
         else -> ozet.satirlar.withIndex()
             .firstOrNull { (i, s) -> i != aktif && GunDurumu.halBul(s) == GunDurumu.Hal.KALAN }
             ?.let { "${it.value.ad} kılınmadı" }
-            ?: ozet.satirlar.firstOrNull { !it.girdi }?.let { "Sıradaki ${it.ad} · ${VakitHesabi.saat(it.ms)}" }
+            ?: ozet.satirlar.firstOrNull { !it.girdi }?.let { "Sıradaki: ${it.ad} ${VakitHesabi.saat(it.ms)}" }
             ?: ""
     }
 

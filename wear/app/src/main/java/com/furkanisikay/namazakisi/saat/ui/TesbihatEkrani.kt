@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,14 +30,26 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.AlertDialog
 import androidx.wear.compose.material3.AlertDialogDefaults
 import androidx.wear.compose.material3.AppScaffold
-import androidx.wear.compose.material3.Button
+import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.CompactButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
 import android.os.SystemClock
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathMeasure
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.Canvas
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -57,8 +68,13 @@ import com.furkanisikay.namazakisi.saat.cekirdek.Tesbihat
 
 /**
  * Tesbihat sayacı ekranı (issue #293). Ekranın TAMAMI tek dokunma hedefidir (+1);
- * taç/çerçeve dönüşü de sayar. Kenarda o fazın ilerleme halkası, ortada faz adı ve
- * büyük rakam. Uzun basış = "baştan başla" (onaylı). Arayüz dili kibar "siz".
+ * taç/çerçeve saat yönünde çevrilince sayar, ters yönde son sayımı geri alır. Kenarda
+ * o fazın ilerleme halkası, ortada faz adı ve büyük rakam. Uzun basış = "baştan başla"
+ * (onaylı). Arayüz dili kibar "siz".
+ *
+ * Taşma kuralı: halkanın içindeki her metin `guvenliGenislikOrani()` sütununda, tek satır
+ * (tehlil hariç) + üç nokta; boyu `sinirliBoyut` (yazı ölçeği en fazla 1,15×) ya da
+ * `sabitBoyut`. 454 yuvarlak / 384 kare ekranda ve 2× yazı ölçeğinde de kenara taşmaz.
  *
  * Taç dönüşü ancak ekran AÇIKKEN gelir (Wear OS ekran kapalıyken rotary olayını
  * uygulamaya iletmez); ekran uyanınca sayım diskten kaldığı yerden sürer.
@@ -79,7 +95,7 @@ fun TesbihatEkrani(
     LaunchedEffect(Unit) { odak.requestFocus() }
 
     val aciklama = if (durum.tamamMi) {
-        "Tesbihat tamamlandı, ${Tesbihat.TOPLAM} / ${Tesbihat.TOPLAM}"
+        "Tesbihat tamamlandı, ${Tesbihat.TOPLAM} / ${Tesbihat.TOPLAM}. ${Tesbihat.KAYNAK}"
     } else {
         "${durum.faz.ad}, ${durum.fazSayisi} / ${durum.faz.hedef}. Toplam ${durum.toplam} / ${Tesbihat.TOPLAM}"
     }
@@ -91,7 +107,12 @@ fun TesbihatEkrani(
                 modifier = Modifier
                     .fillMaxSize()
                     .onRotaryScrollEvent { olay ->
-                        if (!durum.tamamMi && tac.olay(olay.verticalScrollPixels, olay.uptimeMillis)) onSay()
+                        // Saat yönü sayar, ters yön son sayımı geri alır (tamamken de: 100 → 99).
+                        when (tac.olay(olay.verticalScrollPixels, olay.uptimeMillis)) {
+                            TacBiriktirici.Adim.SAY -> if (!durum.tamamMi) onSay()
+                            TacBiriktirici.Adim.GERI_AL -> if (durum.toplam > 0) onGeriAl()
+                            TacBiriktirici.Adim.YOK -> Unit
+                        }
                         true
                     }
                     .focusRequester(odak)
@@ -137,68 +158,167 @@ fun TesbihatEkrani(
 
 @Composable
 private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
+    val azalt = hareketAzaltilmis()
+    // Sayım "vuruşu": rakam bir kez hafifçe büyüyüp yaylanarak yerine oturur (olay tetikli;
+    // hızlı çevirmede — önceki sayımdan < 120 ms — atlanır, boşta hareket yok).
+    val vurus = remember { Animatable(1f) }
+    // Açılış anıyla başlar: ilk kompozisyon "hızlı" sayılır, ekran açılırken rakam vurmaz.
+    val sonVurus = remember { longArrayOf(SystemClock.uptimeMillis()) }
+    LaunchedEffect(durum.toplam) {
+        val an = SystemClock.uptimeMillis()
+        val hizli = azalt || an - sonVurus[0] < ILERLEME_MS
+        sonVurus[0] = an
+        if (hizli) {
+            vurus.snapTo(1f)
+        } else {
+            vurus.snapTo(VURUS_OLCEGI)
+            vurus.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium))
+        }
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+        modifier = Modifier.fillMaxWidth(guvenliGenislikOrani(kareOran = HALKA_ICI_KARE_ORANI)),
     ) {
         if (durum.faz == Tesbihat.Faz.TEHLIL) {
-            // Yüzü tamamlayan tek söz: rakam yerine metnin kendisi okunur.
+            // Yüzü tamamlayan tek söz: rakam yerine metnin kendisi okunur. Boyu yazı ölçeğinden
+            // bağımsız (uzun metin; büyük ölçekte yuvarlak ekranın kenarına taşıyordu).
             Text(
                 Tesbihat.TEHLIL_METNI,
-                style = MaterialTheme.typography.bodySmall,
+                fontSize = sabitBoyut(0.052f),
+                lineHeight = sabitBoyut(0.064f),
                 textAlign = TextAlign.Center,
-                maxLines = 6,
+                color = renk(SaatPaleti.METIN),
+                maxLines = 5,
+                overflow = TextOverflow.Ellipsis,
             )
         } else {
-            Text(durum.faz.ad, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
+            Text(
+                durum.faz.ad,
+                fontSize = sinirliBoyut(0.075f),
+                fontWeight = FontWeight.Medium,
+                color = renk(SaatPaleti.METIN),
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
             Text(
                 durum.fazSayisi.toString(),
                 style = RAKAM,
                 fontSize = sabitBoyut(0.24f),
                 fontWeight = FontWeight.SemiBold,
                 color = renk(SaatPaleti.METIN),
+                maxLines = 1,
+                modifier = Modifier.graphicsLayer {
+                    scaleX = vurus.value
+                    scaleY = vurus.value
+                },
             )
         }
         // Fazın hedefi; toplam 100 halkadan okunur (üç yay).
         Text(
             if (durum.faz == Tesbihat.Faz.TEHLIL) "${durum.toplam} / ${Tesbihat.TOPLAM}" else "/ ${durum.faz.hedef}",
-            style = MaterialTheme.typography.labelSmall,
+            fontSize = sinirliBoyut(0.052f),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
         )
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(4.dp))
         CompactButton(
             onClick = onGeriAl,
             enabled = durum.toplam > 0,
+            colors = ButtonDefaults.filledTonalButtonColors(),
             modifier = Modifier.semantics { contentDescription = "Son sayımı geri alın" },
-            label = { Text("Geri al") },
+            label = { Text("Geri al", maxLines = 1, overflow = TextOverflow.Ellipsis) },
         )
     }
 }
 
+/**
+ * Bitiş ekranı: ortada onay işareti çizilir (300 ms) ve dışına bir halka bir kez yayılıp
+ * söner (520 ms) — "Kıldım" onayıyla aynı dil. Metin kısa ve tek satırlık: eski düzende
+ * başlık + tehlil adı + kaynak + geniş düğme 384 dp kare ekranda / büyük yazı ölçeğinde
+ * taşıyordu. Kaynak ekran okuyucu açıklamasında da okunur.
+ */
 @Composable
 private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
+    val azalt = hareketAzaltilmis()
+    val tik = remember { Animatable(if (azalt) 1f else 0f) }
+    val halka = remember { Animatable(if (azalt) 1f else 0f) }
+    LaunchedEffect(Unit) {
+        if (azalt) return@LaunchedEffect
+        launch { halka.animateTo(1f, tween(BITIS_HALKA_MS, easing = CubicBezierEasing(0.2f, 0f, 0f, 1f))) }
+        tik.animateTo(1f, tween(BITIS_TIK_MS, easing = LinearEasing))
+    }
+    val yesil = renk(SaatPaleti.EYLEM)
+    val ust = renk(SaatPaleti.EYLEM_USTU)
+    // Kare ekran (384 px ≈ 192 dp) küçüktür ve halka yine DAİREDİR: sabit 44 dp onay işareti
+    // + metin + 48 dp dokunma payılı düğme dairenin iç karesine sığmıyor, düğme alttaki
+    // yeşil yayın üstüne biniyordu. Onay işareti ekran genişliğiyle ölçeklenir ve sütun
+    // hafifçe yukarı alınır (alt yay, üstteki boşluktan daha geniştir).
+    val genislik = LocalConfiguration.current.screenWidthDp
+    val isaretBoyu = (genislik * 0.17f).coerceAtMost(44f).dp
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+        modifier = Modifier
+            .fillMaxWidth(guvenliGenislikOrani(kareOran = HALKA_ICI_KARE_ORANI))
+            .offset(y = -(genislik * 0.03f).dp),
     ) {
-        Text("Tamamlandı", style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
+        Canvas(Modifier.size(isaretBoyu).clearAndSetSemantics { }) {
+            val h = halka.value
+            // 0 ve 1'de çizilmez: halka yalnız sahne sürerken vardır (boşta sıfır çizim).
+            if (h > 0f && h < 1f) {
+                drawCircle(
+                    yesil.copy(alpha = 1f - h),
+                    radius = size.minDimension / 2f + 16.dp.toPx() * h,
+                    style = Stroke(width = 3.dp.toPx() * (1f - h * 0.5f)),
+                )
+            }
+            drawCircle(yesil)
+            val yol = Path().apply {
+                moveTo(size.width * 0.27f, size.height * 0.53f)
+                lineTo(size.width * 0.44f, size.height * 0.69f)
+                lineTo(size.width * 0.74f, size.height * 0.34f)
+            }
+            val olcu = PathMeasure().apply { setPath(yol, false) }
+            val parca = Path()
+            olcu.getSegment(0f, olcu.length * tik.value, parca, true)
+            drawPath(parca, ust, style = Stroke(width = 3.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round))
+        }
+        Spacer(Modifier.height(2.dp))
         Text(
-            Tesbihat.Faz.TEHLIL.ad,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.primary,
+            "Tamamlandı",
+            fontSize = sinirliBoyut(0.085f),
+            fontWeight = FontWeight.SemiBold,
+            color = renk(SaatPaleti.METIN),
             textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
         Text(
             Tesbihat.KAYNAK,
-            style = MaterialTheme.typography.labelSmall,
+            fontSize = sinirliBoyut(0.048f),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
-        Spacer(Modifier.height(8.dp))
-        Button(onClick = onYenidenBasla, label = { Text("Yeniden başlayın") })
+        Spacer(Modifier.height(2.dp))
+        CompactButton(
+            onClick = onYenidenBasla,
+            colors = ButtonDefaults.buttonColors(containerColor = yesil, contentColor = ust),
+            modifier = Modifier.semantics { contentDescription = "Tesbihata yeniden başlayın" },
+            label = { Text("Yeniden başla", fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+        )
     }
 }
+
+private const val VURUS_OLCEGI = 1.12f
+
+/** Halka ekran kare olsa da dairedir → kare ekranda da dairenin iç karesi (≈ %71) güvenli. */
+private const val HALKA_ICI_KARE_ORANI = 0.70f
+private const val BITIS_TIK_MS = 300
+private const val BITIS_HALKA_MS = 520
 
 /** Üç yayın her biri 300°'lik çerçevede (ana ekran yayıyla aynı; tepe sistem saatine). */
 private const val YAY_ARASI = 8f

@@ -50,7 +50,8 @@ const ANONS_SECENEKLERI: Secenek<AnonsYeri>[] = [
         deger: 'otomatik',
         ikon: 'exchange-alt',
         baslik: 'Telefonda, uzaktaysa saatte',
-        aciklama: 'Telefonunuz yanınızda değilken sesli okumayı saatiniz yapar.',
+        aciklama:
+            'Telefonunuz yanınızdayken okumayı telefonunuz yapar, saatiniz bilerek konuşmaz (iki cihaz aynı cümleyi okumasın). Telefonunuz uzaktayken okumayı saatiniz yapar.',
     },
     {
         deger: 'saat',
@@ -153,8 +154,9 @@ export const SaatAyarlariSayfasi: React.FC = () => {
                 </AyarGrubu>
                 <Text className="text-xs leading-5 mx-4 -mt-4 mb-6" style={{ color: renkler.metinIkincil }}>
                     Yalnız sesli anonsu açık hatırlatmalar okunur. İki cihaz aynı cümleyi birlikte okumaz. Camideyken ya
-                    da Namaz modu açıkken saatiniz de konuşmaz. Saatinizde hoparlör ya da Türkçe ses yoksa saat yalnız
-                    titreşir.
+                    da Namaz modu açıkken saatiniz de konuşmaz. Saatinizde hoparlör, metin okuma motoru ya da Türkçe ses
+                    yoksa saat yalnız titreşir. Saatin sesini Namaz Akışı saat uygulamasındaki &quot;Sesi deneyin&quot; ile
+                    hemen deneyebilirsiniz.
                 </Text>
 
                 <AyarGrubu baslik="Bilekten yapabilecekleriniz">
