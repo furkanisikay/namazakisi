@@ -311,6 +311,8 @@ const MainTabs: React.FC = () => {
       <Tab.Screen
         name="Kible"
         component={KibleSayfasi}
+        // Tablet/açık katlanabilirde okunabilir sütun (Ayarlar/Kaza yığınlarıyla aynı sarmalayıcı).
+        layout={ayarEkraniYerlesimi}
         options={{
           title: 'Kıble',
           tabBarLabel: 'Kıble',
@@ -335,6 +337,8 @@ const MainTabs: React.FC = () => {
       <Tab.Screen
         name="Ilerleme"
         component={IlerlemeSayfasi}
+        // Tablet/açık katlanabilirde okunabilir sütun (Ayarlar/Kaza yığınlarıyla aynı sarmalayıcı).
+        layout={ayarEkraniYerlesimi}
         options={{
           title: 'İlerleme',
           tabBarLabel: 'İlerleme',

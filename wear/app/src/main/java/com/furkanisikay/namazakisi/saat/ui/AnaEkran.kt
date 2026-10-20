@@ -95,6 +95,14 @@ fun AnaEkran(
     val gorunum = yuk?.let { AnaEkranKarari.kur(it, simdi, bugun, bekleyen) }
     val satirlar = yuk?.let { VakitHesabi.satirlar(it, simdi, bugun, bekleyen) } ?: emptyList()
     val sayilan = gorunum?.sayilan
+    val namazModuAcik = cami?.modBitisMs != null
+    val namazModu: @Composable () -> Unit = {
+        NamazModuSatiri(
+            acikBitis = cami?.modBitisMs?.let { VakitHesabi.saat(it) },
+            kilitli = istekSuruyor,
+            onDokun = onNamazModu,
+        )
+    }
 
     // Bilek jesti (saat W3): merkezdeki öğeden bir adım; ilk kompozisyonda (sira 0) yok.
     LaunchedEffect(jest.sira) {
@@ -172,16 +180,7 @@ fun AnaEkran(
                             )
                         }
                     }
-                    // Namaz modu bilekten (saat W3, fikir 1). Durum telefondan gelir; telefon yoksa
-                    // düğme yine çizilir, basınca "Telefonunuza ulaşılamadı" denir.
-                    item(key = "namaz_modu") {
-                        val bitis = cami?.modBitisMs
-                        NamazModuSatiri(
-                            acikBitis = bitis?.let { VakitHesabi.saat(it) },
-                            kilitli = istekSuruyor,
-                            onDokun = onNamazModu,
-                        )
-                    }
+                    if (namazModuAcik) item(key = "namaz_modu") { namazModu() }
                     if (yuk != null && guncellemeGerekli) {
                         item(key = "guncelleme") { BilgiMetni(GUNCELLEME_METNI) }
                     }
@@ -207,6 +206,11 @@ fun AnaEkran(
                                 .graphicsLayer { with(donusum) { applyContainerTransformation(scrollProgress) } },
                         )
                     }
+                    // Namaz modu bilekten (saat W3, fikir 1). Durum telefondan gelir; telefon yoksa
+                    // düğme yine çizilir, basınca "Telefonunuza ulaşılamadı" denir. Vakit
+                    // listesinin ALTINDA: kaydırınca ilk görülen şey günün vakitleri olsun.
+                    // Açıkken (kapatma eylemi) listenin üstünde durur — açık modun izi görünür kalsın.
+                    if (!namazModuAcik) item(key = "namaz_modu") { namazModu() }
                     if (yuk != null) {
                         item(key = "konum") { BilgiMetni(yuk.konumAdi, Modifier.padding(top = 6.dp)) }
                     }

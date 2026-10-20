@@ -180,17 +180,19 @@ class BugunTileServisi : TileService() {
         val aktifSatir = aktif?.let { ozet.satirlar[it] }
         val kalanVar = ozet.haller.contains(GunDurumu.Hal.KALAN)
 
+        // "Bugün 2/5" yazısı KALDIRILDI: çevredeki beş dilim aynı şeyi metinsiz söylüyor
+        // (kılınan yeşil). Sayı ekran okuyucuda kalır; uygulamayı açma dokunuşu vakit adına geçti.
         val sutun = LayoutElementBuilders.Column.Builder()
             .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
-            .addContent(
-                LayoutElementBuilders.Box.Builder()
-                    .setModifiers(tiklanabilir(UYGULAMAYI_AC, uygulamayiAc(), "Bugün ${ozet.kilinanSayisi} vakit kılındı. Uygulamayı açın"))
-                    .addContent(TileOrtak.metin("Bugün ${ozet.kilinanSayisi}/${GunDurumu.FARZ_SAYISI}", 12f, SaatPaleti.METIN2))
-                    .build()
-            )
+        val acmaAciklamasi = "Bugün ${ozet.kilinanSayisi}/${GunDurumu.FARZ_SAYISI} vakit kılındı. Uygulamayı açın"
         if (sayilan != null) {
             val girisMi = sayilan.mod == KalanSure.Mod.GIRIS
-            sutun.addContent(TileOrtak.metin(sayilan.ad, 20f, SaatPaleti.vakitRengi(sayilan.vakit), true))
+            sutun.addContent(
+                LayoutElementBuilders.Box.Builder()
+                    .setModifiers(tiklanabilir(UYGULAMAYI_AC, uygulamayiAc(), acmaAciklamasi))
+                    .addContent(TileOrtak.metin(sayilan.ad, 20f, SaatPaleti.vakitRengi(sayilan.vakit), true))
+                    .build()
+            )
             sutun.addContent(
                 TileOrtak.dinamikMetin(
                     TileOrtak.kalanMetni(
@@ -202,6 +204,13 @@ class BugunTileServisi : TileService() {
                 )
             )
             sutun.addContent(TileOrtak.metin(AnaEkranKarari.altYazi(sayilan.mod), 11f, SaatPaleti.METIN2))
+        } else {
+            sutun.addContent(
+                LayoutElementBuilders.Box.Builder()
+                    .setModifiers(tiklanabilir(UYGULAMAYI_AC, uygulamayiAc(), acmaAciklamasi))
+                    .addContent(TileOrtak.metin("Bugün ${ozet.kilinanSayisi}/${GunDurumu.FARZ_SAYISI}", 12f, SaatPaleti.METIN2))
+                    .build()
+            )
         }
         sutun.addContent(bosluk(6f))
         val dugme = aktifSatir?.let { s ->

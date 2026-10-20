@@ -81,13 +81,15 @@ fun AnaAmbientEkrani(g: AnaEkranKarari.Gorunum?, bilgi: String, ambient: Ambient
                         fontWeight = FontWeight.Light,
                         maxLines = 1,
                     )
-                    Text(
-                        g.sayac.ana,
-                        color = ana,
-                        style = RAKAM.copy(drawStyle = Stroke(width = 2f)),
-                        fontSize = sabitBoyut(0.20f),
-                        fontWeight = FontWeight.Medium,
-                        maxLines = 1,
+                    // Ambient: saniye yok, rakamlar yalnız kontur (piksel ışığı az).
+                    SureGosterimi(
+                        sayac = g.sayac,
+                        saniyeGoster = false,
+                        rakamRengi = ana,
+                        birimRengi = ikincil,
+                        saniyeRengi = ikincil,
+                        rakamStili = RAKAM.copy(drawStyle = Stroke(width = 2f)),
+                        rakamAgirligi = FontWeight.Medium,
                     )
                     Text(
                         g.altYazi,

@@ -10,8 +10,21 @@ package com.furkanisikay.namazakisi.saat.cekirdek
  */
 object AnaEkranKarari {
 
-    /** Sayaç: iri "S:DD" + küçük ":ss" (saniye yalnız etkileşimli modda çizilir). */
-    data class Sayac(val ana: String, val saniye: String)
+    /** Birimli süre parçası: iri rakam + küçük birim. [saniye] parçası yalnız etkileşimli modda çizilir. */
+    data class Parca(val sayi: String, val birim: String, val saniye: Boolean = false)
+
+    /**
+     * Sayaç BİRİMLİDİR: "1 sa 16 dk", saatin altında "16 dk 42 sn". Eski birimsiz "1:16"
+     * hem 1 saat 16 dakika hem 1 dakika 16 saniye okunabiliyordu (ve tile/liste "1 sa 16 dk"
+     * yazıyordu — iki yüzey aynı şeyi iki biçimde söylüyordu).
+     */
+    data class Sayac(val parcalar: List<Parca>) {
+        /** Ambient / ekran görüntüsü kipinde saniye parçası düşer. */
+        fun gorunur(saniyeGoster: Boolean): List<Parca> = if (saniyeGoster) parcalar else parcalar.filterNot { it.saniye }
+
+        /** Rakam karakteri sayısı (yazı boyu seçimi: 4 hane dar ekrana sığsın). */
+        fun haneSayisi(saniyeGoster: Boolean): Int = gorunur(saniyeGoster).filterNot { it.saniye }.sumOf { it.sayi.length }
+    }
 
     enum class Dugme {
         /** Vakit sürüyor, kılınmadı → "Kıldım" (iki dokunuşlu onay) */
@@ -59,7 +72,12 @@ object AnaEkranKarari {
         val sa = toplamSn / 3600
         val dk = (toplamSn % 3600) / 60
         val sn = toplamSn % 60
-        return Sayac("$sa:${dk.toString().padStart(2, '0')}", ":${sn.toString().padStart(2, '0')}")
+        val saniye = Parca(sn.toString().padStart(2, '0'), "sn", saniye = true)
+        return if (sa > 0) {
+            Sayac(listOf(Parca("$sa", "sa"), Parca("$dk", "dk")))
+        } else {
+            Sayac(listOf(Parca("$dk", "dk"), saniye))
+        }
     }
 
     fun altYazi(mod: KalanSure.Mod): String =
