@@ -67,6 +67,10 @@ on:
         description: 'ekran-yukle için mağaza karelerini üreten iOS Ekran Görüntüleri çalışma kimliği'
         required: false
         default: ''
+      asc_saat_run_id:
+        description: 'ekran-yukle için Apple Watch karelerini üreten çalışma kimliği (tur=saat; boş = saat kareleri yüklenmez)'
+        required: false
+        default: ''
       ozellik_koyu:
         description: 'Özellik turunu koyu temada da çek'
         type: boolean
@@ -407,6 +411,15 @@ jobs:
           run-id: ${{ inputs.asc_kare_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: ⌚ Apple Watch karelerini indir
+        if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_saat_run_id != '' }}
+        uses: actions/download-artifact@v8
+        with:
+          name: ios-saat-kareleri
+          path: indirilen-saat
+          run-id: ${{ inputs.asc_saat_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 🏪 İşlem
         env:
           ISLEM: ${{ inputs.asc_islem }}
@@ -416,6 +429,10 @@ jobs:
           if [ "$ISLEM" = "ekran-yukle" ]; then
             # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
             node scripts/app-store-ekran-goruntuleri.js indirilen/mockup --degistir
+            # Apple Watch kareleri (Ultra 3 simülatörü 422x514 = APP_WATCH_ULTRA).
+            if [ -d indirilen-saat ]; then
+              node scripts/app-store-ekran-goruntuleri.js indirilen-saat --tip APP_WATCH_ULTRA --degistir
+            fi
           elif [ -n "$SURUM" ]; then
             node scripts/app-store-surum.js "$ISLEM" --surum "$SURUM"
           else
