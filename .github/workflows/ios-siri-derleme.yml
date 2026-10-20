@@ -35,6 +35,9 @@ on:
       - 'android/app/src/test/resources/muhafiz-plan-kimligi-ornekleri.json'
       - 'plugins/withNamazWidget.js'
       - 'plugins/withNamazSaat.js'
+      - 'plugins/withNamazTV.js'
+      - 'tv/app/src/test/resources/vakit-fiksturu.json'
+      - 'tv/app/src/main/assets/iller.json'
       - 'wear/app/src/test/resources/ornek-yuk.json'
       - 'src/core/siri/**'
       - 'src/core/widget/iosWidgetKarari.ts'
@@ -99,6 +102,16 @@ jobs:
             targets/saat/ortak/Tesbihat.swift \
             targets/saat/test/main.swift
           "$RUNNER_TEMP/saat-test" wear/app/src/test/resources/ornek-yuk.json
+
+      # Apple TV panosu: adhan JS'in Swift taşıması — telefonun fikstürüyle epoch ms BİREBİR.
+      - name: 🧪 TV çekirdeği (telefonun adhan fikstürü)
+        run: |
+          set -eo pipefail
+          swiftc -swift-version 5 -o "$RUNNER_TEMP/tv-test" \
+            targets/tv/ortak/TvVakitHesabi.swift \
+            targets/tv/ortak/TvPano.swift \
+            targets/tv/test/main.swift
+          "$RUNNER_TEMP/tv-test" tv/app/src/test/resources/vakit-fiksturu.json tv/app/src/main/assets/iller.json
 
   derleme:
     name: 🍎 Simülatör derlemesi + Metadata.appintents
@@ -261,3 +274,46 @@ jobs:
           [ -d "$SAAT/PlugIns/NamazSaatWidget.appex" ] || { echo "Komplikasyon uzantısı YOK"; ls "$SAAT"; exit 1; }
           /usr/libexec/PlistBuddy -c 'Print :WKApplication' "$SAAT/Info.plist"
           echo "✅ Apple Watch uygulaması + komplikasyonlar gömülü"
+
+  tv-derleme:
+    name: 📺 Apple TV derlemesi (simülatör)
+    needs: swift-cekirdek
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Bağımlılıkları kur
+        run: npm ci
+
+      - name: 🍎 Araç sürümleri
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i tv || true
+
+      - name: 🏗️ Expo prebuild (iOS, TV hedefi AÇIK)
+        run: npx expo prebuild --platform ios --no-install
+        env:
+          EXPO_NO_TELEMETRY: '1'
+          NAMAZ_IOS_TV: '1'
+
+      # TV hedefi pod'a ve RN'e bağlanmaz → pod install gerekmez; yalnız -target derlenir.
+      - name: 🔨 tvOS simülatörü için derle
+        working-directory: ios
+        run: |
+          set -eo pipefail
+          PROJ=$(ls -d *.xcodeproj | head -1)
+          xcodebuild -project "$PROJ" -target NamazTV -configuration Release -sdk appletvsimulator \
+            CODE_SIGNING_ALLOWED=NO -quiet
+          APP=build/Release-appletvsimulator/NamazTV.app
+          [ -d "$APP" ] || { echo "NamazTV.app üretilmedi"; find build -maxdepth 3 -name '*.app'; exit 1; }
+          [ -f "$APP/iller.json" ] || { echo "iller.json pakette yok"; exit 1; }
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist"
+          echo "✅ NamazTV.app derlendi"

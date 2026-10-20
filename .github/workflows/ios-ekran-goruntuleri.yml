@@ -18,6 +18,8 @@ name: 📸 iOS Ekran Görüntüleri
 #   ipad    — magaza kareleri iPad Pro 13" simulatorunde (2064x2752; uygulama iPad'de
 #           calistigi icin App Store'da ZORUNLU set). Artifact `ios-ipad-ekran-goruntuleri`;
 #           ASC'ye `tur=asc asc_islem=ekran-yukle asc_ipad_run_id=<bu kosu>` ile gider.
+#   tv      — YALNIZ Apple TV panosu kareleri (ayri is `tv-kareler`; artifact
+#           `ios-tv-kareleri`). TV hedefi (`NAMAZ_IOS_TV=1`) yalniz bu yolda acilir.
 #   saat    — YALNIZ Apple Watch kareleri (ayri is `saat-kareler`; artifact
 #           `ios-saat-kareleri`). iPhone isi bu degerde HIC kosmaz; saat hedefi
 #           (`NAMAZ_IOS_SAAT=1`) yalniz bu yolda acilir. ASC'ye GONDERILMEZ.
@@ -41,7 +43,7 @@ on:
         required: false
         default: false
       tur:
-        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | ipad (iPad 13" mağaza kareleri) | saat (Apple Watch) | asc (kare yok, App Store Connect işlemi)'
+        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | ipad (iPad 13" mağaza kareleri) | tv (Apple TV) | saat (Apple Watch) | asc (kare yok, App Store Connect işlemi)'
         type: choice
         required: false
         default: 'magaza'
@@ -50,6 +52,7 @@ on:
           - ozellik
           - ikisi
           - ipad
+          - tv
           - saat
           - asc
       asc_islem:
@@ -94,7 +97,7 @@ jobs:
   kareler:
     name: 📸 Simülatörde kare çek
     # Apple Watch turu ve ASC islemi ayri istir (asagida); iPhone hatti o degerlerde kosmaz.
-    if: ${{ inputs.tur != 'saat' && inputs.tur != 'asc' }}
+    if: ${{ inputs.tur != 'saat' && inputs.tur != 'asc' && inputs.tur != 'tv' }}
     # macos-26 (Xcode 26) BILINCLI: (a) idb-companion formulasi o macOS'un en yeni
     # Xcode'unu sart kosuyor — macos-15/Xcode 16.4'te "Xcode.app 26.0 is required"
     # ile reddediliyor; (b) TestFlight build'lerimiz zaten Xcode 26 SDK ile
@@ -399,6 +402,77 @@ jobs:
         with:
           name: ios-saat-kareleri
           path: kareler-saat/
+          retention-days: 14
+          if-no-files-found: warn
+
+  # --- APPLE TV TURU — iPhone isinden BAGIMSIZ, yalniz `tur: tv` ---
+  # TV hedefi pod'a ve RN'e baglanmaz → pod install ve iPhone derlemesi gerekmez.
+  tv-kareler:
+    name: 📺 Apple TV kareleri
+    if: ${{ inputs.tur == 'tv' }}
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      SIMCTL_CHILD_TZ: Europe/Istanbul
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Bağımlılıkları kur
+        run: npm ci
+
+      - name: 🏗️ Expo prebuild (iOS, TV hedefi AÇIK)
+        run: npx expo prebuild --platform ios --no-install
+        env:
+          EXPO_NO_TELEMETRY: '1'
+          NAMAZ_IOS_TV: '1'
+
+      - name: 🔨 Apple TV uygulamasını derle (tvOS simülatör, Release)
+        working-directory: ios
+        run: |
+          set -eo pipefail
+          PROJ=$(ls -d *.xcodeproj | head -1)
+          xcodebuild -project "$PROJ" -target NamazTV -configuration Release -sdk appletvsimulator \
+            CODE_SIGNING_ALLOWED=NO -quiet
+          [ -d build/Release-appletvsimulator/NamazTV.app ] || { echo "NamazTV.app üretilmedi"; exit 1; }
+
+      - name: 📸 Kareleri çek
+        run: |
+          set -eo pipefail
+          RT=$(xcrun simctl list runtimes -j | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const r=JSON.parse(d).runtimes.filter(x=>x.platform==="tvOS"&&x.isAvailable);console.log(r.length?r[r.length-1].identifier:"")})')
+          [ -z "$RT" ] && { echo "tvOS simülatör çalışma zamanı yok"; xcrun simctl list runtimes; exit 1; }
+          DT=$(xcrun simctl list devicetypes -j | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const t=JSON.parse(d).devicetypes.filter(x=>/Apple TV 4K/.test(x.name));console.log(t.length?t[t.length-1].identifier:"")})')
+          [ -z "$DT" ] && { echo "Apple TV 4K cihaz tipi yok"; xcrun simctl list devicetypes | grep -i tv; exit 1; }
+          UDID=$(xcrun simctl create "tv-kare" "$DT" "$RT")
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          APP=ios/build/Release-appletvsimulator/NamazTV.app
+          BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
+          xcrun simctl install "$UDID" "$APP"
+          mkdir -p kareler-tv
+          # 1) Ilk acilis: il secimi (kayit yok).
+          xcrun simctl launch "$UDID" "$BUNDLE"
+          sleep 12
+          xcrun simctl io "$UDID" screenshot kareler-tv/01-il-secimi.png
+          xcrun simctl terminate "$UDID" "$BUNDLE" || true
+          # 2) Pano: `-il_plaka 34` arguman alani UserDefaults okumasini ezer (Istanbul).
+          xcrun simctl launch "$UDID" "$BUNDLE" -il_plaka 34
+          sleep 12
+          xcrun simctl io "$UDID" screenshot kareler-tv/02-pano.png
+          for f in kareler-tv/*.png; do echo "$f -> $(sips -g pixelWidth -g pixelHeight "$f" | tail -2 | tr '\n' ' ')"; done
+
+      - name: ⬆️ TV karelerini yükle
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-tv-kareleri
+          path: kareler-tv/
           retention-days: 14
           if-no-files-found: warn
 

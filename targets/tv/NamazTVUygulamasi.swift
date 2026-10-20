@@ -1,0 +1,215 @@
+import SwiftUI
+import UIKit
+
+// APPLE TV PANOSU — tvOS SwiftUI uygulamasi (Android TV `tv/` panosunun ikizi).
+//
+// Pano YALNIZ GOSTERIR: vakitler cihazda, telefonla ayni hesapla (`TvVakitHesabi`)
+// bulunur; ag ve konum izni yok, il elle secilir (`iller.json`, telefonun manuel konum
+// listesi). Secim `UserDefaults` > `il_plaka` (ekran goruntusu hatti `-il_plaka 34`
+// baslatma argumaniyla tohumlar: arguman alani UserDefaults okumasini ezer).
+//
+// Hedef `plugins/withNamazTV.js` ile prebuild'de kurulur (bayrak varsayilan KAPALI).
+
+@main
+struct NamazTVUygulamasi: App {
+    var body: some Scene {
+        WindowGroup {
+            TvKokGorunumu()
+        }
+    }
+}
+
+/// Telefonun koyu tema tokenlari (`koyuTema` + yesil palet). TV daima koyudur.
+/// Kontrast: beyaz metin aktif satirda `birincilKoyu` (#388E3C, ~4.6:1) uzerinde; `birincil`
+/// (#4CAF50) beyazla 2.8:1'de kaldigi icin METIN ZEMINI olmaz; amber yalniz noktada.
+enum TvRenk {
+    static let arkaplan = Color(red: 0x12 / 255, green: 0x12 / 255, blue: 0x12 / 255)
+    static let kart = Color(red: 0x1E / 255, green: 0x1E / 255, blue: 0x1E / 255)
+    static let metin = Color.white
+    static let metinIkincil = Color(red: 0xB0 / 255, green: 0xB0 / 255, blue: 0xB0 / 255)
+    static let sinir = Color(red: 0x33 / 255, green: 0x33 / 255, blue: 0x33 / 255)
+    static let birincil = Color(red: 0x4C / 255, green: 0xAF / 255, blue: 0x50 / 255)
+    static let birincilKoyu = Color(red: 0x38 / 255, green: 0x8E / 255, blue: 0x3C / 255)
+    static let uyari = Color(red: 0xFF / 255, green: 0xCA / 255, blue: 0x28 / 255)
+}
+
+struct TvKokGorunumu: View {
+    @AppStorage("il_plaka") private var plaka: String = ""
+    private let iller: [TvIl] = {
+        guard let yol = Bundle.main.url(forResource: "iller", withExtension: "json"),
+              let veri = try? Data(contentsOf: yol) else { return [] }
+        return TvIlListesi.coz(veri)
+    }()
+
+    var body: some View {
+        Group {
+            if let il = TvIlListesi.bul(iller, plaka.isEmpty ? nil : plaka) {
+                TvPanoGorunumu(il: il) { plaka = "" }
+            } else {
+                TvIlSecimGorunumu(iller: iller) { plaka = $0.plaka }
+            }
+        }
+        .background(TvRenk.arkaplan.ignoresSafeArea())
+        .preferredColorScheme(.dark)
+    }
+}
+
+/// Il secimi: D-pad ile odaklanan liste. Konum donanimi olmadigi icin il merkezi kullanilir.
+struct TvIlSecimGorunumu: View {
+    let iller: [TvIl]
+    let secildi: (TvIl) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            Text("Şehrinizi seçin")
+                .font(.system(size: 52, weight: .semibold))
+                .foregroundColor(TvRenk.metin)
+            Text("Namaz vakitleri il merkezine göre hesaplanır. Seçiminizi sonra değiştirebilirsiniz.")
+                .font(.system(size: 28))
+                .foregroundColor(TvRenk.metinIkincil)
+            ScrollView {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 24), count: 4), spacing: 24) {
+                    ForEach(iller) { il in
+                        Button {
+                            secildi(il)
+                        } label: {
+                            Text(il.ad)
+                                .font(.system(size: 30))
+                                .frame(maxWidth: .infinity, minHeight: 72)
+                        }
+                        .accessibilityLabel("\(il.ad), seçin")
+                    }
+                }
+                .padding(.vertical, 24)
+            }
+        }
+        .padding(.horizontal, 80)
+        .padding(.vertical, 54)
+    }
+}
+
+/// Pano: solda saat, geri sayim ve bilgi serit; sagda alti vakit.
+struct TvPanoGorunumu: View {
+    let il: TvIl
+    let konumuDegistir: () -> Void
+    private let bolge = TimeZone.current
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 1)) { baglam in
+            let simdi = Int64(baglam.date.timeIntervalSince1970 * 1000)
+            let durum = TvPanoHesabi.hesapla(simdiMs: simdi, bolge: bolge) { tarih in
+                TvVakitOnbellegi.paylasilan.al(il: il, tarih: tarih)
+            }
+            let ofset = TvKaydirma.ofset(simdi)
+            HStack(alignment: .top, spacing: 60) {
+                solSutun(durum: durum, simdi: simdi)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                vakitListesi(durum: durum)
+                    .frame(maxWidth: .infinity)
+            }
+            .offset(x: CGFloat(ofset.0), y: CGFloat(ofset.1))
+            // TV tasma (overscan) guvenli alani.
+            .padding(.horizontal, 80)
+            .padding(.vertical, 54)
+        }
+        // Pano saatlerce acik durur; yalniz bu ekranda ekran kapanmaz.
+        .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
+        .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
+    }
+
+    @ViewBuilder
+    private func solSutun(durum: TvPanoDurumu, simdi: Int64) -> some View {
+        VStack(alignment: .leading, spacing: 28) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(il.ad).font(.system(size: 46, weight: .semibold)).foregroundColor(TvRenk.metin)
+                Text(TvBicim.tarih(durum.tarih)).font(.system(size: 30)).foregroundColor(TvRenk.metinIkincil)
+            }
+            HStack(alignment: .lastTextBaseline, spacing: 10) {
+                Text(TvBicim.saat(simdi, bolge))
+                    .font(.system(size: 190, weight: .light).monospacedDigit())
+                    .foregroundColor(TvRenk.metin)
+                Text(TvBicim.saniye(simdi, bolge))
+                    .font(.system(size: 60).monospacedDigit())
+                    .foregroundColor(TvRenk.metinIkincil)
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                Text("\(durum.gorunenAd(durum.siradaki)) vaktine kalan")
+                    .font(.system(size: 32)).foregroundColor(TvRenk.metinIkincil)
+                Text(TvBicim.geriSayim(durum.kalanMs))
+                    .font(.system(size: 96, weight: .semibold).monospacedDigit())
+                    .foregroundColor(TvRenk.metin)
+                    .accessibilityLabel("\(durum.gorunenAd(durum.siradaki)) vaktine kalan süre \(TvBicim.geriSayim(durum.kalanMs))")
+            }
+            bilgiSeridi(durum: durum)
+            Spacer(minLength: 0)
+            Button(action: konumuDegistir) {
+                Label("Konumu değiştirin", systemImage: "mappin.and.ellipse").font(.system(size: 26))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func bilgiSeridi(durum: TvPanoDurumu) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            if let k = durum.kerahat {
+                // Saate hal eki EKLENMEZ ("07:42'e" okunusa gore degisir).
+                bilgiSatiri(TvRenk.uyari, "Kerahat vakti: \(k.tur.ad), bitiş \(TvBicim.saat(k.bitis, bolge)). \(k.tur.aciklama)")
+            } else if let s = durum.siradakiKerahat {
+                bilgiSatiri(TvRenk.sinir, "Sıradaki kerahat: \(s.tur.ad) \(TvBicim.saat(s.baslangic, bolge))–\(TvBicim.saat(s.bitis, bolge))")
+            }
+            if durum.cuma {
+                bilgiSatiri(TvRenk.birincil, "Bugün cuma. Cuma namazı öğle vaktinde kılınır (giriş \(TvBicim.saat(durum.vakitler.ogle, bolge))).")
+            }
+        }
+    }
+
+    private func bilgiSatiri(_ renk: Color, _ metin: String) -> some View {
+        HStack(spacing: 16) {
+            Circle().fill(renk).frame(width: 16, height: 16)
+            Text(metin).font(.system(size: 26)).foregroundColor(TvRenk.metin).lineLimit(2)
+        }
+    }
+
+    @ViewBuilder
+    private func vakitListesi(durum: TvPanoDurumu) -> some View {
+        VStack(spacing: 14) {
+            ForEach(TvVakit.allCases, id: \.self) { vakit in
+                let aktif = vakit == durum.aktif
+                let siradaki = vakit == durum.siradaki && durum.siradakiMs == durum.vakitler.saat(vakit)
+                HStack {
+                    Text(durum.gorunenAd(vakit))
+                        .font(.system(size: 44, weight: aktif ? .bold : .regular))
+                    Spacer()
+                    Text(TvBicim.saat(durum.vakitler.saat(vakit), bolge))
+                        .font(.system(size: 50, weight: aktif ? .bold : .medium).monospacedDigit())
+                }
+                .foregroundColor(TvRenk.metin)
+                .padding(.horizontal, 36)
+                .frame(height: 104)
+                .background(RoundedRectangle(cornerRadius: 24).fill(aktif ? TvRenk.birincilKoyu : TvRenk.kart))
+                .overlay(RoundedRectangle(cornerRadius: 24).stroke(siradaki ? TvRenk.birincil : .clear, lineWidth: 3))
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(
+                    "\(durum.gorunenAd(vakit)) \(TvBicim.saat(durum.vakitler.saat(vakit), bolge))"
+                        + (aktif ? ", şu anki vakit" : "") + (siradaki ? ", sıradaki vakit" : "")
+                )
+            }
+        }
+        .frame(maxHeight: .infinity)
+    }
+}
+
+/// Gun bazinda vakit onbellegi: saniyelik cizim adhan hesabini her seferinde yapmasin.
+final class TvVakitOnbellegi {
+    static let paylasilan = TvVakitOnbellegi()
+    private var harita: [String: TvGunlukVakitler] = [:]
+
+    func al(il: TvIl, tarih: TvTarih) -> TvGunlukVakitler {
+        let anahtar = "\(il.plaka)_\(tarih.iso)"
+        if let v = harita[anahtar] { return v }
+        if harita.count > 6 { harita.removeAll() }
+        let v = TvVakitHesabi.hesapla(lat: il.lat, lng: il.lng, tarih: tarih)
+        harita[anahtar] = v
+        return v
+    }
+}
