@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İkindi: alçalmış güneş, ışınları yalnız üstte, altta ufuk. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF" android:pathData="M12,10a4.5,4.5 0,1 0,0.01 0z" />
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="2" android:strokeLineCap="round"
+        android:pathData="M12,4v2M3.5,14.5h2M18.5,14.5h2M6,8.5l1.4,1.4M18,8.5l-1.4,1.4M3,21.5h18" />
+</vector>

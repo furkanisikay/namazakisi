@@ -32,6 +32,15 @@ import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import com.furkanisikay.namazakisi.tv.R
 import com.furkanisikay.namazakisi.tv.cekirdek.Il
 
 /**
@@ -67,20 +76,26 @@ fun IlSecimEkrani(
             .background(Renkler.arkaplan)
             .padding(horizontal = 48.dp, vertical = 27.dp),
     ) {
-        Text("Bulunduğunuz ili seçin", color = Renkler.metin, fontSize = 34.sp, fontWeight = FontWeight.SemiBold)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painterResource(R.drawable.ic_konum),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(Renkler.birincil),
+                modifier = Modifier.size(36.dp),
+            )
+            Spacer(Modifier.width(14.dp))
+            Text("Bulunduğunuz ili seçin", color = Renkler.metin, fontSize = 36.sp, fontWeight = FontWeight.SemiBold)
+        }
         Spacer(Modifier.height(6.dp))
-        Text(
-            "Vakitler il merkezine göre, telefon uygulamasıyla aynı yöntemle hesaplanır. " +
-                "Seçiminizi daha sonra panodaki “Konumu değiştirin” düğmesiyle değiştirebilirsiniz.",
-            color = Renkler.metinIkincil,
-            fontSize = 18.sp,
-        )
-        Spacer(Modifier.height(20.dp))
+        // Tek kısa satır: ayrıntı (aynı hesap yöntemi, sonradan değiştirme) panoda zaten görünür.
+        Text("Vakitler il merkezine göre hesaplanır.", color = Renkler.metinIkincil, fontSize = 24.sp)
+        Spacer(Modifier.height(16.dp))
+        // 3 sütun: en uzun il adı ("Afyonkarahisar", "Kahramanmaraş") 10-foot boyda kesilmeden sığar.
         LazyVerticalGrid(
-            columns = GridCells.Fixed(5),
+            columns = GridCells.Fixed(3),
             state = izgara,
-            contentPadding = PaddingValues(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -100,17 +115,31 @@ fun IlSecimEkrani(
                         focusedContentColor = Renkler.arkaplan,
                     ),
                     border = ClickableSurfaceDefaults.border(
-                        focusedBorder = Border(BorderStroke(2.dp, Renkler.birincil)),
+                        focusedBorder = Border(BorderStroke(3.dp, Renkler.birincil), inset = (-4).dp),
                     ),
-                    scale = ClickableSurfaceDefaults.scale(focusedScale = 1.06f),
+                    scale = ClickableSurfaceDefaults.scale(focusedScale = 1.05f),
                 ) {
-                    Text(
-                        "${il.plaka}  ${il.ad}",
-                        fontSize = 20.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp),
+                    ) {
+                        // Plaka ikincil ve sabit genişlikte: adlar tek hizada başlar.
+                        Text(
+                            il.plaka,
+                            fontSize = 20.sp,
+                            modifier = Modifier.width(36.dp).alpha(0.7f),
+                        )
+                        Text(
+                            il.ad,
+                            fontSize = 26.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        if (secili) {
+                            Spacer(Modifier.weight(1f))
+                            Text("✓", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
                 }
             }
         }
