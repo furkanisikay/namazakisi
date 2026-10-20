@@ -7,6 +7,7 @@
 //     modules/expo-siri-kisayollari/ios/VakitKarari.swift \
 //     modules/expo-siri-kisayollari/ios/SiriDeposu.swift \
 //     modules/expo-siri-kisayollari/ios/WidgetKarari.swift \
+//     modules/expo-siri-kisayollari/ios/SessizlikKarari.swift \
 //     modules/expo-siri-kisayollari/test/main.swift
 //   /tmp/siri-test android/app/src/test/resources/widget-ornek.json \
 //     modules/expo-siri-kisayollari/test/siri-ornek.json \
@@ -343,6 +344,35 @@ if let ogle = widget.vakitler.first(where: { $0.vakit == "ogle" }) {
     esitMi(dugme("ogle", vakitler: nil), .gecersiz, "dugme: cizelge yoksa gecersiz")
 } else {
     hatalar.append("widget fiksturunde ogle yok")
+}
+
+// MARK: - 7) iPhone "Namazda sessiz" penceresi — siri-ornek.json > sessizlik
+
+struct SessizlikDurumOrnegi: Decodable {
+    let ad: String
+    let simdiMs: Int64
+    let dakika: Int
+    let sessiz: Bool
+    let vakit: String?
+    let bitisMs: Int64?
+}
+
+struct SessizlikBolumu: Decodable {
+    let durumlar: [SessizlikDurumOrnegi]
+}
+
+struct SessizlikOrnek: Decodable {
+    let vakitler: [SiriVakitAni]
+    let sessizlik: SessizlikBolumu
+}
+
+let sessizlik = oku(argumanlar[2], SessizlikOrnek.self)
+for d in sessizlik.sessizlik.durumlar {
+    esitMi(
+        SessizlikKarari.durum(sessizlik.vakitler, simdiMs: d.simdiMs, dakika: d.dakika),
+        SessizlikDurumu(sessiz: d.sessiz, vakit: d.vakit, bitisMs: d.bitisMs),
+        "sessizlik[\(d.ad)]"
+    )
 }
 
 // MARK: - Sonuc

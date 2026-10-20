@@ -229,6 +229,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   KAZA_ONERI_KAYDI: '@namaz_akisi/kaza_oneri_kaydi',
   // Sade görünüm (issue #295) — YEDEKLENİR (beyaz listenin ÜÇ yerinde).
   SADE_GORUNUM_AYARLARI: 'sade_gorunum_ayarlari',
+  // iPhone "Namazda sessiz" kurulum rehberinde tamamlandı işaretli adımlar. Yalnız ekran
+  // kolaylığıdır (Odak'ın gerçek durumu okunamaz); cihaza özgü → yedeklemeye GİRMEZ.
+  IOS_SESSIZ_KURULUM: '@namaz_akisi/ios_sessiz_kurulum',
   // TEK RIZA (sade tasarım, Dalga 3): sesli okuma + gerçek alarm onayı BİR KEZ, tüm
   // hatırlatmalar için. Eski yüzey kayıtlarından bir kez göç eder (`core/hatirlatma/rizalar`).
   // YEDEKLENİR (beyaz listenin ÜÇ yerinde).

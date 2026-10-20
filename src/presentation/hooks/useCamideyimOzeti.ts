@@ -1,17 +1,23 @@
 /**
  * Ayarlar ana sayfasındaki Camideyim / Namaz modu satırlarının özet metni.
  * Kaynak native'dir; ekran açılışında ve uygulamaya dönüşte okunur.
- * Köprü yoksa (iOS) `kullanilabilir` false → satırlar hiç çizilmez.
+ * Android'de köprü yoksa `kullanilabilir` false → satır çizilmez. iPhone'da satır daima
+ * görünür ve Odak kurulum rehberini açar; özet rehberde işaretlenen adımlardan gelir.
  */
 import { useCallback, useEffect, useState } from 'react';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
 import * as kopru from '../../../modules/expo-cami-geofence/src';
 import { camideyimAyarlariniNormalize } from '../../core/cami/camideyimAyarlari';
+import { Depolama } from '../../data/local/Depolama';
+import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { iosSessizKurulumuNormalize, iosSessizOzeti } from '../../core/sessiz/iosSessizKurulum';
 
 export interface CamideyimOzeti {
     kullanilabilir: boolean;
     cami: string;
     namazModu: string;
+    /** iPhone: satırın tüm özeti (Odak kurulum rehberi). Android'de yok. */
+    iosOzeti?: string;
 }
 
 export function camideyimOzetiOlustur(
@@ -40,14 +46,21 @@ export function camideyimOzetiOlustur(
 }
 
 export function useCamideyimOzeti(): CamideyimOzeti {
-    const kullanilabilir = kopru.camiModuluVarMi();
-    const [ozet, setOzet] = useState({ cami: '', namazModu: '' });
+    // iPhone'da native modül yoktur; satır Odak + Kısayollar rehberini açar (`iosOzeti`).
+    const ios = Platform.OS === 'ios';
+    const native = kopru.camiModuluVarMi();
+    const kullanilabilir = native || ios;
+    const [ozet, setOzet] = useState<Omit<CamideyimOzeti, 'kullanilabilir'>>({ cami: '', namazModu: '' });
 
     const yenile = useCallback(async () => {
-        if (!kullanilabilir) return;
-        const [ham, durum] = await Promise.all([kopru.ayarlariAl(), kopru.durumAl()]);
-        setOzet(camideyimOzetiOlustur(ham, durum));
-    }, [kullanilabilir]);
+        if (native) {
+            const [ham, durum] = await Promise.all([kopru.ayarlariAl(), kopru.durumAl()]);
+            setOzet(camideyimOzetiOlustur(ham, durum));
+        } else if (ios) {
+            const ham = await Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.IOS_SESSIZ_KURULUM).catch(() => null);
+            setOzet({ cami: '', namazModu: '', iosOzeti: iosSessizOzeti(iosSessizKurulumuNormalize(ham)) });
+        }
+    }, [native, ios]);
 
     useEffect(() => {
         yenile().catch(() => undefined);

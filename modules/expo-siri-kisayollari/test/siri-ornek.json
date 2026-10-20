@@ -329,5 +329,97 @@
         "onayMetni": null
       }
     }
-  ]
+  ],
+  "sessizlik": {
+    "aciklama": "iPhone Namazda sessiz (SessizlikKarari.swift / sessizlikKarari.ts). Beklenenler ELLE yazildi: pencere = vakit girisi + dakika (5..120 kenetli), vaktin cikisini gecmez; bitis ani DAHIL DEGIL.",
+    "durumlar": [
+      {
+        "ad": "ogle girdikten 5 dk sonra, 20 dk",
+        "simdiMs": 1781950560000,
+        "dakika": 20,
+        "sessiz": true,
+        "vakit": "ogle",
+        "bitisMs": 1781951460000
+      },
+      {
+        "ad": "ogle girdikten 25 dk sonra, 20 dk",
+        "simdiMs": 1781951760000,
+        "dakika": 20,
+        "sessiz": false,
+        "vakit": null,
+        "bitisMs": null
+      },
+      {
+        "ad": "tam bitis aninda sessiz degil",
+        "simdiMs": 1781951460000,
+        "dakika": 20,
+        "sessiz": false,
+        "vakit": null,
+        "bitisMs": null
+      },
+      {
+        "ad": "gunes vakti namaz degil",
+        "simdiMs": 1781922900000,
+        "dakika": 20,
+        "sessiz": false,
+        "vakit": null,
+        "bitisMs": null
+      },
+      {
+        "ad": "500 dk 120ye kenetlenir",
+        "simdiMs": 1781956260000,
+        "dakika": 500,
+        "sessiz": true,
+        "vakit": "ogle",
+        "bitisMs": 1781957460000
+      },
+      {
+        "ad": "0 dk 5e kenetlenir",
+        "simdiMs": 1781950440000,
+        "dakika": 0,
+        "sessiz": true,
+        "vakit": "ogle",
+        "bitisMs": 1781950560000
+      },
+      {
+        "ad": "aksam penceresi yatsi girisini gecmez",
+        "simdiMs": 1781981220000,
+        "dakika": 120,
+        "sessiz": true,
+        "vakit": "aksam",
+        "bitisMs": 1781984280000
+      }
+    ],
+    "pencereler": {
+      "tarih": "2026-06-20",
+      "dakika": 20,
+      "beklenen": [
+        {
+          "vakit": "sabah",
+          "baslangicMs": 1781915040000,
+          "bitisMs": 1781916240000
+        },
+        {
+          "vakit": "ogle",
+          "baslangicMs": 1781950260000,
+          "bitisMs": 1781951460000
+        },
+        {
+          "vakit": "ikindi",
+          "baslangicMs": 1781964660000,
+          "bitisMs": 1781965860000
+        },
+        {
+          "vakit": "aksam",
+          "baslangicMs": 1781977620000,
+          "bitisMs": 1781978820000
+        },
+        {
+          "vakit": "yatsi",
+          "baslangicMs": 1781984280000,
+          "bitisMs": 1781985480000
+        }
+      ]
+    }
+  }
 }

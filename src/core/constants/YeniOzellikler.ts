@@ -73,6 +73,29 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // iPhone "Namazda sessiz" — Odak + Kısayollar rehberi (Android'de Camideyim + Namaz modu var).
+    {
+        id: 'ios-namazda-sessiz-odak',
+        platformlar: ['ios'],
+        surum: '0.55.0',
+        tarih: '2026-10-20',
+        baslik: 'Camide telefonunuz sessize geçsin',
+        aciklama:
+            'Namaz odağını bir kez kurun: camiye ya da kendi belirlediğiniz bir yere varınca iPhone sessize geçer, ayrılınca eski hâline döner.',
+        detayAciklama:
+            'iPhone sessize almayı yalnız Odak ile yapar; uygulama bunu kendisi açamaz. Ayarlar > Namazda sessiz sayfası üç kısa adımda yol gösterir: Namaz odağını oluşturun, yakınınızdaki caminin adıyla konum ekleyin, isterseniz Kısayollar ile vakit girdikten sonraki dakikalarda da açılsın. Namaz odağı açıkken hatırlatmalarımız ses çıkarmadan ve ekranı yakmadan gelir.',
+        detaylar: [
+            'Camiye varınca açılan, çıkınca kapanan Namaz odağı',
+            'Yakınınızdaki camiler listede, adına dokunup Haritalar’da görün',
+            'Ev, iş ya da başka bir yer için de aynı yol',
+            'Kısayollar ile vakit girdikten sonraki dakikalarda sessiz',
+            'Odak açıkken hatırlatmalar sessiz gelir, hiçbiri kaybolmaz',
+        ],
+        ikon: 'volume-mute',
+        hedefSayfa: 'CamideyimAyarlari',
+        ctaEtiketi: 'Kurulumu açın',
+        kartGoster: true,
+    },
     // Kıble ekranı: kendi kamera görünümümüz + 3B pusula (Google kıble bulucu kaldırıldı).
     {
         id: 'kible-kamera-ve-3b-pusula',
