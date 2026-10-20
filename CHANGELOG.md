@@ -5,6 +5,19 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.54.0] - 2026-10-20
+
+### Eklendi
+- [hatirlatma] görsel inceleme düzeltmeleri — düzey kartı, nokta etiketleri, Özel parça, kanal ızgarası
+- [hatirlatma] özetler ikon çipiyle, adımlar zaman çizelgesi rayında, detayda canlı önizleme
+
+### Düzeltildi
+- [hatirlatma] "Vakit çıkar" ile bayrak tek satırda, yan yana
+- [hatirlatma] düzey şeridinde hiçbir etiket atlanmaz
+- [hatirlatma] "Tekrarla" anahtarı gerçek tekrardan beslenir; kanal karosunda eşit iç dolgu
+- [hatirlatma] iPhone kare bulguları — adım anahtarı hizası, yönlü fark çipi, kısa cuma notları, iOS 07/08 kareleri
+- [hatirlatma] tekrar rozeti yalnız gerçek tekrarda, düzey güncelleme düğmesi yalnız farkta, kompakt kanal karoları
+
 ## [0.53.1] - 2026-10-19
 
 ## [0.53.0] - 2026-10-19
