@@ -122,3 +122,32 @@ watchOS SwiftUI uygulaması `NamazSaat` (`<ana>.watchkitapp`, tek hedef, watchOS
 - **Eklenti hedef kurulumu:** saat hedefi `com.apple.product-type.application` + `SDKROOT = watchos`; Expo `getApplicationNativeTarget` İLK `application` hedefini ana saydığı için yeni hedefler `targets` dizisinin SONUNA eklenir. Ana hedefe "Embed Watch Content" (`$(CONTENTS_FOLDER_PATH)/Watch`, `dstSubfolderSpec 16`), saat hedefine "Embed Foundation Extensions" (13). İkon `@expo/image-utils` ile saydamlıksız 1024 PNG. EAS'e iki hedef `appExtensions` ile bildirilir; uzantının `parentBundleIdentifier`'ı SAAT uygulamasıdır.
 - **`xcodebuild`'e `-sdk iphonesimulator` VERME (saat hedefi varken)** — tüm hedeflerin `SDKROOT`'unu ezer; yalnız `-destination 'generic/platform=iOS Simulator'` (CI `ios-siri-derleme.yml > saat-derleme`, `Watch/NamazSaat.app/PlugIns/NamazSaatWidget.appex`'i doğrular).
 - **Cihazda DOĞRULANMADI:** EAS'in watchOS hedefini `appExtensions` ile imzalaması; saatten `sendMessage`'ın iPhone uygulamasını arka planda başlatması; `.backgroundTask(.watchConnectivity)` ile komplikasyon tazelemesi; Digital Crown eşiği (`by: 1` + `TacBiriktirici(esik: 1)`) ve yönü (pozitif = sayım); tamam ekranının 40/41 mm'e sığması.
+
+## Android ↔ iOS eşitlik durumu (denetim 2026-10-20)
+
+Yeni bir Android özelliği eklerken bu tabloya bak; iOS karşılığı yoksa "neden" sütununu doldur. Durum: ✅ var · 🟡 kısmi/bayrak arkasında · ❌ yok · — anlamsız.
+
+| Özellik | Android | iOS | iOS'ta mümkün mü (Apple API) | İş |
+|---|---|---|---|---|
+| Tablet düzeni (`useEkranSinifi`, iki bölme, `OkunabilirGenislik`) | ✅ | 🟡 iPad açık, yalnız dikey tam ekran (`requireFullScreen`) | Evet; yatay + Split View ayrı iş | Küçük (yapıldı) |
+| Katlanabilir postür, kapak widget'ı | ✅ | — | iPhone katlanmaz | — |
+| TV panosu | ✅ Android TV | 🟡 tvOS hedefi bayrak arkasında (`withNamazTV`) | Evet, SwiftUI tvOS uygulaması | Büyük |
+| Canlı sayaç (Now Bar / Canlı Etkinlik) | ✅ vakit, iftar, sahur, cuma, nafile, seri | 🟡 vakit/cuma/nafile; iftar, sahur, seri YOK | Kısmen: etkinlik arka planda İSTENEMEZ (push-to-start sunucu ister) | Orta |
+| Geri sayım bildirimi (vakit/iftar/sahur/seri sayacı) | ✅ chronometer'lı bildirim | ❌ | Hayır: iOS bildiriminde canlı sayaç yok (Canlı Etkinlik tek yol) | — |
+| Hızlı ayar kutusu ↔ Kontrol Merkezi | ✅ `KildimKutusuServisi` | 🟡 `NamazKildimKontrolu` (iOS 18 ControlWidget, widget bayrağıyla) | Evet (iOS 18+) | Küçük (yapıldı) |
+| Ana ekran widget'ları | ✅ küçük/geniş + kilit ekranı | 🟡 küçük/orta + kilit aksesuarları + StandBy (bayrak arkasında) | Evet | — |
+| Uygulama simgesi kısayolları (`shortcuts.xml`) | ✅ | ❌ | Evet: `UIApplicationShortcutItems` (ana ekran hızlı eylemleri) | Küçük |
+| Otomasyon eylemleri (Tasker/Rutinler ↔ Kısayollar) | ✅ "Kıldım", koşul "camide/vakit" | ✅ "Sıradaki namaz" (değer döndürür), "Kıldım", "Kıbleyi aç" | Evet | — |
+| Otomasyon TETİĞİ ("vakit girdi/çıkıyor", "camidesiniz") | ✅ Locale olayı + bildirim anahtar kelimesi | ❌ | HAYIR: üçüncü taraf uygulama Kısayollar'a kişisel otomasyon tetiği tanımlayamaz. Yedek: Kısayollar "Günün saati" tetiği + "Sıradaki namaz" eylemi | — |
+| Asistan (AppFunctions ↔ App Intents) | 🟡 üç fonksiyon, Gemini önizlemede | ✅ aynı üç eylem Siri'de | Evet | — |
+| Odak/Rahatsız Etmeyin uyumu | ✅ Namaz modu (DND kuralı) | 🟡 Odak filtresi yalnız uygulamanın kendi uyarılarını susturur | Uygulama Odak AÇAMAZ | — |
+| Camideyim / Namaz modu | ✅ | ❌ (ayrı iş: Kısayollar ile camide sessiz) | Arka plan konumu + Odak açma yok | — |
+| Sesli okuma | ✅ TTS alarmı, sessiz modu deler | 🟡 bildirim sesi olarak sentez, sessiz anahtarında duyulmaz | Sessizliği yalnız AlarmKit deler | — |
+| Gerçek alarm | ✅ | 🟡 AlarmKit (iOS 26+, izinle); ses kullanıcıya göre değil `.default` | Evet | — |
+| Bildirim sesi / titreşim seçimi | ✅ | ❌ | Ses: sistem seçici yok; titreşim: uygulama denetleyemez | — |
+| Bildirim kanalı, pil rehberi, Play güncellemesi | ✅ | — | iOS'ta karşılığı yok | — |
+| Bileklik dostu başlık rehberi | ✅ | — | iPhone bildirimleri Apple Watch'a yansır | — |
+| Arka plan konum takibi (geofence) + konum değişim bildirimi | ✅ | ❌ (bilinçli) | "Always" izni App Review riski | — |
+| Cihazlar arası eşitleme | 🟡 Drive (istemci kimliği yapılandırılmadı) | 🟡 iCloud KV (ayrı iş) | Evet | — |
+| Saat uygulaması | ✅ Wear OS | 🟡 Apple Watch bayrak arkasında (ayrı iş) | Evet | — |
+| Temalı (tek renk) uygulama simgesi | ✅ | ❌ | Evet: iOS 18 koyu/renklendirilmiş simge (`ios.icon` nesnesi) | Küçük (varlık üretimi) |
