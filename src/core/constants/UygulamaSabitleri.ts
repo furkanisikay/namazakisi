@@ -248,6 +248,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   // cihaza özgü → yedeklemeye GİRMEZ.
   SEFERILIK_AYARLARI: 'seferilik_ayarlari',
   SEFERILIK_KART_HAFIZASI: '@namaz_akisi/seferilik_kart_hafizasi',
+  /** Ana ekran izin onarım bandında "Şimdi değil" anları ({tür: ms}); cihaza özgü, yedeklenmez. */
+  KURULUM_ONARIM_ERTELEME: '@namaz_akisi/kurulum_onarim_erteleme',
   // Saat (Wear OS) iş bölümü (saat W3): uyandırma ve sesli anons NEREDE — saat
   // eşleşmesine bağlı, cihaza özgü → yedeklemeye GİRMEZ (Camideyim gibi).
   SAAT_AYARLARI: '@namaz_akisi/saat_ayarlari',

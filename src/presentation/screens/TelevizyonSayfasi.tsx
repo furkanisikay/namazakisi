@@ -127,6 +127,22 @@ export const TelevizyonSayfasi: React.FC = () => {
         }
     }, [konumVar, metniIsle, koduGoster]);
 
+    // iOS: tarayıcı okumayı OLAYLA bildirir (kullanıcı tarayıcıyı kapatırsa hiçbir şey gelmez;
+    // söz beklemek düğmeyi kalıcı kilitlerdi). Sayfa ömrü boyunca tek abonelik.
+    const metniIsleRef = useRef(metniIsle);
+    metniIsleRef.current = metniIsle;
+    useEffect(
+        () =>
+            TvEslemeServisi.iosOkumaDinle((metin) => {
+                if (islemde.current) return;
+                islemde.current = true;
+                metniIsleRef.current(metin).finally(() => {
+                    islemde.current = false;
+                });
+            }),
+        [],
+    );
+
     // Derin bağlantı: iPhone kamerasıyla okutulan QR bu sayfayı sorgu alanlarıyla açar.
     // Aynı anahtar bir kez işlenir (yeniden çizimde ikinci gönderim olmasın).
     const p = route.params;

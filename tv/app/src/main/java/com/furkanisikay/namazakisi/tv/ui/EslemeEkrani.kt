@@ -95,6 +95,7 @@ fun EslemeEkrani(
                 gelen = Il(KonumDeposu.PLAKA_TELEFON, ad, lat, lng)
             },
             baglandi = { baglandi = true },
+            reddedildi = { baglandi = false },
         )
     }
     DisposableEffect(deneme) {

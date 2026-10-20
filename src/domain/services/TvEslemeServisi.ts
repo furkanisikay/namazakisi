@@ -16,6 +16,7 @@ import * as TvKopru from '../../../modules/expo-tv-esleme/src';
 import {
     eslemeGovdesiOlustur,
     eslemeYanitiniCoz,
+    tvBaglantisiMi,
     ESLEME_YOLU,
     type EslemeYuku,
     type TvBaglantisi,
@@ -27,7 +28,9 @@ export type OkumaSonucu =
     | { tur: 'okundu'; metin: string }
     | { tur: 'iptal' }
     | { tur: 'tarayiciYok' }
-    | { tur: 'kameraIzniYok' };
+    | { tur: 'kameraIzniYok' }
+    /** iOS: tarayıcı açıldı; okuma `iosOkumaDinle` geri çağrısına gelir. */
+    | { tur: 'acildi' };
 
 const ZAMAN_ASIMI_MS = 6000;
 // iOS ilk bağlantıda 'yerel ağ' izni sorar; soru açıkken istekler düşer. Kullanıcının
@@ -48,29 +51,20 @@ async function kameraIzniVarMi(): Promise<boolean> {
     }
 }
 
-async function iosQrOku(): Promise<OkumaSonucu> {
+/**
+ * iOS: VisionKit tarayıcısı SÖZLE DEĞİL OLAYLA çalışır. `launchScanner` tarayıcı açılınca
+ * çözülür ve kullanıcı tarayıcıyı kendisi kapatırsa JS'e HİÇBİR olay gelmez (expo-camera
+ * `presentationControllerDidDismiss` yalnız native'de kalır). Okumayı söze bağlamak sayfayı
+ * kalıcı kilitlerdi → sayfa `iosOkumaDinle` ile ömrü boyunca abone olur, burası yalnız açar.
+ */
+async function iosTarayiciAc(): Promise<OkumaSonucu> {
     const { CameraView } = require('expo-camera') as typeof import('expo-camera');
-    return new Promise<OkumaSonucu>((cozul) => {
-        let bitti = false;
-        const abonelik = CameraView.onModernBarcodeScanned((olay) => {
-            if (bitti) return;
-            bitti = true;
-            abonelik.remove();
-            CameraView.dismissScanner().catch(() => undefined);
-            cozul({ tur: 'okundu', metin: olay.data });
-        });
-        CameraView.launchScanner({ barcodeTypes: ['qr'], isGuidanceEnabled: true, isHighlightingEnabled: true })
-            .then(() => {
-                // iOS'ta söz, tarayıcı AÇILINCA çözülür; kapanış olayla bilinir (aşağıdaki ekran
-                // dönüşü). Kullanıcı tarayıcıyı kapatırsa okuma gelmez: ekran "iptal"i ayrıca sunar.
-            })
-            .catch(() => {
-                if (bitti) return;
-                bitti = true;
-                abonelik.remove();
-                cozul({ tur: 'tarayiciYok' });
-            });
-    });
+    try {
+        await CameraView.launchScanner({ barcodeTypes: ['qr'], isGuidanceEnabled: true, isHighlightingEnabled: true });
+        return { tur: 'acildi' };
+    } catch {
+        return { tur: 'tarayiciYok' };
+    }
 }
 
 export const TvEslemeServisi = {
@@ -82,7 +76,7 @@ export const TvEslemeServisi = {
 
     async qrOku(): Promise<OkumaSonucu> {
         if (!(await kameraIzniVarMi())) return { tur: 'kameraIzniYok' };
-        if (Platform.OS === 'ios') return iosQrOku();
+        if (Platform.OS === 'ios') return iosTarayiciAc();
         try {
             const metin = await TvKopru.qrOku();
             return metin ? { tur: 'okundu', metin } : { tur: 'iptal' };
@@ -92,7 +86,26 @@ export const TvEslemeServisi = {
         }
     },
 
-    /** iOS'ta tarayıcı ekranını kapatır (iptal düğmesi için). */
+    /**
+     * iOS: tarayıcıdan gelen BİZİM kodumuzu sayfaya iletir (başka QR yok sayılır, tarama sürer);
+     * kod gelince tarayıcı kapatılır. Döner: aboneliği kaldıran fonksiyon. Android'de boş.
+     */
+    iosOkumaDinle(geriCagri: (metin: string) => void): () => void {
+        if (Platform.OS !== 'ios') return () => undefined;
+        try {
+            const { CameraView } = require('expo-camera') as typeof import('expo-camera');
+            const abonelik = CameraView.onModernBarcodeScanned((olay) => {
+                if (!tvBaglantisiMi(olay.data)) return;
+                CameraView.dismissScanner().catch(() => undefined);
+                geriCagri(olay.data);
+            });
+            return () => abonelik.remove();
+        } catch {
+            return () => undefined;
+        }
+    },
+
+    /** iOS'ta tarayıcı ekranını kapatır. */
     async taramayiKapat(): Promise<void> {
         if (Platform.OS !== 'ios') return;
         try {

@@ -23,6 +23,8 @@ import java.security.SecureRandom
 class EslemeSunucusu(
     private val kabulEdildi: (ad: String, lat: Double, lng: Double) -> Unit,
     private val baglandi: () -> Unit,
+    /** Yanlış anahtar / bozuk gövde: "bağlandı" durumu geri alınır (ekran "konum geliyor"da kalmasın). */
+    private val reddedildi: () -> Unit = {},
 ) {
     private val ana = Handler(Looper.getMainLooper())
     @Volatile private var soket: ServerSocket? = null
@@ -100,6 +102,7 @@ class EslemeSunucusu(
             val metin = String(govde.toByteArray(), 0, uzunluk, Charsets.UTF_8)
             val sonuc = EslemeProtokolu.govdeyiDogrula(metin, beklenen)
             yanitla(b, sonuc)
+            if (sonuc is EslemeProtokolu.Sonuc.Red) ana.post(reddedildi)
             if (sonuc is EslemeProtokolu.Sonuc.Kabul && !bitti) {
                 bitti = true
                 ana.post { kabulEdildi(sonuc.ad, sonuc.lat, sonuc.lng) }
