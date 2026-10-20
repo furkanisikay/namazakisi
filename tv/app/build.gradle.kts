@@ -102,6 +102,7 @@ dependencies {
     implementation(libs.compose.foundation)
     implementation(libs.activity.compose)
     implementation(libs.adhan2)
+    implementation(libs.zxing.core)
 
     testImplementation(libs.junit)
     // Android'in org.json'u JVM birim testinde stub'dir ("Method not mocked") → gercek uygulama.

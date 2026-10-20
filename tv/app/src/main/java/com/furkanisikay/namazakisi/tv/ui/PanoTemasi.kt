@@ -24,6 +24,8 @@ object Renkler {
     val birincil = Color(0xFF4CAF50)
     val birincilKoyu = Color(0xFF388E3C)
     val uyari = Color(0xFFFFCA28)
+    /** Koyu tema `durum.hata`. Yalnız dekoratif (kod kutusu kenarı); hata METNİ tema metnidir. */
+    val hata = Color(0xFFEF5350)
 }
 
 @Composable
