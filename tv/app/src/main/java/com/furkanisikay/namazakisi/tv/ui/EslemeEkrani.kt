@@ -1,5 +1,7 @@
 package com.furkanisikay.namazakisi.tv.ui
 
+import android.content.pm.ApplicationInfo
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Animatable
@@ -98,6 +100,12 @@ fun EslemeEkrani(
     DisposableEffect(deneme) {
         val metin = sunucu.baslat()
         durum = if (metin != null) QrDurumu.Bekliyor(metin) else QrDurumu.AgYok
+        // Yalnız hata ayıklanabilir (debug) derlemede: ekran görüntüsü hattı telefonu taklit
+        // edip uçtan uca gönderim yapabilsin (`scripts/tv-kare-hatti.sh`). Yayın derlemesinde
+        // tek seferlik anahtar loga YAZILMAZ.
+        if (metin != null && (baglam.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            Log.d("TvEsleme", "QR $metin")
+        }
         onDispose { sunucu.durdur() }
     }
 
