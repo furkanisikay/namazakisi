@@ -300,9 +300,11 @@ private fun KildimDugmesi(dugme: AnaEkranKarari.Dugme, g: AnaEkranKarari.Gorunum
                 // Durum zaten sayaç açıklamasında ("kılındı") okunur; ikinci kez okunmasın.
                 .clearAndSetSemantics { },
         ) {
+            // Telefon onayı beklenirken metin AYNI, yalnız soluk: "✓ Kılındı · eşitleniyor"
+            // yuvarlak ekranda kenara taşıp "Kılındı ·" diye kesiliyordu (kayıtta görüldü).
             Text(
-                if (dugme == AnaEkranKarari.Dugme.ESITLENIYOR) "✓ Kılındı · eşitleniyor" else "✓ Kılındı",
-                color = renk(SaatPaleti.EYLEM),
+                "✓ Kılındı",
+                color = renk(SaatPaleti.EYLEM).copy(alpha = if (dugme == AnaEkranKarari.Dugme.ESITLENIYOR) 0.6f else 1f),
                 style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
             )
