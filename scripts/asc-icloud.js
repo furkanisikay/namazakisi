@@ -29,7 +29,7 @@ async function paketKimligi() {
 }
 
 async function yetenekler(id) {
-    const r = await api('GET', '/v1/bundleIds/' + id + '/bundleIdCapabilities?limit=200');
+    const r = await api('GET', '/v1/bundleIds/' + id + '/bundleIdCapabilities');
     if (r.kod !== 200) hata('bundleIdCapabilities', r);
     return r.j.data || [];
 }
