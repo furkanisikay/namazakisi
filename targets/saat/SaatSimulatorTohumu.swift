@@ -9,10 +9,14 @@ import Foundation
 // `scripts/saat-tohum-yuku.js`) baslatma ortamindan verir. `simctl launch`,
 // `SIMCTL_CHILD_` onekli degiskenleri uygulamaya gecirir.
 //
+// Simulatorde pusula verisi yoktur ve akilli alarm oturumu tetiklenmez → kible karesi
+// sabit yonle (`NAMAZ_SAAT_TOHUM_YON`), uyandirma karesi yukun ilk uyandirma kaydiyla
+// (oturumsuz, yalniz gorunum) cizilir.
+//
 // Kod YALNIZ simulator derlemesinde vardir (`targetEnvironment(simulator)`): cihaz
 // ikilisinde ortam okunmaz, `acilisEkrani` daima nil → uretim davranisi degismez.
 enum SaatAcilisEkrani: String {
-    case ana, vakitler, onay, tesbihat
+    case ana, vakitler, onay, tesbihat, kible, uyandirma
 }
 
 enum SaatSimulatorTohumu {
@@ -25,6 +29,26 @@ enum SaatSimulatorTohumu {
         return nil
         #endif
     }()
+
+    /// Kible karesi icin sabit pusula yonu (derece, cihazda daima nil).
+    static let kibleYonu: Double? = {
+        #if targetEnvironment(simulator)
+        guard let ham = ProcessInfo.processInfo.environment["NAMAZ_SAAT_TOHUM_YON"] else { return nil }
+        return Double(ham)
+        #else
+        return nil
+        #endif
+    }()
+
+    /// Uyandirma karesi: yukun ilk uyandirma kaydi (cihazda daima nil).
+    static func uyandirmaKaydi() -> SaatUyandirmaKaydi? {
+        #if targetEnvironment(simulator)
+        guard acilisEkrani == .uyandirma else { return nil }
+        return SaatDeposu.varsayilan.yuk()?.uyandirma.first
+        #else
+        return nil
+        #endif
+    }
 
     /// Ortamdaki ornek yuku ve tesbihat sayisini depoya yazar (cihazda hicbir sey yapmaz).
     static func uygula(_ depo: SaatDeposu) {

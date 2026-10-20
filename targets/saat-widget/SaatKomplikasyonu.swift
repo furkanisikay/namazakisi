@@ -132,10 +132,21 @@ private struct SatirIci: View {
     let girdi: SaatGirdisi
 
     var body: some View {
+        // Noktali ayrac yok: anlam ikonla verilir (kum saati = cikis, ok = siradakinin girisi).
         if let s = surenVakit(girdi) {
-            Text("\(KomplikasyonMetin.ad(s.aktif.vakit)) · çıkış \(SaatDeposu.saatMetni(s.bitis))")
+            Label {
+                Text("\(KomplikasyonMetin.ad(s.aktif.vakit)) \(SaatDeposu.saatMetni(s.bitis))")
+            } icon: {
+                Image(systemName: "hourglass.bottomhalf.filled")
+            }
+            .accessibilityLabel("\(KomplikasyonMetin.ad(s.aktif.vakit)) vakti, çıkış \(SaatDeposu.saatMetni(s.bitis))")
         } else if let g = girdi.gorunum, let sonraki = g.sonraki {
-            Text("Sıradaki \(KomplikasyonMetin.ad(sonraki.vakit)) \(SaatDeposu.saatMetni(sonraki.ms))")
+            Label {
+                Text("\(KomplikasyonMetin.ad(sonraki.vakit)) \(SaatDeposu.saatMetni(sonraki.ms))")
+            } icon: {
+                Image(systemName: KomplikasyonMetin.ikon(sonraki.vakit))
+            }
+            .accessibilityLabel("Sıradaki \(KomplikasyonMetin.ad(sonraki.vakit)), \(SaatDeposu.saatMetni(sonraki.ms))")
         } else {
             Text("Namaz Akışı")
         }
@@ -225,9 +236,10 @@ private struct Dikdortgen: View {
                 Text(timerInterval: KomplikasyonMetin.aralik(girdi.date, s.bitis), countsDown: true)
                     .font(.system(.title3, design: .rounded).weight(.semibold))
                     .monospacedDigit()
-                Text("Çıkış \(SaatDeposu.saatMetni(s.bitis))")
+                Label(SaatDeposu.saatMetni(s.bitis), systemImage: "hourglass.bottomhalf.filled")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                    .accessibilityLabel("Çıkış \(SaatDeposu.saatMetni(s.bitis))")
             } else if let g = girdi.gorunum, let sonraki = g.sonraki {
                 if let aktif = g.aktif, g.kilindi {
                     Label("\(KomplikasyonMetin.ad(aktif.vakit)) kılındı", systemImage: "checkmark.circle.fill")
