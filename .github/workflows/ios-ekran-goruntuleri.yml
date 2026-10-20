@@ -167,6 +167,25 @@ jobs:
           # diyalogunun dugme metnini etkiler ve betik iki dili de taniyor.
           xcrun simctl boot "$UDID" || true
           xcrun simctl bootstatus "$UDID" -b
+          # iPad durum cubugu TARIH de yazar ("9:41 AM Tue Oct 20") → Turkce bolge + 24 saat.
+          # Saat hattinin (`simulator-saat-cek.sh > yerellestir`) yolu: tercih dosyasi ilk
+          # acilista olusur, simulator KAPALIYKEN yazilir, sonra yeniden acilir.
+          if [ "${{ inputs.tur }}" = "ipad" ]; then
+            TERCIH="$HOME/Library/Developer/CoreSimulator/Devices/$UDID/data/Library/Preferences/.GlobalPreferences.plist"
+            xcrun simctl shutdown "$UDID" || true
+            if [ -f "$TERCIH" ]; then
+              /usr/libexec/PlistBuddy -c "Delete :AppleLanguages" "$TERCIH" >/dev/null 2>&1 || true
+              /usr/libexec/PlistBuddy -c "Add :AppleLanguages array" -c "Add :AppleLanguages:0 string tr-TR" "$TERCIH"
+              /usr/libexec/PlistBuddy -c "Delete :AppleLocale" "$TERCIH" >/dev/null 2>&1 || true
+              /usr/libexec/PlistBuddy -c "Add :AppleLocale string tr_TR" "$TERCIH"
+              /usr/libexec/PlistBuddy -c "Delete :AppleICUForce24HourTime" "$TERCIH" >/dev/null 2>&1 || true
+              /usr/libexec/PlistBuddy -c "Add :AppleICUForce24HourTime bool true" "$TERCIH"
+            else
+              echo "UYARI: tercih dosyası yok, bölge ayarlanmadı"
+            fi
+            xcrun simctl boot "$UDID" || true
+            xcrun simctl bootstatus "$UDID" -b
+          fi
           # Magaza karelerinde temiz durum cubugu (Apple'in kendi kullandigi 09:41).
           xcrun simctl status_bar "$UDID" override --time "09:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
           xcrun simctl list devices | grep "$UDID"

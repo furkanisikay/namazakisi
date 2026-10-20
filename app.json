@@ -13,6 +13,18 @@
       "bundleIdentifier": "com.furkanisikay.namazakisi",
       "infoPlist": {
         "UIDesignRequiresCompatibility": true,
+        "UIApplicationShortcutItems": [
+          {
+            "UIApplicationShortcutItemType": "com.furkanisikay.namazakisi.kildim",
+            "UIApplicationShortcutItemTitle": "Vakti kıldım",
+            "UIApplicationShortcutItemIconSymbolName": "checkmark.circle"
+          },
+          {
+            "UIApplicationShortcutItemType": "com.furkanisikay.namazakisi.kible",
+            "UIApplicationShortcutItemTitle": "Kıble",
+            "UIApplicationShortcutItemIconSymbolName": "safari"
+          }
+        ],
         "UIBackgroundModes": [
           "fetch"
         ],

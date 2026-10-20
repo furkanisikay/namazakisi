@@ -35,6 +35,13 @@ interface GunSayfasiDuzeniProps {
     masaustuBantlar?: React.ReactNode;
     /** Masaüstü düzeninde menteşe sınırı (dp, pencereye göre). */
     mentese?: MenteseSiniri | null;
+    /**
+     * Yalnız iki bölmeli düzende: sol bölmede vakit kartının, sağ bölmede akışın ALTINA
+     * çizilen ikinci içerik (yarının vakitleri, kıble). Tablette alan boş kalmasın diye;
+     * telefon ve masaüstü düzenleri bunları hiç çizmez.
+     */
+    solEk?: React.ReactNode;
+    sagEk?: React.ReactNode;
 }
 
 interface SayfaOlcusu {
@@ -97,6 +104,8 @@ export const GunSayfasiDuzeni: React.FC<GunSayfasiDuzeniProps> = ({
     masaustuUst,
     masaustuBantlar,
     mentese,
+    solEk,
+    sagEk,
 }) => {
     if (duzen === 'masaustu') {
         return (
@@ -128,10 +137,12 @@ export const GunSayfasiDuzeni: React.FC<GunSayfasiDuzeniProps> = ({
         <View testID="anasayfa-iki-bolme" style={stiller.ikiBolme}>
             <ScrollView testID="anasayfa-sol-bolme" style={stiller.solBolme} showsVerticalScrollIndicator={false}>
                 {ustBolum}
+                {solEk}
                 <View className="h-10" />
             </ScrollView>
             <ScrollView testID="anasayfa-sag-bolme" style={stiller.sagBolme} showsVerticalScrollIndicator={false}>
                 {akis}
+                {sagEk ? <View style={stiller.sagEk}>{sagEk}</View> : null}
                 <View className="h-10" />
             </ScrollView>
         </View>
@@ -150,6 +161,7 @@ const stiller = StyleSheet.create({
     // vakit kartı ise tek blok — prototipteki 1 : 1.1 oranı.
     solBolme: { flex: 1 },
     sagBolme: { flex: 1.1 },
+    sagEk: { marginTop: 24 },
     masaustu: { flex: 1 },
     // Ölçü yokken (ilk çizim) ya da menteşe sayfaya sığmıyorsa eşit yarılar.
     esitYari: { flex: 1 },

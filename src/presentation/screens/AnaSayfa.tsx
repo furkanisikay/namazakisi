@@ -22,6 +22,7 @@ import { useFarzSonrasiKazaOnerisi } from '../hooks/useFarzSonrasiKazaOnerisi';
 import { useSadeGorunum } from '../hooks/useSadeGorunum';
 import { SadeGorunum } from '../components/sade/SadeGorunum';
 import { GunSayfasiDuzeni } from '../components/home/GunSayfasiDuzeni';
+import { KibleMiniKarti, YarinVakitleriKarti } from '../components/home/GenisEkranEkleri';
 import { MasaustuGeriSayim } from '../components/home/MasaustuGeriSayim';
 import { SeferilikBilgiKarti, useSeferilikKartiGorunur } from '../components/home/SeferilikBilgiKarti';
 import { useKurulumOnarimi } from '../hooks/useKurulumOnarimi';
@@ -931,6 +932,7 @@ export const AnaSayfa: React.FC = () => {
             onKonumYenile={konumYenile.yenile}
             konumYenileniyor={konumYenile.yenileniyor}
             gorunenVakitAdi={gorunenVakitAdi}
+            genis={gunDuzeni === 'ikiBolme'}
           />
         ) : (
           gecmisGunKarti
@@ -989,7 +991,27 @@ export const AnaSayfa: React.FC = () => {
       );
     }
 
-    return <GunSayfasiDuzeni key={sayfaIndeksi} duzen={gunDuzeni} ustBolum={ustBolum} akis={akis} />;
+    // Geniş ekranda (tablet / iPad) kart ve akış ekranın üstünü doldurur; altına yarının
+    // vakitleri ve kıble yönü gelir. Telefon düzeni bunları hiç çizmez.
+    const ekler = gunDuzeni === 'ikiBolme';
+    return (
+      <GunSayfasiDuzeni
+        key={sayfaIndeksi}
+        duzen={gunDuzeni}
+        ustBolum={ustBolum}
+        akis={akis}
+        solEk={ekler ? (
+          <YarinVakitleriKarti
+            lat={konumAyarlari.koordinatlar?.lat}
+            lng={konumAyarlari.koordinatlar?.lng}
+            gunTarihiIso={sayfaTarihi}
+          />
+        ) : undefined}
+        sagEk={ekler ? (
+          <KibleMiniKarti lat={konumAyarlari.koordinatlar?.lat} lng={konumAyarlari.koordinatlar?.lng} />
+        ) : undefined}
+      />
+    );
   };
 
   // Sade görünüm ayarı diskten okunmadan karar verilmez (normal ekran bir an görünüp

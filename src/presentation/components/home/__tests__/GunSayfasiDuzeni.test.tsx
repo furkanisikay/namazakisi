@@ -108,3 +108,28 @@ describe('GunSayfasiDuzeni', () => {
     });
   });
 });
+
+describe('GunSayfasiDuzeni — geniş ekran ekleri', () => {
+  const ekli = (duzen: GunDuzeni) =>
+    render(
+      <GunSayfasiDuzeni
+        duzen={duzen}
+        ustBolum={<Text>vakit-karti</Text>}
+        akis={<Text>gunluk-akis</Text>}
+        solEk={<Text>yarin</Text>}
+        sagEk={<Text>kible</Text>}
+      />
+    );
+
+  it('iki bölmede ekler kart ve akışın ALTINDA, kendi bölmelerinde çizilir', () => {
+    const e = ekli('ikiBolme');
+    expect(within(e.getByTestId('anasayfa-sol-bolme')).getByText('yarin')).toBeTruthy();
+    expect(within(e.getByTestId('anasayfa-sag-bolme')).getByText('kible')).toBeTruthy();
+  });
+
+  it('telefon (tek) düzeninde ekler HİÇ çizilmez', () => {
+    const e = ekli('tek');
+    expect(e.queryByText('yarin')).toBeNull();
+    expect(e.queryByText('kible')).toBeNull();
+  });
+});
