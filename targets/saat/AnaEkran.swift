@@ -54,23 +54,28 @@ struct AnaEkran: View {
     @Environment(\.scenePhase) private var sahne
     /// Yalniz simulator kare cekimi (`SaatSimulatorTohumu`) acar; cihazda daima false.
     @State private var tesbihatAcik = false
-    @State private var kibleAcik = false
 
     var body: some View {
+        // Yalniz simulator kare cekimi: kible dogrudan KOK ekran olarak acilir (acilista
+        // gezinme itmesiyle acilan kible karesi acilis ekraninda kaliyordu).
+        if SaatSimulatorTohumu.acilisEkrani == .kible {
+            NavigationStack {
+                KibleEkrani(konum: SaatDeposu.varsayilan.yuk()?.konum)
+            }
+        } else {
+            anaGorunum
+        }
+    }
+
+    private var anaGorunum: some View {
         NavigationStack {
             // Dakikada bir yeniden degerlendirme: vakit siniri gecince ekran kendiliginden doner.
             TimelineView(.everyMinute) { baglam in
                 icerik(simdi: baglam.date, yenileme: baglanti.yenileme)
             }
             .navigationTitle("Namaz Akışı")
-            // TEK `navigationDestination(isPresented:)`: ayni gorunume iki tane baglamak
-            // simulatorde acilisi kilitledi (kible karesi acilis ekraninda kaldi).
-            .navigationDestination(isPresented: acilisSayfasi) {
-                if kibleAcik {
-                    KibleEkrani(konum: SaatDeposu.varsayilan.yuk()?.konum)
-                } else {
-                    TesbihatEkrani()
-                }
+            .navigationDestination(isPresented: $tesbihatAcik) {
+                TesbihatEkrani()
             }
         }
         .fullScreenCover(isPresented: uyandirmaAcik) {
@@ -82,7 +87,6 @@ struct AnaEkran: View {
         .onAppear {
             switch SaatSimulatorTohumu.acilisEkrani {
             case .tesbihat: tesbihatAcik = true
-            case .kible: kibleAcik = true
             default: break
             }
         }
@@ -94,19 +98,6 @@ struct AnaEkran: View {
             // watchOS: akilli alarm oturumu YALNIZ etkin uygulamada kurulabilir.
             uyandirici.kur()
         }
-    }
-
-    /// Yalniz simulator kare cekimi (tesbihat / kible dogrudan acilir).
-    private var acilisSayfasi: Binding<Bool> {
-        Binding(
-            get: { tesbihatAcik || kibleAcik },
-            set: { acik in
-                if !acik {
-                    tesbihatAcik = false
-                    kibleAcik = false
-                }
-            }
-        )
     }
 
     private var uyandirmaAcik: Binding<Bool> {

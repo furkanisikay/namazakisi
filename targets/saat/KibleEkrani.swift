@@ -80,7 +80,10 @@ struct KibleEkrani: View {
             }
         }
         .navigationTitle("Kıble")
-        .onAppear { pusula.baslat() }
+        .onAppear {
+            NSLog("[NamazSaat] Kible acildi (konum: %@, pusula: %@)", konum == nil ? "yok" : "var", pusula.destekleniyor ? "var" : "yok")
+            pusula.baslat()
+        }
         .onDisappear { pusula.durdur() }
         .onChange(of: pusula.yon) { _, yeni in
             guard let yeni, let kibleAcisi else { return }
