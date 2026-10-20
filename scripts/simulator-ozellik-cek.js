@@ -222,6 +222,20 @@ async function bolum(ad, fn) {
         cek('22-seferilik');
     });
 
+    await bolum('namazda sessiz', async () => {
+        // iPhone: Odak + Kisayollar kurulum rehberi (Android'deki Camideyim'in karsiligi).
+        await temizAcilis('ozellik');
+        if (!(await ayarlaraGit())) return;
+        if (!(await kaydirarakDokun(/^Namazda sessiz\./i, 'namazda sessiz satiri', 'namazda-sessiz', { bekle: 4000 }))) return;
+        cek('23-namazda-sessiz');
+        const tamam = await getir(/adim-odak-tamam|Namaz odağını oluşturun: tamamladım/i, 'odak-tamam', { ust: 0.3, alt: 0.8 });
+        if (tamam) {
+            await dokun(tamam.ogeler, /adim-odak-tamam|Namaz odağını oluşturun: tamamladım/i, 'odak tamamladim', { bekle: 1500 });
+        }
+        if (await getir(/cami-osm:|Haritalar’da görün/i, 'camiler', { ust: 0.15, alt: 0.6 })) cek('24-namazda-sessiz-camiler');
+        if (await getir(/kisayollari-ac|Kısayollar'ı açın/i, 'kisayollar', { ust: 0.4, alt: 0.85 })) cek('25-namazda-sessiz-vakit');
+    });
+
     const kareler = fs.readdirSync(cikis).filter((f) => /\.png$/i.test(f)).sort();
     console.log(`\nToplam ${kareler.length} kare (tema: ${TEMA}): ${kareler.join(', ')}`);
     if (!kareler.length) process.exit(1);

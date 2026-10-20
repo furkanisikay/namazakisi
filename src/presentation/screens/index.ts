@@ -37,6 +37,7 @@ export { RamazanAyarlariSayfasi } from './RamazanAyarlariSayfasi';
 export { NafileAyarlariSayfasi } from './NafileAyarlariSayfasi';
 export { NowBarAyarlariSayfasi } from './NowBarAyarlariSayfasi';
 export { NamazdaSessizSayfasi } from './NamazdaSessizSayfasi';
+export { NamazdaSessizIosSayfasi } from './NamazdaSessizIosSayfasi';
 export { SeferilikAyarlariSayfasi } from './SeferilikAyarlariSayfasi';
 export { KildimUygulamalariSayfasi } from './KildimUygulamalariSayfasi';
 export { OtomasyonRehberiSayfasi } from './OtomasyonRehberiSayfasi';

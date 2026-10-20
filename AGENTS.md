@@ -126,7 +126,7 @@ Setup: `npm ci` (Node 20; `postinstall: patch-package` atlanmamalı) · Doğrula
 | [konum-geofence](docs/ajan/konum-geofence.md) | Konum takibi (geofence), konum yenileme, konum yayma listesi, seferîlik kartı |
 | [ana-ekran-ve-ayarlar](docs/ajan/ana-ekran-ve-ayarlar.md) | AnaSayfa pager/gün navigasyonu, kerahat, stepper, Ayarlar ve slice hidrasyonu, sade görünüm, katlanabilir/tablet, güncelleme sistemi, tanı akışı |
 | [android-native](docs/ajan/android-native.md) | Widget, hızlı ayarlar, kısayollar, "Kıldım" kuyruğu ve güven listesi, otomasyon, AppFunctions, Samsung/pil, Live Update/Now Bar, erteleme YOK kararı |
-| [camideyim](docs/ajan/camideyim.md) | Camideyim, Namaz modu, cami verisi, güven puanı, harita |
+| [camideyim](docs/ajan/camideyim.md) | Camideyim, Namaz modu, cami verisi, güven puanı, harita; iPhone "Namazda sessiz" (Odak + Kısayollar rehberi) |
 | [wear-tv](docs/ajan/wear-tv.md) | Wear OS saat uygulaması, Android TV panosu, saat/TV dağıtımı |
 | [ios](docs/ajan/ios.md) | iOS teslim katmanı, Siri/Odak, widget + canlı etkinlik, Apple Watch, App Store Connect ve TestFlight hattı |
 | [magaza-ekran-goruntuleri](docs/ajan/magaza-ekran-goruntuleri.md) | Simülatör/emülatör ekran görüntüsü hatları (iOS, Android, Watch, Wear, TV) |

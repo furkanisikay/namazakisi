@@ -97,7 +97,7 @@ export const AyarlarSayfasi: React.FC = () => {
   const { kart, okunmamisVarMi, sayfaOkunmamisMi, sayfayiGorulduIsaretle, kartiKapat } = useYeniOzellikler();
   // Pil muafiyeti + tam alarm: uygulamaya dönüşte de tazelenir (ayar ekranından geri gelince).
   const sistem = useSistemDurumu();
-  // Camideyim + Namaz modu (#297/#277): yalnız Android köprüsü varken satır çizilir.
+  // Camideyim + Namaz modu (#297/#277): Android'de köprü varken; iPhone'da daima (Odak rehberi).
   const camideyim = useCamideyimOzeti();
   // Now Bar ve canlı sayaçlar (#282): Android; iOS'ta canlı etkinlik taşıyan build.
   const nowBar = useNowBarOzeti();
@@ -169,12 +169,12 @@ export const AyarlarSayfasi: React.FC = () => {
 
   // ── Canlı özetler ──
   const hatirlatmaOzeti = ozetler.hatirlatmalar;
-  const namazdaSessizOzeti =
-    camideyim.cami === 'Kapalı' && camideyim.namazModu === 'Kapalı'
+  const namazdaSessizOzeti = camideyim.iosOzeti ??
+    (camideyim.cami === 'Kapalı' && camideyim.namazModu === 'Kapalı'
       ? 'Kapalı'
       : camideyim.cami !== 'Kapalı'
         ? `Camide: ${camideyim.cami}`
-        : `Vakitlerde: ${camideyim.namazModu}`;
+        : `Vakitlerde: ${camideyim.namazModu}`);
   const mezhep = seferilik?.ayarlar.mezhep ?? 'hanefi';
   const namazVakitleriOzeti = `${konumMetniHesapla({
     konumModu: konum.konumModu,
