@@ -141,6 +141,9 @@ jobs:
           EXPO_NO_TELEMETRY: '1'
           # Bayrağı yalnız bu imzasız derleme için açar (EAS'te tanımlı değil).
           NAMAZ_IOS_WIDGET: '1'
+          # Bu iş `-sdk iphonesimulator` ile derler; app.json'da saat bayrağı açıkken watchOS
+          # hedefi iOS SDK'sıyla derlenip düşerdi. Saat `saat-derleme` işinde (-sdk'sız) derlenir.
+          NAMAZ_IOS_SAAT: '0'
 
       - name: 🔎 Intent dosyaları ana hedefe bağlandı mı?
         run: |
