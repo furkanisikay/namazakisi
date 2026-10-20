@@ -168,13 +168,17 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
         >
             {/* "Vakit çıkar" bayrağın ÜSTÜNDE, sağa yaslı — etiket satırında yer kaplamaz. */}
             {!kapali && genislik > 0 ? (
-                <Text
+                // Yazı bayrağın SOLUNDA, ikisi tek satırda rayın sağ ucunun üstünde (bayrak
+                // eskiden rayın içinde mutlak konumluydu ve yazı onun üstüne biniyordu).
+                <View
                     testID="duzey-onizleme-vakit-cikar"
-                    style={{ alignSelf: 'flex-end', fontSize: 12, color: renkler.metinIkincil, marginBottom: -2 }}
-                    numberOfLines={1}
+                    style={{ alignSelf: 'flex-end', flexDirection: 'row', alignItems: 'center', marginBottom: -2 }}
                 >
-                    {VAKIT_CIKAR_METNI}
-                </Text>
+                    <Text style={{ fontSize: 12, color: renkler.metinIkincil }} numberOfLines={1}>
+                        {VAKIT_CIKAR_METNI}
+                    </Text>
+                    <FontAwesome5 name="flag-checkered" size={12} color={renkler.metinIkincil} style={{ marginLeft: 5 }} />
+                </View>
             ) : null}
             <View testID="duzey-onizleme-ray" onLayout={onLayout} style={{ height: 36, justifyContent: 'center' }}>
                 {/* Ray */}
@@ -230,10 +234,6 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
                                 />
                             );
                         })}
-                        {/* Vaktin çıkışı */}
-                        <View style={{ position: 'absolute', right: 0, top: -2 }}>
-                            <FontAwesome5 name="flag-checkered" size={12} color={renkler.metinIkincil} />
-                        </View>
                     </>
                 ) : null}
             </View>

@@ -92,6 +92,12 @@ describe('Kurulum sahneleri', () => {
         expect(izinli.queryAllByTestId('duzey-onizleme-etiket', G).length).toBeGreaterThan(0);
         expect(izinli.getAllByText('volume-up', G).length).toBeGreaterThan(0);
         expect(izinli.getByText('25 dk', G)).toBeTruthy();
+        // "Vakit çıkar" ile bayrak TEK satırda, yazı bayrağın solunda (üst üste binmez).
+        const cikis = izinli.getByTestId('duzey-onizleme-vakit-cikar', G);
+        expect(cikis.props.style).toMatchObject({ flexDirection: 'row' });
+        const cocuklar = cikis.findAll((n) => typeof n.props.children === 'string').map((n) => n.props.children);
+        expect(cocuklar.indexOf('Vakit çıkar')).toBeLessThan(cocuklar.indexOf('flag-checkered'));
+        expect(izinli.getAllByText('flag-checkered', G)).toHaveLength(1);
 
         const izinsiz = render(<DuzeyOnizlemesi duzey="normal" sesliAcik={false} />);
         olc(izinsiz);
