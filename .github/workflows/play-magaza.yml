@@ -66,6 +66,9 @@ jobs:
 
       - name: 🖼️ Android karelerini indir
         if: ${{ inputs.kare_run_id != '' }}
+        # Kosu yalniz ozellik turuysa (tur=ozellik) magaza artifact'i yoktur; pazarlama
+        # seti yine ozellik karelerinden kurulur.
+        continue-on-error: true
         uses: actions/download-artifact@v8
         with:
           name: android-ekran-goruntuleri
@@ -112,8 +115,9 @@ jobs:
         if: ${{ inputs.kare_run_id != '' }}
         run: |
           set -eo pipefail
-          KAYNAK="--kaynak indirilen"
-          for d in indirilen-ozellik indirilen-saat indirilen-tv; do [ -d "$d" ] && KAYNAK="$KAYNAK --kaynak $d"; done
+          KAYNAK=""
+          for d in indirilen indirilen-ozellik indirilen-saat indirilen-tv; do [ -d "$d" ] && KAYNAK="$KAYNAK --kaynak $d"; done
+          [ -n "$KAYNAK" ] || { echo "Hiç ham kare indirilemedi"; exit 1; }
           node scripts/magaza-gorselleri/uret.js $KAYNAK --cikis pazarlama --set play-telefon,play-tablet,tv --one-cikan | tee -a "$GITHUB_STEP_SUMMARY"
           ls -la pazarlama/*
 
