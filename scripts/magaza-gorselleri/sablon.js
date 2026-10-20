@@ -113,17 +113,40 @@ function cerceve(tur, gorsel, gen, k, z, secenek = {}) {
 }
 
 /** Yuvarlak saat (Wear OS): kasa + kordon + kurma kolu. */
+/**
+ * Saatin sessiz uyandirma ekrani (`wear/.../ui/UyandirmaAktivite.kt`) — ham kare
+ * yoksa ayni duzen ve uygulamanin GERCEK metinleriyle cizilir: baslik, govde, Kildim, Kapat.
+ */
+function uyandirmaEkrani(cap) {
+    const p = cap / 454;
+    const dugme = (metin, zemin, renk) =>
+        `<div style="margin-top:${8 * p}px;width:${190 * p}px;height:${46 * p}px;border-radius:999px;background:${zemin};color:${renk};display:flex;align-items:center;justify-content:center;font-family:Roboto,'Segoe UI',sans-serif;font-weight:600;font-size:${20 * p}px">${metin}</div>`;
+    return (
+        `<div style="width:100%;height:100%;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 ${56 * p}px;text-align:center;font-family:Roboto,'Segoe UI',sans-serif">` +
+        `<div style="color:#FFFFFF;font-weight:600;font-size:${27 * p}px;line-height:1.2">Sabah · 25 dk kaldı ⏰</div>` +
+        `<div style="margin-top:${8 * p}px;color:#B8C2BA;font-size:${19 * p}px;line-height:1.3">Vakit daralmaya başladı, fırsat varken kıl.</div>` +
+        dugme('Kıldım', '#6CC070', '#0B2214') +
+        dugme('Kapat', '#26332C', '#E2F2E3') +
+        `</div>`
+    );
+}
+
 function yuvarlakSaat(gorsel, cap, z, kordon = true) {
     const kasa = cap * 0.07;
+    // Kayis: kasanin altina ve ustune KISA uzanan, kenarlari yumusak, zarif bir bant.
+    const kordonGen = cap * 0.46;
     const kordonHtml = kordon
-        ? `<div style="position:absolute;left:${cap * 0.2}px;width:${cap * 0.6 + kasa * 2}px;top:${-cap * 0.34}px;height:${cap * 2.2}px;border-radius:${cap * 0.1}px;background:linear-gradient(90deg, #17201B 0%, #26332C 50%, #17201B 100%);box-shadow:inset 0 0 0 ${kasa * 0.12}px rgba(255,255,255,0.05)"></div>`
+        ? `<div style="position:absolute;left:${(cap + kasa * 2 - kordonGen) / 2}px;width:${kordonGen}px;top:${-cap * 0.3}px;height:${cap * 1.6 + kasa * 2}px;border-radius:${cap * 0.08}px;` +
+          `background:linear-gradient(180deg, rgba(38,51,44,0) 0%, #26332C 22%, #26332C 78%, rgba(38,51,44,0) 100%)"></div>`
         : '';
+    const url = typeof gorsel === 'string' ? gorsel : gorsel && gorsel.url;
+    const icerik = gorsel && gorsel.cizim === 'uyandirma' ? uyandirmaEkrani(cap) : `<img src="${url}" style="width:100%;height:100%;display:block">`;
     return (
         `<div style="position:relative;width:${cap + kasa * 2}px;height:${cap + kasa * 2}px">` +
         kordonHtml +
         `<div style="position:absolute;right:${-kasa * 0.55}px;top:${(cap + kasa * 2) / 2 - cap * 0.07}px;width:${kasa * 1.1}px;height:${cap * 0.14}px;border-radius:${kasa * 0.4}px;background:#3A3D40"></div>` +
         `<div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 30%, #4a4d52, #1b1c1f 70%);box-shadow:0 ${cap * 0.08}px ${cap * 0.18}px ${z.cihazGolge}"></div>` +
-        `<div style="position:absolute;left:${kasa}px;top:${kasa}px;width:${cap}px;height:${cap}px;border-radius:50%;overflow:hidden;background:#000"><img src="${gorsel}" style="width:100%;height:100%;display:block"></div>` +
+        `<div style="position:absolute;left:${kasa}px;top:${kasa}px;width:${cap}px;height:${cap}px;border-radius:50%;overflow:hidden;background:#000">${icerik}</div>` +
         `</div>`
     );
 }
@@ -147,8 +170,8 @@ function bildirimHtml(bildirim, gen, k, ikonUrl) {
     if (!bildirim) return '';
     const ikonKutu = 64 * k;
     return (
-        `<div style="width:${gen}px;padding:${34 * k}px ${40 * k}px ${38 * k}px;border-radius:${48 * k}px;background:rgba(255,255,255,0.97);` +
-        `box-shadow:0 ${30 * k}px ${80 * k}px rgba(18,48,27,0.28), 0 ${4 * k}px ${14 * k}px rgba(18,48,27,0.12)">` +
+        `<div style="width:${gen}px;padding:${34 * k}px ${40 * k}px ${38 * k}px;border-radius:${48 * k}px;background:#FFFFFF;` +
+        `box-shadow:0 ${36 * k}px ${90 * k}px rgba(18,48,27,0.20), 0 ${6 * k}px ${18 * k}px rgba(18,48,27,0.10)">` +
         `<div style="display:flex;align-items:center;gap:${18 * k}px">` +
         (ikonUrl
             ? `<span style="width:${ikonKutu}px;height:${ikonKutu}px;border-radius:${16 * k}px;overflow:hidden;position:relative;flex:none">` +
@@ -173,10 +196,11 @@ function appleSaat(gorsel, ekGen, boyut, z) {
 }
 
 /** Takvimin bir gunu (gorsel anlati): kendi namaz etkinligimiz + bir toplanti + vaktin sonu. */
-function takvimGunu(t, gen, k) {
+function takvimGunu(t, gen, k, yukseklik) {
     const basSaat = 12;
     const bitSaat = 17;
-    const satirYuk = 190 * k;
+    // Verilen yuksekligi doldurur (bos alt bant kalmasin).
+    const satirYuk = yukseklik ? (yukseklik - 120 * k) / (bitSaat - basSaat) : 190 * k;
     const ust = 40 * k;
     const dk = (s) => {
         const [h, m] = s.split(':').map(Number);
@@ -205,7 +229,7 @@ function takvimGunu(t, gen, k) {
     const cy = y(t.vakitCikis);
     h += `<div style="position:absolute;left:${solSutun - 6 * k}px;right:0;top:${cy - 2 * k}px;height:${5 * k}px;background:#C62828"></div>`;
     h += `<div style="position:absolute;left:${solSutun - 18 * k}px;top:${cy - 12 * k}px;width:${28 * k}px;height:${28 * k}px;border-radius:50%;background:#C62828"></div>`;
-    h += `<div style="position:absolute;right:${28 * k}px;top:${cy + 16 * k}px;padding:${8 * k}px ${18 * k}px;border-radius:${14 * k}px;background:#C62828;color:#fff;font-size:${30 * k}px;font-weight:700">${esc(t.vakitAdi)} vakti çıkar ${t.vakitCikis}</div>`;
+    h += `<div style="position:absolute;right:${28 * k}px;top:${cy - 66 * k}px;padding:${8 * k}px ${18 * k}px;border-radius:${14 * k}px;background:#C62828;color:#fff;font-size:${30 * k}px;font-weight:700">${esc(t.vakitAdi)} vakti çıkar ${t.vakitCikis}</div>`;
     const yuk = ust + (bitSaat - basSaat) * satirYuk + 40 * k;
     return `<div style="position:relative;width:${gen}px;height:${yuk}px;border-radius:${56 * k}px;background:#FFFFFF;box-shadow:0 ${40 * k}px ${100 * k}px rgba(18,48,27,0.18)"><div style="position:absolute;left:${30 * k}px;right:${30 * k}px;top:${20 * k}px;bottom:0">${h}</div></div>`;
 }
@@ -236,7 +260,11 @@ function metinAlti(kare, k) {
 }
 
 /** Dikey (telefon) kare. */
-function dikey(kare, b, gorseller, ikonUrl) {
+function dikey(kareHam, b, gorseller, ikonUrl) {
+    const kare =
+        kareHam.yerlesim === 'kolaj' && kareHam.altTabletsiz && !gorseller.some((g) => g.cihaz === 'tablet')
+            ? { ...kareHam, alt: kareHam.altTabletsiz }
+            : kareHam;
     const { gen, yuk } = b;
     const k = gen / 1320;
     const z = ZEMIN[kare.zemin || 'acik'];
@@ -293,13 +321,16 @@ function dikey(kare, b, gorseller, ikonUrl) {
         }
         if (kare.bildirim) {
             const bg = 1120 * k;
-            alan += `<div style="position:absolute;left:${(gen - bg) / 2}px;top:${ust + (yuk - ust) * kare.bildirim.y}px">${bildirimHtml(kare.bildirim, bg, k, ikonUrl)}</div>`;
+            // Kart cihazin ust kenarindan biraz yukarida baslar: ekranin basligini TUMDEN
+            // orter (arkadan yari gorunen baslik dagınık durur).
+            alan += `<div style="position:absolute;left:${(gen - bg) / 2}px;top:${ust - 60 * k + (yuk - ust) * kare.bildirim.y}px">${bildirimHtml(kare.bildirim, bg, k, ikonUrl)}</div>`;
         }
     } else if (yer === 'takvim') {
         const kg = gen - 2 * pad + 40 * k;
         const ust = cihazUst + 330 * k;
+        const kartYuk = yuk - ust - 110 * k;
         alan =
-            `<div style="position:absolute;left:${(gen - kg) / 2}px;top:${ust}px">${takvimGunu(kare.takvim, kg, k)}</div>` +
+            `<div style="position:absolute;left:${(gen - kg) / 2}px;top:${ust}px">${takvimGunu(kare.takvim, kg, k, kartYuk)}</div>` +
             `<div style="position:absolute;left:${(gen - 1120 * k) / 2}px;top:${cihazUst - 20 * k}px">${bildirimHtml(kare.bildirim, 1120 * k, k, ikonUrl)}</div>`;
     } else if (yer === 'telefonSaat') {
         const tel = gorseller.find((g) => g.cihaz === 'iphone' || g.cihaz === 'androidTelefon');
@@ -314,11 +345,18 @@ function dikey(kare, b, gorseller, ikonUrl) {
         const tel = bul('androidTelefon') || bul('iphone');
         const saat = bul('wearYuvarlak');
         const ust = cihazUst;
+        // Katman sirasi (arkadan one): TV, tablet, telefon, saat. Saat kayissiz ve
+        // tabletin ALTINDA durur: kayis tabletin ustune binmesin.
         if (tv) alan += `<div style="position:absolute;left:${104 * k}px;top:${ust}px">${cerceve('tv', tv.url, 960 * k, k, z, { boyut: tv.boyut })}</div>`;
-        if (tablet)
+        if (tablet) {
             alan += `<div style="position:absolute;right:${-80 * k}px;top:${ust + 470 * k}px">${cerceve('tablet', tablet.url, 860 * k, k, z, { boyut: tablet.boyut, kirpAlt: 0.075 })}</div>`;
-        if (tel) alan += `<div style="position:absolute;left:${80 * k}px;top:${ust + 640 * k}px">${cerceve('telefon', tel.url, 500 * k, k, z, { boyut: tel.boyut, yaricap: 50 * k })}</div>`;
-        if (saat) alan += `<div style="position:absolute;right:${110 * k}px;top:${yuk - 560 * k}px">${yuvarlakSaat(saat.url, 360 * k, z, true)}</div>`;
+            if (tel) alan += `<div style="position:absolute;left:${80 * k}px;top:${ust + 640 * k}px">${cerceve('telefon', tel.url, 500 * k, k, z, { boyut: tel.boyut, yaricap: 50 * k })}</div>`;
+            if (saat) alan += `<div style="position:absolute;right:${150 * k}px;top:${ust + 1060 * k}px">${yuvarlakSaat(saat, 380 * k, z, false)}</div>`;
+        } else {
+            // Guncel tablet karesi yoksa tablet CIZILMEZ (eski arayuz konmaz).
+            if (tel) alan += `<div style="position:absolute;left:${110 * k}px;top:${ust + 520 * k}px">${cerceve('telefon', tel.url, 580 * k, k, z, { boyut: tel.boyut, yaricap: 56 * k })}</div>`;
+            if (saat) alan += `<div style="position:absolute;right:${100 * k}px;top:${ust + 900 * k}px">${yuvarlakSaat(saat, 470 * k, z, false)}</div>`;
+        }
     } else if (yer === 'saat') {
         const s = gorseller.find((g) => g.cihaz === 'wearYuvarlak');
         const cap = 700 * k;
@@ -349,7 +387,7 @@ function dikey(kare, b, gorseller, ikonUrl) {
         alan =
             telHtml +
             (kare.titresim === false ? '' : `<svg style="position:absolute;left:0;top:0" width="${gen}" height="${yuk}">${titresim}</svg>`) +
-            `<div style="position:absolute;left:${merkezX - cap * 0.57}px;top:${ust}px">${s ? yuvarlakSaat(s.url, cap, z, true) : ''}</div>`;
+            `<div style="position:absolute;left:${merkezX - cap * 0.57}px;top:${ust}px">${s ? yuvarlakSaat(s, cap, z, true) : ''}</div>`;
         if (kare.rozet) alan += `<div style="position:absolute;left:0;right:0;top:${yuk - 250 * k}px;text-align:center">${rozetHtml(kare.rozet, k, z)}</div>`;
     }
     return belge(gen, yuk, z, yay + metin + alan);

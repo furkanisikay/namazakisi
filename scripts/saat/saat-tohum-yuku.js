@@ -89,8 +89,26 @@ function tohumYuku(simdiMs = Date.now()) {
         kerahatDk: { suruk: 20, istiva: 5, gurub: 20 },
         gunler,
         muhafiz: [],
+        // Sessiz uyandirma ekrani (`UyandirmaAktivite`) karesi icin TEK kayit. Ani ve
+        // son ani DUNDE: zincir onu hic calmaz (pencere gecmis), ekran ise kaydi kimlikle
+        // bulup cizer. Metin uygulamanin gercek muhafiz bicimi (basligiOlustur +
+        // muhafizMetinYardimcisi; "Telefonunuz boyle uyaracak" onizlemesiyle ayni).
+        uyandirma: [
+            {
+                id: UYANDIRMA_KARE_KIMLIGI,
+                ms: gunler[0].vakitler.imsak + 5 * 60_000,
+                sonMs: gunler[0].vakitler.gunes,
+                tarih: gunler[0].tarih,
+                tur: 'imsak',
+                baslik: 'Sabah · 25 dk kaldı ⏰',
+                govde: 'Vakit daralmaya başladı, fırsat varken kıl.',
+            },
+        ],
     };
 }
+
+/** Kare hattinin `UyandirmaAktivite`'yi actigi kimlik (scripts/saat-kare-hatti.sh). */
+const UYANDIRMA_KARE_KIMLIGI = 'magaza_karesi_uyandirma';
 
 function xmlKacir(metin) {
     return metin
@@ -113,7 +131,7 @@ function tercihXml(yuk) {
     ].join('\n');
 }
 
-module.exports = { tohumYuku, tercihXml, istanbulGunu, KOORDINAT };
+module.exports = { tohumYuku, tercihXml, istanbulGunu, KOORDINAT, UYANDIRMA_KARE_KIMLIGI };
 
 if (require.main === module) {
     const cikis = process.argv[2];

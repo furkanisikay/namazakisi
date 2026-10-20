@@ -244,6 +244,27 @@ describe('magaza pazarlama gorselleri — ham kare secimi', () => {
         fs.rmSync(ek);
     });
 
+    it('--en-eski: eski hattin karesi aday sayilmaz (tarihsiz cihaz muaf)', () => {
+        const eski = path.join(kok, 'eski/tablet-acik/09-tablet.png');
+        sahtePng(eski, 2560, 1600);
+        fs.utimesSync(eski, new Date(2026, 0, 1), new Date(2026, 0, 1));
+        const dizin = pngleriTara([kok]);
+        const sinir = { enEski: Date.parse('2026-06-01') };
+        expect(kareBul(dizin, 'tablet', ['09-tablet.png'], sinir)).toBeNull();
+        expect(kareBul(dizin, 'tablet', ['09-tablet.png'], { ...sinir, tarihsiz: ['tablet'] })).not.toBeNull();
+        fs.rmSync(eski);
+    });
+
+    it('saatin uyandirma ekrani ham kare yoksa GERCEK metinle cizilir', () => {
+        const dizin = pngleriTara([kok]);
+        const bilek = SETLER['play-telefon'].kareler.find((k: Kare) => k.ad === '08-bilek');
+        const r = gorselleriCoz(dizin, SETLER['play-telefon'], bilek);
+        expect(r.atla).toBe(false);
+        const html: string = sayfaUret(bilek, SETLER['play-telefon'], r.gorseller, '');
+        expect(html).toContain('Kıldım');
+        expect(html).toContain('Kapat');
+    });
+
     it('onceki uretimin mockup/pazarlama ciktisini ham kare saymaz', () => {
         const dizin = pngleriTara([kok]);
         expect(kareBul(dizin, 'androidTelefon', ['02-muhafiz-zaman-seridi.png'])).toBeNull();

@@ -47,7 +47,7 @@ const ORTAK = {
         alt: 'Vakit daraldıkça sizi yoklar, kıldığınızda susar.',
         zemin: 'acik',
         vakit: 2,
-        kaynak: ['02-muhafiz-zaman-seridi.png', '07-muhafiz-zaman-seridi.png', '06-muhafiz.png'],
+        kaynak: ['07-muhafiz-zaman-seridi.png', '02-muhafiz-zaman-seridi.png', '06-muhafiz.png'],
         // Uygulamanin GERCEK bildirim bicimi (basligiOlustur + muhafizMetinYardimcisi).
         bildirim: { baslik: 'İkindi · 10 dk kaldı', govde: 'Namazı sona bırakma; şimdi kılmak için vakit uygun.', y: 0.04 },
         iddialar: ['muhafiz'],
@@ -239,6 +239,8 @@ const SETLER = {
             kare('07-cihazlar', {
                 baslik: 'Her cihazınızda',
                 alt: 'Telefon, tablet, saat ve televizyonda aynı vakitler.',
+                // Guncel tablet karesi yoksa tablet cizilmez; metin de onu anmaz.
+                altTabletsiz: 'Telefon, saat ve televizyonda aynı vakitler.',
                 zemin: 'acik',
                 vakit: 1,
                 yerlesim: 'kolaj',
@@ -257,8 +259,10 @@ const SETLER = {
                 zemin: 'gece',
                 vakit: 0,
                 yerlesim: 'saat',
+                // Saatin uyandirma ekrani (saat kare hatti 10-uyandirma; root gerekir). Kare
+                // yoksa ayni ekran gercek metinlerle cizilir (sablon.js > uyandirmaEkrani).
                 katmanlar: [
-                    { cihaz: 'wearYuvarlak', kaynak: ['01-ana-ekran.png'] },
+                    { cihaz: 'wearYuvarlak', kaynak: ['10-uyandirma.png'], yedekCizim: 'uyandirma' },
                     { cihaz: 'androidTelefon', kaynak: ['01-ana-ekran.png'] },
                 ],
                 rozet: { ikon: 'titresim', metin: 'Yalnız titreşim', yer: 'sol', y: 0.8 },

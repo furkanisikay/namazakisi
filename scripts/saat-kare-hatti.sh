@@ -198,6 +198,25 @@ if kare 08-kible 3; then
   fi
 fi
 
+# --- 10: sessiz uyandirma ekrani (pazarlama: "Bilekte sessiz uyandirma") ---
+# `UyandirmaAktivite` disa kapali (exported=false): kabuk onu ancak adbd root iken
+# baslatabilir. Kayit tohum yukunde (`uyandirma`, ani dunde → zincir calmaz).
+# Root alinamazsa ya da ekran acilmazsa kare UYARI ile atlanir; pazarlama gorseli o
+# zaman uyandirma ekraninin cizimine duser (scripts/magaza-gorselleri).
+adb root >/dev/null 2>&1 || true
+adb wait-for-device
+sleep 2
+adb shell am force-stop "$PAKET"
+if adb shell am start -W -n "$PAKET/$SINIF.ui.UyandirmaAktivite" --es id magaza_karesi_uyandirma 2>&1 | grep -q 'Error\|Exception'; then
+  echo "UYARI: 10-uyandirma ekrani baslatilamadi (root yok?) — kare atlandi"
+elif hazir_bekle 'Kıldım|Kapat' ; then
+  kare 10-uyandirma 2 || true
+else
+  echo "UYARI: 10-uyandirma ekrani acilmadi — kare atlandi"
+fi
+adb shell am force-stop "$PAKET"
+sleep 2
+
 # --- 05 / 06: tile'lar ---
 # `add-tile` DEBUG_SURFACE, `show-tile` ise DEBUG_SYSUI eylemidir (ilk kosuda
 # show-tile DEBUG_SURFACE'e gonderildi → "Unrecognized operation"). Eklenen tile

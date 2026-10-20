@@ -7,6 +7,7 @@
  *   node scripts/magaza-gorselleri/uret.js <ham-kare-klasoru> <cikis>
  *   node scripts/magaza-gorselleri/uret.js --kaynak kareler --kaynak kareler-ozellik --cikis pazarlama \
  *        [--set iphone,play-telefon] [--kosul appleWatchYayinda] [--duz] [--one-cikan]
+ *        [--en-eski 2026-10-19T20:00] [--tarihsiz tv]
  *
  * Ham kare, ADI (01-ana-ekran.png ...) ve BOYUTU (setler.js > CIHAZ_TURLERI) ile
  * bulunur: ayni klasorde iPhone ve Android kareleri karisik olsa da dogru cihaz secilir.
@@ -59,29 +60,41 @@ function adayPuani(a, cihaz) {
     return magazaOrani + (yol.includes('koyu') ? 0 : 2) + (yol.includes('acik') ? 1 : 0);
 }
 
-function kareBul(dizin, cihaz, adlar) {
+/** Bu gunden eski ham kare icin uyari (CI'da indirme ani ~ cekim ani). */
+const ESKI_KARE_GUN = 7;
+
+/**
+ * `enEski` (ms) verilirse ondan eski dosya aday SAYILMAZ: eski hattin karesi (eski
+ * sekmeler, eski hatirlatma tasarimi) magaza gorseline girmesin. `tarihsiz` listesindeki
+ * cihaz turleri bu kapidan muaftir (ornegin arayuzu degismeyen TV panosu).
+ */
+function kareBul(dizin, cihaz, adlar, secenek = {}) {
     const uygun = CIHAZ_TURLERI[cihaz];
     if (!uygun) throw new Error('bilinmeyen cihaz turu: ' + cihaz);
+    const { enEski, tarihsiz = [] } = secenek;
+    const tazeMi = (p) => !enEski || tarihsiz.includes(cihaz) || p.mtime >= enEski;
     for (const ad of adlar) {
-        const adaylar = dizin.filter((p) => p.ad === ad && uygun(p.boyut.gen, p.boyut.yuk));
+        const adaylar = dizin.filter((p) => p.ad === ad && uygun(p.boyut.gen, p.boyut.yuk) && tazeMi(p));
         if (adaylar.length) {
             adaylar.sort((x, y) => adayPuani(y, cihaz) - adayPuani(x, cihaz) || y.mtime - x.mtime);
             const s = adaylar[0];
-            return { cihaz, yol: s.yol, url: dosyaUrl(s.yol), boyut: s.boyut };
+            return { cihaz, yol: s.yol, url: dosyaUrl(s.yol), boyut: s.boyut, mtime: s.mtime };
         }
     }
     return null;
 }
 
 /** Bir karenin ihtiyac duydugu ham gorselleri cozer; eksik varsa null. */
-function gorselleriCoz(dizin, set, kare) {
+function gorselleriCoz(dizin, set, kare, secenek = {}) {
     // Ham kare istemeyen kare (takvim cizimi gibi): bos katman listesi.
     const katmanlar = kare.katmanlar || (kare.kaynak ? [{ cihaz: set.cihaz, kaynak: kare.kaynak }] : []);
     const bulunan = [];
     const eksik = [];
     for (const k of katmanlar) {
-        const g = kareBul(dizin, k.cihaz, k.kaynak);
+        const g = kareBul(dizin, k.cihaz, k.kaynak, secenek);
         if (g) bulunan.push(g);
+        // Ham kare yoksa ekranin GERCEK metinleriyle cizimi (ornegin saatin uyandirma ekrani).
+        else if (k.yedekCizim) bulunan.push({ cihaz: k.cihaz, cizim: k.yedekCizim });
         else eksik.push(`${k.cihaz}:${k.kaynak.join('|')}`);
     }
     // Kolajda bir cihaz eksikse o cihaz cizilmez; tek cihazli karede eksik = atla.
@@ -90,7 +103,7 @@ function gorselleriCoz(dizin, set, kare) {
 }
 
 function argumanlar(argv) {
-    const a = { kaynak: [], kosul: [], set: null, cikis: null, duz: false, oneCikan: false };
+    const a = { kaynak: [], kosul: [], set: null, cikis: null, duz: false, oneCikan: false, enEski: null, tarihsiz: [] };
     const konumsal = [];
     for (let i = 0; i < argv.length; i++) {
         const x = argv[i];
@@ -99,6 +112,8 @@ function argumanlar(argv) {
         else if (x === '--set') a.set = argv[++i].split(',').filter(Boolean);
         else if (x === '--kosul') a.kosul.push(argv[++i]);
         else if (x === '--duz') a.duz = true;
+        else if (x === '--en-eski') a.enEski = Date.parse(argv[++i]);
+        else if (x === '--tarihsiz') a.tarihsiz = argv[++i].split(',').filter(Boolean);
         else if (x === '--one-cikan') a.oneCikan = true;
         else konumsal.push(x);
     }
@@ -108,7 +123,10 @@ function argumanlar(argv) {
 }
 
 function uret(secenek) {
-    const { kaynak, cikis, kosul = [], duz = false, oneCikan = false } = secenek;
+    const { kaynak, cikis, kosul = [], duz = false, oneCikan = false, enEski = null, tarihsiz = [] } = secenek;
+    if (enEski !== null && Number.isNaN(enEski)) throw new Error('--en-eski gecersiz tarih');
+    const kapi = { enEski, tarihsiz };
+    const uyarilanlar = new Set();
     const setAdlari = secenek.set || Object.keys(SETLER);
     if (duz && setAdlari.length !== 1) throw new Error('--duz yalniz tek setle kullanilir');
     const dizin = pngleriTara(kaynak);
@@ -125,7 +143,14 @@ function uret(secenek) {
                 o.kosulsuz.push(kare.ad + ' (' + kare.kosul + ')');
                 continue;
             }
-            const { gorseller, eksik, atla } = gorselleriCoz(dizin, set, kare);
+            const { gorseller, eksik, atla } = gorselleriCoz(dizin, set, kare, kapi);
+            for (const g of gorseller) {
+                const gun = g.mtime ? (Date.now() - g.mtime) / 86400000 : 0;
+                if (gun > ESKI_KARE_GUN && !uyarilanlar.has(g.yol)) {
+                    uyarilanlar.add(g.yol);
+                    console.error(`  UYARI eski ham kare (${Math.floor(gun)} gun): ${g.yol} — yeni hat kosusunun karelerini verin ya da --en-eski kullanin`);
+                }
+            }
             if (atla) {
                 o.eksik.push(kare.ad + ' <- ' + eksik.join(', '));
                 console.error(`  UYARI ${setAdi}/${kare.ad}: ham kare yok (${eksik.join(', ')})`);
@@ -136,7 +161,7 @@ function uret(secenek) {
             o.uretilen.push(kare.ad);
         }
         if (oneCikan && setAdi === 'play-telefon') {
-            const g = kareBul(dizin, 'androidTelefon', ['02-muhafiz-zaman-seridi.png', '07-muhafiz-zaman-seridi.png', '01-ana-ekran.png']);
+            const g = kareBul(dizin, 'androidTelefon', ['02-muhafiz-zaman-seridi.png', '07-muhafiz-zaman-seridi.png', '01-ana-ekran.png'], kapi);
             if (g) {
                 ciz(oneCikanSayfa(ikonUrl, g.url), path.join(hedefKlasor, 'one-cikan.png'), 1024, 500, tarayici);
                 o.uretilen.push('one-cikan');
