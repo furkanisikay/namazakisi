@@ -10,6 +10,8 @@
  * - `namazakisi://ayarlar`   → Ayarlar (saat W3: saatteki "Telefonda açın")
  * - `namazakisi://camideyim` → Ayarlar > Camideyim (saat W3; yığının altında Ayarlar
  *   kökü durur ki geri tuşu boşa düşmesin)
+ * - `namazakisi://tv?v=1&a=…&p=…&k=…` → Ayarlar > Televizyonda gösterin; TV ekranındaki QR'ın
+ *   kendisidir (iPhone kamerası doğrudan açar), sayfa konumu TV'ye gönderir
  * - `namazakisi://kildim` → bir EKRAN değil, EYLEMDİR: içinde bulunulan vakti kılındı
  *   olarak işaretler. Navigasyondan `filter` ile dışlanır, `useKildimDerinBaglantisi`
  *   işler. Android kısayolu ise uygulamayı hiç açmadan native `KildimKisayolActivity`
@@ -36,6 +38,7 @@ export type AnaSekmeParamList = {
 type AyarlarDerinParamList = {
     AyarlarAna: undefined;
     CamideyimAyarlari: undefined;
+    TelevizyonAyarlari: undefined;
 };
 
 /** Derin bağlantının ihtiyaç duyduğu kök yığın şekli (`RootStackParamList` ile uyumlu). */
@@ -50,6 +53,8 @@ const AYARLAR_YOLLARI: PathConfig<AyarlarDerinParamList> = {
     screens: {
         AyarlarAna: 'ayarlar',
         CamideyimAyarlari: 'camideyim',
+        // TV QR'ı (iPhone kamerası): sorgu alanları sayfa parametresi olur, sayfa doğrular.
+        TelevizyonAyarlari: 'tv',
     },
 };
 
