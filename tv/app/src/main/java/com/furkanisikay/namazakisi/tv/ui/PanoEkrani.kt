@@ -403,18 +403,8 @@ private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: B
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f),
                 )
-                if (aktif) {
-                    Text(
-                        "şimdi",
-                        color = Renkler.metin,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier
-                            .padding(end = 20.dp)
-                            .background(Renkler.metin.copy(alpha = 0.2f), RoundedCornerShape(12.dp))
-                            .padding(horizontal = 12.dp, vertical = 4.dp),
-                    )
-                }
+                // "şimdi" çipi BİLİNÇLİ YOK: dar sütunda "Akşam"ı "Akşa…"ya kesiyordu (kare
+                // turunda görüldü); dolu yeşil zemin + soldaki geri sayım anlamı zaten taşıyor.
                 Text(
                     Bicim.saat(durum.vakitler.saat(vakit), bolge),
                     style = RAKAM,

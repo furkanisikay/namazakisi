@@ -60,7 +60,11 @@ fun IlSecimEkrani(
     if (onGeri != null) BackHandler(onBack = onGeri)
 
     val baslangic = iller.indexOfFirst { it.plaka == seciliPlaka }.coerceAtLeast(0)
-    val izgara = rememberLazyGridState(initialFirstVisibleItemIndex = baslangic)
+    // Izgara seçili ilin bir ÜST satırından başlar: ilk görünen satır tam çizilir (orta
+    // satırdan başlayınca üstteki satır başlığın altında yarım kalıyordu).
+    val izgara = rememberLazyGridState(
+        initialFirstVisibleItemIndex = (baslangic - baslangic % SUTUN - SUTUN).coerceAtLeast(0),
+    )
     val odak = remember { FocusRequester() }
     LaunchedEffect(Unit) {
         try {
@@ -92,7 +96,7 @@ fun IlSecimEkrani(
         Spacer(Modifier.height(16.dp))
         // 3 sütun: en uzun il adı ("Afyonkarahisar", "Kahramanmaraş") 10-foot boyda kesilmeden sığar.
         LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
+            columns = GridCells.Fixed(SUTUN),
             state = izgara,
             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -145,3 +149,6 @@ fun IlSecimEkrani(
         }
     }
 }
+
+/** Izgara sütun sayısı: en uzun il adı 10-foot boyda kesilmeden sığar. */
+private const val SUTUN = 3
