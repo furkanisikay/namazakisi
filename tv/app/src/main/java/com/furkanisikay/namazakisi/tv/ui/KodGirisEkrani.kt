@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -63,9 +64,9 @@ import com.furkanisikay.namazakisi.tv.veri.KonumDeposu
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val KUTU_EN = 62
-private const val KUTU_ARA = 12
-private const val GRUP_ARA = 30
+private const val KUTU_EN = 54
+private const val KUTU_ARA = 10
+private const val GRUP_ARA = 24
 
 /** Kutunun satır merkezine göre yatay konumu (dp): katlanma sahnesi kutuları buraya çeker. */
 private fun kutuMerkezi(i: Int): Float {
@@ -184,7 +185,7 @@ fun KodGirisEkrani(
                         Text("Telefonunuzdaki kodu girin", color = Renkler.metin, fontSize = 36.sp, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.height(10.dp))
                         Text(
-                            "Telefonda: Ayarlar › Televizyonda gösterin. Kod 7 hanedir.",
+                            "Telefonda: Ayarlar › Televizyonda gösterin",
                             color = Renkler.metinIkincil, fontSize = 20.sp,
                         )
                     } else {
@@ -197,7 +198,7 @@ fun KodGirisEkrani(
             Spacer(Modifier.height(40.dp))
 
             // Kutular → katlanınca iğne.
-            Box(Modifier.width(560.dp).height(150.dp), contentAlignment = Alignment.Center) {
+            Box(Modifier.fillMaxWidth().height(150.dp), contentAlignment = Alignment.Center) {
                 Row(
                     Modifier.graphicsLayer {
                         translationX = with(yogunluk) { (titreme(titre.value) * 20).dp.toPx() }
@@ -262,7 +263,7 @@ private fun HaneKutusu(rakam: Char?, aktif: Boolean, hatali: Boolean, modifier: 
     }
     Box(
         modifier
-            .size(width = KUTU_EN.dp, height = 82.dp)
+            .size(width = KUTU_EN.dp, height = 76.dp)
             .background(Renkler.kart, RoundedCornerShape(14.dp))
             .border(BorderStroke(if (aktif || hatali) 3.dp else 1.dp, kenar), RoundedCornerShape(14.dp))
             .semantics { contentDescription = rakam?.toString() ?: "boş hane" },

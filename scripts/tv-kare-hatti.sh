@@ -75,10 +75,10 @@ if [ -n "$QR" ]; then
   RED=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' \
     --data '{"v":1,"k":"ffffffffffffffff","ad":"X","lat":40,"lng":29}' http://127.0.0.1:47555/esle || true)
   echo "yanlis anahtar yaniti: $RED (beklenen 403)"
-  (sleep 0.1; curl -s -X POST -H 'Content-Type: application/json; charset=utf-8' --data "$GOVDE" \
+  (curl -s -X POST -H 'Content-Type: application/json; charset=utf-8' --data "$GOVDE" \
     http://127.0.0.1:47555/esle; echo) &
-  kare 03-qr-katlaniyor 0.6 || true
-  kare 03-qr-konum-geldi 1.0 || true
+  kare 03-qr-katlaniyor 0 || true
+  kare 03-qr-konum-geldi 1.2 || true
   wait || true
   kare 04-pano-telefondan 4 || true
 else

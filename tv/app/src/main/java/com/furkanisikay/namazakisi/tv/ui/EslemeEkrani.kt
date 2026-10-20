@@ -127,8 +127,8 @@ fun EslemeEkrani(
             katlanma.snapTo(1f); igne.snapTo(1f); halka.snapTo(1f)
             delay(1800)
         } else {
-            launch { katlanma.animateTo(1f, tween(750, easing = LinearEasing)) }
-            delay(620)
+            launch { katlanma.animateTo(1f, tween(950, easing = LinearEasing)) }
+            delay(800)
             launch { igne.animateTo(1f, spring(dampingRatio = 0.48f, stiffness = Spring.StiffnessMediumLow)) }
             delay(260)
             halka.animateTo(1f, tween(700))
