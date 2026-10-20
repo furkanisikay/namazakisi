@@ -91,6 +91,23 @@ Kayıt için (üretimdeki not, mağazadan okundu).
 
 ## App Store
 
+#### 0.53.1
+
+Yayındaki önceki sürüm 0.41.1. Bu build'de iPhone widget'ları, canlı etkinlik ve Apple Watch ilk kez açık. iCloud eşitlemesi kapalı olduğu için nota girmedi; Android'e özgü özellikler (Camideyim, Namaz modu, otomasyon) girmez.
+
+```
+- Yeni sade tasarım: Bugün, Kıble, Kaza, İlerleme ve Ayarlar sekmeleri, 5 adımlı kurulum.
+- Ana ekranda "Kıldım" düğmesi dokununca "Kılındı"ya dönüşür; yanlış işaretlediyseniz aynı yerden geri alırsınız.
+- Ana ekran ve kilit ekranı widget'ları; şu anki vaktin geri sayımı canlı etkinlik olarak kilit ekranında.
+- Apple Watch uygulaması: vakitler, kalan süre, "Kıldım", tesbihat sayacı ve kadran komplikasyonları.
+- Kıble: gecikmeden açılan pusula, kamerayla Kâbe yönünü gösteren görünüm ve telefonu dikleştirince yatan 3B kadran.
+- Hatırlatmalar sadeleşti: özetler simgelerle, adımlar zaman çizelgesi gibi, her adımda "Telefonunuz böyle uyaracak" önizlemesi.
+- Daha az bildirim: hazır düzeyler vakit başına 1, 3 ya da 5 uyarı; isterseniz her vakit için ayrı seçebilirsiniz.
+- Gece sessiz saatler: gece uyarı gelmez, yatsı hatırlatması sessizlikten önce gelir.
+- Gün tamamlandıysa gün sonu hatırlatması gelmez.
+- Hatırlatmalardaki "Ertele" düğmesi kaldırıldı; vakit geçmeden kılmanız için hatırlatmalar sırayla gelir.
+```
+
 #### 0.41.1
 
 Yayındaki önceki sürüm 0.30.1. Ana ekran widget'ı, canlı etkinlik ve Apple Watch
