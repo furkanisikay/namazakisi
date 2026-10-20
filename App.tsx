@@ -377,6 +377,14 @@ const AppIcerik: React.FC = () => {
         KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
       } else if (tur === 'odak') {
         arkaplanMuhafiziBildirimleriniPlanla();
+      } else if (tur === 'saatUyandirma') {
+        // Apple Watch'ta uyandırma kapatıldı / teheccüd kılındı: telefonun yedeği bir daha
+        // kurulmasın (planlama turu saatin cevabını okur), teheccüd susturma hafızası yazılsın.
+        // planlamayiCalistir saatin teheccüd Kıldım'larını da önce boşaltır.
+        NafileHatirlatmaServisi.getInstance()
+          .hatirlatmalariGuncelle(store.getState().konum.koordinatlar)
+          .catch(() => {});
+        arkaplanMuhafiziBildirimleriniPlanla();
       }
     });
 

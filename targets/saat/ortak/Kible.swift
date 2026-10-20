@@ -1,0 +1,94 @@
+import Foundation
+
+/**
+ * KIBLE ACISI + PUSULA KARARLARI (Apple Watch, #285 cilasi) — SAF (yalniz Foundation).
+ *
+ * Wear `cekirdek/Kible.kt` + `KibleKarari.kt` ikizi; o da telefonun `adhan` JS `Qibla`
+ * formulunun ikizidir. Radyan donusumu `d * pi / 180` (Kotlin ile ayni), sarma
+ * `x - 360 * floor(x / 360)` (adhan `unwindAngle`). Kilit: ortak fikstur
+ * `wear/app/src/test/resources/kible-ornekleri.json` (`targets/saat/test/main.swift`, 1e-9).
+ *
+ * Acilar derece, gercek kuzeye gore saat yonunde. Sensor (CoreLocation pusulasi)
+ * `targets/saat/KibleEkrani.swift`'tedir; buraya yalniz SAYI girer.
+ */
+public enum Kible {
+    /// Kabe — adhan JS ile ayni koordinat.
+    public static let kabeEnlem = 21.4225241
+    public static let kabeBoylam = 39.8261818
+
+    /// Hizaya GIRIS: telefonla AYNI esik (10°). Cikis 15° (histerezis — yazi yanip sonmesin).
+    public static let hizaGirisDerece = 10.0
+    public static let hizaCikisDerece = 15.0
+
+    public static func aci(enlem: Double, boylam: Double) -> Double {
+        let terim1 = sin(radyan(kabeBoylam) - radyan(boylam))
+        let terim2 = cos(radyan(enlem)) * tan(radyan(kabeEnlem))
+        let terim3 = sin(radyan(enlem)) * cos(radyan(kabeBoylam) - radyan(boylam))
+        return dereceSar(derece(atan2(terim1, terim2 - terim3)))
+    }
+
+    public static func dereceSar(_ aci: Double) -> Double {
+        return aci - 360.0 * (aci / 360.0).rounded(.down)
+    }
+
+    /// Kiblenin saate gore acisi: 0 = tam onde, 90 = sagda, 270 = solda.
+    public static func hedefAcisi(kibleAcisi: Double, yon: Double) -> Double {
+        return dereceSar(kibleAcisi - yon)
+    }
+
+    /// Kibleden mutlak sapma, [0, 180].
+    public static func sapma(_ hedef: Double) -> Double {
+        let h = dereceSar(hedef)
+        return h > 180.0 ? 360.0 - h : h
+    }
+
+    /// Histerezisli hizalama; `titret` yalniz hizaya GIRIS aninda.
+    public static func hiza(oncekiHizali: Bool, hedef: Double) -> (hizali: Bool, titret: Bool) {
+        let s = sapma(hedef)
+        let hizali = oncekiHizali ? s <= hizaCikisDerece : s < hizaGirisDerece
+        return (hizali, hizali && !oncekiHizali)
+    }
+
+    /// Yon. "Saga" / "Sola" / "Arkanizda" — rakam ayrica `donusDerecesi` ile (5°'lik adim).
+    public enum Donus: Equatable { case saga, sola, arkada }
+
+    public static func donus(_ hedef: Double) -> Donus {
+        if sapma(hedef) >= 175.0 { return .arkada }
+        return dereceSar(hedef) <= 180.0 ? .saga : .sola
+    }
+
+    /// 5°'lik adim (her sensor olayinda rakam titremesin), en az 5.
+    public static func donusDerecesi(_ hedef: Double) -> Int {
+        return max(5, Int((sapma(hedef) / 5.0).rounded()) * 5)
+    }
+
+    /// Wear `donusMetni` ile ayni: "Sağa 35°", "Sola 120°", "Arkanızda".
+    public static func donusMetni(_ hedef: Double) -> String {
+        switch donus(hedef) {
+        case .arkada: return "Arkanızda"
+        case .saga: return "Sağa \(donusDerecesi(hedef))°"
+        case .sola: return "Sola \(donusDerecesi(hedef))°"
+        }
+    }
+
+    /// Ekran okuyucu: 10°'lik adim (her olayda okunmasin), kibar "siz".
+    public static func erisimMetni(_ hedef: Double, hizali: Bool) -> String {
+        if hizali { return "Kıble yönündesiniz" }
+        let s = sapma(hedef)
+        if s >= 175.0 { return "Kıble arkanızda" }
+        let adim = max(10, Int((s / 10.0).rounded()) * 10)
+        let taraf = dereceSar(hedef) <= 180.0 ? "sağınızda" : "solunuzda"
+        return "Kıble \(adim) derece \(taraf)"
+    }
+
+    /// Ok donusunde EN KISA yol (359 → 1 gecisinde ok geri dolasmaz). Sonuc sarilmaz.
+    public static func enKisaYol(onceki: Double, yeni: Double) -> Double {
+        var fark = dereceSar(yeni) - dereceSar(onceki)
+        if fark > 180.0 { fark -= 360.0 }
+        if fark < -180.0 { fark += 360.0 }
+        return onceki + fark
+    }
+
+    private static func radyan(_ d: Double) -> Double { d * Double.pi / 180.0 }
+    private static func derece(_ r: Double) -> Double { r * 180.0 / Double.pi }
+}

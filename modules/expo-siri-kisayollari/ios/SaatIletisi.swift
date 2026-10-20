@@ -17,6 +17,11 @@ import Foundation
  *      ORTAK "Kildim" kuyruguna (`SiriDeposu.kildimEkle`, kaynak `saat`) yazar; kuyrugu
  *      JS bosaltir (`KildimKuyruguServisi`).
  *
+ *   3. Saat → telefon: sessiz uyandirma cevabi (`uyandirmaIletisi`, #285 cilasi — Android
+ *      `/namazakisi/uyandirma/kapandi` RPC'sinin ikizi). Telefon kimligi kaydeder, YEDEGINI
+ *      (+3 dk bildirim / AlarmKit alarmi) iptal eder; teheccud "Kildim"i farz kuyruguna
+ *      DEGIL nafile susturma hafizasina gider.
+ *
  * Vakit KAYIT kodudur (`imsak`, `ogle`...): kuyruk `sabah`'i reddeder (AGENTS.md).
  */
 public enum SaatIletisi {
@@ -50,6 +55,64 @@ public enum SaatIletisi {
               let tarih = ileti["tarih"] as? String, isoTarihMi(tarih),
               let vakit = ileti["vakit"] as? String, kayitVakitleri.contains(vakit) else { return nil }
         return Kildim(tarih: tarih, vakit: vakit)
+    }
+
+    public static let uyandirmaTuru = "uyandirma"
+
+    /// Saatin uyandirmaya verdigi cevap. ERTELE YOK (sahip karari 2026-10-19).
+    public struct Uyandirma: Equatable {
+        public let id: String
+        /// `kapat` | `kildim`
+        public let islem: String
+        /// `imsak` | `teheccud`
+        public let tur: String
+        public let tarih: String
+        /// Uyandirmanin anlamini yitirdigi an (telefon kaydi buna gore budar).
+        public let sonMs: Int64
+
+        public init(id: String, islem: String, tur: String, tarih: String, sonMs: Int64) {
+            self.id = id
+            self.islem = islem
+            self.tur = tur
+            self.tarih = tarih
+            self.sonMs = sonMs
+        }
+    }
+
+    public static func uyandirmaIletisi(_ u: Uyandirma) -> [String: Any] {
+        return [
+            turAnahtari: uyandirmaTuru,
+            "id": u.id,
+            "islem": u.islem,
+            "uyandirmaTuru": u.tur,
+            "tarih": u.tarih,
+            "sonMs": NSNumber(value: u.sonMs),
+        ]
+    }
+
+    /// Telefon: gelen uyandirma iletisini dogrular. Gecersizse nil (HICBIR SEY yazilmaz).
+    public static func uyandirmaCoz(_ ileti: [String: Any]) -> Uyandirma? {
+        guard (ileti[turAnahtari] as? String) == uyandirmaTuru,
+              let id = ileti["id"] as? String, uyandirmaKimligiMi(id),
+              let islem = ileti["islem"] as? String, islem == "kapat" || islem == "kildim",
+              let tur = ileti["uyandirmaTuru"] as? String, tur == "imsak" || tur == "teheccud",
+              let tarih = ileti["tarih"] as? String, isoTarihMi(tarih),
+              let son = ileti["sonMs"] as? NSNumber else { return nil }
+        // Kimlik turle celisiyorsa (imsak kimligi teheccud diye gelirse) reddet.
+        if (tur == "imsak") != id.hasPrefix("muhafiz_") { return nil }
+        return Uyandirma(id: id, islem: islem, tur: tur, tarih: tarih, sonMs: son.int64Value)
+    }
+
+    /// Uyandirma olabilecek kimlik mi? (Kotlin `UyandirmaZinciri.uyandirmaKimligiMi` ikizi)
+    public static func uyandirmaKimligiMi(_ id: String) -> Bool {
+        return eslesir(id, "^muhafiz_[0-9]{4}-[0-9]{2}-[0-9]{2}_vakit_imsak_seviye_[1-4]_dk_[0-9]+$") ||
+            eslesir(id, "^nafile_[0-9]{4}-[0-9]{2}-[0-9]{2}_teheccud_[0-9]+$")
+    }
+
+    private static func eslesir(_ metin: String, _ desen: String) -> Bool {
+        guard let r = try? NSRegularExpression(pattern: desen) else { return false }
+        let aralik = NSRange(metin.startIndex..<metin.endIndex, in: metin)
+        return r.firstMatch(in: metin, options: [], range: aralik) != nil
     }
 
     /// Telefon → saat baglami.
