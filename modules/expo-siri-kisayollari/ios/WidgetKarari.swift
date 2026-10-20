@@ -35,7 +35,41 @@ public enum WidgetDugmeKarari: Equatable {
     case gecersiz
 }
 
+/// Kontrol Merkezi "Kildim" kontrolunun gorunumu (iOS 18 ControlWidget; Android hizli ayar
+/// kutusu `KildimKutusuServisi` ikizi). `tarih`/`vakit` KAYIT kodudur; aday yoksa bostur
+/// (dokunus `dugmeKarari`'nda `gecersiz` olur, hicbir sey yazilmaz).
+public struct WidgetKontrolDurumu: Equatable, Sendable {
+    public enum Tur: Equatable, Sendable { case kilinabilir, kilindi, vakitYok }
+    public let tur: Tur
+    public let baslik: String
+    public let tarih: String
+    public let vakit: String
+}
+
 public enum WidgetKarari {
+    /// Kontrol Merkezi kontrolunun o anki durumu. Karar Siri "Kildim" ile AYNI
+    /// (`VakitKarari.kildimKarari`); dokunusta `dugmeKarari` yeniden degerlendirir.
+    public static func kontrolDurumu(
+        vakitler: [SiriVakitAni]?,
+        kilinanlar: [String: [String]],
+        bekleyenler: [SiriBekleyenKildim],
+        simdiMs: Int64
+    ) -> WidgetKontrolDurumu {
+        guard let vakitler, !vakitler.isEmpty else {
+            return WidgetKontrolDurumu(tur: .vakitYok, baslik: "Uygulamayı açın", tarih: "", vakit: "")
+        }
+        switch VakitKarari.kildimKarari(
+            vakitler: vakitler, kilinanlar: kilinanlar, bekleyenler: bekleyenler, simdiMs: simdiMs
+        ) {
+        case let .aday(v, kayit, ad):
+            return WidgetKontrolDurumu(tur: .kilinabilir, baslik: "\(ad) · Kıldım", tarih: v.tarih, vakit: kayit)
+        case let .zatenKilindi(ad):
+            return WidgetKontrolDurumu(tur: .kilindi, baslik: "\(ad) kılındı", tarih: "", vakit: "")
+        case .vakitYok:
+            return WidgetKontrolDurumu(tur: .vakitYok, baslik: "Kılınacak vakit yok", tarih: "", vakit: "")
+        }
+    }
+
     /// Bir zaman cizelgesinde en fazla bu kadar sinir girdisi (~2 gun).
     public static let azamiSinir = 12
 

@@ -83,6 +83,10 @@ struct KildimDugmesiIntent: LiveActivityIntent {
         #endif
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadAllTimelines()
+        // Kontrol Merkezi kontrolu (iOS 18) ayni dugme intent'ini kullanir; yeni durumu cizsin.
+        if #available(iOS 18.0, *) {
+            ControlCenter.shared.reloadAllControls()
+        }
         #endif
         return .result()
     }

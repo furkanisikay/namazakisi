@@ -342,6 +342,16 @@ if let ogle = widget.vakitler.first(where: { $0.vakit == "ogle" }) {
     esitMi(dugme("imsak", kilinan: [ogle.tarih: ["sabah"]]), .zatenKilindi, "dugme: kayitta (widget kodu sabah) → zaten kilindi")
     esitMi(dugme("ogle", bekleyen: [SiriBekleyenKildim(tarih: ogle.tarih, vakit: "ogle")]), .zatenKilindi, "dugme: kuyrukta → zaten kilindi")
     esitMi(dugme("ogle", vakitler: nil), .gecersiz, "dugme: cizelge yoksa gecersiz")
+    // Kontrol Merkezi kontrolu: ayni karar, bos aday dokunusta gecersiz olur.
+    let k1 = WidgetKarari.kontrolDurumu(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [], simdiMs: dokunus)
+    esitMi(k1, WidgetKontrolDurumu(tur: .kilinabilir, baslik: "Öğle · Kıldım", tarih: ogle.tarih, vakit: "ogle"), "kontrol: aktif vakit kilinabilir")
+    esitMi(dugme(k1.vakit), .isaretle, "kontrol: tasidigi aday dokunusta isaretlenir")
+    let k2 = WidgetKarari.kontrolDurumu(vakitler: widget.vakitler, kilinanlar: [ogle.tarih: ["ogle"]], bekleyenler: [], simdiMs: dokunus)
+    esitMi(k2.tur, .kilindi, "kontrol: kilinmis vakit")
+    esitMi(k2.vakit, "", "kontrol: kilinmis vakitte aday yok")
+    esitMi(WidgetKarari.kontrolDurumu(vakitler: nil, kilinanlar: [:], bekleyenler: [], simdiMs: dokunus).tur, .vakitYok, "kontrol: cizelge yok")
+    let gunes = widget.vakitler.first(where: { $0.vakit == "gunes" })!
+    esitMi(WidgetKarari.kontrolDurumu(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [], simdiMs: gunes.ms + 60_000).tur, .vakitYok, "kontrol: gunes→ogle arasi vakit yok")
 } else {
     hatalar.append("widget fiksturunde ogle yok")
 }
