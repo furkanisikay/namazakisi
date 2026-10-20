@@ -77,13 +77,46 @@ if [ -n "$IOS_RT" ] && [ -n "$TELEFON_TIPI" ]; then
   xcrun simctl pair "$SAAT" "$TELEFON" || echo "UYARI: esleme yapilamadi (saat tek basina denenecek)"
   xcrun simctl boot "$TELEFON" || true
 fi
-xcrun simctl boot "$SAAT" || true
-xcrun simctl bootstatus "$SAAT" -b
+# Saati acar ve sistem uygulamasinin gercekten ayaga kalkmasini bekler. Yuklu runner'da
+# acilis "Waiting on System App"ta takilip `Status=4294967295, isTerminal=YES` ile
+# BITEBILIYOR: o cihazda `simctl launch` her denemede
+# FBSOpenApplicationServiceErrorDomain code=4 verir ve tek kare cekilemez (yasandi,
+# run 39426364399). Bu durumda kapatip yeniden acilir.
+saatiAc() {
+  local deneme cikti kod
+  for deneme in 1 2 3; do
+    xcrun simctl boot "$SAAT" >/dev/null 2>&1 || true
+    cikti=$(xcrun simctl bootstatus "$SAAT" -b 2>&1)
+    kod=$?
+    if [ "$kod" -eq 0 ] && ! grep -q 'Status=4294967295' <<<"$cikti"; then
+      echo "saat açıldı (deneme $deneme)"
+      return 0
+    fi
+    echo "UYARI: saat açılışı yarım kaldı (deneme $deneme, kod $kod) — kapatılıp yeniden açılıyor"
+    tail -3 <<<"$cikti"
+    xcrun simctl shutdown "$SAAT" >/dev/null 2>&1 || true
+    sleep 5
+  done
+  return 1
+}
+
+# Uygulama acilmadiginda (code=4) sebebi loga dussun: cokme raporu + sistem gunlugu.
+tani() {
+  echo "::group::Tanı: $1"
+  ls -t "$HOME/Library/Logs/DiagnosticReports" 2>/dev/null | grep -i 'namaz' | head -3 | while read -r f; do
+    echo "--- çökme raporu: $f"
+    head -60 "$HOME/Library/Logs/DiagnosticReports/$f"
+  done
+  xcrun simctl spawn "$SAAT" log show --last 3m --style compact \
+    --predicate 'eventMessage CONTAINS[c] "watchkitapp" OR process CONTAINS[c] "NamazSaat"' 2>/dev/null | tail -60
+  echo "::endgroup::"
+}
+
+saatiAc || echo "UYARI: saat ilk açılışta ayağa kalkmadı"
 # Ilk acilis tercih dosyasini olusturdu: kapat → Turkce bolge yaz → yeniden ac.
 xcrun simctl shutdown "$SAAT" || true
 yerellestir "$SAAT"
-xcrun simctl boot "$SAAT" || true
-xcrun simctl bootstatus "$SAAT" -b
+saatiAc || echo "UYARI: saat yeniden açılışta ayağa kalkmadı"
 
 xcrun simctl install "$SAAT" "$APP"
 BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
@@ -93,6 +126,7 @@ echo "saat paketi: $BUNDLE"
 # ad:ekran:bekleme(sn)
 KARELER="01-ana:ana:12 02-vakitler:vakitler:8 03-kildim-onayi:onay:8 04-tesbihat:tesbihat:8"
 BEKLENEN=0
+KURTARILDI=0
 for k in $KARELER; do
   IFS=: read -r AD EKRAN BEKLE <<<"$k"
   BEKLENEN=$((BEKLENEN + 1))
@@ -110,6 +144,26 @@ for k in $KARELER; do
     fi
     sleep 15
   done
+  if [ "$ACILDI" -ne 1 ]; then
+    tani "$AD"
+    # Tek seferlik kurtarma: cihazi yeniden ac, paketi yeniden kur, bir kez daha dene.
+    if [ "$KURTARILDI" -eq 0 ]; then
+      KURTARILDI=1
+      echo "UYARI: $AD açılmadı — saat yeniden başlatılıp uygulama yeniden kuruluyor"
+      xcrun simctl shutdown "$SAAT" >/dev/null 2>&1 || true
+      saatiAc || true
+      xcrun simctl install "$SAAT" "$APP" || true
+      if SIMCTL_CHILD_TZ="$TZ_ADI" \
+        SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
+        SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
+        SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
+        xcrun simctl launch "$SAAT" "$BUNDLE"; then
+        ACILDI=1
+      else
+        tani "$AD (kurtarma sonrası)"
+      fi
+    fi
+  fi
   if [ "$ACILDI" -ne 1 ]; then
     echo "UYARI: $AD için uygulama başlatılamadı"
     continue
