@@ -6,7 +6,7 @@
  * için bileşenler `React.memo`'dur ve yalnız dize/sayı prop alır.
  */
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
@@ -91,23 +91,29 @@ export const KibleMiniKarti: React.FC<KoordinatProps> = React.memo(({ lat, lng }
             className="rounded-3xl border p-6 mb-6"
             style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir, borderRadius: 24 }}
         >
-            <KartBasligi ikon="kaaba" baslik="Kıble" alt={`Kuzeyden ${kible.derece}°, ${kible.yon}`} />
-            <View className="flex-row items-center gap-6">
-                {/* Statik yön gülü: N işareti üstte, ok kıble derecesinde (sensör yok). */}
+            <KartBasligi ikon="kaaba" baslik="Kıble yönü" alt={`Kuzeyden ${kible.derece}°, ${kible.yon}`} />
+            <View className="items-center">
+                {/* Statik yön gülü (sensör yok): K/D/G/B harfleri, ibre kıble derecesinde,
+                    ucunda Kâbe. Telefonu kuzeye çevirince yön bu ibredir. */}
                 <View
-                    className="w-28 h-28 rounded-full items-center justify-center border"
-                    style={{ borderColor: renkler.sinir, backgroundColor: renkler.arkaplan }}
+                    style={[gulStili.gul, { borderColor: renkler.sinir, backgroundColor: renkler.arkaplan }]}
                     importantForAccessibility="no-hide-descendants"
                     accessibilityElementsHidden
                 >
-                    <Text className="absolute top-1 text-xs font-bold" style={{ color: renkler.metinIkincil }}>K</Text>
-                    {/* `location-arrow` 45°'yi (kuzeydoğu) gösterir → kıble derecesinden 45 düşülür. */}
-                    <View style={{ transform: [{ rotate: `${kible.derece - 45}deg` }] }}>
-                        <FontAwesome5 name="location-arrow" size={40} color={renkler.birincil} />
+                    <Text style={[gulStili.harf, gulStili.kuzey, { color: renkler.metin }]}>K</Text>
+                    <Text style={[gulStili.harf, gulStili.dogu, { color: renkler.metinIkincil }]}>D</Text>
+                    <Text style={[gulStili.harf, gulStili.guney, { color: renkler.metinIkincil }]}>G</Text>
+                    <Text style={[gulStili.harf, gulStili.bati, { color: renkler.metinIkincil }]}>B</Text>
+                    <View style={[gulStili.ibreKatmani, { transform: [{ rotate: `${kible.derece}deg` }] }]}>
+                        <View style={[gulStili.kabe, { backgroundColor: renkler.birincil + '20' }]}>
+                            <FontAwesome5 name="kaaba" size={22} color={renkler.birincil} />
+                        </View>
+                        <View style={[gulStili.ibre, { backgroundColor: renkler.birincil }]} />
                     </View>
+                    <View style={[gulStili.merkez, { backgroundColor: renkler.birincil }]} />
                 </View>
                 <TouchableOpacity
-                    className="flex-1 flex-row items-center justify-center gap-2 rounded-2xl px-4"
+                    className="self-stretch flex-row items-center justify-center gap-2 rounded-2xl px-4 mt-6"
                     style={{ minHeight: 52, backgroundColor: renkler.birincil }}
                     onPress={() => navigation.navigate('Kible')}
                     accessibilityRole="button"
@@ -121,3 +127,18 @@ export const KibleMiniKarti: React.FC<KoordinatProps> = React.memo(({ lat, lng }
     );
 });
 KibleMiniKarti.displayName = 'KibleMiniKarti';
+
+const GUL = 220;
+const gulStili = StyleSheet.create({
+    gul: { width: GUL, height: GUL, borderRadius: GUL / 2, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+    harf: { position: 'absolute', fontSize: 14, fontWeight: '700' },
+    kuzey: { top: 10 },
+    guney: { bottom: 10 },
+    dogu: { right: 14 },
+    bati: { left: 14 },
+    // Tam boy katman merkezden döner; ibre üst yarıdadır (dönmeden önce kuzeyi gösterir).
+    ibreKatmani: { position: 'absolute', width: GUL, height: GUL, alignItems: 'center' },
+    kabe: { marginTop: 30, width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+    ibre: { width: 4, height: GUL / 2 - 30 - 44, borderRadius: 2 },
+    merkez: { width: 12, height: 12, borderRadius: 6 },
+});
