@@ -50,6 +50,8 @@ module.exports = {
     "expo-cami-geofence/src$": "<rootDir>/__mocks__/expo-cami-geofence.js",
     // Katlanabilir postür köprüsü (WindowManager, Android). Varsayılan: modül yok → "düz".
     "expo-katlanma-posturu/src$": "<rootDir>/__mocks__/expo-katlanma-posturu.js",
+    // Android TV eşleştirmesi (QR tarayıcı + yerel ağ gönderimi, Android). Varsayılan: modül yok.
+    "expo-tv-esleme/src$": "<rootDir>/__mocks__/expo-tv-esleme.js",
     // Cihazlar arası eşitleme (issue #288): iCloud köprüsü (iOS native, varsayılan YOK),
     // güvenli depo ve tarayıcı oturumu (native köprüler) — bellek-içi/iptal eden mock'lar.
     "expo-icloud-esitleme/src$": "<rootDir>/__mocks__/expo-icloud-esitleme.js",

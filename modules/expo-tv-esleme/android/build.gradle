@@ -1,0 +1,99 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'maven-publish'
+
+group = 'expo.modules.tvesleme'
+version = '0.1.0'
+
+buildscript {
+  def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
+  if (expoModulesCorePlugin.exists()) {
+    apply from: expoModulesCorePlugin
+    applyKotlinExpoModulesCorePlugin()
+  }
+
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23")
+  }
+}
+
+afterEvaluate {
+  publishing {
+    publications {
+      release(MavenPublication) {
+        from components.release
+      }
+    }
+    repositories {
+      maven {
+        url = mavenLocal().url
+      }
+    }
+  }
+}
+
+android {
+  namespace 'expo.modules.tvesleme'
+  compileSdkVersion safeExtGet("compileSdkVersion", 35)
+
+  defaultConfig {
+    minSdkVersion safeExtGet("minSdkVersion", 24)
+    targetSdkVersion safeExtGet("targetSdkVersion", 35)
+  }
+
+  publishing {
+    singleVariant("release") {
+      withSourcesJar()
+    }
+  }
+
+  lintOptions {
+    abortOnError false
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_17.majorVersion
+  }
+}
+
+repositories {
+  mavenCentral()
+  google()
+}
+
+dependencies {
+  implementation project(':expo-modules-core')
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.23"
+  // TV eşleştirme QR'ı KENDİ tarayıcımızla okunur: CameraX önizleme + ZXing çözücü
+  // (Apache-2.0, saf Java). Google kod tarayıcı / ML Kit BİLİNÇLİ olarak KULLANILMADI:
+  // ML Kit cihaz/uygulama/kullanım verisini Google'a gönderir (Play Data Safety beyanı
+  // gerektirirdi; "veri cihazdan çıkmaz" duruşu bozulurdu) ve Play hizmetleri olmayan
+  // telefonda (Huawei) hiç çalışmazdı. CameraX sürümü expo-camera ile AYNI (1.6.0):
+  // tek kopya derlenir. Kamera izni Kıble için zaten bildirili; yeni izin YOK.
+  def camerax = "1.6.0"
+  implementation "androidx.camera:camera-core:${camerax}"
+  implementation "androidx.camera:camera-camera2:${camerax}"
+  implementation "androidx.camera:camera-lifecycle:${camerax}"
+  implementation "androidx.camera:camera-view:${camerax}"
+  implementation "androidx.appcompat:appcompat:1.7.1"
+  implementation "com.google.zxing:core:3.5.3"
+}
+
+// expo-camera ile aynı düzeltme: RN Gradle eklentisinin çektiği Guava listenablefuture'ı
+// boş 9999.0 sürümüne zorlar; CameraX gerçek ListenableFuture sınıfını ister.
+configurations.configureEach {
+  resolutionStrategy.force "com.google.guava:listenablefuture:1.0"
+}
+
+def safeExtGet(prop, fallback) {
+  rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}

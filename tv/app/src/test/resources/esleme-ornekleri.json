@@ -1,0 +1,69 @@
+{
+  "_aciklama": "TV eşleştirme sözleşmesi (telefon TS core/tv ↔ TV Kotlin cekirdek/Esleme*). Beklenenler ELLE yazıldı: kodlar bağımsız bir Python Damm uygulamasıyla hesaplandı, kodu doğrulanan iki uygulamanın hiçbiri tarafından üretilmedi. Kural değişirse üç tarafı (TS, Kotlin, bu dosya) birlikte değiştirin.",
+  "kodlar": [
+    { "ad": "Fatih", "lat": 41.0082, "lng": 28.9784, "kod": "1684892", "cozulenLat": 41.05, "cozulenLng": 28.95 },
+    { "ad": "Konya", "lat": 37.8746, "lng": 32.4932, "kod": "1429243", "cozulenLat": 37.85, "cozulenLng": 32.45 },
+    { "ad": "Erzurum", "lat": 39.9043, "lng": 41.2679, "kod": "1598122", "cozulenLat": 39.95, "cozulenLng": 41.25 },
+    { "ad": "Kızıltepe", "lat": 37.1939, "lng": 40.586, "kod": "1374051", "cozulenLat": 37.15, "cozulenLng": 40.55 },
+    { "ad": "Berlin", "lat": 52.52, "lng": 13.405, "kod": "2603341", "cozulenLat": 52.55, "cozulenLng": 13.45 },
+    { "ad": "Mekke", "lat": 21.4225, "lng": 39.8262, "kod": "0117985", "cozulenLat": 21.45, "cozulenLng": 39.85 },
+    { "ad": "Sınır (tam 41.0 / 29.0)", "lat": 41.0, "lng": 29.0, "kod": "1684903", "cozulenLat": 41.05, "cozulenLng": 29.05 },
+    { "ad": "Rabat", "lat": 34.0209, "lng": -6.8416, "kod": "1121312", "cozulenLat": 34.05, "cozulenLng": -6.85 }
+  ],
+  "bolgeDisi": [
+    { "ad": "Kuzey dışı", "lat": 61.0, "lng": 10.0 },
+    { "ad": "Batı dışı", "lat": 40.0, "lng": -25.0 },
+    { "ad": "Güney dışı", "lat": 19.99, "lng": 30.0 }
+  ],
+  "gecersizKodlar": [
+    { "kod": "1685892", "neden": "tek hane hatası (Fatih kodunun 4. hanesi)" },
+    { "kod": "1648892", "neden": "komşu hanelerin yer değiştirmesi" },
+    { "kod": "3200001", "neden": "kontrol hanesi doğru ama gövde ayrılmış aralıkta (>= 320000)" },
+    { "kod": "168489", "neden": "eksik hane" },
+    { "kod": "16848921", "neden": "fazla hane" },
+    { "kod": "16a4892", "neden": "rakam dışı karakter" }
+  ],
+  "qrGecerli": [
+    {
+      "metin": "namazakisi://tv?v=1&a=192.168.1.23&p=47123&k=0123456789abcdef",
+      "adres": "192.168.1.23", "port": 47123, "anahtar": "0123456789abcdef"
+    },
+    {
+      "metin": "NAMAZAKISI://tv/?k=a1b2c3d4e5f60718&p=1024&a=10.0.0.7&v=1",
+      "adres": "10.0.0.7", "port": 1024, "anahtar": "a1b2c3d4e5f60718"
+    },
+    {
+      "metin": "namazakisi://tv?v=1&a=172.20.4.9&p=65535&k=ffffffffffffffff",
+      "adres": "172.20.4.9", "port": 65535, "anahtar": "ffffffffffffffff"
+    }
+  ],
+  "qrGecersiz": [
+    { "metin": "https://example.com/tv?v=1&a=192.168.1.23&p=47123&k=0123456789abcdef", "neden": "başka şema" },
+    { "metin": "namazakisi://tv?v=2&a=192.168.1.23&p=47123&k=0123456789abcdef", "neden": "bilinmeyen sürüm" },
+    { "metin": "namazakisi://tv?v=1&a=8.8.8.8&p=47123&k=0123456789abcdef", "neden": "yerel ağ dışı adres (kötü niyetli afiş konumu dışarı yollatamasın)" },
+    { "metin": "namazakisi://tv?v=1&a=172.32.0.1&p=47123&k=0123456789abcdef", "neden": "172.16/12 dışı" },
+    { "metin": "namazakisi://tv?v=1&a=192.168.1.300&p=47123&k=0123456789abcdef", "neden": "geçersiz IPv4" },
+    { "metin": "namazakisi://tv?v=1&a=192.168.1.23&p=80&k=0123456789abcdef", "neden": "ayrıcalıklı port" },
+    { "metin": "namazakisi://tv?v=1&a=192.168.1.23&p=47123&k=0123456789ABCDEF", "neden": "anahtar küçük harf onaltılık olmalı" },
+    { "metin": "namazakisi://tv?v=1&a=192.168.1.23&p=47123&k=0123", "neden": "kısa anahtar" },
+    { "metin": "namazakisi://kildim", "neden": "başka bağlantı" }
+  ],
+  "istekGecerli": [
+    {
+      "govde": "{\"v\":1,\"k\":\"0123456789abcdef\",\"ad\":\"Kadıköy, İstanbul\",\"lat\":40.9903,\"lng\":29.0291}",
+      "ad": "Kadıköy, İstanbul", "lat": 40.9903, "lng": 29.0291
+    },
+    {
+      "govde": "{\"v\":1,\"k\":\"0123456789abcdef\",\"ad\":\"  Meram\\u0007, Konya  \",\"lat\":37.86,\"lng\":32.43}",
+      "ad": "Meram, Konya", "lat": 37.86, "lng": 32.43
+    }
+  ],
+  "istekGecersiz": [
+    { "govde": "{\"v\":1,\"k\":\"ffffffffffffffff\",\"ad\":\"X\",\"lat\":40,\"lng\":29}", "hata": "anahtar" },
+    { "govde": "{\"v\":1,\"k\":\"0123456789abcdef\",\"ad\":\"X\",\"lat\":95,\"lng\":29}", "hata": "veri" },
+    { "govde": "{\"v\":1,\"k\":\"0123456789abcdef\",\"ad\":\"\",\"lat\":40,\"lng\":29}", "hata": "veri" },
+    { "govde": "{\"v\":1,\"k\":\"0123456789abcdef\",\"ad\":\"X\",\"lat\":0,\"lng\":0}", "hata": "veri" },
+    { "govde": "bozuk", "hata": "veri" }
+  ],
+  "istekAnahtari": "0123456789abcdef"
+}

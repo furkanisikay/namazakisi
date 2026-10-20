@@ -328,6 +328,16 @@ export const AyarlarSayfasi: React.FC = () => {
                     onPress={() => grubaGit('SaatVeWidgetAyarlari', CIHAZ_SAYFALARI)}
                   />,
                 ]}
+                {/* Android TV panosu: iki platformdan da kurulur. TV ekranı "Ayarlar › Televizyonda
+                    gösterin" der; yol bu satırla birebir aynı kalmalı (persona testi bulgusu). */}
+                <AyarSatiri
+                  varyant="navigasyon"
+                  ikon={<FontAwesome5 name="tv" size={18} color={ikonRengi} />}
+                  baslik="Televizyonda gösterin"
+                  ozet="Konumunuzu evdeki Android TV'ye aktarın"
+                  yeniRozetGoster={sayfaOkunmamisMi('TelevizyonAyarlari')}
+                  onPress={() => menuyeGit('TelevizyonAyarlari')}
+                />
                 <AyarSatiri
                   varyant="toggle"
                   ikon={<MaterialIcons name="vibration" size={22} color={ikonRengi} />}

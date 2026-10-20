@@ -132,6 +132,13 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     grup: 'Ekran ve cihazlar',
   },
   {
+    id: 'sayfa-televizyon',
+    baslik: 'Televizyonda gösterin',
+    anahtarKelimeler: ['tv', 'televizyon', 'android tv', 'google tv', 'eşleştir', 'qr', 'kare kod', 'büyük ekran'],
+    sayfa: 'TelevizyonAyarlari',
+    grup: 'Ekran ve cihazlar',
+  },
+  {
     id: 'sayfa-yedekleme',
     baslik: 'Yedek ve eşitleme',
     anahtarKelimeler: ['yedek', 'dışa aktar', 'içe aktar', 'yedekleme', 'eşitleme'],

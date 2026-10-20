@@ -36,6 +36,8 @@ export const AYARLAR_EKRANLARI = [
   'CamideyimAyarlari',
   'NamazModuAyarlari',
   'SaatAyarlari',
+  // Android TV'ye konum aktarma (QR ya da 7 haneli kod)
+  'TelevizyonAyarlari',
   'KildimUygulamalari',
   'OtomasyonRehberi',
   'DebugLogs',
@@ -54,4 +56,15 @@ export type AyarlarEkranAdi = (typeof AYARLAR_EKRANLARI)[number];
  * `vurgula` çapası olan HER hedef sayfaya gidebilir. `ac`: Hatırlatmalar'daki anahtar
  * ayrıntıda açma akışını başlatsın (rıza isteyen takvim çakışması).
  */
-export type AyarlarStackParamList = Record<AyarlarEkranAdi, { vurgula?: string; ac?: boolean } | undefined>;
+type OrtakAyarParametreleri = { vurgula?: string; ac?: boolean };
+
+/**
+ * `namazakisi://tv?v=1&a=…&p=…&k=…` derin bağlantısının sorgu alanları (iPhone kamerasıyla
+ * okutulan TV QR'ı). React Navigation sorguyu dize parametrelere çevirir; sayfa onları tek
+ * doğrulama kapısından (`tvQrCoz`) geçirir.
+ */
+export type TvDerinParametreleri = { v?: string; a?: string; p?: string; k?: string };
+
+export type AyarlarStackParamList = Record<AyarlarEkranAdi, OrtakAyarParametreleri | undefined> & {
+  TelevizyonAyarlari: (OrtakAyarParametreleri & TvDerinParametreleri) | undefined;
+};

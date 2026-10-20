@@ -63,6 +63,7 @@ import { KisaBildirimKatmani } from './src/presentation/components/common/KisaBi
 import { GeriAlBandiKatmani } from './src/presentation/components/ortak/GeriAlBandi';
 import { EsitlemeTetikleyici } from './src/presentation/components/esitleme/EsitlemeTetikleyici';
 import { hatirlatmaAyariniYukle } from './src/presentation/store/taniSlice';
+import { nowBarDegistiUygula } from './src/domain/services/NowBarDegisikligiServisi';
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
 // Kullanici bildirimden "Kildim" yaptiginda Redux store'u gunceller
@@ -393,6 +394,10 @@ const AppIcerik: React.FC = () => {
     // tekrarlamamak icin debounce (5 dk). Mount aninda init zaten calistigi icin
     // baslangic referansi simdi.
     let sonForegroundMs = Date.now();
+    // Saat dilimi (uçakla başka dilime geçiş, elle değişen dilim): debounce BEKLENMEZ ve konuma
+    // bağlı tüm tüketiciler (widget, sayaçlar, vakit bildirimleri, saat) TEK yayma noktasından
+    // mevcut koordinatla yeniden kurulur. Gün sınırı ve gösterilen saatler dilime bağlıdır.
+    let sonDilimOfseti = new Date().getTimezoneOffset();
     const FOREGROUND_DEBOUNCE_MS = 5 * 60 * 1000;
     const appStateListener = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active') {
@@ -406,7 +411,12 @@ const AppIcerik: React.FC = () => {
           CanliSayacPlanlayici.getInstance().yenidenPlanla().catch(() => {});
         }
         const simdiMs = Date.now();
-        if (simdiMs - sonForegroundMs < FOREGROUND_DEBOUNCE_MS) {
+        const dilimOfseti = new Date().getTimezoneOffset();
+        const dilimDegisti = dilimOfseti !== sonDilimOfseti;
+        sonDilimOfseti = dilimOfseti;
+        if (dilimDegisti) {
+          nowBarDegistiUygula().catch(() => {});
+        } else if (simdiMs - sonForegroundMs < FOREGROUND_DEBOUNCE_MS) {
           return; // 5 dk icinde tekrar one geldi -> agir yeniden-planlama gerekmez
         }
         sonForegroundMs = simdiMs;

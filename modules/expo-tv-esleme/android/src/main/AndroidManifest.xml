@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Yeni izin YOK: CAMERA uygulama manifestinde (Kıble) zaten bildirili; yerel ağ soketi
+       INTERNET ister, o da zaten var. -->
+  <application>
+    <activity
+      android:name="expo.modules.tvesleme.QrTaramaActivity"
+      android:exported="false"
+      android:screenOrientation="portrait"
+      android:theme="@style/Theme.AppCompat.NoActionBar" />
+  </application>
+</manifest>

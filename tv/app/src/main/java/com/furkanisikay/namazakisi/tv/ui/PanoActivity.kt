@@ -8,11 +8,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.furkanisikay.namazakisi.tv.cekirdek.IlListesi
+import com.furkanisikay.namazakisi.tv.cekirdek.Il
 import com.furkanisikay.namazakisi.tv.veri.KonumDeposu
 
 /**
- * TV giriş noktası (LEANBACK_LAUNCHER). İl seçilmemişse il seçimi, seçilmişse pano.
+ * TV giriş noktası (LEANBACK_LAUNCHER).
+ *
+ * Konum yoksa önerilen yol "Vakitleri telefonunuzdan alın" (QR); oradan kodla giriş ve
+ * elle il seçimi açılır. Panodaki "Konumu değiştirin" de aynı ekrana döner.
  */
 class PanoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,24 +25,38 @@ class PanoActivity : ComponentActivity() {
     }
 }
 
+private enum class Ekran { Pano, Esleme, Kod, Il }
+
 @Composable
 private fun Uygulama(depo: KonumDeposu) {
-    var plaka by remember { mutableStateOf(depo.seciliPlaka()) }
-    var seciliyor by remember { mutableStateOf(false) }
-    val il = IlListesi.bul(depo.iller, plaka)
+    var konum by remember { mutableStateOf<Il?>(depo.seciliIl()) }
+    var ekran by remember { mutableStateOf(if (konum == null) Ekran.Esleme else Ekran.Pano) }
+    val il = konum
+    val tamam: (Il) -> Unit = {
+        konum = it
+        ekran = Ekran.Pano
+    }
 
-    if (il == null || seciliyor) {
-        IlSecimEkrani(
+    when {
+        il != null && ekran == Ekran.Pano ->
+            PanoEkrani(il = il, ekraniAcikTut = true, onKonumDegistir = { ekran = Ekran.Esleme })
+        ekran == Ekran.Kod -> KodGirisEkrani(depo = depo, onTamam = tamam, onGeri = { ekran = Ekran.Esleme })
+        ekran == Ekran.Il -> IlSecimEkrani(
             iller = depo.iller,
-            seciliPlaka = il?.plaka,
+            seciliPlaka = depo.seciliPlaka(),
             onSec = {
                 depo.kaydet(it.plaka)
-                plaka = it.plaka
-                seciliyor = false
+                tamam(it)
             },
-            onGeri = if (il != null) ({ seciliyor = false }) else null,
+            onGeri = { ekran = Ekran.Esleme },
         )
-    } else {
-        PanoEkrani(il = il, ekraniAcikTut = true, onKonumDegistir = { seciliyor = true })
+        else -> EslemeEkrani(
+            depo = depo,
+            onTamam = tamam,
+            onKodla = { ekran = Ekran.Kod },
+            onIlSec = { ekran = Ekran.Il },
+            // İlk kurulumda null → geri tuşu uygulamadan çıkar.
+            onGeri = if (il != null) ({ ekran = Ekran.Pano }) else null,
+        )
     }
 }

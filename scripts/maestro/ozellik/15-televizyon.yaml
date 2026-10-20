@@ -1,0 +1,26 @@
+# tohum: ozellik
+# Televizyonda gosterin: telefondan Android TV'ye konum aktarma (QR + 7 haneli kod).
+# Tarayici acilmaz (emulatorde Play hizmetleri kod tarayicisi gercek QR okuyamaz);
+# sayfanin ust yarisi (sahne + dugme) ve kod karti cekilir.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Televizyonda gösterin\\..*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Televizyonda gösterin\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/32-televizyon
+- scrollUntilVisible:
+    element:
+      id: "tv-konum-kodu"
+    direction: DOWN
+    timeout: 60000
+    waitToSettleTimeoutMs: 1500
+    centerElement: true
+- takeScreenshot: ozk/33-televizyon-kod

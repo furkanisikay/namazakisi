@@ -18,6 +18,8 @@ activityCompose = "1.12.0"
 adhan2 = "0.0.6"
 junit = "4.13.2"
 orgJson = "20240303"
+# ZXing core (Apache-2.0, saf Java, izin eklemez): eşleştirme QR'ını CİHAZDA üretir.
+zxing = "3.5.3"
 
 [libraries]
 tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tvMaterial" }
@@ -27,6 +29,7 @@ activity-compose = { group = "androidx.activity", name = "activity-compose", ver
 adhan2 = { group = "com.batoulapps.adhan", name = "adhan2", version.ref = "adhan2" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 org-json = { group = "org.json", name = "json", version.ref = "orgJson" }
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

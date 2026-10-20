@@ -96,6 +96,28 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         ctaEtiketi: 'Kurulumu açın',
         kartGoster: true,
     },
+    // Android TV panosuna telefondan konum aktarma (QR / 7 haneli kod) + ana ekranda izin onarımı.
+    {
+        id: 'televizyona-konum-aktarma',
+        platformlar: ['android', 'ios'],
+        surum: '0.55.0',
+        tarih: '2026-10-20',
+        baslik: 'Vakitler Televizyonda',
+        aciklama:
+            'Evdeki Android TV’de Namaz Akışı’nı açın, ekrandaki kare kodu telefonunuzla okutun: konumunuz TV’ye gelir, vakitler büyük ekranda sizin şehrinize göre görünür.',
+        detayAciklama:
+            'Konum, evinizin Wi-Fi ağında doğrudan TV’ye gider; hesap açılmaz, sunucuya gönderilmez. Wi-Fi ya da kamera yoksa telefonunuzdaki 7 haneli kodu TV’ye kumandayla girebilirsiniz. Bildirim izni ya da tam zamanlı hatırlatma izni sonradan kapanırsa ana ekran bunu söyler ve tek dokunuşla açmanızı sağlar.',
+        detaylar: [
+            'TV’deki kare kodu okutun, konum TV’ye gelsin',
+            'Wi-Fi yoksa 7 haneli kodla aktarın',
+            'Hesap yok, sunucu yok; veri evinizden çıkmaz',
+            'Kapanan izinler ana ekranda tek dokunuşla onarılır',
+        ],
+        ikon: 'tv',
+        hedefSayfa: 'TelevizyonAyarlari',
+        ctaEtiketi: 'TV’ye aktarın',
+        kartGoster: true,
+    },
     // Kıble ekranı: kendi kamera görünümümüz + 3B pusula (Google kıble bulucu kaldırıldı).
     {
         id: 'kible-kamera-ve-3b-pusula',

@@ -14,7 +14,12 @@
         "UIDesignRequiresCompatibility": true,
         "UIBackgroundModes": [
           "fetch"
-        ]
+        ],
+        "NSLocalNetworkUsageDescription": "Konumunuzu evinizdeki televizyona aktarmak için yerel ağınızdaki TV'ye bağlanılır. Veri yalnız iki cihaz arasında gider.",
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": false,
+          "NSAllowsLocalNetworking": true
+        }
       },
       "entitlements": {
         "com.apple.developer.usernotifications.time-sensitive": true
@@ -78,7 +83,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Kıble yönünü kamera görüntüsü üzerinde göstermek için kameranız kullanılır. Görüntü kaydedilmez ve cihazınızdan çıkmaz.",
+          "cameraPermission": "Kıble yönünü kamera görüntüsü üzerinde göstermek ve televizyondaki eşleştirme kodunu okumak için kameranız kullanılır. Görüntü kaydedilmez ve cihazınızdan çıkmaz.",
           "microphonePermission": false,
           "recordAudioAndroid": false,
           "barcodeScannerEnabled": false

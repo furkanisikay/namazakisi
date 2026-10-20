@@ -2,10 +2,15 @@
 <!--
   Namaz Akışı — Android TV vakit panosu (issue #286).
   applicationId telefonla AYNI (build.gradle.kts): Play'de aynı kaydın "Android TV"
-  form faktörü izine ayrı AAB. Vakitler cihazda hesaplanır; AĞ ve KONUM İZNİ YOK
-  (il elle seçilir).
+  form faktörü izine ayrı AAB. Vakitler cihazda hesaplanır; KONUM İZNİ YOK.
+  INTERNET yalnız telefondan eşleştirme içindir: eşleştirme ekranı açıkken evin YEREL
+  ağında tek seferlik bir port dinlenir (telefon konumu doğrudan TV'ye yollar). TV hiçbir
+  sunucuya bağlanmaz, internete veri göndermez.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Yerel ağda soket açmak için zorunlu (ServerSocket). Bkz. üstteki not. -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Yalnız TV'ye kurulur; dokunmatik ekran istenmez (D-pad). -->
     <uses-feature android:name="android.software.leanback" android:required="true" />
