@@ -76,14 +76,50 @@ if [ -n "$IOS_RT" ] && [ -n "$TELEFON_TIPI" ]; then
   # Esleme: saat uygulamasi telefona bagli (`WKRunsIndependentlyOfCompanionApp=false`).
   xcrun simctl pair "$SAAT" "$TELEFON" || echo "UYARI: esleme yapilamadi (saat tek basina denenecek)"
   xcrun simctl boot "$TELEFON" || true
+  # Saat uygulamasi esine bagli: yarim acilmis telefon test edilmemis bir sebep olurdu.
+  xcrun simctl bootstatus "$TELEFON" -b >/dev/null 2>&1 || echo "UYARI: eş telefon açılışı bitmedi"
 fi
-xcrun simctl boot "$SAAT" || true
-xcrun simctl bootstatus "$SAAT" -b
+# Saati acar ve bootstatus'un BASARIYLA bitmesini bekler; basarisizsa kapatip yeniden
+# acar. DIKKAT: izlenen her acilis `Status=4294967295, isTerminal=YES … Finished` ile
+# biter — bu NORMAL tamamlanmadir, hata sayma (yalniz cikis kodu).
+saatiAc() {
+  local deneme cikti kod
+  for deneme in 1 2 3; do
+    xcrun simctl boot "$SAAT" >/dev/null 2>&1 || true
+    cikti=$(xcrun simctl bootstatus "$SAAT" -b 2>&1)
+    kod=$?
+    if [ "$kod" -eq 0 ]; then
+      echo "saat açıldı (deneme $deneme)"
+      return 0
+    fi
+    echo "UYARI: saat açılışı başarısız (deneme $deneme, kod $kod) — kapatılıp yeniden açılıyor"
+    tail -3 <<<"$cikti"
+    xcrun simctl shutdown "$SAAT" >/dev/null 2>&1 || true
+    sleep 5
+  done
+  return 1
+}
+
+# Uygulama acilmadiginda (code=4) sebebi loga dussun: cokme raporu + sistem gunlugu.
+tani() {
+  echo "::group::Tanı: $1"
+  xcrun simctl list pairs || true
+  xcrun simctl list devices -j | json 'Object.values(j.devices).flat().filter(d=>/^magaza-saat/.test(d.name)).map(d=>d.name+": "+d.state).join("\n")' || true
+  echo "uygulama kabı: $(xcrun simctl get_app_container "$SAAT" "$BUNDLE" 2>&1 || true)"
+  ls -t "$HOME/Library/Logs/DiagnosticReports" 2>/dev/null | grep -i 'namaz' | head -3 | while read -r f; do
+    echo "--- çökme raporu: $f"
+    head -60 "$HOME/Library/Logs/DiagnosticReports/$f"
+  done
+  xcrun simctl spawn "$SAAT" log show --last 3m --style compact \
+    --predicate 'eventMessage CONTAINS[c] "watchkitapp" OR process CONTAINS[c] "NamazSaat"' 2>/dev/null | tail -60
+  echo "::endgroup::"
+}
+
+saatiAc || echo "UYARI: saat ilk açılışta ayağa kalkmadı"
 # Ilk acilis tercih dosyasini olusturdu: kapat → Turkce bolge yaz → yeniden ac.
 xcrun simctl shutdown "$SAAT" || true
 yerellestir "$SAAT"
-xcrun simctl boot "$SAAT" || true
-xcrun simctl bootstatus "$SAAT" -b
+saatiAc || echo "UYARI: saat yeniden açılışta ayağa kalkmadı"
 
 xcrun simctl install "$SAAT" "$APP"
 BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
@@ -93,13 +129,14 @@ echo "saat paketi: $BUNDLE"
 # ad:ekran:bekleme(sn)
 KARELER="01-ana:ana:12 02-vakitler:vakitler:8 03-kildim-onayi:onay:8 04-tesbihat:tesbihat:8"
 BEKLENEN=0
+KURTARILDI=0
 for k in $KARELER; do
   IFS=: read -r AD EKRAN BEKLE <<<"$k"
   BEKLENEN=$((BEKLENEN + 1))
   xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
   sleep 1
   ACILDI=0
-  for deneme in 1 2; do
+  for deneme in 1 2 3 4; do
     if SIMCTL_CHILD_TZ="$TZ_ADI" \
       SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
@@ -108,8 +145,28 @@ for k in $KARELER; do
       ACILDI=1
       break
     fi
-    sleep 15
+    sleep 30
   done
+  if [ "$ACILDI" -ne 1 ]; then
+    tani "$AD"
+    # Tek seferlik kurtarma: cihazi yeniden ac, paketi yeniden kur, bir kez daha dene.
+    if [ "$KURTARILDI" -eq 0 ]; then
+      KURTARILDI=1
+      echo "UYARI: $AD açılmadı — saat yeniden başlatılıp uygulama yeniden kuruluyor"
+      xcrun simctl shutdown "$SAAT" >/dev/null 2>&1 || true
+      saatiAc || true
+      xcrun simctl install "$SAAT" "$APP" || true
+      if SIMCTL_CHILD_TZ="$TZ_ADI" \
+        SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
+        SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
+        SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
+        xcrun simctl launch "$SAAT" "$BUNDLE"; then
+        ACILDI=1
+      else
+        tani "$AD (kurtarma sonrası)"
+      fi
+    fi
+  fi
   if [ "$ACILDI" -ne 1 ]; then
     echo "UYARI: $AD için uygulama başlatılamadı"
     continue

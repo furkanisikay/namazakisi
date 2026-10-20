@@ -296,23 +296,31 @@ function cek(ad) {
     a = await agac('ayarlar-oncesi');
     if (await dokun(a, SEKME('Ayarlar'), 'ayarlar sekmesi', { bekle: 2500 })) {
         a = await agac('ayarlar');
-        // Ayarlar > Hatirlatmalar > Vakit cikmadan > "Kendim ayarlayayim" (vakit kartlari).
+        // Ayarlar > Hatirlatmalar > Vakit cikmadan > Sabah'in "Ozel" parcasi (vakit kartlari).
+        // "Vakit çıkmadan" satiri Hatirlatmalar sayfasinda sekme cubugunun hizasinda
+        // (y≈873/956) duruyor: kaydirmadan dokunmak KAZA sekmesine basiyordu (yasandi).
         const muhafizaGit =
             (await dokun(a, /^Hatırlatmalar\./i, 'hatirlatmalar satiri', { bekle: 3000 })) &&
-            (await dokun(await agac('hatirlatmalar'), /^Vakit çıkmadan\./i, 'vakit cikmadan satiri', { bekle: 3000 })) &&
-            (await dokun(await agac('muhafiz'), /kendim-ayarlayayim|^Kendim ayarlayayım/i, 'kendim ayarlayayim', { bekle: 2000 }));
+            (await kaydirarakDokun(/^Vakit çıkmadan\./i, 'vakit cikmadan satiri', 'hatirlatmalar', { bekle: 3000 }));
+        // Sabah'in "Ozel" parcasi "Kendim ayarlayayim" katini ve Sabah kartini BIRLIKTE
+        // acar (simulator-ozellik-cek.js ile ayni yol). Sayfanin dibindeki eski
+        // "Kendim ayarlayayim" satiri yalniz yedek yoldur.
+        let kartAcik = false;
         if (muhafizaGit) {
-            // Muhafiz DISKTEN acik tohumlanir (simulator-tohumla.js). Anahtara
-            // DOKUNMA: `idb ui tap` UISwitch'i toggle etmiyor, ustelik acik
-            // gelen anahtara dokunmak onu KAPATIR.
-            // Zaman seridi ancak vakit karti acikken gorunur.
-            a = await agac('muhafiz-acik');
-            // SABAH secilir, Yatsi DEGIL: Yatsi listenin en altinda ve genisleyen
-            // icerigi ekranin disinda kaliyor — zaman seridi gorunmuyor, adim
-            // satirlari erisilebilirlik agacina hic girmiyor (yasandi).
-            if (!(await dokun(a, /sabah vakti hatırlatma/i, 'sabah vakit karti', { bekle: 2500 }))) {
-                await dokun(a, /vakti hatırlatma ayarları/i, 'herhangi bir vakit karti', { bekle: 2500 });
+            kartAcik = await kaydirarakDokun(/vakit-duzey-imsak-ozel/, 'sabah ozel parcasi', 'sabah-ozel', { bekle: 2500 });
+            if (!kartAcik && (await kaydirarakDokun(/kendim-ayarlayayim|^Kendim ayarlayayım/i, 'kendim ayarlayayim', 'kendim', { bekle: 2000 }))) {
+                // Muhafiz DISKTEN acik tohumlanir (simulator-tohumla.js). Anahtara
+                // DOKUNMA: `idb ui tap` UISwitch'i toggle etmiyor, ustelik acik
+                // gelen anahtara dokunmak onu KAPATIR.
+                // SABAH secilir, Yatsi DEGIL: Yatsi listenin en altinda ve genisleyen
+                // icerigi ekranin disinda kaliyor (yasandi).
+                a = await agac('muhafiz-acik');
+                kartAcik =
+                    (await dokun(a, /sabah vakti hatırlatma/i, 'sabah vakit karti', { bekle: 2500 })) ||
+                    (await dokun(a, /vakti hatırlatma ayarları/i, 'herhangi bir vakit karti', { bekle: 2500 }));
             }
+        }
+        if (kartAcik) {
             // Kart acildiktan SONRA kaydir: genisleyen icerik (zaman seridi + 4 adim)
             // ekranin alt kenarinda kaliyor. Adim satiri sekme cubugunun ALTINA
             // dustugu icin dokunus bosa gidiyordu ve 03 karesi 02 ile birebir ayni
@@ -324,7 +332,7 @@ function cek(ad) {
             // Adim detayi (bottom sheet). "adımını açın veya kapatın" ANAHTARDIR,
             // ona basmak adimi kapatir — bu yuzden kalip "düzenleyin" ile kesinlestirildi.
             a = await agac('adim-oncesi');
-            if (await dokun(a, /hatırlatma.* — düzenleyin/i, 'adim satiri', { bekle: 3000 })) {
+            if (await kaydirarakDokun(/1\. hatırlatma.* — düzenleyin/i, 'adim satiri', 'adim', { bekle: 3000 })) {
                 // "Gelişmiş" bolumunu ac: sheet tekrar/ton satirlariyla dolar.
                 // (Birlesik modul: kanal kartlari yerine anahtar var; `idb ui tap`
                 // UISwitch'i toggle etmez, bu yuzden anahtar yerine bolum acilir.)
@@ -361,8 +369,10 @@ function cek(ad) {
         // AYLIK, haftalik degil: haftalik gorunum icinde bulunulan haftayi
         // gosterir ve hafta basinda (pazartesi) yalnizca bugun dolu, "%9 basari"
         // gorunuyordu. Kılma oranı seri panelinin ALTINDA → kaydirarak bulunur.
-        // Etiket ", Aylık": ikonun bos etiketi virgulle eklenebiliyor.
-        if (await kaydirarakDokun(/(^|, )Aylık$/, 'aylik secici', 'aylik', { bekle: 4000 })) {
+        // Etiket ", Aylık": ikonun bos etiketi virgulle eklenebiliyor. Secici artik
+        // AXValue tasiyor ("radio button, unchecked") ve `metin` onu " | " ile
+        // ekliyor → satir sonu capasi tek basina TUTMAZ (yasandi).
+        if (await kaydirarakDokun(/(^|, )Aylık( \||$)/, 'aylik secici', 'aylik', { bekle: 4000 })) {
             // Aylik icerik secicinin ALTINDA: "Vakit vakit" kartini orta banda getir.
             await ortayaGetir(/^Vakit vakit$/, 'vakit-vakit');
             await agac('aylik');
