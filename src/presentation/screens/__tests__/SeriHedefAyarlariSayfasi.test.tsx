@@ -56,9 +56,11 @@ const mockRenkler = {
   metin: '#333333',
   metinIkincil: '#666666',
   sinir: '#cccccc',
-  hata: '#F44336',
-  bilgi: '#2196F3',
-  basarili: '#10b981',
+  durum: {
+    hata: '#F44336',
+    bilgi: '#2196F3',
+    basarili: '#10b981',
+  },
 };
 
 describe('SeriHedefAyarlariSayfasi', () => {
