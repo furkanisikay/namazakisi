@@ -70,7 +70,7 @@ describe('withNamazSaat — bayrak', () => {
     it('app.json\'da eklenti KAPALI kayıtlı (varsayılan build saat hedefini taşımaz)', () => {
         const app = JSON.parse(fs.readFileSync(path.join(KOK, 'app.json'), 'utf8'));
         const kayit = app.expo.plugins.find((p: unknown) => Array.isArray(p) && p[0] === './plugins/withNamazSaat');
-        expect(kayit).toEqual(['./plugins/withNamazSaat', { etkin: false }]);
+        expect(kayit).toEqual(['./plugins/withNamazSaat', { etkin: true }]);
     });
 });
 

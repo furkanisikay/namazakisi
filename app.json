@@ -53,11 +53,17 @@
       [
         "./plugins/withNamazWidget",
         {
-          "etkin": false
+          "etkin": true
         }
       ],
       [
         "./plugins/withNamazSaat",
+        {
+          "etkin": true
+        }
+      ],
+      [
+        "./plugins/withIcloudEsitleme",
         {
           "etkin": false
         }

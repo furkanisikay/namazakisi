@@ -522,9 +522,22 @@ jobs:
         timeout-minutes: 200
         run: |
           echo "🍎 iOS build başlatılıyor (production)..."
+          # ASC API anahtarı: EAS bozulan/eksik imza profilini Apple ID girişi
+          # olmadan onarabilsin (yeni yetenek eklenince Apple eski profili
+          # geçersiz sayar, EAS kendi kaydını yine kullanırdı — 2026-10-20).
+          if [ -n "$ASC_API_KEY" ]; then
+            printf '%s' "$ASC_API_KEY" > /tmp/asc-build-key.p8
+            export EXPO_ASC_API_KEY_PATH=/tmp/asc-build-key.p8
+          fi
           eas build             --platform ios             --profile production             --non-interactive
+          rm -f /tmp/asc-build-key.p8
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
+          EXPO_ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          EXPO_ASC_ISSUER_ID: ${{ secrets.ASC_KEY_ISSUER_ID }}
+          EXPO_APPLE_TEAM_ID: 5486BAC22V
+          EXPO_APPLE_TEAM_TYPE: INDIVIDUAL
 
       - name: 🔎 iOS build durumunu doğrula
         if: inputs.build_ios == true && inputs.sadece_submit != true
