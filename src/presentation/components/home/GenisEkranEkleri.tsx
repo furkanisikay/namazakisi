@@ -27,6 +27,11 @@ interface Props {
     gunTarihiIso: string;
     /** Değişince hafta kayıtları yeniden okunur (ör. `${gün}_${bugün kılınan}`). */
     okumaAnahtari: string;
+    /**
+     * Üç sütunlu yatay düzende sütunun tüm yüksekliğini doldur (bölümler artan alanı
+     * eşit paylaşır, içerik ortalanır). Dikey iki sütunda kartın altında doğal boyda kalır.
+     */
+    uzat?: boolean;
 }
 
 /** Ek hesap ana ekranı ASLA düşürmez: patlarsa bölüm çizilmez. */
@@ -38,15 +43,16 @@ function guvenli<T>(hesap: () => T | null): T | null {
     }
 }
 
-const Bolum: React.FC<{ ikon: string; baslik: string; children: React.ReactNode; ilk?: boolean }> = ({
+const Bolum: React.FC<{ ikon: string; baslik: string; children: React.ReactNode; ilk?: boolean; uzat?: boolean }> = ({
     ikon,
     baslik,
     children,
     ilk,
+    uzat,
 }) => {
     const renkler = useRenkler();
     return (
-        <View style={[stil.bolum, !ilk && { borderTopWidth: 1, borderTopColor: renkler.sinir }]}>
+        <View style={[stil.bolum, uzat && stil.uzanan, !ilk && { borderTopWidth: 1, borderTopColor: renkler.sinir }]}>
             <View className="flex-row items-center gap-2 mb-3">
                 <FontAwesome5 name={ikon} size={13} color={renkler.birincil} solid />
                 <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
@@ -58,7 +64,7 @@ const Bolum: React.FC<{ ikon: string; baslik: string; children: React.ReactNode;
     );
 };
 
-export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiIso, okumaAnahtari }) => {
+export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiIso, okumaAnahtari, uzat = false }) => {
     const renkler = useRenkler();
     const dispatch = useAppDispatch();
     const navigation = useNavigation<{ navigate: (ad: string) => void }>();
@@ -98,9 +104,12 @@ export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiI
         <View
             testID="bu-hafta-paneli"
             className="border mb-6"
-            style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir, borderRadius: 24 }}
+            style={[
+                { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir, borderRadius: 24 },
+                uzat && stil.uzananKart,
+            ]}
         >
-            <Bolum ikon="fire" baslik="Bu hafta" ilk>
+            <Bolum ikon="fire" baslik="Bu hafta" ilk uzat={uzat}>
                 <View className="flex-row items-baseline gap-2 mb-4" accessible accessibilityLabel={`${mevcutSeri} günlük seri`}>
                     <Text style={[stil.buyukSayi, { color: renkler.metin }]}>{mevcutSeri}</Text>
                     <Text className="text-base" style={{ color: renkler.metinIkincil }}>
@@ -145,7 +154,7 @@ export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiI
             </Bolum>
 
             {kaza ? (
-                <Bolum ikon="book" baslik="Kaza">
+                <Bolum ikon="book" baslik="Kaza" uzat={uzat}>
                     <View className="flex-row items-center justify-between">
                         <Text className="text-base" style={{ color: renkler.metin }}>
                             <Text className="text-2xl font-bold">
@@ -171,7 +180,7 @@ export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiI
             ) : null}
 
             {yarin ? (
-                <Bolum ikon="calendar-day" baslik={`Yarın, ${yarin.tarihMetni}`}>
+                <Bolum ikon="calendar-day" baslik={`Yarın, ${yarin.tarihMetni}`} uzat={uzat}>
                     <View className="flex-row flex-wrap" testID="genis-yarin-vakitleri">
                         {yarin.satirlar.map((s) => (
                             <View key={s.ad} className="w-1/3 py-2" accessible accessibilityLabel={`Yarın ${s.ad} ${s.saat}`}>
@@ -193,6 +202,8 @@ BuHaftaPaneli.displayName = 'BuHaftaPaneli';
 
 const stil = StyleSheet.create({
     bolum: { paddingHorizontal: 24, paddingVertical: 20 },
+    uzanan: { flexGrow: 1, justifyContent: 'center' },
+    uzananKart: { flexGrow: 1 },
     buyukSayi: { fontSize: 44, lineHeight: 50, fontWeight: '800' },
     kutuSutunu: { gap: 3 },
     kutu: { width: 22, height: 8, borderRadius: 3 },

@@ -1005,6 +1005,7 @@ export const AnaSayfa: React.FC = () => {
           lng={konumAyarlari.koordinatlar?.lng}
           gunTarihiIso={sayfaTarihi}
           okumaAnahtari={`${sayfaTarihi}_${tamamlanan}`}
+          uzat={ucSutun}
         />
       ) : undefined;
     return (

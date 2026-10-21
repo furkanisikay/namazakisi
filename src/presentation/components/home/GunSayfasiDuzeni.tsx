@@ -142,8 +142,14 @@ export const GunSayfasiDuzeni: React.FC<GunSayfasiDuzeniProps> = ({
 
     return (
         <View testID="anasayfa-iki-bolme" style={stiller.ikiBolme}>
-            <ScrollView testID="anasayfa-sol-bolme" style={stiller.solBolme} showsVerticalScrollIndicator={false}>
-                {ustBolum}
+            <ScrollView
+                testID="anasayfa-sol-bolme"
+                style={stiller.solBolme}
+                contentContainerStyle={ucuncuSutun ? stiller.uzanan : undefined}
+                showsVerticalScrollIndicator={false}
+            >
+                {/* Üç sütunda vakit kartı sütunu doldurur (13" yatayda alt üçte bir boş kalıyordu). */}
+                {ucuncuSutun ? <View style={stiller.uzanan}>{ustBolum}</View> : ustBolum}
                 {solEk}
                 <View className="h-10" />
             </ScrollView>
@@ -153,7 +159,12 @@ export const GunSayfasiDuzeni: React.FC<GunSayfasiDuzeniProps> = ({
                 <View className="h-10" />
             </ScrollView>
             {ucuncuSutun ? (
-                <ScrollView testID="anasayfa-ucuncu-sutun" style={stiller.ucuncuSutun} showsVerticalScrollIndicator={false}>
+                <ScrollView
+                    testID="anasayfa-ucuncu-sutun"
+                    style={stiller.ucuncuSutun}
+                    contentContainerStyle={stiller.uzanan}
+                    showsVerticalScrollIndicator={false}
+                >
                     {ucuncuSutun}
                     <View className="h-10" />
                 </ScrollView>
@@ -176,6 +187,7 @@ const stiller = StyleSheet.create({
     sagBolme: { flex: 1.1 },
     sagEk: { marginTop: 24 },
     ucuncuSutun: { flex: 0.9 },
+    uzanan: { flexGrow: 1 },
     masaustu: { flex: 1 },
     // Ölçü yokken (ilk çizim) ya da menteşe sayfaya sığmıyorsa eşit yarılar.
     esitYari: { flex: 1 },

@@ -167,15 +167,10 @@ async function turCek(onEk) {
     kare(`${onEk}-01-bugun`);
     await ac('namazakisi://ayarlar');
     kare(`${onEk}-02-ayarlar`);
-    // Ana-ayrıntı: listeden başka bir ayrıntıya geçiş (sağ bölme değişmeli).
-    const nafile = /^Nafile namazlar/i;
-    if (bul(await agacDolu(), nafile)) {
-        await bas(nafile, async () => !!bul(await agacDolu(), /^Nafile Namazlar$/), 'Nafile satırı');
-        await bekle(3000);
-        kare(`${onEk}-03-ayarlar-nafile`);
-    } else {
-        console.error('  UYARI: Nafile satırı bulunamadı');
-    }
+    // Ana-ayrıntı: başka bir ayrıntı (sağ bölme değişir, listede "Namazda sessiz" seçili).
+    // Derin bağlantı: listedeki satır ekran dışında kalabiliyor (yatayda Nafile görünmüyordu).
+    await ac('namazakisi://camideyim');
+    kare(`${onEk}-03-ayarlar-camideyim`);
     await ac('namazakisi://kaza');
     kare(`${onEk}-04-kaza`);
     await ac('namazakisi://ilerleme');
@@ -236,7 +231,7 @@ function boyut(f) {
     for (const f of fs.readdirSync(CIKIS).filter((x) => x.startsWith('yatay-') && x.endsWith('.png'))) {
         const tam = path.join(CIKIS, f);
         const { w, h } = boyut(tam);
-        if (yol === 'simulator' && w < h) calistir('sips', ['-r', process.env.IPAD_YATAY_ACI || '270', tam], { sessiz: true });
+        if (yol === 'simulator' && w < h) calistir('sips', ['-r', process.env.IPAD_YATAY_ACI || '90', tam], { sessiz: true });
     }
     for (const f of fs.readdirSync(CIKIS).filter((x) => x.endsWith('.png')).sort()) {
         const { w, h } = boyut(path.join(CIKIS, f));

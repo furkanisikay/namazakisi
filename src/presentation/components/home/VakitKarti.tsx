@@ -102,7 +102,10 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
         <View className="mb-6 relative overflow-hidden rounded-3xl shadow-lg border"
             style={{
                 backgroundColor: renkler.kartArkaplan,
-                borderColor: renkler.sinir
+                borderColor: renkler.sinir,
+                // Geniş düzende ebeveyn alan verirse (üç sütun) kart sütunu doldurur;
+                // içerik içinde dikey ortalanır. Ebeveyn içerik boyundaysa etkisiz.
+                ...(genis ? { flexGrow: 1 } : null),
             }}>
 
             {/* Dekoratif Arka Plan Efektleri */}
@@ -257,7 +260,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
 
 // Geniş ekran ölçüleri (tablet / iPad). Telefonda hiçbiri uygulanmaz.
 const stiller = StyleSheet.create({
-    genisIcerik: { paddingHorizontal: 40, paddingVertical: 40 },
+    genisIcerik: { paddingHorizontal: 40, paddingVertical: 40, flexGrow: 1, justifyContent: 'center' },
     genisIkon: { width: 112, height: 112, borderRadius: 28 },
     genisBaslik: { fontSize: 52, lineHeight: 60 },
     genisSayacKutusu: { marginVertical: 40 },
