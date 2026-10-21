@@ -104,7 +104,7 @@ fun TvAyarlarEkrani(
                                     Text(
                                         sonHaberMetni(u.sonHaberMs, simdi),
                                         color = Renkler.metinIkincil, fontSize = 24.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier.weight(1f).padding(start = 76.dp),
+                                        modifier = Modifier.weight(1f).padding(start = 76.dp, end = 12.dp),
                                     )
                                     EslemeDugmesi("Kaldırın", { kaldirilacak = u })
                                 }
@@ -153,10 +153,10 @@ private fun sonHaberMetni(son: Long, simdi: Long): String {
     if (son <= 0) return "Henüz bilgi gelmedi"
     val dk = (simdi - son) / 60_000
     return when {
-        dk < 1 -> "Az önce güncellendi"
-        dk < 60 -> "$dk dk önce güncellendi"
-        dk < 24 * 60 -> "${dk / 60} saat önce güncellendi"
-        else -> "${dk / (24 * 60)} gün önce güncellendi"
+        dk < 1 -> "Az önce"
+        dk < 60 -> "$dk dk önce"
+        dk < 24 * 60 -> "${dk / 60} saat önce"
+        else -> "${dk / (24 * 60)} gün önce"
     }
 }
 
