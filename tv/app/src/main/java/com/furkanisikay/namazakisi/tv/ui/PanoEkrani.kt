@@ -369,7 +369,7 @@ private fun AyarlarDugmesi(onAyarlar: () -> Unit) {
         ) {
             // Simge içerik rengini izler (odakta koyu, değilken beyaz).
             Image(
-                painterResource(R.drawable.ic_konum),
+                painterResource(R.drawable.ic_ayarlar),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(androidx.tv.material3.LocalContentColor.current),
                 modifier = Modifier.size(24.dp),

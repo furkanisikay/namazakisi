@@ -318,7 +318,7 @@ private fun GeldiMetni(il: Il, cihazAdi: String?) {
         Spacer(Modifier.height(8.dp))
         Text(il.ad, color = Renkler.metin, fontSize = 64.sp, fontWeight = FontWeight.SemiBold, lineHeight = 72.sp)
         Spacer(Modifier.height(12.dp))
-        Text("Vakitler bu konuma göre hesaplanacak.", color = Renkler.metinIkincil, fontSize = 28.sp)
+        Text("Vakitler bu konuma göre hesaplanacak.", color = Renkler.metinIkincil, fontSize = 28.sp, lineHeight = 38.sp)
     }
 }
 
