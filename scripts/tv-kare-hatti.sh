@@ -30,12 +30,12 @@ adb install -r "$APK"
 # saatlerle cikar (eskiden bant icin uzak bir boylam seciliyordu, vakitler absurt gorunuyordu).
 # android-tv imaji userdebug: adb root + toybox `date MMDDhhmmCCYY.ss` (yerel saat).
 HEDEF=$(node scripts/tv/tv-esitleme-istemci.js bant-saati 2>/dev/null || true)
-if [ -n "$HEDEF" ] && adb root >/dev/null 2>&1; then
+if [ -n "$HEDEF" ] && adb root 2>&1 | tee /tmp/adb-root.log && ! grep -q "cannot run as root" /tmp/adb-root.log; then
   sleep 2
   adb wait-for-device
   adb shell settings put global auto_time 0 || true
   YEREL=$(TZ=Europe/Istanbul date -d "@$HEDEF" +%m%d%H%M%Y.%S)
-  adb shell date "$YEREL" >/dev/null 2>&1 || echo "UYARI: TV saati ayarlanamadi"
+  adb shell date "$YEREL" 2>&1 || echo "UYARI: TV saati ayarlanamadi ($YEREL)"
   echo "TV saati: $(adb shell date)"
 else
   echo "UYARI: adb root yok; bant karesi yalniz gercek saat uygunsa cikar"
@@ -96,6 +96,8 @@ if [ -n "$QR" ]; then
   for _ in $(seq 1 20); do grep -q ISTEK_GONDERILDI /tmp/tv-esle.log && break; sleep 0.5; done
   cat /tmp/tv-esle.log
   kare 03-onay-soruluyor 1.5 || true
+  # Uygulama çöktüyse nedeni loga düşsün (kare hattı aksi halde yalnız "socket hang up" görür).
+  adb logcat -d -b crash 2>/dev/null | tail -40 || true
   tus KEYCODE_DPAD_CENTER 0
   wait "$ESLE_PID" || echo "UYARI: eslestirme basarisiz"
   cat /tmp/tv-esle.log
