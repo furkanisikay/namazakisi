@@ -110,3 +110,30 @@ appId: com.furkanisikay.namazakisi
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/43-adim-detay-bildirim-kapali
+
+# "Tekrarla" AÇIK: aralik secicisi + canli cumle (video: acilis). Sonra seritte tikler.
+- scrollUntilVisible:
+    element:
+      id: "adim-tekrar-anahtari"
+    direction: UP
+    centerElement: true
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- startRecording: ozk/adim-detay-tekrar
+- tapOn:
+    id: "adim-tekrar-anahtari"
+- waitForAnimationToEnd:
+    timeout: 3000
+- stopRecording
+- takeScreenshot: ozk/44-adim-detay-tekrar-acik
+- tapOn: "Kapat"
+- waitForAnimationToEnd:
+    timeout: 3000
+- scrollUntilVisible:
+    element:
+      text: ".*ilk hatırlatma.*"
+    direction: UP
+    centerElement: true
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/45-zaman-seridi-tekrar
