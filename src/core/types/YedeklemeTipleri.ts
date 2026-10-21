@@ -61,6 +61,12 @@ export interface YedekPayload {
    * yoktur, eski uygulama bilinmeyen alanı yok sayar → `YEDEK_SURUMU` artmadı.
    */
   kazaHareketleri?: unknown[];
+  /**
+   * Cihazlar arası olay günlüğü (`core/cihazAgi/olayGunlugu.ts`). OPSİYONEL ve bugün HİÇBİR
+   * üretici yazmaz: alan yoksa özet birebir eskisidir. Bir üretici eklenmeden ÖNCE birleştirme
+   * (kimliğe göre birleşim + `olaylariUygula`) yazılmalı — yoksa iki cihaz aynı özete ulaşamaz.
+   */
+  cihazOlaylari?: unknown[];
   ayarlar: Record<string, unknown>;
 }
 

@@ -3,10 +3,9 @@
  *
  * İki parça, ikisi de opsiyonel:
  * - `durum`: gönderenin ANLIK GÖRÜNTÜSÜ (alıcı en sonuncuyu tutar). TV bugün bunu kullanır.
- * - `olaylar`: KİMLİKLİ, idempotent olay günlüğü (`{id, tur, …}`). Alıcı kimliğe göre BİRLEŞİM
- *   alır; aynı olay iki kez gelirse zararsızdır. Çift yönlü cihazlar (tablet ↔ telefon) "Kıldım"ı
- *   bununla taşıyacak ve alıcıda ortak "Kıldım" kuyruğuna bağlanacak (`KildimKuyrugu`,
- *   `kildimAksiyonunuIsle`) — o alıcı tarafı henüz yazılmadı (taşıma araştırması sürüyor).
+ * - `olaylar`: KİMLİKLİ, idempotent olay günlüğü (`olayGunlugu.ts`): alıcı kimliğe göre BİRLEŞİM
+ *   alır; aynı olay iki kez gelirse zararsızdır. Çift yönlü cihazlar (tablet ↔ telefon) "Kıldım"ı,
+ *   kaza hareketini ve ayarı bununla taşır.
  * - `sil: true`: gönderen eşleşmeyi kaldırdı → alıcı bu üyenin anahtarını siler.
  *
  * ZAMAN DAMGASI YOK (Wear dersi: aynı içerik her seferinde "yeni" sayılmasın; tekilleştirme
@@ -16,6 +15,7 @@
  * İkizi: TV `cekirdek/CihazYuku.kt`. Saf modül.
  */
 import type { VakitAdi } from '../types';
+import type { GunlukOlayi } from './olayGunlugu';
 
 export const YUK_SURUMU = 2;
 /** Gövde sınırı alıcıda 8 KB; yük bunun çok altında kalmalı (nöbetçi test ≤ 1 KB). */
@@ -39,14 +39,8 @@ export interface DurumAnlikGoruntusu {
     ramazan: boolean;
 }
 
-export interface CihazOlayi {
-    /** Küresel benzersiz (gönderen + yerel sayaç / rastgele); alıcı bununla tekilleştirir. */
-    id: string;
-    tur: 'kildim';
-    /** Namaz günü (YYYY-MM-DD) ve vakit. */
-    tarih: string;
-    vakit: VakitAdi;
-}
+/** Olay günlüğünün tel biçimi (`olayGunlugu.ts`; TV yalnız `kildim`i okur, gerisini atlar). */
+export type CihazOlayi = GunlukOlayi;
 
 export interface CihazAgiYuku {
     v: number;
