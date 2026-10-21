@@ -120,8 +120,16 @@ export const AnaSayfa: React.FC = () => {
   const nafileAyarlari = useAppSelector((state) => state.nafile.ayarlar);
   // useEffect bagimliliklarinda obje referansi yerine stabil string kullanilir
   // (Redux dispatch sonrasi ayni degerlerle bile yeni obje olusturulur, bu gereksiz tetiklemeyi onler)
-  const konumAyarlariStr = JSON.stringify(konumAyarlari.koordinatlar);
-  const muhafizAyarlariStr = JSON.stringify(muhafizAyarlari);
+  const konumAyarlariStr = `${konumAyarlari.koordinatlar?.lat},${konumAyarlari.koordinatlar?.lng}`;
+  // Muhafız (D-10): eskiden tüm ayar nesnesi HER render'da JSON'a çevrilip effect anahtarı
+  // yapılıyordu; ilgisiz bir alan (ör. `sesliOnayi`) değişince ön plan muhafızı söküp diskten
+  // yeniden kuruyordu. Artık yalnız motorun okuduğu alanlardan çözülen matris + `aktif`.
+  const muhafizAktif = muhafizAyarlari.aktif;
+  const { matris: muhafizMatrisKaydi, yogunluk: muhafizYogunluk, esikler: muhafizEsikler, sikliklar: muhafizSikliklar } = muhafizAyarlari;
+  const muhafizMatrisi = useMemo(
+    () => muhafizMatrisiniCoz({ matris: muhafizMatrisKaydi, yogunluk: muhafizYogunluk, esikler: muhafizEsikler, sikliklar: muhafizSikliklar }),
+    [muhafizMatrisKaydi, muhafizYogunluk, muhafizEsikler, muhafizSikliklar]
+  );
 
   const konumMetni = (() => {
     if (konumAyarlari.konumModu === 'oto') {
@@ -479,6 +487,25 @@ export const AnaSayfa: React.FC = () => {
     startLocalTimer();
     vakitTazeleRef.current = startLocalTimer;
 
+    const appStateEvent = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        startLocalTimer();
+      } else {
+        stopLocalTimer();
+      }
+    });
+
+    return () => {
+      stopLocalTimer();
+      if (vakitTazeleRef.current === startLocalTimer) vakitTazeleRef.current = null;
+      appStateEvent.remove();
+    };
+  }, [konumAyarlariStr]);
+
+  // Ön plan muhafızı — vakit zamanlayıcısından AYRI effect (D-10): ayar değişikliği vakit
+  // zamanlayıcısını sökmez. Yukarıdaki effect'ten SONRA tanımlı: hesaplayıcı önce yapılandırılır
+  // (baslat ilk kontrolEt'i hemen çağırır). Konum değişince de eskisi gibi yeniden kurulur.
+  useEffect(() => {
     if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
 
     // Effect temizlenirse geç gelen async baslat'ı iptal et (eski effect'in muhafızı
@@ -486,9 +513,9 @@ export const AnaSayfa: React.FC = () => {
     let iptalEdildi = false;
 
     const muhafiz = NamazMuhafiziServisi.getInstance();
-    if (muhafizAyarlari.aktif) {
+    if (muhafizAktif) {
       // Faz 3: banner da vakit x seviye matrisinden okur (matris yoksa eski alanlardan türetilir).
-      muhafiz.yapilandir(muhafizMatrisiniCoz(muhafizAyarlari));
+      muhafiz.yapilandir(muhafizMatrisi);
       // ÖNCE diskteki kılınmışlık kaydını yükle, SONRA başlat. Aksi halde açılışta
       // bellek-içi map boş olur ve zaten kılınmış namaza vakte kısa süre kala (seviye >= 3)
       // çan sesi çalardı (#92). baslat() ilk kontrolEt'i hemen çağırdığından sıra önemli.
@@ -522,23 +549,12 @@ export const AnaSayfa: React.FC = () => {
       setMuhafizDurumu({ mesaj: '', seviye: 0 });
     }
 
-    const appStateEvent = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
-      if (nextAppState === 'active') {
-        startLocalTimer();
-      } else {
-        stopLocalTimer();
-      }
-    });
-
     return () => {
       iptalEdildi = true;
-      stopLocalTimer();
-      if (vakitTazeleRef.current === startLocalTimer) vakitTazeleRef.current = null;
-      appStateEvent.remove();
       muhafiz.durdur();
       if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
     };
-  }, [konumAyarlariStr, muhafizAyarlariStr]);
+  }, [konumAyarlariStr, muhafizAktif, muhafizMatrisi]);
 
   // Kerahat vakti kontrolü — her dakika güncelle
   useEffect(() => {

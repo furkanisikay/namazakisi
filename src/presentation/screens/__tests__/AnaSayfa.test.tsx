@@ -939,6 +939,34 @@ describe('AnaSayfa', () => {
   // (92 sayfalık pager, modallar, akış) yalnız gerçek bir durum değişince çizilir.
   // Ölçüm gerçek zamanlıdır (sahte zamanlayıcı CI'da asılır): ~3 sn bekle, React
   // `Profiler` ile commit sayısını say. Eski kodda ≥3 (saniyede bir) idi.
+  // ── NÖBETÇİ (D-10) — ilgisiz muhafız alanı ön plan muhafızını SÖKMEZ ─────
+  it('NÖBETÇİ D-10: ilgisiz muhafız alanı değişince muhafız yeniden kurulmaz; zamanlama değişince kurulur', async () => {
+    gunduzSenaryosu();
+    const state = stateOlustur(bugunuAl(), { muhafizAktif: true });
+    const durumuKur = (st: unknown) =>
+      (useAppSelector as unknown as jest.Mock).mockImplementation(
+        (selector: (s: unknown) => unknown) => selector(st)
+      );
+    durumuKur(state);
+    const { AnaSayfa } = require('../AnaSayfa');
+    const ekran = render(<AnaSayfa />);
+    await waitFor(() => expect(mockMuhafizBaslat).toHaveBeenCalledTimes(1));
+
+    // Matrisi etkilemeyen alan (rıza kaydı): eskiden JSON anahtarı değişip muhafız sökülürdü.
+    durumuKur({ ...state, muhafiz: { ...state.muhafiz, sesliOnayi: true } });
+    ekran.rerender(<AnaSayfa />);
+    await act(async () => { await Promise.resolve(); });
+    expect(mockMuhafizBaslat).toHaveBeenCalledTimes(1);
+
+    // Motoru besleyen alan (eşik) değişince yeni matrisle yeniden kurulur.
+    durumuKur({
+      ...state,
+      muhafiz: { ...state.muhafiz, sesliOnayi: true, esikler: { seviye1: 50, seviye2: 25, seviye3: 10, seviye4: 3 } },
+    });
+    ekran.rerender(<AnaSayfa />);
+    await waitFor(() => expect(mockMuhafizBaslat).toHaveBeenCalledTimes(2));
+  });
+
   it('NÖBETÇİ D-03: ana ekran ~3 sn boyunca saniyelik YENİDEN ÇİZİLMEZ', async () => {
     gunduzSenaryosu();
     mockPagerCocuklari.ciz = true;
