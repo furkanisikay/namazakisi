@@ -343,7 +343,11 @@ struct SimdiSayfasi: View {
         if baglanti.kildim(beklenen: aday.vakit) {
             WKInterfaceDevice.current().play(.success)
             if !hareketAzalt {
-                withAnimation(.easeOut(duration: 0.45).delay(0.45)) { tik = 1 }
+                // Durum DEGISIMI gecikir (tik gorunumu kilinma yayinindan sonra eklenir; ayni
+                // turda tik = 1 yazilirsa animasyonsuz tam gorunurdu).
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation(.easeOut(duration: 0.45)) { tik = 1 }
+                }
             }
         } else {
             tik = 1
