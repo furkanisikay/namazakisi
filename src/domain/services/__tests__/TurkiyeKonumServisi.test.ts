@@ -113,6 +113,39 @@ describe('TurkiyeKonumServisi.illeriGetir', () => {
         expect(typeof yazilan.timestamp).toBe('number');
     });
 
+    test('REGRESYON: plaka il kimliğinden gelir, telefon alan kodundan (areaCode) DEĞİL', async () => {
+        // Gerçek API biçimi: areaCode telefon alan kodu, İstanbul'da dizi.
+        global.fetch = jest.fn().mockResolvedValue(
+            fetchYanitOlustur(true, {
+                data: [
+                    { id: 1, name: 'Adana', areaCode: 322, coordinates: { latitude: 37, longitude: 35.3 } },
+                    { id: 34, name: 'İstanbul', areaCode: [212, 216], coordinates: { latitude: 41, longitude: 29 } },
+                ],
+            })
+        );
+
+        const iller = await TurkiyeKonumServisi.illeriGetir();
+        expect(iller.map((i) => i.plakaKodu)).toEqual(['01', '34']);
+        // Yalnız kullanılan alanlar istenir, yönlendirmesiz yeni adres
+        expect((global.fetch as jest.Mock).mock.calls[0][0]).toBe(
+            'https://api.turkiyeapi.dev/v1/provinces?fields=id,name,coordinates'
+        );
+    });
+
+    test('eski önbellekteki yanlış plaka (alan kodu) okurken düzeltilir', async () => {
+        mockStore.set(
+            CACHE_ANAHTARI_ILLER,
+            JSON.stringify({
+                timestamp: Date.now(),
+                data: [{ id: 1, ad: 'Adana', plakaKodu: '322', lat: 37, lng: 35.3 }],
+            })
+        );
+        global.fetch = jest.fn();
+
+        const iller = await TurkiyeKonumServisi.illeriGetir();
+        expect(iller[0].plakaKodu).toBe('01');
+    });
+
     test('coordinates yoksa lat/lng 0 olur (|| 0 dalı)', async () => {
         const apiYanit = [{ id: 99, name: 'Testil', areaCode: 99 }]; // coordinates yok, bare array
         global.fetch = jest

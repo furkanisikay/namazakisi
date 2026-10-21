@@ -51,7 +51,6 @@ export interface Mahalle {
 interface TurkiyeAPIIlYanit {
     id: number;
     name: string;
-    areaCode: number;
     coordinates: {
         latitude: number;
         longitude: number;
@@ -72,7 +71,33 @@ interface TurkiyeAPIIlceYanit {
 // SABITLER
 // =====================
 
-const API_BASE_URL = 'https://turkiyeapi.dev/api/v1';
+// Eski `https://turkiyeapi.dev/api/v1` her istekte 308 ile buraya yönlendiriyordu (fazladan gidiş-dönüş).
+const API_BASE_URL = 'https://api.turkiyeapi.dev/v1';
+/** API isteği zaman aşımı: ağ asılırsa seçici sonsuza dek beklemesin, çevrimdışı listeye düşsün. */
+const API_ZAMAN_ASIMI_MS = 10000;
+
+/** Zaman aşımlı GET (RN fetch'inin kendi zaman aşımı yoktur). */
+async function zamanAsimliGetir(url: string): Promise<Response> {
+    const denetci = new AbortController();
+    const zamanlayici = setTimeout(() => denetci.abort(), API_ZAMAN_ASIMI_MS);
+    try {
+        return await fetch(url, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+            signal: denetci.signal,
+        });
+    } finally {
+        clearTimeout(zamanlayici);
+    }
+}
+
+/**
+ * Plaka = il kimliği (1–81). API'nin `areaCode` alanı TELEFON alan kodudur (Adana 322,
+ * İstanbul [212, 216]) — plaka diye kullanılırsa seçicide "322" görünür (yaşanmış hata).
+ */
+function plakaKodu(ilId: number): string {
+    return String(ilId).padStart(2, '0');
+}
 const CACHE_SURESI = 24 * 60 * 60 * 1000; // 24 saat
 const CACHE_ANAHTARI_ILLER = '@turkiye_iller';
 const CACHE_ANAHTARI_ILCELER = '@turkiye_ilceler_';
@@ -226,8 +251,10 @@ class TurkiyeKonumServisiClass {
             if (cachedData) {
                 const parsed = JSON.parse(cachedData);
                 if (Date.now() - parsed.timestamp < CACHE_SURESI) {
-                    this.illerCache = parsed.data;
-                    return parsed.data;
+                    // Eski sürümün önbelleğinde plaka yerine alan kodu yazılı olabilir.
+                    const iller = (parsed.data as Il[]).map((il) => ({ ...il, plakaKodu: plakaKodu(il.id) }));
+                    this.illerCache = iller;
+                    return iller;
                 }
             }
         } catch (e) {
@@ -236,17 +263,15 @@ class TurkiyeKonumServisiClass {
 
         // API'den cekmeyi dene
         try {
-            const response = await fetch(`${API_BASE_URL}/provinces`, {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' },
-            });
+            // Yalnız kullanılan alanlar: ~100 KB yerine ~8 KB.
+            const response = await zamanAsimliGetir(`${API_BASE_URL}/provinces?fields=id,name,coordinates`);
 
             if (response.ok) {
                 const json = await response.json();
                 const iller: Il[] = (json.data || json).map((il: TurkiyeAPIIlYanit) => ({
                     id: il.id,
                     ad: il.name,
-                    plakaKodu: String(il.areaCode).padStart(2, '0'),
+                    plakaKodu: plakaKodu(il.id),
                     lat: il.coordinates?.latitude || 0,
                     lng: il.coordinates?.longitude || 0,
                 }));
@@ -317,10 +342,7 @@ class TurkiyeKonumServisiClass {
 
         // API'den cekmeyi dene
         try {
-            const response = await fetch(`${API_BASE_URL}/provinces/${ilId}`, {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' },
-            });
+            const response = await zamanAsimliGetir(`${API_BASE_URL}/provinces/${ilId}?fields=coordinates,districts`);
 
             if (response.ok) {
                 const json = await response.json();
