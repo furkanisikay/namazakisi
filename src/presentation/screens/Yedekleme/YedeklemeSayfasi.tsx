@@ -230,9 +230,9 @@ const YedeklemeIcerik: React.FC = () => {
               className="flex-row items-center mt-4 pt-4 border-t"
               style={{ borderTopColor: `${renkler.sinir}80` }}
             >
-              <FontAwesome5 name="lock" size={13} color={renkler.basarili} solid />
+              <FontAwesome5 name="file-alt" size={13} color={renkler.basarili} solid />
               <Text className="text-sm ml-2 flex-1" style={{ color: renkler.metinIkincil }}>
-                Kayıtlar, rozetler ve ayarlar tek şifreli dosyada.
+                Kayıtlar, rozetler ve ayarlar tek dosyada. Dosya parola içermez; güvendiğiniz bir yerde saklayın.
               </Text>
             </View>
           </View>

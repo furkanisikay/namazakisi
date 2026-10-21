@@ -115,9 +115,11 @@ Namaz kayıtlarınız, kaza defteriniz, seriniz, rozetleriniz ve tüm ayarların
 telefonunuzun kendi depolama alanında tutulur. Uygulamayı silmeniz bu verileri de
 siler.
 
-**Yedekleme:** Verilerinizi şifreli bir dosyaya aktarıp başka bir cihaza
+**Yedekleme:** Verilerinizi bir yedek dosyasına aktarıp başka bir cihaza
 taşıyabilirsiniz. Bu dosya siz nereye kaydederseniz oraya gider; uygulama onu
-hiçbir yere yüklemez.
+hiçbir yere yüklemez. Dosya bozulmaya karşı korunur ancak parola içermez ve
+herkesin okuyabileceği bir anahtarla kodlanır; dosyayı ele geçiren biri içeriğini
+okuyabilir. Bu yüzden onu yalnız güvendiğiniz bir yerde saklayın.
 
 ## Cihazlar arası eşitleme (isteğe bağlı)
 
