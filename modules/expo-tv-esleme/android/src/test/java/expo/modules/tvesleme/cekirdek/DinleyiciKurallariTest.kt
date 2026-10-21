@@ -11,7 +11,7 @@ class DinleyiciKurallariTest {
 
     @Test
     fun yalnizPostVeBilinenYol() {
-        assertEquals(k.Istek("/esitle", 120), k.baslikCoz("POST /esitle HTTP/1.1\r\nHost: x\r\ncontent-length: 120"))
+        assertEquals(DinleyiciKurallari.Istek("/esitle", 120), k.baslikCoz("POST /esitle HTTP/1.1\r\nHost: x\r\ncontent-length: 120"))
         assertNull(k.baslikCoz("GET /esitle HTTP/1.1\r\nContent-Length: 10"))
         assertNull(k.baslikCoz("POST /baska HTTP/1.1\r\nContent-Length: 10"))
         assertNull(k.baslikCoz("POST /esle HTTP/1.1\r\nHost: x"))
