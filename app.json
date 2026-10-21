@@ -15,7 +15,10 @@
         "UIBackgroundModes": [
           "fetch"
         ],
-        "NSLocalNetworkUsageDescription": "Konumunuzu evinizdeki televizyona aktarmak için yerel ağınızdaki TV'ye bağlanılır. Veri yalnız iki cihaz arasında gider.",
+        "NSLocalNetworkUsageDescription": "Evinizdeki televizyona vakitlerinizi ve kıldığınız namazları aktarmak için yerel ağınızdaki TV'ye bağlanılır. Veri şifreli ve yalnız iki cihaz arasında gider.",
+        "NSBonjourServices": [
+          "_namazakisi._tcp"
+        ],
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": false,
           "NSAllowsLocalNetworking": true

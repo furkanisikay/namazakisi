@@ -36,7 +36,9 @@ export const AYARLAR_EKRANLARI = [
   'CamideyimAyarlari',
   'NamazModuAyarlari',
   'SaatAyarlari',
-  // Android TV'ye konum aktarma (QR ya da 7 haneli kod)
+  // Cihaz ağı: bağlı TV'ler + saat (tasarım 2026-10-21); TV ekleme aşağıdaki sayfada
+  'Cihazlarim',
+  // Android TV ekleme (QR ya da 7 haneli kod)
   'TelevizyonAyarlari',
   'KildimUygulamalari',
   'OtomasyonRehberi',

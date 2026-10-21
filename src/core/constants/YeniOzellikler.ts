@@ -73,6 +73,28 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Cihaz ağı v2: şifreli TV eşitlemesi + Cihazlarım (tasarım 2026-10-21).
+    {
+        id: 'cihaz-agi-tv-esitleme',
+        platformlar: ['android', 'ios'],
+        surum: '0.59.0',
+        tarih: '2026-10-21',
+        baslik: 'TV kıldığınız namazları da bilir',
+        aciklama:
+            'Cihazlarım sayfasından evdeki TV’leri yönetin. İsterseniz TV, kıldığınız namazları bilir; vakit daralırken kılmadıysanız ekranın altında sessiz bir bant gösterir.',
+        detayAciklama:
+            'Telefon ile TV, ilk eşleştirmede birbirini onaylar: telefonunuzda TV’nin adını görür, TV’de kumandayla “Ekleyin”e basarsınız. Sonrası şifrelidir ve yalnız evinizin Wi-Fi ağında gider. TV’de durumunuzun sayılması varsayılan olarak kapalıdır; açmazsanız TV yalnız vakitleri gösterir. Ramazan’da iftar ve sahur sayacı, cuma günü cuma kartı da büyük ekranda görünür.',
+        detaylar: [
+            'Telefonda ve TV’de çift onaylı eşleştirme',
+            'Bilgiler şifreli, yalnız ev ağınızda',
+            'Vakit daralınca TV’de sessiz hatırlatma bandı',
+            'Ramazan’da iftar ve sahur sayacı, cuma günü cuma kartı',
+            'TV’yi istediğiniz an iki taraftan da kaldırın',
+        ],
+        ikon: 'tv',
+        hedefSayfa: 'Cihazlarim',
+        ctaEtiketi: 'Cihazlarımı açın',
+    },
     // iPhone "Namazda sessiz" — Odak + Kısayollar rehberi (Android'de Camideyim + Namaz modu var).
     {
         id: 'ios-namazda-sessiz-odak',

@@ -89,3 +89,13 @@ Performans (memo, değişen alanı çizme; TV Compose `derivedStateOf`) · Pil (
 
 ## 9. Sıra
 Onay → paralel: (a) TV eşitlemesi + Cihazlarım (telefon + Android TV → Apple TV), (b) geniş ekran, (c) Apple Watch, (d) denetim düzeltmeleri. Her PR: önce/sonra kontak sayfası + video + kendi incelemem.
+
+## 10. Uygulama notları (TV eşitlemesi v2, dal `claude/tv-esitleme`)
+Tasarımdan bilinçli sapmalar ve uygulamada netleşenler:
+- **`ertele` alanı YOK:** muhafız "Ertele"si uygulamadan tümden kaldırıldı (`a44857e1`); yükte taşınacak bir erteleme yok. Bant yalnız kılınmışlıkla kalkar.
+- **Yeni izin GEREKMEDİ (§8.4 kapandı):** keşif `NsdManager` ile yapılır — sistem mDNS servisidir, uygulama multicast soketi açmaz → `CHANGE_WIFI_MULTICAST_STATE` / `WifiManager.MulticastLock` gerekmez. TV `registerService`, telefon `discoverServices` + `resolveService` (süre sınırlı, yalnız önbellek adresi başarısız olunca).
+- **Android 17 (targetSdk 37) `ACCESS_LOCAL_NETWORK`:** yerel ağa soket/mDNS için çalışma zamanı izni olacak (developer.android.com/privacy-and-security/local-network-permission). Bugün targetSdk 36 → etkisiz. targetSdk 37'ye geçişte: izni manifestte bildirin, Cihazlarım ve TV ekleme akışında İSTEYİN (arka planda istenemez), verilmemişse gönderim `atlandi` sayılsın ve ekran söylesin. TV tarafı da aynı sürümde aynı izni ister.
+- **Ramazan sinyali:** uygulamada Ramazan takvimi yok; `ramazan = iftar ya da sahur sayacı açık`.
+- **Konum ~1 km (denetim D-01):** yükte koordinat 0,01°'ye yuvarlanır; derin bağlantı yalnız onay ekranını açar, onaysız hiçbir şey göndermez. **Katı IPv4 (D-06):** baştaki sıfırlı/taşan sekizli iki uçta reddedilir (JS `ozelIpv4Mu`, Kotlin `YerelAg`, telefon native modülü); ortak fikstür `esitleme-ornekleri.json > ozelIpv4`.
+- **TV sunucusu yalnız uygulama görünürken** (`PanoActivity.onStart/onStop`) ve yalnız eşleşik üye varken ya da eşleştirme ekranı açıkken açık. Ekran koruyucu (DreamService) sunucu açmaz.
+- **Apple TV:** bu dalda YOK (sonraki iş).

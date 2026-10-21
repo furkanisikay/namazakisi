@@ -10,7 +10,7 @@
  * - `namazakisi://ayarlar`   → Ayarlar (saat W3: saatteki "Telefonda açın")
  * - `namazakisi://camideyim` → Ayarlar > Camideyim (saat W3; yığının altında Ayarlar
  *   kökü durur ki geri tuşu boşa düşmesin)
- * - `namazakisi://tv?v=1&a=…&p=…&k=…` → Ayarlar > Televizyonda gösterin; TV ekranındaki QR'ın
+ * - `namazakisi://tv?v=1&a=…&p=…&k=…` → Ayarlar > Cihazlarım > TV ekleyin; TV ekranındaki QR'ın
  *   kendisidir (iPhone kamerası doğrudan açar), sayfa konumu TV'ye gönderir
  * - `namazakisi://kildim` → bir EKRAN değil, EYLEMDİR: içinde bulunulan vakti kılındı
  *   olarak işaretler. Navigasyondan `filter` ile dışlanır, `useKildimDerinBaglantisi`

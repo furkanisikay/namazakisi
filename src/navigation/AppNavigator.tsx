@@ -43,6 +43,7 @@ import {
   NamazdaSessizIosSayfasi,
   SaatAyarlariSayfasi,
   TelevizyonSayfasi,
+  CihazlarimSayfasi,
   KildimUygulamalariSayfasi,
   OtomasyonRehberiSayfasi,
   DebugLogsSayfasi,
@@ -154,7 +155,9 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   NamazModuAyarlari: { component: Platform.OS === 'ios' ? NamazdaSessizIosSayfasi : NamazdaSessizSayfasi, options: { title: 'Namazda sessiz' } },
   // Wear OS saati ile iş bölümü (saat W3) — listede yalnız Android'de görünür.
   SaatAyarlari: { component: SaatAyarlariSayfasi, options: { title: 'Akıllı saat' } },
-  TelevizyonAyarlari: { component: TelevizyonSayfasi, options: { title: 'Televizyonda gösterin' } },
+  Cihazlarim: { component: CihazlarimSayfasi, options: { title: 'Cihazlarım' } },
+  // TV ekranı "Ayarlar › Cihazlarım › TV ekleyin" der; başlık bu yolla birebir aynı kalmalı.
+  TelevizyonAyarlari: { component: TelevizyonSayfasi, options: { title: 'TV ekleyin' } },
   KildimUygulamalari: { component: KildimUygulamalariSayfasi, options: { title: 'Kıldım İşaretleyen Uygulamalar' } },
   OtomasyonRehberi: { component: OtomasyonRehberiSayfasi, options: { title: 'Otomasyonlarla Kullanın' } },
   DebugLogs: { component: DebugLogsSayfasi, options: { title: 'Tanı kayıtları' } },
