@@ -341,7 +341,7 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             if (esitleme.tur === 'indirildi' || esitleme.tur === 'indirildiVeYuklendi') {
                 // Kayıtlar store'suz diske yazıldı → saat ve widget kendiliğinden tazelenmez.
                 await WidgetServisi.getInstance().kilinanlariYaz().catch(() => undefined);
-                await WearSenkronServisi.getInstance().gonder().catch(() => undefined);
+                await WearSenkronServisi.getInstance().gonder({ acil: false }).catch(() => undefined);
             }
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Eşitleme turu çalıştırılamadı', e);
@@ -405,7 +405,8 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         try {
             // Ortak "Kıldım" kuyruğu: saat + widget + hızlı ayarlar + kısayol (#275/#276).
             await KildimKuyruguServisi.getInstance().bekleyenleriIsle();
-            await WearSenkronServisi.getInstance().gonder();
+            // Periyodik tur kullanıcı eylemi değil: Data Layer acil senkronu gerekmez (D-08).
+            await WearSenkronServisi.getInstance().gonder({ acil: false });
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Wear senkronu tazelenemedi', e);
         }
