@@ -185,13 +185,13 @@ fun KodGirisEkrani(
                         Text("Telefonunuzdaki kodu girin", color = Renkler.metin, fontSize = 36.sp, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.height(10.dp))
                         Text(
-                            "Telefonda: Ayarlar › Televizyonda gösterin",
-                            color = Renkler.metinIkincil, fontSize = 20.sp,
+                            "Telefonda: Ayarlar › Cihazlarım › TV ekleyin",
+                            color = Renkler.metinIkincil, fontSize = 26.sp,
                         )
                     } else {
-                        Text("Konumunuz geldi", color = Renkler.metinIkincil, fontSize = 22.sp)
+                        Text("Konumunuz geldi", color = Renkler.metinIkincil, fontSize = 30.sp)
                         Spacer(Modifier.height(8.dp))
-                        Text(il.ad, color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold)
+                        Text(il.ad, color = Renkler.metin, fontSize = 60.sp, fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
@@ -237,7 +237,7 @@ fun KodGirisEkrani(
                     else -> "Rakamlı kumandanız varsa tuşlarla da yazabilirsiniz."
                 },
                 color = if (hatali) Renkler.metin else Renkler.metinIkincil,
-                fontSize = 19.sp,
+                fontSize = 24.sp,
                 modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
             )
         }
@@ -324,7 +324,7 @@ private fun Tus(
         scale = ClickableSurfaceDefaults.scale(focusedScale = 1.08f),
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(etiket, fontSize = if (kucuk) 20.sp else 32.sp, fontWeight = FontWeight.SemiBold)
+            Text(etiket, fontSize = if (kucuk) 24.sp else 34.sp, fontWeight = FontWeight.SemiBold)
         }
     }
 }

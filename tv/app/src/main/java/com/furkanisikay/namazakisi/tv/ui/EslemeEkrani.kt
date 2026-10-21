@@ -225,36 +225,36 @@ private fun SolMetin(asama: Asama, cihazAdi: String?) {
     Column {
         when (asama) {
             Asama.EKLENIYOR, Asama.EKLENDI -> {
-                Text("${cihazAdi ?: "Telefon"} ekleniyor", color = Renkler.metin, fontSize = 38.sp, fontWeight = FontWeight.SemiBold, lineHeight = 44.sp)
+                Text("${cihazAdi ?: "Telefon"} ekleniyor", color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold, lineHeight = 52.sp)
                 Spacer(Modifier.height(10.dp))
                 Text(
                     "Telefonunuz konumunu ve durumunu gönderiyor…",
-                    color = Renkler.metinIkincil, fontSize = 20.sp, lineHeight = 28.sp,
+                    color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
                     modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                 )
             }
             Asama.SAKLANAMADI -> {
-                Text("Eşleşme tamamlanamadı", color = Renkler.metin, fontSize = 38.sp, fontWeight = FontWeight.SemiBold)
+                Text("Eşleşme tamamlanamadı", color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.height(10.dp))
                 Text(
                     "Bu TV, bağlantı anahtarını güvenli saklayamıyor. Konumu kodla girebilir ya da ilinizi seçebilirsiniz.",
-                    color = Renkler.metinIkincil, fontSize = 20.sp, lineHeight = 28.sp,
+                    color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
                     modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                 )
             }
             else -> {
-                Text("Telefonunuzu ekleyin", color = Renkler.metin, fontSize = 38.sp, fontWeight = FontWeight.SemiBold, lineHeight = 44.sp)
+                Text("Telefonunuzu ekleyin", color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold, lineHeight = 52.sp)
                 Spacer(Modifier.height(10.dp))
                 Text(
                     "Vakitler sizin konumunuza göre hesaplanır; kıldığınız namazlar TV'de görünür.",
-                    color = Renkler.metinIkincil, fontSize = 20.sp, lineHeight = 28.sp,
+                    color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
                 )
                 Spacer(Modifier.height(30.dp))
                 Adim(1, "Telefonunuzda Namaz Akışı'nı açın")
                 Adim(2, "Ayarlar › Cihazlarım › TV ekleyin")
                 Adim(3, "Telefonun kamerasını sağdaki koda tutun")
                 Spacer(Modifier.height(18.dp))
-                Text("Telefon ile TV aynı Wi-Fi ağında olmalı.", color = Renkler.metinIkincil, fontSize = 18.sp)
+                Text("Telefon ile TV aynı Wi-Fi ağında olmalı.", color = Renkler.metinIkincil, fontSize = 24.sp)
             }
         }
     }
@@ -271,27 +271,27 @@ private fun OnayDiyalogu(cihazAdi: String, onEvet: () -> Unit, onHayir: () -> Un
         } catch (_: IllegalStateException) {
         }
     }
-    Box(Modifier.fillMaxSize().background(Renkler.arkaplan.copy(alpha = 0.86f)), contentAlignment = Alignment.Center) {
+    Box(Modifier.fillMaxSize().background(Renkler.arkaplan.copy(alpha = 0.96f)), contentAlignment = Alignment.Center) {
         Column(
-            Modifier.width(620.dp).background(Renkler.kart, RoundedCornerShape(28.dp)).padding(40.dp),
+            Modifier.width(780.dp).background(Renkler.kart, RoundedCornerShape(36.dp)).padding(horizontal = 56.dp, vertical = 48.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(Modifier.size(72.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
-                TelefonSimgesi(Renkler.birincil, Modifier.size(40.dp))
+            Box(Modifier.size(104.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
+                TelefonSimgesi(Renkler.birincil, Modifier.size(56.dp))
             }
             Spacer(Modifier.height(20.dp))
-            Text("Bu telefonu ekleyelim mi?", color = Renkler.metin, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(10.dp))
-            Text(cihazAdi, color = Renkler.metin, fontSize = 26.sp, textAlign = TextAlign.Center)
-            Spacer(Modifier.height(10.dp))
+            Text("Bu telefonu ekleyelim mi?", color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(16.dp))
+            Text(cihazAdi, color = Renkler.birincil, fontSize = 36.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
+            Spacer(Modifier.height(16.dp))
             Text(
                 "Eklenen telefon bu TV'ye konumunu ve kıldığı namazları gönderebilir.",
-                color = Renkler.metinIkincil, fontSize = 18.sp, textAlign = TextAlign.Center, lineHeight = 26.sp,
+                color = Renkler.metinIkincil, fontSize = 26.sp, textAlign = TextAlign.Center, lineHeight = 36.sp,
             )
-            Spacer(Modifier.height(28.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                EslemeDugmesi("Ekleyin", onEvet, Modifier.focusRequester(odak), birincil = true)
-                EslemeDugmesi("Hayır", onHayir)
+            Spacer(Modifier.height(40.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(28.dp)) {
+                EslemeDugmesi("Ekleyin", onEvet, Modifier.focusRequester(odak), birincil = true, buyuk = true)
+                EslemeDugmesi("Hayır", onHayir, buyuk = true)
             }
         }
     }
@@ -301,24 +301,24 @@ private fun OnayDiyalogu(cihazAdi: String, onEvet: () -> Unit, onHayir: () -> Un
 private fun Adim(sira: Int, metin: String) {
     Row(Modifier.padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
         Box(
-            Modifier.size(38.dp).background(Renkler.kart, CircleShape),
+            Modifier.size(48.dp).background(Renkler.kart, CircleShape),
             contentAlignment = Alignment.Center,
         ) {
-            Text("$sira", color = Renkler.birincil, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+            Text("$sira", color = Renkler.birincil, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         }
         Spacer(Modifier.width(16.dp))
-        Text(metin, color = Renkler.metin, fontSize = 22.sp)
+        Text(metin, color = Renkler.metin, fontSize = 28.sp)
     }
 }
 
 @Composable
 private fun GeldiMetni(il: Il, cihazAdi: String?) {
     Column(Modifier.semantics { liveRegion = LiveRegionMode.Polite }) {
-        Text(if (cihazAdi != null) "$cihazAdi eklendi" else "Konumunuz geldi", color = Renkler.metinIkincil, fontSize = 22.sp)
+        Text(if (cihazAdi != null) "$cihazAdi eklendi" else "Konumunuz geldi", color = Renkler.metinIkincil, fontSize = 30.sp)
         Spacer(Modifier.height(8.dp))
-        Text(il.ad, color = Renkler.metin, fontSize = 46.sp, fontWeight = FontWeight.SemiBold, lineHeight = 52.sp)
+        Text(il.ad, color = Renkler.metin, fontSize = 64.sp, fontWeight = FontWeight.SemiBold, lineHeight = 72.sp)
         Spacer(Modifier.height(12.dp))
-        Text("Vakitler bu konuma göre hesaplanacak.", color = Renkler.metinIkincil, fontSize = 20.sp)
+        Text("Vakitler bu konuma göre hesaplanacak.", color = Renkler.metinIkincil, fontSize = 28.sp)
     }
 }
 
@@ -358,7 +358,7 @@ private fun AgYokKarti() {
         Spacer(Modifier.height(10.dp))
         Text(
             "Telefonunuzdaki 7 haneli kodu girerek ya da ilinizi seçerek devam edebilirsiniz.",
-            color = Renkler.metinIkincil, fontSize = 18.sp, lineHeight = 25.sp, textAlign = TextAlign.Center,
+            color = Renkler.metinIkincil, fontSize = 24.sp, lineHeight = 32.sp, textAlign = TextAlign.Center,
         )
     }
 }

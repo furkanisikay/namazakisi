@@ -2,6 +2,7 @@ package com.furkanisikay.namazakisi.tv.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -61,52 +62,53 @@ fun TvAyarlarEkrani(
     val simdi = System.currentTimeMillis()
 
     Box(Modifier.fillMaxSize().background(Renkler.arkaplan)) {
-        Row(Modifier.fillMaxSize().padding(horizontal = 56.dp, vertical = 40.dp), horizontalArrangement = Arrangement.spacedBy(48.dp)) {
-            // Sol sütun dar tutulur: sağdaki üye kartında ad + "güncellendi" satırı tek satıra sığsın
-            // (420 dp iken 1080p'de ikisi de ikiye bölünüyordu — kare hattında görüldü).
-            Column(Modifier.width(360.dp)) {
-                Text("Ayarlar", color = Renkler.metin, fontSize = 38.sp, fontWeight = FontWeight.SemiBold)
+        // 10-foot: iki dengeli sütun; sol eylemler, sağ bağlı telefonlar + ne gönderdikleri.
+        Row(Modifier.fillMaxSize().padding(horizontal = 56.dp, vertical = 44.dp), horizontalArrangement = Arrangement.spacedBy(56.dp)) {
+            Column(Modifier.weight(1f)) {
+                Text("Ayarlar", color = Renkler.metin, fontSize = 48.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.height(8.dp))
                 Text(
                     if (konumAdi != null) "Konum: $konumAdi" else "Konum seçilmedi",
-                    color = Renkler.metinIkincil, fontSize = 20.sp,
+                    color = Renkler.metinIkincil, fontSize = 26.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(Modifier.height(32.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                Spacer(Modifier.height(40.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(18.dp)) {
                     EslemeDugmesi("Telefon ekleyin", onTelefonEkle, Modifier.focusRequester(ilkOdak).fillMaxWidth(), birincil = true)
                     EslemeDugmesi("Konumu kodla girin", onKodla, Modifier.fillMaxWidth())
                     EslemeDugmesi("İli kendim seçeyim", onIlSec, Modifier.fillMaxWidth())
                 }
             }
-            Column(Modifier.weight(1f)) {
-                Text("Bu TV'ye bağlı telefonlar", color = Renkler.metin, fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(16.dp))
+            Column(Modifier.weight(1.25f)) {
+                Text("Bu TV'ye bağlı telefonlar", color = Renkler.metin, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.height(20.dp))
                 if (uyeler.isEmpty()) {
                     Text(
-                        "Henüz telefon eklenmedi. Telefon eklediğinizde vakitler onun konumuna göre hesaplanır; " +
-                            "isteyen kişi kıldığı namazları da gösterebilir.",
-                        color = Renkler.metinIkincil, fontSize = 20.sp, lineHeight = 28.sp,
+                        "Henüz telefon eklenmedi. Soldaki “Telefon ekleyin” ile ekranda çıkan kodu okutun.",
+                        color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
                     )
                 } else {
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         items(uyeler, key = { it.uye }) { u ->
                             Row(
-                                Modifier.fillMaxWidth().background(Renkler.kart, RoundedCornerShape(18.dp)).padding(horizontal = 24.dp, vertical = 16.dp),
+                                Modifier.fillMaxWidth().background(Renkler.kart, RoundedCornerShape(28.dp)).padding(horizontal = 28.dp, vertical = 22.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                Box(Modifier.size(48.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
-                                    TelefonSimgesi(Renkler.birincil, Modifier.size(28.dp))
+                                Box(Modifier.size(64.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
+                                    TelefonSimgesi(Renkler.birincil, Modifier.size(36.dp))
                                 }
-                                Spacer(Modifier.width(18.dp))
+                                Spacer(Modifier.width(22.dp))
                                 Column(Modifier.weight(1f)) {
-                                    Text(u.ad, color = Renkler.metin, fontSize = 22.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                    Text(sonHaberMetni(u.sonHaberMs, simdi), color = Renkler.metinIkincil, fontSize = 17.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                    Text(u.ad, color = Renkler.metin, fontSize = 30.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                    Text(sonHaberMetni(u.sonHaberMs, simdi), color = Renkler.metinIkincil, fontSize = 24.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 }
+                                Spacer(Modifier.width(16.dp))
                                 EslemeDugmesi("Kaldırın", { kaldirilacak = u })
                             }
                         }
                     }
                 }
+                Spacer(Modifier.height(28.dp))
+                GonderilenlerKarti()
             }
         }
 
@@ -116,6 +118,29 @@ fun TvAyarlarEkrani(
                 kaldirilacak = null
             }, onHayir = { kaldirilacak = null })
         }
+    }
+}
+
+/** Telefonlar bu TV'ye ne gönderir: üç kısa madde (güven: veri evden çıkmaz). */
+@Composable
+private fun GonderilenlerKarti() {
+    Column(
+        Modifier.fillMaxWidth().border(1.dp, Renkler.sinir, RoundedCornerShape(28.dp)).padding(horizontal = 28.dp, vertical = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        Text("Telefonlar bu TV'ye ne gönderir?", color = Renkler.metin, fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+        Madde("Konum: vakitler ona göre hesaplanır")
+        Madde("İsteyen kişinin kıldığı namazlar: vakit daralınca sessiz bir bant çıkar")
+        Madde("Bilgiler şifreli ve yalnız evinizin ağında gider")
+    }
+}
+
+@Composable
+private fun Madde(metin: String) {
+    Row(verticalAlignment = Alignment.Top) {
+        Box(Modifier.padding(top = 12.dp).size(10.dp).background(Renkler.birincil, CircleShape))
+        Spacer(Modifier.width(16.dp))
+        Text(metin, color = Renkler.metinIkincil, fontSize = 24.sp, lineHeight = 32.sp)
     }
 }
 
@@ -140,18 +165,18 @@ private fun KaldirOnayi(ad: String, onEvet: () -> Unit, onHayir: () -> Unit) {
         } catch (_: IllegalStateException) {
         }
     }
-    Box(Modifier.fillMaxSize().background(Renkler.arkaplan.copy(alpha = 0.86f)), contentAlignment = Alignment.Center) {
-        Column(Modifier.width(600.dp).background(Renkler.kart, RoundedCornerShape(28.dp)).padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("$ad kaldırılsın mı?", color = Renkler.metin, fontSize = 30.sp, fontWeight = FontWeight.SemiBold)
+    Box(Modifier.fillMaxSize().background(Renkler.arkaplan.copy(alpha = 0.96f)), contentAlignment = Alignment.Center) {
+        Column(Modifier.width(760.dp).background(Renkler.kart, RoundedCornerShape(36.dp)).padding(horizontal = 56.dp, vertical = 48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("$ad kaldırılsın mı?", color = Renkler.metin, fontSize = 40.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(12.dp))
             Text(
                 "Bu telefon artık TV'ye bilgi gönderemez. Yeniden eklemek için kare kodu tekrar okutmanız gerekir.",
-                color = Renkler.metinIkincil, fontSize = 18.sp, lineHeight = 26.sp,
+                color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
             )
-            Spacer(Modifier.height(28.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                EslemeDugmesi("Vazgeçin", onHayir, Modifier.focusRequester(odak))
-                EslemeDugmesi("Kaldırın", onEvet)
+            Spacer(Modifier.height(40.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(28.dp)) {
+                EslemeDugmesi("Vazgeçin", onHayir, Modifier.focusRequester(odak), buyuk = true)
+                EslemeDugmesi("Kaldırın", onEvet, buyuk = true)
             }
         }
     }

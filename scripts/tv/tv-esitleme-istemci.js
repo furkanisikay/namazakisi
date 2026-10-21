@@ -10,7 +10,8 @@
  *   node scripts/tv/tv-esitleme-istemci.js esle <qr> <yerelPort> <durumDosyasi>
  *       /esle (202) → "ISTEK_GONDERILDI" yazar → /esle-durum yoklar → onayda üyelik dosyaya.
  *   node scripts/tv/tv-esitleme-istemci.js esitle <yerelPort> <durumDosyasi> <senaryo>
- *       senaryo: bant (vaktin son dakikalarına düşen bir il seçer, kılınmamış) | ramazan | sade
+ *       senaryo: bant (Kadıköy, kılınmamış; saat `bant-saati` ile önceden kaydırılır) | ramazan | sade
+ *   node scripts/tv/tv-esitleme-istemci.js bant-saati   → emülatör saati hedefi (epoch sn)
  *   node scripts/tv/tv-esitleme-istemci.js redler <yerelPort> <durumDosyasi>
  *       yanlış anahtar ve tekrarlanan n → ikisi de 403 olmalı (çıkış kodu 1 değilse).
  * Çıktı satırları `SONUC <ad> <değer>` biçimindedir (hat betiği grep'ler).
@@ -71,7 +72,7 @@ function qrCoz(qr) {
 async function esle(qr, yerelPort, dosya) {
     const q = qrCoz(qr);
     const ist = crypto.randomBytes(8).toString('hex');
-    const z = sifrele(q.sir, `esle|${SURUM}|${q.tv}|istek`, JSON.stringify({ cihaz: 'Deneme telefonu', ist }));
+    const z = sifrele(q.sir, `esle|${SURUM}|${q.tv}|istek`, JSON.stringify({ cihaz: "Ahmet'in telefonu", ist }));
     const y = await post(yerelPort, '/esle', JSON.stringify({ v: SURUM, ...z }));
     console.log(`SONUC esle ${y.kod}`);
     if (y.kod !== 202) process.exit(1);
@@ -126,36 +127,26 @@ function kalanDk(lat, lng, simdi) {
     return null; // güneş → öğle arası
 }
 
-/** Bant karesi için: vaktin son 8–25 dakikasına düşen bir il (yoksa dünya genelinde bir nokta). */
-function bantKonumu(simdi) {
-    const iller = JSON.parse(fs.readFileSync(path.join(__dirname, '../../tv/app/src/main/assets/iller.json'), 'utf8'));
-    const uygun = (lat, lng) => {
-        const r = kalanDk(lat, lng, simdi);
-        return r && r.dk >= 8 && r.dk <= 25 ? r : null;
-    };
-    for (const il of iller) {
-        const r = uygun(il.lat, il.lng);
-        if (r) return { ad: il.ad, lat: il.lat, lng: il.lng, ...r };
-    }
-    for (let lng = -180; lng < 180; lng += 1) {
-        const r = uygun(41, lng);
-        if (r) return { ad: 'Deneme konumu', lat: 41, lng, ...r };
-    }
-    return null;
+const KADIKOY = { ad: 'Kadıköy, İstanbul', lat: 40.99, lng: 29.03 };
+
+/**
+ * Bant karesi için emülatör saati: BUGÜN Kadıköy'de ikindi girişinden 20 dk önce (öğle vaktinin
+ * son dakikaları, kerahat yok). Konum gerçek kalır; saat kaydırılır (absürt vakit saatleri yok).
+ * Çıktı: epoch saniye.
+ */
+function bantSaati(simdi) {
+    const k = new adhan.Coordinates(KADIKOY.lat, KADIKOY.lng);
+    const v = new adhan.PrayerTimes(k, simdi, adhan.CalculationMethod.Turkey());
+    return Math.floor((v.asr.getTime() - 20 * 60_000) / 1000);
 }
 
 async function esitle(yerelPort, dosya, senaryo) {
     const uyelik = JSON.parse(fs.readFileSync(dosya, 'utf8'));
     const simdi = new Date();
-    let konum = { ad: 'Kadıköy, İstanbul', lat: 40.99, lng: 29.03 };
+    const konum = KADIKOY;
     if (senaryo === 'bant') {
-        const b = bantKonumu(simdi);
-        if (b) {
-            konum = b;
-            console.log(`SONUC bant-konum ${b.ad} ${b.vakit} ${Math.round(b.dk)}dk`);
-        } else {
-            console.log('SONUC bant-konum yok');
-        }
+        const r = kalanDk(konum.lat, konum.lng, simdi);
+        console.log(`SONUC bant-penceresi ${r ? `${r.vakit} ${Math.round(r.dk)}dk` : 'yok'}`);
     }
     const durum = {
         ad: konum.ad,
@@ -200,6 +191,7 @@ async function ana() {
     const [komut, ...a] = process.argv.slice(2);
     if (komut === 'esle') return esle(a[0], Number(a[1]), a[2]);
     if (komut === 'esitle') return esitle(Number(a[0]), a[1], a[2] || 'sade');
+    if (komut === 'bant-saati') return console.log(String(bantSaati(new Date())));
     if (komut === 'redler') return redler(Number(a[0]), a[1]);
     console.error('komut: esle | esitle | redler');
     process.exit(2);
