@@ -9,7 +9,7 @@ import {
     StyleSheet,
 } from 'react-native';
 import { Anahtar } from '../common/Anahtar';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { BildirimModali } from '../common/BildirimModali';

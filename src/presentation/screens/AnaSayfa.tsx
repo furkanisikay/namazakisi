@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
 import { View, Text, Platform, StatusBar, AppState, AppStateStatus, TouchableOpacity } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';

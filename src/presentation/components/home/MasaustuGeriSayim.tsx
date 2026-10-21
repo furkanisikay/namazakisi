@@ -11,7 +11,7 @@
  */
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 import { useRenkler } from '../../../core/theme';
 import { hedefMsCoz, useKalanSure } from './GeriSayimMetni';

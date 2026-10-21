@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { aciNormalize, kabeyeMesafeKm, mesafeMetni, yonCumlesi } from '../../../core/kible/acilar';
 import { KAMERA_OPTIGI, kabeyiIzdusur } from '../../../core/kible/kameraProjeksiyonu';

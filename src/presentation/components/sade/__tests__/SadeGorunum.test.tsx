@@ -9,6 +9,9 @@ import { render, fireEvent, act } from '@testing-library/react-native';
 // nativewind fabrikada createElement'e izin vermez → düz string (AGENTS.md Seri dersi).
 jest.mock('react-native-svg', () => ({ __esModule: true, default: 'Svg', Svg: 'Svg', Circle: 'Circle' }));
 jest.mock('@expo/vector-icons', () => ({ FontAwesome5: 'FontAwesome5' }));
+// Kaynak alt yol import'u kullanır (denetim D-20) → kök mock'u alt yola da yansıt.
+jest.mock('@expo/vector-icons/FontAwesome5', () => ({ __esModule: true, default: jest.requireMock('@expo/vector-icons').FontAwesome5 }));
+jest.mock('@expo/vector-icons/MaterialIcons', () => ({ __esModule: true, default: jest.requireMock('@expo/vector-icons').MaterialIcons }));
 jest.mock('react-native-safe-area-context', () => ({ SafeAreaView: 'SafeAreaView' }));
 jest.mock('../../../../core/theme', () => ({
   useRenkler: () => ({

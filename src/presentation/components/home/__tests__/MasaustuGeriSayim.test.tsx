@@ -2,6 +2,9 @@ import React from 'react';
 import { render } from '@testing-library/react-native';
 
 jest.mock('@expo/vector-icons', () => ({ FontAwesome5: 'FontAwesome5' }));
+// Kaynak alt yol import'u kullanır (denetim D-20) → kök mock'u alt yola da yansıt.
+jest.mock('@expo/vector-icons/FontAwesome5', () => ({ __esModule: true, default: jest.requireMock('@expo/vector-icons').FontAwesome5 }));
+jest.mock('@expo/vector-icons/MaterialIcons', () => ({ __esModule: true, default: jest.requireMock('@expo/vector-icons').MaterialIcons }));
 jest.mock('../../../../core/theme', () => ({
   useRenkler: () => ({
     birincil: '#4CAF50',

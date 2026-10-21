@@ -17,7 +17,7 @@ import {
   ActivityIndicator,
   Animated,
 } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { styles } from './stiller';
 import { useRenkler } from '../../../../core/theme';
 import { useDonguAcik, useDonguAnimasyonu } from '../../../components/hareket/dongu';
