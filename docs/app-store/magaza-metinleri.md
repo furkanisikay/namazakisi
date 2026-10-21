@@ -65,7 +65,7 @@ SERİ VE İSTATİSTİK
 Tam kıldığınız her gün serinizi bir gün uzatır. 7 günü aşan bir seriniz koparsa, ardından 2 gün tam kılarak seriyi kurtarabilirsiniz. Kıldıkça puan toplar, seviye atlar ve rozet kazanırsınız. İstatistik ekranı günlük, haftalık ve aylık dökümü gösterir.
 
 GİZLİLİK
-Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik bulunmaz. Konumunuzu yalnızca vakit hesabı için kullanır ve telefonunuzdan dışarı çıkarmaz. Verilerinizi şifreli bir dosyaya yedekleyip başka bir cihaza taşıyabilirsiniz.
+Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik bulunmaz. Konumunuzu yalnızca vakit hesabı için kullanır ve telefonunuzdan dışarı çıkarmaz. Verilerinizi bir yedek dosyasına alıp başka bir cihaza taşıyabilirsiniz.
 
 AÇIK KAYNAK
 Namaz Akışı'nı sadaka-i cariye niyetiyle geliştiriyorum. Uygulama ücretsizdir ve kaynak kodları GNU GPLv3 lisansıyla herkese açıktır:
@@ -211,7 +211,7 @@ RAMAZAN
 İftar ve sahura kalan süreyi bildirimde geri sayımla gösterir.
 
 GİZLİLİK
-Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik bulunmaz. Konumunuzu yalnızca vakit ve kıble hesabı için kullanır, hiçbir sunucuya göndermez; Wear OS saatinizdeki kıble pusulası için saatinize yalnızca yaklaşık konum aktarılır. Verilerinizi şifreli bir dosyaya yedekleyip başka bir cihaza taşıyabilirsiniz.
+Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik bulunmaz. Konumunuzu yalnızca vakit ve kıble hesabı için kullanır, hiçbir sunucuya göndermez; Wear OS saatinizdeki kıble pusulası için saatinize yalnızca yaklaşık konum aktarılır. Verilerinizi bir yedek dosyasına alıp başka bir cihaza taşıyabilirsiniz.
 
 AÇIK KAYNAK
 Namaz Akışı'nı sadaka-i cariye niyetiyle geliştiriyorum. Uygulama ücretsizdir ve kaynak kodları GNU GPLv3 lisansıyla herkese açıktır:

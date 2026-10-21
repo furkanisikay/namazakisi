@@ -190,7 +190,7 @@ export const EsitlemeSayfasi: React.FC = () => {
         {e.saglayicilar.length === 0 ? (
           <View className="rounded-2xl p-5" style={{ backgroundColor: renkler.kartArkaplan }}>
             <Text className="text-sm leading-5" style={{ color: renkler.metinIkincil }}>
-              Bu sürümde eşitleme hizmeti etkin değil. Verilerinizi Yedekleme sayfasından şifreli bir dosyayla
+              Bu sürümde eşitleme hizmeti etkin değil. Verilerinizi Yedekleme sayfasından bir yedek dosyasıyla
               taşıyabilirsiniz.
             </Text>
           </View>

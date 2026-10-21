@@ -905,15 +905,15 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         tarih: '2026-06-14',
         baslik: 'Yedekleme & Aktarım',
         aciklama:
-            'Verilerinizi şifreli bir dosyaya yedekleyin ve dilediğiniz zaman geri yükleyin.',
+            'Verilerinizi tek bir dosyaya yedekleyin ve dilediğiniz zaman geri yükleyin.',
         detayAciklama:
-            'Tüm namaz kayıtlarınızı ve ayarlarınızı tek dokunuşla şifreli bir yedek dosyasına alabilirsiniz. Yeni bir cihaza geçtiğinizde akıllı sihirbaz, dosyanızı güvenle geri yükler ve mevcut kayıtlarınızla çakışan veriler korunur.',
+            'Tüm namaz kayıtlarınızı ve ayarlarınızı tek dokunuşla bir yedek dosyasına alabilirsiniz. Dosya bozulmaya karşı korunur ama parola içermez; güvendiğiniz bir yerde saklayın. Yeni bir cihaza geçtiğinizde akıllı sihirbaz, dosyanızı güvenle geri yükler ve mevcut kayıtlarınızla çakışan veriler korunur.',
         ikon: 'cloud-download-alt',
         hedefSayfa: 'YedeklemeAktarim',
         ctaEtiketi: 'Hemen yedekleyin',
         kartGoster: true,
         detaylar: [
-            'Tek dokunuşla şifreli yedek oluşturun',
+            'Tek dokunuşla yedek oluşturun',
             'Akıllı sihirbazla güvenle geri yükleyin',
             'Çakışan kayıtlarınız korunur — veri kaybı olmaz',
         ],
