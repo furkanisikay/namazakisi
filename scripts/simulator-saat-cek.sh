@@ -205,7 +205,8 @@ VIDEO="${3:-}"
 if [ -n "$VIDEO" ]; then
   mkdir -p "$VIDEO"
   # kildim-sahnesi: Simdi acilir, 1,5 sn sonra "Kildim" kendiliginden oynar (halka kapanir + tik).
-  for v in "kildim-sahnesi:kildimDemo" "simdi-acilisi:ana" "bugun-acilisi:vakitler" "uyandirma-acilisi:uyandirma" "kible-acilisi:kible"; do
+  # Ilk kayit bazen tek kare kaliyor (kaydedici isinmamis) → once bir isinma kaydi.
+  for v in "isinma:ana" "kildim-sahnesi:kildimDemo" "simdi-acilisi:ana""bugun-acilisi:vakitler" "uyandirma-acilisi:uyandirma" "kible-acilisi:kible"; do
     IFS=: read -r AD EKRAN <<<"$v"
     xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
     sleep 1
@@ -222,6 +223,7 @@ if [ -n "$VIDEO" ]; then
     kill -INT "$KAYIT" 2>/dev/null || true
     wait "$KAYIT" 2>/dev/null || true
     if [ -s "$VIDEO/$AD.mp4" ]; then echo "video: $AD.mp4 ($(du -h "$VIDEO/$AD.mp4" | cut -f1))"; else echo "UYARI: $AD videosu yok"; fi
+    if [ "$AD" = "isinma" ]; then rm -f "$VIDEO/$AD.mp4"; fi
   done
   # Her zaman acik (sonuk) varyant kareleri — inceleme icin, ASC'ye GITMEZ (video dizininde).
   for v in "sonuk-simdi:ana" "sonuk-bugun:vakitler" "sonuk-kilindi:kilindi" "sonuk-kible:kible"; do
