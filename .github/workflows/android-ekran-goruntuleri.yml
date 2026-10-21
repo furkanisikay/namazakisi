@@ -363,6 +363,11 @@ jobs:
           ./gradlew --no-daemon assembleDebug
           find app/build/outputs/apk -name '*.apk' -print
 
+      # Kare hatti telefonu SIFRELI istemciyle taklit eder (scripts/tv/tv-esitleme-istemci.js:
+      # @noble/ciphers + adhan). Yasam dongusu betikleri gerekmez.
+      - name: 📦 İstemci bağımlılıkları
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
       # android-tv imaji API 34'te yalniz x86 (x86_64 yok); uygulama saf Kotlin/JVM.
       - name: 📺 TV (1080p)
         uses: reactivecircus/android-emulator-runner@v2
