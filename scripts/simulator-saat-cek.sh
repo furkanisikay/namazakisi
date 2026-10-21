@@ -242,6 +242,45 @@ if [ -n "$VIDEO" ]; then
   done
 fi
 
+# --- Kucuk ekran kaniti (istege bagli, video dizinine): en kucuk mevcut saat ----------
+# Magaza seti Ultra'dan kalir; burada 41/42 mm sigmasi TAHMIN degil KARE ile gosterilir.
+if [ -n "${VIDEO:-}" ]; then
+  KUCUK_TIPI=$(xcrun simctl list devicetypes -j | json '(()=>{const t=j.devicetypes.map(x=>x.name);for(const re of [/^Apple Watch Series 9 \(41mm\)/,/^Apple Watch Series 1[0-9] \(42mm\)/,/^Apple Watch SE.*40mm/,/^Apple Watch Series [0-9]+ \(41mm\)/]){const b=t.filter(n=>re.test(n)).sort();if(b.length)return b[0];}return "";})()')
+  if [ -n "$KUCUK_TIPI" ]; then
+    echo "küçük saat: $KUCUK_TIPI"
+    xcrun simctl shutdown "$SAAT" >/dev/null 2>&1 || true
+    SAAT=$(xcrun simctl create "magaza-saat-kucuk" "$KUCUK_TIPI" "$SAAT_RT")
+    if [ -n "${TELEFON:-}" ]; then
+      xcrun simctl unpair "$(xcrun simctl list pairs -j | json 'Object.keys(j.pairs)[0]||""')" >/dev/null 2>&1 || true
+      xcrun simctl pair "$SAAT" "$TELEFON" >/dev/null 2>&1 || echo "UYARI: küçük saat eşlenemedi"
+    fi
+    saatiAc || true
+    xcrun simctl shutdown "$SAAT" >/dev/null 2>&1 || true
+    yerellestir "$SAAT"
+    saatiAc || true
+    xcrun simctl install "$SAAT" "$APP" || echo "UYARI: küçük saate kurulamadı"
+    mkdir -p "$VIDEO/kucuk"
+    for v in "01-simdi:ana" "02-bugun:vakitler" "03-kilindi:kilindi" "04-kible:kible" "06-uyandirma:uyandirma"; do
+      IFS=: read -r AD EKRAN <<<"$v"
+      xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
+      sleep 1
+      SIMCTL_CHILD_TZ="$TZ_ADI" \
+        SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
+        SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
+        SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
+        SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
+        xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1 || { echo "UYARI: küçük $AD başlatılamadı"; continue; }
+      sleep 14
+      xcrun simctl io "$SAAT" screenshot --type=png "$VIDEO/kucuk/$AD.png" >/dev/null 2>&1 \
+        && echo "küçük kare: $AD.png ($(sips -g pixelWidth "$VIDEO/kucuk/$AD.png" | awk '/pixelWidth/{print $2}') px)" \
+        || echo "UYARI: küçük $AD çekilemedi"
+    done
+  else
+    echo "UYARI: küçük saat tipi bulunamadı"
+    xcrun simctl list devicetypes | grep -i watch || true
+  fi
+fi
+
 # --- Ozet -------------------------------------------------------------------------
 {
   echo "### ⌚ Apple Watch kareleri"

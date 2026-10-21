@@ -17,7 +17,8 @@ import WatchKit
 // sonuk varyant: dugme yok, renkler kisik, saniye yok. Hareket YALNIZ olayla baslar.
 //
 // Karar iPhone widget'iyla AYNI saf koddan (`SaatKarari` → `WidgetKarari`/`VakitKarari`);
-// geri sayimi sistem cizer (`Text(timerInterval:)`). Arayuz metni kibar "siz".
+// geri sayim BIRIMLI ("1 sa 9 dk", saatin altinda "9 dk 05 sn"; telefon/TV/Wear ile ayni,
+// saf `SaatSure`). Arayuz metni kibar "siz".
 
 enum SaatGorunum {
     /// Uygulamanin birincil yesili (#4CAF50) — "kilindi" durumunun rengi. Dekoratif.
@@ -263,11 +264,7 @@ struct SimdiSayfasi: View {
                         .font(.system(size: cap * 0.14, weight: .semibold))
                         .accessibilityHidden(true)
                     if let hedefMs {
-                        Text(timerInterval: SaatGorunum.aralik(simdi, hedefMs), countsDown: true, showsHours: true)
-                            .font(.system(size: cap * 0.2, weight: .semibold, design: .rounded))
-                            .monospacedDigit()
-                            .lineLimit(1)
-                            .fixedSize()
+                        BirimliSure(hedefMs: hedefMs, cap: cap, sonuk: sonuk)
                             .accessibilityLabel(durum.gorunum.aktif != nil ? "Çıkışa kalan süre" : "Girişe kalan süre")
                         Label {
                             Text(SaatDeposu.saatMetni(hedefMs)).monospacedDigit()
@@ -353,6 +350,37 @@ struct SimdiSayfasi: View {
             tik = 1
             // Onay acikken vakit degisti: yanlis vakit isaretlenmez.
             WKInterfaceDevice.current().play(.failure)
+        }
+    }
+}
+
+/// Birimli geri sayim: buyuk rakam + ince birim ("1 sa 9 dk", "9 dk 05 sn"). Saniye
+/// yalniz bir saatin altinda ve yalniz ekran tam parlakken tazelenir (saniyede bir);
+/// aksi halde dakikada bir. Sonuk (her zaman acik) ekranda saniye yazilmaz.
+struct BirimliSure: View {
+    let hedefMs: Int64
+    let cap: CGFloat
+    let sonuk: Bool
+
+    var body: some View {
+        let saniyeli = !sonuk && hedefMs - SaatDeposu.simdiMs() < 3_600_000
+        TimelineView(saniyeli ? .periodic(from: Date(), by: 1) : .periodic(from: Date(), by: 60)) { baglam in
+            let kalan = hedefMs - SaatDeposu.simdiMs(baglam.date)
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                ForEach(Array(SaatSure.parcalar(kalanMs: kalan, saniyesiz: sonuk).enumerated()), id: \.offset) { i, p in
+                    Text(p.sayi)
+                        .font(.system(size: cap * 0.2, weight: .semibold, design: .rounded))
+                        .monospacedDigit()
+                    Text(p.birim)
+                        .font(.system(size: cap * 0.085, weight: .medium, design: .rounded))
+                        .foregroundStyle(.secondary)
+                        .padding(.trailing, i == 0 ? 4 : 0)
+                }
+            }
+            .lineLimit(1)
+            .fixedSize()
+            .accessibilityElement(children: .ignore)
+            .accessibilityValue(SaatSure.sesli(kalanMs: kalan, saniyesiz: sonuk))
         }
     }
 }

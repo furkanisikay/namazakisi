@@ -500,6 +500,21 @@ do {
     esitMi(Kible.mesafeMetni(3), "Kâbe'desiniz", "10 km alti")
 }
 
+// MARK: - 14) Birimli geri sayim (#363, JS `kalanSureParcalari` ikizi)
+
+do {
+    func p(_ ms: Int64, _ s: Bool = false) -> [String] { SaatSure.parcalar(kalanMs: ms, saniyesiz: s).map { "\($0.sayi) \($0.birim)" } }
+    esitMi(p((1 * 3600 + 9 * 60 + 9) * 1000), ["1 sa", "9 dk"], "saat ve ustu: saniye yok")
+    esitMi(p((9 * 60 + 5) * 1000), ["9 dk", "05 sn"], "saatin alti: saniye iki haneli")
+    esitMi(p(42_000), ["42 sn"], "dakikanin alti")
+    esitMi(p(42_999), ["42 sn"], "saniye asagi yuvarlanir")
+    esitMi(p(-5_000), ["0 sn"], "negatif sifir")
+    esitMi(p((9 * 60 + 5) * 1000, true), ["9 dk"], "sonuk: saniyesiz")
+    esitMi(p(42_000, true), ["1 dk"], "sonuk: dakikanin alti 1 dk")
+    esitMi(SaatSure.sesli(kalanMs: (9 * 60 + 5) * 1000), "9 dakika 5 saniye", "sesli")
+    esitMi(SaatSure.sesli(kalanMs: (3600 + 60) * 1000), "1 saat 1 dakika", "sesli saat")
+}
+
 // MARK: - Sonuc
 
 if hatalar.isEmpty {
