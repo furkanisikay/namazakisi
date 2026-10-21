@@ -161,6 +161,20 @@ async function bolum(ad, fn) {
         } else {
             console.error('  alarm onay modali acilamadi (UISwitch idb ile degismedi)');
         }
+        // "Tekrarla" AÇIK: aralık seçicisi + canlı cümle; sonra şeritte tekrar tikleri.
+        const tekrar = await getir(/adim-tekrar-anahtari/, 'tekrar-anahtari', { ust: 0.25, alt: 0.6 });
+        if (tekrar) {
+            await dokun(tekrar.ogeler, /adim-tekrar-anahtari/, 'tekrar anahtari', { bekle: 1500 });
+            if (!bul(await agac('tekrar-acik-1'), /Tekrar aralığı artır/)) {
+                const guncel = bul(await agac('tekrar-anahtari-tekrar'), /adim-tekrar-anahtari/);
+                if (guncel) await s.anahtariSurukle(guncel);
+            }
+            await agac('tekrar-acik');
+            cek('44-adim-detay-tekrar-acik');
+            if (await dokun(await agac('adim-kapat'), /^Kapat$/, 'detay kapat', { bekle: 2000 })) {
+                if (await getir(/ilk hatırlatma/i, 'serit-tekrar', { ust: 0.3, alt: 0.55 })) cek('45-zaman-seridi-tekrar');
+            }
+        }
     });
 
     await bolum('bildirim siniri', async () => {
