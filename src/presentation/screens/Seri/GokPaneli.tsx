@@ -12,13 +12,19 @@
  * Faz 2 / Task 3: SÜREKLİ hareket eklendi. (1) 5/5 günlerin parıltısı
  * (`Parilti`) — Svg'nin DIŞINDA, ayrı bir Animated.View overlay katmanı
  * (bkz. `Parilti.tsx` doc-block, mimari gerekçe). (2) Bugünün nabzı
- * (`BugununNabzi`) — TEK öğe olduğu için Svg PROP animasyonu, Faz 1'deki
- * statik "bugün" karesinin YERİNE geçti. (3) Azaltılmış hareket
+ * (`BugununNabzi`) — Faz 1'deki statik "bugün" karesinin YERİNE geçti; o da
+ * Svg'nin DIŞINDA bir Animated.View'dir (zemin Svg'si ile içerik Svg'si
+ * ARASINDA). KURAL: sonsuz döngülü HİÇBİR animasyon bir Svg'nin içine
+ * konmaz — react-native-svg Android'de tek bir alt düğüm güncellemesinde
+ * tüm Svg'nin önbellek bitmap'ini atıp ağacın tamamını yeniden çizer; nabız
+ * önceden Svg PROP animasyonuydu ve İlerleme ekranında kaydırmayı takılttı
+ * (bkz. `BugununNabzi.tsx`; nöbetçi `GokPaneli.test.tsx > TAKILMA`). (3) Azaltılmış hareket
  * (`useReducedMotion`, senkron) her üç animasyon türünde de (giriş + parıltı
  * + nabız) aynı kuralla uygulanır: hiçbiri kurulmaz, ekran doğrudan Faz 1'in
  * nihai görünümünde render olur.
  *
- * Ayın tamamı TEK bir `<Svg>` içinde çizilir (35 ayrı bileşen DEĞİL) — hücre
+ * Ayın tamamı TEK bir içerik `<Svg>`'sinde çizilir (35 ayrı bileşen DEĞİL;
+ * zemin ayrı ve statik bir Svg'dedir) — hücre
  * merkezleri `gokYerlesimi` ile panel genişliğinden HESAPLANIR, ölçülmez.
  * Panel genişliği yalnız BİR KEZ `onLayout` ile alınır; genişlik gelmeden
  * (0 iken) Svg hiç çizilmez.
@@ -232,7 +238,13 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
     >
       {panelGenislik > 0 && (
         <>
-        <Svg width={panelGenislik} height={govdeYukseklik}>
+        {/* 1) Gök zemini — AYRI Svg (İlerleme takılması kök nedeni, bkz.
+            `BugununNabzi.tsx`): nabız katmanı zemin ile içerik ARASINA girer;
+            böylece nabız ana Svg'nin dışında kalır ama yıldız/bağ/gün numarası
+            eskisi gibi onun ÜSTÜNDE çizilir. HEADER dahil TÜM panel
+            yüksekliğini kaplar (inceleme bulgusu: ay adı/gün harfleri önceden
+            bu zeminin DIŞINDAYDI, açık temada okunamıyordu). */}
+        <Svg testID="gok-zemin" width={panelGenislik} height={govdeYukseklik} style={{ position: 'absolute', left: 0, top: 0 }}>
           <Defs>
             {/* Gök zemini — CSS radial-gradient'in RN karşılığı (spec §3.3). */}
             <LinearGradient id="zeminTaban" x1="0" y1="0" x2="0" y2="1">
@@ -247,6 +259,36 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
               <Stop offset="0" stopColor={GOK_TONLARI.ZEMIN_VURGU_SAG_ALT} stopOpacity={1} />
               <Stop offset="1" stopColor={GOK_TONLARI.ZEMIN_VURGU_SAG_ALT} stopOpacity={0} />
             </RadialGradient>
+          </Defs>
+          <Rect x={0} y={0} width={panelGenislik} height={govdeYukseklik} fill="url(#zeminTaban)" />
+          <Rect x={0} y={0} width={panelGenislik} height={govdeYukseklik} fill="url(#zeminSolUst)" />
+          <Rect x={0} y={0} width={panelGenislik} height={govdeYukseklik} fill="url(#zeminSagAlt)" />
+        </Svg>
+
+        {/* Bugünün nabzı — sonsuz animasyon Svg'nin DIŞINDA (zemin ile içerik
+            arasında). Hücrenin gerçek (ölçeklenmemiş) boyutuna göre; `merkezY`'ye
+            `HEADER_YUKSEKLIK` eklenir (`Parilti` ile aynı sözleşme). */}
+        {izgara.map((gun, i) => {
+          if (gun.tarih !== bugun) {
+            return null;
+          }
+          const merkez = yerlesim.merkez(i);
+          return (
+            <BugununNabzi
+              key={`nabiz-${gun.tarih}`}
+              merkezX={merkez.x}
+              merkezY={merkez.y + HEADER_YUKSEKLIK}
+              kenar={bugunKenar}
+              koseOrani={BUGUN_CERCEVE_KOSE_ORANI}
+              renk={renkler.birincil}
+            />
+          );
+        })}
+
+        {/* İçerik — açılış animasyonu bitince hiç geçersiz kılınmaz (önbellek
+            bitmap'i kaydırmada yalnız kopyalanır). Zemini YOK (şeffaf). */}
+        <Svg testID="gok-icerik" width={panelGenislik} height={govdeYukseklik} style={{ position: 'absolute', left: 0, top: 0 }}>
+          <Defs>
             {/* Yıldız hâlesi — merkezde renk, kenarda şeffaf (blur DEĞİL, spec §3.2).
                 Üç duraklı: merkeze yoğunlaşıp kenara doğru ERKEN sönümlenir —
                 iki-duraklı doğrusal geçiş (0.5 -> 0) geniş bir alanı görünür
@@ -263,14 +305,6 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
               <Stop offset="1" stopColor={GOK_TONLARI.ISIK} stopOpacity={0} />
             </RadialGradient>
           </Defs>
-
-          {/* 1) Gök zemini — HEADER dahil TÜM panel yüksekliğini kaplar. İnceleme
-              bulgusu: ay adı/gün harfleri önceden bu zeminin DIŞINDAYDI (tema
-              arkaplanı üzerinde), açık temada okunamıyordu. Artık aynı koyu
-              zeminin üstüne çiziliyorlar (aşağıda, 5. katman). */}
-          <Rect x={0} y={0} width={panelGenislik} height={govdeYukseklik} fill="url(#zeminTaban)" />
-          <Rect x={0} y={0} width={panelGenislik} height={govdeYukseklik} fill="url(#zeminSolUst)" />
-          <Rect x={0} y={0} width={panelGenislik} height={govdeYukseklik} fill="url(#zeminSagAlt)" />
 
           {/* Izgara katmanları (zincir/yıldız/gün-no) HEADER_YUKSEKLIK kadar aşağı
               kaydırılır — header için ayrılan payın altına düşerler. */}
@@ -326,15 +360,6 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
               const merkez = yerlesim.merkez(i);
               return (
                 <React.Fragment key={gun.tarih}>
-                  {gun.tarih === bugun && (
-                    <BugununNabzi
-                      merkezX={merkez.x}
-                      merkezY={merkez.y}
-                      kenar={bugunKenar}
-                      koseOrani={BUGUN_CERCEVE_KOSE_ORANI}
-                      renk={renkler.birincil}
-                    />
-                  )}
                   <AnimasyonluYildiz
                     gun={gun}
                     transform={`translate(${merkez.x} ${merkez.y}) scale(${olcek})`}
