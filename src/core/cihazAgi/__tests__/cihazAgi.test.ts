@@ -141,8 +141,17 @@ describe('yük', () => {
     });
 
     it('olay günlüğü ve silme işareti taşınır', () => {
-        const o = JSON.parse(yukuYaz({ v: 2, olaylar: [{ id: 'x1', tur: 'kildim', tarih: '2026-10-21', vakit: 'ogle' }], sil: true }));
-        expect(o).toEqual({ v: 2, olaylar: [{ id: 'x1', tur: 'kildim', tarih: '2026-10-21', vakit: 'ogle' }], sil: true });
+        const olay = {
+            id: 'aaaaaaaaaaaaaaaa:1',
+            cihaz: 'aaaaaaaaaaaaaaaa',
+            seq: 1,
+            hlc: '000000000000001-0000-aaaaaaaaaaaaaaaa',
+            tur: 'kildim' as const,
+            tarih: '2026-10-21',
+            vakit: 'ogle' as const,
+        };
+        const o = JSON.parse(yukuYaz({ v: 2, olaylar: [olay], sil: true }));
+        expect(o).toEqual({ v: 2, olaylar: [olay], sil: true });
     });
 
     it('baytUzunlugu UTF-8 sayar', () => {

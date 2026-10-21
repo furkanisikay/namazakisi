@@ -23,6 +23,7 @@ import { bytesToHex } from '@noble/hashes/utils';
 import naclUtil from 'tweetnacl-util';
 import { YedekPayload, NamazGunleri, GunNamazHaritasi } from '../types/YedeklemeTipleri';
 import { bilinmeyenleriBirlestir, hareketleriAyristir, hareketleriBirlestir } from '../kaza/kazaHareketi';
+import { olaylariBirlestir } from '../cihazAgi/olayGunlugu';
 
 const TARIH_BICIMI = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -98,6 +99,7 @@ export function esitlemeIcerigineIndir(yerel: YedekPayload): YedekPayload {
     kaza: nesneMi(yerel.kaza) ? yerel.kaza : null,
     kazaTempo: temizTempo(yerel.kazaTempo),
     kazaHareketleri: temizKazaHareketleri(yerel.kazaHareketleri),
+    ...temizOlaylar(yerel.cihazOlaylari),
     ayarlar: {},
   };
 }
@@ -129,9 +131,16 @@ export function icerikNormalizeEt(deger: unknown): YedekPayload | null {
     ...(Array.isArray(deger.kazaHareketleri)
       ? { kazaHareketleri: temizKazaHareketleri(deger.kazaHareketleri) }
       : {}),
+    ...temizOlaylar(deger.cihazOlaylari),
     ayarlar: {},
   };
 }
+
+/** Olay günlüğü: yalnız doğrulanan olaylar; boşsa alan HİÇ yazılmaz (eski özet birebir kalsın). */
+const temizOlaylar = (ham: unknown): { cihazOlaylari?: unknown[] } => {
+  const olaylar = Array.isArray(ham) ? olaylariBirlestir(ham, []) : [];
+  return olaylar.length > 0 ? { cihazOlaylari: olaylar } : {};
+};
 
 /** Rozet kimliği (birleştirme servisiyle aynı anahtar: `id` ya da JSON). */
 const rozetKimligi = (rozet: unknown): string => {
@@ -176,6 +185,11 @@ const yakinsayanGorunum = (icerik: YedekPayload): unknown => {
       .filter((id): id is string => typeof id === 'string')
       .sort(),
     kazaTempo: indirgenmis.kazaTempo,
+    // Olay günlüğü: kimlik KÜMESİ (birleşim yakınsar). Alan yoksa `undefined` → kanonik JSON
+    // anahtarı hiç yazmaz, özet olay günlüğünden önceki sürümle BİREBİR aynı kalır.
+    cihazOlaylari: indirgenmis.cihazOlaylari?.length
+      ? indirgenmis.cihazOlaylari.map((o) => (o as { id: string }).id).sort()
+      : undefined,
   };
 };
 
