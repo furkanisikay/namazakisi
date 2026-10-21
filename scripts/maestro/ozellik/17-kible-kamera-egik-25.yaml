@@ -1,0 +1,15 @@
+# tohum: ozellik
+# hazirlik: kible-kamera-25
+# Kamerali kible, kamera 25° asagi bakiyor: yerdeki yolun perspektifi egimle degisir.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _acilis.yaml
+- tapOn: "Kıble"
+- tapOn: "Kamera modu"
+- extendedWaitUntil:
+    visible:
+      id: "kamera-yon-cumlesi"
+    timeout: 20000
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: ozk/38-kible-kamera-egik-25

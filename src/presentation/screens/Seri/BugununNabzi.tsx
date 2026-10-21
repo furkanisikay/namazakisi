@@ -1,6 +1,6 @@
 /**
- * BugununNabzi — bugünün karesinin sürekli "nabız" animasyonu (büyüyüp
- * soluma, task-3-brief.md §3b).
+ * BugununNabzi — bugünün karesinin "nabız" animasyonu (büyüyüp soluma, task-3-brief.md
+ * §3b). SONLUDUR: bir nefes alıp statik kareye döner; kaydırmada hemen durur.
  *
  * SVG'NİN DIŞINDA, AYRI BİR Animated.View katmanıdır (İlerleme takılması kök
  * nedeni — düzeltildi). Önceden ana `<Svg>`'nin İÇİNDE bir `AnimatedRect`'ti
@@ -28,8 +28,9 @@
  * 0 → Faz 1'deki STATİK "bugün" karesi (opacity `NABIZ_TABAN_OPAKLIK`=0.4,
  * ölçek 1) — global-constraints.md "Faz 1'in görsel sonucu DEĞİŞMEZ".
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Animated, {
+  cancelAnimation,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
@@ -37,6 +38,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { GOK_ZAMANLAMA } from './sabitler';
+import { useGokDurdurmaSayaci } from './gokHareketi';
 
 /**
  * Büyüme/opaklık oranları — referans bağlayıcı (`@keyframes nabiz`,
@@ -79,10 +81,24 @@ export const BugununNabzi: React.FC<BugununNabziProps> = ({ merkezX, merkezY, ke
     if (azaltilmisHareket) {
       return;
     }
-    ilerleme.value = withRepeat(withTiming(1, { duration: GOK_ZAMANLAMA.NABIZ_SURE_MS }), -1, true);
-    // Yalnız mount'ta BİR KEZ kurulur — sonsuz döngü kendi kendine sürer.
+    // SONLU: bir nefes, dinlenme hâlinde (Faz 1 statik kare) durur — "boşta sıfır hareket".
+    ilerleme.value = withRepeat(
+      withTiming(1, { duration: GOK_ZAMANLAMA.NABIZ_SURE_MS }),
+      GOK_ZAMANLAMA.NABIZ_YARIM_DONGU,
+      true,
+    );
+    // Yalnız mount'ta BİR KEZ kurulur.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Kaydırma başladı → durur ve statik kareye döner.
+  const durdurma = useGokDurdurmaSayaci();
+  const ilkDurdurma = useRef(durdurma);
+  useEffect(() => {
+    if (durdurma === ilkDurdurma.current) return;
+    cancelAnimation(ilerleme);
+    ilerleme.value = 0;
+  }, [durdurma, ilerleme]);
 
   const animatedStyle = useAnimatedStyle(() => {
     const t = ilerleme.value;

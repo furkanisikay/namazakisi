@@ -44,6 +44,7 @@ jest.mock('react-native-reanimated', () => {
     ...m,
     withRepeat: jest.fn(m.withRepeat),
     withTiming: jest.fn(m.withTiming),
+    cancelAnimation: jest.fn(),
     withDelay: jest.fn(m.withDelay),
     useReducedMotion: jest.fn(() => false),
   };
@@ -57,12 +58,14 @@ import { zincirBaglari } from '../../../../core/seri/zincir';
 import { gokErisimEtiketi } from '../../../../core/seri/gokErisimEtiketi';
 import { acilisCizelgesi } from '../../../../core/seri/acilisCizelgesi';
 import { GOK_TONLARI, GOK_ZAMANLAMA } from '../sabitler';
+import { GokHareketiBaglami } from '../gokHareketi';
 
 const { G, Path, Text: SvgTextMock } = require('react-native-svg');
 const {
   withTiming: withTimingMock,
   withDelay: withDelayMock,
   withRepeat: withRepeatMock,
+  cancelAnimation: cancelAnimationMock,
   useReducedMotion: useReducedMotionMock,
 } = require('react-native-reanimated');
 
@@ -645,5 +648,29 @@ describe('GokPaneli', () => {
     // Nabzın tek karesi eskiden bu kadar düğümün yeniden çizimini tetikliyordu.
     // eslint-disable-next-line no-console
     if (process.env.GOK_OLCUM) console.log(`gok-icerik host dugumu: ${icerikDugumu}`);
+  });
+
+  test('BOŞTA SIFIR HAREKET: nabız/parıltı SONSUZ değil (bir nefes) ve kaydırma başlayınca durur', () => {
+    cancelAnimationMock.mockClear();
+    const kayitlar: Record<string, boolean[]> = { '2026-07-01': [true, true, true, true, true] };
+    const izgara = aylikIzgaraOlustur({ yil: 2026, ay: 6, kayitlar, dondurulmusTarihler: new Set(), bugun: '2026-07-10' });
+    const zincirler = zincirBaglari(izgara, TAM_GUN_ESIGI);
+    const ui = (n: number) => (
+      <GokHareketiBaglami.Provider value={n}>
+        <GokPaneli izgara={izgara} zincirler={zincirler} ayAdi="Temmuz 2026" bugun="2026-07-10" tamGunEsigi={TAM_GUN_ESIGI} mevcutSeri={1} />
+      </GokHareketiBaglami.Provider>
+    );
+    const tree = render(ui(0));
+    genislikSimuleEt(tree, 350);
+    expect(withRepeatMock).toHaveBeenCalled();
+    for (const [, sayi, ters] of withRepeatMock.mock.calls) {
+      expect(sayi).toBeGreaterThan(0); // -1 = sonsuz YASAK
+      expect(sayi % 2).toBe(0); // çift → dinlenme hâline döner
+      expect(ters).toBe(true);
+    }
+    expect(cancelAnimationMock).not.toHaveBeenCalled();
+    act(() => tree.update(ui(1)));
+    // Nabız + parıltı → ikisi de durdurulur.
+    expect(cancelAnimationMock.mock.calls.length).toBeGreaterThanOrEqual(2);
   });
 });

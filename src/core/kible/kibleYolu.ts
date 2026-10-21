@@ -3,8 +3,9 @@
  *
  * Kullanıcının ayağından kıble yönüne zeminde uzanan bir şerit: dünya uzayında yer
  * düzlemindeki noktalar kurulur ve `kabeyiIzdusur` ile AYNI iğne deliği modeliyle ekrana
- * izdüşürülür. Perspektif kendiliğinden gelir: şerit ufka doğru daralır, noktalar küçülür
- * ve sıklaşır.
+ * izdüşürülür. Perspektif kendiliğinden gelir: şerit ayağın dibinde geniş, ufka doğru
+ * daralır; telefon eğildikçe (pitch) yer düzlemi ekranda farklı yatar. Üstünde Kâbe'ye
+ * doğru akan çevronlar (›) yön hissi verir, kenarlar yumuşak parıltıyla çizilir.
  *
  * Dünya modeli: göz (kamera) yerden `gozYuksekligiM` yukarıda; yer düzlemi dünya "yukarı"
  * eksenine diktir. Nokta P(d, l) = d·t + l·yan − h·yukarı (cihaz ekseninde), t = kıblenin
@@ -21,16 +22,20 @@ import { KameraOptigi, odakUzakligiPx } from './kameraProjeksiyonu';
 export const KIBLE_YOLU = {
   /** Göz (telefon) yüksekliği (m). */
   gozYuksekligiM: 1.4,
-  /** Şeridin yarı genişliği (m). */
-  yariGenislikM: 0.32,
+  /** Şeridin yarı genişliği (m) — ayağın dibinde ekranı geniş kaplar, ufukta incelir. */
+  yariGenislikM: 0.5,
   /** Yolun başladığı / bittiği mesafe (m). Ötesi ufukta tek piksele iner. */
-  baslangicM: 0.5,
+  baslangicM: 0.35,
   bitisM: 45,
   /** Bant sınırları (m): yakın / orta / uzak — opaklık uzaklıkla azalır. */
-  bantSinirlariM: [4, 13] as const,
-  /** Akan noktaların aralığı ve yarıçapı (m). */
-  noktaAraligiM: 1.6,
-  noktaYaricapiM: 0.07,
+  bantSinirlariM: [3.5, 11] as const,
+  /** Akan çevronlar (yer düzleminde, Kâbe'yi gösteren "›"): aralık, boy, kol açıklığı, kalınlık (m). */
+  cevronAraligiM: 1.25,
+  cevronBoyuM: 0.34,
+  cevronKoluM: 0.3,
+  cevronKalinligiM: 0.13,
+  /** Çevronların bittiği mesafe (m): uzakta yön hissi değil kalabalık üretirler. */
+  cevronBitisM: 24,
   /** Kenar başına örnek sayısı (log aralıklı). */
   ornekSayisi: 22,
 } as const;
@@ -41,11 +46,13 @@ export const YAKIN_DUZLEM_M = 0.25;
 export interface KibleYoluGeometrisi {
   /** Yakın, orta, uzak bant çokgenleri (SVG path `d`); boş dize = bant yok. */
   bantlar: [string, string, string];
-  /** Akan noktalar (tek path, daireler). */
-  noktalar: string;
+  /** Şeridin iki kenarı (açık çoklu çizgi; yumuşak parıltı konturu için). */
+  kenarlar: string;
+  /** Akan çevronlar (tek path, çokgenler) — Kâbe yönünü gösterir. */
+  cevronlar: string;
 }
 
-const BOS: KibleYoluGeometrisi = { bantlar: ['', '', ''], noktalar: '' };
+const BOS: KibleYoluGeometrisi = { bantlar: ['', '', ''], kenarlar: '', cevronlar: '' };
 
 const sayi = (v: number) => (Math.round(v * 10) / 10).toString();
 
@@ -124,23 +131,48 @@ export function kibleYoluGeometrisi(girdi: {
   const [b1, b2] = KIBLE_YOLU.bantSinirlariM;
   const bantlar: [string, string, string] = [bant(alt, b1), bant(b1, b2), bant(b2, ust)];
 
+  // Kenarlar: yolun tamamı boyunca iki açık çizgi.
+  const kenarParcasi = (l: number): string => {
+    const n = KIBLE_YOLU.ornekSayisi * 2;
+    const p: string[] = [];
+    for (let i = 0; i <= n; i++) {
+      const d = alt * Math.pow(ust / alt, i / n);
+      const [x, y] = izdus(nokta(d, l));
+      p.push(`${sayi(x)} ${sayi(y)}`);
+    }
+    return `M${p.join('L')}`;
+  };
+  const kenarlar = kenarParcasi(-w) + kenarParcasi(w);
+
+  // Çevronlar: yer düzleminde "›" çokgenleri; ucu Kâbe yönünde (+d). Perspektif onları
+  // uzakta küçültüp sıklaştırır, faz ilerledikçe Kâbe'ye doğru akarlar.
   const parcalar: string[] = [];
-  const aralik = KIBLE_YOLU.noktaAraligiM;
+  const aralik = KIBLE_YOLU.cevronAraligiM;
+  const boy = KIBLE_YOLU.cevronBoyuM;
+  const kol = KIBLE_YOLU.cevronKoluM;
+  const kal = KIBLE_YOLU.cevronKalinligiM;
   const faz = ((girdi.faz % 1) + 1) % 1;
-  for (let k = Math.floor(alt / aralik); k * aralik <= ust; k++) {
+  const sonD = Math.min(ust, KIBLE_YOLU.cevronBitisM);
+  for (let k = Math.floor(alt / aralik); k * aralik <= sonD; k++) {
     const d = (k + faz) * aralik;
-    if (d < alt || d > ust) continue;
-    const p = nokta(d, 0);
-    const derinlik = -p.z;
-    const yar = (f * KIBLE_YOLU.noktaYaricapiM) / derinlik;
-    if (yar < 0.6) break; // ufka yaklaştı; ötesi görünmez
-    const [x, y] = izdus(p);
-    parcalar.push(`M${sayi(x - yar)} ${sayi(y)}a${sayi(yar)} ${sayi(yar)} 0 1 0 ${sayi(2 * yar)} 0a${sayi(yar)} ${sayi(yar)} 0 1 0 ${sayi(-2 * yar)} 0`);
+    if (d - kal < alt || d + boy > sonD) continue;
+    const kose: Array<[number, number]> = [
+      [d, -kol],
+      [d + boy, 0],
+      [d, kol],
+      [d - kal, kol],
+      [d + boy - kal, 0],
+      [d - kal, -kol],
+    ];
+    const ekran = kose.map(([dd, l]) => izdus(nokta(dd, l)));
+    const genislik2 = Math.hypot(ekran[0][0] - ekran[2][0], ekran[0][1] - ekran[2][1]);
+    if (genislik2 < 3) break; // ufka yaklaştı
+    parcalar.push(`M${ekran.map(([x, y]) => `${sayi(x)} ${sayi(y)}`).join('L')}Z`);
   }
-  return { bantlar, noktalar: parcalar.join('') };
+  return { bantlar, kenarlar, cevronlar: parcalar.join('') };
 }
 
-/** Akış hızı: bir nokta aralığını bu sürede geçer (ms). */
+/** Akış hızı: bir çevron aralığını bu sürede geçer (ms). */
 export const KIBLE_YOLU_AKIS_MS = 1400;
 
 /** Zamandan akış fazı (azaltılmış harekette sabit). */

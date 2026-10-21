@@ -227,6 +227,10 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
     <View
       testID="gok-paneli-govde"
       onLayout={onLayout}
+      // Paneli tek dokuya önbellekle: kaydırmada iki Svg + 30'a yakın katman her karede
+      // yeniden rasterlenmez, doku yalnız kaydırılır. Animasyonlar sonlu olduğu için
+      // doku açılıştan kısa süre sonra sabitlenir.
+      renderToHardwareTextureAndroid
       accessible
       accessibilityRole="image"
       accessibilityLabel={erisimEtiketi}

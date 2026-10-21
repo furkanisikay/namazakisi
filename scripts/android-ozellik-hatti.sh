@@ -112,7 +112,7 @@ tohumla() {
 # scripts/kible-emulator-pozu.js'ten — cekirdek fonksiyonlarimizla tutarli poz.
 hazirlik_uygula() {
   case "$1" in
-    kible-kamera|kible-kalibrasyon)
+    kible-kamera*|kible-kalibrasyon)
       adb shell pm grant "$PAKET" android.permission.CAMERA || true
       local poz
       poz=$(node scripts/kible-emulator-pozu.js "$1")
@@ -120,8 +120,9 @@ hazirlik_uygula() {
       # Cikti: "<ivme x:y:z> <manyetik x:y:z>"
       adb emu sensor set acceleration "$(echo "$poz" | cut -d' ' -f1)" || true
       adb emu sensor set magnetic-field "$(echo "$poz" | cut -d' ' -f2)" || true
-      if [ "$1" = "kible-kalibrasyon" ]; then
-        # Rehberin ∞ animasyonu icin animasyonlar ACIK (yoksa reduced-motion statik cizim).
+      if [ "$1" = "kible-kalibrasyon" ] || [ "$1" = "kible-kamera-25" ]; then
+        # Rehberin ∞ animasyonu / yolun akan cevronlari icin animasyonlar ACIK (yoksa
+        # "hareketi azalt" sayilir ve statik cizilir).
         for a in window_animation_scale transition_animation_scale animator_duration_scale; do
           adb shell settings put global "$a" 1
         done
@@ -134,6 +135,16 @@ hazirlik_uygula() {
 # Akis sonrasi: hazirligin actigi seyleri geri al (animasyon olcegi, ekran kaydi).
 hazirlik_bitir() {
   case "$1" in
+    kible-kamera-25)
+      # Akis kamera gorunumunde biter: yolun akisi 8 sn (artifact: kible-yolu-<tema>.mp4).
+      adb shell rm -f /sdcard/kible-yolu.mp4 || true
+      adb shell screenrecord --time-limit 8 --bit-rate 4000000 /sdcard/kible-yolu.mp4 || true
+      sleep 1
+      adb pull /sdcard/kible-yolu.mp4 "$CIKIS/kible-yolu-${2}.mp4" >/dev/null 2>&1 || echo "UYARI: yol videosu alinamadi"
+      for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+        adb shell settings put global "$a" 0
+      done
+      ;;
     kible-kalibrasyon)
       # Akis rehber acikken biter (kamera gorunumu): 12 sn'lik video (artifact:
       # kalibrasyon-<tema>.mp4). Uygulamanin acilisi uzun suruyor; kayit bu yuzden SONDA.
@@ -159,7 +170,7 @@ performans_olc() {
   done
   tohumla ozellik "$tema"
   maestro test scripts/maestro/performans/ilerleme-ac.yaml || echo "UYARI: ilerleme-ac tamamlanamadi"
-  sleep 10   # acilis koreografisi (bag + yildiz) bitsin; olculen sey surekli durum
+  sleep 24   # acilis koreografisi + tek nefeslik nabiz/parilti bitsin (sonlu; bosta sifir hareket)
   local boyut w h
   boyut=$(adb shell wm size | sed -n 's/.*: *\([0-9]*x[0-9]*\).*/\1/p' | tail -1)
   w=${boyut%x*}; h=${boyut#*x}
@@ -214,7 +225,7 @@ for tema in "${TEMALAR[@]}"; do
     echo "=== [$PROFIL/$tema] $akis (tohum: $varyant) ==="
     tohumla "$varyant" "$tema"
     # `# hazirlik: <ad>` satiri: akistan once adb ile cihaz durumu (sensor, izin) kurulur.
-    hazirlik=$(sed -n 's/^# hazirlik: *\([a-z-]*\).*/\1/p' "$akis" | head -1)
+    hazirlik=$(sed -n 's/^# hazirlik: *\([a-z0-9-]*\).*/\1/p' "$akis" | head -1)
     if [ -n "$hazirlik" ]; then hazirlik_uygula "$hazirlik"; fi
     isaret=$(mktemp)
     # Bir akis dusse de digerleri cekilsin (her biri uygulamayi kendisi baslatir).

@@ -57,7 +57,8 @@ describe('kibleYoluGeometrisi', () => {
   it('kıble tam arkada ve telefon dik: yol yok (görüş alanında yer yok)', () => {
     const g = kibleYoluGeometrisi({ taban: taban(150, 90), kibleManyetik: 330, genislik: W, yukseklik: H, optik, faz: 0 });
     expect(g.bantlar.every((b) => b === '')).toBe(true);
-    expect(g.noktalar).toBe('');
+    expect(g.cevronlar).toBe('');
+    expect(g.kenarlar).toBe('');
   });
 
   it('kıble yanda ve telefon aşağı eğik: yol ayaktan yana doğru çizilir', () => {
@@ -69,13 +70,32 @@ describe('kibleYoluGeometrisi', () => {
     expect(uzakUc[0]).toBeGreaterThan(W / 2);
   });
 
-  it('akan noktalar faz ile Kâbe yönüne (uzağa) kayar; ufukta biter', () => {
-    const t = taban(150, 70);
-    const a = noktalar(kibleYoluGeometrisi({ taban: t, kibleManyetik: 150, genislik: W, yukseklik: H, optik, faz: 0.1 }).noktalar);
-    const b = noktalar(kibleYoluGeometrisi({ taban: t, kibleManyetik: 150, genislik: W, yukseklik: H, optik, faz: 0.3 }).noktalar);
+  it('çevronlar Kâbe yönünü gösterir ve faz ile uzağa (ufka) akar', () => {
+    const t = taban(150, 65);
+    const g = (faz: number) => kibleYoluGeometrisi({ taban: t, kibleManyetik: 150, genislik: W, yukseklik: H, optik, faz });
+    const cevronlar = (d: string) => d.split('M').filter(Boolean).map((p) => noktalar(`M${p}`));
+    const a = cevronlar(g(0.4).cevronlar);
+    const b = cevronlar(g(0.5).cevronlar);
     expect(a.length).toBeGreaterThan(3);
-    // İlk dairenin başlangıç noktası (M x y) faz artınca yukarı (ufka) kayar.
-    expect(b[0][1]).toBeLessThan(a[0][1]);
+    for (const c of a) {
+      expect(c).toHaveLength(6);
+      // Uç (2. köşe) kolların (1. ve 3. köşe) ötesinde = ufka daha yakın (y daha küçük).
+      expect(c[1][1]).toBeLessThan(Math.min(c[0][1], c[2][1]));
+    }
+    // Aynı çevron (en yakın) faz artınca yukarı kayar.
+    expect(b[0][1][1]).toBeLessThan(a[0][1][1]);
+    // Uzaktakiler küçülür (perspektif).
+    const gen = (c: Array<[number, number]>) => Math.abs(c[0][0] - c[2][0]);
+    expect(gen(a[a.length - 1])).toBeLessThan(gen(a[0]) / 3);
+  });
+
+  it('eğim perspektifi değiştirir: aşağı bakınca şerit ekranda daha çok yer kaplar', () => {
+    const alan = (teta: number) => {
+      const g = kibleYoluGeometrisi({ taban: taban(150, teta), kibleManyetik: 150, genislik: W, yukseklik: H, optik, faz: 0 });
+      const ys = noktalar(g.kenarlar).map((p) => p[1]).filter((y) => y >= 0 && y <= H);
+      return Math.max(...ys) - Math.min(...ys);
+    };
+    expect(alan(50)).toBeGreaterThan(alan(90));
   });
 
   it('faz: azaltılmış harekette sabit, değilse zamanla döner', () => {
