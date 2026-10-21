@@ -196,7 +196,7 @@ private fun SolSutun(
             Text(il.ad, color = Renkler.metin, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
             Text(Bicim.tarih(durum.tarih), color = Renkler.metinIkincil, fontSize = 24.sp)
             if (bant != null) {
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(10.dp))
                 SessizBant(bant)
             }
         }
@@ -206,9 +206,10 @@ private fun SolSutun(
                 Bicim.saat(simdi, bolge),
                 style = RAKAM,
                 color = Renkler.metin,
-                fontSize = 120.sp,
+                // Bant görünürken saat küçülür: sütun taşıp "Ayarlar" düğmesi ekrandan çıkmasın.
+                fontSize = if (bant != null) 96.sp else 120.sp,
                 fontWeight = FontWeight.Light,
-                lineHeight = 120.sp,
+                lineHeight = if (bant != null) 96.sp else 120.sp,
             )
             Text(
                 Bicim.saniye(simdi, bolge),
@@ -498,12 +499,12 @@ private fun SessizBant(metin: String) {
         Modifier
             .background(Renkler.kart, RoundedCornerShape(28.dp))
             .border(1.5.dp, Renkler.uyari.copy(alpha = 0.6f), RoundedCornerShape(28.dp))
-            .padding(horizontal = 22.dp, vertical = 12.dp)
+            .padding(horizontal = 20.dp, vertical = 8.dp)
             .semantics { liveRegion = LiveRegionMode.Polite },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.size(12.dp).background(Renkler.uyari, CircleShape))
         Spacer(Modifier.width(14.dp))
-        Text(metin, color = Renkler.metin, fontSize = 26.sp, fontWeight = FontWeight.Medium)
+        Text(metin, color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.Medium)
     }
 }
