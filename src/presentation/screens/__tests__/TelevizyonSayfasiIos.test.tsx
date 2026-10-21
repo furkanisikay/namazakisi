@@ -44,6 +44,13 @@ jest.mock('@expo/vector-icons/FontAwesome5', () => {
     const { Text } = require('react-native');
     return (props: { name: string }) => <Text>{props.name}</Text>;
 });
+jest.mock('@expo/vector-icons', () => {
+    const { Text } = require('react-native');
+    return { FontAwesome5: (props: { name: string }) => <Text>{props.name}</Text> };
+});
+const mockEsles = jest.fn(async () => 'onay');
+jest.mock('../../../domain/services/CihazEslesmeServisi', () => ({ esles: (...a: unknown[]) => (mockEsles as (...x: unknown[]) => unknown)(...a) }));
+jest.mock('../../../domain/services/TvSenkronServisi', () => ({ TvSenkronServisi: { getInstance: () => ({ gonder: async () => ({}) }) } }));
 jest.mock('react-native-svg', () => ({ __esModule: true, default: 'Svg', Path: 'Path', Rect: 'Rect' }));
 
 describe('TelevizyonSayfasi (iOS)', () => {
@@ -68,17 +75,21 @@ describe('TelevizyonSayfasi (iOS)', () => {
         await waitFor(() => expect(mockLaunch).toHaveBeenCalledTimes(2));
     });
 
-    it('okunan TV kodu tarayıcıyı kapatır ve konumu yerel ağdan gönderir; başka QR yok sayılır', async () => {
-        const { getByTestId } = render(<TelevizyonSayfasi />);
+    it('okunan TV kodu tarayıcıyı kapatır, onaydan sonra eşleşir; başka QR yok sayılır', async () => {
+        const { getByTestId, findByText, getByText } = render(<TelevizyonSayfasi />);
         fireEvent.press(getByTestId('tv-kodu-okut'));
         await waitFor(() => expect(mockLaunch).toHaveBeenCalled());
         act(() => mockOkumaDinleyicileri.forEach((cb) => cb({ data: 'https://ornek.com' })));
         expect(mockFetch).not.toHaveBeenCalled();
         act(() =>
-            mockOkumaDinleyicileri.forEach((cb) => cb({ data: 'namazakisi://tv?v=1&a=192.168.1.23&p=47123&k=0123456789abcdef' })),
+            mockOkumaDinleyicileri.forEach((cb) =>
+                cb({ data: 'namazakisi://tv?v=2&a=192.168.1.23&p=47123&i=0123456789abcdef&s=AwoRGB8mLTQ7QklQV15lbHN6gYiPlp2kq7K5wMfO1dw&d=Salon%20TV' }),
+            ),
         );
-        await waitFor(() => expect(getByTestId('tv-sonuc').props.children).toMatch(/TV artık Şahinbey, Gaziantep/));
         expect(mockDismiss).toHaveBeenCalled();
-        expect(mockFetch.mock.calls[0][0]).toBe('http://192.168.1.23:47123/esle');
+        await findByText(/Şu TV'ye bağlanıyorsunuz: Salon TV/);
+        expect(mockEsles).not.toHaveBeenCalled();
+        fireEvent.press(getByText('Bağlanın'));
+        await waitFor(() => expect(getByTestId('tv-sonuc').props.children).toMatch(/Salon TV eklendi\. TV artık Şahinbey, Gaziantep/));
     });
 });

@@ -7,6 +7,7 @@
 import React, { useEffect } from 'react';
 import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager, DeviceEventEmitter } from 'react-native';
 import { WearSenkronServisi } from './src/domain/services/WearSenkronServisi';
+import { TvSenkronServisi } from './src/domain/services/TvSenkronServisi';
 import { KildimKuyruguServisi, KILDIM_KUYRUGU_OLAYI } from './src/domain/services/KildimKuyruguServisi';
 import { CamideyimServisi } from './src/domain/services/CamideyimServisi';
 import { camiOlayiniDinle } from './modules/expo-cami-geofence/src';
@@ -184,6 +185,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       // Wear OS saati (issue #269): 8 günlük vakit + kılınmışlık. Konuma bağlı
       // tüketicidir → `KonumDegisikligiServisi` listesinde de var (ikiz liste).
       WearSenkronServisi.getInstance().gonder().catch(() => {});
+      // Eşleşik TV'ler (cihaz ağı): konum + kılınmışlık. Konuma bağlı → `KonumDegisikligiServisi`
+      // listesinde de var (ikiz liste).
+      TvSenkronServisi.getInstance().gonder().catch(() => {});
       // Camideyim + Namaz modu (#297/#277): vakit kapısı, mod planı, izlenen camiler.
       // Konuma bağlı tüketici → `KonumDegisikligiServisi` listesinde de var (ikiz liste).
       CamideyimServisi.getInstance().konumaBagliTazele(konumState.koordinatlar).catch(() => {});
@@ -315,6 +319,8 @@ const AppIcerik: React.FC = () => {
         // Wear OS (issue #269): kılınmışlık her değiştiğinde saati tazele ve
         // uygulama kapalıyken saatten gelmiş "Kıldım"ları işle.
         WearSenkronServisi.getInstance().baslat();
+        // Eşleşik TV'ler: kılınmışlık değişince (adlı yuva 'tv') kısa beklemeyle gönderilir.
+        TvSenkronServisi.getInstance().baslat();
         // Widget + hızlı ayarlar (issue #275/#276): kılınmışlık değişince tazelenir;
         // uygulama kapalıyken saatten/widget'tan/kutudan gelmiş "Kıldım"lar işlenir.
         WidgetServisi.getInstance().baslat();
@@ -405,6 +411,9 @@ const AppIcerik: React.FC = () => {
         // headless görev OEM kısıtıyla başlatılamamışsa tek güvenlik ağı budur (#269/#275).
         KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
         CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
+        // Eşleşik TV'ler: önceki gönderim TV kapalıyken düştüyse (özet yalnız başarıda yazılır)
+        // şimdi tamamlanır; değişiklik yoksa hiçbir şey gönderilmez (ucuz).
+        TvSenkronServisi.getInstance().gonder().catch(() => {});
         // iOS canlı etkinlik (#295) DEBOUNCE'SUZ: arka planda başlatılamadığı için her ön
         // plana gelişte "şu an hangisi?" yeniden eşitlenir (ucuz; değişmediyse köprü dokunmaz).
         if (Platform.OS === 'ios') {

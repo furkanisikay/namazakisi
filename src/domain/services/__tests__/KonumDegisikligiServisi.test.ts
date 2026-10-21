@@ -87,6 +87,11 @@ jest.mock('../WearSenkronServisi', () => ({
         getInstance: jest.fn(() => ({ gonder: jest.fn(() => Promise.resolve()) })),
     },
 }));
+jest.mock('../TvSenkronServisi', () => ({
+    TvSenkronServisi: {
+        getInstance: jest.fn(() => ({ gonder: jest.fn(() => Promise.resolve({})) })),
+    },
+}));
 jest.mock('../CamideyimServisi', () => ({
     CamideyimServisi: {
         getInstance: jest.fn(() => ({ konumaBagliTazele: jest.fn(() => Promise.resolve()) })),
@@ -123,6 +128,7 @@ import { SeriSayacBildirimServisi } from '../SeriSayacBildirimServisi';
 import { WidgetServisi } from '../WidgetServisi';
 import { NafileHatirlatmaServisi } from '../NafileHatirlatmaServisi';
 import { WearSenkronServisi } from '../WearSenkronServisi';
+import { TvSenkronServisi } from '../TvSenkronServisi';
 import { CamideyimServisi } from '../CamideyimServisi';
 import { CamiyeGitHatirlatmaServisi } from '../CamiyeGitHatirlatmaServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
@@ -160,6 +166,7 @@ const sahte = {
     widget: jest.fn((..._a: unknown[]) => Promise.resolve()),
     nafile: jest.fn((..._a: unknown[]) => Promise.resolve()),
     wear: jest.fn((..._a: unknown[]) => Promise.resolve()),
+    tv: jest.fn((..._a: unknown[]) => Promise.resolve()),
     cami: jest.fn((..._a: unknown[]) => Promise.resolve()),
     camiyeGit: jest.fn((..._a: unknown[]) => Promise.resolve()),
 };
@@ -182,6 +189,7 @@ beforeEach(() => {
     (WidgetServisi.getInstance as jest.Mock).mockReturnValue({ vakitleriyaz: sahte.widget });
     (NafileHatirlatmaServisi.getInstance as jest.Mock).mockReturnValue({ hatirlatmalariGuncelle: sahte.nafile });
     (WearSenkronServisi.getInstance as jest.Mock).mockReturnValue({ gonder: sahte.wear });
+    (TvSenkronServisi.getInstance as jest.Mock).mockReturnValue({ gonder: sahte.tv });
     (CamideyimServisi.getInstance as jest.Mock).mockReturnValue({ konumaBagliTazele: sahte.cami });
     (CamiyeGitHatirlatmaServisi.getInstance as jest.Mock).mockReturnValue({ hatirlatmalariGuncelle: sahte.camiyeGit });
 });
@@ -210,6 +218,8 @@ describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
         expect(sahte.nafile).toHaveBeenCalledWith(ANKARA);
         // Wear OS saati (issue #269): vakitler telefonda hesaplanıp gönderilir.
         expect(sahte.wear).toHaveBeenCalledTimes(1);
+        // Eşleşik TV'ler (cihaz ağı): TV konum sahibi telefonun konumunu izler.
+        expect(sahte.tv).toHaveBeenCalledTimes(1);
         // Camideyim + Namaz modu (#297/#277): vakit kapısı, mod planı ve izlenen camiler.
         expect(sahte.cami).toHaveBeenCalledWith(ANKARA);
         // "Camide kılacağım" (issue #292): vakit girişinden yürüme süresi kadar önce.

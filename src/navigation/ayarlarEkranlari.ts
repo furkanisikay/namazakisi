@@ -63,7 +63,7 @@ type OrtakAyarParametreleri = { vurgula?: string; ac?: boolean };
  * okutulan TV QR'ı). React Navigation sorguyu dize parametrelere çevirir; sayfa onları tek
  * doğrulama kapısından (`tvQrCoz`) geçirir.
  */
-export type TvDerinParametreleri = { v?: string; a?: string; p?: string; k?: string };
+export type TvDerinParametreleri = { v?: string; a?: string; p?: string; k?: string; i?: string; s?: string; d?: string };
 
 export type AyarlarStackParamList = Record<AyarlarEkranAdi, OrtakAyarParametreleri | undefined> & {
   TelevizyonAyarlari: (OrtakAyarParametreleri & TvDerinParametreleri) | undefined;

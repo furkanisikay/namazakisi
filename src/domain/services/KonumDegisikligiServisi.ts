@@ -48,6 +48,7 @@ import { CamiyeGitHatirlatmaServisi } from './CamiyeGitHatirlatmaServisi';
 import { TakvimCakismaServisi } from './TakvimCakismaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 import { WearSenkronServisi } from './WearSenkronServisi';
+import { TvSenkronServisi } from './TvSenkronServisi';
 import { CamideyimServisi } from './CamideyimServisi';
 import { SeferilikServisi } from './SeferilikServisi';
 
@@ -262,6 +263,12 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
         // şehir değişince saat de yeni vakitleri ve konum adını almalı. iOS'ta AYNI
         // servis Apple Watch'ı besler (issue #285, WatchConnectivity köprüsü).
         guvenliCalistir('Wear senkronu', () => WearSenkronServisi.getInstance().gonder()),
+
+        // Eşleşik TV'ler (cihaz ağı, tasarım §4.5): TV konum sahibi telefonun konumunu izler;
+        // özel gün değişimi de bu yayma noktasından gelir.
+        guvenliCalistir('TV senkronu', async () => {
+            await TvSenkronServisi.getInstance().gonder();
+        }),
 
         // Camideyim + Namaz modu (#297/#277): vakit kapısı ve mod pencereleri vakit
         // girişlerinden türer, izlenen camiler yeni konumun en yakınlarıdır.

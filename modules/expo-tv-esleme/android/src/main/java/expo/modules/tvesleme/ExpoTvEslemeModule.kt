@@ -62,14 +62,43 @@ class ExpoTvEslemeModule : Module() {
             }
         }
 
+        // v1 (yalnız konum, #359): yol sabit `/esle`, yanıt gövdesi döner. Geriye uyum için durur.
         AsyncFunction("gonder") { adres: String, port: Int, govde: String, zamanAsimiMs: Int ->
+            istekGonder(adres, port, "/esle", govde, zamanAsimiMs).second
+        }
+
+        // Cihaz ağı v2: yol seçilir (`/esle`, `/esle-durum`, `/esitle`), durum kodu + gövde döner
+        // (403 = sessiz red: TV bu telefonu kaldırmış ya da anahtar tutmuyor).
+        AsyncFunction("istek") { adres: String, port: Int, yol: String, govde: String, zamanAsimiMs: Int ->
+            if (yol !in setOf("/esle", "/esle-durum", "/esitle")) throw IllegalArgumentException("Bilinmeyen yol")
+            val (kod, yanit) = istekGonder(adres, port, yol, govde, zamanAsimiMs)
+            mapOf("kod" to kod, "govde" to yanit)
+        }
+
+        // mDNS keşfi (NsdManager SİSTEM servisidir; multicast kilidi / CHANGE_WIFI_MULTICAST_STATE
+        // gerekmez). Yalnız adres düştüğünde ve süre sınırlı çağrılır; her yolda durdurulur.
+        AsyncFunction("tvleriBul") { sureMs: Int, promise: Promise ->
+            val baglam = appContext.reactContext
+            if (baglam == null) {
+                promise.resolve(emptyList<Map<String, Any>>())
+                return@AsyncFunction
+            }
+            NsdKesfi(baglam).bul(sureMs.toLong().coerceIn(1000, 15000)) { liste ->
+                promise.resolve(liste.map { mapOf("i" to it.kimlik, "adres" to it.adres, "port" to it.port) })
+            }
+        }
+    }
+
+    /** Ham soketle tek HTTP POST; (durum kodu, gövde). */
+    private fun istekGonder(adres: String, port: Int, yol: String, govde: String, zamanAsimiMs: Int): Pair<Int, String> {
             if (!ozelIpv4Mu(adres) || port !in 1024..65535) throw IllegalArgumentException("Yerel ağ adresi değil")
             val sure = zamanAsimiMs.coerceIn(1000, 15000)
             val bayt = govde.toByteArray(Charsets.UTF_8)
-            Socket().use { s ->
+            if (bayt.size > 8 * 1024) throw IllegalArgumentException("Gövde çok büyük")
+            return Socket().use { s ->
                 s.connect(InetSocketAddress(adres, port), sure)
                 s.soTimeout = sure
-                val istek = "POST /esle HTTP/1.1\r\nHost: $adres:$port\r\n" +
+                val istek = "POST $yol HTTP/1.1\r\nHost: $adres:$port\r\n" +
                     "Content-Type: application/json; charset=utf-8\r\nContent-Length: ${bayt.size}\r\n" +
                     "Connection: close\r\n\r\n"
                 s.getOutputStream().apply {
@@ -87,9 +116,9 @@ class ExpoTvEslemeModule : Module() {
                 }
                 val ham = String(tampon.toByteArray(), Charsets.UTF_8)
                 val ayrac = ham.indexOf("\r\n\r\n")
-                if (ayrac < 0) "" else ham.substring(ayrac + 4)
+                val kod = ham.substringBefore("\r\n").split(" ").getOrNull(1)?.toIntOrNull() ?: 0
+                kod to (if (ayrac < 0) "" else ham.substring(ayrac + 4))
             }
-        }
     }
 
     /** Katı (denetim D-06): `toIntOrNull` "010" ve "+10"u kabul ediyordu; baştaki sıfır/işaret yok. */

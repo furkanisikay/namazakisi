@@ -17,6 +17,7 @@ import { CumaHatirlatmaServisi, CumaKoordinat } from './CumaHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 import { CamiyeGitHatirlatmaServisi } from './CamiyeGitHatirlatmaServisi';
 import { WearSenkronServisi } from './WearSenkronServisi';
+import { TvSenkronServisi } from './TvSenkronServisi';
 import { CamideyimServisi } from './CamideyimServisi';
 import { KildimKuyruguServisi } from './KildimKuyruguServisi';
 import { WidgetServisi } from './WidgetServisi';
@@ -400,6 +401,9 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Wear senkronu tazelenemedi', e);
         }
+        // Eşleşik TV'ler (cihaz ağı): yalnız özet değiştiyse gider (tekilleştirme kalıcı).
+        // Muhafızdan bağımsız → erken dönüşlerden ÖNCE.
+        await TvSenkronServisi.getInstance().gonder().catch(() => undefined);
 
         // =====================================================
         // ADIM 1.58: ANA EKRAN WIDGET'I (issue #275)
