@@ -34,6 +34,9 @@ interface WidgetVeriModulu {
   kilinanlarKaydet?(json: string): void | Promise<void>;
 }
 
+/** İçerik aynı olsa da Android'de vakit yükünün yeniden yazılma aralığı (bkz. `onarimZamaniMi`). */
+export const WIDGET_ONARIM_ARALIGI_MS = 60 * 60 * 1000;
+
 /** `LocalNamazServisi` dinleyici yuvasının adı. */
 export const WIDGET_DINLEYICI_ADI = 'widget';
 
@@ -48,6 +51,17 @@ export class WidgetServisi {
   private static instance: WidgetServisi;
   /** Kılınmışlık yazımları SIRALI: hızlı aç/kapa'da eski durum yenisinin üstüne yazılmasın. */
   private kilinanZinciri: Promise<void> = Promise.resolve();
+  /**
+   * Son BAŞARIYLA yazılan yükler (denetim D-21). İçerik aynıysa native'e gidilmez:
+   * Android'de her yazım `commit()` + tüm widget örneklerinin yeniden çizimi + sınır
+   * alarmının yeniden kurulumu demektir (başlatıcı sürecini uyandırır), iOS'ta
+   * `reloadAllTimelines` WidgetKit'in günlük bütçesinden yer. Hafıza bellek-içidir:
+   * süreç yeniden başlayınca bir kez yazılır (zararsız). Yazım reddedilirse hafıza
+   * GÜNCELLENMEZ → sonraki çağrı yeniden dener.
+   */
+  private sonVakitYuku: string | null = null;
+  private sonVakitYazimMs = 0;
+  private sonKilinanYuku: string | null = null;
 
   public static getInstance(): WidgetServisi {
     if (!WidgetServisi.instance) {
@@ -72,10 +86,25 @@ export class WidgetServisi {
     const m = modul();
     if (!m || !koordinatGecerliMi(koordinatlar)) return;
     try {
-      await m.vakitlerKaydet(JSON.stringify(widgetVerisiOlustur(koordinatlar, bugunuAl())));
+      const json = JSON.stringify(widgetVerisiOlustur(koordinatlar, bugunuAl()));
+      if (json === this.sonVakitYuku && !this.onarimZamaniMi()) return;
+      await m.vakitlerKaydet(json);
+      this.sonVakitYuku = json;
+      this.sonVakitYazimMs = Date.now();
     } catch (e) {
       Logger.error('WidgetServisi', 'Widget verisi kaydedilemedi', e);
     }
+  }
+
+  /**
+   * ANDROID ONARIMI: native yazım widget'ın vakit SINIRI alarmını da yeniden kurar
+   * (`WidgetGuncelleyici.tumunuGuncelle`). Zincir bir sebeple koparsa (OEM alarmı düşürdü)
+   * eskiden 15 dk'da bir kendiliğinden onarılıyordu; içerik aynı olsa da saatte bir
+   * yazılır ki bu güvenlik ağı kaybolmasın. iOS'ta zaman çizelgesini sistem yönetir ve
+   * her tazeleme WidgetKit bütçesinden yer → orada onarım YOK.
+   */
+  private onarimZamaniMi(): boolean {
+    return Platform.OS === 'android' && Date.now() - this.sonVakitYazimMs >= WIDGET_ONARIM_ARALIGI_MS;
   }
 
   /** Dün + bugünün kılınmışlığını yazar (gece yarısından sonra yatsı dünündür). */
@@ -92,7 +121,10 @@ export class WidgetServisi {
       const bugun = bugunuAl();
       const kayit = await localTarihAraligindakiNamazlariGetir(gunEkle(bugun, -1), bugun);
       if (!kayit.basarili || !kayit.veri) return;
-      await m.kilinanlarKaydet(JSON.stringify(widgetKilinanlariOlustur(kayit.veri)));
+      const json = JSON.stringify(widgetKilinanlariOlustur(kayit.veri));
+      if (json === this.sonKilinanYuku) return;
+      await m.kilinanlarKaydet(json);
+      this.sonKilinanYuku = json;
     } catch (e) {
       Logger.warn('WidgetServisi', 'Widget kilinmislik verisi yazilamadi', e);
     }
@@ -101,5 +133,8 @@ export class WidgetServisi {
   /** Yalnız testler için. */
   public __testIcinSifirla(): void {
     this.kilinanZinciri = Promise.resolve();
+    this.sonVakitYuku = null;
+    this.sonVakitYazimMs = 0;
+    this.sonKilinanYuku = null;
   }
 }
