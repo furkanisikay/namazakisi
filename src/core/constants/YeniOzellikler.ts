@@ -73,6 +73,26 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Cihaz ağı: telefon ↔ tablet "Kıldım" eşitlemesi (olay günlüğü, yerel ağ).
+    {
+        id: 'cihaz-agi-tablet',
+        platformlar: ['android', 'ios'],
+        surum: '0.60.0',
+        tarih: '2026-10-21',
+        baslik: 'Telefon ve tablet birlikte',
+        aciklama:
+            'Tabletinizi telefonunuza ekleyin: birinde işaretlediğiniz namaz öbürüne de geçer. Hesap yok, sunucu yok; yalnız evinizin Wi-Fi ağı.',
+        detayAciklama:
+            'Cihazlarım › Tablet ya da telefon ekleyin: bir cihazda kod gösterin, öbüründe okutun; iki ekranda da onay istenir. Aynı Wi-Fi’de ve iki cihazda da uygulama açıkken namaz hemen geçer; değilse ikisi bir sonraki kez birlikte açık olduğunda.',
+        detaylar: [
+            'İki ekranda onaylı, şifreli eşleştirme',
+            'Kıldım her iki cihazda da işaretlenir',
+            'İstediğiniz an iki taraftan da kaldırın',
+        ],
+        ikon: 'tablet-alt',
+        hedefSayfa: 'CihazEkle',
+        ctaEtiketi: 'Cihaz ekleyin',
+    },
     // Cihaz ağı v2: şifreli TV eşitlemesi + Cihazlarım (tasarım 2026-10-21).
     {
         id: 'cihaz-agi-tv-esitleme',
