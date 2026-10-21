@@ -182,7 +182,7 @@ async function rolKareleri() {
     if (!depoyuDuzenle((m) => delete m[ROL])) return;
     await yenidenAc();
     kare('dikey-06-rol-sorusu');
-    const soru = /^Bu cihaz sizin ana telefonunuz mu\?$/;
+    const soru = /Bu cihaz sizin ana telefonunuz mu/;
     await bas(/^Hayır, bu ikinci cihaz$/, async () => !bul(await agacDolu(1), soru), 'İkinci cihaz düğmesi');
     await bekle(3000);
     await ac('namazakisi://ayarlar');
