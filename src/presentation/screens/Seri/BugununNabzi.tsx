@@ -98,6 +98,7 @@ export const BugununNabzi: React.FC<BugununNabziProps> = ({ merkezX, merkezY, ke
     <Animated.View
       testID="seri-bugun-nabzi"
       pointerEvents="none"
+      renderToHardwareTextureAndroid
       style={[
         {
           position: 'absolute',

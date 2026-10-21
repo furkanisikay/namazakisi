@@ -38,7 +38,9 @@ export const PusulaGorunumu: React.FC<{
   statik?: boolean;
   /** Konumun görünen adı ("Fatih, İstanbul") ya da bilinmiyor. */
   yerAdi?: string | null;
-}> = ({ kibleAcisi, konum, ozet, abone, pusulaDogrulugu, hareketAzalt, onKameraya, statik = false, yerAdi = null }) => {
+  /** Kalibrasyon rehberi açıkken sakin ipucu satırı gizlenir (iki ipucu yan yana olmasın). */
+  kalibrasyonAcik?: boolean;
+}> = ({ kibleAcisi, konum, ozet, abone, pusulaDogrulugu, hareketAzalt, onKameraya, statik = false, yerAdi = null, kalibrasyonAcik = false }) => {
   const renkler = useRenkler();
   const { width, height } = useWindowDimensions();
   // Kadran ekranın görsel merkezini doldurur: üst/alt metinler sabit yükseklikte, gerisi kadran.
@@ -221,7 +223,7 @@ export const PusulaGorunumu: React.FC<{
 
       {/* Doğruluk DÜŞÜKKEN ayrı uyarı yok: `KalibrasyonRehberi` (KibleSayfasi) açılır — iki
           ipucu yan yana gösterilmez. Bilinmiyorken yalnız sakin bir bilgi satırı. */}
-      {!statik && ipucu === 'sonuk' && (
+      {!statik && !kalibrasyonAcik && ipucu === 'sonuk' && (
         <Text style={[styles.bilgi, { color: renkler.metinIkincil }]}>
           Yön kayıyorsa telefonunuzu havada 8 çizer gibi hareket ettirin.
         </Text>

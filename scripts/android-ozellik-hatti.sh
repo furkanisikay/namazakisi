@@ -121,14 +121,10 @@ hazirlik_uygula() {
       adb emu sensor set acceleration "$(echo "$poz" | cut -d' ' -f1)" || true
       adb emu sensor set magnetic-field "$(echo "$poz" | cut -d' ' -f2)" || true
       if [ "$1" = "kible-kalibrasyon" ]; then
-        # Rehberin ∞ animasyonu icin animasyonlar ACIK (yoksa reduced-motion statik cizim)
-        # ve akis boyunca ekran kaydi (video artifact'ta: kalibrasyon-<tema>.mp4).
+        # Rehberin ∞ animasyonu icin animasyonlar ACIK (yoksa reduced-motion statik cizim).
         for a in window_animation_scale transition_animation_scale animator_duration_scale; do
           adb shell settings put global "$a" 1
         done
-        adb shell rm -f /sdcard/kalibrasyon.mp4 || true
-        (adb shell screenrecord --time-limit 45 --bit-rate 4000000 /sdcard/kalibrasyon.mp4 >/dev/null 2>&1 || true) &
-        KAYIT_PID=$!
       fi
       ;;
     *) echo "UYARI: bilinmeyen hazirlik $1" ;;
@@ -139,10 +135,11 @@ hazirlik_uygula() {
 hazirlik_bitir() {
   case "$1" in
     kible-kalibrasyon)
-      sleep 6
-      adb shell pkill -INT screenrecord || true
-      [ -n "${KAYIT_PID:-}" ] && wait "$KAYIT_PID" 2>/dev/null || true
-      sleep 2
+      # Akis rehber acikken biter (kamera gorunumu): 12 sn'lik video (artifact:
+      # kalibrasyon-<tema>.mp4). Uygulamanin acilisi uzun suruyor; kayit bu yuzden SONDA.
+      adb shell rm -f /sdcard/kalibrasyon.mp4 || true
+      adb shell screenrecord --time-limit 12 --bit-rate 4000000 /sdcard/kalibrasyon.mp4 || true
+      sleep 1
       adb pull /sdcard/kalibrasyon.mp4 "$CIKIS/kalibrasyon-${2}.mp4" >/dev/null 2>&1 || echo "UYARI: kalibrasyon videosu alinamadi"
       for a in window_animation_scale transition_animation_scale animator_duration_scale; do
         adb shell settings put global "$a" 0
@@ -179,7 +176,7 @@ performans_olc() {
     adb shell input swipe "$x" "$ust" "$x" "$alt" 400
     sleep 0.4
   done
-  adb shell dumpsys gfxinfo "$PAKET" > "$CIKIS/performans-ilerleme-kaydirma.txt"
+  adb shell dumpsys gfxinfo "$PAKET" framestats > "$CIKIS/performans-ilerleme-kaydirma.txt"
   {
     echo "### Ilerleme performansi (gfxinfo, $(git rev-parse --short HEAD))"
     for tur in bosta kaydirma; do

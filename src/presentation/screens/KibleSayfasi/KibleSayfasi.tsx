@@ -154,6 +154,7 @@ export const KibleSayfasi = () => {
         onKameraya={pusulaYok ? undefined : kameraya}
         statik={pusulaYok}
         yerAdi={yerAdi}
+        kalibrasyonAcik={kalibrasyonNedeniHesapla !== null}
       />
     );
   }

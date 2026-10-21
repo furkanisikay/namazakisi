@@ -107,6 +107,9 @@ export const Parilti: React.FC<PariltiProps> = ({ sol, ust, boyut, renk, indeks,
     <Animated.View
       testID="seri-parilti"
       pointerEvents="none"
+      // Opaklık animasyonu önbellekli donanım katmanı üzerinde: Android her karede
+      // içerdeki Svg'yi yeniden çizmez/ekran dışı tampona almaz, yalnız katman alfası değişir.
+      renderToHardwareTextureAndroid
       style={[{ position: 'absolute', left: sol, top: ust, width: boyut, height: boyut }, animatedStyle]}
     >
       <Svg width={boyut} height={boyut}>
