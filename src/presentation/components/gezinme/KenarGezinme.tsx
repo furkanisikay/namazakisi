@@ -12,7 +12,6 @@
  */
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useRenkler } from '../../../core/theme';
 import { KENAR_GENISLIGI_DP, RAY_GENISLIGI_DP, type GezinmeTuru } from '../../../core/utils/ekranSinifi';
@@ -21,9 +20,8 @@ interface Props extends BottomTabBarProps {
     tur: Exclude<GezinmeTuru, 'alt'>;
 }
 
-export const KenarGezinme: React.FC<Props> = ({ state, descriptors, navigation, tur }) => {
+export const KenarGezinme: React.FC<Props> = ({ state, descriptors, navigation, insets, tur }) => {
     const renkler = useRenkler();
-    const insets = useSafeAreaInsets();
     const odak = descriptors[state.routes[state.index].key]?.options;
     // Sade görünüm sekme çubuğunu gizler (`tabBarStyle: { display: 'none' }`); kenar da gizlenir.
     const gizli = (odak?.tabBarStyle as { display?: string } | undefined)?.display === 'none';
