@@ -194,18 +194,16 @@ describe('NafileAyarlariSayfasi', () => {
             expect(d.hatirlatmalar.kusluk.adimlar[0].oncekiKanallar).toEqual({ bildirim: true });
         });
 
-        it('STANDART yetenekler: Bildirim + Sesli okuma anahtarları; Gelişmiş bölümünde tekrar ve GERÇEK ALARM', () => {
+        it('STANDART yetenekler: Bildirim + Sesli okuma anahtarları; tekrar Ne zaman altında, GERÇEK ALARM', () => {
             const ekran = ac(KUSLUK);
             expect(ekran.getByTestId('adim-bildirim-anahtari')).toBeTruthy();
             expect(ekran.getByTestId('adim-sesli-anahtari')).toBeTruthy();
-            fireEvent.press(ekran.getByTestId('adim-gelismis'));
             expect(ekran.getByTestId('adim-tekrar-anahtari')).toBeTruthy();
             expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
         });
 
         it('gerçek alarm ilk kez açılırken rıza sorulur; onay ORTAK kayda, anahtar nafileye yazılır', async () => {
             const ekran = ac(KUSLUK);
-            fireEvent.press(ekran.getByTestId('adim-gelismis'));
             fireEvent(ekran.getByTestId('adim-alarm-anahtari'), 'valueChange', true);
             // Rıza yokken anahtar doğrudan yazılmaz.
             expect(nafileAyariniGuncelle).not.toHaveBeenCalled();

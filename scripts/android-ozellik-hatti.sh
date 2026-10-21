@@ -236,7 +236,7 @@ for tema in "${TEMALAR[@]}"; do
     maestro test "$akis" || echo "UYARI: $akis tamamlanamadi ($PROFIL/$tema)"
     if [ -n "$hazirlik" ]; then hazirlik_bitir "$hazirlik" "$tema"; fi
     # Yalniz BU akisin kareleri: isaret dosyasindan yeni olanlar.
-    find "$HOME/.maestro/tests" "$PWD/ozk" -newer "$isaret" -path '*ozk/*' -name '*.png' \
+    find "$HOME/.maestro/tests" "$PWD/ozk" -newer "$isaret" -path '*ozk/*' \( -name '*.png' -o -name '*.mp4' \) \
       -exec cp {} "$HEDEF/" \; 2>/dev/null || true
     rm -f "$isaret"
     # `# kanal-dokumu` isaretli akis: paketin bildirim kanallari (ses/onem) metin olarak.
