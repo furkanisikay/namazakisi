@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
@@ -60,8 +61,10 @@ fun TvAyarlarEkrani(
     val simdi = System.currentTimeMillis()
 
     Box(Modifier.fillMaxSize().background(Renkler.arkaplan)) {
-        Row(Modifier.fillMaxSize().padding(horizontal = 56.dp, vertical = 40.dp), horizontalArrangement = Arrangement.spacedBy(56.dp)) {
-            Column(Modifier.width(420.dp)) {
+        Row(Modifier.fillMaxSize().padding(horizontal = 56.dp, vertical = 40.dp), horizontalArrangement = Arrangement.spacedBy(48.dp)) {
+            // Sol sütun dar tutulur: sağdaki üye kartında ad + "güncellendi" satırı tek satıra sığsın
+            // (420 dp iken 1080p'de ikisi de ikiye bölünüyordu — kare hattında görüldü).
+            Column(Modifier.width(360.dp)) {
                 Text("Ayarlar", color = Renkler.metin, fontSize = 38.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.height(8.dp))
                 Text(
@@ -96,8 +99,8 @@ fun TvAyarlarEkrani(
                                 }
                                 Spacer(Modifier.width(18.dp))
                                 Column(Modifier.weight(1f)) {
-                                    Text(u.ad, color = Renkler.metin, fontSize = 22.sp, fontWeight = FontWeight.Medium)
-                                    Text(sonHaberMetni(u.sonHaberMs, simdi), color = Renkler.metinIkincil, fontSize = 17.sp)
+                                    Text(u.ad, color = Renkler.metin, fontSize = 22.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                    Text(sonHaberMetni(u.sonHaberMs, simdi), color = Renkler.metinIkincil, fontSize = 17.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 }
                                 EslemeDugmesi("Kaldırın", { kaldirilacak = u })
                             }
