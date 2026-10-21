@@ -5,6 +5,19 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.59.0] - 2026-10-21
+
+### Eklendi
+- [ana-ekran] birimli geri sayım (1 sa 9 dk); saat/TV hattına animasyon videosu
+- [saat] birimli sayaç, sade Bugün tile'ı; tablette Kıble/İlerleme okunabilir sütun
+- [tv] pano 10-foot düzeni — birimli geri sayım, vakit simgeleri, kısa kerahat çipi, odak halkası
+
+### Düzeltildi
+- [kible] yatay pencerede kadran alçak — yön cümlesi mod seçicinin üstüne binmesin
+- [saat] eşitlenirken 'Kılındı' çipi kesilmesin (soluk, aynı metin)
+- [saat] ambient sayaçta birimler ince
+- [tv] aktif vakit adı kesilmesin, il ızgarası tam satırla açılsın
+
 ## [0.58.0] - 2026-10-20
 
 ### Eklendi
