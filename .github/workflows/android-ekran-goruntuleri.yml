@@ -218,6 +218,8 @@ jobs:
       - name: 🧭 Özellik turu — tablet (açık)
         if: ${{ !cancelled() && inputs.tur != 'magaza' && (inputs.tablet || inputs.tur == 'tablet') }}
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          AKIS_FILTRESI: ${{ inputs.akis_filtresi }}
         with:
           api-level: ${{ inputs.api }}
           target: google_apis

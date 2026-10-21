@@ -27,6 +27,16 @@ type Kopru = typeof import('../../../modules/expo-countdown-notification/src');
 
 const ACIKLAMA = 'Vakit girdiğinde gönderilen hatırlatmalar';
 
+/**
+ * Son uygulanan GC kümesi: küme değişmediyse native toplama ATLANIR (cihazın TÜM
+ * kanallarını sıralar; bu yol açılış + konum yayması + 15 dk görevinde koşar).
+ * `MuhafizKanalServisi.sonToplananKume` ikizi. Testler için sıfırlanabilir.
+ */
+let sonToplananKume: string | null = null;
+export function vakitKanalGcOnbelleginiSifirla(): void {
+    sonToplananKume = null;
+}
+
 export async function vakitKanallariniHazirla(sesler: VakitBildirimSesleri): Promise<VakitBildirimSesleri> {
     if (Platform.OS !== 'android') return {};
     // TEMBEL: köprü native olay yayıcısını yükler; bu servisi (dolaylı) yükleyen her
@@ -67,10 +77,15 @@ export async function vakitKanallariniHazirla(sesler: VakitBildirimSesleri): Pro
     }
     dogrulanmis = cozulemeyenVakitSesleriniDusur(dogrulanmis, kurulamayan);
 
-    try {
-        await vakitKanallariniTemizle(benzersizVakitSesleri(dogrulanmis).map((s) => vakitBildirimKanalId(s.bildirimSesi)));
-    } catch (e) {
-        Logger.warn('VakitKanal', 'Kanal çöp toplama başarısız', e);
+    const korunacak = benzersizVakitSesleri(dogrulanmis).map((s) => vakitBildirimKanalId(s.bildirimSesi));
+    const kume = [...korunacak].sort().join(',');
+    if (kume !== sonToplananKume) {
+        try {
+            await vakitKanallariniTemizle(korunacak);
+            sonToplananKume = kume;
+        } catch (e) {
+            Logger.warn('VakitKanal', 'Kanal çöp toplama başarısız', e);
+        }
     }
     return dogrulanmis;
 }

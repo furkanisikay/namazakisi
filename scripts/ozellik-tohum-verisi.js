@@ -31,6 +31,9 @@
 const { tohumVerisi } = require('./magaza-tohum-verisi');
 
 const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses'];
+
+/** `ses` varyantindaki OLU URI: "kendi dosyamiz" olarak kayitli ama MediaStore satiri yok. */
+const OLU_SES_URI = 'content://media/external_primary/audio/media/999999';
 const TEMALAR = ['acik', 'koyu'];
 
 /** Nafile adimi — `nafileAdimlari.nafileAdimi` ile AYNI sekil (normalize degistirmesin). */
@@ -153,6 +156,10 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         depo.vakit_bildirim_ayarlari = JSON.stringify({ imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true });
         depo['@namaz_akisi/vakit_bildirim_sesleri'] = JSON.stringify({
             imsak: { bildirimSesi: 'content://settings/system/alarm_alert', sesAdi: 'Sabah ezanı' },
+            // OLU URI (kayitli "kendi dosyamiz" ama MediaStore satiri yok): olu-URI
+            // dogrulamasinin kaniti — dokumde bunun `vakit_bildirim_<hash8>` kanali
+            // CIKMAMALI (ogle taban kanala duser). Kayit: `sesIceAktarimTercihXml`.
+            ogle: { bildirimSesi: OLU_SES_URI, sesAdi: 'Silinmiş kayıt' },
         });
     }
 
@@ -212,7 +219,37 @@ function camideyimTercihXml() {
     ].join('\n');
 }
 
-module.exports = { ozellikTohumVerisi, VARYANTLAR, TEMALAR, yogunMuhafizMatrisi, camideyimNativeAyarlari, camideyimTercihXml };
+/**
+ * `SesIceAktarici` kaydi (native SharedPreferences `namazakisi_ses_ice_aktarim`,
+ * StringSet `bizim_uriler`): olu-satir denetimi yalniz bu kumedeki URI'lerde yapilir.
+ */
+function sesIceAktarimTercihXml() {
+    return [
+        "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>",
+        '<map>',
+        '    <set name="bizim_uriler">',
+        `        <string>${OLU_SES_URI}</string>`,
+        '    </set>',
+        '</map>',
+        '',
+    ].join('\n');
+}
+
+module.exports = {
+    ozellikTohumVerisi,
+    VARYANTLAR,
+    TEMALAR,
+    yogunMuhafizMatrisi,
+    camideyimNativeAyarlari,
+    camideyimTercihXml,
+    sesIceAktarimTercihXml,
+    OLU_SES_URI,
+};
+
+// Hat betigi: `node scripts/ozellik-tohum-verisi.js --ses-xml > /tmp/namazakisi_ses_ice_aktarim.xml`
+if (require.main === module && process.argv.includes('--ses-xml')) {
+    process.stdout.write(sesIceAktarimTercihXml());
+}
 
 // Hat betigi: `node scripts/ozellik-tohum-verisi.js --cami-xml > /tmp/namazakisi_cami.xml`
 if (require.main === module && process.argv.includes('--cami-xml')) {

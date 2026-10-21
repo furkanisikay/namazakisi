@@ -46,8 +46,9 @@ jest.mock('../../../../../modules/expo-countdown-notification/src', () => ({
     sesDosyasiDestekleniyor: () => mockDosyaDestegi,
 }));
 const mockSesCal = jest.fn();
+const mockSesTemizle = jest.fn();
 jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({
-    OnizlemeSesServisi: { bildirimSesiniCal: (s: string) => mockSesCal(s) },
+    OnizlemeSesServisi: { bildirimSesiniCal: (s: string) => mockSesCal(s), temizle: () => mockSesTemizle() },
 }));
 let mockSesSecici = true;
 jest.mock('../../../hooks/usePlatformYetenekleri', () => ({
@@ -167,6 +168,12 @@ describe('VakitGirinceBolumu — ses', () => {
         fireEvent.press(e.getByLabelText(/^Sabah bildirim sesi:/));
         fireEvent.press(e.getByLabelText('Telefonun bildirim sesine dönün'));
         expect(mockDispatch).toHaveBeenCalledWith({ type: 'vb/sesGuncelle', payload: { vakit: 'imsak', secim: null } });
+    });
+
+    it('sayfadan çıkınca çalan önizleme susar', () => {
+        const e = render(<VakitGirinceBolumu />);
+        e.unmount();
+        expect(mockSesTemizle).toHaveBeenCalled();
     });
 
     it('varsayılan seste Dinle telefonun bildirim sesini çalar', () => {

@@ -94,11 +94,31 @@ object SesSecici {
     fun sesAdi(context: Context, uri: String?): String {
         if (uri.isNullOrBlank()) return ""
         return try {
-            RingtoneManager.getRingtone(context, Uri.parse(uri))?.getTitle(context) ?: ""
+            val cozulmus = Uri.parse(uri)
+            // OLU MEDYA SATIRI: `Ringtone.getTitle` satir yokken bos DEGIL, yol parcasi /
+            // "Bilinmeyen zil sesi" dondurebilir → olu-URI dogrulamasi (JS: bos ad = olu)
+            // silinen dosyayi yakalayamaz ve bildirim sessiz kalirdi. "Kendi dosyaniz"
+            // kullanicinin gorebildigi bir klasorde durdugu icin silinme olasi → MediaStore
+            // URI'sinde satirin varligi ayrica sorulur. YALNIZ bizim ekledigimiz satirlar
+            // (`SesIceAktarici.bizimMi`): baskasinin medyasi izinsiz sorguda kapsamli depolama
+            // yuzunden ZATEN bos doner — o yolla gecerli bir sistem sesi "olu" sanilirdi.
+            if (SesIceAktarici.bizimMi(context, uri) && !medyaSatiriVarMi(context, cozulmus)) {
+                return ""
+            }
+            RingtoneManager.getRingtone(context, cozulmus)?.getTitle(context) ?: ""
         } catch (e: Exception) {
             Log.w(ETIKET, "Ses adi cozulemedi: ${e.message}")
             ""
         }
+    }
+
+    /** MediaStore satiri var mi? Sorgu yapilamazsa (izin/OEM) `true` — yanlis alarm verme. */
+    private fun medyaSatiriVarMi(context: Context, uri: Uri): Boolean = try {
+        context.contentResolver.query(uri, arrayOf(android.provider.BaseColumns._ID), null, null, null)
+            ?.use { it.count > 0 } ?: true
+    } catch (e: Exception) {
+        Log.w(ETIKET, "Medya satiri sorgulanamadi: ${e.message}")
+        true
     }
 
     /**

@@ -53,6 +53,27 @@ object SesIceAktarici {
         fun harita(): Map<String, Any?> = mapOf("uri" to uri, "ad" to ad, "hata" to hata)
     }
 
+    private const val TERCIH = "namazakisi_ses_ice_aktarim"
+    private const val ANAHTAR = "bizim_uriler"
+
+    /** Bu URI bizim MediaStore'a ekledigimiz bir ses mi? (olu-satir denetimi yalniz bunlarda) */
+    fun bizimMi(context: Context, uri: String): Boolean = try {
+        context.getSharedPreferences(TERCIH, Context.MODE_PRIVATE).getStringSet(ANAHTAR, emptySet())
+            ?.contains(uri) == true
+    } catch (e: Exception) {
+        false
+    }
+
+    private fun kaydet(context: Context, uri: String) {
+        try {
+            val tercih = context.getSharedPreferences(TERCIH, Context.MODE_PRIVATE)
+            val yeni = HashSet(tercih.getStringSet(ANAHTAR, emptySet()) ?: emptySet()).apply { add(uri) }
+            tercih.edit().putStringSet(ANAHTAR, yeni).apply()
+        } catch (e: Exception) {
+            Log.w(ETIKET, "Kayit tutulamadi: ${e.message}")
+        }
+    }
+
     /** MediaStore'a izinsiz yazma Android 10+ ister. */
     fun destekleniyorMu(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
@@ -124,6 +145,7 @@ object SesIceAktarici {
 
             // 3) Ayni icerik daha once eklendiyse ONU kullan (klasorde kopya birikmesin).
             mevcutKayit(context, koleksiyon, kayitAdi, goreliYol)?.let {
+                kaydet(context, it.toString())
                 return Sonuc(uri = it.toString(), ad = gorunenAd)
             }
 
@@ -151,6 +173,7 @@ object SesIceAktarici {
                 try { cozucu.delete(hedef, null, null) } catch (ignored: Exception) { }
                 return Sonuc(hata = "yazilamadi")
             }
+            kaydet(context, hedef.toString())
             return Sonuc(uri = hedef.toString(), ad = gorunenAd)
         } catch (e: SecurityException) {
             Log.w(ETIKET, "Dosyaya erisilemedi: ${e.message}")

@@ -399,6 +399,7 @@ describe('VakitBildirimYoneticiServisi', () => {
 
         beforeEach(() => {
             jest.replaceProperty(Platform, 'OS', 'android');
+            require('../VakitKanalServisi').vakitKanalGcOnbelleginiSifirla();
             mockSesAdiAl.mockReset().mockImplementation(async (uri: string) => (uri === OZEL ? 'Ezan' : ''));
             mockVakitKanaliniGarantile.mockReset().mockResolvedValue(true);
             mockVakitKanallariniTemizle.mockReset().mockResolvedValue(undefined);

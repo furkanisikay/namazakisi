@@ -106,6 +106,10 @@ tohumla() {
   adb push /tmp/namazakisi_cami.xml /data/local/tmp/namazakisi_cami.xml >/dev/null
   adb shell run-as "$PAKET" mkdir -p shared_prefs
   adb shell run-as "$PAKET" cp /data/local/tmp/namazakisi_cami.xml shared_prefs/namazakisi_cami.xml
+  # "Kendi dosyaniz" kaydi (SesIceAktarici): `ses` tohumundaki olu URI bizimmis gibi kayitli.
+  node scripts/ozellik-tohum-verisi.js --ses-xml > /tmp/namazakisi_ses_ice_aktarim.xml
+  adb push /tmp/namazakisi_ses_ice_aktarim.xml /data/local/tmp/namazakisi_ses_ice_aktarim.xml >/dev/null
+  adb shell run-as "$PAKET" cp /data/local/tmp/namazakisi_ses_ice_aktarim.xml shared_prefs/namazakisi_ses_ice_aktarim.xml
 }
 
 # Akis oncesi cihaz hazirligi (`# hazirlik:` satiri). Sensor degerleri

@@ -65,6 +65,14 @@ export const VakitGirinceBolumu: React.FC = () => {
         dispatch(vakitBildirimSesleriniYukle());
     }, [dispatch]);
 
+    // "Dinle" ile başlayan (belki dakikalarca süren ezan) ses sayfadan çıkınca SUSAR.
+    useEffect(
+        () => () => {
+            void OnizlemeSesServisi.temizle();
+        },
+        []
+    );
+
     const sesiYaz = (vakit: VakitAnahtari, secim: VakitSesSecimi | null) => {
         dispatch(vakitBildirimSesiniGuncelle({ vakit, secim }));
     };
