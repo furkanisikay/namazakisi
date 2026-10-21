@@ -7,12 +7,12 @@ appId: com.furkanisikay.namazakisi
 - runFlow: _ayarlar.yaml
 - scrollUntilVisible:
     element:
-      text: "Hatırlatmalar\..*"
+      text: "Hatırlatmalar\\..*"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Hatırlatmalar\..*"
+    text: "Hatırlatmalar\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
 - tapOn:
