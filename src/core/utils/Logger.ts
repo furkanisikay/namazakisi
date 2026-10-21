@@ -67,7 +67,11 @@ class LoggerClass {
             this.logs = this.logs.slice(-MAX_LOGS);
           }
 
-          await this.saveLogs();
+          // Yalnız budama bir şey sildiyse yaz (denetim D-07): her açılışta 500 kaydı
+          // yeniden yazmak açılış zincirini ve tek iş parçacıklı AsyncStorage kuyruğunu bekletiyordu.
+          if (this.logs.length !== allLogs.length) {
+            await this.saveLogs();
+          }
         }
       } catch (error) {
         // Storage okuma veya JSON.parse hatasi: in-memory bos basla, hata sessizce gecilmez

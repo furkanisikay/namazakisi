@@ -169,6 +169,13 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
   }, PLANLAMA_TIMEOUT_MS);
 
   try {
+    // Kurulum bayragi konumdan BAGIMSIZ: okumayi konumla paralel baslat (denetim D-07; eskiden
+    // konum yuklemesinin ardindan seri bekleniyordu). Hata davranisi ayni: asagidaki `await`
+    // reddi yeniden firlatir; bu bos `catch` yalniz konum adimi once patlarsa "islenmemis
+    // red" uyarisini onler.
+    const kurulumOkumasi = AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI);
+    kurulumOkumasi.catch(() => undefined);
+
     // 1. Konum en basta yuklenmeli (muhafiz, vakit sayaci ve iftar sayaci konuma bagimli)
     await store.dispatch(konumAyarlariniYukle()).unwrap();
     const konumState = store.getState().konum;
@@ -192,7 +199,7 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     // 2. Servis ayarlarini ve bildirim iznini paralel yukle (birbirinden bagimsiz)
     // Bildirim izni yalnizca kurulum tamamlandiktan sonra istenir;
     // sihirbaz acikken OS dialog'u gostermemek icin bu kontrol gereklidir.
-    const kurulumTamamlandi = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI);
+    const kurulumTamamlandi = await kurulumOkumasi;
     await Promise.all([
       store.dispatch(muhafizAyarlariniYukle()).unwrap(),
       store.dispatch(vakitSayacAyarlariniYukle()),
