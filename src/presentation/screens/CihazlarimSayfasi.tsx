@@ -3,25 +3,26 @@
  * ve saat. Her TV için: durum (son eşitleme), "TV'de durumum sayılsın", "vakit daralınca TV'de
  * hatırlatın" ve eşleşmeyi kaldırma (iki uçta). Başlık navigasyon header'ındadır.
  *
- * İmza öğesi `AgHaritasi`: telefon ile cihazlar arasındaki bağ çizgileri yalnız İLK görünüşte ve
- * yeni bir cihaz eklendiğinde bir kez çizilir; çizgi rengi bağın durumunu söyler (bilgi hiçbir
- * zaman yalnız harekette değildir — azaltılmış harekette çizgiler doğrudan son hâlindedir).
+ * İmza öğesi `BagHaritasi` (components/cihazlar): bu telefon ortada büyük, bağlı cihazlar
+ * durum rozetli kartlar; bağ çizgisi yalnız yeni cihaz eklenince bir kez çizilir.
  *
  * Veri kaynağı `CihazAgiDeposu` (güvenli depo) — Redux kopyası YOK; ekran her odakta okur ve
  * arka planda bir eşitleme turu başlatıp durumu tazeler.
  */
 import * as React from 'react';
-import { Animated, Easing, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../core/theme';
 import { Anahtar } from '../components/common/Anahtar';
 import { BildirimModali } from '../components/common/BildirimModali';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
-import { useHareketAzalt } from '../hooks/useHareketAzalt';
+import { BagHaritasi, type HaritaDugumu } from '../components/cihazlar/BagHaritasi';
+import { alaniOku } from '../../domain/services/CihazDurumOkuyucu';
+import { AZAMI_DUGUM } from '../../core/cihazAgi/bagHaritasi';
 import { CihazAgiDeposu, type CihazUyeligi } from '../../data/local/CihazAgiDeposu';
 import { TvSenkronServisi } from '../../domain/services/TvSenkronServisi';
-import { esitlemeVaadi, uyelikDurumMetni } from '../../core/cihazAgi/cihazlarimMetni';
+import { esitlemeVaadi, haritaRozeti, saatDurumMetni, uyelikDurumMetni, type SaatDurumu } from '../../core/cihazAgi/cihazlarimMetni';
 
 type Renkler = ReturnType<typeof useRenkler>;
 
@@ -33,6 +34,9 @@ export const CihazlarimSayfasi: React.FC = () => {
     const [liste, setListe] = React.useState<CihazUyeligi[] | null>(null);
     const [simdi, setSimdi] = React.useState(() => Date.now());
     const [kaldirilacak, setKaldirilacak] = React.useState<CihazUyeligi | null>(null);
+    // Saat durumu GERÇEK okumadır (Wear Data Layer bağlı düğüm): "saatiniz eşleşir" cümlesi
+    // saati olmayana söylenmesin. iOS'ta ve okunamazsa null → genel metin.
+    const [saat, setSaat] = React.useState<SaatDurumu | null>(null);
 
     const oku = React.useCallback(async () => {
         const l = await CihazAgiDeposu.liste().catch(() => [] as CihazUyeligi[]);
@@ -45,6 +49,11 @@ export const CihazlarimSayfasi: React.FC = () => {
         React.useCallback(() => {
             let iptal = false;
             void oku();
+            alaniOku('esliSaat')
+                .then((d) => {
+                    if (!iptal) setSaat(d ?? null);
+                })
+                .catch(() => undefined);
             TvSenkronServisi.getInstance()
                 .gonder()
                 .then(() => {
@@ -82,7 +91,22 @@ export const CihazlarimSayfasi: React.FC = () => {
         [oku],
     );
 
-    const tvEkle = () => navigation.navigate('TelevizyonAyarlari');
+    const tvEkle = React.useCallback(() => navigation.navigate('TelevizyonAyarlari'), [navigation]);
+
+    const dugumler = React.useMemo((): HaritaDugumu[] => {
+        const cihazlar: HaritaDugumu[] = (liste ?? []).map((u) => {
+            const m = uyelikDurumMetni(u.durum, u.sonEsitlemeMs, simdi);
+            return { kimlik: u.aliciKimlik, tur: 'tv', ad: u.aliciAdi, rozet: haritaRozeti(u.durum, u.sonEsitlemeMs, simdi), ton: m.ton };
+        });
+        if (saat === 'esli') cihazlar.push({ kimlik: 'saat', tur: 'saat', ad: 'Akıllı saat', rozet: 'bağlı', ton: 'iyi' });
+        if (cihazlar.length > AZAMI_DUGUM) {
+            const kalan = cihazlar.length - (AZAMI_DUGUM - 1);
+            return [...cihazlar.slice(0, AZAMI_DUGUM - 1), { kimlik: 'fazla', tur: 'fazla', ad: `+${kalan}`, rozet: 'aşağıda listelenir', ton: 'notr' }];
+        }
+        return cihazlar.length < AZAMI_DUGUM
+            ? [...cihazlar, { kimlik: 'ekle', tur: 'ekle', ad: 'TV ekleyin', rozet: 'kare kodu okutun', ton: 'notr', onPress: tvEkle }]
+            : cihazlar;
+    }, [liste, saat, simdi, tvEkle]);
 
     return (
         <ScrollView
@@ -91,12 +115,16 @@ export const CihazlarimSayfasi: React.FC = () => {
             contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
             showsVerticalScrollIndicator={false}
         >
-            <AgHaritasi renkler={renkler} liste={liste ?? []} onEkle={tvEkle} />
-            <Text testID="cihazlarim-vaat" className="text-xs mt-3 mb-5 px-1" style={{ color: renkler.metinIkincil, lineHeight: 18 }}>
+            <View className="px-1 pt-2 pb-5 mb-1" style={kartStili(renkler)}>
+                <View className="px-3 pt-3">
+                    <BagHaritasi dugumler={dugumler} />
+                </View>
+            </View>
+            <Text testID="cihazlarim-vaat" className="text-sm mt-3 mb-6 px-1" style={{ color: renkler.metinIkincil, lineHeight: 20 }}>
                 {esitlemeVaadi(Platform.OS)}
             </Text>
 
-            <Text className="text-base font-bold mb-3 px-1" style={{ color: renkler.metin }} accessibilityRole="header">
+            <Text className="text-lg font-bold mb-3 px-1" style={{ color: renkler.metin }} accessibilityRole="header">
                 Televizyonlar
             </Text>
 
@@ -142,9 +170,9 @@ export const CihazlarimSayfasi: React.FC = () => {
                 </Text>
             </TouchableOpacity>
 
-            {Platform.OS === 'android' && (
+            {Platform.OS === 'android' && saat !== 'yok' && (
                 <>
-                    <Text className="text-base font-bold mt-7 mb-3 px-1" style={{ color: renkler.metin }} accessibilityRole="header">
+                    <Text className="text-lg font-bold mt-8 mb-3 px-1" style={{ color: renkler.metin }} accessibilityRole="header">
                         Saat
                     </Text>
                     <TouchableOpacity
@@ -155,15 +183,18 @@ export const CihazlarimSayfasi: React.FC = () => {
                         accessibilityRole="button"
                         accessibilityLabel="Akıllı saat ayarlarını açın"
                     >
-                        <View className="w-11 h-11 rounded-2xl items-center justify-center mr-3" style={{ backgroundColor: renkler.birincil + '20' }}>
-                            <FontAwesome5 name="clock" size={18} color={renkler.birincil} />
+                        <View
+                            className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
+                            style={{ backgroundColor: (saat === 'esli' ? renkler.birincil : renkler.metinIkincil) + '20' }}
+                        >
+                            <FontAwesome5 name="clock" size={18} color={saat === 'esli' ? renkler.birincil : renkler.metinIkincil} />
                         </View>
                         <View className="flex-1 mr-2">
                             <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                                Akıllı saat
+                                {saatDurumMetni(saat).baslik}
                             </Text>
-                            <Text className="text-sm" style={{ color: renkler.metinIkincil }}>
-                                Wear OS saatiniz telefonla kendiliğinden eşleşir; ayrıca kod okutmanız gerekmez.
+                            <Text testID="cihazlarim-saat-durum" className="text-sm" style={{ color: renkler.metinIkincil }}>
+                                {saatDurumMetni(saat).aciklama}
                             </Text>
                         </View>
                         <FontAwesome5 name="chevron-right" size={14} color={renkler.metinIkincil} />
@@ -311,165 +342,3 @@ const AnahtarSatiri: React.FC<{
         />
     </View>
 );
-
-const BAG_ETIKETI: Record<CihazUyeligi['durum'], string> = {
-    tamam: 'bağlı',
-    ulasilamadi: 'şu an ulaşılamıyor',
-    reddedildi: 'yeniden eklenmeli',
-};
-
-/** Görünen en fazla düğüm; fazlası "+N" düğümünde toplanır (küçük ekranda sıkışmasın). */
-const AZAMI_DUGUM = 3;
-
-/**
- * Telefon üstte, cihazlar altta; aralarındaki bağ çizgileri. Çizgi bir kez çizilir: önce
- * telefondan inen gövde, sonra yatay kol, sonra her cihaza inen dal. Yeni bir cihaz eklenince
- * (kimlik kümesi büyüdüğünde) sahne bir kez daha oynar; durum değişimi çizgiyi yeniden ÇİZMEZ,
- * yalnız rengini değiştirir.
- */
-const AgHaritasi: React.FC<{ renkler: Renkler; liste: CihazUyeligi[]; onEkle: () => void }> = ({ renkler, liste, onEkle }) => {
-    const azalt = useHareketAzalt();
-    const ilerleme = React.useRef(new Animated.Value(0)).current;
-    const gorulen = React.useRef<Set<string>>(new Set());
-    const gorunen = liste.slice(0, AZAMI_DUGUM);
-    const fazla = liste.length - gorunen.length;
-    const dugumSayisi = Math.max(1, gorunen.length + (fazla > 0 ? 1 : 0));
-    const anahtar = liste.map((u) => u.aliciKimlik).join(',');
-
-    React.useEffect(() => {
-        const kimlikler = anahtar ? anahtar.split(',') : [];
-        const yeniVar = kimlikler.some((k) => !gorulen.current.has(k));
-        kimlikler.forEach((k) => gorulen.current.add(k));
-        if (kimlikler.length === 0) {
-            ilerleme.setValue(0);
-            return;
-        }
-        if (!yeniVar) return;
-        if (azalt) {
-            ilerleme.setValue(1);
-            return;
-        }
-        ilerleme.setValue(0);
-        const a = Animated.timing(ilerleme, { toValue: 1, duration: 900, easing: Easing.out(Easing.cubic), useNativeDriver: true });
-        a.start();
-        return () => a.stop();
-    }, [anahtar, azalt, ilerleme]);
-
-    const govde = ilerleme.interpolate({ inputRange: [0, 0.3, 1], outputRange: [0, 1, 1] });
-    const kol = ilerleme.interpolate({ inputRange: [0, 0.3, 0.65, 1], outputRange: [0, 0, 1, 1] });
-    const dal = ilerleme.interpolate({ inputRange: [0, 0.65, 1], outputRange: [0, 0, 1] });
-    const bagRengi = (u?: CihazUyeligi) =>
-        !u ? renkler.sinir : u.durum === 'tamam' ? renkler.birincil : u.durum === 'reddedildi' ? renkler.hata : renkler.metinIkincil;
-    const bos = liste.length === 0;
-    const kolPayi = `${50 / dugumSayisi}%` as const;
-
-    return (
-        <View
-            testID="cihazlarim-harita"
-            className="px-4 pt-5 pb-4"
-            style={kartStili(renkler)}
-        >
-            {/* Kart `accessible` YAPILMAZ: çocukları tek düğüme düzleşir, içteki "TV ekleyin"
-                düğmesine ekran okuyucu ulaşamazdı. Her düğüm kendi etiketini taşır. */}
-            <View className="items-center" accessible accessibilityLabel="Bu telefon">
-                <View className="w-12 h-12 rounded-2xl items-center justify-center" style={{ backgroundColor: renkler.birincil + '20' }}>
-                    <FontAwesome5 name="mobile-alt" size={20} color={renkler.birincil} />
-                </View>
-                <Text className="text-xs mt-1.5" style={{ color: renkler.metinIkincil }}>
-                    Bu telefon
-                </Text>
-            </View>
-
-            {/* Gövde: telefondan kola inen çizgi */}
-            <View style={{ alignItems: 'center', height: 18 }}>
-                <Animated.View
-                    style={{
-                        width: 2,
-                        height: 18,
-                        backgroundColor: bos ? renkler.sinir : renkler.birincil,
-                        transformOrigin: 'top',
-                        transform: [{ scaleY: bos ? 1 : govde }],
-                    }}
-                />
-            </View>
-            {/* Kol: ilk düğümün ortasından son düğümün ortasına */}
-            {dugumSayisi > 1 && (
-                <View style={{ height: 2, marginHorizontal: 0 }}>
-                    <Animated.View
-                        style={{
-                            position: 'absolute',
-                            left: kolPayi,
-                            right: kolPayi,
-                            height: 2,
-                            backgroundColor: renkler.birincil,
-                            transform: [{ scaleX: kol }],
-                        }}
-                    />
-                </View>
-            )}
-
-            <View className="flex-row">
-                {(bos ? [undefined] : gorunen).map((u, i) => (
-                    <View key={u?.aliciKimlik ?? 'bos'} className="flex-1 items-center">
-                        <Animated.View
-                            style={{
-                                width: 2,
-                                height: 16,
-                                backgroundColor: bagRengi(u),
-                                opacity: u?.durum === 'ulasilamadi' ? 0.5 : 1,
-                                transformOrigin: 'top',
-                                transform: [{ scaleY: bos ? 1 : dal }],
-                            }}
-                        />
-                        {u ? (
-                            <View
-                                className="items-center"
-                                style={{ maxWidth: '100%' }}
-                                accessible
-                                accessibilityLabel={`${u.aliciAdi}: ${BAG_ETIKETI[u.durum]}`}
-                            >
-                                <View className="w-11 h-11 rounded-2xl items-center justify-center" style={{ backgroundColor: bagRengi(u) + '20' }}>
-                                    <FontAwesome5 name="tv" size={15} color={bagRengi(u)} />
-                                </View>
-                                <Text className="text-xs mt-1.5 px-1" style={{ color: renkler.metin }} numberOfLines={1}>
-                                    {u.aliciAdi}
-                                </Text>
-                            </View>
-                        ) : (
-                            <TouchableOpacity
-                                key={`bos-${i}`}
-                                className="items-center"
-                                onPress={onEkle}
-                                accessibilityRole="button"
-                                accessibilityLabel="TV ekleyin"
-                                hitSlop={8}
-                            >
-                                <View
-                                    className="w-11 h-11 rounded-2xl items-center justify-center"
-                                    style={{ borderWidth: 1.5, borderStyle: 'dashed', borderColor: renkler.metinIkincil }}
-                                >
-                                    <FontAwesome5 name="plus" size={13} color={renkler.metinIkincil} />
-                                </View>
-                                <Text className="text-xs mt-1.5" style={{ color: renkler.metinIkincil }}>
-                                    TV ekleyin
-                                </Text>
-                            </TouchableOpacity>
-                        )}
-                    </View>
-                ))}
-                {fazla > 0 && (
-                    <View className="flex-1 items-center">
-                        <Animated.View
-                            style={{ width: 2, height: 16, backgroundColor: renkler.birincil, transformOrigin: 'top', transform: [{ scaleY: dal }] }}
-                        />
-                        <View className="w-11 h-11 rounded-2xl items-center justify-center" style={{ backgroundColor: renkler.birincil + '20' }}>
-                            <Text className="text-sm font-bold" style={{ color: renkler.birincil }}>
-                                +{fazla}
-                            </Text>
-                        </View>
-                    </View>
-                )}
-            </View>
-        </View>
-    );
-};

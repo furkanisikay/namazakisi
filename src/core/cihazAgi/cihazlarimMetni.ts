@@ -3,6 +3,7 @@
  * kaynaktan beslenir; vaat cümlesi platforma göre değişir çünkü iOS'ta 15 dakikalık arka
  * plan kontrolü güvenilir DEĞİLDİR (background fetch'i sistem keyfince çalıştırır).
  */
+import type { EsliSaatDurumu } from '../cihaz/durumNotlari';
 
 export type UyelikDurumu = 'tamam' | 'ulasilamadi' | 'reddedildi';
 
@@ -51,4 +52,22 @@ export function esitlemeVaadi(platform: string): string {
     return platform === 'android'
         ? 'Aynı Wi-Fi’de ve uygulama açıkken anında; değilse telefon uyandığında, en geç bir sonraki açılışta ya da 15 dakikalık kontrolde.'
         : 'Aynı Wi-Fi’de ve uygulama açıkken anında; değilse en geç uygulamayı bir sonraki açışınızda.';
+}
+
+/** Bağ haritası kart rozeti: "bağlı · 2 dk önce", "ulaşılamıyor", "yeniden ekleyin". */
+export function haritaRozeti(durum: UyelikDurumu, sonEsitlemeMs: number, simdiMs: number): string {
+    if (durum === 'reddedildi') return 'yeniden ekleyin';
+    if (durum === 'ulasilamadi') return 'şu an ulaşılamıyor';
+    const ne = gorecelZaman(sonEsitlemeMs, simdiMs);
+    return ne ? `bağlı · ${ne}` : 'bağlı';
+}
+
+/** Wear Data Layer okuması ("esli" = şu an bağlı düğüm var; "esliDegil" = bağlı düğüm yok). */
+export type SaatDurumu = EsliSaatDurumu;
+
+export function saatDurumMetni(d: SaatDurumu | null): { baslik: string; aciklama: string } {
+    if (d === 'esli') return { baslik: 'Akıllı saatiniz bağlı', aciklama: 'Vakitler ve hatırlatmalar saate kendiliğinden gider; kod okutmanız gerekmez.' };
+    // "esliDegil" iki durumu ayıramaz: saat hiç yok ya da şu an uzakta/kapalı.
+    if (d === 'esliDegil') return { baslik: 'Bağlı saat yok', aciklama: 'Wear OS saatiniz varsa telefonla eşleştirin ve yakınınızda tutun; ayrıca kod okutmanız gerekmez.' };
+    return { baslik: 'Akıllı saat', aciklama: 'Wear OS saatiniz telefonla kendiliğinden eşleşir; ayrıca kod okutmanız gerekmez.' };
 }
