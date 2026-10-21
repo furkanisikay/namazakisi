@@ -132,7 +132,7 @@ echo "saat paketi: $BUNDLE"
 # ekran yukun ilk uyandirma kaydiyla, oturumsuz cizilir.
 # Sayfalar (dikey TabView): 01 Simdi, 02 Bugun kadrani, 03 kilinmis Simdi, 04 Kible,
 # 05 Tesbihat, 06 Uyandirma, 07 Kildim onayi.
-KARELER="01-simdi:ana:12 02-bugun:vakitler:10 03-kilindi:kilindi:10 04-kible:kible:14 05-tesbihat:tesbihat:10 06-uyandirma:uyandirma:8 07-kildim-onayi:onay:8"
+KARELER="01-simdi:ana:20 02-bugun:vakitler:14 03-kilindi:kilindi:14 04-kible:kible:16 05-tesbihat:tesbihat:14 06-uyandirma:uyandirma:16 07-kildim-onayi:onay:12"
 BEKLENEN=0
 KURTARILDI=0
 for k in $KARELER; do
@@ -237,7 +237,7 @@ if [ -n "$VIDEO" ]; then
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
       xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1 || { echo "UYARI: $AD başlatılamadı"; continue; }
-    sleep 18
+    sleep 22
     xcrun simctl io "$SAAT" screenshot --type=png "$VIDEO/$AD.png" >/dev/null 2>&1 && echo "sönük kare: $AD.png" || echo "UYARI: $AD çekilemedi"
   done
 fi
