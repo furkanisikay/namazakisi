@@ -95,6 +95,60 @@ describe('localKonumAyarlariniGetir', () => {
     expect(y.veri?.konumModu).toBe('oto');
   });
 
+  test('GÖÇ: manuel ilçe kaydındaki İL MERKEZİ koordinatı ilçe merkezine çekilir ve diske yazılır', async () => {
+    const eski: KonumAyarlari = {
+      ...VARSAYILAN_KONUM_AYARLARI,
+      konumModu: 'manuel',
+      seciliIlId: 34,
+      seciliIlceId: 1622,
+      seciliIlAdi: 'İstanbul',
+      seciliIlceAdi: 'Silivri',
+      koordinatlar: { lat: 41.0082, lng: 28.9784 },
+    };
+    mockStore.set(KEY, JSON.stringify(eski));
+
+    const y = await localKonumAyarlariniGetir();
+    expect(y.veri?.koordinatlar.lng).toBeLessThan(28.5);
+    expect(diskOku()?.koordinatlar).toEqual(y.veri?.koordinatlar);
+    expect(diskOku()?.seciliIlceAdi).toBe('Silivri');
+  });
+
+  test('GÖÇ: otomatik modda koordinata dokunulmaz, diske yazılmaz', async () => {
+    const oto: KonumAyarlari = {
+      ...VARSAYILAN_KONUM_AYARLARI,
+      konumModu: 'oto',
+      seciliIlId: 34,
+      seciliIlceId: 1622,
+      seciliIlceAdi: 'Silivri',
+      koordinatlar: { lat: 41.0082, lng: 28.9784 },
+    };
+    const ham = JSON.stringify(oto);
+    mockStore.set(KEY, ham);
+
+    const y = await localKonumAyarlariniGetir();
+    expect(y.veri?.koordinatlar).toEqual({ lat: 41.0082, lng: 28.9784 });
+    expect(mockStore.get(KEY)).toBe(ham);
+  });
+
+  test('GÖÇ: düzeltme yazılamasa da okuma başarılı ve doğru koordinatla döner', async () => {
+    mockStore.set(
+      KEY,
+      JSON.stringify({
+        ...VARSAYILAN_KONUM_AYARLARI,
+        konumModu: 'manuel',
+        seciliIlId: 34,
+        seciliIlceId: 1622,
+        seciliIlceAdi: 'Silivri',
+        koordinatlar: { lat: 41.0082, lng: 28.9784 },
+      }),
+    );
+    mockHata.setItem = true;
+
+    const y = await localKonumAyarlariniGetir();
+    expect(y.basarili).toBe(true);
+    expect(y.veri?.koordinatlar.lng).toBeLessThan(28.5);
+  });
+
   test('AsyncStorage okuması fırlatırsa hata mesajıyla başarısız döner', async () => {
     mockHata.getItem = true;
     const y = await localKonumAyarlariniGetir();

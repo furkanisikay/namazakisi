@@ -7,6 +7,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Logger } from '../../core/utils/Logger';
 import { mesafeHesapla } from '../../core/utils/MesafeHesaplayici';
+import { ilceKoordinatiBul, cevrimdisiIlceler } from '../../core/konum/ilceKoordinati';
 
 // =====================
 // TIP TANIMLARI
@@ -80,6 +81,21 @@ const CACHE_ANAHTARI_ILCELER = '@turkiye_ilceler_';
 // OFFLINE IL VERISI (81 IL)
 // Baslangic ve offline calisma icin
 // =====================
+/**
+ * İlçe koordinatlarını çevrimdışı ilçe merkezi tablosundan düzeltir (bulunamayanı aynen bırakır).
+ * Değişiklik yoksa AYNI diziyi döndürür.
+ */
+export function ilceKoordinatlariniDuzelt(ilId: number, ilceler: Ilce[]): Ilce[] {
+    let degisti = false;
+    const sonuc = ilceler.map((ilce) => {
+        const k = ilceKoordinatiBul(ilId, ilce.ad, ilce.id);
+        if (!k || (k.lat === ilce.lat && k.lng === ilce.lng)) return ilce;
+        degisti = true;
+        return { ...ilce, lat: k.lat, lng: k.lng };
+    });
+    return degisti ? sonuc : ilceler;
+}
+
 export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 1, ad: 'Adana', plakaKodu: '01', lat: 37.0000, lng: 35.3213 },
     { id: 2, ad: 'Adıyaman', plakaKodu: '02', lat: 37.7648, lng: 38.2786 },
@@ -289,8 +305,10 @@ class TurkiyeKonumServisiClass {
             if (cachedData) {
                 const parsed = JSON.parse(cachedData);
                 if (Date.now() - parsed.timestamp < CACHE_SURESI) {
-                    this.ilcelerCache.set(ilId, parsed.data);
-                    return parsed.data;
+                    // Eski sürümün önbelleği ilçelere İL MERKEZİ yazmıştı → tablodan düzelt.
+                    const duzeltilmis = ilceKoordinatlariniDuzelt(ilId, parsed.data as Ilce[]);
+                    this.ilcelerCache.set(ilId, duzeltilmis);
+                    return duzeltilmis;
                 }
             }
         } catch (e) {
@@ -309,13 +327,18 @@ class TurkiyeKonumServisiClass {
                 const ilData = json.data || json;
                 
                 // Ilce verisi districts alaninda olmali
-                const ilceler: Ilce[] = (ilData.districts || []).map((ilce: TurkiyeAPIIlceYanit, index: number) => ({
-                    id: ilce.id || index + 1,
-                    ilId: ilId,
-                    ad: ilce.name,
-                    lat: ilce.coordinates?.latitude || ilData.coordinates?.latitude || 0,
-                    lng: ilce.coordinates?.longitude || ilData.coordinates?.longitude || 0,
-                }));
+                // API ilçelerde `coordinates` VERMEZ (2026-10 ölçüldü) → ilçe merkezi çevrimdışı
+                // tablodan; tabloda yoksa API alanı, o da yoksa il merkezi (son çare).
+                const ilceler: Ilce[] = ilceKoordinatlariniDuzelt(
+                    ilId,
+                    (ilData.districts || []).map((ilce: TurkiyeAPIIlceYanit, index: number) => ({
+                        id: ilce.id || index + 1,
+                        ilId: ilId,
+                        ad: ilce.name,
+                        lat: ilce.coordinates?.latitude || ilData.coordinates?.latitude || 0,
+                        lng: ilce.coordinates?.longitude || ilData.coordinates?.longitude || 0,
+                    })),
+                );
 
                 // Cache'e kaydet
                 this.ilcelerCache.set(ilId, ilceler);
@@ -330,8 +353,9 @@ class TurkiyeKonumServisiClass {
             Logger.warn('TurkiyeKonumServisi', 'Ilce API hatasi:', e);
         }
 
-        // Bos dizi dondur (API calismiyorsa)
-        return [];
+        // API'ye ulaşılamıyorsa çevrimdışı tablo (kimlik ve adlar turkiyeapi ile aynı).
+        // Önbelleğe YAZILMAZ: ağ dönünce API listesi (yeni ilçe vb.) kazansın.
+        return cevrimdisiIlceler(ilId).map((k) => ({ ...k, ilId }));
     }
 
     // =====================

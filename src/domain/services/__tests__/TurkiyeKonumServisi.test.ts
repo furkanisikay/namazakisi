@@ -274,20 +274,54 @@ describe('TurkiyeKonumServisi.ilceleriGetir', () => {
         expect(ilceler).toEqual([]);
     });
 
-    test('API ok değilse boş dizi döner', async () => {
+    test('API ok değilse ÇEVRİMDIŞI ilçe listesine düşer (ilçe merkezleriyle)', async () => {
         global.fetch = jest
             .fn()
             .mockResolvedValue(fetchYanitOlustur(false, {}));
 
         const ilceler = await TurkiyeKonumServisi.ilceleriGetir(8);
-        expect(ilceler).toEqual([]);
+        expect(ilceler.map((i) => i.ad)).toContain('Hopa');
+        expect(ilceler.every((i) => i.ilId === 8)).toBe(true);
+        // Çevrimdışı liste önbelleğe YAZILMAZ (ağ dönünce API kazansın)
+        expect(mockStore.has(`${CACHE_ANAHTARI_ILCELER}8`)).toBe(false);
     });
 
-    test('fetch fırlatırsa boş dizi döner', async () => {
+    test('fetch fırlatırsa çevrimdışı ilçe listesine düşer', async () => {
         global.fetch = jest.fn().mockRejectedValue(new Error('ağ yok'));
 
         const ilceler = await TurkiyeKonumServisi.ilceleriGetir(9);
-        expect(ilceler).toEqual([]);
+        expect(ilceler.find((i) => i.ad === 'Kuşadası')).toBeDefined();
+    });
+
+    test('NÖBETÇİ: API ilçe koordinatı vermese de ilçe MERKEZİ döner, il merkezi değil', async () => {
+        // Gerçek API biçimi (2026-10): ilçelerde `coordinates` YOK, yalnız ilde var.
+        global.fetch = jest.fn().mockResolvedValue(
+            fetchYanitOlustur(true, {
+                data: {
+                    coordinates: { latitude: 41.0082, longitude: 28.9784 },
+                    districts: [{ id: 1622, name: 'Silivri' }],
+                },
+            })
+        );
+
+        const [silivri] = await TurkiyeKonumServisi.ilceleriGetir(34);
+        expect(silivri.lng).toBeLessThan(28.5);
+        expect(silivri.lng).not.toBe(28.9784);
+    });
+
+    test('eski sürümün önbelleğindeki il merkezi koordinatı okurken düzeltilir', async () => {
+        mockStore.set(
+            `${CACHE_ANAHTARI_ILCELER}34`,
+            JSON.stringify({
+                timestamp: Date.now(),
+                data: [{ id: 1622, ilId: 34, ad: 'Silivri', lat: 41.0082, lng: 28.9784 }],
+            })
+        );
+        global.fetch = jest.fn();
+
+        const [silivri] = await TurkiyeKonumServisi.ilceleriGetir(34);
+        expect(silivri.lng).toBeLessThan(28.5);
+        expect(global.fetch).not.toHaveBeenCalled();
     });
 
     test('bellek cache sıcaksa ikinci çağrı fetch yapmaz', async () => {

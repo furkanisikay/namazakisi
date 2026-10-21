@@ -29,12 +29,20 @@ jest.mock('../../store/konumSlice', () => ({
 jest.mock('../../../domain/services/KonumTakipServisi', () => ({
   KonumTakipServisi: { getInstance: jest.fn() },
 }));
+const mockGuncelleKonumManuel = jest.fn();
 jest.mock('../../../domain/services/NamazVaktiHesaplayiciServisi', () => ({
-  NamazVaktiHesaplayiciServisi: { getInstance: jest.fn(() => ({})) },
+  NamazVaktiHesaplayiciServisi: { getInstance: jest.fn(() => ({ guncelleKonumManuel: mockGuncelleKonumManuel })) },
 }));
 jest.mock('../../../domain/services/TurkiyeKonumServisi', () => ({}));
 jest.mock('../../hooks/useKonumMetni', () => ({ useKonumMetni: () => 'İstanbul' }));
-jest.mock('../../components/IlIlceSecici', () => ({ IlIlceSecici: () => null }));
+// Seçicinin `onKonumSec` geri çağrısı yakalanır (ilçe seçimi yolunu sürmek için).
+const mockSecici: { onKonumSec?: (il: unknown, ilce?: unknown) => Promise<void> } = {};
+jest.mock('../../components/IlIlceSecici', () => ({
+  IlIlceSecici: (p: { onKonumSec: (il: unknown, ilce?: unknown) => Promise<void> }) => {
+    mockSecici.onKonumSec = p.onKonumSec;
+    return null;
+  },
+}));
 jest.mock('../../components/KonumIzniDisclosureModali', () => ({
   KonumIzniDisclosureModali: () => null,
 }));
@@ -251,5 +259,55 @@ describe('KonumAyarlariSayfasi — konum değişince bildir anahtarı', () => {
 
     await waitFor(() => expect(getByTestId('konum-durum-karti')).toBeTruthy());
     expect(queryByLabelText('Konum değişince bildir')).toBeNull();
+  });
+});
+
+describe('KonumAyarlariSayfasi — manuel ilçe seçimi', () => {
+  const dispatchMock = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
+    (useFeedback as jest.Mock).mockReturnValue({
+      butonTiklandiFeedback: jest.fn().mockResolvedValue(undefined),
+    });
+    (useAppDispatch as unknown as jest.Mock).mockReturnValue(dispatchMock);
+    (KonumTakipServisi.getInstance as jest.Mock).mockReturnValue({
+      aktifMi: jest.fn().mockResolvedValue(false),
+      arkaPlanIzniVarMi: jest.fn().mockResolvedValue(false),
+      baslat: jest.fn(),
+      durdur: jest.fn().mockResolvedValue(undefined),
+    });
+    (useAppSelector as unknown as jest.Mock).mockImplementation((selector: (durum: { konum: unknown }) => unknown) =>
+      selector({ konum: { ...konumState, konumModu: 'manuel' } })
+    );
+  });
+
+  it('NÖBETÇİ: ilçe seçilince İLÇE MERKEZİ yazılır ve vakit hesabı oraya kurulur (il merkezi değil)', async () => {
+    const { KonumAyarlariSayfasi } = require('../KonumAyarlariSayfasi');
+    render(<KonumAyarlariSayfasi />);
+    await waitFor(() => expect(mockSecici.onKonumSec).toBeDefined());
+
+    // API ilçe koordinatı vermediği için ilçe nesnesi eskiden il merkeziyle gelirdi.
+    const il = { id: 34, ad: 'İstanbul', plakaKodu: '34', lat: 41.0082, lng: 28.9784 };
+    const ilce = { id: 1622, ilId: 34, ad: 'Silivri', lat: 41.0082, lng: 28.9784 };
+    await mockSecici.onKonumSec!(il, ilce);
+
+    const yuk = (konumAyarlariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(yuk.seciliIlceAdi).toBe('Silivri');
+    expect(yuk.koordinatlar.lng).toBeLessThan(28.5);
+    expect(mockGuncelleKonumManuel).toHaveBeenCalledWith(yuk.koordinatlar);
+  });
+
+  it('yalnız il seçilince il merkezi kalır', async () => {
+    const { KonumAyarlariSayfasi } = require('../KonumAyarlariSayfasi');
+    render(<KonumAyarlariSayfasi />);
+    await waitFor(() => expect(mockSecici.onKonumSec).toBeDefined());
+
+    const il = { id: 6, ad: 'Ankara', plakaKodu: '06', lat: 39.9334, lng: 32.8597 };
+    await mockSecici.onKonumSec!(il);
+
+    const yuk = (konumAyarlariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(yuk.koordinatlar).toEqual({ lat: 39.9334, lng: 32.8597 });
   });
 });
