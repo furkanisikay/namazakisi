@@ -1,10 +1,10 @@
-import { kibleOzetiHesapla, yarinVakitleriniHesapla } from '../genisEkranEkleri';
+import { yarinVakitleriniHesapla } from '../genisEkranEkleri';
 import { gunVakitleriniHesapla } from '../../nafile/gunVakitleri';
 
 const ISTANBUL = { lat: 41.0082, lng: 28.9784 };
 
-describe('genisEkranEkleri', () => {
-    it('yarının vakitleri gösterilen günün ERTESİ günüdür ve uygulamanın hesabıyla aynıdır', () => {
+describe('genisEkranEkleri — yarının vakitleri', () => {
+    it('gösterilen günün ERTESİ günüdür ve uygulamanın hesabıyla aynıdır', () => {
         const y = yarinVakitleriniHesapla(ISTANBUL, '2026-12-31')!;
         expect(y.tarihMetni).toBe('1 Ocak 2027');
         expect(y.satirlar.map((s) => s.ad)).toEqual(['İmsak', 'Güneş', 'Öğle', 'İkindi', 'Akşam', 'Yatsı']);
@@ -16,13 +16,5 @@ describe('genisEkranEkleri', () => {
     it('konum yoksa (ya da {0,0}) hiçbir şey üretmez', () => {
         expect(yarinVakitleriniHesapla(null, '2026-10-20')).toBeNull();
         expect(yarinVakitleriniHesapla({ lat: 0, lng: 0 }, '2026-10-20')).toBeNull();
-        expect(kibleOzetiHesapla(undefined)).toBeNull();
-    });
-
-    it('İstanbul kıblesi ~151° güneydoğu', () => {
-        const k = kibleOzetiHesapla(ISTANBUL)!;
-        expect(k.derece).toBeGreaterThanOrEqual(150);
-        expect(k.derece).toBeLessThanOrEqual(153);
-        expect(k.yon).toBe('güneydoğu');
     });
 });

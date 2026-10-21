@@ -5,14 +5,16 @@
  */
 
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useState, useEffect, useCallback } from 'react';
+import { createBottomTabNavigator, BottomTabBar, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer, useNavigationContainerRef, type NavigatorScreenParams } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import { Platform, Text, StyleSheet, View } from 'react-native';
+import { Dimensions, Platform, Text, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { KenarGezinme } from '../presentation/components/gezinme/KenarGezinme';
+import { gezinmeTuruSec } from '../core/utils/ekranSinifi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   AnaSayfa,
@@ -64,7 +66,11 @@ import type { AyarlarEkranAdi, AyarlarStackParamList } from './ayarlarEkranlari'
 import { KAZA_EKRAN_BASLIKLARI, type KazaStackParamList } from './kazaEkranlari';
 import { DEPOLAMA_ANAHTARLARI } from '../core/constants/UygulamaSabitleri';
 import { useRenkler } from '../core/theme';
-import { useAppDispatch } from '../presentation/store/hooks';
+import { useAppDispatch, useAppSelector } from '../presentation/store/hooks';
+import { useEvEkraniAyari } from '../presentation/hooks/useEvEkraniAyari';
+import { EvEkraniPanosu } from '../presentation/components/evEkrani/EvEkraniPanosu';
+import { evEkraniGosterilsinMi } from '../core/evEkrani/evEkrani';
+import { konumMetniHesapla } from '../core/ayarlar/konumMetni';
 import { ozellikleriYukle } from '../presentation/store/ozelliklerSlice';
 import { useYeniOzellikler } from '../presentation/hooks/useYeniOzellikler';
 import { GuncellemeBildirimi } from '../presentation/components/guncelleme/GuncellemeBildirimi';
@@ -77,13 +83,9 @@ import {
 import { KildimIzinModali } from '../presentation/components/kildim/KildimIzinModali';
 import { useSiriEkranIstegi } from '../presentation/hooks/useSiriEkranIstegi';
 import { derinBaglantiYapilandirmasi, type AnaSekmeParamList } from './derinBaglantilar';
-import { OkunabilirGenislik } from '../presentation/components/common/OkunabilirGenislik';
+import { anaAyrintiYerlesimiOlustur } from '../presentation/components/common/AnaAyrintiDuzeni';
 import { useSadeGorunum } from '../presentation/hooks/useSadeGorunum';
-
-/** Ayarlar yığınındaki her ekranın sarmalayıcısı (modül düzeyi: referansı sabit). */
-const ayarEkraniYerlesimi = ({ children }: { children: React.ReactElement }) => (
-  <OkunabilirGenislik>{children}</OkunabilirGenislik>
-);
+import { anaAyrintiMi } from '../core/utils/ekranSinifi';
 
 /**
  * Root stack navigation parameter list.
@@ -168,11 +170,40 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
 };
 
 /**
+ * Tablet / iPad geniş pencerede Ayarlar ana-ayrıntı: solda ayar listesi, sağda sayfa
+ * (kökteyken Hatırlatmalar). Dar pencerede okunabilir sütun (eski davranış).
+ * Modül düzeyi: `screenLayout` referansı sabit kalsın.
+ */
+const ayarlarYerlesimi = anaAyrintiYerlesimiOlustur(
+  {
+    anaRota: 'AyarlarAna',
+    Ana: AyarlarSayfasi,
+    Varsayilan: HatirlatmalarSayfasi,
+    varsayilanBaslik: 'Hatırlatmalar',
+    basliklar: Object.fromEntries(
+      Object.entries(AYARLAR_EKRAN_TANIMLARI).map(([ad, t]) => [ad, t.options?.title as string | undefined])
+    ),
+  },
+  ['IceAktarmaSihirbazi']
+);
+
+/** Kaza ana-ayrıntı: solda defter, sağda (kökteyken) geçmiş. */
+const kazaYerlesimi = anaAyrintiYerlesimiOlustur({
+  anaRota: 'KazaDefteriAna',
+  Ana: KazaDefteriSayfasi,
+  Varsayilan: KazaGecmisiSayfasi,
+  varsayilanBaslik: KAZA_EKRAN_BASLIKLARI.KazaGecmisi,
+  basliklar: KAZA_EKRAN_BASLIKLARI,
+});
+
+/**
  * Ayarlar Alt Navigasyonu
  * Tum ayar sayfalari burada tanimlanir
  */
 const AyarlarStack: React.FC = () => {
   const renkler = useRenkler();
+  // Ana-ayrıntıda başlık yalnız ayrıntının üstünde çizilir (native başlık tam genişlikti).
+  const anaAyrinti = anaAyrintiMi(useWindowDimensions().width);
 
   return (
     <Stack.Navigator
@@ -188,10 +219,11 @@ const AyarlarStack: React.FC = () => {
         // basligi yazilir — Ayarlar kokunun basligi olmadigi icin ROTA ADI
         // ("AyarlarAna") gorunuyordu. Yalniz ok gosterilir.
         headerBackButtonDisplayMode: 'minimal',
+        headerShown: !anaAyrinti,
       }}
-      // Katlanabilir/tablet (issue #283): geniş pencerede ayar ekranlarının
-      // içeriği okunabilir genişlikte (≈640 dp) ortalanır; telefonda etkisizdir.
-      screenLayout={ayarEkraniYerlesimi}
+      // Katlanabilir/tablet (issue #283): orta pencerede okunabilir sütun, geniş
+      // pencerede ana-ayrıntı; telefonda etkisizdir.
+      screenLayout={ayarlarYerlesimi}
     >
       {(Object.entries(AYARLAR_EKRAN_TANIMLARI) as Array<
         [AyarlarEkranAdi, (typeof AYARLAR_EKRAN_TANIMLARI)[AyarlarEkranAdi]]
@@ -208,6 +240,7 @@ const AyarlarStack: React.FC = () => {
  */
 const KazaStack: React.FC = () => {
   const renkler = useRenkler();
+  const anaAyrinti = anaAyrintiMi(useWindowDimensions().width);
   return (
     <KazaStackNav.Navigator
       screenOptions={{
@@ -215,8 +248,9 @@ const KazaStack: React.FC = () => {
         headerTintColor: '#FFFFFF',
         headerTitleStyle: { fontWeight: 'bold' },
         headerBackButtonDisplayMode: 'minimal',
+        headerShown: !anaAyrinti,
       }}
-      screenLayout={ayarEkraniYerlesimi}
+      screenLayout={kazaYerlesimi}
     >
       <KazaStackNav.Screen
         name="KazaDefteriAna"
@@ -259,11 +293,41 @@ const MainTabs: React.FC = () => {
     dispatch(ozellikleriYukle());
   }, [dispatch]);
 
+  // Tablet / iPad: alt çubuk yerine ray (orta) ya da kalıcı kenar çubuğu (geniş).
+  const pencere = useWindowDimensions();
+  const gezinme = gezinmeTuruSec(pencere.width);
+  const kenarCubugu = useCallback(
+    (props: BottomTabBarProps) =>
+      gezinme === 'alt' ? <BottomTabBar {...props} /> : <KenarGezinme {...props} tur={gezinme} />,
+    [gezinme]
+  );
+
+  // Tablet ev ekranı (ayardan açılır): yatay tam ekranda pano tüm gezinmenin üstüne çizilir.
+  const evEkrani = useEvEkraniAyari();
+  const konum = useAppSelector((s) => s.konum);
+  const [evEkraniKapatildi, setEvEkraniKapatildi] = useState(false);
+  useEffect(() => {
+    if (!evEkrani.acik) setEvEkraniKapatildi(false);
+  }, [evEkrani.acik]);
+  const panoGoster =
+    !evEkraniKapatildi &&
+    !!konum?.koordinatlar &&
+    !(konum.koordinatlar.lat === 0 && konum.koordinatlar.lng === 0) &&
+    evEkraniGosterilsinMi({
+      ayarAcik: evEkrani.acik,
+      sadeEtkin: sade.etkin,
+      pencere,
+      ekran: Dimensions.get('screen'),
+    });
+
   return (
+    <View style={{ flex: 1 }}>
     <Tab.Navigator
       initialRouteName="AnaSayfa"
       detachInactiveScreens={false}
+      tabBar={kenarCubugu}
       screenOptions={{
+        tabBarPosition: gezinme === 'alt' ? 'bottom' : 'left',
         headerStyle: {
           backgroundColor: renkler.birincil,
           elevation: 0,
@@ -376,6 +440,16 @@ const MainTabs: React.FC = () => {
         }}
       />
     </Tab.Navigator>
+    {/* Gezinmenin ÜSTÜNDE (kardeş, sonra çizilir); Split View'da gösterilmez. */}
+    {panoGoster ? (
+      <EvEkraniPanosu
+        lat={konum.koordinatlar.lat}
+        lng={konum.koordinatlar.lng}
+        konumMetni={konumMetniHesapla(konum)}
+        onKapat={() => setEvEkraniKapatildi(true)}
+      />
+    ) : null}
+    </View>
   );
 };
 

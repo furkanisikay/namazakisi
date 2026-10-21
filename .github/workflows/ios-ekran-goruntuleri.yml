@@ -294,6 +294,14 @@ jobs:
             echo "$f -> $(sips -g pixelWidth -g pixelHeight "$f" | tail -2 | tr '\n' ' ')"
           done
 
+      # iPad geniş ekran: dikey + yatay (Bugün üç sütun, Ayarlar/Kaza ana-ayrıntı, ev ekranı).
+      # Mağaza karelerinden SONRA: yatay için .app yeniden kurulur.
+      - name: 📐 iPad geniş ekran kareleri (dikey + yatay)
+        if: ${{ !cancelled() && inputs.tur == 'ipad' }}
+        run: |
+          APP=$(find ios/build -name '*.app' -maxdepth 5 -not -path '*.dSYM*' | head -1)
+          bash scripts/simulator-ipad-genis.sh "${{ steps.sim.outputs.udid }}" "${{ steps.kurulum.outputs.bundle }}" "$APP" kareler-genis
+
       - name: 🎨 Mockup üret
         if: ${{ inputs.tur != 'ozellik' }}
         run: |
@@ -311,6 +319,7 @@ jobs:
           path: |
             kareler/
             mockup/
+            kareler-genis/
           retention-days: 14
           if-no-files-found: warn
 

@@ -1,18 +1,35 @@
 /**
- * Geniş ekran (tablet / iPad iki bölme) ana sayfa ekleri: yarının vakitleri ve kıble yönü.
+ * "Bu hafta" paneli — tablet / iPad geniş düzenin ana sayfa eki.
  *
- * Yalnız iki bölmeli düzende çizilir (`GunSayfasiDuzeni` `solEk`/`sagEk`); telefonda yoktur.
- * Hesap saf `core/anaEkran/genisEkranEkleri.ts`'te. Saniyelik ana ekran çiziminden yalıtmak
- * için bileşenler `React.memo`'dur ve yalnız dize/sayı prop alır.
+ * Yatayda üçüncü sütundur, dikeyde vakit kartının altına iner (`GunSayfasiDuzeni`).
+ * Tek kart, içinde dört bölüm (dolgu kart yığını değil): seri + haftanın günleri,
+ * kılma oranı, kaza özeti, yarının vakitleri. Telefonda HİÇ çizilmez.
+ *
+ * PERFORMANS: ana ekran saniyede bir çizilir; panel `React.memo`'dur ve yalnız dize/sayı
+ * prop alır. Haftanın kayıtları yalnız `okumaAnahtari` (gün + bugün kılınan sayısı)
+ * değişince diskten yeniden okunur.
  */
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
-import { kibleOzetiHesapla, yarinVakitleriniHesapla } from '../../../core/anaEkran/genisEkranEkleri';
+import { yarinVakitleriniHesapla } from '../../../core/anaEkran/genisEkranEkleri';
+import { GUNLUK_FARZ, haftaBasi, haftaOzetiHesapla } from '../../../core/anaEkran/haftaOzeti';
+import { localTarihAraligindakiNamazlariGetir } from '../../../data/local/LocalNamazServisi';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { kazaVerileriniYukle } from '../../store/kazaSlice';
 
-/** Ek kart ana ekranı ASLA düşürmez: hesap patlarsa kart çizilmez. */
+interface Props {
+    lat: number | undefined;
+    lng: number | undefined;
+    /** Gösterilen (aktif) gün, ISO. */
+    gunTarihiIso: string;
+    /** Değişince hafta kayıtları yeniden okunur (ör. `${gün}_${bugün kılınan}`). */
+    okumaAnahtari: string;
+}
+
+/** Ek hesap ana ekranı ASLA düşürmez: patlarsa bölüm çizilmez. */
 function guvenli<T>(hesap: () => T | null): T | null {
     try {
         return hesap();
@@ -21,124 +38,162 @@ function guvenli<T>(hesap: () => T | null): T | null {
     }
 }
 
-interface KoordinatProps {
-    lat: number | undefined;
-    lng: number | undefined;
-}
-
-const KartBasligi: React.FC<{ ikon: string; baslik: string; alt?: string }> = ({ ikon, baslik, alt }) => {
+const Bolum: React.FC<{ ikon: string; baslik: string; children: React.ReactNode; ilk?: boolean }> = ({
+    ikon,
+    baslik,
+    children,
+    ilk,
+}) => {
     const renkler = useRenkler();
     return (
-        <View className="flex-row items-center gap-3 mb-4">
-            <View className="w-11 h-11 rounded-xl items-center justify-center" style={{ backgroundColor: renkler.birincil + '20' }}>
-                <FontAwesome5 name={ikon} size={18} color={renkler.birincil} />
+        <View style={[stil.bolum, !ilk && { borderTopWidth: 1, borderTopColor: renkler.sinir }]}>
+            <View className="flex-row items-center gap-2 mb-3">
+                <FontAwesome5 name={ikon} size={13} color={renkler.birincil} solid />
+                <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
+                    {baslik}
+                </Text>
             </View>
-            <View>
-                <Text className="text-lg font-bold" style={{ color: renkler.metin }}>{baslik}</Text>
-                {alt ? <Text className="text-sm" style={{ color: renkler.metinIkincil }}>{alt}</Text> : null}
-            </View>
+            {children}
         </View>
     );
 };
 
-/** Gösterilen günün ertesi gününün altı vakti. */
-export const YarinVakitleriKarti: React.FC<KoordinatProps & { gunTarihiIso: string }> = React.memo(
-    ({ lat, lng, gunTarihiIso }) => {
-        const renkler = useRenkler();
-        const yarin = React.useMemo(
-            () => guvenli(() => (lat === undefined || lng === undefined ? null : yarinVakitleriniHesapla({ lat, lng }, gunTarihiIso))),
-            [lat, lng, gunTarihiIso]
-        );
-        if (!yarin) return null;
-        return (
-            <View
-                testID="genis-yarin-vakitleri"
-                className="rounded-3xl border p-6 mb-6"
-                style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir, borderRadius: 24 }}
-            >
-                <KartBasligi ikon="calendar-day" baslik="Yarın" alt={yarin.tarihMetni} />
-                <View className="flex-row flex-wrap">
-                    {yarin.satirlar.map((s) => (
+export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiIso, okumaAnahtari }) => {
+    const renkler = useRenkler();
+    const dispatch = useAppDispatch();
+    const navigation = useNavigation<{ navigate: (ad: string) => void }>();
+    const mevcutSeri = useAppSelector((s) => s.seri?.seriDurumu?.mevcutSeri ?? 0);
+    const kaza = useAppSelector((s) => s.kaza?.kazaDurumu ?? null);
+    const [kilinanlar, setKilinanlar] = React.useState<Record<string, number>>({});
+
+    // Kaza slice'ı ana ekranda hidrate değildir (AGENTS.md "her slice açılışta yüklenmez").
+    React.useEffect(() => {
+        if (!kaza) dispatch(kazaVerileriniYukle());
+        // Yalnız ilk görünüşte; sonraki güncellemeleri kaza ekranı yazar.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch]);
+
+    React.useEffect(() => {
+        let iptal = false;
+        localTarihAraligindakiNamazlariGetir(haftaBasi(gunTarihiIso), gunTarihiIso)
+            .then((yanit) => {
+                if (iptal || !yanit?.basarili || !Array.isArray(yanit.veri)) return;
+                const harita: Record<string, number> = {};
+                for (const g of yanit.veri) harita[g.tarih] = g.namazlar.filter((n) => n.tamamlandi).length;
+                setKilinanlar(harita);
+            })
+            .catch(() => undefined);
+        return () => {
+            iptal = true;
+        };
+    }, [gunTarihiIso, okumaAnahtari]);
+
+    const hafta = React.useMemo(() => haftaOzetiHesapla(gunTarihiIso, kilinanlar), [gunTarihiIso, kilinanlar]);
+    const yarin = React.useMemo(
+        () => guvenli(() => (lat === undefined || lng === undefined ? null : yarinVakitleriniHesapla({ lat, lng }, gunTarihiIso))),
+        [lat, lng, gunTarihiIso]
+    );
+
+    return (
+        <View
+            testID="bu-hafta-paneli"
+            className="border mb-6"
+            style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir, borderRadius: 24 }}
+        >
+            <Bolum ikon="fire" baslik="Bu hafta" ilk>
+                <View className="flex-row items-baseline gap-2 mb-4" accessible accessibilityLabel={`${mevcutSeri} günlük seri`}>
+                    <Text style={[stil.buyukSayi, { color: renkler.metin }]}>{mevcutSeri}</Text>
+                    <Text className="text-base" style={{ color: renkler.metinIkincil }}>
+                        günlük seri
+                    </Text>
+                </View>
+                {/* Haftanın günleri: her gün beş kutucuk (beş vakit), aşağıdan yukarı dolar. */}
+                <View className="flex-row justify-between">
+                    {hafta.gunler.map((g) => (
                         <View
-                            key={s.ad}
-                            className="w-1/3 py-3"
+                            key={g.tarih}
+                            className="items-center"
                             accessible
-                            accessibilityLabel={`Yarın ${s.ad} ${s.saat}`}
+                            accessibilityLabel={g.gelecekMi ? `${g.harf}, henüz gelmedi` : `${g.harf}, ${g.kilinan} vakit kılındı`}
                         >
-                            <Text className="text-sm" style={{ color: renkler.metinIkincil }}>{s.ad}</Text>
-                            <Text className="text-2xl font-bold tabular-nums" style={{ color: renkler.metin }}>{s.saat}</Text>
+                            <View style={stil.kutuSutunu}>
+                                {Array.from({ length: GUNLUK_FARZ }, (_, i) => GUNLUK_FARZ - 1 - i).map((i) => (
+                                    <View
+                                        key={i}
+                                        style={[
+                                            stil.kutu,
+                                            {
+                                                backgroundColor: i < g.kilinan ? renkler.birincil : renkler.sinir,
+                                                opacity: g.gelecekMi ? 0.4 : 1,
+                                            },
+                                        ]}
+                                    />
+                                ))}
+                            </View>
+                            <Text
+                                className="text-xs mt-2"
+                                style={{ color: g.bugunMu ? renkler.metin : renkler.metinIkincil, fontWeight: g.bugunMu ? '700' : '400' }}
+                            >
+                                {g.harf}
+                            </Text>
                         </View>
                     ))}
                 </View>
-            </View>
-        );
-    }
-);
-YarinVakitleriKarti.displayName = 'YarinVakitleriKarti';
+                <Text className="text-sm mt-4" style={{ color: renkler.metin }}>
+                    {`Bu hafta %${hafta.yuzde} kılındı (${hafta.kilinan}/${hafta.toplam})`}
+                </Text>
+            </Bolum>
 
-/** Kıble yönü (kuzeye göre) + Kıble sekmesine geçiş. Pusula sensörü KULLANMAZ. */
-export const KibleMiniKarti: React.FC<KoordinatProps> = React.memo(({ lat, lng }) => {
-    const renkler = useRenkler();
-    const navigation = useNavigation<{ navigate: (ad: string) => void }>();
-    const kible = React.useMemo(
-        () => guvenli(() => (lat === undefined || lng === undefined ? null : kibleOzetiHesapla({ lat, lng }))),
-        [lat, lng]
-    );
-    if (!kible) return null;
-    return (
-        <View
-            testID="genis-kible"
-            className="rounded-3xl border p-6 mb-6"
-            style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir, borderRadius: 24 }}
-        >
-            <KartBasligi ikon="kaaba" baslik="Kıble yönü" alt={`Kuzeyden ${kible.derece}°, ${kible.yon}`} />
-            <View className="items-center">
-                {/* Statik yön gülü (sensör yok): K/D/G/B harfleri, ibre kıble derecesinde,
-                    ucunda Kâbe. Telefonu kuzeye çevirince yön bu ibredir. */}
-                <View
-                    style={[gulStili.gul, { borderColor: renkler.sinir, backgroundColor: renkler.arkaplan }]}
-                    importantForAccessibility="no-hide-descendants"
-                    accessibilityElementsHidden
-                >
-                    <Text style={[gulStili.harf, gulStili.kuzey, { color: renkler.metin }]}>K</Text>
-                    <Text style={[gulStili.harf, gulStili.dogu, { color: renkler.metinIkincil }]}>D</Text>
-                    <Text style={[gulStili.harf, gulStili.guney, { color: renkler.metinIkincil }]}>G</Text>
-                    <Text style={[gulStili.harf, gulStili.bati, { color: renkler.metinIkincil }]}>B</Text>
-                    <View style={[gulStili.ibreKatmani, { transform: [{ rotate: `${kible.derece}deg` }] }]}>
-                        <View style={[gulStili.kabe, { backgroundColor: renkler.birincil + '20' }]}>
-                            <FontAwesome5 name="kaaba" size={22} color={renkler.birincil} />
-                        </View>
-                        <View style={[gulStili.ibre, { backgroundColor: renkler.birincil }]} />
+            {kaza ? (
+                <Bolum ikon="book" baslik="Kaza">
+                    <View className="flex-row items-center justify-between">
+                        <Text className="text-base" style={{ color: renkler.metin }}>
+                            <Text className="text-2xl font-bold">
+                                {kaza.toplamGizleMi ? '••••' : kaza.toplamKalan.toLocaleString('tr-TR')}
+                            </Text>
+                            {' kaza kaldı'}
+                        </Text>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('KazaDefteri')}
+                            accessibilityRole="button"
+                            accessibilityLabel="Kaza defterini açın"
+                            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                            className="flex-row items-center gap-2 px-4 py-2 rounded-full"
+                            style={{ backgroundColor: renkler.birincil + '20' }}
+                        >
+                            <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
+                                Açın
+                            </Text>
+                            <FontAwesome5 name="chevron-right" size={11} color={renkler.metin} />
+                        </TouchableOpacity>
                     </View>
-                    <View style={[gulStili.merkez, { backgroundColor: renkler.birincil }]} />
-                </View>
-                <TouchableOpacity
-                    className="self-stretch flex-row items-center justify-center gap-2 rounded-2xl px-4 mt-6"
-                    style={{ minHeight: 52, backgroundColor: renkler.birincil }}
-                    onPress={() => navigation.navigate('Kible')}
-                    accessibilityRole="button"
-                    accessibilityLabel="Kıble pusulasını açın"
-                >
-                    <FontAwesome5 name="compass" size={16} color={renkler.birincilMetin} />
-                    <Text className="font-bold text-base" style={{ color: renkler.birincilMetin }}>Pusulayı açın</Text>
-                </TouchableOpacity>
-            </View>
+                </Bolum>
+            ) : null}
+
+            {yarin ? (
+                <Bolum ikon="calendar-day" baslik={`Yarın, ${yarin.tarihMetni}`}>
+                    <View className="flex-row flex-wrap" testID="genis-yarin-vakitleri">
+                        {yarin.satirlar.map((s) => (
+                            <View key={s.ad} className="w-1/3 py-2" accessible accessibilityLabel={`Yarın ${s.ad} ${s.saat}`}>
+                                <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
+                                    {s.ad}
+                                </Text>
+                                <Text className="text-xl font-bold" style={{ color: renkler.metin, fontVariant: ['tabular-nums'] }}>
+                                    {s.saat}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+                </Bolum>
+            ) : null}
         </View>
     );
 });
-KibleMiniKarti.displayName = 'KibleMiniKarti';
+BuHaftaPaneli.displayName = 'BuHaftaPaneli';
 
-const GUL = 260;
-const gulStili = StyleSheet.create({
-    gul: { width: GUL, height: GUL, borderRadius: GUL / 2, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-    harf: { position: 'absolute', fontSize: 14, fontWeight: '700' },
-    kuzey: { top: 10 },
-    guney: { bottom: 10 },
-    dogu: { right: 14 },
-    bati: { left: 14 },
-    // Tam boy katman merkezden döner; ibre üst yarıdadır (dönmeden önce kuzeyi gösterir).
-    ibreKatmani: { position: 'absolute', width: GUL, height: GUL, alignItems: 'center' },
-    kabe: { marginTop: 14, width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
-    ibre: { width: 4, height: GUL / 2 - 14 - 44, borderRadius: 2 },
-    merkez: { width: 12, height: 12, borderRadius: 6 },
+const stil = StyleSheet.create({
+    bolum: { paddingHorizontal: 24, paddingVertical: 20 },
+    buyukSayi: { fontSize: 44, lineHeight: 50, fontWeight: '800' },
+    kutuSutunu: { gap: 3 },
+    kutu: { width: 22, height: 8, borderRadius: 3 },
 });

@@ -9,7 +9,6 @@
     "scheme": "namazakisi",
     "ios": {
       "supportsTablet": true,
-      "requireFullScreen": true,
       "bundleIdentifier": "com.furkanisikay.namazakisi",
       "infoPlist": {
         "UIDesignRequiresCompatibility": true,
