@@ -219,19 +219,8 @@ export const PusulaGorunumu: React.FC<{
         </View>
       )}
 
-      {!statik && ipucu === 'belirgin' && (
-        <View
-          testID="kible-kalibrasyon-belirgin"
-          accessible
-          accessibilityLabel="Pusula doğruluğu düşük. Telefonunuzu havada 8 çizer gibi birkaç kez hareket ettirin."
-          style={[styles.uyari, { borderLeftColor: renkler.dikkat ?? renkler.sinir, backgroundColor: renkler.kartArkaplan }]}
-        >
-          <FontAwesome5 name="infinity" size={14} color={renkler.dikkat ?? renkler.metin} style={{ marginRight: 10 }} />
-          <Text style={[styles.uyariMetni, { color: renkler.metin }]}>
-            Pusula doğruluğu düşük. Telefonunuzu havada 8 çizer gibi birkaç kez hareket ettirin.
-          </Text>
-        </View>
-      )}
+      {/* Doğruluk DÜŞÜKKEN ayrı uyarı yok: `KalibrasyonRehberi` (KibleSayfasi) açılır — iki
+          ipucu yan yana gösterilmez. Bilinmiyorken yalnız sakin bir bilgi satırı. */}
       {!statik && ipucu === 'sonuk' && (
         <Text style={[styles.bilgi, { color: renkler.metinIkincil }]}>
           Yön kayıyorsa telefonunuzu havada 8 çizer gibi hareket ettirin.
@@ -314,17 +303,6 @@ const styles = StyleSheet.create({
   centik: { position: 'absolute', zIndex: 3, alignSelf: 'center' },
   kabe: { position: 'absolute', zIndex: 2 },
   merkez: { position: 'absolute', zIndex: 4 },
-  uyari: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderLeftWidth: 3,
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    marginTop: 12,
-    alignSelf: 'stretch',
-  },
-  uyariMetni: { flex: 1, fontSize: 14 },
   bilgi: { textAlign: 'center', fontSize: 12, marginTop: 10, maxWidth: 320 },
   cip: {
     flexDirection: 'row',

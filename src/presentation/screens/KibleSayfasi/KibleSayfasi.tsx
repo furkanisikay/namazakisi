@@ -15,6 +15,8 @@ import { konumMetniHesapla } from '../../../core/ayarlar/konumMetni';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { PusulaGorunumu } from './PusulaGorunumu';
 import { KameraGorunumu } from './KameraGorunumu';
+import { KalibrasyonRehberi } from './KalibrasyonRehberi';
+import { kalibrasyonNedeni } from '../../../core/kible/kalibrasyon';
 
 type Mod = 'pusula' | 'kamera';
 
@@ -63,6 +65,11 @@ export const KibleSayfasi = () => {
     return ['Konum seçilmedi', 'Konum takip ediliyor', 'GPS konumu alındı'].includes(ad) ? null : ad;
   })();
   const pusulaYok = kible.pusulaVar === false;
+  const kalibrasyonNedeniHesapla = kalibrasyonNedeni({
+    dogruluk: kible.pusulaDogrulugu,
+    alanBozuk: kible.teshis?.alanBozuk ?? false,
+    tutarsiz: kible.teshis?.tutarsiz ?? false,
+  });
   const aktifSekme = SEKMELER.find((t) => t.key === mod) ?? SEKMELER[0];
   useKibleGeriBildirimi(kible.ozet, odakta && kible.izinVerildi);
 
@@ -194,7 +201,13 @@ export const KibleSayfasi = () => {
         )}
       </View>
 
-      <View style={styles.content}>{govde}</View>
+      <View style={styles.content}>
+        {govde}
+        {/* Kalibrasyon rehberi: iki modda da AYNI bileşen, yalnız yön güvenilmezken. */}
+        {odakta && kible.izinVerildi && !kible.yukleniyor && !kible.hata && !pusulaYok && (
+          <KalibrasyonRehberi neden={kalibrasyonNedeniHesapla} abone={kible.abone} hareketAzalt={hareketAzalt} />
+        )}
+      </View>
     </SafeAreaView>
   );
 };

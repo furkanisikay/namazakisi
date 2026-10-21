@@ -9,6 +9,7 @@ import { KAMERA_OPTIGI, kabeyiIzdusur } from '../../../core/kible/kameraProjeksi
 import type { KibleKaresi, KibleOzeti } from '../../hooks/useKible';
 import { KabeSimgesi } from './KabeSimgesi';
 import { HizaHalkasi } from './HizaHalkasi';
+import { KibleYolu } from './KibleYolu';
 
 /** Kamera üstündeki yazılar için koyu tül (görüntü ne olursa olsun okunur). Dekoratif zemin. */
 const TUL = 'rgba(0,0,0,0.55)';
@@ -20,7 +21,8 @@ const KABE_BOYUT = 64;
  *
  * Kamera önizlemesinin üstüne Kâbe yönü iğne deliği modeliyle izdüşürülür
  * (`core/kible/kameraProjeksiyonu`): yön ekrandaysa orada Kâbe işareti ve mesafe, değilse
- * kenarda "sağa/sola dönün" oku. Görüntü yalnız ekranda gösterilir; kaydedilmez, hiçbir
+ * kenarda "sağa/sola dönün" oku; ayaktan Kâbe'ye zeminde bir yol (`KibleYolu`). Görüntü
+ * yalnız ekranda gösterilir; kaydedilmez, hiçbir
  * yere gönderilmez.
  *
  * Kamera izni yalnız bu görünümde, kullanıcı "Kamerayı açın"a bastığında istenir; reddedilirse
@@ -174,6 +176,18 @@ export const KameraGorunumu: React.FC<{
         mute
         animateShutter={false}
         onMountError={() => setKameraHatasi(true)}
+      />
+
+      {/* Yerdeki yol: ayaktan Kâbe'ye (yalnız görsel; işaretin altında birleşir). */}
+      <KibleYolu
+        abone={abone}
+        kibleAcisi={kibleAcisi}
+        genislik={alan.w}
+        yukseklik={alan.h}
+        optik={optik}
+        hizali={ozet.hizali && ozet.dik}
+        renk={renkler.birincil}
+        hareketAzalt={hareketAzalt}
       />
 
       {/* Ufuk/hedef çerçevesi: ortadaki daire; işaret onun içine gelince hizalısınız. */}
