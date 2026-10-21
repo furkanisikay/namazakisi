@@ -25,9 +25,13 @@ function onPlandaMi(durum: AppStateStatus | null | undefined): boolean {
     return durum !== 'background' && durum !== 'inactive';
 }
 
-/** Döngü şu an oynayabilir mi? (odak + ön plan + hareket azaltılmamış) */
-export function useDonguAcik(): boolean {
-    const azalt = useHareketAzalt();
+/**
+ * Ekran şu an GÖRÜNÜR mü? (gezinme odağı + uygulama ön planda). "Animasyonları azalt"a
+ * BAKMAZ: geri sayım gibi bilgi taşıyan canlı içerik azaltılmış harekette de akmalı.
+ * Gezinme bağlamı yoksa (test, gezinme dışı ağaç) odakta sayılır — `useIsFocused` gibi
+ * fırlatmaz.
+ */
+export function useEkranCanli(): boolean {
     const baglam = (Gezinme as { NavigationContext?: React.Context<OdakKaynagi | undefined> }).NavigationContext ?? BOS_BAGLAM;
     const gezinme = React.useContext(baglam);
     const [odak, setOdak] = React.useState<boolean>(() => gezinme?.isFocused?.() ?? true);
@@ -49,7 +53,14 @@ export function useDonguAcik(): boolean {
         return () => abonelik?.remove?.();
     }, []);
 
-    return !azalt && odak && onPlan;
+    return odak && onPlan;
+}
+
+/** Döngü şu an oynayabilir mi? (odak + ön plan + hareket azaltılmamış) */
+export function useDonguAcik(): boolean {
+    const azalt = useHareketAzalt();
+    const canli = useEkranCanli();
+    return !azalt && canli;
 }
 
 /**

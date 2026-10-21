@@ -8,10 +8,13 @@ import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { NAMAZ_DURUMLARI } from '../../../core/vakit/durumSozlugu';
 import { KildimDugmesi, KILDIM_DUGMESI_YUKSEKLIK } from '../hareket/KildimDugmesi';
 import { kildimDugmesiRenkleri } from '../../../core/anaEkran/kildimDugmesiRenkleri';
+import { GeriSayimMetni } from './GeriSayimMetni';
 
 interface VakitKartiProps {
+    /** Sayaç hedefi `vakitBilgisi.sonrakiVakitGiris`; saniyelik çizim yalnız `GeriSayimMetni`nde (D-03). */
     vakitBilgisi: VakitBilgisi | null;
-    kalanSureStr: string; // "02:45:12" formatında
+    /** Sayaç sıfıra inince (vakit sınırı) bir kez; ana ekran vakit bilgisini tazeler. */
+    onSayacBitti?: () => void;
     suankiVakitAdi: string; // "İkindi"
     vakitAraligi: string; // "15:15 - 17:42"
     tamamlandi: boolean;
@@ -64,7 +67,7 @@ const getVakitIkonu = (vakit: string): string => {
 
 export const VakitKarti: React.FC<VakitKartiProps> = ({
     vakitBilgisi,
-    kalanSureStr,
+    onSayacBitti,
     suankiVakitAdi,
     vakitAraligi,
     tamamlandi,
@@ -188,9 +191,12 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
 
                 {/* Sayaç */}
                 <View className="my-6 items-center">
-                    <Text className="text-5xl font-mono font-bold tracking-tighter tabular-nums" style={{ color: renkler.metin }}>
-                        {kalanSureStr}
-                    </Text>
+                    <GeriSayimMetni
+                        hedefIso={vakitBilgisi?.sonrakiVakitGiris}
+                        onBitti={onSayacBitti}
+                        className="text-5xl font-mono font-bold tracking-tighter tabular-nums"
+                        style={{ color: renkler.metin }}
+                    />
                     <Text className="text-xs font-semibold tracking-widest mt-2" style={{ color: renkler.metinIkincil }}>
                         KALAN SÜRE
                     </Text>
