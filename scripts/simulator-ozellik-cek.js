@@ -146,6 +146,17 @@ async function bolum(ad, fn) {
         // Gercek alarm "Nasıl" izgarasindaki karodur (Gelişmiş'i acmak gerekmez).
         const anahtar = await getir(/adim-alarm-anahtari/, 'alarm-anahtari', { ust: 0.3, alt: 0.75 });
         cek('09-adim-detay-anahtarlar');
+        // "Tekrarla" AÇIK: aralık seçicisi + canlı cümle; sonra şeritte tekrar tikleri.
+        const tekrar = await getir(/adim-tekrar-anahtari|^Tekrarla$/, 'tekrar-anahtari', { ust: 0.25, alt: 0.6 });
+        if (tekrar) {
+            await dokun(tekrar.ogeler, /adim-tekrar-anahtari|^Tekrarla$/, 'tekrar anahtari', { bekle: 1500 });
+            if (!bul(await agac('tekrar-acik-1'), /Tekrar aralığı artır/)) {
+                const guncel = bul(await agac('tekrar-anahtari-tekrar'), /adim-tekrar-anahtari|^Tekrarla$/);
+                if (guncel) await s.anahtariSurukle(guncel);
+            }
+            await agac('tekrar-acik');
+            cek('44-adim-detay-tekrar-acik');
+        }
         if (!anahtar) return;
         // `idb ui tap` UISwitch'i toggle ETMEZ: once dokun, olmazsa surukle.
         await dokun(anahtar.ogeler, /adim-alarm-anahtari/, 'alarm anahtari', { bekle: 2000 });
@@ -161,19 +172,9 @@ async function bolum(ad, fn) {
         } else {
             console.error('  alarm onay modali acilamadi (UISwitch idb ile degismedi)');
         }
-        // "Tekrarla" AÇIK: aralık seçicisi + canlı cümle; sonra şeritte tekrar tikleri.
-        const tekrar = await getir(/adim-tekrar-anahtari/, 'tekrar-anahtari', { ust: 0.25, alt: 0.6 });
-        if (tekrar) {
-            await dokun(tekrar.ogeler, /adim-tekrar-anahtari/, 'tekrar anahtari', { bekle: 1500 });
-            if (!bul(await agac('tekrar-acik-1'), /Tekrar aralığı artır/)) {
-                const guncel = bul(await agac('tekrar-anahtari-tekrar'), /adim-tekrar-anahtari/);
-                if (guncel) await s.anahtariSurukle(guncel);
-            }
-            await agac('tekrar-acik');
-            cek('44-adim-detay-tekrar-acik');
-            if (await dokun(await agac('adim-kapat'), /^Kapat$/, 'detay kapat', { bekle: 2000 })) {
-                if (await getir(/ilk hatırlatma/i, 'serit-tekrar', { ust: 0.3, alt: 0.55 })) cek('45-zaman-seridi-tekrar');
-            }
+        // Detayı kapat: şeritte tekrar tikleri (tekrar yukarıda açıldıysa).
+        if (tekrar && (await dokun(await agac('adim-kapat'), /^Kapat$/, 'detay kapat', { bekle: 2000 }))) {
+            if (await getir(/ilk hatırlatma/i, 'serit-tekrar', { ust: 0.3, alt: 0.55 })) cek('45-zaman-seridi-tekrar');
         }
     });
 
