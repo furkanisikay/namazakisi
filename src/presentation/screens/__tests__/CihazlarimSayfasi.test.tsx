@@ -118,4 +118,18 @@ describe('CihazlarimSayfasi', () => {
         fireEvent.press(getByTestId('cihazlarim-tv-ekle'));
         expect(mockNavigate).toHaveBeenCalledWith('TelevizyonAyarlari');
     });
+
+    it('NÖBETÇİ (a11y): harita kartı tek düğüme düzleşmez; boş haritadaki "TV ekleyin" ayrı düğmedir', async () => {
+        mockListe.mockResolvedValue([]);
+        const { findByTestId, getAllByLabelText } = render(<CihazlarimSayfasi />);
+        const harita = await findByTestId('cihazlarim-harita');
+        expect(harita.props.accessible).toBeFalsy();
+        // Harita içi düğme + sayfa altındaki birincil düğme.
+        expect(getAllByLabelText('TV ekleyin').length).toBe(2);
+    });
+
+    it('harita düğümleri bağ durumunu söyler', async () => {
+        const { findByLabelText } = render(<CihazlarimSayfasi />);
+        expect(await findByLabelText('Salon TV: bağlı')).toBeTruthy();
+    });
 });

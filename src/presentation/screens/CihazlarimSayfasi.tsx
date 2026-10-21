@@ -312,6 +312,12 @@ const AnahtarSatiri: React.FC<{
     </View>
 );
 
+const BAG_ETIKETI: Record<CihazUyeligi['durum'], string> = {
+    tamam: 'bağlı',
+    ulasilamadi: 'şu an ulaşılamıyor',
+    reddedildi: 'yeniden eklenmeli',
+};
+
 /** Görünen en fazla düğüm; fazlası "+N" düğümünde toplanır (küçük ekranda sıkışmasın). */
 const AZAMI_DUGUM = 3;
 
@@ -362,12 +368,10 @@ const AgHaritasi: React.FC<{ renkler: Renkler; liste: CihazUyeligi[]; onEkle: ()
             testID="cihazlarim-harita"
             className="px-4 pt-5 pb-4"
             style={kartStili(renkler)}
-            accessible
-            accessibilityLabel={
-                bos ? 'Bu telefona bağlı TV yok' : `Bu telefona bağlı ${liste.length} TV: ${liste.map((u) => u.aliciAdi).join(', ')}`
-            }
         >
-            <View className="items-center">
+            {/* Kart `accessible` YAPILMAZ: çocukları tek düğüme düzleşir, içteki "TV ekleyin"
+                düğmesine ekran okuyucu ulaşamazdı. Her düğüm kendi etiketini taşır. */}
+            <View className="items-center" accessible accessibilityLabel="Bu telefon">
                 <View className="w-12 h-12 rounded-2xl items-center justify-center" style={{ backgroundColor: renkler.birincil + '20' }}>
                     <FontAwesome5 name="mobile-alt" size={20} color={renkler.birincil} />
                 </View>
@@ -418,7 +422,12 @@ const AgHaritasi: React.FC<{ renkler: Renkler; liste: CihazUyeligi[]; onEkle: ()
                             }}
                         />
                         {u ? (
-                            <View className="items-center" style={{ maxWidth: '100%' }}>
+                            <View
+                                className="items-center"
+                                style={{ maxWidth: '100%' }}
+                                accessible
+                                accessibilityLabel={`${u.aliciAdi}: ${BAG_ETIKETI[u.durum]}`}
+                            >
                                 <View className="w-11 h-11 rounded-2xl items-center justify-center" style={{ backgroundColor: bagRengi(u) + '20' }}>
                                     <FontAwesome5 name="tv" size={15} color={bagRengi(u)} />
                                 </View>
