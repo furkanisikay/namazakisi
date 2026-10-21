@@ -1,21 +1,27 @@
 # tohum: ozellik
-# Televizyonda gosterin: telefondan Android TV'ye konum aktarma (QR + 7 haneli kod).
-# Tarayici acilmaz (emulatorde Play hizmetleri kod tarayicisi gercek QR okuyamaz);
-# sayfanin ust yarisi (sahne + dugme) ve kod karti cekilir.
+# Cihazlarim + TV ekleyin: telefondan Android TV'ye sifreli eslestirme (QR + 7 haneli kod).
+# Uyelik guvenli depoda (expo-secure-store / Keystore) tutuldugu icin tohumlanamaz → Cihazlarim
+# BOS durumuyla cekilir (bag haritasi + "TV ekleyin"). Tarayici acilmaz (emulatorde gercek QR yok);
+# TV ekleme sayfasinin ust yarisi ve kod karti cekilir.
 appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _ayarlar.yaml
 - scrollUntilVisible:
     element:
-      text: "Televizyonda gösterin\\..*"
+      text: "Cihazlarım\\..*"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Televizyonda gösterin\\..*"
+    text: "Cihazlarım\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
-- takeScreenshot: ozk/32-televizyon
+- takeScreenshot: ozk/32-cihazlarim
+- tapOn:
+    id: "cihazlarim-tv-ekle"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/33-televizyon
 - scrollUntilVisible:
     element:
       id: "tv-konum-kodu"
@@ -23,4 +29,4 @@ appId: com.furkanisikay.namazakisi
     timeout: 60000
     waitToSettleTimeoutMs: 1500
     centerElement: true
-- takeScreenshot: ozk/33-televizyon-kod
+- takeScreenshot: ozk/34-televizyon-kod
