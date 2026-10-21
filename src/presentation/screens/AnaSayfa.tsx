@@ -83,7 +83,6 @@ export const AnaSayfa: React.FC = () => {
   const [kutlamaGoster, setKutlamaGoster] = useState(false);
   const [muhafizDurumu, setMuhafizDurumu] = useState<{ mesaj: string, seviye: number }>({ mesaj: '', seviye: 0 });
   const [vakitBilgisi, setVakitBilgisi] = useState<VakitBilgisi | null>(null);
-  const [kalanSureStr, setKalanSureStr] = useState("00:00:00");
   const [mekruhBilgi, setMekruhBilgi] = useState<{ mekruhMu: boolean; aciklama: string | null; tur?: KerahatTuru }>({
     mekruhMu: false,
     aciklama: null,
@@ -147,6 +146,10 @@ export const AnaSayfa: React.FC = () => {
 
   const oncekiTamamlananRef = useRef<number>(0);
   const arkaplanMuhafizTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Geri sayım sıfıra inince (GeriSayimMetni → onBitti) vakit bilgisini tazeleyen işlev;
+  // vakit effect'i yazar. Geri çağrı ref üzerinden: kartlara giden prop referansı sabit.
+  const vakitTazeleRef = useRef<(() => void) | null>(null);
+  const handleSayacBitti = useCallback(() => vakitTazeleRef.current?.(), []);
   // Programatik pager geçişi (açılış snap'i / tarih seçici / aktif güne dönüş) sırasında
   // onPageSelected'ın yanlışlıkla "gelecek gün" toast'ı + geri-snap yapmasını önleyen bayrak.
   // Yalnızca kullanıcı ELLE gelecek bir güne kaydırınca toast çıkmalı (#13 + gece yarısı bug).
@@ -446,47 +449,35 @@ export const AnaSayfa: React.FC = () => {
          if (prev && bilgi && prev.vakit === bilgi.vakit && prev.sonrakiVakitGiris === bilgi.sonrakiVakitGiris) return prev;
          return bilgi;
       });
-
-      if (bilgi) {
-        const simdi = new Date();
-        const hedef = new Date(bilgi.sonrakiVakitGiris);
-        let fark = hedef.getTime() - simdi.getTime();
-
-        if (fark < 0) fark = 0;
-
-        const saat = Math.floor(fark / (1000 * 60 * 60));
-        const dakika = Math.floor((fark % (1000 * 60 * 60)) / (1000 * 60));
-        const saniye = Math.floor((fark % (1000 * 60)) / 1000);
-
-        const yeniKalanSureStr = `${saat.toString().padStart(2, '0')}:${dakika.toString().padStart(2, '0')}:${saniye.toString().padStart(2, '0')}`;
-
-        // Eger kalan sure stringi ayniysa re-render'dan kacin
-        setKalanSureStr(prev => prev === yeniKalanSureStr ? prev : yeniKalanSureStr);
-      }
+      return bilgi;
     };
 
-    updateTimer();
+    // SANİYELİK ZAMANLAYICI YOK (denetim D-03): kalan süreyi `GeriSayimMetni` kendisi sayar;
+    // ana ekran saniyede bir çizilmez. Burada yalnız VAKİT SINIRINDA (sonraki vakit girişi
+    // + 500 ms) uyanılır; uygulama öne gelince ve sayaç sıfıra inince (onBitti) hemen.
+    // Sınır henüz geçmemiş görünürse (servis aynı hedefi döndü) 1 sn sonra yeniden bakılır.
+    let sinirZamanlayici: ReturnType<typeof setTimeout> | null = null;
 
-    // Timer interval refs
-    let timerInterval: NodeJS.Timeout | null = null;
+    const stopLocalTimer = () => {
+      if (sinirZamanlayici) {
+        clearTimeout(sinirZamanlayici);
+        sinirZamanlayici = null;
+      }
+    };
 
     // Uygulama on plandayken calistir, arkada kapat 
     // (Boylece Background state update sirasina bagli react navigation render crush'lari onlenir)
     const startLocalTimer = () => {
-      if (!timerInterval) {
-        timerInterval = setInterval(updateTimer, 1000);
-      }
-    };
-
-    const stopLocalTimer = () => {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
+      stopLocalTimer();
+      const bilgi = updateTimer();
+      const hedefMs = bilgi ? Date.parse(bilgi.sonrakiVakitGiris) : NaN;
+      const bekle = Number.isFinite(hedefMs) ? Math.max(hedefMs - Date.now() + 500, 1000) : 60 * 1000;
+      sinirZamanlayici = setTimeout(startLocalTimer, bekle);
     };
 
     // Ilk render'da ac ve AppState dinleyicisine ekle
     startLocalTimer();
+    vakitTazeleRef.current = startLocalTimer;
 
     if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
 
@@ -533,7 +524,6 @@ export const AnaSayfa: React.FC = () => {
 
     const appStateEvent = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active') {
-        updateTimer();
         startLocalTimer();
       } else {
         stopLocalTimer();
@@ -543,6 +533,7 @@ export const AnaSayfa: React.FC = () => {
     return () => {
       iptalEdildi = true;
       stopLocalTimer();
+      if (vakitTazeleRef.current === startLocalTimer) vakitTazeleRef.current = null;
       appStateEvent.remove();
       muhafiz.durdur();
       if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
@@ -917,7 +908,7 @@ export const AnaSayfa: React.FC = () => {
         {aktifGunKontrol ? (
           <VakitKarti
             vakitBilgisi={vakitBilgisi}
-            kalanSureStr={kalanSureStr}
+            onSayacBitti={handleSayacBitti}
             suankiVakitAdi={suankiVakitAdi}
             vakitAraligi={vakitAraligi}
             tamamlandi={suankiVakitTamamlandi}
@@ -968,7 +959,8 @@ export const AnaSayfa: React.FC = () => {
       const masaustuUst = aktifGunKontrol ? (
         <MasaustuGeriSayim
           vakitAdi={gorunenVakitAdi}
-          kalanSureStr={kalanSureStr}
+          hedefIso={vakitBilgisi?.sonrakiVakitGiris}
+          onSayacBitti={handleSayacBitti}
           vakitAraligi={vakitAraligi}
           tamamlandi={suankiVakitTamamlandi}
           kilitli={kilitli}

@@ -22,11 +22,18 @@ jest.mock('../../../../core/theme', () => ({
 }));
 
 import { VakitKarti } from '../VakitKarti';
+import type { VakitBilgisi } from '../../../../domain/services/NamazVaktiHesaplayiciServisi';
+
+// Sayaç (GeriSayimMetni, D-03) `Date.now()` okur: sabit "şimdi" ile metin deterministik.
+const SIMDI = Date.UTC(2026, 0, 1, 9, 0, 0);
 
 describe('VakitKarti Bileşeni', () => {
+  beforeAll(() => { jest.spyOn(Date, 'now').mockReturnValue(SIMDI); });
+  afterAll(() => { jest.restoreAllMocks(); });
+
   const varsayilanProps = {
-    vakitBilgisi: null,
-    kalanSureStr: '01:30:00',
+    // Sayaç hedefi 1 sa 30 dk (+0,5 sn; tetik 505 ms aralıkla) sonrası → "01:30:00".
+    vakitBilgisi: { sonrakiVakitGiris: new Date(SIMDI + 90 * 60 * 1000 + 500).toISOString() } as unknown as VakitBilgisi,
     suankiVakitAdi: 'Öğle',
     vakitAraligi: '13:00 - 16:30',
     tamamlandi: false,

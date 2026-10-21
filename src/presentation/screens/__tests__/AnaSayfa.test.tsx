@@ -2,7 +2,8 @@
  * AnaSayfa — iki yaşanmış bug için NÖBETÇİ testler.
  *
  * 1) Tarih seçici geri çağrısı STABİL olmalı.
- *    Ana ekran geri sayım sayacı yüzünden saniyede bir re-render olur.
+ *    Ana ekran her yeniden çizimde (eskiden saniyelik geri sayım yüzünden saniyede
+ *    bir; D-03'ten beri sayaç kendi bileşeninde) prop'larını yeniden üretir.
  *    `@react-native-community/datetimepicker` Android dialog'unu
  *    `[onChange, value.getTime(), mode]` bağımlılıklı bir effect içinde açar →
  *    `onChange` her render'da yeni referans olursa dialog yeniden açılır ve
@@ -17,8 +18,8 @@
  * göreceli doğrulanır. SAHTE ZAMANLAYICI DA KULLANILMAZ: `jest.useFakeTimers` +
  * `setSystemTime` bu tam-sayfa render testlerini CI runner'ında asıyordu
  * (yerelde 0.1 sn, CI'da 30 sn'lik testTimeout — üstelik hep aynı testler
- * değil). Senaryolar imsak mock'undan kurulur, sayaç tick'i `waitFor` ile
- * gerçek zamanda beklenir.
+ * değil). Senaryolar imsak mock'undan kurulur; yeniden çizim `rerender` ile
+ * tetiklenir (ana ekran artık saniyede bir kendiliğinden çizilmez — D-03).
  */
 import React from 'react';
 import { render, fireEvent, act, waitFor, within } from '@testing-library/react-native';
@@ -160,6 +161,14 @@ jest.mock('../../components/home/VakitKarti', () => {
   };
 });
 const mockVakitAkisiProplari: { onVakitTikla?: (ad: string, val: boolean) => void }[] = [];
+// Geri sayım kendi bileşeninde saniyede bir çizilir (D-03); burada SABİT tutulur ki
+// ana ekranın kendi çizim sayısı ölçülebilsin (bkz. NÖBETÇİ D-03).
+jest.mock('../../components/home/GeriSayimMetni', () => ({
+  GeriSayimMetni: () => null,
+  useKalanSure: () => '01:00:00',
+  hedefMsCoz: () => null,
+  kalanSureMetni: () => '01:00:00',
+}));
 jest.mock('../../components/home/VakitAkisi', () => {
   const { View } = require('react-native');
   return {
@@ -325,8 +334,8 @@ const mockRenkler = {
  * takılıyordu (hep aynı üçü de değil — flaky). İmsağı gerçek "şimdi"nin iki yanına
  * koymak aynı iki dalı sahte saat olmadan, deterministik biçimde kurar.
  *
- * Sayaç hedefi de ileriye kurulur ki her tick'te kalan süre metni DEĞİŞSİN —
- * yeniden render olmadan prop stabilitesi ölçülemez.
+ * Sayaç hedefi ileriye kurulur (geçmiş hedef vakit sınırı zamanlayıcısını 1 sn'lik
+ * yeniden denemeye düşürürdü).
  */
 const geceYarisiSenaryosu = () => {
   // İmsak günün SONUNDA → şu an kesinlikle imsaktan önce → aktif gün DÜN
@@ -404,6 +413,15 @@ describe('AnaSayfa', () => {
     return sonuc;
   };
 
+  /**
+   * Ana ekranı AYNI bileşen türüyle yeniden çizer (eski saniyelik tick'in yerine; D-03).
+   * Farklı bir sarmalayıcıyla `rerender` etmek ekranı yeniden mount ederdi.
+   */
+  const yenidenCiz = (ekran: Awaited<ReturnType<typeof kur>>) => {
+    const { AnaSayfa } = require('../AnaSayfa');
+    ekran.rerender(<AnaSayfa />);
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockPagerProplari.length = 0;
@@ -447,32 +465,29 @@ describe('AnaSayfa', () => {
       return ekran;
     };
 
-    it('sayaç tick\'i ile yeniden render olsa da onChange AYNI REFERANS kalır', async () => {
-      await tarihSeciciyiAc();
+    it('yeniden render olsa da onChange AYNI REFERANS kalır', async () => {
+      const ekran = await tarihSeciciyiAc();
 
       expect(mockTarihSeciciProplari.length).toBeGreaterThan(0);
       const ilk = mockTarihSeciciProplari[mockTarihSeciciProplari.length - 1];
       const renderSayisi = mockTarihSeciciProplari.length;
 
-      // Geri sayım sayacı GERÇEK zamanlayıcıdır (1 sn); en az bir tick bekle.
-      // Test vakum olmasın: yeniden render olduğu bekleyişin kendisiyle KANITLANIR.
-      await waitFor(() =>
-        expect(mockTarihSeciciProplari.length).toBeGreaterThan(renderSayisi)
-      );
+      // Test vakum olmasın: yeniden render olduğu sayaçla KANITLANIR.
+      yenidenCiz(ekran);
+      expect(mockTarihSeciciProplari.length).toBeGreaterThan(renderSayisi);
 
       const son = mockTarihSeciciProplari[mockTarihSeciciProplari.length - 1];
       expect(son.onChange).toBe(ilk.onChange);
     });
 
-    it('sayaç tick\'i ile value/minimumDate/maximumDate timestamp\'i DEĞİŞMEZ', async () => {
-      await tarihSeciciyiAc();
+    it('yeniden render olsa da value/minimumDate/maximumDate timestamp\'i DEĞİŞMEZ', async () => {
+      const ekran = await tarihSeciciyiAc();
 
       const ilk = mockTarihSeciciProplari[mockTarihSeciciProplari.length - 1];
       const renderSayisi = mockTarihSeciciProplari.length;
 
-      await waitFor(() =>
-        expect(mockTarihSeciciProplari.length).toBeGreaterThan(renderSayisi)
-      );
+      yenidenCiz(ekran);
+      expect(mockTarihSeciciProplari.length).toBeGreaterThan(renderSayisi);
 
       const son = mockTarihSeciciProplari[mockTarihSeciciProplari.length - 1];
       // datetimepicker effect'i `value.getTime()`e bakar → timestamp sabit kalmalı
@@ -504,11 +519,12 @@ describe('AnaSayfa', () => {
 
     it('açılış sayfası ilk render\'da DONDURULUR — sonraki render\'larda değişmez', async () => {
       geceYarisiSenaryosu();
-      await kur(bugunuAl());
+      const ekran = await kur(bugunuAl());
 
-      // Sayaç tick'i yeniden render tetikler; açılış sayfası yine de değişmemeli
+      // Yeniden render; açılış sayfası yine de değişmemeli
       const renderSayisi = mockPagerProplari.length;
-      await waitFor(() => expect(mockPagerProplari.length).toBeGreaterThan(renderSayisi));
+      yenidenCiz(ekran);
+      expect(mockPagerProplari.length).toBeGreaterThan(renderSayisi);
 
       const tumIndeksler = mockPagerProplari.map((p) => p.initialPage);
       expect(new Set(tumIndeksler).size).toBe(1);
@@ -775,21 +791,24 @@ describe('AnaSayfa', () => {
       expect(ekran.queryByTestId('durum-alani')).toBeNull();
     });
 
-    it('vakit kartının "Kıldım" geri çağrısı saniyelik çizimde AYNI REFERANS kalır', async () => {
+    it('vakit kartının "Kıldım" ve sayaç-bitti geri çağrıları yeniden çizimde AYNI REFERANS kalır', async () => {
       gunduzSenaryosu();
       mockPagerCocuklari.ciz = true;
-      await kur(bugunuAl());
-      const ilk = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onTamamla?: unknown };
+      const ekran = await kur(bugunuAl());
+      const ilk = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onTamamla?: unknown; onSayacBitti?: unknown };
       const sayi = mockVakitKartiProplari.length;
-      await waitFor(() => expect(mockVakitKartiProplari.length).toBeGreaterThan(sayi));
-      const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onTamamla?: unknown };
+      yenidenCiz(ekran);
+      expect(mockVakitKartiProplari.length).toBeGreaterThan(sayi);
+      const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onTamamla?: unknown; onSayacBitti?: unknown };
       expect(son.onTamamla).toBe(ilk.onTamamla);
+      expect(typeof son.onSayacBitti).toBe('function');
+      expect(son.onSayacBitti).toBe(ilk.onSayacBitti);
     });
 
     it('vakit kartından GERİ ALMA: aynı işaretleme yolu, false yönü; geri çağrı kararlı', async () => {
       gunduzSenaryosu();
       mockPagerCocuklari.ciz = true;
-      await kur(bugunuAl());
+      const ekran = await kur(bugunuAl());
       const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as {
         onGeriAl?: () => void; kayitKimligi?: string;
       };
@@ -801,7 +820,8 @@ describe('AnaSayfa', () => {
       const { namazDurumunuDegistir } = jest.requireMock('../../store/namazSlice');
       expect(namazDurumunuDegistir).toHaveBeenCalledWith({ tarih: bugunuAl(), namazAdi: 'Öğle', tamamlandi: false });
       const sayi = mockVakitKartiProplari.length;
-      await waitFor(() => expect(mockVakitKartiProplari.length).toBeGreaterThan(sayi));
+      yenidenCiz(ekran);
+      expect(mockVakitKartiProplari.length).toBeGreaterThan(sayi);
       const sonraki = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onGeriAl?: unknown };
       expect(sonraki.onGeriAl).toBe(son.onGeriAl);
     });
@@ -913,4 +933,34 @@ describe('AnaSayfa', () => {
       expect(mockPagerProplari.length).toBeGreaterThan(0);
     });
   });
+
+  // ── NÖBETÇİ (D-03) — ana ekran saniyede bir yeniden ÇİZİLMEZ ──────────────
+  // Geri sayım kendi küçük bileşeninde (GeriSayimMetni) yaşar; ana ekranın tamamı
+  // (92 sayfalık pager, modallar, akış) yalnız gerçek bir durum değişince çizilir.
+  // Ölçüm gerçek zamanlıdır (sahte zamanlayıcı CI'da asılır): ~3 sn bekle, React
+  // `Profiler` ile commit sayısını say. Eski kodda ≥3 (saniyede bir) idi.
+  it('NÖBETÇİ D-03: ana ekran ~3 sn boyunca saniyelik YENİDEN ÇİZİLMEZ', async () => {
+    gunduzSenaryosu();
+    mockPagerCocuklari.ciz = true;
+    const state = stateOlustur(bugunuAl(), { muhafizAktif: true });
+    (useAppSelector as unknown as jest.Mock).mockImplementation(
+      (selector: (s: typeof state) => unknown) => selector(state)
+    );
+    const { AnaSayfa } = require('../AnaSayfa');
+    const commitler: string[] = [];
+    render(
+      <React.Profiler id="ana" onRender={(_id, evre) => { commitler.push(evre); }}>
+        <AnaSayfa />
+      </React.Profiler>
+    );
+    await act(async () => { await Promise.resolve(); });
+    const yerlesik = commitler.length;
+    // act sonunda güncellemeler TEK commit'e toplanır; saniyelik çizimi saklamasın diye
+    // bekleyiş 200 ms'lik dilimlere bölünür (her dilim kendi commit'ini yapar).
+    for (let i = 0; i < 16; i++) {
+      await act(async () => { await new Promise((r) => setTimeout(r, 200)); });
+    }
+    const ek = commitler.length - yerlesik;
+    expect(ek).toBeLessThanOrEqual(1);
+  }, 15000);
 });
