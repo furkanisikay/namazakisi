@@ -1,0 +1,74 @@
+{
+  "_aciklama": "TV eşitleme kanalı AES-256-GCM fikstürü. scripts/tv/esitleme-fikstur-uret.py (Python cryptography) üretir; telefon @noble/ciphers ve TV javax.crypto bu dosyaya karşı sınanır. ct = şifreli metin || 16 bayt GCM etiketi, base64. AAD UTF-8 dizesidir.",
+  "anahtar": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
+  "sir": "AwoRGB8mLTQ7QklQV15lbHN6gYiPlp2kq7K5wMfO1dw",
+  "tvKimlik": "0123456789abcdef",
+  "uye": "fedcba9876543210",
+  "kanal": {
+    "iv": "oKGio6Slpqeoqaqr",
+    "aad": "2|0123456789abcdef|fedcba9876543210|7",
+    "duz": "{\"v\":2,\"durum\":{\"ad\":\"Kadıköy, İstanbul\",\"konum\":{\"lat\":40.99,\"lng\":29.03},\"kilinan\":{\"2026-10-20\":[\"imsak\",\"ogle\"],\"2026-10-21\":[\"imsak\"]},\"ozelGun\":false,\"tvHatirlat\":true,\"durumumSayilsin\":true,\"cuma\":{\"aktif\":true,\"cikisDk\":25},\"ramazan\":false}}",
+    "ct": "nToKD3/5Lp0GEPWmalj6pVLNPTKolQkN+MqX7bwdDC3ysveM20M9XyrwJuQrEeyXMnZkchnydh81fDFqlF68iZie6QFXh97SzczPK/Li7tGkZ8LKpK+7QJVXDKqDrGClv6kZmyGU1Ln3tnUx7qrBCks3Dcv8aLceHf/skplkwmD3IJJFiGDpekQ4lalPN73056PIB/mllK7Hq9yZ3KIYCbJuV9DCAzJ6434JGBugw4RbBJntcBPDS+/RF0A17mw+WhR2vRKk3sHRPjWiKAYIznCIj5xWBfqCmbMtgHHkuQ4DOEFl0k/jDfXBbn0wai0ecdysHbM0EesYyNAXdhLrs6sX/bj3Q8a7/7L4/Q=="
+  },
+  "esleIstek": {
+    "iv": "EBESExQVFhcYGRob",
+    "aad": "esle|2|0123456789abcdef|istek",
+    "duz": "{\"cihaz\":\"Furkan'ın telefonu\",\"ist\":\"a1b2c3d4e5f60718\"}",
+    "ct": "xaawuRLpP8HpkG08YRiqLTcmNmMhTCJnZaDmbBF7mJkAIZSSyf4t5I+X3SDtuYJ2Q64mbTXRtIFIaerT8EGrBKRrL/pUBo6p"
+  },
+  "esleYanit": {
+    "iv": "MDEyMzQ1Njc4OTo7",
+    "aad": "esle|2|0123456789abcdef|yanit|a1b2c3d4e5f60718",
+    "duz": "{\"durum\":\"onay\",\"u\":\"fedcba9876543210\",\"k\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\",\"tvAdi\":\"Salon TV\"}",
+    "ct": "TK7kmRiSFAYJEYfW4SEXwyLvPRHG+1Ftqz8ffE9pyl3QmmGKy2WijKwvrR4ZeCN1wMIWvxuC7EbyVTeUBiKw3Qo1sgfMnxR1XQrdkjpX3olER4irC6RPjUM/IqgEuataAPScKrayAhGSraNOUOjTwj6jmHaQ+wYy61FiKcM="
+  },
+  "ozelIpv4": {
+    "_aciklama": "Telefon (TS + native) ve TV aynı katı kuralı uygular (denetim D-06): RFC 1918, oktet 0-255, başta sıfır/işaret yok.",
+    "gecerli": [
+      "10.0.0.7",
+      "192.168.1.23",
+      "172.16.0.1",
+      "172.31.255.255",
+      "10.255.255.254"
+    ],
+    "gecersiz": [
+      "010.010.010.010",
+      "192.168.01.1",
+      "+10.0.0.1",
+      "10.0.0.256",
+      "172.15.0.1",
+      "172.32.0.1",
+      "8.8.8.8",
+      "127.0.0.1",
+      "10.0.0",
+      "10.0.0.1.1",
+      " 10.0.0.1",
+      "10.0.0.1 ",
+      "0x0a.0.0.1",
+      ""
+    ]
+  },
+  "redler": [
+    {
+      "neden": "etiket bozuk",
+      "iv": "oKGio6Slpqeoqaqr",
+      "aad": "2|0123456789abcdef|fedcba9876543210|7",
+      "duz": "{\"v\":2,\"durum\":{\"ad\":\"Kadıköy, İstanbul\",\"konum\":{\"lat\":40.99,\"lng\":29.03},\"kilinan\":{\"2026-10-20\":[\"imsak\",\"ogle\"],\"2026-10-21\":[\"imsak\"]},\"ozelGun\":false,\"tvHatirlat\":true,\"durumumSayilsin\":true,\"cuma\":{\"aktif\":true,\"cikisDk\":25},\"ramazan\":false}}",
+      "ct": "nToKD3/5Lp0GEPWmalj6pVLNPTKolQkN+MqX7bwdDC3ysveM20M9XyrwJuQrEeyXMnZkchnydh81fDFqlF68iZie6QFXh97SzczPK/Li7tGkZ8LKpK+7QJVXDKqDrGClv6kZmyGU1Ln3tnUx7qrBCks3Dcv8aLceHf/skplkwmD3IJJFiGDpekQ4lalPN73056PIB/mllK7Hq9yZ3KIYCbJuV9DCAzJ6434JGBugw4RbBJntcBPDS+/RF0A17mw+WhR2vRKk3sHRPjWiKAYIznCIj5xWBfqCmbMtgHHkuQ4DOEFl0k/jDfXBbn0wai0ecdysHbM0EesYyNAXdhLrs6sX/bj3Q8a7/7L4/A=="
+    },
+    {
+      "neden": "AAD'de n farklı (tekrar/kaydırma)",
+      "iv": "oKGio6Slpqeoqaqr",
+      "aad": "2|0123456789abcdef|fedcba9876543210|8",
+      "duz": "{\"v\":2,\"durum\":{\"ad\":\"Kadıköy, İstanbul\",\"konum\":{\"lat\":40.99,\"lng\":29.03},\"kilinan\":{\"2026-10-20\":[\"imsak\",\"ogle\"],\"2026-10-21\":[\"imsak\"]},\"ozelGun\":false,\"tvHatirlat\":true,\"durumumSayilsin\":true,\"cuma\":{\"aktif\":true,\"cikisDk\":25},\"ramazan\":false}}",
+      "ct": "nToKD3/5Lp0GEPWmalj6pVLNPTKolQkN+MqX7bwdDC3ysveM20M9XyrwJuQrEeyXMnZkchnydh81fDFqlF68iZie6QFXh97SzczPK/Li7tGkZ8LKpK+7QJVXDKqDrGClv6kZmyGU1Ln3tnUx7qrBCks3Dcv8aLceHf/skplkwmD3IJJFiGDpekQ4lalPN73056PIB/mllK7Hq9yZ3KIYCbJuV9DCAzJ6434JGBugw4RbBJntcBPDS+/RF0A17mw+WhR2vRKk3sHRPjWiKAYIznCIj5xWBfqCmbMtgHHkuQ4DOEFl0k/jDfXBbn0wai0ecdysHbM0EesYyNAXdhLrs6sX/bj3Q8a7/7L4/Q=="
+    },
+    {
+      "neden": "başka TV kimliği",
+      "iv": "oKGio6Slpqeoqaqr",
+      "aad": "2|ffffffffffffffff|fedcba9876543210|7",
+      "duz": "{\"v\":2,\"durum\":{\"ad\":\"Kadıköy, İstanbul\",\"konum\":{\"lat\":40.99,\"lng\":29.03},\"kilinan\":{\"2026-10-20\":[\"imsak\",\"ogle\"],\"2026-10-21\":[\"imsak\"]},\"ozelGun\":false,\"tvHatirlat\":true,\"durumumSayilsin\":true,\"cuma\":{\"aktif\":true,\"cikisDk\":25},\"ramazan\":false}}",
+      "ct": "nToKD3/5Lp0GEPWmalj6pVLNPTKolQkN+MqX7bwdDC3ysveM20M9XyrwJuQrEeyXMnZkchnydh81fDFqlF68iZie6QFXh97SzczPK/Li7tGkZ8LKpK+7QJVXDKqDrGClv6kZmyGU1Ln3tnUx7qrBCks3Dcv8aLceHf/skplkwmD3IJJFiGDpekQ4lalPN73056PIB/mllK7Hq9yZ3KIYCbJuV9DCAzJ6434JGBugw4RbBJntcBPDS+/RF0A17mw+WhR2vRKk3sHRPjWiKAYIznCIj5xWBfqCmbMtgHHkuQ4DOEFl0k/jDfXBbn0wai0ecdysHbM0EesYyNAXdhLrs6sX/bj3Q8a7/7L4/Q=="
+    }
+  ]
+}

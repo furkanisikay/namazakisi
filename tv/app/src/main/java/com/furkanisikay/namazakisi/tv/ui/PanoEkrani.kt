@@ -39,6 +39,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +54,8 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.furkanisikay.namazakisi.tv.R
 import com.furkanisikay.namazakisi.tv.cekirdek.Bicim
+import com.furkanisikay.namazakisi.tv.cekirdek.EvDurumu
+import com.furkanisikay.namazakisi.tv.cekirdek.UyeHali
 import com.furkanisikay.namazakisi.tv.cekirdek.GunlukVakitler
 import com.furkanisikay.namazakisi.tv.cekirdek.Il
 import com.furkanisikay.namazakisi.tv.cekirdek.Kaydirma
@@ -129,7 +133,8 @@ private val RAKAM = TextStyle(fontFeatureSettings = "tnum")
 fun PanoEkrani(
     il: Il,
     ekraniAcikTut: Boolean,
-    onKonumDegistir: (() -> Unit)?,
+    uyeler: List<UyeHali> = emptyList(),
+    onAyarlar: (() -> Unit)?,
 ) {
     if (ekraniAcikTut) {
         val pencere = LocalActivity.current?.window
@@ -159,7 +164,7 @@ fun PanoEkrani(
                 .offset(dx.dp, dy.dp),
             horizontalArrangement = Arrangement.spacedBy(48.dp),
         ) {
-            SolSutun(il, durum, simdi, bolge, azalt, onKonumDegistir, Modifier.weight(1.1f))
+            SolSutun(il, durum, simdi, bolge, azalt, onAyarlar, uyeler, onbellek, Modifier.weight(1.1f))
             VakitListesi(durum, simdi, bolge, azalt, Modifier.weight(1f))
         }
     }
@@ -172,13 +177,28 @@ private fun SolSutun(
     simdi: Long,
     bolge: ZoneId,
     azalt: Boolean,
-    onKonumDegistir: (() -> Unit)?,
+    onAyarlar: (() -> Unit)?,
+    uyeler: List<UyeHali>,
+    onbellek: VakitOnbellegi,
     modifier: Modifier,
 ) {
+    // Ev ekranı katmanı (tasarım §4.6): yalnız eşleşik üyelerden gelen durumla; boşta hesap ucuz.
+    val bant = EvDurumu.bant(durum, uyeler, simdi)
+    val cumaCikis = EvDurumu.cumaCikisMs(durum, uyeler, simdi)
+    val ramazanSayaci = if (EvDurumu.ramazan(uyeler, simdi)) {
+        val bugun = java.time.Instant.ofEpochMilli(simdi).atZone(bolge).toLocalDate()
+        EvDurumu.ramazanSayaci(onbellek.al(bugun), onbellek.al(bugun.plusDays(1)).imsak, simdi)
+    } else {
+        null
+    }
     Column(modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
         Column {
             Text(il.ad, color = Renkler.metin, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
             Text(Bicim.tarih(durum.tarih), color = Renkler.metinIkincil, fontSize = 24.sp)
+            if (bant != null) {
+                Spacer(Modifier.height(16.dp))
+                SessizBant(bant)
+            }
         }
 
         Row(verticalAlignment = Alignment.Bottom) {
@@ -199,11 +219,11 @@ private fun SolSutun(
             )
         }
 
-        KalanBlogu(durum, simdi, azalt)
+        if (ramazanSayaci != null) RamazanBlogu(ramazanSayaci, durum, simdi) else KalanBlogu(durum, simdi, azalt)
 
-        BilgiCipleri(durum, bolge)
+        BilgiCipleri(durum, bolge, cumaCikis, simdi)
 
-        if (onKonumDegistir != null) KonumDugmesi(onKonumDegistir)
+        if (onAyarlar != null) AyarlarDugmesi(onAyarlar)
     }
 }
 
@@ -266,7 +286,7 @@ private fun KalanBlogu(durum: PanoDurumu, simdi: Long, azalt: Boolean) {
 
 /** Kerahat ve cuma: simge + iki-üç kelime. Amber yalnız simgede; metin daima tema metni. */
 @Composable
-private fun BilgiCipleri(durum: PanoDurumu, bolge: ZoneId) {
+private fun BilgiCipleri(durum: PanoDurumu, bolge: ZoneId, cumaCikis: Long?, simdi: Long) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         val kerahat = durum.kerahat
         if (kerahat != null) {
@@ -279,7 +299,17 @@ private fun BilgiCipleri(durum: PanoDurumu, bolge: ZoneId) {
                 aciklama = "Kerahat vakti, ${kerahat.tur.ad}, bitiş ${Bicim.saat(kerahat.bitis, bolge)}. ${kerahat.tur.aciklama}",
             )
         }
-        if (durum.cuma) {
+        if (cumaCikis != null) {
+            // Cuma kartı: telefonun yürüme + hazırlık süresinden; saate hal eki EKLENMEZ.
+            val gecti = simdi >= cumaCikis
+            BilgiCipi(
+                simge = R.drawable.ic_cami,
+                simgeRengi = Renkler.birincil,
+                baslik = "Cumaya ${Bicim.kalanKisa(durum.vakitler.ogle - simdi)}",
+                ek = if (gecti) "çıkış vakti geldi" else "çıkış ${Bicim.saat(cumaCikis, bolge)}",
+                aciklama = if (gecti) "Cuma için çıkış vakti geldi" else "Cuma için çıkış ${Bicim.saat(cumaCikis, bolge)}",
+            )
+        } else if (durum.cuma) {
             BilgiCipi(
                 simge = R.drawable.ic_cami,
                 simgeRengi = Renkler.birincil,
@@ -316,9 +346,9 @@ private fun BilgiCipi(simge: Int, simgeRengi: Color, baslik: String, ek: String,
  * Odakta: beyaz zemin + yeşil halka + hafif büyüme — uzaktan renk körü kullanıcı da görür.
  */
 @Composable
-private fun KonumDugmesi(onKonumDegistir: () -> Unit) {
+private fun AyarlarDugmesi(onAyarlar: () -> Unit) {
     Surface(
-        onClick = onKonumDegistir,
+        onClick = onAyarlar,
         shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(28.dp)),
         colors = ClickableSurfaceDefaults.colors(
             containerColor = Renkler.kart,
@@ -330,7 +360,7 @@ private fun KonumDugmesi(onKonumDegistir: () -> Unit) {
             focusedBorder = Border(BorderStroke(3.dp, Renkler.birincil), inset = (-4).dp),
         ),
         scale = ClickableSurfaceDefaults.scale(focusedScale = 1.06f),
-        modifier = Modifier.semantics { contentDescription = "Konumu değiştirin" },
+        modifier = Modifier.semantics { contentDescription = "Ayarlar: telefon ekleme, konum, bağlı telefonlar" },
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -344,7 +374,7 @@ private fun KonumDugmesi(onKonumDegistir: () -> Unit) {
                 modifier = Modifier.size(24.dp),
             )
             Spacer(Modifier.width(10.dp))
-            Text("Konumu değiştirin", fontSize = 22.sp)
+            Text("Ayarlar", fontSize = 22.sp)
         }
     }
 }
@@ -425,4 +455,55 @@ private fun Simge(kaynak: Int, renk: Color, boyut: Dp) {
         colorFilter = ColorFilter.tint(renk),
         modifier = Modifier.size(boyut),
     )
+}
+
+/**
+ * Ramazan: büyük sayaç iftar/sahur olur (birimli, panonun sayacıyla aynı biçim); olağan
+ * "vaktine kalan" altta tek satır kalır.
+ */
+@Composable
+private fun RamazanBlogu(sayac: EvDurumu.Sayac, durum: PanoDurumu, simdi: Long) {
+    val kalan = (sayac.hedefMs - simdi).coerceAtLeast(0)
+    val simge = if (sayac.baslik.startsWith("İftar")) R.drawable.ic_vakit_aksam else R.drawable.ic_vakit_imsak
+    Column(Modifier.clearAndSetSemantics { contentDescription = "${sayac.baslik} ${Bicim.kalanSesli(kalan)}" }) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Simge(simge, Renkler.birincil, 30.dp)
+            Spacer(Modifier.width(12.dp))
+            Text(sayac.baslik, color = Renkler.metinIkincil, fontSize = 28.sp)
+        }
+        Row(verticalAlignment = Alignment.Bottom) {
+            Bicim.kalanParcalari(kalan).forEachIndexed { i, p ->
+                if (i > 0) Spacer(Modifier.width(18.dp))
+                Text(p.sayi, style = RAKAM, color = Renkler.metin, fontSize = 76.sp, fontWeight = FontWeight.SemiBold, lineHeight = 80.sp)
+                Text(p.birim, color = Renkler.metinIkincil, fontSize = 32.sp, modifier = Modifier.padding(start = 6.dp, bottom = 12.dp))
+            }
+        }
+        Spacer(Modifier.height(6.dp))
+        Text(
+            "${durum.gorunenAd(durum.siradaki)} vaktine ${Bicim.kalanKisa(durum.kalanMs)}",
+            style = RAKAM,
+            color = Renkler.metinIkincil,
+            fontSize = 24.sp,
+        )
+    }
+}
+
+/**
+ * Sessiz vakit bandı (tasarım §4.6): ses YOK, kişi/sayı ima etmez, yalnız kalan süre. Sakin:
+ * dikkat rengi yalnız noktada ve ince kenarda; metin tema metni.
+ */
+@Composable
+private fun SessizBant(metin: String) {
+    Row(
+        Modifier
+            .background(Renkler.kart, RoundedCornerShape(28.dp))
+            .border(1.5.dp, Renkler.uyari.copy(alpha = 0.6f), RoundedCornerShape(28.dp))
+            .padding(horizontal = 22.dp, vertical = 12.dp)
+            .semantics { liveRegion = LiveRegionMode.Polite },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(Modifier.size(12.dp).background(Renkler.uyari, CircleShape))
+        Spacer(Modifier.width(14.dp))
+        Text(metin, color = Renkler.metin, fontSize = 26.sp, fontWeight = FontWeight.Medium)
+    }
 }

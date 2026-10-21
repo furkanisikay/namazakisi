@@ -55,6 +55,9 @@ object Bicim {
         }
     }
 
+    /** Tek satır birimli süre ("5 sa 2 dk", "18 dk 05 sn", "42 sn") — ikincil satırlar için. */
+    fun kalanKisa(kalanMs: Long): String = kalanParcalari(kalanMs).joinToString(" ") { "${it.sayi} ${it.birim}" }
+
     /** Ekran okuyucu metni, DAKİKA çözünürlüklü: "1 saat 16 dakika", "18 dakika", "1 dakikadan az". */
     fun kalanSesli(kalanMs: Long): String {
         val toplamDk = (kalanMs.coerceAtLeast(0) / 60_000).toInt()
