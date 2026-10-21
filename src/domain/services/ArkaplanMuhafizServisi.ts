@@ -30,12 +30,16 @@ import {
 import { muhafizTeslimcisiniAl, type VakitZamani } from './MuhafizTeslimcisi';
 import { eskiErtelemeKimligiMi, muhafizPlanKimligiMi } from '../../core/muhafiz/planKimligi';
 import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
+import { bildirimleriTopluIptalEt } from './planliBildirimOkuyucu';
 import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
 import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 import type { SaatTeslimBaglami } from '../../core/saat/saatAyarlari';
 import type { GeceSessizligi } from '../../core/muhafiz/geceSessizligi';
 import { geceSessizliginiOku } from '../../data/local/LocalGeceSessizligiOkuyucu';
 import { geceCapasiBasligi, geceCapasiGovdesi } from '../../core/utils/muhafizMetinYardimcisi';
+
+/** Muhafiz turunun SAHIPLENDIGI bekleyen kimlik: plan + eski `_ertele` artiklari (goc). */
+const muhafizSahipliKimlikMi = (id: string): boolean => muhafizPlanKimligiMi(id) || eskiErtelemeKimligiMi(id);
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -325,24 +329,16 @@ export class ArkaplanMuhafizServisi {
 
         // Tum dakika ID'lerini de kapsayacak sekilde bildirimleri iptal et
         const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
-
-        for (const bildirim of tumBildirimler) {
-            // Bu vakite ait muhafiz bildirimi mi kontrol et
-            for (const tarih of tarihler) {
-                const bildirimOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${tarih}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
-                if (bildirim.identifier.startsWith(bildirimOneki)) {
-                    try {
-                        await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
-
-                    } catch {
-                        // Bildirim bulunamazsa hata verme
-                    }
-                    // Bildirimle AYNI id ile planlanan sesli anonsu da iptal et.
-                    // (Anonsu olmayan id icin native tarafta no-op.)
-                    muhafizTeslimcisiniAl().yanKanaliIptalEt(bildirim.identifier);
-                }
-            }
-        }
+        const onekler = tarihler.map(
+            (t) => `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${t}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`
+        );
+        const silinecekler = tumBildirimler
+            .map((b) => b.identifier)
+            .filter((id) => onekler.some((o) => id.startsWith(o)));
+        // Bildirimle AYNI id ile planlanan sesli anonsu da iptal et (anonsu olmayan id
+        // icin native tarafta no-op). Iptaller PARALEL (D-15); hata digerlerini durdurmaz.
+        for (const id of silinecekler) muhafizTeslimcisiniAl().yanKanaliIptalEt(id);
+        await bildirimleriTopluIptalEt(silinecekler, 'ArkaplanMuhafiz');
 
         // Iptal edilen vakti dogru tarihe kaydet: verilen namaz gunu, yoksa tahmin.
         const kayitTarihi = tarih ?? this.vakitIcinDogruTarihiAl(vakit, new Date());
@@ -356,21 +352,23 @@ export class ArkaplanMuhafizServisi {
      * gorunmezler) -> native tarafin kendi kayit defterinden topluca iptal edilir.
      * Muhafiz disinda anons kullanan yok; "tumunu iptal" burada dogru kapsamdir.
      */
-    public async tumMuhafizBildirimleriniTemizle(): Promise<void> {
+    public async tumMuhafizBildirimleriniTemizle(
+        /** Az once okunmus bekleyen liste (atla kapisi okudu — D-15); yoksa taze okunur. */
+        hazirListe?: Notifications.NotificationRequest[]
+    ): Promise<void> {
         muhafizTeslimcisiniAl().tumYanKanallariIptalEt();
 
         try {
-            const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
-            for (const bildirim of tumBildirimler) {
-                const id = bildirim.identifier;
-                // Yalniz muhafiz PLANI temizlenir. Ayni `muhafiz_` uzayindaki
-                // yatis/muhasebe hatirlatmalari (issue #290) baska bir servisindir.
-                // GOC: kaldirilan "Ertele"nin (#289, sahip karari 2026-10-19) guncelleme
-                // oncesi kurulmus `_ertele` kopyalari da her turda silinir.
-                if (muhafizPlanKimligiMi(id) || eskiErtelemeKimligiMi(id)) {
-                    await Notifications.cancelScheduledNotificationAsync(id);
-                }
-            }
+            const tumBildirimler = hazirListe ?? (await Notifications.getAllScheduledNotificationsAsync());
+            // Yalniz muhafiz PLANI temizlenir. Ayni `muhafiz_` uzayindaki
+            // yatis/muhasebe hatirlatmalari (issue #290) baska bir servisindir.
+            // GOC: kaldirilan "Ertele"nin (#289, sahip karari 2026-10-19) guncelleme
+            // oncesi kurulmus `_ertele` kopyalari da her turda silinir.
+            // Iptaller PARALEL (D-15): tek tek await kopru gidis-donusunu N kez bekletiyordu.
+            await bildirimleriTopluIptalEt(
+                tumBildirimler.map((b) => b.identifier).filter((id) => muhafizSahipliKimlikMi(id)),
+                'ArkaplanMuhafiz'
+            );
 
             Logger.info('ArkaplanMuhafiz', 'Tum muhafiz bildirimleri temizlendi');
         } catch (error) {

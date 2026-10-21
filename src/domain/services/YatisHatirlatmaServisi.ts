@@ -17,7 +17,7 @@
  * STORE'A BAĞLI DEĞİLDİR (arka planda Redux yok). Koordinat verilmezse ham
  * konum kaydından okunur.
  */
-import * as Notifications from 'expo-notifications';
+import { bildirimleriTopluIptalEt, tazePlanliBildirimOkuyucu, type PlanliBildirimOkuyucu } from './planliBildirimOkuyucu';
 import { Platform } from 'react-native';
 import { BILDIRIM_SABITLERI, DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
@@ -148,12 +148,14 @@ export class YatisHatirlatmaServisi {
     public async hatirlatmalariGuncelle(
         koordinat?: YatisKoordinat | null,
         ayarlar?: YatisAyarlari,
-        simdi: Date = new Date()
+        simdi: Date = new Date(),
+        /** 15 dk turu TUR İÇİ paylaşılan okuyucuyu geçer (denetim D-15); verilmezse taze okunur. */
+        okuyucu: PlanliBildirimOkuyucu = tazePlanliBildirimOkuyucu
     ): Promise<void> {
         const onceki = this.surenPlanlama ?? Promise.resolve();
         const bu = onceki
             .catch(() => { /* onceki turun hatasi bu turu dusurmez */ })
-            .then(() => this.planlamayiCalistir(koordinat, ayarlar, simdi));
+            .then(() => this.planlamayiCalistir(koordinat, ayarlar, simdi, okuyucu));
         this.surenPlanlama = bu;
         try {
             await bu;
@@ -167,14 +169,15 @@ export class YatisHatirlatmaServisi {
     private async planlamayiCalistir(
         verilenKoordinat: YatisKoordinat | null | undefined,
         verilenAyarlar: YatisAyarlari | undefined,
-        simdi: Date
+        simdi: Date,
+        okuyucu: PlanliBildirimOkuyucu
     ): Promise<void> {
         const okunan = verilenAyarlar ?? (await LocalYatisHatirlatmaServisi.getAyarlar());
         // Özel sesler DOĞRULANIR (Android; cuma ile aynı gerekçe — id paritesi).
         const ayarlar = await this.sesleriDogrula(okunan);
         const teslimci = yatisTeslimcisiniAl();
         if (!ayarlar.aktif) {
-            await this.mevcutlariTemizle(teslimci);
+            await this.mevcutlariTemizle(teslimci, okuyucu);
             // Bekleyen GERÇEK ALARMLAR expo listesinde yoktur: teslimcinin hazırlığı önceki
             // turunkileri YATIŞ sahipliğiyle siler (muhafızınkilere dokunmaz).
             try {
@@ -215,7 +218,7 @@ export class YatisHatirlatmaServisi {
 
         // Kanallar planlamadan ÖNCE (Android 8+ var olmayan kanala gideni göstermez).
         await this.kanallariHazirla(ayarlar);
-        await this.mevcutlariTemizle(teslimci);
+        await this.mevcutlariTemizle(teslimci, okuyucu);
         try {
             await teslimci.hazirla();
             // KRONOLOJİK sıra: iOS bütçesi sayaçla keser, ters sıra yakın uyarıları atardı.
@@ -339,14 +342,13 @@ export class YatisHatirlatmaServisi {
      * Bekleyen yatış bildirimleri (yalnız `yatisKimligiMi`) + Android sesli anons alarmları
      * (yatış SAHİPLİĞİYLE — muhafızın `muhafiz_` uzayındaki plan anonslarına dokunmaz).
      */
-    private async mevcutlariTemizle(teslimci: MuhafizTeslimcisi): Promise<void> {
+    private async mevcutlariTemizle(teslimci: MuhafizTeslimcisi, okuyucu: PlanliBildirimOkuyucu): Promise<void> {
         try {
-            const tumu = await Notifications.getAllScheduledNotificationsAsync();
-            for (const b of tumu) {
-                if (yatisKimligiMi(b.identifier)) {
-                    await Notifications.cancelScheduledNotificationAsync(b.identifier);
-                }
-            }
+            const tumu = await okuyucu.oku();
+            await bildirimleriTopluIptalEt(
+                tumu.filter((b) => yatisKimligiMi(b.identifier)).map((b) => b.identifier),
+                'YatisHatirlatma'
+            );
         } catch (e) {
             Logger.error('YatisHatirlatma', 'Temizlik hatasi', e);
         }

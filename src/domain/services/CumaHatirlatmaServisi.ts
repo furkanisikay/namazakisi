@@ -1,4 +1,4 @@
-import * as Notifications from 'expo-notifications';
+import { bildirimleriTopluIptalEt, tazePlanliBildirimOkuyucu, type PlanliBildirimOkuyucu } from './planliBildirimOkuyucu';
 import { Platform } from 'react-native';
 import { Logger } from '../../core/utils/Logger';
 import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatmaServisi';
@@ -122,11 +122,18 @@ export class CumaHatirlatmaServisi {
      * Cuma hatirlatmalarini yeniden planlar. Once TEMIZLER (cift bildirim olmasin),
      * ayar kapaliysa temizlikten sonra doner.
      */
-    public async hatirlatmalariGuncelle(koordinatlar: CumaKoordinat | null): Promise<void> {
+    /**
+     * @param okuyucu Bekleyen bildirim listesi — 15 dk turu TUR İÇİ paylaşılan okuyucuyu
+     *   geçer (denetim D-15); verilmezse taze okunur.
+     */
+    public async hatirlatmalariGuncelle(
+        koordinatlar: CumaKoordinat | null,
+        okuyucu: PlanliBildirimOkuyucu = tazePlanliBildirimOkuyucu
+    ): Promise<void> {
         const onceki = this.surenPlanlama ?? Promise.resolve();
         const bu = onceki
             .catch(() => { /* onceki turun hatasi bu turu dusurmez */ })
-            .then(() => this.planlamayiCalistir(koordinatlar));
+            .then(() => this.planlamayiCalistir(koordinatlar, okuyucu));
 
         this.surenPlanlama = bu;
         try {
@@ -136,14 +143,14 @@ export class CumaHatirlatmaServisi {
         }
     }
 
-    private async planlamayiCalistir(koordinatlar: CumaKoordinat | null): Promise<void> {
+    private async planlamayiCalistir(koordinatlar: CumaKoordinat | null, okuyucu: PlanliBildirimOkuyucu): Promise<void> {
         // Özel sesler DOĞRULANIR (Android): başka cihazdan geri yüklenen `content://`
         // çözülmez; kanal/alarm ölü sesle kurulup kalıcı sessiz çalardı. Plan, kanal
         // hazırlığı ve muhafızın çöp toplaması AYNI doğrulamadan geçer (id paritesi).
         const ayarlar = await this.sesleriDogrula(await LocalCumaHatirlatmaServisi.getAyarlar());
 
         if (!ayarlar.aktif) {
-            await this.mevcutlariTemizle();
+            await this.mevcutlariTemizle(okuyucu);
             // Bekleyen GERÇEK ALARMLAR expo listesinde yoktur: teslimcinin hazırlığı önceki
             // turunkileri `cuma_hatirlatma_` önekiyle siler.
             const teslimci = cumaTeslimcisiniAl();
@@ -166,7 +173,7 @@ export class CumaHatirlatmaServisi {
         // Kanallar planlamadan ÖNCE (Android 8+ var olmayan kanala gideni göstermez).
         await this.kanallariHazirla(ayarlar);
 
-        await this.mevcutlariTemizle();
+        await this.mevcutlariTemizle(okuyucu);
 
         // Plan SAF ureticiden gelir (`core/bildirim/cumaPlani.ts`): bildirim defteri
         // (issue #298) ayni listeyi sayar. Özel gün (issue #272): aralığa düşen cumanın
@@ -251,13 +258,13 @@ export class CumaHatirlatmaServisi {
     }
 
     /** Bekleyen cuma bildirimleri + Android anons alarmları (yalnız `cuma_hatirlatma_` önekli). */
-    private async mevcutlariTemizle(): Promise<void> {
+    private async mevcutlariTemizle(okuyucu: PlanliBildirimOkuyucu): Promise<void> {
         try {
-            const tumu = await Notifications.getAllScheduledNotificationsAsync();
-            const silinecekler = tumu.filter((b) => b.identifier.startsWith(ID_ONEKI));
-            for (const bildirim of silinecekler) {
-                await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
-            }
+            const tumu = await okuyucu.oku();
+            await bildirimleriTopluIptalEt(
+                tumu.filter((b) => b.identifier.startsWith(ID_ONEKI)).map((b) => b.identifier),
+                'CumaHatirlatma'
+            );
         } catch (e) {
             Logger.error('CumaHatirlatma', 'Temizlik hatasi', e);
         }

@@ -534,7 +534,20 @@ describe('gorev govdesi > gun sonu hatirlatmasi tazelemesi', () => {
 
         await gorevGeriCagrisiniAl()();
 
-        expect(mockGunSonuGuncelle).toHaveBeenCalledWith({ lat: 39.9, lng: 41.27 });
+        expect(mockGunSonuGuncelle).toHaveBeenCalledWith(
+            { lat: 39.9, lng: 41.27 },
+            undefined,
+            undefined,
+            expect.objectContaining({ oku: expect.any(Function) })
+        );
+    });
+
+    it('D-15: gun sonu ile camiye gitme AYNI tur ici bekleyen okuyucusunu paylasir', async () => {
+        await gorevGeriCagrisiniAl()();
+        const gunSonuOkuyucu = mockGunSonuGuncelle.mock.calls[0][3];
+        const camiyeOkuyucu = mockCamiyeGitGuncelle.mock.calls[0][1];
+        expect(gunSonuOkuyucu).toBeDefined();
+        expect(camiyeOkuyucu).toBe(gunSonuOkuyucu);
     });
 
     it('gun sonu patlarsa muhafiz planlamasi DUSMEZ', async () => {
@@ -565,7 +578,10 @@ describe('gorev govdesi > camiye gitme hatirlatmasi tazelemesi', () => {
 
         expect(sonuc).toBe(BackgroundFetch.BackgroundFetchResult.NoData);
         expect(mockCamiyeGitGuncelle).toHaveBeenCalledTimes(1);
-        expect(mockCamiyeGitGuncelle).toHaveBeenCalledWith({ lat: 39.9, lng: 41.27 });
+        expect(mockCamiyeGitGuncelle).toHaveBeenCalledWith(
+            { lat: 39.9, lng: 41.27 },
+            expect.objectContaining({ oku: expect.any(Function) })
+        );
     });
 
     it('patlarsa muhafiz planlamasi DUSMEZ', async () => {

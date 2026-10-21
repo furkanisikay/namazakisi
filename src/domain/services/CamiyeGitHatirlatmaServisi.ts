@@ -1,4 +1,4 @@
-import * as Notifications from 'expo-notifications';
+import { bildirimleriTopluIptalEt, tazePlanliBildirimOkuyucu, type PlanliBildirimOkuyucu } from './planliBildirimOkuyucu';
 import { Platform } from 'react-native';
 import { Logger } from '../../core/utils/Logger';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
@@ -109,11 +109,15 @@ export class CamiyeGitHatirlatmaServisi {
         return CamiyeGitHatirlatmaServisi.instance;
     }
 
-    public async hatirlatmalariGuncelle(koordinatlar: CamiyeGitKoordinat | null): Promise<void> {
+    /** @param okuyucu Bekleyen bildirim listesi (15 dk turu paylaşılan okuyucuyu geçer — D-15). */
+    public async hatirlatmalariGuncelle(
+        koordinatlar: CamiyeGitKoordinat | null,
+        okuyucu: PlanliBildirimOkuyucu = tazePlanliBildirimOkuyucu
+    ): Promise<void> {
         const onceki = this.surenPlanlama ?? Promise.resolve();
         const bu = onceki
             .catch(() => { /* onceki turun hatasi bu turu dusurmez */ })
-            .then(() => this.planlamayiCalistir(koordinatlar));
+            .then(() => this.planlamayiCalistir(koordinatlar, okuyucu));
 
         this.surenPlanlama = bu;
         try {
@@ -123,12 +127,15 @@ export class CamiyeGitHatirlatmaServisi {
         }
     }
 
-    private async planlamayiCalistir(koordinatlar: CamiyeGitKoordinat | null): Promise<void> {
+    private async planlamayiCalistir(
+        koordinatlar: CamiyeGitKoordinat | null,
+        okuyucu: PlanliBildirimOkuyucu
+    ): Promise<void> {
         // Özel sesler DOĞRULANIR (Android; cuma ile aynı gerekçe — id paritesi).
         const ayarlar = await this.sesleriDogrula(await LocalCamiyeGitServisi.getAyarlar());
 
         if (!ayarlar.aktif) {
-            await this.mevcutlariTemizle();
+            await this.mevcutlariTemizle(okuyucu);
             // Bekleyen GERÇEK ALARMLAR expo listesinde yoktur: teslimcinin hazırlığı önceki
             // turunkileri `camiye_git_` önekiyle siler.
             const teslimci = camiyeGitTeslimcisiniAl();
@@ -149,7 +156,7 @@ export class CamiyeGitHatirlatmaServisi {
         // Kanallar planlamadan ÖNCE (Android 8+ var olmayan kanala gideni göstermez).
         await this.kanallariHazirla(ayarlar);
 
-        await this.mevcutlariTemizle();
+        await this.mevcutlariTemizle(okuyucu);
 
         const [ozelGundeMi, cuma] = await Promise.all([
             ozelGunSuzgeciniOku(),
@@ -233,14 +240,13 @@ export class CamiyeGitHatirlatmaServisi {
     }
 
     /** Bekleyen bildirimler + Android anons alarmları (yalnız `camiye_git_` önekli). */
-    private async mevcutlariTemizle(): Promise<void> {
+    private async mevcutlariTemizle(okuyucu: PlanliBildirimOkuyucu): Promise<void> {
         try {
-            const tumu = await Notifications.getAllScheduledNotificationsAsync();
-            for (const b of tumu) {
-                if (b.identifier.startsWith(CAMIYE_GIT_ID_ONEKI)) {
-                    await Notifications.cancelScheduledNotificationAsync(b.identifier);
-                }
-            }
+            const tumu = await okuyucu.oku();
+            await bildirimleriTopluIptalEt(
+                tumu.filter((b) => b.identifier.startsWith(CAMIYE_GIT_ID_ONEKI)).map((b) => b.identifier),
+                'CamiyeGit'
+            );
         } catch (e) {
             Logger.error('CamiyeGit', 'Temizlik hatasi', e);
         }
