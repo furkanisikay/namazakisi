@@ -30,6 +30,9 @@ jest.mock('../../../domain/services/TvSenkronServisi', () => ({
     TvSenkronServisi: { getInstance: () => ({ gonder: () => mockGonder(), kaldir: (k: string) => mockKaldir(k) }) },
 }));
 jest.mock('../../components/common/KisaBildirim', () => ({ kisaBildirimGoster: jest.fn() }));
+const mockSaatDurumu = jest.fn();
+jest.mock('../../../domain/services/CihazDurumOkuyucu', () => ({ alaniOku: () => mockSaatDurumu() }));
+jest.mock('react-native-svg', () => ({ __esModule: true, default: 'Svg', Path: 'Path' }));
 jest.mock('@expo/vector-icons', () => {
     const { Text } = require('react-native');
     return { FontAwesome5: (props: { name: string }) => <Text>{props.name}</Text> };
@@ -69,6 +72,7 @@ describe('CihazlarimSayfasi', () => {
         mockGuncelle.mockImplementation(async (_k: string, d: Partial<CihazUyeligi>) => (kayit = { ...kayit, ...d }));
         mockGonder.mockResolvedValue({});
         mockKaldir.mockResolvedValue(undefined);
+        mockSaatDurumu.mockResolvedValue(null);
     });
 
     afterEach(() => jest.restoreAllMocks());
@@ -123,13 +127,30 @@ describe('CihazlarimSayfasi', () => {
         mockListe.mockResolvedValue([]);
         const { findByTestId, getAllByLabelText } = render(<CihazlarimSayfasi />);
         const harita = await findByTestId('cihazlarim-harita');
+        fireEvent(harita, 'layout', { nativeEvent: { layout: { width: 360, height: 400 } } });
         expect(harita.props.accessible).toBeFalsy();
         // Harita içi düğme + sayfa altındaki birincil düğme.
         expect(getAllByLabelText('TV ekleyin').length).toBe(2);
     });
 
     it('harita düğümleri bağ durumunu söyler', async () => {
-        const { findByLabelText } = render(<CihazlarimSayfasi />);
-        expect(await findByLabelText('Salon TV: bağlı')).toBeTruthy();
+        const { findByLabelText, findByTestId } = render(<CihazlarimSayfasi />);
+        fireEvent(await findByTestId('cihazlarim-harita'), 'layout', { nativeEvent: { layout: { width: 360, height: 400 } } });
+        expect(await findByLabelText('Salon TV: bağlı · 5 dk önce')).toBeTruthy();
+    });
+
+    it('saat satırı GERÇEK durumu söyler: bağlı saat varsa haritada da düğüm olur; Wear yoksa satır gizlenir', async () => {
+        mockSaatDurumu.mockResolvedValue('esli');
+        const { findByTestId, findByLabelText } = render(<CihazlarimSayfasi />);
+        expect((await findByTestId('cihazlarim-saat-durum')).props.children).toMatch(/kendiliğinden gider/);
+        fireEvent(await findByTestId('cihazlarim-harita'), 'layout', { nativeEvent: { layout: { width: 360, height: 400 } } });
+        expect(await findByLabelText('Akıllı saat: bağlı')).toBeTruthy();
+    });
+
+    it('Wear desteği olmayan telefonda saat satırı yok', async () => {
+        mockSaatDurumu.mockResolvedValue('yok');
+        const { findByTestId, queryByTestId } = render(<CihazlarimSayfasi />);
+        await findByTestId('cihaz-durum-0123456789abcdef');
+        await waitFor(() => expect(queryByTestId('cihazlarim-saat')).toBeNull());
     });
 });
