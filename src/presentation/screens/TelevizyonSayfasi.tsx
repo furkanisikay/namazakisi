@@ -184,7 +184,7 @@ export const TelevizyonSayfasi: React.FC = () => {
             showsVerticalScrollIndicator={false}
         >
             <Text style={{ fontSize: 15, lineHeight: 22, color: renkler.metinIkincil, marginBottom: 14 }}>
-                Evdeki Android TV, vakitleri sizin konumunuza göre büyük ekranda gösterir. Konumu bir kez aktarmanız yeter.
+                Evdeki Android TV, vakitleri sizin konumunuza göre büyük ekranda gösterir. TV'yi bir kez ekleyin; sonrası aynı Wi-Fi'de kendiliğinden güncellenir.
             </Text>
 
             <View style={[kart, { padding: 0, overflow: 'hidden' }]}>
