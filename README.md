@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.58.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.59.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.58.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
+Kaynak koddaki sürüm: **0.59.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -85,6 +85,10 @@ Kaynak koddaki sürüm: **0.58.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/11-muhafiz-butce-karti.webp" width="160" alt="Muhafız bütçe kartı" title="Muhafız bütçe kartı">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/12-bildirim-siniri-rehberi.webp" width="160" alt="Bildirim sınırı rehberi" title="Bildirim sınırı rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/13-bildirim-ayarlari.webp" width="160" alt="Bildirim ayarları" title="Bildirim ayarları">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/14-cuma.webp" width="160" alt="Cuma" title="Cuma">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/15-yatis.webp" width="160" alt="Yatış" title="Yatış">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/16-camiye-git.webp" width="160" alt="Camiye git" title="Camiye git">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/17-bileklik-rehberi.webp" width="160" alt="Bileklik rehberi" title="Bileklik rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/18-nafile.webp" width="160" alt="Nafile" title="Nafile">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/19-nafile-teheccud.webp" width="160" alt="Nafile teheccüd" title="Nafile teheccüd">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/20-now-bar.webp" width="160" alt="Now bar" title="Now bar">
@@ -99,6 +103,8 @@ Kaynak koddaki sürüm: **0.58.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/31-seferilik.webp" width="160" alt="Seferîlik" title="Seferîlik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/32-kible.webp" width="160" alt="Kıble" title="Kıble">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/33-ilerleme.webp" width="160" alt="İlerleme" title="İlerleme">
 </p>
 
 </details>
@@ -120,6 +126,10 @@ Kaynak koddaki sürüm: **0.58.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/11-muhafiz-butce-karti.webp" width="160" alt="Muhafız bütçe kartı" title="Muhafız bütçe kartı">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/12-bildirim-siniri-rehberi.webp" width="160" alt="Bildirim sınırı rehberi" title="Bildirim sınırı rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/13-bildirim-ayarlari.webp" width="160" alt="Bildirim ayarları" title="Bildirim ayarları">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/14-cuma.webp" width="160" alt="Cuma" title="Cuma">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/15-yatis.webp" width="160" alt="Yatış" title="Yatış">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/16-camiye-git.webp" width="160" alt="Camiye git" title="Camiye git">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/17-bileklik-rehberi.webp" width="160" alt="Bileklik rehberi" title="Bileklik rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/18-nafile.webp" width="160" alt="Nafile" title="Nafile">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/19-nafile-teheccud.webp" width="160" alt="Nafile teheccüd" title="Nafile teheccüd">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/20-now-bar.webp" width="160" alt="Now bar" title="Now bar">
@@ -134,6 +144,8 @@ Kaynak koddaki sürüm: **0.58.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/31-seferilik.webp" width="160" alt="Seferîlik" title="Seferîlik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/32-kible.webp" width="160" alt="Kıble" title="Kıble">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/33-ilerleme.webp" width="160" alt="İlerleme" title="İlerleme">
 </p>
 
 </details>
@@ -152,8 +164,6 @@ Kaynak koddaki sürüm: **0.58.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/08-adim-detay.webp" width="240" alt="Adım detay" title="Adım detay">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/09-adim-detay-anahtarlar.webp" width="240" alt="Adım detay anahtarlar" title="Adım detay anahtarlar">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/10-alarm-onay.webp" width="240" alt="Alarm onay" title="Alarm onay">
-  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/11-muhafiz-butce-karti.webp" width="240" alt="Muhafız bütçe kartı" title="Muhafız bütçe kartı">
-  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/12-bildirim-siniri-rehberi.webp" width="240" alt="Bildirim sınırı rehberi" title="Bildirim sınırı rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/13-bildirim-ayarlari.webp" width="240" alt="Bildirim ayarları" title="Bildirim ayarları">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/14-cuma.webp" width="240" alt="Cuma" title="Cuma">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/15-yatis.webp" width="240" alt="Yatış" title="Yatış">
@@ -171,7 +181,10 @@ Kaynak koddaki sürüm: **0.58.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/27-camideyim-nasil.webp" width="240" alt="Camideyim nasıl" title="Camideyim nasıl">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/28-kaza.webp" width="240" alt="Kaza" title="Kaza">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/29-kaza-her-farzla.webp" width="240" alt="Kaza her farzla" title="Kaza her farzla">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/30-neler-yeni.webp" width="240" alt="Neler yeni" title="Neler yeni">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/31-seferilik.webp" width="240" alt="Seferîlik" title="Seferîlik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/32-kible.webp" width="240" alt="Kıble" title="Kıble">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/33-ilerleme.webp" width="240" alt="İlerleme" title="İlerleme">
 </p>
 
 </details>
