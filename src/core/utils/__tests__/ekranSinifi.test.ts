@@ -5,7 +5,32 @@ import {
   ORTA_KIRILIM_DP,
   GENIS_KIRILIM_DP,
   OKUNABILIR_MAKS_GENISLIK_DP,
+  gezinmeTuruSec,
+  ucSutunluMu,
+  anaAyrintiMi,
 } from '../ekranSinifi';
+
+describe('geniş ekran düzen kararları', () => {
+  it('gezinme: telefon alt çubuk, orta ray, geniş kalıcı kenar', () => {
+    expect(gezinmeTuruSec(411)).toBe('alt');
+    expect(gezinmeTuruSec(744)).toBe('ray'); // iPad mini dikey
+    expect(gezinmeTuruSec(1032)).toBe('kenar'); // iPad 13" dikey
+  });
+
+  it('üç sütun yalnız yatayda ve gezinme düşüldükten sonra yeterli genişlikte', () => {
+    expect(ucSutunluMu(1376, 1032)).toBe(true); // iPad 13" yatay
+    expect(ucSutunluMu(1280, 800)).toBe(true); // Pixel Tablet yatay
+    expect(ucSutunluMu(1032, 1376)).toBe(false); // dikey: iki sütun
+    expect(ucSutunluMu(1133, 744)).toBe(false); // iPad mini yatay: 1133-220 < 960
+    expect(ucSutunluMu(Number.NaN, 800)).toBe(false);
+  });
+
+  it('ana-ayrıntı yalnız geniş pencerede (Split View dar pencere tek sayfa)', () => {
+    expect(anaAyrintiMi(500)).toBe(false);
+    expect(anaAyrintiMi(744)).toBe(false);
+    expect(anaAyrintiMi(1032)).toBe(true);
+  });
+});
 
 describe('ekranSinifiHesapla', () => {
   it('telefon genişlikleri kompakttır', () => {

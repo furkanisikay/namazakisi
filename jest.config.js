@@ -37,6 +37,7 @@ module.exports = {
     // patlar (AGENTS.md requireNativeModule tuzağı). Global mock ile ses çalan
     // servisi DOLAYLI yükleyen testler de ayakta kalır.
     "^expo-audio$": "<rootDir>/__mocks__/expo-audio.js",
+    "^expo-keep-awake$": "<rootDir>/__mocks__/expo-keep-awake.js",
     // Muhafiz anons koprusu de native tarafa dokunur (AVSpeechSynthesizer).
     // Global mock, `IosMuhafizTeslimcisi`'ni DOLAYLI yukleyen suite'leri ayakta
     // tutar; varsayilani "Turkce ses yok" oldugu icin hicbir test istemeden

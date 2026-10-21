@@ -342,6 +342,16 @@ if let ogle = widget.vakitler.first(where: { $0.vakit == "ogle" }) {
     esitMi(dugme("imsak", kilinan: [ogle.tarih: ["sabah"]]), .zatenKilindi, "dugme: kayitta (widget kodu sabah) → zaten kilindi")
     esitMi(dugme("ogle", bekleyen: [SiriBekleyenKildim(tarih: ogle.tarih, vakit: "ogle")]), .zatenKilindi, "dugme: kuyrukta → zaten kilindi")
     esitMi(dugme("ogle", vakitler: nil), .gecersiz, "dugme: cizelge yoksa gecersiz")
+    // Kontrol Merkezi kontrolu: ayni karar, bos aday dokunusta gecersiz olur.
+    let k1 = WidgetKarari.kontrolDurumu(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [], simdiMs: dokunus)
+    esitMi(k1, WidgetKontrolDurumu(tur: .kilinabilir, baslik: "Öğle · Kıldım", tarih: ogle.tarih, vakit: "ogle"), "kontrol: aktif vakit kilinabilir")
+    esitMi(dugme(k1.vakit), .isaretle, "kontrol: tasidigi aday dokunusta isaretlenir")
+    let k2 = WidgetKarari.kontrolDurumu(vakitler: widget.vakitler, kilinanlar: [ogle.tarih: ["ogle"]], bekleyenler: [], simdiMs: dokunus)
+    esitMi(k2.tur, .kilindi, "kontrol: kilinmis vakit")
+    esitMi(k2.vakit, "", "kontrol: kilinmis vakitte aday yok")
+    esitMi(WidgetKarari.kontrolDurumu(vakitler: nil, kilinanlar: [:], bekleyenler: [], simdiMs: dokunus).tur, .vakitYok, "kontrol: cizelge yok")
+    let gunes = widget.vakitler.first(where: { $0.vakit == "gunes" })!
+    esitMi(WidgetKarari.kontrolDurumu(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [], simdiMs: gunes.ms + 60_000).tur, .vakitYok, "kontrol: gunes→ogle arasi vakit yok")
 } else {
     hatalar.append("widget fiksturunde ogle yok")
 }
@@ -373,6 +383,29 @@ for d in sessizlik.sessizlik.durumlar {
         SessizlikDurumu(sessiz: d.sessiz, vakit: d.vakit, bitisMs: d.bitisMs),
         "sessizlik[\(d.ad)]"
     )
+}
+
+// MARK: - 8) Kisayollar otomasyon degerleri (OtomasyonKarari) — Android %vakit/%kalandk ikizi
+
+if let ogle = widget.vakitler.first(where: { $0.vakit == "ogle" }) {
+    let sirali = widget.vakitler.sorted { $0.ms < $1.ms }
+    // Ogleye 90 sn kala: siradaki ogle, kalan YUKARI yuvarlanir → 2 dk.
+    let s1 = OtomasyonKarari.siradakiVakit(widget.vakitler, simdiMs: ogle.ms - 90_000)
+    esitMi(s1?.kod ?? "-", "ogle", "otomasyon: siradaki vakit kodu")
+    esitMi(s1?.ad ?? "-", "Öğle", "otomasyon: siradaki vakit adi")
+    esitMi(s1?.kalanDk ?? -1, 2, "otomasyon: kalan dakika yukari yuvarlanir (90 sn → 2)")
+    esitMi(OtomasyonKarari.siradakiVakit(widget.vakitler, simdiMs: ogle.ms - 59_000)?.kalanDk ?? -1, 1, "otomasyon: 59 sn kala 1 dk (0 degil)")
+    // Cizelge bittikten sonra siradaki yok → nil (uygulama acilmali).
+    esitMi(OtomasyonKarari.siradakiVakit(widget.vakitler, simdiMs: (sirali.last?.ms ?? 0) + 1) == nil, true, "otomasyon: cizelge sonunda nil")
+    // Kilindi mi: ogle icinde kilinmamis false, kayitta true, kuyrukta true.
+    let icinde = ogle.ms + 60_000
+    esitMi(OtomasyonKarari.simdikiVakitKilindiMi(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [], simdiMs: icinde), false, "otomasyon: kilinmamis vakit false")
+    esitMi(OtomasyonKarari.simdikiVakitKilindiMi(vakitler: widget.vakitler, kilinanlar: [ogle.tarih: ["ogle"]], bekleyenler: [], simdiMs: icinde), true, "otomasyon: kayitta true")
+    esitMi(OtomasyonKarari.simdikiVakitKilindiMi(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [SiriBekleyenKildim(tarih: ogle.tarih, vakit: "ogle")], simdiMs: icinde), true, "otomasyon: kuyrukta true")
+    // Ilk vakitten once kilinacak vakit yok → nil.
+    esitMi(OtomasyonKarari.simdikiVakitKilindiMi(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [], simdiMs: (sirali.first?.ms ?? 0) - 1) == nil, true, "otomasyon: vakit yokken nil")
+} else {
+    hatalar.append("widget fiksturunde ogle yok (otomasyon)")
 }
 
 // MARK: - Sonuc

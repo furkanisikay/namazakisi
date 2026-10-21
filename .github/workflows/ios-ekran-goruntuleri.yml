@@ -15,6 +15,11 @@ name: 📸 iOS Ekran Görüntüleri
 #           `ios-ozellik-kareleri`; scripts/simulator-ozellik-cek.js). ASC'ye
 #           GONDERILMEZ.
 #   ikisi   — ikisi de, ayni derlemeyle.
+#   ipad    — magaza kareleri iPad Pro 13" simulatorunde (2064x2752; uygulama iPad'de
+#           calistigi icin App Store'da ZORUNLU set). Artifact `ios-ipad-ekran-goruntuleri`;
+#           ASC'ye `tur=asc asc_islem=ekran-yukle asc_ipad_run_id=<bu kosu>` ile gider.
+#   tv      — YALNIZ Apple TV panosu kareleri (ayri is `tv-kareler`; artifact
+#           `ios-tv-kareleri`). TV hedefi (`NAMAZ_IOS_TV=1`) yalniz bu yolda acilir.
 #   saat    — YALNIZ Apple Watch kareleri (ayri is `saat-kareler`; artifact
 #           `ios-saat-kareleri`). iPhone isi bu degerde HIC kosmaz; saat hedefi
 #           (`NAMAZ_IOS_SAAT=1`) yalniz bu yolda acilir. ASC'ye GONDERILMEZ.
@@ -38,7 +43,7 @@ on:
         required: false
         default: false
       tur:
-        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | saat (Apple Watch) | asc (kare yok, App Store Connect işlemi)'
+        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | ipad (iPad 13" mağaza kareleri) | tv (Apple TV) | saat (Apple Watch) | asc (kare yok, App Store Connect işlemi)'
         type: choice
         required: false
         default: 'magaza'
@@ -46,6 +51,8 @@ on:
           - magaza
           - ozellik
           - ikisi
+          - ipad
+          - tv
           - saat
           - asc
       asc_islem:
@@ -69,6 +76,10 @@ on:
         description: 'ekran-yukle için mağaza karelerini üreten iOS Ekran Görüntüleri çalışma kimliği'
         required: false
         default: ''
+      asc_ipad_run_id:
+        description: 'ekran-yukle için iPad karelerini üreten çalışma kimliği (tur=ipad; boş = iPad kareleri yüklenmez)'
+        required: false
+        default: ''
       asc_saat_run_id:
         description: 'ekran-yukle için Apple Watch karelerini üreten çalışma kimliği (tur=saat; boş = saat kareleri yüklenmez)'
         required: false
@@ -86,7 +97,7 @@ jobs:
   kareler:
     name: 📸 Simülatörde kare çek
     # Apple Watch turu ve ASC islemi ayri istir (asagida); iPhone hatti o degerlerde kosmaz.
-    if: ${{ inputs.tur != 'saat' && inputs.tur != 'asc' }}
+    if: ${{ inputs.tur != 'saat' && inputs.tur != 'asc' && inputs.tur != 'tv' }}
     # macos-26 (Xcode 26) BILINCLI: (a) idb-companion formulasi o macOS'un en yeni
     # Xcode'unu sart kosuyor — macos-15/Xcode 16.4'te "Xcode.app 26.0 is required"
     # ile reddediliyor; (b) TestFlight build'lerimiz zaten Xcode 26 SDK ile
@@ -123,6 +134,11 @@ jobs:
         run: |
           set -eo pipefail
           ISTENEN="${{ inputs.cihaz }}"
+          if [ "${{ inputs.tur }}" = "ipad" ]; then
+            # iPad 13" (M4/M5) = 2064x2752, App Store'un zorunlu iPad seti.
+            [ -z "$ISTENEN" ] && ISTENEN=$(xcrun simctl list devicetypes | grep -oE 'iPad Pro 13-inch \(M[0-9]+\)' | tail -1)
+            [ -z "$ISTENEN" ] && ISTENEN="iPad Pro 13-inch (M4)"
+          fi
           if [ -z "$ISTENEN" ]; then
             ISTENEN=$(xcrun simctl list devicetypes | grep -oE 'iPhone 1[6-9] Pro Max' | tail -1)
           fi
@@ -139,7 +155,7 @@ jobs:
           if [ -z "$UDID" ]; then
             RT=$(xcrun simctl list runtimes -j | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const r=JSON.parse(d).runtimes.filter(x=>x.platform==="iOS"&&x.isAvailable);console.log(r[r.length-1].identifier)})')
             DT=$(xcrun simctl list devicetypes -j | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const t=JSON.parse(d).devicetypes.find(x=>x.name===process.argv[1]);console.log(t?t.identifier:"")});' "$ISTENEN")
-            [ -z "$DT" ] && { echo "Cihaz tipi bulunamadı: $ISTENEN"; xcrun simctl list devicetypes | grep iPhone; exit 1; }
+            [ -z "$DT" ] && { echo "Cihaz tipi bulunamadı: $ISTENEN"; xcrun simctl list devicetypes | grep -E 'iPhone|iPad'; exit 1; }
             UDID=$(xcrun simctl create "magaza-kare" "$DT" "$RT")
           fi
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
@@ -151,6 +167,32 @@ jobs:
           # diyalogunun dugme metnini etkiler ve betik iki dili de taniyor.
           xcrun simctl boot "$UDID" || true
           xcrun simctl bootstatus "$UDID" -b
+          # iPad durum cubugu TARIH de yazar ("9:41 AM Tue Oct 20") → Turkce bolge + 24 saat.
+          # Saat hattinin (`simulator-saat-cek.sh > yerellestir`) yolu: tercih dosyasi ilk
+          # acilista olusur, simulator KAPALIYKEN yazilir, sonra yeniden acilir.
+          if [ "${{ inputs.tur }}" = "ipad" ]; then
+            TERCIH="$HOME/Library/Developer/CoreSimulator/Devices/$UDID/data/Library/Preferences/.GlobalPreferences.plist"
+            xcrun simctl shutdown "$UDID" || true
+            # iOS simulatoru dosyayi ilk acilista HER ZAMAN olusturmuyor (yasandi); cihazin
+            # veri dizini varsa PlistBuddy dosyayi kendisi olusturur. Veri dizinini elle
+            # kurmak cihazi bozar (saat hatti dersi) → yalniz dizin varken.
+            if [ ! -f "$TERCIH" ] && [ -d "$(dirname "$(dirname "$(dirname "$TERCIH")")")" ]; then
+              mkdir -p "$(dirname "$TERCIH")"
+              /usr/libexec/PlistBuddy -c "Add :AppleLocale string tr_TR" "$TERCIH" || true
+            fi
+            if [ -f "$TERCIH" ]; then
+              /usr/libexec/PlistBuddy -c "Delete :AppleLanguages" "$TERCIH" >/dev/null 2>&1 || true
+              /usr/libexec/PlistBuddy -c "Add :AppleLanguages array" -c "Add :AppleLanguages:0 string tr-TR" "$TERCIH"
+              /usr/libexec/PlistBuddy -c "Delete :AppleLocale" "$TERCIH" >/dev/null 2>&1 || true
+              /usr/libexec/PlistBuddy -c "Add :AppleLocale string tr_TR" "$TERCIH"
+              /usr/libexec/PlistBuddy -c "Delete :AppleICUForce24HourTime" "$TERCIH" >/dev/null 2>&1 || true
+              /usr/libexec/PlistBuddy -c "Add :AppleICUForce24HourTime bool true" "$TERCIH"
+            else
+              echo "UYARI: tercih dosyası yok, bölge ayarlanmadı"
+            fi
+            xcrun simctl boot "$UDID" || true
+            xcrun simctl bootstatus "$UDID" -b
+          fi
           # Magaza karelerinde temiz durum cubugu (Apple'in kendi kullandigi 09:41).
           xcrun simctl status_bar "$UDID" override --time "09:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
           xcrun simctl list devices | grep "$UDID"
@@ -159,6 +201,10 @@ jobs:
         run: npx expo prebuild --platform ios --no-install
         env:
           EXPO_NO_TELEMETRY: '1'
+          # Derleme `-sdk iphonesimulator` ile: app.json'da saat bayragi acikken watchOS
+          # hedefi iOS SDK'siyla derlenip duserdi. Telefon/iPad karelerinde saat gerekmez
+          # (saat kareleri ayri `saat-kareler` isinde).
+          NAMAZ_IOS_SAAT: '0'
 
       - name: 🧩 CocoaPods
         working-directory: ios
@@ -248,28 +294,39 @@ jobs:
             echo "$f -> $(sips -g pixelWidth -g pixelHeight "$f" | tail -2 | tr '\n' ' ')"
           done
 
+      # iPad geniş ekran: dikey + yatay (Bugün üç sütun, Ayarlar/Kaza ana-ayrıntı, ev ekranı).
+      # Mağaza karelerinden SONRA: yatay için .app yeniden kurulur.
+      - name: 📐 iPad geniş ekran kareleri (dikey + yatay)
+        if: ${{ !cancelled() && inputs.tur == 'ipad' }}
+        run: |
+          APP=$(find ios/build -name '*.app' -maxdepth 5 -not -path '*.dSYM*' | head -1)
+          node scripts/simulator-ipad-genis.js "${{ steps.sim.outputs.udid }}" "${{ steps.kurulum.outputs.bundle }}" "$APP" kareler-genis
+
       - name: 🎨 Mockup üret
         if: ${{ inputs.tur != 'ozellik' }}
         run: |
           # Magazaya giden kare ham ekran goruntusu DEGIL, basligi ve cihaz
           # cercevesi olan mockup'tir. Adimlar Chrome'u headless kullanir.
-          node scripts/magaza-mockup.js kareler mockup --platform ios
+          PLATFORM=ios
+          [ "${{ inputs.tur }}" = "ipad" ] && PLATFORM=ipad
+          node scripts/magaza-mockup.js kareler mockup --platform "$PLATFORM"
 
       - name: ⬆️ Kareleri, mockup'ları ve erişilebilirlik ağaçlarını yükle
         if: ${{ always() && inputs.tur != 'ozellik' }}
         uses: actions/upload-artifact@v7
         with:
-          name: ios-ekran-goruntuleri
+          name: ${{ inputs.tur == 'ipad' && 'ios-ipad-ekran-goruntuleri' || 'ios-ekran-goruntuleri' }}
           path: |
             kareler/
             mockup/
+            kareler-genis/
           retention-days: 14
           if-no-files-found: warn
 
       # --- OZELLIK TURU (magaza turuna dokunmaz; ayri klasor + ayri artifact) ---
       # Magaza adimi dustuyse de kossun (`!cancelled()`): iki tur bagimsiz.
       - name: 🧭 Özellik turu
-        if: ${{ !cancelled() && inputs.tur != 'magaza' }}
+        if: ${{ !cancelled() && (inputs.tur == 'ozellik' || inputs.tur == 'ikisi') }}
         run: |
           set -eo pipefail
           idb connect "${{ steps.sim.outputs.udid }}" || true
@@ -283,11 +340,11 @@ jobs:
           done
 
       - name: 🧾 Özellik kareleri özeti
-        if: ${{ always() && inputs.tur != 'magaza' }}
+        if: ${{ always() && (inputs.tur == 'ozellik' || inputs.tur == 'ikisi') }}
         run: node scripts/ozellik-kare-ozeti.js kareler-ozellik ios | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: ⬆️ Özellik karelerini yükle
-        if: ${{ always() && inputs.tur != 'magaza' }}
+        if: ${{ always() && (inputs.tur == 'ozellik' || inputs.tur == 'ikisi') }}
         uses: actions/upload-artifact@v7
         with:
           name: ios-ozellik-kareleri
@@ -304,7 +361,10 @@ jobs:
           ASC_KEY_ISSUER_ID: ${{ secrets.ASC_KEY_ISSUER_ID }}
           ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
         # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
-        run: node scripts/app-store-ekran-goruntuleri.js mockup --degistir
+        run: |
+          TIP=APP_IPHONE_67
+          [ "${{ inputs.tur }}" = "ipad" ] && TIP=APP_IPAD_PRO_3GEN_129
+          node scripts/app-store-ekran-goruntuleri.js mockup --tip "$TIP" --degistir
 
   # --- APPLE WATCH TURU (issue #285) — iPhone isinden BAGIMSIZ, yalniz `tur: saat` ---
   # Yalniz saat hedefleri derlenir (`-target NamazSaat -sdk watchsimulator`): saat
@@ -384,6 +444,77 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+  # --- APPLE TV TURU — iPhone isinden BAGIMSIZ, yalniz `tur: tv` ---
+  # TV hedefi pod'a ve RN'e baglanmaz → pod install ve iPhone derlemesi gerekmez.
+  tv-kareler:
+    name: 📺 Apple TV kareleri
+    if: ${{ inputs.tur == 'tv' }}
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      SIMCTL_CHILD_TZ: Europe/Istanbul
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Bağımlılıkları kur
+        run: npm ci
+
+      - name: 🏗️ Expo prebuild (iOS, TV hedefi AÇIK)
+        run: npx expo prebuild --platform ios --no-install
+        env:
+          EXPO_NO_TELEMETRY: '1'
+          NAMAZ_IOS_TV: '1'
+
+      - name: 🔨 Apple TV uygulamasını derle (tvOS simülatör, Release)
+        working-directory: ios
+        run: |
+          set -eo pipefail
+          PROJ=$(ls -d *.xcodeproj | head -1)
+          xcodebuild -project "$PROJ" -target NamazTV -configuration Release -sdk appletvsimulator \
+            CODE_SIGNING_ALLOWED=NO -quiet
+          [ -d build/Release-appletvsimulator/NamazTV.app ] || { echo "NamazTV.app üretilmedi"; exit 1; }
+
+      - name: 📸 Kareleri çek
+        run: |
+          set -eo pipefail
+          RT=$(xcrun simctl list runtimes -j | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const r=JSON.parse(d).runtimes.filter(x=>x.platform==="tvOS"&&x.isAvailable);console.log(r.length?r[r.length-1].identifier:"")})')
+          [ -z "$RT" ] && { echo "tvOS simülatör çalışma zamanı yok"; xcrun simctl list runtimes; exit 1; }
+          DT=$(xcrun simctl list devicetypes -j | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const t=JSON.parse(d).devicetypes.filter(x=>/Apple TV 4K/.test(x.name));console.log(t.length?t[t.length-1].identifier:"")})')
+          [ -z "$DT" ] && { echo "Apple TV 4K cihaz tipi yok"; xcrun simctl list devicetypes | grep -i tv; exit 1; }
+          UDID=$(xcrun simctl create "tv-kare" "$DT" "$RT")
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          APP=ios/build/Release-appletvsimulator/NamazTV.app
+          BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
+          xcrun simctl install "$UDID" "$APP"
+          mkdir -p kareler-tv
+          # 1) Ilk acilis: il secimi (kayit yok).
+          xcrun simctl launch "$UDID" "$BUNDLE"
+          sleep 12
+          xcrun simctl io "$UDID" screenshot kareler-tv/01-il-secimi.png
+          xcrun simctl terminate "$UDID" "$BUNDLE" || true
+          # 2) Pano: `-il_plaka 34` arguman alani UserDefaults okumasini ezer (Istanbul).
+          xcrun simctl launch "$UDID" "$BUNDLE" -il_plaka 34
+          sleep 12
+          xcrun simctl io "$UDID" screenshot kareler-tv/02-pano.png
+          for f in kareler-tv/*.png; do echo "$f -> $(sips -g pixelWidth -g pixelHeight "$f" | tail -2 | tr '\n' ' ')"; done
+
+      - name: ⬆️ TV karelerini yükle
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-tv-kareleri
+          path: kareler-tv/
+          retention-days: 14
+          if-no-files-found: warn
+
   # --- APP STORE CONNECT ISLEMI — kare cekilmez, yalniz `tur: asc` ---
   asc:
     name: 🏪 App Store Connect (${{ inputs.asc_islem }})
@@ -415,6 +546,15 @@ jobs:
           run-id: ${{ inputs.asc_kare_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: 📱 iPad karelerini indir
+        if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_ipad_run_id != '' }}
+        uses: actions/download-artifact@v8
+        with:
+          name: ios-ipad-ekran-goruntuleri
+          path: indirilen-ipad
+          run-id: ${{ inputs.asc_ipad_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: ⌚ Apple Watch karelerini indir
         if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_saat_run_id != '' }}
         uses: actions/download-artifact@v8
@@ -436,6 +576,11 @@ jobs:
           elif [ "$ISLEM" = "ekran-yukle" ]; then
             # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
             node scripts/app-store-ekran-goruntuleri.js indirilen/mockup --degistir
+            # iPad 13" (2064x2752) = APP_IPAD_PRO_3GEN_129. supportsTablet acikken ZORUNLU;
+            # eksikse incelemeye-gonder bunu soyler.
+            if [ -d indirilen-ipad ]; then
+              node scripts/app-store-ekran-goruntuleri.js indirilen-ipad/mockup --tip APP_IPAD_PRO_3GEN_129 --degistir
+            fi
             # Apple Watch kareleri (Ultra 3 simülatörü 422x514 = APP_WATCH_ULTRA).
             if [ -d indirilen-saat ]; then
               node scripts/app-store-ekran-goruntuleri.js indirilen-saat --tip APP_WATCH_ULTRA --degistir

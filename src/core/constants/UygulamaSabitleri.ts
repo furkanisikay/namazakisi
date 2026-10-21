@@ -232,6 +232,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   // iPhone "Namazda sessiz" kurulum rehberinde tamamlandı işaretli adımlar. Yalnız ekran
   // kolaylığıdır (Odak'ın gerçek durumu okunamaz); cihaza özgü → yedeklemeye GİRMEZ.
   IOS_SESSIZ_KURULUM: '@namaz_akisi/ios_sessiz_kurulum',
+  // Tablet ev ekranı modu — cihaza özgü (o tablet mutfakta duruyor), YEDEKLENMEZ.
+  EV_EKRANI_AYARI: '@namaz_akisi/ev_ekrani_ayari',
   // TEK RIZA (sade tasarım, Dalga 3): sesli okuma + gerçek alarm onayı BİR KEZ, tüm
   // hatırlatmalar için. Eski yüzey kayıtlarından bir kez göç eder (`core/hatirlatma/rizalar`).
   // YEDEKLENİR (beyaz listenin ÜÇ yerinde).

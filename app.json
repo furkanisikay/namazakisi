@@ -8,10 +8,22 @@
     "userInterfaceStyle": "light",
     "scheme": "namazakisi",
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
       "bundleIdentifier": "com.furkanisikay.namazakisi",
       "infoPlist": {
         "UIDesignRequiresCompatibility": true,
+        "UIApplicationShortcutItems": [
+          {
+            "UIApplicationShortcutItemType": "com.furkanisikay.namazakisi.kildim",
+            "UIApplicationShortcutItemTitle": "Vakti kıldım",
+            "UIApplicationShortcutItemIconSymbolName": "checkmark.circle"
+          },
+          {
+            "UIApplicationShortcutItemType": "com.furkanisikay.namazakisi.kible",
+            "UIApplicationShortcutItemTitle": "Kıble",
+            "UIApplicationShortcutItemIconSymbolName": "safari"
+          }
+        ],
         "UIBackgroundModes": [
           "fetch"
         ],
@@ -71,6 +83,12 @@
         "./plugins/withIcloudEsitleme",
         {
           "etkin": true
+        }
+      ],
+      [
+        "./plugins/withNamazTV",
+        {
+          "etkin": false
         }
       ],
       [

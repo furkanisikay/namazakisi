@@ -39,6 +39,8 @@ export interface AyarSatiriNavigasyonProps extends AyarSatiriOrtakProps {
    * düzleştirip eylemi erişilemez kılardı (Switch ile aynı kural).
    */
   ekEylem?: React.ReactNode;
+  /** Tablet ana-ayrıntıda sağda açık olan sayfanın satırı (zemin tonu + ekran okuyucu "seçili"). */
+  secili?: boolean;
 }
 
 export interface AyarSatiriToggleProps extends AyarSatiriOrtakProps {
@@ -83,7 +85,7 @@ export const AyarSatiri: React.FC<AyarSatiriProps> = (props) => {
   );
 
   if (props.varyant === 'navigasyon') {
-    const { onPress, ekEylem } = props;
+    const { onPress, ekEylem, secili } = props;
     const handlePress = async () => {
       await butonTiklandiFeedback();
       onPress();
@@ -96,6 +98,8 @@ export const AyarSatiri: React.FC<AyarSatiriProps> = (props) => {
         activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityLabel={erisimEtiketi}
+        accessibilityState={secili ? { selected: true } : undefined}
+        style={secili && !ekEylem ? { backgroundColor: `${renkler.birincil}14` } : undefined}
       >
         {ikonCipi}
         {metinBlogu}
@@ -108,7 +112,7 @@ export const AyarSatiri: React.FC<AyarSatiriProps> = (props) => {
     }
 
     return (
-      <View className="flex-row items-center">
+      <View className="flex-row items-center" style={secili ? { backgroundColor: `${renkler.birincil}14` } : undefined}>
         {gezinmeAlani}
         <View className="pl-1 pr-4">{ekEylem}</View>
       </View>
