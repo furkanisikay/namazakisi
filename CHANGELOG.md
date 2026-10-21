@@ -5,6 +5,20 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.58.0] - 2026-10-20
+
+### Eklendi
+- [tv] Android QR tarayıcı cihaz içi (CameraX + ZXing), ML Kit yok; gizlilik politikası
+- [ana-ekran] kapanan bildirim / tam alarm iznini ana ekranda onarın; saat dilimi değişince planlar tazelenir
+- [tv] telefondan Android TV'ye konum aktarma — Televizyonda gösterin sayfası
+- [tv] telefondan QR ya da kodla konum aktarma (eşleştirme ekranı)
+
+### Düzeltildi
+- iOS tarayıcı kapanınca düğme kilitlenmez; onarım ertelemesi 7 gün diskte; Android 12- çift niyet yok; TV reddedilen istekte 'bağlandı' geri alınır
+- [tv] kod kutuları sığar, alt başlık kısaldı; katlanma TV mesafesine göre yavaş
+- [tv] kod ekranında LocalContext remember dışına
+- [tv] persona bulguları — Ayarlar'da doğrudan satır, yolculuktaki kullanıcıya uyarı, iOS yerel ağ izni penceresi
+
 ## [0.57.0] - 2026-10-20
 
 ### Eklendi
