@@ -120,8 +120,34 @@ hazirlik_uygula() {
       # Cikti: "<ivme x:y:z> <manyetik x:y:z>"
       adb emu sensor set acceleration "$(echo "$poz" | cut -d' ' -f1)" || true
       adb emu sensor set magnetic-field "$(echo "$poz" | cut -d' ' -f2)" || true
+      if [ "$1" = "kible-kalibrasyon" ]; then
+        # Rehberin ∞ animasyonu icin animasyonlar ACIK (yoksa reduced-motion statik cizim)
+        # ve akis boyunca ekran kaydi (video artifact'ta: kalibrasyon-<tema>.mp4).
+        for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+          adb shell settings put global "$a" 1
+        done
+        adb shell rm -f /sdcard/kalibrasyon.mp4 || true
+        (adb shell screenrecord --time-limit 45 --bit-rate 4000000 /sdcard/kalibrasyon.mp4 >/dev/null 2>&1 || true) &
+        KAYIT_PID=$!
+      fi
       ;;
     *) echo "UYARI: bilinmeyen hazirlik $1" ;;
+  esac
+}
+
+# Akis sonrasi: hazirligin actigi seyleri geri al (animasyon olcegi, ekran kaydi).
+hazirlik_bitir() {
+  case "$1" in
+    kible-kalibrasyon)
+      sleep 6
+      adb shell pkill -INT screenrecord || true
+      [ -n "${KAYIT_PID:-}" ] && wait "$KAYIT_PID" 2>/dev/null || true
+      sleep 2
+      adb pull /sdcard/kalibrasyon.mp4 "$CIKIS/kalibrasyon-${2}.mp4" >/dev/null 2>&1 || echo "UYARI: kalibrasyon videosu alinamadi"
+      for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+        adb shell settings put global "$a" 0
+      done
+      ;;
   esac
 }
 
@@ -196,6 +222,7 @@ for tema in "${TEMALAR[@]}"; do
     isaret=$(mktemp)
     # Bir akis dusse de digerleri cekilsin (her biri uygulamayi kendisi baslatir).
     maestro test "$akis" || echo "UYARI: $akis tamamlanamadi ($PROFIL/$tema)"
+    if [ -n "$hazirlik" ]; then hazirlik_bitir "$hazirlik" "$tema"; fi
     # Yalniz BU akisin kareleri: isaret dosyasindan yeni olanlar.
     find "$HOME/.maestro/tests" "$PWD/ozk" -newer "$isaret" -path '*ozk/*' -name '*.png' \
       -exec cp {} "$HEDEF/" \; 2>/dev/null || true
