@@ -194,8 +194,12 @@ struct SimdiSayfasi: View {
             if durum.veriEski {
                 BilgiKarti(ikon: "arrow.clockwise", metin: "Vakitleri güncellemek için iPhone'unuzda Namaz Akışı'nı açın.")
             } else {
-                halka
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                // Halka kalan alanin tamamini alir; sure punto boyu halka capina gore
+                // (`Text(timerInterval:)` `minimumScaleFactor` ile kuculmez, tasardi).
+                GeometryReader { geo in
+                    halka(cap: min(geo.size.width, geo.size.height))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
                 altSatir
             }
         }
@@ -227,7 +231,7 @@ struct SimdiSayfasi: View {
 
     // MARK: Halka
 
-    private var halka: some View {
+    private func halka(cap: CGFloat) -> some View {
         let kesir: Double
         let hedefMs: Int64?
         if let a = durum.gorunum.aktif, let b = durum.gorunum.bitisMs {
@@ -237,7 +241,7 @@ struct SimdiSayfasi: View {
             kesir = 0
             hedefMs = durum.gorunum.sonraki?.ms
         }
-        let kalinlik: CGFloat = sonuk ? 5 : 10
+        let kalinlik: CGFloat = sonuk ? 5 : max(8, cap * 0.075)
         return ZStack {
             Circle()
                 .stroke(ton.opacity(sonuk ? 0.18 : 0.25), lineWidth: kalinlik)
@@ -249,22 +253,21 @@ struct SimdiSayfasi: View {
                 TikSekli()
                     .trim(from: 0, to: tik)
                     .stroke(SaatGorunum.yesil.opacity(sonuk ? 0.6 : 1), style: StrokeStyle(lineWidth: 7, lineCap: .round, lineJoin: .round))
-                    .frame(width: 44, height: 36)
+                    .frame(width: cap * 0.34, height: cap * 0.28)
                     .accessibilityLabel("\(baslik) kılındı")
             } else {
                 VStack(spacing: 0) {
                     Image(systemName: SaatGorunum.ikon(odakKodu))
                         .symbolRenderingMode(.hierarchical)
                         .foregroundStyle(ton)
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(.system(size: cap * 0.14, weight: .semibold))
                         .accessibilityHidden(true)
                     if let hedefMs {
                         Text(timerInterval: SaatGorunum.aralik(simdi, hedefMs), countsDown: true, showsHours: true)
-                            .font(.system(size: 30, weight: .semibold, design: .rounded))
+                            .font(.system(size: cap * 0.2, weight: .semibold, design: .rounded))
                             .monospacedDigit()
                             .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                            .padding(.horizontal, 14)
+                            .fixedSize()
                             .accessibilityLabel(durum.gorunum.aktif != nil ? "Çıkışa kalan süre" : "Girişe kalan süre")
                         Label {
                             Text(SaatDeposu.saatMetni(hedefMs)).monospacedDigit()
@@ -279,8 +282,7 @@ struct SimdiSayfasi: View {
                 }
             }
         }
-        .aspectRatio(1, contentMode: .fit)
-        .padding(kalinlik / 2)
+        .frame(width: cap - kalinlik, height: cap - kalinlik)
         .animation(hareketAzalt ? nil : .easeInOut(duration: 0.6), value: kilindiMi)
         .onChange(of: kilindiMi) { eski, yeni in
             guard yeni, !eski else { return }
@@ -319,10 +321,11 @@ struct SimdiSayfasi: View {
             } label: {
                 Label("Kıldım", systemImage: "checkmark")
                     .font(.headline)
-                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(.black)
+                    .frame(maxWidth: .infinity, minHeight: 40)
+                    .background(Capsule().fill(ton))
             }
-            .tint(ton)
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.plain)
             .accessibilityLabel("\(aday.ad) namazını kıldım olarak işaretleyin")
         } else if let u = kuruluUyandirma, !sonuk {
             Label {

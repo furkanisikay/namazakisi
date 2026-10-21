@@ -90,6 +90,11 @@ public final class SaatDeposu: @unchecked Sendable {
         }
     }
 
+    /// Yalniz simulator kare tohumu: iyimser isaretleri siler (her kare bagimsiz baslasin).
+    public func bekleyenleriSifirla() {
+        kilitli { defaults.removeObject(forKey: Anahtar.bekleyenler) }
+    }
+
     private func bekleyenleriOku() -> [SaatBekleyen] {
         guard let veri = defaults.data(forKey: Anahtar.bekleyenler),
               let liste = try? JSONDecoder().decode([SaatBekleyen].self, from: veri) else { return [] }

@@ -85,6 +85,15 @@ struct BugunSayfasi: View {
                         .frame(width: yaricap * 2, height: yaricap * 2)
                 }
             }
+            // Yon icin dort saat cizgisi (00 tepede, 06, 12, 18) — halkanin icinde, kisik.
+            ForEach(0..<4, id: \.self) { i in
+                Capsule()
+                    .fill(Color.white.opacity(sonuk ? 0.15 : 0.3))
+                    .frame(width: 2, height: 5)
+                    .rotationEffect(.degrees(Double(i) * 90))
+                    .offset(konum(kesir: Double(i) / 4, yaricap: yaricap - kalinlik - 3))
+                    .accessibilityHidden(true)
+            }
             // Simdiki an.
             if !sonuk {
                 isaret(kesir: SaatKadran.kesir(SaatDeposu.simdiMs(simdi)), yaricap: yaricap)

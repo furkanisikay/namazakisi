@@ -84,6 +84,8 @@ enum SaatSimulatorTohumu {
         if let ham = ortam["NAMAZ_SAAT_TOHUM_TESBIHAT"], let toplam = Int(ham) {
             depo.tesbihatYaz(Tesbihat.Durum(toplam: toplam), simdiMs: simdi)
         }
+        // Kareler BAGIMSIZ: onceki acilisin (kilindi / Kildim sahnesi) iyimser isareti silinir.
+        depo.bekleyenleriSifirla()
         // "Kilindi" karesi: suren vakit iyimser bekleyen olarak isaretlenir (telefon yok).
         if acilisEkrani == .kilindi, let yuk = depo.yuk(),
            case .aday(_, let kayitVakti, _) = SaatKarari.ekranDurumu(yuk: yuk, bekleyenler: [], simdiMs: simdi).kildim,
