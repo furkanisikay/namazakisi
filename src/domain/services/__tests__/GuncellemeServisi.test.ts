@@ -962,6 +962,73 @@ describe('guvenilirBaglantiMi', () => {
   it('bos string icin false dondurur', () => {
     expect(guvenilirBaglantiMi('')).toBe(false);
   });
+
+  it('port 443 ve sorgu/parca ile biten meşru bağlantıları kabul eder', () => {
+    expect(guvenilirBaglantiMi('https://github.com:443/a.apk')).toBe(true);
+    expect(guvenilirBaglantiMi('https://github.com')).toBe(true);
+    expect(guvenilirBaglantiMi('https://github.com?x=1')).toBe(true);
+    expect(guvenilirBaglantiMi('https://github.com#x')).toBe(true);
+    expect(guvenilirBaglantiMi('https://release-assets.githubusercontent.com/a')).toBe(false);
+  });
+});
+
+// ==================== NÖBETÇİ: RN URL POLYFILL'İ (denetim D-22) ====================
+// Jest Node'un WHATWG URL'ini kullanır; uygulama ise RN polyfill'iyle çalışır ve
+// polyfill ana bilgisayarı `(?:[^@]+@)?` ile ayrıştırır. Eski uygulama `new URL()`
+// kullandığı için saldırı bağlantıları cihazda GEÇİYORDU ama testte görünmüyordu.
+describe('guvenilirBaglantiMi — RN URL polyfill nöbetçisi', () => {
+  const SALDIRILAR = [
+    'https://evil.com/@github.com/x',
+    'https://evil.com?@github.com',
+    'https://evil.com#@github.com',
+    'https://github.com.evil.com/x',
+    'https://user@github.com/x',
+    'https://user:parola@github.com/x',
+    'https://evil.com\\@github.com/x',
+    'https://evil.com\\.github.com/x',
+    'https://github.com@evil.com/x',
+    'https://evil.com/ @github.com',
+    'https://GITHUB.com.evil.com/x',
+    'https://github.com:8443/x',
+    'javascript://github.com/%0aalert(1)',
+  ];
+  const MESRU = [
+    'https://github.com/furkanisikay/namazakisi/releases/latest',
+    'https://github.com/furkanisikay/namazakisi/releases/download/v0.31.0/NamazAkisi-0.31.0.apk',
+    'https://objects.githubusercontent.com/releases/NamazAkisi-99.0.0.apk',
+    'https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi',
+    'https://apps.apple.com/app/namaz-akisi/id6813061360',
+  ];
+
+  /** Eski uygulamanın birebir kopyası — cihazdaki gibi RN polyfill'iyle koşar. */
+  function eskiKontrolPolyfillIle(url: string): boolean {
+    const { URL: RnURL } = jest.requireActual('react-native/Libraries/Blob/URL');
+    try {
+      const parsed = new RnURL(url);
+      if (parsed.protocol !== undefined && parsed.protocol !== 'https:') {
+        // polyfill protocol alanını taşımayabilir; taşıyorsa eski kuralı uygula
+        return false;
+      }
+      return ['github.com', 'objects.githubusercontent.com', 'play.google.com', 'apps.apple.com'].some(
+        (d) => parsed.hostname === d || parsed.hostname.endsWith(`.${d}`)
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  it('RN polyfill eski kuralda @ hilesini GEÇİRİYOR (açığın kanıtı)', () => {
+    expect(eskiKontrolPolyfillIle('https://evil.com/@github.com/x')).toBe(true);
+    expect(eskiKontrolPolyfillIle('https://evil.com?@github.com')).toBe(true);
+  });
+
+  it.each(SALDIRILAR)('saldırı bağlantısını reddeder: %s', (url) => {
+    expect(guvenilirBaglantiMi(url)).toBe(false);
+  });
+
+  it.each(MESRU)('meşru bağlantıyı kabul eder: %s', (url) => {
+    expect(guvenilirBaglantiMi(url)).toBe(true);
+  });
 });
 
 // ==================== EK KAPSAM: DENETIM GAP'LERI ====================
