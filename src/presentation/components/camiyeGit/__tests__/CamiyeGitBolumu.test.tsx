@@ -193,7 +193,6 @@ describe('CamiyeGitBolumu', () => {
         fireEvent.press(await ekran.findByLabelText(/^Hatırlatma — düzenleyin/));
         // Birleşik modül: iki ANA anahtar + "Gelişmiş" bölümünde gerçek alarm.
         expect(ekran.getByTestId('adim-bildirim-anahtari')).toBeTruthy();
-        fireEvent.press(ekran.getByTestId('adim-gelismis'));
         expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
         fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
         expect(ekran.getByText('Sesli okuma açılsın mı?')).toBeTruthy();

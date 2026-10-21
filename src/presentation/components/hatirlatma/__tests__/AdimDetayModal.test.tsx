@@ -184,9 +184,22 @@ describe('AdimDetayModal — NASIL (iki anahtar)', () => {
         );
     });
 
-    test('ızgara tutarlı: titreşim karosu her zaman görünür, bildirim kapalıyken seçilemez', () => {
-        expect(kur(CUMA, adim({ bildirim: true })).ekran.getByTestId('adim-titresim-anahtari').props.disabled).toBeFalsy();
-        expect(kur(CUMA, adim({ sesli: true })).ekran.getByTestId('adim-titresim-anahtari').props.disabled).toBe(true);
+    test('KANAL KARTLARI: titreşim Bildirim kartının İÇİNDE; bildirim kapalıyken gövde hiç çizilmez', () => {
+        // Eskiden ayrı karo (bildirim kapalıyken soluk) — sahip sorusu 2026-10: ilişkili
+        // ayarlar ayrı duruyordu. Artık her kanal kendi alt ayarlarını taşır.
+        const acik = kur(CUMA, adim({ bildirim: true })).ekran;
+        expect(acik.getByTestId('adim-titresim-anahtari').props.disabled).toBeFalsy();
+        const kapali = kur(CUMA, adim({ sesli: true })).ekran;
+        expect(kapali.queryByTestId('adim-titresim-anahtari')).toBeNull();
+        // Sesli okuma kartı açık → metin editörü kartın içinde.
+        expect(kapali.getByTestId('adim-sesli-karti')).toBeTruthy();
+    });
+
+    test('alarm kapalıyken kapsam seçimi görünmez; açıkken alarm kartının içinde', () => {
+        const kapali = kur(CUMA, adim({ bildirim: true }), { alarmOnayiVar: true }).ekran;
+        expect(kapali.queryByTestId('adim-alarm-ayrinti')).toBeNull();
+        const acik = kur(CUMA, adim({ bildirim: true, alarm: true }), { alarmOnayiVar: true }).ekran;
+        expect(acik.getByTestId('adim-alarm-ayrinti')).toBeTruthy();
     });
 
     test('MUHAFIZ: sesli açılırken boş kutu yön-uygun şablonla dolar (boş = sessiz)', () => {
@@ -222,29 +235,29 @@ describe('AdimDetayModal — sesli rıza (modal ağacının içinde)', () => {
 });
 
 describe('AdimDetayModal — GELİŞMİŞ', () => {
-    test('varsayılan adımda KAPALI başlar', () => {
+    test('ek yüzeyde Gelişmiş HİÇ çizilmez; tekrar ana görünümde (Ne zaman altında)', () => {
         const { ekran } = kur(CUMA, adim({ bildirim: true }));
-        expect(ekran.queryByTestId('adim-gelismis-icerik')).toBeNull();
-        fireEvent.press(ekran.getByTestId('adim-gelismis'));
+        expect(ekran.queryByTestId('adim-gelismis')).toBeNull();
         expect(ekran.getByTestId('adim-tekrar-anahtari')).toBeTruthy();
+        expect(ekran.getByText('Bir kez gelir.')).toBeTruthy();
     });
 
-    test('tekrarlı / alarmlı adımda AÇIK başlar ve başlık özetler', () => {
+    test('MUHAFIZ: Gelişmiş yalnız sertliği taşır; tekrarlı adımda bile KAPALI başlar', () => {
+        const { ekran } = kur(MUHAFIZ, adim({ bildirim: true }, { siklik: { herDk: 5 } }));
+        expect(ekran.getByTestId('adim-gelismis')).toBeTruthy();
+        expect(ekran.queryByTestId('adim-gelismis-icerik')).toBeNull();
+        expect(ekran.getByTestId('adim-tekrar-anahtari').props.value).toBe(true);
+        fireEvent.press(ekran.getByTestId('adim-gelismis'));
+        expect(ekran.getByLabelText('Sertlik: Sert')).toBeTruthy();
+    });
+
+    test('tekrar cümlesi canlıdır; tekrarlı adımda aralık seçicisi görünür', () => {
         const { ekran } = kur(CUMA, adim({ bildirim: true, alarm: true }, { siklik: { herDk: 15 } }), {
             alarmOnayiVar: true,
         });
-        expect(ekran.getByTestId('adim-gelismis-icerik')).toBeTruthy();
-        // Özet ikon çipidir (orta noktalı metin yok); tam cümle başlığın etiketinde.
-        expect(ekran.getByLabelText('Gelişmiş ayarlar: her 15 dk tekrar')).toBeTruthy();
-        // Çipler ekran okuyucudan gizlidir (etiket zaten tam cümle) → gizlileri de ara.
-        const gizli = { includeHiddenElements: true };
-        expect(ekran.getByTestId('adim-gelismis-ozet', gizli)).toBeTruthy();
-        expect(ekran.getByText('15 dk', gizli)).toBeTruthy();
-        // Gerçek alarm Gelişmiş'te değil, Nasıl ızgarasında; açıkken ayrıntısı görünür.
-        expect(ekran.getByTestId('adim-alarm-anahtari').props.value).toBe(true);
+        expect(ekran.getByText("Her 15 dk'da bir tekrarlanır.")).toBeTruthy();
+        expect(ekran.getByLabelText('Tekrar aralığı artır')).toBeTruthy();
         expect(ekran.getByTestId('adim-alarm-ayrinti')).toBeTruthy();
-        // (Önizlemedeki bildirim BAŞLIĞI "Cuma · 30 dk kaldı …" gerçek bildirim metnidir, özet değil.)
-        expect(ekran.queryByText(/her \d+ dk ·|· Gerçek alarm/)).toBeNull();
     });
 
     test('canlı önizleme gerçek bildirim başlığını gösterir ve dokununca adımı çalar', () => {
@@ -286,7 +299,6 @@ describe('AdimDetayModal — GELİŞMİŞ', () => {
         const { ekran, onDegistir } = kur(CUMA, adim({ bildirim: true }, { esikDk: 30, siklik: { herDk: 30 } }));
         // Gerçek tekrar yok → Gelişmiş kapalı başlar; açınca anahtar kapalı.
         expect(ekran.queryByTestId('adim-gelismis-icerik')).toBeNull();
-        fireEvent.press(ekran.getByTestId('adim-gelismis'));
         expect(ekran.getByTestId('adim-tekrar-anahtari').props.value).toBe(false);
         expect(ekran.queryByLabelText(/Tekrar aralığı/)).toBeNull();
         fireEvent(ekran.getByTestId('adim-tekrar-anahtari'), 'valueChange', true);
@@ -295,7 +307,6 @@ describe('AdimDetayModal — GELİŞMİŞ', () => {
 
     test('Tekrarla anahtarı tek atış ↔ tekrar yazar', () => {
         const { ekran, onDegistir } = kur(CUMA, adim({ bildirim: true }));
-        fireEvent.press(ekran.getByTestId('adim-gelismis'));
         fireEvent(ekran.getByTestId('adim-tekrar-anahtari'), 'valueChange', true);
         expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ siklik: { herDk: 15 } }));
     });

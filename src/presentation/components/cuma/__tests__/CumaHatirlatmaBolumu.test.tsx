@@ -127,11 +127,10 @@ describe('CumaHatirlatmaBolumu', () => {
             return ekran;
         };
 
-        it('STANDART yetenekler: Bildirim + Sesli okuma anahtarları, Gelişmiş bölümünde tekrar ve GERÇEK ALARM', () => {
+        it('STANDART yetenekler: Bildirim + Sesli okuma anahtarları, tekrar Ne zaman altında, GERÇEK ALARM', () => {
             const ekran = ac(ACIK);
             expect(ekran.getByTestId('adim-bildirim-anahtari')).toBeTruthy();
             expect(ekran.getByTestId('adim-sesli-anahtari')).toBeTruthy();
-            fireEvent.press(ekran.getByTestId('adim-gelismis'));
             expect(ekran.getByTestId('adim-tekrar-anahtari')).toBeTruthy();
             expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
         });
@@ -180,7 +179,6 @@ describe('CumaHatirlatmaBolumu', () => {
 
         it('gerçek alarm İLK kez: rıza sorulur; onay ORTAK kayda, anahtar cumaya yazılır', async () => {
             const ekran = ac(ACIK);
-            fireEvent.press(ekran.getByTestId('adim-gelismis'));
             fireEvent(ekran.getByTestId('adim-alarm-anahtari'), 'valueChange', true);
             expect(guncelleMock).not.toHaveBeenCalled();
             fireEvent.press(ekran.getByLabelText('Alarmı açın'));

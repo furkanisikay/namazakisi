@@ -36,7 +36,6 @@ import type { EsikSinirlari } from '../../../core/muhafiz/esikSinirlari';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
 import { kanalAcikMi } from '../../../core/muhafiz/kanalKumesi';
-import { gercekTekrarDk } from '../../../core/muhafiz/planButcesi';
 import { anonsMetniniCoz, anonsSablonlari } from '../../../core/muhafiz/anonsMetni';
 import {
     ANONS_SOZLUKLERI,
@@ -170,11 +169,10 @@ export function gelismisAcikBaslarMi(
     tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'> & { pencereUzunluguDk?: number },
     kardesler: SeviyeAyari[] = [seviye]
 ): boolean {
-    return (
-        // GERÇEK tekrar (tek atışın `herDk = esikDk` türevi açtırmaz — anahtarla aynı kapı).
-        gercekTekrarDk(seviye, kardesler, tanim.yon, tanim.pencereUzunluguDk) !== null ||
-        (tanim.tonSecilebilir === true && etkinKademe(seviye, tanim.yon) !== 'nazik')
-    );
+    // Tekrar artık "Ne zaman"ın altında (sahip sorusu + persona, 2026-10): Gelişmiş'te
+    // yalnız SERTLİK kaldı → yalnız nazik dışı ETKİN ton açtırır.
+    void kardesler;
+    return tanim.tonSecilebilir === true && etkinKademe(seviye, tanim.yon) !== 'nazik';
 }
 
 /**
@@ -193,9 +191,8 @@ export function gelismisOzetiVerisi(
     kardesler: SeviyeAyari[] = [seviye]
 ): GelismisOzeti {
     const ozet: GelismisOzeti = {};
-    // Rozet yalnız GERÇEK tekrarda (motorun etkin aralığı segmentten küçükse).
-    const tekrar = gercekTekrarDk(seviye, kardesler, tanim.yon, tanim.pencereUzunluguDk);
-    if (tekrar !== null) ozet.tekrarDk = tekrar;
+    // Tekrar Gelişmiş'te DEĞİL (bkz. `gelismisAcikBaslarMi`); özet yalnız sertliği taşır.
+    void kardesler;
     if (tanim.tonSecilebilir === true) {
         const ton = etkinKademe(seviye, tanim.yon);
         if (ton !== 'nazik') ozet.ton = ton;
@@ -217,6 +214,27 @@ export function gelismisOzetiOlustur(
     if (o.tekrarDk) parcalar.push(`her ${o.tekrarDk} dk tekrar`);
     if (o.ton) parcalar.push(`${TON_ETIKETLERI[o.ton]} sertliği`);
     return parcalar.join(', ');
+}
+
+/**
+ * "Tekrarla" anahtarının altındaki TEK satırlık canlı cümle.
+ *  - tekrar açık: "Her 5 dk'da bir, kılana kadar." (muhafızın son adımı) /
+ *    "Her 5 dk'da bir, sonraki hatırlatmaya kadar." / ek yüzeyde "Her 10 dk'da bir tekrarlanır."
+ *  - kapalı: "Bir kez gelir." — kayıtta aralık var ama sonraki hatırlatmadan önce ikinci
+ *    tetik doğmuyorsa bunu söyler (sessiz sapma yok).
+ */
+export function tekrarCumlesiOlustur(
+    seviye: Pick<SeviyeAyari, 'siklik'>,
+    tekrarDk: number | null,
+    sonAdim: boolean,
+    namazaKadar: boolean
+): string {
+    if (tekrarDk === null) {
+        return seviye.siklik !== 'birkez' ? 'Bir kez gelir; sonraki hatırlatma daha önce başlar.' : 'Bir kez gelir.';
+    }
+    const her = `Her ${tekrarDk} dk'da bir`;
+    if (!sonAdim) return `${her}, sonraki hatırlatmaya kadar.`;
+    return namazaKadar ? `${her}, kılana kadar.` : `${her} tekrarlanır.`;
 }
 
 /** Titresim anahtarinin ekran metinleri (kibar "siz"). */
