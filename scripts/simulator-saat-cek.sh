@@ -218,7 +218,7 @@ if [ -n "$VIDEO" ]; then
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
       xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1 || echo "UYARI: $AD videosu için uygulama başlatılamadı"
-    sleep 12
+    sleep 24  # soguk acilis ~10 sn + sahne
     kill -INT "$KAYIT" 2>/dev/null || true
     wait "$KAYIT" 2>/dev/null || true
     if [ -s "$VIDEO/$AD.mp4" ]; then echo "video: $AD.mp4 ($(du -h "$VIDEO/$AD.mp4" | cut -f1))"; else echo "UYARI: $AD videosu yok"; fi
