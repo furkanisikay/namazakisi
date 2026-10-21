@@ -51,7 +51,7 @@ describe('panoDurumuHesapla', () => {
 
 describe('yardımcılar', () => {
     it('geri sayım ve kaydırma', () => {
-        expect(geriSayimMetni(59_999)).toBe('00:59');
+        expect(geriSayimMetni(59_999)).toBe('0:00:59');
         expect(geriSayimMetni(2 * 3_600_000 + 5 * 60_000 + 9_000)).toBe('2:05:09');
         expect(kaydirmaOfseti(0)).toEqual([0, 0]);
         expect(kaydirmaOfseti(60_000)).toEqual([6, 0]);

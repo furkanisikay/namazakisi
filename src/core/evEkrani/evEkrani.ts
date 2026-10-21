@@ -96,12 +96,15 @@ export function kaydirmaOfseti(simdiMs: number): readonly [number, number] {
     return ADIMLAR[((dakika % ADIMLAR.length) + ADIMLAR.length) % ADIMLAR.length];
 }
 
-/** "2:05:09" ya da "05:09" (saniye aşağı yuvarlanır). */
+/**
+ * "S:DD:ss" (saniye aşağı yuvarlanır) — ana ekranla AYNI ham biçim; görünen hâli
+ * `BirimliSure` ("1 sa 9 dk"), sesli hâli `kalanSureSesli` üretir.
+ */
 export function geriSayimMetni(kalanMs: number): string {
     const t = Math.floor(Math.max(0, kalanMs) / 1000);
     const sa = Math.floor(t / 3600);
     const dk = Math.floor((t % 3600) / 60);
     const sn = t % 60;
     const iki = (n: number) => String(n).padStart(2, '0');
-    return sa > 0 ? `${sa}:${iki(dk)}:${iki(sn)}` : `${iki(dk)}:${iki(sn)}`;
+    return `${sa}:${iki(dk)}:${iki(sn)}`;
 }

@@ -84,6 +84,7 @@ import { KildimIzinModali } from '../presentation/components/kildim/KildimIzinMo
 import { useSiriEkranIstegi } from '../presentation/hooks/useSiriEkranIstegi';
 import { derinBaglantiYapilandirmasi, type AnaSekmeParamList } from './derinBaglantilar';
 import { anaAyrintiYerlesimiOlustur } from '../presentation/components/common/AnaAyrintiDuzeni';
+import { OkunabilirGenislik } from '../presentation/components/common/OkunabilirGenislik';
 import { useSadeGorunum } from '../presentation/hooks/useSadeGorunum';
 import { anaAyrintiMi } from '../core/utils/ekranSinifi';
 
@@ -174,6 +175,11 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
  * (kökteyken Hatırlatmalar). Dar pencerede okunabilir sütun (eski davranış).
  * Modül düzeyi: `screenLayout` referansı sabit kalsın.
  */
+/** Kıble ve İlerleme sekmelerinin sarmalayıcısı (modül düzeyi: referansı sabit): geniş pencerede okunabilir sütun. */
+const ayarEkraniYerlesimi = ({ children }: { children: React.ReactElement }) => (
+  <OkunabilirGenislik>{children}</OkunabilirGenislik>
+);
+
 const ayarlarYerlesimi = anaAyrintiYerlesimiOlustur(
   {
     anaRota: 'AyarlarAna',

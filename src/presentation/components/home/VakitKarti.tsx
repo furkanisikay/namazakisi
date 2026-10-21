@@ -264,5 +264,4 @@ const stiller = StyleSheet.create({
     genisIkon: { width: 112, height: 112, borderRadius: 28 },
     genisBaslik: { fontSize: 52, lineHeight: 60 },
     genisSayacKutusu: { marginVertical: 40 },
-    genisSayac: { fontSize: 72, lineHeight: 84 },
 });

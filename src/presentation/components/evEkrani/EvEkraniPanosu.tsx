@@ -7,6 +7,8 @@
  * içerik dakikada bir birkaç nokta kayar (ekran yanığı). Aynı oturumda "Uygulamaya dönün"
  * ile kapatılabilir; ayar Görünüm sayfasındadır.
  */
+import { BirimliSure } from '../common/BirimliSure';
+import { kalanSureSesli } from '../../../core/utils/kalanSureParcalari';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useKeepAwake } from 'expo-keep-awake';
@@ -82,9 +84,14 @@ export const EvEkraniPanosu: React.FC<Props> = ({ lat, lng, konumMetni, onKapat 
                         <Text style={[stil.saat, { color: K.metin }]}>{`${iki(saat.getHours())}:${iki(saat.getMinutes())}`}</Text>
                         <Text style={[stil.saniye, { color: K.metinIkincil }]}>{iki(saat.getSeconds())}</Text>
                     </View>
-                    <View accessible accessibilityLabel={`${PANO_ADLARI[durum.siradaki]} vaktine ${geriSayimMetni(durum.kalanMs)} kaldı`}>
+                    <View accessible accessibilityLabel={`${PANO_ADLARI[durum.siradaki]} vaktine ${kalanSureSesli(geriSayimMetni(durum.kalanMs))} kaldı`}>
                         <Text style={[stil.kalanEtiket, { color: K.metinIkincil }]}>{`${PANO_ADLARI[durum.siradaki]} vaktine kalan`}</Text>
-                        <Text style={[stil.kalan, { color: K.metin }]}>{geriSayimMetni(durum.kalanMs)}</Text>
+                        <BirimliSure
+                            sure={geriSayimMetni(durum.kalanMs)}
+                            rakamBoyu={72}
+                            birimRengi={K.metinIkincil}
+                            style={[stil.kalan, { color: K.metin }]}
+                        />
                     </View>
                     <Pressable
                         onPress={onKapat}
@@ -135,7 +142,7 @@ const stil = StyleSheet.create({
     saat: { fontSize: 140, fontWeight: '200', lineHeight: 150, fontVariant: ['tabular-nums'] },
     saniye: { fontSize: 40, marginLeft: 8, marginBottom: 22, fontVariant: ['tabular-nums'] },
     kalanEtiket: { fontSize: 22 },
-    kalan: { fontSize: 72, fontWeight: '600', fontVariant: ['tabular-nums'] },
+    kalan: { fontWeight: '600', fontVariant: ['tabular-nums'] },
     cikis: {
         flexDirection: 'row',
         alignItems: 'center',
