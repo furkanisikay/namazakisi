@@ -15,6 +15,12 @@ appId: com.furkanisikay.namazakisi
     text: "Hatırlatmalar\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
+- scrollUntilVisible:
+    element:
+      id: "satir-vakit-girince"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
 - tapOn:
     id: "satir-vakit-girince"
 - waitForAnimationToEnd:
