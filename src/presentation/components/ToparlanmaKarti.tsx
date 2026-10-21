@@ -3,7 +3,7 @@
  * Seri bozuldugunda gosterilen kurtarma modu UI'i
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {
 import { useRenkler } from '../../core/theme';
 import { BOYUTLAR, SERI_RENKLERI } from '../../core/constants/UygulamaSabitleri';
 import { ToparlanmaDurumu } from '../../core/types/SeriTipleri';
+import { useDonguAcik, useDonguAnimasyonu } from './hareket/dongu';
 
 interface ToparlanmaKartiProps {
   toparlanmaDurumu: ToparlanmaDurumu;
@@ -30,14 +31,17 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
 }) => {
   const renkler = useRenkler();
 
-  // Sadece ikon için hafif pulse
+  // Sadece ikon için hafif pulse — tek kapı `hareket/dongu` (D-16): odak/ön plan/azaltılmış
+  // hareket kapısı + temizlik; dinlenme pozu ölçek 1.
   const ikonPulseAnim = useRef(new Animated.Value(1)).current;
-  useEffect(() => {
-    Animated.loop(Animated.sequence([
+  useDonguAnimasyonu(
+    useDonguAcik(),
+    () => Animated.sequence([
       Animated.timing(ikonPulseAnim, { toValue: 1.12, duration: 900, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
       Animated.timing(ikonPulseAnim, { toValue: 1, duration: 900, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-    ])).start();
-  }, []);
+    ]),
+    () => ikonPulseAnim.setValue(1)
+  );
 
   // Progress daireleri
   const daireler = [];
