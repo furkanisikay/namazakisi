@@ -237,7 +237,7 @@ if [ -n "$VIDEO" ]; then
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
       xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1 || { echo "UYARI: $AD başlatılamadı"; continue; }
-    sleep 12
+    sleep 18
     xcrun simctl io "$SAAT" screenshot --type=png "$VIDEO/$AD.png" >/dev/null 2>&1 && echo "sönük kare: $AD.png" || echo "UYARI: $AD çekilemedi"
   done
 fi

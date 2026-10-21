@@ -23,25 +23,28 @@ struct UyandirmaEkrani: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 4) {
-                ZStack {
-                    Circle()
-                        .stroke(ton.opacity(dalga ? 0 : 0.7), lineWidth: 2)
-                        .scaleEffect(dalga ? 1.9 : 1)
-                    Circle()
-                        .fill(ton.opacity(0.25))
-                    Image(systemName: ikon)
-                        .symbolRenderingMode(.hierarchical)
-                        .foregroundStyle(ton)
-                        .font(.system(size: 20, weight: .semibold))
-                        .symbolEffect(.bounce, value: seke)
+                // Ikon + ad TEK satir (41 mm'de iki dugme de kaydirmadan gorunsun — kanitlandi).
+                HStack(spacing: 6) {
+                    ZStack {
+                        Circle()
+                            .stroke(ton.opacity(dalga ? 0 : 0.7), lineWidth: 2)
+                            .scaleEffect(dalga ? 1.9 : 1)
+                        Circle()
+                            .fill(ton.opacity(0.25))
+                        Image(systemName: ikon)
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(ton)
+                            .font(.system(size: 15, weight: .semibold))
+                            .symbolEffect(.bounce, value: seke)
+                    }
+                    .frame(width: 30, height: 30)
+                    .accessibilityHidden(true)
+                    Text(ad)
+                        .font(.headline)
+                        .lineLimit(1)
                 }
-                .frame(width: 40, height: 40)
-                .accessibilityHidden(true)
-                Text(ad)
-                    .font(.headline)
-                    .lineLimit(1)
                 Text(Date(), style: .time)
-                    .font(.system(size: 32, weight: .semibold, design: .rounded))
+                    .font(.system(size: 30, weight: .semibold, design: .rounded))
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
