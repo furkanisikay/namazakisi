@@ -40,6 +40,11 @@ import { rastgeleBaytlar, yereleGonder } from './CihazAgiTasima';
 export const TV_DINLEYICI_ADI = 'tv';
 const BEKLEME_MS = 1500;
 const KESIF_MS = 4000;
+/** Ulaşılamayan TV için bekleme: 30 sn × 2^(hata−1), en çok 60 dk (tasarım §4.5). `zorla` atlar. */
+const GERI_CEKILME_TABAN_MS = 30_000;
+const GERI_CEKILME_TAVAN_MS = 60 * 60_000;
+export const geriCekilmeMs = (hataSayisi: number): number =>
+    hataSayisi <= 0 ? 0 : Math.min(GERI_CEKILME_TAVAN_MS, GERI_CEKILME_TABAN_MS * 2 ** Math.min(hataSayisi - 1, 12));
 /** Alıcı başına son gönderilen yükün ÖZETİ (içerik değil): 15 dk görevi ayrı süreçte koşar,
  * bellek-içi tekilleştirme orada boştur → özet diskte tutulur, aynıysa hiç gönderilmez. */
 const OZET_ANAHTARI = 'cihazAgi_son_ozet';
@@ -120,6 +125,10 @@ export class TvSenkronServisi {
         const ortak = await this.ortakDurumuOku();
         const ozetler = await this.ozetleriOku();
         for (const u of uyeler) {
+            if (!zorla && u.sonHataMs && Date.now() < u.sonHataMs + geriCekilmeMs(u.hataSayisi ?? 0)) {
+                sonuc[u.aliciKimlik] = 'atlandi';
+                continue;
+            }
             const duz = yukuYaz({
                 v: 2,
                 durum: { ...ortak, durumumSayilsin: u.durumumSayilsin, tvHatirlat: u.tvHatirlat },
@@ -191,7 +200,8 @@ export class TvSenkronServisi {
         const simdi = Date.now();
         await CihazAgiDeposu.guncelle(u.aliciKimlik, {
             durum: sonuc === 'reddedildi' ? 'reddedildi' : sonuc === 'tamam' ? 'tamam' : 'ulasilamadi',
-            ...(sonuc === 'tamam' ? { sonEsitlemeMs: simdi } : {}),
+            ...(sonuc === 'tamam' ? { sonEsitlemeMs: simdi, sonHataMs: 0, hataSayisi: 0 } : {}),
+            ...(sonuc === 'ulasilamadi' ? { sonHataMs: simdi, hataSayisi: (u.hataSayisi ?? 0) + 1 } : {}),
         });
         return sonuc;
     }

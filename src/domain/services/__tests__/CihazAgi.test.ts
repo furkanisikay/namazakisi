@@ -138,6 +138,22 @@ describe('TV durum gönderimi', () => {
         expect(mockGonder).not.toHaveBeenCalled();
     });
 
+    it('PİL: ulaşılamayan TV üstel geri çekilir — bekleme içinde denenmez, "zorla" atlar, başarı sıfırlar', async () => {
+        await eslesmisKur();
+        mockGonder.mockRejectedValue(new Error('zaman aşımı'));
+        const { TvSenkronServisi, geriCekilmeMs } = require('../TvSenkronServisi');
+        // İlk tur zorlanır (önceki testlerin özet tekilleştirmesi "ayni" demesin).
+        expect(await TvSenkronServisi.getInstance().gonder(true)).toEqual({ [TV]: 'ulasilamadi' });
+        expect((await CihazAgiDeposu.liste())[0].hataSayisi).toBe(1);
+        mockGonder.mockClear();
+        expect(await TvSenkronServisi.getInstance().gonder()).toEqual({ [TV]: 'atlandi' });
+        expect(mockGonder).not.toHaveBeenCalled();
+        mockGonder.mockResolvedValue({ kod: 200, govde: '' });
+        expect(await TvSenkronServisi.getInstance().gonder(true)).toEqual({ [TV]: 'tamam' });
+        expect((await CihazAgiDeposu.liste())[0].hataSayisi).toBe(0);
+        expect([geriCekilmeMs(1), geriCekilmeMs(3), geriCekilmeMs(40)]).toEqual([30_000, 120_000, 60 * 60_000]);
+    });
+
     it('adres düştüyse mDNS ile bulunan adrese denenir; adres YALNIZ başarıdan sonra güncellenir', async () => {
         sahteTv();
         await eslesmisKur();

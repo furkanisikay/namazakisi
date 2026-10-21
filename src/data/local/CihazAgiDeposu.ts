@@ -32,6 +32,9 @@ export interface CihazUyeligi {
     sonEsitlemeMs: number;
     /** 'reddedildi': cihaz bu telefonu kaldırmış ya da anahtar tutmuyor → yeniden eşleştirme. */
     durum: 'tamam' | 'ulasilamadi' | 'reddedildi';
+    /** Üstel geri çekilme (TV kapalıyken her tetikte soket + keşif masrafı ödenmesin). Opsiyonel: eski kayıt. */
+    sonHataMs?: number;
+    hataSayisi?: number;
 }
 
 const LISTE = 'cihazAgi.liste';
