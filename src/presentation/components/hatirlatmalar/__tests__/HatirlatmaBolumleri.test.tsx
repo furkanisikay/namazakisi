@@ -118,7 +118,7 @@ describe('VakitGirinceBolumu — ses', () => {
             },
         };
         const e = render(<VakitGirinceBolumu />);
-        await waitFor(() => expect(e.getByLabelText(/^Sabah bildirim sesi: Ses bulunamadı/)).toBeTruthy());
+        await waitFor(() => expect(e.getByLabelText(/^Sabah bildirim sesi: Bulunamadı · telefonun sesi/)).toBeTruthy());
     });
 
     it('yalnız AÇIK vaktin altında ses satırı çizilir; açılınca sesler de yüklenir', () => {

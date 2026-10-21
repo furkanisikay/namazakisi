@@ -149,7 +149,7 @@ export const VakitGirinceBolumu: React.FC = () => {
                                     bildirimSesi={sesler[v.anahtar]?.bildirimSesi ?? 'varsayilan'}
                                     sesAdi={
                                         bulunamayan.has(sesler[v.anahtar]?.bildirimSesi ?? '')
-                                            ? 'Ses bulunamadı · telefonun sesi çalar'
+                                            ? 'Bulunamadı · telefonun sesi'
                                             : vakitSesGorunenAdi(sesler[v.anahtar])
                                     }
                                     varsayilanAdi={VAKIT_VARSAYILAN_SES_ADI}
