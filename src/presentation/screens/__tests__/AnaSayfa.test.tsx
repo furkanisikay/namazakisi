@@ -989,6 +989,8 @@ describe('AnaSayfa', () => {
       await act(async () => { await new Promise((r) => setTimeout(r, 200)); });
     }
     const ek = commitler.length - yerlesik;
+    // 0 değil ≤1: pencere bir dakika sınırını kesebilir — kerahat effect'i dakikada bir
+    // çizdirir (nafile satırlarının tazelenme kaynağı). Sıkılaştırma, flaky olur.
     expect(ek).toBeLessThanOrEqual(1);
   }, 15000);
 });
