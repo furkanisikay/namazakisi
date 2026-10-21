@@ -314,6 +314,17 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      # Olayla baslayan animasyonlarin ekran kaydi (adb screenrecord, en gayret; hat
+      # betigi sonda animator olcegini 1 yapip kaydeder). Kare artifact'indan AYRI.
+      - name: 🎬 Saat animasyon videolarını yükle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-saat-videolari
+          path: videolar-saat/
+          retention-days: 14
+          if-no-files-found: warn
+
   # --- ANDROID TV (bagimsiz; `tv/` ayri Gradle koku) ---
   tv:
     name: 📺 TV kareleri (Android TV)
@@ -374,5 +385,16 @@ jobs:
         with:
           name: android-tv-kareleri
           path: kareler-tv/
+          retention-days: 14
+          if-no-files-found: warn
+
+      # Olayla baslayan animasyonlarin ekran kaydi (adb screenrecord, en gayret; hat
+      # betigi sonda animator olcegini 1 yapip kaydeder). Kare artifact'indan AYRI.
+      - name: 🎬 TV animasyon videolarını yükle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-tv-videolari
+          path: videolar-tv/
           retention-days: 14
           if-no-files-found: warn

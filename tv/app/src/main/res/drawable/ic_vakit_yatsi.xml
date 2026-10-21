@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Yatsı: hilal + yıldız (gece). ic_vakit.xml ile aynı çizim; canlı sayaç eşlemesi için ayrı ad. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M12.5,3a9,9 0,1 0,8.5 12A7,7 0,1 1,12.5 3z" />
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M18,5l0.9,1.9 2.1,0.3 -1.5,1.5 0.4,2.1 -1.9,-1 -1.9,1 0.4,-2.1 -1.5,-1.5 2.1,-0.3z" />
+</vector>

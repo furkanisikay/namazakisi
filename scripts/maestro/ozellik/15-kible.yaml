@@ -1,0 +1,9 @@
+# tohum: ozellik
+# Kible sekmesi (tablet/katlanabilir duzeni de bu kareden incelenir).
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _acilis.yaml
+- tapOn: "Kıble"
+- waitForAnimationToEnd:
+    timeout: 4000
+- takeScreenshot: ozk/32-kible

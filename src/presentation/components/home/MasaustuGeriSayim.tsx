@@ -12,6 +12,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { useRenkler } from '../../../core/theme';
+import { BirimliSure } from '../common/BirimliSure';
+import { kalanSureSesli } from '../../../core/utils/kalanSureParcalari';
 
 interface MasaustuGeriSayimProps {
     /** Başlıkta görünen ad ("Öğle", cuma günü "Cuma"). */
@@ -35,7 +37,7 @@ const MasaustuGeriSayimBileseni: React.FC<MasaustuGeriSayimProps> = ({
     const renkler = useRenkler();
     const ustEtiket = kilitli ? 'SIRADAKİ VAKİT' : 'ŞU ANKİ VAKİT';
     const sayacEtiketi = kilitli ? 'Vaktin girmesine kalan' : 'Vaktin çıkmasına kalan';
-    const erisimEtiketi = `${vakitAdi} vakti, ${vakitAraligi}. ${sayacEtiketi} ${kalanSureStr}.${
+    const erisimEtiketi = `${vakitAdi} vakti, ${vakitAraligi}. ${sayacEtiketi} ${kalanSureSesli(kalanSureStr)}.${
         tamamlandi ? ' Kılındı.' : ''
     }`;
 
@@ -59,14 +61,15 @@ const MasaustuGeriSayimBileseni: React.FC<MasaustuGeriSayimProps> = ({
             <Text style={[stiller.vakitAdi, { color: renkler.metin }]} numberOfLines={1}>
                 {vakitAdi}
             </Text>
-            <Text
+            <BirimliSure
+                sure={kalanSureStr}
+                rakamBoyu={88}
+                birimOrani={0.36}
+                birimRengi={renkler.metinIkincil}
                 style={[stiller.sayac, { color: renkler.metin }]}
-                numberOfLines={1}
                 adjustsFontSizeToFit
                 minimumFontScale={0.5}
-            >
-                {kalanSureStr}
-            </Text>
+            />
             <Text style={[stiller.altMetin, { color: renkler.metinIkincil }]}>
                 {sayacEtiketi} · {vakitAraligi}
             </Text>

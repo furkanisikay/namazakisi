@@ -45,8 +45,8 @@ describe('VakitKarti Bileşeni', () => {
     expect(getByText('ŞU ANKİ VAKİT')).toBeTruthy();
     expect(getByText('Öğle')).toBeTruthy();
     expect(getByText('13:00 - 16:30')).toBeTruthy();
-    expect(getByText('01:30:00')).toBeTruthy();
-    expect(getByText('KALAN SÜRE')).toBeTruthy();
+    expect(getByText('1 sa 30 dk')).toBeTruthy();
+    expect(getByText('Kalan süre')).toBeTruthy();
     expect(getByLabelText('Öğle — Kılındı olarak işaretle')).toBeTruthy();
     expect(getByTestId('vakit-karti-tesvik')).toBeTruthy();
   });
