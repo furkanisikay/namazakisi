@@ -302,12 +302,14 @@ describe('SESLİ OKUMA METNİ — her yüzey', () => {
 describe('tekrarCumlesiOlustur (Tekrarla anahtarının canlı cümlesi)', () => {
     const { tekrarCumlesiOlustur } = require('../pencereTanimi');
     test('tek atış ve etkisiz aralık açıkça söylenir', () => {
-        expect(tekrarCumlesiOlustur({ siklik: 'birkez' }, null, true, true)).toBe('Bir kez gelir.');
-        expect(tekrarCumlesiOlustur({ siklik: { herDk: 30 } }, null, false, true)).toMatch(/sonraki hatırlatma daha önce/);
+        expect(tekrarCumlesiOlustur({ siklik: 'birkez', esikDk: 25 }, null, true, true)).toBe('Bir kez gelir.');
+        // Hazır düzeyin tek atış türevi (herDk = esikDk) kullanıcı seçimi değildir.
+        expect(tekrarCumlesiOlustur({ siklik: { herDk: 25 }, esikDk: 25 }, null, false, true)).toBe('Bir kez gelir.');
+        expect(tekrarCumlesiOlustur({ siklik: { herDk: 20 }, esikDk: 25 }, null, false, true)).toMatch(/sonraki hatırlatma daha önce/);
     });
     test('muhafızın son adımı kılana kadar, ara adım sonraki hatırlatmaya kadar, ek yüzey tekrarlanır', () => {
-        expect(tekrarCumlesiOlustur({ siklik: { herDk: 5 } }, 5, true, true)).toBe("Her 5 dk'da bir, kılana kadar.");
-        expect(tekrarCumlesiOlustur({ siklik: { herDk: 5 } }, 5, false, true)).toBe("Her 5 dk'da bir, sonraki hatırlatmaya kadar.");
-        expect(tekrarCumlesiOlustur({ siklik: { herDk: 10 } }, 10, true, false)).toBe("Her 10 dk'da bir tekrarlanır.");
+        expect(tekrarCumlesiOlustur({ siklik: { herDk: 5 }, esikDk: 25 }, 5, true, true)).toBe("Her 5 dk'da bir, kılana kadar.");
+        expect(tekrarCumlesiOlustur({ siklik: { herDk: 5 }, esikDk: 25 }, 5, false, true)).toBe("Her 5 dk'da bir, sonraki hatırlatmaya kadar.");
+        expect(tekrarCumlesiOlustur({ siklik: { herDk: 10 }, esikDk: 30 }, 10, true, false)).toBe("Her 10 dk'da bir tekrarlanır.");
     });
 });
