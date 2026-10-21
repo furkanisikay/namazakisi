@@ -26,20 +26,8 @@ adb shell settings put global hide_error_dialogs 1 || true
 adb shell svc power stayon true || true
 adb install -r "$APK"
 
-# Saat: BUGUN Kadikoy'de ogle vaktinin son 20 dakikasi -> sessiz bant karesi GERCEK konum ve
-# saatlerle cikar (eskiden bant icin uzak bir boylam seciliyordu, vakitler absurt gorunuyordu).
-# android-tv imaji userdebug: adb root + toybox `date MMDDhhmmCCYY.ss` (yerel saat).
-HEDEF=$(node scripts/tv/tv-esitleme-istemci.js bant-saati 2>/dev/null || true)
-if [ -n "$HEDEF" ] && adb root 2>&1 | tee /tmp/adb-root.log && ! grep -q "cannot run as root" /tmp/adb-root.log; then
-  sleep 2
-  adb wait-for-device
-  adb shell settings put global auto_time 0 || true
-  YEREL=$(TZ=Europe/Istanbul date -d "@$HEDEF" +%m%d%H%M%Y.%S)
-  adb shell date "$YEREL" 2>&1 || echo "UYARI: TV saati ayarlanamadi ($YEREL)"
-  echo "TV saati: $(adb shell date)"
-else
-  echo "UYARI: adb root yok; bant karesi yalniz gercek saat uygunsa cikar"
-fi
+# Saat DEGISTIRILEMEZ (android-tv imaji production build: adb root yok, olculdu). Sessiz bant
+# karesi yalniz Kadikoy'de bir vaktin son 30 dakikasindaysak cikar: hat o pencerede calistirilir.
 
 kare() {
   local ad="$1"

@@ -170,7 +170,9 @@ fun EslemeDugmesi(
         border = ClickableSurfaceDefaults.border(
             border = Border(BorderStroke(1.dp, Renkler.sinir)),
             // Odak halkası dışa taşar: kanepeden (3 m) hangi düğmede olduğunuz görünsün.
-            focusedBorder = Border(BorderStroke(3.dp, Renkler.birincil), inset = (-4).dp),
+            // inset VERİLMEZ: negatif inset, belirip büyüyen (onay penceresi) yüzeyin ilk karesinde
+            // SurfaceBorderNode'u "Width and height must be ≥ 0" ile çökertti (kare hattında görüldü).
+            focusedBorder = Border(BorderStroke(3.dp, Renkler.birincil)),
         ),
         scale = ClickableSurfaceDefaults.scale(focusedScale = 1.06f),
     ) {
