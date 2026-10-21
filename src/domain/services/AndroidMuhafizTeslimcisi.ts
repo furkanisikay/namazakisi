@@ -37,6 +37,7 @@ import {
     iptalEtAnons,
     iptalEtTumAnonslar,
     iptalEtOnekliAnonslar,
+    bekleyenAnonsSayisi,
 } from '../../../modules/expo-countdown-notification/src';
 import { sessizBitisMs } from '../../../modules/expo-cami-geofence/src';
 import { MuhafizKanalServisi } from './MuhafizKanalServisi';
@@ -44,13 +45,15 @@ import {
     alarmKanallariniTemizle,
     alarmKoprusuVarMi,
     alarmPlanla as nativeAlarmPlanla,
+    bekleyenAlarmSayisi,
     onekliAlarmlariIptalEt,
     sahipliIptalVarMi,
     sahipliYanKanallariIptalEt,
+    tamAlarmIzniVarMi,
     vakitAlarmlariniSustur,
 } from './MuhafizAlarmKoprusu';
 import { ANDROID_MUHAFIZ_PAYI } from '../../core/bildirim/butceSabitleri';
-import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
+import type { MuhafizTeslimcisi, TeslimSonucu, UyariTeslimi } from './MuhafizTeslimcisi';
 
 /**
  * Bir planlama turunda muhafızın kurabileceği en fazla alarm (bildirim + sesli anons).
@@ -195,6 +198,46 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
         return true;
     }
 
+    /**
+     * Plan kaydi (D-02) icin teslim baglami: camideyken (bitis ani) alarm/anons/acil kanal
+     * kurulmaz, tam alarm izni yoksa gercek alarm bildirime duser — ikisi de ayni girdiyle
+     * FARKLI plan demektir. Okunamayan deger dizeye ayri isaretle girer (kapi ihtiyatli).
+     */
+    async planBaglamiImzasi(): Promise<string> {
+        let cami: number | string;
+        try {
+            const bitis = await sessizBitisMs();
+            cami = bitis > Date.now() ? bitis : 0;
+        } catch {
+            cami = 'okunamadi';
+        }
+        let alarmIzni: boolean | null | string = 'yok';
+        if (this.alarmDestegi && alarmKoprusuVarMi()) {
+            try {
+                alarmIzni = await tamAlarmIzniVarMi();
+            } catch {
+                alarmIzni = 'okunamadi';
+            }
+        }
+        return JSON.stringify({ cami, alarmIzni, butce: this.alarmButcesi });
+    }
+
+    async kurulumSayilari(): Promise<{ anons: number | null; alarm: number | null }> {
+        let anons: number | null = null;
+        try {
+            anons = await bekleyenAnonsSayisi();
+        } catch {
+            anons = null;
+        }
+        // Köprü yoksa bu turda zaten hiç alarm kurulamazdı (beklenen 0).
+        const alarm = alarmKoprusuVarMi() ? await bekleyenAlarmSayisi() : 0;
+        return { anons, alarm };
+    }
+
+    butceDolduMu(): boolean {
+        return this.butceUyarisiYazildi;
+    }
+
     /** Android'de tur sonu isi yok: anons calisma aninda TTS ile uretilir, dosya birakmaz. */
     async tamamla(): Promise<void> {
         // Bilincli bos.
@@ -256,16 +299,21 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
         }
     }
 
-    async uyariPlanla(teslim: UyariTeslimi): Promise<void> {
+    async uyariPlanla(teslim: UyariTeslimi): Promise<TeslimSonucu> {
         // GERÇEK ALARM (issue #74): alarm o tetiğin bildirimi + anonsunun YERİNE geçer
         // (alarm bildirimi tam ekran/heads-up olarak zaten görünür; aynı anda TTS de
         // konuşsaydı alarm sesinin üstüne binerdi). Kurulamazsa (izin yok, köprü yok,
         // camide) aynı tetik NORMAL yoldan kurulur — sessiz kayıp yok.
-        if (await this.alarmPlanla(teslim)) return;
-        await this.tekBildirimPlanla(teslim);
+        if (await this.alarmPlanla(teslim)) return { alarm: true };
+        const bildirim = await this.tekBildirimPlanla(teslim);
         // mod 'sesli'/'ikisi' ise ayni ana bir de TTS anonsu planla.
         // Anons id = bildirim id -> iptal zinciri simetrik kalir.
-        this.anonsPlanla(teslim);
+        const anons = this.anonsPlanla(teslim);
+        return {
+            ...(bildirim === 'kuruldu' ? { bildirim: true as const } : {}),
+            ...(anons === 'kuruldu' ? { anons: true as const } : {}),
+            ...(bildirim === 'hata' || anons === 'hata' ? { hata: true as const } : {}),
+        };
     }
 
     /**
@@ -382,15 +430,15 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     /**
      * Tek bir bildirim planla.
      */
-    private async tekBildirimPlanla(teslim: UyariTeslimi): Promise<void> {
+    private async tekBildirimPlanla(teslim: UyariTeslimi): Promise<'kuruldu' | 'atlandi' | 'hata'> {
         const { id, baslik, mesaj, zaman, uyari, vakit, tarih, ozel } = teslim;
         try {
             // Zamanin gecerli oldugundan emin ol
             const simdi = new Date();
             if (zaman.getTime() <= simdi.getTime()) {
-                return;
+                return 'atlandi';
             }
-            if (!this.alarmPayiAl()) return;
+            if (!this.alarmPayiAl()) return 'atlandi';
 
             const titresimli = titresimGerekliMi(uyari.kanallar);
             const kanalId = muhafizKanaliSec(
@@ -444,10 +492,10 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     channelId: ozelKanalSec(teslim, kanalId),
                 },
             });
-
-
+            return 'kuruldu';
         } catch (error) {
             Logger.error('ArkaplanMuhafiz', `Bildirim planlanamadi: ${id}`, error);
+            return 'hata';
         }
     }
 
@@ -460,13 +508,13 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
      *
      * Native cagri asla planlamayi durdurmamali -> hata yutulup loglanir.
      */
-    private anonsPlanla(teslim: UyariTeslimi): void {
+    private anonsPlanla(teslim: UyariTeslimi): 'kuruldu' | 'atlandi' | 'hata' {
         const { id, zaman, uyari, muhafizVakti, yon } = teslim;
-        if (!uyari.sesliAnons) return;
-        if (!uyari.anonsMetni || uyari.anonsMetni.trim().length === 0) return;
-        if (zaman.getTime() <= Date.now()) return;
-        if (this.camideMi(zaman)) return;
-        if (!this.alarmPayiAl()) return;
+        if (!uyari.sesliAnons) return 'atlandi';
+        if (!uyari.anonsMetni || uyari.anonsMetni.trim().length === 0) return 'atlandi';
+        if (zaman.getTime() <= Date.now()) return 'atlandi';
+        if (this.camideMi(zaman)) return 'atlandi';
+        if (!this.alarmPayiAl()) return 'atlandi';
 
         try {
             // UCUNCU ARGUMAN `olcuDk` — `kalanDk` DEGIL. Cikis yonunde ikisi
@@ -475,8 +523,10 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
             // varsayilanli oldugu icin typecheck bunu YAKALAMAZ.
             const metin = anonsMetniniCoz(uyari.anonsMetni, muhafizVakti, uyari.olcuDk, yon);
             planlaAnons(id, zaman.getTime(), metin);
+            return 'kuruldu';
         } catch (error) {
             Logger.error('ArkaplanMuhafiz', `Sesli anons planlanamadi: ${id}`, error);
+            return 'hata';
         }
     }
 }

@@ -596,7 +596,10 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             }),
         };
 
-        await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla(muhafizAyarlari);
+        // D-02: periyodik tur girdiler ve cihazdaki kurulum değişmediyse sil-kur YAPMAZ
+        // (gün dönümü, kılınmışlık, konum, ayar, camide, alarm izni parmak izine girer;
+        // kayıt 6 saatten eskiyse yine kurar). Diğer tüm yollar tam kurar.
+        await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla(muhafizAyarlari, { degismediyseAtla: true });
 
         Logger.info('ArkaplanGorev', 'Bildirimler yeniden planlandi (sehir hassasiyetinde konum)');
         return BackgroundFetch.BackgroundFetchResult.NewData;

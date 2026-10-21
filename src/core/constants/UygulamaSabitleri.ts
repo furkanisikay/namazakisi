@@ -156,6 +156,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   OZEL_GUN_AYARLARI: 'ozel_gun_ayarlari',
   // Muhafiz sistemi
   MUHAFIZ_AYARLARI: 'muhafiz_ayarlari',
+  // Son TAM muhafiz kurulumunun kaydi (parmak izi + kurulan kimlikler; denetim D-02):
+  // 15 dk turu girdiler degismediyse yeniden kurmaz. Cihaza ozgu → yedeklemeye GIRMEZ.
+  MUHAFIZ_PLAN_KAYDI: '@namaz_akisi/muhafiz_plan_kaydi',
   // iOS anons kliplerinin son kullanim gunleri (GC icin). CIHAZA OZGUDUR — dosyalar
   // bu cihazin Library/Sounds'unda yasar; yedekleme beyaz listesine GIRMEZ.
   IOS_ANONS_KLIP_KULLANIMI: '@namaz_akisi/ios_anons_klip_kullanimi',
