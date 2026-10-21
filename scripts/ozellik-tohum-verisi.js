@@ -30,7 +30,7 @@
  */
 const { tohumVerisi } = require('./magaza-tohum-verisi');
 
-const VARYANTLAR = ['ozellik', 'sade', 'butce'];
+const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses'];
 const TEMALAR = ['acik', 'koyu'];
 
 /** Nafile adimi — `nafileAdimlari.nafileAdimi` ile AYNI sekil (normalize degistirmesin). */
@@ -145,6 +145,16 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
     );
     // Kaza defteri "Her farzla bir kaza" anahtari acik gorunsun (borc magaza tohumunda).
     depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: true });
+
+    if (varyant === 'ses') {
+        // "Vakit girince" sesi: bes vakit acik, sabaha ozel ses. URI emulatorde HER ZAMAN
+        // cozulen sistem alarm sesidir (`RingtoneManager` adini verir) → kanal dogrulamasi
+        // gecer ve `vakit_bildirim_<hash8>` kanali kurulur (hat `dumpsys` ile doker).
+        depo.vakit_bildirim_ayarlari = JSON.stringify({ imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true });
+        depo['@namaz_akisi/vakit_bildirim_sesleri'] = JSON.stringify({
+            imsak: { bildirimSesi: 'content://settings/system/alarm_alert', sesAdi: 'Sabah ezanı' },
+        });
+    }
 
     if (varyant === 'sade') {
         depo.sade_gorunum_ayarlari = JSON.stringify({ aktif: true });

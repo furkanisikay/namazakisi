@@ -19,6 +19,16 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { ozelSesMi, sesGorunenAdi } from '../../../core/muhafiz/sesKimligi';
 
+/** Satırın altındaki/açılır listedeki ikincil eylem. */
+interface Eylem {
+    ikon: string;
+    etiket: string;
+    erisimEtiketi: string;
+    ipucu?: string;
+    onPress: () => void;
+    testID?: string;
+}
+
 export interface SesSecimSatiriProps {
     /** `varsayilan` ya da `content://...` */
     bildirimSesi: string;
@@ -33,6 +43,28 @@ export interface SesSecimSatiriProps {
     onSec: () => void;
     /** Secili sesi calar */
     onDinle: () => void;
+    /**
+     * "Kendi dosyanizdan secin" (Android 10+; SAF → MediaStore). Verilmezse secenek
+     * cizilmez. Ornegin bir ezan kaydi buradan eklenir.
+     */
+    onDosyadanSec?: () => void;
+    /** Dosya ice aktariliyor mu? (satir ve secenek kilitlenir) */
+    dosyaAktariliyor?: boolean;
+    /** Ozel ses seciliyken varsayilana donus. Verilmezse secenek cizilmez. */
+    onVarsayilanaDon?: () => void;
+    /** Varsayilan sesin gorunen adi (muhafiz: "Uygulama sesi"; vakit bildirimi: telefonun sesi). */
+    varsayilanAdi?: string;
+    /** Varsayilana donus eyleminin metni (varsayilan: "Uygulama sesine dön"). */
+    varsayilanaDonEtiketi?: string;
+    /**
+     * KOMPAKT: liste icinde (vakit basina) kucuk satir. Dokunus sistem secicisini
+     * DOGRUDAN acmaz; secenekleri (telefonun sesleri / kendi dosyaniz / varsayilan)
+     * satirin altinda acar — ilk gorunum tek satir kalir.
+     */
+    kompakt?: boolean;
+    /** Erisilebilirlik etiketinin basi (ayni ekranda birden cok satir varsa AYIRT EDICI olmali). */
+    sesEtiketi?: string;
+    testID?: string;
 }
 
 export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
@@ -41,10 +73,59 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
     seciliyor = false,
     onSec,
     onDinle,
+    onDosyadanSec,
+    dosyaAktariliyor = false,
+    onVarsayilanaDon,
+    varsayilanAdi,
+    varsayilanaDonEtiketi = 'Uygulama sesine dön',
+    kompakt = false,
+    sesEtiketi = 'Bildirim sesi',
+    testID,
 }) => {
     const renkler = useRenkler();
-    const ad = sesGorunenAdi(bildirimSesi, sesAdi);
     const ozelMi = ozelSesMi(bildirimSesi);
+    const ad = !ozelMi && varsayilanAdi ? varsayilanAdi : sesGorunenAdi(bildirimSesi, sesAdi);
+    const mesgul = seciliyor || dosyaAktariliyor;
+    const [acik, setAcik] = useState(false);
+
+    const eylemler: Eylem[] = [];
+    if (kompakt) {
+        eylemler.push({
+            ikon: 'bell',
+            etiket: 'Telefonun sesleri',
+            erisimEtiketi: `${sesEtiketi}: telefonun seslerinden seçin`,
+            onPress: () => {
+                setAcik(false);
+                onSec();
+            },
+            testID: testID ? `${testID}-sistem` : undefined,
+        });
+    }
+    if (onDosyadanSec) {
+        eylemler.push({
+            ikon: 'folder-open',
+            etiket: 'Kendi dosyanızdan seçin',
+            erisimEtiketi: `${sesEtiketi}: kendi dosyanızdan seçin`,
+            ipucu: 'Örneğin bir ezan kaydı',
+            onPress: () => {
+                setAcik(false);
+                onDosyadanSec();
+            },
+            testID: testID ? `${testID}-dosya` : 'ses-dosyadan-sec',
+        });
+    }
+    if (onVarsayilanaDon && ozelMi) {
+        eylemler.push({
+            ikon: 'undo',
+            etiket: varsayilanaDonEtiketi,
+            erisimEtiketi: `${varsayilanaDonEtiketi}ün`,
+            onPress: () => {
+                setAcik(false);
+                onVarsayilanaDon();
+            },
+            testID: testID ? `${testID}-varsayilan` : undefined,
+        });
+    }
 
     // Ad degisince yumusak gecis: hafif yukari kayma + fade.
     const [gosterilenAd, setGosterilenAd] = useState(ad);
@@ -64,78 +145,194 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
         }).start();
     }, [ad, canlandirma]);
 
-    return (
-        <View
-            className="flex-row items-center p-3 rounded-2xl border"
-            style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }}
-        >
-            {/* Secime goturen ana dokunma hedefi (satirin govdesi) */}
-            <TouchableOpacity
-                className="flex-row items-center flex-1"
-                style={{ minHeight: 44, opacity: seciliyor ? 0.6 : 1 }}
-                onPress={onSec}
-                disabled={seciliyor}
-                activeOpacity={0.7}
-                accessibilityRole="button"
-                accessibilityState={{ disabled: seciliyor }}
-                accessibilityLabel={
-                    seciliyor
-                        ? 'Ses seçici açılıyor, lütfen bekleyin'
-                        : `Bildirim sesi: ${ad}. Değiştirmek için dokunun.`
-                }
-            >
-                <View
-                    className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
-                    style={{ backgroundColor: `${renkler.birincil}20` }}
+    const eylemListesi = (
+        <View style={kompakt ? { marginTop: 6 } : { marginTop: 4 }}>
+            {eylemler.map((e) => (
+                <TouchableOpacity
+                    key={e.etiket}
+                    testID={e.testID}
+                    className={
+                        kompakt
+                            ? 'flex-row items-center px-3 rounded-xl'
+                            : 'flex-row items-center justify-center px-3 rounded-xl'
+                    }
+                    style={{ minHeight: 44, opacity: mesgul ? 0.6 : 1 }}
+                    onPress={e.onPress}
+                    disabled={mesgul}
+                    activeOpacity={0.7}
+                    accessibilityRole="button"
+                    accessibilityState={{ disabled: mesgul }}
+                    accessibilityLabel={e.erisimEtiketi}
+                    accessibilityHint={e.ipucu}
                 >
                     <FontAwesome5
-                        name={ozelMi ? 'music' : 'bell'}
-                        size={16}
-                        color={renkler.birincil}
-                        solid
+                        name={e.ikon}
+                        size={kompakt ? 13 : 11}
+                        color={kompakt ? renkler.birincil : renkler.metinIkincil}
+                        style={{ marginRight: 8, width: 16, textAlign: 'center' }}
                     />
-                </View>
-                <View className="flex-1 pr-2">
-                    <Animated.Text
-                        numberOfLines={1}
-                        className="text-sm font-semibold"
-                        style={{
-                            color: renkler.metin,
-                            opacity: canlandirma,
-                            transform: [
-                                {
-                                    translateY: canlandirma.interpolate({
-                                        inputRange: [0, 1],
-                                        outputRange: [6, 0],
-                                    }),
-                                },
-                            ],
-                        }}
+                    <Text
+                        className={kompakt ? 'text-sm' : 'text-xs font-medium'}
+                        style={{ color: kompakt ? renkler.metin : renkler.metinIkincil }}
                     >
-                        {gosterilenAd}
-                    </Animated.Text>
-                    <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                        {seciliyor
-                            ? 'Ses seçici açılıyor…'
-                            : ozelMi
-                                ? 'Kendi seçtiğiniz ses'
-                                : 'Dokunarak değiştirin'}
+                        {e.etiket}
                     </Text>
+                    {kompakt && e.ipucu ? (
+                        <Text className="text-xs ml-2" style={{ color: renkler.metinIkincil }}>
+                            {e.ipucu}
+                        </Text>
+                    ) : null}
+                </TouchableOpacity>
+            ))}
+        </View>
+    );
+
+    if (kompakt) {
+        return (
+            <View testID={testID}>
+                <View className="flex-row items-center">
+                    <TouchableOpacity
+                        className="flex-row items-center flex-1"
+                        style={{ minHeight: 44, opacity: mesgul ? 0.6 : 1 }}
+                        onPress={() => setAcik((a) => !a)}
+                        disabled={mesgul}
+                        activeOpacity={0.7}
+                        accessibilityRole="button"
+                        accessibilityState={{ disabled: mesgul, expanded: acik }}
+                        accessibilityLabel={
+                            mesgul
+                                ? 'Ses ekleniyor, lütfen bekleyin'
+                                : `${sesEtiketi}: ${ad}. Değiştirmek için dokunun.`
+                        }
+                    >
+                        <FontAwesome5
+                            name={ozelMi ? 'music' : 'volume-up'}
+                            size={12}
+                            color={renkler.metinIkincil}
+                            style={{ width: 18, textAlign: 'center', marginRight: 8 }}
+                            solid
+                        />
+                        <Animated.Text
+                            numberOfLines={1}
+                            className="text-sm flex-1"
+                            style={{
+                                color: renkler.metinIkincil,
+                                opacity: canlandirma,
+                                transform: [
+                                    {
+                                        translateY: canlandirma.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: [6, 0],
+                                        }),
+                                    },
+                                ],
+                            }}
+                        >
+                            {mesgul ? 'Ses ekleniyor…' : gosterilenAd}
+                        </Animated.Text>
+                        <FontAwesome5
+                            name={acik ? 'chevron-up' : 'chevron-down'}
+                            size={11}
+                            color={renkler.metinIkincil}
+                            style={{ marginHorizontal: 8 }}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        className="w-11 h-11 items-center justify-center rounded-xl"
+                        onPress={onDinle}
+                        activeOpacity={0.7}
+                        accessibilityRole="button"
+                        accessibilityLabel={`${sesEtiketi}ni dinleyin`}
+                    >
+                        <FontAwesome5 name="play" size={11} color={renkler.birincil} solid />
+                    </TouchableOpacity>
                 </View>
-            </TouchableOpacity>
+                {acik ? eylemListesi : null}
+            </View>
+        );
+    }
 
-            <TouchableOpacity
-                className="w-11 h-11 items-center justify-center rounded-xl border mr-1.5"
-                style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
-                onPress={onDinle}
-                activeOpacity={0.7}
-                accessibilityRole="button"
-                accessibilityLabel="Seçili bildirim sesini dinleyin"
+    return (
+        <View>
+            <View
+                className="flex-row items-center p-3 rounded-2xl border"
+                style={{
+                    backgroundColor: renkler.arkaplan,
+                    borderColor: renkler.sinir,
+                }}
             >
-                <FontAwesome5 name="play" size={12} color={renkler.birincil} solid />
-            </TouchableOpacity>
+                {/* Secime goturen ana dokunma hedefi (satirin govdesi) */}
+                <TouchableOpacity
+                    className="flex-row items-center flex-1"
+                    style={{ minHeight: 44, opacity: mesgul ? 0.6 : 1 }}
+                    onPress={onSec}
+                    disabled={mesgul}
+                    activeOpacity={0.7}
+                    accessibilityRole="button"
+                    accessibilityState={{ disabled: seciliyor }}
+                    accessibilityLabel={
+                        seciliyor
+                            ? 'Ses seçici açılıyor, lütfen bekleyin'
+                            : `Bildirim sesi: ${ad}. Değiştirmek için dokunun.`
+                    }
+                >
+                    <View
+                        className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
+                        style={{ backgroundColor: `${renkler.birincil}20` }}
+                    >
+                        <FontAwesome5
+                            name={ozelMi ? 'music' : 'bell'}
+                            size={16}
+                            color={renkler.birincil}
+                            solid
+                        />
+                    </View>
+                    <View className="flex-1 pr-2">
+                        <Animated.Text
+                            numberOfLines={1}
+                            className="text-sm font-semibold"
+                            style={{
+                                color: renkler.metin,
+                                opacity: canlandirma,
+                                transform: [
+                                    {
+                                        translateY: canlandirma.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: [6, 0],
+                                        }),
+                                    },
+                                ],
+                            }}
+                        >
+                            {gosterilenAd}
+                        </Animated.Text>
+                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                            {seciliyor
+                                ? 'Ses seçici açılıyor…'
+                                : ozelMi
+                                  ? 'Kendi seçtiğiniz ses'
+                                  : 'Dokunarak değiştirin'}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
 
-            <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} />
+                <TouchableOpacity
+                    className="w-11 h-11 items-center justify-center rounded-xl border mr-1.5"
+                    style={{
+                        backgroundColor: renkler.kartArkaplan,
+                        borderColor: renkler.sinir,
+                    }}
+                    onPress={onDinle}
+                    activeOpacity={0.7}
+                    accessibilityRole="button"
+                    accessibilityLabel="Seçili bildirim sesini dinleyin"
+                >
+                    <FontAwesome5 name="play" size={12} color={renkler.birincil} solid />
+                </TouchableOpacity>
+
+                <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} />
+            </View>
+            {eylemler.length > 0 ? eylemListesi : null}
         </View>
     );
 };

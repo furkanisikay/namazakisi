@@ -7,6 +7,8 @@ import { vakitBildirimPlaniOlustur } from '../../core/bildirim/vakitBildirimPlan
 import { VAKIT_BILDIRIM_ICERIKLERI, VakitBildirimTipi } from '../../core/data/VakitBildirimIcerikleri';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { vakitGirdiBasligi } from '../../core/otomasyon/anahtarKelimeler';
+import { vakitBildirimKanalId, type VakitBildirimSesleri } from '../../core/bildirim/vakitBildirimSesi';
+import { vakitKanallariniHazirla } from './VakitKanalServisi';
 
 export class VakitBildirimYoneticiServisi {
     private static instance: VakitBildirimYoneticiServisi;
@@ -48,6 +50,14 @@ export class VakitBildirimYoneticiServisi {
         // temizlendi; pencere bugün+yarın olduğu için aralığın son günü açılan
         // uygulama ertesi günün bildirimlerini zaten kurar.
         const ozelGundeMi = await ozelGunSuzgeciniOku();
+        // Vakit başına ses (Android): kanal hazırlığı planlamadan ÖNCE, plan DOĞRULANMIŞ
+        // kayıtla kurulur. Ses seçilmemiş vakit taban `vakit_bildirim` kanalında kalır.
+        let sesler: VakitBildirimSesleri = {};
+        try {
+            sesler = await vakitKanallariniHazirla((await LocalVakitBildirimServisi.getSesler()) ?? {});
+        } catch (e) {
+            Logger.warn('VakitBildirim', 'Vakit sesleri hazırlanamadı; varsayılan ses kullanılacak', e);
+        }
         const plan = vakitBildirimPlaniOlustur(
             { lat: config.latitude, lng: config.longitude },
             ayarlar,
@@ -55,7 +65,12 @@ export class VakitBildirimYoneticiServisi {
             ozelGundeMi
         );
         for (const kayit of plan) {
-            await this.tekBildirimPlanla(kayit.vakit, kayit.zaman, kayit.id);
+            await this.tekBildirimPlanla(
+                kayit.vakit,
+                kayit.zaman,
+                kayit.id,
+                vakitBildirimKanalId(sesler[kayit.vakit]?.bildirimSesi)
+            );
         }
 
         Logger.info('VakitBildirim', 'Bildirim planlama tamamlandı.');
@@ -64,7 +79,12 @@ export class VakitBildirimYoneticiServisi {
     /**
      * Tek bir bildirim planlar
      */
-    private async tekBildirimPlanla(vakit: VakitBildirimTipi, zaman: Date, bildirimId: string): Promise<void> {
+    private async tekBildirimPlanla(
+        vakit: VakitBildirimTipi,
+        zaman: Date,
+        bildirimId: string,
+        kanalId: string = BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM
+    ): Promise<void> {
         const simdi = new Date();
 
         // Geçmiş zaman için planlama yapma
@@ -119,7 +139,9 @@ export class VakitBildirimYoneticiServisi {
                 trigger: {
                     type: Notifications.SchedulableTriggerInputTypes.DATE,
                     date: zaman,
-                    channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM, // Expo SDK 44+ support
+                    // Seçilen ses kanalın özelliğidir (`vakit_bildirim_<hash8>`); ses
+                    // seçilmemişse taban kanal — bugünkü davranış birebir.
+                    channelId: kanalId,
                 },
             });
             Logger.info('VakitBildirim', `Planlandı: ${baslik} @ ${zaman.toLocaleTimeString()}`);

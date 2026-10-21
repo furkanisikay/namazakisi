@@ -10,6 +10,16 @@ jest.mock('expo-notifications');
 jest.mock('../NamazVaktiHesaplayiciServisi');
 jest.mock('../../../data/local/LocalVakitBildirimServisi');
 
+// Ses kanalı köprüsü (yalnız Android yolunda TEMBEL yüklenir).
+const mockSesAdiAl = jest.fn();
+const mockVakitKanaliniGarantile = jest.fn();
+const mockVakitKanallariniTemizle = jest.fn();
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
+    sesAdiAl: (...a: unknown[]) => mockSesAdiAl(...a),
+    vakitKanaliniGarantile: (...a: unknown[]) => mockVakitKanaliniGarantile(...a),
+    vakitKanallariniTemizle: (...a: unknown[]) => mockVakitKanallariniTemizle(...a),
+}));
+
 // adhan mock: PrayerTimes deterministik, geçirilen 'tarih' gününe sabit saatler kurar.
 // Üretim kodu trigger.date olarak doğrudan bu Date'leri kullandığı için
 // beklenen değerleri (saat, gün) bağımsız ve kesin doğrulayabiliriz.
@@ -380,5 +390,73 @@ describe('VakitBildirimYoneticiServisi', () => {
             await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI);
             jest.useRealTimers();
         }
+    });
+
+    describe('vakit başına ses (Android kanalı = sesin fonksiyonu)', () => {
+        const { Platform } = require('react-native');
+        const OZEL = 'content://media/external_primary/audio/media/7';
+        const OLU = 'content://media/external_primary/audio/media/999';
+
+        beforeEach(() => {
+            jest.replaceProperty(Platform, 'OS', 'android');
+            mockSesAdiAl.mockReset().mockImplementation(async (uri: string) => (uri === OZEL ? 'Ezan' : ''));
+            mockVakitKanaliniGarantile.mockReset().mockResolvedValue(true);
+            mockVakitKanallariniTemizle.mockReset().mockResolvedValue(undefined);
+            (LocalVakitBildirimServisi.getAyarlar as jest.Mock).mockResolvedValue({
+                imsak: true, ogle: true, ikindi: false, aksam: false, yatsi: false,
+            });
+            (NamazVaktiHesaplayiciServisi.getInstance().getKonfig as jest.Mock).mockReturnValue({ latitude: 41, longitude: 29 });
+            (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValue('id');
+        });
+
+        it('seçilen ses kendi kanalına gider; çözülemeyen ses TABAN kanala düşer; GC yalnız kullanılanı korur', async () => {
+            jest.useFakeTimers();
+            jest.setSystemTime(new Date('2024-06-15T03:00:00'));
+            try {
+                (LocalVakitBildirimServisi.getSesler as jest.Mock).mockResolvedValue({
+                    imsak: { bildirimSesi: OZEL, sesAdi: 'Ezan' },
+                    ogle: { bildirimSesi: OLU, sesAdi: 'Silinmiş' },
+                });
+                await service.bildirimleriGuncelle();
+
+                const { vakitBildirimKanalId } = require('../../../core/bildirim/vakitBildirimSesi');
+                const ozelKanal = vakitBildirimKanalId(OZEL);
+                expect(ozelKanal).toMatch(/^vakit_bildirim_[0-9a-f]{8}$/);
+
+                const cagrilar = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
+                const imsak = cagrilar.find((c) => c.identifier === 'vakit_bildirim_imsak_2024-06-15');
+                const ogle = cagrilar.find((c) => c.identifier === 'vakit_bildirim_ogle_2024-06-15');
+                expect(imsak.trigger.channelId).toBe(ozelKanal);
+                expect(ogle.trigger.channelId).toBe('vakit_bildirim');
+                // İçerik değişmez (iOS'ta ve taban kanalda `sound: true`).
+                expect(imsak.content.sound).toBe(true);
+
+                expect(mockVakitKanaliniGarantile).toHaveBeenCalledTimes(1);
+                expect(mockVakitKanaliniGarantile).toHaveBeenCalledWith(
+                    ozelKanal, 'Vakit Bildirimleri · Ezan', expect.any(String), OZEL
+                );
+                expect(mockVakitKanallariniTemizle).toHaveBeenCalledWith([ozelKanal]);
+                // Kanal hazırlığı planlamadan ÖNCE.
+                expect(mockVakitKanaliniGarantile.mock.invocationCallOrder[0]).toBeLessThan(
+                    (Notifications.scheduleNotificationAsync as jest.Mock).mock.invocationCallOrder[0]
+                );
+            } finally {
+                jest.useRealTimers();
+            }
+        });
+
+        it('kanal kurulamazsa (eski native ikili) o vakit TABAN kanalda kalır', async () => {
+            jest.useFakeTimers();
+            jest.setSystemTime(new Date('2024-06-15T03:00:00'));
+            try {
+                mockVakitKanaliniGarantile.mockResolvedValue(false);
+                (LocalVakitBildirimServisi.getSesler as jest.Mock).mockResolvedValue({ imsak: { bildirimSesi: OZEL } });
+                await service.bildirimleriGuncelle();
+                const kanallar = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0].trigger.channelId);
+                expect(new Set(kanallar)).toEqual(new Set(['vakit_bildirim']));
+            } finally {
+                jest.useRealTimers();
+            }
+        });
     });
 });

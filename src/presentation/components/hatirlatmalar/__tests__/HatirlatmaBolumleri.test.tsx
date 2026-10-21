@@ -33,6 +33,25 @@ jest.mock('../../OzelGunTakvimi', () => ({
 jest.mock('../../../store/vakitBildirimSlice', () => ({
     vakitBildirimAyarlariniYukle: jest.fn(() => ({ type: 'vb/yukle' })),
     vakitBildirimAyariniGuncelle: jest.fn((a) => ({ type: 'vb/guncelle', payload: a })),
+    vakitBildirimSesleriniYukle: jest.fn(() => ({ type: 'vb/sesleriYukle' })),
+    vakitBildirimSesiniGuncelle: jest.fn((a) => ({ type: 'vb/sesGuncelle', payload: a })),
+}));
+// Ses köprüsü (native) — dar mock; "kendi dosyanız" yalnız destek varken çizilir.
+const mockSesSec = jest.fn();
+const mockSesDosyasiSec = jest.fn();
+let mockDosyaDestegi = true;
+jest.mock('../../../../../modules/expo-countdown-notification/src', () => ({
+    sesSec: (...a: unknown[]) => mockSesSec(...a),
+    sesDosyasiSec: () => mockSesDosyasiSec(),
+    sesDosyasiDestekleniyor: () => mockDosyaDestegi,
+}));
+const mockSesCal = jest.fn();
+jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({
+    OnizlemeSesServisi: { bildirimSesiniCal: (s: string) => mockSesCal(s) },
+}));
+let mockSesSecici = true;
+jest.mock('../../../hooks/usePlatformYetenekleri', () => ({
+    usePlatformYetenekleri: () => ({ sesSecici: mockSesSecici }),
 }));
 jest.mock('../../../store/seriSlice', () => ({
     ozelGunBaslat: Object.assign(
@@ -76,6 +95,84 @@ describe('VakitGirinceBolumu', () => {
         await waitFor(() =>
             expect(mockDispatch).toHaveBeenCalledWith({ type: 'vb/guncelle', payload: { vakit: 'ikindi', aktif: true } })
         );
+    });
+});
+
+describe('VakitGirinceBolumu — ses', () => {
+    beforeEach(() => {
+        mockSesSecici = true;
+        mockDosyaDestegi = true;
+    });
+
+    it('yalnız AÇIK vaktin altında ses satırı çizilir; açılınca sesler de yüklenir', () => {
+        const e = render(<VakitGirinceBolumu />);
+        expect(mockDispatch).toHaveBeenCalledWith({ type: 'vb/sesleriYukle' });
+        expect(e.getByLabelText(/^Sabah bildirim sesi: Telefonun bildirim sesi/)).toBeTruthy();
+        expect(e.queryByLabelText(/^İkindi bildirim sesi/)).toBeNull();
+        // Varsayılanda "uzun ses" notu yok (ilk görünüm sade).
+        expect(e.queryByTestId('vakit-sesi-uzunluk-notu')).toBeNull();
+    });
+
+    it('iOS (ses seçici yok): ses satırı HİÇ çizilmez', () => {
+        mockSesSecici = false;
+        const e = render(<VakitGirinceBolumu />);
+        expect(e.queryByLabelText(/bildirim sesi:/)).toBeNull();
+    });
+
+    it('kendi dosyanızdan seçilen ses o vakte yazılır', async () => {
+        mockSesDosyasiSec.mockResolvedValueOnce({ uri: 'content://media/external_primary/audio/media/7', ad: 'Ezan' });
+        const e = render(<VakitGirinceBolumu />);
+        fireEvent.press(e.getByLabelText(/^Sabah bildirim sesi:/));
+        await act(async () => {
+            fireEvent.press(e.getByLabelText('Sabah bildirim sesi: kendi dosyanızdan seçin'));
+        });
+        expect(mockDispatch).toHaveBeenCalledWith({
+            type: 'vb/sesGuncelle',
+            payload: { vakit: 'imsak', secim: { bildirimSesi: 'content://media/external_primary/audio/media/7', sesAdi: 'Ezan' } },
+        });
+    });
+
+    it('dosya eklenemezse kullanıcıya kibar dille söylenir, hiçbir şey yazılmaz', async () => {
+        mockSesDosyasiSec.mockResolvedValueOnce({ hata: 'sure' });
+        const e = render(<VakitGirinceBolumu />);
+        fireEvent.press(e.getByLabelText(/^Sabah bildirim sesi:/));
+        await act(async () => {
+            fireEvent.press(e.getByLabelText('Sabah bildirim sesi: kendi dosyanızdan seçin'));
+        });
+        expect(mockKisaBildirim).toHaveBeenCalledWith(expect.stringMatching(/8 dakika/), true);
+        expect(mockDispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'vb/sesGuncelle' }));
+    });
+
+    it('Android 10 altında "kendi dosyanız" seçeneği yok; telefonun sesleri kalır', () => {
+        mockDosyaDestegi = false;
+        const e = render(<VakitGirinceBolumu />);
+        fireEvent.press(e.getByLabelText(/^Sabah bildirim sesi:/));
+        expect(e.queryByLabelText('Sabah bildirim sesi: kendi dosyanızdan seçin')).toBeNull();
+        expect(e.getByLabelText('Sabah bildirim sesi: telefonun seslerinden seçin')).toBeTruthy();
+    });
+
+    it('özel ses: adı görünür, not çıkar, varsayılana dönüş kaydı siler; Dinle o sesi çalar', async () => {
+        mockState = {
+            ...mockState,
+            vakitBildirim: {
+                ayarlar: { imsak: true, ogle: false, ikindi: false, aksam: false, yatsi: false },
+                sesler: { imsak: { bildirimSesi: 'content://media/external/audio/media/3', sesAdi: 'Ezan' } },
+            },
+        };
+        const e = render(<VakitGirinceBolumu />);
+        expect(e.getByLabelText(/^Sabah bildirim sesi: Ezan/)).toBeTruthy();
+        expect(e.getByTestId('vakit-sesi-uzunluk-notu')).toBeTruthy();
+        fireEvent.press(e.getByLabelText('Sabah bildirim sesini dinleyin'));
+        expect(mockSesCal).toHaveBeenCalledWith('content://media/external/audio/media/3');
+        fireEvent.press(e.getByLabelText(/^Sabah bildirim sesi:/));
+        fireEvent.press(e.getByLabelText('Telefonun bildirim sesine dönün'));
+        expect(mockDispatch).toHaveBeenCalledWith({ type: 'vb/sesGuncelle', payload: { vakit: 'imsak', secim: null } });
+    });
+
+    it('varsayılan seste Dinle telefonun bildirim sesini çalar', () => {
+        const e = render(<VakitGirinceBolumu />);
+        fireEvent.press(e.getByLabelText('Sabah bildirim sesini dinleyin'));
+        expect(mockSesCal).toHaveBeenCalledWith('content://settings/system/notification_sound');
     });
 });
 

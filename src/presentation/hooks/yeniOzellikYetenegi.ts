@@ -35,6 +35,13 @@ const YETENEKLER: Record<YeniOzellikYetenegi, () => boolean> = {
   },
   // iPad düzeni: yalnız iPad'de (iPhone kullanıcısına tablet duyurusu gösterilmez).
   ipad: () => Platform.OS === 'ios' && (Platform as { isPad?: boolean }).isPad === true,
+  // Kendi ses dosyanız (MediaStore'a izinsiz yazma = Android 10+ ve yeni native ikili).
+  // TEMBEL: bu dosyayı yükleyen her ekran testi sayaç köprüsünü (native) mock'lamasın.
+  sesDosyasi: () =>
+    Platform.OS === 'android' &&
+    (
+      require('../../../modules/expo-countdown-notification/src') as typeof import('../../../modules/expo-countdown-notification/src')
+    ).sesDosyasiDestekleniyor(),
 };
 
 export function yeniOzellikGorunurMu(ozellik: YeniOzellik): boolean {

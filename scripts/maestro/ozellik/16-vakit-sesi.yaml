@@ -1,0 +1,27 @@
+# tohum: ses
+# kanal-dokumu
+# Hatirlatmalar > Vakit girince: vakit basina ses satiri (kapali + acik secenekler).
+# Hat bu akistan sonra paketin bildirim kanallarini doker (vakit_bildirim_<hash8>).
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Hatırlatmalar\..*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Hatırlatmalar\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
+    id: "satir-vakit-girince"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/40-vakit-sesi
+- tapOn:
+    id: "vakit-sesi-imsak"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/41-vakit-sesi-secenekler

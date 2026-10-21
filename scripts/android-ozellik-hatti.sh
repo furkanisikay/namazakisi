@@ -235,6 +235,13 @@ for tema in "${TEMALAR[@]}"; do
     find "$HOME/.maestro/tests" "$PWD/ozk" -newer "$isaret" -path '*ozk/*' -name '*.png' \
       -exec cp {} "$HEDEF/" \; 2>/dev/null || true
     rm -f "$isaret"
+    # `# kanal-dokumu` isaretli akis: paketin bildirim kanallari (ses/onem) metin olarak.
+    if grep -q '^# kanal-dokumu' "$akis"; then
+      sleep 5
+      adb shell dumpsys notification 2>/dev/null         | awk -v pkg="$PAKET" '/AppSettings: /{i=($2==pkg);next} i&&/NotificationChannel\{/'         > "$HEDEF/kanallar-$(basename "$akis" .yaml).txt" || true
+      echo "Kanal dokumu: $(wc -l < "$HEDEF/kanallar-$(basename "$akis" .yaml).txt") satir"
+      grep -o "mId='vakit_bildirim[^']*'[^,]*\|mSound=[^,]*" "$HEDEF/kanallar-$(basename "$akis" .yaml).txt" | head -20 || true
+    fi
   done
 done
 

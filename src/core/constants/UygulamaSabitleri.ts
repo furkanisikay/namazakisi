@@ -164,6 +164,10 @@ export const DEPOLAMA_ANAHTARLARI = {
   IOS_ANONS_KLIP_KULLANIMI: '@namaz_akisi/ios_anons_klip_kullanimi',
   // Vakit Bildirim Ayarları
   VAKIT_BILDIRIM_AYARLARI: 'vakit_bildirim_ayarlari',
+  // "Vakit girdi" bildiriminin vakit başına sesi (content:// URI + ad). CİHAZA ÖZGÜDÜR:
+  // MediaStore kimliği başka cihazda BAŞKA bir dosyayı gösterebilir → yedekleme beyaz
+  // listesine GİRMEZ (yanlış ses çalmaktansa yeni cihazda varsayılan ses).
+  VAKIT_BILDIRIM_SESLERI: '@namaz_akisi/vakit_bildirim_sesleri',
   // Cuma namazı hatırlatması (issue #173) — varsayılan KAPALI
   CUMA_HATIRLATMA_AYARLARI: 'cuma_hatirlatma_ayarlari',
   // Yatış saatine göre yatsı hatırlatması + gün sonu muhasebesi (issue #290).
