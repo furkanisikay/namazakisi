@@ -51,14 +51,30 @@ class WearSenkronModulu(reactContext: ReactApplicationContext) : ReactContextBas
 
     @ReactMethod
     fun durumGonder(json: String, promise: Promise) {
+        gonder(json, acil = true, promise = promise)
+    }
+
+    /**
+     * Aciliyet seçilebilen gönderim (denetim D-08). `acil=false` → `setUrgent` YOK: Data Layer
+     * yazımı kendi toplu senkronuna bırakır (Google: ≤30 dk gecikebilir), saat radyosu ayrıca
+     * uyandırılmaz. JS periyodik turda false, kullanıcı eyleminde true geçer. Ayrı yöntem:
+     * `durumGonder`'in imzası değişirse eski JS ile yeni ikili (ya da tersi) uyuşmazdı.
+     */
+    @ReactMethod
+    fun durumGonderSecenekli(json: String, acil: Boolean, promise: Promise) {
+        gonder(json, acil, promise)
+    }
+
+    private fun gonder(json: String, acil: Boolean, promise: Promise) {
         if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(reactApplicationContext) != ConnectionResult.SUCCESS) {
             promise.reject(KOD_WEAR_YOK, "Play Hizmetleri yok")
             return
         }
         try {
-            val istek = PutDataMapRequest.create(DURUM_YOLU).apply {
+            val temel = PutDataMapRequest.create(DURUM_YOLU).apply {
                 dataMap.putString("yuk", json)
-            }.asPutDataRequest().setUrgent()
+            }.asPutDataRequest()
+            val istek = if (acil) temel.setUrgent() else temel
             Wearable.getDataClient(reactApplicationContext).putDataItem(istek)
                 .addOnSuccessListener { promise.resolve(null) }
                 .addOnFailureListener { e ->

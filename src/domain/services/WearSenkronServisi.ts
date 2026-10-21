@@ -44,9 +44,17 @@ import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServ
 import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
 import { saatUyandiriyorMu, type SaatTeslimBaglami } from '../../core/saat/saatAyarlari';
 import { wearUyandirmaListesiOlustur, type WearUyandirmaKaydi } from '../../core/wear/wearUyandirma';
+import { metinOzeti } from '../../core/utils/kararliOzet';
 
 interface WearSenkronModulu {
     durumGonder(json: string): Promise<void>;
+    /**
+     * Aciliyet seçilebilen gönderim (D-08): `acil=false` Data Layer'ın toplu senkronuna
+     * bırakır (≤30 dk gecikebilir, radyoyu ayrıca uyandırmaz). Eski ikilide yok → `durumGonder`.
+     */
+    durumGonderSecenekli?(json: string, acil: boolean): Promise<void>;
+    /** Şu an BAĞLI saat: "esli" | "esliDegil" | "yok" | null (yalnız Wear OS, eski ikilide yok). */
+    esliSaatDurumu?(): Promise<unknown>;
     /** Camideyim / Namaz modu durumunu saate yeniden yaz (saat W3; yalnız Wear OS, eski ikilide yok). */
     camiDurumunuTazele?(): Promise<void>;
 }
@@ -77,6 +85,20 @@ const hedef = (): SaatHedefi | null => {
     return m ? { modul: m, tur: 'wear' } : null;
 };
 
+/** Bağlı saat sorgusunun süreç içi önbellek süresi. */
+export const SAAT_DURUM_ONBELLEK_MS = 5 * 60 * 1000;
+/** Aynı yük en geç bu aralıkta yine gönderilir (diskteki özet güvenlik ağıdır, kalıcı susturma değil). */
+export const WEAR_YUK_YENIDEN_GONDERIM_MS = 24 * 60 * 60 * 1000;
+
+export interface WearGonderimSecenekleri {
+    /**
+     * Data Layer `setUrgent`: kullanıcı eylemi (Kıldım, ayar) için `true` (varsayılan —
+     * eski davranış). Periyodik tur `false` geçer: içerik saatte zaten 31 gün/48 sa ileri
+     * hazırdır, anında senkron gerekmez.
+     */
+    acil?: boolean;
+}
+
 export class WearSenkronServisi {
     private static instance: WearSenkronServisi;
     /** Son gönderilen yük — içerik aynıysa Data Layer'a yazılmaz. */
@@ -87,8 +109,18 @@ export class WearSenkronServisi {
      * satırlık tamponu gerçek hatalardan boşaltırdı.
      */
     private kullanilamaz = false;
-    /** Gönderimler SIRALI: hızlı aç/kapa'da eski yük yenisinin üstüne yazılmasın. */
-    private gonderimZinciri: Promise<void> = Promise.resolve();
+    /**
+     * Gönderimler SIRALI ve BİRLEŞTİRİLİR (D-08): koşan tur varken gelen istekler TEK bir
+     * ek tura bağlanır (ek tur diskten taze okuduğu için hepsini kapsar). Eskiden her
+     * istek kuyruğa ayrı tur ekliyordu — "Kıldım" başına ≈3 tam kurulum.
+     */
+    private kosanTur: Promise<void> | null = null;
+    private bekleyenTur: Promise<void> | null = null;
+    private bekleyenAcil = false;
+    /** Bağlı saat kapısının önbelleği (süreç içi). */
+    private saatDurumu: { var: boolean; ms: number } | null = null;
+    /** Diskteki son gönderim özeti bu süreçte okundu mu? */
+    private diskOzetiOkundu = false;
     /**
      * Telefonun EN SON planladığı muhafız durumu (doğrulanmış matris). Varsa
      * diskten okumaya yeğlenir: ekrandaki değişiklik diske yazılmadan önce de
@@ -110,7 +142,8 @@ export class WearSenkronServisi {
         const h = hedef();
         if (!h) return;
         kayitDegistiDinleyicisiniAyarla(() => {
-            this.gonder().catch(() => { /* gonder kendi hatasını loglar */ });
+            // Kılınmışlık = kullanıcı eylemi → saat ✓'yu hemen görsün (acil).
+            this.gonder({ acil: true }).catch(() => { /* gonder kendi hatasını loglar */ });
         });
         // Apple Watch'a plan ve Now Bar payı gitmez → o gözlemciler yalnız Wear OS'ta.
         if (h.tur !== 'wear') return;
@@ -125,17 +158,106 @@ export class WearSenkronServisi {
         });
     }
 
-    public gonder(): Promise<void> {
-        const tur = this.gonderimZinciri.then(() => this.gonderTuru());
-        this.gonderimZinciri = tur.catch(() => undefined);
+    public gonder(secenekler: WearGonderimSecenekleri = {}): Promise<void> {
+        const acil = secenekler.acil ?? true;
+        if (!this.kosanTur) return this.turuBaslat(acil);
+        if (acil) this.bekleyenAcil = true;
+        if (!this.bekleyenTur) {
+            this.bekleyenTur = this.kosanTur.then(() => {
+                const ekAcil = this.bekleyenAcil;
+                this.bekleyenAcil = false;
+                this.bekleyenTur = null;
+                return this.turuBaslat(ekAcil);
+            });
+        }
+        return this.bekleyenTur;
+    }
+
+    private turuBaslat(acil: boolean): Promise<void> {
+        const tur: Promise<void> = this.gonderTuru(acil)
+            .catch(() => undefined)
+            .finally(() => {
+                if (this.kosanTur === tur) this.kosanTur = null;
+            });
+        this.kosanTur = tur;
         return tur;
     }
 
-    private async gonderTuru(): Promise<void> {
+    /**
+     * Wear OS kapısı (D-08): saati OLMAYAN telefonda 31 günlük yük + 48 sa plan + 30–80 KB
+     * JSON hiç kurulmaz. "esliDegil" BELİRSİZDİR (yalnız o an bağlı düğümü sorar; şarjdaki
+     * saat de öyle görünür) → bu telefonda bir kez bile saat GÖRÜLDÜYSE kurulur ve DataItem
+     * bağlantı gelince senkronlanır (DataClient seçilme gerekçesi). Köprü/yanıt yoksa kurulur.
+     */
+    private async saatVarMi(m: WearSenkronModulu): Promise<boolean> {
+        if (typeof m.esliSaatDurumu !== 'function') return true;
+        const simdi = Date.now();
+        if (this.saatDurumu && simdi - this.saatDurumu.ms < SAAT_DURUM_ONBELLEK_MS) return this.saatDurumu.var;
+        let durum: unknown = null;
+        try {
+            durum = await m.esliSaatDurumu();
+        } catch {
+            durum = null;
+        }
+        let saatVar: boolean;
+        if (durum === 'esli') {
+            saatVar = true;
+            try {
+                await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.WEAR_SAAT_GORULDU, '1');
+            } catch {
+                // Bayrak yazılamazsa bir sonraki "esli" yine yazar.
+            }
+        } else if (durum === 'yok') {
+            saatVar = false;
+        } else if (durum === 'esliDegil') {
+            try {
+                saatVar = (await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.WEAR_SAAT_GORULDU)) === '1';
+            } catch {
+                saatVar = true;
+            }
+        } else {
+            saatVar = true;
+        }
+        this.saatDurumu = { var: saatVar, ms: simdi };
+        return saatVar;
+    }
+
+    /**
+     * Aynı yük az önce (bu süreçte ya da diskteki özete göre) gönderildiyse `true`. Disk
+     * özeti YALNIZ Wear OS'ta: DataItem Play Hizmetleri'nde kalıcıdır ve saat bağlanınca
+     * kendiliğinden senkronlanır. Apple Watch köprüsü bekleyen yükü süreç BELLEĞİNDE tutar
+     * (oturum sonradan etkinleşirse gönderir) → yeni süreçte yeniden verilmesi şarttır.
+     */
+    private async ayniYukGonderildiMi(json: string, diskOzeti: boolean): Promise<boolean> {
+        if (json === this.sonGonderilen) return true;
+        if (!diskOzeti || this.diskOzetiOkundu) return false;
+        this.diskOzetiOkundu = true;
+        try {
+            const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.WEAR_SON_YUK_OZETI);
+            const kayit = ham ? (JSON.parse(ham) as { ozet?: unknown; ms?: unknown }) : null;
+            const simdi = Date.now();
+            if (
+                kayit &&
+                kayit.ozet === metinOzeti(json) &&
+                typeof kayit.ms === 'number' &&
+                kayit.ms <= simdi &&
+                simdi - kayit.ms < WEAR_YUK_YENIDEN_GONDERIM_MS
+            ) {
+                this.sonGonderilen = json;
+                return true;
+            }
+        } catch {
+            // Okunamayan özet = gönder.
+        }
+        return false;
+    }
+
+    private async gonderTuru(acil = true): Promise<void> {
         const h = hedef();
         if (!h || this.kullanilamaz) return;
         const wear = h.tur === 'wear';
         try {
+            if (wear && !(await this.saatVarMi(h.modul))) return;
             const konum = await this.konumuOku();
             if (!konum) return;
 
@@ -177,9 +299,23 @@ export class WearSenkronServisi {
             // Camideyim/Namaz modu durumu AYRI küçük DataItem'dır (native yazar, içerik
             // aynıysa yazmaz) — ana yükün tekilleştirmesinden ÖNCE: durum yük değişmeden de değişir.
             if (wear) await h.modul.camiDurumunuTazele?.().catch(() => undefined);
-            if (json === this.sonGonderilen) return;
-            await h.modul.durumGonder(json);
+            if (await this.ayniYukGonderildiMi(json, wear)) return;
+            if (wear && typeof h.modul.durumGonderSecenekli === 'function') {
+                await h.modul.durumGonderSecenekli(json, acil);
+            } else {
+                await h.modul.durumGonder(json);
+            }
             this.sonGonderilen = json;
+            if (wear) {
+                try {
+                    await AsyncStorage.setItem(
+                        DEPOLAMA_ANAHTARLARI.WEAR_SON_YUK_OZETI,
+                        JSON.stringify({ ozet: metinOzeti(json), ms: Date.now() })
+                    );
+                } catch {
+                    // Özet yazılamazsa en kötü ihtimalle yeni süreçte bir kez daha gönderilir.
+                }
+            }
         } catch (e) {
             if ((e as { code?: string } | null)?.code === 'WEAR_YOK') {
                 this.kullanilamaz = true;
@@ -334,6 +470,10 @@ export class WearSenkronServisi {
         this.sonGonderilen = null;
         this.kullanilamaz = false;
         this.sonMuhafiz = null;
-        this.gonderimZinciri = Promise.resolve();
+        this.kosanTur = null;
+        this.bekleyenTur = null;
+        this.bekleyenAcil = false;
+        this.saatDurumu = null;
+        this.diskOzetiOkundu = false;
     }
 }
