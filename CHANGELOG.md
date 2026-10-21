@@ -5,6 +5,14 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.60.0] - 2026-10-21
+
+### Eklendi
+- [arac] Android Auto POI ekranı — sıradaki vakit ve yakındaki camiler
+
+### Düzeltildi
+- [arac] yenileme düğmesini Car API 5 ile kapıla, çapaya işaret ver
+
 ## [0.59.0] - 2026-10-21
 
 ### Eklendi
