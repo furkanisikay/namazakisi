@@ -930,6 +930,53 @@ describe('Arka Plan Bolge Gorevi (defineTask callback)', () => {
         expect(konumDegistiUygula).not.toHaveBeenCalled();
     });
 
+    it('D-14: esik asildi ama vakitler <1 dk ve yer adi AYNI → koordinat yazilir, yayma ATLANIR', async () => {
+        const seferilik = require('../SeferilikServisi').SeferilikServisi;
+        const seferilikCasusu = jest.spyOn(seferilik, 'konumIsle').mockResolvedValue({} as never);
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+            if (key === KONUM_ANAHTARI) {
+                return Promise.resolve(JSON.stringify({
+                    konumModu: 'oto',
+                    takipHassasiyeti: 'dengeli',
+                    koordinatlar: { lat: 41.0, lng: 29.0 },
+                    gpsAdres: { semt: '', ilce: 'Uskudar', il: 'Istanbul' },
+                }));
+            }
+            return Promise.resolve(null);
+        });
+        // ~6 km doguya: 5 km esigin USTUNDE, vakitler ~17 sn kayar
+        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(konumNesnesiUret(41.0, 29.0715));
+        (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([{ district: 'Uskudar', city: 'Istanbul' }]);
+
+        await bolgeGorevi(cikisOlayi());
+
+        expect(konumDegistiUygula).not.toHaveBeenCalled();
+        const yazma = (AsyncStorage.setItem as jest.Mock).mock.calls.find((c: [string, string]) => c[0] === KONUM_ANAHTARI);
+        expect(JSON.parse(yazma![1]).koordinatlar).toEqual({ lat: 41.0, lng: 29.0715 });
+        expect(seferilikCasusu).toHaveBeenCalledWith({ lat: 41.0, lng: 29.0715 });
+        seferilikCasusu.mockRestore();
+    });
+
+    it('D-14: ayni kucuk kayma ama ilce DEGISTI → yayilir', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+            if (key === KONUM_ANAHTARI) {
+                return Promise.resolve(JSON.stringify({
+                    konumModu: 'oto',
+                    takipHassasiyeti: 'dengeli',
+                    koordinatlar: { lat: 41.0, lng: 29.0 },
+                    gpsAdres: { semt: '', ilce: 'Uskudar', il: 'Istanbul' },
+                }));
+            }
+            return Promise.resolve(null);
+        });
+        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(konumNesnesiUret(41.0, 29.0715));
+        (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([{ district: 'Atasehir', city: 'Istanbul' }]);
+
+        await bolgeGorevi(cikisOlayi());
+
+        expect(konumDegistiUygula).toHaveBeenCalledTimes(1);
+    });
+
     it('manuel moda gecilmisse yayma YAPILMAMALI (kullanici secimi ezilmemeli)', async () => {
         (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
             konumModu: 'manuel',

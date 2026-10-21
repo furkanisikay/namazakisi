@@ -28,6 +28,7 @@
  */
 
 import { konumDegisimBildirimiGerekliMi } from '../../core/konum/konumDegisimBildirimi';
+import { konumYaymasiGerekliMi } from '../../core/konum/konumYaymaKarari';
 import { konumDegisimBildirimiGonder } from './KonumBildirimServisi';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
@@ -224,7 +225,7 @@ TaskManager.defineTask(KONUM_GEOFENCE_GOREVI, async ({ data, error }: TaskManage
 
         await yeniKonumuUygula(yeniLat, yeniLng, profil.mesafe, {
             sonGeofenceOlayi: new Date(simdi).toISOString(),
-        }, { degisimiBildir: true });
+        }, { degisimiBildir: true, vakitDegismediyseYayma: true });
 
     } catch (e) {
         Logger.error('KonumTakip', 'Islem hatasi:', e);
@@ -249,6 +250,10 @@ TaskManager.defineTask(KONUM_GEOFENCE_GOREVI, async ({ data, error }: TaskManage
  * @param secenekler.degisimiBildir Yer adı (ilçe/il) değiştiyse kullanıcıya sessiz
  *   bildirim gönder. YALNIZ otomatik yollar (bölge çıkışı, arka plan onarımı) true
  *   geçer: elle yenilemede kullanıcı zaten ekrandadır ve kısa mesajı görür.
+ * @param secenekler.vakitDegismediyseYayma Yeni koordinatta hiçbir vakit ≥1 dk
+ *   değişmiyor VE yer adı aynıysa yalnız koordinat + damga yazılır, `konumDegistiUygula`
+ *   ATLANIR (denetim D-14; karar `core/konum/konumYaymaKarari.ts`). YALNIZ bölge çıkışı
+ *   geçer: elle yenileme ve onarım yolu (başka şehirde reboot) her zaman yayar.
  * @returns Konum güncellenip yayıldıysa true; eşik altında kalındıysa false
  */
 export async function yeniKonumuUygula(
@@ -256,7 +261,7 @@ export async function yeniKonumuUygula(
     yeniLng: number,
     esikMesafe: number,
     ekAlanlar: Record<string, unknown> = {},
-    secenekler: { degisimiBildir?: boolean } = {},
+    secenekler: { degisimiBildir?: boolean; vakitDegismediyseYayma?: boolean } = {},
 ): Promise<boolean> {
     const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
     if (!konumAyarlariJson) {
@@ -310,6 +315,39 @@ export async function yeniKonumuUygula(
         }
     } catch (geoError) {
         Logger.warn('KonumTakip', 'Reverse geocoding hatasi:', geoError);
+    }
+
+    // D-14: vakitler (yuvarlanmamış, ±1 dk) ve yer adı değişmiyorsa ~17 tüketicinin
+    // sil-kur turuna gerek yok. Koordinat yine YAZILIR (sonraki turlar ve kıble yeni
+    // noktadan okusun); yalnız yayma atlanır. Seferîlik kartı ucuzdur ve vakitten
+    // bağımsızdır (30 km dönüş sıfırlaması) → doğrudan beslenir.
+    if (
+        secenekler.vakitDegismediyseYayma &&
+        sonLat &&
+        sonLng &&
+        !konumYaymasiGerekliMi({
+            eski: { lat: sonLat, lng: sonLng },
+            yeni: { lat: yeniLat, lng: yeniLng },
+            eskiAdres: konumAyarlari.gpsAdres,
+            yeniAdres: gpsAdres,
+            simdi: new Date(),
+        })
+    ) {
+        await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify({
+            ...konumAyarlari,
+            koordinatlar: { lat: yeniLat, lng: yeniLng },
+            gpsAdres: gpsAdres,
+            sonGpsGuncellemesi: simdi,
+            ...ekAlanlar,
+        }));
+        Logger.info('KonumTakip', 'Konum guncellendi; vakitler ve yer adi degismedi, yayma atlandi');
+        try {
+            const { SeferilikServisi } = require('./SeferilikServisi') as typeof import('./SeferilikServisi');
+            await SeferilikServisi.konumIsle({ lat: yeniLat, lng: yeniLng });
+        } catch (e) {
+            Logger.warn('KonumTakip', 'Seferilik guncellenemedi', e);
+        }
+        return true;
     }
 
     // Konum ayarlarini guncelle (bilinmeyen alanlar korunur)
