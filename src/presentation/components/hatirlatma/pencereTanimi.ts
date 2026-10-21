@@ -224,13 +224,16 @@ export function gelismisOzetiOlustur(
  *    tetik doğmuyorsa bunu söyler (sessiz sapma yok).
  */
 export function tekrarCumlesiOlustur(
-    seviye: Pick<SeviyeAyari, 'siklik'>,
+    seviye: Pick<SeviyeAyari, 'siklik' | 'esikDk'>,
     tekrarDk: number | null,
     sonAdim: boolean,
     namazaKadar: boolean
 ): string {
     if (tekrarDk === null) {
-        return seviye.siklik !== 'birkez' ? 'Bir kez gelir; sonraki hatırlatma daha önce başlar.' : 'Bir kez gelir.';
+        // Hazır düzeylerin tek atış türevi `herDk = esikDk` kullanıcının seçimi değildir →
+        // yalnız gerçekten daha sık bir aralık seçilmiş ama tetik doğmuyorsa açıklanır.
+        const etkisiz = seviye.siklik !== 'birkez' && seviye.siklik.herDk < seviye.esikDk;
+        return etkisiz ? 'Bir kez gelir; sonraki hatırlatma daha önce başlar.' : 'Bir kez gelir.';
     }
     const her = `Her ${tekrarDk} dk'da bir`;
     if (!sonAdim) return `${her}, sonraki hatırlatmaya kadar.`;
