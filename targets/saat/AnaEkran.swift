@@ -284,16 +284,7 @@ struct SimdiSayfasi: View {
         }
         .frame(width: cap - kalinlik, height: cap - kalinlik)
         .animation(hareketAzalt ? nil : .easeInOut(duration: 0.6), value: kilindiMi)
-        .onChange(of: kilindiMi) { eski, yeni in
-            guard yeni, !eski else { return }
-            // Kilinma ANI: halka kapanir (yukaridaki animasyon), ardindan tik cizilir.
-            if hareketAzalt {
-                tik = 1
-            } else {
-                tik = 0
-                withAnimation(.easeOut(duration: 0.45).delay(0.35)) { tik = 1 }
-            }
-        }
+
     }
 
     // MARK: Alt satir
@@ -346,9 +337,16 @@ struct SimdiSayfasi: View {
 
     private func isaretle() {
         guard let aday else { return }
+        // Kilinma ANI: tik gizli baslar (halka kapanirken), sonra cizilir. Baska yoldan
+        // (telefon, bildirim) kilinan vakitte tik dogrudan tam gorunur.
+        if !hareketAzalt { tik = 0 }
         if baglanti.kildim(beklenen: aday.vakit) {
             WKInterfaceDevice.current().play(.success)
+            if !hareketAzalt {
+                withAnimation(.easeOut(duration: 0.45).delay(0.45)) { tik = 1 }
+            }
         } else {
+            tik = 1
             // Onay acikken vakit degisti: yanlis vakit isaretlenmez.
             WKInterfaceDevice.current().play(.failure)
         }
