@@ -97,7 +97,7 @@ if [ -n "$QR" ]; then
   cat /tmp/tv-esle.log
   kare 03-onay-soruluyor 1.5 || true
   # Uygulama çöktüyse nedeni loga düşsün (kare hattı aksi halde yalnız "socket hang up" görür).
-  adb logcat -d -b crash 2>/dev/null | tail -40 || true
+  adb logcat -d -b crash 2>/dev/null | grep -m1 -A20 "FATAL EXCEPTION" || true
   tus KEYCODE_DPAD_CENTER 0
   wait "$ESLE_PID" || echo "UYARI: eslestirme basarisiz"
   cat /tmp/tv-esle.log
