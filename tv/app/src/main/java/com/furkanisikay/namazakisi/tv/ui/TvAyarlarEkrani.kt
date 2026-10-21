@@ -89,20 +89,23 @@ fun TvAyarlarEkrani(
                 } else {
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         items(uyeler, key = { it.uye }) { u ->
-                            Row(
-                                Modifier.fillMaxWidth().background(Renkler.kart, RoundedCornerShape(28.dp)).padding(horizontal = 28.dp, vertical = 22.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Box(Modifier.size(64.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
-                                    TelefonSimgesi(Renkler.birincil, Modifier.size(36.dp))
+                            // Ad ve durum TAM genişlikte (düğme yanına sığmıyor, "Ahmet'i…" diye kesiliyordu);
+                            // "Kaldırın" alt satırda sağda.
+                            Column(Modifier.fillMaxWidth().background(Renkler.kart, RoundedCornerShape(28.dp)).padding(horizontal = 28.dp, vertical = 22.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Box(Modifier.size(64.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
+                                        TelefonSimgesi(Renkler.birincil, Modifier.size(36.dp))
+                                    }
+                                    Spacer(Modifier.width(22.dp))
+                                    Column(Modifier.weight(1f)) {
+                                        Text(u.ad, color = Renkler.metin, fontSize = 30.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                        Text(sonHaberMetni(u.sonHaberMs, simdi), color = Renkler.metinIkincil, fontSize = 24.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                    }
                                 }
-                                Spacer(Modifier.width(22.dp))
-                                Column(Modifier.weight(1f)) {
-                                    Text(u.ad, color = Renkler.metin, fontSize = 30.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                    Text(sonHaberMetni(u.sonHaberMs, simdi), color = Renkler.metinIkincil, fontSize = 24.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                Spacer(Modifier.height(14.dp))
+                                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+                                    EslemeDugmesi("Kaldırın", { kaldirilacak = u })
                                 }
-                                Spacer(Modifier.width(16.dp))
-                                EslemeDugmesi("Kaldırın", { kaldirilacak = u })
                             }
                         }
                     }

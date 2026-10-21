@@ -186,7 +186,7 @@ fun KodGirisEkrani(
                         Spacer(Modifier.height(10.dp))
                         Text(
                             "Telefonda: Ayarlar › Cihazlarım › TV ekleyin",
-                            color = Renkler.metinIkincil, fontSize = 26.sp,
+                            color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
                         )
                     } else {
                         Text("Konumunuz geldi", color = Renkler.metinIkincil, fontSize = 30.sp)
@@ -238,6 +238,7 @@ fun KodGirisEkrani(
                 },
                 color = if (hatali) Renkler.metin else Renkler.metinIkincil,
                 fontSize = 24.sp,
+                lineHeight = 34.sp,
                 modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
             )
         }
