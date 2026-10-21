@@ -89,21 +89,23 @@ fun TvAyarlarEkrani(
                 } else {
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         items(uyeler, key = { it.uye }) { u ->
-                            // Ad ve durum TAM genişlikte (düğme yanına sığmıyor, "Ahmet'i…" diye kesiliyordu);
-                            // "Kaldırın" alt satırda sağda.
-                            Column(Modifier.fillMaxWidth().background(Renkler.kart, RoundedCornerShape(28.dp)).padding(horizontal = 28.dp, vertical = 22.dp)) {
+                            // Ad TAM genişlikte (düğmenin yanında "Ahmet'i…" diye kesiliyordu); durum + "Kaldırın"
+                            // ikinci satırda — kart alçak kalır, altındaki bilgi kartı sığar.
+                            Column(Modifier.fillMaxWidth().background(Renkler.kart, RoundedCornerShape(28.dp)).padding(horizontal = 28.dp, vertical = 20.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Box(Modifier.size(64.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
-                                        TelefonSimgesi(Renkler.birincil, Modifier.size(36.dp))
+                                    Box(Modifier.size(56.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
+                                        TelefonSimgesi(Renkler.birincil, Modifier.size(32.dp))
                                     }
-                                    Spacer(Modifier.width(22.dp))
-                                    Column(Modifier.weight(1f)) {
-                                        Text(u.ad, color = Renkler.metin, fontSize = 30.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                        Text(sonHaberMetni(u.sonHaberMs, simdi), color = Renkler.metinIkincil, fontSize = 24.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                    }
+                                    Spacer(Modifier.width(20.dp))
+                                    Text(u.ad, color = Renkler.metin, fontSize = 30.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 }
-                                Spacer(Modifier.height(14.dp))
-                                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+                                Spacer(Modifier.height(8.dp))
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        sonHaberMetni(u.sonHaberMs, simdi),
+                                        color = Renkler.metinIkincil, fontSize = 24.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.weight(1f).padding(start = 76.dp),
+                                    )
                                     EslemeDugmesi("Kaldırın", { kaldirilacak = u })
                                 }
                             }
@@ -129,12 +131,12 @@ fun TvAyarlarEkrani(
 private fun GonderilenlerKarti() {
     Column(
         Modifier.fillMaxWidth().border(1.dp, Renkler.sinir, RoundedCornerShape(28.dp)).padding(horizontal = 28.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Text("Telefonlar bu TV'ye ne gönderir?", color = Renkler.metin, fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
-        Madde("Konum: vakitler ona göre hesaplanır")
-        Madde("İsteyen kişinin kıldığı namazlar: vakit daralınca sessiz bir bant çıkar")
-        Madde("Bilgiler şifreli ve yalnız evinizin ağında gider")
+        Text("Telefonlar ne gönderir?", color = Renkler.metin, fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+        Madde("Konum: vakitler ona göre")
+        Madde("İsteyenin kıldığı namazlar")
+        Madde("Şifreli, yalnız ev ağında")
     }
 }
 
