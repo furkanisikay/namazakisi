@@ -209,26 +209,7 @@ export class TvSenkronServisi {
     /** Tüm TV'lere ortak kısım (üyeye özel iki anahtar sonra eklenir). */
     private async ortakDurumuOku(): Promise<Omit<DurumAnlikGoruntusu, 'durumumSayilsin' | 'tvHatirlat'>> {
         const bugun = bugunuAl();
-        const dun = gunEkle(bugun, -1);
-        const kilinan: Record<string, VakitAdi[]> = {};
-        try {
-            const kayit = await localTarihAraligindakiNamazlariGetir(dun, bugun);
-            if (kayit.basarili && kayit.veri) {
-                for (const gun of kayit.veri) {
-                    kilinan[gun.tarih] = gun.namazlar
-                        .filter((n) => n.tamamlandi)
-                        .map((n) => NAMAZ_VAKIT[n.namazAdi])
-                        .filter((v): v is VakitAdi => !!v);
-                }
-            }
-        } catch {
-            // kayıt okunamadı: boş gider
-        }
-        // Kılınmışlığın tek doğru kaynağı disk (AGENTS.md): muhafız kaydıyla birleşim.
-        for (const tarih of [dun, bugun]) {
-            const m = await kilinanVakitleriAl(tarih).catch(() => [] as VakitAdi[]);
-            kilinan[tarih] = [...new Set([...(kilinan[tarih] ?? []), ...m])];
-        }
+        const kilinan = await dunBugunKilinanlar(bugun);
         const konum = await konumuOku();
         const ozelGun = await ozelGunSuzgeciniOku().then((s) => s(bugun)).catch(() => false);
         const cuma = await LocalCumaHatirlatmaServisi.getAyarlar().catch(() => null);
@@ -242,6 +223,31 @@ export class TvSenkronServisi {
             ramazan,
         };
     }
+}
+
+/** Dün + bugün kılınan farzlar (namaz kaydı ∪ muhafız diski). TV yükü ve cihaz olay günlüğü ortak kaynak. */
+export async function dunBugunKilinanlar(bugun: string = bugunuAl()): Promise<Record<string, VakitAdi[]>> {
+    const dun = gunEkle(bugun, -1);
+    const kilinan: Record<string, VakitAdi[]> = {};
+    try {
+        const kayit = await localTarihAraligindakiNamazlariGetir(dun, bugun);
+        if (kayit.basarili && kayit.veri) {
+            for (const gun of kayit.veri) {
+                kilinan[gun.tarih] = gun.namazlar
+                    .filter((n) => n.tamamlandi)
+                    .map((n) => NAMAZ_VAKIT[n.namazAdi])
+                    .filter((v): v is VakitAdi => !!v);
+            }
+        }
+    } catch {
+        // kayıt okunamadı: boş gider
+    }
+    // Kılınmışlığın tek doğru kaynağı disk (AGENTS.md): muhafız kaydıyla birleşim.
+    for (const tarih of [dun, bugun]) {
+        const m = await kilinanVakitleriAl(tarih).catch(() => [] as VakitAdi[]);
+        kilinan[tarih] = [...new Set([...(kilinan[tarih] ?? []), ...m])];
+    }
+    return kilinan;
 }
 
 async function yerelAgVarMi(): Promise<boolean> {

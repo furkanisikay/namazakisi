@@ -25,11 +25,12 @@ import Foundation
  */
 public class ExpoSiriKisayollariModule: Module {
     private var gozlemci: NSObjectProtocol?
+    private var dinleyici: CihazDinleyici?
 
     public func definition() -> ModuleDefinition {
         Name("ExpoSiriKisayollari")
 
-        Events("onSiriDegisikligi")
+        Events("onSiriDegisikligi", "onCihazIstegi")
 
         // Intent uygulama ACIKKEN calisirsa (ayni surec) JS hemen haberdar olur;
         // kapaliyken JS acilista/one gelince okur.
@@ -44,7 +45,30 @@ public class ExpoSiriKisayollariModule: Module {
             }
         }
 
+        // Cihaz agi dinleyicisi (iPad <-> iPhone): YALNIZ on planda; karar ve sifre JS'te.
+        AsyncFunction("dinleyiciBaslat") { (kimlik: String, ad: String, promise: Promise) in
+            let d = self.dinleyici ?? CihazDinleyici { [weak self] veri in self?.sendEvent("onCihazIstegi", veri) }
+            self.dinleyici = d
+            d.baslat(kimlik: kimlik, ad: ad) { port in
+                if let port = port { promise.resolve(port) } else { promise.reject("DINLEYICI", "Dinleyici acilamadi") }
+            }
+        }
+
+        /// Bu cihazin Wi-Fi IPv4'u (QR'a yazilir); yoksa nil.
+        AsyncFunction("yerelAdres") { () -> String? in
+            return CihazDinleyici.yerelIpv4()
+        }
+
+        AsyncFunction("dinleyiciDurdur") {
+            self.dinleyici?.durdur()
+        }
+
+        AsyncFunction("dinleyiciYanitla") { (id: String, kod: Int, govde: String) in
+            self.dinleyici?.yanitla(id: id, kod: kod, govde: govde)
+        }
+
         OnDestroy {
+            self.dinleyici?.durdur()
             if let g = self.gozlemci {
                 NotificationCenter.default.removeObserver(g)
                 self.gozlemci = nil
@@ -65,6 +89,13 @@ public class ExpoSiriKisayollariModule: Module {
 
         AsyncFunction("bekleyenleriAl") { () -> String in
             return SiriDeposu.varsayilan.bekleyenleriJson()
+        }
+
+        /// Cihaz agindan gelen "Kildim": kaynak SABIT (`cihaz`); JS baska kaynak adina yazamaz.
+        AsyncFunction("cihazdanKildimEkle") { (tarih: String, vakit: String) -> Bool in
+            return SiriDeposu.varsayilan.kildimEkle(
+                tarih: tarih, vakit: vakit, kaynak: SiriDeposu.cihazKaynagi,
+                simdiMs: Int64(Date().timeIntervalSince1970 * 1000))
         }
 
         AsyncFunction("tamamlandi") { (id: String) in

@@ -9,7 +9,8 @@
  */
 import { GuvenliDepo } from './GuvenliDepo';
 
-export type CihazTuru = 'tv' | 'tablet';
+/** `tv`: yalnız alıcı pano. `tablet` / `telefon`: çift yönlü eş (karşı cihazın türü). */
+export type CihazTuru = 'tv' | 'tablet' | 'telefon';
 
 export interface CihazUyeligi {
     tur: CihazTuru;
@@ -35,6 +36,10 @@ export interface CihazUyeligi {
     /** Üstel geri çekilme (TV kapalıyken her tetikte soket + keşif masrafı ödenmesin). Opsiyonel: eski kayıt. */
     sonHataMs?: number;
     hataSayisi?: number;
+    /** Çift yönlü eş: karşının olay günlüğümüzden bildiği aralık (son yanıttan). */
+    karsiBilinen?: Record<string, number>;
+    /** Çift yönlü eş: bu eşten kabul edilen son sayaç (tekrar koruması). */
+    sonGelenN?: number;
 }
 
 const LISTE = 'cihazAgi.liste';
@@ -55,7 +60,7 @@ function gecerliMi(o: unknown): o is CihazUyeligi {
     const k = o as Partial<CihazUyeligi> | null;
     return (
         !!k &&
-        (k.tur === 'tv' || k.tur === 'tablet') &&
+        (k.tur === 'tv' || k.tur === 'tablet' || k.tur === 'telefon') &&
         typeof k.aliciKimlik === 'string' &&
         KIMLIK.test(k.aliciKimlik) &&
         typeof k.uye === 'string' &&

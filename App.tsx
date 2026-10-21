@@ -8,6 +8,7 @@ import React, { useEffect } from 'react';
 import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager, DeviceEventEmitter } from 'react-native';
 import { WearSenkronServisi } from './src/domain/services/WearSenkronServisi';
 import { TvSenkronServisi } from './src/domain/services/TvSenkronServisi';
+import { CihazEsServisi } from './src/domain/services/CihazEsServisi';
 import { KildimKuyruguServisi, KILDIM_KUYRUGU_OLAYI } from './src/domain/services/KildimKuyruguServisi';
 import { CamideyimServisi } from './src/domain/services/CamideyimServisi';
 import { camiOlayiniDinle } from './modules/expo-cami-geofence/src';
@@ -328,6 +329,10 @@ const AppIcerik: React.FC = () => {
         WearSenkronServisi.getInstance().baslat();
         // Eşleşik TV'ler: kılınmışlık değişince (adlı yuva 'tv') kısa beklemeyle gönderilir.
         TvSenkronServisi.getInstance().baslat();
+        // Çift yönlü eşler (tablet ↔ telefon): kılınmışlık değişince eşitlenir (yuva 'cihazEs');
+        // dinleyici YALNIZ ön planda (aşağıdaki AppState).
+        CihazEsServisi.getInstance().baslat();
+        CihazEsServisi.getInstance().dinlemeyiBaslat().then(() => CihazEsServisi.getInstance().esitle()).catch(() => {});
         // Widget + hızlı ayarlar (issue #275/#276): kılınmışlık değişince tazelenir;
         // uygulama kapalıyken saatten/widget'tan/kutudan gelmiş "Kıldım"lar işlenir.
         WidgetServisi.getInstance().baslat();
@@ -429,6 +434,8 @@ const AppIcerik: React.FC = () => {
         // Eşleşik TV'ler: önceki gönderim TV kapalıyken düştüyse (özet yalnız başarıda yazılır)
         // şimdi tamamlanır; değişiklik yoksa hiçbir şey gönderilmez (ucuz).
         TvSenkronServisi.getInstance().gonder().catch(() => {});
+        // Çift yönlü eşler: dinleyici yalnız ön planda açılır; açılınca eksikler alınıp verilir.
+        CihazEsServisi.getInstance().dinlemeyiBaslat().then(() => CihazEsServisi.getInstance().esitle()).catch(() => {});
         // iOS canlı etkinlik (#295) DEBOUNCE'SUZ: arka planda başlatılamadığı için her ön
         // plana gelişte "şu an hangisi?" yeniden eşitlenir (ucuz; değişmediyse köprü dokunmaz).
         if (Platform.OS === 'ios') {
@@ -466,6 +473,9 @@ const AppIcerik: React.FC = () => {
             })
             .catch(() => {});
         }
+      } else if (nextAppState === 'background') {
+        // Dinleyici (port + mDNS) ön plan dışında KAPALI: pil + saldırı yüzeyi.
+        CihazEsServisi.getInstance().dinlemeyiDurdur().catch(() => {});
       }
     });
 

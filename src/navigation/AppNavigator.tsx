@@ -46,6 +46,7 @@ import {
   SaatAyarlariSayfasi,
   TelevizyonSayfasi,
   CihazlarimSayfasi,
+  CihazEkleSayfasi,
   KildimUygulamalariSayfasi,
   OtomasyonRehberiSayfasi,
   DebugLogsSayfasi,
@@ -160,6 +161,7 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   // Wear OS saati ile iş bölümü (saat W3) — listede yalnız Android'de görünür.
   SaatAyarlari: { component: SaatAyarlariSayfasi, options: { title: 'Akıllı saat' } },
   Cihazlarim: { component: CihazlarimSayfasi, options: { title: 'Cihazlarım' } },
+  CihazEkle: { component: CihazEkleSayfasi, options: { title: 'Cihaz ekleyin' } },
   // TV ekranı "Ayarlar › Cihazlarım › TV ekleyin" der; başlık bu yolla birebir aynı kalmalı.
   TelevizyonAyarlari: { component: TelevizyonSayfasi, options: { title: 'TV ekleyin' } },
   KildimUygulamalari: { component: KildimUygulamalariSayfasi, options: { title: 'Kıldım İşaretleyen Uygulamalar' } },

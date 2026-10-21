@@ -124,6 +124,11 @@ if (Platform.OS === 'android') {
     import('./src/domain/services/TvSenkronServisi')
         .then(({ TvSenkronServisi }) => TvSenkronServisi.getInstance().baslat())
         .catch(() => undefined);
+    // Çift yönlü eşler (tablet ↔ telefon): headless "Kıldım" da eşe gönderilsin (yuva 'cihazEs').
+    // Eş yalnız ön plandayken dinler; ulaşılamazsa bir sonraki açılışta tamamlanır.
+    import('./src/domain/services/CihazEsServisi')
+        .then(({ CihazEsServisi }) => CihazEsServisi.getInstance().baslat())
+        .catch(() => undefined);
 }
 
 // Muhafız bildirimindeki "Kıldım" — uygulama KAPALI/arka plandayken (yalnız Android).

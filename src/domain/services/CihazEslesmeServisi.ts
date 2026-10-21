@@ -32,7 +32,13 @@ export function telefonAdi(): string {
 
 export async function esles(
     qr: EslesmeQr,
-    secenek: { iptalMi?: () => boolean; bekle?: (ms: number) => Promise<void>; simdi?: () => number } = {},
+    secenek: {
+        iptalMi?: () => boolean;
+        bekle?: (ms: number) => Promise<void>;
+        simdi?: () => number;
+        /** Çift yönlü eş (tablet/telefon): karşı taraf bize geri ulaşabilsin diye kimlik + adres + port. */
+        kendi?: { kimlik: string; adres: string; port: number; tur: 'tablet' | 'telefon' };
+    } = {},
 ): Promise<EslesmeSonucu> {
     const bekle = secenek.bekle ?? ((ms: number) => new Promise<void>((c) => setTimeout(c, ms)));
     const simdi = secenek.simdi ?? Date.now;
@@ -41,7 +47,7 @@ export async function esles(
     const govde = JSON.stringify({
         v: 2,
         iv: base64Yaz(iv),
-        ct: sifrele(qr.sir, iv, esleIstekAad(qr.aliciKimlik), JSON.stringify({ cihaz: telefonAdi(), ist })),
+        ct: sifrele(qr.sir, iv, esleIstekAad(qr.aliciKimlik), JSON.stringify({ cihaz: telefonAdi(), ist, ...(secenek.kendi ?? {}) })),
     });
     try {
         const y = await yereleGonder(qr.adres, qr.port, '/esle', govde);
@@ -74,7 +80,7 @@ export async function esles(
         if (durum.durum === 'bekliyor') continue;
         if (durum.durum === 'red') return 'red';
         await CihazAgiDeposu.kaydet({
-            tur: 'tv',
+            tur: qr.tur === 'tv' ? 'tv' : (qr.aliciTuru ?? 'tablet'),
             aliciKimlik: qr.aliciKimlik,
             aliciAdi: durum.aliciAdi || qr.aliciAdi,
             uye: durum.uye,

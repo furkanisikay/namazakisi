@@ -17,14 +17,14 @@ export type DugumTonu = 'iyi' | 'bekliyor' | 'sorun' | 'notr';
 
 export interface HaritaDugumu {
     kimlik: string;
-    tur: 'tv' | 'saat' | 'tablet' | 'ekle' | 'fazla';
+    tur: 'tv' | 'saat' | 'tablet' | 'telefon' | 'ekle' | 'fazla';
     ad: string;
     rozet: string;
     ton: DugumTonu;
     onPress?: () => void;
 }
 
-const SIMGE: Record<HaritaDugumu['tur'], string> = { tv: 'tv', saat: 'clock', tablet: 'tablet-alt', ekle: 'plus', fazla: 'ellipsis-h' };
+const SIMGE: Record<HaritaDugumu['tur'], string> = { tv: 'tv', saat: 'clock', tablet: 'tablet-alt', telefon: 'mobile-alt', ekle: 'plus', fazla: 'ellipsis-h' };
 const CIZIM_MS = 700;
 
 export const BagHaritasi: React.FC<{ dugumler: HaritaDugumu[] }> = ({ dugumler }) => {

@@ -54,3 +54,27 @@ export function alicilariBul(sureMs: number): Promise<BulunanAlici[]> {
     if (!modul?.tvleriBul) return Promise.resolve([]);
     return modul.tvleriBul(sureMs);
 }
+
+// ---- Cihaz ağı dinleyicisi (tablet ↔ telefon; YALNIZ ön planda) ----
+
+export interface CihazIstegi {
+    id: string;
+    yol: string;
+    govde: string;
+}
+
+export interface DinleyiciKoprusu {
+    dinleyiciBaslat(kimlik: string, ad: string): Promise<number>;
+    dinleyiciDurdur(): Promise<void>;
+    dinleyiciYanitla(id: string, kod: number, govde: string): Promise<void>;
+    yerelAdres(): Promise<string | null>;
+    addListener(olay: 'onCihazIstegi', dinleyici: (veri: CihazIstegi) => void): { remove(): void };
+}
+
+/** Android dinleyici köprüsü; eski ikilide/iOS'ta `null`. */
+export function androidDinleyici(): DinleyiciKoprusu | null {
+    const m = modul as unknown as Partial<DinleyiciKoprusu> | null;
+    return m?.dinleyiciBaslat && m.dinleyiciYanitla && m.dinleyiciDurdur && m.yerelAdres && m.addListener
+        ? (m as DinleyiciKoprusu)
+        : null;
+}

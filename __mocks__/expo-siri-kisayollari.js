@@ -27,12 +27,15 @@ const saatUygulamasiDestekli = jest.fn().mockReturnValue(false);
 const saatKoprusu = jest.fn().mockReturnValue(null);
 const saatUyandirmaDurumlariniOku = jest.fn().mockResolvedValue(null);
 const saatNafileKildimleriniAl = jest.fn().mockResolvedValue([]);
+// Cihaz ağı dinleyicisi: varsayılan YOK.
+const iosDinleyici = jest.fn().mockReturnValue(null);
 
 module.exports = {
   saatUygulamasiDestekli,
   saatKoprusu,
   saatUyandirmaDurumlariniOku,
   saatNafileKildimleriniAl,
+  iosDinleyici,
   siriVeriYazici,
   siriKildimKuyrugu,
   siriOdakDurumuAl,

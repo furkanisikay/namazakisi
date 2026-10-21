@@ -38,6 +38,8 @@ export const AYARLAR_EKRANLARI = [
   'SaatAyarlari',
   // Cihaz ağı: bağlı TV'ler + saat (tasarım 2026-10-21); TV ekleme aşağıdaki sayfada
   'Cihazlarim',
+  // Telefon ↔ tablet eşleştirme (kod göster / okut)
+  'CihazEkle',
   // Android TV ekleme (QR ya da 7 haneli kod)
   'TelevizyonAyarlari',
   'KildimUygulamalari',

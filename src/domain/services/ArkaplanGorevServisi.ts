@@ -414,6 +414,13 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         // Eşleşik TV'ler (cihaz ağı): yalnız özet değiştiyse gider (tekilleştirme kalıcı).
         // Muhafızdan bağımsız → erken dönüşlerden ÖNCE.
         await TvSenkronServisi.getInstance().gonder().catch(() => undefined);
+        // Çift yönlü eşler: eş ön plandaysa eksikler alınıp verilir; değilse sessiz (tembel: native köprü).
+        try {
+            const { CihazEsServisi } = require('./CihazEsServisi') as typeof import('./CihazEsServisi');
+            await CihazEsServisi.getInstance().esitle();
+        } catch {
+            // eş yok / ağ yok
+        }
 
         // =====================================================
         // ADIM 1.58: ANA EKRAN WIDGET'I (issue #275)

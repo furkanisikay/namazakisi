@@ -81,4 +81,14 @@ class KildimKuyruguKurallariTest {
         assertFalse(k.gecerliMi("2026-10-13", "imsak "))
         assertTrue(k.gecerliMi("2026-10-13", "imsak"))
     }
+
+    @Test
+    fun kaynaklarUcDildeAyni() {
+        val metin = javaClass.classLoader!!.getResource("kildim-kaynaklari.json")!!.readText()
+        val dizi = org.json.JSONObject(metin).getJSONArray("kaynaklar")
+        val fikstur = (0 until dizi.length()).map { dizi.getString(it) }.toSet()
+        assertEquals(fikstur, k.KAYNAKLAR)
+        val l = k.ekle(emptyList(), "2026-10-21", "ogle", k.KAYNAK_CIHAZ)!!
+        assertEquals(k.KAYNAK_CIHAZ, l.single().kaynak)
+    }
 }

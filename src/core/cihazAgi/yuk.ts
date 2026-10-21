@@ -47,6 +47,26 @@ export interface CihazAgiYuku {
     durum?: DurumAnlikGoruntusu;
     olaylar?: CihazOlayi[];
     sil?: true;
+    /** Çift yönlü cihaz: gönderenin olay günlüğünde bildiği aralık (karşı taraf eksiğini yollar). */
+    bilinen?: Record<string, number>;
+}
+
+/** Çift yönlü alıcıda düz yükü güvenle çözer (TV'nin `CihazYuku.kt` ayrıştırıcısının JS ikizi). */
+export function yukCoz(duz: string | null): { olaylar: unknown[]; bilinen: Record<string, number>; sil: boolean } | null {
+    if (!duz) return null;
+    try {
+        const o = JSON.parse(duz) as Record<string, unknown>;
+        if (!o || typeof o !== 'object' || o.v !== YUK_SURUMU) return null;
+        const bilinen: Record<string, number> = {};
+        if (o.bilinen && typeof o.bilinen === 'object') {
+            for (const [c, n] of Object.entries(o.bilinen as Record<string, unknown>)) {
+                if (/^[0-9a-f]{16}$/.test(c) && Number.isInteger(n) && (n as number) >= 0) bilinen[c] = n as number;
+            }
+        }
+        return { olaylar: Array.isArray(o.olaylar) ? o.olaylar.slice(0, 200) : [], bilinen, sil: o.sil === true };
+    } catch {
+        return null;
+    }
 }
 
 const VAKITLER: readonly VakitAdi[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
@@ -75,6 +95,7 @@ export function yukuYaz(yuk: CihazAgiYuku): string {
         ...(durum ? { durum } : {}),
         ...(yuk.olaylar && yuk.olaylar.length > 0 ? { olaylar: yuk.olaylar } : {}),
         ...(yuk.sil ? { sil: true } : {}),
+        ...(yuk.bilinen ? { bilinen: Object.fromEntries(Object.keys(yuk.bilinen).sort().map((k) => [k, yuk.bilinen![k]])) } : {}),
     });
 }
 

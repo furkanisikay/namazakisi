@@ -194,6 +194,12 @@ depo.kilinanlariYaz("bozuk{")
 esitMi(depo.kilinanlar(), [:], "bozuk kilinanlar bos sayilir (cokmez)")
 
 esitMi(depo.kildimEkle(tarih: "2026-06-21", vakit: "ogle", kaynak: "siri", simdiMs: 1), true, "kildim eklenir")
+// Kaynak ikizi: cihaz agi kaynagi ortak fiksturde (Kotlin KAYNAKLAR) bulunmali.
+if argumanlar.count > 4 {
+    struct Kaynaklar: Decodable { let kaynaklar: [String] }
+    let kaynaklar = oku(argumanlar[4], Kaynaklar.self).kaynaklar
+    esitMi(kaynaklar.contains(SiriDeposu.cihazKaynagi), true, "cihaz kaynagi fiksturde")
+}
 esitMi(depo.kildimEkle(tarih: "2026-06-21", vakit: "ogle", kaynak: "siri", simdiMs: 2), false, "ayni vakit ikinci kez eklenmez")
 esitMi(depo.bekleyenler(), [SiriBekleyenKildim(tarih: "2026-06-21", vakit: "ogle")], "bekleyen gorunur")
 
