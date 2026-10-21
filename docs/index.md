@@ -13,7 +13,7 @@ Gizlilik odaklı, tamamen çevrimdışı ibadet asistanı.
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.60.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
+Kaynak koddaki sürüm: **0.61.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## Ekran görüntüleri
@@ -80,7 +80,7 @@ Kaynak koddaki sürüm: **0.60.0** · Mağazada: Google Play: **0.45.0** · App 
 - **Cuma Namazı Hatırlatması** — Her cuma, öğle vaktinden istediğiniz kadar önce hatırlatalım — camiye rahatça yetişin. <sub>Android · iOS · 0.37.0</sub>
 
 <details>
-<summary>Diğer 30 özellik</summary>
+<summary>Diğer 32 özellik</summary>
 
 - **Camiye Zamanında Yetişin** — Camide kılmak istediğiniz vakitleri seçin; ezandan, camiye yürüme süreniz kadar önce hatırlatalım. <sub>Android · iOS · 0.37.0</sub>
 - **Yatmadan Önce Hatırlatma** — Her zamanki yatış saatinizi girin; yatsıyı işaretlemediyseniz uyumadan önce hatırlatalım, gün sonunda eksik vakitlerinizi tek bildirimde görün. <sub>Android · iOS · 0.37.0</sub>
@@ -95,13 +95,15 @@ Kaynak koddaki sürüm: **0.60.0** · Mağazada: Google Play: **0.45.0** · App 
 - **Sade Görünüm** — Ana ekranda yalnız şu anki vakit, kalan süre ve büyük bir "Kıldım" düğmesi: büyüklerimiz için tek bakışta anlaşılan, dokununca sesli okunan bir ekran. <sub>Android · iOS · 0.31.0</sub>
 - **Otomasyonlarla Kullanın** — Vakit girince telefonunuz sessize alınsın, camiye girince bir şey kapansın: Samsung Rutinler, Tasker ve MacroDroid ile Namaz Akışı'nı birlikte kullanabilirsiniz. <sub>Android · 0.31.0</sub>
 - **Her Farzla Bir Kaza** — Kaza borcunuz varsa, ana ekranda bir farzı kıldım olarak işaretlediğinizde bir kaza kılmanızı öneririz; tek dokunuşla defterinizden düşebilirsiniz. <sub>Android · iOS · 0.31.0</sub>
-- **iPhone'da Siri, Kısayollar ve Odak** — Siri'ye sıradaki namazı sorabilir, kıldığınız vakti sesinizle işaretleyebilir ve "Namaz" Odağınızda hatırlatmaları sessize alabilirsiniz. <sub>iOS · 0.31.0</sub>
+- **iPhone'da Siri, Kısayollar ve Odak** — Siri'ye sıradaki namazı sorabilir, kıldığınız vakti sesinizle işaretleyebilir ve "Namaz" Odağınızda hatırlatmaları sessize alabilirsiniz. <sub>iOS · 0.57.0</sub>
 - **Geri Sayım Durum Çubuğunda ve Now Bar'da** — Vaktin son dakikaları, iftar ve sahur sayacı durum çubuğunda kalan süreyle görünür; Samsung cihazlarda Now Bar'a da taşınır. Neyin ne zaman görüneceğini siz seçersiniz. <sub>Android · 0.31.0</sub>
 - **Bildirim Sınırı Rehberi** — Telefonunuzun bekletebildiği bildirim sayısı sınırlıdır; uygulama sınıra yaklaştığınızda sizi önceden uyarır ve yer açmanın en kolay yollarını önerir. <sub>Android · iOS · 0.31.0</sub>
 - **Her Vakte Kendi Hatırlatma Akışı** — Namaz Muhafızı'nda her vakit için 1 ile 6 arasında hatırlatma kurar; ne zaman başlayacağını, tonunu ve sesli okunup okunmayacağını vakit vakit seçersiniz. <sub>Android · iOS · 0.31.0</sub>
 - **Camideyim: Camiye Girince Telefonunuz Anlar** — Hangi camiye giderseniz gidin, vakit yakınında birkaç dakika kaldığınızda Namaz modu kendiliğinden açılır; emin olunamayan durumlarda önce size sorulur. <sub>Android · 0.31.0</sub>
 - **Telefonunuza "Namaz" Modu** — Telefonunuzun Rahatsız Etmeyin/mod ayarlarına "Namaz" eklenir; cuma hutbesinde, vakit girince ya da camideyken kendiliğinden açılır. <sub>Android · 0.31.0</sub>
 - **Özel Günlerde Hatırlatmalar Durur** — Özel gün modu açıkken seçtiğiniz tarihler boyunca namaz hatırlatmaları da durur; tarihler bitince kendiliğinden geri gelir. <sub>Android · iOS · 0.31.0</sub>
+- **Kontrol Merkezi'nden Kıldım** — Kontrol Merkezi'ne, kilit ekranına ya da Eylem düğmesine "Vakti kıldım" kontrolünü ekleyerek içinde bulunduğunuz vakti tek dokunuşla işaretleyebilirsiniz. <sub>iOS · 0.57.0</sub>
+- **iPad'de Geniş Düzen** — Namaz Akışı artık iPad'de ekranın tamamını kullanır: solda vakit kartı ve geri sayım, sağda günlük akış. <sub>iOS · 0.57.0</sub>
 - **Katlanabilir ve Tablet Ekranlara Uygun Düzen** — Tabletlerde ve katlanabilir telefonların iç ekranında ana ekran iki sütunda açılır; yarı açık katlanabilir telefonda üst yarıda büyük bir geri sayım görürsünüz. <sub>Android · 0.31.0</sub>
 - **Widget ve Tek Dokunuşla "Kıldım"** — Ana ekran widget'ından, hızlı ayarlar kutusundan ya da uygulama kısayolundan, uygulamayı açmadan vakti görüp "Kıldım" diyebilirsiniz. <sub>Android · 0.31.0</sub>
 - **Konumunuz Değişince Haber Veriyoruz** — Başka bir ilçeye ya da şehre geçtiğinizde uygulama vakitleri kendiliğinden günceller ve bunu sessiz bir bildirimle size söyler. <sub>Android · 0.30.0</sub>
