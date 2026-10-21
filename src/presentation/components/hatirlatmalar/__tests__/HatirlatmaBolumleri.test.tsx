@@ -39,9 +39,11 @@ jest.mock('../../../store/vakitBildirimSlice', () => ({
 // Ses köprüsü (native) — dar mock; "kendi dosyanız" yalnız destek varken çizilir.
 const mockSesSec = jest.fn();
 const mockSesDosyasiSec = jest.fn();
+const mockSesAdiAl = jest.fn();
 let mockDosyaDestegi = true;
 jest.mock('../../../../../modules/expo-countdown-notification/src', () => ({
     sesSec: (...a: unknown[]) => mockSesSec(...a),
+    sesAdiAl: (u: string) => mockSesAdiAl(u),
     sesDosyasiSec: () => mockSesDosyasiSec(),
     sesDosyasiDestekleniyor: () => mockDosyaDestegi,
 }));
@@ -103,6 +105,20 @@ describe('VakitGirinceBolumu — ses', () => {
     beforeEach(() => {
         mockSesSecici = true;
         mockDosyaDestegi = true;
+        mockSesAdiAl.mockResolvedValue('Ezan');
+    });
+
+    it('SESSİZ SAPMA YOK: dosyası silinmiş ses "bulunamadı" diye görünür', async () => {
+        mockSesAdiAl.mockResolvedValue('');
+        mockState = {
+            ...mockState,
+            vakitBildirim: {
+                ayarlar: { imsak: true, ogle: false, ikindi: false, aksam: false, yatsi: false },
+                sesler: { imsak: { bildirimSesi: 'content://media/external/audio/media/9', sesAdi: 'Ezan' } },
+            },
+        };
+        const e = render(<VakitGirinceBolumu />);
+        await waitFor(() => expect(e.getByLabelText(/^Sabah bildirim sesi: Ses bulunamadı/)).toBeTruthy());
     });
 
     it('yalnız AÇIK vaktin altında ses satırı çizilir; açılınca sesler de yüklenir', () => {

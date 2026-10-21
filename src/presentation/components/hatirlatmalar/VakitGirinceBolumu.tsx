@@ -25,7 +25,7 @@ import {
 import { SesSecimSatiri } from '../hatirlatma/SesSecimSatiri';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useSesDosyasiSecimi } from '../../hooks/useSesDosyasiSecimi';
-import { sesSec } from '../../../../modules/expo-countdown-notification/src';
+import { sesAdiAl, sesSec } from '../../../../modules/expo-countdown-notification/src';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import {
     VAKIT_VARSAYILAN_SES_ADI,
@@ -72,6 +72,30 @@ export const VakitGirinceBolumu: React.FC = () => {
         },
         []
     );
+
+    // SESSİZ SAPMA YOK: dosyası silinmiş ses planlamada telefonun sesine düşer
+    // (`VakitKanalServisi`); ekran da aynı doğrulamayı yapıp bunu söyler.
+    const [bulunamayan, setBulunamayan] = React.useState<ReadonlySet<string>>(new Set());
+    const sesAnahtari = VAKITLER.map((v) => sesler[v.anahtar]?.bildirimSesi ?? '').join('|');
+    useEffect(() => {
+        if (!sesSecilebilir || typeof sesAdiAl !== 'function') return;
+        let iptal = false;
+        const uriler = [...new Set(sesAnahtari.split('|').filter(ozelSesMi))];
+        void (async () => {
+            const yok = new Set<string>();
+            for (const uri of uriler) {
+                try {
+                    if (!(await sesAdiAl(uri))) yok.add(uri);
+                } catch {
+                    yok.add(uri);
+                }
+            }
+            if (!iptal) setBulunamayan(yok);
+        })();
+        return () => {
+            iptal = true;
+        };
+    }, [sesAnahtari, sesSecilebilir]);
 
     const sesiYaz = (vakit: VakitAnahtari, secim: VakitSesSecimi | null) => {
         dispatch(vakitBildirimSesiniGuncelle({ vakit, secim }));
@@ -123,7 +147,11 @@ export const VakitGirinceBolumu: React.FC = () => {
                                     testID={`vakit-sesi-${v.anahtar}`}
                                     sesEtiketi={`${v.ad} bildirim sesi`}
                                     bildirimSesi={sesler[v.anahtar]?.bildirimSesi ?? 'varsayilan'}
-                                    sesAdi={vakitSesGorunenAdi(sesler[v.anahtar])}
+                                    sesAdi={
+                                        bulunamayan.has(sesler[v.anahtar]?.bildirimSesi ?? '')
+                                            ? 'Ses bulunamadı · telefonun sesi çalar'
+                                            : vakitSesGorunenAdi(sesler[v.anahtar])
+                                    }
                                     varsayilanAdi={VAKIT_VARSAYILAN_SES_ADI}
                                     varsayilanaDonEtiketi="Telefonun bildirim sesine dön"
                                     seciliyor={seciciAcikVakit === v.anahtar}
