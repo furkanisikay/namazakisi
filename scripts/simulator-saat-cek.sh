@@ -130,7 +130,9 @@ echo "saat paketi: $BUNDLE"
 # Kible: simulatorde pusula yok → sabit yon (`NAMAZ_SAAT_TOHUM_YON`, Istanbul kiblesi
 # ~152° → hizada (yesil halka)). Uyandirma: akilli alarm oturumu simulatorde tetiklenmez →
 # ekran yukun ilk uyandirma kaydiyla, oturumsuz cizilir.
-KARELER="01-ana:ana:12 02-vakitler:vakitler:8 03-kildim-onayi:onay:8 04-tesbihat:tesbihat:8 05-kible:kible:14 06-uyandirma:uyandirma:8"
+# Sayfalar (dikey TabView): 01 Simdi, 02 Bugun kadrani, 03 kilinmis Simdi, 04 Kible,
+# 05 Tesbihat, 06 Uyandirma, 07 Kildim onayi.
+KARELER="01-simdi:ana:12 02-bugun:vakitler:10 03-kilindi:kilindi:10 04-kible:kible:14 05-tesbihat:tesbihat:10 06-uyandirma:uyandirma:8 07-kildim-onayi:onay:8"
 BEKLENEN=0
 KURTARILDI=0
 for k in $KARELER; do
@@ -202,7 +204,8 @@ done
 VIDEO="${3:-}"
 if [ -n "$VIDEO" ]; then
   mkdir -p "$VIDEO"
-  for v in "uyandirma-acilisi:uyandirma" "kible-acilisi:kible" "ana-acilisi:ana"; do
+  # kildim-sahnesi: Simdi acilir, 1,5 sn sonra "Kildim" kendiliginden oynar (halka kapanir + tik).
+  for v in "kildim-sahnesi:kildimDemo" "simdi-acilisi:ana" "bugun-acilisi:vakitler" "uyandirma-acilisi:uyandirma" "kible-acilisi:kible"; do
     IFS=: read -r AD EKRAN <<<"$v"
     xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
     sleep 1
@@ -219,6 +222,21 @@ if [ -n "$VIDEO" ]; then
     kill -INT "$KAYIT" 2>/dev/null || true
     wait "$KAYIT" 2>/dev/null || true
     if [ -s "$VIDEO/$AD.mp4" ]; then echo "video: $AD.mp4 ($(du -h "$VIDEO/$AD.mp4" | cut -f1))"; else echo "UYARI: $AD videosu yok"; fi
+  done
+  # Her zaman acik (sonuk) varyant kareleri — inceleme icin, ASC'ye GITMEZ (video dizininde).
+  for v in "sonuk-simdi:ana" "sonuk-bugun:vakitler" "sonuk-kilindi:kilindi" "sonuk-kible:kible"; do
+    IFS=: read -r AD EKRAN <<<"$v"
+    xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
+    sleep 1
+    SIMCTL_CHILD_TZ="$TZ_ADI" \
+      SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
+      SIMCTL_CHILD_NAMAZ_SAAT_SONUK="1" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
+      xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1 || { echo "UYARI: $AD başlatılamadı"; continue; }
+    sleep 12
+    xcrun simctl io "$SAAT" screenshot --type=png "$VIDEO/$AD.png" >/dev/null 2>&1 && echo "sönük kare: $AD.png" || echo "UYARI: $AD çekilemedi"
   done
 fi
 

@@ -13,6 +13,9 @@ struct SaatGirdisi: TimelineEntry {
     /// nil → iPhone henuz veri gondermedi.
     let gorunum: WidgetGorunumu?
     let veriEski: Bool
+    /// Smart Stack (watchOS 10) onemi: suren ve kilinmamis vakit yukselir, cikisina 45 dk
+    /// kala en yuksege cikar; kilininca duser. Ayrica sistem kendi sinyallerini ekler.
+    var relevance: TimelineEntryRelevance? = nil
 
     static func bos(_ tarih: Date) -> SaatGirdisi {
         SaatGirdisi(date: tarih, gorunum: nil, veriEski: false)
@@ -49,11 +52,32 @@ struct SaatSaglayici: TimelineProvider {
 
         func girdi(_ ms: Int64) -> SaatGirdisi {
             let g = WidgetKarari.gorunum(vakitler: vakitler, kilinanlar: kilinanlar, bekleyenler: bekleyenler, simdiMs: ms)
-            return SaatGirdisi(date: SaatDeposu.tarih(ms), gorunum: g, veriEski: g.aktif == nil && g.sonraki == nil)
+            return SaatGirdisi(
+                date: SaatDeposu.tarih(ms), gorunum: g, veriEski: g.aktif == nil && g.sonraki == nil,
+                relevance: onem(g, ms: ms)
+            )
         }
 
-        let liste = [girdi(simdiMs)] + sinirlar.map { girdi($0) }
+        // Cikisa 45 dk kala ayri bir girdi: Smart Stack o andan itibaren vakti one alir.
+        let yakinlik = sinirlar.compactMap { s -> Int64? in
+            let g = WidgetKarari.gorunum(vakitler: vakitler, kilinanlar: kilinanlar, bekleyenler: bekleyenler, simdiMs: s)
+            guard let b = g.bitisMs, g.aktif != nil, !g.kilindi else { return nil }
+            let an = b - 45 * 60_000
+            return an > simdiMs ? an : nil
+        }
+        let anlar = Array(Set(sinirlar + yakinlik)).sorted()
+        let liste = [girdi(simdiMs)] + anlar.map { girdi($0) }
         return (liste, sinirlar.last.map { SaatDeposu.tarih($0) })
+    }
+
+    /// Smart Stack onemi (saf kural, `girdiler` ile ayni gorunumden).
+    static func onem(_ g: WidgetGorunumu, ms: Int64) -> TimelineEntryRelevance {
+        guard g.aktif != nil, let b = g.bitisMs, !g.kilindi else {
+            return TimelineEntryRelevance(score: 5)
+        }
+        let kalan = Double(max(b - ms, 0)) / 1000
+        let skor: Float = b - ms <= 45 * 60_000 ? 100 : 50
+        return TimelineEntryRelevance(score: skor, duration: kalan)
     }
 
     /// Galeri onizlemesi: sabit, gercekci bir ogle vakti.
@@ -89,6 +113,20 @@ enum KomplikasyonMetin {
         }
     }
 
+    /// Vaktin tonu (uygulamadaki `SaatGorunum.renk` ile ayni degerler; uzanti onu goremez).
+    static func renk(_ girdi: SaatGirdisi) -> Color {
+        let kod = girdi.gorunum?.aktif?.vakit ?? girdi.gorunum?.sonraki?.vakit ?? ""
+        if let g = girdi.gorunum, g.aktif != nil, g.kilindi { return yesil }
+        switch kod {
+        case "sabah": return Color(red: 0.62, green: 0.56, blue: 1.00)
+        case "ogle": return Color(red: 1.00, green: 0.78, blue: 0.27)
+        case "ikindi": return Color(red: 1.00, green: 0.62, blue: 0.27)
+        case "aksam": return Color(red: 1.00, green: 0.44, blue: 0.38)
+        case "yatsi": return Color(red: 0.42, green: 0.55, blue: 1.00)
+        default: return Color(red: 1.00, green: 0.82, blue: 0.48)
+        }
+    }
+
     /// Guvenli aralik: alt sinir ust siniri gecerse `ClosedRange` cokertirdi.
     static func aralik(_ simdi: Date, _ hedefMs: Int64) -> ClosedRange<Date> {
         let hedef = SaatDeposu.tarih(hedefMs)
@@ -100,7 +138,6 @@ struct NamazSaatKomplikasyonu: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "NamazSaatKomplikasyonu", provider: SaatSaglayici()) { girdi in
             KomplikasyonGorunumu(girdi: girdi)
-                .containerBackground(for: .widget) { Color.clear }
         }
         .configurationDisplayName("Namaz vakti")
         .description("İçinde bulunulan vakit ve çıkışına kalan süre.")
@@ -113,6 +150,18 @@ struct KomplikasyonGorunumu: View {
     @Environment(\.widgetFamily) private var aile
 
     var body: some View {
+        icerik
+            // Smart Stack'teki dikdortgen: vaktin tonu zemine hafif duser (uygulamayla ayni dil).
+            .containerBackground(for: .widget) {
+                if aile == .accessoryRectangular {
+                    Rectangle().fill(KomplikasyonMetin.renk(girdi).opacity(0.35).gradient)
+                } else {
+                    Color.clear
+                }
+            }
+    }
+
+    @ViewBuilder private var icerik: some View {
         switch aile {
         case .accessoryInline: SatirIci(girdi: girdi)
         case .accessoryCorner: Kose(girdi: girdi)

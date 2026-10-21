@@ -472,6 +472,34 @@ do {
     esitMi(Kible.erisimMetni(36, hizali: false), "Kıble 40 derece sağınızda", "erisim metni 10° adim")
 }
 
+// MARK: - 13) Bugun kadrani (yeniden tasarim) + Kabe uzakligi
+
+do {
+    let ist = TimeZone(secondsFromGMT: 3 * 3600)!
+    let d = SaatKadran.dilimler(yuk: yuk, tarih: "2026-10-12", saatDilimi: ist)
+    esitMi(d.map { $0.kod }, ["sabah", "ogle", "ikindi", "aksam", "yatsi"], "bes pencere sirali")
+    esitMi(d.first?.basMs, imsak12, "sabah imsakta baslar")
+    esitMi(d.first?.bitisMs, gunes12, "sabah gunes'te biter")
+    esitMi(d.last?.bitisMs, imsak13, "yatsi ERTESI imsakta biter")
+    esitMi(abs(SaatKadran.kesir(imsak12, saatDilimi: ist) - 0.236805555) < 1e-6, true, "kesir yerel gece yarisindan")
+    let yatsiYaylari = SaatKadran.yaylar(d[4], saatDilimi: ist)
+    esitMi(yatsiYaylari.count, 2, "gece yarisini asan yatsi iki yay")
+    esitMi(yatsiYaylari.first?.upperBound, 1, "ilk parca gece yarisina kadar")
+    esitMi(yatsiYaylari.last?.lowerBound, 0, "ikinci parca gece yarisindan")
+    esitMi(SaatKadran.yaylar(d[1], saatDilimi: ist).count, 1, "ogle tek yay")
+    esitMi(SaatKadran.dilimler(yuk: yuk, tarih: "2026-10-13", saatDilimi: ist).last.map { $0.bitisMs > $0.basMs }, true, "son gunde yatsi gece yarisina")
+    esitMi(SaatKadran.dilimler(yuk: yuk, tarih: "1999-01-01"), [], "olmayan gun bos")
+    esitMi(SaatKadran.odak(tac: 2.4), 2, "tac yuvarlanir")
+    esitMi(SaatKadran.odak(tac: -3), 0, "tac alt sinir")
+    esitMi(SaatKadran.odak(tac: 9), 4, "tac ust sinir")
+    esitMi(SaatKadran.odak(tac: .nan), 0, "tac NaN")
+    esitMi(SaatKadran.indeks("ikindi"), 2, "kod indeksi")
+    esitMi(abs(Kible.mesafeKm(enlem: 41, boylam: 29) - 2403.4) < 1, true, "Istanbul → Kabe ~2403 km")
+    esitMi(Kible.mesafeMetni(2403.4), "2.400 km", "binlik ayraci + 10 km yuvarlama")
+    esitMi(Kible.mesafeMetni(845), "850 km", "uc haneli")
+    esitMi(Kible.mesafeMetni(3), "Kâbe'desiniz", "10 km alti")
+}
+
 // MARK: - Sonuc
 
 if hatalar.isEmpty {

@@ -90,6 +90,29 @@ public enum Kible {
         return onceki + fark
     }
 
+    /// Kabe'ye buyuk daire uzakligi (km, haversine, R = 6371). Gosterim icin; konum zaten
+    /// ~11 km yuvarlak oldugundan ekranda 10 km'ye yuvarlanir (`mesafeMetni`).
+    public static func mesafeKm(enlem: Double, boylam: Double) -> Double {
+        let f1 = radyan(enlem), f2 = radyan(kabeEnlem)
+        let df = radyan(kabeEnlem - enlem), dl = radyan(kabeBoylam - boylam)
+        let a = sin(df / 2) * sin(df / 2) + cos(f1) * cos(f2) * sin(dl / 2) * sin(dl / 2)
+        return 6371.0 * 2 * atan2(a.squareRoot(), (1 - a).squareRoot())
+    }
+
+    /// "2.410 km" (Turkce binlik ayraci nokta; 10 km'ye yuvarlanir, 10 km altinda "Kâbe'desiniz").
+    public static func mesafeMetni(_ km: Double) -> String {
+        if km < 10 { return "Kâbe'desiniz" }
+        let yuvarlak = Int((km / 10).rounded()) * 10
+        var rakam = String(yuvarlak)
+        var parcalar: [String] = []
+        while rakam.count > 3 {
+            parcalar.insert(String(rakam.suffix(3)), at: 0)
+            rakam = String(rakam.dropLast(3))
+        }
+        parcalar.insert(rakam, at: 0)
+        return parcalar.joined(separator: ".") + " km"
+    }
+
     private static func radyan(_ d: Double) -> Double { d * Double.pi / 180.0 }
     private static func derece(_ r: Double) -> Double { r * 180.0 / Double.pi }
 }
