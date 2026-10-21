@@ -5,6 +5,25 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.61.0] - 2026-10-21
+
+### Eklendi
+- [tablet] geniş vakit kartı ve ev ekranı sayacı birimli (#363 ile hizalı)
+- [tablet] ana-ayrıntıda seçili satır ve sakin ayrıntı başlığı; iPad kare betiği onay + gerçek yatay
+- [tablet] kenar gezinme, Bugün üç sütun + Bu hafta paneli, ana-ayrıntı, ev ekranı modu
+- geniş ekranda (tablet/iPad) ana sayfa alanı dolar; iOS simge hızlı eylemleri
+- [ios] Kontrol Merkezi ve Kısayollar eylemleri için Neler Yeni duyurusu
+- [ios] Apple TV vakit panosu (tvOS hedefi, bayrak arkasında)
+- [ios] Kontrol Merkezi 'Kıldım' kontrolü (iOS 18 ControlWidget)
+- [ios] Kısayollar için değer döndüren otomasyon eylemleri
+- [ios] iPad desteği — tam ekran dikey, iPad 13" mağaza kareleri hattı
+
+### Düzeltildi
+- [tablet] üç sütunda vakit kartı ve Bu hafta sütunu doldurur; iPad kare betiği açı ve Camideyim ayrıntısı
+- [tablet] kıble yön gülü büyüdü, Kâbe ibrenin ucunda
+- [tablet] geniş ekran geri sayımı tek satır, kıble yön gülü büyüdü, kart başlığı sekmeyle çakışmıyor
+- package-lock.json master'daki hâline geri alındı (npm 11 cosmiconfig düşürmüştü)
+
 ## [0.60.0] - 2026-10-21
 
 ### Eklendi
