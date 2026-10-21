@@ -1,3 +1,4 @@
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import * as Notifications from 'expo-notifications';
 import { Logger } from '../../core/utils/Logger';
 import { NamazVaktiHesaplayiciServisi } from './NamazVaktiHesaplayiciServisi';
@@ -34,6 +35,12 @@ export class VakitBildirimYoneticiServisi {
 
         // 2. Önceki planlanmış vakit bildirimlerini temizle
         await this.mevcutBildirimleriTemizle();
+
+        // Tek beyin: ikinci cihaz (tablet/iPad) ve ev ekranı modu hatırlatma kurmaz.
+        if (!(await hatirlatmaKurulabilirMi())) {
+            Logger.info('VakitBildirim', 'Bu cihazda hatırlatma kurulmuyor (ikinci cihaz)');
+            return;
+        }
 
         // 3. Konum yapılandırmasını al
         const hesaplayici = NamazVaktiHesaplayiciServisi.getInstance();

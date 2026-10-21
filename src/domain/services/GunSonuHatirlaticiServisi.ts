@@ -26,6 +26,7 @@
  * Redux yoktur). Imsak kaynagi koordinat (arka plan/headless) ya da hazir bir
  * saglayici (uygulama icinde hidrate edilmis hesaplayici) olabilir.
  */
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import * as Notifications from 'expo-notifications';
 import { bildirimleriTopluIptalEt, tazePlanliBildirimOkuyucu, type PlanliBildirimOkuyucu } from './planliBildirimOkuyucu';
 import { Platform } from 'react-native';
@@ -214,7 +215,7 @@ async function planlamayiCalistir(
 
   const bekleyenler = await bekleyenKimlikleriOku(okuyucu);
 
-  if (!ayarlar.gunSonuBildirimAktif) {
+  if (!ayarlar.gunSonuBildirimAktif || !(await hatirlatmaKurulabilirMi())) {
     await iptalEt(bekleyenler ?? []);
     return;
   }

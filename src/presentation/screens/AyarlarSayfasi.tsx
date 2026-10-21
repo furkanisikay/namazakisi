@@ -54,6 +54,8 @@ import type { AyarlarEkranAdi, AyarlarStackParamList } from '../../navigation/ay
 import type { Sorun } from '../../core/ayarlar/kurulumSagligi';
 import { useAnaAyrintiSecimi } from '../components/common/anaAyrintiSecimi';
 import { saatUygulamasiDestekli } from '../../../modules/expo-siri-kisayollari/src';
+import { cihazRoluAyarla, useCihazRolu } from '../hooks/useHatirlatmaKapisi';
+import { useEvEkraniAyari } from '../hooks/useEvEkraniAyari';
 
 /** Kompakt başlığın belirmeye başlayıp tamamen görünür olduğu kaydırma mesafesi (dp). */
 const KOMPAKT_BASLIK_GECIS_ARALIGI = 32;
@@ -111,6 +113,15 @@ export const AyarlarSayfasi: React.FC = () => {
   const konum = useAppSelector((s) => s.konum);
   // Tablet ana-ayrıntı: sağda açık sayfanın satırı seçili görünür (telefonda null).
   const seciliAyrinti = useAnaAyrintiSecimi();
+  // Tek beyin: ikinci cihaz hatırlatma kurmaz (rol seçilmediyse ana sayılır).
+  const cihazRolu = useCihazRolu();
+  const evEkrani = useEvEkraniAyari();
+  const buCihazdaKur = cihazRolu !== 'ikincil';
+  const buCihazdaKurOzeti = evEkrani.acik
+    ? 'Ev ekranı açıkken bu cihaz hatırlatma kurmaz'
+    : buCihazdaKur
+      ? 'Hatırlatmalar bu cihazda çalar'
+      : 'Yalnız gösterir; hatırlatmayı ana telefonunuz verir';
   const grupSecili = (grup: readonly AyarlarEkranAdi[]) =>
     seciliAyrinti !== null && grup.includes(seciliAyrinti as AyarlarEkranAdi);
 
@@ -355,6 +366,14 @@ export const AyarlarSayfasi: React.FC = () => {
                   yeniRozetGoster={sayfaOkunmamisMi('Cihazlarim') || sayfaOkunmamisMi('TelevizyonAyarlari')}
                   secili={seciliAyrinti === 'Cihazlarim'}
                   onPress={() => menuyeGit('Cihazlarim')}
+                />
+                <AyarSatiri
+                  varyant="toggle"
+                  ikon={<FontAwesome5 name="mobile-alt" size={20} color={ikonRengi} solid />}
+                  baslik="Hatırlatmaları bu cihazda kur"
+                  ozet={buCihazdaKurOzeti}
+                  deger={buCihazdaKur && !evEkrani.acik}
+                  onDegistir={(acik) => void cihazRoluAyarla(acik ? 'ana' : 'ikincil')}
                 />
                 <AyarSatiri
                   varyant="toggle"

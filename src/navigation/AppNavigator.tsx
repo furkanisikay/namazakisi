@@ -85,6 +85,7 @@ import { KildimIzinModali } from '../presentation/components/kildim/KildimIzinMo
 import { useSiriEkranIstegi } from '../presentation/hooks/useSiriEkranIstegi';
 import { derinBaglantiYapilandirmasi, type AnaSekmeParamList } from './derinBaglantilar';
 import { anaAyrintiYerlesimiOlustur } from '../presentation/components/common/AnaAyrintiDuzeni';
+import { CihazRoluSorusu } from '../presentation/components/cihaz/CihazRoluSorusu';
 import { OkunabilirGenislik } from '../presentation/components/common/OkunabilirGenislik';
 import { useSadeGorunum } from '../presentation/hooks/useSadeGorunum';
 import { anaAyrintiMi } from '../core/utils/ekranSinifi';
@@ -460,6 +461,8 @@ const MainTabs: React.FC = () => {
         onKapat={() => setEvEkraniKapatildi(true)}
       />
     ) : null}
+    {/* Tek beyin: geniş ekranda bir kez "ana telefonunuz mu?" (yeni kurulum sihirbazda görür). */}
+    <CihazRoluSorusu />
     </View>
   );
 };

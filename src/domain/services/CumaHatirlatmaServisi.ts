@@ -1,3 +1,4 @@
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import { bildirimleriTopluIptalEt, tazePlanliBildirimOkuyucu, type PlanliBildirimOkuyucu } from './planliBildirimOkuyucu';
 import { Platform } from 'react-native';
 import { Logger } from '../../core/utils/Logger';
@@ -149,7 +150,7 @@ export class CumaHatirlatmaServisi {
         // hazırlığı ve muhafızın çöp toplaması AYNI doğrulamadan geçer (id paritesi).
         const ayarlar = await this.sesleriDogrula(await LocalCumaHatirlatmaServisi.getAyarlar());
 
-        if (!ayarlar.aktif) {
+        if (!ayarlar.aktif || !(await hatirlatmaKurulabilirMi())) {
             await this.mevcutlariTemizle(okuyucu);
             // Bekleyen GERÇEK ALARMLAR expo listesinde yoktur: teslimcinin hazırlığı önceki
             // turunkileri `cuma_hatirlatma_` önekiyle siler.

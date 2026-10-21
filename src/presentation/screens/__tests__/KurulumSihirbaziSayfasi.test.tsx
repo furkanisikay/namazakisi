@@ -186,7 +186,10 @@ describe('KurulumSihirbaziSayfasi', () => {
         expect(matris.ogle.seviyeler.some((a) => a.kanallar.sesli)).toBe(false);
         expect(rizaEylemleri()).toEqual([]);
         expect(AsyncStorage.setItem).toHaveBeenCalledWith('@namaz_akisi/ilk_kurulum_tamamlandi', 'true');
-        const bayrakSirasi = (AsyncStorage.setItem as jest.Mock).mock.invocationCallOrder[0];
+        // Bayrak yazımının sırası (jest ekranı 750 dp → tek beyin rol yazımı da setItem'dır).
+        const setItem = AsyncStorage.setItem as jest.Mock;
+        const bayrakSirasi =
+            setItem.mock.invocationCallOrder[setItem.mock.calls.findIndex((c) => c[0] === '@namaz_akisi/ilk_kurulum_tamamlandi')];
         expect(Math.max(...mockDispatch.mock.invocationCallOrder)).toBeLessThan(bayrakSirasi);
     });
 

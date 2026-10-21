@@ -6,6 +6,7 @@
  * ozelligini kullanarak sistem seviyesinde bildirim gonderir.
  */
 
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import * as Notifications from 'expo-notifications';
 import { bugunuAl, dunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
 import { Coordinates, PrayerTimes } from 'adhan';
@@ -149,7 +150,7 @@ export class ArkaplanMuhafizServisi {
         // Ayarlar aktif degilse sadece temizle ve cik. Kanal COP TOPLAMA burada da
         // calisir (matris verilmeden): muhafiz kapatildiginda kullanicinin ozel sesli
         // kanallari aksi halde bildirim ayarlarinda sonsuza kadar oksuz kalirdi.
-        if (!ayarlar.aktif) {
+        if (!ayarlar.aktif || !(await hatirlatmaKurulabilirMi())) {
             await this.planKaydiniSil();
             await this.tumMuhafizBildirimleriniTemizle();
             await teslimci.hazirla();

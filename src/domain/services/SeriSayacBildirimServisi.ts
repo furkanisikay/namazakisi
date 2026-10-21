@@ -13,6 +13,7 @@
  * calismazdi.
  */
 
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import { Platform } from 'react-native';
 import { AndroidStyle } from '@notifee/react-native';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
@@ -75,7 +76,7 @@ export class SeriSayacBildirimServisi extends SayacBildirimTemeli {
     if (Platform.OS !== 'android') return;
     // Gun zaten tamsa hatirlatacak bir sey yok — kalici bir bildirimle
     // kullaniciyi bosuna mesgul etme. Now Bar planlayıcısına da "aday yok".
-    if (!ayarlar.aktif || ayarlar.seriBugunTamMi || !ayarlar.hedef) {
+    if (!ayarlar.aktif || !(await hatirlatmaKurulabilirMi()) || ayarlar.seriBugunTamMi || !ayarlar.hedef) {
       return this.canliKaynagiBildir('seriSayac', []);
     }
 

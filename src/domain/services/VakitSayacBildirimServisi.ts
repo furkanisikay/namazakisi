@@ -6,6 +6,7 @@
  * Foreground Service + CountDownTimer ile batarya verimli calisir.
  */
 
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import notifee, { AndroidImportance, AndroidStyle } from '@notifee/react-native';
 import { zamanTetigiOlustur } from './notifeeTetik';
 import { bugunuAl, dunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
@@ -101,7 +102,7 @@ export class VakitSayacBildirimServisi {
     }
 
     // Aktif değilse bitir (Now Bar planlayıcısına da "aday yok").
-    if (!ayarlar.aktif) {
+    if (!ayarlar.aktif || !(await hatirlatmaKurulabilirMi())) {
       Logger.info('VakitSayac', 'Sayaç devre dışı');
       await this.canliKaynagiBildir([]);
       return;
