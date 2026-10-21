@@ -43,4 +43,11 @@ class BicimTest {
         assertEquals(1f, Bicim.ilerleme(0, 100, 500), 1e-6f)
         assertEquals(0f, Bicim.ilerleme(100, 100, 100), 1e-6f)
     }
+
+    @Test
+    fun kisaBirimliSatirBuyukSayaclaAyniBicim() {
+        assertEquals("5 sa 2 dk", Bicim.kalanKisa(5 * sa + 2 * dk + 59 * sn))
+        assertEquals("18 dk 05 sn", Bicim.kalanKisa(18 * dk + 5 * sn))
+        assertEquals("42 sn", Bicim.kalanKisa(42 * sn))
+    }
 }

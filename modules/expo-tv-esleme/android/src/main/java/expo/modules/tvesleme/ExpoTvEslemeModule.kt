@@ -92,9 +92,12 @@ class ExpoTvEslemeModule : Module() {
         }
     }
 
+    /** Katı (denetim D-06): `toIntOrNull` "010" ve "+10"u kabul ediyordu; baştaki sıfır/işaret yok. */
+    private val katiIpv4 = Regex("^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}$")
+
     private fun ozelIpv4Mu(adres: String): Boolean {
-        val o = adres.split('.').mapNotNull { it.toIntOrNull() }
-        if (o.size != 4 || o.any { it !in 0..255 }) return false
+        if (!katiIpv4.matches(adres)) return false
+        val o = adres.split('.').map { it.toInt() }
         return o[0] == 10 || (o[0] == 192 && o[1] == 168) || (o[0] == 172 && o[1] in 16..31)
     }
 }

@@ -21,6 +21,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import androidx.tv.material3.Text
 import com.furkanisikay.namazakisi.tv.veri.KonumDeposu
+import com.furkanisikay.namazakisi.tv.veri.UyeDeposu
 
 /**
  * Ekran koruyucu (Daydream) — panonun etkileşimsiz hâli. İsteğe bağlıdır; kullanıcı
@@ -51,14 +52,17 @@ class PanoDreamServisi : DreamService(), LifecycleOwner, SavedStateRegistryOwner
         isFullscreen = true
         isScreenBright = true
 
-        val il = KonumDeposu(this).seciliIl()
+        val konum = KonumDeposu(this)
+        val il = konum.seciliIl()
+        // Ekran koruyucuda sunucu AÇILMAZ; yalnız saklı son durum okunur (bant da bayatlık kuralına uyar).
+        val uyeler = UyeDeposu(this, konum).uyeHalleri()
         val gorunum = ComposeView(this).apply {
             setViewTreeLifecycleOwner(this@PanoDreamServisi)
             setViewTreeSavedStateRegistryOwner(this@PanoDreamServisi)
             setContent {
                 PanoTemasi {
                     if (il != null) {
-                        PanoEkrani(il = il, ekraniAcikTut = false, onKonumDegistir = null)
+                        PanoEkrani(il = il, ekraniAcikTut = false, uyeler = uyeler, onAyarlar = null)
                     } else {
                         Box(
                             Modifier.fillMaxSize().background(Renkler.arkaplan).padding(48.dp),

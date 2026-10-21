@@ -1,7 +1,5 @@
 package com.furkanisikay.namazakisi.tv.ui
 
-import android.content.pm.ApplicationInfo
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Animatable
@@ -51,8 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
 import com.furkanisikay.namazakisi.tv.cekirdek.Il
-import com.furkanisikay.namazakisi.tv.veri.EslemeSunucusu
 import com.furkanisikay.namazakisi.tv.veri.KonumDeposu
+import com.furkanisikay.namazakisi.tv.veri.TvSunucusu
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -61,20 +59,26 @@ private sealed class QrDurumu {
     data object AgYok : QrDurumu()
 }
 
+/** Eşleştirmenin aşaması (ekranın sol metni bundan çizilir). */
+private enum class Asama { QR, ONAY_SORULUYOR, EKLENIYOR, EKLENDI, SAKLANAMADI }
+
 /**
- * "Vakitleri telefonunuzdan alın": TV'nin ilk ve önerilen kurulum yolu.
+ * "Telefonunuzu ekleyin" (eşleştirme v2, tasarım §4.1): TV'nin ilk ve önerilen kurulum yolu.
  *
- * Sağda QR (TV'nin yerel adresi + tek seferlik anahtar). Telefon kodu okuyunca konumunu
- * bu TV'ye doğrudan yollar; sahne: okunan QR'ın kareleri dıştan içe merkeze katlanır, yolda
- * yeşile döner ve gelen konumun iğnesine dönüşür; halka bir kez çizilir; şehir adı gelir;
- * kısa bir an sonra pano açılır. Bekleme sırasında ekran DURGUNDUR (boşta hareket yok).
+ * Sağda QR — yalnız GEÇİCİ eşleştirme sırrı (kalıcı anahtar QR'da yok). Telefon okur, kendi
+ * ekranında "Şu TV'ye bağlanıyorsunuz: <ad>" onayını alır, TV'ye şifreli istek yollar. TV
+ * kumandayla "Bu telefonu ekleyelim mi?" sorar; onayda üyeye ÖZEL anahtar üretilir (Keystore
+ * ile sarılı saklanır) ve telefona sırla şifreli gider. Telefonun ilk eşitlemesi konumu getirir.
+ * Sahne: QR kareleri dıştan içe katlanıp yeşile döner ve konum iğnesine dönüşür; halka bir kez.
+ * Her başarılı eşleşmede sır yenilenir (yeni QR). Boşta ekran DURGUNDUR.
  *
- * Ağ yoksa (yerel IPv4 bulunamadı) QR yerine yön gösteren kart: "Kodla girin" ya da il seçimi.
+ * `onTamam(null)`: telefon konum göndermediyse il seçimine gidilir.
  */
 @Composable
 fun EslemeEkrani(
-    depo: KonumDeposu,
-    onTamam: (Il) -> Unit,
+    sunucu: TvSunucusu,
+    konum: KonumDeposu,
+    onTamam: (Il?) -> Unit,
     onKodla: () -> Unit,
     onIlSec: () -> Unit,
     onGeri: (() -> Unit)?,
@@ -82,36 +86,55 @@ fun EslemeEkrani(
     if (onGeri != null) BackHandler(onBack = onGeri)
     val baglam = LocalContext.current
     val animasyon = remember { animasyonAcik(baglam) }
+    val mantik = sunucu.mantik
 
     var deneme by remember { mutableIntStateOf(0) }
     var durum by remember { mutableStateOf<QrDurumu?>(null) }
-    var baglandi by remember { mutableStateOf(false) }
+    var asama by remember { mutableStateOf(Asama.QR) }
+    var cihazAdi by remember { mutableStateOf<String?>(null) }
+    var olaySayaci by remember { mutableIntStateOf(0) }
     var gelen by remember { mutableStateOf<Il?>(null) }
 
-    val sunucu = remember {
-        EslemeSunucusu(
-            kabulEdildi = { ad, lat, lng ->
-                depo.telefondanKaydet(ad, lat, lng)
-                gelen = Il(KonumDeposu.PLAKA_TELEFON, ad, lat, lng)
-            },
-            baglandi = { baglandi = true },
-            reddedildi = { baglandi = false },
-        )
-    }
     DisposableEffect(deneme) {
-        val metin = sunucu.baslat()
+        val sir = mantik.eslesmeyiAc()
+        val metin = sunucu.qrMetni(sir)
         durum = if (metin != null) QrDurumu.Bekliyor(metin) else QrDurumu.AgYok
-        // Yalnız hata ayıklanabilir (debug) derlemede: ekran görüntüsü hattı telefonu taklit
-        // edip uçtan uca gönderim yapabilsin (`scripts/tv-kare-hatti.sh`). Yayın derlemesinde
-        // tek seferlik anahtar loga YAZILMAZ.
-        if (metin != null && (baglam.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
-            Log.d("TvEsleme", "QR $metin")
+        sunucu.olay = { olaySayaci++ }
+        onDispose {
+            sunucu.olay = null
+            mantik.eslesmeyiKapat()
+            if (!sunucu.depo.uyeVarMi()) sunucu.kapat()
         }
-        onDispose { sunucu.durdur() }
+    }
+
+    // Sunucudan gelen her olayda (istek, onay teslimi, ilk eşitleme) aşamayı yeniden değerlendir.
+    LaunchedEffect(olaySayaci) {
+        val bekleyen = mantik.onayBekleyen
+        if (asama == Asama.QR && bekleyen != null) {
+            cihazAdi = bekleyen
+            asama = Asama.ONAY_SORULUYOR
+        }
+        if (asama == Asama.EKLENIYOR && mantik.onayTeslimEdildi) asama = Asama.EKLENDI
+        if (asama == Asama.EKLENDI && gelen == null) konum.telefondanGelen()?.let { gelen = it }
+    }
+
+    // Eklendi: ilk eşitleme (konum) en çok 8 sn beklenir, sonra sahne + pano.
+    LaunchedEffect(asama) {
+        if (asama != Asama.EKLENDI) return@LaunchedEffect
+        repeat(16) {
+            if (gelen != null) return@repeat
+            delay(500)
+            konum.telefondanGelen()?.let { gelen = it }
+        }
+        if (gelen == null) {
+            mantik.oturumuYenile()
+            onTamam(konum.seciliIl())
+        }
     }
 
     val ilkOdak = remember { FocusRequester() }
-    LaunchedEffect(durum is QrDurumu.AgYok) {
+    LaunchedEffect(durum is QrDurumu.AgYok, asama) {
+        if (asama != Asama.QR) return@LaunchedEffect
         try {
             ilkOdak.requestFocus()
         } catch (_: IllegalStateException) {
@@ -135,73 +158,142 @@ fun EslemeEkrani(
             halka.animateTo(1f, tween(700))
             delay(1500)
         }
+        mantik.oturumuYenile()
         onTamam(il)
     }
 
-    Row(
-        Modifier
-            .fillMaxSize()
-            .background(Renkler.arkaplan)
-            .padding(horizontal = 56.dp, vertical = 36.dp),
-        horizontalArrangement = Arrangement.spacedBy(48.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-            AnimatedContent(
-                targetState = gelen,
-                transitionSpec = {
-                    (fadeIn(tween(320, delayMillis = 140)) + slideInVertically(tween(320, delayMillis = 140)) { it / 6 })
-                        .togetherWith(fadeOut(tween(200)))
-                },
-                label = "baslik",
-            ) { il ->
-                if (il == null) SolMetin(baglandi) else GeldiMetni(il)
+    Box(Modifier.fillMaxSize().background(Renkler.arkaplan)) {
+        Row(
+            Modifier.fillMaxSize().padding(horizontal = 56.dp, vertical = 36.dp),
+            horizontalArrangement = Arrangement.spacedBy(48.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+                AnimatedContent(
+                    targetState = gelen,
+                    transitionSpec = {
+                        (fadeIn(tween(320, delayMillis = 140)) + slideInVertically(tween(320, delayMillis = 140)) { it / 6 })
+                            .togetherWith(fadeOut(tween(200)))
+                    },
+                    label = "baslik",
+                ) { il ->
+                    if (il == null) SolMetin(asama, cihazAdi) else GeldiMetni(il, cihazAdi)
+                }
+                Spacer(Modifier.height(36.dp))
+                if (gelen == null && asama == Asama.QR) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        EslemeDugmesi(
+                            "Kodla girin",
+                            onKodla,
+                            Modifier.focusRequester(ilkOdak),
+                            birincil = durum is QrDurumu.AgYok,
+                        )
+                        EslemeDugmesi("İli kendim seçeyim", onIlSec)
+                        if (durum is QrDurumu.AgYok) EslemeDugmesi("Yeniden deneyin", { deneme++ })
+                    }
+                }
             }
-            Spacer(Modifier.height(36.dp))
-            if (gelen == null) {
-                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    EslemeDugmesi(
-                        "Kodla girin",
-                        onKodla,
-                        Modifier.focusRequester(ilkOdak),
-                        birincil = durum is QrDurumu.AgYok,
-                    )
-                    EslemeDugmesi("İli kendim seçeyim", onIlSec)
-                    if (durum is QrDurumu.AgYok) EslemeDugmesi("Yeniden deneyin", { deneme++ })
+
+            Box(Modifier.width(380.dp), contentAlignment = Alignment.Center) {
+                when (val d = durum) {
+                    is QrDurumu.Bekliyor -> QrKarti(d.metin, katlanma.value, igne.value, halka.value, gelen != null)
+                    QrDurumu.AgYok -> AgYokKarti()
+                    null -> Unit
                 }
             }
         }
 
-        Box(Modifier.width(380.dp), contentAlignment = Alignment.Center) {
-            when (val d = durum) {
-                is QrDurumu.Bekliyor -> QrKarti(d.metin, katlanma.value, igne.value, halka.value, gelen != null)
-                QrDurumu.AgYok -> AgYokKarti()
-                null -> Unit
-            }
+        if (asama == Asama.ONAY_SORULUYOR) {
+            OnayDiyalogu(
+                cihazAdi = cihazAdi ?: "Telefon",
+                onEvet = {
+                    asama = if (mantik.karar(true) != null) Asama.EKLENIYOR else Asama.SAKLANAMADI
+                    olaySayaci++
+                },
+                onHayir = {
+                    mantik.karar(false)
+                    asama = Asama.QR
+                    deneme++
+                },
+            )
         }
     }
 }
 
 @Composable
-private fun SolMetin(baglandi: Boolean) {
+private fun SolMetin(asama: Asama, cihazAdi: String?) {
     Column {
-        Text("Vakitleri telefonunuzdan alın", color = Renkler.metin, fontSize = 38.sp, fontWeight = FontWeight.SemiBold, lineHeight = 44.sp)
-        Spacer(Modifier.height(10.dp))
-        Text(
-            "Telefonunuzdaki konum bu ekrana gelir; vakitler ona göre hesaplanır.",
-            color = Renkler.metinIkincil, fontSize = 20.sp, lineHeight = 28.sp,
-        )
-        Spacer(Modifier.height(30.dp))
-        Adim(1, "Telefonunuzda Namaz Akışı'nı açın")
-        Adim(2, "Ayarlar › Televizyonda gösterin")
-        Adim(3, "Telefonun kamerasını sağdaki koda tutun")
-        Spacer(Modifier.height(18.dp))
-        Text(
-            if (baglandi) "Telefonunuz bağlandı, konum geliyor…" else "Telefon ile TV aynı Wi-Fi ağında olmalı.",
-            color = if (baglandi) Renkler.metin else Renkler.metinIkincil,
-            fontSize = 18.sp,
-            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
-        )
+        when (asama) {
+            Asama.EKLENIYOR, Asama.EKLENDI -> {
+                Text("${cihazAdi ?: "Telefon"} ekleniyor", color = Renkler.metin, fontSize = 38.sp, fontWeight = FontWeight.SemiBold, lineHeight = 44.sp)
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    "Telefonunuz konumunu ve durumunu gönderiyor…",
+                    color = Renkler.metinIkincil, fontSize = 20.sp, lineHeight = 28.sp,
+                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                )
+            }
+            Asama.SAKLANAMADI -> {
+                Text("Eşleşme tamamlanamadı", color = Renkler.metin, fontSize = 38.sp, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    "Bu TV, bağlantı anahtarını güvenli saklayamıyor. Konumu kodla girebilir ya da ilinizi seçebilirsiniz.",
+                    color = Renkler.metinIkincil, fontSize = 20.sp, lineHeight = 28.sp,
+                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                )
+            }
+            else -> {
+                Text("Telefonunuzu ekleyin", color = Renkler.metin, fontSize = 38.sp, fontWeight = FontWeight.SemiBold, lineHeight = 44.sp)
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    "Vakitler sizin konumunuza göre hesaplanır; kıldığınız namazlar TV'de görünür.",
+                    color = Renkler.metinIkincil, fontSize = 20.sp, lineHeight = 28.sp,
+                )
+                Spacer(Modifier.height(30.dp))
+                Adim(1, "Telefonunuzda Namaz Akışı'nı açın")
+                Adim(2, "Ayarlar › Cihazlarım › TV ekleyin")
+                Adim(3, "Telefonun kamerasını sağdaki koda tutun")
+                Spacer(Modifier.height(18.dp))
+                Text("Telefon ile TV aynı Wi-Fi ağında olmalı.", color = Renkler.metinIkincil, fontSize = 18.sp)
+            }
+        }
+    }
+}
+
+/** Kumanda onayı: odak "Ekleyin"de; geri tuşu = hayır. */
+@Composable
+private fun OnayDiyalogu(cihazAdi: String, onEvet: () -> Unit, onHayir: () -> Unit) {
+    BackHandler(onBack = onHayir)
+    val odak = remember { FocusRequester() }
+    LaunchedEffect(Unit) {
+        try {
+            odak.requestFocus()
+        } catch (_: IllegalStateException) {
+        }
+    }
+    Box(Modifier.fillMaxSize().background(Renkler.arkaplan.copy(alpha = 0.86f)), contentAlignment = Alignment.Center) {
+        Column(
+            Modifier.width(620.dp).background(Renkler.kart, RoundedCornerShape(28.dp)).padding(40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Box(Modifier.size(72.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
+                TelefonSimgesi(Renkler.birincil, Modifier.size(40.dp))
+            }
+            Spacer(Modifier.height(20.dp))
+            Text("Bu telefonu ekleyelim mi?", color = Renkler.metin, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(10.dp))
+            Text(cihazAdi, color = Renkler.metin, fontSize = 26.sp, textAlign = TextAlign.Center)
+            Spacer(Modifier.height(10.dp))
+            Text(
+                "Eklenen telefon bu TV'ye konumunu ve kıldığı namazları gönderebilir.",
+                color = Renkler.metinIkincil, fontSize = 18.sp, textAlign = TextAlign.Center, lineHeight = 26.sp,
+            )
+            Spacer(Modifier.height(28.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                EslemeDugmesi("Ekleyin", onEvet, Modifier.focusRequester(odak), birincil = true)
+                EslemeDugmesi("Hayır", onHayir)
+            }
+        }
     }
 }
 
@@ -220,9 +312,9 @@ private fun Adim(sira: Int, metin: String) {
 }
 
 @Composable
-private fun GeldiMetni(il: Il) {
+private fun GeldiMetni(il: Il, cihazAdi: String?) {
     Column(Modifier.semantics { liveRegion = LiveRegionMode.Polite }) {
-        Text("Konumunuz geldi", color = Renkler.metinIkincil, fontSize = 22.sp)
+        Text(if (cihazAdi != null) "$cihazAdi eklendi" else "Konumunuz geldi", color = Renkler.metinIkincil, fontSize = 22.sp)
         Spacer(Modifier.height(8.dp))
         Text(il.ad, color = Renkler.metin, fontSize = 46.sp, fontWeight = FontWeight.SemiBold, lineHeight = 52.sp)
         Spacer(Modifier.height(12.dp))
