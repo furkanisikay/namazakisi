@@ -39,6 +39,13 @@ Namaz vakitleri bulunduğunuz yerin enlem ve boylamından hesaplanır. Konumunuz
   saati ve "Camide misiniz?" sorusu) ile Namaz modunun bitiş saati de aynı yolla
   **yalnızca kendi saatinize** gider; saatten verdiğiniz cevap ("Burası cami değil")
   yalnız telefonunuza döner. Bu bilgiler de geliştiriciye ulaşmaz,
+- Android Auto'yu kullanıyorsanız, araç ekranındaki yakındaki camiler listesi
+  telefonunuzun son bilinen konumundan **telefonunuzun içinde** hesaplanır (cami verisi
+  uygulamayla birlikte gelir, internet gerekmez); aracınızın ekranına yalnızca vakit
+  bilgisi, cami adları, mesafeleri ve harita için cami konumları gider. Bir camiye
+  dokunup yol tarifi isterseniz o caminin konumu aracınızda seçili navigasyon
+  uygulamasına (ör. Google Haritalar) iletilir; oradan sonrası o uygulamanın gizlilik
+  koşullarına tabidir. Uygulama araçta konum izni istemez,
 - dilerseniz hiç verilmeyebilir: konumu kapatıp şehrinizi elle seçebilirsiniz.
 
 Konum izni vermezseniz uygulama çalışmaya devam eder.

@@ -29,6 +29,9 @@
        beyanı gerekir (AGENTS.md). İzin yoksa sistem heads-up'a indirger, ses yine çalar. -->
   <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <!-- Android Auto POI şablonu (PlaceListMapTemplate) için Car App Library izni. Normal
+       izindir, kullanıcıya sorulmaz; host dışında kimse kullanmaz (arac/NamazAracServisi). -->
+  <uses-permission android:name="androidx.car.app.MAP_TEMPLATES"/>
 
   <!-- Kütüphaneler merge sırasında bu izinleri geri ekleyebilir; aşağıdakiler bunu engeller -->
   <uses-permission android:name="android.permission.RECORD_AUDIO"
@@ -328,5 +331,23 @@
          (PlatformAppFunctionService, yalnız sistem bağlanabilir: BIND_APP_FUNCTION_SERVICE)
          androidx.appfunctions-service manifestinden birleşir; yeni izin EKLEMEZ. -->
     <property android:name="android.app.appfunctions.app_metadata" android:resource="@xml/asistan_uygulama_bilgisi"/>
+    <!-- Android Auto (POI): sıradaki vakit + yakındaki camiler + yol tarifi. Servis exported +
+         izinsizdir (kütüphane sözleşmesi); hangi host bağlanır kararını createHostValidator
+         verir. Play'de görünmesi için ayrıca Play Console'da "Android Auto" form faktörü
+         açılmalıdır (sahibin kararı — docs/ajan/arac-destegi.md). -->
+    <service
+        android:name=".arac.NamazAracServisi"
+        android:exported="true"
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher">
+      <intent-filter>
+        <action android:name="androidx.car.app.CarAppService"/>
+        <category android:name="androidx.car.app.category.POI"/>
+      </intent-filter>
+    </service>
+    <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/automotive_app_desc"/>
+    <!-- PlaceListMapTemplate Car API 1'den beri var; daha yeni API'ler çalışma anında
+         carAppApiLevel ile kapılanır (ConstraintManager ≥ 2). -->
+    <meta-data android:name="androidx.car.app.minCarApiLevel" android:value="1"/>
   </application>
 </manifest>
