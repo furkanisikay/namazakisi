@@ -76,6 +76,18 @@ object CamiKarar {
         return "yenile"
     }
 
+    /**
+     * Yeniden merkezleme ölçümünün sonucu (denetim D-09): önce `yenilemeKarari`
+     * (tazelik + sıklık, JS ikizli), "yenile" ise ayrıca DOĞRULUK — balanced ölçüm
+     * kaba konum döndürebilir. Doğruluk bilinmiyorsa (NaN/negatif) güvenli taraf: kaba.
+     */
+    fun yenilemeOlcumKarari(simdiMs: Long, sonYenilemeMs: Long?, konumZamaniMs: Long?, dogrulukM: Double?): String {
+        val karar = yenilemeKarari(simdiMs, sonYenilemeMs, konumZamaniMs)
+        if (karar != "yenile") return karar
+        if (dogrulukM == null || !(dogrulukM >= 0) || dogrulukM > CamiSabitleri.YENILEME_AZAMI_DOGRULUK_M) return "kabaKonum"
+        return "yenile"
+    }
+
     fun geofenceYaricapiM(yer: IzlenenYer): Double =
         max(CamiSabitleri.GEOFENCE_YARICAPI_M, Geometri.alanYaricapiM(yer.ozelAlanM, yer.yaricapM, yer.ozelOlcek) + CamiSabitleri.GEOFENCE_ALAN_PAYI_M)
 

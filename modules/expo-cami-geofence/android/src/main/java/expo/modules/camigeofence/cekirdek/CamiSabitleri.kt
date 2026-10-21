@@ -59,6 +59,22 @@ object CamiSabitleri {
     const val KONUM_TAZELIK_MS = 2 * 60 * 1000L
     const val YENILEME_BEKLEMESI_MS = 60 * 1000L
 
+    /**
+     * Yenileme çemberini yeniden merkezlemek için ölçüm (denetim D-09) — native'e özgü,
+     * JS ikizi YOK. Karar (DWELL) yolu HIGH_ACCURACY + önbelleksiz kalır.
+     *
+     * - Tazelik: FLP `maxUpdateAge`'i `elapsedRealtime` ile, `yenilemeKarari` ise
+     *   `konum.time` ile ölçer; eşik tam `KONUM_TAZELIK_MS` olsaydı sınırdaki önbellek
+     *   konumu geri çağrı anında 2 dk'yı aşıp "bayatKonum"a düşer, ölçüm boşa giderdi →
+     *   ölçüm tavanı (15 sn) kadar ve fazlası pay bırakılır (90 sn + 15 sn < 120 sn).
+     * - Doğruluk: `YENILEME_ICERI_PAY_M` çemberi K'ıncı camiden içeri çeken paydır; daha
+     *   kaba (hücre tabanlı, 500–1000 m) bir konum yanlış merkez kurup gerçek konum
+     *   gelince anında EXIT doğurabilir → aynı önbellek konumuyla sıkı döngü. Kaba konum
+     *   "bayatKonum" sayılır ve tasarlanmış bozulma yoluna (`yenilemeBayatla`) düşer.
+     */
+    const val YENILEME_KONUM_AZAMI_YAS_MS = 90 * 1000L
+    const val YENILEME_AZAMI_DOGRULUK_M = YENILEME_ICERI_PAY_M
+
     /** Tek hassas ölçümün tavanı (Fable: DWELL başına tek `getCurrentLocation`, 15 sn). */
     const val OLCUM_ZAMAN_ASIMI_MS = 15_000L
 

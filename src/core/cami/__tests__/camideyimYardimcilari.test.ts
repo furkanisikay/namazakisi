@@ -64,6 +64,12 @@ describe('olay zaman çizelgesi', () => {
         expect(s[0].aciklama).toBe('Namaz modu açıldı.');
     });
 
+    it('yenileme: kaba konum (D-09) kullanıcıya bayat konum gibi anlatılır', () => {
+        expect(olaySatiriOlustur({ zamanMs: 1, tur: 'yenileme', sonuc: 'kabaKonum', dogrulukM: 900 })?.baslik).toBe(
+            'Konum yeterince kesin ölçülemedi; liste daha sonra yenilenecek'
+        );
+    });
+
     it('kılındı satırında Türkçe vakit adı (İkindi, toUpperCase tuzağı yok)', () => {
         expect(olaySatiriOlustur({ zamanMs: 1, tur: 'kildim', vakit: 'ikindi' })?.baslik).toBe('İkindi kılındı olarak işaretlendi');
     });

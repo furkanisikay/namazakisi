@@ -279,6 +279,15 @@ export function olaySatiriOlustur(o: HamOlay): OlaySatiri | null {
                     ton: 'notr',
                 };
             }
+            // Native yeniden merkezleme ölçümü (BALANCED, denetim D-09) kaba döndü.
+            if (o.sonuc === 'kabaKonum') {
+                return {
+                    zamanMs: t,
+                    ikon: 'sync-alt',
+                    baslik: 'Konum yeterince kesin ölçülemedi; liste daha sonra yenilenecek',
+                    ton: 'notr',
+                };
+            }
             return null;
         default:
             return null;

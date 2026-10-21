@@ -28,7 +28,9 @@ import java.util.concurrent.atomic.AtomicBoolean
  *      + kullanıcının açılış biçimi → otomatik aç / "Camide misiniz?" diye sor / hiçbir şey.
  *      "Hayır" denen (tur, yer) için bir daha sorulmaz; bekleyen soru varken ölçüm yapılmaz.
  * EXIT: camideyken o yerin çevresinden çıkış → hâl biter. Yenileme çemberinden
- *   çıkış → yalnız TAZE konuma yeniden merkezlenir (sıkı döngü koruması).
+ *   çıkış → yalnız TAZE ve yeterince DOĞRU konuma yeniden merkezlenir (sıkı döngü
+ *   koruması). Bu ölçüm BALANCED önceliklidir (soğuk GPS yok, denetim D-09); kararı
+ *   veren DWELL ölçümü HIGH_ACCURACY kalır.
  */
 class CamiGeofenceAlicisi : BroadcastReceiver() {
     companion object {
@@ -178,11 +180,21 @@ class CamiGeofenceAlicisi : BroadcastReceiver() {
 
     private fun yenile(ctx: Context, kapat: () -> Unit) {
         val onceki = CamiDepo.yenileme(ctx)?.sonMs
-        CamiKonumOlcer.olc(ctx) { konum ->
+        CamiKonumOlcer.olc(ctx, OlcumAmaci.YENILEME) { konum ->
             isci.execute {
                 try {
-                    val karar = CamiKarar.yenilemeKarari(System.currentTimeMillis(), onceki?.takeIf { it > 0 }, konum?.time)
-                    CamiGunluk.ekle(ctx, "yenileme", mapOf("sonuc" to karar))
+                    val simdi = System.currentTimeMillis()
+                    val dogrulukM = konum?.takeIf { it.hasAccuracy() }?.accuracy?.toDouble()
+                    val karar = CamiKarar.yenilemeOlcumKarari(simdi, onceki?.takeIf { it > 0 }, konum?.time, dogrulukM)
+                    CamiGunluk.ekle(
+                        ctx,
+                        "yenileme",
+                        mapOf(
+                            "sonuc" to karar,
+                            "dogrulukM" to dogrulukM?.let { Math.round(it) },
+                            "yasSn" to konum?.let { (simdi - it.time) / 1000 },
+                        ),
+                    )
                     if (karar == "yenile" && konum != null) {
                         CamiIzleyici.kur(ctx, konum.latitude, konum.longitude, IzlemeKipi.OLAY) { kapat() }
                     } else {
