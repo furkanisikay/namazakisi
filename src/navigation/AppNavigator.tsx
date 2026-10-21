@@ -179,6 +179,7 @@ const ayarlarYerlesimi = anaAyrintiYerlesimiOlustur(
     anaRota: 'AyarlarAna',
     Ana: AyarlarSayfasi,
     Varsayilan: HatirlatmalarSayfasi,
+    varsayilanRota: 'Hatirlatmalar',
     varsayilanBaslik: 'Hatırlatmalar',
     basliklar: Object.fromEntries(
       Object.entries(AYARLAR_EKRAN_TANIMLARI).map(([ad, t]) => [ad, t.options?.title as string | undefined])
@@ -192,6 +193,7 @@ const kazaYerlesimi = anaAyrintiYerlesimiOlustur({
   anaRota: 'KazaDefteriAna',
   Ana: KazaDefteriSayfasi,
   Varsayilan: KazaGecmisiSayfasi,
+  varsayilanRota: 'KazaGecmisi',
   varsayilanBaslik: KAZA_EKRAN_BASLIKLARI.KazaGecmisi,
   basliklar: KAZA_EKRAN_BASLIKLARI,
 });

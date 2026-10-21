@@ -52,6 +52,7 @@ import { AYAR_INDEKSI } from '../../core/ayarlar/aramaIndeksi';
 import { ayarAra } from '../../core/ayarlar/ayarAra';
 import type { AyarlarEkranAdi, AyarlarStackParamList } from '../../navigation/ayarlarEkranlari';
 import type { Sorun } from '../../core/ayarlar/kurulumSagligi';
+import { useAnaAyrintiSecimi } from '../components/common/anaAyrintiSecimi';
 
 /** Kompakt başlığın belirmeye başlayıp tamamen görünür olduğu kaydırma mesafesi (dp). */
 const KOMPAKT_BASLIK_GECIS_ARALIGI = 32;
@@ -107,6 +108,10 @@ export const AyarlarSayfasi: React.FC = () => {
   // Mezhep (ortak ayar) seferîlik diliminde yaşar; dilim yoksa (eski test mock'u) Hanefî.
   const seferilik = useSeferilik().durum;
   const konum = useAppSelector((s) => s.konum);
+  // Tablet ana-ayrıntı: sağda açık sayfanın satırı seçili görünür (telefonda null).
+  const seciliAyrinti = useAnaAyrintiSecimi();
+  const grupSecili = (grup: readonly AyarlarEkranAdi[]) =>
+    seciliAyrinti !== null && grup.includes(seciliAyrinti as AyarlarEkranAdi);
 
   const [sorgu, setSorgu] = useState('');
   const sorguTemiz = sorgu.trim();
@@ -266,6 +271,7 @@ export const AyarlarSayfasi: React.FC = () => {
                   baslik="Hatırlatmalar"
                   ozet={hatirlatmaOzeti}
                   yeniRozetGoster={grupOkunmamisMi(HATIRLATMA_SAYFALARI)}
+                  secili={grupSecili(HATIRLATMA_SAYFALARI)}
                   onPress={() => grubaGit('Hatirlatmalar', HATIRLATMA_SAYFALARI)}
                 />
                 {/* Dizi (Fragment değil): AyarGrubu ayraçları Children.toArray ile sayar. */}
@@ -277,6 +283,7 @@ export const AyarlarSayfasi: React.FC = () => {
                     baslik="Namazda sessiz"
                     ozet={namazdaSessizOzeti}
                     yeniRozetGoster={grupOkunmamisMi(SESSIZ_SAYFALARI)}
+                    secili={grupSecili(SESSIZ_SAYFALARI)}
                     onPress={() => grubaGit('CamideyimAyarlari', SESSIZ_SAYFALARI)}
                   />,
                 ]}
@@ -286,6 +293,7 @@ export const AyarlarSayfasi: React.FC = () => {
                   baslik="Namaz vakitleri"
                   ozet={namazVakitleriOzeti}
                   yeniRozetGoster={grupOkunmamisMi(VAKIT_SAYFALARI)}
+                  secili={grupSecili(VAKIT_SAYFALARI)}
                   onPress={() => grubaGit('NamazVakitleriAyarlari', VAKIT_SAYFALARI)}
                   // Otomatik modda konum bayat kalabilir (bölge olayı düşmemişse);
                   // sayfaya girmeden tek dokunuşla tazelenebilsin.
@@ -304,6 +312,7 @@ export const AyarlarSayfasi: React.FC = () => {
                   baslik="Seri hedefi"
                   ozet={ozetler.seri}
                   yeniRozetGoster={sayfaOkunmamisMi('SeriHedefAyarlari')}
+                  secili={seciliAyrinti === 'SeriHedefAyarlari'}
                   onPress={() => menuyeGit('SeriHedefAyarlari')}
                 />
               </AyarGrubu>
@@ -315,6 +324,7 @@ export const AyarlarSayfasi: React.FC = () => {
                   baslik="Görünüm"
                   ozet={ozetler.gorunum}
                   yeniRozetGoster={sayfaOkunmamisMi('GorünumAyarlari')}
+                  secili={seciliAyrinti === 'GorünumAyarlari'}
                   onPress={() => menuyeGit('GorünumAyarlari')}
                 />
                 {saatVeWidgetVar && [
@@ -325,6 +335,7 @@ export const AyarlarSayfasi: React.FC = () => {
                     baslik="Saat ve widget"
                     ozet={saatVeWidgetOzeti}
                     yeniRozetGoster={grupOkunmamisMi(CIHAZ_SAYFALARI)}
+                    secili={grupSecili(CIHAZ_SAYFALARI)}
                     onPress={() => grubaGit('SaatVeWidgetAyarlari', CIHAZ_SAYFALARI)}
                   />,
                 ]}
@@ -336,6 +347,7 @@ export const AyarlarSayfasi: React.FC = () => {
                   baslik="Televizyonda gösterin"
                   ozet="Konumunuzu evdeki Android TV'ye aktarın"
                   yeniRozetGoster={sayfaOkunmamisMi('TelevizyonAyarlari')}
+                  secili={seciliAyrinti === 'TelevizyonAyarlari'}
                   onPress={() => menuyeGit('TelevizyonAyarlari')}
                 />
                 <AyarSatiri
@@ -363,6 +375,7 @@ export const AyarlarSayfasi: React.FC = () => {
                   baslik="Yedek ve eşitleme"
                   ozet={ozetler.yedekleme}
                   yeniRozetGoster={sayfaOkunmamisMi('YedeklemeAktarim')}
+                  secili={seciliAyrinti === 'YedeklemeAktarim'}
                   onPress={() => menuyeGit('YedeklemeAktarim')}
                 />
                 <AyarSatiri
@@ -371,6 +384,7 @@ export const AyarlarSayfasi: React.FC = () => {
                   baslik="Yardım"
                   ozet="Sorun bildirin, neler yeni"
                   yeniRozetGoster={okunmamisVarMi}
+                  secili={grupSecili(YARDIM_SAYFALARI)}
                   onPress={() => grubaGit('Yardim', YARDIM_SAYFALARI)}
                 />
               </AyarGrubu>

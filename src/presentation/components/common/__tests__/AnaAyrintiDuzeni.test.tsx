@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, Text } from 'react-native';
 import { fireEvent, render } from '@testing-library/react-native';
 import { useNavigation } from '@react-navigation/native';
-import { anaAyrintiYerlesimiOlustur } from '../AnaAyrintiDuzeni';
+import { anaAyrintiYerlesimiOlustur, useAnaAyrintiSecimi } from '../AnaAyrintiDuzeni';
 
 jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
     __esModule: true,
@@ -15,23 +15,27 @@ jest.mock('react-native-safe-area-context', () => ({
     useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
 jest.mock('../../../../core/theme', () => ({
-    useRenkler: () => ({ birincil: '#4CAF50', birincilMetin: '#FFFFFF', arkaplan: '#F5F5F5', sinir: '#DDD' }),
+    useRenkler: () => ({ birincil: '#4CAF50', birincilMetin: '#FFFFFF', arkaplan: '#F5F5F5', sinir: '#DDD', metin: '#111' }),
 }));
 
 const Liste = () => {
     const nav = useNavigation<{ navigate: (ad: string) => void }>();
+    const secili = useAnaAyrintiSecimi();
     return (
         <Pressable onPress={() => nav.navigate('Muhafiz')}>
             <Text>liste</Text>
+            <Text>{`secili:${secili ?? 'yok'}`}</Text>
         </Pressable>
     );
 };
+const SeciliOkuyucu = () => <Text>{`secili:${useAnaAyrintiSecimi() ?? 'yok'}`}</Text>;
 const Varsayilan = () => <Text>varsayilan-sayfa</Text>;
 
 const Yerlesim = anaAyrintiYerlesimiOlustur({
     anaRota: 'Kok',
     Ana: Liste,
     Varsayilan,
+    varsayilanRota: 'Hatirlatmalar',
     varsayilanBaslik: 'Hatırlatmalar',
     basliklar: { Muhafiz: 'Vakit çıkmadan', Alt: 'Alt sayfa' },
 });
@@ -82,6 +86,21 @@ describe('AnaAyrintiDuzeni', () => {
         );
         fireEvent.press(e.getByLabelText('Geri'));
         expect(nav.goBack).toHaveBeenCalled();
+    });
+
+    it('listeye açık ayrıntının KÖK rotası seçili olarak verilir (alt sayfada da)', () => {
+        const kok = render(
+            <Yerlesim route={{ name: 'Kok' }} navigation={navKur(['Kok'])}>
+                <SeciliOkuyucu />
+            </Yerlesim>
+        );
+        expect(kok.getByText('secili:Hatirlatmalar')).toBeTruthy();
+        const alt = render(
+            <Yerlesim route={{ name: 'Alt' }} navigation={navKur(['Kok', 'Muhafiz', 'Alt'])}>
+                <Text>alt</Text>
+            </Yerlesim>
+        );
+        expect(alt.getByText('secili:Muhafiz')).toBeTruthy();
     });
 
     it('dar pencerede (telefon, Split View) ana-ayrıntı yok: yalnız ekran', () => {

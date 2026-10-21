@@ -300,7 +300,7 @@ jobs:
         if: ${{ !cancelled() && inputs.tur == 'ipad' }}
         run: |
           APP=$(find ios/build -name '*.app' -maxdepth 5 -not -path '*.dSYM*' | head -1)
-          bash scripts/simulator-ipad-genis.sh "${{ steps.sim.outputs.udid }}" "${{ steps.kurulum.outputs.bundle }}" "$APP" kareler-genis
+          node scripts/simulator-ipad-genis.js "${{ steps.sim.outputs.udid }}" "${{ steps.kurulum.outputs.bundle }}" "$APP" kareler-genis
 
       - name: 🎨 Mockup üret
         if: ${{ inputs.tur != 'ozellik' }}

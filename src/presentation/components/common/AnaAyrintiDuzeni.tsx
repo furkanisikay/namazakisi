@@ -8,7 +8,8 @@
  *   geçmez; sayfanın kendi alt sayfaları (ör. Hatırlatmalar → Vakit çıkmadan) normal
  *   yığın gibi açılır ve sağ başlıkta geri oku çıkar.
  * - Native başlık gizlenir (çağıran `headerShown: false` verir); başlık yalnız ayrıntının
- *   üstünde, uygulamanın yeşil başlık rengiyle çizilir.
+ *   üstünde, zemin renginde büyük başlık olarak çizilir (yarım genişlikte yeşil şerit
+ *   listeyle kopuk duruyordu). Açık ayrıntının satırı listede seçili görünür.
  * Telefonda ve dar pencerede (Split View) davranış birebir eskisidir: okunabilir sütun.
  */
 import * as React from 'react';
@@ -20,6 +21,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../../core/theme';
 import { anaAyrintiMi } from '../../../core/utils/ekranSinifi';
 import { OkunabilirGenislik } from './OkunabilirGenislik';
+import { AnaAyrintiSecimi } from './anaAyrintiSecimi';
+
+export { useAnaAyrintiSecimi } from './anaAyrintiSecimi';
 
 export const ANA_LISTE_GENISLIGI_DP = 340;
 
@@ -38,6 +42,8 @@ export interface AnaAyrintiTanimi {
     Ana: React.ComponentType;
     /** Kök rotadayken sağda açık duran sayfa. */
     Varsayilan: React.ComponentType;
+    /** Varsayılan sayfanın rota adı (liste satırı seçili görünsün). */
+    varsayilanRota: string;
     varsayilanBaslik: string;
     /** Rota → ayrıntı başlığı. */
     basliklar: Record<string, string | undefined>;
@@ -58,7 +64,12 @@ const AyrintiBasligi: React.FC<{ baslik?: string; geri?: () => void }> = ({ basl
     const renkler = useRenkler();
     const insets = useSafeAreaInsets();
     return (
-        <View style={[stil.baslik, { paddingTop: insets.top, height: 56 + insets.top, backgroundColor: renkler.birincil }]}>
+        <View
+            style={[
+                stil.baslik,
+                { paddingTop: insets.top, height: 60 + insets.top, backgroundColor: renkler.arkaplan, borderBottomColor: renkler.sinir },
+            ]}
+        >
             {geri ? (
                 <Pressable
                     onPress={geri}
@@ -67,13 +78,13 @@ const AyrintiBasligi: React.FC<{ baslik?: string; geri?: () => void }> = ({ basl
                     hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                     style={stil.geri}
                 >
-                    <FontAwesome5 name="chevron-left" size={18} color={renkler.birincilMetin} />
+                    <FontAwesome5 name="chevron-left" size={18} color={renkler.birincil} />
                 </Pressable>
             ) : (
                 <View style={stil.geriBosluk} />
             )}
             {baslik ? (
-                <Text style={[stil.baslikMetni, { color: renkler.birincilMetin }]} numberOfLines={1} accessibilityRole="header">
+                <Text style={[stil.baslikMetni, { color: renkler.metin }]} numberOfLines={1} accessibilityRole="header">
                     {baslik}
                 </Text>
             ) : null}
@@ -99,17 +110,21 @@ const AnaAyrintiCercevesi: React.FC<CerceveProps> = ({ tanim, route, navigation,
 
     const kokteMi = route.name === tanim.anaRota;
     const { Ana, Varsayilan } = tanim;
-    const derinlik = navigation.getState().index;
+    const durum = navigation.getState();
+    const derinlik = durum.index;
+    const secili = kokteMi ? tanim.varsayilanRota : (durum.routes[1]?.name ?? route.name);
     return (
         <View testID="ana-ayrinti" style={[stil.kok, { backgroundColor: renkler.arkaplan }]}>
             <View testID="ana-ayrinti-liste" style={[stil.liste, { borderRightColor: renkler.sinir }]}>
-                {kokteMi ? (
-                    children
-                ) : (
-                    <NavigationContext.Provider value={listeNav as never}>
-                        <Ana />
-                    </NavigationContext.Provider>
-                )}
+                <AnaAyrintiSecimi.Provider value={secili}>
+                    {kokteMi ? (
+                        children
+                    ) : (
+                        <NavigationContext.Provider value={listeNav as never}>
+                            <Ana />
+                        </NavigationContext.Provider>
+                    )}
+                </AnaAyrintiSecimi.Provider>
             </View>
             <View testID="ana-ayrinti-sayfa" style={stil.sayfa}>
                 {kendiBasligi ? null : (
@@ -155,8 +170,8 @@ const stil = StyleSheet.create({
     liste: { width: ANA_LISTE_GENISLIGI_DP, borderRightWidth: StyleSheet.hairlineWidth },
     sayfa: { flex: 1 },
     sayfaIcerik: { flex: 1 },
-    baslik: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 },
+    baslik: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, borderBottomWidth: StyleSheet.hairlineWidth },
     geri: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
     geriBosluk: { width: 12 },
-    baslikMetni: { flex: 1, fontSize: 18, fontWeight: '700', marginLeft: 4 },
+    baslikMetni: { flex: 1, fontSize: 22, fontWeight: '700', marginLeft: 4 },
 });
