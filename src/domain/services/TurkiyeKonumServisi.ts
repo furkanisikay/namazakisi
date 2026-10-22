@@ -121,6 +121,12 @@ export function ilceKoordinatlariniDuzelt(ilId: number, ilceler: Ilce[]): Ilce[]
     return degisti ? sonuc : ilceler;
 }
 
+/**
+ * Çevrimdışı il listesi. Koordinat = il merkezinin (merkez ilçe / şehir) konumu.
+ * Yedi il (Burdur, Muş, Hatay, Bilecik, Şırnak, Kocaeli, Nevşehir) eskiden şehir merkezinden
+ * 8–35 km sapıyordu; OSM il `admin_centre` düğümüne çekildi (denetim 2026-10-21). TV
+ * `iller.json` bu listeden üretilir: `node scripts/tv/tv-verisi-uret.js`.
+ */
 export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 1, ad: 'Adana', plakaKodu: '01', lat: 37.0000, lng: 35.3213 },
     { id: 2, ad: 'Adıyaman', plakaKodu: '02', lat: 37.7648, lng: 38.2786 },
@@ -132,11 +138,11 @@ export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 8, ad: 'Artvin', plakaKodu: '08', lat: 41.1828, lng: 41.8183 },
     { id: 9, ad: 'Aydın', plakaKodu: '09', lat: 37.8444, lng: 27.8458 },
     { id: 10, ad: 'Balıkesir', plakaKodu: '10', lat: 39.6484, lng: 27.8826 },
-    { id: 11, ad: 'Bilecik', plakaKodu: '11', lat: 40.0567, lng: 30.0665 },
+    { id: 11, ad: 'Bilecik', plakaKodu: '11', lat: 40.1435, lng: 29.9753 },
     { id: 12, ad: 'Bingöl', plakaKodu: '12', lat: 38.8854, lng: 40.4981 },
     { id: 13, ad: 'Bitlis', plakaKodu: '13', lat: 38.4004, lng: 42.1095 },
     { id: 14, ad: 'Bolu', plakaKodu: '14', lat: 40.7356, lng: 31.6061 },
-    { id: 15, ad: 'Burdur', plakaKodu: '15', lat: 37.4613, lng: 30.0665 },
+    { id: 15, ad: 'Burdur', plakaKodu: '15', lat: 37.7248, lng: 30.2887 },
     { id: 16, ad: 'Bursa', plakaKodu: '16', lat: 40.1885, lng: 29.0610 },
     { id: 17, ad: 'Çanakkale', plakaKodu: '17', lat: 40.1553, lng: 26.4142 },
     { id: 18, ad: 'Çankırı', plakaKodu: '18', lat: 40.6013, lng: 33.6134 },
@@ -152,7 +158,7 @@ export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 28, ad: 'Giresun', plakaKodu: '28', lat: 40.9128, lng: 38.3895 },
     { id: 29, ad: 'Gümüşhane', plakaKodu: '29', lat: 40.4386, lng: 39.5086 },
     { id: 30, ad: 'Hakkari', plakaKodu: '30', lat: 37.5833, lng: 43.7333 },
-    { id: 31, ad: 'Hatay', plakaKodu: '31', lat: 36.4018, lng: 36.3498 },
+    { id: 31, ad: 'Hatay', plakaKodu: '31', lat: 36.2025, lng: 36.1603 },
     { id: 32, ad: 'Isparta', plakaKodu: '32', lat: 37.7648, lng: 30.5566 },
     { id: 33, ad: 'Mersin', plakaKodu: '33', lat: 36.8121, lng: 34.6415 },
     { id: 34, ad: 'İstanbul', plakaKodu: '34', lat: 41.0082, lng: 28.9784 },
@@ -162,7 +168,7 @@ export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 38, ad: 'Kayseri', plakaKodu: '38', lat: 38.7312, lng: 35.4787 },
     { id: 39, ad: 'Kırklareli', plakaKodu: '39', lat: 41.7333, lng: 27.2167 },
     { id: 40, ad: 'Kırşehir', plakaKodu: '40', lat: 39.1425, lng: 34.1709 },
-    { id: 41, ad: 'Kocaeli', plakaKodu: '41', lat: 40.8533, lng: 29.8815 },
+    { id: 41, ad: 'Kocaeli', plakaKodu: '41', lat: 40.7654, lng: 29.9407 },
     { id: 42, ad: 'Konya', plakaKodu: '42', lat: 37.8667, lng: 32.4833 },
     { id: 43, ad: 'Kütahya', plakaKodu: '43', lat: 39.4167, lng: 29.9833 },
     { id: 44, ad: 'Malatya', plakaKodu: '44', lat: 38.3552, lng: 38.3095 },
@@ -170,8 +176,8 @@ export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 46, ad: 'Kahramanmaraş', plakaKodu: '46', lat: 37.5858, lng: 36.9371 },
     { id: 47, ad: 'Mardin', plakaKodu: '47', lat: 37.3212, lng: 40.7245 },
     { id: 48, ad: 'Muğla', plakaKodu: '48', lat: 37.2153, lng: 28.3636 },
-    { id: 49, ad: 'Muş', plakaKodu: '49', lat: 38.9462, lng: 41.7539 },
-    { id: 50, ad: 'Nevşehir', plakaKodu: '50', lat: 38.6939, lng: 34.6857 },
+    { id: 49, ad: 'Muş', plakaKodu: '49', lat: 38.7322, lng: 41.4899 },
+    { id: 50, ad: 'Nevşehir', plakaKodu: '50', lat: 38.6250, lng: 34.7151 },
     { id: 51, ad: 'Niğde', plakaKodu: '51', lat: 37.9667, lng: 34.6833 },
     { id: 52, ad: 'Ordu', plakaKodu: '52', lat: 40.9839, lng: 37.8764 },
     { id: 53, ad: 'Rize', plakaKodu: '53', lat: 41.0201, lng: 40.5234 },
@@ -194,7 +200,7 @@ export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 70, ad: 'Karaman', plakaKodu: '70', lat: 37.1759, lng: 33.2287 },
     { id: 71, ad: 'Kırıkkale', plakaKodu: '71', lat: 39.8468, lng: 33.5153 },
     { id: 72, ad: 'Batman', plakaKodu: '72', lat: 37.8812, lng: 41.1351 },
-    { id: 73, ad: 'Şırnak', plakaKodu: '73', lat: 37.4187, lng: 42.4918 },
+    { id: 73, ad: 'Şırnak', plakaKodu: '73', lat: 37.5220, lng: 42.4570 },
     { id: 74, ad: 'Bartın', plakaKodu: '74', lat: 41.6344, lng: 32.3375 },
     { id: 75, ad: 'Ardahan', plakaKodu: '75', lat: 41.1105, lng: 42.7022 },
     { id: 76, ad: 'Iğdır', plakaKodu: '76', lat: 39.9167, lng: 44.0333 },
