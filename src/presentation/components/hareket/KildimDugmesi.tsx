@@ -10,7 +10,8 @@
  *   1. hazırlık (180 ms): eski içerik yukarı kayarak söner, zemin yeşile döner (iki hap
  *      katmanı arasında opaklık çaprazı; `backgroundColor` native driver'da animasyonlanamaz);
  *   2. eylem (yay): ✓ ikonun yerinde yayla oturur, çevresinde halka BİR KEZ açılıp söner;
- *   3. sonuç: "Kılındı" aşağıdan gelir ve öyle KALIR.
+ *   3. sonuç: "Kılındı" (ana ekranda kılınan namazın duası, `kilindiMetni`) aşağıdan gelir ve
+ *      öyle KALIR. Sahip isteği: "Kılındı / Tamamlandı" yerine "Allah kabul etsin".
  * Geri almada (kılındı → kılınmadı) aynı yol kısaltılmış süreyle tersine oynar, halka yok.
  *
  * Kurallar: yalnız transform + opaklık (native driver). Animasyon YALNIZ gerçek geçişte
@@ -47,6 +48,12 @@ export interface KildimDugmesiProps {
     /** Ekran okuyucu etiketine eklenir: "Öğle — Kılındı olarak işaretle". */
     vakitAdi?: string;
     /**
+     * Kılınmışken düğmede yazan. Ana ekranda kılınan namazın duası ("Allah kabul etsin" —
+     * `core/samimiyet/kabulDuasi`); verilmezse durum adı "Kılındı". Ekran okuyucu her durumda
+     * önce DURUMU duyar ("Kılındı. Allah kabul etsin"): dua durum bilgisinin yerine geçmez.
+     */
+    kilindiMetni?: string;
+    /**
      * Gösterilen kaydın kimliği (ör. "<gün>_<vakit>"). Değişirse durum değişimi animasyonsuz
      * uygulanır: yeni vakit/gün gerçek bir işaretleme değildir.
      */
@@ -60,6 +67,7 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
     onKildim,
     onGeriAl,
     vakitAdi,
+    kilindiMetni = NAMAZ_EYLEMI.kilindi,
     kimlik,
     devreDisi = false,
     testID,
@@ -74,6 +82,9 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
     /** Halka: 0 → 1 bir kez; dinlenmede 0 (görünmez). */
     const halka = React.useRef(new Animated.Value(0)).current;
     const onceki = React.useRef({ kilindi, kimlik });
+    // "Kılındı" ya da "Kılındı. Allah kabul etsin" — durum önce, dua sonra.
+    const kilindiDuyurusu =
+        kilindiMetni === NAMAZ_EYLEMI.kilindi ? NAMAZ_EYLEMI.kilindi : `${NAMAZ_EYLEMI.kilindi}. ${kilindiMetni}`;
 
     React.useEffect(() => {
         const eski = onceki.current;
@@ -86,7 +97,7 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
             isaret.setValue(hedef);
             halka.setValue(0);
             if (gercekGecis) {
-                AccessibilityInfo.announceForAccessibility?.(kilindi ? NAMAZ_EYLEMI.kilindi : KILDIM_GERI_ALINDI_METNI);
+                AccessibilityInfo.announceForAccessibility?.(kilindi ? kilindiDuyurusu : KILDIM_GERI_ALINDI_METNI);
             }
             return;
         }
@@ -100,7 +111,7 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
                     Animated.timing(halka, { toValue: 1, duration: SURE.halka, easing: EGRI.giris, useNativeDriver: true }),
                 ]),
             ]).start(() => halka.setValue(0));
-            AccessibilityInfo.announceForAccessibility?.(NAMAZ_EYLEMI.kilindi);
+            AccessibilityInfo.announceForAccessibility?.(kilindiDuyurusu);
         } else {
             halka.setValue(0);
             Animated.sequence([
@@ -109,11 +120,17 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
             ]).start();
             AccessibilityInfo.announceForAccessibility?.(KILDIM_GERI_ALINDI_METNI);
         }
+    // kilindiDuyurusu bağımlılık DEĞİL: dua metni gün/vakitle değişir, geçiş tetiklemez.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [kilindi, kimlik, azalt, gecis, isaret, halka]);
 
     const dokunulabilir = !devreDisi && (!kilindi || !!onGeriAl);
     // Etiket DURUMU söyler; kılınmış ve geri alınabilirse ne olacağını da (ipucu kapalı olabilir).
-    const durumMetni = !kilindi ? KILDIM_ISARETLE_METNI : onGeriAl ? KILDIM_GERI_AL_ETIKETI : NAMAZ_EYLEMI.kilindi;
+    const durumMetni = !kilindi
+        ? KILDIM_ISARETLE_METNI
+        : onGeriAl
+          ? `${kilindiDuyurusu}, geri almak için dokunun`
+          : kilindiDuyurusu;
     const etiket = vakitAdi ? `${vakitAdi} — ${durumMetni}` : durumMetni;
     // Metin rengi zemine göre ÖLÇÜLÜR (beyaz yeşil/turuncu zeminde AA'yı tutmaz).
     const { isaretleMetin, kilindiMetin } = kildimDugmesiRenkleri({
@@ -188,7 +205,9 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
                         <FontAwesome5 name="check-circle" size={IKON} color={kilindiMetin} solid />
                     </Animated.View>
                 </View>
-                <Text style={[styles.yazi, { color: kilindiMetin }]}>{NAMAZ_EYLEMI.kilindi}</Text>
+                <Text style={[styles.yazi, { color: kilindiMetin }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
+                    {kilindiMetni}
+                </Text>
             </Animated.View>
         </TouchableOpacity>
     );

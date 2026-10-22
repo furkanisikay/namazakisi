@@ -1,0 +1,26 @@
+# tohum: kildim
+# Samimiyet: o anki vakit kilinmamis; "Kıldım"a basinca dugme "Allah kabul etsin"e doner
+# (sabah/yatsida altinda kisa selam). Gunu tamamlayan vakitse "Allah kabul etsin" karti da.
+# Gunes vaktinde dugme kilitlidir ("Henüz girmedi") — kare yine alinir, dokunus atlanir.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _acilis.yaml
+- takeScreenshot: ozk/19-kabul-once
+- runFlow:
+    when:
+      visible:
+        id: "vakit-karti-kildim"
+    commands:
+      - startRecording: ozk/kabul-gecisi
+      - tapOn:
+          id: "vakit-karti-kildim"
+      # Kerahat vaktindeyse once kibar onay modali gelir.
+      - runFlow:
+          when:
+            visible: "Yine de işaretleyin"
+          commands:
+            - tapOn: "Yine de işaretleyin"
+      - waitForAnimationToEnd:
+          timeout: 2500
+      - stopRecording
+- takeScreenshot: ozk/19-kabul-sonra

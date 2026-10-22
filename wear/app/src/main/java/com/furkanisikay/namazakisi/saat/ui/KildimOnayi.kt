@@ -122,12 +122,13 @@ fun KildimOnayi(
         if (!onaylandi) return@LaunchedEffect
         if (azalt) {
             tik.snapTo(1f)
-            delay(400)
+            delay(KABUL_GOSTERIM_MS)
         } else {
             delay(180)
             launch { halka.animateTo(1f, tween(HALKA_MS, easing = CubicBezierEasing(0.2f, 0f, 0f, 1f))) }
             tik.animateTo(1f, tween(300, easing = LinearEasing))
-            delay(450)
+            // "Allah kabul etsin" okunabilsin diye kısa bekleme (sahne yine ~1,5 sn'de biter).
+            delay(KABUL_GOSTERIM_MS)
         }
         kapat()
     }
@@ -195,6 +196,17 @@ fun KildimOnayi(
                     color = renk(SaatPaleti.METIN),
                     maxLines = 2,
                     // Ret metni ekran okuyucuya kendiliğinden okunur.
+                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                )
+            } else if (onaylandi) {
+                // Onaylanınca soru duaya döner (sahip isteği); canlı bölge ekran okuyucuya okutur.
+                Text(
+                    AnaEkranKarari.KABUL_DUASI,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    color = renk(SaatPaleti.METIN),
+                    maxLines = 2,
                     modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                 )
             } else {
@@ -275,7 +287,7 @@ private fun OnayIsareti(genislik: Dp, ilerleme: Float, halka: Float) {
                 }
             }
             .background(yesil, CircleShape)
-            .clearAndSetSemantics { contentDescription = "Kılındı" },
+            .clearAndSetSemantics { contentDescription = "Kılındı. ${AnaEkranKarari.KABUL_DUASI}" },
     ) {
         Canvas(Modifier.size(26.dp)) {
             val yol = Path().apply {
@@ -293,4 +305,5 @@ private fun OnayIsareti(genislik: Dp, ilerleme: Float, halka: Float) {
 
 private const val KAPATMA_ORANI = 0.3f
 private const val RED_GOSTERIM_MS = 1600L
+private const val KABUL_GOSTERIM_MS = 900L
 private const val HALKA_MS = 520

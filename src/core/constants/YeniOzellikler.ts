@@ -73,6 +73,25 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Samimiyet: "Kılındı" yerine dua, günün selamı, saat ailesiyle aynı vakit simgeleri.
+    {
+        id: 'samimiyet-kabul-olsun',
+        platformlar: ['android', 'ios'],
+        surum: '0.70.0',
+        tarih: '2026-10-22',
+        baslik: 'Allah kabul etsin',
+        aciklama:
+            'Namazı işaretlediğinizde artık "Kılındı" değil, "Allah kabul etsin" yazar. Cuma, kandil, bayram ve Ramazan günlerinde başlıkta kısa bir selam görürsünüz.',
+        detayAciklama:
+            'Kıldım düğmesi, saat ve sesli asistan aynı duayı söyler; beş vakti tamamladığınız gün kısa bir kart çıkar. Kandil ve bayram günleri Diyanet takviminden alınır. Vakit simgeleri de yenilendi: her vakit saatinizdeki simgeyle aynı.',
+        detaylar: [
+            'Kıldım sonrası "Allah kabul etsin" — sabah ve yatsıda kısa selam',
+            'Beş vakit tamam olunca kısa bir dua kartı',
+            'Cuma, kandil, bayram ve Ramazan selamı (Diyanet takvimi)',
+            'Her vakte ayrı, saatinizle aynı simge',
+        ],
+        ikon: 'pray',
+    },
     // Cihazlar arası eşitleme (#288). Yalnız Android: Drive yetkisi yerleşik Google
     // hesabı onayıyla alınır. iOS'ta iCloud yolu ayrı bayrağa bağlı ve henüz açık değil.
     {

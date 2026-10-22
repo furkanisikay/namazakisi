@@ -121,7 +121,7 @@ object AsistanKarari {
 
     /** "Kıldım" sonucu metni — iOS `siriKildimMetni` / `KildimIslemleri.sonucMetni` ile aynı dil. */
     fun kildimMetni(karar: KildimKarari, bugun: String, saat: (Long) -> String): String = when (karar) {
-        is KildimKarari.Aday -> "${karar.ad} namazınız kılındı olarak işaretlendi."
+        is KildimKarari.Aday -> "${karar.ad} namazınız kılındı olarak işaretlendi. Allah kabul etsin."
         is KildimKarari.ZatenKilindi -> "${karar.ad} namazı zaten kılındı olarak işaretli."
         is KildimKarari.VakitYok -> karar.siradaki?.let {
             "Şu an kılınacak vakit yok. Sıradaki ${VakitKodlari.gorunenAd(it.kod)}, ${girisMetni(it, bugun, saat)}."

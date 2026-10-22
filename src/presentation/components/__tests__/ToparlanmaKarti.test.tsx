@@ -150,7 +150,7 @@ describe('ToparlanmaKarti', () => {
       );
     });
     const json = JSON.stringify(tree!.toJSON());
-    expect(json).toContain('aradaki bo');
+    expect(json).toContain('arada boş gün');
     expect(json).not.toContain('Dikkat:');
   });
 
@@ -206,10 +206,10 @@ describe('ToparlanmaKarti', () => {
       );
     });
 
-    const altMesaj = metniBul(tree!, 'gün daha tam kıl');
-    expect(altMesaj).toBe('2 gün daha tam kıl ve seriyi kurtar! 💪');
+    const altMesaj = metniBul(tree!, 'gün daha beş vakti');
+    expect(altMesaj).toBe('2 gün daha beş vakti tamamladığınızda seriniz kaldığı yerden sürer.');
     // "Son gün" mesajı bu dalda görünmemeli (yanlış dal seçimi yakalanır).
-    expect(metniBul(tree!, 'Bugün tam kılarak')).toBeUndefined();
+    expect(metniBul(tree!, 'Bugünü tamamladığınızda')).toBeUndefined();
   });
 
   it('kalanGun === 0 (tamamlananGun===hedefGunSayisi) iken "son gün" mesajına geçer', () => {
@@ -225,9 +225,9 @@ describe('ToparlanmaKarti', () => {
       );
     });
 
-    expect(metniBul(tree!, 'Bugün tam kılarak')).toBe('Bugün tam kılarak serini kurtar! 🎉');
+    expect(metniBul(tree!, 'Bugünü tamamladığınızda')).toBe('Bugünü tamamladığınızda seriniz kaldığı yerden sürer.');
     // kalanGun=0 olduğundan "X gün daha" mesajı HİÇ görünmemeli.
-    expect(metniBul(tree!, 'gün daha tam kıl')).toBeUndefined();
+    expect(metniBul(tree!, 'gün daha beş vakti')).toBeUndefined();
     // 3/3 tüm daireler dolu olmalı, boş daire kalmamalı.
     expect(onayIsaretiSayisi(tree!)).toBe(3);
     expect(bosDaireSayisi(tree!)).toBe(0);
@@ -251,7 +251,7 @@ describe('ToparlanmaKarti', () => {
     // olduğundan render ağacında ayrı serileşir; vurgulu parça tam olarak "7 günlük" olur.
     expect(metniBul(tree!, 'günlük')).toBe('7 günlük');
     // Bağlam: cümlenin devamı ('serini kurtarabilirsin') ayrı düğümde yine de mevcut.
-    expect(metniBul(tree!, 'serini kurtarabilirsin')).toBeDefined();
+    expect(metniBul(tree!, 'kaldığınız yerden devam')).toBeDefined();
     // Durum alanındaki değer (10) ekrana sızmamalı.
     expect(metniBul(tree!, '10 günlük')).toBeUndefined();
   });

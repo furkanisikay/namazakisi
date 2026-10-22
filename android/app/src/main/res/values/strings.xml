@@ -51,4 +51,7 @@
   <string name="widget_ayar_sonraki">Sıradaki vakti gösterin</string>
   <string name="widget_ayar_vazgec">Vazgeç</string>
   <string name="widget_ayar_kaydet">Kaydet</string>
+  <!-- Bildirimdeki "Kıldım" sonrası 5 sn'lik sessiz teşekkür (kildim/KildimOnayBildirimi). -->
+  <string name="kildim_onay_kanal_adi">Kıldım onayı</string>
+  <string name="kildim_onay_kanal_aciklama">Bildirimden "Kıldım" dediğinizde birkaç saniye görünen sessiz onay</string>
 </resources>

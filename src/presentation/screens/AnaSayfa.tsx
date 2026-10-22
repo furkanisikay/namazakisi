@@ -13,6 +13,9 @@ import { seriVerileriniYukle, seriKontrolet, puanlamayiYenidenHesapla, kutlamayi
 import { useKonumYenile } from '../hooks/useKonumYenile';
 import { YuklemeGostergesi, KutlamaAnimasyonu, KutlamaModal, AnimasyonluButon, ToparlanmaModal } from '../components';
 import { HomeHeader } from '../components/home/HomeHeader';
+import { GunTamamMesaji } from '../components/home/GunTamamMesaji';
+import { kabulDuasi, kabulEkSelami } from '../../core/samimiyet/kabulDuasi';
+import { gunSelami } from '../../core/samimiyet/selam';
 import { VakitKarti } from '../components/home/VakitKarti';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { VakitAkisi } from '../components/home/VakitAkisi';
@@ -80,7 +83,9 @@ export const AnaSayfa: React.FC = () => {
   // Yatay geniş tablet: Bugün üç sütun (kart | akış | "Bu hafta"); dikeyde iki sütun.
   const pencere = useWindowDimensions();
   const ucSutun = ucSutunluMu(pencere.width, pencere.height);
-  const { tumNamazlarTamamlandiFeedback } = useFeedback();
+  const { tumNamazlarTamamlandiFeedback, namazTamamlandiFeedback } = useFeedback();
+  const [gunTamamGoster, setGunTamamGoster] = useState(false);
+  const gunTamamKapat = useCallback(() => setGunTamamGoster(false), []);
 
   const [mevcutSayfaIndeksi, setMevcutSayfaIndeksi] = useState(BASLANGIC_SAYFA_INDEKSI);
   const [tarihSeciciGorunur, setTarihSeciciGorunur] = useState(false);
@@ -586,6 +591,7 @@ export const AnaSayfa: React.FC = () => {
       const toplam = gunlukNamazlar.namazlar.length;
       if (tamamlanan === toplam && oncekiTamamlananRef.current < toplam && oncekiTamamlananRef.current > 0) {
         setKutlamaGoster(true);
+        setGunTamamGoster(true);
         tumNamazlarTamamlandiFeedback();
       }
       oncekiTamamlananRef.current = tamamlanan;
@@ -595,6 +601,20 @@ export const AnaSayfa: React.FC = () => {
   // Namaz İşlemleri — gerçek işaretleme (kerahat onayından geçtikten sonra çağrılır)
   const namazIsaretle = async (namazAdi: NamazAdi, tamamlandi: boolean) => {
     dispatch(namazDurumunuDegistir({ tarih: mevcutTarih, namazAdi: namazAdi, tamamlandi }));
+    if (tamamlandi) {
+      // Samimiyet anı: kısa onay dokusu (titreşim ayarına uyar). Vakit kartı/sade görünüm
+      // kendi düğmesinde duayı gösterir; listeden BAŞKA bir vakit işaretlenince kısa bildirim.
+      // Günü tamamlayan işaretlemede kısa bildirim yok — gün tamam kartı onu karşılar.
+      void namazTamamlandiFeedback();
+      const kartVakti =
+        mevcutTarih === aktifGun && vakitBilgisi?.vakit ? servisToNamazAdi[vakitBilgisi.vakit] : undefined;
+      const gunuTamamlar =
+        !!gunlukNamazlar &&
+        gunlukNamazlar.namazlar.every((n) => n.tamamlandi || n.namazAdi === namazAdi);
+      if (kartVakti !== namazAdi && !gunuTamamlar) {
+        kisaBildirimGoster(`${namazAdi} · ${kabulDuasi(mevcutTarih, namazAdi)}`);
+      }
+    }
     // Kaza önerisi (issue #294): yalnız aktif günün o anki vaktinde, kerahat dışında,
     // borç varsa sorar. Geri almada (tamamlandi=false) bekleyen değerlendirmeyi iptal eder.
     void kazaOnerisi.degerlendir({
@@ -948,6 +968,8 @@ export const AnaSayfa: React.FC = () => {
             konumYenileniyor={konumYenile.yenileniyor}
             gorunenVakitAdi={gorunenVakitAdi}
             genis={gunDuzeni === 'ikiBolme'}
+            kabulMetni={kabulDuasi(sayfaTarihi, suankiVakitAdi)}
+            kabulEki={kabulEkSelami(suankiVakitAdi)}
           />
         ) : (
           gecmisGunKarti
@@ -1037,6 +1059,10 @@ export const AnaSayfa: React.FC = () => {
   if (!sade.yuklendi) return <View className="flex-1 justify-center items-center" style={{ backgroundColor: renkler.arkaplan }}><YuklemeGostergesi mesaj="Yükleniyor..." /></View>;
 
   // ---- Sade görünüm (issue #295): tek ekran; işaretleme ve modallar ana ekranla AYNI ----
+  // Günün selamı (cuma, kandil, Ramazan…) — saf ve ucuz; değer dizeyle karşılaştırılır,
+  // saniyelik çizim memo'lu başlığı kırmaz. Yalnız aktif gün için.
+  const gunSelamMetni = gunSelami({ tarihIso: aktifGun, takvimGunuIso: bugunuAl(), vakit: vakitBilgisi?.vakit });
+
   if (sade.etkin) {
     const sadeKayitHazir = !!gunlukNamazlar && gunlukNamazlar.tarih === aktifGun;
     const sadeNamazAdi = vakitBilgisi?.vakit ? servisToNamazAdi[vakitBilgisi.vakit] : undefined;
@@ -1056,6 +1082,9 @@ export const AnaSayfa: React.FC = () => {
           cumaEtiketi={cumaEtiketi}
           onKildim={handleSuankiKildim}
           onTumUygulama={sade.tumUygulamayiAc}
+          kabulMetni={sadeNamazAdi ? kabulDuasi(aktifGun, sadeNamazAdi) : undefined}
+          kabulEki={sadeNamazAdi ? kabulEkSelami(sadeNamazAdi) : null}
+          gunSelami={gunSelamMetni}
         />
         <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
         <KazaOneriModal
@@ -1074,6 +1103,7 @@ export const AnaSayfa: React.FC = () => {
           onOnayla={kerahatOnayla}
           onVazgec={kerahatVazgec}
         />
+        <GunTamamMesaji gorunur={gunTamamGoster} onBitti={gunTamamKapat} />
       </View>
     );
   }
@@ -1095,6 +1125,7 @@ export const AnaSayfa: React.FC = () => {
         onSeriTikla={handleSeriTikla}
         toparlanmaModu={seriOzeti?.toparlanmaModu}
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
+        selam={mevcutTarih === aktifGun ? gunSelamMetni : null}
       />
 
       {/* Sade görünümden bu oturum için çıkıldıysa geri dönüş (issue #295). Uyarı değil,
@@ -1201,6 +1232,8 @@ export const AnaSayfa: React.FC = () => {
           oncekiSeri={seriDurumu.toparlanmaDurumu.oncekiSeri}
         />
       )}
+
+      <GunTamamMesaji gorunur={gunTamamGoster} onBitti={gunTamamKapat} />
     </SafeAreaView>
   );
 };

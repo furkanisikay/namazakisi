@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { VakitIkonu, vakitIkonKodu } from '../ortak/VakitIkonu';
 import { useRenkler } from '../../../core/theme';
 import { Namaz } from '../../../core/types';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
@@ -114,6 +115,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                     const aktifMi = namaz.namazAdi === suankiVakitAdi;
                     const tamamlandi = namaz.tamamlandi === true; // undefined veya false durumunda false
                     const vakitIkonu = getVakitIkonu(namaz.namazAdi);
+                    const ikonKodu = vakitIkonKodu(namaz.namazAdi);
 
                     // Vakit gecti mi kontrolu (sadece aktif gun icin) — saat GOSTERILEN
                     // gunun takvim gunune kurulur, `new Date()`in gunune DEGIL.
@@ -238,12 +240,21 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                                             </Text>
                                         </View>
                                     )}
-                                    <FontAwesome5
-                                        name={vakitIkonu}
-                                        size={aktifMi ? 20 : 16}
-                                        color={aktifMi ? renkler.birincil : renkler.sinir}
-                                        style={{ opacity: tamamlandi ? 0.5 : 1 }}
-                                    />
+                                    {ikonKodu ? (
+                                        <VakitIkonu
+                                            kod={ikonKodu}
+                                            boyut={aktifMi ? 22 : 18}
+                                            renk={aktifMi ? renkler.birincil : renkler.sinir}
+                                            opaklik={tamamlandi ? 0.5 : 1}
+                                        />
+                                    ) : (
+                                        <FontAwesome5
+                                            name={vakitIkonu}
+                                            size={aktifMi ? 20 : 16}
+                                            color={aktifMi ? renkler.birincil : renkler.sinir}
+                                            style={{ opacity: tamamlandi ? 0.5 : 1 }}
+                                        />
+                                    )}
                                 </View>
                             </TouchableOpacity>
                             {ardindakiNafileler.map((nafile, nIndex) => (

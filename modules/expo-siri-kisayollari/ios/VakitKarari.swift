@@ -165,7 +165,7 @@ public enum VakitKarari {
     public static func kildimMetni(_ karar: SiriKildimKarari, bugun: String, saat: (Int64) -> String) -> String {
         switch karar {
         case .aday(_, _, let ad):
-            return "\(ad) namazınız kılındı olarak işaretlendi."
+            return "\(ad) namazınız kılındı olarak işaretlendi. Allah kabul etsin."
         case .zatenKilindi(let ad):
             return "\(ad) namazı zaten kılındı olarak işaretli."
         case .vakitYok(let siradaki):

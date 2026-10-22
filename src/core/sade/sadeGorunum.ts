@@ -113,6 +113,8 @@ export interface SadeDurumGirdisi {
   mekruhMu: boolean;
   /** Kullanıcı cuma hatırlatmasını açtıysa cuma günü öğle "Cuma" görünür. */
   cumaEtiketi: boolean;
+  /** Kılınmışken söylenen dua ("Allah kabul etsin"); verilirse sesli okumaya da eklenir. */
+  kabulMetni?: string;
 }
 
 export type SadeDurumTuru = 'vakit' | 'girmedi' | 'yok';
@@ -197,7 +199,7 @@ export function sadeDurumuHesapla(g: SadeDurumGirdisi): SadeDurum {
   const kerahat = g.mekruhMu && !g.tamamlandi;
 
   const cumleler = [`Şimdi ${kucukAd(ad)} vakti.`];
-  if (g.tamamlandi) cumleler.push(`${ad} namazını kıldınız.`);
+  if (g.tamamlandi) cumleler.push(`${ad} namazını kıldınız.${g.kabulMetni ? ` ${g.kabulMetni}.` : ''}`);
   cumleler.push(`Çıkmasına ${kalanSureUzun(kalanDk)} var.`);
   if (kerahat) cumleler.push('Şu an kerahat vakti.');
   if (sonrakiEtiket) {

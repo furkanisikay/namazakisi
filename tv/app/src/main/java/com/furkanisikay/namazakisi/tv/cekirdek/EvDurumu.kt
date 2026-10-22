@@ -45,6 +45,45 @@ object EvDurumu {
         return "${pano.gorunenAd(pano.aktif)} vakti daralıyor · $dk dk"
     }
 
+    /** Bant kalkınca gösterilen sessiz dua (telefon/saat ile aynı sabit kalıp). */
+    const val KABUL_DUASI = "Allah kabul etsin"
+
+    /** Duanın ekranda kalma süresi (kısa; sonra pano sakin hâline döner). */
+    const val KABUL_SURESI_MS = 2L * 60_000
+
+    /**
+     * Bant penceresinde (vaktin son 30 dk'sı) "durumu sayılan" en az bir üye var ve HİÇBİRİ
+     * beklemiyor mu? Bant görünürken bu `true`ya dönerse ekran bandı kısa süre
+     * [KABUL_DUASI]na çevirir (geçiş zamanlaması arayüzde; bu karar SAF). Kişi/sayı ima
+     * edilmez; yalnız bant şartlarını sağlayan (durumunu açan) üyeler sayılır — riya/baskı
+     * kuralı: kimin kıldığı söylenmez, yalnız evin sessiz bandı nazikçe kapanır.
+     */
+    fun hepsiKildi(pano: PanoDurumu, uyeler: List<UyeHali>, simdiMs: Long): Boolean {
+        if (pano.aktif == Vakit.GUNES) return false
+        if (pano.kalanMs <= 0 || pano.kalanMs > BANT_ESIGI_MS) return false
+        val gun = pano.tarih.toString()
+        val vakit = pano.aktif.kod
+        val sayilanlar = uyeler.filter { u ->
+            val d = u.durum ?: return@filter false
+            d.durumumSayilsin && d.tvHatirlat && !d.ozelGun &&
+                u.sonHaberMs > 0 && simdiMs - u.sonHaberMs in 0..TAZELIK_MS
+        }
+        return sayilanlar.isNotEmpty() && sayilanlar.all { u ->
+            vakit in (u.durum!!.kilinan[gun].orEmpty() + u.olayKilinan[gun].orEmpty())
+        }
+    }
+
+    /**
+     * Panonun sessiz selamı ya da `null`: cuma "Hayırlı cumalar"; Ramazan'da (bir üye Ramazan
+     * dediyse) akşam vaktinde "Hayırlı iftarlar". Bayram/kandil tablosu TV'de YOK (telefonun
+     * Diyanet tablosu yük şemasına girmedi) — yanlış günde "mübarek olsun" demektense susar.
+     */
+    fun selam(pano: PanoDurumu, uyeler: List<UyeHali>, simdiMs: Long): String? = when {
+        ramazan(uyeler, simdiMs) && pano.aktif == Vakit.AKSAM -> "Hayırlı iftarlar"
+        pano.tarih.dayOfWeek == DayOfWeek.FRIDAY -> "Hayırlı cumalar"
+        else -> null
+    }
+
     /** Herhangi bir üye Ramazan dediyse (son 12 saatte) TV iftar/sahur sayacını gösterir. */
     fun ramazan(uyeler: List<UyeHali>, simdiMs: Long): Boolean =
         uyeler.any { it.durum?.ramazan == true && simdiMs - it.sonHaberMs in 0..TAZELIK_MS }

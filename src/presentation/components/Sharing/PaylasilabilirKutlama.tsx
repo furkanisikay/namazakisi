@@ -82,30 +82,32 @@ const ikonAdAl = (tip: KutlamaTipi): string => {
  * Motivasyon mesaj listesi
  */
 const MOTIVASYON_MESAJLARI: Record<KutlamaTipi, string[]> = {
+    // Paylaşılan söz kişinin kendi sesidir: övünme değil, dua ve niyet (riya kaygısı).
+    // İbadet bir yarış değildir; "benim/rekor/harika" yerine "Allah daim etsin" kaydı.
     rozet_kazanildi: [
-        'Azimle devam ediyorum, bu rozet benim! 💪',
-        'Sabahın bereketini yakaladım! 🌅',
-        'Ruhuma iyi gelen bu akışta ben de varım! ✨',
+        'Rabbim daim etsin. 🤲',
+        'Küçük adımlar, büyük huzur getirir. 🍃',
+        'Allah hepimize sebat versin. 🌱',
     ],
     hedef_tamamlandi: [
         'Küçük adımlar, büyük huzur getirir. 🍃',
-        'Bugün kendim için harika bir adım attım! 🌟',
-        'Azimle yürüyünce hedefe varılır. 🎯',
+        'Allah daim etsin. 🤲',
+        'Her gün bir adım daha. 🌱',
     ],
     seviye_atlandi: [
-        'Her gün biraz daha olgunlaşıyorum. ⭐',
-        'Ruhumu geliştirmenin tadını çıkarıyorum. 💫',
-        'Yolculuk devam ediyor, daha da yukarıya! 🚀',
+        'Her gün biraz daha yol alıyorum, Allah kolaylık versin. 🍃',
+        'Allah daim etsin. 🤲',
+        'Yolculuk devam ediyor. 🌱',
     ],
     toparlanma_tamamlandi: [
         'Düşmek değil, kalkmak önemlidir. 🔄',
-        'Toparlandım ve daha güçlüyüm! 💪',
-        'Sabır ve azimle her zorluk aşılır. 🌱',
+        'Allah sebat versin. 🤲',
+        'Sabırla her yol yürünür. 🌱',
     ],
     en_uzun_seri: [
-        'Her gün küçük bir adım, ruhumda büyük bir huzur. 🔥',
-        'Zincirim kırılmadı, azmim artıyor! 🏆',
-        'Bu rekoru kendime adadım. 💎',
+        'Her gün küçük bir adım, kalbimde büyük bir huzur. 🍃',
+        'Allah daim etsin. 🤲',
+        'Rabbim hepimize sebat versin. 🌱',
     ],
 };
 

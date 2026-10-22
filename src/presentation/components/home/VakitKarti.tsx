@@ -7,6 +7,8 @@ import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { NAMAZ_DURUMLARI } from '../../../core/vakit/durumSozlugu';
 import { KildimDugmesi, KILDIM_DUGMESI_YUKSEKLIK } from '../hareket/KildimDugmesi';
+import { KabulEkSatiri } from '../hareket/KabulEkSatiri';
+import { VakitIkonu, vakitIkonKodu } from '../ortak/VakitIkonu';
 import { kildimDugmesiRenkleri } from '../../../core/anaEkran/kildimDugmesiRenkleri';
 import { GeriSayimBirimli } from './GeriSayimMetni';
 
@@ -55,6 +57,13 @@ interface VakitKartiProps {
      * büyük çizilir. Telefonda verilmez; düzen birebir eskisi kalır.
      */
     genis?: boolean;
+    /**
+     * Kılınınca düğmede yazan dua ("Allah kabul etsin" — `core/samimiyet/kabulDuasi`,
+     * gün + vakitle deterministik). Verilmezse durum adı "Kılındı".
+     */
+    kabulMetni?: string;
+    /** Kılınınca düğmenin altındaki kısa selam ("Hayırlı sabahlar"); yalnız sabah ve yatsı. */
+    kabulEki?: string | null;
 }
 
 const getVakitIkonu = (vakit: string): string => {
@@ -87,6 +96,8 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     konumYenileniyor = false,
     gorunenVakitAdi,
     genis = false,
+    kabulMetni,
+    kabulEki,
 }) => {
     const renkler = useRenkler();
     // Gri "Henüz girmedi" düğmesinin metni zemine göre ölçülür (koyu temada gri açıktır).
@@ -96,6 +107,8 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
         metinIkincil: renkler.metinIkincil,
         birincilMetin: renkler.birincilMetin,
     });
+    // Saat/TV ile aynı simge ailesi (FontAwesome "sun" küçükte dişliye benziyordu).
+    const ikonKodu = vakitIkonKodu(suankiVakitAdi);
     const ikonAdi = getVakitIkonu(suankiVakitAdi);
     const baslikAdi = gorunenVakitAdi ?? suankiVakitAdi;
     const konumYenilenebilir = konumModu === 'oto' && !!onKonumYenile;
@@ -188,7 +201,11 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                 <View className="flex-col items-center justify-center mb-2">
                     <View className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4 shadow-sm"
                         style={[{ backgroundColor: renkler.birincil + '10' }, genis && stiller.genisIkon]}>
-                        <FontAwesome5 name={ikonAdi} size={genis ? 52 : 36} color={renkler.birincil} />
+                        {ikonKodu ? (
+                            <VakitIkonu kod={ikonKodu} boyut={genis ? 52 : 38} renk={renkler.birincil} testID={`vakit-karti-ikon-${ikonKodu}`} />
+                        ) : (
+                            <FontAwesome5 name={ikonAdi} size={genis ? 52 : 36} color={renkler.birincil} />
+                        )}
                     </View>
                     <Text className="text-4xl font-black tracking-tight" style={[{ color: renkler.metin }, genis && stiller.genisBaslik]}>
                         {baslikAdi}
@@ -242,7 +259,18 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                         onGeriAl={onGeriAl}
                         kimlik={kayitKimligi}
                         vakitAdi={baslikAdi}
+                        kilindiMetni={kabulMetni}
                         testID="vakit-karti-kildim"
+                    />
+                )}
+
+                {/* Kılınınca sessiz ek selam (sabah/yatsı) — teşvik satırının yerinde, kayma yok. */}
+                {!kilitli && kayitHazir && !!kabulEki && (
+                    <KabulEkSatiri
+                        metin={kabulEki}
+                        gorunur={tamamlandi}
+                        kimlik={kayitKimligi}
+                        testID="vakit-karti-kabul-eki"
                     />
                 )}
 

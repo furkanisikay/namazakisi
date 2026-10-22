@@ -90,7 +90,7 @@ object KildimIslemleri {
 
     /** Kullanıcıya kısa geri bildirim (kibar "siz" — arayüz yönetimi, ibadet çağrısı değil). */
     fun sonucMetni(sonuc: Sonuc): String = when (sonuc) {
-        is Sonuc.Isaretlendi -> "${sonuc.vakitAdi} namazınız kılındı olarak işaretlendi."
+        is Sonuc.Isaretlendi -> "${sonuc.vakitAdi} namazınız kılındı olarak işaretlendi. Allah kabul etsin."
         is Sonuc.ZatenKilindi -> "${sonuc.vakitAdi} namazı zaten kılındı olarak işaretli."
         is Sonuc.VakitYok ->
             if (sonuc.siradakiAd != null) "Şu an kılınacak vakit yok. Sıradaki ${sonuc.siradakiAd}, giriş ${sonuc.giris}."

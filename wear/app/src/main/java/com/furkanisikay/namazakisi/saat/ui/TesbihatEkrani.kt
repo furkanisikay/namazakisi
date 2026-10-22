@@ -57,6 +57,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
+import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.TesbihatYaylari
 import kotlinx.coroutines.launch
@@ -95,7 +96,7 @@ fun TesbihatEkrani(
     LaunchedEffect(Unit) { odak.requestFocus() }
 
     val aciklama = if (durum.tamamMi) {
-        "Tesbihat tamamlandı, ${Tesbihat.TOPLAM} / ${Tesbihat.TOPLAM}. ${Tesbihat.KAYNAK}"
+        "Tesbihat tamamlandı. ${AnaEkranKarari.KABUL_DUASI}. ${Tesbihat.TOPLAM} / ${Tesbihat.TOPLAM}. ${Tesbihat.KAYNAK}"
     } else {
         "${durum.faz.ad}, ${durum.fazSayisi} / ${durum.faz.hedef}. Toplam ${durum.toplam} / ${Tesbihat.TOPLAM}"
     }
@@ -288,9 +289,10 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
             drawPath(parca, ust, style = Stroke(width = 3.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round))
         }
         Spacer(Modifier.height(2.dp))
+        // Tesbihat bitince dua (sahip isteği: "Tamamlandı" yerine "Allah kabul etsin").
         Text(
-            "Tamamlandı",
-            fontSize = sinirliBoyut(0.085f),
+            AnaEkranKarari.KABUL_DUASI,
+            fontSize = sinirliBoyut(0.075f),
             fontWeight = FontWeight.SemiBold,
             color = renk(SaatPaleti.METIN),
             textAlign = TextAlign.Center,

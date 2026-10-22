@@ -112,6 +112,17 @@ async function bolum(ad, fn) {
         if (await getir(/nafile-satir-(kusluk|evvabin)|, nafile,/, 'nafile-satiri', { ust: 0.15, alt: 0.85 })) cek('02-ana-nafile-zinciri');
     });
 
+    // Samimiyet: o anki vakit kilinmamis tohumla "Kıldım" → dugme duaya doner (Android 19-kabul).
+    await bolum('kabul', async () => {
+        await temizAcilis('kildim');
+        cek('19-kabul-once');
+        const ogeler = await agac('kabul');
+        if (!(await dokun(ogeler, / — Kılındı olarak işaretle$/, 'kildim dugmesi', { bekle: 1800 }))) return;
+        const sonra = await agac('kabul-sonra');
+        if (bul(sonra, /^Yine de işaretleyin$/)) await dokun(sonra, /^Yine de işaretleyin$/, 'kerahat onayi', { bekle: 1800 });
+        cek('19-kabul-sonra');
+    });
+
     await bolum('sade gorunum', async () => {
         await temizAcilis('sade');
         await agac('sade');
