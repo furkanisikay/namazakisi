@@ -20,7 +20,13 @@ appId: com.furkanisikay.namazakisi
             visible: "Yine de işaretleyin"
           commands:
             - tapOn: "Yine de işaretleyin"
+      # Dua gorunur gorunmez kare (kaza onerisi 1,6 sn sonra gelir).
+      - extendedWaitUntil:
+          visible: ".*(Allah kabul etsin|Kabul olsun|Rabbim kabul etsin).*"
+          timeout: 5000
+      - takeScreenshot: ozk/19-kabul-sonra
+      # Sonra kaza onerisi (duanin ustune hemen acilmaz).
       - waitForAnimationToEnd:
           timeout: 2500
+      - takeScreenshot: ozk/19-kabul-kaza-onerisi
       - stopRecording
-- takeScreenshot: ozk/19-kabul-sonra

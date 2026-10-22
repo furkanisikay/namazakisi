@@ -117,10 +117,16 @@ async function bolum(ad, fn) {
         await temizAcilis('kildim');
         cek('19-kabul-once');
         const ogeler = await agac('kabul');
-        if (!(await dokun(ogeler, /vakit-karti-kildim|Kılındı olarak işaretle/, 'kildim dugmesi', { bekle: 1800 }))) return;
-        const sonra = await agac('kabul-sonra');
-        if (bul(sonra, /^Yine de işaretleyin$/)) await dokun(sonra, /^Yine de işaretleyin$/, 'kerahat onayi', { bekle: 1800 });
+        if (!(await dokun(ogeler, /vakit-karti-kildim|Kılındı olarak işaretle/, 'kildim dugmesi', { bekle: 900 }))) return;
+        // Dua gorunur gorunmez kare: kaza onerisi 1,6 sn sonra acilir.
         cek('19-kabul-sonra');
+        const sonra = await agac('kabul-sonra');
+        if (bul(sonra, /^Yine de işaretleyin$/)) {
+            await dokun(sonra, /^Yine de işaretleyin$/, 'kerahat onayi', { bekle: 900 });
+            cek('19-kabul-sonra');
+        }
+        await bekle(1500);
+        cek('19-kabul-kaza-onerisi');
     });
 
     await bolum('sade gorunum', async () => {

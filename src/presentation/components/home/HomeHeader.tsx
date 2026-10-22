@@ -100,7 +100,7 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
 
                 <View>
                     {gosterilenSelam ? (
-                        <Text className="text-xs font-semibold" style={{ color: renkler.birincil }} numberOfLines={1} testID="baslik-gun-selami">
+                        <Text className="text-xs font-semibold" style={{ color: renkler.metin }} numberOfLines={1} testID="baslik-gun-selami">
                             {gosterilenSelam}
                         </Text>
                     ) : (
