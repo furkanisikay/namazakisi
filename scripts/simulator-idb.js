@@ -92,7 +92,12 @@ function idbOlustur({ cikis, udid, bundle }) {
     };
 
     function bul(ogeler, kalip, { tur } = {}) {
-        let aday = ogeler.filter((o) => (o.frame || o.AXFrame) && alan(o) > 0 && kalip.test(metin(o)));
+        // Çapalı kalıplar birleşik metinde tutmaz ("İlerleme | gezinme-Ilerleme") → alanları ayrı da dene.
+        const alanlar = (o) =>
+            [o.AXLabel, o.AXValue, o.AXUniqueId, o.title, o.label].filter((x) => typeof x === 'string' && x);
+        let aday = ogeler.filter(
+            (o) => (o.frame || o.AXFrame) && alan(o) > 0 && (kalip.test(metin(o)) || alanlar(o).some((x) => kalip.test(x)))
+        );
         if (tur) {
             const turlu = aday.filter((o) => new RegExp(tur, 'i').test(String(o.type || o.role || '')));
             if (turlu.length) aday = turlu;

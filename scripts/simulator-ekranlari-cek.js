@@ -127,8 +127,14 @@ const alan = (o) => {
  * `tur` verilirse o erisilebilirlik turu YEGLENIR (orn. Switch) — basliktaki ayni
  * metni tasiyan StaticText'e basmayi onler.
  */
+// Kalıp her alanda AYRI da denenir: `^İlerleme(,|$)` gibi çapalı kalıplar birleşik metinde
+// ("İlerleme | gezinme-Ilerleme") hiç tutmuyordu — iPad kenar gezinmesinde sekmeler bulunamıyordu.
+const alanlar = (o) =>
+    [o.AXLabel, o.AXValue, o.AXUniqueId, o.title, o.label].filter((x) => typeof x === 'string' && x);
+const eslesir = (o, kalip) => kalip.test(metin(o)) || alanlar(o).some((x) => kalip.test(x));
+
 function bul(ogeler, kalip, { tur } = {}) {
-    let aday = ogeler.filter((o) => (o.frame || o.AXFrame) && alan(o) > 0 && kalip.test(metin(o)));
+    let aday = ogeler.filter((o) => (o.frame || o.AXFrame) && alan(o) > 0 && eslesir(o, kalip));
     if (tur) {
         const turlu = aday.filter((o) => new RegExp(tur, 'i').test(String(o.type || o.role || '')));
         if (turlu.length) aday = turlu;
