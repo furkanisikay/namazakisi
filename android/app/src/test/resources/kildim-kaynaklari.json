@@ -1,0 +1,14 @@
+{
+  "aciklama": "Ortak Kildim kuyrugunun kabul ettigi kaynaklar. Kotlin KildimKuyruguKurallari.KAYNAKLAR, Swift SiriDeposu.kaynaklar ve JS core/kildim/kildimKaynaklari.ts BUNUNLA ayni olmali.",
+  "kaynaklar": [
+    "wear",
+    "widget",
+    "qs",
+    "kisayol",
+    "sayac",
+    "bildirim",
+    "otomasyon",
+    "asistan",
+    "cihaz"
+  ]
+}

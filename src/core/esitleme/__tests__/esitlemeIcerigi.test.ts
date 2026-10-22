@@ -140,3 +140,36 @@ describe('icerikOzeti', () => {
     );
   });
 });
+
+describe('cihaz olay günlüğü (özet)', () => {
+  const olay = (cihaz: string, seq: number) => ({
+    id: `${cihaz}:${seq}`,
+    cihaz,
+    seq,
+    hlc: `${String(1000 + seq).padStart(15, '0')}-0000-${cihaz}`,
+    tur: 'kildim',
+    tarih: '2026-10-21',
+    vakit: 'ogle',
+  });
+  const A = 'aaaaaaaaaaaaaaaa';
+  const B = 'bbbbbbbbbbbbbbbb';
+
+  it('NÖBETÇİ: alan yoksa, boşsa ya da yalnız bozuk öğe taşıyorsa özet DEĞİŞMEZ (eski cihazlarla ping-pong yok)', () => {
+    const taban = icerikOzeti(payload());
+    expect(icerikOzeti(payload({ cihazOlaylari: [] }))).toBe(taban);
+    expect(icerikOzeti(payload({ cihazOlaylari: [{ id: 'bozuk' }] }))).toBe(taban);
+    expect(esitlemeIcerigineIndir(payload()).cihazOlaylari).toBeUndefined();
+  });
+
+  it('kimlik kümesi yakınsar: sıra ve tekrar fark etmez; yeni olay özeti değiştirir', () => {
+    const a = payload({ cihazOlaylari: [olay(A, 1), olay(B, 1)] });
+    const b = payload({ cihazOlaylari: [olay(B, 1), olay(A, 1), olay(A, 1)] });
+    expect(icerikOzeti(a)).toBe(icerikOzeti(b));
+    expect(icerikOzeti(payload({ cihazOlaylari: [olay(A, 1), olay(B, 1), olay(A, 2)] }))).not.toBe(icerikOzeti(a));
+  });
+
+  it('normalize kurcalanmış olayları atar', () => {
+    const n = icerikNormalizeEt({ ...payload(), cihazOlaylari: [olay(A, 1), { ...olay(A, 2), id: 'x' }] });
+    expect((n?.cihazOlaylari ?? []).map((o) => (o as { id: string }).id)).toEqual([`${A}:1`]);
+  });
+});

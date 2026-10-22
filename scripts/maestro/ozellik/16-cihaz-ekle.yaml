@@ -1,0 +1,34 @@
+# tohum: ozellik
+# Cihaz ekleyin (telefon ↔ tablet): telefonda varsayılan "Kodu okutun"; "Bu cihazda kod gösterin"
+# sekmesinde geçici sırlı kare kod (emülatörün 10.0.2.x adresiyle). Tarayıcı açılmaz.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Cihazlarım\\..*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Cihazlarım\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- scrollUntilVisible:
+    element:
+      id: "cihazlarim-cihaz-ekle"
+    direction: DOWN
+    timeout: 60000
+    waitToSettleTimeoutMs: 1500
+    centerElement: true
+- takeScreenshot: ozk/35-cihazlarim-tablet
+- tapOn:
+    id: "cihazlarim-cihaz-ekle"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/36-cihaz-ekle-okut
+- tapOn:
+    id: "cihaz-ekle-goster"
+- waitForAnimationToEnd:
+    timeout: 4000
+- takeScreenshot: ozk/37-cihaz-ekle-kod

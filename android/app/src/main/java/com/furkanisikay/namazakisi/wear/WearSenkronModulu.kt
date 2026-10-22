@@ -13,6 +13,7 @@ import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 import com.furkanisikay.namazakisi.kildim.KildimKuyrugu
 import com.furkanisikay.namazakisi.cekirdek.CihazDurumKurallari
+import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
 
 /**
  * JS ↔ Wear OS köprüsü (issue #269). JS adı: `NativeModules.WearSenkron`.
@@ -130,6 +131,20 @@ class WearSenkronModulu(reactContext: ReactApplicationContext) : ReactContextBas
                 }
         } catch (_: Throwable) {
             promise.resolve(null)
+        }
+    }
+
+    /**
+     * Cihaz ağından (tablet ↔ telefon) gelen "Kıldım": ortak kuyruğa `cihaz` kaynağıyla yazar.
+     * Kaynak SABİTTİR (JS başka kaynak adına yazamaz); geçersiz tarih/vakit false döner.
+     * `KildimKuyrugu.ekle` o vaktin gerçek alarmlarını da susturur (diğer kaynaklarla aynı).
+     */
+    @ReactMethod
+    fun cihazdanKildimEkle(tarih: String, vakit: String, promise: Promise) {
+        try {
+            promise.resolve(KildimKuyrugu.ekle(reactApplicationContext, tarih, vakit, KildimKuyruguKurallari.KAYNAK_CIHAZ))
+        } catch (e: Exception) {
+            promise.resolve(false)
         }
     }
 

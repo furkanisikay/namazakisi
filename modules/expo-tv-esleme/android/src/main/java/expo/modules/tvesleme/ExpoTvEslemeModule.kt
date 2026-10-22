@@ -24,6 +24,9 @@ class ExpoTvEslemeModule : Module() {
     @Volatile
     private var bekleyenOkuma: Promise? = null
 
+    @Volatile
+    private var dinleyici: CihazDinleyici? = null
+
     override fun definition() = ModuleDefinition {
         Name("ExpoTvEsleme")
 
@@ -73,6 +76,43 @@ class ExpoTvEslemeModule : Module() {
             if (yol !in setOf("/esle", "/esle-durum", "/esitle")) throw IllegalArgumentException("Bilinmeyen yol")
             val (kod, yanit) = istekGonder(adres, port, yol, govde, zamanAsimiMs)
             mapOf("kod" to kod, "govde" to yanit)
+        }
+
+        // Cihaz ağı dinleyicisi (tablet ↔ telefon): YALNIZ ön planda (JS AppState). Karar ve
+        // şifre JS'te; native kapıları uygular ve isteği `onCihazIstegi` olayıyla verir.
+        Events("onCihazIstegi")
+
+        AsyncFunction("dinleyiciBaslat") { kimlik: String, ad: String, port: Int ->
+            if (!Regex("^[0-9a-f]{16}$").matches(kimlik)) throw IllegalArgumentException("Kimlik")
+            val baglam = appContext.reactContext ?: throw IllegalStateException("Bağlam yok")
+            val d = dinleyici ?: CihazDinleyici(baglam) { sendEvent("onCihazIstegi", it) }.also { dinleyici = it }
+            d.baslat(kimlik, ad, port.coerceIn(1024, 65535))
+        }
+
+        /** Bu cihazın yerel ağ IPv4'ü (QR'a yazılır); Wi-Fi/Ethernet yoksa null. */
+        AsyncFunction("yerelAdres") {
+            try {
+                java.net.NetworkInterface.getNetworkInterfaces().toList()
+                    .filter { it.isUp && !it.isLoopback && !it.isVirtual }
+                    .sortedBy { if (it.name.startsWith("wlan") || it.name.startsWith("eth")) 0 else 1 }
+                    .flatMap { it.inetAddresses.toList() }
+                    .firstOrNull { it is java.net.Inet4Address && ozelIpv4Mu(it.hostAddress ?: "") }
+                    ?.hostAddress
+            } catch (_: Exception) {
+                null
+            }
+        }
+
+        AsyncFunction("dinleyiciDurdur") {
+            dinleyici?.durdur()
+        }
+
+        AsyncFunction("dinleyiciYanitla") { id: String, kod: Int, govde: String ->
+            dinleyici?.yanitla(id, kod, govde)
+        }
+
+        OnDestroy {
+            dinleyici?.durdur()
         }
 
         // mDNS keşfi (NsdManager SİSTEM servisidir; multicast kilidi / CHANGE_WIFI_MULTICAST_STATE

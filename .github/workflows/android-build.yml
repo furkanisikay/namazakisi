@@ -428,17 +428,20 @@ jobs:
       # yalnız bu komut satırında: gradle.properties (4 ABI) değişmez, böylece
       # debug APK + emülatör ekran görüntüsü hatları (x86_64) ve Play AAB'si
       # (Play kendisi böler) etkilenmez.
+      #
+      # Yerel modüllerin JVM testleri (saf `cekirdek/`: cami kararı, sayaç kısa metni, Google yetki,
+      # cihaz ağı dinleyicisi) da burada koşar — eskiden CI'da HİÇ koşmuyordu.
       - name: 🏗️ Build APK
         working-directory: android
         run: |
           chmod +x gradlew
           if [ "${{ inputs.build_type }}" == "release" ]; then
             echo "🚀 Release APK build ediliyor (armeabi-v7a, arm64-v8a)..."
-            ./gradlew :app:testReleaseUnitTest assembleRelease --no-daemon \
+            ./gradlew :app:testReleaseUnitTest :expo-cami-geofence:testReleaseUnitTest :expo-countdown-notification:testReleaseUnitTest :expo-google-yetki:testReleaseUnitTest :expo-tv-esleme:testReleaseUnitTest assembleRelease --no-daemon \
               -PreactNativeArchitectures=armeabi-v7a,arm64-v8a
           else
             echo "🔧 Debug APK build ediliyor..."
-            ./gradlew :app:testDebugUnitTest assembleDebug --no-daemon
+            ./gradlew :app:testDebugUnitTest :expo-cami-geofence:testDebugUnitTest :expo-countdown-notification:testDebugUnitTest :expo-google-yetki:testDebugUnitTest :expo-tv-esleme:testDebugUnitTest assembleDebug --no-daemon
           fi
 
       - name: ↩️ Imza yamasini geri al (Release)

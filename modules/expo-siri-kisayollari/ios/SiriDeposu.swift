@@ -152,6 +152,11 @@ public final class SiriDeposu: @unchecked Sendable {
         return kilitli { kuyrukOku().map { SiriBekleyenKildim(tarih: $0.tarih, vakit: $0.vakit) } }
     }
 
+    /// Cihaz agindan (tablet <-> telefon) gelen "Kildim"in kaynagi. Android
+    /// `KildimKuyruguKurallari.KAYNAK_CIHAZ` ile ayni; ortak fikstur
+    /// `android/app/src/test/resources/kildim-kaynaklari.json` (Swift testi bunu okur).
+    public static let cihazKaynagi = "cihaz"
+
     /// Intent: "Kildim" ekler. Ayni tarih + vakit zaten bekliyorsa ikinci kez eklemez.
     @discardableResult
     public func kildimEkle(tarih: String, vakit: String, kaynak: String, simdiMs: Int64) -> Bool {

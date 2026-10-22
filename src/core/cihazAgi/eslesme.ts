@@ -17,11 +17,15 @@
  * `eslesmeQrCoz` `null` döner ve ekran "TV uygulamasını güncelleyin" der.
  */
 import { ozelIpv4Mu } from '../tv/eslemeBaglantisi';
-import { base64UrlCoz } from './kanal';
+import { base64UrlCoz, base64Yaz } from './kanal';
 
 export const ESLESME_SURUMU = 2;
 
 export interface EslesmeQr {
+    /** `tv`: Android TV panosu (yalnız alıcı). `cihaz`: tablet/telefon (çift yönlü). */
+    tur: 'tv' | 'cihaz';
+    /** Yalnız `cihaz` QR'ında: gösteren cihazın türü (`t`), Cihazlarım'da doğru simge/ad için. */
+    aliciTuru?: 'tablet' | 'telefon';
     adres: string;
     port: number;
     aliciKimlik: string;
@@ -29,7 +33,7 @@ export interface EslesmeQr {
     aliciAdi: string;
 }
 
-const DESEN = /^namazakisi:\/\/tv\/?\?(.*)$/i;
+const DESEN = /^namazakisi:\/\/(tv|cihaz)\/?\?(.*)$/i;
 
 function sorgu(metin: string): Record<string, string> {
     const sonuc: Record<string, string> = {};
@@ -49,14 +53,15 @@ function sorgu(metin: string): Record<string, string> {
 export function tvQrSurumu(metin: string | null | undefined): number | null {
     const m = metin ? DESEN.exec(metin.trim()) : null;
     if (!m) return null;
-    const v = Number(sorgu(m[1]).v);
+    const v = Number(sorgu(m[2]).v);
     return Number.isInteger(v) ? v : null;
 }
 
 export function eslesmeQrCoz(metin: string | null | undefined): EslesmeQr | null {
     const m = metin ? DESEN.exec(metin.trim()) : null;
     if (!m) return null;
-    const s = sorgu(m[1]);
+    const s = sorgu(m[2]);
+    const tur = m[1].toLowerCase() === 'cihaz' ? 'cihaz' : 'tv';
     if (s.v !== String(ESLESME_SURUMU)) return null;
     if (!s.a || !ozelIpv4Mu(s.a)) return null;
     if (!/^\d{4,5}$/.test(s.p ?? '')) return null;
@@ -71,8 +76,25 @@ export function eslesmeQrCoz(metin: string | null | undefined): EslesmeQr | null
         return null;
     }
     if (sir.length !== 32) return null;
-    const ad = (s.d ?? '').replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 40) || 'Televizyon';
-    return { adres: s.a, port, aliciKimlik: s.i, sir, aliciAdi: ad };
+    const ad = (s.d ?? '').replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 40) || (tur === 'tv' ? 'Televizyon' : 'Tablet');
+    return {
+        tur,
+        ...(tur === 'cihaz' ? { aliciTuru: s.t === 'telefon' ? ('telefon' as const) : ('tablet' as const) } : {}),
+        adres: s.a,
+        port,
+        aliciKimlik: s.i,
+        sir,
+        aliciAdi: ad,
+    };
+}
+
+/** Çift yönlü cihaz (tablet/telefon) QR'ı: `namazakisi://cihaz?v=2&a&p&i&s&d` (sır base64url, dolgusuz). */
+export function cihazQrYaz(q: Omit<EslesmeQr, 'tur'>): string {
+    const sir = base64Yaz(q.sir).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    return (
+        `namazakisi://cihaz?v=${ESLESME_SURUMU}&a=${q.adres}&p=${q.port}&i=${q.aliciKimlik}` +
+        `&s=${sir}&d=${encodeURIComponent(q.aliciAdi.slice(0, 40))}&t=${q.aliciTuru ?? 'tablet'}`
+    );
 }
 
 export type EslesmeDurumu =

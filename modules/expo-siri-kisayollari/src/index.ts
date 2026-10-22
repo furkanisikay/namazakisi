@@ -62,6 +62,8 @@ export interface SiriKildimKuyrugu {
     bekleyenleriAl(): Promise<string>;
     tamamlandi(id: string): Promise<void>;
     basarisiz(id: string): Promise<void>;
+    /** Cihaz ağından gelen "Kıldım" (kaynak sabit `cihaz`). Eski ikilide yok → opsiyonel. */
+    cihazdanKildimEkle?(tarih: string, vakit: string): Promise<boolean>;
 }
 
 /** iOS'ta Siri çizelgesi yazıcısı; modül yoksa `null`. */
@@ -268,4 +270,22 @@ export async function saatNafileKildimleriniAl(): Promise<SaatNafileKildimi[]> {
     } catch {
         return [];
     }
+}
+
+// ---- Cihaz ağı dinleyicisi (iPad ↔ iPhone; YALNIZ ön planda) ----
+
+export interface IosDinleyiciKoprusu {
+    dinleyiciBaslat(kimlik: string, ad: string, port: number): Promise<number>;
+    dinleyiciDurdur(): Promise<void>;
+    dinleyiciYanitla(id: string, kod: number, govde: string): Promise<void>;
+    yerelAdres(): Promise<string | null>;
+    addListener(olay: 'onCihazIstegi', dinleyici: (veri: { id: string; yol: string; govde: string; ip?: string }) => void): { remove(): void };
+}
+
+/** iOS dinleyici köprüsü; eski ikilide `null`. */
+export function iosDinleyici(): IosDinleyiciKoprusu | null {
+    const m = modul() as unknown as Partial<IosDinleyiciKoprusu> | null;
+    return m?.dinleyiciBaslat && m.dinleyiciYanitla && m.dinleyiciDurdur && m.yerelAdres && m.addListener
+        ? (m as IosDinleyiciKoprusu)
+        : null;
 }

@@ -73,6 +73,7 @@ repositories {
 dependencies {
   implementation project(':expo-modules-core')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.23"
+  testImplementation "junit:junit:4.13.2"
   // TV eşleştirme QR'ı KENDİ tarayıcımızla okunur: CameraX önizleme + ZXing çözücü
   // (Apache-2.0, saf Java). Google kod tarayıcı / ML Kit BİLİNÇLİ olarak KULLANILMADI:
   // ML Kit cihaz/uygulama/kullanım verisini Google'a gönderir (Play Data Safety beyanı

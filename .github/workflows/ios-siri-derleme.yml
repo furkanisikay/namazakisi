@@ -76,7 +76,8 @@ jobs:
           "$RUNNER_TEMP/siri-test" \
             android/app/src/test/resources/widget-ornek.json \
             modules/expo-siri-kisayollari/test/siri-ornek.json \
-            modules/expo-siri-kisayollari/test/widget-ios-ornek.json
+            modules/expo-siri-kisayollari/test/widget-ios-ornek.json \
+            android/app/src/test/resources/kildim-kaynaklari.json
 
       # Gerçek alarm (AlarmKit, issue #74): UUID + plan kimliği — JS/Kotlin ile ortak fikstür.
       - name: 🧪 AlarmKurallari + AlarmDeposu (ortak fikstür)

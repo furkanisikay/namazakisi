@@ -67,6 +67,7 @@
     "expo-web-browser": "~57.0.3",
     "lottie-react-native": "~7.3.8",
     "nativewind": "^4.2.7",
+    "qrcode-generator": "2.0.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",

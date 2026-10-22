@@ -47,9 +47,16 @@ object KildimKuyruguKurallari {
      * onaydan sonra (onay kimliği eşleşince) yazılır.
      */
     const val KAYNAK_ASISTAN = "asistan"
+    /**
+     * Eşleşik başka cihazdan (tablet ↔ telefon, cihaz ağı) gelen "Kıldım" olayı. Şifreli kanal
+     * (üye anahtarı) çözüldükten SONRA JS yazar (`WearSenkronModulu.cihazdanKildimEkle`).
+     */
+    const val KAYNAK_CIHAZ = "cihaz"
+    /** Liste üç dilde ikizdir: JS `core/kildim/kildimKaynaklari.ts`, Swift `SiriDeposu.kaynaklar`;
+     *  ortak fikstür `src/test/resources/kildim-kaynaklari.json`. */
     val KAYNAKLAR = setOf(
         KAYNAK_WEAR, KAYNAK_WIDGET, KAYNAK_KUTU, KAYNAK_KISAYOL, KAYNAK_SAYAC, KAYNAK_BILDIRIM,
-        KAYNAK_OTOMASYON, KAYNAK_ASISTAN,
+        KAYNAK_OTOMASYON, KAYNAK_ASISTAN, KAYNAK_CIHAZ,
     )
 
     private val GECERLI_VAKITLER = setOf("imsak", "ogle", "ikindi", "aksam", "yatsi")

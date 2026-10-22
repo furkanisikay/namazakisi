@@ -3,10 +3,9 @@
  *
  * İki parça, ikisi de opsiyonel:
  * - `durum`: gönderenin ANLIK GÖRÜNTÜSÜ (alıcı en sonuncuyu tutar). TV bugün bunu kullanır.
- * - `olaylar`: KİMLİKLİ, idempotent olay günlüğü (`{id, tur, …}`). Alıcı kimliğe göre BİRLEŞİM
- *   alır; aynı olay iki kez gelirse zararsızdır. Çift yönlü cihazlar (tablet ↔ telefon) "Kıldım"ı
- *   bununla taşıyacak ve alıcıda ortak "Kıldım" kuyruğuna bağlanacak (`KildimKuyrugu`,
- *   `kildimAksiyonunuIsle`) — o alıcı tarafı henüz yazılmadı (taşıma araştırması sürüyor).
+ * - `olaylar`: KİMLİKLİ, idempotent olay günlüğü (`olayGunlugu.ts`): alıcı kimliğe göre BİRLEŞİM
+ *   alır; aynı olay iki kez gelirse zararsızdır. Çift yönlü cihazlar (tablet ↔ telefon) "Kıldım"ı,
+ *   kaza hareketini ve ayarı bununla taşır.
  * - `sil: true`: gönderen eşleşmeyi kaldırdı → alıcı bu üyenin anahtarını siler.
  *
  * ZAMAN DAMGASI YOK (Wear dersi: aynı içerik her seferinde "yeni" sayılmasın; tekilleştirme
@@ -16,6 +15,7 @@
  * İkizi: TV `cekirdek/CihazYuku.kt`. Saf modül.
  */
 import type { VakitAdi } from '../types';
+import type { GunlukOlayi } from './olayGunlugu';
 
 export const YUK_SURUMU = 2;
 /** Gövde sınırı alıcıda 8 KB; yük bunun çok altında kalmalı (nöbetçi test ≤ 1 KB). */
@@ -39,20 +39,37 @@ export interface DurumAnlikGoruntusu {
     ramazan: boolean;
 }
 
-export interface CihazOlayi {
-    /** Küresel benzersiz (gönderen + yerel sayaç / rastgele); alıcı bununla tekilleştirir. */
-    id: string;
-    tur: 'kildim';
-    /** Namaz günü (YYYY-MM-DD) ve vakit. */
-    tarih: string;
-    vakit: VakitAdi;
-}
+/** Olay günlüğünün tel biçimi (`olayGunlugu.ts`; TV yalnız `kildim`i okur, gerisini atlar). */
+export type CihazOlayi = GunlukOlayi;
 
 export interface CihazAgiYuku {
     v: number;
     durum?: DurumAnlikGoruntusu;
     olaylar?: CihazOlayi[];
     sil?: true;
+    /** Çift yönlü cihaz: gönderenin olay günlüğünde bildiği aralık (karşı taraf eksiğini yollar). */
+    bilinen?: Record<string, number>;
+    /** Çift yönlü cihaz: gönderenin şu anki dinleme portu (alıcı kimliği doğrulayınca adresi tazeler). */
+    port?: number;
+}
+
+/** Çift yönlü alıcıda düz yükü güvenle çözer (TV'nin `CihazYuku.kt` ayrıştırıcısının JS ikizi). */
+export function yukCoz(duz: string | null): { olaylar: unknown[]; bilinen: Record<string, number>; sil: boolean; port: number | null } | null {
+    if (!duz) return null;
+    try {
+        const o = JSON.parse(duz) as Record<string, unknown>;
+        if (!o || typeof o !== 'object' || o.v !== YUK_SURUMU) return null;
+        const bilinen: Record<string, number> = {};
+        if (o.bilinen && typeof o.bilinen === 'object') {
+            for (const [c, n] of Object.entries(o.bilinen as Record<string, unknown>)) {
+                if (/^[0-9a-f]{16}$/.test(c) && Number.isInteger(n) && (n as number) >= 0) bilinen[c] = n as number;
+            }
+        }
+        const port = Number.isInteger(o.port) && (o.port as number) >= 1024 && (o.port as number) <= 65535 ? (o.port as number) : null;
+        return { olaylar: Array.isArray(o.olaylar) ? o.olaylar.slice(0, 200) : [], bilinen, sil: o.sil === true, port };
+    } catch {
+        return null;
+    }
 }
 
 const VAKITLER: readonly VakitAdi[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
@@ -81,6 +98,8 @@ export function yukuYaz(yuk: CihazAgiYuku): string {
         ...(durum ? { durum } : {}),
         ...(yuk.olaylar && yuk.olaylar.length > 0 ? { olaylar: yuk.olaylar } : {}),
         ...(yuk.sil ? { sil: true } : {}),
+        ...(yuk.port ? { port: yuk.port } : {}),
+        ...(yuk.bilinen ? { bilinen: Object.fromEntries(Object.keys(yuk.bilinen).sort().map((k) => [k, yuk.bilinen![k]])) } : {}),
     });
 }
 

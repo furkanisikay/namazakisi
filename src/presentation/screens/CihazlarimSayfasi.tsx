@@ -22,6 +22,7 @@ import { alaniOku } from '../../domain/services/CihazDurumOkuyucu';
 import { AZAMI_DUGUM } from '../../core/cihazAgi/bagHaritasi';
 import { CihazAgiDeposu, type CihazUyeligi } from '../../data/local/CihazAgiDeposu';
 import { TvSenkronServisi } from '../../domain/services/TvSenkronServisi';
+import { CihazEsServisi, buCihazinTuru, cihazAgiDinleyicisiVarMi } from '../../domain/services/CihazEsServisi';
 import { esitlemeVaadi, haritaRozeti, saatDurumMetni, uyelikDurumMetni, type SaatDurumu } from '../../core/cihazAgi/cihazlarimMetni';
 
 type Renkler = ReturnType<typeof useRenkler>;
@@ -32,6 +33,9 @@ export const CihazlarimSayfasi: React.FC = () => {
     const renkler = useRenkler();
     const navigation = useNavigation() as unknown as { navigate: (ekran: string) => void };
     const [liste, setListe] = React.useState<CihazUyeligi[] | null>(null);
+    // Çift yönlü eşler (tablet / telefon): TV'lerden ayrı bölüm.
+    const [esler, setEsler] = React.useState<CihazUyeligi[]>([]);
+    const [kaldirilacakEs, setKaldirilacakEs] = React.useState<CihazUyeligi | null>(null);
     const [simdi, setSimdi] = React.useState(() => Date.now());
     const [kaldirilacak, setKaldirilacak] = React.useState<CihazUyeligi | null>(null);
     // Saat durumu GERÇEK okumadır (Wear Data Layer bağlı düğüm): "saatiniz eşleşir" cümlesi
@@ -41,6 +45,7 @@ export const CihazlarimSayfasi: React.FC = () => {
     const oku = React.useCallback(async () => {
         const l = await CihazAgiDeposu.liste().catch(() => [] as CihazUyeligi[]);
         setListe(l.filter((u) => u.tur === 'tv').sort((a, b) => a.eklenmeMs - b.eklenmeMs));
+        setEsler(l.filter((u) => u.tur === 'tablet' || u.tur === 'telefon').sort((a, b) => a.eklenmeMs - b.eklenmeMs));
         setSimdi(Date.now());
     }, []);
 
@@ -56,6 +61,12 @@ export const CihazlarimSayfasi: React.FC = () => {
                 .catch(() => undefined);
             TvSenkronServisi.getInstance()
                 .gonder()
+                .then(() => {
+                    if (!iptal) void oku();
+                })
+                .catch(() => undefined);
+            CihazEsServisi.getInstance()
+                .esitle()
                 .then(() => {
                     if (!iptal) void oku();
                 })
@@ -98,6 +109,10 @@ export const CihazlarimSayfasi: React.FC = () => {
             const m = uyelikDurumMetni(u.durum, u.sonEsitlemeMs, simdi);
             return { kimlik: u.aliciKimlik, tur: 'tv', ad: u.aliciAdi, rozet: haritaRozeti(u.durum, u.sonEsitlemeMs, simdi), ton: m.ton };
         });
+        for (const e of esler) {
+            const m = uyelikDurumMetni(e.durum, e.sonEsitlemeMs, simdi);
+            cihazlar.push({ kimlik: e.aliciKimlik, tur: e.tur === 'telefon' ? 'telefon' : 'tablet', ad: e.aliciAdi, rozet: haritaRozeti(e.durum, e.sonEsitlemeMs, simdi), ton: m.ton });
+        }
         if (saat === 'esli') cihazlar.push({ kimlik: 'saat', tur: 'saat', ad: 'Akıllı saat', rozet: 'bağlı', ton: 'iyi' });
         if (cihazlar.length > AZAMI_DUGUM) {
             const kalan = cihazlar.length - (AZAMI_DUGUM - 1);
@@ -106,7 +121,7 @@ export const CihazlarimSayfasi: React.FC = () => {
         return cihazlar.length < AZAMI_DUGUM
             ? [...cihazlar, { kimlik: 'ekle', tur: 'ekle', ad: 'TV ekleyin', rozet: 'kare kodu okutun', ton: 'notr', onPress: tvEkle }]
             : cihazlar;
-    }, [liste, saat, simdi, tvEkle]);
+    }, [liste, esler, saat, simdi, tvEkle]);
 
     return (
         <ScrollView
@@ -117,7 +132,7 @@ export const CihazlarimSayfasi: React.FC = () => {
         >
             <View className="px-1 pt-2 pb-5 mb-1" style={kartStili(renkler)}>
                 <View className="px-3 pt-3">
-                    <BagHaritasi dugumler={dugumler} />
+                    <BagHaritasi dugumler={dugumler} merkezAdi={buCihazinTuru() === 'tablet' ? 'Bu tablet' : 'Bu telefon'} merkezTablet={buCihazinTuru() === 'tablet'} />
                 </View>
             </View>
             <Text testID="cihazlarim-vaat" className="text-sm mt-3 mb-6 px-1" style={{ color: renkler.metinIkincil, lineHeight: 20 }}>
@@ -170,6 +185,61 @@ export const CihazlarimSayfasi: React.FC = () => {
                 </Text>
             </TouchableOpacity>
 
+            <Text className="text-lg font-bold mt-8 mb-3 px-1" style={{ color: renkler.metin }} accessibilityRole="header">
+                Tablet ve telefonlar
+            </Text>
+            {esler.length === 0 ? (
+                <Text className="text-sm mb-3 px-1" style={{ color: renkler.metinIkincil, lineHeight: 20 }}>
+                    Tabletinizi ya da ikinci telefonunuzu ekleyin: birinde işaretlediğiniz namaz öbürüne geçer.
+                </Text>
+            ) : (
+                <View style={{ gap: 12 }}>
+                    {esler.map((e) => {
+                        const d = uyelikDurumMetni(e.durum, e.sonEsitlemeMs, simdi);
+                        const tonRengi = d.ton === 'iyi' ? renkler.basarili : d.ton === 'sorun' ? renkler.hata : renkler.metinIkincil;
+                        return (
+                            <View key={e.aliciKimlik} testID={`es-${e.aliciKimlik}`} className="p-4 flex-row items-center" style={kartStili(renkler)}>
+                                <View className="w-11 h-11 rounded-2xl items-center justify-center mr-3" style={{ backgroundColor: tonRengi + '20' }}>
+                                    <FontAwesome5 name={e.tur === 'telefon' ? 'mobile-alt' : 'tablet-alt'} size={17} color={tonRengi} />
+                                </View>
+                                <View className="flex-1 mr-2">
+                                    <Text className="text-base font-semibold" style={{ color: renkler.metin }} numberOfLines={1}>
+                                        {e.aliciAdi}
+                                    </Text>
+                                    <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
+                                        {haritaRozeti(e.durum, e.sonEsitlemeMs, simdi)}
+                                    </Text>
+                                </View>
+                                <TouchableOpacity
+                                    className="px-3 rounded-xl items-center justify-center"
+                                    style={{ minHeight: 44 }}
+                                    onPress={() => setKaldirilacakEs(e)}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={`${e.aliciAdi} cihazını kaldırın`}
+                                >
+                                    <FontAwesome5 name="unlink" size={13} color={renkler.metinIkincil} />
+                                </TouchableOpacity>
+                            </View>
+                        );
+                    })}
+                </View>
+            )}
+            {cihazAgiDinleyicisiVarMi() && (
+                <TouchableOpacity
+                    testID="cihazlarim-cihaz-ekle"
+                    className="flex-row items-center justify-center rounded-2xl mt-4 px-5"
+                    style={{ minHeight: 52, backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
+                    onPress={() => navigation.navigate('CihazEkle')}
+                    accessibilityRole="button"
+                    accessibilityLabel="Tablet ya da telefon ekleyin"
+                >
+                    <FontAwesome5 name="plus" size={14} color={renkler.metin} style={{ marginRight: 10 }} />
+                    <Text className="text-base font-bold" style={{ color: renkler.metin }}>
+                        Tablet ya da telefon ekleyin
+                    </Text>
+                </TouchableOpacity>
+            )}
+
             {Platform.OS === 'android' && saat !== 'yok' && (
                 <>
                     <Text className="text-lg font-bold mt-8 mb-3 px-1" style={{ color: renkler.metin }} accessibilityRole="header">
@@ -202,6 +272,22 @@ export const CihazlarimSayfasi: React.FC = () => {
                 </>
             )}
 
+            <BildirimModali
+                gorunur={kaldirilacakEs != null}
+                tip="bilgi"
+                baslik="Bu cihaz kaldırılsın mı?"
+                mesaj={kaldirilacakEs ? `${kaldirilacakEs.aliciAdi} ile eşitleme durur; bağlantı anahtarı iki tarafta da silinir.` : ''}
+                birincilEtiket="Kaldırın"
+                birincilIkon="unlink"
+                tehlikeli
+                onBirincil={() => {
+                    const e = kaldirilacakEs;
+                    setKaldirilacakEs(null);
+                    if (e) void CihazEsServisi.getInstance().kaldir(e.aliciKimlik).then(() => { kisaBildirimGoster(`${e.aliciAdi} kaldırıldı.`); void oku(); });
+                }}
+                kapatEtiketi="Vazgeçin"
+                onKapat={() => setKaldirilacakEs(null)}
+            />
             <BildirimModali
                 gorunur={kaldirilacak != null}
                 tip="bilgi"

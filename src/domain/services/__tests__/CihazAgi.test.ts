@@ -188,4 +188,99 @@ describe('TV durum gönderimi', () => {
         expect(JSON.parse(tv.alinan[0])).toEqual({ v: 2, sil: true });
         expect(await CihazAgiDeposu.liste()).toEqual([]);
     });
+
+    it('TV kapalıyken kaldırma yine yerelde siler (sil gönderilemese de)', async () => {
+        await eslesmisKur();
+        mockGonder.mockRejectedValue(new Error('ECONNREFUSED'));
+        const { TvSenkronServisi } = require('../TvSenkronServisi');
+        await TvSenkronServisi.getInstance().kaldir(TV);
+        expect(await CihazAgiDeposu.liste()).toEqual([]);
+    });
+
+    it('Ramazan = iftar ya da sahur sayacı açık; konum kaydı yoksa yükte konum/ad yok', async () => {
+        const tv = sahteTv();
+        await eslesmisKur();
+        await AsyncStorage.setItem('sahur_sayac_ayarlari', JSON.stringify({ aktif: true }));
+        await AsyncStorage.removeItem('@namaz_akisi/konum_ayarlari');
+        const { TvSenkronServisi } = require('../TvSenkronServisi');
+        await TvSenkronServisi.getInstance().gonder(true);
+        const d = JSON.parse(tv.alinan[0]).durum;
+        expect(d.ramazan).toBe(true);
+        expect(d.ad).toBeUndefined();
+        expect(d.konum).toBeUndefined();
+    });
+
+    it('Wi-Fi/Ethernet yoksa hiç denenmez ("atlandi"); eşleşik TV yoksa boş tur', async () => {
+        const { TvSenkronServisi } = require('../TvSenkronServisi');
+        expect(await TvSenkronServisi.getInstance().gonder(true)).toEqual({});
+        await eslesmisKur();
+        const ni = require('@react-native-community/netinfo').default;
+        ni.fetch.mockResolvedValueOnce({ isConnected: true, type: 'cellular' });
+        expect(await TvSenkronServisi.getInstance().gonder(true)).toEqual({ [TV]: 'atlandi' });
+        expect(mockGonder).not.toHaveBeenCalled();
+    });
+
+    it('kılınmışlık değişince (yuva "tv") kısa beklemeyle tek gönderim', async () => {
+        jest.useFakeTimers();
+        try {
+            const { kayitDegistiDinleyicisiEkle } = require('../../../data/local/LocalNamazServisi');
+            const { TvSenkronServisi } = require('../TvSenkronServisi');
+            const s = TvSenkronServisi.getInstance();
+            const gonder = jest.spyOn(s, 'gonder').mockResolvedValue({});
+            s.baslat();
+            s.baslat();
+            const cagri = (kayitDegistiDinleyicisiEkle as jest.Mock).mock.calls.filter((c) => c[0] === 'tv');
+            expect(cagri).toHaveLength(1);
+            cagri[0][1]();
+            cagri[0][1]();
+            jest.advanceTimersByTime(1600);
+            expect(gonder).toHaveBeenCalledTimes(1);
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+});
+
+describe('eşleştirme v2 — kenar durumlar', () => {
+    it('telefon adı: iPhone; Android markadan', () => {
+        const { telefonAdi } = require('../CihazEslesmeServisi');
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        expect(telefonAdi()).toBe('iPhone');
+        jest.replaceProperty(Platform, 'OS', 'android');
+        const sabitler = jest.spyOn(Platform, 'constants', 'get');
+        sabitler.mockReturnValue({ Brand: 'samsung' } as unknown as typeof Platform.constants);
+        expect(telefonAdi()).toBe('Samsung telefon');
+        sabitler.mockReturnValue({ Brand: '' } as unknown as typeof Platform.constants);
+        expect(telefonAdi()).toBe('Android telefon');
+    });
+
+    it('TV ulaşılamaz → "ulasilamadi"; kullanıcı iptal ederse "iptal"; TV "Hayır" → "red"', async () => {
+        const { esles } = require('../CihazEslesmeServisi');
+        mockGonder.mockRejectedValueOnce(new Error('ECONNREFUSED'));
+        expect(await esles(eslesmeQrCoz(QR)!, hizli)).toBe('ulasilamadi');
+
+        sahteTv(99);
+        expect(await esles(eslesmeQrCoz(QR)!, { ...hizli, iptalMi: () => true })).toBe('iptal');
+
+        mockGonder.mockImplementation(async (_a: string, _p: number, yol: string, govde: string) => {
+            const g = JSON.parse(govde);
+            if (yol === '/esle') return { kod: 202, govde: '' };
+            const iv = new Uint8Array(12).fill(4);
+            return { kod: 200, govde: JSON.stringify({ iv: base64Yaz(iv), ct: sifrele(base64UrlCoz(SIR), iv, esleYanitAad(TV, g.ist), JSON.stringify({ durum: 'red' })) }) };
+        });
+        expect(await esles(eslesmeQrCoz(QR)!, hizli)).toBe('red');
+    });
+
+    it('bozuk yanıt "gecersiz", süre dolarsa "zamanAsimi", beklenmeyen kod "ulasilamadi"', async () => {
+        const { esles } = require('../CihazEslesmeServisi');
+        mockGonder.mockImplementation(async (_a: string, _p: number, yol: string) => (yol === '/esle' ? { kod: 202, govde: '' } : { kod: 200, govde: 'bozuk' }));
+        expect(await esles(eslesmeQrCoz(QR)!, hizli)).toBe('gecersiz');
+        mockGonder.mockImplementation(async (_a: string, _p: number, yol: string) => (yol === '/esle' ? { kod: 202, govde: '' } : { kod: 403, govde: '' }));
+        expect(await esles(eslesmeQrCoz(QR)!, hizli)).toBe('zamanAsimi');
+        mockGonder.mockImplementation(async () => ({ kod: 500, govde: '' }));
+        expect(await esles(eslesmeQrCoz(QR)!, hizli)).toBe('ulasilamadi');
+        let t = 0;
+        mockGonder.mockImplementation(async (_a: string, _p: number, yol: string) => (yol === '/esle' ? { kod: 202, govde: '' } : Promise.reject(new Error('x'))));
+        expect(await esles(eslesmeQrCoz(QR)!, { bekle: async () => undefined, simdi: () => (t += 60_000) })).toBe('zamanAsimi');
+    });
 });

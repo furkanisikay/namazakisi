@@ -29,7 +29,7 @@ import { TelevizyonSahnesi, type SahneDurumu } from '../components/tv/Televizyon
 import { BildirimModali } from '../components/common/BildirimModali';
 import type { TvDerinParametreleri } from '../../navigation/ayarlarEkranlari';
 
-type Hata = Exclude<EslesmeSonucu, 'onay' | 'iptal'> | 'gecersizQr' | 'eskiTv' | 'tarayiciYok' | 'kameraIzniYok';
+type Hata = Exclude<EslesmeSonucu, 'onay' | 'iptal'> | 'gecersizQr' | 'cihazKodu' | 'eskiTv' | 'tarayiciYok' | 'kameraIzniYok';
 
 const HATA_METNI: Record<Hata, string> = {
     ulasilamadi:
@@ -39,6 +39,7 @@ const HATA_METNI: Record<Hata, string> = {
     zamanAsimi: "TV'de onay gelmedi. Kodu yeniden okutun ve TV'de kumandayla “Ekleyin”e basın.",
     red: "TV'de “Hayır” seçildi; bu telefon eklenmedi.",
     gecersizQr: "Bu kare kod Namaz Akışı TV'ye ait değil. TV'deki “Telefonunuzu ekleyin” ekranındaki kodu okutun.",
+    cihazKodu: 'Bu kod bir tablete ya da telefona ait. Ayarlar › Cihazlarım › Cihaz ekleyin sayfasından okutun.',
     eskiTv: "TV'deki Namaz Akışı eski. TV'de Google Play'den güncelleyin; o zamana kadar aşağıdaki 7 haneli kodla konumu aktarabilirsiniz.",
     tarayiciYok: "Kamera bu telefonda açılamadı. Aşağıdaki 7 haneli kodu TV'ye girin.",
     kameraIzniYok:
@@ -103,6 +104,11 @@ export const TelevizyonSayfasi: React.FC = () => {
         if (!qr) {
             setDurum('hata');
             setHata('gecersizQr');
+            return;
+        }
+        if (qr.tur !== 'tv') {
+            setDurum('hata');
+            setHata('cihazKodu');
             return;
         }
         setHata(null);

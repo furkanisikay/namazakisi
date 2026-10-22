@@ -51,6 +51,7 @@ export { TaniGeriBildirimSayfasi } from './TaniGeriBildirimSayfasi';
 export { SaatAyarlariSayfasi } from './SaatAyarlariSayfasi';
 export { TelevizyonSayfasi } from './TelevizyonSayfasi';
 export { CihazlarimSayfasi } from './CihazlarimSayfasi';
+export { CihazEkleSayfasi } from './CihazEkleSayfasi';
 export { KazaGecmisiSayfasi } from './Kaza/KazaGecmisiSayfasi';
 export { KazaOtomatikAyarSayfasi } from './Kaza/KazaOtomatikAyarSayfasi';
 export { KazaTemizlikSayfasi } from './Kaza/KazaTemizlikSayfasi';

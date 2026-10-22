@@ -8,4 +8,6 @@ const tvyeGonder = jest.fn().mockResolvedValue('{"ok":true}');
 const yerelIstek = jest.fn().mockRejectedValue(new Error('Modül yok'));
 const alicilariBul = jest.fn().mockResolvedValue([]);
 
-module.exports = { tvEslemeModuluVarMi, qrOku, tvyeGonder, yerelIstek, alicilariBul };
+const androidDinleyici = jest.fn().mockReturnValue(null);
+
+module.exports = { tvEslemeModuluVarMi, qrOku, tvyeGonder, yerelIstek, alicilariBul, androidDinleyici };
