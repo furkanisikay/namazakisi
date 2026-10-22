@@ -20,8 +20,9 @@ import {
   EsitlemeAkisAdimi,
   EsitlemeAkisModali,
 } from '../../components/esitleme/EsitlemeAkisModali';
-import { esitlemeHataMetni, useEsitleme } from '../../hooks/useEsitleme';
+import { esitlemeBeklemeMetni, esitlemeHataMetni, useEsitleme } from '../../hooks/useEsitleme';
 import type { SaglayiciKimligi } from '../../../core/esitleme/esitlemeTipleri';
+import { EsitlemeSikligi, gorunurBeklemeMi } from '../../../core/esitleme/esitlemePolitikasi';
 
 /** "13.10.2026 14:05" — Intl'e bağlı değil (Hermes). */
 export function esitlemeZamaniniBicimle(iso: string | null): string {
@@ -30,6 +31,31 @@ export function esitlemeZamaniniBicimle(iso: string | null): string {
   if (Number.isNaN(t.getTime())) return 'Henüz eşitlenmedi';
   const iki = (n: number) => String(n).padStart(2, '0');
   return `${iki(t.getDate())}.${iki(t.getMonth() + 1)}.${t.getFullYear()} ${iki(t.getHours())}:${iki(t.getMinutes())}`;
+}
+
+/** Sıklık seçenekleri (ekran sırası). */
+export const SIKLIK_SECENEKLERI: readonly { deger: EsitlemeSikligi; etiket: string }[] = [
+  { deger: 'degisince', etiket: 'Değişince' },
+  { deger: 'ceyrek', etiket: '15 dakikada bir' },
+  { deger: 'saatlik', etiket: 'Saatte bir' },
+  { deger: 'gunluk', etiket: 'Günde bir' },
+  { deger: 'elle', etiket: 'Yalnız elle' },
+];
+
+/** Seçili sıklığın tek cümlelik açıklaması. */
+export function siklikAciklamasi(siklik: EsitlemeSikligi): string {
+  switch (siklik) {
+    case 'degisince':
+      return 'Bir namazı işaretlediğinizde hemen, ayrıca 15 dakikada bir eşitlenir.';
+    case 'ceyrek':
+      return 'Uygulama açılınca ve 15 dakikada bir eşitlenir.';
+    case 'saatlik':
+      return 'Saatte bir eşitlenir.';
+    case 'gunluk':
+      return 'Günde bir eşitlenir.';
+    default:
+      return 'Yalnız "Şimdi eşitleyin"e dokunduğunuzda eşitlenir.';
+  }
 }
 
 /** Akışta kalıp kullanıcıya gösterilen (eşitlemeyi AÇMAYAN) hatalar. */
@@ -240,6 +266,20 @@ export const EsitlemeSayfasi: React.FC = () => {
                     Son eşitleme: {esitlemeZamaniniBicimle(e.durum.sonEsitleme)}
                   </Text>
                 </View>
+                {gorunurBeklemeMi(e.durum.sonBekleme) && e.durum.sonBekleme ? (
+                  <View className="flex-row items-start mb-3" testID="esitleme-bekleme">
+                    <FontAwesome5
+                      name="hourglass-half"
+                      size={14}
+                      color={renkler.metinIkincil}
+                      style={{ marginTop: 3 }}
+                      solid
+                    />
+                    <Text className="text-sm leading-5 ml-2 flex-1" style={{ color: renkler.metin }}>
+                      {esitlemeBeklemeMetni(e.durum.sonBekleme)}
+                    </Text>
+                  </View>
+                ) : null}
                 {e.durum.sonHata ? (
                   <View className="flex-row items-start mb-3">
                     <FontAwesome5
@@ -289,10 +329,85 @@ export const EsitlemeSayfasi: React.FC = () => {
                     </>
                   )}
                 </TouchableOpacity>
-                <Text className="text-xs leading-4 mt-3" style={{ color: renkler.metinIkincil }}>
-                  Uygulama açıldığında ve arka planda aşağı yukarı 15 dakikada bir kendiliğinden eşitlenir. İnternet
-                  yokken bekler, sonra yeniden dener.
+              </View>
+            )}
+
+            {e.durum.aktif && (
+              <View className="rounded-2xl p-5 mb-4" style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24 }}>
+                <View className="flex-row items-center mb-3">
+                  <View
+                    className="w-9 h-9 rounded-xl items-center justify-center mr-3"
+                    style={{ backgroundColor: renkler.birincil + '20' }}
+                  >
+                    <FontAwesome5 name="clock" size={15} color={renkler.birincil} solid />
+                  </View>
+                  <Text className="text-base font-bold flex-1" style={{ color: renkler.metin }}>
+                    Otomatik eşitleme
+                  </Text>
+                </View>
+                <View className="flex-row flex-wrap" accessibilityRole="radiogroup">
+                  {SIKLIK_SECENEKLERI.map((sec) => {
+                    const secili = e.tercihler.siklik === sec.deger;
+                    return (
+                      <TouchableOpacity
+                        key={sec.deger}
+                        className="px-3 rounded-full mr-2 mb-2 items-center justify-center"
+                        style={{
+                          minHeight: 44,
+                          backgroundColor: secili ? renkler.birincil : renkler.arkaplan,
+                          borderWidth: 1,
+                          borderColor: secili ? renkler.birincil : renkler.sinir,
+                        }}
+                        onPress={() => e.tercihleriDegistir({ siklik: sec.deger })}
+                        accessibilityRole="radio"
+                        accessibilityState={{ selected: secili, checked: secili }}
+                        accessibilityLabel={`Sıklık: ${sec.etiket}`}
+                        testID={`esitleme-siklik-${sec.deger}`}
+                      >
+                        <Text
+                          className="text-sm font-semibold"
+                          style={{ color: secili ? renkler.birincilMetin : renkler.metin }}
+                        >
+                          {sec.etiket}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+                <Text className="text-xs leading-4 mt-1 mb-2" style={{ color: renkler.metinIkincil }}>
+                  {siklikAciklamasi(e.tercihler.siklik)}
                 </Text>
+                {e.tercihler.siklik !== 'elle' && (
+                  <>
+                    {(
+                      [
+                        { anahtar: 'yalnizWifi', ikon: 'wifi', etiket: "Yalnız Wi-Fi'de" },
+                        { anahtar: 'yalnizSarjda', ikon: 'plug', etiket: 'Yalnız şarjdayken' },
+                      ] as const
+                    ).map((satir) => (
+                      <View key={satir.anahtar} className="flex-row items-center py-2" style={{ minHeight: 48 }}>
+                        <FontAwesome5 name={satir.ikon} size={14} color={renkler.metinIkincil} style={{ width: 22 }} solid />
+                        <Text className="text-sm flex-1 ml-1" style={{ color: renkler.metin }}>
+                          {satir.etiket}
+                        </Text>
+                        <Anahtar
+                          value={e.tercihler[satir.anahtar]}
+                          onValueChange={(acik) => e.tercihleriDegistir({ [satir.anahtar]: acik })}
+                          trackColor={{ false: renkler.sinir, true: renkler.birincil }}
+                          accessibilityLabel={satir.etiket}
+                          accessibilityRole="switch"
+                          testID={`esitleme-${satir.anahtar}`}
+                        />
+                      </View>
+                    ))}
+                    <View className="flex-row items-start mt-1">
+                      <FontAwesome5 name="battery-quarter" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
+                      <Text className="text-xs leading-4 ml-2 flex-1" style={{ color: renkler.metinIkincil }}>
+                        Güç tasarrufu açıkken otomatik eşitleme şarja kadar bekler. Hatırlatmalar etkilenmez.
+                      </Text>
+                    </View>
+                  </>
+                )}
               </View>
             )}
 

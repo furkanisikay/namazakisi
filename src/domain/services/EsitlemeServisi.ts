@@ -43,6 +43,14 @@ import {
   anahtarTuret,
   yeniKdfParametreleri,
 } from '../../core/esitleme/anahtarTuretme';
+import {
+  BeklemeNedeni,
+  EsitlemeTercihleri,
+  EsitlemeTetigi,
+  esitlemeKarari,
+  esitlemeTercihleriniNormalizeEt,
+  gorunurBeklemeMi,
+} from '../../core/esitleme/esitlemePolitikasi';
 import { rastgeleBaytlar } from '../../core/utils/yedekSifreleme';
 import { Logger } from '../../core/utils/Logger';
 import { AnahtarSonucu, EsitlemeAnahtarDeposu } from './EsitlemeAnahtarDeposu';
@@ -56,6 +64,8 @@ export type EsitlemeSonucu =
   | { tur: 'indirildiVeYuklendi' }
   /** Arka planda anahtar türetmesi gerekti; uygulama açılınca yapılır. */
   | { tur: 'ertelendi' }
+  /** Otomatik tur koşmadı: tercih ya da sistem koşulu (Wi-Fi, şarj, güç tasarrufu…) bekleniyor. */
+  | { tur: 'bekliyor'; neden: BeklemeNedeni }
   | { tur: 'kapali' }
   | { tur: 'hata'; kod: EsitlemeHataKodu };
 
@@ -242,8 +252,9 @@ const turuKos = async (secenek: EsitleSecenekleri): Promise<EsitlemeSonucu> => {
   // Kurulum/kapatma tur sürerken değişmiş olabilir → güncel durumun üstüne yaz.
   const guncel = await durumuOku();
   if (!guncel.aktif || guncel.saglayici !== durum.saglayici) return sonuc.sonuc;
+  const sonDeneme = new Date().toISOString();
   if (sonuc.sonuc.tur === 'hata') {
-    await durumuYaz({ ...guncel, sonHata: sonuc.sonuc.kod });
+    await durumuYaz({ ...guncel, sonHata: sonuc.sonuc.kod, sonDeneme, sonBekleme: null });
     if (sonuc.sonuc.kod !== 'agYok') {
       Logger.warn('EsitlemeServisi', `Eşitleme başarısız: ${sonuc.sonuc.kod}`);
     }
@@ -252,11 +263,48 @@ const turuKos = async (secenek: EsitleSecenekleri): Promise<EsitlemeSonucu> => {
       ...guncel,
       sonEtiket: sonuc.etiket ?? guncel.sonEtiket,
       sonOzet: sonuc.ozet ?? guncel.sonOzet,
-      sonEsitleme: new Date().toISOString(),
+      sonEsitleme: sonDeneme,
+      sonDeneme,
       sonHata: null,
+      sonBekleme: null,
     });
   }
   return sonuc.sonuc;
+};
+
+const tercihleriOku = async (): Promise<EsitlemeTercihleri> =>
+  esitlemeTercihleriniNormalizeEt(await Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.ESITLEME_TERCIHLERI));
+
+/** Sistem koşulları (tembel: köprü yalnız gerektiğinde yüklenir). */
+const sistemOku = async () => {
+  const { sistemKosullariniOku } = require('./SistemKosullariServisi') as typeof import('./SistemKosullariServisi');
+  return sistemKosullariniOku();
+};
+
+/**
+ * Otomatik tur kapısı: tercih + sistem koşulları. Koşmayacaksa görünür nedeni
+ * durumun `sonBekleme`'sine yazar (değişmediyse yazmaz) ve `bekliyor` döner.
+ */
+const otomatikKapi = async (
+  tetik: EsitlemeTetigi
+): Promise<{ kos: true } | { kos: false; sonuc: EsitlemeSonucu }> => {
+  const durum = await durumuOku();
+  if (!durum.aktif) return { kos: false, sonuc: { tur: 'kapali' } };
+  const [tercih, sistem] = await Promise.all([tercihleriOku(), sistemOku()]);
+  const sonDenemeMs = durum.sonDeneme ? Date.parse(durum.sonDeneme) : NaN;
+  const karar = esitlemeKarari({
+    tetik,
+    tercih,
+    sistem,
+    sonDenemeMs: Number.isFinite(sonDenemeMs) ? sonDenemeMs : null,
+    bekliyordu: gorunurBeklemeMi(durum.sonBekleme),
+    simdiMs: Date.now(),
+  });
+  if (karar.kos) return { kos: true };
+  if (gorunurBeklemeMi(karar.neden) && durum.sonBekleme !== karar.neden) {
+    await durumuYaz({ ...durum, sonBekleme: karar.neden });
+  }
+  return { kos: false, sonuc: { tur: 'bekliyor', neden: karar.neden } };
 };
 
 /** Kurulum modu: `sifirla` uzaktaki kaydı silip yeni parolayla baştan kurar. */
@@ -264,6 +312,31 @@ export type KurulumModu = 'baslat' | 'sifirla';
 
 export const EsitlemeServisi = {
   durumuOku,
+  tercihleriOku,
+
+  /** Tercihleri yazar (normalize ederek) ve yazılanı döndürür. */
+  async tercihleriYaz(yeni: Partial<EsitlemeTercihleri>): Promise<EsitlemeTercihleri> {
+    const birlesik = esitlemeTercihleriniNormalizeEt({ ...(await tercihleriOku()), ...yeni });
+    await Depolama.yaz(DEPOLAMA_ANAHTARLARI.ESITLEME_TERCIHLERI, birlesik);
+    // Tercih değişince eski bekleme nedeni bayatlar (ör. "Yalnız Wi-Fi" kapatıldı).
+    const durum = await durumuOku();
+    if (durum.aktif && durum.sonBekleme !== null) await durumuYaz({ ...durum, sonBekleme: null });
+    return birlesik;
+  },
+
+  /**
+   * Otomatik tur (açılış, öne geliş, yerel değişiklik, koşul değişimi): önce kapıdan
+   * geçer (`esitlemeKarari`). Elle "Şimdi eşitleyin" bu yolu DEĞİL `esitle`'yi kullanır.
+   */
+  async otomatikEsitle(tetik: EsitlemeTetigi, secenek: EsitleSecenekleri): Promise<EsitlemeSonucu> {
+    try {
+      const kapi = await otomatikKapi(tetik);
+      if (!kapi.kos) return kapi.sonuc;
+      return await EsitlemeServisi.esitle(secenek);
+    } catch (e) {
+      return { tur: 'hata', kod: hataKodunaCevir(e) };
+    }
+  },
 
   /**
    * Bir eşitleme turu. Eşzamanlı çağrılar AYNI turu paylaşır (açılış + ekran düğmesi
@@ -286,8 +359,9 @@ export const EsitlemeServisi = {
    */
   async arkaplandaEsitle(): Promise<EsitlemeSonucu> {
     try {
-      const durum = await durumuOku();
-      if (!durum.aktif) return { tur: 'kapali' };
+      // Arka planda Veri Tasarrufu, güç tasarrufu, Wi-Fi/şarj tercihi ve sıklık kapısı.
+      const kapi = await otomatikKapi('arkaPlan');
+      if (!kapi.kos) return kapi.sonuc;
       let zamanlayici: ReturnType<typeof setTimeout> | undefined;
       const asim = new Promise<EsitlemeSonucu>((coz) => {
         zamanlayici = setTimeout(() => coz({ tur: 'hata', kod: 'agYok' }), ARKA_PLAN_ZAMAN_ASIMI_MS);

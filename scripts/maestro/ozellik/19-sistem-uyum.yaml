@@ -1,0 +1,40 @@
+# tohum: esitleme
+# hazirlik: guc-tasarrufu
+# Sistem kosullarina uyum: Ayarlar'daki durum cipi (pil tasarrufu + Veri Tasarrufu
+# acik) ve esitleme sayfasindaki otomatik esitleme ayarlari + bekleme satiri.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- extendedWaitUntil:
+    visible:
+      id: "sistem-durumu-cipi"
+    timeout: 15000
+- takeScreenshot: ozk/50-ayarlar-guc-tasarrufu-cipi
+- scrollUntilVisible:
+    element:
+      text: "Yedek ve eşitleme\..*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Yedek ve eşitleme\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- scrollUntilVisible:
+    element:
+      text: "Cihazlar arası eşitleme.*"
+    direction: DOWN
+    timeout: 120000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Cihazlar arası eşitleme.*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/51-esitleme-durum
+- scrollUntilVisible:
+    element:
+      id: "esitleme-yalnizSarjda"
+    direction: DOWN
+    timeout: 60000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/52-esitleme-otomatik

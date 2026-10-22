@@ -30,7 +30,7 @@
  */
 const { tohumVerisi } = require('./magaza-tohum-verisi');
 
-const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses'];
+const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme'];
 
 /** `ses` varyantindaki OLU URI: "kendi dosyamiz" olarak kayitli ama MediaStore satiri yok. */
 const OLU_SES_URI = 'content://media/external_primary/audio/media/999999';
@@ -165,6 +165,29 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
 
     if (varyant === 'sade') {
         depo.sade_gorunum_ayarlari = JSON.stringify({ aktif: true });
+    }
+
+    if (varyant === 'esitleme') {
+        // Eşitleme ACIK (Drive) + güç tasarrufu beklemesi: hat cihazı pil tasarrufuna alır
+        // ve şarjdan çıkarır (`# hazirlik: guc-tasarrufu`) → açılıştaki otomatik tur ağa
+        // çıkmadan "güç tasarrufu" nedeniyle bekler, sayfa bekleme satırını gösterir.
+        // Parola/oturum (güvenli depo) tohumlanmaz: elle tur denenmez.
+        const iso = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+        depo['@namaz_akisi/esitleme_durumu'] = JSON.stringify({
+            aktif: true,
+            saglayici: 'googleDrive',
+            sonEtiket: '1',
+            sonOzet: 'tohum',
+            sonEsitleme: iso,
+            sonHata: null,
+            sonDeneme: iso,
+            sonBekleme: 'gucTasarrufu',
+        });
+        depo['@namaz_akisi/esitleme_tercihleri'] = JSON.stringify({
+            siklik: 'degisince',
+            yalnizWifi: true,
+            yalnizSarjda: false,
+        });
     }
 
     if (yogun) {

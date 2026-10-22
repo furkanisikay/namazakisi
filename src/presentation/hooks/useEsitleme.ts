@@ -17,6 +17,12 @@ import {
   SaglayiciKimligi,
   VARSAYILAN_ESITLEME_DURUMU,
 } from '../../core/esitleme/esitlemeTipleri';
+import {
+  BeklemeNedeni,
+  EsitlemeTercihleri,
+  EsitlemeTetigi,
+  VARSAYILAN_ESITLEME_TERCIHLERI,
+} from '../../core/esitleme/esitlemePolitikasi';
 import { kullanilabilirSaglayicilar } from '../../domain/services/esitlemeSaglayicilari';
 import { AKILLI_SECIMLER } from '../../domain/services/YedekBirlestirmeServisi';
 import type { EsitlemeSonucu, KurulumModu } from '../../domain/services/EsitlemeServisi';
@@ -43,6 +49,38 @@ export async function onPlandaEsitle(dispatch: AppDispatch): Promise<EsitlemeSon
     return await servis().esitle({ uygula: onPlanUygulayicisi(dispatch), turetebilir: true });
   } catch {
     return { tur: 'hata', kod: 'bilinmiyor' };
+  }
+}
+
+/**
+ * Ön planda OTOMATİK tur (açılış / öne geliş / yerel değişiklik / koşul değişimi):
+ * tercih ve sistem koşulları kapısından geçer. Fırlatmaz.
+ */
+export async function onPlandaOtomatikEsitle(dispatch: AppDispatch, tetik: EsitlemeTetigi): Promise<EsitlemeSonucu> {
+  try {
+    return await servis().otomatikEsitle(tetik, { uygula: onPlanUygulayicisi(dispatch), turetebilir: true });
+  } catch {
+    return { tur: 'hata', kod: 'bilinmiyor' };
+  }
+}
+
+/** Otomatik turun beklediği koşulun kısa açıklaması (tek kaynak). */
+export function esitlemeBeklemeMetni(neden: BeklemeNedeni): string {
+  switch (neden) {
+    case 'wifi':
+      return 'Otomatik eşitleme Wi-Fi bağlantısını bekliyor.';
+    case 'sarj':
+      return 'Otomatik eşitleme şarja takılmayı bekliyor.';
+    case 'gucTasarrufu':
+      return 'Güç tasarrufu açık; otomatik eşitleme şarja takılınca ya da mod kapanınca yapılır.';
+    case 'veriTasarrufu':
+      return 'Veri tasarrufu açık; eşitleme uygulamayı açtığınızda yapılır.';
+    case 'agYok':
+      return 'İnternet bağlantısı yok; bağlantı gelince eşitlenir.';
+    case 'elle':
+      return 'Otomatik eşitleme kapalı; "Şimdi eşitleyin" ile eşitleyebilirsiniz.';
+    default:
+      return 'Sıradaki otomatik eşitleme zamanı bekleniyor.';
   }
 }
 
@@ -75,6 +113,9 @@ export interface EsitlemeKancasi {
   /** Bu build'de kullanılabilen sağlayıcılar (boşsa eşitleme hiç gösterilmez). */
   saglayicilar: { kimlik: SaglayiciKimligi; ad: string }[];
   mesgul: boolean;
+  /** Otomatik eşitleme tercihleri (cihaza özgü). */
+  tercihler: EsitlemeTercihleri;
+  tercihleriDegistir: (yeni: Partial<EsitlemeTercihleri>) => Promise<void>;
   yenile: () => Promise<void>;
   esitle: () => Promise<EsitlemeSonucu>;
   baglan: (kimlik: SaglayiciKimligi, zorla?: boolean) => ReturnType<EsitlemeServisiTipi['baglan']>;
@@ -88,6 +129,7 @@ export function useEsitleme(): EsitlemeKancasi {
   const [durum, setDurum] = useState<EsitlemeDurumu>(VARSAYILAN_ESITLEME_DURUMU);
   const [yuklendi, setYuklendi] = useState(false);
   const [mesgul, setMesgul] = useState(false);
+  const [tercihler, setTercihler] = useState<EsitlemeTercihleri>(VARSAYILAN_ESITLEME_TERCIHLERI);
   const bagli = useRef(true);
 
   const saglayicilar = useMemo(
@@ -97,8 +139,11 @@ export function useEsitleme(): EsitlemeKancasi {
 
   const yenile = useCallback(async () => {
     try {
-      const yeni = await servis().durumuOku();
-      if (bagli.current) setDurum(yeni);
+      const [yeni, t] = await Promise.all([servis().durumuOku(), servis().tercihleriOku()]);
+      if (bagli.current) {
+        setDurum(yeni);
+        setTercihler(t);
+      }
     } catch {
       // Durum okunamazsa varsayılan (kapalı) gösterilir.
     } finally {
@@ -147,5 +192,32 @@ export function useEsitleme(): EsitlemeKancasi {
     [sarmala]
   );
 
-  return { durum, yuklendi, saglayicilar, mesgul, yenile, esitle, baglan, uzakDurumu, kur, kapat };
+  const tercihleriDegistir = useCallback(
+    async (yeni: Partial<EsitlemeTercihleri>) => {
+      // İyimser: anahtar hemen dönsün; yazılan değer diskten doğrulanır.
+      setTercihler((onceki) => ({ ...onceki, ...yeni }));
+      try {
+        const yazilan = await servis().tercihleriYaz(yeni);
+        if (bagli.current) setTercihler(yazilan);
+      } finally {
+        await yenile();
+      }
+    },
+    [yenile]
+  );
+
+  return {
+    durum,
+    yuklendi,
+    saglayicilar,
+    mesgul,
+    tercihler,
+    tercihleriDegistir,
+    yenile,
+    esitle,
+    baglan,
+    uzakDurumu,
+    kur,
+    kapat,
+  };
 }

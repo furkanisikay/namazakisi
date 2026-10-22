@@ -5,6 +5,7 @@ import React from 'react';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { EsitlemeSayfasi, esitlemeZamaniniBicimle } from '../EsitlemeSayfasi';
 import type { EsitlemeDurumu } from '../../../../core/esitleme/esitlemeTipleri';
+import type { EsitlemeTercihleri } from '../../../../core/esitleme/esitlemePolitikasi';
 
 const mockKanca = {
   durum: {
@@ -14,7 +15,11 @@ const mockKanca = {
     sonOzet: null,
     sonEsitleme: null,
     sonHata: null,
+    sonDeneme: null,
+    sonBekleme: null,
   } as EsitlemeDurumu,
+  tercihler: { siklik: 'degisince', yalnizWifi: false, yalnizSarjda: false } as EsitlemeTercihleri,
+  tercihleriDegistir: jest.fn(async () => undefined),
   yuklendi: true,
   saglayicilar: [{ kimlik: 'googleDrive', ad: 'Google Drive' }],
   mesgul: false,
@@ -29,6 +34,7 @@ const mockKanca = {
 jest.mock('../../../hooks/useEsitleme', () => ({
   useEsitleme: () => mockKanca,
   esitlemeHataMetni: (kod: string) => `hata:${kod}`,
+  esitlemeBeklemeMetni: (neden: string) => `bekleme:${neden}`,
 }));
 jest.mock('@react-navigation/native', () => ({
   useFocusEffect: (cb: () => void) => {
@@ -76,6 +82,8 @@ const kapaliDurum = (): EsitlemeDurumu => ({
   sonOzet: null,
   sonEsitleme: null,
   sonHata: null,
+  sonDeneme: null,
+  sonBekleme: null,
 });
 
 describe('EsitlemeSayfasi', () => {
@@ -217,6 +225,37 @@ describe('EsitlemeSayfasi', () => {
     });
     expect(mockKanca.baglan).toHaveBeenCalledWith('googleDrive', true);
     expect(mockKanca.esitle).toHaveBeenCalled();
+  });
+
+  it('açıkken otomatik eşitleme ayarları: sıklık ve Wi-Fi/şarj anahtarları tercihleri yazar', async () => {
+    mockKanca.durum = { ...kapaliDurum(), aktif: true, saglayici: 'googleDrive' };
+    mockKanca.tercihler = { siklik: 'degisince', yalnizWifi: false, yalnizSarjda: false };
+    const { getByTestId, getByText } = render(<EsitlemeSayfasi />);
+    expect(getByText(/Bir namazı işaretlediğinizde hemen/)).toBeTruthy();
+    await act(async () => {
+      fireEvent.press(getByTestId('esitleme-siklik-saatlik'));
+    });
+    expect(mockKanca.tercihleriDegistir).toHaveBeenCalledWith({ siklik: 'saatlik' });
+    await act(async () => {
+      fireEvent(getByTestId('esitleme-yalnizWifi'), 'valueChange', true);
+    });
+    expect(mockKanca.tercihleriDegistir).toHaveBeenCalledWith({ yalnizWifi: true });
+  });
+
+  it('"Yalnız elle"de Wi-Fi/şarj anahtarları gizlenir', () => {
+    mockKanca.durum = { ...kapaliDurum(), aktif: true, saglayici: 'googleDrive' };
+    mockKanca.tercihler = { siklik: 'elle', yalnizWifi: false, yalnizSarjda: false };
+    const { queryByTestId } = render(<EsitlemeSayfasi />);
+    expect(queryByTestId('esitleme-yalnizWifi')).toBeNull();
+  });
+
+  it('görünür bekleme nedeni (Wi-Fi) satır olarak gösterilir; sıklık beklemesi gösterilmez', () => {
+    mockKanca.durum = { ...kapaliDurum(), aktif: true, saglayici: 'googleDrive', sonBekleme: 'wifi' };
+    const { getByText, rerender, queryByTestId } = render(<EsitlemeSayfasi />);
+    expect(getByText('bekleme:wifi')).toBeTruthy();
+    mockKanca.durum = { ...mockKanca.durum, sonBekleme: 'siklik' };
+    rerender(<EsitlemeSayfasi />);
+    expect(queryByTestId('esitleme-bekleme')).toBeNull();
   });
 
   it('kapatma: buluttakini de silme seçeneği', async () => {

@@ -37,6 +37,8 @@ import { mesafeHesapla } from '../../core/utils/MesafeHesaplayici';
 import { Logger } from '../../core/utils/Logger';
 import { konumTazeMi, olayIslenebilirMi } from '../../core/utils/geofenceKararYardimcisi';
 import { konumDegistiUygula } from './KonumDegisikligiServisi';
+import { BILINMEYEN_SISTEM_DURUMU, konumDogrulugunuSinirla } from '../../core/sistem/sistemDurumu';
+import { gucTasarrufuAcikMi } from './SistemKosullariServisi';
 import {
     TAKIP_PROFILLERI,
     VARSAYILAN_TAKIP_HASSASIYETI,
@@ -53,6 +55,15 @@ import {
  * `durdur` bu görevi açıkça durdurur.
  */
 export const KONUM_TAKIP_GOREVI = 'KONUM_TAKIP_GOREVI';
+
+/**
+ * Tek seferlik ölçümün doğruluğu: güç tasarrufunda en fazla "dengeli" (GPS yerine
+ * ağ/Wi-Fi konumu; şehir değişimi ve bölge merkezi için yeterli). Okunamazsa profil.
+ */
+async function olcumDogrulugu(istenen: Location.Accuracy): Promise<Location.Accuracy> {
+    const guc = await gucTasarrufuAcikMi().catch(() => null);
+    return konumDogrulugunuSinirla(istenen, { ...BILINMEYEN_SISTEM_DURUMU, gucTasarrufu: guc }) as Location.Accuracy;
+}
 
 /** Arka plan bölge (geofence) görevi adı */
 export const KONUM_GEOFENCE_GOREVI = 'KONUM_GEOFENCE_GOREVI';
@@ -190,7 +201,7 @@ TaskManager.defineTask(KONUM_GEOFENCE_GOREVI, async ({ data, error }: TaskManage
         // Taze sabitleme al (olay yükü konum taşımaz).
         let yeniKonum: Location.LocationObject | null = null;
         try {
-            yeniKonum = await Location.getCurrentPositionAsync({ accuracy: profil.dogruluk });
+            yeniKonum = await Location.getCurrentPositionAsync({ accuracy: await olcumDogrulugu(profil.dogruluk) });
         } catch (konumHatasi) {
             Logger.warn('KonumTakip', 'Taze konum alinamadi:', konumHatasi);
         }
@@ -479,7 +490,7 @@ export class KonumTakipServisi {
         profil: TakipProfilKonfigurasyonu,
     ): Promise<{ lat: number; lng: number } | null> {
         try {
-            const konum = await Location.getCurrentPositionAsync({ accuracy: profil.dogruluk });
+            const konum = await Location.getCurrentPositionAsync({ accuracy: await olcumDogrulugu(profil.dogruluk) });
             if (konum?.coords) {
                 return { lat: konum.coords.latitude, lng: konum.coords.longitude };
             }

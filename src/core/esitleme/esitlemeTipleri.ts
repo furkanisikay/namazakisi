@@ -86,6 +86,8 @@ export interface EsitlemeSaglayicisi {
   sil(): Promise<void>;
 }
 
+import type { BeklemeNedeni } from './esitlemePolitikasi';
+
 /**
  * Cihazdaki eşitleme durumu (`DEPOLAMA_ANAHTARLARI.ESITLEME_DURUMU`).
  * Cihaza özgüdür → yedeklemeye GİRMEZ. Parola/anahtar burada DEĞİL, güvenli depodadır.
@@ -101,6 +103,10 @@ export interface EsitlemeDurumu {
   sonEsitleme: string | null;
   /** Son denemenin hatası (başarıda `null`). */
   sonHata: EsitlemeHataKodu | null;
+  /** Son TAMAMLANAN turun zamanı (başarılı ya da hatalı; ISO) — sıklık kapısı buna bakar. */
+  sonDeneme: string | null;
+  /** Son otomatik turun beklediği koşul (Wi-Fi, şarj…); tur koşunca `null`. */
+  sonBekleme: BeklemeNedeni | null;
 }
 
 export const VARSAYILAN_ESITLEME_DURUMU: EsitlemeDurumu = {
@@ -110,9 +116,13 @@ export const VARSAYILAN_ESITLEME_DURUMU: EsitlemeDurumu = {
   sonOzet: null,
   sonEsitleme: null,
   sonHata: null,
+  sonDeneme: null,
+  sonBekleme: null,
 };
 
 /** Diskten gelen değeri güvenle `EsitlemeDurumu`'na çevirir (bozuk → varsayılan). */
+const BEKLEME_NEDENLERI: readonly BeklemeNedeni[] = ['elle', 'siklik', 'agYok', 'wifi', 'sarj', 'gucTasarrufu', 'veriTasarrufu'];
+
 export function esitlemeDurumunuNormalizeEt(deger: unknown): EsitlemeDurumu {
   if (!deger || typeof deger !== 'object') return { ...VARSAYILAN_ESITLEME_DURUMU };
   const d = deger as Partial<EsitlemeDurumu>;
@@ -126,5 +136,7 @@ export function esitlemeDurumunuNormalizeEt(deger: unknown): EsitlemeDurumu {
     sonOzet: metinVeyaNull(d.sonOzet),
     sonEsitleme: metinVeyaNull(d.sonEsitleme),
     sonHata: typeof d.sonHata === 'string' ? (d.sonHata as EsitlemeHataKodu) : null,
+    sonDeneme: metinVeyaNull(d.sonDeneme),
+    sonBekleme: BEKLEME_NEDENLERI.includes(d.sonBekleme as BeklemeNedeni) ? (d.sonBekleme as BeklemeNedeni) : null,
   };
 }

@@ -265,6 +265,13 @@ describe('esitlemeTuru (motor)', () => {
   });
 });
 
+/** Durumdaki son deneme zamanını 1 gün geriye çeker (sıklık kapısı açılsın). */
+async function sonDenemeyiEskit(): Promise<void> {
+  const ham = JSON.parse((await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ESITLEME_DURUMU)) ?? '{}');
+  ham.sonDeneme = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ESITLEME_DURUMU, JSON.stringify(ham));
+}
+
 describe('EsitlemeServisi (kurulum, tur, kapatma)', () => {
   let s: SahteSaglayici;
   const secureStore = require('expo-secure-store');
@@ -346,6 +353,8 @@ describe('EsitlemeServisi (kurulum, tur, kapatma)', () => {
   it('ağ yokken tur sessiz hata kaydeder; arka plan fırlatmaz', async () => {
     await EsitlemeServisi.kur({ kimlik: 'googleDrive', parola: 'çok gizli parola', mod: 'baslat', uygula: jest.fn() });
     s.agYok = true;
+    // Kurulum turu az önce koştu: sıklık kapısı arka plan turunu bekletmesin.
+    await sonDenemeyiEskit();
     expect(await EsitlemeServisi.arkaplandaEsitle()).toEqual({ tur: 'hata', kod: 'agYok' });
     expect((await EsitlemeServisi.durumuOku()).sonHata).toBe('agYok');
   });
@@ -549,5 +558,109 @@ describe('karışık sürüm eşitlemesi — sonsuz karşılıklı yükleme YOK'
     );
     expect(t.sonuc.tur).toBe('indirildiVeYuklendi');
     expect(Object.keys(uzaktakiIcerik(s).namazGunleri)).toContain('2026-10-05');
+  });
+});
+
+describe('otomatik tur kapısı (sıklık, Wi-Fi, şarj, güç/veri tasarrufu)', () => {
+  let s: SahteSaglayici;
+  const secureStore = require('expo-secure-store');
+  const kopru = require('../../../../modules/expo-sistem-durumu/src');
+  const sistem = (ham: Record<string, unknown>) => {
+    kopru.sistemModuluVarMi.mockReturnValue(true);
+    kopru.hamSistemDurumuAl.mockResolvedValue({ platform: 'android', agTuru: 'wifi', olculuAg: false, sarjda: false, gucTasarrufu: false, ...ham });
+  };
+  const kur = () =>
+    EsitlemeServisi.kur({ kimlik: 'googleDrive', parola: 'çok gizli parola', mod: 'baslat', uygula: jest.fn() });
+
+  beforeEach(async () => {
+    await AsyncStorage.clear();
+    secureStore.__sifirla();
+    s = new SahteSaglayici();
+    saglayicilariAyarla([s]);
+    mockYerel.deger = { ...bos(), namazGunleri: { '2026-10-01': { Sabah: true } } };
+    sistem({});
+  });
+
+  afterAll(() => {
+    saglayicilariAyarla(null);
+    kopru.sistemModuluVarMi.mockReturnValue(false);
+    kopru.hamSistemDurumuAl.mockResolvedValue(null);
+  });
+
+  it('kapalıyken otomatik tur `kapali`', async () => {
+    expect(await EsitlemeServisi.otomatikEsitle('acilis', { uygula: jest.fn(), turetebilir: true })).toEqual({ tur: 'kapali' });
+  });
+
+  it('güç tasarrufu turu bekletir, nedeni durumda görünür; şarja takılınca bekleyen tur hemen koşar', async () => {
+    await kur();
+    mockYerel.deger = { ...bos(), namazGunleri: { '2026-10-01': { Sabah: true, Öğle: true } } };
+    const yazma = s.yazmaSayisi;
+    sistem({ gucTasarrufu: true });
+    expect(await EsitlemeServisi.otomatikEsitle('degisiklik', { uygula: jest.fn(), turetebilir: true })).toEqual({
+      tur: 'bekliyor',
+      neden: 'gucTasarrufu',
+    });
+    expect(s.yazmaSayisi).toBe(yazma);
+    expect((await EsitlemeServisi.durumuOku()).sonBekleme).toBe('gucTasarrufu');
+
+    sistem({ gucTasarrufu: true, sarjda: true });
+    expect(await EsitlemeServisi.otomatikEsitle('kosulDegisti', { uygula: jest.fn(), turetebilir: true })).toEqual({
+      tur: 'yuklendi',
+    });
+    const durum = await EsitlemeServisi.durumuOku();
+    expect(durum.sonBekleme).toBeNull();
+    expect(durum.sonDeneme).not.toBeNull();
+  });
+
+  it('arka planda Veri Tasarrufu turu bekletir (ağa hiç çıkılmaz)', async () => {
+    await kur();
+    await sonDenemeyiEskit();
+    sistem({ veriTasarrufu: 3 });
+    const meta = jest.spyOn(s, 'meta');
+    expect(await EsitlemeServisi.arkaplandaEsitle()).toEqual({ tur: 'bekliyor', neden: 'veriTasarrufu' });
+    expect(meta).not.toHaveBeenCalled();
+  });
+
+  it('"Yalnız Wi-Fi" hücresel ağda bekletir; elle "Şimdi eşitleyin" her zaman koşar', async () => {
+    await kur();
+    await sonDenemeyiEskit();
+    await EsitlemeServisi.tercihleriYaz({ yalnizWifi: true });
+    sistem({ agTuru: 'hucresel', olculuAg: true });
+    expect(await EsitlemeServisi.otomatikEsitle('oneGelis', { uygula: jest.fn(), turetebilir: true })).toEqual({
+      tur: 'bekliyor',
+      neden: 'wifi',
+    });
+    expect(await EsitlemeServisi.esitle({ uygula: jest.fn(), turetebilir: true })).toEqual({ tur: 'guncel' });
+  });
+
+  it('ağ yokken tur hiç denenmez', async () => {
+    await kur();
+    await sonDenemeyiEskit();
+    sistem({ agTuru: 'yok' });
+    const meta = jest.spyOn(s, 'meta');
+    expect(await EsitlemeServisi.otomatikEsitle('oneGelis', { uygula: jest.fn(), turetebilir: true })).toEqual({
+      tur: 'bekliyor',
+      neden: 'agYok',
+    });
+    expect(meta).not.toHaveBeenCalled();
+  });
+
+  it('sıklık: kurulumdan hemen sonra öne geliş turu bekler, "sıklık" nedeni durumu kirletmez', async () => {
+    await kur();
+    expect(await EsitlemeServisi.otomatikEsitle('oneGelis', { uygula: jest.fn(), turetebilir: true })).toEqual({
+      tur: 'bekliyor',
+      neden: 'siklik',
+    });
+    expect((await EsitlemeServisi.durumuOku()).sonBekleme).toBeNull();
+  });
+
+  it('tercihler normalize edilerek yazılır, bekleme nedeni sıfırlanır; tercihler eşitleme durumundan AYRI anahtardadır', async () => {
+    await kur();
+    sistem({ gucTasarrufu: true });
+    await EsitlemeServisi.otomatikEsitle('degisiklik', { uygula: jest.fn(), turetebilir: true });
+    const yazilan = await EsitlemeServisi.tercihleriYaz({ siklik: 'saatlik', yalnizSarjda: true });
+    expect(yazilan).toEqual({ siklik: 'saatlik', yalnizWifi: false, yalnizSarjda: true });
+    expect((await EsitlemeServisi.durumuOku()).sonBekleme).toBeNull();
+    expect(JSON.parse((await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ESITLEME_TERCIHLERI)) ?? '{}')).toEqual(yazilan);
   });
 });
