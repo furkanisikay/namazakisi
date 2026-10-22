@@ -92,7 +92,9 @@ const ORTAK = {
         vakit: 2,
         kaynak: ['07-muhafiz-zaman-seridi.png', '02-muhafiz-zaman-seridi.png', '06-muhafiz.png'],
         // Uygulamanin GERCEK bildirim bicimi (basligiOlustur + muhafizMetinYardimcisi).
-        bildirim: { baslik: 'İkindi · 10 dk kaldı', govde: 'Namazı sona bırakma; şimdi kılmak için vakit uygun.', y: 0.04 },
+        // Kareler OGLE vaktinde cekilir (scripts/kare-hatlarini-baslat.sh): bildirim de ogle ortasina uyar.
+        // Gercek metin: giris yonu, ton 2 (muhafizMetinYardimcisi > basligiOlustur + GIRIS_ICERIK_HAVUZU).
+        bildirim: { baslik: 'Öğle · 45 dk oldu · namazını geciktirme ⚠️', govde: 'Erteledikçe ağırlaşır; namazı sona bırakma.', y: 0.04 },
         iddialar: ['muhafiz'],
     },
     sabah: {
@@ -717,7 +719,7 @@ const IPUCLARI = {
         '06-gece': { metin: 'Vakti girince hatırlatır', hedef: { x: 0.76, y: 0.84 }, yon: 'alt' },
     },
     tv: {
-        '04-ramazan': { metin: 'Ramazanda kendiliğinden', hedef: { x: 0.24, y: 0.7 }, yon: 'alt' },
+        '04-ramazan': { metin: 'Ramazanda\nkendiliğinden', hedef: { x: 0.363, y: 0.606 }, yon: 'sag' },
     },
     wear: {
         '02-uyandirma': { metin: 'Yalnız titreşim', x: 0.5, y: 0.94, orta: true },
