@@ -103,8 +103,25 @@ Kaynak koddaki sürüm: **0.68.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/31-seferilik.webp" width="160" alt="Seferîlik" title="Seferîlik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/32-cihazlarim.webp" width="160" alt="Cihazlarim" title="Cihazlarim">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/32-kible.webp" width="160" alt="Kıble" title="Kıble">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/33-ilerleme.webp" width="160" alt="İlerleme" title="İlerleme">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/33-televizyon.webp" width="160" alt="Televizyon" title="Televizyon">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/34-televizyon-kod.webp" width="160" alt="Televizyon kod" title="Televizyon kod">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/35-cihazlarim-tablet.webp" width="160" alt="Cihazlarim tablet" title="Cihazlarim tablet">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/35-kible-kamera.webp" width="160" alt="Kıble kamera" title="Kıble kamera">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/36-cihaz-ekle-okut.webp" width="160" alt="Cihaz ekle okut" title="Cihaz ekle okut">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/36-kible-kalibrasyon.webp" width="160" alt="Kıble kalibrasyon" title="Kıble kalibrasyon">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/37-cihaz-ekle-kod.webp" width="160" alt="Cihaz ekle kod" title="Cihaz ekle kod">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/37-kible-kalibrasyon-kamera.webp" width="160" alt="Kıble kalibrasyon kamera" title="Kıble kalibrasyon kamera">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/38-kible-kamera-egik-25.webp" width="160" alt="Kıble kamera egik 25" title="Kıble kamera egik 25">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/39-kible-kamera-egik-45.webp" width="160" alt="Kıble kamera egik 45" title="Kıble kamera egik 45">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/40-vakit-sesi.webp" width="160" alt="Vakit sesi" title="Vakit sesi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/41-vakit-sesi-secenekler.webp" width="160" alt="Vakit sesi secenekler" title="Vakit sesi secenekler">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/42-adim-detay-kanallar-acik.webp" width="160" alt="Adım detay kanallar acik" title="Adım detay kanallar acik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/43-adim-detay-bildirim-kapali.webp" width="160" alt="Adım detay bildirim kapali" title="Adım detay bildirim kapali">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/44-adim-detay-tekrar-acik.webp" width="160" alt="Adım detay tekrar acik" title="Adım detay tekrar acik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/45-zaman-seridi-tekrar.webp" width="160" alt="Zaman şeridi tekrar" title="Zaman şeridi tekrar">
 </p>
 
 </details>
@@ -144,8 +161,25 @@ Kaynak koddaki sürüm: **0.68.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/31-seferilik.webp" width="160" alt="Seferîlik" title="Seferîlik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/32-cihazlarim.webp" width="160" alt="Cihazlarim" title="Cihazlarim">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/32-kible.webp" width="160" alt="Kıble" title="Kıble">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/33-ilerleme.webp" width="160" alt="İlerleme" title="İlerleme">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/33-televizyon.webp" width="160" alt="Televizyon" title="Televizyon">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/34-televizyon-kod.webp" width="160" alt="Televizyon kod" title="Televizyon kod">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/35-cihazlarim-tablet.webp" width="160" alt="Cihazlarim tablet" title="Cihazlarim tablet">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/35-kible-kamera.webp" width="160" alt="Kıble kamera" title="Kıble kamera">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/36-cihaz-ekle-okut.webp" width="160" alt="Cihaz ekle okut" title="Cihaz ekle okut">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/36-kible-kalibrasyon.webp" width="160" alt="Kıble kalibrasyon" title="Kıble kalibrasyon">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/37-cihaz-ekle-kod.webp" width="160" alt="Cihaz ekle kod" title="Cihaz ekle kod">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/37-kible-kalibrasyon-kamera.webp" width="160" alt="Kıble kalibrasyon kamera" title="Kıble kalibrasyon kamera">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/38-kible-kamera-egik-25.webp" width="160" alt="Kıble kamera egik 25" title="Kıble kamera egik 25">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/39-kible-kamera-egik-45.webp" width="160" alt="Kıble kamera egik 45" title="Kıble kamera egik 45">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/40-vakit-sesi.webp" width="160" alt="Vakit sesi" title="Vakit sesi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/41-vakit-sesi-secenekler.webp" width="160" alt="Vakit sesi secenekler" title="Vakit sesi secenekler">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/42-adim-detay-kanallar-acik.webp" width="160" alt="Adım detay kanallar acik" title="Adım detay kanallar acik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/43-adim-detay-bildirim-kapali.webp" width="160" alt="Adım detay bildirim kapali" title="Adım detay bildirim kapali">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/44-adim-detay-tekrar-acik.webp" width="160" alt="Adım detay tekrar acik" title="Adım detay tekrar acik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/45-zaman-seridi-tekrar.webp" width="160" alt="Zaman şeridi tekrar" title="Zaman şeridi tekrar">
 </p>
 
 </details>
@@ -179,6 +213,13 @@ Kaynak koddaki sürüm: **0.68.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/31-seferilik.webp" width="240" alt="Seferîlik" title="Seferîlik">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/32-kible.webp" width="240" alt="Kıble" title="Kıble">
   <img src="docs/ekran-goruntuleri/uygulama/android-tablet/33-ilerleme.webp" width="240" alt="İlerleme" title="İlerleme">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/36-kible-kalibrasyon.webp" width="240" alt="Kıble kalibrasyon" title="Kıble kalibrasyon">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/40-vakit-sesi.webp" width="240" alt="Vakit sesi" title="Vakit sesi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/41-vakit-sesi-secenekler.webp" width="240" alt="Vakit sesi secenekler" title="Vakit sesi secenekler">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/42-adim-detay-kanallar-acik.webp" width="240" alt="Adım detay kanallar acik" title="Adım detay kanallar acik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/43-adim-detay-bildirim-kapali.webp" width="240" alt="Adım detay bildirim kapali" title="Adım detay bildirim kapali">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/44-adim-detay-tekrar-acik.webp" width="240" alt="Adım detay tekrar acik" title="Adım detay tekrar acik">
+  <img src="docs/ekran-goruntuleri/uygulama/android-tablet/45-zaman-seridi-tekrar.webp" width="240" alt="Zaman şeridi tekrar" title="Zaman şeridi tekrar">
 </p>
 
 </details>
