@@ -1,9 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { LocalVakitBildirimServisi, VakitBildirimAyarlari } from '../../data/local/LocalVakitBildirimServisi';
 import { VakitBildirimYoneticiServisi } from '../../domain/services/VakitBildirimYoneticiServisi';
+import {
+    vakitSesiniAyarla,
+    type VakitBildirimSesleri,
+    type VakitSesSecimi,
+} from '../../core/bildirim/vakitBildirimSesi';
 
 interface VakitBildirimState {
     ayarlar: VakitBildirimAyarlari;
+    /** Vakit başına ses (cihaza özgü; `ayarlar`'dan AYRI — `ayarlar` beş boolean kalır). */
+    sesler: VakitBildirimSesleri;
     yukleniyor: boolean;
     hata: string | null;
 }
@@ -16,6 +23,7 @@ const initialState: VakitBildirimState = {
         aksam: false,
         yatsi: false,
     },
+    sesler: {},
     yukleniyor: false,
     hata: null,
 };
@@ -69,6 +77,29 @@ export const tumVakitBildirimAyarlariniGuncelle = createAsyncThunk(
     }
 );
 
+/** Vakit başına sesleri yükler (bölüm açılınca; açılışta YÜKLENMEZ). */
+export const vakitBildirimSesleriniYukle = createAsyncThunk('vakitBildirim/sesleriYukle', async () =>
+    LocalVakitBildirimServisi.getSesler()
+);
+
+/**
+ * Bir vaktin sesini değiştirir (`null` = telefonun bildirim sesine dön) ve bildirimleri
+ * yeniden planlar — kanal id'si sesin fonksiyonu olduğu için önceden kurulmuş bildirim
+ * eski kanalda kalırdı.
+ */
+export const vakitBildirimSesiniGuncelle = createAsyncThunk(
+    'vakitBildirim/sesGuncelle',
+    async ({ vakit, secim }: { vakit: keyof VakitBildirimAyarlari; secim: VakitSesSecimi | null }) => {
+        const mevcut = await LocalVakitBildirimServisi.getSesler();
+        const yeni = vakitSesiniAyarla(mevcut, vakit, secim);
+        if (!(await LocalVakitBildirimServisi.saveSesler(yeni))) {
+            throw new Error('Vakit bildirim sesi kaydedilemedi');
+        }
+        await VakitBildirimYoneticiServisi.getInstance().bildirimleriGuncelle();
+        return yeni;
+    }
+);
+
 // Slice
 
 const vakitBildirimSlice = createSlice({
@@ -88,6 +119,13 @@ const vakitBildirimSlice = createSlice({
         builder.addCase(vakitBildirimAyarlariniYukle.rejected, (state, action) => {
             state.yukleniyor = false;
             state.hata = action.error.message || 'Ayarlar yüklenemedi';
+        });
+
+        builder.addCase(vakitBildirimSesleriniYukle.fulfilled, (state, action) => {
+            state.sesler = action.payload;
+        });
+        builder.addCase(vakitBildirimSesiniGuncelle.fulfilled, (state, action) => {
+            state.sesler = action.payload;
         });
 
         // Güncelleme

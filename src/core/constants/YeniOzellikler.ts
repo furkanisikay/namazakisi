@@ -28,7 +28,7 @@
  * Duyurunun yalnız özelliği taşıyan cihazda görünmesi için yetenek anahtarı.
  * Çözümü sunum katmanındadır (`presentation/hooks/yeniOzellikYetenegi.ts`).
  */
-export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive' | 'ipad' | 'kontrolMerkezi';
+export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive' | 'ipad' | 'kontrolMerkezi' | 'sesDosyasi';
 
 /** Duyurunun görüneceği platformlar. */
 export type YeniOzellikPlatformu = 'android' | 'ios';
@@ -73,6 +73,29 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Vakit girdi bildirimine vakit başına ses + kendi ses dosyanız (ezan kaydı dahil).
+    {
+        id: 'vakit-girdi-sesi-ve-kendi-dosyaniz',
+        platformlar: ['android'],
+        surum: '0.64.0',
+        tarih: '2026-10-21',
+        baslik: 'Vakit girince kendi sesiniz çalsın',
+        aciklama:
+            'Her vakit için bildirim sesini ayrı seçin; telefonunuzdaki bir ses dosyasını, örneğin sevdiğiniz bir ezan kaydını da ekleyebilirsiniz.',
+        detayAciklama:
+            'Hatırlatmalar > Vakit girince sayfasında açık her vaktin altında ses satırı var. Telefonun seslerinden seçebilir ya da kendi dosyanızı ekleyebilirsiniz. Eklediğiniz dosya telefonunuzun Bildirimler klasörüne kopyalanır; asıl dosyayı silseniz de ses çalmaya devam eder. Aynı yol Namaz Muhafızı adımlarında da var.',
+        detaylar: [
+            'Sabah, öğle, ikindi, akşam ve yatsı için ayrı ses',
+            'Kendi ses dosyanız: MP3, M4A, OGG ya da WAV',
+            'Seçtiğiniz ses bildirim gelince çalar, bildirimi kapatınca susar',
+            'Namaz Muhafızı adımlarında da kendi dosyanızı seçebilirsiniz',
+        ],
+        ikon: 'music',
+        hedefSayfa: 'VakitGirinceAyarlari',
+        ctaEtiketi: 'Ses seçin',
+        kartGoster: true,
+        yetenek: 'sesDosyasi',
+    },
     // iPhone "Namazda sessiz" — Odak + Kısayollar rehberi (Android'de Camideyim + Namaz modu var).
     {
         id: 'ios-namazda-sessiz-odak',

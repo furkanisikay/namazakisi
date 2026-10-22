@@ -109,6 +109,11 @@ interface CountdownNativeModule {
         titresim: boolean
     ): Promise<void>;
     muhafizKanallariniTemizle(korunacakIdler: string[]): Promise<void>;
+    /** "Kendi dosyanızdan" + vakit bildirimi sesi — eski native ikili TAŞIMAZ (opsiyonel). */
+    sesDosyasiDestekleniyor?(): boolean;
+    sesDosyasiSecAsync?(): Promise<{ uri?: unknown; ad?: unknown; hata?: unknown } | null>;
+    vakitKanaliniGarantile?(kanalId: string, kanalAdi: string, aciklama: string, sesUri: string): Promise<void>;
+    vakitKanallariniTemizle?(korunacakIdler: string[]): Promise<void>;
     /** Now Bar planı (issue #282 ikinci aşama) — eski native ikili TAŞIMAZ (opsiyonel). */
     canliDurumu?(): Promise<string>;
     canliPlaniKur?(json: string): Promise<void>;
@@ -589,4 +594,63 @@ export async function muhafizKanaliniGarantile(
 export async function muhafizKanallariniTemizle(korunacakIdler: string[]): Promise<void> {
     if (Platform.OS !== 'android' || !ExpoCountdownNotification) return;
     await ExpoCountdownNotification.muhafizKanallariniTemizle(korunacakIdler);
+}
+
+// ============================================================
+// "KENDİ DOSYANIZDAN SEÇİN" + VAKİT BİLDİRİMİ SESİ
+// ============================================================
+
+/** İçe aktarma hatası: `bicim` (ses değil/çözülemedi), `boyut` (>20 MB), `sure` (>8 dk),
+ * `erisim`, `yazilamadi`, `desteklenmiyor`. */
+export type SesDosyasiHatasi = 'bicim' | 'boyut' | 'sure' | 'erisim' | 'yazilamadi' | 'desteklenmiyor';
+
+export type SesDosyasiSonucu = SecilenSes | { hata: SesDosyasiHatasi };
+
+/** Bu cihazda "kendi dosyanızdan" yolu var mı? (Android 10+ ve yeni native ikili) */
+export function sesDosyasiDestekleniyor(): boolean {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.sesDosyasiDestekleniyor) return false;
+    try {
+        return ExpoCountdownNotification.sesDosyasiDestekleniyor() === true;
+    } catch {
+        return false;
+    }
+}
+
+const HATALAR: readonly SesDosyasiHatasi[] = ['bicim', 'boyut', 'sure', 'erisim', 'yazilamadi', 'desteklenmiyor'];
+
+/**
+ * Belge seçicisini açar, seçilen dosyayı doğrulayıp kalıcı bildirim sesi yapar
+ * (MediaStore › Bildirimler/NamazAkisi). Vazgeçilirse `null`. Asla fırlatmaz.
+ */
+export async function sesDosyasiSec(): Promise<SesDosyasiSonucu | null> {
+    if (!sesDosyasiDestekleniyor() || !ExpoCountdownNotification?.sesDosyasiSecAsync) return null;
+    try {
+        const sonuc = await ExpoCountdownNotification.sesDosyasiSecAsync();
+        if (!sonuc) return null;
+        if (typeof sonuc.uri === 'string' && sonuc.uri.length > 0) {
+            return { uri: sonuc.uri, ad: typeof sonuc.ad === 'string' ? sonuc.ad : '' };
+        }
+        const hata = HATALAR.find((h) => h === sonuc.hata) ?? 'yazilamadi';
+        return { hata };
+    } catch {
+        return { hata: 'yazilamadi' };
+    }
+}
+
+/** Vakit bildirimi kanalını YOKSA kurar (`vakit_bildirim_<hash8>`). */
+export async function vakitKanaliniGarantile(
+    kanalId: string,
+    kanalAdi: string,
+    aciklama: string,
+    sesUri: string
+): Promise<boolean> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.vakitKanaliniGarantile) return false;
+    await ExpoCountdownNotification.vakitKanaliniGarantile(kanalId, kanalAdi, aciklama, sesUri);
+    return true;
+}
+
+/** Kullanılmayan `vakit_bildirim_*` kanallarını siler. */
+export async function vakitKanallariniTemizle(korunacakIdler: string[]): Promise<void> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.vakitKanallariniTemizle) return;
+    await ExpoCountdownNotification.vakitKanallariniTemizle(korunacakIdler);
 }

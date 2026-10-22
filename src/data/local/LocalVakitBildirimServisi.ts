@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
+import { vakitSesleriniNormalize, type VakitBildirimSesleri } from '../../core/bildirim/vakitBildirimSesi';
 
 /**
  * Vakit Bildirim Ayarları
@@ -68,5 +69,32 @@ export const LocalVakitBildirimServisi = {
             Logger.error('LocalVakitBildirimServisi', 'Vakit ayarı güncellenemedi:', e);
             return null;
         }
-    }
+    },
+
+    /**
+     * Vakit başına bildirim sesleri (CİHAZA ÖZGÜ, yedeklenmez). Okunamazsa boş kayıt =
+     * her vakit taban kanalda (bugünkü davranış).
+     */
+    getSesler: async (): Promise<VakitBildirimSesleri> => {
+        try {
+            const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_SESLERI);
+            return ham ? vakitSesleriniNormalize(JSON.parse(ham)) : {};
+        } catch (e) {
+            Logger.error('LocalVakitBildirimServisi', 'Vakit bildirim sesleri okunamadı:', e);
+            return {};
+        }
+    },
+
+    saveSesler: async (sesler: VakitBildirimSesleri): Promise<boolean> => {
+        try {
+            await AsyncStorage.setItem(
+                DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_SESLERI,
+                JSON.stringify(vakitSesleriniNormalize(sesler))
+            );
+            return true;
+        } catch (e) {
+            Logger.error('LocalVakitBildirimServisi', 'Vakit bildirim sesleri kaydedilemedi:', e);
+            return false;
+        }
+    },
 };

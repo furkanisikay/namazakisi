@@ -43,6 +43,7 @@ import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
 import { sesSec } from '../../../../modules/expo-countdown-notification/src';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import { SesSecimSatiri } from './SesSecimSatiri';
+import { useSesDosyasiSecimi } from '../../hooks/useSesDosyasiSecimi';
 import { varsayilanAnonsMetni } from '../../../core/muhafiz/anonsMetni';
 import { esikSinirlariniHesapla, komsuyaKilitliSinirlar } from '../../../core/muhafiz/esikSinirlari';
 import { TurkceTtsUyarisi } from './AnonsBilesenleri';
@@ -322,6 +323,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     const [metinTaslak, setMetinTaslak] = useState(seviye?.anonsMetni ?? '');
     /** Ses secici acik mi? Cift dokunusa karsi butonu kilitler (bkz. `sesiSec`). */
     const [seciciAcik, setSeciciAcik] = useState(false);
+    const dosyaSecimi = useSesDosyasiSecimi();
     /** Gelişmiş bölüm açık mı? Değiştirilmiş adımda açık başlar. */
     const [gelismisAcik, setGelismisAcik] = useState(() =>
         seviye ? gelismisAcikBaslarMi(seviye, tanim, seviyeler) : false
@@ -498,6 +500,17 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
         } finally {
             setSeciciAcik(false);
         }
+    };
+
+    /**
+     * "Kendi dosyanızdan seçin" (Android 10+): Samsung'un ses seçicisi kullanıcının kendi
+     * dosyasını eklemiyor. Dosya kalıcı bildirim sesi olur (bkz. `useSesDosyasiSecimi`).
+     */
+    const dosyadanSec = async () => {
+        if (seciciAcik) return;
+        const secilen = await dosyaSecimi.sec();
+        if (!secilen) return;
+        onDegistir({ ...seviye, bildirimSesi: secilen.uri, sesAdi: secilen.ad || undefined });
     };
 
     const gelismisOzeti = gelismisOzetiOlustur(seviye, tanim, seviyeler);
@@ -713,29 +726,14 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                         onDinle={() => {
                                                             void OnizlemeSesServisi.bildirimSesiniCal(seviye.bildirimSesi);
                                                         }}
+                                                        onDosyadanSec={
+                                                            dosyaSecimi.destekleniyor ? () => void dosyadanSec() : undefined
+                                                        }
+                                                        dosyaAktariliyor={dosyaSecimi.seciliyor}
+                                                        onVarsayilanaDon={() =>
+                                                            onDegistir({ ...seviye, bildirimSesi: VARSAYILAN_SES, sesAdi: undefined })
+                                                        }
                                                     />
-                                                    {ozelSesMi(seviye.bildirimSesi) && (
-                                                        <TouchableOpacity
-                                                            className="flex-row items-center justify-center mt-1 px-3 rounded-xl"
-                                                            style={{ minHeight: 44 }}
-                                                            onPress={() =>
-                                                                onDegistir({ ...seviye, bildirimSesi: VARSAYILAN_SES, sesAdi: undefined })
-                                                            }
-                                                            activeOpacity={0.7}
-                                                            accessibilityRole="button"
-                                                            accessibilityLabel="Uygulama sesine dönün"
-                                                        >
-                                                            <FontAwesome5
-                                                                name="undo"
-                                                                size={11}
-                                                                color={renkler.metinIkincil}
-                                                                style={{ marginRight: 7 }}
-                                                            />
-                                                            <Text className="text-xs font-medium" style={{ color: renkler.metinIkincil }}>
-                                                                Uygulama sesine dön
-                                                            </Text>
-                                                        </TouchableOpacity>
-                                                    )}
                                                 </View>
                                             )}
 

@@ -85,6 +85,19 @@ describe('ozellik turu tohumu', () => {
         expect((await LocalSadeGorunumServisi.getAyarlar()).aktif).toBe(varyant === 'sade');
     });
 
+    it('ses varyanti: vakit bildirimi acik + sabah sesi uygulamanin okuma yolundan DEGISMEDEN gecer', async () => {
+        const { LocalVakitBildirimServisi } = require('../../../data/local/LocalVakitBildirimServisi');
+        const depo = ozellikTohumVerisi({ varyant: 'ses' });
+        await yaz(depo);
+        expect(depo[DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_SESLERI]).toBeDefined();
+        expect(await LocalVakitBildirimServisi.getAyarlar()).toEqual(
+            JSON.parse(depo[DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_AYARLARI])
+        );
+        expect(await LocalVakitBildirimServisi.getSesler()).toEqual(
+            JSON.parse(depo[DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_SESLERI])
+        );
+    });
+
     it('tema tercihi acikca yazilir', () => {
         expect(JSON.parse(ozellikTohumVerisi({ tema: 'koyu' }).tema_tercihleri).mod).toBe('koyu');
         expect(JSON.parse(ozellikTohumVerisi().tema_tercihleri).mod).toBe('acik');

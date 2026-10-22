@@ -106,6 +106,10 @@ tohumla() {
   adb push /tmp/namazakisi_cami.xml /data/local/tmp/namazakisi_cami.xml >/dev/null
   adb shell run-as "$PAKET" mkdir -p shared_prefs
   adb shell run-as "$PAKET" cp /data/local/tmp/namazakisi_cami.xml shared_prefs/namazakisi_cami.xml
+  # "Kendi dosyaniz" kaydi (SesIceAktarici): `ses` tohumundaki olu URI bizimmis gibi kayitli.
+  node scripts/ozellik-tohum-verisi.js --ses-xml > /tmp/namazakisi_ses_ice_aktarim.xml
+  adb push /tmp/namazakisi_ses_ice_aktarim.xml /data/local/tmp/namazakisi_ses_ice_aktarim.xml >/dev/null
+  adb shell run-as "$PAKET" cp /data/local/tmp/namazakisi_ses_ice_aktarim.xml shared_prefs/namazakisi_ses_ice_aktarim.xml
 }
 
 # Akis oncesi cihaz hazirligi (`# hazirlik:` satiri). Sensor degerleri
@@ -235,6 +239,13 @@ for tema in "${TEMALAR[@]}"; do
     find "$HOME/.maestro/tests" "$PWD/ozk" -newer "$isaret" -path '*ozk/*' -name '*.png' \
       -exec cp {} "$HEDEF/" \; 2>/dev/null || true
     rm -f "$isaret"
+    # `# kanal-dokumu` isaretli akis: paketin bildirim kanallari (ses/onem) metin olarak.
+    if grep -q '^# kanal-dokumu' "$akis"; then
+      sleep 5
+      adb shell dumpsys notification 2>/dev/null         | awk -v pkg="$PAKET" '/AppSettings: /{i=($2==pkg);next} i&&/NotificationChannel\{/'         > "$HEDEF/kanallar-$(basename "$akis" .yaml).txt" || true
+      echo "Kanal dokumu: $(wc -l < "$HEDEF/kanallar-$(basename "$akis" .yaml).txt") satir"
+      grep -o "mId='vakit_bildirim[^']*'[^,]*\|mSound=[^,]*" "$HEDEF/kanallar-$(basename "$akis" .yaml).txt" | head -20 || true
+    fi
   done
 done
 

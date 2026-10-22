@@ -26,6 +26,10 @@ class ExpoCountdownNotificationModule : Module() {
     @Volatile
     private var bekleyenSecim: Promise? = null
 
+    /** "Kendi dosyanizdan secin" (SAF) promise'i — `bekleyenSecim` ile ayni kurallar. */
+    @Volatile
+    private var bekleyenDosyaSecimi: Promise? = null
+
     override fun definition() = ModuleDefinition {
         Name("ExpoCountdownNotification")
 
@@ -264,6 +268,57 @@ class ExpoCountdownNotificationModule : Module() {
             }
         }
 
+        /** "Kendi dosyanizdan" yolu bu cihazda var mi? (MediaStore'a izinsiz yazma = API 29+) */
+        Function("sesDosyasiDestekleniyor") {
+            SesIceAktarici.destekleniyorMu()
+        }
+
+        /**
+         * Belge secicisini (SAF, audio) acar; secilen dosyayi dogrulayip MediaStore'a
+         * (Bildirimler/NamazAkisi) kopyalar ve `{ uri, ad, hata }` dondurur. Vazgecilirse
+         * `null`. IZIN GEREKTIRMEZ (bkz. [SesIceAktarici]).
+         */
+        AsyncFunction("sesDosyasiSecAsync") { promise: Promise ->
+            val aktivite = appContext.currentActivity
+            if (aktivite == null || !SesIceAktarici.destekleniyorMu()) {
+                promise.resolve(null)
+                return@AsyncFunction
+            }
+            if (bekleyenDosyaSecimi != null || bekleyenSecim != null) {
+                Log.w("CountdownModule", "Bir secici zaten acik; ikinci cagri yok sayildi")
+                promise.resolve(null)
+                return@AsyncFunction
+            }
+            try {
+                bekleyenDosyaSecimi = promise
+                aktivite.startActivityForResult(SesIceAktarici.seciciIntenti(), SesIceAktarici.ISTEK_KODU)
+            } catch (e: Exception) {
+                Log.e("CountdownModule", "Belge secici acilamadi: ${e.message}")
+                bekleyenDosyaSecimi = null
+                promise.resolve(null)
+            }
+        }
+
+        /**
+         * "Vakit girdi" bildirimi icin sese ozgu kanal (`vakit_bildirim_<hash8>`) YOKSA
+         * olusturur. Onem/desen taban `vakit_bildirim` ile ayni (bkz. [VakitKanallari]).
+         */
+        AsyncFunction("vakitKanaliniGarantile") {
+            kanalId: String,
+            kanalAdi: String,
+            aciklama: String,
+            sesUri: String,
+            promise: Promise ->
+            appContext.reactContext?.let { VakitKanallari.garantile(it, kanalId, kanalAdi, aciklama, sesUri) }
+            promise.resolve(null)
+        }
+
+        /** Kullanilmayan `vakit_bildirim_*` kanallarini siler (taban kanal korunur). */
+        AsyncFunction("vakitKanallariniTemizle") { korunacakIdler: List<String>, promise: Promise ->
+            appContext.reactContext?.let { VakitKanallari.copleriTopla(it, korunacakIdler) }
+            promise.resolve(null)
+        }
+
         /** URI'nin gosterilecek adi; cozulemezse bos string. */
         AsyncFunction("sesAdiAl") { uri: String?, promise: Promise ->
             val context = appContext.reactContext
@@ -330,6 +385,33 @@ class ExpoCountdownNotificationModule : Module() {
          * `bekleyenSecim` temizlenir — aksi halde ekran ikinci acilista asili kalir.
          */
         OnActivityResult { _, payload ->
+            if (payload.requestCode == SesIceAktarici.ISTEK_KODU) {
+                val promise = bekleyenDosyaSecimi
+                bekleyenDosyaSecimi = null
+                if (promise != null) {
+                    try {
+                        val kaynak = payload.data?.data
+                        val context = appContext.reactContext
+                        if (kaynak == null || context == null) {
+                            promise.resolve(null)
+                        } else {
+                            // Kopyalama I/O'dur: ANA thread'de (burasi) yapilmaz. Gecici
+                            // okuma izni etkinlik yasadikca gecerlidir; hemen okunur.
+                            Thread {
+                                val sonuc = try {
+                                    SesIceAktarici.iceAktar(context, kaynak)
+                                } catch (e: Exception) {
+                                    SesIceAktarici.Sonuc(hata = "yazilamadi")
+                                }
+                                promise.resolve(sonuc.harita())
+                            }.start()
+                        }
+                    } catch (e: Exception) {
+                        Log.e("CountdownModule", "Belge secici sonucu islenemedi: ${e.message}")
+                        promise.resolve(null)
+                    }
+                }
+            }
             if (payload.requestCode == SesSecici.ISTEK_KODU) {
                 val promise = bekleyenSecim
                 bekleyenSecim = null
