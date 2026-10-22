@@ -77,7 +77,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
         id: 'vakit-girdi-sesi-ve-kendi-dosyaniz',
         platformlar: ['android'],
-        surum: '0.62.0',
+        surum: '0.64.0',
         tarih: '2026-10-21',
         baslik: 'Vakit girince kendi sesiniz çalsın',
         aciklama:
