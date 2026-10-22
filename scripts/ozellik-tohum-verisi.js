@@ -189,6 +189,9 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         const suanki = suankiVakitAdi();
         if (suanki) delete bugun[suanki];
         depo[anahtar] = JSON.stringify(bugun);
+        // Kare duayi gostersin: kaza onerisi (1,6 sn sonra acilir) bu tohumda KAPALI —
+        // yavas emulator/simulatorde dokunus + kare 1,6 sn'yi asip modal duayi ortuyordu.
+        depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: false });
     }
 
     if (varyant === 'sade') {

@@ -12,21 +12,21 @@ appId: com.furkanisikay.namazakisi
         id: "vakit-karti-kildim"
     commands:
       - startRecording: ozk/kabul-gecisi
+      # Dokunustan sonra durulma BEKLENMEZ: saniyelik sayac yuzunden tapOn ~12 sn bekliyordu,
+      # o arada kaza onerisi (1,6 sn) acilip duayi ortuyordu.
       - tapOn:
           id: "vakit-karti-kildim"
-      # Kerahat vaktindeyse once kibar onay modali gelir.
+          waitToSettleTimeoutMs: 400
+      # Dua karesi HEMEN (kosul denetimleri yavas emulatorde saniyeler surer).
+      - takeScreenshot: ozk/19-kabul-sonra
+      # Kerahat vaktindeyse once kibar onay modali gelir (o zaman dua onaydan sonra).
       - runFlow:
           when:
             visible: "Yine de işaretleyin"
           commands:
             - tapOn: "Yine de işaretleyin"
-      # Dua gorunur gorunmez kare (kaza onerisi 1,6 sn sonra gelir).
-      - extendedWaitUntil:
-          visible: ".*(Allah kabul etsin|Kabul olsun|Rabbim kabul etsin).*"
-          timeout: 5000
-      - takeScreenshot: ozk/19-kabul-sonra
-      # Sonra kaza onerisi (duanin ustune hemen acilmaz).
+            - takeScreenshot: ozk/19-kabul-sonra
       - waitForAnimationToEnd:
           timeout: 2500
-      - takeScreenshot: ozk/19-kabul-kaza-onerisi
+      - takeScreenshot: ozk/19-kabul-yerlesti
       - stopRecording

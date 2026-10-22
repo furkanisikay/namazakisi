@@ -126,7 +126,7 @@ async function bolum(ad, fn) {
             cek('19-kabul-sonra');
         }
         await bekle(1500);
-        cek('19-kabul-kaza-onerisi');
+        cek('19-kabul-yerlesti');
     });
 
     await bolum('sade gorunum', async () => {
