@@ -50,6 +50,8 @@ describe('tek beyin kapısı — tüm planlayıcılar', () => {
         'CamiyeGitHatirlatmaServisi',
         'TakvimCakismaServisi',
         'NafileHatirlatmaServisi',
+        // Saat (Wear OS / Apple Watch) hazır planı + uyandırma: ikinci cihaz saate de göndermez.
+        'WearSenkronServisi',
     ];
     const kok = path.resolve(__dirname, '../../../domain/services');
 
