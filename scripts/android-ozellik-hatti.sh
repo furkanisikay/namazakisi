@@ -186,6 +186,9 @@ hazirlik_bitir() {
       adb shell "pm list libraries | grep -i window" || true
       adb shell "getprop | grep -iE 'fold|hinge|display_feature|device_state|wm.extensions'" || true
       adb shell "settings get global display_features" || true
+      # Uygulama surecinde WindowManager Extensions / modul uyarilari (FoldingFeature geldi mi?).
+      echo "--- logcat (window/katlanma) ---"
+      adb logcat -d 2>/dev/null | grep -iE "KatlanmaPosturu|WindowExtensions|ExtensionsUtil|WindowLayoutComponent|FoldingFeature|DeviceStateManagerFoldingFeature|RawFoldingFeature|androidx.window" | tail -40 || true
       adb exec-out screencap -p > "$CIKIS/${PROFIL}-$2/46-katlanabilir-masaustu.png" || true
       adb emu sensor set hinge-angle0 180 || true
       adb shell settings delete global display_features || true
