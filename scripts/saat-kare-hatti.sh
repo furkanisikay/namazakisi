@@ -290,6 +290,7 @@ adb wait-for-device
 sleep 2
 adb shell am force-stop "$PAKET"
 adb shell settings put global auto_time 0 || true
+adb shell settings put global auto_time_zone 0 || true
 GUN="$(adb shell date +%m%d%Y | tr -d '\r')"
 if [ ${#GUN} -eq 8 ] && adb shell date "${GUN:0:4}0651${GUN:4:4}.00" >/dev/null 2>&1; then
   echo "saat: $(adb shell date +%H:%M | tr -d '\r')"
@@ -299,11 +300,20 @@ fi
 if adb shell am start -W -n "$PAKET/$SINIF.ui.UyandirmaAktivite" --es id magaza_karesi_uyandirma 2>&1 | grep -q 'Error\|Exception'; then
   echo "UYARI: 10-uyandirma ekrani baslatilamadi (root yok?) — kare atlandi"
 elif hazir_bekle 'Kıldım|Kapat'; then
-  kare 10-uyandirma 2 || true
+  # Emulator saati ana makineyle yeniden esitleyebiliyor (bir kosuda kare 21:56 gosterdi):
+  # cekimden hemen once saati yeniden kur, ekrandaki saat guncellensin, sonra cek.
+  for _ in 1 2 3; do
+    adb shell date "${GUN:0:4}0651${GUN:4:4}.00" >/dev/null 2>&1 || true
+    sleep 3
+    [ "$(adb shell date +%H:%M | tr -d '\r')" = "06:51" ] && break
+  done
+  echo "cekim ani saat: $(adb shell date +%H:%M | tr -d '\r')"
+  kare 10-uyandirma 0 || true
 else
   echo "UYARI: 10-uyandirma ekrani acilmadi — kare atlandi"
 fi
 adb shell am force-stop "$PAKET"
 adb shell settings put global auto_time 1 || true
+adb shell settings put global auto_time_zone 1 || true
 
 ls -la "$CIKIS"
