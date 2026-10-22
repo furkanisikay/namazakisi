@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.67.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.68.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.67.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
+Kaynak koddaki sürüm: **0.68.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -265,8 +265,18 @@ Kaynak koddaki sürüm: **0.67.0** · Mağazada: Google Play: **0.45.0** · App 
 
 <p>
   <img src="docs/ekran-goruntuleri/cihaz/android-tv/01-pano.webp" width="320" alt="Pano" title="Pano">
-  <img src="docs/ekran-goruntuleri/cihaz/android-tv/02-il-secimi.webp" width="320" alt="İl seçimi" title="İl seçimi">
-  <img src="docs/ekran-goruntuleri/cihaz/android-tv/03-ekran-koruyucu.webp" width="320" alt="Ekran koruyucu" title="Ekran koruyucu">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/02-esleme-qr.webp" width="320" alt="Esleme qr" title="Esleme qr">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/02-tv-ayarlar-bos.webp" width="320" alt="Tv ayarlar bos" title="Tv ayarlar bos">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/03-onay-soruluyor.webp" width="320" alt="Onay soruluyor" title="Onay soruluyor">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/04-eklendi-sahne.webp" width="320" alt="Eklendi sahne" title="Eklendi sahne">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/04-pano-ramazan.webp" width="320" alt="Pano ramazan" title="Pano ramazan">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/04-pano-telefondan.webp" width="320" alt="Pano telefondan" title="Pano telefondan">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/04-tv-ayarlar-uyeler.webp" width="320" alt="Tv ayarlar uyeler" title="Tv ayarlar uyeler">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/05-kod-giris.webp" width="320" alt="Kod giris" title="Kod giris">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/06-kod-hata.webp" width="320" alt="Kod hata" title="Kod hata">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/07-kod-basari.webp" width="320" alt="Kod basari" title="Kod basari">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/08-il-secimi.webp" width="320" alt="İl seçimi" title="İl seçimi">
+  <img src="docs/ekran-goruntuleri/cihaz/android-tv/09-ekran-koruyucu.webp" width="320" alt="Ekran koruyucu" title="Ekran koruyucu">
 </p>
 
 </details>
@@ -306,6 +316,7 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 ### 🆕 Son Eklenenler
 
 <!-- OTOMATIK:BASLA yenilikler -->
+- **Telefon ve tablet birlikte** — Tabletinizi telefonunuza ekleyin: birinde işaretlediğiniz namaz öbürüne de geçer. Hesap yok, sunucu yok; yalnız evinizin Wi-Fi ağı. <sub>Android · iOS · 0.60.0</sub>
 - **TV kıldığınız namazları da bilir** — Cihazlarım sayfasından evdeki TV’leri yönetin. İsterseniz TV, kıldığınız namazları bilir; vakit daralırken kılmadıysanız ekranın altında sessiz bir bant gösterir. <sub>Android · iOS · 0.65.0</sub>
 - **Vakit girince kendi sesiniz çalsın** — Her vakit için bildirim sesini ayrı seçin; telefonunuzdaki bir ses dosyasını, örneğin sevdiğiniz bir ezan kaydını da ekleyebilirsiniz. <sub>Android · 0.64.0</sub>
 - **Camide telefonunuz sessize geçsin** — Namaz odağını bir kez kurun: camiye ya da kendi belirlediğiniz bir yere varınca iPhone sessize geçer, ayrılınca eski hâline döner. <sub>iOS · 0.55.0</sub>
@@ -313,11 +324,11 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 - **Kıbleyi Kamerayla Bulun** — Kıble sekmesinde telefonunuzu dik tutup kamerayla çevrenize bakın: Kâbe işareti kıble yönünde belirir, yanında Kâbe’ye uzaklığınız yazar. Pusula açılır açılmaz döner ve titremeden akar. <sub>Android · iOS · 0.52.0</sub>
 - **Daha sade uygulama** — Daha az bildirim, gece sessiz saatler ve tüm hatırlatmalar tek sayfada. Yeni sekmeler: Bugün, Kıble, Kaza, İlerleme, Ayarlar. <sub>Android · iOS · 0.50.0</sub>
 - **Verileriniz Tüm Cihazlarınızda** — Kıldığınız namazları, seri ve kaza defterinizi kendi Google Drive alanınızda saklayıp diğer telefonunuz ya da tabletinizle eşitleyebilirsiniz. Veriler sizin belirlediğiniz parolayla şifrelenir. <sub>Android · 0.42.0</sub>
-- **Wear OS Saatinizde Namaz Akışı** — Galaxy Watch gibi Wear OS saatinizde vakti ve kalan süreyi kadranda görür, bilekten "Kıldım" der, tesbihat sayarsınız. Uyandırmanın ve sesli okumanın saatte mi telefonda mı olacağını siz seçersiniz. <sub>Android · 0.47.0</sub>
 
 <details>
-<summary>Diğer 34 özellik</summary>
+<summary>Diğer 35 özellik</summary>
 
+- **Wear OS Saatinizde Namaz Akışı** — Galaxy Watch gibi Wear OS saatinizde vakti ve kalan süreyi kadranda görür, bilekten "Kıldım" der, tesbihat sayarsınız. Uyandırmanın ve sesli okumanın saatte mi telefonda mı olacağını siz seçersiniz. <sub>Android · 0.47.0</sub>
 - **Tüm Hatırlatmalar Aynı Ekranda** — Namaz muhafızı, nafile, cuma, camiye gitme, yatış ve takvim hatırlatmaları aynı ekranı ve aynı seçenekleri kullanır: birden çok hatırlatma, tekrar ve sesli okuma. <sub>Android · iOS · 0.40.0</sub>
 - **Cuma Namazı Hatırlatması** — Her cuma, öğle vaktinden istediğiniz kadar önce hatırlatalım — camiye rahatça yetişin. <sub>Android · iOS · 0.37.0</sub>
 - **Camiye Zamanında Yetişin** — Camide kılmak istediğiniz vakitleri seçin; ezandan, camiye yürüme süreniz kadar önce hatırlatalım. <sub>Android · iOS · 0.37.0</sub>

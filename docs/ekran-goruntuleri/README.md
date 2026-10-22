@@ -2,7 +2,7 @@
 
 <!-- Bu sayfa scripts/belgeleri-guncelle.js ile üretilir; elle düzenlemeyin (kaynak: scripts/belge-gorsel-gruplari.js + manifest.json). -->
 
-Güncel sürüm: **0.67.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**. Mağaza kareleri Google Play ve App Store'daki güncel listelerden, diğerleri uygulamanın ekran görüntüsü hatlarından (yalnız ana dala girmiş sürümler) gelir.
+Güncel sürüm: **0.68.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**. Mağaza kareleri Google Play ve App Store'daki güncel listelerden, diğerleri uygulamanın ekran görüntüsü hatlarından (yalnız ana dala girmiş sürümler) gelir.
 
 ## Mağazalarda
 
@@ -116,6 +116,11 @@ Güncel sürüm: **0.67.0** · Mağazada: Google Play: **0.45.0** · App Store: 
 ### Android TV
 
 <table>
-  <tr><td align="center"><img src="./cihaz/android-tv/01-pano.webp" width="320" alt="Pano" title="Pano"><br><sub>Pano</sub></td><td align="center"><img src="./cihaz/android-tv/02-il-secimi.webp" width="320" alt="İl seçimi" title="İl seçimi"><br><sub>İl seçimi</sub></td></tr>
-  <tr><td align="center"><img src="./cihaz/android-tv/03-ekran-koruyucu.webp" width="320" alt="Ekran koruyucu" title="Ekran koruyucu"><br><sub>Ekran koruyucu</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/android-tv/01-pano.webp" width="320" alt="Pano" title="Pano"><br><sub>Pano</sub></td><td align="center"><img src="./cihaz/android-tv/02-esleme-qr.webp" width="320" alt="Esleme qr" title="Esleme qr"><br><sub>Esleme qr</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/android-tv/02-tv-ayarlar-bos.webp" width="320" alt="Tv ayarlar bos" title="Tv ayarlar bos"><br><sub>Tv ayarlar bos</sub></td><td align="center"><img src="./cihaz/android-tv/03-onay-soruluyor.webp" width="320" alt="Onay soruluyor" title="Onay soruluyor"><br><sub>Onay soruluyor</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/android-tv/04-eklendi-sahne.webp" width="320" alt="Eklendi sahne" title="Eklendi sahne"><br><sub>Eklendi sahne</sub></td><td align="center"><img src="./cihaz/android-tv/04-pano-ramazan.webp" width="320" alt="Pano ramazan" title="Pano ramazan"><br><sub>Pano ramazan</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/android-tv/04-pano-telefondan.webp" width="320" alt="Pano telefondan" title="Pano telefondan"><br><sub>Pano telefondan</sub></td><td align="center"><img src="./cihaz/android-tv/04-tv-ayarlar-uyeler.webp" width="320" alt="Tv ayarlar uyeler" title="Tv ayarlar uyeler"><br><sub>Tv ayarlar uyeler</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/android-tv/05-kod-giris.webp" width="320" alt="Kod giris" title="Kod giris"><br><sub>Kod giris</sub></td><td align="center"><img src="./cihaz/android-tv/06-kod-hata.webp" width="320" alt="Kod hata" title="Kod hata"><br><sub>Kod hata</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/android-tv/07-kod-basari.webp" width="320" alt="Kod basari" title="Kod basari"><br><sub>Kod basari</sub></td><td align="center"><img src="./cihaz/android-tv/08-il-secimi.webp" width="320" alt="İl seçimi" title="İl seçimi"><br><sub>İl seçimi</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/android-tv/09-ekran-koruyucu.webp" width="320" alt="Ekran koruyucu" title="Ekran koruyucu"><br><sub>Ekran koruyucu</sub></td></tr>
 </table>
