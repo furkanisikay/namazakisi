@@ -309,7 +309,6 @@ struct SimdiSayfasi: View {
                 .foregroundStyle(SaatGorunum.yesil)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-                .transition(.opacity)
         } else if kilindiMi {
             // Sonraki vakit, tek satirda: ikon + ad + saat.
             if let s = durum.gorunum.sonraki {
@@ -361,9 +360,12 @@ struct SimdiSayfasi: View {
         if !hareketAzalt { tik = 0 }
         if baglanti.kildim(beklenen: aday.vakit) {
             WKInterfaceDevice.current().play(.success)
-            withAnimation(hareketAzalt ? nil : .easeOut(duration: 0.3)) { kabulGoster = true }
+            // Animasyonsuz degisim: alt satirdaki iki metin ayni yerde capraz solarsa ust uste
+            // biniyordu (kildim-sahnesi videosunda "Allah kabul etsin" + "İkindi 15:50").
+            // Hareketi halkanin tik cizimi tasir; metin yalniz yer degistirir.
+            kabulGoster = true
             DispatchQueue.main.asyncAfter(deadline: .now() + Samimiyet.kabulGosterimSaniye) {
-                withAnimation(hareketAzalt ? nil : .easeInOut(duration: 0.3)) { kabulGoster = false }
+                kabulGoster = false
             }
             if !hareketAzalt {
                 // Durum DEGISIMI gecikir (tik gorunumu kilinma yayinindan sonra eklenir; ayni
