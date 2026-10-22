@@ -117,7 +117,7 @@ async function bolum(ad, fn) {
         await temizAcilis('kildim');
         cek('19-kabul-once');
         const ogeler = await agac('kabul');
-        if (!(await dokun(ogeler, / — Kılındı olarak işaretle$/, 'kildim dugmesi', { bekle: 1800 }))) return;
+        if (!(await dokun(ogeler, /vakit-karti-kildim|Kılındı olarak işaretle/, 'kildim dugmesi', { bekle: 1800 }))) return;
         const sonra = await agac('kabul-sonra');
         if (bul(sonra, /^Yine de işaretleyin$/)) await dokun(sonra, /^Yine de işaretleyin$/, 'kerahat onayi', { bekle: 1800 });
         cek('19-kabul-sonra');
