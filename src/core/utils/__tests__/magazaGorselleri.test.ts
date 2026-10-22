@@ -120,8 +120,9 @@ describe('magaza pazarlama gorselleri — DOGRULUK (platform suzgeci)', () => {
     });
 
     it('App Store metinlerinde Android-ozel sozcuk YOK', () => {
-        const yasak = /rahatsız etmeyin|wear os|android|google|drive|televizyon|widget|otomasyon|ezan kaydı|kendi ses/i;
-        for (const [, s] of appStore) for (const k of s.kareler.filter((x) => !x.kosul)) for (const m of metinleri(k)) expect(m).not.toMatch(yasak);
+        // "televizyon" serbest: iOS uygulamasi Android/Google TV ile esleser (TvEslemeServisi).
+        const yasak = /rahatsız etmeyin|wear os|android|google|drive|widget|otomasyon|ezan kaydı|kendi ses|apple tv/i;
+        for (const [, s] of appStore.filter(([, x]) => !x.kosul)) for (const k of s.kareler.filter((x) => !x.kosul)) for (const m of metinleri(k)) expect(m).not.toMatch(yasak);
     });
 
     it('iPhone camide sessiz vaadi Odak ile anlatilir (Rahatsız Etmeyin/geofence degil)', () => {

@@ -398,6 +398,13 @@ function belge(gen, yuk, z, govde, ekStil = '') {
 </style></head><body><div class="zemin"></div>${govde}</body></html>`;
 }
 
+/** Herhangi bir saat (Apple Watch kasasi ya da yuvarlak Wear) — boyut = genislik. */
+function saatCiz(s, boyut, z) {
+    if (!s) return '';
+    if (s.cihaz === 'appleWatch') return appleSaat(s, boyut * 0.86, s.boyut, z);
+    return yuvarlakSaat(s, boyut, z, false);
+}
+
 /** Dikey karede metin blogunun tahmini alt kenari (tarayicisiz; ayni olcu testte de). */
 function metinAlti(kare, k) {
     const satir = kare.baslik.split('\n').length;
@@ -471,6 +478,8 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
             const rx = kare.rozet.yer === 'sol' ? `left:${pad * 0.55}px` : `right:${pad * 0.55}px`;
             alan += `<div style="position:absolute;${rx};top:${ust + (yuk - ust) * kare.rozet.y}px">${rozetHtml(kare.rozet, k, z)}</div>`;
         }
+        const bilekEk = gorseller.find((x) => x !== g && (x.cihaz === 'appleWatch' || x.cihaz === 'wearYuvarlak'));
+        if (bilekEk) alan += `<div style="position:absolute;right:${50 * k}px;top:${yuk - 640 * k}px">${saatCiz(bilekEk, 470 * k, z)}</div>`;
         if (kare.bildirim) {
             const bg = 1120 * k;
             // Kart cihazin ust kenarindan biraz yukarida baslar: ekranin basligini TUMDEN
@@ -492,8 +501,10 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
         const buyukGen = Math.min(820 * k, (yuk - cihazUst - 90 * k) / (boyut.yuk / boyut.gen) + 32 * k);
         const ekranGen = buyukGen - 32 * k;
         alan += `<div style="position:absolute;left:${90 * k}px;top:${cihazUst}px">${cerceve('telefon', { html: alarmEkrani(kare.alarm, platform, ekranGen) }, buyukGen, k, z, { boyut, yaricap: platform === 'ios' ? 96 * k : 60 * k })}</div>`;
-        const kucuk = gorseller[0];
-        if (kucuk)
+        const bilek = gorseller.find((g) => g.cihaz === 'appleWatch' || g.cihaz === 'wearYuvarlak');
+        const kucuk = gorseller.find((g) => g.cihaz === 'iphone' || g.cihaz === 'androidTelefon');
+        if (bilek) alan += `<div style="position:absolute;right:${60 * k}px;top:${cihazUst + 880 * k}px">${saatCiz(bilek, 470 * k, z)}</div>`;
+        else if (kucuk)
             alan += `<div style="position:absolute;right:${70 * k}px;top:${cihazUst + 260 * k}px">${cerceve('telefon', kucuk.url, 440 * k, k, z, { boyut: kucuk.boyut, yaricap: kucuk.cihaz === 'androidTelefon' ? 40 * k : 60 * k })}</div>`;
     } else if (yer === 'telefonSaat') {
         const tel = gorseller.find((g) => g.cihaz === 'iphone' || g.cihaz === 'androidTelefon');
@@ -524,21 +535,22 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
     } else if (yer === 'kolaj') {
         const bul = (c) => gorseller.find((g) => g.cihaz === c);
         const tv = bul('tv');
-        const tablet = bul('tablet');
+        const tablet = bul('tablet') || bul('ipadYatay');
         const tel = bul('androidTelefon') || bul('iphone');
-        const saat = bul('wearYuvarlak');
+        const saat = bul('wearYuvarlak') || bul('appleWatch');
+        const telYaricap = tel && tel.cihaz === 'iphone' ? 70 * k : 50 * k;
         const ust = cihazUst;
         // Katman sirasi (arkadan one): TV, tablet, telefon, saat. Saat kayissiz ve
         // tabletin ALTINDA durur: kayis tabletin ustune binmesin.
         if (tv) alan += `<div style="position:absolute;left:${104 * k}px;top:${ust}px">${cerceve('tv', tv.url, 960 * k, k, z, { boyut: tv.boyut })}</div>`;
         if (tablet) {
-            alan += `<div style="position:absolute;right:${-80 * k}px;top:${ust + 470 * k}px">${cerceve('tablet', tablet.url, 860 * k, k, z, { boyut: tablet.boyut, kirpAlt: 0.075 })}</div>`;
-            if (tel) alan += `<div style="position:absolute;left:${80 * k}px;top:${ust + 640 * k}px">${cerceve('telefon', tel.url, 500 * k, k, z, { boyut: tel.boyut, yaricap: 50 * k })}</div>`;
-            if (saat) alan += `<div style="position:absolute;right:${150 * k}px;top:${ust + 1060 * k}px">${yuvarlakSaat(saat, 380 * k, z, false)}</div>`;
+            alan += `<div style="position:absolute;right:${-80 * k}px;top:${ust + 470 * k}px">${cerceve(tablet.cihaz, tablet.url, 860 * k, k, z, { boyut: tablet.boyut, kirpAlt: tablet.cihaz === 'tablet' ? 0.075 : 0 })}</div>`;
+            if (tel) alan += `<div style="position:absolute;left:${80 * k}px;top:${ust + 640 * k}px">${cerceve('telefon', tel.url, 500 * k, k, z, { boyut: tel.boyut, yaricap: telYaricap })}</div>`;
+            if (saat) alan += `<div style="position:absolute;right:${150 * k}px;top:${ust + 1060 * k}px">${saatCiz(saat, 380 * k, z)}</div>`;
         } else {
             // Guncel tablet karesi yoksa tablet CIZILMEZ (eski arayuz konmaz).
-            if (tel) alan += `<div style="position:absolute;left:${110 * k}px;top:${ust + 520 * k}px">${cerceve('telefon', tel.url, 580 * k, k, z, { boyut: tel.boyut, yaricap: 56 * k })}</div>`;
-            if (saat) alan += `<div style="position:absolute;right:${100 * k}px;top:${ust + 900 * k}px">${yuvarlakSaat(saat, 470 * k, z, false)}</div>`;
+            if (tel) alan += `<div style="position:absolute;left:${110 * k}px;top:${ust + 520 * k}px">${cerceve('telefon', tel.url, 580 * k, k, z, { boyut: tel.boyut, yaricap: telYaricap })}</div>`;
+            if (saat) alan += `<div style="position:absolute;right:${100 * k}px;top:${ust + 900 * k}px">${saatCiz(saat, 470 * k, z)}</div>`;
         }
     } else if (yer === 'saat') {
         const s = gorseller.find((g) => g.cihaz === 'wearYuvarlak' || g.cihaz === 'appleWatch');

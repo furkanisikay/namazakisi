@@ -188,7 +188,12 @@ const SETLER = {
         yukleme: true,
         kareler: [
             kare('01-muhafiz', ORTAK.muhafiz),
-            kare('02-sabah', ORTAK.sabah, { dipnot: 'Gerçek alarm iOS 26 ve sonrasında çalar.' }),
+            // Alarm aninda saatte de "Kildim" (Apple Watch sessiz uyandirma ekrani).
+            kare('02-sabah', ORTAK.sabah, {
+                dipnot: 'Gerçek alarm iOS 26 ve sonrasında çalar.',
+                katmanlar: [{ cihaz: 'appleWatch', kaynak: ['06-uyandirma-dolu.png'], yedekCizim: 'appleUyandirma' }],
+                iddialar: ['alarm', 'apple-watch-uyandirma'],
+            }),
             kare('03-takvim', ORTAK.takvim),
             // iPhone'da sessize alma yalniz Odak ile: uygulama rehberle bir kez kurdurur.
             kare('04-camide', {
@@ -243,17 +248,19 @@ const SETLER = {
                 iddialar: ['kible', 'apple-watch-gosterim'],
             }),
             kare('08-kaza', ORTAK.kaza),
-            kare('09-ipad', {
-                baslik: 'Birinde işaretleyin,\nhepsi bilsin',
-                alt: 'iPhone ve iPad’i eşleştirin; birinde işaretlediğiniz namaz öbürüne de geçer.',
+            kare('09-cihazlar', {
+                baslik: 'Her cihazınızda',
+                alt: 'iPhone, iPad, saat ve televizyon kıldığınızı birbirine söyler.',
                 zemin: 'acik',
-                vakit: 2,
-                yerlesim: 'telefonTablet',
+                vakit: 1,
+                yerlesim: 'kolaj',
                 katmanlar: [
+                    { cihaz: 'tv', kaynak: ['04-pano-telefondan.png', '01-pano.png'] },
                     { cihaz: 'ipadYatay', kaynak: ['yatay-01-bugun.png'] },
                     { cihaz: 'iphone', kaynak: ['01-ana-ekran.png'] },
+                    { cihaz: 'appleWatch', kaynak: ['01-simdi.png', '01-ana.png'] },
                 ],
-                iddialar: ['cihaz-agi', 'ipad'],
+                iddialar: ['cihaz-agi', 'ipad', 'apple-watch-gosterim', 'tv-eslesme'],
             }),
             kare('10-gizlilik', ORTAK.gizlilik),
             // App Store galerisi en fazla 10: ureticiye girer, yukleyiciye gitmez.
@@ -352,7 +359,13 @@ const SETLER = {
         cihaz: 'androidTelefon',
         yukleme: true,
         kareler: [
-            kare('01-muhafiz', ORTAK.muhafiz),
+            kare('01-muhafiz', ORTAK.muhafiz, {
+                katmanlar: [
+                    { cihaz: 'androidTelefon', kaynak: ORTAK.muhafiz.kaynak },
+                    { cihaz: 'wearYuvarlak', kaynak: ['01-ana-ekran.png'] },
+                ],
+                iddialar: ['muhafiz', 'wear-gosterim'],
+            }),
             kare('02-sabah', ORTAK.sabah),
             kare('03-camide', {
                 baslik: 'Camide telefonunuz\nçalmaz',
