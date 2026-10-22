@@ -8,7 +8,7 @@
  */
 import * as React from 'react';
 import { AccessibilityInfo, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { BildirimModali } from '../components/common/BildirimModali';
 import { KareKod } from '../components/cihazlar/KareKod';
