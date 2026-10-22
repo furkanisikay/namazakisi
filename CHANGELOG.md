@@ -5,6 +5,18 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.68.0] - 2026-10-22
+
+### Eklendi
+- [cihazlar] telefon ↔ tablet — yerel ağda çift yönlü Kıldım eşitlemesi
+- [cihazlar] olay günlüğü çekirdeği — HLC, eksik aralık teslimi, idempotent alım, LWW ayar
+
+### Düzeltildi
+- [cihazlar] Cihaz ekleyin ikon importu alt yoldan (D-20 nöbetçisi)
+- [cihazlar] kararlı dinleme portu + doğrulanmış istekte adres tazeleme; ağ kapısı ve geri çekilme; eşleşme adresi D-06 denetimi
+- [cihazlar] tablette harita merkezi 'Bu tablet'; olay belgesine uygulama durumu
+- [test] iç içe sınıf tipi nesne üzerinden değil sınıftan
+
 ## [0.67.0] - 2026-10-22
 
 ### Eklendi
