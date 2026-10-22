@@ -5,6 +5,31 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.66.0] - 2026-10-22
+
+### Eklendi
+- [cihazlar] canlı bağ haritası — telefon ortada büyük, durum rozetli cihaz kartları; saat satırı gerçek durumu söyler
+- [tv] ulaşılamayan TV'ye üstel geri çekilme (30 sn → en çok 60 dk; pil)
+- [cihazlar] Cihazlarım ekranı — bağlı TV'ler, durum, iki anahtar, iki uçtan kaldırma
+- [tv] telefon tarafı cihaz ağı — v2 eşleştirme onayı, şifreli eşitleme servisi, NSD keşfi, tv yuvası
+- [tv] cihaz ağı v2 — şifreli eşleştirme + üye kanalı, sessiz bant, Ramazan sayacı, cuma kartı, TV ayarları
+
+### Düzeltildi
+- [cihazlar] ikon importları alt yoldan (D-20 nöbetçisi)
+- [tv] eşleştirme ekranında düğmeler tam görünsün
+- [tv] eşleştirme ekranı sığsın (QR 300 dp, sıkı ama ferah satırlar; düğmeler ve not ekranda)
+- [tv] eşleştirme adımlarında satır aralığı; Ramazan sayacı varken aynı bilgiyi tekrar eden alt satır gizli
+- [tv] kararlı dinleme portu — TV yeniden başlayınca iPhone (keşifsiz) eski adrese ulaşsın
+- [tv] üye kartında durum kısa ('Az önce', '5 dk önce') — kesilmesin
+- [tv] Ayarlar sağ sütunu taşmasın (bilgi kartı kesiliyordu)
+- [tv] üye kartında ad kesilmesin, pano 'Ayarlar' dişli simgesi, alt yazı satır aralıkları
+- [tv] sessiz bant görünürken pano taşmasın (Ayarlar düğmesi ekrandan çıkıyordu)
+- [tv] odak halkasında negatif inset onay penceresini çökertiyordu; kare hattı saat kaydırmayı bırakır
+- [tv] 10-foot tipografi (onay, eklendi, ayarlar, kod), birimli Ramazan/cuma sayaçları; kare verisi gerçekçi
+- [tv] TV ekleme sayfası artık tek seferlik aktarım demiyor
+- [tv] Ayarlar'daki üye kartında ad ve 'güncellendi' satırı tek satıra sığsın
+- [cihazlar] bağ haritası tek erişilebilirlik düğümüne düzleşmesin (içteki TV ekleyin düğmesi ulaşılabilir)
+
 ## [0.65.0] - 2026-10-22
 
 ### Eklendi
