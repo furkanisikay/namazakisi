@@ -37,4 +37,5 @@ appId: com.furkanisikay.namazakisi
     direction: DOWN
     timeout: 60000
     waitToSettleTimeoutMs: 1500
+    centerElement: true
 - takeScreenshot: ozk/52-esitleme-otomatik
