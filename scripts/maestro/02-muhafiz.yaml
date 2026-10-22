@@ -59,6 +59,17 @@ appId: com.furkanisikay.namazakisi
 # onay modali cikar — onaylanir.
 - tapOn:
     text: "1\\. hatırlatma.*düzenleyin.*"
+- waitForAnimationToEnd:
+    timeout: 3000
+# Anahtar "Nasıl" ızgarasında, sheet'in ilk ekranının altında kalabilir (özellik
+# akışı 04-muhafiz ile aynı kaydırma).
+- scrollUntilVisible:
+    element:
+      id: "adim-sesli-anahtari"
+    direction: DOWN
+    centerElement: true
+    timeout: 60000
+    waitToSettleTimeoutMs: 1500
 - tapOn:
     id: "adim-sesli-anahtari"
 - runFlow:

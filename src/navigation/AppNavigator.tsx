@@ -342,6 +342,10 @@ const MainTabs: React.FC = () => {
       tabBar={kenarCubugu}
       screenOptions={{
         tabBarPosition: gezinme === 'alt' ? 'bottom' : 'left',
+        // Yan gezinmede alt çubuk yok → alttaki sistem çubuğu (Android tablet görev çubuğu,
+        // iPad ana çubuğu) inset'ini sahne alır. Yoksa ekranın altına sabitlenmiş öğeler
+        // (kamera kıblesinin yön cümlesi, kalibrasyon rehberi) görev çubuğunun altında kalıyordu.
+        ...(gezinme === 'alt' ? {} : { sceneStyle: { paddingBottom: insets.bottom } }),
         headerStyle: {
           backgroundColor: renkler.birincil,
           elevation: 0,
