@@ -80,6 +80,7 @@ print(
                     "8.8.8.8", "127.0.0.1", "10.0.0", "10.0.0.1.1", " 10.0.0.1", "10.0.0.1 ", "0x0a.0.0.1", "",
                 ],
             },
+            "kararliPort": {k: 40000 + int(k[:4], 16) % 20000 for k in [TV, UYE, "ffffffffffffffff"]},
             "redler": [
                 {"neden": "etiket bozuk", **bozukEtiket},
                 {"neden": "AAD'de n farklı (tekrar/kaydırma)", **{**kanal, "aad": f"2|{TV}|{UYE}|8"}},

@@ -35,6 +35,12 @@ class CihazAgiTest {
     }
 
     @Test
+    fun kararliPortTelefonlaAyni() {
+        val p = f.getJSONObject("kararliPort")
+        for (k in p.keys()) assertEquals(p.getInt(k), AgProtokolu.kararliPort(k))
+    }
+
+    @Test
     fun ozelIpv4KatiTelefonlaAyni() {
         val ip = f.getJSONObject("ozelIpv4")
         val g = ip.getJSONArray("gecerli")

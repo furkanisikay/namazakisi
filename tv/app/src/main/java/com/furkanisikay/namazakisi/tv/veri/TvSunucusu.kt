@@ -52,9 +52,19 @@ class TvSunucusu(context: Context, val depo: UyeDeposu) {
     fun ac(): Boolean {
         if (soket != null) return true
         return try {
-            val s = ServerSocket().apply {
-                reuseAddress = true
-                bind(InetSocketAddress(0))
+            // KARARLI port (kimlikten): TV yeniden başlayınca iPhone (mDNS keşfi yok) eski adrese
+            // ulaşabilsin. Port doluysa sistem seçer (Android telefon NSD ile yine bulur).
+            val tercih = AgProtokolu.kararliPort(depo.tvKimlik)
+            val s = try {
+                ServerSocket().apply {
+                    reuseAddress = true
+                    bind(InetSocketAddress(tercih))
+                }
+            } catch (_: Exception) {
+                ServerSocket().apply {
+                    reuseAddress = true
+                    bind(InetSocketAddress(0))
+                }
             }
             soket = s
             Thread({ dinle(s) }, "cihaz-agi").apply { isDaemon = true }.start()

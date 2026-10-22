@@ -48,6 +48,11 @@
       ""
     ]
   },
+  "kararliPort": {
+    "0123456789abcdef": 40291,
+    "fedcba9876543210": 45244,
+    "ffffffffffffffff": 45535
+  },
   "redler": [
     {
       "neden": "etiket bozuk",

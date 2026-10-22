@@ -30,6 +30,9 @@ export interface KanalZarfi {
     ct: string;
 }
 
+/** Kimlikten KARARLI dinleme portu (40000 + ilk 4 hex mod 20000) — TV `AgProtokolu.kararliPort` ikizi. */
+export const kararliPort = (kimlik: string): number => 40000 + ((parseInt(kimlik.slice(0, 4), 16) || 0) % 20000);
+
 export const kanalAad = (aliciKimlik: string, uye: string, n: number): string => `${KANAL_SURUMU}|${aliciKimlik}|${uye}|${n}`;
 export const esleIstekAad = (aliciKimlik: string): string => `esle|${KANAL_SURUMU}|${aliciKimlik}|istek`;
 export const esleYanitAad = (aliciKimlik: string, istek: string): string => `esle|${KANAL_SURUMU}|${aliciKimlik}|yanit|${istek}`;

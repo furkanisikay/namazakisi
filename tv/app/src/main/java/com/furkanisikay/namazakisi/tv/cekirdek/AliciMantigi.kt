@@ -216,6 +216,12 @@ object AgProtokolu {
     const val GOVDE_AZAMI = 8 * 1024
     val YOLLAR = setOf("/esle", "/esle-durum", "/esitle")
 
+    /**
+     * Kimlikten KARARLI dinleme portu: 40000 + ilk 4 hex mod 20000. JS `kararliPort` ikizi
+     * (`core/cihazAgi/kanal.ts`); ortak fikstür `esitleme-ornekleri.json > kararliPort`.
+     */
+    fun kararliPort(kimlik: String): Int = 40000 + ((kimlik.take(4).toIntOrNull(16) ?: 0) % 20000)
+
     data class Istek(val yol: String, val uzunluk: Int)
 
     fun basligiCoz(baslik: String): Istek? {

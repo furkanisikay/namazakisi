@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { base64Coz, base64UrlCoz, coz, sifrele, kanalAad, esleIstekAad, esleYanitAad } from '../kanal';
+import { base64Coz, base64UrlCoz, coz, sifrele, kanalAad, esleIstekAad, esleYanitAad, kararliPort } from '../kanal';
 import { eslesmeQrCoz, eslesmeYanitiniCoz, tvQrSurumu } from '../eslesme';
 import { YUK_AZAMI_BAYT, baytUzunlugu, yukuYaz } from '../yuk';
 import { ozelIpv4Mu } from '../../tv/eslemeBaglantisi';
@@ -47,6 +47,11 @@ describe('cihaz ağı kanalı (AES-256-GCM)', () => {
         expect(coz(sir, f.kanal.iv, f.kanal.aad, f.kanal.ct)).toBeNull();
         expect(coz(anahtar, '!!!', f.kanal.aad, f.kanal.ct)).toBeNull();
     });
+});
+
+describe('kararlı port (TV ↔ telefon ikizi)', () => {
+    const p = (f as unknown as { kararliPort: Record<string, number> }).kararliPort;
+    it.each(Object.entries(p))('%s → %d', (k, port) => expect(kararliPort(k)).toBe(port));
 });
 
 describe('özel IPv4 katı ayrıştırma (denetim D-06)', () => {
