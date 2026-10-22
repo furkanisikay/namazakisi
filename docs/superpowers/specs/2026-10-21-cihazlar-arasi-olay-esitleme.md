@@ -49,5 +49,11 @@ Hedef senaryo ("tabletten Kıldım → telefon muhafızı hemen sussun") için i
 ## Öneri (tek paragraf)
 Olay günlüğünü (kimlikli, cihaz-sıralı, idempotent; Kıldım union, kaza G-Set, ayar LWW+HLC) tek sözleşme yapıp v1'de **LAN doğrudan teslim** (TV kanalıyla aynı şifreleme ve üye anahtarı) + **CloudKit sessiz push** (Apple-içi, sunucusuz, saniyeler, ~3/saat) + mevcut saat kanalları + Drive'ın iOS'a açılmasıyla başlayın; "uyuyan telefonu uyandırma" için Android'de sunucusuz tek yol **BLE** olduğundan onu v2'ye alıp önce gerçek cihazda Doze ölçümü yapın; FCM, Nearby, Multipeer ve Wi-Fi Aware reddedilir. Kullanıcıya vaat dürüst kalır: aynı Wi-Fi'de ve açıkken anında, iPhone–iPad'de genelde saniyeler, aksi halde en geç sonraki açılış/15 dk.
 
+## Uygulama durumu (dal `claude/cihaz-tablet`)
+- YAPILDI: olay günlüğü çekirdeği (HLC, eksik aralık, idempotent alım, LWW) + telefon ↔ tablet LAN (Android ServerSocket + NSD, iOS NWListener + Bonjour; YALNIZ ön planda), iki uçta onaylı eşleştirme (`namazakisi://cihaz?…`), gelen kildim → ortak kuyruk `kaynak:'cihaz'` (üç dilde ikiz fikstür), Cihazlarım'da tablet/telefon bölümü.
+- Sapma: teslim, ayrı bir "eksik aralık isteği" yerine `/esitle` YANITINDA iki yönlü (tek gidiş-dönüş). Yerel olaylar kayıttan türetilir (dün + bugün); kaza hareketi ve ayar olayı henüz ÜRETİLMİYOR (çekirdek + uygulayıcı hazır), eşitlenen ayar beyaz listesi boş.
+- YAPILMADI: CloudKit sessiz push, BLE uyandırma (v2), Drive iOS istemci kimliği (sahip adımı), `YedekPayload.cihazOlaylari` üreticisi (özet desteği var; üretici eklenmeden önce birleştirme yazılmalı).
+- Vaat (ekranda): "aynı Wi-Fi'de ve iki cihazda da uygulama açıkken hemen; değilse ikisi bir sonraki kez birlikte açık olduğunda."
+
 ## Ek: Android 17 yerel ağ izni
 `ACCESS_LOCAL_NETWORK` (Android 17 / targetSdk 37) yerel ağdaki her soket ve mDNS erişimi için çalışma zamanı izni olacak; LAN teslimi o sürümde izinsiz ÇALIŞMAZ. İzin yalnız ön planda istenebilir (Cihazlarım / cihaz ekleme akışı); verilmemişse teslim `atlandi` sayılır ve ekran söyler; açılış ve 15 dk yolu da aynı izne tabidir. Bugün targetSdk 36 → etkisiz.

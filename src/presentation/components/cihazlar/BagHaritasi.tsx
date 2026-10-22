@@ -27,7 +27,7 @@ export interface HaritaDugumu {
 const SIMGE: Record<HaritaDugumu['tur'], string> = { tv: 'tv', saat: 'clock', tablet: 'tablet-alt', telefon: 'mobile-alt', ekle: 'plus', fazla: 'ellipsis-h' };
 const CIZIM_MS = 700;
 
-export const BagHaritasi: React.FC<{ dugumler: HaritaDugumu[] }> = ({ dugumler }) => {
+export const BagHaritasi: React.FC<{ dugumler: HaritaDugumu[]; merkezAdi?: string; merkezTablet?: boolean }> = ({ dugumler, merkezAdi = "Bu telefon", merkezTablet = false }) => {
     const renkler = useRenkler();
     const azalt = useHareketAzalt();
     const [genislik, setGenislik] = React.useState(0);
@@ -94,14 +94,14 @@ export const BagHaritasi: React.FC<{ dugumler: HaritaDugumu[] }> = ({ dugumler }
             )}
 
             {/* Bu telefon: ortada büyük, dolu birincil + yumuşak hâle. */}
-            <View style={{ alignItems: 'center', paddingTop: HARITA.ustBosluk }} accessible accessibilityLabel="Bu telefon">
+            <View style={{ alignItems: 'center', paddingTop: HARITA.ustBosluk }} accessible accessibilityLabel={merkezAdi}>
                 <View style={{ width: HARITA.telefon, height: HARITA.telefon, borderRadius: 30, backgroundColor: renkler.birincil + '20', alignItems: 'center', justifyContent: 'center' }}>
                     <View style={{ width: 68, height: 68, borderRadius: 22, backgroundColor: renkler.birincil, alignItems: 'center', justifyContent: 'center' }}>
-                        <FontAwesome5 name="mobile-alt" size={30} color={renkler.birincilMetin} />
+                        <FontAwesome5 name={merkezTablet ? "tablet-alt" : "mobile-alt"} size={30} color={renkler.birincilMetin} />
                     </View>
                 </View>
                 <Text className="text-sm font-bold mt-1.5" style={{ color: renkler.metin }}>
-                    Bu telefon
+                    {merkezAdi}
                 </Text>
             </View>
 

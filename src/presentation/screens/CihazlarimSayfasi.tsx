@@ -22,7 +22,7 @@ import { alaniOku } from '../../domain/services/CihazDurumOkuyucu';
 import { AZAMI_DUGUM } from '../../core/cihazAgi/bagHaritasi';
 import { CihazAgiDeposu, type CihazUyeligi } from '../../data/local/CihazAgiDeposu';
 import { TvSenkronServisi } from '../../domain/services/TvSenkronServisi';
-import { CihazEsServisi, cihazAgiDinleyicisiVarMi } from '../../domain/services/CihazEsServisi';
+import { CihazEsServisi, buCihazinTuru, cihazAgiDinleyicisiVarMi } from '../../domain/services/CihazEsServisi';
 import { esitlemeVaadi, haritaRozeti, saatDurumMetni, uyelikDurumMetni, type SaatDurumu } from '../../core/cihazAgi/cihazlarimMetni';
 
 type Renkler = ReturnType<typeof useRenkler>;
@@ -132,7 +132,7 @@ export const CihazlarimSayfasi: React.FC = () => {
         >
             <View className="px-1 pt-2 pb-5 mb-1" style={kartStili(renkler)}>
                 <View className="px-3 pt-3">
-                    <BagHaritasi dugumler={dugumler} />
+                    <BagHaritasi dugumler={dugumler} merkezAdi={buCihazinTuru() === 'tablet' ? 'Bu tablet' : 'Bu telefon'} merkezTablet={buCihazinTuru() === 'tablet'} />
                 </View>
             </View>
             <Text testID="cihazlarim-vaat" className="text-sm mt-3 mb-6 px-1" style={{ color: renkler.metinIkincil, lineHeight: 20 }}>
