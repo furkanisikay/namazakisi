@@ -23,6 +23,7 @@
  * Store'a BAĞIMLI DEĞİLDİR (arka planda Redux yok): konum ham AsyncStorage'dan,
  * kılınmışlık `LocalNamazServisi`'nden okunur. Saat köprüsü yoksa no-op.
  */
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import { NativeModules, Platform } from 'react-native';
 import { geceSessizliginiOku } from '../../data/local/LocalGeceSessizligiOkuyucu';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -289,9 +290,12 @@ export class WearSenkronServisi {
             // Apple Watch da HAZIR planı alır (#285 cilası): telefon uzaktayken saat kendi
             // bildirimini kurar. Çift bildirim olmaz — saat telefonla AYNI kimliği kullanır,
             // watchOS aynı kimlikli iki bildirimi tekilleştirip yalnız etkin cihazda gösterir.
-            const muhafiz = await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar);
+            // Tek beyin (#364): ikinci cihaz / ev ekranı saate de hatırlatma planı ve
+            // uyandırma GÖNDERMEZ — saatin hatırlatmasını ana telefon verir (vakitler gider).
+            const kurulur = await hatirlatmaKurulabilirMi();
+            const muhafiz = kurulur ? await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar) : undefined;
             const uyandirma =
-                saatUyandiriyorMu(saat)
+                kurulur && saatUyandiriyorMu(saat)
                     ? await this.uyandirmaListesiniHazirla(konum.koordinat, bugun, muhafiz, saat.uyandirmaDurumlari)
                     : undefined;
             const json = JSON.stringify(

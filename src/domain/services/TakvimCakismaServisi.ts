@@ -26,6 +26,7 @@
  * Turlar SIRAYA dizilir (`surenPlanlama`): konum yayması ve açılış zinciri `Promise.all`
  * ile paralel tetikleyebilir; "temizle → planla" iç içe girerse yeni plan silinirdi.
  */
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import * as Notifications from 'expo-notifications';
 import { bildirimleriTopluIptalEt, tazePlanliBildirimOkuyucu, type PlanliBildirimOkuyucu } from './planliBildirimOkuyucu';
 import { Platform } from 'react-native';
@@ -225,7 +226,7 @@ export class TakvimCakismaServisi {
     ): Promise<void> {
         // Özel sesler DOĞRULANIR (Android; cuma ile aynı gerekçe — kanal id paritesi).
         const ayarlar = await this.sesleriDogrula(await LocalTakvimCakismaServisi.getAyarlar());
-        if (!ayarlar.aktif) {
+        if (!ayarlar.aktif || !(await hatirlatmaKurulabilirMi())) {
             await this.tumunuTemizle(okuyucu);
             return;
         }

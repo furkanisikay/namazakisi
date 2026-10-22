@@ -87,6 +87,9 @@ function tohumVerisi(simdi = new Date()) {
     const BUGUN = bugunKilinanlar(simdi);
     const depo = {
         '@namaz_akisi/ilk_kurulum_tamamlandi': 'true',
+        // Tek beyin (#364): tablet/iPad karelerinde "ana telefonunuz mu?" sorusu çıkmasın
+        // (yanıtsız açılış soruyu bir kez gösterir ve tüm akışları örterdi).
+        '@namaz_akisi/cihaz_rolu': JSON.stringify({ rol: 'ana', soruldu: true }),
         '@namaz_akisi/konum_ayarlari': JSON.stringify(KONUM),
         // Gun-bazli kayitlar dogrudan yazildigi icin eski blob gocunu ATLA.
         '@namaz_akisi/namaz_gun_migrasyon_tamam': '1',

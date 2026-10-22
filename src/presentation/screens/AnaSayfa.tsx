@@ -1,3 +1,4 @@
+import { useHatirlatmaKapisi } from '../hooks/useHatirlatmaKapisi';
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
 import { View, Text, Platform, StatusBar, AppState, AppStateStatus, TouchableOpacity, useWindowDimensions } from 'react-native';
@@ -118,6 +119,9 @@ export const AnaSayfa: React.FC = () => {
   const seriDurumu = useAppSelector(state => state.seri.seriDurumu);
   const ilkKutlama = useAppSelector(ilkKutlamaSelector);
   const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
+  // Tek beyin: ikinci cihaz (tablet/iPad) ve ev ekranı modu ön plan muhafızını da
+  // (banner, ses, sesli anons) başlatmaz — hatırlatmayı ana telefon verir.
+  const hatirlatmaKapisi = useHatirlatmaKapisi();
   const konumAyarlari = useAppSelector((state) => state.konum);
   // Cuma etiketi yalniz kullanici cuma hatirlatmasini actiysa gosterilir —
   // cuma herkese farz-i ayn degildir, etiketi herkese dayatmayiz.
@@ -518,7 +522,7 @@ export const AnaSayfa: React.FC = () => {
     let iptalEdildi = false;
 
     const muhafiz = NamazMuhafiziServisi.getInstance();
-    if (muhafizAktif) {
+    if (muhafizAktif && hatirlatmaKapisi === true) {
       // Faz 3: banner da vakit x seviye matrisinden okur (matris yoksa eski alanlardan türetilir).
       muhafiz.yapilandir(muhafizMatrisi);
       // ÖNCE diskteki kılınmışlık kaydını yükle, SONRA başlat. Aksi halde açılışta
@@ -559,7 +563,7 @@ export const AnaSayfa: React.FC = () => {
       muhafiz.durdur();
       if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
     };
-  }, [konumAyarlariStr, muhafizAktif, muhafizMatrisi]);
+  }, [konumAyarlariStr, muhafizAktif, muhafizMatrisi, hatirlatmaKapisi]);
 
   // Kerahat vakti kontrolü — her dakika güncelle
   useEffect(() => {

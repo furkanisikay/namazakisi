@@ -1,3 +1,4 @@
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import * as Notifications from 'expo-notifications';
 import { bildirimleriTopluIptalEt, tazePlanliBildirimOkuyucu, type PlanliBildirimOkuyucu } from './planliBildirimOkuyucu';
 import { Platform } from 'react-native';
@@ -246,7 +247,7 @@ export class NafileHatirlatmaServisi {
         // hazırlığı ve muhafızın çöp toplaması AYNI doğrulamadan geçer (id paritesi).
         const ayarlar = await this.sesleriDogrula(await LocalNafileServisi.getAyarlar());
 
-        if (!nafileHatirlatmaAcikMi(ayarlar)) {
+        if (!nafileHatirlatmaAcikMi(ayarlar) || !(await hatirlatmaKurulabilirMi())) {
             await this.mevcutlariTemizle(okuyucu);
             // Bekleyen GERÇEK ALARMLAR (#74) expo listesinde yoktur: teslimcinin
             // hazırlığı önceki turunkileri `nafile_` önekiyle siler.

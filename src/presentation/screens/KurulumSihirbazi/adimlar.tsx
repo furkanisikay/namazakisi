@@ -250,6 +250,11 @@ export const VARSAYILAN_KURULUM_SECIMLERI: KurulumSecimleri = {
     cuma: false,
 };
 
+const ANA_CIHAZ_SECENEKLERI = [
+    { deger: 'evet', etiket: 'Evet, ana telefonum', ikon: 'mobile-alt' },
+    { deger: 'hayir', etiket: 'Hayır, ikinci cihaz', ikon: 'tablet-alt' },
+] as const;
+
 const ISARETLER_SECENEKLERI = [
     { deger: 'evet', etiket: 'Evet', ikon: 'check' },
     { deger: 'hayir', etiket: 'Hayır', ikon: 'times' },
@@ -269,13 +274,37 @@ export const DuzeyAdimi: React.FC<{
     sesliOrnek: string;
     sade: boolean;
     onSade: (acik: boolean) => void;
-}> = ({ duzey, onDuzey, secimler, onIsaretler, onSecim, onSabahAlarmiIste, sesliBilgi, sesliOrnek, sade, onSade }) => {
+    /**
+     * Tek beyin: geniş ekranlı cihazda (tablet, iPad) "Bu cihaz sizin ana telefonunuz mu?"
+     * sorusu. Verilmezse (telefon) kart çizilmez.
+     */
+    anaCihaz?: { secili: 'evet' | 'hayir'; onSec: (d: 'evet' | 'hayir') => void };
+}> = ({ duzey, onDuzey, secimler, onIsaretler, onSecim, onSabahAlarmiIste, sesliBilgi, sesliOrnek, sade, onSade, anaCihaz }) => {
     const renkler = useRenkler();
     const acik = duzey !== 'kapali';
     const sesliVar = duzey === 'normal' || duzey === 'yogun';
     return (
     <View>
         <AdimBasligi baslik="Ne kadar hatırlatalım?" alt="Vakit çıkmadan önce gelen hatırlatmalar." />
+        {anaCihaz ? (
+            <>
+                <SoruKarti
+                    ikon="mobile-alt"
+                    baslik="Bu cihaz sizin ana telefonunuz mu?"
+                    aciklama="Hatırlatmaları tek cihaz verir. İkinci cihaz vakitleri gösterir ve Kıldım işaretler."
+                    secenekler={ANA_CIHAZ_SECENEKLERI}
+                    secili={anaCihaz.secili}
+                    onSec={(d) => anaCihaz.onSec(d === 'hayir' ? 'hayir' : 'evet')}
+                    not={
+                        anaCihaz.secili === 'hayir'
+                            ? 'Bu cihazda hatırlatma kurulmaz; telefonunuz hatırlatır. Ayarlar > Ekran ve cihazlar bölümünden değiştirebilirsiniz.'
+                            : null
+                    }
+                    testID="kart-ana-cihaz"
+                />
+                <View style={{ height: 12 }} />
+            </>
+        ) : null}
         <SoruKarti
             ikon="check-circle"
             baslik="Kıldığınızı işaretler misiniz?"

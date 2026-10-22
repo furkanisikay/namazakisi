@@ -247,6 +247,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   IOS_SESSIZ_KURULUM: '@namaz_akisi/ios_sessiz_kurulum',
   // Tablet ev ekranı modu — cihaza özgü (o tablet mutfakta duruyor), YEDEKLENMEZ.
   EV_EKRANI_AYARI: '@namaz_akisi/ev_ekrani_ayari',
+  // "Hatırlatmaları bu cihazda kur" (tek beyin): ana telefon mu, ikinci cihaz mı.
+  // Cihaza özgü → YEDEKLENMEZ (yedek ikinci cihaza dönünce telefonun rolünü taşımasın).
+  CIHAZ_ROLU: '@namaz_akisi/cihaz_rolu',
   // TEK RIZA (sade tasarım, Dalga 3): sesli okuma + gerçek alarm onayı BİR KEZ, tüm
   // hatırlatmalar için. Eski yüzey kayıtlarından bir kez göç eder (`core/hatirlatma/rizalar`).
   // YEDEKLENİR (beyaz listenin ÜÇ yerinde).

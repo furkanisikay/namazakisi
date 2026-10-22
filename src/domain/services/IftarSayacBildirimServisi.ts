@@ -13,6 +13,7 @@
  * Ortak mekanikler (kanal, temizleme, trigger planlama) SayacBildirimTemeli'nde.
  */
 
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import { AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
@@ -66,7 +67,7 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
     if (Platform.OS !== 'android') return;
     // Now Bar (issue #282): kapalı/özel gün yolunda da planlayıcıya "aday yok" denir,
     // yoksa önceki turun iftar penceresi planda kalırdı.
-    if (!ayarlar.aktif) return this.canliKaynagiBildir('iftarSayac', []);
+    if (!ayarlar.aktif || !(await hatirlatmaKurulabilirMi())) return this.canliKaynagiBildir('iftarSayac', []);
 
     // Özel gün (issue #272): hayız/nifas günlerinde oruç da tutulmaz → o günün
     // iftar sayacı kurulmaz (eski plan yukarıda temizlendi). Gün = takvim günü:

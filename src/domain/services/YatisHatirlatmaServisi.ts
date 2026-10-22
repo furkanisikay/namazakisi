@@ -17,6 +17,7 @@
  * STORE'A BAĞLI DEĞİLDİR (arka planda Redux yok). Koordinat verilmezse ham
  * konum kaydından okunur.
  */
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import { bildirimleriTopluIptalEt, tazePlanliBildirimOkuyucu, type PlanliBildirimOkuyucu } from './planliBildirimOkuyucu';
 import { Platform } from 'react-native';
 import { BILDIRIM_SABITLERI, DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../core/constants/UygulamaSabitleri';
@@ -176,7 +177,7 @@ export class YatisHatirlatmaServisi {
         // Özel sesler DOĞRULANIR (Android; cuma ile aynı gerekçe — id paritesi).
         const ayarlar = await this.sesleriDogrula(okunan);
         const teslimci = yatisTeslimcisiniAl();
-        if (!ayarlar.aktif) {
+        if (!ayarlar.aktif || !(await hatirlatmaKurulabilirMi())) {
             await this.mevcutlariTemizle(teslimci, okuyucu);
             // Bekleyen GERÇEK ALARMLAR expo listesinde yoktur: teslimcinin hazırlığı önceki
             // turunkileri YATIŞ sahipliğiyle siler (muhafızınkilere dokunmaz).

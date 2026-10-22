@@ -8,6 +8,7 @@
 import { useEffect, useState } from 'react';
 import { Depolama } from '../../data/local/Depolama';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { hatirlatmaKapisiniUygula } from './useHatirlatmaKapisi';
 
 let deger: boolean | null = null;
 const dinleyiciler = new Set<(acik: boolean) => void>();
@@ -30,6 +31,8 @@ async function yukle(): Promise<void> {
 export async function evEkraniAyarla(acik: boolean): Promise<void> {
     yayinla(acik);
     await Depolama.yaz(DEPOLAMA_ANAHTARLARI.EV_EKRANI_AYARI, { acik });
+    // Tek beyin: ev ekranı açıkken bu tablet hatırlatma KURMAZ → plan yeniden kurulur.
+    await hatirlatmaKapisiniUygula();
 }
 
 /** Yalnız testler için. */

@@ -18,8 +18,11 @@
  *    gece sessizliği AÇIK; sabah alarmı `AlarmOnayModal` onayıyla açılır; cuma KAPALI.
  *    "Kıldığınızı işaretler misiniz? Hayır" → Hafif (uyarılar kılınmışlıkla susar).
  */
+import { rolSorulmaliMi } from '../../core/cihaz/cihazRolu';
+import { cihazRoluYaz } from '../../data/local/LocalCihazRoluServisi';
+import { hatirlatmaKapisiDegisti } from '../hooks/useHatirlatmaKapisi';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Animated, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Animated, Dimensions, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -118,6 +121,12 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     const [duzey, setDuzey] = useState<HatirlatmaDuzeyi>('normal');
     const [sade, setSade] = useState(false);
     const [secimler, setSecimler] = useState<KurulumSecimleri>(VARSAYILAN_KURULUM_SECIMLERI);
+    // Tek beyin: geniş ekranda (tablet, iPad) ana cihaz sorusu; telefonda sorulmaz.
+    const [rolSorusu] = useState(() => {
+        const ekran = Dimensions.get('screen');
+        return rolSorulmaliMi({}, Math.min(ekran.width, ekran.height));
+    });
+    const [anaCihaz, setAnaCihaz] = useState<'evet' | 'hayir'>('evet');
     const secimDegistir = useCallback((d: Partial<KurulumSecimleri>) => setSecimler((s) => ({ ...s, ...d })), []);
     const isaretlerSec = useCallback((d: 'evet' | 'hayir') => {
         setSecimler((s) => ({ ...s, isaretler: d }));
@@ -273,6 +282,15 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     const kurulumuTamamla = useCallback(async () => {
         setKaydediliyor(true);
         setKayitHatasi(null);
+        // Rol, hatırlatmaları planlayan yazımlardan ÖNCE: ikinci cihaz hiç kurmasın.
+        if (rolSorusu) {
+            try {
+                await cihazRoluYaz({ rol: anaCihaz === 'evet' ? 'ana' : 'ikincil', soruldu: true });
+                hatirlatmaKapisiDegisti();
+            } catch (error) {
+                Logger.error('KurulumSihirbazi', 'Cihaz rolü yazılamadı', error);
+            }
+        }
         // Kaldırılan "vakit bildirimleri" adımının varsayılanı: beş vakit açık. Ölümcül DEĞİL:
         // yazılamazsa uygulama varsayılanla açılır, kullanıcı kurulumda döngüye girmez.
         try {
@@ -329,7 +347,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             setKayitHatasi('Ayarlar kaydedilemedi. Tekrar deneyin.');
             setKaydediliyor(false);
         }
-    }, [dispatch, duzey, sade, secimler, navigation]);
+    }, [dispatch, duzey, sade, secimler, navigation, rolSorusu, anaCihaz]);
 
     // ─── Düğmeler ────────────────────────────────────────────────────────────
     const birincil = (etiket: string, ikon: string, onPress: () => void, testID?: string, mesgul = false, kapali = false) => (
@@ -479,6 +497,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                         sesliOrnek={sesliOrnek}
                         sade={sade}
                         onSade={setSade}
+                        anaCihaz={rolSorusu ? { secili: anaCihaz, onSec: setAnaCihaz } : undefined}
                     />
                 );
             case 'hazir':

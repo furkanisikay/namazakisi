@@ -60,7 +60,7 @@ function agac() {
     return ogeler;
 }
 const metin = (o) =>
-    [o.AXLabel, o.AXValue, o.AXUniqueId, o.title, o.label].filter((x) => typeof x === 'string' && x).join(' | ');
+    [o.AXLabel, o.AXValue, o.AXUniqueId, o.title, o.label].filter((x) => typeof x === 'string' && x).join(' | ').normalize('NFC'); // idb Türkçe harfleri ayrışık (NFD) verebilir
 function cerceve(o) {
     const f = o.frame || o.AXFrame || {};
     return {
@@ -73,7 +73,8 @@ function cerceve(o) {
 function bul(ogeler, kalip) {
     const aday = ogeler.filter((o) => {
         const c = cerceve(o);
-        return c.w * c.h > 0 && kalip.test(metin(o));
+        // Alan alan sınanır: birleşik metin testID'yi de taşır ('Başlayın | basla'), ^…$ tutmazdı.
+        return c.w * c.h > 0 && metin(o).split(' | ').some((x) => kalip.test(x));
     });
     aday.sort((a, b) => cerceve(a).w * cerceve(a).h - cerceve(b).w * cerceve(b).h);
     return aday[0] || null;
@@ -98,12 +99,19 @@ function ekranBoyutunuOku(ogeler) {
 }
 
 /** Kalıba uyan öğeye basar; `dogrula()` true dönene kadar döndürülmüş adayları dener. */
-async function bas(kalip, dogrula, ad) {
+async function bas(kalip, dogrula, ad, yedek) {
     const ogeler = await agacDolu();
     ekranBoyutunuOku(ogeler);
     const o = bul(ogeler, kalip);
     if (!o) {
-        console.error(`  UYARI: "${ad}" bulunamadı`);
+        console.error(`  UYARI: "${ad}" bulunamadı${yedek ? ' — yedek koordinat' : ''}`);
+        // Teşhis: ağaç artifact'a (RN Modal ayrı pencerede, ağaca girmeyebilir).
+        fs.writeFileSync(path.join(CIKIS, `agac-${ad.replace(/\W+/g, '_')}.json`), JSON.stringify(ogeler, null, 1));
+        if (yedek) {
+            idb('ui', 'tap', String(yedek[0]), String(yedek[1]));
+            await bekle(2500);
+            return dogrula();
+        }
         return false;
     }
     const c = cerceve(o);
@@ -147,19 +155,70 @@ async function yenidenAc(ms = 14000) {
     if (bul(await agacDolu(1), ONAY)) await bas(ONAY, onayYok, 'kalan Aç onayı');
 }
 
-function evEkraniniAc(acik) {
+/** AsyncStorage manifest'ini düzenler (uygulama durdurulmuşken). */
+function depoyuDuzenle(degistir) {
+    simctl('terminate', UDID, BUNDLE);
     const kap = (simctl('get_app_container', UDID, BUNDLE, 'data') || '').trim();
     const man = (calistir('find', [kap, '-name', 'manifest.json', '-path', '*RCTAsyncLocalStorage*'], { sessiz: true }) || '')
         .split('\n')
         .filter(Boolean)[0];
     if (!man) {
-        console.error('  UYARI: manifest.json yok, ev ekranı karesi atlanır');
+        console.error('  UYARI: manifest.json yok, depo düzenlenemedi');
         return false;
     }
     const m = JSON.parse(fs.readFileSync(man, 'utf8'));
-    m['@namaz_akisi/ev_ekrani_ayari'] = JSON.stringify({ acik });
+    degistir(m);
     fs.writeFileSync(man, JSON.stringify(m));
     return true;
+}
+
+function evEkraniniAc(acik) {
+    return depoyuDuzenle((m) => {
+        m['@namaz_akisi/ev_ekrani_ayari'] = JSON.stringify({ acik });
+    });
+}
+
+const ROL = '@namaz_akisi/cihaz_rolu';
+const ILK_KURULUM = '@namaz_akisi/ilk_kurulum_tamamlandi';
+
+/**
+ * Tek beyin (#364) kareleri, DİKEYDE (dokunuş koordinatları kesin): bir kerelik
+ * "ana telefonunuz mu?" sorusu, "ikinci cihaz" seçimi sonrası Ayarlar anahtarı ve
+ * sihirbazın düzey adımındaki kart. Sonda tohum durumu geri yüklenir.
+ */
+async function rolKareleri() {
+    if (!depoyuDuzenle((m) => delete m[ROL])) return;
+    await yenidenAc();
+    kare('dikey-06-rol-sorusu');
+    const soru = /Bu cihaz sizin ana telefonunuz mu/;
+    await bas(/^Hayır, bu ikinci cihaz$/, async () => !bul(await agacDolu(1), soru), 'İkinci cihaz düğmesi', [516, 748]);
+    await bekle(3000);
+    await ac('namazakisi://ayarlar');
+    kare('dikey-07-ayarlar-bu-cihazda-kur');
+
+    depoyuDuzenle((m) => {
+        delete m[ROL];
+        delete m[ILK_KURULUM];
+    });
+    await yenidenAc();
+    const adimlar = [
+        [/Başlayın$/, 'Başlayın'],
+        [/Konumumu (kullanın|bulun)$/, 'Konum'],
+        [/Devam edin$/, 'Konum devam'],
+        [/(Devam edin|Şimdilik geçin)$/, 'Bildirim'],
+    ];
+    for (const [kalip, ad] of adimlar) {
+        // Kart göründüyse dur: düzey adımının "Devam edin"i kareyi atlatırdı.
+        if (bul(await agacDolu(), soru)) break;
+        await bas(kalip, async () => true, ad, ad === 'Başlayın' ? [516, 1312] : undefined);
+        await bekle(4000);
+    }
+    kare('dikey-08-sihirbaz-ana-cihaz');
+
+    depoyuDuzenle((m) => {
+        m[ILK_KURULUM] = 'true';
+        m[ROL] = JSON.stringify({ rol: 'ana', soruldu: true });
+    });
 }
 
 async function turCek(onEk) {
@@ -212,6 +271,7 @@ function boyut(f) {
 (async () => {
     evEkraniniAc(false);
     await turCek('dikey');
+    await rolKareleri();
 
     let yol = 'simulator';
     if (!yataySimulatorleDondur()) {

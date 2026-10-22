@@ -13,6 +13,7 @@
  * Ortak mekanikler (kanal, temizleme, trigger planlama) SayacBildirimTemeli'nde.
  */
 
+import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi';
 import { AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
@@ -66,7 +67,7 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
 
     if (Platform.OS !== 'android') return;
     // Now Bar (issue #282): kapalıyken planlayıcıya "aday yok" denir.
-    if (!ayarlar.aktif) return this.canliKaynagiBildir('sahurSayac', []);
+    if (!ayarlar.aktif || !(await hatirlatmaKurulabilirMi())) return this.canliKaynagiBildir('sahurSayac', []);
 
     await this.kanalOlustur();
 
