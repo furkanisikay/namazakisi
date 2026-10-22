@@ -208,6 +208,7 @@ async function seridiHizala() {
         const kok = a.find((o) => String(o.type || '') === 'Application');
         const yuk = kok ? cerceve(kok).h : 956;
         const hedef = yuk * 0.42;
+        const sx = String(Math.round((kok ? cerceve(kok).w : 440) * 0.7)); // iPad: ayrıntı bölmesi
         const o = bul(a, /ilk hatırlatma/i);
         // Gorunmuyorsa icerik asagida: yukari surukle.
         const fark = o ? cerceve(o).y + cerceve(o).h / 2 - hedef : yuk * 0.3;
@@ -215,7 +216,7 @@ async function seridiHizala() {
         const sinir = (v) => Math.max(yuk * 0.12, Math.min(yuk * 0.88, v));
         const bas = sinir(fark > 0 ? yuk * 0.78 : yuk * 0.3);
         const son = sinir(bas - fark);
-        idb('ui', 'swipe', '220', String(Math.round(bas)), '220', String(Math.round(son)), '--duration', '1.2');
+        idb('ui', 'swipe', sx, String(Math.round(bas)), sx, String(Math.round(son)), '--duration', '1.2');
         await bekle(1500);
     }
     console.error('  UYARI: zaman seridi orta banda getirilemedi');
