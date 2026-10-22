@@ -618,6 +618,11 @@ const SETLER = {
     },
 };
 
+// iPhone "Dynamic Island (medium)" sinifi 1206x2622 App Store'da ZORUNLU (large 1320x2868
+// tek basina karsilamaz). Ayni sahneler bu olcude YENIDEN cizilir (olcekleme degil):
+// sablon her olcuyu genislige gore kurar, ham ekran goruntusu kaynak cozunurlukten okunur.
+SETLER['iphone-orta'] = { ...SETLER.iphone, boyut: { gen: 1206, yuk: 2622 } };
+
 /** Magaza mockup'larinin eski `--platform` adlari -> set. */
 const PLATFORM_SETI = { ios: 'iphone', ipad: 'ipad', android: 'play-telefon' };
 

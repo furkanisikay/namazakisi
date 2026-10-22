@@ -8,4 +8,6 @@ appId: com.furkanisikay.namazakisi
 - runFlow: _acilis.yaml
 - waitForAnimationToEnd:
     timeout: 5000
-- takeScreenshot: ozk/46-katlanabilir-masaustu
+# Kare hazirlik_bitir masaustu'da (yari acik postür uygulama calisirken verilir) alinir;
+# bu acik postür karesidir.
+- takeScreenshot: ozk/46b-katlanabilir-acik

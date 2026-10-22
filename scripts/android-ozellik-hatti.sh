@@ -119,12 +119,10 @@ hazirlik_uygula() {
     masaustu)
       # Masaustu postur: mentese YATAY + yari acik. Fold'un ic ekraninda mentese dikeydir →
       # ekran dondurulur; Flip'te mentese zaten yatay. Yari acik = mentese acisi ~90.
-      if [ "$PROFIL" = "katlanabilir" ]; then
-        adb shell settings put system accelerometer_rotation 0 || true
-        adb shell settings put system user_rotation 1 || true
-      fi
-      adb emu sensor set hinge-angle0 90 || adb emu posture 2 || true
-      sleep 3
+      # Akis uygulamayi ACIK postürde baslatir; yari acik postür hazirlik_bitir'de, uygulama
+      # calisirken verilir (WindowInfoTracker degisimi olay olarak alsin) ve kare adb ile alinir.
+      adb emu sensor set hinge-angle0 180 || true
+      sleep 2
       adb shell dumpsys device_state 2>/dev/null | grep -iE "state|posture" | head -8 || true
       adb shell wm size || true
       ;;
@@ -168,6 +166,14 @@ hazirlik_uygula() {
 # Akis sonrasi: hazirligin actigi seyleri geri al (animasyon olcegi, ekran kaydi).
 hazirlik_bitir() {
   case "$1" in
+    masaustu)
+      adb emu sensor set hinge-angle0 90 || adb emu posture 2 || true
+      sleep 6
+      adb shell dumpsys device_state 2>/dev/null | grep -E "mCommittedState" | head -2 || true
+      adb shell dumpsys window 2>/dev/null | grep -iE "displayfeature|fold|hinge" | head -10 || true
+      adb exec-out screencap -p > "$CIKIS/${PROFIL}-$2/46-katlanabilir-masaustu.png" || true
+      adb emu sensor set hinge-angle0 180 || true
+      ;;
     guc-tasarrufu)
       adb shell settings put global low_power 0 || true
       adb shell cmd netpolicy set restrict-background false || true
@@ -293,7 +299,7 @@ if [ "${PERFORMANS_OLCUMU:-}" = "1" ] && [ "$PROFIL" = "telefon" ]; then
 fi
 
 # Ozet: dosya adi + boyut; akislarin bekledigi ama cikmayan kare → UYARI.
-BEKLENEN=$(for a in scripts/maestro/ozellik/*.yaml; do p=$(sed -n 's/^# profil: *\([a-z|]*\).*/\1/p' "$a" | head -1); { [ -z "$p" ] || [[ "$PROFIL" =~ ^($p)$ ]]; } && grep -h 'takeScreenshot: ozk/' "$a"; done | sed 's/.*ozk\///' | sort -u)
+BEKLENEN=$(for a in scripts/maestro/ozellik/*.yaml; do p=$(sed -n 's/^# profil: *\([a-z|]*\).*/\1/p' "$a" | head -1); { [ -z "$p" ] || [[ "$PROFIL" =~ ^($p)$ ]]; } && grep -h 'takeScreenshot: ozk/' "$a"; done | sed 's/.*ozk\///' | sort -u || true)
 for tema in "${TEMALAR[@]}"; do
   HEDEF="$CIKIS/${PROFIL}-${tema}"
   echo "--- $HEDEF ---"
