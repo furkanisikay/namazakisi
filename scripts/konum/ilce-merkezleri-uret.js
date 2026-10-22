@@ -47,7 +47,7 @@ function uret(osmYolu, apiYolu) {
     if (!m) continue;
     const ac = r.members.find((x) => x.role === 'admin_centre' && dugumler.has(x.ref));
     const d = ac ? dugumler.get(ac.ref) : { lat: r.center.lat, lon: r.center.lon };
-    iller.set(Number(m[1]), { lat: d.lat, lng: d.lon });
+    iller.set(Number(m[1]), { lat: d.lat, lng: d.lon, kaynak: ac ? 'admin_centre' : 'center' });
   }
 
   function konumu(r) {
@@ -110,6 +110,12 @@ function uret(osmYolu, apiYolu) {
     if (!bulunan) {
       eksik.push(`${ilAdi} (${ilId}) / ${ilce.name} (${ilce.id})`);
       continue;
+    }
+    // "Merkez" ilçesinin merkezi = İLİN merkez düğümü (tanım gereği). İlçe ilişkisinin kendi
+    // konumuna güvenilmez: Rize'de admin_centre yok (sınır kutusu ortası, 8 km), Çorum'da
+    // admin_centre yanlışlıkla bir köy (Güzelyayla, 11 km).
+    if (ilce.name === 'Merkez' && ilMerkezi.kaynak === 'admin_centre') {
+      bulunan = { ...bulunan, lat: ilMerkezi.lat, lng: ilMerkezi.lng, kaynak: 'admin_centre' };
     }
     if (bulunan.km > enUzak.km) enUzak = { km: bulunan.km, ad: `${ilAdi}/${ilce.name}` };
     kaynakSayisi[bulunan.kaynak]++;

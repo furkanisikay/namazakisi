@@ -55,6 +55,25 @@ describe('ilçe merkezi tablosu — bütünlük', () => {
   });
 });
 
+describe('NÖBETÇİ: çevrimdışı il koordinatı şehir merkezindedir', () => {
+  it('"Merkez" ilçesi olan her ilde il koordinatı merkez ilçeye 5 km’den yakın', () => {
+    // Denetim 2026-10-21: Burdur 35 km, Muş 33 km sapıyordu (il kutusunun ortası gibi).
+    const { TURKIYE_ILLERI_OFFLINE } = require('../../../domain/services/TurkiyeKonumServisi') as {
+      TURKIYE_ILLERI_OFFLINE: { id: number; ad: string; lat: number; lng: number }[];
+    };
+    const km = (a: { lat: number; lng: number }, b: { lat: number; lng: number }) => {
+      const r = Math.PI / 180;
+      const x = (b.lng - a.lng) * r * Math.cos(((a.lat + b.lat) / 2) * r);
+      return Math.hypot(x, (b.lat - a.lat) * r) * 6371;
+    };
+    const sapanlar = TURKIYE_ILLERI_OFFLINE.flatMap((il) => {
+      const merkez = ilceKoordinatiBul(il.id, 'Merkez');
+      return merkez && km(il, merkez) > 5 ? [`${il.ad} ${km(il, merkez).toFixed(1)} km`] : [];
+    });
+    expect(sapanlar).toEqual([]);
+  });
+});
+
 describe('ilceKoordinatiBul', () => {
   it('kimlikle ve adla aynı ilçeyi bulur; ad Türkçe harf/boşluk duyarsız', () => {
     const kimlikle = ilceKoordinatiBul(34, 'yanlış ad', 1622);
