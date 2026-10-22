@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { VakitIkonu, vakitIkonKodu } from '../ortak/VakitIkonu';
+import { TAM_GUN_METNI } from '../../../core/samimiyet/kabulDuasi';
 import { useRenkler } from '../../../core/theme';
 import { Namaz } from '../../../core/types';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
@@ -275,9 +276,11 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
             {tamamlananSayisi === toplamSayi && toplamSayi > 0 ? (
                 <View className="flex-row items-center justify-center gap-2 mt-4 py-2 px-3 rounded-xl"
                     style={{ backgroundColor: renkler.durum.basarili + '15' }}>
-                    <FontAwesome5 name="trophy" size={14} color={renkler.durum.basarili} />
+                    <FontAwesome5 name="check-circle" size={14} color={renkler.durum.basarili} solid />
+                    {/* Samimiyet: kupa/ünlem yerine dua; puan bilgisi sakin bir ek olarak kalır. */}
                     <Text className="text-sm font-bold" style={{ color: renkler.durum.basarili }}>
-                        Tam gün bonusu kazanıldı! +{PUAN_DEGERLERI.tam_gun} puan
+                        {TAM_GUN_METNI.ana}
+                        <Text className="font-medium">{` · beş vakit tamam · +${PUAN_DEGERLERI.tam_gun} puan`}</Text>
                     </Text>
                 </View>
             ) : null}
