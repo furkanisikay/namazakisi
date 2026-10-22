@@ -220,6 +220,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         env:
           AKIS_FILTRESI: ${{ inputs.akis_filtresi }}
+          PERFORMANS_OLCUMU: ${{ inputs.performans_olcumu && '1' || '' }}
         with:
           api-level: ${{ inputs.api }}
           target: google_apis
@@ -229,8 +230,6 @@ jobs:
           disable-animations: true
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back ${{ inputs.kamera_arka || 'emulated' }} -timezone Europe/Istanbul
           script: bash scripts/android-ozellik-hatti.sh tablet acik
-        env:
-          AKIS_FILTRESI: ${{ inputs.akis_filtresi }}
 
       - name: 🧾 Özellik kareleri özeti
         if: ${{ always() && inputs.tur != 'magaza' }}
