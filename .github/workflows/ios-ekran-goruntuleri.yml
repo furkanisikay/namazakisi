@@ -375,7 +375,7 @@ jobs:
     name: ⌚ Apple Watch kareleri
     if: ${{ inputs.tur == 'saat' }}
     runs-on: macos-26
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - name: 📥 Kodu çek
         uses: actions/checkout@v7

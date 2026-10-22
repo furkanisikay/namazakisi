@@ -78,13 +78,25 @@ struct AnaEkran: View {
     @State private var sayfa: SaatSayfa = SaatSimulatorTohumu.acilisSayfasi
 
     var body: some View {
-        NavigationStack {
-            TimelineView(.everyMinute) { baglam in
-                sayfalar(simdi: baglam.date, yenileme: baglanti.yenileme)
+        Group {
+            // Simulator uyandirma karesi KOK olarak cizilir, kapak olarak DEGIL: ilk cizimde
+            // sunulan `fullScreenCover` simulatoru acilis ekraninda birakiyordu (kare hatti:
+            // 06-uyandirma cogu denemede acilis simgesi, ardindan gelen kareleri de takiyordu);
+            // gecikmeli sunum ise gecis sirasinda sistemin kapatma dugmesini kareye katiyordu.
+            // Cihazda `uyandirmaKaydi()` daima nil → bu dal hic secilmez.
+            if uyandirici.calan == nil, let kayit = SaatSimulatorTohumu.uyandirmaKaydi() {
+                UyandirmaEkrani(kayit: kayit)
+                    .environmentObject(uyandirici)
+            } else {
+                NavigationStack {
+                    TimelineView(.everyMinute) { baglam in
+                        sayfalar(simdi: baglam.date, yenileme: baglanti.yenileme)
+                    }
+                }
             }
         }
         .fullScreenCover(isPresented: uyandirmaAcik) {
-            if let kayit = uyandirici.calan ?? SaatSimulatorTohumu.uyandirmaKaydi() {
+            if let kayit = uyandirici.calan {
                 UyandirmaEkrani(kayit: kayit)
                     .environmentObject(uyandirici)
             }
@@ -101,7 +113,7 @@ struct AnaEkran: View {
 
     private var uyandirmaAcik: Binding<Bool> {
         Binding(
-            get: { uyandirici.calan != nil || SaatSimulatorTohumu.acilisEkrani == .uyandirma },
+            get: { uyandirici.calan != nil },
             set: { _ in }
         )
     }
