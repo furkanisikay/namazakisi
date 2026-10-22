@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -209,27 +210,13 @@ fun VakitSayaci(
                         maxLines = 1,
                     )
                 }
-                Row(verticalAlignment = Alignment.Bottom) {
-                    Text(
-                        g.sayac.ana,
-                        style = RAKAM,
-                        fontSize = sabitBoyut(0.20f),
-                        fontWeight = FontWeight.SemiBold,
-                        color = renk(SaatPaleti.METIN),
-                        maxLines = 1,
-                    )
-                    if (saniyeGoster) {
-                        Text(
-                            g.sayac.saniye,
-                            style = RAKAM,
-                            fontSize = sabitBoyut(0.085f),
-                            fontWeight = FontWeight.Medium,
-                            color = if (g.acil) renk else renk(SaatPaleti.METIN2),
-                            maxLines = 1,
-                            modifier = Modifier.padding(bottom = 5.dp, start = 1.dp),
-                        )
-                    }
-                }
+                SureGosterimi(
+                    sayac = g.sayac,
+                    saniyeGoster = saniyeGoster,
+                    rakamRengi = renk(SaatPaleti.METIN),
+                    birimRengi = renk(SaatPaleti.METIN2),
+                    saniyeRengi = if (g.acil) renk else renk(SaatPaleti.METIN2),
+                )
                 Text(
                     g.altYazi,
                     style = MaterialTheme.typography.labelSmall,
@@ -246,6 +233,48 @@ fun VakitSayaci(
                 Spacer(Modifier.height(4.dp))
                 GunNoktalari(g.noktalar, g.aktifNokta, renk, ortuluMu)
             }
+        }
+    }
+}
+
+/**
+ * Birimli iri süre: "1 sa 16 dk" / "16 dk 42 sn". Rakam iri, birim küçük ve ikincil;
+ * saniye parçası daha küçük (etkileşimli kipte). Dört haneli sürede ("10 sa 59 dk") rakam
+ * küçülür ki yuvarlak ekranın güvenli sütununa sığsın. Boylar `sabitBoyut`: yazı ölçeği
+ * büyüse de rakam taşmaz.
+ */
+@Composable
+fun SureGosterimi(
+    sayac: AnaEkranKarari.Sayac,
+    saniyeGoster: Boolean,
+    rakamRengi: Color,
+    birimRengi: Color,
+    saniyeRengi: Color,
+    rakamStili: TextStyle = RAKAM,
+    rakamAgirligi: FontWeight = FontWeight.SemiBold,
+    birimAgirligi: FontWeight = FontWeight.Normal,
+) {
+    val rakamBoyu = sabitBoyut(if (sayac.haneSayisi(saniyeGoster) >= 4) 0.165f else 0.20f)
+    val birimBoyu = sabitBoyut(0.072f)
+    Row(verticalAlignment = Alignment.Bottom) {
+        sayac.gorunur(saniyeGoster).forEachIndexed { i, p ->
+            if (i > 0) Spacer(Modifier.width(5.dp))
+            Text(
+                p.sayi,
+                style = rakamStili,
+                fontSize = if (p.saniye) sabitBoyut(0.09f) else rakamBoyu,
+                fontWeight = if (p.saniye) FontWeight.Medium else rakamAgirligi,
+                color = if (p.saniye) saniyeRengi else rakamRengi,
+                maxLines = 1,
+            )
+            Text(
+                p.birim,
+                fontSize = birimBoyu,
+                fontWeight = birimAgirligi,
+                color = if (p.saniye) saniyeRengi else birimRengi,
+                maxLines = 1,
+                modifier = Modifier.padding(start = 2.dp, bottom = if (p.saniye) 3.dp else 6.dp),
+            )
         }
     }
 }
@@ -271,9 +300,11 @@ private fun KildimDugmesi(dugme: AnaEkranKarari.Dugme, g: AnaEkranKarari.Gorunum
                 // Durum zaten sayaç açıklamasında ("kılındı") okunur; ikinci kez okunmasın.
                 .clearAndSetSemantics { },
         ) {
+            // Telefon onayı beklenirken metin AYNI, yalnız soluk: "✓ Kılındı · eşitleniyor"
+            // yuvarlak ekranda kenara taşıp "Kılındı ·" diye kesiliyordu (kayıtta görüldü).
             Text(
-                if (dugme == AnaEkranKarari.Dugme.ESITLENIYOR) "✓ Kılındı · eşitleniyor" else "✓ Kılındı",
-                color = renk(SaatPaleti.EYLEM),
+                "✓ Kılındı",
+                color = renk(SaatPaleti.EYLEM).copy(alpha = if (dugme == AnaEkranKarari.Dugme.ESITLENIYOR) 0.6f else 1f),
                 style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
             )

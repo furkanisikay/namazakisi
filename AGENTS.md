@@ -126,6 +126,7 @@ Setup: `npm ci` (Node 20; `postinstall: patch-package` atlanmamalı) · Doğrula
 | [konum-geofence](docs/ajan/konum-geofence.md) | Konum takibi (geofence), konum yenileme, konum yayma listesi, seferîlik kartı |
 | [ana-ekran-ve-ayarlar](docs/ajan/ana-ekran-ve-ayarlar.md) | AnaSayfa pager/gün navigasyonu, kerahat, stepper, Ayarlar ve slice hidrasyonu, sade görünüm, katlanabilir/tablet, güncelleme sistemi, tanı akışı |
 | [android-native](docs/ajan/android-native.md) | Widget, hızlı ayarlar, kısayollar, "Kıldım" kuyruğu ve güven listesi, otomasyon, AppFunctions, Samsung/pil, Live Update/Now Bar, erteleme YOK kararı |
+| [arac-destegi](docs/ajan/arac-destegi.md) | Android Auto (Car App Library, POI: vakit + yakındaki camiler), Play "Android Auto" form faktörü riski, CarPlay kategori analizi, CarPlay'de widget/canlı etkinlik/Siri |
 | [camideyim](docs/ajan/camideyim.md) | Camideyim, Namaz modu, cami verisi, güven puanı, harita; iPhone "Namazda sessiz" (Odak + Kısayollar rehberi) |
 | [wear-tv](docs/ajan/wear-tv.md) | Wear OS saat uygulaması, Android TV panosu, TV eşleştirme (telefondan QR / 7 haneli kodla konum aktarma), saat/TV dağıtımı |
 | [ios](docs/ajan/ios.md) | iOS teslim katmanı, Siri/Odak, widget + canlı etkinlik, Apple Watch, App Store Connect ve TestFlight hattı |

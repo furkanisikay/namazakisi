@@ -248,4 +248,35 @@ sleep 2
 # yuvalarini kapali getirir ("set-complication failed ... Complication slot is not
 # enabled", yuva >= 3 "out of range") ve imajda baska kadran yuklu degil.
 
+# --- VIDEO: "Kıldım" onayi animasyonu (en gayret; kareleri ETKILEMEZ, en sonda) ---
+# Emulator `disable-animations: true` ile acilir → animator olcegi 0 → uygulama
+# "hareketi azalt" sanip son kareye atlar. Kayit icin olcek yalniz burada 1 yapilir.
+# screenrecord MediaCodec ister; swiftshader'da tutmazsa UYARI ile gecilir.
+VIDEO="videolar-saat"
+mkdir -p "$VIDEO"
+adb shell settings put global animator_duration_scale 1 || true
+adb shell settings put global transition_animation_scale 1 || true
+ana_ac
+if dump_al && node scripts/saat/ui-merkez.js /tmp/saat-ui.xml 'kıldım olarak işaretleyin' > /tmp/kildim-xy; then
+  adb shell rm -f /sdcard/kildim.mp4 || true
+  adb shell screenrecord --time-limit 9 /sdcard/kildim.mp4 &
+  KAYIT=$!
+  sleep 1.5
+  adb shell input tap $(cat /tmp/kildim-xy)
+  sleep 2
+  # Onay katmaninin kenar dugmesi ("Kıldım"): ekranin alt ortasi.
+  adb shell input tap $((G / 2)) $((Y * 7 / 8))
+  wait "$KAYIT" || true
+  sleep 1
+  if adb pull /sdcard/kildim.mp4 "$VIDEO/$ETIKET-kildim.mp4" >/dev/null 2>&1 && [ -s "$VIDEO/$ETIKET-kildim.mp4" ]; then
+    echo "video: $VIDEO/$ETIKET-kildim.mp4"
+  else
+    echo "UYARI: kildim videosu alinamadi"
+  fi
+else
+  echo "UYARI: video icin Kildim dugmesi bulunamadi"
+fi
+adb shell settings put global animator_duration_scale 0 || true
+adb shell settings put global transition_animation_scale 0 || true
+
 ls -la "$CIKIS"

@@ -12,6 +12,10 @@ struct NamazWidgetPaketi: WidgetBundle {
     var body: some Widget {
         NamazVakitWidget()
         NamazCanliEtkinlikWidget()
+        // Kontrol Merkezi "Kildim" kontrolu (iOS 18 ControlWidget; Android hizli ayar kutusu ikizi).
+        if #available(iOS 18.0, *) {
+            NamazKildimKontrolu()
+        }
         // Muhafiz gercek alarminin canli etkinlik sunumu (AlarmKit, iOS 26, issue #74).
         #if canImport(AlarmKit)
         if #available(iOS 26.0, *) {

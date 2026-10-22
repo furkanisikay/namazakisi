@@ -1,7 +1,13 @@
 package com.furkanisikay.namazakisi.tv.ui
 
+import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,19 +33,29 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.tv.material3.Border
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
+import com.furkanisikay.namazakisi.tv.R
 import com.furkanisikay.namazakisi.tv.cekirdek.Bicim
 import com.furkanisikay.namazakisi.tv.cekirdek.GunlukVakitler
 import com.furkanisikay.namazakisi.tv.cekirdek.Il
 import com.furkanisikay.namazakisi.tv.cekirdek.Kaydirma
+import com.furkanisikay.namazakisi.tv.cekirdek.Kerahat
 import com.furkanisikay.namazakisi.tv.cekirdek.PanoDurumu
 import com.furkanisikay.namazakisi.tv.cekirdek.PanoHesabi
 import com.furkanisikay.namazakisi.tv.cekirdek.Vakit
@@ -68,11 +85,45 @@ private class VakitOnbellegi(private val il: Il) {
     }
 }
 
+/** "Animasyonları kaldır" açık mı (animatör ölçeği 0)? Wear `hareketAzaltilmis` ikizi. */
+@Composable
+fun hareketAzaltilmis(): Boolean {
+    val baglam = LocalContext.current
+    return remember {
+        Settings.Global.getFloat(baglam.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
+    }
+}
+
+/** Vaktin simgesi (saatle aynı çizimler; tek renk, Compose boyar). */
+fun vakitSimgesi(vakit: Vakit): Int = when (vakit) {
+    Vakit.IMSAK -> R.drawable.ic_vakit_imsak
+    Vakit.GUNES -> R.drawable.ic_vakit_gunes
+    Vakit.OGLE -> R.drawable.ic_vakit_ogle
+    Vakit.IKINDI -> R.drawable.ic_vakit_ikindi
+    Vakit.AKSAM -> R.drawable.ic_vakit_aksam
+    Vakit.YATSI -> R.drawable.ic_vakit_yatsi
+}
+
+/** Kerahatin simgesi = güneşin o anki hâli (doğuş / tepe / batış). */
+private fun kerahatSimgesi(tur: Kerahat.Tur): Int = when (tur) {
+    Kerahat.Tur.SURUK -> R.drawable.ic_vakit_gunes
+    Kerahat.Tur.ISTIVA -> R.drawable.ic_vakit_ogle
+    Kerahat.Tur.GURUB -> R.drawable.ic_vakit_aksam
+}
+
+private val RAKAM = TextStyle(fontFeatureSettings = "tnum")
+
 /**
- * Pano ekranı. [ekraniAcikTut] yalnız etkinlikte (Activity) true verilir:
- * `FLAG_KEEP_SCREEN_ON` YALNIZ bu ekran görünürken pencerede durur (il seçiminde
- * ve uygulamadan çıkınca kalkar). Ekran koruyucuda (DreamService) sistem ekranı zaten
- * açık tutar; orada etkinlik yoktur.
+ * Pano ekranı (10-foot): solda saat + "sıradaki vakte kalan" (birimli, iri), sağda günün
+ * altı vakti simgeleriyle. Metin en az: kerahat ve cuma tek satırlık simgeli çip.
+ *
+ * Hareket YALNIZ OLAYLA: vakit değişince aktif satırın zemini 600 ms'de yeni satıra geçer,
+ * sıradaki vaktin adı/simgesi 400 ms crossfade. Saat ve süre her saniye değişir ama
+ * animasyon değildir. "Animasyonları kaldır" açıksa geçişler anında son kareye atlar.
+ *
+ * [ekraniAcikTut] yalnız etkinlikte (Activity) true verilir: `FLAG_KEEP_SCREEN_ON` YALNIZ
+ * bu ekran görünürken pencerede durur. Ekran koruyucuda (DreamService) sistem ekranı zaten
+ * açık tutar.
  */
 @Composable
 fun PanoEkrani(
@@ -93,6 +144,7 @@ fun PanoEkrani(
     val onbellek = remember(il) { VakitOnbellegi(il) }
     val durum = PanoHesabi.hesapla(simdi, bolge, onbellek::al)
     val (dx, dy) = Kaydirma.ofset(simdi)
+    val azalt = hareketAzaltilmis()
 
     Box(
         Modifier
@@ -105,10 +157,10 @@ fun PanoEkrani(
             Modifier
                 .fillMaxSize()
                 .offset(dx.dp, dy.dp),
-            horizontalArrangement = Arrangement.spacedBy(40.dp),
+            horizontalArrangement = Arrangement.spacedBy(48.dp),
         ) {
-            SolSutun(il, durum, simdi, bolge, onKonumDegistir, Modifier.weight(1.1f))
-            VakitListesi(durum, bolge, Modifier.weight(1f))
+            SolSutun(il, durum, simdi, bolge, azalt, onKonumDegistir, Modifier.weight(1.1f))
+            VakitListesi(durum, simdi, bolge, azalt, Modifier.weight(1f))
         }
     }
 }
@@ -119,128 +171,210 @@ private fun SolSutun(
     durum: PanoDurumu,
     simdi: Long,
     bolge: ZoneId,
+    azalt: Boolean,
     onKonumDegistir: (() -> Unit)?,
     modifier: Modifier,
 ) {
     Column(modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
         Column {
-            Text(il.ad, color = Renkler.metin, fontSize = 30.sp, fontWeight = FontWeight.SemiBold)
-            Text(Bicim.tarih(durum.tarih), color = Renkler.metinIkincil, fontSize = 20.sp)
+            Text(il.ad, color = Renkler.metin, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
+            Text(Bicim.tarih(durum.tarih), color = Renkler.metinIkincil, fontSize = 24.sp)
         }
 
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
                 Bicim.saat(simdi, bolge),
+                style = RAKAM,
                 color = Renkler.metin,
-                fontSize = 128.sp,
+                fontSize = 120.sp,
                 fontWeight = FontWeight.Light,
-                lineHeight = 128.sp,
+                lineHeight = 120.sp,
             )
             Text(
                 Bicim.saniye(simdi, bolge),
+                style = RAKAM,
                 color = Renkler.metinIkincil,
                 fontSize = 40.sp,
-                modifier = Modifier.padding(start = 8.dp, bottom = 20.dp),
+                modifier = Modifier.padding(start = 8.dp, bottom = 18.dp),
             )
         }
 
-        Column {
-            Text(
-                "${durum.gorunenAd(durum.siradaki)} vaktine kalan",
-                color = Renkler.metinIkincil,
-                fontSize = 22.sp,
-            )
-            Text(
-                Bicim.geriSayim(durum.kalanMs),
-                color = Renkler.metin,
-                fontSize = 64.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.semantics {
-                    contentDescription = "${durum.gorunenAd(durum.siradaki)} vaktine kalan süre"
-                },
-            )
+        KalanBlogu(durum, simdi, azalt)
+
+        BilgiCipleri(durum, bolge)
+
+        if (onKonumDegistir != null) KonumDugmesi(onKonumDegistir)
+    }
+}
+
+/**
+ * "Sıradaki vakte kalan": simge + ad, iri birimli süre, şu anki vaktin dolan çubuğu.
+ * Süre birimlidir ("18 dk 25 sn"): birimsiz "18:25" duvar saatinin yanında saat sanılıyordu.
+ */
+@Composable
+private fun KalanBlogu(durum: PanoDurumu, simdi: Long, azalt: Boolean) {
+    val ad = durum.gorunenAd(durum.siradaki)
+    Column(
+        Modifier.clearAndSetSemantics {
+            contentDescription = "$ad vaktine ${Bicim.kalanSesli(durum.kalanMs)} kaldı"
+        },
+    ) {
+        Crossfade(targetState = durum.siradaki, animationSpec = tween(if (azalt) 0 else 400), label = "siradaki") { v ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Simge(vakitSimgesi(v), Renkler.birincil, 30.dp)
+                Spacer(Modifier.width(12.dp))
+                Text("${durum.gorunenAd(v)} vaktine", color = Renkler.metinIkincil, fontSize = 28.sp)
+            }
         }
-
-        BilgiSeridi(durum, bolge)
-
-        if (onKonumDegistir != null) {
-            Surface(
-                onClick = onKonumDegistir,
-                shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(12.dp)),
-                colors = ClickableSurfaceDefaults.colors(
-                    containerColor = Renkler.kart,
-                    contentColor = Renkler.metin,
-                    focusedContainerColor = Renkler.birincilKoyu,
-                    focusedContentColor = Renkler.metin,
-                ),
-                scale = ClickableSurfaceDefaults.scale(focusedScale = 1.05f),
-            ) {
+        Row(verticalAlignment = Alignment.Bottom) {
+            Bicim.kalanParcalari(durum.kalanMs).forEachIndexed { i, p ->
+                if (i > 0) Spacer(Modifier.width(18.dp))
                 Text(
-                    "Konumu değiştirin",
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                    p.sayi,
+                    style = RAKAM,
+                    color = Renkler.metin,
+                    fontSize = 76.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    lineHeight = 80.sp,
+                )
+                Text(
+                    p.birim,
+                    color = Renkler.metinIkincil,
+                    fontSize = 32.sp,
+                    modifier = Modifier.padding(start = 6.dp, bottom = 12.dp),
                 )
             }
+        }
+        Spacer(Modifier.height(10.dp))
+        // Şu anki vaktin ne kadarı geçti: dakikada bir piksel ilerler, animasyon değildir.
+        val oran = Bicim.ilerleme(durum.vakitler.saat(durum.aktif), durum.siradakiMs, simdi)
+        Box(
+            Modifier
+                .width(420.dp)
+                .height(8.dp)
+                .background(Renkler.sinir, CircleShape),
+        ) {
+            Box(
+                Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(oran)
+                    .background(Renkler.birincil, CircleShape),
+            )
         }
     }
 }
 
-/** Kerahat (şu an / sıradaki) ve cuma bilgisi. Amber yalnız noktada; metin tema metni. */
+/** Kerahat ve cuma: simge + iki-üç kelime. Amber yalnız simgede; metin daima tema metni. */
 @Composable
-private fun BilgiSeridi(durum: PanoDurumu, bolge: ZoneId) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+private fun BilgiCipleri(durum: PanoDurumu, bolge: ZoneId) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         val kerahat = durum.kerahat
         if (kerahat != null) {
-            BilgiSatiri(
-                renk = Renkler.uyari,
-                // Saate hal eki EKLENMEZ ("07:42'e" okunuşa göre değişir — AGENTS.md şerit dersi).
-                metin = "Kerahat vakti: ${kerahat.tur.ad}, bitiş ${Bicim.saat(kerahat.bitis, bolge)}. " +
-                    kerahat.tur.aciklama,
+            // Saate hal eki EKLENMEZ ("18:23'e" okunuşa göre değişir).
+            BilgiCipi(
+                simge = kerahatSimgesi(kerahat.tur),
+                simgeRengi = Renkler.uyari,
+                baslik = "Kerahat vakti",
+                ek = "bitiş ${Bicim.saat(kerahat.bitis, bolge)}",
+                aciklama = "Kerahat vakti, ${kerahat.tur.ad}, bitiş ${Bicim.saat(kerahat.bitis, bolge)}. ${kerahat.tur.aciklama}",
             )
-        } else {
-            durum.siradakiKerahat?.let {
-                BilgiSatiri(
-                    renk = Renkler.sinir,
-                    metin = "Sıradaki kerahat: ${it.tur.ad} ${Bicim.saat(it.baslangic, bolge)}–${Bicim.saat(it.bitis, bolge)}",
-                )
-            }
         }
         if (durum.cuma) {
-            BilgiSatiri(
-                renk = Renkler.birincil,
-                metin = "Bugün cuma. Cuma namazı öğle vaktinde kılınır (giriş ${Bicim.saat(durum.vakitler.ogle, bolge)}).",
+            BilgiCipi(
+                simge = R.drawable.ic_cami,
+                simgeRengi = Renkler.birincil,
+                baslik = "Bugün cuma",
+                ek = "öğle ${Bicim.saat(durum.vakitler.ogle, bolge)}",
+                aciklama = "Bugün cuma. Cuma namazı öğle vaktinde, ${Bicim.saat(durum.vakitler.ogle, bolge)}",
             )
         }
     }
 }
 
 @Composable
-private fun BilgiSatiri(renk: androidx.compose.ui.graphics.Color, metin: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.size(12.dp).background(renk, CircleShape))
+private fun BilgiCipi(simge: Int, simgeRengi: Color, baslik: String, ek: String, aciklama: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .background(Renkler.kart, RoundedCornerShape(28.dp))
+            .padding(start = 10.dp, end = 22.dp, top = 8.dp, bottom = 8.dp)
+            .clearAndSetSemantics { contentDescription = aciklama },
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.size(40.dp).background(simgeRengi.copy(alpha = 0.18f), CircleShape),
+        ) { Simge(simge, simgeRengi, 24.dp) }
+        Spacer(Modifier.width(14.dp))
+        Text(baslik, color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.width(12.dp))
-        Text(metin, color = Renkler.metin, fontSize = 18.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        Text(ek, style = RAKAM, color = Renkler.metinIkincil, fontSize = 24.sp)
+    }
+}
+
+/**
+ * Panodaki TEK odaklanabilir öğe (ekran görüntüsü hattı D-pad ↓ ile bunu bulur).
+ * Odakta: beyaz zemin + yeşil halka + hafif büyüme — uzaktan renk körü kullanıcı da görür.
+ */
+@Composable
+private fun KonumDugmesi(onKonumDegistir: () -> Unit) {
+    Surface(
+        onClick = onKonumDegistir,
+        shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(28.dp)),
+        colors = ClickableSurfaceDefaults.colors(
+            containerColor = Renkler.kart,
+            contentColor = Renkler.metin,
+            focusedContainerColor = Renkler.metin,
+            focusedContentColor = Renkler.arkaplan,
+        ),
+        border = ClickableSurfaceDefaults.border(
+            focusedBorder = Border(BorderStroke(3.dp, Renkler.birincil), inset = (-4).dp),
+        ),
+        scale = ClickableSurfaceDefaults.scale(focusedScale = 1.06f),
+        modifier = Modifier.semantics { contentDescription = "Konumu değiştirin" },
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(start = 18.dp, end = 24.dp, top = 10.dp, bottom = 10.dp),
+        ) {
+            // Simge içerik rengini izler (odakta koyu, değilken beyaz).
+            Image(
+                painterResource(R.drawable.ic_konum),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(androidx.tv.material3.LocalContentColor.current),
+                modifier = Modifier.size(24.dp),
+            )
+            Spacer(Modifier.width(10.dp))
+            Text("Konumu değiştirin", fontSize = 22.sp)
+        }
     }
 }
 
 @Composable
-private fun VakitListesi(durum: PanoDurumu, bolge: ZoneId, modifier: Modifier) {
+private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: Boolean, modifier: Modifier) {
     Column(
         modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
     ) {
         for (vakit in Vakit.entries) {
             val aktif = vakit == durum.aktif
             val siradaki = vakit == durum.siradaki && durum.siradakiMs == durum.vakitler.saat(vakit)
-            val sekil = RoundedCornerShape(16.dp)
+            // Geçmiş vakit sönük: günün nereye geldiği tek bakışta okunur.
+            val gecti = !aktif && durum.vakitler.saat(vakit) < simdi
+            val zemin by animateColorAsState(
+                if (aktif) Renkler.birincilKoyu else Renkler.kart,
+                tween(if (azalt) 0 else 600),
+                label = "satirZemini",
+            )
+            val metinRengi = if (gecti) Renkler.metinIkincil else Renkler.metin
+            val sekil = RoundedCornerShape(18.dp)
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .height(68.dp)
-                    .background(if (aktif) Renkler.birincilKoyu else Renkler.kart, sekil)
+                    .height(72.dp)
+                    .background(zemin, sekil)
                     .then(if (siradaki) Modifier.border(2.dp, Renkler.birincil, sekil) else Modifier)
                     .padding(horizontal = 24.dp)
-                    .semantics {
+                    .clearAndSetSemantics {
                         contentDescription = buildString {
                             append(durum.gorunenAd(vakit)).append(' ')
                             append(Bicim.saat(durum.vakitler.saat(vakit), bolge))
@@ -250,20 +384,45 @@ private fun VakitListesi(durum: PanoDurumu, bolge: ZoneId, modifier: Modifier) {
                     },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                Simge(
+                    vakitSimgesi(vakit),
+                    when {
+                        aktif -> Renkler.metin
+                        siradaki -> Renkler.birincil
+                        else -> metinRengi
+                    },
+                    32.dp,
+                )
+                Spacer(Modifier.width(20.dp))
                 Text(
                     durum.gorunenAd(vakit),
-                    color = Renkler.metin,
-                    fontSize = 30.sp,
+                    color = metinRengi,
+                    fontSize = 32.sp,
                     fontWeight = if (aktif) FontWeight.Bold else FontWeight.Normal,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f),
                 )
+                // "şimdi" çipi BİLİNÇLİ YOK: dar sütunda "Akşam"ı "Akşa…"ya kesiyordu (kare
+                // turunda görüldü); dolu yeşil zemin + soldaki geri sayım anlamı zaten taşıyor.
                 Text(
                     Bicim.saat(durum.vakitler.saat(vakit), bolge),
-                    color = Renkler.metin,
-                    fontSize = 34.sp,
+                    style = RAKAM,
+                    color = metinRengi,
+                    fontSize = 36.sp,
                     fontWeight = if (aktif) FontWeight.Bold else FontWeight.Medium,
                 )
             }
         }
     }
+}
+
+@Composable
+private fun Simge(kaynak: Int, renk: Color, boyut: Dp) {
+    Image(
+        painterResource(kaynak),
+        contentDescription = null,
+        colorFilter = ColorFilter.tint(renk),
+        modifier = Modifier.size(boyut),
+    )
 }

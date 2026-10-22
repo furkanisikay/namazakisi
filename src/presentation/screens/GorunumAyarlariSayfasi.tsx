@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   Animated,
   Easing,
+  Dimensions,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler, useTema, TemaModu } from '../../core/theme';
@@ -25,6 +26,8 @@ import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { Anahtar } from '../components/common/Anahtar';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { useSadeGorunum } from '../hooks/useSadeGorunum';
+import { evEkraniAyarla, useEvEkraniAyari } from '../hooks/useEvEkraniAyari';
+import { evEkraniSunulurMu } from '../../core/evEkrani/evEkrani';
 
 // Tema modu ikon eslesmesi
 const TEMA_MODU_IKONLARI: Record<TemaModu, string> = {
@@ -200,6 +203,47 @@ const SadeGorunumSecici: React.FC = () => {
 };
 
 /**
+ * Tablet ev ekranı anahtarı (yalnız tablette görünür). Açıkken tablet yatay ve tam
+ * ekrandayken vakit panosu gösterilir; bu cihazda hatırlatma kurulmaz, yalnız gösterir.
+ */
+const EvEkraniSecici: React.FC = () => {
+  const renkler = useRenkler();
+  const evEkrani = useEvEkraniAyari();
+  return (
+    <View
+      className="p-4 rounded-2xl border"
+      style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+    >
+      <View className="flex-row items-center">
+        <View
+          className="w-11 h-11 rounded-full items-center justify-center mr-3.5"
+          style={{ backgroundColor: `${renkler.birincil}20` }}
+        >
+          <FontAwesome5 name="tablet-alt" size={18} color={renkler.birincil} solid />
+        </View>
+        <Text className="text-base font-semibold flex-1" style={{ color: renkler.metin }}>
+          Ev ekranı
+        </Text>
+        <Anahtar
+          value={evEkrani.acik}
+          disabled={!evEkrani.yuklendi}
+          onValueChange={(acik) => {
+            evEkraniAyarla(acik).catch(() => undefined);
+          }}
+          trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+          thumbColor={evEkrani.acik ? renkler.birincil : '#f4f3f4'}
+          accessibilityLabel="Ev ekranı"
+        />
+      </View>
+      <Text className="text-sm leading-5 mt-3" style={{ color: renkler.metinIkincil }}>
+        Tableti yatay ve tam ekran kullandığınızda bugünün vakitleri, sıradaki vakit ve kalan
+        süre büyük yazıyla görünür; ekran kapanmaz. Tablet şarjdayken açık bırakmanız önerilir.
+      </Text>
+    </View>
+  );
+};
+
+/**
  * Gorunum Ayarlari Sayfasi
  */
 export const GorunumAyarlariSayfasi: React.FC = () => {
@@ -246,6 +290,14 @@ const GorünumAyarlariIcerik: React.FC = () => {
             <SadeGorunumSecici />
           </AyarCapasi>
         </View>
+
+        {/* Tablet ev ekranı (yalnız tablette) */}
+        {evEkraniSunulurMu(Dimensions.get('screen')) ? (
+          <View className="mb-8">
+            <BolumBasligi metin="Ev ekranı" ikon="tablet-alt" />
+            <EvEkraniSecici />
+          </View>
+        ) : null}
 
         {/* Tema Modu Bolumu */}
         <View className="mb-8">

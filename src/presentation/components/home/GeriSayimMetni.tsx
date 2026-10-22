@@ -17,6 +17,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Text, type TextProps } from 'react-native';
 
 import { useEkranCanli } from '../hareket/dongu';
+import { BirimliSure } from '../common/BirimliSure';
 
 const iki = (n: number) => n.toString().padStart(2, '0');
 
@@ -91,3 +92,24 @@ const GeriSayimMetniBileseni: React.FC<GeriSayimMetniProps> = ({ hedefIso, onBit
 };
 
 export const GeriSayimMetni = React.memo(GeriSayimMetniBileseni);
+
+type BirimliSureProplari = React.ComponentProps<typeof BirimliSure>;
+
+interface GeriSayimBirimliProps extends Omit<BirimliSureProplari, 'sure'> {
+    /** Sayılan an (ISO). Boş/bozuksa `00:00:00`. */
+    hedefIso: string | null | undefined;
+    /** Sayaç sıfıra inince bir kez (ekran görünürken). */
+    onBitti?: () => void;
+}
+
+/**
+ * Birimli görünüm ("1 sa 09 dk 09 sn") + kendi saniyelik sayacı. Saniyede bir YALNIZ bu
+ * bileşen çizilir; çağıran kart (VakitKarti) yeniden çizilmez (denetim D-03).
+ */
+const GeriSayimBirimliBileseni: React.FC<GeriSayimBirimliProps> = ({ hedefIso, onBitti, ...birimliProplar }) => {
+    const hedefMs = useMemo(() => hedefMsCoz(hedefIso), [hedefIso]);
+    const sure = useKalanSure(hedefMs, onBitti);
+    return <BirimliSure sure={sure} {...birimliProplar} />;
+};
+
+export const GeriSayimBirimli = React.memo(GeriSayimBirimliBileseni);

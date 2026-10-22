@@ -117,6 +117,15 @@ async function buildler(surum) {
     }));
 }
 
+/** iPad 13" (2064x2752 / 2048x2732) setinin ASC adi. */
+const IPAD_EKRAN_TIPI = 'APP_IPAD_PRO_3GEN_129';
+
+/** Uygulama iPad'de calisiyor mu (app.json > expo.ios.supportsTablet)? */
+function ipadDestekleniyor() {
+    const app = JSON.parse(fs.readFileSync(path.join(KOK, 'app.json'), 'utf8'));
+    return !!(app.expo && app.expo.ios && app.expo.ios.supportsTablet);
+}
+
 async function ekranSayilari(locId) {
     const r = await api('GET', '/v1/appStoreVersionLocalizations/' + locId + '/appScreenshotSets');
     if (r.kod >= 300) hata('ekran setleri okunamadi', r);
@@ -330,6 +339,11 @@ async function incelemeyeGonder(a) {
         if (!l.attributes.whatsNew) eksik.push(l.attributes.locale + ' yenilikler metni');
         const ekran = await ekranSayilari(l.id);
         if (!Object.values(ekran).some((n) => n > 0)) eksik.push(l.attributes.locale + ' ekran goruntuleri');
+        // app.json > ios.supportsTablet acikken Apple iPad 13" setini ZORUNLU tutar;
+        // gonderimi biz durdurmazsak App Review kuyruguna girmeden reddedilir.
+        if (ipadDestekleniyor() && !(ekran[IPAD_EKRAN_TIPI] > 0)) {
+            eksik.push(l.attributes.locale + ' iPad 13" ekran goruntuleri (' + IPAD_EKRAN_TIPI + ')');
+        }
     }
     if (eksik.length) throw new Error('Eksik: ' + eksik.join(', '));
 

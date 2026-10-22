@@ -25,6 +25,24 @@ const SIRI_EKRANLARI: Readonly<Record<string, 'Kible'>> = {
     kible: 'Kible',
 };
 
+/**
+ * Uygulama simgesi hızlı eylemi "Vakti kıldım" (Android ana ekran kısayolunun ikizi):
+ * kişinin kendi ana ekranındaki eylemidir → Android'in "ana ekran = doğrudan" kuralı gibi
+ * onay sorulmadan, şu anki vakit yeniden değerlendirilerek işaretlenir; sonuç kısa
+ * bildirimle söylenir. Servisler native köprü çektiği için tembel yüklenir.
+ */
+async function simgedenKildim(): Promise<void> {
+    const { KildimKuyruguServisi } = require('../../domain/services/KildimKuyruguServisi') as typeof import('../../domain/services/KildimKuyruguServisi');
+    const { kildimSonucMetni } = require('./useKildimDerinBaglantisi') as typeof import('./useKildimDerinBaglantisi');
+    const { kisaBildirimGoster } = require('../components/common/KisaBildirim') as typeof import('../components/common/KisaBildirim');
+    try {
+        kisaBildirimGoster(kildimSonucMetni(await KildimKuyruguServisi.getInstance().simdikiVaktiKildim()));
+    } catch (e) {
+        Logger.warn('SiriEkranIstegi', 'Hizli eylemden Kildim islenemedi', e);
+        kisaBildirimGoster('İşaretleme yapılamadı. Lütfen uygulamadan işaretleyin.');
+    }
+}
+
 /** @returns `NavigationContainer.onReady`'ye verilecek geri çağrı. */
 export function useSiriEkranIstegi(
     etkin: boolean,
@@ -34,7 +52,11 @@ export function useSiriEkranIstegi(
         // Gezinme hazır değilken TÜKETME: istek kaybolurdu (onReady yeniden dener).
         if (!etkin || !navRef.isReady()) return;
         siriEkranIstegiAl()
-            .then((ekran) => {
+            .then(async (ekran) => {
+                if (ekran === 'kildim') {
+                    await simgedenKildim();
+                    return;
+                }
                 const rota = ekran ? SIRI_EKRANLARI[ekran] : undefined;
                 if (rota && navRef.isReady()) navRef.navigate('MainTabs', { screen: rota });
             })

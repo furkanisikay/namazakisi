@@ -184,6 +184,10 @@ public enum CanliEtkinlikKoprusu {
         if #available(iOS 14.0, *) {
             WidgetCenter.shared.reloadAllTimelines()
         }
+        // Kontrol Merkezi "Kildim" kontrolu (iOS 18 ControlWidget) de ayni veriyi okur.
+        if #available(iOS 18.0, *) {
+            ControlCenter.shared.reloadAllControls()
+        }
         #endif
     }
 }

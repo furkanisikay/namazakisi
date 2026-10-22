@@ -75,9 +75,16 @@ class AnaEkranKarariTest {
 
     @Test
     fun sayacBicimi() {
-        assertEquals(AnaEkranKarari.Sayac("1:58", ":07"), AnaEkranKarari.sayac((118 * 60 + 7) * 1000L))
-        assertEquals(AnaEkranKarari.Sayac("0:05", ":00"), AnaEkranKarari.sayac(5 * dk))
-        assertEquals(AnaEkranKarari.Sayac("0:00", ":00"), AnaEkranKarari.sayac(-5_000))
+        val p = AnaEkranKarari::Parca
+        // Saat ve üstü: saniye YOK, birimler zorunlu ("1:58" saniye sanılabiliyordu).
+        assertEquals(AnaEkranKarari.Sayac(listOf(p("1", "sa", false), p("58", "dk", false))), AnaEkranKarari.sayac((118 * 60 + 7) * 1000L))
+        // Saatin altı: dakika + (etkileşimli kipte) iki haneli saniye.
+        val bes = AnaEkranKarari.sayac(5 * dk + 7_000)
+        assertEquals(listOf(p("5", "dk", false), p("07", "sn", true)), bes.parcalar)
+        assertEquals(listOf(p("5", "dk", false)), bes.gorunur(saniyeGoster = false))
+        assertEquals(1, bes.haneSayisi(saniyeGoster = true))
+        assertEquals(listOf(p("0", "dk", false), p("00", "sn", true)), AnaEkranKarari.sayac(-5_000).parcalar)
+        assertEquals(4, AnaEkranKarari.sayac((10 * 60 + 59) * dk).haneSayisi(saniyeGoster = true))
     }
 
     @Test

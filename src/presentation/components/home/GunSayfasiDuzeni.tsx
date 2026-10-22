@@ -35,6 +35,19 @@ interface GunSayfasiDuzeniProps {
     masaustuBantlar?: React.ReactNode;
     /** Masaüstü düzeninde menteşe sınırı (dp, pencereye göre). */
     mentese?: MenteseSiniri | null;
+    /**
+     * Yalnız iki bölmeli düzende: sol bölmede vakit kartının, sağ bölmede akışın ALTINA
+     * çizilen ikinci içerik (yarının vakitleri, kıble). Tablette alan boş kalmasın diye;
+     * telefon ve masaüstü düzenleri bunları hiç çizmez.
+     */
+    solEk?: React.ReactNode;
+    sagEk?: React.ReactNode;
+    /**
+     * Yalnız iki bölmeli düzende: verilirse ÜÇÜNCÜ sütun olarak (akışın sağında, kendi
+     * içinde kayan) çizilir. Yatay geniş tablette "Bu hafta" paneli; dikeyde verilmez
+     * (panel `solEk` olarak kartın altına iner).
+     */
+    ucuncuSutun?: React.ReactNode;
 }
 
 interface SayfaOlcusu {
@@ -97,6 +110,9 @@ export const GunSayfasiDuzeni: React.FC<GunSayfasiDuzeniProps> = ({
     masaustuUst,
     masaustuBantlar,
     mentese,
+    solEk,
+    sagEk,
+    ucuncuSutun,
 }) => {
     if (duzen === 'masaustu') {
         return (
@@ -126,14 +142,33 @@ export const GunSayfasiDuzeni: React.FC<GunSayfasiDuzeniProps> = ({
 
     return (
         <View testID="anasayfa-iki-bolme" style={stiller.ikiBolme}>
-            <ScrollView testID="anasayfa-sol-bolme" style={stiller.solBolme} showsVerticalScrollIndicator={false}>
-                {ustBolum}
+            <ScrollView
+                testID="anasayfa-sol-bolme"
+                style={stiller.solBolme}
+                contentContainerStyle={ucuncuSutun ? stiller.uzanan : undefined}
+                showsVerticalScrollIndicator={false}
+            >
+                {/* Üç sütunda vakit kartı sütunu doldurur (13" yatayda alt üçte bir boş kalıyordu). */}
+                {ucuncuSutun ? <View style={stiller.uzanan}>{ustBolum}</View> : ustBolum}
+                {solEk}
                 <View className="h-10" />
             </ScrollView>
             <ScrollView testID="anasayfa-sag-bolme" style={stiller.sagBolme} showsVerticalScrollIndicator={false}>
                 {akis}
+                {sagEk ? <View style={stiller.sagEk}>{sagEk}</View> : null}
                 <View className="h-10" />
             </ScrollView>
+            {ucuncuSutun ? (
+                <ScrollView
+                    testID="anasayfa-ucuncu-sutun"
+                    style={stiller.ucuncuSutun}
+                    contentContainerStyle={stiller.uzanan}
+                    showsVerticalScrollIndicator={false}
+                >
+                    {ucuncuSutun}
+                    <View className="h-10" />
+                </ScrollView>
+            ) : null}
         </View>
     );
 };
@@ -150,6 +185,9 @@ const stiller = StyleSheet.create({
     // vakit kartı ise tek blok — prototipteki 1 : 1.1 oranı.
     solBolme: { flex: 1 },
     sagBolme: { flex: 1.1 },
+    sagEk: { marginTop: 24 },
+    ucuncuSutun: { flex: 0.9 },
+    uzanan: { flexGrow: 1 },
     masaustu: { flex: 1 },
     // Ölçü yokken (ilk çizim) ya da menteşe sayfaya sığmıyorsa eşit yarılar.
     esitYari: { flex: 1 },

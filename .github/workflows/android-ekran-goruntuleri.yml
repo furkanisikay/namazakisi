@@ -19,6 +19,8 @@ name: 📸 Android Ekran Görüntüleri
 #   tv      — Android TV panosunun kareleri (`kareler-tv/`, artifact
 #           `android-tv-kareleri`); ayri is.
 #   cihazlar — saat + tv (iki is paralel kosar).
+#   tablet  — YALNIZ tablet ozellik turu (pixel_tablet, acik tema); telefon turu ve magaza
+#           kareleri kosmaz. Genis ekran duzeni gelistirilirken hizli dongu icin.
 #
 # NOT: saat/TV icin AYRI workflow acilmadi: GitHub varsayilan dalda (master) olmayan
 # bir workflow'u workflow_dispatch ile calistiramaz (404); bu dosya zaten master'da.
@@ -35,7 +37,7 @@ on:
         required: false
         default: ''
       tur:
-        description: 'Hangi kareler: magaza (Play kareleri) | ozellik (yeni ekranlar turu) | ikisi | saat (Wear OS) | tv (Android TV) | cihazlar (saat + tv)'
+        description: 'Hangi kareler: magaza (Play kareleri) | ozellik (yeni ekranlar turu) | ikisi | tablet (yalnız tablet özellik turu) | saat (Wear OS) | tv (Android TV) | cihazlar (saat + tv)'
         type: choice
         required: false
         default: 'magaza'
@@ -43,6 +45,7 @@ on:
           - magaza
           - ozellik
           - ikisi
+          - tablet
           - saat
           - tv
           - cihazlar
@@ -63,7 +66,7 @@ jobs:
   kareler:
     name: 📸 Emülatörde kare çek
     # Telefon kareleri yalniz telefon turlarinda (saat/tv kendi islerinde).
-    if: ${{ inputs.tur == 'magaza' || inputs.tur == 'ozellik' || inputs.tur == 'ikisi' }}
+    if: ${{ inputs.tur == 'magaza' || inputs.tur == 'ozellik' || inputs.tur == 'ikisi' || inputs.tur == 'tablet' }}
     runs-on: ubuntu-latest
     # 90 dk magaza turu icin yetiyordu; ozellik turu (iki tema + istege bagli
     # tablet, her akistan once yeniden tohumlama) ayni isin icinde kosar.
@@ -145,7 +148,7 @@ jobs:
           echo "Metro hazır"
 
       - name: 📱 Emülatörde kareleri çek
-        if: ${{ inputs.tur != 'ozellik' }}
+        if: ${{ inputs.tur != 'ozellik' && inputs.tur != 'tablet' }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ inputs.api }}
@@ -160,14 +163,14 @@ jobs:
           script: bash scripts/android-kare-hatti.sh
 
       - name: 🧾 Kare boyutları
-        if: ${{ always() && inputs.tur != 'ozellik' }}
+        if: ${{ always() && inputs.tur != 'ozellik' && inputs.tur != 'tablet' }}
         run: |
           for f in kareler/*.png; do
             node -e 'const b=require("fs").readFileSync(process.argv[1]);console.log(process.argv[1], b.readUInt32BE(16)+"x"+b.readUInt32BE(20))' "$f"
           done || true
 
       - name: ⬆️ Kareleri yükle
-        if: ${{ always() && inputs.tur != 'ozellik' }}
+        if: ${{ always() && inputs.tur != 'ozellik' && inputs.tur != 'tablet' }}
         uses: actions/upload-artifact@v7
         with:
           name: android-ekran-goruntuleri
@@ -180,7 +183,7 @@ jobs:
       # --- OZELLIK TURU (magaza turuna dokunmaz; ayri klasor + ayri artifact) ---
       # Magaza adimi dustuyse de kossun (`!cancelled()`): iki tur birbirinden bagimsiz.
       - name: 🧭 Özellik turu — telefon (açık + koyu)
-        if: ${{ !cancelled() && inputs.tur != 'magaza' }}
+        if: ${{ !cancelled() && inputs.tur != 'magaza' && inputs.tur != 'tablet' }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ inputs.api }}
@@ -193,7 +196,7 @@ jobs:
           script: bash scripts/android-ozellik-hatti.sh telefon acik koyu
 
       - name: 🧭 Özellik turu — tablet (açık)
-        if: ${{ !cancelled() && inputs.tur != 'magaza' && inputs.tablet }}
+        if: ${{ !cancelled() && inputs.tur != 'magaza' && (inputs.tablet || inputs.tur == 'tablet') }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ inputs.api }}
@@ -314,6 +317,17 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      # Olayla baslayan animasyonlarin ekran kaydi (adb screenrecord, en gayret; hat
+      # betigi sonda animator olcegini 1 yapip kaydeder). Kare artifact'indan AYRI.
+      - name: 🎬 Saat animasyon videolarını yükle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-saat-videolari
+          path: videolar-saat/
+          retention-days: 14
+          if-no-files-found: warn
+
   # --- ANDROID TV (bagimsiz; `tv/` ayri Gradle koku) ---
   tv:
     name: 📺 TV kareleri (Android TV)
@@ -374,5 +388,16 @@ jobs:
         with:
           name: android-tv-kareleri
           path: kareler-tv/
+          retention-days: 14
+          if-no-files-found: warn
+
+      # Olayla baslayan animasyonlarin ekran kaydi (adb screenrecord, en gayret; hat
+      # betigi sonda animator olcegini 1 yapip kaydeder). Kare artifact'indan AYRI.
+      - name: 🎬 TV animasyon videolarını yükle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-tv-videolari
+          path: videolar-tv/
           retention-days: 14
           if-no-files-found: warn

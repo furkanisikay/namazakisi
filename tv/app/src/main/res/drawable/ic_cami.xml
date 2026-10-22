@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cami: kubbe + alem + kapılı gövde, yanda minare. Cuma canlı sayacı ve "Camidesiniz"
+     sürekli etkinliği. Tek renk (sistem boyar); kapı evenOdd ile oyulmuştur. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <!-- Alem -->
+    <path android:fillColor="#FFFFFFFF" android:pathData="M10.4,2.2h1.2v2.6h-1.2z" />
+    <!-- Kubbe -->
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M4.5,12.6C4.5,9.2 7.4,6.6 11,5.2C14.6,6.6 17.5,9.2 17.5,12.6Z" />
+    <!-- Gövde + kemerli kapı -->
+    <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd"
+        android:pathData="M3.5,13.6h15v8.4h-15zM9.4,22v-3.6a1.6,1.6 0 0,1 3.2,0v3.6z" />
+    <!-- Minare -->
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M19.6,22V8.6L20.6,5.6L21.6,8.6V22Z" />
+</vector>

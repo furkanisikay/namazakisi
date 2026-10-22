@@ -19,6 +19,26 @@ beforeEach(() => {
     kopru.siriDegisikliginiDinle.mockReturnValue(() => undefined);
 });
 
+jest.mock('../../../domain/services/KildimKuyruguServisi', () => ({
+    KildimKuyruguServisi: { getInstance: () => ({ simdikiVaktiKildim: mockSimdikiVaktiKildim }) },
+}));
+jest.mock('../../components/common/KisaBildirim', () => ({ kisaBildirimGoster: mockKisaBildirim }));
+jest.mock('../useKildimDerinBaglantisi', () => ({ kildimSonucMetni: () => 'sonuc-metni' }));
+const mockSimdikiVaktiKildim = jest.fn();
+const mockKisaBildirim = jest.fn();
+
+describe('useSiriEkranIstegi — uygulama simgesi hızlı eylemi', () => {
+    it('"kildim" isteği gezinmez; şu anki vakti işaretler ve sonucu söyler', async () => {
+        mockSimdikiVaktiKildim.mockResolvedValueOnce({ tur: 'isaretlendi' });
+        kopru.siriEkranIstegiAl.mockResolvedValueOnce('kildim');
+        const nav = navKur();
+        renderHook(() => useSiriEkranIstegi(true, nav as never));
+        await waitFor(() => expect(mockKisaBildirim).toHaveBeenCalledWith('sonuc-metni'));
+        expect(mockSimdikiVaktiKildim).toHaveBeenCalledTimes(1);
+        expect(nav.navigate).not.toHaveBeenCalled();
+    });
+});
+
 describe('useSiriEkranIstegi', () => {
     it('açılışta bekleyen "kible" isteği Kıble ekranına götürür', async () => {
         kopru.siriEkranIstegiAl.mockResolvedValueOnce('kible');

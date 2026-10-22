@@ -34,7 +34,7 @@ describe('MasaustuGeriSayim', () => {
   it('vakit adı, büyük sayaç ve çıkışa kalan açıklaması', () => {
     const ekran = render(<MasaustuGeriSayim {...temel} />);
     expect(ekran.getByText('İkindi')).toBeTruthy();
-    expect(ekran.getByText('01:02:03')).toBeTruthy();
+    expect(ekran.getByText('1 sa 2 dk')).toBeTruthy();
     expect(ekran.getByText('ŞU ANKİ VAKİT')).toBeTruthy();
     expect(ekran.getByText(/Vaktin çıkmasına kalan · 15:45 - 18:20/)).toBeTruthy();
     expect(ekran.queryByText('Kılındı')).toBeNull();
@@ -57,7 +57,7 @@ describe('MasaustuGeriSayim', () => {
   it('ekran okuyucu tek düğümde tüm durumu okur', () => {
     const ekran = render(<MasaustuGeriSayim {...temel} tamamlandi />);
     expect(
-      ekran.getByLabelText('İkindi vakti, 15:45 - 18:20. Vaktin çıkmasına kalan 01:02:03. Kılındı.')
+      ekran.getByLabelText('İkindi vakti, 15:45 - 18:20. Vaktin çıkmasına kalan 1 saat 2 dakika. Kılındı.')
     ).toBeTruthy();
   });
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { VakitBilgisi } from '../../../domain/services/NamazVaktiHesaplayiciServisi';
@@ -8,7 +8,7 @@ import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { NAMAZ_DURUMLARI } from '../../../core/vakit/durumSozlugu';
 import { KildimDugmesi, KILDIM_DUGMESI_YUKSEKLIK } from '../hareket/KildimDugmesi';
 import { kildimDugmesiRenkleri } from '../../../core/anaEkran/kildimDugmesiRenkleri';
-import { GeriSayimMetni } from './GeriSayimMetni';
+import { GeriSayimBirimli } from './GeriSayimMetni';
 
 interface VakitKartiProps {
     /** Sayaç hedefi `vakitBilgisi.sonrakiVakitGiris`; saniyelik çizim yalnız `GeriSayimMetni`nde (D-03). */
@@ -50,6 +50,11 @@ interface VakitKartiProps {
      * karsilastirmalari `suankiVakitAdi` uzerinden surer.
      */
     gorunenVakitAdi?: string;
+    /**
+     * Geniş ekran (tablet / iPad iki bölme): kart daha ferah, başlık ve geri sayım daha
+     * büyük çizilir. Telefonda verilmez; düzen birebir eskisi kalır.
+     */
+    genis?: boolean;
 }
 
 const getVakitIkonu = (vakit: string): string => {
@@ -80,7 +85,8 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     konumMetni,
     onKonumYenile,
     konumYenileniyor = false,
-    gorunenVakitAdi
+    gorunenVakitAdi,
+    genis = false,
 }) => {
     const renkler = useRenkler();
     // Gri "Henüz girmedi" düğmesinin metni zemine göre ölçülür (koyu temada gri açıktır).
@@ -98,7 +104,10 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
         <View className="mb-6 relative overflow-hidden rounded-3xl shadow-lg border"
             style={{
                 backgroundColor: renkler.kartArkaplan,
-                borderColor: renkler.sinir
+                borderColor: renkler.sinir,
+                // Geniş düzende ebeveyn alan verirse (üç sütun) kart sütunu doldurur;
+                // içerik içinde dikey ortalanır. Ebeveyn içerik boyundaysa etkisiz.
+                ...(genis ? { flexGrow: 1 } : null),
             }}>
 
             {/* Dekoratif Arka Plan Efektleri */}
@@ -109,7 +118,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
             <View className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full blur-2xl opacity-10"
                 style={{ backgroundColor: renkler.vurgu }} />
 
-            <View className="p-6 text-center items-center">
+            <View className="p-6 text-center items-center" style={genis ? stiller.genisIcerik : undefined}>
                 {/* Badge Satırı: Şu Anki Vakit + Konum */}
                 <View className="flex-row items-center gap-2 mb-4">
                     {/* Eski kartın rozeti. Nokta STATİK: boşta sıfır hareket (eski `animate-ping`
@@ -178,10 +187,10 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                 {/* İkon ve Başlık */}
                 <View className="flex-col items-center justify-center mb-2">
                     <View className="w-20 h-20 rounded-2xl flex items-center justify-center mb-4 shadow-sm"
-                        style={{ backgroundColor: renkler.birincil + '10' }}>
-                        <FontAwesome5 name={ikonAdi} size={36} color={renkler.birincil} />
+                        style={[{ backgroundColor: renkler.birincil + '10' }, genis && stiller.genisIkon]}>
+                        <FontAwesome5 name={ikonAdi} size={genis ? 52 : 36} color={renkler.birincil} />
                     </View>
-                    <Text className="text-4xl font-black tracking-tight" style={{ color: renkler.metin }}>
+                    <Text className="text-4xl font-black tracking-tight" style={[{ color: renkler.metin }, genis && stiller.genisBaslik]}>
                         {baslikAdi}
                     </Text>
                     <Text className="font-medium text-sm mt-1" style={{ color: renkler.metinIkincil }}>
@@ -190,15 +199,19 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                 </View>
 
                 {/* Sayaç */}
-                <View className="my-6 items-center">
-                    <GeriSayimMetni
+                <View className="my-6 items-center" style={genis ? stiller.genisSayacKutusu : undefined}>
+                    {/* Birimli: "01:09:09" duvar saati gibi okunuyordu (saat/TV ile aynı dil). */}
+                    <GeriSayimBirimli
                         hedefIso={vakitBilgisi?.sonrakiVakitGiris}
                         onBitti={onSayacBitti}
-                        className="text-5xl font-mono font-bold tracking-tighter tabular-nums"
-                        style={{ color: renkler.metin }}
+                        rakamBoyu={genis ? 76 : 48}
+                        birimRengi={renkler.metinIkincil}
+                        style={{ color: renkler.metin, fontWeight: '800', letterSpacing: -1 }}
+                        adjustsFontSizeToFit
+                        minimumFontScale={0.6}
                     />
-                    <Text className="text-xs font-semibold tracking-widest mt-2" style={{ color: renkler.metinIkincil }}>
-                        KALAN SÜRE
+                    <Text className="text-sm font-medium mt-1" style={{ color: renkler.metinIkincil }}>
+                        Kalan süre
                     </Text>
                 </View>
 
@@ -247,3 +260,11 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
         </View>
     );
 };
+
+// Geniş ekran ölçüleri (tablet / iPad). Telefonda hiçbiri uygulanmaz.
+const stiller = StyleSheet.create({
+    genisIcerik: { paddingHorizontal: 40, paddingVertical: 40, flexGrow: 1, justifyContent: 'center' },
+    genisIkon: { width: 112, height: 112, borderRadius: 28 },
+    genisBaslik: { fontSize: 52, lineHeight: 60 },
+    genisSayacKutusu: { marginVertical: 40 },
+});

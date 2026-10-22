@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
-import { View, Text, Platform, StatusBar, AppState, AppStateStatus, TouchableOpacity } from 'react-native';
+import { View, Text, Platform, StatusBar, AppState, AppStateStatus, TouchableOpacity, useWindowDimensions } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
@@ -22,6 +22,7 @@ import { useFarzSonrasiKazaOnerisi } from '../hooks/useFarzSonrasiKazaOnerisi';
 import { useSadeGorunum } from '../hooks/useSadeGorunum';
 import { SadeGorunum } from '../components/sade/SadeGorunum';
 import { GunSayfasiDuzeni } from '../components/home/GunSayfasiDuzeni';
+import { BuHaftaPaneli } from '../components/home/GenisEkranEkleri';
 import { MasaustuGeriSayim } from '../components/home/MasaustuGeriSayim';
 import { SeferilikBilgiKarti, useSeferilikKartiGorunur } from '../components/home/SeferilikBilgiKarti';
 import { useKurulumOnarimi } from '../hooks/useKurulumOnarimi';
@@ -32,6 +33,7 @@ import { kerahatMetniSec, type KerahatTuru } from '../../core/anaEkran/kerahatNo
 import { useEkranSinifi } from '../hooks/useEkranSinifi';
 import { useKatlanmaPosturu } from '../hooks/useKatlanmaPosturu';
 import { gunDuzeniSec } from '../../core/utils/katlanmaPosturu';
+import { ucSutunluMu } from '../../core/utils/ekranSinifi';
 import { useNafilePencereleri } from '../hooks/useNafilePencereleri';
 import { nafileZincirSatirlariOlustur } from '../../core/nafile/nafileZinciri';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
@@ -74,6 +76,9 @@ export const AnaSayfa: React.FC = () => {
   // Telefonda (kompakt, düz) düzen birebir eskisi gibi tek sütundur.
   const katlanmaPosturu = useKatlanmaPosturu();
   const gunDuzeni = gunDuzeniSec(useEkranSinifi(), katlanmaPosturu);
+  // Yatay geniş tablet: Bugün üç sütun (kart | akış | "Bu hafta"); dikeyde iki sütun.
+  const pencere = useWindowDimensions();
+  const ucSutun = ucSutunluMu(pencere.width, pencere.height);
   const { tumNamazlarTamamlandiFeedback } = useFeedback();
 
   const [mevcutSayfaIndeksi, setMevcutSayfaIndeksi] = useState(BASLANGIC_SAYFA_INDEKSI);
@@ -938,6 +943,7 @@ export const AnaSayfa: React.FC = () => {
             onKonumYenile={konumYenile.yenile}
             konumYenileniyor={konumYenile.yenileniyor}
             gorunenVakitAdi={gorunenVakitAdi}
+            genis={gunDuzeni === 'ikiBolme'}
           />
         ) : (
           gecmisGunKarti
@@ -997,7 +1003,29 @@ export const AnaSayfa: React.FC = () => {
       );
     }
 
-    return <GunSayfasiDuzeni key={sayfaIndeksi} duzen={gunDuzeni} ustBolum={ustBolum} akis={akis} />;
+    // Geniş ekran (tablet / iPad): "Bu hafta" paneli (seri, haftanın günleri, kaza, yarın).
+    // Yatay ve yeterince genişse üçüncü sütun, değilse vakit kartının altı. Telefon ve
+    // masaüstü düzenleri paneli hiç çizmez.
+    const buHafta =
+      gunDuzeni === 'ikiBolme' ? (
+        <BuHaftaPaneli
+          lat={konumAyarlari.koordinatlar?.lat}
+          lng={konumAyarlari.koordinatlar?.lng}
+          gunTarihiIso={sayfaTarihi}
+          okumaAnahtari={`${sayfaTarihi}_${tamamlanan}`}
+          uzat={ucSutun}
+        />
+      ) : undefined;
+    return (
+      <GunSayfasiDuzeni
+        key={sayfaIndeksi}
+        duzen={gunDuzeni}
+        ustBolum={ustBolum}
+        akis={akis}
+        solEk={ucSutun ? undefined : buHafta}
+        ucuncuSutun={ucSutun ? buHafta : undefined}
+      />
+    );
   };
 
   // Sade görünüm ayarı diskten okunmadan karar verilmez (normal ekran bir an görünüp

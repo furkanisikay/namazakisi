@@ -42,7 +42,10 @@ export const PusulaGorunumu: React.FC<{
   const renkler = useRenkler();
   const { width, height } = useWindowDimensions();
   // Kadran ekranın görsel merkezini doldurur: üst/alt metinler sabit yükseklikte, gerisi kadran.
-  const S = Math.min(width * KADRAN_ORANI, height * 0.52, 440);
+  // Yatay pencerede (tablet, açık Fold) yükseklik başlık + mod seçici + sekme çubuğunu da
+  // taşır: 0,52 oranı kadranı taşırıyor, ortalanan blok yön cümlesini mod seçicinin
+  // ÜSTÜNE itiyordu (tablet karesinde görüldü). Yatayda kadran daha alçak tutulur.
+  const S = Math.min(width * KADRAN_ORANI, height * (width > height ? 0.4 : 0.52), 440);
   // Kâbe küpü dış halkanın İÇİNDE, kıble ışınının ucunda (KadranCizimi birimleri /200).
   const R = (S * KABE_HALKA_R) / 200;
   const KABE = Math.round(S * 0.12);
