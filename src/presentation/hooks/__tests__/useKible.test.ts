@@ -308,6 +308,17 @@ describe('useKible', () => {
     expect(result.current.hata).toContain('Konum servislerine erişilemiyor');
   });
 
+  it('GPS yokken uygulamanın KAYITLI konumu kullanılır (hata yok, kıble açısı var)', async () => {
+    const AsyncStorage = require('@react-native-async-storage/async-storage');
+    await AsyncStorage.setItem('@namaz_akisi/konum_ayarlari', JSON.stringify({ koordinatlar: { lat: 41.0082, lng: 28.9784 } }));
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(new Error('Current location is unavailable.'));
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(result.current.kibleAcisi).not.toBeNull());
+    expect(result.current.hata).toBeNull();
+    await AsyncStorage.removeItem('@namaz_akisi/konum_ayarlari');
+  });
+
   it('genel hatada genel mesaj; son bilinen konum varsa hata YOK', async () => {
     (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(new Error('patladı'));

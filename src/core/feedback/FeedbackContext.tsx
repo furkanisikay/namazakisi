@@ -136,13 +136,13 @@ export const FeedbackProvider: React.FC<FeedbackProviderProps> = ({ children }) 
     }
   }, [ayarlar.sesAktif]);
 
-  // Namaz tamamlandi feedback
+  // Namaz tamamlandi ("Kıldım") — yalnız kısa onay dokusu, SES YOK: kişi camide/ev içinde
+  // işaretleyebilir; ses kutlamaya dönüşürdü. Titreşim ayarına uyar.
   const namazTamamlandiFeedback = useCallback(async () => {
-    await Promise.all([
-      titret('basari'),
-      sesCal('basari'),
-    ]);
-  }, [titret, sesCal]);
+    if (ayarlar.titresimAktif) {
+      await HaptikServisi.onayTitresimi();
+    }
+  }, [ayarlar.titresimAktif]);
 
   // Tum namazlar tamamlandi feedback
   const tumNamazlarTamamlandiFeedback = useCallback(async () => {

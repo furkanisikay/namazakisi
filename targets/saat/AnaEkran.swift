@@ -183,6 +183,8 @@ struct SimdiSayfasi: View {
     @State private var onayAcik = false
     /// Tik cizimi (0 → 1). Sayfa zaten kilinmis acilirsa 1 (animasyonsuz).
     @State private var tik: CGFloat = 1
+    /// Kildim sonrasi kisa dua satiri (Samimiyet.kabulGosterimSaniye).
+    @State private var kabulGoster = false
 
     private var sonuk: Bool { sistemSonuk || SaatSimulatorTohumu.sonuk }
 
@@ -267,7 +269,7 @@ struct SimdiSayfasi: View {
                     .trim(from: 0, to: tik)
                     .stroke(SaatGorunum.yesil.opacity(sonuk ? 0.6 : 1), style: StrokeStyle(lineWidth: 7, lineCap: .round, lineJoin: .round))
                     .frame(width: cap * 0.34, height: cap * 0.28)
-                    .accessibilityLabel("\(baslik) kılındı")
+                    .accessibilityLabel("\(baslik) kılındı. \(Samimiyet.kabulDuasi)")
             } else {
                 VStack(spacing: 0) {
                     Image(systemName: SaatGorunum.ikon(odakKodu))
@@ -300,7 +302,14 @@ struct SimdiSayfasi: View {
 
     @ViewBuilder
     private var altSatir: some View {
-        if kilindiMi {
+        if kilindiMi && kabulGoster {
+            // Kildim ANI: birkac saniye dua, sonra siradaki vakit (sahip istegi).
+            Text(Samimiyet.kabulDuasi)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(SaatGorunum.yesil)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        } else if kilindiMi {
             // Sonraki vakit, tek satirda: ikon + ad + saat.
             if let s = durum.gorunum.sonraki {
                 Label {
@@ -351,6 +360,13 @@ struct SimdiSayfasi: View {
         if !hareketAzalt { tik = 0 }
         if baglanti.kildim(beklenen: aday.vakit) {
             WKInterfaceDevice.current().play(.success)
+            // Animasyonsuz degisim: alt satirdaki iki metin ayni yerde capraz solarsa ust uste
+            // biniyordu (kildim-sahnesi videosunda "Allah kabul etsin" + "İkindi 15:50").
+            // Hareketi halkanin tik cizimi tasir; metin yalniz yer degistirir.
+            kabulGoster = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + Samimiyet.kabulGosterimSaniye) {
+                kabulGoster = false
+            }
             if !hareketAzalt {
                 // Durum DEGISIMI gecikir (tik gorunumu kilinma yayinindan sonra eklenir; ayni
                 // turda tik = 1 yazilirsa animasyonsuz tam gorunurdu).

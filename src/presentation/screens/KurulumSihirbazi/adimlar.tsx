@@ -13,6 +13,7 @@
  * açıklama modalı açılmaz (aynı şeyi iki kez okutmuyoruz).
  */
 import * as React from 'react';
+import { KURULUM_BITTI_SELAMI } from '../../../core/samimiyet/kabulDuasi';
 import { AccessibilityInfo, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
@@ -428,7 +429,7 @@ export const HazirAdimi: React.FC<{ ozet: HazirOzeti; hata: string | null }> = (
         <View>
             {/* Kutlama adıma girişte BİR KEZ oynar (✓ + saçılan noktalar). */}
             <HazirSahnesi />
-            <AdimBasligi baslik="Her şey hazır" alt="Ayarları istediğiniz zaman değiştirebilirsiniz." />
+            <AdimBasligi baslik="Her şey hazır" alt={`${KURULUM_BITTI_SELAMI} Ayarları istediğiniz zaman değiştirebilirsiniz.`} />
             <View
                 style={{
                     borderRadius: 24,

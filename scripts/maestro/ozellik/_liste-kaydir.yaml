@@ -1,0 +1,19 @@
+# Ortak: Ayarlar KÖK listesini `HEDEF` (metin kalıbı) görünene dek kaydırır.
+# İki düzende de çalışır: telefonda liste tam genişliktedir; tablette ana-ayrıntının
+# SOL bölmesidir (kenar gezinme ~%17 + 340 dp liste → x ≈ %17–44). `scrollUntilVisible`
+# ekranın ORTASINDAN kaydırır — tablette orta sağ (ayrıntı) bölmeye düşer ve liste hiç
+# kaymaz (yaşandı: Yardım, Saat ve widget, Cihazlarım bulunamadı). Bu yüzden x = %30.
+appId: com.furkanisikay.namazakisi
+---
+- repeat:
+    while:
+      notVisible:
+        text: ${HEDEF}
+    times: 25
+    commands:
+      - swipe:
+          start: 30%, 75%
+          end: 30%, 40%
+          duration: 600
+      - waitForAnimationToEnd:
+          timeout: 1500

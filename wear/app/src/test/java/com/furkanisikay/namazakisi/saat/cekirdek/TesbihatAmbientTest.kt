@@ -71,7 +71,7 @@ class TesbihatAmbientTest {
         assertEquals("99 / 100", tehlil.alt)
 
         val tamam = TesbihatAmbient.icerik(Tesbihat.Durum(100))
-        assertEquals("Tamamlandı", tamam.baslik)
+        assertEquals("Allah kabul etsin", tamam.baslik)
         assertNull(tamam.sayi)
         assertEquals("100 / 100", tamam.alt)
     }

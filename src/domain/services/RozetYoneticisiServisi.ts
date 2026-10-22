@@ -294,8 +294,8 @@ export const rozetPuaniHesapla = (rozetSeviyesi: RozetSeviyesi): number => {
  */
 export const rozetKutlamasiOlustur = (rozet: RozetTanimi): KutlamaBilgisi => ({
   tip: 'rozet_kazanildi',
-  baslik: 'Tebrikler!',
-  mesaj: `"${rozet.ad}" rozetini kazandınız!`,
+  baslik: 'Allah daim etsin',
+  mesaj: `"${rozet.ad}" rozetini kazandınız.`,
   ikon: rozet.ikon,
   ekstraVeri: { rozet },
 });
@@ -308,8 +308,8 @@ export const hedefKutlamasiOlustur = (
   hedefAd: string
 ): KutlamaBilgisi => ({
   tip: 'hedef_tamamlandi',
-  baslik: `${hedefGun} Gün!`,
-  mesaj: `"${hedefAd}" hedefini tamamladınız!`,
+  baslik: `${hedefGun} gün`,
+  mesaj: `"${hedefAd}" hedefini tamamladınız. Allah daim etsin.`,
   ikon: '🎯',
   ekstraVeri: { hedefGun, hedefAd },
 });
@@ -321,8 +321,8 @@ export const seviyeKutlamasiOlustur = (
   yeniSeviye: SeviyeTanimi
 ): KutlamaBilgisi => ({
   tip: 'seviye_atlandi',
-  baslik: 'Seviye Atladın!',
-  mesaj: `Artık bir "${yeniSeviye.rank}" olarak devam ediyorsunuz!`,
+  baslik: 'Yeni seviyeniz',
+  mesaj: `Artık bir "${yeniSeviye.rank}" olarak devam ediyorsunuz. Allah daim etsin.`,
   ikon: yeniSeviye.ikon,
   ekstraVeri: { seviye: yeniSeviye },
 });
@@ -334,8 +334,8 @@ export const toparlanmaKutlamasiOlustur = (
   kurtarilanSeri: number
 ): KutlamaBilgisi => ({
   tip: 'toparlanma_tamamlandi',
-  baslik: 'Seri Kurtardın!',
-  mesaj: `${kurtarilanSeri} günlük serinizi başarıyla kurtardınız!`,
+  baslik: 'Serinize yeniden kavuştunuz',
+  mesaj: `${kurtarilanSeri} günlük seriniz kaldığı yerden sürüyor. Allah sebat versin.`,
   ikon: '🔄',
   ekstraVeri: { kurtarilanSeri },
 });
@@ -345,8 +345,8 @@ export const toparlanmaKutlamasiOlustur = (
  */
 export const enUzunSeriKutlamasiOlustur = (seri: number): KutlamaBilgisi => ({
   tip: 'en_uzun_seri',
-  baslik: 'Yeni Rekor!',
-  mesaj: `${seri} günlük yeni en uzun seri rekorunuz!`,
+  baslik: 'En uzun seriniz',
+  mesaj: `${seri} gün; şimdiye kadarki en uzun seriniz. Allah daim etsin.`,
   ikon: '🏆',
   ekstraVeri: { seri },
 });

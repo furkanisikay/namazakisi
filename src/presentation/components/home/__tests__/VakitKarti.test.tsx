@@ -109,6 +109,23 @@ describe('VakitKarti Bileşeni', () => {
     expect(queryByLabelText('Öğle — Kılındı')).toBeTruthy();
   });
 
+  it('samimiyet: kılınınca düğmede dua yazar, etiket önce durumu söyler; sabah/yatsıda ek selam', () => {
+    const { getByText, getByLabelText, getByTestId, queryByTestId } = render(
+      <VakitKarti
+        {...varsayilanProps}
+        kilitli={false}
+        tamamlandi
+        onGeriAl={jest.fn()}
+        kabulMetni="Allah kabul etsin"
+        kabulEki="Hayırlı geceler"
+      />,
+    );
+    expect(getByText('Allah kabul etsin')).toBeTruthy();
+    expect(getByLabelText('Öğle — Kılındı. Allah kabul etsin, geri almak için dokunun')).toBeTruthy();
+    expect(getByTestId('vakit-karti-kabul-eki', { includeHiddenElements: true })).toBeTruthy();
+    expect(queryByTestId('vakit-karti-tesvik')).toBeNull();
+  });
+
   it('gösterilen ad (cuma) başlıkta ve düğme etiketinde kullanılır', () => {
     const { getByText, getByLabelText } = render(
       <VakitKarti {...varsayilanProps} gorunenVakitAdi="Cuma" kilitli={false} />,
@@ -117,22 +134,22 @@ describe('VakitKarti Bileşeni', () => {
     expect(getByLabelText('Cuma — Kılındı olarak işaretle')).toBeTruthy();
   });
 
-  // getVakitIkonu eşlemesi (üretim satır 21-32) — vakit adına göre ana ikon seçimi.
-  // suankiVakitAdi ana ikon olarak ilk FontAwesome5 (satır 100) ile render edilir.
+  // Vakit simgesi saat (Wear) ile aynı aileden: her vakit ayrı çizim (FontAwesome "sun"
+  // küçükte dişliye benziyordu). Eşleme `ortak/VakitIkonu.vakitIkonKodu`.
   it.each([
-    ['Güneş', 'sun'],
-    ['Öğle', 'sun'],
-    ['Akşam', 'moon'],
-    ['Yatsı', 'star-and-crescent'],
-    ['İmsak', 'cloud-sun'],
-    ['Sabah', 'cloud-sun'],
-    ['İkindi', 'cloud-sun'],
-  ])('vakit "%s" için ana ikon "%s" seçilir', (vakitAdi, beklenenIkon) => {
-    const { root } = render(
+    ['Güneş', 'gunes'],
+    ['Öğle', 'ogle'],
+    ['Cuma', 'ogle'],
+    ['Akşam', 'aksam'],
+    ['Yatsı', 'yatsi'],
+    ['İmsak', 'imsak'],
+    ['Sabah', 'imsak'],
+    ['İkindi', 'ikindi'],
+  ])('vakit "%s" için ana simge "%s" çizilir', (vakitAdi, beklenenKod) => {
+    const { getByTestId } = render(
       <VakitKarti {...varsayilanProps} suankiVakitAdi={vakitAdi} kilitli={false} />
     );
-    // Ana vakit ikonu, ikon listesinde bulunmalı (default 'mosque' DEĞİL)
-    expect(ikonAdlariniTopla(root)).toContain(beklenenIkon);
+    expect(getByTestId(`vakit-karti-ikon-${beklenenKod}`, { includeHiddenElements: true })).toBeTruthy();
   });
 
   it('bilinmeyen/beklenmedik vakit adı için ana ikon "mosque" (default) olur', () => {

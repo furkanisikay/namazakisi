@@ -173,4 +173,11 @@ object AnaEkranKarari {
 
     /** Onay reddedildiğinde katmanın kısa süre gösterdiği metin (arayüz dili: kibar "siz"). */
     const val VAKIT_DEGISTI = "Vakit değişti, işaretlenmedi."
+
+    /**
+     * Onaydan sonra gösterilen dua (sahip isteği: "Kılındı" yerine "Allah kabul etsin").
+     * Telefon `core/samimiyet/kabulDuasi.ts > KABUL_DUASI` ile aynı sabit kalıp; saatte
+     * dönüşüm yok (tek kalıp, kısa ekran).
+     */
+    const val KABUL_DUASI = "Allah kabul etsin"
 }

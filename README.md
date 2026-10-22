@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.68.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.69.2-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.68.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
+Kaynak koddaki sürüm: **0.69.2** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -72,56 +72,9 @@ Kaynak koddaki sürüm: **0.68.0** · Mağazada: Google Play: **0.45.0** · App 
 <summary><b>Android — tüm ekranlar (açık tema)</b></summary>
 
 <p>
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/01-ana-ekran.webp" width="160" alt="Ana ekran" title="Ana ekran">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/02-ana-nafile-zinciri.webp" width="160" alt="Ana nafile zinciri" title="Ana nafile zinciri">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/03-sade-gorunum.webp" width="160" alt="Sade görünüm" title="Sade görünüm">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/04-ayarlar.webp" width="160" alt="Ayarlar" title="Ayarlar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/05-ayarlar-alt.webp" width="160" alt="Ayarlar alt" title="Ayarlar alt">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/06-muhafiz.webp" width="160" alt="Muhafız" title="Muhafız">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/07-muhafiz-zaman-seridi.webp" width="160" alt="Muhafız zaman şeridi" title="Muhafız zaman şeridi">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/08-adim-detay.webp" width="160" alt="Adım detay" title="Adım detay">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/09-adim-detay-anahtarlar.webp" width="160" alt="Adım detay anahtarlar" title="Adım detay anahtarlar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/10-alarm-onay.webp" width="160" alt="Alarm onay" title="Alarm onay">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/11-muhafiz-butce-karti.webp" width="160" alt="Muhafız bütçe kartı" title="Muhafız bütçe kartı">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/12-bildirim-siniri-rehberi.webp" width="160" alt="Bildirim sınırı rehberi" title="Bildirim sınırı rehberi">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/13-bildirim-ayarlari.webp" width="160" alt="Bildirim ayarları" title="Bildirim ayarları">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/14-cuma.webp" width="160" alt="Cuma" title="Cuma">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/15-yatis.webp" width="160" alt="Yatış" title="Yatış">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/16-camiye-git.webp" width="160" alt="Camiye git" title="Camiye git">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/17-bileklik-rehberi.webp" width="160" alt="Bileklik rehberi" title="Bileklik rehberi">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/18-nafile.webp" width="160" alt="Nafile" title="Nafile">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/19-nafile-teheccud.webp" width="160" alt="Nafile teheccüd" title="Nafile teheccüd">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/20-now-bar.webp" width="160" alt="Now bar" title="Now bar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/21-now-bar-alt.webp" width="160" alt="Now bar alt" title="Now bar alt">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/22-otomasyon-rehberi.webp" width="160" alt="Otomasyon rehberi" title="Otomasyon rehberi">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/23-otomasyon-rehberi-alt.webp" width="160" alt="Otomasyon rehberi alt" title="Otomasyon rehberi alt">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/24-kildim-uygulamalari.webp" width="160" alt="Kıldım uygulamaları" title="Kıldım uygulamaları">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/25-camideyim-ayarlar.webp" width="160" alt="Camideyim ayarlar" title="Camideyim ayarlar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/26-camideyim-harita.webp" width="160" alt="Camideyim harita" title="Camideyim harita">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/27-camideyim-nasil.webp" width="160" alt="Camideyim nasıl" title="Camideyim nasıl">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/28-kaza.webp" width="160" alt="Kaza" title="Kaza">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/31-seferilik.webp" width="160" alt="Seferîlik" title="Seferîlik">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/32-cihazlarim.webp" width="160" alt="Cihazlarim" title="Cihazlarim">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/32-kible.webp" width="160" alt="Kıble" title="Kıble">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/33-ilerleme.webp" width="160" alt="İlerleme" title="İlerleme">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/33-televizyon.webp" width="160" alt="Televizyon" title="Televizyon">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/34-televizyon-kod.webp" width="160" alt="Televizyon kod" title="Televizyon kod">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/35-cihazlarim-tablet.webp" width="160" alt="Cihazlarim tablet" title="Cihazlarim tablet">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/35-kible-kamera.webp" width="160" alt="Kıble kamera" title="Kıble kamera">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/36-cihaz-ekle-okut.webp" width="160" alt="Cihaz ekle okut" title="Cihaz ekle okut">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/36-kible-kalibrasyon.webp" width="160" alt="Kıble kalibrasyon" title="Kıble kalibrasyon">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/37-cihaz-ekle-kod.webp" width="160" alt="Cihaz ekle kod" title="Cihaz ekle kod">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/37-kible-kalibrasyon-kamera.webp" width="160" alt="Kıble kalibrasyon kamera" title="Kıble kalibrasyon kamera">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/38-kible-kamera-egik-25.webp" width="160" alt="Kıble kamera egik 25" title="Kıble kamera egik 25">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/39-kible-kamera-egik-45.webp" width="160" alt="Kıble kamera egik 45" title="Kıble kamera egik 45">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/40-vakit-sesi.webp" width="160" alt="Vakit sesi" title="Vakit sesi">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/41-vakit-sesi-secenekler.webp" width="160" alt="Vakit sesi secenekler" title="Vakit sesi secenekler">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/42-adim-detay-kanallar-acik.webp" width="160" alt="Adım detay kanallar acik" title="Adım detay kanallar acik">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/43-adim-detay-bildirim-kapali.webp" width="160" alt="Adım detay bildirim kapali" title="Adım detay bildirim kapali">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/44-adim-detay-tekrar-acik.webp" width="160" alt="Adım detay tekrar acik" title="Adım detay tekrar acik">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/45-zaman-seridi-tekrar.webp" width="160" alt="Zaman şeridi tekrar" title="Zaman şeridi tekrar">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/50-ayarlar-guc-tasarrufu-cipi.webp" width="160" alt="Ayarlar güç tasarrufu cipi" title="Ayarlar güç tasarrufu cipi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/51-esitleme-durum.webp" width="160" alt="Esitleme durum" title="Esitleme durum">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/52-esitleme-otomatik.webp" width="160" alt="Esitleme otomatik" title="Esitleme otomatik">
 </p>
 
 </details>
@@ -130,56 +83,9 @@ Kaynak koddaki sürüm: **0.68.0** · Mağazada: Google Play: **0.45.0** · App 
 <summary><b>Android — koyu tema</b></summary>
 
 <p>
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/01-ana-ekran.webp" width="160" alt="Ana ekran" title="Ana ekran">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/02-ana-nafile-zinciri.webp" width="160" alt="Ana nafile zinciri" title="Ana nafile zinciri">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/03-sade-gorunum.webp" width="160" alt="Sade görünüm" title="Sade görünüm">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/04-ayarlar.webp" width="160" alt="Ayarlar" title="Ayarlar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/05-ayarlar-alt.webp" width="160" alt="Ayarlar alt" title="Ayarlar alt">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/06-muhafiz.webp" width="160" alt="Muhafız" title="Muhafız">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/07-muhafiz-zaman-seridi.webp" width="160" alt="Muhafız zaman şeridi" title="Muhafız zaman şeridi">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/08-adim-detay.webp" width="160" alt="Adım detay" title="Adım detay">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/09-adim-detay-anahtarlar.webp" width="160" alt="Adım detay anahtarlar" title="Adım detay anahtarlar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/10-alarm-onay.webp" width="160" alt="Alarm onay" title="Alarm onay">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/11-muhafiz-butce-karti.webp" width="160" alt="Muhafız bütçe kartı" title="Muhafız bütçe kartı">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/12-bildirim-siniri-rehberi.webp" width="160" alt="Bildirim sınırı rehberi" title="Bildirim sınırı rehberi">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/13-bildirim-ayarlari.webp" width="160" alt="Bildirim ayarları" title="Bildirim ayarları">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/14-cuma.webp" width="160" alt="Cuma" title="Cuma">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/15-yatis.webp" width="160" alt="Yatış" title="Yatış">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/16-camiye-git.webp" width="160" alt="Camiye git" title="Camiye git">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/17-bileklik-rehberi.webp" width="160" alt="Bileklik rehberi" title="Bileklik rehberi">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/18-nafile.webp" width="160" alt="Nafile" title="Nafile">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/19-nafile-teheccud.webp" width="160" alt="Nafile teheccüd" title="Nafile teheccüd">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/20-now-bar.webp" width="160" alt="Now bar" title="Now bar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/21-now-bar-alt.webp" width="160" alt="Now bar alt" title="Now bar alt">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/22-otomasyon-rehberi.webp" width="160" alt="Otomasyon rehberi" title="Otomasyon rehberi">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/23-otomasyon-rehberi-alt.webp" width="160" alt="Otomasyon rehberi alt" title="Otomasyon rehberi alt">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/24-kildim-uygulamalari.webp" width="160" alt="Kıldım uygulamaları" title="Kıldım uygulamaları">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/25-camideyim-ayarlar.webp" width="160" alt="Camideyim ayarlar" title="Camideyim ayarlar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/26-camideyim-harita.webp" width="160" alt="Camideyim harita" title="Camideyim harita">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/27-camideyim-nasil.webp" width="160" alt="Camideyim nasıl" title="Camideyim nasıl">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/28-kaza.webp" width="160" alt="Kaza" title="Kaza">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/31-seferilik.webp" width="160" alt="Seferîlik" title="Seferîlik">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/32-cihazlarim.webp" width="160" alt="Cihazlarim" title="Cihazlarim">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/32-kible.webp" width="160" alt="Kıble" title="Kıble">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/33-ilerleme.webp" width="160" alt="İlerleme" title="İlerleme">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/33-televizyon.webp" width="160" alt="Televizyon" title="Televizyon">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/34-televizyon-kod.webp" width="160" alt="Televizyon kod" title="Televizyon kod">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/35-cihazlarim-tablet.webp" width="160" alt="Cihazlarim tablet" title="Cihazlarim tablet">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/35-kible-kamera.webp" width="160" alt="Kıble kamera" title="Kıble kamera">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/36-cihaz-ekle-okut.webp" width="160" alt="Cihaz ekle okut" title="Cihaz ekle okut">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/36-kible-kalibrasyon.webp" width="160" alt="Kıble kalibrasyon" title="Kıble kalibrasyon">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/37-cihaz-ekle-kod.webp" width="160" alt="Cihaz ekle kod" title="Cihaz ekle kod">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/37-kible-kalibrasyon-kamera.webp" width="160" alt="Kıble kalibrasyon kamera" title="Kıble kalibrasyon kamera">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/38-kible-kamera-egik-25.webp" width="160" alt="Kıble kamera egik 25" title="Kıble kamera egik 25">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/39-kible-kamera-egik-45.webp" width="160" alt="Kıble kamera egik 45" title="Kıble kamera egik 45">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/40-vakit-sesi.webp" width="160" alt="Vakit sesi" title="Vakit sesi">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/41-vakit-sesi-secenekler.webp" width="160" alt="Vakit sesi secenekler" title="Vakit sesi secenekler">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/42-adim-detay-kanallar-acik.webp" width="160" alt="Adım detay kanallar acik" title="Adım detay kanallar acik">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/43-adim-detay-bildirim-kapali.webp" width="160" alt="Adım detay bildirim kapali" title="Adım detay bildirim kapali">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/44-adim-detay-tekrar-acik.webp" width="160" alt="Adım detay tekrar acik" title="Adım detay tekrar acik">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/45-zaman-seridi-tekrar.webp" width="160" alt="Zaman şeridi tekrar" title="Zaman şeridi tekrar">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/50-ayarlar-guc-tasarrufu-cipi.webp" width="160" alt="Ayarlar güç tasarrufu cipi" title="Ayarlar güç tasarrufu cipi">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/51-esitleme-durum.webp" width="160" alt="Esitleme durum" title="Esitleme durum">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/52-esitleme-otomatik.webp" width="160" alt="Esitleme otomatik" title="Esitleme otomatik">
 </p>
 
 </details>
@@ -360,6 +266,7 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 ### 🆕 Son Eklenenler
 
 <!-- OTOMATIK:BASLA yenilikler -->
+- **Verileriniz Tüm Cihazlarınızda** — Kıldığınız namazları, seri ve kaza defterinizi kendi Google Drive alanınızda saklayıp diğer telefonunuz ya da tabletinizle eşitleyebilirsiniz. Veriler sizin belirlediğiniz parolayla şifrelenir. <sub>Android · 0.69.0</sub>
 - **Telefon ve tablet birlikte** — Tabletinizi telefonunuza ekleyin: birinde işaretlediğiniz namaz öbürüne de geçer. Hesap yok, sunucu yok; yalnız evinizin Wi-Fi ağı. <sub>Android · iOS · 0.60.0</sub>
 - **TV kıldığınız namazları da bilir** — Cihazlarım sayfasından evdeki TV’leri yönetin. İsterseniz TV, kıldığınız namazları bilir; vakit daralırken kılmadıysanız ekranın altında sessiz bir bant gösterir. <sub>Android · iOS · 0.65.0</sub>
 - **Vakit girince kendi sesiniz çalsın** — Her vakit için bildirim sesini ayrı seçin; telefonunuzdaki bir ses dosyasını, örneğin sevdiğiniz bir ezan kaydını da ekleyebilirsiniz. <sub>Android · 0.64.0</sub>
@@ -367,7 +274,6 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 - **Vakitler Televizyonda** — Evdeki Android TV’de Namaz Akışı’nı açın, ekrandaki kare kodu telefonunuzla okutun: konumunuz TV’ye gelir, vakitler büyük ekranda sizin şehrinize göre görünür. <sub>Android · iOS · 0.55.0</sub>
 - **Kıbleyi Kamerayla Bulun** — Kıble sekmesinde telefonunuzu dik tutup kamerayla çevrenize bakın: Kâbe işareti kıble yönünde belirir, yanında Kâbe’ye uzaklığınız yazar. Pusula açılır açılmaz döner ve titremeden akar. <sub>Android · iOS · 0.52.0</sub>
 - **Daha sade uygulama** — Daha az bildirim, gece sessiz saatler ve tüm hatırlatmalar tek sayfada. Yeni sekmeler: Bugün, Kıble, Kaza, İlerleme, Ayarlar. <sub>Android · iOS · 0.50.0</sub>
-- **Verileriniz Tüm Cihazlarınızda** — Kıldığınız namazları, seri ve kaza defterinizi kendi Google Drive alanınızda saklayıp diğer telefonunuz ya da tabletinizle eşitleyebilirsiniz. Veriler sizin belirlediğiniz parolayla şifrelenir. <sub>Android · 0.42.0</sub>
 
 <details>
 <summary>Diğer 35 özellik</summary>

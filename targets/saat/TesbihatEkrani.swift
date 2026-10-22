@@ -98,7 +98,7 @@ struct TesbihatEkrani: View {
                 }
             }
             .frame(width: durum.tamamMi ? 52 : 92, height: durum.tamamMi ? 52 : 92)
-            Text(durum.tamamMi ? "Tamamlandı" : durum.faz.ad)
+            Text(durum.tamamMi ? Samimiyet.kabulDuasi : durum.faz.ad)
                 .font(.headline)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)

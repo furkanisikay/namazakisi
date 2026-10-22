@@ -17,6 +17,11 @@ interface HomeHeaderProps {
     onSeriTikla?: () => void;
     toparlanmaModu?: boolean;
     toparlanmaIlerleme?: { tamamlanan: number; hedef: number } | null;
+    /**
+     * Günün selamı ("Hayırlı cumalar", "Kandiliniz mübarek olsun" — `core/samimiyet/selam`).
+     * Yalnız bugün/aktif gün gösterilirken "Bugün" etiketinin yerine geçer; geçmiş günde yok.
+     */
+    selam?: string | null;
 }
 
 /**
@@ -35,8 +40,10 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
     onSeriTikla,
     toparlanmaModu,
     toparlanmaIlerleme,
+    selam,
 }) => {
     const renkler = useRenkler();
+    const gosterilenSelam = (aktifGunMu || bugunMu) && selam ? selam : null;
 
     // Tarih parçalarını ayır (Örn: "18 Ocak 2026")
     const formatliTarih = tarihiGorunumFormatinaCevir(tarih);
@@ -73,7 +80,7 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
                 activeOpacity={0.7}
                 accessibilityRole="button"
                 // Kısaltılmış ay ("Oca") yerine tam tarih okunur.
-                accessibilityLabel={`${aktifGunMu ? 'Aktif gün' : bugunMu ? 'Bugün' : 'Seçili tarih'}: ${formatliTarih}, ${gunAdi}`}
+                accessibilityLabel={`${gosterilenSelam ? `${gosterilenSelam}. ` : ''}${aktifGunMu ? 'Aktif gün' : bugunMu ? 'Bugün' : 'Seçili tarih'}: ${formatliTarih}, ${gunAdi}`}
                 accessibilityHint="Tarih seçiciyi açar"
             >
                 <View
@@ -92,9 +99,15 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
                 </View>
 
                 <View>
-                    <Text className="text-xs font-medium" style={{ color: renkler.metinIkincil }}>
-                        {aktifGunMu ? 'Aktif Gün' : (bugunMu ? 'Bugün' : 'Seçili Tarih')}
-                    </Text>
+                    {gosterilenSelam ? (
+                        <Text className="text-xs font-semibold" style={{ color: renkler.metin }} numberOfLines={1} testID="baslik-gun-selami">
+                            {gosterilenSelam}
+                        </Text>
+                    ) : (
+                        <Text className="text-xs font-medium" style={{ color: renkler.metinIkincil }}>
+                            {aktifGunMu ? 'Aktif Gün' : (bugunMu ? 'Bugün' : 'Seçili Tarih')}
+                        </Text>
+                    )}
                     <Text className="text-sm font-bold" style={{ color: renkler.metin }}>
                         {gunAdi}, {yil}
                     </Text>

@@ -38,6 +38,9 @@ adb install -r "$APK"
 for izin in POST_NOTIFICATIONS ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION ACCESS_BACKGROUND_LOCATION; do
   adb shell pm grant "$PAKET" "android.permission.$izin" || true
 done
+# pixel_tablet imaji konum servisi KAPALI aciliyor: Kible "Konum servislerine erisilemiyor"
+# deyip kamera yon cumlesini/kalibrasyon rehberini hic cizmiyordu (telefon imaji acik gelir).
+adb shell cmd location set-location-enabled true || adb shell settings put secure location_mode 3 || true
 adb emu geo fix 28.9784 41.0082 || true
 
 # Veritabani ancak uygulama bir kez calistiktan sonra olusur.
@@ -136,6 +139,9 @@ hazirlik_uygula() {
       ;;
     kible-kamera*|kible-kalibrasyon)
       adb shell pm grant "$PAKET" android.permission.CAMERA || true
+      # Kible taze konum ister; sabitleme her akistan once tazelenir (tablette konum gec acilir).
+      adb shell cmd location set-location-enabled true >/dev/null 2>&1 || true
+      adb emu geo fix 28.9784 41.0082 || true
       local poz
       poz=$(node scripts/kible-emulator-pozu.js "$1")
       echo "sensor pozu ($1): $poz"

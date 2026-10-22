@@ -43,7 +43,7 @@ const saatMetni = (ms: number): string => {
 export function kildimSonucMetni(sonuc: SimdikiVakitSonucu): string {
     switch (sonuc.tur) {
         case 'isaretlendi':
-            return `${sonuc.vakitAdi} namazınız kılındı olarak işaretlendi.`;
+            return `${sonuc.vakitAdi} namazınız kılındı olarak işaretlendi. Allah kabul etsin.`;
         case 'zatenKilindi':
             return `${sonuc.vakitAdi} namazı zaten kılındı olarak işaretli.`;
         case 'vakitYok':

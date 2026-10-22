@@ -4,6 +4,7 @@
  */
 
 import * as Haptics from 'expo-haptics';
+import { Platform } from 'react-native';
 import { Logger } from '../utils/Logger';
 
 /**
@@ -90,6 +91,23 @@ export const HaptikServisi = {
       await Haptics.selectionAsync();
     } catch (hata) {
       Logger.warn('HaptikServisi', 'Secim titresimi hatasi:', hata);
+    }
+  },
+
+  /**
+   * "Kıldım" onayı — platformun KENDİ onay dokusu: Android'de `HapticFeedbackConstants.CONFIRM`
+   * (`performAndroidHapticsAsync`, VIBRATE izni istemez), iOS'ta `UINotificationFeedback.success`.
+   * Tek, kısa ve sakin: kutlama deseni değildir (namaz bir başarı gösterisi değil).
+   */
+  onayTitresimi: async (): Promise<void> => {
+    try {
+      if (Platform.OS === 'android' && typeof Haptics.performAndroidHapticsAsync === 'function') {
+        await Haptics.performAndroidHapticsAsync(Haptics.AndroidHaptics.Confirm);
+      } else {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
+    } catch (hata) {
+      Logger.warn('HaptikServisi', 'Onay titresimi hatasi:', hata);
     }
   },
 

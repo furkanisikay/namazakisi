@@ -11,6 +11,7 @@
  * secer; hat her akistan ONCE yeniden tohumlar):
  *   - `ozellik`: varsayilan zengin tohum.
  *   - `sade`   : ozellik + sade gorunum ACIK (ana ekran yerine tek ekran).
+ *   - `kildim` : ozellik + o anki vakit KILINMAMIS (samimiyet karesi: Kıldım → dua).
  *   - `butce`  : ozellik + YOGUN hatirlatmalar — bildirim siniri kartinin
  *                gorunmesi icin. Android'de kart yalniz 400+ bekleyen bildirimde
  *                cikar (iOS'ta daima). Sayi gunun saatine baglidir: muhafiz
@@ -28,9 +29,9 @@
  * kendi normalizasyonundan DEGISMEDEN gectigini dogrular — betik TS'yi
  * yukleyemedigi icin ayrisma ancak orada yakalanir.
  */
-const { tohumVerisi } = require('./magaza-tohum-verisi');
+const { tohumVerisi, gun } = require('./magaza-tohum-verisi');
 
-const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme'];
+const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme', 'kildim'];
 
 /** `ses` varyantindaki OLU URI: "kendi dosyamiz" olarak kayitli ama MediaStore satiri yok. */
 const OLU_SES_URI = 'content://media/external_primary/audio/media/999999';
@@ -104,6 +105,23 @@ function yogunMuhafizMatrisi() {
  * AsyncStorage anahtar -> ham string deger.
  * @param {{ varyant?: string, tema?: string }} [secenek]
  */
+/** Istanbul tohumunda su anki farz vaktinin kayit adi ('Sabah'…'Yatsı'); gunes vaktinde null. */
+function suankiVakitAdi(simdi = new Date()) {
+    const { Coordinates, CalculationMethod, PrayerTimes } = require('adhan');
+    const v = new PrayerTimes(new Coordinates(41.0082, 28.9784), simdi, CalculationMethod.Turkey());
+    const sira = [
+        ['Yatsı', v.isha],
+        ['Akşam', v.maghrib],
+        ['İkindi', v.asr],
+        ['Öğle', v.dhuhr],
+        ['Güneş', v.sunrise],
+        ['Sabah', v.fajr],
+    ];
+    const bulunan = sira.find(([, t]) => t.getTime() <= simdi.getTime());
+    if (!bulunan) return 'Yatsı'; // gece yarisindan sonra: dunun yatsisi (kayit dune ait)
+    return bulunan[0] === 'Güneş' ? null : bulunan[0];
+}
+
 function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
     if (!VARYANTLAR.includes(varyant)) throw new Error(`Bilinmeyen tohum varyanti: ${varyant}`);
     if (!TEMALAR.includes(tema)) throw new Error(`Bilinmeyen tema: ${tema}`);
@@ -161,6 +179,19 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
             // CIKMAMALI (ogle taban kanala duser). Kayit: `sesIceAktarimTercihXml`.
             ogle: { bildirimSesi: OLU_SES_URI, sesAdi: 'Silinmiş kayıt' },
         });
+    }
+
+    if (varyant === 'kildim') {
+        // Samimiyet karesi: o anki vakit KILINMAMIS olsun ki akis "Kıldım"a basip duayi
+        // ("Allah kabul etsin") ve gerekiyorsa gun tamam kartini cekebilsin.
+        const anahtar = `namaz_gun_${gun(0)}`;
+        const bugun = JSON.parse(depo[anahtar] || '{}');
+        const suanki = suankiVakitAdi();
+        if (suanki) delete bugun[suanki];
+        depo[anahtar] = JSON.stringify(bugun);
+        // Kare duayi gostersin: kaza onerisi (1,6 sn sonra acilir) bu tohumda KAPALI —
+        // yavas emulator/simulatorde dokunus + kare 1,6 sn'yi asip modal duayi ortuyordu.
+        depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: false });
     }
 
     if (varyant === 'sade') {

@@ -4,12 +4,10 @@ appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _ayarlar.yaml
 - takeScreenshot: ozk/04-ayarlar
-- scrollUntilVisible:
-    element:
-      text: "Yardım\\..*"
-    direction: DOWN
-    timeout: 300000
-    waitToSettleTimeoutMs: 1500
+- runFlow:
+    file: _liste-kaydir.yaml
+    env:
+      HEDEF: "Yardım\\..*"
 - tapOn:
     text: "Yardım\\..*"
 - waitForAnimationToEnd:

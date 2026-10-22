@@ -61,12 +61,34 @@ public struct NamazCanliNitelikleri: ActivityAttributes {
 
 @available(iOS 16.2, *)
 public extension NamazCanliNitelikleri {
+    /// Kildim sonrasi son karenin metni (telefon `KABUL_DUASI` ile ayni sabit kalip).
+    static let kabulDuasi = "Allah kabul etsin"
+    /// Son karenin temasi (gorunum bu temada sayac yerine dua cizer).
+    static let kabulTemasi = "kabul"
+    /// Son karenin kilit ekraninda/Dinamik Ada'da kalma suresi.
+    static let kabulGorunmeSaniye: TimeInterval = 4
+
     /// "Kildim" sonrasi o vaktin canli etkinligini kapatir (Android'deki sayac iptalinin ikizi).
     static func kildimIleBitir(tarih: String, vakit: String) async {
         for etkinlik in Activity<NamazCanliNitelikleri>.activities {
             let durum = etkinlik.content.state
             if durum.kildimTarih == tarih && durum.kildimVakit == vakit {
-                await etkinlik.end(nil, dismissalPolicy: .immediate)
+                // Samimiyet: etkinlik hemen kaybolmaz, son karesi birkac saniye "Allah kabul
+                // etsin" der (tema `kabul`; dugme yok), sonra sistem kaldirir. Sema DEGISMEDI:
+                // yalniz yeni bir tema dizesi (eski gorunum bilmedigi temada sayaca duser).
+                let son = ContentState(
+                    baslik: kabulDuasi,
+                    ad: durum.ad,
+                    baslangicMs: durum.baslangicMs,
+                    hedefMs: durum.hedefMs,
+                    tema: kabulTemasi,
+                    kildimTarih: nil,
+                    kildimVakit: nil
+                )
+                await etkinlik.end(
+                    ActivityContent(state: son, staleDate: nil),
+                    dismissalPolicy: .after(Date().addingTimeInterval(kabulGorunmeSaniye))
+                )
             }
         }
     }
