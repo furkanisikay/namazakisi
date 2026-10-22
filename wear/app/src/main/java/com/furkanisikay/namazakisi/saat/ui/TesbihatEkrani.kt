@@ -323,8 +323,8 @@ private const val HALKA_ICI_KARE_ORANI = 0.70f
 /** Zikir adının güvenli sütundaki payı (sütunun tepesinde daire daralır). */
 private const val ZIKIR_ADI_ORANI = 0.82f
 
-/** Kare saatte halka kenara yakın çizilir: tepedeki kiriş ≈ ekranın %40'ı (kare koşusunda ölçüldü). */
-private const val ZIKIR_ADI_KARE_ORANI = 0.58f
+/** Kare saatte halka kenara yakın çizilir: tepedeki kiriş ≈ ekranın %34-40.ı (kare koşusunda ölçüldü; 0,58 hâlâ yaya değiyordu). */
+private const val ZIKIR_ADI_KARE_ORANI = 0.48f
 private const val BITIS_TIK_MS = 300
 private const val BITIS_HALKA_MS = 520
 

@@ -183,8 +183,8 @@ fun KildimOnayi(
             // Kare saatte yay ekranın kenarına yakın: soru biraz aşağıda ve daha dar sütunda
             // durmazsa ilk satır tepedeki yaya değiyordu (kare koşusunda görüldü).
             modifier = Modifier
-                .fillMaxWidth(guvenliGenislikOrani(yuvarlakOran = 0.66f, kareOran = 0.50f))
-                .padding(bottom = if (LocalConfiguration.current.isScreenRound) 50.dp else 30.dp),
+                .fillMaxWidth(guvenliGenislikOrani(yuvarlakOran = 0.66f, kareOran = 0.42f))
+                .padding(bottom = if (LocalConfiguration.current.isScreenRound) 50.dp else 22.dp),
         ) {
             if (reddedildi) {
                 Text(

@@ -370,7 +370,7 @@ fun SigdirilanMetin(
     enFazla: androidx.compose.ui.unit.TextUnit,
     renk: Color,
     modifier: Modifier = Modifier,
-    enAz: androidx.compose.ui.unit.TextUnit = (enFazla.value * 0.7f).sp,
+    enAz: androidx.compose.ui.unit.TextUnit = (enFazla.value * 0.6f).sp,
     agirlik: FontWeight = FontWeight.Medium,
     ortala: Boolean = true,
     stil: TextStyle = TextStyle.Default,
