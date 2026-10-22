@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.63.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.63.1-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS%20%7C%20watchOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.63.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
+Kaynak koddaki sürüm: **0.63.1** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -348,7 +348,7 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 - **Hatırlatma Sesini ve Titreşimi Siz Seçin** — Her hatırlatma adımı için telefonunuzdaki seslerden birini ya da kendi müziğinizi seçebilir, titreşimi ayrıca açabilirsiniz. <sub>Android · 0.25.0</sub>
 - **Konumunuzu Tek Dokunuşla Yenileyin** — Otomatik konum kullanıyorsanız ana ekrandaki konum rozetine dokunarak vakitleri anında güncel konumunuza göre hesaplatabilirsiniz. <sub>Android · iOS · 0.25.0</sub>
 - **Serinizi 2 Günde Kurtarın** — Uzun bir seriyi bir gün kaçırdığınızda serinizi geri almak için 2 gün tam kılmanız yeterli. <sub>Android · iOS · 0.25.0</sub>
-- **Yedekleme & Aktarım** — Verilerinizi şifreli bir dosyaya yedekleyin ve dilediğiniz zaman geri yükleyin. <sub>Android · iOS · 0.24.0</sub>
+- **Yedekleme & Aktarım** — Verilerinizi tek bir dosyaya yedekleyin ve dilediğiniz zaman geri yükleyin. <sub>Android · iOS · 0.24.0</sub>
 - **Namaz Vakitleri Takviminizde** — Seçtiğiniz namaz vakitlerini telefonunuzun takvimine otomatik etkinlik olarak ekleyebilirsiniz. Böylece günlük planınızı vakitlere göre rahatça yaparsınız. <sub>Android · iOS · 0.22.0</sub>
 
 </details>

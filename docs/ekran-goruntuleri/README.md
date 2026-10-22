@@ -2,7 +2,7 @@
 
 <!-- Bu sayfa scripts/belgeleri-guncelle.js ile üretilir; elle düzenlemeyin (kaynak: scripts/belge-gorsel-gruplari.js + manifest.json). -->
 
-Güncel sürüm: **0.63.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**. Mağaza kareleri Google Play ve App Store'daki güncel listelerden, diğerleri uygulamanın ekran görüntüsü hatlarından (yalnız ana dala girmiş sürümler) gelir.
+Güncel sürüm: **0.63.1** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**. Mağaza kareleri Google Play ve App Store'daki güncel listelerden, diğerleri uygulamanın ekran görüntüsü hatlarından (yalnız ana dala girmiş sürümler) gelir.
 
 ## Mağazalarda
 

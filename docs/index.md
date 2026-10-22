@@ -13,7 +13,7 @@ Gizlilik odaklı, tamamen çevrimdışı ibadet asistanı.
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.63.0** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
+Kaynak koddaki sürüm: **0.63.1** · Mağazada: Google Play: **0.45.0** · App Store: **0.41.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## Ekran görüntüleri
@@ -112,7 +112,7 @@ Kaynak koddaki sürüm: **0.63.0** · Mağazada: Google Play: **0.45.0** · App 
 - **Hatırlatma Sesini ve Titreşimi Siz Seçin** — Her hatırlatma adımı için telefonunuzdaki seslerden birini ya da kendi müziğinizi seçebilir, titreşimi ayrıca açabilirsiniz. <sub>Android · 0.25.0</sub>
 - **Konumunuzu Tek Dokunuşla Yenileyin** — Otomatik konum kullanıyorsanız ana ekrandaki konum rozetine dokunarak vakitleri anında güncel konumunuza göre hesaplatabilirsiniz. <sub>Android · iOS · 0.25.0</sub>
 - **Serinizi 2 Günde Kurtarın** — Uzun bir seriyi bir gün kaçırdığınızda serinizi geri almak için 2 gün tam kılmanız yeterli. <sub>Android · iOS · 0.25.0</sub>
-- **Yedekleme & Aktarım** — Verilerinizi şifreli bir dosyaya yedekleyin ve dilediğiniz zaman geri yükleyin. <sub>Android · iOS · 0.24.0</sub>
+- **Yedekleme & Aktarım** — Verilerinizi tek bir dosyaya yedekleyin ve dilediğiniz zaman geri yükleyin. <sub>Android · iOS · 0.24.0</sub>
 - **Namaz Vakitleri Takviminizde** — Seçtiğiniz namaz vakitlerini telefonunuzun takvimine otomatik etkinlik olarak ekleyebilirsiniz. Böylece günlük planınızı vakitlere göre rahatça yaparsınız. <sub>Android · iOS · 0.22.0</sub>
 
 </details>
