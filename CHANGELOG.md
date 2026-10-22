@@ -5,6 +5,15 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.65.0] - 2026-10-22
+
+### Eklendi
+- [hatirlatma] kanal kartları ve ana görünümde tekrar
+
+### Düzeltildi
+- [hatirlatma] adım detayı sheet'i geniş ekranda 640 dp sütun
+- [hatirlatma] hazır düzeyin tek atışı için 'Bir kez gelir.'
+
 ## [0.64.0] - 2026-10-22
 
 ### Eklendi
