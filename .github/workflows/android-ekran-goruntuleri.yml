@@ -238,7 +238,7 @@ jobs:
         if: ${{ !cancelled() && inputs.tur == 'katlanabilir' }}
         uses: reactivecircus/android-emulator-runner@v2
         env:
-          AKIS_FILTRESI: '^(01-ana-ekran|20-katlanabilir)'
+          AKIS_FILTRESI: ${{ inputs.akis_filtresi || '^(01-ana-ekran|20-katlanabilir)' }}
         with:
           api-level: ${{ inputs.api }}
           target: google_apis

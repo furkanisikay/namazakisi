@@ -171,6 +171,12 @@ hazirlik_bitir() {
       sleep 6
       adb shell dumpsys device_state 2>/dev/null | grep -E "mCommittedState" | head -2 || true
       adb shell dumpsys window 2>/dev/null | grep -iE "displayfeature|fold|hinge" | head -10 || true
+      # Tani: WindowManager Extensions kutuphanesi imajda var mi, mentese ozelligi hangi
+      # kaynaktan geliyor (FoldingFeature uygulamaya buradan ulasir).
+      echo "--- window extensions ---"
+      adb shell "ls /system_ext/framework /system/framework /vendor/framework 2>/dev/null | grep -i window" || true
+      adb shell "pm list libraries | grep -i window" || true
+      adb shell "getprop | grep -iE 'fold|hinge|display_feature|device_state|wm.extensions'" || true
       adb exec-out screencap -p > "$CIKIS/${PROFIL}-$2/46-katlanabilir-masaustu.png" || true
       adb emu sensor set hinge-angle0 180 || true
       ;;
