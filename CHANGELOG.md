@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.69.2] - 2026-10-22
+
+### Düzeltildi
+- [tablet-kare] Maestro akışları ana-ayrıntı ve kenar gezinmede de çalışır (#374)
+
 ## [0.69.1] - 2026-10-22
 
 ### Düzeltildi
