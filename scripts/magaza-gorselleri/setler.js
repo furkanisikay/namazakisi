@@ -579,7 +579,7 @@ const SETLER = {
                 zemin: 'gece',
                 vakit: 3,
                 kaynak: ['04-pano-telefondan.png', '01-pano.png'],
-                rozet: { ikon: 'zil', metin: 'İkindi vakti daralıyor · 12 dk', yer: 'sag', y: 0.08 },
+                rozet: { ikon: 'zil', metin: 'Vakit daralınca sessiz uyarı', yer: 'sag', y: 0.08 },
                 iddialar: ['tv', 'tv-kilindi'],
             }),
             kare('04-ramazan', {
