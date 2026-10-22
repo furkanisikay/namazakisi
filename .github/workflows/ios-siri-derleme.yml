@@ -31,6 +31,7 @@ on:
       - 'modules/expo-siri-kisayollari/**'
       - 'plugins/withSiriKisayollari.js'
       - 'modules/expo-muhafiz-alarmkit/**'
+      - 'modules/expo-sistem-durumu/**'
       - 'plugins/withMuhafizAlarmKit.js'
       - 'android/app/src/test/resources/muhafiz-plan-kimligi-ornekleri.json'
       - 'plugins/withNamazWidget.js'

@@ -132,6 +132,23 @@ hazirlik_uygula() {
         done
       fi
       ;;
+    guc-tasarrufu)
+      # Sistem kosullari karesi: pil tasarrufu ACIK, sarjdan cikmis, Veri Tasarrufu ACIK
+      # (Ayarlar cipi + esitleme bekleme satiri). hazirlik_bitir geri alir.
+      # Pil tasarrufu sarjdayken acilamaz (sistem kapatir): once sarjdan cikar,
+      # sistemin bunu islemesini bekle, sonra ac ve DOGRULA (yaris bir karede
+      # tasarrufu kapali birakmisti).
+      adb shell dumpsys battery unplug || true
+      sleep 2
+      for _ in 1 2 3 4 5; do
+        adb shell settings put global low_power 1 || true
+        sleep 1
+        if adb shell dumpsys power | grep -qiE "mLowPowerModeEnabled=true|Battery saver: *ON|mBatterySaverEnabled=true"; then break; fi
+      done
+      adb shell cmd netpolicy set restrict-background true || true
+      echo "sistem durumu: low_power=$(adb shell settings get global low_power | tr -d '') $(adb shell dumpsys power | grep -iE 'mIsPowered|LowPowerMode' | tr -d '' | tr '
+' ' ')"
+      ;;
     *) echo "UYARI: bilinmeyen hazirlik $1" ;;
   esac
 }
@@ -139,6 +156,11 @@ hazirlik_uygula() {
 # Akis sonrasi: hazirligin actigi seyleri geri al (animasyon olcegi, ekran kaydi).
 hazirlik_bitir() {
   case "$1" in
+    guc-tasarrufu)
+      adb shell settings put global low_power 0 || true
+      adb shell cmd netpolicy set restrict-background false || true
+      adb shell dumpsys battery reset || true
+      ;;
     kible-kamera-25)
       # Akis kamera gorunumunde biter: yolun akisi 8 sn (artifact: kible-yolu-<tema>.mp4).
       adb shell rm -f /sdcard/kible-yolu.mp4 || true

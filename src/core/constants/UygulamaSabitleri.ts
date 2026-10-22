@@ -294,6 +294,8 @@ export const DEPOLAMA_ANAHTARLARI = {
    * `expo-secure-store`'dadır.
    */
   ESITLEME_DURUMU: '@namaz_akisi/esitleme_durumu',
+  /** Otomatik eşitleme tercihleri (sıklık, yalnız Wi-Fi, yalnız şarjda) — cihaza özgü, yedeklenmez. */
+  ESITLEME_TERCIHLERI: '@namaz_akisi/esitleme_tercihleri',
 } as const;
 
 // Tarih formatlari

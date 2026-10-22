@@ -98,6 +98,16 @@ describe('ozellik turu tohumu', () => {
         );
     });
 
+    it('esitleme varyanti: durum ve tercihler uygulamanin normalize yolundan DEGISMEDEN gecer', () => {
+        const { esitlemeDurumunuNormalizeEt } = require('../../esitleme/esitlemeTipleri');
+        const { esitlemeTercihleriniNormalizeEt } = require('../../esitleme/esitlemePolitikasi');
+        const depo = ozellikTohumVerisi({ varyant: 'esitleme' });
+        const durum = JSON.parse(depo[DEPOLAMA_ANAHTARLARI.ESITLEME_DURUMU]);
+        const tercih = JSON.parse(depo[DEPOLAMA_ANAHTARLARI.ESITLEME_TERCIHLERI]);
+        expect(esitlemeDurumunuNormalizeEt(durum)).toEqual(durum);
+        expect(esitlemeTercihleriniNormalizeEt(tercih)).toEqual(tercih);
+    });
+
     it('tema tercihi acikca yazilir', () => {
         expect(JSON.parse(ozellikTohumVerisi({ tema: 'koyu' }).tema_tercihleri).mod).toBe('koyu');
         expect(JSON.parse(ozellikTohumVerisi().tema_tercihleri).mod).toBe('acik');

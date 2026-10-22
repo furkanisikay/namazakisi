@@ -5,6 +5,7 @@ import React from 'react';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { EsitlemeSayfasi, esitlemeZamaniniBicimle } from '../EsitlemeSayfasi';
 import type { EsitlemeDurumu } from '../../../../core/esitleme/esitlemeTipleri';
+import type { EsitlemeTercihleri } from '../../../../core/esitleme/esitlemePolitikasi';
 
 const mockKanca = {
   durum: {
@@ -14,7 +15,11 @@ const mockKanca = {
     sonOzet: null,
     sonEsitleme: null,
     sonHata: null,
+    sonDeneme: null,
+    sonBekleme: null,
   } as EsitlemeDurumu,
+  tercihler: { siklik: 'degisince', yalnizWifi: false, yalnizSarjda: false } as EsitlemeTercihleri,
+  tercihleriDegistir: jest.fn(async () => undefined),
   yuklendi: true,
   saglayicilar: [{ kimlik: 'googleDrive', ad: 'Google Drive' }],
   mesgul: false,
@@ -26,9 +31,24 @@ const mockKanca = {
   kapat: jest.fn(async () => ({ basarili: true })),
 };
 
+const mockPil = { muaf: null as boolean | null, samsung: false };
+jest.mock('../../../hooks/useSistemDurumu', () => ({
+  useSistemDurumu: () => ({ pil: mockPil, tamAlarm: 'belirsiz', yenile: jest.fn() }),
+}));
+jest.mock('../../../hooks/useSistemKosullari', () => ({
+  useSistemKosullari: () => ({ ...require('../../../../core/sistem/sistemDurumu').BILINMEYEN_SISTEM_DURUMU, platform: 'android' }),
+}));
+jest.mock('../../../components/pil/PilRehberi', () => ({
+  PilRehberModal: ({ gorunur }: { gorunur: boolean }) => {
+    const { Text } = require('react-native');
+    return gorunur ? <Text>pil-rehberi</Text> : null;
+  },
+}));
+
 jest.mock('../../../hooks/useEsitleme', () => ({
   useEsitleme: () => mockKanca,
   esitlemeHataMetni: (kod: string) => `hata:${kod}`,
+  esitlemeBeklemeMetni: (neden: string) => `bekleme:${neden}`,
 }));
 jest.mock('@react-navigation/native', () => ({
   useFocusEffect: (cb: () => void) => {
@@ -46,6 +66,7 @@ jest.mock('../../../../core/theme', () => ({
     metinIkincil: '#555',
     sinir: '#ccc',
     hata: '#f00',
+    durum: { dikkat: '#e65100' },
     bilgi: '#00f',
     basarili: '#0f0',
   }),
@@ -76,6 +97,8 @@ const kapaliDurum = (): EsitlemeDurumu => ({
   sonOzet: null,
   sonEsitleme: null,
   sonHata: null,
+  sonDeneme: null,
+  sonBekleme: null,
 });
 
 describe('EsitlemeSayfasi', () => {
@@ -217,6 +240,65 @@ describe('EsitlemeSayfasi', () => {
     });
     expect(mockKanca.baglan).toHaveBeenCalledWith('googleDrive', true);
     expect(mockKanca.esitle).toHaveBeenCalled();
+  });
+
+  it('açıkken otomatik eşitleme ayarları: sıklık ve Wi-Fi/şarj anahtarları tercihleri yazar', async () => {
+    mockKanca.durum = { ...kapaliDurum(), aktif: true, saglayici: 'googleDrive' };
+    mockKanca.tercihler = { siklik: 'degisince', yalnizWifi: false, yalnizSarjda: false };
+    const { getByTestId, getByText } = render(<EsitlemeSayfasi />);
+    expect(getByText(/Bir namazı işaretlediğinizde hemen/)).toBeTruthy();
+    await act(async () => {
+      fireEvent.press(getByTestId('esitleme-siklik-saatlik'));
+    });
+    expect(mockKanca.tercihleriDegistir).toHaveBeenCalledWith({ siklik: 'saatlik' });
+    await act(async () => {
+      fireEvent(getByTestId('esitleme-yalnizWifi'), 'valueChange', true);
+    });
+    expect(mockKanca.tercihleriDegistir).toHaveBeenCalledWith({ yalnizWifi: true });
+  });
+
+  it('hatırlatma cümlesi pil muafiyetinden türer: muafsa "etkilenmez", değilse pil rehberine götüren uyarı', async () => {
+    mockKanca.durum = { ...kapaliDurum(), aktif: true, saglayici: 'googleDrive' };
+    mockKanca.tercihler = { siklik: 'degisince', yalnizWifi: false, yalnizSarjda: false };
+    mockPil.muaf = true;
+    const r1 = render(<EsitlemeSayfasi />);
+    expect(r1.getByText(/Hatırlatmalar etkilenmez/)).toBeTruthy();
+    expect(r1.queryByTestId('esitleme-pil-uyarisi')).toBeNull();
+    r1.unmount();
+    mockPil.muaf = false;
+    const r2 = render(<EsitlemeSayfasi />);
+    expect(r2.queryByText(/Hatırlatmalar etkilenmez/)).toBeNull();
+    await act(async () => {
+      fireEvent.press(r2.getByTestId('esitleme-pil-uyarisi'));
+    });
+    expect(r2.getByText('pil-rehberi')).toBeTruthy();
+    mockPil.muaf = null;
+  });
+
+  it('kısa tanıtım; ayrıntı "Nasıl çalışır?" altında', async () => {
+    const { getByText, queryByText, getByTestId } = render(<EsitlemeSayfasi />);
+    expect(getByText('Yalnız sizin parolanızla şifrelenir')).toBeTruthy();
+    expect(queryByText(/Unutursanız buluttaki veri/)).toBeNull();
+    await act(async () => {
+      fireEvent.press(getByTestId('esitleme-nasil-calisir'));
+    });
+    expect(getByText(/Unutursanız buluttaki veri/)).toBeTruthy();
+  });
+
+  it('"Yalnız elle"de Wi-Fi/şarj anahtarları gizlenir', () => {
+    mockKanca.durum = { ...kapaliDurum(), aktif: true, saglayici: 'googleDrive' };
+    mockKanca.tercihler = { siklik: 'elle', yalnizWifi: false, yalnizSarjda: false };
+    const { queryByTestId } = render(<EsitlemeSayfasi />);
+    expect(queryByTestId('esitleme-yalnizWifi')).toBeNull();
+  });
+
+  it('görünür bekleme nedeni (Wi-Fi) satır olarak gösterilir; sıklık beklemesi gösterilmez', () => {
+    mockKanca.durum = { ...kapaliDurum(), aktif: true, saglayici: 'googleDrive', sonBekleme: 'wifi' };
+    const { getByText, rerender, queryByTestId } = render(<EsitlemeSayfasi />);
+    expect(getByText('bekleme:wifi')).toBeTruthy();
+    mockKanca.durum = { ...mockKanca.durum, sonBekleme: 'siklik' };
+    rerender(<EsitlemeSayfasi />);
+    expect(queryByTestId('esitleme-bekleme')).toBeNull();
   });
 
   it('kapatma: buluttakini de silme seçeneği', async () => {

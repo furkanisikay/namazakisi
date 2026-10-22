@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo } from 'react-native';
+import { dekoratifHareketAzaltilsinMi } from '../../core/sistem/sistemDurumu';
+import { useSistemKosullari } from './useSistemKosullari';
 
 /**
  * "Animasyonları azalt" açık mı? Açıksa sahneler son karelerine atlar
  * (motion-choreography: bilgi hiçbir zaman yalnız hareketle verilmez).
  * Okunamazsa `false` (hareket açık) — sahneler zaten kısa ve tek seferlik.
+ *
+ * Güç tasarrufu (Android Pil Tasarrufu / iOS Düşük Güç Modu) açıkken de `true`:
+ * dekoratif döngüler durur (`dongu.ts`), bilgi taşıyan canlı içerik etkilenmez.
  */
 export function useHareketAzalt(): boolean {
   const [azalt, setAzalt] = useState(false);
@@ -27,5 +32,6 @@ export function useHareketAzalt(): boolean {
       abonelik?.remove?.();
     };
   }, []);
-  return azalt;
+  const sistem = useSistemKosullari();
+  return azalt || dekoratifHareketAzaltilsinMi(sistem);
 }

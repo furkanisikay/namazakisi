@@ -4,13 +4,23 @@
  * olarak alınır (`AGENTS.md`: core saf kalmalı).
  */
 
+import { SistemDurumu, arkaPlanKisitlanmisMi } from '../sistem/sistemDurumu';
+
 const GUN_MS = 24 * 60 * 60 * 1000;
 const YEDI_GUN_MS = 7 * GUN_MS;
 
 export type SorunSeviyesi = 'kritik' | 'uyari' | 'bilgi';
 
 export interface Sorun {
-  id: 'bildirimIzni' | 'konumAlinamadi' | 'hatirlatmaYok' | 'konumBayat' | 'tamAlarm' | 'pilKisiti';
+  id:
+    | 'bildirimIzni'
+    | 'konumAlinamadi'
+    | 'hatirlatmaYok'
+    | 'konumBayat'
+    | 'tamAlarm'
+    | 'pilKisiti'
+    | 'arkaPlanKisiti'
+    | 'arkaPlanYenileme';
   seviye: SorunSeviyesi;
   baslik: string;
   aciklama: string;
@@ -44,6 +54,12 @@ export interface SaglikGirdisi {
   acikVakitBildirimSayisi: number;
   /** Verilmezse kontrol yapılmaz (geriye uyumlu). */
   pil?: PilDurumu;
+  /**
+   * Sistem koşulları (`core/sistem/sistemDurumu`). Verilmezse ya da alan bilinmiyorsa
+   * kontrol yapılmaz. Android'de RESTRICTED bekleme kovası / "Kısıtlı" kullanım ve iOS'ta
+   * kapalı "Arka planda yenileme" hatırlatma güvenilirliğini etkiler.
+   */
+  kosullar?: SistemDurumu;
   /** Android 12+ tam alarm izni. Yalnız 'reddedildi' uyarır. */
   tamAlarm?: 'verildi' | 'reddedildi' | 'belirsiz';
   /** Test edilebilirlik için ENJEKTE edilir — `new Date()` çağırma. */
@@ -110,7 +126,43 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
     });
   }
 
-  if (hatirlatmaVar && g.pil?.muaf === false) {
+  // Android uygulamayı arka planda KISITLAMIŞ (kullanıcı "Kısıtlı" yaptı ya da RESTRICTED
+  // kovası: günde tek alarm). Pil muafiyeti uyarısının daha güçlü hâlidir; ikisi birden
+  // gösterilmez. Çözüm aynı ekrandır (pil kullanımı → Kısıtlanmamış).
+  const kisitli = hatirlatmaVar && g.kosullar?.platform === 'android' && arkaPlanKisitlanmisMi(g.kosullar);
+  if (kisitli) {
+    sorunlar.push({
+      id: 'arkaPlanKisiti',
+      seviye: 'uyari',
+      baslik: 'Android uygulamayı kısıtlamış',
+      aciklama: 'Hatırlatmalar gecikebilir ya da hiç gelmeyebilir. Pil kullanımını "Kısıtlanmamış" yapın.',
+      eylemEtiketi: 'Pil ayarlarını açın',
+      eylem: { tip: 'pilAyarlari' },
+      ikon: 'ban',
+    });
+  }
+
+  // iOS: Arka planda yenileme kapalıysa kurulu hatırlatmalar gelir ama ertesi günün planı
+  // ancak uygulama açılınca kurulur. Düşük Güç Modu da yenilemeyi geçici kapatır; o
+  // durumu Ayarlar'daki durum çipi anlatır, burada tekrar edilmez.
+  if (
+    hatirlatmaVar &&
+    g.kosullar?.platform === 'ios' &&
+    (g.kosullar.arkaPlanYenileme === 'kapali' || g.kosullar.arkaPlanYenileme === 'kisitli') &&
+    g.kosullar.gucTasarrufu !== true
+  ) {
+    sorunlar.push({
+      id: 'arkaPlanYenileme',
+      seviye: 'bilgi',
+      baslik: 'Arka planda yenileme kapalı',
+      aciklama: 'Kurulu hatırlatmalar gelir; yeni günün planı için uygulamayı günde bir açın.',
+      eylemEtiketi: 'Ayarları açın',
+      eylem: { tip: 'sistemAyarlari' },
+      ikon: 'sync-alt',
+    });
+  }
+
+  if (hatirlatmaVar && g.pil?.muaf === false && !kisitli) {
     sorunlar.push(
       g.pil.samsung
         ? {
@@ -139,7 +191,7 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
   // zaten `sonGpsGuncellemesi` yokluğunu kapsar; `konumBayat` damganın
   // VAR olmasını ve yalnız 7+ gün eski olmasını ister.
   // Pil kısıtı zaten raporlandıysa `konumBayat` aynı sebebin ikinci yüzüdür → tekrarlanmaz.
-  const pilRaporlandi = sorunlar.some((x) => x.id === 'pilKisiti');
+  const pilRaporlandi = sorunlar.some((x) => x.id === 'pilKisiti' || x.id === 'arkaPlanKisiti');
   if (g.akilliTakipAktif && g.sonGpsGuncellemesi && !pilRaporlandi) {
     const damgaMs = new Date(g.sonGpsGuncellemesi).getTime();
     const gecenMs = g.simdi.getTime() - damgaMs;
@@ -156,6 +208,13 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
         eylem: { tip: 'pilAyarlari' },
       });
     }
+  }
+
+  // Güç tasarrufu da açıksa ayrı bir çip yerine pil uyarısının içinde söylenir
+  // (aynı rehbere giden iki uyarı olmasın; Ayarlar çipi bu durumda çizilmez).
+  if (g.kosullar?.gucTasarrufu === true) {
+    const pilSorunu = sorunlar.find((x) => x.id === 'pilKisiti' || x.id === 'arkaPlanKisiti');
+    if (pilSorunu) pilSorunu.aciklama = `${pilSorunu.aciklama} Güç tasarrufu da açık.`;
   }
 
   return sorunlar.sort((a, b) => SEVIYE_SIRASI[a.seviye] - SEVIYE_SIRASI[b.seviye]);

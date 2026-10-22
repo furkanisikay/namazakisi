@@ -15,6 +15,8 @@
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import { guncellemeKontroluErtelensinMi } from '../../core/sistem/sistemDurumu';
+import { sistemKosullariniOku } from './SistemKosullariServisi';
 import { Logger } from '../../core/utils/Logger';
 import { versiyonKarsilastir } from '../../core/utils/versiyonKarsilastir';
 import {
@@ -422,6 +424,21 @@ export class GuncellemeServisi {
           if (this.onbellekBayatMi()) {
             return { guncellemeMevcut: false, bilgi: null };
           }
+          return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
+        }
+
+        // Ölçülen ağda / Veri Tasarrufu ya da Düşük Veri Modu açıkken otomatik kontrol
+        // Wi-Fi'ye ertelenir (elle kontrol ve bir haftadan eski önbellek ERTELENMEZ).
+        const sistem = await sistemKosullariniOku();
+        if (
+          guncellemeKontroluErtelensinMi({
+            sistem,
+            zorla,
+            sonKontrolMs: this.onbellek?.sonKontrolZamani ?? null,
+            simdiMs: Date.now(),
+          })
+        ) {
+          Logger.info('GuncellemeServisi', 'Kisitli/olculen ag - kontrol Wi-Fi icin ertelendi');
           return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
         }
       }

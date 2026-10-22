@@ -1,4 +1,5 @@
 import { kurulumSagligi, type SaglikGirdisi } from '../kurulumSagligi';
+import { BILINMEYEN_SISTEM_DURUMU, type SistemDurumu } from '../../sistem/sistemDurumu';
 
 const TEMEL: SaglikGirdisi = {
   izinDurumu: 'verildi',
@@ -242,6 +243,50 @@ describe('kurulumSagligi', () => {
     it('belirsiz/verildi → uyarı yok', () => {
       expect(kurulumSagligi({ ...TAZE, tamAlarm: 'belirsiz' })).toEqual([]);
       expect(kurulumSagligi({ ...TAZE, tamAlarm: 'verildi' })).toEqual([]);
+    });
+  });
+
+  describe('sistem koşulları (arka plan kısıtı, iOS arka planda yenileme)', () => {
+    const k = (x: Partial<SistemDurumu>): SistemDurumu => ({ ...BILINMEYEN_SISTEM_DURUMU, ...x });
+
+    it('Android RESTRICTED kovası ya da "Kısıtlı" kullanım → arkaPlanKisiti (pil ayarları); pilKisiti tekrarlanmaz', () => {
+      const sonuc = kurulumSagligi({
+        ...TEMEL,
+        pil: { muaf: false, samsung: true },
+        kosullar: k({ platform: 'android', beklemeKovasi: 'kisitli' }),
+      });
+      expect(sonuc.map((x) => x.id)).toEqual(['arkaPlanKisiti']);
+      expect(sonuc[0]).toMatchObject({ seviye: 'uyari', eylem: { tip: 'pilAyarlari' } });
+      expect(kurulumSagligi({ ...TEMEL, kosullar: k({ platform: 'android', arkaPlanKisitli: true }) })[0].id).toBe('arkaPlanKisiti');
+    });
+
+    it('güç tasarrufu da açıksa pil uyarısının İÇİNDE söylenir (ayrı çip yok)', () => {
+      const sonuc = kurulumSagligi({
+        ...TEMEL,
+        pil: { muaf: false, samsung: false },
+        kosullar: k({ platform: 'android', gucTasarrufu: true }),
+      });
+      expect(sonuc).toHaveLength(1);
+      expect(sonuc[0].id).toBe('pilKisiti');
+      expect(sonuc[0].aciklama.endsWith('Güç tasarrufu da açık.')).toBe(true);
+    });
+
+    it('hatırlatma yoksa ya da durum bilinmiyorsa sessiz', () => {
+      expect(
+        kurulumSagligi({ ...TEMEL, muhafizAktif: false, acikVakitBildirimSayisi: 0, kosullar: k({ platform: 'android', arkaPlanKisitli: true }) }).map(
+          (x) => x.id
+        )
+      ).toEqual(['hatirlatmaYok']);
+      expect(kurulumSagligi({ ...TEMEL, kosullar: k({}) })).toEqual([]);
+      expect(kurulumSagligi({ ...TEMEL, kosullar: k({ platform: 'android', beklemeKovasi: 'nadir' }) })).toEqual([]);
+    });
+
+    it('iOS arka planda yenileme kapalı → bilgi; Düşük Güç Modu açıkken tekrarlanmaz (çip anlatır)', () => {
+      const sonuc = kurulumSagligi({ ...TEMEL, kosullar: k({ platform: 'ios', arkaPlanYenileme: 'kapali', gucTasarrufu: false }) });
+      expect(sonuc).toHaveLength(1);
+      expect(sonuc[0]).toMatchObject({ id: 'arkaPlanYenileme', seviye: 'bilgi', eylem: { tip: 'sistemAyarlari' } });
+      expect(kurulumSagligi({ ...TEMEL, kosullar: k({ platform: 'ios', arkaPlanYenileme: 'kapali', gucTasarrufu: true }) })).toEqual([]);
+      expect(kurulumSagligi({ ...TEMEL, kosullar: k({ platform: 'ios', arkaPlanYenileme: 'acik' }) })).toEqual([]);
     });
   });
 });

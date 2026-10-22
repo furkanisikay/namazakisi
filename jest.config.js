@@ -53,6 +53,8 @@ module.exports = {
     "expo-katlanma-posturu/src$": "<rootDir>/__mocks__/expo-katlanma-posturu.js",
     // Android TV eşleştirmesi (QR tarayıcı + yerel ağ gönderimi, Android). Varsayılan: modül yok.
     "expo-tv-esleme/src$": "<rootDir>/__mocks__/expo-tv-esleme.js",
+    // Sistem koşulları (güç/veri tasarrufu, ağ, şarj; Android + iOS). Varsayılan: modül yok.
+    "expo-sistem-durumu/src$": "<rootDir>/__mocks__/expo-sistem-durumu.js",
     // Cihazlar arası eşitleme (issue #288): iCloud köprüsü (iOS native, varsayılan YOK),
     // güvenli depo ve tarayıcı oturumu (native köprüler) — bellek-içi/iptal eden mock'lar.
     "expo-icloud-esitleme/src$": "<rootDir>/__mocks__/expo-icloud-esitleme.js",

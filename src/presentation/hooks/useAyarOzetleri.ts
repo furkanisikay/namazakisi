@@ -10,6 +10,7 @@
  *
  * (Task 4 brief — Ayarlar ekranı yeniden kurulumu)
  */
+import { useSistemKosullari } from './useSistemKosullari';
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -72,6 +73,8 @@ export function useAyarOzetleri(sistem?: Pick<SistemDurumu, 'pil' | 'tamAlarm'>)
 } {
   const { tema, palet } = useTema();
   const dispatch = useAppDispatch();
+  // Güç/veri tasarrufu, arka plan kısıtı (köprüsüz build'de "bilinmiyor" → kontrol yok).
+  const kosullar = useSistemKosullari();
 
   const konum = useAppSelector((s) => s.konum);
   const muhafizAktif = useAppSelector((s) => s.muhafiz.aktif);
@@ -149,6 +152,7 @@ export function useAyarOzetleri(sistem?: Pick<SistemDurumu, 'pil' | 'tamAlarm'>)
     acikVakitBildirimSayisi,
     pil: sistem?.pil,
     tamAlarm: sistem?.tamAlarm,
+    kosullar,
     simdi,
   });
 

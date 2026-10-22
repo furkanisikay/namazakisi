@@ -132,6 +132,7 @@ Setup: `npm ci` (Node 20; `postinstall: patch-package` atlanmamalı) · Doğrula
 | [ios](docs/ajan/ios.md) | iOS teslim katmanı, Siri/Odak, widget + canlı etkinlik, Apple Watch, App Store Connect ve TestFlight hattı |
 | [magaza-ekran-goruntuleri](docs/ajan/magaza-ekran-goruntuleri.md) | Simülatör/emülatör ekran görüntüsü hatları (iOS, Android, Watch, Wear, TV) |
 | [yedekleme-esitleme](docs/ajan/yedekleme-esitleme.md) | Yedekleme/içe aktarma, cihazlar arası eşitleme |
+| [sistem-uyum](docs/ajan/sistem-uyum.md) | Güç/veri tasarrufu, Wi-Fi/ölçülen ağ, şarj, arka plan kısıtı algılama ve politikası (`expo-sistem-durumu`), eşitleme sıklığı/koşulları |
 | [expo-sdk-ve-bagimliliklar](docs/ajan/expo-sdk-ve-bagimliliklar.md) | Expo SDK yükseltmesi, bağımlılık/audit, patch-package |
 | [ci-ve-yayin](docs/ajan/ci-ve-yayin.md) | GitHub Actions, sürümleme, EAS, dependabot, ajan ortamı |
 | [test-tuzaklari](docs/ajan/test-tuzaklari.md) | Jest tuzakları ayrıntısı (mock, zamanlayıcı, act, platform) |

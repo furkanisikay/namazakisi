@@ -35,6 +35,7 @@ import { usePilRehberi } from '../hooks/usePilRehberi';
 import { useCamideyimOzeti } from '../hooks/useCamideyimOzeti';
 import { useNowBarOzeti } from '../hooks/useNowBarOzeti';
 import { PilRehberModal } from '../components/pil/PilRehberi';
+import { SistemDurumuCipi } from './Ayarlar/SistemDurumuCipi';
 import { alarmIzniAyariniAc } from '../../domain/services/SistemDurumuOkuyucu';
 import { useKonumYenile } from '../hooks/useKonumYenile';
 import { useSeferilik } from '../hooks/useSeferilik';
@@ -280,6 +281,11 @@ export const AyarlarSayfasi: React.FC = () => {
               )}
 
               <KurulumSagligiKarti sorunlar={sorunlar} onEylem={saglikEylemi} ozetSatiri={saglikOzetSatiri} />
+              <SistemDurumuCipi
+                pilMuaf={sistem.pil?.muaf}
+                onPilRehberi={pilRehberi.rehberiAc}
+                pilUyarisiGosteriliyor={sorunlar.some((x) => x.id === 'pilKisiti' || x.id === 'arkaPlanKisiti')}
+              />
 
               <AyarGrubu baslik="Namaz">
                 <AyarSatiri
