@@ -5,6 +5,15 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.67.0] - 2026-10-22
+
+### Eklendi
+- [cihaz] tek beyin kapısı saate de uygulanır (Wear OS / Apple Watch planı ve uyandırma)
+- [cihaz] tek beyin — ikinci cihaz ve ev ekranı hatırlatma kurmaz
+
+### Düzeltildi
+- [cihaz] master denetimiyle (parmak izi kapısı, tek ikon importu) hizalama; kapı sırası nöbetçisi
+
 ## [0.66.0] - 2026-10-22
 
 ### Eklendi
