@@ -200,7 +200,9 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
                 durum.faz.ad,
                 enFazla = sinirliBoyut(0.072f),
                 renk = renk(SaatPaleti.METIN),
-                modifier = Modifier.fillMaxWidth(ZIKIR_ADI_ORANI),
+                modifier = Modifier.fillMaxWidth(
+                    if (LocalConfiguration.current.isScreenRound) ZIKIR_ADI_ORANI else ZIKIR_ADI_KARE_ORANI,
+                ),
             )
             Text(
                 durum.fazSayisi.toString(),
@@ -320,6 +322,9 @@ private const val HALKA_ICI_KARE_ORANI = 0.70f
 
 /** Zikir adının güvenli sütundaki payı (sütunun tepesinde daire daralır). */
 private const val ZIKIR_ADI_ORANI = 0.82f
+
+/** Kare saatte halka kenara yakın çizilir: tepedeki kiriş ≈ ekranın %40'ı (kare koşusunda ölçüldü). */
+private const val ZIKIR_ADI_KARE_ORANI = 0.58f
 private const val BITIS_TIK_MS = 300
 private const val BITIS_HALKA_MS = 520
 

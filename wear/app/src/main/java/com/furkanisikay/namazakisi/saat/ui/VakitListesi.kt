@@ -104,12 +104,16 @@ fun VakitSatiri(
                 else -> null
             }
             if (alt != null) {
-                Text(
+                // Kare saatte büyük yazı ölçeğinde "2 sa 2 dk" "2 sa"ya kesiliyordu: satır
+                // kendini sütuna sığdırır (kesilmez, küçülür).
+                SigdirilanMetin(
                     alt,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = if (aktif) vakitRengi else renk(SaatPaleti.METIN2),
-                    maxLines = 1,
-                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    enFazla = MaterialTheme.typography.labelSmall.fontSize,
+                    renk = if (aktif) vakitRengi else renk(SaatPaleti.METIN2),
+                    modifier = Modifier.fillMaxWidth(),
+                    agirlik = FontWeight.Normal,
+                    ortala = false,
+                    stil = MaterialTheme.typography.labelSmall,
                 )
             }
         }

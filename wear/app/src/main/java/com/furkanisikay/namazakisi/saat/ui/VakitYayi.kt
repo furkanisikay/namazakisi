@@ -372,8 +372,13 @@ fun SigdirilanMetin(
     modifier: Modifier = Modifier,
     enAz: androidx.compose.ui.unit.TextUnit = (enFazla.value * 0.7f).sp,
     agirlik: FontWeight = FontWeight.Medium,
+    ortala: Boolean = true,
+    stil: TextStyle = TextStyle.Default,
 ) {
-    androidx.compose.foundation.layout.BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
+    androidx.compose.foundation.layout.BoxWithConstraints(
+        modifier,
+        contentAlignment = if (ortala) Alignment.Center else Alignment.CenterStart,
+    ) {
         val olcer = androidx.compose.ui.text.rememberTextMeasurer()
         val genislik = constraints.maxWidth
         val boy = remember(metin, genislik, enFazla, agirlik) {
@@ -381,7 +386,7 @@ fun SigdirilanMetin(
             while (b > enAz.value &&
                 olcer.measure(
                     metin,
-                    TextStyle(fontSize = b.sp, fontWeight = agirlik),
+                    stil.merge(TextStyle(fontSize = b.sp, fontWeight = agirlik)),
                     maxLines = 1,
                     softWrap = false,
                 ).size.width > genislik
@@ -392,10 +397,11 @@ fun SigdirilanMetin(
         }
         Text(
             metin,
+            style = stil,
             fontSize = boy,
             fontWeight = agirlik,
             color = renk,
-            textAlign = TextAlign.Center,
+            textAlign = if (ortala) TextAlign.Center else TextAlign.Start,
             maxLines = 1,
             softWrap = false,
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,

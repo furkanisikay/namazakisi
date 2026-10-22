@@ -180,9 +180,11 @@ fun KildimOnayi(
             // Güvenli sütun: yuvarlak ekranda soru tek satıra yayılıp dairenin kenarında
             // kırpılıyordu, kare ekranda tepedeki yaya değiyordu. Soru İKİ sabit satırdır
             // ("Öğle namazını" / "kıldınız mı?"), her satır kendini sütuna sığdırır.
+            // Kare saatte yay ekranın kenarına yakın: soru biraz aşağıda ve daha dar sütunda
+            // durmazsa ilk satır tepedeki yaya değiyordu (kare koşusunda görüldü).
             modifier = Modifier
-                .fillMaxWidth(guvenliGenislikOrani(yuvarlakOran = 0.66f, kareOran = 0.62f))
-                .padding(bottom = 50.dp),
+                .fillMaxWidth(guvenliGenislikOrani(yuvarlakOran = 0.66f, kareOran = 0.50f))
+                .padding(bottom = if (LocalConfiguration.current.isScreenRound) 50.dp else 30.dp),
         ) {
             if (reddedildi) {
                 Text(
