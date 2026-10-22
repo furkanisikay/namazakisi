@@ -256,6 +256,81 @@ function appleUyandirmaEkrani(g) {
     );
 }
 
+/**
+ * Kible kamera ekrani: emulatorun sanal odasi (renkli bloklar) kameranin GORDUGU yerdir,
+ * uygulamanin arayuzu degil. Gorselde ust (baslik + Pusula/Kamera) ve alt (sekme cubugu)
+ * GERCEK kareden kesilir; kamera alani sade, bulanik bir avlu zemini uzerine uygulamanin
+ * kendi katmaniyla (yere cizilen yol, oklar, Kabe isareti, mesafe, "Kible yonundesiniz"
+ * karti) yeniden cizilir (src/presentation/screens/KibleSayfasi/KibleYolu.tsx ile ayni
+ * ogeler). Koordinatlar 1080x2400 kaynaga gore: kamera alani 522..2166.
+ */
+function kibleKameraEkrani(url, g) {
+    const s = g / 1080;
+    const U = 522 * s;
+    const A = 2166 * s;
+    const ufuk = 860 * s;
+    const vx = 540 * s;
+    let zemin = '';
+    // Avlu taslari: kacis noktasina giden cizgiler + yatay derzler.
+    for (let i = -7; i <= 7; i++) zemin += `<line x1="${vx}" y1="${ufuk}" x2="${vx + i * 260 * s}" y2="${A}" stroke="rgba(120,104,84,0.35)" stroke-width="${2.2 * s}"/>`;
+    for (let j = 1; j <= 9; j++) {
+        const t = Math.pow(j / 9, 1.9);
+        const y = ufuk + (A - ufuk) * t;
+        zemin += `<line x1="0" y1="${y}" x2="${g}" y2="${y}" stroke="rgba(120,104,84,0.30)" stroke-width="${2 * s}"/>`;
+    }
+    // Yol: Kabe'nin altindan ekranin altina genisleyen huzme + oklar.
+    const tepeY = 800 * s;
+    const yol =
+        `<polygon points="${vx - 18 * s},${tepeY} ${vx + 18 * s},${tepeY} ${1000 * s},${A} ${80 * s},${A}" fill="rgba(76,175,80,0.30)" stroke="rgba(46,125,50,0.95)" stroke-width="${6 * s}" stroke-linejoin="round"/>` +
+        [930, 1010, 1110, 1240, 1420, 1700]
+            .map((y0, i) => {
+                const y = y0 * s;
+                const yari = (18 + ((y0 - 800) / (2166 - 800)) * 442) * s;
+                const w = yari * 0.62;
+                const h = w * 0.34;
+                const kal = (5 + i * 3) * s;
+                return `<polyline points="${vx - w},${y + h} ${vx},${y} ${vx + w},${y + h}" fill="none" stroke="rgba(255,255,255,0.95)" stroke-width="${kal}" stroke-linecap="round" stroke-linejoin="round"/>`;
+            })
+            .join('') +
+        `<circle cx="${vx}" cy="${1340 * s}" r="${120 * s}" fill="none" stroke="rgba(46,125,50,0.9)" stroke-width="${5 * s}"/>` +
+        `<circle cx="${vx}" cy="${1340 * s}" r="${54 * s}" fill="#43A047"/>` +
+        `<polyline points="${vx - 24 * s},${1340 * s} ${vx - 6 * s},${1358 * s} ${vx + 26 * s},${1322 * s}" fill="none" stroke="#fff" stroke-width="${10 * s}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    const kes = (y0, y1) =>
+        `<div style="position:absolute;left:0;top:${y0 * s}px;width:${g}px;height:${(y1 - y0) * s}px;overflow:hidden">` +
+        `<img src="${url}" style="position:absolute;left:0;top:${-y0 * s}px;width:${g}px"></div>`;
+    // Kabe isareti gercek kareden kesilir (468..594 x 690..816).
+    const kx = vx;
+    const ky = 700 * s;
+    const kw = 62 * s;
+    const kabe =
+        `<svg style="position:absolute;left:0;top:0" width="${g}" height="${A}">` +
+        `<polygon points="${kx - kw},${ky + 18 * s} ${kx},${ky - 6 * s} ${kx + kw},${ky + 18 * s} ${kx},${ky + 42 * s}" fill="#3A3A3A"/>` +
+        `<polygon points="${kx - kw},${ky + 18 * s} ${kx},${ky + 42 * s} ${kx},${ky + 118 * s} ${kx - kw},${ky + 94 * s}" fill="#151515"/>` +
+        `<polygon points="${kx},${ky + 42 * s} ${kx + kw},${ky + 18 * s} ${kx + kw},${ky + 94 * s} ${kx},${ky + 118 * s}" fill="#262626"/>` +
+        `<polygon points="${kx - kw},${ky + 34 * s} ${kx},${ky + 58 * s} ${kx},${ky + 70 * s} ${kx - kw},${ky + 46 * s}" fill="#C9A227"/>` +
+        `<polygon points="${kx},${ky + 58 * s} ${kx + kw},${ky + 34 * s} ${kx + kw},${ky + 46 * s} ${kx},${ky + 70 * s}" fill="#B08D1E"/>` +
+        `<rect x="${kx + 26 * s}" y="${ky + 64 * s}" width="${14 * s}" height="${26 * s}" fill="#C9A227" transform="skewY(-25)" transform-origin="${kx + 33 * s} ${ky + 77 * s}"/>` +
+        `</svg>`;
+    const yazi = "font-family:Roboto,'Segoe UI',sans-serif;color:#fff;text-align:center";
+    return (
+        `<div style="position:absolute;inset:0;background:#F7F7F7">` +
+        `<div style="position:absolute;left:0;top:${U}px;width:${g}px;height:${A - U}px;overflow:hidden;` +
+        `background:linear-gradient(180deg,#B9CFE0 0%,#DCE6EC ${((ufuk - U) / (A - U)) * 100 - 4}%,#D8CDBB ${((ufuk - U) / (A - U)) * 100}%,#C9B79C 100%);filter:blur(${1.2 * s}px)">` +
+        `<div style="position:absolute;left:${120 * s}px;top:${ufuk - U - 210 * s}px;width:${840 * s}px;height:${210 * s}px;background:linear-gradient(180deg,#E9E1D3,#D7CBB6);border-radius:${6 * s}px ${6 * s}px 0 0;opacity:0.9"></div>` +
+        `<div style="position:absolute;left:${420 * s}px;top:${ufuk - U - 360 * s}px;width:${240 * s}px;height:${160 * s}px;background:#D9CFBE;border-radius:${120 * s}px ${120 * s}px 0 0;opacity:0.9"></div>` +
+        `<svg style="position:absolute;left:0;top:${-U}px" width="${g}" height="${A}">${zemin}</svg></div>` +
+        `<svg style="position:absolute;left:0;top:0" width="${g}" height="${A}">${yol}</svg>` +
+        kabe +
+        `<div style="position:absolute;left:${vx - 78 * s}px;top:${855 * s}px;width:${156 * s}px;height:${58 * s}px;border-radius:999px;background:rgba(80,80,80,0.78);${yazi};font-size:${27 * s}px;font-weight:700;line-height:${58 * s}px">2.405 km</div>` +
+        `<div style="position:absolute;left:${42 * s}px;top:${1946 * s}px;width:${996 * s}px;height:${178 * s}px;border-radius:${60 * s}px;background:rgba(30,40,32,0.78);${yazi}">` +
+        `<div style="margin-top:${30 * s}px;font-size:${44 * s}px;font-weight:700">Kıble yönündesiniz</div>` +
+        `<div style="margin-top:${6 * s}px;font-size:${30 * s}px">Kâbe 2.405 km uzakta</div></div>` +
+        kes(0, 522) +
+        kes(2166, 2400) +
+        `</div>`
+    );
+}
+
 /** Apple Watch: yuvarlatilmis kasa + kurma kolu. `gorsel`: adres ya da { cizim }. */
 function appleSaat(gorsel, ekGen, boyut, z) {
     const oran = boyut ? boyut.yuk / boyut.gen : 514 / 422;
@@ -438,7 +513,8 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
         const [on, arka] = gorseller;
         const yaricap = (g) => (g && g.cihaz === 'androidTelefon' ? 50 * k : 80 * k);
         if (arka) alan += `<div style="position:absolute;right:${70 * k}px;top:${cihazUst + 150 * k}px">${cerceve('telefon', arka.url, 560 * k, k, z, { boyut: arka.boyut, yaricap: yaricap(arka) })}</div>`;
-        if (on) alan += `<div style="position:absolute;left:${80 * k}px;top:${cihazUst + 40 * k}px">${cerceve('telefon', on.url, 680 * k, k, z, { boyut: on.boyut, yaricap: yaricap(on) })}</div>`;
+        const onGorsel = on && kare.kibleKamera ? { html: kibleKameraEkrani(on.url, 680 * k - 32 * k) } : on && on.url;
+        if (on) alan += `<div style="position:absolute;left:${80 * k}px;top:${cihazUst + 40 * k}px">${cerceve('telefon', onGorsel, 680 * k, k, z, { boyut: on.boyut, yaricap: yaricap(on) })}</div>`;
     } else if (yer === 'telefonTablet') {
         // Tablet arkada (sag kenardan tasar), telefon onde solda.
         const tab = gorseller.find((g) => g.cihaz === 'ipadYatay' || g.cihaz === 'tablet' || g.cihaz === 'ipad');
@@ -503,40 +579,70 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
     return belge(gen, yuk, z, yay + metin + alan);
 }
 
-/** Yatay (tablet, TV) kare: solda metin, sagda cihaz. */
+/**
+ * Yatay (tablet, iPad, TV) kare: baslik USTTE buyuk (tek satir), kisa alt satir, altinda
+ * cihazin TAMAMI ortada ve karenin buyuk kismini kaplar (kesilmez). Magazanin kucuk
+ * onizlemesinde ekran icerigi okunmayacagi icin istege bagli `yakin` cagri kutusu,
+ * ekranin onemli bolgesini buyutulmus bir kartla cihazin ustune bindirir.
+ */
 function yatay(kare, b, gorseller, cihazTuru) {
     const { gen, yuk } = b;
-    const k = yuk / 1600;
     const z = ZEMIN[kare.zemin || 'acik'];
     const g = gorseller[0];
+    const k = yuk / 1600;
     const yay =
         `<svg style="position:absolute;left:0;top:0" width="${gen}" height="${yuk}">` +
-        (z.yildiz ? yildizlar(gen, yuk * 0.5, 70, '#E8F5E9') : '') +
-        vakitYayi(gen, 380 * k, k, z, kare.vakit) +
+        (z.yildiz ? yildizlar(gen, yuk * 0.4, 70, '#E8F5E9') : '') +
+        vakitYayi(gen, yuk * 0.16, k * 0.8, z, kare.vakit) +
         `</svg>`;
-    const solGen = gen * 0.38;
-    // Metin olcegi: 4:3 iPad'de yukseklige gore olcek sutunu tasirir -> genislikle sinirla.
-    const kt = Math.min(k, gen / 2560);
+    const o = yatayOlcu(b);
+    const baslik = kare.baslik.replace(/\n/g, ' ');
     const metin =
-        `<div style="position:absolute;left:${150 * k}px;width:${solGen}px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;padding-top:${200 * k}px">` +
-        `<h1 style="font-size:${122 * kt}px;line-height:1.06">${satirlar(kare.baslik)}</h1>` +
-        (kare.alt ? `<p class="alt" style="margin-top:${40 * kt}px;font-size:${54 * kt}px;line-height:1.38">${esc(kare.alt)}</p>` : '') +
+        `<div style="position:absolute;left:${gen * 0.05}px;right:${gen * 0.05}px;top:${yuk * 0.07}px;text-align:center">` +
+        `<h1 style="font-size:${o.baslikPx}px;line-height:1.05">${esc(baslik)}</h1>` +
+        (kare.alt ? `<p class="alt" style="margin:${yuk * 0.014}px auto 0;max-width:${o.altGen}px;font-size:${o.altPx}px;line-height:1.3">${esc(kare.alt)}</p>` : '') +
         `</div>`;
-    // Tablet sag kenardan tasar; TV butun gorunur (ayakligiyla). iPad (4:3) daha yuksek:
-    // genislik yukseklige gore sinirlanir.
     const tvMi = cihazTuru === 'tv';
-    const ipadMi = cihazTuru === 'ipadYatay';
-    const cihazGen = gen * (tvMi ? 0.52 : ipadMi ? 0.62 : 0.64);
+    const ust = yuk * (kare.alt ? 0.235 : 0.19);
+    const altPay = yuk * 0.035;
     const oran = g ? (g.boyut.yuk * (1 - (kare.kirpAlt || 0))) / g.boyut.gen : 0.6;
-    const ust = Math.max(300 * k, (yuk - cihazGen * oran) / 2 + 110 * k);
-    const sag = tvMi ? 110 * k : -gen * 0.07;
+    // Cerceve payi: TV'de ayaklik, tablette kenarlik.
+    const ekstraYuk = tvMi ? 0.06 : 0.035;
+    const cihazGen = Math.min(gen * 0.9, (yuk - ust - altPay) / (oran + ekstraYuk));
+    const sol = (gen - cihazGen) / 2;
     const cihaz = g
-        ? `<div style="position:absolute;right:${sag}px;top:${ust}px">${cerceve(cihazTuru, g.url, cihazGen, k * 1.4, z, { boyut: g.boyut, kirpAlt: kare.kirpAlt })}</div>`
+        ? `<div style="position:absolute;left:${sol}px;top:${ust}px">${cerceve(cihazTuru, g.url, cihazGen, k * 1.4, z, { boyut: g.boyut, kirpAlt: kare.kirpAlt })}</div>`
         : '';
-    const rozet = kare.rozet
-        ? `<div style="position:absolute;right:${(tvMi ? 150 : 90) * k}px;top:${ust - 80 * k + (yuk - ust) * kare.rozet.y}px">${rozetHtml(kare.rozet, k * 1.3, z)}</div>`
-        : '';
-    return belge(gen, yuk, z, yay + metin + cihaz + rozet);
+    let ek = '';
+    if (kare.rozet)
+        ek += `<div style="position:absolute;right:${sol - 40 * k}px;top:${ust + (yuk - ust) * kare.rozet.y - 20 * k}px">${rozetHtml(kare.rozet, k * 1.35, z)}</div>`;
+    if (kare.yakin && g) ek += yakinKutusu(kare.yakin, g, cihazGen, sol, ust, gen, yuk, k);
+    return belge(gen, yuk, z, yay + metin + cihaz + ek);
+}
+
+/** Yatay karenin metin olculeri (test de bunu kullanir). */
+function yatayOlcu({ gen, yuk }) {
+    return { baslikPx: yuk * 0.082, baslikGen: gen * 0.9, altPx: yuk * 0.034, altGen: gen * 0.8, altSatir: 1 };
+}
+
+/**
+ * Cagri kutusu: ham karenin `yakin` bolgesini ({x,y,w,h} oranlari) buyutup beyaz kenarli
+ * bir kartla cihazin sag alt kosesine bindirir. `yer: 'sol'` sol alta koyar.
+ */
+function yakinKutusu(y, g, cihazGen, sol, ust, gen, yuk, k) {
+    const kartGen = gen * (y.genislik || 0.3);
+    const imgGen = kartGen / y.w;
+    const imgYuk = imgGen * (g.boyut.yuk / g.boyut.gen);
+    const kartYuk = imgYuk * y.h;
+    const kenar = 10 * k;
+    const x = y.yer === 'sol' ? sol - kartGen * 0.18 : sol + cihazGen - kartGen * 0.82;
+    const top = Math.min(yuk - kartYuk - 40 * k, ust + (yuk - ust) * (y.ust ?? 0.45));
+    return (
+        `<div style="position:absolute;left:${x}px;top:${top}px;width:${kartGen + kenar * 2}px;padding:${kenar}px;border-radius:${36 * k}px;background:#FFFFFF;` +
+        `box-shadow:0 ${30 * k}px ${80 * k}px rgba(18,48,27,0.30), 0 0 0 ${3 * k}px ${MARKA.yesil}">` +
+        `<div style="position:relative;width:${kartGen}px;height:${kartYuk}px;border-radius:${26 * k}px;overflow:hidden;background:#fff">` +
+        `<img src="${g.url}" style="position:absolute;width:${imgGen}px;left:${-y.x * imgGen}px;top:${-y.y * imgYuk}px"></div></div>`
+    );
 }
 
 /** Saat karesi (Apple Watch 422x514 ya da Wear 1:1): ustte kisa baslik, altta ekran. */
@@ -619,14 +725,10 @@ function metinOlcusu(set) {
         const k = gen / 1320;
         return { baslikPx: 118 * k, baslikGen: gen - 2 * 104 * k, altPx: 50 * k, altGen: Math.min(1060 * k, gen - 2 * 104 * k), altSatir: 2 };
     }
-    if (set.yon === 'yatay') {
-        const k = yuk / 1600;
-        const kt = Math.min(k, gen / 2560);
-        return { baslikPx: 122 * kt, baslikGen: gen * 0.38, altPx: 54 * kt, altGen: gen * 0.38, altSatir: 3 };
-    }
+    if (set.yon === 'yatay') return yatayOlcu(set.boyut);
     if (set.cihaz === 'wearYuvarlak') return { baslikPx: gen * 0.068, baslikGen: gen * 0.84, altPx: 0, altGen: 1, altSatir: 0 };
     const k = gen / 422;
     return { baslikPx: 30 * k, baslikGen: gen - 44 * k, altPx: 0, altGen: 1, altSatir: 0 };
 }
 
-module.exports = { sayfaUret, oneCikanSayfa, metinOlcusu, metinGenisligi, metinAlti, ORTALAMA_GENISLIK, ZEMIN, MARKA };
+module.exports = { yatayOlcu, kibleKameraEkrani, sayfaUret, oneCikanSayfa, metinOlcusu, metinGenisligi, metinAlti, ORTALAMA_GENISLIK, ZEMIN, MARKA };

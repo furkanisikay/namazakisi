@@ -193,7 +193,7 @@ const SETLER = {
             // iPhone'da sessize alma yalniz Odak ile: uygulama rehberle bir kez kurdurur.
             kare('04-camide', {
                 baslik: 'Camide telefonunuz\nçalmaz',
-                alt: 'Bir kez kurun; camiye varınca iPhone’unuz Namaz odağına geçer.',
+                alt: 'Kısayollar ile bir kez kurun; camiye varınca Namaz odağı açılır.',
                 zemin: 'acik',
                 vakit: 1,
                 kaynak: ['23-namazda-sessiz.png'],
@@ -245,7 +245,7 @@ const SETLER = {
             kare('08-kaza', ORTAK.kaza),
             kare('09-ipad', {
                 baslik: 'Birinde işaretleyin,\nhepsi bilsin',
-                alt: 'Aynı Wi-Fi’daki iPhone ve iPad işaretlediğinizi anında paylaşır.',
+                alt: 'iPhone ve iPad’i eşleştirin; birinde işaretlediğiniz namaz öbürüne de geçer.',
                 zemin: 'acik',
                 vakit: 2,
                 yerlesim: 'telefonTablet',
@@ -288,22 +288,34 @@ const SETLER = {
                 zemin: 'acik',
                 vakit: 2,
                 kaynak: ['yatay-01-bugun.png'],
+                yakin: { x: 0.205, y: 0.42, w: 0.27, h: 0.37, genislik: 0.23, ust: 0.3, yer: 'sol' },
                 iddialar: ['ipad'],
             }),
-            kare('02-muhafiz', { ...ORTAK.muhafiz, bildirim: undefined, kaynak: ['yatay-02-ayarlar.png'] }),
+            kare('02-muhafiz', {
+                ...ORTAK.muhafiz,
+                bildirim: undefined,
+                kaynak: ['yatay-02-ayarlar.png'],
+                yakin: { x: 0.41, y: 0.25, w: 0.585, h: 0.45, genislik: 0.36, ust: 0.33 },
+            }),
             kare('03-camide', {
                 baslik: 'Camide iPad\nçalmaz',
-                alt: 'Bir kez kurun; camiye varınca Namaz odağı açılır.',
+                alt: 'Kısayollar ile bir kez kurun; camiye varınca Namaz odağı açılır.',
                 zemin: 'acik',
                 vakit: 1,
                 kaynak: ['yatay-03-ayarlar-camideyim.png'],
+                yakin: { x: 0.41, y: 0.08, w: 0.585, h: 0.42, genislik: 0.36, ust: 0.33 },
                 iddialar: ['ios-camide-odak'],
             }),
-            kare('04-kaza', { ...ORTAK.kaza, kaynak: ['yatay-04-kaza.png'] }),
+            kare('04-kaza', {
+                ...ORTAK.kaza,
+                alt: 'Kalan borç ve her hareketin geçmişi yan yana.',
+                kaynak: ['yatay-04-kaza.png'],
+                yakin: { x: 0.185, y: 0.075, w: 0.255, h: 0.22, genislik: 0.26, ust: 0.3, yer: 'sol' },
+            }),
             kare('05-seri', { ...ORTAK.seri, kaynak: ['yatay-05-ilerleme.png'] }),
             kare('06-ev-ekrani', {
                 baslik: 'Evde vakit\npanosu',
-                alt: 'iPad’iniz dururken vakitleri ve kalan süreyi büyük gösterir.',
+                alt: 'Ev ekranını açın; iPad yatay dururken vakitler büyük görünür.',
                 zemin: 'gece',
                 vakit: 2,
                 kaynak: ['yatay-06-ev-ekrani.png'],
@@ -362,6 +374,8 @@ const SETLER = {
                 zemin: 'acik',
                 vakit: 1,
                 yerlesim: 'ikiTelefon',
+                // Emulatorun sanal odasi yerine sade avlu zemini + uygulamanin kendi yol katmani.
+                kibleKamera: true,
                 katmanlar: [
                     { cihaz: 'androidTelefon', kaynak: ['38-kible-kamera-egik-25.png', '35-kible-kamera.png'] },
                     { cihaz: 'androidTelefon', kaynak: ['32-kible.png'] },
@@ -444,9 +458,15 @@ const SETLER = {
                 vakit: 2,
                 kaynak: ['01-ana-ekran.png'],
                 kirpAlt: 0.075,
+                yakin: { x: 0.185, y: 0.42, w: 0.27, h: 0.44, genislik: 0.24, ust: 0.38, yer: 'sol' },
                 iddialar: ['tablet'],
             }),
-            kare('02-muhafiz', { ...ORTAK.muhafiz, bildirim: undefined, kirpAlt: 0.075 }),
+            kare('02-muhafiz', {
+                ...ORTAK.muhafiz,
+                bildirim: undefined,
+                kirpAlt: 0.075,
+                yakin: { x: 0.455, y: 0.19, w: 0.53, h: 0.52, genislik: 0.3, ust: 0.3 },
+            }),
             kare('03-camide', {
                 baslik: 'Camide tabletiniz\nçalmaz',
                 alt: 'Yakındaki camiler haritada; girince sessize geçer.',
@@ -456,7 +476,12 @@ const SETLER = {
                 kirpAlt: 0.075,
                 iddialar: ['camideyim', 'tablet'],
             }),
-            kare('04-kaza', { ...ORTAK.kaza, alt: 'Kalan borç ve her hareketin geçmişi yan yana.', kirpAlt: 0.075 }),
+            kare('04-kaza', {
+                ...ORTAK.kaza,
+                alt: 'Kalan borç ve her hareketin geçmişi yan yana.',
+                kirpAlt: 0.075,
+                yakin: { x: 0.165, y: 0.12, w: 0.28, h: 0.24, genislik: 0.27, ust: 0.3, yer: 'sol' },
+            }),
             kare('05-vakit-sesi', {
                 baslik: 'Vakit girince\nkendi sesiniz',
                 alt: 'Her vakte ayrı ses seçin; dilerseniz kendi kaydınızı.',
@@ -464,9 +489,17 @@ const SETLER = {
                 vakit: 2,
                 kaynak: ['41-vakit-sesi-secenekler.png', '40-vakit-sesi.png'],
                 kirpAlt: 0.075,
+                yakin: { x: 0.455, y: 0.08, w: 0.53, h: 0.5, genislik: 0.3, ust: 0.3 },
                 iddialar: ['vakit-sesi', 'tablet'],
             }),
-            kare('06-gece', { ...ORTAK.nafile, rozet: undefined, kirpAlt: 0.075 }),
+            // Ana ekrandaki gece zinciri: teheccud satiri cagri kutusunda buyutulur.
+            kare('06-gece', {
+                ...ORTAK.nafile,
+                rozet: undefined,
+                kaynak: ['02-ana-nafile-zinciri.png'],
+                kirpAlt: 0.075,
+                yakin: { x: 0.455, y: 0.595, w: 0.275, h: 0.23, genislik: 0.36, ust: 0.38 },
+            }),
         ],
     },
     tv: {
