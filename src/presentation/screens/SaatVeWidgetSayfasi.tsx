@@ -25,6 +25,7 @@ import { AyarCapasi } from '../components/ayar/AyarCapasi';
 import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { VakitSayaciBolumu } from '../components/hatirlatmalar/VakitSayaciBolumu';
 import { BileklikRehberKarti } from '../components/bildirim/BileklikRehberKarti';
+import { saatUygulamasiDestekli } from '../../../modules/expo-siri-kisayollari/src';
 
 type Navigasyon = { navigate: (ekran: string) => void };
 
@@ -45,14 +46,17 @@ const SaatVeWidgetIcerik: React.FC = () => {
     const ayrac = { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: renkler.sinir };
 
     const satirlar: React.ReactNode[] = [];
-    if (Platform.OS === 'android') {
+    // Apple Watch (#285 cilası): yalnız saat uygulamasını taşıyan build'de; orada saat
+    // konuşmadığı için yalnız uyandırma seçimi vardır.
+    const appleWatch = Platform.OS === 'ios' && saatUygulamasiDestekli();
+    if (Platform.OS === 'android' || appleWatch) {
         satirlar.push(
             <AyarSatiri
                 key="saat"
                 varyant="navigasyon"
                 ikon={<FontAwesome5 name="clock" size={20} color={ikon} />}
-                baslik="Akıllı saat"
-                ozet="Uyandırma ve sesli okuma nerede"
+                baslik={appleWatch ? 'Apple Watch' : 'Akıllı saat'}
+                ozet={appleWatch ? 'Uyandırma nerede çalsın' : 'Uyandırma ve sesli okuma nerede'}
                 onPress={() => navigation.navigate('SaatAyarlari')}
             />
         );

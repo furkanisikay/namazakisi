@@ -127,7 +127,12 @@ echo "saat paketi: $BUNDLE"
 
 # --- Kareler ----------------------------------------------------------------------
 # ad:ekran:bekleme(sn)
-KARELER="01-ana:ana:12 02-vakitler:vakitler:8 03-kildim-onayi:onay:8 04-tesbihat:tesbihat:8"
+# Kible: simulatorde pusula yok → sabit yon (`NAMAZ_SAAT_TOHUM_YON`, Istanbul kiblesi
+# ~152° → hizada (yesil halka)). Uyandirma: akilli alarm oturumu simulatorde tetiklenmez →
+# ekran yukun ilk uyandirma kaydiyla, oturumsuz cizilir.
+# Sayfalar (dikey TabView): 01 Simdi, 02 Bugun kadrani, 03 kilinmis Simdi, 04 Kible,
+# 05 Tesbihat, 06 Uyandirma, 07 Kildim onayi.
+KARELER="01-simdi:ana:20 02-bugun:vakitler:14 03-kilindi:kilindi:14 04-kible:kible:16 05-tesbihat:tesbihat:14 06-uyandirma:uyandirma:16 07-kildim-onayi:onay:12"
 BEKLENEN=0
 KURTARILDI=0
 for k in $KARELER; do
@@ -141,6 +146,7 @@ for k in $KARELER; do
       SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
       SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
       xcrun simctl launch "$SAAT" "$BUNDLE"; then
       ACILDI=1
       break
@@ -172,6 +178,11 @@ for k in $KARELER; do
     continue
   fi
   sleep "$BEKLE"
+  if [ "$EKRAN" = "kible" ]; then
+    echo "::group::Kıble açılış günlüğü"
+    xcrun simctl spawn "$SAAT" log show --style compact --last 25s --predicate 'process CONTAINS "NamazSaat"' 2>/dev/null | tail -60 || true
+    echo "::endgroup::"
+  fi
   HAM="$CIKTI/$AD.ham.png"
   xcrun simctl io "$SAAT" screenshot --type=png "$HAM" || { echo "UYARI: $AD çekilemedi"; continue; }
   # App Store alfa kanali kabul etmez → JPEG'den gecirip alfasiz PNG yap.
@@ -179,6 +190,96 @@ for k in $KARELER; do
   sips -s format png "$CIKTI/$AD.jpg" --out "$CIKTI/$AD.png" >/dev/null
   rm -f "$HAM" "$CIKTI/$AD.jpg"
 done
+
+# --- Tani: cokme raporlari (bir kare acilis ekraninda kaldiysa nedeni buradadir) ----
+for rapor in $(ls -t "$HOME/Library/Logs/DiagnosticReports/" 2>/dev/null | grep -i "NamazSaat" | head -2); do
+  echo "::group::Çökme raporu: $rapor"
+  head -c 6000 "$HOME/Library/Logs/DiagnosticReports/$rapor"
+  echo "::endgroup::"
+done
+
+# --- Animasyon videolari (istege bagli 3. arguman: video dizini) -------------------
+# Hareket yalniz olayla baslar (uyandirma ekrani acilinca ikon BIR KEZ seker) → acilisi
+# kaydetmek animasyonu gosterir. Videolar ayri dizindedir: ASC'ye kare olarak gitmesin.
+VIDEO="${3:-}"
+if [ -n "$VIDEO" ]; then
+  mkdir -p "$VIDEO"
+  # kildim-sahnesi: Simdi acilir, 1,5 sn sonra "Kildim" kendiliginden oynar (halka kapanir + tik).
+  # Ilk kayit bazen tek kare kaliyor (kaydedici isinmamis) → once bir isinma kaydi.
+  for v in "isinma:ana" "kildim-sahnesi:kildimDemo" "simdi-acilisi:ana""bugun-acilisi:vakitler" "uyandirma-acilisi:uyandirma" "kible-acilisi:kible"; do
+    IFS=: read -r AD EKRAN <<<"$v"
+    xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
+    sleep 1
+    xcrun simctl io "$SAAT" recordVideo --codec=h264 --force "$VIDEO/$AD.mp4" >/dev/null 2>&1 &
+    KAYIT=$!
+    sleep 2
+    SIMCTL_CHILD_TZ="$TZ_ADI" \
+      SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
+      xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1 || echo "UYARI: $AD videosu için uygulama başlatılamadı"
+    sleep 24  # soguk acilis ~10 sn + sahne
+    kill -INT "$KAYIT" 2>/dev/null || true
+    wait "$KAYIT" 2>/dev/null || true
+    if [ -s "$VIDEO/$AD.mp4" ]; then echo "video: $AD.mp4 ($(du -h "$VIDEO/$AD.mp4" | cut -f1))"; else echo "UYARI: $AD videosu yok"; fi
+    if [ "$AD" = "isinma" ]; then rm -f "$VIDEO/$AD.mp4"; fi
+  done
+  # Her zaman acik (sonuk) varyant kareleri — inceleme icin, ASC'ye GITMEZ (video dizininde).
+  for v in "sonuk-simdi:ana" "sonuk-bugun:vakitler" "sonuk-kilindi:kilindi" "sonuk-kible:kible"; do
+    IFS=: read -r AD EKRAN <<<"$v"
+    xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
+    sleep 1
+    SIMCTL_CHILD_TZ="$TZ_ADI" \
+      SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
+      SIMCTL_CHILD_NAMAZ_SAAT_SONUK="1" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
+      xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1 || { echo "UYARI: $AD başlatılamadı"; continue; }
+    sleep 22
+    xcrun simctl io "$SAAT" screenshot --type=png "$VIDEO/$AD.png" >/dev/null 2>&1 && echo "sönük kare: $AD.png" || echo "UYARI: $AD çekilemedi"
+  done
+fi
+
+# --- Kucuk ekran kaniti (istege bagli, video dizinine): en kucuk mevcut saat ----------
+# Magaza seti Ultra'dan kalir; burada 41/42 mm sigmasi TAHMIN degil KARE ile gosterilir.
+if [ -n "${VIDEO:-}" ]; then
+  KUCUK_TIPI=$(xcrun simctl list devicetypes -j | json '(()=>{const t=j.devicetypes.map(x=>x.name);for(const re of [/^Apple Watch Series 9 \(41mm\)/,/^Apple Watch Series 1[0-9] \(42mm\)/,/^Apple Watch SE.*40mm/,/^Apple Watch Series [0-9]+ \(41mm\)/]){const b=t.filter(n=>re.test(n)).sort();if(b.length)return b[0];}return "";})()')
+  if [ -n "$KUCUK_TIPI" ]; then
+    echo "küçük saat: $KUCUK_TIPI"
+    xcrun simctl shutdown "$SAAT" >/dev/null 2>&1 || true
+    SAAT=$(xcrun simctl create "magaza-saat-kucuk" "$KUCUK_TIPI" "$SAAT_RT")
+    if [ -n "${TELEFON:-}" ]; then
+      xcrun simctl unpair "$(xcrun simctl list pairs -j | json 'Object.keys(j.pairs)[0]||""')" >/dev/null 2>&1 || true
+      xcrun simctl pair "$SAAT" "$TELEFON" >/dev/null 2>&1 || echo "UYARI: küçük saat eşlenemedi"
+    fi
+    saatiAc || true
+    xcrun simctl shutdown "$SAAT" >/dev/null 2>&1 || true
+    yerellestir "$SAAT"
+    saatiAc || true
+    xcrun simctl install "$SAAT" "$APP" || echo "UYARI: küçük saate kurulamadı"
+    mkdir -p "$VIDEO/kucuk"
+    for v in "01-simdi:ana" "02-bugun:vakitler" "03-kilindi:kilindi" "04-kible:kible" "06-uyandirma:uyandirma"; do
+      IFS=: read -r AD EKRAN <<<"$v"
+      xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
+      sleep 1
+      SIMCTL_CHILD_TZ="$TZ_ADI" \
+        SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
+        SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
+        SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
+        SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YON="150" \
+        xcrun simctl launch "$SAAT" "$BUNDLE" >/dev/null 2>&1 || { echo "UYARI: küçük $AD başlatılamadı"; continue; }
+      sleep 14
+      xcrun simctl io "$SAAT" screenshot --type=png "$VIDEO/kucuk/$AD.png" >/dev/null 2>&1 \
+        && echo "küçük kare: $AD.png ($(sips -g pixelWidth "$VIDEO/kucuk/$AD.png" | awk '/pixelWidth/{print $2}') px)" \
+        || echo "UYARI: küçük $AD çekilemedi"
+    done
+  else
+    echo "UYARI: küçük saat tipi bulunamadı"
+    xcrun simctl list devicetypes | grep -i watch || true
+  fi
+fi
 
 # --- Ozet -------------------------------------------------------------------------
 {

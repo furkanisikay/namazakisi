@@ -78,9 +78,13 @@ public final class SiriDeposu: @unchecked Sendable {
         static let kuyruk = "namazakisi.siri.kildimKuyrugu"
         static let odak = "namazakisi.siri.odak"
         static let ekranIstegi = "namazakisi.siri.ekranIstegi"
-        static let hepsi = [cizelge, kilinanlar, kuyruk, odak, ekranIstegi]
+        /// Apple Watch sessiz uyandirma cevaplari (#285 cilasi): kimlik → {islem, sonMs}.
+        static let saatUyandirma = "namazakisi.siri.saatUyandirma"
+        /// Saatte basilan teheccud "Kildim"lari (farz kuyruguna ASLA girmez), JS TUKETIR.
+        static let saatNafileKildim = "namazakisi.siri.saatNafileKildim"
+        static let hepsi = [cizelge, kilinanlar, kuyruk, odak, ekranIstegi, saatUyandirma, saatNafileKildim]
         /// Intent'in yazip JS'in TUKETTIGI anahtarlar: goc sonrasi kaynakta birakilmaz.
-        static let olaylar = [kuyruk, odak, ekranIstegi]
+        static let olaylar = [kuyruk, odak, ekranIstegi, saatNafileKildim]
     }
 
     /// Zehirli oge esigi — Android `KildimKuyrugu` ile ayni (5 deneme).
@@ -225,6 +229,85 @@ public final class SiriDeposu: @unchecked Sendable {
               let istek = try? JSONDecoder().decode(EkranIstegi.self, from: veri) else { return nil }
         let yas = simdiMs - istek.ms
         return (yas >= -5_000 && yas <= Self.ekranIstegiTazelikMs) ? istek.ekran : nil
+    }
+
+    // MARK: - Apple Watch sessiz uyandirma (#285 cilasi, Android `SaatUyandirmaDeposu` ikizi)
+
+    private struct SaatUyandirmaKaydi: Codable, Equatable {
+        let islem: String
+        let sonMs: Int64
+    }
+
+    /// Kayit, uyandirmanin anlamini yitirdigi andan bu kadar sonra budanir.
+    public static let saatUyandirmaOmruMs: Int64 = 24 * 3_600_000
+
+    private func saatUyandirmaOku() -> [String: SaatUyandirmaKaydi] {
+        guard let ham = defaults.string(forKey: Anahtar.saatUyandirma),
+              let veri = ham.data(using: .utf8),
+              let sozluk = try? JSONDecoder().decode([String: SaatUyandirmaKaydi].self, from: veri) else { return [:] }
+        return sozluk
+    }
+
+    private func saatUyandirmaYazHam(_ sozluk: [String: SaatUyandirmaKaydi]) {
+        guard let veri = try? JSONEncoder().encode(sozluk), let ham = String(data: veri, encoding: .utf8) else { return }
+        defaults.set(ham, forKey: Anahtar.saatUyandirma)
+    }
+
+    /**
+     * Saat bir uyandirmayi kapatti (ya da Kildim dedi): telefonun YEDEGI artik kurulmaz.
+     * Planlama turu (`LocalSaatAyarlariServisi.teslimBaglaminiOku`) bu kaydi okur ve
+     * `uyandirmaTelefonMs` null doner. Bayat kayitlar (`sonMs` + 1 gun) budanir.
+     */
+    public func saatUyandirmaYaz(id: String, sonMs: Int64, simdiMs: Int64) {
+        kilitli {
+            var sozluk = saatUyandirmaOku().filter { simdiMs - $0.value.sonMs <= Self.saatUyandirmaOmruMs }
+            sozluk[id] = SaatUyandirmaKaydi(islem: "kapat", sonMs: sonMs)
+            saatUyandirmaYazHam(sozluk)
+        }
+    }
+
+    /// JS: `{kimlik: {"islem":"kapat"}}` (Android `saatUyandirmaDurumlari` ile ayni bicim).
+    public func saatUyandirmaJson(simdiMs: Int64) -> String {
+        let sozluk = kilitli { saatUyandirmaOku().filter { simdiMs - $0.value.sonMs <= Self.saatUyandirmaOmruMs } }
+        var sade: [String: [String: String]] = [:]
+        for (id, k) in sozluk { sade[id] = ["islem": k.islem] }
+        guard let veri = try? JSONEncoder().encode(sade), let ham = String(data: veri, encoding: .utf8) else { return "{}" }
+        return ham
+    }
+
+    private struct SaatNafileKildim: Codable, Equatable {
+        let tarih: String
+        let tur: String
+    }
+
+    public func saatNafileKildimEkle(tarih: String, tur: String) {
+        kilitli {
+            var liste: [SaatNafileKildim] = []
+            if let ham = defaults.string(forKey: Anahtar.saatNafileKildim), let veri = ham.data(using: .utf8),
+               let eski = try? JSONDecoder().decode([SaatNafileKildim].self, from: veri) {
+                liste = eski
+            }
+            let yeni = SaatNafileKildim(tarih: tarih, tur: tur)
+            if !liste.contains(yeni) { liste.append(yeni) }
+            if liste.count > Self.azamiKuyruk { liste.removeFirst(liste.count - Self.azamiKuyruk) }
+            if let veri = try? JSONEncoder().encode(liste), let ham = String(data: veri, encoding: .utf8) {
+                defaults.set(ham, forKey: Anahtar.saatNafileKildim)
+            }
+        }
+    }
+
+    /// JS: teheccud Kildim'larini TUKETIR (`[{tarih,tur}]`).
+    public func saatNafileKildimleriniAl() -> String {
+        return kilitli {
+            let ham = defaults.string(forKey: Anahtar.saatNafileKildim) ?? "[]"
+            defaults.removeObject(forKey: Anahtar.saatNafileKildim)
+            return ham
+        }
+    }
+
+    /// Saatten gelen uyandirma cevabi uygulama acikken JS'e duyurulur (yeniden planlama).
+    public func saatUyandirmaDuyur() {
+        duyur("saatUyandirma")
     }
 
     // MARK: - Intent yardimcilari (cihaz saati ve takvimiyle)

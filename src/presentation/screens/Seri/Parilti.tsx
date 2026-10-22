@@ -1,5 +1,7 @@
 /**
- * Parilti — 5/5 (tam) günlerin sürekli "nefes alan" parıltısı (task-3-brief.md §3a).
+ * Parilti — 5/5 (tam) günlerin "nefes alan" parıltısı (task-3-brief.md §3a). SONLUDUR:
+ * açılıştan sonra bir nefes alıp dinlenme hâlinde (görünmez) durur, kaydırma başlayınca
+ * hemen durur (`gokHareketi`) — "boşta sıfır hareket".
  *
  * Svg prop'u DEĞİL, panelin üstüne konan AYRI bir Animated.View katmanı.
  * Gerekçe mimari bir gerçek, spekülasyon değil: `VirtualView.java`'da herhangi
@@ -39,8 +41,9 @@
  * böylece Faz 1'in nihai görünümü (bu katmanın yokluğu) mount anında VE her
  * "nefes" döngüsünün dibinde korunur.
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Animated, {
+  cancelAnimation,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
@@ -50,6 +53,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import { GOK_ZAMANLAMA } from './sabitler';
+import { useGokDurdurmaSayaci } from './gokHareketi';
 
 /** Parıltının tepe (en parlak) opaklığı — dekoratif ayar, zamanlama sabiti
  * DEĞİL (GOK_ZAMANLAMA yalnız süre/gecikme taşır, spec). Dip DAİMA 0'dır
@@ -90,12 +94,24 @@ export const Parilti: React.FC<PariltiProps> = ({ sol, ust, boyut, renk, indeks,
       cizelgeToplam +
       GOK_ZAMANLAMA.PARILTI_GECIKME_SONRASI_MS +
       ((indeks * GOK_ZAMANLAMA.PARILTI_FAZ_CARPANI_GECIKME) % GOK_ZAMANLAMA.PARILTI_GECIKME_FAZ_ARALIGI_MS);
-    opacity.value = withDelay(gecikme, withRepeat(withTiming(PARILTI_TEPE_OPAKLIK, { duration: sure }), -1, true));
-    // Yalnız mount'ta BİR KEZ kurulur — sonsuz döngü (`withRepeat(-1, true)`)
-    // kendi kendine sürer, `indeks`/`cizelgeToplam` sonradan değişse de
+    // SONLU: bir nefes (0 → tepe → 0) ve dinlenme hâlinde (0) durur — "boşta sıfır hareket".
+    opacity.value = withDelay(
+      gecikme,
+      withRepeat(withTiming(PARILTI_TEPE_OPAKLIK, { duration: sure }), GOK_ZAMANLAMA.PARILTI_YARIM_DONGU, true),
+    );
+    // Yalnız mount'ta BİR KEZ kurulur — `indeks`/`cizelgeToplam` sonradan değişse de
     // yeniden tetiklenmemeli.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Kaydırma başladı → animasyon durur, dinlenme hâline (0) döner.
+  const durdurma = useGokDurdurmaSayaci();
+  const ilkDurdurma = useRef(durdurma);
+  useEffect(() => {
+    if (durdurma === ilkDurdurma.current) return;
+    cancelAnimation(opacity);
+    opacity.value = 0;
+  }, [durdurma, opacity]);
 
   const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
 
@@ -107,6 +123,9 @@ export const Parilti: React.FC<PariltiProps> = ({ sol, ust, boyut, renk, indeks,
     <Animated.View
       testID="seri-parilti"
       pointerEvents="none"
+      // Opaklık animasyonu önbellekli donanım katmanı üzerinde: Android her karede
+      // içerdeki Svg'yi yeniden çizmez/ekran dışı tampona almaz, yalnız katman alfası değişir.
+      renderToHardwareTextureAndroid
       style={[{ position: 'absolute', left: sol, top: ust, width: boyut, height: boyut }, animatedStyle]}
     >
       <Svg width={boyut} height={boyut}>

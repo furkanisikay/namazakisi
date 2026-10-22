@@ -106,6 +106,20 @@ function uret(simdi) {
     kerahatDk: { suruk: 20, istiva: 5, gurub: 20 },
     gunler: gunler.map(({ tarih: t, vakitler, kilinan }) => ({ tarih: t, vakitler, kilinan })),
     muhafiz: [],
+    // Kible karesi: telefonun gonderdigi gibi 1 ondaliga yuvarlanmis konum.
+    konum: { lat: 41, lng: 29 },
+    // Uyandirma karesi: yarinin sabah uyandirmasi (telefonun kimlik bicimiyle).
+    uyandirma: [
+      {
+        id: `muhafiz_${gunler[2].tarih}_vakit_imsak_seviye_2_dk_34`,
+        ms: gunler[2].vakitler.gunes - 34 * 60_000,
+        sonMs: gunler[2].vakitler.gunes,
+        tarih: gunler[2].tarih,
+        tur: 'imsak',
+        baslik: 'Sabah vakti',
+        govde: 'Sabah namazı vakti, kalk.',
+      },
+    ],
   };
   return {
     tz: saatDilimi(ofset),

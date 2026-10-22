@@ -389,6 +389,59 @@ describe('useKible', () => {
     oku(3, 100);
     expect(result.current.pusulaDogrulugu).toBe(3);
   });
+
+  it('TİTREME KÖK NEDENİ: el ivmesi (füzyon dışı) yönü oynatmaz — "aşağı" füzyonlu yerçekiminden', async () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(mockSensor.hareket).not.toBeNull());
+    const kareler: KibleKaresi[] = [];
+    act(() => {
+      result.current.abone((k) => kareler.push(k));
+    });
+    // Düz telefon 140°; el her karede ±2 m/s² sallıyor. `acceleration` (doğrusal) bunu taşır →
+    // füzyonlu aşağı = dahil − doğrusal sabit kalır. Eski zincir dahil vektörü süzüyordu.
+    for (let i = 0; i < 100; i++) {
+      act(() => {
+        simdi += 20;
+        const o = duzOkuma(140);
+        const el = i % 2 === 0 ? 2 : -2;
+        mockSensor.manyetik?.(o.manyetik);
+        mockSensor.hareket?.({
+          accelerationIncludingGravity: { x: o.asagi.x + el, y: o.asagi.y - el, z: o.asagi.z },
+          acceleration: { x: el, y: -el, z: 0 },
+        });
+      });
+    }
+    const son = kareler.slice(-40).map((k) => k.baslik);
+    expect(Math.max(...son) - Math.min(...son)).toBeLessThan(0.3);
+    expect(son[son.length - 1]).toBeCloseTo(140, 0);
+  });
+
+  it('manyetik alan uzun süre aralık dışındaysa teşhis "alanBozuk" olur, kalite düşer', async () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(mockSensor.hareket).not.toBeNull());
+    let son: KibleKaresi | null = null;
+    act(() => {
+      result.current.abone((k) => (son = k));
+    });
+    for (let i = 0; i < 30; i++) sur(100);
+    expect(result.current.teshis.alanBozuk).toBe(false);
+    expect((son as unknown as KibleKaresi).kalite).toBeCloseTo(1, 1);
+    // Mıknatıslı kılıf: alan 6 kat (≈290 µT), 2 sn
+    for (let i = 0; i < 100; i++) {
+      act(() => {
+        simdi += 20;
+        const o = duzOkuma(100);
+        mockSensor.manyetik?.({ x: o.manyetik.x * 6, y: o.manyetik.y * 6, z: o.manyetik.z * 6 });
+        mockSensor.hareket?.({ accelerationIncludingGravity: o.asagi });
+      });
+    }
+    expect(result.current.teshis.alanBozuk).toBe(true);
+    expect((son as unknown as KibleKaresi).kalite).toBeLessThan(0.1);
+  });
 });
 
 describe('dogrulukAdimi (saf)', () => {

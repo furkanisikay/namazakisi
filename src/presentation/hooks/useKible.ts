@@ -1,19 +1,19 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { AppState } from 'react-native';
+import { AppState, Platform as PlatformRN } from 'react-native';
 import * as Location from 'expo-location';
 import { Coordinates, Qibla } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
-import { AcisalSuzgec, aciFarki, aciNormalize, hizalandiMi } from '../../core/kible/acilar';
+import { aciFarki, aciNormalize, hizalandiMi } from '../../core/kible/acilar';
+import { DunyaTabani, EksenDenetimi, Vektor3, VektorSuzgeci, dikOrani, egimDerece } from '../../core/kible/cihazYonelimi';
 import {
-  BAKIS_VEKTORU,
-  DunyaTabani,
-  EksenDenetimi,
-  VektorSuzgeci,
-  azimut,
-  dikOrani,
-  dunyaTabaniKur,
-  egimDerece,
-} from '../../core/kible/cihazYonelimi';
+  OneEuroAcisal,
+  Platform,
+  YonCiktisi,
+  YonFiltresi,
+  asagiVektoru,
+  donusHiziCihazEkseni,
+  yonKalitesi,
+} from '../../core/kible/yonFiltresi';
 
 /**
  * Bir sensör karesinin özeti. Saniyede ~50 kez üretilir ve React state'ine YAZILMAZ:
@@ -35,6 +35,16 @@ export interface KibleKaresi {
   taban: DunyaTabani | null;
   /** Gerçek − manyetik kuzey (derece; doğu pozitif). */
   manyetikSapma: number;
+  /** Yön kalitesi 0..1 (`yonKalitesi`) — kalibrasyon rehberinin canlı göstergesi. */
+  kalite: number;
+}
+
+/** Yön süzgecinin teşhisi (kalibrasyon rehberi) — yalnız DEĞİŞİNCE yazılır. */
+export interface KibleTeshisi {
+  /** Manyetik alan büyüklüğü beklenen aralığın dışında (metal/mıknatıs yakın). */
+  alanBozuk: boolean;
+  /** Telefon dururken yön tutarsız sıçrıyor. */
+  tutarsiz: boolean;
 }
 
 /** Ekranda metin olarak görünenler — yalnız DEĞİŞİNCE ve en çok ~4/sn yazılır. */
@@ -67,6 +77,7 @@ interface UseKibleSonuc {
   izinTekrarSorulabilir: boolean | null;
   pusulaDogrulugu: number | null;
   pusulaVar: boolean | null;
+  teshis: KibleTeshisi;
   izinIste: () => Promise<void>;
 }
 
@@ -102,9 +113,7 @@ export function dogrulukAdimi(iz: DogrulukIzi, okuma: number, simdiMs: number): 
 
 /** Sensör örnekleme aralığı (ms). Ekran odaktayken; ~50 Hz akıcı ama pil dostu. */
 export const SENSOR_ARALIGI_MS = 20;
-/** Yön süzgecinin zaman sabiti: titremeyi yutar, dönüşte ~0,1 sn gecikir. */
-export const YON_SUZGECI_TAU_MS = 110;
-/** Yerçekimi/manyetik vektör süzgeci (el titremesi, anlık ivme). */
+/** Eğim (düz ↔ dik geçişi) için yerçekimi süzgeci. Yön süzgeci `YonFiltresi`'nde. */
 export const VEKTOR_SUZGECI_TAU_MS = 70;
 /** Özet (metin) yazım aralığı — ekran okuyucu ve derece yazısı için yeter. */
 export const OZET_ARALIGI_MS = 250;
@@ -136,6 +145,11 @@ function sensorleriYukle(): typeof import('expo-sensors') | null {
  * expo-location başlık okumasından. Manyetometre yoksa ya da eksen denetimi bozuksa yön
  * doğrudan expo-location'a düşer (düz tutuşta doğru, kamera görünümü kapanır).
  *
+ * SÜZME (Kâbe işareti titriyordu — düzeltildi): "aşağı" füzyonlu yerçekimidir (el ivmesi
+ * ayıklanmış), yön `YonFiltresi` ile süzülür (jiroskop doğrulanınca tamamlayıcı süzgeç +
+ * One Euro + ölü bölge) ve kamera tabanı da süzülmüş yönden kurulur — pusula ve kamera
+ * AYNI süzgeçten beslenir. Ölçümler `core/kible/__tests__/yonFiltresi.test.ts`.
+ *
  * `aktif` false iken (sekme odakta değil) hiçbir sensör çalışmaz; uygulama arka plana
  * gidince de durur (pil).
  */
@@ -150,10 +164,13 @@ export const useKible = (aktif = true): UseKibleSonuc => {
   const [pusulaVar, setPusulaVar] = useState<boolean | null>(null);
   const [vektorGuvenilir, setVektorGuvenilir] = useState<boolean | null>(null);
   const [ozet, setOzet] = useState<KibleOzeti>(BOS_OZET);
+  const [teshis, setTeshis] = useState<KibleTeshisi>({ alanBozuk: false, tutarsiz: false });
   const [deneme, setDeneme] = useState(0);
   const [onPlanda, setOnPlanda] = useState(true);
 
   const dogrulukIzi = useRef<DogrulukIzi>(BOS_DOGRULUK_IZI);
+  const dogrulukRef = useRef<number | null>(null);
+  dogrulukRef.current = pusulaDogrulugu;
   const dinleyiciler = useRef(new Set<(k: KibleKaresi) => void>());
   const kibleRef = useRef<number | null>(null);
   const sonKare = useRef<KibleKaresi | null>(null);
@@ -270,10 +287,26 @@ export const useKible = (aktif = true): UseKibleSonuc => {
     if (!calisiyor) return;
     let isMounted = true;
     const abonelikler: Abonelik[] = [];
+    // Pusula ve kamera AYNI süzgeçten beslenir (`core/kible/yonFiltresi`).
+    const platform: Platform = PlatformRN.OS === 'ios' ? 'ios' : 'android';
+    const filtre = new YonFiltresi();
+    // Yedek yol (konum servisi yönü) ve eğim için ayrı, hafif süzgeçler.
+    const yedekSuzgec = new OneEuroAcisal();
     const yerCekimi = new VektorSuzgeci(VEKTOR_SUZGECI_TAU_MS);
-    const manyetik = new VektorSuzgeci(VEKTOR_SUZGECI_TAU_MS);
-    const yonSuzgeci = new AcisalSuzgec(YON_SUZGECI_TAU_MS);
     const denetim = new EksenDenetimi();
+    let bekleyenManyetik: Vektor3 | null = null;
+    let oncekiBaslik: number | null = null;
+    let surekli = 0;
+    let sonTeshis: { alanBozuk: boolean; tutarsiz: boolean } = { alanBozuk: false, tutarsiz: false };
+    const teshisYaz = () => {
+      const t = filtre.teshis;
+      kalite = yonKalitesi(t, dogrulukRef.current);
+      if (t.alanBozuk !== sonTeshis.alanBozuk || t.tutarsiz !== sonTeshis.tutarsiz) {
+        sonTeshis = { alanBozuk: t.alanBozuk, tutarsiz: t.tutarsiz };
+        setTeshis(sonTeshis);
+      }
+    };
+    let kalite = 1;
     let sonManyetikMs = -Infinity;
     let konumBasligi: { gercek: number; manyetik: number; ms: number } | null = null;
     let manyetikSapma = 0;
@@ -301,21 +334,22 @@ export const useKible = (aktif = true): UseKibleSonuc => {
       setOzet(o);
     };
 
-    const yay = (gercekYon: number, egim: number | null, taban: DunyaTabani | null) => {
-      const t = simdi();
-      const baslik = yonSuzgeci.ekle(gercekYon, t);
+    const yay = (baslik: number, egim: number | null, taban: DunyaTabani | null) => {
+      surekli = oncekiBaslik === null ? baslik : surekli + aciFarki(baslik, oncekiBaslik);
+      oncekiBaslik = baslik;
       const kible = kibleRef.current;
       const fark = kible === null ? null : aciFarki(kible, baslik);
       const yeniHizali = fark === null ? false : hizalandiMi(hizali, fark);
       const oran = dikOrani(egim);
       const kare: KibleKaresi = {
         baslik,
-        surekliBaslik: yonSuzgeci.surekli,
+        surekliBaslik: surekli,
         fark,
         dikOrani: oran,
         egim,
         taban,
         manyetikSapma,
+        kalite,
       };
       sonKare.current = kare;
       dinleyiciler.current.forEach((d) => {
@@ -333,15 +367,25 @@ export const useKible = (aktif = true): UseKibleSonuc => {
       );
     };
 
-    const hesapla = () => {
+    /**
+     * Hareket olayında `hareket` gelir (aşağı + jiroskop) ve yön süzgeci ilerletilir;
+     * konum servisi başlığından çağrıldığında (yedek yol) gelmez.
+     */
+    const hesapla = (hareket?: { asagi: Vektor3; donus: Vektor3 | null }) => {
       if (!isMounted) return;
+      const t = simdi();
+      if (hareket) yerCekimi.ekle(hareket.asagi, t);
       const g = yerCekimi.deger;
       const egim = g ? egimDerece(g) : null;
-      const m = manyetik.deger;
-      const t = simdi();
-      const vektorTaze = !!g && !!m && t - sonManyetikMs < MANYETIK_BAYAT_MS;
-      const taban = vektorTaze ? dunyaTabaniKur(g!, m!) : null;
-      const manyetikYon = taban ? azimut(taban, BAKIS_VEKTORU) : null;
+      const vektorTaze = t - sonManyetikMs < MANYETIK_BAYAT_MS;
+      let cikti: YonCiktisi | null = null;
+      if (hareket && vektorTaze) {
+        cikti = filtre.ekle({ asagi: hareket.asagi, manyetik: bekleyenManyetik, donus: hareket.donus, ms: t });
+        bekleyenManyetik = null;
+        teshisYaz();
+      }
+      const taban = cikti?.taban ?? null;
+      const manyetikYon = cikti ? cikti.manyetikYon : null;
 
       // Eksen denetimi: düz tutuşta platform pusulasıyla karşılaştır (yalnız taze okumada).
       if (manyetikYon !== null && egim !== null && egim < 30 && konumBasligi && t - konumBasligi.ms < 500) {
@@ -358,9 +402,13 @@ export const useKible = (aktif = true): UseKibleSonuc => {
       }
 
       if (manyetikYon !== null && !eksenBozuk) {
-        yay(aciNormalize(manyetikYon + manyetikSapma), egim, taban);
-      } else if (konumBasligi && t - konumBasligi.ms < 1500) {
-        yay(konumBasligi.gercek, egim, null);
+        yay(aciNormalize(manyetikYon + manyetikSapma), cikti?.egim ?? egim, taban);
+      } else if (!hareket || !vektorTaze || eksenBozuk) {
+        // Yedek yol (konum servisi yönü): yalnız taze başlıkla; hareket olayı vektör yolu
+        // açıkken bunu tekrar tekrar beslemesin.
+        if (konumBasligi && t - konumBasligi.ms < 1500) {
+          yay(yedekSuzgec.ekle(konumBasligi.gercek, t), egim, null);
+        }
       }
     };
 
@@ -371,10 +419,10 @@ export const useKible = (aktif = true): UseKibleSonuc => {
           s.DeviceMotion.setUpdateInterval?.(SENSOR_ARALIGI_MS);
           abonelikler.push(
             s.DeviceMotion.addListener((e) => {
-              const a = e?.accelerationIncludingGravity;
-              if (!a) return;
-              yerCekimi.ekle({ x: a.x, y: a.y, z: a.z }, simdi());
-              hesapla();
+              // Füzyonlu yerçekimi (el titremesi ayıklanmış) varsa o; jiroskop platform eşlemeli.
+              const asagi = asagiVektoru(e?.accelerationIncludingGravity, e?.acceleration);
+              if (!asagi) return;
+              hesapla({ asagi, donus: donusHiziCihazEkseni(e?.rotationRate, platform) });
             }),
           );
         } catch (err) {
@@ -388,7 +436,7 @@ export const useKible = (aktif = true): UseKibleSonuc => {
             s.Magnetometer.addListener((e) => {
               if (!e || !Number.isFinite(e.x)) return;
               sonManyetikMs = simdi();
-              manyetik.ekle({ x: e.x, y: e.y, z: e.z }, sonManyetikMs);
+              bekleyenManyetik = { x: e.x, y: e.y, z: e.z };
             }),
           );
         } catch (err) {
@@ -480,6 +528,7 @@ export const useKible = (aktif = true): UseKibleSonuc => {
     izinTekrarSorulabilir,
     pusulaDogrulugu,
     pusulaVar,
+    teshis,
     izinIste,
   };
 };

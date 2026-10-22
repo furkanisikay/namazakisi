@@ -9,6 +9,7 @@ import { KAMERA_OPTIGI, kabeyiIzdusur } from '../../../core/kible/kameraProjeksi
 import type { KibleKaresi, KibleOzeti } from '../../hooks/useKible';
 import { KabeSimgesi } from './KabeSimgesi';
 import { HizaHalkasi } from './HizaHalkasi';
+import { KibleYolu } from './KibleYolu';
 
 /** Kamera üstündeki yazılar için koyu tül (görüntü ne olursa olsun okunur). Dekoratif zemin. */
 const TUL = 'rgba(0,0,0,0.55)';
@@ -20,7 +21,8 @@ const KABE_BOYUT = 64;
  *
  * Kamera önizlemesinin üstüne Kâbe yönü iğne deliği modeliyle izdüşürülür
  * (`core/kible/kameraProjeksiyonu`): yön ekrandaysa orada Kâbe işareti ve mesafe, değilse
- * kenarda "sağa/sola dönün" oku. Görüntü yalnız ekranda gösterilir; kaydedilmez, hiçbir
+ * kenarda "sağa/sola dönün" oku; ayaktan Kâbe'ye zeminde bir yol (`KibleYolu`). Görüntü
+ * yalnız ekranda gösterilir; kaydedilmez, hiçbir
  * yere gönderilmez.
  *
  * Kamera izni yalnız bu görünümde, kullanıcı "Kamerayı açın"a bastığında istenir; reddedilirse
@@ -176,6 +178,18 @@ export const KameraGorunumu: React.FC<{
         onMountError={() => setKameraHatasi(true)}
       />
 
+      {/* Yerdeki yol: ayaktan Kâbe'ye (yalnız görsel; işaretin altında birleşir). */}
+      <KibleYolu
+        abone={abone}
+        kibleAcisi={kibleAcisi}
+        genislik={alan.w}
+        yukseklik={alan.h}
+        optik={optik}
+        hizali={ozet.hizali && ozet.dik}
+        renk={renkler.birincil}
+        hareketAzalt={hareketAzalt}
+      />
+
       {/* Ufuk/hedef çerçevesi: ortadaki daire; işaret onun içine gelince hizalısınız. */}
       <View pointerEvents="none" style={[styles.hedef, { top: alan.h / 2 - 48, left: alan.w / 2 - 48 }]}>
         <View style={[styles.hedefHalka, { borderColor: ozet.hizali ? renkler.birincil : 'rgba(255,255,255,0.75)' }]} />
@@ -187,8 +201,13 @@ export const KameraGorunumu: React.FC<{
       <Animated.View pointerEvents="none" testID="kamera-kabe-isareti" style={[styles.kabe, kabeStili]}>
         <KabeSimgesi boyut={KABE_BOYUT} kontur="rgba(255,255,255,0.8)" />
         {mesafe && (
-          <View style={[styles.etiket, { backgroundColor: TUL }]}>
-            <Text style={styles.etiketMetni}>{mesafe}</Text>
+          // İşaret kutusundan (64) GENİŞ kap: "2.405 km" iki satıra bölünmesin, ortalı kalsın.
+          <View style={styles.etiketKap}>
+            <View style={[styles.etiket, { backgroundColor: TUL }]}>
+              <Text style={styles.etiketMetni} numberOfLines={1}>
+                {mesafe}
+              </Text>
+            </View>
           </View>
         )}
       </Animated.View>
@@ -240,7 +259,8 @@ const styles = StyleSheet.create({
   hedef: { position: 'absolute', width: 96, height: 96, alignItems: 'center', justifyContent: 'center' },
   hedefHalka: { width: 96, height: 96, borderRadius: 48, borderWidth: 2 },
   kabe: { position: 'absolute', top: 0, left: 0, width: KABE_BOYUT, alignItems: 'center' },
-  etiket: { marginTop: 6, paddingHorizontal: 10, paddingVertical: 3, borderRadius: 10 },
+  etiketKap: { width: 160, marginTop: 6, alignItems: 'center' },
+  etiket: { paddingHorizontal: 10, paddingVertical: 3, borderRadius: 10 },
   etiketMetni: { color: TUL_METNI, fontSize: 12, fontWeight: '600', fontVariant: ['tabular-nums'] },
   ok: { position: 'absolute', top: '45%', width: 44, height: 64, alignItems: 'center', justifyContent: 'center' },
   okSag: { right: 8 },

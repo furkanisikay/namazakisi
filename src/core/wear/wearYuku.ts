@@ -44,6 +44,14 @@ export const WEAR_GUN_SAYISI = 31;
  */
 export const WEAR_YUK_BAYT_SINIRI = 90_000;
 
+/**
+ * Apple Watch (WatchConnectivity `updateApplicationContext`) için daha DAR sınır.
+ * Apple bağlam sözlüğünün üst sınırını belgelemez (`WCErrorCodePayloadTooLarge`);
+ * yaygın raporlar ~64 KB der. Ölçülmedi → muhafazakâr 60 KB. Aşılırsa aynı
+ * `planiSigdir` en uzak vakit penceresini bütün olarak düşürür.
+ */
+export const APPLE_WATCH_YUK_BAYT_SINIRI = 60_000;
+
 export const WEAR_VAKITLER: readonly VakitAdi[] = ['imsak', 'gunes', 'ogle', 'ikindi', 'aksam', 'yatsi'];
 
 /**
@@ -173,16 +181,22 @@ export interface WearYukGirdisi {
     kilinanlar: Record<string, VakitAdi[]>;
     /** Verilmezse plan boş gider (muhafız bilgisi okunamadı). */
     muhafiz?: WearMuhafizYukGirdisi;
-    /** Testte küçük sınır denemek için. */
+    /** Testte küçük sınır denemek için; Apple Watch `APPLE_WATCH_YUK_BAYT_SINIRI` geçer. */
     baytSiniri?: number;
+    /**
+     * Plan kayıtları çözülmüş anons cümlesini (`anons`) taşısın mı? Varsayılan evet
+     * (Wear OS saati konuşabilir). Apple Watch konuşmaz → `false`: kullanılmayan metin
+     * dar bağlam sınırını yemesin.
+     */
+    anonsMetinleri?: boolean;
     /** Now Bar seçimi ve öne çıkan dilimler (`CanliSayacPlanlayici` saat payı). */
     canli?: WearCanli;
     /**
-     * Saatin kıble pusulası için yaklaşık konum eklensin mi? Yalnız Wear OS (kıble
-     * orada). Apple Watch'a gönderilmez: kullanılmayan konum cihazdan çıkmasın.
+     * Saatin kıble pusulası için yaklaşık konum eklensin mi? İki saatte de kıble var
+     * (Apple Watch #285 cilası); konum `wearKonumuOlustur` ile ~11 km'ye yuvarlanır.
      */
     kibleKonumu?: boolean;
-    /** Saatin uyandırma listesi (yalnız Wear OS ve kullanıcı saati seçtiyse). */
+    /** Saatin uyandırma listesi (kullanıcı saati seçtiyse; Wear OS ve Apple Watch). */
     uyandirma?: WearUyandirmaKaydi[];
     /** Anons yeri (yalnız Wear OS). */
     anonsYeri?: AnonsYeri;
@@ -221,7 +235,11 @@ export function wearYukuOlustur(g: WearYukGirdisi): WearYuku {
     };
     const konum = g.kibleKonumu ? wearKonumuOlustur(g.koordinat) : undefined;
     if (konum) taban.konum = konum;
-    const gruplar = g.muhafiz ? wearMuhafizPlaniOlustur({ koordinat: g.koordinat, bugunIso: g.bugunIso, ...g.muhafiz }) : [];
+    const hamGruplar = g.muhafiz ? wearMuhafizPlaniOlustur({ koordinat: g.koordinat, bugunIso: g.bugunIso, ...g.muhafiz }) : [];
+    const gruplar =
+        g.anonsMetinleri === false
+            ? hamGruplar.map((grup) => grup.map(({ anons: _anons, ...kayit }) => kayit))
+            : hamGruplar;
     return planiSigdir(taban, gruplar, g.baytSiniri ?? WEAR_YUK_BAYT_SINIRI);
 }
 

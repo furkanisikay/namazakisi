@@ -1,0 +1,19 @@
+# tohum: ozellik
+# hazirlik: kible-kalibrasyon
+# Kalibrasyon rehberi: manyetik alan 6 kat (≈280 µT, "metal/miknatis yakin") → rehber
+# kendiliginden acilir. Once pusula, sonra kamera gorunumunde (ayni bilesen).
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _acilis.yaml
+- tapOn: "Kıble"
+- extendedWaitUntil:
+    visible:
+      id: "kalibrasyon-rehberi"
+    timeout: 30000
+- takeScreenshot: ozk/36-kible-kalibrasyon
+- tapOn: "Kamera modu"
+- extendedWaitUntil:
+    visible:
+      id: "kalibrasyon-rehberi"
+    timeout: 20000
+- takeScreenshot: ozk/37-kible-kalibrasyon-kamera

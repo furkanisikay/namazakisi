@@ -39,6 +39,7 @@ on:
       - 'tv/app/src/test/resources/vakit-fiksturu.json'
       - 'tv/app/src/main/assets/iller.json'
       - 'wear/app/src/test/resources/ornek-yuk.json'
+      - 'wear/app/src/test/resources/kible-ornekleri.json'
       - 'src/core/siri/**'
       - 'src/core/widget/iosWidgetKarari.ts'
       - 'android/app/src/test/resources/widget-ornek.json'
@@ -97,11 +98,9 @@ jobs:
             modules/expo-siri-kisayollari/ios/VakitKarari.swift \
             modules/expo-siri-kisayollari/ios/WidgetKarari.swift \
             modules/expo-siri-kisayollari/ios/SaatIletisi.swift \
-            targets/saat/ortak/SaatYuku.swift \
-            targets/saat/ortak/SaatDeposu.swift \
-            targets/saat/ortak/Tesbihat.swift \
+            targets/saat/ortak/*.swift \
             targets/saat/test/main.swift
-          "$RUNNER_TEMP/saat-test" wear/app/src/test/resources/ornek-yuk.json
+          "$RUNNER_TEMP/saat-test" wear/app/src/test/resources/ornek-yuk.json wear/app/src/test/resources/kible-ornekleri.json
 
       # Apple TV panosu: adhan JS'in Swift taşıması — telefonun fikstürüyle epoch ms BİREBİR.
       - name: 🧪 TV çekirdeği (telefonun adhan fikstürü)

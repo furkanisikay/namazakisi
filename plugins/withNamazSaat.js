@@ -122,6 +122,10 @@ function saatInfoPlist(surum, derleme, anaKimlik) {
   <string>${xmlKacir(anaKimlik)}</string>
   <key>WKRunsIndependentlyOfCompanionApp</key>
   <false/>
+  <key>WKBackgroundModes</key>
+  <array>
+    <string>alarm</string>
+  </array>
 ${PLIST_SONU}`;
 }
 

@@ -63,6 +63,7 @@ struct TesbihatEkrani: View {
             }
         }
         .navigationTitle("Tesbihat")
+        .containerBackground(TesbihatRenk.ton.opacity(0.22).gradient, for: .tabView)
         .onAppear {
             durum = SaatDeposu.varsayilan.tesbihatOku(simdiMs: SaatDeposu.simdiMs())
         }
@@ -72,11 +73,12 @@ struct TesbihatEkrani: View {
         VStack(spacing: 2) {
             ZStack {
                 Circle()
-                    .stroke(Color.secondary.opacity(0.3), lineWidth: 6)
+                    .stroke(TesbihatRenk.ton.opacity(0.25), lineWidth: 9)
                 Circle()
-                    .trim(from: 0, to: CGFloat(durum.fazIlerlemesi))
-                    .stroke(SaatGorunum.yesil, style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                    .trim(from: 0, to: CGFloat(durum.tamamMi ? 1 : durum.fazIlerlemesi))
+                    .stroke(durum.tamamMi ? SaatGorunum.yesil : TesbihatRenk.ton, style: StrokeStyle(lineWidth: 9, lineCap: .round))
                     .rotationEffect(.degrees(-90))
+                    .animation(.easeOut(duration: 0.15), value: durum.toplam)
                 if durum.tamamMi {
                     Image(systemName: "checkmark")
                         .font(.system(size: 26, weight: .bold))
@@ -107,6 +109,16 @@ struct TesbihatEkrani: View {
                     .lineLimit(3)
                     .minimumScaleFactor(0.5)
             } else {
+                // Dort faz noktasi (tamamlanan dolu, suren halka): toplam ilerleme rakamsiz okunur.
+                HStack(spacing: 5) {
+                    ForEach(Tesbihat.Faz.allCases, id: \.rawValue) { f in
+                        Circle()
+                            .fill(f.rawValue < durum.faz.rawValue ? TesbihatRenk.ton : Color.clear)
+                            .overlay(Circle().stroke(TesbihatRenk.ton.opacity(f == durum.faz ? 1 : 0.5), lineWidth: 1.5))
+                            .frame(width: 7, height: 7)
+                    }
+                }
+                .accessibilityHidden(true)
                 Text("\(durum.toplam)/\(Tesbihat.toplamHedef)")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
@@ -145,4 +157,9 @@ struct TesbihatEkrani: View {
         case .yok: break
         }
     }
+}
+
+enum TesbihatRenk {
+    /// Tesbihatin tonu (nane yesili): vakit renklerinden ve "kilindi" yesilinden ayrisir. Dekoratif.
+    static let ton = Color(red: 0.35, green: 0.85, blue: 0.75)
 }

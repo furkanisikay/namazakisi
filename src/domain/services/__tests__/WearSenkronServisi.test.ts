@@ -147,7 +147,7 @@ describe('gonder', () => {
             siriKoprusu.saatKoprusu.mockReturnValue(null);
         });
 
-        it('Wear şemasıyla gönderir (31 gün + kılınmışlık); Android modülüne dokunmaz', async () => {
+        it('Wear şemasıyla gönderir (31 gün + kılınmışlık + yaklaşık konum); Android modülüne dokunmaz', async () => {
             konumKur();
             await servis.gonder();
             expect(modul.durumGonder).not.toHaveBeenCalled();
@@ -157,18 +157,44 @@ describe('gonder', () => {
             expect(yuk.konumAdi).toBe('Fatih, İstanbul');
             expect(yuk.gunler).toHaveLength(31);
             expect(yuk.gunler[1].kilinan).toEqual(['imsak']);
-            // Apple Watch'ta kıble yok → konum cihazdan çıkmaz.
-            expect('konum' in yuk).toBe(false);
+            // Kıble Apple Watch'ta da var (#285 cilası): ~11 km'ye yuvarlanmış konum.
+            expect(yuk.konum).toEqual({ lat: 41, lng: 29 });
+            // Apple Watch konuşmaz → anons yeri gitmez.
+            expect(yuk).not.toHaveProperty('anonsYeri');
         });
 
-        it('muhafız AÇIK olsa da plan ve Now Bar payı GİTMEZ (iPhone bildirimi saate yansır — çift bildirim yok)', async () => {
+        it('muhafız AÇIKKEN hazır plan GİDER (saat telefonla aynı kimlikle kurar); Now Bar payı ve anons metni GİTMEZ', async () => {
             konumKur(undefined, { aktif: true, ...ESKI_AYAR });
             await servis.gonder();
             const yuk = saatYuku();
-            expect(yuk.muhafiz).toEqual([]);
+            expect(yuk.muhafiz.length).toBeGreaterThan(0);
+            for (const k of yuk.muhafiz) {
+                expect(k.id).toMatch(/^muhafiz_\d{4}-\d{2}-\d{2}_vakit_/);
+                expect(k).not.toHaveProperty('anons');
+            }
             expect(yuk).not.toHaveProperty('canli');
-            // Plan için diske hiç bakılmaz (muhafız kılınmışlığı yalnız Wear planı içindir).
-            expect(mockMuhafizKilinan).not.toHaveBeenCalled();
+            // Plan kılınmışlığı muhafız diskiyle birleştirilir (telefonla aynı kural).
+            expect(mockMuhafizKilinan).toHaveBeenCalled();
+            // Dar bağlam sınırı (WatchConnectivity): Wear'ın 90 KB'ı değil.
+            expect(saat.durumGonder.mock.calls[0][0].length).toBeLessThanOrEqual(60_000);
+        });
+
+        it('uyandırma listesi YALNIZ saat uygulaması bu build\'deyken ve "saatte" seçiliyken', async () => {
+            konumKur();
+            const taban = (AsyncStorage.getItem as jest.Mock).getMockImplementation()!;
+            (AsyncStorage.getItem as jest.Mock).mockImplementation(async (k: string) =>
+                k === DEPOLAMA_ANAHTARLARI.SAAT_AYARLARI ? JSON.stringify({ uyandirmaYeri: 'saat', anonsYeri: 'saat' }) : taban(k)
+            );
+            siriKoprusu.saatUygulamasiDestekli.mockReturnValue(false);
+            await servis.gonder();
+            // Saat uygulaması yok sayılır → "telefon" (yedek gecikmesi de uygulanmaz).
+            expect(saatYuku()).not.toHaveProperty('uyandirma');
+
+            servis.__testIcinSifirla();
+            siriKoprusu.saatUygulamasiDestekli.mockReturnValue(true);
+            await servis.gonder();
+            expect(saatYuku(1).uyandirma).toEqual([]);
+            siriKoprusu.saatUygulamasiDestekli.mockReturnValue(false);
         });
 
         it('içerik aynıysa ikinci kez göndermez; köprü hata verirse sonraki gönderim yeniden dener', async () => {
@@ -180,13 +206,14 @@ describe('gonder', () => {
             expect(saat.durumGonder).toHaveBeenCalledTimes(2);
         });
 
-        it('baslat: kılınmışlık değişince saat tazelenir; plan gözlemcisi Apple Watch\'ı TETİKLEMEZ', async () => {
+        it('baslat: kılınmışlık değişince saat tazelenir; plan gözlemcisi Apple Watch\'ı da tazeler', async () => {
             konumKur();
             servis.baslat();
             expect(mockDinleyiciAyarla).toHaveBeenCalledTimes(1);
             muhafizPlaniDegistiBildir({ aktif: true, matris: muhafizMatrisiniCoz(ESKI_AYAR) });
             await servis.gonder();
             expect(saat.durumGonder).toHaveBeenCalledTimes(1);
+            expect(saatYuku().muhafiz.length).toBeGreaterThan(0);
             const dinleyici = mockDinleyiciAyarla.mock.calls[0][0] as () => void;
             mockAralik.mockResolvedValue({
                 basarili: true,

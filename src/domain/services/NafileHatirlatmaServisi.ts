@@ -224,6 +224,18 @@ export class NafileHatirlatmaServisi {
         } catch (e) {
             Logger.warn('NafileHatirlatma', 'Alarm Kildim kuyrugu okunamadi', e);
         }
+        // Apple Watch'ın sessiz uyandırmasında basılan teheccüd "Kıldım"ı (#285 cilası):
+        // farz kuyruğuna değil buraya düşer; aynı susturma hafızası.
+        try {
+            const { saatNafileKildimleriniAl } =
+                require('../../../modules/expo-siri-kisayollari/src') as typeof import('../../../modules/expo-siri-kisayollari/src');
+            for (const k of await saatNafileKildimleriniAl()) {
+                if (k.tur !== 'teheccud' || !/^\d{4}-\d{2}-\d{2}$/.test(k.tarih)) continue;
+                await LocalNafileServisi.kilindiIsaretle(k.tarih, 'teheccud', bugunuAl());
+            }
+        } catch (e) {
+            Logger.warn('NafileHatirlatma', 'Saat Kildim kuyrugu okunamadi', e);
+        }
     }
 
     private async planlamayiCalistir(koordinatlar: NafileKoordinat | null, okuyucu: PlanliBildirimOkuyucu): Promise<void> {

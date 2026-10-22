@@ -108,6 +108,103 @@ tohumla() {
   adb shell run-as "$PAKET" cp /data/local/tmp/namazakisi_cami.xml shared_prefs/namazakisi_cami.xml
 }
 
+# Akis oncesi cihaz hazirligi (`# hazirlik:` satiri). Sensor degerleri
+# scripts/kible-emulator-pozu.js'ten — cekirdek fonksiyonlarimizla tutarli poz.
+hazirlik_uygula() {
+  case "$1" in
+    kible-kamera*|kible-kalibrasyon)
+      adb shell pm grant "$PAKET" android.permission.CAMERA || true
+      local poz
+      poz=$(node scripts/kible-emulator-pozu.js "$1")
+      echo "sensor pozu ($1): $poz"
+      # Cikti: "<ivme x:y:z> <manyetik x:y:z>"
+      adb emu sensor set acceleration "$(echo "$poz" | cut -d' ' -f1)" || true
+      adb emu sensor set magnetic-field "$(echo "$poz" | cut -d' ' -f2)" || true
+      if [ "$1" = "kible-kalibrasyon" ] || [ "$1" = "kible-kamera-25" ]; then
+        # Rehberin ∞ animasyonu / yolun akan cevronlari icin animasyonlar ACIK (yoksa
+        # "hareketi azalt" sayilir ve statik cizilir).
+        for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+          adb shell settings put global "$a" 1
+        done
+      fi
+      ;;
+    *) echo "UYARI: bilinmeyen hazirlik $1" ;;
+  esac
+}
+
+# Akis sonrasi: hazirligin actigi seyleri geri al (animasyon olcegi, ekran kaydi).
+hazirlik_bitir() {
+  case "$1" in
+    kible-kamera-25)
+      # Akis kamera gorunumunde biter: yolun akisi 8 sn (artifact: kible-yolu-<tema>.mp4).
+      adb shell rm -f /sdcard/kible-yolu.mp4 || true
+      adb shell screenrecord --time-limit 8 --bit-rate 4000000 /sdcard/kible-yolu.mp4 || true
+      sleep 1
+      adb pull /sdcard/kible-yolu.mp4 "$CIKIS/kible-yolu-${2}.mp4" >/dev/null 2>&1 || echo "UYARI: yol videosu alinamadi"
+      for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+        adb shell settings put global "$a" 0
+      done
+      ;;
+    kible-kalibrasyon)
+      # Akis rehber acikken biter (kamera gorunumu): 12 sn'lik video (artifact:
+      # kalibrasyon-<tema>.mp4). Uygulamanin acilisi uzun suruyor; kayit bu yuzden SONDA.
+      adb shell rm -f /sdcard/kalibrasyon.mp4 || true
+      adb shell screenrecord --time-limit 12 --bit-rate 4000000 /sdcard/kalibrasyon.mp4 || true
+      sleep 1
+      adb pull /sdcard/kalibrasyon.mp4 "$CIKIS/kalibrasyon-${2}.mp4" >/dev/null 2>&1 || echo "UYARI: kalibrasyon videosu alinamadi"
+      for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+        adb shell settings put global "$a" 0
+      done
+      ;;
+  esac
+}
+
+# PERFORMANS_OLCUMU=1: Ilerleme sekmesinde kaydirma sirasinda kare suresi olcumu.
+# DIKKAT: emulator-runner `disable-animations: true` ile animator olcegini 0 yapar →
+# Reanimated useReducedMotion() true doner ve gok panelinin sonsuz animasyonlari HIC
+# kurulmaz; takilma bu kosulda olusmaz. Olcum suresince olcekler 1'e alinir.
+performans_olc() {
+  local tema="${TEMALAR[0]}" ozet="$CIKIS/performans-ozet.md"
+  for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+    adb shell settings put global "$a" 1
+  done
+  tohumla ozellik "$tema"
+  maestro test scripts/maestro/performans/ilerleme-ac.yaml || echo "UYARI: ilerleme-ac tamamlanamadi"
+  sleep 24   # acilis koreografisi + tek nefeslik nabiz/parilti bitsin (sonlu; bosta sifir hareket)
+  local boyut w h
+  boyut=$(adb shell wm size | sed -n 's/.*: *\([0-9]*x[0-9]*\).*/\1/p' | tail -1)
+  w=${boyut%x*}; h=${boyut#*x}
+  local x=$((w / 2)) alt=$((h * 3 / 4)) ust=$((h / 3))
+  # 1) Bosta: 10 sn hic dokunmadan (surekli animasyonlarin maliyeti).
+  adb shell dumpsys gfxinfo "$PAKET" reset >/dev/null
+  sleep 10
+  adb shell dumpsys gfxinfo "$PAKET" > "$CIKIS/performans-ilerleme-bosta.txt"
+  # 2) Kaydirma: 12 asagi/yukari surukleme, gok paneli ekrana girip cikar.
+  adb shell dumpsys gfxinfo "$PAKET" reset >/dev/null
+  for i in $(seq 1 12); do
+    adb shell input swipe "$x" "$alt" "$x" "$ust" 400
+    sleep 0.4
+    adb shell input swipe "$x" "$ust" "$x" "$alt" 400
+    sleep 0.4
+  done
+  adb shell dumpsys gfxinfo "$PAKET" framestats > "$CIKIS/performans-ilerleme-kaydirma.txt"
+  {
+    echo "### Ilerleme performansi (gfxinfo, $(git rev-parse --short HEAD))"
+    for tur in bosta kaydirma; do
+      echo ""
+      echo "**$tur**"
+      echo '```'
+      grep -E "Total frames rendered|Janky frames|percentile|Number Slow UI thread|Number Slow issue draw commands|Number Frame deadline missed" \
+        "$CIKIS/performans-ilerleme-$tur.txt" | grep -v "GPU" | head -12 || true
+      echo '```'
+    done
+  } > "$ozet"
+  cat "$ozet"
+  for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+    adb shell settings put global "$a" 0
+  done
+}
+
 # Ilk acilis Metro paketini derler (minify): sonraki akislarin beklemesi kisalsin.
 tohumla ozellik "${TEMALAR[0]}"
 adb shell monkey -p "$PAKET" -c android.intent.category.LAUNCHER 1
@@ -118,19 +215,32 @@ for tema in "${TEMALAR[@]}"; do
   HEDEF="$CIKIS/${PROFIL}-${tema}"
   mkdir -p "$HEDEF"
   for akis in scripts/maestro/ozellik/[0-9]*.yaml; do
+    # AKIS_FILTRESI (workflow girdisi `akis_filtresi`): yalniz uyan akislar — tek ekran
+    # icin 3,5 saatlik turu beklememek. Bos = hepsi (varsayilan davranis birebir).
+    if [ -n "${AKIS_FILTRESI:-}" ] && ! [[ "$(basename "$akis")" =~ $AKIS_FILTRESI ]]; then
+      continue
+    fi
     varyant=$(sed -n 's/^# tohum: *\([a-z]*\).*/\1/p' "$akis" | head -1)
     varyant="${varyant:-ozellik}"
     echo "=== [$PROFIL/$tema] $akis (tohum: $varyant) ==="
     tohumla "$varyant" "$tema"
+    # `# hazirlik: <ad>` satiri: akistan once adb ile cihaz durumu (sensor, izin) kurulur.
+    hazirlik=$(sed -n 's/^# hazirlik: *\([a-z0-9-]*\).*/\1/p' "$akis" | head -1)
+    if [ -n "$hazirlik" ]; then hazirlik_uygula "$hazirlik"; fi
     isaret=$(mktemp)
     # Bir akis dusse de digerleri cekilsin (her biri uygulamayi kendisi baslatir).
     maestro test "$akis" || echo "UYARI: $akis tamamlanamadi ($PROFIL/$tema)"
+    if [ -n "$hazirlik" ]; then hazirlik_bitir "$hazirlik" "$tema"; fi
     # Yalniz BU akisin kareleri: isaret dosyasindan yeni olanlar.
     find "$HOME/.maestro/tests" "$PWD/ozk" -newer "$isaret" -path '*ozk/*' -name '*.png' \
       -exec cp {} "$HEDEF/" \; 2>/dev/null || true
     rm -f "$isaret"
   done
 done
+
+if [ "${PERFORMANS_OLCUMU:-}" = "1" ] && [ "$PROFIL" = "telefon" ]; then
+  performans_olc || echo "UYARI: performans olcumu tamamlanamadi"
+fi
 
 # Ozet: dosya adi + boyut; akislarin bekledigi ama cikmayan kare → UYARI.
 BEKLENEN=$(grep -h 'takeScreenshot: ozk/' scripts/maestro/ozellik/*.yaml | sed 's/.*ozk\///' | sort -u)

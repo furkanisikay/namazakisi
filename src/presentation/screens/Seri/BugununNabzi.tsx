@@ -1,39 +1,44 @@
 /**
- * BugununNabzi — bugünün karesinin sürekli "nabız" animasyonu (büyüyüp
- * soluma, task-3-brief.md §3b).
+ * BugununNabzi — bugünün karesinin "nabız" animasyonu (büyüyüp soluma, task-3-brief.md
+ * §3b). SONLUDUR: bir nefes alıp statik kareye döner; kaydırmada hemen durur.
  *
- * TEK öğe olduğu için Svg PROP animasyonu (`Animated.createAnimatedComponent(Rect)`)
- * TERCİH EDİLDİ — `Parilti` gibi ayrı bir Animated.View overlay katmanı DEĞİL:
- * parıltının Svg-prop'tan kaçınma gerekçesi (19-20 sonsuz animasyonun her
- * karede TÜM Svg ağacını geçersiz kılması) burada geçerli değil — ayda en
- * fazla BİR "bugün" karesi vardır, tek bir ek sonsuz animasyonun invalidate
- * maliyeti ölçülemeyecek kadar küçüktür; ayrı bir overlay katmanı kurmak
- * (konum hesabı + `HEADER_YUKSEKLIK` ofseti dahil) karşılığında gereksiz
- * karmaşıklık ekler. Gerekçe rapora yazılmıştır (task-3-report.md).
+ * SVG'NİN DIŞINDA, AYRI BİR Animated.View katmanıdır (İlerleme takılması kök
+ * nedeni — düzeltildi). Önceden ana `<Svg>`'nin İÇİNDE bir `AnimatedRect`'ti
+ * ve "tek öğe, maliyeti ölçülemeyecek kadar küçük" diye gerekçelendirilmişti;
+ * gerekçe yanlıştı: react-native-svg Android'de (`SvgView.java`) herhangi bir
+ * alt düğümün prop güncellemesi `RenderableViewManager.onAfterUpdateTransaction
+ * → invalidateSvgView` ile `SvgView.invalidate()`'i çağırır, bu da önbellek
+ * bitmap'ini (`mBitmap`) ATAR; sonraki `onDraw` `drawOutput()` ile panel
+ * boyutunda YENİ bir ARGB_8888 bitmap ayırıp TÜM ağacı (~1.000 düğüm) yeniden
+ * çizer. Tek bir sonsuz animasyon = saniyede ~60 tam yeniden rasterleme + 60
+ * büyük bitmap ayırma (GC baskısı) — kaydırmanın kare bütçesiyle UI thread'inde
+ * yarışıyordu ("çizilirken bir şey oluyor"). Artık animasyon yalnız bu View'in
+ * `opacity` + `scale` özelliklerindedir (kompozitör; ana Svg'ye dokunmaz) ve
+ * ana Svg açılıştan sonra hiç geçersiz kılınmaz, bitmap'i önbellekte kalır.
  *
- * `useAnimatedProps`/`useSharedValue` bir `.map()` içinde çağrılamadığı için
- * (React Hooks kuralı — bkz. `GokPaneli.tsx` doc-block) bu tek öğe de kendi
- * child bileşenine çıkarıldı, `AnimasyonluBag`/`AnimasyonluYildiz` ile aynı
- * gerekçeyle.
+ * GÖRÜNÜM BİREBİR KORUNUR: SVG `Rect` konturu kenarın ORTASINA çizilir (yarısı
+ * dışarı taşar), RN `borderWidth` ise İÇERİ çizer → kutu kontur kalınlığı kadar
+ * büyütülüp yarım kontur kadar dışa kaydırılır; köşe yarıçapı da aynı hesapla.
+ * Büyüme artık geometri değil `scale` olduğu için tepe noktasında kontur
+ * 1,4 → 1,5 px'e kalınlaşır (algılanamaz). Katman sırası `GokPaneli`'de
+ * korunur: zemin Svg'si → nabız → içerik Svg'si (yıldız/bağ/gün numarası
+ * nabzın ÜSTÜNDE kalır, önceki sırayla aynı).
  *
- * Azaltılmış hareket açıkken (veya animasyon henüz kurulmadan ÖNCE, ilk
- * render turunda) `ilerleme` her zaman 0 — bu durumda x/y/width/height/rx/
- * opacity Faz 1'deki STATİK "bugün" karesiyle BİREBİR aynı değerleri üretir
- * (kenar=kenar, opacity=`NABIZ_TABAN_OPAKLIK`=0.4) — global-constraints.md
- * "Faz 1'in görsel sonucu DEĞİŞMEZ" kuralı böyle sağlanır.
+ * Azaltılmış hareket açıkken (veya animasyon henüz kurulmadan ÖNCE) `ilerleme`
+ * 0 → Faz 1'deki STATİK "bugün" karesi (opacity `NABIZ_TABAN_OPAKLIK`=0.4,
+ * ölçek 1) — global-constraints.md "Faz 1'in görsel sonucu DEĞİŞMEZ".
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Animated, {
-  useAnimatedProps,
+  cancelAnimation,
+  useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { Rect } from 'react-native-svg';
 import { GOK_ZAMANLAMA } from './sabitler';
-
-const AnimatedRect = Animated.createAnimatedComponent(Rect);
+import { useGokDurdurmaSayaci } from './gokHareketi';
 
 /**
  * Büyüme/opaklık oranları — referans bağlayıcı (`@keyframes nabiz`,
@@ -49,11 +54,15 @@ const AnimatedRect = Animated.createAnimatedComponent(Rect);
  * değeri (0.72) referansa uyar, çünkü tepe için Faz 1'de karşılaştırılacak
  * bir statik değer yok — referansı olduğu gibi taşımak serbest.
  */
-const NABIZ_BUYUME_ORANI = 1.07;
-const NABIZ_TABAN_OPAKLIK = 0.4;
-const NABIZ_TEPE_OPAKLIK = 0.72;
+export const NABIZ_BUYUME_ORANI = 1.07;
+export const NABIZ_TABAN_OPAKLIK = 0.4;
+export const NABIZ_TEPE_OPAKLIK = 0.72;
+/** Kontur kalınlığı (px) — önceki SVG `strokeWidth` ile aynı. */
+export const NABIZ_KONTUR = 1.4;
 
 export interface BugununNabziProps {
+  /** Panel-göreceli piksel merkezi — `HEADER_YUKSEKLIK` çağıran tarafından
+   * zaten eklenmiş olmalı (`Parilti` ile aynı sözleşme). */
   merkezX: number;
   merkezY: number;
   /** Faz 1'deki statik kare kenarı (`bugunKenar`). */
@@ -72,23 +81,53 @@ export const BugununNabzi: React.FC<BugununNabziProps> = ({ merkezX, merkezY, ke
     if (azaltilmisHareket) {
       return;
     }
-    ilerleme.value = withRepeat(withTiming(1, { duration: GOK_ZAMANLAMA.NABIZ_SURE_MS }), -1, true);
-    // Yalnız mount'ta BİR KEZ kurulur — sonsuz döngü kendi kendine sürer.
+    // SONLU: bir nefes, dinlenme hâlinde (Faz 1 statik kare) durur — "boşta sıfır hareket".
+    ilerleme.value = withRepeat(
+      withTiming(1, { duration: GOK_ZAMANLAMA.NABIZ_SURE_MS }),
+      GOK_ZAMANLAMA.NABIZ_YARIM_DONGU,
+      true,
+    );
+    // Yalnız mount'ta BİR KEZ kurulur.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const animatedProps = useAnimatedProps(() => {
+  // Kaydırma başladı → durur ve statik kareye döner.
+  const durdurma = useGokDurdurmaSayaci();
+  const ilkDurdurma = useRef(durdurma);
+  useEffect(() => {
+    if (durdurma === ilkDurdurma.current) return;
+    cancelAnimation(ilerleme);
+    ilerleme.value = 0;
+  }, [durdurma, ilerleme]);
+
+  const animatedStyle = useAnimatedStyle(() => {
     const t = ilerleme.value;
-    const genislik = kenar * (1 + (NABIZ_BUYUME_ORANI - 1) * t);
     return {
-      x: merkezX - genislik / 2,
-      y: merkezY - genislik / 2,
-      width: genislik,
-      height: genislik,
-      rx: genislik * koseOrani,
       opacity: NABIZ_TABAN_OPAKLIK + (NABIZ_TEPE_OPAKLIK - NABIZ_TABAN_OPAKLIK) * t,
+      transform: [{ scale: 1 + (NABIZ_BUYUME_ORANI - 1) * t }],
     };
   });
 
-  return <AnimatedRect fill="none" stroke={renk} strokeWidth={1.4} animatedProps={animatedProps} />;
+  // SVG konturu kenarın ortasında → RN kutusu kontur kadar büyük, yarım kontur dışarıda.
+  const kutu = kenar + NABIZ_KONTUR;
+  return (
+    <Animated.View
+      testID="seri-bugun-nabzi"
+      pointerEvents="none"
+      renderToHardwareTextureAndroid
+      style={[
+        {
+          position: 'absolute',
+          left: merkezX - kutu / 2,
+          top: merkezY - kutu / 2,
+          width: kutu,
+          height: kutu,
+          borderRadius: kenar * koseOrani + NABIZ_KONTUR / 2,
+          borderWidth: NABIZ_KONTUR,
+          borderColor: renk,
+        },
+        animatedStyle,
+      ]}
+    />
+  );
 };

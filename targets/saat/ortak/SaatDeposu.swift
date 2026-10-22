@@ -22,6 +22,7 @@ public final class SaatDeposu: @unchecked Sendable {
         static let bekleyenler = "namazakisi.saat.bekleyenler"
         static let tesbihatToplam = "namazakisi.saat.tesbihat.toplam"
         static let tesbihatMs = "namazakisi.saat.tesbihat.ms"
+        static let kapatilanUyandirma = "namazakisi.saat.uyandirma.kapatilan"
     }
 
     private let defaults: UserDefaults
@@ -89,6 +90,11 @@ public final class SaatDeposu: @unchecked Sendable {
         }
     }
 
+    /// Yalniz simulator kare tohumu: iyimser isaretleri siler (her kare bagimsiz baslasin).
+    public func bekleyenleriSifirla() {
+        kilitli { defaults.removeObject(forKey: Anahtar.bekleyenler) }
+    }
+
     private func bekleyenleriOku() -> [SaatBekleyen] {
         guard let veri = defaults.data(forKey: Anahtar.bekleyenler),
               let liste = try? JSONDecoder().decode([SaatBekleyen].self, from: veri) else { return [] }
@@ -98,6 +104,31 @@ public final class SaatDeposu: @unchecked Sendable {
     private func bekleyenleriYaz(_ liste: [SaatBekleyen]) {
         guard let veri = try? JSONEncoder().encode(liste) else { return }
         defaults.set(veri, forKey: Anahtar.bekleyenler)
+    }
+
+    // MARK: - Sessiz uyandirma (saat-yerel durum)
+
+    /// Kapatilan kayit, uyandirmanin anlamini yitirdigi andan bu kadar sonra budanir.
+    public static let kapatilanOmruMs: Int64 = 24 * 3_600_000
+
+    private func kapatilanOku() -> [String: Int64] {
+        guard let veri = defaults.data(forKey: Anahtar.kapatilanUyandirma),
+              let sozluk = try? JSONDecoder().decode([String: Int64].self, from: veri) else { return [:] }
+        return sozluk
+    }
+
+    /// Bu saatte kapatilmis (ya da Kildim denmis) uyandirma kimlikleri.
+    public func kapatilanUyandirmalar(simdiMs: Int64) -> Set<String> {
+        return kilitli { Set(kapatilanOku().filter { simdiMs - $0.value <= Self.kapatilanOmruMs }.keys) }
+    }
+
+    /// `kimlikler`: kapatilan kimlik → o uyandirmanin `sonMs`'i (budama icin).
+    public func uyandirmalariKapat(_ kimlikler: [String: Int64], simdiMs: Int64) {
+        kilitli {
+            var sozluk = kapatilanOku().filter { simdiMs - $0.value <= Self.kapatilanOmruMs }
+            for (id, son) in kimlikler { sozluk[id] = son }
+            if let veri = try? JSONEncoder().encode(sozluk) { defaults.set(veri, forKey: Anahtar.kapatilanUyandirma) }
+        }
     }
 
     // MARK: - Tesbihat (saatte bagimsiz)

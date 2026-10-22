@@ -7,11 +7,9 @@
 //     modules/expo-siri-kisayollari/ios/VakitKarari.swift \
 //     modules/expo-siri-kisayollari/ios/WidgetKarari.swift \
 //     modules/expo-siri-kisayollari/ios/SaatIletisi.swift \
-//     targets/saat/ortak/SaatYuku.swift \
-//     targets/saat/ortak/SaatDeposu.swift \
-//     targets/saat/ortak/Tesbihat.swift \
+//     targets/saat/ortak/(tum .swift dosyalari) \
 //     targets/saat/test/main.swift
-//   /tmp/saat-test wear/app/src/test/resources/ornek-yuk.json
+//   /tmp/saat-test wear/app/src/test/resources/ornek-yuk.json wear/app/src/test/resources/kible-ornekleri.json
 //
 // Fikstur Wear OS ile ORTAKTIR (JS `wearYuku.test.ts` + Kotlin `YukCozucu` testleri ayni
 // dosyayi kabul eder): saat yuku tek taraflı degistirilemez. Uyusmazlikta cikis kodu 1.
@@ -222,7 +220,7 @@ do {
     let geri = Tesbihat.geriAl(Tesbihat.Durum(toplam: 33))
     esitMi(geri.durum.faz, .subhanallah, "geri alma faz sinirini geri gecer")
     esitMi(geri.durum.fazSayisi, 32, "geri alinmis faz sayisi")
-    esitMi(Tesbihat.kisaMetin(Tesbihat.Durum(toplam: 45)), "Elhamdülillâh · 12/33", "kisa metin")
+    esitMi(Tesbihat.kisaMetin(Tesbihat.Durum(toplam: 45)), "Elhamdülillâh, 12/33", "kisa metin (noktali ayrac yok)")
     let t0: Int64 = 1_000_000_000_000
     esitMi(Tesbihat.yukle(toplam: 40, sonDokunusMs: t0, simdiMs: t0 + 10 * dk).toplam, 40, "taze oturum korunur")
     esitMi(Tesbihat.yukle(toplam: 40, sonDokunusMs: t0, simdiMs: t0 + 91 * dk).toplam, 0, "eskimis oturum sifirlanir")
@@ -272,6 +270,249 @@ do {
     depo.tesbihatYaz(Tesbihat.Durum(toplam: 12), simdiMs: ikindi12)
     esitMi(depo.tesbihatOku(simdiMs: ikindi12 + dk).toplam, 12, "tesbihat okunur")
     defaults.removePersistentDomain(forName: suite)
+}
+
+// MARK: - 8) Plan, uyandirma ve konum cozumu (#285 cilasi — Kotlin `YukCozucu` katiligi)
+
+let tehecUyandirma = "nafile_2026-10-12_teheccud_45"
+let imsakUyandirma = "muhafiz_2026-10-13_vakit_imsak_seviye_2_dk_34"
+do {
+    esitMi(yuk.plan.map { $0.id }, ["muhafiz_2026-10-12_vakit_ikindi_seviye_1_dk_45", "muhafiz_2026-10-12_vakit_ikindi_seviye_4_dk_3"], "plan kronolojik okunur")
+    esitMi(yuk.plan.last?.acil, true, "acil bayragi okunur")
+    esitMi(yuk.plan.first?.vakit, "ikindi", "plan vakti KAYIT kodu")
+    esitMi(yuk.uyandirma.map { $0.id }, [tehecUyandirma, imsakUyandirma], "uyandirma kronolojik okunur")
+    esitMi(yuk.uyandirma.first?.nafile, true, "teheccud nafile")
+    esitMi(yuk.konum, SaatKonum(lat: 41, lng: 29), "konum okunur")
+    func planDegistir(_ degis: @escaping (inout [String: Any]) -> Void) -> String {
+        return yukMetni { o in
+            var plan = o["muhafiz"] as! [[String: Any]]
+            degis(&plan[0])
+            o["muhafiz"] = plan
+        }
+    }
+    esitMi(SaatYukCozucu.coz(planDegistir { $0["seviye"] = 5 }), .gecersiz, "bozuk seviye tum yuku reddeder")
+    esitMi(SaatYukCozucu.coz(planDegistir { $0["vakit"] = "gunes" }), .gecersiz, "gunes plan vakti olamaz")
+    esitMi(SaatYukCozucu.coz(planDegistir { $0["adim"] = 6 }), .gecersiz, "adim tavani")
+    esitMi(SaatYukCozucu.coz(planDegistir { $0["adim"] = 1.5 }), .gecersiz, "adim tam sayi olmali")
+    esitMi(SaatYukCozucu.coz(planDegistir { $0.removeValue(forKey: "baslik") }), .gecersiz, "baslik zorunlu")
+    if case .basarili(let y) = SaatYukCozucu.coz(planDegistir { $0.removeValue(forKey: "adim") }) {
+        esitMi(y.plan.count, 2, "adim opsiyonel (eski telefon)")
+    } else {
+        hatalar.append("adimsiz plan okunmali")
+    }
+    esitMi(
+        SaatYukCozucu.coz(yukMetni { o in
+            var u = o["uyandirma"] as! [[String: Any]]
+            u[0]["tur"] = "ogle"
+            o["uyandirma"] = u
+        }),
+        .gecersiz,
+        "uyandirma turu imsak/teheccud"
+    )
+    esitMi(
+        SaatYukCozucu.coz(yukMetni { o in
+            var u = o["uyandirma"] as! [[String: Any]]
+            u[0]["sonMs"] = u[0]["ms"]
+            o["uyandirma"] = u
+        }),
+        .gecersiz,
+        "uyandirma sonMs > ms"
+    )
+    if case .basarili(let y) = SaatYukCozucu.coz(yukMetni { $0["konum"] = ["lat": "41", "lng": 29] }) {
+        esitMi(y.konum, nil, "bozuk konum GEVSEK: yalniz kible duser")
+    } else {
+        hatalar.append("bozuk konum yuku reddetmemeli")
+    }
+    if case .basarili(let y) = SaatYukCozucu.coz(yukMetni { $0["konum"] = ["lat": 0, "lng": 0] }) {
+        esitMi(y.konum, nil, "(0,0) nobetcisi")
+    } else {
+        hatalar.append("(0,0) konum yuku reddetmemeli")
+    }
+    if case .basarili(let y) = SaatYukCozucu.coz(yukMetni { $0.removeValue(forKey: "uyandirma"); $0.removeValue(forKey: "konum") }) {
+        esitMi(y.uyandirma, [], "uyandirma opsiyonel")
+        esitMi(y.konum, nil, "konum opsiyonel")
+    } else {
+        hatalar.append("uyandirmasiz yuk okunmali")
+    }
+}
+
+// MARK: - 9) Saatin yerel bildirim secimi (telefonla AYNI kimlik)
+
+do {
+    let hepsi = SaatHatirlatmaPlani.bildirimler(yuk: yuk, bekleyenler: [], simdiMs: ikindi12)
+    esitMi(hepsi.map { $0.id }, yuk.plan.map { $0.id }, "gelecek kayitlar AYNI kimlikle")
+    esitMi(
+        SaatHatirlatmaPlani.bildirimler(yuk: yuk, bekleyenler: [], simdiMs: 1_791_816_600_000).map { $0.id },
+        ["muhafiz_2026-10-12_vakit_ikindi_seviye_4_dk_3"],
+        "tetigi gelmis kayit kurulmaz"
+    )
+    esitMi(
+        SaatHatirlatmaPlani.bildirimler(
+            yuk: yuk, bekleyenler: [SaatBekleyen(tarih: "2026-10-12", vakit: "ikindi", ms: ikindi12)], simdiMs: ikindi12
+        ),
+        [],
+        "iyimser Kildim o vaktin bildirimlerini dusurur"
+    )
+    esitMi(SaatHatirlatmaPlani.bildirimler(yuk: yuk, bekleyenler: [], simdiMs: ikindi12, azami: 1).count, 1, "azami kronolojik keser")
+    esitMi(SaatHatirlatmaPlani.vakitOneki(tarih: "2026-10-12", vakit: "ikindi"), "muhafiz_2026-10-12_vakit_ikindi_", "vakit oneki")
+    // Uyandirma kimligi plana da yazilmissa bildirim KURULMAZ (bilekte sessiz alarm calar).
+    let ciftli = yukMetni { o in
+        var plan = o["muhafiz"] as! [[String: Any]]
+        var k = plan[0]
+        k["id"] = imsakUyandirma
+        k["tarih"] = "2026-10-13"
+        k["vakit"] = "imsak"
+        k["ms"] = 1_791_862_320_000
+        plan.append(k)
+        o["muhafiz"] = plan
+    }
+    if case .basarili(let y) = SaatYukCozucu.coz(ciftli) {
+        esitMi(
+            SaatHatirlatmaPlani.bildirimler(yuk: y, bekleyenler: [], simdiMs: ikindi12).contains { $0.id == imsakUyandirma },
+            false,
+            "uyandirma kimligi bildirim olarak kurulmaz"
+        )
+    } else {
+        hatalar.append("ciftli yuk okunmali")
+    }
+}
+
+// MARK: - 10) Sessiz uyandirma karari (Wear `UyandirmaZinciri` ikizi)
+
+do {
+    let siradaki = SaatUyandirmaKarari.siradaki(yuk: yuk, bekleyenler: [], kapatilan: [], simdiMs: ikindi12)
+    esitMi(siradaki?.id, tehecUyandirma, "siradaki en yakin uyandirma")
+    esitMi(
+        SaatUyandirmaKarari.siradaki(yuk: yuk, bekleyenler: [], kapatilan: [tehecUyandirma], simdiMs: ikindi12)?.id,
+        imsakUyandirma,
+        "kapatilan atlanir"
+    )
+    esitMi(
+        SaatUyandirmaKarari.siradaki(
+            yuk: yuk, bekleyenler: [SaatBekleyen(tarih: "2026-10-13", vakit: "imsak", ms: 0)], kapatilan: [tehecUyandirma], simdiMs: ikindi12
+        ),
+        nil,
+        "kilinmis sabah uyandirmaz"
+    )
+    esitMi(
+        SaatUyandirmaKarari.siradaki(yuk: yuk, bekleyenler: [], kapatilan: [], simdiMs: 1_791_856_620_000 - 37 * saat),
+        nil,
+        "36 sa ufkunun otesi kurulamaz"
+    )
+    let t = Int64(1_791_856_620_000)
+    esitMi(SaatUyandirmaKarari.calacak(yuk: yuk, bekleyenler: [], kapatilan: [], simdiMs: t + 30_000)?.id, tehecUyandirma, "zamani gelen calar")
+    esitMi(SaatUyandirmaKarari.calacak(yuk: yuk, bekleyenler: [], kapatilan: [], simdiMs: t + 3 * dk), nil, "2 dk sonra calmaz (yedek esas)")
+    esitMi(SaatUyandirmaKarari.calacak(yuk: yuk, bekleyenler: [], kapatilan: [tehecUyandirma], simdiMs: t), nil, "kapatilan calmaz")
+    let tehec = yuk.uyandirma[0]
+    esitMi(SaatUyandirmaKarari.kildimKapsami(yuk: yuk, kayit: tehec), [tehecUyandirma], "teheccud Kildim o gecenin tum kimlikleri")
+    esitMi(SaatUyandirmaKarari.kildimKapsami(yuk: yuk, kayit: yuk.uyandirma[1]), [imsakUyandirma], "sabah Kildim yalniz kendi")
+
+    let suite = "test.namazakisi.saat.uy.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: suite)!
+    let depo = SaatDeposu(defaults: defaults)
+    depo.uyandirmalariKapat([tehecUyandirma: tehec.sonMs], simdiMs: t)
+    esitMi(depo.kapatilanUyandirmalar(simdiMs: t), [tehecUyandirma], "kapatilan saklanir")
+    esitMi(depo.kapatilanUyandirmalar(simdiMs: tehec.sonMs + 25 * saat), [], "bayat kapatilan budanir")
+    defaults.removePersistentDomain(forName: suite)
+}
+
+// MARK: - 11) Uyandirma iletisi (saat → telefon)
+
+do {
+    let u = SaatIletisi.Uyandirma(id: tehecUyandirma, islem: "kildim", tur: "teheccud", tarih: "2026-10-12", sonMs: 1_791_859_320_000)
+    esitMi(SaatIletisi.uyandirmaCoz(SaatIletisi.uyandirmaIletisi(u)), u, "uyandirma gidis-donus")
+    let k = SaatIletisi.Uyandirma(id: imsakUyandirma, islem: "kapat", tur: "imsak", tarih: "2026-10-13", sonMs: 1)
+    esitMi(SaatIletisi.uyandirmaCoz(SaatIletisi.uyandirmaIletisi(k)), k, "sabah kapat gidis-donus")
+    let ertele = SaatIletisi.Uyandirma(id: imsakUyandirma, islem: "ertele", tur: "imsak", tarih: "2026-10-13", sonMs: 1)
+    esitMi(SaatIletisi.uyandirmaCoz(SaatIletisi.uyandirmaIletisi(ertele)), nil, "ERTELE YOK (sahip karari)")
+    let celiskili = SaatIletisi.Uyandirma(id: imsakUyandirma, islem: "kapat", tur: "teheccud", tarih: "2026-10-13", sonMs: 1)
+    esitMi(SaatIletisi.uyandirmaCoz(SaatIletisi.uyandirmaIletisi(celiskili)), nil, "kimlikle celisen tur reddedilir")
+    esitMi(SaatIletisi.uyandirmaKimligiMi("muhafiz_2026-10-13_vakit_ogle_seviye_2_dk_34"), false, "ogle uyandirma degil")
+    esitMi(SaatIletisi.uyandirmaKimligiMi("nafile_2026-10-12_kusluk_5"), false, "kusluk uyandirma degil")
+    esitMi(SaatIletisi.kildimCoz(SaatIletisi.uyandirmaIletisi(u)), nil, "uyandirma iletisi farz Kildim'i DEGIL")
+}
+
+// MARK: - 12) Kible (Wear `Kible.kt` ortak fiksturu, 1e-9)
+
+if argumanlar.count >= 3, let kibleMetni = try? String(contentsOfFile: argumanlar[2], encoding: .utf8),
+   let ornekler = (try? JSONSerialization.jsonObject(with: kibleMetni.data(using: .utf8)!)) as? [[String: Any]] {
+    for o in ornekler {
+        // NSNumber: Linux'ta JSONSerialization tam sayiyi `as? Double` ile vermeyebilir.
+        guard let lat = (o["lat"] as? NSNumber)?.doubleValue, let lng = (o["lng"] as? NSNumber)?.doubleValue,
+              let beklenen = (o["aci"] as? NSNumber)?.doubleValue else {
+            hatalar.append("kible fiksturu okunamadi: \(o)")
+            continue
+        }
+        let aci = Kible.aci(enlem: lat, boylam: lng)
+        // Kabe'nin kendisi dejeneredir (atan2(0, 0)): yalniz "sonlu ve [0,360)" aranir (Wear `KibleTest` ile ayni).
+        if (o["ad"] as? String) == "Kâbe" {
+            if !(aci.isFinite && aci >= 0 && aci < 360) { hatalar.append("kible Kâbe dejenere degil: \(aci)") } else { gecen += 1 }
+            continue
+        }
+        if abs(aci - beklenen) <= 1e-9 { gecen += 1 } else { hatalar.append("kible \(o["ad"] ?? "?"): \(aci) != \(beklenen)") }
+        if !(aci >= 0 && aci < 360) { hatalar.append("kible [0,360) disinda: \(aci)") }
+    }
+    esitMi(ornekler.isEmpty, false, "kible fiksturu bos degil")
+} else {
+    hatalar.append("Kible fiksturu verilmedi (2. arguman: kible-ornekleri.json)")
+}
+do {
+    esitMi(Kible.donusMetni(35), "Sağa 35°", "saga donus")
+    esitMi(Kible.donusMetni(360 - 121), "Sola 120°", "sola donus 5° adim")
+    esitMi(Kible.donusMetni(178), "Arkanızda", "arkada")
+    esitMi(Kible.donusMetni(1), "Sağa 5°", "en az 5°")
+    esitMi(Kible.hiza(oncekiHizali: false, hedef: 4).hizali, true, "5° altinda hizaya girer")
+    esitMi(Kible.hiza(oncekiHizali: false, hedef: 6).hizali, false, "6° hizada degil")
+    esitMi(Kible.hiza(oncekiHizali: false, hedef: 4).titret, true, "giriste titrer")
+    esitMi(Kible.hiza(oncekiHizali: true, hedef: 7).hizali, true, "8°'ye kadar hizada kalir (histerezis)")
+    esitMi(Kible.hiza(oncekiHizali: true, hedef: 7).titret, false, "hizadayken tekrar titremez")
+    esitMi(Kible.hiza(oncekiHizali: true, hedef: 9).hizali, false, "8° ustunde cikar")
+    esitMi(Kible.hiza(oncekiHizali: false, hedef: 355.5).hizali, true, "sol yandan hiza")
+    esitMi(Kible.enKisaYol(onceki: 359, yeni: 1), 361, "359 → 1 en kisa yol")
+    esitMi(Kible.erisimMetni(36, hizali: false), "Kıble 40 derece sağınızda", "erisim metni 10° adim")
+}
+
+// MARK: - 13) Bugun kadrani (yeniden tasarim) + Kabe uzakligi
+
+do {
+    let ist = TimeZone(secondsFromGMT: 3 * 3600)!
+    let d = SaatKadran.dilimler(yuk: yuk, tarih: "2026-10-12", saatDilimi: ist)
+    esitMi(d.map { $0.kod }, ["sabah", "ogle", "ikindi", "aksam", "yatsi"], "bes pencere sirali")
+    esitMi(d.first?.basMs, imsak12, "sabah imsakta baslar")
+    esitMi(d.first?.bitisMs, gunes12, "sabah gunes'te biter")
+    esitMi(d.last?.bitisMs, imsak13, "yatsi ERTESI imsakta biter")
+    esitMi(abs(SaatKadran.kesir(imsak12, saatDilimi: ist) - 0.236805555) < 1e-6, true, "kesir yerel gece yarisindan")
+    let yatsiYaylari = SaatKadran.yaylar(d[4], saatDilimi: ist)
+    esitMi(yatsiYaylari.count, 2, "gece yarisini asan yatsi iki yay")
+    esitMi(yatsiYaylari.first?.upperBound, 1, "ilk parca gece yarisina kadar")
+    esitMi(yatsiYaylari.last?.lowerBound, 0, "ikinci parca gece yarisindan")
+    esitMi(SaatKadran.yaylar(d[1], saatDilimi: ist).count, 1, "ogle tek yay")
+    esitMi(SaatKadran.dilimler(yuk: yuk, tarih: "2026-10-13", saatDilimi: ist).last.map { $0.bitisMs > $0.basMs }, true, "son gunde yatsi gece yarisina")
+    esitMi(SaatKadran.dilimler(yuk: yuk, tarih: "1999-01-01"), [], "olmayan gun bos")
+    esitMi(SaatKadran.odak(tac: 2.4), 2, "tac yuvarlanir")
+    esitMi(SaatKadran.odak(tac: -3), 0, "tac alt sinir")
+    esitMi(SaatKadran.odak(tac: 9), 4, "tac ust sinir")
+    esitMi(SaatKadran.odak(tac: .nan), 0, "tac NaN")
+    esitMi(SaatKadran.indeks("ikindi"), 2, "kod indeksi")
+    esitMi(abs(Kible.mesafeKm(enlem: 41, boylam: 29) - 2403.4) < 1, true, "Istanbul → Kabe ~2403 km")
+    esitMi(Kible.mesafeMetni(2403.4), "2.400 km", "binlik ayraci + 10 km yuvarlama")
+    esitMi(Kible.mesafeMetni(845), "850 km", "uc haneli")
+    esitMi(Kible.mesafeMetni(3), "Kâbe'desiniz", "10 km alti")
+}
+
+// MARK: - 14) Birimli geri sayim (#363, JS `kalanSureParcalari` ikizi)
+
+do {
+    func p(_ ms: Int64, _ s: Bool = false) -> [String] { SaatSure.parcalar(kalanMs: ms, saniyesiz: s).map { "\($0.sayi) \($0.birim)" } }
+    esitMi(p((1 * 3600 + 9 * 60 + 9) * 1000), ["1 sa", "9 dk"], "saat ve ustu: saniye yok")
+    esitMi(p((9 * 60 + 5) * 1000), ["9 dk", "05 sn"], "saatin alti: saniye iki haneli")
+    esitMi(p(42_000), ["42 sn"], "dakikanin alti")
+    esitMi(p(42_999), ["42 sn"], "saniye asagi yuvarlanir")
+    esitMi(p(-5_000), ["0 sn"], "negatif sifir")
+    esitMi(p((9 * 60 + 5) * 1000, true), ["9 dk"], "sonuk: saniyesiz")
+    esitMi(p(42_000, true), ["1 dk"], "sonuk: dakikanin alti 1 dk")
+    esitMi(SaatSure.sesli(kalanMs: (9 * 60 + 5) * 1000), "9 dakika 5 saniye", "sesli")
+    esitMi(SaatSure.sesli(kalanMs: (3600 + 60) * 1000), "1 saat 1 dakika", "sesli saat")
 }
 
 // MARK: - Sonuc

@@ -17,7 +17,7 @@ import { requireOptionalNativeModule } from 'expo-modules-core';
 import { Platform } from 'react-native';
 
 /** Uygulama açıkken intent bir şey yazınca gelen olayın türü. */
-export type SiriDegisiklikTuru = 'kildim' | 'odak' | 'ekran';
+export type SiriDegisiklikTuru = 'kildim' | 'odak' | 'ekran' | 'saatUyandirma';
 
 interface Abonelik {
     remove(): void;
@@ -39,6 +39,10 @@ interface SiriNativeModule {
     /** #285 Apple Watch — eski ikilide yok (opsiyonel). */
     saatDestekli?(): boolean;
     saatDurumGonder?(json: string): Promise<string>;
+    /** Saatin uyandırma cevapları (`{kimlik: {islem}}` JSON) — eski ikilide yok. */
+    saatUyandirmaDurumlari?(): Promise<string>;
+    /** Saatte basılan teheccüd "Kıldım"ları (`[{tarih,tur}]` JSON), TÜKETİR. */
+    saatNafileKildimleriniAl?(): Promise<string>;
     addListener(olay: 'onSiriDegisikligi', dinleyici: (veri: { tur?: string }) => void): Abonelik;
 }
 
@@ -102,7 +106,7 @@ export function siriDegisikliginiDinle(dinleyici: (tur: SiriDegisiklikTuru) => v
     try {
         const abonelik = m.addListener('onSiriDegisikligi', (veri) => {
             const tur = veri?.tur;
-            if (tur === 'kildim' || tur === 'odak' || tur === 'ekran') dinleyici(tur);
+            if (tur === 'kildim' || tur === 'odak' || tur === 'ekran' || tur === 'saatUyandirma') dinleyici(tur);
         });
         return () => abonelik.remove();
     } catch {
@@ -224,4 +228,44 @@ export function saatKoprusu(): SaatKoprusu | null {
             if (sonuc === 'hata') throw new Error('Apple Watch durumu gonderilemedi');
         },
     };
+}
+
+/**
+ * Saatte sessiz uyandırmaya verilen cevaplar (saat W3'ün iOS ikizi, #285 cilası).
+ * Android `WearSenkron.saatUyandirmaDurumlari` ile AYNI biçim (kimlik → `{islem}` JSON);
+ * köprü yoksa ya da okunamazsa `null` (asla fırlatmaz).
+ */
+export async function saatUyandirmaDurumlariniOku(): Promise<string | null> {
+    const m = modul();
+    if (!m || typeof m.saatUyandirmaDurumlari !== 'function') return null;
+    try {
+        return await m.saatUyandirmaDurumlari();
+    } catch {
+        return null;
+    }
+}
+
+export interface SaatNafileKildimi {
+    tarih: string;
+    tur: string;
+}
+
+/**
+ * Saatte basılan teheccüd "Kıldım"larını TÜKETİR. Farz kuyruğuna ASLA girmez (teheccüd
+ * nafiledir) → `NafileHatirlatmaServisi` susturma hafızasına yazar. Asla fırlatmaz.
+ */
+export async function saatNafileKildimleriniAl(): Promise<SaatNafileKildimi[]> {
+    const m = modul();
+    if (!m || typeof m.saatNafileKildimleriniAl !== 'function') return [];
+    try {
+        const ham = JSON.parse(await m.saatNafileKildimleriniAl()) as unknown;
+        if (!Array.isArray(ham)) return [];
+        return ham.filter(
+            (k): k is SaatNafileKildimi =>
+                !!k && typeof k === 'object' && typeof (k as SaatNafileKildimi).tarih === 'string' &&
+                typeof (k as SaatNafileKildimi).tur === 'string'
+        );
+    } catch {
+        return [];
+    }
 }

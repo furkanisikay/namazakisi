@@ -5,8 +5,10 @@ import Foundation
  *
  * Saat YALNIZ GOSTERIR: vakitler telefonda hesaplanir ve Wear OS saatine giden yukun
  * AYNISI (`src/core/wear/wearYuku.ts`, Kotlin ikizi `wear/.../cekirdek/Yuk.kt`)
- * WatchConnectivity ile gelir. Saat ikinci bir vakit motoru KURMAZ; hatirlatma da
- * kurmaz (iPhone bildirimleri saate zaten yansir — ikinci bildirim = cift bildirim).
+ * WatchConnectivity ile gelir. Saat ikinci bir vakit motoru KURMAZ: hatirlatmalar telefonun
+ * HAZIR planidir (`plan`) ve telefondaki bildirimle AYNI kimlikle kurulur — watchOS ayni
+ * kimlikli iki bildirimi tekillestirir (telefon yanindaysa yalniz etkin cihaz gosterir,
+ * uzaktaysa saat kendisi calar). Bkz. `SaatHatirlatmaPlani.swift`.
  *
  * Karar, iPhone widget'iyla AYNI saf koddan gecer (`VakitKarari` + `WidgetKarari`, pod'dan
  * kopya): Wear yukunun `VakitAdi` uzayi (`imsak`) widget kod uzayina (`sabah`) cevrilir,
@@ -33,11 +35,56 @@ public struct SaatGunu: Equatable {
     public let kilinan: Set<String>
 }
 
+/// Telefonun HAZIR muhafiz planinin bir kaydi (Kotlin `PlanKaydi` ikizi). Kimlik telefondaki
+/// bildirimle AYNIDIR → saatin yerel bildirimi watchOS'ta telefonunkiyle tekillesir.
+public struct SaatPlanKaydi: Equatable {
+    public let id: String
+    public let ms: Int64
+    /// Vaktin gunu (gece yarisindan sonra suren yatsi DUNE aittir).
+    public let tarih: String
+    /// Wear `VakitAdi` (`imsak`, `ogle`...) — KAYIT kodu.
+    public let vakit: String
+    /// 1 nazik · 2 uyari · 3 sert · 4 acil
+    public let seviye: Int
+    public let baslik: String
+    public let govde: String
+    public let titresim: Bool
+    public let acil: Bool
+}
+
+/// Sessiz uyandirma kaydi (saat W3, Kotlin `UyandirmaKaydi` ikizi).
+public struct SaatUyandirmaKaydi: Equatable {
+    public let id: String
+    /// Ozgun tetik ani (telefonun yedegi bundan 3 dk sonra).
+    public let ms: Int64
+    /// Uyandirmanin anlamini yitirdigi an.
+    public let sonMs: Int64
+    public let tarih: String
+    /// `imsak` | `teheccud`
+    public let tur: String
+    public let baslik: String
+    public let govde: String
+
+    public var nafile: Bool { tur == "teheccud" }
+}
+
+/// Kible icin YAKLASIK konum (~11 km; telefon 1 ondaliga yuvarlar).
+public struct SaatKonum: Equatable {
+    public let lat: Double
+    public let lng: Double
+}
+
 public struct SaatYuku: Equatable {
     public let surum: Int
     public let konumAdi: String
     /// Tarihe gore sirali.
     public let gunler: [SaatGunu]
+    /// Kronolojik hazir muhafiz plani (muhafiz kapaliysa bos).
+    public var plan: [SaatPlanKaydi] = []
+    /// Kronolojik sessiz uyandirmalar (kullanici "saatte"/"ikisi" secmediyse bos).
+    public var uyandirma: [SaatUyandirmaKaydi] = []
+    /// Kible (yoksa ya da bozuksa nil — yuk yine gecerli).
+    public var konum: SaatKonum? = nil
 }
 
 public enum SaatYukSonucu: Equatable {
@@ -66,9 +113,48 @@ public enum SaatYukCozucu {
         let surum: Int
     }
 
-    /// Icerigi okunmayan dizi ogesi (muhafiz plani saatte KULLANILMAZ, yalniz varligi aranir).
-    private struct Yoksay: Decodable {
-        init(from decoder: Decoder) throws {}
+    /// Plan kaydi — Kotlin `planiCoz` katiligi: tek bozuk kayit tum yuku reddeder.
+    private struct HamPlan: Decodable {
+        let id: String
+        let ms: Int64
+        let tarih: String
+        let vakit: String
+        let seviye: Int
+        let baslik: String
+        let govde: String
+        let titresim: Bool
+        let acil: Bool
+        let adim: Int?
+    }
+
+    private struct HamUyandirma: Decodable {
+        let id: String
+        let ms: Int64
+        let sonMs: Int64
+        let tarih: String
+        let tur: String
+        let baslik: String
+        let govde: String
+    }
+
+    /// `konum` GEVSEK cozulur (Kotlin `konumCoz`): bozuksa yuk reddedilmez, yalniz kible duser.
+    private struct GevsekKonum: Decodable {
+        let deger: SaatKonum?
+
+        private enum Anahtar: String, CodingKey { case lat, lng }
+
+        init(from decoder: Decoder) throws {
+            guard let c = try? decoder.container(keyedBy: Anahtar.self),
+                  let lat = try? c.decode(Double.self, forKey: .lat),
+                  let lng = try? c.decode(Double.self, forKey: .lng),
+                  lat.isFinite, lng.isFinite,
+                  (-90.0...90.0).contains(lat), (-180.0...180.0).contains(lng),
+                  !(lat == 0 && lng == 0) else {
+                deger = nil
+                return
+            }
+            deger = SaatKonum(lat: lat, lng: lng)
+        }
     }
 
     private struct HamGun: Decodable {
@@ -88,8 +174,13 @@ public enum SaatYukCozucu {
         let konumAdi: String
         let kerahatDk: HamKerahat
         let gunler: [HamGun]
-        let muhafiz: [Yoksay]?
+        let muhafiz: [HamPlan]?
+        let uyandirma: [HamUyandirma]?
+        let konum: GevsekKonum?
     }
+
+    /// Kotlin `MAKS_ADIM` (JS `MUHAFIZ_MAKS_ADIM`).
+    static let azamiAdim = 6
 
     /// Kotlin `YukCozucu.coz` ile ayni katilik: eksik/yanlis alan → `gecersiz`.
     public static func coz(_ json: String?) -> SaatYukSonucu {
@@ -115,7 +206,34 @@ public enum SaatYukCozucu {
             }
             gunler.append(SaatGunu(tarih: g.tarih, vakitler: vakitler, kilinan: Set(g.kilinan)))
         }
-        return .basarili(SaatYuku(surum: ham.surum, konumAdi: ham.konumAdi, gunler: gunler.sorted { $0.tarih < $1.tarih }))
+        var plan: [SaatPlanKaydi] = []
+        for k in ham.muhafiz ?? [] {
+            guard SaatIletisi.isoTarihMi(k.tarih),
+                  k.vakit != "gunes", SaatSabitleri.vakitler.contains(k.vakit),
+                  (1...4).contains(k.seviye) else { return .gecersiz }
+            if let adim = k.adim, !(0..<azamiAdim).contains(adim) { return .gecersiz }
+            plan.append(SaatPlanKaydi(
+                id: k.id, ms: k.ms, tarih: k.tarih, vakit: k.vakit, seviye: k.seviye,
+                baslik: k.baslik, govde: k.govde, titresim: k.titresim, acil: k.acil
+            ))
+        }
+        var uyandirma: [SaatUyandirmaKaydi] = []
+        for k in ham.uyandirma ?? [] {
+            guard SaatIletisi.isoTarihMi(k.tarih), k.tur == "imsak" || k.tur == "teheccud", k.sonMs > k.ms else {
+                return .gecersiz
+            }
+            uyandirma.append(SaatUyandirmaKaydi(
+                id: k.id, ms: k.ms, sonMs: k.sonMs, tarih: k.tarih, tur: k.tur, baslik: k.baslik, govde: k.govde
+            ))
+        }
+        return .basarili(SaatYuku(
+            surum: ham.surum,
+            konumAdi: ham.konumAdi,
+            gunler: gunler.sorted { $0.tarih < $1.tarih },
+            plan: plan.sorted { $0.ms < $1.ms },
+            uyandirma: uyandirma.sorted { $0.ms < $1.ms },
+            konum: ham.konum?.deger
+        ))
     }
 
     /// Wear `VakitAdi` → widget kodu (`imsak` → `sabah`; gerisi ayni).

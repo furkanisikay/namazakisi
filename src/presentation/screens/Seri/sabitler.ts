@@ -99,6 +99,15 @@ export const GOK_ZAMANLAMA = {
   /** Bugünün karesinin nabız animasyonu süresi (ms) — 3.2 sn, sabit. */
   NABIZ_SURE_MS: 3200,
 
+  /**
+   * "Boşta sıfır hareket": nabız ve parıltı SONSUZ DEĞİLDİR. Yarım döngü sayısı
+   * (`withRepeat(..., N, true)`; çift sayı = başlangıç değerine, yani dinlenme hâline
+   * döner). 2 = bir nefes (çık + in). Sonsuz döngü İlerleme ekranında boşta bile
+   * saniyede onlarca kare ürettiriyordu (kaydırmayla yarışıyordu).
+   */
+  NABIZ_YARIM_DONGU: 2,
+  PARILTI_YARIM_DONGU: 2,
+
   /** Yıldız girişi — 5/5 (en vurgulu, en uzun): opacity 0→1 (task-2-brief.md
    * §2b). Ölçek taşması KULLANILMAZ (bkz. AnimasyonluYildiz.tsx doc-block,
    * "(b) Ölçekten vazgeç" seçildi) — kademe farkı süre + içeriğin zenginliğiyle

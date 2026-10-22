@@ -5,6 +5,7 @@
  */
 import React from 'react';
 import { render } from '@testing-library/react-native';
+import { Platform } from 'react-native';
 import { SaatAyarlariSayfasi } from '../SaatAyarlariSayfasi';
 import { useRenkler } from '../../../core/theme';
 import { VARSAYILAN_SAAT_AYARLARI } from '../../../core/saat/saatAyarlari';
@@ -31,7 +32,10 @@ const mockRenkler = {
 describe('SaatAyarlariSayfasi', () => {
     beforeEach(() => {
         (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
+        // Jest varsayılanı iOS (AGENTS.md): Wear OS metinleri Android'de.
+        jest.replaceProperty(Platform, 'OS', 'android');
     });
+    afterEach(() => jest.restoreAllMocks());
 
     it('NÖBETÇİ (bulgu 10): saatte uygulama yoksa telefonun her sabah geç çalacağını söyler', () => {
         const { getByText } = render(<SaatAyarlariSayfasi />);
@@ -47,5 +51,21 @@ describe('SaatAyarlariSayfasi', () => {
         const { getByText } = render(<SaatAyarlariSayfasi />);
         expect(getByText(/Camideyken ya\s+da Namaz modu açıkken saatiniz de konuşmaz/)).toBeTruthy();
         expect(VARSAYILAN_SAAT_AYARLARI.anonsYeri).toBe('otomatik');
+    });
+
+    describe('iOS — Apple Watch (#285 cilası)', () => {
+        beforeEach(() => jest.replaceProperty(Platform, 'OS', 'ios'));
+
+        it("yalnız uyandırma seçimi: sesli okuma bölümü ve Android'e özgü Namaz modu YOK", () => {
+            const { queryByText, getByText } = render(<SaatAyarlariSayfasi />);
+            expect(getByText('Uyandırma nerede çalsın?')).toBeTruthy();
+            expect(queryByText('Sesli okuma nerede yapılsın?')).toBeNull();
+            expect(queryByText('Namaz modu ayarlarını açın')).toBeNull();
+        });
+
+        it('NÖBETÇİ: watchOS sınırını söyler (sessiz alarm yalnız saat uygulaması açıkken kurulur)', () => {
+            const { getByText } = render(<SaatAyarlariSayfasi />);
+            expect(getByText(/saatinizde Namaz Akışı'nı günde bir kez açın/)).toBeTruthy();
+        });
     });
 });

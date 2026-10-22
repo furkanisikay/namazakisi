@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, fireEvent, act, waitFor } from '@testing-library/react-native';
 import { KibleSayfasi } from '../KibleSayfasi';
+import { kalibrasyonOturumunuSifirla } from '../KalibrasyonRehberi';
 import { useKible } from '../../../hooks/useKible';
 import { useIsFocused } from '@react-navigation/native';
 import { useRenkler } from '../../../../core/theme';
@@ -70,6 +71,7 @@ const mockRenkler = {
   sinir: '#cccccc',
   hata: '#ff0000',
   dikkat: '#E65100',
+  durum: { hata: '#F44336', uyari: '#FFC107', basarili: '#4CAF50', bilgi: '#2196F3' },
 };
 
 const ozet = (o: Partial<{ hazir: boolean; baslik: number; fark: number | null; hizali: boolean; dik: boolean }> = {}) => ({
@@ -94,6 +96,7 @@ function kibleDurumu(ek: Record<string, unknown> = {}) {
     izinTekrarSorulabilir: null,
     pusulaDogrulugu: 3,
     pusulaVar: true,
+    teshis: { alanBozuk: false, tutarsiz: false },
     izinIste: jest.fn(),
     ...ek,
   };
@@ -174,10 +177,42 @@ describe('KibleSayfasi', () => {
     expect(getByLabelText('Kamera modu').props.accessibilityState).toEqual({ selected: true });
   });
 
-  it('kalibrasyon ipucu doğruluğa bağlı', () => {
-    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaDogrulugu: 1 }));
-    const { getByTestId } = render(<KibleSayfasi />);
-    expect(getByTestId('kible-kalibrasyon-belirgin')).toBeTruthy();
+  describe('kalibrasyon rehberi', () => {
+    beforeEach(() => kalibrasyonOturumunuSifirla());
+
+    it('doğruluk iyiyken ve teşhis temizken GÖRÜNMEZ (sürekli uyarı yok)', () => {
+      const { queryByTestId } = render(<KibleSayfasi />);
+      expect(queryByTestId('kalibrasyon-rehberi')).toBeNull();
+    });
+
+    it('doğruluk düşükken açılır; metal ipucu yok; eski ayrı uyarı bandı da yok', () => {
+      (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaDogrulugu: 1 }));
+      const { getByTestId, queryByTestId, getByText } = render(<KibleSayfasi />);
+      expect(getByTestId('kalibrasyon-rehberi')).toBeTruthy();
+      expect(getByText('Telefonunuzu havada 8 çizer gibi sallayın.')).toBeTruthy();
+      expect(queryByTestId('kalibrasyon-metal-ipucu')).toBeNull();
+      expect(queryByTestId('kible-kalibrasyon-belirgin')).toBeNull();
+    });
+
+    it('alan bozulmasında metal/mıknatıs ipucu; kamera görünümünde de AYNI rehber', () => {
+      kamera.__izinAyarla({ granted: true, canAskAgain: true, status: 'granted' });
+      (useKible as jest.Mock).mockReturnValue(kibleDurumu({ teshis: { alanBozuk: true, tutarsiz: false } }));
+      const { getByTestId, getByLabelText } = render(<KibleSayfasi />);
+      expect(getByTestId('kalibrasyon-metal-ipucu')).toBeTruthy();
+      fireEvent.press(getByLabelText('Kamera modu'));
+      expect(getByTestId('kalibrasyon-rehberi')).toBeTruthy();
+      expect(getByTestId('kalibrasyon-metal-ipucu')).toBeTruthy();
+    });
+
+    it('"Şimdi değil" kapatır ve o oturumda (mod değişse de) yeniden açılmaz', () => {
+      (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaDogrulugu: 0 }));
+      const { getByLabelText, queryByTestId } = render(<KibleSayfasi />);
+      fireEvent.press(getByLabelText('Şimdi değil'));
+      expect(queryByTestId('kalibrasyon-rehberi')).toBeNull();
+      fireEvent.press(getByLabelText('Kamera modu'));
+      fireEvent.press(getByLabelText('Pusula modu'));
+      expect(queryByTestId('kalibrasyon-rehberi')).toBeNull();
+    });
   });
 
   it('konum izni kapalıysa açıklamalı izin satırı (diyalog doğrudan açılmaz)', () => {
@@ -278,6 +313,19 @@ describe('KibleSayfasi', () => {
       expect(UNSAFE_root.findAll((n: { type: unknown }) => n.type === 'CameraView').length).toBeGreaterThan(0);
       expect(getByTestId('kamera-kabe-isareti')).toBeTruthy();
       expect(getByTestId('kamera-yon-cumlesi').props.children).toBe('Telefonunuzu dik tutun');
+    });
+
+    it('yerdeki yol kamera görünümünde çizilir, ekran okuyucudan gizlidir ve kare aboneliğine bağlanır', () => {
+      kamera.__izinAyarla({ granted: true, canAskAgain: true, status: 'granted' });
+      const durum = kibleDurumu();
+      (useKible as jest.Mock).mockReturnValue(durum);
+      const { getByLabelText, getByTestId } = render(<KibleSayfasi />);
+      fireEvent.press(getByLabelText('Kamera modu'));
+      const yol = getByTestId('kible-yolu', { includeHiddenElements: true });
+      expect(yol.props.accessibilityElementsHidden).toBe(true);
+      expect(yol.props.pointerEvents).toBe('none');
+      // Kâbe işareti + yol: iki ayrı kare aboneliği (pusula görünümü çizilmiyor).
+      expect((durum.abone as jest.Mock).mock.calls.length).toBeGreaterThanOrEqual(2);
     });
 
     it('eksenler bu cihazda güvenilmezse kamera görünümü açılmaz, pusula önerilir', () => {
