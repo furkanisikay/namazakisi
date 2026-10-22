@@ -5,6 +5,12 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.69.1] - 2026-10-22
+
+### Düzeltildi
+- [saat] simülatör uyandırma karesi kök olarak çizilir (kapak geçişi ve sistem X'i yok)
+- [saat] simülatör uyandırma kapağı ilk çizimden sonra açılır; kare sırası
+
 ## [0.69.0] - 2026-10-22
 
 ### Eklendi
