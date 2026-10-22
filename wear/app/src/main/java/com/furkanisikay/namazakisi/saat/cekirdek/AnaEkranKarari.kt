@@ -159,6 +159,9 @@ object AnaEkranKarari {
      */
     fun onaySorusu(ad: String): String = "$ad namazını kıldınız mı?"
 
+    /** Onay sorusunun ekrandaki iki satırı (yuvarlak ekranda tek satır kenarda kırpılıyordu). */
+    fun onaySorusuSatirlari(ad: String): Pair<String, String> = "$ad namazını" to "kıldınız mı?"
+
     /**
      * Onay dokunuşu anındaki YENİDEN doğrulama: katman açıkken vakit değiştiyse (ör. 05:14:50
      * yatsı onayı açıldı, 05:15'te imsak girdi) ya da telefon arada işaretlediyse yazılmaz.

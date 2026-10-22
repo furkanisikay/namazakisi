@@ -99,7 +99,8 @@ fun VakitSatiri(
             Text(satir.ad, style = MaterialTheme.typography.titleSmall, color = yazi, maxLines = 1)
             val alt = when {
                 satir.esitleniyor -> "eşitleniyor"
-                aktif && kalanMetni != null -> "$kalanMetni kaldı"
+                // "kaldı" eki kare ekranda "2 sa 41 dk"yı "2 sa 41"e kesiyordu; süre tek başına okunur.
+                aktif && kalanMetni != null -> kalanMetni
                 else -> null
             }
             if (alt != null) {
@@ -108,6 +109,7 @@ fun VakitSatiri(
                     style = MaterialTheme.typography.labelSmall,
                     color = if (aktif) vakitRengi else renk(SaatPaleti.METIN2),
                     maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
                 )
             }
         }

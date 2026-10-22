@@ -193,14 +193,14 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
                 overflow = TextOverflow.Ellipsis,
             )
         } else {
-            Text(
+            // Zikir adı sütunun TEPESİNDE durur; orada dairenin kirişi sütundan dardır →
+            // ad sütunun %82'sine sığdırılır ("Sübhânallah" kare ekranda halkaya değiyordu,
+            // "Elhamdülillâh" daha uzun). Sığmazsa küçülür, kesilmez.
+            SigdirilanMetin(
                 durum.faz.ad,
-                fontSize = sinirliBoyut(0.075f),
-                fontWeight = FontWeight.Medium,
-                color = renk(SaatPaleti.METIN),
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                enFazla = sinirliBoyut(0.072f),
+                renk = renk(SaatPaleti.METIN),
+                modifier = Modifier.fillMaxWidth(ZIKIR_ADI_ORANI),
             )
             Text(
                 durum.fazSayisi.toString(),
@@ -317,6 +317,9 @@ private const val VURUS_OLCEGI = 1.12f
 
 /** Halka ekran kare olsa da dairedir → kare ekranda da dairenin iç karesi (≈ %71) güvenli. */
 private const val HALKA_ICI_KARE_ORANI = 0.70f
+
+/** Zikir adının güvenli sütundaki payı (sütunun tepesinde daire daralır). */
+private const val ZIKIR_ADI_ORANI = 0.82f
 private const val BITIS_TIK_MS = 300
 private const val BITIS_HALKA_MS = 520
 
