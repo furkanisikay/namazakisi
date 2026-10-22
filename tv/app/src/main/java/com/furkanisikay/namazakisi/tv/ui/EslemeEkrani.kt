@@ -164,7 +164,7 @@ fun EslemeEkrani(
 
     Box(Modifier.fillMaxSize().background(Renkler.arkaplan)) {
         Row(
-            Modifier.fillMaxSize().padding(horizontal = 56.dp, vertical = 36.dp),
+            Modifier.fillMaxSize().padding(horizontal = 56.dp, vertical = 28.dp),
             horizontalArrangement = Arrangement.spacedBy(48.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -179,7 +179,7 @@ fun EslemeEkrani(
                 ) { il ->
                     if (il == null) SolMetin(asama, cihazAdi) else GeldiMetni(il, cihazAdi)
                 }
-                Spacer(Modifier.height(36.dp))
+                Spacer(Modifier.height(24.dp))
                 if (gelen == null && asama == Asama.QR) {
                     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         EslemeDugmesi(
@@ -250,7 +250,7 @@ private fun SolMetin(asama: Asama, cihazAdi: String?) {
                     color = Renkler.metinIkincil, fontSize = 24.sp, lineHeight = 32.sp,
                 )
                 Spacer(Modifier.height(20.dp))
-                Adim(1, "Telefonunuzda Namaz Akışı'nı açın")
+                Adim(1, "Telefonda Namaz Akışı'nı açın")
                 Adim(2, "Ayarlar › Cihazlarım › TV ekleyin")
                 Adim(3, "Telefonun kamerasını koda tutun")
                 Spacer(Modifier.height(18.dp))
