@@ -186,4 +186,131 @@ describe('telefon ↔ tablet', () => {
         await eslesmisKur();
         expect(await s.dinlemeyiBaslat()).toBe(47555);
     });
+
+    it('arka planda dinleyici açılmaz; köprü yoksa da açılmaz', async () => {
+        const s = CihazEsServisi.getInstance();
+        await eslesmisKur();
+        Object.defineProperty(AppState, 'currentState', { value: 'background', configurable: true, writable: true });
+        expect(await s.dinlemeyiBaslat()).toBeNull();
+        Object.defineProperty(AppState, 'currentState', { value: 'active', configurable: true, writable: true });
+        kopru.androidDinleyici.mockReturnValue(null);
+        expect(await s.dinlemeyiBaslat(true)).toBeNull();
+    });
+
+    it('native olay → yanıt köprüye yazılır (bilinmeyen yol 400, bozuk gövde sessiz 403); durdurma aboneliği kaldırır', async () => {
+        const s = CihazEsServisi.getInstance();
+        await s.dinlemeyiDurdur();
+        let olay: ((i: { id: string; yol: string; govde: string }) => void) | null = null;
+        const kaldir = jest.fn();
+        const yanitla = jest.fn(async () => undefined);
+        kopru.androidDinleyici.mockReturnValue({
+            dinleyiciBaslat: jest.fn(async () => 47555),
+            dinleyiciDurdur: jest.fn(async () => undefined),
+            dinleyiciYanitla: yanitla,
+            yerelAdres: jest.fn(async () => '192.168.1.50'),
+            addListener: jest.fn((_o: string, cb: typeof olay) => {
+                olay = cb;
+                return { remove: kaldir };
+            }),
+        });
+        await s.dinlemeyiBaslat(true);
+        expect(s.dinlemePortu()).toBe(47555);
+        olay!({ id: 'i1', yol: '/bilinmeyen', govde: '{}' });
+        olay!({ id: 'i2', yol: '/esitle', govde: 'bozuk' });
+        await new Promise((c) => setTimeout(c, 20));
+        expect(yanitla).toHaveBeenCalledWith('i1', 400, '');
+        expect(yanitla).toHaveBeenCalledWith('i2', 403, '');
+        await s.dinlemeyiDurdur();
+        expect(kaldir).toHaveBeenCalled();
+        expect(s.dinlemePortu()).toBeNull();
+    });
+
+    it('eşleşme: oturum yokken / süresi dolmuşken /esle sessiz 403; ikinci farklı istek 409', async () => {
+        const s = CihazEsServisi.getInstance();
+        expect((await s.istegeYanit('/esle', '{}')).kod).toBe(403);
+        const o = (await s.eslesmeOturumuAc())!;
+        const istek = (ist: string, kimlik = TEL) => {
+            const iv = new Uint8Array(12).fill(2);
+            return JSON.stringify({ v: 2, iv: base64Yaz(iv), ct: sifrele(o.sir, iv, esleIstekAad(o.kimlik), JSON.stringify({ cihaz: 'X', ist, kimlik, adres: '8.8.8.8', port: 80 })) });
+        };
+        expect((await s.istegeYanit('/esle', istek('1111111111111111'))).kod).toBe(202);
+        expect((await s.istegeYanit('/esle', istek('2222222222222222'))).kod).toBe(409);
+        // Geçersiz kimlik biçimi: sessiz 403.
+        expect((await s.istegeYanit('/esle', istek('1111111111111111', 'kisa'))).kod).toBe(403);
+        // D-06: yerel olmayan adres kaydedilmez.
+        await s.eslesmeyiYanitla(true);
+        expect((await CihazAgiDeposu.liste())[0]).toMatchObject({ adres: '', port: 0 });
+        const simdi = Date.now();
+        jest.spyOn(Date, 'now').mockReturnValue(simdi + 4 * 60_000);
+        expect((await s.istegeYanit('/esle-durum', JSON.stringify({ ist: '1111111111111111' }))).kod).toBe(403);
+    });
+
+    it('kaldırma: eşe şifreli "sil" gider, yerelde silinir; eş "sil" yollarsa üyelik düşer', async () => {
+        const { tablet, anahtar } = await eslesmisKur();
+        let giden = '';
+        mockGonder.mockImplementation(async (_a: string, _p: number, _y: string, govde: string) => {
+            const g = JSON.parse(govde);
+            giden = coz(anahtar, g.iv, kanalAad(TEL, tablet, g.n), g.ct) ?? '';
+            return { kod: 200, govde: '' };
+        });
+        const s = CihazEsServisi.getInstance();
+        await s.kaldir(TEL);
+        expect(JSON.parse(giden)).toEqual({ v: 2, sil: true });
+        expect(await CihazAgiDeposu.liste()).toEqual([]);
+
+        const ikinci = await eslesmisKur();
+        expect((await s.istegeYanit('/esitle', telefonZarfi(ikinci.tablet, ikinci.anahtar, 1, yukuYaz({ v: 2, sil: true })))).kod).toBe(200);
+        expect(await CihazAgiDeposu.liste()).toEqual([]);
+    });
+
+    it('eşe 403 → üyelik "reddedildi" ve bir daha denenmez', async () => {
+        await eslesmisKur();
+        mockGonder.mockResolvedValue({ kod: 403, govde: '' });
+        const s = CihazEsServisi.getInstance();
+        expect(await s.esitle()).toEqual({ [TEL]: 'reddedildi' });
+        mockGonder.mockClear();
+        expect(await s.esitle()).toEqual({});
+        expect(mockGonder).not.toHaveBeenCalled();
+    });
+
+    it('kılınmışlık değişince (yuva "cihazEs") kısa beklemeyle tek eşitleme; tür ve köprü varlığı', async () => {
+        jest.useFakeTimers();
+        try {
+            const { kayitDegistiDinleyicisiEkle } = require('../../../data/local/LocalNamazServisi');
+            const s = CihazEsServisi.getInstance();
+            const esitle = jest.spyOn(s, 'esitle').mockResolvedValue({});
+            s.baslat();
+            s.baslat();
+            const cagri = (kayitDegistiDinleyicisiEkle as jest.Mock).mock.calls.filter((c) => c[0] === 'cihazEs');
+            expect(cagri).toHaveLength(1);
+            cagri[0][1]();
+            cagri[0][1]();
+            jest.advanceTimersByTime(1600);
+            expect(esitle).toHaveBeenCalledTimes(1);
+        } finally {
+            jest.useRealTimers();
+        }
+        const { buCihazinTuru, cihazAgiDinleyicisiVarMi } = require('../CihazEsServisi');
+        expect(['tablet', 'telefon']).toContain(buCihazinTuru());
+        expect(cihazAgiDinleyicisiVarMi()).toBe(true);
+    });
+});
+
+describe('varsayılan olay hedefleri', () => {
+    it('Android: gelen kıldım WearSenkron.cihazdanKildimEkle ile ortak kuyruğa; iOS: Siri kuyruğu', async () => {
+        const { NativeModules } = require('react-native');
+        const ekle = jest.fn(async () => true);
+        NativeModules.WearSenkron = { cihazdanKildimEkle: ekle };
+        const { VARSAYILAN_HEDEFLER } = require('../CihazEsServisi');
+        await VARSAYILAN_HEDEFLER.kildim('2026-10-21', 'ogle');
+        expect(ekle).toHaveBeenCalledWith('2026-10-21', 'ogle');
+
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        const siri = require('expo-siri-kisayollari');
+        const iosEkle = jest.fn(async () => true);
+        siri.siriKildimKuyrugu.mockReturnValueOnce({ cihazdanKildimEkle: iosEkle });
+        await VARSAYILAN_HEDEFLER.kildim('2026-10-21', 'ikindi');
+        expect(iosEkle).toHaveBeenCalledWith('2026-10-21', 'ikindi');
+        await VARSAYILAN_HEDEFLER.ayar('X', 1);
+    });
 });
