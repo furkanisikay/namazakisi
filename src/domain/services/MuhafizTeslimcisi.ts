@@ -133,6 +133,19 @@ export interface OzelTeslim {
     alarmKilinmisligaBagli?: boolean;
 }
 
+/**
+ * Bir teslimin cihazda neye donustugu (denetim D-02, plan kaydi). `bildirim`: expo
+ * listesine girdi; `anons`: sesli okuma alarmi kuruldu; `alarm`: gercek alarm kuruldu
+ * (bildirim + anonsun YERINE); `hata`: teslim patladi (kayit guvenilmez sayilir). Bos
+ * nesne = bilincli olarak hicbir sey kurulmadi (gecmis tetik).
+ */
+export interface TeslimSonucu {
+    bildirim?: true;
+    anons?: true;
+    alarm?: true;
+    hata?: true;
+}
+
 export interface MuhafizTeslimcisi {
     /** Tani/log icin — hangi teslimci calisiyor. */
     readonly ad: 'android' | 'ios';
@@ -149,8 +162,24 @@ export interface MuhafizTeslimcisi {
      */
     hazirla(matris?: MuhafizMatrisi): Promise<MuhafizMatrisi | undefined>;
 
-    /** Tek bir uyariyi cihazda planla. Asla firlatmaz — hata loglanir. */
-    uyariPlanla(teslim: UyariTeslimi): Promise<void>;
+    /**
+     * Tek bir uyariyi cihazda planla. Asla firlatmaz — hata loglanir. Sonucu
+     * bildirmeyen (void) teslimci plan kaydini "eksik" yapar → 15 dk turu ASLA atlamaz.
+     */
+    uyariPlanla(teslim: UyariTeslimi): Promise<TeslimSonucu | void>;
+
+    /**
+     * "Plani atla" kapisinin (D-02) teslim BAGLAMI: ayni matris ve vakitlerle bile planin
+     * cihazdaki hâlini degistiren durum (camide sessizligi, tam alarm izni…). Yalniz bunu
+     * saglayan teslimcide kapi acilir (bugun Android); yoksa her tur tam kurulur.
+     */
+    planBaglamiImzasi?(): Promise<string>;
+
+    /** Kapinin "kurulum saglam mi" sorusu: native kayit defterlerindeki TOPLAM oge sayilari. */
+    kurulumSayilari?(): Promise<{ anons: number | null; alarm: number | null }>;
+
+    /** Son `hazirla`dan beri alarm butcesi doldu mu (kesilen tetikler sonraki turda kurulmali)? */
+    butceDolduMu?(): boolean;
 
     /**
      * Bildirimle AYNI id ile planlanmis yan kanali iptal et (Android'de TTS

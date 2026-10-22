@@ -27,6 +27,7 @@
  * saglayici (uygulama icinde hidrate edilmis hesaplayici) olabilir.
  */
 import * as Notifications from 'expo-notifications';
+import { bildirimleriTopluIptalEt, tazePlanliBildirimOkuyucu, type PlanliBildirimOkuyucu } from './planliBildirimOkuyucu';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Logger } from '../../core/utils/Logger';
@@ -137,12 +138,14 @@ let surenPlanlama: Promise<void> | null = null;
 export async function gunSonuHatirlatmalariniGuncelle(
   imsakKaynagi: GunSonuImsakKaynagi,
   ayarlar?: GunSonuAyarlari,
-  simdi: Date = new Date()
+  simdi: Date = new Date(),
+  /** 15 dk turu TUR İÇİ paylaşılan okuyucuyu geçer (denetim D-15); verilmezse taze okunur. */
+  okuyucu: PlanliBildirimOkuyucu = tazePlanliBildirimOkuyucu
 ): Promise<void> {
   const onceki = surenPlanlama ?? Promise.resolve();
   const bu = onceki
     .catch(() => { /* onceki turun hatasi bu turu dusurmez */ })
-    .then(() => planlamayiCalistir(imsakKaynagi, ayarlar, simdi));
+    .then(() => planlamayiCalistir(imsakKaynagi, ayarlar, simdi, okuyucu));
 
   surenPlanlama = bu;
   try {
@@ -159,9 +162,9 @@ async function ayarlariOku(): Promise<GunSonuAyarlari | null> {
   return yanit.basarili && yanit.veri ? yanit.veri : null;
 }
 
-async function bekleyenKimlikleriOku(): Promise<string[] | null> {
+async function bekleyenKimlikleriOku(okuyucu: PlanliBildirimOkuyucu): Promise<string[] | null> {
   try {
-    const tumu = await Notifications.getAllScheduledNotificationsAsync();
+    const tumu = await okuyucu.oku();
     return tumu.map((b) => b.identifier).filter(bizimMi);
   } catch (error) {
     Logger.warn('GunSonuHatirlatici', 'Bekleyen bildirimler okunamadi', error);
@@ -173,14 +176,7 @@ async function iptalEt(kimlikler: string[]): Promise<void> {
   // Eski DAILY kimligi her turda KOSULSUZ iptal edilir (gocun kendisi budur):
   // bekleyenler okunamasa bile bir daha gelmesin. Var olmayan kimligi iptal
   // etmek zararsizdir.
-  const tumu = new Set([GUN_SONU_ESKI_ID, ...kimlikler]);
-  for (const kimlik of tumu) {
-    try {
-      await Notifications.cancelScheduledNotificationAsync(kimlik);
-    } catch (error) {
-      Logger.warn('GunSonuHatirlatici', `Iptal edilemedi: ${kimlik}`, error);
-    }
-  }
+  await bildirimleriTopluIptalEt([...new Set([GUN_SONU_ESKI_ID, ...kimlikler])], 'GunSonuHatirlatici');
 }
 
 async function tetikPlanla(tetik: GunSonuTetigi): Promise<void> {
@@ -206,7 +202,8 @@ async function tetikPlanla(tetik: GunSonuTetigi): Promise<void> {
 async function planlamayiCalistir(
   imsakKaynagi: GunSonuImsakKaynagi,
   verilenAyarlar: GunSonuAyarlari | undefined,
-  simdi: Date
+  simdi: Date,
+  okuyucu: PlanliBildirimOkuyucu
 ): Promise<void> {
   const ayarlar = verilenAyarlar ?? (await ayarlariOku());
   if (!ayarlar) {
@@ -215,7 +212,7 @@ async function planlamayiCalistir(
     return;
   }
 
-  const bekleyenler = await bekleyenKimlikleriOku();
+  const bekleyenler = await bekleyenKimlikleriOku(okuyucu);
 
   if (!ayarlar.gunSonuBildirimAktif) {
     await iptalEt(bekleyenler ?? []);

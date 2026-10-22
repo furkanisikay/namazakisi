@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { BlurView } from 'expo-blur';
 import { useTema } from '../../../core/theme';
 import { PaylasimModal } from '../Sharing/PaylasimModal';

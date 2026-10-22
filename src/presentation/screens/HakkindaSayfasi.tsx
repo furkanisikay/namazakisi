@@ -332,16 +332,16 @@ export const HakkindaSayfasi: React.FC = () => {
           <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
             Tüm hakları saklıdır.
           </Text>
-          {/* Camideyim cami verisi OpenStreetMap türevidir (ODbL) — atıf zorunlu. */}
+          {/* Camideyim cami verisi ve ilçe merkezi koordinatları OpenStreetMap türevidir (ODbL) — atıf zorunlu. */}
           <TouchableOpacity
             className="mt-2 justify-center"
             style={{ minHeight: 44 }}
             onPress={() => Linking.openURL('https://www.openstreetmap.org/copyright').catch(() => undefined)}
             accessibilityRole="link"
-            accessibilityLabel="Cami verisi: OpenStreetMap katkıcıları, ODbL lisansı. Ayrıntılar için açın"
+            accessibilityLabel="Cami ve ilçe merkezi verisi: OpenStreetMap katkıcıları, ODbL lisansı. Ayrıntılar için açın"
           >
             <Text className="text-xs text-center" style={{ color: renkler.metinIkincil }}>
-              Cami verisi: © OpenStreetMap katkıcıları (ODbL)
+              Cami ve ilçe merkezi verisi: © OpenStreetMap katkıcıları (ODbL)
             </Text>
           </TouchableOpacity>
         </View>

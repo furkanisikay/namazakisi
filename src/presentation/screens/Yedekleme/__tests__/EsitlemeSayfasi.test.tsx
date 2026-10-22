@@ -59,6 +59,9 @@ jest.mock('@expo/vector-icons', () => {
   const { Text } = require('react-native');
   return { FontAwesome5: (props: { name: string }) => <Text>{props.name}</Text> };
 });
+// Kaynak alt yol import'u kullanır (denetim D-20) → kök mock'u alt yola da yansıt.
+jest.mock('@expo/vector-icons/FontAwesome5', () => ({ __esModule: true, default: jest.requireMock('@expo/vector-icons').FontAwesome5 }));
+jest.mock('@expo/vector-icons/MaterialIcons', () => ({ __esModule: true, default: jest.requireMock('@expo/vector-icons').MaterialIcons }));
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children, ...props }: { children: React.ReactNode }) => {
     const { View } = require('react-native');

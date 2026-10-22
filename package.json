@@ -112,6 +112,9 @@
       "android": {
         "exclude": [
           "expo-splash-screen"
+        ],
+        "buildFromSource": [
+          "expo-camera"
         ]
       }
     }

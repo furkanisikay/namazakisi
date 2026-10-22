@@ -34,7 +34,9 @@ on:
         type: string
 
 concurrency:
-  group: android-build-${{ inputs.build_type || 'debug' }}
+  # Debug grubu dala özgüdür: eskiden tüm dalların debug dispatch'leri tek
+  # grupta birbirini iptal ediyordu (paralel ajanlar). Release grubu değişmedi.
+  group: android-build-${{ inputs.build_type || 'debug' }}${{ inputs.build_type != 'release' && format('-{0}', github.ref) || '' }}
   # Release'i yarıda kesme (commit/tag/push/EAS atomik olmayan zinciri tehlikeli);
   # sadece debug'da iptal et.
   cancel-in-progress: ${{ inputs.build_type != 'release' }}
@@ -420,13 +422,20 @@ jobs:
       # :app JVM birim testleri (android/app/src/test — widget/hızlı ayarlar saf
       # çekirdeği, issue #275/#276) AYNI Gradle çağrısında koşar: derleme
       # yapılandırması paylaşılır, test düşerse APK üretilmez.
+      #
+      # Release APK (GitHub'a yayımlanan) YALNIZ ARM ABI'leri taşır: telefonlar
+      # x86/x86_64 kullanmaz ve ikisi APK'nın ~%43'üydü (denetim D-04). Ayar
+      # yalnız bu komut satırında: gradle.properties (4 ABI) değişmez, böylece
+      # debug APK + emülatör ekran görüntüsü hatları (x86_64) ve Play AAB'si
+      # (Play kendisi böler) etkilenmez.
       - name: 🏗️ Build APK
         working-directory: android
         run: |
           chmod +x gradlew
           if [ "${{ inputs.build_type }}" == "release" ]; then
-            echo "🚀 Release APK build ediliyor..."
-            ./gradlew :app:testReleaseUnitTest assembleRelease --no-daemon
+            echo "🚀 Release APK build ediliyor (armeabi-v7a, arm64-v8a)..."
+            ./gradlew :app:testReleaseUnitTest assembleRelease --no-daemon \
+              -PreactNativeArchitectures=armeabi-v7a,arm64-v8a
           else
             echo "🔧 Debug APK build ediliyor..."
             ./gradlew :app:testDebugUnitTest assembleDebug --no-daemon

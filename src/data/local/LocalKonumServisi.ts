@@ -9,6 +9,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApiYanit } from '../../core/types';
 import { Logger } from '../../core/utils/Logger';
+import { manuelIlceKoordinatiniDuzelt } from '../../core/konum/ilceKoordinati';
 
 // ==================== TIPLER ====================
 
@@ -120,9 +121,26 @@ export const localKonumAyarlariniGetir = async (): Promise<ApiYanit<KonumAyarlar
         const parsed = JSON.parse(veri) as KonumAyarlari;
         Logger.info('LocalKonumServisi', 'Yuklenen veri:', { mod: parsed.konumModu, il: parsed.seciliIlAdi });
 
+        // GÖÇ: eski sürümler manuel ilçe seçimine İL MERKEZİNİN koordinatını yazıyordu.
+        // İdempotent (bayrak yok); düzeltme diske de yazılır ki ham AsyncStorage okuyan arka
+        // plan tüketicileri (konum yayması, görevler) aynı koordinatı görsün.
+        const duzeltilmis = manuelIlceKoordinatiniDuzelt(parsed);
+        if (duzeltilmis !== parsed) {
+            Logger.info('LocalKonumServisi', 'Ilce koordinati ilce merkezine duzeltildi', {
+                il: parsed.seciliIlAdi,
+                ilce: parsed.seciliIlceAdi,
+            });
+            try {
+                await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(duzeltilmis));
+            } catch (yazmaHatasi) {
+                // Yazılamasa da bu oturum doğru koordinatla çalışır; bir sonraki okumada yeniden denenir.
+                Logger.warn('LocalKonumServisi', 'Ilce koordinat duzeltmesi diske yazilamadi:', yazmaHatasi);
+            }
+        }
+
         return {
             basarili: true,
-            veri: parsed,
+            veri: duzeltilmis,
         };
     } catch (error) {
         Logger.error('LocalKonumServisi', 'Konum ayarlari yuklenemedi:', error);

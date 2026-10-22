@@ -33,6 +33,7 @@ import type { TakipHassasiyeti } from '../store/konumSlice';
 import { VARSAYILAN_TAKIP_HASSASIYETI } from '../../core/constants/UygulamaSabitleri';
 import { NamazVaktiHesaplayiciServisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
 import { Il, Ilce } from '../../domain/services/TurkiyeKonumServisi';
+import { ilceKoordinatiBul } from '../../core/konum/ilceKoordinati';
 import { KonumTakipServisi } from '../../domain/services/KonumTakipServisi';
 import { useFeedback } from '../../core/feedback';
 import { Logger } from '../../core/utils/Logger';
@@ -292,10 +293,13 @@ const KonumAyarlariIcerik: React.FC = () => {
 
     const handleKonumSecimi = async (il: Il, ilce?: Ilce) => {
         await butonTiklandiFeedback();
-        const lat = ilce?.lat || il.lat;
-        const lng = ilce?.lng || il.lng;
+        // İlçe merkezi çevrimdışı tablodan (API ilçe koordinatı vermez); yoksa il merkezi.
+        const ilceMerkezi = ilce ? ilceKoordinatiBul(il.id, ilce.ad, ilce.id) : null;
+        const lat = ilceMerkezi?.lat ?? (ilce?.lat || il.lat);
+        const lng = ilceMerkezi?.lng ?? (ilce?.lng || il.lng);
 
-        NamazVaktiHesaplayiciServisi.getInstance().guncelleKonumManuel(il.plakaKodu);
+        // Vakit hesabı SEÇİLEN noktaya kurulur (plaka verilseydi il merkezine düşerdi).
+        NamazVaktiHesaplayiciServisi.getInstance().guncelleKonumManuel({ lat, lng });
 
         dispatch(konumAyarlariniGuncelle({
             konumModu: 'manuel',

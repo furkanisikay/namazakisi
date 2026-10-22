@@ -80,6 +80,14 @@ describe('YedeklemeSayfasi', () => {
     expect(getByText('Yedekten geri yükleyin')).toBeTruthy();
   });
 
+  it('yerel yedeği "şifreli" diye anlatmaz; parola içermediğini söyler (denetim D-17)', () => {
+    // Yerel yedeğin anahtarı kaynak kodda sabittir (yedekSifreleme.ts); "şifreli" demek
+    // yanlış güven verir. Gerçek parola ile şifreleme yalnız eşitlemededir.
+    const { getByText, queryByText } = render(<YedeklemeSayfasi />);
+    expect(getByText(/parola içermez; güvendiğiniz bir yerde saklayın/)).toBeTruthy();
+    expect(queryByText(/şifreli dosya/)).toBeNull();
+  });
+
   it('"Yedek oluştur"a basınca yedeginiPaylas çağrılmalıdır', async () => {
     const { getByText } = render(<YedeklemeSayfasi />);
     fireEvent.press(getByText('Yedek oluşturun'));

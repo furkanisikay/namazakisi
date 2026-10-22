@@ -5,7 +5,7 @@
  * NativeWind + Expo Vector Icons ile guncellenmis versiyon
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { ROZET_RENKLERI } from '../../core/constants/UygulamaSabitleri';
 import { RozetDetay, RozetSeviyesi } from '../../core/types/SeriTipleri';
+import { useDonguAcik, useDonguAnimasyonu } from './hareket/dongu';
 
 interface RozetKartiProps {
   rozet: RozetDetay;
@@ -71,29 +72,32 @@ export const RozetKarti: React.FC<RozetKartiProps> = ({
 }) => {
   const renkler = useRenkler();
 
-  // Parlama animasyonu (kazanilmis rozetler icin)
+  // Parlama animasyonu (kazanilmis rozetler icin). Tek kapı `hareket/dongu` (denetim D-16):
+  // yalnız sekme odaktayken ve uygulama öndeyken döner, "Animasyonları azalt"ta hiç dönmez;
+  // durunca dinlenme pozuna (0 → en sönük parlama) döner. Eskiden temizliksiz
+  // `Animated.loop` İlerleme sekmesinden çıkınca da süreç boyunca dönüyordu.
   const parlamaAnim = useRef(new Animated.Value(0)).current;
+  const donguAcik = useDonguAcik();
 
-  useEffect(() => {
-    if (rozet.kazanildiMi) {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(parlamaAnim, {
-            toValue: 1,
-            duration: 2000,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
-          }),
-          Animated.timing(parlamaAnim, {
-            toValue: 0,
-            duration: 2000,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
-          }),
-        ])
-      ).start();
-    }
-  }, [rozet.kazanildiMi]);
+  useDonguAnimasyonu(
+    donguAcik && rozet.kazanildiMi,
+    () =>
+      Animated.sequence([
+        Animated.timing(parlamaAnim, {
+          toValue: 1,
+          duration: 2000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(parlamaAnim, {
+          toValue: 0,
+          duration: 2000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ]),
+    () => parlamaAnim.setValue(0)
+  );
 
   const seviyeRengi = seviyeRengiAl(rozet.seviye);
 

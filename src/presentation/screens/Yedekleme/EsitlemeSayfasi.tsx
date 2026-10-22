@@ -10,7 +10,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
 import { Anahtar } from '../../components/common/Anahtar';
@@ -190,7 +190,7 @@ export const EsitlemeSayfasi: React.FC = () => {
         {e.saglayicilar.length === 0 ? (
           <View className="rounded-2xl p-5" style={{ backgroundColor: renkler.kartArkaplan }}>
             <Text className="text-sm leading-5" style={{ color: renkler.metinIkincil }}>
-              Bu sürümde eşitleme hizmeti etkin değil. Verilerinizi Yedekleme sayfasından şifreli bir dosyayla
+              Bu sürümde eşitleme hizmeti etkin değil. Verilerinizi Yedekleme sayfasından bir yedek dosyasıyla
               taşıyabilirsiniz.
             </Text>
           </View>

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { tarihiGorunumFormatinaCevir, gunAdiniAl } from '../../../core/utils/TarihYardimcisi';
 import { SERI_RENKLERI } from '../../../core/constants/UygulamaSabitleri';

@@ -17,7 +17,7 @@ import {
   Easing,
   Dimensions,
 } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { BOYUTLAR } from '../../core/constants/UygulamaSabitleri';
 import { KutlamaBilgisi, KutlamaTipi } from '../../core/types/SeriTipleri';

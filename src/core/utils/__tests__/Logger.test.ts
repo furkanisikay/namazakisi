@@ -76,6 +76,23 @@ describe('Logger', () => {
       );
     });
 
+    it('NOBETCI (D-07): budanacak log yoksa acilista storage YENIDEN YAZILMAZ', async () => {
+      (Logger as unknown as { initialized: boolean }).initialized = false;
+      (Logger as unknown as { initPromise: Promise<void> | null }).initPromise = null;
+      const taze: LogEntry = { timestamp: Date.now(), level: LogLevel.INFO, tag: 'T', message: 'taze' };
+      (AsyncStorage.getItem as jest.Mock).mockImplementation((anahtar: string) => {
+        if (anahtar === ETKIN_ANAHTARI) return Promise.resolve('false');
+        if (anahtar === LOGLAR_ANAHTARI) return Promise.resolve(JSON.stringify([taze]));
+        return Promise.resolve(null);
+      });
+      (AsyncStorage.setItem as jest.Mock).mockClear();
+
+      await Logger.initialize();
+
+      expect(Logger.getLogs()).toHaveLength(1);
+      expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+    });
+
     it('7 gunluk yas esigini gecmeyen log korunur (sinir testi)', async () => {
       (Logger as unknown as { initialized: boolean }).initialized = false;
       (Logger as unknown as { initPromise: Promise<void> | null }).initPromise = null;

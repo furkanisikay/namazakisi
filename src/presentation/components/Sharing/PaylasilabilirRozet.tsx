@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { RozetDetay, RozetSeviyesi } from '../../../core/types/SeriTipleri';
 
 interface PaylasilabilirRozetProps {

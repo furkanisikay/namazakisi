@@ -156,6 +156,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   OZEL_GUN_AYARLARI: 'ozel_gun_ayarlari',
   // Muhafiz sistemi
   MUHAFIZ_AYARLARI: 'muhafiz_ayarlari',
+  // Son TAM muhafiz kurulumunun kaydi (parmak izi + kurulan kimlikler; denetim D-02):
+  // 15 dk turu girdiler degismediyse yeniden kurmaz. Cihaza ozgu → yedeklemeye GIRMEZ.
+  MUHAFIZ_PLAN_KAYDI: '@namaz_akisi/muhafiz_plan_kaydi',
   // iOS anons kliplerinin son kullanim gunleri (GC icin). CIHAZA OZGUDUR — dosyalar
   // bu cihazin Library/Sounds'unda yasar; yedekleme beyaz listesine GIRMEZ.
   IOS_ANONS_KLIP_KULLANIMI: '@namaz_akisi/ios_anons_klip_kullanimi',
@@ -181,6 +184,12 @@ export const DEPOLAMA_ANAHTARLARI = {
   CANLI_SAYAC_KAYNAKLARI: '@namaz_akisi/canli_sayac_kaynaklari',
   // Planlayıcının saate (Wear OS) giden çıktısı; WearSenkronServisi okur. Yedeklenmez.
   CANLI_SAAT_VERISI: '@namaz_akisi/canli_saat_verisi',
+  // Bu telefonda bir Wear OS saati EN AZ BİR KEZ bağlı görüldü mü ('1'). Görülmediyse saat
+  // yükü hiç kurulmaz (denetim D-08). Cihaza özgü, yedeklenmez.
+  WEAR_SAAT_GORULDU: '@namaz_akisi/wear_saat_goruldu',
+  // Saate son gönderilen yükün özeti + anı ({ ozet, ms }): süreç ölse de aynı yük yeniden
+  // gönderilmesin (headless 15 dk turu her seferinde taze süreç olabilir). Yedeklenmez.
+  WEAR_SON_YUK_OZETI: '@namaz_akisi/wear_son_yuk_ozeti',
   // Now Bar YEDEĞİ için kullanıcının verdiği son "yeniden dene" anı (ms). Cihaza özgü, yedeklenmez.
   CANLI_YEDEK_YENI_DENEME: '@namaz_akisi/canli_yedek_yeni_deneme',
   // Nafile "Kıldım" (issue #273): o günün o nafilesinin kalan hatırlatmaları

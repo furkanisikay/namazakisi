@@ -113,6 +113,39 @@ describe('TurkiyeKonumServisi.illeriGetir', () => {
         expect(typeof yazilan.timestamp).toBe('number');
     });
 
+    test('REGRESYON: plaka il kimliğinden gelir, telefon alan kodundan (areaCode) DEĞİL', async () => {
+        // Gerçek API biçimi: areaCode telefon alan kodu, İstanbul'da dizi.
+        global.fetch = jest.fn().mockResolvedValue(
+            fetchYanitOlustur(true, {
+                data: [
+                    { id: 1, name: 'Adana', areaCode: 322, coordinates: { latitude: 37, longitude: 35.3 } },
+                    { id: 34, name: 'İstanbul', areaCode: [212, 216], coordinates: { latitude: 41, longitude: 29 } },
+                ],
+            })
+        );
+
+        const iller = await TurkiyeKonumServisi.illeriGetir();
+        expect(iller.map((i) => i.plakaKodu)).toEqual(['01', '34']);
+        // Yalnız kullanılan alanlar istenir, yönlendirmesiz yeni adres
+        expect((global.fetch as jest.Mock).mock.calls[0][0]).toBe(
+            'https://api.turkiyeapi.dev/v1/provinces?fields=id,name,coordinates'
+        );
+    });
+
+    test('eski önbellekteki yanlış plaka (alan kodu) okurken düzeltilir', async () => {
+        mockStore.set(
+            CACHE_ANAHTARI_ILLER,
+            JSON.stringify({
+                timestamp: Date.now(),
+                data: [{ id: 1, ad: 'Adana', plakaKodu: '322', lat: 37, lng: 35.3 }],
+            })
+        );
+        global.fetch = jest.fn();
+
+        const iller = await TurkiyeKonumServisi.illeriGetir();
+        expect(iller[0].plakaKodu).toBe('01');
+    });
+
     test('coordinates yoksa lat/lng 0 olur (|| 0 dalı)', async () => {
         const apiYanit = [{ id: 99, name: 'Testil', areaCode: 99 }]; // coordinates yok, bare array
         global.fetch = jest
@@ -274,20 +307,54 @@ describe('TurkiyeKonumServisi.ilceleriGetir', () => {
         expect(ilceler).toEqual([]);
     });
 
-    test('API ok değilse boş dizi döner', async () => {
+    test('API ok değilse ÇEVRİMDIŞI ilçe listesine düşer (ilçe merkezleriyle)', async () => {
         global.fetch = jest
             .fn()
             .mockResolvedValue(fetchYanitOlustur(false, {}));
 
         const ilceler = await TurkiyeKonumServisi.ilceleriGetir(8);
-        expect(ilceler).toEqual([]);
+        expect(ilceler.map((i) => i.ad)).toContain('Hopa');
+        expect(ilceler.every((i) => i.ilId === 8)).toBe(true);
+        // Çevrimdışı liste önbelleğe YAZILMAZ (ağ dönünce API kazansın)
+        expect(mockStore.has(`${CACHE_ANAHTARI_ILCELER}8`)).toBe(false);
     });
 
-    test('fetch fırlatırsa boş dizi döner', async () => {
+    test('fetch fırlatırsa çevrimdışı ilçe listesine düşer', async () => {
         global.fetch = jest.fn().mockRejectedValue(new Error('ağ yok'));
 
         const ilceler = await TurkiyeKonumServisi.ilceleriGetir(9);
-        expect(ilceler).toEqual([]);
+        expect(ilceler.find((i) => i.ad === 'Kuşadası')).toBeDefined();
+    });
+
+    test('NÖBETÇİ: API ilçe koordinatı vermese de ilçe MERKEZİ döner, il merkezi değil', async () => {
+        // Gerçek API biçimi (2026-10): ilçelerde `coordinates` YOK, yalnız ilde var.
+        global.fetch = jest.fn().mockResolvedValue(
+            fetchYanitOlustur(true, {
+                data: {
+                    coordinates: { latitude: 41.0082, longitude: 28.9784 },
+                    districts: [{ id: 1622, name: 'Silivri' }],
+                },
+            })
+        );
+
+        const [silivri] = await TurkiyeKonumServisi.ilceleriGetir(34);
+        expect(silivri.lng).toBeLessThan(28.5);
+        expect(silivri.lng).not.toBe(28.9784);
+    });
+
+    test('eski sürümün önbelleğindeki il merkezi koordinatı okurken düzeltilir', async () => {
+        mockStore.set(
+            `${CACHE_ANAHTARI_ILCELER}34`,
+            JSON.stringify({
+                timestamp: Date.now(),
+                data: [{ id: 1622, ilId: 34, ad: 'Silivri', lat: 41.0082, lng: 28.9784 }],
+            })
+        );
+        global.fetch = jest.fn();
+
+        const [silivri] = await TurkiyeKonumServisi.ilceleriGetir(34);
+        expect(silivri.lng).toBeLessThan(28.5);
+        expect(global.fetch).not.toHaveBeenCalled();
     });
 
     test('bellek cache sıcaksa ikinci çağrı fetch yapmaz', async () => {

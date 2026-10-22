@@ -11,6 +11,8 @@ jest.mock('react-native/Libraries/Utilities/useWindowDimensions', () => ({
 const pencere = require('react-native/Libraries/Utilities/useWindowDimensions').default as jest.Mock;
 
 jest.mock('@expo/vector-icons', () => ({ FontAwesome5: 'FontAwesome5' }));
+// Kaynak alt yol import'u kullanır (denetim D-20) → kök mock'u alt yola da yansıt.
+jest.mock('@expo/vector-icons/FontAwesome5', () => ({ __esModule: true, default: jest.requireMock('@expo/vector-icons').FontAwesome5 }));
 jest.mock('react-native-safe-area-context', () => ({
     useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));

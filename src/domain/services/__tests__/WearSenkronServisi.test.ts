@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { bugunuAl, dunuAl, gunEkle } from '../../../core/utils/TarihYardimcisi';
 
-jest.mock('@react-native-async-storage/async-storage', () => ({ getItem: jest.fn() }));
+jest.mock('@react-native-async-storage/async-storage', () => ({ getItem: jest.fn(), setItem: jest.fn() }));
 jest.mock('../../../core/utils/Logger', () => ({
     Logger: { warn: jest.fn(), error: jest.fn(), info: jest.fn(), debug: jest.fn() },
 }));
@@ -386,6 +386,112 @@ describe('gonder', () => {
     it('baslat kılınmışlık dinleyicisini kaydeder', () => {
         servis.baslat();
         expect(mockDinleyiciAyarla).toHaveBeenCalledWith(expect.any(Function));
+    });
+});
+
+describe('D-08: saat yoksa kurma, birleştir, aciliyet', () => {
+    const saatModulu = (durum: unknown, ek: Record<string, unknown> = {}) => {
+        const m = {
+            durumGonder: jest.fn(() => Promise.resolve()),
+            durumGonderSecenekli: jest.fn((_j: string, _a: boolean) => Promise.resolve()),
+            esliSaatDurumu: jest.fn(() => Promise.resolve(durum)),
+            ...ek,
+        };
+        (NativeModules as Record<string, unknown>).WearSenkron = m;
+        return m;
+    };
+    const diskKur = (ek: Record<string, string> = {}) => {
+        const taban = (AsyncStorage.getItem as jest.Mock).getMockImplementation()!;
+        (AsyncStorage.getItem as jest.Mock).mockImplementation(async (k: string) => (k in ek ? ek[k] : taban(k)));
+    };
+
+    it('ÖLÇÜM: saati hiç görülmemiş telefonda 3 gönderim → 0 yük kurulumu, 0 Data Layer yazımı (önce: 3 kurulum + 1 yazım)', async () => {
+        const m = saatModulu('esliDegil');
+        konumKur();
+        await servis.gonder();
+        await servis.gonder({ acil: false });
+        await servis.gonder();
+        expect(mockAralik).not.toHaveBeenCalled();
+        expect(m.durumGonderSecenekli).not.toHaveBeenCalled();
+        expect(m.durumGonder).not.toHaveBeenCalled();
+        // Bağlı saat sorgusu süreç içinde önbelleklenir.
+        expect(m.esliSaatDurumu).toHaveBeenCalledTimes(1);
+    });
+
+    it('saat bir kez GÖRÜLDÜYSE menzil dışıyken de kurar (DataItem bağlanınca senkronlanır)', async () => {
+        const m = saatModulu('esliDegil');
+        konumKur();
+        diskKur({ [DEPOLAMA_ANAHTARLARI.WEAR_SAAT_GORULDU]: '1' });
+        await servis.gonder();
+        expect(m.durumGonderSecenekli).toHaveBeenCalledTimes(1);
+    });
+
+    it('bağlı saat görülünce bayrak yazılır ve gönderilir', async () => {
+        const m = saatModulu('esli');
+        konumKur();
+        await servis.gonder();
+        expect(AsyncStorage.setItem).toHaveBeenCalledWith(DEPOLAMA_ANAHTARLARI.WEAR_SAAT_GORULDU, '1');
+        expect(m.durumGonderSecenekli).toHaveBeenCalledWith(expect.any(String), true);
+    });
+
+    it('Wear API yoksa ("yok") kurmaz; durum bilinmiyorsa (null) ihtiyatla kurar', async () => {
+        const yok = saatModulu('yok');
+        konumKur();
+        await servis.gonder();
+        expect(yok.durumGonderSecenekli).not.toHaveBeenCalled();
+
+        servis.__testIcinSifirla();
+        const bilinmiyor = saatModulu(null);
+        await servis.gonder();
+        expect(bilinmiyor.durumGonderSecenekli).toHaveBeenCalledTimes(1);
+    });
+
+    it('periyodik tur acil:false geçer; eski ikili (yöntem yok) durumGonder ile gönderir', async () => {
+        const m = saatModulu('esli');
+        konumKur();
+        await servis.gonder({ acil: false });
+        expect(m.durumGonderSecenekli).toHaveBeenCalledWith(expect.any(String), false);
+
+        servis.__testIcinSifirla();
+        const eski = saatModulu('esli', { durumGonderSecenekli: undefined });
+        await servis.gonder({ acil: false });
+        expect(eski.durumGonder).toHaveBeenCalledTimes(1);
+    });
+
+    it('BİRLEŞTİRME: tur sürerken gelen 3 istek TEK ek tura bağlanır (toplam 2 kurulum)', async () => {
+        saatModulu('esli');
+        konumKur();
+        await Promise.all([servis.gonder(), servis.gonder(), servis.gonder(), servis.gonder()]);
+        expect(mockAralik).toHaveBeenCalledTimes(2);
+    });
+
+    it('birleşen isteklerden biri acil ise ek tur acildir', async () => {
+        const m = saatModulu('esli');
+        konumKur();
+        mockAralik
+            .mockResolvedValueOnce({ basarili: true, veri: [{ tarih: bugunuAl(), namazlar: [] }] })
+            .mockResolvedValueOnce({ basarili: true, veri: [{ tarih: bugunuAl(), namazlar: [{ namazAdi: NamazAdi.Ogle, tamamlandi: true }] }] });
+        await Promise.all([servis.gonder({ acil: false }), servis.gonder({ acil: false }), servis.gonder({ acil: true })]);
+        expect(m.durumGonderSecenekli.mock.calls.map((c) => c[1])).toEqual([false, true]);
+    });
+
+    it('diskteki özet aynıysa YENİ süreçte de yeniden yazılmaz (24 sa içinde)', async () => {
+        const m = saatModulu('esli');
+        konumKur();
+        await servis.gonder();
+        const ozetYazimi = (AsyncStorage.setItem as jest.Mock).mock.calls.find(
+            (c) => c[0] === DEPOLAMA_ANAHTARLARI.WEAR_SON_YUK_OZETI
+        )!;
+        servis.__testIcinSifirla(); // yeni süreç
+        diskKur({ [DEPOLAMA_ANAHTARLARI.WEAR_SON_YUK_OZETI]: ozetYazimi[1] as string });
+        await servis.gonder();
+        expect(m.durumGonderSecenekli).toHaveBeenCalledTimes(1);
+
+        servis.__testIcinSifirla();
+        const eski = JSON.parse(ozetYazimi[1] as string);
+        diskKur({ [DEPOLAMA_ANAHTARLARI.WEAR_SON_YUK_OZETI]: JSON.stringify({ ...eski, ms: eski.ms - 25 * 3600_000 }) });
+        await servis.gonder();
+        expect(m.durumGonderSecenekli).toHaveBeenCalledTimes(2);
     });
 });
 

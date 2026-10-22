@@ -611,19 +611,37 @@ const GUVENILIR_DOMAINLER = [
 ];
 
 /**
+ * Kesin sözdizimli `https://<ana bilgisayar>[:443]<yol>` biçimi: ana bilgisayar
+ * yalnız küçük harf, rakam, `-` ve `.` içerir ve ardından ya bitiş ya da `/`, `?`,
+ * `#` gelir. `URL` sınıfı BİLEREK kullanılmaz: çalışma anındaki RN polyfill'i
+ * (`react-native/Libraries/Blob/URL.js`) ana bilgisayarı `(?:[^@]+@)?` ile ayrıştırır
+ * ve `https://evil.com/@github.com/a.apk` için `github.com` döndürür, oysa sistem
+ * tarayıcısı `evil.com`'u açar. Jest Node'un WHATWG `URL`'ini kullandığı için bu
+ * fark testte görünmezdi (denetim D-22).
+ */
+const GUVENILIR_URL_DESENI = /^https:\/\/([a-z0-9](?:[a-z0-9.-]*[a-z0-9])?)(?::443)?(?:[/?#]|$)/;
+
+/** Görünür ASCII (0x21–0x7E); boşluk, kontrol ve ASCII dışı karakter içermez. */
+const GORUNUR_ASCII = /^[\x21-\x7e]+$/;
+
+/**
  * Indirme baglantisinin guvenilir bir domaine ait olup olmadigini kontrol et
- * API'den gelen URL'lerin phishing icin manipule edilmediginden emin olur
+ * API'den gelen URL'lerin phishing icin manipule edilmediginden emin olur.
+ *
+ * Kullanıcı bilgisi (`@`), ters eğik çizgi, boşluk/kontrol ve ASCII dışı karakter
+ * taşıyan bağlantı KOŞULSUZ reddedilir: hiçbir meşru indirme bağlantısı bunları
+ * taşımaz, ayrıştırıcılar arası farkların hepsi de buradan doğar.
  */
 export function guvenilirBaglantiMi(url: string): boolean {
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol !== 'https:') return false;
-    return GUVENILIR_DOMAINLER.some(
-      (domain) => parsed.hostname === domain || parsed.hostname.endsWith(`.${domain}`)
-    );
-  } catch {
-    return false;
-  }
+  if (typeof url !== 'string' || url.length > 2048) return false;
+  if (!GORUNUR_ASCII.test(url) || url.includes('@') || url.includes('\\')) return false;
+  const eslesme = GUVENILIR_URL_DESENI.exec(url);
+  if (!eslesme) return false;
+  const anaBilgisayar = eslesme[1];
+  if (anaBilgisayar.includes('..')) return false;
+  return GUVENILIR_DOMAINLER.some(
+    (domain) => anaBilgisayar === domain || anaBilgisayar.endsWith(`.${domain}`)
+  );
 }
 
 /**

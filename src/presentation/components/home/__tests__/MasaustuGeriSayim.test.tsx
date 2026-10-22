@@ -2,6 +2,9 @@ import React from 'react';
 import { render } from '@testing-library/react-native';
 
 jest.mock('@expo/vector-icons', () => ({ FontAwesome5: 'FontAwesome5' }));
+// Kaynak alt yol import'u kullanır (denetim D-20) → kök mock'u alt yola da yansıt.
+jest.mock('@expo/vector-icons/FontAwesome5', () => ({ __esModule: true, default: jest.requireMock('@expo/vector-icons').FontAwesome5 }));
+jest.mock('@expo/vector-icons/MaterialIcons', () => ({ __esModule: true, default: jest.requireMock('@expo/vector-icons').MaterialIcons }));
 jest.mock('../../../../core/theme', () => ({
   useRenkler: () => ({
     birincil: '#4CAF50',
@@ -13,9 +16,15 @@ jest.mock('../../../../core/theme', () => ({
 
 import { MasaustuGeriSayim } from '../MasaustuGeriSayim';
 
+// Sayaç (useKalanSure, D-03) `Date.now()` okur: sabit "şimdi" ile metin deterministik.
+const SIMDI = Date.UTC(2026, 0, 1, 12, 0, 0);
+beforeAll(() => { jest.spyOn(Date, 'now').mockReturnValue(SIMDI); });
+afterAll(() => { jest.restoreAllMocks(); });
+
 const temel = {
   vakitAdi: 'İkindi',
-  kalanSureStr: '01:02:03',
+  // Hedef 1:02:03 sonrası → sayaç "01:02:03".
+  hedefIso: new Date(SIMDI + (3600 + 2 * 60 + 3) * 1000 + 500).toISOString(),
   vakitAraligi: '15:45 - 18:20',
   tamamlandi: false,
   kilitli: false,

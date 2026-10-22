@@ -26,6 +26,7 @@ import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
 import { YatisHatirlatmaServisi } from './YatisHatirlatmaServisi';
 import { TakvimCakismaServisi } from './TakvimCakismaServisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
+import { turIciPlanliBildirimOkuyucu } from './planliBildirimOkuyucu';
 import {
     DEPOLAMA_ANAHTARLARI,
     TAKIP_PROFILLERI,
@@ -312,6 +313,11 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
  */
 TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
     Logger.info('ArkaplanGorev', 'Görev tetiklendi');
+    // TUR İÇİ tek bekleyen bildirim listesi (denetim D-15): aşağıdaki planlayıcılar SIRALI
+    // koşar ve listeyi yalnız KENDİ öneklerini silmek için okur → turun ilk okuması hepsi
+    // için doğrudur (bkz. `planliBildirimOkuyucu`). Muhafız kendi taze listesini okur
+    // (atla kapısı kurulumun sağlamlığını ölçer).
+    const bekleyenOkuyucu = turIciPlanliBildirimOkuyucu();
 
     try {
         // =====================================================
@@ -335,7 +341,7 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             if (esitleme.tur === 'indirildi' || esitleme.tur === 'indirildiVeYuklendi') {
                 // Kayıtlar store'suz diske yazıldı → saat ve widget kendiliğinden tazelenmez.
                 await WidgetServisi.getInstance().kilinanlariYaz().catch(() => undefined);
-                await WearSenkronServisi.getInstance().gonder().catch(() => undefined);
+                await WearSenkronServisi.getInstance().gonder({ acil: false }).catch(() => undefined);
             }
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Eşitleme turu çalıştırılamadı', e);
@@ -352,7 +358,8 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         // =====================================================
         try {
             await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(
-                await arkaplandaKoordinatOku()
+                await arkaplandaKoordinatOku(),
+                bekleyenOkuyucu
             );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Cuma hatırlatması tazelenemedi', e);
@@ -363,7 +370,8 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         // dönüşlerinden ÖNCE durmalı.
         try {
             await CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(
-                await arkaplandaKoordinatOku()
+                await arkaplandaKoordinatOku(),
+                bekleyenOkuyucu
             );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Camiye gitme hatırlatması tazelenemedi', e);
@@ -378,7 +386,8 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         // =====================================================
         try {
             await NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(
-                await arkaplandaKoordinatOku()
+                await arkaplandaKoordinatOku(),
+                bekleyenOkuyucu
             );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Nafile hatırlatması tazelenemedi', e);
@@ -396,7 +405,8 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         try {
             // Ortak "Kıldım" kuyruğu: saat + widget + hızlı ayarlar + kısayol (#275/#276).
             await KildimKuyruguServisi.getInstance().bekleyenleriIsle();
-            await WearSenkronServisi.getInstance().gonder();
+            // Periyodik tur kullanıcı eylemi değil: Data Layer acil senkronu gerekmez (D-08).
+            await WearSenkronServisi.getInstance().gonder({ acil: false });
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Wear senkronu tazelenemedi', e);
         }
@@ -468,7 +478,7 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         // donuslerinden ONCE durmali. Ayarlar ham depolamadan okunur.
         // =====================================================
         try {
-            await gunSonuHatirlatmalariniGuncelle(await arkaplandaKoordinatOku());
+            await gunSonuHatirlatmalariniGuncelle(await arkaplandaKoordinatOku(), undefined, undefined, bekleyenOkuyucu);
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Gün sonu hatırlatması tazelenemedi', e);
         }
@@ -480,7 +490,12 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         // bagimsiz → muhafiz erken donuslerinden ONCE. Ayarlar ham depolamadan.
         // =====================================================
         try {
-            await YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(await arkaplandaKoordinatOku());
+            await YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(
+                await arkaplandaKoordinatOku(),
+                undefined,
+                undefined,
+                bekleyenOkuyucu
+            );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Yatış hatırlatması tazelenemedi', e);
         }
@@ -493,7 +508,11 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         // → muhafiz erken donuslerinden ONCE. Izin yoksa servis plani temizler.
         // =====================================================
         try {
-            await TakvimCakismaServisi.getInstance().hatirlatmalariGuncelle(await arkaplandaKoordinatOku());
+            await TakvimCakismaServisi.getInstance().hatirlatmalariGuncelle(
+                await arkaplandaKoordinatOku(),
+                undefined,
+                bekleyenOkuyucu
+            );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Takvim çakışması tazelenemedi', e);
         }
@@ -578,7 +597,10 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             }),
         };
 
-        await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla(muhafizAyarlari);
+        // D-02: periyodik tur girdiler ve cihazdaki kurulum değişmediyse sil-kur YAPMAZ
+        // (gün dönümü, kılınmışlık, konum, ayar, camide, alarm izni parmak izine girer;
+        // kayıt 6 saatten eskiyse yine kurar). Diğer tüm yollar tam kurar.
+        await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla(muhafizAyarlari, { degismediyseAtla: true });
 
         Logger.info('ArkaplanGorev', 'Bildirimler yeniden planlandi (sehir hassasiyetinde konum)');
         return BackgroundFetch.BackgroundFetchResult.NewData;

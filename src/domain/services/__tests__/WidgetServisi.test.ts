@@ -16,7 +16,7 @@ jest.mock('../../../data/local/LocalNamazServisi', () => ({
     kayitDegistiDinleyicisiEkle: (...a: unknown[]) => mockDinleyiciEkle(...a),
 }));
 
-import { WIDGET_DINLEYICI_ADI, WidgetServisi } from '../WidgetServisi';
+import { WIDGET_DINLEYICI_ADI, WIDGET_ONARIM_ARALIGI_MS, WidgetServisi } from '../WidgetServisi';
 
 const modul = { vakitlerKaydet: jest.fn(), kilinanlarKaydet: jest.fn() };
 const servis = WidgetServisi.getInstance();
@@ -120,6 +120,73 @@ describe('kilinanlariYaz', () => {
         mockAralik.mockResolvedValueOnce({ basarili: false });
         await servis.kilinanlariYaz();
         expect(modul.kilinanlarKaydet).not.toHaveBeenCalled();
+    });
+});
+
+describe('içerik aynıysa yazmaz (denetim D-21)', () => {
+    const KOORDINAT = { lat: 41.0082, lng: 28.9784 };
+
+    it('ÖLÇÜM: değişmeyen veriyle iki tur → native yazım 1 vakit + 1 kılınmışlık (önce: 2 + 2)', async () => {
+        await servis.vakitleriyaz(KOORDINAT);
+        await servis.kilinanlariYaz();
+        await servis.vakitleriyaz(KOORDINAT);
+        await servis.kilinanlariYaz();
+        expect(modul.vakitlerKaydet).toHaveBeenCalledTimes(1);
+        expect(modul.kilinanlarKaydet).toHaveBeenCalledTimes(1);
+    });
+
+    it('kılınmışlık değişince hemen yazar', async () => {
+        await servis.kilinanlariYaz();
+        mockAralik.mockResolvedValueOnce({
+            basarili: true,
+            veri: [{ tarih: bugunuAl(), namazlar: [{ namazAdi: NamazAdi.Ogle, tamamlandi: true }] }],
+        });
+        await servis.kilinanlariYaz();
+        expect(modul.kilinanlarKaydet).toHaveBeenCalledTimes(2);
+    });
+
+    it('konum değişince vakitleri hemen yazar', async () => {
+        await servis.vakitleriyaz(KOORDINAT);
+        await servis.vakitleriyaz({ lat: 39.9334, lng: 32.8597 });
+        expect(modul.vakitlerKaydet).toHaveBeenCalledTimes(2);
+    });
+
+    it('reddedilen yazım hafızaya girmez → sonraki çağrı yeniden dener', async () => {
+        modul.kilinanlarKaydet.mockImplementationOnce(() => {
+            throw new Error('kopru');
+        });
+        await servis.kilinanlariYaz();
+        await servis.kilinanlariYaz();
+        expect(modul.kilinanlarKaydet).toHaveBeenCalledTimes(2);
+    });
+
+    it('Android ONARIMI: aynı vakit yükü saatte bir yine yazılır (sınır alarmı zinciri onarılsın)', async () => {
+        const simdi = jest.spyOn(Date, 'now');
+        simdi.mockReturnValue(1_000_000_000_000);
+        await servis.vakitleriyaz(KOORDINAT);
+        simdi.mockReturnValue(1_000_000_000_000 + WIDGET_ONARIM_ARALIGI_MS - 1);
+        await servis.vakitleriyaz(KOORDINAT);
+        expect(modul.vakitlerKaydet).toHaveBeenCalledTimes(1);
+        simdi.mockReturnValue(1_000_000_000_000 + WIDGET_ONARIM_ARALIGI_MS);
+        await servis.vakitleriyaz(KOORDINAT);
+        expect(modul.vakitlerKaydet).toHaveBeenCalledTimes(2);
+    });
+
+    it('iOS: onarım YOK (her tazeleme WidgetKit bütçesinden yer)', async () => {
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        const siri = { vakitlerKaydet: jest.fn().mockResolvedValue(undefined), kilinanlarKaydet: jest.fn().mockResolvedValue(undefined) };
+        const kopru = require('../../../../modules/expo-siri-kisayollari/src');
+        kopru.siriVeriYazici.mockReturnValue(siri);
+        const simdi = jest.spyOn(Date, 'now');
+        try {
+            simdi.mockReturnValue(1_000_000_000_000);
+            await servis.vakitleriyaz(KOORDINAT);
+            simdi.mockReturnValue(1_000_000_000_000 + 3 * WIDGET_ONARIM_ARALIGI_MS);
+            await servis.vakitleriyaz(KOORDINAT);
+        } finally {
+            kopru.siriVeriYazici.mockReturnValue(null);
+        }
+        expect(siri.vakitlerKaydet).toHaveBeenCalledTimes(1);
     });
 });
 

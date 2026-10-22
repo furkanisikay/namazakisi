@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import Animated, { SharedValue, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { kabeyeMesafeKm, mesafeMetni, yonCumlesi } from '../../../core/kible/acilar';
 import { kalibrasyonIpucu } from '../../hooks/useKible';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { VakitBilgisi } from '../../../domain/services/NamazVaktiHesaplayiciServisi';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
@@ -8,11 +8,13 @@ import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { NAMAZ_DURUMLARI } from '../../../core/vakit/durumSozlugu';
 import { KildimDugmesi, KILDIM_DUGMESI_YUKSEKLIK } from '../hareket/KildimDugmesi';
 import { kildimDugmesiRenkleri } from '../../../core/anaEkran/kildimDugmesiRenkleri';
-import { BirimliSure } from '../common/BirimliSure';
+import { GeriSayimBirimli } from './GeriSayimMetni';
 
 interface VakitKartiProps {
+    /** Sayaç hedefi `vakitBilgisi.sonrakiVakitGiris`; saniyelik çizim yalnız `GeriSayimMetni`nde (D-03). */
     vakitBilgisi: VakitBilgisi | null;
-    kalanSureStr: string; // "02:45:12" formatında
+    /** Sayaç sıfıra inince (vakit sınırı) bir kez; ana ekran vakit bilgisini tazeler. */
+    onSayacBitti?: () => void;
     suankiVakitAdi: string; // "İkindi"
     vakitAraligi: string; // "15:15 - 17:42"
     tamamlandi: boolean;
@@ -70,7 +72,7 @@ const getVakitIkonu = (vakit: string): string => {
 
 export const VakitKarti: React.FC<VakitKartiProps> = ({
     vakitBilgisi,
-    kalanSureStr,
+    onSayacBitti,
     suankiVakitAdi,
     vakitAraligi,
     tamamlandi,
@@ -199,8 +201,9 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                 {/* Sayaç */}
                 <View className="my-6 items-center" style={genis ? stiller.genisSayacKutusu : undefined}>
                     {/* Birimli: "01:09:09" duvar saati gibi okunuyordu (saat/TV ile aynı dil). */}
-                    <BirimliSure
-                        sure={kalanSureStr}
+                    <GeriSayimBirimli
+                        hedefIso={vakitBilgisi?.sonrakiVakitGiris}
+                        onBitti={onSayacBitti}
                         rakamBoyu={genis ? 76 : 48}
                         birimRengi={renkler.metinIkincil}
                         style={{ color: renkler.metin, fontWeight: '800', letterSpacing: -1 }}

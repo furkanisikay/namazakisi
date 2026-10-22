@@ -11,7 +11,7 @@ import { bugunuAl, dunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
 import { Coordinates, PrayerTimes } from 'adhan';
 import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
+import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI, UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import type { VakitAdi } from '../../core/types';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
@@ -27,15 +27,28 @@ import {
     planlanacakMuhafizVakitleri,
     vakitTeslimAdaylari,
 } from '../../core/muhafiz/muhafizTeslimPlani';
-import { muhafizTeslimcisiniAl, type VakitZamani } from './MuhafizTeslimcisi';
+import { muhafizTeslimcisiniAl, type MuhafizTeslimcisi, type VakitZamani } from './MuhafizTeslimcisi';
+import {
+    MUHAFIZ_PLAN_KAYDI_SURUMU,
+    muhafizPlanKaydiniCoz,
+    muhafizPlaniAtlanabilirMi,
+    muhafizPlanParmakIzi,
+    type MuhafizPlanKaydi,
+    type ParmakIziVakti,
+    type PlanKaydiOgesi,
+} from '../../core/muhafiz/planParmakIzi';
 import { eskiErtelemeKimligiMi, muhafizPlanKimligiMi } from '../../core/muhafiz/planKimligi';
 import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
+import { bildirimleriTopluIptalEt } from './planliBildirimOkuyucu';
 import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
 import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 import type { SaatTeslimBaglami } from '../../core/saat/saatAyarlari';
 import type { GeceSessizligi } from '../../core/muhafiz/geceSessizligi';
 import { geceSessizliginiOku } from '../../data/local/LocalGeceSessizligiOkuyucu';
 import { geceCapasiBasligi, geceCapasiGovdesi } from '../../core/utils/muhafizMetinYardimcisi';
+
+/** Muhafiz turunun SAHIPLENDIGI bekleyen kimlik: plan + eski `_ertele` artiklari (goc). */
+const muhafizSahipliKimlikMi = (id: string): boolean => muhafizPlanKimligiMi(id) || eskiErtelemeKimligiMi(id);
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -61,6 +74,8 @@ export interface ArkaplanMuhafizAyarlari {
 export class ArkaplanMuhafizServisi {
     private static instance: ArkaplanMuhafizServisi;
     private ayarlar: ArkaplanMuhafizAyarlari | null = null;
+    /** Bu turun plan kaydı (D-02) — teslim sonuçları buraya toplanır; kayıt desteği yoksa null. */
+    private turKaydi: { parmakIzi: string; eksik: boolean; ogeler: PlanKaydiOgesi[] } | null = null;
     /** Bildirim kategorileri bu süreçte kaydedildi mi (L7 — düğmesiz bildirim olmasın). */
     private kategorilerKayitli = false;
     /** Bu turun saat iş bölümü ayarı (saat W3) — üreticiye geçer (defterle parite). */
@@ -86,10 +101,16 @@ export class ArkaplanMuhafizServisi {
     /**
      * Servisi yapilandir ve bildirimleri planla
      * @param ayarlar Muhafiz ayarlari
+     * @param secenekler.degismediyseAtla YALNIZ 15 dk arka plan görevi geçer (D-02): girdiler
+     *   ve cihazdaki kurulum son TAM kurulumla aynıysa sil-kur yapılmaz. Ön plan, ekran,
+     *   kılınmışlık ve konum yolları her zaman tam kurar (ve kaydı tazeler).
      */
-    public async yapilandirVePlanla(ayarlar: ArkaplanMuhafizAyarlari): Promise<void> {
+    public async yapilandirVePlanla(
+        ayarlar: ArkaplanMuhafizAyarlari,
+        secenekler: { degismediyseAtla?: boolean } = {}
+    ): Promise<void> {
         try {
-            await this.planla(ayarlar);
+            await this.planla(ayarlar, secenekler.degismediyseAtla === true);
         } finally {
             // Saat (Wear OS) hazir plani tasir → plan degisince o da tazelenir.
             // `hazirla` ile DOGRULANMIS matris gecer (kimlik paritesi).
@@ -118,22 +139,68 @@ export class ArkaplanMuhafizServisi {
         if (this.ayarlar) await this.yapilandirVePlanla(this.ayarlar);
     }
 
-    private async planla(ayarlar: ArkaplanMuhafizAyarlari): Promise<void> {
+    private async planla(ayarlar: ArkaplanMuhafizAyarlari, degismediyseAtla: boolean): Promise<void> {
         this.ayarlar = ayarlar;
+        this.turKaydi = null;
+        const teslimci = muhafizTeslimcisiniAl();
 
         Logger.info('ArkaplanMuhafiz', `Muhafiz yapilandiriliyor (aktif: ${ayarlar.aktif})`);
-
-        // Once tum eski muhafiz bildirimlerini temizle.
-        await this.tumMuhafizBildirimleriniTemizle();
 
         // Ayarlar aktif degilse sadece temizle ve cik. Kanal COP TOPLAMA burada da
         // calisir (matris verilmeden): muhafiz kapatildiginda kullanicinin ozel sesli
         // kanallari aksi halde bildirim ayarlarinda sonsuza kadar oksuz kalirdi.
         if (!ayarlar.aktif) {
-            await muhafizTeslimcisiniAl().hazirla();
+            await this.planKaydiniSil();
+            await this.tumMuhafizBildirimleriniTemizle();
+            await teslimci.hazirla();
             Logger.info('ArkaplanMuhafiz', 'Muhafiz devre disi, bildirimler temizlendi');
             return;
         }
+
+        // Plan girdileri (saf üreticinin TÜM girdileri) TEMİZLİKTEN ÖNCE okunur: "atla" kapısı
+        // (D-02) aynı değerlerden parmak izi çıkarır ve tam kurulum da AYNI değerlerle planlar.
+        const simdi = new Date();
+        // Yarının imsağı da (issue #74 M2): akşam kurulan plan sabahı da kapsasın — OEM
+        // 15 dk görevini öldürse (Android) ya da background fetch hiç koşmasa (iOS) da
+        // sabah uyarısı kurulu olsun. iOS'ta BÜTÇE ARTIĞI olarak (bkz. `yarininImsagiKipi`).
+        const vakitler = muhafizVakitleriniHesapla(ayarlar.koordinatlar, simdi, {
+            yarininImsagi: yarininImsagiPlanlanirMi(teslimci.ad),
+        });
+        // Kilinmis vakitleri al (bugun VE dun icin - gece yarisi gecisleri)
+        const kilinanVakitlerMap: Record<string, VakitAdi[]> = {
+            [bugunuAl()]: await kilinanVakitleriAl(bugunuAl()),
+            [dunuAl()]: await kilinanVakitleriAl(dunuAl()),
+        };
+        // OZEL GUN (issue #272): aralik aktifken o gunun vakitleri icin ne
+        // bildirim ne TTS anons alarmi kurulur. Eski plan asagida temizlenir;
+        // aralik bitince ilk tur (acilis / 15 dk gorevi) planlamayi
+        // kendiliginden geri getirir. Kapi VAKTIN GUNUNE bakar (gece yarisindan
+        // sonraki yatsi DUNE aittir). Bes tuketici de bu fonksiyondan gectigi
+        // icin kapi burada TEK yerde durur.
+        const ozelGundeMi = await ozelGunSuzgeciniOku();
+        // Saat iş bölümü (saat W3): sabah uyandırması saatteyse telefonda yedek, anons
+        // "yalnız saatte" ise telefon TTS planlamaz. Okuyucu asla fırlatmaz.
+        this.saatAyarlari = await LocalSaatAyarlariServisi.teslimBaglaminiOku();
+        this.geceSessizligi = await geceSessizliginiOku();
+
+        // PLAN PARMAK İZİ (D-02). Yalnız teslim bağlamını bildiren teslimcide (Android):
+        // iOS'ta bütçe öteki tüketicilerin bekleyenlerine bağlıdır, kapı açılmaz.
+        let hazirListe: Notifications.NotificationRequest[] | undefined;
+        if (teslimci.planBaglamiImzasi) {
+            const parmakIzi = await this.parmakIziHesapla(teslimci, ayarlar, vakitler, kilinanVakitlerMap, ozelGundeMi);
+            if (degismediyseAtla) {
+                const atlandi = await this.atlanabilirseAtla(teslimci, ayarlar, parmakIzi);
+                if (atlandi === true) return;
+                hazirListe = atlandi || undefined;
+            }
+            // Tam kurulumun BAŞINDA kayıt silinir: yarıda ölen süreç "plan tamam" diyen
+            // bayat bir kayıt bırakmasın.
+            await this.planKaydiniSil();
+            this.turKaydi = { parmakIzi, eksik: false, ogeler: [] };
+        }
+
+        // Once tum eski muhafiz bildirimlerini temizle (kapının okuduğu liste paylaşılır).
+        await this.tumMuhafizBildirimleriniTemizle(hazirListe);
 
         // Kategoriler (eylem dugmeleri) PLANLAMADAN ONCE garanti: guncelleme sonrasi
         // yeni/degisen kategori ancak kayit kosunca vardir ve dinleyici
@@ -154,39 +221,13 @@ export class ArkaplanMuhafizServisi {
         this.ayarlar = {
             ...ayarlar,
             matris:
-                (await muhafizTeslimcisiniAl().hazirla(ayarlar.matris)) ?? ayarlar.matris,
+                (await teslimci.hazirla(ayarlar.matris)) ?? ayarlar.matris,
         };
 
         // Vakitler + eleme + uyari uretimi SAF plan ureticisinde
         // (`core/muhafiz/muhafizTeslimPlani.ts`). Bildirim defteri (issue #298)
         // AYNI fonksiyonu kuru calistirir; burada ayri bir mantik YAZILMAZ,
         // yoksa rehber ekrani ile cihazdaki plan ayrisir.
-        const simdi = new Date();
-        // Yarının imsağı da (issue #74 M2): akşam kurulan plan sabahı da kapsasın — OEM
-        // 15 dk görevini öldürse (Android) ya da background fetch hiç koşmasa (iOS) da
-        // sabah uyarısı kurulu olsun. iOS'ta BÜTÇE ARTIĞI olarak (bkz. `yarininImsagiKipi`).
-        const vakitler = muhafizVakitleriniHesapla(this.ayarlar.koordinatlar, simdi, {
-            yarininImsagi: yarininImsagiPlanlanirMi(muhafizTeslimcisiniAl().ad),
-        });
-
-        // Kilinmis vakitleri al (bugun VE dun icin - gece yarisi gecisleri)
-        const kilinanVakitlerMap: Record<string, VakitAdi[]> = {
-            [bugunuAl()]: await kilinanVakitleriAl(bugunuAl()),
-            [dunuAl()]: await kilinanVakitleriAl(dunuAl()),
-        };
-
-        // OZEL GUN (issue #272): aralik aktifken o gunun vakitleri icin ne
-        // bildirim ne TTS anons alarmi kurulur. Eski plan yukarida zaten
-        // temizlendi; aralik bitince ilk tur (acilis / 15 dk gorevi) planlamayi
-        // kendiliginden geri getirir. Kapi VAKTIN GUNUNE bakar (gece yarisindan
-        // sonraki yatsi DUNE aittir). Bes tuketici de bu fonksiyondan gectigi
-        // icin kapi burada TEK yerde durur.
-        const ozelGundeMi = await ozelGunSuzgeciniOku();
-        // Saat iş bölümü (saat W3): sabah uyandırması saatteyse telefonda yedek, anons
-        // "yalnız saatte" ise telefon TTS planlamaz. Okuyucu asla fırlatmaz.
-        this.saatAyarlari = await LocalSaatAyarlariServisi.teslimBaglaminiOku();
-        this.geceSessizligi = await geceSessizliginiOku();
-
         const planGirdisi = {
             matris: this.ayarlar.matris,
             vakitler,
@@ -200,6 +241,7 @@ export class ArkaplanMuhafizServisi {
 
         if (gelecekVakitler.length === 0) {
             Logger.info('ArkaplanMuhafiz', 'Gelecek veya kilinmamis vakit bulunamadi');
+            await this.planKaydiniYaz(teslimci);
             return;
         }
 
@@ -208,6 +250,109 @@ export class ArkaplanMuhafizServisi {
         }
 
         Logger.info('ArkaplanMuhafiz', `Toplam ${gelecekVakitler.length} vakit icin bildirimler planlandi`);
+        await this.planKaydiniYaz(teslimci);
+    }
+
+    // ============================================================
+    // PLAN KAYDI / "ATLA" KAPISI (denetim D-02)
+    // ============================================================
+
+    private async parmakIziHesapla(
+        teslimci: MuhafizTeslimcisi,
+        ayarlar: ArkaplanMuhafizAyarlari,
+        vakitler: readonly ParmakIziVakti[],
+        kilinanlar: Record<string, VakitAdi[]>,
+        ozelGundeMi: (tarih: string) => boolean
+    ): Promise<string> {
+        const ozelGunler: Record<string, boolean> = {};
+        for (const v of vakitler) ozelGunler[v.tarih] = ozelGundeMi(v.tarih);
+        let teslimBaglami: string;
+        try {
+            teslimBaglami = (await teslimci.planBaglamiImzasi?.()) ?? '';
+        } catch {
+            // Okunamayan bağlam kendine özgü bir değer olur → önceki kayıtla eşleşmez (kur).
+            teslimBaglami = `okunamadi:${Date.now()}`;
+        }
+        return muhafizPlanParmakIzi({
+            surum: UYGULAMA.VERSIYON,
+            platform: teslimci.ad,
+            aktif: ayarlar.aktif,
+            matris: ayarlar.matris,
+            vakitler,
+            kilinanlar,
+            ozelGunler,
+            saatAyarlari: this.saatAyarlari,
+            geceSessizligi: this.geceSessizligi,
+            teslimBaglami,
+        });
+    }
+
+    /**
+     * Kapı: atlanırsa `true` (servis durumu son kurulumun doğrulanmış matrisiyle kurulur);
+     * atlanmazsa kapının okuduğu bekleyen liste (temizlik onu yeniden kullanır) ya da
+     * okunamadıysa `false`. ASLA fırlatmaz — şüphede kurulum yapılır.
+     */
+    private async atlanabilirseAtla(
+        teslimci: MuhafizTeslimcisi,
+        ayarlar: ArkaplanMuhafizAyarlari,
+        parmakIzi: string
+    ): Promise<true | Notifications.NotificationRequest[] | false> {
+        let liste: Notifications.NotificationRequest[];
+        let kayit: MuhafizPlanKaydi | null;
+        let sayilar: { anons: number | null; alarm: number | null };
+        try {
+            [kayit, liste, sayilar] = await Promise.all([
+                AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_PLAN_KAYDI).then(muhafizPlanKaydiniCoz),
+                Notifications.getAllScheduledNotificationsAsync(),
+                teslimci.kurulumSayilari?.() ?? Promise.resolve({ anons: null, alarm: null }),
+            ]);
+        } catch (error) {
+            Logger.warn('ArkaplanMuhafiz', 'Plan kapisi okunamadi; tam kurulum yapiliyor', error);
+            return false;
+        }
+        const karar = muhafizPlaniAtlanabilirMi({
+            kayit,
+            parmakIzi,
+            simdiMs: Date.now(),
+            kuruluKimlikler: liste.map((b) => b.identifier).filter(muhafizSahipliKimlikMi),
+            bekleyenAnonsSayisi: sayilar.anons,
+            bekleyenAlarmSayisi: sayilar.alarm,
+        });
+        if (!karar.atla || !kayit) {
+            Logger.info('ArkaplanMuhafiz', `Plan yeniden kuruluyor (${karar.neden})`);
+            return liste;
+        }
+        this.ayarlar = { ...ayarlar, matris: (kayit.dogrulanmisMatris as MuhafizMatrisi | undefined) ?? ayarlar.matris };
+        Logger.info('ArkaplanMuhafiz', 'Plan girdileri ve kurulum degismedi; yeniden kurulum atlandi');
+        return true;
+    }
+
+    private async planKaydiniSil(): Promise<void> {
+        try {
+            await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_PLAN_KAYDI);
+        } catch {
+            // Silinemezse bile parmak izi bir sonraki turu yine korur.
+        }
+    }
+
+    private async planKaydiniYaz(teslimci: MuhafizTeslimcisi): Promise<void> {
+        const tur = this.turKaydi;
+        this.turKaydi = null;
+        if (!tur || !this.ayarlar) return;
+        const kayit: MuhafizPlanKaydi = {
+            s: MUHAFIZ_PLAN_KAYDI_SURUMU,
+            parmakIzi: tur.parmakIzi,
+            kurulumMs: Date.now(),
+            eksik: tur.eksik,
+            butceDoldu: teslimci.butceDolduMu?.() ?? true,
+            ogeler: tur.ogeler,
+            dogrulanmisMatris: this.ayarlar.matris,
+        };
+        try {
+            await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_PLAN_KAYDI, JSON.stringify(kayit));
+        } catch (error) {
+            Logger.warn('ArkaplanMuhafiz', 'Plan kaydi yazilamadi', error);
+        }
     }
 
     private async kategorileriGarantile(): Promise<void> {
@@ -255,7 +400,7 @@ export class ArkaplanMuhafizServisi {
             // iOS: kesinti seviyesi + paket sesi). Id paylasilan yardimcidan gelir
             // (`muhafizBildirimIdOlustur`) — on plan ayni anonsu ayni id ile
             // yeniden planlar; format sapmasi cift konusma uretir.
-            await muhafizTeslimcisiniAl().uyariPlanla({
+            const sonuc = await muhafizTeslimcisiniAl().uyariPlanla({
                 id: aday.id,
                 baslik,
                 mesaj,
@@ -268,6 +413,17 @@ export class ArkaplanMuhafizServisi {
                 cikis: vakit.cikis,
                 ...(butceArtigiMi(vakit, muhafizTeslimcisiniAl().ad) ? { butceArtigi: true as const } : {}),
             });
+            if (this.turKaydi) {
+                // Sonuç bildirmeyen teslim (eski/el yapımı teslimci) ya da hata → kayıt güvenilmez.
+                if (!sonuc || sonuc.hata) this.turKaydi.eksik = true;
+                this.turKaydi.ogeler.push({
+                    id: aday.id,
+                    zamanMs: aday.zaman.getTime(),
+                    ...(sonuc?.bildirim ? { bildirim: true as const } : {}),
+                    ...(sonuc?.anons ? { anons: true as const } : {}),
+                    ...(sonuc?.alarm ? { alarm: true as const } : {}),
+                });
+            }
         }
 
         Logger.info('ArkaplanMuhafiz', `${vakit.vakit} (${vakit.tarih}) icin ${adaylar.length} bildirim planlandi`);
@@ -325,24 +481,16 @@ export class ArkaplanMuhafizServisi {
 
         // Tum dakika ID'lerini de kapsayacak sekilde bildirimleri iptal et
         const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
-
-        for (const bildirim of tumBildirimler) {
-            // Bu vakite ait muhafiz bildirimi mi kontrol et
-            for (const tarih of tarihler) {
-                const bildirimOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${tarih}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
-                if (bildirim.identifier.startsWith(bildirimOneki)) {
-                    try {
-                        await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
-
-                    } catch {
-                        // Bildirim bulunamazsa hata verme
-                    }
-                    // Bildirimle AYNI id ile planlanan sesli anonsu da iptal et.
-                    // (Anonsu olmayan id icin native tarafta no-op.)
-                    muhafizTeslimcisiniAl().yanKanaliIptalEt(bildirim.identifier);
-                }
-            }
-        }
+        const onekler = tarihler.map(
+            (t) => `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${t}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`
+        );
+        const silinecekler = tumBildirimler
+            .map((b) => b.identifier)
+            .filter((id) => onekler.some((o) => id.startsWith(o)));
+        // Bildirimle AYNI id ile planlanan sesli anonsu da iptal et (anonsu olmayan id
+        // icin native tarafta no-op). Iptaller PARALEL (D-15); hata digerlerini durdurmaz.
+        for (const id of silinecekler) muhafizTeslimcisiniAl().yanKanaliIptalEt(id);
+        await bildirimleriTopluIptalEt(silinecekler, 'ArkaplanMuhafiz');
 
         // Iptal edilen vakti dogru tarihe kaydet: verilen namaz gunu, yoksa tahmin.
         const kayitTarihi = tarih ?? this.vakitIcinDogruTarihiAl(vakit, new Date());
@@ -356,21 +504,23 @@ export class ArkaplanMuhafizServisi {
      * gorunmezler) -> native tarafin kendi kayit defterinden topluca iptal edilir.
      * Muhafiz disinda anons kullanan yok; "tumunu iptal" burada dogru kapsamdir.
      */
-    public async tumMuhafizBildirimleriniTemizle(): Promise<void> {
+    public async tumMuhafizBildirimleriniTemizle(
+        /** Az once okunmus bekleyen liste (atla kapisi okudu — D-15); yoksa taze okunur. */
+        hazirListe?: Notifications.NotificationRequest[]
+    ): Promise<void> {
         muhafizTeslimcisiniAl().tumYanKanallariIptalEt();
 
         try {
-            const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
-            for (const bildirim of tumBildirimler) {
-                const id = bildirim.identifier;
-                // Yalniz muhafiz PLANI temizlenir. Ayni `muhafiz_` uzayindaki
-                // yatis/muhasebe hatirlatmalari (issue #290) baska bir servisindir.
-                // GOC: kaldirilan "Ertele"nin (#289, sahip karari 2026-10-19) guncelleme
-                // oncesi kurulmus `_ertele` kopyalari da her turda silinir.
-                if (muhafizPlanKimligiMi(id) || eskiErtelemeKimligiMi(id)) {
-                    await Notifications.cancelScheduledNotificationAsync(id);
-                }
-            }
+            const tumBildirimler = hazirListe ?? (await Notifications.getAllScheduledNotificationsAsync());
+            // Yalniz muhafiz PLANI temizlenir. Ayni `muhafiz_` uzayindaki
+            // yatis/muhasebe hatirlatmalari (issue #290) baska bir servisindir.
+            // GOC: kaldirilan "Ertele"nin (#289, sahip karari 2026-10-19) guncelleme
+            // oncesi kurulmus `_ertele` kopyalari da her turda silinir.
+            // Iptaller PARALEL (D-15): tek tek await kopru gidis-donusunu N kez bekletiyordu.
+            await bildirimleriTopluIptalEt(
+                tumBildirimler.map((b) => b.identifier).filter((id) => muhafizSahipliKimlikMi(id)),
+                'ArkaplanMuhafiz'
+            );
 
             Logger.info('ArkaplanMuhafiz', 'Tum muhafiz bildirimleri temizlendi');
         } catch (error) {

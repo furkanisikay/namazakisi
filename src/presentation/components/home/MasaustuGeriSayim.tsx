@@ -4,22 +4,27 @@
  *
  * SALT GÖSTERİM: dik duran yarıya dokunmak cihazı devirir; "Kıldım" alt yarıdaki
  * günlük akıştan işaretlenir. Prop'lar ilkel değerlerdir ve bileşen `React.memo`
- * ile sarılıdır — ana ekranın saniyelik çiziminde yalnız `kalanSureStr`
- * değiştiğinde (o da saniyede bir, beklenen) yeniden çizilir.
+ * ile sarılıdır. Kalan süreyi KENDİSİ sayar (`useKalanSure`, `GeriSayimMetni` ile aynı
+ * kaynak — denetim D-03): saniyede bir yalnız bu küçük bileşen çizilir, ana ekran değil.
+ * Ekran okuyucu etiketi süreyi de taşıdığı için sayaç ayrı bir metin bileşenine
+ * bölünmedi (kapsayıcı `accessible` — çocuklar ayrı düğüm olmaz).
  */
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 import { useRenkler } from '../../../core/theme';
+import { hedefMsCoz, useKalanSure } from './GeriSayimMetni';
 import { BirimliSure } from '../common/BirimliSure';
 import { kalanSureSesli } from '../../../core/utils/kalanSureParcalari';
 
 interface MasaustuGeriSayimProps {
     /** Başlıkta görünen ad ("Öğle", cuma günü "Cuma"). */
     vakitAdi: string;
-    /** "02:45:12" */
-    kalanSureStr: string;
+    /** Sayılan an (ISO; `vakitBilgisi.sonrakiVakitGiris`). Boşsa `00:00:00`. */
+    hedefIso: string | null | undefined;
+    /** Sayaç sıfıra inince bir kez (ekran görünürken). */
+    onSayacBitti?: () => void;
     /** "12:30 - 15:45" */
     vakitAraligi: string;
     tamamlandi: boolean;
@@ -29,12 +34,15 @@ interface MasaustuGeriSayimProps {
 
 const MasaustuGeriSayimBileseni: React.FC<MasaustuGeriSayimProps> = ({
     vakitAdi,
-    kalanSureStr,
+    hedefIso,
+    onSayacBitti,
     vakitAraligi,
     tamamlandi,
     kilitli,
 }) => {
     const renkler = useRenkler();
+    const hedefMs = useMemo(() => hedefMsCoz(hedefIso), [hedefIso]);
+    const kalanSureStr = useKalanSure(hedefMs, onSayacBitti);
     const ustEtiket = kilitli ? 'SIRADAKİ VAKİT' : 'ŞU ANKİ VAKİT';
     const sayacEtiketi = kilitli ? 'Vaktin girmesine kalan' : 'Vaktin çıkmasına kalan';
     const erisimEtiketi = `${vakitAdi} vakti, ${vakitAraligi}. ${sayacEtiketi} ${kalanSureSesli(kalanSureStr)}.${

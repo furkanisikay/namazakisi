@@ -12,7 +12,7 @@ import { kalanSureSesli } from '../../../core/utils/kalanSureParcalari';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useKeepAwake } from 'expo-keep-awake';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { KOYU_TEMA, useRenkler } from '../../../core/theme';
 import {
     PANO_ADLARI,

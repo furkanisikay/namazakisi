@@ -17,9 +17,10 @@ import {
   ActivityIndicator,
   Animated,
 } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { styles } from './stiller';
 import { useRenkler } from '../../../../core/theme';
+import { useDonguAcik, useDonguAnimasyonu } from '../../../components/hareket/dongu';
 import type {
   BirlestirmeStratejisi,
   KategoriStratejisi,
@@ -105,14 +106,16 @@ export const InfoKutu: React.FC<{
 export const DosyaSecAdimi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => {
-    Animated.loop(
+  // Sihirbaz sahnesi: görünürken döngü, tek kapı `hareket/dongu` (D-16; eskiden temizliksizdi).
+  useDonguAnimasyonu(
+    useDonguAcik(),
+    () =>
       Animated.sequence([
         Animated.timing(pulseAnim, { toValue: 1.08, duration: 1200, useNativeDriver: true }),
         Animated.timing(pulseAnim, { toValue: 1, duration: 1200, useNativeDriver: true }),
-      ])
-    ).start();
-  }, [pulseAnim]);
+      ]),
+    () => pulseAnim.setValue(1)
+  );
 
   return (
     <ScrollView style={styles.scrollAdim} contentContainerStyle={styles.scrollIcerik} showsVerticalScrollIndicator={false}>

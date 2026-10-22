@@ -16,7 +16,7 @@ import * as React from 'react';
 import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { NavigationContext } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 import { useRenkler } from '../../../core/theme';
 import { anaAyrintiMi } from '../../../core/utils/ekranSinifi';

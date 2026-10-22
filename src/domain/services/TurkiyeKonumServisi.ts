@@ -7,6 +7,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Logger } from '../../core/utils/Logger';
 import { mesafeHesapla } from '../../core/utils/MesafeHesaplayici';
+import { ilceKoordinatiBul, cevrimdisiIlceler } from '../../core/konum/ilceKoordinati';
 
 // =====================
 // TIP TANIMLARI
@@ -50,7 +51,6 @@ export interface Mahalle {
 interface TurkiyeAPIIlYanit {
     id: number;
     name: string;
-    areaCode: number;
     coordinates: {
         latitude: number;
         longitude: number;
@@ -71,7 +71,33 @@ interface TurkiyeAPIIlceYanit {
 // SABITLER
 // =====================
 
-const API_BASE_URL = 'https://turkiyeapi.dev/api/v1';
+// Eski `https://turkiyeapi.dev/api/v1` her istekte 308 ile buraya yönlendiriyordu (fazladan gidiş-dönüş).
+const API_BASE_URL = 'https://api.turkiyeapi.dev/v1';
+/** API isteği zaman aşımı: ağ asılırsa seçici sonsuza dek beklemesin, çevrimdışı listeye düşsün. */
+const API_ZAMAN_ASIMI_MS = 10000;
+
+/** Zaman aşımlı GET (RN fetch'inin kendi zaman aşımı yoktur). */
+async function zamanAsimliGetir(url: string): Promise<Response> {
+    const denetci = new AbortController();
+    const zamanlayici = setTimeout(() => denetci.abort(), API_ZAMAN_ASIMI_MS);
+    try {
+        return await fetch(url, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+            signal: denetci.signal,
+        });
+    } finally {
+        clearTimeout(zamanlayici);
+    }
+}
+
+/**
+ * Plaka = il kimliği (1–81). API'nin `areaCode` alanı TELEFON alan kodudur (Adana 322,
+ * İstanbul [212, 216]) — plaka diye kullanılırsa seçicide "322" görünür (yaşanmış hata).
+ */
+function plakaKodu(ilId: number): string {
+    return String(ilId).padStart(2, '0');
+}
 const CACHE_SURESI = 24 * 60 * 60 * 1000; // 24 saat
 const CACHE_ANAHTARI_ILLER = '@turkiye_iller';
 const CACHE_ANAHTARI_ILCELER = '@turkiye_ilceler_';
@@ -80,6 +106,27 @@ const CACHE_ANAHTARI_ILCELER = '@turkiye_ilceler_';
 // OFFLINE IL VERISI (81 IL)
 // Baslangic ve offline calisma icin
 // =====================
+/**
+ * İlçe koordinatlarını çevrimdışı ilçe merkezi tablosundan düzeltir (bulunamayanı aynen bırakır).
+ * Değişiklik yoksa AYNI diziyi döndürür.
+ */
+export function ilceKoordinatlariniDuzelt(ilId: number, ilceler: Ilce[]): Ilce[] {
+    let degisti = false;
+    const sonuc = ilceler.map((ilce) => {
+        const k = ilceKoordinatiBul(ilId, ilce.ad, ilce.id);
+        if (!k || (k.lat === ilce.lat && k.lng === ilce.lng)) return ilce;
+        degisti = true;
+        return { ...ilce, lat: k.lat, lng: k.lng };
+    });
+    return degisti ? sonuc : ilceler;
+}
+
+/**
+ * Çevrimdışı il listesi. Koordinat = il merkezinin (merkez ilçe / şehir) konumu.
+ * Yedi il (Burdur, Muş, Hatay, Bilecik, Şırnak, Kocaeli, Nevşehir) eskiden şehir merkezinden
+ * 8–35 km sapıyordu; OSM il `admin_centre` düğümüne çekildi (denetim 2026-10-21). TV
+ * `iller.json` bu listeden üretilir: `node scripts/tv/tv-verisi-uret.js`.
+ */
 export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 1, ad: 'Adana', plakaKodu: '01', lat: 37.0000, lng: 35.3213 },
     { id: 2, ad: 'Adıyaman', plakaKodu: '02', lat: 37.7648, lng: 38.2786 },
@@ -91,11 +138,11 @@ export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 8, ad: 'Artvin', plakaKodu: '08', lat: 41.1828, lng: 41.8183 },
     { id: 9, ad: 'Aydın', plakaKodu: '09', lat: 37.8444, lng: 27.8458 },
     { id: 10, ad: 'Balıkesir', plakaKodu: '10', lat: 39.6484, lng: 27.8826 },
-    { id: 11, ad: 'Bilecik', plakaKodu: '11', lat: 40.0567, lng: 30.0665 },
+    { id: 11, ad: 'Bilecik', plakaKodu: '11', lat: 40.1435, lng: 29.9753 },
     { id: 12, ad: 'Bingöl', plakaKodu: '12', lat: 38.8854, lng: 40.4981 },
     { id: 13, ad: 'Bitlis', plakaKodu: '13', lat: 38.4004, lng: 42.1095 },
     { id: 14, ad: 'Bolu', plakaKodu: '14', lat: 40.7356, lng: 31.6061 },
-    { id: 15, ad: 'Burdur', plakaKodu: '15', lat: 37.4613, lng: 30.0665 },
+    { id: 15, ad: 'Burdur', plakaKodu: '15', lat: 37.7248, lng: 30.2887 },
     { id: 16, ad: 'Bursa', plakaKodu: '16', lat: 40.1885, lng: 29.0610 },
     { id: 17, ad: 'Çanakkale', plakaKodu: '17', lat: 40.1553, lng: 26.4142 },
     { id: 18, ad: 'Çankırı', plakaKodu: '18', lat: 40.6013, lng: 33.6134 },
@@ -111,7 +158,7 @@ export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 28, ad: 'Giresun', plakaKodu: '28', lat: 40.9128, lng: 38.3895 },
     { id: 29, ad: 'Gümüşhane', plakaKodu: '29', lat: 40.4386, lng: 39.5086 },
     { id: 30, ad: 'Hakkari', plakaKodu: '30', lat: 37.5833, lng: 43.7333 },
-    { id: 31, ad: 'Hatay', plakaKodu: '31', lat: 36.4018, lng: 36.3498 },
+    { id: 31, ad: 'Hatay', plakaKodu: '31', lat: 36.2025, lng: 36.1603 },
     { id: 32, ad: 'Isparta', plakaKodu: '32', lat: 37.7648, lng: 30.5566 },
     { id: 33, ad: 'Mersin', plakaKodu: '33', lat: 36.8121, lng: 34.6415 },
     { id: 34, ad: 'İstanbul', plakaKodu: '34', lat: 41.0082, lng: 28.9784 },
@@ -121,7 +168,7 @@ export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 38, ad: 'Kayseri', plakaKodu: '38', lat: 38.7312, lng: 35.4787 },
     { id: 39, ad: 'Kırklareli', plakaKodu: '39', lat: 41.7333, lng: 27.2167 },
     { id: 40, ad: 'Kırşehir', plakaKodu: '40', lat: 39.1425, lng: 34.1709 },
-    { id: 41, ad: 'Kocaeli', plakaKodu: '41', lat: 40.8533, lng: 29.8815 },
+    { id: 41, ad: 'Kocaeli', plakaKodu: '41', lat: 40.7654, lng: 29.9407 },
     { id: 42, ad: 'Konya', plakaKodu: '42', lat: 37.8667, lng: 32.4833 },
     { id: 43, ad: 'Kütahya', plakaKodu: '43', lat: 39.4167, lng: 29.9833 },
     { id: 44, ad: 'Malatya', plakaKodu: '44', lat: 38.3552, lng: 38.3095 },
@@ -129,8 +176,8 @@ export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 46, ad: 'Kahramanmaraş', plakaKodu: '46', lat: 37.5858, lng: 36.9371 },
     { id: 47, ad: 'Mardin', plakaKodu: '47', lat: 37.3212, lng: 40.7245 },
     { id: 48, ad: 'Muğla', plakaKodu: '48', lat: 37.2153, lng: 28.3636 },
-    { id: 49, ad: 'Muş', plakaKodu: '49', lat: 38.9462, lng: 41.7539 },
-    { id: 50, ad: 'Nevşehir', plakaKodu: '50', lat: 38.6939, lng: 34.6857 },
+    { id: 49, ad: 'Muş', plakaKodu: '49', lat: 38.7322, lng: 41.4899 },
+    { id: 50, ad: 'Nevşehir', plakaKodu: '50', lat: 38.6250, lng: 34.7151 },
     { id: 51, ad: 'Niğde', plakaKodu: '51', lat: 37.9667, lng: 34.6833 },
     { id: 52, ad: 'Ordu', plakaKodu: '52', lat: 40.9839, lng: 37.8764 },
     { id: 53, ad: 'Rize', plakaKodu: '53', lat: 41.0201, lng: 40.5234 },
@@ -153,7 +200,7 @@ export const TURKIYE_ILLERI_OFFLINE: Il[] = [
     { id: 70, ad: 'Karaman', plakaKodu: '70', lat: 37.1759, lng: 33.2287 },
     { id: 71, ad: 'Kırıkkale', plakaKodu: '71', lat: 39.8468, lng: 33.5153 },
     { id: 72, ad: 'Batman', plakaKodu: '72', lat: 37.8812, lng: 41.1351 },
-    { id: 73, ad: 'Şırnak', plakaKodu: '73', lat: 37.4187, lng: 42.4918 },
+    { id: 73, ad: 'Şırnak', plakaKodu: '73', lat: 37.5220, lng: 42.4570 },
     { id: 74, ad: 'Bartın', plakaKodu: '74', lat: 41.6344, lng: 32.3375 },
     { id: 75, ad: 'Ardahan', plakaKodu: '75', lat: 41.1105, lng: 42.7022 },
     { id: 76, ad: 'Iğdır', plakaKodu: '76', lat: 39.9167, lng: 44.0333 },
@@ -210,8 +257,10 @@ class TurkiyeKonumServisiClass {
             if (cachedData) {
                 const parsed = JSON.parse(cachedData);
                 if (Date.now() - parsed.timestamp < CACHE_SURESI) {
-                    this.illerCache = parsed.data;
-                    return parsed.data;
+                    // Eski sürümün önbelleğinde plaka yerine alan kodu yazılı olabilir.
+                    const iller = (parsed.data as Il[]).map((il) => ({ ...il, plakaKodu: plakaKodu(il.id) }));
+                    this.illerCache = iller;
+                    return iller;
                 }
             }
         } catch (e) {
@@ -220,17 +269,15 @@ class TurkiyeKonumServisiClass {
 
         // API'den cekmeyi dene
         try {
-            const response = await fetch(`${API_BASE_URL}/provinces`, {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' },
-            });
+            // Yalnız kullanılan alanlar: ~100 KB yerine ~8 KB.
+            const response = await zamanAsimliGetir(`${API_BASE_URL}/provinces?fields=id,name,coordinates`);
 
             if (response.ok) {
                 const json = await response.json();
                 const iller: Il[] = (json.data || json).map((il: TurkiyeAPIIlYanit) => ({
                     id: il.id,
                     ad: il.name,
-                    plakaKodu: String(il.areaCode).padStart(2, '0'),
+                    plakaKodu: plakaKodu(il.id),
                     lat: il.coordinates?.latitude || 0,
                     lng: il.coordinates?.longitude || 0,
                 }));
@@ -289,8 +336,10 @@ class TurkiyeKonumServisiClass {
             if (cachedData) {
                 const parsed = JSON.parse(cachedData);
                 if (Date.now() - parsed.timestamp < CACHE_SURESI) {
-                    this.ilcelerCache.set(ilId, parsed.data);
-                    return parsed.data;
+                    // Eski sürümün önbelleği ilçelere İL MERKEZİ yazmıştı → tablodan düzelt.
+                    const duzeltilmis = ilceKoordinatlariniDuzelt(ilId, parsed.data as Ilce[]);
+                    this.ilcelerCache.set(ilId, duzeltilmis);
+                    return duzeltilmis;
                 }
             }
         } catch (e) {
@@ -299,23 +348,25 @@ class TurkiyeKonumServisiClass {
 
         // API'den cekmeyi dene
         try {
-            const response = await fetch(`${API_BASE_URL}/provinces/${ilId}`, {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' },
-            });
+            const response = await zamanAsimliGetir(`${API_BASE_URL}/provinces/${ilId}?fields=coordinates,districts`);
 
             if (response.ok) {
                 const json = await response.json();
                 const ilData = json.data || json;
                 
                 // Ilce verisi districts alaninda olmali
-                const ilceler: Ilce[] = (ilData.districts || []).map((ilce: TurkiyeAPIIlceYanit, index: number) => ({
-                    id: ilce.id || index + 1,
-                    ilId: ilId,
-                    ad: ilce.name,
-                    lat: ilce.coordinates?.latitude || ilData.coordinates?.latitude || 0,
-                    lng: ilce.coordinates?.longitude || ilData.coordinates?.longitude || 0,
-                }));
+                // API ilçelerde `coordinates` VERMEZ (2026-10 ölçüldü) → ilçe merkezi çevrimdışı
+                // tablodan; tabloda yoksa API alanı, o da yoksa il merkezi (son çare).
+                const ilceler: Ilce[] = ilceKoordinatlariniDuzelt(
+                    ilId,
+                    (ilData.districts || []).map((ilce: TurkiyeAPIIlceYanit, index: number) => ({
+                        id: ilce.id || index + 1,
+                        ilId: ilId,
+                        ad: ilce.name,
+                        lat: ilce.coordinates?.latitude || ilData.coordinates?.latitude || 0,
+                        lng: ilce.coordinates?.longitude || ilData.coordinates?.longitude || 0,
+                    })),
+                );
 
                 // Cache'e kaydet
                 this.ilcelerCache.set(ilId, ilceler);
@@ -330,8 +381,9 @@ class TurkiyeKonumServisiClass {
             Logger.warn('TurkiyeKonumServisi', 'Ilce API hatasi:', e);
         }
 
-        // Bos dizi dondur (API calismiyorsa)
-        return [];
+        // API'ye ulaşılamıyorsa çevrimdışı tablo (kimlik ve adlar turkiyeapi ile aynı).
+        // Önbelleğe YAZILMAZ: ağ dönünce API listesi (yeni ilçe vb.) kazansın.
+        return cevrimdisiIlceler(ilId).map((k) => ({ ...k, ilId }));
     }
 
     // =====================

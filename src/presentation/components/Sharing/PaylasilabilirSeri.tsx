@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 interface PaylasilabilirSeriProps {
     mevcutSeri: number;

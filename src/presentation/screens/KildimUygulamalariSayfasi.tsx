@@ -11,7 +11,7 @@
  */
 import * as React from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRenkler } from '../../core/theme';
 import { Anahtar } from '../components/common/Anahtar';

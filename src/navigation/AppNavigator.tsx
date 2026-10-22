@@ -12,7 +12,7 @@ import { NavigationContainer, useNavigationContainerRef, type NavigatorScreenPar
 import type { NativeStackNavigationProp, NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { Dimensions, Platform, Text, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { KenarGezinme } from '../presentation/components/gezinme/KenarGezinme';
 import { gezinmeTuruSec } from '../core/utils/ekranSinifi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
