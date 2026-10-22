@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.70.0] - 2026-10-22
+
+### Eklendi
+- [samimiyet] Kıldım sonrası dua, günün selamı, vakit simgeleri (#373)
+
 ## [0.69.2] - 2026-10-22
 
 ### Düzeltildi
