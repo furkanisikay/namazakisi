@@ -184,7 +184,10 @@ async function yenidenBaslat() {
  */
 const ANA_EKRAN_CAPASI = /^(Seri|Toparlanma modu): /i;
 
-const SEKME = (ad) => new RegExp(`^${ad}(,|$)`, 'i');
+// iPad kenar gezinmesinde (KenarGezinme) sekme etiketi farklı gelebiliyor; ASCII testID
+// (`gezinme-<rota>`) ile de tanı. Türkçe harfli etiketler (İlerleme, Kıble) iPad'de bulunamıyordu.
+const SEKME_ROTA = { 'İlerleme': 'Ilerleme', 'Kıble': 'Kible', 'Kaza': 'KazaDefteri', 'Ayarlar': 'Ayarlar', 'Bugün': 'AnaSayfa' };
+const SEKME = (ad) => new RegExp(`^(${ad}(,|$)|gezinme-${SEKME_ROTA[ad] || ad}$)`, 'i');
 
 /**
  * Zaman seridini ekranin orta bandina getirir (GERI BESLEMELI).
