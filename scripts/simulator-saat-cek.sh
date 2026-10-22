@@ -132,7 +132,9 @@ echo "saat paketi: $BUNDLE"
 # ekran yukun ilk uyandirma kaydiyla, oturumsuz cizilir.
 # Sayfalar (dikey TabView): 01 Simdi, 02 Bugun kadrani, 03 kilinmis Simdi, 04 Kible,
 # 05 Tesbihat, 06 Uyandirma, 07 Kildim onayi.
-KARELER="01-simdi:ana:20 02-bugun:vakitler:14 03-kilindi:kilindi:14 04-kible:kible:16 05-tesbihat:tesbihat:14 06-uyandirma:uyandirma:16 07-kildim-onayi:onay:12"
+# Uyandirma (ilk cizimde tam ekran kapak) EN SONDA: takildiginda sonraki acilislari da
+# acilis ekraninda birakiyordu (kare hatti: 07 ancak saat yeniden acilinca cizildi).
+KARELER="01-simdi:ana:20 02-bugun:vakitler:14 03-kilindi:kilindi:14 04-kible:kible:16 05-tesbihat:tesbihat:14 07-kildim-onayi:onay:12 06-uyandirma:uyandirma:16"
 GECICI=$(mktemp -d)
 EKSIKLER=""
 
@@ -236,7 +238,7 @@ if [ -n "$VIDEO" ]; then
   mkdir -p "$VIDEO"
   # kildim-sahnesi: Simdi acilir, 1,5 sn sonra "Kildim" kendiliginden oynar (halka kapanir + tik).
   # Ilk kayit bazen tek kare kaliyor (kaydedici isinmamis) → once bir isinma kaydi.
-  for v in "isinma:ana" "kildim-sahnesi:kildimDemo" "simdi-acilisi:ana""bugun-acilisi:vakitler" "uyandirma-acilisi:uyandirma" "kible-acilisi:kible"; do
+  for v in "isinma:ana" "kildim-sahnesi:kildimDemo" "simdi-acilisi:ana" "bugun-acilisi:vakitler" "kible-acilisi:kible" "uyandirma-acilisi:uyandirma"; do
     IFS=: read -r AD EKRAN <<<"$v"
     xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
     sleep 1
