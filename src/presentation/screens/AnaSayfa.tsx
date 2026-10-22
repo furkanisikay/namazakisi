@@ -62,6 +62,8 @@ import { VARSAYILAN_SES } from '../../core/muhafiz/matrisTipleri';
 import { Coordinates, PrayerTimes } from 'adhan';
 import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import { Logger } from '../../core/utils/Logger';
+/** Kaza önerisinin Kıldım duasından sonra açılma gecikmesi. */
+const KAZA_ONERI_GECIKMESI_MS = 1600;
 
 // Baslangic sayfasi
 const GECMIS_GUN_SAYISI = 90; // 3 ay geri
@@ -103,6 +105,18 @@ export const AnaSayfa: React.FC = () => {
   const [kerahatOnayBekleyen, setKerahatOnayBekleyen] = useState<NamazAdi | null>(null);
   // "Her farzla bir kaza" önerisi (issue #294): karar saf çekirdekte, burada yalnız tetiklenir.
   const kazaOnerisi = useFarzSonrasiKazaOnerisi();
+  // Samimiyet: kaza önerisi duanın ("Allah kabul etsin") ÜSTÜNE hemen açılmasın — düğmenin
+  // dönüşümü ve dua bir an görünsün, soru sonra gelsin. Öneri kalkınca hemen kapanır.
+  const [kazaOneriHazir, setKazaOneriHazir] = useState(false);
+  const kazaOneriVar = kazaOnerisi.oneri !== null;
+  useEffect(() => {
+    if (!kazaOneriVar) {
+      setKazaOneriHazir(false);
+      return;
+    }
+    const zamanlayici = setTimeout(() => setKazaOneriHazir(true), KAZA_ONERI_GECIKMESI_MS);
+    return () => clearTimeout(zamanlayici);
+  }, [kazaOneriVar]);
   // Sade görünüm (issue #295): açıksa ana ekranın yerine tek ekran çizilir (aşağıda seçim dalı).
   const sade = useSadeGorunum();
   // Seferîlik kartı (issue #296) tek durum alanında yalnız "kazanan" uyarıyken çizilir;
@@ -1088,7 +1102,7 @@ export const AnaSayfa: React.FC = () => {
         />
         <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
         <KazaOneriModal
-          gorunur={kazaOnerisi.oneri !== null && !ilkKutlama}
+          gorunur={kazaOneriVar && kazaOneriHazir && !ilkKutlama}
           kilinanFarz={kazaOnerisi.oneri?.kilinanFarz ?? null}
           kazaNamazi={kazaOnerisi.oneri?.kazaNamazi ?? null}
           isleniyor={kazaOnerisi.isleniyor}
@@ -1199,7 +1213,7 @@ export const AnaSayfa: React.FC = () => {
       {/* Kerahat (mekruh) vaktinde işaretleme öncesi kibar onay (issue #82) */}
       {/* Kutlama modalı açıkken beklesin; kapanınca görünür (iki modal üst üste binmesin). */}
       <KazaOneriModal
-        gorunur={kazaOnerisi.oneri !== null && !ilkKutlama}
+        gorunur={kazaOneriVar && kazaOneriHazir && !ilkKutlama}
         kilinanFarz={kazaOnerisi.oneri?.kilinanFarz ?? null}
         kazaNamazi={kazaOnerisi.oneri?.kazaNamazi ?? null}
         isleniyor={kazaOnerisi.isleniyor}
