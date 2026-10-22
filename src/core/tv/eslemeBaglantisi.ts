@@ -50,12 +50,16 @@ function sorguyuAyristir(sorgu: string): Record<string, string> {
     return sonuc;
 }
 
-/** Yalnız özel (RFC 1918) IPv4 adreslerini kabul eder. */
+/**
+ * Yalnız özel (RFC 1918) IPv4 adreslerini kabul eder. KATI ayrıştırma (denetim D-06): her oktet
+ * 0–255 ve BAŞTA SIFIR YOK — `010.010.010.010` bazı ayrıştırıcılarda SEKİZLİK okunup bambaşka
+ * bir adrese dönüşebilir. TV (`YerelAg.ozelMi`) ve telefon native ikizi aynı kural.
+ */
+const KATI_IPV4 = /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$/;
+
 export function ozelIpv4Mu(adres: string): boolean {
-    const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(adres);
-    if (!m) return false;
-    const o = m.slice(1).map(Number);
-    if (o.some((x) => x > 255)) return false;
+    if (!KATI_IPV4.test(adres)) return false;
+    const o = adres.split('.').map(Number);
     if (o[0] === 10) return true;
     if (o[0] === 192 && o[1] === 168) return true;
     if (o[0] === 172 && o[1] >= 16 && o[1] <= 31) return true;

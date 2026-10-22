@@ -155,11 +155,12 @@ fun EslemeDugmesi(
     modifier: Modifier = Modifier,
     birincil: Boolean = false,
     ikon: (@Composable () -> Unit)? = null,
+    buyuk: Boolean = false,
 ) {
     Surface(
         onClick = onClick,
         modifier = modifier,
-        shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(14.dp)),
+        shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(if (buyuk) 32.dp else 24.dp)),
         colors = ClickableSurfaceDefaults.colors(
             containerColor = if (birincil) Renkler.birincilKoyu else Renkler.kart,
             contentColor = Renkler.metin,
@@ -168,16 +169,22 @@ fun EslemeDugmesi(
         ),
         border = ClickableSurfaceDefaults.border(
             border = Border(BorderStroke(1.dp, Renkler.sinir)),
-            focusedBorder = Border(BorderStroke(2.dp, Renkler.birincil)),
+            // Odak halkası dışa taşar: kanepeden (3 m) hangi düğmede olduğunuz görünsün.
+            // inset VERİLMEZ: negatif inset, belirip büyüyen (onay penceresi) yüzeyin ilk karesinde
+            // SurfaceBorderNode'u "Width and height must be ≥ 0" ile çökertti (kare hattında görüldü).
+            focusedBorder = Border(BorderStroke(3.dp, Renkler.birincil)),
         ),
-        scale = ClickableSurfaceDefaults.scale(focusedScale = 1.05f),
+        scale = ClickableSurfaceDefaults.scale(focusedScale = 1.06f),
     ) {
-        Row(Modifier.padding(horizontal = 22.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.padding(horizontal = if (buyuk) 40.dp else 28.dp, vertical = if (buyuk) 18.dp else 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             if (ikon != null) {
                 ikon()
                 androidx.compose.foundation.layout.Spacer(Modifier.padding(start = 10.dp))
             }
-            Text(metin, fontSize = 19.sp, fontWeight = FontWeight.Medium)
+            Text(metin, fontSize = if (buyuk) 30.sp else 24.sp, fontWeight = FontWeight.Medium)
         }
     }
 }

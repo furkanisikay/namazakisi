@@ -1,14 +1,28 @@
 import { requireOptionalNativeModule } from 'expo-modules-core';
 
 /**
- * Android TV eşleştirmesi — telefon tarafı native köprü (YALNIZ ANDROID).
+ * Cihaz ağı / TV eşleştirmesi — telefon tarafı native köprü (YALNIZ ANDROID).
  *
  * Opsiyonel yüklenir: iOS'ta, köprüsüz eski build'de ve jest'te `null` → çağıran yedek yola
  * (iOS: expo-camera + fetch) ya da kodla aktarmaya düşer. Ayrıntı: `ExpoTvEslemeModule.kt`.
  */
+export interface IstekYaniti {
+    kod: number;
+    govde: string;
+}
+
+export interface BulunanAlici {
+    /** TXT `i` — alıcı kimliği. */
+    i: string;
+    adres: string;
+    port: number;
+}
+
 interface TvEslemeNativeModulu {
     qrOku(): Promise<string | null>;
     gonder(adres: string, port: number, govde: string, zamanAsimiMs: number): Promise<string>;
+    istek?(adres: string, port: number, yol: string, govde: string, zamanAsimiMs: number): Promise<IstekYaniti>;
+    tvleriBul?(sureMs: number): Promise<BulunanAlici[]>;
 }
 
 const modul = requireOptionalNativeModule<TvEslemeNativeModulu>('ExpoTvEsleme');
@@ -23,8 +37,20 @@ export function qrOku(): Promise<string | null> {
     return modul.qrOku();
 }
 
-/** TV'ye `POST /esle`; yanıt GÖVDESİNİ döner. Bağlanamazsa reddeder. */
+/** v1: TV'ye `POST /esle`; yanıt GÖVDESİNİ döner. Bağlanamazsa reddeder. */
 export function tvyeGonder(adres: string, port: number, govde: string, zamanAsimiMs: number): Promise<string> {
     if (!modul) return Promise.reject(new Error('Modül yok'));
     return modul.gonder(adres, port, govde, zamanAsimiMs);
+}
+
+/** v2: seçilen yola `POST`; durum kodu + gövde. Bağlanamazsa reddeder. */
+export function yerelIstek(adres: string, port: number, yol: string, govde: string, zamanAsimiMs: number): Promise<IstekYaniti> {
+    if (!modul?.istek) return Promise.reject(new Error('Modül yok'));
+    return modul.istek(adres, port, yol, govde, zamanAsimiMs);
+}
+
+/** mDNS ile yerel ağdaki alıcıları süre sınırlı arar (yalnız Android). */
+export function alicilariBul(sureMs: number): Promise<BulunanAlici[]> {
+    if (!modul?.tvleriBul) return Promise.resolve([]);
+    return modul.tvleriBul(sureMs);
 }

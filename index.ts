@@ -119,6 +119,11 @@ if (Platform.OS === 'android') {
     import('./src/domain/services/KazaDefteriServisi')
         .then((KazaDefteriServisi) => KazaDefteriServisi.baslat())
         .catch(() => undefined);
+    // Cihaz ağı: bildirimden "Kıldım" headless işlenince eşleşik TV'ler de tazelensin
+    // (adlı yuva 'tv'; idempotent, App.tsx de çağırır).
+    import('./src/domain/services/TvSenkronServisi')
+        .then(({ TvSenkronServisi }) => TvSenkronServisi.getInstance().baslat())
+        .catch(() => undefined);
 }
 
 // Muhafız bildirimindeki "Kıldım" — uygulama KAPALI/arka plandayken (yalnız Android).
