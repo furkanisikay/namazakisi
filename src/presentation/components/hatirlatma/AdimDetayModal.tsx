@@ -29,7 +29,7 @@ import {
     Modal,
     ScrollView,
     StyleSheet,
-    Dimensions,
+    useWindowDimensions,
     LayoutAnimation,
 } from 'react-native';
 import { Anahtar } from '../common/Anahtar';
@@ -106,7 +106,11 @@ import { KANAL_IKONLARI, OzetCipleri } from './OzetCipleri';
 import { AdimOnizlemeKarti } from './AdimOnizlemeKarti';
 import { GirisKademesi } from './GirisKademesi';
 
-const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
+/**
+ * Geniş ekranda (iPad, tablet, Fold iç ekranı) sheet tam genişliğe YAYILMAZ: anahtarlar
+ * metinden kopar, satırlar okunmaz. Ayar sayfalarının okunabilir sütunuyla aynı ölçü.
+ */
+const SHEET_AZAMI_GENISLIK = 640;
 
 /** Adım yazımıyla BİRLİKTE kaydedilecek rıza (yüzeyin kendi kaydı). */
 
@@ -272,6 +276,9 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     /** Ses secici acik mi? Cift dokunusa karsi butonu kilitler (bkz. `sesiSec`). */
     const [seciciAcik, setSeciciAcik] = useState(false);
     const dosyaSecimi = useSesDosyasiSecimi();
+    // Pencere ölçüsü HOOK'tan: modül yükünde okunan `Dimensions` iPad'de döndürme/bölünmüş
+    // ekranda bayatlardı.
+    const { height: pencereYuksekligi } = useWindowDimensions();
     const hareketAzalt = useHareketAzalt();
     /**
      * Kanal/tekrar anahtarı açılıp kapanınca alt ayarlar ÖLÇÜLÜ genişler (olayla başlar,
@@ -509,7 +516,10 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                         backgroundColor: renkler.kartArkaplan,
                         borderTopLeftRadius: 24,
                         borderTopRightRadius: 24,
-                        height: EKRAN_YUKSEKLIGI * 0.85,
+                        height: pencereYuksekligi * 0.85,
+                        width: '100%',
+                        maxWidth: SHEET_AZAMI_GENISLIK,
+                        alignSelf: 'center',
                         paddingBottom: 24,
                     }}
                 >
