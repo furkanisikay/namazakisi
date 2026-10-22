@@ -122,6 +122,14 @@ hazirlik_uygula() {
       # Akis uygulamayi ACIK postürde baslatir; yari acik postür hazirlik_bitir'de, uygulama
       # calisirken verilir (WindowInfoTracker degisimi olay olarak alsin) ve kare adb ile alinir.
       adb emu sensor set hinge-angle0 180 || true
+      # Ozel AVD'de (pixel_6 + config.ini menteşesi) cihaz durumu HALF_OPENED'a gecer ama
+      # WindowManager Extensions'in mentese KONUMUNU okudugu kaynak (config_display_features)
+      # imajda yok → FoldingFeature hic uretilmez. AOSP'nin gelistirici ayari ayni bilgiyi
+      # verir ("fold-[sol,ust,sag,alt]"; durum device_state'ten gelir). Uygulama acilmadan once.
+      case "$PROFIL" in
+        flip) adb shell settings put global display_features "fold-[0,1320,1080,1320]" || true ;;
+        katlanabilir) adb shell settings put global display_features "fold-[1104,0,1104,1840]" || true ;;
+      esac
       sleep 2
       adb shell dumpsys device_state 2>/dev/null | grep -iE "state|posture" | head -8 || true
       adb shell wm size || true
@@ -177,8 +185,10 @@ hazirlik_bitir() {
       adb shell "ls /system_ext/framework /system/framework /vendor/framework 2>/dev/null | grep -i window" || true
       adb shell "pm list libraries | grep -i window" || true
       adb shell "getprop | grep -iE 'fold|hinge|display_feature|device_state|wm.extensions'" || true
+      adb shell "settings get global display_features" || true
       adb exec-out screencap -p > "$CIKIS/${PROFIL}-$2/46-katlanabilir-masaustu.png" || true
       adb emu sensor set hinge-angle0 180 || true
+      adb shell settings delete global display_features || true
       ;;
     guc-tasarrufu)
       adb shell settings put global low_power 0 || true
