@@ -15,7 +15,10 @@
  *
  * Cikti (stdout, JSON): { tz, ofsetSa, durumCubuguSaati, tarih, kalanDk, istanbulVakitleri, yuk }
  *   yuk: tek satirlik JSON dizesi (SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK).
- * Secenek: --simdi <epoch ms> (test icin).
+ * Secenek: --simdi <epoch ms> (test icin); --hedef simdi (ya da SAAT_HEDEF=simdi): dilim
+ *   KAYDIRILMAZ, saat GERCEK Istanbul vaktini gosterir (telefon kareleriyle ayni vakit;
+ *   pazarlama gorsellerinde telefon + saat birlikte). Gercek an gunes vaktindeyse (kilinamaz)
+ *   ogle hilesine duser.
  *
  * Hesap = telefonun hesabi: adhan `CalculationMethod.Turkey()` (madhab verilmez →
  * asr-i evvel; `core/vakit/hesapParametreleri.ts > turkiyeHesapParametreleri`).
@@ -64,7 +67,19 @@ function saatDilimi(ofsetSa) {
   return `Etc/GMT${ofsetSa > 0 ? '-' : '+'}${Math.abs(ofsetSa)}`;
 }
 
-function uret(simdi) {
+/** Gercek Istanbul vaktinde aktif vakit: { gunFark, vakit } ya da gunes ise null. */
+function gercekAktifVakit(simdi) {
+  const istTarih = isoTarih(simdi + ISTANBUL_OFSET_SA * SA);
+  const b = istanbulVakitleri(istTarih);
+  if (simdi < b.imsak) return { gunFark: -1, vakit: 'yatsi' };
+  if (simdi < b.gunes) return { gunFark: 0, vakit: 'imsak' };
+  if (simdi < b.ogle) return null;
+  for (const v of ['yatsi', 'aksam', 'ikindi', 'ogle']) if (simdi >= b[v]) return { gunFark: 0, vakit: v };
+  return null;
+}
+
+function uret(simdi, secenek = {}) {
+  const aktif = secenek.hedef === 'simdi' ? gercekAktifVakit(simdi) : null;
   // 1) Bugunun (Istanbul) ogle penceresinin ortasi, Istanbul duvar saatiyle (dk).
   const istTarih = isoTarih(simdi + ISTANBUL_OFSET_SA * SA);
   const bugun = istanbulVakitleri(istTarih);
@@ -76,6 +91,7 @@ function uret(simdi) {
   let ofset = Math.round((ortaDk - simdiDk) / 60);
   ofset = ((ofset % 24) + 24) % 24;
   if (ofset > 14) ofset -= 24;
+  if (aktif) ofset = ISTANBUL_OFSET_SA;
 
   // 3) O dilimdeki takvim gunu ve vakitler: Istanbul duvar saatleri, dilime tasinir.
   const tarih = isoTarih(simdi + ofset * SA);
@@ -86,12 +102,18 @@ function uret(simdi) {
     const vakitler = {};
     for (const v of VAKITLER) vakitler[v] = ham[v] + kaydirma;
     // Dun tamamen kilinmis, bugun yalniz sabah (ogle aktif, "Kildim" gorunsun), yarin bos.
-    const kilinan = fark < 0 ? ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] : fark === 0 ? ['imsak'] : [];
+    let kilinan = fark < 0 ? ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] : fark === 0 ? ['imsak'] : [];
+    // Gercek vakit kipi: aktif vakitten ONCEKILER kilinmis, aktif vakit kilinmamis (Kildim gorunsun).
+    if (aktif) {
+      const sira = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
+      const once = sira.slice(0, sira.indexOf(aktif.vakit));
+      kilinan = fark < aktif.gunFark ? sira : fark === aktif.gunFark ? once : [];
+    }
     return { tarih: t, vakitler, kilinan, ham };
   });
 
   const bugunGun = gunler[1];
-  if (!(bugunGun.vakitler.ogle <= simdi && simdi < bugunGun.vakitler.ikindi)) {
+  if (!aktif && !(bugunGun.vakitler.ogle <= simdi && simdi < bugunGun.vakitler.ikindi)) {
     throw new Error(`Ogle penceresi tutturulamadi (ofset ${ofset}, tarih ${tarih})`);
   }
   const yerel = new Date(simdi + ofset * SA);
@@ -126,7 +148,8 @@ function uret(simdi) {
     ofsetSa: ofset,
     durumCubuguSaati,
     tarih,
-    kalanDk: Math.round((bugunGun.vakitler.ikindi - simdi) / 60_000),
+    kalanDk: aktif ? null : Math.round((bugunGun.vakitler.ikindi - simdi) / 60_000),
+    aktifVakit: aktif ? aktif.vakit : 'ogle',
     istanbulVakitleri: Object.fromEntries(VAKITLER.map((v) => [v, hhmm(bugunGun.ham[v])])),
     yuk: JSON.stringify(yuk),
   };
@@ -135,5 +158,7 @@ function uret(simdi) {
 module.exports = { uret, saatDilimi };
 
 if (require.main === module) {
-  process.stdout.write(`${JSON.stringify(uret(argSimdi(process.argv)))}\n`);
+  const i = process.argv.indexOf('--hedef');
+  const hedef = i >= 0 ? process.argv[i + 1] : process.env.SAAT_HEDEF;
+  process.stdout.write(`${JSON.stringify(uret(argSimdi(process.argv), { hedef }))}\n`);
 }

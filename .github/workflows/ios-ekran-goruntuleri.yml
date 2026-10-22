@@ -89,6 +89,11 @@ on:
         type: boolean
         required: false
         default: false
+      saat_hedef:
+        description: 'Apple Watch kareleri hangi vakitte: ogle (dilim hilesi) | simdi (gerçek İstanbul vakti, telefon kareleriyle aynı)'
+        type: choice
+        options: [ogle, simdi]
+        default: ogle
 
 permissions:
   contents: read
@@ -441,6 +446,7 @@ jobs:
       - name: 📸 Kareleri çek
         env:
           SAAT_APP: ${{ steps.saat_derleme.outputs.app }}
+          SAAT_HEDEF: ${{ inputs.saat_hedef || 'ogle' }}
         run: bash scripts/simulator-saat-cek.sh kareler-saat "$SAAT_APP" videolar-saat
 
       - name: ⬆️ Saat karelerini yükle
