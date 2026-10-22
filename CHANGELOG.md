@@ -5,6 +5,30 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.63.1] - 2026-10-22
+
+### Düzeltildi
+- [konum] "Merkez" ilçesi ilin merkez düğümünü alır; il koordinatı nöbetçisi
+- [konum] çevrimdışı il koordinatları şehir merkezine çekildi (+ TV iller.json)
+- [yedekleme] yerel yedegi sifreli diye anlatma
+- [guvenlik] guncelleme baglantisi dogrulamasini RN URL polyfill'inden bagimsiz yap
+- [konum] il plakası alan kodundan değil kimlikten; turkiyeapi isteği hafifledi
+- [konum] elle seçilen ilçenin vakitleri ilçe merkezine göre hesaplansın
+
+### Değiştirildi
+- [camideyim] yenileme cemberini BALANCED olcumle yeniden merkezle
+- [acilis] Logger budama yoksa yazmaz, kurulum bayrağı konumla paralel okunur
+- [boyut] ikon fontları alt yoldan import edilsin, kullanılmayan 18 aile paketten çıksın
+- [hareket] rozet ve uyarı döngülerini dongu.ts kapısına taşı (D-16)
+- [ana-ekran] muhafız ayarlarını her render'da JSON'a çevirme (D-10)
+- [ana-ekran] saniyelik geri sayımı ayrı bileşene taşı (D-03)
+- [wear] saati olmayan telefonda yük kurulmaz, gönderimler birleşir
+- [muhafiz] 15 dk turu plan değişmediyse yeniden kurmaz
+- [bildirim] tur içi tek bekleyen listesi ve toplu iptal
+- [konum] vakitler değişmiyorsa bölge çıkışında yayma atlanır
+- [widget] aynı içerikte widget verisi yazılmaz ve tazelenmez
+- [saat] yuk JSON'unu onbellekle, ayni yuku degismedi say
+
 ## [0.63.0] - 2026-10-22
 
 ### Eklendi
