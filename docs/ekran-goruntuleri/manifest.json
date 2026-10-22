@@ -15,35 +15,35 @@
       "ogeler": [
         {
           "dosya": "01.webp",
-          "kimlik": "360:88a8ee7ca65971e3f4a812e0b0d6c1d5dae8c6f354919d9c576a5bbbfeb9af03"
+          "kimlik": "360:GEZ-okzt5P8S4jyY-AidksXmg6auMDBBDhv9hgkN8Ns9fP7WKKfR76VBU4TBtn4ITluCOQMAlVaYdbNj_hteaA"
         },
         {
           "dosya": "02.webp",
-          "kimlik": "360:6436fdab35f59df238fad40554c7b8169c7f3f1fa1f6c3bcdf8895e29b4280c3"
+          "kimlik": "360:uAYQE_TYNeUvPXmgA9J-pT_4N9JMJ9pLvBU83yvhWmQlJG-NszvQU9xsphn0c_hvN2sAdrswwHPNvJDyQ5L1EQ"
         },
         {
           "dosya": "03.webp",
-          "kimlik": "360:d4be2afaa9debb82d85fc2ad70fbc96e0f2aa1ffeb692c784794c9783905eb92"
+          "kimlik": "360:0o3z0g99ppniOyFt-bt7bcZsGEPJy1XeM4OccNuibswdlBaXmIZsURk3XQ4fNJtrdr5Qz6r_mZwfrWunyKfER9E"
         },
         {
           "dosya": "04.webp",
-          "kimlik": "360:aa17ddf1f9de956f00472c9ff04b77d716cd23e037a6ab7bc1b434d2b6fdcb25"
+          "kimlik": "360:k5T3GFrWsEeqOLE4YI6cko9OKavtGVZ72Z4RoABlGiUzzNoxQP0vjQ-QQOqKRGG8NQCr_l7oSpPNGcruy_9z"
         },
         {
           "dosya": "05.webp",
-          "kimlik": "360:7a01044c4d741b49c73dae9e955a961f0d39009eb5041894d80b3c9cfdecf3b9"
+          "kimlik": "360:wCH_8a-JAqeORqP0M24d_SMDYz4YKze_lCXo_EBOhqll1xuBFg4oFBvdj9lwNvxiPXpxRT-NAebZc6p0U0PcVw"
         },
         {
           "dosya": "06.webp",
-          "kimlik": "360:8db704e1a40f0f207561b09d059610c62a45a1bab8d711729fca70ed7030b7dd"
+          "kimlik": "360:ucxZ4zVzOKm-_k0sb0sQHshRgBVcWDUBNY31GTZ53MTybK3PXT8kpbCEp8TilNqYtn41ZnU7O2eDIxYoNfwF"
         },
         {
           "dosya": "07.webp",
-          "kimlik": "360:663d5b40d53b6b69f365e8ffd2229136c0e8ce8163fcb36c8248f67f1daf6032"
+          "kimlik": "360:-jSClLSpVvyort6n4euOV7Blc49ySRfCgFgq6TEF6vAOUoRRzjG8mySRlTYkBVzJlZOxfanJGKC0zjxkOvtiBw"
         },
         {
           "dosya": "08.webp",
-          "kimlik": "360:a7047bf84f8d97ec41cc378e00fcfbf1b5c017cc7f36f37fb534bb00cb8661ff"
+          "kimlik": "360:gmHGB3Ya1g7-4pNbBzw9u932hOPQMVw83ecrGVELcmbamyAUGYEeWkVeIfUSxZ_HhPOhJVqS5DCA1oJB0g4yoQ"
         }
       ]
     },
@@ -682,20 +682,32 @@
     "apple-watch": {
       "ogeler": [
         {
-          "dosya": "01-ana.webp",
-          "kimlik": "240:62b7ed7b30d9d1dfd816811d6709e87f422817498ca4fa177d3051b974a8574a"
+          "dosya": "01-simdi.webp",
+          "kimlik": "240:dca08ad6a13f755cfacc8a874101ee28bc5ff3d94eb4e205dede58af5faf9fc3"
         },
         {
-          "dosya": "02-vakitler.webp",
-          "kimlik": "240:32295de945da72a52aca1501087280f04505dede44be6fe07ed6e6771bc4bf9e"
+          "dosya": "02-bugun.webp",
+          "kimlik": "240:213ab440d2cc2a13f65c9ead412e76153ec0db94afb6b463ed5662b2a44853b0"
         },
         {
-          "dosya": "03-kildim-onayi.webp",
-          "kimlik": "240:d85201f87c36ba2c34bd9d3e251d1b7eae2967d02ce5ccca64504e6819a94f94"
+          "dosya": "03-kilindi.webp",
+          "kimlik": "240:a383fb07c88b5b285bffbe60e9eed7a3325f9b913046e49918afceb991de4ded"
         },
         {
-          "dosya": "04-tesbihat.webp",
-          "kimlik": "240:c294012562c4cedd2e0227907ecd173c5f4b05a67f72ec8f2314009add24586d"
+          "dosya": "04-kible.webp",
+          "kimlik": "240:b6f70d5267d82d0ee1bf87ffbd87267bd961e13f3749afec1cc831f7eaab2199"
+        },
+        {
+          "dosya": "05-tesbihat.webp",
+          "kimlik": "240:367f76f3d76ddfe9bd7f3e61e9808947a479bbd5aa79b335882172b337654c4a"
+        },
+        {
+          "dosya": "06-uyandirma.webp",
+          "kimlik": "240:c304afd3c78a33640271ced17502c23f753c155e747a0bec3b2d8236b63c4463"
+        },
+        {
+          "dosya": "07-kildim-onayi.webp",
+          "kimlik": "240:40ca02e41ed1670b322858d7062f98e2d9381535e6033efa13758a412e95f640"
         }
       ]
     },

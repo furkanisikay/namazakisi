@@ -252,10 +252,13 @@ Kaynak koddaki sürüm: **0.68.0** · Mağazada: Google Play: **0.45.0** · App 
 <summary><b>Apple Watch</b></summary>
 
 <p>
-  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/01-ana.webp" width="150" alt="Ana" title="Ana">
-  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/02-vakitler.webp" width="150" alt="Vakitler" title="Vakitler">
-  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/03-kildim-onayi.webp" width="150" alt="Kıldım onayı" title="Kıldım onayı">
-  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/04-tesbihat.webp" width="150" alt="Tesbihat" title="Tesbihat">
+  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/01-simdi.webp" width="150" alt="Simdi" title="Simdi">
+  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/02-bugun.webp" width="150" alt="Bugün" title="Bugün">
+  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/03-kilindi.webp" width="150" alt="Kilindi" title="Kilindi">
+  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/04-kible.webp" width="150" alt="Kıble" title="Kıble">
+  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/05-tesbihat.webp" width="150" alt="Tesbihat" title="Tesbihat">
+  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/06-uyandirma.webp" width="150" alt="Uyandirma" title="Uyandirma">
+  <img src="docs/ekran-goruntuleri/cihaz/apple-watch/07-kildim-onayi.webp" width="150" alt="Kıldım onayı" title="Kıldım onayı">
 </p>
 
 </details>

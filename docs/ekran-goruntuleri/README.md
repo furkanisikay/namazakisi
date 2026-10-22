@@ -110,7 +110,8 @@ Güncel sürüm: **0.68.0** · Mağazada: Google Play: **0.45.0** · App Store: 
 ### Apple Watch
 
 <table>
-  <tr><td align="center"><img src="./cihaz/apple-watch/01-ana.webp" width="150" alt="Ana" title="Ana"><br><sub>Ana</sub></td><td align="center"><img src="./cihaz/apple-watch/02-vakitler.webp" width="150" alt="Vakitler" title="Vakitler"><br><sub>Vakitler</sub></td><td align="center"><img src="./cihaz/apple-watch/03-kildim-onayi.webp" width="150" alt="Kıldım onayı" title="Kıldım onayı"><br><sub>Kıldım onayı</sub></td><td align="center"><img src="./cihaz/apple-watch/04-tesbihat.webp" width="150" alt="Tesbihat" title="Tesbihat"><br><sub>Tesbihat</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/apple-watch/01-simdi.webp" width="150" alt="Simdi" title="Simdi"><br><sub>Simdi</sub></td><td align="center"><img src="./cihaz/apple-watch/02-bugun.webp" width="150" alt="Bugün" title="Bugün"><br><sub>Bugün</sub></td><td align="center"><img src="./cihaz/apple-watch/03-kilindi.webp" width="150" alt="Kilindi" title="Kilindi"><br><sub>Kilindi</sub></td><td align="center"><img src="./cihaz/apple-watch/04-kible.webp" width="150" alt="Kıble" title="Kıble"><br><sub>Kıble</sub></td></tr>
+  <tr><td align="center"><img src="./cihaz/apple-watch/05-tesbihat.webp" width="150" alt="Tesbihat" title="Tesbihat"><br><sub>Tesbihat</sub></td><td align="center"><img src="./cihaz/apple-watch/06-uyandirma.webp" width="150" alt="Uyandirma" title="Uyandirma"><br><sub>Uyandirma</sub></td><td align="center"><img src="./cihaz/apple-watch/07-kildim-onayi.webp" width="150" alt="Kıldım onayı" title="Kıldım onayı"><br><sub>Kıldım onayı</sub></td></tr>
 </table>
 
 ### Android TV
