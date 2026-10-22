@@ -44,6 +44,7 @@ jest.mock('react-native-reanimated', () => {
     ...m,
     withRepeat: jest.fn(m.withRepeat),
     withTiming: jest.fn(m.withTiming),
+    cancelAnimation: jest.fn(),
     withDelay: jest.fn(m.withDelay),
     useReducedMotion: jest.fn(() => false),
   };
@@ -57,12 +58,14 @@ import { zincirBaglari } from '../../../../core/seri/zincir';
 import { gokErisimEtiketi } from '../../../../core/seri/gokErisimEtiketi';
 import { acilisCizelgesi } from '../../../../core/seri/acilisCizelgesi';
 import { GOK_TONLARI, GOK_ZAMANLAMA } from '../sabitler';
+import { GokHareketiBaglami } from '../gokHareketi';
 
-const { G, Path, Rect, Text: SvgTextMock } = require('react-native-svg');
+const { G, Path, Text: SvgTextMock } = require('react-native-svg');
 const {
   withTiming: withTimingMock,
   withDelay: withDelayMock,
   withRepeat: withRepeatMock,
+  cancelAnimation: cancelAnimationMock,
   useReducedMotion: useReducedMotionMock,
 } = require('react-native-reanimated');
 
@@ -504,10 +507,11 @@ describe('GokPaneli', () => {
   });
 
   test('SÜREKLİ HAREKET (3a — parıltı konumu): "ust" hesabına HEADER_YUKSEKLIK dahildir (silinse hiçbir test yakalamazdı — nöbetçi)', () => {
-    // Aynı gün HEM "bugün" (BugununNabzi, Svg İÇİNDE header'sız koordinat)
-    // HEM 5/5 (Parilti, Svg DIŞINDA header'lı koordinat) olsun diye tek-günlük
-    // özel bir ızgara kuruldu — ikisinin merkezi AYNI hücreye karşılık gelir,
-    // fark TAM OLARAK HEADER_YUKSEKLIK olmalı.
+    // Aynı gün HEM "bugün" (BugununNabzi) HEM 5/5 (Parilti) olsun diye tek-günlük
+    // özel bir ızgara kuruldu. İkisi de Svg'nin DIŞINDA, header'lı koordinatta
+    // çizilir; Svg İÇİNDEKİ yıldız ise header'sız `translate(x y)` taşır ve
+    // ızgara katmanı `translate(0 46)` ile kaydırılır → yıldızın G merkezi +
+    // HEADER_YUKSEKLIK, iki overlay'in merkezine EŞİT olmalı.
     const kayitlar: Record<string, boolean[]> = {
       '2026-07-05': [true, true, true, true, true],
     };
@@ -534,10 +538,15 @@ describe('GokPaneli', () => {
     const nabiz = tree.root.findByType(BugununNabzi);
     const parilti = tree.root.findByType(Parilti);
     // HEADER_YUKSEKLIK = 46 (GokPaneli.tsx'teki dokümante, stabil sabit).
-    // `+ HEADER_YUKSEKLIK` terimi silinse bu fark 0 çıkar ve test DÜŞER.
+    // `+ HEADER_YUKSEKLIK` terimi (iki overlay'den birinde) silinse fark 46 ya
+    // da −46 çıkar ve test DÜŞER.
     const HEADER_YUKSEKLIK_BEKLENEN = 46;
-    const ustFarki = parilti.props.ust + parilti.props.boyut / 2 - nabiz.props.merkezY;
-    expect(ustFarki).toBeCloseTo(HEADER_YUKSEKLIK_BEKLENEN, 6);
+    const yildizG = tree.root
+      .findAllByType(G)
+      .find((g) => typeof g.props.transform === 'string' && g.props.transform.startsWith('translate(') && g.props.transform.includes('scale('))!;
+    const [, yildizY] = /translate\(([-\d.e]+) ([-\d.e]+)\)/.exec(yildizG.props.transform)!.slice(1).map(Number);
+    expect(parilti.props.ust + parilti.props.boyut / 2).toBeCloseTo(yildizY + HEADER_YUKSEKLIK_BEKLENEN, 6);
+    expect(nabiz.props.merkezY).toBeCloseTo(yildizY + HEADER_YUKSEKLIK_BEKLENEN, 6);
 
     // Yatayda header ofseti YOK — sol, merkez.x'ten dolaysız türetilir.
     const solFarki = parilti.props.sol + parilti.props.boyut / 2 - nabiz.props.merkezX;
@@ -558,12 +567,11 @@ describe('GokPaneli', () => {
     );
     genislikSimuleEt(tree, 350);
 
-    // BugununNabzi tek bir AnimatedRect'tir — `animatedProps` prop'u taşıyan
-    // TEK Rect bu olmalı (zemin gradyan dikdörtgenlerinde animatedProps yok).
-    const animatedRectler = tree.root
-      .findAllByType(Rect)
-      .filter((d) => d.props.animatedProps !== undefined);
-    expect(animatedRectler).toHaveLength(1);
+    // Nabız tek bir Animated.View'dir (Svg'nin DIŞINDA) — ayda tek "bugün".
+    expect(tree.root.findAllByType(BugununNabzi)).toHaveLength(1);
+    expect(
+      tree.root.findAllByProps({ testID: 'seri-bugun-nabzi' }).filter((d) => typeof d.type === 'string')
+    ).toHaveLength(1);
 
     // withRepeat NABIZ_SURE_MS ile çağrıldı.
     const nabizSureleri = withTimingMock.mock.calls
@@ -596,7 +604,73 @@ describe('GokPaneli', () => {
     expect(tree.root.findAllByProps({ testID: 'seri-parilti' })).toHaveLength(0);
 
     // Nabız — Faz 1'deki STATİK "bugün" karesiyle BİREBİR aynı değerlerle doğar.
-    const bugunKaresi = tree.root.findAllByType(Rect).find((d) => d.props.animatedProps !== undefined)!;
-    expect(bugunKaresi.props.animatedProps.opacity).toBe(0.4);
+    const bugunKaresi = tree.root
+      .findAllByProps({ testID: 'seri-bugun-nabzi' })
+      .find((d) => typeof d.type === 'string')!;
+    const stiller = bugunKaresi.props.style as Array<Record<string, unknown>>;
+    const animatedStil = stiller[stiller.length - 1] as { opacity: number; transform: Array<{ scale: number }> };
+    expect(animatedStil.opacity).toBe(0.4);
+    expect(animatedStil.transform[0].scale).toBe(1);
+  });
+
+  test('TAKILMA KÖK NEDENİ (nöbetçi): sonsuz döngülü HİÇBİR animasyon bir Svg içinde değil', () => {
+    // react-native-svg Android'de tek bir alt düğüm prop güncellemesi tüm Svg'nin
+    // önbellek bitmap'ini atar ve ağacın tamamını yeniden çizer (SvgView.drawOutput).
+    // Nabız önceden içerik Svg'sinde bir AnimatedRect'ti → boşta bile saniyede ~60 tam
+    // yeniden rasterleme; İlerleme'de kaydırma takılıyordu. Ölçüm: bütün ay 5/5.
+    const kayitlar: Record<string, boolean[]> = {};
+    for (let g = 1; g <= 31; g++) kayitlar[`2026-07-${String(g).padStart(2, '0')}`] = [true, true, true, true, true];
+    const izgara = aylikIzgaraOlustur({ yil: 2026, ay: 6, kayitlar, dondurulmusTarihler: new Set(), bugun: '2026-07-31' });
+    const zincirler = zincirBaglari(izgara, TAM_GUN_ESIGI);
+    const tree = render(
+      <GokPaneli izgara={izgara} zincirler={zincirler} ayAdi="Temmuz 2026" bugun="2026-07-31" tamGunEsigi={TAM_GUN_ESIGI} mevcutSeri={31} />
+    );
+    genislikSimuleEt(tree, 350);
+
+    const svgler = tree.root.findAll((d) => (d.type as unknown) === 'Svg');
+    const svgIcindeMi = (dugum: renderer.ReactTestInstance) => {
+      for (let p = dugum.parent; p; p = p.parent) if ((p.type as unknown) === 'Svg') return true;
+      return false;
+    };
+    // Sonsuz döngüler (nabız + her 5/5 parıltısı) — hepsi Svg DIŞINDA.
+    const nabizlar = tree.root.findAllByType(BugununNabzi);
+    const pariltilar = tree.root.findAllByType(Parilti);
+    expect(nabizlar).toHaveLength(1);
+    expect(pariltilar.length).toBeGreaterThan(20);
+    for (const d of [...nabizlar, ...pariltilar]) expect(svgIcindeMi(d)).toBe(false);
+    // withRepeat yalnız bu overlay'lerden kurulur (Svg içindeki bağ/yıldız animasyonları SONLUdur).
+    expect(withRepeatMock).toHaveBeenCalledTimes(nabizlar.length + pariltilar.length);
+
+    // İçerik Svg'si: açılıştan sonra hiç geçersiz kılınmayan büyük tuval. Düğüm sayısı raporda.
+    const icerik = svgler.find((d) => d.props.testID === 'gok-icerik')!;
+    const icerikDugumu = icerik.findAll((d) => typeof d.type === 'string').length;
+    expect(icerikDugumu).toBeGreaterThan(500);
+    // Nabzın tek karesi eskiden bu kadar düğümün yeniden çizimini tetikliyordu.
+    // eslint-disable-next-line no-console
+    if (process.env.GOK_OLCUM) console.log(`gok-icerik host dugumu: ${icerikDugumu}`);
+  });
+
+  test('BOŞTA SIFIR HAREKET: nabız/parıltı SONSUZ değil (bir nefes) ve kaydırma başlayınca durur', () => {
+    cancelAnimationMock.mockClear();
+    const kayitlar: Record<string, boolean[]> = { '2026-07-01': [true, true, true, true, true] };
+    const izgara = aylikIzgaraOlustur({ yil: 2026, ay: 6, kayitlar, dondurulmusTarihler: new Set(), bugun: '2026-07-10' });
+    const zincirler = zincirBaglari(izgara, TAM_GUN_ESIGI);
+    const ui = (n: number) => (
+      <GokHareketiBaglami.Provider value={n}>
+        <GokPaneli izgara={izgara} zincirler={zincirler} ayAdi="Temmuz 2026" bugun="2026-07-10" tamGunEsigi={TAM_GUN_ESIGI} mevcutSeri={1} />
+      </GokHareketiBaglami.Provider>
+    );
+    const tree = render(ui(0));
+    genislikSimuleEt(tree, 350);
+    expect(withRepeatMock).toHaveBeenCalled();
+    for (const [, sayi, ters] of withRepeatMock.mock.calls) {
+      expect(sayi).toBeGreaterThan(0); // -1 = sonsuz YASAK
+      expect(sayi % 2).toBe(0); // çift → dinlenme hâline döner
+      expect(ters).toBe(true);
+    }
+    expect(cancelAnimationMock).not.toHaveBeenCalled();
+    act(() => tree.update(ui(1)));
+    // Nabız + parıltı → ikisi de durdurulur.
+    expect(cancelAnimationMock.mock.calls.length).toBeGreaterThanOrEqual(2);
   });
 });

@@ -11,6 +11,9 @@
  * ODAK: sekmeler mount kalır (`detachInactiveScreens={false}`). Seri bölümü YALNIZ
  * odaktayken çizilir (gök paneli döngüleri arka planda koşmasın; her girişte açılış
  * animasyonu yeniden oynar). İstatistik her odakta tazelenir (`useFocusEffect`).
+ *
+ * BOŞTA SIFIR HAREKET: gök panelinin nabız/parıltısı sonludur (bir nefes) ve kaydırma
+ * başlayınca (`onScrollBeginDrag`) hemen durur — `gokHareketi` bağlamı.
  */
 import React, { useCallback, useState } from 'react';
 import { View, Text, ScrollView, RefreshControl } from 'react-native';
@@ -22,6 +25,7 @@ import { useRenkler } from '../../../core/theme';
 import { SeriSekmesi } from '../Seri/SeriSekmesi';
 import { KilmaOraniBolumu, type KilmaOraniDonemi } from './KilmaOraniBolumu';
 import { RozetlerBolumu } from './RozetlerBolumu';
+import { GokHareketiBaglami } from '../Seri/gokHareketi';
 
 export const IlerlemeSayfasi: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -46,6 +50,9 @@ export const IlerlemeSayfasi: React.FC = () => {
   );
 
   const donemSec = useCallback((d: KilmaOraniDonemi) => setDonem(d), []);
+  // Kaydırma başlayınca gök panelinin nabız/parıltısı durur (kaydırmayla yarışmasın).
+  const [gokDurdurma, setGokDurdurma] = useState(0);
+  const kaydirmaBasladi = useCallback(() => setGokDurdurma((n) => n + 1), []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: renkler.arkaplan }} edges={['top', 'left', 'right']}>
@@ -56,12 +63,13 @@ export const IlerlemeSayfasi: React.FC = () => {
       </View>
       <ScrollView
         style={{ flex: 1 }}
+        onScrollBeginDrag={kaydirmaBasladi}
         contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
         refreshControl={
           <RefreshControl refreshing={yukleniyor} onRefresh={() => istatistikYukle(donem)} colors={[renkler.birincil]} />
         }
       >
-        {odakta ? <SeriSekmesi gomulu /> : null}
+        <GokHareketiBaglami.Provider value={gokDurdurma}>{odakta ? <SeriSekmesi gomulu /> : null}</GokHareketiBaglami.Provider>
         <View style={{ height: 24 }} />
         <KilmaOraniBolumu
           donem={donem}

@@ -4,6 +4,10 @@ appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _acilis.yaml
 - tapOn: "İlerleme"
+- extendedWaitUntil:
+    visible:
+      id: "gok-paneli-govde"
+    timeout: 60000
 - waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: ozk/33-ilerleme

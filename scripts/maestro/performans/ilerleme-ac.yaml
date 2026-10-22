@@ -1,0 +1,10 @@
+# Performans olcumu (ozellik hatti, PERFORMANS_OLCUMU=1): Ilerleme sekmesini acar ve
+# gok panelinin acilis animasyonunun bitmesini bekler. Kaydirma + gfxinfo hatta (adb).
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: ../ozellik/_acilis.yaml
+- tapOn: "İlerleme"
+- extendedWaitUntil:
+    visible:
+      id: "gok-paneli-govde"
+    timeout: 60000

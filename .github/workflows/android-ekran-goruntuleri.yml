@@ -58,6 +58,23 @@ on:
         type: boolean
         required: false
         default: false
+      akis_filtresi:
+        description: 'Özellik turu: yalnız adı bu bash regex''ine uyan akışları koş (boş = hepsi; ör. 16-|17-|18-)'
+        required: false
+        default: ''
+      performans_olcumu:
+        description: 'Özellik turu (telefon): animasyonlar AÇIKKEN İlerleme kaydırmasında dumpsys gfxinfo ölçümü'
+        type: boolean
+        required: false
+        default: false
+      kamera_arka:
+        description: 'Özellik turu emülatör arka kamerası (emulated: kameralı kıble karesi 17-kible-kamera bunu ister; mağaza turu daima none)'
+        type: choice
+        required: false
+        default: 'emulated'
+        options:
+          - emulated
+          - none
 
 permissions:
   contents: read
@@ -192,8 +209,11 @@ jobs:
           profile: ${{ inputs.ozellik_profili }}
           ram-size: 4096M
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back ${{ inputs.kamera_arka || 'emulated' }} -timezone Europe/Istanbul
           script: bash scripts/android-ozellik-hatti.sh telefon acik koyu
+        env:
+          AKIS_FILTRESI: ${{ inputs.akis_filtresi }}
+          PERFORMANS_OLCUMU: ${{ inputs.performans_olcumu && '1' || '' }}
 
       - name: 🧭 Özellik turu — tablet (açık)
         if: ${{ !cancelled() && inputs.tur != 'magaza' && (inputs.tablet || inputs.tur == 'tablet') }}
@@ -205,12 +225,16 @@ jobs:
           profile: pixel_tablet
           ram-size: 4096M
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back ${{ inputs.kamera_arka || 'emulated' }} -timezone Europe/Istanbul
           script: bash scripts/android-ozellik-hatti.sh tablet acik
+        env:
+          AKIS_FILTRESI: ${{ inputs.akis_filtresi }}
 
       - name: 🧾 Özellik kareleri özeti
         if: ${{ always() && inputs.tur != 'magaza' }}
-        run: node scripts/ozellik-kare-ozeti.js kareler-ozellik android | tee -a "$GITHUB_STEP_SUMMARY"
+        run: |
+          node scripts/ozellik-kare-ozeti.js kareler-ozellik android | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ -f kareler-ozellik/performans-ozet.md ]; then cat kareler-ozellik/performans-ozet.md | tee -a "$GITHUB_STEP_SUMMARY"; fi
 
       - name: ⬆️ Özellik karelerini yükle
         if: ${{ always() && inputs.tur != 'magaza' }}
