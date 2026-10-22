@@ -6,6 +6,8 @@ import {
   arkaPlanKisitlanmisMi,
   dekoratifHareketAzaltilsinMi,
   guncellemeKontroluErtelensinMi,
+  hatirlatmaEtkisi,
+  hatirlatmaEtkisiMetni,
   konumDogrulugunuSinirla,
   sinirsizAgMi,
   sistemCipi,
@@ -120,6 +122,18 @@ describe('politika', () => {
   });
 });
 
+describe('hatırlatma etkisi — tek kaynak', () => {
+  it('iOS daima etkilenmez; Android muafiyet varsa etkilenmez, yoksa ya da kısıtlıysa gecikebilir, bilinmiyorsa iddia yok', () => {
+    expect(hatirlatmaEtkisi(d({ platform: 'ios' }), null)).toBe('etkilenmez');
+    expect(hatirlatmaEtkisi(d({ platform: 'android' }), true)).toBe('etkilenmez');
+    expect(hatirlatmaEtkisi(d({ platform: 'android' }), false)).toBe('gecikebilir');
+    expect(hatirlatmaEtkisi(d({ platform: 'android', beklemeKovasi: 'kisitli' }), true)).toBe('gecikebilir');
+    expect(hatirlatmaEtkisi(d({ platform: 'android' }), null)).toBeNull();
+    expect(hatirlatmaEtkisiMetni('gecikebilir')).toBe('hatırlatmalar gecikebilir — pil ayarını açın');
+    expect(hatirlatmaEtkisiMetni(null)).toBeNull();
+  });
+});
+
 describe('sistemCipi', () => {
   it('iOS Düşük Güç Modu: hatırlatmalar etkilenmez (yerel bildirim)', () => {
     expect(sistemCipi(d({ platform: 'ios', gucTasarrufu: true }), null)?.metin).toBe(
@@ -127,12 +141,24 @@ describe('sistemCipi', () => {
     );
   });
 
-  it('Android: "etkilenmez" YALNIZ pil muafiyeti varken ve arka plan kısıtı yokken söylenir', () => {
+  it('Android: metin hatırlatma etkisinden türer (çelişki yok)', () => {
     const acik = d({ platform: 'android', gucTasarrufu: true });
-    expect(sistemCipi(acik, true)).toMatchObject({ metin: 'Güç tasarrufu açık — hatırlatmalar etkilenmez', ton: 'bilgi' });
-    expect(sistemCipi(acik, null)).toMatchObject({ metin: 'Güç tasarrufu açık — hatırlatmalar gecikebilir', pilRehberi: false });
-    expect(sistemCipi(acik, false)).toMatchObject({ ton: 'uyari', pilRehberi: true });
+    expect(sistemCipi(acik, true)).toMatchObject({ metin: 'Güç tasarrufu açık — hatırlatmalar etkilenmez', ton: 'bilgi', pilRehberi: false });
+    expect(sistemCipi(acik, false)).toMatchObject({
+      metin: 'Güç tasarrufu açık — hatırlatmalar gecikebilir — pil ayarını açın',
+      ton: 'uyari',
+      pilRehberi: true,
+    });
+    expect(sistemCipi(acik, null)).toMatchObject({ metin: 'Güç tasarrufu açık', ton: 'bilgi', pilRehberi: false });
     expect(sistemCipi({ ...acik, beklemeKovasi: 'kisitli' }, true)).toMatchObject({ ton: 'uyari', pilRehberi: true });
+  });
+
+  it('kurulum sağlığı pil uyarısını zaten gösteriyorsa güç tasarrufu çipi çizilmez (tek uyarı)', () => {
+    expect(sistemCipi(d({ platform: 'android', gucTasarrufu: true }), false, true)).toBeNull();
+    // Veri tasarrufu ayrı bilgidir, gösterilmeye devam eder.
+    expect(sistemCipi(d({ platform: 'android', gucTasarrufu: true, veriTasarrufu: 'acik' }), false, true)?.ikon).toBe(
+      'tachometer-alt'
+    );
   });
 
   it('veri tasarrufu çipi; hiçbir koşul yoksa ya da bilinmiyorsa çip yok', () => {

@@ -178,6 +178,32 @@ export function arkaPlanKisitlanmisMi(d: SistemDurumu): boolean {
   return d.arkaPlanKisitli === true || d.beklemeKovasi === 'kisitli';
 }
 
+/**
+ * Güç/veri tasarrufu açıkken hatırlatmalar ETKİLENİR mi? Ekrandaki her "hatırlatmalar …"
+ * cümlesinin TEK kaynağı (çip, eşitleme sayfası) — iki yer farklı şey söylemesin.
+ * - iOS: yerel bildirimler Düşük Güç / Düşük Veri Modu'ndan etkilenmez → `etkilenmez`.
+ * - Android: pil muafiyeti VARSA ve arka plan kısıtı yoksa `etkilenmez`; muafiyet YOKSA
+ *   ya da uygulama kısıtlıysa `gecikebilir`; muafiyet okunamadıysa `null` (iddia yok).
+ */
+export type HatirlatmaEtkisi = 'etkilenmez' | 'gecikebilir';
+
+export function hatirlatmaEtkisi(d: SistemDurumu, pilMuaf: boolean | null): HatirlatmaEtkisi | null {
+  if (d.platform === 'ios') return 'etkilenmez';
+  if (pilMuaf === false || arkaPlanKisitlanmisMi(d)) return 'gecikebilir';
+  if (pilMuaf === true) return 'etkilenmez';
+  return null;
+}
+
+/** Etkinin kullanıcıya görünen cümlesi (`null` → hiçbir şey söylenmez). */
+export function hatirlatmaEtkisiMetni(etki: HatirlatmaEtkisi | null): string | null {
+  if (etki === 'etkilenmez') return 'hatırlatmalar etkilenmez';
+  if (etki === 'gecikebilir') return 'hatırlatmalar gecikebilir — pil ayarını açın';
+  return null;
+}
+
+/** "Güç tasarrufu açık" + (varsa) " — <etki>" */
+const ekle = (bas: string, etki: string | null) => (etki ? `${bas} — ${etki}` : bas);
+
 /** Ayarlar'daki durum çipi. */
 export interface SistemCipi {
   ikon: string;
@@ -189,36 +215,27 @@ export interface SistemCipi {
 
 /**
  * Ayarlar'daki tek satırlık durum çipi (yoksa `null`). `pilMuaf`: Android pil
- * optimizasyonu muafiyeti (`null` = bilinmiyor). "Etkilenmez" yalnız gerçekten doğru
- * olduğunda söylenir: iOS'ta yerel bildirimler Düşük Güç Modu'ndan etkilenmez;
- * Android'de ancak uygulama pil kısıtından muafsa ve arka planda kısıtlı değilse.
+ * optimizasyonu muafiyeti (`null` = bilinmiyor). `pilUyarisiGosteriliyor`: kurulum
+ * sağlığı kartı pil/arka plan kısıtını zaten gösteriyorsa güç tasarrufu çipi ÇİZİLMEZ
+ * (aynı rehbere giden ikinci uyarı olmasın; kart "güç tasarrufu da açık" der).
  */
-export function sistemCipi(d: SistemDurumu, pilMuaf: boolean | null): SistemCipi | null {
-  if (d.gucTasarrufu === true) {
-    if (d.platform === 'ios') {
-      return {
-        ikon: 'battery-quarter',
-        metin: 'Düşük Güç Modu açık — hatırlatmalar etkilenmez',
-        ton: 'bilgi',
-        pilRehberi: false,
-      };
-    }
-    if (pilMuaf === true && !arkaPlanKisitlanmisMi(d)) {
-      return {
-        ikon: 'battery-quarter',
-        metin: 'Güç tasarrufu açık — hatırlatmalar etkilenmez',
-        ton: 'bilgi',
-        pilRehberi: false,
-      };
-    }
+export function sistemCipi(
+  d: SistemDurumu,
+  pilMuaf: boolean | null,
+  pilUyarisiGosteriliyor = false
+): SistemCipi | null {
+  const etki = hatirlatmaEtkisi(d, pilMuaf);
+  if (d.gucTasarrufu === true && !pilUyarisiGosteriliyor) {
+    const ad = d.platform === 'ios' ? 'Düşük Güç Modu açık' : 'Güç tasarrufu açık';
     return {
       ikon: 'battery-quarter',
-      metin: 'Güç tasarrufu açık — hatırlatmalar gecikebilir',
-      ton: 'uyari',
-      pilRehberi: pilMuaf === false || arkaPlanKisitlanmisMi(d),
+      metin: ekle(ad, hatirlatmaEtkisiMetni(etki)),
+      ton: etki === 'gecikebilir' ? 'uyari' : 'bilgi',
+      pilRehberi: etki === 'gecikebilir',
     };
   }
   if (veriKisitliMi(d)) {
+    // Veri tasarrufu yerel bildirimleri hiçbir platformda etkilemez (ağ gerekmez).
     return {
       ikon: 'tachometer-alt',
       metin: d.platform === 'ios'

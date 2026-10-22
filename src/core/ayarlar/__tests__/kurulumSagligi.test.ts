@@ -260,6 +260,17 @@ describe('kurulumSagligi', () => {
       expect(kurulumSagligi({ ...TEMEL, kosullar: k({ platform: 'android', arkaPlanKisitli: true }) })[0].id).toBe('arkaPlanKisiti');
     });
 
+    it('güç tasarrufu da açıksa pil uyarısının İÇİNDE söylenir (ayrı çip yok)', () => {
+      const sonuc = kurulumSagligi({
+        ...TEMEL,
+        pil: { muaf: false, samsung: false },
+        kosullar: k({ platform: 'android', gucTasarrufu: true }),
+      });
+      expect(sonuc).toHaveLength(1);
+      expect(sonuc[0].id).toBe('pilKisiti');
+      expect(sonuc[0].aciklama.endsWith('Güç tasarrufu da açık.')).toBe(true);
+    });
+
     it('hatırlatma yoksa ya da durum bilinmiyorsa sessiz', () => {
       expect(
         kurulumSagligi({ ...TEMEL, muhafizAktif: false, acikVakitBildirimSayisi: 0, kosullar: k({ platform: 'android', arkaPlanKisitli: true }) }).map(

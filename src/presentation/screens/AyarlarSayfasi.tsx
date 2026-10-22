@@ -281,7 +281,11 @@ export const AyarlarSayfasi: React.FC = () => {
               )}
 
               <KurulumSagligiKarti sorunlar={sorunlar} onEylem={saglikEylemi} ozetSatiri={saglikOzetSatiri} />
-              <SistemDurumuCipi pilMuaf={sistem.pil?.muaf} onPilRehberi={pilRehberi.rehberiAc} />
+              <SistemDurumuCipi
+                pilMuaf={sistem.pil?.muaf}
+                onPilRehberi={pilRehberi.rehberiAc}
+                pilUyarisiGosteriliyor={sorunlar.some((x) => x.id === 'pilKisiti' || x.id === 'arkaPlanKisiti')}
+              />
 
               <AyarGrubu baslik="Namaz">
                 <AyarSatiri

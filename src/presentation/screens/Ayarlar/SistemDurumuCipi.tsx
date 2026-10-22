@@ -18,12 +18,18 @@ export interface SistemDurumuCipiProps {
   pilMuaf: boolean | null | undefined;
   /** Uyarı tonunda dokununca pil rehberi açılır. */
   onPilRehberi: () => void;
+  /** Kurulum sağlığı kartı pil kısıtını zaten gösteriyorsa güç tasarrufu çipi çizilmez. */
+  pilUyarisiGosteriliyor?: boolean;
 }
 
-export const SistemDurumuCipi: React.FC<SistemDurumuCipiProps> = ({ pilMuaf, onPilRehberi }) => {
+export const SistemDurumuCipi: React.FC<SistemDurumuCipiProps> = ({
+  pilMuaf,
+  onPilRehberi,
+  pilUyarisiGosteriliyor = false,
+}) => {
   const renkler = useRenkler();
   const kosullar = useSistemKosullari();
-  const cip = sistemCipi(kosullar, pilMuaf ?? null);
+  const cip = sistemCipi(kosullar, pilMuaf ?? null, pilUyarisiGosteriliyor);
   if (!cip) return null;
 
   const ikonRengi = cip.ton === 'uyari' ? renkler.durum.dikkat : renkler.durum.bilgi;

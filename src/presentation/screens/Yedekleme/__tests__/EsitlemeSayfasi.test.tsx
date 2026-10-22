@@ -31,6 +31,20 @@ const mockKanca = {
   kapat: jest.fn(async () => ({ basarili: true })),
 };
 
+const mockPil = { muaf: null as boolean | null, samsung: false };
+jest.mock('../../../hooks/useSistemDurumu', () => ({
+  useSistemDurumu: () => ({ pil: mockPil, tamAlarm: 'belirsiz', yenile: jest.fn() }),
+}));
+jest.mock('../../../hooks/useSistemKosullari', () => ({
+  useSistemKosullari: () => ({ ...require('../../../../core/sistem/sistemDurumu').BILINMEYEN_SISTEM_DURUMU, platform: 'android' }),
+}));
+jest.mock('../../../components/pil/PilRehberi', () => ({
+  PilRehberModal: ({ gorunur }: { gorunur: boolean }) => {
+    const { Text } = require('react-native');
+    return gorunur ? <Text>pil-rehberi</Text> : null;
+  },
+}));
+
 jest.mock('../../../hooks/useEsitleme', () => ({
   useEsitleme: () => mockKanca,
   esitlemeHataMetni: (kod: string) => `hata:${kod}`,
@@ -52,6 +66,7 @@ jest.mock('../../../../core/theme', () => ({
     metinIkincil: '#555',
     sinir: '#ccc',
     hata: '#f00',
+    durum: { dikkat: '#e65100' },
     bilgi: '#00f',
     basarili: '#0f0',
   }),
@@ -240,6 +255,34 @@ describe('EsitlemeSayfasi', () => {
       fireEvent(getByTestId('esitleme-yalnizWifi'), 'valueChange', true);
     });
     expect(mockKanca.tercihleriDegistir).toHaveBeenCalledWith({ yalnizWifi: true });
+  });
+
+  it('hatırlatma cümlesi pil muafiyetinden türer: muafsa "etkilenmez", değilse pil rehberine götüren uyarı', async () => {
+    mockKanca.durum = { ...kapaliDurum(), aktif: true, saglayici: 'googleDrive' };
+    mockKanca.tercihler = { siklik: 'degisince', yalnizWifi: false, yalnizSarjda: false };
+    mockPil.muaf = true;
+    const r1 = render(<EsitlemeSayfasi />);
+    expect(r1.getByText(/Hatırlatmalar etkilenmez/)).toBeTruthy();
+    expect(r1.queryByTestId('esitleme-pil-uyarisi')).toBeNull();
+    r1.unmount();
+    mockPil.muaf = false;
+    const r2 = render(<EsitlemeSayfasi />);
+    expect(r2.queryByText(/Hatırlatmalar etkilenmez/)).toBeNull();
+    await act(async () => {
+      fireEvent.press(r2.getByTestId('esitleme-pil-uyarisi'));
+    });
+    expect(r2.getByText('pil-rehberi')).toBeTruthy();
+    mockPil.muaf = null;
+  });
+
+  it('kısa tanıtım; ayrıntı "Nasıl çalışır?" altında', async () => {
+    const { getByText, queryByText, getByTestId } = render(<EsitlemeSayfasi />);
+    expect(getByText('Yalnız sizin parolanızla şifrelenir')).toBeTruthy();
+    expect(queryByText(/Unutursanız buluttaki veri/)).toBeNull();
+    await act(async () => {
+      fireEvent.press(getByTestId('esitleme-nasil-calisir'));
+    });
+    expect(getByText(/Unutursanız buluttaki veri/)).toBeTruthy();
   });
 
   it('"Yalnız elle"de Wi-Fi/şarj anahtarları gizlenir', () => {

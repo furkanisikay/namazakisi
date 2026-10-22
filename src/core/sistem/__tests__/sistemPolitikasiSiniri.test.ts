@@ -27,6 +27,7 @@ const IZINLI = new Set([
   'presentation/hooks/useAyarOzetleri.ts',
   'presentation/components/esitleme/EsitlemeTetikleyici.tsx',
   'presentation/screens/Ayarlar/SistemDurumuCipi.tsx',
+  'presentation/screens/Yedekleme/EsitlemeSayfasi.tsx',
 ]);
 
 const KALIP = /(core\/sistem\/sistemDurumu|SistemKosullariServisi|useSistemKosullari|expo-sistem-durumu)['"]/;

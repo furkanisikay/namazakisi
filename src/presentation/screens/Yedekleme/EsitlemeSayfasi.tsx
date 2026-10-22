@@ -23,6 +23,11 @@ import {
 import { esitlemeBeklemeMetni, esitlemeHataMetni, useEsitleme } from '../../hooks/useEsitleme';
 import type { SaglayiciKimligi } from '../../../core/esitleme/esitlemeTipleri';
 import { EsitlemeSikligi, gorunurBeklemeMi } from '../../../core/esitleme/esitlemePolitikasi';
+import { hatirlatmaEtkisi } from '../../../core/sistem/sistemDurumu';
+import { useSistemDurumu } from '../../hooks/useSistemDurumu';
+import { useSistemKosullari } from '../../hooks/useSistemKosullari';
+import { usePilRehberi } from '../../hooks/usePilRehberi';
+import { PilRehberModal } from '../../components/pil/PilRehberi';
 
 /** "13.10.2026 14:05" — Intl'e bağlı değil (Hermes). */
 export function esitlemeZamaniniBicimle(iso: string | null): string {
@@ -68,6 +73,12 @@ export const EsitlemeSayfasi: React.FC = () => {
   const [adim, setAdim] = useState<EsitlemeAkisAdimi | null>(null);
   const [secili, setSecili] = useState<SaglayiciKimligi | null>(null);
   const [akisHatasi, setAkisHatasi] = useState<string | null>(null);
+  const [nasilAcik, setNasilAcik] = useState(false);
+  // "Hatırlatmalar …" cümlesi TEK kaynaktan (Ayarlar çipiyle aynı): pil muafiyeti + kısıt.
+  const sistem = useSistemDurumu();
+  const kosullar = useSistemKosullari();
+  const pilRehberi = usePilRehberi(sistem);
+  const etki = hatirlatmaEtkisi(kosullar, sistem.pil?.muaf ?? null);
   const [bilgi, setBilgi] = useState<{ tip: 'hata' | 'bilgi'; baslik: string; mesaj: string } | null>(null);
 
   useFocusEffect(
@@ -208,6 +219,7 @@ export const EsitlemeSayfasi: React.FC = () => {
   };
 
   const saglayiciAdi = e.saglayicilar.find((s) => s.kimlik === e.durum.saglayici)?.ad ?? '';
+  const bulutAdi = saglayiciAdi || (e.saglayicilar[0]?.ad ?? 'bulut');
   const cozum = hataCozumu();
 
   return (
@@ -251,11 +263,46 @@ export const EsitlemeSayfasi: React.FC = () => {
                   <ActivityIndicator color={renkler.birincil} />
                 )}
               </View>
-              <Text className="text-sm leading-5 mt-4" style={{ color: renkler.metinIkincil }}>
-                Telefonunuz ve tabletiniz gibi cihazlarınızda namaz kayıtlarınızı, kaza defterinizi ve rozetlerinizi
-                kendi bulut hesabınız üzerinden eşitleyin. Veriler gönderilmeden önce yalnız sizin bildiğiniz bir
-                parolayla şifrelenir; biz göremeyiz.
-              </Text>
+              <View className="mt-4">
+                {[
+                  { ikon: 'cloud', metin: `Kayıtlarınız ${bulutAdi} alanınızda durur` },
+                  { ikon: 'lock', metin: 'Yalnız sizin parolanızla şifrelenir' },
+                ].map((satir) => (
+                  <View key={satir.ikon} className="flex-row items-center mb-1.5">
+                    <FontAwesome5 name={satir.ikon} size={13} color={renkler.birincil} style={{ width: 22 }} solid />
+                    <Text className="text-sm ml-1 flex-1" style={{ color: renkler.metin }}>
+                      {satir.metin}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+              <TouchableOpacity
+                className="flex-row items-center mt-1"
+                style={{ minHeight: 44 }}
+                onPress={() => setNasilAcik((a) => !a)}
+                accessibilityRole="button"
+                accessibilityState={{ expanded: nasilAcik }}
+                accessibilityLabel="Nasıl çalışır?"
+                testID="esitleme-nasil-calisir"
+              >
+                <FontAwesome5
+                  name={nasilAcik ? 'chevron-up' : 'chevron-down'}
+                  size={11}
+                  color={renkler.birincil}
+                  style={{ width: 22 }}
+                />
+                <Text className="text-sm font-semibold ml-1" style={{ color: renkler.birincil }}>
+                  Nasıl çalışır?
+                </Text>
+              </TouchableOpacity>
+              {nasilAcik && (
+                <Text className="text-sm leading-5 mt-1" style={{ color: renkler.metinIkincil }}>
+                  Telefonunuz ve tabletiniz gibi cihazlarınızda namaz kayıtlarınızı, kaza defterinizi ve rozetlerinizi
+                  kendi bulut hesabınız üzerinden eşitler. Veriler gönderilmeden önce yalnız sizin bildiğiniz bir
+                  parolayla şifrelenir; biz göremeyiz. Parolanız yalnız bu cihazın güvenli deposunda tutulur ve yedeğe
+                  girmez. Unutursanız buluttaki veri kurtarılamaz; cihazlarınızdaki kayıtlar yerinde kalır.
+                </Text>
+              )}
             </View>
 
             {e.durum.aktif && (
@@ -403,21 +450,37 @@ export const EsitlemeSayfasi: React.FC = () => {
                     <View className="flex-row items-start mt-1">
                       <FontAwesome5 name="battery-quarter" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
                       <Text className="text-xs leading-4 ml-2 flex-1" style={{ color: renkler.metinIkincil }}>
-                        Güç tasarrufu açıkken otomatik eşitleme şarja kadar bekler. Hatırlatmalar etkilenmez.
+                        Güç tasarrufu açıkken otomatik eşitleme şarja kadar bekler.
+                        {etki === 'etkilenmez' ? ' Hatırlatmalar etkilenmez.' : ''}
                       </Text>
                     </View>
+                    {etki === 'gecikebilir' && (
+                      <TouchableOpacity
+                        className="flex-row items-center mt-1"
+                        style={{ minHeight: 44 }}
+                        onPress={pilRehberi.rehberiAc}
+                        accessibilityRole="button"
+                        accessibilityLabel="Hatırlatmalar gecikebilir — pil ayarını açın"
+                        testID="esitleme-pil-uyarisi"
+                      >
+                        <FontAwesome5
+                          name="exclamation-triangle"
+                          size={12}
+                          color={renkler.durum.dikkat}
+                          style={{ width: 20 }}
+                          solid
+                        />
+                        <Text className="text-xs font-semibold flex-1" style={{ color: renkler.metin }}>
+                          Hatırlatmalar gecikebilir — pil ayarını açın
+                        </Text>
+                        <FontAwesome5 name="chevron-right" size={11} color={renkler.metinIkincil} />
+                      </TouchableOpacity>
+                    )}
                   </>
                 )}
               </View>
             )}
 
-            <View className="flex-row items-start px-1">
-              <FontAwesome5 name="lock" size={12} color={renkler.metinIkincil} style={{ marginTop: 3 }} />
-              <Text className="text-xs leading-4 ml-2 flex-1" style={{ color: renkler.metinIkincil }}>
-                Parolanız yalnız bu cihazın güvenli deposunda tutulur ve yedeğe girmez. Unutursanız buluttaki veri
-                kurtarılamaz; cihazlarınızdaki kayıtlar yerinde kalır.
-              </Text>
-            </View>
           </>
         )}
       </ScrollView>
@@ -438,6 +501,13 @@ export const EsitlemeSayfasi: React.FC = () => {
         onVazgec={() => {
           if (!e.mesgul) adimaGec(null);
         }}
+      />
+
+      <PilRehberModal
+        gorunur={pilRehberi.rehberGorunur}
+        samsung={pilRehberi.samsung}
+        onAc={pilRehberi.ayarlariAc}
+        onKapat={pilRehberi.rehberiKapat}
       />
 
       <BildirimModali

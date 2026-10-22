@@ -210,5 +210,12 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
     }
   }
 
+  // Güç tasarrufu da açıksa ayrı bir çip yerine pil uyarısının içinde söylenir
+  // (aynı rehbere giden iki uyarı olmasın; Ayarlar çipi bu durumda çizilmez).
+  if (g.kosullar?.gucTasarrufu === true) {
+    const pilSorunu = sorunlar.find((x) => x.id === 'pilKisiti' || x.id === 'arkaPlanKisiti');
+    if (pilSorunu) pilSorunu.aciklama = `${pilSorunu.aciklama} Güç tasarrufu da açık.`;
+  }
+
   return sorunlar.sort((a, b) => SEVIYE_SIRASI[a.seviye] - SEVIYE_SIRASI[b.seviye]);
 }
