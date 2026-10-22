@@ -353,7 +353,10 @@ const gunduzSenaryosu = () => {
 
 describe('AnaSayfa', () => {
   const dispatchMock = jest.fn();
-  const feedbackMock = { tumNamazlarTamamlandiFeedback: jest.fn().mockResolvedValue(undefined) };
+  const feedbackMock = {
+    tumNamazlarTamamlandiFeedback: jest.fn().mockResolvedValue(undefined),
+    namazTamamlandiFeedback: jest.fn().mockResolvedValue(undefined),
+  };
 
   /**
    * Redux useSelector ÜRETİMDE stabil referans döndürür. Mock'ta da TEK ve SABİT

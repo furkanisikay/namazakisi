@@ -81,7 +81,7 @@ describe('ozellik turu tohumu', () => {
         expect(cuma).toEqual(ham(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI));
         expect(cuma.aktif).toBe(true);
 
-        expect(await LocalKazaOneriServisi.ayarlariGetir()).toEqual({ farzSonrasiOner: true });
+        expect(await LocalKazaOneriServisi.ayarlariGetir()).toEqual({ farzSonrasiOner: varyant !== 'kildim' });
         expect((await LocalSadeGorunumServisi.getAyarlar()).aktif).toBe(varyant === 'sade');
     });
 

@@ -2,6 +2,7 @@ package com.furkanisikay.namazakisi.tv.cekirdek
 
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -212,6 +213,38 @@ class CihazAgiTest {
     private fun pano(simdi: Long) = PanoHesabi.hesapla(simdi, bolge) { VakitHesabi.hesapla(41.0082, 28.9784, it) }
     private fun uye(kilinan: Set<String> = emptySet(), sayilsin: Boolean = true, hatirlat: Boolean = true, ozel: Boolean = false, haber: Long) =
         UyeHali("u1", DurumGoruntusu(null, null, null, mapOf(gun.toString() to kilinan), ozel, hatirlat, sayilsin, false, null, false), haber)
+
+    @Test
+    fun kabulBandiYalnizDurumuSayilanlarHepsiKildiysa() {
+        val t20 = v.aksam - 20 * 60_000
+        // Sayılan tek üye kıldı → dua; kılmadıysa yok.
+        assertTrue(EvDurumu.hepsiKildi(pano(t20), listOf(uye(setOf("ikindi"), haber = t20)), t20))
+        assertFalse(EvDurumu.hepsiKildi(pano(t20), listOf(uye(haber = t20)), t20))
+        // Durumunu açmayan üye sayılmaz: tek başına "hepsi kıldı" doğmaz (kimse sayılmıyor).
+        assertFalse(EvDurumu.hepsiKildi(pano(t20), listOf(uye(setOf("ikindi"), sayilsin = false, haber = t20)), t20))
+        // Biri kıldı biri kılmadı → yok.
+        assertFalse(
+            EvDurumu.hepsiKildi(pano(t20), listOf(uye(setOf("ikindi"), haber = t20), uye(haber = t20).copy(uye = "u2")), t20),
+        )
+        // Pencere dışı → yok.
+        val t31 = v.aksam - 31 * 60_000
+        assertFalse(EvDurumu.hepsiKildi(pano(t31), listOf(uye(setOf("ikindi"), haber = t31)), t31))
+        assertEquals("Allah kabul etsin", EvDurumu.KABUL_DUASI)
+    }
+
+    @Test
+    fun panoSelamiCumaVeIftar() {
+        // 2026-10-21 çarşamba: selam yok; 2026-10-23 cuma öğle: "Hayırlı cumalar".
+        val ogle = v.ogle + 60_000
+        assertNull(EvDurumu.selam(pano(ogle), emptyList(), ogle))
+        val cuma = VakitHesabi.hesapla(41.0082, 28.9784, LocalDate.of(2026, 10, 23))
+        val cumaOgle = cuma.ogle + 60_000
+        assertEquals("Hayırlı cumalar", EvDurumu.selam(pano(cumaOgle), emptyList(), cumaOgle))
+        // Ramazan diyen üye varsa akşam vakti "Hayırlı iftarlar".
+        val aksam = v.aksam + 60_000
+        val ramazanli = UyeHali("u1", DurumGoruntusu(null, null, null, emptyMap(), false, true, true, false, null, true), aksam)
+        assertEquals("Hayırlı iftarlar", EvDurumu.selam(pano(aksam), listOf(ramazanli), aksam))
+    }
 
     @Test
     fun bantBesSartVeSinirlar() {

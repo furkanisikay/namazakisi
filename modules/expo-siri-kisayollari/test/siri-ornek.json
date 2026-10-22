@@ -108,7 +108,7 @@
           "kayitVakti": "ogle",
           "ad": "Öğle"
         },
-        "kildimMetni": "Öğle namazınız kılındı olarak işaretlendi.",
+        "kildimMetni": "Öğle namazınız kılındı olarak işaretlendi. Allah kabul etsin.",
         "onayMetni": "Öğle namazı kılındı olarak işaretlensin mi?"
       }
     },
@@ -176,7 +176,7 @@
           "kayitVakti": "ogle",
           "ad": "Öğle"
         },
-        "kildimMetni": "Öğle namazınız kılındı olarak işaretlendi.",
+        "kildimMetni": "Öğle namazınız kılındı olarak işaretlendi. Allah kabul etsin.",
         "onayMetni": "Öğle namazı kılındı olarak işaretlensin mi?"
       }
     },
@@ -194,7 +194,7 @@
           "kayitVakti": "yatsi",
           "ad": "Yatsı"
         },
-        "kildimMetni": "Yatsı namazınız kılındı olarak işaretlendi.",
+        "kildimMetni": "Yatsı namazınız kılındı olarak işaretlendi. Allah kabul etsin.",
         "onayMetni": "Yatsı namazı kılındı olarak işaretlensin mi?"
       }
     },
@@ -212,7 +212,7 @@
           "kayitVakti": "yatsi",
           "ad": "Yatsı"
         },
-        "kildimMetni": "Yatsı namazınız kılındı olarak işaretlendi.",
+        "kildimMetni": "Yatsı namazınız kılındı olarak işaretlendi. Allah kabul etsin.",
         "onayMetni": "Yatsı namazı kılındı olarak işaretlensin mi?"
       }
     },
@@ -230,7 +230,7 @@
           "kayitVakti": "imsak",
           "ad": "Sabah"
         },
-        "kildimMetni": "Sabah namazınız kılındı olarak işaretlendi.",
+        "kildimMetni": "Sabah namazınız kılındı olarak işaretlendi. Allah kabul etsin.",
         "onayMetni": "Sabah namazı kılındı olarak işaretlensin mi?"
       }
     },

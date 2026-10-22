@@ -38,6 +38,8 @@ module.exports = {
     // servisi DOLAYLI yükleyen testler de ayakta kalır.
     "^expo-audio$": "<rootDir>/__mocks__/expo-audio.js",
     "^expo-keep-awake$": "<rootDir>/__mocks__/expo-keep-awake.js",
+    // Haptik (Kıldım onay dokusu) native köprüdür; `core/feedback`'i dolaylı yükleyen ekranlar için.
+    "^expo-haptics$": "<rootDir>/__mocks__/expo-haptics.js",
     // Muhafiz anons koprusu de native tarafa dokunur (AVSpeechSynthesizer).
     // Global mock, `IosMuhafizTeslimcisi`'ni DOLAYLI yukleyen suite'leri ayakta
     // tutar; varsayilani "Turkce ses yok" oldugu icin hicbir test istemeden

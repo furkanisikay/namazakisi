@@ -25,7 +25,9 @@ import expo.modules.notifications.service.interfaces.SchedulingDelegate
  *  2. o vaktin bekleyen muhafız tetiklerini (expo mağazası + güncelleme öncesi eski
  *     bileşenli tetik) ve TTS anons alarmlarını iptal eder;
  *  3. vaktin gösterilen bildirimlerini kaldırır, widget/hızlı ayarlar kutusunu tazeler;
- *  4. JS'i uyandırır (ön planda olay, değilse headless).
+ *  4. JS'i uyandırır (ön planda olay, değilse headless);
+ *  5. (yalnız bildirim eylemi) dokunulan uyarının yerine 5 sn'lik sessiz teşekkür gösterir
+ *     (`KildimOnayBildirimi`, "Öğle · Allah kabul etsin") — dokunuşun işe yaradığı görünsün.
  *
  * Her adım kendi try/catch'indedir: biri patlarsa diğerleri yine çalışır. Kuyruğa
  * yazılamadıysa `false` döner ve çağıran expo'nun olağan yoluna (JS görevi) düşer —
@@ -45,7 +47,11 @@ object BildirimKildimIsleyici {
         } catch (_: Exception) {
             null
         } ?: return false
-        return vakitIsle(context, vakit, zamanlama)
+        if (!vakitIsle(context, vakit, zamanlama)) return false
+        // Dokunulan uyarının yerine 5 sn'lik sessiz teşekkür ("Öğle · Allah kabul etsin").
+        // Yalnız BİLDİRİM yolunda: gerçek alarm ekranı kendi onayını gösterir.
+        KildimOnayBildirimi.goster(context, vakit)
+        return true
     }
 
     /**

@@ -27,7 +27,7 @@ object TesbihatAmbient {
     fun icerik(d: Tesbihat.Durum): Icerik {
         val alt = "${d.toplam} / ${Tesbihat.TOPLAM}"
         return when {
-            d.tamamMi -> Icerik("Tamamlandı", null, alt, "Tesbihat tamamlandı, $alt")
+            d.tamamMi -> Icerik(AnaEkranKarari.KABUL_DUASI, null, alt, "Tesbihat tamamlandı. ${AnaEkranKarari.KABUL_DUASI}, $alt")
             d.faz == Tesbihat.Faz.TEHLIL -> Icerik(d.faz.ad, null, alt, "${d.faz.ad}. Toplam $alt")
             else -> Icerik(
                 d.faz.ad,

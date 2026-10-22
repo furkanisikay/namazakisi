@@ -22,6 +22,7 @@ import {
   Animated,
   KeyboardAvoidingView,
   Platform,
+  AccessibilityInfo,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -52,6 +53,9 @@ import { KazaBant } from '../components/kaza/KazaOrtak';
 import { KazaDigerMenusu, type KazaDigerSatiri } from '../components/kaza/KazaDigerMenusu';
 import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { gunMetni, saatMetni } from '../components/kaza/kazaMetinleri';
+import { kisaBildirimGoster } from '../components/common/KisaBildirim';
+import { KABUL_DUASI } from '../../core/samimiyet/kabulDuasi';
+import { useFeedback } from '../../core/feedback';
 import type { KazaStackParamList } from '../../navigation/kazaEkranlari';
 
 // ==================== TİPLER ====================
@@ -207,6 +211,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
 
   // "Animasyonları azalt" açıksa sayı yalnız güncellenir (bilgi hareketle verilmez).
   const hareketAzalt = useHareketAzalt();
+  const { namazTamamlandiFeedback } = useFeedback();
   const tamamlamaFlash = useCallback(() => {
     if (hareketAzalt) return;
     Animated.sequence([
@@ -224,8 +229,12 @@ export const KazaDefteriSayfasi: React.FC = () => {
       if (!namaz || namaz.kalanBorc <= 0) return;
       dispatch(kazaTamamla({ namazAdi, sayi: 1 }));
       tamamlamaFlash();
+      // Samimiyet: kısa onay dokusu + ekran okuyucuya dua. Tek tık art arda basılabildiği için
+      // kısa bildirim YOK (Android'de kuyruklanıp dakikalarca sürerdi).
+      void namazTamamlandiFeedback();
+      AccessibilityInfo.announceForAccessibility?.(`Bir kaza düşüldü. ${KABUL_DUASI}.`);
     },
-    [dispatch, kazaDurumu, tamamlamaFlash]
+    [dispatch, kazaDurumu, tamamlamaFlash, namazTamamlandiFeedback]
   );
 
   const handleTopluTamamlaGonder = useCallback(() => {
@@ -237,9 +246,11 @@ export const KazaDefteriSayfasi: React.FC = () => {
     const modal = aktifModal as { tip: 'topluTamamla'; namazAdi: KazaNamazAdi };
     dispatch(kazaTamamla({ namazAdi: modal.namazAdi, sayi }));
     tamamlamaFlash();
+    void namazTamamlandiFeedback();
+    kisaBildirimGoster(`${sayi} kaza defterinizden düşüldü. ${KABUL_DUASI}.`);
     setAktifModal(null);
     setModalGirdi('');
-  }, [dispatch, aktifModal, modalGirdi, tamamlamaFlash, hataGoster]);
+  }, [dispatch, aktifModal, modalGirdi, tamamlamaFlash, hataGoster, namazTamamlandiFeedback]);
 
   const handleBorcEkleGonder = useCallback(() => {
     const sayi = parseInt(modalGirdi, 10);

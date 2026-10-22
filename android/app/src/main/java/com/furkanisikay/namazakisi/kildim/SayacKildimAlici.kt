@@ -3,6 +3,7 @@ package com.furkanisikay.namazakisi.kildim
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.furkanisikay.namazakisi.cekirdek.BildirimKildimKurallari
 import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
 import com.furkanisikay.namazakisi.widget.WidgetGuncelleyici
 
@@ -27,6 +28,10 @@ class SayacKildimAlici : BroadcastReceiver() {
         val vakit = intent.getStringExtra(EK_VAKIT)
         if (!KildimKuyrugu.ekle(context, tarih, vakit, KildimKuyruguKurallari.KAYNAK_SAYAC)) return
         WidgetGuncelleyici.tumunuGuncelle(context)
+        // Sayaç (Now Bar çipi) kaybolurken yerine 5 sn'lik sessiz teşekkür.
+        if (tarih != null && vakit != null) {
+            KildimOnayBildirimi.goster(context, BildirimKildimKurallari.Vakit(tarih, vakit))
+        }
         KildimKuyrugu.jsUyandir(context)
     }
 

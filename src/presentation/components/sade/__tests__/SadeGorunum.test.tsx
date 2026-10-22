@@ -145,6 +145,21 @@ describe('SadeGorunum', () => {
     await act(async () => {
       await Promise.resolve();
     });
-    expect(duyuru).toHaveBeenCalledWith('İkindi namazı kılındı olarak işaretlendi');
+    expect(duyuru).toHaveBeenCalledWith('İkindi namazı kılındı olarak işaretlendi.');
+  });
+
+  it('samimiyet: kılınınca düğmede dua, ekran okuyucu önce durumu sonra duayı duyar; günün selamı başlıkta', async () => {
+    const p = { ...props(), kabulMetni: 'Allah kabul etsin', kabulEki: 'Hayırlı geceler', gunSelami: 'Hayırlı cumalar' };
+    const e = await kur(p);
+    expect(e.getByTestId('sade-gun-selami')).toBeTruthy();
+    expect(e.queryByTestId('sade-kabul-eki', { includeHiddenElements: true })).toBeNull();
+    e.rerender(<SadeGorunum {...p} tamamlandi />);
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(duyuru).toHaveBeenCalledWith('İkindi namazı kılındı olarak işaretlendi. Allah kabul etsin.');
+    expect(e.getByText('Allah kabul etsin')).toBeTruthy();
+    expect(e.getByLabelText('İkindi namazı kılındı. Allah kabul etsin')).toBeTruthy();
+    expect(e.getByTestId('sade-kabul-eki', { includeHiddenElements: true })).toBeTruthy();
   });
 });

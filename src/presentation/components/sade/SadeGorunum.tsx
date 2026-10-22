@@ -33,6 +33,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { KabulEkSatiri } from '../hareket/KabulEkSatiri';
 import { useRenkler } from '../../../core/theme';
 import { ACIK_TEMA } from '../../../core/theme/temalar';
 import {
@@ -58,6 +59,12 @@ export interface SadeGorunumProps {
   onKildim: () => void;
   /** Bu oturum için tüm uygulamayı aç. */
   onTumUygulama: () => void;
+  /** Kılınınca düğmede yazan dua (`core/samimiyet/kabulDuasi`); verilmezse "Kılındı". */
+  kabulMetni?: string;
+  /** Kılınınca düğmenin altındaki kısa selam (sabah/yatsı). */
+  kabulEki?: string | null;
+  /** Başlıktaki günün selamı ("Hayırlı cumalar"); verilmezse "Şimdi". */
+  gunSelami?: string | null;
 }
 
 /** Dakika sınırına hizalı saat: saniyede bir DEĞİL, dakikada bir yeniden çizer. */
@@ -116,6 +123,9 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
   cumaEtiketi,
   onKildim,
   onTumUygulama,
+  kabulMetni,
+  kabulEki,
+  gunSelami,
 }) => {
   const renkler = useRenkler();
   const simdi = useDakikaSaati();
@@ -136,8 +146,9 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
         kayitHazir,
         mekruhMu,
         cumaEtiketi,
+        kabulMetni,
       }),
-    [vakit, giris, sonrakiGirisIso, sonrakiVakit, simdi, tamamlandi, kayitHazir, mekruhMu, cumaEtiketi]
+    [vakit, giris, sonrakiGirisIso, sonrakiVakit, simdi, tamamlandi, kayitHazir, mekruhMu, cumaEtiketi, kabulMetni]
   );
 
   // Halka çapı: pencereye göre (telefon, açık katlanabilir, yatay tablet).
@@ -152,7 +163,9 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
     const yeniKilindi = durum.tamamlandi && !oncekiTamamlandi.current;
     oncekiTamamlandi.current = durum.tamamlandi;
     if (!yeniKilindi) return;
-    AccessibilityInfo.announceForAccessibility(`${durum.vakitAdi} namazı kılındı olarak işaretlendi`);
+    AccessibilityInfo.announceForAccessibility(
+      `${durum.vakitAdi} namazı kılındı olarak işaretlendi.${kabulMetni ? ` ${kabulMetni}.` : ''}`
+    );
     let iptal = false;
     AccessibilityInfo.isReduceMotionEnabled()
       .then((azalt) => {
@@ -164,6 +177,8 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
     return () => {
       iptal = true;
     };
+    // kabulMetni bağımlılık değil: duyuru yalnız geçiş anında.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [durum.tamamlandi, durum.vakitAdi, olcek]);
 
   const oku = () => {
@@ -185,7 +200,7 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
   let dugmeKenar = renkler.birincilKoyu;
   let dugmeMetin = dugmeMetinRengi;
   if (durum.tamamlandi) {
-    dugmeEtiketi = 'Kılındı';
+    dugmeEtiketi = kabulMetni ?? 'Kılındı';
     dugmeIkonu = 'check-circle';
     dugmeZemin = `${renkler.basarili}20`;
     dugmeKenar = renkler.basarili;
@@ -206,6 +221,12 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
         showsVerticalScrollIndicator={false}
       >
         <View style={{ width: '100%', maxWidth: 560, alignItems: 'center' }}>
+          {/* Günün selamı (cuma, kandil, Ramazan…) — sessiz tek satır, düz metin. */}
+          {!!gunSelami && (
+            <Text testID="sade-gun-selami" style={{ color: renkler.metin, fontSize: 20, fontWeight: '600', marginBottom: 12 }}>
+              {gunSelami}
+            </Text>
+          )}
           {/* İmza öğesi: vaktin geçen kısmını gösteren halka. Dokununca sesli okunur. */}
           <TouchableOpacity
             testID="sade-halka"
@@ -300,7 +321,7 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
             accessibilityRole="button"
             accessibilityLabel={
               durum.tamamlandi
-                ? `${durum.vakitAdi} namazı kılındı`
+                ? `${durum.vakitAdi} namazı kılındı${kabulMetni ? `. ${kabulMetni}` : ''}`
                 : dugmeEtkin
                   ? `${durum.vakitAdi} namazını kıldım olarak işaretleyin`
                   : dugmeEtiketi
@@ -322,6 +343,10 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
               {dugmeEtiketi}
             </Text>
           </TouchableOpacity>
+
+          {!!kabulEki && (
+            <KabulEkSatiri metin={kabulEki} gorunur={durum.tamamlandi} kimlik={durum.vakitAdi} testID="sade-kabul-eki" />
+          )}
 
           {durum.kerahat && (
             <Text style={{ color: renkler.metin, fontSize: 16, textAlign: 'center', marginTop: 10 }}>

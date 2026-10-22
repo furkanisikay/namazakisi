@@ -37,7 +37,7 @@ struct NamazCanliEtkinlikWidget: Widget {
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(alignment: .leading, spacing: 6) {
-                        CanliIlerleme(durum: durum)
+                        if !CanliMetin.kabulMu(durum) { CanliIlerleme(durum: durum) }
                         HStack {
                             Text(CanliMetin.altSatir(durum))
                                 .font(.caption)
@@ -67,6 +67,7 @@ struct NamazCanliEtkinlikWidget: Widget {
 enum CanliMetin {
     static func ikon(_ d: NamazCanliNitelikleri.ContentState) -> String {
         switch d.tema {
+        case "kabul": return "checkmark.circle.fill"
         case "cuma": return "building.columns.fill"
         case "nafile": return "sparkles"
         default:
@@ -75,12 +76,16 @@ enum CanliMetin {
         }
     }
 
+    /// Kildim sonrasi son kare (`NamazCanliNitelikleri.kildimIleBitir`): sayac yerine dua.
+    static func kabulMu(_ d: NamazCanliNitelikleri.ContentState) -> Bool { d.tema == "kabul" }
+
     static func hedef(_ d: NamazCanliNitelikleri.ContentState) -> Date {
         VakitSaglayici.tarih(d.hedefMs)
     }
 
     static func altSatir(_ d: NamazCanliNitelikleri.ContentState) -> String {
-        d.tema == "vakit" ? "Çıkış \(WidgetMetin.saat(d.hedefMs))" : "Bitiş \(WidgetMetin.saat(d.hedefMs))"
+        if kabulMu(d) { return "\(d.ad) namazı kılındı" }
+        return d.tema == "vakit" ? "Çıkış \(WidgetMetin.saat(d.hedefMs))" : "Bitiş \(WidgetMetin.saat(d.hedefMs))"
     }
 }
 
@@ -91,7 +96,11 @@ private struct CanliSayac: View {
     let eskidi: Bool
     var body: some View {
         let hedef = CanliMetin.hedef(durum)
-        if eskidi || hedef <= Date() {
+        if CanliMetin.kabulMu(durum) {
+            Image(systemName: "checkmark")
+                .foregroundStyle(WidgetSabitleri.yesil)
+                .accessibilityLabel("Kılındı")
+        } else if eskidi || hedef <= Date() {
             Text("Bitti")
         } else {
             Text(timerInterval: Date()...hedef, countsDown: true)
@@ -156,7 +165,7 @@ private struct CanliKilitEkraniGorunumu: View {
                     .foregroundStyle(.primary)
                     .frame(maxWidth: 110, alignment: .trailing)
             }
-            if !eskidi {
+            if !eskidi && !CanliMetin.kabulMu(durum) {
                 HStack(spacing: 10) {
                     CanliIlerleme(durum: durum)
                     CanliKildimDugmesi(durum: durum, eskidi: eskidi)

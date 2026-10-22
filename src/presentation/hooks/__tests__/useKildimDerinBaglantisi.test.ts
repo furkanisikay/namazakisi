@@ -60,7 +60,7 @@ describe('useKildimDerinBaglantisi — dışarıdan gelen bağlantı SESSİZCE i
         act(() => result.current.onayla());
         await waitFor(() => expect(mockAdayiIsaretle).toHaveBeenCalledWith(ADAY));
         expect(result.current.onayAdayi).toBeNull();
-        await waitFor(() => expect(kisaBildirimGoster).toHaveBeenCalledWith('Öğle namazınız kılındı olarak işaretlendi.'));
+        await waitFor(() => expect(kisaBildirimGoster).toHaveBeenCalledWith('Öğle namazınız kılındı olarak işaretlendi. Allah kabul etsin.'));
     });
 
     it('vazgeçilirse hiçbir şey yazılmaz', async () => {
@@ -91,7 +91,7 @@ describe('useKildimDerinBaglantisi — dışarıdan gelen bağlantı SESSİZCE i
 
 describe('kildimSonucMetni', () => {
     it('işaretlendi', () => {
-        expect(kildimSonucMetni({ tur: 'isaretlendi', vakitAdi: 'Öğle' })).toBe('Öğle namazınız kılındı olarak işaretlendi.');
+        expect(kildimSonucMetni({ tur: 'isaretlendi', vakitAdi: 'Öğle' })).toBe('Öğle namazınız kılındı olarak işaretlendi. Allah kabul etsin.');
     });
 
     it('zaten kılınmış', () => {
@@ -136,7 +136,7 @@ describe('useKildimDerinBaglantisi — güven listesi (issue #299)', () => {
         const { result } = renderHook(() => useKildimDerinBaglantisi(true));
         await waitFor(() => expect(mockSimdikiKildim).toHaveBeenCalledTimes(1));
         expect(result.current.onayAdayi).toBeNull();
-        await waitFor(() => expect(kisaBildirimGoster).toHaveBeenCalledWith('Öğle namazınız kılındı olarak işaretlendi.'));
+        await waitFor(() => expect(kisaBildirimGoster).toHaveBeenCalledWith('Öğle namazınız kılındı olarak işaretlendi. Allah kabul etsin.'));
     });
 
     it('engellenmiş uygulama: hiçbir şey yapılmaz, mesaj bile gösterilmez', async () => {

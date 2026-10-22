@@ -27,6 +27,7 @@ import type { KazaNamazAdi } from '../../core/types/KazaTipleri';
 import { mekruhVakitKontrolEt } from '../../domain/services/KazaHesaplayiciServisi';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { Logger } from '../../core/utils/Logger';
+import { kazaKabulMetni } from '../../core/samimiyet/kabulDuasi';
 
 export interface KazaOnerisi {
   /** "Kıldım" işaretlenen farz (NamazAdi değeri). */
@@ -114,7 +115,7 @@ export const useFarzSonrasiKazaOnerisi = () => {
       }
       const sonuc = await dispatch(kazaTamamla({ namazAdi: oneri.kazaNamazi, sayi: 1 }));
       if (!kazaTamamla.fulfilled.match(sonuc)) throw new Error('Kaza kaydedilemedi');
-      kisaBildirimGoster(`Bir ${kucukAd} kazası defterinizden düşüldü. Allah kabul etsin.`);
+      kisaBildirimGoster(kazaKabulMetni(kucukAd));
     } catch (e) {
       Logger.warn('KazaOnerisi', 'Kaza dusulemedi', e);
       kisaBildirimGoster("Kaza kaydedilemedi. Kaza Defteri'nden işaretleyebilirsiniz.", true);

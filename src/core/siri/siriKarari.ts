@@ -127,7 +127,7 @@ export function siriKildimMetni(
 ): string {
     switch (karar.tur) {
         case 'aday':
-            return `${karar.ad} namazınız kılındı olarak işaretlendi.`;
+            return `${karar.ad} namazınız kılındı olarak işaretlendi. Allah kabul etsin.`;
         case 'zatenKilindi':
             return `${karar.ad} namazı zaten kılındı olarak işaretli.`;
         case 'vakitYok':

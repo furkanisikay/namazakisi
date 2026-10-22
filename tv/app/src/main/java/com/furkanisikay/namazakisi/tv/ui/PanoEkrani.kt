@@ -27,6 +27,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -184,6 +188,19 @@ private fun SolSutun(
 ) {
     // Ev ekranı katmanı (tasarım §4.6): yalnız eşleşik üyelerden gelen durumla; boşta hesap ucuz.
     val bant = EvDurumu.bant(durum, uyeler, simdi)
+    // Bant görünürken durumu sayılan herkes kıldıysa bant kısa süre "Allah kabul etsin"e
+    // döner (kişi/sayı yok), sonra pano sakin hâline döner. Geçiş yalnız GÖRÜLEN bir banttan.
+    val hepsiKildi = EvDurumu.hepsiKildi(durum, uyeler, simdi)
+    var oncekiBant by remember { mutableStateOf<String?>(null) }
+    var kabulBitis by remember { mutableLongStateOf(0L) }
+    LaunchedEffect(bant, hepsiKildi) {
+        if (oncekiBant != null && bant == null && hepsiKildi) {
+            kabulBitis = System.currentTimeMillis() + EvDurumu.KABUL_SURESI_MS
+        }
+        oncekiBant = bant
+    }
+    val kabul = bant == null && simdi < kabulBitis
+    val selam = if (bant == null && !kabul) EvDurumu.selam(durum, uyeler, simdi) else null
     val cumaCikis = EvDurumu.cumaCikisMs(durum, uyeler, simdi)
     val ramazanSayaci = if (EvDurumu.ramazan(uyeler, simdi)) {
         val bugun = java.time.Instant.ofEpochMilli(simdi).atZone(bolge).toLocalDate()
@@ -198,6 +215,11 @@ private fun SolSutun(
             if (bant != null) {
                 Spacer(Modifier.height(10.dp))
                 SessizBant(bant)
+            } else if (kabul) {
+                Spacer(Modifier.height(10.dp))
+                SessizBant(EvDurumu.KABUL_DUASI, Renkler.birincil)
+            } else if (selam != null) {
+                Text(selam, color = Renkler.birincil, fontSize = 24.sp, fontWeight = FontWeight.Medium)
             }
         }
 
@@ -207,9 +229,9 @@ private fun SolSutun(
                 style = RAKAM,
                 color = Renkler.metin,
                 // Bant görünürken saat küçülür: sütun taşıp "Ayarlar" düğmesi ekrandan çıkmasın.
-                fontSize = if (bant != null) 96.sp else 120.sp,
+                fontSize = if (bant != null || kabul) 96.sp else 120.sp,
                 fontWeight = FontWeight.Light,
-                lineHeight = if (bant != null) 96.sp else 120.sp,
+                lineHeight = if (bant != null || kabul) 96.sp else 120.sp,
             )
             Text(
                 Bicim.saniye(simdi, bolge),
@@ -498,16 +520,16 @@ private fun RamazanBlogu(sayac: EvDurumu.Sayac, durum: PanoDurumu, simdi: Long) 
  * dikkat rengi yalnız noktada ve ince kenarda; metin tema metni.
  */
 @Composable
-private fun SessizBant(metin: String) {
+private fun SessizBant(metin: String, vurgu: Color = Renkler.uyari) {
     Row(
         Modifier
             .background(Renkler.kart, RoundedCornerShape(28.dp))
-            .border(1.5.dp, Renkler.uyari.copy(alpha = 0.6f), RoundedCornerShape(28.dp))
+            .border(1.5.dp, vurgu.copy(alpha = 0.6f), RoundedCornerShape(28.dp))
             .padding(horizontal = 20.dp, vertical = 8.dp)
             .semantics { liveRegion = LiveRegionMode.Polite },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(Modifier.size(12.dp).background(Renkler.uyari, CircleShape))
+        Box(Modifier.size(12.dp).background(vurgu, CircleShape))
         Spacer(Modifier.width(14.dp))
         Text(metin, color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.Medium)
     }
