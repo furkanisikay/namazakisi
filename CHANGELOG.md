@@ -5,6 +5,17 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.69.0] - 2026-10-22
+
+### Eklendi
+- [sistem] güç/veri tasarrufu ve ağa uyum, eşitleme sıklığı ayarları
+
+### Düzeltildi
+- [sistem] hatırlatma cümlesi tek kaynaktan, tek pil uyarısı, kısa eşitleme tanıtımı
+- [saat] kare ekranda onay sorusu ve zikir adı yaydan uzak
+- [saat] kare ekranda tepe satırı daha dar ve aşağıda; liste süresi kendini sığdırır
+- [saat] yuvarlak/kare ekranda taşma — Kıldım sorusu iki satır, zikir adı kendini sığdırır
+
 ## [0.68.0] - 2026-10-22
 
 ### Eklendi
