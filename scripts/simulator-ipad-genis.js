@@ -60,7 +60,7 @@ function agac() {
     return ogeler;
 }
 const metin = (o) =>
-    [o.AXLabel, o.AXValue, o.AXUniqueId, o.title, o.label].filter((x) => typeof x === 'string' && x).join(' | ');
+    [o.AXLabel, o.AXValue, o.AXUniqueId, o.title, o.label].filter((x) => typeof x === 'string' && x).join(' | ').normalize('NFC'); // idb Türkçe harfleri ayrışık (NFD) verebilir
 function cerceve(o) {
     const f = o.frame || o.AXFrame || {};
     return {
@@ -73,7 +73,8 @@ function cerceve(o) {
 function bul(ogeler, kalip) {
     const aday = ogeler.filter((o) => {
         const c = cerceve(o);
-        return c.w * c.h > 0 && kalip.test(metin(o));
+        // Alan alan sınanır: birleşik metin testID'yi de taşır ('Başlayın | basla'), ^…$ tutmazdı.
+        return c.w * c.h > 0 && metin(o).split(' | ').some((x) => kalip.test(x));
     });
     aday.sort((a, b) => cerceve(a).w * cerceve(a).h - cerceve(b).w * cerceve(b).h);
     return aday[0] || null;
