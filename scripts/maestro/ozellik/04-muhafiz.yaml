@@ -76,3 +76,64 @@ appId: com.furkanisikay.namazakisi
     timeout: 10000
 - takeScreenshot: ozk/10-alarm-onay
 - tapOn: "Vazgeç"
+
+# NASIL = kanal kartlari: her kanal kendi alt ayarlarini tasir. Sesli okumayi ac
+# (ilk seferde riza) → kart olculu genisler; video bu anin kaydidir.
+- scrollUntilVisible:
+    element:
+      id: "adim-sesli-anahtari"
+    direction: DOWN
+    centerElement: true
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- startRecording: ozk/adim-detay-genisleme
+- tapOn:
+    id: "adim-sesli-anahtari"
+- extendedWaitUntil:
+    visible: "Sesli okumayı açın"
+    timeout: 10000
+- tapOn: "Sesli okumayı açın"
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
+    id: "adim-bildirim-anahtari"
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
+    id: "adim-bildirim-anahtari"
+- waitForAnimationToEnd:
+    timeout: 3000
+- stopRecording
+- takeScreenshot: ozk/42-adim-detay-kanallar-acik
+- tapOn:
+    id: "adim-bildirim-anahtari"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/43-adim-detay-bildirim-kapali
+
+# "Tekrarla" AÇIK: aralik secicisi + canli cumle (video: acilis). Sonra seritte tikler.
+- scrollUntilVisible:
+    element:
+      id: "adim-tekrar-anahtari"
+    direction: UP
+    centerElement: true
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- startRecording: ozk/adim-detay-tekrar
+- tapOn:
+    id: "adim-tekrar-anahtari"
+- waitForAnimationToEnd:
+    timeout: 3000
+- stopRecording
+- takeScreenshot: ozk/44-adim-detay-tekrar-acik
+- back
+- waitForAnimationToEnd:
+    timeout: 3000
+- scrollUntilVisible:
+    element:
+      text: ".*ilk hatırlatma.*"
+    direction: UP
+    centerElement: true
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/45-zaman-seridi-tekrar
