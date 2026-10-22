@@ -125,22 +125,21 @@ function cerceve(tur, gorsel, gen, k, z, secenek = {}) {
  * Telifli urun gorseli YOK; renk ve doku elle cizilir (silikon kordon: mat koyu yesil-gri,
  * ortada ince isik, kenarlarda golge, delik/dikis cizgileri).
  */
-function kordonHtml({ x, y, gen, yuk, yukari, yaricap }) {
+function kordonHtml({ x, y, gen, yuk, yukari, yaricap, deri = false }) {
     const sol = yukari ? 'to top' : 'to bottom';
     const delikler = yukari
         ? ''
         : Array.from({ length: 4 }, (_, i) => `<div style="position:absolute;left:50%;top:${yuk * (0.42 + i * 0.12)}px;width:${gen * 0.075}px;height:${gen * 0.075}px;margin-left:${-gen * 0.0375}px;border-radius:50%;background:rgba(0,0,0,0.45);box-shadow:inset 0 ${gen * 0.01}px ${gen * 0.015}px rgba(0,0,0,0.6)"></div>`).join('');
     return (
         `<div style="position:absolute;left:${x}px;top:${y}px;width:${gen}px;height:${yuk}px;border-radius:${yukari ? `${yaricap}px ${yaricap}px 0 0` : `0 0 ${yaricap}px ${yaricap}px`};` +
-        `background:linear-gradient(90deg,#1B2420 0%,#2C3933 14%,#34433C 50%,#2C3933 86%,#1B2420 100%);` +
+        `background:${deri ? 'linear-gradient(90deg,#24170F 0%,#4A2E1C 14%,#5B3A25 50%,#4A2E1C 86%,#24170F 100%)' : 'linear-gradient(90deg,#1B2420 0%,#2C3933 14%,#34433C 50%,#2C3933 86%,#1B2420 100%)'};` +
         `-webkit-mask-image:linear-gradient(${sol},#000 0%,#000 70%,transparent 100%);mask-image:linear-gradient(${sol},#000 0%,#000 70%,transparent 100%)">` +
-        `<div style="position:absolute;left:${gen * 0.08}px;right:${gen * 0.08}px;top:0;bottom:0;border-left:${Math.max(1, gen * 0.008)}px dashed rgba(255,255,255,0.07);border-right:${Math.max(1, gen * 0.008)}px dashed rgba(255,255,255,0.07)"></div>` +
+        `<div style="position:absolute;left:${gen * 0.08}px;right:${gen * 0.08}px;top:0;bottom:0;border-left:${Math.max(1, gen * 0.008)}px dashed rgba(255,255,255,${deri ? 0.22 : 0.07});border-right:${Math.max(1, gen * 0.008)}px dashed rgba(255,255,255,${deri ? 0.22 : 0.07})"></div>` +
         delikler +
         `</div>`
     );
 }
 
-/** Yuvarlak saat (Wear OS): kasa + kordon + tuslar. */
 /**
  * Saatin sessiz uyandirma ekrani (`wear/.../ui/UyandirmaAktivite.kt`) — ham kare
  * yoksa ayni duzen ve uygulamanin GERCEK metinleriyle cizilir: baslik, govde, Kildim, Kapat.
@@ -159,31 +158,93 @@ function uyandirmaEkrani(cap) {
     );
 }
 
+/**
+ * Klasik yuvarlak saat (Wear OS): disli DONER cerceve (dakika cizgileri + 60/15/30/45), kalin
+ * celik kasa, sagda iki tus, klasik catal kulplar ve deri kordon. Marka/logo YOK (kendi cizimimiz).
+ * Ekran `cap` capinda kalir (icerik degismez); kasa disa buyur → dis cap `cap * WEAR_DIS_ORAN`.
+ */
+const WEAR_KASA_ORAN = 0.165;
+const WEAR_DIS_ORAN = 1 + 2 * WEAR_KASA_ORAN;
+
 function yuvarlakSaat(gorsel, cap, z, kordon = true) {
-    // Wear OS: yuvarlak celik govde, cerceve halkasi, iki tus, ust/alt kulp + kordon.
-    const kasa = cap * 0.085;
-    const D = cap + kasa * 2;
+    const D = cap * WEAR_DIS_ORAN;
+    const m = D / 2;
+    const r0 = cap / 2; // ekran
+    const cerceveGen = cap * 0.105; // doner cerceve (seramik halka)
+    const disGen = cap * 0.03; // disli kenar
+    const kenar = cap * 0.03; // celik kasa kenari
+    const rC = r0 + cerceveGen; // cerceve dis yaricapi
+    const rD = rC + disGen / 2; // disli halka merkez yaricapi
     const uzun = kordon === true ? 0.75 : typeof kordon === 'number' ? kordon : 0;
-    const kordonGen = D * 0.5;
-    const kulpGen = D * 0.62;
-    const kulpYuk = D * 0.13;
+    const kordonGen = D * 0.4;
+    const kulpGen = D * 0.075;
+    const kulpYuk = D * 0.17;
     const url = typeof gorsel === 'string' ? gorsel : gorsel && gorsel.url;
     const icerik = gorsel && gorsel.cizim === 'uyandirma' ? uyandirmaEkrani(cap) : `<img src="${url}" style="width:100%;height:100%;display:block">`;
     let h = '';
     if (uzun) {
-        h += kordonHtml({ x: (D - kordonGen) / 2, y: -D * uzun - kulpYuk * 0.5, gen: kordonGen, yuk: D * uzun + kulpYuk, yukari: true, yaricap: kordonGen * 0.12 });
-        h += kordonHtml({ x: (D - kordonGen) / 2, y: D - kulpYuk * 0.5, gen: kordonGen, yuk: D * uzun + kulpYuk, yukari: false, yaricap: kordonGen * 0.12 });
+        const ky = kulpYuk * 0.75;
+        h += kordonHtml({ x: (D - kordonGen) / 2, y: -D * uzun - ky * 0.3, gen: kordonGen, yuk: D * uzun + ky, yukari: true, yaricap: kordonGen * 0.1, deri: true });
+        h += kordonHtml({ x: (D - kordonGen) / 2, y: D - ky * 0.7, gen: kordonGen, yuk: D * uzun + ky, yukari: false, yaricap: kordonGen * 0.1, deri: true });
     }
-    // Kulplar: govdeyle ayni metal, kordonu govdeye baglar.
-    const kulp = (ust) =>
-        `<div style="position:absolute;left:${(D - kulpGen) / 2}px;top:${ust ? -kulpYuk * 0.55 : D - kulpYuk * 0.45}px;width:${kulpGen}px;height:${kulpYuk}px;border-radius:${kulpYuk * 0.45}px;background:linear-gradient(90deg,#2A2C30,#5B5F66 30%,#3A3D42 70%,#232528)"></div>`;
-    h += kulp(true) + kulp(false);
-    // Tuslar: taç (cizgili) ve ikinci tus.
-    h += `<div style="position:absolute;right:${-kasa * 0.62}px;top:${D * 0.43}px;width:${kasa * 0.85}px;height:${D * 0.14}px;border-radius:${kasa * 0.3}px;background:repeating-linear-gradient(180deg,#5A5E64 0,#5A5E64 ${D * 0.008}px,#34373B ${D * 0.008}px,#34373B ${D * 0.016}px);box-shadow:0 0 0 ${Math.max(1, D * 0.003)}px rgba(0,0,0,0.5)"></div>`;
-    h += `<div style="position:absolute;right:${-kasa * 0.38}px;top:${D * 0.24}px;width:${kasa * 0.6}px;height:${D * 0.09}px;border-radius:${kasa * 0.3}px;background:linear-gradient(90deg,#3A3D42,#62666C)"></div>`;
-    // Govde: metal halka + isik yansimasi + golge.
-    h += `<div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 26%, #6A6E75 0%, #3B3E43 38%, #1A1B1E 72%);box-shadow:0 ${D * 0.09}px ${D * 0.2}px ${z.cihazGolge}, inset 0 0 0 ${Math.max(1, D * 0.006)}px rgba(255,255,255,0.18)"></div>`;
-    h += `<div style="position:absolute;inset:${kasa * 0.45}px;border-radius:50%;background:#0B0C0D;box-shadow:inset 0 0 0 ${Math.max(1, D * 0.004)}px rgba(255,255,255,0.08)"></div>`;
+    // Klasik catal kulplar: kordonun iki yaninda, kasadan cikan dort celik boynuz.
+    const kulp = (sol, ust) => {
+        const x = sol ? (D - kordonGen) / 2 - kulpGen * 0.55 : (D + kordonGen) / 2 - kulpGen * 0.45;
+        const y = ust ? -kulpYuk * 0.42 : D - kulpYuk * 0.58;
+        const r = `${kulpGen * 0.5}px`;
+        const yari = ust ? `${r} ${r} ${kulpGen * 0.2}px ${kulpGen * 0.2}px` : `${kulpGen * 0.2}px ${kulpGen * 0.2}px ${r} ${r}`;
+        return `<div style="position:absolute;left:${x}px;top:${y}px;width:${kulpGen}px;height:${kulpYuk}px;border-radius:${yari};background:linear-gradient(90deg,#3A3D42,#9A9EA5 45%,#5E6268 75%,#2E3034)"></div>`;
+    };
+    h += kulp(true, true) + kulp(false, true) + kulp(true, false) + kulp(false, false);
+    // Sagda iki tus (2 ve 4 yonunde).
+    const tus = (aci) => {
+        const tg = D * 0.13;
+        const tk = D * 0.055;
+        const a = (aci * Math.PI) / 180;
+        const cx = m + Math.cos(a) * (m + tk * 0.05);
+        const cy = m + Math.sin(a) * (m + tk * 0.05);
+        return `<div style="position:absolute;left:${cx - tk / 2}px;top:${cy - tg / 2}px;width:${tk}px;height:${tg}px;border-radius:${tk * 0.35}px;transform:rotate(${aci}deg);transform-origin:center;background:linear-gradient(90deg,#2E3034,#8C9097 55%,#4A4D52)"></div>`;
+    };
+    h += tus(-32) + tus(32);
+    // Kasa + cerceve: SVG.
+    const cevre = 2 * Math.PI * rD;
+    const dis = cevre / 240;
+    let cizgiler = '';
+    for (let i = 0; i < 60; i++) {
+        if (i % 15 === 0) continue;
+        const a = (i * 6 * Math.PI) / 180;
+        const buyuk = i % 5 === 0;
+        const ri = r0 + cerceveGen * 0.2;
+        const ro = ri + cerceveGen * (buyuk ? 0.42 : 0.22);
+        const s = Math.sin(a);
+        const c = -Math.cos(a);
+        cizgiler += `<line x1="${m + s * ri}" y1="${m + c * ri}" x2="${m + s * ro}" y2="${m + c * ro}" stroke="${buyuk ? '#D9DCE0' : '#8C9097'}" stroke-width="${cap * (buyuk ? 0.009 : 0.005)}" stroke-linecap="round"/>`;
+    }
+    const rakam = (metin, aci) => {
+        const a = (aci * Math.PI) / 180;
+        const rr = r0 + cerceveGen * 0.52;
+        return `<text x="${m + Math.sin(a) * rr}" y="${m - Math.cos(a) * rr}" fill="#EEF0F2" font-family="Roboto,'Segoe UI',sans-serif" font-weight="700" font-size="${cerceveGen * 0.5}" text-anchor="middle" dominant-baseline="central">${metin}</text>`;
+    };
+    const svg =
+        `<svg style="position:absolute;left:0;top:0;overflow:visible" width="${D}" height="${D}" viewBox="0 0 ${D} ${D}">` +
+        `<defs><radialGradient id="celik" cx="34%" cy="28%" r="75%"><stop offset="0%" stop-color="#B9BDC3"/><stop offset="35%" stop-color="#6E7279"/><stop offset="70%" stop-color="#3A3D42"/><stop offset="100%" stop-color="#1E2023"/></radialGradient>` +
+        `<linearGradient id="seramik" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#26282C"/><stop offset="100%" stop-color="#0E0F11"/></linearGradient></defs>` +
+        `<circle cx="${m}" cy="${m}" r="${m}" fill="url(#celik)"/>` +
+        `<circle cx="${m}" cy="${m}" r="${m - kenar * 0.15}" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="${Math.max(1, D * 0.003)}"/>` +
+        // disli kenar: koyu oluklar
+        `<circle cx="${m}" cy="${m}" r="${rD}" fill="none" stroke="#2A2C30" stroke-width="${disGen}" stroke-dasharray="${dis} ${dis}"/>` +
+        `<circle cx="${m}" cy="${m}" r="${rC + cap * 0.002}" fill="none" stroke="rgba(0,0,0,0.55)" stroke-width="${cap * 0.004}"/>` +
+        // seramik cerceve halkasi
+        `<circle cx="${m}" cy="${m}" r="${r0 + cerceveGen / 2}" fill="none" stroke="url(#seramik)" stroke-width="${cerceveGen}"/>` +
+        cizgiler +
+        rakam('60', 0) +
+        rakam('15', 90) +
+        rakam('30', 180) +
+        rakam('45', 270) +
+        `<circle cx="${m}" cy="${m}" r="${r0 + cap * 0.004}" fill="#050505"/>` +
+        `</svg>`;
+    h += `<div style="position:absolute;inset:0;border-radius:50%;box-shadow:0 ${D * 0.09}px ${D * 0.2}px ${z.cihazGolge}">${svg}</div>`;
+    const kasa = (D - cap) / 2;
     h += `<div style="position:absolute;left:${kasa}px;top:${kasa}px;width:${cap}px;height:${cap}px;border-radius:50%;overflow:hidden;background:#000">${icerik}</div>`;
     // Cam yansimasi.
     h += `<div style="position:absolute;left:${kasa}px;top:${kasa}px;width:${cap}px;height:${cap}px;border-radius:50%;background:linear-gradient(140deg,rgba(255,255,255,0.10) 0%,rgba(255,255,255,0) 38%);pointer-events:none"></div>`;
@@ -574,7 +635,7 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
             alan += `<div style="position:absolute;${rx};top:${ust + (yuk - ust) * kare.rozet.y}px">${rozetHtml(kare.rozet, k, z)}</div>`;
         }
         const bilekEk = gorseller.find((x) => x !== g && (x.cihaz === 'appleWatch' || x.cihaz === 'wearYuvarlak'));
-        if (bilekEk) alan += `<div style="position:absolute;right:${40 * k}px;top:${yuk - 600 * k}px">${saatCiz(bilekEk, 470 * k, z, 0.55)}</div>`;
+        if (bilekEk) alan += `<div style="position:absolute;right:${(bilekEk.cihaz === 'wearYuvarlak' ? 18 : 40) * k}px;top:${yuk - (bilekEk.cihaz === 'wearYuvarlak' ? 560 : 600) * k}px">${saatCiz(bilekEk, 470 * k, z, 0.55)}</div>`;
         if (kare.bildirim) {
             const bg = 1120 * k;
             // Kart cihazin ust kenarindan biraz yukarida baslar: ekranin basligini TUMDEN
@@ -694,7 +755,7 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
             (kare.titresim === false ? '' : `<svg style="position:absolute;left:0;top:0" width="${gen}" height="${yuk}">${titresim}</svg>`) +
             (apple
                 ? `<div style="position:absolute;left:${merkezX - cap * 0.4}px;top:${ust + 140 * k}px">${appleSaat(s, cap * 0.72, s.boyut, z, 0.5)}</div>`
-                : `<div style="position:absolute;left:${merkezX - cap * 0.59}px;top:${ust}px">${s ? yuvarlakSaat(s, cap, z, 0.45) : ''}</div>`);
+                : `<div style="position:absolute;left:${merkezX - (cap * WEAR_DIS_ORAN) / 2}px;top:${ust}px">${s ? yuvarlakSaat(s, cap, z, 0.45) : ''}</div>`);
         if (kare.rozet) alan += `<div style="position:absolute;left:0;right:0;top:${yuk - 250 * k}px;text-align:center">${rozetHtml(kare.rozet, k, z)}</div>`;
     }
     return belge(gen, yuk, z, yay + metin + alan);
@@ -778,8 +839,10 @@ function saatKaresi(kare, b, gorseller, cihazTuru) {
             gen,
             yuk,
             z,
-            `<div style="position:absolute;left:${(gen - cap * 1.17) / 2}px;top:${yuk * 0.32}px">${g ? yuvarlakSaat(g, cap, z, 0.5) : ''}</div>` +
-                `<h1 style="position:absolute;left:${gen * 0.08}px;right:${gen * 0.08}px;top:${gen * 0.06}px;text-align:center;font-size:${gen * 0.068}px;line-height:1.12;text-shadow:0 0 ${gen * 0.02}px rgba(8,32,15,0.9)">${satirlar(kare.baslik)}</h1>`
+            // Klasik kasa disa buyudu (ekran ayni): saat yukari alinir, alt metin varsa basligin altina.
+            `<div style="position:absolute;left:${(gen - cap * WEAR_DIS_ORAN) / 2}px;top:${yuk * (kare.alt || kare.baslik.length > 24 ? 0.25 : 0.2)}px">${g ? yuvarlakSaat(g, cap, z, 0.5) : ''}</div>` +
+                `<h1 style="position:absolute;left:${gen * 0.08}px;right:${gen * 0.08}px;top:${gen * 0.05}px;text-align:center;font-size:${gen * 0.068}px;line-height:1.12;text-shadow:0 0 ${gen * 0.02}px rgba(8,32,15,0.9)">${satirlar(kare.baslik)}</h1>` +
+                (kare.alt ? `<p class="alt" style="position:absolute;left:${gen * 0.06}px;right:${gen * 0.06}px;top:${gen * 0.135}px;text-align:center;font-size:${gen * 0.034}px;line-height:1.25;text-shadow:0 0 ${gen * 0.02}px rgba(8,32,15,0.95)">${esc(kare.alt)}</p>` : '')
         );
     }
     const ekGen = 270 * k;
@@ -794,10 +857,72 @@ function saatKaresi(kare, b, gorseller, cihazTuru) {
     );
 }
 
+/**
+ * Karenin TEK anlatici ipucu: ince marka yesili ok/yay + 2-4 kelimelik etiket (istege bagli
+ * kucuk not). Koordinatlar tuvalin ORANIdir (0..1) → ayni tanim iPhone ve iPhone orta
+ * boyutunda calisir. Alanlar: metin, x, y (etiketin sol-ust kosesi; `sag: true` ise x sag
+ * kenar), not, ok: { bas:{x,y}, hedef:{x,y}, egri, cift }, yay: { cx, cy, r, a1, a2 }
+ * (r tuval genisligine oran; acilar derece, 0 = saat 12, saat yonunde), kesik: [[x1,y1,x2,y2]].
+ */
+function ipucuHtml(ip, gen, yuk, koyu = false) {
+    if (!ip) return '';
+    const fs = Math.max(13, Math.min(gen, yuk) * 0.031);
+    const cizgi = Math.max(2, fs * 0.1);
+    const renk = koyu ? MARKA.yesil : MARKA.koyu;
+    const P = (o) => ({ x: o.x * gen, y: o.y * yuk });
+    let svg = '';
+    const ucu = (x, y, aci) => {
+        const u = fs * 0.55;
+        const a1 = aci + Math.PI * 0.82;
+        const a2 = aci - Math.PI * 0.82;
+        return `<path d="M${x + Math.cos(a1) * u},${y + Math.sin(a1) * u} L${x},${y} L${x + Math.cos(a2) * u},${y + Math.sin(a2) * u}" fill="none" stroke="${renk}" stroke-width="${cizgi}" stroke-linecap="round" stroke-linejoin="round"/>`;
+    };
+    if (ip.ok) {
+        const a = P(ip.ok.bas);
+        const b = P(ip.ok.hedef);
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const egri = ip.ok.egri === undefined ? 0.25 : ip.ok.egri;
+        const cx = (a.x + b.x) / 2 - dy * egri;
+        const cy = (a.y + b.y) / 2 + dx * egri;
+        svg += `<path d="M${a.x},${a.y} Q${cx},${cy} ${b.x},${b.y}" fill="none" stroke="${renk}" stroke-width="${cizgi}" stroke-linecap="round"/>`;
+        svg += ucu(b.x, b.y, Math.atan2(b.y - cy, b.x - cx));
+        if (ip.ok.cift) svg += ucu(a.x, a.y, Math.atan2(a.y - cy, a.x - cx));
+        svg += `<circle cx="${b.x}" cy="${b.y}" r="${fs * 0.42}" fill="none" stroke="${renk}" stroke-width="${cizgi * 0.7}" opacity="0.55"/>`;
+    }
+    if (ip.yay) {
+        const { cx, cy, r, a1, a2 } = ip.yay;
+        const X = cx * gen;
+        const Y = cy * yuk;
+        const R = r * gen;
+        const nokta = (d) => {
+            const t = ((d - 90) * Math.PI) / 180;
+            return { x: X + Math.cos(t) * R, y: Y + Math.sin(t) * R, t };
+        };
+        const p1 = nokta(a1);
+        const p2 = nokta(a2);
+        svg += `<path d="M${p1.x},${p1.y} A${R},${R} 0 0 1 ${p2.x},${p2.y}" fill="none" stroke="${renk}" stroke-width="${cizgi * 1.2}" stroke-linecap="round"/>`;
+        svg += ucu(p2.x, p2.y, p2.t + Math.PI / 2) + ucu(p1.x, p1.y, p1.t - Math.PI / 2);
+    }
+    for (const [x1, y1, x2, y2] of ip.kesik || []) {
+        svg += `<line x1="${x1 * gen}" y1="${y1 * yuk}" x2="${x2 * gen}" y2="${y2 * yuk}" stroke="${renk}" stroke-width="${cizgi}" stroke-dasharray="${fs * 0.35} ${fs * 0.35}" stroke-linecap="round"/>`;
+    }
+    const yer = ip.sag ? `right:${(1 - ip.x) * gen}px` : ip.orta ? `left:${ip.x * gen}px;transform:translateX(-50%)` : `left:${ip.x * gen}px`;
+    const etiket =
+        `<div style="position:absolute;${yer};top:${ip.y * yuk}px;padding:${fs * 0.36}px ${fs * 0.62}px;border-radius:${fs}px;background:rgba(255,255,255,0.96);border:${cizgi * 0.8}px solid ${MARKA.yesil};` +
+        `box-shadow:0 ${fs * 0.3}px ${fs * 0.9}px rgba(18,48,27,0.18);color:#12301B;font-size:${fs}px;font-weight:700;line-height:1.15;white-space:nowrap;text-align:${ip.sag ? 'right' : 'left'}">${satirlar(ip.metin)}` +
+        (ip.not ? `<div style="margin-top:${fs * 0.12}px;font-size:${fs * 0.72}px;font-weight:500;color:#4A5F50">${esc(ip.not)}</div>` : '') +
+        `</div>`;
+    return `<svg style="position:absolute;left:0;top:0;overflow:visible;pointer-events:none;filter:drop-shadow(0 0 ${cizgi * 0.9}px rgba(255,255,255,0.95))" width="${gen}" height="${yuk}">${svg}</svg>${etiket}`;
+}
+
 function sayfaUret(kare, set, gorseller, ikonUrl) {
-    if (set.yon === 'dikey') return dikey(kare, { ...set.boyut, platform: set.platform }, gorseller, ikonUrl);
-    if (set.yon === 'yatay') return yatay(kare, set.boyut, gorseller, set.cihaz);
-    return saatKaresi(kare, set.boyut, gorseller, set.cihaz);
+    let html;
+    if (set.yon === 'dikey') html = dikey(kare, { ...set.boyut, platform: set.platform }, gorseller, ikonUrl);
+    else if (set.yon === 'yatay') html = yatay(kare, set.boyut, gorseller, set.cihaz);
+    else html = saatKaresi(kare, set.boyut, gorseller, set.cihaz);
+    if (!kare.ipucu) return html;
+    return html.replace('</body>', `${ipucuHtml(kare.ipucu, set.boyut.gen, set.boyut.yuk, (kare.zemin || '') === 'gece')}</body>`);
 }
 
 /** Play "one cikan gorsel" (1024x500). */
@@ -844,7 +969,7 @@ function metinOlcusu(set) {
         return { baslikPx: 118 * k, baslikGen: gen - 2 * 104 * k, altPx: 50 * k, altGen: Math.min(1060 * k, gen - 2 * 104 * k), altSatir: 2 };
     }
     if (set.yon === 'yatay') return yatayOlcu(set.boyut);
-    if (set.cihaz === 'wearYuvarlak') return { baslikPx: gen * 0.068, baslikGen: gen * 0.84, altPx: 0, altGen: 1, altSatir: 0 };
+    if (set.cihaz === 'wearYuvarlak') return { baslikPx: gen * 0.068, baslikGen: gen * 0.84, altPx: gen * 0.034, altGen: gen * 0.88, altSatir: 1 };
     const k = gen / 422;
     return { baslikPx: 30 * k, baslikGen: gen - 44 * k, altPx: 0, altGen: 1, altSatir: 0 };
 }

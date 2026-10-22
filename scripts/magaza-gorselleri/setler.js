@@ -190,14 +190,15 @@ const SETLER = {
         cihaz: 'iphone',
         yukleme: true,
         kareler: [
-            kare('01-muhafiz', ORTAK.muhafiz),
+            kare('01-muhafiz', ORTAK.muhafiz, { ipucu: { metin: 'Vakit daraldıkça sıklaşır', x: 0.06, y: 0.262, ok: { bas: { x: 0.48, y: 0.285 }, hedef: { x: 0.76, y: 0.55 }, egri: -0.2 } } }),
             // Alarm aninda saatte de "Kildim" (Apple Watch sessiz uyandirma ekrani).
             kare('02-sabah', ORTAK.sabah, {
+                ipucu: { metin: 'Her sabah\nvakte göre kayar', x: 0.985, y: 0.4, sag: true, ok: { bas: { x: 0.78, y: 0.39 }, hedef: { x: 0.6, y: 0.435 }, egri: 0.2 } },
                 dipnot: 'Gerçek alarm iOS 26 ve sonrasında çalar.',
                 katmanlar: [{ cihaz: 'appleWatch', kaynak: ['06-uyandirma-dolu.png'], yedekCizim: 'appleUyandirma' }],
                 iddialar: ['alarm', 'apple-watch-uyandirma'],
             }),
-            kare('03-takvim', ORTAK.takvim),
+            kare('03-takvim', ORTAK.takvim, { ipucu: { metin: 'Toplantı vakti yutuyor', x: 0.44, y: 0.5, ok: { bas: { x: 0.64, y: 0.535 }, hedef: { x: 0.62, y: 0.815 }, egri: 0.15 } } }),
             // iPhone'da sessize alma yalniz Odak ile: uygulama rehberle bir kez kurdurur.
             kare('04-camide', {
                 baslik: 'Camide telefonunuz\nçalmaz',
@@ -209,6 +210,7 @@ const SETLER = {
                 iddialar: ['ios-camide-odak'],
             }),
             kare('05-saat', {
+                ipucu: { metin: 'Bilekten işaretleyin', x: 0.06, y: 0.895, ok: { bas: { x: 0.37, y: 0.905 }, hedef: { x: 0.77, y: 0.725 }, egri: 0.25 } },
                 baslik: 'Telefon uzaktayken\nsaatiniz hatırlatır',
                 alt: 'Kalan süreyi bilekte görün, kıldığınızı oradan işaretleyin.',
                 zemin: 'gece',
@@ -237,6 +239,7 @@ const SETLER = {
                 iddialar: ['apple-watch-uyandirma'],
             }),
             kare('07-kible', {
+                ipucu: { metin: 'Yöne dönünce söyler', x: 0.06, y: 0.9, ok: { bas: { x: 0.42, y: 0.912 }, hedef: { x: 0.74, y: 0.715 }, egri: 0.25 } },
                 baslik: 'Kıbleyi anında\nbulun',
                 alt: 'Pusulada, kamerada ya da bilekte Kâbe yönü. İnternet gerekmez.',
                 zemin: 'acik',
@@ -250,8 +253,9 @@ const SETLER = {
                 gorunur: 0.72,
                 iddialar: ['kible', 'apple-watch-gosterim'],
             }),
-            kare('08-kaza', ORTAK.kaza),
+            kare('08-kaza', ORTAK.kaza, { ipucu: { metin: 'Kıldıkça düşer', x: 0.36, y: 0.505, ok: { bas: { x: 0.66, y: 0.53 }, hedef: { x: 0.73, y: 0.565 }, egri: -0.3 } } }),
             kare('09-cihazlar', {
+                ipucu: { metin: 'Birinde işaretleyin, hepsi bilir', x: 0.06, y: 0.905, kesik: [[0.25, 0.67, 0.75, 0.73], [0.25, 0.67, 0.62, 0.52], [0.25, 0.67, 0.4, 0.36]] },
                 baslik: 'Her cihazınızda',
                 alt: 'iPhone, iPad, saat ve televizyon kıldığınızı birbirine söyler.',
                 zemin: 'acik',
@@ -302,12 +306,14 @@ const SETLER = {
                 iddialar: ['ipad'],
             }),
             kare('02-muhafiz', {
+                ipucu: { metin: 'Vakit daraldıkça sıklaşır', x: 0.985, y: 0.88, sag: true, ok: { bas: { x: 0.8, y: 0.88 }, hedef: { x: 0.85, y: 0.78 }, egri: 0.3 } },
                 ...ORTAK.muhafiz,
                 bildirim: undefined,
                 kaynak: ['yatay-02-ayarlar.png'],
                 yakin: { x: 0.41, y: 0.25, w: 0.585, h: 0.45, genislik: 0.36, ust: 0.33 },
             }),
             kare('03-camide', {
+                ipucu: { metin: 'Bir kez kurulur', x: 0.985, y: 0.88, sag: true, ok: { bas: { x: 0.86, y: 0.88 }, hedef: { x: 0.85, y: 0.76 }, egri: 0.3 } },
                 baslik: 'Camide iPad\nçalmaz',
                 alt: 'Kısayollar ile bir kez kurun; camiye varınca Namaz odağı açılır.',
                 zemin: 'acik',
@@ -317,12 +323,13 @@ const SETLER = {
                 iddialar: ['ios-camide-odak'],
             }),
             kare('04-kaza', {
+                ipucu: { metin: 'Kıldıkça düşer', x: 0.03, y: 0.82, ok: { bas: { x: 0.2, y: 0.835 }, hedef: { x: 0.4, y: 0.58 }, egri: -0.25 } },
                 ...ORTAK.kaza,
                 alt: 'Kalan borç ve her hareketin geçmişi yan yana.',
                 kaynak: ['yatay-04-kaza.png'],
                 yakin: { x: 0.185, y: 0.075, w: 0.255, h: 0.22, genislik: 0.26, ust: 0.3, yer: 'sol' },
             }),
-            kare('05-seri', { ...ORTAK.seri, kaynak: ['yatay-05-ilerleme.png'] }),
+            kare('05-seri', { ...ORTAK.seri, kaynak: ['yatay-05-ilerleme.png'], ipucu: { metin: 'Her tam gün bir yıldız', x: 0.985, y: 0.8, sag: true, ok: { bas: { x: 0.74, y: 0.8 }, hedef: { x: 0.66, y: 0.62 }, egri: 0.25 } } }),
             kare('06-ev-ekrani', {
                 baslik: 'Evde vakit\npanosu',
                 alt: 'Ev ekranını açın; iPad yatay dururken vakitler büyük görünür.',
@@ -345,12 +352,13 @@ const SETLER = {
             kare('02-bugun', { baslik: 'Günün vakitleri\ntek bakışta', kaynak: ['02-bugun.png', '02-vakitler.png'], iddialar: ['apple-watch-gosterim'] }),
             kare('03-kilindi', { baslik: 'Kıldığınızı\nbilekten işaretleyin', kaynak: ['03-kilindi.png', '03-kildim-onayi.png'], iddialar: ['apple-watch-gosterim'] }),
             kare('04-uyandirma', {
+                ipucu: { metin: 'Yalnız titreşim', x: 0.5, y: 0.9, orta: true },
                 baslik: 'Yanınızdakini\nuyandırmadan',
                 katmanlar: [{ cihaz: 'appleWatch', kaynak: ['06-uyandirma-dolu.png'], yedekCizim: 'appleUyandirma' }],
                 iddialar: ['apple-watch-uyandirma'],
             }),
             kare('05-kible', { baslik: 'Kıble bileğinizde', kaynak: ['04-kible.png'], iddialar: ['apple-watch-gosterim'] }),
-            kare('06-tesbihat', { baslik: 'Tesbihatı\nbilekte sayın', kaynak: ['05-tesbihat.png', '04-tesbihat.png'], iddialar: ['apple-watch-gosterim'] }),
+            kare('06-tesbihat', { baslik: 'Tesbihatı\nbilekte sayın', kaynak: ['05-tesbihat.png', '04-tesbihat.png'], iddialar: ['apple-watch-gosterim'], ipucu: { metin: 'Taçla sayın', x: 0.99, y: 0.6, sag: true, ok: { bas: { x: 0.92, y: 0.6 }, hedef: { x: 0.9, y: 0.48 }, egri: 0.3 } } }),
         ],
     },
     'play-telefon': {
@@ -363,6 +371,7 @@ const SETLER = {
         yukleme: true,
         kareler: [
             kare('01-muhafiz', ORTAK.muhafiz, {
+                ipucu: { metin: 'Vakit daraldıkça sıklaşır', x: 0.08, y: 0.3, ok: { bas: { x: 0.5, y: 0.325 }, hedef: { x: 0.62, y: 0.612 }, egri: -0.2 } },
                 katmanlar: [
                     { cihaz: 'androidTelefon', kaynak: ORTAK.muhafiz.kaynak },
                     { cihaz: 'wearYuvarlak', kaynak: ['01-ana-ekran.png'] },
@@ -389,9 +398,10 @@ const SETLER = {
                 rozet: { ikon: 'ay', metin: 'Rahatsız Etmeyin açıldı', yer: 'sag', y: 0.5 },
                 iddialar: ['camideyim'],
             }),
-            kare('04-takvim', ORTAK.takvim),
+            kare('04-takvim', ORTAK.takvim, { ipucu: { metin: 'Toplantı vakti yutuyor', x: 0.42, y: 0.55, ok: { bas: { x: 0.62, y: 0.585 }, hedef: { x: 0.56, y: 0.825 }, egri: 0.15 } } }),
             // Kamerada zemine cizilen yol + titremeyen pusula, iki ekran yan yana.
             kare('05-kible', {
+                ipucu: { metin: 'Yol yere çizilir', x: 0.06, y: 0.33, ok: { bas: { x: 0.24, y: 0.36 }, hedef: { x: 0.3, y: 0.77 }, egri: 0.12 } },
                 baslik: 'Kıbleyi anında\nbulun',
                 alt: 'Kamerada yere çizilen yol sizi Kâbe yönüne götürür. İnternet gerekmez.',
                 zemin: 'acik',
@@ -405,11 +415,12 @@ const SETLER = {
                 ],
                 iddialar: ['kible'],
             }),
-            kare('06-kaza', ORTAK.kaza),
+            kare('06-kaza', ORTAK.kaza, { ipucu: { metin: 'Kıldıkça düşer', x: 0.38, y: 0.635, ok: { bas: { x: 0.64, y: 0.66 }, hedef: { x: 0.72, y: 0.69 }, egri: -0.3 } } }),
             // Katlanabilir: Fold tipi ic ekran (2208x1840) emulatorde GERCEK iki bolmeli duzen.
             // Flip masaustu postur emulatorde gosterilemedi (device_state HALF_OPENED olsa da
             // pencereye mentese ozelligi gelmiyor) → yalniz gercekten gorulen duzen.
             kare('07-katlanabilir', {
+                ipucu: { metin: 'Açınca iki bölme', x: 0.06, y: 0.88, ok: { bas: { x: 0.36, y: 0.9 }, hedef: { x: 0.4, y: 0.8 }, egri: 0.3 } },
                 baslik: 'Katlanabilir\ntelefonda da rahat',
                 alt: 'Açınca kalan süre ve günlük akış yan yana.',
                 zemin: 'acik',
@@ -423,6 +434,7 @@ const SETLER = {
                 iddialar: ['katlanabilir'],
             }),
             kare('08-cihazlar', {
+                ipucu: { metin: 'Birinde işaretleyin, hepsi bilir', x: 0.06, y: 0.274, kesik: [[0.25, 0.81, 0.74, 0.88], [0.25, 0.81, 0.7, 0.6], [0.25, 0.81, 0.24, 0.42]] },
                 baslik: 'Her cihazınızda',
                 alt: 'Telefon, tablet, saat ve televizyon kıldığınızı birbirine söyler.',
                 altTabletsiz: 'Telefon, saat ve televizyon kıldığınızı birbirine söyler.',
@@ -503,12 +515,14 @@ const SETLER = {
                 iddialar: ['tablet'],
             }),
             kare('02-muhafiz', {
+                ipucu: { metin: 'Vakit daraldıkça sıklaşır', x: 0.985, y: 0.85, sag: true, ok: { bas: { x: 0.84, y: 0.85 }, hedef: { x: 0.9, y: 0.6 }, egri: 0.3 } },
                 ...ORTAK.muhafiz,
                 bildirim: undefined,
                 kirpAlt: 0.075,
                 yakin: { x: 0.455, y: 0.19, w: 0.53, h: 0.52, genislik: 0.3, ust: 0.3 },
             }),
             kare('03-camide', {
+                ipucu: { metin: 'Girince sessize alır', x: 0.985, y: 0.85, sag: true, ok: { bas: { x: 0.84, y: 0.85 }, hedef: { x: 0.74, y: 0.6 }, egri: 0.3 } },
                 baslik: 'Camide tabletiniz\nçalmaz',
                 alt: 'Yakındaki camiler haritada; girince sessize geçer.',
                 zemin: 'acik',
@@ -518,12 +532,14 @@ const SETLER = {
                 iddialar: ['camideyim', 'tablet'],
             }),
             kare('04-kaza', {
+                ipucu: { metin: 'Kıldıkça düşer', x: 0.03, y: 0.82, ok: { bas: { x: 0.2, y: 0.835 }, hedef: { x: 0.41, y: 0.6 }, egri: -0.25 } },
                 ...ORTAK.kaza,
                 alt: 'Kalan borç ve her hareketin geçmişi yan yana.',
                 kirpAlt: 0.075,
                 yakin: { x: 0.165, y: 0.12, w: 0.28, h: 0.24, genislik: 0.27, ust: 0.3, yer: 'sol' },
             }),
             kare('05-vakit-sesi', {
+                ipucu: { metin: 'Kendi kaydınızı seçin', x: 0.985, y: 0.85, sag: true, ok: { bas: { x: 0.82, y: 0.85 }, hedef: { x: 0.72, y: 0.6 }, egri: 0.3 } },
                 baslik: 'Vakit girince\nkendi sesiniz',
                 alt: 'Her vakte ayrı ses seçin; dilerseniz kendi kaydınızı.',
                 zemin: 'acik',
@@ -535,6 +551,7 @@ const SETLER = {
             }),
             // Ana ekrandaki gece zinciri: teheccud satiri cagri kutusunda buyutulur.
             kare('06-gece', {
+                ipucu: { metin: 'Vakti girince hatırlatır', x: 0.03, y: 0.62, ok: { bas: { x: 0.3, y: 0.65 }, hedef: { x: 0.6, y: 0.76 }, egri: -0.2 } },
                 ...ORTAK.nafile,
                 rozet: undefined,
                 kaynak: ['02-ana-nafile-zinciri.png'],
@@ -582,6 +599,7 @@ const SETLER = {
                 iddialar: ['tv', 'tv-kilindi'],
             }),
             kare('04-ramazan', {
+                ipucu: { metin: 'Ramazanda kendiliğinden', x: 0.03, y: 0.925, ok: { bas: { x: 0.22, y: 0.925 }, hedef: { x: 0.24, y: 0.7 }, egri: 0.2 } },
                 baslik: 'Ramazanda iftara\nkalan süre',
                 alt: 'Sahur ve iftar sayacı panoda kendiliğinden belirir.',
                 zemin: 'gece',
@@ -612,6 +630,7 @@ const SETLER = {
         kareler: [
             kare('01-siradaki', { baslik: 'Sıradaki vakit bileğinizde', zemin: 'gece', kaynak: ['01-ana-ekran.png'], iddialar: ['wear-gosterim'] }),
             kare('02-uyandirma', {
+                ipucu: { metin: 'Yalnız titreşim', x: 0.5, y: 0.93, orta: true },
                 baslik: 'Yanınızdakini uyandırmadan',
                 zemin: 'gece',
                 katmanlar: [{ cihaz: 'wearYuvarlak', kaynak: ['10-uyandirma.png'], yedekCizim: 'uyandirma' }],
@@ -619,7 +638,15 @@ const SETLER = {
             }),
             kare('03-telefonsuz', { baslik: 'Telefon uzaktayken de hatırlatır', zemin: 'gece', kaynak: ['05-tile-bugun.png', '01-ana-ekran.png'], iddialar: ['wear-bagimsiz'] }),
             kare('04-kible', { baslik: 'Kıble bileğinizde', zemin: 'gece', kaynak: ['08-kible.png'], iddialar: ['wear-kible'] }),
-            kare('05-tesbihat', { baslik: 'Tesbihatı bilekte sayın', zemin: 'gece', kaynak: ['04-tesbihat.png'], iddialar: ['wear-gosterim'] }),
+            kare('05-tesbihat', {
+                baslik: 'Tesbihatı bilekte sayın',
+                alt: 'Dokunarak, taçla ya da döner çerçeveyle sayın.',
+                zemin: 'gece',
+                kaynak: ['04-tesbihat.png'],
+                // Saat taç ve doner cerceve (rotary) donusunu sayar: TacBiriktirici (Tesbihat.kt).
+                ipucu: { metin: 'Çerçeveyi çevirin,\nsayılsın', not: 'Döner çerçeveli saatlerde', x: 0.985, y: 0.225, sag: true, yay: { cx: 0.5, cy: 0.622, r: 0.39, a1: 50, a2: 98 } },
+                iddialar: ['wear-gosterim'],
+            }),
         ],
     },
     // GELECEK: Apple TV hedefi (withNamazTV) etkin olunca. Ham kare Android TV ile ayni

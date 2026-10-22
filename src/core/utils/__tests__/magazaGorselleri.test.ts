@@ -24,6 +24,7 @@ type Kare = {
     dipnot?: string;
     iddialar: string[];
     rozet?: { ikon: string; metin: string };
+    ipucu?: { metin: string; not?: string; x: number; y: number };
     bildirim?: { baslik: string; govde: string };
     maddeler?: { ikon: string; metin: string }[];
     katmanlar?: { cihaz: string; kaynak: string[] }[];
@@ -44,7 +45,7 @@ type Set = {
 
 const setler = Object.entries(SETLER) as [string, Set][];
 const metinleri = (k: Kare) =>
-    [k.baslik, k.alt, k.altTabletsiz, k.dipnot, k.rozet?.metin, k.bildirim?.baslik, k.bildirim?.govde, ...(k.maddeler || []).map((m) => m.metin)].filter(
+    [k.baslik, k.alt, k.altTabletsiz, k.dipnot, k.rozet?.metin, k.ipucu?.metin, k.ipucu?.not, k.bildirim?.baslik, k.bildirim?.govde, ...(k.maddeler || []).map((m) => m.metin)].filter(
         Boolean
     ) as string[];
 const app = JSON.parse(fs.readFileSync(path.join(KOK, 'app.json'), 'utf8'));
@@ -184,7 +185,22 @@ describe('magaza pazarlama gorselleri — DOGRULUK (platform suzgeci)', () => {
 
     it('kibar "siz": arayuz metninde "sen" kipi yok (bildirim ornegi haric)', () => {
         for (const [, s] of setler)
-            for (const k of s.kareler) for (const m of [k.baslik, k.alt, k.dipnot].filter(Boolean) as string[]) expect(m).not.toMatch(/\b(sen|senin|sana)\b/i);
+            for (const k of s.kareler)
+                for (const m of [k.baslik, k.alt, k.dipnot, k.ipucu?.metin, k.ipucu?.not].filter(Boolean) as string[]) expect(m).not.toMatch(/\b(sen|senin|sana)\b/i);
+    });
+
+    it('kare basina EN FAZLA bir anlatici ipucu: kisa etiket, tuval icinde, rozetle birlikte degil', () => {
+        let sayi = 0;
+        for (const [ad, s] of setler)
+            for (const k of s.kareler) {
+                if (!k.ipucu) continue;
+                sayi++;
+                expect({ ad, kare: k.ad, rozetDe: Boolean(k.rozet) }).toEqual({ ad, kare: k.ad, rozetDe: false });
+                const kelime = k.ipucu.metin.split(/\s+/).filter(Boolean).length;
+                expect({ kare: k.ad, kisa: kelime >= 2 && kelime <= 5 }).toEqual({ kare: k.ad, kisa: true });
+                for (const v of [k.ipucu.x, k.ipucu.y]) expect(v >= 0 && v <= 1).toBe(true);
+            }
+        expect(sayi).toBeGreaterThan(20);
     });
 
     it('telefon/iPad setlerinin eski --platform adlari dogru sete gider', () => {
