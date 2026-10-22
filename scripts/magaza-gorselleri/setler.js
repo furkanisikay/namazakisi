@@ -369,7 +369,14 @@ const SETLER = {
                 ],
                 iddialar: ['muhafiz', 'wear-gosterim'],
             }),
-            kare('02-sabah', ORTAK.sabah),
+            // Sabah alarmi + bilekte ayni alarm (Wear sessiz uyandirma ekrani, GERCEK kare).
+            kare('02-sabah', ORTAK.sabah, {
+                alt: 'Alarm her sabah vakte göre kurulur; isterseniz yalnız bileğiniz titrer.',
+                dipnot: 'Wear OS saat gerekir.',
+                katmanlar: [{ cihaz: 'wearYuvarlak', kaynak: ['10-uyandirma.png'], yedekCizim: 'uyandirma' }],
+                rozet: { ikon: 'titresim', metin: 'Yalnız titreşim', yer: 'sol', y: 0.8 },
+                iddialar: ['alarm', 'wear-uyandirma'],
+            }),
             kare('03-camide', {
                 baslik: 'Camide telefonunuz\nçalmaz',
                 alt: 'Camiye girince sessize geçer, çıkınca eski hâline döner.',
@@ -398,32 +405,22 @@ const SETLER = {
                 ],
                 iddialar: ['kible'],
             }),
+            kare('06-kaza', ORTAK.kaza),
             // Katlanabilir: Fold tipi ic ekran (2208x1840) emulatorde GERCEK iki bolmeli duzen.
             // Flip masaustu postur emulatorde gosterilemedi (device_state HALF_OPENED olsa da
             // pencereye mentese ozelligi gelmiyor) → yalniz gercekten gorulen duzen.
-            kare('06-katlanabilir', {
+            kare('07-katlanabilir', {
                 baslik: 'Katlanabilir\ntelefonda da rahat',
                 alt: 'Açınca kalan süre ve günlük akış yan yana.',
                 zemin: 'acik',
                 vakit: 2,
                 yerlesim: 'katlanabilir',
-                katmanlar: [{ cihaz: 'fold', kaynak: ['01-ana-ekran.png'] }],
-                iddialar: ['katlanabilir'],
-            }),
-            // Telefon + saat birlikte: telefon uzakta ya da sessizde, saat bilekte titrer.
-            kare('07-bilek', {
-                baslik: 'Bilekte sessiz\nuyandırma',
-                alt: 'Sabah alarmı yalnız bileğinizi titretir, yanınızdakini uyandırmaz.',
-                dipnot: 'Wear OS saat gerekir.',
-                zemin: 'gece',
-                vakit: 0,
-                yerlesim: 'saat',
                 katmanlar: [
-                    { cihaz: 'wearYuvarlak', kaynak: ['10-uyandirma.png'], yedekCizim: 'uyandirma' },
-                    { cihaz: 'androidTelefon', kaynak: ['01-ana-ekran.png'] },
+                    { cihaz: 'fold', kaynak: ['01-ana-ekran.png'] },
+                    // Kapali hali (dar dis ekran): ayni kosunun dar katlanabilir karesi, yoksa telefon.
+                    { cihaz: 'flip', kaynak: ['46b-katlanabilir-acik.png'] },
                 ],
-                rozet: { ikon: 'titresim', metin: 'Yalnız titreşim', yer: 'sol', y: 0.8 },
-                iddialar: ['wear-uyandirma'],
+                iddialar: ['katlanabilir'],
             }),
             kare('08-cihazlar', {
                 baslik: 'Her cihazınızda',
@@ -442,8 +439,7 @@ const SETLER = {
             }),
             // Play telefon galerisi en fazla 8 kare: gerisi uretilir, yuklenmez.
             kare('09-gizlilik', ORTAK.gizlilik, { magazaDisi: true }),
-            // Kaza tablet setinde (04-kaza) duruyor; telefon galerisinde yerini katlanabilir aldi.
-            kare('09-kaza', ORTAK.kaza, { magazaDisi: true }),
+
             kare('10-vakit-sesi', {
                 baslik: 'Vakit girince\nkendi sesiniz',
                 alt: 'Her vakte ayrı ses seçin; dilerseniz kendi kaydınızı.',
@@ -468,6 +464,22 @@ const SETLER = {
                 ],
                 kaynak: ['01-ana-ekran.png'],
                 iddialar: ['android-auto'],
+            }),
+            // Eski ayri bilek karesi: artik 02-sabah icinde; uretilir, yuklenmez.
+            kare('13-bilek', {
+                magazaDisi: true,
+                baslik: 'Bilekte sessiz\nuyandırma',
+                alt: 'Sabah alarmı yalnız bileğinizi titretir, yanınızdakini uyandırmaz.',
+                dipnot: 'Wear OS saat gerekir.',
+                zemin: 'gece',
+                vakit: 0,
+                yerlesim: 'saat',
+                katmanlar: [
+                    { cihaz: 'wearYuvarlak', kaynak: ['10-uyandirma.png'], yedekCizim: 'uyandirma' },
+                    { cihaz: 'androidTelefon', kaynak: ['01-ana-ekran.png'] },
+                ],
+                rozet: { ikon: 'titresim', metin: 'Yalnız titreşim', yer: 'sol', y: 0.8 },
+                iddialar: ['wear-uyandirma'],
             }),
         ],
     },

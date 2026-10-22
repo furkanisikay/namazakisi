@@ -300,7 +300,8 @@ describe('magaza pazarlama gorselleri — ham kare secimi', () => {
     it('saatlerin uyandirma ekrani ham kare yoksa GERCEK metinle cizilir (Wear + Apple Watch)', () => {
         const dizin = pngleriTara([kok]);
         for (const [set, ad] of [
-            ['play-telefon', '07-bilek'],
+            ['play-telefon', '02-sabah'],
+            ['play-telefon', '13-bilek'],
             ['iphone', '06-bilek'],
             ['apple-watch', '04-uyandirma'],
         ]) {

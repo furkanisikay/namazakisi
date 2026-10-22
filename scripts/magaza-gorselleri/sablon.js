@@ -446,6 +446,30 @@ function belge(gen, yuk, z, govde, ekStil = '') {
 }
 
 /**
+ * Kitap gibi acilan katlanabilir (Fold): ic ekran karesi menteseden ikiye bolunur, iki yari
+ * hafif acili cizilir (CSS 3B), ortada mentese seridi. Ekran icerigi degismez.
+ */
+function foldKitap(g, gen, k, z, kirp = 0) {
+    const cerc = 16 * k;
+    const yariGen = gen / 2;
+    const ekranGen = gen - cerc * 2;
+    const ekranYuk = ekranGen * ((g.boyut.yuk * (1 - kirp)) / g.boyut.gen);
+    const yari = (sol) =>
+        `<div style="position:relative;width:${yariGen}px;height:${ekranYuk + cerc * 2}px;background:linear-gradient(${sol ? '90deg' : '270deg'},#1C1D21,#0E0F11);` +
+        `border-radius:${sol ? `${40 * k}px 6px 6px ${40 * k}px` : `6px ${40 * k}px ${40 * k}px 6px`};transform-origin:${sol ? 'right' : 'left'} center;transform:rotateY(${sol ? 14 : -14}deg)">` +
+        `<div style="position:absolute;${sol ? `left:${cerc}px` : 'left:0'};top:${cerc}px;width:${yariGen - cerc}px;height:${ekranYuk}px;overflow:hidden;border-radius:${sol ? `${26 * k}px 0 0 ${26 * k}px` : `0 ${26 * k}px ${26 * k}px 0`};background:#000">` +
+        `<img src="${g.url}" style="position:absolute;top:0;left:${sol ? 0 : -(yariGen - cerc)}px;width:${ekranGen}px;display:block">` +
+        `<div style="position:absolute;inset:0;background:linear-gradient(${sol ? '90deg' : '270deg'},rgba(0,0,0,0) 70%,rgba(0,0,0,0.18) 100%)"></div></div></div>`;
+    return (
+        `<div style="position:relative;display:flex;perspective:${2600 * k}px;filter:drop-shadow(0 ${40 * k}px ${60 * k}px ${z.cihazGolge})">` +
+        yari(true) +
+        `<div style="position:absolute;left:${yariGen - 2 * k}px;top:${cerc * 0.4}px;width:${4 * k}px;height:${ekranYuk + cerc * 1.2}px;border-radius:${2 * k}px;background:linear-gradient(90deg,rgba(0,0,0,0.5),rgba(255,255,255,0.3) 50%,rgba(0,0,0,0.5));z-index:2"></div>` +
+        yari(false) +
+        `</div>`
+    );
+}
+
+/**
  * Flip (dikey katlanan) telefon masaustu postürde: ust yari dik, alt yari masaya yatik
  * (CSS 3B). Ekran goruntusu GERCEK emulator karesidir (yari acik postür), yalniz mentese
  * cizgisinden ikiye bolunup egilir. `gen` = govde genisligi.
@@ -574,26 +598,23 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
         alan += `<div style="position:absolute;left:${90 * k}px;top:${cihazUst}px">${cerceve('telefon', { html: alarmEkrani(kare.alarm, platform, ekranGen) }, buyukGen, k, z, { boyut, yaricap: platform === 'ios' ? 96 * k : 60 * k })}</div>`;
         const bilek = gorseller.find((g) => g.cihaz === 'appleWatch' || g.cihaz === 'wearYuvarlak');
         const kucuk = gorseller.find((g) => g.cihaz === 'iphone' || g.cihaz === 'androidTelefon');
-        if (bilek) alan += `<div style="position:absolute;right:${40 * k}px;top:${cihazUst + 900 * k}px">${saatCiz(bilek, 520 * k, z, 0.9)}</div>`;
+        // Rozet varsa saat yukari alinir, rozet saatin altinda sag alt koseye oturur.
+        const saatUst = cihazUst + (kare.rozet ? 560 : 900) * k;
+        if (bilek) alan += `<div style="position:absolute;right:${40 * k}px;top:${saatUst}px">${saatCiz(bilek, 520 * k, z, 0.9)}</div>`;
         else if (kucuk)
             alan += `<div style="position:absolute;right:${70 * k}px;top:${cihazUst + 260 * k}px">${cerceve('telefon', kucuk.url, 440 * k, k, z, { boyut: kucuk.boyut, yaricap: kucuk.cihaz === 'androidTelefon' ? 40 * k : 60 * k })}</div>`;
+        if (kare.rozet) alan += `<div style="position:absolute;right:${40 * k}px;top:${yuk - 200 * k}px">${rozetHtml(kare.rozet, k * 0.85, z)}</div>`;
     } else if (yer === 'katlanabilir') {
-        // Fold (acik, iki bolme) arkada ustte; Flip (yari acik, masaustu) onde altta.
+        // Acik kitap formunda Fold (ic ekran GERCEK kare, ortadan iki yariya bolunup hafif
+        // acili) + yaninda kapali hali (dar dis ekran: uygulamanin telefon karesi, gercek).
         const fold = gorseller.find((x) => x.cihaz === 'fold');
-        const flip = gorseller.find((x) => x.cihaz === 'flip');
+        const dis = gorseller.find((x) => x.cihaz === 'flip') || gorseller.find((x) => x.cihaz === 'androidTelefon');
         if (fold) {
-            // Kitap gibi acilan telefon: ince cerceve + ortada mentese golgesi. Alt kenardaki
-            // sistem gorev cubugu (baska uygulama simgeleri) kirpilir.
-            const fg = (flip ? 1000 : 1240) * k;
-            const fx = flip ? 60 * k : (gen - fg) / 2;
-            const fy = cihazUst + (flip ? 20 : 300) * k;
-            const kirp = fold.kirpAlt ?? 0.09;
-            const ekranYuk = (fg - 44 * k) * ((fold.boyut.yuk * (1 - kirp)) / fold.boyut.gen);
-            alan +=
-                `<div style="position:absolute;left:${fx}px;top:${fy}px">${cerceve('tablet', fold.url, fg, k, z, { boyut: fold.boyut, kirpAlt: kirp })}` +
-                `<div style="position:absolute;left:${fg / 2 - 10 * k}px;top:${22 * k}px;width:${20 * k}px;height:${ekranYuk}px;background:linear-gradient(90deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.10) 45%,rgba(255,255,255,0.12) 55%,rgba(0,0,0,0) 100%)"></div></div>`;
+            const fg = 1000 * k;
+            const kirp = 0.09;
+            alan += `<div style="position:absolute;left:${30 * k}px;top:${cihazUst + 420 * k}px">${foldKitap(fold, fg, k, z, kirp)}</div>`;
         }
-        if (flip) alan += `<div style="position:absolute;right:${80 * k}px;top:${cihazUst + (fold ? 640 : 120) * k}px">${flipMasaustu(flip, 560 * k, k, z)}</div>`;
+        if (dis) alan += `<div style="position:absolute;right:${40 * k}px;top:${cihazUst - 20 * k}px;transform:rotate(5deg)">${cerceve('telefon', dis.url, 330 * k, k, z, { boyut: dis.boyut, yaricap: 40 * k })}</div>`;
     } else if (yer === 'telefonSaat') {
         const tel = gorseller.find((g) => g.cihaz === 'iphone' || g.cihaz === 'androidTelefon');
         const saat = gorseller.find((g) => g.cihaz === 'appleWatch');

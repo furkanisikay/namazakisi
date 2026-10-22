@@ -282,7 +282,7 @@ adb shell settings put global transition_animation_scale 0 || true
 # --- 10: sessiz uyandirma ekrani (magaza gorseli "Bilekte sessiz uyandirma") ---
 # EN SONDA: saat degistirilir. `UyandirmaAktivite` disa kapali (exported=false) → kabuk
 # onu ancak adbd root iken baslatabilir; kayit tohum yukunde (`uyandirma`, ani dunde →
-# zincir calmaz). Metin "Sabah · 25 dk kaldi" oldugu icin saat 06:26'ya alinir (gercek
+# zincir calmaz). Metin "Sabah · 25 dk kaldi" oldugu icin saat 06:51'e alinir (telefonun alarm karesi ve vakit sonu 07:16 ile ayni an; gercek
 # saat 17:43 gibi bir an gosterip metinle celisiyordu). Olmazsa kare UYARI ile atlanir;
 # pazarlama gorseli o zaman ekranin cizimine duser (scripts/magaza-gorselleri).
 adb root >/dev/null 2>&1 || true
@@ -291,10 +291,10 @@ sleep 2
 adb shell am force-stop "$PAKET"
 adb shell settings put global auto_time 0 || true
 GUN="$(adb shell date +%m%d%Y | tr -d '\r')"
-if [ ${#GUN} -eq 8 ] && adb shell date "${GUN:0:4}0626${GUN:4:4}.00" >/dev/null 2>&1; then
+if [ ${#GUN} -eq 8 ] && adb shell date "${GUN:0:4}0651${GUN:4:4}.00" >/dev/null 2>&1; then
   echo "saat: $(adb shell date +%H:%M | tr -d '\r')"
 else
-  echo "UYARI: saat 06:26'ya alinamadi (root yok?)"
+  echo "UYARI: saat 06:51'e alinamadi (root yok?)"
 fi
 if adb shell am start -W -n "$PAKET/$SINIF.ui.UyandirmaAktivite" --es id magaza_karesi_uyandirma 2>&1 | grep -q 'Error\|Exception'; then
   echo "UYARI: 10-uyandirma ekrani baslatilamadi (root yok?) — kare atlandi"
