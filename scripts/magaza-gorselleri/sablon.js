@@ -542,7 +542,7 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
                 : '';
         alan =
             liste +
-            `<div style="position:absolute;left:${(gen - cihazGen) / 2 - (gorseller.some((x) => x !== g && (x.cihaz === 'appleWatch' || x.cihaz === 'wearYuvarlak')) ? 190 * k : 0)}px;top:${ust}px;${maske}">` +
+            `<div style="position:absolute;left:${(gen - cihazGen) / 2 - (gorseller.some((x) => x !== g && (x.cihaz === 'appleWatch' || x.cihaz === 'wearYuvarlak')) ? 110 * k : 0)}px;top:${ust}px;${maske}">` +
             (g ? cerceve('telefon', g.url, cihazGen, k, z, { boyut: g.boyut, kirpAlt: kare.kirpAlt, yaricap: g.cihaz === 'androidTelefon' ? 60 * k : undefined }) : '') +
             `</div>`;
         if (kare.rozet) {
@@ -673,7 +673,7 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
             (kare.titresim === false ? '' : `<svg style="position:absolute;left:0;top:0" width="${gen}" height="${yuk}">${titresim}</svg>`) +
             (apple
                 ? `<div style="position:absolute;left:${merkezX - cap * 0.4}px;top:${ust + 140 * k}px">${appleSaat(s, cap * 0.72, s.boyut, z, 0.5)}</div>`
-                : `<div style="position:absolute;left:${merkezX - cap * 0.59}px;top:${ust}px">${s ? yuvarlakSaat(s, cap, z, 0.9) : ''}</div>`);
+                : `<div style="position:absolute;left:${merkezX - cap * 0.59}px;top:${ust}px">${s ? yuvarlakSaat(s, cap, z, 0.45) : ''}</div>`);
         if (kare.rozet) alan += `<div style="position:absolute;left:0;right:0;top:${yuk - 250 * k}px;text-align:center">${rozetHtml(kare.rozet, k, z)}</div>`;
     }
     return belge(gen, yuk, z, yay + metin + alan);
