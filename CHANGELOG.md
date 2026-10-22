@@ -5,6 +5,19 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.62.0] - 2026-10-22
+
+### Eklendi
+- [kible] kameralı kıblede yerdeki yol ve ∞ kalibrasyon rehberi
+
+### Düzeltildi
+- [kible,ilerleme] mesafe etiketi tek satır, rehber açıkken ipucu satırı gizli, parıltı donanım katmanında
+- [kible] Kâbe işaretinin titremesini gider — füzyonlu yerçekimi + jiroskop destekli One Euro süzgeci
+
+### Değiştirildi
+- [ilerleme] nabız ve parıltı sonlu, kaydırmada durur; AR yolu şerit + çevron
+- [ilerleme] gök panelindeki nabzı Svg dışına taşı, kaydırma takılmasını gider
+
 ## [0.61.0] - 2026-10-21
 
 ### Eklendi
