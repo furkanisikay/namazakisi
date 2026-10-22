@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { Text, TouchableOpacity, View, type LayoutChangeEvent } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { haritaYerlesimi, HARITA } from '../../../core/cihazAgi/bagHaritasi';
