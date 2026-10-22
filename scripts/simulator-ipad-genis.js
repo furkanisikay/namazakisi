@@ -98,12 +98,19 @@ function ekranBoyutunuOku(ogeler) {
 }
 
 /** Kalıba uyan öğeye basar; `dogrula()` true dönene kadar döndürülmüş adayları dener. */
-async function bas(kalip, dogrula, ad) {
+async function bas(kalip, dogrula, ad, yedek) {
     const ogeler = await agacDolu();
     ekranBoyutunuOku(ogeler);
     const o = bul(ogeler, kalip);
     if (!o) {
-        console.error(`  UYARI: "${ad}" bulunamadı`);
+        console.error(`  UYARI: "${ad}" bulunamadı${yedek ? ' — yedek koordinat' : ''}`);
+        // Teşhis: ağaç artifact'a (RN Modal ayrı pencerede, ağaca girmeyebilir).
+        fs.writeFileSync(path.join(CIKIS, `agac-${ad.replace(/\W+/g, '_')}.json`), JSON.stringify(ogeler, null, 1));
+        if (yedek) {
+            idb('ui', 'tap', String(yedek[0]), String(yedek[1]));
+            await bekle(2500);
+            return dogrula();
+        }
         return false;
     }
     const c = cerceve(o);
@@ -183,7 +190,7 @@ async function rolKareleri() {
     await yenidenAc();
     kare('dikey-06-rol-sorusu');
     const soru = /Bu cihaz sizin ana telefonunuz mu/;
-    await bas(/^Hayır, bu ikinci cihaz$/, async () => !bul(await agacDolu(1), soru), 'İkinci cihaz düğmesi');
+    await bas(/^Hayır, bu ikinci cihaz$/, async () => !bul(await agacDolu(1), soru), 'İkinci cihaz düğmesi', [516, 748]);
     await bekle(3000);
     await ac('namazakisi://ayarlar');
     kare('dikey-07-ayarlar-bu-cihazda-kur');
@@ -194,15 +201,15 @@ async function rolKareleri() {
     });
     await yenidenAc();
     const adimlar = [
-        [/^Başlayın$/, 'Başlayın'],
-        [/^Konumumu (kullanın|bulun)$/, 'Konum'],
-        [/^Devam edin$/, 'Konum devam'],
-        [/^(Devam edin|Şimdilik geçin)$/, 'Bildirim'],
+        [/Başlayın$/, 'Başlayın'],
+        [/Konumumu (kullanın|bulun)$/, 'Konum'],
+        [/Devam edin$/, 'Konum devam'],
+        [/(Devam edin|Şimdilik geçin)$/, 'Bildirim'],
     ];
     for (const [kalip, ad] of adimlar) {
         // Kart göründüyse dur: düzey adımının "Devam edin"i kareyi atlatırdı.
         if (bul(await agacDolu(), soru)) break;
-        await bas(kalip, async () => true, ad);
+        await bas(kalip, async () => true, ad, ad === 'Başlayın' ? [516, 1312] : undefined);
         await bekle(4000);
     }
     kare('dikey-08-sihirbaz-ana-cihaz');
