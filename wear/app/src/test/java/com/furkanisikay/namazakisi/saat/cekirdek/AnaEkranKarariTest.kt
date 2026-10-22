@@ -97,6 +97,9 @@ class AnaEkranKarariTest {
         // scripts/saat-kare-hatti.sh bu kalıpları arar.
         assertEquals("Öğle vaktini kıldım olarak işaretleyin", AnaEkranKarari.dugmeAciklamasi("Öğle"))
         assertEquals("İkindi namazını kıldınız mı?", AnaEkranKarari.onaySorusu("İkindi"))
+        // Ekrandaki iki satır birleşince TalkBack metniyle aynı soru olmalı.
+        val (ilk, ikinci) = AnaEkranKarari.onaySorusuSatirlari("İkindi")
+        assertEquals(AnaEkranKarari.onaySorusu("İkindi"), "$ilk $ikinci")
     }
 
     @Test

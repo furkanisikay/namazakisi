@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -176,17 +177,37 @@ fun KildimOnayi(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(start = 30.dp, end = 30.dp, bottom = 56.dp),
+            // Güvenli sütun: yuvarlak ekranda soru tek satıra yayılıp dairenin kenarında
+            // kırpılıyordu, kare ekranda tepedeki yaya değiyordu. Soru İKİ sabit satırdır
+            // ("Öğle namazını" / "kıldınız mı?"), her satır kendini sütuna sığdırır.
+            // Kare saatte yay ekranın kenarına yakın: soru biraz aşağıda ve daha dar sütunda
+            // durmazsa ilk satır tepedeki yaya değiyordu (kare koşusunda görüldü).
+            modifier = Modifier
+                .fillMaxWidth(guvenliGenislikOrani(yuvarlakOran = 0.66f, kareOran = 0.42f))
+                .padding(bottom = if (LocalConfiguration.current.isScreenRound) 50.dp else 22.dp),
         ) {
-            Text(
-                if (reddedildi) AnaEkranKarari.VAKIT_DEGISTI else AnaEkranKarari.onaySorusu(ad),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-                color = renk(SaatPaleti.METIN),
-                // Ret metni ekran okuyucuya kendiliğinden okunur.
-                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
-            )
+            if (reddedildi) {
+                Text(
+                    AnaEkranKarari.VAKIT_DEGISTI,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    color = renk(SaatPaleti.METIN),
+                    maxLines = 2,
+                    // Ret metni ekran okuyucuya kendiliğinden okunur.
+                    modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+                )
+            } else {
+                val (ilk, ikinci) = AnaEkranKarari.onaySorusuSatirlari(ad)
+                val boy = MaterialTheme.typography.titleMedium.fontSize
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clearAndSetSemantics { contentDescription = AnaEkranKarari.onaySorusu(ad) },
+                ) {
+                    SigdirilanMetin(ilk, enFazla = boy, renk = renk(SaatPaleti.METIN), agirlik = FontWeight.SemiBold, modifier = Modifier.fillMaxWidth())
+                    SigdirilanMetin(ikinci, enFazla = boy, renk = renk(SaatPaleti.METIN), agirlik = FontWeight.SemiBold, modifier = Modifier.fillMaxWidth())
+                }
+            }
             if (kerahat && !reddedildi) {
                 Text(
                     "Kerahat vaktindesiniz.",

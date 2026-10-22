@@ -99,15 +99,21 @@ fun VakitSatiri(
             Text(satir.ad, style = MaterialTheme.typography.titleSmall, color = yazi, maxLines = 1)
             val alt = when {
                 satir.esitleniyor -> "eşitleniyor"
-                aktif && kalanMetni != null -> "$kalanMetni kaldı"
+                // "kaldı" eki kare ekranda "2 sa 41 dk"yı "2 sa 41"e kesiyordu; süre tek başına okunur.
+                aktif && kalanMetni != null -> kalanMetni
                 else -> null
             }
             if (alt != null) {
-                Text(
+                // Kare saatte büyük yazı ölçeğinde "2 sa 2 dk" "2 sa"ya kesiliyordu: satır
+                // kendini sütuna sığdırır (kesilmez, küçülür).
+                SigdirilanMetin(
                     alt,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = if (aktif) vakitRengi else renk(SaatPaleti.METIN2),
-                    maxLines = 1,
+                    enFazla = MaterialTheme.typography.labelSmall.fontSize,
+                    renk = if (aktif) vakitRengi else renk(SaatPaleti.METIN2),
+                    modifier = Modifier.fillMaxWidth(),
+                    agirlik = FontWeight.Normal,
+                    ortala = false,
+                    stil = MaterialTheme.typography.labelSmall,
                 )
             }
         }

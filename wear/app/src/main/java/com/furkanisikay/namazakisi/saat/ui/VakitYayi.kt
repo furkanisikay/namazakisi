@@ -357,3 +357,54 @@ private fun GunNoktalari(haller: List<GunDurumu.Hal>, aktif: Int?, aktifRenk: Co
 }
 
 private const val NOKTA_DOLMA_OLCEGI = 1.7f
+
+/**
+ * Tek satır, KENDİNİ SIĞDIRAN metin: verilen genişliğe sığana dek [enFazla]'dan [enAz]'a
+ * 0,5 sp adımlarla küçülür (Wear Compose 1.6.2'de `autoSize` yok). Yuvarlak/kare ekranda
+ * halkaya değen uzun adlar için ("Elhamdülillâh", "İkindi namazını"): sabit boy taşar,
+ * üç nokta ise adı keserdi. Ölçüm genişlik/metin değişince bir kez yapılır (her çizimde değil).
+ */
+@Composable
+fun SigdirilanMetin(
+    metin: String,
+    enFazla: androidx.compose.ui.unit.TextUnit,
+    renk: Color,
+    modifier: Modifier = Modifier,
+    enAz: androidx.compose.ui.unit.TextUnit = (enFazla.value * 0.6f).sp,
+    agirlik: FontWeight = FontWeight.Medium,
+    ortala: Boolean = true,
+    stil: TextStyle = TextStyle.Default,
+) {
+    androidx.compose.foundation.layout.BoxWithConstraints(
+        modifier,
+        contentAlignment = if (ortala) Alignment.Center else Alignment.CenterStart,
+    ) {
+        val olcer = androidx.compose.ui.text.rememberTextMeasurer()
+        val genislik = constraints.maxWidth
+        val boy = remember(metin, genislik, enFazla, agirlik) {
+            var b = enFazla.value
+            while (b > enAz.value &&
+                olcer.measure(
+                    metin,
+                    stil.merge(TextStyle(fontSize = b.sp, fontWeight = agirlik)),
+                    maxLines = 1,
+                    softWrap = false,
+                ).size.width > genislik
+            ) {
+                b -= 0.5f
+            }
+            b.sp
+        }
+        Text(
+            metin,
+            style = stil,
+            fontSize = boy,
+            fontWeight = agirlik,
+            color = renk,
+            textAlign = if (ortala) TextAlign.Center else TextAlign.Start,
+            maxLines = 1,
+            softWrap = false,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+        )
+    }
+}
