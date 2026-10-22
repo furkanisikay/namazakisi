@@ -194,7 +194,7 @@ fun EslemeEkrani(
                 }
             }
 
-            Box(Modifier.width(380.dp), contentAlignment = Alignment.Center) {
+            Box(Modifier.width(320.dp), contentAlignment = Alignment.Center) {
                 when (val d = durum) {
                     is QrDurumu.Bekliyor -> QrKarti(d.metin, katlanma.value, igne.value, halka.value, gelen != null)
                     QrDurumu.AgYok -> AgYokKarti()
@@ -243,16 +243,16 @@ private fun SolMetin(asama: Asama, cihazAdi: String?) {
                 )
             }
             else -> {
-                Text("Telefonunuzu ekleyin", color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold, lineHeight = 52.sp)
+                Text("Telefonunuzu ekleyin", color = Renkler.metin, fontSize = 40.sp, fontWeight = FontWeight.SemiBold, lineHeight = 48.sp)
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    "Vakitler sizin konumunuza göre hesaplanır; kıldığınız namazlar TV'de görünür.",
-                    color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
+                    "Vakitler konumunuza göre; kıldığınız namazlar da görünür.",
+                    color = Renkler.metinIkincil, fontSize = 24.sp, lineHeight = 32.sp,
                 )
-                Spacer(Modifier.height(30.dp))
+                Spacer(Modifier.height(20.dp))
                 Adim(1, "Telefonunuzda Namaz Akışı'nı açın")
                 Adim(2, "Ayarlar › Cihazlarım › TV ekleyin")
-                Adim(3, "Telefonun kamerasını sağdaki koda tutun")
+                Adim(3, "Telefonun kamerasını koda tutun")
                 Spacer(Modifier.height(18.dp))
                 Text("Telefon ile TV aynı Wi-Fi ağında olmalı.", color = Renkler.metinIkincil, fontSize = 24.sp)
             }
@@ -299,7 +299,7 @@ private fun OnayDiyalogu(cihazAdi: String, onEvet: () -> Unit, onHayir: () -> Un
 
 @Composable
 private fun Adim(sira: Int, metin: String) {
-    Row(Modifier.padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
         Box(
             Modifier.size(48.dp).background(Renkler.kart, CircleShape),
             contentAlignment = Alignment.Center,
@@ -307,7 +307,7 @@ private fun Adim(sira: Int, metin: String) {
             Text("$sira", color = Renkler.birincil, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         }
         Spacer(Modifier.width(16.dp))
-        Text(metin, color = Renkler.metin, fontSize = 28.sp, lineHeight = 38.sp)
+        Text(metin, color = Renkler.metin, fontSize = 26.sp, lineHeight = 34.sp)
     }
 }
 
@@ -327,7 +327,7 @@ private fun QrKarti(metin: String, katlanma: Float, igne: Float, halka: Float, g
     val qr = rememberQr(metin) ?: return
     Box(
         Modifier
-            .size(360.dp)
+            .size(300.dp)
             .background(androidx.compose.ui.graphics.Color.White, RoundedCornerShape(24.dp))
             .padding(26.dp)
             .semantics {
@@ -346,7 +346,7 @@ private fun QrKarti(metin: String, katlanma: Float, igne: Float, halka: Float, g
 private fun AgYokKarti() {
     Column(
         Modifier
-            .size(360.dp)
+            .size(300.dp)
             .background(Renkler.kart, RoundedCornerShape(24.dp))
             .padding(32.dp),
         verticalArrangement = Arrangement.Center,
