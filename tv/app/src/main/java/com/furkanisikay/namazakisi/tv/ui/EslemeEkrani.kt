@@ -307,7 +307,7 @@ private fun Adim(sira: Int, metin: String) {
             Text("$sira", color = Renkler.birincil, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         }
         Spacer(Modifier.width(16.dp))
-        Text(metin, color = Renkler.metin, fontSize = 28.sp)
+        Text(metin, color = Renkler.metin, fontSize = 28.sp, lineHeight = 38.sp)
     }
 }
 

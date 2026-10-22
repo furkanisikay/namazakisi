@@ -479,13 +479,17 @@ private fun RamazanBlogu(sayac: EvDurumu.Sayac, durum: PanoDurumu, simdi: Long) 
                 Text(p.birim, color = Renkler.metinIkincil, fontSize = 32.sp, modifier = Modifier.padding(start = 6.dp, bottom = 12.dp))
             }
         }
-        Spacer(Modifier.height(6.dp))
-        Text(
-            "${durum.gorunenAd(durum.siradaki)} vaktine ${Bicim.kalanKisa(durum.kalanMs)}",
-            style = RAKAM,
-            color = Renkler.metinIkincil,
-            fontSize = 24.sp,
-        )
+        // Sıradaki vakit sayacın hedefiyse (sahur = imsak, iftar = akşam) alt satır aynı bilgiyi
+        // tekrar ederdi → yalnız FARKLIYSA gösterilir.
+        if (durum.siradakiMs != sayac.hedefMs) {
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "${durum.gorunenAd(durum.siradaki)} vaktine ${Bicim.kalanKisa(durum.kalanMs)}",
+                style = RAKAM,
+                color = Renkler.metinIkincil,
+                fontSize = 24.sp,
+            )
+        }
     }
 }
 
