@@ -53,6 +53,7 @@ import { ayarAra } from '../../core/ayarlar/ayarAra';
 import type { AyarlarEkranAdi, AyarlarStackParamList } from '../../navigation/ayarlarEkranlari';
 import type { Sorun } from '../../core/ayarlar/kurulumSagligi';
 import { useAnaAyrintiSecimi } from '../components/common/anaAyrintiSecimi';
+import { saatUygulamasiDestekli } from '../../../modules/expo-siri-kisayollari/src';
 
 /** Kompakt başlığın belirmeye başlayıp tamamen görünür olduğu kaydırma mesafesi (dp). */
 const KOMPAKT_BASLIK_GECIS_ARALIGI = 32;
@@ -189,9 +190,14 @@ export const AyarlarSayfasi: React.FC = () => {
   })} · ${MEZHEP_ADLARI[mezhep]}`;
   // Saat ve widget: Android'de her zaman (saat, sayaç, bileklik); iOS'ta yalnız canlı
   // etkinlik taşıyan build'de (başka bir şey yoksa sayfa "bu telefonda yok"tan ibaret olurdu).
-  const saatVeWidgetVar = Platform.OS === 'android' || nowBar.kullanilabilir;
+  const appleWatchVar = Platform.OS === 'ios' && saatUygulamasiDestekli();
+  const saatVeWidgetVar = Platform.OS === 'android' || nowBar.kullanilabilir || appleWatchVar;
   const saatVeWidgetOzeti =
-    Platform.OS === 'android' ? 'Saat, canlı sayaç, bileklik' : `Canlı etkinlikler · ${nowBar.ozet ?? ''}`.replace(/ · $/, '');
+    Platform.OS === 'android'
+      ? 'Saat, canlı sayaç, bileklik'
+      : appleWatchVar && !nowBar.kullanilabilir
+        ? 'Apple Watch'
+        : `${appleWatchVar ? 'Apple Watch, c' : 'C'}anlı etkinlikler · ${nowBar.ozet ?? ''}`.replace(/ · $/, '');
 
   const saglikEylemi = (sorun: Sorun) => {
     if (sorun.eylem?.tip === 'sistemAyarlari') {

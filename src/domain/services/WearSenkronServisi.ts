@@ -13,9 +13,12 @@
  * APPLE WATCH (issue #285): iOS'ta AYNI yük, WatchConnectivity köprüsüne
  * (`modules/expo-siri-kisayollari` → `SaatKoprusu`, `updateApplicationContext`) gider —
  * böylece konum yayması, açılış, "Kıldım" sonrası tazeleme ve arka plan görevi iki saat
- * için de TEK yoldan geçer. Fark yalnız içerik payıdır: Apple Watch'a muhafız planı ve
- * Now Bar payı GÖNDERİLMEZ (iPhone bildirimleri saate zaten yansır; saat ikinci bildirim
- * kurarsa çift bildirim olur). Saatten gelen "Kıldım" Siri/widget ile ortak kuyruğa düşer.
+ * için de TEK yoldan geçer. Apple Watch da HAZIR muhafız planını ve uyandırma listesini
+ * alır: saat yerel bildirimini telefonla AYNI kimlikle kurar, watchOS aynı kimlikli iki
+ * bildirimi tekilleştirir (telefon yanındaysa yalnız etkin cihaz gösterir, uzaktaysa saat
+ * kendi çalar). Farklar: Now Bar payı ve anons metni gitmez (Apple Watch'ta canlı sayaç
+ * yüzeyi yok, saat konuşmaz), bağlam sınırı daha dardır. Saatten gelen "Kıldım" Siri/widget
+ * ile ortak kuyruğa düşer.
  *
  * Store'a BAĞIMLI DEĞİLDİR (arka planda Redux yok): konum ham AsyncStorage'dan,
  * kılınmışlık `LocalNamazServisi`'nden okunur. Saat köprüsü yoksa no-op.
@@ -28,7 +31,13 @@ import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../core/constants/UygulamaSab
 import { bugunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
 import { koordinatGecerliMi } from '../../core/nafile/gunVakitleri';
 import { konumMetniHesapla, type KonumMetniGirdisi } from '../../core/ayarlar/konumMetni';
-import { canliGecerliMi, wearYukuOlustur, type WearCanli, type WearYukGirdisi } from '../../core/wear/wearYuku';
+import {
+    APPLE_WATCH_YUK_BAYT_SINIRI,
+    canliGecerliMi,
+    wearYukuOlustur,
+    type WearCanli,
+    type WearYukGirdisi,
+} from '../../core/wear/wearYuku';
 import type { VakitAdi } from '../../core/types';
 import {
     kayitDegistiDinleyicisiniAyarla,
@@ -112,13 +121,14 @@ export class WearSenkronServisi {
         kayitDegistiDinleyicisiniAyarla(() => {
             this.gonder().catch(() => { /* gonder kendi hatasını loglar */ });
         });
-        // Apple Watch'a plan ve Now Bar payı gitmez → o gözlemciler yalnız Wear OS'ta.
-        if (h.tur !== 'wear') return;
         // Muhafız planı değişince (ayar ekranı, kılınma, konum) saatin planı da tazelenir.
+        // İki saatte de: Apple Watch da telefon uzaktayken kendi bildirimini kurar (#285).
         muhafizPlaniDinleyicisiniAyarla((durum) => {
             this.sonMuhafiz = durum;
             this.gonder().catch(() => { /* gonder kendi hatasını loglar */ });
         });
+        // Now Bar payı yalnız Wear OS'ta (Apple Watch'ta canlı sayaç yüzeyi yok).
+        if (h.tur !== 'wear') return;
         // Now Bar seçimi / canlı sayaç planı değişince (issue #282) saatin canlı sayacı da.
         canliSaatDinleyicisiniAyarla(() => {
             this.gonder().catch(() => { /* gonder kendi hatasını loglar */ });
@@ -152,11 +162,14 @@ export class WearSenkronServisi {
                 }
             }
 
-            // Saat iş bölümü (saat W3): uyandırma listesi ve anons yeri (yalnız Wear OS).
-            const saat = wear ? await LocalSaatAyarlariServisi.teslimBaglaminiOku() : null;
-            const muhafiz = wear ? await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar) : undefined;
+            // Saat iş bölümü (saat W3): uyandırma listesi iki saatte, anons yeri yalnız Wear OS.
+            const saat = await LocalSaatAyarlariServisi.teslimBaglaminiOku();
+            // Apple Watch da HAZIR planı alır (#285 cilası): telefon uzaktayken saat kendi
+            // bildirimini kurar. Çift bildirim olmaz — saat telefonla AYNI kimliği kullanır,
+            // watchOS aynı kimlikli iki bildirimi tekilleştirip yalnız etkin cihazda gösterir.
+            const muhafiz = await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar);
             const uyandirma =
-                saat && saatUyandiriyorMu(saat)
+                saatUyandiriyorMu(saat)
                     ? await this.uyandirmaListesiniHazirla(konum.koordinat, bugun, muhafiz, saat.uyandirmaDurumlari)
                     : undefined;
             const json = JSON.stringify(
@@ -165,13 +178,14 @@ export class WearSenkronServisi {
                     bugunIso: bugun,
                     konumAdi: konum.ad,
                     kilinanlar,
-                    // Apple Watch: hatırlatmayı iPhone bildirimi verir (saate yansır) → plan yok.
                     muhafiz,
                     canli: wear ? await this.canliPayiniOku() : undefined,
-                    // Kıble yalnız Wear OS saatte; Apple Watch'a konum gitmez (kullanılmayan veri).
-                    kibleKonumu: wear,
+                    // Kıble iki saatte de (yaklaşık konum, ~11 km).
+                    kibleKonumu: true,
                     uyandirma,
-                    anonsYeri: saat?.anonsYeri,
+                    anonsYeri: wear ? saat.anonsYeri : undefined,
+                    // Apple Watch: dar bağlam sınırı + konuşmadığı için anons metni gitmez.
+                    ...(wear ? {} : { baytSiniri: APPLE_WATCH_YUK_BAYT_SINIRI, anonsMetinleri: false }),
                 })
             );
             // Camideyim/Namaz modu durumu AYRI küçük DataItem'dır (native yazar, içerik

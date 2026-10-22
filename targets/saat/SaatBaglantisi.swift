@@ -11,6 +11,8 @@ import WidgetKit
 //    `transferUserInfo` (kuyruklu, sistem teslimi garanti eder). Telefon ayni tarih+vakit
 //    iki kez gelirse kuyrukta TEK tutar.
 //  - Gonderilen "Kildim" yuk onu tasiyana kadar IYIMSER gosterilir (`SaatBekleyen`).
+//  - saat → iPhone: sessiz uyandirma cevabi (`SaatIletisi.uyandirmaIletisi`) — telefon
+//    yedegini iptal eder; ayni kuyruklu/anlik teslim yolu.
 //
 // Her degisiklikten sonra komplikasyonlar tazelenir (`reloadAllTimelines`).
 final class SaatBaglantisi: NSObject, ObservableObject, WCSessionDelegate, @unchecked Sendable {
@@ -52,12 +54,35 @@ final class SaatBaglantisi: NSObject, ObservableObject, WCSessionDelegate, @unch
         guard let yuk = depo.yuk() else { return false }
         let karar = SaatKarari.ekranDurumu(yuk: yuk, bekleyenler: depo.bekleyenler(), simdiMs: SaatDeposu.simdiMs()).kildim
         guard case .aday(let vakit, let kayitVakti, _) = karar, vakit == beklenen else { return false }
+        return kildimKayit(tarih: vakit.tarih, vakit: kayitVakti)
+    }
+
+    /**
+     * Belirli bir vakti "kilindi" isaretler (saatin kendi bildirimindeki ve uyandirma
+     * ekranindaki "Kildim"). Vakit KAYIT kodudur (`imsak`...). Zaten kilinmissa false.
+     * O vaktin saatteki kalan hatirlatmalari hemen susar (telefon kaydi sonra gelir).
+     */
+    @discardableResult
+    func kildimKayit(tarih: String, vakit: String) -> Bool {
+        guard SaatIletisi.kayitVakitleri.contains(vakit), SaatIletisi.isoTarihMi(tarih) else { return false }
+        if let yuk = depo.yuk(), SaatHatirlatmaPlani.kilinmisMi(yuk, depo.bekleyenler(), tarih: tarih, vakit: vakit) {
+            return false
+        }
         let ms = SaatDeposu.simdiMs()
-        depo.bekleyenEkle(SaatBekleyen(tarih: vakit.tarih, vakit: kayitVakti, ms: ms))
-        gonder(SaatIletisi.kildimIletisi(tarih: vakit.tarih, vakit: kayitVakti, ms: ms))
+        depo.bekleyenEkle(SaatBekleyen(tarih: tarih, vakit: vakit, ms: ms))
+        gonder(SaatIletisi.kildimIletisi(tarih: tarih, vakit: vakit, ms: ms))
+        SaatHatirlatici.paylasilan.vaktiSustur(tarih: tarih, vakit: vakit)
         WidgetCenter.shared.reloadAllTimelines()
         degisti()
         return true
+    }
+
+    /// Sessiz uyandirma kapatildi / Kildim: telefon YEDEGINI iptal etsin (kalici kayit).
+    func uyandirmaCevabi(_ kayit: SaatUyandirmaKaydi, islem: String) {
+        gonder(SaatIletisi.uyandirmaIletisi(SaatIletisi.Uyandirma(
+            id: kayit.id, islem: islem, tur: kayit.tur, tarih: kayit.tarih, sonMs: kayit.sonMs
+        )))
+        degisti()
     }
 
     // MARK: - Ic
@@ -85,6 +110,10 @@ final class SaatBaglantisi: NSObject, ObservableObject, WCSessionDelegate, @unch
         guard let json = SaatIletisi.yukJson(baglam) else { return }
         if depo.yeniYukuIsle(json, simdiMs: SaatDeposu.simdiMs()) {
             WidgetCenter.shared.reloadAllTimelines()
+            // Telefonun hazir plani degisti: bilekteki yerel hatirlatmalar esitlenir; uygulama
+            // etkinse siradaki sessiz uyandirma da yeniden kurulur (arka planda kurulamaz).
+            SaatHatirlatici.paylasilan.tazele()
+            SaatUyandirici.paylasilan.kur()
             degisti()
         }
     }

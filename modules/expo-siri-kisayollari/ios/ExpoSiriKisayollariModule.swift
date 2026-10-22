@@ -106,6 +106,16 @@ public class ExpoSiriKisayollariModule: Module {
             return SaatKoprusu.paylasilan.durumGonder(json)
         }
 
+        /// Saatin sessiz uyandirma cevaplari (`{kimlik:{islem}}`), Android `saatUyandirmaDurumlari` ikizi.
+        AsyncFunction("saatUyandirmaDurumlari") { () -> String in
+            return SiriDeposu.varsayilan.saatUyandirmaJson(simdiMs: SiriDeposu.simdiMs())
+        }
+
+        /// Saatte basilan teheccud Kildim'larini TUKETIR (`[{tarih,tur}]`).
+        AsyncFunction("saatNafileKildimleriniAl") { () -> String in
+            return SiriDeposu.varsayilan.saatNafileKildimleriniAl()
+        }
+
         /// Bekleyen ekran istegini TUKETIR (ör. "kible"); yoksa/bayatsa nil.
         AsyncFunction("ekranIstegiAl") { () -> String? in
             return SiriDeposu.varsayilan.ekranIstegiAl(simdiMs: SiriDeposu.simdiMs())

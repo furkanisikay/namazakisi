@@ -1,12 +1,14 @@
 /**
- * Saat (Wear OS) ayarları (saat W3) — saatle telefonun İŞ BÖLÜMÜ.
+ * Saat ayarları (saat W3) — saatle telefonun İŞ BÖLÜMÜ.
  *
- * Yalnız Android'de listelenir (Wear OS saati yalnız Android telefonla eşleşir).
+ * Android'de Wear OS saati için; iOS'ta Apple Watch uygulamasını taşıyan build'de
+ * (#285 cilası). Apple Watch konuşmaz → iOS'ta yalnız uyandırma seçimi vardır, ve
+ * watchOS'un sınırı (sessiz alarm yalnız saat uygulaması açıkken kurulabilir) söylenir.
  * Başlık navigasyon header'ındadır (AGENTS "başlık tek yerde"); gövdede yalnız özet.
  * Ayar cihaza özgüdür, yedeklemeye girmez. Değişiklik planları hemen yeniden kurar.
  */
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
@@ -45,6 +47,23 @@ const UYANDIRMA_SECENEKLERI: Secenek<UyandirmaYeri>[] = [
     },
 ];
 
+/** Apple Watch metni: watchOS'ta sessiz alarm yalnız saat uygulaması açıkken kurulabilir. */
+const IOS_UYANDIRMA_SECENEKLERI: Secenek<UyandirmaYeri>[] = [
+    UYANDIRMA_SECENEKLERI[0],
+    {
+        deger: 'saat',
+        ikon: 'clock',
+        baslik: 'Saatte, sessizce',
+        aciklama: `Yalnız bileğiniz titrer, yanınızda uyuyan uyanmaz. Saatte kapatmazsanız iPhone'unuz ${SAAT_YEDEK_GECIKMESI_DK} dakika sonra yedek olarak çalar.`,
+    },
+    {
+        deger: 'ikisi',
+        ikon: 'clone',
+        baslik: 'İkisinde birden',
+        aciklama: "Saat ve iPhone aynı anda çalar; saatte kapatmanız iPhone'u da susturur.",
+    },
+];
+
 const ANONS_SECENEKLERI: Secenek<AnonsYeri>[] = [
     {
         deger: 'otomatik',
@@ -73,6 +92,7 @@ export const SaatAyarlariSayfasi: React.FC = () => {
     const navigation = useNavigation() as unknown as AyarNavigasyonu | undefined;
     const { ayarlar, guncelle } = useSaatAyarlari();
     if (!ayarlar) return null;
+    const ios = Platform.OS === 'ios';
 
     const secenekSatiri = <T extends string>(s: Secenek<T>, secili: boolean, onSec: () => void) => (
         <TouchableOpacity
@@ -126,12 +146,13 @@ export const SaatAyarlariSayfasi: React.FC = () => {
         <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['bottom', 'left', 'right']}>
             <ScrollView contentContainerStyle={{ paddingTop: 16, paddingBottom: 32 }}>
                 <Text className="text-sm leading-5 mx-4 mb-4" style={{ color: renkler.metinIkincil }}>
-                    Saatinizde Namaz Akışı yüklüyse telefonunuzla işleri bölüşür. Burada uyandırmanın ve sesli
-                    anonsun nerede duyulacağını seçersiniz.
+                    {ios
+                        ? "Apple Watch'unuzda Namaz Akışı yüklüyse iPhone'unuzla işleri bölüşür. Burada uyandırmanın nerede çalacağını seçersiniz."
+                        : 'Saatinizde Namaz Akışı yüklüyse telefonunuzla işleri bölüşür. Burada uyandırmanın ve sesli anonsun nerede duyulacağını seçersiniz.'}
                 </Text>
 
                 <AyarGrubu baslik="Uyandırma nerede çalsın?">
-                    {UYANDIRMA_SECENEKLERI.map((s) =>
+                    {(ios ? IOS_UYANDIRMA_SECENEKLERI : UYANDIRMA_SECENEKLERI).map((s) =>
                         secenekSatiri(s, ayarlar.uyandirmaYeri === s.deger, () => {
                             void guncelle({ uyandirmaYeri: s.deger });
                         })
@@ -139,11 +160,36 @@ export const SaatAyarlariSayfasi: React.FC = () => {
                 </AyarGrubu>
                 <Text className="text-xs leading-5 mx-4 -mt-4 mb-2" style={{ color: renkler.metinIkincil }}>
                     Uyandırma, "Vakit çıkmadan" hatırlatmasında sabah vaktine açtığınız gerçek alarm ve Nafile Namazlar'da açtığınız
-                    teheccüd uyandırmasıdır. Saatiniz şarjdayken çalmaz; o zaman telefonunuz çalar.
+                    teheccüd uyandırmasıdır.{' '}
+                    {ios
+                        ? "watchOS sessiz alarmı yalnız saat uygulaması açıkken kurabilir: saatinizde Namaz Akışı'nı günde bir kez açın, sıradaki uyandırma o an kurulur. Saat şarjdayken ya da uygulama açılmadıysa iPhone'unuzun yedeği çalar."
+                        : 'Saatiniz şarjdayken çalmaz; o zaman telefonunuz çalar.'}
                 </Text>
                 {gecisDugmesi('"Vakit çıkmadan" ayarlarını açın', 'MuhafizAyarlari', 'shield-alt')}
                 {gecisDugmesi('Nafile namaz ayarlarını açın', 'NafileAyarlari', 'star-and-crescent')}
 
+                {ios ? (
+                    <>
+                        <View className="h-6" />
+                        <AyarGrubu baslik="Bilekten yapabilecekleriniz">
+                            <View className="px-4 py-3">
+                                {[
+                                    'iPhone uzaktayken hatırlatmalar saatinizde çalar; ikisi birden çalmaz.',
+                                    'Kıldığınız namazı bilekten işaretlersiniz; iPhone kaydı alır.',
+                                    'Tesbihatı Digital Crown ile sayar, kıbleyi saatinizde bulursunuz.',
+                                ].map((m) => (
+                                    <View key={m} className="flex-row mb-2">
+                                        <FontAwesome5 name="check" size={11} color={renkler.birincil} style={{ marginTop: 4, marginRight: 8 }} />
+                                        <Text className="flex-1 text-sm leading-5" style={{ color: renkler.metin }}>
+                                            {m}
+                                        </Text>
+                                    </View>
+                                ))}
+                            </View>
+                        </AyarGrubu>
+                    </>
+                ) : (
+                    <>
                 <View className="h-6" />
                 <AyarGrubu baslik="Sesli okuma nerede yapılsın?">
                     {ANONS_SECENEKLERI.map((s) =>
@@ -179,6 +225,8 @@ export const SaatAyarlariSayfasi: React.FC = () => {
                     Namaz modunu saatten açabilmek için önce telefonunuzda bir kez açmanız gerekir.
                 </Text>
                 {gecisDugmesi('Namaz modu ayarlarını açın', 'NamazModuAyarlari', 'moon')}
+                    </>
+                )}
             </ScrollView>
         </SafeAreaView>
     );

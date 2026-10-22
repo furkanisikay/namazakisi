@@ -71,9 +71,9 @@ public enum Tesbihat {
         return Durum(toplam: toplam)
     }
 
-    /// Ekran okuyucu / kisa durum: "Elhamdülillâh · 12/33".
+    /// Ekran okuyucu / kisa durum: "Elhamdülillâh, 12/33" (noktali ayrac yok).
     public static func kisaMetin(_ d: Durum) -> String {
-        return "\(d.faz.ad) · \(d.fazSayisi)/\(d.faz.hedef)"
+        return "\(d.faz.ad), \(d.fazSayisi)/\(d.faz.hedef)"
     }
 }
 

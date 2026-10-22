@@ -25,10 +25,14 @@ const canliEtkinlikEsitle = jest.fn().mockResolvedValue('desteklenmiyor');
 // #285 Apple Watch: varsayılan YOK (saat bayrağı kapalı build gibi).
 const saatUygulamasiDestekli = jest.fn().mockReturnValue(false);
 const saatKoprusu = jest.fn().mockReturnValue(null);
+const saatUyandirmaDurumlariniOku = jest.fn().mockResolvedValue(null);
+const saatNafileKildimleriniAl = jest.fn().mockResolvedValue([]);
 
 module.exports = {
   saatUygulamasiDestekli,
   saatKoprusu,
+  saatUyandirmaDurumlariniOku,
+  saatNafileKildimleriniAl,
   siriVeriYazici,
   siriKildimKuyrugu,
   siriOdakDurumuAl,

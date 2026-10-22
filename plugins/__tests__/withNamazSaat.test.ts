@@ -103,6 +103,8 @@ describe('withNamazSaat — EAS hedef bildirimi', () => {
         expect(saat).toContain('<key>WKApplication</key>\n  <true/>');
         expect(saat).toContain('<key>WKCompanionAppBundleIdentifier</key>\n  <string>com.ornek</string>');
         expect(saat).toContain('<key>WKRunsIndependentlyOfCompanionApp</key>\n  <false/>');
+        // Sessiz uyandırma (#285 cilası): akıllı alarm oturumu — uygulama başına TEK oturum türü.
+        expect(saat).toContain('<key>WKBackgroundModes</key>\n  <array>\n    <string>alarm</string>\n  </array>');
         expect(saat).toContain('<string>0.31.0</string>');
         expect(saat).toContain('<string>1760000000</string>');
         const uzanti = eklenti.widgetInfoPlist('0.31.0', '1760000000');

@@ -1,4 +1,5 @@
 import Foundation
+import UserNotifications
 import WatchConnectivity
 
 /**
@@ -79,6 +80,10 @@ public final class SaatKoprusu: NSObject, WCSessionDelegate, @unchecked Sendable
     }
 
     private func iletiyiIsle(_ ileti: [String: Any]) {
+        if let u = SaatIletisi.uyandirmaCoz(ileti) {
+            uyandirmaIsle(u)
+            return
+        }
         guard let kildim = SaatIletisi.kildimCoz(ileti) else { return }
         SiriDeposu.varsayilan.kildimEkle(
             tarih: kildim.tarih,
@@ -86,6 +91,41 @@ public final class SaatKoprusu: NSObject, WCSessionDelegate, @unchecked Sendable
             kaynak: SaatIletisi.kaynak,
             simdiMs: SiriDeposu.simdiMs()
         )
+    }
+
+    /**
+     * Saat sessiz uyandirmayi kapatti / Kildim dedi (#285 cilasi): telefonun YEDEGI
+     * (+3 dk sonraya kurulmus bildirim ya da AlarmKit alarmi) JS'i beklemeden iptal edilir
+     * ve kayit kalici yazilir (sonraki planlama turu ayni kimligi YENIDEN kurmasin).
+     * Teheccud "Kildim"i farz kuyruguna ASLA girmez — nafile susturma hafizasina.
+     */
+    private func uyandirmaIsle(_ u: SaatIletisi.Uyandirma) {
+        let depo = SiriDeposu.varsayilan
+        depo.saatUyandirmaYaz(id: u.id, sonMs: u.sonMs, simdiMs: SiriDeposu.simdiMs())
+        if u.islem == "kildim" && u.tur == "teheccud" {
+            depo.saatNafileKildimEkle(tarih: u.tarih, tur: "teheccud")
+        }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [u.id])
+        SaatKoprusu.alarmKitYedeginiIptalEt(u.id)
+        depo.saatUyandirmaDuyur()
+    }
+
+    /**
+     * AlarmKit yedegi ana hedefteki `NamazAlarmPlanlayici`'dadir; bu pod onu import EDEMEZ
+     * (ExpoMuhafizAlarmKit deseni). Objective-C calisma zamaninda adiyla bulunur ve
+     * `iptalEt(_:_:_:)` (`MuhafizAlarmPlanlayicisi` sozlesmesi) secicisi cagrilir; sinif
+     * ya da secici yoksa (eski build, iOS < 26) sessizce gecilir — JS planlama turu
+     * kaydi okuyup alarmi yine kaldirir.
+     */
+    static func alarmKitYedeginiIptalEt(_ id: String) {
+        guard let sinif = NSClassFromString("NamazAlarmPlanlayici") as? NSObject.Type else { return }
+        let nesne = sinif.init()
+        let secici = NSSelectorFromString("iptalEt:::")
+        guard nesne.responds(to: secici), let imp = nesne.method(for: secici) else { return }
+        typealias Iptal = @convention(c) (AnyObject, Selector, NSArray, Bool, @escaping @convention(block) () -> Void) -> Void
+        let cagri = unsafeBitCast(imp, to: Iptal.self)
+        // calaniDurdur = true: saatte kapatilan uyandirmanin telefon alarmi CALIYORSA da sussun.
+        cagri(nesne, secici, [id] as NSArray, true, {})
     }
 
     // MARK: - WCSessionDelegate
@@ -123,7 +163,7 @@ public final class SaatKoprusu: NSObject, WCSessionDelegate, @unchecked Sendable
         replyHandler: @escaping ([String: Any]) -> Void
     ) {
         iletiyiIsle(message)
-        replyHandler(["tamam": SaatIletisi.kildimCoz(message) != nil])
+        replyHandler(["tamam": SaatIletisi.kildimCoz(message) != nil || SaatIletisi.uyandirmaCoz(message) != nil])
     }
 
     private func kilitli<T>(_ blok: () -> T) -> T {
