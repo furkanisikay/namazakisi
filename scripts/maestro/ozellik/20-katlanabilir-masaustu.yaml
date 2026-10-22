@@ -1,5 +1,5 @@
 # tohum: ozellik
-# profil: katlanabilir
+# profil: katlanabilir|flip
 # hazirlik: masaustu
 # Katlanabilir masaustu postur (yari acik, yatay mentese): ust yarida geri sayim,
 # alt yarida gunluk akis (GunSayfasiDuzeni duzen="masaustu"). Yalniz Pixel Fold profili.

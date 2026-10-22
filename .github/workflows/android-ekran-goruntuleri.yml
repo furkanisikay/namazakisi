@@ -249,6 +249,24 @@ jobs:
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
           script: bash scripts/android-ozellik-hatti.sh katlanabilir acik
 
+      # Flip (Z Flip tipi): hazir AVD profili yok → pixel_6 tabanina kompakt ekran + yatay
+      # mentese yazilir (scripts/android-flip-avd.sh). Yalniz masaustu postur karesi.
+      - name: 📱 Katlanabilir (Flip, masaüstü)
+        if: ${{ !cancelled() && inputs.tur == 'katlanabilir' }}
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          AKIS_FILTRESI: '^20-katlanabilir'
+        with:
+          api-level: ${{ inputs.api }}
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          ram-size: 4096M
+          disable-animations: true
+          pre-emulator-launch-script: bash scripts/android-flip-avd.sh
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          script: bash scripts/android-ozellik-hatti.sh flip acik
+
       - name: 🧾 Özellik kareleri özeti
         if: ${{ always() && inputs.tur != 'magaza' }}
         run: |
