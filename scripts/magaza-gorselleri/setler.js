@@ -39,6 +39,9 @@ const CIHAZ_TURLERI = {
     tv: (g, y) => g === 1920 && y === 1080,
     wearYuvarlak: (g, y) => g === y && g === 454,
     wearKare: (g, y) => g === y && g === 384,
+    // Katlanabilir emulator kareleri (scripts/android-flip-avd.sh): Fold ic ekran, Flip.
+    fold: (g, y) => (g === 2208 && y === 1840) || (g === 1840 && y === 2208),
+    flip: (g, y) => g === 1080 && y === 2640,
     appleWatch: (g, y) =>
         [
             [422, 514],
@@ -395,7 +398,18 @@ const SETLER = {
                 ],
                 iddialar: ['kible'],
             }),
-            kare('06-kaza', ORTAK.kaza),
+            // Katlanabilir: Fold tipi ic ekran (2208x1840) emulatorde GERCEK iki bolmeli duzen.
+            // Flip masaustu postur emulatorde gosterilemedi (device_state HALF_OPENED olsa da
+            // pencereye mentese ozelligi gelmiyor) → yalniz gercekten gorulen duzen.
+            kare('06-katlanabilir', {
+                baslik: 'Katlanabilir\ntelefonda da rahat',
+                alt: 'Açınca kalan süre ve günlük akış yan yana.',
+                zemin: 'acik',
+                vakit: 2,
+                yerlesim: 'katlanabilir',
+                katmanlar: [{ cihaz: 'fold', kaynak: ['01-ana-ekran.png'] }],
+                iddialar: ['katlanabilir'],
+            }),
             // Telefon + saat birlikte: telefon uzakta ya da sessizde, saat bilekte titrer.
             kare('07-bilek', {
                 baslik: 'Bilekte sessiz\nuyandırma',
@@ -428,6 +442,8 @@ const SETLER = {
             }),
             // Play telefon galerisi en fazla 8 kare: gerisi uretilir, yuklenmez.
             kare('09-gizlilik', ORTAK.gizlilik, { magazaDisi: true }),
+            // Kaza tablet setinde (04-kaza) duruyor; telefon galerisinde yerini katlanabilir aldi.
+            kare('09-kaza', ORTAK.kaza, { magazaDisi: true }),
             kare('10-vakit-sesi', {
                 baslik: 'Vakit girince\nkendi sesiniz',
                 alt: 'Her vakte ayrı ses seçin; dilerseniz kendi kaydınızı.',
