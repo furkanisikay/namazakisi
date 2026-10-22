@@ -37,7 +37,7 @@ on:
         required: false
         default: ''
       tur:
-        description: 'Hangi kareler: magaza (Play kareleri) | ozellik (yeni ekranlar turu) | ikisi | tablet (yalnız tablet özellik turu) | saat (Wear OS) | tv (Android TV) | cihazlar (saat + tv)'
+        description: 'Hangi kareler: magaza (Play kareleri) | ozellik (yeni ekranlar turu) | ikisi | tablet (yalnız tablet özellik turu) | katlanabilir (Pixel Fold: açık + masaüstü postürü) | saat (Wear OS) | tv (Android TV) | cihazlar (saat + tv)'
         type: choice
         required: false
         default: 'magaza'
@@ -46,6 +46,7 @@ on:
           - ozellik
           - ikisi
           - tablet
+          - katlanabilir
           - saat
           - tv
           - cihazlar
@@ -83,7 +84,7 @@ jobs:
   kareler:
     name: 📸 Emülatörde kare çek
     # Telefon kareleri yalniz telefon turlarinda (saat/tv kendi islerinde).
-    if: ${{ inputs.tur == 'magaza' || inputs.tur == 'ozellik' || inputs.tur == 'ikisi' || inputs.tur == 'tablet' }}
+    if: ${{ inputs.tur == 'magaza' || inputs.tur == 'ozellik' || inputs.tur == 'ikisi' || inputs.tur == 'tablet' || inputs.tur == 'katlanabilir' }}
     runs-on: ubuntu-latest
     # 90 dk magaza turu icin yetiyordu; ozellik turu (iki tema + istege bagli
     # tablet, her akistan once yeniden tohumlama) ayni isin icinde kosar.
@@ -165,7 +166,7 @@ jobs:
           echo "Metro hazır"
 
       - name: 📱 Emülatörde kareleri çek
-        if: ${{ inputs.tur != 'ozellik' && inputs.tur != 'tablet' }}
+        if: ${{ inputs.tur != 'ozellik' && inputs.tur != 'tablet' && inputs.tur != 'katlanabilir' }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ inputs.api }}
@@ -180,14 +181,14 @@ jobs:
           script: bash scripts/android-kare-hatti.sh
 
       - name: 🧾 Kare boyutları
-        if: ${{ always() && inputs.tur != 'ozellik' && inputs.tur != 'tablet' }}
+        if: ${{ always() && inputs.tur != 'ozellik' && inputs.tur != 'tablet' && inputs.tur != 'katlanabilir' }}
         run: |
           for f in kareler/*.png; do
             node -e 'const b=require("fs").readFileSync(process.argv[1]);console.log(process.argv[1], b.readUInt32BE(16)+"x"+b.readUInt32BE(20))' "$f"
           done || true
 
       - name: ⬆️ Kareleri yükle
-        if: ${{ always() && inputs.tur != 'ozellik' && inputs.tur != 'tablet' }}
+        if: ${{ always() && inputs.tur != 'ozellik' && inputs.tur != 'tablet' && inputs.tur != 'katlanabilir' }}
         uses: actions/upload-artifact@v7
         with:
           name: android-ekran-goruntuleri
@@ -200,7 +201,7 @@ jobs:
       # --- OZELLIK TURU (magaza turuna dokunmaz; ayri klasor + ayri artifact) ---
       # Magaza adimi dustuyse de kossun (`!cancelled()`): iki tur birbirinden bagimsiz.
       - name: 🧭 Özellik turu — telefon (açık + koyu)
-        if: ${{ !cancelled() && inputs.tur != 'magaza' && inputs.tur != 'tablet' }}
+        if: ${{ !cancelled() && inputs.tur != 'magaza' && inputs.tur != 'tablet' && inputs.tur != 'katlanabilir' }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ inputs.api }}
@@ -230,6 +231,23 @@ jobs:
           disable-animations: true
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back ${{ inputs.kamera_arka || 'emulated' }} -timezone Europe/Istanbul
           script: bash scripts/android-ozellik-hatti.sh tablet acik
+
+      # Katlanabilir (Pixel Fold): iç ekran açıkken ana ekran + masaüstü postürü (yarı açık,
+      # yatay menteşe). Yalnız iki akış koşar; postür `# hazirlik: masaustu` ile adb'den kurulur.
+      - name: 📖 Katlanabilir (Pixel Fold)
+        if: ${{ !cancelled() && inputs.tur == 'katlanabilir' }}
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          AKIS_FILTRESI: '^(01-ana-ekran|20-katlanabilir)'
+        with:
+          api-level: ${{ inputs.api }}
+          target: google_apis
+          arch: x86_64
+          profile: pixel_fold
+          ram-size: 4096M
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          script: bash scripts/android-ozellik-hatti.sh katlanabilir acik
 
       - name: 🧾 Özellik kareleri özeti
         if: ${{ always() && inputs.tur != 'magaza' }}

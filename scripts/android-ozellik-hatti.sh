@@ -116,6 +116,16 @@ tohumla() {
 # scripts/kible-emulator-pozu.js'ten — cekirdek fonksiyonlarimizla tutarli poz.
 hazirlik_uygula() {
   case "$1" in
+    masaustu)
+      # Masaustu postur: ic ekran dikey (menteşe YATAY) + yari acik. Emulator konsolu
+      # surume gore farkli adlar kabul ediyor; hangisinin tuttugu loga yazilir.
+      adb shell settings put system accelerometer_rotation 0 || true
+      adb shell settings put system user_rotation 1 || true
+      adb emu posture 2 || adb emu posture half-opened || adb emu fold half || true
+      sleep 3
+      adb shell dumpsys device_state 2>/dev/null | grep -iE "state|posture" | head -8 || true
+      adb shell wm size || true
+      ;;
     kible-kamera*|kible-kalibrasyon)
       adb shell pm grant "$PAKET" android.permission.CAMERA || true
       local poz
@@ -246,6 +256,11 @@ for tema in "${TEMALAR[@]}"; do
     if [ -n "${AKIS_FILTRESI:-}" ] && ! [[ "$(basename "$akis")" =~ $AKIS_FILTRESI ]]; then
       continue
     fi
+    # `# profil: <ad>` satiri: akis yalniz o profilde koşar (ornek: katlanabilir).
+    akis_profili=$(sed -n 's/^# profil: *\([a-z]*\).*/\1/p' "$akis" | head -1)
+    if [ -n "$akis_profili" ] && [ "$akis_profili" != "$PROFIL" ]; then
+      continue
+    fi
     varyant=$(sed -n 's/^# tohum: *\([a-z]*\).*/\1/p' "$akis" | head -1)
     varyant="${varyant:-ozellik}"
     echo "=== [$PROFIL/$tema] $akis (tohum: $varyant) ==="
@@ -276,7 +291,7 @@ if [ "${PERFORMANS_OLCUMU:-}" = "1" ] && [ "$PROFIL" = "telefon" ]; then
 fi
 
 # Ozet: dosya adi + boyut; akislarin bekledigi ama cikmayan kare → UYARI.
-BEKLENEN=$(grep -h 'takeScreenshot: ozk/' scripts/maestro/ozellik/*.yaml | sed 's/.*ozk\///' | sort -u)
+BEKLENEN=$(for a in scripts/maestro/ozellik/*.yaml; do p=$(sed -n 's/^# profil: *\([a-z]*\).*/\1/p' "$a" | head -1); { [ -z "$p" ] || [ "$p" = "$PROFIL" ]; } && grep -h 'takeScreenshot: ozk/' "$a"; done | sed 's/.*ozk\///' | sort -u)
 for tema in "${TEMALAR[@]}"; do
   HEDEF="$CIKIS/${PROFIL}-${tema}"
   echo "--- $HEDEF ---"
