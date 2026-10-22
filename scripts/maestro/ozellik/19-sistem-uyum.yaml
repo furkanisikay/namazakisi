@@ -12,12 +12,12 @@ appId: com.furkanisikay.namazakisi
 - takeScreenshot: ozk/50-ayarlar-guc-tasarrufu-cipi
 - scrollUntilVisible:
     element:
-      text: "Yedek ve eşitleme\..*"
+      text: "Yedek ve eşitleme\\..*"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Yedek ve eşitleme\..*"
+    text: "Yedek ve eşitleme\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
 - scrollUntilVisible:
