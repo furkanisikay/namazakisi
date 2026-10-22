@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { AppState, Platform as PlatformRN } from 'react-native';
 import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Coordinates, Qibla } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
 import { aciFarki, aciNormalize, hizalandiMi } from '../../core/kible/acilar';
@@ -153,6 +155,19 @@ function sensorleriYukle(): typeof import('expo-sensors') | null {
  * `aktif` false iken (sekme odakta değil) hiçbir sensör çalışmaz; uygulama arka plana
  * gidince de durur (pil).
  */
+/** Uygulamanın kayıtlı konumu (GPS yokken yedek). `{0,0}` "yapılandırılmadı" nöbetçisidir. */
+async function kayitliKonumuOku(): Promise<{ lat: number; lng: number } | null> {
+  try {
+    const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI);
+    const k = ham ? JSON.parse(ham)?.koordinatlar : null;
+    if (!k || typeof k.lat !== 'number' || typeof k.lng !== 'number') return null;
+    if (!Number.isFinite(k.lat) || !Number.isFinite(k.lng) || (k.lat === 0 && k.lng === 0)) return null;
+    return { lat: k.lat, lng: k.lng };
+  } catch {
+    return null;
+  }
+}
+
 export const useKible = (aktif = true): UseKibleSonuc => {
   const [izinVerildi, setIzinVerildi] = useState(false);
   const [kibleAcisi, setKibleAcisi] = useState<number | null>(null);
@@ -258,6 +273,15 @@ export const useKible = (aktif = true): UseKibleSonuc => {
         } catch (err) {
           if (sonBilinenVar) {
             Logger.warn('Kible', 'Taze konum alinamadi, son bilinen konum kullaniliyor');
+            return;
+          }
+          // GPS hiç yoksa (konum servisi kapalı, tablet, kapalı alan) uygulamanın kayıtlı
+          // konumu (manuel il ya da son otomatik konum) kullanılır: kıble açısı şehir
+          // hassasiyetinde bile ~0,1° değişir; "erişilemiyor" demek kullanıcıyı boşa düşürürdü.
+          const kayitli = await kayitliKonumuOku();
+          if (kayitli) {
+            Logger.warn('Kible', 'Taze konum alinamadi, kayitli konum kullaniliyor');
+            kibleYaz(kayitli.lat, kayitli.lng);
             return;
           }
           throw err;
