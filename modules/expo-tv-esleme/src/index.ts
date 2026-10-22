@@ -61,10 +61,12 @@ export interface CihazIstegi {
     id: string;
     yol: string;
     govde: string;
+    /** Gönderenin IP'si (kimliği doğrulanmış istekte adres tazelenir). */
+    ip?: string;
 }
 
 export interface DinleyiciKoprusu {
-    dinleyiciBaslat(kimlik: string, ad: string): Promise<number>;
+    dinleyiciBaslat(kimlik: string, ad: string, port: number): Promise<number>;
     dinleyiciDurdur(): Promise<void>;
     dinleyiciYanitla(id: string, kod: number, govde: string): Promise<void>;
     yerelAdres(): Promise<string | null>;

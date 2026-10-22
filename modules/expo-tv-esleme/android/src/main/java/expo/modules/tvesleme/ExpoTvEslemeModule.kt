@@ -82,11 +82,11 @@ class ExpoTvEslemeModule : Module() {
         // şifre JS'te; native kapıları uygular ve isteği `onCihazIstegi` olayıyla verir.
         Events("onCihazIstegi")
 
-        AsyncFunction("dinleyiciBaslat") { kimlik: String, ad: String ->
+        AsyncFunction("dinleyiciBaslat") { kimlik: String, ad: String, port: Int ->
             if (!Regex("^[0-9a-f]{16}$").matches(kimlik)) throw IllegalArgumentException("Kimlik")
             val baglam = appContext.reactContext ?: throw IllegalStateException("Bağlam yok")
             val d = dinleyici ?: CihazDinleyici(baglam) { sendEvent("onCihazIstegi", it) }.also { dinleyici = it }
-            d.baslat(kimlik, ad)
+            d.baslat(kimlik, ad, port.coerceIn(1024, 65535))
         }
 
         /** Bu cihazın yerel ağ IPv4'ü (QR'a yazılır); Wi-Fi/Ethernet yoksa null. */

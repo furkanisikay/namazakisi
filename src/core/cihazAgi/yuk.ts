@@ -49,10 +49,12 @@ export interface CihazAgiYuku {
     sil?: true;
     /** Çift yönlü cihaz: gönderenin olay günlüğünde bildiği aralık (karşı taraf eksiğini yollar). */
     bilinen?: Record<string, number>;
+    /** Çift yönlü cihaz: gönderenin şu anki dinleme portu (alıcı kimliği doğrulayınca adresi tazeler). */
+    port?: number;
 }
 
 /** Çift yönlü alıcıda düz yükü güvenle çözer (TV'nin `CihazYuku.kt` ayrıştırıcısının JS ikizi). */
-export function yukCoz(duz: string | null): { olaylar: unknown[]; bilinen: Record<string, number>; sil: boolean } | null {
+export function yukCoz(duz: string | null): { olaylar: unknown[]; bilinen: Record<string, number>; sil: boolean; port: number | null } | null {
     if (!duz) return null;
     try {
         const o = JSON.parse(duz) as Record<string, unknown>;
@@ -63,7 +65,8 @@ export function yukCoz(duz: string | null): { olaylar: unknown[]; bilinen: Recor
                 if (/^[0-9a-f]{16}$/.test(c) && Number.isInteger(n) && (n as number) >= 0) bilinen[c] = n as number;
             }
         }
-        return { olaylar: Array.isArray(o.olaylar) ? o.olaylar.slice(0, 200) : [], bilinen, sil: o.sil === true };
+        const port = Number.isInteger(o.port) && (o.port as number) >= 1024 && (o.port as number) <= 65535 ? (o.port as number) : null;
+        return { olaylar: Array.isArray(o.olaylar) ? o.olaylar.slice(0, 200) : [], bilinen, sil: o.sil === true, port };
     } catch {
         return null;
     }
@@ -95,6 +98,7 @@ export function yukuYaz(yuk: CihazAgiYuku): string {
         ...(durum ? { durum } : {}),
         ...(yuk.olaylar && yuk.olaylar.length > 0 ? { olaylar: yuk.olaylar } : {}),
         ...(yuk.sil ? { sil: true } : {}),
+        ...(yuk.port ? { port: yuk.port } : {}),
         ...(yuk.bilinen ? { bilinen: Object.fromEntries(Object.keys(yuk.bilinen).sort().map((k) => [k, yuk.bilinen![k]])) } : {}),
     });
 }

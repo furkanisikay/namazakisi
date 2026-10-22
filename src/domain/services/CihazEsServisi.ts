@@ -17,7 +17,8 @@
  * Store'a BAĞIMLI DEĞİL.
  */
 import { AppState, Dimensions, Platform } from 'react-native';
-import { base64Coz, base64Yaz, coz, esleIstekAad, esleYanitAad, kanalAad, sifrele, zarfla, type KanalZarfi } from '../../core/cihazAgi/kanal';
+import { base64Coz, base64Yaz, coz, esleIstekAad, esleYanitAad, kanalAad, kararliPort, sifrele, zarfla, type KanalZarfi } from '../../core/cihazAgi/kanal';
+import { ozelIpv4Mu } from '../../core/tv/eslemeBaglantisi';
 import { yukCoz, yukuYaz } from '../../core/cihazAgi/yuk';
 import {
     bosGunluk,
@@ -37,7 +38,7 @@ import { CihazAgiDeposu, type CihazUyeligi } from '../../data/local/CihazAgiDepo
 import { androidDinleyici, alicilariBul, type CihazIstegi, type DinleyiciKoprusu } from '../../../modules/expo-tv-esleme/src';
 import { iosDinleyici } from '../../../modules/expo-siri-kisayollari/src';
 import { rastgeleBaytlar, yereleGonder } from './CihazAgiTasima';
-import { dunBugunKilinanlar } from './TvSenkronServisi';
+import { dunBugunKilinanlar, geriCekilmeMs, yerelAgVarMi } from './TvSenkronServisi';
 
 const KIMLIK_ANAHTARI = 'cihazAgi.kimlik';
 const GUNLUK_ANAHTARI = 'cihazAgi_olay_gunlugu';
@@ -218,13 +219,20 @@ export class CihazEsServisi {
         );
         if (esler.length === 0) return sonuc;
         await this.olaylariUret().catch(() => 0);
+        // Wi-Fi/Ethernet yoksa hiç denenmez (eş evde, kişi dışarıda: her tetikte soket zaman aşımı olmasın).
+        if (!(await yerelAgVarMi())) return sonuc;
         for (const e of esler) {
+            // Üstel geri çekilme (TV ile aynı kural): ulaşılamayan eş bekleme süresince denenmez.
+            if (e.sonHataMs && Date.now() < e.sonHataMs + geriCekilmeMs(e.hataSayisi ?? 0)) {
+                sonuc[e.aliciKimlik] = 'ulasilamadi';
+                continue;
+            }
             try {
                 sonuc[e.aliciKimlik] = await this.eseGonder(e);
             } catch (hata) {
                 Logger.info('CihazEs', 'Eşe ulaşılamadı', { hata: String(hata) });
                 sonuc[e.aliciKimlik] = 'ulasilamadi';
-                await CihazAgiDeposu.guncelle(e.aliciKimlik, { durum: 'ulasilamadi' });
+                await CihazAgiDeposu.guncelle(e.aliciKimlik, { durum: 'ulasilamadi', sonHataMs: Date.now(), hataSayisi: (e.hataSayisi ?? 0) + 1 });
             }
         }
         return sonuc;
@@ -232,7 +240,7 @@ export class CihazEsServisi {
 
     private async eseGonder(e: CihazUyeligi): Promise<'tamam' | 'ulasilamadi' | 'reddedildi'> {
         const g = await this.gunlukOku();
-        const duz = yukuYaz({ v: 2, olaylar: gonderilecekler(g, e.karsiBilinen ?? {}), bilinen: g.bilinen });
+        const duz = yukuYaz({ v: 2, olaylar: gonderilecekler(g, e.karsiBilinen ?? {}), bilinen: g.bilinen, port: this.port ?? kararliPort(e.uye) });
         const dene = async (adres: string, port: number) => {
             const n = await CihazAgiDeposu.sonrakiN(e.aliciKimlik);
             if (n == null) return { kod: 403, govde: '', n: 0 };
@@ -264,6 +272,8 @@ export class CihazEsServisi {
         await CihazAgiDeposu.guncelle(e.aliciKimlik, {
             durum: 'tamam',
             sonEsitlemeMs: Date.now(),
+            sonHataMs: 0,
+            hataSayisi: 0,
             karsiBilinen: yanit.bilinen,
             // Adres yalnız şifreli yanıt başarılıysa güncellenir (sahte mDNS adres çalamaz).
             ...(adres !== e.adres || port !== e.port ? { adres, port } : {}),
@@ -283,7 +293,8 @@ export class CihazEsServisi {
         }
         if (!this.abonelik) this.abonelik = k.addListener('onCihazIstegi', (i) => void this.istegiIsle(k, i));
         const { telefonAdi } = require('./CihazEslesmeServisi') as typeof import('./CihazEslesmeServisi');
-        this.port = await k.dinleyiciBaslat(await cihazKimligi(), telefonAdi()).catch(() => null);
+        const kimlik = await cihazKimligi();
+        this.port = await k.dinleyiciBaslat(kimlik, telefonAdi(), kararliPort(kimlik)).catch(() => null);
         return this.port;
     }
 
@@ -306,7 +317,7 @@ export class CihazEsServisi {
         let kod = 403;
         let govde = '';
         try {
-            const r = await this.istegeYanit(i.yol, i.govde);
+            const r = await this.istegeYanit(i.yol, i.govde, i.ip);
             kod = r.kod;
             govde = r.govde;
         } catch (e) {
@@ -316,14 +327,14 @@ export class CihazEsServisi {
     }
 
     /** Saf yönlendirme (testler doğrudan çağırır). Yanlış anahtar/bilinmeyen eş: sessiz 403. */
-    async istegeYanit(yol: string, govde: string): Promise<{ kod: number; govde: string }> {
+    async istegeYanit(yol: string, govde: string, ip?: string): Promise<{ kod: number; govde: string }> {
         if (yol === '/esle') return this.esleIstegi(govde);
         if (yol === '/esle-durum') return this.esleDurumu(govde);
-        if (yol === '/esitle') return this.esitleIstegi(govde);
+        if (yol === '/esitle') return this.esitleIstegi(govde, ip);
         return { kod: 400, govde: '' };
     }
 
-    private async esitleIstegi(govde: string): Promise<{ kod: number; govde: string }> {
+    private async esitleIstegi(govde: string, ip?: string): Promise<{ kod: number; govde: string }> {
         const z = JSON.parse(govde) as Partial<KanalZarfi>;
         if (z.v !== 2 || typeof z.u !== 'string' || typeof z.n !== 'number') return { kod: 403, govde: '' };
         const e = (await CihazAgiDeposu.liste()).find((u) => u.aliciKimlik === z.u && (u.tur === 'tablet' || u.tur === 'telefon'));
@@ -331,7 +342,10 @@ export class CihazEsServisi {
         const anahtar = base64Coz(e.anahtar);
         const yuk = yukCoz(coz(anahtar, z.iv ?? '', kanalAad(e.uye, e.aliciKimlik, z.n), z.ct ?? ''));
         if (!yuk) return { kod: 403, govde: '' };
-        await CihazAgiDeposu.guncelle(e.aliciKimlik, { sonGelenN: z.n, sonEsitlemeMs: Date.now(), durum: 'tamam' });
+        // Kimliği doğrulanmış istek: eşin GÜNCEL adresi/portu kaydedilir (eş yeniden başladıysa bize
+        // yine ulaşabilsin diye; sahte mDNS bunu yapamaz — anahtar gerekir).
+        const adresTazele = ip && ozelIpv4Mu(ip) && yuk.port ? { adres: ip, port: yuk.port } : {};
+        await CihazAgiDeposu.guncelle(e.aliciKimlik, { sonGelenN: z.n, sonEsitlemeMs: Date.now(), durum: 'tamam', sonHataMs: 0, hataSayisi: 0, ...adresTazele });
         if (yuk.sil) {
             await CihazAgiDeposu.sil(e.aliciKimlik);
             this.degisti?.();
@@ -388,8 +402,9 @@ export class CihazEsServisi {
             ist: p.ist,
             cihazAdi: (p.cihaz ?? 'Telefon').slice(0, 40),
             kimlik: p.kimlik,
-            adres: typeof p.adres === 'string' ? p.adres : '',
-            port: typeof p.port === 'number' ? p.port : 0,
+            // Denetim D-06 paritesi: kayıt asla yerel olmayan adres tutmaz.
+            adres: typeof p.adres === 'string' && ozelIpv4Mu(p.adres) ? p.adres : '',
+            port: typeof p.port === 'number' && Number.isInteger(p.port) && p.port >= 1024 && p.port <= 65535 ? p.port : 0,
             tur: p.tur === 'tablet' ? 'tablet' : 'telefon',
         };
         this.istekDinleyicisi?.(o.bekleyen);

@@ -46,11 +46,11 @@ public class ExpoSiriKisayollariModule: Module {
         }
 
         // Cihaz agi dinleyicisi (iPad <-> iPhone): YALNIZ on planda; karar ve sifre JS'te.
-        AsyncFunction("dinleyiciBaslat") { (kimlik: String, ad: String, promise: Promise) in
+        AsyncFunction("dinleyiciBaslat") { (kimlik: String, ad: String, port: Int, promise: Promise) in
             let d = self.dinleyici ?? CihazDinleyici { [weak self] veri in self?.sendEvent("onCihazIstegi", veri) }
             self.dinleyici = d
-            d.baslat(kimlik: kimlik, ad: ad) { port in
-                if let port = port { promise.resolve(port) } else { promise.reject("DINLEYICI", "Dinleyici acilamadi") }
+            d.baslat(kimlik: kimlik, ad: ad, tercihPort: port) { acilan in
+                if let acilan = acilan { promise.resolve(acilan) } else { promise.reject("DINLEYICI", "Dinleyici acilamadi") }
             }
         }
 

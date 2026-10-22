@@ -275,11 +275,11 @@ export async function saatNafileKildimleriniAl(): Promise<SaatNafileKildimi[]> {
 // ---- Cihaz ağı dinleyicisi (iPad ↔ iPhone; YALNIZ ön planda) ----
 
 export interface IosDinleyiciKoprusu {
-    dinleyiciBaslat(kimlik: string, ad: string): Promise<number>;
+    dinleyiciBaslat(kimlik: string, ad: string, port: number): Promise<number>;
     dinleyiciDurdur(): Promise<void>;
     dinleyiciYanitla(id: string, kod: number, govde: string): Promise<void>;
     yerelAdres(): Promise<string | null>;
-    addListener(olay: 'onCihazIstegi', dinleyici: (veri: { id: string; yol: string; govde: string }) => void): { remove(): void };
+    addListener(olay: 'onCihazIstegi', dinleyici: (veri: { id: string; yol: string; govde: string; ip?: string }) => void): { remove(): void };
 }
 
 /** iOS dinleyici köprüsü; eski ikilide `null`. */

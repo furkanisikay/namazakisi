@@ -250,7 +250,7 @@ export async function dunBugunKilinanlar(bugun: string = bugunuAl()): Promise<Re
     return kilinan;
 }
 
-async function yerelAgVarMi(): Promise<boolean> {
+export async function yerelAgVarMi(): Promise<boolean> {
     try {
         // Tembel: netinfo native köprüdür; modül yükünde çekilseydi bu servisi dolaylı yükleyen her test düşerdi.
         const NetInfo = (require('@react-native-community/netinfo') as typeof import('@react-native-community/netinfo')).default;

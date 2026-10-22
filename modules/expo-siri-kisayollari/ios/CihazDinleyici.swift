@@ -25,33 +25,47 @@ final class CihazDinleyici {
         self.olay = olay
     }
 
-    func baslat(kimlik: String, ad: String, tamam: @escaping (Int?) -> Void) {
+    /// Once kararli porta (kimlikten) baglanir: es yeniden basladiginda iPhone (kesif yapmaz) ayni
+    /// adrese ulassin. Port doluysa sistem secer.
+    func baslat(kimlik: String, ad: String, tercihPort: Int, tamam: @escaping (Int?) -> Void) {
         kuyruk.async {
             if let d = self.dinleyici, let port = d.port?.rawValue {
                 tamam(Int(port))
                 return
             }
-            do {
-                let d = try NWListener(using: .tcp, on: .any)
-                let txt = NWTXTRecord(["i": kimlik, "t": "cihaz"])
-                d.service = NWListener.Service(name: String(ad.prefix(40)), type: "_namazakisi._tcp", domain: nil, txtRecord: txt)
-                var bildirildi = false
-                d.stateUpdateHandler = { durum in
-                    switch durum {
-                    case .ready:
-                        if !bildirildi { bildirildi = true; tamam(d.port.map { Int($0.rawValue) }) }
-                    case .failed, .cancelled:
-                        if !bildirildi { bildirildi = true; tamam(nil) }
-                    default:
-                        break
+            self.ac(kimlik: kimlik, ad: ad, port: NWEndpoint.Port(rawValue: UInt16(clamping: tercihPort)), tamam: tamam)
+        }
+    }
+
+    private func ac(kimlik: String, ad: String, port: NWEndpoint.Port?, tamam: @escaping (Int?) -> Void) {
+        do {
+            let d = try NWListener(using: .tcp, on: port ?? .any)
+            let txt = NWTXTRecord(["i": kimlik, "t": "cihaz"])
+            d.service = NWListener.Service(name: String(ad.prefix(40)), type: "_namazakisi._tcp", domain: nil, txtRecord: txt)
+            var bildirildi = false
+            d.stateUpdateHandler = { [weak self] durum in
+                switch durum {
+                case .ready:
+                    if !bildirildi { bildirildi = true; tamam(d.port.map { Int($0.rawValue) }) }
+                case .failed, .cancelled:
+                    guard !bildirildi else { return }
+                    bildirildi = true
+                    if port != nil, let self = self {
+                        // Kararli port dolu: sistem secsin.
+                        self.dinleyici = nil
+                        self.ac(kimlik: kimlik, ad: ad, port: nil, tamam: tamam)
+                    } else {
+                        tamam(nil)
                     }
+                default:
+                    break
                 }
-                d.newConnectionHandler = { [weak self] b in self?.kabul(b) }
-                self.dinleyici = d
-                d.start(queue: self.kuyruk)
-            } catch {
-                tamam(nil)
             }
+            d.newConnectionHandler = { [weak self] b in self?.kabul(b) }
+            dinleyici = d
+            d.start(queue: kuyruk)
+        } catch {
+            if port != nil { ac(kimlik: kimlik, ad: ad, port: nil, tamam: tamam) } else { tamam(nil) }
         }
     }
 
@@ -122,7 +136,7 @@ final class CihazDinleyici {
             self.sayac += 1
             let id = "i\(self.sayac)"
             self.bekleyenler[id] = { [weak self] kod, yanit in self?.yaz(b, kod: kod, govde: yanit) }
-            self.olay(["id": id, "yol": yol, "govde": metin])
+            self.olay(["id": id, "yol": yol, "govde": metin, "ip": CihazDinleyici.ipMetni(b.endpoint)])
             self.kuyruk.asyncAfter(deadline: .now() + 8) {
                 if let geri = self.bekleyenler.removeValue(forKey: id) { geri(503, "") }
             }
@@ -158,7 +172,12 @@ final class CihazDinleyici {
             if let adres = arayuz.ifa_addr, adres.pointee.sa_family == UInt8(AF_INET), String(cString: arayuz.ifa_name) == "en0" {
                 var ad = [CChar](repeating: 0, count: Int(NI_MAXHOST))
                 if getnameinfo(adres, socklen_t(adres.pointee.sa_len), &ad, socklen_t(ad.count), nil, 0, NI_NUMERICHOST) == 0 {
-                    bulunan = String(cString: ad)
+                    let aday = String(cString: ad)
+                    // QR yalniz OZEL IPv4 tasir (okuyan taraf zaten reddeder): 10/8, 172.16/12, 192.168/16.
+                    let o = aday.split(separator: ".").compactMap { Int($0) }
+                    if o.count == 4, o[0] == 10 || (o[0] == 192 && o[1] == 168) || (o[0] == 172 && (16...31).contains(o[1])) {
+                        bulunan = aday
+                    }
                 }
             }
             p = arayuz.ifa_next
@@ -179,6 +198,21 @@ final class CihazDinleyici {
             }
         }
         return nil
+    }
+
+    /// Esin IPv4 metni (IPv4-eslemeli IPv6 dahil); bilinmiyorsa bos.
+    static func ipMetni(_ uc: NWEndpoint) -> String {
+        guard case let .hostPort(host, _) = uc else { return "" }
+        switch host {
+        case .ipv4(let a):
+            return [UInt8](a.rawValue).map(String.init).joined(separator: ".")
+        case .ipv6(let a):
+            let o = [UInt8](a.rawValue)
+            if o.prefix(10).allSatisfy({ $0 == 0 }) && o[10] == 0xff && o[11] == 0xff { return o[12...15].map(String.init).joined(separator: ".") }
+            return ""
+        default:
+            return ""
+        }
     }
 
     static func yerelMi(_ uc: NWEndpoint) -> Bool {

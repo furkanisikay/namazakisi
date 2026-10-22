@@ -34,9 +34,14 @@ class CihazDinleyici(
     private val kapasite = Semaphore(DinleyiciKurallari.ES_ZAMANLI_AZAMI)
 
     @Synchronized
-    fun baslat(kimlik: String, ad: String): Int {
+    fun baslat(kimlik: String, ad: String, tercihPort: Int): Int {
         soket?.let { return it.localPort }
-        val s = ServerSocket(0)
+        // Kararlı port (kimlikten): eş yeniden başlayınca da aynı adreste bulunsun (iOS keşif yapmaz).
+        val s = try {
+            ServerSocket(tercihPort)
+        } catch (_: Exception) {
+            ServerSocket(0)
+        }
         soket = s
         Thread({ kabulDongusu(s) }, "CihazDinleyici").apply { isDaemon = true }.start()
         nsdYayinla(kimlik, ad, s.localPort)
@@ -117,7 +122,7 @@ class CihazDinleyici(
                 val id = "i${sayac.incrementAndGet()}"
                 val gelecek = CompletableFuture<Pair<Int, String>>()
                 bekleyenler[id] = gelecek
-                olay(mapOf("id" to id, "yol" to istek.yol, "govde" to metin))
+                olay(mapOf("id" to id, "yol" to istek.yol, "govde" to metin, "ip" to (s.inetAddress.hostAddress ?: "").removePrefix("::ffff:")))
                 val (kod, yanit) = try {
                     gelecek.get(8, TimeUnit.SECONDS)
                 } catch (_: Exception) {

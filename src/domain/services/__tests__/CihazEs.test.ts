@@ -19,7 +19,11 @@ jest.mock('../CihazAgiTasima', () => {
     };
 });
 const mockKilinanlar = jest.fn(async (): Promise<Record<string, string[]>> => ({}));
-jest.mock('../TvSenkronServisi', () => ({ dunBugunKilinanlar: () => mockKilinanlar() }));
+jest.mock('../TvSenkronServisi', () => ({
+    dunBugunKilinanlar: () => mockKilinanlar(),
+    yerelAgVarMi: async () => true,
+    geriCekilmeMs: (h: number) => (h <= 0 ? 0 : 30_000 * 2 ** (h - 1)),
+}));
 jest.mock('../../../data/local/LocalNamazServisi', () => ({ kayitDegistiDinleyicisiEkle: jest.fn() }));
 jest.mock('../KildimKuyruguServisi', () => ({ KildimKuyruguServisi: { getInstance: () => ({ bekleyenleriIsle: async () => undefined }) } }));
 
@@ -152,6 +156,28 @@ describe('telefon ↔ tablet', () => {
         // Eş zaten biliyor: ikinci turda olay gitmez; eşten gelen olayın yankısı da üretilmez.
         await CihazEsServisi.getInstance().esitle();
         expect(giden).toEqual([]);
+    });
+
+    it('eş yeniden başladıysa: kimliği doğrulanmış istek eşin GÜNCEL ip + portunu kaydeder', async () => {
+        const { tablet, anahtar } = await eslesmisKur();
+        const duz = yukuYaz({ v: 2, olaylar: [], bilinen: {}, port: 48001 });
+        const s = CihazEsServisi.getInstance();
+        expect((await s.istegeYanit('/esitle', telefonZarfi(tablet, anahtar, 1, duz), '192.168.1.77')).kod).toBe(200);
+        expect((await CihazAgiDeposu.liste())[0]).toMatchObject({ adres: '192.168.1.77', port: 48001 });
+        // Yerel olmayan ip ile adres DEĞİŞMEZ.
+        await s.istegeYanit('/esitle', telefonZarfi(tablet, anahtar, 2, duz), '8.8.8.8');
+        expect((await CihazAgiDeposu.liste())[0].adres).toBe('192.168.1.77');
+    });
+
+    it('PİL: ulaşılamayan eş üstel geri çekilir — bekleme süresince denenmez', async () => {
+        await eslesmisKur();
+        mockGonder.mockRejectedValue(new Error('zaman aşımı'));
+        const s = CihazEsServisi.getInstance();
+        expect(await s.esitle()).toEqual({ [TEL]: 'ulasilamadi' });
+        expect((await CihazAgiDeposu.liste())[0].hataSayisi).toBe(1);
+        mockGonder.mockClear();
+        expect(await s.esitle()).toEqual({ [TEL]: 'ulasilamadi' });
+        expect(mockGonder).not.toHaveBeenCalled();
     });
 
     it('dinleyici ön planda ve yalnız eş/oturum varken açılır', async () => {
