@@ -5,6 +5,25 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.63.0] - 2026-10-22
+
+### Eklendi
+- [saat] Apple Watch geri sayımı birimli (#363 ile aynı dil); en küçük saatte kare kanıtı
+- [saat] Apple Watch arayüzü yeniden — dikey sayfalar (Şimdi halkası, Bugün gün kadranı, Kıble, Tesbihat), vakit tonları, her zaman açık varyant, Smart Stack önemi, yük boyutu ölçümü
+- [saat] kıblede Kâbe işareti + ±5° yeşil hiza, net boş durum; uyandırma ekranı 41 mm'de kaydırmasız
+- [saat] Apple Watch yerel hatırlatma, bilekte sessiz uyandırma, kıble ve ekran cilası
+- [saat] Apple Watch'a muhafız planı, uyandırma listesi ve kıble konumu
+
+### Düzeltildi
+- [saat] uyandırma ekranı 41 mm'de iki düğmeyle sığar (ikon + ad tek satır); sönük kare daha uzun bekler
+- [saat] Kıldım tikinin çizim animasyonu gerçekten oynar
+- [saat] Kıldım sahnesinde tik halka kapandıktan sonra çizilir
+- [saat] Şimdi halkası alanı doldurur, süre halka çapına göre (taşmıyordu); kompakt Kıldım; kareler bağımsız; kadranda saat çizgileri
+- [saat] kıble karesi kök ekran olarak açılır; kıble açılış günlüğü
+- [saat] kare çekiminde tek navigasyon hedefi (kıble açılışı kilitleniyordu)
+- [saat] kare çekiminde bildirim izni penceresi açılmasın
+- [saat] uyandırma ekranında sistem kapatma düğmesi yok, opak zemin; kıble karesi daha uzun bekler
+
 ## [0.62.0] - 2026-10-22
 
 ### Eklendi
