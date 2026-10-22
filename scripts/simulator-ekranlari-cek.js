@@ -236,12 +236,15 @@ async function ortayaGetir(kalip, ad) {
         const a = await agac(`${ad}-${i}`);
         const kok = a.find((o) => String(o.type || '') === 'Application');
         const yuk = kok ? cerceve(kok).h : 956;
+        // iPad'de sol 220 pt kenar gezinmesidir: kaydırma ayrıntı bölmesinde yapılmalı.
+        const gen = kok ? cerceve(kok).w : 440;
+        const sx = String(Math.round(gen * 0.7));
         const o = bul(a, kalip);
         if (o) {
             const y = cerceve(o).y + cerceve(o).h / 2;
             if (y > yuk * 0.25 && y < yuk * 0.6) return true;
         }
-        idb('ui', 'swipe', '220', String(Math.round(yuk * 0.72)), '220', String(Math.round(yuk * 0.45)), '--duration', '1.0');
+        idb('ui', 'swipe', sx, String(Math.round(yuk * 0.72)), sx, String(Math.round(yuk * 0.45)), '--duration', '1.0');
         await bekle(1500);
     }
     return false;
@@ -252,12 +255,15 @@ async function kaydirarakDokun(kalip, aciklama, ad, secenek = {}) {
         const a = await agac(`${ad}-${i}`);
         const kok = a.find((o) => String(o.type || '') === 'Application');
         const yuk = kok ? cerceve(kok).h : 956;
+        // iPad'de sol 220 pt kenar gezinmesidir: kaydırma ayrıntı bölmesinde yapılmalı.
+        const gen = kok ? cerceve(kok).w : 440;
+        const sx = String(Math.round(gen * 0.7));
         const o = bul(a, kalip);
         if (o) {
             const y = cerceve(o).y + cerceve(o).h / 2;
             if (y > yuk * 0.12 && y < yuk * 0.8) return dokun(a, kalip, aciklama, secenek);
         }
-        idb('ui', 'swipe', '220', String(Math.round(yuk * 0.72)), '220', String(Math.round(yuk * 0.4)), '--duration', '1.0');
+        idb('ui', 'swipe', sx, String(Math.round(yuk * 0.72)), sx, String(Math.round(yuk * 0.4)), '--duration', '1.0');
         await bekle(1500);
     }
     console.error(`  BULUNAMADI (kaydirarak): ${aciklama}  (${kalip})`);
@@ -292,7 +298,7 @@ function cek(ad) {
 
     // --- Seri (Ilerleme sekmesinin en ustu: gok paneli) ---
     a = await agac('seri-oncesi');
-    if (await dokun(a, SEKME('İlerleme'), 'ilerleme sekmesi', { bekle: 3500 })) {
+    if (await dokun(a, SEKME('İlerleme'), 'ilerleme sekmesi', { bekle: 3500, tur: 'Button|GenericElement' })) {
         // Gok panelindeki yildizlar SIRAYLA animasyonla belirir; erken cekilen kare
         // haritayi yarim gosterir: baslik "25 günlük seri" derken harita 18'den
         // sonrasini bos birakiyordu (yasandi).
@@ -303,7 +309,7 @@ function cek(ad) {
 
     // --- Ayarlar -> Muhafiz ---
     a = await agac('ayarlar-oncesi');
-    if (await dokun(a, SEKME('Ayarlar'), 'ayarlar sekmesi', { bekle: 2500 })) {
+    if (await dokun(a, SEKME('Ayarlar'), 'ayarlar sekmesi', { bekle: 2500, tur: 'Button|GenericElement' })) {
         a = await agac('ayarlar');
         // Ayarlar > Hatirlatmalar > Vakit cikmadan > Sabah'in "Ozel" parcasi (vakit kartlari).
         // "Vakit çıkmadan" satiri Hatirlatmalar sayfasinda sekme cubugunun hizasinda
@@ -369,12 +375,12 @@ function cek(ad) {
         if (!(await dokun(katman, KAPATILACAK, `kaza oncesi katman ${tur + 1}`, { bekle: 2000 }))) break;
     }
     a = await agac('kaza-oncesi');
-    if (await dokun(a, SEKME('Kaza'), 'kaza sekmesi', { bekle: 3000 })) {
+    if (await dokun(a, SEKME('Kaza'), 'kaza sekmesi', { bekle: 3000, tur: 'Button|GenericElement' })) {
         await agac('kaza');
         cek('07-kaza');
     }
     a = await agac('istatistik-oncesi');
-    if (await dokun(a, SEKME('İlerleme'), 'ilerleme sekmesi', { bekle: 3000 })) {
+    if (await dokun(a, SEKME('İlerleme'), 'ilerleme sekmesi', { bekle: 3000, tur: 'Button|GenericElement' })) {
         // AYLIK, haftalik degil: haftalik gorunum icinde bulunulan haftayi
         // gosterir ve hafta basinda (pazartesi) yalnizca bugun dolu, "%9 basari"
         // gorunuyordu. Kılma oranı seri panelinin ALTINDA → kaydirarak bulunur.
@@ -399,7 +405,7 @@ function cek(ad) {
         if (!(await dokun(katman, KAPATILACAK, `kible oncesi katman ${tur + 1}`, { bekle: 2000 }))) break;
     }
     a = await agac('kible-oncesi');
-    if (await dokun(a, SEKME('Kıble'), 'kible sekmesi', { bekle: 3500 })) {
+    if (await dokun(a, SEKME('Kıble'), 'kible sekmesi', { bekle: 3500, tur: 'Button|GenericElement' })) {
         // Konum izni is akista verilmis olmali; yine de guvenlik agi.
         for (let tur = 0; tur < 2; tur++) {
             const katman = await agac(`kible-izin-${tur}`);
