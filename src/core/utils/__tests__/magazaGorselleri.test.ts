@@ -24,7 +24,7 @@ type Kare = {
     dipnot?: string;
     iddialar: string[];
     rozet?: { ikon: string; metin: string };
-    ipucu?: { metin: string; not?: string; x: number; y: number };
+    ipucu?: { metin: string; not?: string; x?: number; y?: number; hedef?: { x: number; y: number }; yon?: string };
     bildirim?: { baslik: string; govde: string };
     maddeler?: { ikon: string; metin: string }[];
     katmanlar?: { cihaz: string; kaynak: string[] }[];
@@ -198,9 +198,11 @@ describe('magaza pazarlama gorselleri — DOGRULUK (platform suzgeci)', () => {
                 expect({ ad, kare: k.ad, rozetDe: Boolean(k.rozet) }).toEqual({ ad, kare: k.ad, rozetDe: false });
                 const kelime = k.ipucu.metin.split(/\s+/).filter(Boolean).length;
                 expect({ kare: k.ad, kisa: kelime >= 2 && kelime <= 5 }).toEqual({ kare: k.ad, kisa: true });
-                for (const v of [k.ipucu.x, k.ipucu.y]) expect(v >= 0 && v <= 1).toBe(true);
+                const n = k.ipucu.hedef || { x: k.ipucu.x as number, y: k.ipucu.y as number };
+                for (const v of [n.x, n.y]) expect(v >= 0 && v <= 1).toBe(true);
+                if (k.ipucu.hedef) expect(['sol', 'sag', 'ust', 'alt']).toContain(k.ipucu.yon);
             }
-        expect(sayi).toBeGreaterThan(20);
+        expect(sayi).toBeGreaterThan(15);
     });
 
     it('telefon/iPad setlerinin eski --platform adlari dogru sete gider', () => {

@@ -714,9 +714,10 @@ function dikey(kareHam, b, gorseller, ikonUrl) {
         // tabletin ALTINDA durur: kayis tabletin ustune binmesin.
         if (tv) alan += `<div style="position:absolute;left:${104 * k}px;top:${ust}px">${cerceve('tv', tv.url, 960 * k, k, z, { boyut: tv.boyut })}</div>`;
         if (tablet) {
+            // Saat tabletin ARKASINDA ve altinda: kayisi tabletin altina girer, tableti ortmez.
+            if (saat) alan += `<div style="position:absolute;right:${110 * k}px;top:${ust + 1160 * k}px">${saatCiz(saat, 400 * k, z, 0.55)}</div>`;
             alan += `<div style="position:absolute;right:${-80 * k}px;top:${ust + 470 * k}px">${cerceve(tablet.cihaz, tablet.url, 860 * k, k, z, { boyut: tablet.boyut, kirpAlt: tablet.cihaz === 'tablet' ? 0.075 : 0 })}</div>`;
             if (tel) alan += `<div style="position:absolute;left:${80 * k}px;top:${ust + 640 * k}px">${cerceve('telefon', tel.url, 500 * k, k, z, { boyut: tel.boyut, yaricap: telYaricap })}</div>`;
-            if (saat) alan += `<div style="position:absolute;right:${130 * k}px;top:${ust + 1120 * k}px">${saatCiz(saat, 400 * k, z, 0.55)}</div>`;
         } else {
             // Guncel tablet karesi yoksa tablet CIZILMEZ (eski arayuz konmaz).
             if (tel) alan += `<div style="position:absolute;left:${110 * k}px;top:${ust + 520 * k}px">${cerceve('telefon', tel.url, 580 * k, k, z, { boyut: tel.boyut, yaricap: telYaricap })}</div>`;
@@ -858,38 +859,39 @@ function saatKaresi(kare, b, gorseller, cihazTuru) {
 }
 
 /**
- * Karenin TEK anlatici ipucu: ince marka yesili ok/yay + 2-4 kelimelik etiket (istege bagli
- * kucuk not). Koordinatlar tuvalin ORANIdir (0..1) → ayni tanim iPhone ve iPhone orta
- * boyutunda calisir. Alanlar: metin, x, y (etiketin sol-ust kosesi; `sag: true` ise x sag
- * kenar), not, ok: { bas:{x,y}, hedef:{x,y}, egri, cift }, yay: { cx, cy, r, a1, a2 }
- * (r tuval genisligine oran; acilar derece, 0 = saat 12, saat yonunde), kesik: [[x1,y1,x2,y2]].
+ * Karenin TEK anlatici ipucu. Biçim: hedefin kenarina kucuk bir isaret noktasi + HEMEN yanina
+ * etiket (kisa baglanti cizgisi, ~%2-4); ok uzun degil, icerigin ustunden gecmez. Koordinatlar
+ * tuvalin ORANIdir (0..1) → ayni tanim iPhone ve iPhone orta boyutunda calisir.
+ * Alanlar: metin, not?, hedef {x,y} + yon ('sol'|'sag'|'ust'|'alt') — etiket hedefin o yaninda;
+ * ya da hedefsiz serbest etiket: x, y (+ orta | sag). Ek: yay { cx, cy, r, a1, a2 } (doner
+ * cerceve izi), kesik [[x1,y1,x2,y2]] (CIHAZLARIN ARKASINDAN gecen ince cizgiler).
  */
+function ipucuOlcu(gen, yuk) {
+    const fs = Math.max(13, Math.min(gen, yuk) * 0.031);
+    return { fs, cizgi: Math.max(2, fs * 0.09) };
+}
+
+function ipucuArkaHtml(ip, gen, yuk) {
+    if (!ip || !ip.kesik) return '';
+    const { fs, cizgi } = ipucuOlcu(gen, yuk);
+    let svg = '';
+    for (const [x1, y1, x2, y2] of ip.kesik) {
+        svg += `<line x1="${x1 * gen}" y1="${y1 * yuk}" x2="${x2 * gen}" y2="${y2 * yuk}" stroke="${MARKA.yesil}" stroke-width="${cizgi * 0.9}" stroke-dasharray="${fs * 0.3} ${fs * 0.42}" stroke-linecap="round" opacity="0.85"/>`;
+    }
+    return `<svg style="position:absolute;left:0;top:0;pointer-events:none" width="${gen}" height="${yuk}">${svg}</svg>`;
+}
+
 function ipucuHtml(ip, gen, yuk, koyu = false) {
     if (!ip) return '';
-    const fs = Math.max(13, Math.min(gen, yuk) * 0.031);
-    const cizgi = Math.max(2, fs * 0.1);
+    const { fs, cizgi } = ipucuOlcu(gen, yuk);
     const renk = koyu ? MARKA.yesil : MARKA.koyu;
-    const P = (o) => ({ x: o.x * gen, y: o.y * yuk });
     let svg = '';
     const ucu = (x, y, aci) => {
-        const u = fs * 0.55;
-        const a1 = aci + Math.PI * 0.82;
-        const a2 = aci - Math.PI * 0.82;
+        const u = fs * 0.5;
+        const a1 = aci + Math.PI * 0.8;
+        const a2 = aci - Math.PI * 0.8;
         return `<path d="M${x + Math.cos(a1) * u},${y + Math.sin(a1) * u} L${x},${y} L${x + Math.cos(a2) * u},${y + Math.sin(a2) * u}" fill="none" stroke="${renk}" stroke-width="${cizgi}" stroke-linecap="round" stroke-linejoin="round"/>`;
     };
-    if (ip.ok) {
-        const a = P(ip.ok.bas);
-        const b = P(ip.ok.hedef);
-        const dx = b.x - a.x;
-        const dy = b.y - a.y;
-        const egri = ip.ok.egri === undefined ? 0.25 : ip.ok.egri;
-        const cx = (a.x + b.x) / 2 - dy * egri;
-        const cy = (a.y + b.y) / 2 + dx * egri;
-        svg += `<path d="M${a.x},${a.y} Q${cx},${cy} ${b.x},${b.y}" fill="none" stroke="${renk}" stroke-width="${cizgi}" stroke-linecap="round"/>`;
-        svg += ucu(b.x, b.y, Math.atan2(b.y - cy, b.x - cx));
-        if (ip.ok.cift) svg += ucu(a.x, a.y, Math.atan2(a.y - cy, a.x - cx));
-        svg += `<circle cx="${b.x}" cy="${b.y}" r="${fs * 0.42}" fill="none" stroke="${renk}" stroke-width="${cizgi * 0.7}" opacity="0.55"/>`;
-    }
     if (ip.yay) {
         const { cx, cy, r, a1, a2 } = ip.yay;
         const X = cx * gen;
@@ -904,16 +906,30 @@ function ipucuHtml(ip, gen, yuk, koyu = false) {
         svg += `<path d="M${p1.x},${p1.y} A${R},${R} 0 0 1 ${p2.x},${p2.y}" fill="none" stroke="${renk}" stroke-width="${cizgi * 1.2}" stroke-linecap="round"/>`;
         svg += ucu(p2.x, p2.y, p2.t + Math.PI / 2) + ucu(p1.x, p1.y, p1.t - Math.PI / 2);
     }
-    for (const [x1, y1, x2, y2] of ip.kesik || []) {
-        svg += `<line x1="${x1 * gen}" y1="${y1 * yuk}" x2="${x2 * gen}" y2="${y2 * yuk}" stroke="${renk}" stroke-width="${cizgi}" stroke-dasharray="${fs * 0.35} ${fs * 0.35}" stroke-linecap="round"/>`;
+    // Etiketin konumu: hedefin yaninda (kisa baglanti) ya da serbest.
+    let konum;
+    if (ip.hedef) {
+        const hx = ip.hedef.x * gen;
+        const hy = ip.hedef.y * yuk;
+        const r = fs * 0.34;
+        const bag = fs * 0.9; // baglanti cizgisi
+        svg += `<circle cx="${hx}" cy="${hy}" r="${r}" fill="#FFFFFF" stroke="${renk}" stroke-width="${cizgi}"/><circle cx="${hx}" cy="${hy}" r="${r * 0.42}" fill="${renk}"/>`;
+        const yon = ip.yon || 'sag';
+        const d = { sol: [-1, 0], sag: [1, 0], ust: [0, -1], alt: [0, 1] }[yon];
+        const bx = hx + d[0] * (r + bag);
+        const by = hy + d[1] * (r + bag);
+        svg += `<line x1="${hx + d[0] * r}" y1="${hy + d[1] * r}" x2="${bx}" y2="${by}" stroke="${renk}" stroke-width="${cizgi}" stroke-linecap="round"/>`;
+        const kay = { sol: 'translate(-100%,-50%)', sag: 'translate(0,-50%)', ust: 'translate(-50%,-100%)', alt: 'translate(-50%,0)' }[yon];
+        konum = `left:${bx}px;top:${by}px;transform:${kay}`;
+    } else {
+        konum = ip.sag ? `right:${(1 - ip.x) * gen}px;top:${ip.y * yuk}px` : ip.orta ? `left:${ip.x * gen}px;top:${ip.y * yuk}px;transform:translateX(-50%)` : `left:${ip.x * gen}px;top:${ip.y * yuk}px`;
     }
-    const yer = ip.sag ? `right:${(1 - ip.x) * gen}px` : ip.orta ? `left:${ip.x * gen}px;transform:translateX(-50%)` : `left:${ip.x * gen}px`;
     const etiket =
-        `<div style="position:absolute;${yer};top:${ip.y * yuk}px;padding:${fs * 0.36}px ${fs * 0.62}px;border-radius:${fs}px;background:rgba(255,255,255,0.96);border:${cizgi * 0.8}px solid ${MARKA.yesil};` +
-        `box-shadow:0 ${fs * 0.3}px ${fs * 0.9}px rgba(18,48,27,0.18);color:#12301B;font-size:${fs}px;font-weight:700;line-height:1.15;white-space:nowrap;text-align:${ip.sag ? 'right' : 'left'}">${satirlar(ip.metin)}` +
+        `<div style="position:absolute;${konum};padding:${fs * 0.34}px ${fs * 0.6}px;border-radius:${fs}px;background:rgba(255,255,255,0.97);border:${cizgi * 0.8}px solid ${MARKA.yesil};` +
+        `box-shadow:0 ${fs * 0.25}px ${fs * 0.8}px rgba(18,48,27,0.18);color:#12301B;font-size:${fs}px;font-weight:700;line-height:1.15;white-space:nowrap;text-align:${ip.sag ? 'right' : 'left'}">${satirlar(ip.metin)}` +
         (ip.not ? `<div style="margin-top:${fs * 0.12}px;font-size:${fs * 0.72}px;font-weight:500;color:#4A5F50">${esc(ip.not)}</div>` : '') +
         `</div>`;
-    return `<svg style="position:absolute;left:0;top:0;overflow:visible;pointer-events:none;filter:drop-shadow(0 0 ${cizgi * 0.9}px rgba(255,255,255,0.95))" width="${gen}" height="${yuk}">${svg}</svg>${etiket}`;
+    return `<svg style="position:absolute;left:0;top:0;overflow:visible;pointer-events:none;filter:drop-shadow(0 0 ${cizgi * 0.8}px rgba(255,255,255,0.9))" width="${gen}" height="${yuk}">${svg}</svg>${etiket}`;
 }
 
 function sayfaUret(kare, set, gorseller, ikonUrl) {
@@ -922,7 +938,11 @@ function sayfaUret(kare, set, gorseller, ikonUrl) {
     else if (set.yon === 'yatay') html = yatay(kare, set.boyut, gorseller, set.cihaz);
     else html = saatKaresi(kare, set.boyut, gorseller, set.cihaz);
     if (!kare.ipucu) return html;
-    return html.replace('</body>', `${ipucuHtml(kare.ipucu, set.boyut.gen, set.boyut.yuk, (kare.zemin || '') === 'gece')}</body>`);
+    const { gen, yuk } = set.boyut;
+    // Kesik cizgiler zeminin hemen ustune: cihazlar onlari orter (arkadan gecer).
+    return html
+        .replace('<div class="zemin"></div>', `<div class="zemin"></div>${ipucuArkaHtml(kare.ipucu, gen, yuk)}`)
+        .replace('</body>', `${ipucuHtml(kare.ipucu, gen, yuk, (kare.zemin || '') === 'gece')}</body>`);
 }
 
 /** Play "one cikan gorsel" (1024x500). */
