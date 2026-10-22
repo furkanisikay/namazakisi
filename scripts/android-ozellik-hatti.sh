@@ -124,6 +124,11 @@ hazirlik_uygula() {
       # Kible taze konum ister; sabitleme her akistan once tazelenir (tablette konum gec acilir).
       adb shell cmd location set-location-enabled true >/dev/null 2>&1 || true
       adb emu geo fix 28.9784 41.0082 || true
+      # Akis boyunca sabitleme tazelenir: tablette kalibrasyon akisi pusuladan kameraya
+      # gecince konumu YENIDEN istiyor ve tek seferlik bayat fix "Konum servislerine
+      # erisilemiyor" veriyordu (telefonda gorulmedi). hazirlik_bitir durdurur.
+      ( for _ in $(seq 1 90); do adb emu geo fix 28.9784 41.0082 >/dev/null 2>&1 || true; sleep 2; done ) &
+      KONUM_TAZELEYICI=$!
       local poz
       poz=$(node scripts/kible-emulator-pozu.js "$1")
       echo "sensor pozu ($1): $poz"
@@ -144,6 +149,7 @@ hazirlik_uygula() {
 
 # Akis sonrasi: hazirligin actigi seyleri geri al (animasyon olcegi, ekran kaydi).
 hazirlik_bitir() {
+  if [ -n "${KONUM_TAZELEYICI:-}" ]; then kill "$KONUM_TAZELEYICI" 2>/dev/null || true; KONUM_TAZELEYICI=; fi
   case "$1" in
     kible-kamera-25)
       # Akis kamera gorunumunde biter: yolun akisi 8 sn (artifact: kible-yolu-<tema>.mp4).
