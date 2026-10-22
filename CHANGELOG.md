@@ -5,6 +5,16 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.64.0] - 2026-10-22
+
+### Eklendi
+- [ses] kendi dosyanızdan bildirim sesi ve vakit girdi sesi seçimi
+
+### Düzeltildi
+- [ses] bulunamayan ses metni satıra sığar
+- [ses] bulunamayan vakit sesi ekranda söylenir
+- [ses] önizleme çıkışta susar, ölü kendi-dosya URI'si varsayılana düşer, vakit kanal GC önbelleği
+
 ## [0.63.1] - 2026-10-22
 
 ### Düzeltildi
