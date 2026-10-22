@@ -377,6 +377,14 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 90
     steps:
+      # Bilgi: runner'daki Xcode / simulator cihaz turleri (ornegin katlanabilir iPhone Duo
+      # simulatoru var mi). Yalniz listeler, hicbir seyi degistirmez.
+      - name: 🔎 Xcode ve simülatör cihaz türleri
+        run: |
+          xcodebuild -version || true
+          xcrun simctl list devicetypes | tee -a "$GITHUB_STEP_SUMMARY" || true
+          xcrun simctl list runtimes | tee -a "$GITHUB_STEP_SUMMARY" || true
+
       - name: 📥 Kodu çek
         uses: actions/checkout@v7
 
