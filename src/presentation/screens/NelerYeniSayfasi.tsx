@@ -65,6 +65,8 @@ const OzellikKarti: React.FC<OzellikKartiProps> = ({ ozellik, acik, onTogglePres
                 className="flex-row items-center p-4"
                 onPress={onTogglePress}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityState={{ expanded: acik }}
             >
                 <View
                     className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
@@ -127,6 +129,7 @@ const OzellikKarti: React.FC<OzellikKartiProps> = ({ ozellik, acik, onTogglePres
                             style={{ backgroundColor: renkler.birincil }}
                             onPress={onAc}
                             activeOpacity={0.85}
+                            accessibilityRole="button"
                         >
                             <FontAwesome5 name="arrow-right" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                             <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
