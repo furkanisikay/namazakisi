@@ -8,7 +8,7 @@
  */
 import * as React from 'react';
 import { Dimensions, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { rolSorulmaliMi } from '../../../core/cihaz/cihazRolu';
 import { cihazRoluOku, cihazRoluYaz } from '../../../data/local/LocalCihazRoluServisi';

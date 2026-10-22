@@ -61,6 +61,16 @@ describe('tek beyin kapısı — tüm planlayıcılar', () => {
         expect(kaynak).toMatch(/await hatirlatmaKurulabilirMi\(\)/);
     });
 
+    it('muhafızda kapı "değişmediyse atla" parmak izinden ÖNCE: ikinci cihaza geçişte plan temizlenir', () => {
+        const kaynak = fs.readFileSync(path.join(kok, 'ArkaplanMuhafizServisi.ts'), 'utf8');
+        const govde = kaynak.slice(kaynak.indexOf('private async planla('));
+        const kapi = govde.indexOf('await hatirlatmaKurulabilirMi()');
+        expect(kapi).toBeGreaterThan(-1);
+        expect(kapi).toBeLessThan(govde.indexOf('this.parmakIziHesapla('));
+        // Kapalı dalı plan kaydını da siler: kapı yeniden açılınca tur "değişmedi" sanıp atlamaz.
+        expect(govde.slice(kapi, govde.indexOf('this.parmakIziHesapla('))).toContain('this.planKaydiniSil()');
+    });
+
     it('konum yayma listesindeki her hatırlatma servisi bu listede', () => {
         const yayma = fs.readFileSync(path.join(kok, 'KonumDegisikligiServisi.ts'), 'utf8');
         const kullanilan = new Set(
