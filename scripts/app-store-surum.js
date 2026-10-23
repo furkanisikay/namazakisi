@@ -347,6 +347,45 @@ async function incelemeyeGonder(a) {
     }
     if (eksik.length) throw new Error('Eksik: ' + eksik.join(', '));
 
+    // Reddedilen surum duzeltilip yeniden gonderiliyorsa surum hala ESKI gonderime
+    // (UNRESOLVED_ISSUES) baglidir; yeni gonderime eklemek 409 "cannot be reviewed" verir.
+    // Apple'in yolu: eski gonderimin ogelerini resolved yap, eski gonderimi yeniden sun.
+    const cozulmemis = await api(
+        'GET',
+        '/v1/reviewSubmissions?filter[app]=' + APP + '&filter[platform]=IOS&filter[state]=UNRESOLVED_ISSUES&limit=5'
+    );
+    if (cozulmemis.kod >= 300) hata('gonderimler okunamadi', cozulmemis);
+    const eski = cozulmemis.j.data[0];
+    if (eski) {
+        // Onceki denemede acilmis BOS gonderimler kalmasin (iptal edilir).
+        const bos = await api(
+            'GET',
+            '/v1/reviewSubmissions?filter[app]=' + APP + '&filter[platform]=IOS&filter[state]=READY_FOR_REVIEW&limit=5'
+        );
+        for (const s of (bos.j && bos.j.data) || []) {
+            const o = await api('GET', '/v1/reviewSubmissions/' + s.id + '/items');
+            if (((o.j && o.j.data) || []).length === 0) {
+                await api('PATCH', '/v1/reviewSubmissions/' + s.id, {
+                    data: { type: 'reviewSubmissions', id: s.id, attributes: { canceled: true } },
+                });
+                console.log('  bos gonderim iptal edildi: ' + s.id);
+            }
+        }
+        const ogeler = await api('GET', '/v1/reviewSubmissions/' + eski.id + '/items');
+        for (const oge of (ogeler.j && ogeler.j.data) || []) {
+            const c = await api('PATCH', '/v1/reviewSubmissionItems/' + oge.id, {
+                data: { type: 'reviewSubmissionItems', id: oge.id, attributes: { resolved: true } },
+            });
+            if (c.kod >= 300) hata('oge cozuldu olarak isaretlenemedi', c);
+        }
+        const g = await api('PATCH', '/v1/reviewSubmissions/' + eski.id, {
+            data: { type: 'reviewSubmissions', id: eski.id, attributes: { submitted: true } },
+        });
+        if (g.kod >= 300) hata('reddedilen gonderim yeniden sunulamadi', g);
+        console.log('Reddedilen gonderim yeniden sunuldu: ' + eski.id + ' -> ' + g.j.data.attributes.state);
+        return;
+    }
+
     // Acik (gonderilmemis) bir gonderim varsa onu kullan; yoksa ac.
     const rs = await api(
         'GET',
