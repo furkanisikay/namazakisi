@@ -91,9 +91,9 @@ Kayıt için (üretimdeki not, mağazadan okundu).
 
 ## App Store
 
-#### 0.70.0
+#### 0.70.1
 
-Yayındaki önceki sürüm 0.41.1 (0.53.1 reddedildi, kullanıcıya ulaşmadı); not ikisinin arasındaki her şeyi kapsar. Kaynak: `YeniOzellikler.ts` iOS duyuruları ve CHANGELOG. iCloud eşitlemesi iOS'ta duyurulmadığı için girmedi; Android'e özgü özellikler (kendi ses dosyası, Google Drive eşitlemesi, Wear OS, widget dışı Android yüzeyleri) girmez.
+Yayındaki önceki sürüm 0.41.1 (0.53.1 arka plan ses kipi yüzünden reddedildi, 0.70.1 bunu giderir, kullanıcıya ulaşmadı); not ikisinin arasındaki her şeyi kapsar. Kaynak: `YeniOzellikler.ts` iOS duyuruları ve CHANGELOG. iCloud eşitlemesi iOS'ta duyurulmadığı için girmedi; Android'e özgü özellikler (kendi ses dosyası, Google Drive eşitlemesi, Wear OS, widget dışı Android yüzeyleri) girmez.
 
 ```
 - Yeni sade tasarım: Bugün, Kıble, Kaza, İlerleme ve Ayarlar sekmeleri, 5 adımlı kurulum.
