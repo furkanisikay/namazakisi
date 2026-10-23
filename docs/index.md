@@ -54,6 +54,8 @@ Kaynak koddaki sürüm: **0.70.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="ekran-goruntuleri/magaza/wear/04.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 4" title="Google Play — Wear OS ekran görüntüsü 4">
   <img src="ekran-goruntuleri/magaza/wear/05.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 5" title="Google Play — Wear OS ekran görüntüsü 5">
   <img src="ekran-goruntuleri/magaza/wear/06.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 6" title="Google Play — Wear OS ekran görüntüsü 6">
+  <img src="ekran-goruntuleri/magaza/wear/07.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 7" title="Google Play — Wear OS ekran görüntüsü 7">
+  <img src="ekran-goruntuleri/magaza/wear/08.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 8" title="Google Play — Wear OS ekran görüntüsü 8">
 </p>
 
 **Google Play — Android TV**
@@ -62,6 +64,11 @@ Kaynak koddaki sürüm: **0.70.0** · Mağazada: Google Play: **0.45.0** · App 
   <img src="ekran-goruntuleri/magaza/tv/01.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 1" title="Google Play — Android TV ekran görüntüsü 1">
   <img src="ekran-goruntuleri/magaza/tv/02.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 2" title="Google Play — Android TV ekran görüntüsü 2">
   <img src="ekran-goruntuleri/magaza/tv/03.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 3" title="Google Play — Android TV ekran görüntüsü 3">
+  <img src="ekran-goruntuleri/magaza/tv/04.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 4" title="Google Play — Android TV ekran görüntüsü 4">
+  <img src="ekran-goruntuleri/magaza/tv/05.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 5" title="Google Play — Android TV ekran görüntüsü 5">
+  <img src="ekran-goruntuleri/magaza/tv/06.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 6" title="Google Play — Android TV ekran görüntüsü 6">
+  <img src="ekran-goruntuleri/magaza/tv/07.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 7" title="Google Play — Android TV ekran görüntüsü 7">
+  <img src="ekran-goruntuleri/magaza/tv/08.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 8" title="Google Play — Android TV ekran görüntüsü 8">
 </p>
 
 [Tüm ekran görüntüleri](ekran-goruntuleri/)
