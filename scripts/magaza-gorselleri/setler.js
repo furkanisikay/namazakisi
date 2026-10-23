@@ -279,7 +279,7 @@ const SETLER = {
                 iddialar: ['cihaz-agi', 'ipad', 'apple-watch-gosterim', 'tv-eslesme'],
             }),
             // Samimiyet: Kildim sonrasi dugme "Allah kabul etsin" (magaza turu sonu 09-kabul; yoksa ozellik 19-kabul).
-            kare('10-gizlilik', ORTAK.gizlilik, { kaynak: ['09-kabul.png', '19-kabul-yerlesti.png', '19-kabul-sonra.png', '01-ana-ekran.png'] }),
+            kare('10-gizlilik', ORTAK.gizlilik, { kaynak: ['19-kabul-sonra.png', '09-kabul.png', '19-kabul-yerlesti.png', '01-ana-ekran.png'] }),
             // App Store galerisi en fazla 10: ureticiye girer, yukleyiciye gitmez.
             kare('11-gece', ORTAK.nafile, { magazaDisi: true }),
             kare('12-cuma', ORTAK.cuma, { magazaDisi: true }),

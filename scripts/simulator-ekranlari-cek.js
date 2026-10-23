@@ -428,10 +428,14 @@ function cek(ad) {
     for (let i = 0; i < 10 && !bul(await agac(`kabul-capa-${i}`), ANA_EKRAN_CAPASI); i++) await bekle(1500);
     a = await agac('kabul');
     if (await dokun(a, /vakit-karti-kildim|Kılındı olarak işaretle/, 'kildim dugmesi', { bekle: 900 })) {
+        // Kare HEMEN (agac okumasi saniyeler surer; o arada kaza onerisi acilip duayi ortuyordu).
+        cek('09-kabul');
         const sonra = await agac('kabul-sonra');
         // Kerahat vaktindeyse once kibar onay modali gelir.
-        if (bul(sonra, /^Yine de işaretleyin$/)) await dokun(sonra, /^Yine de işaretleyin$/, 'kerahat onayi', { bekle: 900 });
-        cek('09-kabul');
+        if (bul(sonra, /^Yine de işaretleyin$/)) {
+            await dokun(sonra, /^Yine de işaretleyin$/, 'kerahat onayi', { bekle: 900 });
+            cek('09-kabul');
+        }
     }
 
     const kareler = fs.readdirSync(cikis).filter((f) => /\.png$/i.test(f)).sort();
