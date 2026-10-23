@@ -1,0 +1,175 @@
+name: 🎨 Mağaza Pazarlama Görselleri
+
+# Ekran görüntüsü hatlarının HAM karelerinden mağaza pazarlama görsellerini üretir
+# (scripts/magaza-gorselleri/: başlık + kısa alt satır + gerçek ekran / anlatı).
+# Ham kareler değişince bu iş yeniden koşturulur; görseller kendiliğinden güncellenir.
+#
+# YALNIZ ÜRETİR: App Store Connect ya da Google Play'e HİÇBİR ŞEY YÜKLEMEZ. Çıktı
+# `magaza-pazarlama` artifact'ıdır (set başına klasör + kontak sayfası). Mağazaya
+# yükleme sahip onayından sonra mevcut yükleyicilerle yapılır:
+#   App Store: scripts/app-store-ekran-goruntuleri.js <pazarlama/iphone|ipad|apple-watch> --tip ...
+#   Play:      scripts/play-magaza.js yaz --gorseller pazarlama/play-telefon --tablet pazarlama/play-tablet
+#
+# Her kimlik isteğe bağlıdır; verilmeyen cihazın görselleri üretilmez (özette "eksik").
+
+on:
+  workflow_dispatch:
+    inputs:
+      ios_run_id:
+        description: 'iOS Ekran Görüntüleri koşusu (iPhone mağaza + özellik kareleri)'
+        required: false
+        default: ''
+      ipad_run_id:
+        description: 'iOS Ekran Görüntüleri koşusu, tur=ipad (iPad kareleri + geniş ekran)'
+        required: false
+        default: ''
+      saat_run_id:
+        description: 'iOS Ekran Görüntüleri koşusu, tur=saat (Apple Watch kareleri)'
+        required: false
+        default: ''
+      android_run_id:
+        description: 'Android Ekran Görüntüleri koşusu (telefon mağaza + özellik + tablet)'
+        required: false
+        default: ''
+      cihaz_run_id:
+        description: 'Android Ekran Görüntüleri koşusu, tur=cihazlar (Wear OS + Android TV)'
+        required: false
+        default: ''
+      tablet_run_id:
+        description: 'Android Ekran Görüntüleri koşusu, tur=tablet (Play tablet kareleri)'
+        required: false
+        default: ''
+      katlanabilir_run_id:
+        description: 'Android Ekran Görüntüleri koşusu, tur=katlanabilir (Fold + Flip kareleri)'
+        required: false
+        default: ''
+      kosul:
+        description: 'Açılacak gelecek özellik kareleri (virgüllü; örn. icloudEsitleme,androidAutoYayinda)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  uret:
+    name: 🎨 Pazarlama görselleri
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+
+      # Her indirme kendi klasörüne; biri yoksa iş durmaz (o cihazın görselleri eksik kalır).
+      - name: 🍎 iPhone kareleri
+        if: ${{ inputs.ios_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          pattern: 'ios-*kareleri*'
+          path: ham/ios
+          run-id: ${{ inputs.ios_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 🍎 iPhone mağaza kareleri
+        if: ${{ inputs.ios_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: ios-ekran-goruntuleri
+          path: ham/ios-magaza
+          run-id: ${{ inputs.ios_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 📱 iPad kareleri
+        if: ${{ inputs.ipad_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: ios-ipad-ekran-goruntuleri
+          path: ham/ipad
+          run-id: ${{ inputs.ipad_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: ⌚ Apple Watch kareleri
+        if: ${{ inputs.saat_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: ios-saat-kareleri
+          path: ham/apple-watch
+          run-id: ${{ inputs.saat_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 🤖 Android kareleri
+        if: ${{ inputs.android_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          pattern: 'android-*-kareleri'
+          path: ham/android
+          run-id: ${{ inputs.android_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 🤖 Android mağaza kareleri
+        if: ${{ inputs.android_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: android-ekran-goruntuleri
+          path: ham/android-magaza
+          run-id: ${{ inputs.android_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: ⌚📺 Wear OS + Android TV kareleri
+        if: ${{ inputs.cihaz_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          pattern: 'android-*-kareleri'
+          path: ham/cihazlar
+          run-id: ${{ inputs.cihaz_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📱 Android tablet kareleri
+        if: ${{ inputs.tablet_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          pattern: 'android-*-kareleri'
+          path: ham/tablet
+          run-id: ${{ inputs.tablet_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 📖 Katlanabilir kareleri
+        if: ${{ inputs.katlanabilir_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          pattern: 'android-*-kareleri'
+          path: ham/katlanabilir
+          run-id: ${{ inputs.katlanabilir_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🎨 Görselleri üret
+        run: |
+          set -eo pipefail
+          KAYNAK=""
+          for d in ham/*; do [ -d "$d" ] && KAYNAK="$KAYNAK --kaynak $d"; done
+          [ -n "$KAYNAK" ] || { echo "::error::Hiç ham kare indirilemedi (koşu kimliklerini verin)."; exit 1; }
+          KOSUL=""
+          for k in $(echo "${{ inputs.kosul }}" | tr ',' ' '); do KOSUL="$KOSUL --kosul $k"; done
+          {
+            echo '## Mağaza pazarlama görselleri'
+            echo '```'
+            node scripts/magaza-gorselleri/uret.js $KAYNAK $KOSUL --cikis pazarlama --one-cikan | grep -v ' KB$'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          node scripts/magaza-gorselleri/kontak.js --hepsi pazarlama
+          ls -la pazarlama
+
+      - name: ⬆️ Görselleri yükle
+        uses: actions/upload-artifact@v7
+        with:
+          name: magaza-pazarlama
+          path: pazarlama/
+          retention-days: 30

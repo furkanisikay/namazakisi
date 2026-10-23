@@ -1,0 +1,13 @@
+# tohum: ozellik
+# profil: katlanabilir|flip
+# hazirlik: masaustu
+# Katlanabilir masaustu postur (yari acik, yatay mentese): ust yarida geri sayim,
+# alt yarida gunluk akis (GunSayfasiDuzeni duzen="masaustu"). Yalniz Pixel Fold profili.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _acilis.yaml
+- waitForAnimationToEnd:
+    timeout: 5000
+# Kare hazirlik_bitir masaustu'da (yari acik postür uygulama calisirken verilir) alinir;
+# bu acik postür karesidir.
+- takeScreenshot: ozk/46b-katlanabilir-acik

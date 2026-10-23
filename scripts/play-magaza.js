@@ -4,7 +4,7 @@
  *
  * Kullanim:
  *   node scripts/play-magaza.js oku
- *   node scripts/play-magaza.js yaz [--gorseller <klasor>]
+ *   node scripts/play-magaza.js yaz [--gorseller <klasor>] [--tablet <klasor>]
  *   node scripts/play-magaza.js aab-yukle --dosya <aab> --kanal <kanal> [--ad <surum adi>]
  *   node scripts/play-magaza.js gorseller --json <dosya>
  *
@@ -225,7 +225,8 @@ function playMetinleri() {
                 console.log('TAM ACIKLAMA (' + (d.fullDescription || '').length + '/4000):');
                 console.log(d.fullDescription);
             }
-            for (const tur of ['phoneScreenshots', 'featureGraphic', 'icon']) {
+            // Yuklemeden sonra geri okuyup sayilari dogrulamak icin butun gorsel turleri.
+            for (const tur of ['phoneScreenshots', 'sevenInchScreenshots', 'tenInchScreenshots', 'tvScreenshots', 'wearScreenshots', 'featureGraphic', 'icon']) {
                 const g = await api('GET', '/edits/' + editId + '/listings/' + DIL + '/' + tur);
                 const im = (g.j && g.j.images) || [];
                 console.log('GORSEL ' + tur + ': ' + im.length + ' adet');
@@ -424,6 +425,26 @@ function playMetinleri() {
                     const r = await gorselYukle(editId, 'phoneScreenshots', path.join(klasor, f));
                     console.log('  ' + f + ' -> ' + r.kod);
                     if (r.kod >= 300) throw new Error(f + ' yuklenemedi: ' + JSON.stringify(r.j).slice(0, 200));
+                }
+            }
+            // Tablet pazarlama gorselleri (2560x1600, 16:10): ayni dosyalar 7" ve 10"
+            // tablet setlerine gider (ikisinin boyut sartini da karsilar).
+            const ti = process.argv.indexOf('--tablet');
+            const tabletKlasor = ti >= 0 ? process.argv[ti + 1] : null;
+            if (tabletKlasor && fs.existsSync(tabletKlasor)) {
+                const tablet = fs
+                    .readdirSync(tabletKlasor)
+                    .filter((f) => /^\d.*\.png$/i.test(f))
+                    .sort()
+                    .slice(0, 8);
+                for (const tur of tablet.length ? ['sevenInchScreenshots', 'tenInchScreenshots'] : []) {
+                    const sil = await api('DELETE', '/edits/' + editId + '/listings/' + DIL + '/' + tur);
+                    console.log('eski ' + tur + ' silindi:', sil.kod);
+                    for (const f of tablet) {
+                        const r = await gorselYukle(editId, tur, path.join(tabletKlasor, f));
+                        console.log('  ' + tur + ' ' + f + ' -> ' + r.kod);
+                        if (r.kod >= 300) throw new Error(f + ' yuklenemedi: ' + JSON.stringify(r.j).slice(0, 200));
+                    }
                 }
             }
             const one = path.join(klasor, 'one-cikan.png');

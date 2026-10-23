@@ -91,6 +91,22 @@ Kayıt için (üretimdeki not, mağazadan okundu).
 
 ## App Store
 
+#### 0.70.0
+
+Yayındaki önceki sürüm 0.41.1 (0.53.1 reddedildi, kullanıcıya ulaşmadı); not ikisinin arasındaki her şeyi kapsar. Kaynak: `YeniOzellikler.ts` iOS duyuruları ve CHANGELOG. iCloud eşitlemesi iOS'ta duyurulmadığı için girmedi; Android'e özgü özellikler (kendi ses dosyası, Google Drive eşitlemesi, Wear OS, widget dışı Android yüzeyleri) girmez.
+
+```
+- Yeni sade tasarım: Bugün, Kıble, Kaza, İlerleme ve Ayarlar sekmeleri, 5 adımlı kurulum.
+- Namazı işaretlediğinizde düğme "Allah kabul etsin" der; sabah ve yatsıda kısa bir selam görürsünüz.
+- Ana ekran ve kilit ekranı widget'ları; şu anki vaktin geri sayımı canlı etkinlik olarak kilit ekranında.
+- Kontrol Merkezi ve Kısayollar'dan "Kıldım" diyebilirsiniz.
+- Apple Watch uygulaması: kalan süre, günün vakitleri, "Kıldım", kıble, tesbihat ve bilekte sessiz uyandırma.
+- Camide sessiz: Namaz odağını bir kez kurun; camiye varınca iPhone sessize geçer, ayrılınca eski hâline döner.
+- Kıble: kamerada yere çizilen yol sizi Kâbe yönüne götürür.
+- iPad desteği; telefonunuzla tabletiniz ev Wi-Fi ağında birbirine "Kıldım" bilgisini iletir.
+- Evdeki Android TV'ye konumunuzu kare kodla gönderin, vakitler büyük ekranda görünsün.
+```
+
 #### 0.53.1
 
 Yayındaki önceki sürüm 0.41.1. Bu build'de iPhone widget'ları, canlı etkinlik ve Apple Watch ilk kez açık. iCloud eşitlemesi kapalı olduğu için nota girmedi; Android'e özgü özellikler (Camideyim, Namaz modu, otomasyon) girmez.

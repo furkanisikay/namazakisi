@@ -119,6 +119,24 @@ tohumla() {
 # scripts/kible-emulator-pozu.js'ten — cekirdek fonksiyonlarimizla tutarli poz.
 hazirlik_uygula() {
   case "$1" in
+    masaustu)
+      # Masaustu postur: mentese YATAY + yari acik. Fold'un ic ekraninda mentese dikeydir →
+      # ekran dondurulur; Flip'te mentese zaten yatay. Yari acik = mentese acisi ~90.
+      # Akis uygulamayi ACIK postürde baslatir; yari acik postür hazirlik_bitir'de, uygulama
+      # calisirken verilir (WindowInfoTracker degisimi olay olarak alsin) ve kare adb ile alinir.
+      adb emu sensor set hinge-angle0 180 || true
+      # Ozel AVD'de (pixel_6 + config.ini menteşesi) cihaz durumu HALF_OPENED'a gecer ama
+      # WindowManager Extensions'in mentese KONUMUNU okudugu kaynak (config_display_features)
+      # imajda yok → FoldingFeature hic uretilmez. AOSP'nin gelistirici ayari ayni bilgiyi
+      # verir ("fold-[sol,ust,sag,alt]"; durum device_state'ten gelir). Uygulama acilmadan once.
+      case "$PROFIL" in
+        flip) adb shell settings put global display_features "fold-[0,1320,1080,1320]" || true ;;
+        katlanabilir) adb shell settings put global display_features "fold-[1104,0,1104,1840]" || true ;;
+      esac
+      sleep 2
+      adb shell dumpsys device_state 2>/dev/null | grep -iE "state|posture" | head -8 || true
+      adb shell wm size || true
+      ;;
     kible-kamera*|kible-kalibrasyon)
       adb shell pm grant "$PAKET" android.permission.CAMERA || true
       # Kible taze konum ister; sabitleme her akistan once tazelenir (tablette konum gec acilir).
@@ -162,6 +180,25 @@ hazirlik_uygula() {
 # Akis sonrasi: hazirligin actigi seyleri geri al (animasyon olcegi, ekran kaydi).
 hazirlik_bitir() {
   case "$1" in
+    masaustu)
+      adb emu sensor set hinge-angle0 90 || adb emu posture 2 || true
+      sleep 6
+      adb shell dumpsys device_state 2>/dev/null | grep -E "mCommittedState" | head -2 || true
+      adb shell dumpsys window 2>/dev/null | grep -iE "displayfeature|fold|hinge" | head -10 || true
+      # Tani: WindowManager Extensions kutuphanesi imajda var mi, mentese ozelligi hangi
+      # kaynaktan geliyor (FoldingFeature uygulamaya buradan ulasir).
+      echo "--- window extensions ---"
+      adb shell "ls /system_ext/framework /system/framework /vendor/framework 2>/dev/null | grep -i window" || true
+      adb shell "pm list libraries | grep -i window" || true
+      adb shell "getprop | grep -iE 'fold|hinge|display_feature|device_state|wm.extensions'" || true
+      adb shell "settings get global display_features" || true
+      # Uygulama surecinde WindowManager Extensions / modul uyarilari (FoldingFeature geldi mi?).
+      echo "--- logcat (window/katlanma) ---"
+      adb logcat -d 2>/dev/null | grep -iE "KatlanmaPosturu|WindowExtensions|ExtensionsUtil|WindowLayoutComponent|FoldingFeature|DeviceStateManagerFoldingFeature|RawFoldingFeature|androidx.window" | tail -40 || true
+      adb exec-out screencap -p > "$CIKIS/${PROFIL}-$2/46-katlanabilir-masaustu.png" || true
+      adb emu sensor set hinge-angle0 180 || true
+      adb shell settings delete global display_features || true
+      ;;
     guc-tasarrufu)
       adb shell settings put global low_power 0 || true
       adb shell cmd netpolicy set restrict-background false || true
@@ -252,6 +289,11 @@ for tema in "${TEMALAR[@]}"; do
     if [ -n "${AKIS_FILTRESI:-}" ] && ! [[ "$(basename "$akis")" =~ $AKIS_FILTRESI ]]; then
       continue
     fi
+    # `# profil: <ad>` satiri: akis yalniz o profilde koşar (ornek: katlanabilir).
+    akis_profili=$(sed -n 's/^# profil: *\([a-z|]*\).*/\1/p' "$akis" | head -1)
+    if [ -n "$akis_profili" ] && ! [[ "$PROFIL" =~ ^($akis_profili)$ ]]; then
+      continue
+    fi
     varyant=$(sed -n 's/^# tohum: *\([a-z]*\).*/\1/p' "$akis" | head -1)
     varyant="${varyant:-ozellik}"
     echo "=== [$PROFIL/$tema] $akis (tohum: $varyant) ==="
@@ -282,7 +324,7 @@ if [ "${PERFORMANS_OLCUMU:-}" = "1" ] && [ "$PROFIL" = "telefon" ]; then
 fi
 
 # Ozet: dosya adi + boyut; akislarin bekledigi ama cikmayan kare → UYARI.
-BEKLENEN=$(grep -h 'takeScreenshot: ozk/' scripts/maestro/ozellik/*.yaml | sed 's/.*ozk\///' | sort -u)
+BEKLENEN=$(for a in scripts/maestro/ozellik/*.yaml; do p=$(sed -n 's/^# profil: *\([a-z|]*\).*/\1/p' "$a" | head -1); { [ -z "$p" ] || [[ "$PROFIL" =~ ^($p)$ ]]; } && grep -h 'takeScreenshot: ozk/' "$a"; done | sed 's/.*ozk\///' | sort -u || true)
 for tema in "${TEMALAR[@]}"; do
   HEDEF="$CIKIS/${PROFIL}-${tema}"
   echo "--- $HEDEF ---"

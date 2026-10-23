@@ -23,12 +23,14 @@ describe('magaza tohumu seviye tablosu', () => {
         expect(seviye.rank).toBe(tanim!.rank);
     });
 
-    it('bugun yalniz vakti GIRMIS namazlari isaretler (Istanbul, 14 Ekim)', () => {
-        // Istanbul 14.10.2026: sabah ~05:43, ogle ~12:55, ikindi ~15:59 (yerel, UTC+3).
+    it('bugun yalniz vakti CIKMIS namazlari isaretler; o anki vakit kilinmamis (Istanbul, 14 Ekim)', () => {
+        // Istanbul 14.10.2026: gunes ~07:08, ogle ~12:55, ikindi ~15:59, aksam ~18:35 (yerel, UTC+3).
         expect(bugunKilinanlar(new Date('2026-10-14T01:00:00Z'))).toEqual({});
         expect(bugunKilinanlar(new Date('2026-10-14T07:00:00Z'))).toEqual({ Sabah: true });
-        expect(bugunKilinanlar(new Date('2026-10-14T11:00:00Z'))).toEqual({ Sabah: true, 'Öğle': true });
-        expect(bugunKilinanlar(new Date('2026-10-14T14:00:00Z'))).toEqual({
+        // 14:00 yerel: ogle SURUYOR → kilinmamis (telefon Kildim gostersin, saatle celismesin).
+        expect(bugunKilinanlar(new Date('2026-10-14T11:00:00Z'))).toEqual({ Sabah: true });
+        expect(bugunKilinanlar(new Date('2026-10-14T14:00:00Z'))).toEqual({ Sabah: true, 'Öğle': true });
+        expect(bugunKilinanlar(new Date('2026-10-14T16:00:00Z'))).toEqual({
             Sabah: true,
             'Öğle': true,
             'İkindi': true,

@@ -39,6 +39,10 @@ on:
         description: 'cihaz-kareleri için android-ekran-goruntuleri (tur=saat|tv|cihazlar) çalışma kimliği'
         required: false
         default: ''
+      pazarlama_run_id:
+        description: 'yaz için magaza-gorselleri.yml çalışma kimliği (magaza-pazarlama: Play telefon + 7/10 inç tablet + öne çıkan). Verilirse kare_run_id mockup üretimi KULLANILMAZ.'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -89,6 +93,15 @@ jobs:
           path: mockup/
           retention-days: 14
 
+      - name: 🎨 Pazarlama görsellerini indir
+        if: ${{ inputs.mod == 'yaz' && inputs.pazarlama_run_id != '' }}
+        uses: actions/download-artifact@v8
+        with:
+          name: magaza-pazarlama
+          path: pazarlama
+          run-id: ${{ inputs.pazarlama_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: ⌚ Saat karelerini indir
         if: ${{ inputs.mod == 'cihaz-kareleri' && inputs.cihaz_run_id != '' }}
         continue-on-error: true
@@ -114,7 +127,12 @@ jobs:
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
         run: |
           set -eo pipefail
-          if [ "${{ inputs.mod }}" = "yaz" ] && [ -n "${{ inputs.kare_run_id }}" ]; then
+          if [ "${{ inputs.mod }}" = "yaz" ] && [ -n "${{ inputs.pazarlama_run_id }}" ]; then
+            # Pazarlama gorselleri: telefon setinin yerine konur (silinip yeniden yuklenir),
+            # tablet seti 7 ve 10 inc'e; one-cikan.png one cikan gorsel olur. Wear/TV ayri: cihaz-kareleri.
+            ls -la pazarlama/play-telefon pazarlama/play-tablet
+            node scripts/play-magaza.js yaz --gorseller pazarlama/play-telefon --tablet pazarlama/play-tablet
+          elif [ "${{ inputs.mod }}" = "yaz" ] && [ -n "${{ inputs.kare_run_id }}" ]; then
             node scripts/play-magaza.js yaz --gorseller mockup
           elif [ "${{ inputs.mod }}" = "cihaz-kareleri" ]; then
             # Saat: Play kare (1:1) ister → yuvarlak profil; TV: 16:9 kareler.
