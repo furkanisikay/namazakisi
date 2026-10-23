@@ -217,7 +217,7 @@ const SETLER = {
                 vakit: 2,
                 yerlesim: 'telefonSaat',
                 katmanlar: [
-                    { cihaz: 'iphone', kaynak: ['01-ana-ekran.png'] },
+                    { cihaz: 'iphone', kaynak: ['19-kabul-once.png', '01-ana-ekran.png'] },
                     { cihaz: 'appleWatch', kaynak: ['01-simdi.png', '01-ana.png'] },
                 ],
                 iddialar: ['apple-watch-gosterim', 'apple-watch-hatirlatma'],
@@ -262,7 +262,7 @@ const SETLER = {
                 katmanlar: [
                     { cihaz: 'tv', kaynak: ['04-pano-telefondan.png', '01-pano.png'] },
                     { cihaz: 'ipadYatay', kaynak: ['yatay-01-bugun.png'] },
-                    { cihaz: 'iphone', kaynak: ['01-ana-ekran.png'] },
+                    { cihaz: 'iphone', kaynak: ['19-kabul-once.png', '01-ana-ekran.png'] },
                     { cihaz: 'appleWatch', kaynak: ['01-simdi.png', '01-ana.png'] },
                 ],
                 iddialar: ['cihaz-agi', 'ipad', 'apple-watch-gosterim', 'tv-eslesme'],
@@ -434,8 +434,8 @@ const SETLER = {
                 yerlesim: 'kolaj',
                 katmanlar: [
                     { cihaz: 'tv', kaynak: ['04-pano-telefondan.png', '01-pano.png'] },
-                    { cihaz: 'tablet', kaynak: ['01-ana-ekran.png'], kirpAlt: 0.075 },
-                    { cihaz: 'androidTelefon', kaynak: ['01-ana-ekran.png'] },
+                    { cihaz: 'tablet', kaynak: ['19-kabul-once.png', '01-ana-ekran.png'], kirpAlt: 0.075 },
+                    { cihaz: 'androidTelefon', kaynak: ['19-kabul-once.png', '01-ana-ekran.png'] },
                     { cihaz: 'wearYuvarlak', kaynak: ['01-ana-ekran.png'] },
                 ],
                 iddialar: ['cihazlar', 'tv', 'tablet', 'cihaz-agi'],
@@ -695,7 +695,7 @@ const IPUCLARI = {
         '06-tesbihat': { metin: 'Taçla sayın', hedef: { x: 0.885, y: 0.47 }, yon: 'alt' },
     },
     'play-telefon': {
-        '01-muhafiz': { metin: 'Vakit daraldıkça sıklaşır', hedef: { x: 0.665, y: 0.553 }, yon: 'sol' },
+        '01-muhafiz': { metin: 'Vakit daraldıkça sıklaşır', hedef: { x: 0.665, y: 0.612 }, yon: 'sol' },
         '04-takvim': { metin: 'Toplantı vakti yutuyor', hedef: { x: 0.58, y: 0.825 }, yon: 'ust' },
         '05-kible': { metin: 'Yol yere çizilir', hedef: { x: 0.31, y: 0.64 }, yon: 'sag' },
         '06-kaza': { metin: 'Kıldıkça düşer', hedef: { x: 0.72, y: 0.69 }, yon: 'ust' },
