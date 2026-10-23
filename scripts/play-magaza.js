@@ -225,7 +225,8 @@ function playMetinleri() {
                 console.log('TAM ACIKLAMA (' + (d.fullDescription || '').length + '/4000):');
                 console.log(d.fullDescription);
             }
-            for (const tur of ['phoneScreenshots', 'featureGraphic', 'icon']) {
+            // Yuklemeden sonra geri okuyup sayilari dogrulamak icin butun gorsel turleri.
+            for (const tur of ['phoneScreenshots', 'sevenInchScreenshots', 'tenInchScreenshots', 'tvScreenshots', 'wearScreenshots', 'featureGraphic', 'icon']) {
                 const g = await api('GET', '/edits/' + editId + '/listings/' + DIL + '/' + tur);
                 const im = (g.j && g.j.images) || [];
                 console.log('GORSEL ' + tur + ': ' + im.length + ' adet');

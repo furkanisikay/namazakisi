@@ -67,7 +67,11 @@ function parcaYukle(islem, tampon) {
 
     const sv = await api('GET', '/v1/apps/' + APP + '/appStoreVersions?limit=10');
     if (sv.kod >= 300) hata('surumler okunamadi', sv);
-    const surum = sv.j.data.find((x) => x.attributes.appStoreState === 'PREPARE_FOR_SUBMISSION');
+    // app-store-surum.js > DUZENLENEBILIR ile ayni: reddedilen surum yeniden adlandirilip
+    // duzenlenir (Apple ayni anda ikinci bir duzenlenebilir surum acmaya izin vermez),
+    // durumu REJECTED kalir — yalniz PREPARE_FOR_SUBMISSION'a bakmak onu bulamazdi.
+    const DUZENLENEBILIR = ['PREPARE_FOR_SUBMISSION', 'DEVELOPER_REJECTED', 'REJECTED', 'METADATA_REJECTED', 'INVALID_BINARY'];
+    const surum = sv.j.data.find((x) => DUZENLENEBILIR.includes(x.attributes.appStoreState));
     if (!surum) throw new Error('Gonderime hazirlanan bir surum bulunamadi.');
     console.log('Surum ' + surum.attributes.versionString + ' (' + surum.id + ')');
 

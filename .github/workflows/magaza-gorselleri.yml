@@ -35,6 +35,14 @@ on:
         description: 'Android Ekran Görüntüleri koşusu, tur=cihazlar (Wear OS + Android TV)'
         required: false
         default: ''
+      tablet_run_id:
+        description: 'Android Ekran Görüntüleri koşusu, tur=tablet (Play tablet kareleri)'
+        required: false
+        default: ''
+      katlanabilir_run_id:
+        description: 'Android Ekran Görüntüleri koşusu, tur=katlanabilir (Fold + Flip kareleri)'
+        required: false
+        default: ''
       kosul:
         description: 'Açılacak gelecek özellik kareleri (virgüllü; örn. icloudEsitleme,androidAutoYayinda)'
         required: false
@@ -121,6 +129,25 @@ jobs:
           pattern: 'android-*-kareleri'
           path: ham/cihazlar
           run-id: ${{ inputs.cihaz_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📱 Android tablet kareleri
+        if: ${{ inputs.tablet_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          pattern: 'android-*-kareleri'
+          path: ham/tablet
+          run-id: ${{ inputs.tablet_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 📖 Katlanabilir kareleri
+        if: ${{ inputs.katlanabilir_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          pattern: 'android-*-kareleri'
+          path: ham/katlanabilir
+          run-id: ${{ inputs.katlanabilir_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🎨 Görselleri üret

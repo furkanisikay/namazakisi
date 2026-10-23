@@ -80,6 +80,10 @@ on:
         description: 'ekran-yukle için iPad karelerini üreten çalışma kimliği (tur=ipad; boş = iPad kareleri yüklenmez)'
         required: false
         default: ''
+      asc_pazarlama_run_id:
+        description: 'ekran-yukle için magaza-gorselleri.yml çalışma kimliği (magaza-pazarlama: iPhone 6.9 + 6.3, iPad 13, Apple Watch). Verilirse diğer kare kimlikleri kullanılmaz.'
+        required: false
+        default: ''
       asc_saat_run_id:
         description: 'ekran-yukle için Apple Watch karelerini üreten çalışma kimliği (tur=saat; boş = saat kareleri yüklenmez)'
         required: false
@@ -561,8 +565,17 @@ jobs:
         with:
           node-version: '20'
 
+      - name: 🎨 Pazarlama görsellerini indir
+        if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_pazarlama_run_id != '' }}
+        uses: actions/download-artifact@v8
+        with:
+          name: magaza-pazarlama
+          path: pazarlama
+          run-id: ${{ inputs.asc_pazarlama_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 🖼️ Mağaza karelerini indir
-        if: ${{ inputs.asc_islem == 'ekran-yukle' }}
+        if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_pazarlama_run_id == '' }}
         uses: actions/download-artifact@v8
         with:
           name: ios-ekran-goruntuleri
@@ -571,7 +584,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📱 iPad karelerini indir
-        if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_ipad_run_id != '' }}
+        if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_pazarlama_run_id == '' && inputs.asc_ipad_run_id != '' }}
         uses: actions/download-artifact@v8
         with:
           name: ios-ipad-ekran-goruntuleri
@@ -580,7 +593,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⌚ Apple Watch karelerini indir
-        if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_saat_run_id != '' }}
+        if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_pazarlama_run_id == '' && inputs.asc_saat_run_id != '' }}
         uses: actions/download-artifact@v8
         with:
           name: ios-saat-kareleri
@@ -597,6 +610,14 @@ jobs:
           if [ "$ISLEM" = "icloud-durum" ] || [ "$ISLEM" = "icloud-ac" ]; then
             # Yalniz ana App ID'nin ICLOUD yetenegi (scripts/asc-icloud.js).
             node scripts/asc-icloud.js "${ISLEM#icloud-}"
+          elif [ "$ISLEM" = "ekran-yukle" ] && [ -d pazarlama ]; then
+            # Pazarlama gorselleri (scripts/magaza-gorselleri): her set kendi gorunum tipine,
+            # settekilerin YERINE (--degistir). Yalniz ust klasordeki NN-*.png yuklenir;
+            # magaza-disi/ alt klasoru yuklenmez.
+            node scripts/app-store-ekran-goruntuleri.js pazarlama/iphone --tip APP_IPHONE_67 --degistir
+            node scripts/app-store-ekran-goruntuleri.js pazarlama/iphone-orta --tip APP_IPHONE_61 --degistir
+            node scripts/app-store-ekran-goruntuleri.js pazarlama/ipad --tip APP_IPAD_PRO_3GEN_129 --degistir
+            node scripts/app-store-ekran-goruntuleri.js pazarlama/apple-watch --tip APP_WATCH_ULTRA --degistir
           elif [ "$ISLEM" = "ekran-yukle" ]; then
             # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
             node scripts/app-store-ekran-goruntuleri.js indirilen/mockup --degistir
