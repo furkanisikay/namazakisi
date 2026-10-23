@@ -22,10 +22,12 @@ const GECMIS_GUN = 25;
 // Bugun kismen kilinmis: ana ekranda hem isaretli hem bekleyen vakit gorunsun.
 // En fazla bu uc vakit isaretlenir, ama YALNIZ vakti girmis olanlar: sabit liste
 // ogle/ikindi girmeden ("Vakit Girmedi") onlari kilinmis gosteriyordu.
+// [ad, vaktin BITTIGI an]: o anki vakit KILINMAMIS kalir (telefon "Kildim" gostersin, saat ve TV
+// kareleriyle celismesin); yalniz vakti CIKMIS adaylar kilinmis sayilir.
 const BUGUN_ADAYLARI = [
-    ['Sabah', 'fajr'],
-    ['Öğle', 'dhuhr'],
-    ['İkindi', 'asr'],
+    ['Sabah', 'sunrise'],
+    ['Öğle', 'asr'],
+    ['İkindi', 'maghrib'],
 ];
 
 const KONUM = {
@@ -58,7 +60,7 @@ const SEVIYELER = [
 ];
 
 /**
- * Bugun vakti girmis adaylar (`simdi` enjekte edilebilir). Hesap uygulamanin
+ * Bugun vakti CIKMIS adaylar (`simdi` enjekte edilebilir); o anki vakit kilinmamis kalir. Hesap uygulamanin
  * yoluyla ayni: `CalculationMethod.Turkey()` (asr-i evvel), tohum konumunda.
  */
 function bugunKilinanlar(simdi = new Date()) {

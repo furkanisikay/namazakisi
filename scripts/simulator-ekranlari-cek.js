@@ -416,6 +416,24 @@ function cek(ad) {
         cek('05-kible');
     }
 
+    // --- Kabul duasi (EN SONDA: kilinmislik degisir) ---
+    // Tohum o anki vakti kilinmamis birakir; "Kıldım"a bir kez basilir, dugme
+    // "Allah kabul etsin"e doner. Kare dokunusun HEMEN ardindan: kaza onerisi ~1,6 sn
+    // sonra acilip duayi ortebilir.
+    await yenidenBaslat();
+    for (let tur = 0; tur < 3; tur++) {
+        const katman = await agac(`kabul-katman-${tur}`);
+        if (!(await dokun(katman, KAPATILACAK, `kabul oncesi katman ${tur + 1}`, { bekle: 2000 }))) break;
+    }
+    for (let i = 0; i < 10 && !bul(await agac(`kabul-capa-${i}`), ANA_EKRAN_CAPASI); i++) await bekle(1500);
+    a = await agac('kabul');
+    if (await dokun(a, /vakit-karti-kildim|Kılındı olarak işaretle/, 'kildim dugmesi', { bekle: 900 })) {
+        const sonra = await agac('kabul-sonra');
+        // Kerahat vaktindeyse once kibar onay modali gelir.
+        if (bul(sonra, /^Yine de işaretleyin$/)) await dokun(sonra, /^Yine de işaretleyin$/, 'kerahat onayi', { bekle: 900 });
+        cek('09-kabul');
+    }
+
     const kareler = fs.readdirSync(cikis).filter((f) => /\.png$/i.test(f)).sort();
     console.log(`\nToplam ${kareler.length} kare: ${kareler.join(', ')}`);
     if (!kareler.length) process.exit(1);

@@ -73,10 +73,21 @@ const ANDROID_OZEL_IDDIALAR = [
 /** Apple Watch karelerinde izinli iddialar (kodda dogrulandi, 2026-10-22). */
 const APPLE_WATCH_IDDIALARI = ['apple-watch-gosterim', 'apple-watch-hatirlatma', 'apple-watch-uyandirma'];
 
-/** Sabah alarmi ornegi: zaman seridi karesi (ilk hatirlatma 06:51, gunes 07:16). */
+/**
+ * Kilit ekranindaki tarih KOSU GUNUNDEN uretilir (sabit metin kosu gunuyle celisiyordu).
+ * Istanbul (UTC+3, yaz saati yok) takvim gunu; ay/gun adlari sabit tablodan (Intl'e baglanma).
+ */
+function kosuGunuMetni(simdi = new Date()) {
+    const GUNLER = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+    const AYLAR = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+    const d = new Date(simdi.getTime() + 3 * 3600 * 1000);
+    return `${GUNLER[d.getUTCDay()]}, ${d.getUTCDate()} ${AYLAR[d.getUTCMonth()]}`;
+}
+
+/** Sabah alarmi ornegi: saat ve vaktin sonu Wear uyandirma karesiyle AYNI (06:51 / 07:16). */
 const SABAH_ALARMI = {
     saat: '06:51',
-    tarih: 'Perşembe, 22 Ekim',
+    tarih: kosuGunuMetni(),
     vakitAdi: 'Sabah',
     vaktinSonu: '07:16',
     baslik: 'Sabah · 25 dk kaldı ⏰',
@@ -217,7 +228,7 @@ const SETLER = {
                 vakit: 2,
                 yerlesim: 'telefonSaat',
                 katmanlar: [
-                    { cihaz: 'iphone', kaynak: ['19-kabul-once.png', '01-ana-ekran.png'] },
+                    { cihaz: 'iphone', kaynak: ['01-ana-ekran.png', '19-kabul-once.png'] },
                     { cihaz: 'appleWatch', kaynak: ['01-simdi.png', '01-ana.png'] },
                 ],
                 iddialar: ['apple-watch-gosterim', 'apple-watch-hatirlatma'],
@@ -262,13 +273,13 @@ const SETLER = {
                 katmanlar: [
                     { cihaz: 'tv', kaynak: ['04-pano-telefondan.png', '01-pano.png'] },
                     { cihaz: 'ipadYatay', kaynak: ['yatay-01-bugun.png'] },
-                    { cihaz: 'iphone', kaynak: ['19-kabul-once.png', '01-ana-ekran.png'] },
+                    { cihaz: 'iphone', kaynak: ['01-ana-ekran.png', '19-kabul-once.png'] },
                     { cihaz: 'appleWatch', kaynak: ['01-simdi.png', '01-ana.png'] },
                 ],
                 iddialar: ['cihaz-agi', 'ipad', 'apple-watch-gosterim', 'tv-eslesme'],
             }),
-            // Samimiyet: Kildim sonrasi dugme "Allah kabul etsin" (ozellik turu 19-kabul karesi).
-            kare('10-gizlilik', ORTAK.gizlilik, { kaynak: ['19-kabul-yerlesti.png', '19-kabul-sonra.png', '01-ana-ekran.png'] }),
+            // Samimiyet: Kildim sonrasi dugme "Allah kabul etsin" (magaza turu sonu 09-kabul; yoksa ozellik 19-kabul).
+            kare('10-gizlilik', ORTAK.gizlilik, { kaynak: ['09-kabul.png', '19-kabul-yerlesti.png', '19-kabul-sonra.png', '01-ana-ekran.png'] }),
             // App Store galerisi en fazla 10: ureticiye girer, yukleyiciye gitmez.
             kare('11-gece', ORTAK.nafile, { magazaDisi: true }),
             kare('12-cuma', ORTAK.cuma, { magazaDisi: true }),
@@ -434,8 +445,8 @@ const SETLER = {
                 yerlesim: 'kolaj',
                 katmanlar: [
                     { cihaz: 'tv', kaynak: ['04-pano-telefondan.png', '01-pano.png'] },
-                    { cihaz: 'tablet', kaynak: ['19-kabul-once.png', '01-ana-ekran.png'], kirpAlt: 0.075 },
-                    { cihaz: 'androidTelefon', kaynak: ['19-kabul-once.png', '01-ana-ekran.png'] },
+                    { cihaz: 'tablet', kaynak: ['01-ana-ekran.png', '19-kabul-once.png'], kirpAlt: 0.075 },
+                    { cihaz: 'androidTelefon', kaynak: ['01-ana-ekran.png', '19-kabul-once.png'] },
                     { cihaz: 'wearYuvarlak', kaynak: ['01-ana-ekran.png'] },
                 ],
                 iddialar: ['cihazlar', 'tv', 'tablet', 'cihaz-agi'],
@@ -742,4 +753,4 @@ SETLER['iphone-orta'] = { ...SETLER.iphone, boyut: { gen: 1206, yuk: 2622 } };
 /** Magaza mockup'larinin eski `--platform` adlari -> set. */
 const PLATFORM_SETI = { ios: 'iphone', ipad: 'ipad', android: 'play-telefon' };
 
-module.exports = { SETLER, CIHAZ_TURLERI, ANDROID_OZEL_IDDIALAR, APPLE_WATCH_IDDIALARI, PLATFORM_SETI, SABAH_ALARMI };
+module.exports = { kosuGunuMetni, SETLER, CIHAZ_TURLERI, ANDROID_OZEL_IDDIALAR, APPLE_WATCH_IDDIALARI, PLATFORM_SETI, SABAH_ALARMI };

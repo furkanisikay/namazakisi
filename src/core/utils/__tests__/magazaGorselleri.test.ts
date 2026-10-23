@@ -169,6 +169,13 @@ describe('magaza pazarlama gorselleri — DOGRULUK (platform suzgeci)', () => {
         expect(sabah.dipnot).toMatch(/iOS 26/);
     });
 
+    it('alarm kilit ekrani tarihi kosu gununden uretilir (Istanbul takvim gunu, Turkce adlar)', () => {
+        const { kosuGunuMetni } = require(path.join(KOK, 'scripts/magaza-gorselleri/setler'));
+        expect(kosuGunuMetni(new Date('2026-10-24T09:00:00Z'))).toBe('Cumartesi, 24 Ekim');
+        // 23:30 UTC = ertesi gun 02:30 Istanbul.
+        expect(kosuGunuMetni(new Date('2026-10-22T23:30:00Z'))).toBe('Cuma, 23 Ekim');
+    });
+
     it('Play Wear OS seti magazaya yuklenmez (cerceve/metin yasak)', () => {
         expect(SETLER.wear.yukleme).toBe(false);
     });
