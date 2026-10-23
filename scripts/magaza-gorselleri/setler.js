@@ -445,7 +445,8 @@ const SETLER = {
                 yerlesim: 'kolaj',
                 katmanlar: [
                     { cihaz: 'tv', kaynak: ['04-pano-telefondan.png', '01-pano.png'] },
-                    { cihaz: 'tablet', kaynak: ['01-ana-ekran.png', '19-kabul-once.png'], kirpAlt: 0.075 },
+                    // Tablet icin magaza turu yok; 16:32'deki ozellik karesi saat/TV anina (16:23-16:24) en yakin.
+                    { cihaz: 'tablet', kaynak: ['19-kabul-once.png', '01-ana-ekran.png'], kirpAlt: 0.075 },
                     { cihaz: 'androidTelefon', kaynak: ['01-ana-ekran.png', '19-kabul-once.png'] },
                     { cihaz: 'wearYuvarlak', kaynak: ['01-ana-ekran.png'] },
                 ],
