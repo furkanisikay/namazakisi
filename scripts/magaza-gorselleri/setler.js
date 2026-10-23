@@ -415,7 +415,8 @@ const SETLER = {
                 kibleKamera: true,
                 katmanlar: [
                     { cihaz: 'androidTelefon', kaynak: ['38-kible-kamera-egik-25.png', '35-kible-kamera.png'] },
-                    { cihaz: 'androidTelefon', kaynak: ['32-kible.png'] },
+                    // Pusula 'Konumunuz aliniyor' ile cekilebiliyor (emulator konumu gec); kalibrasyon rehberi (gercek ekran) sabit.
+                    { cihaz: 'androidTelefon', kaynak: ['36-kible-kalibrasyon.png', '32-kible.png'] },
                 ],
                 iddialar: ['kible'],
             }),
