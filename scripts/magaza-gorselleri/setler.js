@@ -103,9 +103,9 @@ const ORTAK = {
         vakit: 2,
         kaynak: ['07-muhafiz-zaman-seridi.png', '02-muhafiz-zaman-seridi.png', '06-muhafiz.png'],
         // Uygulamanin GERCEK bildirim bicimi (basligiOlustur + muhafizMetinYardimcisi).
-        // Kareler OGLE vaktinde cekilir (scripts/kare-hatlarini-baslat.sh): bildirim de ogle ortasina uyar.
+        // Kareler IKINDI vaktinde cekilir (scripts/kare-hatlarini-baslat.sh, HAT_ZAMANLARI): bildirim o ana uyar.
         // Gercek metin: giris yonu, ton 2 (muhafizMetinYardimcisi > basligiOlustur + GIRIS_ICERIK_HAVUZU).
-        bildirim: { baslik: 'Öğle · 45 dk oldu · namazını geciktirme ⚠️', govde: 'Erteledikçe ağırlaşır; namazı sona bırakma.', y: 0.04 },
+        bildirim: { baslik: 'İkindi · 45 dk oldu · namazını geciktirme ⚠️', govde: 'Erteledikçe ağırlaşır; namazı sona bırakma.', y: 0.04 },
         iddialar: ['muhafiz'],
     },
     sabah: {

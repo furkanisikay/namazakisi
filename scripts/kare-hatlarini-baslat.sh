@@ -49,6 +49,11 @@ son_run_id() {
 tek_baslat() {
   local ad="$1" wf="$2" girdiler="$3" dal="$4" cikti="$5"
   local onceki yeni argumanlar=()
+  # PROVA=1: hicbir sey baslatmadan plani dene.
+  if [ -n "${PROVA:-}" ]; then
+    echo "PROVA $ad $(istanbul '%H:%M') ($wf $girdiler)"
+    return 0
+  fi
   onceki=$(son_run_id "$wf" "$dal")
   for g in $girdiler; do argumanlar+=(-f "$g"); done
   gh workflow run "$wf" --ref "$dal" "${argumanlar[@]}"
@@ -66,23 +71,43 @@ tek_baslat() {
   echo "$ad $yeni $(istanbul '%H:%M')" | tee -a "$cikti"
 }
 
+# Hattin baslama ani (Istanbul HHMM, bos = hemen). Oncelik: HAT_ZAMANLARI ("ad=HHMM,ad=HHMM")
+# > listedeki "gec" (GEC_BASLAMA) > hemen. Ornek (ikindi cekimi):
+#   HAT_ZAMANLARI="ios-ikisi=1535,ios-ipad=1535,android-tablet=1535,android-katlanabilir=1535,android-ikisi=1555,android-cihazlar=1619,ios-saat=1632"
+hat_zamani() {
+  local ad="$1" alan="$2" cift
+  for cift in ${HAT_ZAMANLARI//,/ }; do
+    if [ "${cift%%=*}" = "$ad" ]; then
+      echo "${cift#*=}"
+      return
+    fi
+  done
+  if [ "$alan" = "gec" ]; then echo "${GEC_BASLAMA:-1257}"; else echo ""; fi
+}
+
 baslat() {
   local dal="${1:-$(git rev-parse --abbrev-ref HEAD)}"
   local cikti="${2:-$VARSAYILAN_CIKTI}"
-  local gec="${GEC_BASLAMA:-1257}"
-  local ad wf girdiler zaman
+  local ad wf girdiler alan zaman satir
   : > "$cikti"
-  echo "Dal: $dal · baslangic: $(istanbul '%Y-%m-%d %H:%M') (Istanbul) · gec hatlar: $gec"
-  while IFS='|' read -r ad wf girdiler zaman; do
-    if [ -n "$ad" ] && [ -z "$zaman" ]; then tek_baslat "$ad" "$wf" "$girdiler" "$dal" "$cikti"; fi
-  done < <(hat_listesi)
-  if [ "$((10#$(istanbul '%H%M')))" -lt "$((10#$gec))" ]; then
-    echo "Gec hatlar icin $gec bekleniyor..."
-    while [ "$((10#$(istanbul '%H%M')))" -lt "$((10#$gec))" ]; do sleep 15; done
-  fi
-  while IFS='|' read -r ad wf girdiler zaman; do
-    if [ -n "$ad" ] && [ -n "$zaman" ]; then tek_baslat "$ad" "$wf" "$girdiler" "$dal" "$cikti"; fi
-  done < <(hat_listesi)
+  echo "Dal: $dal · baslangic: $(istanbul '%Y-%m-%d %H:%M') (Istanbul)"
+  # "HHMM|ad|wf|girdiler" (hemen baslayanlar 0000) → zamana gore sirali.
+  local plan
+  plan=$(while IFS='|' read -r ad wf girdiler alan; do
+    [ -n "$ad" ] || continue
+    zaman=$(hat_zamani "$ad" "$alan")
+    echo "${zaman:-0000}|$ad|$wf|$girdiler"
+  done < <(hat_listesi) | sort)
+  echo "Plan:"
+  echo "$plan" | sed 's/^/  /'
+  while IFS='|' read -r zaman ad wf girdiler; do
+    [ -n "$ad" ] || continue
+    if [ "$((10#$(istanbul '%H%M')))" -lt "$((10#$zaman))" ]; then
+      echo "$ad icin $zaman bekleniyor..."
+      while [ "$((10#$(istanbul '%H%M')))" -lt "$((10#$zaman))" ]; do sleep 15; done
+    fi
+    tek_baslat "$ad" "$wf" "$girdiler" "$dal" "$cikti"
+  done <<< "$plan"
   echo "Run id'ler: $cikti"
 }
 
