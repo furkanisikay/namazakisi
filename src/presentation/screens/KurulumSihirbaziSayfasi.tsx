@@ -42,7 +42,7 @@ import { bolgeOnerisi } from '../../core/vakit/ulkeProfilleri';
 import { HESAP_PROFILLERI } from '../../core/vakit/hesapProfilleri';
 import { IKINDI_ADLARI } from '../../core/vakit/profilAdlari';
 import type { DunyaSehri } from '../../core/konum/dunyaSehirleri';
-import { useMetin } from '../hooks/useMetin';
+import { useAktifDil, useMetin } from '../hooks/useMetin';
 import { bicim, metin } from '../../core/dil/aktifDil';
 import { hatirlatmaRizasiVer } from '../store/hatirlatmaRizaSlice';
 import { sadeGorunumuAyarla } from '../store/sadeGorunumSlice';
@@ -72,6 +72,9 @@ import { VARSAYILAN_GECE_SESSIZLIGI } from '../../core/muhafiz/geceSessizligi';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { sesliBilgiMetni } from '../../core/hatirlatma/duzeyOzeti';
 import { AlarmOnayModal } from '../components/hatirlatma/AlarmOnayModal';
+import { DilSecimModali } from '../components/dil/DilSecimModali';
+import { cihazYerelAyari, DilServisi } from '../../domain/services/DilServisi';
+import { DILLER } from '../../core/dil/diller';
 import { useAlarmIzinleri } from '../hooks/useAlarmIzinleri';
 import { usePlatformYetenekleri } from '../hooks/usePlatformYetenekleri';
 
@@ -154,7 +157,25 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     const yetenekler = usePlatformYetenekleri();
     const alarmIzinleri = useAlarmIzinleri(adim === 'duzey', yetenekler.platform);
     const [alarmOnayAcik, setAlarmOnayAcik] = useState(false);
-    const sesliOrnek = useMemo(() => anonsMetniniCoz(ANONS_SABLONLARI[0], 'ogle', 3), []);
+    const dilKodu = useAktifDil();
+    // Hazır şablon çözüm anında etkin dile çevrilir → dil değişince örnek yeniden üretilir.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const sesliOrnek = useMemo(() => anonsMetniniCoz(ANONS_SABLONLARI[0], 'ogle', 3), [dilKodu]);
+
+    // Dil bağlantısı: cihaz dili Türkçe değilse ve seçilebilir birden çok dil varsa (sahip kararı).
+    const yerel = useMemo(() => cihazYerelAyari(), []);
+    const dilBaglantisi = useMemo(
+        () => !!yerel && yerel.split(/[-_]/)[0] !== 'tr' && DILLER.filter((d) => d.secilebilir).length > 1,
+        [yerel],
+    );
+    const [dilModali, setDilModali] = useState(false);
+    const [dilSecimVar, setDilSecimVar] = useState<boolean | null>(null);
+    const dilModaliniAc = useCallback(() => {
+        setDilModali(true);
+        void DilServisi.secimVar().then(setDilSecimVar);
+    }, []);
+    const dilModaliniKapat = useCallback(() => setDilModali(false), []);
+    const dilDegisti = useCallback((secim: string) => setDilSecimVar(secim !== 'cihaz'), []);
 
     // Kayıt
     const [kaydediliyor, setKaydediliyor] = useState(false);
@@ -547,7 +568,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     const icerik = (): React.ReactNode => {
         switch (adim) {
             case 'hosgeldiniz':
-                return <HosgeldinizAdimi />;
+                return <HosgeldinizAdimi onDil={dilBaglantisi ? dilModaliniAc : undefined} />;
             case 'konum':
                 return (
                     <KonumAdimi
@@ -666,6 +687,13 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                     onIptal={() => setAlarmOnayAcik(false)}
                 />
             ) : null}
+            <DilSecimModali
+                gorunur={dilModali}
+                onKapat={dilModaliniKapat}
+                secimVar={dilSecimVar}
+                cihazYerelAyari={yerel}
+                onDegisti={dilDegisti}
+            />
         </SafeAreaView>
     );
 };

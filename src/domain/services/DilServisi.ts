@@ -83,6 +83,24 @@ export const DilServisi = {
     return degisti;
   },
 
+  /** Kullanıcının açık bir seçimi var mı (yoksa cihaz dili izlenir)? Okunamazsa `false`. */
+  async secimVar(): Promise<boolean> {
+    try {
+      const ham = await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI);
+      return dilKoduMu(ham?.kod);
+    } catch {
+      return false;
+    }
+  },
+
+  /** Açık seçimi siler: cihaz dili (seçilebilirse) ya da Türkçe kurulur. Dil değiştiyse `true`. */
+  async cihazDilineDon(): Promise<boolean> {
+    const onceki = aktifDil();
+    await Depolama.sil(DEPOLAMA_ANAHTARLARI.DIL_AYARI);
+    const kod = await DilServisi.yukle(true);
+    return kod !== onceki;
+  },
+
   /** Testler için. */
   _sifirla(): void {
     yukleme = null;

@@ -86,3 +86,10 @@ it('hazır: her satır açık', () => {
     ),
   ).toEqual([]);
 });
+
+it('dil bağlantısı: yalnız verilince çizilir, iki dillidir', () => {
+  const { getByTestId, getByText } = render(<HosgeldinizAdimi onDil={bos} />);
+  expect(getByTestId('kurulum-dil-baglantisi')).toBeTruthy();
+  expect(getByText('Language · Dil')).toBeTruthy();
+  expect(render(<HosgeldinizAdimi />).queryByTestId('kurulum-dil-baglantisi')).toBeNull();
+});

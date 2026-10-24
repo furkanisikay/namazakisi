@@ -94,10 +94,40 @@ export const SonucSatiri: React.FC<{ tip: 'basari' | 'uyari'; metin: string; tes
 
 // ─── 1. Hoş geldiniz ─────────────────────────────────────────────────────────
 
-export const HosgeldinizAdimi: React.FC = () => {
-    const m = useMetin().kurulum.hosgeldiniz;
+/**
+ * `onDil` verilirse (cihaz dili Türkçe değil) sağ üstte iki dilli "Dil · Language" bağlantısı
+ * çizilir: arayüzü okuyamayan kullanıcı da dili bulur.
+ */
+export const HosgeldinizAdimi: React.FC<{ onDil?: () => void }> = ({ onDil }) => {
+    const renkler = useRenkler();
+    const metin = useMetin();
+    const m = metin.kurulum.hosgeldiniz;
     return (
         <View>
+            {onDil ? (
+                <TouchableOpacity
+                    onPress={onDil}
+                    accessibilityRole="button"
+                    accessibilityLabel={metin.dilAyar.sihirbazBaglantisi}
+                    accessibilityHint={metin.dilAyar.sihirbazBaglantisiAciklama}
+                    testID="kurulum-dil-baglantisi"
+                    style={{
+                        alignSelf: 'flex-end',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        minHeight: 44,
+                        paddingHorizontal: 14,
+                        borderRadius: 22,
+                        borderWidth: 1,
+                        borderColor: renkler.sinir,
+                        backgroundColor: renkler.kartArkaplan,
+                        marginBottom: 8,
+                    }}
+                >
+                    <FontAwesome5 name="language" size={15} color={renkler.birincil} style={{ marginRight: 8 }} />
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.metin }}>{metin.dilAyar.sihirbazBaglantisi}</Text>
+                </TouchableOpacity>
+            ) : null}
             <HosgeldinizSahnesi />
             <AdimBasligi baslik={m.baslik} alt={m.alt} />
             <Madde ikon="map-marker-alt" metin={m.maddeVakit} />

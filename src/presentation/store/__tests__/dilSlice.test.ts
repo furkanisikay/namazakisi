@@ -62,3 +62,16 @@ it('yayma hatası kaydı bozmaz', async () => {
   await store.dispatch(diliKaydet('en'));
   expect(store.getState().dil.kod).toBe('en');
 });
+
+describe('cihaz dili ve elle yazılmış sesli okuma metinleri', () => {
+  it("'cihaz' → açık seçim silinir, etkin dil store'a yazılır", async () => {
+    const { DilServisi } = jest.requireMock('../../../domain/services/DilServisi') as { DilServisi: Record<string, unknown> };
+    DilServisi.cihazDilineDon = jest.fn(() => Promise.resolve(false));
+    const store = kur({ lat: 3.14, lng: 101.69 });
+    await store.dispatch(diliKaydet('cihaz'));
+    expect(DilServisi.cihazDilineDon).toHaveBeenCalledTimes(1);
+    expect(mockKaydet).not.toHaveBeenCalled();
+    expect(mockUygula).not.toHaveBeenCalled();
+    expect(store.getState().dil.kod).toBe('tr');
+  });
+});

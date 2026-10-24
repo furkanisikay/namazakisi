@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
 import { DilServisi } from '../../domain/services/DilServisi';
 import { Logger } from '../../core/utils/Logger';
+import { aktifDil } from '../../core/dil/aktifDil';
 
 /**
  * Arayüz dili — ekranların yeniden çizilmesi için store aynası. Gerçek kaynak disk +
@@ -14,7 +15,10 @@ export interface DilState {
 
 const initialState: DilState = { kod: VARSAYILAN_DIL, yuklendi: false };
 
-export const diliYukle = createAsyncThunk<DilKodu>('dil/yukle', () => DilServisi.yukle());
+/** `zorla`: disk yeniden okunur (yedekten geri yükleme dili değiştirmiş olabilir). */
+export const diliYukle = createAsyncThunk<DilKodu, { zorla?: boolean } | undefined>('dil/yukle', (arg) =>
+  DilServisi.yukle(arg?.zorla ?? false)
+);
 
 interface DurumKaynagi {
   konum?: { koordinatlar?: { lat: number; lng: number } | null };
@@ -25,8 +29,9 @@ interface DurumKaynagi {
  * muhafız adımları, cuma/yatış, sesli okuma ve widget planı plan anının dilini taşır →
  * `hesapAyariniKaydet` gibi `konumDegistiUygula` yolundan yayılır (tek yayma noktası).
  */
-export const diliKaydet = createAsyncThunk<DilKodu, DilKodu>('dil/kaydet', async (kod, { getState }) => {
-  const degisti = await DilServisi.kaydet(kod);
+export const diliKaydet = createAsyncThunk<DilKodu, DilKodu | 'cihaz'>('dil/kaydet', async (secim, { getState }) => {
+  // 'cihaz': açık seçim silinir, cihaz dili izlenir (seçilebilir değilse Türkçe).
+  const degisti = secim === 'cihaz' ? await DilServisi.cihazDilineDon() : await DilServisi.kaydet(secim);
   if (degisti) {
     try {
       // Bildirim düğmeleri gösterim anında, kanal adları sistem ayarlarında çözülür → yeni dilde
@@ -49,7 +54,47 @@ export const diliKaydet = createAsyncThunk<DilKodu, DilKodu>('dil/kaydet', async
       }
     }
   }
-  return kod;
+  return secim === 'cihaz' ? aktifDil() : secim;
+});
+
+/** Elle yazılmış sesli okuma metni sayısı (dil değişince "bir kez sor" kapısı). */
+export const ozelAnonsSay = createAsyncThunk<number>('dil/ozelAnonsSay', async () => {
+  const { LocalOzelAnonsServisi } = require('../../data/local/LocalOzelAnonsServisi') as typeof import('../../data/local/LocalOzelAnonsServisi');
+  return LocalOzelAnonsServisi.say();
+});
+
+/**
+ * Kullanıcı onayladıysa elle yazılmış sesli okuma metinlerini etkin dilin hazır şablonuyla
+ * değiştirir; değişen yüzeylerin slice'larını diskten yeniden yükler (eski metin ekranda kalıp
+ * bir sonraki kayıtta geri yazılmasın) ve planları yeniler.
+ */
+export const ozelAnonslariDegistir = createAsyncThunk<number, void>('dil/ozelAnonslariDegistir', async (_, { dispatch, getState }) => {
+  const { LocalOzelAnonsServisi } = require('../../data/local/LocalOzelAnonsServisi') as typeof import('../../data/local/LocalOzelAnonsServisi');
+  const degisen = await LocalOzelAnonsServisi.sablonlaDegistir();
+  if (degisen.length === 0) return 0;
+  try {
+    const yukleyiciler: Record<string, () => unknown> = {
+      muhafiz: () => (require('./muhafizSlice') as typeof import('./muhafizSlice')).muhafizAyarlariniYukle(),
+      nafile: () => (require('./nafileSlice') as typeof import('./nafileSlice')).nafileAyarlariniYukle(),
+      cuma: () => (require('./cumaHatirlatmaSlice') as typeof import('./cumaHatirlatmaSlice')).cumaHatirlatmaAyarlariniYukle(),
+      camiyeGit: () => (require('./camiyeGitSlice') as typeof import('./camiyeGitSlice')).camiyeGitAyarlariniYukle(),
+      yatis: () => (require('./yatisHatirlatmaSlice') as typeof import('./yatisHatirlatmaSlice')).yatisHatirlatmaAyarlariniYukle(),
+      takvim: () => (require('./takvimCakismaSlice') as typeof import('./takvimCakismaSlice')).takvimCakismaAyarlariniYukle(),
+    };
+    for (const y of degisen) await dispatch(yukleyiciler[y]() as never);
+  } catch (e) {
+    Logger.warn('dilSlice', 'Ayarlar yeniden yüklenemedi', e);
+  }
+  const k = (getState() as DurumKaynagi).konum?.koordinatlar;
+  if (k && !(k.lat === 0 && k.lng === 0)) {
+    try {
+      const { konumDegistiUygula } = require('../../domain/services/KonumDegisikligiServisi') as typeof import('../../domain/services/KonumDegisikligiServisi');
+      await konumDegistiUygula(k);
+    } catch (e) {
+      Logger.warn('dilSlice', 'Planlar yenilenemedi', e);
+    }
+  }
+  return degisen.length;
 });
 
 const dilSlice = createSlice({
