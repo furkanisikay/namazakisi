@@ -57,7 +57,8 @@ import { useAnaAyrintiSecimi } from '../components/common/anaAyrintiSecimi';
 import { saatUygulamasiDestekli } from '../../../modules/expo-siri-kisayollari/src';
 import { cihazRoluAyarla, useCihazRolu } from '../hooks/useHatirlatmaKapisi';
 import { useEvEkraniAyari } from '../hooks/useEvEkraniAyari';
-import { useMetin } from '../hooks/useMetin';
+import { useAktifDil, useMetin } from '../hooks/useMetin';
+import { DILLER, dilSeciciGorunur } from '../../core/dil/diller';
 import { bicim } from '../../core/dil/aktifDil';
 
 /** Kompakt başlığın belirmeye başlayıp tamamen görünür olduğu kaydırma mesafesi (dp). */
@@ -102,6 +103,7 @@ export const AyarlarSayfasi: React.FC = () => {
   const s = useMetin();
   const m = s.ayarlar.ana;
   const e = s.genel.ekranlar;
+  const etkinDil = useAktifDil();
   const navigation = useNavigation<NativeStackNavigationProp<AyarlarStackParamList>>();
   const { ayarlar, titresimDurumunuDegistir, sesDurumunuDegistir } = useFeedback();
   const { kart, okunmamisVarMi, sayfaOkunmamisMi, sayfayiGorulduIsaretle, kartiKapat } = useYeniOzellikler();
@@ -194,12 +196,12 @@ export const AyarlarSayfasi: React.FC = () => {
 
   // ── Canlı özetler ──
   const hatirlatmaOzeti = ozetler.hatirlatmalar;
-  // `useCamideyimOzeti` "Kapalı" (ya da etkin dilde karşılığı) döndürür; ikisi de kapalı sayılır.
-  const kapaliMi = (x: string) => x === 'Kapalı' || x === s.ayarlar.ozet.kapali; // dil-haric: kimlik (özet hook'u)
+  // Kapalı durumu özet metninden değil hook'un bayrağından (metin etkin dildedir).
+  const camiKapali = camideyim.camiKapali ?? false;
   const namazdaSessizOzeti = camideyim.iosOzeti ??
-    (kapaliMi(camideyim.cami) && kapaliMi(camideyim.namazModu)
+    (camiKapali && (camideyim.namazModuKapali ?? false)
       ? s.ayarlar.ozet.kapali
-      : !kapaliMi(camideyim.cami)
+      : !camiKapali
         ? bicim(m.camide, { durum: camideyim.cami })
         : bicim(m.vakitlerde, { durum: camideyim.namazModu }));
   const mezhep = seferilik?.ayarlar.mezhep ?? 'hanefi';
@@ -362,6 +364,17 @@ export const AyarlarSayfasi: React.FC = () => {
                   secili={seciliAyrinti === 'GorünumAyarlari'} // dil-haric: kimlik (rota adı)
                   onPress={() => menuyeGit('GorünumAyarlari')} // dil-haric: kimlik (rota adı)
                 />
+                {dilSeciciGorunur() ? (
+                  <AyarSatiri
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="language" size={20} color={ikonRengi} solid />}
+                    baslik={e.DilAyarlari}
+                    ozet={DILLER.find((d) => d.kod === etkinDil)?.yerelAd ?? etkinDil}
+                    yeniRozetGoster={sayfaOkunmamisMi('DilAyarlari')}
+                    secili={seciliAyrinti === 'DilAyarlari'}
+                    onPress={() => menuyeGit('DilAyarlari')}
+                  />
+                ) : null}
                 {saatVeWidgetVar && [
                   <AyarSatiri
                     key="saat-widget"

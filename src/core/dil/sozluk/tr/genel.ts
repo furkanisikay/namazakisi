@@ -131,6 +131,8 @@ export const genel = {
     Camilerim: 'Camilerim',
     KonumAyarlari: 'Konum',
     GorunumAyarlari: 'Görünüm',
+    /** İki dilli: arayüzü okuyamayan kullanıcı da bulur. */
+    DilAyarlari: 'Dil · Language',
     BildirimAyarlari: 'Hatırlatmalar',
     SeriHedefAyarlari: 'Seri hedefi',
     MuhafizAyarlari: 'Vakit çıkmadan',
@@ -203,6 +205,8 @@ export const genel = {
   },
   yeniOzellik: {
     rozet: 'YENİ',
+    /** Menü satırının küçük rozeti (`YeniRozet`). */
+    satirRozeti: 'Yeni',
     eklendi: 'Uygulamaya eklendi',
     incele: 'İncele',
     inceleyin: 'İnceleyin',

@@ -12,6 +12,8 @@ export const kaza: Sozluk['kaza'] = {
     aciklama: "One qada after each obligatory prayer reduces what you owe step by step. Mark it when you pray a {kaza} qada; we'll deduct it from your log.",
     simdiDegil: 'Not now',
     kildimDusun: "I've prayed it, deduct it",
+    kapatildi: 'Qada suggestion turned off. You can turn it back on in the Qada log.',
+    ayarKaydedilemedi: "The setting couldn't be saved. Try again.",
     birDahaSormayin: "Don't ask again",
     birDahaIpucu: 'Turns off this suggestion; you can turn it back on in the Qada log',
     borcYok: 'You have no {kaza} qada left to make up.',

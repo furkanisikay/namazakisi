@@ -139,9 +139,9 @@ export const useFarzSonrasiKazaOnerisi = () => {
     setOneri(null);
     const sonuc = await dispatch(kazaOneriAyarlariniGuncelle({ farzSonrasiOner: false }));
     if (kazaOneriAyarlariniGuncelle.fulfilled.match(sonuc)) {
-      kisaBildirimGoster("Kaza önerisi kapatıldı. Kaza Defteri'nden yeniden açabilirsiniz.", true);
+      kisaBildirimGoster(metin().kaza.oneri.kapatildi, true);
     } else {
-      kisaBildirimGoster('Ayar kaydedilemedi. Lütfen yeniden deneyin.');
+      kisaBildirimGoster(metin().kaza.oneri.ayarKaydedilemedi);
     }
   }, [dispatch, oneri]);
 

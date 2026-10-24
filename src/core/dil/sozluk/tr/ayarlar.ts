@@ -33,6 +33,7 @@ export const ayarlar = {
     'sayfa-ramazan': { baslik: 'Ramazan', kelimeler: 'ramazan, iftar, sahur, oruç' },
     'sayfa-nafile': { baslik: 'Nafile namazlar', kelimeler: 'nafile, kuşluk, duha, işrak, evvabin, teheccüd, gece namazı' },
     'sayfa-gorunum': { baslik: 'Görünüm', kelimeler: 'tema, renk, görünüm, karanlık mod' },
+    'sayfa-dil': { baslik: 'Dil · Language', kelimeler: 'dil, language, ingilizce, english, türkçe, cihaz dili' },
     'sayfa-saat-widget': { baslik: 'Saat ve widget', kelimeler: 'saat, wear, widget, now bar, canlı sayaç, canlı etkinlik, bileklik, otomasyon, tasker, rutin' },
     'sayfa-cihazlarim': { baslik: 'Cihazlarım', kelimeler: 'cihaz, cihazlarım, bağlı cihaz, tv kaldır, durumum sayılsın, sessiz bant, eşitleme' },
     'sayfa-cihaz-ekle': { baslik: 'Tablet ya da telefon ekleyin', kelimeler: 'tablet, ipad, ikinci telefon, cihaz ekle, eşleştir, kıldım eşitle' },

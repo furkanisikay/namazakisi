@@ -16,7 +16,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { useAppDispatch } from '../store/hooks';
 import { ozellikGorulduIsaretle } from '../store/ozelliklerSlice';
-import { YENI_OZELLIKLER, type YeniOzellik } from '../../core/constants/YeniOzellikler';
+import { type YeniOzellik } from '../../core/constants/YeniOzellikler';
+import { yeniOzelliklerDilde } from '../../core/constants/yeniOzellikDili';
 import { gorulmeAnahtari } from '../../core/utils/yeniOzellikGorulme';
 import { yeniOzellikGorunurMu } from '../hooks/yeniOzellikYetenegi';
 import { useFeedback } from '../../core/feedback';
@@ -154,7 +155,7 @@ export const NelerYeniSayfasi: React.FC<any> = ({ navigation }) => {
 
     // Kronolojik (en yeni üstte)
     const siraliOzellikler = useMemo(
-        () => YENI_OZELLIKLER.filter(yeniOzellikGorunurMu).sort((a, b) => b.tarih.localeCompare(a.tarih)),
+        () => yeniOzelliklerDilde().filter(yeniOzellikGorunurMu).sort((a, b) => b.tarih.localeCompare(a.tarih)),
         // Duyuru metinleri etkin dilden okunur: dil değişince liste yeniden kurulsun.
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [s]
@@ -176,8 +177,9 @@ export const NelerYeniSayfasi: React.FC<any> = ({ navigation }) => {
     }, [butonTiklandiFeedback]);
 
     useEffect(() => {
-        // Sayfayı görünce tüm özellikler okundu sayılır → rozetler kalkar
-        dispatch(ozellikGorulduIsaretle(YENI_OZELLIKLER.map(gorulmeAnahtari)));
+        // Sayfayı görünce GÖSTERİLEN özellikler okundu sayılır → rozetler kalkar (bu dilde
+        // çevirisi olmayan duyuru, çevrildiği dile dönülünce hâlâ yeni görünür).
+        dispatch(ozellikGorulduIsaretle(siraliOzellikler.map(gorulmeAnahtari)));
 
         Animated.parallel([
             Animated.timing(fadeAnim, { toValue: 1, duration: 350, useNativeDriver: true }),

@@ -22,6 +22,7 @@ import type { AyarlarEkranAdi } from '../../navigation/ayarlarEkranlari';
 import type { CapaId } from './capalar';
 import { aktifDil, metin, sozluk } from '../dil/aktifDil';
 import type { Sozluk } from '../dil/sozluk/tr';
+import { dilSeciciGorunur } from '../dil/diller';
 
 export interface AyarIndeksKaydi {
   id: string;
@@ -77,6 +78,8 @@ const TANIMLAR: KayitTanimi[] = [
   { id: 'sayfa-ramazan', sayfa: 'RamazanAyarlari', grup: 'hatirlatmalar' },
   { id: 'sayfa-nafile', sayfa: 'NafileAyarlari', grup: 'hatirlatmalar' },
   { id: 'sayfa-gorunum', sayfa: 'GorünumAyarlari', grup: 'ekranCihazlar' }, // dil-haric: kimlik (rota adı)
+  // Dil sayfası yalnız seçicide birden çok dil varken (Ayarlar satırıyla aynı kapı).
+  ...(dilSeciciGorunur() ? [{ id: 'sayfa-dil', sayfa: 'DilAyarlari', grup: 'ekranCihazlar' } as const] : []),
   { id: 'sayfa-saat-widget', sayfa: 'SaatVeWidgetAyarlari', grup: 'ekranCihazlar' },
   { id: 'sayfa-cihazlarim', sayfa: 'Cihazlarim', grup: 'ekranCihazlar' },
   { id: 'sayfa-cihaz-ekle', sayfa: 'CihazEkle', grup: 'ekranCihazlar' },

@@ -74,7 +74,7 @@ import { sesliBilgiMetni } from '../../core/hatirlatma/duzeyOzeti';
 import { AlarmOnayModal } from '../components/hatirlatma/AlarmOnayModal';
 import { DilSecimModali } from '../components/dil/DilSecimModali';
 import { cihazYerelAyari, DilServisi } from '../../domain/services/DilServisi';
-import { DILLER } from '../../core/dil/diller';
+import { dilSeciciGorunur } from '../../core/dil/diller';
 import { useAlarmIzinleri } from '../hooks/useAlarmIzinleri';
 import { usePlatformYetenekleri } from '../hooks/usePlatformYetenekleri';
 
@@ -165,7 +165,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     // Dil bağlantısı: cihaz dili Türkçe değilse ve seçilebilir birden çok dil varsa (sahip kararı).
     const yerel = useMemo(() => cihazYerelAyari(), []);
     const dilBaglantisi = useMemo(
-        () => !!yerel && yerel.split(/[-_]/)[0] !== 'tr' && DILLER.filter((d) => d.secilebilir).length > 1,
+        () => !!yerel && yerel.split(/[-_]/)[0] !== 'tr' && dilSeciciGorunur(),
         [yerel],
     );
     const [dilModali, setDilModali] = useState(false);

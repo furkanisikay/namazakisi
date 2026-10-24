@@ -55,6 +55,7 @@ export const seri: Sozluk['seri'] = {
     rozetMesaj: 'You earned the "{ad}" badge.',
     hedefBaslik: cogul({ one: '{n} day', other: '{n} days' }),
     hedefMesaj: 'You completed the "{ad}" goal. May Allah make it lasting.',
+    yeniRank: 'New rank: {rank}',
     seviyeBaslik: 'Your new level',
     seviyeMesaj: 'You now continue as "{rank}". May Allah make it lasting.',
     toparlanmaBaslik: 'Your streak is back',

@@ -26,6 +26,8 @@ export const AYARLAR_EKRANLARI = [
   'Camilerim',
   'KonumAyarlari',
   'GorünumAyarlari', // dil-haric: kimlik (rota adı)
+  // Arayüz dili (seçicide birden çok dil varken Ayarlar'da satırı görünür)
+  'DilAyarlari',
   'BildirimAyarlari',
   'SeriHedefAyarlari',
   'MuhafizAyarlari',

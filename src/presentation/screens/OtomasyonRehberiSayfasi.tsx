@@ -196,7 +196,6 @@ const RutinlerRehberi: React.FC<{ renkler: Renkler; onkosul: string | null }> = 
 
 const EklentiRehberi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
     const mo = useMetin().muhafizAyar.otomasyon;
-    const aciklamalar: Readonly<Record<string, string>> = mo.degiskenAciklamalari;
     return (
     <View style={{ gap: 16 }}>
         <Kart renkler={renkler} ikon="bolt" baslik={mo.eklentiOlayBaslik} testID="rehber-eklenti-olay">
@@ -214,7 +213,7 @@ const EklentiRehberi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
                             {d.ad}
                         </Text>
                         <Text className="flex-1 text-sm" style={{ color: renkler.metinIkincil }}>
-                            {aciklamalar[d.ad] ?? d.aciklama}
+                            {d.aciklama}
                         </Text>
                     </View>
                 ))}

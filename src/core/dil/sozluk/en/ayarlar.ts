@@ -29,6 +29,7 @@ export const ayarlar: Sozluk['ayarlar'] = {
     'sayfa-ramazan': { baslik: 'Ramadan', kelimeler: 'ramadan, iftar, suhoor, sahur, fasting' },
     'sayfa-nafile': { baslik: 'Nafl prayers', kelimeler: 'nafl, voluntary, duha, ishraq, awwabin, tahajjud, night prayer' },
     'sayfa-gorunum': { baslik: 'Appearance', kelimeler: 'theme, color, appearance, dark mode' },
+    'sayfa-dil': { baslik: 'Language · Dil', kelimeler: 'language, turkish, english, device language, translation' },
     'sayfa-saat-widget': { baslik: 'Watch and widgets', kelimeler: 'watch, wear, widget, now bar, live countdown, live activity, wristband, automation, tasker, routine' },
     'sayfa-cihazlarim': { baslik: 'My devices', kelimeler: 'device, my devices, connected device, remove tv, count my status, quiet band, sync' },
     'sayfa-cihaz-ekle': { baslik: 'Add a tablet or phone', kelimeler: "tablet, ipad, second phone, add device, pair, sync i've prayed" },

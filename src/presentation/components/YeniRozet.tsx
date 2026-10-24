@@ -2,9 +2,10 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, Text } from 'react-native';
 import { useRenkler } from '../../core/theme';
 import { useDonguAcik } from './hareket/dongu';
+import { useMetin } from '../hooks/useMetin';
 
 interface YeniRozetProps {
-    /** Metin (varsayılan: "Yeni") */
+    /** Metin (varsayılan: etkin dilde "Yeni") */
     etiket?: string;
 }
 
@@ -15,8 +16,10 @@ interface YeniRozetProps {
  * (AGENTS hareket kuralı; denetim D-16 — eskiden Ayarlar'da sonsuza dek dönüyordu).
  * Odak dışı / arka plan / "Animasyonları azalt"ta oynamaz; dinlenme pozu ölçek 1.
  */
-export const YeniRozet: React.FC<YeniRozetProps> = ({ etiket = 'Yeni' }) => {
+export const YeniRozet: React.FC<YeniRozetProps> = ({ etiket: verilen }) => {
     const renkler = useRenkler();
+    const varsayilan = useMetin().genel.yeniOzellik.satirRozeti;
+    const etiket = verilen ?? varsayilan;
     const nabiz = useRef(new Animated.Value(1)).current;
     const acik = useDonguAcik();
     const oynandi = useRef(false);

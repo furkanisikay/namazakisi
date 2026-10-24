@@ -61,6 +61,7 @@ export const seri = {
     hedefBaslik: cogul({ one: '{n} gün', other: '{n} gün' }),
     hedefMesaj: '"{ad}" hedefini tamamladınız. Allah daim etsin.',
     seviyeBaslik: 'Yeni seviyeniz',
+    yeniRank: 'Yeni rank: {rank}',
     seviyeMesaj: 'Artık bir "{rank}" olarak devam ediyorsunuz. Allah daim etsin.',
     toparlanmaBaslik: 'Serinize yeniden kavuştunuz',
     toparlanmaMesaj: cogul({

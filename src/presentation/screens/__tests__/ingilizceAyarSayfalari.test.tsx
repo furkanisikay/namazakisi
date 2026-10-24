@@ -42,7 +42,10 @@ jest.mock('../../../core/constants/YeniOzellikler', () => ({
     {
       id: 'ornek', surum: '1.0.0', tarih: '2026-03-05', baslik: 'Feature', aciklama: 'Details', ikon: 'star',
       platformlar: ['android', 'ios'], hedefSayfa: 'Hatirlatmalar',
+      ceviri: { en: { baslik: 'Feature', aciklama: 'Details' } },
     },
+    // Çevirisi olmayan duyuru İngilizcede GÖSTERİLMEZ (yarım çeviri yok).
+    { id: 'cevirisiz', surum: '1.0.0', tarih: '2026-04-01', baslik: 'Yalnız Türkçe duyuru', aciklama: 'Ayrıntı', ikon: 'star', platformlar: ['android', 'ios'] },
   ],
 }));
 
@@ -76,6 +79,7 @@ it('"Neler yeni" çerçevesi ve tarih İngilizce', () => {
   const e = render(<NelerYeniSayfasi navigation={{ navigate: jest.fn() }} />);
   expect(e.getByText(/^5 March 2026/)).toBeTruthy();
   expect(e.getByText('Take a look')).toBeTruthy();
+  expect(e.queryByText('Yalnız Türkçe duyuru')).toBeNull();
   expect(turkceKalanlar(e.toJSON() as never, YASAKLI).filter((m) => !m.includes('Namaz Akışı'))).toEqual([]);
 });
 

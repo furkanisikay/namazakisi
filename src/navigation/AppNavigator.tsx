@@ -66,6 +66,7 @@ import {
   TaniGeriBildirimSayfasi,
 } from '../presentation/screens';
 import type { AyarlarEkranAdi, AyarlarStackParamList } from './ayarlarEkranlari';
+import { DilAyarlariSayfasi } from '../presentation/screens/DilAyarlariSayfasi';
 import { KAZA_EKRAN_BASLIKLARI, type KazaStackParamList } from './kazaEkranlari';
 import { DEPOLAMA_ANAHTARLARI } from '../core/constants/UygulamaSabitleri';
 import { useRenkler } from '../core/theme';
@@ -151,6 +152,7 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   Camilerim: { component: CamilerimSayfasi, baslik: (e) => e.Camilerim },
   KonumAyarlari: { component: KonumAyarlariSayfasi, baslik: (e) => e.KonumAyarlari },
   GorünumAyarlari: { component: GorunumAyarlariSayfasi, baslik: (e) => e.GorunumAyarlari }, // dil-haric: kimlik (rota adı)
+  DilAyarlari: { component: DilAyarlariSayfasi, baslik: (e) => e.DilAyarlari },
   // Eski "Bildirimler" rotası (Neler Yeni, eski bağlantılar) Hatırlatmalar sayfasını açar.
   BildirimAyarlari: { component: HatirlatmalarSayfasi, baslik: (e) => e.BildirimAyarlari },
   SeriHedefAyarlari: { component: SeriHedefAyarlariSayfasi, baslik: (e) => e.SeriHedefAyarlari },

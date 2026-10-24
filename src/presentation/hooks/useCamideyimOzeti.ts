@@ -19,12 +19,15 @@ export interface CamideyimOzeti {
     namazModu: string;
     /** iPhone: satırın tüm özeti (Odak kurulum rehberi). Android'de yok. */
     iosOzeti?: string;
+    /** Kapalı durumu metinden değil buradan okunur (özet metni etkin dildedir). */
+    camiKapali?: boolean;
+    namazModuKapali?: boolean;
 }
 
 export function camideyimOzetiOlustur(
     ayarlarHam: unknown,
     durum: kopru.CamiNativeDurumu | null
-): Pick<CamideyimOzeti, 'cami' | 'namazModu'> {
+): Pick<CamideyimOzeti, 'cami' | 'namazModu' | 'camiKapali' | 'namazModuKapali'> {
     const a = camideyimAyarlariniNormalize(ayarlarHam);
     const t = metin().cami.ozet;
     const cami = !a.aktif
@@ -44,7 +47,7 @@ export function camideyimOzetiOlustur(
             : [m.ayarlar.cuma ? t.cumaHutbesi : null, m.ayarlar.vakit ? t.vakitGirince : null, a.aktif && a.namazModu ? t.camide : null]
                   .filter(Boolean)
                   .join(', ') || t.acik;
-    return { cami, namazModu };
+    return { cami, namazModu, camiKapali: !a.aktif, namazModuKapali: !m?.ayarlar?.etkin };
 }
 
 export function useCamideyimOzeti(): CamideyimOzeti {

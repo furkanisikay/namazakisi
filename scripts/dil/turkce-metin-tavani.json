@@ -1,7 +1,4 @@
 {
- "toplam": 6,
- "dosyalar": {
-  "src/core/otomasyon/anahtarKelimeler.ts": 4,
-  "src/presentation/hooks/useFarzSonrasiKazaOnerisi.ts": 2
- }
+ "toplam": 0,
+ "dosyalar": {}
 }

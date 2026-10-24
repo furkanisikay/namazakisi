@@ -191,6 +191,18 @@ describe('AyarlarSayfasi', () => {
     });
   });
 
+  it('Dil satırı yalnız seçicide birden çok dil varken görünür; özeti dilin kendi adı', async () => {
+    const diller = require('../../../core/dil/diller') as typeof import('../../../core/dil/diller');
+    const tek = jest.spyOn(diller, 'dilSeciciGorunur').mockReturnValue(false);
+    expect(render(<AyarlarSayfasi />).queryByText('Dil · Language')).toBeNull();
+    tek.mockReturnValue(true);
+    const { getByText } = render(<AyarlarSayfasi />);
+    expect(getByText('Türkçe')).toBeTruthy();
+    fireEvent.press(getByText('Dil · Language'));
+    await waitFor(() => expect(navigateMock).toHaveBeenCalledWith('DilAyarlari'));
+    tek.mockRestore();
+  });
+
   it('NÖBETÇİ: yeni özellik tanıtım kartı hâlâ render edilir', async () => {
     // Sabit dize DEĞİL — katalogdan türetilir: AGENTS.md'nin duyuru reçetesi diziye
     // EN ÜSTE kayıt eklemeyi söylüyor, sabit başlık bir sonraki özellik duyurusunda

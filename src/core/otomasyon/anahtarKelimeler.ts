@@ -12,6 +12,7 @@
  */
 import type { VakitBildirimVakti } from '../bildirim/vakitBildirimPlani';
 import { bicim, metin } from '../dil/aktifDil';
+import type { Sozluk } from '../dil/sozluk/tr';
 
 const VAKITLER: readonly VakitBildirimVakti[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
 
@@ -53,12 +54,20 @@ export interface EklentiDegiskeni {
 }
 
 /** Tasker değişkenleri — Kotlin `OtomasyonKurallari.D_*` ile AYNI (nöbetçi test okur). */
+/** Ad Kotlin ile birebir (kimlik); açıklama etkin dilde (`muhafizAyar.otomasyon.degiskenAciklamalari`). */
+const degisken = (ad: keyof Sozluk['muhafizAyar']['otomasyon']['degiskenAciklamalari']): EklentiDegiskeni => ({
+    ad,
+    get aciklama() {
+        return metin().muhafizAyar.otomasyon.degiskenAciklamalari[ad];
+    },
+});
+
 export const EKLENTI_DEGISKENLERI: EklentiDegiskeni[] = [
-    { ad: '%vakit', aciklama: 'Vaktin adı (ör. Öğle)' },
-    { ad: '%vakitkodu', aciklama: 'sabah, ogle, ikindi, aksam ya da yatsi' },
-    { ad: '%tarih', aciklama: 'Namaz günü (YYYY-AA-GG)' },
-    { ad: '%kalandk', aciklama: 'Vakit çıkıyor: kalan dakika' },
-    { ad: '%cami', aciklama: 'Camidesiniz: caminin adı' },
+    degisken('%vakit'),
+    degisken('%vakitkodu'),
+    degisken('%tarih'),
+    degisken('%kalandk'),
+    degisken('%cami'),
 ];
 
 /** "Vakit çıkıyor" olayının eşiği (dk) — Kotlin `OtomasyonKurallari.CIKIYOR_ESIK_DK`. */

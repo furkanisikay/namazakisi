@@ -25,6 +25,9 @@ export const DILLER: readonly DilTanimi[] = [
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';
 
+/** Dil seçimi sunulur mu (Ayarlar satırı, arama kaydı, sihirbaz bağlantısı)? Tek dilde anlamsız. */
+export const dilSeciciGorunur = (): boolean => DILLER.filter((d) => d.secilebilir).length > 1;
+
 export function dilKoduMu(x: unknown): x is DilKodu {
   return typeof x === 'string' && DILLER.some((d) => d.kod === x);
 }

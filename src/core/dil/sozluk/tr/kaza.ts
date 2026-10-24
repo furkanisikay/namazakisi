@@ -13,6 +13,8 @@ export const kaza = {
     aciklama: 'Kıldığınız her farzın ardından bir kaza, borcunuzu adım adım azaltır. Bir {kaza} kazası kıldığınızda işaretleyin; defterinizden düşelim.',
     simdiDegil: 'Şimdi değil',
     kildimDusun: 'Kıldım, kazadan düşün',
+    kapatildi: "Kaza önerisi kapatıldı. Kaza Defteri'nden yeniden açabilirsiniz.",
+    ayarKaydedilemedi: 'Ayar kaydedilemedi. Lütfen yeniden deneyin.',
     birDahaSormayin: 'Bir daha sormayın',
     birDahaIpucu: "Bu öneriyi kapatır; Kaza Defteri'nden yeniden açabilirsiniz",
     borcYok: 'Bu {kaza} kazası için borcunuz kalmamış.',

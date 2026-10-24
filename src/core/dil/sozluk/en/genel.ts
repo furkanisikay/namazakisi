@@ -132,6 +132,7 @@ export const genel: Sozluk['genel'] = {
     Camilerim: 'My mosques',
     KonumAyarlari: 'Location',
     GorunumAyarlari: 'Appearance',
+    DilAyarlari: 'Language · Dil',
     BildirimAyarlari: 'Reminders',
     SeriHedefAyarlari: 'Streak goal',
     MuhafizAyarlari: 'Before the time ends',
@@ -204,6 +205,7 @@ export const genel: Sozluk['genel'] = {
   },
   yeniOzellik: {
     rozet: 'NEW',
+    satirRozeti: 'New',
     eklendi: 'Added to the app',
     incele: 'Take a look',
     inceleyin: 'Take a look',
