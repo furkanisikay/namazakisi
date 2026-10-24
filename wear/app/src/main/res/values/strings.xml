@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Türkçe (varsayılan). İngilizce: values-en; anahtar kümesi iki dilde AYNI olmalı, yer tutucular (%1$s, %1$d) da. -->
 <resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">tr</string>
     <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
     <string name="tile_adi">Sıradaki vakit</string>
     <string name="tile_aciklama">Sıradaki namaz vakti ve saati</string>
     <string name="komplikasyon_adi">Kalan süre</string>
@@ -22,4 +26,133 @@
     <string name="camideyim_kanal_aciklama">Telefonunuz camide olduğunuzu bildirince kadranda sessiz simge</string>
     <string name="uyandirma_kanal_adi">Sessiz uyandırma</string>
     <string name="uyandirma_kanal_aciklama">Sabah ve teheccüd için yalnız titreşimle uyandırır</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Kıldım</string>
+    <string name="kilindi_isareti">✓ Kılındı</string>
+    <string name="kapat">Kapat</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Vakitleri görmek için telefonunuzda Namaz Akışı\'nı açın.</string>
+    <string name="yuk_eskidi">Vakit bilgisi eskidi. Yenilemek için telefonunuzda Namaz Akışı\'nı açın.</string>
+    <string name="guncelleme_gerekli">Saatinizdeki Namaz Akışı\'nı güncelleyin.</string>
+    <string name="bildirim_izni">Telefonunuz yanınızda değilken de hatırlatma almak için saatin ayarlarından Namaz Akışı bildirimlerine izin verin.</string>
+    <string name="cami_soru">Camide misiniz?</string>
+    <string name="cami_evet">Evet</string>
+    <string name="cami_evet_aciklama">Evet, camideyim. Namaz modunu açar</string>
+    <string name="cami_hayir">Hayır</string>
+    <string name="cami_hayir_aciklama">Hayır, camide değilim</string>
+    <string name="camidesiniz">Camidesiniz</string>
+    <string name="cami_degil">Burası cami değil</string>
+    <string name="cami_degil_aciklama">Burası cami değil. Bu yer bir daha cami sayılmaz</string>
+    <string name="tesbihat_ac">Tesbihat sayacını açın</string>
+    <string name="kible_ac">Kıble pusulasını açın</string>
+    <string name="ses_dene">Sesi deneyin</string>
+    <string name="ses_dene_aciklama">Saatin sesli okumasını deneyin</string>
+    <string name="telefonda_acin">Telefonda açın</string>
+    <string name="telefonda_ekran_ac">%1$s ekranını telefonunuzda açın</string>
+    <string name="ekran_kaza">Kaza Defteri</string>
+    <string name="ekran_camideyim">Camideyim</string>
+    <string name="ekran_ayarlar">Ayarlar</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">kılındı, eşitleniyor</string>
+    <string name="durum_kilindi">kılındı</string>
+    <string name="durum_girmedi">vakti henüz girmedi</string>
+    <string name="durum_simdiki">şu anki vakit, işaretlemek için dokunun</string>
+    <string name="durum_simdiki_kalan">şu anki vakit, %1$s, işaretlemek için dokunun</string>
+    <string name="durum_kilinmadi">kılınmadı, işaretlemek için dokunun</string>
+    <string name="isaretleyin">İşaretleyin</string>
+    <string name="esitleniyor">eşitleniyor</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Kıldım onayı</string>
+    <string name="vazgecin">Vazgeçin</string>
+    <string name="vazgec">Vazgeç</string>
+    <string name="kerahat_vaktindesiniz">Kerahat vaktindesiniz.</string>
+    <string name="kilindi_dua">Kılındı. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Namaz modu açık, bitiş %1$s. Kapatmak için dokunun</string>
+    <string name="namaz_modu_ac_aciklama">Telefonunuzda Namaz modunu açın</string>
+    <string name="namaz_modu_kapatin">Namaz modunu kapatın</string>
+    <string name="namaz_modu_acin">Namaz modunu açın</string>
+    <string name="namaz_modu_acik_bitis">Açık, bitiş %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Yön ölçülüyor…</string>
+    <string name="kible_yuk_yok">Kıble için telefonunuzda Namaz Akışı\'nı açın.</string>
+    <string name="kible_konum_yok">Kıble için telefonunuzda konumu açın. Namaz Akışı güncel değilse güncelleyin.</string>
+    <string name="kible_sensor_yok">Bu saatte pusula sensörü bulunmuyor. Kıble yönünü telefonunuzdan görebilirsiniz.</string>
+    <string name="kible_kuzeyden">Kıble %1$d° (kuzeyden)</string>
+    <string name="kible_derece">Kıble %1$d°</string>
+    <string name="kible_telefonda_ac">Kıbleyi telefonunuzda açın</string>
+    <string name="kible_erisim">%1$s. Kıble %2$d derece, %3$s</string>
+    <string name="kible_hizali">Kıble yönündesiniz</string>
+    <string name="kible_kalibrasyon">Kalibrasyon için bileğinizle havada 8 çizin</string>
+    <string name="kible_egim">Saatinizi yere paralel tutun</string>
+    <string name="kible_titresim_acik">Titreşimle yönlendirme açık. Kapatmak için dokunun</string>
+    <string name="kible_titresim_kapali">Titreşimle yönlendirme kapalı. Açmak için dokunun</string>
+    <string name="kible_harf_kuzey">K</string>
+    <string name="kible_harf_dogu">D</string>
+    <string name="kible_harf_guney">G</string>
+    <string name="kible_harf_bati">B</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak transliterasyondur: çevrilmez. -->
+    <string name="tesbihat_tamam_erisim">Tesbihat tamamlandı. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Toplam %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Sayın</string>
+    <string name="tesbihat_bastan_baslayin">Baştan başlayın</string>
+    <string name="tesbihat_bastan_soru">Baştan başlansın mı?</string>
+    <string name="tesbihat_sifirlanir">Sayım sıfırlanır.</string>
+    <string name="tesbihat_geri_al">Geri al</string>
+    <string name="tesbihat_geri_al_aciklama">Son sayımı geri alın</string>
+    <string name="tesbihat_yeniden">Yeniden başla</string>
+    <string name="tesbihat_yeniden_aciklama">Tesbihata yeniden başlayın</string>
+    <string name="tesbihat_suruyor">Tesbihat sürüyor: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Kıldım. Uyandırmayı kapatır</string>
+    <string name="uyandirma_kapat_aciklama">Uyandırmayı kapat</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışı\'nı açın</string>
+    <string name="tile_vakitler_icin">Vakitler için dokunun</string>
+    <string name="tile_telefonda_acin">Telefonunuzda uygulamayı açın</string>
+    <string name="tile_sonra">%1$s sonra</string>
+    <string name="tile_siradaki_aciklama">Sıradaki vakit %1$s, giriş %2$s. Uygulamayı açın</string>
+    <string name="tile_giris">giriş %1$s</string>
+    <string name="tile_cikis">çıkış %1$s</string>
+    <string name="bugun_bos_satir1">Telefonunuzda</string>
+    <string name="bugun_bos_satir2">uygulamayı açın</string>
+    <string name="bugun_acma_aciklamasi">Bugün %1$d/%2$d vakit kılındı. Uygulamayı açın</string>
+    <string name="bugun_sayi">Bugün %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Kerahat vakti · onay için tekrar</string>
+    <string name="bugun_onay_tekrar">Onaylamak için tekrar dokunun</string>
+    <string name="bugun_tamam">Bugünün namazları tamam</string>
+    <string name="bugun_kilinmadi">%1$s kılınmadı</string>
+    <string name="bugun_siradaki">Sıradaki: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Tekrar dokunun</string>
+    <string name="bugun_kilindi">%1$s kılındı</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s kılındı, eşitleniyor</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Vakit bilgisi bekleniyor; telefonda Namaz Akışı\'nı açın</string>
+    <string name="komplikasyon_bekleniyor">Vakitler bekleniyor</string>
+    <string name="komplikasyon_vakit">Vakit</string>
+    <string name="komplikasyon_cikis">Çıkış</string>
+    <string name="komplikasyon_sirada">Sırada</string>
+    <string name="gun_durumu_aciklama">Bugün %1$d vakitten %2$d kılındı</string>
+    <string name="gun_durumu_kilinmamis">%1$s; kılınmamış: %2$s</string>
+    <string name="komplikasyon_namaz">Namaz</string>
+    <string name="komplikasyon_kerahat">Kerahat</string>
+    <string name="kerahat_icinde_aciklama">Kerahat vaktindesiniz, bitiş %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Sıradaki kerahat vakti %1$s</string>
+    <string name="kible_komplikasyon">Kıble kuzeyden %1$d derece. Pusulayı açın</string>
+    <string name="kible_komplikasyon_konumlu">Kıble kuzeyden %1$d derece, %2$s. Pusulayı açın</string>
+    <string name="kible_komplikasyon_konum_yok">Kıble için telefonunuzda konumu açın</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Acil hatırlatma · Titreşimli</string>
+    <string name="muhafiz_kanal_acil">Acil hatırlatma</string>
+    <string name="muhafiz_kanal_titresimli">Namaz hatırlatması · Titreşimli</string>
+    <string name="muhafiz_kanal">Namaz hatırlatması</string>
+    <string name="muhafiz_kanal_aciklama">Telefon yanınızda değilken de saatinizde gösterilen namaz hatırlatmaları</string>
+    <string name="son_dakikalar_cikis">Çıkış: %1$s</string>
+    <string name="son_dakikalar_bitis">Bitiş: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">%1$s vaktinin çıkmasına kalan süre</string>
+    <string name="son_dakikalar_kalan_erisim">%1$s için kalan süre</string>
+    <string name="cami_namaz_modu_bitis">Namaz modu · bitiş %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Telefonunuzda açıldı</string>
+    <string name="telefona_ulasilamadi">Telefonunuza ulaşılamadı</string>
 </resources>

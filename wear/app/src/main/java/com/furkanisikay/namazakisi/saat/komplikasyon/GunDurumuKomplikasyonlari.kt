@@ -47,10 +47,12 @@ abstract class GunDurumuKomplikasyonu : GuvenliKomplikasyonServisi() {
     override fun onizleme(type: ComplicationType): ComplicationData? = veri(type, ORNEK)
 
     protected fun aciklama(ozet: GunDurumu.Ozet): String {
-        if (ozet === BOS) return "Vakit bilgisi bekleniyor; telefonda Namaz Akışı'nı açın"
-        val kalan = ozet.satirlar.filter { GunDurumu.halBul(it) == GunDurumu.Hal.KALAN }.joinToString(", ") { it.ad }
-        val temel = "Bugün ${GunDurumu.FARZ_SAYISI} vakitten ${ozet.kilinanSayisi} kılındı"
-        return if (kalan.isEmpty()) temel else "$temel; kılınmamış: $kalan"
+        if (ozet === BOS) return getString(R.string.komplikasyon_bekleniyor_aciklama)
+        val dil = this.dil
+        val kalan = ozet.satirlar.filter { GunDurumu.halBul(it) == GunDurumu.Hal.KALAN }
+            .joinToString(", ") { VakitHesabi.ad(it.vakit, dil) }
+        val temel = getString(R.string.gun_durumu_aciklama, GunDurumu.FARZ_SAYISI, ozet.kilinanSayisi)
+        return if (kalan.isEmpty()) temel else getString(R.string.gun_durumu_kilinmamis, temel, kalan)
     }
 
     protected fun oran(ozet: GunDurumu.Ozet) =
@@ -98,7 +100,7 @@ open class GunlukIlerlemeKomplikasyonServisi : GunDurumuKomplikasyonu() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && tur == ComplicationType.GOAL_PROGRESS) {
             return GoalProgressComplicationData.Builder(kilinan, hedef, aciklama)
                 .setText(metin)
-                .setTitle(duz("Namaz"))
+                .setTitle(duz(getString(R.string.komplikasyon_namaz)))
                 .setMonochromaticImage(ikon)
                 .setColorRamp(ColorRamp(intArrayOf(YESIL, YESIL), false))
                 .setTapAction(dokunus)
@@ -108,13 +110,13 @@ open class GunlukIlerlemeKomplikasyonServisi : GunDurumuKomplikasyonu() {
             ComplicationType.RANGED_VALUE ->
                 RangedValueComplicationData.Builder(kilinan, 0f, hedef, aciklama)
                     .setText(metin)
-                    .setTitle(duz("Namaz"))
+                    .setTitle(duz(getString(R.string.komplikasyon_namaz)))
                     .setMonochromaticImage(ikon)
                     .setTapAction(dokunus)
                     .build()
             ComplicationType.SHORT_TEXT ->
                 ShortTextComplicationData.Builder(metin, aciklama)
-                    .setTitle(duz("Namaz"))
+                    .setTitle(duz(getString(R.string.komplikasyon_namaz)))
                     .setMonochromaticImage(ikon)
                     .setTapAction(dokunus)
                     .build()

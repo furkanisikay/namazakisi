@@ -67,7 +67,9 @@ object TesbihatEtkinligi {
             .setTouchIntent(ac)
             .setStatus(durumMetni)
             .setTitle(context.getString(R.string.tesbihat_adi))
-            .setContentDescription("Tesbihat sürüyor: ${durum.faz.ad}, ${durum.fazSayisi} / ${durum.faz.hedef}")
+            .setContentDescription(
+                context.getString(R.string.tesbihat_suruyor, durum.faz.ad, durum.fazSayisi, durum.faz.hedef)
+            )
             .build()
             .apply(context)
         try {
@@ -83,10 +85,14 @@ object TesbihatEtkinligi {
 
     private fun kanaliGarantile(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
-        if (nm.getNotificationChannel(KANAL) != null) return
+        val ad = context.getString(R.string.tesbihat_kanal_adi)
+        val aciklama = context.getString(R.string.tesbihat_kanal_aciklama)
+        // Var olan kanalda yalnız ad/açıklama (cihaz dili değişince) güncellenir.
+        val mevcut = nm.getNotificationChannel(KANAL)
+        if (mevcut != null && mevcut.name?.toString() == ad && mevcut.description == aciklama) return
         nm.createNotificationChannel(
-            NotificationChannel(KANAL, context.getString(R.string.tesbihat_kanal_adi), NotificationManager.IMPORTANCE_LOW).apply {
-                description = context.getString(R.string.tesbihat_kanal_aciklama)
+            NotificationChannel(KANAL, ad, NotificationManager.IMPORTANCE_LOW).apply {
+                description = aciklama
                 enableVibration(false)
                 setSound(null, null)
             }

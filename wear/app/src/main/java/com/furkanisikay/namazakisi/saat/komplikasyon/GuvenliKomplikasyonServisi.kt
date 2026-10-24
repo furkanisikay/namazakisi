@@ -10,6 +10,7 @@ import androidx.wear.watchface.complications.datasource.ComplicationDataTimeline
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
 import androidx.wear.watchface.complications.datasource.TimeInterval
 import androidx.wear.watchface.complications.datasource.TimelineEntry
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.KomplikasyonCizelgesi
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +41,9 @@ abstract class GuvenliKomplikasyonServisi : ComplicationDataSourceService() {
 
     /** Çizelge aralıkları: (başlangıç, bitiş, o aralığın verisi — tür desteklenmiyorsa null). */
     protected abstract fun araliklar(tur: ComplicationType): List<Triple<Long, Long, ComplicationData?>>
+
+    /** Metin dili: kaynak sisteminin seçtiği values-xx (cihaz dili; her istekte okunur). */
+    protected val dil: String get() = getString(R.string.dil_kodu)
 
     /**
      * Veri yokken / çizelge tükenince gösterilen, istenen TÜRDE veri ("bekleniyor").

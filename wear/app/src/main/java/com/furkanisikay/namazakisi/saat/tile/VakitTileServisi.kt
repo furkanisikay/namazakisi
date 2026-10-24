@@ -11,6 +11,7 @@ import androidx.wear.protolayout.TimelineBuilders
 import androidx.wear.tiles.RequestBuilders
 import androidx.wear.tiles.TileBuilders
 import androidx.wear.tiles.TileService
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
@@ -46,6 +47,9 @@ class VakitTileServisi : TileService() {
             tamamlayici.set(ResourceBuilders.Resources.Builder().setVersion(KAYNAK_SURUMU).build())
             "VakitTileKaynak"
         }
+
+    /** Metin dili: kaynak sisteminin seçtiği values-xx (cihaz dili; tile her istekte kurulur). */
+    private val dil: String get() = getString(R.string.dil_kodu)
 
     private fun tileOlustur(yuk: Yuk?, simdi: Long): TileBuilders.Tile {
         val cizelge = TimelineBuilders.Timeline.Builder()
@@ -88,39 +92,47 @@ class VakitTileServisi : TileService() {
         kutu(
             LayoutElementBuilders.Column.Builder()
                 .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
-                .addContent(TileOrtak.metin("Namaz Akışı", 18f, SaatPaleti.METIN, true))
+                .addContent(TileOrtak.metin(getString(R.string.app_name), 18f, SaatPaleti.METIN, true))
                 .addContent(
                     TileOrtak.metin(
-                        if (yukVar) "Vakitler için dokunun" else "Telefonunuzda uygulamayı açın",
+                        getString(if (yukVar) R.string.tile_vakitler_icin else R.string.tile_telefonda_acin),
                         13f,
                         SaatPaleti.METIN2,
                     )
                 )
                 .build(),
-            "Namaz Akışı'nı açın",
+            getString(R.string.uygulamayi_acin),
         )
 
     private fun duzen(siradaki: VakitHesabi.VakitAni, sonrakiler: List<VakitHesabi.VakitAni>): LayoutElementBuilders.LayoutElement {
+        val dil = this.dil
         val saat = VakitHesabi.saat(siradaki.ms)
+        val ad = siradaki.ad(dil)
+        val sonra = getString(R.string.tile_sonra, TileOrtak.YER_TUTUCU)
         val sutun = LayoutElementBuilders.Column.Builder()
             .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
-            .addContent(TileOrtak.metin(siradaki.ad, 16f, SaatPaleti.vakitRengi(siradaki.vakit), true))
+            .addContent(TileOrtak.metin(ad, 16f, SaatPaleti.vakitRengi(siradaki.vakit), true))
             .addContent(TileOrtak.metin(saat, 40f, SaatPaleti.METIN, true))
             .addContent(
-                TileOrtak.dinamikMetin(TileOrtak.kalanMetni(siradaki.ms, " sonra", "Sıradaki vakit"), 13f, SaatPaleti.METIN2)
+                TileOrtak.dinamikMetin(
+                    TileOrtak.kalanMetni(siradaki.ms, getString(R.string.tile_adi), dil, sonra),
+                    13f,
+                    SaatPaleti.METIN2,
+                    kalip = TileOrtak.kalanKalibi(dil, sonra),
+                )
             )
         if (sonrakiler.isNotEmpty()) {
             sutun.addContent(LayoutElementBuilders.Spacer.Builder().setHeight(dp(8f)).build())
-            for (v in sonrakiler) sutun.addContent(sonrakiSatiri(v))
+            for (v in sonrakiler) sutun.addContent(sonrakiSatiri(v, dil))
         }
-        return kutu(sutun.build(), "Sıradaki vakit ${siradaki.ad}, giriş $saat. Uygulamayı açın")
+        return kutu(sutun.build(), getString(R.string.tile_siradaki_aciklama, ad, saat))
     }
 
     /** "İkindi   15:56": ad solda ikincil, saat sağda birincil. */
-    private fun sonrakiSatiri(v: VakitHesabi.VakitAni): LayoutElementBuilders.LayoutElement =
+    private fun sonrakiSatiri(v: VakitHesabi.VakitAni, dil: String): LayoutElementBuilders.LayoutElement =
         LayoutElementBuilders.Row.Builder()
             .setVerticalAlignment(LayoutElementBuilders.VERTICAL_ALIGN_CENTER)
-            .addContent(TileOrtak.metin(v.ad, 12f, SaatPaleti.METIN2))
+            .addContent(TileOrtak.metin(v.ad(dil), 12f, SaatPaleti.METIN2))
             .addContent(LayoutElementBuilders.Spacer.Builder().setWidth(dp(10f)).build())
             .addContent(TileOrtak.metin(VakitHesabi.saat(v.ms), 12f, SaatPaleti.METIN))
             .build()

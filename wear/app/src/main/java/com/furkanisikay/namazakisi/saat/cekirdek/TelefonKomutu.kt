@@ -69,24 +69,30 @@ object TelefonKomutu {
      * Telefonda özellik kapalı ya da Rahatsız Etmeyin erişimi yoksa kişi telefonda bir kez
      * açmalı (izin ancak orada verilir).
      */
-    fun modMetni(sonuc: String, saat: String?): String = when (sonuc) {
-        "acildi" -> if (saat != null) "Namaz modu açık · bitiş $saat" else "Namaz modu açık"
-        "kapandi" -> "Namaz modu kapandı"
-        "kapali", "erisimYok" -> "Telefonunuzda Namaz modunu bir kez açın"
-        ULASILAMADI -> "Telefonunuza ulaşılamadı"
-        else -> "Namaz modu açılamadı. Telefonunuzdan deneyin"
+    fun modMetni(sonuc: String, saat: String?, dil: String = "tr"): String {
+        val d = saatDili(dil)
+        return when (sonuc) {
+            "acildi" -> if (saat != null) d.namazModuAcikBitis(saat) else d.namazModuAcik
+            "kapandi" -> d.namazModuKapandi
+            "kapali", "erisimYok" -> d.namazModuTelefondaAcin
+            ULASILAMADI -> d.telefonaUlasilamadi
+            else -> d.namazModuAcilamadi
+        }
     }
 
-    /** Camideyim cevabının bilekteki sonuç metni. */
-    fun camiMetni(cevap: String, sonuc: String): String = when (sonuc) {
-        "tamam" -> when (cevap) {
-            "evet" -> "Camide olduğunuz kaydedildi"
-            "hayir" -> "Bu vakitte bir daha sorulmaz"
-            else -> "Bu yer bir daha cami sayılmaz"
+    /** Camideyim cevabının bilekteki sonuç metni. Cevap/sonuç kodları kimliktir, çevrilmez. */
+    fun camiMetni(cevap: String, sonuc: String, dil: String = "tr"): String {
+        val d = saatDili(dil)
+        return when (sonuc) {
+            "tamam" -> when (cevap) {
+                "evet" -> d.camiKaydedildi
+                "hayir" -> d.camiBirDahaSorulmaz
+                else -> d.camiSayilmaz
+            }
+            ULASILAMADI -> d.telefonaUlasilamadi
+            "gecersiz" -> d.soruGecersiz
+            else -> d.islemYapilamadi
         }
-        ULASILAMADI -> "Telefonunuza ulaşılamadı"
-        "gecersiz" -> "Bu soru artık geçerli değil"
-        else -> "İşlem yapılamadı. Telefonunuzdan deneyin"
     }
 
     /** Telefondan gelen gösterim durumu. */

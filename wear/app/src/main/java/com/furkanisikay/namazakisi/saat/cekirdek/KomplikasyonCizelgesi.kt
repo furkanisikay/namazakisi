@@ -57,8 +57,9 @@ object KomplikasyonCizelgesi {
  *
  * Metin (sistemin çizdiği süre) iki türde de YALNIZ süredir; başlık en fazla
  * "<vakit> çıkışına" kadar kısa bir yönlendirmedir. Adlar SABİT haritadan gelir
- * (`toUpperCase`/ek üretimi yok — Türkçe İ tuzağı). Kısa başlıklar en fazla 6
- * karakterdir (SHORT_TEXT başlığı ~7 karakter taşır).
+ * (`toUpperCase`/ek üretimi yok — Türkçe İ tuzağı). Kısa başlıklar Türkçede en fazla 6,
+ * İngilizcede 7 karakterdir ("Maghrib"; SHORT_TEXT başlığı ~7 karakter taşır). Metinler
+ * `SaatDili`'nden (dil parametresi, varsayılan Türkçe).
  */
 object KalanSure {
     enum class Mod { CIKIS, GIRIS }
@@ -77,20 +78,9 @@ object KalanSure {
         val aciklama: String,
     )
 
-    private val KISA = mapOf(
-        "imsak" to "Sabah", "gunes" to "Güneş", "ogle" to "Öğle",
-        "ikindi" to "İkindi", "aksam" to "Akşam", "yatsi" to "Yatsı",
-    )
+    fun kisaAd(vakit: String, dil: String = "tr"): String = saatDili(dil).vakitAdi(vakit)
 
-    /** Yönelme hâli ("…-e kalan") — sabit harita, ek üretilmez. */
-    private val YONELME = mapOf(
-        "imsak" to "Sabaha", "gunes" to "Güneşe", "ogle" to "Öğleye",
-        "ikindi" to "İkindiye", "aksam" to "Akşama", "yatsi" to "Yatsıya",
-    )
-
-    fun kisaAd(vakit: String): String = KISA[vakit] ?: vakit
-
-    fun yonelme(vakit: String): String = YONELME[vakit] ?: kisaAd(vakit)
+    fun yonelme(vakit: String, dil: String = "tr"): String = saatDili(dil).giriseUzun(vakit)
 
     /**
      * Sayılan anın TEK kuralı: farz vakti sürüyorsa ÇIKIŞ, değilse (güneş→öğle ya da
@@ -102,16 +92,21 @@ object KalanSure {
     /**
      * @param simdikiVakit aralığın başındaki vakit (yoksa null)
      * @param siradakiVakit aralığın sonundaki vakit
+     * @param dil metin dili (`SaatDili`; varsayılan Türkçe)
      */
-    fun gosterim(simdikiVakit: String?, siradakiVakit: String): Gosterim {
+    fun gosterim(simdikiVakit: String?, siradakiVakit: String, dil: String = "tr"): Gosterim {
+        val d = saatDili(dil)
         return if (mod(simdikiVakit) == Mod.CIKIS) {
-            val ad = kisaAd(simdikiVakit!!)
-            Gosterim(Mod.CIKIS, ad, "$ad çıkışına", "$ad vaktinin çıkmasına kalan süre")
+            val ad = d.vakitAdi(simdikiVakit!!)
+            Gosterim(Mod.CIKIS, ad, d.cikisaUzun(ad), d.cikisaAciklama(ad))
         } else {
-            val yon = yonelme(siradakiVakit)
-            // "İkindiye"/"Yatsıya" 6 karakteri aşar → kısa başlıkta yalnız ad.
-            val kisa = if (yon.length <= 6) yon else kisaAd(siradakiVakit)
-            Gosterim(Mod.GIRIS, kisa, yon, "${kisaAd(siradakiVakit)} vaktine kalan süre")
+            // Türkçede "İkindiye"/"Yatsıya" 6 karakteri aşar → kısa başlıkta yalnız ad.
+            Gosterim(
+                Mod.GIRIS,
+                d.giriseKisa(siradakiVakit),
+                d.giriseUzun(siradakiVakit),
+                d.giriseAciklama(d.vakitAdi(siradakiVakit)),
+            )
         }
     }
 }
@@ -138,21 +133,24 @@ object VakitSiniri {
      * güneş→öğle arasında öğlenin GİRİŞİ ("Giriş" / "Öğle girişi 13:05"). Kural
      * `KalanSure.mod` ile AYNI — iki yuva aynı anı anlatır.
      */
-    fun cikisSaati(simdikiVakit: String?, siradakiVakit: String, saat: String): Etiket =
-        if (KalanSure.mod(simdikiVakit) == KalanSure.Mod.CIKIS) {
-            val ad = KalanSure.kisaAd(simdikiVakit!!)
-            Etiket("Çıkış", saat, "$ad çıkışı $saat", "$ad vaktinin çıkış saati $saat")
+    fun cikisSaati(simdikiVakit: String?, siradakiVakit: String, saat: String, dil: String = "tr"): Etiket {
+        val d = saatDili(dil)
+        return if (KalanSure.mod(simdikiVakit) == KalanSure.Mod.CIKIS) {
+            val ad = d.vakitAdi(simdikiVakit!!)
+            Etiket(d.cikisBasligi, saat, d.cikisUzun(ad, saat), d.cikisAciklama(ad, saat))
         } else {
-            val ad = KalanSure.kisaAd(siradakiVakit)
-            Etiket("Giriş", saat, "$ad girişi $saat", "$ad vaktinin giriş saati $saat")
+            val ad = d.vakitAdi(siradakiVakit)
+            Etiket(d.girisBasligi, saat, d.girisUzun(ad, saat), d.girisAciklama(ad, saat))
         }
+    }
 
     /**
      * Sıradaki NAMAZ: "İkindi" / "15:42". Güneş namaz değildir; çağıran aralıkları
      * `ZamanCizelgesi.araliklar(yalnizNamaz = true)` ile kurar (sabahta sıradaki öğledir).
      */
-    fun siradaki(vakit: String, saat: String): Etiket {
-        val ad = KalanSure.kisaAd(vakit)
-        return Etiket(ad, saat, "Sıradaki: $ad $saat", "Sıradaki namaz $ad, giriş $saat")
+    fun siradaki(vakit: String, saat: String, dil: String = "tr"): Etiket {
+        val d = saatDili(dil)
+        val ad = d.vakitAdi(vakit)
+        return Etiket(ad, saat, d.siradakiUzun(ad, saat), d.siradakiAciklama(ad, saat))
     }
 }

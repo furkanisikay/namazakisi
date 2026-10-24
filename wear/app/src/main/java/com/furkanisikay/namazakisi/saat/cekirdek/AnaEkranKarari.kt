@@ -67,32 +67,31 @@ object AnaEkranKarari {
 
     private const val SN = 1_000L
 
-    fun sayac(kalanMs: Long): Sayac {
+    fun sayac(kalanMs: Long, dil: String = "tr"): Sayac {
+        val d = saatDili(dil)
         val toplamSn = (kalanMs.coerceAtLeast(0L)) / SN
         val sa = toplamSn / 3600
         val dk = (toplamSn % 3600) / 60
         val sn = toplamSn % 60
-        val saniye = Parca(sn.toString().padStart(2, '0'), "sn", saniye = true)
+        val saniye = Parca(sn.toString().padStart(2, '0'), d.birimSn, saniye = true)
         return if (sa > 0) {
-            Sayac(listOf(Parca("$sa", "sa"), Parca("$dk", "dk")))
+            Sayac(listOf(Parca("$sa", d.birimSa), Parca("$dk", d.birimDk)))
         } else {
-            Sayac(listOf(Parca("$dk", "dk"), saniye))
+            Sayac(listOf(Parca("$dk", d.birimDk), saniye))
         }
     }
 
-    fun altYazi(mod: KalanSure.Mod): String =
-        if (mod == KalanSure.Mod.CIKIS) "vaktin çıkmasına" else "vaktin girmesine"
+    fun altYazi(mod: KalanSure.Mod, dil: String = "tr"): String = saatDili(dil).altYazi(mod)
 
     /** "Öğle vaktinin çıkmasına 1 saat 58 dakika" — ekran görüntüsü hattı bu kalıbı arar. */
-    fun sayacAciklamasi(s: VakitHesabi.SayilanAn, simdi: Long): String {
-        val fiil = if (s.mod == KalanSure.Mod.CIKIS) "çıkmasına" else "girmesine"
-        return "${s.ad} vaktinin $fiil ${VakitHesabi.kalanSesliMetni(s.kalanMs(simdi))}"
-    }
+    fun sayacAciklamasi(s: VakitHesabi.SayilanAn, simdi: Long, dil: String = "tr"): String =
+        saatDili(dil).sayacAciklamasi(s.ad(dil), s.mod, VakitHesabi.kalanSesliMetni(s.kalanMs(simdi), dil))
 
     /** Ana ekran "Kıldım" düğmesinin açıklaması (hat sözleşmesi: "… kıldım olarak işaretleyin"). */
-    fun dugmeAciklamasi(ad: String): String = "$ad vaktini kıldım olarak işaretleyin"
+    fun dugmeAciklamasi(ad: String, dil: String = "tr"): String = saatDili(dil).dugmeAciklamasi(ad)
 
-    fun kur(yuk: Yuk, simdi: Long, bugun: String, bekleyen: Set<String>): Gorunum? {
+    fun kur(yuk: Yuk, simdi: Long, bugun: String, bekleyen: Set<String>, dil: String = "tr"): Gorunum? {
+        val d = saatDili(dil)
         val s = VakitHesabi.sayilanAn(yuk, simdi) ?: return null
         val satirlar = VakitHesabi.satirlar(yuk, simdi, bugun, bekleyen)
         val satir = if (s.mod == KalanSure.Mod.CIKIS) {
@@ -130,19 +129,19 @@ object AnaEkranKarari {
         }
 
         val aciklama = buildString {
-            append(sayacAciklamasi(s, simdi))
-            if (kilindi) append(", kılındı")
-            if (acil) append(", son ${SaatPaleti.ACIL_ESIK_DK} dakika")
-            if (ozet != null) append(". Bugün $kilinan/${GunDurumu.FARZ_SAYISI} kılındı")
+            append(sayacAciklamasi(s, simdi, dil))
+            if (kilindi) append(d.kilindiEki)
+            if (acil) append(d.sonDakikaEki(SaatPaleti.ACIL_ESIK_DK))
+            if (ozet != null) append(d.bugunEki(kilinan, GunDurumu.FARZ_SAYISI))
         }
 
         return Gorunum(
             sayilan = s,
-            adSatiri = if (acil) "${s.ad} · son ${SaatPaleti.ACIL_ESIK_DK} dk" else s.ad,
+            adSatiri = if (acil) d.acilAdSatiri(s.ad(dil), SaatPaleti.ACIL_ESIK_DK) else s.ad(dil),
             renk = renk,
             acil = acil,
-            altYazi = altYazi(s.mod),
-            sayac = sayac(s.kalanMs(simdi)),
+            altYazi = altYazi(s.mod, dil),
+            sayac = sayac(s.kalanMs(simdi), dil),
             kalanOran = s.kalanOran(simdi),
             kerahatBandi = bant,
             dugme = dugme,
@@ -157,10 +156,11 @@ object AnaEkranKarari {
     /**
      * Onay sorusu. Vakit adına hal eki ÜRETİLMEZ (Türkçe ek uyumu tuzağı): "Öğle namazını".
      */
-    fun onaySorusu(ad: String): String = "$ad namazını kıldınız mı?"
+    fun onaySorusu(ad: String, dil: String = "tr"): String =
+        onaySorusuSatirlari(ad, dil).let { (ilk, ikinci) -> "$ilk $ikinci" }
 
     /** Onay sorusunun ekrandaki iki satırı (yuvarlak ekranda tek satır kenarda kırpılıyordu). */
-    fun onaySorusuSatirlari(ad: String): Pair<String, String> = "$ad namazını" to "kıldınız mı?"
+    fun onaySorusuSatirlari(ad: String, dil: String = "tr"): Pair<String, String> = saatDili(dil).onaySorusuSatirlari(ad)
 
     /**
      * Onay dokunuşu anındaki YENİDEN doğrulama: katman açıkken vakit değiştiyse (ör. 05:14:50
@@ -174,10 +174,15 @@ object AnaEkranKarari {
     /** Onay reddedildiğinde katmanın kısa süre gösterdiği metin (arayüz dili: kibar "siz"). */
     const val VAKIT_DEGISTI = "Vakit değişti, işaretlenmedi."
 
+    fun vakitDegisti(dil: String = "tr"): String = saatDili(dil).vakitDegisti
+
     /**
      * Onaydan sonra gösterilen dua (sahip isteği: "Kılındı" yerine "Allah kabul etsin").
      * Telefon `core/samimiyet/kabulDuasi.ts > KABUL_DUASI` ile aynı sabit kalıp; saatte
      * dönüşüm yok (tek kalıp, kısa ekran).
      */
     const val KABUL_DUASI = "Allah kabul etsin"
+
+    /** [KABUL_DUASI]nın [dil]deki sabit kalıbı (İngilizce JS `samimiyet.kabulDuasi`). */
+    fun kabulDuasi(dil: String = "tr"): String = saatDili(dil).kabulDuasi
 }

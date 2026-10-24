@@ -28,6 +28,10 @@ enum class Vakit(val kod: String, val ad: String) {
     IKINDI("ikindi", "İkindi"),
     AKSAM("aksam", "Akşam"),
     YATSI("yatsi", "Yatsı"),
+    ;
+
+    /** [dil]deki görünen ad (`TvDili`); [ad] Türkçedir. */
+    fun ad(dil: String): String = tvDili(dil).vakitAdi(this)
 }
 
 /** Bir takvim gününün vakitleri (epoch ms, dakikaya yuvarlanmış). */

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.AmbientKaydirma
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
@@ -75,7 +77,7 @@ fun AnaAmbientEkrani(g: AnaEkranKarari.Gorunum?, bilgi: String, ambient: Ambient
                     modifier = Modifier.padding(horizontal = 28.dp),
                 ) {
                     Text(
-                        g.sayilan.ad,
+                        g.sayilan.ad(stringResource(R.string.dil_kodu)),
                         color = ikincil,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Light,

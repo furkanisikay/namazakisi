@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.furkanisikay.namazakisi.saat.R
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -92,7 +93,8 @@ fun AnaEkran(
     val ekran = LocalConfiguration.current
     val yanBosluk = (ekran.screenWidthDp * 0.08f).dp
 
-    val gorunum = yuk?.let { AnaEkranKarari.kur(it, simdi, bugun, bekleyen) }
+    val dil = stringResource(R.string.dil_kodu)
+    val gorunum = yuk?.let { AnaEkranKarari.kur(it, simdi, bugun, bekleyen, dil) }
     val satirlar = yuk?.let { VakitHesabi.satirlar(it, simdi, bugun, bekleyen) } ?: emptyList()
     val sayilan = gorunum?.sayilan
     val namazModuAcik = cami?.modBitisMs != null
@@ -139,14 +141,17 @@ fun AnaEkran(
                                     ortuluMu = onay != null,
                                     modifier = Modifier.fillMaxWidth().height(ekran.screenHeightDp.dp),
                                 )
-                                yuk == null && guncellemeGerekli -> BilgiMetni(GUNCELLEME_METNI, Modifier.padding(horizontal = 16.dp))
+                                yuk == null && guncellemeGerekli -> BilgiMetni(
+                                    stringResource(R.string.guncelleme_gerekli),
+                                    Modifier.padding(horizontal = 16.dp),
+                                )
                                 yuk == null -> BilgiMetni(
-                                    "Vakitleri görmek için telefonunuzda Namaz Akışı'nı açın.",
+                                    stringResource(R.string.yuk_yok),
                                     Modifier.padding(horizontal = 16.dp),
                                 )
                                 // Yük tükendi (telefon günlerce veri göndermedi).
                                 else -> BilgiMetni(
-                                    "Vakit bilgisi eskidi. Yenilemek için telefonunuzda Namaz Akışı'nı açın.",
+                                    stringResource(R.string.yuk_eskidi),
                                     Modifier.padding(horizontal = 16.dp),
                                 )
                             }
@@ -156,11 +161,15 @@ fun AnaEkran(
                     cami?.soru?.let { soru ->
                         item(key = "cami_soru") {
                             CamiSatiri(
-                                baslik = "Camide misiniz?",
+                                baslik = stringResource(R.string.cami_soru),
                                 alt = soru.ad,
                                 dugmeler = listOf(
-                                    Triple("Evet", "Evet, camideyim. Namaz modunu açar") { onCamiCevap("evet", soru.yerId) },
-                                    Triple("Hayır", "Hayır, camide değilim") { onCamiCevap("hayir", soru.yerId) },
+                                    Triple(stringResource(R.string.cami_evet), stringResource(R.string.cami_evet_aciklama)) {
+                                        onCamiCevap("evet", soru.yerId)
+                                    },
+                                    Triple(stringResource(R.string.cami_hayir), stringResource(R.string.cami_hayir_aciklama)) {
+                                        onCamiCevap("hayir", soru.yerId)
+                                    },
                                 ),
                                 kilitli = istekSuruyor,
                             )
@@ -169,10 +178,10 @@ fun AnaEkran(
                     cami?.camide?.let { yer ->
                         item(key = "cami_camide") {
                             CamiSatiri(
-                                baslik = "Camidesiniz",
+                                baslik = stringResource(R.string.camidesiniz),
                                 alt = yer.ad,
                                 dugmeler = listOf(
-                                    Triple("Burası cami değil", "Burası cami değil. Bu yer bir daha cami sayılmaz") {
+                                    Triple(stringResource(R.string.cami_degil), stringResource(R.string.cami_degil_aciklama)) {
                                         onCamiCevap("camiDegil", yer.yerId)
                                     },
                                 ),
@@ -182,14 +191,14 @@ fun AnaEkran(
                     }
                     if (namazModuAcik) item(key = "namaz_modu") { namazModu() }
                     if (yuk != null && guncellemeGerekli) {
-                        item(key = "guncelleme") { BilgiMetni(GUNCELLEME_METNI) }
+                        item(key = "guncelleme") { BilgiMetni(stringResource(R.string.guncelleme_gerekli)) }
                     }
                     if (sesBilgisi != null) {
                         item(key = "ses_bilgisi") { BilgiMetni(sesBilgisi) }
                     }
                     if (yuk != null && !bildirimIzni) {
                         item(key = "izin") {
-                            BilgiMetni("Telefonunuz yanınızda değilken de hatırlatma almak için saatin ayarlarından Namaz Akışı bildirimlerine izin verin.")
+                            BilgiMetni(stringResource(R.string.bildirim_izni))
                         }
                     }
                     items(satirlar, key = { "${it.tarih}_${it.vakit}" }) { satir ->
@@ -198,7 +207,7 @@ fun AnaEkran(
                         VakitSatiri(
                             satir = satir,
                             aktif = aktif,
-                            kalanMetni = if (aktif) VakitHesabi.kalanMetni(sayilan.kalanMs(simdi)) else null,
+                            kalanMetni = if (aktif) VakitHesabi.kalanMetni(sayilan.kalanMs(simdi), dil) else null,
                             onSec = { onay = satir },
                             modifier = Modifier
                                 .padding(horizontal = yanBosluk)
@@ -216,32 +225,35 @@ fun AnaEkran(
                     }
                     // Tesbihat telefon verisine bağlı değildir: yük yokken de açılır.
                     item(key = "tesbihat") {
+                        val aciklama = stringResource(R.string.tesbihat_ac)
                         CompactButton(
                             onClick = onTesbihat,
                             colors = ButtonDefaults.filledTonalButtonColors(),
-                            modifier = Modifier.semantics { contentDescription = "Tesbihat sayacını açın" },
+                            modifier = Modifier.semantics { contentDescription = aciklama },
                             icon = { DugmeIkonu(R.drawable.ic_tesbihat) },
-                            label = { Text("Tesbihat") },
+                            label = { Text(stringResource(R.string.tesbihat_adi)) },
                         )
                     }
                     // Kıble (saat W2): yük/konum yoksa ekran kendisi yönlendirir.
                     item(key = "kible") {
+                        val aciklama = stringResource(R.string.kible_ac)
                         CompactButton(
                             onClick = onKible,
                             colors = ButtonDefaults.filledTonalButtonColors(),
-                            modifier = Modifier.semantics { contentDescription = "Kıble pusulasını açın" },
+                            modifier = Modifier.semantics { contentDescription = aciklama },
                             icon = { DugmeIkonu(R.drawable.ic_kible) },
-                            label = { Text("Kıble") },
+                            label = { Text(stringResource(R.string.kible_adi)) },
                         )
                     }
                     // Sesli okuma denemesi: vakit beklemeden "saat konuşuyor mu?" sorusunu cevaplar.
                     if (onSesDene != null) {
                         item(key = "ses_dene") {
+                            val aciklama = stringResource(R.string.ses_dene_aciklama)
                             CompactButton(
                                 onClick = onSesDene,
                                 colors = ButtonDefaults.filledTonalButtonColors(),
-                                modifier = Modifier.semantics { contentDescription = "Saatin sesli okumasını deneyin" },
-                                label = { Text("Sesi deneyin") },
+                                modifier = Modifier.semantics { contentDescription = aciklama },
+                                label = { Text(stringResource(R.string.ses_dene)) },
                             )
                         }
                         if (sesAciklamasi != null) {
@@ -249,13 +261,15 @@ fun AnaEkran(
                         }
                     }
                     // Saate sığmayan ekranlar telefonda açılır (yalnız gezinme bağlantıları).
-                    item(key = "telefonda") { BilgiMetni("Telefonda açın", Modifier.padding(top = 8.dp)) }
-                    for ((anahtar, etiket, baglanti) in TELEFON_EKRANLARI) {
+                    item(key = "telefonda") { BilgiMetni(stringResource(R.string.telefonda_acin), Modifier.padding(top = 8.dp)) }
+                    for ((anahtar, etiketKaynagi, baglanti) in TELEFON_EKRANLARI) {
                         item(key = anahtar) {
+                            val etiket = stringResource(etiketKaynagi)
+                            val aciklama = stringResource(R.string.telefonda_ekran_ac, etiket)
                             CompactButton(
                                 onClick = { onTelefondaAc(baglanti) },
                                 colors = ButtonDefaults.filledTonalButtonColors(),
-                                modifier = Modifier.semantics { contentDescription = "$etiket ekranını telefonunuzda açın" },
+                                modifier = Modifier.semantics { contentDescription = aciklama },
                                 label = { Text(etiket) },
                             )
                         }
@@ -268,7 +282,7 @@ fun AnaEkran(
                 val anaVakit = sayilan?.mod == KalanSure.Mod.CIKIS &&
                     sayilan.tarih == secili.tarih && sayilan.vakit == secili.vakit
                 KildimOnayi(
-                    ad = secili.ad,
+                    ad = VakitHesabi.ad(secili.vakit, dil),
                     vakitRengi = SaatPaleti.vakitRengi(secili.vakit),
                     kalanOran = if (anaVakit) gorunum.kalanOran else 0f,
                     kerahat = VakitHesabi.kerahatMi(yuk, simdi),
@@ -298,10 +312,8 @@ private fun DugmeIkonu(kaynak: Int) {
     Icon(painterResource(kaynak), contentDescription = null, modifier = Modifier.size(18.dp))
 }
 
-private const val GUNCELLEME_METNI = "Saatinizdeki Namaz Akışı'nı güncelleyin."
-
 private val TELEFON_EKRANLARI = listOf(
-    Triple("tel_kaza", "Kaza Defteri", TelefondaAc.KAZA),
-    Triple("tel_cami", "Camideyim", TelefondaAc.CAMIDEYIM),
-    Triple("tel_ayar", "Ayarlar", TelefondaAc.AYARLAR),
+    Triple("tel_kaza", R.string.ekran_kaza, TelefondaAc.KAZA),
+    Triple("tel_cami", R.string.ekran_camideyim, TelefondaAc.CAMIDEYIM),
+    Triple("tel_ayar", R.string.ekran_ayarlar, TelefondaAc.AYARLAR),
 )

@@ -101,13 +101,13 @@ object KibleKarari {
      * TalkBack metni — 10°'lik ADIMLARLA (her sensör olayında okunmasın; ekran yalnız
      * metin değişince açıklamayı günceller). Kibar "siz".
      */
-    fun erisimMetni(hedef: Double, hizali: Boolean): String {
-        if (hizali) return "Kıble yönündesiniz"
+    fun erisimMetni(hedef: Double, hizali: Boolean, dil: String = "tr"): String {
+        val d = saatDili(dil)
+        if (hizali) return d.kibleHizali
         val s = sapma(hedef)
-        if (s >= 175.0) return "Kıble arkanızda"
+        if (s >= 175.0) return d.kibleArkada
         val adim = ((s / 10.0).roundToInt() * 10).coerceAtLeast(10)
-        val taraf = if (Kible.dereceSar(hedef) <= 180.0) "sağınızda" else "solunuzda"
-        return "Kıble $adim derece $taraf"
+        return d.kibleTarafta(adim, sag = Kible.dereceSar(hedef) <= 180.0)
     }
 
     /**
@@ -202,11 +202,11 @@ object KibleKarari {
      * arkadaysa "Arkanızda"). 5°'lik adımla (her sensör olayında rakam titremesin).
      * Hizadayken çağıran "Kıble yönündesiniz" yazar.
      */
-    fun donusMetni(hedef: Double): String {
+    fun donusMetni(hedef: Double, dil: String = "tr"): String {
+        val d = saatDili(dil)
         val s = sapma(hedef)
-        if (s >= 175.0) return "Arkanızda"
+        if (s >= 175.0) return d.donusArkada
         val adim = ((s / 5.0).roundToInt() * 5).coerceAtLeast(5)
-        val taraf = if (Kible.dereceSar(hedef) <= 180.0) "Sağa" else "Sola"
-        return "$taraf $adim°"
+        return d.donus(adim, sag = Kible.dereceSar(hedef) <= 180.0)
     }
 }

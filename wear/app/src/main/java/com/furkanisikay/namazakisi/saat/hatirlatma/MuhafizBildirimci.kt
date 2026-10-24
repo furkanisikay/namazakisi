@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.CanliIkon
 import com.furkanisikay.namazakisi.saat.cekirdek.PlanKaydi
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
@@ -32,13 +33,14 @@ object MuhafizBildirimci {
     private val DESEN_BELIRGIN_NORMAL = longArrayOf(0, 400, 150, 400, 150, 400, 150, 700)
     private val DESEN_BELIRGIN_ACIL = longArrayOf(0, 600, 200, 600, 200, 600, 200, 1200)
 
-    private data class Kanal(val id: String, val ad: String, val onem: Int, val desen: LongArray)
+    /** Kanal KİMLİĞİ sabittir (çevrilmez); kullanıcıya görünen ad [ad] kaynak dizgesidir. */
+    private data class Kanal(val id: String, val ad: Int, val onem: Int, val desen: LongArray)
 
     private fun kanal(acil: Boolean, titresim: Boolean): Kanal = when {
-        acil && titresim -> Kanal("muhafiz_acil_titresimli", "Acil hatırlatma · Titreşimli", NotificationManager.IMPORTANCE_MAX, DESEN_BELIRGIN_ACIL)
-        acil -> Kanal("muhafiz_acil", "Acil hatırlatma", NotificationManager.IMPORTANCE_MAX, DESEN_ACIL)
-        titresim -> Kanal("muhafiz_titresimli", "Namaz hatırlatması · Titreşimli", NotificationManager.IMPORTANCE_HIGH, DESEN_BELIRGIN_NORMAL)
-        else -> Kanal("muhafiz", "Namaz hatırlatması", NotificationManager.IMPORTANCE_HIGH, DESEN_NORMAL)
+        acil && titresim -> Kanal("muhafiz_acil_titresimli", R.string.muhafiz_kanal_acil_titresimli, NotificationManager.IMPORTANCE_MAX, DESEN_BELIRGIN_ACIL)
+        acil -> Kanal("muhafiz_acil", R.string.muhafiz_kanal_acil, NotificationManager.IMPORTANCE_MAX, DESEN_ACIL)
+        titresim -> Kanal("muhafiz_titresimli", R.string.muhafiz_kanal_titresimli, NotificationManager.IMPORTANCE_HIGH, DESEN_BELIRGIN_NORMAL)
+        else -> Kanal("muhafiz", R.string.muhafiz_kanal, NotificationManager.IMPORTANCE_HIGH, DESEN_NORMAL)
     }
 
     fun vakitEtiketi(tarih: String, vakit: String) = "muhafiz_${tarih}_vakit_$vakit"
@@ -47,12 +49,19 @@ object MuhafizBildirimci {
     fun bildirimIzniVar(context: Context): Boolean =
         NotificationManagerCompat.from(context).areNotificationsEnabled()
 
+    /**
+     * Kanal yoksa kurar; varsa yalnız ADI/AÇIKLAMASI cihaz diliyle değiştiyse yeniden bildirir
+     * (sistem var olan kanalda yalnız ad/açıklamayı günceller, titreşim ve önem kullanıcınındır).
+     */
     private fun kanaliGarantile(context: Context, k: Kanal) {
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
-        if (nm.getNotificationChannel(k.id) != null) return
+        val ad = context.getString(k.ad)
+        val aciklama = context.getString(R.string.muhafiz_kanal_aciklama)
+        val mevcut = nm.getNotificationChannel(k.id)
+        if (mevcut != null && mevcut.name?.toString() == ad && mevcut.description == aciklama) return
         nm.createNotificationChannel(
-            NotificationChannel(k.id, k.ad, k.onem).apply {
-                description = "Telefon yanınızda değilken de saatinizde gösterilen namaz hatırlatmaları"
+            NotificationChannel(k.id, ad, k.onem).apply {
+                description = aciklama
                 enableVibration(true)
                 vibrationPattern = k.desen
             }
@@ -92,7 +101,7 @@ object MuhafizBildirimci {
             .setLocalOnly(true)
             .setContentIntent(ac)
             // İbadet çağrısı kaydı ("sen") değil, buton etiketi — telefondaki bildirimle aynı.
-            .addAction(0, "Kıldım", kildim)
+            .addAction(0, context.getString(R.string.kildim), kildim)
             .build()
         try {
             NotificationManagerCompat.from(context).notify(etiket, BILDIRIM_NO, bildirim)

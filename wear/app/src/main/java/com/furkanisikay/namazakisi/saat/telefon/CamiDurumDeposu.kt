@@ -71,11 +71,12 @@ object CamideBildirimi {
             Intent(context, AnaAktivite::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        val metin = durum.modBitisMs?.let { "Namaz modu · bitiş ${VakitHesabi.saat(it)}" } ?: camide.ad
+        val metin = durum.modBitisMs?.let { context.getString(R.string.cami_namaz_modu_bitis, VakitHesabi.saat(it)) } ?: camide.ad
+        val camidesiniz = context.getString(R.string.camidesiniz)
         val bildirim = NotificationCompat.Builder(context, KANAL)
             .setSmallIcon(R.drawable.ic_cami)
             .setColor(SaatPaleti.int(SaatPaleti.EYLEM))
-            .setContentTitle("Camidesiniz")
+            .setContentTitle(camidesiniz)
             .setContentText(metin)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setOngoing(true)
@@ -87,9 +88,9 @@ object CamideBildirimi {
         OngoingActivity.Builder(context, ETIKET, BILDIRIM_NO, bildirim)
             .setStaticIcon(R.drawable.ic_cami)
             .setTouchIntent(ac)
-            .setStatus(Status.Builder().addTemplate("#d#").addPart("d", Status.TextPart("Camidesiniz")).build())
-            .setTitle("Camidesiniz")
-            .setContentDescription("Camidesiniz: ${camide.ad}. $metin")
+            .setStatus(Status.Builder().addTemplate("#d#").addPart("d", Status.TextPart(camidesiniz)).build())
+            .setTitle(camidesiniz)
+            .setContentDescription(context.getString(R.string.cami_erisim, camidesiniz, camide.ad, metin))
             .build()
             .apply(context)
         try {
@@ -101,10 +102,14 @@ object CamideBildirimi {
 
     private fun kanaliGarantile(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
-        if (nm.getNotificationChannel(KANAL) != null) return
+        val ad = context.getString(R.string.camideyim_kanal_adi)
+        val aciklama = context.getString(R.string.camideyim_kanal_aciklama)
+        // Var olan kanalda yalnız ad/açıklama (cihaz dili değişince) güncellenir.
+        val mevcut = nm.getNotificationChannel(KANAL)
+        if (mevcut != null && mevcut.name?.toString() == ad && mevcut.description == aciklama) return
         nm.createNotificationChannel(
-            NotificationChannel(KANAL, context.getString(R.string.camideyim_kanal_adi), NotificationManager.IMPORTANCE_LOW).apply {
-                description = context.getString(R.string.camideyim_kanal_aciklama)
+            NotificationChannel(KANAL, ad, NotificationManager.IMPORTANCE_LOW).apply {
+                description = aciklama
                 enableVibration(false)
                 setSound(null, null)
             }

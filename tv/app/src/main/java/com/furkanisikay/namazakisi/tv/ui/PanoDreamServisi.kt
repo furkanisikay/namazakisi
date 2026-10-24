@@ -1,5 +1,7 @@
 package com.furkanisikay.namazakisi.tv.ui
 
+import com.furkanisikay.namazakisi.tv.R
+import androidx.compose.ui.res.stringResource
 import android.service.dreams.DreamService
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -69,7 +71,7 @@ class PanoDreamServisi : DreamService(), LifecycleOwner, SavedStateRegistryOwner
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                "Vakit panosunu görmek için Namaz Akışı uygulamasını açıp ilinizi seçin.",
+                                stringResource(R.string.dream_il_yok),
                                 color = Renkler.metin,
                                 fontSize = 28.sp,
                                 textAlign = TextAlign.Center,

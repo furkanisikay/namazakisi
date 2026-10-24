@@ -37,6 +37,8 @@ object SonDakikalar {
         val bitis: Long,
     ) {
         val ad: String get() = VakitHesabi.ADLAR[vakit] ?: vakit
+
+        fun ad(dil: String): String = VakitHesabi.ad(vakit, dil)
     }
 
     private val SONRAKI = mapOf("imsak" to "gunes", "ogle" to "ikindi", "ikindi" to "aksam", "aksam" to "yatsi")

@@ -1,5 +1,7 @@
 package com.furkanisikay.namazakisi.tv.ui
 
+import com.furkanisikay.namazakisi.tv.R
+import androidx.compose.ui.res.stringResource
 import android.view.KeyEvent as AndroidKeyEvent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -182,14 +184,14 @@ fun KodGirisEkrani(
             ) { il ->
                 Column {
                     if (il == null) {
-                        Text("Telefonunuzdaki kodu girin", color = Renkler.metin, fontSize = 36.sp, fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.kod_baslik), color = Renkler.metin, fontSize = 36.sp, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.height(10.dp))
                         Text(
-                            "Telefonda: Ayarlar › Cihazlarım › TV ekleyin",
+                            stringResource(R.string.kod_yol),
                             color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
                         )
                     } else {
-                        Text("Konumunuz geldi", color = Renkler.metinIkincil, fontSize = 30.sp)
+                        Text(stringResource(R.string.konumunuz_geldi), color = Renkler.metinIkincil, fontSize = 30.sp)
                         Spacer(Modifier.height(8.dp))
                         Text(il.ad, color = Renkler.metin, fontSize = 60.sp, fontWeight = FontWeight.SemiBold)
                     }
@@ -232,9 +234,9 @@ fun KodGirisEkrani(
             Spacer(Modifier.height(18.dp))
             Text(
                 when {
-                    gelen != null -> "Vakitler bu konuma göre hesaplanacak."
-                    hatali -> "Kod tutmadı. Telefonunuzdaki 7 haneyi kontrol edin; yanlış haneyi “Sil” ile düzeltin."
-                    else -> "Rakamlı kumandanız varsa tuşlarla da yazabilirsiniz."
+                    gelen != null -> stringResource(R.string.konuma_gore_hesaplanacak)
+                    hatali -> stringResource(R.string.kod_hatali, stringResource(R.string.kod_sil))
+                    else -> stringResource(R.string.kod_rakamli_kumanda)
                 },
                 color = if (hatali) Renkler.metin else Renkler.metinIkincil,
                 fontSize = 24.sp,
@@ -257,6 +259,7 @@ fun KodGirisEkrani(
 
 @Composable
 private fun HaneKutusu(rakam: Char?, aktif: Boolean, hatali: Boolean, modifier: Modifier) {
+    val bosHane = stringResource(R.string.kod_bos_hane)
     val kenar = when {
         hatali -> Renkler.hata
         aktif -> Renkler.birincil
@@ -267,7 +270,7 @@ private fun HaneKutusu(rakam: Char?, aktif: Boolean, hatali: Boolean, modifier: 
             .size(width = KUTU_EN.dp, height = 76.dp)
             .background(Renkler.kart, RoundedCornerShape(14.dp))
             .border(BorderStroke(if (aktif || hatali) 3.dp else 1.dp, kenar), RoundedCornerShape(14.dp))
-            .semantics { contentDescription = rakam?.toString() ?: "boş hane" },
+            .semantics { contentDescription = rakam?.toString() ?: bosHane },
         contentAlignment = Alignment.Center,
     ) {
         Text(rakam?.toString() ?: "", color = Renkler.metin, fontSize = 40.sp, fontWeight = FontWeight.SemiBold)
@@ -292,9 +295,9 @@ private fun TusTakimi(
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Tus("Sil", "Son haneyi silin", onSil, Modifier, kucuk = true, etkin = silinebilir)
+            Tus(stringResource(R.string.kod_sil), stringResource(R.string.kod_sil_aciklama), onSil, Modifier, kucuk = true, etkin = silinebilir)
             Tus("0", "0", { onRakam('0') }, Modifier)
-            Tus("Geri", "Vazgeçin", onVazgec, Modifier, kucuk = true)
+            Tus(stringResource(R.string.kod_geri), stringResource(R.string.vazgecin), onVazgec, Modifier, kucuk = true)
         }
     }
 }

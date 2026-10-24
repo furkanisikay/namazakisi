@@ -175,7 +175,7 @@ jobs:
           profile: pixel_2
           ram-size: 4096M
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul -change-locale tr-TR
           # Adimlar TEK bash betiginde: action her satiri ayri `sh` (dash) ile
           # calistirir; pipefail patlar ve degiskenler satirlar arasinda kaybolur.
           script: bash scripts/android-kare-hatti.sh
@@ -210,7 +210,7 @@ jobs:
           profile: ${{ inputs.ozellik_profili }}
           ram-size: 4096M
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back ${{ inputs.kamera_arka || 'emulated' }} -timezone Europe/Istanbul
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back ${{ inputs.kamera_arka || 'emulated' }} -timezone Europe/Istanbul -change-locale tr-TR
           script: bash scripts/android-ozellik-hatti.sh telefon acik koyu
         env:
           AKIS_FILTRESI: ${{ inputs.akis_filtresi }}
@@ -229,7 +229,7 @@ jobs:
           profile: pixel_tablet
           ram-size: 4096M
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back ${{ inputs.kamera_arka || 'emulated' }} -timezone Europe/Istanbul
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back ${{ inputs.kamera_arka || 'emulated' }} -timezone Europe/Istanbul -change-locale tr-TR
           script: bash scripts/android-ozellik-hatti.sh tablet acik
 
       # Katlanabilir (Pixel Fold): iç ekran açıkken ana ekran + masaüstü postürü (yarı açık,
@@ -248,7 +248,7 @@ jobs:
           ram-size: 4096M
           disable-animations: true
           pre-emulator-launch-script: bash scripts/android-flip-avd.sh fold
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul -change-locale tr-TR
           script: bash scripts/android-ozellik-hatti.sh katlanabilir acik
 
       # Flip (Z Flip tipi): hazir AVD profili yok → pixel_6 tabanina kompakt ekran + yatay
@@ -266,7 +266,7 @@ jobs:
           ram-size: 4096M
           disable-animations: true
           pre-emulator-launch-script: bash scripts/android-flip-avd.sh flip
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul -change-locale tr-TR
           script: bash scripts/android-ozellik-hatti.sh flip acik
 
       - name: 🧾 Özellik kareleri özeti
@@ -350,7 +350,7 @@ jobs:
           arch: x86_64
           profile: wearos_large_round
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul -change-locale tr-TR
           script: bash scripts/saat-kare-hatti.sh yuvarlak
 
       # wearos_square profili 360x360'tir; Play saat karesi en az 384x384 ister →
@@ -364,7 +364,7 @@ jobs:
           arch: x86_64
           profile: wearos_square
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul -skin 384x384
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul -change-locale tr-TR -skin 384x384
           script: bash scripts/saat-kare-hatti.sh kare
 
       - name: 🧾 Saat kareleri özeti
@@ -443,7 +443,7 @@ jobs:
           arch: x86
           profile: tv_1080p
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul -change-locale tr-TR
           script: bash scripts/tv-kare-hatti.sh
 
       - name: 🧾 TV kareleri özeti
