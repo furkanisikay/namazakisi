@@ -89,7 +89,7 @@ private class VakitOnbellegi(private val il: Il) {
     fun al(tarih: LocalDate): GunlukVakitler {
         harita[tarih]?.let { return it }
         if (harita.size > 3) harita.clear()
-        return VakitHesabi.hesapla(il.lat, il.lng, tarih).also { harita[tarih] = it }
+        return VakitHesabi.hesapla(il.lat, il.lng, tarih, il.hesap).also { harita[tarih] = it }
     }
 }
 

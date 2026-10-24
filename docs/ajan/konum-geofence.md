@@ -2,6 +2,8 @@
 
 Ne zaman okunur: konum takibi, konum yenileme, konum değişiminin yayılması, konuma bağlı yeni bir tüketici ya da seferîlik kartı üzerinde çalışırken.
 
+Türkiye dışı konum, ülke kodu ve hesap yöntemi: [hesap-yontemi](hesap-yontemi.md).
+
 Katmanlar: `KonumTakipServisi` (geofence) · `KonumYenilemeServisi` + `useKonumYenile` (elle) · `KonumDegisikligiServisi.konumDegistiUygula` (tek yayma noktası) · `ArkaplanGorevServisi` (15 dk güvenlik ağı) · `konumSlice`.
 
 ## Takip modeli

@@ -46,7 +46,7 @@ class NamazAsistanFonksiyonlari {
 
     /**
      * Returns the current and the next Islamic prayer time for the user's saved location
-     * (Diyanet / Turkey calculation method), works fully offline.
+     * (the calculation method chosen in the app, Diyanet by default), works fully offline.
      *
      * Use it for questions like "when is the next prayer?", "how much time is left for the
      * afternoon prayer?". Read [SiradakiNamazSonucu.ozet] to the user as is; it is already a

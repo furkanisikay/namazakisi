@@ -147,8 +147,8 @@ class UyeDeposu(context: Context, private val konum: KonumDeposu) : UyeDeposuAra
         if (d?.lat != null && d.lng != null && p.getString(K_KONUM_SAHIBI, null) == uye) {
             val mevcut = konum.telefondanGelen()
             val ad = d.ad ?: mevcut?.ad ?: "Telefonunuzdaki konum"
-            if (mevcut == null || mevcut.lat != d.lat || mevcut.lng != d.lng || mevcut.ad != ad) {
-                konum.telefondanKaydet(ad, d.lat, d.lng)
+            if (mevcut == null || mevcut.lat != d.lat || mevcut.lng != d.lng || mevcut.ad != ad || mevcut.hesap != d.hesap) {
+                konum.telefondanKaydet(ad, d.lat, d.lng, d.hesap)
             }
         }
     }

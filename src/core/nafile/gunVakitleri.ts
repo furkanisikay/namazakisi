@@ -1,7 +1,7 @@
 /**
  * adhan köprüsü — bir takvim gününün farz vakitlerini `GunVakitleri` olarak üretir.
  *
- * Uygulamanın tamamıyla AYNI hesap: `CalculationMethod.Turkey()`, gün bazında ayrı
+ * Uygulamanın tamamıyla AYNI hesap: etkin hesap ayarı (`aktifPrayerTimes`), gün bazında ayrı
  * `PrayerTimes` (AGENTS.md). Saf hesap (`nafileVakitleri.ts`) adhan'a bağımlı
  * değildir; bu dosya ikisini birleştirir.
  */

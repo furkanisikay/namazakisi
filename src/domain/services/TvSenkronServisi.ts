@@ -22,6 +22,8 @@ import { konumMetniHesapla, type KonumMetniGirdisi } from '../../core/ayarlar/ko
 import { base64Coz, zarfla } from '../../core/cihazAgi/kanal';
 import { yukuYaz, type DurumAnlikGoruntusu } from '../../core/cihazAgi/yuk';
 import { camiyeGitOncedenDk } from '../../core/camiyeGit/camiyeGitAyarlari';
+import { tvHesapOzeti } from '../../core/vakit/tvHesapOzeti';
+import { HesapAyariServisi } from './HesapAyariServisi';
 import { fnv1aHex } from '../../core/kaza/kazaHareketi';
 import type { VakitAdi } from '../../core/types';
 import { Logger } from '../../core/utils/Logger';
@@ -215,8 +217,15 @@ export class TvSenkronServisi {
         const cuma = await LocalCumaHatirlatmaServisi.getAyarlar().catch(() => null);
         const camiye = await LocalCamiyeGitServisi.getAyarlar().catch(() => null);
         const ramazan = await ramazanMi();
+        // TV vakitleri kendisi hesaplar: telefonun yöntemi de gitmeli (yoksa TV Diyanet'le hesaplar).
+        const hesap = konum
+            ? await HesapAyariServisi.yukle()
+                  .then((a) => tvHesapOzeti(a, konum.koordinat.lat, new Date()))
+                  .catch(() => null)
+            : null;
         return {
             ...(konum ? { ad: konum.ad, konum: konum.koordinat } : {}),
+            ...(hesap ? { hesap } : {}),
             kilinan,
             ozelGun,
             cuma: { aktif: cuma?.aktif === true, cikisDk: camiye ? camiyeGitOncedenDk(camiye) : null },

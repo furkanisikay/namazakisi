@@ -1,7 +1,7 @@
 /**
  * Telefon → Wear OS saat YÜK SÖZLEŞMESİ (issue #269) — SAF.
  *
- * Vakitler TELEFONDA hesaplanır (tek hesap kaynağı: `CalculationMethod.Turkey()`),
+ * Vakitler TELEFONDA hesaplanır (tek hesap kaynağı: etkin hesap ayarı, `core/vakit/aktifHesap`),
  * saat yalnız gösterir; saatte ikinci bir adhan kopyası sessiz sapma doğururdu.
  *
  * Sözleşme İKİ TARAFTA kilitlidir: bu dosyanın doğrulayıcısı ve Kotlin

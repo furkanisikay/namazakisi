@@ -5,9 +5,9 @@
  * Tüketiciler: seferîlik bilgi kartı (kalış süresi, cem) ve kaza defterinde
  * vitirin otomatik eklenmesi (Hanefî: vacip → eklenir).
  *
- * ⚠️ NAMAZ VAKTİ HESABINA DOKUNMAZ. İkindi daima asr-ı evvel'dir
- * (`turkiyeHesapParametreleri()`, Diyanet takvimi); "Hanefî kullanıcıya Hanefî
- * ikindi" sezgisiyle buraya bağlamak ikindiyi ~45 dk kaydırır. Nöbetçi:
+ * ⚠️ NAMAZ VAKTİ HESABINA DOKUNMAZ. İkindi hesabı hesap yöntemi ayarındadır
+ * (`core/vakit/hesapProfilleri`, Türkiye'de Diyanet = asr-ı evvel); "Hanefî kullanıcıya
+ * Hanefî ikindi" sezgisiyle buraya bağlamak Türkiye'de ikindiyi ~45 dk kaydırır. Nöbetçi:
  * `mezhepAyari.test.ts`.
  */
 

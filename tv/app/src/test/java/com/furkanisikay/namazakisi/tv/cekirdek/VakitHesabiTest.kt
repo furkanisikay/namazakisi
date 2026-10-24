@@ -2,6 +2,8 @@ package com.furkanisikay.namazakisi.tv.cekirdek
 
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.LocalDate
@@ -34,6 +36,43 @@ class VakitHesabiTest {
                 )
             }
         }
+    }
+
+    /**
+     * Türkiye dışı yöntemler: telefonun yüke koyduğu özet (`hesap`) TV'de çözülüp adhan2'ye
+     * verildiğinde telefonla epoch ms birebir aynı (Ramazan yatsısı, yüksek enlem, akşam açısı,
+     * Moonsighting mevsimselliği, elle düzeltme dahil).
+     */
+    @Test
+    fun dunyaYontemleriTelefonlaAyni() {
+        val akis = javaClass.classLoader!!.getResourceAsStream("vakit-fiksturu-dunya.json")
+        val ornekler = JSONObject(akis.bufferedReader(Charsets.UTF_8).readText()).getJSONArray("ornekler")
+        assertTrue(ornekler.length() >= 60)
+        for (i in 0 until ornekler.length()) {
+            val o = ornekler.getJSONObject(i)
+            val hesap = TvHesapCozucu.coz(o.getJSONObject("hesap"))
+            assertNotNull("${o.getString("ad")} özeti çözülmeli", hesap)
+            assertEquals(hesap, TvHesapCozucu.coz(JSONObject(TvHesapCozucu.yaz(hesap!!))))
+            val v = VakitHesabi.hesapla(o.getDouble("lat"), o.getDouble("lng"), LocalDate.parse(o.getString("tarih")), hesap)
+            val beklenen = o.getJSONObject("vakitler")
+            for (vakit in Vakit.entries) {
+                assertEquals(
+                    "${o.getString("ad")} ${o.getString("tarih")} ${vakit.kod}",
+                    beklenen.getLong(vakit.kod),
+                    v.saat(vakit),
+                )
+            }
+        }
+    }
+
+    @Test
+    fun bozukOzetTurkiyeYolunaDuser() {
+        val gecerli = """{"y":"diger","f":18,"i":17,"ia":0,"a":"evvel","k":"orta","o":[0,0,0,0,0,0]}"""
+        assertNotNull(TvHesapCozucu.coz(JSONObject(gecerli)))
+        assertNull(TvHesapCozucu.coz(JSONObject(gecerli.replace("\"f\":18", "\"f\":99"))))
+        assertNull(TvHesapCozucu.coz(JSONObject(gecerli.replace("[0,0,0,0,0,0]", "[0,0,0]"))))
+        assertNull(TvHesapCozucu.coz(JSONObject(gecerli.replace("\"diger\"", "\"x\""))))
+        assertNull(TvHesapCozucu.coz(null))
     }
 
     @Test

@@ -16,7 +16,8 @@ import App from './App';
 
 // Hesap ayarı (yöntem/ikindi/dakika) HER JS bağlamında vakit hesabından ÖNCE yüklenir:
 // headless/arka plan bağlamında App.tsx hiç çalışmaz; beklenmezse vakitler Diyanet'le
-// hesaplanır (yurt dışı kullanıcıda yanlış saat). ASLA reddetmez.
+// hesaplanır (yurt dışı kullanıcıda yanlış saat). ASLA reddetmez. Kılınmışlık dinleyicisi kuran
+// servisler de (widget, camideyim, yatış, TV…) bu kapıdan sonra yüklenir: dinleyici vakit hesaplar.
 const hesapAyariHazir = (): Promise<void> =>
     import('./src/domain/services/HesapAyariServisi')
         .then(({ HesapAyariServisi }) => HesapAyariServisi.hazir())
@@ -80,7 +81,8 @@ if (Platform.OS === 'android') {
     // Widget kılınmışlık tazelemesi HER JS bağlamında (headless dahil) kurulsun:
     // bildirimdeki "Kıldım" uygulama kapalıyken işlenince widget da ≤1 sn'de
     // güncellenmeli; App.tsx o bağlamda hiç yüklenmez (issue #275).
-    import('./src/domain/services/WidgetServisi')
+    hesapAyariHazir()
+        .then(() => import('./src/domain/services/WidgetServisi'))
         .then(({ WidgetServisi }) => WidgetServisi.getInstance().baslat())
         .catch(() => undefined);
 }
@@ -105,7 +107,8 @@ if (Platform.OS === 'android') {
     // Namaz modu "Kıldım deyince kapansın" dinleyicisi HER JS bağlamında (headless
     // dahil): uygulama kapalıyken bildirimden "Kıldım" işlenince mod da kapanmalı;
     // App.tsx o bağlamda hiç yüklenmez. `baslat` idempotenttir (App.tsx de çağırır).
-    import('./src/domain/services/CamideyimServisi')
+    hesapAyariHazir()
+        .then(() => import('./src/domain/services/CamideyimServisi'))
         .then(({ CamideyimServisi }) => CamideyimServisi.getInstance().baslat())
         .catch(() => undefined);
 }
@@ -114,30 +117,36 @@ if (Platform.OS === 'android') {
 // yeniden planlanır. HER JS bağlamında (headless dahil): bildirimden "Kıldım"
 // uygulama kapalıyken işlenince muhasebe içeriği bayat kalmasın. İdempotent.
 if (Platform.OS === 'android') {
-    import('./src/domain/services/YatisHatirlatmaServisi')
+    hesapAyariHazir()
+        .then(() => import('./src/domain/services/YatisHatirlatmaServisi'))
         .then(({ YatisHatirlatmaServisi }) => YatisHatirlatmaServisi.getInstance().baslat())
         .catch(() => undefined);
     // Gün sonu seri hatırlatması: gün headless "Kıldım" ile tamamlanınca o günün tetiği kalksın.
-    import('./src/domain/services/GunSonuHatirlaticiServisi')
+    hesapAyariHazir()
+        .then(() => import('./src/domain/services/GunSonuHatirlaticiServisi'))
         .then(({ gunSonuDinleyicisiniBaslat }) => gunSonuDinleyicisiniBaslat())
         .catch(() => undefined);
     // Takvim çakışması (issue #291): kılınan vaktin uyarısı headless'ta da iptal edilsin.
-    import('./src/domain/services/TakvimCakismaServisi')
+    hesapAyariHazir()
+        .then(() => import('./src/domain/services/TakvimCakismaServisi'))
         .then(({ TakvimCakismaServisi }) => TakvimCakismaServisi.getInstance().baslat())
         .catch(() => undefined);
     // Kaza Defteri 2.0: bildirimden "Kıldım" headless işlenince otomatik kaza
     // tarama günlüğü de tazelensin (sayılar zaten kayıttan türer). İdempotent.
-    import('./src/domain/services/KazaDefteriServisi')
+    hesapAyariHazir()
+        .then(() => import('./src/domain/services/KazaDefteriServisi'))
         .then((KazaDefteriServisi) => KazaDefteriServisi.baslat())
         .catch(() => undefined);
     // Cihaz ağı: bildirimden "Kıldım" headless işlenince eşleşik TV'ler de tazelensin
     // (adlı yuva 'tv'; idempotent, App.tsx de çağırır).
-    import('./src/domain/services/TvSenkronServisi')
+    hesapAyariHazir()
+        .then(() => import('./src/domain/services/TvSenkronServisi'))
         .then(({ TvSenkronServisi }) => TvSenkronServisi.getInstance().baslat())
         .catch(() => undefined);
     // Çift yönlü eşler (tablet ↔ telefon): headless "Kıldım" da eşe gönderilsin (yuva 'cihazEs').
     // Eş yalnız ön plandayken dinler; ulaşılamazsa bir sonraki açılışta tamamlanır.
-    import('./src/domain/services/CihazEsServisi')
+    hesapAyariHazir()
+        .then(() => import('./src/domain/services/CihazEsServisi'))
         .then(({ CihazEsServisi }) => CihazEsServisi.getInstance().baslat())
         .catch(() => undefined);
 }

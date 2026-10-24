@@ -1,7 +1,7 @@
 /**
  * Camideyim vakit kapısı ve Namaz modu planı için günlük farz vakit girişleri.
  *
- * Uygulamanın tamamıyla AYNI hesap (`gunVakitleriniHesapla` — `CalculationMethod.Turkey()`,
+ * Uygulamanın tamamıyla AYNI hesap (`gunVakitleriniHesapla` — etkin hesap ayarı,
  * gün bazında ayrı `PrayerTimes`). Native taraf vakit hesaplamaz; bu girişlerden
  * türetilen pencereleri JS gönderir (Wear 8 günlük pencere deseni).
  */
