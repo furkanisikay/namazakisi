@@ -59,17 +59,20 @@ object DuvarKagidiCizici {
         val icGenislik = maxOf(1, Math.round(genislik - 2 * YAN_BOSLUK * s))
         val olcek = s * DuvarKagidiKurallari.yaziOlcegi(ekran)
 
-        var arapca = GununAyetiKurallari.duvardaArapca(kayit, yuk.duvar)
-        var blok = blokKur(context, yuk, kayit, renk, arapca, olcek, s, icGenislik, 1f)
-        var carpan = 1f
-        while (blok.yukseklik > bantAlt - bantUst && carpan > EN_KUCUK_CARPAN) {
-            carpan -= CARPAN_ADIMI
-            blok = blokKur(context, yuk, kayit, renk, arapca, olcek, s, icGenislik, carpan)
+        val arapca = GununAyetiKurallari.duvardaArapca(kayit, yuk.duvar)
+        // Sığana kadar küçült; Arapça ile en küçük boyutta da sığmazsa Arapçayı düşürüp
+        // küçültmeyi baştan yine dene (Arapçasız blok da dar kilit bandını aşabilir).
+        fun sigdir(arapcaIle: Boolean): Blok {
+            var b = blokKur(context, yuk, kayit, renk, arapcaIle, olcek, s, icGenislik, 1f)
+            var carpan = 1f
+            while (b.yukseklik > bantAlt - bantUst && carpan > EN_KUCUK_CARPAN) {
+                carpan -= CARPAN_ADIMI
+                b = blokKur(context, yuk, kayit, renk, arapcaIle, olcek, s, icGenislik, carpan)
+            }
+            return b
         }
-        if (blok.yukseklik > bantAlt - bantUst && arapca && kayit.meal != null) {
-            arapca = false
-            blok = blokKur(context, yuk, kayit, renk, arapca, olcek, s, icGenislik, 1f)
-        }
+        val ilk = sigdir(arapca)
+        val blok = if (ilk.yukseklik > bantAlt - bantUst && arapca && kayit.meal != null) sigdir(false) else ilk
 
         // Kilit ekranında blok bandın ortasında, atıf bandın altında; ana ekranda üstten başlar.
         val x = (genislik - icGenislik) / 2f
