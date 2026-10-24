@@ -5,7 +5,7 @@
  * kendiliğinden açılmaz); değilse Türkçe. Her JS giriş noktası metin üretmeden önce
  * `DilServisi.hazir()`'ı bekler. Store'a bağımlı değil.
  */
-import { I18nManager, NativeModules, Platform } from 'react-native';
+import { I18nManager, Platform, Settings } from 'react-native';
 import { Depolama } from '../../data/local/Depolama';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
@@ -23,8 +23,10 @@ let yukleme: Promise<DilKodu> | null = null;
 export function cihazYerelAyari(): string | null {
   try {
     if (Platform.OS === 'ios') {
-      const ayarlar = NativeModules.SettingsManager?.settings;
-      return ayarlar?.AppleLanguages?.[0] ?? ayarlar?.AppleLocale ?? null;
+      // `NativeModules.SettingsManager` New Architecture'da güvenilmez; `Settings` kararlı yol.
+      // Cihazda DOĞRULANMADI.
+      const diller = Settings.get('AppleLanguages') as string[] | undefined;
+      return diller?.[0] ?? (Settings.get('AppleLocale') as string | undefined) ?? null;
     }
     const sabitler = (I18nManager as unknown as { getConstants?: () => { localeIdentifier?: string } }).getConstants?.();
     return sabitler?.localeIdentifier ?? null;

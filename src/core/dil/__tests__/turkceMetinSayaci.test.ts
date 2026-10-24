@@ -8,6 +8,8 @@
  */
 import * as fs from 'fs';
 
+import { DILLER } from '../diller';
+
 const { sayim, TAVAN } = require('../../../../scripts/dil/turkceMetinSay');
 
 const tavan: { toplam: number; dosyalar: Record<string, number> } = JSON.parse(fs.readFileSync(TAVAN, 'utf8'));
@@ -26,4 +28,11 @@ it('tavan güncel: çıkarılan metin tavana işlenmiş (betikle --yaz)', () => 
     .filter(([dosya, n]) => (simdi[dosya] ?? 0) < n)
     .map(([dosya, n]) => `${dosya}: ${simdi[dosya] ?? 0} < ${n}`);
   expect(dusen).toEqual([]);
+});
+
+it('YARIM DİL YOK: Türkçe dışında bir dil seçilebilirse Türkçe sabit metin kalmamıştır', () => {
+  const kalan = Object.values(sayim() as Record<string, number>).reduce((a, b) => a + b, 0);
+  for (const d of DILLER.filter((x) => x.kod !== 'tr' && x.secilebilir)) {
+    expect([d.kod, kalan]).toEqual([d.kod, 0]);
+  }
 });

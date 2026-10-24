@@ -15,7 +15,11 @@ const initialState: DilState = { kod: VARSAYILAN_DIL, yuklendi: false };
 
 export const diliYukle = createAsyncThunk<DilKodu>('dil/yukle', () => DilServisi.yukle());
 
-/** Kaydeder; metin üreten planlar (bildirim, sesli okuma, widget) W5'te buradan yeniden kurulur. */
+/**
+ * Kaydeder. DİKKAT (seçici açılmadan ÖNCE yapılmalı): planlanmış metinler (bildirim,
+ * muhafız adımları, cuma/yatış, sesli okuma, widget) eski dilde kalır → `hesapAyariniKaydet`
+ * gibi `konumDegistiUygula` yolundan yeniden kurulmalı.
+ */
 export const diliKaydet = createAsyncThunk<DilKodu, DilKodu>('dil/kaydet', async (kod) => {
   await DilServisi.kaydet(kod);
   return kod;

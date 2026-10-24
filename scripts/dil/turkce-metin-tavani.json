@@ -1,5 +1,5 @@
 {
- "toplam": 3742,
+ "toplam": 3130,
  "dosyalar": {
   "src/core/anaEkran/genisEkranEkleri.ts": 6,
   "src/core/anaEkran/haftaOzeti.ts": 1,
@@ -35,9 +35,7 @@
   "src/core/kaza/kazaHareketi.ts": 11,
   "src/core/kible/acilar.ts": 4,
   "src/core/kildim/kildimGuven.ts": 6,
-  "src/core/konum/ilceMerkezleriVerisi.ts": 511,
   "src/core/konum/konumDegisimBildirimi.ts": 2,
-  "src/core/konum/ulkeAdlariVerisi.ts": 70,
   "src/core/mezhep/mezhepAyari.ts": 1,
   "src/core/muhafiz/alarmNotlari.ts": 9,
   "src/core/muhafiz/alarmYuku.ts": 2,
@@ -94,7 +92,6 @@
   "src/domain/services/SeriSayacBildirimServisi.ts": 6,
   "src/domain/services/TakvimServisi.ts": 5,
   "src/domain/services/TaniRaporuServisi.ts": 4,
-  "src/domain/services/TurkiyeKonumServisi.ts": 31,
   "src/domain/services/VakitKanalServisi.ts": 1,
   "src/domain/services/VakitSayacBildirimServisi.ts": 13,
   "src/domain/services/YatisHatirlatmaServisi.ts": 1,

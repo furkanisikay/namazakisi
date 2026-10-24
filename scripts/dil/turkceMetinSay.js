@@ -10,6 +10,9 @@
  *
  *   node scripts/dil/turkceMetinSay.js          # özet
  *   node scripts/dil/turkceMetinSay.js --yaz    # tavanı bugünkü sayıya indir (yalnız düşer)
+ *
+ * Metni dosyalar arasında TAŞIMAK (çıkarmak değil) iki testi de kırar ve `--yaz` artanı
+ * yükseltmez: JSON'u elle düzenleyin, `toplam` artmamalı.
  */
 'use strict';
 const fs = require('fs');
@@ -18,6 +21,16 @@ const path = require('path');
 const KOK = path.resolve(__dirname, '..', '..');
 const TAVAN = path.join(__dirname, 'turkce-metin-tavani.json');
 const TR = /[çğıöşüÇĞİÖŞÜ]/;
+/**
+ * Çevrilmeyen VERİ dosyaları (sayılmaz). Her birinin nedeni: yer adı dilden bağımsızdır
+ * (İstanbul İngilizcede de İstanbul) ya da dosya zaten dil başına üretilir. Çevrilecek veri
+ * (özel gün adları, "Neler Yeni", arama dizini) burada YOK — sayılır.
+ */
+const HARIC = new Set([
+    'src/core/konum/ilceMerkezleriVerisi.ts', // ilçe adları + koordinat (üretilmiş)
+    'src/core/konum/ulkeAdlariVerisi.ts', // CLDR'den dil başına üretilmiş ülke adları
+    'src/domain/services/TurkiyeKonumServisi.ts', // 81 il adı + koordinat
+]);
 const DIZE = /(['"`])((?:\\.|(?!\1)[^\\\n])*)\1/g;
 const JSX_METNI = />([^<>{}\n]+)</g;
 
@@ -66,14 +79,14 @@ function sayim() {
     const sonuc = {};
     for (const yol of dosyalar(path.join(KOK, 'src'))) {
         const goreli = path.relative(KOK, yol).split(path.sep).join('/');
-        if (goreli.startsWith('src/core/dil/sozluk/')) continue;
+        if (goreli.startsWith('src/core/dil/sozluk/') || HARIC.has(goreli)) continue;
         const n = say(fs.readFileSync(yol, 'utf8'));
         if (n > 0) sonuc[goreli] = n;
     }
     return sonuc;
 }
 
-module.exports = { say, sayim, TAVAN };
+module.exports = { say, sayim, TAVAN, HARIC };
 
 if (require.main === module) {
     const s = sayim();

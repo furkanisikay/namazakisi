@@ -8,11 +8,16 @@ Katmanlar: `src/core/dil/` (saf: `tipler`, `cogul`, `bicim`, `diller`, `aktifDil
 
 - **Yeni ekran metni sözlüğe yazılır, koda değil:** önce `sozluk/tr/<adAlani>.ts`, aynı anahtar her dilde (`Sozluk` tipi Türkçeden türer, eksik anahtar `tsc` hatası). Ekranda `const m = useMetin(); m.kurulum.baslik`; yer tutucu `bicim(m.x, { ad })`, sayı `sayili(m.y, n)` (`{n}` kendiliğinden). Nöbetçi: `turkceMetinSayaci.test.ts` (dosya başına Türkçe sabit metin tavanı; metin çıkarınca `node scripts/dil/turkceMetinSay.js --yaz`).
 - **Headless/servis metni `metin()`'den** (`core/dil/aktifDil`): bildirim içeriği, sesli okuma, widget yükü. Giriş noktaları `baglamHazir()`'ı bekler (hesap ayarı + dil); yeni giriş noktası da.
-- **Yarım dil yok:** `DILLER`'de `secilebilir: true` yalnız o dilde Türkçe sabit metin kalmamış (cırcır sıfır, kullanıcıya görünen dosyalar) ve native metinler üretilmişken. Seçilemeyen dil cihaz dili olsa bile kendiliğinden açılmaz. Gözden geçirilmemiş çeviri `beta: true`.
+- **Yarım dil yok:** `DILLER`'de `secilebilir: true` yalnız Türkçe sabit metin kalmamışken (nöbetçi `turkceMetinSayaci.test.ts` "YARIM DİL YOK": Türkçe dışı bir dil seçilebilirse sayaç 0 olmalı) ve native metinler üretilmişken (W5'te nöbetçiye eklenir). Seçilemeyen dil cihaz dili olsa bile kendiliğinden açılmaz. Gözden geçirilmemiş çeviri `beta: true`.
+- **Çevrilmeyen veri sayaçtan HARİÇ** (`turkceMetinSay.js > HARIC`, gerekçe dosya başına): yer adları (il, ilçe), dil başına üretilmiş ülke adları. Çevrilecek veri (özel gün adları, "Neler Yeni", ayar arama dizini) sayılır. Metni dosyalar arasında taşımak `--yaz` ile düzelmez: JSON'u elle düzenle, toplam artmasın.
+- **Her çıkarılan ekrana İngilizce çizim testi:** `src/__tests__/yardimci/ingilizceDenetimi.ts` → `ingilizceyeGec()` (singleton da İngilizce olur; yalnız store'u değiştirmek `bicim`/`sayili`'yi Türkçe bırakır) + `turkceKalanlar(ekran.toJSON(), ['Kaza', …])`. Cırcırın göremediği Türkçe harfsiz metni (“Ayarlar”, “Kaza”) yasaklı sözcük listesi yakalar.
+- **Dil değişince planlanmış metin yeniden kurulur** (seçici açılmadan ÖNCE): `diliKaydet`, `hesapAyariniKaydet` gibi `konumDegistiUygula` yolundan yayar; yoksa İngilizceye geçen kullanıcı Türkçe bildirim almaya devam eder.
+- **Samimiyet metinleri ÇEVİRİ DEĞİLDİR** (`kabulDuasi`, `KURULUM_BITTI_SELAMI`, `gunSelami`): her dilde o dilin geleneksel kalıplarından ayrı, DETERMİNİSTİK bir küme; aynı kurallar (övgü yok, "!" yok, kılınmadıya yargı yok). Önce `ana-ekran-ve-ayarlar.md > Samimiyet`.
+- **Maestro akışlarında metinle değil `testID` ile seç:** dil başına kare turu metin seçicilerini kırar.
 - **Çoğul ELLE yazılmış CLDR kuralıyla** (`cogul.ts`; Hermes'te `Intl.PluralRules`'a güvenilmez). Yeni dil eklerken kuralını yaz; nöbetçi `cogul.test.ts` Node ICU ile 0–1000 karşılaştırır, `aktifDil.test.ts` her çoğul metnin o dilin bütün kategorilerini taşıdığını denetler.
 - **Büyük/küçük harf dönüşümü yine YASAK** (`toUpperCase`/`toLocale*`): büyük harf gereken yerde sözlükte ayrı anahtar.
 - **Tarih ve ay/gün adları sözlükte**, `Intl.DateTimeFormat`/`toLocale*` kullanılmaz (Hermes ICU'ya bağlı).
-- **Cihaz dili:** Android `I18nManager.getConstants().localeIdentifier`, iOS `SettingsManager.settings.AppleLanguages[0]`; `expo-localization` eklenmedi (native bağımlılık gereksiz). Dil seçici açılınca `DIL_AYARI` yedeğin üç beyaz listesine girer.
+- **Cihaz dili:** Android `I18nManager.getConstants().localeIdentifier`, iOS `Settings.get('AppleLanguages')[0]` (`NativeModules.SettingsManager` New Architecture'da güvenilmez; iOS yolu cihazda DOĞRULANMADI); `expo-localization` eklenmedi (native bağımlılık gereksiz). Dil seçici açılınca `DIL_AYARI` yedeğin üç beyaz listesine girer.
 
 ## Hitap kaydı (her dilde eşlenir)
 
