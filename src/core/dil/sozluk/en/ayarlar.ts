@@ -31,6 +31,8 @@ export const ayarlar: Sozluk['ayarlar'] = {
     'sayfa-gorunum': { baslik: 'Appearance', kelimeler: 'theme, color, appearance, dark mode' },
     'sayfa-dil': { baslik: 'Language · Dil', kelimeler: 'language, turkish, english, device language, translation' },
     'sayfa-saat-widget': { baslik: 'Watch and widgets', kelimeler: 'watch, wear, widget, now bar, live countdown, live activity, wristband, automation, tasker, routine' },
+    'sayfa-gunun-ayeti': { baslik: 'Verse of the day', kelimeler: 'verse, verse of the day, translation, quran, share, tanzil' },
+    'sayfa-gunun-ayeti-ayar': { baslik: 'Widget and wallpaper', kelimeler: 'widget, wallpaper, lock screen, home screen, verse widget, shortcuts' },
     'sayfa-cihazlarim': { baslik: 'My devices', kelimeler: 'device, my devices, connected device, remove tv, count my status, quiet band, sync' },
     'sayfa-cihaz-ekle': { baslik: 'Add a tablet or phone', kelimeler: "tablet, ipad, second phone, add device, pair, sync i've prayed" },
     'sayfa-televizyon': { baslik: 'Add a TV', kelimeler: 'tv, television, android tv, google tv, pair, qr, qr code, big screen' },

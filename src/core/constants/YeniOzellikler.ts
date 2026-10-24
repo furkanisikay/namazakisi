@@ -83,6 +83,77 @@ export interface YeniOzellik {
 export type YeniOzellikCevirisi = Pick<YeniOzellik, 'baslik' | 'aciklama' | 'detayAciklama' | 'ctaEtiketi' | 'detaylar'>;
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Günün ayeti (#380 widget, #381 duvar kâğıdı). Duvar kâğıdı platforma göre farklı
+    // olduğundan iki öğe: Android'de uygulama değiştirir, iPhone'da Kısayollar rehberi.
+    {
+        id: 'gunun-ayeti-android',
+        platformlar: ['android'],
+        surum: '0.71.0',
+        tarih: '2026-10-24',
+        baslik: 'Günün ayeti ana ekranınızda',
+        aciklama:
+            'Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza widget olarak ekleyebilir, isterseniz kilit ekranınızın duvar kâğıdı yapabilirsiniz.',
+        detayAciklama:
+            "Widget, duvar kâğıdı ve uygulamadaki \"Günün ayeti\" sayfası aynı ayeti gösterir. Arapça metin Tanzil Projesi'nden, mealler QuranEnc'ten değiştirilmeden alınır.",
+        ikon: 'book-open',
+        hedefSayfa: 'GununAyeti',
+        ctaEtiketi: 'Günün ayetini açın',
+        detaylar: [
+            'Meal hiçbir boyutta kesilmez; sığmadığı gün widget okumak için dokunmanızı ister.',
+            'Duvar kâğıdında Arapça metin isteğe bağlıdır ve başta kapalıdır.',
+            'Ayeti metin ya da görsel olarak paylaşabilirsiniz.',
+        ],
+        ceviri: {
+            en: {
+                baslik: 'Verse of the day on your home screen',
+                aciklama:
+                    'Add a verse and its translation that changes every day at Fajr to your home screen as a widget, and make it your lock screen wallpaper if you like.',
+                detayAciklama:
+                    'The widget, the wallpaper and the "Verse of the day" page in the app show the same verse. The Arabic text comes from the Tanzil Project and translations from QuranEnc, unchanged.',
+                ctaEtiketi: 'Open the verse of the day',
+                detaylar: [
+                    "The translation is never cut off; on days it doesn't fit, the widget asks you to tap to read it.",
+                    'Arabic text on the wallpaper is optional and starts off.',
+                    'You can share the verse as text or as an image.',
+                ],
+            },
+        },
+    },
+    {
+        id: 'gunun-ayeti-ios',
+        platformlar: ['ios'],
+        yetenek: 'iosWidget',
+        surum: '0.71.0',
+        tarih: '2026-10-24',
+        baslik: 'Günün ayeti ana ekranınızda',
+        aciklama:
+            'Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza ve kilit ekranınıza widget olarak ekleyebilirsiniz.',
+        detayAciklama:
+            "Widget ve uygulamadaki \"Günün ayeti\" sayfası aynı ayeti gösterir. Arapça metin Tanzil Projesi'nden, mealler QuranEnc'ten değiştirilmeden alınır.",
+        ikon: 'book-open',
+        hedefSayfa: 'GununAyeti',
+        ctaEtiketi: 'Günün ayetini açın',
+        detaylar: [
+            'Meal hiçbir boyutta kesilmez; sığmadığı gün widget okumak için dokunmanızı ister.',
+            'Kısayollar uygulamasıyla günün ayetini her sabah duvar kâğıdınız yapabilirsiniz; adımlar uygulamada anlatılır.',
+            'Ayeti metin ya da görsel olarak paylaşabilirsiniz.',
+        ],
+        ceviri: {
+            en: {
+                baslik: 'Verse of the day on your home screen',
+                aciklama:
+                    'Add a verse and its translation that changes every day at Fajr to your Home Screen and Lock Screen as a widget.',
+                detayAciklama:
+                    'The widget and the "Verse of the day" page in the app show the same verse. The Arabic text comes from the Tanzil Project and translations from QuranEnc, unchanged.',
+                ctaEtiketi: 'Open the verse of the day',
+                detaylar: [
+                    "The translation is never cut off; on days it doesn't fit, the widget asks you to tap to read it.",
+                    'With the Shortcuts app you can make the verse of the day your wallpaper every morning; the app walks you through the steps.',
+                    'You can share the verse as text or as an image.',
+                ],
+            },
+        },
+    },
     // Arayüz dili: İngilizce (beta) ve dil seçici (spec 2026-10-24 §9).
     {
         id: 'uygulama-dili',

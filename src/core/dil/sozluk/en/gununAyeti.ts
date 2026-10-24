@@ -11,8 +11,10 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
   sigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
   acin: 'Open',
   sayfa: {
-    kopyalayin: 'Copy',
-    kopyalandi: 'Verse copied',
+    tarih: '{gunAdi}, {ay} {gun}',
+    kisaTarih: '{ay} {gun}',
+    metniPaylasin: 'Share text',
+    paylasilamadi: "Sharing isn't available on this device.",
     gorselPaylasin: 'Share as image',
     widgetVeDuvar: 'Widget and wallpaper',
     widgetVeDuvarAciklama: 'Add it to your home screen, see it on your lock screen',
@@ -20,11 +22,13 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
     dun: 'Yesterday',
     kaynakNotu: 'Translations are taken from QuranEnc unchanged and updated when new versions are released.',
     mealYok: 'No translation in this language yet; the Arabic text is shown.',
+    tanzilBaglanti: 'Arabic text: Tanzil Project (tanzil.net)',
   },
   ayar: {
     widgetBolum: 'Widget',
     widgetEkleyin: 'Add a widget to your home screen',
-    widgetEkleyinAciklama: 'Long-press, Widgets, Namaz Akışı, Verse of the day',
+    widgetEkleyinAciklama: 'Long-press an empty spot on your home screen, Widgets, Namaz Akışı, Verse of the day',
+    widgetEkleyinAciklamaIos: 'Long-press an empty spot on your Home Screen, Edit, Add Widget, Namaz Akışı',
     duvarBolum: 'Wallpaper',
     duvarAnahtar: 'Change it every day',
     duvarAcikOzet: 'On · refreshed every day at Fajr',
@@ -39,9 +43,9 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
     kapatNotu: "If you turn it off, the last image stays on screen; choose your previous wallpaper again from your gallery.",
     kullanilamiyor: 'Unavailable',
     engelli: "Changing the wallpaper is turned off on this device (work or school management), so this setting can't be turned on.",
-    baskaHizmet:
-      'Another service that changes your lock screen is on. To keep the verse of the day, turn off the wallpaper service in your phone settings.',
     yazilamadi: "Today's image couldn't be set. It will be tried again when you open the app.",
+    yerlestirildi: 'Wallpaper set',
+    onizlemeErisim: "Preview of today's wallpaper",
   },
   onay: {
     baslik: 'Your wallpaper will change',
@@ -53,13 +57,14 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
     aciklama:
       "On iPhone, apps can't change the wallpaper themselves. The Shortcuts app can do it for you every morning; you set it up once.",
     ucAdim: 'Three steps',
-    adim1: 'Add the ready-made shortcut. It contains the "Verse of the day image" and "Set Wallpaper" steps.',
-    kisayoluEkleyin: 'Add the shortcut',
+    adim1:
+      'In the Shortcuts app, create a new shortcut. Add the "Verse of the day image" action first, then the action that sets the wallpaper photo (search for "Wallpaper").',
+    kisayollariAcin: 'Open Shortcuts',
     adim2: 'In Shortcuts, on the Automation tab, create a new Time of Day automation and pick a time after Fajr (for example 07:30).',
     adim3: 'Choose Run Immediately and connect the shortcut you added.',
     elle: 'Or by hand',
-    fotograflaraKaydedin: "Save today's image to Photos",
-    kaydedildi: 'Image saved to Photos',
+    gorseliKaydedin: "Save today's image",
+    kaydetIpucu: 'In the share menu that opens, you can save the image to Photos.',
     not: "The automation runs at the fixed time you choose and can't follow the Fajr time; if it runs before Fajr, it sets yesterday's verse.",
   },
 };

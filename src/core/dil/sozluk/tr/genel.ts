@@ -139,6 +139,8 @@ export const genel = {
     OzelGunAyarlari: 'Özel gün',
     NamazVakitleriAyarlari: 'Namaz vakitleri',
     SaatVeWidgetAyarlari: 'Saat ve widget',
+    GununAyeti: 'Günün ayeti',
+    GununAyetiAyarlari: 'Widget ve duvar kâğıdı',
     Yardim: 'Yardım',
     Camilerim: 'Camilerim',
     KonumAyarlari: 'Konum',

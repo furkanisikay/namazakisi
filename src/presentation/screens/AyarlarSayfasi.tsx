@@ -96,6 +96,7 @@ const CIHAZ_SAYFALARI: readonly AyarlarEkranAdi[] = [
   'OtomasyonRehberi',
   'KildimUygulamalari',
 ];
+const GUNUN_AYETI_SAYFALARI: readonly AyarlarEkranAdi[] = ['GununAyeti', 'GununAyetiAyarlari'];
 const YARDIM_SAYFALARI: readonly AyarlarEkranAdi[] = ['Yardim', 'TaniGeriBildirim', 'Hakkinda'];
 
 export const AyarlarSayfasi: React.FC = () => {
@@ -387,6 +388,15 @@ export const AyarlarSayfasi: React.FC = () => {
                     onPress={() => grubaGit('SaatVeWidgetAyarlari', CIHAZ_SAYFALARI)}
                   />,
                 ]}
+                <AyarSatiri
+                  varyant="navigasyon"
+                  ikon={<FontAwesome5 name="book-open" size={18} color={ikonRengi} />}
+                  baslik={e.GununAyeti}
+                  ozet={s.gununAyeti.sayfa.widgetVeDuvarAciklama}
+                  yeniRozetGoster={grupOkunmamisMi(GUNUN_AYETI_SAYFALARI)}
+                  secili={grupSecili(GUNUN_AYETI_SAYFALARI)}
+                  onPress={() => grubaGit('GununAyeti', GUNUN_AYETI_SAYFALARI)}
+                />
                 {/* Cihaz ağı (TV'ler + saat). TV ekranı "Ayarlar › Cihazlarım › TV ekleyin" der;
                     yol bu satırla ve sayfadaki düğmeyle birebir aynı kalmalı (persona testi bulgusu). */}
                 <AyarSatiri

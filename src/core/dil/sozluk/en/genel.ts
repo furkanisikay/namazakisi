@@ -140,6 +140,8 @@ export const genel: Sozluk['genel'] = {
     OzelGunAyarlari: 'Excused days',
     NamazVakitleriAyarlari: 'Prayer times',
     SaatVeWidgetAyarlari: 'Watch and widgets',
+    GununAyeti: 'Verse of the day',
+    GununAyetiAyarlari: 'Widget and wallpaper',
     Yardim: 'Help',
     Camilerim: 'My mosques',
     KonumAyarlari: 'Location',

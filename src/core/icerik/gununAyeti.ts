@@ -74,7 +74,8 @@ export function gununAyetiGorunumu(kayit: GununAyetiKaydi, dil: DilKodu = aktifD
   };
 }
 
-function isoGun(t: Date): string {
+/** Yerel takvim günü "YYYY-MM-DD" (UTC'ye kaymaz). */
+export function isoGun(t: Date): string {
   const a = String(t.getMonth() + 1).padStart(2, '0');
   const g = String(t.getDate()).padStart(2, '0');
   return `${t.getFullYear()}-${a}-${g}`;

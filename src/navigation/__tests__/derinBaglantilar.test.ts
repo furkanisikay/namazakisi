@@ -55,4 +55,10 @@ describe('ekran eşlemesi', () => {
         expect(sekme?.name).toBe('Ayarlar');
         expect(sekme?.state?.routes.map((r) => r.name)).toEqual(['AyarlarAna', 'CamideyimAyarlari']);
     });
+
+    it('gunun-ayeti (widget dokunuşu) → Ayarlar yığını, altında AyarlarAna', () => {
+        const sekme = durum('gunun-ayeti')?.routes[0].state?.routes[0];
+        expect(sekme?.name).toBe('Ayarlar');
+        expect(sekme?.state?.routes.map((r) => r.name)).toEqual(['AyarlarAna', 'GununAyeti']);
+    });
 });

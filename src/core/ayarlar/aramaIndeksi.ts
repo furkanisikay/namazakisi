@@ -81,6 +81,8 @@ const TANIMLAR: KayitTanimi[] = [
   // Dil sayfası yalnız seçicide birden çok dil varken (Ayarlar satırıyla aynı kapı).
   ...(dilSeciciGorunur() ? [{ id: 'sayfa-dil', sayfa: 'DilAyarlari', grup: 'ekranCihazlar' } as const] : []),
   { id: 'sayfa-saat-widget', sayfa: 'SaatVeWidgetAyarlari', grup: 'ekranCihazlar' },
+  { id: 'sayfa-gunun-ayeti', sayfa: 'GununAyeti', grup: 'ekranCihazlar' },
+  { id: 'sayfa-gunun-ayeti-ayar', sayfa: 'GununAyetiAyarlari', grup: 'ekranCihazlar' },
   { id: 'sayfa-cihazlarim', sayfa: 'Cihazlarim', grup: 'ekranCihazlar' },
   { id: 'sayfa-cihaz-ekle', sayfa: 'CihazEkle', grup: 'ekranCihazlar' },
   { id: 'sayfa-televizyon', sayfa: 'TelevizyonAyarlari', grup: 'ekranCihazlar' },

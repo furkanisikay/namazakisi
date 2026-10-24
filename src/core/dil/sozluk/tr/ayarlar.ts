@@ -35,6 +35,8 @@ export const ayarlar = {
     'sayfa-gorunum': { baslik: 'Görünüm', kelimeler: 'tema, renk, görünüm, karanlık mod' },
     'sayfa-dil': { baslik: 'Dil · Language', kelimeler: 'dil, language, ingilizce, english, türkçe, cihaz dili' },
     'sayfa-saat-widget': { baslik: 'Saat ve widget', kelimeler: 'saat, wear, widget, now bar, canlı sayaç, canlı etkinlik, bileklik, otomasyon, tasker, rutin' },
+    'sayfa-gunun-ayeti': { baslik: 'Günün ayeti', kelimeler: 'ayet, günün ayeti, meal, kuran, paylaş, tanzil' },
+    'sayfa-gunun-ayeti-ayar': { baslik: 'Widget ve duvar kâğıdı', kelimeler: 'widget, duvar kâğıdı, kilit ekranı, ana ekran, ayet widget, kısayollar' },
     'sayfa-cihazlarim': { baslik: 'Cihazlarım', kelimeler: 'cihaz, cihazlarım, bağlı cihaz, tv kaldır, durumum sayılsın, sessiz bant, eşitleme' },
     'sayfa-cihaz-ekle': { baslik: 'Tablet ya da telefon ekleyin', kelimeler: 'tablet, ipad, ikinci telefon, cihaz ekle, eşleştir, kıldım eşitle' },
     'sayfa-televizyon': { baslik: 'TV ekleyin', kelimeler: 'tv, televizyon, android tv, google tv, eşleştir, qr, kare kod, büyük ekran' },

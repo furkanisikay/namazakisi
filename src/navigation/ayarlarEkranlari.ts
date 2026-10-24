@@ -22,6 +22,9 @@ export const AYARLAR_EKRANLARI = [
   'OzelGunAyarlari',
   'NamazVakitleriAyarlari',
   'SaatVeWidgetAyarlari',
+  // Günün ayeti (#380 widget, #381 duvar kâğıdı): sayfa widget'tan da açılır (`namazakisi://gunun-ayeti`)
+  'GununAyeti',
+  'GununAyetiAyarlari',
   'Yardim',
   'Camilerim',
   'KonumAyarlari',

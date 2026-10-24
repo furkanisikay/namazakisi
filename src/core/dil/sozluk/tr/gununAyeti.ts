@@ -18,8 +18,12 @@ export const gununAyeti = {
   sigmiyor: 'Bugünün ayeti bu boyuta sığmıyor. Okumak için dokunun.',
   acin: 'Açın',
   sayfa: {
-    kopyalayin: 'Kopyalayın',
-    kopyalandi: 'Ayet kopyalandı',
+    /** Başlık tarihi: "Cumartesi, 24 Ekim". */
+    tarih: '{gunAdi}, {gun} {ay}',
+    /** Önceki günler listesi: "22 Eki". */
+    kisaTarih: '{gun} {ay}',
+    metniPaylasin: 'Metni paylaşın',
+    paylasilamadi: 'Paylaşım bu cihazda açılamadı.',
     gorselPaylasin: 'Görsel paylaşın',
     widgetVeDuvar: 'Widget ve duvar kâğıdı',
     widgetVeDuvarAciklama: 'Ana ekrana ekleyin, kilit ekranında görün',
@@ -27,11 +31,13 @@ export const gununAyeti = {
     dun: 'Dün',
     kaynakNotu: "Mealler QuranEnc'ten değiştirilmeden alınır ve yeni sürüm çıktıkça güncellenir.",
     mealYok: 'Bu dilde meal henüz yok; Arapça metin gösteriliyor.',
+    tanzilBaglanti: 'Arapça metin: Tanzil Projesi (tanzil.net)',
   },
   ayar: {
     widgetBolum: 'Widget',
     widgetEkleyin: 'Ana ekrana widget ekleyin',
-    widgetEkleyinAciklama: 'Uzun basın, Widget’lar, Namaz Akışı, Günün ayeti',
+    widgetEkleyinAciklama: 'Ana ekranda boş bir yere uzun basın, Widget’lar, Namaz Akışı, Günün ayeti',
+    widgetEkleyinAciklamaIos: 'Ana ekranda boş bir yere uzun basın, Düzenle, Widget ekle, Namaz Akışı',
     duvarBolum: 'Duvar kâğıdı',
     duvarAnahtar: 'Her gün değiştirin',
     duvarAcikOzet: 'Açık · her gün imsakta yenilenir',
@@ -46,9 +52,9 @@ export const gununAyeti = {
     kapatNotu: 'Kapatırsanız son görsel ekranda kalır; önceki duvar kâğıdınızı galeriden kendiniz seçersiniz.',
     kullanilamiyor: 'Kullanılamıyor',
     engelli: 'Bu cihazda duvar kâğıdını değiştirme izni kapalı (iş ya da okul yönetimi). Ayarı bu yüzden açamıyorsunuz.',
-    baskaHizmet:
-      'Telefonunuzda kilit ekranını değiştiren başka bir hizmet açık. Günün ayetinin kalması için telefon ayarlarındaki duvar kâğıdı hizmetini kapatın.',
     yazilamadi: 'Bugünün görseli yerleştirilemedi. Uygulamayı açtığınızda yeniden denenir.',
+    yerlestirildi: 'Duvar kâğıdı yerleştirildi',
+    onizlemeErisim: 'Bugünün duvar kâğıdı önizlemesi',
   },
   onay: {
     baslik: 'Duvar kâğıdınız değişecek',
@@ -60,13 +66,14 @@ export const gununAyeti = {
     aciklama:
       "iPhone'da uygulamalar duvar kâğıdını kendisi değiştiremez. Kısayollar uygulaması bunu her sabah sizin yerinize yapabilir; kurulumu bir kez yaparsınız.",
     ucAdim: 'Üç adım',
-    adim1: 'Hazır kısayolu ekleyin. "Günün ayeti görseli" ve "Duvar Kâğıdını Ayarla" adımlarını taşır.',
-    kisayoluEkleyin: 'Kısayolu ekleyin',
+    adim1:
+      'Kısayollar uygulamasında yeni bir kısayol oluşturun. Önce "Günün ayeti görseli" eylemini, ardından duvar kâğıdı fotoğrafını ayarlayan eylemi ekleyin ("Duvar kâğıdı" diye aratın).',
+    kisayollariAcin: "Kısayollar'ı açın",
     adim2: "Kısayollar'da Otomasyon sekmesinde yeni bir Günün Saati otomasyonu açın ve imsaktan sonraki bir saat seçin (örneğin 07:30).",
     adim3: "Hemen Çalıştır'ı seçin ve eklediğiniz kısayolu bağlayın.",
     elle: 'Ya da elle',
-    fotograflaraKaydedin: "Bugünün görselini Fotoğraflar'a kaydedin",
-    kaydedildi: "Görsel Fotoğraflar'a kaydedildi",
+    gorseliKaydedin: 'Bugünün görselini kaydedin',
+    kaydetIpucu: "Açılan paylaşım menüsünden görseli Fotoğraflar'a kaydedebilirsiniz.",
     not: 'Otomasyon seçtiğiniz sabit saatte çalışır, imsak saatini izleyemez; imsaktan önce çalışırsa dünün ayetini koyar.',
   },
 } as const;
