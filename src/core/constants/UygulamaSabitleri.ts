@@ -240,6 +240,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   // sorulan ülkeler). Yokluğu = Diyanet (eski kurulumlar). YEDEKLENİR (beyaz listenin
   // üç yeri). Etkin durum `core/vakit/aktifHesap.ts`; yükleme `HesapAyariServisi`.
   HESAP_AYARI: 'hesap_ayari',
+  // Arayüz dili (`core/dil`). Yokluğu = cihaz dili (seçilebilirse) ya da Türkçe. Etkin durum
+  // `core/dil/aktifDil.ts`; yükleme `DilServisi`. Seçici açılınca YEDEKLENECEK (beyaz listenin üç yeri).
+  DIL_AYARI: 'dil_ayari',
   // "Her farzla bir kaza" önerisi (issue #294) — ayar YEDEKLENİR (beyaz listenin
   // ÜÇ yerinde); sorulma hafızası cihaza özgü, tek günlük → yedeklemeye GİRMEZ.
   KAZA_ONERI_AYARLARI: 'kaza_oneri_ayarlari',

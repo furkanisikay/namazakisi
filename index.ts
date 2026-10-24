@@ -14,13 +14,13 @@ configureReanimatedLogger({
 
 import App from './App';
 
-// Hesap ayarı (yöntem/ikindi/dakika) HER JS bağlamında vakit hesabından ÖNCE yüklenir:
+// Hesap ayarı (yöntem/ikindi/dakika) ve arayüz dili HER JS bağlamında vakit/metin üretiminden ÖNCE yüklenir:
 // headless/arka plan bağlamında App.tsx hiç çalışmaz; beklenmezse vakitler Diyanet'le
 // hesaplanır (yurt dışı kullanıcıda yanlış saat). ASLA reddetmez. Kılınmışlık dinleyicisi kuran
 // servisler de (widget, camideyim, yatış, TV…) bu kapıdan sonra yüklenir: dinleyici vakit hesaplar.
 const hesapAyariHazir = (): Promise<void> =>
-    import('./src/domain/services/HesapAyariServisi')
-        .then(({ HesapAyariServisi }) => HesapAyariServisi.hazir())
+    import('./src/domain/services/baglamHazir')
+        .then(({ baglamHazir }) => baglamHazir())
         .catch(() => undefined);
 
 // notifee arka plan olay işleyicisi (Android sayaç için)

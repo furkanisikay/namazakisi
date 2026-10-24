@@ -35,7 +35,7 @@ import * as TaskManager from 'expo-task-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mesafeHesapla } from '../../core/utils/MesafeHesaplayici';
 import { Logger } from '../../core/utils/Logger';
-import { HesapAyariServisi } from './HesapAyariServisi';
+import { baglamHazir } from './baglamHazir';
 import { konumTazeMi, olayIslenebilirMi } from '../../core/utils/geofenceKararYardimcisi';
 import { konumDegistiUygula } from './KonumDegisikligiServisi';
 import { BILINMEYEN_SISTEM_DURUMU, konumDogrulugunuSinirla } from '../../core/sistem/sistemDurumu';
@@ -173,7 +173,7 @@ TaskManager.defineTask(KONUM_GEOFENCE_GOREVI, async ({ data, error }: TaskManage
         return;
     }
     // Yayma kararı ve planlar kullanıcının hesap ayarıyla hesaplansın.
-    await HesapAyariServisi.hazir();
+    await baglamHazir();
 
     try {
         // Mevcut konum ayarlarini al

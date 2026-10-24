@@ -42,7 +42,7 @@ import {
 } from './KonumTakipServisi';
 import { konumTazeMi } from '../../core/utils/geofenceKararYardimcisi';
 import { Logger } from '../../core/utils/Logger';
-import { HesapAyariServisi } from './HesapAyariServisi';
+import { baglamHazir } from './baglamHazir';
 
 // Görev adı sabiti
 export const BILDIRIM_YENILEME_GOREVI = 'BILDIRIM_YENILEME_GOREVI';
@@ -321,7 +321,7 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
     // (atla kapısı kurulumun sağlamlığını ölçer).
     const bekleyenOkuyucu = turIciPlanliBildirimOkuyucu();
     // Vakitler kullanıcının hesap ayarıyla hesaplansın (bu bağlamda App.tsx çalışmaz).
-    await HesapAyariServisi.hazir();
+    await baglamHazir();
 
     try {
         // =====================================================

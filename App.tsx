@@ -44,8 +44,9 @@ import { nafileAyarlariniYukle } from './src/presentation/store/nafileSlice';
 import { hatirlatmaRizalariniYukle } from './src/presentation/store/hatirlatmaRizaSlice';
 import { NafileHatirlatmaServisi } from './src/domain/services/NafileHatirlatmaServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
-import { HesapAyariServisi } from './src/domain/services/HesapAyariServisi';
+import { baglamHazir } from './src/domain/services/baglamHazir';
 import { hesapAyariniYukle } from './src/presentation/store/hesapSlice';
+import { diliYukle } from './src/presentation/store/dilSlice';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from './src/core/utils/vakitSayacYardimcisi';
@@ -180,9 +181,10 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     const kurulumOkumasi = AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI);
     kurulumOkumasi.catch(() => undefined);
 
-    // 0. Hesap ayarı (yöntem/ikindi) vakit hesaplayan her şeyden ÖNCE.
-    await HesapAyariServisi.hazir();
+    // 0. Hesap ayarı (yöntem/ikindi) ve arayüz dili vakit/metin üreten her şeyden ÖNCE.
+    await baglamHazir();
     store.dispatch(hesapAyariniYukle());
+    store.dispatch(diliYukle());
 
     // 1. Konum en basta yuklenmeli (muhafiz, vakit sayaci ve iftar sayaci konuma bagimli)
     await store.dispatch(konumAyarlariniYukle()).unwrap();
