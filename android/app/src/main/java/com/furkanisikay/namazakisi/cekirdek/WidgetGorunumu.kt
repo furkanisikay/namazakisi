@@ -30,8 +30,13 @@ object WidgetDuzenSecici {
     }
 }
 
+/**
+ * [PALET] yalnız günün ayeti widget'ında seçilir (yapılandırma ekranı yalnız orada gösterir):
+ * uygulama palet renginin açık tonu (`DuvarKagidiKurallari.acikTon`). Namaz widget'ları bu
+ * değeri görürse açık palete düşer.
+ */
 enum class WidgetZemini(val kod: String) {
-    MATERIAL("material"), ACIK("acik"), KOYU("koyu"), SEFFAF("seffaf");
+    MATERIAL("material"), ACIK("acik"), KOYU("koyu"), SEFFAF("seffaf"), PALET("palet");
 
     companion object {
         fun coz(kod: String?): WidgetZemini = values().firstOrNull { it.kod == kod } ?: MATERIAL
