@@ -22,10 +22,3 @@ appId: com.furkanisikay.namazakisi
     timeout: 60000
     waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/53-hesap-yontemi-ikindi
-- scrollUntilVisible:
-    element:
-      text: "Yatsı düzeltmesi.*"
-    direction: DOWN
-    timeout: 60000
-    waitToSettleTimeoutMs: 1500
-- takeScreenshot: ozk/54-hesap-yontemi-dakika

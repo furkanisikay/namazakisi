@@ -25,6 +25,9 @@ appId: com.furkanisikay.namazakisi
     timeout: 3000
 - takeScreenshot: ozk/55-konum-dunya
 - tapOn: "Şehir seçin"
+- extendedWaitUntil:
+    visible: "Ülke ya da şehir arayın"
+    timeout: 10000
 # Ulke listesi 34 bin sehirlik varlik okununca gelir ("Sehir listesi aciliyor" gider).
 - extendedWaitUntil:
     notVisible: "Şehir listesi açılıyor"
