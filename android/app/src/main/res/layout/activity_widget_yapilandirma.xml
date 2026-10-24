@@ -57,6 +57,15 @@
                 android:layout_height="wrap_content"
                 android:minHeight="48dp"
                 android:text="@string/widget_ayar_zemin_seffaf" />
+
+            <!-- Yalnız günün ayeti widget'ında görünür (palet renginin açık tonu). -->
+            <RadioButton
+                android:id="@+id/ayar_zemin_palet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/widget_ayar_zemin_palet"
+                android:visibility="gone" />
         </RadioGroup>
 
         <TextView
@@ -74,7 +83,40 @@
             android:layout_height="48dp"
             android:max="80" />
 
+        <!-- Günün ayeti widget'ı: kare (2×2) boyutta meal ya da yalnız Arapça (hat). Vakit
+             seçenekleri (aşağıdaki gösterim ve sıradaki vakit) o widget'ta gizlenir. -->
         <TextView
+            android:id="@+id/ayar_ayet_icerik_baslik"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/widget_ayar_ayet_icerik"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="gone" />
+
+        <RadioGroup
+            android:id="@+id/ayar_ayet_icerik"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <RadioButton
+                android:id="@+id/ayar_ayet_icerik_meal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/widget_ayar_ayet_icerik_meal" />
+
+            <RadioButton
+                android:id="@+id/ayar_ayet_icerik_hat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="@string/widget_ayar_ayet_icerik_hat" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/ayar_gosterim_baslik"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -102,6 +144,7 @@
         </RadioGroup>
 
         <TextView
+            android:id="@+id/ayar_gosterim_not"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/widget_ayar_gosterim_not"

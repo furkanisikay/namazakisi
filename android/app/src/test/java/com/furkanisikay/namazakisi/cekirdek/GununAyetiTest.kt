@@ -54,7 +54,7 @@ class GununAyetiTest {
         assertEquals(DuvarZemini.PALET, d.zemin)
         assertFalse(d.arapca)
         assertEquals(0xFF2E7D32.toInt(), d.paletRenk)
-        // İkisi: önce ana ekran, sonra kilit (ana ekranı yazmak ortak kilit görselini de değiştirir).
+        // İkisi: önce ana ekran, sonra kilit — son yazılan kilit görseli kendi görseli olarak kalır.
         assertEquals(listOf(DuvarEkrani.ANA, DuvarEkrani.KILIT), d.ekranlar())
     }
 
@@ -294,9 +294,15 @@ class GununAyetiTest {
 
     @Test
     fun paletAcikTonuKoyuMetinleOkunur() {
-        for (palet in listOf(0xFF2E7D32.toInt(), 0xFF0D47A1.toInt(), 0xFFB71C1C.toInt(), 0xFF000000.toInt())) {
+        val paletler = listOf(0xFF2E7D32, 0xFF0D47A1, 0xFFB71C1C, 0xFF000000, 0xFFFFEB3B, 0xFFFFFFFF).map { it.toInt() }
+        for (palet in paletler) {
+            val ad = Integer.toHexString(palet)
             val ton = DuvarKagidiKurallari.acikTon(palet)
-            assertTrue(DuvarKagidiKurallari.kontrastOrani(0xFF1B2B22.toInt(), ton) >= 7.0)
+            assertTrue(ad, DuvarKagidiKurallari.kontrastOrani(0xFF1B2B22.toInt(), ton) >= 7.0)
+            val w = DuvarKagidiKurallari.widgetPaleti(palet)
+            assertEquals(ad, ton, w.zemin)
+            assertTrue(ad, DuvarKagidiKurallari.kontrastOrani(w.ikincil, w.zemin) >= 4.5)
+            assertTrue(ad, DuvarKagidiKurallari.kontrastOrani(w.vurgu, w.zemin) >= 4.5)
         }
     }
 

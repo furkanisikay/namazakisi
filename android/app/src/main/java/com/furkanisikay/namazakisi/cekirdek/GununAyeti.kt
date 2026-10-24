@@ -59,7 +59,7 @@ data class DuvarAyari(
     /** ARGB. */
     val paletRenk: Int = VARSAYILAN_PALET,
 ) {
-    /** Bu ayarla çizilecek görseller (sırası önemli: önce ana ekran, sonra kilit — bkz. uygulayıcı). */
+    /** Bu ayarla çizilecek görseller (sıra: önce ana ekran, kilit EN SON — bkz. `DuvarKagidiUygulayici`). */
     fun ekranlar(): List<DuvarEkrani> = when (yer) {
         DuvarYeri.KILIT -> listOf(DuvarEkrani.KILIT)
         DuvarYeri.ANA -> listOf(DuvarEkrani.ANA)
@@ -333,6 +333,9 @@ data class DuvarRenkleri(
     val susOpakligi: Float,
 )
 
+/** Ayet widget'ının palet zemini renkleri (ARGB, çalışma anında hesaplanır). */
+data class WidgetPaletRenkleri(val zemin: Int, val metin: Int, val ikincil: Int, val vurgu: Int)
+
 object DuvarKagidiKurallari {
     /** Tasarım tuvali 412 px genişlikte çizildi; ölçüler bu genişliğe göre ölçeklenir. */
     const val TASARIM_GENISLIGI = 412f
@@ -403,6 +406,19 @@ object DuvarKagidiKurallari {
 
     /** Widget'ın palet zemini: palet renginin AÇIK tonu (beyazla %78 karışım; koyu metin okunur). */
     fun acikTon(renk: Int): Int = karistir(renk or 0xFF000000.toInt(), 0xFFFFFFFF.toInt(), 0.78f)
+
+    /**
+     * Ayet widget'ının "palet" zemini (tasarım: açık ton, koyu metin). Vurgu (başlık) palet
+     * renginin koyu tonudur; 11 sp başlıkta 4.5:1'i tutmazsa metin rengi kullanılır.
+     */
+    fun widgetPaleti(palet: Int): WidgetPaletRenkleri {
+        val zemin = acikTon(palet)
+        val metin = 0xFF1B2B22.toInt()
+        val ikincil = 0xFF33463A.toInt()
+        val koyuTon = karistir(palet or 0xFF000000.toInt(), 0xFF000000.toInt(), 0.45f)
+        val vurgu = if (kontrastOrani(koyuTon, zemin) >= 4.5) koyuTon else metin
+        return WidgetPaletRenkleri(zemin, metin, ikincil, vurgu)
+    }
 
     /** a'dan b'ye [oran] kadar doğrusal karışım (0 = a, 1 = b); alfa opak. */
     fun karistir(a: Int, b: Int, oran: Float): Int {

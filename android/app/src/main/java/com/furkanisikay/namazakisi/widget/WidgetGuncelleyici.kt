@@ -75,9 +75,10 @@ object WidgetGuncelleyici {
         NamazKlasikGenisWidget::class.java,
     )
 
-    private data class Palet(val zemin: Int, val metin: Int, val ikincil: Int, val vurgu: Int, val vurguUstu: Int)
+    /** Renk KAYNAK kimlikleri (API 31+'da başlatıcı çözer). Günün ayeti widget'ı da kullanır. */
+    internal data class Palet(val zemin: Int, val metin: Int, val ikincil: Int, val vurgu: Int, val vurguUstu: Int)
 
-    private val PALETLER = mapOf(
+    internal val PALETLER = mapOf(
         WidgetZemini.MATERIAL to Palet(
             R.color.widget_my_zemin, R.color.widget_my_metin, R.color.widget_my_ikincil,
             R.color.widget_my_vurgu, R.color.widget_my_vurgu_ustu,
@@ -94,6 +95,12 @@ object WidgetGuncelleyici {
         WidgetZemini.SEFFAF to Palet(
             R.color.widget_koyu_zemin, R.color.widget_koyu_metin, R.color.widget_koyu_ikincil,
             R.color.widget_koyu_vurgu, R.color.widget_koyu_vurgu_ustu,
+        ),
+        // Palet yalnız günün ayeti widget'ında seçilir (renk orada çalışma anında hesaplanır);
+        // namaz widget'ı bu değeri görürse açık palete düşer.
+        WidgetZemini.PALET to Palet(
+            R.color.widget_acik_zemin, R.color.widget_acik_metin, R.color.widget_acik_ikincil,
+            R.color.widget_acik_vurgu, R.color.widget_acik_vurgu_ustu,
         ),
     )
 

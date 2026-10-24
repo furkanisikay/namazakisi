@@ -32,6 +32,9 @@
   <!-- Android Auto POI şablonu (PlaceListMapTemplate) için Car App Library izni. Normal
        izindir, kullanıcıya sorulmaz; host dışında kimse kullanmaz (arac/NamazAracServisi). -->
   <uses-permission android:name="androidx.car.app.MAP_TEMPLATES"/>
+  <!-- Günün ayeti duvar kâğıdı (#381): WallpaperManager.setBitmap. Normal izindir, kurulumda
+       sorulmaz; yalnız kullanıcı "Her gün değiştirin"i açınca kullanılır. -->
+  <uses-permission android:name="android.permission.SET_WALLPAPER"/>
 
   <!-- Kütüphaneler merge sırasında bu izinleri geri ekleyebilir; aşağıdakiler bunu engeller -->
   <uses-permission android:name="android.permission.RECORD_AUDIO"
@@ -161,6 +164,23 @@
           android:name="android.appwidget.provider"
           android:resource="@xml/widget_klasik_genis_bilgisi" />
     </receiver>
+
+    <!-- Günün ayeti widget'ı (#380): AYRI sağlayıcı ve AYRI çizici/alarm (GununAyetiGuncelleyici);
+         namaz widget'larının sağlayıcı listesine girmez. -->
+    <receiver
+        android:name=".widget.GununAyetiWidget"
+        android:label="@string/widget_ayet_adi"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+          android:name="android.appwidget.provider"
+          android:resource="@xml/gunun_ayeti_widget_info" />
+    </receiver>
+    <!-- Günün ayeti sınır alarmı (planın bir sonraki imsakı) ve NamazWidgetAlarmAlici'nin
+         ilettiği sistem olayları; duvar kâğıdı burada goAsync ile yazılır. Yalnız açık niyet. -->
+    <receiver android:name=".widget.GununAyetiAlarmAlici" android:exported="false"/>
 
     <!-- Widget yeniden hesaplama alıcısı (issue #275): vakit sınırı alarmı (dakikalık alarm
          YOK), açılış, güncelleme, saat / saat dilimi / tarih değişimi. -->
