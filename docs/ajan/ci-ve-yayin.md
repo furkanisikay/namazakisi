@@ -2,6 +2,9 @@
 
 Ne zaman okunur: `.github/workflows` düzenlerken, PR birleştirirken/release beklerken, EAS/Play gönderimi ya da dependabot PR'ı ile uğraşırken; Jules ortamını kurarken.
 
+## Ağır iş GitHub Actions'ta (sahip tercihi 2026-10-24)
+- **Native derleme, Kotlin/Swift testleri ve ekran görüntüsü turları yalnız CI'da koşar:** `android-build.yml` (uygulama + modüller + JVM testleri), `wear-build.yml`, `tv-build.yml`, `ios-siri-derleme.yml` (simülatör + swiftc testleri), `android-ekran-goruntuleri.yml` / `ios-ekran-goruntuleri.yml`. Ajan ortamında Gradle/Kotlin/Swift araç zinciri kurmaya uğraşma; dala push'la ve iş akışını `--ref <dal>` ile çalıştır. Yerelde yalnız `npm run verify`.
+
 ## Hat yapısı
 - **APK = Gradle (`android-build.yml`), AAB = EAS (`expo-build.yml`; EAS derleyemezse aynı işte GitHub/Gradle yedeği) → Play Store internal track.** `android-build.yml` reusable'dır, `ci.yml`'in `auto-release` job'undan çağrılır.
 - **GitHub release APK'sı yalnız ARM ABI'leri taşır** (`assembleRelease ... -PreactNativeArchitectures=armeabi-v7a,arm64-v8a`, D-04). `gradle.properties` dört ABI'de kalır: debug APK ve emülatör kare hatları x86_64 ister, AAB'yi Play böler. ABI'yi `gradle.properties`'ten daraltma.
