@@ -14,12 +14,17 @@ export const samimiyet: Sozluk['samimiyet'] = {
   tamGunAna: 'May Allah accept it',
   tamGunAlt: 'You completed all five prayers today.',
   kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kandilGeceleri: {
+    regaib: 'Blessed night of Raghaib',
+    mirac: "Blessed Isra and Mi'raj",
+    berat: "Blessed night of Bara'ah",
+    mevlid: 'Blessed Mawlid',
+  },
   selamlar: {
     sahur: 'Blessed suhoor',
     bayram: 'Eid Mubarak',
     iftar: 'Blessed iftar',
     kadir: 'Blessed Laylat al-Qadr',
-    kandil: 'Blessed holy night',
     arefe: 'Blessed eve of Eid',
     hicriYilbasi: 'Blessed Islamic New Year',
     cuma: "Jumu'ah Mubarak",

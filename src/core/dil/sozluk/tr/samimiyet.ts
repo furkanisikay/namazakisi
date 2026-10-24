@@ -13,12 +13,18 @@ export const samimiyet = {
   tamGunAna: 'Allah kabul etsin',
   tamGunAlt: 'Bugün beş vakti tamamladınız.',
   kazaKabul: 'Bir {vakit} kazası defterinizden düşüldü. {dua}.',
+  /** Gece başına kandil selamı (Türkçe gelenekte dördü aynı söylenir). */
+  kandilGeceleri: {
+    regaib: 'Kandiliniz mübarek olsun',
+    mirac: 'Kandiliniz mübarek olsun',
+    berat: 'Kandiliniz mübarek olsun',
+    mevlid: 'Kandiliniz mübarek olsun',
+  },
   selamlar: {
     sahur: 'Hayırlı sahurlar',
     bayram: 'Bayramınız mübarek olsun',
     iftar: 'Hayırlı iftarlar',
     kadir: 'Kadir Geceniz mübarek olsun',
-    kandil: 'Kandiliniz mübarek olsun',
     arefe: 'Hayırlı arefeler',
     hicriYilbasi: 'Hicri yılbaşınız mübarek olsun',
     cuma: 'Hayırlı cumalar',

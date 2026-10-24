@@ -11,7 +11,7 @@ import {
     kazaKabulMetni,
 } from '../kabulDuasi';
 import { OZEL_GUNLER, RAMAZAN_ARALIKLARI, TABLO_SON_GUNU, ozelGunBul, ramazanGunuMu } from '../ozelGunler';
-import { SELAMLAR, gunSelami } from '../selam';
+import { KANDIL_SELAMLARI, SELAMLAR, gunSelami } from '../selam';
 import { aktifDiliKur, aktifDilSifirla } from '../../dil/aktifDil';
 
 const FARZLAR = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] as const;
@@ -115,7 +115,7 @@ describe('gunSelami — öncelik', () => {
     });
 
     it('kandil ve Kadir Gecesi', () => {
-        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam' })).toBe(SELAMLAR.kandil);
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam' })).toBe(KANDIL_SELAMLARI.regaib);
         expect(gunSelami({ tarihIso: '2027-03-05', vakit: 'ogle' })).toBe(SELAMLAR.kadir);
     });
 
@@ -187,10 +187,24 @@ describe('İngilizce — her dil kendi geleneksel kalıbı', () => {
     it('kandil selamı ÜLKEYE göre (sahip kararı): Bosna ve Özbekistan evet, Körfez ve Pakistan hayır; ülke yoksa dil kuralı', () => {
         // 2026-12-10 Regaib (perşembe, akşam)
         expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam' })).toBeNull();
-        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'BA' })).toBe('Blessed holy night');
-        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'UZ' })).toBe('Blessed holy night');
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'BA' })).toBe('Blessed night of Raghaib');
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'UZ' })).toBe('Blessed night of Raghaib');
         expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'SA' })).toBeNull();
         expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'PK' })).toBeNull();
+    });
+
+    it('kandil GECE başına (sahip kararı): Mevlid resmî tatil olan ülkelerde de, Regaib yalnız Osmanlı mirasında', () => {
+        // 2026-08-24 Mevlid (pazartesi), 2026-01-15 Miraç, 2026-02-02 Berat
+        for (const ulke of ['ID', 'MY', 'PK', 'BD', 'EG', 'TR', 'BA']) {
+            expect(gunSelami({ tarihIso: '2026-08-24', vakit: 'aksam', ulkeKodu: ulke })).toBe('Blessed Mawlid');
+        }
+        expect(gunSelami({ tarihIso: '2026-08-24', vakit: 'aksam', ulkeKodu: 'SA' })).toBeNull();
+        expect(gunSelami({ tarihIso: '2026-08-24', vakit: 'aksam', ulkeKodu: 'AE' })).toBeNull();
+        expect(gunSelami({ tarihIso: '2026-01-15', vakit: 'aksam', ulkeKodu: 'ID' })).toBe("Blessed Isra and Mi'raj");
+        expect(gunSelami({ tarihIso: '2026-01-15', vakit: 'aksam', ulkeKodu: 'PK' })).toBeNull();
+        expect(gunSelami({ tarihIso: '2026-02-02', vakit: 'aksam', ulkeKodu: 'BD' })).toBe("Blessed night of Bara'ah");
+        expect(gunSelami({ tarihIso: '2026-02-02', vakit: 'aksam', ulkeKodu: 'ID' })).toBeNull();
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'ID' })).toBeNull();
     });
 
     it('cuma ve Kadir her ülkede söylenir', () => {
@@ -217,7 +231,7 @@ describe('İngilizce — her dil kendi geleneksel kalıbı', () => {
 
 describe('Türkçe: ülke kuralı', () => {
     it('Türkçe arayüzde de Körfez ülkesinde kandil selamı yok, Türkiye\'de var', () => {
-        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'TR' })).toBe(SELAMLAR.kandil);
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'TR' })).toBe(KANDIL_SELAMLARI.regaib);
         expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'AE' })).toBeNull();
     });
 });

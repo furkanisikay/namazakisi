@@ -19,7 +19,7 @@
 import { aktifDil, canli } from '../dil/aktifDil';
 import type { DilKodu } from '../dil/diller';
 import type { Sozluk } from '../dil/sozluk/tr';
-import { ozelGunBul, ramazanGunuMu } from './ozelGunler';
+import { ozelGunBul, ramazanGunuMu, type KandilGecesi } from './ozelGunler';
 import { bilinenVakitSirasi } from './kabulDuasi';
 
 export interface SelamGirdisi {
@@ -42,23 +42,40 @@ function haftaGunu(tarihIso: string): number {
 
 export const SELAMLAR: Readonly<Sozluk['samimiyet']['selamlar']> = canli((s) => s.samimiyet.selamlar);
 
+/** Gece başına kandil selamı (Türkçede dördü de "Kandiliniz mübarek olsun"). */
+export const KANDIL_SELAMLARI: Readonly<Sozluk['samimiyet']['kandilGeceleri']> = canli((s) => s.samimiyet.kandilGeceleri);
+
 /**
- * Kandil ve hicrî yılbaşı selamı Osmanlı mirası geleneğidir. SAHİP KARARI (2026-10-24): ÜLKEYE
- * göre — Türkiye, Kıbrıs, Balkanlar ve Orta Asya/Kafkasya'da söylenir; Körfez, Güney Asya ve
- * Batı'da bu geceleri kutlamak tartışmalıdır, kullanıcıyı kırabilir (aşure kararıyla aynı
- * gerekçe) → orada o gün yalnız genel selamlar (cuma, Ramazan) kalır. Ülke bilinmiyorsa dil
- * kuralı: yalnız Türkçede.
+ * Kandil ve hicrî yılbaşı selamı ÜLKEYE göredir (sahip kararı 2026-10-24); kandilde GECE başına
+ * (sahip kararı 2026-10-24, ikinci karar). Ölçüt: gece o ülkede resmî tatil ya da resmî din
+ * kurumunun takviminde. Osmanlı mirası ülkeler (Türkiye, Kıbrıs, Balkanlar, Kafkasya ve Orta
+ * Asya) dört geceyi de anar; Mevlid Endonezya, Malezya, Pakistan, Bangladeş ve Mısır'da devlet
+ * tatili, Miraç Endonezya'da (Malezya'da eyalet tatili), Berat Bangladeş'te. Körfez'de kapalı
+ * (kutlama bid'at sayılır). Kaynaklar: `docs/ajan/ana-ekran-ve-ayarlar.md > Samimiyet`.
+ * Ülke bilinmiyorsa dil kuralı: yalnız Türkçede.
  */
-const GELENEK_SELAMI_ULKELERI: ReadonlySet<string> = new Set([
+const OSMANLI_MIRASI: readonly string[] = [
     'TR', 'CY', // Türkiye, Kıbrıs
     'BA', 'AL', 'XK', 'MK', 'BG', 'RS', 'ME', 'GR', 'RO', // Balkanlar
     'AZ', 'KZ', 'KG', 'UZ', 'TM', 'TJ', // Kafkasya ve Orta Asya
-]);
+];
+const KANDIL_ULKELERI: Readonly<Record<KandilGecesi, ReadonlySet<string>>> = {
+    regaib: new Set(OSMANLI_MIRASI),
+    mirac: new Set([...OSMANLI_MIRASI, 'ID', 'MY']),
+    berat: new Set([...OSMANLI_MIRASI, 'BD']),
+    mevlid: new Set([...OSMANLI_MIRASI, 'ID', 'MY', 'PK', 'BD', 'EG']),
+};
+const GELENEK_SELAMI_ULKELERI: ReadonlySet<string> = new Set(OSMANLI_MIRASI);
 const GELENEK_SELAMI_DILLERI: readonly DilKodu[] = ['tr'];
 
-/** Bu kullanıcıya kandil/hicrî yılbaşı selamı söylenir mi? */
+/** Bu kullanıcıya hicrî yılbaşı selamı söylenir mi? (Kandil için `kandilSelamiSoylenir`.) */
 export function gelenekSelamiSoylenir(ulkeKodu?: string | null): boolean {
     return ulkeKodu ? GELENEK_SELAMI_ULKELERI.has(ulkeKodu) : GELENEK_SELAMI_DILLERI.includes(aktifDil());
+}
+
+/** Bu kullanıcıya bu kandil gecesinin selamı söylenir mi? */
+export function kandilSelamiSoylenir(gece: KandilGecesi, ulkeKodu?: string | null): boolean {
+    return ulkeKodu ? KANDIL_ULKELERI[gece].has(ulkeKodu) : GELENEK_SELAMI_DILLERI.includes(aktifDil());
 }
 
 export function gunSelami({ tarihIso, takvimGunuIso, vakit, ulkeKodu }: SelamGirdisi): string | null {
@@ -74,10 +91,11 @@ export function gunSelami({ tarihIso, takvimGunuIso, vakit, ulkeKodu }: SelamGir
     if (ramazan && sira === 3) return SELAMLAR.iftar;
 
     if (ozel?.tur === 'kadir') return SELAMLAR.kadir;
-    const gelenek = gelenekSelamiSoylenir(ulkeKodu);
-    if (ozel?.tur === 'kandil' && gelenek) return SELAMLAR.kandil;
+    if (ozel?.tur === 'kandil' && ozel.gece && kandilSelamiSoylenir(ozel.gece, ulkeKodu)) {
+        return KANDIL_SELAMLARI[ozel.gece];
+    }
     if (ozel?.tur === 'arefe') return SELAMLAR.arefe;
-    if (ozel?.tur === 'hicriYilbasi' && gelenek) return SELAMLAR.hicriYilbasi;
+    if (ozel?.tur === 'hicriYilbasi' && gelenekSelamiSoylenir(ulkeKodu)) return SELAMLAR.hicriYilbasi;
 
     if (haftaGunu(tarihIso) === 5) return SELAMLAR.cuma;
     if (ramazan) return SELAMLAR.ramazan;

@@ -30,9 +30,14 @@ export type OzelGunTuru =
     | 'kadir'
     | 'hicriYilbasi';
 
+/** Kandil gecesinin kimliği (ülke kuralı ve selam metni buna göre). */
+export type KandilGecesi = 'regaib' | 'mirac' | 'berat' | 'mevlid';
+
 export interface OzelGun {
     tarih: string; // YYYY-MM-DD
     tur: OzelGunTuru;
+    /** Yalnız `tur: 'kandil'` için. */
+    gece?: KandilGecesi;
     /** Görünen ad ("Regaib Kandili") — ekran okuyucu ve test için. */
     ad: string;
 }
@@ -50,8 +55,8 @@ export const RAMAZAN_ARALIKLARI: readonly RamazanAraligi[] = [
 
 export const OZEL_GUNLER: readonly OzelGun[] = [
     // ── 2026 (resmî liste) ──
-    { tarih: '2026-01-15', tur: 'kandil', ad: 'Miraç Kandili' },
-    { tarih: '2026-02-02', tur: 'kandil', ad: 'Berat Kandili' },
+    { tarih: '2026-01-15', tur: 'kandil', ad: 'Miraç Kandili', gece: 'mirac' },
+    { tarih: '2026-02-02', tur: 'kandil', ad: 'Berat Kandili', gece: 'berat' },
     { tarih: '2026-03-16', tur: 'kadir', ad: 'Kadir Gecesi' },
     { tarih: '2026-03-19', tur: 'arefe', ad: 'Ramazan Bayramı Arefesi' },
     { tarih: '2026-03-20', tur: 'ramazanBayrami', ad: 'Ramazan Bayramı 1. Gün' },
@@ -63,11 +68,11 @@ export const OZEL_GUNLER: readonly OzelGun[] = [
     { tarih: '2026-05-29', tur: 'kurbanBayrami', ad: 'Kurban Bayramı 3. Gün' },
     { tarih: '2026-05-30', tur: 'kurbanBayrami', ad: 'Kurban Bayramı 4. Gün' },
     { tarih: '2026-06-16', tur: 'hicriYilbasi', ad: 'Hicrî Yılbaşı' },
-    { tarih: '2026-08-24', tur: 'kandil', ad: 'Mevlid Kandili' },
-    { tarih: '2026-12-10', tur: 'kandil', ad: 'Regaib Kandili' },
+    { tarih: '2026-08-24', tur: 'kandil', ad: 'Mevlid Kandili', gece: 'mevlid' },
+    { tarih: '2026-12-10', tur: 'kandil', ad: 'Regaib Kandili', gece: 'regaib' },
     // ── 2027 (Diyanet duyurusu) ──
-    { tarih: '2027-01-04', tur: 'kandil', ad: 'Miraç Kandili' },
-    { tarih: '2027-01-22', tur: 'kandil', ad: 'Berat Kandili' },
+    { tarih: '2027-01-04', tur: 'kandil', ad: 'Miraç Kandili', gece: 'mirac' },
+    { tarih: '2027-01-22', tur: 'kandil', ad: 'Berat Kandili', gece: 'berat' },
     { tarih: '2027-03-05', tur: 'kadir', ad: 'Kadir Gecesi' },
     { tarih: '2027-03-08', tur: 'arefe', ad: 'Ramazan Bayramı Arefesi' },
     { tarih: '2027-03-09', tur: 'ramazanBayrami', ad: 'Ramazan Bayramı 1. Gün' },
@@ -79,9 +84,9 @@ export const OZEL_GUNLER: readonly OzelGun[] = [
     { tarih: '2027-05-18', tur: 'kurbanBayrami', ad: 'Kurban Bayramı 3. Gün' },
     { tarih: '2027-05-19', tur: 'kurbanBayrami', ad: 'Kurban Bayramı 4. Gün' },
     { tarih: '2027-06-06', tur: 'hicriYilbasi', ad: 'Hicrî Yılbaşı' },
-    { tarih: '2027-08-13', tur: 'kandil', ad: 'Mevlid Kandili' },
-    { tarih: '2027-12-02', tur: 'kandil', ad: 'Regaib Kandili' },
-    { tarih: '2027-12-24', tur: 'kandil', ad: 'Miraç Kandili' },
+    { tarih: '2027-08-13', tur: 'kandil', ad: 'Mevlid Kandili', gece: 'mevlid' },
+    { tarih: '2027-12-02', tur: 'kandil', ad: 'Regaib Kandili', gece: 'regaib' },
+    { tarih: '2027-12-24', tur: 'kandil', ad: 'Miraç Kandili', gece: 'mirac' },
 ];
 
 /** Tablonun kapsadığı son gün (sonrası bilinmiyor → özel gün selamı yok). */
