@@ -19,5 +19,16 @@ import { bildirim } from './bildirim';
 import { nafile } from './nafile';
 import { sayac } from './sayac';
 import { nowBar } from './nowBar';
+import { ilerleme } from './ilerleme';
+import { muhafizAyar } from './muhafizAyar';
+import { takvim } from './takvim';
+import { ayarlar } from './ayarlar';
+import { konum } from './konum';
+import { genel } from './genel';
+import { cami } from './cami';
+import { yedekleme } from './yedekleme';
+import { cihaz } from './cihaz';
+import { kible } from './kible';
+import { saat } from './saat';
 
-export const en: Sozluk = { ortak, vakit, tarih, sure, anaEkran, hesap, seferilik, kaza, seri, sade, muhafiz, icerik, otomasyon, bildirim, nafile, sayac, nowBar, kurulum, hatirlatma, samimiyet };
+export const en: Sozluk = { ortak, vakit, tarih, sure, anaEkran, hesap, seferilik, kaza, seri, sade, muhafiz, icerik, otomasyon, bildirim, nafile, sayac, nowBar, ilerleme, muhafizAyar, takvim, ayarlar, konum, genel, cami, yedekleme, cihaz, kible, saat, kurulum, hatirlatma, samimiyet };

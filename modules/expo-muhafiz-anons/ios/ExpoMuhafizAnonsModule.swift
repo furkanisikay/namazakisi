@@ -61,8 +61,22 @@ public class ExpoMuhafizAnonsModule: Module {
     /// dosyaya yazim gercek zamandan cok hizlidir, 20 sn cok comert bir tavandir.
     private static let sentezZamanAsimi: TimeInterval = 20
 
+    /// Anons dili tercihi (BCP-47, ör. "tr-TR"/"en-US"); JS etkin dil değişince yazar.
+    private static let dilAnahtari = "namazakisi_anons_dil"
+
+    /// Kayıtlı anons dilinin dil öneki ("tr", "en"); yazılmadıysa Türkçe (eski sürümle aynı).
+    private static func dilOneki() -> String {
+        let dil = UserDefaults.standard.string(forKey: dilAnahtari) ?? "tr-TR"
+        return String(dil.split(separator: "-").first ?? "tr")
+    }
+
     public func definition() -> ModuleDefinition {
         Name("ExpoMuhafizAnons")
+
+        /** Anons dilini kaydeder; ses seçimi (sentez, önizleme) bundan sonra bu dildedir. */
+        Function("anonsDiliniAyarla") { (dil: String) -> Void in
+            UserDefaults.standard.set(dil, forKey: Self.dilAnahtari)
+        }
 
         /**
          * Cihazda kullanilabilir Turkce sesin tanimlayicisi; yoksa nil.
@@ -278,14 +292,16 @@ public class ExpoMuhafizAnonsModule: Module {
     // MARK: - Yardimcilar
 
     /**
-     * Cihazdaki Turkce sesi bul.
+     * Cihazdaki anons dilinin (kayıtlı tercih; varsayılan Türkçe) sesini bul. Ad geriye
+     * uyumluluk için "turkce" kalır.
      *
      * Birden cok varsa GELISMIS (enhanced/premium) olani yegle: kullanici onu
      * indirdiyse duymak istedigi odur.
      */
     private static func turkceSesBul() -> AVSpeechSynthesisVoice? {
+        let onek = dilOneki()
         let turkceler = AVSpeechSynthesisVoice.speechVoices().filter {
-            $0.language.hasPrefix("tr")
+            $0.language.hasPrefix(onek)
         }
         if turkceler.isEmpty { return nil }
 

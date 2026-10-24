@@ -70,7 +70,17 @@ export interface YeniOzellik {
     detaylar?: string[];
     /** Verilirse duyuru yalnız bu yetenek varken görünür (ör. iPhone widget'ı). */
     yetenek?: YeniOzellikYetenegi;
+    /**
+     * Diğer dillerdeki metin. Türkçe dışında YALNIZ çevirisi olan öğe gösterilir
+     * (`core/constants/yeniOzellikDili.ts`): eski duyurular yeni dilin kullanıcısına
+     * anlamsızdır, yarım çeviri gösterilmez. Metin o dilin kullanıcısı için DOĞRU olmalı
+     * (ör. yalnız Türkiye'de çalışan bir yol çeviride anlatılmaz).
+     */
+    ceviri?: Partial<Record<'en', YeniOzellikCevirisi>>;
 }
+
+/** Bir duyurunun çevrilen alanları. */
+export type YeniOzellikCevirisi = Pick<YeniOzellik, 'baslik' | 'aciklama' | 'detayAciklama' | 'ctaEtiketi' | 'detaylar'>;
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Dünya geneli konum + ülkeye göre hesap yöntemi (spec 2026-10-24).
@@ -93,6 +103,20 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Ana ekrandaki yöntem çipine dokunarak hangi takvimin kullanıldığını görebilir, isterseniz ikindi vaktini ve her vakti dakika dakika camiye göre ayarlayabilirsiniz.',
             'Türkiye\'deki vakitler Diyanet takvimiyle aynı kalır.',
         ],
+        ceviri: {
+            en: {
+                baslik: 'Accurate prayer times anywhere in the world',
+                aciklama: 'Choose any city in the world. Prayer times follow the timetable the mosques in that country use.',
+                detayAciklama:
+                    "When you travel to another country, the app suggests that country's timetable once and shows today's times side by side. The method never changes without your approval.",
+                ctaEtiketi: 'See the calculation method',
+                detaylar: [
+                    'In Location, choose "Another country" and search more than 34,000 cities; no internet needed.',
+                    'In Malaysia, Indonesia, Saudi Arabia, Egypt, Pakistan and many other countries, the timetable of the local mosques is used.',
+                    'Tap the method chip on the home screen to see which timetable is used, and adjust Asr and each prayer time minute by minute to match your mosque.',
+                ],
+            },
+        },
     },
     // Samimiyet: "Kılındı" yerine dua, günün selamı, saat ailesiyle aynı vakit simgeleri.
     {
@@ -112,6 +136,21 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Her vakte ayrı, saatinizle aynı simge',
         ],
         ikon: 'pray',
+        ceviri: {
+            en: {
+                baslik: 'May Allah accept it',
+                aciklama:
+                    'When you mark a prayer, it says "May Allah accept it". On Fridays, Eid and in Ramadan you see a short greeting at the top.',
+                detayAciklama:
+                    'The I\'ve prayed button, your watch and the voice assistant say the same prayer; on a day you complete all five prayers, a short card appears. Each prayer now has its own icon, the same as on your watch.',
+                detaylar: [
+                    '"May Allah accept it" after you pray — a short greeting at Fajr and Isha',
+                    'A short card when all five prayers are done',
+                    'Friday, Eid and Ramadan greetings',
+                    'A separate icon for each prayer, the same as on your watch',
+                ],
+            },
+        },
     },
     // Cihazlar arası eşitleme (#288). Yalnız Android: Drive yetkisi yerleşik Google
     // hesabı onayıyla alınır. iOS'ta iCloud yolu ayrı bayrağa bağlı ve henüz açık değil.
@@ -139,6 +178,24 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         kartGoster: true,
         // Google Play hizmetleri olmayan cihazda (Huawei vb.) Drive kartı görünmez → duyuru da yok.
         yetenek: 'googleDrive',
+        ceviri: {
+            en: {
+                baslik: 'Your data on all your devices',
+                aciklama:
+                    'Keep your prayers, streak and Qada log in your own Google Drive and sync them with your other phone or tablet. Your data is encrypted with a password you choose.',
+                detayAciklama:
+                    "Connect your Google account with one tap; the app sees only its own hidden folder in Drive, never your files. Your data is encrypted with your password before it leaves the phone; we don't know the password either, so don't forget it. A prayer syncs as soon as you mark it; you can also sync hourly or daily, only on Wi-Fi or only while charging. With battery saver on, sync waits for charging. Prayers marked on two devices are merged; none are deleted.",
+                ctaEtiketi: 'Turn on sync',
+                detaylar: [
+                    'Connect with your Google account in one tap',
+                    'End-to-end encryption: only you know the password',
+                    "A hidden folder that belongs only to the app and doesn't show in Drive",
+                    'Prayers, streak and Qada log are merged',
+                    'You choose how often, and whether only on Wi-Fi or while charging',
+                    'Disconnect whenever you like',
+                ],
+            },
+        },
     },
     // Cihaz ağı: telefon ↔ tablet "Kıldım" eşitlemesi (olay günlüğü, yerel ağ).
     {
@@ -159,6 +216,21 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         ikon: 'tablet-alt',
         hedefSayfa: 'CihazEkle',
         ctaEtiketi: 'Cihaz ekleyin',
+        ceviri: {
+            en: {
+                baslik: 'Phone and tablet together',
+                aciklama:
+                    'Add your tablet to your phone: a prayer you mark on one is marked on the other. No account, no server; just your home Wi-Fi.',
+                detayAciklama:
+                    'My devices › Add a tablet or phone: show a code on one device and scan it on the other; both screens ask for approval. On the same Wi-Fi with the app open on both, a prayer passes over right away; otherwise the next time both are open together.',
+                ctaEtiketi: 'Add a device',
+                detaylar: [
+                    'Encrypted pairing approved on both screens',
+                    "I've prayed is marked on both devices",
+                    'Remove it from either side at any time',
+                ],
+            },
+        },
     },
     // Cihaz ağı v2: şifreli TV eşitlemesi + Cihazlarım (tasarım 2026-10-21).
     {
@@ -181,6 +253,23 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         ikon: 'tv',
         hedefSayfa: 'Cihazlarim',
         ctaEtiketi: 'Cihazlarımı açın',
+        ceviri: {
+            en: {
+                baslik: 'Your TV knows the prayers you pray',
+                aciklama:
+                    "Manage the TVs at home from My devices. If you like, the TV knows which prayers you have prayed; when time runs short and you haven't prayed, it shows a quiet band at the bottom of the screen.",
+                detayAciklama:
+                    'On first pairing, the phone and TV approve each other: you see the TV\'s name on your phone and press "Add" with the remote on the TV. After that everything is encrypted and stays on your home Wi-Fi. Counting your status on the TV is off by default; unless you turn it on, the TV only shows prayer times. In Ramadan the iftar and suhoor countdowns, and on Fridays the Jumu\'ah card, appear on the big screen too.',
+                ctaEtiketi: 'Open My devices',
+                detaylar: [
+                    'Pairing approved on both the phone and the TV',
+                    'Encrypted, only on your home network',
+                    'A quiet reminder band on the TV when time runs short',
+                    "Iftar and suhoor countdowns in Ramadan, the Jumu'ah card on Fridays",
+                    'Remove the TV from either side at any time',
+                ],
+            },
+        },
     },
     // Vakit girdi bildirimine vakit başına ses + kendi ses dosyanız (ezan kaydı dahil).
     {
@@ -204,6 +293,22 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         ctaEtiketi: 'Ses seçin',
         kartGoster: true,
         yetenek: 'sesDosyasi',
+        ceviri: {
+            en: {
+                baslik: 'Play your own sound when a prayer time begins',
+                aciklama:
+                    'Choose a separate notification sound for each prayer; you can also add a sound file from your phone, such as a favorite adhan recording.',
+                detayAciklama:
+                    'Under Reminders › When a prayer time begins, each enabled prayer has a sound row. Pick one of your phone\'s sounds or add your own file. The file is copied to your phone\'s Notifications folder, so the sound keeps playing even if you delete the original. The same option is available in Prayer Guardian steps.',
+                ctaEtiketi: 'Choose a sound',
+                detaylar: [
+                    'A separate sound for Fajr, Dhuhr, Asr, Maghrib and Isha',
+                    'Your own sound file: MP3, M4A, OGG or WAV',
+                    'The sound plays when the notification arrives and stops when you dismiss it',
+                    'You can pick your own file in Prayer Guardian steps too',
+                ],
+            },
+        },
     },
     // iPhone "Namazda sessiz" — Odak + Kısayollar rehberi (Android'de Camideyim + Namaz modu var).
     {
@@ -227,6 +332,23 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         hedefSayfa: 'CamideyimAyarlari',
         ctaEtiketi: 'Kurulumu açın',
         kartGoster: true,
+        ceviri: {
+            en: {
+                baslik: 'Silence your phone at the mosque',
+                aciklama:
+                    'Set up a Prayer focus once: when you arrive at the mosque or a place you choose, your iPhone goes silent, and it switches back when you leave.',
+                detayAciklama:
+                    "iPhone can only silence itself with a Focus; the app can't turn it on by itself. The Silent during prayer page guides you in three short steps: create a Prayer focus, add a location with the name of a mosque near you, and if you like, use Shortcuts to turn it on in the minutes after a prayer time begins. While the Prayer focus is on, our reminders arrive without sound and without lighting up the screen.",
+                ctaEtiketi: 'Open the setup',
+                detaylar: [
+                    'A Prayer focus that turns on at the mosque and off when you leave',
+                    'Nearby mosques in a list; tap a name to see it in Maps',
+                    'The same works for home, work or any other place',
+                    'Silent in the minutes after a prayer time begins, with Shortcuts',
+                    'Reminders arrive silently while the Focus is on; none are lost',
+                ],
+            },
+        },
     },
     // Android TV panosuna telefondan konum aktarma (QR / 7 haneli kod) + ana ekranda izin onarımı.
     {
@@ -270,6 +392,23 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'İnternetsiz; görüntü kaydedilmez',
         ],
         ikon: 'kaaba',
+        ceviri: {
+            en: {
+                baslik: 'Find the Qibla with your camera',
+                aciklama:
+                    'On the Qibla tab, hold your phone upright and look around with the camera: the Kaaba marker appears in the Qibla direction, with your distance to the Kaaba next to it. The compass turns as soon as it opens and moves smoothly.',
+                detayAciklama:
+                    'If the Kaaba marker is off screen, an arrow at the edge shows which way to turn; when the marker settles in the center ring, the ring turns green and the phone vibrates once. No internet needed, and nothing is recorded. In Compass view without the camera, holding the phone flat shows a classic compass; as you raise it, the compass tilts to the horizon and the Kaaba cube stands up in the Qibla direction. If the direction drifts, move your phone in a figure 8 a few times. With a screen reader on, the direction is read as "Qibla 30° to your right".',
+                detaylar: [
+                    'The Kaaba marker and your distance to the Kaaba on camera',
+                    '"Turn right/left" arrows when it is off screen',
+                    'A green ring and a single vibration when aligned',
+                    'A 3D compass that tilts to the horizon as you raise the phone',
+                    'A compass that works right away and stays steady',
+                    'Works offline; nothing is recorded',
+                ],
+            },
+        },
     },
     // Sade tasarım (Dalga 2 + 3 + 4). Bugünkü kullanıcıya anlamlı olanı söyler.
     {

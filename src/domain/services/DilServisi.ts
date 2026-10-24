@@ -10,7 +10,7 @@ import { Depolama } from '../../data/local/Depolama';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import { aktifDil, aktifDiliKur } from '../../core/dil/aktifDil';
-import { cihazDilindenSec, dilKoduMu, VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
+import { cihazDilindenSec, DILLER, dilKoduMu, VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
 
 /** Diskteki kayıt: yalnız kullanıcının açık seçimi. */
 export interface DilAyari {
@@ -35,6 +35,21 @@ export function cihazYerelAyari(): string | null {
   }
 }
 
+/**
+ * Sesli okuma motoruna etkin dili bildirir (Android SharedPreferences / iOS UserDefaults):
+ * planlı anonslar konuşma anında bunu okur. Native köprü TEMBEL yüklenir (jest'te yok);
+ * eski native'de fonksiyon yoksa atlanır ve anons Türkçe konuşur. Asla fırlatmaz.
+ */
+function anonsDiliniBildir(kod: DilKodu): void {
+  const tts = DILLER.find((d) => d.kod === kod)?.ttsDili ?? 'tr-TR';
+  try {
+    (require('../../../modules/expo-countdown-notification/src') as typeof import('../../../modules/expo-countdown-notification/src')).anonsDiliniAyarla(tts);
+    (require('../../../modules/expo-muhafiz-anons/src') as typeof import('../../../modules/expo-muhafiz-anons/src')).anonsDiliniAyarla(tts);
+  } catch {
+    // Köprü yok (test/eski sürüm): sesli okuma varsayılan dilde kalır.
+  }
+}
+
 async function diskten(): Promise<DilKodu> {
   try {
     const ham = await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI);
@@ -43,6 +58,7 @@ async function diskten(): Promise<DilKodu> {
   } catch (e) {
     Logger.warn('DilServisi', 'Dil ayarı okunamadı, Türkçe kullanılıyor', e);
   }
+  anonsDiliniBildir(aktifDil());
   return aktifDil();
 }
 
@@ -63,6 +79,7 @@ export const DilServisi = {
     await Depolama.yaz(DEPOLAMA_ANAHTARLARI.DIL_AYARI, { kod } satisfies DilAyari);
     const degisti = aktifDiliKur(kod);
     yukleme = Promise.resolve(aktifDil());
+    anonsDiliniBildir(aktifDil());
     return degisti;
   },
 

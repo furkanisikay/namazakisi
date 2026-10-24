@@ -25,13 +25,14 @@ const TR = /[çğıöşüÇĞİÖŞÜ]/;
 /**
  * Çevrilmeyen VERİ dosyaları (sayılmaz). Her birinin nedeni: yer adı dilden bağımsızdır
  * (İstanbul İngilizcede de İstanbul), dosya zaten dil başına üretilir ya da metin ekrana hiç
- * çıkmaz. Çevrilecek veri ("Neler Yeni", arama dizini) burada YOK — sayılır.
+ * çıkmaz. Çevrilecek veri (arama dizini) burada YOK — sayılır.
  */
 const HARIC = new Set([
     'src/core/konum/ilceMerkezleriVerisi.ts', // ilçe adları + koordinat (üretilmiş)
     'src/core/konum/ulkeAdlariVerisi.ts', // CLDR'den dil başına üretilmiş ülke adları
     'src/domain/services/TurkiyeKonumServisi.ts', // 81 il adı + koordinat
     'src/core/samimiyet/ozelGunler.ts', // Diyanet listesiyle eşleme etiketi; ekranda görünmez (selam `tur`dan)
+    'src/core/constants/YeniOzellikler.ts', // Türkçe kaynak kayıt; başka dilde yalnız `ceviri`si olan öğe görünür
 ]);
 const DIZE = /(['"`])((?:\\.|(?!\1)[^\\\n])*)\1/g;
 const JSX_METNI = />([^<>{}\n]+)</g;

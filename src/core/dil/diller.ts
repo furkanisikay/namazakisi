@@ -12,13 +12,15 @@ export interface DilTanimi {
   /** Dilin kendi dilindeki adı (seçicide böyle yazılır). */
   yerelAd: string;
   yon: 'ltr' | 'rtl';
+  /** Sesli okuma (TTS) dili, BCP-47. */
+  ttsDili: string;
   beta: boolean;
   secilebilir: boolean;
 }
 
 export const DILLER: readonly DilTanimi[] = [
-  { kod: 'tr', yerelAd: 'Türkçe', yon: 'ltr', beta: false, secilebilir: true },
-  { kod: 'en', yerelAd: 'English', yon: 'ltr', beta: true, secilebilir: false },
+  { kod: 'tr', yerelAd: 'Türkçe', yon: 'ltr', ttsDili: 'tr-TR', beta: false, secilebilir: true },
+  { kod: 'en', yerelAd: 'English', yon: 'ltr', ttsDili: 'en-US', beta: true, secilebilir: false },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';

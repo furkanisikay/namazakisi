@@ -86,6 +86,8 @@ interface CountdownNativeModule {
     stopCountdown(id: string): void;
     stopAll(): void;
     planlaAnons(id: string, tetikZamanMs: number, metin: string): void;
+    /** Yeni köprü — eski native'de yoktur, opsiyonel tiplenir. */
+    anonsDiliniAyarla?(dil: string): void;
     iptalEtAnons(id: string): void;
     iptalEtTumAnonslar(): void;
     /** Yeni köprü (issue #273) — eski native'de yoktur, opsiyonel tiplenir. */
@@ -455,7 +457,21 @@ export async function alarmSesiAcikMi(): Promise<boolean | null> {
 }
 
 /**
- * Cihazda Turkce TTS dil verisi kurulu mu? UC DURUMLU, asla firlatmaz:
+ * Planli anonslarin konusma dili (BCP-47, ör. "en-US"). Native eski ise (fonksiyon yok)
+ * sessizce atlanir: anons Turkce konusur. Asla firlatmaz.
+ */
+export function anonsDiliniAyarla(dil: string): void {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.anonsDiliniAyarla) return;
+    try {
+        ExpoCountdownNotification.anonsDiliniAyarla(dil);
+    } catch {
+        // Eski native ya da bağlam yok: anons varsayılan dilde kalır.
+    }
+}
+
+/**
+ * Cihazda anons dilinin (kayitli tercih; varsayilan Turkce) TTS verisi kurulu mu?
+ * UC DURUMLU, asla firlatmaz:
  *   `true`  → kurulu, `false` → motor dili GERCEKTEN desteklemiyor (uyari gosterilir),
  *   `null`  → bilinmiyor: Android disi, modul yok, native zaman asimi / motor acilamadi /
  *             hata. "Yok" demek, yavas acilan TTS motorunda yanlis uyari yakardi.

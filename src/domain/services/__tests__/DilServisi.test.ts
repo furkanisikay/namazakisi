@@ -8,6 +8,11 @@ jest.mock('../../../data/local/Depolama', () => ({
   },
 }));
 
+const mockAndroidDil = jest.fn();
+const mockIosDil = jest.fn();
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({ anonsDiliniAyarla: (d: string) => mockAndroidDil(d) }));
+jest.mock('../../../../modules/expo-muhafiz-anons/src', () => ({ anonsDiliniAyarla: (d: string) => mockIosDil(d) }));
+
 import { I18nManager, Platform } from 'react-native';
 import { DilServisi } from '../DilServisi';
 import { aktifDil, aktifDilSifirla } from '../../../core/dil/aktifDil';
@@ -54,5 +59,14 @@ describe('DilServisi', () => {
     disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'klingon' };
     await DilServisi.hazir();
     expect(aktifDil()).toBe('tr');
+  });
+
+  it('sesli okuma dili etkin dille birlikte native tarafa bildirilir (yükleme ve kayıt)', async () => {
+    await DilServisi.yukle();
+    expect(mockAndroidDil).toHaveBeenLastCalledWith('tr-TR');
+    expect(mockIosDil).toHaveBeenLastCalledWith('tr-TR');
+    await DilServisi.kaydet('en');
+    expect(mockAndroidDil).toHaveBeenLastCalledWith('en-US');
+    expect(mockIosDil).toHaveBeenLastCalledWith('en-US');
   });
 });
