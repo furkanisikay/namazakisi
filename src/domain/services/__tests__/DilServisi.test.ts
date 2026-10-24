@@ -14,7 +14,13 @@ jest.mock('../../../data/local/Depolama', () => ({
 
 const mockAndroidDil = jest.fn();
 const mockIosDil = jest.fn();
-jest.mock('../../../../modules/expo-countdown-notification/src', () => ({ anonsDiliniAyarla: (d: string) => mockAndroidDil(d) }));
+const mockAndroidArayuz = jest.fn();
+const mockIosArayuz = jest.fn();
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
+  anonsDiliniAyarla: (d: string) => mockAndroidDil(d),
+  arayuzDiliniAyarla: (k: string) => mockAndroidArayuz(k),
+}));
+jest.mock('../../../../modules/expo-siri-kisayollari/src', () => ({ arayuzDiliniAyarla: (k: string) => mockIosArayuz(k) }));
 jest.mock('../../../../modules/expo-muhafiz-anons/src', () => ({ anonsDiliniAyarla: (d: string) => mockIosDil(d) }));
 
 import { I18nManager, Platform } from 'react-native';
@@ -103,5 +109,14 @@ describe('DilServisi', () => {
     await DilServisi.kaydet('en');
     expect(mockAndroidDil).toHaveBeenLastCalledWith('en-US');
     expect(mockIosDil).toHaveBeenLastCalledWith('en-US');
+  });
+
+  it('arayüz dili (dil kodu) native widget/bildirim/saat için ayrı anahtara yazılır', async () => {
+    await DilServisi.yukle(true);
+    expect(mockAndroidArayuz).toHaveBeenLastCalledWith('tr');
+    expect(mockIosArayuz).toHaveBeenLastCalledWith('tr');
+    await DilServisi.kaydet('en');
+    expect(mockAndroidArayuz).toHaveBeenLastCalledWith('en');
+    expect(mockIosArayuz).toHaveBeenLastCalledWith('en');
   });
 });

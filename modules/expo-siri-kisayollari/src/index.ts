@@ -33,6 +33,8 @@ interface SiriNativeModule {
     odakDurumuAl(): Promise<string | null>;
     ekranIstegiAl(): Promise<string | null>;
     /** #295 — eski ikilide yok (opsiyonel). */
+    /** Arayüz dili (App Group) — eski ikilide yok (opsiyonel). */
+    arayuzDiliniAyarla?(kod: string): void;
     canliEtkinlikDestekli?(): boolean;
     canliEtkinlikIzniAcik?(): Promise<boolean>;
     canliEtkinlikEsitle?(json: string | null, secenek?: string | null): Promise<string>;
@@ -50,6 +52,20 @@ const ExpoSiriKisayollari = requireOptionalNativeModule<SiriNativeModule>('ExpoS
 
 const modul = (): SiriNativeModule | null =>
     Platform.OS === 'ios' && ExpoSiriKisayollari ? ExpoSiriKisayollari : null;
+
+/**
+ * Arayüz dilini App Group'a yazar (iOS widget, saat köprüsü ve Siri metinleri okur).
+ * Modül/fonksiyon yoksa (Android, eski ikili) sessizce atlanır. Asla fırlatmaz.
+ */
+export function arayuzDiliniAyarla(kod: string): void {
+    const m = modul();
+    if (!m || typeof m.arayuzDiliniAyarla !== 'function') return;
+    try {
+        m.arayuzDiliniAyarla(kod);
+    } catch {
+        // Eski ikili: uzantılar Türkçe kalır.
+    }
+}
 
 /** Widget yükü arayüzü (Android `WidgetVeri` ile aynı). iOS'ta Siri'nin okuduğu çizelge. */
 export interface SiriVeriYazici {

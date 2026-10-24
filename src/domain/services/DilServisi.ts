@@ -50,12 +50,19 @@ export function cihazYerelAyari(): string | null {
 }
 
 /**
- * Sesli okuma motoruna etkin dili bildirir (Android SharedPreferences / iOS UserDefaults):
- * planlı anonslar konuşma anında bunu okur. Native köprü TEMBEL yüklenir (jest'te yok);
+ * Etkin dili native tarafa bildirir: arayüz dili (Android `namazakisi_dil/kod`, iOS App Group
+ * `namazakisi_dil_kod`) ve sesli okuma dili (planlı anonslar konuşma anında okur). Native köprü TEMBEL yüklenir (jest'te yok);
  * eski native'de fonksiyon yoksa atlanır ve anons Türkçe konuşur. Asla fırlatmaz.
  */
 function anonsDiliniBildir(kod: DilKodu): void {
   const tts = DILLER.find((d) => d.kod === kod)?.ttsDili ?? 'tr-TR';
+  try {
+    // Arayüz dili (widget, native bildirim, saat köprüsü) — sesli okuma dilinden AYRI anahtar.
+    (require('../../../modules/expo-countdown-notification/src') as typeof import('../../../modules/expo-countdown-notification/src')).arayuzDiliniAyarla(kod);
+    (require('../../../modules/expo-siri-kisayollari/src') as typeof import('../../../modules/expo-siri-kisayollari/src')).arayuzDiliniAyarla(kod);
+  } catch {
+    // Köprü yok (test/eski sürüm): native metinler Türkçe kalır.
+  }
   try {
     (require('../../../modules/expo-countdown-notification/src') as typeof import('../../../modules/expo-countdown-notification/src')).anonsDiliniAyarla(tts);
     (require('../../../modules/expo-muhafiz-anons/src') as typeof import('../../../modules/expo-muhafiz-anons/src')).anonsDiliniAyarla(tts);

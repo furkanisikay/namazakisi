@@ -88,6 +88,7 @@ interface CountdownNativeModule {
     planlaAnons(id: string, tetikZamanMs: number, metin: string): void;
     /** Yeni köprü — eski native'de yoktur, opsiyonel tiplenir. */
     anonsDiliniAyarla?(dil: string): void;
+    arayuzDiliniAyarla?(kod: string): void;
     iptalEtAnons(id: string): void;
     iptalEtTumAnonslar(): void;
     /** Yeni köprü (issue #273) — eski native'de yoktur, opsiyonel tiplenir. */
@@ -453,6 +454,19 @@ export async function alarmSesiAcikMi(): Promise<boolean | null> {
         return typeof duzey === 'number' && duzey >= 0 ? duzey > 0 : null;
     } catch {
         return null;
+    }
+}
+
+/**
+ * Arayüz dili ("tr", "en"): Android widget, bildirim ve alarm metinleri bunu okur. Native
+ * eski ise sessizce atlanır (Türkçe kalır). Asla fırlatmaz.
+ */
+export function arayuzDiliniAyarla(kod: string): void {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.arayuzDiliniAyarla) return;
+    try {
+        ExpoCountdownNotification.arayuzDiliniAyarla(kod);
+    } catch {
+        // Eski native: widget/bildirim Türkçe kalır.
     }
 }
 

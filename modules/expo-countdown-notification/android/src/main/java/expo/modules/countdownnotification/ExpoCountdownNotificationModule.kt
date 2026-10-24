@@ -178,6 +178,13 @@ class ExpoCountdownNotificationModule : Module() {
          * Anons dilini (BCP-47) kaydeder; planli anonslar konusma aninda bunu kullanir.
          * Yazilmadiysa Turkce (eski surumle ayni).
          */
+        /** Arayüz dili ("tr", "en"); widget ve bildirim metinleri bunu okur ([ArayuzDili]). */
+        Function("arayuzDiliniAyarla") { kod: String ->
+            val context = appContext.reactContext
+            if (context != null) ArayuzDili.kaydet(context.applicationContext, kod)
+            Unit
+        }
+
         Function("anonsDiliniAyarla") { dil: String ->
             val context = appContext.reactContext
             if (context != null) AnonsKonusucu.diliKaydet(context.applicationContext, dil)

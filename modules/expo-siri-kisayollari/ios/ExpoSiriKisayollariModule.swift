@@ -111,6 +111,11 @@ public class ExpoSiriKisayollariModule: Module {
             return SiriDeposu.varsayilan.odakJson()
         }
 
+        /// Arayuz dili (App Group): widget ve saat koprusu metinleri bu dilde kurar.
+        Function("arayuzDiliniAyarla") { (kod: String) -> Void in
+            SiriDeposu.varsayilan.arayuzDiliniYaz(kod)
+        }
+
         /// Canli etkinlik (Live Activity, #295) bu build'de var mi? (Widget uzantisi bayragi.)
         Function("canliEtkinlikDestekli") { () -> Bool in
             return CanliEtkinlikKoprusu.destekleniyor

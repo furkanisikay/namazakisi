@@ -121,6 +121,21 @@ public final class SiriDeposu: @unchecked Sendable {
         kilitli { defaults.set(json, forKey: Anahtar.kilinanlar) }
     }
 
+    // MARK: - Arayuz dili (JS yazar; uygulama, widget ve saat koprusu okur)
+
+    /// Arayuz dili anahtari (dil kodu: "tr", "en"). Sesli okuma dilinden AYRIDIR
+    /// (`namazakisi_anons_dil`, standart depo): ses motoru baska dile dusebilir.
+    public static let arayuzDiliAnahtari = "namazakisi_dil_kod"
+
+    public func arayuzDiliniYaz(_ kod: String) {
+        kilitli { defaults.set(kod, forKey: Self.arayuzDiliAnahtari) }
+    }
+
+    /// Kayitli arayuz dili; uygulama hic acilmadiysa (JS yazmadi) Turkce.
+    public func arayuzDili() -> String {
+        kilitli { defaults.string(forKey: Self.arayuzDiliAnahtari) ?? "tr" }
+    }
+
     public func cizelge() -> SiriCizelge? {
         guard let ham = kilitli({ defaults.string(forKey: Anahtar.cizelge) }),
               let veri = ham.data(using: .utf8) else { return nil }
