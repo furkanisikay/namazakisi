@@ -46,7 +46,7 @@ export function kayitliUlkeKodu(k: {
   ulkeKodu?: string;
   dunyaSehri?: { ulke: string } | null;
 }): string | null {
-  if (k.dunyaSehri?.ulke) return k.dunyaSehri.ulke;
+  if (k.konumModu === 'manuel' && k.dunyaSehri?.ulke) return k.dunyaSehri.ulke;
   if (k.ulkeKodu && /^[A-Z]{2}$/.test(k.ulkeKodu)) return k.ulkeKodu;
   if (k.konumModu === 'manuel' && k.seciliIlId != null) return 'TR';
   return null;

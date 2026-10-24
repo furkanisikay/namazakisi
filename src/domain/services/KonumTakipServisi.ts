@@ -314,6 +314,9 @@ export async function yeniKonumuUygula(
 
     // Reverse geocoding ile adres al
     let gpsAdres: { semt: string; ilce: string; il: string } | null = null;
+    // Ülke ters kodlamadan TAZE yazılır; bilinmiyorsa SİLİNİR (eski ülke kalırsa bölge
+    // takvimi önerisi yeni ülkede hiç çıkmaz; yokluğunda koordinattan bulunur).
+    let ulkeKodu: string | undefined;
     try {
         const adresler = await Location.reverseGeocodeAsync({
             latitude: yeniLat,
@@ -326,6 +329,7 @@ export async function yeniKonumuUygula(
                 ilce: adres.district || adres.subregion || '',
                 il: adres.city || adres.region || '',
             };
+            if (adres.isoCountryCode && /^[A-Z]{2}$/.test(adres.isoCountryCode)) ulkeKodu = adres.isoCountryCode;
         }
     } catch (geoError) {
         Logger.warn('KonumTakip', 'Reverse geocoding hatasi:', geoError);
@@ -352,6 +356,8 @@ export async function yeniKonumuUygula(
             koordinatlar: { lat: yeniLat, lng: yeniLng },
             gpsAdres: gpsAdres,
             sonGpsGuncellemesi: simdi,
+            ulkeKodu,
+            dunyaSehri: null,
             ...ekAlanlar,
         }));
         Logger.info('KonumTakip', 'Konum guncellendi; vakitler ve yer adi degismedi, yayma atlandi');
@@ -370,6 +376,8 @@ export async function yeniKonumuUygula(
         koordinatlar: { lat: yeniLat, lng: yeniLng },
         gpsAdres: gpsAdres,
         sonGpsGuncellemesi: simdi,
+        ulkeKodu,
+        dunyaSehri: null,
         ...ekAlanlar,
     }));
     Logger.info('KonumTakip', 'Konum guncellendi');

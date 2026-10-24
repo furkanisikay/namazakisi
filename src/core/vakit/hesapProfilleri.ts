@@ -172,8 +172,9 @@ export const HESAP_PROFILLERI: Readonly<Record<HesapProfiliKimligi, HesapProfili
     parametre: diger(18, 18),
   },
   tahran: {
-    // İran'ın resmî otoritesi (Tahran Üniversitesi Jeofizik Enstitüsü); yalnız İran'ın varsayılanı.
-    kimlik: 'tahran', kisaAd: 'Tehran', ikindi: 'evvel',
+    // Tahran Üniversitesi Jeofizik Enstitüsü (İran) — Caferî hesap (akşam 4,5°, Caferî gece
+    // yarısı) → yalnız elle seçilir, hiçbir ülkenin varsayılanı değildir (sahip kararı 2026-10-24).
+    kimlik: 'tahran', kisaAd: 'Tehran', ikindi: 'evvel', yalnizElle: true,
     kaynakUrl: 'https://github.com/batoulapps/adhan-js/blob/master/METHODS.md',
     parametre: () => CalculationMethod.Tehran(),
   },

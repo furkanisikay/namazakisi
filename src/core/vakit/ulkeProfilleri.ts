@@ -47,7 +47,8 @@ export const ULKE_VARSAYILANLARI: Readonly<Record<string, UlkeVarsayilani>> = {
   LB: T('misir', 'genel'),
   SY: T('misir', 'genel'),
   IQ: T('mwl', 'genel'),
-  IR: T('tahran', 'kaynakli'),
+  // İran: Tahran yöntemi Caferî hesabıdır (akşam 4,5°); Caferî yalnız elle seçilir (sahip kararı).
+  IR: T('mwl', 'genel'),
   // Mağrip ve Afrika
   MA: T('fas', 'genel'),
   DZ: T('mwl', 'genel'),

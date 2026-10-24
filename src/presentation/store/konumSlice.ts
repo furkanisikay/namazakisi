@@ -61,6 +61,27 @@ function diskeYazilacakAyarlar(state: KonumState): KonumAyarlari {
     return konumAyarlari;
 }
 
+/**
+ * Türkiye il seçimi ↔ dünya şehri ↔ GPS TEK kayıtta tutarlı kalsın (yoksa eski ülke
+ * "bölgenizin takvimi" kararını bozar):
+ * - Türkiye ili seçmek dünya şehrini siler; dünya şehri seçmek il/ilçe kimliğini siler.
+ * - GPS (oto) modunda dünya şehri tutulmaz; koordinat değişip ülke verilmediyse eski
+ *   ülke kodu silinir (koordinattan yeniden bulunur).
+ */
+export function konumKaydiTutarliHale<T extends Partial<KonumAyarlari>>(onceki: T, degisiklik: Partial<KonumAyarlari>): T {
+    const yeni = { ...onceki, ...degisiklik } as T & Partial<KonumAyarlari>;
+    if (degisiklik.seciliIlId != null && !('dunyaSehri' in degisiklik)) yeni.dunyaSehri = null;
+    if (degisiklik.dunyaSehri) {
+        yeni.seciliIlId = null;
+        yeni.seciliIlceId = null;
+    }
+    if (yeni.konumModu === 'oto') {
+        yeni.dunyaSehri = null;
+        if ('koordinatlar' in degisiklik && !('ulkeKodu' in degisiklik)) delete yeni.ulkeKodu;
+    }
+    return yeni;
+}
+
 // ==================== ASYNC THUNKS ====================
 
 /**
@@ -168,7 +189,7 @@ const konumSlice = createSlice({
          * Yeni kodlarda konumAyarlariniKaydetAsync tercih edilmeli
          */
         konumAyarlariniGuncelle: (state, action: PayloadAction<Partial<KonumState>>) => {
-            const yeniState = { ...state, ...action.payload };
+            const yeniState = konumKaydiTutarliHale(state, action.payload);
             Logger.debug('KonumSlice', 'State guncelleniyor (sync)', { konumModu: yeniState.konumModu, seciliIlAdi: yeniState.seciliIlAdi });
 
             // Arka planda kaydet (fire-and-forget)
