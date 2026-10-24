@@ -184,9 +184,16 @@ describe('İngilizce — her dil kendi geleneksel kalıbı', () => {
         expect(KABUL_DUALARI).not.toContain(d);
     });
 
-    it('kandil ve hicrî yılbaşı selamı İngilizcede söylenmez; cuma ve Kadir söylenir', () => {
-        // 2026-12-10 Regaib (perşembe, akşam) → İngilizcede selam yok
+    it('kandil selamı ÜLKEYE göre (sahip kararı): Bosna ve Özbekistan evet, Körfez ve Pakistan hayır; ülke yoksa dil kuralı', () => {
+        // 2026-12-10 Regaib (perşembe, akşam)
         expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam' })).toBeNull();
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'BA' })).toBe('Blessed holy night');
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'UZ' })).toBe('Blessed holy night');
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'SA' })).toBeNull();
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'PK' })).toBeNull();
+    });
+
+    it('cuma ve Kadir her ülkede söylenir', () => {
         expect(gunSelami({ tarihIso: '2026-10-23', vakit: 'ogle' })).toBe("Jumu'ah Mubarak");
         expect(gunSelami({ tarihIso: '2027-03-05', vakit: 'ogle' })).toBe('Blessed Laylat al-Qadr');
     });
@@ -205,5 +212,12 @@ describe('İngilizce — her dil kendi geleneksel kalıbı', () => {
             expect(m.toLowerCase()).not.toMatch(/congrat|great job|awesome|amazing|well done|sin\b|hell\b|missed/);
         }
         expect(TAM_GUN_METNI.alt).toBe('You completed all five prayers today.');
+    });
+});
+
+describe('Türkçe: ülke kuralı', () => {
+    it('Türkçe arayüzde de Körfez ülkesinde kandil selamı yok, Türkiye\'de var', () => {
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'TR' })).toBe(SELAMLAR.kandil);
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam', ulkeKodu: 'AE' })).toBeNull();
     });
 });

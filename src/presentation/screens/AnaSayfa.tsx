@@ -68,6 +68,7 @@ import { BolgeTakvimiModali } from '../components/home/BolgeTakvimiModali';
 import { ulkeAdi } from '../../core/konum/ulkeAdlari';
 import { bicim, sayili } from '../../core/dil/aktifDil';
 import { useMetin } from '../hooks/useMetin';
+import { kayitliUlkeKodu } from '../../core/konum/ulkeTespiti';
 import { Logger } from '../../core/utils/Logger';
 /** Kaza önerisinin Kıldım duasından sonra açılma gecikmesi. */
 const KAZA_ONERI_GECIKMESI_MS = 1600;
@@ -1112,7 +1113,12 @@ export const AnaSayfa: React.FC = () => {
   // ---- Sade görünüm (issue #295): tek ekran; işaretleme ve modallar ana ekranla AYNI ----
   // Günün selamı (cuma, kandil, Ramazan…) — saf ve ucuz; değer dizeyle karşılaştırılır,
   // saniyelik çizim memo'lu başlığı kırmaz. Yalnız aktif gün için.
-  const gunSelamMetni = gunSelami({ tarihIso: aktifGun, takvimGunuIso: bugunuAl(), vakit: vakitBilgisi?.vakit });
+  const gunSelamMetni = gunSelami({
+    tarihIso: aktifGun,
+    takvimGunuIso: bugunuAl(),
+    vakit: vakitBilgisi?.vakit,
+    ulkeKodu: kayitliUlkeKodu(konumAyarlari),
+  });
 
   if (sade.etkin) {
     const sadeKayitHazir = !!gunlukNamazlar && gunlukNamazlar.tarih === aktifGun;

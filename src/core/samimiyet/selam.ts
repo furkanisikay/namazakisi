@@ -29,6 +29,8 @@ export interface SelamGirdisi {
     takvimGunuIso?: string;
     /** İçinde bulunulan vakit ('imsak' | 'Sabah' | 'aksam' | ...). Bilinmiyorsa verilmez. */
     vakit?: string;
+    /** Kullanıcının bulunduğu ülke (ISO-3166 alfa-2, konum kaydından). Bilinmiyorsa dil kuralı. */
+    ulkeKodu?: string | null;
 }
 
 /** ISO gün → haftanın günü (0 = pazar), UTC ile (saat dilimi kaydırmaz). */
@@ -41,13 +43,25 @@ function haftaGunu(tarihIso: string): number {
 export const SELAMLAR: Readonly<Sozluk['samimiyet']['selamlar']> = canli((s) => s.samimiyet.selamlar);
 
 /**
- * Kandil ve hicrî yılbaşı selamı Türkiye geleneğidir: başka dilde (Körfez, Güney Asya,
- * Batı) bu geceleri kutlamak tartışmalıdır ve kullanıcıyı kırabilir (aşure kararıyla aynı
- * gerekçe) → o dillerde o gün yalnız genel selamlar (cuma, Ramazan) kalır.
+ * Kandil ve hicrî yılbaşı selamı Osmanlı mirası geleneğidir. SAHİP KARARI (2026-10-24): ÜLKEYE
+ * göre — Türkiye, Kıbrıs, Balkanlar ve Orta Asya/Kafkasya'da söylenir; Körfez, Güney Asya ve
+ * Batı'da bu geceleri kutlamak tartışmalıdır, kullanıcıyı kırabilir (aşure kararıyla aynı
+ * gerekçe) → orada o gün yalnız genel selamlar (cuma, Ramazan) kalır. Ülke bilinmiyorsa dil
+ * kuralı: yalnız Türkçede.
  */
+const GELENEK_SELAMI_ULKELERI: ReadonlySet<string> = new Set([
+    'TR', 'CY', // Türkiye, Kıbrıs
+    'BA', 'AL', 'XK', 'MK', 'BG', 'RS', 'ME', 'GR', 'RO', // Balkanlar
+    'AZ', 'KZ', 'KG', 'UZ', 'TM', 'TJ', // Kafkasya ve Orta Asya
+]);
 const GELENEK_SELAMI_DILLERI: readonly DilKodu[] = ['tr'];
 
-export function gunSelami({ tarihIso, takvimGunuIso, vakit }: SelamGirdisi): string | null {
+/** Bu kullanıcıya kandil/hicrî yılbaşı selamı söylenir mi? */
+export function gelenekSelamiSoylenir(ulkeKodu?: string | null): boolean {
+    return ulkeKodu ? GELENEK_SELAMI_ULKELERI.has(ulkeKodu) : GELENEK_SELAMI_DILLERI.includes(aktifDil());
+}
+
+export function gunSelami({ tarihIso, takvimGunuIso, vakit, ulkeKodu }: SelamGirdisi): string | null {
     const takvim = takvimGunuIso ?? tarihIso;
     const sira = bilinenVakitSirasi(vakit);
 
@@ -60,7 +74,7 @@ export function gunSelami({ tarihIso, takvimGunuIso, vakit }: SelamGirdisi): str
     if (ramazan && sira === 3) return SELAMLAR.iftar;
 
     if (ozel?.tur === 'kadir') return SELAMLAR.kadir;
-    const gelenek = GELENEK_SELAMI_DILLERI.includes(aktifDil());
+    const gelenek = gelenekSelamiSoylenir(ulkeKodu);
     if (ozel?.tur === 'kandil' && gelenek) return SELAMLAR.kandil;
     if (ozel?.tur === 'arefe') return SELAMLAR.arefe;
     if (ozel?.tur === 'hicriYilbasi' && gelenek) return SELAMLAR.hicriYilbasi;
