@@ -89,6 +89,9 @@ function tohumVerisi(simdi = new Date()) {
     const BUGUN = bugunKilinanlar(simdi);
     const depo = {
         '@namaz_akisi/ilk_kurulum_tamamlandi': 'true',
+        // Uygulama dili: kurulum tamam görünen tohumda dil göçü Türkçeyi sabitler; İngilizce
+        // kanıt turu (`TOHUM_DIL=en`) dili açık seçim olarak yazar.
+        dil_ayari: JSON.stringify({ kod: process.env.TOHUM_DIL || 'tr', goc: 1 }),
         // Tek beyin (#364): tablet/iPad karelerinde "ana telefonunuz mu?" sorusu çıkmasın
         // (yanıtsız açılış soruyu bir kez gösterir ve tüm akışları örterdi).
         '@namaz_akisi/cihaz_rolu': JSON.stringify({ rol: 'ana', soruldu: true }),

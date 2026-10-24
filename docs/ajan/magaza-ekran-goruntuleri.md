@@ -8,6 +8,10 @@ Katmanlar: workflow (`tur: magaza|ozellik|ikisi|saat|tv|cihazlar`) → tohum (`s
 
 Genel ilke: **bu hatlardaki tuzakların hepsi SESSİZDİR** — adım "başarılı" görünür, sonuç yanlış/eksik çıkar. Her adımın sonunda çıktıyı (`.app` varlığı, `manifest.json` anahtar sayısı, kare listesi, logda `UYARI`/`FAILED`) doğrula. Kareler önce artifact olur; ASC'ye yükleme `asc_yukle: true` ile ayrı adımdır (gözden geçirilmemiş kare Apple'a gitmesin). Apple simülatör görüntülerini kabul eder; iPhone Pro Max simülatörü **1320×2868** verir.
 
+## Dil (Türkçe kareler ve İngilizce kanıt turu)
+- **İki hattın da `dil` girişi var (`tr` varsayılan, `en`):** tohum `dil_ayari`'nı `TOHUM_DIL`'den yazar (kurulum tamam görünen tohumda dil göçü aksi hâlde Türkçeyi sabitler), Android emülatörleri `-change-locale` ile o dilde açılır. Türkçe turda emülatör `tr-TR`'dir: saat/TV `values-en` taşıdığı için İngilizce AVD'de İngilizce çizer ve Türkçe metin arayan betikler (`saat-kare-hatti.sh`) kırılır.
+- **İngilizce koşunun artifact adları `-en` eklidir:** `belgeler.yml` README/`docs/ekran-goruntuleri` karelerini adıyla aldığı için İngilizce tur Türkçe kareleri ezmez. Saat/TV kare betikleri Türkçe metin arar; İngilizce turu yalnız telefon akışlarıyla koşun.
+
 ## iOS (iPhone) hattı — `ios-ekran-goruntuleri.yml` + `scripts/simulator-{tohumla,ekranlari-cek}.js`
 
 - **`runs-on: macos-26` ZORUNLU:** `idb-companion` o macOS'un en yeni Xcode'unu ister (macos-15'te `A full installation of Xcode.app 26.0 is required`); kareler TestFlight build'iyle aynı Xcode 26 görünümünü yansıtır. Homebrew tap'i açıkça güvenilir ister: `brew trust facebook/fb`.
