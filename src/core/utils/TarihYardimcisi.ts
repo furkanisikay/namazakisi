@@ -2,14 +2,10 @@
  * Tarih islemleri icin yardimci fonksiyonlar
  */
 
-// Kullaniciya GORUNEN metinlerdir (gok paneli basligi, istatistik ay basligi,
-// ekran okuyucu etiketi): Turkce karakterlerle yazilmali. ASCII yaziliydilar ve
-// "Eylul 2026" magaza ekran goruntulerine kadar gitti.
-const GUN_ISIMLERI = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
-const AY_ISIMLERI = [
-  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
-];
+import { bicim, metin } from '../dil/aktifDil';
+
+// Gün/ay adları kullanıcıya GÖRÜNÜR (gök paneli başlığı, istatistik ay başlığı, ekran
+// okuyucu etiketi) → etkin dilin sözlüğünden (`tarih`) gelir.
 
 /**
  * Tarihi ISO formatina donusturur (yyyy-MM-dd)
@@ -57,26 +53,24 @@ export const gunEkle = (isoTarih: string, gunSayisi: number): string => {
  */
 export const gunAdiniAl = (isoTarih: string): string => {
   const tarih = ISOTarihiDateNesnesiNeCevir(isoTarih);
-  return GUN_ISIMLERI[tarih.getDay()];
+  return metin().tarih.gunler[tarih.getDay()];
 };
 
 /**
- * Standart Turkce gun kisaltmasini dondurur (Pzt, Sal, Çar, Per, Cum, Cmt, Paz).
- * Tam adin ilk uc harfi KULLANILAMAZ: Pazar/Pazartesi ikisi de "Paz",
- * Cuma/Cumartesi ikisi de "Cum" olur (haftalik grafikte gorundu).
+ * Standart gun kisaltmasini dondurur (Pzt, Sal, Çar…). Tam adin ilk uc harfi
+ * KULLANILAMAZ: Pazar/Pazartesi ikisi de "Paz" olur (haftalik grafikte gorundu).
  */
-const GUN_KISALTMALARI = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
 
 export const gunKisaAdiniAl = (isoTarih: string): string => {
   const tarih = ISOTarihiDateNesnesiNeCevir(isoTarih);
-  return GUN_KISALTMALARI[tarih.getDay()];
+  return metin().tarih.gunlerKisa[tarih.getDay()];
 };
 
 /**
  * Ay adini dondurur
  */
 export const ayAdiniAl = (ay: number): string => {
-  return AY_ISIMLERI[ay];
+  return metin().tarih.aylar[ay];
 };
 
 /**
@@ -84,10 +78,11 @@ export const ayAdiniAl = (ay: number): string => {
  */
 export const tarihiGorunumFormatinaCevir = (isoTarih: string): string => {
   const tarih = ISOTarihiDateNesnesiNeCevir(isoTarih);
-  const gun = tarih.getDate();
-  const ay = AY_ISIMLERI[tarih.getMonth()];
-  const yil = tarih.getFullYear();
-  return `${gun} ${ay} ${yil}`;
+  return bicim(metin().tarih.uzun, {
+    gun: tarih.getDate(),
+    ay: metin().tarih.aylar[tarih.getMonth()],
+    yil: tarih.getFullYear(),
+  });
 };
 
 /**

@@ -11,15 +11,14 @@
  * `mezhepAyari.test.ts`.
  */
 
+import { canli } from '../dil/aktifDil';
+
 export type Mezhep = 'hanefi' | 'safii';
 
 export const MEZHEPLER: readonly Mezhep[] = ['hanefi', 'safii'];
 
-/** Görünen mezhep adları (sabit harita — `toUpperCase`/`toLowerCase` kullanılmaz). */
-export const MEZHEP_ADLARI: Record<Mezhep, string> = {
-  hanefi: 'Hanefî',
-  safii: 'Şâfiî',
-};
+/** Görünen mezhep adları, etkin dilde (sözlük `seferilik.mezhepler`; sabit harita). */
+export const MEZHEP_ADLARI: Readonly<Record<Mezhep, string>> = canli((s) => s.seferilik.mezhepler);
 
 export const VARSAYILAN_MEZHEP: Mezhep = 'hanefi';
 

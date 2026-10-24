@@ -19,6 +19,7 @@
 
 import { NamazAdi } from '../constants/UygulamaSabitleri';
 import { KAZA_NAMAZ_LISTESI, type KazaNamazAdi } from '../types/KazaTipleri';
+import { canli } from '../dil/aktifDil';
 
 /** Ayar (yedeklenir). YOKLUĞU "açık" demektir. */
 export interface KazaOneriAyarlari {
@@ -204,15 +205,29 @@ export const simdiDegilKaydet = (kayit: KazaOneriKaydi, aktifGun: string): KazaO
   return temel.ertelendi ? temel : { ...temel, ertelendi: true };
 };
 
+/** Kaza adı (kimlik, Türkçe) → sözlük anahtarı. */
+const KAZA_ANAHTARI = {
+  Sabah: 'sabah',
+  'Öğle': 'ogle', // dil-haric: kimlik
+  'İkindi': 'ikindi', // dil-haric: kimlik
+  'Akşam': 'aksam', // dil-haric: kimlik
+  'Yatsı': 'yatsi', // dil-haric: kimlik
+  Vitir: 'vitir',
+} as const satisfies Record<KazaNamazAdi, string>;
+
+/** Kaza namazının görünen adı, etkin dilde ("Öğle" / "Dhuhr"). */
+export const KAZA_ADLARI: Readonly<Record<KazaNamazAdi, string>> = canli((s) => {
+  const o = {} as Record<KazaNamazAdi, string>;
+  for (const k of Object.keys(KAZA_ANAHTARI) as KazaNamazAdi[]) o[k] = s.kaza.adlar[KAZA_ANAHTARI[k]];
+  return o;
+});
+
 /**
  * Cümle içinde küçük harfli kaza adı ("bir öğle kazası"). `toLowerCase()` KULLANMA:
  * 'İkindi'.toLowerCase() → 'i̇kindi' (AGENTS.md Türkçe harf tuzağı).
  */
-export const KAZA_ADLARI_KUCUK: Record<KazaNamazAdi, string> = {
-  Sabah: 'sabah',
-  'Öğle': 'öğle',
-  'İkindi': 'ikindi',
-  'Akşam': 'akşam',
-  'Yatsı': 'yatsı',
-  Vitir: 'vitir',
-};
+export const KAZA_ADLARI_KUCUK: Readonly<Record<KazaNamazAdi, string>> = canli((s) => {
+  const o = {} as Record<KazaNamazAdi, string>;
+  for (const k of Object.keys(KAZA_ANAHTARI) as KazaNamazAdi[]) o[k] = s.kaza.kucuk[KAZA_ANAHTARI[k]];
+  return o;
+});

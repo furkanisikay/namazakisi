@@ -21,6 +21,7 @@ jest.mock('../../../../core/theme', () => ({
   useTema: () => ({ koyuMu: false }),
 }));
 jest.mock('../../../../core/utils/TarihYardimcisi', () => ({
+  ...jest.requireActual('../../../../core/utils/TarihYardimcisi'),
   tarihiGorunumFormatinaCevir: () => '21 Mart 2026',
   gunAdiniAl: () => 'Cumartesi',
 }));

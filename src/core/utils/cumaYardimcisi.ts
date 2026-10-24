@@ -11,7 +11,8 @@
  * tuzak (#13). Buraya ISO parse SOKMA.
  */
 
-import { NamazAdi } from '../constants/UygulamaSabitleri';
+import { NamazAdi, namazAdiGoster } from '../constants/UygulamaSabitleri';
+import { metin } from '../dil/aktifDil';
 
 /** JavaScript `Date.getDay()` degeri: 0 Pazar … 5 Cuma. */
 const CUMA_GUN_INDEKSI = 5;
@@ -74,7 +75,8 @@ export const namazGorunenAdi = (
   namazAdi: string,
   tarih: Date,
   cumaGosterilsin: boolean
-): string => (cumaGosterilsin && namazAdi === NamazAdi.Ogle && cumaMi(tarih) ? 'Cuma' : namazAdi);
+): string =>
+  cumaGosterilsin && namazAdi === NamazAdi.Ogle && cumaMi(tarih) ? metin().vakit.cuma : namazAdiGoster(namazAdi);
 
 export const sureMetniOlustur = (dakika: number): string => {
   const saat = Math.floor(dakika / 60);

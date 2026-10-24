@@ -8,33 +8,24 @@
  * ve bileklikler (issue #287) basligin sonunu kirpar; sure sonda olursa kaybolur.
  */
 import type { VakitAdi } from '../types';
+import { canli } from '../dil/aktifDil';
 import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from '../muhafiz/pencereTipleri';
 
 export type MuhafizSeviye = 1 | 2 | 3 | 4;
 
-export const VAKIT_ADLARI: Record<VakitAdi, string> = {
-  imsak: 'Sabah',
-  gunes: 'Güneş',
-  ogle: 'Öğle',
-  ikindi: 'İkindi',
-  aksam: 'Akşam',
-  yatsi: 'Yatsı',
-};
+/** Etkin dilde vakit adı (canlı görünüm: dil değişince yeni değeri okur). */
+export const VAKIT_ADLARI: Readonly<Record<VakitAdi, string>> = canli((s) => s.vakit.adlar);
 
 /**
  * DIKKAT: toUpperCase() KULLANMA.
  * 'İkindi'.toUpperCase() -> 'İKINDI' (noktali İ kaybolur, i -> I).
  * toLocaleUpperCase('tr-TR') dogru sonuc verir ama Hermes'te Intl/ICU
- * varligina baglidir -> sabit harita motordan bagimsiz ve kesindir.
+ * varligina baglidir -> sabit harita (sozluk `vakit.buyuk`) motordan bagimsiz ve kesindir.
  */
-export const VAKIT_ADLARI_BUYUK: Record<VakitAdi, string> = {
-  imsak: 'SABAH',
-  gunes: 'GÜNEŞ',
-  ogle: 'ÖĞLE',
-  ikindi: 'İKİNDİ',
-  aksam: 'AKŞAM',
-  yatsi: 'YATSI',
-};
+export const VAKIT_ADLARI_BUYUK: Readonly<Record<VakitAdi, string>> = canli((s) => s.vakit.buyuk);
+
+/** Cumle icinde gecen kucuk harfli vakit adlari (sabit harita; `toLowerCase` YAZMA). */
+export const VAKIT_ADLARI_KUCUK: Readonly<Record<VakitAdi, string>> = canli((s) => s.vakit.kucuk);
 
 /**
  * METIN = (TON, OLCU) — issue #274.

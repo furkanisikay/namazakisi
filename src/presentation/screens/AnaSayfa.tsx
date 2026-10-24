@@ -41,7 +41,7 @@ import { ucSutunluMu } from '../../core/utils/ekranSinifi';
 import { useNafilePencereleri } from '../hooks/useNafilePencereleri';
 import { useHesapSurumu } from '../hooks/useHesapSurumu';
 import { nafileZincirSatirlariOlustur } from '../../core/nafile/nafileZinciri';
-import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
+import { NamazAdi, namazAdiGoster } from '../../core/constants/UygulamaSabitleri';
 import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir, gunEkle, ISOTarihiDateNesnesiNeCevir } from '../../core/utils/TarihYardimcisi';
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
@@ -66,6 +66,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useBolgeTakvimiOnerisi } from '../hooks/useBolgeTakvimiOnerisi';
 import { BolgeTakvimiModali } from '../components/home/BolgeTakvimiModali';
 import { ulkeAdi } from '../../core/konum/ulkeAdlari';
+import { bicim, sayili } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
 import { Logger } from '../../core/utils/Logger';
 /** Kaza önerisinin Kıldım duasından sonra açılma gecikmesi. */
 const KAZA_ONERI_GECIKMESI_MS = 1600;
@@ -81,6 +83,8 @@ export const AnaSayfa: React.FC = () => {
   const dispatch = useAppDispatch();
   const pagerRef = useRef<PagerView>(null);
   const renkler = useRenkler();
+  const metinler = useMetin();
+  const ma = metinler.anaEkran;
   const { koyuMu } = useTema();
   // Katlanabilir/tablet (issue #283): pencere ≥600 dp ise gün sayfası iki bölmeli;
   // yarı açık + yatay menteşede (masaüstü postürü) üstte büyük geri sayım, altta akış.
@@ -186,7 +190,7 @@ export const AnaSayfa: React.FC = () => {
     if (konumAyarlari.konumModu === 'oto') {
       const { gpsAdres } = konumAyarlari;
       if (gpsAdres?.ilce && gpsAdres?.il) return `${gpsAdres.ilce}, ${gpsAdres.il}`;
-      return gpsAdres?.ilce || gpsAdres?.il || 'GPS aktif';
+      return gpsAdres?.ilce || gpsAdres?.il || ma.kart.gpsAktif;
     }
     if (konumAyarlari.seciliIlceAdi && konumAyarlari.seciliIlAdi) {
       return `${konumAyarlari.seciliIlceAdi}, ${konumAyarlari.seciliIlAdi}`;
@@ -321,7 +325,9 @@ export const AnaSayfa: React.FC = () => {
             nafileGosterge
           )
         : undefined,
-    [nafileGostergesi, nafileGosterge, nafilePencereleri, nafileDakikasi, nafileTeheccud.pencere]
+    // `metinler`: satır adları ve durum metni etkin dilde üretilir (dil değişince yenilenir).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [nafileGostergesi, nafileGosterge, nafilePencereleri, nafileDakikasi, nafileTeheccud.pencere, metinler]
   );
 
   // Pager'ın AÇILIŞ sayfası: aktif gün (gece yarısından sonra yatsı sürerken = dün).
@@ -647,7 +653,7 @@ export const AnaSayfa: React.FC = () => {
         !!gunlukNamazlar &&
         gunlukNamazlar.namazlar.every((n) => n.tamamlandi || n.namazAdi === namazAdi);
       if (kartVakti !== namazAdi && !gunuTamamlar) {
-        kisaBildirimGoster(`${namazAdi} · ${kabulDuasi(mevcutTarih, namazAdi)}`);
+        kisaBildirimGoster(`${namazAdiGoster(namazAdi)} · ${kabulDuasi(mevcutTarih, namazAdi)}`);
       }
     }
     // Kaza önerisi (issue #294): yalnız aktif günün o anki vaktinde, kerahat dışında,
@@ -805,8 +811,16 @@ export const AnaSayfa: React.FC = () => {
     if (kerahatEtkin && !muhafizKerahatNotu) {
       ogeler.push({
         anahtar: 'kerahat',
-        ozet: 'kerahat vakti',
-        dugum: <DurumSeridi testID="durum-kerahat" ikon="hourglass-half" renk={renkler.dikkat} baslik="Kerahat vakti" metin={kerahatMetni} />,
+        ozet: ma.durumAlani.kerahatOzet,
+        dugum: (
+          <DurumSeridi
+            testID="durum-kerahat"
+            ikon="hourglass-half"
+            renk={renkler.dikkat}
+            baslik={metinler.vakit.kerahatVakti}
+            metin={kerahatMetni}
+          />
+        ),
       });
     }
     if (muhafizEtkin) {
@@ -814,18 +828,18 @@ export const AnaSayfa: React.FC = () => {
       const sert = muhafizDurumu.seviye >= 3;
       ogeler.push({
         anahtar: 'muhafiz',
-        ozet: 'vakit çıkıyor',
+        ozet: ma.durumAlani.muhafizOzet,
         dugum: (
           <DurumSeridi
             testID="durum-muhafiz"
             ikon="exclamation-triangle"
             renk={sert ? renkler.hata : renkler.dikkat}
-            baslik={sert ? 'Şeytanla mücadele modu' : 'Vakit çıkıyor'}
+            baslik={sert ? ma.durumAlani.muhafizSertBaslik : ma.durumAlani.muhafizBaslik}
             metin={muhafizDurumu.mesaj}
             alt={
               muhafizKerahatNotu ? (
                 <View testID="durum-muhafiz-kerahat-notu" style={{ flexDirection: 'row', marginTop: 6 }}>
-                  <Text style={{ fontSize: 13, lineHeight: 18, color: renkler.metin }}>{`Kerahat vakti: ${kerahatMetni}`}</Text>
+                  <Text style={{ fontSize: 13, lineHeight: 18, color: renkler.metin }}>{bicim(ma.durumAlani.kerahatMetni, { metin: kerahatMetni ?? '' })}</Text>
                 </View>
               ) : undefined
             }
@@ -837,7 +851,7 @@ export const AnaSayfa: React.FC = () => {
       const m = ONARIM_METINLERI[onarim.sorun];
       ogeler.push({
         anahtar: 'kurulum',
-        ozet: 'izin kapalı',
+        ozet: ma.durumAlani.kurulumOzet,
         dugum: (
           <DurumSeridi
             testID="durum-kurulum"
@@ -861,7 +875,7 @@ export const AnaSayfa: React.FC = () => {
                   accessibilityRole="button"
                   style={{ minHeight: 44, paddingHorizontal: 12, justifyContent: 'center' }}
                 >
-                  <Text style={{ color: renkler.metinIkincil, fontSize: 14 }}>Şimdi değil</Text>
+                  <Text style={{ color: renkler.metinIkincil, fontSize: 14 }}>{ma.durumAlani.simdiDegil}</Text>
                 </TouchableOpacity>
               </View>
             }
@@ -873,15 +887,15 @@ export const AnaSayfa: React.FC = () => {
       const oran = toparlanma.hedef > 0 ? Math.min(1, toparlanma.tamamlanan / toparlanma.hedef) : 0;
       ogeler.push({
         anahtar: 'toparlanma',
-        ozet: 'toparlanma',
+        ozet: ma.durumAlani.toparlanmaOzet,
         dugum: (
           <DurumSeridi
             testID="durum-toparlanma"
             ikon="bolt"
             renk={renkler.birincil}
-            baslik={`Toparlanma · ${toparlanma.tamamlanan}/${toparlanma.hedef} gün`}
+            baslik={sayili(ma.durumAlani.toparlanmaBaslik, toparlanma.hedef, { tamamlanan: toparlanma.tamamlanan })}
             onPress={handleToparlanmaModalGoster}
-            erisimEtiketi={`Toparlanma, ${toparlanma.tamamlanan} / ${toparlanma.hedef} gün tamamlandı. Ayrıntılar için dokunun`}
+            erisimEtiketi={sayili(ma.durumAlani.toparlanmaErisim, toparlanma.hedef, { tamamlanan: toparlanma.tamamlanan })}
             alt={
               <View style={{ height: 4, marginTop: 8, borderRadius: 2, backgroundColor: renkler.sinir, overflow: 'hidden' }}>
                 <View style={{ height: 4, width: `${oran * 100}%`, backgroundColor: renkler.birincil }} />
@@ -892,7 +906,7 @@ export const AnaSayfa: React.FC = () => {
       });
     }
     if (aktifGunKontrol && seferilikGorunur) {
-      ogeler.push({ anahtar: 'seferilik', ozet: 'yolculuk bilgisi', dugum: <SeferilikBilgiKarti /> });
+      ogeler.push({ anahtar: 'seferilik', ozet: ma.durumAlani.seferilikOzet, dugum: <SeferilikBilgiKarti /> });
     }
     return ogeler;
   };
@@ -912,7 +926,7 @@ export const AnaSayfa: React.FC = () => {
     const sayfaTarihiDate = ISOTarihiDateNesnesiNeCevir(sayfaTarihi);
 
     // Şu anki vakit bilgisi (sadece aktif gün için geçerli)
-    let suankiVakitAdi = "Vakit";
+    let suankiVakitAdi = ma.sayfa.vakit;
     let vakitAraligi = "00:00 - 00:00";
     let suankiVakitTamamlandi = false;
     let kilitli = false;
@@ -928,7 +942,7 @@ export const AnaSayfa: React.FC = () => {
       } else {
         // Vakti girmiş namazlarda kerahat (gurub vb.) işaretlemeyi ENGELLEMEZ (issue #82):
         // buton açık kalır; işaretlemeden önce kibar onay modalı gösterilir (kerahatOnayBekleyen).
-        suankiVakitAdi = servisToNamazAdi[vakitBilgisi.vakit] || "Sabah";
+        suankiVakitAdi = servisToNamazAdi[vakitBilgisi.vakit] || NamazAdi.Sabah;
       }
 
       const suankiNamaz = uiNamazlar.find(n => n.namazAdi === suankiVakitAdi);
@@ -1093,7 +1107,7 @@ export const AnaSayfa: React.FC = () => {
 
   // Sade görünüm ayarı diskten okunmadan karar verilmez (normal ekran bir an görünüp
   // sade görünüme zıplamasın).
-  if (!sade.yuklendi) return <View className="flex-1 justify-center items-center" style={{ backgroundColor: renkler.arkaplan }}><YuklemeGostergesi mesaj="Yükleniyor..." /></View>;
+  if (!sade.yuklendi) return <View className="flex-1 justify-center items-center" style={{ backgroundColor: renkler.arkaplan }}><YuklemeGostergesi mesaj={ma.sayfa.yukleniyor} /></View>;
 
   // ---- Sade görünüm (issue #295): tek ekran; işaretleme ve modallar ana ekranla AYNI ----
   // Günün selamı (cuma, kandil, Ramazan…) — saf ve ucuz; değer dizeyle karşılaştırılır,
@@ -1155,8 +1169,8 @@ export const AnaSayfa: React.FC = () => {
     );
   }
 
-  if (yukleniyor && !gunlukNamazlar) return <View className="flex-1 justify-center items-center" style={{ backgroundColor: renkler.arkaplan }}><YuklemeGostergesi mesaj="Yükleniyor..." /></View>;
-  if (hata && !gunlukNamazlar) return <View className="flex-1 justify-center items-center p-6" style={{ backgroundColor: renkler.arkaplan }}><Text className="text-red-500 mb-4">{hata}</Text><AnimasyonluButon metin="Tekrar Dene" ikon="🔄" onPress={() => namazlariGetir(mevcutTarih)} tip="birincil" /></View>;
+  if (yukleniyor && !gunlukNamazlar) return <View className="flex-1 justify-center items-center" style={{ backgroundColor: renkler.arkaplan }}><YuklemeGostergesi mesaj={ma.sayfa.yukleniyor} /></View>;
+  if (hata && !gunlukNamazlar) return <View className="flex-1 justify-center items-center p-6" style={{ backgroundColor: renkler.arkaplan }}><Text className="text-red-500 mb-4">{hata}</Text><AnimasyonluButon metin={ma.sayfa.tekrarDene} ikon="🔄" onPress={() => namazlariGetir(mevcutTarih)} tip="birincil" /></View>;
 
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['top', 'left', 'right']}>
@@ -1181,12 +1195,12 @@ export const AnaSayfa: React.FC = () => {
         <TouchableOpacity
           onPress={sade.sadeyeDon}
           accessibilityRole="button"
-          accessibilityLabel="Sade görünüme dönün"
+          accessibilityLabel={ma.sayfa.sadeyeDon}
           testID="sade-donus-baglantisi"
           style={{ alignSelf: 'flex-end', flexDirection: 'row', alignItems: 'center', minHeight: 44, paddingHorizontal: 16 }}
         >
           <FontAwesome5 name="compress-alt" size={12} color={renkler.birincil} style={{ marginRight: 6 }} />
-          <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.birincil }}>Sade görünüme dönün</Text>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.birincil }}>{ma.sayfa.sadeyeDon}</Text>
         </TouchableOpacity>
       )}
 
@@ -1209,7 +1223,7 @@ export const AnaSayfa: React.FC = () => {
           // yanlışlıkla "gelecek gün" sayılıp toast tetiklemesin (#13 + gece yarısı bug).
           if (!programatik && gelecekGuneGecisMi(yeniTarih, aktifGun)) {
             HaptikServisi.uyariTitresimi();
-            kisaBildirimGoster('Gelecek günlere gidemezsiniz');
+            kisaBildirimGoster(ma.sayfa.gelecekGunler);
             // Aktif gune geri don
             programatikGecisRef.current = true;
             pagerRef.current?.setPage(tarihiSayfaIndeksineCevir(aktifGun));

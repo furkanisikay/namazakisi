@@ -60,23 +60,23 @@ export function vakitIkonKodu(vakit: string): VakitIkonKodu | null {
         case 'imsak':
         case 'sabah':
         case 'Sabah':
-        case 'İmsak':
+        case 'İmsak': // dil-haric: kimlik
             return 'imsak';
         case 'gunes':
-        case 'Güneş':
+        case 'Güneş': // dil-haric: kimlik
             return 'gunes';
         case 'ogle':
-        case 'Öğle':
+        case 'Öğle': // dil-haric: kimlik
         case 'Cuma':
             return 'ogle';
         case 'ikindi':
-        case 'İkindi':
+        case 'İkindi': // dil-haric: kimlik
             return 'ikindi';
         case 'aksam':
-        case 'Akşam':
+        case 'Akşam': // dil-haric: kimlik
             return 'aksam';
         case 'yatsi':
-        case 'Yatsı':
+        case 'Yatsı': // dil-haric: kimlik
             return 'yatsi';
         default:
             return null;

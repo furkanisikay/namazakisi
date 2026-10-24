@@ -20,7 +20,7 @@ import {
   kmMetni,
 } from '../../core/seferilik/seferilikKarari';
 import {
-  SEFERILIK_BILGI_NOTU,
+  seferilikBilgiNotu,
   SEFERILIK_KAYNAK_LISTESI,
   type KaynakBaglantisi,
 } from '../../core/seferilik/seferilikMetni';
@@ -126,7 +126,7 @@ export const SeferilikAyarlariSayfasi: React.FC = () => {
         </AyarGrubu>
 
         <Text className="text-xs leading-5 mx-4" style={{ color: renkler.metinIkincil }}>
-          {SEFERILIK_BILGI_NOTU} Sorularınız için 190 Diyanet Fetva Hattı'nı arayabilirsiniz.
+          {seferilikBilgiNotu()} Sorularınız için 190 Diyanet Fetva Hattı'nı arayabilirsiniz.
         </Text>
       </ScrollView>
     </SafeAreaView>

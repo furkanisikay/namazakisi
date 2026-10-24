@@ -13,6 +13,8 @@
  * Yanlış alarm, hiç uyarmamaktan kötüdür: bilinmeyen durum daima "sorun yok" sayılır.
  */
 
+import { canli } from '../dil/aktifDil';
+
 export type OnarimTuru = 'bildirimIzni' | 'tamAlarm';
 
 export interface OnarimGirdisi {
@@ -48,15 +50,15 @@ export function gecerliErtelemeler(kayit: unknown, simdiMs: number): OnarimTuru[
     return sonuc;
 }
 
-export const ONARIM_METINLERI: Record<OnarimTuru, { baslik: string; metin: string; eylem: string }> = {
+export const ONARIM_METINLERI: Readonly<Record<OnarimTuru, { baslik: string; metin: string; eylem: string }>> = canli((s) => ({
     bildirimIzni: {
-        baslik: 'Bildirimler kapalı',
-        metin: 'Vakit hatırlatmaları size ulaşamıyor. İzni tek dokunuşla açabilirsiniz.',
-        eylem: 'İzni açın',
+        baslik: s.anaEkran.onarim.bildirimBaslik,
+        metin: s.anaEkran.onarim.bildirimMetin,
+        eylem: s.anaEkran.onarim.izniAcin,
     },
     tamAlarm: {
-        baslik: 'Hatırlatmalar geç gelebilir',
-        metin: 'Tam zamanlı hatırlatma izni kapalı; vaktin son dakikalarında bu önemli.',
-        eylem: 'İzni açın',
+        baslik: s.anaEkran.onarim.tamAlarmBaslik,
+        metin: s.anaEkran.onarim.tamAlarmMetin,
+        eylem: s.anaEkran.onarim.izniAcin,
     },
-};
+}));

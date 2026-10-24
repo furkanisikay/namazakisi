@@ -14,6 +14,8 @@ import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { HESAP_PROFILLERI, hesapParametreleriOlustur, type HesapAyari } from '../../../core/vakit/hesapProfilleri';
 import type { UlkeVarsayilani } from '../../../core/vakit/ulkeProfilleri';
 import { GUVEN_METNI, PROFIL_ADLARI } from '../../../core/vakit/profilAdlari';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 interface Props {
   gorunur: boolean;
@@ -27,18 +29,20 @@ interface Props {
 }
 
 const VAKITLER = [
-  ['Sabah', 'fajr'],
-  ['Güneş', 'sunrise'],
-  ['Öğle', 'dhuhr'],
-  ['İkindi', 'asr'],
-  ['Akşam', 'maghrib'],
-  ['Yatsı', 'isha'],
+  ['imsak', 'fajr'],
+  ['gunes', 'sunrise'],
+  ['ogle', 'dhuhr'],
+  ['ikindi', 'asr'],
+  ['aksam', 'maghrib'],
+  ['yatsi', 'isha'],
 ] as const;
 
 const ss = (d: Date) => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 
 export const BolgeTakvimiModali: React.FC<Props> = ({ gorunur, ulkeAdi, yerAdi, koordinat, mevcut, oneri, onKabul, onReddet }) => {
   const renkler = useRenkler();
+  const metinler = useMetin();
+  const m = metinler.hesap.oneri;
   useDonanimGeriTusu(gorunur, onReddet);
 
   const satirlar = useMemo(() => {
@@ -48,7 +52,7 @@ export const BolgeTakvimiModali: React.FC<Props> = ({ gorunur, ulkeAdi, yerAdi, 
     const baglam = { tarih: bugun, enlem: koordinat.lat };
     const a = new PrayerTimes(k, bugun, hesapParametreleriOlustur(mevcut, baglam));
     const b = new PrayerTimes(k, bugun, hesapParametreleriOlustur({ profil: oneri.profil, ikindi: oneri.ikindi }, baglam));
-    return VAKITLER.map(([ad, alan]) => ({ ad, eski: ss(a[alan]), yeni: ss(b[alan]) }));
+    return VAKITLER.map(([kod, alan]) => ({ kod, eski: ss(a[alan]), yeni: ss(b[alan]) }));
   }, [koordinat, mevcut, oneri]);
 
   const eskiAd = HESAP_PROFILLERI[mevcut.profil]?.kisaAd ?? '';
@@ -82,21 +86,20 @@ export const BolgeTakvimiModali: React.FC<Props> = ({ gorunur, ulkeAdi, yerAdi, 
               </Text>
               {/* Ülke adına ek getirilmez ("…'dasınız"): Türkçe ses uyumu ada göre değişir. */}
               <Text className="text-sm" style={{ color: renkler.metinIkincil }}>
-                {yerAdi ? `Bulunduğunuz yer · ${yerAdi}` : 'Bulunduğunuz ülke'}
+                {yerAdi ? bicim(m.bulunduguYer, { yer: yerAdi }) : m.bulunduguUlke}
               </Text>
             </View>
           </View>
 
           <Text className="text-sm leading-5 mb-3" style={{ color: renkler.metin }}>
-            Vakitleri buradaki camilerin takvimine, {PROFIL_ADLARI[oneri.profil]} yöntemine göre hesaplayalım mı? Bugün
-            şöyle değişir:
+            {bicim(m.soru, { profil: PROFIL_ADLARI[oneri.profil] })}
           </Text>
 
           {satirlar.length > 0 && (
             <View className="rounded-2xl mb-3" style={{ borderWidth: 1, borderColor: renkler.sinir, overflow: 'hidden' }}>
               <View className="flex-row px-3 py-2" style={{ backgroundColor: renkler.arkaplan }}>
                 <Text className="flex-1 text-xs font-bold" style={{ color: renkler.metinIkincil }}>
-                  Vakit
+                  {m.vakit}
                 </Text>
                 <Text className="flex-1 text-xs font-bold text-center" style={{ color: renkler.metinIkincil }}>
                   {eskiAd}
@@ -106,9 +109,9 @@ export const BolgeTakvimiModali: React.FC<Props> = ({ gorunur, ulkeAdi, yerAdi, 
                 </Text>
               </View>
               {satirlar.map((s) => (
-                <View key={s.ad} className="flex-row px-3 py-1.5" style={{ borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: renkler.sinir }}>
+                <View key={s.kod} className="flex-row px-3 py-1.5" style={{ borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: renkler.sinir }}>
                   <Text className="flex-1 text-sm" style={{ color: renkler.metin }}>
-                    {s.ad}
+                    {metinler.vakit.adlar[s.kod]}
                   </Text>
                   <Text className="flex-1 text-sm text-center" style={{ color: renkler.metinIkincil }}>
                     {s.eski}
@@ -123,7 +126,7 @@ export const BolgeTakvimiModali: React.FC<Props> = ({ gorunur, ulkeAdi, yerAdi, 
 
           {oneri.guven === 'genel' && (
             <Text className="text-xs mb-3" style={{ color: renkler.metinIkincil }}>
-              {GUVEN_METNI.genel}: bu ülke için doğrulanmış bir resmî takvim bulamadık.
+              {bicim(m.genelUyari, { guven: GUVEN_METNI.genel })}
             </Text>
           )}
 
@@ -132,11 +135,11 @@ export const BolgeTakvimiModali: React.FC<Props> = ({ gorunur, ulkeAdi, yerAdi, 
             style={{ backgroundColor: renkler.birincil, minHeight: 50 }}
             onPress={onKabul}
             accessibilityRole="button"
-            accessibilityLabel={`${yeniAd} takvimine geçin`}
+            accessibilityLabel={bicim(m.gecin, { ad: yeniAd })}
           >
             <FontAwesome5 name="check" size={14} color="#FFFFFF" style={{ marginRight: 8 }} />
             <Text className="text-base font-bold" style={{ color: '#FFFFFF' }}>
-              {yeniAd} takvimine geçin
+              {bicim(m.gecin, { ad: yeniAd })}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -144,15 +147,14 @@ export const BolgeTakvimiModali: React.FC<Props> = ({ gorunur, ulkeAdi, yerAdi, 
             style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir, minHeight: 48 }}
             onPress={onReddet}
             accessibilityRole="button"
-            accessibilityLabel={`${eskiAd} ile devam edin`}
+            accessibilityLabel={bicim(m.devam, { ad: eskiAd })}
           >
             <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-              {eskiAd} ile devam edin
+              {bicim(m.devam, { ad: eskiAd })}
             </Text>
           </TouchableOpacity>
           <Text className="text-xs text-center mt-3" style={{ color: renkler.metinIkincil }}>
-            Bu soru bu ülke için bir kez sorulur. Ayarlar › Namaz vakitleri › Hesap yöntemi'nden istediğiniz zaman
-            değiştirebilirsiniz.
+            {m.birKez}
           </Text>
         </View>
       </View>

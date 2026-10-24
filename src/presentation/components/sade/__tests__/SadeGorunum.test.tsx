@@ -36,6 +36,7 @@ const mockTts = { deger: null as boolean | null };
 jest.mock('../../../hooks/useTurkceTtsDestegi', () => ({ useTurkceTtsDestegi: () => mockTts.deger }));
 
 import { SadeGorunum, type SadeGorunumProps } from '../SadeGorunum';
+import { ingilizceyeGec, turkceKalanlar } from '../../../../__tests__/yardimci/ingilizceDenetimi';
 
 const SIMDI = Date.now();
 const props = (ek: Partial<SadeGorunumProps> = {}): SadeGorunumProps => ({
@@ -161,5 +162,43 @@ describe('SadeGorunum', () => {
     expect(e.getByText('Allah kabul etsin')).toBeTruthy();
     expect(e.getByLabelText('İkindi namazı kılındı. Allah kabul etsin')).toBeTruthy();
     expect(e.getByTestId('sade-kabul-eki', { includeHiddenElements: true })).toBeTruthy();
+  });
+});
+
+describe('SadeGorunum — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+    mockDestek.var = true;
+    mockTts.deger = false;
+    jest.spyOn(AccessibilityInfo, 'isScreenReaderEnabled').mockResolvedValue(false);
+    jest.spyOn(AccessibilityInfo, 'isReduceMotionEnabled').mockResolvedValue(true);
+  });
+  afterEach(() => {
+    geriAl();
+    jest.restoreAllMocks();
+  });
+
+  const YASAKLI = ['Sabah', 'Vakit', 'vakit', 'dk\\b', 'sa\\b', 'Cuma', 'Dokunun'];
+  const kalan = async (p: SadeGorunumProps) => {
+    const ekran = render(<SadeGorunum {...p} />);
+    await act(async () => {
+      await Promise.resolve();
+    });
+    return turkceKalanlar(ekran.toJSON() as never, YASAKLI);
+  };
+
+  it('vakit sürüyor, kılınmış, kerahat, güneş (henüz girmedi), hazır değil', async () => {
+    expect(await kalan(props())).toEqual([]);
+    expect(await kalan(props({ tamamlandi: true, kabulMetni: 'May Allah accept it' }))).toEqual([]);
+    expect(await kalan(props({ mekruhMu: true }))).toEqual([]);
+    expect(await kalan(props({ vakit: 'gunes', sonrakiVakit: 'ogle', cumaEtiketi: true }))).toEqual([]);
+    expect(await kalan(props({ vakit: null, sonrakiGirisIso: null }))).toEqual([]);
+  });
+
+  it('sesli okuma cümlesi İngilizce: "It\'s Asr time now. … Next is Maghrib"', async () => {
+    const ekran = render(<SadeGorunum {...props()} />);
+    const halka = ekran.getByTestId('sade-halka');
+    expect(halka.props.accessibilityLabel).toMatch(/^It's Asr time now\. It ends in 42 minutes\. Next is Maghrib, at \d\d:\d\d\.$/);
   });
 });

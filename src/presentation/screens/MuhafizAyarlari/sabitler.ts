@@ -15,20 +15,8 @@ import type {
     SeviyeKademe,
 } from '../../../core/muhafiz/matrisTipleri';
 
-/**
- * CUMLE ICINDE gecen kucuk harfli vakit adlari ("… yatsı bugün 6 sa 40 dk").
- *
- * SABIT HARITA — `VAKIT_ADLARI[...].toLowerCase()` YAZMA: 'İkindi'.toLowerCase()
- * JS'te 'i̇kindi' (i + birlesik nokta) uretir. AGENTS.md'deki toUpperCase tuzaginin
- * ikizidir; yalniz `i`/`İ` iceren sozcukleri bozdugu icin testlerden kolayca kacar.
- */
-export const VAKIT_ADLARI_KUCUK: Record<MuhafizVakti, string> = {
-    imsak: 'sabah',
-    ogle: 'öğle',
-    ikindi: 'ikindi',
-    aksam: 'akşam',
-    yatsi: 'yatsı',
-};
+/** Cümle içindeki küçük harfli vakit adları — tek kaynak sözlük (`vakit.kucuk`). */
+export { VAKIT_ADLARI_KUCUK } from '../../../core/utils/muhafizMetinYardimcisi';
 
 export interface SeviyeBilgisi {
     baslik: string;

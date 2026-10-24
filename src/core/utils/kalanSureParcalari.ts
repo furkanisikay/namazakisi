@@ -9,26 +9,37 @@
  *  - bir dakikanın altı: "42 sn"
  * SAF: girdi AnaSayfa'nın ürettiği "SS:DD:ss" dizesidir; bozuksa olduğu gibi tek parça döner.
  */
+import { metin, sayili } from '../dil/aktifDil';
+
 export interface SureParcasi {
   sayi: string;
   birim: string;
 }
 
-export function kalanSureParcalari(ssddss: string): SureParcasi[] {
+type Birim = 'sa' | 'dk' | 'sn';
+
+function kodluParcalar(ssddss: string): { sayi: string; kod: Birim | null }[] {
   const eslesme = /^(\d+):(\d{2}):(\d{2})$/.exec(ssddss.trim());
-  if (!eslesme) return [{ sayi: ssddss, birim: '' }];
+  if (!eslesme) return [{ sayi: ssddss, kod: null }];
   const sa = Number(eslesme[1]);
   const dk = Number(eslesme[2]);
   const sn = eslesme[3];
-  if (sa > 0) return [{ sayi: String(sa), birim: 'sa' }, { sayi: String(dk), birim: 'dk' }];
-  if (dk > 0) return [{ sayi: String(dk), birim: 'dk' }, { sayi: sn, birim: 'sn' }];
-  return [{ sayi: String(Number(sn)), birim: 'sn' }];
+  if (sa > 0) return [{ sayi: String(sa), kod: 'sa' }, { sayi: String(dk), kod: 'dk' }];
+  if (dk > 0) return [{ sayi: String(dk), kod: 'dk' }, { sayi: sn, kod: 'sn' }];
+  return [{ sayi: String(Number(sn)), kod: 'sn' }];
+}
+
+/** Birimler etkin dilde ("1 sa 9 dk" / "1 h 9 min"). */
+export function kalanSureParcalari(ssddss: string): SureParcasi[] {
+  const kisa = metin().sure.kisa;
+  return kodluParcalar(ssddss).map((p) => ({ sayi: p.sayi, birim: p.kod ? kisa[p.kod] : '' }));
 }
 
 /** Ekran okuyucu metni: "1 saat 9 dakika", "9 dakika 5 saniye", "42 saniye". */
 export function kalanSureSesli(ssddss: string): string {
-  const adlar: Record<string, string> = { sa: 'saat', dk: 'dakika', sn: 'saniye' };
-  return kalanSureParcalari(ssddss)
-    .map((p) => (adlar[p.birim] ? `${Number(p.sayi)} ${adlar[p.birim]}` : p.sayi))
+  const s = metin().sure;
+  const uzun = { sa: s.saat, dk: s.dakika, sn: s.saniye };
+  return kodluParcalar(ssddss)
+    .map((p) => (p.kod ? sayili(uzun[p.kod], Number(p.sayi)) : p.sayi))
     .join(' ');
 }

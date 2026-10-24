@@ -16,6 +16,9 @@
  * Aşure günü bilinçli olarak YOK: Muharrem matemi tutan kullanıcı için "mübarek olsun" kırıcıdır.
  * Kaygı/suçlama yok, emir yok: selam karşılıklı bir nezakettir, arayüz kaydında ("siz").
  */
+import { aktifDil, canli } from '../dil/aktifDil';
+import type { DilKodu } from '../dil/diller';
+import type { Sozluk } from '../dil/sozluk/tr';
 import { ozelGunBul, ramazanGunuMu } from './ozelGunler';
 import { bilinenVakitSirasi } from './kabulDuasi';
 
@@ -35,18 +38,14 @@ function haftaGunu(tarihIso: string): number {
     return new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]))).getUTCDay();
 }
 
-export const SELAMLAR = {
-    sahur: 'Hayırlı sahurlar',
-    bayram: 'Bayramınız mübarek olsun',
-    iftar: 'Hayırlı iftarlar',
-    kadir: 'Kadir Geceniz mübarek olsun',
-    kandil: 'Kandiliniz mübarek olsun',
-    arefe: 'Hayırlı arefeler',
-    hicriYilbasi: 'Hicri yılbaşınız mübarek olsun',
-    cuma: 'Hayırlı cumalar',
-    ramazan: 'Hayırlı Ramazanlar',
-    sabah: 'Hayırlı sabahlar',
-} as const;
+export const SELAMLAR: Readonly<Sozluk['samimiyet']['selamlar']> = canli((s) => s.samimiyet.selamlar);
+
+/**
+ * Kandil ve hicrî yılbaşı selamı Türkiye geleneğidir: başka dilde (Körfez, Güney Asya,
+ * Batı) bu geceleri kutlamak tartışmalıdır ve kullanıcıyı kırabilir (aşure kararıyla aynı
+ * gerekçe) → o dillerde o gün yalnız genel selamlar (cuma, Ramazan) kalır.
+ */
+const GELENEK_SELAMI_DILLERI: readonly DilKodu[] = ['tr'];
 
 export function gunSelami({ tarihIso, takvimGunuIso, vakit }: SelamGirdisi): string | null {
     const takvim = takvimGunuIso ?? tarihIso;
@@ -61,9 +60,10 @@ export function gunSelami({ tarihIso, takvimGunuIso, vakit }: SelamGirdisi): str
     if (ramazan && sira === 3) return SELAMLAR.iftar;
 
     if (ozel?.tur === 'kadir') return SELAMLAR.kadir;
-    if (ozel?.tur === 'kandil') return SELAMLAR.kandil;
+    const gelenek = GELENEK_SELAMI_DILLERI.includes(aktifDil());
+    if (ozel?.tur === 'kandil' && gelenek) return SELAMLAR.kandil;
     if (ozel?.tur === 'arefe') return SELAMLAR.arefe;
-    if (ozel?.tur === 'hicriYilbasi') return SELAMLAR.hicriYilbasi;
+    if (ozel?.tur === 'hicriYilbasi' && gelenek) return SELAMLAR.hicriYilbasi;
 
     if (haftaGunu(tarihIso) === 5) return SELAMLAR.cuma;
     if (ramazan) return SELAMLAR.ramazan;

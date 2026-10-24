@@ -3,6 +3,8 @@
  * SOLID prensiplerini takip ederek arayuz sabitlerini ayiriyoruz
  */
 
+import { canli } from '../dil/aktifDil';
+
 // Namaz isimleri (Veritabanı ve Kod içinde kullanım için)
 // NOT: Veritabanında Türkçe karakterli saklandığı için değerler Türkçe olmalı.
 export enum NamazAdi {
@@ -14,15 +16,22 @@ export enum NamazAdi {
   Yatsi = 'Yatsı',
 }
 
-// UI'da gösterilecek isimler (Enum değerleri zaten Türkçe olduğu için birebir aynı olabilir, veya farklı formatlanabilir)
-export const NAMAZ_GORUNUM_ISIMLERI: Record<NamazAdi, string> = {
-  [NamazAdi.Sabah]: 'Sabah',
-  [NamazAdi.Gunes]: 'Güneş',
-  [NamazAdi.Ogle]: 'Öğle',
-  [NamazAdi.Ikindi]: 'İkindi',
-  [NamazAdi.Aksam]: 'Akşam',
-  [NamazAdi.Yatsi]: 'Yatsı',
-};
+/**
+ * Ekranda gösterilecek ad. Enum DEĞERİ Türkçedir ve depolama anahtarıdır (çevrilmez);
+ * görünen ad etkin dilin sözlüğünden gelir (canlı görünüm).
+ */
+export const NAMAZ_GORUNUM_ISIMLERI: Readonly<Record<NamazAdi, string>> = canli((s) => ({
+  [NamazAdi.Sabah]: s.vakit.adlar.imsak,
+  [NamazAdi.Gunes]: s.vakit.adlar.gunes,
+  [NamazAdi.Ogle]: s.vakit.adlar.ogle,
+  [NamazAdi.Ikindi]: s.vakit.adlar.ikindi,
+  [NamazAdi.Aksam]: s.vakit.adlar.aksam,
+  [NamazAdi.Yatsi]: s.vakit.adlar.yatsi,
+}));
+
+/** Namaz kaydının ekrandaki adı; tanınmayan değer olduğu gibi döner. */
+export const namazAdiGoster = (ad: string): string =>
+  (NAMAZ_GORUNUM_ISIMLERI as Record<string, string>)[ad] ?? ad;
 
 // Veritabanı oluşturulurken kullanılan liste (5 Vakit)
 // Güneş vakti namaz olarak kılınmadığı/işaretlenmediği için burada yer almaz.

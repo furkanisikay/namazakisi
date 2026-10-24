@@ -13,20 +13,25 @@
  * - Ek selam yalnız iki vakitte: sabah → "Hayırlı sabahlar", yatsı → "Hayırlı geceler"
  *   (günün başı ve sonu; diğer vakitlerde ek söz gürültüdür).
  */
+import { bicim, canli, metin } from '../dil/aktifDil';
 import { tr } from '../dil/sozluk/tr';
 
-/** Dört yuva; "Allah kabul etsin" iki kez → baskın kalıp. Sıra değişirse test değişir. */
-export const KABUL_DUALARI = [
-    'Allah kabul etsin',
-    'Kabul olsun',
-    'Allah kabul etsin',
-    'Rabbim kabul etsin',
-] as const;
+/**
+ * TÜRKÇE kalıplar — native ikizlerin (Kotlin/Swift) sabiti ve nöbetçi testin kaynağı.
+ * Ekran ve bildirim etkin dili okur (`kabulDuasi`, `kabulDualari()`).
+ */
+export const KABUL_DUALARI = tr.samimiyet.kabulDualari;
 
-/** Sesli asistan, saat, bildirim gibi tek kalıplı yüzeylerin metni. */
-export const KABUL_DUASI = 'Allah kabul etsin';
+/** Sesli asistan, saat, bildirim gibi tek kalıplı yüzeylerin Türkçe metni (native ikizler). */
+export const KABUL_DUASI = tr.samimiyet.kabulDuasi;
 
-export type KabulDuasi = (typeof KABUL_DUALARI)[number];
+/** Etkin dilde dört yuva (her dil kendi geleneksel kalıbını taşır). */
+export const kabulDualari = (): readonly string[] => metin().samimiyet.kabulDualari;
+
+/** Etkin dilde tek kalıp. */
+export const tekKabulDuasi = (): string => metin().samimiyet.kabulDuasi;
+
+export type KabulDuasi = string;
 
 /** Vakit anahtarı → sıra. Hem `VakitAdi` ('imsak') hem görünen `NamazAdi` ('Sabah') kabul edilir. */
 const VAKIT_SIRASI: Record<string, number> = {
@@ -63,16 +68,17 @@ export function bilinenVakitSirasi(vakit: string | undefined): number | null {
 
 /** O gün o vakit için söylenecek dua (deterministik). */
 export function kabulDuasi(tarihIso: string, vakit: string): KabulDuasi {
-    const n = KABUL_DUALARI.length;
+    const dualar = kabulDualari();
+    const n = dualar.length;
     const i = (((gunSirasi(tarihIso) + vakitSirasi(vakit)) % n) + n) % n;
-    return KABUL_DUALARI[i];
+    return dualar[i];
 }
 
 /** Duanın ardından söylenebilecek kısa selam ya da `null` (yalnız sabah ve yatsı). */
 export function kabulEkSelami(vakit: string): string | null {
     const s = bilinenVakitSirasi(vakit);
-    if (s === 0) return 'Hayırlı sabahlar';
-    if (s === 4) return 'Hayırlı geceler';
+    if (s === 0) return metin().samimiyet.ekSabah;
+    if (s === 4) return metin().samimiyet.ekYatsi;
     return null;
 }
 
@@ -83,17 +89,17 @@ export function kabulCumlesi(tarihIso: string, vakit: string): string {
 }
 
 /** Günün beş vakti tamamlanınca (iki satır: P1/P2 için kısa ana satır + bilgi satırı). */
-export const TAM_GUN_METNI = {
-    ana: 'Allah kabul etsin',
-    alt: 'Bugün beş vakti tamamladınız.',
-} as const;
+export const TAM_GUN_METNI: Readonly<{ ana: string; alt: string }> = canli((s) => ({
+    ana: s.samimiyet.tamGunAna,
+    alt: s.samimiyet.tamGunAlt,
+}));
 
 /** Kaza namazı işaretlenince (defter + kaza önerisi aynı söz). */
 export function kazaKabulMetni(kucukVakitAdi: string): string {
-    return `Bir ${kucukVakitAdi} kazası defterinizden düşüldü. ${KABUL_DUASI}.`;
+    return bicim(metin().samimiyet.kazaKabul, { vakit: kucukVakitAdi, dua: tekKabulDuasi() });
 }
 
-/** Tesbihat tamamlanınca (saat ikizleri aynı sözü yazar). */
+/** Tesbihat tamamlanınca (saat ikizleri aynı sözü yazar; Türkçe sabit). */
 export const TESBIHAT_TAMAM_METNI = KABUL_DUASI;
 
 /** Kurulum sihirbazı bitince ("Her şey hazır" başlığının alt satırının başı). Kaynak sözlükte

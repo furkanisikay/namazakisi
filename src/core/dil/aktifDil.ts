@@ -75,6 +75,20 @@ export function sayili(
   return bicimle(cogulSec(kod, sablon, n), { n, ...degerler });
 }
 
+const BINLIK: Readonly<Record<DilKodu, string>> = { tr: '.', en: ',' };
+const ONDALIK: Readonly<Record<DilKodu, string>> = { tr: ',', en: '.' };
+
+/**
+ * Sayıyı etkin dilin ayırıcılarıyla yazar ("12.450" / "12,450"). `Intl`'e bağlı değil
+ * (Hermes'te `toLocaleString` ICU derlemesine bağlıdır; sonuç cihaza göre değişirdi).
+ */
+export function sayiYaz(n: number, kod: DilKodu = aktif): string {
+  if (!Number.isFinite(n)) return String(n);
+  const [tam, kesir] = Math.abs(n).toString().split('.');
+  const gruplu = tam.replace(/\B(?=(\d{3})+(?!\d))/g, BINLIK[kod]);
+  return `${n < 0 ? '-' : ''}${gruplu}${kesir ? ONDALIK[kod] + kesir : ''}`;
+}
+
 /**
  * Sözlüğün bir dalını DEĞİŞMEZ nesne gibi gösteren canlı görünüm: okunduğu an etkin dilin
  * değerini verir. Eski sabit tabloları (`DUZEY_ADLARI[d]`) çağıranları değiştirmeden

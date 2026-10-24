@@ -6,11 +6,13 @@ import {
     TESBIHAT_TAMAM_METNI,
     kabulCumlesi,
     kabulDuasi,
+    kabulDualari,
     kabulEkSelami,
     kazaKabulMetni,
 } from '../kabulDuasi';
 import { OZEL_GUNLER, RAMAZAN_ARALIKLARI, TABLO_SON_GUNU, ozelGunBul, ramazanGunuMu } from '../ozelGunler';
 import { SELAMLAR, gunSelami } from '../selam';
+import { aktifDiliKur, aktifDilSifirla } from '../../dil/aktifDil';
 
 const FARZLAR = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] as const;
 
@@ -168,5 +170,40 @@ describe('NÖBETÇİ — samimiyet metinlerinde yasaklı ifade yok', () => {
         expect(metin).not.toMatch(/!/);
         // büyük harf tuzağı: noktasız I ile yanlış "İ" yok
         expect(metin).not.toMatch(/KINDI|İKINDI/);
+    });
+});
+
+describe('İngilizce — her dil kendi geleneksel kalıbı', () => {
+    beforeEach(() => aktifDiliKur('en'));
+    afterEach(() => aktifDilSifirla());
+
+    it('dua dönüşümü deterministik ve yalnız İngilizce kalıplardan', () => {
+        const d = kabulDuasi('2026-10-22', 'ogle');
+        expect(d).toBe(kabulDuasi('2026-10-22', 'ogle'));
+        expect(kabulDualari()).toContain(d);
+        expect(KABUL_DUALARI).not.toContain(d);
+    });
+
+    it('kandil ve hicrî yılbaşı selamı İngilizcede söylenmez; cuma ve Kadir söylenir', () => {
+        // 2026-12-10 Regaib (perşembe, akşam) → İngilizcede selam yok
+        expect(gunSelami({ tarihIso: '2026-12-10', vakit: 'aksam' })).toBeNull();
+        expect(gunSelami({ tarihIso: '2026-10-23', vakit: 'ogle' })).toBe("Jumu'ah Mubarak");
+        expect(gunSelami({ tarihIso: '2027-03-05', vakit: 'ogle' })).toBe('Blessed Laylat al-Qadr');
+    });
+
+    it('yasaklı ifade yok (övgü, ünlem, suçlama)', () => {
+        const metinler = [
+            ...kabulDualari(),
+            TAM_GUN_METNI.ana,
+            TAM_GUN_METNI.alt,
+            kazaKabulMetni('Dhuhr'),
+            kabulCumlesi('2026-10-22', 'imsak'),
+            ...Object.values(SELAMLAR),
+        ];
+        for (const m of metinler) {
+            expect(m).not.toMatch(/!/);
+            expect(m.toLowerCase()).not.toMatch(/congrat|great job|awesome|amazing|well done|sin\b|hell\b|missed/);
+        }
+        expect(TAM_GUN_METNI.alt).toBe('You completed all five prayers today.');
     });
 });

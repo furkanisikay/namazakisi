@@ -43,6 +43,8 @@ import {
   type SadeVakitKodu,
 } from '../../../core/sade/sadeGorunum';
 import { sesliOku, sesliOkumaDestekleniyorMu } from '../../../domain/services/SesliOkumaServisi';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
 
 export interface SadeGorunumProps {
@@ -128,6 +130,7 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
   gunSelami,
 }) => {
   const renkler = useRenkler();
+  const metinler = useMetin();
   const simdi = useDakikaSaati();
   const ekranOkuyucu = useEkranOkuyucuAcik();
   const okumaVar = sesliOkumaDestekleniyorMu();
@@ -148,7 +151,9 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
         cumaEtiketi,
         kabulMetni,
       }),
-    [vakit, giris, sonrakiGirisIso, sonrakiVakit, simdi, tamamlandi, kayitHazir, mekruhMu, cumaEtiketi, kabulMetni]
+    // `metinler`: başlık ve sesli okuma cümleleri etkin dilde üretilir.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [vakit, giris, sonrakiGirisIso, sonrakiVakit, simdi, tamamlandi, kayitHazir, mekruhMu, cumaEtiketi, kabulMetni, metinler]
   );
 
   // Halka çapı: pencereye göre (telefon, açık katlanabilir, yatay tablet).
@@ -164,7 +169,7 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
     oncekiTamamlandi.current = durum.tamamlandi;
     if (!yeniKilindi) return;
     AccessibilityInfo.announceForAccessibility(
-      `${durum.vakitAdi} namazı kılındı olarak işaretlendi.${kabulMetni ? ` ${kabulMetni}.` : ''}`
+      `${bicim(metinler.sade.isaretlendiDuyuru, { ad: durum.vakitAdi })}${kabulMetni ? ` ${kabulMetni}.` : ''}`
     );
     let iptal = false;
     AccessibilityInfo.isReduceMotionEnabled()
@@ -194,19 +199,19 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
     ACIK_TEMA.renkler.metin,
   ]);
 
-  let dugmeEtiketi = 'Kıldım';
+  let dugmeEtiketi = metinler.vakit.eylem.kildim;
   let dugmeIkonu = 'check';
   let dugmeZemin = renkler.birincilKoyu;
   let dugmeKenar = renkler.birincilKoyu;
   let dugmeMetin = dugmeMetinRengi;
   if (durum.tamamlandi) {
-    dugmeEtiketi = kabulMetni ?? 'Kılındı';
+    dugmeEtiketi = kabulMetni ?? metinler.vakit.eylem.kilindi;
     dugmeIkonu = 'check-circle';
     dugmeZemin = `${renkler.basarili}20`;
     dugmeKenar = renkler.basarili;
     dugmeMetin = renkler.metin;
   } else if (durum.tur !== 'vakit') {
-    dugmeEtiketi = durum.tur === 'girmedi' ? 'Vakit henüz girmedi' : 'Vakit hesaplanıyor';
+    dugmeEtiketi = durum.tur === 'girmedi' ? metinler.sade.vakitGirmedi : metinler.sade.vakitHesaplaniyor;
     dugmeIkonu = 'hourglass-half';
     dugmeZemin = renkler.kartArkaplan;
     dugmeKenar = renkler.sinir;
@@ -234,7 +239,7 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
             activeOpacity={0.8}
             accessibilityRole="button"
             accessibilityLabel={durum.okunacakMetin}
-            accessibilityHint={okumaVar && !ekranOkuyucu ? 'Sesli okumak için dokunun' : undefined}
+            accessibilityHint={okumaVar && !ekranOkuyucu ? metinler.sade.sesliIpucu : undefined}
           >
             <Animated.View
               style={{ width: cap, height: cap, alignItems: 'center', justifyContent: 'center', transform: [{ scale: olcek }] }}
@@ -303,12 +308,12 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
           {okumaVar && (
             <View className="flex-row items-center mt-3" importantForAccessibility="no-hide-descendants">
               <FontAwesome5 name="volume-up" size={16} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
-              <Text style={{ color: renkler.metin, fontSize: 16 }}>Dokunun, sesli okuyalım</Text>
+              <Text style={{ color: renkler.metin, fontSize: 16 }}>{metinler.sade.sesliOkuyalim}</Text>
             </View>
           )}
           {okumaVar && ttsDestegi === false && (
             <Text style={{ color: renkler.metin, fontSize: 14, textAlign: 'center', marginTop: 6 }}>
-              Sesli okuma için telefonunuzun ayarlarından Türkçe konuşma sesini indirebilirsiniz.
+              {metinler.sade.sesIndirin}
             </Text>
           )}
 
@@ -321,9 +326,9 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
             accessibilityRole="button"
             accessibilityLabel={
               durum.tamamlandi
-                ? `${durum.vakitAdi} namazı kılındı${kabulMetni ? `. ${kabulMetni}` : ''}`
+                ? `${bicim(metinler.sade.kilindiErisim, { ad: durum.vakitAdi })}${kabulMetni ? `. ${kabulMetni}` : ''}`
                 : dugmeEtkin
-                  ? `${durum.vakitAdi} namazını kıldım olarak işaretleyin`
+                  ? bicim(metinler.sade.kildimErisim, { ad: durum.vakitAdi })
                   : dugmeEtiketi
             }
             accessibilityState={{ disabled: !dugmeEtkin }}
@@ -350,14 +355,14 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
 
           {durum.kerahat && (
             <Text style={{ color: renkler.metin, fontSize: 16, textAlign: 'center', marginTop: 10 }}>
-              Şu an kerahat vakti; işaretlemeden önce size sorulacak.
+              {metinler.sade.kerahatNotu}
             </Text>
           )}
 
           {durum.sonrakiMetni && (
             <View className="items-center mt-8">
               <Text style={{ color: renkler.metin, fontSize: 18 }}>
-                {durum.tur === 'girmedi' ? `${durum.vakitAdi} vakti` : 'Sıradaki'}
+                {durum.tur === 'girmedi' ? bicim(metinler.sade.vaktiEtiketi, { ad: durum.vakitAdi }) : metinler.sade.siradaki}
               </Text>
               <Text testID="sade-sonraki" style={{ color: renkler.metin, fontSize: 26, fontWeight: '700', marginTop: 2 }}>
                 {durum.sonrakiMetni}
@@ -369,13 +374,13 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
             testID="sade-tum-uygulama"
             onPress={onTumUygulama}
             accessibilityRole="button"
-            accessibilityLabel="Tüm uygulamayı açın"
-            accessibilityHint="Sekmeler ve ayarlar görünür. Uygulamayı kapatıp açtığınızda sade görünüme dönülür."
+            accessibilityLabel={metinler.sade.tumUygulama}
+            accessibilityHint={metinler.sade.tumUygulamaIpucu}
             className="items-center justify-center mt-10"
             style={{ minHeight: 48, paddingHorizontal: 16 }}
           >
             <Text style={{ color: renkler.metin, fontSize: 16, textDecorationLine: 'underline' }}>
-              Tüm uygulamayı açın
+              {metinler.sade.tumUygulama}
             </Text>
           </TouchableOpacity>
         </View>

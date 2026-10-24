@@ -2,7 +2,9 @@ import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
-import { tarihiGorunumFormatinaCevir, gunAdiniAl } from '../../../core/utils/TarihYardimcisi';
+import { tarihiGorunumFormatinaCevir, gunAdiniAl, ISOTarihiDateNesnesiNeCevir } from '../../../core/utils/TarihYardimcisi';
+import { bicim, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { SERI_RENKLERI } from '../../../core/constants/UygulamaSabitleri';
 
 /**
@@ -43,15 +45,20 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
     selam,
 }) => {
     const renkler = useRenkler();
+    const metinler = useMetin();
+    const m = metinler.anaEkran.baslik;
     const gosterilenSelam = (aktifGunMu || bugunMu) && selam ? selam : null;
 
-    // Tarih parçalarını ayır (Örn: "18 Ocak 2026")
+    // Takvim yaprağı parçaları doğrudan tarihten (dile göre değişen biçimi bölmeden).
     const formatliTarih = tarihiGorunumFormatinaCevir(tarih);
-    const tarihParcalari = formatliTarih.split(' '); // ["18", "Ocak", "2026"]
-    const gun = tarihParcalari[0];
-    const ay = tarihParcalari[1]?.substring(0, 3); // "Oca"
-    const yil = tarihParcalari[2];
+    const tarihNesnesi = ISOTarihiDateNesnesiNeCevir(tarih);
+    const gun = tarihNesnesi.getDate();
+    const ay = metinler.tarih.aylarKisa[tarihNesnesi.getMonth()]; // "Oca"
+    const yil = tarihNesnesi.getFullYear();
     const gunAdi = gunAdiniAl(tarih); // "Pazar"
+    const toparlanmaEtiketi = toparlanmaIlerleme
+        ? bicim(m.toparlanmaErisim, { tamamlanan: toparlanmaIlerleme.tamamlanan, hedef: toparlanmaIlerleme.hedef })
+        : '';
 
     // Kademeli ateş rengi — toparlanma moduna göre değişir, useMemo ile hesaplanır
     const { atesRenk, atesOpacity } = useMemo(() => {
@@ -80,8 +87,12 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
                 activeOpacity={0.7}
                 accessibilityRole="button"
                 // Kısaltılmış ay ("Oca") yerine tam tarih okunur.
-                accessibilityLabel={`${gosterilenSelam ? `${gosterilenSelam}. ` : ''}${aktifGunMu ? 'Aktif gün' : bugunMu ? 'Bugün' : 'Seçili tarih'}: ${formatliTarih}, ${gunAdi}`}
-                accessibilityHint="Tarih seçiciyi açar"
+                accessibilityLabel={`${gosterilenSelam ? `${gosterilenSelam}. ` : ''}${bicim(m.tarihErisim, {
+                    etiket: aktifGunMu ? m.aktifGunErisim : bugunMu ? m.bugun : m.seciliTarihErisim,
+                    tarih: formatliTarih,
+                    gun: gunAdi,
+                })}`}
+                accessibilityHint={m.tarihIpucu}
             >
                 <View
                     className="p-2 rounded-lg items-center min-w-[3.5rem] border"
@@ -105,7 +116,7 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
                         </Text>
                     ) : (
                         <Text className="text-xs font-medium" style={{ color: renkler.metinIkincil }}>
-                            {aktifGunMu ? 'Aktif Gün' : (bugunMu ? 'Bugün' : 'Seçili Tarih')}
+                            {aktifGunMu ? m.aktifGun : (bugunMu ? m.bugun : m.seciliTarih)}
                         </Text>
                     )}
                     <Text className="text-sm font-bold" style={{ color: renkler.metin }}>
@@ -127,8 +138,8 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
                     activeOpacity={0.7}
                     accessibilityLabel={
                         toparlanmaModu && toparlanmaIlerleme
-                            ? `Toparlanma modu: ${toparlanmaIlerleme.tamamlanan}/${toparlanmaIlerleme.hedef} gün tamamlandı`
-                            : `Seri: ${streakGun} gün`
+                            ? toparlanmaEtiketi
+                            : sayili(m.seriErisim, streakGun)
                     }
                     accessibilityRole="button"
                 >
@@ -140,12 +151,12 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
                             accessibilityRole="text"
                             accessibilityLabel={
                                 toparlanmaModu && toparlanmaIlerleme
-                                    ? `Toparlanma modu: ${toparlanmaIlerleme.tamamlanan}/${toparlanmaIlerleme.hedef} gün tamamlandı`
+                                    ? toparlanmaEtiketi
                                     : undefined
                             }
                         />
                         <Text className="font-bold text-sm" style={{ color: atesRenk }}>
-                            {streakGun} Gün
+                            {sayili(m.seriGun, streakGun)}
                         </Text>
                     </View>
                     {toparlanmaModu && toparlanmaIlerleme && (
