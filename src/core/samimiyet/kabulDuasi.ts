@@ -13,6 +13,7 @@
  * - Ek selam yalnız iki vakitte: sabah → "Hayırlı sabahlar", yatsı → "Hayırlı geceler"
  *   (günün başı ve sonu; diğer vakitlerde ek söz gürültüdür).
  */
+import { tr } from '../dil/sozluk/tr';
 
 /** Dört yuva; "Allah kabul etsin" iki kez → baskın kalıp. Sıra değişirse test değişir. */
 export const KABUL_DUALARI = [
@@ -95,5 +96,6 @@ export function kazaKabulMetni(kucukVakitAdi: string): string {
 /** Tesbihat tamamlanınca (saat ikizleri aynı sözü yazar). */
 export const TESBIHAT_TAMAM_METNI = KABUL_DUASI;
 
-/** Kurulum sihirbazı bitince ("Her şey hazır" başlığının alt satırının başı). */
-export const KURULUM_BITTI_SELAMI = 'Hayırlı olsun.';
+/** Kurulum sihirbazı bitince ("Her şey hazır" başlığının alt satırının başı). Kaynak sözlükte
+ * (`samimiyet.kurulumBittiSelami`); ekran etkin dili `useMetin()` ile okur. */
+export const KURULUM_BITTI_SELAMI = tr.samimiyet.kurulumBittiSelami;

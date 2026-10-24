@@ -5,7 +5,7 @@
  *
  * Vakit adları sabit haritadan (Türkçe `toLowerCase`/`toUpperCase` İ tuzağı — AGENTS.md).
  */
-import { DUZEY_ADLARI, OZEL_DUZEY_ADI, type HatirlatmaDuzeyi } from './duzeyOzeti';
+import { DUZEY_ADLARI, OZEL_DUZEY, type HatirlatmaDuzeyi } from './duzeyOzeti';
 
 export type VakitAnahtari = 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
 
@@ -32,7 +32,7 @@ export function vakitGirinceOzeti(acik: Partial<Record<VakitAnahtari, boolean>>)
 /** Vakit çıkmadan (muhafız düzeyi). */
 export function vakitCikmadanOzeti(aktif: boolean, yogunluk: string): string {
     if (!aktif) return 'Kapalı';
-    if (yogunluk === 'ozel') return OZEL_DUZEY_ADI;
+    if (yogunluk === 'ozel') return OZEL_DUZEY.ad;
     const ad = DUZEY_ADLARI[yogunluk as HatirlatmaDuzeyi];
     return ad ? `${ad} düzey` : 'Açık';
 }

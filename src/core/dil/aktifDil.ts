@@ -17,6 +17,19 @@ import { tr, type Sozluk } from './sozluk/tr';
 const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en };
 
 let aktif: DilKodu = VARSAYILAN_DIL;
+const dinleyiciler = new Set<() => void>();
+
+/** Etkin dil değişince haber al (ekranların `useMetin` aboneliği). Aboneliği bırakan fonksiyon döner. */
+export function dilDegisiminiDinle(fn: () => void): () => void {
+  dinleyiciler.add(fn);
+  return () => {
+    dinleyiciler.delete(fn);
+  };
+}
+
+function bildir(): void {
+  for (const fn of [...dinleyiciler]) fn();
+}
 
 export function aktifDil(): DilKodu {
   return aktif;
@@ -27,11 +40,14 @@ export function aktifDiliKur(kod: unknown): boolean {
   const yeni = dilKoduMu(kod) ? kod : VARSAYILAN_DIL;
   if (yeni === aktif) return false;
   aktif = yeni;
+  bildir();
   return true;
 }
 
 export function aktifDilSifirla(): void {
+  if (aktif === VARSAYILAN_DIL) return;
   aktif = VARSAYILAN_DIL;
+  bildir();
 }
 
 /** Bir dilin sözlüğü (ekran `useMetin`, test ve önizleme için). */
@@ -57,4 +73,22 @@ export function sayili(
   kod: DilKodu = aktif,
 ): string {
   return bicimle(cogulSec(kod, sablon, n), { n, ...degerler });
+}
+
+/**
+ * Sözlüğün bir dalını DEĞİŞMEZ nesne gibi gösteren canlı görünüm: okunduğu an etkin dilin
+ * değerini verir. Eski sabit tabloları (`DUZEY_ADLARI[d]`) çağıranları değiştirmeden
+ * sözlüğe bağlamak için. Yeni kodda doğrudan `metin()`/`useMetin()` kullanın.
+ */
+export function canli<T extends object>(sec: (s: Sozluk) => T): Readonly<T> {
+  const hedef = () => sec(metin());
+  return new Proxy({} as T, {
+    get: (_, k) => (hedef() as Record<string | symbol, unknown>)[k],
+    has: (_, k) => k in hedef(),
+    ownKeys: () => Reflect.ownKeys(hedef()),
+    getOwnPropertyDescriptor: (_, k) => {
+      const d = Reflect.getOwnPropertyDescriptor(hedef(), k);
+      return d ? { ...d, configurable: true } : undefined;
+    },
+  });
 }

@@ -17,6 +17,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { Anahtar } from '../../components/common/Anahtar';
 import { useDonguAcik, useDonguAnimasyonu } from '../../components/hareket';
+import { useMetin } from '../../hooks/useMetin';
 
 export type CanliIkonTuru = 'nabiz' | 'salla' | 'dalga' | 'salin';
 
@@ -193,6 +194,7 @@ export const SoruKarti: React.FC<{
  */
 export const DinleDugmesi: React.FC<{ metin: string }> = ({ metin }) => {
     const renkler = useRenkler();
+    const etiket = useMetin().kurulum.duzey.sesliDinleyin;
     const dinle = () => {
         try {
             const { adimiOnizle } = require('../../../domain/services/AnonsOnizlemeServisi') as typeof import('../../../domain/services/AnonsOnizlemeServisi');
@@ -206,7 +208,7 @@ export const DinleDugmesi: React.FC<{ metin: string }> = ({ metin }) => {
             testID="kart-sesli-dinle"
             onPress={dinle}
             accessibilityRole="button"
-            accessibilityLabel="Sesli okumayı dinleyin"
+            accessibilityLabel={etiket}
             style={{
                 minHeight: 44,
                 paddingHorizontal: 14,

@@ -4,6 +4,7 @@
  *
  * Sayılan: Türkçe harf (çğıöşüÇĞİÖŞÜ) içeren dize sabitleri ve JSX metni. Sayılmayan:
  * yorumlar, `Logger.*`/`console.*`/`throw new Error(` satırları (geliştiriciye gider),
+ * `// dil-haric` işaretli satırlar (kullanıcıya görünmeyen kod sabiti; gerekçe aynı satırda),
  * testler, sözlüğün kendisi (`src/core/dil/sozluk/`). Sezgiseldir: Türkçe harfsiz
  * metinleri ("Kaza", "Ayarlar") kaçırır — onları ekran başına "İngilizce çizimde Türkçe
  * yok" testleri yakalar.
@@ -67,6 +68,8 @@ function say(icerik) {
         const t = satir.trim();
         if (t.startsWith('//') || t.startsWith('*')) continue;
         if (/\b(Logger\.\w+|console\.\w+)\(|throw new Error\(/.test(t)) continue;
+        // Kullanıcıya görünmeyen Türkçe harfli kod sabiti (arama normalleştirme vb.): satır sonu işareti.
+        if (/\/\/\s*dil-haric\b/.test(satir)) continue;
         // Satır sonu yorumunu at (dize içindeki // nadiren Türkçe harf taşır; sezgisel).
         const kod = satir.replace(/\s\/\/.*$/, '');
         for (const m of kod.matchAll(DIZE)) if (TR.test(m[2])) n++;

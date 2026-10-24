@@ -5,4 +5,8 @@ export const ortak = {
   kapatin: 'Kapatın',
   ayarlariAcin: 'Ayarları açın',
   simdilikGecin: 'Şimdilik geçin',
+  tekrarDeneyin: 'Tekrar deneyin',
+  evet: 'Evet',
+  hayir: 'Hayır',
+  ayrintilariAcar: 'Ayrıntıları açar',
 } as const;

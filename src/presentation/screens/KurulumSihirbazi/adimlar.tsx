@@ -13,7 +13,6 @@
  * açıklama modalı açılmaz (aynı şeyi iki kez okutmuyoruz).
  */
 import * as React from 'react';
-import { KURULUM_BITTI_SELAMI } from '../../../core/samimiyet/kabulDuasi';
 import { AccessibilityInfo, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
@@ -29,6 +28,8 @@ import type { IzinSonucu } from '../../components/ortak';
 import type { KonumDurumu } from './tipler';
 import { DunyaSehirSecici } from '../../components/DunyaSehirSecici';
 import type { DunyaSehri } from '../../../core/konum/dunyaSehirleri';
+import { useMetin } from '../../hooks/useMetin';
+import { bicim } from '../../../core/dil/aktifDil';
 
 /** Elle seçimde bölge: Türkiye il listesi ya da dünya şehri. */
 export type ManuelBolge = 'turkiye' | 'dunya';
@@ -93,15 +94,18 @@ export const SonucSatiri: React.FC<{ tip: 'basari' | 'uyari'; metin: string; tes
 
 // ─── 1. Hoş geldiniz ─────────────────────────────────────────────────────────
 
-export const HosgeldinizAdimi: React.FC = () => (
-    <View>
-        <HosgeldinizSahnesi />
-        <AdimBasligi baslik="Namaz Akışı" alt="Vakitleri bilin, kıldığınızı tek dokunuşla işaretleyin." />
-        <Madde ikon="map-marker-alt" metin="Bulunduğunuz yerin vakitleri" />
-        <Madde ikon="bell" metin="Vakit çıkmadan önce hatırlatma" />
-        <Madde ikon="lock" metin="Her şey bu telefonda kalır" />
-    </View>
-);
+export const HosgeldinizAdimi: React.FC = () => {
+    const m = useMetin().kurulum.hosgeldiniz;
+    return (
+        <View>
+            <HosgeldinizSahnesi />
+            <AdimBasligi baslik={m.baslik} alt={m.alt} />
+            <Madde ikon="map-marker-alt" metin={m.maddeVakit} />
+            <Madde ikon="bell" metin={m.maddeHatirlatma} />
+            <Madde ikon="lock" metin={m.maddeGizlilik} />
+        </View>
+    );
+};
 
 // ─── 2. Konum ────────────────────────────────────────────────────────────────
 
@@ -109,7 +113,7 @@ export const HosgeldinizAdimi: React.FC = () => (
  * Türkçe küçük harf (aramada). `toLocaleLowerCase('tr-TR')` Hermes'te ICU'ya bağlıdır
  * ve 'İ'.toLowerCase() 'i̇' (birleşik nokta) üretir → önce İ/I elle çevrilir.
  */
-export const kucukHarf = (s: string): string => s.replace(/İ/g, 'i').replace(/I/g, 'ı').toLowerCase();
+export const kucukHarf = (s: string): string => s.replace(/İ/g, 'i').replace(/I/g, 'ı').toLowerCase(); // dil-haric: arama normalleştirme
 
 export interface KonumAdimiProps {
     durum: KonumDurumu;
@@ -131,6 +135,7 @@ export interface KonumAdimiProps {
 
 const BolgeSecici: React.FC<{ bolge: ManuelBolge; onBolge: (b: ManuelBolge) => void }> = ({ bolge, onBolge }) => {
     const renkler = useRenkler();
+    const m = useMetin().kurulum.konum;
     return (
         <View
             style={{ flexDirection: 'row', borderRadius: 16, padding: 4, marginTop: 12, borderWidth: 1, borderColor: renkler.sinir, backgroundColor: renkler.kartArkaplan }}
@@ -148,7 +153,7 @@ const BolgeSecici: React.FC<{ bolge: ManuelBolge; onBolge: (b: ManuelBolge) => v
                         style={{ flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: 12, backgroundColor: secili ? renkler.birincil : 'transparent' }}
                     >
                         <Text style={{ fontSize: 15, fontWeight: '700', color: secili ? '#FFFFFF' : renkler.metin }}>
-                            {b === 'turkiye' ? 'Türkiye' : 'Başka bir ülke'}
+                            {b === 'turkiye' ? m.turkiye : m.baskaUlke}
                         </Text>
                     </TouchableOpacity>
                 );
@@ -171,6 +176,7 @@ export const KonumAdimi: React.FC<KonumAdimiProps> = ({
     onDunyaSehriSec,
 }) => {
     const renkler = useRenkler();
+    const m = useMetin().kurulum.konum;
     const [arama, setArama] = React.useState('');
     const iller = React.useMemo(() => {
         const a = kucukHarf(arama.trim());
@@ -183,14 +189,14 @@ export const KonumAdimi: React.FC<KonumAdimiProps> = ({
             : null;
         return (
             <View style={{ flex: 1 }}>
-                <AdimBasligi baslik="Şehrinizi seçin" alt="Vakitler seçtiğiniz şehre ve o ülkede yaygın hesap yöntemine göre hesaplanır." />
+                <AdimBasligi baslik={m.sehirBaslik} alt={m.dunyaAlt} />
                 {hata ? <SonucSatiri tip="uyari" metin={hata} testID="konum-hata" /> : null}
                 <BolgeSecici bolge={bolge} onBolge={onBolge} />
                 <View style={{ marginTop: 12 }}>
                     <DunyaSehirSecici secili={kayit} onSec={onDunyaSehriSec} />
                 </View>
                 <Text style={{ fontSize: 13, lineHeight: 19, marginTop: 12, color: renkler.metinIkincil }}>
-                    Hesap yöntemini sonra Ayarlar › Namaz vakitleri › Hesap yöntemi'nden değiştirebilirsiniz.
+                    {m.yontemNotu}
                 </Text>
             </View>
         );
@@ -199,10 +205,10 @@ export const KonumAdimi: React.FC<KonumAdimiProps> = ({
     if (durum === 'manuel') {
         return (
             <View style={{ flex: 1 }}>
-                <AdimBasligi baslik="Şehrinizi seçin" alt="Vakitler seçtiğiniz ile göre hesaplanır." />
+                <AdimBasligi baslik={m.sehirBaslik} alt={m.ilAlt} />
                 {hata ? <SonucSatiri tip="uyari" metin={hata} testID="konum-hata" /> : null}
                 {izinSonucu === 'ayarlar' || izin === 'reddedildi' ? (
-                    <SonucSatiri tip="uyari" metin="Konum izni kapalı. Ayarlardan açabilir ya da şehir seçebilirsiniz." />
+                    <SonucSatiri tip="uyari" metin={m.izinKapali} />
                 ) : null}
                 <BolgeSecici bolge={bolge} onBolge={onBolge} />
                 <View
@@ -223,9 +229,9 @@ export const KonumAdimi: React.FC<KonumAdimiProps> = ({
                     <TextInput
                         value={arama}
                         onChangeText={setArama}
-                        placeholder="Şehir arayın"
+                        placeholder={m.sehirArayin}
                         placeholderTextColor={renkler.metinIkincil}
-                        accessibilityLabel="Şehir arayın"
+                        accessibilityLabel={m.sehirArayin}
                         style={{ flex: 1, fontSize: 16, color: renkler.metin, paddingVertical: 10 }}
                     />
                 </View>
@@ -264,16 +270,16 @@ export const KonumAdimi: React.FC<KonumAdimiProps> = ({
     return (
         <View>
             <KonumSahnesi alindi={durum === 'alindi'} />
-            <AdimBasligi baslik="Konumunuz" alt="Namaz vakitleri ve kıble yönü konumunuza göre hesaplanır." />
-            <Madde ikon="mobile-alt" metin="Konumunuz sunucularımıza gönderilmez, üçüncü taraflarla paylaşılmaz." />
-            <Madde ikon="ban" metin="Reklam ya da takip için kullanılmaz." />
-            {durum === 'aliniyor' ? <SonucSatiri tip="basari" metin="Konumunuz bulunuyor…" testID="konum-aliniyor" /> : null}
-            {durum === 'alindi' ? <SonucSatiri tip="basari" metin={`Konum alındı · ${konumBilgi}`} testID="konum-alindi" /> : null}
+            <AdimBasligi baslik={m.baslik} alt={m.alt} />
+            <Madde ikon="mobile-alt" metin={m.maddeSunucu} />
+            <Madde ikon="ban" metin={m.maddeReklam} />
+            {durum === 'aliniyor' ? <SonucSatiri tip="basari" metin={m.bulunuyor} testID="konum-aliniyor" /> : null}
+            {durum === 'alindi' ? <SonucSatiri tip="basari" metin={bicim(m.alindi, { yer: konumBilgi })} testID="konum-alindi" /> : null}
             {durum === 'bekliyor' && izin === 'verildi' ? (
-                <SonucSatiri tip="basari" metin="Konum izni verildi" testID="konum-izin-var" />
+                <SonucSatiri tip="basari" metin={m.izinVar} testID="konum-izin-var" />
             ) : null}
             {durum === 'bekliyor' && izinSonucu === 'tekrarDene' ? (
-                <SonucSatiri tip="uyari" metin="Konum izni verilmedi." />
+                <SonucSatiri tip="uyari" metin={m.izinYok} />
             ) : null}
         </View>
     );
@@ -281,21 +287,24 @@ export const KonumAdimi: React.FC<KonumAdimiProps> = ({
 
 // ─── 3. Bildirim ─────────────────────────────────────────────────────────────
 
-export const BildirimAdimi: React.FC<{ izin: IzinDurumu | null; izinSonucu: IzinSonucu | null }> = ({ izin, izinSonucu }) => (
-    <View>
-        <BildirimSahnesi izinVar={izin === 'verildi'} />
-        <AdimBasligi baslik="Bildirimler" alt="Vakit girince ve çıkmadan önce haber verelim." />
-        <Madde ikon="mosque" metin="Yalnız namaz için kullanılır." />
-        <Madde ikon="ban" metin="Reklam bildirimi gönderilmez." />
-        {izin === 'verildi' ? <SonucSatiri tip="basari" metin="Bildirim izni verildi" testID="bildirim-izin-var" /> : null}
-        {izin !== 'verildi' && izinSonucu === 'tekrarDene' ? (
-            <SonucSatiri tip="uyari" metin="İzin verilmedi. Tekrar deneyebilirsiniz." testID="bildirim-red" />
-        ) : null}
-        {izin !== 'verildi' && (izinSonucu === 'ayarlar' || izin === 'reddedildi') ? (
-            <SonucSatiri tip="uyari" metin="Bildirim izni kapalı. Ayarlardan açabilirsiniz." testID="bildirim-kalici-red" />
-        ) : null}
-    </View>
-);
+export const BildirimAdimi: React.FC<{ izin: IzinDurumu | null; izinSonucu: IzinSonucu | null }> = ({ izin, izinSonucu }) => {
+    const m = useMetin().kurulum.bildirim;
+    return (
+        <View>
+            <BildirimSahnesi izinVar={izin === 'verildi'} />
+            <AdimBasligi baslik={m.baslik} alt={m.alt} />
+            <Madde ikon="mosque" metin={m.maddeNamaz} />
+            <Madde ikon="ban" metin={m.maddeReklam} />
+            {izin === 'verildi' ? <SonucSatiri tip="basari" metin={m.izinVar} testID="bildirim-izin-var" /> : null}
+            {izin !== 'verildi' && izinSonucu === 'tekrarDene' ? (
+                <SonucSatiri tip="uyari" metin={m.red} testID="bildirim-red" />
+            ) : null}
+            {izin !== 'verildi' && (izinSonucu === 'ayarlar' || izin === 'reddedildi') ? (
+                <SonucSatiri tip="uyari" metin={m.kaliciRed} testID="bildirim-kalici-red" />
+            ) : null}
+        </View>
+    );
+};
 
 // ─── 4. Hatırlatma düzeyi ────────────────────────────────────────────────────
 
@@ -320,15 +329,6 @@ export const VARSAYILAN_KURULUM_SECIMLERI: KurulumSecimleri = {
     cuma: false,
 };
 
-const ANA_CIHAZ_SECENEKLERI = [
-    { deger: 'evet', etiket: 'Evet, ana telefonum', ikon: 'mobile-alt' },
-    { deger: 'hayir', etiket: 'Hayır, ikinci cihaz', ikon: 'tablet-alt' },
-] as const;
-
-const ISARETLER_SECENEKLERI = [
-    { deger: 'evet', etiket: 'Evet', ikon: 'check' },
-    { deger: 'hayir', etiket: 'Hayır', ikon: 'times' },
-] as const;
 
 export const DuzeyAdimi: React.FC<{
     duzey: HatirlatmaDuzeyi;
@@ -351,23 +351,33 @@ export const DuzeyAdimi: React.FC<{
     anaCihaz?: { secili: 'evet' | 'hayir'; onSec: (d: 'evet' | 'hayir') => void };
 }> = ({ duzey, onDuzey, secimler, onIsaretler, onSecim, onSabahAlarmiIste, sesliBilgi, sesliOrnek, sade, onSade, anaCihaz }) => {
     const renkler = useRenkler();
+    const mm = useMetin();
+    const m = mm.kurulum.duzey;
+    const anaCihazSecenekleri = [
+        { deger: 'evet', etiket: m.anaCihazEvet, ikon: 'mobile-alt' },
+        { deger: 'hayir', etiket: m.anaCihazHayir, ikon: 'tablet-alt' },
+    ] as const;
+    const isaretlerSecenekleri = [
+        { deger: 'evet', etiket: mm.ortak.evet, ikon: 'check' },
+        { deger: 'hayir', etiket: mm.ortak.hayir, ikon: 'times' },
+    ] as const;
     const acik = duzey !== 'kapali';
     const sesliVar = duzey === 'normal' || duzey === 'yogun';
     return (
     <View>
-        <AdimBasligi baslik="Ne kadar hatırlatalım?" alt="Vakit çıkmadan önce gelen hatırlatmalar." />
+        <AdimBasligi baslik={m.baslik} alt={m.alt} />
         {anaCihaz ? (
             <>
                 <SoruKarti
                     ikon="mobile-alt"
-                    baslik="Bu cihaz sizin ana telefonunuz mu?"
-                    aciklama="Hatırlatmaları tek cihaz verir. İkinci cihaz vakitleri gösterir ve Kıldım işaretler."
-                    secenekler={ANA_CIHAZ_SECENEKLERI}
+                    baslik={m.anaCihazSoru}
+                    aciklama={m.anaCihazAciklama}
+                    secenekler={anaCihazSecenekleri}
                     secili={anaCihaz.secili}
                     onSec={(d) => anaCihaz.onSec(d === 'hayir' ? 'hayir' : 'evet')}
                     not={
                         anaCihaz.secili === 'hayir'
-                            ? 'Bu cihazda hatırlatma kurulmaz; telefonunuz hatırlatır. Ayarlar > Ekran ve cihazlar bölümünden değiştirebilirsiniz.'
+                            ? m.anaCihazNot
                             : null
                     }
                     testID="kart-ana-cihaz"
@@ -377,14 +387,14 @@ export const DuzeyAdimi: React.FC<{
         ) : null}
         <SoruKarti
             ikon="check-circle"
-            baslik="Kıldığınızı işaretler misiniz?"
-            aciklama="Kıldım'a basınca o namazın hatırlatmaları durur."
-            secenekler={ISARETLER_SECENEKLERI}
+            baslik={m.isaretSoru}
+            aciklama={m.isaretAciklama}
+            secenekler={isaretlerSecenekleri}
             secili={secimler.isaretler}
             onSec={(d) => onIsaretler(d === 'hayir' ? 'hayir' : 'evet')}
             not={
                 secimler.isaretler === 'hayir'
-                    ? 'İşaretlemezseniz hatırlatmalar susmaz. Bu yüzden vakit başına tek hatırlatma seçildi.'
+                    ? m.isaretNot
                     : null
             }
             testID="kart-isaretler"
@@ -406,8 +416,8 @@ export const DuzeyAdimi: React.FC<{
             <AnahtarKarti
                 ikon="volume-up"
                 tur="dalga"
-                baslik="Telefon vakti sesli söylesin mi?"
-                aciklama="Son hatırlatmada vakti sesle okur."
+                baslik={m.sesliBaslik}
+                aciklama={m.sesliAciklama}
                 deger={secimler.sesli}
                 onDegistir={(v) => onSecim({ sesli: v })}
                 testID="kart-sesli"
@@ -425,8 +435,8 @@ export const DuzeyAdimi: React.FC<{
             <AnahtarKarti
                 ikon="bell"
                 tur="salla"
-                baslik="Sabah beni uyandırsın"
-                aciklama="Sabahın ilk hatırlatması alarm olarak çalar."
+                baslik={m.sabahBaslik}
+                aciklama={m.sabahAciklama}
                 deger={secimler.sabahAlarm}
                 onDegistir={(v) => (v ? onSabahAlarmiIste() : onSecim({ sabahAlarm: false }))}
                 testID="kart-sabah-alarm"
@@ -436,8 +446,8 @@ export const DuzeyAdimi: React.FC<{
             <AnahtarKarti
                 ikon="moon"
                 tur="salin"
-                baslik="Gece sessiz olsun"
-                aciklama="23:00'ten imsağa kadar hatırlatma gelmez."
+                baslik={m.geceBaslik}
+                aciklama={m.geceAciklama}
                 deger={secimler.gece}
                 onDegistir={(v) => onSecim({ gece: v })}
                 testID="kart-gece"
@@ -446,18 +456,18 @@ export const DuzeyAdimi: React.FC<{
         <AnahtarKarti
             ikon="mosque"
             tur="nabiz"
-            baslik="Cumayı hatırlat"
-            aciklama="Cuma günü öğleden 1 saat önce hatırlatır."
+            baslik={m.cumaBaslik}
+            aciklama={m.cumaAciklama}
             deger={secimler.cuma}
             onDegistir={(v) => onSecim({ cuma: v })}
             testID="kart-cuma"
         />
         <View style={{ marginTop: 24 }}>
-            <BolumBasligi metin="Görünüm" />
+            <BolumBasligi metin={m.gorunum} />
             <AnahtarSatiri
                 ikon="compress-alt"
-                baslik="Sade görünüm"
-                ozet="Ana ekranda yalnız şu anki vakit ve Kıldım"
+                baslik={m.sadeBaslik}
+                ozet={m.sadeOzet}
                 deger={sade}
                 onDegistir={onSade}
                 testID="sade-anahtari"
@@ -481,27 +491,29 @@ export interface HazirOzeti {
 
 export const HazirAdimi: React.FC<{ ozet: HazirOzeti; hata: string | null }> = ({ ozet, hata }) => {
     const renkler = useRenkler();
+    const mm = useMetin();
+    const m = mm.kurulum.hazir;
     const satirlar: { ikon: string; metin: string }[] = [
-        { ikon: 'map-marker-alt', metin: ozet.konum || 'Konum seçilmedi' },
-        ...(ozet.yontem ? [{ ikon: 'calculator', metin: `Hesap yöntemi: ${ozet.yontem}` }] : []),
+        { ikon: 'map-marker-alt', metin: ozet.konum || m.konumYok },
+        ...(ozet.yontem ? [{ ikon: 'calculator', metin: bicim(m.yontem, { yontem: ozet.yontem }) }] : []),
         {
             ikon: ozet.bildirim ? 'bell' : 'bell-slash',
-            metin: ozet.bildirim ? 'Bildirimler açık' : 'Bildirimler kapalı',
+            metin: ozet.bildirim ? m.bildirimAcik : m.bildirimKapali,
         },
-        { ikon: 'shield-alt', metin: `Hatırlatma: ${DUZEY_ADLARI[ozet.duzey]}` },
+        { ikon: 'shield-alt', metin: bicim(m.hatirlatma, { duzey: DUZEY_ADLARI[ozet.duzey] }) },
         ...(ozet.duzey !== 'kapali' && ozet.secimler.sesli && (ozet.duzey === 'normal' || ozet.duzey === 'yogun')
-            ? [{ ikon: 'volume-up', metin: 'Sesli okuma açık' }]
+            ? [{ ikon: 'volume-up', metin: m.sesliAcik }]
             : []),
-        ...(ozet.duzey !== 'kapali' && ozet.secimler.sabahAlarm ? [{ ikon: 'bell', metin: 'Sabah alarmı açık' }] : []),
-        ...(ozet.duzey !== 'kapali' && ozet.secimler.gece ? [{ ikon: 'moon', metin: 'Gece 23:00 – imsak sessiz' }] : []),
-        ...(ozet.secimler.cuma ? [{ ikon: 'mosque', metin: 'Cuma hatırlatması açık' }] : []),
-        ...(ozet.sade ? [{ ikon: 'compress-alt', metin: 'Sade görünüm açık' }] : []),
+        ...(ozet.duzey !== 'kapali' && ozet.secimler.sabahAlarm ? [{ ikon: 'bell', metin: m.sabahAlarmAcik }] : []),
+        ...(ozet.duzey !== 'kapali' && ozet.secimler.gece ? [{ ikon: 'moon', metin: m.geceSessiz }] : []),
+        ...(ozet.secimler.cuma ? [{ ikon: 'mosque', metin: m.cumaAcik }] : []),
+        ...(ozet.sade ? [{ ikon: 'compress-alt', metin: m.sadeAcik }] : []),
     ];
     return (
         <View>
             {/* Kutlama adıma girişte BİR KEZ oynar (✓ + saçılan noktalar). */}
             <HazirSahnesi />
-            <AdimBasligi baslik="Her şey hazır" alt={`${KURULUM_BITTI_SELAMI} Ayarları istediğiniz zaman değiştirebilirsiniz.`} />
+            <AdimBasligi baslik={m.baslik} alt={bicim(m.alt, { selam: mm.samimiyet.kurulumBittiSelami })} />
             <View
                 style={{
                     borderRadius: 24,

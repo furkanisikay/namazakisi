@@ -16,6 +16,7 @@ import { useRenkler } from '../../../core/theme';
 import { Anahtar } from '../common/Anahtar';
 import { IkonCipi } from './IkonCipi';
 import { useYayVurgu } from '../hareket/hareketler';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface AnahtarSatiriProps {
     ikon: string;
@@ -46,6 +47,7 @@ export const AnahtarSatiri: React.FC<AnahtarSatiriProps> = ({
     testID,
 }) => {
     const renkler = useRenkler();
+    const ayrintiIpucu = useMetin().ortak.ayrintilariAcar;
     const olcek = useYayVurgu(deger);
     const r = renk ?? renkler.birincil;
 
@@ -79,7 +81,7 @@ export const AnahtarSatiri: React.FC<AnahtarSatiriProps> = ({
                     activeOpacity={0.7}
                     accessibilityRole="button"
                     accessibilityLabel={ozet ? `${baslik}. ${ozet}` : baslik}
-                    accessibilityHint="Ayrıntıları açar"
+                    accessibilityHint={ayrintiIpucu}
                 >
                     {icerik}
                 </TouchableOpacity>

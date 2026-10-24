@@ -9,6 +9,8 @@
 import { aktifDiliKur, aktifDilSifirla } from '../../core/dil/aktifDil';
 
 const TR = /[çğıöşüÇĞİÖŞÜ]/;
+/** Her dilde aynı kalan adlar: uygulamanın markası, ülkenin resmî İngilizce adı (BM, 2022). */
+const IZINLI = new Set(['Namaz Akışı', 'Türkiye']);
 
 export function ingilizceyeGec(): () => void {
   aktifDiliKur('en');
@@ -30,5 +32,7 @@ export function agacMetinleri(dugum: Dugum | Dugum[]): string[] {
 }
 
 export function turkceKalanlar(agac: Dugum | Dugum[], yasakliSozcukler: string[] = []): string[] {
-  return agacMetinleri(agac).filter((m) => TR.test(m) || yasakliSozcukler.some((s) => m.includes(s)));
+  return agacMetinleri(agac).filter(
+    (m) => !IZINLI.has(m) && (TR.test(m) || yasakliSozcukler.some((s) => new RegExp(`\\b${s}`).test(m))),
+  );
 }
