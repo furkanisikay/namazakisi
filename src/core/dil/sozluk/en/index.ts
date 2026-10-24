@@ -16,5 +16,8 @@ import { muhafiz } from './muhafiz';
 import { icerik } from './icerik';
 import { otomasyon } from './otomasyon';
 import { bildirim } from './bildirim';
+import { nafile } from './nafile';
+import { sayac } from './sayac';
+import { nowBar } from './nowBar';
 
-export const en: Sozluk = { ortak, vakit, tarih, sure, anaEkran, hesap, seferilik, kaza, seri, sade, muhafiz, icerik, otomasyon, bildirim, kurulum, hatirlatma, samimiyet };
+export const en: Sozluk = { ortak, vakit, tarih, sure, anaEkran, hesap, seferilik, kaza, seri, sade, muhafiz, icerik, otomasyon, bildirim, nafile, sayac, nowBar, kurulum, hatirlatma, samimiyet };

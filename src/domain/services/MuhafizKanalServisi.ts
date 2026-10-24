@@ -44,6 +44,7 @@ import {
     adimOzelSesleri,
 } from '../../core/hatirlatma/adimDizisi';
 import { alarmKanalIdOlustur } from '../../core/muhafiz/alarmYuku';
+import { bicim, metin } from '../../core/dil/aktifDil';
 import { ekAdimDizileriniOku, type EkAdimDizisi } from './ekHatirlatmaKaynaklari';
 
 /** Android bildirim ayarlarinda kanal adi — kullanici hangisi oldugunu ayirt edebilmeli. */
@@ -51,17 +52,17 @@ function kanalAdiOlustur(tanim: MuhafizKanalTanimi): string {
     // `sesGorunenAdi` ozel ses icin AYIRT EDICI yedek doner ("Seçtiğiniz ses").
     // Duz "Uygulama sesi" yazsaydik, adi cozulemeyen ozel sesli kanal TABAN kanalla
     // BIREBIR ayni isimle gorunur ve kullanici ikisini ayirt edemezdi.
-    const sesAdi = sesGorunenAdi(tanim.sesKimligi, tanim.sesAdi);
-    const taban = tanim.acilMi ? `Acil Hatırlatıcı · ${sesAdi}` : `Namaz Muhafızı · ${sesAdi}`;
+    const k = metin().bildirim.kanal;
+    const ses = sesGorunenAdi(tanim.sesKimligi, tanim.sesAdi);
+    const taban = bicim(tanim.acilMi ? k.acilSes : k.muhafizSes, { ses });
     // Faz 6: ayni ses iki ayri kanalda (titresimli/titresimsiz) yasayabilir —
     // Android bildirim ayarlarinda ikisi ayni isimde gorunmemeli.
-    return tanim.titresim ? `${taban} · Titreşimli` : taban;
+    return tanim.titresim ? bicim(k.titresimli, { kanal: taban }) : taban;
 }
 
 function kanalAciklamasiOlustur(tanim: MuhafizKanalTanimi): string {
-    return tanim.acilMi
-        ? 'Vakit çıkmak üzere — acil hatırlatmalar'
-        : 'Namaz vakti hatırlatmaları';
+    const k = metin().bildirim.kanal;
+    return tanim.acilMi ? k.acilSesAciklama : k.muhafizAciklama;
 }
 
 /**

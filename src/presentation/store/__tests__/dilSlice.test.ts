@@ -11,6 +11,13 @@ jest.mock('../../../domain/services/DilServisi', () => ({
   DilServisi: { kaydet: (kod: string) => mockKaydet(kod), yukle: () => Promise.resolve('tr') },
 }));
 
+const mockKategori = jest.fn(() => Promise.resolve());
+jest.mock('../../../domain/services/bildirimKategorileri', () => ({ bildirimKategorileriniKaydet: () => mockKategori() }));
+const mockKanal = jest.fn(() => Promise.resolve());
+jest.mock('../../../domain/services/BildirimServisi', () => ({
+  BildirimServisi: { getInstance: () => ({ temelKanallariKur: () => mockKanal() }) },
+}));
+
 import dilReducer, { diliKaydet } from '../dilSlice';
 
 const kur = (koordinatlar: { lat: number; lng: number } | null) =>
@@ -21,12 +28,16 @@ const kur = (koordinatlar: { lat: number; lng: number } | null) =>
 beforeEach(() => {
   mockUygula.mockReset().mockResolvedValue(undefined);
   mockKaydet.mockReset().mockResolvedValue(true);
+  mockKategori.mockReset().mockResolvedValue(undefined);
+  mockKanal.mockReset().mockResolvedValue(undefined);
 });
 
 it('dil değişti → konumDegistiUygula ile planlar yeniden kurulur', async () => {
   const store = kur({ lat: 3.14, lng: 101.69 });
   await store.dispatch(diliKaydet('en'));
   expect(mockUygula).toHaveBeenCalledWith({ lat: 3.14, lng: 101.69 });
+  expect(mockKategori).toHaveBeenCalledTimes(1);
+  expect(mockKanal).toHaveBeenCalledTimes(1);
   expect(store.getState().dil.kod).toBe('en');
 });
 
@@ -34,6 +45,7 @@ it('dil aynı → yayılmaz', async () => {
   mockKaydet.mockResolvedValue(false);
   await kur({ lat: 3.14, lng: 101.69 }).dispatch(diliKaydet('tr'));
   expect(mockUygula).not.toHaveBeenCalled();
+  expect(mockKategori).not.toHaveBeenCalled();
 });
 
 it('konum yapılandırılmamış ({0,0} ya da yok) → yayılmaz, dil yine kaydedilir', async () => {

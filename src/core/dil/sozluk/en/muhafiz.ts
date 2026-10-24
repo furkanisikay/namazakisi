@@ -1,3 +1,4 @@
+import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
@@ -33,6 +34,15 @@ export const muhafiz: Sozluk['muhafiz'] = {
     s2: "Don't leave your prayer to the end; now is a good time to pray.",
     s3: 'Time is almost up; you can still pray now.',
     s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+  },
+  serit: {
+    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
+    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
+    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
+    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
+    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
+    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
+    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
   },
   geceCapasi: {
     baslik: '{ad} · pray before you sleep ⏰',

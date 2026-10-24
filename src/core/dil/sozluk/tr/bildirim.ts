@@ -6,6 +6,26 @@ import { cogul } from '../../tipler';
  * Başlık önden okunur: vakit adı + süre ilk 16 karakterde (issue #287).
  */
 export const bildirim = {
+  /** Bildirim eylem düğmeleri (kategori). */
+  eylem: { kildim: '✅ Kıldım', kazayaEkle: 'Kazaya ekle', inceleyin: 'İnceleyin' },
+  /** Android bildirim kanalları (sistem bildirim ayarlarında görünür). */
+  kanal: {
+    genel: 'Genel Bildirimler',
+    muhafiz: 'Namaz Muhafızı',
+    muhafizAciklama: 'Namaz vakti hatırlatmaları',
+    acil: 'Acil Namaz Hatırlatıcı',
+    acilAciklama: 'Vakit çıkmak üzere - acil hatırlatmalar',
+    vakit: 'Vakit Bildirimleri',
+    vakitAciklama: 'Vakit girdiğinde gönderilen hatırlatmalar',
+    muhafizSes: 'Namaz Muhafızı · {ses}',
+    acilSes: 'Acil Hatırlatıcı · {ses}',
+    acilSesAciklama: 'Vakit çıkmak üzere — acil hatırlatmalar',
+    titresimli: '{kanal} · Titreşimli',
+    alarm: 'Namaz alarmı',
+    alarmSes: 'Namaz alarmı · {ses}',
+    uygulamaSesi: 'Uygulama sesi',
+    seciliSes: 'Seçtiğiniz ses',
+  },
   cuma: {
     baslik: 'Cuma · {sure} kaldı · namaz yaklaşıyor',
     govdeIlk: 'Öğle vaktine {sure} kaldı. Hazırlan, camiye yola çık.',

@@ -2,6 +2,24 @@ import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 export const bildirim: Sozluk['bildirim'] = {
+  eylem: { kildim: "✅ I've prayed", kazayaEkle: 'Add to qada', inceleyin: 'Review' },
+  kanal: {
+    genel: 'General notifications',
+    muhafiz: 'Prayer Guardian',
+    muhafizAciklama: 'Prayer time reminders',
+    acil: 'Urgent prayer reminder',
+    acilAciklama: 'Prayer time is about to end - urgent reminders',
+    vakit: 'Prayer times',
+    vakitAciklama: 'Reminders sent when a prayer time begins',
+    muhafizSes: 'Prayer Guardian · {ses}',
+    acilSes: 'Urgent reminder · {ses}',
+    acilSesAciklama: 'Prayer time is about to end — urgent reminders',
+    titresimli: '{kanal} · Vibrating',
+    alarm: 'Prayer alarm',
+    alarmSes: 'Prayer alarm · {ses}',
+    uygulamaSesi: 'App sound',
+    seciliSes: 'Your chosen sound',
+  },
   cuma: {
     baslik: "Jumu'ah · {sure} left · prayer is near",
     govdeIlk: '{sure} until Dhuhr. Get ready and head to the mosque.',

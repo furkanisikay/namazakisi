@@ -14,16 +14,23 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { MUHASEBE_KATEGORILERI } from '../../core/yatis/yatisPlani';
+import { metin } from '../../core/dil/aktifDil';
 
 /** Kaldırılan "Ertele"nin (#289) kategori kimlikleri — yalnız göç için. */
 const ESKI_ERTELE_KATEGORILERI = ['muhafiz_ertele1_category', 'muhafiz_ertele2_category'] as const;
 
+/**
+ * Düğme metinleri etkin dilde (`bildirim.eylem`). Kategori GÖSTERİM anında çözülür →
+ * dil değişince yeniden kaydedilir (`dilSlice.diliKaydet`), planlanmış bildirimlerin
+ * düğmesi de yeni dilde görünür.
+ */
 export async function bildirimKategorileriniKaydet(): Promise<void> {
+  const e = metin().bildirim.eylem;
   // Muhafiz kategorisi - "Kildim" aksiyonu ile
   await Notifications.setNotificationCategoryAsync(BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ, [
     {
       identifier: BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM,
-      buttonTitle: '✅ Kıldım',
+      buttonTitle: e.kildim,
       options: {
         // ANDROID: false → "Kıldım" telefonu açmaz. Bu, saate köprülenen
         // bildirimde özellikle önemli: saatten basınca cepteki telefonda uygulama
@@ -37,7 +44,7 @@ export async function bildirimKategorileriniKaydet(): Promise<void> {
 
   const kildim = {
     identifier: BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM,
-    buttonTitle: '✅ Kıldım',
+    buttonTitle: e.kildim,
     options: { opensAppToForeground: Platform.OS === 'ios' },
   };
 
@@ -54,7 +61,7 @@ export async function bildirimKategorileriniKaydet(): Promise<void> {
     kildim,
     {
       identifier: BILDIRIM_SABITLERI.AKSIYONLAR.KAZAYA_EKLE,
-      buttonTitle: 'Kazaya ekle',
+      buttonTitle: e.kazayaEkle,
       // iOS'ta arka planda JS çalışması güvenilir değil → uygulama açılır ki
       // borç sessizce kaybolmasın. Android'de headless görev işler.
       options: { opensAppToForeground: Platform.OS === 'ios' },
@@ -63,7 +70,7 @@ export async function bildirimKategorileriniKaydet(): Promise<void> {
   await Notifications.setNotificationCategoryAsync(MUHASEBE_KATEGORILERI.COKLU, [
     {
       identifier: BILDIRIM_SABITLERI.AKSIYONLAR.INCELE,
-      buttonTitle: 'İnceleyin',
+      buttonTitle: e.inceleyin,
       options: { opensAppToForeground: true },
     },
   ]);

@@ -10,6 +10,7 @@
  * içindeki göçle tek adıma çevrilir (idempotent, birebir aynı plan).
  */
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
+import { canli } from '../dil/aktifDil';
 import type { PencereYonu } from '../muhafiz/pencereTipleri';
 
 /** Gündüz/akşam nafileleri. */
@@ -145,18 +146,10 @@ export const VARSAYILAN_NAFILE_AYARLARI: NafileAyarlari = {
 };
 
 /** Görünen adlar (Title Case) — büyük/küçük harf dönüşümü YAPILMAZ (Türkçe İ tuzağı). */
-export const NAFILE_ADLARI: Record<NafileTuru, string> = {
-    kusluk: 'Kuşluk',
-    evvabin: 'Evvâbîn',
-    teheccud: 'Teheccüd',
-};
+export const NAFILE_ADLARI: Readonly<Record<NafileTuru, string>> = canli((s) => s.nafile.adlar);
 
 /** Cümle içi küçük harfli adlar — `toLowerCase()` YAZMA (sabit harita). */
-export const NAFILE_ADLARI_KUCUK: Record<NafileTuru, string> = {
-    kusluk: 'kuşluk',
-    evvabin: 'evvâbîn',
-    teheccud: 'teheccüd',
-};
+export const NAFILE_ADLARI_KUCUK: Readonly<Record<NafileTuru, string>> = canli((s) => s.nafile.kucuk);
 
 export const NAFILE_TURLERI: NafileTuru[] = ['kusluk', 'evvabin', 'teheccud'];
 

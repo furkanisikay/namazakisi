@@ -27,6 +27,7 @@ import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../
 import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
 import { GIRIS_ICERIK_HAVUZU, sonDakikaDiliMi } from '../../core/utils/muhafizMetinYardimcisi';
 import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
+import { bicim, metin, sayili } from '../../core/dil/aktifDil';
 import { Platform, Vibration } from 'react-native';
 
 /**
@@ -470,26 +471,26 @@ export class NamazMuhafiziServisi {
         olcuDk: number,
         yon: PencereYonu = VARSAYILAN_PENCERE_YONU
     ): string {
+        const m = metin().muhafiz.serit;
+        const dk = { dk: olcuDk };
         if (yon === 'girisindenItibaren') {
             switch (seviye) {
-                case 4: return `NAMAZI GECİKTİRME! Hemen namaza dur! (${olcuDk} dk geçti)`;
+                case 4: return bicim(m.giris4, dk);
                 case 3: return this.girisIcerigiSec(3);
-                case 2: return `Vakit ilerliyor, namazı sona bırakma. (${olcuDk} dk geçti)`;
-                case 1: return `Namaz vakti gireli ${olcuDk} dakika oldu.`;
+                case 2: return bicim(m.giris2, dk);
+                case 1: return sayili(m.giris1, olcuDk);
             }
         }
         // Issue #274 — metin = (ton, ölçü): erken sert/acil adım "VAKİT ÇIKIYOR"
         // demez, vakte özgü nass da taşımaz (arka plan başlığıyla aynı kural).
         if (!sonDakikaDiliMi(seviye, olcuDk)) {
-            return seviye === 4
-                ? `Namazı geciktirme, hemen namaza dur! (${olcuDk} dk kaldı)`
-                : this.girisIcerigiSec(3);
+            return seviye === 4 ? bicim(m.erken4, dk) : this.girisIcerigiSec(3);
         }
         switch (seviye) {
-            case 4: return `VAKİT ÇIKIYOR! Hemen namaza dur! (${olcuDk} dk kaldı)`;
+            case 4: return bicim(m.cikis4, dk);
             case 3: return this.getRandomIcerik(vakit, 3);
-            case 2: return `Vakit daralıyor, namazı sona bırakma. (${olcuDk} dk kaldı)`;
-            case 1: return `Namaz vaktinin bitmesine ${olcuDk} dakika kaldı.`;
+            case 2: return bicim(m.cikis2, dk);
+            case 1: return sayili(m.cikis1, olcuDk);
         }
     }
 
@@ -505,7 +506,7 @@ export class NamazMuhafiziServisi {
      */
     private getRandomIcerik(vakit: VakitAdi, seviye: 1 | 2 | 3 | 4): string {
         const uygunIcerikler = uygunIcerikleriBul(vakit, seviye);
-        if (uygunIcerikler.length === 0) return 'Vakit bitmek üzere; şimdi kılabilirsin.';
+        if (uygunIcerikler.length === 0) return metin().muhafiz.govde.s3;
 
         const random = Math.floor(Math.random() * uygunIcerikler.length);
         return icerikMetniOlustur(uygunIcerikler[random]);

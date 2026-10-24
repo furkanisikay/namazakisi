@@ -23,6 +23,7 @@ import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
+import { metin } from '../../core/dil/aktifDil';
 import { sahurCanliYukuOlustur } from '../../core/sayac/canliGuncelleme';
 
 interface SahurSayacAyarlari {
@@ -48,10 +49,10 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
       idOneki: BILDIRIM_SABITLERI.ONEKLEME.SAHUR_SAYAC,
       kanalId: BILDIRIM_SABITLERI.KANALLAR.SAHUR_SAYAC,
       eskiKanalId: 'sahur_sayac',
-      kanalAdi: 'Sahur Sayacı',
-      kanalAciklamasi: 'İmsak (Sahur bitiş) vaktine geri sayım bildirimi',
-      countdownBaslik: '🌙 Sahur Sayacı',
-      countdownBodyTemplate: 'Yemeye içmeye devam, imsak yaklaşıyor!\n⏱️ {time}',
+      kanalAdi: metin().sayac.sahur.kanal,
+      kanalAciklamasi: metin().sayac.sahur.kanalAciklama,
+      countdownBaslik: metin().sayac.sahur.baslik,
+      countdownBodyTemplate: `${metin().sayac.sahur.govde}\n⏱️ {time}`,
       themeType: 'sahur',
     };
   }
@@ -175,8 +176,8 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
   protected vakitGirdiBildirimIcerigi(bildirimId: string, _imsakVaktiMs: number): any {
     return {
       id: bildirimId,
-      title: '🌙 Sahur Vakti Bitti!',
-      body: 'Niyet etme vakti geldi.',
+      title: metin().sayac.sahur.girdiBaslik,
+      body: metin().sayac.sahur.girdiGovde,
       android: {
         channelId: this.konfig.kanalId,
         ongoing: true,

@@ -27,12 +27,12 @@ import { SayisalSecici } from '../components/common/SayisalSecici';
 import {
   NOW_BAR_BASLANGICLARI,
   NOW_BAR_OGE_BILGILERI,
-  NOW_BAR_POLITIKA_UYARISI,
+  nowBarPolitikaUyarisi,
   NOW_BAR_SON_DK_ADIM,
   NOW_BAR_SON_DK_MAX,
   NOW_BAR_SON_DK_MIN,
   NOW_BAR_VAKITLERI,
-  VAKIT_SAYACI_KAPALI_NOTU,
+  vakitSayaciKapaliNotu,
   etkinVakitBaslangici,
   vakitSayacGereksinimNotu,
   type NowBarOgeAyari,
@@ -350,7 +350,7 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
         >
           <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
           <Text className="text-xs flex-1 pr-2" style={{ color: renkler.metin }}>
-            {VAKIT_SAYACI_KAPALI_NOTU}
+            {vakitSayaciKapaliNotu()}
           </Text>
           <TouchableOpacity
             className="px-3 rounded-2xl border items-center justify-center"
@@ -409,7 +409,7 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
                 </Text>
               ))}
               <Text className="text-xs mt-2" style={{ color: renkler.metinIkincil }} testID="now-bar-politika">
-                {NOW_BAR_POLITIKA_UYARISI}
+                {nowBarPolitikaUyarisi()}
               </Text>
             </View>
           )}

@@ -21,6 +21,8 @@ import { SERI_SAYAC_VARSAYILAN_ESIK_DK, sayacBaslamaliMi } from '../../core/seri
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
 import { SERI_SOZU } from '../../core/data/SeriSozu';
+import { metin } from '../../core/dil/aktifDil';
+import { hadisGosterilir } from '../../core/icerik/nassDili';
 import { NOW_BAR_SON_DK_MAX } from '../../core/sayac/nowBar';
 
 export interface SeriSayacAyarlari {
@@ -52,13 +54,13 @@ export class SeriSayacBildirimServisi extends SayacBildirimTemeli {
       kanalId: BILDIRIM_SABITLERI.KANALLAR.SERI_SAYAC,
       // Ilk surum — silinecek eski kanal yok; taban sinif silmeyi yok sayar.
       eskiKanalId: '',
-      kanalAdi: 'Seri Sayacı',
-      kanalAciklamasi: 'Seri gününün bitmesine geri sayım',
+      kanalAdi: metin().sayac.seri.kanal,
+      kanalAciklamasi: metin().sayac.seri.kanalAciklama,
       // IBADETE CAGRI kaydi: "sen" + emir kipi (AGENTS.md bilincli istisnasi).
-      countdownBaslik: '🔥 Serin Tehlikede',
+      countdownBaslik: metin().sayac.seri.baslik,
       // Serinin dayandığı hadis (issue #72) genişletilmiş görünümde ikinci satırdır;
       // native taraf {time}/⏱️'i ayıklayıp kalanı açıklama alanına yazar.
-      countdownBodyTemplate: `Bugünkü namazların eksik, serini kaybetme.\n«${SERI_SOZU.metin}» (Buhârî)\n⏱️ {time}`,
+      countdownBodyTemplate: `${metin().sayac.seri.govde}\n${hadisGosterilir() ? `«${SERI_SOZU.metin}» (Buhârî)\n` : ''}⏱️ {time}`,
       themeType: 'seri',
       // Hedefte kaybolmali: chronometer sifiri gecince YUKARI sayar ve kullanici
       // "gun bitti" yerine artan bir sayac gorur.
@@ -120,8 +122,8 @@ export class SeriSayacBildirimServisi extends SayacBildirimTemeli {
   protected vakitGirdiBildirimIcerigi(bildirimId: string): any {
     return {
       id: bildirimId,
-      title: '🔥 Seri Günü Bitti',
-      body: 'Yeni gün başladı.',
+      title: metin().sayac.seri.girdiBaslik,
+      body: metin().sayac.seri.girdiGovde,
       android: {
         channelId: this.konfig.kanalId,
         ongoing: false,

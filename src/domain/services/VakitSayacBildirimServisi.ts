@@ -23,16 +23,10 @@ import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { vakitCanliYukuOlustur, type CanliGuncellemeYuku } from '../../core/sayac/canliGuncelleme';
 import { CANLI_SAYAC_KANALI, type CanliAday } from '../../core/sayac/canliSayacPlani';
+import { bicim, metin } from '../../core/dil/aktifDil';
+import { VAKIT_ADLARI } from '../../core/utils/muhafizMetinYardimcisi';
 import { CanliSayacPlanlayici, type CanliOgeKarari } from './CanliSayacPlanlayici';
 
-const VAKIT_ADLARI: Record<VakitAdi, string> = {
-  imsak: 'Sabah',
-  gunes: 'Güneş',
-  ogle: 'Öğle',
-  ikindi: 'İkindi',
-  aksam: 'Akşam',
-  yatsi: 'Yatsı',
-};
 
 /** Planlayıcıya ulaşılamazsa ilk aşamanın davranışı: devralma yok, öne çıkarma isteği var. */
 const ILK_ASAMA_KARARI: CanliOgeKarari = { devralir: false, oneCikar: true };
@@ -216,8 +210,8 @@ export class VakitSayacBildirimServisi {
       baslangicMs: this.sayacBaslangiciMs(vakit),
       dogalBaslangicMs: vakit.giris.getTime(),
       hedefMs: vakit.cikis.getTime(),
-      baslik: `\u23F1\uFE0F ${ad} Namazı`,
-      govdeSablonu: `${ad} namazı vakti çıkmak üzere!\n\u23F1\uFE0F {time}`,
+      baslik: bicim(metin().sayac.vakit.baslik, { ad }),
+      govdeSablonu: `${bicim(metin().sayac.vakit.govde, { ad })}\n\u23F1\uFE0F {time}`,
       kanalId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
       tema: 'vakit',
       hedefteKaybol: false,
@@ -261,8 +255,8 @@ export class VakitSayacBildirimServisi {
 
       await notifee.createChannel({
         id: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
-        name: 'Vakit Sayacı',
-        description: 'Vakit çıkmadan önce geri sayım bildirimi',
+        name: metin().sayac.vakit.kanal,
+        description: metin().sayac.vakit.kanalAciklama,
         importance: AndroidImportance.DEFAULT,
         vibration: false,
         sound: '', // Sessiz
@@ -294,8 +288,8 @@ export class VakitSayacBildirimServisi {
 
     // A) Geri sayim bildirimi - native modül ile body'de countdown
     const tetikZamani = Math.max(sayacBaslangic, simdi.getTime() + 5000);
-    const vakitBasligi = `\u23F1\uFE0F ${vakitAdlari[vakit.vakit]} Namazı`;
-    const bodyTemplate = `${vakitAdlari[vakit.vakit]} namazı vakti çıkmak üzere!\n\u23F1\uFE0F {time}`;
+    const vakitBasligi = bicim(metin().sayac.vakit.baslik, { ad: vakitAdlari[vakit.vakit] });
+    const bodyTemplate = `${bicim(metin().sayac.vakit.govde, { ad: vakitAdlari[vakit.vakit] })}\n\u23F1\uFE0F {time}`;
 
     // Now Bar (issue #282 ikinci aşama): planlayıcı devraldıysa sayacı o gösterir
     // (tam başlangıçta, exact alarmla). Yalnız A atlanır; B (çıkışta temizleme)
@@ -331,7 +325,7 @@ export class VakitSayacBildirimServisi {
         const bildirimIcerigi = {
           id: bildirimId,
           title: vakitBasligi,
-          body: `${vakitAdlari[vakit.vakit]} namazı vakti çıkmak üzere!`,
+          body: bicim(metin().sayac.vakit.govde, { ad: vakitAdlari[vakit.vakit] }),
           android: {
             channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
             ongoing: true,

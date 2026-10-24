@@ -28,6 +28,16 @@ interface DurumKaynagi {
 export const diliKaydet = createAsyncThunk<DilKodu, DilKodu>('dil/kaydet', async (kod, { getState }) => {
   const degisti = await DilServisi.kaydet(kod);
   if (degisti) {
+    try {
+      // Bildirim düğmeleri gösterim anında, kanal adları sistem ayarlarında çözülür → yeni dilde
+      // yeniden kaydedilir (kimlikler aynı; Android kanal adını günceller).
+      const { bildirimKategorileriniKaydet } = require('../../domain/services/bildirimKategorileri') as typeof import('../../domain/services/bildirimKategorileri');
+      await bildirimKategorileriniKaydet();
+      const { BildirimServisi } = require('../../domain/services/BildirimServisi') as typeof import('../../domain/services/BildirimServisi');
+      await BildirimServisi.getInstance().temelKanallariKur();
+    } catch (e) {
+      Logger.warn('dilSlice', 'Bildirim düğmeleri/kanalları yenilenemedi', e);
+    }
     const k = (getState() as DurumKaynagi).konum?.koordinatlar;
     if (k && !(k.lat === 0 && k.lng === 0)) {
       try {

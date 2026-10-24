@@ -22,6 +22,7 @@ import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { metin } from '../../core/dil/aktifDil';
 import { iftarCanliYukuOlustur } from '../../core/sayac/canliGuncelleme';
 
 interface IftarSayacAyarlari {
@@ -47,10 +48,10 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
       idOneki: BILDIRIM_SABITLERI.ONEKLEME.IFTAR_SAYAC,
       kanalId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
       eskiKanalId: 'iftar_sayac',
-      kanalAdi: 'İftar Sayacı',
-      kanalAciklamasi: 'İftar vaktine geri sayım bildirimi',
-      countdownBaslik: '🌙 İftar Sayacı',
-      countdownBodyTemplate: 'Ezanı duymadan orucunuzu açmayınız!\n⏱️ {time}',
+      kanalAdi: metin().sayac.iftar.kanal,
+      kanalAciklamasi: metin().sayac.iftar.kanalAciklama,
+      countdownBaslik: metin().sayac.iftar.baslik,
+      countdownBodyTemplate: `${metin().sayac.iftar.govde}\n⏱️ {time}`,
       themeType: 'iftar',
     };
   }
@@ -133,8 +134,8 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
   protected vakitGirdiBildirimIcerigi(bildirimId: string, _aksamVaktiMs: number): any {
     return {
       id: bildirimId,
-      title: '🌙 İftar Vakti!',
-      body: 'Hayırlı iftarlar!',
+      title: metin().sayac.iftar.girdiBaslik,
+      body: metin().sayac.iftar.girdiGovde,
       android: {
         channelId: this.konfig.kanalId,
         ongoing: false,
