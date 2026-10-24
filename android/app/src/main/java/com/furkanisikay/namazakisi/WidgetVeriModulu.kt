@@ -9,6 +9,9 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.furkanisikay.namazakisi.cekirdek.CihazDurumKurallari
+import com.furkanisikay.namazakisi.duvar.DuvarKagidiUygulayici
+import com.furkanisikay.namazakisi.widget.GununAyetiDeposu
+import com.furkanisikay.namazakisi.widget.GununAyetiGuncelleyici
 import com.furkanisikay.namazakisi.widget.WidgetGuncelleyici
 import com.furkanisikay.namazakisi.widget.WidgetVeriDeposu
 
@@ -58,6 +61,39 @@ class WidgetVeriModulu(reactContext: ReactApplicationContext) :
             promise.resolve(CihazDurumKurallari.widgetEkliMi(sayilar))
         } catch (e: Throwable) {
             Log.w(TAG, "Widget sayisi okunamadi", e)
+            promise.resolve(null)
+        }
+    }
+
+    /**
+     * Günün ayeti planı (#380/#381, yük şeması v1 — `docs/ajan/gunun-ayeti.md`). JS yazar
+     * (`GununAyetiServisi.yaz`): açılış, konum değişimi, arka plan turu, dil ve duvar kâğıdı
+     * ayarı değişimi. Çözülemeyen yük YAZILMAZ (eski geçerli yük kalır). Yazınca ayet
+     * widget'ları çizilir, sınır alarmı yeniden kurulur ve duvar kâğıdı açıksa imzası
+     * değiştiyse arka planda uygulanır (aynı içerik yeniden yazılmaz).
+     */
+    @ReactMethod
+    fun gununAyetiKaydet(json: String) {
+        try {
+            val context = reactApplicationContext
+            if (!GununAyetiDeposu.yaz(context, json)) {
+                Log.w(TAG, "Gunun ayeti yuku cozulemedi; yazilmadi")
+                return
+            }
+            GununAyetiGuncelleyici.tumunuGuncelle(context)
+            DuvarKagidiUygulayici.arkaPlandaGerekirseUygula(context)
+        } catch (e: Throwable) {
+            Log.e(TAG, "Gunun ayeti kaydedilemedi", e)
+        }
+    }
+
+    /** Ana ekranda en az bir "Günün ayeti" widget'ı var mı? Okunamazsa `null`. */
+    @ReactMethod
+    fun gununAyetiWidgetEkliMi(promise: Promise) {
+        try {
+            promise.resolve(GununAyetiGuncelleyici.widgetSayisi(reactApplicationContext) > 0)
+        } catch (e: Throwable) {
+            Log.w(TAG, "Ayet widget sayisi okunamadi", e)
             promise.resolve(null)
         }
     }

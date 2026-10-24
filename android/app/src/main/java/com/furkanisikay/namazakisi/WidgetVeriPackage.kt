@@ -18,6 +18,8 @@ class WidgetVeriPackage : ReactPackage {
         WidgetVeriModulu(reactContext),
         KildimKuyruguModulu(reactContext),
         KildimGuvenModulu(reactContext),
+        // Günün ayeti duvar kâğıdı (#381): widget yüküyle aynı veriyi kullanır.
+        DuvarKagidiModulu(reactContext),
     )
 
     override fun createViewManagers(

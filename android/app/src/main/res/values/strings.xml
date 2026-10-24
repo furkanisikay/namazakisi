@@ -10,6 +10,13 @@
   <string name="widget_klasik_aciklama">Yeşil klasik görünüm: sıradaki vakte kalan süre</string>
   <string name="widget_klasik_genis_adi">Namaz Akışı — Klasik geniş</string>
   <string name="widget_klasik_genis_aciklama">Yeşil klasik görünüm: geri sayım ve günün vakitleri</string>
+  <!-- Günün ayeti widget'ı (#380); ayet metinleri yükle gelir (JS), burada yalnız seçici ve ayar -->
+  <string name="widget_ayet_adi">Günün ayeti</string>
+  <string name="widget_ayet_aciklama">Her gün imsakta yenilenen bir ayet ve meali</string>
+  <string name="widget_ayar_zemin_palet">Uygulama rengi (açık ton)</string>
+  <string name="widget_ayar_ayet_icerik">Kare boyutta gösterilsin</string>
+  <string name="widget_ayar_ayet_icerik_meal">Meal</string>
+  <string name="widget_ayar_ayet_icerik_hat">Arapça metin (hat)</string>
   <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
   <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
 

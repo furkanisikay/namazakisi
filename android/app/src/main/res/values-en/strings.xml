@@ -10,6 +10,12 @@
   <string name="widget_klasik_aciklama">Classic green look: time left until the next prayer</string>
   <string name="widget_klasik_genis_adi">Namaz Akışı — Classic wide</string>
   <string name="widget_klasik_genis_aciklama">Classic green look: countdown and today\'s prayer times</string>
+  <string name="widget_ayet_adi">Verse of the day</string>
+  <string name="widget_ayet_aciklama">A verse and its translation, renewed every day at Fajr</string>
+  <string name="widget_ayar_zemin_palet">App color (light tone)</string>
+  <string name="widget_ayar_ayet_icerik">At square size, show</string>
+  <string name="widget_ayar_ayet_icerik_meal">Translation</string>
+  <string name="widget_ayar_ayet_icerik_hat">Arabic text (calligraphy)</string>
   <string name="kutu_kildim_etiket">I\'ve prayed</string>
   <string name="kisayol_kildim_kisa">I\'ve prayed</string>
   <string name="kisayol_kildim_uzun">I\'ve prayed the current prayer</string>
