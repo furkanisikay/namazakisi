@@ -344,6 +344,18 @@ export const HakkindaSayfasi: React.FC = () => {
               Cami ve ilçe merkezi verisi: © OpenStreetMap katkıcıları (ODbL)
             </Text>
           </TouchableOpacity>
+          {/* Dünya şehirleri GeoNames türevidir (CC BY 4.0) — atıf ve "değiştirildi" notu zorunlu. */}
+          <TouchableOpacity
+            className="justify-center"
+            style={{ minHeight: 44 }}
+            onPress={() => Linking.openURL('https://www.geonames.org').catch(() => undefined)}
+            accessibilityRole="link"
+            accessibilityLabel="Dünya şehirleri verisi: GeoNames, CC BY 4.0 lisansı, uyarlanarak kullanıldı. Ayrıntılar için açın"
+          >
+            <Text className="text-xs text-center" style={{ color: renkler.metinIkincil }}>
+              Dünya şehirleri: GeoNames (CC BY 4.0), uyarlanarak
+            </Text>
+          </TouchableOpacity>
         </View>
       </Animated.View>
     </ScrollView>
