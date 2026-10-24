@@ -10,6 +10,7 @@ Genel ilke: **bu hatlardaki tuzakların hepsi SESSİZDİR** — adım "başarıl
 
 ## Dil (Türkçe kareler ve İngilizce kanıt turu)
 - **İki hattın da `dil` girişi var (`tr` varsayılan, `en`):** tohum `dil_ayari`'nı `TOHUM_DIL`'den yazar (kurulum tamam görünen tohumda dil göçü aksi hâlde Türkçeyi sabitler), Android emülatörleri `-change-locale` ile o dilde açılır. Türkçe turda emülatör `tr-TR`'dir: saat/TV `values-en` taşıdığı için İngilizce AVD'de İngilizce çizer ve Türkçe metin arayan betikler (`saat-kare-hatti.sh`) kırılır.
+- **`-change-locale` açılıştan hemen sonra framework'ü yeniden başlatır:** o anda `adb install` "Failure calling service package: Broken pipe" ile düşer (`sys.boot_completed` 1 kalır). Her kare hattı `adb wait-for-device`'tan sonra `scripts/emulator-hazir-bekle.sh`'ı çağırır (paket servisi art arda 3 kez cevap verene dek); yeni hat da çağırmalı.
 - **İngilizce koşunun artifact adları `-en` eklidir:** `belgeler.yml` README/`docs/ekran-goruntuleri` karelerini adıyla aldığı için İngilizce tur Türkçe kareleri ezmez. Saat/TV kare betikleri Türkçe metin arar; İngilizce turu yalnız telefon akışlarıyla koşun.
 
 ## iOS (iPhone) hattı — `ios-ekran-goruntuleri.yml` + `scripts/simulator-{tohumla,ekranlari-cek}.js`

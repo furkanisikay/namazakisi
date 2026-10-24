@@ -32,6 +32,7 @@ APK=$(find wear/app/build/outputs/apk/debug -name '*.apk' | head -1)
 [ -z "$APK" ] && { echo "saat debug APK bulunamadi"; exit 1; }
 
 adb wait-for-device
+bash scripts/emulator-hazir-bekle.sh
 adb shell getprop ro.build.version.release
 adb shell getprop ro.build.fingerprint
 BOYUT=$(adb shell wm size | sed -n 's/.*: *\([0-9]*x[0-9]*\).*/\1/p' | tail -1)

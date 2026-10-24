@@ -19,6 +19,7 @@ APK=$(find tv/app/build/outputs/apk/debug -name '*.apk' | head -1)
 [ -z "$APK" ] && { echo "TV debug APK bulunamadi"; exit 1; }
 
 adb wait-for-device
+bash scripts/emulator-hazir-bekle.sh
 adb shell getprop ro.build.version.release
 adb shell wm size
 adb shell settings put system time_12_24 24 || true

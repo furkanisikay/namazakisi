@@ -28,6 +28,7 @@ CIKIS="kareler-ozellik"
 mkdir -p "$CIKIS"
 
 adb wait-for-device
+bash scripts/emulator-hazir-bekle.sh
 adb reverse tcp:8081 tcp:8081
 
 APK=$(find android -name '*.apk' -path '*debug*' | head -1)

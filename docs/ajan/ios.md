@@ -19,7 +19,7 @@ Genel kurallar çekirdekte (AGENTS.md): dosya adları salt ASCII, `.gitignore`'d
 - **`.strings` anahtarı koddaki Türkçe metnin kendisidir:** kodda metin değişirse `targets/siri-kisayollari/<dil>.lproj` de değişmeli. "Sıradaki vaktin adı" eylemi paket dilinde değer döndürür (İngilizce cihazda kurulu "… Öğle ise" karşılaştırmaları kırılır).
 - **Saf Swift dil tablosu `VakitKarari.swift` içindedir** (yeni pod dosyası CI swiftc listelerine ve widget kopya listesine girmek zorunda kalırdı); saat metinleri `targets/saat/ortak/SaatMetinleri.swift` (glob'la derlenir, eklenti saate ve komplikasyona kopyalar). Metin üreten fonksiyonlarda `dil: String = "tr"`; Türkçe beklentiler bayt bayt aynı.
 - **Swift fikstür testleri Linux'ta da koşar:** swift.org 6.0.3 Linux araç zinciri + CI'daki `-swift-version 5` argümanları (SwiftUI tip denetimi yalnız macOS CI'da).
-- İzin metinleri (Info.plist) bugün yalnız Türkçe; açılacaksa `app.json > locales` (`en.json`) — `en.lproj/InfoPlist.strings` (hızlı eylem başlıkları) ile ad çakışır, o başlıklar oraya taşınır.
+- **İzin metinleri ve hızlı eylem başlıkları `app.json > locales` (`locales/<dil>.json`) ile çevrilir; Expo `InfoPlist.strings`'i KAÇIŞSIZ yazar** (`${anahtar} = "${deger}";`): boşluklu/ASCII dışı anahtarı JSON'da tırnaklı yaz (`"\"Vakti kıldım\""`), değerde düz `"` yerine tipografik tırnak kullan — yoksa Xcode "Couldn't parse property list" ile derlemeyi keser. Nöbetçi: `plugins/__tests__/siriYerellestirme.test.ts`.
 
 ## Teslim katmanı (aynı matris, platforma göre teslim)
 
