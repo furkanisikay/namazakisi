@@ -176,3 +176,17 @@ Reddit/forum alıntıları; Bahreyn, Umman, Orta Asya, Afrika'nın çoğu için 
 4. Ayet/hadis çeviri kaynakları (QuranEnc, Diyanet'ten izin).
 5. Simge: tek seferlik seçim mi, vakte göre değişim mi.
 6. Yeni bağımlılıklar, `SET_WALLPAPER`, `android/`/`wear/`/`tv/`/`targets/` native değişiklikleri, iş akışı düzenlemeleri ve dalda CI koşuları.
+
+## 9. W3 — dil altyapısı (uygulama tasarımı)
+
+**Ölçek (2026-10-24 sayımı):** `src/` altında 543 dosyada ~6.000 aday metin; günlük ve teşhis metinleri düşülünce kullanıcıya görünen ~4.000 civarı. Tek oturumda çıkarılamaz. Bu yüzden altyapı, çıkarımı parça parça yapmaya ve yarım dili hiç göstermemeye göre kurulur.
+
+- **Kütüphane yok, tipli sözlük:** `src/core/dil/` saf modül. `tr` sözlüğü kaynaktır (`as const` ad alanları: `ortak`, `anaSayfa`, `kurulum`, `bildirim`…); diğer diller `Sozluk` tipini (anahtarları `tr`'den türer) karşılamak zorundadır, eksik anahtar `tsc` hatasıdır. i18next'e göre kazanç: çalışma anı yükü yok, anahtar yazım hatası derlemede yakalanır, headless bağlamda React gerekmez.
+- **Çağrı:** `c('anaSayfa.kalanSure', { dk })` → `{ad}` yer tutucuları. Çoğul `{ one, other, few, … }` nesnesiyle; kategori seçimi ELLE yazılmış CLDR kurallarıyla (Hermes'te `Intl.PluralRules` yok sayılır, polyfill eklenmez). Nöbetçi: her desteklenen dil için 0–1000 arası her sayıda seçicimiz Node'un `Intl.PluralRules` sonucuna eşit.
+- **Etkin dil süreç düzeyinde tek durum** (`core/dil/aktifDil.ts`, `aktifHesap` deseni): headless görevler, bildirim içerikleri ve sesli okuma da aynı yerden okur. Giriş noktaları `DilServisi.hazir()`'ı `hesapAyariHazir()` ile birlikte bekler. React tarafı `useCeviri()` (dil slice'ı değişince yeniden çizim).
+- **İlk dil:** kullanıcı seçmediyse cihaz dili (`expo-localization`, onaylı bağımlılık), yalnız TAMAM bir dilse; değilse Türkçe. Seçim Ayarlar › Dil'de; yedeklenen ayar (üç beyaz liste).
+- **Yarım dil yok:** bir dil `DILLER` listesine yalnız JS sözlüğü tip düzeyinde tam, native metinleri (W5) üretilmiş ve ekran turu karesi çekilmişken eklenir. Gözden geçirilmemiş dil `beta: true` taşır, seçicide "beta" rozeti.
+- **Çıkarım cırcırı:** `turkceMetinSayaci.test.ts` dosya başına kalan Türkçe sabit metni sayar ve kayıtlı tavanı (`scripts/dil/turkce-metin-tavani.json`) aşmayı reddeder; tavan yalnız düşebilir. Çıkarım ekran ekran ilerler, Türkçe çıktı birebir aynı kalır (mevcut testler Türkçe metinle koşar, hiçbiri değişmez).
+- **Öncelik sırası (İngilizce için):** kurulum sihirbazı → ana ekran ve vakit kartı → bildirim ve muhafız metinleri (çağrı kaydı "sen" eşlemesiyle) → kıble → Ayarlar ana ve Konum/Hesap yöntemi → kaza/ilerleme → kalan ayar sayfaları.
+- **Tarih/sayı:** ay ve gün adları sözlükte (Hermes `toLocale*` ICU'ya bağlı, kullanılmaz); rakamlar Batı Arap rakamı (RTL adımında yeniden ele alınır).
+- **Fıkıh sözlüğü ve hitap eşlemesi** `docs/ajan/coklu-dil.md`'de: namaz adları dil başına sabit tablo, "siz"/"sen" eşlemesi, Arapça/Urduca çağrılarda cinsiyetsiz kalıp.
