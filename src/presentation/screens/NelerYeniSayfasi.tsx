@@ -195,6 +195,7 @@ export const NelerYeniSayfasi: React.FC<any> = ({ navigation }) => {
     return (
         <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['bottom', 'left', 'right']}>
             <ScrollView
+                testID="neler-yeni-liste"
                 className="flex-1"
                 contentContainerStyle={{ paddingVertical: 16, paddingBottom: 40 }}
                 showsVerticalScrollIndicator={false}

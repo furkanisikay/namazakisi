@@ -37,7 +37,10 @@ export function esitlemeZamaniniBicimle(iso: string | null): string {
   const t = new Date(iso);
   if (Number.isNaN(t.getTime())) return metin().yedekleme.esitleme.henuzEsitlenmedi;
   const iki = (n: number) => String(n).padStart(2, '0');
-  return `${iki(t.getDate())}.${iki(t.getMonth() + 1)}.${t.getFullYear()} ${iki(t.getHours())}:${iki(t.getMinutes())}`;
+  // Gün ve ay adı etkin dilin sözlüğünden ("13 Ekim 2026" / "13 October 2026"); sayısal biçim dile göre okunmaz.
+  const tarihSozlugu = metin().tarih;
+  const gun = bicim(tarihSozlugu.uzun, { gun: t.getDate(), ay: tarihSozlugu.aylar[t.getMonth()], yil: t.getFullYear() });
+  return `${gun} ${iki(t.getHours())}:${iki(t.getMinutes())}`;
 }
 
 /** Sıklık seçenekleri (ekran sırası); etiketler sözlükte (`yedekleme.esitleme.siklik`). */

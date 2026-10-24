@@ -19,6 +19,19 @@ appId: com.furkanisikay.namazakisi
     waitToSettleTimeoutMs: 1500
 - tapOn:
     text: "(Neler yeni|What's new)\\..*"
+# Kaydırma sürerken dokunuş bazen boşa düşer (Türkçe turda Yardım listesi çekildi):
+# sayfa görünene kadar bekle, görünmezse bir kez daha dokun.
+- runFlow:
+    when:
+      notVisible:
+        id: "neler-yeni-liste"
+    commands:
+      - tapOn:
+          text: "(Neler yeni|What's new)\\..*"
+- extendedWaitUntil:
+    visible:
+      id: "neler-yeni-liste"
+    timeout: 15000
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/30-neler-yeni

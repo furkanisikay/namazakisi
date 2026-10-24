@@ -323,7 +323,13 @@ describe('EsitlemeSayfasi', () => {
     expect(esitlemeZamaniniBicimle(null)).toBe('Henüz eşitlenmedi');
     expect(esitlemeZamaniniBicimle('bozuk')).toBe('Henüz eşitlenmedi');
     const t = new Date(2026, 9, 13, 9, 5);
-    expect(esitlemeZamaniniBicimle(t.toISOString())).toBe('13.10.2026 09:05');
+    expect(esitlemeZamaniniBicimle(t.toISOString())).toBe('13 Ekim 2026 09:05');
+    const geriAl = ingilizceyeGec();
+    try {
+      expect(esitlemeZamaniniBicimle(t.toISOString())).toBe('13 October 2026 09:05');
+    } finally {
+      geriAl();
+    }
   });
 
   it('yenileme odakta çağrılır', async () => {
