@@ -83,6 +83,39 @@ export interface YeniOzellik {
 export type YeniOzellikCevirisi = Pick<YeniOzellik, 'baslik' | 'aciklama' | 'detayAciklama' | 'ctaEtiketi' | 'detaylar'>;
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Arayüz dili: İngilizce (beta) ve dil seçici (spec 2026-10-24 §9).
+    {
+        id: 'uygulama-dili',
+        platformlar: ['android', 'ios'],
+        surum: '0.71.0',
+        tarih: '2026-10-24',
+        baslik: 'Uygulamayı İngilizce de kullanabilirsiniz',
+        aciklama: 'Ayarlar › Dil bölümünden İngilizceyi seçebilirsiniz. Bildirimler, sesli okuma ve widget da seçtiğiniz dilde olur.',
+        detayAciklama:
+            'Telefonunuzun dili İngilizceyse uygulama kendiliğinden İngilizce açılır. "Cihazın dili" ya da Türkçe seçeneğiyle istediğiniz zaman değiştirebilirsiniz.',
+        ikon: 'language',
+        hedefSayfa: 'DilAyarlari',
+        ctaEtiketi: 'Dil ayarını açın',
+        detaylar: [
+            'İngilizce çeviri beta aşamasındadır.',
+            'Dil, namaz vakitlerinin hesabını değiştirmez.',
+            'Türkçe dışındaki dillerde ayetler QuranEnc mealiyle gösterilir; hadisler gösterilmez.',
+        ],
+        ceviri: {
+            en: {
+                baslik: 'Use the app in English',
+                aciklama: 'Choose English in Settings › Language. Notifications, read-aloud and widgets follow the language you choose.',
+                detayAciklama:
+                    'If your phone is set to English, the app opens in English. You can switch to "Device language" or Turkish at any time.',
+                ctaEtiketi: 'Open language settings',
+                detaylar: [
+                    'The English translation is in beta.',
+                    "The language doesn't change how prayer times are calculated.",
+                    'In languages other than Turkish, Quran verses are shown with the QuranEnc translation; hadith are not shown.',
+                ],
+            },
+        },
+    },
     // Dünya geneli konum + ülkeye göre hesap yöntemi (spec 2026-10-24).
     {
         id: 'dunya-konum-hesap-yontemi',

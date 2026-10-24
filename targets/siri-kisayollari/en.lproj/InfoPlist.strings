@@ -1,6 +1,0 @@
-// W5 — Uygulama simgesi hizli eylemleri (app.json > ios.infoPlist.UIApplicationShortcutItems):
-// UIApplicationShortcutItemTitle degeri InfoPlist.strings'te ANAHTAR olarak aranir (cihaz dili).
-// Izin metinleri (NS...UsageDescription) BILINCLI olarak burada YOK.
-
-"Vakti kıldım" = "I've prayed";
-"Kıble" = "Qibla";

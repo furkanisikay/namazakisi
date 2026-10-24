@@ -1,5 +1,6 @@
 {
   "expo": {
+    "locales": { "en": "./locales/en.json" },
     "name": "Namaz Akışı",
     "slug": "namazakisi",
     "version": "0.70.1",
@@ -68,7 +69,7 @@
     },
     "plugins": [
       "./plugins/withPlayStoreDependency",
-      "./plugins/withSiriKisayollari",
+      ["./plugins/withSiriKisayollari", { "diller": ["tr", "en"] }],
       "./plugins/withMuhafizAlarmKit",
       [
         "./plugins/withNamazWidget",

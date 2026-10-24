@@ -42,6 +42,7 @@ Katmanlar: `src/core/dil/` (saf: `tipler`, `cogul`, `bicim`, `diller`, `aktifDil
 Araştırma ve kaynaklar: `docs/superpowers/specs/2026-10-24-dil-onceligi-arastirmasi.md` (öncelik, ülke/otorite, yerleşik vakit adları, QuranEnc anahtarları, çoğul, hitap, kullanıcı şikâyetleri). Sahip kararları (2026-10-24): Azerbaycan'da Sünnî varsayılan, QMİ (Caferî) takvimi yalnız öneri; Arapça arayüzde ayet yalnız Kur'an metni (Tanzil, künyeli), meal/tefsir yok. Bilinen engel: QuranEnc liste API'si bazı çevirileri (ru, bn, ms, kk, bosnian_korkut, french_hameedullah) döndürmez → `ayet-mealleri-uret.js` künye/sürümü başka yoldan almalı; dipnot işaretli mealler (`[2]`) "birebir" kuralı nedeniyle dipnotsuz bir meal tercih edilerek seçilir.
 
 ## Bir dili seçicide açma kapısı (`secilebilir: true`)
+Açık diller: Türkçe, İngilizce (beta, 2026-10-24). Bir dil açılırken AYNI commit'te: `diller.ts > secilebilir`, `app.json` Siri eklentisi `diller` listesi ve `locales/<dil>.json` (iOS izin metinleri + hızlı eylem başlıkları; nöbetçi `plugins/__tests__/siriYerellestirme.test.ts`), "Neler Yeni" öğesi `ceviri`si.
 Her dil için ayrı ayrı; hepsi sağlanmadan açma (yarım dil kendiliğinden de açılır: cihaz dili):
 1. JS cırcırı (`turkce-metin-tavani.json`) sıfıra ya da yalnız bilinçli HARIC'e inmiş; ekranların İngilizce/dil çizim testleri yeşil.
 2. O dilin kullanıcısının gördüğü native yüzeyler (widget, bildirim eylemleri, Wear/TV başlıkları, iOS hedefleri) o dilde (W5).

@@ -25,11 +25,12 @@
  *    eslestiremezdi.
  *  - Yerellestirme (W5): `targets/siri-kisayollari/<dil>.lproj/` altindaki `.strings`
  *    dosyalari (`Localizable` = intent basligi/aciklamasi/parametresi, `AppShortcuts` =
- *    Siri ifadeleri, `InfoPlist` = hizli eylem basliklari) ana hedefin Resources fazina
+ *    Siri ifadeleri) ana hedefin Resources fazina
  *    eklenir; App Intents metinleri CIHAZ diliyle cozulur. `tr.lproj` ZORUNLUDUR: yalniz
  *    `en.lproj` olsaydi Turkce cihaz da (eslesen yerellestirme yok) Ingilizceye duserdi.
  *    Dosyalar Expo `locales` ile ayni yere (`<Proje>/Supporting/<dil>.lproj`) yazilir;
- *    ileride `app.json > locales` acilirsa `InfoPlist.strings` cakisir (Expo'nunki ezer).
+ *    `InfoPlist.strings` (izin metinleri + hizli eylem basliklari) BURADA DEGIL, Expo'nun
+ *    `app.json > locales` dosyasindadir (`locales/<dil>.json`) — ayni adla iki kaynak ezisir.
  *  - AppIntents.framework hedefe ZAYIF (Weak) baglanir: dagitim hedefi 15.1,
  *    AppIntents iOS 16'dadir (bkz. `appIntentsZayifBagla`).
  */
