@@ -17,8 +17,8 @@ import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi'
 import { AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
@@ -73,16 +73,15 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
 
     const { lat, lng } = ayarlar.koordinatlar;
     const coordinates = new Coordinates(lat, lng);
-    const params = turkiyeHesapParametreleri();
     const simdi = new Date();
 
-    const prayerTimesBugun = new PrayerTimes(coordinates, simdi, params);
+    const prayerTimesBugun = aktifPrayerTimes(coordinates, simdi);
     const imsakBugun = prayerTimesBugun.fajr;
     const yatsiBugun = prayerTimesBugun.isha;
 
     const yarin = new Date(simdi);
     yarin.setDate(yarin.getDate() + 1);
-    const prayerTimesYarin = new PrayerTimes(coordinates, yarin, params);
+    const prayerTimesYarin = aktifPrayerTimes(coordinates, yarin);
     const imsakYarin = prayerTimesYarin.fajr;
 
     // Özel gün (issue #272): sayaç, hedeflediği imsakla BAŞLAYAN oruç günü
@@ -105,7 +104,7 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
     // kendi bildirimini kurmaz.
     const dunTarihi = new Date(simdi);
     dunTarihi.setDate(dunTarihi.getDate() - 1);
-    const yatsiDun = new PrayerTimes(coordinates, dunTarihi, params).isha;
+    const yatsiDun = aktifPrayerTimes(coordinates, dunTarihi).isha;
     const pencere =
       simdi.getTime() < imsakBugun.getTime()
         ? { yatsi: yatsiDun, imsak: imsakBugun }

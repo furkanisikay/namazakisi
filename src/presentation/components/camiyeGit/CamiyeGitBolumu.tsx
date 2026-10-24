@@ -29,7 +29,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
-import { Coordinates, PrayerTimes } from 'adhan';
+import { Coordinates } from 'adhan';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -67,7 +67,7 @@ import { camiyeGitAnonsMetni, camiyeGitMetniOlustur } from '../../../core/bildir
 import { adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
 import { enYakinFavoriCami, type FavoriCami } from '../../../core/camiyeGit/yurumeSuresi';
 import { camideyimAyarlariniNormalize } from '../../../core/cami/camideyimAyarlari';
-import { turkiyeHesapParametreleri } from '../../../core/vakit/hesapParametreleri';
+import { aktifPrayerTimes } from '../../../core/vakit/aktifHesap';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 import * as camiKoprusu from '../../../../modules/expo-cami-geofence/src';
 
@@ -103,7 +103,7 @@ function siradakiPencere(
         const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
         for (let i = 0; i < 2; i++) {
             const gun = new Date(simdi.getFullYear(), simdi.getMonth(), simdi.getDate() + i);
-            const pt = new PrayerTimes(coordinates, gun, turkiyeHesapParametreleri());
+            const pt = aktifPrayerTimes(coordinates, gun);
             const girisler: Record<CamiyeGitVakti, Date> = {
                 imsak: pt.fajr,
                 ogle: pt.dhuhr,

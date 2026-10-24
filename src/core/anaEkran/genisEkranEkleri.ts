@@ -3,7 +3,7 @@
  *
  * Geniş düzenin "Bu hafta" panelinin yarının vakitleri bölümü.
  * Hesap
- * uygulamanın tamamıyla AYNI yoldan (`gunVakitleriniHesapla` = `turkiyeHesapParametreleri`).
+ * uygulamanın tamamıyla AYNI yoldan (`gunVakitleriniHesapla` = `aktifPrayerTimes`).
  */
 import { gunVakitleriniHesapla, koordinatGecerliMi, type NafileKoordinat } from '../nafile/gunVakitleri';
 import { gunEkle, tarihiGorunumFormatinaCevir } from '../utils/TarihYardimcisi';

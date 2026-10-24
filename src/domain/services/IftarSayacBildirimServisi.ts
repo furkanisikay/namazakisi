@@ -17,8 +17,8 @@ import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi'
 import { AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
@@ -79,9 +79,8 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
 
     const { lat, lng } = ayarlar.koordinatlar;
     const coordinates = new Coordinates(lat, lng);
-    const params = turkiyeHesapParametreleri();
     const simdi = new Date();
-    const prayerTimes = new PrayerTimes(coordinates, simdi, params);
+    const prayerTimes = aktifPrayerTimes(coordinates, simdi);
 
     const sabahVakti = prayerTimes.fajr;
     const aksamVakti = prayerTimes.maghrib;

@@ -31,8 +31,8 @@
  * SAF: `simdi` enjekte edilir; adhan core'da zaten kullanılıyor.
  */
 import { yatisSahipliMi } from '../muhafiz/teslimSahipligi';
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../vakit/aktifHesap';
 import type { VakitAdi } from '../types';
 import { BILDIRIM_SABITLERI } from '../constants/UygulamaSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
@@ -165,9 +165,8 @@ export function yatisTetikAni(gun: Date, ayarlar: Pick<YatisAyarlari, 'saat' | '
 /** Namaz günü `gun`ün beş vaktinin pencereleri (yatsı ertesi imsakta biter). */
 export function namazGunuVakitleri(koordinat: { lat: number; lng: number }, gun: Date): Record<FarzVakit, VakitPenceresi> {
     const konum = new Coordinates(koordinat.lat, koordinat.lng);
-    const params = turkiyeHesapParametreleri();
-    const b = new PrayerTimes(konum, gunKaydir(gun, 0), params);
-    const y = new PrayerTimes(konum, gunKaydir(gun, 1), params);
+    const b = aktifPrayerTimes(konum, gunKaydir(gun, 0));
+    const y = aktifPrayerTimes(konum, gunKaydir(gun, 1));
     return {
         imsak: { giris: b.fajr, cikis: b.sunrise },
         ogle: { giris: b.dhuhr, cikis: b.asr },

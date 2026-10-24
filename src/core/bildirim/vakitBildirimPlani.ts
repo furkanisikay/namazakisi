@@ -5,8 +5,8 @@
  * Pencere bugün + yarın; özel gün (issue #272) GÜN bazında atlanır. Metin
  * (rastgele içerik) serviste kalır.
  */
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../vakit/aktifHesap';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 
 export type VakitBildirimVakti = 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
@@ -32,7 +32,6 @@ export function vakitBildirimPlaniOlustur(
     gunAtlanirMi: (iso: string) => boolean = () => false
 ): VakitBildirimPlanKaydi[] {
     const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
-    const params = turkiyeHesapParametreleri();
     const bugun = new Date(simdi);
     const yarin = new Date(simdi);
     yarin.setDate(yarin.getDate() + 1);
@@ -40,7 +39,7 @@ export function vakitBildirimPlaniOlustur(
     const plan: VakitBildirimPlanKaydi[] = [];
     for (const gun of [bugun, yarin]) {
         if (gunAtlanirMi(tarihiISOFormatinaCevir(gun))) continue;
-        const pt = new PrayerTimes(coordinates, gun, params);
+        const pt = aktifPrayerTimes(coordinates, gun);
         const zamanlar: [VakitBildirimVakti, Date][] = [
             ['imsak', pt.fajr],
             ['ogle', pt.dhuhr],

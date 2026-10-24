@@ -28,7 +28,7 @@
  * Metin serviste DEĞİL burada üretilir (saf, testli): `camiyeGitMetniOlustur`.
  */
 import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import { aktifPrayerTimes } from '../vakit/aktifHesap';
 import type { BildirimPlatformu } from './butceSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { cumaMi, sureMetniOlustur } from '../utils/cumaYardimcisi';
@@ -103,7 +103,6 @@ export function camiyeGitPlaniOlustur(
     if (!CAMIYE_GIT_VAKITLERI.some((v) => ayarlar.vakitler[v])) return [];
     const gunAtlanirMi = secenekler.gunAtlanirMi ?? (() => false);
     const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
-    const params = turkiyeHesapParametreleri();
 
     // Tarama en uzak eşikten başlar (çıkış yönü: ölçü azalarak ezana yaklaşır). Motor
     // çıktısı kalanDk'ya göre AZALAN = kronolojik; ilk = vaktin ilk tetiği.
@@ -116,7 +115,7 @@ export function camiyeGitPlaniOlustur(
         const gun = new Date(simdi.getFullYear(), simdi.getMonth(), simdi.getDate() + i);
         const tarih = tarihiISOFormatinaCevir(gun);
         if (gunAtlanirMi(tarih)) continue;
-        const vakitler = gunVakitleri(new PrayerTimes(coordinates, gun, params));
+        const vakitler = gunVakitleri(aktifPrayerTimes(coordinates, gun));
         for (const vakit of CAMIYE_GIT_VAKITLERI) {
             if (!ayarlar.vakitler[vakit]) continue;
             if (vakit === 'ogle' && secenekler.cumaHatirlatmasiAcik && cumaMi(gun)) continue;

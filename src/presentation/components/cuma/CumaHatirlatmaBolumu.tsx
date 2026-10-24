@@ -22,7 +22,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
-import { Coordinates, PrayerTimes } from 'adhan';
+import { Coordinates } from 'adhan';
 import { useRenkler } from '../../../core/theme';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { cumaHatirlatmaAyariniGuncelle } from '../../store/cumaHatirlatmaSlice';
@@ -48,7 +48,7 @@ import {
 } from '../../../core/cuma/cumaAyarlari';
 import { adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
 import { cumaAnonsMetni, cumaBildirimMetni, cumaMi, sonrakiCumalar } from '../../../core/utils/cumaYardimcisi';
-import { turkiyeHesapParametreleri } from '../../../core/vakit/hesapParametreleri';
+import { aktifPrayerTimes } from '../../../core/vakit/aktifHesap';
 
 
 /** Taslağın diske yazılmadan önce beklediği süre (stepper → tek yazma). */
@@ -76,7 +76,7 @@ function buCumaninPenceresi(
     try {
         const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
         for (const cuma of sonrakiCumalar(simdi, 2)) {
-            const ogle = new PrayerTimes(coordinates, cuma, turkiyeHesapParametreleri()).dhuhr;
+            const ogle = aktifPrayerTimes(coordinates, cuma).dhuhr;
             if (ogle.getTime() <= simdi.getTime()) continue;
             return {
                 baslangic: new Date(ogle.getTime() - CUMA_ONCEDEN_MAX_DK * 60000),

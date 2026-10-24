@@ -236,6 +236,10 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Ortak mezhep ayarı (seferîlik kartı + kaza defterinde vitir). Namaz vakti
   // hesabına DOKUNMAZ. YEDEKLENİR (beyaz listenin üç yeri).
   MEZHEP_AYARI: 'mezhep_ayari',
+  // Namaz vakti hesap ayarı (yöntem/profil, ikindi, vakit başına dakika, özel açı,
+  // sorulan ülkeler). Yokluğu = Diyanet (eski kurulumlar). YEDEKLENİR (beyaz listenin
+  // üç yeri). Etkin durum `core/vakit/aktifHesap.ts`; yükleme `HesapAyariServisi`.
+  HESAP_AYARI: 'hesap_ayari',
   // "Her farzla bir kaza" önerisi (issue #294) — ayar YEDEKLENİR (beyaz listenin
   // ÜÇ yerinde); sorulma hafızası cihaza özgü, tek günlük → yedeklemeye GİRMEZ.
   KAZA_ONERI_AYARLARI: 'kaza_oneri_ayarlari',

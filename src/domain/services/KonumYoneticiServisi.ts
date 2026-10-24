@@ -5,8 +5,8 @@
  */
 
 import * as Location from 'expo-location';
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { Logger } from '../../core/utils/Logger';
 import { TurkiyeKonumServisi, Il, Ilce } from './TurkiyeKonumServisi';
 
@@ -189,13 +189,12 @@ export class KonumYoneticiServisi {
 
         const { lat, lng } = this.durum.koordinatlar;
         const coordinates = new Coordinates(lat, lng);
-        const params = turkiyeHesapParametreleri();
 
         // Yarının tarihi
         const yarin = new Date();
         yarin.setDate(yarin.getDate() + 1);
 
-        const prayerTimes = new PrayerTimes(coordinates, yarin, params);
+        const prayerTimes = aktifPrayerTimes(coordinates, yarin);
         return prayerTimes.fajr;
     }
 
@@ -209,9 +208,8 @@ export class KonumYoneticiServisi {
 
         const { lat, lng } = this.durum.koordinatlar;
         const coordinates = new Coordinates(lat, lng);
-        const params = turkiyeHesapParametreleri();
 
-        const prayerTimes = new PrayerTimes(coordinates, new Date(), params);
+        const prayerTimes = aktifPrayerTimes(coordinates, new Date());
         return prayerTimes.fajr;
     }
 
@@ -225,9 +223,8 @@ export class KonumYoneticiServisi {
 
         const { lat, lng } = this.durum.koordinatlar;
         const coordinates = new Coordinates(lat, lng);
-        const params = turkiyeHesapParametreleri();
 
-        const prayerTimes = new PrayerTimes(coordinates, new Date(), params);
+        const prayerTimes = aktifPrayerTimes(coordinates, new Date());
         return prayerTimes.isha;
     }
 

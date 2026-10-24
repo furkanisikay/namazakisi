@@ -5,8 +5,8 @@
 
 import * as Calendar from 'expo-calendar/legacy';
 import { Platform } from 'react-native';
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { Logger } from '../../core/utils/Logger';
 import { UYGULAMA_TAKVIM_NOTU } from '../../core/takvimCakisma/takvimCakismaAyarlari';
 
@@ -193,7 +193,6 @@ export class TakvimServisi {
         await this.eskiOlaylariTemizle(ayarlar.takvimId, ayarlar.kaciGunIlerisi);
 
         const coordinates = new Coordinates(koordinatlar.lat, koordinatlar.lng);
-        const params = turkiyeHesapParametreleri();
         let toplamOlusturulan = 0;
 
         // IANA timezone: 'local' gecersiz, cihazin gercek timezone'unu al
@@ -207,11 +206,11 @@ export class TakvimServisi {
             tarih.setDate(tarih.getDate() + g);
             tarih.setHours(0, 0, 0, 0);
 
-            const pt = new PrayerTimes(coordinates, tarih, params);
+            const pt = aktifPrayerTimes(coordinates, tarih);
 
             const yarinTarih = new Date(tarih);
             yarinTarih.setDate(yarinTarih.getDate() + 1);
-            const ptYarin = new PrayerTimes(coordinates, yarinTarih, params);
+            const ptYarin = aktifPrayerTimes(coordinates, yarinTarih);
 
             const girisSaatleri: Record<TakvimVakitAdi, Date> = {
                 imsak:  pt.fajr,

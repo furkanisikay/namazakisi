@@ -18,8 +18,8 @@
  * baglansaydik arka plan yolu sessizce hicbir sey yapmazdi.
  */
 
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { gunTamMi } from '../../core/seri/gunTamMi';
 import { sonrakiImsakVaktiBul, type ImsakSaglayici } from '../../core/seri/seriGunSonu';
 import { localNamazlariGetir } from '../../data/local/LocalNamazServisi';
@@ -43,9 +43,8 @@ export function koordinattanImsakSaglayici(koordinatlar: {
   if (koordinatlar.lat === 0 && koordinatlar.lng === 0) return () => null;
 
   const konum = new Coordinates(koordinatlar.lat, koordinatlar.lng);
-  const params = turkiyeHesapParametreleri();
   // Gun bazinda ayri `PrayerTimes` (AGENTS.md kurali).
-  return (tarih: Date) => new PrayerTimes(konum, tarih, params).fajr ?? null;
+  return (tarih: Date) => aktifPrayerTimes(konum, tarih).fajr ?? null;
 }
 
 /**

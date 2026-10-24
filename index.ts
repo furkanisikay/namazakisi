@@ -14,6 +14,14 @@ configureReanimatedLogger({
 
 import App from './App';
 
+// Hesap ayarı (yöntem/ikindi/dakika) HER JS bağlamında vakit hesabından ÖNCE yüklenir:
+// headless/arka plan bağlamında App.tsx hiç çalışmaz; beklenmezse vakitler Diyanet'le
+// hesaplanır (yurt dışı kullanıcıda yanlış saat). ASLA reddetmez.
+const hesapAyariHazir = (): Promise<void> =>
+    import('./src/domain/services/HesapAyariServisi')
+        .then(({ HesapAyariServisi }) => HesapAyariServisi.hazir())
+        .catch(() => undefined);
+
 // notifee arka plan olay işleyicisi (Android sayaç için)
 // Uygulama kapalıyken/arka plandayken "Kıldım" aksiyonunu yakalar.
 // Headless JS ortamında olduğumuz için her bloğu ayrı try-catch ile koruyoruz:
@@ -25,6 +33,7 @@ if (Platform.OS === 'android') {
         if (!bildirimId) {
             return;
         }
+        await hesapAyariHazir();
 
         // Sayac asama gecisi: onceki asama bildirimlerini iptal et
         if (type === EventType.DELIVERED) {
@@ -58,6 +67,7 @@ if (Platform.OS === 'android') {
     try {
         AppRegistry.registerHeadlessTask('KildimKuyrugu', () => async () => {
             try {
+                await hesapAyariHazir();
                 const { KildimKuyruguServisi } = await import('./src/domain/services/KildimKuyruguServisi');
                 await KildimKuyruguServisi.getInstance().bekleyenleriIsle();
             } catch {
@@ -82,6 +92,7 @@ if (Platform.OS === 'android') {
     try {
         AppRegistry.registerHeadlessTask('CamiKildim', () => async () => {
             try {
+                await hesapAyariHazir();
                 const { CamideyimServisi } = await import('./src/domain/services/CamideyimServisi');
                 await CamideyimServisi.getInstance().bekleyenKildimleriIsle();
             } catch {
@@ -144,6 +155,7 @@ if (Platform.OS === 'android') {
         TaskManager.defineTask(MUHAFIZ_YANIT_GOREVI, async ({ data, error }) => {
             if (error || !data) return;
             try {
+                await hesapAyariHazir();
                 const { BildirimServisi } = await import('./src/domain/services/BildirimServisi');
                 await BildirimServisi.getInstance().arkaplanYanitiniIsle(data);
             } catch {

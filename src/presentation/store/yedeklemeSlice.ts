@@ -34,6 +34,7 @@ import { nafileAyarlariniYukle } from './nafileSlice';
 import { nowBarAyarlariniYukle } from './nowBarSlice';
 import { sadeGorunumAyarlariniYukle } from './sadeGorunumSlice';
 import { hatirlatmaRizalariniYukle } from './hatirlatmaRizaSlice';
+import { hesapAyariniYukle } from './hesapSlice';
 import { seferilikYukle } from './seferilikSlice';
 import { NafileHatirlatmaServisi } from '../../domain/services/NafileHatirlatmaServisi';
 import { gunSonuHatirlatmalariniGuncelle } from '../../domain/services/GunSonuHatirlaticiServisi';
@@ -80,6 +81,8 @@ export const iceAktarmayiUygula = createAsyncThunk(
     await planiDiskeYaz(plan);
 
     // 3) Store'u KRİTİK SIRAYLA tazele (spec §10).
+    // Hesap ayarı (yöntem/ikindi) vakit hesaplayan her şeyden önce — beyaz listenin üçüncü yeri.
+    await dispatch(hesapAyariniYukle({ zorla: true }));
     await dispatch(konumAyarlariniYukle()); // önce konum (sayaç/muhafız buna bağlı)
     await Promise.all([
       dispatch(muhafizAyarlariniYukle()),

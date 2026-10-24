@@ -5,8 +5,8 @@
  * `PrayerTimes` (AGENTS.md). Saf hesap (`nafileVakitleri.ts`) adhan'a bağımlı
  * değildir; bu dosya ikisini birleştirir.
  */
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../vakit/aktifHesap';
 import { ISOTarihiDateNesnesiNeCevir, gunEkle } from '../utils/TarihYardimcisi';
 import { nafilePencereleriHesapla, type GunVakitleri, type NafilePencere } from './nafileVakitleri';
 
@@ -24,11 +24,7 @@ export const koordinatGecerliMi = (k: NafileKoordinat | null | undefined): k is 
 
 /** Bir ISO günün ('YYYY-MM-DD') farz vakitleri. */
 export function gunVakitleriniHesapla(koordinat: NafileKoordinat, isoGun: string): GunVakitleri {
-    const pt = new PrayerTimes(
-        new Coordinates(koordinat.lat, koordinat.lng),
-        ISOTarihiDateNesnesiNeCevir(isoGun),
-        turkiyeHesapParametreleri()
-    );
+    const pt = aktifPrayerTimes(new Coordinates(koordinat.lat, koordinat.lng), ISOTarihiDateNesnesiNeCevir(isoGun));
     return {
         imsak: pt.fajr,
         gunes: pt.sunrise,

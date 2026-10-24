@@ -47,6 +47,9 @@ jest.mock('../../../core/utils/TarihYardimcisi', () => ({
 }));
 
 // --- Loader/reconcile thunk mock'ları: her biri benzersiz type'lı action döndürür ---
+jest.mock('../hesapSlice', () => ({
+  hesapAyariniYukle: jest.fn(() => ({ type: 'hesap/yukle' })),
+}));
 jest.mock('../konumSlice', () => ({
   konumAyarlariniYukle: jest.fn(() => ({ type: 'konum/yukle' })),
 }));
@@ -298,8 +301,11 @@ describe('yedeklemeSlice', () => {
       );
       const i = (t: string) => loaderSirasi.indexOf(t);
 
-      // konum İLK dispatch edilen loader olmalı.
-      expect(loaderSirasi[0]).toBe('konum/yukle');
+      // Hesap ayarı (yöntem/ikindi) İLK, konum hemen ARDINDAN: vakit hesaplayan her şey ikisine bağlı.
+      expect(loaderSirasi[0]).toBe('hesap/yukle');
+      expect(loaderSirasi[1]).toBe('konum/yukle');
+      const { hesapAyariniYukle } = jest.requireMock('../hesapSlice');
+      expect(hesapAyariniYukle).toHaveBeenCalledWith({ zorla: true });
 
       // namaz, tüm ayar loader'larından SONRA.
       expect(i('namaz/yukle')).toBeGreaterThan(i('muhafiz/yukle'));

@@ -59,8 +59,8 @@ import { store } from '../store/store';
 import { HaptikServisi } from '../../core/feedback/HaptikServisi';
 import { OnizlemeSesServisi } from '../../domain/services/OnizlemeSesServisi';
 import { VARSAYILAN_SES } from '../../core/muhafiz/matrisTipleri';
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { Logger } from '../../core/utils/Logger';
 /** Kaza önerisinin Kıldım duasından sonra açılma gecikmesi. */
 const KAZA_ONERI_GECIKMESI_MS = 1600;
@@ -241,8 +241,7 @@ export const AnaSayfa: React.FC = () => {
     // gerisindeki saat dilimlerinde adhan ÖNCEKİ günün vakitlerini hesaplar (AGENTS.md).
     const date = ISOTarihiDateNesnesiNeCevir(mevcutTarih);
     const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
-    const params = turkiyeHesapParametreleri();
-    const prayerTimes = new PrayerTimes(coordinates, date, params);
+    const prayerTimes = aktifPrayerTimes(coordinates, date);
 
     const zamanFormatla = (d: Date) => {
       return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
@@ -274,8 +273,7 @@ export const AnaSayfa: React.FC = () => {
 
     if (konumAyarlari.koordinatlar) {
       const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
-      const params = turkiyeHesapParametreleri();
-      const prayerTimes = new PrayerTimes(coordinates, now, params);
+      const prayerTimes = aktifPrayerTimes(coordinates, now);
       imsakZamani = prayerTimes.fajr;
     }
 

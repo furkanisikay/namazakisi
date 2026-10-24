@@ -63,8 +63,8 @@
  *
  * SAF: `simdi` enjekte edilir; React/expo import ETMEZ.
  */
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../vakit/aktifHesap';
 import type { VakitAdi } from '../types';
 import type { BildirimPlatformu } from './butceSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
@@ -258,9 +258,8 @@ export interface TakvimCakismaPlanGirdisi {
 const adimlarGecerliMi = (adimlar: unknown): adimlar is SeviyeAyari[] => Array.isArray(adimlar) && adimlar.length > 0;
 
 const vakitAraliklari = (gun: Date, coordinates: Coordinates): Record<CakismaVakti, VakitAraligi> | null => {
-    const params = turkiyeHesapParametreleri();
-    const pt = new PrayerTimes(coordinates, gun, params);
-    const yarin = new PrayerTimes(coordinates, new Date(gun.getFullYear(), gun.getMonth(), gun.getDate() + 1), params);
+    const pt = aktifPrayerTimes(coordinates, gun);
+    const yarin = aktifPrayerTimes(coordinates, new Date(gun.getFullYear(), gun.getMonth(), gun.getDate() + 1));
     const zamanlar = [pt.fajr, pt.sunrise, pt.dhuhr, pt.asr, pt.maghrib, pt.isha, yarin.fajr];
     if (zamanlar.some((z) => !(z instanceof Date) || !Number.isFinite(z.getTime()))) return null;
     return {
