@@ -23,6 +23,7 @@ import {
 } from '../../../core/evEkrani/evEkrani';
 import { gunVakitleriniHesapla } from '../../../core/nafile/gunVakitleri';
 import type { GunVakitleri } from '../../../core/nafile/nafileVakitleri';
+import { useHesapSurumu } from '../../hooks/useHesapSurumu';
 import { bugunuAl, tarihiGorunumFormatinaCevir } from '../../../core/utils/TarihYardimcisi';
 
 const K = KOYU_TEMA.renkler;
@@ -55,9 +56,10 @@ export const EvEkraniPanosu: React.FC<Props> = ({ lat, lng, konumMetni, onKapat 
 
     // Gün bazlı önbellek: saniyelik çizim adhan hesabını yinelemesin.
     const onbellek = React.useRef(new Map<string, GunVakitleri>());
+    const hesapSurumu = useHesapSurumu();
     const vakitHesapla = React.useCallback(
         (iso: string) => {
-            const anahtar = `${lat},${lng},${iso}`;
+            const anahtar = `${lat},${lng},${iso},${hesapSurumu}`;
             const var_ = onbellek.current.get(anahtar);
             if (var_) return var_;
             if (onbellek.current.size > 6) onbellek.current.clear();
@@ -65,7 +67,7 @@ export const EvEkraniPanosu: React.FC<Props> = ({ lat, lng, konumMetni, onKapat 
             onbellek.current.set(anahtar, v);
             return v;
         },
-        [lat, lng]
+        [lat, lng, hesapSurumu]
     );
 
     const durum = panoDurumuHesapla(simdi, bugunuAl(), vakitHesapla);

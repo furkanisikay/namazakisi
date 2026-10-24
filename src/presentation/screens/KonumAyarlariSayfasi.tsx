@@ -522,7 +522,7 @@ const KonumAyarlariIcerik: React.FC = () => {
                             </Text>
                         </View>
                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                            İl ve ilçe seçerek konumunuzu belirleyin
+                            Şehrinizi listeden seçerek konumunuzu belirleyin
                         </Text>
                     </View>
                 </TouchableOpacity>

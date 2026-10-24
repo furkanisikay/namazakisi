@@ -27,6 +27,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useHesapSurumu } from '../../hooks/useHesapSurumu';
 import { yatisHatirlatmaAyariniGuncelle } from '../../store/yatisHatirlatmaSlice';
 import { Anahtar } from '../common/Anahtar';
 import { HatirlatmaModulu, ekAdimIslemleri } from '../hatirlatma/HatirlatmaModulu';
@@ -268,6 +269,7 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
     // hatırlatması yatsı girdikten sonraya kayar (plan üreticisi), muhasebe ise
     // seçilen saatte gelir ve yatsıyı saymaz. Sessiz sapma bırakılmaz — söylenir.
     // Ölçü İLK (yatıştan en uzak) hatırlatmadır (`onceDk` türevi).
+    const hesapSurumu = useHesapSurumu();
     const yatsiOncesi = useMemo(
         () =>
             yatsiOncesiTetikBilgisi(
@@ -275,7 +277,9 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
                 { saat: ayarlar.saat, dakika: ayarlar.dakika, onceDk: ayarlar.onceDk },
                 new Date()
             ),
-        [koordinat, ayarlar.saat, ayarlar.dakika, ayarlar.onceDk]
+        // hesapSurumu: yöntem değişince yeniden hesaplanır (değer kapanışta okunmaz).
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [koordinat, ayarlar.saat, ayarlar.dakika, ayarlar.onceDk, hesapSurumu]
     );
     const yatsiOncesiMetni = (() => {
         if (!yatsiOncesi || (!ayarlar.yatsiHatirlatmasi && !ayarlar.muhasebe)) return null;

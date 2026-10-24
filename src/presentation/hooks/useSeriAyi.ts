@@ -36,6 +36,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { useHesapSurumu } from './useHesapSurumu';
 import { seriVerileriniYukle } from '../store/seriSlice';
 import { localTarihAraligindakiNamazlariGetir } from '../../data/local/LocalNamazServisi';
 import { Logger } from '../../core/utils/Logger';
@@ -119,6 +120,7 @@ export function useSeriAyi(): SeriAyiSonucu {
   // Gün sınırı state'te tutulur (bkz. dosya başı "GÜN SINIRI HİDRASYONU").
   // Başlangıç değeri imsak kaynağına HİÇ bakmaz (`() => null` sağlayıcı) — böylece
   // ilk render her koşulda deterministiktir.
+  const hesapSurumu = useHesapSurumu();
   const [bugun, setBugun] = useState(() =>
     namazGunuHesapla(new Date(), ayarlar.gunBitisSaati, () => null)
   );
@@ -136,7 +138,7 @@ export function useSeriAyi(): SeriAyiSonucu {
     }
     const cozulmus = namazGunuHesapla(new Date(), ayarlar.gunBitisSaati);
     setBugun((onceki) => (onceki === cozulmus ? onceki : cozulmus));
-  }, [ayarlar.gunBitisSaati, konumKoordinatlari]);
+  }, [ayarlar.gunBitisSaati, konumKoordinatlari, hesapSurumu]);
 
   const bugunTarihi = ISOTarihiDateNesnesiNeCevir(bugun);
   const yil = bugunTarihi.getFullYear();

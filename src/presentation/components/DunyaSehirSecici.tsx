@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   Dimensions,
   FlatList,
+  InteractionManager,
   Modal,
   Pressable,
   StyleSheet,
@@ -80,6 +81,17 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
     }
     setVeri(v);
     setDurum(v ? 'hazir' : 'hata');
+  }, []);
+
+  // Kart görünür olur olmaz (geçiş bitince) önceden yüklenir: 34 bin şehirlik varlığın
+  // okunması emülatörde birkaç saniye sürüyor, liste ilk dokunuşta hazır olsun.
+  useEffect(() => {
+    const is = InteractionManager.runAfterInteractions(() => {
+      if (!veri && durum === 'bos') void yukle();
+    });
+    return () => is.cancel();
+    // Yalnız ilk görünüşte; hata sonrası yeniden deneme listeyi açınca yapılır.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

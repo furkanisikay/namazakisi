@@ -82,7 +82,7 @@ describe('ozellik turu tohumu', () => {
         expect(cuma.aktif).toBe(true);
 
         expect(await LocalKazaOneriServisi.ayarlariGetir()).toEqual({
-            farzSonrasiOner: !['kildim', 'dunya', 'dunyaYontem'].includes(varyant),
+            farzSonrasiOner: !['kildim', 'dunya', 'jakim'].includes(varyant),
         });
         expect((await LocalSadeGorunumServisi.getAyarlar()).aktif).toBe(varyant === 'sade');
     });
@@ -100,7 +100,7 @@ describe('ozellik turu tohumu', () => {
         );
     });
 
-    it.each(['dunya', 'dunyaYontem'])('%s varyanti: dünya şehri ve hesap ayarı uygulamanın okuma yolundan geçer', async (varyant) => {
+    it.each(['dunya', 'jakim'])('%s varyanti: dünya şehri ve hesap ayarı uygulamanın okuma yolundan geçer', async (varyant) => {
         const { localKonumAyarlariniGetir } = require('../../../data/local/LocalKonumServisi');
         const { HesapAyariServisi } = require('../../../domain/services/HesapAyariServisi');
         const { kayitliUlkeKodu } = require('../../konum/ulkeTespiti');

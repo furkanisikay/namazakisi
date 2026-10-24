@@ -39,6 +39,7 @@ import { useKatlanmaPosturu } from '../hooks/useKatlanmaPosturu';
 import { gunDuzeniSec } from '../../core/utils/katlanmaPosturu';
 import { ucSutunluMu } from '../../core/utils/ekranSinifi';
 import { useNafilePencereleri } from '../hooks/useNafilePencereleri';
+import { useHesapSurumu } from '../hooks/useHesapSurumu';
 import { nafileZincirSatirlariOlustur } from '../../core/nafile/nafileZinciri';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir, gunEkle, ISOTarihiDateNesnesiNeCevir } from '../../core/utils/TarihYardimcisi';
@@ -152,7 +153,10 @@ export const AnaSayfa: React.FC = () => {
   const nafileAyarlari = useAppSelector((state) => state.nafile.ayarlar);
   // useEffect bagimliliklarinda obje referansi yerine stabil string kullanilir
   // (Redux dispatch sonrasi ayni degerlerle bile yeni obje olusturulur, bu gereksiz tetiklemeyi onler)
-  const konumAyarlariStr = `${konumAyarlari.koordinatlar?.lat},${konumAyarlari.koordinatlar?.lng}`;
+  // Vakit hesaplayan effect'lerin anahtarı: konum + hesap yöntemi (yöntem değişince sayaç,
+  // muhafız ve kerahat de yeniden kurulur).
+  const hesapSurumu = useHesapSurumu();
+  const konumAyarlariStr = `${konumAyarlari.koordinatlar?.lat},${konumAyarlari.koordinatlar?.lng}|${hesapSurumu}`;
   // Muhafız (D-10): eskiden tüm ayar nesnesi HER render'da JSON'a çevrilip effect anahtarı
   // yapılıyordu; ilgisiz bir alan (ör. `sesliOnayi`) değişince ön plan muhafızı söküp diskten
   // yeniden kuruyordu. Artık yalnız motorun okuduğu alanlardan çözülen matris + `aktif`.

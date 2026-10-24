@@ -33,6 +33,7 @@ import { Coordinates } from 'adhan';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useHesapSurumu } from '../../hooks/useHesapSurumu';
 import { camiyeGitAyariniGuncelle, camiyeGitAyarlariniYukle } from '../../store/camiyeGitSlice';
 import { Anahtar } from '../common/Anahtar';
 import { SayisalSecici } from '../common/SayisalSecici';
@@ -311,9 +312,12 @@ export const CamiyeGitBolumu: React.FC = () => {
         ayarlar.yurumeDk !== favori.yurumeDk;
 
     // ── Pencere tanımı ──
+    const hesapSurumu = useHesapSurumu();
     const pencere = useMemo(
         () => siradakiPencere(koordinat, ayarlar.vakitler, new Date()),
-        [koordinat, ayarlar.vakitler]
+        // hesapSurumu: yöntem değişince yeniden hesaplanır (değer kapanışta okunmaz).
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [koordinat, ayarlar.vakitler, hesapSurumu]
     );
     const ornekVakit: CamiyeGitVakti = pencere?.vakit ?? CAMIYE_GIT_VAKITLERI.find((v) => ayarlar.vakitler[v]) ?? 'ogle';
     const sure = useMemo(() => ({ yurumeDk: ayarlar.yurumeDk, hazirlikDk: ayarlar.hazirlikDk }), [ayarlar.yurumeDk, ayarlar.hazirlikDk]);

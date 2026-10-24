@@ -29,6 +29,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { useHesapSurumu } from '../hooks/useHesapSurumu';
 import {
   kazaVerileriniYukle,
   borcEkle,
@@ -113,6 +114,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<KazaStackParamList>>();
 
   const { kazaDurumu, istatistik, yukleniyor } = useAppSelector((s) => s.kaza);
+  const hesapSurumu = useHesapSurumu();
   // Eski test/mock state'lerinde bu alanlar olmayabilir → güvenli varsayılan.
   const bozukAylar = useAppSelector((s) => s.kaza.bozukAylar) ?? [];
   const eskiKayitBozuk = useAppSelector((s) => s.kaza.eskiKayitBozuk) === true;
@@ -197,7 +199,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
     return () => clearInterval(interval);
     // Nesne yerine primitive bağımlılık: koordinatlar referansı değişse de (ör. her
     // render yeni nesne) yalnız gerçek lat/lng değişiminde yeniden kur → render döngüsü olmaz.
-  }, [koordinatlar?.lat, koordinatlar?.lng]);
+  }, [koordinatlar?.lat, koordinatlar?.lng, hesapSurumu]);
 
   // ==================== MOTİVASYON ====================
 

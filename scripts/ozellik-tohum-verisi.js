@@ -31,7 +31,7 @@
  */
 const { tohumVerisi, gun } = require('./magaza-tohum-verisi');
 
-const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme', 'kildim', 'dunya', 'dunyaYontem'];
+const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme', 'kildim', 'dunya', 'jakim'];
 
 /** `dunya*` varyantlarinin konumu: Kuala Lumpur, elle secilmis dunya sehri. */
 const DUNYA_KONUMU = {
@@ -211,13 +211,13 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: false });
     }
 
-    if (varyant === 'dunya' || varyant === 'dunyaYontem') {
+    if (varyant === 'dunya' || varyant === 'jakim') {
         // Turkiye disi elle secilmis sehir (Kuala Lumpur). `dunya`: hesap ayari YOK → ana
-        // ekranda "bolgenizin takvimi" karti acilir. `dunyaYontem`: JAKIM secilmis, kart
+        // ekranda "bolgenizin takvimi" karti acilir. `jakim`: JAKIM secilmis, kart
         // sorulmus sayilir. Kaza onerisi kapali: iki modal ust uste binmesin.
         depo['@namaz_akisi/konum_ayarlari'] = JSON.stringify(DUNYA_KONUMU);
         depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: false });
-        if (varyant === 'dunyaYontem') {
+        if (varyant === 'jakim') {
             depo.hesap_ayari = JSON.stringify({ profil: 'jakim', secildi: true, sorulanUlkeler: ['MY'] });
         }
     }

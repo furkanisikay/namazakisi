@@ -18,10 +18,17 @@ appId: com.furkanisikay.namazakisi
     timeout: 20000
 - tapOn:
     id: "manuel-bolge-dunya"
+- extendedWaitUntil:
+    visible: "Şehir seçin"
+    timeout: 10000
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/55-konum-dunya
 - tapOn: "Şehir seçin"
+# Ulke listesi 34 bin sehirlik varlik okununca gelir ("Sehir listesi aciliyor" gider).
+- extendedWaitUntil:
+    notVisible: "Şehir listesi açılıyor"
+    timeout: 30000
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/56-ulke-listesi
