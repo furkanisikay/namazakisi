@@ -6,8 +6,9 @@ export const gununAyeti = {
   baslik: 'Günün ayeti',
   /** Widget ve duvar kâğıdı üst etiketi. */
   etiket: 'GÜNÜN AYETİ',
-  /** Kısa künye: "İnşirâh 94:6". */
+  /** Kısa künye: "İnşirâh 94:6" (Türkçede `{sure}` sûre adı, diğer dillerde `kuran`). */
   kisaKunye: '{sure} {ref}',
+  kuran: "Kur'an",
   /** Meal kaynağı: "Rowwad, QuranEnc 1.0.4". */
   mealKaynagi: '{yayimci}, QuranEnc {surum}',
   /** Sayfadaki tam künye. */

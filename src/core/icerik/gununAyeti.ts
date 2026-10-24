@@ -68,7 +68,7 @@ export function gununAyetiGorunumu(kayit: GununAyetiKaydi, dil: DilKodu = aktifD
     ref: kayit.ref,
     ar: kayit.ar,
     meal,
-    kisaKunye: bicim(m.kisaKunye, { sure: sureAdiTr(kayit.sure), ref: kayit.ref }),
+    kisaKunye: bicim(m.kisaKunye, { sure: dil === 'tr' ? sureAdiTr(kayit.sure) : m.kuran, ref: kayit.ref }),
     mealKaynagi: yayimci ? bicim(m.mealKaynagi, yayimci) : null,
     tamKunye: yayimci ? bicim(m.sayfaKunye, { ref: kayit.ref, ...yayimci }) : `${kayit.ref} · ${m.arapcaKaynagi}`,
   };

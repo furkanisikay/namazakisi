@@ -59,6 +59,7 @@ import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 import { guncellemeKontrolEt, indirmeTamamlandiIsaretle } from './src/presentation/store/guncellemeSlice';
 import { PlayStoreModulu } from './src/domain/services/PlayStoreGuncellemeModulu';
 import { WidgetServisi } from './src/domain/services/WidgetServisi';
+import { GununAyetiServisi } from './src/domain/services/GununAyetiServisi';
 import { CanliSayacPlanlayici } from './src/domain/services/CanliSayacPlanlayici';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from './src/core/constants/UygulamaSabitleri';
@@ -198,6 +199,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       });
       // Widget verilerini güncelle (fire-and-forget, kritik değil)
       WidgetServisi.getInstance().vakitleriyaz(konumState.koordinatlar).catch(() => {});
+      // Günün ayeti (widget + duvar kâğıdı): imsak sınırı konuma bağlı → `KonumDegisikligiServisi`
+      // listesinde de var (ikiz liste).
+      GununAyetiServisi.getInstance().yaz(konumState.koordinatlar).catch(() => {});
       // Wear OS saati (issue #269): 8 günlük vakit + kılınmışlık. Konuma bağlı
       // tüketicidir → `KonumDegisikligiServisi` listesinde de var (ikiz liste).
       WearSenkronServisi.getInstance().gonder().catch(() => {});

@@ -52,6 +52,10 @@ export const diliKaydet = createAsyncThunk<DilKodu, DilKodu | 'cihaz'>('dil/kayd
       } catch (e) {
         Logger.warn('dilSlice', 'Dil değişikliği yayılamadı', e);
       }
+    } else {
+      // Konum yokken de günün ayeti metinleri yeni dilde yazılsın (yayma listesi konum ister).
+      const { GununAyetiServisi } = require('../../domain/services/GununAyetiServisi') as typeof import('../../domain/services/GununAyetiServisi');
+      await GununAyetiServisi.getInstance().yaz();
     }
   }
   return secim === 'cihaz' ? aktifDil() : secim;

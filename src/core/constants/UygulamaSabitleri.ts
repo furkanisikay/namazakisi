@@ -255,6 +255,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Arayüz dili (`core/dil`). Yokluğu = cihaz dili (seçilebilirse) ya da Türkçe. Etkin durum
   // `core/dil/aktifDil.ts`; yükleme `DilServisi`. Seçici açılınca YEDEKLENECEK (beyaz listenin üç yeri).
   DIL_AYARI: 'dil_ayari',
+  // Günün ayeti duvar kâğıdı (#381). CİHAZA ÖZGÜ, YEDEKLENMEZ: duvar kâğıdını değiştirmek o
+  // cihazda verilen açık onaya bağlı (`core/icerik/gununAyetiYuku.ts`).
+  GUNUN_AYETI_DUVAR: 'gunun_ayeti_duvar',
   // "Her farzla bir kaza" önerisi (issue #294) — ayar YEDEKLENİR (beyaz listenin
   // ÜÇ yerinde); sorulma hafızası cihaza özgü, tek günlük → yedeklemeye GİRMEZ.
   KAZA_ONERI_AYARLARI: 'kaza_oneri_ayarlari',

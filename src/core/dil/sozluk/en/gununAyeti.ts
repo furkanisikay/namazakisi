@@ -3,7 +3,8 @@ import type { Sozluk } from '../tr';
 export const gununAyeti: Sozluk['gununAyeti'] = {
   baslik: 'Verse of the day',
   etiket: 'VERSE OF THE DAY',
-  kisaKunye: 'Quran {ref}',
+  kisaKunye: '{sure} {ref}',
+  kuran: 'Quran',
   mealKaynagi: '{yayimci}, QuranEnc {surum}',
   sayfaKunye: 'Quran {ref} · Translation: {yayimci}, QuranEnc {surum} · Arabic text: Tanzil Project',
   arapcaKaynagi: 'Arabic: Tanzil',

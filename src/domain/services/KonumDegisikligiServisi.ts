@@ -42,6 +42,7 @@ import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
 import { WidgetServisi } from './WidgetServisi';
+import { GununAyetiServisi } from './GununAyetiServisi';
 import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
 import { YatisHatirlatmaServisi } from './YatisHatirlatmaServisi';
 import { CamiyeGitHatirlatmaServisi } from './CamiyeGitHatirlatmaServisi';
@@ -230,6 +231,11 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
 
         guvenliCalistir('Widget', () =>
             WidgetServisi.getInstance().vakitleriyaz(koordinatlar),
+        ),
+
+        // Günün ayeti (#380/#381): ayet imsakta değişir; imsak şehirle kayar.
+        guvenliCalistir('Gunun ayeti', () =>
+            GununAyetiServisi.getInstance().yaz(koordinatlar),
         ),
 
         // Cuma hatırlatması da konuma bağlıdır: öğle vakti kayınca hatırlatma anı

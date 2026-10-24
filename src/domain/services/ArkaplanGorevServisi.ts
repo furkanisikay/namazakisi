@@ -21,6 +21,7 @@ import { TvSenkronServisi } from './TvSenkronServisi';
 import { CamideyimServisi } from './CamideyimServisi';
 import { KildimKuyruguServisi } from './KildimKuyruguServisi';
 import { WidgetServisi } from './WidgetServisi';
+import { GununAyetiServisi } from './GununAyetiServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
@@ -440,6 +441,8 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Widget tazelenemedi', e);
         }
+        // Günün ayeti planı (14 gün) uygulama açılmasa da ileride kalsın (ASLA reddetmez).
+        await GununAyetiServisi.getInstance().yaz(await arkaplandaKoordinatOku().catch(() => null));
 
         // =====================================================
         // ADIM 1.59: CAMİDEYİM + NAMAZ MODU (#297/#277)
