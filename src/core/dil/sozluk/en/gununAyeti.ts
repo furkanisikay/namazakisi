@@ -29,6 +29,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
     widgetEkleyin: 'Add a widget to your home screen',
     widgetEkleyinAciklama: 'Long-press an empty spot on your home screen, Widgets, Namaz Akışı, Verse of the day',
     widgetEkleyinAciklamaIos: 'Long-press an empty spot on your Home Screen, Edit, Add Widget, Namaz Akışı',
+    widgetEkleDugme: 'Add to home screen',
     duvarBolum: 'Wallpaper',
     duvarAnahtar: 'Change it every day',
     duvarAcikOzet: 'On · refreshed every day at Fajr',

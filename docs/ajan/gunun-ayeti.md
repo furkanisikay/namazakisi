@@ -56,6 +56,8 @@ Seçim `src/core/icerik/gununAyeti.ts` (`gununAyetiPlani`). Native yüzeyler aye
 - **Tanzil bağlantısı sabit adresle doğrudan açılır, `guvenilirBaglantiMi`'ye EKLENMEZ:** o liste güncelleme APK indirmelerinin güven listesidir; genişletmek indirme güvenini de genişletirdi.
 - **Duvar kâğıdı anahtarı yalnız onaydan sonra `acik: true` yazar** (`BildirimModali`, fıkıh notu içerikte); ardından `duvarKagidiniSimdiUygula`, `false` → "yerleştirilemedi" bilgi satırı. `durum().izinli === false` → anahtar soluk + neden. Yer/zemin/Arapça değişimi kaydedip hemen uygular; önizleme kayıtlı yükü okur.
 - **iPhone rehberi Kısayollar eyleminin tam adını YAZMAZ** ("Duvar kâğıdı diye aratın"): eylemin adı iOS sürümüyle değişti ("Set Wallpaper" → "Set Wallpaper Photo"), Türkçe adı resmî kaynakta doğrulanamadı. "Kısayollar'ı açın" `shortcuts://` açar. Hazır kısayol (iCloud) bağlantısı YOK: sahibin cihazında üretilmesi gerekir.
+- **Widget tek dokunuşla eklenir (Android):** `WidgetVeri.gununAyetiWidgetiniSabitle()` → `requestPinAppWidget` (API 26+, başlatıcının onay penceresi); `widgetSabitlemeDestekleniyorMu()` false ise düğme çizilmez, elle ekleme tarifi kalır.
+- **Emülatör kareleri:** özellik turu `24-gunun-ayeti` (sayfa, önceki günler, ayar, onay) ve `25-gunun-ayeti-cihaz` (yalnız telefon: widget ekleme penceresi 63, duvar önizlemesi 64, ana ekranda widget 65, kilit ekranı 66). Kilit ekranı karesi Maestro'da değil `android-ozellik-hatti.sh` `hazirlik_bitir gunun-ayeti-cihaz` içinde adb ile (ekran kapat/aç → screencap → `wm dismiss-keyguard`); tus kilidi `locksettings set-disabled false` ile açılır.
 - Nöbetçiler: `GununAyetiSayfasi.test.tsx`, `GununAyetiAyarlariSayfasi.test.tsx` (onaysız açılmaz, engelli/başarısız durum metni, iki dilde Türkçe kalmaz).
 
 ## Android

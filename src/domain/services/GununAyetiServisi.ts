@@ -25,6 +25,15 @@ interface AyetYazici {
   gununAyetiKaydet?(json: string): void | Promise<void>;
 }
 
+/** Android `WidgetVeri` köprüsünün widget sabitleme yöntemleri (eski ikilide yok). */
+interface WidgetSabitleyici {
+  widgetSabitlemeDestekleniyorMu?(): Promise<boolean>;
+  gununAyetiWidgetiniSabitle?(): Promise<boolean>;
+}
+
+const widgetKoprusu = (): WidgetSabitleyici | null =>
+  Platform.OS === 'android' ? ((NativeModules.WidgetVeri as WidgetSabitleyici | undefined) ?? null) : null;
+
 /** Android `DuvarKagidi` native modülü (iOS'ta yok). */
 interface DuvarKagidiModulu {
   durum(): Promise<{ izinli: boolean; sonHata?: string | null }>;
@@ -109,6 +118,30 @@ export class GununAyetiServisi {
       return await modul.simdiUygula();
     } catch (e) {
       Logger.warn('GununAyetiServisi', 'Duvar kâğıdı uygulanamadı', e);
+      return false;
+    }
+  }
+
+  /** Başlatıcı widget'ı uygulamadan eklemeyi destekliyor mu (yalnız Android)? */
+  public async widgetSabitlenebilirMi(): Promise<boolean> {
+    const k = widgetKoprusu();
+    if (!k?.widgetSabitlemeDestekleniyorMu) return false;
+    try {
+      return (await k.widgetSabitlemeDestekleniyorMu()) === true;
+    } catch {
+      return false;
+    }
+  }
+
+  /** Başlatıcının "ana ekrana ekle" penceresini açar; açılamazsa `false`. */
+  public async widgetiSabitle(): Promise<boolean> {
+    const k = widgetKoprusu();
+    if (!k?.gununAyetiWidgetiniSabitle) return false;
+    await this.yaz();
+    try {
+      return (await k.gununAyetiWidgetiniSabitle()) === true;
+    } catch (e) {
+      Logger.warn('GununAyetiServisi', 'Widget sabitlenemedi', e);
       return false;
     }
   }

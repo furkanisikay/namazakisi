@@ -38,6 +38,7 @@ export const gununAyeti = {
     widgetEkleyin: 'Ana ekrana widget ekleyin',
     widgetEkleyinAciklama: 'Ana ekranda boş bir yere uzun basın, Widget’lar, Namaz Akışı, Günün ayeti',
     widgetEkleyinAciklamaIos: 'Ana ekranda boş bir yere uzun basın, Düzenle, Widget ekle, Namaz Akışı',
+    widgetEkleDugme: 'Ana ekrana ekleyin',
     duvarBolum: 'Duvar kâğıdı',
     duvarAnahtar: 'Her gün değiştirin',
     duvarAcikOzet: 'Açık · her gün imsakta yenilenir',

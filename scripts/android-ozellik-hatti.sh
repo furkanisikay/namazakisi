@@ -191,6 +191,10 @@ hazirlik_uygula() {
         done
       fi
       ;;
+    gunun-ayeti-cihaz)
+      # Kilit ekrani karesi icin tus kilidi (kaydirma) acik olmali; emulator imajinda kapali olabilir.
+      adb shell locksettings set-disabled false >/dev/null 2>&1 || true
+      ;;
     *) echo "UYARI: bilinmeyen hazirlik $1" ;;
   esac
 }
@@ -225,6 +229,16 @@ hazirlik_bitir() {
       fi
       adb shell cmd alarm set-timezone Europe/Istanbul >/dev/null 2>&1 \
         || adb shell service call alarm 3 s16 Europe/Istanbul >/dev/null 2>&1 || true
+      ;;
+    gunun-ayeti-cihaz)
+      # Kilit ekrani: ekrani kapatip ac, tus kilidi gorunurken cek, sonra kilidi kaldir.
+      adb shell input keyevent KEYCODE_SLEEP || true
+      sleep 3
+      adb shell input keyevent KEYCODE_WAKEUP || true
+      sleep 4
+      adb exec-out screencap -p > "$CIKIS/${PROFIL}-$2/66-gunun-ayeti-kilit.png" || echo "UYARI: kilit ekrani karesi alinamadi"
+      adb shell wm dismiss-keyguard >/dev/null 2>&1 || adb shell input keyevent KEYCODE_MENU || true
+      sleep 2
       ;;
     guc-tasarrufu)
       adb shell settings put global low_power 0 || true

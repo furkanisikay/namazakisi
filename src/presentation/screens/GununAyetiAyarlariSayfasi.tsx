@@ -42,6 +42,22 @@ export const GununAyetiAyarlariSayfasi: React.FC = () => {
   const s = useMetin();
   const m = s.gununAyeti;
   const kart = { backgroundColor: renkler.kartArkaplan, borderRadius: 24, overflow: 'hidden' as const };
+  // Android: başlatıcı destekliyorsa widget tek dokunuşla eklenir (sistemin onay penceresi);
+  // desteklemiyorsa yalnız elle ekleme tarifi kalır.
+  const [sabitlenebilir, setSabitlenebilir] = useState(false);
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    let iptal = false;
+    servis()
+      .widgetSabitlenebilirMi()
+      .then((d) => {
+        if (!iptal) setSabitlenebilir(d);
+      })
+      .catch(() => undefined);
+    return () => {
+      iptal = true;
+    };
+  }, []);
 
   return (
     <ScrollView
@@ -70,6 +86,26 @@ export const GununAyetiAyarlariSayfasi: React.FC = () => {
           </Text>
         </View>
       </View>
+      {sabitlenebilir ? (
+        <TouchableOpacity
+          testID="gunun-ayeti-widget-ekle"
+          onPress={() => servis().widgetiSabitle().catch(() => false)}
+          accessibilityRole="button"
+          activeOpacity={0.8}
+          style={{
+            marginTop: 12,
+            minHeight: 48,
+            borderRadius: 16,
+            backgroundColor: renkler.birincil,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <FontAwesome5 name="plus" size={14} color="#FFFFFF" />
+          <Text style={{ marginLeft: 8, fontSize: 15, fontWeight: '600', color: '#FFFFFF' }}>{m.ayar.widgetEkleDugme}</Text>
+        </TouchableOpacity>
+      ) : null}
 
       <BolumBasligi metin={m.ayar.duvarBolum} style={{ marginTop: 24 }} />
       {Platform.OS === 'android' ? <AndroidDuvarKagidi /> : <IosKisayolRehberi />}

@@ -98,6 +98,45 @@ class WidgetVeriModulu(reactContext: ReactApplicationContext) :
         }
     }
 
+    /**
+     * "Günün ayeti" widget'ını ana ekrana eklemek için başlatıcının onay penceresini açar
+     * (`requestPinAppWidget`, API 26+). Başlatıcı desteklemiyorsa ya da istek reddedilirse
+     * `false`: ekran elle ekleme tarifini gösterir.
+     */
+    @ReactMethod
+    fun gununAyetiWidgetiniSabitle(promise: Promise) {
+        try {
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+                promise.resolve(false)
+                return
+            }
+            val yonetici = AppWidgetManager.getInstance(reactApplicationContext)
+            if (!yonetici.isRequestPinAppWidgetSupported) {
+                promise.resolve(false)
+                return
+            }
+            val saglayici = ComponentName(reactApplicationContext, com.furkanisikay.namazakisi.widget.GununAyetiWidget::class.java)
+            promise.resolve(yonetici.requestPinAppWidget(saglayici, null, null))
+        } catch (e: Throwable) {
+            Log.w(TAG, "Ayet widget'i sabitlenemedi", e)
+            promise.resolve(false)
+        }
+    }
+
+    /** Başlatıcı widget sabitlemeyi destekliyor mu (düğmeyi göstermek için)? */
+    @ReactMethod
+    fun widgetSabitlemeDestekleniyorMu(promise: Promise) {
+        try {
+            promise.resolve(
+                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O &&
+                    AppWidgetManager.getInstance(reactApplicationContext).isRequestPinAppWidgetSupported
+            )
+        } catch (e: Throwable) {
+            Log.w(TAG, "Widget sabitleme destegi okunamadi", e)
+            promise.resolve(false)
+        }
+    }
+
     private fun yazVeTazele(anahtar: String, deger: String) {
         try {
             val context = reactApplicationContext

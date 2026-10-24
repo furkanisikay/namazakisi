@@ -15,6 +15,8 @@ const mockServis = {
     duvarKagidiDurumu: jest.fn(),
     duvarKagidiniSimdiUygula: jest.fn(),
     duvarOnizlemesi: jest.fn(),
+    widgetSabitlenebilirMi: jest.fn(),
+    widgetiSabitle: jest.fn(),
 };
 jest.mock('../../../domain/services/GununAyetiServisi', () => ({ GununAyetiServisi: { getInstance: () => mockServis } }));
 jest.mock('../../../core/theme', () => ({
@@ -69,6 +71,8 @@ describe('GununAyetiAyarlariSayfasi', () => {
         mockServis.duvarKagidiDurumu.mockResolvedValue(durum());
         mockServis.duvarKagidiniSimdiUygula.mockResolvedValue(true);
         mockServis.duvarOnizlemesi.mockResolvedValue(null);
+        mockServis.widgetSabitlenebilirMi.mockResolvedValue(false);
+        mockServis.widgetiSabitle.mockResolvedValue(true);
     });
 
     describe('Android', () => {
@@ -102,6 +106,18 @@ describe('GununAyetiAyarlariSayfasi', () => {
             expect(e.queryByText('Duvar kâğıdınız değişecek')).toBeNull();
             expect(e.getByText(/iş ya da okul yönetimi/)).toBeTruthy();
             expect(e.getByText(/Kullanılamıyor/)).toBeTruthy();
+        });
+
+        it('başlatıcı destekliyorsa widget tek dokunuşla eklenir, desteklemiyorsa düğme yok', async () => {
+            const e = render(<GununAyetiAyarlariSayfasi />);
+            await e.findByTestId('gunun-ayeti-duvar-anahtar');
+            expect(e.queryByTestId('gunun-ayeti-widget-ekle')).toBeNull();
+            e.unmount();
+
+            mockServis.widgetSabitlenebilirMi.mockResolvedValue(true);
+            const d = render(<GununAyetiAyarlariSayfasi />);
+            fireEvent.press(await d.findByTestId('gunun-ayeti-widget-ekle'));
+            expect(mockServis.widgetiSabitle).toHaveBeenCalled();
         });
 
         it('açıkken seçenekler ve kapatma notu görünür', async () => {
