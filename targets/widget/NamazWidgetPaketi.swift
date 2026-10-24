@@ -11,6 +11,8 @@ import WidgetKit
 struct NamazWidgetPaketi: WidgetBundle {
     var body: some Widget {
         NamazVakitWidget()
+        // Gunun ayeti (#380 iOS ikizi): kucuk / orta / buyuk + kilit ekrani dikdortgen.
+        GununAyetiWidget()
         NamazCanliEtkinlikWidget()
         // Kontrol Merkezi "Kildim" kontrolu (iOS 18 ControlWidget; Android hizli ayar kutusu ikizi).
         if #available(iOS 18.0, *) {
