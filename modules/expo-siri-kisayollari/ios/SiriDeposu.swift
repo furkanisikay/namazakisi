@@ -15,6 +15,7 @@ import Foundation
  *
  * TEK YAZICI kurali: her anahtari tek taraf yazar.
  *   - cizelge, kilinanlar        → JS (WidgetServisi yuku)
+ *   - gunun ayeti (`namazakisi_gunun_ayeti`) → JS (GununAyetiServisi); widget + gorsel intent'i okur
  *   - kildimKuyrugu              → intent/widget dugmesi EKLER, JS (bu sinif uzerinden) DUSER —
  *                                  widget dugmesi `LiveActivityIntent`'tir, UYGULAMA
  *                                  surecinde calisir → ayni kilit, kayip yazim olmaz
