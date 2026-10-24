@@ -27,6 +27,11 @@ import { AnahtarKarti, DinleDugmesi, SoruKarti } from './secenekKartlari';
 import type { IzinDurumu } from '../../../core/cihaz/durumNotlari';
 import type { IzinSonucu } from '../../components/ortak';
 import type { KonumDurumu } from './tipler';
+import { DunyaSehirSecici } from '../../components/DunyaSehirSecici';
+import type { DunyaSehri } from '../../../core/konum/dunyaSehirleri';
+
+/** Elle seçimde bölge: Türkiye il listesi ya da dünya şehri. */
+export type ManuelBolge = 'turkiye' | 'dunya';
 
 // ─── Ortak parçalar ──────────────────────────────────────────────────────────
 
@@ -118,15 +123,78 @@ export interface KonumAdimiProps {
     hata: string | null;
     manuelIl: Il | null;
     onIlSec: (il: Il) => void;
+    bolge: ManuelBolge;
+    onBolge: (b: ManuelBolge) => void;
+    dunyaSehri: DunyaSehri | null;
+    onDunyaSehriSec: (s: DunyaSehri) => void;
 }
 
-export const KonumAdimi: React.FC<KonumAdimiProps> = ({ durum, konumBilgi, izin, izinSonucu, hata, manuelIl, onIlSec }) => {
+const BolgeSecici: React.FC<{ bolge: ManuelBolge; onBolge: (b: ManuelBolge) => void }> = ({ bolge, onBolge }) => {
+    const renkler = useRenkler();
+    return (
+        <View
+            style={{ flexDirection: 'row', borderRadius: 16, padding: 4, marginTop: 12, borderWidth: 1, borderColor: renkler.sinir, backgroundColor: renkler.kartArkaplan }}
+            accessibilityRole="tablist"
+        >
+            {(['turkiye', 'dunya'] as const).map((b) => {
+                const secili = bolge === b;
+                return (
+                    <TouchableOpacity
+                        key={b}
+                        onPress={() => onBolge(b)}
+                        accessibilityRole="tab"
+                        accessibilityState={{ selected: secili }}
+                        testID={`kurulum-bolge-${b}`}
+                        style={{ flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: 12, backgroundColor: secili ? renkler.birincil : 'transparent' }}
+                    >
+                        <Text style={{ fontSize: 15, fontWeight: '700', color: secili ? '#FFFFFF' : renkler.metin }}>
+                            {b === 'turkiye' ? 'Türkiye' : 'Başka bir ülke'}
+                        </Text>
+                    </TouchableOpacity>
+                );
+            })}
+        </View>
+    );
+};
+
+export const KonumAdimi: React.FC<KonumAdimiProps> = ({
+    durum,
+    konumBilgi,
+    izin,
+    izinSonucu,
+    hata,
+    manuelIl,
+    onIlSec,
+    bolge,
+    onBolge,
+    dunyaSehri,
+    onDunyaSehriSec,
+}) => {
     const renkler = useRenkler();
     const [arama, setArama] = React.useState('');
     const iller = React.useMemo(() => {
         const a = kucukHarf(arama.trim());
         return a ? TURKIYE_ILLERI_OFFLINE.filter((il) => kucukHarf(il.ad).includes(a)) : TURKIYE_ILLERI_OFFLINE;
     }, [arama]);
+
+    if (durum === 'manuel' && bolge === 'dunya') {
+        const kayit = dunyaSehri
+            ? { ad: dunyaSehri.ad, ulke: dunyaSehri.ulke, bolge: dunyaSehri.bolge, saatDilimi: dunyaSehri.saatDilimi }
+            : null;
+        return (
+            <View style={{ flex: 1 }}>
+                <AdimBasligi baslik="Şehrinizi seçin" alt="Vakitler seçtiğiniz şehre ve o ülkede yaygın hesap yöntemine göre hesaplanır." />
+                {hata ? <SonucSatiri tip="uyari" metin={hata} testID="konum-hata" /> : null}
+                <BolgeSecici bolge={bolge} onBolge={onBolge} />
+                <View style={{ marginTop: 12 }}>
+                    <DunyaSehirSecici secili={kayit} onSec={onDunyaSehriSec} />
+                </View>
+                <Text style={{ fontSize: 13, lineHeight: 19, marginTop: 12, color: renkler.metinIkincil }}>
+                    Hesap yöntemini sonra Ayarlar › Namaz vakitleri › Hesap yöntemi'nden değiştirebilirsiniz.
+                </Text>
+            </View>
+        );
+    }
 
     if (durum === 'manuel') {
         return (
@@ -136,6 +204,7 @@ export const KonumAdimi: React.FC<KonumAdimiProps> = ({ durum, konumBilgi, izin,
                 {izinSonucu === 'ayarlar' || izin === 'reddedildi' ? (
                     <SonucSatiri tip="uyari" metin="Konum izni kapalı. Ayarlardan açabilir ya da şehir seçebilirsiniz." />
                 ) : null}
+                <BolgeSecici bolge={bolge} onBolge={onBolge} />
                 <View
                     style={{
                         flexDirection: 'row',
@@ -406,12 +475,15 @@ export interface HazirOzeti {
     duzey: HatirlatmaDuzeyi;
     sade: boolean;
     secimler: KurulumSecimleri;
+    /** Kurulumda değişen hesap yöntemi ("JAKIM · Asr-ı evvel"); değişmediyse yok. */
+    yontem?: string;
 }
 
 export const HazirAdimi: React.FC<{ ozet: HazirOzeti; hata: string | null }> = ({ ozet, hata }) => {
     const renkler = useRenkler();
     const satirlar: { ikon: string; metin: string }[] = [
         { ikon: 'map-marker-alt', metin: ozet.konum || 'Konum seçilmedi' },
+        ...(ozet.yontem ? [{ ikon: 'calculator', metin: `Hesap yöntemi: ${ozet.yontem}` }] : []),
         {
             ikon: ozet.bildirim ? 'bell' : 'bell-slash',
             metin: ozet.bildirim ? 'Bildirimler açık' : 'Bildirimler kapalı',

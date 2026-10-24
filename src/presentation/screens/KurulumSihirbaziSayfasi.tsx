@@ -28,7 +28,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useRenkler, useTema } from '../../core/theme';
@@ -37,9 +37,14 @@ import { Logger } from '../../core/utils/Logger';
 import { tumVakitBildirimAyarlariniGuncelle } from '../store/vakitBildirimSlice';
 import { muhafizAyarlariniGuncelle, presetAyarlariniOlustur } from '../store/muhafizSlice';
 import { konumAyarlariniGuncelle } from '../store/konumSlice';
+import { hesapAyariniKaydet } from '../store/hesapSlice';
+import { bolgeOnerisi } from '../../core/vakit/ulkeProfilleri';
+import { HESAP_PROFILLERI } from '../../core/vakit/hesapProfilleri';
+import { IKINDI_ADLARI } from '../../core/vakit/profilAdlari';
+import type { DunyaSehri } from '../../core/konum/dunyaSehirleri';
 import { hatirlatmaRizasiVer } from '../store/hatirlatmaRizaSlice';
 import { sadeGorunumuAyarla } from '../store/sadeGorunumSlice';
-import type { AppDispatch } from '../store/store';
+import type { AppDispatch, RootState } from '../store/store';
 import type { RootStackParamList } from '../../navigation/AppNavigator';
 import type { Il } from '../../domain/services/TurkiyeKonumServisi';
 import { alaniOku } from '../../domain/services/CihazDurumOkuyucu';
@@ -56,6 +61,7 @@ import {
     HosgeldinizAdimi,
     KonumAdimi,
     VARSAYILAN_KURULUM_SECIMLERI,
+    type ManuelBolge,
     type KurulumSecimleri,
 } from './KurulumSihirbazi/adimlar';
 import { cumaHatirlatmaAyariniGuncelle } from '../store/cumaHatirlatmaSlice';
@@ -110,6 +116,11 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     const [konumBilgi, setKonumBilgi] = useState('');
     const [konumHata, setKonumHata] = useState<string | null>(null);
     const [manuelIl, setManuelIl] = useState<Il | null>(null);
+    const [manuelBolge, setManuelBolge] = useState<ManuelBolge>('turkiye');
+    const [dunyaSehri, setDunyaSehri] = useState<DunyaSehri | null>(null);
+    /** Türkiye dışında kurulan hesap yöntemi (özet satırı). */
+    const [kurulanYontem, setKurulanYontem] = useState<string | undefined>(undefined);
+    const hesap = useSelector((s: RootState) => s.hesap);
 
     // Bildirim
     const bildirimIzin = useIzinAkisi({ oku: bildirimIzniOku, iste: bildirimIzniIste, kapanisBeklemeMs: 0 });
@@ -199,6 +210,36 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     useDonanimGeriTusu(adimNo > 0, donanimGeri);
 
     // ─── Konum ───────────────────────────────────────────────────────────────
+    /**
+     * İlk kurulumda Türkiye dışı ülke seçilince o ülkenin yöntemi DOĞRUDAN kurulur ve "Her şey
+     * hazır" özetinde söylenir (ana ekranda ayrıca sorulmaz: ülke `sorulanUlkeler`'e yazılır).
+     * Hesap ayarı yüklenmediyse karar ana ekrandaki tek seferlik soruya kalır.
+     */
+    const ulkeHesabiniKur = useCallback(
+        (ulke: string) => {
+            const ayar = hesap?.ayar;
+            if (!hesap?.yuklendi || !ayar) return;
+            const oneri = bolgeOnerisi(ulke, ayar);
+            if (!oneri) {
+                setKurulanYontem(undefined);
+                return;
+            }
+            void dispatch(
+                hesapAyariniKaydet({
+                    ...ayar,
+                    profil: oneri.profil,
+                    ikindi: oneri.ikindi,
+                    ofsetler: undefined,
+                    aci: undefined,
+                    sorulanUlkeler: [...(ayar.sorulanUlkeler ?? []), ulke],
+                }),
+            );
+            const profil = HESAP_PROFILLERI[oneri.profil];
+            setKurulanYontem(`${profil.kisaAd} · ${IKINDI_ADLARI[oneri.ikindi ?? profil.ikindi]}`);
+        },
+        [hesap, dispatch],
+    );
+
     const konumuAl = useCallback(async () => {
         setKonumHata(null);
         setKonumDurumu('aliniyor');
@@ -211,9 +252,11 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             if (tur !== konumTuru.current) return; // Kullanıcı vazgeçti.
             const { latitude: lat, longitude: lng } = konum.coords;
             let gpsAdres = { il: '', ilce: '', semt: '' };
+            let ulkeKodu: string | undefined;
             try {
                 const g = (await Location.reverseGeocodeAsync({ latitude: lat, longitude: lng }))[0];
                 if (g) gpsAdres = { il: g.city || g.region || '', ilce: g.district || g.subregion || '', semt: g.street || '' };
+                ulkeKodu = g?.isoCountryCode || undefined;
             } catch (error) {
                 // Ters geocode isteğe bağlı; koordinat yine kullanılır.
                 Logger.warn('KurulumSihirbazi', 'Ters geocode başarısız', error);
@@ -225,8 +268,11 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                     koordinatlar: { lat, lng },
                     gpsAdres,
                     sonGpsGuncellemesi: new Date().toISOString(),
+                    ulkeKodu,
+                    dunyaSehri: null,
                 }),
             );
+            if (ulkeKodu) ulkeHesabiniKur(ulkeKodu);
             setKonumBilgi(gpsAdres.ilce || gpsAdres.il || 'Bulunduğunuz yer');
             setKonumDurumu('alindi');
         } catch (error) {
@@ -235,7 +281,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             setKonumHata('Konumunuz bulunamadı. Şehrinizi seçin.');
             setKonumDurumu('manuel');
         }
-    }, [dispatch]);
+    }, [dispatch, ulkeHesabiniKur]);
 
     const { istekBaslat: konumIstekBaslat, durum: konumIzinDurumu } = konumIzin;
     const konumBul = useCallback(async () => {
@@ -272,11 +318,34 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                 koordinatlar: { lat: manuelIl.lat, lng: manuelIl.lng },
                 seciliIlceId: null,
                 seciliIlceAdi: '',
+                ulkeKodu: 'TR',
+                dunyaSehri: null,
             }),
         );
+        ulkeHesabiniKur('TR');
         setKonumBilgi(manuelIl.ad);
         ilerle();
-    }, [manuelIl, dispatch, ilerle]);
+    }, [manuelIl, dispatch, ilerle, ulkeHesabiniKur]);
+
+    const dunyaKonumuKaydet = useCallback(() => {
+        if (!dunyaSehri) return;
+        dispatch(
+            konumAyarlariniGuncelle({
+                konumModu: 'manuel',
+                seciliSehirId: '',
+                seciliIlId: null,
+                seciliIlceId: null,
+                seciliIlAdi: dunyaSehri.ad,
+                seciliIlceAdi: '',
+                koordinatlar: { lat: dunyaSehri.lat, lng: dunyaSehri.lng },
+                ulkeKodu: dunyaSehri.ulke,
+                dunyaSehri: { ad: dunyaSehri.ad, ulke: dunyaSehri.ulke, bolge: dunyaSehri.bolge, saatDilimi: dunyaSehri.saatDilimi },
+            }),
+        );
+        ulkeHesabiniKur(dunyaSehri.ulke);
+        setKonumBilgi(dunyaSehri.ad);
+        ilerle();
+    }, [dunyaSehri, dispatch, ilerle, ulkeHesabiniKur]);
 
     // ─── Tamamla ─────────────────────────────────────────────────────────────
     const kurulumuTamamla = useCallback(async () => {
@@ -407,6 +476,11 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                         </>
                     );
                 }
+                if (konumDurumu === 'manuel' && manuelBolge === 'dunya') {
+                    return dunyaSehri
+                        ? birincil(`${dunyaSehri.ad} ile devam edin`, 'check', dunyaKonumuKaydet, 'manuel-devam')
+                        : birincil('Şehir seçin', 'city', () => undefined, 'manuel-devam', false, true);
+                }
                 if (konumDurumu === 'manuel') {
                     return (
                         <>
@@ -462,8 +536,8 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     };
 
     const hazirOzeti = useMemo(
-        () => ({ konum: konumBilgi, bildirim: bildirimIzin.durum === 'verildi', duzey, sade, secimler }),
-        [konumBilgi, bildirimIzin.durum, duzey, sade, secimler],
+        () => ({ konum: konumBilgi, bildirim: bildirimIzin.durum === 'verildi', duzey, sade, secimler, yontem: kurulanYontem }),
+        [konumBilgi, bildirimIzin.durum, duzey, sade, secimler, kurulanYontem],
     );
 
     const icerik = (): React.ReactNode => {
@@ -480,6 +554,10 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                         hata={konumHata}
                         manuelIl={manuelIl}
                         onIlSec={setManuelIl}
+                        bolge={manuelBolge}
+                        onBolge={setManuelBolge}
+                        dunyaSehri={dunyaSehri}
+                        onDunyaSehriSec={setDunyaSehri}
                     />
                 );
             case 'bildirim':
@@ -506,7 +584,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     };
 
     // Liste (il seçimi) kendi kayar; diğer adımlar tek ScrollView.
-    const listeli = adim === 'konum' && konumDurumu === 'manuel';
+    const listeli = adim === 'konum' && konumDurumu === 'manuel' && manuelBolge === 'turkiye';
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: renkler.arkaplan }} edges={['top', 'bottom', 'left', 'right']}>

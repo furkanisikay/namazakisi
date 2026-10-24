@@ -36,7 +36,20 @@ const RENKLER = {
 jest.mock('../../../core/theme', () => ({ useRenkler: () => RENKLER, useTema: () => ({ koyuMu: false }) }));
 jest.mock('../../hooks/useHareketAzalt', () => ({ useHareketAzalt: () => true }));
 const mockDispatch = jest.fn((_a: unknown) => ({ unwrap: () => Promise.resolve() }));
-jest.mock('react-redux', () => ({ useDispatch: () => mockDispatch }));
+const mockDurum = { hesap: { ayar: { profil: 'diyanet' }, yuklendi: true, yukleniyor: false } };
+jest.mock('react-redux', () => ({ useDispatch: () => mockDispatch, useSelector: (f: (s: unknown) => unknown) => f(mockDurum) }));
+jest.mock('../../store/hesapSlice', () => ({ hesapAyariniKaydet: (a: unknown) => ({ type: 'test/hesap', payload: a }) }));
+const mockKualaLumpur = { ad: 'Kuala Lumpur', ascii: 'kuala lumpur', lat: 3.139, lng: 101.687, ulke: 'MY', bolge: 'Kuala Lumpur', saatDilimi: 'Asia/Kuala_Lumpur', nufus: 1 };
+jest.mock('../../components/DunyaSehirSecici', () => {
+    const { Text } = require('react-native');
+    return {
+        DunyaSehirSecici: ({ onSec }: { onSec: (s: unknown) => void }) => (
+            <Text testID="dunya-sehir-sec" onPress={() => onSec(mockKualaLumpur)}>
+                Şehir seçin
+            </Text>
+        ),
+    };
+});
 const mockAlaniOku = jest.fn();
 jest.mock('../../../domain/services/CihazDurumOkuyucu', () => ({ alaniOku: (a: string) => mockAlaniOku(a) }));
 jest.mock('../../../core/utils/Logger', () => ({ Logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() } }));
@@ -160,6 +173,45 @@ describe('KurulumSihirbaziSayfasi', () => {
         await waitFor(() => e.getByLabelText('Adım 3 / 5'));
         const konum = mockDispatch.mock.calls.map((c) => c[0] as { type?: string; payload?: { konumModu?: string } }).find((a) => a?.payload?.konumModu === 'manuel');
         expect(konum).toBeTruthy();
+    });
+
+    it('başka bir ülkeden şehir seçilince konum ülkesiyle yazılır, o ülkenin yöntemi kurulur ve özette söylenir', async () => {
+        const e = await kur();
+        fireEvent.press(e.getByTestId('basla'));
+        await waitFor(() => e.getByTestId('konum-manuel'));
+        fireEvent.press(e.getByTestId('konum-manuel'));
+        fireEvent.press(e.getByTestId('kurulum-bolge-dunya'));
+        fireEvent.press(e.getByTestId('dunya-sehir-sec'));
+        fireEvent.press(e.getByText('Kuala Lumpur ile devam edin'));
+        await waitFor(() => e.getByLabelText('Adım 3 / 5'));
+        const eylemler = mockDispatch.mock.calls.map((c) => c[0] as { type?: string; payload?: Record<string, unknown> });
+        expect(eylemler.find((a) => a?.type === 'konum/konumAyarlariniGuncelle')?.payload).toMatchObject({
+            konumModu: 'manuel',
+            seciliIlId: null,
+            ulkeKodu: 'MY',
+            koordinatlar: { lat: 3.139, lng: 101.687 },
+            dunyaSehri: { ad: 'Kuala Lumpur', ulke: 'MY' },
+        });
+        expect(eylemler.find((a) => a?.type === 'test/hesap')?.payload).toMatchObject({ profil: 'jakim', sorulanUlkeler: ['MY'] });
+        fireEvent.press(e.getByTestId('devam'));
+        await waitFor(() => e.getByTestId('duzey-secici'));
+        fireEvent.press(e.getByTestId('devam'));
+        await waitFor(() => e.getByText('Hesap yöntemi: JAKIM · Asr-ı evvel'));
+    });
+
+    it('Türkiye ili seçilince hesap yöntemine dokunulmaz', async () => {
+        (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(new Error('gps'));
+        const e = await kur();
+        fireEvent.press(e.getByTestId('basla'));
+        await waitFor(() => e.getByTestId('konum-bul'));
+        fireEvent.press(e.getByTestId('konum-bul'));
+        await waitFor(() => e.getByTestId('konum-hata'));
+        fireEvent.press(e.getByLabelText('Ankara'));
+        fireEvent.press(e.getByText('Ankara ile devam edin'));
+        await waitFor(() => e.getByLabelText('Adım 3 / 5'));
+        const eylemler = mockDispatch.mock.calls.map((c) => c[0] as { type?: string; payload?: Record<string, unknown> });
+        expect(eylemler.find((a) => a?.type === 'konum/konumAyarlariniGuncelle')?.payload).toMatchObject({ ulkeKodu: 'TR', dunyaSehri: null });
+        expect(eylemler.find((a) => a?.type === 'test/hesap')).toBeUndefined();
     });
 
     it('Normal düzey: sesli okuma VARSAYILAN KAPALI → rıza yazılmaz; gece sessiz açık; bayrak EN SON', async () => {

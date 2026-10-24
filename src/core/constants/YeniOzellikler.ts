@@ -73,6 +73,27 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Dünya geneli konum + ülkeye göre hesap yöntemi (spec 2026-10-24).
+    {
+        id: 'dunya-konum-hesap-yontemi',
+        platformlar: ['android', 'ios'],
+        surum: '0.71.0',
+        tarih: '2026-10-24',
+        baslik: 'Dünyanın her yerinde doğru vakit',
+        aciklama:
+            'Türkiye dışındaki bir şehri de seçebilirsiniz. Vakitler o ülkenin camilerinin uyduğu takvime göre hesaplanır.',
+        detayAciklama:
+            'Başka bir ülkeye gittiğinizde uygulama o ülkenin takvimini bir kez önerir ve bugünkü vakitleri yan yana gösterir. Siz onaylamadan yöntem değişmez.',
+        ikon: 'globe-europe',
+        hedefSayfa: 'HesapYontemiAyarlari',
+        ctaEtiketi: 'Hesap yöntemini görün',
+        detaylar: [
+            'Konum ayarında "Başka bir ülke"yi seçip 34 binden fazla şehir arasından arayabilirsiniz; internet gerekmez.',
+            'Malezya, Endonezya, Suudi Arabistan, Mısır, Pakistan ve daha birçok ülkede o ülkede camilerin uyduğu takvim kullanılır.',
+            'Ana ekrandaki yöntem çipine dokunarak hangi takvimin kullanıldığını görebilir, isterseniz ikindi vaktini ve her vakti dakika dakika camiye göre ayarlayabilirsiniz.',
+            'Türkiye\'deki vakitler Diyanet takvimiyle aynı kalır.',
+        ],
+    },
     // Samimiyet: "Kılındı" yerine dua, günün selamı, saat ailesiyle aynı vakit simgeleri.
     {
         id: 'samimiyet-kabul-olsun',
