@@ -10,7 +10,7 @@ Katmanlar: `wear/` ve `tv/` **bağımsız Gradle kökleridir** — `android/` RN
 - **İngilizce SHORT_TEXT başlığı en fazla 7 karakter** ("Maghrib", "Sunrise"; Türkçede 6). Gerçek kadranda sığdığı cihazda DOĞRULANMADI.
 - **Bildirim kanalı adı/açıklaması cihaz dili değişince yeniden bildirilir** (kimlik aynı; sistem yalnız ad/açıklamayı günceller).
 - **Telefon → saat yükü (`ornek-yuk.json`) hazır METİN taşır** (`muhafiz[].baslik/govde/anons`, `canli.pencereler[].baslik/ad`, `uyandirma[].baslik/govde`): bildirim başlığı TELEFONUN dilinde, düğmeler ("I've prayed"/"Kıldım") SAATİN dilinde çıkabilir. Saatin sesli okuması yükteki `ttsDili`'ne göre ses seçer (BCP-47; yalnız Türkçe dışında yazılır, yoksa `tr-TR`; bozuk etiket yalnız bu alanı düşürür). Ses saatte yoksa durum `TURKCE_YOK` ("ses yok") yazılır.
-- **Kare hatları Türkçe cihaz dilinde koşar:** emülatörler `-change-locale tr-TR` ile açılır (`android-ekran-goruntuleri.yml`); `saat-kare-hatti.sh` Türkçe metin arar.
+- **Kare hatları Türkçe cihaz dilinde koşar:** emülatörleri `scripts/emulator-hazir-bekle.sh` `tr-TR`'ye alır (`TOHUM_DIL`); `saat-kare-hatti.sh` Türkçe metin arar.
 - Tesbihat zikir adları (`Tesbihat.Faz.ad`, `TEHLIL_METNI`) Arapça okunuşun Türkçe yazımıdır, her dilde aynı gösterilir; hadis künyesi (`KAYNAK`) çevrilmez.
 
 ## Derleme ve dağıtım
