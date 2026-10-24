@@ -177,18 +177,17 @@ hazirlik_uygula() {
       ;;
     dunya-kl|dunya-kl-video)
       # Dunya konumu kareleri: cihaz Kuala Lumpur saatinde (yoksa vakitler Istanbul saatiyle
-      # gosterilir; imsak gece yarisina duser). `-video`: kart gecisi icin animasyonlar ACIK ve
-      # akis boyunca ekran kaydi (bolge-takvimi.mp4). hazirlik_bitir geri alir.
+      # gosterilir; imsak gece yarisina duser). `-video`: kart gecisi icin animasyonlar ACIK
+      # (kayit akistaki startRecording'le). hazirlik_bitir geri alir.
       adb shell cmd alarm set-timezone Asia/Kuala_Lumpur >/dev/null 2>&1 \
         || adb shell service call alarm 3 s16 Asia/Kuala_Lumpur >/dev/null 2>&1 || true
       echo "saat dilimi: $(adb shell getprop persist.sys.timezone | tr -d '\r')"
       if [ "$1" = "dunya-kl-video" ]; then
+        # Kayit akistaki Maestro startRecording ile (kart gorununce baslar); burada yalniz
+        # animasyonlar ACIK, yoksa kart gecisi "hareketi azalt" sayilip atlanir.
         for a in window_animation_scale transition_animation_scale animator_duration_scale; do
           adb shell settings put global "$a" 1
         done
-        adb shell rm -f /sdcard/bolge-takvimi.mp4 || true
-        ( adb shell screenrecord --time-limit 40 --bit-rate 4000000 /sdcard/bolge-takvimi.mp4 >/dev/null 2>&1 & )
-        sleep 1
       fi
       ;;
     *) echo "UYARI: bilinmeyen hazirlik $1" ;;
@@ -219,11 +218,6 @@ hazirlik_bitir() {
       ;;
     dunya-kl|dunya-kl-video)
       if [ "$1" = "dunya-kl-video" ]; then
-        sleep 2
-        adb shell pkill -INT screenrecord >/dev/null 2>&1 || true
-        sleep 2
-        adb pull /sdcard/bolge-takvimi.mp4 "$CIKIS/${PROFIL}-$2/bolge-takvimi.mp4" >/dev/null 2>&1 \
-          || echo "UYARI: bolge takvimi videosu alinamadi"
         for a in window_animation_scale transition_animation_scale animator_duration_scale; do
           adb shell settings put global "$a" 0
         done

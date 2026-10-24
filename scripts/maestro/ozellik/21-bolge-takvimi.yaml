@@ -19,6 +19,11 @@ appId: com.furkanisikay.namazakisi
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/50-bolge-takvimi
+# Video kart gorunurken baslar (acilis/Metro yuklemesi kayda girmez): kart → kabul →
+# ana ekranin JAKIM'le yeniden cizilmesi → yontem cipinden Hesap yontemi sayfasi.
+- startRecording: ozk/bolge-takvimi
+- waitForAnimationToEnd:
+    timeout: 2000
 - tapOn: "JAKIM takvimine geçin"
 - extendedWaitUntil:
     visible:
@@ -27,3 +32,26 @@ appId: com.furkanisikay.namazakisi
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/51-ana-ekran-jakim
+- scrollUntilVisible:
+    element:
+      id: "nafile-satir-kusluk"
+    direction: DOWN
+    centerElement: true
+    timeout: 30000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/51b-ana-ekran-jakim-akis
+- scrollUntilVisible:
+    element:
+      id: "yontem-cipi"
+    direction: UP
+    timeout: 30000
+    waitToSettleTimeoutMs: 1000
+- tapOn:
+    id: "yontem-cipi"
+- extendedWaitUntil:
+    visible:
+      id: "hesap-yontemi-karti"
+    timeout: 20000
+- waitForAnimationToEnd:
+    timeout: 3000
+- stopRecording
