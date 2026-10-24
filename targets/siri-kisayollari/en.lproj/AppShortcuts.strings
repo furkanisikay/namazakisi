@@ -13,3 +13,5 @@
 "${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
 "${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
 "${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
+"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";

@@ -49,3 +49,9 @@
 "Namaz alarmını durdur" = "Namaz alarmını durdur";
 "Namazı kıldım" = "Namazı kıldım";
 "Alarm" = "Alarm";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Günün ayeti görseli";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Günün ayetini hazırlamak için uygulamayı bir kez açın.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Görsel hazırlanamadı. Biraz sonra yeniden deneyin.";

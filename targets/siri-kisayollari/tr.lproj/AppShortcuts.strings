@@ -13,3 +13,5 @@
 "${applicationName} ile vakti kıldım olarak işaretle" = "${applicationName} ile vakti kıldım olarak işaretle";
 "${applicationName} kıbleyi aç" = "${applicationName} kıbleyi aç";
 "${applicationName} ile kıbleyi göster" = "${applicationName} ile kıbleyi göster";
+"${applicationName} günün ayeti görseli" = "${applicationName} günün ayeti görseli";
+"${applicationName} ile günün ayeti görselini hazırla" = "${applicationName} ile günün ayeti görselini hazırla";

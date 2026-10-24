@@ -40,5 +40,15 @@ struct NamazKisayollari: AppShortcutsProvider {
             shortTitle: "Kıble",
             systemImageName: "location.north.line"
         )
+        // Gunun ayeti gorseli (#381 iOS): Kisayollar "Duvar Kâğıdını Ayarla" adiminin girdisi.
+        AppShortcut(
+            intent: GununAyetiGorseliIntent(),
+            phrases: [
+                "\(.applicationName) günün ayeti görseli",
+                "\(.applicationName) ile günün ayeti görselini hazırla",
+            ],
+            shortTitle: "Günün ayeti görseli",
+            systemImageName: "photo.on.rectangle"
+        )
     }
 }

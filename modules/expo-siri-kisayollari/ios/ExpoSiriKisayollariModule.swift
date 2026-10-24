@@ -87,6 +87,13 @@ public class ExpoSiriKisayollariModule: Module {
             CanliEtkinlikKoprusu.widgetlariTazele()
         }
 
+        /// Gunun ayeti yuku v1 (`docs/ajan/gunun-ayeti.md`; Android `WidgetVeri.gununAyetiKaydet` ikizi).
+        /// Yalniz ayet widget'inin zaman cizelgesi tazelenir.
+        AsyncFunction("gununAyetiKaydet") { (json: String) in
+            SiriDeposu.varsayilan.gununAyetiYaz(json)
+            CanliEtkinlikKoprusu.gununAyetiWidgetiniTazele()
+        }
+
         AsyncFunction("bekleyenleriAl") { () -> String in
             return SiriDeposu.varsayilan.bekleyenleriJson()
         }

@@ -15,6 +15,7 @@ import Foundation
  *
  * TEK YAZICI kurali: her anahtari tek taraf yazar.
  *   - cizelge, kilinanlar        → JS (WidgetServisi yuku)
+ *   - gunun ayeti (`namazakisi_gunun_ayeti`) → JS (GununAyetiServisi); widget + gorsel intent'i okur
  *   - kildimKuyrugu              → intent/widget dugmesi EKLER, JS (bu sinif uzerinden) DUSER —
  *                                  widget dugmesi `LiveActivityIntent`'tir, UYGULAMA
  *                                  surecinde calisir → ayni kilit, kayip yazim olmaz
@@ -134,6 +135,25 @@ public final class SiriDeposu: @unchecked Sendable {
     /// Kayitli arayuz dili; uygulama hic acilmadiysa (JS yazmadi) Turkce.
     public func arayuzDili() -> String {
         kilitli { defaults.string(forKey: Self.arayuzDiliAnahtari) ?? "tr" }
+    }
+
+    // MARK: - Gunun ayeti (JS yazar; widget ve "Gunun ayeti gorseli" intent'i okur)
+
+    /// Gunun ayeti yuku v1 (`docs/ajan/gunun-ayeti.md`). OLAY anahtari DEGIL: JS her
+    /// acilista ve dil/konum degisiminde yeniden yazar → goce (`gocEt`) girmesi gerekmez.
+    public static let gununAyetiAnahtari = "namazakisi_gunun_ayeti"
+
+    public func gununAyetiYaz(_ json: String) {
+        kilitli { defaults.set(json, forKey: Self.gununAyetiAnahtari) }
+    }
+
+    public func gununAyetiJson() -> String? {
+        kilitli { defaults.string(forKey: Self.gununAyetiAnahtari) }
+    }
+
+    /// Cozulmus yuk; yoksa / bozuksa / baska surumse nil.
+    public func gununAyeti() -> GununAyetiYuku? {
+        GununAyetiKarari.coz(gununAyetiJson())
     }
 
     public func cizelge() -> SiriCizelge? {

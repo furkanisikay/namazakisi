@@ -77,6 +77,11 @@ describe('withNamazWidget — EAS uzantı bildirimi', () => {
     expect(plist).toContain('<string>1760000000</string>');
     expect(plist).toContain('com.apple.widgetkit-extension');
   });
+
+  it('Info.plist günün ayeti fontunu UIAppFonts ile kaydeder (yoksa Arapça sistem fontuna düşer)', () => {
+    const plist: string = eklenti.infoPlistIcerigi('1.0.0', '1');
+    expect(plist).toMatch(/<key>UIAppFonts<\/key>\s*<array>\s*<string>AmiriQuran-Regular\.ttf<\/string>\s*<\/array>/);
+  });
 });
 
 describe('withNamazWidget — uzantı kaynakları', () => {
@@ -89,6 +94,12 @@ describe('withNamazWidget — uzantı kaynakları', () => {
       expect(adlar).toContain('NamazAlarmVerisi.swift');
       expect(adlar).toContain('AlarmCanliEtkinlikWidget.swift');
       expect(fs.existsSync(path.join(dizin, 'NamazWidget', 'NamazAlarmVerisi.swift'))).toBe(true);
+      // Günün ayeti: widget kaynağı derlenir, font kopyalanır ama Sources listesine GİRMEZ.
+      expect(adlar).toContain('GununAyetiWidget.swift');
+      expect(adlar.filter((ad) => !ad.endsWith('.swift'))).toEqual([]);
+      for (const ad of eklenti.UZANTI_FONTLARI as string[]) {
+        expect(fs.existsSync(path.join(dizin, 'NamazWidget', ad))).toBe(true);
+      }
     } finally {
       fs.rmSync(dizin, { recursive: true, force: true });
     }
@@ -102,9 +113,20 @@ describe('withNamazWidget — Xcode hedefi (Expo şablonu üzerinde)', () => {
       anaHedefUuid: anaHedefUuid(proje),
       kimlik: 'com.ornek.widget',
       kaynaklar: ['NamazWidgetPaketi.swift', 'VakitKarari.swift'],
+      paketKaynaklari: eklenti.UZANTI_FONTLARI,
     });
     return proje;
   };
+
+  it('günün ayeti fontu uzantının Resources fazındadır (Sources\'ta değil)', () => {
+    const proje = kur();
+    const hedef = proje.pbxTargetByName('NamazWidget');
+    const nesneler = proje.hash.project.objects;
+    const kaynakFazi = hedef.buildPhases.find((f: { comment: string }) => f.comment === 'Resources');
+    expect(nesneler.PBXResourcesBuildPhase[kaynakFazi.value].files.map((f: { comment: string }) => f.comment)).toEqual([
+      'AmiriQuran-Regular.ttf in Resources',
+    ]);
+  });
 
   it('uzantı hedefi, ayarları ve kaynakları kurulur', () => {
     const proje = kur();
