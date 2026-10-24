@@ -50,7 +50,9 @@ import { useFeedback } from '../../core/feedback';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 import { SayisalSecici } from '../components/common/SayisalSecici';
 import { OzetSatir, takvimUygulamasiniAc, BildirimBanneri, OzellikBilgi, BasariIcerigi } from './TakvimAyarlari/bilesenler';
-import { VAKIT_GORUNTU_ADLARI, VAKIT_SIRASI, VAKIT_TEMIZLE_BASLIK, saatFormatla } from './TakvimAyarlari/sabitler';
+import { VAKIT_GORUNTU_ADLARI, VAKIT_SIRASI, saatFormatla } from './TakvimAyarlari/sabitler';
+import { bicim, metin, sayili } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
 import { TemizleModali } from './TakvimAyarlari/TemizleModali';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
@@ -76,6 +78,7 @@ const takvimIzniIste = async (): Promise<void> => {
 /** Numaralı adım başlığı — takvim akışının ilerlemesi (1 → 4). */
 const AdimBasligi: React.FC<{ no: number; metin: string; tamam?: boolean; sag?: React.ReactNode }> = ({ no, metin, tamam, sag }) => {
     const renkler = useRenkler();
+    const ms = useMetin().takvim.sayfa;
     return (
         <View className="flex-row items-center mb-3">
             <View
@@ -94,7 +97,7 @@ const AdimBasligi: React.FC<{ no: number; metin: string; tamam?: boolean; sag?: 
                 className="flex-1 text-sm font-bold"
                 style={{ color: renkler.metin }}
                 accessibilityRole="header"
-                accessibilityLabel={`Adım ${no}: ${metin}${tamam ? ', tamam' : ''}`}
+                accessibilityLabel={bicim(tamam ? ms.adimTamam : ms.adimEtiketi, { no, metin })}
             >
                 {metin}
             </Text>
@@ -112,20 +115,20 @@ const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
 // ─── VakitSatiri (kompakt satır) ──────────────────────────────────────────────
 
-const BASLANGIC_TIPLERI: { tip: BaslangicTipi; etiket: string; aciklama: string }[] = [
-    { tip: 'vakit_oncesi',  etiket: 'Çıkmadan Önce', aciklama: 'Vakit bitmeden X dk önce' },
-    { tip: 'vakit_girisi',  etiket: 'Vakitte',        aciklama: 'Tam vakit girince başlar' },
-    { tip: 'vakit_sonrasi', etiket: 'Vakitten Sonra', aciklama: 'Vakit girdikten X dk sonra' },
-];
+const BASLANGIC_TIPLERI: BaslangicTipi[] = ['vakit_oncesi', 'vakit_girisi', 'vakit_sonrasi'];
 
 function vakitOzetMetni(ayar: VakitTakvimAyari): string {
-    if (!ayar.aktif) return 'Kapalı — eklenmeyecek';
+    const m = metin().takvim.sayfa;
+    if (!ayar.aktif) return m.ozetKapali;
     const baslangic =
-        ayar.baslangicTipi === 'vakit_girisi' ? 'Vakitte başlar'
-        : ayar.baslangicTipi === 'vakit_oncesi' ? `Çıkmadan ${ayar.dakika} dk önce`
-        : `Vakitten ${ayar.dakika} dk sonra`;
-    return `${baslangic} · ${ayar.sureDakika} dk`;
+        ayar.baslangicTipi === 'vakit_girisi' ? m.ozetVakitte
+        : ayar.baslangicTipi === 'vakit_oncesi' ? bicim(m.ozetOnce, { dk: ayar.dakika })
+        : bicim(m.ozetSonra, { dk: ayar.dakika });
+    return bicim(m.ozet, { baslangic, sure: ayar.sureDakika });
 }
+
+/** Etkinlik başlığı ("Öğle Namazı") — cihaz takvimine yazılanla aynı şablon. */
+const etkinlikAdi = (gorununumAdi: string): string => bicim(metin().takvim.etkinlikBasligi, { ad: gorununumAdi });
 
 interface VakitSatiriProps {
     gorununumAdi: string;
@@ -137,6 +140,7 @@ interface VakitSatiriProps {
 
 const VakitSatiri: React.FC<VakitSatiriProps> = ({ gorununumAdi, ayar, onAc, onToggle, sonMu }) => {
     const renkler = useRenkler();
+    const ms = useMetin().takvim.sayfa;
 
     return (
         <TouchableOpacity
@@ -145,7 +149,7 @@ const VakitSatiri: React.FC<VakitSatiriProps> = ({ gorununumAdi, ayar, onAc, onT
             onPress={onAc}
             activeOpacity={0.6}
             accessibilityRole="button"
-            accessibilityLabel={`${gorununumAdi} vakti: ${vakitOzetMetni(ayar)}. Ayarlamak için dokunun`}
+            accessibilityLabel={bicim(ms.satirEtiketi, { ad: gorununumAdi, ozet: vakitOzetMetni(ayar) })}
         >
             <View
                 className="w-9 h-9 rounded-xl items-center justify-center mr-3"
@@ -159,7 +163,7 @@ const VakitSatiri: React.FC<VakitSatiriProps> = ({ gorununumAdi, ayar, onAc, onT
             </View>
             <View className="flex-1">
                 <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                    {gorununumAdi} Vakti
+                    {bicim(ms.vakti, { ad: gorununumAdi })}
                 </Text>
                 <Text
                     className="text-xs mt-0.5"
@@ -180,7 +184,7 @@ const VakitSatiri: React.FC<VakitSatiriProps> = ({ gorununumAdi, ayar, onAc, onT
                 onValueChange={onToggle}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                 thumbColor={ayar.aktif ? renkler.birincil : '#f4f3f4'}
-                accessibilityLabel={`${gorununumAdi} vaktini takvime ekleyin`}
+                accessibilityLabel={bicim(ms.anahtarEtiketi, { ad: gorununumAdi })}
             />
         </TouchableOpacity>
     );
@@ -207,6 +211,7 @@ const OnizlemeSatiri: React.FC<OnizlemeSatiriProps> = ({
     vakitAdi, gorununumAdi, ayar, bugunVakitler, bugunCikisVakitleri,
 }) => {
     const renkler = useRenkler();
+    const mt = useMetin().takvim.sayfa;
 
     if (!bugunVakitler || !bugunCikisVakitleri) return null;
 
@@ -224,9 +229,9 @@ const OnizlemeSatiri: React.FC<OnizlemeSatiriProps> = ({
 
     const baslangicAciklamasi = (() => {
         switch (ayar.baslangicTipi) {
-            case 'vakit_girisi':  return 'Vakit girince';
-            case 'vakit_sonrasi': return `Vakitten ${ayar.dakika || 0} dk sonra`;
-            case 'vakit_oncesi':  return `Vakit çıkmadan ${ayar.dakika || 0} dk önce`;
+            case 'vakit_girisi':  return mt.onizlemeGirince;
+            case 'vakit_sonrasi': return bicim(mt.onizlemeSonra, { dk: ayar.dakika || 0 });
+            case 'vakit_oncesi':  return bicim(mt.onizlemeOnce, { dk: ayar.dakika || 0 });
         }
     })();
 
@@ -243,10 +248,10 @@ const OnizlemeSatiri: React.FC<OnizlemeSatiriProps> = ({
             </View>
             <View className="flex-1">
                 <Text className="text-sm font-semibold mb-1" style={{ color: renkler.metin }}>
-                    {gorununumAdi} Namazı
+                    {etkinlikAdi(gorununumAdi)}
                 </Text>
                 <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                    {saatFormatla(startDate)} – {saatFormatla(endDate)}{'  '}({ayar.sureDakika} dk)
+                    {saatFormatla(startDate)} – {saatFormatla(endDate)}{'  '}{bicim(mt.onizlemeSure, { dk: ayar.sureDakika })}
                 </Text>
                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                     {baslangicAciklamasi}
@@ -272,6 +277,7 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
     gorunur, onKapat, vakitAdi, ayar, onChange, bugunVakitler, bugunCikisVakitleri,
 }) => {
     const renkler = useRenkler();
+    const ms = useMetin().takvim.sayfa;
     useDonanimGeriTusu(gorunur, onKapat);
 
     // Kapanış slide-out'u sırasında içerik kaybolmasın diye son geçerli değeri tut
@@ -315,10 +321,10 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                 </View>
                                 <View className="flex-1">
                                     <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                        {gorununumAdi} Namazı
+                                        {etkinlikAdi(gorununumAdi)}
                                     </Text>
                                     <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                        {aktifAyar.aktif ? 'Bu vakit takvime eklenecek' : 'Bu vakit şu an kapalı'}
+                                        {aktifAyar.aktif ? ms.eklenecek : ms.kapali}
                                     </Text>
                                 </View>
                                 <Anahtar
@@ -334,10 +340,11 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                     {/* Başlangıç tipi */}
                                     <View>
                                         <Text className="text-xs font-bold tracking-wider mb-2" style={{ color: renkler.metinIkincil }}>
-                                            ETKİNLİK NE ZAMAN BAŞLASIN
+                                            {ms.neZaman}
                                         </Text>
                                         <View className="flex-row gap-2">
-                                            {BASLANGIC_TIPLERI.map(({ tip, etiket, aciklama }) => {
+                                            {BASLANGIC_TIPLERI.map((tip) => {
+                                                const { etiket, aciklama } = ms.baslangicTipleri[tip];
                                                 const secili = aktifAyar.baslangicTipi === tip;
                                                 return (
                                                     <TouchableOpacity
@@ -375,14 +382,14 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                     {aktifAyar.baslangicTipi !== 'vakit_girisi' && (
                                         <View className="flex-row justify-between items-center">
                                             <Text className="text-sm" style={{ color: renkler.metin }}>
-                                                {aktifAyar.baslangicTipi === 'vakit_oncesi' ? 'Kaç dk önce' : 'Kaç dk sonra'}
+                                                {aktifAyar.baslangicTipi === 'vakit_oncesi' ? ms.kacOnce : ms.kacSonra}
                                             </Text>
                                             <SayisalSecici
                                                 deger={aktifAyar.dakika}
                                                 min={1}
                                                 max={60}
                                                 adim={5}
-                                                birim="dk"
+                                                birim={ms.dk}
                                                 onChange={v => onChange({ dakika: v })}
                                                 renk={renkler.birincil}
                                             />
@@ -392,14 +399,14 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                     {/* Süre */}
                                     <View className="flex-row justify-between items-center">
                                         <Text className="text-sm" style={{ color: renkler.metin }}>
-                                            Etkinlik süresi
+                                            {ms.sure}
                                         </Text>
                                         <SayisalSecici
                                             deger={aktifAyar.sureDakika}
                                             min={5}
                                             max={120}
                                             adim={5}
-                                            birim="dk"
+                                            birim={ms.dk}
                                             onChange={v => onChange({ sureDakika: v })}
                                             renk={renkler.birincil}
                                         />
@@ -409,7 +416,7 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                     {bugunVakitler && bugunCikisVakitleri && (
                                         <View>
                                             <Text className="text-xs font-bold tracking-wider mb-2" style={{ color: renkler.metinIkincil }}>
-                                                BUGÜN İÇİN ÖNİZLEME
+                                                {ms.bugunOnizleme}
                                             </Text>
                                             <OnizlemeSatiri
                                                 vakitAdi={aktifVakit}
@@ -425,7 +432,7 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                 <View className="items-center py-8">
                                     <FontAwesome5 name="bell-slash" size={28} color={renkler.metinIkincil} />
                                     <Text className="text-sm text-center mt-3 leading-5" style={{ color: renkler.metinIkincil }}>
-                                        Bu vakit için etkinlik oluşturulmayacak.{'\n'}Ayarlamak için yukarıdan açın.
+                                        {ms.olusturulmayacak}
                                     </Text>
                                 </View>
                             )}
@@ -438,7 +445,7 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                 activeOpacity={0.85}
                             >
                                 <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
-                                    Tamam
+                                    {ms.tamam}
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -470,6 +477,8 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
  */
 const TakvimAyarlariIcerik: React.FC = () => {
     const renkler = useRenkler();
+    const sozluk = useMetin();
+    const ms = sozluk.takvim.sayfa;
     const scrollRef = useVurguKurulumu();
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
@@ -592,11 +601,11 @@ const TakvimAyarlariIcerik: React.FC = () => {
         await butonTiklandiFeedback();
 
         if (!ayarlar.takvimId) {
-            bildirimGoster('Önce bir takvim seçin.', 'bilgi');
+            bildirimGoster(metin().takvim.sayfa.takvimSecin, 'bilgi');
             return;
         }
         if (!koordinatlar) {
-            bildirimGoster('Konum bulunamadı. Lütfen konum ayarlarını kontrol edin.', 'hata');
+            bildirimGoster(metin().takvim.sayfa.konumYok, 'hata');
             return;
         }
 
@@ -607,7 +616,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
             setSonAktarim(aktarilan);
             Depolama.hamYaz(DEPOLAMA_ANAHTARLARI.TAKVIM_SON_AKTARIM, aktarilan).catch(() => undefined);
         } else {
-            bildirimGoster(String(result.payload) || 'Etkinlikler oluşturulurken hata oluştu.', 'hata');
+            bildirimGoster(String(result.payload) || metin().takvim.sayfa.olusturmaHatasi, 'hata');
         }
     };
 
@@ -654,9 +663,9 @@ const TakvimAyarlariIcerik: React.FC = () => {
     const pasifIzinNotu = !ayarlar.aktif && (izin.sonuc === 'tekrarDene' || izin.sonuc === 'ayarlar') ? izinNotu : null;
 
     const olusturButonuMesaji = !ayarlar.takvimId
-        ? 'Takvim seçilmedi'
+        ? ms.takvimSecilmedi
         : !koordinatlar
-            ? 'Konum bulunamadı'
+            ? ms.konumBulunamadi
             : null;
 
     return (
@@ -678,7 +687,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                         activeOpacity={0.8}
                         accessibilityRole="switch"
                         accessibilityState={{ checked: ayarlar.aktif }}
-                        accessibilityLabel="Takvime ekleme"
+                        accessibilityLabel={ms.takvimeEkleme}
                     >
                         <View
                             className="w-11 h-11 rounded-xl items-center justify-center mr-3"
@@ -693,10 +702,10 @@ const TakvimAyarlariIcerik: React.FC = () => {
                         </View>
                         <View className="flex-1">
                             <Text className="text-base font-semibold" style={{ color: ayarlar.aktif ? renkler.birincilMetin : renkler.metin }}>
-                                Takvime ekleme
+                                {ms.takvimeEkleme}
                             </Text>
                             <Text className="text-sm mt-0.5" style={{ color: ayarlar.aktif ? `${renkler.birincilMetin}C0` : renkler.metinIkincil }}>
-                                {ayarlar.aktif ? 'Açık' : 'Kapalı'}
+                                {ayarlar.aktif ? ms.acik : ms.kapaliKisa}
                             </Text>
                         </View>
                         <Anahtar
@@ -704,7 +713,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                             onValueChange={(v) => void anaAnahtariDegistir(v)}
                             trackColor={{ false: renkler.sinir, true: `${renkler.birincilMetin}66` }}
                             thumbColor={renkler.birincilMetin}
-                            accessibilityLabel="Takvime ekleme"
+                            accessibilityLabel={ms.takvimeEkleme}
                         />
                     </TouchableOpacity>
                     </AyarCapasi>
@@ -732,17 +741,17 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                 >
                                     <FontAwesome5 name="sync-alt" size={14} color={renkler.dikkat} style={{ marginRight: 10 }} />
                                     <Text className="flex-1 text-sm" style={{ color: renkler.metin }}>
-                                        Takvime aktarılmayı bekleyen değişiklik var
+                                        {ms.bekleyen}
                                     </Text>
                                     <TouchableOpacity
                                         onPress={handleOlaylariOlustur}
                                         disabled={olayOlusturuluyor}
                                         accessibilityRole="button"
-                                        accessibilityLabel="Şimdi aktarın"
+                                        accessibilityLabel={ms.simdiAktarin}
                                         className="px-3 rounded-2xl items-center justify-center"
                                         style={{ minHeight: 44, backgroundColor: renkler.birincil, opacity: olayOlusturuluyor ? 0.6 : 1 }}
                                     >
-                                        <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>Şimdi aktarın</Text>
+                                        <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>{ms.simdiAktarin}</Text>
                                     </TouchableOpacity>
                                 </View>
                             )}
@@ -754,7 +763,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                             >
                                 <AdimBasligi
                                     no={1}
-                                    metin="Hangi takvime?"
+                                    metin={ms.hangiTakvim}
                                     tamam={!!ayarlar.takvimId}
                                     sag={izin.durum === 'verildi' ? (
                                     <TouchableOpacity
@@ -762,13 +771,13 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                         className="flex-row items-center gap-1 px-3 rounded-lg"
                                         style={{ backgroundColor: `${renkler.birincil}15`, minHeight: 44 }}
                                         accessibilityRole="button"
-                                        accessibilityLabel="Takvim listesini yenileyin"
+                                        accessibilityLabel={ms.listeyiYenileyin}
                                     >
                                         {takvimYukleniyor
                                             ? <ActivityIndicator size="small" color={renkler.birincil} />
                                             : <FontAwesome5 name="sync-alt" size={12} color={renkler.birincil} />
                                         }
-                                        <Text className="text-sm" style={{ color: renkler.birincil }}>Yenile</Text>
+                                        <Text className="text-sm" style={{ color: renkler.birincil }}>{ms.yenile}</Text>
                                     </TouchableOpacity>
                                     ) : null}
                                 />
@@ -783,28 +792,28 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                 ) : izinOkunamadi ? (
                                     <View testID="takvim-izin-okunamadi" className="flex-row items-center py-2">
                                         <Text className="flex-1 text-sm" style={{ color: renkler.metin }}>
-                                            Takvim izni okunamadı.
+                                            {ms.izinOkunamadi}
                                         </Text>
                                         <TouchableOpacity
                                             onPress={() => void izinOku()}
                                             accessibilityRole="button"
-                                            accessibilityLabel="Tekrar deneyin"
+                                            accessibilityLabel={sozluk.ortak.tekrarDeneyin}
                                             className="px-4 rounded-2xl items-center justify-center"
                                             style={{ minHeight: 44, backgroundColor: renkler.birincil }}
                                         >
-                                            <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>Tekrar deneyin</Text>
+                                            <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>{sozluk.ortak.tekrarDeneyin}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 ) : izin.durum !== 'verildi' ? null : cihazTakvimleri.length === 0 ? (
                                     <View className="items-center py-5">
                                         <FontAwesome5 name="calendar-times" size={28} color={renkler.metinIkincil} />
                                         <Text className="text-sm text-center mt-2" style={{ color: renkler.metinIkincil }}>
-                                            Cihazınızda düzenlenebilir takvim bulunamadı.
+                                            {ms.takvimYok}
                                         </Text>
                                         <Text className="text-xs text-center mt-1" style={{ color: renkler.metinIkincil }}>
                                             {Platform.OS === 'ios'
-                                                ? "Ayarlar'dan iCloud'a giriş yapıp takvimi açın."
-                                                : 'Telefonunuza bir Google hesabı ekleyin.'}
+                                                ? ms.takvimYokIos
+                                                : ms.takvimYokAndroid}
                                         </Text>
                                     </View>
                                 ) : (
@@ -844,7 +853,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                 className="rounded-2xl p-4 mb-4"
                                 style={{ backgroundColor: renkler.kartArkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                             >
-                                <AdimBasligi no={2} metin="Hangi vakitler?" tamam={aktifVakitler.length > 0} />
+                                <AdimBasligi no={2} metin={ms.hangiVakitler} tamam={aktifVakitler.length > 0} />
                                 {VAKIT_SIRASI.map((vakit, idx) => (
                                     <VakitSatiri
                                         key={vakit}
@@ -862,7 +871,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                 className="rounded-2xl p-4 mb-4"
                                 style={{ backgroundColor: renkler.kartArkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                             >
-                                <AdimBasligi no={3} metin="Kaç gün ileriye?" tamam />
+                                <AdimBasligi no={3} metin={ms.kacGun} tamam />
                                 <View className="flex-row gap-2 mb-2">
                                     {([7, 14, 30] as const).map(gun => {
                                         const secili = !ozelGunAktif && ayarlar.kaciGunIlerisi === gun;
@@ -879,7 +888,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                                 activeOpacity={0.7}
                                             >
                                                 <Text className="text-sm font-semibold" style={{ color: secili ? renkler.birincilMetin : renkler.metinIkincil }}>
-                                                    {gun} gün
+                                                    {sayili(ms.gunSecenek, gun)}
                                                 </Text>
                                             </TouchableOpacity>
                                         );
@@ -902,22 +911,22 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                         activeOpacity={0.7}
                                     >
                                         <Text className="text-sm font-semibold" style={{ color: ozelGunAktif ? renkler.birincilMetin : renkler.metinIkincil }}>
-                                            Özel
+                                            {ms.ozel}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
                                 {ozelGunAktif && (
                                     <View className="flex-row items-center justify-between mt-1">
-                                        <Text className="text-sm" style={{ color: renkler.metin }}>Gün sayısı</Text>
+                                        <Text className="text-sm" style={{ color: renkler.metin }}>{ms.gunSayisi}</Text>
                                         <SayisalSecici
                                             deger={ayarlar.kaciGunIlerisi}
                                             min={1}
                                             max={90}
                                             adim={1}
-                                            birim="gün"
+                                            birim={ms.gunBirim}
                                             onChange={v => dispatch(takvimAyarlariniGuncelle({ kaciGunIlerisi: v }))}
                                             renk={renkler.birincil}
-                                            aciklama="Kaç gün ileri"
+                                            aciklama={ms.kacGunIleri}
                                         />
                                     </View>
                                 )}
@@ -928,12 +937,12 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                 className="rounded-2xl p-4 mb-4"
                                 style={{ backgroundColor: renkler.kartArkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                             >
-                                <AdimBasligi no={4} metin="Bugün böyle görünecek" tamam={aktifVakitler.length > 0} />
+                                <AdimBasligi no={4} metin={ms.bugunBoyle} tamam={aktifVakitler.length > 0} />
                                 {aktifVakitler.length === 0 ? (
                                     <View className="items-center py-6">
                                         <FontAwesome5 name="calendar-minus" size={28} color={renkler.metinIkincil} />
                                         <Text className="text-sm text-center mt-3 leading-5" style={{ color: renkler.metinIkincil }}>
-                                            Henüz vakit seçmediniz. Yukarıdan bir vakit açın.
+                                            {ms.vakitSecmediniz}
                                         </Text>
                                     </View>
                                 ) : (
@@ -963,7 +972,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                             <TouchableOpacity
                                 testID="takvime-ekle-dugmesi"
                                 accessibilityRole="button"
-                                accessibilityLabel={`Takvime ekleyin, ${ayarlar.kaciGunIlerisi} gün`}
+                                accessibilityLabel={sayili(ms.ekleyinEtiketi, ayarlar.kaciGunIlerisi)}
                                 accessibilityState={{ disabled: olayOlusturuluyor, busy: olayOlusturuluyor }}
                                 className="flex-row items-center justify-center p-4 rounded-2xl mb-2"
                                 style={{ backgroundColor: olayOlusturuluyor ? `${renkler.birincil}80` : renkler.birincil }}
@@ -977,7 +986,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                     <>
                                         <FontAwesome5 name="calendar-plus" size={16} color={renkler.birincilMetin} solid style={{ marginRight: 8 }} />
                                         <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
-                                            Takvime ekleyin ({ayarlar.kaciGunIlerisi} gün)
+                                            {sayili(ms.ekleyin, ayarlar.kaciGunIlerisi)}
                                         </Text>
                                     </>
                                 )}
@@ -1000,11 +1009,11 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                 disabled={olayOlusturuluyor}
                                 activeOpacity={0.8}
                                 accessibilityRole="button"
-                                accessibilityLabel="Etkinlikleri silin"
+                                accessibilityLabel={ms.silin}
                             >
                                 <FontAwesome5 name="broom" size={14} color={renkler.hata} style={{ marginRight: 8 }} />
                                 <Text className="text-sm font-semibold" style={{ color: renkler.hata }}>
-                                    Etkinlikleri silin
+                                    {ms.silin}
                                 </Text>
                             </TouchableOpacity>
 
@@ -1015,7 +1024,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                             >
                                 <FontAwesome5 name="info-circle" size={14} color={renkler.birincil} style={{ marginTop: 1, marginRight: 8 }} />
                                 <Text className="flex-1 text-sm leading-5" style={{ color: renkler.metinIkincil }}>
-                                    Her eklemede bu uygulamanın eski etkinlikleri silinip yeniden yazılır.
+                                    {ms.bilgi}
                                 </Text>
                             </View>
                         </>
@@ -1050,14 +1059,14 @@ const TakvimAyarlariIcerik: React.FC = () => {
             <RizaModali
                 gorunur={rizaAcik}
                 ikon="calendar-alt"
-                baslik="Takviminize erişim"
+                baslik={ms.rizaBaslik}
                 maddeler={[
-                    { ikon: 'calendar-plus', metin: 'Seçtiğiniz takvime namaz vakitlerini ekler.' },
-                    { ikon: 'shield-alt', metin: 'Yalnız kendi eklediği etkinlikleri siler.' },
-                    { ikon: 'mobile-alt', metin: 'Her şey cihazınızda kalır.' },
+                    { ikon: 'calendar-plus', metin: ms.rizaMaddeler.ekler },
+                    { ikon: 'shield-alt', metin: ms.rizaMaddeler.siler },
+                    { ikon: 'mobile-alt', metin: ms.rizaMaddeler.cihaz },
                 ]}
-                onaylaEtiketi="Devam edin"
-                vazgecEtiketi="Şimdi değil"
+                onaylaEtiketi={sozluk.ortak.devamEdin}
+                vazgecEtiketi={ms.simdiDegil}
                 onOnayla={() => void rizaOnayla()}
                 onVazgec={() => setRizaAcik(false)}
                 onKapandi={izin.modalKapandi}
@@ -1090,20 +1099,18 @@ const TakvimAyarlariIcerik: React.FC = () => {
                         {olusturmaSonucu && (
                             <BasariIcerigi
                                 tip="olusturma"
-                                baslik="Takviminize eklendi"
-                                altBaslik={olusturmaSonucu.sayi > 0
-                                    ? 'Namaz vakitleriniz takviminizde.'
-                                    : 'Eklenecek vakit yok; yukarıdan bir vakit açın.'}
+                                baslik={ms.eklendi}
+                                altBaslik={olusturmaSonucu.sayi > 0 ? ms.vakitlerinizTakvimde : ms.eklenecekYok}
                                 sayi={olusturmaSonucu.sayi}
                                 satirlar={[
-                                    { ikon: 'calendar-check', etiket: 'Oluşturulan', deger: `${olusturmaSonucu.sayi} etkinlik` },
-                                    { ikon: 'bookmark', etiket: 'Takvim', deger: ayarlar.takvimAdi ?? '—' },
-                                    { ikon: 'clock', etiket: 'Süre', deger: `${ayarlar.kaciGunIlerisi} gün` },
+                                    { ikon: 'calendar-check', etiket: ms.olusturulan, deger: sayili(ms.etkinlikSayisi, olusturmaSonucu.sayi) },
+                                    { ikon: 'bookmark', etiket: ms.takvim, deger: ayarlar.takvimAdi ?? '—' },
+                                    { ikon: 'clock', etiket: ms.sureEtiketi, deger: sayili(ms.gunSecenek, ayarlar.kaciGunIlerisi) },
                                     {
                                         ikon: 'list-ul',
-                                        etiket: 'Vakitler',
+                                        etiket: ms.vakitler,
                                         deger: aktifVakitler.length === VAKIT_SIRASI.length
-                                            ? 'Tüm vakitler'
+                                            ? ms.tumVakitler
                                             : aktifVakitler.map(v => VAKIT_GORUNTU_ADLARI[v]).join(', ') || '—',
                                     },
                                 ]}

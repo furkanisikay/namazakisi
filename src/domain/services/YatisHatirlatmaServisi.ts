@@ -36,6 +36,7 @@ import {
 } from '../../core/yatis/yatisPlani';
 import { ANDROID_YATIS_PAYI, IOS_ALARMKIT_YATIS_PAYI } from '../../core/bildirim/butceSabitleri';
 import { VAKIT_ADLARI } from '../../core/utils/muhafizMetinYardimcisi';
+import { metin } from '../../core/dil/aktifDil';
 import { bildirimKategorileriniGarantile } from './bildirimKategorileri';
 import type { MuhafizTeslimcisi } from './MuhafizTeslimcisi';
 import { sahipliYanKanallariIptalEt } from './MuhafizAlarmKoprusu';
@@ -302,7 +303,7 @@ export class YatisHatirlatmaServisi {
                             ? BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ
                             : BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM,
                     varsayilanSistemSesi: true,
-                    alarmAdi: kayit.tur === 'muhasebeCoklu' ? 'Gün sonu' : VAKIT_ADLARI[vakit],
+                    alarmAdi: kayit.tur === 'muhasebeCoklu' ? metin().hatirlatma.yatis.gunSonuAlarm : VAKIT_ADLARI[vakit],
                     // Yatsı / tek eksik: VAKİT alarmı ("Kıldım" o farzı işaretler — native kimlikten
                     // çözer); çoklu muhasebe vakte bağlı değildir → BİLGİ (yalnız "Kapat").
                     alarmTuru: kayit.tur === 'muhasebeCoklu' ? 'bilgi' : 'vakit',

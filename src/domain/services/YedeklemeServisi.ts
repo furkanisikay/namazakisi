@@ -17,6 +17,7 @@
  */
 
 import * as Sharing from 'expo-sharing';
+import { metin } from '../../core/dil/aktifDil';
 import * as FileSystem from 'expo-file-system/legacy';
 import {
   YedekZarfi,
@@ -308,7 +309,7 @@ export const yedeginiPaylas = async (): Promise<void> => {
   if (paylasimVar) {
     await Sharing.shareAsync(dosyaUri, {
       mimeType: 'application/json',
-      dialogTitle: 'Yedeğinizi paylaşın',
+      dialogTitle: metin().yedekleme.paylasBaslik,
     });
 
     // Damga: "yedek dosyası oluşturuldu ve paylaşım açıldı" — kendi try/catch'inde,

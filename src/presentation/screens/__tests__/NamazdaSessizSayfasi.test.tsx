@@ -43,6 +43,7 @@ jest.mock('../../../domain/services/CamideyimServisi', () => ({
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NamazdaSessizSayfasi } from '../NamazdaSessizSayfasi';
 import { CamilerimSayfasi } from '../CamilerimSayfasi';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const RENKLER = {
     birincil: '#4CAF50',
@@ -522,5 +523,103 @@ describe('NamazdaSessizSayfasi — Namaz vakitlerinde', () => {
             expect(k.namazModuAyarlariniYaz).toHaveBeenCalledWith(expect.objectContaining({ etkin: true }))
         );
         expect(e.queryByTestId('namaz-modu-rehberi')).toBeNull();
+    });
+});
+
+describe('NamazdaSessizSayfasi — İngilizce', () => {
+    // Türkçe harfsiz ama Türkçe sözcükler (bu ekranlarda geçebilecek).
+    const YASAKLI = ['Cami', 'cami\\b', 'Namaz\\b', 'Kapal', 'Sil\\b', 'Favori\\b', 'Sorarak', 'Otomatik', 'Daire', 'dk\\b', 'uzakta', 'Yer ekle', 'Vazge', 'Ayar'];
+    // Marka adı ("Namaz Akışı") cümle içinde her dilde aynı kalır.
+    const kalan = (agac: unknown) =>
+        turkceKalanlar(agac as never, YASAKLI).filter((m) => turkceKalanlar(m.replace(/Namaz Akışı/g, ''), YASAKLI).length > 0);
+    const OLAYLAR = [
+        { tur: 'izlemeKuruldu', sayi: 4 },
+        { tur: 'izinYok', izin: 'arkaPlanYok' },
+        { tur: 'izlemeHatasi' },
+        { tur: 'dwell', yer: 'Square Mosque', dk: 3 },
+        { tur: 'vakitDisi' },
+        { tur: 'olcum', sonuc: 'camide', yer: 'Square Mosque', dogrulukM: 12 },
+        { tur: 'olcum', sonuc: 'supheli', dogrulukM: 48 },
+        { tur: 'olcum', sonuc: 'disarida', yer: 'Square Mosque', mesafeM: 30 },
+        { tur: 'olcum', sonuc: 'konumYok' },
+        { tur: 'guven', eylem: 'sor', yer: 'Square Mosque', zaman: 'ezanYakin', yerSinifi: 'tampon', hareket: 'durgun', tavan: 'kenar' },
+        { tur: 'guven', eylem: 'otomatik', bicim: 'otomatik', guvenKarari: 'sor', yer: 'Square Mosque', zaman: 'cuma', yerSinifi: 'poligonIci' },
+        { tur: 'soruldu' },
+        { tur: 'soruRet', yer: 'Square Mosque' },
+        { tur: 'camide', mod: 'erisimYok', yer: 'Square Mosque' },
+        { tur: 'cikis', yer: 'Square Mosque', dk: 25 },
+        { tur: 'haricTutuldu', yer: 'Square Mosque' },
+        { tur: 'kildim', vakit: 'ogle' },
+        { tur: 'yenileme', sonuc: 'kabaKonum' },
+    ].map((o, i) => ({ zamanMs: Date.now() - i * 60000, ...o }));
+
+    let geriAl: () => void;
+    beforeEach(() => {
+        geriAl = ingilizceyeGec();
+    });
+    afterEach(() => act(() => geriAl()));
+
+    it('iki tetik, durum satırları, soru ve ayrıntılar (zaman çizelgesi dahil) İngilizce', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true, namazModu: true, yerler: { 'osm:w2': { durum: 'favori', ad: 'Old Mosque' } } });
+        k.durumAl.mockResolvedValue({
+            ...NATIVE_DURUM,
+            izin: 'arkaPlanYok',
+            soru: { yer: { id: 'osm:w1', ad: 'Square Mosque', lat: 41, lng: 29 }, vakit: 'ogle', tarih: '2026-10-13', cuma: false, tur: 't', zamanMs: 0, bitisMs: 1 },
+        });
+        k.namazModuDurumu.mockResolvedValue({ ...MOD_DURUMU, erisim: false, ayarlar: { ...MOD_DURUMU.ayarlar, vakit: true } });
+        k.gunlukAl.mockResolvedValue(OLAYLAR as never);
+        k.yakinCamiler.mockResolvedValue([
+            { id: 'osm:w1', ad: 'Square Mosque', lat: 41.011, lng: 28.972, yaricapM: 29, poligonVar: true, mesafeM: 1370 },
+        ]);
+        const e = render(<NamazdaSessizSayfasi />);
+        await waitFor(() => expect(e.getByText('Are you at the mosque? · Square Mosque')).toBeTruthy());
+        await ayrintilariAc(e);
+        await waitFor(() => expect(e.getByText('RECENT DETECTIONS')).toBeTruthy());
+        fireEvent.press(await e.findByTestId('cami-osm:w1'));
+        expect(e.getByText('1.4 km')).toBeTruthy();
+        expect(kalan(e.toJSON())).toEqual([]);
+        expect(e.getByText('Watching 4 places near you')).toBeTruthy();
+    });
+
+    it('köprü yoksa boş durum İngilizce', async () => {
+        k.camiModuluVarMi.mockReturnValue(false);
+        const e = render(<NamazdaSessizSayfasi />);
+        await bosalt();
+        expect(kalan(e.toJSON())).toEqual([]);
+        const c = render(<CamilerimSayfasi />);
+        await bosalt();
+        expect(kalan(c.toJSON())).toEqual([]);
+    });
+
+    it('Namaz modu erişim rehberi İngilizce', async () => {
+        k.namazModuDurumu.mockResolvedValue({ ...MOD_DURUMU, erisim: false });
+        const e = render(<NamazdaSessizSayfasi />);
+        await waitFor(() => expect(e.getByTestId('namaz-modu-erisim-uyarisi')).toBeTruthy());
+        fireEvent.press(e.getByLabelText('Grant access'));
+        await waitFor(() => expect(e.getByTestId('namaz-modu-rehberi')).toBeTruthy());
+        expect(kalan(e.toJSON())).toEqual([]);
+    });
+
+    it('Camilerim haritası: ipucu, lejant, yer paneli ve ekleme paneli İngilizce', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true });
+        k.yakinCamiler.mockResolvedValue([
+            { id: 'osm:w1', ad: 'Square Mosque', lat: 41.011, lng: 28.972, yaricapM: 29, poligonVar: true, mesafeM: 137, poligon: null },
+        ]);
+        L.getForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' } as never);
+        const e = render(<CamilerimSayfasi />);
+        await waitFor(() => expect(e.getByTestId('cami-haritasi')).toBeTruthy());
+        fireEvent.press(e.getByTestId('harita-lejant-dugmesi'));
+        expect(kalan(e.toJSON())).toEqual([]);
+        const kaynak = e.UNSAFE_root.findAll((n) => (n.type as unknown) === 'GeoJSONSource' && n.props.id === 'cami-kumeleri')[0];
+        await waitFor(() => expect(kaynak.props.data.features).toHaveLength(1));
+        await act(async () => {
+            await kaynak.props.onPress({ nativeEvent: { features: [{ properties: { id: 'osm:w1' } }] } });
+        });
+        await waitFor(() => expect(e.getByTestId('harita-yer-paneli')).toBeTruthy());
+        expect(kalan(e.toJSON())).toEqual([]);
+        fireEvent.press(e.getByLabelText('Close the panel'));
+        fireEvent.press(e.getByTestId('harita-yer-ekle'));
+        expect(e.getByTestId('harita-ekleme-paneli')).toBeTruthy();
+        expect(kalan(e.toJSON())).toEqual([]);
     });
 });

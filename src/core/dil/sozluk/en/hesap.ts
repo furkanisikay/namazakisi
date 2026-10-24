@@ -43,4 +43,23 @@ export const hesap: Sozluk['hesap'] = {
     devam: 'Continue with {ad}',
     birKez: 'We ask this only once for this country. You can change it anytime in Settings › Prayer times › Calculation method.',
   },
+  sayfa: {
+    erkeneAl: 'Move {ad} one minute earlier',
+    geciktir: 'Move {ad} one minute later',
+    duzeltmeErisim: '{ad} adjustment {deger}',
+    onerilen: 'Recommended for {ulke}',
+    yerIcin: 'Prayer times for {yer} are calculated by this timetable:',
+    ikindiEtiketi: 'Asr: {ad}',
+    kaynakErisim: "Open the method's source",
+    kaynagiAcin: 'Open the source',
+    yuksekEnlem: 'At this latitude, Fajr and Isha are estimates in summer (one-seventh of the night rule). Compare with your mosque.',
+    diyanetAvrupa:
+      "In Diyanet's European timetable, Isha may be 5-7 minutes earlier than here. Compare with your mosque and adjust the minutes.",
+    takvim: 'Timetable',
+    secimDegismez: "Your choice doesn't change on its own. When you move to another country, we ask once.",
+    ikindiVakti: 'Asr time',
+    ikindiNotu: 'Choose the time when mosques in your area call the Asr adhan.',
+    dakikaDuzeltmesi: 'Minute adjustment for your mosque',
+    duzeltmeKalici: 'The adjustment is permanent; it applies the same way every day.',
+  },
 };

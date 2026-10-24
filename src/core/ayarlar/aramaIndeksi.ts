@@ -10,359 +10,106 @@
  * OLARAK indekslenmez — ikisi de `AyarlarAna`'da yaşar ve "dokununca nereye
  * gider?" sorusunun arama sonucu olarak anlamlı bir cevabı yok.
  *
+ * Görünen metinler (başlık, grup, anahtar kelimeler) sözlükte (`ayarlar.arama`,
+ * `ayarlar.aramaGruplari`); kayıtlar onları GETTER ile etkin dilden okur. Türkçe dışı
+ * dilde Türkçe başlık ve anahtar kelimeler de aranır (yurt dışındaki Türkçe konuşan,
+ * İngilizce arayüzde "ezan" yazabilsin). `id`, `sayfa`, `capa` kimliktir.
+ *
  * `sayfa` alanı yalnız TİP olarak `AyarlarEkranAdi`'a bağlıdır (`import
  * type` — runtime bağ kurmaz); `src/core/` saf kalır (AGENTS.md).
  */
 import type { AyarlarEkranAdi } from '../../navigation/ayarlarEkranlari';
 import type { CapaId } from './capalar';
+import { aktifDil, metin, sozluk } from '../dil/aktifDil';
+import type { Sozluk } from '../dil/sozluk/tr';
 
 export interface AyarIndeksKaydi {
   id: string;
   baslik: string;
-  anahtarKelimeler: string[];
+  anahtarKelimeler: readonly string[];
   sayfa: AyarlarEkranAdi;
   /** Sonuçta bağlam olarak gösterilir (ör. "Bildirimler" grubu/sayfası). */
   grup: string;
   capa?: CapaId;
 }
 
-export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
+type AramaId = keyof Sozluk['ayarlar']['arama'];
+type GrupId = keyof Sozluk['ayarlar']['aramaGruplari'];
+
+interface KayitTanimi {
+  id: AramaId;
+  sayfa: AyarlarEkranAdi;
+  grup: GrupId;
+  capa?: CapaId;
+}
+
+/** Sözlükte anahtar kelimeler virgülle ayrılmış tek dizedir. */
+const bol = (dize: string): string[] => dize.split(',').map((k) => k.trim()).filter(Boolean);
+
+/** Etkin dilin anahtar kelimeleri; Türkçe dışında Türkçe başlık + kelimeler de eklenir. */
+function anahtarKelimeler(id: AramaId): readonly string[] {
+  const etkin = bol(metin().ayarlar.arama[id].kelimeler);
+  if (aktifDil() === 'tr') return etkin;
+  const tr = sozluk('tr').ayarlar.arama[id];
+  return [...etkin, tr.baslik, ...bol(tr.kelimeler)];
+}
+
+function kayit(t: KayitTanimi): AyarIndeksKaydi {
+  const sabit = t.capa ? { id: t.id, sayfa: t.sayfa, capa: t.capa } : { id: t.id, sayfa: t.sayfa };
+  return Object.defineProperties(sabit, {
+    baslik: { get: () => metin().ayarlar.arama[t.id].baslik, enumerable: true },
+    grup: { get: () => metin().ayarlar.aramaGruplari[t.grup], enumerable: true },
+    anahtarKelimeler: { get: () => anahtarKelimeler(t.id), enumerable: true },
+  }) as AyarIndeksKaydi;
+}
+
+const TANIMLAR: KayitTanimi[] = [
   // ── Sayfalar (çapasız) — sade tasarım (Dalga 3) görev bazlı düzen ──────────
-  {
-    id: 'sayfa-hatirlatmalar',
-    baslik: 'Hatırlatmalar',
-    anahtarKelimeler: ['hatırlatma', 'bildirim', 'ezan', 'uyarı', 'ne kadar hatırlatalım', 'düzey'],
-    sayfa: 'Hatirlatmalar',
-    grup: 'Namaz',
-  },
-  {
-    id: 'sayfa-muhafiz',
-    baslik: 'Vakit çıkmadan',
-    anahtarKelimeler: [
-      'muhafız',
-      'namaz muhafızı',
-      'vakit çıkarken',
-      'vakit girer girmez',
-      'kendim ayarlayayım',
-      'sesli okuma',
-    ],
-    sayfa: 'MuhafizAyarlari',
-    grup: 'Hatırlatmalar',
-  },
-  {
-    id: 'sayfa-namazda-sessiz',
-    baslik: 'Namazda sessiz',
-    anahtarKelimeler: [
-      'cami',
-      'camideyim',
-      'mescit',
-      'sessiz',
-      'namaz modu',
-      'rahatsız etmeyin',
-      'hutbe',
-      'camilerim',
-      'harita',
-      'odak',
-      'kısayollar',
-    ],
-    sayfa: 'CamideyimAyarlari',
-    grup: 'Namaz',
-  },
-  {
-    id: 'sayfa-namaz-vakitleri',
-    baslik: 'Namaz vakitleri',
-    anahtarKelimeler: ['vakit', 'mezhep', 'hanefi', 'şafii', 'vitir'],
-    sayfa: 'NamazVakitleriAyarlari',
-    grup: 'Namaz',
-  },
-  {
-    id: 'sayfa-konum',
-    baslik: 'Konum',
-    anahtarKelimeler: ['konum', 'şehir', 'gps', 'yer'],
-    sayfa: 'KonumAyarlari',
-    grup: 'Namaz vakitleri',
-  },
-  {
-    id: 'sayfa-takvim',
-    baslik: 'Vakitleri takvime ekleyin',
-    anahtarKelimeler: ['takvim', 'etkinlik', 'senkronizasyon', 'takvim entegrasyonu'],
-    sayfa: 'TakvimAyarlari',
-    grup: 'Namaz vakitleri',
-  },
-  {
-    id: 'sayfa-hesap-yontemi',
-    baslik: 'Hesap yöntemi',
-    anahtarKelimeler: ['hesap', 'yöntem', 'takvim', 'ikindi', 'asr', 'hanefi', 'diyanet', 'jakim', 'ummul kura', 'açı', 'dakika', 'düzeltme', 'cami'],
-    sayfa: 'HesapYontemiAyarlari',
-    grup: 'Namaz vakitleri',
-  },
-  {
-    id: 'sayfa-seferilik',
-    baslik: 'Yolculuk bilgisi',
-    anahtarKelimeler: ['yolculuk', 'seferî', 'seferi', 'misafir', 'kasr', 'cem', 'ikamet'],
-    sayfa: 'SeferilikAyarlari',
-    grup: 'Namaz vakitleri',
-  },
-  {
-    id: 'sayfa-seri',
-    baslik: 'Seri hedefi',
-    anahtarKelimeler: ['seri', 'hedef', 'puan', 'streak'],
-    sayfa: 'SeriHedefAyarlari',
-    grup: 'Namaz',
-  },
-  {
-    id: 'sayfa-ramazan',
-    baslik: 'Ramazan',
-    anahtarKelimeler: ['ramazan', 'iftar', 'sahur', 'oruç'],
-    sayfa: 'RamazanAyarlari',
-    grup: 'Hatırlatmalar',
-  },
-  {
-    id: 'sayfa-nafile',
-    baslik: 'Nafile namazlar',
-    anahtarKelimeler: ['nafile', 'kuşluk', 'duha', 'işrak', 'evvabin', 'teheccüd', 'gece namazı'],
-    sayfa: 'NafileAyarlari',
-    grup: 'Hatırlatmalar',
-  },
-  {
-    id: 'sayfa-gorunum',
-    baslik: 'Görünüm',
-    anahtarKelimeler: ['tema', 'renk', 'görünüm', 'karanlık mod'],
-    sayfa: 'GorünumAyarlari',
-    grup: 'Ekran ve cihazlar',
-  },
-  {
-    id: 'sayfa-saat-widget',
-    baslik: 'Saat ve widget',
-    anahtarKelimeler: ['saat', 'wear', 'widget', 'now bar', 'canlı sayaç', 'canlı etkinlik', 'bileklik', 'otomasyon', 'tasker', 'rutin'],
-    sayfa: 'SaatVeWidgetAyarlari',
-    grup: 'Ekran ve cihazlar',
-  },
-  {
-    id: 'sayfa-cihazlarim',
-    baslik: 'Cihazlarım',
-    anahtarKelimeler: ['cihaz', 'cihazlarım', 'bağlı cihaz', 'tv kaldır', 'durumum sayılsın', 'sessiz bant', 'eşitleme'],
-    sayfa: 'Cihazlarim',
-    grup: 'Ekran ve cihazlar',
-  },
-  {
-    id: 'sayfa-cihaz-ekle',
-    baslik: 'Tablet ya da telefon ekleyin',
-    anahtarKelimeler: ['tablet', 'ipad', 'ikinci telefon', 'cihaz ekle', 'eşleştir', 'kıldım eşitle'],
-    sayfa: 'CihazEkle',
-    grup: 'Ekran ve cihazlar',
-  },
-  {
-    id: 'sayfa-televizyon',
-    baslik: 'TV ekleyin',
-    anahtarKelimeler: ['tv', 'televizyon', 'android tv', 'google tv', 'eşleştir', 'qr', 'kare kod', 'büyük ekran'],
-    sayfa: 'TelevizyonAyarlari',
-    grup: 'Ekran ve cihazlar',
-  },
-  {
-    id: 'sayfa-yedekleme',
-    baslik: 'Yedek ve eşitleme',
-    anahtarKelimeler: ['yedek', 'dışa aktar', 'içe aktar', 'yedekleme', 'eşitleme'],
-    sayfa: 'YedeklemeAktarim',
-    grup: 'Hesap',
-  },
-  {
-    id: 'sayfa-yardim',
-    baslik: 'Yardım',
-    anahtarKelimeler: ['yardım', 'kurulum', 'sihirbaz', 'yeniden başlat'],
-    sayfa: 'Yardim',
-    grup: 'Hesap',
-  },
-  {
-    id: 'sayfa-tani',
-    baslik: 'Sorun bildirin',
-    anahtarKelimeler: ['tanı', 'sorun bildir', 'geri bildirim', 'hata'],
-    sayfa: 'TaniGeriBildirim',
-    grup: 'Yardım',
-  },
-  {
-    id: 'sayfa-nelerYeni',
-    baslik: 'Neler yeni',
-    anahtarKelimeler: ['yeni özellik', 'güncelleme', 'neler yeni'],
-    sayfa: 'NelerYeni',
-    grup: 'Yardım',
-  },
-  {
-    id: 'sayfa-hakkinda',
-    baslik: 'Hakkında',
-    anahtarKelimeler: ['hakkında', 'sürüm', 'versiyon', 'iletişim'],
-    sayfa: 'Hakkinda',
-    grup: 'Yardım',
-  },
+  { id: 'sayfa-hatirlatmalar', sayfa: 'Hatirlatmalar', grup: 'namaz' },
+  { id: 'sayfa-muhafiz', sayfa: 'MuhafizAyarlari', grup: 'hatirlatmalar' },
+  { id: 'sayfa-namazda-sessiz', sayfa: 'CamideyimAyarlari', grup: 'namaz' },
+  { id: 'sayfa-namaz-vakitleri', sayfa: 'NamazVakitleriAyarlari', grup: 'namaz' },
+  { id: 'sayfa-konum', sayfa: 'KonumAyarlari', grup: 'namazVakitleri' },
+  { id: 'sayfa-takvim', sayfa: 'TakvimAyarlari', grup: 'namazVakitleri' },
+  { id: 'sayfa-hesap-yontemi', sayfa: 'HesapYontemiAyarlari', grup: 'namazVakitleri' },
+  { id: 'sayfa-seferilik', sayfa: 'SeferilikAyarlari', grup: 'namazVakitleri' },
+  { id: 'sayfa-seri', sayfa: 'SeriHedefAyarlari', grup: 'namaz' },
+  { id: 'sayfa-ramazan', sayfa: 'RamazanAyarlari', grup: 'hatirlatmalar' },
+  { id: 'sayfa-nafile', sayfa: 'NafileAyarlari', grup: 'hatirlatmalar' },
+  { id: 'sayfa-gorunum', sayfa: 'GorünumAyarlari', grup: 'ekranCihazlar' }, // dil-haric: kimlik (rota adı)
+  { id: 'sayfa-saat-widget', sayfa: 'SaatVeWidgetAyarlari', grup: 'ekranCihazlar' },
+  { id: 'sayfa-cihazlarim', sayfa: 'Cihazlarim', grup: 'ekranCihazlar' },
+  { id: 'sayfa-cihaz-ekle', sayfa: 'CihazEkle', grup: 'ekranCihazlar' },
+  { id: 'sayfa-televizyon', sayfa: 'TelevizyonAyarlari', grup: 'ekranCihazlar' },
+  { id: 'sayfa-yedekleme', sayfa: 'YedeklemeAktarim', grup: 'hesap' },
+  { id: 'sayfa-yardim', sayfa: 'Yardim', grup: 'hesap' },
+  { id: 'sayfa-tani', sayfa: 'TaniGeriBildirim', grup: 'yardim' },
+  { id: 'sayfa-nelerYeni', sayfa: 'NelerYeni', grup: 'yardim' },
+  { id: 'sayfa-hakkinda', sayfa: 'Hakkinda', grup: 'yardim' },
 
   // ── Alt-ayar çapaları — çapa→sayfa eşleşmesi kaynak koddan doğrulandı ──────
-  {
-    id: 'konumModu',
-    baslik: 'Konum modu',
-    anahtarKelimeler: ['otomatik', 'manuel', 'konum modu', 'gps'],
-    sayfa: 'KonumAyarlari',
-    grup: 'Konum',
-    capa: 'konumModu',
-  },
-  {
-    id: 'akilliTakip',
-    baslik: 'Akıllı takip',
-    anahtarKelimeler: ['akıllı takip', 'otomatik konum', 'arka plan konum'],
-    sayfa: 'KonumAyarlari',
-    grup: 'Konum',
-    capa: 'akilliTakip',
-  },
-  {
-    id: 'tema',
-    baslik: 'Tema',
-    anahtarKelimeler: ['tema', 'açık tema', 'koyu tema', 'karanlık mod'],
-    sayfa: 'GorünumAyarlari',
-    grup: 'Görünüm',
-    capa: 'tema',
-  },
-  {
-    id: 'palet',
-    baslik: 'Renk paleti',
-    anahtarKelimeler: ['renk', 'palet', 'renk paleti'],
-    sayfa: 'GorünumAyarlari',
-    grup: 'Görünüm',
-    capa: 'palet',
-  },
-  {
-    id: 'sadeGorunum',
-    baslik: 'Sade görünüm',
-    anahtarKelimeler: ['sade', 'sade görünüm', 'büyük yazı', 'yaşlı', 'basit', 'kolay görünüm', 'sesli okuma'],
-    sayfa: 'GorünumAyarlari',
-    grup: 'Görünüm',
-    capa: 'sadeGorunum',
-  },
-  {
-    id: 'vakitBildirimleri',
-    baslik: 'Vakit girince',
-    anahtarKelimeler: ['ezan', 'vakit bildirimi', 'namaz vakti', 'vakit girdi'],
-    sayfa: 'VakitGirinceAyarlari',
-    grup: 'Hatırlatmalar',
-    capa: 'vakitBildirimleri',
-  },
-  {
-    id: 'cumaHatirlatmasi',
-    baslik: 'Cuma namazı',
-    anahtarKelimeler: ['cuma', 'cuma namazı', 'hutbe'],
-    sayfa: 'CumaHatirlatmaAyarlari',
-    grup: 'Hatırlatmalar',
-    capa: 'cumaHatirlatmasi',
-  },
-  {
-    id: 'yatisHatirlatmasi',
-    baslik: 'Yatmadan önce',
-    anahtarKelimeler: ['yatış', 'uyku', 'yatsı', 'gün sonu muhasebesi', 'kaza'],
-    sayfa: 'YatisHatirlatmaAyarlari',
-    grup: 'Hatırlatmalar',
-    capa: 'yatisHatirlatmasi',
-  },
-  {
-    id: 'camiyeGitHatirlatmasi',
-    baslik: 'Camiye gitme vakti',
-    anahtarKelimeler: ['cami', 'camiye git', 'yürüme', 'cemaat', 'ezandan önce', 'camide kılacağım'],
-    sayfa: 'CamiyeGitAyarlari',
-    grup: 'Hatırlatmalar',
-    capa: 'camiyeGitHatirlatmasi',
-  },
-  {
-    id: 'takvimCakismaUyarisi',
-    baslik: 'Toplantı çakışırsa',
-    anahtarKelimeler: ['takvim', 'toplantı', 'etkinlik', 'çakışma', 'ajanda'],
-    sayfa: 'TakvimCakismaAyarlari',
-    grup: 'Hatırlatmalar',
-    capa: 'takvimCakismaUyarisi',
-  },
-  {
-    id: 'vakitSayaci',
-    baslik: 'Vakit sayacı',
-    anahtarKelimeler: ['sayaç', 'geri sayım', 'vakit çıkıyor'],
-    sayfa: 'SaatVeWidgetAyarlari',
-    grup: 'Saat ve widget',
-    capa: 'vakitSayaci',
-  },
-  {
-    // DİKKAT: ad "seri"yi çağrıştırır ama kontrol Hatırlatmalar'dadır (Dalga 3).
-    id: 'gunSonuBildirimi',
-    baslik: 'Günü tamamlamadıysam',
-    anahtarKelimeler: ['gün sonu', 'imsak öncesi', 'seri hatırlatma'],
-    sayfa: 'GunSonuAyarlari',
-    grup: 'Hatırlatmalar',
-    capa: 'gunSonuBildirimi',
-  },
-  {
-    id: 'tamGunEsigi',
-    baslik: 'Tam gün eşiği',
-    anahtarKelimeler: ['tam gün', 'eşik', 'kaç namaz'],
-    sayfa: 'SeriHedefAyarlari',
-    grup: 'Seri hedefi',
-    capa: 'tamGunEsigi',
-  },
-  {
-    id: 'ozelGunModu',
-    baslik: 'Özel gün',
-    anahtarKelimeler: ['mazeret', 'özel gün', 'seri dondurma', 'hayız', 'hatırlatmaları durdur'],
-    sayfa: 'OzelGunAyarlari',
-    grup: 'Hatırlatmalar',
-    capa: 'ozelGunModu',
-  },
-  {
-    id: 'iftarSayaci',
-    baslik: 'İftar sayacı',
-    anahtarKelimeler: ['iftar', 'iftar sayacı', 'oruç açma'],
-    sayfa: 'RamazanAyarlari',
-    grup: 'Ramazan',
-    capa: 'iftarSayaci',
-  },
-  {
-    id: 'sahurSayaci',
-    baslik: 'Sahur sayacı',
-    anahtarKelimeler: ['sahur', 'sahur sayacı', 'imsak'],
-    sayfa: 'RamazanAyarlari',
-    grup: 'Ramazan',
-    capa: 'sahurSayaci',
-  },
-  {
-    id: 'takvimSenkron',
-    baslik: 'Takvim senkronizasyonu',
-    anahtarKelimeler: ['takvim', 'senkronizasyon', 'etkinlik oluştur'],
-    sayfa: 'TakvimAyarlari',
-    grup: 'Namaz vakitleri',
-    capa: 'takvimSenkron',
-  },
-  {
-    id: 'muhafizAnaSwitch',
-    baslik: 'Vakit çıkmadan hatırlatma',
-    anahtarKelimeler: ['muhafız', 'aç kapat', 'vakit çıkmadan'],
-    sayfa: 'Hatirlatmalar',
-    grup: 'Hatırlatmalar',
-    capa: 'muhafizAnaSwitch',
-  },
-  {
-    id: 'muhafizYogunluk',
-    baslik: 'Hatırlatma düzeyi',
-    anahtarKelimeler: ['hafif', 'normal', 'yoğun', 'sıklık', 'ısrarcı', 'düzey', 'yoğunluk'],
-    sayfa: 'Hatirlatmalar',
-    grup: 'Hatırlatmalar',
-    capa: 'muhafizYogunluk',
-  },
-  {
-    id: 'disaAktar',
-    baslik: 'Dışa aktar',
-    anahtarKelimeler: ['yedek al', 'dışa aktar', 'paylaş'],
-    sayfa: 'YedeklemeAktarim',
-    grup: 'Yedek ve eşitleme',
-    capa: 'disaAktar',
-  },
-  {
-    id: 'iceAktar',
-    baslik: 'İçe aktar',
-    anahtarKelimeler: ['geri yükle', 'içe aktar', 'yedeği yükle'],
-    sayfa: 'YedeklemeAktarim',
-    grup: 'Yedek ve eşitleme',
-    capa: 'iceAktar',
-  },
+  { id: 'konumModu', sayfa: 'KonumAyarlari', grup: 'konum', capa: 'konumModu' },
+  { id: 'akilliTakip', sayfa: 'KonumAyarlari', grup: 'konum', capa: 'akilliTakip' },
+  { id: 'tema', sayfa: 'GorünumAyarlari', grup: 'gorunum', capa: 'tema' }, // dil-haric: kimlik (rota adı)
+  { id: 'palet', sayfa: 'GorünumAyarlari', grup: 'gorunum', capa: 'palet' }, // dil-haric: kimlik (rota adı)
+  { id: 'sadeGorunum', sayfa: 'GorünumAyarlari', grup: 'gorunum', capa: 'sadeGorunum' }, // dil-haric: kimlik (rota adı)
+  { id: 'vakitBildirimleri', sayfa: 'VakitGirinceAyarlari', grup: 'hatirlatmalar', capa: 'vakitBildirimleri' },
+  { id: 'cumaHatirlatmasi', sayfa: 'CumaHatirlatmaAyarlari', grup: 'hatirlatmalar', capa: 'cumaHatirlatmasi' },
+  { id: 'yatisHatirlatmasi', sayfa: 'YatisHatirlatmaAyarlari', grup: 'hatirlatmalar', capa: 'yatisHatirlatmasi' },
+  { id: 'camiyeGitHatirlatmasi', sayfa: 'CamiyeGitAyarlari', grup: 'hatirlatmalar', capa: 'camiyeGitHatirlatmasi' },
+  { id: 'takvimCakismaUyarisi', sayfa: 'TakvimCakismaAyarlari', grup: 'hatirlatmalar', capa: 'takvimCakismaUyarisi' },
+  { id: 'vakitSayaci', sayfa: 'SaatVeWidgetAyarlari', grup: 'saatWidget', capa: 'vakitSayaci' },
+  // DİKKAT: ad "seri"yi çağrıştırır ama kontrol Hatırlatmalar'dadır (Dalga 3).
+  { id: 'gunSonuBildirimi', sayfa: 'GunSonuAyarlari', grup: 'hatirlatmalar', capa: 'gunSonuBildirimi' },
+  { id: 'tamGunEsigi', sayfa: 'SeriHedefAyarlari', grup: 'seriHedefi', capa: 'tamGunEsigi' },
+  { id: 'ozelGunModu', sayfa: 'OzelGunAyarlari', grup: 'hatirlatmalar', capa: 'ozelGunModu' },
+  { id: 'iftarSayaci', sayfa: 'RamazanAyarlari', grup: 'ramazan', capa: 'iftarSayaci' },
+  { id: 'sahurSayaci', sayfa: 'RamazanAyarlari', grup: 'ramazan', capa: 'sahurSayaci' },
+  { id: 'takvimSenkron', sayfa: 'TakvimAyarlari', grup: 'namazVakitleri', capa: 'takvimSenkron' },
+  { id: 'muhafizAnaSwitch', sayfa: 'Hatirlatmalar', grup: 'hatirlatmalar', capa: 'muhafizAnaSwitch' },
+  { id: 'muhafizYogunluk', sayfa: 'Hatirlatmalar', grup: 'hatirlatmalar', capa: 'muhafizYogunluk' },
+  { id: 'disaAktar', sayfa: 'YedeklemeAktarim', grup: 'yedek', capa: 'disaAktar' },
+  { id: 'iceAktar', sayfa: 'YedeklemeAktarim', grup: 'yedek', capa: 'iceAktar' },
 ];
+
+export const AYAR_INDEKSI: AyarIndeksKaydi[] = TANIMLAR.map(kayit);

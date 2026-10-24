@@ -2,14 +2,15 @@
  * Kaza Defteri özelliği için tip tanımları
  */
 
-export type KazaNamazAdi = 'Sabah' | 'Öğle' | 'İkindi' | 'Akşam' | 'Yatsı' | 'Vitir';
+/** Kaza namazı KİMLİĞİ (depolama/karşılaştırma anahtarı). Görünen ad: `KAZA_ADLARI`. */
+export type KazaNamazAdi = 'Sabah' | 'Öğle' | 'İkindi' | 'Akşam' | 'Yatsı' | 'Vitir'; // dil-haric: kimlik
 
 export const KAZA_NAMAZ_LISTESI: KazaNamazAdi[] = [
   'Sabah',
-  'Öğle',
-  'İkindi',
-  'Akşam',
-  'Yatsı',
+  'Öğle', // dil-haric: kimlik
+  'İkindi', // dil-haric: kimlik
+  'Akşam', // dil-haric: kimlik
+  'Yatsı', // dil-haric: kimlik
   'Vitir',
 ];
 

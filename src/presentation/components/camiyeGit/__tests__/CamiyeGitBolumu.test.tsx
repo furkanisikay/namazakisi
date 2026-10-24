@@ -5,7 +5,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import camiyeGitReducer from '../../../store/camiyeGitSlice';
 import rizaReducer from '../../../store/hatirlatmaRizaSlice';
 import {
@@ -71,7 +71,7 @@ jest.mock('../../../../domain/services/CamiyeGitHatirlatmaServisi', () => ({
     CamiyeGitHatirlatmaServisi: { getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockPlanla(...a) }) },
 }));
 
-import { CamiyeGitBolumu, CAMIYE_GIT_YON_GEREKCESI } from '../CamiyeGitBolumu';
+import { CamiyeGitBolumu, camiyeGitYonGerekcesi } from '../CamiyeGitBolumu';
 
 // `require` ŞART: moduleNameMapper mock'una `jest.requireMock` ayrı örnek döndürür (AGENTS.md).
 const kopru = require('../../../../../modules/expo-cami-geofence/src') as {
@@ -181,7 +181,7 @@ describe('CamiyeGitBolumu', () => {
         mockDisk = camiyeGitAyarlariniNormalize({ aktif: true, yurumeDk: 12, hazirlikDk: 5 });
         const ekran = kur();
         expect(await ekran.findByTestId('yon-sabit-gerekcesi')).toBeTruthy();
-        expect(ekran.getByText(CAMIYE_GIT_YON_GEREKCESI)).toBeTruthy();
+        expect(ekran.getByText(camiyeGitYonGerekcesi())).toBeTruthy();
         expect(ekran.getByText('Yola çıkış: 17 dk (yürüme 12 + hazırlık 5)')).toBeTruthy();
         fireEvent.press(ekran.getByLabelText('Camiye gitme vakti akışını önizleyin'));
         expect(ekran.getByText('Camiye gitme vakti akışı')).toBeTruthy();
@@ -236,5 +236,22 @@ describe('CamiyeGitBolumu', () => {
         expect(mockNavigate).toHaveBeenCalledWith('MuhafizAyarlari');
         ekran.unmount();
         expect(mockDisk.aktif).toBe(false);
+    });
+});
+
+describe('CamiyeGitBolumu — İngilizce', () => {
+    const YASAKLI = ['Camiye', 'camiye', 'Ezan', 'dk\\b', 'kala', 'Vakit', 'vakit', 'Kapat', 'Bildirim', 'Tekrar', 'Sabah', 'Cuma'];
+    it('açık bölüm: vakit çipleri, süreler, ortak kart ve notlar İngilizce', async () => {
+        const { ingilizceyeGec, turkceKalanlar } = require('../../../../__tests__/yardimci/ingilizceDenetimi') as typeof import('../../../../__tests__/yardimci/ingilizceDenetimi');
+        const geri = ingilizceyeGec();
+        try {
+            mockDisk = camiyeGitAyarlariniNormalize({ aktif: true, yurumeDk: 12, hazirlikDk: 5 });
+            const e = kur(true);
+            await e.findByLabelText('Asr prayer');
+            expect(turkceKalanlar(e.toJSON() as never, YASAKLI)).toEqual([]);
+            expect(e.getByText('Which prayers do you go to the mosque for?')).toBeTruthy();
+        } finally {
+            act(() => geri());
+        }
     });
 });

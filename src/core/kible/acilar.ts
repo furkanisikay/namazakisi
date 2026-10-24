@@ -6,6 +6,7 @@
  * sin/cos bileşenlerini yumuşatır (ham açıyı ortalamak 350° ile 10°'yi 180° yapardı).
  * Wear `cekirdek/KibleKarari.kt` ile aynı dil ve aynı eşikler.
  */
+import { bicim, metin, sayiYaz } from '../dil/aktifDil';
 
 /** Açıyı [0, 360) aralığına indirger. Sonlu olmayan değer 0 olur. */
 export function aciNormalize(aci: number): number {
@@ -119,12 +120,11 @@ export function kabeyeMesafeKm(lat: number, lng: number): number | null {
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(a)));
 }
 
-/** "2.184 km" — Türkçe binlik ayıracıyla, sabit tablo (Intl'e bağımlı değil). */
+/** "2.184 km" — etkin dilin binlik ayıracıyla (`sayiYaz`; Intl'e bağımlı değil). */
 export function mesafeMetni(km: number | null): string | null {
   if (km === null || !Number.isFinite(km) || km < 0) return null;
   if (km < 1) return `${Math.round(km * 1000)} m`;
-  const yuvarlak = Math.round(km);
-  return `${String(yuvarlak).replace(/\B(?=(\d{3})+(?!\d))/g, '.')} km`;
+  return `${sayiYaz(Math.round(km))} km`;
 }
 
 /**
@@ -132,8 +132,9 @@ export function mesafeMetni(km: number | null): string | null {
  * Kibar "siz" dili (arayüz metni; ibadete çağrı değil).
  */
 export function yonCumlesi(fark: number, hizali: boolean): string {
-  if (hizali) return 'Kıble yönündesiniz';
+  const m = metin().kible.yon;
+  if (hizali) return m.hizali;
   const derece = Math.round(Math.abs(fark));
-  if (derece >= 170) return 'Kıble arkanızda, geri dönün';
-  return fark > 0 ? `Kıble ${derece}° sağınızda` : `Kıble ${derece}° solunuzda`;
+  if (derece >= 170) return m.arkada;
+  return bicim(fark > 0 ? m.sagda : m.solda, { derece });
 }

@@ -24,6 +24,8 @@ import {
 import { gunVakitleriniHesapla } from '../../../core/nafile/gunVakitleri';
 import type { GunVakitleri } from '../../../core/nafile/nafileVakitleri';
 import { useHesapSurumu } from '../../hooks/useHesapSurumu';
+import { useMetin } from '../../hooks/useMetin';
+import { bicim } from '../../../core/dil/aktifDil';
 import { bugunuAl, tarihiGorunumFormatinaCevir } from '../../../core/utils/TarihYardimcisi';
 
 const K = KOYU_TEMA.renkler;
@@ -40,6 +42,7 @@ interface Props {
 export const EvEkraniPanosu: React.FC<Props> = ({ lat, lng, konumMetni, onKapat }) => {
     useKeepAwake();
     const renkler = useRenkler();
+    const m = useMetin().genel.evEkrani;
     const [simdi, setSimdi] = React.useState(() => Date.now());
 
     // Saniye sınırına hizalı tik: yalnız bu pano çizilir (uygulamanın geri kalanı ona bağlı değil).
@@ -86,8 +89,8 @@ export const EvEkraniPanosu: React.FC<Props> = ({ lat, lng, konumMetni, onKapat 
                         <Text style={[stil.saat, { color: K.metin }]}>{`${iki(saat.getHours())}:${iki(saat.getMinutes())}`}</Text>
                         <Text style={[stil.saniye, { color: K.metinIkincil }]}>{iki(saat.getSeconds())}</Text>
                     </View>
-                    <View accessible accessibilityLabel={`${PANO_ADLARI[durum.siradaki]} vaktine ${kalanSureSesli(geriSayimMetni(durum.kalanMs))} kaldı`}>
-                        <Text style={[stil.kalanEtiket, { color: K.metinIkincil }]}>{`${PANO_ADLARI[durum.siradaki]} vaktine kalan`}</Text>
+                    <View accessible accessibilityLabel={bicim(m.kalanErisim, { vakit: PANO_ADLARI[durum.siradaki], sure: kalanSureSesli(geriSayimMetni(durum.kalanMs)) })}>
+                        <Text style={[stil.kalanEtiket, { color: K.metinIkincil }]}>{bicim(m.kalan, { vakit: PANO_ADLARI[durum.siradaki] })}</Text>
                         <BirimliSure
                             sure={geriSayimMetni(durum.kalanMs)}
                             rakamBoyu={72}
@@ -98,11 +101,11 @@ export const EvEkraniPanosu: React.FC<Props> = ({ lat, lng, konumMetni, onKapat 
                     <Pressable
                         onPress={onKapat}
                         accessibilityRole="button"
-                        accessibilityLabel="Uygulamaya dönün"
+                        accessibilityLabel={m.uygulamayaDonun}
                         style={[stil.cikis, { borderColor: K.sinir }]}
                     >
                         <FontAwesome5 name="th-large" size={16} color={K.metinIkincil} />
-                        <Text style={[stil.cikisMetni, { color: K.metinIkincil }]}>Uygulamaya dönün</Text>
+                        <Text style={[stil.cikisMetni, { color: K.metinIkincil }]}>{m.uygulamayaDonun}</Text>
                     </Pressable>
                 </View>
                 <View style={stil.sag}>
@@ -113,7 +116,7 @@ export const EvEkraniPanosu: React.FC<Props> = ({ lat, lng, konumMetni, onKapat 
                             <View
                                 key={ad}
                                 accessible
-                                accessibilityLabel={`${PANO_ADLARI[ad]} ${saatMetni(durum.vakitler[ad])}${aktif ? ', şu anki vakit' : ''}${siradaki ? ', sıradaki vakit' : ''}`}
+                                accessibilityLabel={`${PANO_ADLARI[ad]} ${saatMetni(durum.vakitler[ad])}${aktif ? m.suAnkiEk : ''}${siradaki ? m.siradakiEk : ''}`}
                                 style={[
                                     stil.satir,
                                     { backgroundColor: aktif ? renkler.birincilKoyu : K.kartArkaplan },

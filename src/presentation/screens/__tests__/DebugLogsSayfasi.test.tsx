@@ -2,6 +2,7 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { useRenkler } from '../../../core/theme';
 import { Logger } from '../../../core/utils/Logger';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 // Mocklar
 jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
@@ -147,5 +148,25 @@ describe('DebugLogsSayfasi — onay/bildirim modalı', () => {
     await waitFor(() => {
       expect(getByText('Ayar kaydedilemedi')).toBeTruthy();
     });
+  });
+});
+
+describe('DebugLogsSayfasi — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+    (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
+    (Logger.getLogs as jest.Mock).mockReturnValue([{ timestamp: Date.now(), level: 'INFO', tag: 'Test', message: 'hello' }]);
+    (Logger.isEnabled as jest.Mock).mockReturnValue(true);
+  });
+  afterEach(() => geriAl());
+
+  it('sayfa ve temizleme onayı İngilizce', async () => {
+    const { DebugLogsSayfasi } = require('../DebugLogsSayfasi');
+    const e = render(<DebugLogsSayfasi />);
+    await waitFor(() => expect(e.getByText('Debug mode')).toBeTruthy());
+    fireEvent.press(e.getByText('Clear'));
+    await waitFor(() => expect(e.getByText('All logs will be deleted. Are you sure?')).toBeTruthy());
+    expect(turkceKalanlar(e.toJSON() as never, ['Temizle', 'Yenile', 'Modu', 'log bulundu', 'Kapat'])).toEqual([]);
   });
 });

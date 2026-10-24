@@ -20,6 +20,8 @@ import {
   KalibrasyonNedeni,
   sonsuzlukYolu,
 } from '../../../core/kible/kalibrasyon';
+import { metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import type { KibleKaresi } from '../../hooks/useKible';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
@@ -63,6 +65,7 @@ export const KalibrasyonRehberi: React.FC<{
   hareketAzalt: boolean;
 }> = ({ neden, abone, hareketAzalt }) => {
   const renkler = useRenkler();
+  const m = useMetin().kible.kalibrasyon;
   const [evre, setEvre] = useState<Evre>('gizli');
   const sonNeden = useRef<KalibrasyonNedeni | null>(null);
   if (neden) sonNeden.current = neden;
@@ -76,7 +79,7 @@ export const KalibrasyonRehberi: React.FC<{
       return () => clearTimeout(t);
     }
     if (evre === 'tesekkur') {
-      AccessibilityInfo.announceForAccessibility?.('Teşekkürler, yön artık daha doğru');
+      AccessibilityInfo.announceForAccessibility?.(metin().kible.kalibrasyon.tesekkurErisim);
       const t = setTimeout(() => {
         oturum.bitti = true;
         setEvre('gizli');
@@ -148,13 +151,13 @@ export const KalibrasyonRehberi: React.FC<{
       <View
         testID="kalibrasyon-tesekkur"
         accessible
-        accessibilityLabel="Teşekkürler, yön artık daha doğru"
+        accessibilityLabel={m.tesekkurErisim}
         style={[styles.kart, styles.tesekkur, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}
       >
         <View style={[styles.cip, { backgroundColor: renkler.durum.basarili + '20' }]}>
           <FontAwesome5 name="check" size={16} color={renkler.durum.basarili} />
         </View>
-        <Text style={[styles.tesekkurMetni, { color: renkler.metin }]}>Teşekkürler, yön artık daha doğru ✓</Text>
+        <Text style={[styles.tesekkurMetni, { color: renkler.metin }]}>{m.tesekkur}</Text>
       </View>
     );
   }
@@ -168,9 +171,9 @@ export const KalibrasyonRehberi: React.FC<{
       <View
         accessible
         accessibilityRole="alert"
-        accessibilityLabel={`Pusulayı kalibre edin. Telefonunuzu havada 8 çizer gibi sallayın.${alan ? ' Metal eşyalardan ve mıknatıslı kılıftan uzaklaşın.' : ''}`}
+        accessibilityLabel={[m.baslik + '.', m.sallayin, alan ? m.metal : null].filter(Boolean).join(' ')}
       >
-        <Text style={[styles.baslik, { color: renkler.metin }]}>Pusulayı kalibre edin</Text>
+        <Text style={[styles.baslik, { color: renkler.metin }]}>{m.baslik}</Text>
 
         <View style={styles.cizim} importantForAccessibility="no-hide-descendants">
           <Svg width={CIZIM_G} height={CIZIM_Y}>
@@ -200,19 +203,19 @@ export const KalibrasyonRehberi: React.FC<{
           </Animated.View>
         </View>
 
-        <Text style={[styles.metin, { color: renkler.metin }]}>Telefonunuzu havada 8 çizer gibi sallayın.</Text>
+        <Text style={[styles.metin, { color: renkler.metin }]}>{m.sallayin}</Text>
         {alan && (
           <View testID="kalibrasyon-metal-ipucu" style={styles.ipucu}>
             <View style={[styles.cipKucuk, { backgroundColor: renkler.durum.uyari + '20' }]}>
               <FontAwesome5 name="magnet" size={12} color={renkler.metin} />
             </View>
-            <Text style={[styles.ipucuMetni, { color: renkler.metinIkincil }]}>Metal eşyalardan ve mıknatıslı kılıftan uzaklaşın.</Text>
+            <Text style={[styles.ipucuMetni, { color: renkler.metinIkincil }]}>{m.metal}</Text>
           </View>
         )}
       </View>
 
       <View style={styles.dogruluk} importantForAccessibility="no-hide-descendants">
-        <Text style={[styles.dogrulukEtiket, { color: renkler.metinIkincil }]}>Doğruluk</Text>
+        <Text style={[styles.dogrulukEtiket, { color: renkler.metinIkincil }]}>{m.dogruluk}</Text>
         <View style={[styles.cubukIz, { backgroundColor: renkler.sinir }]}>
           <Animated.View testID="kalibrasyon-dogruluk-cubugu" style={[styles.cubuk, cubukStili]} />
         </View>
@@ -224,10 +227,10 @@ export const KalibrasyonRehberi: React.FC<{
           setEvre('gizli');
         }}
         accessibilityRole="button"
-        accessibilityLabel="Şimdi değil"
+        accessibilityLabel={m.simdiDegil}
         style={[styles.ikincil, { backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }]}
       >
-        <Text style={[styles.ikincilMetin, { color: renkler.metin }]}>Şimdi değil</Text>
+        <Text style={[styles.ikincilMetin, { color: renkler.metin }]}>{m.simdiDegil}</Text>
       </TouchableOpacity>
     </View>
   );

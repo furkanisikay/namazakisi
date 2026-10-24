@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import type { YeniOzellik } from '../../core/constants/YeniOzellikler';
+import { useMetin } from '../hooks/useMetin';
 
 interface YeniOzellikKartiProps {
     ozellik: YeniOzellik;
@@ -18,6 +19,7 @@ interface YeniOzellikKartiProps {
  */
 export const YeniOzellikKarti: React.FC<YeniOzellikKartiProps> = ({ ozellik, onAc, onKapat }) => {
     const renkler = useRenkler();
+    const m = useMetin().genel.yeniOzellik;
     const opacity = useRef(new Animated.Value(0)).current;
     const translateY = useRef(new Animated.Value(-12)).current;
 
@@ -51,11 +53,11 @@ export const YeniOzellikKarti: React.FC<YeniOzellikKartiProps> = ({ ozellik, onA
                         style={{ backgroundColor: renkler.birincil }}
                     >
                         <Text style={{ color: renkler.birincilMetin, fontSize: 10, fontWeight: '700', letterSpacing: 0.3 }}>
-                            YENİ
+                            {m.rozet}
                         </Text>
                     </View>
                     <Text className="text-xs font-semibold" style={{ color: renkler.birincil }}>
-                        Uygulamaya eklendi
+                        {m.eklendi}
                     </Text>
                     <TouchableOpacity
                         onPress={onKapat}
@@ -91,7 +93,7 @@ export const YeniOzellikKarti: React.FC<YeniOzellikKartiProps> = ({ ozellik, onA
                 >
                     <FontAwesome5 name="arrow-right" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                     <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
-                        {ozellik.ctaEtiketi ?? 'İncele'}
+                        {ozellik.ctaEtiketi ?? m.incele}
                     </Text>
                 </TouchableOpacity>
             </View>

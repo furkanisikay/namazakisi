@@ -10,6 +10,8 @@ import { HARF_HALKA_R, KABE_HALKA_R, KadranCizimi } from './KadranCizimi';
 import { KabeSimgesi } from './KabeSimgesi';
 import { HizaHalkasi } from './HizaHalkasi';
 import { KADRAN_AZAMI_YATIS, KADRAN_ORANI, KADRAN_PERSPEKTIF } from './sabitler';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 /**
  * Kamerasız 3B pusula.
@@ -42,6 +44,9 @@ export const PusulaGorunumu: React.FC<{
   kalibrasyonAcik?: boolean;
 }> = ({ kibleAcisi, konum, ozet, abone, pusulaDogrulugu, hareketAzalt, onKameraya, statik = false, yerAdi = null, kalibrasyonAcik = false }) => {
   const renkler = useRenkler();
+  const metinler = useMetin().kible;
+  const m = metinler.pusula;
+  const yonHarfleri = yonHarfleriOlustur(metinler.harf);
   const { width, height } = useWindowDimensions();
   // Kadran ekranın görsel merkezini doldurur: üst/alt metinler sabit yükseklikte, gerisi kadran.
   // Yatay pencerede (tablet, açık Fold) yükseklik başlık + mod seçici + sekme çubuğunu da
@@ -109,12 +114,12 @@ export const PusulaGorunumu: React.FC<{
   const mesafe = konum ? mesafeMetni(kabeyeMesafeKm(konum.lat, konum.lng)) : null;
   const cumle = statik
     ? kibleAcisi === null
-      ? 'Konumunuz alınıyor…'
-      : `Kıble kuzeyden ${Math.round(kibleAcisi)}°`
+      ? m.konumAliniyor
+      : bicim(m.kuzeydenAci, { derece: Math.round(kibleAcisi) })
     : !ozet.hazir
-    ? 'Pusula hazırlanıyor…'
+    ? m.hazirlaniyor
     : kibleAcisi === null || ozet.fark === null
-      ? 'Konumunuz alınıyor…'
+      ? m.konumAliniyor
       : yonCumlesi(ozet.fark, ozet.hizali);
 
   return (
@@ -135,11 +140,13 @@ export const PusulaGorunumu: React.FC<{
         )}
         {statik && kibleAcisi !== null ? (
           <Text style={[styles.alt, { color: renkler.metinIkincil }]}>
-            {[yerAdi, mesafe ? `Kâbe ${mesafe} uzakta` : null].filter(Boolean).join(', ') || 'Kuzeyden saat yönünde'}
+            {[yerAdi, mesafe ? bicim(m.kabeUzakta, { mesafe }) : null].filter(Boolean).join(', ') || m.kuzeydenSaatYonu}
           </Text>
         ) : kibleAcisi !== null && (
           <Text style={[styles.alt, { color: renkler.metinIkincil }]}>
-            {mesafe ? `Kâbe ${mesafe} uzakta, ` : ''}kuzeyden {Math.round(kibleAcisi)}°
+            {mesafe
+              ? bicim(m.kabeUzaktaKuzeyden, { mesafe, derece: Math.round(kibleAcisi) })
+              : bicim(m.kuzeyden, { derece: Math.round(kibleAcisi) })}
           </Text>
         )}
       </View>
@@ -147,7 +154,7 @@ export const PusulaGorunumu: React.FC<{
       <View
         style={[styles.sahne, { width: S, height: S + UST, marginTop: statik ? 28 : 12 }]}
         accessible
-        accessibilityLabel={`Kıble pusulası. ${cumle}`}
+        accessibilityLabel={bicim(m.pusulaErisim, { cumle })}
       >
         <Animated.View pointerEvents="none" style={[styles.ufuk, { top: UST / 2, borderColor: renkler.sinir }, ufukStili]}>
           <Text style={[styles.ufukMetni, { color: renkler.metinIkincil }]}>ufuk</Text>
@@ -174,9 +181,9 @@ export const PusulaGorunumu: React.FC<{
           />
         </Animated.View>
 
-        {YON_HARFLERI.map(([harf, aci]) => (
+        {yonHarfleri.map(([harf, aci]) => (
           <YonHarfi
-            key={harf}
+            key={aci}
             harf={harf}
             aci={aci}
             yaricap={(S * HARF_HALKA_R) / 200}
@@ -216,7 +223,7 @@ export const PusulaGorunumu: React.FC<{
         <View style={styles.statikBilgi}>
           <FontAwesome5 name="info-circle" size={13} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
           <Text testID="kible-statik-bilgi" style={[styles.bilgiSatiri, { color: renkler.metinIkincil }]}>
-            Bu cihazda pusula yok; kuzeye göre yönü gösteriyoruz.
+            {m.pusulaYok}
           </Text>
         </View>
       )}
@@ -225,29 +232,30 @@ export const PusulaGorunumu: React.FC<{
           ipucu yan yana gösterilmez. Bilinmiyorken yalnız sakin bir bilgi satırı. */}
       {!statik && !kalibrasyonAcik && ipucu === 'sonuk' && (
         <Text style={[styles.bilgi, { color: renkler.metinIkincil }]}>
-          Yön kayıyorsa telefonunuzu havada 8 çizer gibi hareket ettirin.
+          {m.kayiyorsa}
         </Text>
       )}
       {!statik && ozet.dik && onKameraya && (
         <TouchableOpacity
           onPress={onKameraya}
           accessibilityRole="button"
-          accessibilityLabel="Kamerayla görün"
+          accessibilityLabel={m.kamerayla}
           style={[styles.cip, { borderColor: renkler.sinir, backgroundColor: renkler.kartArkaplan }]}
         >
           <FontAwesome5 name="camera" size={13} color={renkler.birincil} style={{ marginRight: 8 }} />
-          <Text style={[styles.cipMetni, { color: renkler.metin }]}>Kamerayla görün</Text>
+          <Text style={[styles.cipMetni, { color: renkler.metin }]}>{m.kamerayla}</Text>
         </TouchableOpacity>
       )}
     </View>
   );
 };
 
-const YON_HARFLERI: Array<[string, number]> = [
-  ['K', 0],
-  ['D', 90],
-  ['G', 180],
-  ['B', 270],
+/** Kadrandaki yön harfleri (dile göre: K/D/G/B, N/E/S/W). */
+const yonHarfleriOlustur = (h: { kuzey: string; dogu: string; guney: string; bati: string }): Array<[string, number]> => [
+  [h.kuzey, 0],
+  [h.dogu, 90],
+  [h.guney, 180],
+  [h.bati, 270],
 ];
 
 /**

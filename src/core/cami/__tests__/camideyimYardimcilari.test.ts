@@ -7,6 +7,12 @@ import {
 import { ilkHarfiBuyut, olaySatiriOlustur, zamanCizelgesiOlustur } from '../olayMetinleri';
 import { cumaMi, gunGirisleriniHesapla } from '../vakitGirisleri';
 import { kapiPencereleriniHesapla } from '../camiKarar';
+import { aktifDiliKur, aktifDilSifirla } from '../../dil/aktifDil';
+import { EYLEM_METNI, guvenOrnekleriOlustur } from '../guvenOrnekleri';
+import { sinirAciklamasi } from '../sinirAyari';
+import { mesafeKmYaz } from '../geometri';
+import { namazModuMetni } from '../../namazModu/namazModuMetni';
+import { iosSessizOzeti } from '../../sessiz/iosSessizKurulum';
 
 describe('camideyimAyarlariniNormalize', () => {
     it('bozuk kayıt varsayılana düşer (kapalı, 3 dk, kapı açık)', () => {
@@ -141,5 +147,74 @@ describe('Faz 2 ayarları ve güven olayları', () => {
         expect(ilkHarfiBuyut('içinde')).toBe('İçinde');
         expect(ilkHarfiBuyut('ışık')).toBe('Işık');
         expect(ilkHarfiBuyut('')).toBe('');
+    });
+});
+
+describe('Camideyim metinleri — İngilizce', () => {
+    const TR = /[çğıöşüÇĞİÖŞÜ]/;
+    beforeEach(() => aktifDiliKur('en'));
+    afterEach(() => aktifDilSifirla());
+
+    it('her olay satırı, güven örnekleri, sınır ve özet metinleri İngilizce', () => {
+        const olaylar: Record<string, unknown>[] = [
+            { tur: 'izlemeKuruldu', sayi: 1 },
+            { tur: 'izinYok', izin: 'arkaPlanYok' },
+            { tur: 'izinYok' },
+            { tur: 'izlemeHatasi' },
+            { tur: 'dwell', yer: 'Mosque A', dk: 3 },
+            { tur: 'vakitDisi' },
+            { tur: 'olcum', sonuc: 'camide', yer: 'Mosque A', dogrulukM: 12 },
+            { tur: 'olcum', sonuc: 'supheli', dogrulukM: 48 },
+            { tur: 'olcum', sonuc: 'supheli' },
+            { tur: 'olcum', sonuc: 'disarida', yer: 'Mosque A', mesafeM: 30 },
+            { tur: 'olcum', sonuc: 'disarida' },
+            { tur: 'olcum', sonuc: 'konumYok' },
+            { tur: 'guven', eylem: 'otomatik', zaman: 'ezanYakin', yerSinifi: 'poligonIci', hareket: 'durgun' },
+            { tur: 'guven', eylem: 'sor', bicim: 'sorarak', guvenKarari: 'otomatik', zaman: 'kapiIci', yerSinifi: 'noktaKenar', hareket: 'yavas' },
+            { tur: 'guven', eylem: 'hicbir', tavan: 'gecipGidiyor', zaman: 'serbest', yerSinifi: 'kullaniciAlani', hareket: 'hareketli' },
+            { tur: 'soruldu' },
+            { tur: 'soruKabul' },
+            { tur: 'soruRet' },
+            { tur: 'soruCikis' },
+            { tur: 'reddedilmis' },
+            ...['acildi', 'kullaniciKapatti', 'erisimYok', 'sessiz'].map((mod) => ({ tur: 'camide', mod })),
+            { tur: 'cikis', dk: 1 },
+            { tur: 'sure' },
+            { tur: 'kapatildi' },
+            { tur: 'haricTutuldu' },
+            { tur: 'modElleKapatildi' },
+            { tur: 'kildim', vakit: 'ogle' },
+            { tur: 'kildim' },
+            ...['yenile', 'bayatKonum', 'kabaKonum'].map((sonuc) => ({ tur: 'yenileme', sonuc })),
+        ];
+        for (const o of olaylar) {
+            const s = olaySatiriOlustur({ zamanMs: 1, ...o } as never);
+            expect(s).not.toBeNull();
+            expect(`${s!.baslik} ${s!.aciklama ?? ''}`).not.toMatch(TR);
+        }
+        expect(olaySatiriOlustur({ zamanMs: 1, tur: 'kildim', vakit: 'ogle' })!.baslik).toBe('Dhuhr marked as prayed');
+        expect(olaySatiriOlustur({ zamanMs: 1, tur: 'izlemeKuruldu', sayi: 1 })!.baslik).toBe('Watching 1 place near you');
+        expect(olaySatiriOlustur({ zamanMs: 1, tur: 'cikis', yer: 'Mosque A', dk: 1 })!.aciklama).toBe('You stayed 1 minute.');
+        expect(olaySatiriOlustur({ zamanMs: 1, tur: 'soruKabul' })!.baslik).toMatch(/· Mosque$/);
+        // Cümle başı: İngilizcede noktalı `i` yine `I` olur (Türkçe `İ` değil).
+        expect(ilkHarfiBuyut('inside the mosque')).toBe('Inside the mosque');
+        for (const o of guvenOrnekleriOlustur({ acilisBicimi: 'akilli', beklemeDk: 3, vakitKapisi: true })) {
+            expect(`${o.baslik} ${EYLEM_METNI[o.eylem]}`).not.toMatch(TR);
+        }
+        const sinir = [
+            sinirAciklamasi({ poligonVar: true, yaricapM: 30, alanM: null, olcek: null, kendi: false }),
+            sinirAciklamasi({ poligonVar: true, yaricapM: 30, alanM: null, olcek: 2, kendi: false }),
+            sinirAciklamasi({ poligonVar: true, yaricapM: 30, alanM: 60, olcek: null, kendi: false }),
+            sinirAciklamasi({ poligonVar: false, yaricapM: 30, alanM: 60, olcek: null, kendi: false }),
+            sinirAciklamasi({ poligonVar: false, yaricapM: 30, alanM: 60, olcek: null, kendi: true }),
+        ];
+        for (const s of sinir) expect(s).not.toMatch(TR);
+        for (const n of [namazModuMetni(28, 'filtre'), namazModuMetni(35, 'kural')]) expect(`${n.giris} ${n.anahtar}`).not.toMatch(TR);
+        expect([0, 1, 3].map((n) => iosSessizOzeti({ tamam: (['odak', 'cami', 'vakit'] as const).slice(0, n), dakika: 20 }))).toEqual([
+            'Set up with Focus',
+            '1/3 steps done',
+            'Set up with Focus',
+        ]);
+        expect(mesafeKmYaz(1450)).toBe('1.4 km');
     });
 });

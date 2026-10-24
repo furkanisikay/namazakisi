@@ -8,6 +8,7 @@ import * as Location from 'expo-location';
 import { Coordinates } from 'adhan';
 import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { Logger } from '../../core/utils/Logger';
+import { metin } from '../../core/dil/aktifDil';
 import { TurkiyeKonumServisi, Il, Ilce } from './TurkiyeKonumServisi';
 
 // =====================
@@ -48,7 +49,7 @@ export class KonumYoneticiServisi {
             koordinatlar: null,
             ilId: 34, // İstanbul varsayılan
             ilceId: null,
-            ilAdi: 'İstanbul',
+            ilAdi: 'İstanbul', // dil-haric: yer adı (varsayılan il)
             ilceAdi: '',
             gpsAdres: null,
             gpsIzniVar: false,
@@ -245,7 +246,7 @@ export class KonumYoneticiServisi {
             const { ilce, il } = this.durum.gpsAdres;
             if (ilce && il) return `${ilce}, ${il}`;
             if (il) return il;
-            return 'GPS Konumu';
+            return metin().konum.metin.gpsKonumu;
         }
 
         if (this.durum.ilceAdi && this.durum.ilAdi) {
@@ -254,7 +255,7 @@ export class KonumYoneticiServisi {
         if (this.durum.ilAdi) {
             return this.durum.ilAdi;
         }
-        return 'Konum seçilmedi';
+        return metin().konum.metin.secilmedi;
     }
 
     // =====================
@@ -277,7 +278,7 @@ export class KonumYoneticiServisi {
             koordinatlar: null,
             ilId: 34,
             ilceId: null,
-            ilAdi: 'İstanbul',
+            ilAdi: 'İstanbul', // dil-haric: yer adı (varsayılan il)
             ilceAdi: '',
             gpsAdres: null,
             gpsIzniVar: false,

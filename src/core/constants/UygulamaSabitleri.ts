@@ -3,17 +3,17 @@
  * SOLID prensiplerini takip ederek arayuz sabitlerini ayiriyoruz
  */
 
-import { canli } from '../dil/aktifDil';
+import { canli, metin } from '../dil/aktifDil';
 
 // Namaz isimleri (Veritabanı ve Kod içinde kullanım için)
 // NOT: Veritabanında Türkçe karakterli saklandığı için değerler Türkçe olmalı.
 export enum NamazAdi {
   Sabah = 'Sabah',
-  Gunes = 'Güneş', // UI ve Vakit hesaplama için gerekli, DB'de yok
-  Ogle = 'Öğle',
-  Ikindi = 'İkindi',
-  Aksam = 'Akşam',
-  Yatsi = 'Yatsı',
+  Gunes = 'Güneş', // dil-haric: kimlik · UI ve Vakit hesaplama için gerekli, DB'de yok
+  Ogle = 'Öğle', // dil-haric: kimlik (depolama anahtarı)
+  Ikindi = 'İkindi', // dil-haric: kimlik
+  Aksam = 'Akşam', // dil-haric: kimlik
+  Yatsi = 'Yatsı', // dil-haric: kimlik
 }
 
 /**
@@ -45,9 +45,12 @@ export const NAMAZ_ISIMLERI = [
 
 // Uygulama meta verileri
 export const UYGULAMA = {
-  ADI: 'Namaz Akışı',
+  ADI: 'Namaz Akışı', // dil-haric: marka adı (her dilde aynı)
   VERSIYON: '0.70.1',
-  ACIKLAMA: 'Günlük namaz takip uygulaması',
+  /** Etkin dilde (getter). */
+  get ACIKLAMA(): string {
+    return metin().genel.hakkinda.uygulamaAciklamasi;
+  },
   GITHUB_REPO: 'furkanisikay/namazakisi',
   DESTEK_EPOSTA: 'support@furkanisikay.com',
 } as const;

@@ -42,6 +42,7 @@ import {
 } from './KonumTakipServisi';
 import { konumTazeMi } from '../../core/utils/geofenceKararYardimcisi';
 import { Logger } from '../../core/utils/Logger';
+import { metin } from '../../core/dil/aktifDil';
 import { baglamHazir } from './baglamHazir';
 
 // Görev adı sabiti
@@ -707,15 +708,16 @@ export class ArkaplanGorevServisi {
      * Background fetch durumunu insan okunabilir stringe çevir
      */
     public static durumAciklamasi(status: BackgroundFetch.BackgroundFetchStatus): string {
+        const m = metin().genel.arkaPlanDurumu;
         switch (status) {
             case BackgroundFetch.BackgroundFetchStatus.Restricted:
-                return 'Kısıtlı - Sistem tarafından engelleniyor';
+                return m.kisitli;
             case BackgroundFetch.BackgroundFetchStatus.Denied:
-                return 'Reddedildi - Kullanıcı izin vermedi';
+                return m.reddedildi;
             case BackgroundFetch.BackgroundFetchStatus.Available:
-                return 'Kullanılabilir';
+                return m.kullanilabilir;
             default:
-                return 'Bilinmiyor';
+                return m.bilinmiyor;
         }
     }
 }

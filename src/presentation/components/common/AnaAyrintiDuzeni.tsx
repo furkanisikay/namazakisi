@@ -22,6 +22,7 @@ import { useRenkler } from '../../../core/theme';
 import { anaAyrintiMi } from '../../../core/utils/ekranSinifi';
 import { OkunabilirGenislik } from './OkunabilirGenislik';
 import { AnaAyrintiSecimi } from './anaAyrintiSecimi';
+import { useMetin } from '../../hooks/useMetin';
 
 export { useAnaAyrintiSecimi } from './anaAyrintiSecimi';
 
@@ -44,6 +45,7 @@ export interface AnaAyrintiTanimi {
     Varsayilan: React.ComponentType;
     /** Varsayılan sayfanın rota adı (liste satırı seçili görünsün). */
     varsayilanRota: string;
+    /** Etkin dilde okunsun diye çağıran getter verebilir (çerçeve dile abonedir). */
     varsayilanBaslik: string;
     /** Rota → ayrıntı başlığı. */
     basliklar: Record<string, string | undefined>;
@@ -63,6 +65,7 @@ function listeGezinmesi<T extends YiginGezinmesi>(nav: T, anaRota: string): T {
 const AyrintiBasligi: React.FC<{ baslik?: string; geri?: () => void }> = ({ baslik, geri }) => {
     const renkler = useRenkler();
     const insets = useSafeAreaInsets();
+    const m = useMetin().genel.ortak;
     return (
         <View
             style={[
@@ -74,7 +77,7 @@ const AyrintiBasligi: React.FC<{ baslik?: string; geri?: () => void }> = ({ basl
                 <Pressable
                     onPress={geri}
                     accessibilityRole="button"
-                    accessibilityLabel="Geri"
+                    accessibilityLabel={m.geri}
                     hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                     style={stil.geri}
                 >
@@ -104,6 +107,8 @@ interface CerceveProps {
 const AnaAyrintiCercevesi: React.FC<CerceveProps> = ({ tanim, route, navigation, kendiBasligi, children }) => {
     const { width } = useWindowDimensions();
     const renkler = useRenkler();
+    // Dile abone: başlıklar (`varsayilanBaslik` getter'ı, `basliklar` canlı görünümü) dil değişince tazelensin.
+    useMetin();
     const listeNav = React.useMemo(() => listeGezinmesi(navigation, tanim.anaRota), [navigation, tanim.anaRota]);
 
     if (!anaAyrintiMi(width)) return <OkunabilirGenislik>{children}</OkunabilirGenislik>;

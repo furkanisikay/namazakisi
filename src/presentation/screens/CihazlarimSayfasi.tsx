@@ -24,6 +24,8 @@ import { CihazAgiDeposu, type CihazUyeligi } from '../../data/local/CihazAgiDepo
 import { TvSenkronServisi } from '../../domain/services/TvSenkronServisi';
 import { CihazEsServisi, buCihazinTuru, cihazAgiDinleyicisiVarMi } from '../../domain/services/CihazEsServisi';
 import { esitlemeVaadi, haritaRozeti, saatDurumMetni, uyelikDurumMetni, type SaatDurumu } from '../../core/cihazAgi/cihazlarimMetni';
+import { bicim } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
 
 type Renkler = ReturnType<typeof useRenkler>;
 
@@ -31,6 +33,9 @@ const kartStili = (r: Renkler) => ({ backgroundColor: r.kartArkaplan, borderRadi
 
 export const CihazlarimSayfasi: React.FC = () => {
     const renkler = useRenkler();
+    const cm = useMetin().cihaz;
+    const mt = cm.cihazlarim;
+    const rozetBagli = cm.uyelik.rozetBagli;
     const navigation = useNavigation() as unknown as { navigate: (ekran: string) => void };
     const [liste, setListe] = React.useState<CihazUyeligi[] | null>(null);
     // Çift yönlü eşler (tablet / telefon): TV'lerden ayrı bölüm.
@@ -83,23 +88,23 @@ export const CihazlarimSayfasi: React.FC = () => {
             const yeni = await CihazAgiDeposu.guncelle(u.aliciKimlik, degisim).catch(() => null);
             if (!yeni) {
                 setListe((l) => l && l.map((x) => (x.aliciKimlik === u.aliciKimlik ? u : x)));
-                kisaBildirimGoster('Ayar kaydedilemedi. Lütfen yeniden deneyin.');
+                kisaBildirimGoster(mt.ayarKaydedilemedi);
                 return;
             }
             await TvSenkronServisi.getInstance().gonder().catch(() => undefined);
             void oku();
         },
-        [oku],
+        [oku, mt],
     );
 
     const kaldir = React.useCallback(
         async (u: CihazUyeligi) => {
             setKaldirilacak(null);
             await TvSenkronServisi.getInstance().kaldir(u.aliciKimlik).catch(() => undefined);
-            kisaBildirimGoster(`${u.aliciAdi} kaldırıldı.`);
+            kisaBildirimGoster(bicim(mt.kaldirildi, { ad: u.aliciAdi }));
             void oku();
         },
-        [oku],
+        [oku, mt],
     );
 
     const tvEkle = React.useCallback(() => navigation.navigate('TelevizyonAyarlari'), [navigation]);
@@ -113,15 +118,15 @@ export const CihazlarimSayfasi: React.FC = () => {
             const m = uyelikDurumMetni(e.durum, e.sonEsitlemeMs, simdi);
             cihazlar.push({ kimlik: e.aliciKimlik, tur: e.tur === 'telefon' ? 'telefon' : 'tablet', ad: e.aliciAdi, rozet: haritaRozeti(e.durum, e.sonEsitlemeMs, simdi), ton: m.ton });
         }
-        if (saat === 'esli') cihazlar.push({ kimlik: 'saat', tur: 'saat', ad: 'Akıllı saat', rozet: 'bağlı', ton: 'iyi' });
+        if (saat === 'esli') cihazlar.push({ kimlik: 'saat', tur: 'saat', ad: mt.akilliSaat, rozet: rozetBagli, ton: 'iyi' });
         if (cihazlar.length > AZAMI_DUGUM) {
             const kalan = cihazlar.length - (AZAMI_DUGUM - 1);
-            return [...cihazlar.slice(0, AZAMI_DUGUM - 1), { kimlik: 'fazla', tur: 'fazla', ad: `+${kalan}`, rozet: 'aşağıda listelenir', ton: 'notr' }];
+            return [...cihazlar.slice(0, AZAMI_DUGUM - 1), { kimlik: 'fazla', tur: 'fazla', ad: `+${kalan}`, rozet: mt.asagidaListelenir, ton: 'notr' }];
         }
         return cihazlar.length < AZAMI_DUGUM
-            ? [...cihazlar, { kimlik: 'ekle', tur: 'ekle', ad: 'TV ekleyin', rozet: 'kare kodu okutun', ton: 'notr', onPress: tvEkle }]
+            ? [...cihazlar, { kimlik: 'ekle', tur: 'ekle', ad: mt.tvEkleyin, rozet: mt.kareKoduOkutun, ton: 'notr', onPress: tvEkle }]
             : cihazlar;
-    }, [liste, esler, saat, simdi, tvEkle]);
+    }, [liste, esler, saat, simdi, tvEkle, mt, rozetBagli]);
 
     return (
         <ScrollView
@@ -132,7 +137,7 @@ export const CihazlarimSayfasi: React.FC = () => {
         >
             <View className="px-1 pt-2 pb-5 mb-1" style={kartStili(renkler)}>
                 <View className="px-3 pt-3">
-                    <BagHaritasi dugumler={dugumler} merkezAdi={buCihazinTuru() === 'tablet' ? 'Bu tablet' : 'Bu telefon'} merkezTablet={buCihazinTuru() === 'tablet'} />
+                    <BagHaritasi dugumler={dugumler} merkezAdi={buCihazinTuru() === 'tablet' ? mt.buTablet : mt.buTelefon} merkezTablet={buCihazinTuru() === 'tablet'} />
                 </View>
             </View>
             <Text testID="cihazlarim-vaat" className="text-sm mt-3 mb-6 px-1" style={{ color: renkler.metinIkincil, lineHeight: 20 }}>
@@ -140,17 +145,16 @@ export const CihazlarimSayfasi: React.FC = () => {
             </Text>
 
             <Text className="text-lg font-bold mb-3 px-1" style={{ color: renkler.metin }} accessibilityRole="header">
-                Televizyonlar
+                {mt.televizyonlar}
             </Text>
 
             {liste != null && liste.length === 0 && (
                 <View testID="cihazlarim-bos" className="p-5" style={kartStili(renkler)}>
                     <Text className="text-base font-semibold mb-1" style={{ color: renkler.metin }}>
-                        Henüz bir TV eklemediniz
+                        {mt.tvYok}
                     </Text>
                     <Text className="text-sm" style={{ color: renkler.metinIkincil }}>
-                        Android TV&apos;ye Namaz Akışı&apos;nı kurun, ekrandaki kare kodu bu telefonla okutun. Vakitler ve
-                        Ramazan sayacı evin büyük ekranında görünür.
+                        {mt.tvYokAciklama}
                     </Text>
                 </View>
             )}
@@ -177,20 +181,20 @@ export const CihazlarimSayfasi: React.FC = () => {
                 style={{ minHeight: 52, backgroundColor: renkler.birincil }}
                 onPress={tvEkle}
                 accessibilityRole="button"
-                accessibilityLabel="TV ekleyin"
+                accessibilityLabel={mt.tvEkleyin}
             >
                 <FontAwesome5 name="plus" size={14} color={renkler.birincilMetin} style={{ marginRight: 10 }} />
                 <Text className="text-base font-bold" style={{ color: renkler.birincilMetin }}>
-                    TV ekleyin
+                    {mt.tvEkleyin}
                 </Text>
             </TouchableOpacity>
 
             <Text className="text-lg font-bold mt-8 mb-3 px-1" style={{ color: renkler.metin }} accessibilityRole="header">
-                Tablet ve telefonlar
+                {mt.tabletVeTelefonlar}
             </Text>
             {esler.length === 0 ? (
                 <Text className="text-sm mb-3 px-1" style={{ color: renkler.metinIkincil, lineHeight: 20 }}>
-                    Tabletinizi ya da ikinci telefonunuzu ekleyin: birinde işaretlediğiniz namaz öbürüne geçer.
+                    {mt.esYok}
                 </Text>
             ) : (
                 <View style={{ gap: 12 }}>
@@ -215,7 +219,7 @@ export const CihazlarimSayfasi: React.FC = () => {
                                     style={{ minHeight: 44 }}
                                     onPress={() => setKaldirilacakEs(e)}
                                     accessibilityRole="button"
-                                    accessibilityLabel={`${e.aliciAdi} cihazını kaldırın`}
+                                    accessibilityLabel={bicim(mt.cihaziKaldirinErisim, { ad: e.aliciAdi })}
                                 >
                                     <FontAwesome5 name="unlink" size={13} color={renkler.metinIkincil} />
                                 </TouchableOpacity>
@@ -231,11 +235,11 @@ export const CihazlarimSayfasi: React.FC = () => {
                     style={{ minHeight: 52, backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                     onPress={() => navigation.navigate('CihazEkle')}
                     accessibilityRole="button"
-                    accessibilityLabel="Tablet ya da telefon ekleyin"
+                    accessibilityLabel={mt.tabletEkleyin}
                 >
                     <FontAwesome5 name="plus" size={14} color={renkler.metin} style={{ marginRight: 10 }} />
                     <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                        Tablet ya da telefon ekleyin
+                        {mt.tabletEkleyin}
                     </Text>
                 </TouchableOpacity>
             )}
@@ -243,7 +247,7 @@ export const CihazlarimSayfasi: React.FC = () => {
             {Platform.OS === 'android' && saat !== 'yok' && (
                 <>
                     <Text className="text-lg font-bold mt-8 mb-3 px-1" style={{ color: renkler.metin }} accessibilityRole="header">
-                        Saat
+                        {mt.saat}
                     </Text>
                     <TouchableOpacity
                         testID="cihazlarim-saat"
@@ -251,7 +255,7 @@ export const CihazlarimSayfasi: React.FC = () => {
                         style={kartStili(renkler)}
                         onPress={() => navigation.navigate('SaatAyarlari')}
                         accessibilityRole="button"
-                        accessibilityLabel="Akıllı saat ayarlarını açın"
+                        accessibilityLabel={mt.saatAyarlariErisim}
                     >
                         <View
                             className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
@@ -275,33 +279,33 @@ export const CihazlarimSayfasi: React.FC = () => {
             <BildirimModali
                 gorunur={kaldirilacakEs != null}
                 tip="bilgi"
-                baslik="Bu cihaz kaldırılsın mı?"
-                mesaj={kaldirilacakEs ? `${kaldirilacakEs.aliciAdi} ile eşitleme durur; bağlantı anahtarı iki tarafta da silinir.` : ''}
-                birincilEtiket="Kaldırın"
+                baslik={mt.cihazKaldirBaslik}
+                mesaj={kaldirilacakEs ? bicim(mt.cihazKaldirMesaj, { ad: kaldirilacakEs.aliciAdi }) : ''}
+                birincilEtiket={mt.kaldirin}
                 birincilIkon="unlink"
                 tehlikeli
                 onBirincil={() => {
                     const e = kaldirilacakEs;
                     setKaldirilacakEs(null);
-                    if (e) void CihazEsServisi.getInstance().kaldir(e.aliciKimlik).then(() => { kisaBildirimGoster(`${e.aliciAdi} kaldırıldı.`); void oku(); });
+                    if (e) void CihazEsServisi.getInstance().kaldir(e.aliciKimlik).then(() => { kisaBildirimGoster(bicim(mt.kaldirildi, { ad: e.aliciAdi })); void oku(); });
                 }}
-                kapatEtiketi="Vazgeçin"
+                kapatEtiketi={mt.vazgecin}
                 onKapat={() => setKaldirilacakEs(null)}
             />
             <BildirimModali
                 gorunur={kaldirilacak != null}
                 tip="bilgi"
-                baslik="Bu TV kaldırılsın mı?"
+                baslik={mt.tvKaldirBaslik}
                 mesaj={
                     kaldirilacak
-                        ? `${kaldirilacak.aliciAdi} artık bu telefondan bilgi almaz; bağlantı anahtarı iki tarafta da silinir. Yeniden eklemek için TV'deki kodu okutmanız yeterli.`
+                        ? bicim(mt.tvKaldirMesaj, { ad: kaldirilacak.aliciAdi })
                         : ''
                 }
-                birincilEtiket="Kaldırın"
+                birincilEtiket={mt.kaldirin}
                 birincilIkon="unlink"
                 tehlikeli
                 onBirincil={() => kaldirilacak && void kaldir(kaldirilacak)}
-                kapatEtiketi="Vazgeçin"
+                kapatEtiketi={mt.vazgecin}
                 onKapat={() => setKaldirilacak(null)}
             />
         </ScrollView>
@@ -316,6 +320,9 @@ const TvKarti: React.FC<{
     onKaldir: () => void;
     onYenidenEkle: () => void;
 }> = ({ u, simdi, renkler, onAyar, onKaldir, onYenidenEkle }) => {
+    const metinler = useMetin().cihaz;
+    const mt = metinler.cihazlarim;
+    const yenidenEkleyin = metinler.uyelik.yenidenEkleyin;
     const d = uyelikDurumMetni(u.durum, u.sonEsitlemeMs, simdi);
     const tonRengi = d.ton === 'iyi' ? renkler.basarili : d.ton === 'sorun' ? renkler.hata : renkler.metinIkincil;
     const reddedildi = u.durum === 'reddedildi';
@@ -350,30 +357,30 @@ const TvKarti: React.FC<{
                     style={{ minHeight: 44, backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                     onPress={onYenidenEkle}
                     accessibilityRole="button"
-                    accessibilityLabel={`${u.aliciAdi} TV'sini yeniden ekleyin`}
+                    accessibilityLabel={bicim(mt.tvYenidenEkleErisim, { ad: u.aliciAdi })}
                 >
                     <FontAwesome5 name="qrcode" size={13} color={renkler.metin} style={{ marginRight: 8 }} />
                     <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                        Yeniden ekleyin
+                        {yenidenEkleyin}
                     </Text>
                 </TouchableOpacity>
             ) : (
                 <View className="mt-3" style={{ gap: 4 }}>
                     <AnahtarSatiri
                         testID={`cihaz-sayilsin-${u.aliciKimlik}`}
-                        baslik="TV'de durumum sayılsın"
-                        aciklama="Kıldığınız vakitler TV'deki hatırlatmayı etkiler. Kapalıyken TV yalnız vakitleri gösterir."
+                        baslik={mt.durumumSayilsin}
+                        aciklama={mt.durumumSayilsinAciklama}
                         deger={u.durumumSayilsin}
                         onDegistir={(v) => onAyar({ durumumSayilsin: v })}
                         renkler={renkler}
                     />
                     <AnahtarSatiri
                         testID={`cihaz-hatirlat-${u.aliciKimlik}`}
-                        baslik="Vakit daralınca TV'de hatırlatın"
+                        baslik={mt.tvHatirlat}
                         aciklama={
                             u.durumumSayilsin
-                                ? 'Vaktin son 30 dakikasında, kılmadıysanız ekranın altında sessiz bir bant çıkar. Ses çalmaz.'
-                                : 'Önce “TV’de durumum sayılsın”ı açın.'
+                                ? mt.tvHatirlatAciklama
+                                : mt.tvHatirlatOnce
                         }
                         deger={u.durumumSayilsin && u.tvHatirlat}
                         pasif={!u.durumumSayilsin}
@@ -388,11 +395,11 @@ const TvKarti: React.FC<{
                 style={{ minHeight: 44 }}
                 onPress={onKaldir}
                 accessibilityRole="button"
-                accessibilityLabel={`${u.aliciAdi} TV'sini kaldırın`}
+                accessibilityLabel={bicim(mt.tvKaldirErisim, { ad: u.aliciAdi })}
             >
                 <FontAwesome5 name="unlink" size={12} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
                 <Text className="text-sm" style={{ color: renkler.metinIkincil }}>
-                    Kaldırın
+                    {mt.kaldirin}
                 </Text>
             </TouchableOpacity>
         </View>

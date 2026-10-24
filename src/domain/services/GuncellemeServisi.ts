@@ -18,6 +18,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { guncellemeKontroluErtelensinMi } from '../../core/sistem/sistemDurumu';
 import { sistemKosullariniOku } from './SistemKosullariServisi';
 import { Logger } from '../../core/utils/Logger';
+import { metin } from '../../core/dil/aktifDil';
 import { versiyonKarsilastir } from '../../core/utils/versiyonKarsilastir';
 import {
   UYGULAMA,
@@ -240,7 +241,7 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
     const bolumTespitEt = (satir: string): 'added' | 'fixed' | 'changed' | null => {
       const alt = satir.toLowerCase();
       if (!alt.startsWith('###')) return null;
-      if (alt.includes('added') || alt.includes('yeni özellik')) return 'added';
+      if (alt.includes('added') || alt.includes('yeni özellik')) return 'added'; // dil-haric: sürüm notu ayrıştırma anahtarı
       if (alt.includes('fixed') || alt.includes('hata')) return 'fixed';
       if (alt.includes('changed') || alt.includes('refactor')) return 'changed';
       return null;
@@ -279,7 +280,7 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
     const parcalar: string[] = [];
 
     if (yeniOzellikler.length > 0) {
-      parcalar.push('Yeni Özellikler:');
+      parcalar.push(metin().genel.guncelleme.yeniOzellikler);
       yeniOzellikler.forEach(ozellik => {
         parcalar.push(`• ${ozellik}`);
       });
@@ -287,7 +288,7 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
 
     if (hatalar.length > 0) {
       if (parcalar.length > 0) parcalar.push(''); // Bos satir ekle
-      parcalar.push('Hatalar giderildi');
+      parcalar.push(metin().genel.guncelleme.hatalarGiderildi);
     }
 
     const sonuc = parcalar.join('\n').trim();

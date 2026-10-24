@@ -3,6 +3,9 @@
  * Kullanici tercihine gore degisebilen renk sistemini icerir
  */
 
+import { metin } from '../dil/aktifDil';
+import type { Sozluk } from '../dil/sozluk/tr';
+
 // Renk paleti tipi
 export interface RenkPaleti {
   id: string;
@@ -39,55 +42,57 @@ export interface Tema {
 }
 
 // Kullanilabilir renk paletleri
+/** Görünen ad etkin dilin sözlüğünden okunur (getter): palet `id`'si kimliktir. */
+function palet(p: Omit<RenkPaleti, 'ad'> & { id: keyof Sozluk['genel']['paletler'] }): RenkPaleti {
+  return Object.defineProperty({ ...p }, 'ad', {
+    get: () => metin().genel.paletler[p.id],
+    enumerable: true,
+  }) as RenkPaleti;
+}
+
 export const RENK_PALETLERI: RenkPaleti[] = [
-  {
+  palet({
     id: 'zumrut',
-    ad: 'Zümrüt',
     birincil: '#4CAF50',
     birincilKoyu: '#388E3C',
     birincilAcik: '#C8E6C9',
     vurgu: '#00BFA5',
-  },
-  {
+  }),
+  palet({
     id: 'okyanus',
-    ad: 'Okyanus',
     birincil: '#2196F3',
     birincilKoyu: '#1565C0',
     birincilAcik: '#BBDEFB',
     vurgu: '#00ACC1',
-  },
-  {
+  }),
+  palet({
     id: 'lavanta',
-    ad: 'Lavanta',
     birincil: '#7C4DFF',
     birincilKoyu: '#651FFF',
     birincilAcik: '#E8DEF8',
     vurgu: '#E040FB',
-  },
-  {
+  }),
+  palet({
     id: 'gunes',
-    ad: 'Güneş',
     birincil: '#FF9800',
     birincilKoyu: '#F57C00',
     birincilAcik: '#FFE0B2',
     vurgu: '#FFC107',
-  },
-  {
+  }),
+  palet({
     id: 'mercan',
-    ad: 'Mercan',
     birincil: '#FF5722',
     birincilKoyu: '#E64A19',
     birincilAcik: '#FFCCBC',
     vurgu: '#FF4081',
-  },
-  {
+  }),
+  palet({
     id: 'gece',
-    ad: 'Gece',
     birincil: '#37474F',
     birincilKoyu: '#263238',
     birincilAcik: '#CFD8DC',
     vurgu: '#546E7A',
-  },
+  }),
 ];
 
 // Acik tema renkleri

@@ -31,6 +31,9 @@ import { useIosSessizKurulum } from '../hooks/useIosSessizKurulum';
 import { SayisalSecici } from '../components/common/SayisalSecici';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { KisayolBlogu, KurulumAdimi, OdakSemasi, YolCipleri } from '../components/sessizIos/SessizIosParcalari';
+import { mesafeKmYaz } from '../../core/cami/geometri';
+import { bicim } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
 
 const CAMI_SAYISI = 4;
 
@@ -39,8 +42,7 @@ const saat = (ms: number) => {
     const d = new Date(ms);
     return `${ikiHane(d.getHours())}:${ikiHane(d.getMinutes())}`;
 };
-const mesafeMetni = (m: number) =>
-    m < 1000 ? `${Math.max(10, Math.round(m / 10) * 10)} m` : `${(m / 1000).toFixed(1).replace('.', ',')} km`;
+const mesafeMetni = (m: number) => mesafeKmYaz(m, (x) => Math.max(10, Math.round(x / 10) * 10));
 
 async function ac(url: string, hata: string) {
     try {
@@ -52,6 +54,7 @@ async function ac(url: string, hata: string) {
 
 export const NamazdaSessizIosSayfasi: React.FC = () => {
     const renkler = useRenkler();
+    const m = useMetin().cami.ios;
     const koordinat = useAppSelector((s) => s.konum.koordinatlar);
     const { kurulum, adimiDegistir, dakikaYaz } = useIosSessizKurulum();
     const [camiler, setCamiler] = useState<YakinCamiOzeti[] | null>(null);
@@ -109,44 +112,44 @@ export const NamazdaSessizIosSayfasi: React.FC = () => {
             <ScrollView className="flex-1" contentContainerStyle={{ padding: 16, paddingBottom: 40 }} testID="namazda-sessiz-ios">
                 <OdakSemasi />
                 <Text className="text-sm leading-5 mt-4 mb-6 px-1" style={{ color: renkler.metinIkincil }}>
-                    iPhone sessize almayı yalnız Odak ile yapar. Bir kez kurun, gerisini iPhone halleder.
+                    {m.giris}
                 </Text>
 
                 <View className="p-5" style={kart}>
                     <KurulumAdimi
                         testID="adim-odak"
                         sira={1}
-                        baslik="Namaz odağını oluşturun"
+                        baslik={m.adim1}
                         tamam={tamam('odak')}
                         onDegistir={() => adimiDegistir('odak')}
                     >
-                        <YolCipleri adimlar={['Ayarlar', 'Odak', '+', 'Özel', 'Namaz']} />
+                        <YolCipleri adimlar={m.yolOdak} />
                         <Text className="text-sm font-semibold mt-4 mb-2" style={{ color: renkler.metin }}>
-                            Hatırlatmalarımızı da sessize alın
+                            {m.hatirlatmalariSessiz}
                         </Text>
-                        <YolCipleri adimlar={['Namaz', 'Odak filtreleri', 'Namaz Akışı', 'Hatırlatmaları sessiz ver']} />
+                        <YolCipleri adimlar={m.yolFiltre} />
                         <Text className="text-xs leading-4 mt-2" style={{ color: renkler.metinIkincil }}>
-                            Odak açıkken hatırlatmalar ses çıkarmadan, ekranı yakmadan gelir. Hiçbiri kaybolmaz.
+                            {m.filtreNotu}
                         </Text>
-                        {birincilDugme('ayarlari-ac', 'cog', "Ayarlar'ı açın", () => {
-                            Linking.openSettings().catch(() => kisaBildirimGoster("Ayarlar açılamadı. Ayarlar uygulamasından Odak'a girin."));
+                        {birincilDugme('ayarlari-ac', 'cog', m.ayarlariAcin, () => {
+                            Linking.openSettings().catch(() => kisaBildirimGoster(m.ayarlarAcilamadi));
                         })}
                     </KurulumAdimi>
 
                     <KurulumAdimi
                         testID="adim-cami"
                         sira={2}
-                        baslik="Camiye varınca açılsın"
+                        baslik={m.adim2}
                         tamam={tamam('cami')}
                         onDegistir={() => adimiDegistir('cami')}
                     >
-                        <YolCipleri adimlar={['Namaz', 'Zamanlama ekle', 'Konum', 'Caminin adı']} />
+                        <YolCipleri adimlar={m.yolKonum} />
                         <Text className="text-xs leading-4 mt-2 mb-3" style={{ color: renkler.metinIkincil }}>
-                            Camiden çıkınca Odak kendiliğinden kapanır.
+                            {m.cikincaKapanir}
                         </Text>
                         {camiler == null ? null : camiler.length === 0 ? (
                             <Text testID="cami-yok" className="text-sm leading-5" style={{ color: renkler.metinIkincil }}>
-                                Yakında cami bulunamadı. Caminizin adını Konum ekranında arayabilirsiniz.
+                                {m.camiYok}
                             </Text>
                         ) : (
                             camiler.map((c) => (
@@ -156,11 +159,11 @@ export const NamazdaSessizIosSayfasi: React.FC = () => {
                                     onPress={() =>
                                         ac(
                                             `maps://?q=${encodeURIComponent(c.ad)}&ll=${c.lat},${c.lng}`,
-                                            'Haritalar açılamadı.'
+                                            m.haritalarAcilamadi
                                         )
                                     }
                                     accessibilityRole="button"
-                                    accessibilityLabel={`${c.ad}, ${mesafeMetni(c.mesafeM)}. Haritalar'da görün.`}
+                                    accessibilityLabel={bicim(m.camiErisim, { ad: c.ad, mesafe: mesafeMetni(c.mesafeM) })}
                                     className="flex-row items-center rounded-2xl p-3 mb-2"
                                     style={{ minHeight: 52, backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                                 >
@@ -182,7 +185,7 @@ export const NamazdaSessizIosSayfasi: React.FC = () => {
                         <View className="flex-row items-center mt-2">
                             <FontAwesome5 name="home" size={12} color={renkler.birincil} solid />
                             <Text className="text-xs leading-4 ml-2 flex-1" style={{ color: renkler.metinIkincil }}>
-                                Ev, iş ya da başka bir yer için aynı yoldan konum ekleyebilirsiniz.
+                                {m.baskaYer}
                             </Text>
                         </View>
                     </KurulumAdimi>
@@ -190,37 +193,37 @@ export const NamazdaSessizIosSayfasi: React.FC = () => {
                     <KurulumAdimi
                         testID="adim-vakit"
                         sira={3}
-                        baslik="Namaz vakitlerinde açılsın"
+                        baslik={m.adim3}
                         tamam={tamam('vakit')}
                         onDegistir={() => adimiDegistir('vakit')}
                         son
                     >
-                        <YolCipleri adimlar={['Kısayollar', 'Otomasyon', '+', 'Uygulama', 'Namaz Akışı', 'Açıldığında']} />
+                        <YolCipleri adimlar={m.yolOtomasyon} />
                         <View className="mt-3">
                             <KisayolBlogu
                                 ikon="moon"
-                                baslik="Namaz sessizliği"
-                                ayrinti={`Vakit girdikten sonraki ${kurulum.dakika} dakika`}
+                                baslik={m.eylemSessizlik}
+                                ayrinti={bicim(m.eylemSessizlikAyrinti, { dk: kurulum.dakika })}
                             />
-                            <KisayolBlogu ikon="code-branch" baslik="Eğer" ayrinti="Sonuç doğruysa" />
+                            <KisayolBlogu ikon="code-branch" baslik={m.eylemEger} ayrinti={m.eylemEgerAyrinti} />
                             <KisayolBlogu
                                 ikon="toggle-on"
-                                baslik="Odak'ı ayarla"
-                                ayrinti="Namaz açık, bitiş: Namaz sessizliğinin bitişi"
+                                baslik={m.eylemOdak}
+                                ayrinti={m.eylemOdakAyrinti}
                                 girinti
                             />
                         </View>
                         <View className="flex-row items-center justify-between mt-2">
                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                Sessizlik süresi
+                                {m.sessizlikSuresi}
                             </Text>
                             <SayisalSecici
                                 deger={kurulum.dakika}
                                 min={SESSIZLIK_EN_AZ_DK}
                                 max={SESSIZLIK_EN_COK_DK}
                                 adim={5}
-                                birim="dk"
-                                aciklama="Sessizlik süresi"
+                                birim={m.dk}
+                                aciklama={m.sessizlikSuresi}
                                 renk={renkler.birincil}
                                 onChange={dakikaYaz}
                             />
@@ -251,10 +254,10 @@ export const NamazdaSessizIosSayfasi: React.FC = () => {
                             </View>
                         )}
                         <Text className="text-xs leading-4 mt-3" style={{ color: renkler.metinIkincil }}>
-                            Otomasyonda Hemen çalıştır'ı seçin. Vakit bildirimine dokunduğunuzda iPhone Namaz odağına geçer.
+                            {m.hemenCalistir}
                         </Text>
-                        {birincilDugme('kisayollari-ac', 'magic', "Kısayollar'ı açın", () =>
-                            ac('shortcuts://', 'Kısayollar açılamadı. Uygulama silinmiş olabilir; App Store\'dan yükleyebilirsiniz.')
+                        {birincilDugme('kisayollari-ac', 'magic', m.kisayollariAcin, () =>
+                            ac('shortcuts://', m.kisayollarAcilamadi)
                         )}
                     </KurulumAdimi>
                 </View>

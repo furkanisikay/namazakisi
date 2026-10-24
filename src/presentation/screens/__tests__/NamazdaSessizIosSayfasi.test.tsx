@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Linking } from 'react-native';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NamazdaSessizIosSayfasi } from '../NamazdaSessizIosSayfasi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 jest.mock('../../store/hooks', () => ({
     useAppSelector: (secici: (s: unknown) => unknown) => secici({ konum: { koordinatlar: { lat: 41.0054, lng: 28.9768 } } }),
@@ -80,5 +81,38 @@ describe('NamazdaSessizIosSayfasi', () => {
         mockCamiler.mockResolvedValue([]);
         const ekran = render(<NamazdaSessizIosSayfasi />);
         await waitFor(() => expect(ekran.getByTestId('cami-yok')).toBeTruthy());
+    });
+});
+
+describe('NamazdaSessizIosSayfasi — İngilizce', () => {
+    const YASAKLI = ['Namaz\\b', 'Odak', 'Ayarlar', 'Konum', 'Kisayol', 'Otomasyon', 'Uygulama', 'Sonra', 'dk\\b', 'Tamam'];
+    // Marka adı ("Namaz Akışı") her dilde aynı kalır; cami adları veridir.
+    const kalan = (agac: unknown) =>
+        turkceKalanlar(agac as never, YASAKLI).filter((m) => turkceKalanlar(m.replace(/Namaz Akışı/g, ''), YASAKLI).length > 0);
+    let geriAl: () => void;
+    beforeEach(async () => {
+        geriAl = ingilizceyeGec();
+        await AsyncStorage.clear();
+        mockCamiler.mockReset();
+        mockCamiler.mockResolvedValue([{ id: 'osm:w2', ad: 'Blue Mosque', lat: 41.007, lng: 28.975, mesafeM: 1450 }]);
+    });
+    afterEach(() => act(() => geriAl()));
+
+    it('üç adım, menü yolları ve Kısayollar blokları İngilizce', async () => {
+        const e = render(<NamazdaSessizIosSayfasi />);
+        await waitFor(() => expect(e.getByText('Blue Mosque')).toBeTruthy());
+        expect(e.getByText('1.4 km')).toBeTruthy();
+        expect(e.getByText('Create the Prayer Focus')).toBeTruthy();
+        expect(e.getByLabelText('Settings, then Focus, then +, then Custom, then Prayer')).toBeTruthy();
+        fireEvent.press(e.getByTestId('adim-odak-tamam'));
+        await waitFor(() => expect(e.getByText('Done')).toBeTruthy());
+        expect(kalan(e.toJSON())).toEqual([]);
+    });
+
+    it('yakında cami yoksa İngilizce yönlendirme', async () => {
+        mockCamiler.mockResolvedValue([]);
+        const e = render(<NamazdaSessizIosSayfasi />);
+        await waitFor(() => expect(e.getByTestId('cami-yok')).toBeTruthy());
+        expect(kalan(e.toJSON())).toEqual([]);
     });
 });

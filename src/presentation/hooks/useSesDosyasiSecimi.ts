@@ -14,15 +14,11 @@ import {
     type SesDosyasiHatasi,
 } from '../../../modules/expo-countdown-notification/src';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
+import { canli } from '../../core/dil/aktifDil';
 
-export const SES_DOSYASI_HATA_METINLERI: Readonly<Record<SesDosyasiHatasi, string>> = {
-    bicim: 'Bu dosya ses olarak açılamadı. MP3, M4A, OGG ya da WAV dosyası seçebilirsiniz.',
-    boyut: 'Dosya çok büyük. En fazla 20 MB seçebilirsiniz.',
-    sure: 'Kayıt çok uzun. En fazla 8 dakikalık bir ses seçebilirsiniz.',
-    erisim: 'Dosyaya erişilemedi. Telefonunuzdaki bir dosyayı seçmeyi deneyin.',
-    yazilamadi: 'Dosya eklenemedi. Başka bir dosya deneyin.',
-    desteklenmiyor: 'Bu telefonda kendi dosyanızı ekleyemezsiniz; telefonun seslerinden seçebilirsiniz.',
-};
+export const SES_DOSYASI_HATA_METINLERI: Readonly<Record<SesDosyasiHatasi, string>> = canli(
+    (s) => s.muhafizAyar.kanca.sesDosyasi
+);
 
 export interface SesDosyasiSecimi {
     destekleniyor: boolean;

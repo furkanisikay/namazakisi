@@ -27,23 +27,25 @@ import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import type { DefterKaynagi, DefterOzeti } from '../../../core/bildirim/bildirimDefteri';
 import type { ButceOnerisi } from '../../../core/bildirim/butceOnerileri';
 import { butceRengi, cihazAdi } from './BildirimButceKarti';
+import { bicim, metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
 /** Kaynak dökümünün görünen adları (kibar "siz" dili gerektirmeyen ad öbekleri). */
 export const KAYNAK_BILGILERI: Record<DefterKaynagi, { ad: string; ikon: string }> = {
-    muhafiz: { ad: 'Vakit çıkmadan', ikon: 'shield-alt' },
-    anons: { ad: 'Sesli okuma alarmları', ikon: 'volume-up' },
-    alarm: { ad: 'Gerçek alarmlar', ikon: 'clock' },
-    nafile: { ad: 'Nafile hatırlatmaları', ikon: 'star-and-crescent' },
-    vakitBildirimi: { ad: 'Vakit girdi bildirimleri', ikon: 'bell' },
-    cuma: { ad: 'Cuma hatırlatması', ikon: 'mosque' },
-    camiyeGit: { ad: 'Camiye gitme hatırlatması', ikon: 'walking' },
-    takvimCakisma: { ad: 'Takvim çakışması uyarısı', ikon: 'calendar-times' },
-    gunSonu: { ad: 'Seri gün sonu hatırlatması', ikon: 'fire' },
-    yatis: { ad: 'Yatış hatırlatması', ikon: 'bed' },
-    sayac: { ad: 'Geri sayım bildirimleri', ikon: 'hourglass-half' },
-    widget: { ad: 'Ana ekran widget’ı', ikon: 'th-large' },
+    muhafiz: { get ad() { return metin().hatirlatma.sinir.kaynak.muhafiz; }, ikon: 'shield-alt' },
+    anons: { get ad() { return metin().hatirlatma.sinir.kaynak.anons; }, ikon: 'volume-up' },
+    alarm: { get ad() { return metin().hatirlatma.sinir.kaynak.alarm; }, ikon: 'clock' },
+    nafile: { get ad() { return metin().hatirlatma.sinir.kaynak.nafile; }, ikon: 'star-and-crescent' },
+    vakitBildirimi: { get ad() { return metin().hatirlatma.sinir.kaynak.vakitBildirimi; }, ikon: 'bell' },
+    cuma: { get ad() { return metin().hatirlatma.sinir.kaynak.cuma; }, ikon: 'mosque' },
+    camiyeGit: { get ad() { return metin().hatirlatma.sinir.kaynak.camiyeGit; }, ikon: 'walking' },
+    takvimCakisma: { get ad() { return metin().hatirlatma.sinir.kaynak.takvimCakisma; }, ikon: 'calendar-times' },
+    gunSonu: { get ad() { return metin().hatirlatma.sinir.kaynak.gunSonu; }, ikon: 'fire' },
+    yatis: { get ad() { return metin().hatirlatma.sinir.kaynak.yatis; }, ikon: 'bed' },
+    sayac: { get ad() { return metin().hatirlatma.sinir.kaynak.sayac; }, ikon: 'hourglass-half' },
+    widget: { get ad() { return metin().hatirlatma.sinir.kaynak.widget; }, ikon: 'th-large' },
 };
 
 export type SinirSayfasiModu =
@@ -64,6 +66,7 @@ interface Props {
 
 export const BildirimSiniriSayfasi: React.FC<Props> = ({ gorunur, mod, ozet, oneriler, ekYol, onUygula, onKapat }) => {
     const renkler = useRenkler();
+    const ms = useMetin().hatirlatma.sinir;
     useDonanimGeriTusu(gorunur, onKapat);
 
     const ekleme = mod.tur === 'ekleme';
@@ -74,19 +77,19 @@ export const BildirimSiniriSayfasi: React.FC<Props> = ({ gorunur, mod, ozet, one
 
     let govde: string;
     if (ekleme) {
-        govde = `Bu değişiklikle bekleyen bildirim sayısı ${mod.sonraki.toplam} olacaktı. ${cihaz} en fazla ${ozet.sinir} bildirim bekletir ve fazlasını sessizce atar: en geç kurulan hatırlatmalar hiç gelmez. Aşağıdakilerden birini seçin; yer açılınca değişikliğiniz uygulanır.`;
+        govde = bicim(ms.eklemeGovde, { sonraki: mod.sonraki.toplam, cihaz, sinir: ozet.sinir });
     } else if (ozet.durum === 'asim') {
-        govde = `Şu an ${ozet.toplam} bildirim bekliyor. ${cihaz} en fazla ${ozet.sinir} bildirim bekletir ve fazlasını hata vermeden atar: en geç kurulan ${ozet.gelmeyecek} bildirim gelmeyecek.`;
+        govde = bicim(ms.asimGovde, { toplam: ozet.toplam, cihaz, sinir: ozet.sinir, gelmeyecek: ozet.gelmeyecek });
     } else if (ozet.durum === 'yakin') {
-        govde = `Şu an ${ozet.toplam} bildirim bekliyor; sınıra ${ozet.sinir - ozet.toplam} kaldı. Yeni hatırlatma eklemeden önce yer açabilirsiniz.`;
+        govde = bicim(ms.yakinGovde, { toplam: ozet.toplam, kalan: ozet.sinir - ozet.toplam });
     } else {
-        govde = `Şu an ${ozet.toplam} bildirim bekliyor, sınırın altındasınız.`;
+        govde = bicim(ms.normalGovde, { toplam: ozet.toplam });
     }
 
     return (
         <Modal visible={gorunur} animationType="slide" transparent statusBarTranslucent onRequestClose={onKapat}>
             <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-                <TouchableWithoutFeedback onPress={onKapat} accessibilityLabel="Kapat">
+                <TouchableWithoutFeedback onPress={onKapat} accessibilityLabel={ms.kapat}>
                     <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
                 </TouchableWithoutFeedback>
 
@@ -119,10 +122,10 @@ export const BildirimSiniriSayfasi: React.FC<Props> = ({ gorunur, mod, ozet, one
                             </View>
                             <View className="flex-1">
                                 <Text className="text-base font-bold" style={{ color: renkler.metin }} accessibilityRole="header">
-                                    {ekleme ? mod.baslik : 'Bildirim sınırı'}
+                                    {ekleme ? mod.baslik : ms.baslik}
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                    {cihaz} aynı anda en fazla {ozet.sinir} bildirim bekletir
+                                    {bicim(ms.altBaslik, { cihaz, sinir: ozet.sinir })}
                                 </Text>
                             </View>
                         </View>
@@ -155,9 +158,7 @@ export const BildirimSiniriSayfasi: React.FC<Props> = ({ gorunur, mod, ozet, one
                                     <FontAwesome5 name="cloud-sun" size={12} color={renkler.metinIkincil} solid />
                                 </View>
                                 <Text className="text-xs flex-1 leading-4" style={{ color: renkler.metinIkincil }}>
-                                    Boş kalan yere yarın sabahki imsak hatırlatmalarından {ozet.yedek} tanesi de yedek olarak
-                                    kurulur; uygulamayı sabaha kadar açmasanız da uyarı gelir. Bunlar sınıra sayılmaz, yer
-                                    gerektiğinde önce onlar çıkar.
+                                    {bicim(ms.yedek, { n: ozet.yedek })}
                                 </Text>
                             </View>
                         )}
@@ -165,7 +166,7 @@ export const BildirimSiniriSayfasi: React.FC<Props> = ({ gorunur, mod, ozet, one
                         {onerileriGoster && (
                             <>
                                 <Text className="text-[11px] font-bold tracking-wider mb-2" style={{ color: renkler.metinIkincil }}>
-                                    ÖNERİLERİMİZ
+                                    {ms.onerilerimiz}
                                 </Text>
                                 {oneriler.map((o) => (
                                     <View
@@ -197,19 +198,19 @@ export const BildirimSiniriSayfasi: React.FC<Props> = ({ gorunur, mod, ozet, one
                                                 testID={`oneri-sayi-${o.tur}`}
                                             >
                                                 {o.oncekiToplam} → <Text className="font-bold">{o.sonrakiToplam}</Text>
-                                                {o.sinirAltinaIner ? ' · sınırın altına iner' : ''}
+                                                {o.sinirAltinaIner ? ms.sinirAltinda : ''}
                                             </Text>
                                             <TouchableOpacity
                                                 onPress={() => onUygula(o)}
                                                 activeOpacity={0.8}
                                                 accessibilityRole="button"
-                                                accessibilityLabel={`${o.baslik}: uygulayın`}
+                                                accessibilityLabel={bicim(ms.uygulaEtiketi, { baslik: o.baslik })}
                                                 className="flex-row items-center rounded-xl px-4"
                                                 style={{ backgroundColor: renkler.birincil, minHeight: 44 }}
                                             >
                                                 <FontAwesome5 name="check" size={12} color={renkler.birincilMetin} solid />
                                                 <Text className="text-sm font-bold ml-2" style={{ color: renkler.birincilMetin }}>
-                                                    Uygula
+                                                    {ms.uygula}
                                                 </Text>
                                             </TouchableOpacity>
                                         </View>
@@ -240,12 +241,12 @@ export const BildirimSiniriSayfasi: React.FC<Props> = ({ gorunur, mod, ozet, one
                             onPress={onKapat}
                             activeOpacity={0.7}
                             accessibilityRole="button"
-                            accessibilityLabel={ekleme ? 'Vazgeç' : 'Kapat'}
+                            accessibilityLabel={ekleme ? ms.vazgec : ms.kapat}
                             className="items-center justify-center rounded-xl border"
                             style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir, minHeight: 48 }}
                         >
                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                {ekleme ? 'Vazgeç' : 'Kapat'}
+                                {ekleme ? ms.vazgec : ms.kapat}
                             </Text>
                         </TouchableOpacity>
                     </View>

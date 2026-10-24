@@ -10,6 +10,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { metin } from '../../core/dil/aktifDil';
 import type { YedekPayload } from '../../core/types';
 import {
   EsitlemeDurumu,
@@ -66,44 +67,46 @@ export async function onPlandaOtomatikEsitle(dispatch: AppDispatch, tetik: Esitl
 
 /** Otomatik turun beklediği koşulun kısa açıklaması (tek kaynak). */
 export function esitlemeBeklemeMetni(neden: BeklemeNedeni): string {
+  const m = metin().yedekleme.esitleme.bekleme;
   switch (neden) {
     case 'wifi':
-      return 'Otomatik eşitleme Wi-Fi bağlantısını bekliyor.';
+      return m.wifi;
     case 'sarj':
-      return 'Otomatik eşitleme şarja takılmayı bekliyor.';
+      return m.sarj;
     case 'gucTasarrufu':
-      return 'Güç tasarrufu açık; otomatik eşitleme şarja takılınca ya da mod kapanınca yapılır.';
+      return m.gucTasarrufu;
     case 'veriTasarrufu':
-      return 'Veri tasarrufu açık; eşitleme uygulamayı açtığınızda yapılır.';
+      return m.veriTasarrufu;
     case 'agYok':
-      return 'İnternet bağlantısı yok; bağlantı gelince eşitlenir.';
+      return m.agYok;
     case 'elle':
-      return 'Otomatik eşitleme kapalı; "Şimdi eşitleyin" ile eşitleyebilirsiniz.';
+      return m.elle;
     default:
-      return 'Sıradaki otomatik eşitleme zamanı bekleniyor.';
+      return m.siradaki;
   }
 }
 
 /** Hata kodunun kullanıcıya görünen kibar açıklaması (tek kaynak). */
 export function esitlemeHataMetni(kod: EsitlemeHataKodu): string {
+  const m = metin().yedekleme.esitleme.hata;
   switch (kod) {
     case 'agYok':
-      return 'İnternet bağlantısı olmadığı için eşitlenemedi. Bağlantı gelince kendiliğinden yeniden denenir.';
+      return m.agYok;
     case 'yetkiYok':
-      return 'Hesap bağlantınız sona ermiş. Yeniden bağlanarak eşitlemeyi sürdürebilirsiniz.';
+      return m.yetkiYok;
     case 'yapilandirilmamis':
-      return 'Bu eşitleme hizmeti bu sürümde kullanılamıyor.';
+      return m.yapilandirilmamis;
     case 'parolaGerekli':
     case 'parolaYanlis':
-      return 'Eşitleme parolanız başka bir cihazda değiştirilmiş görünüyor. Yeni parolayı girerek sürdürebilirsiniz.';
+      return m.parola;
     case 'bozukVeri':
-      return 'Buluttaki eşitleme kaydı okunamadı. Verilerinizi korumak için üzerine yazılmadı.';
+      return m.bozukVeri;
     case 'surumYeni':
-      return 'Buluttaki kayıt uygulamanın daha yeni bir sürümüyle oluşturulmuş. Uygulamayı güncelleyin.';
+      return m.surumYeni;
     case 'boyutAsimi':
-      return 'Bulut alanınızda yer kalmadı ya da kayıt hizmetin sınırını aşıyor.';
+      return m.boyutAsimi;
     default:
-      return 'Eşitleme sırasında beklenmeyen bir sorun oluştu. Daha sonra yeniden deneyin.';
+      return m.bilinmiyor;
   }
 }
 

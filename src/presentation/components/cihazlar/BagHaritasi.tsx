@@ -12,6 +12,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { haritaYerlesimi, HARITA } from '../../../core/cihazAgi/bagHaritasi';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 export type DugumTonu = 'iyi' | 'bekliyor' | 'sorun' | 'notr';
 
@@ -27,8 +29,11 @@ export interface HaritaDugumu {
 const SIMGE: Record<HaritaDugumu['tur'], string> = { tv: 'tv', saat: 'clock', tablet: 'tablet-alt', telefon: 'mobile-alt', ekle: 'plus', fazla: 'ellipsis-h' };
 const CIZIM_MS = 700;
 
-export const BagHaritasi: React.FC<{ dugumler: HaritaDugumu[]; merkezAdi?: string; merkezTablet?: boolean }> = ({ dugumler, merkezAdi = "Bu telefon", merkezTablet = false }) => {
+export const BagHaritasi: React.FC<{ dugumler: HaritaDugumu[]; merkezAdi?: string; merkezTablet?: boolean }> = ({ dugumler, merkezAdi: merkezAdiProp, merkezTablet = false }) => {
     const renkler = useRenkler();
+    const metinler = useMetin().cihaz;
+    const m = metinler.harita;
+    const merkezAdi = merkezAdiProp ?? metinler.cihazlarim.buTelefon;
     const azalt = useHareketAzalt();
     const [genislik, setGenislik] = React.useState(0);
     const [ilerleme, setIlerleme] = React.useState(1);
@@ -127,7 +132,7 @@ export const BagHaritasi: React.FC<{ dugumler: HaritaDugumu[]; merkezAdi?: strin
                             </View>
                             <View className="ml-3 flex-1">
                                 <Text className="font-semibold" style={{ color: renkler.metin, fontSize: 15 }} numberOfLines={1}>
-                                    {dugum.tur === 'fazla' ? 'Diğer cihazlar' : dugum.ad}
+                                    {dugum.tur === 'fazla' ? m.digerCihazlar : dugum.ad}
                                 </Text>
                                 <View className="flex-row items-center mt-1">
                                     {!ekle && <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: r, marginRight: 6 }} />}
@@ -158,12 +163,12 @@ export const BagHaritasi: React.FC<{ dugumler: HaritaDugumu[]; merkezAdi?: strin
                             style={stil}
                             onPress={dugum.onPress}
                             accessibilityRole="button"
-                            accessibilityLabel={ekle ? dugum.ad : `${dugum.ad}: ${dugum.rozet}`}
+                            accessibilityLabel={ekle ? dugum.ad : bicim(m.dugumErisim, { ad: dugum.ad, rozet: dugum.rozet })}
                         >
                             {icerik}
                         </TouchableOpacity>
                     ) : (
-                        <View key={dugum.kimlik} style={stil} accessible accessibilityLabel={`${dugum.ad}: ${dugum.rozet}`}>
+                        <View key={dugum.kimlik} style={stil} accessible accessibilityLabel={bicim(m.dugumErisim, { ad: dugum.ad, rozet: dugum.rozet })}>
                             {icerik}
                         </View>
                     );

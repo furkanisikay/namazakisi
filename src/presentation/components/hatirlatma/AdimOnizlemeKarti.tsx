@@ -22,8 +22,9 @@ import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafi
 import { adimiOnizle } from '../../../domain/services/AnonsOnizlemeServisi';
 import { KANAL_IKONLARI } from './OzetCipleri';
 import type { AdimOnizlemeIcerigi } from './pencereTanimi';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
-const YALNIZ_SESLI_METNI = 'Bildirim gelmez, sesli okunur.';
 
 /** Kanal açıldığında bir kez oynayan ikon hareketi. */
 const KanalIkonu: React.FC<{ kanal: OzetKanali; renk: string; canlan: boolean }> = ({ kanal, renk, canlan }) => {
@@ -101,6 +102,8 @@ export const AdimOnizlemeKarti: React.FC<AdimOnizlemeKartiProps> = ({
     not,
 }) => {
     const renkler = useRenkler();
+    const mo = useMetin().hatirlatma;
+    const YALNIZ_SESLI_METNI = mo.onizlemeKart.yalnizSesli;
     // İlk çizimde ikonlar sakin doğar; sonradan AÇILAN kanalın ikonu canlanır.
     const ilkCizim = React.useRef(true);
     React.useEffect(() => {
@@ -170,7 +173,7 @@ export const AdimOnizlemeKarti: React.FC<AdimOnizlemeKartiProps> = ({
                 <View className="flex-row items-center justify-end mt-2">
                     <FontAwesome5 name={dinleIkonu} size={10} color={renkler.birincil} solid style={{ marginRight: 6 }} />
                     <Text className="text-xs font-semibold" style={{ color: renkler.birincil }}>
-                        Dinle
+                        {mo.akis.dinle}
                     </Text>
                 </View>
             )}
@@ -180,7 +183,7 @@ export const AdimOnizlemeKarti: React.FC<AdimOnizlemeKartiProps> = ({
     return (
         <View testID="adim-onizleme">
             <Text className="text-xs mb-1.5" style={{ color: renkler.metinIkincil }}>
-                Telefonunuz böyle uyaracak
+                {mo.onizlemeKart.boyleUyaracak}
             </Text>
             {dinlenebilir ? (
                 <TouchableOpacity
@@ -189,7 +192,9 @@ export const AdimOnizlemeKarti: React.FC<AdimOnizlemeKartiProps> = ({
                     }}
                     activeOpacity={0.75}
                     accessibilityRole="button"
-                    accessibilityLabel={`Bu hatırlatmayı dinleyin. ${bildirimVar ? `${icerik.baslik}. ` : ''}${anons ?? ''}`.trim()}
+                    accessibilityLabel={bicim(mo.onizlemeKart.dinleEtiketi, {
+                        metin: `${bildirimVar ? `${icerik.baslik}. ` : ''}${anons ?? ''}`,
+                    }).trim()}
                     testID="adim-onizleme-dinle"
                 >
                     {govde}

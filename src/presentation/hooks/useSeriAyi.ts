@@ -40,6 +40,7 @@ import { useHesapSurumu } from './useHesapSurumu';
 import { seriVerileriniYukle } from '../store/seriSlice';
 import { localTarihAraligindakiNamazlariGetir } from '../../data/local/LocalNamazServisi';
 import { Logger } from '../../core/utils/Logger';
+import { metin } from '../../core/dil/aktifDil';
 import { ISOTarihiDateNesnesiNeCevir, ayAdiniAl } from '../../core/utils/TarihYardimcisi';
 import { namazGunuHesapla } from '../../domain/services/SeriHesaplayiciServisi';
 import { aylikIzgaraOlustur, izgaraAraligi, IzgaraGunu } from '../../core/seri/aylikIzgara';
@@ -83,8 +84,9 @@ const BASLANGIC_OKUMA_DURUMU: OkumaDurumu = {
 // error.message'ı (teknik, kullanıcıya anlamsız) burada asla kullanılmaz;
 // ham içerik yalnız Logger.error'a gider (bkz. dosya başı JSDoc'u). Testte de
 // tüketilebilsin diye export edilir (iki yerde aynı sabit metin tekrar
-// yazılmasın).
-export const KIBAR_HATA_METNI = 'Geçmiş kayıtlarınız şu anda okunamadı.';
+// yazılmasın). Etkin dilde, hata anında çözülür; `SeriSekmesi` metni çizim anında
+// sözlükten yeniden okur (dil sonradan değişirse bayat kalmaz).
+export const kibarHataMetni = (): string => metin().seri.sekme.hataOkunamadi;
 
 export function useSeriAyi(): SeriAyiSonucu {
   const dispatch = useAppDispatch();
@@ -164,13 +166,13 @@ export function useSeriAyi(): SeriAyiSonucu {
 
       if (!yanit.basarili || !yanit.veri) {
         // Teknik ayrıntı (ham error.message) yalnız log'a gider — kullanıcı
-        // daima aynı kibar, sabit metni görür (bkz. KIBAR_HATA_METNI JSDoc'u).
+        // daima aynı kibar, sabit metni görür (bkz. kibarHataMetni JSDoc'u).
         Logger.error('useSeriAyi', 'Namaz kayıtları okunamadı (aralık okuma)', {
           hata: yanit.hata,
           izgaraBaslangici,
           izgaraBitisi,
         });
-        setOkuma({ yukleniyor: false, hata: KIBAR_HATA_METNI, kayitlar: {} });
+        setOkuma({ yukleniyor: false, hata: kibarHataMetni(), kayitlar: {} });
         return;
       }
 

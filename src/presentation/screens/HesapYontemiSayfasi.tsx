@@ -29,15 +29,11 @@ import { ulkeAdi } from '../../core/konum/ulkeAdlari';
 import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { SecenekListesi, type Secenek } from '../components/ortak/SecenekListesi';
 import { NotSatiri } from '../components/ortak/NotSatiri';
+import { useMetin } from '../hooks/useMetin';
+import { aktifDil, bicim } from '../../core/dil/aktifDil';
 
-const OFSET_VAKITLERI: readonly { anahtar: VakitOfsetAnahtari; ad: string }[] = [
-  { anahtar: 'imsak', ad: 'Sabah' },
-  { anahtar: 'gunes', ad: 'Güneş' },
-  { anahtar: 'ogle', ad: 'Öğle' },
-  { anahtar: 'ikindi', ad: 'İkindi' },
-  { anahtar: 'aksam', ad: 'Akşam' },
-  { anahtar: 'yatsi', ad: 'Yatsı' },
-];
+/** Ofset anahtarları vakit sözlüğünün (`vakit.adlar`) anahtarlarıyla aynıdır; ad etkin dilden. */
+const OFSET_VAKITLERI: readonly VakitOfsetAnahtari[] = ['imsak', 'gunes', 'ogle', 'ikindi', 'aksam', 'yatsi'];
 
 const OFSET_SINIRI = 30;
 
@@ -47,7 +43,7 @@ function profilSirasi(onerilen: HesapProfiliKimligi): HesapProfiliKimligi[] {
   const bas = [onerilen, 'diyanet', 'mwl'].filter((p, i, a) => a.indexOf(p) === i) as HesapProfiliKimligi[];
   const orta = tumu
     .filter((p) => !bas.includes(p) && p !== 'caferi')
-    .sort((a, b) => PROFIL_ADLARI[a].localeCompare(PROFIL_ADLARI[b], 'tr'));
+    .sort((a, b) => PROFIL_ADLARI[a].localeCompare(PROFIL_ADLARI[b], aktifDil()));
   return [...bas, ...orta, 'caferi'];
 }
 
@@ -61,7 +57,9 @@ function DakikaAdimlayici({
   onDegistir: (yeni: number) => void;
 }) {
   const renkler = useRenkler();
-  const metin = deger === 0 ? '0 dk' : `${deger > 0 ? '+' : ''}${deger} dk`;
+  const s = useMetin();
+  const m = s.hesap.sayfa;
+  const metin = `${deger > 0 ? '+' : ''}${deger} ${s.sure.kisa.dk}`;
   const dugme = (yon: -1 | 1) => {
     const kapali = yon < 0 ? deger <= -OFSET_SINIRI : deger >= OFSET_SINIRI;
     return (
@@ -71,7 +69,7 @@ function DakikaAdimlayici({
         className="w-11 h-11 rounded-xl items-center justify-center"
         style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir, opacity: kapali ? 0.4 : 1 }}
         accessibilityRole="button"
-        accessibilityLabel={yon < 0 ? `${ad} vaktini bir dakika erkene alın` : `${ad} vaktini bir dakika geciktirin`}
+        accessibilityLabel={bicim(yon < 0 ? m.erkeneAl : m.geciktir, { ad })}
         accessibilityState={{ disabled: kapali }}
       >
         <FontAwesome5 name={yon < 0 ? 'minus' : 'plus'} size={14} color={renkler.metin} />
@@ -87,7 +85,7 @@ function DakikaAdimlayici({
       <Text
         className="text-base font-bold text-center"
         style={{ width: 64, color: deger === 0 ? renkler.metin : renkler.birincil }}
-        accessibilityLabel={`${ad} düzeltmesi ${metin}`}
+        accessibilityLabel={bicim(m.duzeltmeErisim, { ad, deger: metin })}
       >
         {metin}
       </Text>
@@ -98,6 +96,8 @@ function DakikaAdimlayici({
 
 export const HesapYontemiSayfasi: React.FC = () => {
   const renkler = useRenkler();
+  const s = useMetin();
+  const m = s.hesap.sayfa;
   const dispatch = useAppDispatch();
   const ayar = useAppSelector((s) => s.hesap.ayar);
   const konum = useAppSelector((s) => s.konum);
@@ -128,15 +128,18 @@ export const HesapYontemiSayfasi: React.FC = () => {
         etiket: PROFIL_ADLARI[p],
         aciklama:
           p === onerilen.profil && ulke
-            ? `${ulkeAdi(ulke)} için önerilen`
+            ? bicim(m.onerilen, { ulke: ulkeAdi(ulke, aktifDil()) })
             : aciOzeti(hesapParametreleriOlustur({ profil: p })),
       })),
-    [onerilen.profil, ulke],
+    // Profil adları canlı görünümdür: dil değişince liste yeniden kurulsun.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [onerilen.profil, ulke, s],
   );
 
   const ikindiSecenekleri = useMemo<Secenek<IkindiYontemi>[]>(
     () => (['evvel', 'sani'] as const).map((i) => ({ deger: i, etiket: IKINDI_ADLARI[i], aciklama: IKINDI_ACIKLAMASI[i] })),
-    [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [s],
   );
 
   const ofsetDegistir = useCallback(
@@ -166,7 +169,7 @@ export const HesapYontemiSayfasi: React.FC = () => {
     >
       {yerAdi ? (
         <Text className="text-sm mb-3" style={{ color: renkler.metinIkincil }}>
-          {yerAdi} için vakitler şu takvime göre hesaplanıyor:
+          {bicim(m.yerIcin, { yer: yerAdi })}
         </Text>
       ) : null}
 
@@ -200,7 +203,7 @@ export const HesapYontemiSayfasi: React.FC = () => {
           </View>
           <View className="px-2.5 py-1 rounded-lg" style={{ backgroundColor: renkler.arkaplan }}>
             <Text className="text-xs" style={{ color: renkler.metin }}>
-              İkindi: {IKINDI_ADLARI[ikindi]}
+              {bicim(m.ikindiEtiketi, { ad: IKINDI_ADLARI[ikindi] })}
             </Text>
           </View>
         </View>
@@ -209,63 +212,63 @@ export const HesapYontemiSayfasi: React.FC = () => {
           className="mt-3 justify-center"
           style={{ minHeight: 44 }}
           accessibilityRole="link"
-          accessibilityLabel="Yöntemin kaynağını açın"
+          accessibilityLabel={m.kaynakErisim}
         >
           <Text className="text-sm font-semibold" style={{ color: renkler.birincil }}>
-            Kaynağı açın
+            {m.kaynagiAcin}
           </Text>
         </TouchableOpacity>
       </View>
 
       {yuksekEnlem && (
         <NotSatiri
-          metin="Bu enlemde yaz aylarında sabah ve yatsı tahminîdir (gecenin yedide biri kuralı). Camiyle karşılaştırın."
+          metin={m.yuksekEnlem}
           style={{ marginTop: 10 }}
         />
       )}
       {diyanetAvrupa && (
         <NotSatiri
-          metin="Diyanet'in Avrupa takviminde yatsı buradakinden 5-7 dakika önce olabilir. Camiyle karşılaştırıp dakika düzeltmesi yapabilirsiniz."
+          metin={m.diyanetAvrupa}
           style={{ marginTop: 10 }}
         />
       )}
 
       <View style={{ marginTop: 24 }} testID="hesap-yontemi-listesi">
-        <BolumBasligi metin="Takvim" />
+        <BolumBasligi metin={m.takvim} />
         <SecenekListesi
           secenekler={profilSecenekleri}
           secili={ayar.profil}
           onSec={(p) => kaydet({ profil: p, ikindi: undefined })}
-          erisimEtiketi="Hesap yöntemi"
+          erisimEtiketi={s.genel.ekranlar.HesapYontemiAyarlari}
         />
-        <NotSatiri metin="Seçiminiz kendiliğinden değişmez. Başka bir ülkeye geçtiğinizde bir kez sorarız." style={{ marginTop: 10 }} />
+        <NotSatiri metin={m.secimDegismez} style={{ marginTop: 10 }} />
       </View>
 
       <View style={{ marginTop: 24 }} testID="ikindi-secimi">
-        <BolumBasligi metin="İkindi vakti" />
+        <BolumBasligi metin={m.ikindiVakti} />
         <SecenekListesi
           secenekler={ikindiSecenekleri}
           secili={ikindi}
           onSec={(i) => kaydet({ ikindi: i === profil.ikindi ? undefined : i })}
-          erisimEtiketi="İkindi vakti"
+          erisimEtiketi={m.ikindiVakti}
         />
-        <NotSatiri metin="Bölgenizdeki camilerin ikindi ezanını okuduğu vakti seçin." style={{ marginTop: 10 }} />
+        <NotSatiri metin={m.ikindiNotu} style={{ marginTop: 10 }} />
       </View>
 
       <View style={{ marginTop: 24 }}>
-        <BolumBasligi metin="Camiye göre dakika düzeltmesi" />
+        <BolumBasligi metin={m.dakikaDuzeltmesi} />
         <View style={{ borderRadius: 24, overflow: 'hidden', backgroundColor: renkler.kartArkaplan }}>
-          {OFSET_VAKITLERI.map((v, i) => (
-            <View key={v.anahtar} style={i ? ayrac : undefined}>
+          {OFSET_VAKITLERI.map((anahtar, i) => (
+            <View key={anahtar} style={i ? ayrac : undefined}>
               <DakikaAdimlayici
-                ad={v.ad}
-                deger={ayar.ofsetler?.[v.anahtar] ?? 0}
-                onDegistir={(yeni) => ofsetDegistir(v.anahtar, yeni)}
+                ad={s.vakit.adlar[anahtar]}
+                deger={ayar.ofsetler?.[anahtar] ?? 0}
+                onDegistir={(yeni) => ofsetDegistir(anahtar, yeni)}
               />
             </View>
           ))}
         </View>
-        <NotSatiri metin="Düzeltme kalıcıdır; her gün aynen uygulanır." style={{ marginTop: 10 }} />
+        <NotSatiri metin={m.duzeltmeKalici} style={{ marginTop: 10 }} />
       </View>
     </ScrollView>
   );

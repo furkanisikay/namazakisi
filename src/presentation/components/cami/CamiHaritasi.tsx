@@ -54,7 +54,9 @@ import {
 } from '../../../core/cami/haritaVerisi';
 import type { YerKaydi } from '../../../core/cami/camiTipleri';
 import { yerDurumunuAyarla } from '../../../core/cami/camideyimAyarlari';
-import { mesafeM } from '../../../core/cami/geometri';
+import { mesafeKmYaz, mesafeM } from '../../../core/cami/geometri';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import type { CamideyimDurumu } from '../../hooks/useCamideyim';
 import * as kopru from '../../../../modules/expo-cami-geofence/src';
 
@@ -72,8 +74,7 @@ const CAMI_IKONU = require('../../../../assets/harita/cami-ikonu.png');
 /** Küme yazısı: OpenFreeMap stillerinin glif yığını (liberty + dark aynı yazı ailesini taşır). */
 const KUME_YAZI_TIPI = ['Noto Sans Bold'];
 
-export const mesafeYazisi = (m: number): string =>
-    m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1).replace('.', ',')} km`;
+export const mesafeYazisi = (m: number): string => mesafeKmYaz(m);
 
 interface Nokta {
     lat: number;
@@ -86,6 +87,9 @@ interface Props {
 
 export const CamiHaritasi: React.FC<Props> = ({ c }) => {
     const renkler = useRenkler();
+    const metinler = useMetin().cami;
+    const mh = metinler.harita;
+    const my = metinler.yer;
     const { koyuMu } = useTema();
     const kamera = useRef<CameraRef>(null);
     const [kullanici, setKullanici] = useState<Nokta | null>(null);
@@ -303,7 +307,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
     const eklemeyiOnayla = useCallback(async () => {
         const merkez = gorunumMerkezi.current;
         if (!merkez) {
-            kisaBildirimGoster('Haritanın ortası okunamadı; haritayı biraz kaydırıp yeniden deneyin.', true);
+            kisaBildirimGoster(mh.ortaOkunamadi, true);
             return;
         }
         Keyboard.dismiss();
@@ -313,13 +317,13 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
             setEkleme(false);
             setEklemeAdi('');
             setSeciliId(id);
-            kisaBildirimGoster('Yer eklendi');
+            kisaBildirimGoster(mh.yerEklendi);
         } catch {
-            kisaBildirimGoster('Yer eklenemedi; yeniden deneyin.', true);
+            kisaBildirimGoster(mh.yerEklenemedi, true);
         } finally {
             setEkleniyor(false);
         }
-    }, [c, eklemeAdi]);
+    }, [c, eklemeAdi, mh]);
 
     const konumumaGit = useCallback(() => {
         const hedef = kullanici ?? c.merkez;
@@ -333,7 +337,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
             <View className="flex-1 items-center justify-center p-6" style={{ backgroundColor: renkler.arkaplan }}>
                 <FontAwesome5 name="map-marked-alt" size={28} color={renkler.metinIkincil} />
                 <Text className="text-sm text-center mt-3" style={{ color: renkler.metinIkincil }}>
-                    Haritayı açmak için önce konumunuzu Konum Ayarları'ndan belirleyin.
+                    {mh.konumYok}
                 </Text>
             </View>
         );
@@ -352,19 +356,18 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
             return (
                 <View testID="harita-ekleme-paneli">
                     <Text className="text-sm font-semibold mb-1" style={{ color: renkler.metin }}>
-                        Yer ekleyin
+                        {mh.yerEkleyin}
                     </Text>
                     <Text className="text-xs mb-2" style={{ color: renkler.metinIkincil }}>
-                        Haritayı kaydırıp iğneyi namaz kıldığınız yere getirin. İş yerindeki mescit, Kur'an kursu ya da herhangi bir yer
-                        olabilir.
+                        {mh.yerEkleAciklama}
                     </Text>
                     <TextInput
                         value={eklemeAdi}
                         onChangeText={setEklemeAdi}
-                        placeholder="Yerin adı (isteğe bağlı)"
+                        placeholder={mh.yerAdiIpucu}
                         placeholderTextColor={renkler.metinIkincil}
                         maxLength={60}
-                        accessibilityLabel="Yerin adı"
+                        accessibilityLabel={mh.yerAdi}
                         className="rounded-xl px-3 mb-2"
                         style={{ minHeight: 44, borderWidth: 1, borderColor: renkler.sinir, color: renkler.metin, backgroundColor: renkler.arkaplan }}
                     />
@@ -374,10 +377,10 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                             style={ikincilButon}
                             onPress={() => setEkleme(false)}
                             accessibilityRole="button"
-                            accessibilityLabel="Vazgeçin"
+                            accessibilityLabel={mh.vazgecin}
                         >
                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                Vazgeçin
+                                {mh.vazgecin}
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -388,11 +391,11 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                             disabled={ekleniyor}
                             accessibilityRole="button"
                             accessibilityState={{ disabled: ekleniyor, busy: ekleniyor }}
-                            accessibilityLabel="Buraya ekleyin"
+                            accessibilityLabel={mh.buraya}
                         >
                             <FontAwesome5 name="map-pin" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                             <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
-                                Buraya ekleyin
+                                {mh.buraya}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -406,7 +409,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                     <View className="flex-row items-center" testID="harita-veri-yok">
                         <FontAwesome5 name="info-circle" size={14} color={renkler.bilgi} solid style={{ marginRight: 8 }} />
                         <Text className="text-sm flex-1" style={{ color: renkler.metin }}>
-                            Bu sürümde cami verisi yok; eklediğiniz yerler yine algılanır.
+                            {my.veriYok}
                         </Text>
                     </View>
                 );
@@ -415,17 +418,17 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                 <View className="flex-row items-center" testID="harita-ipucu">
                     <FontAwesome5 name="hand-pointer" size={14} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
                     <Text className="text-sm flex-1" style={{ color: renkler.metinIkincil }}>
-                        Camiye dokunun
+                        {mh.camiyeDokunun}
                     </Text>
                 </View>
             );
         }
         const haric = secili.tur === 'haric';
         const kendi = secili.tur === 'kendi';
-        const ad = secili.ad || (kendi ? 'Eklediğim yer' : 'Adı bilinmeyen cami');
+        const ad = secili.ad || (kendi ? metinler.eklenenYer : metinler.adsizCami);
         const referans = kullanici ?? c.merkez;
         const uzaklik = referans ? mesafeYazisi(mesafeM(referans.lat, referans.lng, secili.lat, secili.lng)) : null;
-        const altYazi = [uzaklik ? `${uzaklik} uzakta` : null, kendi ? 'sizin eklediğiniz yer' : 'OpenStreetMap', haric ? 'cami değil' : null, secili.favori ? 'favori' : null]
+        const altYazi = [uzaklik ? bicim(mh.uzakta, { mesafe: uzaklik }) : null, kendi ? mh.sizinEklediginiz : 'OpenStreetMap', haric ? my.camiDegil : null, secili.favori ? my.favori : null]
             .filter(Boolean)
             .join(', ');
         const renk = haric ? renkler.metinIkincil : kendi ? renkler.durum.bilgi : renkler.birincil;
@@ -447,14 +450,14 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                         className="w-11 h-11 items-center justify-center"
                         onPress={() => setSeciliId(null)}
                         accessibilityRole="button"
-                        accessibilityLabel="Paneli kapatın"
+                        accessibilityLabel={mh.paneliKapatin}
                     >
                         <FontAwesome5 name="times" size={14} color={renkler.metinIkincil} />
                     </TouchableOpacity>
                 </View>
                 {haric ? (
                     <Text className="text-xs mb-2" style={{ color: renkler.metinIkincil }}>
-                        Burada hiçbir zaman "camidesiniz" denmez.
+                        {my.hicbirZaman}
                     </Text>
                 ) : (
                     <View className="mb-2">
@@ -480,11 +483,11 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                             style={ikincilButon}
                             onPress={() => sil(secili)}
                             accessibilityRole="button"
-                            accessibilityLabel={`${ad} yerini silin`}
+                            accessibilityLabel={bicim(my.silErisim, { ad })}
                         >
                             <FontAwesome5 name="trash-alt" size={12} color={renkler.metin} style={{ marginRight: 6 }} />
                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                Sil
+                                {my.sil}
                             </Text>
                         </TouchableOpacity>
                     ) : (
@@ -493,11 +496,11 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                             style={ikincilButon}
                             onPress={() => haricDegis(secili)}
                             accessibilityRole="button"
-                            accessibilityLabel={haric ? `${ad}: geri alın` : `${ad}: cami değil`}
+                            accessibilityLabel={bicim(haric ? my.geriAlErisim : my.camiDegilErisim, { ad })}
                         >
                             <FontAwesome5 name={haric ? 'undo' : 'ban'} size={12} color={renkler.metin} style={{ marginRight: 6 }} />
                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                {haric ? 'Geri alın' : 'Cami değil'}
+                                {haric ? my.geriAlin : my.camiDegilDugme}
                             </Text>
                         </TouchableOpacity>
                     )}
@@ -508,7 +511,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                             onPress={() => favoriDegis(secili)}
                             accessibilityRole="button"
                             accessibilityState={{ selected: secili.favori }}
-                            accessibilityLabel={secili.favori ? `${ad}: favoriden çıkarın` : `${ad}: favorilere ekleyin`}
+                            accessibilityLabel={bicim(secili.favori ? my.favoridenCikarin : my.favorilereEkleyin, { ad })}
                         >
                             <FontAwesome5
                                 name="star"
@@ -518,7 +521,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                                 style={{ marginRight: 6 }}
                             />
                             <Text className="text-sm font-semibold" style={{ color: secili.favori ? renkler.birincilMetin : renkler.metin }}>
-                                {secili.favori ? 'Favoride' : 'Favori'}
+                                {secili.favori ? my.favoride : my.favoriDugme}
                             </Text>
                         </TouchableOpacity>
                     )}
@@ -704,16 +707,16 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                     onPress={() => setLejantAcik((a) => !a)}
                     accessibilityRole="button"
                     accessibilityState={{ expanded: lejantAcik }}
-                    accessibilityLabel={lejantAcik ? 'İşaretlerin açıklamasını kapatın' : 'İşaretlerin açıklamasını gösterin'}
+                    accessibilityLabel={lejantAcik ? mh.lejantKapat : mh.lejantGoster}
                 >
                     <FontAwesome5 name={lejantAcik ? 'times' : 'question'} size={14} color={renkler.metin} />
                 </TouchableOpacity>
                 {lejantAcik && (
                     <View testID="harita-lejant" className="absolute left-3 px-2.5 py-2" style={[etiketKutusu, { top: 64 }]} pointerEvents="none">
                         {[
-                            { etiket: 'Cami', renk: renkler.birincil },
-                            { etiket: 'Sizin yeriniz', renk: renkler.durum.bilgi },
-                            { etiket: 'Cami değil', renk: renkler.metinIkincil },
+                            { etiket: mh.lejantCami, renk: renkler.birincil },
+                            { etiket: mh.lejantSizin, renk: renkler.durum.bilgi },
+                            { etiket: mh.lejantCamiDegil, renk: renkler.metinIkincil },
                         ].map((l) => (
                             <View key={l.etiket} className="flex-row items-center" style={{ marginVertical: 1 }}>
                                 <View className="w-2.5 h-2.5 rounded-full mr-1.5" style={{ backgroundColor: l.renk }} />
@@ -728,7 +731,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                                 style={{ borderWidth: 2, borderColor: renkler.birincil, backgroundColor: renkler.kartArkaplan }}
                             />
                             <Text className="text-[11px]" style={{ color: renkler.metin }}>
-                                Sayılı daire: birden çok cami
+                                {mh.lejantKume}
                             </Text>
                         </View>
                         <View className="flex-row items-center" style={{ marginVertical: 1 }}>
@@ -737,7 +740,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                                 style={{ borderWidth: 1, borderStyle: 'dashed', borderColor: renkler.metinIkincil }}
                             />
                             <Text className="text-[11px]" style={{ color: renkler.metin }}>
-                                Uyanma çevresi
+                                {mh.lejantUyanma}
                             </Text>
                         </View>
                     </View>
@@ -755,11 +758,11 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                                 setEkleme(true);
                             }}
                             accessibilityRole="button"
-                            accessibilityLabel="Yer ekleyin"
+                            accessibilityLabel={mh.yerEkleyin}
                         >
                             <FontAwesome5 name="plus" size={12} color={renkler.birincilMetin} style={{ marginRight: 6 }} />
                             <Text className="text-xs font-bold" style={{ color: renkler.birincilMetin }}>
-                                Yer ekleyin
+                                {mh.yerEkleyin}
                             </Text>
                         </TouchableOpacity>
                     )}
@@ -768,7 +771,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                         style={{ backgroundColor: renkler.kartArkaplan }}
                         onPress={konumumaGit}
                         accessibilityRole="button"
-                        accessibilityLabel="Konumunuza gidin"
+                        accessibilityLabel={mh.konumunuzaGidin}
                     >
                         <FontAwesome5 name="location-arrow" size={14} color={renkler.birincil} />
                     </TouchableOpacity>
@@ -786,7 +789,7 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                 {/* Atıf — MapLibre "i" düğmesine ek olarak daima görünür */}
                 <View className="absolute left-3 bottom-2 px-2 py-0.5" style={etiketKutusu} pointerEvents="none">
                     <Text className="text-[10px]" style={{ color: renkler.metinIkincil }}>
-                        © OpenStreetMap katkıcıları · OpenFreeMap
+                        {mh.atif}
                     </Text>
                 </View>
             </View>

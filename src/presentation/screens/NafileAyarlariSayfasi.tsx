@@ -64,19 +64,23 @@ import { teheccudPenceresiniUygula, type NafilePencere } from '../../core/nafile
 import { useCihazDurumu } from '../hooks/useCihazDurumu';
 import { durumNotu } from '../../core/cihaz/durumNotlari';
 import { DurumSatiri } from '../components/ortak/DurumSatiri';
+import { bicim, metin, sayili } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
 
 const saatMetni = (t: Date): string =>
     `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`;
 
-const KARTLAR: { tur: NafileTuru; ikon: string; kisa: string }[] = [
-    { tur: 'kusluk', ikon: 'sun', kisa: 'Güneş yükseldikten sonra, öğleden önce' },
-    { tur: 'evvabin', ikon: 'cloud-sun', kisa: 'Akşam namazından sonra, yatsıya kadar' },
-    { tur: 'teheccud', ikon: 'moon', kisa: 'Yatsıdan sonra, imsaka kadar' },
+const nm = () => metin().muhafizAyar.nafile;
+
+const KARTLAR: { tur: NafileTuru; ikon: string; readonly kisa: string }[] = [
+    { tur: 'kusluk', ikon: 'sun', get kisa() { return nm().kisa.kusluk; } },
+    { tur: 'evvabin', ikon: 'cloud-sun', get kisa() { return nm().kisa.evvabin; } },
+    { tur: 'teheccud', ikon: 'moon', get kisa() { return nm().kisa.teheccud; } },
 ];
 
-const TEHECCUD_PENCERELERI: { pencere: TeheccudPenceresi; etiket: string; ikon: string }[] = [
-    { pencere: 'sonUcteBir', etiket: 'Son üçte bir', ikon: 'star' },
-    { pencere: 'yatsi', etiket: 'Yatsıdan', ikon: 'moon' },
+const TEHECCUD_PENCERELERI: { pencere: TeheccudPenceresi; readonly etiket: string; ikon: string }[] = [
+    { pencere: 'sonUcteBir', get etiket() { return nm().pencereler.sonUcteBir; }, ikon: 'star' },
+    { pencere: 'yatsi', get etiket() { return nm().pencereler.yatsi; }, ikon: 'moon' },
 ];
 
 /** Nafile ekranında yalnız nafile önerisi UYGULANIR; muhafız önerileri kendi ekranında. */
@@ -109,6 +113,8 @@ const SES_ALANLARI = ['alarmSesiAcik'] as const;
 
 export const NafileAyarlariSayfasi: React.FC = () => {
     const renkler = useRenkler();
+    const sozluk = useMetin();
+    const mn = sozluk.muhafizAyar.nafile;
     // Teheccüd uyandırması alarm sesiyle çalar: alarm ses düzeyi 0 ise SÖYLE (ölç, varsayma).
     const { durum: cihaz } = useCihazDurumu(SES_ALANLARI, Platform.OS === 'android');
     const dispatch = useAppDispatch();
@@ -139,7 +145,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
         {
             oneriFiltresi: yalnizNafileOnerisi,
             ekYol: navigation
-                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: sozluk.hatirlatma.ek.ekYol, onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );
@@ -214,11 +220,13 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                     };
                     return { ...nafileBildirimMetni(girdi), anons: nafileAnonsMetni(girdi) };
                 },
-                onizlemeOzeti: (adet) => `Bugün ${NAFILE_ADLARI_KUCUK[k.tur]} için ${adet} hatırlatma alırsınız`,
+                onizlemeOzeti: (adet) => sayili(nm().onizlemeOzeti, adet, { ad: NAFILE_ADLARI_KUCUK[k.tur] }),
             });
         }
         return sonuc;
-    }, [ayarlar, pencereAl, yetenekler]);
+        // Dil değişince tanım (başlık, metinler) yeniden kurulur.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ayarlar, pencereAl, yetenekler, sozluk]);
 
     const vakitAyari = (ayar: NafileHatirlatmaAyari): VakitMuhafizAyari => ({ yon: ayar.yon, seviyeler: ayar.adimlar });
 
@@ -261,7 +269,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                 }}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                 thumbColor={deger ? renkler.birincil : '#f4f3f4'}
-                accessibilityLabel={`${baslik} hatırlatması`}
+                accessibilityLabel={bicim(mn.anahtarEtiketi, { ad: baslik })}
             />
         </View>
     );
@@ -280,7 +288,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
         return (
             <>
                 <Text className="text-xs font-bold tracking-wider mt-4 mb-2" style={{ color: renkler.metinIkincil }}>
-                    PENCERE
+                    {mn.pencere}
                 </Text>
                 <View className="flex-row gap-2 mb-3">
                     {TEHECCUD_PENCERELERI.map((h) => {
@@ -301,7 +309,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                                 activeOpacity={0.7}
                                 accessibilityRole="button"
                                 accessibilityState={{ selected: secili }}
-                                accessibilityLabel={`Teheccüd penceresi: ${etiket}`}
+                                accessibilityLabel={bicim(mn.pencereEtiketi, { etiket })}
                             >
                                 <FontAwesome5
                                     name={h.ikon}
@@ -329,12 +337,12 @@ export const NafileAyarlariSayfasi: React.FC = () => {
             >
                 <View className="flex-1 pr-3">
                     <Text className="text-sm font-medium" style={{ color: renkler.metin }}>
-                        Uyandırma sesi
+                        {mn.uyandirma}
                     </Text>
                     <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                         {Platform.OS === 'ios'
-                            ? 'Odak modunu deler. Telefonun sessiz anahtarı açıksa ses çıkmaz.'
-                            : 'Alarm sesiyle çalar, sessiz modu deler.'}
+                            ? mn.uyandirmaIos
+                            : mn.uyandirmaAndroid}
                     </Text>
                 </View>
                 <Anahtar
@@ -344,7 +352,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                     }}
                     trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                     thumbColor={ayarlar.teheccud.uyandirma ? renkler.birincil : '#f4f3f4'}
-                    accessibilityLabel="Teheccüd uyandırması"
+                    accessibilityLabel={mn.uyandirmaEtiketi}
                 />
             </View>
             {ayarlar.teheccud.uyandirma && <DurumSatiri durum={durumNotu('alarmSesi', cihaz)} style={{ marginTop: 8 }} />}
@@ -369,10 +377,10 @@ export const NafileAyarlariSayfasi: React.FC = () => {
             </View>
             <View className="flex-1 pr-3">
                 <Text className="text-sm font-medium" style={{ color: renkler.metin }}>
-                    Ana ekranda göster
+                    {mn.gosterge}
                 </Text>
                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                    Günlük akışta, vakitlerin arasında
+                    {mn.gostergeAciklama}
                 </Text>
             </View>
             <Anahtar
@@ -383,7 +391,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                 }}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                 thumbColor={ayarlar.gosterge[tur] ? renkler.birincil : '#f4f3f4'}
-                accessibilityLabel={`${NAFILE_ADLARI[tur]} ana ekranda gösterilsin`}
+                accessibilityLabel={bicim(mn.gostergeEtiketi, { ad: NAFILE_ADLARI[tur] })}
             />
         </View>
     );
@@ -422,8 +430,8 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                             sesliOnayiVar={genelRiza.sesli}
                             alarmOnayiVar={genelRiza.alarm}
                             sesliOnayMetinleri={{
-                                altBaslik: 'Nafile hatırlatmasında sesli okuma',
-                                kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',
+                                altBaslik: mn.sesliAltBaslik,
+                                kapatmaNotu: sozluk.hatirlatma.adim.sesliKapatmaNotu,
                             }}
                             silinebilirMi={(a) => a.adimlar.length > 1}
                             karsiYonAyari={vakitAyari(nafileYonunuDegistir(ayar, karsiYon))}
@@ -432,7 +440,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                         />
                         {k.tur === 'teheccud' && uyandirmaSatiri()}
                         {bilgiSatiri(
-                            "Bildirimdeki Kıldım'a dokunduğunuzda o günün kalan hatırlatmaları durur. Bu kayıt puana ve seriye karışmaz.",
+                            mn.kildim,
                             'check-circle',
                             renkler.birincil
                         )}
@@ -452,18 +460,17 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                 showsVerticalScrollIndicator={false}
             >
                 <Text className="text-sm mb-5" style={{ color: renkler.metinIkincil }}>
-                    Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, namaz hatırlatmasındaki gibi
-                    dilediğiniz sıklıkta hatırlatılabilirsiniz.
+                    {mn.giris}
                 </Text>
 
                 {/* Bildirim sınırı (issue #298) — üstte tek kart */}
                 <BildirimButceKarti ozet={butce.ozet} onPress={rehber.karttanAc} />
 
-                {bolumBasligi('GÜNDÜZ VE AKŞAM')}
+                {bolumBasligi(mn.gunduz)}
                 {kart(KARTLAR[0])}
                 {kart(KARTLAR[1])}
 
-                <View className="mt-2">{bolumBasligi('GECE')}</View>
+                <View className="mt-2">{bolumBasligi(mn.gece)}</View>
                 {kart(KARTLAR[2])}
             </ScrollView>
 

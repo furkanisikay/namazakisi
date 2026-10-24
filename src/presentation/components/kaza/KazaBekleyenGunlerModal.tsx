@@ -15,6 +15,8 @@ import { gunKarariVer } from '../../store/kazaSlice';
 import { gunMetni } from './kazaMetinleri';
 import { KazaDugme } from './KazaOrtak';
 import { kisaBildirimGoster } from '../common/KisaBildirim';
+import { bicim, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 interface Props {
   gorunur: boolean;
@@ -25,6 +27,8 @@ interface Props {
 export const KazaBekleyenGunlerModal: React.FC<Props> = ({ gorunur, gunler, onKapat }) => {
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
+  const sozluk = useMetin().kaza;
+  const m = sozluk.bekleyen;
   const [mesgul, setMesgul] = useState(false);
   useDonanimGeriTusu(gorunur, onKapat);
 
@@ -33,17 +37,15 @@ export const KazaBekleyenGunlerModal: React.FC<Props> = ({ gorunur, gunler, onKa
       setMesgul(true);
       try {
         await dispatch(gunKarariVer({ gunler: secilen, karar: k })).unwrap();
-        kisaBildirimGoster(
-          k === 'ekle' ? `${secilen.length} gün kazaya eklendi` : `${secilen.length} gün yok sayıldı`
-        );
+        kisaBildirimGoster(sayili(k === 'ekle' ? m.eklendi : m.yokSayildi, secilen.length));
         if (secilen.length >= gunler.length) onKapat();
       } catch {
-        kisaBildirimGoster('Karar kaydedilemedi. Lütfen tekrar deneyin.');
+        kisaBildirimGoster(m.kaydedilemedi);
       } finally {
         setMesgul(false);
       }
     },
-    [dispatch, gunler.length, onKapat]
+    [dispatch, gunler.length, onKapat, m]
   );
 
   return (
@@ -55,40 +57,39 @@ export const KazaBekleyenGunlerModal: React.FC<Props> = ({ gorunur, gunler, onKa
         <View style={[stiller.sayfa, { backgroundColor: renkler.kartArkaplan }]} accessibilityViewIsModal>
           <ScrollView contentContainerStyle={stiller.icerik}>
             <Text style={[stiller.baslik, { color: renkler.metin }]} accessibilityRole="header">
-              Kontrol bekleyen {gunler.length} gün
+              {sayili(sozluk.bekleyenBaslik, gunler.length)}
             </Text>
             <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>
-              Bu günlerde hiçbir vakit işaretlenmemiş. Uygulamayı açmadığınız için olabilir; kılmadıysanız kazaya
-              ekleyin, kıldıysanız yok sayın.
+              {m.aciklama}
             </Text>
             {gunler.map((gun) => (
               <View key={gun} style={[stiller.gunSatiri, { borderColor: renkler.sinir }]}>
                 <Text style={[stiller.gunMetni, { color: renkler.metin }]}>{gunMetni(gun)}</Text>
                 <View style={stiller.gunDugmeleri}>
                   <KazaDugme
-                    etiket="Yok sayın"
+                    etiket={m.yokSayin}
                     tur="ikincil"
                     onPress={() => karar([gun], 'yoksay')}
                     devreDisi={mesgul}
-                    erisimEtiketi={`${gunMetni(gun)} gününü yok sayın`}
+                    erisimEtiketi={bicim(m.gunuYokSayin, { gun: gunMetni(gun) })}
                   />
                   <KazaDugme
-                    etiket="Ekleyin"
+                    etiket={m.ekleyin}
                     ikon="plus"
                     onPress={() => karar([gun], 'ekle')}
                     devreDisi={mesgul}
-                    erisimEtiketi={`${gunMetni(gun)} gününü kazaya ekleyin`}
+                    erisimEtiketi={bicim(m.gunuEkleyin, { gun: gunMetni(gun) })}
                   />
                 </View>
               </View>
             ))}
             {gunler.length > 1 && (
               <View style={stiller.toplu}>
-                <KazaDugme etiket="Hepsini yok sayın" tur="ikincil" onPress={() => karar([...gunler], 'yoksay')} devreDisi={mesgul} />
-                <KazaDugme etiket="Hepsini ekleyin" ikon="plus" onPress={() => karar([...gunler], 'ekle')} devreDisi={mesgul} />
+                <KazaDugme etiket={m.hepsiniYokSayin} tur="ikincil" onPress={() => karar([...gunler], 'yoksay')} devreDisi={mesgul} />
+                <KazaDugme etiket={m.hepsiniEkleyin} ikon="plus" onPress={() => karar([...gunler], 'ekle')} devreDisi={mesgul} />
               </View>
             )}
-            <KazaDugme etiket="Sonra karar vereceğim" tur="ikincil" onPress={onKapat} />
+            <KazaDugme etiket={m.sonra} tur="ikincil" onPress={onKapat} />
           </ScrollView>
         </View>
       </View>

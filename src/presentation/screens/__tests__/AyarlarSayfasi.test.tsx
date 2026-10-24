@@ -20,6 +20,7 @@ import { yeniOzellikGorunurMu } from '../../hooks/yeniOzellikYetenegi';
 import { AyarlarSayfasi } from '../AyarlarSayfasi';
 import { KildimGuvenServisi } from '../../../domain/services/KildimGuvenServisi';
 import { VARSAYILAN_NAFILE_AYARLARI } from '../../../core/nafile/nafileTipleri';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 jest.mock('@react-navigation/native', () => ({
   useNavigation: jest.fn(),
@@ -383,5 +384,50 @@ describe('AyarlarSayfasi', () => {
       expect(queryByText('Uyutulmasın')).toBeNull();
       expect(queryByText('Pil ayarlarını açın')).toBeNull();
     });
+  });
+});
+
+describe('AyarlarSayfasi — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    jest.clearAllMocks();
+    geriAl = ingilizceyeGec();
+    (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
+    (useTema as jest.Mock).mockReturnValue({ ...mockTema, palet: { id: 'zumrut', ad: 'Emerald' } });
+    (useNavigation as jest.Mock).mockReturnValue({ navigate: jest.fn() });
+    (useAppDispatch as unknown as jest.Mock).mockReturnValue(jest.fn());
+    (useFeedback as jest.Mock).mockReturnValue({
+      ayarlar: { titresimAktif: true, sesAktif: false },
+      titresimDurumunuDegistir: jest.fn(),
+      sesDurumunuDegistir: jest.fn(),
+      butonTiklandiFeedback: jest.fn().mockResolvedValue(undefined),
+    });
+    (Depolama.oku as jest.Mock).mockResolvedValue(null);
+    (Notifications.getPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: false });
+    // Tanıtım kartı ("Neler yeni" içeriği) koordinatörün dosyasıdır: hepsi görülmüş sayılır.
+    selectorlaKur({
+      muhafiz: { aktif: false, yogunluk: 'normal' },
+      vakitBildirim: { ayarlar: { imsak: false, ogle: false, ikindi: false, aksam: false, yatsi: false } },
+      ozellikler: {
+        gorulenIdler: YENI_OZELLIKLER.flatMap((o) => [o.id, `${o.id}@${o.surum}`]),
+        kapatilanKartIdler: YENI_OZELLIKLER.map((o) => o.id),
+        yuklendi: true,
+      },
+    });
+  });
+  afterEach(() => geriAl());
+
+  it('kök sayfa, sağlık kartı ve arama sonuçları İngilizce (yer adları hariç)', async () => {
+    const e = render(<AyarlarSayfasi />);
+    await waitFor(() => expect(e.getByText('Notification permission is off')).toBeTruthy());
+    const yasakli = ['Ayarlar', 'Namaz', 'Hesap', 'Yedek', 'Seri', 'Kapal', 'Konum', 'Dokunma', 'Yard'];
+    const yerAdi = (m: string) => m.includes('Kadıköy, İstanbul');
+    expect(turkceKalanlar(e.toJSON() as never, yasakli).filter((m) => !yerAdi(m))).toEqual([]);
+    expect(e.getAllByText('Settings').length).toBe(2);
+    fireEvent.changeText(e.getByLabelText('Search settings'), 'qibla calculation');
+    await waitFor(() => expect(e.getByText('No matching setting found')).toBeTruthy());
+    fireEvent.changeText(e.getByLabelText('Search settings'), 'theme');
+    await waitFor(() => expect(e.getAllByText('Theme').length).toBeGreaterThan(0));
+    expect(turkceKalanlar(e.toJSON() as never, yasakli)).toEqual([]);
   });
 });

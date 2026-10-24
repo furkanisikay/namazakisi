@@ -1,4 +1,4 @@
-import { ONE_UI_NOTU, ONKOSUL_GENEL, rutinOnkosulNotu } from '../rehberNotlari';
+import { oneUiNotu, onkosulGenel, rutinOnkosulNotu } from '../rehberNotlari';
 
 describe('rutinOnkosulNotu — ölçerek konuşur', () => {
     it('ikisi de açık → not yok', () => {
@@ -12,10 +12,10 @@ describe('rutinOnkosulNotu — ölçerek konuşur', () => {
         expect(rutinOnkosulNotu(false, false)).toContain('; "Camiye girince" kapalı');
     });
     it('bilinmiyorsa (ve kapalı yoksa) genel cümle', () => {
-        expect(rutinOnkosulNotu(null, null)).toBe(ONKOSUL_GENEL);
-        expect(rutinOnkosulNotu(true, null)).toBe(ONKOSUL_GENEL);
+        expect(rutinOnkosulNotu(null, null)).toBe(onkosulGenel());
+        expect(rutinOnkosulNotu(true, null)).toBe(onkosulGenel());
     });
     it('One UI notu sürüm adı vermez', () => {
-        expect(ONE_UI_NOTU).not.toMatch(/One UI \d/);
+        expect(oneUiNotu()).not.toMatch(/One UI \d/);
     });
 });

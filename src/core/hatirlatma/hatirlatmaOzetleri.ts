@@ -6,35 +6,37 @@
  * Vakit adları sabit haritadan (Türkçe `toLowerCase`/`toUpperCase` İ tuzağı — AGENTS.md).
  */
 import { DUZEY_ADLARI, OZEL_DUZEY, type HatirlatmaDuzeyi } from './duzeyOzeti';
+import { bicim, metin, sayili } from '../dil/aktifDil';
 
 export type VakitAnahtari = 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
 
 const VAKIT_SIRASI: readonly VakitAnahtari[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
-const VAKIT_BAS: Record<VakitAnahtari, string> = { imsak: 'Sabah', ogle: 'Öğle', ikindi: 'İkindi', aksam: 'Akşam', yatsi: 'Yatsı' };
-const VAKIT_KUCUK: Record<VakitAnahtari, string> = { imsak: 'sabah', ogle: 'öğle', ikindi: 'ikindi', aksam: 'akşam', yatsi: 'yatsı' };
 
 const iki = (n: number) => String(n).padStart(2, '0');
 
 /** "Sabah, öğle" — açık vakitlerin listesi (sıra kronolojik). */
 export function vakitListesi(acik: Partial<Record<VakitAnahtari, boolean>>): string {
     const liste = VAKIT_SIRASI.filter((v) => acik[v] === true);
-    return liste.map((v, i) => (i === 0 ? VAKIT_BAS[v] : VAKIT_KUCUK[v])).join(', ');
+    const { adlar, kucuk } = metin().vakit;
+    return liste.map((v, i) => (i === 0 ? adlar[v] : kucuk[v])).join(', ');
 }
 
 /** Vakit girince (vakit bildirimleri). */
 export function vakitGirinceOzeti(acik: Partial<Record<VakitAnahtari, boolean>>): string {
     const sayi = VAKIT_SIRASI.filter((v) => acik[v] === true).length;
-    if (sayi === 0) return 'Kapalı';
-    if (sayi === 5) return 'Beş vakitte';
+    const o = metin().hatirlatma.ozet;
+    if (sayi === 0) return o.kapali;
+    if (sayi === 5) return o.besVakitte;
     return vakitListesi(acik);
 }
 
 /** Vakit çıkmadan (muhafız düzeyi). */
 export function vakitCikmadanOzeti(aktif: boolean, yogunluk: string): string {
-    if (!aktif) return 'Kapalı';
+    const o = metin().hatirlatma.ozet;
+    if (!aktif) return o.kapali;
     if (yogunluk === 'ozel') return OZEL_DUZEY.ad;
     const ad = DUZEY_ADLARI[yogunluk as HatirlatmaDuzeyi];
-    return ad ? `${ad} düzey` : 'Açık';
+    return ad ? bicim(o.duzey, { ad }) : o.acik;
 }
 
 /**
@@ -42,9 +44,10 @@ export function vakitCikmadanOzeti(aktif: boolean, yogunluk: string): string {
  * satır ne kazanacağını söyler).
  */
 export function geceSessizligiOzeti(ayar: { aktif: boolean; baslangicSaat: number; baslangicDakika: number } | undefined): string {
-    if (!ayar?.aktif) return 'Kapalı. Açarsanız gece uyarı gelmez';
-    const s = `${String(ayar.baslangicSaat).padStart(2, '0')}:${String(ayar.baslangicDakika).padStart(2, '0')}`;
-    return `${s} – imsak arası uyarı gelmez`;
+    const o = metin().hatirlatma.ozet;
+    if (!ayar?.aktif) return o.geceKapali;
+    const saat = `${String(ayar.baslangicSaat).padStart(2, '0')}:${String(ayar.baslangicDakika).padStart(2, '0')}`;
+    return bicim(o.geceAcik, { saat });
 }
 
 /** Adımların en erken eşiği (dk) — "ne kadar önce başlar". */
@@ -55,9 +58,10 @@ export function enErkenEsik(adimlar: ReadonlyArray<{ esikDk: number }> | undefin
 
 /** Cuma: "Öğleden 60 dk önce". */
 export function cumaOzeti(aktif: boolean, adimlar?: ReadonlyArray<{ esikDk: number }>): string {
-    if (!aktif) return 'Kapalı';
+    const o = metin().hatirlatma.ozet;
+    if (!aktif) return o.kapali;
     const dk = enErkenEsik(adimlar);
-    return dk == null ? 'Açık' : `Öğleden ${dk} dk önce`;
+    return dk == null ? o.acik : bicim(o.cuma, { dk });
 }
 
 /** Camiye gitme vakti: "Öğle, akşam: 20 dk önce" (orta nokta ayracı yok — görsel dil kuralı). */
@@ -66,21 +70,24 @@ export function camiyeGitOzeti(
     vakitler: Partial<Record<VakitAnahtari, boolean>>,
     adimlar?: ReadonlyArray<{ esikDk: number }>
 ): string {
-    if (!aktif) return 'Kapalı';
+    const o = metin().hatirlatma.ozet;
+    if (!aktif) return o.kapali;
     const liste = vakitListesi(vakitler);
-    if (!liste) return 'Vakit seçilmedi';
+    if (!liste) return o.vakitSecilmedi;
     const dk = enErkenEsik(adimlar);
-    return dk == null ? liste : `${liste}: ${dk} dk önce`;
+    return dk == null ? liste : bicim(o.camiye, { liste, dk });
 }
 
 /** Yatmadan önce: "Yatış 23:00". */
 export function yatisOzeti(aktif: boolean, saat: number, dakika: number): string {
-    return aktif ? `Yatış ${iki(saat)}:${iki(dakika)}` : 'Kapalı';
+    const o = metin().hatirlatma.ozet;
+    return aktif ? bicim(o.yatis, { saat: `${iki(saat)}:${iki(dakika)}` }) : o.kapali;
 }
 
 /** Toplantı çakışırsa (takvim çakışması). */
 export function takvimCakismaOzeti(aktif: boolean): string {
-    return aktif ? 'Takviminize bakar' : 'Kapalı';
+    const o = metin().hatirlatma.ozet;
+    return aktif ? o.takvim : o.kapali;
 }
 
 /** Günü tamamlamadıysam (seri gün sonu hatırlatması). */
@@ -91,14 +98,18 @@ export function gunSonuOzeti(g: {
     saat: number;
     dakika: number;
 }): string {
-    if (!g.aktif) return 'Kapalı';
-    return g.mod === 'otomatik' ? `İmsaktan ${g.imsakOncesiDk} dk önce` : `Her gün ${iki(g.saat)}:${iki(g.dakika)}`;
+    const o = metin().hatirlatma.ozet;
+    if (!g.aktif) return o.kapali;
+    return g.mod === 'otomatik'
+        ? bicim(o.gunSonuOto, { dk: g.imsakOncesiDk })
+        : bicim(o.gunSonuSabit, { saat: `${iki(g.saat)}:${iki(g.dakika)}` });
 }
 
 /** Özel gün (hatırlatmaları ve seriyi durdurur). */
 export function ozelGunOzeti(modAktif: boolean, suruyor: boolean): string {
-    if (suruyor) return 'Şu an sürüyor';
-    return modAktif ? 'Hazır, başlatılmadı' : 'Kapalı';
+    const o = metin().hatirlatma.ozet;
+    if (suruyor) return o.ozelSuruyor;
+    return modAktif ? o.ozelHazir : o.kapali;
 }
 
 /**
@@ -107,6 +118,7 @@ export function ozelGunOzeti(modAktif: boolean, suruyor: boolean): string {
  */
 export function hatirlatmalarOzeti(muhafizAktif: boolean, yogunluk: string, digerAcikSayisi: number): string {
     const duzey = muhafizAktif ? vakitCikmadanOzeti(true, yogunluk) : null;
-    if (!duzey) return digerAcikSayisi === 0 ? 'Kapalı' : `${digerAcikSayisi} hatırlatma açık`;
-    return digerAcikSayisi === 0 ? duzey : `${duzey}, ${digerAcikSayisi} hatırlatma daha`;
+    const o = metin().hatirlatma.ozet;
+    if (!duzey) return digerAcikSayisi === 0 ? o.kapali : sayili(o.acikSayisi, digerAcikSayisi);
+    return digerAcikSayisi === 0 ? duzey : sayili(o.dahaSayisi, digerAcikSayisi, { duzey });
 }

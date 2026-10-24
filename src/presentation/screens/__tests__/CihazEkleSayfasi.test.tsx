@@ -8,6 +8,7 @@ import { CihazEkleSayfasi } from '../CihazEkleSayfasi';
 import { useRenkler } from '../../../core/theme';
 import { kareKodYolu } from '../../components/cihazlar/KareKod';
 import { cihazQrYaz } from '../../../core/cihazAgi/eslesme';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const mockServis = {
     istekDinleyicisi: null as null | ((i: unknown) => void),
@@ -93,4 +94,39 @@ it('TV kodu okutulursa yön gösterir', async () => {
     const { getByTestId } = render(<CihazEkleSayfasi />);
     fireEvent.press(getByTestId('cihaz-ekle-okut-dugme'));
     await waitFor(() => expect(getByTestId('cihaz-ekle-durum').props.children).toMatch(/TV’ye ait/));
+});
+
+describe('CihazEkleSayfasi — İngilizce', () => {
+    const YASAKLI = ['Kodu', 'kod\\b', 'Yenileyin', 'Ekleyin', 'Vazge', 'Cihaz'];
+    let geriAl: () => void;
+    beforeEach(() => {
+        geriAl = ingilizceyeGec();
+    });
+    afterEach(() => act(() => geriAl()));
+    // Marka adı ("Namaz Akışı") cümle içinde her dilde aynı kalır.
+    const kalan = (agac: unknown) =>
+        turkceKalanlar(agac as never, YASAKLI).filter((m) => turkceKalanlar(m.replace(/Namaz Akışı/g, ''), YASAKLI).length > 0);
+
+    it('kod gösterme ve gelen istek', async () => {
+        mockTur = 'tablet';
+        const e = render(<CihazEkleSayfasi />);
+        expect(await e.findByLabelText('QR code to scan with the other device')).toBeTruthy();
+        act(() => mockServis.istekDinleyicisi?.({ ist: 'x', cihazAdi: 'Phone', kimlik: 'aaaaaaaaaaaaaaaa', adres: '', port: 0, tur: 'telefon' }));
+        await e.findByText(/Phone will be added to this device/);
+        expect(kalan(e.toJSON())).toEqual([]);
+    });
+
+    it('kod okutma, onay ve hata', async () => {
+        mockTur = 'telefon';
+        mockQrOku.mockResolvedValue({ tur: 'okundu', metin: cihazQrYaz({ adres: '192.168.1.50', port: 47555, aliciKimlik: 'bbbbbbbbbbbbbbbb', sir: SIR, aliciAdi: 'Tablet', aliciTuru: 'tablet' }) });
+        mockEsles.mockResolvedValue('red');
+        const e = render(<CihazEkleSayfasi />);
+        expect(kalan(e.toJSON())).toEqual([]);
+        fireEvent.press(e.getByTestId('cihaz-ekle-okut-dugme'));
+        await e.findByText(/You're connecting to: Tablet/);
+        expect(kalan(e.toJSON())).toEqual([]);
+        fireEvent.press(e.getByText('Connect'));
+        await waitFor(() => expect(e.getByTestId('cihaz-ekle-durum').props.children).toMatch(/“No” was chosen on Tablet/));
+        expect(kalan(e.toJSON())).toEqual([]);
+    });
 });

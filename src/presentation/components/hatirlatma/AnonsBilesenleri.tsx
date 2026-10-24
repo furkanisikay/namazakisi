@@ -12,6 +12,7 @@ import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafi
 import { BOS_CIHAZ_DURUMU, durumNotu } from '../../../core/cihaz/durumNotlari';
 import { surumuOku } from '../../../domain/services/CihazDurumOkuyucu';
 import { DurumSatiri } from '../ortak/DurumSatiri';
+import { useMetin } from '../../hooks/useMetin';
 
 /**
  * Cihazda Turkce konusma paketi yoksa gosterilen kibar bilgilendirme.
@@ -67,6 +68,7 @@ export const DinleButonu: React.FC<DinleButonuProps> = ({
     erisimEtiketi,
 }) => {
     const renkler = useRenkler();
+    const dinle = useMetin().hatirlatma.akis.dinle;
 
     const anonsCalinacak = sesliAnonsGerekliMi(kanallar) && cozulmusMetin.trim().length > 0;
     const bildirimCalinacak = bildirimSesiGerekliMi(kanallar);
@@ -91,7 +93,7 @@ export const DinleButonu: React.FC<DinleButonuProps> = ({
         >
             <FontAwesome5 name={ikon} size={11} color={renkler.birincil} solid style={{ marginRight: 7 }} />
             <Text className="text-xs font-semibold" style={{ color: renkler.birincil }}>
-                Dinle
+                {dinle}
             </Text>
         </TouchableOpacity>
     );

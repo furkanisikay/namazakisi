@@ -31,8 +31,12 @@ export function agacMetinleri(dugum: Dugum | Dugum[]): string[] {
   return [...etiketler, ...agacMetinleri((dugum.children ?? []) as Dugum[])];
 }
 
+/** Metinden izinli adlar (cümle içinde de) çıkarılır; kalan kısım denetlenir. */
+const izinlileriCikar = (m: string): string => [...IZINLI].reduce((k, ad) => k.split(ad).join(''), m);
+
 export function turkceKalanlar(agac: Dugum | Dugum[], yasakliSozcukler: string[] = []): string[] {
-  return agacMetinleri(agac).filter(
-    (m) => !IZINLI.has(m) && (TR.test(m) || yasakliSozcukler.some((s) => new RegExp(`\\b${s}`).test(m))),
-  );
+  return agacMetinleri(agac).filter((ham) => {
+    const m = izinlileriCikar(ham);
+    return TR.test(m) || yasakliSozcukler.some((s) => new RegExp(`\\b${s}`).test(m));
+  });
 }

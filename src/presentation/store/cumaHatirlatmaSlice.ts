@@ -8,6 +8,7 @@ import {
 import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServisi';
 import { CamiyeGitHatirlatmaServisi } from '../../domain/services/CamiyeGitHatirlatmaServisi';
 import type { RootState } from './store';
+import { metin } from '../../core/dil/aktifDil';
 
 interface CumaHatirlatmaState {
     ayarlar: CumaHatirlatmaAyarlari;
@@ -88,13 +89,13 @@ const cumaHatirlatmaSlice = createSlice({
             })
             .addCase(cumaHatirlatmaAyarlariniYukle.rejected, (state, action) => {
                 state.yukleniyor = false;
-                state.hata = action.error.message || 'Ayarlar yüklenemedi';
+                state.hata = action.error.message || metin().muhafizAyar.hata.yuklenemedi;
             })
             .addCase(cumaHatirlatmaAyariniGuncelle.fulfilled, (state, action) => {
                 state.ayarlar = action.payload;
             })
             .addCase(cumaHatirlatmaAyariniGuncelle.rejected, (state, action) => {
-                state.hata = action.error.message || 'Ayar güncellenemedi';
+                state.hata = action.error.message || metin().muhafizAyar.hata.guncellenemedi;
             });
     },
 });

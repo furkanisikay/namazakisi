@@ -30,6 +30,7 @@ import { HesapYontemiSayfasi } from '../HesapYontemiSayfasi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { HesapAyariServisi } from '../../../domain/services/HesapAyariServisi';
 import { aktifHesapAyari, aktifHesapSifirla } from '../../../core/vakit/aktifHesap';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const kur = (konum: Record<string, unknown>) => {
   const store = configureStore({ reducer: { hesap: hesapReducer, konum: (s = konum) => s } });
@@ -85,5 +86,24 @@ describe('HesapYontemiSayfasi', () => {
     await waitFor(() => expect(store.getState().hesap.ayar.ofsetler).toEqual({ aksam: 1 }));
     const disk = JSON.parse((await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.HESAP_AYARI)) ?? '{}');
     expect(disk).toMatchObject({ ikindi: 'sani', ofsetler: { aksam: 1 }, secildi: true });
+  });
+});
+
+describe('HesapYontemiSayfasi — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+  });
+  afterEach(() => geriAl());
+
+  it('sayfada Türkçe metin kalmaz; ülke adı İngilizce tablodan gelir', async () => {
+    const { toJSON, getByText, store } = kur(KUALA_LUMPUR);
+    await waitFor(() => expect(store.getState().hesap.yuklendi).toBe(true));
+    // "Diyanet (Türkiye)" kurumun adıdır (ülkenin resmî İngilizce adı izinli).
+    const kalan = turkceKalanlar(toJSON() as never, ['Takvim', 'Sabah', 'Vakit', 'dk\\b', 'Kaynak']);
+    expect(kalan.filter((m) => !m.startsWith('Diyanet (Türkiye)'))).toEqual([]);
+    expect(getByText(/Recommended for Malaysia/)).toBeTruthy();
+    expect(getByText('Asr: Earlier Asr')).toBeTruthy();
+    expect(getByText('Fajr')).toBeTruthy();
   });
 });

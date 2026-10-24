@@ -17,6 +17,7 @@ import { DEPOLAMA_ANAHTARLARI, UYGULAMA } from '../../core/constants/UygulamaSab
 import { hakkindaOzeti } from '../../core/ayarlar/ozetler';
 import { AyarSatiri } from './Ayarlar/AyarSatiri';
 import { BildirimModali } from '../components/common/BildirimModali';
+import { useMetin } from '../hooks/useMetin';
 
 type Navigasyon = {
     navigate: (ekran: string) => void;
@@ -25,6 +26,8 @@ type Navigasyon = {
 
 export const YardimSayfasi: React.FC = () => {
     const renkler = useRenkler();
+    const s = useMetin();
+    const m = s.genel.yardim;
     const navigation = useNavigation() as unknown as Navigasyon;
     const { okunmamisVarMi } = useYeniOzellikler();
     const guncellemeMevcut = useAppSelector((s) => s.guncelleme?.guncellemeMevcut === true);
@@ -48,16 +51,16 @@ export const YardimSayfasi: React.FC = () => {
                 <AyarSatiri
                     varyant="navigasyon"
                     ikon={<FontAwesome5 name="comment-dots" size={20} color={ikon} solid />}
-                    baslik="Sorun bildirin"
-                    ozet="Tanı raporunu e-postayla gönderin"
+                    baslik={m.sorunBildirin}
+                    ozet={m.sorunBildirinOzet}
                     onPress={() => navigation.navigate('TaniGeriBildirim')}
                 />
                 <View style={ayrac}>
                     <AyarSatiri
                         varyant="navigasyon"
                         ikon={<FontAwesome5 name="gift" size={20} color={ikon} solid />}
-                        baslik="Neler yeni"
-                        ozet="Uygulamaya eklenenler"
+                        baslik={m.nelerYeni}
+                        ozet={m.nelerYeniOzet}
                         yeniRozetGoster={okunmamisVarMi}
                         onPress={() => navigation.navigate('NelerYeni')}
                     />
@@ -66,7 +69,7 @@ export const YardimSayfasi: React.FC = () => {
                     <AyarSatiri
                         varyant="navigasyon"
                         ikon={<FontAwesome5 name="info-circle" size={20} color={ikon} solid />}
-                        baslik="Hakkında"
+                        baslik={s.genel.ekranlar.Hakkinda}
                         ozet={hakkindaOzeti(UYGULAMA.VERSIYON, guncellemeMevcut)}
                         onPress={() => navigation.navigate('Hakkinda')}
                     />
@@ -77,8 +80,8 @@ export const YardimSayfasi: React.FC = () => {
                 <AyarSatiri
                     varyant="navigasyon"
                     ikon={<FontAwesome5 name="redo-alt" size={20} color={ikon} solid />}
-                    baslik="Kurulumu yeniden başlatın"
-                    ozet="Verileriniz silinmez"
+                    baslik={m.kurulum}
+                    ozet={m.kurulumOzet}
                     onPress={() => setKurulumOnayi(true)}
                 />
             </View>
@@ -86,11 +89,11 @@ export const YardimSayfasi: React.FC = () => {
             <BildirimModali
                 gorunur={kurulumOnayi}
                 tip="bilgi"
-                baslik="Kurulum yeniden başlasın mı?"
-                mesaj="Kurulum ekranı açılır. Namaz, seri ve puan verileriniz korunur."
-                birincilEtiket="Kurulumu açın"
+                baslik={m.kurulumSoru}
+                mesaj={m.kurulumMesaj}
+                birincilEtiket={m.kurulumuAcin}
                 birincilIkon="redo-alt"
-                kapatEtiketi="Vazgeç"
+                kapatEtiketi={s.genel.ortak.vazgec}
                 onBirincil={() => void kurulumuBaslat()}
                 onKapat={() => setKurulumOnayi(false)}
             />

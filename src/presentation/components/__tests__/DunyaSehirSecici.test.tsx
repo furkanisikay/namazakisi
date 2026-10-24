@@ -27,6 +27,7 @@ jest.mock('../../../data/local/dunyaSehirVerisi', () => {
 });
 
 import { DunyaSehirSecici } from '../DunyaSehirSecici';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 describe('DunyaSehirSecici', () => {
   it('ülke seçilip şehri seçilir; satır ülkenin önerilen takvimini gösterir', async () => {
@@ -54,5 +55,33 @@ describe('DunyaSehirSecici', () => {
       <DunyaSehirSecici secili={{ ad: 'Berlin', ulke: 'DE', bolge: 'Berlin', saatDilimi: 'Europe/Berlin' }} onSec={jest.fn()} />,
     );
     expect(getByLabelText('Şehir: Berlin, Almanya. Değiştirmek için dokunun')).toBeTruthy();
+  });
+});
+
+describe('DunyaSehirSecici — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+  });
+  afterEach(() => geriAl());
+
+  it('ülke adları İngilizce tablodan; seçici metinleri İngilizce', async () => {
+    const e = render(<DunyaSehirSecici secili={null} onSec={jest.fn()} />);
+    expect(turkceKalanlar(e.toJSON() as never, ['Kapat', 'Konum'])).toEqual([]);
+    fireEvent.press(e.getByLabelText('Choose a city'));
+    fireEvent.press(await e.findByLabelText('Malaysia, show its cities'));
+    expect(await e.findByLabelText('Kuala Lumpur, Kuala Lumpur · Malaysia')).toBeTruthy();
+    // "Türkiye" ülkenin resmî İngilizce adıdır.
+    const kalan = () => turkceKalanlar(e.toJSON() as never, ['Kapat']).filter((m) => !m.includes('For Türkiye'));
+    expect(kalan()).toEqual([]);
+    fireEvent.press(e.getByLabelText('Back to the country list'));
+    fireEvent.changeText(e.getAllByLabelText('Search for a country or city')[0], 'zzzz');
+    expect(await e.findByText('No results for "zzzz"')).toBeTruthy();
+    expect(kalan()).toEqual([]);
+  });
+
+  it('seçili şehir düğmesi İngilizce', () => {
+    const e = render(<DunyaSehirSecici secili={{ ad: 'Berlin', ulke: 'DE', bolge: 'Berlin', saatDilimi: 'Europe/Berlin' }} onSec={jest.fn()} />);
+    expect(e.getByLabelText('City: Berlin, Germany. Tap to change')).toBeTruthy();
   });
 });

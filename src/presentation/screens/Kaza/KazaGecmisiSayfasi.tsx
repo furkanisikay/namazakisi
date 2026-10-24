@@ -30,6 +30,8 @@ import {
 import { IkonCipi, KazaDugme, SecimCipi, kaynakRengi } from '../../components/kaza/KazaOrtak';
 import { KazaHareketAyrintiModal } from '../../components/kaza/KazaHareketAyrintiModal';
 import type { KazaStackParamList } from '../../../navigation/kazaEkranlari';
+import { sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 interface Bolum {
   baslik: string;
@@ -43,6 +45,8 @@ export const KazaGecmisiSayfasi: React.FC = () => {
   const { kazaDurumu, hareketler, cihaz } = useAppSelector((s) => s.kaza);
   const [suzgec, setSuzgec] = useState<GecmisSuzgeci>('tumu');
   const [secili, setSecili] = useState<GecmisSatiri | null>(null);
+  const sozluk = useMetin().kaza;
+  const m = sozluk.gecmis;
 
   useEffect(() => {
     if (!kazaDurumu) dispatch(kazaVerileriniYukle());
@@ -58,7 +62,9 @@ export const KazaGecmisiSayfasi: React.FC = () => {
     }
     const bugun = new Date();
     return Array.from(gruplar.values()).map((data) => ({ baslik: gunBasligi(data[0].zaman, bugun), data }));
-  }, [hareketler, kazaDurumu, suzgec]);
+    // `sozluk`: gün başlığı etkin dilde yeniden kurulsun.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hareketler, kazaDurumu, suzgec, sozluk]);
 
   const satirCiz = useCallback(
     ({ item }: { item: GecmisSatiri }) => {
@@ -82,8 +88,8 @@ export const KazaGecmisiSayfasi: React.FC = () => {
             </Text>
             <Text style={[stiller.satirAlt, { color: renkler.metinIkincil }]} numberOfLines={2}>
               {satirAltMetni(item, cihaz)}
-              {item.gizli ? ' · gizlendi' : ''}
-              {item.geriAlindi ? ' · geri alındı' : ''}
+              {item.gizli ? m.gizlendi : ''}
+              {item.geriAlindi ? m.geriAlindi : ''}
             </Text>
           </View>
           {delta !== '' && (
@@ -100,7 +106,7 @@ export const KazaGecmisiSayfasi: React.FC = () => {
         </TouchableOpacity>
       );
     },
-    [cihaz, renkler]
+    [cihaz, renkler, m]
   );
 
   const toplamSatir = bolumler.reduce((t, b) => t + b.data.length, 0);
@@ -123,7 +129,7 @@ export const KazaGecmisiSayfasi: React.FC = () => {
             <Text style={[stiller.bolumMetin, { color: renkler.metinIkincil }]} accessibilityRole="header">
               {section.baslik}
             </Text>
-            <Text style={[stiller.bolumMetin, { color: renkler.metinIkincil }]}>{section.data.length} kayıt</Text>
+            <Text style={[stiller.bolumMetin, { color: renkler.metinIkincil }]}>{sayili(m.kayitSayisi, section.data.length)}</Text>
           </View>
         )}
         stickySectionHeadersEnabled={false}
@@ -131,15 +137,13 @@ export const KazaGecmisiSayfasi: React.FC = () => {
         initialNumToRender={20}
         ListEmptyComponent={
           <Text style={[stiller.bos, { color: renkler.metinIkincil }]}>
-            {suzgec === 'tumu'
-              ? 'Henüz bir hareket yok. Borç eklediğinizde, kaza kıldığınızda ya da otomatik ekleme çalıştığında burada görünür.'
-              : 'Bu süzgece uyan bir kayıt yok. Başka bir süzgeç seçebilirsiniz.'}
+            {suzgec === 'tumu' ? m.bosTumu : m.bosSuzgec}
           </Text>
         }
         ListFooterComponent={
           toplamSatir > 0 ? (
             <KazaDugme
-              etiket="Kayıtları temizleyin"
+              etiket={sozluk.kayitlariTemizleyin}
               ikon="broom"
               tur="ikincil"
               onPress={() => navigation.navigate('KazaTemizlik')}

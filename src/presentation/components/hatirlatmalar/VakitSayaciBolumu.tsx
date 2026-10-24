@@ -28,14 +28,22 @@ import { BolumBasligi } from '../ortak/BolumBasligi';
 import { SecenekListesi, type Secenek } from '../ortak/SecenekListesi';
 import { DurumSatiri } from '../ortak/DurumSatiri';
 import { CanliGuncellemeBilgisi } from '../common/CanliGuncellemeBilgisi';
+import { metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 export const VAKIT_SAYACI_YOK = {
     yok: true as const,
-    metin: 'Vakit sayacı bu telefonda yok',
-    aciklama: 'Bildirimde canlı geri sayım Android telefonlarda çalışır.',
+    get metin() {
+        return metin().hatirlatma.vakitSayaci.yokMetin;
+    },
+    get aciklama() {
+        return metin().hatirlatma.vakitSayaci.yokAciklama;
+    },
 };
 
 export const VakitSayaciBolumu: React.FC = () => {
+    const sozluk = useMetin();
+    const m = sozluk.hatirlatma.vakitSayaci;
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const sayac = useAppSelector((s) => s.vakitSayac.ayarlar);
@@ -47,7 +55,9 @@ export const VakitSayaciBolumu: React.FC = () => {
     }, [dispatch]);
 
     // Başlangıç seçenekleri GERÇEK matristen (bayat global eşiklerden değil).
-    const secenekler = useMemo(() => sayacBaslangicSecenekleriOlustur(muhafizMatrisiniCoz(muhafiz)), [muhafiz]);
+    // Seçenek metni etkin dilde: dil değişince yeniden kurulur.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const secenekler = useMemo(() => sayacBaslangicSecenekleriOlustur(muhafizMatrisiniCoz(muhafiz)), [muhafiz, sozluk]);
     const secili = seciliSayacBaslangici(sayac.sayacBaslangicSeviyesi, secenekler.length);
     const liste = useMemo<Secenek<number>[]>(
         () => secenekler.map((s) => ({ deger: s.seviye, etiket: s.metin })),
@@ -84,20 +94,20 @@ export const VakitSayaciBolumu: React.FC = () => {
         <View>
             <AnahtarSatiri
                 ikon="hourglass-half"
-                baslik="Vakit sayacı"
-                ozet="Vakit çıkmadan bildirimde geri sayım"
+                baslik={m.baslik}
+                ozet={m.ozet}
                 deger={sayac.aktif}
                 onDegistir={(v) => void anahtar(v)}
                 testID="vakit-sayaci-anahtari"
             />
             {sayac.aktif && liste.length > 0 ? (
                 <View style={{ marginTop: 8 }}>
-                    <BolumBasligi metin="Ne zaman başlasın" />
+                    <BolumBasligi metin={m.neZaman} />
                     <SecenekListesi
                         secenekler={liste}
                         secili={secili}
                         onSec={(v) => void baslangic(v)}
-                        erisimEtiketi="Vakit sayacı ne zaman başlasın"
+                        erisimEtiketi={m.neZamanEtiketi}
                         testID="vakit-sayaci-baslangic"
                     />
                 </View>

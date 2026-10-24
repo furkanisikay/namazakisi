@@ -14,6 +14,7 @@ import {
 import { GuncellemeKaynagiTipi, UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { PlayStoreModulu } from './PlayStoreGuncellemeModulu';
 import { Logger } from '../../core/utils/Logger';
+import { metin } from '../../core/dil/aktifDil';
 
 export class PlayStoreGuncellemeKaynagi implements GuncellemeKaynagi {
   readonly tip: GuncellemeKaynagiTipi = 'playstore';
@@ -33,7 +34,7 @@ export class PlayStoreGuncellemeKaynagi implements GuncellemeKaynagi {
 
       Logger.info(
         'PlayStoreGuncellemeKaynagi',
-        `Güncelleme mevcut. versionCode: ${durum.availableVersionCode}`
+        `Güncelleme mevcut. versionCode: ${durum.availableVersionCode}` // dil-haric: log mesajı (Logger.info argümanı)
       );
 
       return {
@@ -46,7 +47,7 @@ export class PlayStoreGuncellemeKaynagi implements GuncellemeKaynagi {
           yeniVersiyon: durum.availableVersionCode
             ? String(durum.availableVersionCode)
             : 'playstore',
-          yeniVersiyonEtiketi: 'Yeni sürüm',
+          yeniVersiyonEtiketi: metin().genel.guncelleme.yeniSurum,
           mevcutVersiyon: UYGULAMA.VERSIYON,
           degisiklikNotlari: '',
           // Sembolik URL — GuncellemeBildirimi'nde kaynak 'playstore' olunca

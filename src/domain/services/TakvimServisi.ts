@@ -9,6 +9,8 @@ import { Coordinates } from 'adhan';
 import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { Logger } from '../../core/utils/Logger';
 import { UYGULAMA_TAKVIM_NOTU } from '../../core/takvimCakisma/takvimCakismaAyarlari';
+import { aktifDil, bicim, sozluk } from '../../core/dil/aktifDil';
+import type { DilKodu } from '../../core/dil/diller';
 
 // Domain-local tipler — presentation/store'a bağımlılık olmadan yapısal uyum sağlar
 type TakvimVakitAdi = 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
@@ -30,13 +32,11 @@ interface TakvimAyarlari {
 // Tek kaynak: çakışma taraması (issue #291) bu nottaki etkinlikleri HARİÇ tutar.
 const OLUSTURULDU_NOTU = UYGULAMA_TAKVIM_NOTU;
 
-const VAKIT_ISIMLERI: Record<TakvimVakitAdi, string> = {
-    imsak:  'Sabah',
-    ogle:   'Öğle',
-    ikindi: 'İkindi',
-    aksam:  'Akşam',
-    yatsi:  'Yatsı',
-};
+/** Etkinlik başlığı (etkin dilde ya da verilen dilde): "Öğle Namazı" / "Dhuhr prayer". */
+export function takvimEtkinlikBasligi(vakit: TakvimVakitAdi, kod: DilKodu = aktifDil()): string {
+    const s = sozluk(kod);
+    return bicim(s.takvim.etkinlikBasligi, { ad: s.vakit.adlar[vakit] });
+}
 
 export class TakvimServisi {
     private static instance: TakvimServisi;
@@ -244,7 +244,7 @@ export class TakvimServisi {
 
                 try {
                     await Calendar.createEventAsync(ayarlar.takvimId!, {
-                        title: `${VAKIT_ISIMLERI[vakit]} Namazı`,
+                        title: takvimEtkinlikBasligi(vakit),
                         startDate,
                         endDate,
                         notes: OLUSTURULDU_NOTU,

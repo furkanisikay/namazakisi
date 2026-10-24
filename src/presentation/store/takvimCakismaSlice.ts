@@ -7,6 +7,7 @@ import {
     type TakvimCakismaAyarlari,
 } from '../../core/takvimCakisma/takvimCakismaAyarlari';
 import type { RootState } from './store';
+import { metin } from '../../core/dil/aktifDil';
 
 interface TakvimCakismaState {
     ayarlar: TakvimCakismaAyarlari;
@@ -64,13 +65,13 @@ const takvimCakismaSlice = createSlice({
             })
             .addCase(takvimCakismaAyarlariniYukle.rejected, (state, action) => {
                 state.yukleniyor = false;
-                state.hata = action.error.message || 'Ayarlar yüklenemedi';
+                state.hata = action.error.message || metin().muhafizAyar.hata.yuklenemedi;
             })
             .addCase(takvimCakismaAyariniGuncelle.fulfilled, (state, action) => {
                 state.ayarlar = action.payload;
             })
             .addCase(takvimCakismaAyariniGuncelle.rejected, (state, action) => {
-                state.hata = action.error.message || 'Ayar güncellenemedi';
+                state.hata = action.error.message || metin().muhafizAyar.hata.guncellenemedi;
             });
     },
 });

@@ -55,7 +55,10 @@ import { KazaDigerMenusu, type KazaDigerSatiri } from '../components/kaza/KazaDi
 import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { gunMetni, saatMetni } from '../components/kaza/kazaMetinleri';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
-import { KABUL_DUASI } from '../../core/samimiyet/kabulDuasi';
+import { tekKabulDuasi } from '../../core/samimiyet/kabulDuasi';
+import { KAZA_ADLARI } from '../../core/kaza/farzSonrasiKazaOnerisi';
+import { bicim, metin, sayili, sayiYaz } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
 import { useFeedback } from '../../core/feedback';
 import type { KazaStackParamList } from '../../navigation/kazaEkranlari';
 
@@ -74,36 +77,39 @@ type ModalTipi =
 
 const NAMAZ_IKONLARI: Record<KazaNamazAdi, string> = {
   Sabah: 'sun',
-  'Öğle': 'cloud-sun',
-  'İkindi': 'cloud',
-  'Akşam': 'moon',
-  'Yatsı': 'star',
+  'Öğle': 'cloud-sun', // dil-haric: kimlik
+  'İkindi': 'cloud', // dil-haric: kimlik
+  'Akşam': 'moon', // dil-haric: kimlik
+  'Yatsı': 'star', // dil-haric: kimlik
   Vitir: 'star-half-alt',
 };
 
 
 /** '201 kılındı · 30 elle, 12 otomatik eklendi' */
 function kaynakOzetiMetni(ozet: { kilinan: number; elle: number; otomatik: number; bildirim: number }): string {
+  const m = metin().kaza.defter;
   const eklemeler = [
-    ozet.elle ? `${ozet.elle} elle` : null,
-    ozet.otomatik ? `${ozet.otomatik} otomatik` : null,
-    ozet.bildirim ? `${ozet.bildirim} bildirimden` : null,
+    ozet.elle ? bicim(m.ozetElle, { n: ozet.elle }) : null,
+    ozet.otomatik ? bicim(m.ozetOtomatik, { n: ozet.otomatik }) : null,
+    ozet.bildirim ? bicim(m.ozetBildirim, { n: ozet.bildirim }) : null,
   ].filter(Boolean);
-  const kilinan = `${ozet.kilinan.toLocaleString('tr-TR')} kılındı`;
-  return eklemeler.length > 0 ? `${kilinan} · ${eklemeler.join(', ')} eklendi` : kilinan;
+  const kilinan = bicim(m.ozetKilindi, { n: sayiYaz(ozet.kilinan) });
+  return eklemeler.length > 0 ? bicim(m.ozetEklendi, { kilinan, liste: eklemeler.join(m.listeAyirici) }) : kilinan;
 }
 
 function otomatikCipMetni(aktif: boolean, sonTarama: string | null): string {
-  if (!aktif) return 'Otomatik ekleme kapalı';
-  return sonTarama ? `Otomatik ekleme açık · son tarama ${saatMetni(sonTarama)}` : 'Otomatik ekleme açık';
+  const m = metin().kaza.defter;
+  if (!aktif) return m.otoKapali;
+  return sonTarama ? bicim(m.otoAcikTarama, { saat: saatMetni(sonTarama) }) : m.otoAcik;
 }
 
 /** "Diğer"den açılan modal, menü TAMAMEN kapandıktan sonra açılır (iOS iki modalı üst üste sunamaz). */
 const MENU_KAPANIS_MS = Platform.OS === 'ios' ? 450 : 250;
 
 function bekleyenGunlerMetni(gunler: readonly string[]): string {
-  if (gunler.length === 1) return `${gunMetni(gunler[0])} gününde hiç işaret yok`;
-  return `${gunMetni(gunler[0])} – ${gunMetni(gunler[gunler.length - 1])} arasında hiç işaret olmayan günler var`;
+  const m = metin().kaza.defter;
+  if (gunler.length === 1) return bicim(m.bekleyenTek, { gun: gunMetni(gunler[0]) });
+  return bicim(m.bekleyenAralik, { ilk: gunMetni(gunler[0]), son: gunMetni(gunler[gunler.length - 1]) });
 }
 
 // ==================== ANA BİLEŞEN ====================
@@ -112,6 +118,9 @@ export const KazaDefteriSayfasi: React.FC = () => {
   const dispatch = useAppDispatch();
   const renkler = useRenkler();
   const navigation = useNavigation<NativeStackNavigationProp<KazaStackParamList>>();
+  const metinler = useMetin();
+  const sozluk = metinler.kaza;
+  const m = sozluk.defter;
 
   const { kazaDurumu, istatistik, yukleniyor } = useAppSelector((s) => s.kaza);
   const hesapSurumu = useHesapSurumu();
@@ -205,7 +214,9 @@ export const KazaDefteriSayfasi: React.FC = () => {
 
   const motivasyonOnerileri = useMemo(
     () => (kazaDurumu ? motivasyonOnerileriHesapla(kazaDurumu.toplamKalan) : []),
-    [kazaDurumu?.toplamKalan]
+    // `sozluk`: öneri metinleri etkin dilde yeniden kurulsun.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [kazaDurumu?.toplamKalan, sozluk]
   );
   const aktifOneri = motivasyonOnerileri[motivasyonIndex] ?? motivasyonOnerileri[0];
 
@@ -234,54 +245,54 @@ export const KazaDefteriSayfasi: React.FC = () => {
       // Samimiyet: kısa onay dokusu + ekran okuyucuya dua. Tek tık art arda basılabildiği için
       // kısa bildirim YOK (Android'de kuyruklanıp dakikalarca sürerdi).
       void namazTamamlandiFeedback();
-      AccessibilityInfo.announceForAccessibility?.(`Bir kaza düşüldü. ${KABUL_DUASI}.`);
+      AccessibilityInfo.announceForAccessibility?.(bicim(m.kazaDusuldu, { dua: tekKabulDuasi() }));
     },
-    [dispatch, kazaDurumu, tamamlamaFlash, namazTamamlandiFeedback]
+    [dispatch, kazaDurumu, tamamlamaFlash, namazTamamlandiFeedback, m]
   );
 
   const handleTopluTamamlaGonder = useCallback(() => {
     const sayi = parseInt(modalGirdi, 10);
     if (!sayi || sayi <= 0) {
-      hataGoster('Geçerli bir sayı giriniz.');
+      hataGoster(m.gecersizSayi);
       return;
     }
     const modal = aktifModal as { tip: 'topluTamamla'; namazAdi: KazaNamazAdi };
     dispatch(kazaTamamla({ namazAdi: modal.namazAdi, sayi }));
     tamamlamaFlash();
     void namazTamamlandiFeedback();
-    kisaBildirimGoster(`${sayi} kaza defterinizden düşüldü. ${KABUL_DUASI}.`);
+    kisaBildirimGoster(sayili(m.topluDusuldu, sayi, { dua: tekKabulDuasi() }));
     setAktifModal(null);
     setModalGirdi('');
-  }, [dispatch, aktifModal, modalGirdi, tamamlamaFlash, hataGoster, namazTamamlandiFeedback]);
+  }, [dispatch, aktifModal, modalGirdi, tamamlamaFlash, hataGoster, namazTamamlandiFeedback, m]);
 
   const handleBorcEkleGonder = useCallback(() => {
     const sayi = parseInt(modalGirdi, 10);
     if (!sayi || sayi <= 0) {
-      hataGoster('Geçerli bir sayı giriniz.');
+      hataGoster(m.gecersizSayi);
       return;
     }
     const modal = aktifModal as { tip: 'borcEkle'; namazAdi: KazaNamazAdi };
     dispatch(borcEkle({ namazAdi: modal.namazAdi, sayi }));
     setAktifModal(null);
     setModalGirdi('');
-  }, [dispatch, aktifModal, modalGirdi, hataGoster]);
+  }, [dispatch, aktifModal, modalGirdi, hataGoster, m]);
 
   const handleGunlukHedefGonder = useCallback(() => {
     const hedef = parseInt(modalGirdi, 10);
     if (isNaN(hedef) || hedef < 0) {
-      hataGoster('Geçerli bir sayı giriniz (0 = hedefsiz).');
+      hataGoster(m.gecersizHedef);
       return;
     }
     dispatch(gunlukHedefiGuncelle({ hedef }));
     setAktifModal(null);
     setModalGirdi('');
-  }, [dispatch, modalGirdi, hataGoster]);
+  }, [dispatch, modalGirdi, hataGoster, m]);
 
   const handleSihirbazTamamla = useCallback(() => {
     const dogumYili = parseInt(sihirbazDogumYili, 10);
     const bugunYili = new Date().getFullYear();
     if (!dogumYili || dogumYili < 1900 || dogumYili > bugunYili - 5) {
-      hataGoster('Geçerli bir doğum yılı giriniz.');
+      hataGoster(m.gecersizYil);
       return;
     }
     // Sihirbazın son adımı ÖNİZLEMEDİR: yeni taban yazılmadan önce neyin değişip
@@ -295,7 +306,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
         kildigiTahminiYuzdesi: sihirbazKildigiYuzde,
       },
     });
-  }, [navigation, sihirbazDogumYili, sihirbazErgenlikYasi, sihirbazKildigiYuzde, hataGoster]);
+  }, [navigation, sihirbazDogumYili, sihirbazErgenlikYasi, sihirbazKildigiYuzde, hataGoster, m]);
 
   // ==================== YARDIMCI ====================
 
@@ -314,7 +325,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
       : 0;
 
   const sayiGoster = useCallback(
-    (sayi: number) => (kazaDurumu?.toplamGizleMi ? '••••' : sayi.toLocaleString('tr-TR')),
+    (sayi: number) => (kazaDurumu?.toplamGizleMi ? '••••' : sayiYaz(sayi)),
     [kazaDurumu?.toplamGizleMi]
   );
 
@@ -325,7 +336,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
       <SafeAreaView style={[styles.container, { backgroundColor: renkler.arkaplan }]}>
         <View style={styles.yukleniyorKonteyner}>
           <Text style={[styles.yukleniyorMetin, { color: renkler.metinIkincil }]}>
-            Yükleniyor...
+            {sozluk.yukleniyor}
           </Text>
         </View>
       </SafeAreaView>
@@ -344,8 +355,8 @@ export const KazaDefteriSayfasi: React.FC = () => {
     {
       anahtar: 'hedef',
       ikon: 'flag',
-      baslik: 'Günlük hedef',
-      alt: kazaDurumu.gunlukHedef > 0 ? `Günde ${kazaDurumu.gunlukHedef} kaza` : 'Belirlenmedi',
+      baslik: m.gunlukHedef,
+      alt: kazaDurumu.gunlukHedef > 0 ? sayili(m.gundeKaza, kazaDurumu.gunlukHedef) : m.belirlenmedi,
       onPress: () => {
         setModalGirdi(kazaDurumu.gunlukHedef > 0 ? String(kazaDurumu.gunlukHedef) : '');
         menudenModalAc({ tip: 'gunlukHedef' });
@@ -354,19 +365,19 @@ export const KazaDefteriSayfasi: React.FC = () => {
     {
       anahtar: 'hesapla',
       ikon: 'calculator',
-      baslik: kazaDurumu.taban ? 'Yeniden hesaplayın' : 'Kazamı hesaplayın',
-      alt: 'Doğum yılı ve tahminle başlangıç sayısı',
+      baslik: kazaDurumu.taban ? m.yenidenHesaplayin : m.kazamiHesaplayin,
+      alt: m.hesaplaAlt,
       onPress: () => menudenModalAc({ tip: 'sihirbaz', adim: 1 }),
     },
-    { anahtar: 'gecmis', ikon: 'history', baslik: 'Hareket geçmişi', onPress: () => sayfayaGit('KazaGecmisi') },
+    { anahtar: 'gecmis', ikon: 'history', baslik: m.hareketGecmisi, onPress: () => sayfayaGit('KazaGecmisi') },
     {
       anahtar: 'ayarlar',
       ikon: 'cog',
-      baslik: 'Kaza ayarları',
+      baslik: sozluk.ekranlar.ayarlar,
       alt: kazaDurumu.otomatik ? otomatikCipMetni(kazaDurumu.otomatik.aktif, sonTarama) : undefined,
       onPress: () => sayfayaGit('KazaOtomatikAyar'),
     },
-    { anahtar: 'temizlik', ikon: 'broom', baslik: 'Kayıtları temizleyin', tehlikeli: true, onPress: () => sayfayaGit('KazaTemizlik') },
+    { anahtar: 'temizlik', ikon: 'broom', baslik: sozluk.kayitlariTemizleyin, tehlikeli: true, onPress: () => sayfayaGit('KazaTemizlik') },
   ];
 
   return (
@@ -375,7 +386,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
       <View style={[styles.baslik, { backgroundColor: renkler.birincil }]}>
         <View style={styles.baslikIcerik}>
           <FontAwesome5 name="book" size={20} color="#fff" />
-          <Text style={styles.baslikMetin}>Kaza Defteri</Text>
+          <Text style={styles.baslikMetin}>{m.baslik}</Text>
         </View>
         <View style={styles.baslikSagButonlar}>
           <TouchableOpacity
@@ -383,7 +394,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
             style={styles.ikonButon}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             accessibilityRole="button"
-            accessibilityLabel={kazaDurumu.toplamGizleMi ? 'Toplam sayıyı gösterin' : 'Toplam sayıyı gizleyin'}
+            accessibilityLabel={kazaDurumu.toplamGizleMi ? m.toplamGoster : m.toplamGizle}
           >
             <FontAwesome5
               name={kazaDurumu.toplamGizleMi ? 'eye-slash' : 'eye'}
@@ -397,7 +408,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
             style={styles.ikonButon}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             accessibilityRole="button"
-            accessibilityLabel="Diğer: hedef, geçmiş, ayarlar"
+            accessibilityLabel={m.digerErisim}
           >
             <FontAwesome5 name="ellipsis-h" size={18} color="#fff" />
           </TouchableOpacity>
@@ -424,11 +435,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
             testID="kaza-bozuk-ay-bandi"
             ikon="exclamation-triangle"
             renk={renkler.dikkat}
-            metin={
-              bozukAylar.length === 1
-                ? 'Bir aylık kayıt okunamadı; o ayın hareketleri sayılmıyor. Kayıt silinmedi, cihazınızda korunuyor.'
-                : `${bozukAylar.length} aylık kayıt okunamadı; o ayların hareketleri sayılmıyor. Kayıtlar silinmedi, cihazınızda korunuyor.`
-            }
+            metin={sayili(m.bozukAy, bozukAylar.length)}
           />
         )}
         {eskiKayitBozuk && (
@@ -436,7 +443,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
             testID="kaza-eski-kayit-bandi"
             ikon="exclamation-triangle"
             renk={renkler.dikkat}
-            metin="Önceki sürümdeki kaza kaydınız okunamadı ve aktarılamadı. Kayıt silinmedi; Ayarlar > Tanı ve Geri Bildirim'den bize bildirebilirsiniz."
+            metin={m.eskiBozuk}
           />
         )}
 
@@ -451,7 +458,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
           <View style={styles.toplamKartUst}>
             <View>
               <Text style={[styles.toplamEtiket, { color: renkler.metinIkincil }]}>
-                Toplam Kalan Kaza
+                {m.toplamKalan}
               </Text>
               <Text style={[styles.toplamSayi, { color: renkler.birincil }]}>
                 {sayiGoster(kazaDurumu.toplamKalan)}
@@ -459,14 +466,14 @@ export const KazaDefteriSayfasi: React.FC = () => {
             </View>
             <View style={styles.toplamKartSag}>
               <Text style={[styles.tamamlananKucuk, { color: renkler.metinIkincil }]}>
-                Tamamlanan
+                {m.tamamlanan}
               </Text>
               <Text style={[styles.tamamlananSayi, { color: renkler.basarili || '#4CAF50' }]}>
                 {sayiGoster(kazaDurumu.toplamTamamlanan)}
               </Text>
               {toplamIlerlemeYuzdesi > 0 && (
                 <Text style={[styles.yuzdeMetin, { color: renkler.metinIkincil }]}>
-                  %{Math.round(toplamIlerlemeYuzdesi * 100)}
+                  {bicim(m.yuzde, { n: Math.round(toplamIlerlemeYuzdesi * 100) })}
                 </Text>
               )}
             </View>
@@ -499,13 +506,13 @@ export const KazaDefteriSayfasi: React.FC = () => {
             <TouchableOpacity
               onPress={() => setAktifModal({ tip: 'fazlaSifirla' })}
               accessibilityRole="button"
-              accessibilityLabel={`${kazaDurumu.toplamFazla} kaza hesaplanan borçtan fazla kılınmış. Sıfırlamak için dokunun`}
+              accessibilityLabel={bicim(m.fazlaErisim, { n: kazaDurumu.toplamFazla ?? 0 })}
               style={[styles.tahminiSatir, styles.fazlaSatir]}
             >
               <FontAwesome5 name="info-circle" size={12} color={renkler.bilgi} />
               <Text style={[styles.tahminiMetin, { color: renkler.metin }]}>
-                {kazaDurumu.toplamFazla} fazla kılınmış ·{' '}
-                <Text style={styles.altiCizili}>Sıfırlayın</Text>
+                {bicim(m.fazlaKilinmis, { n: kazaDurumu.toplamFazla ?? 0 })}{' '}
+                <Text style={styles.altiCizili}>{m.sifirlayin}</Text>
               </Text>
             </TouchableOpacity>
           )}
@@ -515,12 +522,12 @@ export const KazaDefteriSayfasi: React.FC = () => {
             <View
               testID="kaza-gunluk-hedef"
               accessible
-              accessibilityLabel={`Bugün ${kazaDurumu.gunlukTamamlanan} / ${kazaDurumu.gunlukHedef} kaza`}
+              accessibilityLabel={bicim(m.bugunHedef, { yapilan: kazaDurumu.gunlukTamamlanan, hedef: kazaDurumu.gunlukHedef })}
               style={styles.gunlukHedefOzet}
             >
               <View style={styles.gunlukHedefSatir}>
                 <Text style={[styles.gunlukHedefSayilar, { color: renkler.metin }]}>
-                  Bugün {kazaDurumu.gunlukTamamlanan} / {kazaDurumu.gunlukHedef} kaza
+                  {bicim(m.bugunHedef, { yapilan: kazaDurumu.gunlukTamamlanan, hedef: kazaDurumu.gunlukHedef })}
                 </Text>
                 {kazaDurumu.gunlukTamamlanan >= kazaDurumu.gunlukHedef && (
                   <FontAwesome5 name="check-circle" size={14} color={renkler.birincil} solid />
@@ -552,7 +559,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
             </View>
             <View style={styles.oneriMetinler}>
               <Text style={[styles.gunlukHedefEtiket, { color: renkler.metin }]}>
-                Kontrol bekleyen {kazaDurumu.bekleyenGunler.length} gün
+                {sayili(sozluk.bekleyenBaslik, kazaDurumu.bekleyenGunler.length)}
               </Text>
               <Text style={[styles.hedefsizMetin, { color: renkler.metinIkincil }]}>
                 {bekleyenGunlerMetni(kazaDurumu.bekleyenGunler)}
@@ -561,16 +568,16 @@ export const KazaDefteriSayfasi: React.FC = () => {
             <TouchableOpacity
               onPress={() => setAktifModal({ tip: 'bekleyenGunler' })}
               accessibilityRole="button"
-              accessibilityLabel="Kontrol bekleyen günleri inceleyin"
+              accessibilityLabel={m.inceleErisim}
               style={[styles.inceleButon, { borderColor: renkler.sinir, backgroundColor: renkler.arkaplan }]}
             >
-              <Text style={[styles.inceleMetin, { color: renkler.metin }]}>İnceleyin</Text>
+              <Text style={[styles.inceleMetin, { color: renkler.metin }]}>{m.inceleyin}</Text>
             </TouchableOpacity>
           </View>
         )}
 
         {/* NAMAZ KARTLARI */}
-        <BolumBasligi metin="Vakit vakit" ikon="list" style={{ marginTop: 8, marginBottom: 8 }} />
+        <BolumBasligi metin={m.vakitVakit} ikon="list" style={{ marginTop: 8, marginBottom: 8 }} />
 
         {kazaDurumu.namazlar.map((namaz) => (
           <View
@@ -595,10 +602,10 @@ export const KazaDefteriSayfasi: React.FC = () => {
               </View>
               <View>
                 <Text style={[styles.namazAdi, { color: renkler.metin }]}>
-                  {namaz.namazAdi}
+                  {KAZA_ADLARI[namaz.namazAdi]}
                 </Text>
                 <Text style={[styles.namazKalanMetin, { color: renkler.metinIkincil }]}>
-                  {namaz.kalanBorc > 0 ? `${namaz.kalanBorc} kaza kaldı` : 'Borç yok'}
+                  {namaz.kalanBorc > 0 ? sayili(m.kaldi, namaz.kalanBorc) : m.borcYok}
                 </Text>
               </View>
             </View>
@@ -614,7 +621,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                 // 32 dp kutu + 6 dp pay = 44 dp dokunma hedefi
                 hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
                 accessibilityRole="button"
-                accessibilityLabel={`${namaz.namazAdi} için kaza borcu ekleyin`}
+                accessibilityLabel={bicim(m.borcEkleErisim, { ad: KAZA_ADLARI[namaz.namazAdi] })}
               >
                 <FontAwesome5 name="plus" size={12} color={renkler.metinIkincil} />
               </TouchableOpacity>
@@ -628,8 +635,8 @@ export const KazaDefteriSayfasi: React.FC = () => {
                 }}
                 disabled={namaz.kalanBorc <= 0}
                 accessibilityRole="button"
-                accessibilityLabel={`${namaz.namazAdi} kazasını kıldım olarak işaretleyin`}
-                accessibilityHint="Birden fazlasını işaretlemek için basılı tutun"
+                accessibilityLabel={bicim(m.kildimErisim, { ad: KAZA_ADLARI[namaz.namazAdi] })}
+                accessibilityHint={m.kildimIpucu}
                 style={[
                   styles.namazTamamlaButon,
                   {
@@ -651,7 +658,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     },
                   ]}
                 >
-                  Kıldım
+                  {m.kildim}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -666,10 +673,10 @@ export const KazaDefteriSayfasi: React.FC = () => {
       {/* BORÇ EKLE MODAL */}
       <SayiGirisModali
         gorunur={aktifModal?.tip === 'borcEkle'}
-        baslik={`Kaza ekleyin — ${aktifModal?.tip === 'borcEkle' ? aktifModal.namazAdi : ''}`}
-        aciklama="Deftere kaç kaza eklensin?"
-        placeholder="Örn: 100"
-        onayMetni="Ekleyin"
+        baslik={bicim(m.ekleBaslik, { ad: aktifModal?.tip === 'borcEkle' ? KAZA_ADLARI[aktifModal.namazAdi] : '' })}
+        aciklama={m.ekleAciklama}
+        placeholder={bicim(m.ornek, { n: 100 })}
+        onayMetni={m.ekleyin}
         deger={modalGirdi}
         onDegisim={setModalGirdi}
         onIptal={() => { setAktifModal(null); setModalGirdi(''); }}
@@ -679,10 +686,10 @@ export const KazaDefteriSayfasi: React.FC = () => {
       {/* TOPLU TAMAMLA MODAL */}
       <SayiGirisModali
         gorunur={aktifModal?.tip === 'topluTamamla'}
-        baslik={aktifModal?.tip === 'topluTamamla' ? `Kıldım — ${aktifModal.namazAdi}` : 'Kıldım'}
-        aciklama="Kaç kaza kıldınız?"
-        placeholder="Örn: 5"
-        onayMetni="Kıldım"
+        baslik={aktifModal?.tip === 'topluTamamla' ? bicim(m.kildimBaslik, { ad: KAZA_ADLARI[aktifModal.namazAdi] }) : m.kildim}
+        aciklama={m.kacKildiniz}
+        placeholder={bicim(m.ornek, { n: 5 })}
+        onayMetni={m.kildim}
         deger={modalGirdi}
         onDegisim={setModalGirdi}
         onIptal={() => { setAktifModal(null); setModalGirdi(''); }}
@@ -692,10 +699,10 @@ export const KazaDefteriSayfasi: React.FC = () => {
       {/* GÜNLÜK HEDEF MODAL */}
       <SayiGirisModali
         gorunur={aktifModal?.tip === 'gunlukHedef'}
-        baslik="Günlük hedef"
-        aciklama="Günde kaç kaza kılmayı hedefliyorsunuz? (0 = hedefsiz)"
-        placeholder="Örn: 3"
-        onayMetni="Kaydet"
+        baslik={m.gunlukHedef}
+        aciklama={m.hedefAciklama}
+        placeholder={bicim(m.ornek, { n: 3 })}
+        onayMetni={m.kaydet}
         deger={modalGirdi}
         onDegisim={setModalGirdi}
         onIptal={() => { setAktifModal(null); setModalGirdi(''); }}
@@ -725,19 +732,19 @@ export const KazaDefteriSayfasi: React.FC = () => {
             <View style={styles.sihirbazBaslikSatir}>
               <FontAwesome5 name="magic" size={18} color={renkler.birincil} />
               <Text style={[styles.modalBaslik, { color: renkler.metin, marginLeft: 8 }]}>
-                Kazamı hesaplayın
+                {m.kazamiHesaplayin}
               </Text>
             </View>
 
             <Text style={[styles.sihirbazAdimMetin, { color: renkler.metinIkincil }]}>
-              {aktifModal?.tip === 'sihirbaz' ? `Adım ${aktifModal.adim} / 3` : ''}
+              {aktifModal?.tip === 'sihirbaz' ? bicim(m.adim, { n: aktifModal.adim }) : ''}
             </Text>
 
             {/* ADIM 1: Doğum Yılı */}
             {aktifModal?.tip === 'sihirbaz' && aktifModal.adim === 1 && (
               <>
                 <Text style={[styles.sihirbazSoru, { color: renkler.metin }]}>
-                  Doğum yılınız nedir?
+                  {m.dogumYili}
                 </Text>
                 <TextInput
                   style={[
@@ -745,7 +752,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     { borderColor: renkler.sinir, color: renkler.metin, backgroundColor: renkler.arkaplan },
                   ]}
                   keyboardType="number-pad"
-                  placeholder="Örn: 1995"
+                  placeholder={bicim(m.ornek, { n: 1995 })}
                   placeholderTextColor={renkler.metinIkincil}
                   value={sihirbazDogumYili}
                   onChangeText={setSihirbazDogumYili}
@@ -758,22 +765,22 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     style={[styles.modalIptalButon, { borderColor: renkler.sinir }]}
                     accessibilityRole="button"
                   >
-                    <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>İptal</Text>
+                    <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>{m.iptal}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       const yil = parseInt(sihirbazDogumYili, 10);
                       if (!yil || yil < 1900 || yil > new Date().getFullYear() - 5) {
-                        hataGoster('Geçerli bir doğum yılı giriniz.');
+                        hataGoster(m.gecersizYil);
                         return;
                       }
                       setAktifModal({ tip: 'sihirbaz', adim: 2 });
                     }}
                     style={[styles.modalOnayButon, { backgroundColor: renkler.birincil }]}
                     accessibilityRole="button"
-                    accessibilityLabel="İleri"
+                    accessibilityLabel={m.ileri}
                   >
-                    <Text style={styles.modalOnayMetin}>İleri</Text>
+                    <Text style={styles.modalOnayMetin}>{m.ileri}</Text>
                   </TouchableOpacity>
                 </View>
               </>
@@ -783,10 +790,10 @@ export const KazaDefteriSayfasi: React.FC = () => {
             {aktifModal?.tip === 'sihirbaz' && aktifModal.adim === 2 && (
               <>
                 <Text style={[styles.sihirbazSoru, { color: renkler.metin }]}>
-                  Ergenlik yaşınız neydi?
+                  {m.ergenlik}
                 </Text>
                 <Text style={[styles.sihirbazAciklama, { color: renkler.metinIkincil }]}>
-                  Namaz borcu ergenlikten itibaren başlar.
+                  {m.ergenlikAlt}
                 </Text>
                 <View style={styles.ergenlikButonlar}>
                   {[12, 13, 14, 15, 16].map((yas) => (
@@ -794,7 +801,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                       key={yas}
                       onPress={() => setSihirbazErgenlikYasi(yas)}
                       accessibilityRole="button"
-                      accessibilityLabel={`${yas} yaş`}
+                      accessibilityLabel={bicim(m.yas, { n: yas })}
                       accessibilityState={{ selected: sihirbazErgenlikYasi === yas }}
                       style={[
                         styles.ergenlikButon,
@@ -821,17 +828,17 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     onPress={() => setAktifModal({ tip: 'sihirbaz', adim: 1 })}
                     style={[styles.modalIptalButon, { borderColor: renkler.sinir }]}
                     accessibilityRole="button"
-                    accessibilityLabel="Geri"
+                    accessibilityLabel={m.geri}
                   >
-                    <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>Geri</Text>
+                    <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>{m.geri}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => setAktifModal({ tip: 'sihirbaz', adim: 3 })}
                     style={[styles.modalOnayButon, { backgroundColor: renkler.birincil }]}
                     accessibilityRole="button"
-                    accessibilityLabel="İleri"
+                    accessibilityLabel={m.ileri}
                   >
-                    <Text style={styles.modalOnayMetin}>İleri</Text>
+                    <Text style={styles.modalOnayMetin}>{m.ileri}</Text>
                   </TouchableOpacity>
                 </View>
               </>
@@ -841,7 +848,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
             {aktifModal?.tip === 'sihirbaz' && aktifModal.adim === 3 && (
               <>
                 <Text style={[styles.sihirbazSoru, { color: renkler.metin }]}>
-                  Ergenlikten bugüne namazlarınızın yaklaşık yüzde kaçını kıldınız?
+                  {m.yuzdeSoru}
                 </Text>
                 <View style={styles.yuzdeButonlar}>
                   {[0, 10, 25, 50, 75, 90].map((yuzde) => (
@@ -849,7 +856,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                       key={yuzde}
                       onPress={() => setSihirbazKildigiYuzde(yuzde)}
                       accessibilityRole="button"
-                      accessibilityLabel={`Yüzde ${yuzde}`}
+                      accessibilityLabel={bicim(m.yuzdeErisim, { n: yuzde })}
                       accessibilityState={{ selected: sihirbazKildigiYuzde === yuzde }}
                       style={[
                         styles.yuzdeButon,
@@ -869,29 +876,29 @@ export const KazaDefteriSayfasi: React.FC = () => {
                           },
                         ]}
                       >
-                        %{yuzde}
+                        {bicim(m.yuzde, { n: yuzde })}
                       </Text>
                     </TouchableOpacity>
                   ))}
                 </View>
                 <Text style={[styles.sihirbazNot, { color: renkler.metinIkincil }]}>
-                  Şüphe durumunda daha düşük bir oran seçmeniz önerilir. Daha sonra namaz bazında ince ayar yapabilirsiniz.
+                  {m.sihirbazNot}
                 </Text>
                 <View style={styles.modalButonlar}>
                   <TouchableOpacity
                     onPress={() => setAktifModal({ tip: 'sihirbaz', adim: 2 })}
                     style={[styles.modalIptalButon, { borderColor: renkler.sinir }]}
                     accessibilityRole="button"
-                    accessibilityLabel="Geri"
+                    accessibilityLabel={m.geri}
                   >
-                    <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>Geri</Text>
+                    <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>{m.geri}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={handleSihirbazTamamla}
                     style={[styles.modalOnayButon, { backgroundColor: renkler.birincil }]}
                     accessibilityRole="button"
                   >
-                    <Text style={styles.modalOnayMetin}>Önizleyin</Text>
+                    <Text style={styles.modalOnayMetin}>{m.onizleyin}</Text>
                   </TouchableOpacity>
                 </View>
               </>
@@ -907,10 +914,10 @@ export const KazaDefteriSayfasi: React.FC = () => {
         ust={
           kazaDurumu.toplamKalan > 0 && motivasyonOnerileri.length > 0 ? (
             <View testID="kaza-tempo" style={[styles.motivasyonKart, { backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }]}>
-              <BolumBasligi metin="Tempo" ikon="bullseye" />
+              <BolumBasligi metin={m.tempo} ikon="bullseye" />
               {istatistik?.tahminiTamamlanmaTarihi ? (
                 <Text style={[styles.motivasyonAciklama, { color: renkler.metin }]}>
-                  Bu tempoyla bitiş:{' '}
+                  {m.tempoBitis}{' '}
                   <Text style={{ fontWeight: '700' }}>{tahminiTarihiFormatla(istatistik.tahminiTamamlanmaTarihi)}</Text>
                 </Text>
               ) : null}
@@ -923,7 +930,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     key={oneri.kazaAdediPerVakit}
                     onPress={() => setMotivasyonIndex(index)}
                     accessibilityRole="button"
-                    accessibilityLabel={`Vakit başına ${oneri.kazaAdediPerVakit} kaza`}
+                    accessibilityLabel={bicim(m.vakitBasinaErisim, { n: oneri.kazaAdediPerVakit })}
                     accessibilityState={{ selected: motivasyonIndex === index }}
                     style={[
                       styles.senaryoButon,
@@ -939,7 +946,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                         { color: motivasyonIndex === index ? renkler.birincilMetin : renkler.metin },
                       ]}
                     >
-                      {oneri.kazaAdediPerVakit}/vakit
+                      {bicim(m.vakitBasina, { n: oneri.kazaAdediPerVakit })}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -961,15 +968,15 @@ export const KazaDefteriSayfasi: React.FC = () => {
       <BildirimModali
         gorunur={aktifModal?.tip === 'fazlaSifirla'}
         tip="bilgi"
-        baslik="Fazla kılınan sıfırlansın mı?"
-        mesaj={`Hesaplanan borçtan ${kazaDurumu.toplamFazla ?? 0} fazla kaza kılmışsınız. Bu sayı ileride eklenen borçlardan düşülmez, yalnız gösterilir. Sıfırlarsanız kalan değişmez; işlem hareket geçmişinde görünür.`}
-        birincilEtiket="Sıfırlayın"
+        baslik={m.fazlaBaslik}
+        mesaj={bicim(m.fazlaMesaj, { n: kazaDurumu.toplamFazla ?? 0 })}
+        birincilEtiket={m.sifirlayin}
         birincilIkon="eraser"
         onBirincil={() => {
           dispatch(fazlayiSifirla());
           setAktifModal(null);
         }}
-        kapatEtiketi="Vazgeçin"
+        kapatEtiketi={metinler.ortak.vazgecin}
         onKapat={() => setAktifModal(null)}
       />
 
@@ -977,9 +984,9 @@ export const KazaDefteriSayfasi: React.FC = () => {
       <BildirimModali
         gorunur={hataModali.gorunur}
         tip="hata"
-        baslik="Geçersiz giriş"
+        baslik={m.gecersizGiris}
         mesaj={hataModali.mesaj}
-        birincilEtiket="Tamam"
+        birincilEtiket={m.tamam}
         birincilIkon="check"
         onBirincil={hataKapat}
         onKapat={hataKapat}

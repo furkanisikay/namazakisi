@@ -42,4 +42,23 @@ export const hesap = {
     devam: '{ad} ile devam edin',
     birKez: "Bu soru bu ülke için bir kez sorulur. Ayarlar › Namaz vakitleri › Hesap yöntemi'nden istediğiniz zaman değiştirebilirsiniz.",
   },
+  sayfa: {
+    erkeneAl: '{ad} vaktini bir dakika erkene alın',
+    geciktir: '{ad} vaktini bir dakika geciktirin',
+    duzeltmeErisim: '{ad} düzeltmesi {deger}',
+    onerilen: '{ulke} için önerilen',
+    yerIcin: '{yer} için vakitler şu takvime göre hesaplanıyor:',
+    ikindiEtiketi: 'İkindi: {ad}',
+    kaynakErisim: 'Yöntemin kaynağını açın',
+    kaynagiAcin: 'Kaynağı açın',
+    yuksekEnlem: 'Bu enlemde yaz aylarında sabah ve yatsı tahminîdir (gecenin yedide biri kuralı). Camiyle karşılaştırın.',
+    diyanetAvrupa:
+      "Diyanet'in Avrupa takviminde yatsı buradakinden 5-7 dakika önce olabilir. Camiyle karşılaştırıp dakika düzeltmesi yapabilirsiniz.",
+    takvim: 'Takvim',
+    secimDegismez: 'Seçiminiz kendiliğinden değişmez. Başka bir ülkeye geçtiğinizde bir kez sorarız.',
+    ikindiVakti: 'İkindi vakti',
+    ikindiNotu: 'Bölgenizdeki camilerin ikindi ezanını okuduğu vakti seçin.',
+    dakikaDuzeltmesi: 'Camiye göre dakika düzeltmesi',
+    duzeltmeKalici: 'Düzeltme kalıcıdır; her gün aynen uygulanır.',
+  },
 } as const;

@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { Platform } from 'react-native';
-import { fireEvent, render } from '@testing-library/react-native';
+import { act, fireEvent, render } from '@testing-library/react-native';
 import { useRenkler } from '../../../core/theme';
 
 jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
@@ -25,6 +25,7 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 import { OtomasyonRehberiSayfasi } from '../OtomasyonRehberiSayfasi';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const RENKLER = {
     birincil: '#4CAF50',
@@ -95,5 +96,36 @@ describe('OtomasyonRehberiSayfasi', () => {
         const ekran = kur();
         expect(ekran.getByText(/yalnız Android/)).toBeTruthy();
         expect(ekran.queryByTestId('rehber-sekme-rutinler')).toBeNull();
+    });
+});
+
+describe('OtomasyonRehberiSayfasi — İngilizce', () => {
+    const YASAKLI = ['Vakit', 'vakit\\b', 'Rutin', 'Kapat', 'Cami\\b'];
+    /**
+     * Native kısayol/eklenti etiketleri (Android kaynakları yalnız Türkçe) ve eklentinin
+     * `%vakit` örnek değeri bugün Türkçedir; ekran bunu "(shown in Turkish for now)" diye söyler.
+     * Değişken adları (`%vakit`) kimliktir.
+     */
+    const NATIVE = ['Şu anki vakti kıldım', 'Namaz Akışı: Vakit', 'Namaz Akışı: Kıldım', 'Prayer name, in Turkish for now (e.g. Öğle)'];
+    const kalan = (e: ReturnType<typeof render>) =>
+        turkceKalanlar(e.toJSON() as never, YASAKLI).filter((m: string) => !m.startsWith('%') && !NATIVE.some((n) => m.includes(n)));
+    let geriAl: () => void;
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.replaceProperty(Platform, 'OS', 'android');
+        mockCihaz.samsung = null;
+        geriAl = ingilizceyeGec();
+    });
+    afterEach(() => act(() => geriAl()));
+
+    it('Rutinler ve Tasker sekmeleri, iOS bilgisi', () => {
+        const ekran = kur();
+        expect(kalan(ekran)).toEqual([]);
+        expect(ekran.getByTestId('rehber-rutin-dil-notu')).toBeTruthy();
+        fireEvent.press(ekran.getByTestId('rehber-sekme-eklenti'));
+        expect(kalan(ekran)).toEqual([]);
+        ekran.unmount();
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        expect(kalan(kur())).toEqual([]);
     });
 });

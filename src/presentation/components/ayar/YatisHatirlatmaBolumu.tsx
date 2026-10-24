@@ -55,11 +55,14 @@ import {
     type YatisAyarlari,
 } from '../../../core/yatis/yatisPlani';
 import { yatisAyarlariniBirlestir } from '../../../core/yatis/yatisAyarlari';
+import { bicim, metin, sayili } from '../../../core/dil/aktifDil';
+import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
+import { useMetin } from '../../hooks/useMetin';
 
 export const YATIS_YAZMA_GECIKMESI_MS = 1200;
 
 /** Yön sabit gerekçesi (plan §3.3) — kartta seçici yerine yazılır. */
-export const YATIS_YON_GEREKCESI = 'Hatırlatma yatış saatinizden önce gelir.';
+export const yatisYonGerekcesi = (): string => metin().hatirlatma.yatis.yonGerekce;
 
 /** Yatış saati 20:00 – 02:55 aralığında; stepper bu aralığı 20:00'den dakika olarak tutar. */
 const PENCERE_BASI_SAAT = 20;
@@ -104,6 +107,9 @@ export interface YatisHatirlatmaBolumuProps {
 
 export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ baslikGizle = false }) => {
     const renkler = useRenkler();
+    const sozluk = useMetin();
+    const mh = sozluk.hatirlatma;
+    const my = mh.yatis;
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const kayitli = useAppSelector((s) => s.yatisHatirlatma.ayarlar);
@@ -162,7 +168,7 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
         {
             oneriFiltresi: oneriUygulanmaz,
             ekYol: navigation
-                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: mh.ek.ekYol, onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );
@@ -217,16 +223,17 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
             ekHatirlatmaPencereTanimi({
                 kaynak: 'yatis',
                 yuzey: 'yatis',
-                anonsVakitAdi: 'Yatsı',
-                anonsNotu: 'Kendi metniniz yalnız yatsı hatırlatmasında okunur; gün sonu muhasebesi daima otomatik cümleyle okunur.',
+                // Planlayıcıyla aynı ad (`yatisPlani`: `VAKIT_ADLARI.yatsi`).
+                anonsVakitAdi: VAKIT_ADLARI.yatsi,
+                anonsNotu: metin().hatirlatma.yatis.anonsNotu,
                 // Plan üreticisiyle aynı kural: muhasebe içeriği kullanıcının metnini KULLANMAZ.
                 ozelMetinOnizlemedeOkunur: ornek?.tur === 'yatsi',
-                baslik: 'Yatış hatırlatması',
-                baslikKucuk: 'yatış hatırlatması',
+                baslik: metin().hatirlatma.yatis.baslik,
+                baslikKucuk: metin().hatirlatma.yatis.baslikKucuk,
                 ikon: 'bed',
                 // Kimlik yatsıdır; boş sesli okuma metni içerikten gelir (otomatik cümle).
                 vakit: 'yatsi',
-                yonSabitGerekcesi: YATIS_YON_GEREKCESI,
+                yonSabitGerekcesi: yatisYonGerekcesi(),
                 adimSayisi: ayarlar.adimlar.length,
                 maksAdim: YATIS_ADIM_KISITLARI.maksAdim,
                 esikSinirlari: { min: YATIS_ONCE_MIN_DK, max: YATIS_ONCE_MAX_DK },
@@ -234,12 +241,12 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
                 tekrarMinDk: YATIS_TEKRAR_MIN_DK,
                 tekrarMaxDk: YATIS_TEKRAR_MAX_DK,
                 varsayilanTekrarDk: YATIS_VARSAYILAN_TEKRAR_DK,
-                esikBasligi: 'NE KADAR ÖNCE',
-                esikAciklamasi: 'Yatış saatinize',
-                esikErisimAdi: 'Yatıştan kaç dk önce',
-                esikBirimi: 'dk kala',
+                esikBasligi: metin().hatirlatma.ek.neKadarOnce,
+                esikAciklamasi: metin().hatirlatma.yatis.esikAciklamasi,
+                esikErisimAdi: metin().hatirlatma.yatis.esikErisimAdi,
+                esikBirimi: metin().hatirlatma.ek.dkKala,
                 pencere,
-                seritGunEtiketi: 'Bu gece',
+                seritGunEtiketi: metin().hatirlatma.yatis.buGece,
                 yetenekler,
                 otomatikAnons: () => ornek?.anons ?? '',
                 onizlemeMetni: () => ({
@@ -247,9 +254,11 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
                     govde: ornek?.govde ?? '',
                     anons: ornek?.anons ?? '',
                 }),
-                onizlemeOzeti: (adet) => `Yatmadan önce ${adet} hatırlatma alırsınız`,
+                onizlemeOzeti: (adet) => sayili(metin().hatirlatma.yatis.onizlemeOzeti, adet),
             }),
-        [ayarlar.adimlar.length, ornek, pencere, yetenekler]
+        // Dil değişince tanım (başlık, eşik metinleri) yeniden kurulur.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [ayarlar.adimlar.length, ornek, pencere, yetenekler, sozluk]
     );
 
     /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
@@ -285,10 +294,8 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
         if (!yatsiOncesi || (!ayarlar.yatsiHatirlatmasi && !ayarlar.muhasebe)) return null;
         const tetik = saatDakika(yatisTetikAni(new Date(), ayarlar));
         const yatsi = saatDakika(yatsiOncesi.yatsiGiris);
-        const giris = `Hatırlatma saati (${tetik}) bugün yatsı vaktinden (${yatsi}) önce. `;
-        return ayarlar.yatsiHatirlatmasi
-            ? `${giris}Yatsı hatırlatması yatsı girdikten sonra gelir.`
-            : `${giris}Gün sonu muhasebesi yatsıyı saymaz.`;
+        const giris = bicim(my.yatsiOncesiGiris, { tetik, yatsi });
+        return `${giris}${ayarlar.yatsiHatirlatmasi ? my.yatsiSonraGelir : my.muhasebeSaymaz}`;
     })();
     const stepperDugmesi = (ikon: 'minus' | 'plus', adim: number, etiket: string, pasif: boolean) => (
         <TouchableOpacity
@@ -333,7 +340,7 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
         <View className="mb-6">
             {!baslikGizle && (
                 <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
-                    YATIŞ HATIRLATMASI
+                    {my.bolumBaslik}
                 </Text>
             )}
 
@@ -347,10 +354,10 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
                     </View>
                     <View className="flex-1">
                         <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                            Yatmadan önce hatırlat
+                            {my.anahtar}
                         </Text>
                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                            Yatsıyı ve günün eksiklerini uyumadan önce hatırlatalım
+                            {my.altBaslik}
                         </Text>
                     </View>
                     <Anahtar
@@ -358,22 +365,22 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
                         onValueChange={(v) => anahtar({ aktif: v })}
                         trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                         thumbColor={ayarlar.aktif ? renkler.birincil : '#f4f3f4'}
-                        accessibilityLabel="Yatış hatırlatması"
+                        accessibilityLabel={my.baslik}
                     />
                 </View>
 
                 {ayarlar.aktif && (
                     <View className="px-4 pb-4 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
                         <Text className="text-xs font-semibold mt-4 mb-3" style={{ color: renkler.metinIkincil }}>
-                            Genelde saat kaçta yatıyorsunuz?
+                            {my.saatSorusu}
                         </Text>
                         <View className="flex-row items-center justify-center gap-3">
-                            {stepperDugmesi('minus', -YATIS_DAKIKA_ADIM, 'Yatış saatini 5 dakika geri alın', pencereDk <= 0)}
+                            {stepperDugmesi('minus', -YATIS_DAKIKA_ADIM, bicim(my.geriAl, { dk: YATIS_DAKIKA_ADIM }), pencereDk <= 0)}
                             <View
                                 className="px-5 py-2 rounded-2xl min-w-[110px] items-center"
                                 style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                                 accessible
-                                accessibilityLabel={`Yatış saati ${saatMetni}`}
+                                accessibilityLabel={bicim(my.saatEtiketi, { saat: saatMetni })}
                             >
                                 <Text className="text-2xl font-bold" style={{ color: renkler.metin }}>
                                     {saatMetni}
@@ -382,20 +389,20 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
                             {stepperDugmesi(
                                 'plus',
                                 YATIS_DAKIKA_ADIM,
-                                'Yatış saatini 5 dakika ileri alın',
+                                bicim(my.ileriAl, { dk: YATIS_DAKIKA_ADIM }),
                                 pencereDk >= PENCERE_UZUNLUGU_DK
                             )}
                         </View>
 
                         {altSecenek(
-                            'Yatsı hatırlatması',
-                            'Yatsıyı işaretlemediyseniz uyumadan önce hatırlatır.',
+                            my.yatsiBaslik,
+                            my.yatsiAciklama,
                             ayarlar.yatsiHatirlatmasi,
                             'yatsiHatirlatmasi'
                         )}
                         {altSecenek(
-                            'Gün sonu muhasebesi',
-                            'İşaretlenmemiş vakitleri gösterir; tek eksik varsa bildirimden işaretleyebilir ya da kazaya ekleyebilirsiniz.',
+                            my.muhasebeBaslik,
+                            my.muhasebeAciklama,
                             ayarlar.muhasebe,
                             'muhasebe'
                         )}
@@ -411,8 +418,8 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
                                 sesliOnayiVar={genelRiza.sesli}
                                 alarmOnayiVar={genelRiza.alarm}
                                 sesliOnayMetinleri={{
-                                    altBaslik: 'Yatış hatırlatmasında sesli okuma',
-                                    kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',
+                                    altBaslik: my.sesliAltBaslik,
+                                    kapatmaNotu: mh.adim.sesliKapatmaNotu,
                                 }}
                                 silinebilirMi={(a) => a.adimlar.length > 1}
                                 // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
@@ -433,9 +440,7 @@ export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ ba
                         <View className="flex-row items-start mt-4 gap-2">
                             <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
                             <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
-                                İlk hatırlatma yatıştan {ayarlar.onceDk} dk önce gelir; tekrarlar aynı içeriği taşır.
-                                Yatsı vakti uzundur; muhafızın “vakit çıkıyor” uyarısı sabaha kalır, bu hatırlatma
-                                uykuya dalmadan önce gelir. Özel gün aralığında gönderilmez.
+                                {bicim(my.not, { dk: ayarlar.onceDk })}
                             </Text>
                         </View>
                     </View>

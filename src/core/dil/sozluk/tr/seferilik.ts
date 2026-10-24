@@ -37,4 +37,25 @@ export const seferilik = {
   burasiEvim: 'Burası evim',
   diyanetteOkuyunErisim: 'Diyanet fetvasını tarayıcıda okuyun',
   diyanetteOkuyun: "Diyanet'te okuyun",
+  sayfa: {
+    kayitliKonum: 'Kayıtlı konum',
+    henuzKaydedilmedi: 'Henüz kaydedilmedi — ilk konumunuz ikamet yeri sayılır',
+    buradasiniz: 'Şu an buradasınız',
+    uzaktasiniz: 'Şu an kuş uçuşu yaklaşık {km} km uzaktasınız',
+    konumBilinmiyor: 'Konumunuz henüz bilinmiyor; önce konum seçin',
+    giris:
+      "İkamet yerinizden yaklaşık {km} km uzaklaştığınızda ana ekranda, Diyanet'in fetvalarını özetleyen kısa bir bilgi kartı görürsünüz. Kart yolculuk başına bir kez çıkar, bildirim göndermez.",
+    bilgiKarti: 'Bilgi kartı',
+    kartBaslik: 'Yolculuk bilgi kartı',
+    gosterilir: 'Ana ekranda gösterilir',
+    gosterilmez: 'Gösterilmez',
+    mezhepNotu: "Kartın içeriği mezhebinize göredir; mezhebi Ayarlar › Namaz vakitleri'nden seçebilirsiniz.",
+    ikametYeri: 'İkamet yeri',
+    ikametYapErisim: 'Şu anki konumunuzu ikamet yeri olarak kaydedin',
+    ikametYap: 'Şu anki konumu ikamet yeri yapın',
+    kaynaklar: 'Kaynaklar (Diyanet Din İşleri Yüksek Kurulu)',
+    kaynakErisim: '{etiket}. Tarayıcıda açılır',
+    /** Türkiye'ye özgü hizmet: yalnız Türkçe arayüzde gösterilir. */
+    fetvaHatti: "Sorularınız için 190 Diyanet Fetva Hattı'nı arayabilirsiniz.",
+  },
 } as const;

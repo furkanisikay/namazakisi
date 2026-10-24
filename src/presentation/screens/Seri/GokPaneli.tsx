@@ -87,6 +87,7 @@ import { AnimasyonluBag } from './AnimasyonluBag';
 import { AnimasyonluYildiz } from './AnimasyonluYildiz';
 import { Parilti } from './Parilti';
 import { BugununNabzi } from './BugununNabzi';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface GokPaneliProps {
   /** `aylikIzgaraOlustur` çıktısı — 28/35/42 hücre. */
@@ -143,8 +144,6 @@ const PARILTI_CAP_ORANI = 1.3;
 const GUN_NUMARASI_FONT_ORANI = 0.18;
 const GUN_NUMARASI_ALT_PAY_ORANI = 0.08;
 
-/** Haftanın günleri, pazartesiden başlar (ızgara pazartesi başlıyor). */
-const GUN_HARFLERI = ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'];
 
 export const GokPaneli: React.FC<GokPaneliProps> = ({
   izgara,
@@ -155,6 +154,9 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
   mevcutSeri,
 }) => {
   const renkler = useRenkler();
+  // Haftanın günleri, pazartesiden başlar (ızgara pazartesi başlıyor); etkin dilde.
+  const sozluk = useMetin();
+  const gunHarfleri = sozluk.seri.gok.gunHarfleri;
   const [panelGenislik, setPanelGenislik] = useState(0);
 
   // Açılış animasyonu bir kez oynatma sentinel'i (spec 2c). `AnimasyonluBag`/
@@ -202,7 +204,9 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
 
   const erisimEtiketi = useMemo(
     () => gokErisimEtiketi(izgara, ayAdi, mevcutSeri, tamGunEsigi),
-    [izgara, ayAdi, mevcutSeri, tamGunEsigi]
+    // `sozluk`: etiket etkin dilde yeniden kurulsun.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [izgara, ayAdi, mevcutSeri, tamGunEsigi, sozluk]
   );
 
   // Açılış zaman çizelgesi — SAF (core/seri/acilisCizelgesi), zamanlama
@@ -414,7 +418,7 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
           >
             {ayAdi}
           </SvgText>
-          {GUN_HARFLERI.map((harf, i) => (
+          {gunHarfleri.map((harf, i) => (
             <SvgText
               key={`gun-adi-${i}`}
               x={yerlesim.merkez(i).x}

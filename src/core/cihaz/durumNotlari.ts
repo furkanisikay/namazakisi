@@ -13,6 +13,7 @@
  */
 import type { IsletimSistemiSurumu } from './surum';
 import type { AlarmKitDurumu } from '../muhafiz/ios/alarmKit';
+import { canli, metin } from '../dil/aktifDil';
 
 /** Okunan izin durumu: `null` = bilinmiyor. */
 export type IzinDurumu = 'verildi' | 'sorulabilir' | 'reddedildi';
@@ -91,20 +92,7 @@ export interface DurumNotu {
 }
 
 /** Varsayılan düğme etiketleri (1–3 kelime, sonucu söyleyen fiil). */
-export const EYLEM_ETIKETLERI: Record<DurumEylemi, string> = {
-    bildirimIzni: 'İzin verin',
-    konumIzni: 'İzin verin',
-    takvimIzni: 'İzin verin',
-    tamAlarm: 'Açın',
-    tamEkran: 'Açın',
-    pil: 'Ayarlayın',
-    dnd: 'Erişim verin',
-    uygulamaAyarlari: 'Ayarları açın',
-    ttsIndir: 'Türkçe sesi indirin',
-    alarmIzni: 'İzin verin',
-    sesAyarlari: 'Ses ayarları',
-    canliGuncellemeAyari: 'Ayarları açın',
-};
+export const EYLEM_ETIKETLERI: Readonly<Record<DurumEylemi, string>> = canli((s) => s.cihaz.eylemEtiketleri);
 
 export type DurumKosulu =
     | 'bildirimIzni'
@@ -133,46 +121,47 @@ function izinNotu(durum: IzinDurumu | null, metin: string, istekEylemi: DurumEyl
  */
 export function durumNotu(kosul: DurumKosulu, d: CihazDurumu): DurumNotu | null {
     const android = d.surum?.platform === 'android';
+    const m = metin().cihaz.durum;
     switch (kosul) {
         case 'bildirimIzni':
-            return izinNotu(d.bildirimIzni, 'Bildirim izni kapalı; hatırlatmalar gelmez.', 'bildirimIzni');
+            return izinNotu(d.bildirimIzni, m.bildirimIzni, 'bildirimIzni');
         case 'konumIzni':
-            return izinNotu(d.konumIzni, 'Konum izni kapalı; yönü bulmak için konumunuz gerekiyor.', 'konumIzni');
+            return izinNotu(d.konumIzni, m.konumIzni, 'konumIzni');
         case 'takvimIzni':
-            return izinNotu(d.takvimIzni, 'Takvim izni kapalı.', 'takvimIzni');
+            return izinNotu(d.takvimIzni, m.takvimIzni, 'takvimIzni');
         case 'tamAlarm':
             return android && d.tamAlarm === false
-                ? { tip: 'uyari', metin: 'Tam saatinde alarm izni kapalı; hatırlatmalar gecikebilir.', eylem: 'tamAlarm' }
+                ? { tip: 'uyari', metin: m.tamAlarm, eylem: 'tamAlarm' }
                 : null;
         case 'tamEkran':
             return android && d.tamEkran === false
-                ? { tip: 'uyari', metin: 'Kilit ekranında tam ekran açılma izni kapalı.', eylem: 'tamEkran' }
+                ? { tip: 'uyari', metin: m.tamEkran, eylem: 'tamEkran' }
                 : null;
         case 'pil':
             return android && d.pilMuaf === false
-                ? { tip: 'uyari', metin: 'Pil kısıtlaması hatırlatmaları geciktirebilir.', eylem: 'pil' }
+                ? { tip: 'uyari', metin: m.pil, eylem: 'pil' }
                 : null;
         case 'dndErisimi':
             return android && d.dndErisimi === false
-                ? { tip: 'uyari', metin: 'Rahatsız Etmeyin açıkken bu bildirim susar.', eylem: 'dnd' }
+                ? { tip: 'uyari', metin: m.dnd, eylem: 'dnd' }
                 : null;
         case 'turkceTts':
             if (d.turkceTts !== false) return null;
             return android
-                ? { tip: 'uyari', metin: 'Türkçe konuşma paketi bulunamadı; sesli okuma duyulmayabilir.', eylem: 'ttsIndir' }
+                ? { tip: 'uyari', metin: m.turkceTts, eylem: 'ttsIndir' }
                 : {
                       tip: 'uyari',
                       // Tam menü yolu iOS sürümüne göre değişir (Seslendirme / Konuşulan İçerik…)
                       // → yol yazılmaz, yalnız bölüm adı.
-                      metin: 'Türkçe konuşma paketi bulunamadı; sesli okuma duyulmayabilir. Erişilebilirlik ayarlarından Türkçe ses indirin.',
+                      metin: m.turkceTtsIos,
                   };
         case 'alarmSesi':
             return android && d.alarmSesiAcik === false
-                ? { tip: 'uyari', metin: 'Alarm ses düzeyiniz kapalı; uyandırma duyulmaz.', eylem: 'sesAyarlari' }
+                ? { tip: 'uyari', metin: m.alarmSesi, eylem: 'sesAyarlari' }
                 : null;
         case 'canliGuncelleme':
             return android && d.canliGuncelleme === 'kapali'
-                ? { tip: 'uyari', metin: 'Canlı güncellemeler kapalı; sayaç durum çubuğunda görünmez.', eylem: 'canliGuncellemeAyari' }
+                ? { tip: 'uyari', metin: m.canliGuncelleme, eylem: 'canliGuncellemeAyari' }
                 : null;
         default:
             return null;
@@ -195,5 +184,6 @@ export function durumNotlari(kosullar: readonly DurumKosulu[], d: CihazDurumu): 
  * genel ad.
  */
 export function canliYuzeyAdi(samsung: boolean | null): string {
-    return samsung === true ? "durum çubuğunda ve Now Bar'da" : 'durum çubuğunda';
+    const m = metin().cihaz.durum;
+    return samsung === true ? m.yuzeySamsung : m.yuzey;
 }

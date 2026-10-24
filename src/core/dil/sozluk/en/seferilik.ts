@@ -35,4 +35,25 @@ export const seferilik: Sozluk['seferilik'] = {
   burasiEvim: 'This is home',
   diyanetteOkuyunErisim: 'Read the Diyanet fatwa in the browser',
   diyanetteOkuyun: 'Read on Diyanet',
+  sayfa: {
+    kayitliKonum: 'Saved location',
+    henuzKaydedilmedi: 'Not saved yet — your first location counts as your place of residence',
+    buradasiniz: 'You are here now',
+    uzaktasiniz: 'You are now about {km} km away as the crow flies',
+    konumBilinmiyor: "Your location isn't known yet; choose a location first",
+    giris:
+      "When you are about {km} km from your place of residence, a short info card summarizing Diyanet's fatwas appears on the home screen. The card appears once per journey and sends no notifications.",
+    bilgiKarti: 'Info card',
+    kartBaslik: 'Travel info card',
+    gosterilir: 'Shown on the home screen',
+    gosterilmez: 'Not shown',
+    mezhepNotu: 'The card follows your school of thought; you can choose it in Settings › Prayer times.',
+    ikametYeri: 'Place of residence',
+    ikametYapErisim: 'Save your current location as your place of residence',
+    ikametYap: 'Make my current location my residence',
+    kaynaklar: 'Sources (Diyanet High Board of Religious Affairs)',
+    kaynakErisim: '{etiket}. Opens in the browser',
+    /** Not shown outside Turkish (Türkiye-only service). */
+    fetvaHatti: "For questions, you can call Diyanet's 190 fatwa line.",
+  },
 };

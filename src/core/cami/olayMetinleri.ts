@@ -6,6 +6,7 @@
  * türü atlanır (eski/yeni sürüm farkı ekranı bozmasın).
  */
 import { AZAMI_DOGRULUK_M } from './camiTipleri';
+import { aktifDil, bicim, metin, sayili } from '../dil/aktifDil';
 
 export type OlayTonu = 'iyi' | 'notr' | 'uyari';
 
@@ -23,108 +24,84 @@ export interface HamOlay {
     [ek: string]: unknown;
 }
 
-const VAKIT_ADLARI: Record<string, string> = {
-    imsak: 'Sabah',
-    ogle: 'Öğle',
-    ikindi: 'İkindi',
-    aksam: 'Akşam',
-    yatsi: 'Yatsı',
-};
-
-/** Güven puanı gerekçeleri — "neden sorduk / neden açmadık" (Faz 2). */
-const ZAMAN_METNI: Record<string, string> = {
-    cuma: 'cuma namazı vakti',
-    ezanYakin: 'ezan vaktine yakın',
-    kapiIci: 'vakit içinde ama ezandan uzak',
-    serbest: 'vakit yakınında değil',
-};
-const YER_METNI: Record<string, string> = {
-    poligonIci: 'caminin binası içinde',
-    kullaniciAlani: 'seçtiğiniz alanın içinde',
-    noktaMerkez: 'caminin hemen yanında',
-    noktaKenar: 'caminin alanının kenarında',
-    tampon: 'binanın hemen dışında',
-};
-const HAREKET_METNI: Record<string, string> = {
-    durgun: 'duruyordunuz',
-    yavas: 'yavaş hareket ediyordunuz',
-    hareketli: 'hareket hâlindeydiniz',
-};
-const TAVAN_METNI: Record<string, string> = {
-    gecipGidiyor: 'Önünden geçiyor gibiydiniz; hiçbir şey yapılmadı.',
-    hareketli: 'Hareket hâlinde olduğunuz için kendiliğinden açılmadı.',
-    kenar: 'Bina dışında (ör. yolda) olabileceğiniz için kendiliğinden açılmadı.',
-    vakitDisi: 'Vakit yakınında olmadığınız için kendiliğinden açılmadı.',
-};
+/** Güven puanı gerekçeleri — "neden sorduk / neden açmadık" (Faz 2). Metinler sözlükte (`cami.olay`). */
+const parca = (tablo: Readonly<Record<string, string>>, k: unknown): string | undefined =>
+    typeof k === 'string' && Object.prototype.hasOwnProperty.call(tablo, k) ? tablo[k] : undefined;
 
 /**
  * Cümle başını büyütür — `toUpperCase`/`toLocaleUpperCase` YOK (AGENTS.md: 'i' → 'I'
- * tuzağı; Hermes'te Intl'e güvenilmez). Sabit Türkçe harita.
+ * tuzağı; Hermes'te Intl'e güvenilmez). Sabit harita; noktalı `i` yalnız Türkçede `İ` olur.
  */
 const BUYUK_HARF: Record<string, string> = {
-    a: 'A', b: 'B', c: 'C', ç: 'Ç', d: 'D', e: 'E', f: 'F', g: 'G', ğ: 'Ğ', h: 'H', ı: 'I', i: 'İ', j: 'J', k: 'K',
-    l: 'L', m: 'M', n: 'N', o: 'O', ö: 'Ö', p: 'P', r: 'R', s: 'S', ş: 'Ş', t: 'T', u: 'U', ü: 'Ü', v: 'V', y: 'Y', z: 'Z',
+    a: 'A', b: 'B', c: 'C', ç: 'Ç', d: 'D', e: 'E', f: 'F', g: 'G', ğ: 'Ğ', h: 'H', ı: 'I', i: 'İ', j: 'J', k: 'K', // dil-haric: harf eşlemesi (görünen metin değil)
+    l: 'L', m: 'M', n: 'N', o: 'O', ö: 'Ö', p: 'P', r: 'R', s: 'S', ş: 'Ş', t: 'T', u: 'U', ü: 'Ü', v: 'V', y: 'Y', z: 'Z', // dil-haric: harf eşlemesi (görünen metin değil)
 };
-export const ilkHarfiBuyut = (m: string): string => (m ? (BUYUK_HARF[m.charAt(0)] ?? m.charAt(0)) + m.slice(1) : m);
+export const ilkHarfiBuyut = (m: string): string => {
+    if (!m) return m;
+    const ilk = m.charAt(0);
+    const buyuk = ilk === 'i' && aktifDil() !== 'tr' ? 'I' : BUYUK_HARF[ilk];
+    return (buyuk ?? ilk) + m.slice(1);
+};
 
 /** "ezan vaktine yakın · caminin binası içinde · duruyordunuz" */
 export function guvenGerekcesi(o: Readonly<Record<string, unknown>>): string {
-    const parcalar = [
-        typeof o.zaman === 'string' ? ZAMAN_METNI[o.zaman] : undefined,
-        typeof o.yerSinifi === 'string' ? YER_METNI[o.yerSinifi] : undefined,
-        typeof o.hareket === 'string' ? HAREKET_METNI[o.hareket] : undefined,
-    ].filter((p): p is string => !!p);
+    const m = metin().cami.olay;
+    const parcalar = [parca(m.zaman, o.zaman), parca(m.yer, o.yerSinifi), parca(m.hareket, o.hareket)].filter(
+        (p): p is string => !!p,
+    );
     return parcalar.join(' · ');
 }
 
-const metin = (d: unknown): string | null => (typeof d === 'string' && d.trim() ? d.trim() : null);
+const dize = (d: unknown): string | null => (typeof d === 'string' && d.trim() ? d.trim() : null);
 const sayi = (d: unknown): number | null => (typeof d === 'number' && Number.isFinite(d) ? d : null);
 
 export function olaySatiriOlustur(o: HamOlay): OlaySatiri | null {
-    const yer = metin(o.yer) ?? 'Cami';
+    const s = metin().cami;
+    const m = s.olay;
+    const yer = dize(o.yer) ?? s.camiVarsayilan;
     const t = o.zamanMs;
     switch (o.tur) {
         case 'izlemeKuruldu':
             return {
                 zamanMs: t,
                 ikon: 'satellite-dish',
-                baslik: `Yakınınızdaki ${sayi(o.sayi) ?? 0} yer izleniyor`,
-                aciklama: 'Bekleme işini telefonun konum servisi yapar; uygulama yalnız bir olay olunca uyanır.',
+                baslik: sayili(m.izlemeKuruldu, sayi(o.sayi) ?? 0),
+                aciklama: m.izlemeKurulduAciklama,
                 ton: 'notr',
             };
         case 'izinYok':
             return {
                 zamanMs: t,
                 ikon: 'lock',
-                baslik: 'Konum izni eksik',
+                baslik: m.izinYok,
                 aciklama:
                     o.izin === 'arkaPlanYok'
-                        ? '"Her zaman" konum izni olmadan uygulama kapalıyken camide olduğunuz anlaşılamaz.'
-                        : 'Konum izni verilmediği için camiler izlenemiyor.',
+                        ? m.izinYokArkaPlan
+                        : m.izinYokGenel,
                 ton: 'uyari',
             };
         case 'izlemeHatasi':
             return {
                 zamanMs: t,
                 ikon: 'exclamation-triangle',
-                baslik: 'Camiler izlenemedi',
-                aciklama: 'Telefonunuzun konumu kapalı olabilir. Açınca izleme yeniden kurulur.',
+                baslik: m.izlemeHatasi,
+                aciklama: m.izlemeHatasiAciklama,
                 ton: 'uyari',
             };
         case 'dwell':
             return {
                 zamanMs: t,
                 ikon: 'hourglass-half',
-                baslik: `${yer} çevresinde ${sayi(o.dk) ?? 3} dakikayı geçtiniz`,
-                aciklama: 'Telefon uygulamayı uyandırdı.',
+                baslik: sayili(m.dwell, sayi(o.dk) ?? 3, { yer }),
+                aciklama: m.dwellAciklama,
                 ton: 'notr',
             };
         case 'vakitDisi':
             return {
                 zamanMs: t,
                 ikon: 'clock',
-                baslik: 'Vakit yakınında değildiniz',
-                aciklama: 'Konum ölçülmedi, hiçbir şey yapılmadı. İsterseniz "Yalnız vakit yakınında" ayarını kapatabilirsiniz.',
+                baslik: m.vakitDisi,
+                aciklama: m.vakitDisiAciklama,
                 ton: 'iyi',
             };
         case 'olcum': {
@@ -135,16 +112,19 @@ export function olaySatiriOlustur(o: HamOlay): OlaySatiri | null {
                     return {
                         zamanMs: t,
                         ikon: 'crosshairs',
-                        baslik: `Hassas ölçüm: ${yer} alanının içindesiniz`,
-                        aciklama: dogruluk != null ? `Ölçüm ${dogruluk} m doğrulukla alındı.` : undefined,
+                        baslik: bicim(m.olcumCamide, { yer }),
+                        aciklama: dogruluk != null ? bicim(m.olcumDogruluk, { m: dogruluk }) : undefined,
                         ton: 'iyi',
                     };
                 case 'supheli':
                     return {
                         zamanMs: t,
                         ikon: 'question-circle',
-                        baslik: 'Ölçüm yeterince hassas değildi',
-                        aciklama: `${dogruluk != null ? `${dogruluk} m doğruluk ` : 'Doğruluk '}${AZAMI_DOGRULUK_M} m'den kaba. Yanlışlıkla sessize almamak için mod açılmadı.`,
+                        baslik: m.olcumSupheli,
+                        aciklama:
+                            dogruluk != null
+                                ? bicim(m.olcumSupheliDogruluk, { m: dogruluk, azami: AZAMI_DOGRULUK_M })
+                                : bicim(m.olcumSupheliGenel, { azami: AZAMI_DOGRULUK_M }),
                         ton: 'iyi',
                     };
                 case 'disarida':
@@ -153,35 +133,35 @@ export function olaySatiriOlustur(o: HamOlay): OlaySatiri | null {
                         ikon: 'crosshairs',
                         baslik:
                             mesafe != null
-                                ? `Hassas ölçüm: ${yer} alanının ${mesafe} m dışındasınız`
-                                : 'Hassas ölçüm: bir caminin alanında değilsiniz',
-                        aciklama: 'Camide sayılmadınız. Yanlışsa Camideyim ayarlarından alanı genişletebilirsiniz.',
+                                ? bicim(m.olcumDisarida, { yer, m: mesafe })
+                                : m.olcumDisaridaGenel,
+                        aciklama: m.olcumDisaridaAciklama,
                         ton: 'iyi',
                     };
                 case 'konumYok':
-                    return { zamanMs: t, ikon: 'map-marker-alt', baslik: 'Konum ölçülemedi', aciklama: 'Mod açılmadı.', ton: 'uyari' };
+                    return { zamanMs: t, ikon: 'map-marker-alt', baslik: m.konumYok, aciklama: m.modAcilmadi, ton: 'uyari' };
                 default:
                     return null;
             }
         }
         case 'guven': {
             const gerekce = guvenGerekcesi(o);
-            const tavan = typeof o.tavan === 'string' ? TAVAN_METNI[o.tavan] : undefined;
+            const tavan = parca(m.tavan, o.tavan);
             const bicimNotu =
                 o.bicim === 'sorarak' && o.eylem === 'sor' && o.guvenKarari === 'otomatik'
-                    ? '"Sorarak aç" seçili olduğu için sorulacak.'
+                    ? m.sorarakNotu
                     : o.bicim === 'otomatik' && o.eylem === 'otomatik' && o.guvenKarari === 'sor'
-                      ? '"Otomatik aç" seçili olduğu için açılacak.'
+                      ? m.otomatikNotu
                       : undefined;
             const aciklama = [gerekce ? `${ilkHarfiBuyut(gerekce)}.` : null, tavan, bicimNotu]
                 .filter(Boolean)
                 .join(' ');
             const baslik =
                 o.eylem === 'otomatik'
-                    ? `Güven yüksek: ${yer}`
+                    ? bicim(m.guvenYuksek, { yer })
                     : o.eylem === 'sor'
-                      ? `Emin olunamadı, size sorulacak: ${yer}`
-                      : `Camide sayılmadınız: ${yer}`;
+                      ? bicim(m.emin, { yer })
+                      : bicim(m.sayilmadi, { yer });
             return {
                 zamanMs: t,
                 ikon: o.eylem === 'otomatik' ? 'check-double' : o.eylem === 'sor' ? 'question-circle' : 'walking',
@@ -194,88 +174,88 @@ export function olaySatiriOlustur(o: HamOlay): OlaySatiri | null {
             return {
                 zamanMs: t,
                 ikon: 'bell',
-                baslik: '"Camide misiniz?" diye soruldu',
-                aciklama: 'Bildirimden Namaz modunu açabilir ya da "Hayır" diyebilirsiniz.',
+                baslik: m.soruldu,
+                aciklama: m.sorulduAciklama,
                 ton: 'notr',
             };
         case 'soruKabul':
-            return { zamanMs: t, ikon: 'check', baslik: `Camide olduğunuzu onayladınız · ${yer}`, ton: 'iyi' };
+            return { zamanMs: t, ikon: 'check', baslik: bicim(m.soruKabul, { yer }), ton: 'iyi' };
         case 'soruRet':
             return {
                 zamanMs: t,
                 ikon: 'times',
-                baslik: `"Hayır" dediniz · ${yer}`,
-                aciklama: 'Bu vakit için burada bir daha sorulmayacak.',
+                baslik: bicim(m.soruRet, { yer }),
+                aciklama: m.soruRetAciklama,
                 ton: 'notr',
             };
         case 'soruCikis':
-            return { zamanMs: t, ikon: 'sign-out-alt', baslik: 'Soru cevaplanmadan alandan çıktınız', ton: 'notr' };
+            return { zamanMs: t, ikon: 'sign-out-alt', baslik: m.soruCikis, ton: 'notr' };
         case 'reddedilmis':
             return {
                 zamanMs: t,
                 ikon: 'times-circle',
-                baslik: 'Bu vakitte "Hayır" demiştiniz',
-                aciklama: 'Konum ölçülmedi, hiçbir şey yapılmadı.',
+                baslik: m.reddedilmis,
+                aciklama: m.olculmedi,
                 ton: 'iyi',
             };
         case 'camide': {
             const mod =
                 o.mod === 'acildi'
-                    ? 'Namaz modu açıldı.'
+                    ? m.modAcildi
                     : o.mod === 'kullaniciKapatti'
-                      ? 'Namaz modunu bu vakit için kapatmıştınız.'
+                      ? m.modKullaniciKapatti
                       : o.mod === 'erisimYok'
-                        ? 'Rahatsız Etmeyin erişimi olmadığı için Namaz modu açılamadı.'
-                        : 'Hatırlatmalar sessiz gelir; sesli okumalar duyulmaz.';
-            return { zamanMs: t, ikon: 'mosque', baslik: `Camidesiniz · ${yer}`, aciklama: mod, ton: 'iyi' };
+                        ? m.modErisimYok
+                        : m.modSessiz;
+            return { zamanMs: t, ikon: 'mosque', baslik: bicim(m.camidesiniz, { yer }), aciklama: mod, ton: 'iyi' };
         }
         case 'cikis':
             return {
                 zamanMs: t,
                 ikon: 'sign-out-alt',
-                baslik: `${yer} alanından çıktınız`,
-                aciklama: sayi(o.dk) != null ? `${sayi(o.dk)} dakika kaldınız.` : undefined,
+                baslik: bicim(m.cikis, { yer }),
+                aciklama: sayi(o.dk) != null ? sayili(m.cikisSure, sayi(o.dk) as number) : undefined,
                 ton: 'iyi',
             };
         case 'sure':
             return {
                 zamanMs: t,
                 ikon: 'stopwatch',
-                baslik: 'Üst süre doldu',
-                aciklama: 'Çıkış algılanmadı; Camidesiniz hâli kendiliğinden kapandı.',
+                baslik: m.sure,
+                aciklama: m.sureAciklama,
                 ton: 'notr',
             };
         case 'kapatildi':
-            return { zamanMs: t, ikon: 'power-off', baslik: 'Camidesiniz hâli kapatıldı', ton: 'notr' };
+            return { zamanMs: t, ikon: 'power-off', baslik: m.kapatildi, ton: 'notr' };
         case 'haricTutuldu':
             return {
                 zamanMs: t,
                 ikon: 'ban',
-                baslik: `${yer} cami değil olarak işaretlendi`,
-                aciklama: 'Burada artık "camidesiniz" denmez. Camideyim ayarlarından geri alabilirsiniz.',
+                baslik: bicim(m.haricTutuldu, { yer }),
+                aciklama: m.haricTutulduAciklama,
                 ton: 'notr',
             };
         case 'modElleKapatildi':
             return {
                 zamanMs: t,
                 ikon: 'toggle-off',
-                baslik: 'Namaz modunu kapattınız',
-                aciklama: 'Bu vakit için yeniden açılmayacak.',
+                baslik: m.modElleKapatildi,
+                aciklama: m.modElleKapatildiAciklama,
                 ton: 'notr',
             };
         case 'kildim': {
-            const vakit = typeof o.vakit === 'string' ? VAKIT_ADLARI[o.vakit] : undefined;
-            return { zamanMs: t, ikon: 'check-circle', baslik: `${vakit ?? 'Namaz'} kılındı olarak işaretlendi`, ton: 'iyi' };
+            const vakit = parca(metin().vakit.adlar, o.vakit);
+            return { zamanMs: t, ikon: 'check-circle', baslik: bicim(m.kildim, { vakit: vakit ?? m.namaz }), ton: 'iyi' };
         }
         case 'yenileme':
             if (o.sonuc === 'yenile') {
-                return { zamanMs: t, ikon: 'sync-alt', baslik: 'Uzaklaştınız; yakın camiler yenilendi', ton: 'notr' };
+                return { zamanMs: t, ikon: 'sync-alt', baslik: m.yenile, ton: 'notr' };
             }
             if (o.sonuc === 'bayatKonum') {
                 return {
                     zamanMs: t,
                     ikon: 'sync-alt',
-                    baslik: 'Konum ölçülemedi; liste daha sonra yenilenecek',
+                    baslik: m.bayatKonum,
                     ton: 'notr',
                 };
             }
@@ -284,7 +264,7 @@ export function olaySatiriOlustur(o: HamOlay): OlaySatiri | null {
                 return {
                     zamanMs: t,
                     ikon: 'sync-alt',
-                    baslik: 'Konum yeterince kesin ölçülemedi; liste daha sonra yenilenecek',
+                    baslik: m.kabaKonum,
                     ton: 'notr',
                 };
             }

@@ -6,6 +6,7 @@ import { useKible } from '../../../hooks/useKible';
 import { useIsFocused } from '@react-navigation/native';
 import { useRenkler } from '../../../../core/theme';
 import { HaptikServisi } from '../../../../core/feedback/HaptikServisi';
+import { ingilizceyeGec, turkceKalanlar } from '../../../../__tests__/yardimci/ingilizceDenetimi';
 
 jest.mock('../../../hooks/useKible', () => {
   const gercek = jest.requireActual('../../../hooks/useKible');
@@ -336,5 +337,77 @@ describe('KibleSayfasi', () => {
       expect(getByText('Kamera görünümü bu telefonda kullanılamıyor')).toBeTruthy();
       expect(UNSAFE_root.findAll((n: { type: unknown }) => n.type === 'CameraView').length).toBe(0);
     });
+  });
+});
+
+describe('KibleSayfasi — İngilizce', () => {
+  // Türkçe harfsiz ama Türkçe sözcükler + kadrandaki tek harfli yön kısaltmaları (K/D/G/B).
+  const YASAKLI = ['Pusula', 'Kamera', 'Kuzey', 'kuzey', 'Kabe', 'uzakta', 'Telefon', 'Konum', '^[KDGB]$'];
+  let geriAl: () => void;
+  const ilkKonum = { ...mockKonum };
+  beforeEach(async () => {
+    geriAl = ingilizceyeGec();
+    jest.clearAllMocks();
+    await AsyncStorage.clear?.();
+    kalibrasyonOturumunuSifirla();
+    Object.assign(mockKonum, { seciliIlceAdi: '', seciliIlAdi: 'London' });
+    (useIsFocused as jest.Mock).mockReturnValue(true);
+    (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu());
+    kamera.__izinAyarla({ granted: false, canAskAgain: true, status: 'undetermined' });
+  });
+  afterEach(() => {
+    Object.assign(mockKonum, ilkKonum);
+    act(() => geriAl()); // bağlı ekran dil değişince act içinde yeniden çizilsin
+  });
+  const kalan = (agac: unknown) => turkceKalanlar(agac as never, YASAKLI);
+
+  it('pusula: başlık, sekmeler, yön cümlesi, N/E/S/W, kalibrasyon rehberi', () => {
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ ozet: ozet({ dik: true }), pusulaDogrulugu: 0, teshis: { alanBozuk: true, tutarsiz: false } }));
+    const e = render(<KibleSayfasi />);
+    expect(kalan(e.toJSON())).toEqual([]);
+    expect(e.getByText('Qibla')).toBeTruthy();
+    expect(e.getByText('The Qibla is 12° to your right')).toBeTruthy();
+    for (const h of ['N', 'E', 'S', 'W']) expect(e.getByText(h)).toBeTruthy();
+    expect(e.getByText('Calibrate the compass')).toBeTruthy();
+  });
+
+  it('hazırlanıyor, konum bekleniyor, hata ve statik pusula', () => {
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ ozet: ozet({ hazir: false }) }));
+    expect(kalan(render(<KibleSayfasi />).toJSON())).toEqual([]);
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ kibleAcisi: null, konum: null, ozet: ozet({ fark: null }) }));
+    expect(kalan(render(<KibleSayfasi />).toJSON())).toEqual([]);
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ yukleniyor: true }));
+    expect(kalan(render(<KibleSayfasi />).toJSON())).toEqual([]);
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ hata: "The Qibla service couldn't start." }));
+    expect(kalan(render(<KibleSayfasi />).toJSON())).toEqual([]);
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ pusulaVar: false, ozet: ozet({ hazir: false, fark: null }) }));
+    const statik = render(<KibleSayfasi />);
+    expect(kalan(statik.toJSON())).toEqual([]);
+    expect(statik.getByText(/London, Kaaba is 2,\d{3} km away/)).toBeTruthy();
+  });
+
+  const kameraModu = () => {
+    const e = render(<KibleSayfasi />);
+    fireEvent.press(e.getByLabelText('Camera mode'));
+    return e;
+  };
+  it('kamera: izin açıklaması', () => {
+    expect(kalan(kameraModu().toJSON())).toEqual([]);
+  });
+  it('kamera: kalıcı ret', () => {
+    kamera.__izinAyarla({ granted: false, canAskAgain: false, status: 'denied' });
+    expect(kalan(kameraModu().toJSON())).toEqual([]);
+  });
+  it('kamera: dik değil', () => {
+    kamera.__izinAyarla({ granted: true, canAskAgain: true, status: 'granted' });
+    const dik = kameraModu();
+    expect(kalan(dik.toJSON())).toEqual([]);
+    expect(dik.getByText('Hold your phone upright')).toBeTruthy();
+  });
+  it('kamera: güvenilmez eksen', () => {
+    kamera.__izinAyarla({ granted: true, canAskAgain: true, status: 'granted' });
+    (useKible as jest.Mock).mockReturnValue(kibleDurumu({ vektorGuvenilir: false }));
+    expect(kalan(kameraModu().toJSON())).toEqual([]);
   });
 });

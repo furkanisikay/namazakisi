@@ -69,6 +69,8 @@ import { AyarCapasi } from '../../components/ayar/AyarCapasi';
 import { OZEL_GUN_RENGI } from '../../../core/constants/OzelGunRengi';
 import { LocalKapatmaOncesiSecim } from '../../../data/local/LocalKapatmaOncesiSecim';
 import { geriAlBandiGoster } from '../../components/ortak/GeriAlBandi';
+import { metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 type Navigasyon = { navigate: (ekran: string, params?: Record<string, unknown>) => void };
 
@@ -84,6 +86,7 @@ const GezinmeSatiri: React.FC<{
     testID?: string;
 }> = ({ ikon, renk, baslik, ozet, onPress, testID }) => {
     const renkler = useRenkler();
+    const ayrintilariAcar = useMetin().ortak.ayrintilariAcar;
     return (
         <TouchableOpacity
             testID={testID}
@@ -91,7 +94,7 @@ const GezinmeSatiri: React.FC<{
             activeOpacity={0.7}
             accessibilityRole="button"
             accessibilityLabel={`${baslik}. ${ozet}`}
-            accessibilityHint="Ayrıntıları açar"
+            accessibilityHint={ayrintilariAcar}
             style={{ flexDirection: 'row', alignItems: 'center', minHeight: 56, paddingVertical: 10 }}
         >
             <IkonCipi ikon={ikon} renk={renk} />
@@ -129,6 +132,8 @@ export const HatirlatmalarSayfasi: React.FC = () => (
 
 const HatirlatmalarIcerik: React.FC = () => {
     const renkler = useRenkler();
+    const sozluk = useMetin();
+    const ms = sozluk.hatirlatma.sayfa;
     const scrollRef = useVurguKurulumu();
     const dispatch = useAppDispatch();
     const navigation = useNavigation() as unknown as Navigasyon;
@@ -178,7 +183,7 @@ const HatirlatmalarIcerik: React.FC = () => {
         {
             // Öneriler muhafız/nafile ayarını yazar; bu sayfa yalnız anahtarları yazar.
             oneriFiltresi: () => false,
-            ekYol: { etiket: 'Vakit çıkmadan ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') },
+            ekYol: { etiket: ms.ekYol, onPress: () => navigation.navigate('MuhafizAyarlari') },
         }
     );
 
@@ -207,7 +212,7 @@ const HatirlatmalarIcerik: React.FC = () => {
             await LocalKapatmaOncesiSecim.yaz('vakitGirince', once);
             dispatch(tumVakitBildirimAyarlariniGuncelle({ imsak: false, ogle: false, ikindi: false, aksam: false, yatsi: false }));
             geriAlBandiGoster({
-                mesaj: 'Vakit girince hatırlatması kapatıldı',
+                mesaj: metin().hatirlatma.sayfa.vakitGirinceKapatildi,
                 geriAl: () => dispatch(tumVakitBildirimAyarlariniGuncelle(once)),
             });
             return;
@@ -291,7 +296,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                 {oneri.goster ? <VarsayilanOneriKarti onUygula={oneri.uygula} onKapat={oneri.kapat} kendiAyari={muhafiz.yogunluk === 'ozel'} /> : null}
 
                 <AyarCapasi id="muhafizYogunluk">
-                    <BolumBasligi metin="Ne kadar hatırlatalım?" />
+                    <BolumBasligi metin={ms.neKadar} />
                     <DuzeySecici
                         secili={duzey.secili}
                         onSec={duzey.sec}
@@ -310,12 +315,12 @@ const HatirlatmalarIcerik: React.FC = () => {
                 <BildirimButceKarti ozet={butce.ozet} onPress={rehber.karttanAc} />
 
                 <View style={{ marginTop: 24 }}>
-                    <BolumBasligi metin="Hatırlatmalar" />
+                    <BolumBasligi metin={ms.hatirlatmalar} />
                     <Kart>
                         <AnahtarSatiri
                             ikon="bell"
                             kapaliIkon="bell-slash"
-                            baslik="Vakit girince"
+                            baslik={ms.vakitGirince}
                             ozet={vakitGirinceOzeti(vakitBildirim)}
                             deger={vakitGirinceAcik}
                             onDegistir={(v) => void vakitGirinceDegistir(v)}
@@ -325,7 +330,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                         <AyarCapasi id="muhafizAnaSwitch">
                             <AnahtarSatiri
                                 ikon="shield-alt"
-                                baslik="Vakit çıkmadan"
+                                baslik={ms.vakitCikmadan}
                                 ozet={vakitCikmadanOzeti(muhafiz.aktif, muhafiz.yogunluk)}
                                 deger={muhafiz.aktif}
                                 onDegistir={duzey.aktifiDegistir}
@@ -336,7 +341,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                         <GeceSessizligiSatiri ayar={geceSessizligi} onDegistir={geceDegistir} />
                         <AnahtarSatiri
                             ikon="mosque"
-                            baslik="Cuma namazı"
+                            baslik={ms.cuma}
                             ozet={cumaOzeti(cuma.aktif, cuma.adimlar)}
                             deger={cuma.aktif}
                             onDegistir={cumaDegistir}
@@ -345,7 +350,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                         />
                         <AnahtarSatiri
                             ikon="walking"
-                            baslik="Camiye gitme vakti"
+                            baslik={ms.camiye}
                             ozet={camiyeGitOzeti(camiyeGit.aktif, camiyeGit.vakitler, camiyeGit.adimlar)}
                             deger={camiyeGit.aktif}
                             onDegistir={camiyeGitDegistir}
@@ -354,7 +359,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                         />
                         <AnahtarSatiri
                             ikon="bed"
-                            baslik="Yatmadan önce"
+                            baslik={ms.yatis}
                             ozet={yatisOzeti(yatis.aktif, yatis.saat, yatis.dakika)}
                             deger={yatis.aktif}
                             onDegistir={yatisDegistir}
@@ -363,7 +368,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                         />
                         <AnahtarSatiri
                             ikon="calendar-times"
-                            baslik="Toplantı çakışırsa"
+                            baslik={ms.takvim}
                             ozet={takvimCakismaOzeti(takvimCakisma.aktif)}
                             deger={takvimCakisma.aktif}
                             onDegistir={takvimDegistir}
@@ -372,14 +377,14 @@ const HatirlatmalarIcerik: React.FC = () => {
                         />
                         <GezinmeSatiri
                             ikon="star-and-crescent"
-                            baslik="Nafile namazlar"
+                            baslik={ms.nafile}
                             ozet={nafileOzeti(nafileAcik)}
                             onPress={() => git('NafileAyarlari')}
                             testID="satir-nafile"
                         />
                         <AnahtarSatiri
                             ikon="moon"
-                            baslik="Ramazan"
+                            baslik={ms.ramazan}
                             ozet={ramazanOzeti(ramazan.iftar, ramazan.sahur)}
                             deger={ramazanAcik}
                             onDegistir={ramazanDegistir}
@@ -388,7 +393,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                         />
                         <AnahtarSatiri
                             ikon="fire-alt"
-                            baslik="Günü tamamlamadıysam"
+                            baslik={sozluk.hatirlatma.gunSonu.baslik}
                             ozet={gunSonuOzeti({
                                 aktif: seriAyarlari.gunSonuBildirimAktif,
                                 mod: seriAyarlari.gunSonuBildirimModu,
@@ -405,12 +410,12 @@ const HatirlatmalarIcerik: React.FC = () => {
                 </View>
 
                 <View style={{ marginTop: 24 }}>
-                    <BolumBasligi metin="Ara vermek için" />
+                    <BolumBasligi metin={ms.araVermek} />
                     <Kart>
                         <GezinmeSatiri
                             ikon="magic"
                             renk={OZEL_GUN_RENGI}
-                            baslik="Özel gün"
+                            baslik={sozluk.hatirlatma.ozelGun.baslik}
                             ozet={ozelGunOzeti(ozelGun.ozelGunModuAktif, !!ozelGun.aktifOzelGun)}
                             onPress={() => git('OzelGunAyarlari')}
                             testID="satir-ozel-gun"

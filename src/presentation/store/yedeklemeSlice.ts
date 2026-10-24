@@ -11,6 +11,7 @@
  */
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { metin } from '../../core/dil/aktifDil';
 import { YedekPayload, KategoriSecimleri, GunlukNamazlar } from '../../core/types';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { mevcutVeriyiTopla, planiDiskeYaz } from '../../domain/services/YedeklemeServisi';
@@ -226,7 +227,7 @@ const yedeklemeSlice = createSlice({
       })
       .addCase(iceAktarmayiUygula.rejected, (state, action) => {
         state.durum = 'hata';
-        state.hata = action.error.message ?? 'İçe aktarma başarısız oldu';
+        state.hata = action.error.message ?? metin().yedekleme.iceAktarmaBasarisiz;
       });
   },
 });

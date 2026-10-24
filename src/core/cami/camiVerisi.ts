@@ -153,7 +153,7 @@ export function camiVerisiniCoz(veri: Uint8Array): CamiVerisi | null {
             veriZamani,
             kayit(indeks: number): CamiKaydi {
                 if (!Number.isInteger(indeks) || indeks < 0 || indeks >= n) {
-                    throw new RangeError(`Kayıt yok: ${indeks}`);
+                    throw new RangeError(`Kayıt yok: ${indeks}`); // dil-haric: throw metni (kullanıcıya görünmez)
                 }
                 return kayitOku(indeks);
             },

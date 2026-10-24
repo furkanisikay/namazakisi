@@ -11,6 +11,7 @@ import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { BasariIsareti } from '../../components/hareket/hareketler';
 import { TakvimeEkleHareketi } from './TakvimeEkleHareketi';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface OzetSatir {
     ikon: string;
@@ -41,6 +42,7 @@ interface BildirimBanneriProps {
 
 export const BildirimBanneri: React.FC<BildirimBanneriProps> = ({ mesaj, tip, onKapat }) => {
     const renkler = useRenkler();
+    const mb = useMetin().takvim.bilesen;
     const renk = tip === 'basari' ? renkler.basarili : tip === 'hata' ? renkler.hata : renkler.birincil;
     const ikon = tip === 'basari' ? 'check-circle' : tip === 'hata' ? 'exclamation-circle' : 'info-circle';
 
@@ -54,7 +56,7 @@ export const BildirimBanneri: React.FC<BildirimBanneriProps> = ({ mesaj, tip, on
             <TouchableOpacity
                 onPress={onKapat}
                 accessibilityRole="button"
-                accessibilityLabel="Bildirimi kapatın"
+                accessibilityLabel={mb.bildirimiKapatin}
                 style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center', marginRight: -10 }}
             >
                 <FontAwesome5 name="times" size={13} color={renkler.metinIkincil} />
@@ -66,22 +68,20 @@ export const BildirimBanneri: React.FC<BildirimBanneriProps> = ({ mesaj, tip, on
 // ─── OzellikBilgi (inactive state) ────────────────────────────────────────────
 export const OzellikBilgi: React.FC = () => {
     const renkler = useRenkler();
+    const mb = useMetin().takvim.bilesen;
 
     const ozellikler = [
         {
             ikon: 'sliders-h',
-            baslik: 'Vakit vakit ayar',
-            aciklama: 'Her namazın etkinlik saati ve süresi ayrı ayarlanır.',
+            ...mb.ozellikler.vakit,
         },
         {
             ikon: 'calendar-check',
-            baslik: 'Önce görün',
-            aciklama: 'Bugünkü etkinlik saatlerini takvime eklemeden önce görürsünüz.',
+            ...mb.ozellikler.once,
         },
         {
             ikon: 'trash-alt',
-            baslik: 'Kolayca silin',
-            aciklama: 'Silinecek etkinlikleri önce listede görür, sonra silersiniz.',
+            ...mb.ozellikler.sil,
         },
     ];
 
@@ -98,10 +98,10 @@ export const OzellikBilgi: React.FC = () => {
                     <FontAwesome5 name="calendar-alt" size={36} color={renkler.birincil} solid />
                 </View>
                 <Text className="text-base font-bold text-center" style={{ color: renkler.metin }}>
-                    Namaz vakitlerini takviminize ekleyin
+                    {mb.baslik}
                 </Text>
                 <Text className="text-sm text-center mt-2 leading-5" style={{ color: renkler.metinIkincil }}>
-                    Seçtiğiniz vakitler takviminize etkinlik olarak eklenir.
+                    {mb.aciklama}
                 </Text>
             </View>
 
@@ -130,7 +130,7 @@ export const OzellikBilgi: React.FC = () => {
             >
                 <FontAwesome5 name="arrow-up" size={11} color={renkler.birincil} />
                 <Text className="text-sm font-medium" style={{ color: renkler.birincil }}>
-                    Başlamak için yukarıdaki anahtarı açın
+                    {mb.baslamak}
                 </Text>
             </View>
         </View>
@@ -159,6 +159,7 @@ export const BasariIcerigi: React.FC<BasariIcerigiProps> = ({
     tip, baslik, altBaslik, satirlar, sayi = 0, onTakvimiAc, onKapat,
 }) => {
     const renkler = useRenkler();
+    const mb = useMetin().takvim.bilesen;
     const azalt = useHareketAzalt();
     const renk = tip === 'olusturma' ? renkler.basarili : renkler.hata;
 
@@ -236,11 +237,11 @@ export const BasariIcerigi: React.FC<BasariIcerigiProps> = ({
                     onPress={onTakvimiAc}
                     activeOpacity={0.85}
                     accessibilityRole="button"
-                    accessibilityLabel="Takvim uygulamasını açın"
+                    accessibilityLabel={mb.takvimiAcin}
                 >
                     <FontAwesome5 name="external-link-alt" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                     <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
-                        Takvim uygulamasını açın
+                        {mb.takvimiAcin}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -251,7 +252,7 @@ export const BasariIcerigi: React.FC<BasariIcerigiProps> = ({
                     accessibilityRole="button"
                 >
                     <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
-                        Tamam
+                        {mb.tamam}
                     </Text>
                 </TouchableOpacity>
             </Animated.View>

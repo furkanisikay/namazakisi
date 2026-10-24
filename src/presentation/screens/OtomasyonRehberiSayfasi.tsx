@@ -20,8 +20,11 @@ import {
     CIKIYOR_ESIK_DK,
     EKLENTI_DEGISKENLERI,
     rutinAnahtarKelimeleri,
+    vakitGirdiEki,
 } from '../../core/otomasyon/anahtarKelimeler';
-import { ONE_UI_NOTU, rutinOnkosulNotu } from '../../core/otomasyon/rehberNotlari';
+import { oneUiNotu, rutinOnkosulNotu } from '../../core/otomasyon/rehberNotlari';
+import { bicim, metin } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
 import { useCihazDurumu } from '../hooks/useCihazDurumu';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 
@@ -67,10 +70,21 @@ const CIHAZ_ALANLARI = ['samsung'] as const;
 
 type Renkler = ReturnType<typeof useRenkler>;
 
-const SEKMELER: { id: Sekme; etiket: string; ikon: string }[] = [
-    { id: 'rutinler', etiket: 'Samsung Rutinler', ikon: 'magic' },
-    { id: 'eklenti', etiket: 'Tasker · MacroDroid', ikon: 'puzzle-piece' },
+const SEKMELER: { id: Sekme; readonly etiket: string; ikon: string }[] = [
+    { id: 'rutinler', get etiket() { return metin().muhafizAyar.otomasyon.sekmeRutinler; }, ikon: 'magic' },
+    { id: 'eklenti', get etiket() { return metin().muhafizAyar.otomasyon.sekmeEklenti; }, ikon: 'puzzle-piece' },
 ];
+
+/**
+ * Native etiketler (Android `res/values`, W5'e kadar YALNIZ Türkçe): rehber bunları
+ * kullanıcının ekranda gördüğü gibi aynen yazar; çevrilmiş ad bulunamazdı.
+ */
+const NATIVE_ETIKETLER = {
+    kisayol: 'Şu anki vakti kıldım', // dil-haric: kimlik (native kısayol etiketi)
+    olay: 'Namaz Akışı: Vakit olayı', // dil-haric: kimlik (native eklenti etiketi)
+    kosul: 'Namaz Akışı: Vakit durumu', // dil-haric: kimlik (native eklenti etiketi)
+    eylem: 'Namaz Akışı: Kıldım', // dil-haric: kimlik (native eklenti etiketi)
+} as const;
 
 const Kart: React.FC<{ renkler: Renkler; ikon: string; baslik: string; children: React.ReactNode; testID?: string }> = ({
     renkler,
@@ -112,7 +126,7 @@ const Adimlar: React.FC<{ renkler: Renkler; adimlar: string[] }> = ({ renkler, a
                         {i + 1}
                     </Text>
                 </View>
-                <Text className="flex-1 text-sm" style={{ color: renkler.metin }} accessibilityLabel={`${i + 1}. adım: ${a}`}>
+                <Text className="flex-1 text-sm" style={{ color: renkler.metin }} accessibilityLabel={bicim(metin().muhafizAyar.otomasyon.adimEtiketi, { n: i + 1, metin: a })}>
                     {a}
                 </Text>
             </View>
@@ -128,7 +142,7 @@ const Notlar: React.FC<{ renkler: Renkler; notlar: string[] }> = ({ renkler, not
         <View className="flex-row items-center mb-2">
             <FontAwesome5 name="exclamation-circle" size={15} color={renkler.dikkat} solid />
             <Text className="ml-2 text-sm font-bold" style={{ color: renkler.metin }}>
-                Bilmeniz gerekenler
+                {metin().muhafizAyar.otomasyon.notlarBaslik}
             </Text>
         </View>
         <View style={{ gap: 8 }}>
@@ -142,18 +156,12 @@ const Notlar: React.FC<{ renkler: Renkler; notlar: string[] }> = ({ renkler, not
     </View>
 );
 
-const RutinlerRehberi: React.FC<{ renkler: Renkler; onkosul: string | null }> = ({ renkler, onkosul }) => (
+const RutinlerRehberi: React.FC<{ renkler: Renkler; onkosul: string | null }> = ({ renkler, onkosul }) => {
+    const mo = useMetin().muhafizAyar.otomasyon;
+    return (
     <View style={{ gap: 16 }}>
-        <Kart renkler={renkler} ikon="bell" baslik="Vakit girince bir şey yapın" testID="rehber-rutin-tetik">
-            <Adimlar
-                renkler={renkler}
-                adimlar={[
-                    'Telefonunuzun Ayarlar > Modlar ve Rutinler > Rutinler bölümünü açın, yeni bir rutin ekleyin.',
-                    '"Eğer" kısmında "Bildirim alındığında" koşulunu seçin.',
-                    'Uygulama olarak Namaz Akışı\'nı seçin, anahtar kelimeye aşağıdakilerden birini harfiyen yazın.',
-                    '"Ardından" kısmında istediğiniz eylemi ekleyin (ör. ses modunu titreşime alın).',
-                ]}
-            />
+        <Kart renkler={renkler} ikon="bell" baslik={mo.rutinTetikBaslik} testID="rehber-rutin-tetik">
+            <Adimlar renkler={renkler} adimlar={[...mo.rutinTetikAdimlar]} />
             <View className="mt-4" style={{ gap: 8 }}>
                 {rutinAnahtarKelimeleri().map((k) => (
                     <View
@@ -170,41 +178,34 @@ const RutinlerRehberi: React.FC<{ renkler: Renkler; onkosul: string | null }> = 
                     </View>
                 ))}
             </View>
+            {/* Anahtar kelime dile bağlıdır (Türkçe dahil her dilde söylenir). */}
+            <View className="flex-row items-start mt-3 gap-2" testID="rehber-rutin-dil-notu">
+                <FontAwesome5 name="language" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} solid />
+                <Text className="flex-1 text-xs" style={{ color: renkler.metinIkincil }}>
+                    {mo.dilNotu}
+                </Text>
+            </View>
         </Kart>
-        <Kart renkler={renkler} ikon="check" baslik="Rutinden namazı işaretleyin" testID="rehber-rutin-kildim">
-            <Adimlar
-                renkler={renkler}
-                adimlar={[
-                    'Rutinin "Ardından" kısmında Uygulamalar bölümünü açın ve bir uygulama eylemi ekleyin.',
-                    'Namaz Akışı\'nın "Şu anki vakti kıldım" kısayolunu seçin.',
-                    'Rutin ilk çalıştığında size sorulur. "Her zaman izin ver" derseniz bir daha sorulmaz.',
-                ]}
-            />
+        <Kart renkler={renkler} ikon="check" baslik={mo.rutinKildimBaslik} testID="rehber-rutin-kildim">
+            <Adimlar renkler={renkler} adimlar={mo.rutinKildimAdimlar.map((a) => bicim(a, NATIVE_ETIKETLER))} />
         </Kart>
-        <Notlar
-            renkler={renkler}
-            notlar={[
-                'Namaz Akışı bildirimlerini ya da ilgili bildirim kategorisini sessize alırsanız rutin tetiklenmez.',
-                ...(onkosul ? [onkosul] : []),
-                ONE_UI_NOTU,
-            ]}
-        />
+        <Notlar renkler={renkler} notlar={[mo.rutinSessiz, ...(onkosul ? [onkosul] : []), oneUiNotu()]} />
     </View>
-);
+    );
+};
 
-const EklentiRehberi: React.FC<{ renkler: Renkler }> = ({ renkler }) => (
+const EklentiRehberi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
+    const mo = useMetin().muhafizAyar.otomasyon;
+    const aciklamalar: Readonly<Record<string, string>> = mo.degiskenAciklamalari;
+    return (
     <View style={{ gap: 16 }}>
-        <Kart renkler={renkler} ikon="bolt" baslik="Vakit olaylarıyla başlatın" testID="rehber-eklenti-olay">
+        <Kart renkler={renkler} ikon="bolt" baslik={mo.eklentiOlayBaslik} testID="rehber-eklenti-olay">
             <Adimlar
                 renkler={renkler}
-                adimlar={[
-                    'Tasker\'da yeni bir profil ekleyin: Olay > Eklenti > "Namaz Akışı: Vakit olayı". MacroDroid ve Automate\'te "Namaz Akışı: Vakit durumu" eklentisini seçin.',
-                    `Olayı seçin: vakit girdiğinde, vakit çıkıyor (${CIKIYOR_ESIK_DK} dk kala) ya da camide olduğunuz algılandığında. İsterseniz tek bir vakti seçebilirsiniz.`,
-                    'İlk eklediğinizde uygulamaya izin vermeniz istenir.',
-                ]}
+                adimlar={mo.eklentiOlayAdimlar.map((a) => bicim(a, { ...NATIVE_ETIKETLER, dk: CIKIYOR_ESIK_DK }))}
             />
             <Text className="text-xs font-bold mt-4 mb-2" style={{ color: renkler.metinIkincil }}>
-                KULLANABİLECEĞİNİZ DEĞİŞKENLER
+                {mo.degiskenler}
             </Text>
             <View style={{ gap: 6 }}>
                 {EKLENTI_DEGISKENLERI.map((d) => (
@@ -213,34 +214,23 @@ const EklentiRehberi: React.FC<{ renkler: Renkler }> = ({ renkler }) => (
                             {d.ad}
                         </Text>
                         <Text className="flex-1 text-sm" style={{ color: renkler.metinIkincil }}>
-                            {d.aciklama}
+                            {aciklamalar[d.ad] ?? d.aciklama}
                         </Text>
                     </View>
                 ))}
             </View>
         </Kart>
-        <Kart renkler={renkler} ikon="check" baslik="Namazı işaretleyin" testID="rehber-eklenti-kildim">
-            <Adimlar
-                renkler={renkler}
-                adimlar={[
-                    'Göreve eylem ekleyin: Eklenti > "Namaz Akışı: Kıldım".',
-                    'Eylem çalıştığında o anki vakit kılındı olarak işaretlenir. Vakit yoksa ya da zaten işaretliyse hiçbir şey değişmez.',
-                ]}
-            />
+        <Kart renkler={renkler} ikon="check" baslik={mo.eklentiKildimBaslik} testID="rehber-eklenti-kildim">
+            <Adimlar renkler={renkler} adimlar={mo.eklentiKildimAdimlar.map((a) => bicim(a, NATIVE_ETIKETLER))} />
         </Kart>
-        <Notlar
-            renkler={renkler}
-            notlar={[
-                '"Vakit girdi" olayı ekran kapalıyken birkaç dakika gecikebilir. Tam vaktinde çalışması gerekiyorsa bildirim tetikleyicisini ("vakti girdi") kullanın.',
-                '"Vakit çıkıyor" namaz muhafızı açıkken ve namaz henüz işaretlenmemişken çalışır.',
-                'Bir uygulamayı aşağıdaki listeden engellerseniz ya da kaldırırsanız kurduğunuz eklentiler çalışmaz. Otomasyonu başka bir telefona taşıdığınızda eklentiyi bir kez yeniden düzenleyin.',
-            ]}
-        />
+        <Notlar renkler={renkler} notlar={mo.eklentiNotlar.map((n) => bicim(n, { kelime: vakitGirdiEki() }))} />
     </View>
-);
+    );
+};
 
 export const OtomasyonRehberiSayfasi: React.FC = () => {
     const renkler = useRenkler();
+    const mo = useMetin().muhafizAyar.otomasyon;
     const navigation = useNavigation<{ navigate: (ad: string) => void }>();
     const [sekme, setSekme] = React.useState<Sekme>('rutinler');
     // Samsung Rutinler yalnız Samsung'da var: Samsung DEĞİLSE sekme seçici gizlenir,
@@ -255,7 +245,7 @@ export const OtomasyonRehberiSayfasi: React.FC = () => {
             <View className="flex-1 p-6 items-center justify-center" style={{ backgroundColor: renkler.arkaplan }}>
                 <FontAwesome5 name="magic" size={28} color={renkler.metinIkincil} solid />
                 <Text className="text-sm text-center mt-3" style={{ color: renkler.metinIkincil }}>
-                    Bu rehber yalnız Android telefonlar içindir.
+                    {mo.yalnizAndroid}
                 </Text>
             </View>
         );
@@ -269,8 +259,7 @@ export const OtomasyonRehberiSayfasi: React.FC = () => {
             showsVerticalScrollIndicator={false}
         >
             <Text className="text-sm mb-4" style={{ color: renkler.metinIkincil }}>
-                Vakit girince telefonunuzu sessize almak, camiye girince bir şeyi kapatmak ya da namazı tek dokunuşla
-                işaretlemek için Namaz Akışı&apos;nı otomasyon uygulamalarıyla kullanabilirsiniz.
+                {mo.giris}
             </Text>
 
             {!samsungDegil && (
@@ -322,8 +311,8 @@ export const OtomasyonRehberiSayfasi: React.FC = () => {
             <TouchableOpacity
                 testID="rehber-guven-listesi"
                 accessibilityRole="button"
-                accessibilityLabel="Kıldım işaretleyebilen uygulamalar"
-                accessibilityHint="Otomasyon uygulamalarına verdiğiniz izinleri yönetin"
+                accessibilityLabel={mo.guvenListesi}
+                accessibilityHint={mo.guvenIpucu}
                 onPress={() => navigation.navigate('KildimUygulamalari')}
                 className="flex-row items-center mt-5 p-4"
                 style={{ minHeight: 64, backgroundColor: renkler.kartArkaplan, borderRadius: 24, borderWidth: 1, borderColor: renkler.sinir }}
@@ -336,10 +325,10 @@ export const OtomasyonRehberiSayfasi: React.FC = () => {
                 </View>
                 <View className="flex-1">
                     <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                        Kıldım işaretleyebilen uygulamalar
+                        {mo.guvenListesi}
                     </Text>
                     <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
-                        İzin verdiğiniz uygulamaları yönetin
+                        {mo.guvenAciklama}
                     </Text>
                 </View>
                 <FontAwesome5 name="chevron-right" size={14} color={renkler.metinIkincil} />

@@ -57,6 +57,8 @@ import { useAnaAyrintiSecimi } from '../components/common/anaAyrintiSecimi';
 import { saatUygulamasiDestekli } from '../../../modules/expo-siri-kisayollari/src';
 import { cihazRoluAyarla, useCihazRolu } from '../hooks/useHatirlatmaKapisi';
 import { useEvEkraniAyari } from '../hooks/useEvEkraniAyari';
+import { useMetin } from '../hooks/useMetin';
+import { bicim } from '../../core/dil/aktifDil';
 
 /** Kompakt başlığın belirmeye başlayıp tamamen görünür olduğu kaydırma mesafesi (dp). */
 const KOMPAKT_BASLIK_GECIS_ARALIGI = 32;
@@ -97,6 +99,9 @@ const YARDIM_SAYFALARI: readonly AyarlarEkranAdi[] = ['Yardim', 'TaniGeriBildiri
 
 export const AyarlarSayfasi: React.FC = () => {
   const renkler = useRenkler();
+  const s = useMetin();
+  const m = s.ayarlar.ana;
+  const e = s.genel.ekranlar;
   const navigation = useNavigation<NativeStackNavigationProp<AyarlarStackParamList>>();
   const { ayarlar, titresimDurumunuDegistir, sesDurumunuDegistir } = useFeedback();
   const { kart, okunmamisVarMi, sayfaOkunmamisMi, sayfayiGorulduIsaretle, kartiKapat } = useYeniOzellikler();
@@ -119,18 +124,20 @@ export const AyarlarSayfasi: React.FC = () => {
   const evEkrani = useEvEkraniAyari();
   const buCihazdaKur = cihazRolu !== 'ikincil';
   const buCihazdaKurOzeti = evEkrani.acik
-    ? 'Ev ekranı açıkken bu cihaz hatırlatma kurmaz'
+    ? m.buCihazdaEvEkrani
     : buCihazdaKur
-      ? 'Hatırlatmalar bu cihazda çalar'
-      : 'Yalnız gösterir; hatırlatmayı ana telefonunuz verir';
+      ? m.buCihazdaCalar
+      : m.buCihazdaYalnizGosterir;
   const grupSecili = (grup: readonly AyarlarEkranAdi[]) =>
     seciliAyrinti !== null && grup.includes(seciliAyrinti as AyarlarEkranAdi);
 
   const [sorgu, setSorgu] = useState('');
   const sorguTemiz = sorgu.trim();
+  // Dizin metinleri etkin dilden okunur (getter): dil değişince arama yeniden yapılsın.
   const sonuclar = useMemo(
     () => (sorguTemiz ? ayarAra(AYAR_INDEKSI, sorgu) : []),
-    [sorgu, sorguTemiz]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sorgu, sorguTemiz, s]
   );
 
   // Giriş animasyonu (KORUNUR — spec §1 "KORUNACAK davranışlar")
@@ -187,12 +194,14 @@ export const AyarlarSayfasi: React.FC = () => {
 
   // ── Canlı özetler ──
   const hatirlatmaOzeti = ozetler.hatirlatmalar;
+  // `useCamideyimOzeti` "Kapalı" (ya da etkin dilde karşılığı) döndürür; ikisi de kapalı sayılır.
+  const kapaliMi = (x: string) => x === 'Kapalı' || x === s.ayarlar.ozet.kapali; // dil-haric: kimlik (özet hook'u)
   const namazdaSessizOzeti = camideyim.iosOzeti ??
-    (camideyim.cami === 'Kapalı' && camideyim.namazModu === 'Kapalı'
-      ? 'Kapalı'
-      : camideyim.cami !== 'Kapalı'
-        ? `Camide: ${camideyim.cami}`
-        : `Vakitlerde: ${camideyim.namazModu}`);
+    (kapaliMi(camideyim.cami) && kapaliMi(camideyim.namazModu)
+      ? s.ayarlar.ozet.kapali
+      : !kapaliMi(camideyim.cami)
+        ? bicim(m.camide, { durum: camideyim.cami })
+        : bicim(m.vakitlerde, { durum: camideyim.namazModu }));
   const mezhep = seferilik?.ayarlar.mezhep ?? 'hanefi';
   const namazVakitleriOzeti = `${konumMetniHesapla({
     konumModu: konum.konumModu,
@@ -204,12 +213,15 @@ export const AyarlarSayfasi: React.FC = () => {
   // etkinlik taşıyan build'de (başka bir şey yoksa sayfa "bu telefonda yok"tan ibaret olurdu).
   const appleWatchVar = Platform.OS === 'ios' && saatUygulamasiDestekli();
   const saatVeWidgetVar = Platform.OS === 'android' || nowBar.kullanilabilir || appleWatchVar;
+  const canliEtkinlik = appleWatchVar ? m.saatWidgetIosWatch : m.saatWidgetIos;
   const saatVeWidgetOzeti =
     Platform.OS === 'android'
-      ? 'Saat, canlı sayaç, bileklik'
+      ? m.saatWidgetAndroid
       : appleWatchVar && !nowBar.kullanilabilir
         ? 'Apple Watch'
-        : `${appleWatchVar ? 'Apple Watch, c' : 'C'}anlı etkinlikler · ${nowBar.ozet ?? ''}`.replace(/ · $/, '');
+        : nowBar.ozet
+          ? `${canliEtkinlik} · ${nowBar.ozet}`
+          : canliEtkinlik;
 
   const saglikEylemi = (sorun: Sorun) => {
     if (sorun.eylem?.tip === 'sistemAyarlari') {
@@ -249,7 +261,7 @@ export const AyarlarSayfasi: React.FC = () => {
               style={{ color: renkler.metin }}
               numberOfLines={1}
             >
-              Ayarlar
+              {e.AyarlarAna}
             </Text>
           </Animated.View>
           <AramaAlani deger={sorgu} onDegistir={setSorgu} />
@@ -262,7 +274,7 @@ export const AyarlarSayfasi: React.FC = () => {
           }}
         >
           <Text className="text-3xl font-bold mx-4 mb-4 mt-2" style={{ color: renkler.metin }}>
-            Ayarlar
+            {e.AyarlarAna}
           </Text>
 
           {sorguTemiz ? (
@@ -287,11 +299,11 @@ export const AyarlarSayfasi: React.FC = () => {
                 pilUyarisiGosteriliyor={sorunlar.some((x) => x.id === 'pilKisiti' || x.id === 'arkaPlanKisiti')}
               />
 
-              <AyarGrubu baslik="Namaz">
+              <AyarGrubu baslik={s.ayarlar.aramaGruplari.namaz}>
                 <AyarSatiri
                   varyant="navigasyon"
                   ikon={<FontAwesome5 name="bell" size={20} color={ikonRengi} solid />}
-                  baslik="Hatırlatmalar"
+                  baslik={e.Hatirlatmalar}
                   ozet={hatirlatmaOzeti}
                   yeniRozetGoster={grupOkunmamisMi(HATIRLATMA_SAYFALARI)}
                   secili={grupSecili(HATIRLATMA_SAYFALARI)}
@@ -303,7 +315,7 @@ export const AyarlarSayfasi: React.FC = () => {
                     key="namazda-sessiz"
                     varyant="navigasyon"
                     ikon={<FontAwesome5 name="volume-mute" size={20} color={ikonRengi} solid />}
-                    baslik="Namazda sessiz"
+                    baslik={e.CamideyimAyarlari}
                     ozet={namazdaSessizOzeti}
                     yeniRozetGoster={grupOkunmamisMi(SESSIZ_SAYFALARI)}
                     secili={grupSecili(SESSIZ_SAYFALARI)}
@@ -313,7 +325,7 @@ export const AyarlarSayfasi: React.FC = () => {
                 <AyarSatiri
                   varyant="navigasyon"
                   ikon={<FontAwesome5 name="map-marker-alt" size={20} color={ikonRengi} solid />}
-                  baslik="Namaz vakitleri"
+                  baslik={e.NamazVakitleriAyarlari}
                   ozet={namazVakitleriOzeti}
                   yeniRozetGoster={grupOkunmamisMi(VAKIT_SAYFALARI)}
                   secili={grupSecili(VAKIT_SAYFALARI)}
@@ -332,7 +344,7 @@ export const AyarlarSayfasi: React.FC = () => {
                 <AyarSatiri
                   varyant="navigasyon"
                   ikon={<FontAwesome5 name="bullseye" size={20} color={ikonRengi} solid />}
-                  baslik="Seri hedefi"
+                  baslik={e.SeriHedefAyarlari}
                   ozet={ozetler.seri}
                   yeniRozetGoster={sayfaOkunmamisMi('SeriHedefAyarlari')}
                   secili={seciliAyrinti === 'SeriHedefAyarlari'}
@@ -340,22 +352,22 @@ export const AyarlarSayfasi: React.FC = () => {
                 />
               </AyarGrubu>
 
-              <AyarGrubu baslik="Ekran ve cihazlar">
+              <AyarGrubu baslik={s.ayarlar.aramaGruplari.ekranCihazlar}>
                 <AyarSatiri
                   varyant="navigasyon"
                   ikon={<FontAwesome5 name="palette" size={20} color={ikonRengi} solid />}
-                  baslik="Görünüm"
+                  baslik={e.GorunumAyarlari}
                   ozet={ozetler.gorunum}
-                  yeniRozetGoster={sayfaOkunmamisMi('GorünumAyarlari')}
-                  secili={seciliAyrinti === 'GorünumAyarlari'}
-                  onPress={() => menuyeGit('GorünumAyarlari')}
+                  yeniRozetGoster={sayfaOkunmamisMi('GorünumAyarlari')} // dil-haric: kimlik (rota adı)
+                  secili={seciliAyrinti === 'GorünumAyarlari'} // dil-haric: kimlik (rota adı)
+                  onPress={() => menuyeGit('GorünumAyarlari')} // dil-haric: kimlik (rota adı)
                 />
                 {saatVeWidgetVar && [
                   <AyarSatiri
                     key="saat-widget"
                     varyant="navigasyon"
                     ikon={<FontAwesome5 name="clock" size={20} color={ikonRengi} />}
-                    baslik="Saat ve widget"
+                    baslik={e.SaatVeWidgetAyarlari}
                     ozet={saatVeWidgetOzeti}
                     yeniRozetGoster={grupOkunmamisMi(CIHAZ_SAYFALARI)}
                     secili={grupSecili(CIHAZ_SAYFALARI)}
@@ -367,8 +379,8 @@ export const AyarlarSayfasi: React.FC = () => {
                 <AyarSatiri
                   varyant="navigasyon"
                   ikon={<FontAwesome5 name="tv" size={18} color={ikonRengi} />}
-                  baslik="Cihazlarım"
-                  ozet="Evdeki TV'leri ekleyin, bağlı cihazlarınızı yönetin"
+                  baslik={e.Cihazlarim}
+                  ozet={m.cihazlarimOzet}
                   yeniRozetGoster={sayfaOkunmamisMi('Cihazlarim') || sayfaOkunmamisMi('TelevizyonAyarlari')}
                   secili={seciliAyrinti === 'Cihazlarim'}
                   onPress={() => menuyeGit('Cihazlarim')}
@@ -376,7 +388,7 @@ export const AyarlarSayfasi: React.FC = () => {
                 <AyarSatiri
                   varyant="toggle"
                   ikon={<FontAwesome5 name="mobile-alt" size={20} color={ikonRengi} solid />}
-                  baslik="Hatırlatmaları bu cihazda kur"
+                  baslik={m.buCihazdaKur}
                   ozet={buCihazdaKurOzeti}
                   deger={buCihazdaKur && !evEkrani.acik}
                   onDegistir={(acik) => void cihazRoluAyarla(acik ? 'ana' : 'ikincil')}
@@ -384,26 +396,26 @@ export const AyarlarSayfasi: React.FC = () => {
                 <AyarSatiri
                   varyant="toggle"
                   ikon={<MaterialIcons name="vibration" size={22} color={ikonRengi} />}
-                  baslik="Dokunma titreşimi"
-                  ozet="Dokununca telefon hafifçe titrer"
+                  baslik={m.titresim}
+                  ozet={m.titresimOzet}
                   deger={ayarlar.titresimAktif}
                   onDegistir={titresimDurumunuDegistir}
                 />
                 <AyarSatiri
                   varyant="toggle"
                   ikon={<FontAwesome5 name="volume-up" size={20} color={ikonRengi} solid />}
-                  baslik="Dokunma sesleri"
-                  ozet="Dokununca kısa bir ses çıkar"
+                  baslik={m.ses}
+                  ozet={m.sesOzet}
                   deger={ayarlar.sesAktif}
                   onDegistir={sesDurumunuDegistir}
                 />
               </AyarGrubu>
 
-              <AyarGrubu baslik="Hesap">
+              <AyarGrubu baslik={s.ayarlar.aramaGruplari.hesap}>
                 <AyarSatiri
                   varyant="navigasyon"
                   ikon={<FontAwesome5 name="cloud-download-alt" size={20} color={ikonRengi} solid />}
-                  baslik="Yedek ve eşitleme"
+                  baslik={e.YedeklemeAktarim}
                   ozet={ozetler.yedekleme}
                   yeniRozetGoster={sayfaOkunmamisMi('YedeklemeAktarim')}
                   secili={seciliAyrinti === 'YedeklemeAktarim'}
@@ -412,8 +424,8 @@ export const AyarlarSayfasi: React.FC = () => {
                 <AyarSatiri
                   varyant="navigasyon"
                   ikon={<FontAwesome5 name="life-ring" size={20} color={ikonRengi} solid />}
-                  baslik="Yardım"
-                  ozet="Sorun bildirin, neler yeni"
+                  baslik={e.Yardim}
+                  ozet={m.yardimOzet}
                   yeniRozetGoster={okunmamisVarMi}
                   secili={grupSecili(YARDIM_SAYFALARI)}
                   onPress={() => grubaGit('Yardim', YARDIM_SAYFALARI)}

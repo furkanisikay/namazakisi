@@ -25,16 +25,17 @@ import { SecenekListesi, type Secenek } from '../components/ortak/SecenekListesi
 import { NotSatiri } from '../components/ortak/NotSatiri';
 import { HESAP_PROFILLERI, VARSAYILAN_HESAP_AYARI } from '../../core/vakit/hesapProfilleri';
 import { IKINDI_ADLARI } from '../../core/vakit/profilAdlari';
+import { useMetin } from '../hooks/useMetin';
+import { canli } from '../../core/dil/aktifDil';
 
 type Navigasyon = { navigate: (ekran: string) => void };
 
-const MEZHEP_ACIKLAMASI: Record<Mezhep, string> = {
-    hanefi: 'Vitir vacip, yolculukta 15 gün',
-    safii: 'Vitir sünnet, yolculukta 4 gün',
-};
+const MEZHEP_ACIKLAMASI: Readonly<Record<Mezhep, string>> = canli((s) => s.ayarlar.namazVakitleri.mezhepAciklamasi);
 
 export const NamazVakitleriSayfasi: React.FC = () => {
     const renkler = useRenkler();
+    const s = useMetin();
+    const m = s.ayarlar.namazVakitleri;
     const navigation = useNavigation() as unknown as Navigasyon;
     const konum = useAppSelector((s) => s.konum);
     const takvimAktif = useAppSelector((s) => s.takvim?.ayarlar?.aktif === true);
@@ -44,7 +45,9 @@ export const NamazVakitleriSayfasi: React.FC = () => {
     const hesapOzeti = React.useMemo(() => {
         const ikindi = hesap.ikindi ?? HESAP_PROFILLERI[hesap.profil].ikindi;
         return `${HESAP_PROFILLERI[hesap.profil].kisaAd} · ${IKINDI_ADLARI[ikindi]}`;
-    }, [hesap.profil, hesap.ikindi]);
+        // `IKINDI_ADLARI` canlı görünümdür: dil değişince yeniden hesaplansın.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [hesap.profil, hesap.ikindi, s]);
     const dispatch = useAppDispatch();
     const ikon = renkler.birincil;
 
@@ -55,8 +58,10 @@ export const NamazVakitleriSayfasi: React.FC = () => {
 
     const mezhep: Mezhep = seferilik?.ayarlar.mezhep ?? 'hanefi';
     const mezhepler = React.useMemo<Secenek<Mezhep>[]>(
-        () => MEZHEPLER.map((m) => ({ deger: m, etiket: MEZHEP_ADLARI[m], aciklama: MEZHEP_ACIKLAMASI[m] })),
-        []
+        () => MEZHEPLER.map((x) => ({ deger: x, etiket: MEZHEP_ADLARI[x], aciklama: MEZHEP_ACIKLAMASI[x] })),
+        // Canlı tablolar: dil değişince yeniden kurulsun.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [s]
     );
 
     const ayrac = { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: renkler.sinir };
@@ -71,7 +76,7 @@ export const NamazVakitleriSayfasi: React.FC = () => {
                 <AyarSatiri
                     varyant="navigasyon"
                     ikon={<FontAwesome5 name="map-marker-alt" size={20} color={ikon} solid />}
-                    baslik="Konum"
+                    baslik={s.genel.ekranlar.KonumAyarlari}
                     ozet={konumOzeti({
                         konumModu: konum.konumModu,
                         gpsAdres: konum.gpsAdres,
@@ -89,7 +94,7 @@ export const NamazVakitleriSayfasi: React.FC = () => {
                     <AyarSatiri
                         varyant="navigasyon"
                         ikon={<FontAwesome5 name="mosque" size={20} color={ikon} solid />}
-                        baslik="Hesap yöntemi"
+                        baslik={s.genel.ekranlar.HesapYontemiAyarlari}
                         ozet={hesapOzeti}
                         onPress={() => navigation.navigate('HesapYontemiAyarlari')}
                     />
@@ -98,8 +103,8 @@ export const NamazVakitleriSayfasi: React.FC = () => {
                     <AyarSatiri
                         varyant="navigasyon"
                         ikon={<FontAwesome5 name="route" size={20} color={ikon} solid />}
-                        baslik="Yolculuk bilgisi"
-                        ozet={(seferilik?.ayarlar.kartAcik ?? true) ? 'Bilgi kartı açık' : 'Kapalı'}
+                        baslik={m.yolculukBilgisi}
+                        ozet={(seferilik?.ayarlar.kartAcik ?? true) ? m.kartAcik : s.ayarlar.ozet.kapali}
                         onPress={() => navigation.navigate('SeferilikAyarlari')}
                     />
                 </View>
@@ -107,7 +112,7 @@ export const NamazVakitleriSayfasi: React.FC = () => {
                     <AyarSatiri
                         varyant="navigasyon"
                         ikon={<FontAwesome5 name="calendar-alt" size={20} color={ikon} solid />}
-                        baslik="Vakitleri takvime ekleyin"
+                        baslik={s.genel.ekranlar.TakvimAyarlari}
                         ozet={takvimOzeti(takvimAktif)}
                         onPress={() => navigation.navigate('TakvimAyarlari')}
                     />
@@ -115,15 +120,15 @@ export const NamazVakitleriSayfasi: React.FC = () => {
             </View>
 
             <View style={{ marginHorizontal: 16, marginTop: 24 }} testID="mezhep-secimi">
-                <BolumBasligi metin="Mezhep" />
+                <BolumBasligi metin={m.mezhep} />
                 <SecenekListesi
                     secenekler={mezhepler}
                     secili={mezhep}
                     onSec={mezhepAyarla}
-                    erisimEtiketi="Mezhep"
+                    erisimEtiketi={m.mezhep}
                 />
                 <NotSatiri
-                    metin="Yolculuk kartını ve kazada vitri belirler; vakitleri değiştirmez."
+                    metin={m.mezhepNotu}
                     style={{ marginTop: 10 }}
                 />
             </View>

@@ -10,6 +10,7 @@ import { AppState } from 'react-native';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { pilAyarlariniAc } from '../../domain/services/SistemDurumuOkuyucu';
 import type { SistemDurumu } from './useSistemDurumu';
+import { metin } from '../../core/dil/aktifDil';
 
 export function usePilRehberi(sistem: Pick<SistemDurumu, 'pil' | 'yenile'>) {
     const [gorunur, setGorunur] = useState(false);
@@ -24,9 +25,7 @@ export function usePilRehberi(sistem: Pick<SistemDurumu, 'pil' | 'yenile'>) {
             const { pil } = await yenile();
             if (pil.muaf === true) {
                 kisaBildirimGoster(
-                    pil.samsung
-                        ? 'Hatırlatmalarınız artık uyutulmayacak'
-                        : 'Pil kısıtı kaldırıldı · hatırlatmalar zamanında gelecek'
+                    pil.samsung ? metin().ayarlar.pil.uyutulmayacak : metin().ayarlar.pil.kisitKalkti
                 );
             }
         });
@@ -39,7 +38,7 @@ export function usePilRehberi(sistem: Pick<SistemDurumu, 'pil' | 'yenile'>) {
         const acilan = await pilAyarlariniAc();
         if (!acilan) {
             donusBekleniyor.current = false;
-            kisaBildirimGoster('Ayar ekranı açılamadı; telefonunuzun Ayarlar > Uygulamalar bölümünden açabilirsiniz.', true);
+            kisaBildirimGoster(metin().ayarlar.pil.acilamadi, true);
         }
     }, []);
 

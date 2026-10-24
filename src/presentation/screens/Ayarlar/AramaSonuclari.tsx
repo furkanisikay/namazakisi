@@ -20,6 +20,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { AYAR_INDEKSI, type AyarIndeksKaydi } from '../../../core/ayarlar/aramaIndeksi';
 import type { AyarlarStackParamList } from '../../../navigation/ayarlarEkranlari';
+import { useMetin } from '../../hooks/useMetin';
+import { sayili } from '../../../core/dil/aktifDil';
 
 export interface AramaSonuclariProps {
   sonuclar: AyarIndeksKaydi[];
@@ -38,6 +40,7 @@ function baglamOlustur(kayit: AyarIndeksKaydi): string {
 
 export const AramaSonuclari: React.FC<AramaSonuclariProps> = ({ sonuclar }) => {
   const renkler = useRenkler();
+  const m = useMetin().ayarlar.ana;
   const navigation = useNavigation<NativeStackNavigationProp<AyarlarStackParamList>>();
 
   if (sonuclar.length === 0) {
@@ -46,7 +49,7 @@ export const AramaSonuclari: React.FC<AramaSonuclariProps> = ({ sonuclar }) => {
         className="items-center px-8 py-16"
         accessible
         accessibilityRole="text"
-        accessibilityLabel="Eşleşen ayar bulunamadı. Farklı bir sözcük deneyin."
+        accessibilityLabel={`${m.sonucYok} ${m.sonucYokIpucu}`}
       >
         <FontAwesome5
           name="search"
@@ -56,10 +59,10 @@ export const AramaSonuclari: React.FC<AramaSonuclariProps> = ({ sonuclar }) => {
           style={{ marginBottom: 12 }}
         />
         <Text className="text-base font-semibold text-center" style={{ color: renkler.metin }}>
-          Eşleşen ayar bulunamadı
+          {m.sonucYokBaslik}
         </Text>
         <Text className="text-sm text-center mt-1" style={{ color: renkler.metinIkincil }}>
-          Farklı bir sözcük deneyin.
+          {m.sonucYokIpucu}
         </Text>
       </View>
     );
@@ -72,7 +75,7 @@ export const AramaSonuclari: React.FC<AramaSonuclariProps> = ({ sonuclar }) => {
         accessibilityLiveRegion="polite"
         style={{ position: 'absolute', width: 1, height: 1, opacity: 0 }}
       >
-        {`${sonuclar.length} sonuç bulundu`}
+        {sayili(m.sonucSayisi, sonuclar.length)}
       </Text>
 
       <View

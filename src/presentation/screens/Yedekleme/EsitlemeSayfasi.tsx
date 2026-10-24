@@ -22,6 +22,8 @@ import {
 } from '../../components/esitleme/EsitlemeAkisModali';
 import { esitlemeBeklemeMetni, esitlemeHataMetni, useEsitleme } from '../../hooks/useEsitleme';
 import type { SaglayiciKimligi } from '../../../core/esitleme/esitlemeTipleri';
+import { bicim, metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { EsitlemeSikligi, gorunurBeklemeMi } from '../../../core/esitleme/esitlemePolitikasi';
 import { hatirlatmaEtkisi } from '../../../core/sistem/sistemDurumu';
 import { useSistemDurumu } from '../../hooks/useSistemDurumu';
@@ -31,36 +33,26 @@ import { PilRehberModal } from '../../components/pil/PilRehberi';
 
 /** "13.10.2026 14:05" — Intl'e bağlı değil (Hermes). */
 export function esitlemeZamaniniBicimle(iso: string | null): string {
-  if (!iso) return 'Henüz eşitlenmedi';
+  if (!iso) return metin().yedekleme.esitleme.henuzEsitlenmedi;
   const t = new Date(iso);
-  if (Number.isNaN(t.getTime())) return 'Henüz eşitlenmedi';
+  if (Number.isNaN(t.getTime())) return metin().yedekleme.esitleme.henuzEsitlenmedi;
   const iki = (n: number) => String(n).padStart(2, '0');
   return `${iki(t.getDate())}.${iki(t.getMonth() + 1)}.${t.getFullYear()} ${iki(t.getHours())}:${iki(t.getMinutes())}`;
 }
 
-/** Sıklık seçenekleri (ekran sırası). */
-export const SIKLIK_SECENEKLERI: readonly { deger: EsitlemeSikligi; etiket: string }[] = [
-  { deger: 'degisince', etiket: 'Değişince' },
-  { deger: 'ceyrek', etiket: '15 dakikada bir' },
-  { deger: 'saatlik', etiket: 'Saatte bir' },
-  { deger: 'gunluk', etiket: 'Günde bir' },
-  { deger: 'elle', etiket: 'Yalnız elle' },
-];
+/** Sıklık seçenekleri (ekran sırası); etiketler sözlükte (`yedekleme.esitleme.siklik`). */
+const SIKLIKLAR: readonly EsitlemeSikligi[] = ['degisince', 'ceyrek', 'saatlik', 'gunluk', 'elle'];
+
+/** Sıklık seçenekleri, etkin dilde. */
+export function siklikSecenekleri(): readonly { deger: EsitlemeSikligi; etiket: string }[] {
+  const m = metin().yedekleme.esitleme.siklik;
+  return SIKLIKLAR.map((deger) => ({ deger, etiket: m[deger] }));
+}
 
 /** Seçili sıklığın tek cümlelik açıklaması. */
 export function siklikAciklamasi(siklik: EsitlemeSikligi): string {
-  switch (siklik) {
-    case 'degisince':
-      return 'Bir namazı işaretlediğinizde hemen, ayrıca 15 dakikada bir eşitlenir.';
-    case 'ceyrek':
-      return 'Uygulama açılınca ve 15 dakikada bir eşitlenir.';
-    case 'saatlik':
-      return 'Saatte bir eşitlenir.';
-    case 'gunluk':
-      return 'Günde bir eşitlenir.';
-    default:
-      return 'Yalnız "Şimdi eşitleyin"e dokunduğunuzda eşitlenir.';
-  }
+  const m = metin().yedekleme.esitleme.siklikAciklama;
+  return siklik in m ? m[siklik] : m.elle;
 }
 
 /** Akışta kalıp kullanıcıya gösterilen (eşitlemeyi AÇMAYAN) hatalar. */
@@ -68,6 +60,7 @@ const AKISTA_KALAN_HATALAR = new Set(['parolaYanlis', 'bozukVeri', 'surumYeni', 
 
 export const EsitlemeSayfasi: React.FC = () => {
   const renkler = useRenkler();
+  const m = useMetin().yedekleme.esitleme;
   const e = useEsitleme();
   const { yenile } = e;
   const [adim, setAdim] = useState<EsitlemeAkisAdimi | null>(null);
@@ -101,7 +94,7 @@ export const EsitlemeSayfasi: React.FC = () => {
       if (ic.icloudModuluVarMi()) {
         void ic.icloudHesapVarMi().then((var_) => {
           // Yalnız KESİN "yok" engel yazar; bilinmiyor (`null`, köprü hatası) → sus.
-          if (!iptal) setIcloudEngeli(var_ === false ? "Bu cihazda iCloud'a giriş yapılmamış. Ayarlar'dan giriş yapıp yeniden deneyin." : null);
+          if (!iptal) setIcloudEngeli(var_ === false ? metin().yedekleme.esitleme.icloudGirisYok : null);
         });
       }
     }
@@ -131,8 +124,8 @@ export const EsitlemeSayfasi: React.FC = () => {
     if (baglanti.tur === 'iptal') {
       setAkisHatasi(
         kimlik === 'icloud'
-          ? 'Bu cihazda iCloud açık görünmüyor. Ayarlar\'dan iCloud\'a giriş yapıp yeniden deneyin.'
-          : 'Hesabınıza bağlanılamadı. Yeniden deneyebilirsiniz.'
+          ? m.icloudKapali
+          : m.baglanilamadi
       );
       return;
     }
@@ -158,35 +151,35 @@ export const EsitlemeSayfasi: React.FC = () => {
     if (sonuc.tur === 'hata' && AKISTA_KALAN_HATALAR.has(sonuc.kod)) {
       setAkisHatasi(
         sonuc.kod === 'parolaYanlis'
-          ? 'Parola eşleşmedi. Diğer cihazınızda belirlediğiniz parolayı girin.'
+          ? m.parolaEslesmedi
           : esitlemeHataMetni(sonuc.kod)
       );
       return;
     }
     adimaGec(null);
     if (sonuc.tur === 'hata') {
-      setBilgi({ tip: 'bilgi', baslik: 'Eşitleme açıldı', mesaj: esitlemeHataMetni(sonuc.kod) });
+      setBilgi({ tip: 'bilgi', baslik: m.acildiBaslik, mesaj: esitlemeHataMetni(sonuc.kod) });
     } else {
-      kisaBildirimGoster('Eşitleme açıldı. Kayıtlarınız eşitlendi.');
+      kisaBildirimGoster(m.acildi);
     }
   };
 
   const kapatSec = async (uzaktakiniSil: boolean) => {
     const sonuc = await e.kapat(uzaktakiniSil);
     if (!sonuc.basarili) {
-      setAkisHatasi(`Buluttaki veri silinemedi. ${esitlemeHataMetni(sonuc.kod)}`);
+      setAkisHatasi(bicim(m.silinemedi, { neden: esitlemeHataMetni(sonuc.kod) }));
       return;
     }
     adimaGec(null);
-    kisaBildirimGoster(uzaktakiniSil ? 'Eşitleme kapatıldı ve buluttaki veri silindi.' : 'Eşitleme bu cihazda kapatıldı.');
+    kisaBildirimGoster(uzaktakiniSil ? m.kapatildiSilindi : m.kapatildi);
   };
 
   const simdiEsitle = async () => {
     const sonuc = await e.esitle();
     if (sonuc.tur === 'hata') {
-      setBilgi({ tip: 'hata', baslik: 'Eşitlenemedi', mesaj: esitlemeHataMetni(sonuc.kod) });
+      setBilgi({ tip: 'hata', baslik: m.esitlenemedi, mesaj: esitlemeHataMetni(sonuc.kod) });
     } else if (sonuc.tur !== 'kapali') {
-      kisaBildirimGoster('Kayıtlarınız eşitlendi.');
+      kisaBildirimGoster(m.esitlendi);
     }
   };
 
@@ -197,7 +190,7 @@ export const EsitlemeSayfasi: React.FC = () => {
     if (!kod || !kimlik) return null;
     if (kod === 'yetkiYok') {
       return {
-        etiket: 'Yeniden bağlanın',
+        etiket: m.yenidenBaglanin,
         ikon: 'plug',
         onPress: async () => {
           const b = await e.baglan(kimlik, true);
@@ -207,7 +200,7 @@ export const EsitlemeSayfasi: React.FC = () => {
     }
     if (kod === 'parolaYanlis' || kod === 'parolaGerekli') {
       return {
-        etiket: 'Parolayı girin',
+        etiket: m.parolayiGirin,
         ikon: 'key',
         onPress: () => {
           setSecili(kimlik);
@@ -219,7 +212,7 @@ export const EsitlemeSayfasi: React.FC = () => {
   };
 
   const saglayiciAdi = e.saglayicilar.find((s) => s.kimlik === e.durum.saglayici)?.ad ?? '';
-  const bulutAdi = saglayiciAdi || (e.saglayicilar[0]?.ad ?? 'bulut');
+  const bulutAdi = saglayiciAdi || (e.saglayicilar[0]?.ad ?? m.bulut);
   const cozum = hataCozumu();
 
   return (
@@ -228,8 +221,7 @@ export const EsitlemeSayfasi: React.FC = () => {
         {e.saglayicilar.length === 0 ? (
           <View className="rounded-2xl p-5" style={{ backgroundColor: renkler.kartArkaplan }}>
             <Text className="text-sm leading-5" style={{ color: renkler.metinIkincil }}>
-              Bu sürümde eşitleme hizmeti etkin değil. Verilerinizi Yedekleme sayfasından bir yedek dosyasıyla
-              taşıyabilirsiniz.
+              {m.hizmetYok}
             </Text>
           </View>
         ) : (
@@ -244,10 +236,10 @@ export const EsitlemeSayfasi: React.FC = () => {
                 </View>
                 <View className="flex-1 mr-3">
                   <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                    Cihazlar arası eşitleme
+                    {m.baslik}
                   </Text>
                   <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                    {e.durum.aktif ? `Açık · ${saglayiciAdi}` : 'Kapalı'}
+                    {e.durum.aktif ? bicim(m.acik, { saglayici: saglayiciAdi }) : m.kapali}
                   </Text>
                 </View>
                 {e.yuklendi ? (
@@ -256,7 +248,7 @@ export const EsitlemeSayfasi: React.FC = () => {
                     disabled={e.mesgul}
                     onValueChange={(acik) => adimaGec(acik ? { tur: 'riza' } : { tur: 'kapat' })}
                     trackColor={{ false: renkler.sinir, true: renkler.birincil }}
-                    accessibilityLabel="Cihazlar arası eşitleme"
+                    accessibilityLabel={m.baslik}
                     accessibilityRole="switch"
                   />
                 ) : (
@@ -265,8 +257,8 @@ export const EsitlemeSayfasi: React.FC = () => {
               </View>
               <View className="mt-4">
                 {[
-                  { ikon: 'cloud', metin: `Kayıtlarınız ${bulutAdi} alanınızda durur` },
-                  { ikon: 'lock', metin: 'Yalnız sizin parolanızla şifrelenir' },
+                  { ikon: 'cloud', metin: bicim(m.bulutAlani, { bulut: bulutAdi }) },
+                  { ikon: 'lock', metin: m.sifreli },
                 ].map((satir) => (
                   <View key={satir.ikon} className="flex-row items-center mb-1.5">
                     <FontAwesome5 name={satir.ikon} size={13} color={renkler.birincil} style={{ width: 22 }} solid />
@@ -282,7 +274,7 @@ export const EsitlemeSayfasi: React.FC = () => {
                 onPress={() => setNasilAcik((a) => !a)}
                 accessibilityRole="button"
                 accessibilityState={{ expanded: nasilAcik }}
-                accessibilityLabel="Nasıl çalışır?"
+                accessibilityLabel={m.nasil}
                 testID="esitleme-nasil-calisir"
               >
                 <FontAwesome5
@@ -292,15 +284,12 @@ export const EsitlemeSayfasi: React.FC = () => {
                   style={{ width: 22 }}
                 />
                 <Text className="text-sm font-semibold ml-1" style={{ color: renkler.birincil }}>
-                  Nasıl çalışır?
+                  {m.nasil}
                 </Text>
               </TouchableOpacity>
               {nasilAcik && (
                 <Text className="text-sm leading-5 mt-1" style={{ color: renkler.metinIkincil }}>
-                  Telefonunuz ve tabletiniz gibi cihazlarınızda namaz kayıtlarınızı, kaza defterinizi ve rozetlerinizi
-                  kendi bulut hesabınız üzerinden eşitler. Veriler gönderilmeden önce yalnız sizin bildiğiniz bir
-                  parolayla şifrelenir; biz göremeyiz. Parolanız yalnız bu cihazın güvenli deposunda tutulur ve yedeğe
-                  girmez. Unutursanız buluttaki veri kurtarılamaz; cihazlarınızdaki kayıtlar yerinde kalır.
+                  {m.nasilMetin}
                 </Text>
               )}
             </View>
@@ -310,7 +299,7 @@ export const EsitlemeSayfasi: React.FC = () => {
                 <View className="flex-row items-center mb-3">
                   <FontAwesome5 name="history" size={14} color={renkler.metinIkincil} />
                   <Text className="text-sm ml-2 flex-1" style={{ color: renkler.metin }}>
-                    Son eşitleme: {esitlemeZamaniniBicimle(e.durum.sonEsitleme)}
+                    {bicim(m.sonEsitleme, { zaman: esitlemeZamaniniBicimle(e.durum.sonEsitleme) })}
                   </Text>
                 </View>
                 {gorunurBeklemeMi(e.durum.sonBekleme) && e.durum.sonBekleme ? (
@@ -362,7 +351,7 @@ export const EsitlemeSayfasi: React.FC = () => {
                   onPress={simdiEsitle}
                   disabled={e.mesgul}
                   accessibilityRole="button"
-                  accessibilityLabel="Şimdi eşitleyin"
+                  accessibilityLabel={m.simdiEsitleyin}
                   accessibilityState={{ busy: e.mesgul, disabled: e.mesgul }}
                 >
                   {e.mesgul ? (
@@ -371,7 +360,7 @@ export const EsitlemeSayfasi: React.FC = () => {
                     <>
                       <FontAwesome5 name="sync-alt" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                       <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
-                        Şimdi eşitleyin
+                        {m.simdiEsitleyin}
                       </Text>
                     </>
                   )}
@@ -389,11 +378,11 @@ export const EsitlemeSayfasi: React.FC = () => {
                     <FontAwesome5 name="clock" size={15} color={renkler.birincil} solid />
                   </View>
                   <Text className="text-base font-bold flex-1" style={{ color: renkler.metin }}>
-                    Otomatik eşitleme
+                    {m.otomatik}
                   </Text>
                 </View>
                 <View className="flex-row flex-wrap" accessibilityRole="radiogroup">
-                  {SIKLIK_SECENEKLERI.map((sec) => {
+                  {siklikSecenekleri().map((sec) => {
                     const secili = e.tercihler.siklik === sec.deger;
                     return (
                       <TouchableOpacity
@@ -408,7 +397,7 @@ export const EsitlemeSayfasi: React.FC = () => {
                         onPress={() => e.tercihleriDegistir({ siklik: sec.deger })}
                         accessibilityRole="radio"
                         accessibilityState={{ selected: secili, checked: secili }}
-                        accessibilityLabel={`Sıklık: ${sec.etiket}`}
+                        accessibilityLabel={bicim(m.siklikErisim, { siklik: sec.etiket })}
                         testID={`esitleme-siklik-${sec.deger}`}
                       >
                         <Text
@@ -428,8 +417,8 @@ export const EsitlemeSayfasi: React.FC = () => {
                   <>
                     {(
                       [
-                        { anahtar: 'yalnizWifi', ikon: 'wifi', etiket: "Yalnız Wi-Fi'de" },
-                        { anahtar: 'yalnizSarjda', ikon: 'plug', etiket: 'Yalnız şarjdayken' },
+                        { anahtar: 'yalnizWifi', ikon: 'wifi', etiket: m.yalnizWifi },
+                        { anahtar: 'yalnizSarjda', ikon: 'plug', etiket: m.yalnizSarjda },
                       ] as const
                     ).map((satir) => (
                       <View key={satir.anahtar} className="flex-row items-center py-2" style={{ minHeight: 48 }}>
@@ -450,8 +439,8 @@ export const EsitlemeSayfasi: React.FC = () => {
                     <View className="flex-row items-start mt-1">
                       <FontAwesome5 name="battery-quarter" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
                       <Text className="text-xs leading-4 ml-2 flex-1" style={{ color: renkler.metinIkincil }}>
-                        Güç tasarrufu açıkken otomatik eşitleme şarja kadar bekler.
-                        {etki === 'etkilenmez' ? ' Hatırlatmalar etkilenmez.' : ''}
+                        {m.gucTasarrufu}
+                        {etki === 'etkilenmez' ? m.hatirlatmaEtkilenmez : ''}
                       </Text>
                     </View>
                     {etki === 'gecikebilir' && (
@@ -460,7 +449,7 @@ export const EsitlemeSayfasi: React.FC = () => {
                         style={{ minHeight: 44 }}
                         onPress={pilRehberi.rehberiAc}
                         accessibilityRole="button"
-                        accessibilityLabel="Hatırlatmalar gecikebilir — pil ayarını açın"
+                        accessibilityLabel={m.pilUyarisi}
                         testID="esitleme-pil-uyarisi"
                       >
                         <FontAwesome5
@@ -471,7 +460,7 @@ export const EsitlemeSayfasi: React.FC = () => {
                           solid
                         />
                         <Text className="text-xs font-semibold flex-1" style={{ color: renkler.metin }}>
-                          Hatırlatmalar gecikebilir — pil ayarını açın
+                          {m.pilUyarisi}
                         </Text>
                         <FontAwesome5 name="chevron-right" size={11} color={renkler.metinIkincil} />
                       </TouchableOpacity>

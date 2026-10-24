@@ -45,11 +45,14 @@ import {
 } from '../../core/cami/camiTipleri';
 import { SinirAyari } from '../components/cami/SinirAyari';
 import { YakinCamilerOnizlemesi } from '../components/cami/YakinCamilerOnizlemesi';
-import { mesafeM } from '../../core/cami/geometri';
+import { mesafeKmYaz, mesafeM } from '../../core/cami/geometri';
+import { bicim, metin, sayili } from '../../core/dil/aktifDil';
+import type { Sozluk } from '../../core/dil/sozluk/tr';
+import { useMetin } from '../hooks/useMetin';
 import type { OlaySatiri } from '../../core/cami/olayMetinleri';
 import { camidenCik } from '../../../modules/expo-cami-geofence/src';
 import { SecenekCipleri, type Secenek } from '../components/cami/SecenekCipleri';
-import { EYLEM_METNI, guvenOrnekleriOlustur } from '../../core/cami/guvenOrnekleri';
+import { guvenOrnekleriOlustur } from '../../core/cami/guvenOrnekleri';
 import type { AcilisBicimi, IzlemeKapsami } from '../../core/cami/guvenPuani';
 import {
     CUMA_HUTBE_SURESI_DK,
@@ -75,11 +78,7 @@ interface ListeYeri {
 
 type Navigasyon = { navigate: (ekran: string) => void };
 
-export const mesafeMetni = (m: number | null): string => {
-    if (m == null) return 'uzakta';
-    if (m < 1000) return `${Math.round(m)} m`;
-    return `${(m / 1000).toFixed(1).replace('.', ',')} km`;
-};
+export const mesafeMetni = (m: number | null): string => (m == null ? metin().cami.yer.uzakta : mesafeKmYaz(m));
 
 const saatMetni = (ms: number): string => {
     const d = new Date(ms);
@@ -89,27 +88,26 @@ const saatMetni = (ms: number): string => {
     return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')} ${saat}`;
 };
 
-const ACILIS_SECENEKLERI: readonly Secenek<AcilisBicimi>[] = [
-    { deger: 'akilli', etiket: 'Akıllı (önerilen)', ikon: 'magic' },
-    { deger: 'otomatik', etiket: 'Otomatik', ikon: 'bolt' },
-    { deger: 'sorarak', etiket: 'Sorarak', ikon: 'question' },
+type SessizMetinleri = Sozluk['cami']['sessiz'];
+
+const acilisSecenekleri = (t: SessizMetinleri): readonly Secenek<AcilisBicimi>[] => [
+    { deger: 'akilli', etiket: t.acilisAkilli, ikon: 'magic' },
+    { deger: 'otomatik', etiket: t.acilisOtomatik, ikon: 'bolt' },
+    { deger: 'sorarak', etiket: t.acilisSorarak, ikon: 'question' },
 ];
 
-const ACILIS_ACIKLAMASI: Readonly<Record<AcilisBicimi, string>> = {
-    akilli: 'Emin olunca kendiliğinden açılır, emin değilse size sorulur.',
-    otomatik: 'Camide sayıldığınızda sormadan açılır.',
-    sorarak: 'Her seferinde önce "Camide misiniz?" diye sorulur.',
-};
+const acilisAciklamasi = (t: SessizMetinleri, b: AcilisBicimi): string =>
+    b === 'akilli' ? t.acilisAkilliAciklama : b === 'otomatik' ? t.acilisOtomatikAciklama : t.acilisSorarakAciklama;
 
-const KAPSAM_SECENEKLERI: readonly Secenek<IzlemeKapsami>[] = [
-    { deger: 'yakindakiler', etiket: 'Yakınımdaki tüm camiler', ikon: 'mosque' },
-    { deger: 'secilenler', etiket: 'Yalnız seçtiklerim', ikon: 'star' },
+const kapsamSecenekleri = (t: SessizMetinleri): readonly Secenek<IzlemeKapsami>[] => [
+    { deger: 'yakindakiler', etiket: t.kapsamYakin, ikon: 'mosque' },
+    { deger: 'secilenler', etiket: t.kapsamSecilen, ikon: 'star' },
 ];
 
-const NASIL_CALISIR = [
-    { ikon: 'hourglass-half', metin: 'Bir caminin yanında birkaç dakika kalırsanız telefon fark eder.' },
-    { ikon: 'crosshairs', metin: 'Konum bir kez ölçülür, caminin alanıyla karşılaştırılır.' },
-    { ikon: 'balance-scale', metin: 'Vakte yakınlık ve hızınıza bakılır; önünden geçmek sayılmaz.' },
+const nasilCalisir = (t: SessizMetinleri) => [
+    { ikon: 'hourglass-half', metin: t.nasil1 },
+    { ikon: 'crosshairs', metin: t.nasil2 },
+    { ikon: 'balance-scale', metin: t.nasil3 },
 ];
 
 /** Küçük ikonlu sayı çipi (ör. ★ 2) — "·" ayraçlı metin yerine. */
@@ -134,6 +132,9 @@ const SayiCipi: React.FC<{ ikon: string; sayi: number }> = ({ ikon, sayi }) => {
 
 export const NamazdaSessizSayfasi: React.FC = () => {
     const renkler = useRenkler();
+    const metinler = useMetin().cami;
+    const t = metinler.sessiz;
+    const my = metinler.yer;
     const navigation = useNavigation() as unknown as Navigasyon;
     const c = useCamideyim();
     const m = useNamazModu();
@@ -235,11 +236,8 @@ export const NamazdaSessizSayfasi: React.FC = () => {
         setEkleniyor(true);
         const eklendi = await c.bulundugumYeriEkle();
         setEkleniyor(false);
-        kisaBildirimGoster(
-            eklendi ? 'Bulunduğunuz yer eklendi' : 'Konumunuz alınamadı; konum izni ve GPS açık mı kontrol edin.',
-            !eklendi
-        );
-    }, [c]);
+        kisaBildirimGoster(eklendi ? t.yerEklendi : t.yerEklenemedi, !eklendi);
+    }, [c, t]);
 
     const liste = useMemo<ListeYeri[]>(() => {
         const sonuc: ListeYeri[] = c.yakinlar.map((y) => ({
@@ -269,7 +267,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
     const favoriSayisi = yerSay((y) => y.durum === 'favori');
     const kendiSayisi = yerSay((y) => y.kendi === true);
     // Ekran okuyucu metni; ekranda sayılar ikonlu çip olarak çizilir ("·" ayracı YOK), ikisi 0 ise hiç.
-    const haritaOzeti = [favoriSayisi > 0 ? `${favoriSayisi} favori` : null, kendiSayisi > 0 ? `${kendiSayisi} eklediğiniz yer` : null]
+    const haritaOzeti = [favoriSayisi > 0 ? sayili(t.favoriSayisi, favoriSayisi) : null, kendiSayisi > 0 ? sayili(t.kendiSayisi, kendiSayisi) : null]
         .filter(Boolean)
         .join(', ');
     const ornekler = guvenOrnekleriOlustur(ayarlar);
@@ -281,7 +279,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
             <View className="flex-1 p-6 items-center justify-center" style={{ backgroundColor: renkler.arkaplan }}>
                 <FontAwesome5 name="mosque" size={28} color={renkler.metinIkincil} solid />
                 <Text className="text-sm text-center mt-3" style={{ color: renkler.metinIkincil }}>
-                    Namazda sessiz bu telefonda yok. Android telefonlarda kullanılabilir.
+                    {t.yok}
                 </Text>
             </View>
         );
@@ -292,8 +290,8 @@ export const NamazdaSessizSayfasi: React.FC = () => {
     const modKapali = ayarlar.namazModu && m.durum != null && !mod.etkin;
     const ozet = camideyimOzetiOlustur(ayarlar, durum);
     const vakitlerdeOzet = !vakitlerdeAcik
-        ? 'Kapalı'
-        : [mod.cuma ? 'Cuma hutbesi' : null, mod.vakit ? `her vakit ${mod.vakitSureDk} dk` : null].filter(Boolean).join(', ');
+        ? metinler.ozet.kapali
+        : [mod.cuma ? t.cumaHutbesi : null, mod.vakit ? bicim(t.herVakit, { dk: mod.vakitSureDk }) : null].filter(Boolean).join(', ');
 
     const yerSatiri = (y: ListeYeri) => {
         const ayar = y.ayar;
@@ -301,8 +299,8 @@ export const NamazdaSessizSayfasi: React.FC = () => {
         const haric = ayar?.durum === 'haric';
         const favori = ayar?.durum === 'favori';
         const acik = acikYer === y.id;
-        const ad = y.ad || (kendi ? 'Eklediğim yer' : 'Adı bilinmeyen cami');
-        const etiketler = [mesafeMetni(y.mesafe), kendi ? 'sizin yeriniz' : null, favori ? 'favori' : null, haric ? 'cami değil' : null]
+        const ad = y.ad || (kendi ? metinler.eklenenYer : metinler.adsizCami);
+        const etiketler = [mesafeMetni(y.mesafe), kendi ? my.sizinYeriniz : null, favori ? my.favori : null, haric ? my.camiDegil : null]
             .filter(Boolean)
             .join(', ');
         return (
@@ -314,7 +312,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                     onPress={() => setAcikYer(acik ? null : y.id)}
                     accessibilityRole="button"
                     accessibilityState={{ expanded: acik }}
-                    accessibilityLabel={`${ad}, ${etiketler}`}
+                    accessibilityLabel={bicim(my.etiketErisim, { ad, etiketler })}
                 >
                     <IkonCipi ikon={haric ? 'ban' : kendi ? 'home' : 'mosque'} boyut="kucuk" soluk={haric} />
                     <View className="flex-1 px-3">
@@ -332,7 +330,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                     <View className="px-3 pb-3">
                         {haric ? (
                             <Text className="text-xs mb-2" style={{ color: renkler.metinIkincil }}>
-                                Burada hiçbir zaman "camidesiniz" denmez.
+                                {my.hicbirZaman}
                             </Text>
                         ) : (
                             // Harita paneliyle AYNI bileşen: tek metre stepper'ı eskiden poligonu
@@ -359,11 +357,11 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                     style={{ borderColor: renkler.sinir, backgroundColor: renkler.kartArkaplan, minHeight: 44 }}
                                     onPress={() => c.yerSil(y.id)}
                                     accessibilityRole="button"
-                                    accessibilityLabel={`${ad} yerini silin`}
+                                    accessibilityLabel={bicim(my.silErisim, { ad })}
                                 >
                                     <FontAwesome5 name="trash-alt" size={12} color={renkler.metin} style={{ marginRight: 6 }} />
                                     <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                        Sil
+                                        {my.sil}
                                     </Text>
                                 </TouchableOpacity>
                             ) : (
@@ -372,11 +370,11 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                     style={{ borderColor: renkler.sinir, backgroundColor: renkler.kartArkaplan, minHeight: 44 }}
                                     onPress={() => c.yerGuncelle(y.id, haric ? { durum: 'normal' } : { durum: 'haric', ad: y.ad })}
                                     accessibilityRole="button"
-                                    accessibilityLabel={haric ? `${ad}: geri alın` : `${ad}: cami değil`}
+                                    accessibilityLabel={bicim(haric ? my.geriAlErisim : my.camiDegilErisim, { ad })}
                                 >
                                     <FontAwesome5 name={haric ? 'undo' : 'ban'} size={12} color={renkler.metin} style={{ marginRight: 6 }} />
                                     <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                        {haric ? 'Geri alın' : 'Cami değil'}
+                                        {haric ? my.geriAlin : my.camiDegilDugme}
                                     </Text>
                                 </TouchableOpacity>
                             )}
@@ -400,11 +398,11 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                     }}
                                     accessibilityRole="button"
                                     accessibilityState={{ selected: favori }}
-                                    accessibilityLabel={favori ? `${ad}: favoriden çıkarın` : `${ad}: favorilere ekleyin`}
+                                    accessibilityLabel={bicim(favori ? my.favoridenCikarin : my.favorilereEkleyin, { ad })}
                                 >
                                     <FontAwesome5 name="star" size={12} color={favori ? renkler.birincilMetin : renkler.metin} solid style={{ marginRight: 6 }} />
                                     <Text className="text-sm font-semibold" style={{ color: favori ? renkler.birincilMetin : renkler.metin }}>
-                                        {favori ? 'Favoride' : 'Favori'}
+                                        {favori ? my.favoride : my.favoriDugme}
                                     </Text>
                                 </TouchableOpacity>
                             )}
@@ -450,14 +448,14 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                 showsVerticalScrollIndicator={false}
             >
                 <Text style={{ fontSize: 15, marginBottom: 14, color: renkler.metin }}>
-                    Namazda telefonunuz kendiliğinden sessize alınır.
+                    {t.giris}
                 </Text>
 
                 {/* ── İki tetik ── */}
                 <View style={[kartStili, { paddingHorizontal: 16, paddingVertical: 4 }]}>
                     <AnahtarSatiri
                         ikon="mosque"
-                        baslik="Camiye girince"
+                        baslik={t.camiyeGirince}
                         ozet={ozet.cami}
                         deger={ayarlar.aktif}
                         onDegistir={(v) => void camiyeGirince(v)}
@@ -466,7 +464,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                     <View style={ayrac}>
                         <AnahtarSatiri
                             ikon="clock"
-                            baslik="Namaz vakitlerinde"
+                            baslik={t.namazVakitlerinde}
                             ozet={vakitlerdeOzet}
                             deger={vakitlerdeAcik}
                             onDegistir={(v) => void namazVakitlerinde(v)}
@@ -480,12 +478,12 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                             onPress={() => navigation.navigate('Camilerim')}
                             activeOpacity={0.7}
                             accessibilityRole="button"
-                            accessibilityLabel={haritaOzeti ? `Camilerim. ${haritaOzeti}` : 'Camilerim, yakındaki camilerin haritası'}
+                            accessibilityLabel={haritaOzeti ? bicim(t.camilerimErisim, { ozet: haritaOzeti }) : t.camilerimErisimBos}
                             style={{ flexDirection: 'row', alignItems: 'center', minHeight: 56, paddingVertical: 10 }}
                         >
                             <IkonCipi ikon="map-marked-alt" />
                             <View style={{ flex: 1, marginLeft: 14 }}>
-                                <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>Camilerim</Text>
+                                <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>{t.camilerim}</Text>
                                 {favoriSayisi > 0 || kendiSayisi > 0 ? (
                                     <View style={{ flexDirection: 'row', gap: 6, marginTop: 4 }} testID="camilerim-sayilari">
                                         {favoriSayisi > 0 ? <SayiCipi ikon="star" sayi={favoriSayisi} /> : null}
@@ -510,8 +508,8 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                             tip: 'uyari',
                             metin:
                                 durum?.izin === 'arkaPlanYok'
-                                    ? 'Konum izni "Her zaman" değil; uygulama kapalıyken camide olduğunuz anlaşılamaz.'
-                                    : 'Konum izni verilmediği için camiler izlenemiyor.',
+                                    ? t.izinArkaPlan
+                                    : t.izinGenel,
                             eylem: 'uygulamaAyarlari',
                         }}
                         onEylem={() => Linking.openSettings().catch(() => undefined)}
@@ -521,7 +519,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                     <DurumSatiri
                         testID="namaz-modu-erisim-uyarisi"
                         style={{ marginTop: 12 }}
-                        durum={{ tip: 'uyari', metin: 'Rahatsız Etmeyin erişimi yok; telefon sessize alınamıyor.', eylem: 'dnd' }}
+                        durum={{ tip: 'uyari', metin: t.erisimYok, eylem: 'dnd' }}
                         onEylem={() => m.rehberiAc()}
                     />
                 ) : null}
@@ -531,9 +529,9 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                         style={{ marginTop: 12 }}
                         durum={{
                             tip: 'bilgi',
-                            metin: 'Camide sessize almak için namaz modu açılmalı.',
+                            metin: t.modKapali,
                             eylem: 'dnd',
-                            eylemEtiketi: 'Açın',
+                            eylemEtiketi: t.acin,
                         }}
                         onEylem={() => m.guncelle({ etkin: true })}
                     />
@@ -543,7 +541,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                     <View className="flex-row items-center p-3.5 rounded-2xl mt-3" style={{ backgroundColor: `${renkler.birincil}15` }}>
                         <FontAwesome5 name="mosque" size={16} color={renkler.birincil} solid style={{ marginRight: 10 }} />
                         <Text className="text-sm flex-1 font-semibold" style={{ color: renkler.metin }}>
-                            Camidesiniz · {durum.camide.ad || 'Cami'}
+                            {bicim(t.camidesiniz, { ad: durum.camide.ad || metinler.camiVarsayilan })}
                         </Text>
                         <TouchableOpacity
                             className="px-3 rounded-xl items-center justify-center"
@@ -553,10 +551,10 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                 await c.yenile();
                             }}
                             accessibilityRole="button"
-                            accessibilityLabel="Camide değilim"
+                            accessibilityLabel={t.camideDegilim}
                         >
                             <Text className="text-xs font-semibold" style={{ color: renkler.metin }}>
-                                Camide değilim
+                                {t.camideDegilim}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -566,7 +564,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                         <View className="flex-row items-center mb-2">
                             <FontAwesome5 name="question-circle" size={16} color={renkler.bilgi} solid style={{ marginRight: 10 }} />
                             <Text className="text-sm flex-1 font-semibold" style={{ color: renkler.metin }}>
-                                Camide misiniz? · {durum.soru.yer.ad || 'Cami'}
+                                {bicim(t.camideMisiniz, { ad: durum.soru.yer.ad || metinler.camiVarsayilan })}
                             </Text>
                         </View>
                         <View className="flex-row gap-2">
@@ -575,10 +573,10 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                 style={{ minHeight: 44, borderWidth: 1, borderColor: renkler.sinir, backgroundColor: renkler.kartArkaplan }}
                                 onPress={() => c.soruyuCevapla(false)}
                                 accessibilityRole="button"
-                                accessibilityLabel="Hayır, camide değilim"
+                                accessibilityLabel={t.hayirErisim}
                             >
                                 <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                    Hayır
+                                    {t.hayir}
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity
@@ -586,10 +584,10 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                 style={{ flex: 1.4, minHeight: 44, backgroundColor: renkler.birincil }}
                                 onPress={() => c.soruyuCevapla(true)}
                                 accessibilityRole="button"
-                                accessibilityLabel={ayarlar.namazModu ? 'Namaz modunu açın' : 'Evet, camideyim'}
+                                accessibilityLabel={ayarlar.namazModu ? t.namazModunuAcin : t.evetCamideyim}
                             >
                                 <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
-                                    {ayarlar.namazModu ? 'Namaz modunu açın' : 'Evet, camideyim'}
+                                    {ayarlar.namazModu ? t.namazModunuAcin : t.evetCamideyim}
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -603,11 +601,11 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                     activeOpacity={0.7}
                     accessibilityRole="button"
                     accessibilityState={{ expanded: ayrinti }}
-                    accessibilityLabel="Ayrıntılar"
+                    accessibilityLabel={t.ayrintilar}
                     style={{ flexDirection: 'row', alignItems: 'center', minHeight: 48, marginTop: 20 }}
                 >
-                    <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: renkler.metin }}>Ayrıntılar</Text>
-                    <Text style={{ fontSize: 14, color: renkler.metinIkincil, marginRight: 8 }}>Süre, nasıl açılır, camiler</Text>
+                    <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: renkler.metin }}>{t.ayrintilar}</Text>
+                    <Text style={{ fontSize: 14, color: renkler.metinIkincil, marginRight: 8 }}>{t.ayrintilarOzet}</Text>
                     <FontAwesome5 name={ayrinti ? 'chevron-up' : 'chevron-down'} size={13} color={renkler.metinIkincil} />
                 </TouchableOpacity>
 
@@ -615,93 +613,93 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                     <View>
                         {ayarlar.aktif ? (
                             <>
-                                <BolumBasligi metin="Camideyken" style={{ marginTop: 8 }} />
+                                <BolumBasligi metin={t.camideyken} style={{ marginTop: 8 }} />
                                 <View className="p-3" style={kartStili}>
                                     <AyarKutusu
                                         ikon="moon"
-                                        baslik="Telefonu sessize alın"
-                                        aciklama="Telefonunuzun Rahatsız Etmeyin kuralı (Namaz) açılır"
+                                        baslik={t.sessizeAlin}
+                                        aciklama={t.sessizeAlinAciklama}
                                         deger={ayarlar.namazModu}
                                         onDegis={(v) => c.guncelle({ namazModu: v })}
                                     />
                                     <AyarKutusu
                                         ikon="volume-mute"
-                                        baslik="Hatırlatmalar sessiz gelsin"
-                                        aciklama="Tüm hatırlatmalar (vakit, cuma, nafile, yatış, takvim) gelmeye devam eder; sesli okuma ve gerçek alarm susar"
+                                        baslik={t.hatirlatmaSessiz}
+                                        aciklama={t.hatirlatmaSessizAciklama}
                                         deger={ayarlar.sessiz}
                                         onDegis={(v) => c.guncelle({ sessiz: v })}
                                     />
                                     <AyarKutusu
                                         ikon="check-circle"
-                                        baslik={'Çıkınca "Kıldınız mı?" diye sorulsun'}
-                                        aciklama="Tek dokunuşla işaretleyebilirsiniz"
+                                        baslik={t.kildimSor}
+                                        aciklama={t.kildimSorAciklama}
                                         deger={ayarlar.kildimSor}
                                         onDegis={(v) => c.guncelle({ kildimSor: v })}
                                     />
                                 </View>
 
-                                <BolumBasligi metin="Ne zaman camide sayılırım" style={{ marginTop: 20 }} />
+                                <BolumBasligi metin={t.neZaman} style={{ marginTop: 20 }} />
                                 <View className="p-3" style={kartStili}>
                                     <AyarKutusu
                                         ikon="hourglass-half"
-                                        baslik="En az kalma süresi"
-                                        aciklama="Önünden geçmek sayılmaz"
+                                        baslik={t.enAzKalma}
+                                        aciklama={t.gecmekSayilmaz}
                                         sag={
                                             <SayisalSecici
                                                 deger={ayarlar.beklemeDk}
                                                 min={BEKLEME_MIN_DK}
                                                 max={BEKLEME_MAX_DK}
-                                                birim="dk"
+                                                birim={t.dk}
                                                 onChange={(v) => c.guncelle({ beklemeDk: v })}
                                                 renk={renkler.birincil}
-                                                aciklama="En az kalma süresi"
+                                                aciklama={t.enAzKalma}
                                             />
                                         }
                                     />
                                     <AyarKutusu
                                         ikon="clock"
-                                        baslik="Yalnız vakit yakınında"
-                                        aciklama={`Ezandan ${KAPI_ONCE_DK} dk önce → ${KAPI_SONRA_DK} dk sonra · cuma ${KAPI_CUMA_ONCE_DK} → ${KAPI_CUMA_SONRA_DK} dk`}
+                                        baslik={t.vakitYakininda}
+                                        aciklama={bicim(t.vakitYakinindaAciklama, { once: KAPI_ONCE_DK, sonra: KAPI_SONRA_DK, cumaOnce: KAPI_CUMA_ONCE_DK, cumaSonra: KAPI_CUMA_SONRA_DK })}
                                         deger={ayarlar.vakitKapisi}
                                         onDegis={(v) => c.guncelle({ vakitKapisi: v })}
                                     />
                                     <View className="px-1 pt-2 pb-1" testID="acilis-bicimi">
                                         <Text className="text-sm font-semibold mb-2" style={{ color: renkler.metin }}>
-                                            Nasıl açılsın?
+                                            {t.nasilAcilsin}
                                         </Text>
                                         <SecenekCipleri
-                                            secenekler={ACILIS_SECENEKLERI}
+                                            secenekler={acilisSecenekleri(t)}
                                             secili={ayarlar.acilisBicimi}
                                             onSec={(v) => c.guncelle({ acilisBicimi: v })}
-                                            grupEtiketi="Açılış biçimi"
+                                            grupEtiketi={t.acilisBicimi}
                                             testIDOnEki="acilis"
                                         />
                                         <Text style={{ fontSize: 14, marginTop: 8, color: renkler.metin }}>
-                                            {ACILIS_ACIKLAMASI[ayarlar.acilisBicimi]}
+                                            {acilisAciklamasi(t, ayarlar.acilisBicimi)}
                                         </Text>
                                     </View>
                                 </View>
 
-                                <BolumBasligi metin="Hangi camiler" style={{ marginTop: 20 }} />
+                                <BolumBasligi metin={t.hangiCamiler} style={{ marginTop: 20 }} />
                                 <View className="p-3" style={kartStili} testID="izleme-kapsami">
                                     <SecenekCipleri
-                                        secenekler={KAPSAM_SECENEKLERI}
+                                        secenekler={kapsamSecenekleri(t)}
                                         secili={ayarlar.izlemeKapsami}
                                         onSec={(v) => c.guncelle({ izlemeKapsami: v })}
-                                        grupEtiketi="İzleme kapsamı"
+                                        grupEtiketi={t.izlemeKapsami}
                                         testIDOnEki="kapsam"
                                     />
                                     <Text style={{ fontSize: 14, marginTop: 8, color: renkler.metin }}>
                                         {ayarlar.izlemeKapsami === 'secilenler'
-                                            ? 'Yalnız favorileriniz ve eklediğiniz yerler izlenir.'
-                                            : `Size en yakın ${IZLENEN_CAMI_SAYISI} cami izlenir; favoriler uzakta da izlenir.`}
+                                            ? t.secilenlerAciklama
+                                            : bicim(t.yakinlarAciklama, { n: IZLENEN_CAMI_SAYISI })}
                                     </Text>
                                     {ayarlar.izlemeKapsami === 'secilenler' && secilenSayisi === 0 ? (
-                                        <NotSatiri tip="uyari" metin="Henüz seçili yer yok; şu an hiçbir yer izlenmiyor." style={{ marginTop: 8 }} />
+                                        <NotSatiri tip="uyari" metin={t.seciliYok} style={{ marginTop: 8 }} />
                                     ) : null}
                                 </View>
 
-                                <BolumBasligi metin="Yakındaki camiler" style={{ marginTop: 20 }} />
+                                <BolumBasligi metin={t.yakindakiCamiler} style={{ marginTop: 20 }} />
                                 <View className="p-3" style={kartStili}>
                                     <TouchableOpacity
                                         testID="yer-ekle"
@@ -711,25 +709,25 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                         disabled={ekleniyor}
                                         accessibilityRole="button"
                                         accessibilityState={{ disabled: ekleniyor, busy: ekleniyor }}
-                                        accessibilityLabel="Bulunduğunuz yeri ekleyin"
+                                        accessibilityLabel={t.yeriEkleyin}
                                     >
                                         <FontAwesome5 name="plus" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                                         <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
-                                            Bulunduğunuz yeri ekleyin
+                                            {t.yeriEkleyin}
                                         </Text>
                                     </TouchableOpacity>
                                     {liste.length === 0 ? (
                                         <Text className="text-sm text-center py-4" style={{ color: renkler.metinIkincil }}>
                                             {durum?.veriVar === false
-                                                ? 'Bu sürümde cami verisi yok; eklediğiniz yerler yine algılanır.'
-                                                : 'Yakınınızda cami bulunamadı. Konumunuzu Konum Ayarları\'ndan kontrol edin.'}
+                                                ? my.veriYok
+                                                : t.camiBulunamadi}
                                         </Text>
                                     ) : (
                                         liste.map(yerSatiri)
                                     )}
                                     {durum?.veriVar ? (
                                         <Text className="text-[11px] mt-1" style={{ color: renkler.metinIkincil }}>
-                                            Cami verisi: © OpenStreetMap katkıcıları (ODbL)
+                                            {t.atif}
                                         </Text>
                                     ) : null}
                                 </View>
@@ -738,44 +736,44 @@ export const NamazdaSessizSayfasi: React.FC = () => {
 
                         {mod.etkin ? (
                             <>
-                                <BolumBasligi metin="Namaz vakitlerinde" style={{ marginTop: 20 }} />
+                                <BolumBasligi metin={t.namazVakitlerinde} style={{ marginTop: 20 }} />
                                 <View className="p-3" style={kartStili}>
                                     <AyarKutusu
                                         ikon="mosque"
-                                        baslik="Cuma hutbesi"
-                                        aciklama={`Cuma öğle girişinden ${CUMA_HUTBE_SURESI_DK} dk sonrasına kadar`}
+                                        baslik={t.cumaHutbesi}
+                                        aciklama={bicim(t.cumaHutbesiAciklama, { dk: CUMA_HUTBE_SURESI_DK })}
                                         deger={mod.cuma}
                                         onDegis={(v) => m.guncelle({ cuma: v })}
                                     />
                                     <AyarKutusu
                                         ikon="clock"
-                                        baslik="Her vakit girince"
-                                        aciklama={`${mod.vakitSureDk} dk boyunca · beş vakit`}
+                                        baslik={t.herVakitBaslik}
+                                        aciklama={bicim(t.herVakitAciklama, { dk: mod.vakitSureDk })}
                                         deger={mod.vakit}
                                         onDegis={(v) => m.guncelle({ vakit: v })}
                                     />
                                     {mod.vakit ? (
                                         <AyarKutusu
                                             ikon="hourglass-half"
-                                            baslik="Süre"
+                                            baslik={t.sure}
                                             sag={
                                                 <SayisalSecici
                                                     deger={mod.vakitSureDk}
                                                     min={VAKIT_SURE_MIN_DK}
                                                     max={VAKIT_SURE_MAX_DK}
                                                     adim={VAKIT_SURE_ADIM_DK}
-                                                    birim="dk"
+                                                    birim={t.dk}
                                                     onChange={(v) => m.guncelle({ vakitSureDk: v })}
                                                     renk={renkler.birincil}
-                                                    aciklama="Mod süresi"
+                                                    aciklama={t.modSuresi}
                                                 />
                                             }
                                         />
                                     ) : null}
                                     <AyarKutusu
                                         ikon="check-circle"
-                                        baslik={'"Kıldım" deyince kapansın'}
-                                        aciklama="Namazı işaretlediğiniz an mod biter"
+                                        baslik={t.kildimKapat}
+                                        aciklama={t.kildimKapatAciklama}
                                         deger={mod.kildimKapat}
                                         onDegis={(v) => m.guncelle({ kildimKapat: v })}
                                     />
@@ -785,37 +783,37 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                             style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir, minHeight: 48 }}
                                             onPress={m.modAyarlariniAc}
                                             accessibilityRole="button"
-                                            accessibilityLabel="Modun ayarlarını açın"
+                                            accessibilityLabel={t.modAyarlari}
                                         >
                                             <FontAwesome5 name="external-link-alt" size={12} color={renkler.metin} style={{ marginRight: 8 }} />
                                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                                Modun ayarlarını açın
+                                                {t.modAyarlari}
                                             </Text>
                                         </TouchableOpacity>
                                     ) : null}
                                 </View>
-                                <NotSatiri metin="Modu elle kapatırsanız o vakit yeniden açılmaz." style={{ marginTop: 8 }} />
+                                <NotSatiri metin={t.elleKapatma} style={{ marginTop: 8 }} />
                             </>
                         ) : null}
 
                         {ayarlar.aktif ? (
                             <>
-                                <BolumBasligi metin="Nasıl çalışır" style={{ marginTop: 20 }} />
+                                <BolumBasligi metin={t.nasilCalisir} style={{ marginTop: 20 }} />
                                 <View className="p-4" style={kartStili} testID="nasil-algilanir">
-                                    {NASIL_CALISIR.map((m2) => (
+                                    {nasilCalisir(t).map((m2) => (
                                         <NotSatiri key={m2.ikon} ikon={m2.ikon} metin={m2.metin} />
                                     ))}
-                                    <NotSatiri ikon="lock" metin="Konumunuz telefonunuzdan çıkmaz." />
+                                    <NotSatiri ikon="lock" metin={t.konumCikmaz} />
                                 </View>
 
-                                <BolumBasligi metin="Sizin ayarlarınızla" style={{ marginTop: 20 }} />
+                                <BolumBasligi metin={t.sizinAyarlarinizla} style={{ marginTop: 20 }} />
                                 <View className="p-3" style={kartStili} testID="guven-ornekleri">
                                     {ornekler.map((o) => (
                                         <View
                                             key={o.id}
                                             className="flex-row items-center py-2"
                                             accessible
-                                            accessibilityLabel={`${o.baslik}: ${o.olculmez ? 'konum bile ölçülmez' : EYLEM_METNI[o.eylem]}`}
+                                            accessibilityLabel={bicim(t.ornekErisim, { baslik: o.baslik, eylem: o.olculmez ? t.olculmezErisim : metinler.eylem[o.eylem] })}
                                         >
                                             <FontAwesome5 name={o.ikon} size={13} color={renkler.metinIkincil} style={{ width: 22, textAlign: 'center', marginRight: 8 }} />
                                             <Text className="text-sm flex-1" style={{ color: renkler.metin }}>
@@ -833,18 +831,18 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                                 }}
                                             >
                                                 <Text className="text-xs font-semibold" style={{ color: renkler.metin }}>
-                                                    {o.olculmez ? 'Ölçülmez bile' : EYLEM_METNI[o.eylem]}
+                                                    {o.olculmez ? t.olculmez : metinler.eylem[o.eylem]}
                                                 </Text>
                                             </View>
                                         </View>
                                     ))}
                                 </View>
 
-                                <BolumBasligi metin="Son algılamalar" style={{ marginTop: 20 }} />
+                                <BolumBasligi metin={t.sonAlgilamalar} style={{ marginTop: 20 }} />
                                 <View className="p-4" style={kartStili} testID="son-algilamalar">
                                     {c.olaylar.length === 0 ? (
                                         <Text style={{ fontSize: 14, color: renkler.metinIkincil }}>
-                                            Henüz bir algılama yok.
+                                            {t.algilamaYok}
                                         </Text>
                                     ) : (
                                         <>
@@ -854,10 +852,10 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                                 style={{ minHeight: 44 }}
                                                 onPress={c.gunluguTemizle}
                                                 accessibilityRole="button"
-                                                accessibilityLabel="Son algılamaları temizleyin"
+                                                accessibilityLabel={t.temizleErisim}
                                             >
                                                 <Text className="text-xs font-semibold" style={{ color: renkler.birincil }}>
-                                                    Listeyi temizleyin
+                                                    {t.temizle}
                                                 </Text>
                                             </TouchableOpacity>
                                         </>
@@ -873,9 +871,9 @@ export const NamazdaSessizSayfasi: React.FC = () => {
             <BildirimModali
                 gorunur={izinUyarisi}
                 tip="bilgi"
-                baslik={'"Her zaman" konum izni gerekiyor'}
-                mesaj={'Uygulama kapalıyken camide olduğunuzu anlamak için konum izni "Her zaman" olmalı. Ayarlardan izin verip buraya dönebilirsiniz.'}
-                birincilEtiket="Ayarları açın"
+                baslik={t.herZamanBaslik}
+                mesaj={t.herZamanMesaj}
+                birincilEtiket={t.ayarlariAcin}
                 birincilIkon="external-link-alt"
                 onBirincil={() => {
                     setIzinUyarisi(false);

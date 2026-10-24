@@ -18,6 +18,8 @@ import { DUZEY_ADLARI } from '../../../core/hatirlatma/duzeyOzeti';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 import { HATIRLATMA_PRESETLERI } from '../../store/muhafizSlice';
 import { ParcaliSecici } from './ParcaliSecici';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 export type VakitDuzeyi = 'hafif' | 'normal' | 'yogun';
 const DUZEYLER: readonly VakitDuzeyi[] = ['hafif', 'normal', 'yogun'];
@@ -51,6 +53,7 @@ export interface VakitDuzeyListesiProps {
 
 export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, onSec, onOzel, geceSessiz = false, yatsiDustu = false, aksamKesiliyor = false }) => {
     const renkler = useRenkler();
+    const mv = useMetin().hatirlatma.vakitDuzey;
     return (
         <View
             testID="vakit-duzey-listesi"
@@ -73,13 +76,13 @@ export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, on
                                 ...DUZEYLER.map((d) => ({
                                     deger: d as VakitDuzeyi | 'ozel',
                                     etiket: DUZEY_ADLARI[d],
-                                    erisimEtiketi: `${VAKIT_ADLARI[vakit]}: ${DUZEY_ADLARI[d]}`,
+                                    erisimEtiketi: bicim(mv.secenekEtiketi, { ad: VAKIT_ADLARI[vakit], duzey: DUZEY_ADLARI[d] }),
                                     testID: `vakit-duzey-${vakit}-${d}`,
                                 })),
                                 {
                                     deger: 'ozel' as const,
-                                    etiket: 'Özel',
-                                    erisimEtiketi: `${VAKIT_ADLARI[vakit]}: özel ayar${onOzel ? ', adımları düzenleyin' : ''}`,
+                                    etiket: mv.ozel,
+                                    erisimEtiketi: bicim(onOzel ? mv.ozelDuzenle : mv.ozelEtiketi, { ad: VAKIT_ADLARI[vakit] }),
                                     testID: `vakit-duzey-${vakit}-ozel`,
                                 },
                             ]}
@@ -89,13 +92,13 @@ export const VakitDuzeyListesi: React.FC<VakitDuzeyListesiProps> = ({ matris, on
                         {yatsiGece ? (
                             <Text testID="vakit-duzey-yatsi-gece" style={{ fontSize: 14, lineHeight: 20, marginTop: 8, color: renkler.metin }}>
                                 {yatsiDustu
-                                    ? 'Bugün yatsı gece sessizliğinden sonra giriyor; yatsı hatırlatması gelmez.'
-                                    : 'Yatsı uyarıları gece sessizliğinden önce gelir.'}
+                                    ? mv.yatsiDustu
+                                    : mv.yatsiOnce}
                             </Text>
                         ) : null}
                         {vakit === 'aksam' && geceSessiz && aksamKesiliyor ? (
                             <Text testID="vakit-duzey-aksam-gece" style={{ fontSize: 14, lineHeight: 20, marginTop: 8, color: renkler.metin }}>
-                                Bugün akşamın son dakikaları gece sessizliğine denk geliyor; o dakikalarda hatırlatma gelmez.
+                                {mv.aksamKesiliyor}
                             </Text>
                         ) : null}
                     </View>

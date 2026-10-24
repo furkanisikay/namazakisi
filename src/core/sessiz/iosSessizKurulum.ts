@@ -7,6 +7,7 @@
  * ve "Bugün" önizlemesini besler. Bozuk kayıt varsayılana düşer.
  */
 import { SESSIZLIK_VARSAYILAN_DK, sessizlikDakikasiniKenetle } from '../siri/sessizlikKarari';
+import { bicim, metin } from '../dil/aktifDil';
 
 export type IosSessizAdim = 'odak' | 'cami' | 'vakit';
 export const IOS_SESSIZ_ADIMLARI: readonly IosSessizAdim[] = ['odak', 'cami', 'vakit'];
@@ -36,8 +37,9 @@ export function iosSessizAdimiDegistir(k: IosSessizKurulum, adim: IosSessizAdim)
 
 /** Ayarlar ana sayfasındaki satır özeti. */
 export function iosSessizOzeti(k: IosSessizKurulum): string {
+    const m = metin().cami.ozet;
     const n = k.tamam.length;
-    if (n === 0) return 'Odak ile kurun';
-    if (n === IOS_SESSIZ_ADIMLARI.length) return 'Odak ile kuruldu';
-    return `${n}/${IOS_SESSIZ_ADIMLARI.length} adım tamam`;
+    if (n === 0) return m.odakIleKurun;
+    if (n === IOS_SESSIZ_ADIMLARI.length) return m.odakIleKuruldu;
+    return bicim(m.adimTamam, { n, toplam: IOS_SESSIZ_ADIMLARI.length });
 }

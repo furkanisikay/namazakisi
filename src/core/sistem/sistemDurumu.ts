@@ -12,6 +12,8 @@
  * okunamayan alanda uygulama bugünkü gibi davranır (yanlış alarm, hiç uyarmamaktan kötü).
  */
 
+import { bicim, metin } from '../dil/aktifDil';
+
 export type AgTuru = 'wifi' | 'ethernet' | 'hucresel' | 'diger' | 'yok';
 
 /**
@@ -196,13 +198,14 @@ export function hatirlatmaEtkisi(d: SistemDurumu, pilMuaf: boolean | null): Hati
 
 /** Etkinin kullanıcıya görünen cümlesi (`null` → hiçbir şey söylenmez). */
 export function hatirlatmaEtkisiMetni(etki: HatirlatmaEtkisi | null): string | null {
-  if (etki === 'etkilenmez') return 'hatırlatmalar etkilenmez';
-  if (etki === 'gecikebilir') return 'hatırlatmalar gecikebilir — pil ayarını açın';
+  const m = metin().ayarlar.sistem;
+  if (etki === 'etkilenmez') return m.etkilenmez;
+  if (etki === 'gecikebilir') return m.gecikebilir;
   return null;
 }
 
 /** "Güç tasarrufu açık" + (varsa) " — <etki>" */
-const ekle = (bas: string, etki: string | null) => (etki ? `${bas} — ${etki}` : bas);
+const ekle = (bas: string, etki: string | null) => (etki ? bicim(metin().ayarlar.sistem.ek, { bas, etki }) : bas);
 
 /** Ayarlar'daki durum çipi. */
 export interface SistemCipi {
@@ -225,8 +228,9 @@ export function sistemCipi(
   pilUyarisiGosteriliyor = false
 ): SistemCipi | null {
   const etki = hatirlatmaEtkisi(d, pilMuaf);
+  const m = metin().ayarlar.sistem;
   if (d.gucTasarrufu === true && !pilUyarisiGosteriliyor) {
-    const ad = d.platform === 'ios' ? 'Düşük Güç Modu açık' : 'Güç tasarrufu açık';
+    const ad = d.platform === 'ios' ? m.dusukGuc : m.gucTasarrufu;
     return {
       ikon: 'battery-quarter',
       metin: ekle(ad, hatirlatmaEtkisiMetni(etki)),
@@ -238,9 +242,7 @@ export function sistemCipi(
     // Veri tasarrufu yerel bildirimleri hiçbir platformda etkilemez (ağ gerekmez).
     return {
       ikon: 'tachometer-alt',
-      metin: d.platform === 'ios'
-        ? 'Düşük Veri Modu açık — hatırlatmalar etkilenmez'
-        : 'Veri tasarrufu açık — hatırlatmalar etkilenmez',
+      metin: d.platform === 'ios' ? m.dusukVeri : m.veriTasarrufu,
       ton: 'bilgi',
       pilRehberi: false,
     };

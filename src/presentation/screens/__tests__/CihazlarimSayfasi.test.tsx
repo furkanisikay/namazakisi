@@ -4,10 +4,11 @@
  */
 import React from 'react';
 import { Platform } from 'react-native';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { CihazlarimSayfasi } from '../CihazlarimSayfasi';
 import { useRenkler } from '../../../core/theme';
 import type { CihazUyeligi } from '../../../data/local/CihazAgiDeposu';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const mockNavigate = jest.fn();
 const mockListe = jest.fn();
@@ -152,5 +153,50 @@ describe('CihazlarimSayfasi', () => {
         const { findByTestId, queryByTestId } = render(<CihazlarimSayfasi />);
         await findByTestId('cihaz-durum-0123456789abcdef');
         await waitFor(() => expect(queryByTestId('cihazlarim-saat')).toBeNull());
+    });
+});
+
+describe('CihazlarimSayfasi — İngilizce', () => {
+    const YASAKLI = ['Televizyon', 'Tablet ve', 'Saat\\b', 'TV ekleyin', 'dk\\b', 'Kaldır', 'Vazge', 'Yeniden'];
+    let geriAl: () => void;
+    beforeEach(() => {
+        geriAl = ingilizceyeGec();
+        jest.replaceProperty(Platform, 'OS', 'android');
+        (useRenkler as jest.Mock).mockReturnValue({
+            arkaplan: '#fff', kartArkaplan: '#f0f0f0', birincil: '#4CAF50', birincilMetin: '#FFFFFF', metin: '#333', metinIkincil: '#666', sinir: '#ccc', hata: '#F44336', bilgi: '#2196F3', basarili: '#4CAF50',
+        });
+        mockListe.mockResolvedValue([
+            tv(),
+            tv({ aliciKimlik: 'aaaa', aliciAdi: 'Bedroom TV', durum: 'reddedildi' }),
+            tv({ aliciKimlik: 'bbbb', aliciAdi: 'Kitchen TV', durum: 'ulasilamadi', durumumSayilsin: true }),
+            tv({ tur: 'tablet', aliciKimlik: 'cccc', aliciAdi: 'Tablet', eklenmeMs: 2 }),
+        ]);
+        mockGonder.mockResolvedValue({});
+        mockSaatDurumu.mockResolvedValue('esli');
+    });
+    afterEach(() => {
+        act(() => geriAl());
+        jest.restoreAllMocks();
+    });
+
+    it('liste, harita, saat satırı ve kaldırma onayı İngilizce', async () => {
+        const e = render(<CihazlarimSayfasi />);
+        fireEvent(await e.findByTestId('cihazlarim-harita'), 'layout', { nativeEvent: { layout: { width: 360, height: 400 } } });
+        expect(await e.findByText('Your smartwatch is connected')).toBeTruthy();
+        expect(await e.findByLabelText('Salon TV: connected · 5 min ago')).toBeTruthy();
+        fireEvent.press(await e.findByLabelText('Remove the TV Salon TV'));
+        expect(e.getByText('Remove this TV?')).toBeTruthy();
+        expect(turkceKalanlar(e.toJSON() as never, YASAKLI)).toEqual([]);
+    });
+
+    it('boş durum İngilizce', async () => {
+        mockListe.mockResolvedValue([]);
+        mockSaatDurumu.mockResolvedValue('esliDegil');
+        const e = render(<CihazlarimSayfasi />);
+        await e.findByTestId('cihazlarim-bos');
+        expect(await e.findByText('No watch connected')).toBeTruthy();
+        // Marka adı ("Namaz Akışı") cümle içinde her dilde aynı kalır.
+        const kalanlar = turkceKalanlar(e.toJSON() as never, YASAKLI).filter((m) => turkceKalanlar(m.replace(/Namaz Akışı/g, ''), YASAKLI).length > 0);
+        expect(kalanlar).toEqual([]);
     });
 });

@@ -16,6 +16,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 import { TurkiyeKonumServisi, Il, Ilce, TURKIYE_ILLERI_OFFLINE } from '../../domain/services/TurkiyeKonumServisi';
+import { useMetin } from '../hooks/useMetin';
+import { bicim, sayili } from '../../core/dil/aktifDil';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
@@ -38,6 +40,7 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
     onKonumSec
 }) => {
     const renkler = useRenkler();
+    const m = useMetin().konum.il;
     const [modalGorunum, setModalGorunum] = useState(false);
     const [aramaMetni, setAramaMetni] = useState('');
     const [secilenIl, setSecilenIl] = useState<Il | null>(null);
@@ -57,9 +60,9 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
     }, []);
 
     const normalizeMetin = useCallback((metin: string) => {
-        return metin.toLowerCase().replace(/[ığüşöçİ]/g, (char) => {
+        return metin.toLowerCase().replace(/[ığüşöçİ]/g, (char) => { // dil-haric: arama normalleştirme
             const harita: Record<string, string> = {
-                'ı': 'i', 'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c', 'İ': 'i'
+                'ı': 'i', 'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c', 'İ': 'i' // dil-haric: arama normalleştirme
             };
             return harita[char] || char;
         });
@@ -169,14 +172,14 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                             {item.ad}
                         </Text>
                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                            {item.lat.toFixed(2)}°K, {item.lng.toFixed(2)}°D
+                            {`${item.lat.toFixed(2)}°${m.kuzey}, ${item.lng.toFixed(2)}°${m.dogu}`}
                         </Text>
                     </View>
                 </View>
                 <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
             </TouchableOpacity>
         );
-    }, [seciliIlId, renkler, ilSecHandler]);
+    }, [seciliIlId, renkler, ilSecHandler, m]);
 
     const ilceOgesiRender = useCallback(({ item }: { item: Ilce }) => {
         const seciliMi = item.id === seciliIlceId;
@@ -210,12 +213,12 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                 </View>
                 {seciliMi && (
                     <View className="px-2.5 py-1 rounded-lg" style={{ backgroundColor: renkler.birincil }}>
-                        <Text className="text-xs font-semibold text-white">Seçili</Text>
+                        <Text className="text-xs font-semibold text-white">{m.secili}</Text>
                     </View>
                 )}
             </TouchableOpacity>
         );
-    }, [seciliIlceId, renkler, ilceSecHandler]);
+    }, [seciliIlceId, renkler, ilceSecHandler, m]);
 
     const konumMetni = useMemo(() => {
         if (seciliIlceAdi && seciliIlAdi) {
@@ -224,8 +227,8 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
         if (seciliIlAdi) {
             return seciliIlAdi;
         }
-        return 'Konum seçiniz...';
-    }, [seciliIlAdi, seciliIlceAdi]);
+        return m.konumSeciniz;
+    }, [seciliIlAdi, seciliIlceAdi, m]);
 
     return (
         <>
@@ -249,7 +252,7 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                     </View>
                     <View className="flex-1">
                         <Text className="text-xs font-medium tracking-wider mb-0.5" style={{ color: renkler.metinIkincil }}>
-                            KONUM
+                            {m.konumBaslik}
                         </Text>
                         <Text
                             className="text-lg font-semibold"
@@ -298,11 +301,11 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                     <View className="flex-row items-center">
                                         <FontAwesome5 name={adim === 'il' ? 'city' : 'map-marker-alt'} size={16} color={renkler.metin} />
                                         <Text className="text-xl font-bold ml-2" style={{ color: renkler.metin }}>
-                                            {adim === 'il' ? 'İl Seçimi' : `${secilenIl?.ad} - İlçe Seçimi`}
+                                            {adim === 'il' ? m.ilSecimi : bicim(m.ilceSecimi, { il: secilenIl?.ad ?? '' })}
                                         </Text>
                                     </View>
                                     <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                        {adim === 'il' ? '81 il arasından seçin' : 'İlçe seçerek devam edin'}
+                                        {adim === 'il' ? m.ilAciklama : m.ilceAciklama}
                                     </Text>
                                 </View>
                                 <TouchableOpacity
@@ -341,7 +344,7 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                 <TextInput
                                     className="flex-1 text-base h-12"
                                     style={{ color: renkler.metin }}
-                                    placeholder={adim === 'il' ? 'İl ara...' : 'İlçe ara...'}
+                                    placeholder={adim === 'il' ? m.ilAra : m.ilceAra}
                                     placeholderTextColor={renkler.metinIkincil}
                                     value={aramaMetni}
                                     onChangeText={setAramaMetni}
@@ -361,8 +364,8 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                             <View className="px-4 mb-2">
                                 <Text className="text-xs font-medium" style={{ color: renkler.metinIkincil }}>
                                     {adim === 'il'
-                                        ? `${filtreliIller.length} il listeleniyor`
-                                        : `${filtreliIlceler.length} ilçe listeleniyor`
+                                        ? sayili(m.ilSayisi, filtreliIller.length)
+                                        : sayili(m.ilceSayisi, filtreliIlceler.length)
                                     }
                                 </Text>
                             </View>
@@ -372,7 +375,7 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                 <View className="flex-1 items-center justify-center py-12">
                                     <ActivityIndicator size="large" color={renkler.birincil} />
                                     <Text className="text-sm mt-3" style={{ color: renkler.metinIkincil }}>
-                                        İlçeler yükleniyor...
+                                        {m.ilcelerYukleniyor}
                                     </Text>
                                 </View>
                             ) : adim === 'il' ? (
@@ -388,7 +391,7 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                         <View className="items-center py-12">
                                             <FontAwesome5 name="search" size={40} color={renkler.metinIkincil} style={{ opacity: 0.5 }} />
                                             <Text className="text-base text-center mt-4" style={{ color: renkler.metinIkincil }}>
-                                                "{aramaMetni}" için sonuç bulunamadı
+                                                {bicim(m.sonucYok, { arama: aramaMetni })}
                                             </Text>
                                         </View>
                                     }
@@ -407,8 +410,8 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                             <FontAwesome5 name="search" size={40} color={renkler.metinIkincil} style={{ opacity: 0.5 }} />
                                             <Text className="text-base text-center mt-4" style={{ color: renkler.metinIkincil }}>
                                                 {aramaMetni
-                                                    ? `"${aramaMetni}" için sonuç bulunamadı`
-                                                    : 'Bu il için ilçe verisi bulunamadı'
+                                                    ? bicim(m.sonucYok, { arama: aramaMetni })
+                                                    : m.ilceVerisiYok
                                                 }
                                             </Text>
                                         </View>

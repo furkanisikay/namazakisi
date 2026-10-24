@@ -28,28 +28,22 @@ import { TvSenkronServisi } from '../../domain/services/TvSenkronServisi';
 import { TelevizyonSahnesi, type SahneDurumu } from '../components/tv/TelevizyonSahnesi';
 import { BildirimModali } from '../components/common/BildirimModali';
 import type { TvDerinParametreleri } from '../../navigation/ayarlarEkranlari';
+import { bicim, metin } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
 
 type Hata = Exclude<EslesmeSonucu, 'onay' | 'iptal'> | 'gecersizQr' | 'cihazKodu' | 'eskiTv' | 'tarayiciYok' | 'kameraIzniYok';
 
-const HATA_METNI: Record<Hata, string> = {
-    ulasilamadi:
-        "TV'ye ulaşılamadı. Telefon ile TV aynı Wi-Fi ağında olmalı; misafir ağı ya da VPN bağlantıyı engelleyebilir. Olmazsa aşağıdaki kodu TV'ye girin." +
-        (Platform.OS === 'ios' ? ' iPhone yerel ağ izni sorduysa izin verip yeniden okutun.' : ''),
-    gecersiz: "Bu kare kodun süresi doldu. TV'de “Telefonunuzu ekleyin” ekranını yeniden açın ve yeni kodu okutun.",
-    zamanAsimi: "TV'de onay gelmedi. Kodu yeniden okutun ve TV'de kumandayla “Ekleyin”e basın.",
-    red: "TV'de “Hayır” seçildi; bu telefon eklenmedi.",
-    gecersizQr: "Bu kare kod Namaz Akışı TV'ye ait değil. TV'deki “Telefonunuzu ekleyin” ekranındaki kodu okutun.",
-    cihazKodu: 'Bu kod bir tablete ya da telefona ait. Ayarlar › Cihazlarım › Cihaz ekleyin sayfasından okutun.',
-    eskiTv: "TV'deki Namaz Akışı eski. TV'de Google Play'den güncelleyin; o zamana kadar aşağıdaki 7 haneli kodla konumu aktarabilirsiniz.",
-    tarayiciYok: "Kamera bu telefonda açılamadı. Aşağıdaki 7 haneli kodu TV'ye girin.",
-    kameraIzniYok:
-        "Kodu okumak için kamera izni gerekir. Telefon ayarlarından kamerayı açın ya da aşağıdaki 7 haneli kodu TV'ye girin.",
-};
+/** Hata cümlesi (sözlük `cihaz.tv.hata`); ulaşılamadıysa iPhone'a yerel ağ izni notu eklenir. */
+function hataMetni(hata: Hata): string {
+    const m = metin().cihaz.tv.hata;
+    return hata === 'ulasilamadi' ? m.ulasilamadi + (Platform.OS === 'ios' ? m.ulasilamadiIos : '') : m[hata];
+}
 
 type Rota = { params?: TvDerinParametreleri };
 
 export const TelevizyonSayfasi: React.FC = () => {
     const renkler = useRenkler();
+    const m = useMetin().cihaz.tv;
     const navigation = useNavigation() as unknown as { navigate: (ekran: string) => void; setParams?: (p: object) => void };
     const route = useRoute() as unknown as Rota;
     const konum = useAppSelector((s) => s.konum);
@@ -94,13 +88,13 @@ export const TelevizyonSayfasi: React.FC = () => {
     }, []);
 
     /** Okunan / derin bağlantıyla gelen metin: doğrula, sonra BU TELEFONDA onay iste. */
-    const metniIsle = useCallback(async (metin: string) => {
-        if (tvQrSurumu(metin) === 1) {
+    const metniIsle = useCallback(async (okunan: string) => {
+        if (tvQrSurumu(okunan) === 1) {
             setDurum('hata');
             setHata('eskiTv');
             return;
         }
-        const qr = eslesmeQrCoz(metin);
+        const qr = eslesmeQrCoz(okunan);
         if (!qr) {
             setDurum('hata');
             setHata('gecersizQr');
@@ -133,7 +127,7 @@ export const TelevizyonSayfasi: React.FC = () => {
                     await TvSenkronServisi.getInstance().gonder(true).catch(() => undefined);
                     setEklenenTv(qr.aliciAdi);
                     setDurum('tamam');
-                    AccessibilityInfo.announceForAccessibility(`${qr.aliciAdi} eklendi`);
+                    AccessibilityInfo.announceForAccessibility(bicim(metin().cihaz.tv.eklendiErisim, { ad: qr.aliciAdi }));
                 } else if (sonuc !== 'iptal') {
                     setDurum('hata');
                     setHata(sonuc);
@@ -162,7 +156,7 @@ export const TelevizyonSayfasi: React.FC = () => {
     // iOS: tarayıcı okumayı OLAYLA bildirir (kullanıcı tarayıcıyı kapatırsa hiçbir şey gelmez).
     const metniIsleRef = useRef(metniIsle);
     metniIsleRef.current = metniIsle;
-    useEffect(() => TvEslemeServisi.iosOkumaDinle((metin) => void metniIsleRef.current(metin)), []);
+    useEffect(() => TvEslemeServisi.iosOkumaDinle((okunan) => void metniIsleRef.current(okunan)), []);
 
     // Derin bağlantı (iPhone kamerası): yalnız ONAY EKRANINI açar; gönderim kullanıcı onayıyla.
     const p = route.params;
@@ -190,7 +184,7 @@ export const TelevizyonSayfasi: React.FC = () => {
             showsVerticalScrollIndicator={false}
         >
             <Text style={{ fontSize: 15, lineHeight: 22, color: renkler.metinIkincil, marginBottom: 14 }}>
-                Evdeki Android TV, vakitleri sizin konumunuza göre büyük ekranda gösterir. TV'yi bir kez ekleyin; sonrası aynı Wi-Fi'de kendiliğinden güncellenir.
+                {m.giris}
             </Text>
 
             <View style={[kart, { padding: 0, overflow: 'hidden' }]}>
@@ -202,16 +196,16 @@ export const TelevizyonSayfasi: React.FC = () => {
 
             {!konumVar ? (
                 <View style={[kart, { marginTop: 16 }]}>
-                    <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>Önce konumunuzu belirleyin</Text>
+                    <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>{m.konumYokBaslik}</Text>
                     <Text style={{ fontSize: 14, lineHeight: 20, color: renkler.metinIkincil, marginTop: 6 }}>
-                        TV'ye gönderilecek bir konum henüz yok.
+                        {m.konumYokMetin}
                     </Text>
                     <TouchableOpacity
                         onPress={() => navigation.navigate('KonumAyarlari')}
                         accessibilityRole="button"
                         style={{ marginTop: 12, minHeight: 44, justifyContent: 'center' }}
                     >
-                        <Text style={{ fontSize: 15, fontWeight: '600', color: renkler.birincil }}>Konum ayarlarını açın</Text>
+                        <Text style={{ fontSize: 15, fontWeight: '600', color: renkler.birincil }}>{m.konumAyarlari}</Text>
                     </TouchableOpacity>
                 </View>
             ) : (
@@ -231,11 +225,11 @@ export const TelevizyonSayfasi: React.FC = () => {
                             <FontAwesome5 name="map-marker-alt" size={18} color={renkler.birincil} />
                         </View>
                         <View style={{ flex: 1 }}>
-                            <Text style={{ fontSize: 13, color: renkler.metinIkincil }}>TV'ye gidecek konum</Text>
+                            <Text style={{ fontSize: 13, color: renkler.metinIkincil }}>{m.gidecekKonum}</Text>
                             <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin, marginTop: 2 }}>{konumAdi}</Text>
                             {konum.konumModu === 'oto' ? (
                                 <Text style={{ fontSize: 13, lineHeight: 18, color: renkler.metinIkincil, marginTop: 4 }}>
-                                    Şu an bulunduğunuz yer gider. TV başka bir şehirdeyse TV'de ili kendiniz seçin.
+                                    {m.otoKonumNotu}
                                 </Text>
                             ) : null}
                         </View>
@@ -248,7 +242,7 @@ export const TelevizyonSayfasi: React.FC = () => {
                         activeOpacity={0.85}
                         accessibilityRole="button"
                         accessibilityState={{ disabled: gonderiliyor, busy: gonderiliyor }}
-                        accessibilityLabel="TV'deki kodu okutun"
+                        accessibilityLabel={m.okutun}
                         style={{
                             marginTop: 16,
                             minHeight: 56,
@@ -262,14 +256,14 @@ export const TelevizyonSayfasi: React.FC = () => {
                     >
                         <FontAwesome5 name="qrcode" size={18} color="#FFFFFF" />
                         <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '700', marginLeft: 10 }}>
-                            {durum === 'tamam' ? 'Başka bir TV için okutun' : "TV'deki kodu okutun"}
+                            {durum === 'tamam' ? m.baskaTv : m.okutun}
                         </Text>
                     </TouchableOpacity>
 
                     <View style={{ marginTop: 20 }}>
-                        <Adim sira={1} metin="TV'de Namaz Akışı'nı açın. Uygulama yoksa TV'deki Google Play'den kurun." />
-                        <Adim sira={2} metin="Ekranda bir kare kod görünür; yukarıdaki düğmeyle okutun." />
-                        <Adim sira={3} metin="TV'de kumandayla “Ekleyin”e basın. Konumunuz TV'ye gelir." />
+                        <Adim sira={1} metin={m.adim1} />
+                        <Adim sira={2} metin={m.adim2} />
+                        <Adim sira={3} metin={m.adim3} />
                     </View>
 
                     <View
@@ -278,15 +272,15 @@ export const TelevizyonSayfasi: React.FC = () => {
                         }}
                         style={[kart, { marginTop: 16 }]}
                     >
-                        <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>Wi-Fi ya da kamera yoksa</Text>
+                        <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>{m.kodBaslik}</Text>
                         {kod ? (
                             <>
                                 <Text style={{ fontSize: 14, lineHeight: 20, color: renkler.metinIkincil, marginTop: 6 }}>
-                                    TV'de {'“'}Kodla girin{'”'}i seçin ve bu 7 haneyi yazın:
+                                    {m.kodYonerge}
                                 </Text>
                                 <Text
                                     testID="tv-konum-kodu"
-                                    accessibilityLabel={`Kod: ${kod.split('').join(' ')}`}
+                                    accessibilityLabel={bicim(m.kodErisim, { kod: kod.split('').join(' ') })}
                                     style={{
                                         fontSize: 36,
                                         fontWeight: '700',
@@ -301,7 +295,7 @@ export const TelevizyonSayfasi: React.FC = () => {
                             </>
                         ) : (
                             <Text style={{ fontSize: 14, lineHeight: 20, color: renkler.metinIkincil, marginTop: 6 }}>
-                                Bu konum için kod yok. TV'de {'“'}İli kendim seçeyim{'”'} ile ilinizi seçebilirsiniz.
+                                {m.kodYok}
                             </Text>
                         )}
                     </View>
@@ -311,23 +305,23 @@ export const TelevizyonSayfasi: React.FC = () => {
             <View style={{ flexDirection: 'row', marginTop: 18, paddingHorizontal: 4 }}>
                 <FontAwesome5 name="lock" size={12} color={renkler.metinIkincil} style={{ marginTop: 3, marginRight: 8 }} />
                 <Text style={{ flex: 1, fontSize: 13, lineHeight: 19, color: renkler.metinIkincil }}>
-                    Bilgiler yalnız evinizin ağında, şifreli olarak doğrudan TV'ye gider; hesap açılmaz, başka hiçbir yere gönderilmez. Konum yaklaşık 1 km hassasiyetle gider.
-                    {Platform.OS === 'ios' ? ' iPhone ilk seferde yerel ağ izni sorar.' : ''}
+                    {m.gizlilik}
+                    {Platform.OS === 'ios' ? m.gizlilikIos : ''}
                 </Text>
             </View>
             <BildirimModali
                 gorunur={onayBekleyen != null}
                 tip="bilgi"
-                baslik="Bu TV'ye bağlanılsın mı?"
+                baslik={m.onayBaslik}
                 mesaj={
                     onayBekleyen
-                        ? `Şu TV'ye bağlanıyorsunuz: ${onayBekleyen.aliciAdi}. Onaylarsanız konumunuz ve kıldığınız namazlar bu TV'ye gidebilir; TV'de de kumandayla onay istenir.`
+                        ? bicim(m.onayMesaj, { ad: onayBekleyen.aliciAdi })
                         : ''
                 }
-                birincilEtiket="Bağlanın"
+                birincilEtiket={m.baglanin}
                 birincilIkon="tv"
                 onBirincil={() => onayBekleyen && void eslestir(onayBekleyen)}
-                kapatEtiketi="Vazgeçin"
+                kapatEtiketi={m.vazgecin}
                 onKapat={() => setOnayBekleyen(null)}
             />
         </ScrollView>
@@ -365,21 +359,22 @@ const SonucSatiri: React.FC<{ durum: SahneDurumu; hata: Hata | null; konumAdi: s
     eklenenTv,
 }) => {
     const renkler = useRenkler();
+    const m = useMetin().cihaz.tv;
     const gorunurluk = useRef(new Animated.Value(1)).current;
-    const metin =
+    const cumle =
         durum === 'tamam'
-            ? `${eklenenTv ?? 'TV'} eklendi. TV artık ${konumAdi} vakitlerini gösteriyor.`
+            ? bicim(m.tamam, { ad: eklenenTv ?? m.tvVarsayilan, konum: konumAdi })
             : durum === 'gonderiliyor'
               ? tvOnayi
-                  ? "TV'de kumandayla “Ekleyin”e basın…"
-                  : "TV'ye gönderiliyor…"
+                  ? m.kumandaylaEkleyin
+                  : m.gonderiliyor
               : durum === 'hata' && hata
-                ? HATA_METNI[hata]
-                : 'Hazır. TV ekranındaki kare kodu okutun.';
+                ? hataMetni(hata)
+                : m.hazir;
     useEffect(() => {
         gorunurluk.setValue(0);
         Animated.timing(gorunurluk, { toValue: 1, duration: 220, easing: Easing.out(Easing.quad), useNativeDriver: true }).start();
-    }, [metin, gorunurluk]);
+    }, [cumle, gorunurluk]);
     return (
         <Animated.Text
             testID="tv-sonuc"
@@ -393,7 +388,7 @@ const SonucSatiri: React.FC<{ durum: SahneDurumu; hata: Hata | null; konumAdi: s
                 textAlign: 'center',
             }}
         >
-            {metin}
+            {cumle}
         </Animated.Text>
     );
 };

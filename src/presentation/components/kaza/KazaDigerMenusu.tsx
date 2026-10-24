@@ -12,6 +12,7 @@ import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithout
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface KazaDigerSatiri {
   anahtar: string;
@@ -34,6 +35,7 @@ interface KazaDigerMenusuProps {
 
 export const KazaDigerMenusu: React.FC<KazaDigerMenusuProps> = ({ gorunur, onKapat, satirlar, ust }) => {
   const renkler = useRenkler();
+  const m = useMetin();
   useDonanimGeriTusu(gorunur, onKapat);
 
   return (
@@ -45,12 +47,12 @@ export const KazaDigerMenusu: React.FC<KazaDigerMenusuProps> = ({ gorunur, onKap
         <View testID="kaza-diger-menusu" style={[stiller.sayfa, { backgroundColor: renkler.kartArkaplan }]}>
           <View style={stiller.baslikSatiri}>
             <Text accessibilityRole="header" style={[stiller.baslik, { color: renkler.metin }]}>
-              Diğer
+              {m.kaza.diger.baslik}
             </Text>
             <TouchableOpacity
               onPress={onKapat}
               accessibilityRole="button"
-              accessibilityLabel="Kapatın"
+              accessibilityLabel={m.ortak.kapatin}
               style={stiller.kapat}
             >
               <FontAwesome5 name="times" size={18} color={renkler.metinIkincil} />

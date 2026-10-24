@@ -17,9 +17,12 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { SURE } from '../hareket/sureler';
+import { metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 export const KAYDEDILDI_SURESI_MS = 1600;
-export const KAYDEDILDI_METNI = 'Kaydedildi';
+/** "Kaydedildi" (etkin dilde). */
+export const kaydedildiMetni = (): string => metin().genel.ortak.kaydedildi;
 
 export interface KaydedildiIsaretiProps {
     gorunur: boolean;
@@ -38,7 +41,7 @@ export function useKaydedildi(yalnizIlk = true): { goster: () => void; ozellikle
         gosterildi.current = true;
         if (zamanlayici.current) clearTimeout(zamanlayici.current);
         setGorunur(true);
-        AccessibilityInfo.announceForAccessibility?.(KAYDEDILDI_METNI);
+        AccessibilityInfo.announceForAccessibility?.(kaydedildiMetni());
         zamanlayici.current = setTimeout(() => setGorunur(false), KAYDEDILDI_SURESI_MS);
     }, [yalnizIlk]);
     return { goster, ozellikler: { gorunur } };
@@ -46,6 +49,7 @@ export function useKaydedildi(yalnizIlk = true): { goster: () => void; ozellikle
 
 export const KaydedildiIsareti: React.FC<KaydedildiIsaretiProps> = ({ gorunur, style }) => {
     const renkler = useRenkler();
+    const m = useMetin().genel.ortak;
     const azalt = useHareketAzalt();
     const opaklik = React.useRef(new Animated.Value(gorunur ? 1 : 0)).current;
     React.useEffect(() => {
@@ -63,7 +67,7 @@ export const KaydedildiIsareti: React.FC<KaydedildiIsaretiProps> = ({ gorunur, s
             style={[{ flexDirection: 'row', alignItems: 'center', opacity: opaklik }, style]}
         >
             <FontAwesome5 name="check-circle" size={12} color={renkler.basarili} solid style={{ marginRight: 6 }} />
-            <Text style={{ fontSize: 13, fontWeight: '600', color: renkler.metinIkincil }}>{KAYDEDILDI_METNI}</Text>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: renkler.metinIkincil }}>{m.kaydedildi}</Text>
         </Animated.View>
     );
 };

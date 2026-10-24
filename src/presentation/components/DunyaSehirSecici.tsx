@@ -29,6 +29,8 @@ import { ulkeAdi } from '../../core/konum/ulkeAdlari';
 import { ulkeVarsayilani } from '../../core/vakit/ulkeProfilleri';
 import { HESAP_PROFILLERI } from '../../core/vakit/hesapProfilleri';
 import type { DunyaSehriKaydi } from '../../data/local/LocalKonumServisi';
+import { useMetin } from '../hooks/useMetin';
+import { aktifDil, bicim } from '../../core/dil/aktifDil';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
@@ -43,6 +45,7 @@ type Satir =
 
 function ProfilCipi({ ulke }: { ulke: string }) {
   const renkler = useRenkler();
+  const m = useMetin().konum.dunya;
   const v = ulkeVarsayilani(ulke);
   const genel = v.guven === 'genel';
   return (
@@ -55,7 +58,7 @@ function ProfilCipi({ ulke }: { ulke: string }) {
       }}
     >
       <Text className="text-xs font-bold" style={{ color: renkler.metin }}>
-        {genel ? 'Genel yöntem' : HESAP_PROFILLERI[v.profil].kisaAd}
+        {genel ? m.genelYontem : HESAP_PROFILLERI[v.profil].kisaAd}
       </Text>
     </View>
   );
@@ -63,6 +66,8 @@ function ProfilCipi({ ulke }: { ulke: string }) {
 
 export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSec }) => {
   const renkler = useRenkler();
+  const sozlukMetni = useMetin();
+  const m = sozlukMetni.konum.dunya;
   const [gorunur, setGorunur] = useState(false);
   const [veri, setVeri] = useState<DunyaSehirVerisi | null>(null);
   const [durum, setDurum] = useState<'bos' | 'yukleniyor' | 'hata' | 'hazir'>('bos');
@@ -117,9 +122,11 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
   const ulkeListesi = useMemo(
     () =>
       (veri?.ulkeler ?? [])
-        .map((kod) => ({ kod, ad: ulkeAdi(kod) }))
-        .sort((a, b) => a.ad.localeCompare(b.ad, 'tr')),
-    [veri],
+        .map((kod) => ({ kod, ad: ulkeAdi(kod, aktifDil()) }))
+        .sort((a, b) => a.ad.localeCompare(b.ad, aktifDil())),
+    // Ülke adları dil başına: dil değişince liste yeniden kurulsun.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [veri, sozlukMetni],
   );
 
   const satirlar = useMemo<Satir[]>(() => {
@@ -160,7 +167,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
               setArama('');
             }}
             accessibilityRole="button"
-            accessibilityLabel={`${item.ad}, şehirlerini gösterin`}
+            accessibilityLabel={bicim(m.sehirleriGoster, { ulke: item.ad })}
           >
             <Text className="text-base font-semibold flex-1" style={{ color: renkler.metin }}>
               {item.ad}
@@ -172,7 +179,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
       }
       const s = item.sehir;
       const seciliMi = !!secili && secili.ad === s.ad && secili.ulke === s.ulke && secili.bolge === s.bolge;
-      const alt = [s.bolge, ulkeAdi(s.ulke)].filter(Boolean).join(' · ');
+      const alt = [s.bolge, ulkeAdi(s.ulke, aktifDil())].filter(Boolean).join(' · ');
       return (
         <TouchableOpacity
           className="flex-row items-center py-3 px-4 rounded-xl mb-2 border"
@@ -198,11 +205,11 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
         </TouchableOpacity>
       );
     },
-    [renkler, secili, sec],
+    [renkler, secili, sec, m],
   );
 
-  const baslik = ulke ? ulkeAdi(ulke) : 'Şehir seçin';
-  const konumMetni = secili ? `${secili.ad}, ${ulkeAdi(secili.ulke)}` : 'Şehir seçin';
+  const baslik = ulke ? ulkeAdi(ulke, aktifDil()) : m.sehirSecin;
+  const konumMetni = secili ? `${secili.ad}, ${ulkeAdi(secili.ulke, aktifDil())}` : m.sehirSecin;
 
   return (
     <>
@@ -215,7 +222,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
         }}
         onPress={ac}
         accessibilityRole="button"
-        accessibilityLabel={secili ? `Şehir: ${konumMetni}. Değiştirmek için dokunun` : 'Şehir seçin'}
+        accessibilityLabel={secili ? bicim(m.seciliErisim, { konum: konumMetni }) : m.sehirSecin}
       >
         <View
           className="w-12 h-12 rounded-xl items-center justify-center mr-3.5"
@@ -225,7 +232,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
         </View>
         <View className="flex-1">
           <Text className="text-xs font-medium tracking-wider mb-0.5" style={{ color: renkler.metinIkincil }}>
-            ŞEHİR
+            {m.sehirBaslik}
           </Text>
           <Text className="text-lg font-semibold" style={{ color: secili ? renkler.metin : renkler.metinIkincil }}>
             {konumMetni}
@@ -240,7 +247,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
             style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]}
             onPress={kapat}
             accessibilityRole="button"
-            accessibilityLabel="Kapatın"
+            accessibilityLabel={sozlukMetni.ortak.kapatin}
           />
           <View
             style={{
@@ -258,7 +265,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
                   style={{ backgroundColor: renkler.sinir }}
                   onPress={geri}
                   accessibilityRole="button"
-                  accessibilityLabel="Ülke listesine dönün"
+                  accessibilityLabel={m.ulkeListesineDon}
                 >
                   <FontAwesome5 name="arrow-left" size={14} color={renkler.metin} />
                 </TouchableOpacity>
@@ -268,7 +275,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
                   {baslik}
                 </Text>
                 <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
-                  {ulke ? 'Şehrinizi seçin' : 'Ülke ya da şehir adı yazın; konum izni gerekmez'}
+                  {ulke ? m.sehrinizi : m.ulkeYaDaSehir}
                 </Text>
               </View>
               <TouchableOpacity
@@ -276,7 +283,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
                 style={{ backgroundColor: renkler.sinir }}
                 onPress={kapat}
                 accessibilityRole="button"
-                accessibilityLabel="Kapatın"
+                accessibilityLabel={sozlukMetni.ortak.kapatin}
               >
                 <FontAwesome5 name="times" size={14} color={renkler.metin} />
               </TouchableOpacity>
@@ -290,12 +297,12 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
               <TextInput
                 className="flex-1 text-base ml-2.5"
                 style={{ color: renkler.metin, height: 48 }}
-                placeholder={ulke ? 'Şehir arayın' : 'Ülke ya da şehir arayın'}
+                placeholder={ulke ? m.sehirArayin : m.ulkeSehirArayin}
                 placeholderTextColor={renkler.metinIkincil}
                 value={arama}
                 onChangeText={setArama}
                 autoCorrect={false}
-                accessibilityLabel={ulke ? 'Şehir arayın' : 'Ülke ya da şehir arayın'}
+                accessibilityLabel={ulke ? m.sehirArayin : m.ulkeSehirArayin}
               />
             </View>
 
@@ -303,13 +310,13 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
               <View className="flex-1 items-center justify-center">
                 <ActivityIndicator size="large" color={renkler.birincil} />
                 <Text className="text-sm mt-3" style={{ color: renkler.metinIkincil }}>
-                  Şehir listesi açılıyor
+                  {m.aciliyor}
                 </Text>
               </View>
             ) : durum === 'hata' ? (
               <View className="flex-1 items-center justify-center px-8">
                 <Text className="text-base text-center" style={{ color: renkler.metin }}>
-                  Şehir listesi açılamadı.
+                  {m.acilamadi}
                 </Text>
                 <TouchableOpacity
                   className="mt-4 px-5 rounded-xl items-center justify-center"
@@ -318,7 +325,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
                   accessibilityRole="button"
                 >
                   <Text className="text-base font-bold" style={{ color: '#FFFFFF' }}>
-                    Yeniden deneyin
+                    {m.yenidenDeneyin}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -332,12 +339,12 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
                 initialNumToRender={20}
                 ListEmptyComponent={
                   <Text className="text-base text-center mt-10" style={{ color: renkler.metinIkincil }}>
-                    "{arama}" için sonuç yok
+                    {bicim(m.sonucYok, { arama })}
                   </Text>
                 }
                 ListFooterComponent={
                   <Text className="text-xs text-center mt-4" style={{ color: renkler.metinIkincil }}>
-                    Şehir verisi: GeoNames (CC BY 4.0). Türkiye için il ve ilçe seçimini kullanın.
+                    {m.kaynak}
                   </Text>
                 }
               />

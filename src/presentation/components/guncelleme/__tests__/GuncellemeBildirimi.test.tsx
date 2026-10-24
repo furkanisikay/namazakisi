@@ -13,6 +13,7 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { TouchableOpacity, Text, Linking } from 'react-native';
 import guncellemeReducer, { bildirimiKapat } from '../../../store/guncellemeSlice';
+import { ingilizceyeGec, turkceKalanlar } from '../../../../__tests__/yardimci/ingilizceDenetimi';
 
 // ==================== MOCKLAR ====================
 
@@ -1116,5 +1117,51 @@ describe('GuncellemeBildirimi', () => {
     // Unmount -> useEffect cleanup -> abonelikIptal() calismali
     act(() => { tree!.unmount(); });
     expect(mockAbonelikIptal).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('GuncellemeBildirimi — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    jest.useFakeTimers();
+    geriAl = ingilizceyeGec();
+  });
+  afterEach(() => {
+    geriAl();
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+  });
+
+  const ciz = (guncelleme: Record<string, unknown>) => {
+    const store = storeOlustur({ guncelleme: { kontrolEdiliyor: false, bildirimiKapatti: false, hata: null, ...guncelleme } });
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+    const agac = tree!.toJSON();
+    const kalan = turkceKalanlar(agac as never, ['Sonra', 'Kapat']);
+    act(() => { tree!.unmount(); });
+    return { kalan, json: JSON.stringify(agac) };
+  };
+
+  it('yeni sürüm ve yeniden başlatma bildirimleri İngilizce', () => {
+    expect(
+      ciz({
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '1.0.0', mevcutVersiyon: '0.3.0', degisiklikNotlari: '', indirmeBaglantisi: 'https://github.com/x',
+          yayinTarihi: '', kaynak: 'github', zorunluMu: false,
+        },
+      }),
+    ).toEqual({ kalan: [], json: expect.stringContaining('New version available') });
+    expect(ciz({ guncellemeMevcut: false, bilgi: null, indirmeTamamlandi: true })).toEqual({
+      kalan: [],
+      json: expect.stringContaining('Update downloaded'),
+    });
   });
 });

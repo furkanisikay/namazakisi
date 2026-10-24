@@ -17,6 +17,8 @@ import { ALARM_CALMA_SURESI_DK } from '../../../core/muhafiz/alarmYuku';
 import type { MuhafizPlatformu } from '../../../core/muhafiz/ios/platformYetenekleri';
 import type { AlarmKitDurumu } from '../../../core/muhafiz/ios/alarmKit';
 import { ALARMKIT_IOS_SURUMU, iosAlarmKitYokNedeni } from '../../../core/muhafiz/alarmNotlari';
+import { bicim, metin as sozlukMetni } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 export interface AlarmOnayModalProps {
     gorunur: boolean;
@@ -42,27 +44,25 @@ export function alarmOnayMaddeleri(
     alarmKit: AlarmKitDurumu | null = null,
     secenek: { iosSurum?: number | null; tamEkran?: boolean | null } = {}
 ): { ikon: string; metin: string }[] {
-    const ortak = {
-        ikon: 'check-circle',
-        metin: 'Alarm ekranından tek dokunuşla "Kıldım" diyebilir ya da alarmı kapatabilirsiniz.',
-    };
+    const a = sozlukMetni().hatirlatma.alarmOnay;
+    const ortak = { ikon: 'check-circle', metin: a.ortak };
     if (platform === 'ios' && iosAlarmKitVarMi(alarmKit)) {
         return [
             {
                 ikon: 'clock',
-                metin: 'Bu adımın ilk hatırlatmasında iPhone\'unuzun alarmı çalar; sessiz anahtarı ve Odak açıkken de duyulur.',
+                metin: a.iosIlk,
             },
             alarmKit === 'reddedildi'
                 ? {
                       ikon: 'cog',
-                      metin: 'Alarm izni şu an kapalı. Ayarlar\'dan açana kadar bu adım uzun sesli bir bildirimle gelir.',
+                      metin: a.iosReddedildi,
                   }
                 : alarmKit === 'belirsiz'
-                  ? { ikon: 'user-check', metin: 'Onayladığınızda iPhone\'unuz bir kez alarm izni isteyecek.' }
-                  : { ikon: 'shield-alt', metin: 'Alarm izni verilmiş; ek bir adım gerekmez.' },
+                  ? { ikon: 'user-check', metin: a.iosBelirsiz }
+                  : { ikon: 'shield-alt', metin: a.iosIzinli },
             {
                 ikon: 'check-circle',
-                metin: 'Alarm ekranından durdurabilir ya da "Kıldım" diyebilirsiniz.',
+                metin: a.iosDurdur,
             },
         ];
     }
@@ -71,11 +71,11 @@ export function alarmOnayMaddeleri(
         return [
             {
                 ikon: 'clock',
-                metin: "iPhone'unuz destekliyorsa ilk hatırlatmada alarm çalar; desteklemiyorsa zamana duyarlı bir bildirim ve yaklaşık 30 saniyelik bir sesle gelir.",
+                metin: a.iosBilinmiyor,
             },
             {
                 ikon: 'info-circle',
-                metin: 'Alarm desteklenmiyorsa sessiz anahtarı açıkken ses duyulmaz.',
+                metin: a.iosBilinmiyorSessiz,
             },
         ];
     }
@@ -83,7 +83,7 @@ export function alarmOnayMaddeleri(
         return [
             {
                 ikon: 'clock',
-                metin: 'Bu adımın ilk hatırlatması zamana duyarlı bir bildirim ve yaklaşık 30 saniyelik bir sesle gelir; Odak modunu deler.',
+                metin: a.iosYok,
             },
             {
                 ikon: 'info-circle',
@@ -91,39 +91,38 @@ export function alarmOnayMaddeleri(
                 // geçici bir hata demektir ve "güncelleyin" demek yalan olurdu.
                 metin:
                     iosAlarmKitYokNedeni(secenek.iosSurum) !== null
-                        ? `iPhone'da sessiz anahtarı açıkken ses duyulmaz. Gerçek alarm iOS ${ALARMKIT_IOS_SURUMU} ve üzerinde çalışır; bu iPhone iOS ${secenek.iosSurum}.`
-                        : "iPhone'da sessiz anahtarı açıkken ses duyulmaz.",
+                        ? bicim(a.iosSessizSurum, { gerekli: ALARMKIT_IOS_SURUMU, surum: secenek.iosSurum ?? '' })
+                        : a.iosSessiz,
             },
             {
                 // Bu dalda alarm ekranı YOK: "alarm ekranından Kıldım" yalan olurdu.
                 // Bildirim düğmeleri yüzeye göre değişir (cuma/takvimde Kıldım yok) → kesin yazılmaz.
                 ikon: 'bell',
-                metin: 'Alarm ekranı açılmaz; hatırlatma bildirim olarak gelir, dokunarak uygulamayı açabilirsiniz.',
+                metin: a.iosEkranYok,
             },
         ];
     }
     return [
         {
             ikon: 'clock',
-            metin: `Bu adımın ilk hatırlatmasında telefonunuzun alarmı çalar; siz kapatana kadar, en fazla ${ALARM_CALMA_SURESI_DK} dakika sürer.`,
+            metin: bicim(a.androidIlk, { dk: ALARM_CALMA_SURESI_DK }),
         },
         {
             ikon: 'bell-slash',
             metin:
-                secenek.tamEkran === false
-                    ? 'Alarm gibi davranır: telefonunuz sessizde veya Rahatsız Etmeyin modundayken de duyulabilir. Kilit ekranında tam ekran açılması için ayrıca izin vermeniz gerekir.'
-                    : 'Alarm gibi davranır: telefonunuz sessizde veya Rahatsız Etmeyin modundayken de duyulabilir, kilit ekranında tam ekran açılır.',
+                secenek.tamEkran === false ? a.androidIzinsiz : a.android,
         },
         ortak,
-        { ikon: 'mosque', metin: 'Camideyken alarm çalmaz; hatırlatma sessiz bildirim olarak gelir.' },
+        { ikon: 'mosque', metin: a.camide },
     ];
 }
 
 /** Başlığın alt satırı: AlarmKit durumu okunmadıysa (`null`) kesin bir vaat yok. */
 export function alarmOnayAltBasligi(platform: MuhafizPlatformu, alarmKit: AlarmKitDurumu | null = null): string {
-    if (platform !== 'ios' || iosAlarmKitVarMi(alarmKit)) return 'Telefonunuzun alarm uygulaması gibi çalar';
-    if (alarmKit === null) return "iPhone'unuzun desteğine göre alarm ya da uzun sesli bildirim";
-    return "Bu iPhone'da uzun sesli bildirim olarak gelir";
+    const a = sozlukMetni().hatirlatma.alarmOnay;
+    if (platform !== 'ios' || iosAlarmKitVarMi(alarmKit)) return a.altBaslik;
+    if (alarmKit === null) return a.altBaslikBilinmiyor;
+    return a.altBaslikYok;
 }
 
 export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({
@@ -136,6 +135,7 @@ export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({
     onIptal,
 }) => {
     const renkler = useRenkler();
+    const ma = useMetin().hatirlatma.alarmOnay;
     useDonanimGeriTusu(gorunur, onIptal);
 
     return (
@@ -166,7 +166,7 @@ export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({
                         </View>
                         <View className="flex-1">
                             <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                Gerçek alarm açılsın mı?
+                                {ma.baslik}
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                                 {alarmOnayAltBasligi(platform, alarmKit)}
@@ -190,7 +190,7 @@ export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({
                     ))}
 
                     <Text className="text-xs leading-4 mt-1" style={{ color: renkler.metinIkincil }}>
-                        Dilediğiniz zaman aynı anahtardan kapatabilirsiniz.
+                        {ma.kapatmaNotu}
                     </Text>
 
                     <View className="flex-row gap-3 mt-4">
@@ -205,10 +205,10 @@ export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({
                             onPress={onIptal}
                             activeOpacity={0.7}
                             accessibilityRole="button"
-                            accessibilityLabel="Vazgeç"
+                            accessibilityLabel={ma.vazgec}
                         >
                             <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
-                                Vazgeç
+                                {ma.vazgec}
                             </Text>
                         </TouchableOpacity>
 
@@ -218,11 +218,11 @@ export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({
                             onPress={onOnayla}
                             activeOpacity={0.85}
                             accessibilityRole="button"
-                            accessibilityLabel="Alarmı açın"
+                            accessibilityLabel={ma.onayla}
                         >
                             <FontAwesome5 name="check" size={13} color="#FFF" style={{ marginRight: 8 }} />
                             <Text className="text-sm font-bold" style={{ color: '#FFF' }}>
-                                Alarmı açın
+                                {ma.onayla}
                             </Text>
                         </TouchableOpacity>
                     </View>

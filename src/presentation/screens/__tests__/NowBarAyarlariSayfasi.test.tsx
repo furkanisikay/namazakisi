@@ -44,6 +44,7 @@ jest.mock('../../../domain/services/NowBarDegisikligiServisi', () => ({
 }));
 
 import { NowBarAyarlariSayfasi } from '../NowBarAyarlariSayfasi';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const RENKLER = {
   birincil: '#4CAF50',
@@ -268,5 +269,91 @@ describe('NowBarAyarlariSayfasi — iOS canlı etkinlik (#295)', () => {
     const ekran = await kur();
     fireEvent(ekran.getByLabelText('İkindi canlı etkinlikte'), 'valueChange', false);
     expect(nowBarOgesiniGuncelle).toHaveBeenCalledWith({ oge: 'ikindi', degisiklik: { acik: false } });
+  });
+});
+
+describe('NowBarAyarlariSayfasi — İngilizce', () => {
+  const siri = require('../../../../modules/expo-siri-kisayollari/src') as { canliEtkinlikIzniAcik: jest.Mock };
+  const YASAKLI = ['Sayac', 'Vakit', 'vakit', 'dk\\b', 'Seri\\b', 'Sabah', 'Kapat', 'Sistem', 'Canli'];
+  // Tanı ayrıntısındaki ham kimlikler (tema `vakit`, kanal kimliği) destek içindir; dil dışı.
+  const kalan = (ekran: ReturnType<typeof render>) =>
+    turkceKalanlar(ekran.toJSON() as never, YASAKLI).filter((m: string) => !m.startsWith('Last shown:'));
+  let geriAl: () => void;
+  beforeEach(() => {
+    jest.clearAllMocks();
+    geriAl = ingilizceyeGec();
+    mockCanliAyarlariniAc.mockResolvedValue('canli');
+    mockCanliTaniHam.mockResolvedValue(null);
+    mockNowBarDegistiUygula.mockResolvedValue(undefined);
+    mockCihaz.surum = { platform: 'android', ana: 36, alt: 0, tam: '16' };
+    mockCihaz.samsung = null;
+    mockCihaz.esliSaat = null;
+  });
+  afterEach(() => {
+    act(() => geriAl());
+    siri.canliEtkinlikIzniAcik.mockResolvedValue(null);
+  });
+
+  it('Android: açık, kapalı, desteklenmiyor (Android 14, saat bağlı) ve vakit sayacı kapalı', async () => {
+    jest.replaceProperty(Platform, 'OS', 'android');
+    mockCanliDurumu.mockResolvedValue('acik');
+    const acik = await kur(VARSAYILAN_NOW_BAR_AYARLARI, { vakitSayac: { ayarlar: { aktif: false } } });
+    expect(kalan(acik)).toEqual([]);
+    expect(acik.getByText('Live updates on')).toBeTruthy();
+    acik.unmount();
+    mockCanliDurumu.mockResolvedValue('kapali');
+    const kapali = await kur();
+    expect(kalan(kapali)).toEqual([]);
+    kapali.unmount();
+    mockCanliDurumu.mockResolvedValue('desteklenmiyor');
+    mockCihaz.surum = { platform: 'android', ana: 34, alt: 0, tam: '14' };
+    mockCihaz.esliSaat = 'Pixel Watch';
+    expect(kalan(await kur())).toEqual([]);
+  });
+
+  it('Android Samsung: tanı teşhisi ve açılan ayrıntılar', async () => {
+    jest.replaceProperty(Platform, 'OS', 'android');
+    mockCanliDurumu.mockResolvedValue('acik');
+    mockCihaz.samsung = true;
+    mockCanliTaniHam.mockResolvedValue(
+      JSON.stringify({
+        sdkInt: 36,
+        sdkTam: 3600000,
+        samsung: true,
+        oneUi: '8.0',
+        izinVar: true,
+        planOlaySayisi: 2,
+        sonrakiAlarmMs: null,
+        sonPlanMs: null,
+        gosterilenler: ['sayac_2026-10-19_ikindi'],
+        sonGosterim: {
+          zamanMs: 0,
+          id: 'sayac_2026-10-19_ikindi',
+          tema: 'vakit',
+          kanalId: 'canli_sayac',
+          kanalOnemi: 3,
+          oneCikarilabilir: true,
+          izinVar: true,
+          oneCikarildi: false,
+          hata: null,
+        },
+        aktifBildirimler: [],
+      })
+    );
+    const ekran = await kur();
+    await waitFor(() => expect(ekran.getByTestId('now-bar-tani')).toBeTruthy());
+    fireEvent.press(ekran.getByTestId('now-bar-tani').findAll((d) => d.props.accessibilityRole === 'button')[0]);
+    await waitFor(() => expect(ekran.getByTestId('now-bar-tani-ayrinti')).toBeTruthy());
+    expect(kalan(ekran)).toEqual([]);
+  });
+
+  it('iPhone: canlı etkinlik açık ve kapalı', async () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    siri.canliEtkinlikIzniAcik.mockResolvedValue(true);
+    const acik = await kur();
+    expect(kalan(acik)).toEqual([]);
+    acik.unmount();
+    siri.canliEtkinlikIzniAcik.mockResolvedValue(false);
+    expect(kalan(await kur())).toEqual([]);
   });
 });

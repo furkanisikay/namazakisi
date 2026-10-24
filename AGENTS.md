@@ -42,7 +42,7 @@ Geçmiyorsa iş **bitmemiştir** — düzelt, çözemiyorsan açıkça raporla. 
 - **Samimiyet anları tek kaynaktan (`core/samimiyet/`):** Kıldım sonucu "Kılındı" değil **dua** (`kabulDuasi(tarih, vakit)` — geleneksel kalıplar, DETERMİNİSTİK dönüşüm, rastgele değil); durum etiketleri (liste, rozet, widget, tile) "Kılındı" KALIR. Native/saat/asistan tek sabit "Allah kabul etsin". Günün selamı (`gunSelami`) cuma + Diyanet tablosu (`ozelGunler.ts`, yıllık elle güncellenir, tablo dışı = sus, tahmin YOK; aşure bilinçli yok). Övgü/"Tebrikler"/"!" yok, kılınmadı durumunda yargı yok; nöbetçi `samimiyet.test.ts`. Ayrıntı: `docs/ajan/ana-ekran-ve-ayarlar.md > Samimiyet`.
 - **`Alert.alert` KULLANMA** → `BildirimModali` (`components/common/BildirimModali.tsx`, `tip: 'hata'|'bilgi'|'basari'`) ya da `KerahatOnayModal` kalitesinde onay modalı.
 - **`ToastAndroid` doğrudan KULLANMA** → `kisaBildirimGoster(mesaj, uzun?)` (`components/common/KisaBildirim.tsx`); iOS'ta ToastAndroid sessizce hiçbir şey yapmaz; orada `App.tsx` kökündeki `KisaBildirimKatmani` çizer. Testte modülü mock'la.
-- Stil/format kurallarını elle kovalama — `npm run lint` yapar.
+- Stil/format kurallarını elle kovalama — `npm run lint` yapar. `npx prettier` ÇALIŞTIRMA: repoda yapılandırması yok, dosyanın tamamını yeniden biçimler.
 
 ## Ekran / UI tasarım standardı (zorunlu)
 - **Süreç:** `superpowers:brainstorming` → görsel kararlar için `frontend-design` → gerekirse `deep-research` → tasarımı **kullanıcıya onaylat** → sonra kur.

@@ -31,6 +31,7 @@ import {
 import { ortakDuzeyiBul } from '../components/hatirlatma/VakitDuzeyListesi';
 import { geriAlBandiGoster } from '../components/ortak/GeriAlBandi';
 import { useGenelRiza } from './useGenelRiza';
+import { metin } from '../../core/dil/aktifDil';
 
 interface MuhafizKaydi {
     aktif: boolean;
@@ -75,7 +76,7 @@ export function useVarsayilanOnerisi(planla: () => void): VarsayilanOnerisi {
         dispatch(muhafizAyarlariniGuncelle({ yogunluk: 'normal', geceSessizligi: yeniGece, varsayilanOnerisiGoruldu: true }));
         planla();
         geriAlBandiGoster({
-            mesaj: 'Önerilen ayarlar uygulandı',
+            mesaj: metin().muhafizAyar.kanca.onerilenUygulandi,
             ikon: 'leaf',
             geriAl: () => {
                 dispatch(matrisiGuncelle(once.matris));

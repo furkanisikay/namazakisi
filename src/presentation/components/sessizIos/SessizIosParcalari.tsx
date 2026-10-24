@@ -15,6 +15,8 @@ import { Animated, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 type Renkler = ReturnType<typeof useRenkler>;
 
@@ -46,12 +48,13 @@ const Bag: React.FC<{ renk: string }> = ({ renk }) => (
 
 export const OdakSemasi: React.FC = () => {
     const renkler = useRenkler();
+    const m = useMetin().cami.ios;
     const cizgi = `${renkler.birincil}55`;
     return (
         <View
             testID="odak-semasi"
             accessible
-            accessibilityLabel="Camiye varınca ya da vakit girince iPhone Namaz odağına geçer; hatırlatmalar sessiz gelir."
+            accessibilityLabel={m.semaErisim}
             className="p-5 items-center"
             style={{ backgroundColor: `${renkler.birincil}12`, borderRadius: 24 }}
         >
@@ -59,11 +62,11 @@ export const OdakSemasi: React.FC = () => {
                 onların arasında kalır (çip genişliğinden bağımsız). */}
             <View className="flex-row" style={{ alignSelf: 'stretch' }}>
                 <View className="items-center" style={{ flex: 1 }}>
-                    <Cip ikon="map-marker-alt" metin="Camiye varınca" renkler={renkler} />
+                    <Cip ikon="map-marker-alt" metin={m.camiyeVarinca} renkler={renkler} />
                     <Bag renk={cizgi} />
                 </View>
                 <View className="items-center" style={{ flex: 1 }}>
-                    <Cip ikon="clock" metin="Vakit girince" renkler={renkler} />
+                    <Cip ikon="clock" metin={m.vakitGirince} renkler={renkler} />
                     <Bag renk={cizgi} />
                 </View>
             </View>
@@ -86,15 +89,15 @@ export const OdakSemasi: React.FC = () => {
                 </View>
                 <View className="ml-3">
                     <Text className="text-lg font-bold" style={{ color: renkler.metin }}>
-                        Namaz
+                        {m.odakAdi}
                     </Text>
                     <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                        Odak açık
+                        {m.odakAcik}
                     </Text>
                 </View>
             </View>
             <Bag renk={cizgi} />
-            <Cip ikon="bell-slash" metin="Telefon sessiz" renkler={renkler} vurgulu />
+            <Cip ikon="bell-slash" metin={m.telefonSessiz} renkler={renkler} vurgulu />
         </View>
     );
 };
@@ -111,6 +114,7 @@ interface KurulumAdimiProps {
 
 export const KurulumAdimi: React.FC<KurulumAdimiProps> = ({ sira, baslik, tamam, onDegistir, son, testID, children }) => {
     const renkler = useRenkler();
+    const m = useMetin().cami.ios;
     const azalt = useHareketAzalt();
     const dolu = useRef(new Animated.Value(tamam ? 1 : 0)).current;
     const cizgi = useRef(new Animated.Value(tamam ? 1 : 0)).current;
@@ -191,7 +195,7 @@ export const KurulumAdimi: React.FC<KurulumAdimiProps> = ({ sira, baslik, tamam,
                     onPress={onDegistir}
                     accessibilityRole="checkbox"
                     accessibilityState={{ checked: tamam }}
-                    accessibilityLabel={`${baslik}: tamamladım`}
+                    accessibilityLabel={bicim(m.tamamladimErisim, { baslik })}
                     className="flex-row items-center self-start rounded-full px-4 mt-4"
                     style={{
                         minHeight: 44,
@@ -207,7 +211,7 @@ export const KurulumAdimi: React.FC<KurulumAdimiProps> = ({ sira, baslik, tamam,
                         solid={tamam}
                     />
                     <Text className="text-sm font-semibold ml-2" style={{ color: renkler.metin }}>
-                        {tamam ? 'Tamamlandı' : 'Tamamladım'}
+                        {tamam ? m.tamamlandi : m.tamamladim}
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -218,8 +222,9 @@ export const KurulumAdimi: React.FC<KurulumAdimiProps> = ({ sira, baslik, tamam,
 /** iPhone'da sırayla dokunulacak yerler. Son çip hedeftir (vurgulu). */
 export const YolCipleri: React.FC<{ adimlar: readonly string[]; testID?: string }> = ({ adimlar, testID }) => {
     const renkler = useRenkler();
+    const m = useMetin().cami.ios;
     return (
-        <View testID={testID} className="flex-row flex-wrap items-center" style={{ rowGap: 8 }} accessible accessibilityLabel={adimlar.join(', sonra ')}>
+        <View testID={testID} className="flex-row flex-wrap items-center" style={{ rowGap: 8 }} accessible accessibilityLabel={adimlar.join(m.yolAyirici)}>
             {adimlar.map((a, i) => {
                 const son = i === adimlar.length - 1;
                 return (

@@ -60,6 +60,8 @@ import type { NafileAyarlari } from '../../core/nafile/nafileTipleri';
 import { useBildirimButcesi } from '../hooks/useBildirimButcesi';
 import { useButceRehberi } from '../hooks/useButceRehberi';
 import { BildirimButceKarti } from '../components/bildirim/BildirimButceKarti';
+import { bicim, metin } from '../../core/dil/aktifDil';
+import { useMetin } from '../hooks/useMetin';
 import type { DefterGirdisi } from '../../core/bildirim/bildirimDefteri';
 
 /**
@@ -90,6 +92,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
  */
 const MuhafizAyarlariIcerik: React.FC = () => {
     const renkler = useRenkler();
+    const ms = useMetin().muhafizAyar.sayfa;
     const scrollRef = useVurguKurulumu();
     const dispatch = useAppDispatch();
     const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
@@ -105,8 +108,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     const [kendimAcik, setKendimAcik] = useState(muhafizAyarlari.yogunluk === 'ozel');
     const kendimOzeti =
         muhafizAyarlari.yogunluk === 'ozel'
-            ? 'Kendi ayarınız kullanılıyor'
-            : 'Her vakti ayrı ayarlayın';
+            ? ms.kendiAyariniz
+            : ms.ayriAyarlayin;
     /** Adım detayı açılırken matris + yoğunluk (kapanışta sığma simülasyonu için). */
     const detayOncesiRef = useRef<{
         matris: MuhafizMatrisi;
@@ -393,7 +396,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         if (!once || once.matris === matris) return;
         const sigdi = rehber.degisikligiDene(
             { matris },
-            { once: { matris: once.matris }, baslik: 'Bu değişiklik sığmıyor' }
+            { once: { matris: once.matris }, baslik: metin().muhafizAyar.sayfa.sigmiyor }
         );
         if (sigdi) return;
         dispatch(matrisiGuncelle(once.matris));
@@ -439,7 +442,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                 <AyarCapasi id="muhafizAnaSwitch">
                 <AyarCapasi id="muhafizYogunluk">
                 <View className="mt-2 mb-4">
-                    <BolumBasligi metin="Ne kadar hatırlatalım?" />
+                    <BolumBasligi metin={ms.neKadar} />
                     <DuzeySecici
                         secili={duzey.secili}
                         onSec={duzey.sec}
@@ -467,7 +470,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                             "Kendim ayarlayayım" açılınca vakit kartları onun yerini alır. ── */}
                         {!kendimAcik ? (
                             <>
-                                <BolumBasligi metin="Her vakit için" />
+                                <BolumBasligi metin={ms.herVakit} />
                                 <VakitDuzeyListesi
                                     matris={matris}
                                     onSec={vakitDuzeyiSec}
@@ -493,7 +496,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                             activeOpacity={0.7}
                             accessibilityRole="button"
                             accessibilityState={{ expanded: kendimAcik }}
-                            accessibilityLabel={`Kendim ayarlayayım. ${kendimOzeti}`}
+                            accessibilityLabel={bicim(ms.kendimEtiketi, { ozet: kendimOzeti })}
                         >
                             <View
                                 className="w-10 h-10 rounded-full items-center justify-center mr-3"
@@ -503,7 +506,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                             </View>
                             <View className="flex-1">
                                 <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                                    Kendim ayarlayayım
+                                    {ms.kendim}
                                 </Text>
                                 <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
                                     {kendimOzeti}
@@ -566,17 +569,13 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             <BildirimModali
                 gorunur={tumuneOnayi !== null}
                 tip="bilgi"
-                baslik={tumuneOnayi ? `${VAKIT_ADLARI[tumuneOnayi]} ayarları kopyalansın mı?` : ''}
-                mesaj={
-                    tumuneOnayi
-                        ? `${VAKIT_ADLARI[tumuneOnayi]} vaktinin tüm hatırlatmaları diğer vakitlere kopyalanır. Sesli okuma metnine vakit adını elle yazdıysanız, diğer vakitlerde de o ad okunur.`
-                        : ''
-                }
-                birincilEtiket="Tümüne uygula"
+                baslik={tumuneOnayi ? bicim(ms.kopyaBaslik, { ad: VAKIT_ADLARI[tumuneOnayi] }) : ''}
+                mesaj={tumuneOnayi ? bicim(ms.kopyaMesaj, { ad: VAKIT_ADLARI[tumuneOnayi] }) : ''}
+                birincilEtiket={ms.tumuneUygula}
                 birincilIkon="clone"
                 onBirincil={tumVakitlereUygulaOnayla}
                 onKapat={() => setTumuneOnayi(null)}
-                kapatEtiketi="Vazgeç"
+                kapatEtiketi={ms.vazgec}
             />
         </>
     );

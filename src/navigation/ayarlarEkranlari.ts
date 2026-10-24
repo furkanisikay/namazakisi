@@ -25,7 +25,7 @@ export const AYARLAR_EKRANLARI = [
   'Yardim',
   'Camilerim',
   'KonumAyarlari',
-  'GorünumAyarlari',
+  'GorünumAyarlari', // dil-haric: kimlik (rota adı)
   'BildirimAyarlari',
   'SeriHedefAyarlari',
   'MuhafizAyarlari',

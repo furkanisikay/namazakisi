@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { useMetin } from '../../hooks/useMetin';
 
 /**
  * Tek sayı girişli onay modalı (number-pad + İptal/Onay).
@@ -41,6 +42,7 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
   onOnay,
 }) => {
   const renkler = useRenkler();
+  const m = useMetin().genel.ortak;
 
   useDonanimGeriTusu(gorunur, onIptal);
 
@@ -74,9 +76,9 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
               onPress={onIptal}
               style={[styles.modalIptalButon, { borderColor: renkler.sinir }]}
               accessibilityRole="button"
-              accessibilityLabel="İptal"
+              accessibilityLabel={m.iptal}
             >
-              <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>İptal</Text>
+              <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>{m.iptal}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={onOnay}

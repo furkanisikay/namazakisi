@@ -20,6 +20,8 @@ import { YENI_OZELLIKLER, type YeniOzellik } from '../../core/constants/YeniOzel
 import { gorulmeAnahtari } from '../../core/utils/yeniOzellikGorulme';
 import { yeniOzellikGorunurMu } from '../hooks/yeniOzellikYetenegi';
 import { useFeedback } from '../../core/feedback';
+import { useMetin } from '../hooks/useMetin';
+import { bicim, metin } from '../../core/dil/aktifDil';
 
 // Android'de LayoutAnimation'ı etkinleştir (eski mimari güvencesi)
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -28,9 +30,9 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 
 function tarihFormatla(iso: string): string {
     const [yil, ay, gun] = iso.split('-');
-    const aylar = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+    const t = metin().tarih;
     const ayIdx = parseInt(ay, 10) - 1;
-    return `${parseInt(gun, 10)} ${aylar[ayIdx] ?? ''} ${yil}`;
+    return bicim(t.uzun, { gun: parseInt(gun, 10), ay: t.aylar[ayIdx] ?? '', yil });
 }
 
 interface OzellikKartiProps {
@@ -42,6 +44,7 @@ interface OzellikKartiProps {
 
 const OzellikKarti: React.FC<OzellikKartiProps> = ({ ozellik, acik, onTogglePress, onAc }) => {
     const renkler = useRenkler();
+    const m = useMetin().genel.yeniOzellik;
     const okAnim = useRef(new Animated.Value(acik ? 1 : 0)).current;
 
     useEffect(() => {
@@ -130,7 +133,7 @@ const OzellikKarti: React.FC<OzellikKartiProps> = ({ ozellik, acik, onTogglePres
                         >
                             <FontAwesome5 name="arrow-right" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                             <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
-                                {ozellik.ctaEtiketi ?? 'İnceleyin'}
+                                {ozellik.ctaEtiketi ?? m.inceleyin}
                             </Text>
                         </TouchableOpacity>
                     )}
@@ -142,6 +145,7 @@ const OzellikKarti: React.FC<OzellikKartiProps> = ({ ozellik, acik, onTogglePres
 
 export const NelerYeniSayfasi: React.FC<any> = ({ navigation }) => {
     const renkler = useRenkler();
+    const s = useMetin();
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
 
@@ -151,7 +155,9 @@ export const NelerYeniSayfasi: React.FC<any> = ({ navigation }) => {
     // Kronolojik (en yeni üstte)
     const siraliOzellikler = useMemo(
         () => YENI_OZELLIKLER.filter(yeniOzellikGorunurMu).sort((a, b) => b.tarih.localeCompare(a.tarih)),
-        []
+        // Duyuru metinleri etkin dilden okunur: dil değişince liste yeniden kurulsun.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [s]
     );
 
     // En güncel özellik başta açık gelsin
@@ -195,7 +201,7 @@ export const NelerYeniSayfasi: React.FC<any> = ({ navigation }) => {
                     {/* Başlık navigasyon header'ında — burada yalnız özet metin */}
                     <View className="px-4 mb-4">
                         <Text className="text-sm leading-5" style={{ color: renkler.metinIkincil }}>
-                            Namaz Akışı'na eklenen yeni özellikleri burada bulabilirsiniz. Detay için bir başlığa dokunun.
+                            {s.genel.yeniOzellik.sayfaGiris}
                         </Text>
                     </View>
 

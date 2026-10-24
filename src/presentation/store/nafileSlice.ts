@@ -3,6 +3,7 @@ import { LocalNafileServisi, nafileAyarlariniNormalize } from '../../data/local/
 import { NafileHatirlatmaServisi } from '../../domain/services/NafileHatirlatmaServisi';
 import type { NafileAyarlari, NafileTuru } from '../../core/nafile/nafileTipleri';
 import type { RootState } from './store';
+import { metin } from '../../core/dil/aktifDil';
 
 interface NafileState {
     ayarlar: NafileAyarlari;
@@ -99,7 +100,7 @@ const nafileSlice = createSlice({
             .addCase(nafileAyarlariniYukle.rejected, (state, action) => {
                 // Okuma reddetmez ama yine de: kapı açılsın, varsayılanla devam edilsin.
                 state.yuklendi = true;
-                state.hata = action.error.message || 'Ayarlar yüklenemedi';
+                state.hata = action.error.message || metin().muhafizAyar.hata.yuklenemedi;
             })
             // İyimser: ekran anahtarı beklemeden dönsün; disk sonucu fulfilled'da yazılır.
             .addCase(nafileAyariniGuncelle.pending, (state, action) => {
@@ -110,7 +111,7 @@ const nafileSlice = createSlice({
                 state.hata = null;
             })
             .addCase(nafileAyariniGuncelle.rejected, (state, action) => {
-                state.hata = action.error.message || 'Ayar güncellenemedi';
+                state.hata = action.error.message || metin().muhafizAyar.hata.guncellenemedi;
             });
     },
 });

@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
+import { useMetin } from '../../hooks/useMetin';
 
 export const GERI_AL_SURESI_MS = 8000;
 
@@ -22,6 +23,7 @@ interface Props {
 
 export const GeriAlBildirimi: React.FC<Props> = ({ metin, onGeriAl, onKapat }) => {
     const renkler = useRenkler();
+    const mg = useMetin().hatirlatma.geriAl;
 
     useEffect(() => {
         if (!metin) return;
@@ -53,13 +55,13 @@ export const GeriAlBildirimi: React.FC<Props> = ({ metin, onGeriAl, onKapat }) =
             <TouchableOpacity
                 onPress={onGeriAl}
                 accessibilityRole="button"
-                accessibilityLabel="Geri al"
+                accessibilityLabel={mg.etiket}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 className="justify-center"
                 style={{ minHeight: 44 }}
             >
                 <Text className="text-sm font-bold" style={{ color: renkler.kartArkaplan }}>
-                    GERİ AL
+                    {mg.buyuk}
                 </Text>
             </TouchableOpacity>
         </View>

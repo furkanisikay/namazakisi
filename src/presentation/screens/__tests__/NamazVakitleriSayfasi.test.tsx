@@ -37,6 +37,7 @@ import seferilikReducer from '../../store/seferilikSlice';
 import takvimReducer from '../../store/takvimSlice';
 import { NamazVakitleriSayfasi } from '../NamazVakitleriSayfasi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const konumDurumu = {
   konumModu: 'manuel',
@@ -97,5 +98,24 @@ describe('NamazVakitleriSayfasi', () => {
       expect(JSON.parse((await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI)) ?? '{}').mezhep).toBe('safii'),
     );
     expect(getByLabelText(/^Şâfiî\./).props.accessibilityState).toMatchObject({ selected: true });
+  });
+});
+
+describe('NamazVakitleriSayfasi — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+  });
+  afterEach(() => geriAl());
+
+  it('sayfada Türkçe metin kalmaz (yer adları hariç)', async () => {
+    const { store, toJSON, getByText } = kur();
+    await waitFor(() => expect(store.getState().seferilik.yuklendi).toBe(true));
+    const kalan = turkceKalanlar(toJSON() as never, ['Konum', 'Mezhep', 'Kapal', 'manuel', 'Vitir']).filter(
+      (m) => !m.includes('Tepebaşı'),
+    );
+    expect(kalan).toEqual([]);
+    expect(getByText('Tepebaşı, Eskişehir · manual')).toBeTruthy();
+    expect(getByText('Diyanet · Earlier Asr')).toBeTruthy();
   });
 });

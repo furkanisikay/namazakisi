@@ -14,7 +14,7 @@ import {
 import { KAZA_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 import { gurubKerahatiBaslangiciMs } from '../../core/vakit/kerahat';
-import { bicim, metin } from '../../core/dil/aktifDil';
+import { bicim, metin, sayili } from '../../core/dil/aktifDil';
 import { KAZA_ADINDAN_VAKTE, type KazaVakti } from '../../core/kaza/kazaHareketi';
 
 // ==================== SİHİRBAZ HESABI ====================
@@ -98,14 +98,15 @@ export const motivasyonOnerileriHesapla = (toplamKalan: number): MotivasyonOneri
     const tamamlanmaGunSayisi = Math.ceil(toplamKalan / toplamGunlukKaza);
     const tamamlanmaAySayisi = parseFloat((tamamlanmaGunSayisi / 30).toFixed(1));
 
+    const m = metin().kaza.motivasyon;
     let aciklama: string;
     if (tamamlanmaGunSayisi <= 30) {
-      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılarsanız ${tamamlanmaGunSayisi} günde biter`;
+      aciklama = sayili(m.gun, tamamlanmaGunSayisi, { adet: kazaAdediPerVakit });
     } else if (tamamlanmaAySayisi <= 12) {
-      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılarsanız ~${Math.ceil(tamamlanmaAySayisi)} ayda biter`;
+      aciklama = sayili(m.ay, Math.ceil(tamamlanmaAySayisi), { adet: kazaAdediPerVakit });
     } else {
       const yil = parseFloat((tamamlanmaAySayisi / 12).toFixed(1));
-      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılarsanız ~${yil} yılda biter`;
+      aciklama = sayili(m.yil, yil, { adet: kazaAdediPerVakit });
     }
 
     return {

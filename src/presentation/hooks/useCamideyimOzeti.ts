@@ -11,6 +11,7 @@ import { camideyimAyarlariniNormalize } from '../../core/cami/camideyimAyarlari'
 import { Depolama } from '../../data/local/Depolama';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { iosSessizKurulumuNormalize, iosSessizOzeti } from '../../core/sessiz/iosSessizKurulum';
+import { bicim, metin } from '../../core/dil/aktifDil';
 
 export interface CamideyimOzeti {
     kullanilabilir: boolean;
@@ -25,23 +26,24 @@ export function camideyimOzetiOlustur(
     durum: kopru.CamiNativeDurumu | null
 ): Pick<CamideyimOzeti, 'cami' | 'namazModu'> {
     const a = camideyimAyarlariniNormalize(ayarlarHam);
+    const t = metin().cami.ozet;
     const cami = !a.aktif
-        ? 'Kapalı'
+        ? t.kapali
         : durum?.camide
-          ? 'Şu an camidesiniz'
+          ? t.camidesiniz
           : durum && durum.izin !== 'tamam'
-            ? 'Konum izni gerekiyor'
-            : `Camide ${a.beklemeDk} dk kalınca`;
+            ? t.konumIzni
+            : bicim(t.bekleme, { dk: a.beklemeDk });
     const m = durum?.namazModu;
     const namazModu = !m?.ayarlar?.etkin
-        ? 'Kapalı'
+        ? t.kapali
         : !m.erisim
-          ? 'Rahatsız Etmeyin erişimi gerekiyor'
+          ? t.erisimGerekli
           : m.aktif
-            ? 'Şu an açık'
-            : [m.ayarlar.cuma ? 'Cuma hutbesi' : null, m.ayarlar.vakit ? 'vakit girince' : null, a.aktif && a.namazModu ? 'camide' : null]
+            ? t.suAnAcik
+            : [m.ayarlar.cuma ? t.cumaHutbesi : null, m.ayarlar.vakit ? t.vakitGirince : null, a.aktif && a.namazModu ? t.camide : null]
                   .filter(Boolean)
-                  .join(', ') || 'Açık';
+                  .join(', ') || t.acik;
     return { cami, namazModu };
 }
 

@@ -1637,3 +1637,52 @@ describe('MuhafizAyarlariSayfasi', () => {
     });
   });
 });
+
+describe('MuhafizAyarlariSayfasi — İngilizce', () => {
+  const { ingilizceyeGec, turkceKalanlar } = require('../../../__tests__/yardimci/ingilizceDenetimi') as typeof import('../../../__tests__/yardimci/ingilizceDenetimi');
+  const { DUZEY_ADLARI } = require('../../../core/hatirlatma/duzeyOzeti') as typeof import('../../../core/hatirlatma/duzeyOzeti');
+  const YASAKLI = ['Sabah', 'Vakit', 'vakit', 'dk\\b', 'Kapat', 'Tamam', 'Hafif', 'Nazik', 'Sert\\b', 'Acil', 'Bildirim', 'Uygula'];
+  const kalan = (e: ReturnType<typeof render>) => turkceKalanlar(e.toJSON() as never, YASAKLI);
+  const state = (ustyaz: Record<string, unknown> = {}) => ({
+    muhafiz: { aktif: true, yogunluk: 'normal', gelismisMod: false, esikler: NORMAL_ESIKLER, sikliklar: NORMAL_SIKLIKLAR, matris: varsayilanMatris(), ...ustyaz },
+    konum: { konumModu: 'manuel', sonGpsGuncellemesi: null, akilliTakipAktif: false, koordinatlar: { lat: 41.0082, lng: 28.9784 } },
+    vakitSayac: { ayarlar: { aktif: true, sayacBaslangicSeviyesi: 1 } },
+  });
+  const kur = async (ustyaz: Record<string, unknown> = {}) => {
+    (useAppSelector as unknown as jest.Mock).mockImplementation((sec: (s: unknown) => unknown) => sec(state(ustyaz)));
+    const { MuhafizAyarlariSayfasi } = require('../MuhafizAyarlariSayfasi');
+    const ekran = render(<MuhafizAyarlariSayfasi />);
+    await act(async () => { await Promise.resolve(); });
+    return ekran;
+  };
+  let geriAl: () => void;
+  beforeEach(() => {
+    jest.clearAllMocks();
+    ttsDurumu.destekli = true;
+    ttsDurumu.hataVer = false;
+    vakitKutusu.vakitler = null;
+    (useNavigation as jest.Mock).mockReturnValue({ navigate: jest.fn() });
+    (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
+    (useFeedback as jest.Mock).mockReturnValue({ butonTiklandiFeedback: jest.fn().mockResolvedValue(undefined) });
+    (useAppDispatch as unknown as jest.Mock).mockReturnValue(jest.fn());
+    geriAl = ingilizceyeGec();
+  });
+  afterEach(() => act(() => geriAl()));
+
+  it('düzey listesi, "Kendim ayarlayayım" katı ve açık vakit kartı', async () => {
+    const ekran = await kur();
+    expect(kalan(ekran)).toEqual([]);
+    fireEvent.press(ekran.getByTestId('kendim-ayarlayayim'));
+    expect(kalan(ekran)).toEqual([]);
+    fireEvent.press(ekran.getByText('Dhuhr'));
+    expect(kalan(ekran)).toEqual([]);
+  });
+
+  it('kapalı muhafız ve sesli okuma onay modalı', async () => {
+    expect(kalan(await kur({ aktif: false }))).toEqual([]);
+    const ekran = await kur({ yogunluk: 'hafif' });
+    await act(async () => { fireEvent.press(ekran.getByLabelText(new RegExp(`^${DUZEY_ADLARI.normal}\\.`))); });
+    expect(ekran.getByLabelText('Turn on read aloud')).toBeTruthy();
+    expect(kalan(ekran)).toEqual([]);
+  });
+});

@@ -13,13 +13,25 @@ import React from 'react';
 import { Animated, Easing, View, Text } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
-import { NAMAZ_ISIMLERI } from '../../../core/constants/UygulamaSabitleri';
+import { NAMAZ_ISIMLERI, namazAdiGoster } from '../../../core/constants/UygulamaSabitleri';
 import { haftalikHedefHesapla } from '../../../core/seri/haftalikHedef';
 import type { AylikIstatistik, HaftalikIstatistik } from '../../../core/types';
 import { BolumBasligi } from '../../components/ortak/BolumBasligi';
 import { SecenekListesi } from '../../components/ortak/SecenekListesi';
 import { BosDurum, Yukleniyor } from '../../components/ortak/BosDurum';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
+import { useMetin } from '../../hooks/useMetin';
+import { bicim, sayili } from '../../../core/dil/aktifDil';
+import { ayAdiniAl, gunKisaAdiniAl } from '../../../core/utils/TarihYardimcisi';
+import type { Sozluk } from '../../../core/dil/sozluk/tr';
+import type { GunlukIstatistik } from '../../../core/types';
+
+/**
+ * Gün/ay adı ÇİZİM ANINDA tarihten/ay numarasından, etkin dilde (slice'taki `gunAdi`/`ayAdi`
+ * yükleme anının dilinde saklanır, dil değişince bayatlar). Ölçülemeyen değerde saklı ada düşer.
+ */
+const gunAdi = (g: GunlukIstatistik): string => gunKisaAdiniAl(g.tarih) ?? g.gunAdi;
+const ayAdi = (i: AylikIstatistik): string => (Number.isInteger(i.ay) ? ayAdiniAl(i.ay) ?? i.ayAdi : i.ayAdi);
 
 /**
  * Görsel anlatı (sahip kararı 2026-10-19): çubuklar dönem açılınca BİR KEZ tabandan
@@ -43,12 +55,8 @@ function useGirisBuyumesi(): Animated.Value {
 
 export type KilmaOraniDonemi = 'haftalik' | 'aylik';
 
-const DONEMLER = [
-  { deger: 'haftalik' as const, etiket: 'Haftalık' },
-  { deger: 'aylik' as const, etiket: 'Aylık' },
-];
-
 type Renkler = ReturnType<typeof useRenkler>;
+type Metin = Sozluk['ilerleme']['kilma'];
 
 interface KilmaOraniBolumuProps {
   donem: KilmaOraniDonemi;
@@ -68,27 +76,35 @@ export const KilmaOraniBolumu: React.FC<KilmaOraniBolumuProps> = ({
   tamGunEsigi,
 }) => {
   const renkler = useRenkler();
+  const m = useMetin().ilerleme.kilma;
   const veri = donem === 'haftalik' ? haftalik : aylik;
+  const donemler = React.useMemo(
+    () => [
+      { deger: 'haftalik' as const, etiket: m.haftalik },
+      { deger: 'aylik' as const, etiket: m.aylik },
+    ],
+    [m]
+  );
 
   return (
     <View testID="kilma-orani-bolumu">
-      <BolumBasligi metin="Kılma oranı" ikon="chart-bar" />
+      <BolumBasligi metin={m.baslik} ikon="chart-bar" />
       <SecenekListesi
         gorunum="cip"
-        secenekler={DONEMLER}
+        secenekler={donemler}
         secili={donem}
         onSec={onDonemSec}
-        erisimEtiketi="Kılma oranı dönemi"
+        erisimEtiketi={m.donemErisim}
       />
       <View style={{ marginTop: 12 }}>
         {!veri && yukleniyor ? (
-          <Yukleniyor metin="Kılma oranınız hesaplanıyor" />
+          <Yukleniyor metin={m.hesaplaniyor} />
         ) : !veri ? (
-          <BosDurum ikon="chart-bar" baslik="Henüz kayıt yok" aciklama="Namazlarınızı işaretledikçe burada görünür." />
+          <BosDurum ikon="chart-bar" baslik={m.bosBaslik} aciklama={m.bosAciklama} />
         ) : donem === 'haftalik' ? (
-          <HaftalikIcerik istatistik={veri as HaftalikIstatistik} renkler={renkler} tamGunEsigi={tamGunEsigi} />
+          <HaftalikIcerik istatistik={veri as HaftalikIstatistik} renkler={renkler} tamGunEsigi={tamGunEsigi} m={m} />
         ) : (
-          <AylikIcerik istatistik={veri as AylikIstatistik} renkler={renkler} />
+          <AylikIcerik istatistik={veri as AylikIstatistik} renkler={renkler} m={m} />
         )}
       </View>
     </View>
@@ -143,10 +159,11 @@ const Cubuk: React.FC<{ renkler: Renkler; baslik: string; mevcut: number; hedef:
   );
 };
 
-const HaftalikIcerik: React.FC<{ istatistik: HaftalikIstatistik; renkler: Renkler; tamGunEsigi: number }> = ({
+const HaftalikIcerik: React.FC<{ istatistik: HaftalikIstatistik; renkler: Renkler; tamGunEsigi: number; m: Metin }> = ({
   istatistik,
   renkler,
   tamGunEsigi,
+  m,
 }) => {
   const hedef = haftalikHedefHesapla(istatistik.gunlukVeriler, tamGunEsigi);
   const buyume = useGirisBuyumesi();
@@ -163,12 +180,12 @@ const HaftalikIcerik: React.FC<{ istatistik: HaftalikIstatistik; renkler: Renkle
                 key={gun.tarih}
                 style={{ alignItems: 'center', flex: 1 }}
                 accessible
-                accessibilityLabel={`${gun.gunAdi}: ${gun.tamamlananNamaz} / ${gun.toplamNamaz}`}
+                accessibilityLabel={`${gunAdi(gun)}: ${gun.tamamlananNamaz} / ${gun.toplamNamaz}`}
               >
                 <View style={{ width: 24, height: 80, borderRadius: 6, justifyContent: 'flex-end', overflow: 'hidden', backgroundColor: renkler.sinir }}>
                   <Animated.View style={{ width: '100%', borderRadius: 6, height: `${yuzde}%`, backgroundColor: barRenk, transformOrigin: 'bottom', transform: [{ scaleY: buyume }] }} />
                 </View>
-                <Text style={{ fontSize: 12, fontWeight: '600', marginTop: 4, color: renkler.metin }}>{gun.gunAdi}</Text>
+                <Text style={{ fontSize: 12, fontWeight: '600', marginTop: 4, color: renkler.metin }}>{gunAdi(gun)}</Text>
                 <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>
                   {gun.tamamlananNamaz}/{gun.toplamNamaz}
                 </Text>
@@ -179,48 +196,48 @@ const HaftalikIcerik: React.FC<{ istatistik: HaftalikIstatistik; renkler: Renkle
       </Kart>
 
       <View style={{ flexDirection: 'row', marginHorizontal: -4, marginBottom: 12 }}>
-        <OzetKutusu renkler={renkler} ikon="check" renk={renkler.birincil} deger={String(istatistik.tamamlananNamaz)} etiket="Kılınan" />
-        <OzetKutusu renkler={renkler} ikon="chart-line" renk={renkler.durum.bilgi} deger={`%${istatistik.tamamlanmaYuzdesi}`} etiket="Oran" />
+        <OzetKutusu renkler={renkler} ikon="check" renk={renkler.birincil} deger={String(istatistik.tamamlananNamaz)} etiket={m.kilinan} />
+        <OzetKutusu renkler={renkler} ikon="chart-line" renk={renkler.durum.bilgi} deger={bicim(m.yuzde, { n: istatistik.tamamlanmaYuzdesi })} etiket={m.oran} />
         <OzetKutusu
           renkler={renkler}
           ikon="star"
           renk={renkler.durum.uyari}
-          deger={istatistik.enIyiGun?.gunAdi || '-'}
-          etiket="En iyi gün"
+          deger={istatistik.enIyiGun ? gunAdi(istatistik.enIyiGun) || '-' : '-'}
+          etiket={m.enIyiGun}
         />
       </View>
 
       <Kart renkler={renkler}>
-        <Text style={{ fontSize: 16, fontWeight: '700', color: renkler.metin, marginBottom: 4 }}>Bu haftanın hedefi</Text>
+        <Text style={{ fontSize: 16, fontWeight: '700', color: renkler.metin, marginBottom: 4 }}>{m.haftaHedefi}</Text>
         <Text style={{ fontSize: 14, color: renkler.metinIkincil, marginBottom: 12 }}>
-          Seri hedefinize göre: günde {hedef.esik} vakit
+          {sayili(m.hedefAlt, hedef.esik)}
         </Text>
-        <Cubuk renkler={renkler} baslik="Kılınan namaz" mevcut={hedef.kilinan} hedef={hedef.namazHedefi} renk={renkler.birincil} />
-        <Cubuk renkler={renkler} baslik="Hedefe ulaşan gün" mevcut={hedef.esigiGecenGun} hedef={7} renk={renkler.durum.bilgi} />
+        <Cubuk renkler={renkler} baslik={m.kilinanNamaz} mevcut={hedef.kilinan} hedef={hedef.namazHedefi} renk={renkler.birincil} />
+        <Cubuk renkler={renkler} baslik={m.hedefeUlasan} mevcut={hedef.esigiGecenGun} hedef={7} renk={renkler.durum.bilgi} />
       </Kart>
     </View>
   );
 };
 
-const AylikIcerik: React.FC<{ istatistik: AylikIstatistik; renkler: Renkler }> = ({ istatistik, renkler }) => {
+const AylikIcerik: React.FC<{ istatistik: AylikIstatistik; renkler: Renkler; m: Metin }> = ({ istatistik, renkler, m }) => {
   const buyume = useGirisBuyumesi();
   return (
   <View>
     <Kart renkler={renkler}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
         <Text style={{ fontSize: 16, fontWeight: '700', color: renkler.metin }}>
-          {istatistik.ayAdi} {istatistik.yil}
+          {bicim(m.ayYil, { ay: ayAdi(istatistik), yil: istatistik.yil })}
         </Text>
       </View>
       <View style={{ flexDirection: 'row', marginHorizontal: -4 }}>
-        <OzetKutusu renkler={renkler} ikon="calendar-check" renk={renkler.birincil} deger={String(istatistik.aktifGunSayisi)} etiket="Namaz kılınan gün" />
-        <OzetKutusu renkler={renkler} ikon="mosque" renk={renkler.durum.bilgi} deger={String(istatistik.tamamlananNamaz)} etiket="Kılınan" />
-        <OzetKutusu renkler={renkler} ikon="chart-line" renk={renkler.durum.uyari} deger={`%${istatistik.tamamlanmaYuzdesi}`} etiket="Oran" />
+        <OzetKutusu renkler={renkler} ikon="calendar-check" renk={renkler.birincil} deger={String(istatistik.aktifGunSayisi)} etiket={m.namazKilinanGun} />
+        <OzetKutusu renkler={renkler} ikon="mosque" renk={renkler.durum.bilgi} deger={String(istatistik.tamamlananNamaz)} etiket={m.kilinan} />
+        <OzetKutusu renkler={renkler} ikon="chart-line" renk={renkler.durum.uyari} deger={bicim(m.yuzde, { n: istatistik.tamamlanmaYuzdesi })} etiket={m.oran} />
       </View>
     </Kart>
 
     <Kart renkler={renkler}>
-      <Text style={{ fontSize: 16, fontWeight: '700', color: renkler.metin, marginBottom: 12 }}>Vakit vakit</Text>
+      <Text style={{ fontSize: 16, fontWeight: '700', color: renkler.metin, marginBottom: 12 }}>{m.vakitVakit}</Text>
       {NAMAZ_ISIMLERI.map((namazAdi) => {
         const yuzde = istatistik.namazBazindaYuzdeler?.[namazAdi] || 0;
         return (
@@ -228,13 +245,13 @@ const AylikIcerik: React.FC<{ istatistik: AylikIstatistik; renkler: Renkler }> =
             key={namazAdi}
             style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}
             accessible
-            accessibilityLabel={`${namazAdi}: yüzde ${yuzde}`}
+            accessibilityLabel={bicim(m.yuzdeErisim, { ad: namazAdiGoster(namazAdi), n: yuzde })}
           >
-            <Text style={{ width: 64, fontSize: 14, fontWeight: '600', color: renkler.metin }}>{namazAdi}</Text>
+            <Text style={{ width: 64, fontSize: 14, fontWeight: '600', color: renkler.metin }}>{namazAdiGoster(namazAdi)}</Text>
             <View style={{ flex: 1, height: 8, borderRadius: 4, marginHorizontal: 12, overflow: 'hidden', backgroundColor: renkler.sinir }}>
               <Animated.View style={{ height: '100%', borderRadius: 4, width: `${yuzde}%`, backgroundColor: renkler.birincil, transformOrigin: 'left', transform: [{ scaleX: buyume }] }} />
             </View>
-            <Text style={{ width: 44, fontSize: 14, fontWeight: '700', textAlign: 'right', color: renkler.metin }}>%{yuzde}</Text>
+            <Text style={{ width: 44, fontSize: 14, fontWeight: '700', textAlign: 'right', color: renkler.metin }}>{bicim(m.yuzde, { n: yuzde })}</Text>
           </View>
         );
       })}
