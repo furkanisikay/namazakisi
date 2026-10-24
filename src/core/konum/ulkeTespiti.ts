@@ -38,3 +38,16 @@ export function koordinatinUlkesi(lat: number, lng: number, dunya: DunyaSehirVer
   }
   return trKm <= 40 ? 'TR' : null;
 }
+
+/** Konum kaydından bilinen ülke; GPS'te kayıtta yoksa `null` (çağıran koordinattan bulur). */
+export function kayitliUlkeKodu(k: {
+  konumModu?: string;
+  seciliIlId?: number | null;
+  ulkeKodu?: string;
+  dunyaSehri?: { ulke: string } | null;
+}): string | null {
+  if (k.dunyaSehri?.ulke) return k.dunyaSehri.ulke;
+  if (k.ulkeKodu && /^[A-Z]{2}$/.test(k.ulkeKodu)) return k.ulkeKodu;
+  if (k.konumModu === 'manuel' && k.seciliIlId != null) return 'TR';
+  return null;
+}

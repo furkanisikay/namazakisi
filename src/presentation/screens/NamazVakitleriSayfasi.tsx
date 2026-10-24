@@ -1,6 +1,6 @@
 /**
  * Namaz vakitleri (sade tasarım, Dalga 3) — vakit hesabına ve vakte bağlı içeriğe
- * dair her şey tek yerde: Konum · Mezhep · Yolculuk bilgisi · Vakitleri takvime ekleme.
+ * dair her şey tek yerde: Konum · Hesap yöntemi · Mezhep · Yolculuk bilgisi · Vakitleri takvime ekleme.
  *
  * MEZHEP buraya "Yolculuk bilgisi"nden taşındı: ortak bir ayardır (yolculuk kartı +
  * Kaza Defteri'nde vitir) ve yolculuk sayfasında aranmıyordu. Yazma yolu AYNI
@@ -23,6 +23,8 @@ import { KonumYenileButonu } from '../components/common/KonumYenileButonu';
 import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { SecenekListesi, type Secenek } from '../components/ortak/SecenekListesi';
 import { NotSatiri } from '../components/ortak/NotSatiri';
+import { HESAP_PROFILLERI, VARSAYILAN_HESAP_AYARI } from '../../core/vakit/hesapProfilleri';
+import { IKINDI_ADLARI } from '../../core/vakit/profilAdlari';
 
 type Navigasyon = { navigate: (ekran: string) => void };
 
@@ -38,6 +40,11 @@ export const NamazVakitleriSayfasi: React.FC = () => {
     const takvimAktif = useAppSelector((s) => s.takvim?.ayarlar?.aktif === true);
     const { durum: seferilik, mezhepAyarla } = useSeferilik();
     const konumYenile = useKonumYenile();
+    const hesap = useAppSelector((s) => s.hesap?.ayar) ?? VARSAYILAN_HESAP_AYARI;
+    const hesapOzeti = React.useMemo(() => {
+        const ikindi = hesap.ikindi ?? HESAP_PROFILLERI[hesap.profil].ikindi;
+        return `${HESAP_PROFILLERI[hesap.profil].kisaAd} · ${IKINDI_ADLARI[ikindi]}`;
+    }, [hesap.profil, hesap.ikindi]);
     const dispatch = useAppDispatch();
     const ikon = renkler.birincil;
 
@@ -78,6 +85,15 @@ export const NamazVakitleriSayfasi: React.FC = () => {
                         ) : undefined
                     }
                 />
+                <View style={ayrac}>
+                    <AyarSatiri
+                        varyant="navigasyon"
+                        ikon={<FontAwesome5 name="mosque" size={20} color={ikon} solid />}
+                        baslik="Hesap yöntemi"
+                        ozet={hesapOzeti}
+                        onPress={() => navigation.navigate('HesapYontemiAyarlari')}
+                    />
+                </View>
                 <View style={ayrac}>
                     <AyarSatiri
                         varyant="navigasyon"

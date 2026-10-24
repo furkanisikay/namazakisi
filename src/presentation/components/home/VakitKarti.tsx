@@ -46,6 +46,10 @@ interface VakitKartiProps {
     onKonumYenile?: () => void;
     /** Yenileme sürerken çip beklemeye geçer (metin "Güncelleniyor…", tekrar basılamaz) */
     konumYenileniyor?: boolean;
+    /** Hesap yönteminin kısa adı ("Diyanet", "JAKIM"); verilirse konum çipinin yanında çip olur. */
+    yontemAdi?: string;
+    /** Yöntem çipine dokununca (yöntem sayfası). */
+    onYontem?: () => void;
     /**
      * Basligta gosterilecek ad. Verilmezse `suankiVakitAdi` kullanilir.
      * Cuma gunu ogle icin "Cuma" olur — SALT GORUNUM; ikon ve tum kimlik
@@ -94,6 +98,8 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     konumMetni,
     onKonumYenile,
     konumYenileniyor = false,
+    yontemAdi,
+    onYontem,
     gorunenVakitAdi,
     genis = false,
     kabulMetni,
@@ -133,7 +139,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
 
             <View className="p-6 text-center items-center" style={genis ? stiller.genisIcerik : undefined}>
                 {/* Badge Satırı: Şu Anki Vakit + Konum */}
-                <View className="flex-row items-center gap-2 mb-4">
+                <View className="flex-row flex-wrap items-center gap-2 mb-4">
                     {/* Eski kartın rozeti. Nokta STATİK: boşta sıfır hareket (eski `animate-ping`
                         sonsuz döngüydü). Kılındı bilgisini düğme taşır; rozet tekrar etmez. */}
                     <View className="flex-row items-center gap-2 px-3 py-1 rounded-full"
@@ -195,6 +201,25 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                             </TouchableOpacity>
                         );
                     })()}
+
+                    {yontemAdi ? (
+                        <TouchableOpacity
+                            className="flex-row items-center gap-1 px-3 py-1 rounded-full"
+                            style={{ backgroundColor: renkler.birincil + '15' }}
+                            onPress={onYontem}
+                            disabled={!onYontem}
+                            hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Hesap yöntemi: ${yontemAdi}`}
+                            accessibilityHint="Vakitlerin hangi takvime göre hesaplandığını açar"
+                            testID="yontem-cipi"
+                        >
+                            <FontAwesome5 name="mosque" size={9} color={renkler.metinIkincil} />
+                            <Text className="text-xs font-semibold" style={{ color: renkler.metin }}>
+                                {yontemAdi}
+                            </Text>
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
 
                 {/* İkon ve Başlık */}

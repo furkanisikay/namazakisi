@@ -41,6 +41,8 @@ import { KonumIzniDisclosureModali, IzinTipi } from '../components/KonumIzniDisc
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 import { useKonumMetni } from '../hooks/useKonumMetni';
 import { IlIlceSecici } from '../components/IlIlceSecici';
+import { DunyaSehirSecici } from '../components/DunyaSehirSecici';
+import type { DunyaSehri } from '../../core/konum/dunyaSehirleri';
 import { BildirimModali, BildirimTipi } from '../components/common/BildirimModali';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
@@ -88,6 +90,18 @@ const KonumAyarlariIcerik: React.FC = () => {
     const konumAyarlari = useAppSelector((state) => state.konum);
     const konumYenile = useKonumYenile();
     const [gelismisAcik, setGelismisAcik] = useState(false);
+    // Manuel seçimde Türkiye (il/ilçe) mi başka ülke (dünya şehirleri) mi; açılışta kayda göre.
+    const [manuelBolge, setManuelBolge] = useState<'turkiye' | 'dunya'>(konumAyarlari.dunyaSehri ? 'dunya' : 'turkiye');
+    const saatDilimiFarkli = useMemo(() => {
+        const sehirTz = konumAyarlari.dunyaSehri?.saatDilimi;
+        if (!sehirTz) return false;
+        try {
+            const cihazTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            return !!cihazTz && cihazTz !== sehirTz;
+        } catch {
+            return false;
+        }
+    }, [konumAyarlari.dunyaSehri?.saatDilimi]);
     const konumMetni = useKonumMetni(konumAyarlari);
     const [yukleniyor, setYukleniyor] = useState(false);
     const [takipDurumuYukleniyor, setTakipDurumuYukleniyor] = useState(false);
@@ -244,6 +258,7 @@ const KonumAyarlariIcerik: React.FC = () => {
 
             if (sonuc) {
                 let gpsAdres: GpsAdres | null = null;
+                let ulkeKodu: string | undefined;
 
                 try {
                     const adresler = await Location.reverseGeocodeAsync({
@@ -256,6 +271,7 @@ const KonumAyarlariIcerik: React.FC = () => {
                         const ilce = adres.district || adres.subregion || '';
                         const il = adres.city || adres.region || '';
                         gpsAdres = { semt: '', ilce, il };
+                        if (adres.isoCountryCode && /^[A-Z]{2}$/.test(adres.isoCountryCode)) ulkeKodu = adres.isoCountryCode;
                     }
                 } catch (geoError) {
                     Logger.warn('KonumAyarlariSayfasi', 'Reverse geocoding basarisiz', geoError);
@@ -267,6 +283,8 @@ const KonumAyarlariIcerik: React.FC = () => {
                     gpsAdres,
                     seciliSehirId: '',
                     sonGpsGuncellemesi: new Date().toISOString(),
+                    ulkeKodu,
+                    dunyaSehri: null,
                 }));
             }
         } finally {
@@ -308,7 +326,25 @@ const KonumAyarlariIcerik: React.FC = () => {
             seciliIlceId: ilce?.id || null,
             seciliIlAdi: il.ad,
             seciliIlceAdi: ilce?.ad || '',
-            koordinatlar: { lat, lng }
+            koordinatlar: { lat, lng },
+            ulkeKodu: 'TR',
+            dunyaSehri: null,
+        }));
+    };
+
+    const handleDunyaSehriSecimi = async (sehir: DunyaSehri) => {
+        await butonTiklandiFeedback();
+        NamazVaktiHesaplayiciServisi.getInstance().guncelleKonumManuel({ lat: sehir.lat, lng: sehir.lng });
+        dispatch(konumAyarlariniGuncelle({
+            konumModu: 'manuel',
+            seciliSehirId: '',
+            seciliIlId: null,
+            seciliIlceId: null,
+            seciliIlAdi: sehir.ad,
+            seciliIlceAdi: '',
+            koordinatlar: { lat: sehir.lat, lng: sehir.lng },
+            ulkeKodu: sehir.ulke,
+            dunyaSehri: { ad: sehir.ad, ulke: sehir.ulke, bolge: sehir.bolge, saatDilimi: sehir.saatDilimi },
         }));
     };
 
@@ -494,13 +530,46 @@ const KonumAyarlariIcerik: React.FC = () => {
                 {/* Sehir Secici - Sadece Manuel Modda */}
                 {konumAyarlari.konumModu === 'manuel' && (
                     <View className="mt-2">
-                        <IlIlceSecici
-                            seciliIlId={konumAyarlari.seciliIlId}
-                            seciliIlceId={konumAyarlari.seciliIlceId}
-                            seciliIlAdi={konumAyarlari.seciliIlAdi}
-                            seciliIlceAdi={konumAyarlari.seciliIlceAdi}
-                            onKonumSec={handleKonumSecimi}
-                        />
+                        <View
+                            className="flex-row rounded-xl p-1 mb-2"
+                            style={{ backgroundColor: renkler.kartArkaplan, borderWidth: 1, borderColor: renkler.sinir }}
+                            accessibilityRole="tablist"
+                        >
+                            {(['turkiye', 'dunya'] as const).map((bolge) => {
+                                const secili = manuelBolge === bolge;
+                                return (
+                                    <TouchableOpacity
+                                        key={bolge}
+                                        className="flex-1 items-center justify-center rounded-lg"
+                                        style={{ minHeight: 44, backgroundColor: secili ? renkler.birincil : 'transparent' }}
+                                        onPress={() => setManuelBolge(bolge)}
+                                        accessibilityRole="tab"
+                                        accessibilityState={{ selected: secili }}
+                                        testID={`manuel-bolge-${bolge}`}
+                                    >
+                                        <Text className="text-sm font-bold" style={{ color: secili ? '#FFFFFF' : renkler.metin }}>
+                                            {bolge === 'turkiye' ? 'Türkiye' : 'Başka bir ülke'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                        {manuelBolge === 'turkiye' ? (
+                            <IlIlceSecici
+                                seciliIlId={konumAyarlari.seciliIlId}
+                                seciliIlceId={konumAyarlari.seciliIlceId}
+                                seciliIlAdi={konumAyarlari.dunyaSehri ? '' : konumAyarlari.seciliIlAdi}
+                                seciliIlceAdi={konumAyarlari.dunyaSehri ? '' : konumAyarlari.seciliIlceAdi}
+                                onKonumSec={handleKonumSecimi}
+                            />
+                        ) : (
+                            <DunyaSehirSecici secili={konumAyarlari.dunyaSehri} onSec={handleDunyaSehriSecimi} />
+                        )}
+                        {manuelBolge === 'dunya' && saatDilimiFarkli && (
+                            <Text className="text-xs mt-2" style={{ color: renkler.metinIkincil }}>
+                                Telefonunuzun saat dilimi bu şehirden farklı; vakitler telefonunuzun saatiyle gösterilir.
+                            </Text>
+                        )}
                     </View>
                 )}
             </View>

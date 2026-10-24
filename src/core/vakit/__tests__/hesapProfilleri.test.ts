@@ -157,3 +157,30 @@ describe('etkin ayar', () => {
     expect(SAAT(aktifPrayerTimes(KUALA_LUMPUR, GUN).fajr, 'Asia/Kuala_Lumpur')).toBe('05:49');
   });
 });
+
+describe('bölge önerisi kartı', () => {
+  const { bolgeOnerisi } = require('../ulkeProfilleri') as typeof import('../ulkeProfilleri');
+  const { kayitliUlkeKodu } = require('../../konum/ulkeTespiti') as typeof import('../../konum/ulkeTespiti');
+
+  it("Türkiye'deki eski kurulum hiçbir şey görmez", () => {
+    expect(bolgeOnerisi('TR', { profil: 'diyanet' })).toBeNull();
+  });
+
+  it('yurt dışında bir kez sorulur', () => {
+    expect(bolgeOnerisi('MY', { profil: 'diyanet' })).toEqual({ profil: 'jakim', guven: 'olculdu' });
+    expect(bolgeOnerisi('MY', { profil: 'diyanet', sorulanUlkeler: ['MY'] })).toBeNull();
+    expect(bolgeOnerisi('MY', { profil: 'jakim' })).toBeNull();
+    expect(bolgeOnerisi(null, { profil: 'diyanet' })).toBeNull();
+  });
+
+  it('aynı profil ama farklı ikindi de önerilir (Orta Asya)', () => {
+    expect(bolgeOnerisi('UZ', { profil: 'mwl' })?.ikindi).toBe('sani');
+  });
+
+  it('kayıtlı ülke: dünya şehri > ülke kodu > manuel il = TR', () => {
+    expect(kayitliUlkeKodu({ konumModu: 'manuel', seciliIlId: 34 })).toBe('TR');
+    expect(kayitliUlkeKodu({ konumModu: 'manuel', seciliIlId: null, dunyaSehri: { ulke: 'MY' } })).toBe('MY');
+    expect(kayitliUlkeKodu({ konumModu: 'oto', ulkeKodu: 'DE' })).toBe('DE');
+    expect(kayitliUlkeKodu({ konumModu: 'oto' })).toBeNull();
+  });
+});

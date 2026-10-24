@@ -59,8 +59,12 @@ import { store } from '../store/store';
 import { HaptikServisi } from '../../core/feedback/HaptikServisi';
 import { OnizlemeSesServisi } from '../../domain/services/OnizlemeSesServisi';
 import { VARSAYILAN_SES } from '../../core/muhafiz/matrisTipleri';
-import { Coordinates } from 'adhan';
-import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { HESAP_PROFILLERI, VARSAYILAN_HESAP_AYARI, hesapParametreleriOlustur } from '../../core/vakit/hesapProfilleri';
+import { useNavigation } from '@react-navigation/native';
+import { useBolgeTakvimiOnerisi } from '../hooks/useBolgeTakvimiOnerisi';
+import { BolgeTakvimiModali } from '../components/home/BolgeTakvimiModali';
+import { ulkeAdi } from '../../core/konum/ulkeAdlari';
 import { Logger } from '../../core/utils/Logger';
 /** Kaza önerisinin Kıldım duasından sonra açılma gecikmesi. */
 const KAZA_ONERI_GECIKMESI_MS = 1600;
@@ -159,6 +163,21 @@ export const AnaSayfa: React.FC = () => {
     [muhafizMatrisKaydi, muhafizYogunluk, muhafizEsikler, muhafizSikliklar]
   );
 
+  // Hesap yöntemi (ülkeye göre takvim): değişince vakit memo'ları yeniden hesaplanır;
+  // ana karttaki çip yöntemi gösterir, dokununca yöntem sayfası açılır.
+  const hesapAyari = useAppSelector((s) => s.hesap?.ayar) ?? VARSAYILAN_HESAP_AYARI;
+  const yontemAdi = HESAP_PROFILLERI[hesapAyari.profil]?.kisaAd ?? HESAP_PROFILLERI.diyanet.kisaAd;
+  const navigation = useNavigation();
+  // Başka ülkeye geçince bir kez: "bölgenizin takvimine geçelim mi?" (yöntem asla sessizce değişmez).
+  const bolgeTakvimi = useBolgeTakvimiOnerisi();
+  const bolgeTakvimiKabul = useCallback(() => bolgeTakvimi?.kabul(), [bolgeTakvimi]);
+  const bolgeTakvimiReddet = useCallback(() => bolgeTakvimi?.reddet(), [bolgeTakvimi]);
+  const yontemSayfasiniAc = useCallback(() => {
+    (navigation as unknown as { navigate?: (ad: string, p?: object) => void } | undefined)?.navigate?.('Ayarlar', {
+      screen: 'HesapYontemiAyarlari',
+    });
+  }, [navigation]);
+
   const konumMetni = (() => {
     if (konumAyarlari.konumModu === 'oto') {
       const { gpsAdres } = konumAyarlari;
@@ -241,7 +260,7 @@ export const AnaSayfa: React.FC = () => {
     // gerisindeki saat dilimlerinde adhan ÖNCEKİ günün vakitlerini hesaplar (AGENTS.md).
     const date = ISOTarihiDateNesnesiNeCevir(mevcutTarih);
     const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
-    const prayerTimes = aktifPrayerTimes(coordinates, date);
+    const prayerTimes = new PrayerTimes(coordinates, date, hesapParametreleriOlustur(hesapAyari, { tarih: date, enlem: coordinates.latitude }));
 
     const zamanFormatla = (d: Date) => {
       return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
@@ -260,7 +279,7 @@ export const AnaSayfa: React.FC = () => {
       ...namaz,
       saat: vakitSaatleri[namaz.namazAdi] || ''
     }));
-  }, [gunlukNamazlar, konumAyarlari.koordinatlar, mevcutTarih]);
+  }, [gunlukNamazlar, konumAyarlari.koordinatlar, mevcutTarih, hesapAyari]);
 
 
   // Aktif Gün Hesaplama (İmsak öncesi ise önceki gün — yatsı süreci devam ediyor).
@@ -273,12 +292,12 @@ export const AnaSayfa: React.FC = () => {
 
     if (konumAyarlari.koordinatlar) {
       const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
-      const prayerTimes = aktifPrayerTimes(coordinates, now);
+      const prayerTimes = new PrayerTimes(coordinates, now, hesapParametreleriOlustur(hesapAyari, { tarih: now, enlem: coordinates.latitude }));
       imsakZamani = prayerTimes.fajr;
     }
 
     return aktifGunuHesapla(bugun, now, imsakZamani, gunEkle(bugun, -1));
-  }, [konumAyarlari.koordinatlar, vakitBilgisi?.vakit]); // vakitBilgisi.vakit degisince aktif gun yeniden hesaplanir (imsak gecisi = yeni gun)
+  }, [konumAyarlari.koordinatlar, vakitBilgisi?.vakit, hesapAyari]); // hesap ayarı vakitleri değiştirir; vakitBilgisi.vakit degisince aktif gun yeniden hesaplanir (imsak gecisi = yeni gun)
 
   // Nafile satırları (issue #77): "Günlük Akış" zincirinde kendi farzlarının ardına
   // girer. Pencereler AKTİF GÜN tabanlı (gece yarısı sonrası = dün). Ekran saniyede
@@ -978,6 +997,8 @@ export const AnaSayfa: React.FC = () => {
             konumMetni={konumMetni}
             onKonumYenile={konumYenile.yenile}
             konumYenileniyor={konumYenile.yenileniyor}
+            yontemAdi={yontemAdi}
+            onYontem={yontemSayfasiniAc}
             gorunenVakitAdi={gorunenVakitAdi}
             genis={gunDuzeni === 'ikiBolme'}
             kabulMetni={kabulDuasi(sayfaTarihi, suankiVakitAdi)}
@@ -1108,6 +1129,16 @@ export const AnaSayfa: React.FC = () => {
           onSimdiDegil={kazaOnerisi.simdiDegil}
           onBirDahaSorma={kazaOnerisi.birDahaSorma}
         />
+        <BolgeTakvimiModali
+          gorunur={!!bolgeTakvimi && !ilkKutlama && !(kazaOneriVar && kazaOneriHazir)}
+          ulkeAdi={bolgeTakvimi ? ulkeAdi(bolgeTakvimi.ulke) : ''}
+          yerAdi={konumMetni ?? ''}
+          koordinat={konumAyarlari.koordinatlar ?? null}
+          mevcut={hesapAyari}
+          oneri={bolgeTakvimi?.oneri ?? { profil: hesapAyari.profil, guven: 'genel' }}
+          onKabul={bolgeTakvimiKabul}
+          onReddet={bolgeTakvimiReddet}
+        />
         <KerahatOnayModal
           gorunur={kerahatOnayBekleyen !== null}
           aciklama={kerahatMetni}
@@ -1220,6 +1251,16 @@ export const AnaSayfa: React.FC = () => {
         onBirDahaSorma={kazaOnerisi.birDahaSorma}
       />
 
+      <BolgeTakvimiModali
+        gorunur={!!bolgeTakvimi && !ilkKutlama && !(kazaOneriVar && kazaOneriHazir)}
+        ulkeAdi={bolgeTakvimi ? ulkeAdi(bolgeTakvimi.ulke) : ''}
+        yerAdi={konumMetni ?? ''}
+        koordinat={konumAyarlari.koordinatlar ?? null}
+        mevcut={hesapAyari}
+        oneri={bolgeTakvimi?.oneri ?? { profil: hesapAyari.profil, guven: 'genel' }}
+        onKabul={bolgeTakvimiKabul}
+        onReddet={bolgeTakvimiReddet}
+      />
       <KerahatOnayModal
         gorunur={kerahatOnayBekleyen !== null}
         aciklama={kerahatMetni}

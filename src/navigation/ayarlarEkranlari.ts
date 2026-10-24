@@ -47,6 +47,8 @@ export const AYARLAR_EKRANLARI = [
   'DebugLogs',
   'TakvimAyarlari',
   'SeferilikAyarlari',
+  // Hesap yöntemi (ülkeye göre takvim, ikindi, dakika düzeltmesi)
+  'HesapYontemiAyarlari',
   'NelerYeni',
   'YedeklemeAktarim',
   'IceAktarmaSihirbazi',

@@ -39,6 +39,7 @@ export { NowBarAyarlariSayfasi } from './NowBarAyarlariSayfasi';
 export { NamazdaSessizSayfasi } from './NamazdaSessizSayfasi';
 export { NamazdaSessizIosSayfasi } from './NamazdaSessizIosSayfasi';
 export { SeferilikAyarlariSayfasi } from './SeferilikAyarlariSayfasi';
+export { HesapYontemiSayfasi } from './HesapYontemiSayfasi';
 export { KildimUygulamalariSayfasi } from './KildimUygulamalariSayfasi';
 export { OtomasyonRehberiSayfasi } from './OtomasyonRehberiSayfasi';
 export { DebugLogsSayfasi } from './DebugLogsSayfasi';

@@ -90,6 +90,13 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     grup: 'Namaz vakitleri',
   },
   {
+    id: 'sayfa-hesap-yontemi',
+    baslik: 'Hesap yöntemi',
+    anahtarKelimeler: ['hesap', 'yöntem', 'takvim', 'ikindi', 'asr', 'hanefi', 'diyanet', 'jakim', 'ummul kura', 'açı', 'dakika', 'düzeltme', 'cami'],
+    sayfa: 'HesapYontemiAyarlari',
+    grup: 'Namaz vakitleri',
+  },
+  {
     id: 'sayfa-seferilik',
     baslik: 'Yolculuk bilgisi',
     anahtarKelimeler: ['yolculuk', 'seferî', 'seferi', 'misafir', 'kasr', 'cem', 'ikamet'],

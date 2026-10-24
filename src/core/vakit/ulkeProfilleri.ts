@@ -98,3 +98,19 @@ export function ulkeVarsayilani(ulkeKodu: string | null | undefined): UlkeVarsay
   if (!v || HESAP_PROFILLERI[v.profil]?.yalnizElle) return GENEL_VARSAYILAN;
   return v;
 }
+
+/**
+ * "Bölgenizin takvimine geçelim mi?" kartı gösterilmeli mi? Önerilecek varsayılanı ya da
+ * `null` döner. Ülke başına BİR KEZ sorulur (`sorulanUlkeler`); yöntem asla sessizce değişmez.
+ */
+export function bolgeOnerisi(
+  ulkeKodu: string | null | undefined,
+  ayar: { profil: HesapProfiliKimligi; ikindi?: IkindiYontemi; sorulanUlkeler?: string[] },
+): UlkeVarsayilani | null {
+  if (!ulkeKodu || ayar.sorulanUlkeler?.includes(ulkeKodu)) return null;
+  const v = ulkeVarsayilani(ulkeKodu);
+  const onerilenIkindi = v.ikindi ?? HESAP_PROFILLERI[v.profil].ikindi;
+  const mevcutIkindi = ayar.ikindi ?? HESAP_PROFILLERI[ayar.profil]?.ikindi;
+  if (v.profil === ayar.profil && onerilenIkindi === mevcutIkindi) return null;
+  return v;
+}

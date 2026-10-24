@@ -133,6 +133,25 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
     expect(await findByText('Enlem')).toBeTruthy();
   });
 
+  it('elle konumda "Başka bir ülke" dünya şehri seçicisini açar; kayıtlı dünya şehri seçili gelir', async () => {
+    (useAppSelector as unknown as jest.Mock).mockImplementation((selector: any) =>
+      selector({
+        konum: {
+          ...konumState,
+          konumModu: 'manuel',
+          seciliIlAdi: 'Kuala Lumpur',
+          dunyaSehri: { ad: 'Kuala Lumpur', ulke: 'MY', bolge: 'Kuala Lumpur', saatDilimi: 'Asia/Kuala_Lumpur' },
+        },
+      })
+    );
+    const { getByTestId, getByLabelText } = SayfaYukle();
+    await waitFor(() => expect(getByTestId('konum-durum-karti')).toBeTruthy());
+    expect(getByTestId('manuel-bolge-dunya').props.accessibilityState).toMatchObject({ selected: true });
+    expect(getByLabelText('Şehir: Kuala Lumpur, Malezya. Değiştirmek için dokunun')).toBeTruthy();
+    fireEvent.press(getByTestId('manuel-bolge-turkiye'));
+    await waitFor(() => expect(getByTestId('manuel-bolge-turkiye').props.accessibilityState).toMatchObject({ selected: true }));
+  });
+
   it('takip başlatılamazsa "İzin Gerekli" onay modalı (Alert DEĞİL) gösterilir', async () => {
     servisMock.baslat.mockResolvedValue(false);
     const { getByText, getByTestId, UNSAFE_getByType } = SayfaYukle();

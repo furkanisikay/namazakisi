@@ -82,6 +82,10 @@ describe('NamazVakitleriSayfasi', () => {
     await waitFor(() => expect(mockNavigate).toHaveBeenLastCalledWith('TakvimAyarlari'));
     fireEvent.press(getByText('Konum'));
     await waitFor(() => expect(mockNavigate).toHaveBeenLastCalledWith('KonumAyarlari'));
+    // Hesap yöntemi satırı: hesap dilimi yoksa Diyanet + asr-ı evvel özetini gösterir.
+    expect(getByText('Diyanet · Asr-ı evvel')).toBeTruthy();
+    fireEvent.press(getByText('Hesap yöntemi'));
+    await waitFor(() => expect(mockNavigate).toHaveBeenLastCalledWith('HesapYontemiAyarlari'));
   });
 
   it('mezhep seçimi aynı yoldan diske yazılır ve vakitleri değiştirmediği söylenir', async () => {
