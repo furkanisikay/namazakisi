@@ -507,6 +507,50 @@ if let ogle = widget.vakitler.first(where: { $0.vakit == "ogle" }) {
     esitMi(s1?.kod ?? "-", "ogle", "en otomasyon: kod dilden bagimsiz")
 }
 
+// MARK: - 10) Gunun ayeti (#380 iOS) — yuk v1 cozumu + "su anki kayit" + zaman cizelgesi
+
+// Sozlesme ornegi (`docs/ajan/gunun-ayeti.md`), uc gunluk plan; `duvar` iOS'ta yok sayilir.
+let ayetHam = """
+{"v":1,"dil":"tr",
+ "metin":{"etiket":"GÜNÜN AYETİ","sigmiyor":"Bugünün ayeti bu boyuta sığmıyor. Okumak için dokunun.","acin":"Açın","arapcaKaynagi":"Arapça: Tanzil"},
+ "plan":[
+  {"gun":"2026-10-24","baslangicMs":1000,"ref":"94:6","ar":"إِنَّ مَعَ ٱلۡعُسۡرِ يُسۡرٗا","meal":"Gerçekten güçlükle beraber bir kolaylık vardır.","kisaKunye":"İnşirâh 94:6","mealKaynagi":"Rowwad Translation Center, QuranEnc 1.0.4"},
+  {"gun":"2026-10-26","baslangicMs":3000,"ref":"2:286","ar":"ا","meal":null,"kisaKunye":"Bakara 2:286","mealKaynagi":null},
+  {"gun":"2026-10-25","baslangicMs":2000,"ref":"13:28","ar":"ب","meal":"Kalpler ancak Allah'ı anmakla huzur bulur.","kisaKunye":"Ra'd 13:28","mealKaynagi":"Rowwad Translation Center, QuranEnc 1.0.4"}
+ ],
+ "duvar":{"acik":false,"yer":"kilit","zemin":"gece","arapca":false,"paletRenk":"#2E7D32"}}
+"""
+if let ayet = GununAyetiKarari.coz(ayetHam) {
+    let refler: ([GununAyetiGirdisi]) -> [String] = { $0.map { "\($0.ms)=\($0.kayit.ref)" } }
+    esitMi(ayet.metin.etiket, "GÜNÜN AYETİ", "ayet: metin cozulur")
+    esitMi(ayet.plan[1].meal, nil, "ayet: meal null olabilir")
+    esitMi(GununAyetiKarari.gecerliKayit(ayet.plan, simdiMs: 1000)?.ref, "94:6", "ayet: baslangic aninda o kayit (<=)")
+    esitMi(GununAyetiKarari.gecerliKayit(ayet.plan, simdiMs: 2500)?.ref, "13:28", "ayet: sirasiz planda baslamis SON kayit")
+    esitMi(GununAyetiKarari.gecerliKayit(ayet.plan, simdiMs: 99_999)?.ref, "2:286", "ayet: plan bitince son kayit kalir")
+    esitMi(GununAyetiKarari.gecerliKayit(ayet.plan, simdiMs: 500)?.ref, "94:6", "ayet: hicbiri baslamadiysa ilk kayit")
+    esitMi(GununAyetiKarari.gecerliKayit([], simdiMs: 500)?.ref, nil, "ayet: bos plan → nil")
+    esitMi(refler(GununAyetiKarari.girdiler(ayet.plan, simdiMs: 1500)), ["1500=94:6", "2000=13:28", "3000=2:286"], "ayet: simdiki + gelecek girdiler")
+    esitMi(refler(GununAyetiKarari.girdiler(ayet.plan, simdiMs: 99_999)), ["99999=2:286"], "ayet: plan bitti → tek girdi")
+    esitMi(refler(GununAyetiKarari.girdiler(ayet.plan, simdiMs: 500)), ["500=94:6", "2000=13:28", "3000=2:286"], "ayet: erken → ilk kayit tekrarlanmaz")
+    esitMi(
+        GununAyetiKarari.kunyeSatiri(ayet.plan[0], metin: ayet.metin, arapcaVar: false),
+        "İnşirâh 94:6 · Rowwad Translation Center, QuranEnc 1.0.4", "ayet: kunye (meal kaynagi zorunlu)"
+    )
+    esitMi(
+        GununAyetiKarari.kunyeSatiri(ayet.plan[1], metin: ayet.metin, arapcaVar: true),
+        "Bakara 2:286 · Arapça: Tanzil", "ayet: mealsiz kunye + Arapca kaynagi"
+    )
+} else {
+    hatalar.append("ayet: sozlesme ornegi cozulemedi")
+}
+esitMi(GununAyetiKarari.coz(ayetHam.replacingOccurrences(of: "\"v\":1", with: "\"v\":2")) == nil, true, "ayet: baska surum okunmaz")
+esitMi(GununAyetiKarari.coz("{bozuk") == nil, true, "ayet: bozuk JSON → nil")
+esitMi(GununAyetiKarari.coz(nil) == nil, true, "ayet: yok → nil")
+esitMi(depo.gununAyeti() == nil, true, "ayet depo: yazilmadan nil")
+depo.gununAyetiYaz(ayetHam)
+esitMi(depo.gununAyetiJson(), ayetHam, "ayet depo: ham yuk birebir saklanir")
+esitMi(depo.gununAyeti()?.plan.count, 3, "ayet depo: cozulmus yuk")
+
 // MARK: - Sonuc
 
 if hatalar.isEmpty {

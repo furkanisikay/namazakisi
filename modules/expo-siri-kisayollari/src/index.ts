@@ -32,6 +32,8 @@ interface SiriNativeModule {
     basarisiz(id: string): Promise<void>;
     odakDurumuAl(): Promise<string | null>;
     ekranIstegiAl(): Promise<string | null>;
+    /** Günün ayeti yükü v1 (`docs/ajan/gunun-ayeti.md`) — eski ikilide yok (opsiyonel). */
+    gununAyetiKaydet?(json: string): Promise<void>;
     /** #295 — eski ikilide yok (opsiyonel). */
     /** Arayüz dili (App Group) — eski ikilide yok (opsiyonel). */
     arayuzDiliniAyarla?(kod: string): void;
@@ -71,6 +73,11 @@ export function arayuzDiliniAyarla(kod: string): void {
 export interface SiriVeriYazici {
     vakitlerKaydet(json: string): Promise<void>;
     kilinanlarKaydet(json: string): Promise<void>;
+    /**
+     * Günün ayeti yükü v1 (Android `WidgetVeri.gununAyetiKaydet` ile aynı ad): App Group'a
+     * yazar, yalnız ayet widget'ını tazeler. Eski ikilide yok → opsiyonel (`?.` ile çağırın).
+     */
+    gununAyetiKaydet?(json: string): Promise<void>;
 }
 
 /** "Kıldım" kuyruğu arayüzü (Android `KildimKuyrugu` ile aynı). */

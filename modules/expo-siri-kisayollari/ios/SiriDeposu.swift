@@ -136,6 +136,25 @@ public final class SiriDeposu: @unchecked Sendable {
         kilitli { defaults.string(forKey: Self.arayuzDiliAnahtari) ?? "tr" }
     }
 
+    // MARK: - Gunun ayeti (JS yazar; widget ve "Gunun ayeti gorseli" intent'i okur)
+
+    /// Gunun ayeti yuku v1 (`docs/ajan/gunun-ayeti.md`). OLAY anahtari DEGIL: JS her
+    /// acilista ve dil/konum degisiminde yeniden yazar → goce (`gocEt`) girmesi gerekmez.
+    public static let gununAyetiAnahtari = "namazakisi_gunun_ayeti"
+
+    public func gununAyetiYaz(_ json: String) {
+        kilitli { defaults.set(json, forKey: Self.gununAyetiAnahtari) }
+    }
+
+    public func gununAyetiJson() -> String? {
+        kilitli { defaults.string(forKey: Self.gununAyetiAnahtari) }
+    }
+
+    /// Cozulmus yuk; yoksa / bozuksa / baska surumse nil.
+    public func gununAyeti() -> GununAyetiYuku? {
+        GununAyetiKarari.coz(gununAyetiJson())
+    }
+
     public func cizelge() -> SiriCizelge? {
         guard let ham = kilitli({ defaults.string(forKey: Anahtar.cizelge) }),
               let veri = ham.data(using: .utf8) else { return nil }

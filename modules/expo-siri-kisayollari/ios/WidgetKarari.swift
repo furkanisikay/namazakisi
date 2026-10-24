@@ -145,3 +145,117 @@ public enum WidgetKarari {
         return .gecersiz
     }
 }
+
+// MARK: - Gunun ayeti (#380 iOS ikizi) — yuk v1 ve "su anki kayit" karari
+
+/**
+ * GUNUN AYETI YUKU (v1) — sozlesme `docs/ajan/gunun-ayeti.md`. JS (`GununAyetiServisi`)
+ * 14 gunluk plani App Group'a yazar (`SiriDeposu.gununAyetiYaz`); native ayet SECMEZ ve
+ * namaz vakti HESAPLAMAZ: `baslangicMs <= simdi` olan SON kaydi cizer, plan biterse son
+ * kaydi gostermeye devam eder. Metinler JS'te etkin dilde cozulmus gelir (native ek
+ * ceviri tasimaz). `duvar` alani iOS'ta YOK SAYILIR (Codable bilinmeyen anahtari atlar).
+ *
+ * Bu bolum bilincli olarak `WidgetKarari.swift` icindedir: dosya zaten pod'da derlenir,
+ * widget uzantisina kopyalanir ve CI Swift testinin derleme listesindedir (yeni bir dosya
+ * hepsine ayrica eklenmek zorunda kalirdi).
+ */
+public struct GununAyetiMetinleri: Codable, Equatable, Sendable {
+    /// Ust etiket ("GÜNÜN AYETİ").
+    public let etiket: String
+    /// Sigmayan boyutta gosterilen "dokunun" metni.
+    public let sigmiyor: String
+    public let acin: String
+    /// Arapca cizildiginde kaynak ("Arapça: Tanzil").
+    public let arapcaKaynagi: String
+}
+
+public struct GununAyetiKaydi: Codable, Equatable, Sendable {
+    /// Namaz gunu (`YYYY-MM-DD`).
+    public let gun: String
+    /// Kaydin gecerli oldugu an (o namaz gununun imsaki), epoch ms.
+    public let baslangicMs: Int64
+    public let ref: String
+    /// Tanzil Uthmani, birebir.
+    public let ar: String
+    /// Etkin dildeki meal; meali olmayan dilde nil (yalniz Arapca cizilir).
+    public let meal: String?
+    /// "İnşirâh 94:6" / "Quran 94:6".
+    public let kisaKunye: String
+    /// "Rowwad Translation Center, QuranEnc 1.0.4"; meal yoksa nil.
+    public let mealKaynagi: String?
+
+    public init(gun: String, baslangicMs: Int64, ref: String, ar: String, meal: String?, kisaKunye: String, mealKaynagi: String?) {
+        self.gun = gun
+        self.baslangicMs = baslangicMs
+        self.ref = ref
+        self.ar = ar
+        self.meal = meal
+        self.kisaKunye = kisaKunye
+        self.mealKaynagi = mealKaynagi
+    }
+}
+
+public struct GununAyetiYuku: Codable, Equatable, Sendable {
+    public let v: Int
+    public let dil: String
+    public let metin: GununAyetiMetinleri
+    public let plan: [GununAyetiKaydi]
+}
+
+/// Zaman cizelgesi girdisi: `ms` aninda `kayit` gosterilir.
+public struct GununAyetiGirdisi: Equatable, Sendable {
+    public let ms: Int64
+    public let kayit: GununAyetiKaydi
+}
+
+public enum GununAyetiKarari {
+    /// Widget turu (`kind`). Kopru YALNIZ bu turu tazeler (`reloadTimelines(ofKind:)`).
+    public static let widgetTuru = "GununAyetiWidget"
+    /// Desteklenen yuk surumu; baska surum okunmaz (bos durum cizilir).
+    public static let surum = 1
+
+    /// Ham JSON → yuk. Bozuk / baska surum / bos plan → nil.
+    public static func coz(_ ham: String?) -> GununAyetiYuku? {
+        guard let ham, let veri = ham.data(using: .utf8),
+              let yuk = try? JSONDecoder().decode(GununAyetiYuku.self, from: veri),
+              yuk.v == surum, !yuk.plan.isEmpty else { return nil }
+        return yuk
+    }
+
+    /// Baslangica gore sirali (JS sirali yazar; savunma). Esit baslangicta yazim sirasi korunur.
+    static func sirali(_ plan: [GununAyetiKaydi]) -> [GununAyetiKaydi] {
+        return plan.enumerated()
+            .sorted {
+                $0.element.baslangicMs != $1.element.baslangicMs
+                    ? $0.element.baslangicMs < $1.element.baslangicMs
+                    : $0.offset < $1.offset
+            }
+            .map { $0.element }
+    }
+
+    /// Simdi gosterilecek kayit: `baslangicMs <= simdi` olan SON kayit. Plan bittiyse bu
+    /// zaten son kayittir (bayat ama bos ekrandan iyi); hicbiri baslamadiysa (cihaz saati
+    /// geri, plan erken yazildi) ILK kayit. Bos plan → nil.
+    public static func gecerliKayit(_ plan: [GununAyetiKaydi], simdiMs: Int64) -> GununAyetiKaydi? {
+        let liste = sirali(plan)
+        return liste.last(where: { $0.baslangicMs <= simdiMs }) ?? liste.first
+    }
+
+    /// Zaman cizelgesi: simdiki kayit `simdiMs` aninda + baslangici gelecekte olan her kayit
+    /// kendi `baslangicMs`'inde. Plan bittiyse tek girdi (son kayit).
+    public static func girdiler(_ plan: [GununAyetiKaydi], simdiMs: Int64) -> [GununAyetiGirdisi] {
+        guard let simdiki = gecerliKayit(plan, simdiMs: simdiMs) else { return [] }
+        let gelecek = sirali(plan).filter { $0.baslangicMs > simdiMs && $0.baslangicMs > simdiki.baslangicMs }
+        return [GununAyetiGirdisi(ms: simdiMs, kayit: simdiki)]
+            + gelecek.map { GununAyetiGirdisi(ms: $0.baslangicMs, kayit: $0) }
+    }
+
+    /// Kunye satiri: "kisaKunye · mealKaynagi" (+ Arapca cizildiyse " · Arapça: Tanzil").
+    /// Meal kaynagi gosterildigi her yuzeyde ZORUNLU (QuranEnc kosulu).
+    public static func kunyeSatiri(_ kayit: GununAyetiKaydi, metin: GununAyetiMetinleri, arapcaVar: Bool) -> String {
+        var parcalar = [kayit.kisaKunye]
+        if let k = kayit.mealKaynagi, !k.isEmpty { parcalar.append(k) }
+        if arapcaVar { parcalar.append(metin.arapcaKaynagi) }
+        return parcalar.joined(separator: " · ")
+    }
+}
