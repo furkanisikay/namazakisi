@@ -1,6 +1,9 @@
 package com.furkanisikay.namazakisi.kildim
 
 import android.content.Context
+import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.arayuzDili
+import com.furkanisikay.namazakisi.dildeBaglam
 import com.furkanisikay.namazakisi.cekirdek.KildimDurumKarari
 import com.furkanisikay.namazakisi.cekirdek.KildimDurumu
 import com.furkanisikay.namazakisi.cekirdek.VakitKodlari
@@ -18,6 +21,7 @@ import com.furkanisikay.namazakisi.widget.WidgetVeriDeposu
  */
 object KildimIslemleri {
 
+    /** [vakitAdi]/[siradakiAd] arayüz dilindeki GÖRÜNEN addır (kimlik değil). */
     sealed class Sonuc {
         data class Isaretlendi(val vakitAdi: String) : Sonuc()
         data class ZatenKilindi(val vakitAdi: String) : Sonuc()
@@ -37,12 +41,13 @@ object KildimIslemleri {
     /** Şu anki vakit işaretlenebilir mi? Hiçbir şey YAZMAZ (onay penceresi için). */
     fun simdikiVaktiDegerlendir(context: Context): Degerlendirme {
         val a = WidgetVeriDeposu.anlik(context)
+        val dil = context.arayuzDili()
         val aktif = a.durum.aktif
         if (aktif == null || a.durum.bitisMs == null) {
             val s = a.durum.sonraki ?: return Degerlendirme.Kesin(Sonuc.VeriYok)
-            return Degerlendirme.Kesin(Sonuc.VakitYok(VakitKodlari.gorunenAd(s.kod), saatMetni(s.ms)))
+            return Degerlendirme.Kesin(Sonuc.VakitYok(VakitKodlari.gorunenAd(s.kod, dil), saatMetni(s.ms)))
         }
-        val ad = VakitKodlari.gorunenAd(aktif.kod)
+        val ad = VakitKodlari.gorunenAd(aktif.kod, dil)
         return when (a.kildim) {
             KildimDurumu.KILINDI, KildimDurumu.BEKLIYOR -> Degerlendirme.Kesin(Sonuc.ZatenKilindi(ad))
             else -> Degerlendirme.Aday(aktif.tarih, aktif.kod, ad)
@@ -88,14 +93,20 @@ object KildimIslemleri {
         return true
     }
 
-    /** Kullanıcıya kısa geri bildirim (kibar "siz" — arayüz yönetimi, ibadet çağrısı değil). */
-    fun sonucMetni(sonuc: Sonuc): String = when (sonuc) {
-        is Sonuc.Isaretlendi -> "${sonuc.vakitAdi} namazınız kılındı olarak işaretlendi. Allah kabul etsin."
-        is Sonuc.ZatenKilindi -> "${sonuc.vakitAdi} namazı zaten kılındı olarak işaretli."
-        is Sonuc.VakitYok ->
-            if (sonuc.siradakiAd != null) "Şu an kılınacak vakit yok. Sıradaki ${sonuc.siradakiAd}, giriş ${sonuc.giris}."
-            else "Şu an kılınacak vakit yok."
-        Sonuc.VeriYok -> "Vakit bilgisi yok. Uygulamayı bir kez açın."
-        Sonuc.VakitDegisti -> "Vakit değişti, işaretleme yapılmadı. Lütfen yeniden deneyin."
+    /**
+     * Kullanıcıya kısa geri bildirim (kibar "siz" — arayüz yönetimi, ibadet çağrısı değil).
+     * Arayüz dilinde, kaynaklardan (`kildim_sonuc_*`); JS `genel.kildim.sonuc` ile aynı kalıp.
+     */
+    fun sonucMetni(context: Context, sonuc: Sonuc): String {
+        val m = context.dildeBaglam()
+        return when (sonuc) {
+            is Sonuc.Isaretlendi -> m.getString(R.string.kildim_sonuc_isaretlendi, sonuc.vakitAdi)
+            is Sonuc.ZatenKilindi -> m.getString(R.string.kildim_sonuc_zaten_kilindi, sonuc.vakitAdi)
+            is Sonuc.VakitYok ->
+                if (sonuc.siradakiAd != null) m.getString(R.string.kildim_sonuc_vakit_yok_siradaki, sonuc.siradakiAd, sonuc.giris)
+                else m.getString(R.string.kildim_sonuc_vakit_yok)
+            Sonuc.VeriYok -> m.getString(R.string.kildim_sonuc_veri_yok)
+            Sonuc.VakitDegisti -> m.getString(R.string.kildim_sonuc_vakit_degisti)
+        }
     }
 }

@@ -54,4 +54,42 @@
   <!-- Bildirimdeki "Kıldım" sonrası 5 sn'lik sessiz teşekkür (kildim/KildimOnayBildirimi). -->
   <string name="kildim_onay_kanal_adi">Kıldım onayı</string>
   <string name="kildim_onay_kanal_aciklama">Bildirimden "Kıldım" dediğinizde birkaç saniye görünen sessiz onay</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Çıkış %1$s</string>
+  <string name="widget_giris">Giriş %1$s</string>
+  <string name="widget_namaz_vakti">Namaz vakti</string>
+  <string name="widget_uygulamayi_acin">Uygulamayı açın</string>
+  <string name="widget_siradaki">Sıradaki %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Şu an kılınacak vakit yok</string>
+  <string name="widget_dugme_kildim">Kıldım</string>
+  <string name="widget_dugme_isaretleniyor">İşaretleniyor</string>
+  <string name="widget_dugme_kilindi">Kılındı</string>
+  <string name="widget_dugme_vakit_girmedi">Vakit girmedi</string>
+  <string name="widget_klasik_uygulamayi_acin">uygulamayı açın</string>
+  <string name="widget_klasik_erisim_veri_yok">Namaz vakitleri için uygulamayı açın</string>
+  <string name="widget_klasik_erisim_siradaki">Sıradaki vakit %1$s, giriş %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">öğleye:</string>
+  <string name="widget_onizleme_klasik_genis">Akşama</string>
+  <string name="widget_onizleme_imsak">İmsak</string>
+  <string name="widget_onizleme_gunes">Güneş</string>
+  <string name="widget_onizleme_ogle">Öğle</string>
+  <string name="widget_onizleme_ikindi">İkindi</string>
+  <string name="widget_onizleme_aksam">Akşam</string>
+  <string name="widget_onizleme_yatsi">Yatsı</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s namazınız kılındı olarak işaretlendi. Allah kabul etsin.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s namazı zaten kılındı olarak işaretli.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Şu an kılınacak vakit yok. Sıradaki %1$s, giriş %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Şu an kılınacak vakit yok.</string>
+  <string name="kildim_sonuc_veri_yok">Vakit bilgisi yok. Uygulamayı bir kez açın.</string>
+  <string name="kildim_sonuc_vakit_degisti">Vakit değişti, işaretleme yapılmadı. Lütfen yeniden deneyin.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Navigasyon uygulaması açılamadı.</string>
+  <string name="arac_adsiz_cami">Cami</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Vakit bilgisi okunamadı.</string>
+  <string name="asistan_isaretleme_yapilamadi">İşaretleme yapılamadı.</string>
+  <string name="asistan_aciklama">Namaz vakitlerini sorabilir, şu anki vakti kılındı olarak işaretleyebilir ve Kıble ekranını açabilirsiniz.</string>
 </resources>

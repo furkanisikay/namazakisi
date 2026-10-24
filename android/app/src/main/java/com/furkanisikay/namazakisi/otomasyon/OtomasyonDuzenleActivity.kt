@@ -2,9 +2,12 @@ package com.furkanisikay.namazakisi.otomasyon
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.arayuzDili
+import com.furkanisikay.namazakisi.dildeBaglam
 import com.furkanisikay.namazakisi.cekirdek.EklentiAyari
 import com.furkanisikay.namazakisi.cekirdek.KildimGuvenKurallari.Karar
 import com.furkanisikay.namazakisi.cekirdek.KildimGuvenKurallari.KaynakSinifi
@@ -33,7 +36,8 @@ import com.furkanisikay.namazakisi.widget.WidgetGuncelleyici
  *     Tasker'ın ilgili değişken listesi.
  *
  * Arayüz uygulamayı açmaz: saydam etkinlik + sistem pencereleri (kısayol etkinliğiyle aynı
- * tema). Metinler kibar "siz" (arayüz yönetimi).
+ * tema). Metinler kibar "siz" (arayüz yönetimi), kaynaklar UYGULAMANIN arayüz dilinde
+ * (`attachBaseContext` → `dildeBaglam`; cihaz dili farklı olabilir).
  */
 abstract class OtomasyonDuzenleActivity : Activity() {
     private var pencere: AlertDialog? = null
@@ -43,6 +47,10 @@ abstract class OtomasyonDuzenleActivity : Activity() {
 
     /** Çağıran onaylandıktan sonra: seçim (gerekirse) ve [kaydet]. */
     protected abstract fun secimeBasla(paket: String, onceki: EklentiAyari?)
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase.dildeBaglam())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,16 +69,15 @@ abstract class OtomasyonDuzenleActivity : Activity() {
         val eylem = OtomasyonKurallari.duzenlemeEylemi(baslatan.sinif, KildimGuvenDeposu.karar(this, paket))
         when {
             paket == null || eylem == DuzenlemeEylemi.REDDET -> bilgi(
-                "Bu ayar bir otomasyon uygulamasından eklenir",
-                if (baslatan.sinif == KaynakSinifi.TARAYICI) {
-                    "Tarayıcılara kalıcı izin verilmez. Tasker, MacroDroid ya da Automate gibi bir uygulamanın eklenti listesinden ekleyin."
-                } else {
-                    "Tasker, MacroDroid ya da Automate gibi bir uygulamanın eklenti listesinden \"Namaz Akışı\"nı seçerek ekleyin."
-                },
+                getString(R.string.otomasyon_bilgi_baslik),
+                getString(
+                    if (baslatan.sinif == KaynakSinifi.TARAYICI) R.string.otomasyon_bilgi_tarayici
+                    else R.string.otomasyon_bilgi_eklenti
+                ),
             )
             eylem == DuzenlemeEylemi.ENGELLI -> bilgi(
-                "${baslatan.ad} engellenmiş",
-                "Bu uygulamanın namazlarınızı işaretlemesini daha önce engellediniz. Namaz Akışı'nda Ayarlar > \"Kıldım işaretleyebilen uygulamalar\" sayfasından izin verebilirsiniz.",
+                getString(R.string.otomasyon_engelli_baslik, baslatan.ad),
+                getString(R.string.otomasyon_engelli_mesaj),
             )
             eylem == DuzenlemeEylemi.SOR -> izinSor(paket, baslatan.ad, onceki)
             else -> secimeBasla(paket, onceki)
@@ -85,24 +92,20 @@ abstract class OtomasyonDuzenleActivity : Activity() {
     }
 
     private fun izinSor(paket: String, ad: String, onceki: EklentiAyari?) {
-        val mesaj = if (kosulMu) {
-            "$ad, vakit girdi, vakit çıkıyor ve camidesiniz olaylarını öğrenip otomasyonlarınızı çalıştırabilir. Kararınızı Namaz Akışı'nda Ayarlar > \"Kıldım işaretleyebilen uygulamalar\" sayfasından değiştirebilirsiniz."
-        } else {
-            "$ad, kurduğunuz otomasyonla şu anki vakti kılındı olarak işaretleyebilir. Kararınızı Namaz Akışı'nda Ayarlar > \"Kıldım işaretleyebilen uygulamalar\" sayfasından değiştirebilirsiniz."
-        }
+        val mesaj = getString(if (kosulMu) R.string.otomasyon_izin_kosul else R.string.otomasyon_izin_kildim, ad)
         goster(
             AlertDialog.Builder(this, R.style.KildimOnayTemasi)
-                .setTitle("$ad ile kullanılsın mı?")
+                .setTitle(getString(R.string.otomasyon_izin_baslik, ad))
                 .setMessage(mesaj)
-                .setPositiveButton("İzin ver") { _, _ ->
+                .setPositiveButton(R.string.otomasyon_izin_ver) { _, _ ->
                     KildimGuvenDeposu.kaydet(this, paket, Karar.IZIN, ad)
                     secimeBasla(paket, onceki)
                 }
-                .setNegativeButton("Engelle") { _, _ ->
+                .setNegativeButton(R.string.otomasyon_engelle) { _, _ ->
                     KildimGuvenDeposu.kaydet(this, paket, Karar.ENGEL, ad)
                     kapat()
                 }
-                .setNeutralButton("Vazgeç") { _, _ -> kapat() },
+                .setNeutralButton(R.string.otomasyon_vazgec) { _, _ -> kapat() },
         )
     }
 
@@ -111,7 +114,7 @@ abstract class OtomasyonDuzenleActivity : Activity() {
             AlertDialog.Builder(this, R.style.KildimOnayTemasi)
                 .setTitle(baslik)
                 .setMessage(mesaj)
-                .setPositiveButton("Tamam") { _, _ -> kapat() },
+                .setPositiveButton(R.string.otomasyon_tamam) { _, _ -> kapat() },
         )
     }
 
@@ -131,8 +134,10 @@ abstract class OtomasyonDuzenleActivity : Activity() {
         OtomasyonKurallari.paketeYaz(ayar).forEach { (k, v) -> paket.putString(k, v) }
         val sonuc = Intent()
             .putExtra(OtomasyonProtokolu.EK_PAKET, paket)
-            .putExtra(OtomasyonProtokolu.EK_OZET, OtomasyonKurallari.ozet(ayar))
-        if (olay != null) sonuc.putExtra(OtomasyonProtokolu.TASKER_ILGILI_DEGISKENLER, OtomasyonKurallari.ilgiliDegiskenler(olay))
+            .putExtra(OtomasyonProtokolu.EK_OZET, OtomasyonKurallari.ozet(ayar, arayuzDili()))
+        if (olay != null) {
+            sonuc.putExtra(OtomasyonProtokolu.TASKER_ILGILI_DEGISKENLER, OtomasyonKurallari.ilgiliDegiskenler(olay, arayuzDili()))
+        }
         setResult(RESULT_OK, sonuc)
         if (ayar is EklentiAyari.Kosul) {
             OtomasyonDeposu.kosulPaketiEkle(this, ayar.paket)
@@ -175,26 +180,27 @@ abstract class OtomasyonKosulSecimActivity : OtomasyonDuzenleActivity() {
         var secili = o?.let { turler.indexOf(it.olay) }?.takeIf { it >= 0 } ?: 0
         goster(
             AlertDialog.Builder(this, R.style.KildimOnayTemasi)
-                .setTitle("Hangi durumda çalışsın?")
+                .setTitle(R.string.otomasyon_tur_baslik)
                 .setSingleChoiceItems(turEtiketleri.toTypedArray(), secili) { _, i -> secili = i }
-                .setPositiveButton("İleri") { _, _ ->
+                .setPositiveButton(R.string.otomasyon_ileri) { _, _ ->
                     val tur = turler[secili]
                     if (tur == OtomasyonOlayi.CAMIDE) bitir(paket, tur, null) else vakitSec(paket, tur, o?.vakit)
                 }
-                .setNegativeButton("Vazgeç") { _, _ -> kapat() },
+                .setNegativeButton(R.string.otomasyon_vazgec) { _, _ -> kapat() },
         )
     }
 
     private fun vakitSec(paket: String, tur: OtomasyonOlayi, onceki: String?) {
         val kodlar = listOf<String?>(null) + VakitKodlari.KILINABILIR
-        val etiketler = kodlar.map { it?.let { k -> VakitKodlari.gorunenAd(k) } ?: "Herhangi bir vakit" }
+        val dil = arayuzDili()
+        val etiketler = kodlar.map { it?.let { k -> VakitKodlari.gorunenAd(k, dil) } ?: getString(R.string.otomasyon_herhangi_vakit) }
         var secili = kodlar.indexOf(onceki).takeIf { it >= 0 } ?: 0
         goster(
             AlertDialog.Builder(this, R.style.KildimOnayTemasi)
-                .setTitle("Hangi vakit?")
+                .setTitle(R.string.otomasyon_vakit_baslik)
                 .setSingleChoiceItems(etiketler.toTypedArray(), secili) { _, i -> secili = i }
-                .setPositiveButton("Kaydet") { _, _ -> bitir(paket, tur, kodlar[secili]) }
-                .setNegativeButton("Vazgeç") { _, _ -> kapat() },
+                .setPositiveButton(R.string.otomasyon_kaydet) { _, _ -> bitir(paket, tur, kodlar[secili]) }
+                .setNegativeButton(R.string.otomasyon_vazgec) { _, _ -> kapat() },
         )
     }
 
@@ -206,19 +212,22 @@ abstract class OtomasyonKosulSecimActivity : OtomasyonDuzenleActivity() {
 /** EDIT_CONDITION — Locale/MacroDroid/Automate koşulu, Tasker "Durum" (sürekli doğru/yanlış). */
 class OtomasyonKosulActivity : OtomasyonKosulSecimActivity() {
     override val kip = KosulKipi.DURUM
-    override val turEtiketleri = listOf(
-        "Vakit içindeyken",
-        "Vakit çıkıyorken (${OtomasyonKurallari.CIKIYOR_ESIK_DK} dk kala, muhafız açıkken)",
-        "Camideyken",
-    )
+    // Getter: kaynaklar ancak `attachBaseContext`'ten sonra (yapım anında değil) çözülebilir.
+    override val turEtiketleri: List<String>
+        get() = listOf(
+            getString(R.string.otomasyon_kosul_icinde),
+            getString(R.string.otomasyon_kosul_cikiyor, OtomasyonKurallari.CIKIYOR_ESIK_DK),
+            getString(R.string.otomasyon_kosul_camide),
+        )
 }
 
 /** Tasker ACTION_EDIT_EVENT — "Olay" (tek an). */
 class OtomasyonOlayActivity : OtomasyonKosulSecimActivity() {
     override val kip = KosulKipi.OLAY
-    override val turEtiketleri = listOf(
-        "Vakit girdiğinde",
-        "Vakit çıkıyor (${OtomasyonKurallari.CIKIYOR_ESIK_DK} dk kala, muhafız açıkken)",
-        "Camide olduğunuz algılandığında",
-    )
+    override val turEtiketleri: List<String>
+        get() = listOf(
+            getString(R.string.otomasyon_olay_girdi),
+            getString(R.string.otomasyon_olay_cikiyor, OtomasyonKurallari.CIKIYOR_ESIK_DK),
+            getString(R.string.otomasyon_olay_camide),
+        )
 }

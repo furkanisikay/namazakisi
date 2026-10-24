@@ -15,6 +15,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.dildeBaglam
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari
 
 /**
@@ -69,7 +70,7 @@ object MuhafizAlarmBildirimi {
         try {
             if (nm.getNotificationChannel(kanalId) != null) return
             val kanal = NotificationChannel(kanalId, ad, NotificationManager.IMPORTANCE_HIGH).apply {
-                description = context.getString(R.string.alarm_kanal_aciklamasi)
+                description = context.dildeBaglam().getString(R.string.alarm_kanal_aciklamasi)
                 setSound(alarmSesi(sesUri), ALARM_NITELIKLERI)
                 enableVibration(true)
                 vibrationPattern = DESEN
@@ -142,7 +143,7 @@ object MuhafizAlarmBildirimi {
      * bayrak yok sayılır, kilit ekranı sürümü ([herkeseAcikSurum]) düğmeyi hiç taşımaz.
      */
     private fun kildimEylemi(context: Context, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String): NotificationCompat.Action =
-        NotificationCompat.Action.Builder(0, context.getString(R.string.alarm_kildim), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KILDIM, yuk, hamYuk))
+        NotificationCompat.Action.Builder(0, context.dildeBaglam().getString(R.string.alarm_kildim), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KILDIM, yuk, hamYuk))
             .setAuthenticationRequired(true)
             .build()
 
@@ -164,7 +165,7 @@ object MuhafizAlarmBildirimi {
             .setContentText(yuk.metin)
             .apply {
                 if (kapatVar) {
-                    addAction(0, context.getString(R.string.alarm_kapat), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
+                    addAction(0, context.dildeBaglam().getString(R.string.alarm_kapat), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
                 }
             }
             .build()
@@ -206,7 +207,7 @@ object MuhafizAlarmBildirimi {
             .setContentIntent(ekran)
             .setFullScreenIntent(ekran, true)
             .setDeleteIntent(eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
-            .addAction(0, context.getString(R.string.alarm_kapat), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
+            .addAction(0, context.dildeBaglam().getString(R.string.alarm_kapat), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
             // Emniyet: süre dolunca susturma alarmı gelmese bile bildirim (ve sesi) biter.
             .setTimeoutAfter(MuhafizAlarmKurallari.CALMA_SURESI_MS + 60_000L)
             .apply {

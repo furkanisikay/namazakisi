@@ -5,4 +5,29 @@
   <string name="otomasyon_eylem_etiket">Namaz Akışı: Kıldım</string>
   <string name="otomasyon_kosul_etiket">Namaz Akışı: Vakit durumu</string>
   <string name="otomasyon_olay_etiket">Namaz Akışı: Vakit olayı</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Bu ayar bir otomasyon uygulamasından eklenir</string>
+  <string name="otomasyon_bilgi_tarayici">Tarayıcılara kalıcı izin verilmez. Tasker, MacroDroid ya da Automate gibi bir uygulamanın eklenti listesinden ekleyin.</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid ya da Automate gibi bir uygulamanın eklenti listesinden \"Namaz Akışı\"nı seçerek ekleyin.</string>
+  <string name="otomasyon_engelli_baslik">%1$s engellenmiş</string>
+  <string name="otomasyon_engelli_mesaj">Bu uygulamanın namazlarınızı işaretlemesini daha önce engellediniz. Namaz Akışı\'nda Ayarlar &gt; \"Kıldım işaretleyebilen uygulamalar\" sayfasından izin verebilirsiniz.</string>
+  <string name="otomasyon_izin_baslik">%1$s ile kullanılsın mı?</string>
+  <string name="otomasyon_izin_kosul">%1$s, vakit girdi, vakit çıkıyor ve camidesiniz olaylarını öğrenip otomasyonlarınızı çalıştırabilir. Kararınızı Namaz Akışı\'nda Ayarlar &gt; \"Kıldım işaretleyebilen uygulamalar\" sayfasından değiştirebilirsiniz.</string>
+  <string name="otomasyon_izin_kildim">%1$s, kurduğunuz otomasyonla şu anki vakti kılındı olarak işaretleyebilir. Kararınızı Namaz Akışı\'nda Ayarlar &gt; \"Kıldım işaretleyebilen uygulamalar\" sayfasından değiştirebilirsiniz.</string>
+  <string name="otomasyon_izin_ver">İzin ver</string>
+  <string name="otomasyon_engelle">Engelle</string>
+  <string name="otomasyon_vazgec">Vazgeç</string>
+  <string name="otomasyon_tamam">Tamam</string>
+  <string name="otomasyon_tur_baslik">Hangi durumda çalışsın?</string>
+  <string name="otomasyon_ileri">İleri</string>
+  <string name="otomasyon_vakit_baslik">Hangi vakit?</string>
+  <string name="otomasyon_herhangi_vakit">Herhangi bir vakit</string>
+  <string name="otomasyon_kaydet">Kaydet</string>
+  <string name="otomasyon_kosul_icinde">Vakit içindeyken</string>
+  <string name="otomasyon_kosul_cikiyor">Vakit çıkıyorken (%1$d dk kala, muhafız açıkken)</string>
+  <string name="otomasyon_kosul_camide">Camideyken</string>
+  <string name="otomasyon_olay_girdi">Vakit girdiğinde</string>
+  <string name="otomasyon_olay_cikiyor">Vakit çıkıyor (%1$d dk kala, muhafız açıkken)</string>
+  <string name="otomasyon_olay_camide">Camide olduğunuz algılandığında</string>
 </resources>

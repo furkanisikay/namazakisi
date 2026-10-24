@@ -2,6 +2,7 @@ package com.furkanisikay.namazakisi.widget
 
 import androidx.appcompat.app.AppCompatActivity
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.widget.RadioGroup
 import android.widget.SeekBar
 import android.widget.Switch
 import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.dildeBaglam
 import com.furkanisikay.namazakisi.cekirdek.SureGosterimi
 import com.furkanisikay.namazakisi.cekirdek.WidgetAyari
 import com.furkanisikay.namazakisi.cekirdek.WidgetZemini
@@ -27,6 +29,11 @@ import com.furkanisikay.namazakisi.cekirdek.WidgetZemini
 class WidgetYapilandirmaActivity : AppCompatActivity() {
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+
+    /** Yerleşimin `@string`'leri UYGULAMANIN arayüz dilinde çözülsün (cihaz dili farklı olabilir). */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase.dildeBaglam())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

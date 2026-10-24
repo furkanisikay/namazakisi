@@ -133,19 +133,19 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     rutinKildimBaslik: 'Mark the prayer from a routine',
     rutinKildimAdimlar: [
       'In the routine’s "Then" part, open Apps and add an app action.',
-      'Choose Namaz Akışı’s "{kisayol}" shortcut (shown in Turkish for now).',
+      'Choose Namaz Akışı’s "{kisayol}" shortcut.',
       'You’re asked the first time the routine runs. If you choose "Always allow", you won’t be asked again.',
     ],
     rutinSessiz: 'If you silence Namaz Akışı notifications or the related notification category, the routine won’t trigger.',
     eklentiOlayBaslik: 'Start with prayer time events',
     eklentiOlayAdimlar: [
-      'Add a new profile in Tasker: Event > Plugin > "{olay}". In MacroDroid and Automate, choose the "{kosul}" plugin (plugin names are in Turkish for now).',
+      'Add a new profile in Tasker: Event > Plugin > "{olay}". In MacroDroid and Automate, choose the "{kosul}" plugin.',
       'Choose the event: when a prayer time begins, when it’s ending ({dk} min left), or when you’re detected at a mosque. You can pick a single prayer if you like.',
       'You’re asked to allow the app the first time you add it.',
     ],
     degiskenler: 'VARIABLES YOU CAN USE',
     degiskenAciklamalari: {
-      '%vakit': 'Prayer name, in Turkish for now (e.g. Öğle)',
+      '%vakit': 'Prayer name in the app language (e.g. Dhuhr)',
       '%vakitkodu': 'sabah, ogle, ikindi, aksam or yatsi',
       '%tarih': 'Prayer day (YYYY-MM-DD)',
       '%kalandk': 'Time ending: minutes left',

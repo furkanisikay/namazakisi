@@ -22,14 +22,23 @@ object KlasikWidgetKarari {
         VakitKodlari.IKINDI, VakitKodlari.AKSAM, VakitKodlari.YATSI,
     )
 
-    /** Geniş widget satır adı. Eski görünümde sabah satırı "İmsak" yazar. */
-    fun satirAdi(kod: String): String = if (kod == VakitKodlari.SABAH) "İmsak" else VakitKodlari.gorunenAd(kod)
+    /**
+     * Geniş widget satır adı. Eski görünümde sabah satırı "İmsak" yazar (İngilizcede
+     * JS `vakit.imsakVakti` gibi "Fajr").
+     */
+    fun satirAdi(kod: String, dil: String = MetinDili.TR): String =
+        if (kod == VakitKodlari.SABAH) MetinDili.sec(dil, "İmsak", "Fajr") else VakitKodlari.gorunenAd(kod, dil)
 
     /**
      * Yönelme hâli (sabit harita; `toLowerCase` İ'yi bozar). Küçük widget küçük harfli
-     * ve iki noktalı ("öğleye:"), geniş widget büyük harfle ("Öğleye") yazar.
+     * ve iki noktalı ("öğleye:"), geniş widget büyük harfle ("Öğleye") yazar; altında
+     * geri sayım akar. İngilizcede hal eki yok: iki boyutta da "Dhuhr in" (geri sayım
+     * cümleyi tamamlar).
      */
-    fun yonelmeHali(kod: String, buyukHarf: Boolean): String {
+    fun yonelmeHali(kod: String, buyukHarf: Boolean, dil: String = MetinDili.TR): String {
+        if (MetinDili.coz(dil) == MetinDili.EN) {
+            return if (kod in SIRA) "${VakitKodlari.gorunenAd(kod, dil)} in" else kod
+        }
         val (kucuk, buyuk) = when (kod) {
             VakitKodlari.SABAH -> "sabaha" to "Sabaha"
             VakitKodlari.GUNES -> "güneşe" to "Güneşe"

@@ -41,15 +41,16 @@ object VakitKodlari {
 
     /**
      * Görünen ad. `toUpperCase` gibi dönüşümler YAPILMAZ (AGENTS.md: 'İkindi'.toUpperCase()
-     * noktalı İ'yi bozar) — sabit harita.
+     * noktalı İ'yi bozar) — sabit harita. İngilizce karşılıklar JS sözlüğü `vakit.adlar` ile
+     * AYNI (terim sözlüğü: Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha).
      */
-    fun gorunenAd(kod: String): String = when (kod) {
-        SABAH -> "Sabah"
-        GUNES -> "Güneş"
-        OGLE -> "Öğle"
-        IKINDI -> "İkindi"
-        AKSAM -> "Akşam"
-        YATSI -> "Yatsı"
+    fun gorunenAd(kod: String, dil: String = MetinDili.TR): String = when (kod) {
+        SABAH -> MetinDili.sec(dil, "Sabah", "Fajr")
+        GUNES -> MetinDili.sec(dil, "Güneş", "Sunrise")
+        OGLE -> MetinDili.sec(dil, "Öğle", "Dhuhr")
+        IKINDI -> MetinDili.sec(dil, "İkindi", "Asr")
+        AKSAM -> MetinDili.sec(dil, "Akşam", "Maghrib")
+        YATSI -> MetinDili.sec(dil, "Yatsı", "Isha")
         else -> kod
     }
 }

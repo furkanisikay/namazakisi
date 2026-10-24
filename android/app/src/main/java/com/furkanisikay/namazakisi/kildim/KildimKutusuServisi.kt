@@ -3,6 +3,7 @@ package com.furkanisikay.namazakisi.kildim
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import com.furkanisikay.namazakisi.arayuzDili
 import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
 import com.furkanisikay.namazakisi.cekirdek.KutuDurumu
 import com.furkanisikay.namazakisi.cekirdek.KutuGorunumKarari
@@ -38,7 +39,8 @@ class KildimKutusuServisi : TileService() {
     private fun ciz() {
         val kutu = qsTile ?: return
         val a = WidgetVeriDeposu.anlik(this)
-        val g = KutuGorunumKarari.hesapla(a.durum, a.kildim) { saatMetni(it) }
+        // Metin UYGULAMANIN arayüz dilinde (dil değişince `ArayuzDiliIzleyici` kutuyu tazeler).
+        val g = KutuGorunumKarari.hesapla(a.durum, a.kildim, { saatMetni(it) }, arayuzDili())
         kutu.label = g.etiket
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) kutu.subtitle = g.altEtiket
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) kutu.stateDescription = g.altEtiket

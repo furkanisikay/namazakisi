@@ -101,19 +101,14 @@ describe('OtomasyonRehberiSayfasi', () => {
 
 describe('OtomasyonRehberiSayfasi — İngilizce', () => {
     const YASAKLI = ['Vakit', 'vakit\\b', 'Rutin', 'Kapat', 'Cami\\b'];
-    /**
-     * Native kısayol/eklenti etiketleri (Android kaynakları yalnız Türkçe) ve eklentinin
-     * `%vakit` örnek değeri bugün Türkçedir; ekran bunu "(shown in Turkish for now)" diye söyler.
-     * Değişken adları (`%vakit`) kimliktir.
-     */
-    const NATIVE = ['Şu anki vakti kıldım', 'Namaz Akışı: Vakit', 'Namaz Akışı: Kıldım', 'Prayer name, in Turkish for now (e.g. Öğle)'];
-    const kalan = (e: ReturnType<typeof render>) =>
-        turkceKalanlar(e.toJSON() as never, YASAKLI).filter((m: string) => !m.startsWith('%') && !NATIVE.some((n) => m.includes(n)));
+    /** Değişken adları (`%vakit`) kimliktir. Telefon İngilizce: native etiketler de İngilizce. */
+    const kalan = (e: ReturnType<typeof render>) => turkceKalanlar(e.toJSON() as never, YASAKLI).filter((m: string) => !m.startsWith('%'));
     let geriAl: () => void;
     beforeEach(() => {
         jest.clearAllMocks();
         jest.replaceProperty(Platform, 'OS', 'android');
         mockCihaz.samsung = null;
+        jest.spyOn(require('../../../domain/services/DilServisi'), 'cihazYerelAyari').mockReturnValue('en_US');
         geriAl = ingilizceyeGec();
     });
     afterEach(() => act(() => geriAl()));
@@ -121,6 +116,8 @@ describe('OtomasyonRehberiSayfasi — İngilizce', () => {
     it('Rutinler ve Tasker sekmeleri, iOS bilgisi', () => {
         const ekran = kur();
         expect(kalan(ekran)).toEqual([]);
+        // Kısayol adı telefonun dilinde (başlatıcı çözer) — İngilizce telefonda İngilizce.
+        expect(ekran.getByText(/I've prayed the current prayer/)).toBeTruthy();
         expect(ekran.getByTestId('rehber-rutin-dil-notu')).toBeTruthy();
         fireEvent.press(ekran.getByTestId('rehber-sekme-eklenti'));
         expect(kalan(ekran)).toEqual([]);

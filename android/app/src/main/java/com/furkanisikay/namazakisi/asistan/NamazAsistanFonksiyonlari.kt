@@ -9,12 +9,15 @@ import androidx.appfunctions.AppFunctionAppUnknownException
 import androidx.appfunctions.AppFunctionContext
 import androidx.appfunctions.AppFunctionSerializable
 import androidx.appfunctions.service.AppFunction
+import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.arayuzDili
 import com.furkanisikay.namazakisi.cekirdek.AsistanKarari
 import com.furkanisikay.namazakisi.cekirdek.KildimDurumu
 import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
 import com.furkanisikay.namazakisi.cekirdek.VakitAni
 import com.furkanisikay.namazakisi.cekirdek.VakitKodlari
 import com.furkanisikay.namazakisi.cekirdek.saatMetni
+import com.furkanisikay.namazakisi.dildeBaglam
 import com.furkanisikay.namazakisi.kildim.KildimIslemleri
 import com.furkanisikay.namazakisi.widget.WidgetVeriDeposu
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +43,7 @@ import kotlinx.coroutines.withContext
  *
  * KDoc İNGİLİZCE yazıldı: `isDescribedByKDoc = true` onu asistanın gördüğü araç
  * açıklamasına çevirir (LLM'e giden sözleşme); kullanıcıya görünen `ozet`/`mesaj`
- * metinleri Türkçe ve kibar "siz" dilindedir.
+ * metinleri UYGULAMANIN arayüz dilinde (Türkçe ya da İngilizce) ve kibar "siz" dilindedir.
  */
 class NamazAsistanFonksiyonlari {
 
@@ -50,7 +53,7 @@ class NamazAsistanFonksiyonlari {
      *
      * Use it for questions like "when is the next prayer?", "how much time is left for the
      * afternoon prayer?". Read [SiradakiNamazSonucu.ozet] to the user as is; it is already a
-     * complete Turkish sentence.
+     * complete sentence in the app's interface language (Turkish or English).
      *
      * @param appFunctionContext The context of this app function call.
      * @return The current prayer window (if any), whether it is already marked as prayed,
@@ -63,7 +66,9 @@ class NamazAsistanFonksiyonlari {
                 siradakiNamazHesapla(appFunctionContext.context, System.currentTimeMillis())
             } catch (e: Exception) {
                 Log.w(TAG, "siradakiNamaz basarisiz", e)
-                throw AppFunctionAppUnknownException("Vakit bilgisi okunamadı.")
+                throw AppFunctionAppUnknownException(
+                    appFunctionContext.context.dildeBaglam().getString(R.string.asistan_vakit_okunamadi),
+                )
             }
         }
 
@@ -72,7 +77,7 @@ class NamazAsistanFonksiyonlari {
      * confirmation-gated: this function never writes anything without a confirmation id.
      *
      * Step 1: call with [onayKimligi] = null. Nothing is written. If a prayer can be marked,
-     * the result has `durum = "onayBekleniyor"`, a Turkish question in [KildimSonucu.onaySorusu]
+     * the result has `durum = "onayBekleniyor"`, a question in [KildimSonucu.onaySorusu]
      * and an [KildimSonucu.onayKimligi]. Ask the user that question.
      * Step 2: only if the user explicitly confirms, call again with the returned
      * [KildimSonucu.onayKimligi]. If the prayer time changed in between, nothing is marked and
@@ -96,7 +101,9 @@ class NamazAsistanFonksiyonlari {
             kildimIsle(appFunctionContext.context, onayKimligi, System.currentTimeMillis())
         } catch (e: Exception) {
             Log.w(TAG, "simdikiVaktiKildim basarisiz", e)
-            throw AppFunctionAppUnknownException("İşaretleme yapılamadı.")
+            throw AppFunctionAppUnknownException(
+                appFunctionContext.context.dildeBaglam().getString(R.string.asistan_isaretleme_yapilamadi),
+            )
         }
     }
 
@@ -121,10 +128,11 @@ class NamazAsistanFonksiyonlari {
 
         internal fun siradakiNamazHesapla(context: Context, simdiMs: Long): SiradakiNamazSonucu {
             val a = WidgetVeriDeposu.anlik(context, simdiMs)
+            val dil = context.arayuzDili()
             if (a.vakitler.isEmpty()) {
                 return SiradakiNamazSonucu(
                     durum = DURUM_KONUM_YOK,
-                    ozet = AsistanKarari.KONUM_YOK_METNI,
+                    ozet = AsistanKarari.konumYokMetni(dil),
                     simdikiVakit = null,
                     simdikiVakitKilindi = false,
                     siradakiVakit = null,
@@ -141,16 +149,16 @@ class NamazAsistanFonksiyonlari {
             }
             return SiradakiNamazSonucu(
                 durum = durum,
-                ozet = AsistanKarari.siradakiNamazMetni(d, a.kildim, bugun) { saatMetni(it) },
-                simdikiVakit = if (aktif != null && bitis != null) vakit(aktif, bitis, simdiMs) else null,
+                ozet = AsistanKarari.siradakiNamazMetni(d, a.kildim, bugun, { saatMetni(it) }, dil),
+                simdikiVakit = if (aktif != null && bitis != null) vakit(aktif, bitis, simdiMs, dil) else null,
                 simdikiVakitKilindi = a.kildim == KildimDurumu.KILINDI || a.kildim == KildimDurumu.BEKLIYOR,
-                siradakiVakit = d.sonraki?.let { vakit(it, null, simdiMs) },
+                siradakiVakit = d.sonraki?.let { vakit(it, null, simdiMs, dil) },
             )
         }
 
-        private fun vakit(v: VakitAni, cikisMs: Long?, simdiMs: Long) = AsistanVakti(
+        private fun vakit(v: VakitAni, cikisMs: Long?, simdiMs: Long, dil: String) = AsistanVakti(
             kod = v.kod,
-            ad = VakitKodlari.gorunenAd(v.kod),
+            ad = VakitKodlari.gorunenAd(v.kod, dil),
             namazGunu = v.tarih,
             giris = AsistanKarari.isoZaman(v.ms),
             cikis = cikisMs?.let { AsistanKarari.isoZaman(it) },
@@ -159,13 +167,14 @@ class NamazAsistanFonksiyonlari {
 
         internal fun kildimIsle(context: Context, onayKimligi: String?, simdiMs: Long): KildimSonucu {
             val a = WidgetVeriDeposu.anlik(context, simdiMs)
+            val dil = context.arayuzDili()
             if (a.vakitler.isEmpty()) {
-                return KildimSonucu(KILDIM_VERI_YOK, AsistanKarari.KONUM_YOK_METNI, null, null, null)
+                return KildimSonucu(KILDIM_VERI_YOK, AsistanKarari.konumYokMetni(dil), null, null, null)
             }
             val bugun = AsistanKarari.takvimGunu(simdiMs)
             val saat: (Long) -> String = { saatMetni(it) }
-            val karar = AsistanKarari.kildimKarari(a.durum, a.kildim)
-            return when (val adim = AsistanKarari.kildimAdimi(karar, onayKimligi)) {
+            val karar = AsistanKarari.kildimKarari(a.durum, a.kildim, dil)
+            return when (val adim = AsistanKarari.kildimAdimi(karar, onayKimligi, dil)) {
                 is AsistanKarari.KildimAdimi.OnayIste -> KildimSonucu(
                     durum = KILDIM_ONAY_BEKLENIYOR,
                     mesaj = adim.soru,
@@ -174,8 +183,8 @@ class NamazAsistanFonksiyonlari {
                     onayKimligi = adim.aday.onayKimligi,
                 )
                 AsistanKarari.KildimAdimi.VakitDegisti ->
-                    KildimSonucu(KILDIM_VAKIT_DEGISTI, AsistanKarari.VAKIT_DEGISTI_METNI, null, null, null)
-                is AsistanKarari.KildimAdimi.Bilgi -> bilgiSonucu(adim.karar, bugun, saat)
+                    KildimSonucu(KILDIM_VAKIT_DEGISTI, AsistanKarari.vakitDegistiMetni(dil), null, null, null)
+                is AsistanKarari.KildimAdimi.Bilgi -> bilgiSonucu(adim.karar, bugun, saat, dil)
                 is AsistanKarari.KildimAdimi.Isaretle -> {
                     // Ortak "Kıldım" yolu (widget/kutu/kısayol/otomasyon ile aynı): yazmadan
                     // ÖNCE yeniden değerlendirir, vakit değiştiyse işaretlemez.
@@ -189,7 +198,7 @@ class NamazAsistanFonksiyonlari {
                             KildimIslemleri.Sonuc.VakitDegisti -> KILDIM_VAKIT_DEGISTI
                             KildimIslemleri.Sonuc.VeriYok -> KILDIM_VERI_YOK
                         },
-                        mesaj = KildimIslemleri.sonucMetni(sonuc),
+                        mesaj = KildimIslemleri.sonucMetni(context, sonuc),
                         vakit = adim.aday.ad,
                         onaySorusu = null,
                         onayKimligi = null,
@@ -198,13 +207,13 @@ class NamazAsistanFonksiyonlari {
             }
         }
 
-        private fun bilgiSonucu(karar: AsistanKarari.KildimKarari, bugun: String, saat: (Long) -> String) =
+        private fun bilgiSonucu(karar: AsistanKarari.KildimKarari, bugun: String, saat: (Long) -> String, dil: String) =
             KildimSonucu(
                 durum = when (karar) {
                     is AsistanKarari.KildimKarari.ZatenKilindi -> KILDIM_ZATEN_KILINDI
                     else -> KILDIM_VAKIT_YOK
                 },
-                mesaj = AsistanKarari.kildimMetni(karar, bugun, saat),
+                mesaj = AsistanKarari.kildimMetni(karar, bugun, saat, dil),
                 vakit = (karar as? AsistanKarari.KildimKarari.ZatenKilindi)?.ad,
                 onaySorusu = null,
                 onayKimligi = null,
@@ -246,7 +255,7 @@ class NamazAsistanFonksiyonlari {
 data class AsistanVakti(
     /** Stable prayer code: "sabah" (fajr), "ogle", "ikindi", "aksam" or "yatsi". */
     val kod: String,
-    /** Turkish display name, e.g. "Öğle". */
+    /** Display name in the app's interface language, e.g. "Öğle" (Turkish) or "Dhuhr" (English). */
     val ad: String,
     /** The prayer day (YYYY-MM-DD). After midnight the night prayer still belongs to the previous day. */
     val namazGunu: String,
@@ -267,7 +276,7 @@ data class SiradakiNamazSonucu(
      * "konumYok" (no location saved yet).
      */
     val durum: String,
-    /** Ready-to-speak Turkish summary. Read it to the user. */
+    /** Ready-to-speak summary in the app's interface language. Read it to the user. */
     val ozet: String,
     /** The running prayer window, if any. */
     val simdikiVakit: AsistanVakti?,
@@ -282,9 +291,9 @@ data class SiradakiNamazSonucu(
 data class KildimSonucu(
     /** "onayBekleniyor", "isaretlendi", "zatenKilindi", "vakitYok", "vakitDegisti" or "veriYok". */
     val durum: String,
-    /** Ready-to-speak Turkish message. Read it to the user. */
+    /** Ready-to-speak message in the app's interface language. Read it to the user. */
     val mesaj: String,
-    /** Turkish name of the prayer concerned, if any. */
+    /** Display name of the prayer concerned (app's interface language), if any. */
     val vakit: String?,
     /** Question to ask the user before marking (only when durum = "onayBekleniyor"). */
     val onaySorusu: String?,

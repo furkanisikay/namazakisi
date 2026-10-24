@@ -12,20 +12,25 @@ package com.furkanisikay.namazakisi.cekirdek
 object KildimOnayMetni {
     const val KABUL_DUASI = "Allah kabul etsin"
 
+    /** [KABUL_DUASI]'nın arayüz dilindeki hâli — JS `samimiyet.kabulDuasi` ("May Allah accept it"). */
+    fun kabulDuasi(dil: String = MetinDili.TR): String = MetinDili.sec(dil, KABUL_DUASI, "May Allah accept it")
+
     /** Bildirimin ekranda kalma süresi (sonra kendiliğinden kalkar). */
     const val GORUNME_MS = 5_000L
 
     /** Kayıt kodu (`imsak`, `ogle`…) → görünen ad. Sabit harita (toUpperCase tuzağı yok). */
-    fun gorunenAd(kayitVakti: String): String = when (kayitVakti) {
-        "imsak", "sabah" -> "Sabah"
-        "ogle" -> "Öğle"
-        "ikindi" -> "İkindi"
-        "aksam" -> "Akşam"
-        "yatsi" -> "Yatsı"
-        else -> "Namaz"
+    fun gorunenAd(kayitVakti: String, dil: String = MetinDili.TR): String = when (kayitVakti) {
+        "imsak", "sabah" -> VakitKodlari.gorunenAd(VakitKodlari.SABAH, dil)
+        "ogle", "ikindi", "aksam", "yatsi" -> VakitKodlari.gorunenAd(kayitVakti, dil)
+        else -> MetinDili.sec(dil, "Namaz", "Prayer")
     }
 
-    fun baslik(kayitVakti: String): String = "${gorunenAd(kayitVakti)} · $KABUL_DUASI"
+    fun baslik(kayitVakti: String, dil: String = MetinDili.TR): String =
+        "${gorunenAd(kayitVakti, dil)} · ${kabulDuasi(dil)}"
 
-    fun govde(kayitVakti: String): String = "${gorunenAd(kayitVakti)} namazınız kılındı olarak işaretlendi."
+    fun govde(kayitVakti: String, dil: String = MetinDili.TR): String = MetinDili.sec(
+        dil,
+        "${gorunenAd(kayitVakti, dil)} namazınız kılındı olarak işaretlendi.",
+        "${gorunenAd(kayitVakti, dil)} is marked as prayed.",
+    )
 }

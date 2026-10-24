@@ -125,7 +125,7 @@ enum class KutuDurumu { AKTIF, PASIF, KULLANILAMAZ }
 /**
  * Hızlı ayarlar kutusunun görünümü.
  * Cümle içinde saate hal eki EKLENMEZ ("15:42'de" okunuşa göre değişir — AGENTS.md
- * zaman şeridi kuralı) → "Çıkış 15:42" / "Giriş 12:58".
+ * zaman şeridi kuralı) → "Çıkış 15:42" / "Giriş 12:58" (İngilizce "Ends 15:42" / "Starts 12:58").
  */
 data class KutuGorunumu(
     val etiket: String,
@@ -136,35 +136,50 @@ data class KutuGorunumu(
 )
 
 object KutuGorunumKarari {
-    fun hesapla(durum: VakitDurumu, kildim: KildimDurumu, saat: (Long) -> String): KutuGorunumu {
+    fun hesapla(
+        durum: VakitDurumu,
+        kildim: KildimDurumu,
+        saat: (Long) -> String,
+        dil: String = MetinDili.TR,
+    ): KutuGorunumu {
         val aktif = durum.aktif
         val bitis = durum.bitisMs
         if (aktif != null && bitis != null) {
-            val ad = VakitKodlari.gorunenAd(aktif.kod)
+            val ad = VakitKodlari.gorunenAd(aktif.kod, dil)
             return when (kildim) {
                 KildimDurumu.KILINDI -> KutuGorunumu(
-                    ad, "Kılındı", KutuDurumu.AKTIF, false,
-                    "$ad namazı kılındı olarak işaretli",
+                    ad, MetinDili.sec(dil, "Kılındı", "Prayed"), KutuDurumu.AKTIF, false,
+                    MetinDili.sec(dil, "$ad namazı kılındı olarak işaretli", "$ad is marked as prayed"),
                 )
                 KildimDurumu.BEKLIYOR -> KutuGorunumu(
-                    ad, "İşaretleniyor", KutuDurumu.AKTIF, false,
-                    "$ad namazı işaretleniyor",
+                    ad, MetinDili.sec(dil, "İşaretleniyor", "Marking"), KutuDurumu.AKTIF, false,
+                    MetinDili.sec(dil, "$ad namazı işaretleniyor", "$ad is being marked as prayed"),
                 )
                 else -> KutuGorunumu(
-                    ad, "Çıkış ${saat(bitis)}", KutuDurumu.PASIF, true,
-                    "$ad namazı kılınmadı. Kılındı olarak işaretlemek için dokunun",
+                    ad, MetinDili.sec(dil, "Çıkış ${saat(bitis)}", "Ends ${saat(bitis)}"), KutuDurumu.PASIF, true,
+                    MetinDili.sec(
+                        dil,
+                        "$ad namazı kılınmadı. Kılındı olarak işaretlemek için dokunun",
+                        "$ad not prayed yet. Tap to mark it as prayed",
+                    ),
                 )
             }
         }
         val sonraki = durum.sonraki
             ?: return KutuGorunumu(
-                "Namaz vakti", "Uygulamayı açın", KutuDurumu.KULLANILAMAZ, false,
-                "Vakit bilgisi yok. Uygulamayı açın",
+                MetinDili.sec(dil, "Namaz vakti", "Prayer time"),
+                MetinDili.sec(dil, "Uygulamayı açın", "Open the app"),
+                KutuDurumu.KULLANILAMAZ, false,
+                MetinDili.sec(dil, "Vakit bilgisi yok. Uygulamayı açın", "No prayer time data. Open the app"),
             )
-        val ad = VakitKodlari.gorunenAd(sonraki.kod)
+        val ad = VakitKodlari.gorunenAd(sonraki.kod, dil)
         return KutuGorunumu(
-            ad, "Giriş ${saat(sonraki.ms)}", KutuDurumu.KULLANILAMAZ, false,
-            "Şu an kılınacak vakit yok. Sıradaki $ad, giriş ${saat(sonraki.ms)}",
+            ad, MetinDili.sec(dil, "Giriş ${saat(sonraki.ms)}", "Starts ${saat(sonraki.ms)}"), KutuDurumu.KULLANILAMAZ, false,
+            MetinDili.sec(
+                dil,
+                "Şu an kılınacak vakit yok. Sıradaki $ad, giriş ${saat(sonraki.ms)}",
+                "There is no prayer to mark right now. Next is $ad, starting at ${saat(sonraki.ms)}",
+            ),
         )
     }
 }

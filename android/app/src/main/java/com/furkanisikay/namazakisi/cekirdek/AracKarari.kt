@@ -37,6 +37,17 @@ object AracKarari {
     /** Cami verisi paketlenmemişse ya da yakında kayıt yoksa. */
     const val CAMI_YOK_METNI = "Yakınınızda kayıtlı cami bulunamadı."
 
+    /** [KONUM_YOK_METNI]'nin arayüz dilindeki hâli. */
+    fun konumYokMetni(dil: String = MetinDili.TR): String = MetinDili.sec(
+        dil,
+        KONUM_YOK_METNI,
+        "Location is needed to show nearby mosques. When your car is safely stopped, open Namaz Akışı on your phone and allow location access.",
+    )
+
+    /** [CAMI_YOK_METNI]'nin arayüz dilindeki hâli. */
+    fun camiYokMetni(dil: String = MetinDili.TR): String =
+        MetinDili.sec(dil, CAMI_YOK_METNI, "No listed mosques were found near you.")
+
     /** Host sınırı bilinmiyorsa liste en fazla bu kadar cami gösterir. */
     const val VARSAYILAN_CAMI_SAYISI = 6
 
@@ -48,15 +59,23 @@ object AracKarari {
      * ("Öğle · 42 dk kaldı"); kılındıysa ya da vakit arasındaysa sıradaki vaktin
      * girişi ("Sıradaki İkindi · 15:42"). Saate hal eki EKLENMEZ.
      */
-    fun baslik(durum: VakitDurumu, kildim: KildimDurumu, simdiMs: Long, saat: (Long) -> String): String {
+    fun baslik(
+        durum: VakitDurumu,
+        kildim: KildimDurumu,
+        simdiMs: Long,
+        saat: (Long) -> String,
+        dil: String = MetinDili.TR,
+    ): String {
         val aktif = durum.aktif
         val bitis = durum.bitisMs
         if (aktif != null && bitis != null && kildim == KildimDurumu.KILINABILIR) {
             val dk = AsistanKarari.kalanDakika(bitis, simdiMs)
-            return "${VakitKodlari.gorunenAd(aktif.kod)} · $dk dk kaldı"
+            val ad = VakitKodlari.gorunenAd(aktif.kod, dil)
+            return MetinDili.sec(dil, "$ad · $dk dk kaldı", "$ad · $dk min left")
         }
         val s = durum.sonraki ?: return VARSAYILAN_BASLIK
-        return "Sıradaki ${VakitKodlari.gorunenAd(s.kod)} · ${saat(s.ms)}"
+        val ad = VakitKodlari.gorunenAd(s.kod, dil)
+        return MetinDili.sec(dil, "Sıradaki $ad · ${saat(s.ms)}", "Next: $ad · ${saat(s.ms)}")
     }
 
     /** Listede gösterilecek cami sayısı (host sınırı `ConstraintManager`'dan gelir). */

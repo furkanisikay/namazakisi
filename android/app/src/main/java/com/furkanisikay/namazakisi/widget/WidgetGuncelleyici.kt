@@ -14,6 +14,7 @@ import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
 import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.arayuzDili
 import com.furkanisikay.namazakisi.cekirdek.KildimDurumu
 import com.furkanisikay.namazakisi.cekirdek.KilitEkraniKarari
 import com.furkanisikay.namazakisi.cekirdek.KlasikWidgetKarari
@@ -27,6 +28,7 @@ import com.furkanisikay.namazakisi.cekirdek.WidgetDuzeni
 import com.furkanisikay.namazakisi.cekirdek.WidgetZemini
 import com.furkanisikay.namazakisi.cekirdek.kildimIstekKodu
 import com.furkanisikay.namazakisi.cekirdek.saatMetni
+import com.furkanisikay.namazakisi.dildeBaglam
 import com.furkanisikay.namazakisi.kildim.KildimKutusuServisi
 import com.furkanisikay.namazakisi.otomasyon.OtomasyonDeposu
 
@@ -43,7 +45,13 @@ import com.furkanisikay.namazakisi.otomasyon.OtomasyonDeposu
  *
  * Tazeleme tetikleri: vakit sınırı alarmı, saat/saat dilimi/tarih değişimi, açılış
  * ve paket güncellemesi (`NamazWidgetAlarmAlici`), JS'ten vakit ya da kılınmışlık
- * yazımı (`WidgetVeriModulu`), widget/kutu dokunuşu.
+ * yazımı (`WidgetVeriModulu`), widget/kutu dokunuşu, arayüz dili değişimi
+ * (`ArayuzDiliIzleyici`).
+ *
+ * METİN KODDA verilir (`setTextViewText`/`setContentDescription`), düzen XML'inde DEĞİL:
+ * XML'deki `@string` başlatıcının sürecinde ve CİHAZ dilinde çözülür, uygulama dili farklıysa
+ * widget yanlış dilde kalırdı. Kaynak metinleri `dildeBaglam()`'dan, saf kararların metinleri
+ * `dil` parametresiyle (`arayuzDili()`) gelir.
  */
 object WidgetGuncelleyici {
     private const val TAG = "WidgetGuncelleyici"
@@ -148,9 +156,10 @@ object WidgetGuncelleyici {
         anlik: WidgetVeriDeposu.Anlik,
     ): RemoteViews {
         val saglayici = yonetici.getAppWidgetInfo(id)?.provider?.className
+        val dm = DilMetni(context.dildeBaglam(), context.arayuzDili())
         // Klasik (yeşil) widget'lar: sabit tek düzen, boyut haritası ve ayar YOK.
-        if (saglayici == NamazKlasikWidget::class.java.name) return klasikCiz(context, genis = false, anlik)
-        if (saglayici == NamazKlasikGenisWidget::class.java.name) return klasikCiz(context, genis = true, anlik)
+        if (saglayici == NamazKlasikWidget::class.java.name) return klasikCiz(context, genis = false, anlik, dm)
+        if (saglayici == NamazKlasikGenisWidget::class.java.name) return klasikCiz(context, genis = true, anlik, dm)
         val ayar = WidgetVeriDeposu.ayar(context, id)
         val secenek = yonetici.getAppWidgetOptions(id)
         // Kilit ekranı / hub (issue #295): communal ana bilgisayarı KEYGUARD kategorisiyle
@@ -164,11 +173,11 @@ object WidgetGuncelleyici {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return RemoteViews(
                 mapOf(
-                    SizeF(40f, 40f) to ciz(context, WidgetDuzeni.KUCUK, ayar, anlik, kilitEkrani, kapakEkrani),
+                    SizeF(40f, 40f) to ciz(context, WidgetDuzeni.KUCUK, ayar, anlik, kilitEkrani, kapakEkrani, dm),
                     SizeF(WidgetDuzenSecici.ORTA_MIN_GENISLIK_DP, WidgetDuzenSecici.ORTA_MIN_YUKSEKLIK_DP) to
-                        ciz(context, WidgetDuzeni.ORTA, ayar, anlik, kilitEkrani, kapakEkrani),
+                        ciz(context, WidgetDuzeni.ORTA, ayar, anlik, kilitEkrani, kapakEkrani, dm),
                     SizeF(WidgetDuzenSecici.GENIS_MIN_GENISLIK_DP, WidgetDuzenSecici.ORTA_MIN_YUKSEKLIK_DP) to
-                        ciz(context, WidgetDuzeni.GENIS, ayar, anlik, kilitEkrani, kapakEkrani),
+                        ciz(context, WidgetDuzeni.GENIS, ayar, anlik, kilitEkrani, kapakEkrani, dm),
                 )
             )
         }
@@ -181,7 +190,15 @@ object WidgetGuncelleyici {
         } else {
             WidgetDuzeni.KUCUK
         }
-        return ciz(context, duzen, ayar, anlik, kilitEkrani, kapakEkrani)
+        return ciz(context, duzen, ayar, anlik, kilitEkrani, kapakEkrani, dm)
+    }
+
+    /**
+     * Bir çizim turunun dili: [m] arayüz dilindeki kaynak bağlamı (YALNIZ metin çözmek için;
+     * renk/niyet asıl bağlamla), [dil] saf kararlara verilen kod.
+     */
+    private class DilMetni(val m: Context, val dil: String) {
+        fun s(id: Int, vararg args: Any): String = m.getString(id, *args)
     }
 
     private fun ciz(
@@ -191,6 +208,7 @@ object WidgetGuncelleyici {
         a: WidgetVeriDeposu.Anlik,
         kilitEkrani: Boolean,
         kapakEkrani: Boolean,
+        dm: DilMetni,
     ): RemoteViews {
         val v = RemoteViews(
             context.packageName,
@@ -212,9 +230,9 @@ object WidgetGuncelleyici {
         val sonraki = durum.sonraki
         // Hedef: aktif vaktin ÇIKIŞI; güneş→öğle arasında sıradaki vaktin GİRİŞİ.
         val (ad, hedefMs, sinirEtiketi) = when {
-            aktif != null && bitis != null -> Triple(VakitKodlari.gorunenAd(aktif.kod), bitis, "Çıkış")
-            sonraki != null -> Triple(VakitKodlari.gorunenAd(sonraki.kod), sonraki.ms, "Giriş")
-            else -> Triple("Namaz vakti", null, null)
+            aktif != null && bitis != null -> Triple(VakitKodlari.gorunenAd(aktif.kod, dm.dil), bitis, R.string.widget_cikis)
+            sonraki != null -> Triple(VakitKodlari.gorunenAd(sonraki.kod, dm.dil), sonraki.ms, R.string.widget_giris)
+            else -> Triple(dm.s(R.string.widget_namaz_vakti), null, null)
         }
         val kildimNiyeti = if (KilitEkraniKarari.kildimNiyetiVerilsinMi(a.kildim, kilitEkrani) && aktif != null) {
             kildimNiyeti(context, aktif.tarih, aktif.kod)
@@ -222,7 +240,8 @@ object WidgetGuncelleyici {
 
         v.setTextViewText(R.id.widget_vakit_adi, ad)
         metinRengi(context, v, R.id.widget_vakit_adi, p.metin)
-        val bitisMetni = if (hedefMs != null) "$sinirEtiketi ${saatMetni(hedefMs)}" else "Uygulamayı açın"
+        val bitisMetni = if (hedefMs != null && sinirEtiketi != null) dm.s(sinirEtiketi, saatMetni(hedefMs))
+        else dm.s(R.string.widget_uygulamayi_acin)
 
         if (duzen == WidgetDuzeni.KUCUK) {
             v.setTextViewText(R.id.widget_bitis, bitisMetni)
@@ -230,7 +249,7 @@ object WidgetGuncelleyici {
             gorselRengi(context, v, R.id.widget_kildim, if (a.kildim == KildimDurumu.YOK) p.ikincil else p.vurgu)
             isaretiCiz(context, v, R.id.widget_kildim_ikon, a.kildim, p)
             v.setOnClickPendingIntent(R.id.widget_kildim, kildimNiyeti ?: uygulamaAc)
-            v.setContentDescription(R.id.widget_kildim, KilitEkraniKarari.erisimMetni(ad, a.kildim, kilitEkrani, kapakEkrani))
+            v.setContentDescription(R.id.widget_kildim, KilitEkraniKarari.erisimMetni(ad, a.kildim, kilitEkrani, kapakEkrani, dm.dil))
             return v
         }
 
@@ -256,20 +275,20 @@ object WidgetGuncelleyici {
 
         // Flex Window ipucu "sıradaki" satırının yerine geçer (kapak ekranında dokunuş
         // uygulamayı açamayabilir — `KilitEkraniKarari.kapakIpucu`).
-        val sonrakiMetni = KilitEkraniKarari.kapakIpucu(kapakEkrani, a.kildim) ?: when {
+        val sonrakiMetni = KilitEkraniKarari.kapakIpucu(kapakEkrani, a.kildim, dm.dil) ?: when {
             !ayar.sonrakiGoster || sonraki == null -> null
-            aktif != null -> "Sıradaki ${VakitKodlari.gorunenAd(sonraki.kod)} · ${saatMetni(sonraki.ms)}"
-            else -> "Şu an kılınacak vakit yok"
+            aktif != null -> dm.s(R.string.widget_siradaki, VakitKodlari.gorunenAd(sonraki.kod, dm.dil), saatMetni(sonraki.ms))
+            else -> dm.s(R.string.widget_kilinacak_vakit_yok)
         }
         v.setViewVisibility(R.id.widget_sonraki, if (sonrakiMetni == null) View.GONE else View.VISIBLE)
         v.setTextViewText(R.id.widget_sonraki, sonrakiMetni ?: "")
         metinRengi(context, v, R.id.widget_sonraki, p.ikincil)
 
-        dugmeyiCiz(context, v, a.kildim, sayacVar, kilitEkrani, p)
+        dugmeyiCiz(context, v, a.kildim, sayacVar, kilitEkrani, p, dm)
         v.setOnClickPendingIntent(R.id.widget_kildim, kildimNiyeti ?: uygulamaAc)
-        v.setContentDescription(R.id.widget_kildim, KilitEkraniKarari.erisimMetni(ad, a.kildim, kilitEkrani, kapakEkrani))
+        v.setContentDescription(R.id.widget_kildim, KilitEkraniKarari.erisimMetni(ad, a.kildim, kilitEkrani, kapakEkrani, dm.dil))
 
-        if (duzen == WidgetDuzeni.GENIS) listeyiCiz(context, v, a, p)
+        if (duzen == WidgetDuzeni.GENIS) listeyiCiz(context, v, a, p, dm)
         return v
     }
 
@@ -290,7 +309,7 @@ object WidgetGuncelleyici {
      * girişte (güneş dahil) zaten uyandığı için hedef doğru anda yenilenir. Kararlar
      * `KlasikWidgetKarari`'nda (JVM testli). Dokunuş = uygulamayı aç (Kıldım yok).
      */
-    private fun klasikCiz(context: Context, genis: Boolean, a: WidgetVeriDeposu.Anlik): RemoteViews {
+    private fun klasikCiz(context: Context, genis: Boolean, a: WidgetVeriDeposu.Anlik, dm: DilMetni): RemoteViews {
         val v = RemoteViews(context.packageName, if (genis) R.layout.widget_klasik_genis else R.layout.widget_klasik)
         val kok = if (genis) R.id.klasik_genis_kok else R.id.klasik_kok
         val adId = if (genis) R.id.klasik_genis_vakit_adi else R.id.klasik_vakit_adi
@@ -300,27 +319,27 @@ object WidgetGuncelleyici {
 
         val sonraki = KlasikWidgetKarari.sonrakiGiris(a.vakitler, a.simdiMs)
         if (sonraki == null) {
-            v.setTextViewText(adId, if (genis) "--" else "uygulamayı açın")
+            v.setTextViewText(adId, if (genis) "--" else dm.s(R.string.widget_klasik_uygulamayi_acin))
             v.setTextViewText(metinId, "--:--")
             v.setViewVisibility(metinId, View.VISIBLE)
             v.setViewVisibility(sayacId, View.GONE)
-            v.setContentDescription(kok, "Namaz vakitleri için uygulamayı açın")
+            v.setContentDescription(kok, dm.s(R.string.widget_klasik_erisim_veri_yok))
         } else {
-            v.setTextViewText(adId, KlasikWidgetKarari.yonelmeHali(sonraki.kod, buyukHarf = genis))
+            v.setTextViewText(adId, KlasikWidgetKarari.yonelmeHali(sonraki.kod, buyukHarf = genis, dil = dm.dil))
             v.setChronometer(sayacId, SystemClock.elapsedRealtime() + (sonraki.ms - a.simdiMs), null, true)
             v.setChronometerCountDown(sayacId, true)
             v.setViewVisibility(sayacId, View.VISIBLE)
             v.setViewVisibility(metinId, View.GONE)
             v.setContentDescription(
                 kok,
-                "Sıradaki vakit ${VakitKodlari.gorunenAd(sonraki.kod)}, giriş ${saatMetni(sonraki.ms)}",
+                dm.s(R.string.widget_klasik_erisim_siradaki, VakitKodlari.gorunenAd(sonraki.kod, dm.dil), saatMetni(sonraki.ms)),
             )
         }
         if (!genis) return v
 
         for (satir in KlasikWidgetKarari.satirlar(a.vakitler, a.simdiMs)) {
             val (satirId, satirAdId, saatId) = KLASIK_SATIRLAR[satir.kod] ?: continue
-            v.setTextViewText(satirAdId, KlasikWidgetKarari.satirAdi(satir.kod))
+            v.setTextViewText(satirAdId, KlasikWidgetKarari.satirAdi(satir.kod, dm.dil))
             v.setTextViewText(saatId, satir.ms?.let { saatMetni(it) } ?: "--:--")
             v.setInt(satirId, "setBackgroundResource", if (satir.aktif) R.drawable.widget_klasik_satir_aktif else 0)
             val renk = if (satir.aktif) R.color.widget_klasik_metin else R.color.widget_klasik_metin_soluk
@@ -337,6 +356,7 @@ object WidgetGuncelleyici {
         veriVar: Boolean,
         kilitEkrani: Boolean,
         p: Palet,
+        dm: DilMetni,
     ) {
         if (!KilitEkraniKarari.dugmeGorunurMu(kildim, veriVar, kilitEkrani)) {
             v.setViewVisibility(R.id.widget_kildim_dugme, View.GONE)
@@ -349,12 +369,14 @@ object WidgetGuncelleyici {
         v.setInt(R.id.widget_kildim, "setImageAlpha", if (etkin) 255 else 56)
         v.setTextViewText(
             R.id.widget_kildim_metin,
-            when (kildim) {
-                KildimDurumu.KILINABILIR -> "Kıldım"
-                KildimDurumu.BEKLIYOR -> "İşaretleniyor"
-                KildimDurumu.KILINDI -> "Kılındı"
-                KildimDurumu.YOK -> "Vakit girmedi"
-            },
+            dm.s(
+                when (kildim) {
+                    KildimDurumu.KILINABILIR -> R.string.widget_dugme_kildim
+                    KildimDurumu.BEKLIYOR -> R.string.widget_dugme_isaretleniyor
+                    KildimDurumu.KILINDI -> R.string.widget_dugme_kilindi
+                    KildimDurumu.YOK -> R.string.widget_dugme_vakit_girmedi
+                }
+            ),
         )
         metinRengi(context, v, R.id.widget_kildim_metin, if (etkin) p.vurguUstu else p.metin)
         when (kildim) {
@@ -383,7 +405,7 @@ object WidgetGuncelleyici {
         }
     }
 
-    private fun listeyiCiz(context: Context, v: RemoteViews, a: WidgetVeriDeposu.Anlik, p: Palet) {
+    private fun listeyiCiz(context: Context, v: RemoteViews, a: WidgetVeriDeposu.Anlik, p: Palet, dm: DilMetni) {
         val gun = VakitCizelgesi.gosterilecekGun(a.durum)
         val vakitler = if (gun == null) emptyList() else VakitCizelgesi.gunVakitleri(a.vakitler, gun)
         val kilinan = if (gun == null) emptySet() else a.kilinanlar[gun].orEmpty()
@@ -392,7 +414,7 @@ object WidgetGuncelleyici {
             val (satir, adId, saatId, isaretId) = idler.toList()
             val giris = vakitler.firstOrNull { it.kod == kod }
             val buSatirAktif = aktif != null && aktif.kod == kod && aktif.tarih == gun
-            v.setTextViewText(adId, VakitKodlari.gorunenAd(kod))
+            v.setTextViewText(adId, VakitKodlari.gorunenAd(kod, dm.dil))
             v.setTextViewText(saatId, if (giris != null) saatMetni(giris.ms) else "--:--")
             metinRengi(context, v, adId, if (buSatirAktif) p.metin else p.ikincil)
             metinRengi(context, v, saatId, if (buSatirAktif) p.metin else p.ikincil)

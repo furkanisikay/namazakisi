@@ -25,6 +25,7 @@ import {
 import { oneUiNotu, rutinOnkosulNotu } from '../../core/otomasyon/rehberNotlari';
 import { bicim, metin } from '../../core/dil/aktifDil';
 import { useMetin } from '../hooks/useMetin';
+import { cihazYerelAyari } from '../../domain/services/DilServisi';
 import { useCihazDurumu } from '../hooks/useCihazDurumu';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 
@@ -79,12 +80,27 @@ const SEKMELER: { id: Sekme; readonly etiket: string; ikon: string }[] = [
  * Native etiketler (Android `res/values`, W5'e kadar YALNIZ Türkçe): rehber bunları
  * kullanıcının ekranda gördüğü gibi aynen yazar; çevrilmiş ad bulunamazdı.
  */
+/**
+ * Native kısayol ve eklenti etiketleri — başlatıcı ve Tasker/MacroDroid onları TELEFONUN
+ * diliyle çözer (uygulama dili değil): `android/app/src/main/res/values[-en]`. Rehber de
+ * telefonun dilindeki adı gösterir; İngilizce dışındaki cihaz dilleri Türkçe varsayılana düşer.
+ */
 const NATIVE_ETIKETLER = {
-    kisayol: 'Şu anki vakti kıldım', // dil-haric: kimlik (native kısayol etiketi)
-    olay: 'Namaz Akışı: Vakit olayı', // dil-haric: kimlik (native eklenti etiketi)
-    kosul: 'Namaz Akışı: Vakit durumu', // dil-haric: kimlik (native eklenti etiketi)
-    eylem: 'Namaz Akışı: Kıldım', // dil-haric: kimlik (native eklenti etiketi)
+    tr: {
+        kisayol: 'Şu anki vakti kıldım', // dil-haric: kimlik (native kısayol etiketi, values/)
+        olay: 'Namaz Akışı: Vakit olayı', // dil-haric: kimlik (native eklenti etiketi, values/)
+        kosul: 'Namaz Akışı: Vakit durumu', // dil-haric: kimlik (native eklenti etiketi, values/)
+        eylem: 'Namaz Akışı: Kıldım', // dil-haric: kimlik (native eklenti etiketi, values/)
+    },
+    en: {
+        kisayol: "I've prayed the current prayer",
+        olay: 'Namaz Akışı: Prayer time event',
+        kosul: 'Namaz Akışı: Prayer time status',
+        eylem: "Namaz Akışı: I've prayed",
+    },
 } as const;
+
+const nativeEtiketler = () => (cihazYerelAyari()?.split(/[-_]/)[0] === 'en' ? NATIVE_ETIKETLER.en : NATIVE_ETIKETLER.tr);
 
 const Kart: React.FC<{ renkler: Renkler; ikon: string; baslik: string; children: React.ReactNode; testID?: string }> = ({
     renkler,
@@ -187,7 +203,7 @@ const RutinlerRehberi: React.FC<{ renkler: Renkler; onkosul: string | null }> = 
             </View>
         </Kart>
         <Kart renkler={renkler} ikon="check" baslik={mo.rutinKildimBaslik} testID="rehber-rutin-kildim">
-            <Adimlar renkler={renkler} adimlar={mo.rutinKildimAdimlar.map((a) => bicim(a, NATIVE_ETIKETLER))} />
+            <Adimlar renkler={renkler} adimlar={mo.rutinKildimAdimlar.map((a) => bicim(a, nativeEtiketler()))} />
         </Kart>
         <Notlar renkler={renkler} notlar={[mo.rutinSessiz, ...(onkosul ? [onkosul] : []), oneUiNotu()]} />
     </View>
@@ -201,7 +217,7 @@ const EklentiRehberi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
         <Kart renkler={renkler} ikon="bolt" baslik={mo.eklentiOlayBaslik} testID="rehber-eklenti-olay">
             <Adimlar
                 renkler={renkler}
-                adimlar={mo.eklentiOlayAdimlar.map((a) => bicim(a, { ...NATIVE_ETIKETLER, dk: CIKIYOR_ESIK_DK }))}
+                adimlar={mo.eklentiOlayAdimlar.map((a) => bicim(a, { ...nativeEtiketler(), dk: CIKIYOR_ESIK_DK }))}
             />
             <Text className="text-xs font-bold mt-4 mb-2" style={{ color: renkler.metinIkincil }}>
                 {mo.degiskenler}
@@ -220,7 +236,7 @@ const EklentiRehberi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
             </View>
         </Kart>
         <Kart renkler={renkler} ikon="check" baslik={mo.eklentiKildimBaslik} testID="rehber-eklenti-kildim">
-            <Adimlar renkler={renkler} adimlar={mo.eklentiKildimAdimlar.map((a) => bicim(a, NATIVE_ETIKETLER))} />
+            <Adimlar renkler={renkler} adimlar={mo.eklentiKildimAdimlar.map((a) => bicim(a, nativeEtiketler()))} />
         </Kart>
         <Notlar renkler={renkler} notlar={mo.eklentiNotlar.map((n) => bicim(n, { kelime: vakitGirdiEki() }))} />
     </View>

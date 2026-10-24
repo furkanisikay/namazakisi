@@ -2,6 +2,9 @@
 <!--
   Klasik (yeşil) 4×2 widget — Widget 1.0 görünümü (solda geri sayım, sağda günün altı
   vakti, içinde bulunulan vakit koyu bantla). Çizici: `WidgetGuncelleyici.klasikCiz`.
+  DİL: `@string/widget_onizleme_*` YALNIZ seçici önizlemesidir (previewLayout, başlatıcı CİHAZ
+  dilinde çözer); gerçek widget'ta her ad/saat `klasikCiz` tarafından UYGULAMA dilinde KODDA
+  yazılır. Buraya çizimde görünecek metin ekleme.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/klasik_genis_kok"
@@ -25,7 +28,7 @@
             android:id="@+id/klasik_genis_vakit_adi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Akşama"
+            android:text="@string/widget_onizleme_klasik_genis"
             android:textColor="@color/widget_klasik_metin"
             android:textSize="17sp"
             android:maxLines="1" />
@@ -77,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:text="İmsak"
+                android:text="@string/widget_onizleme_imsak"
                 android:textColor="@color/widget_klasik_metin_soluk"
                 android:textSize="12sp"
                 android:maxLines="1" />
@@ -106,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:text="Güneş"
+                android:text="@string/widget_onizleme_gunes"
                 android:textColor="@color/widget_klasik_metin_soluk"
                 android:textSize="12sp"
                 android:maxLines="1" />
@@ -135,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:text="Öğle"
+                android:text="@string/widget_onizleme_ogle"
                 android:textColor="@color/widget_klasik_metin_soluk"
                 android:textSize="12sp"
                 android:maxLines="1" />
@@ -164,7 +167,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:text="İkindi"
+                android:text="@string/widget_onizleme_ikindi"
                 android:textColor="@color/widget_klasik_metin_soluk"
                 android:textSize="12sp"
                 android:maxLines="1" />
@@ -193,7 +196,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:text="Akşam"
+                android:text="@string/widget_onizleme_aksam"
                 android:textColor="@color/widget_klasik_metin_soluk"
                 android:textSize="12sp"
                 android:maxLines="1" />
@@ -222,7 +225,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:text="Yatsı"
+                android:text="@string/widget_onizleme_yatsi"
                 android:textColor="@color/widget_klasik_metin_soluk"
                 android:textSize="12sp"
                 android:maxLines="1" />

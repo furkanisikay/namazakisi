@@ -2,6 +2,7 @@ package com.furkanisikay.namazakisi.alarm
 
 import android.app.Activity
 import android.app.KeyguardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -20,6 +21,7 @@ import android.widget.LinearLayout
 import android.widget.TextClock
 import android.widget.TextView
 import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.dildeBaglam
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari.KildimYolu
 
@@ -64,6 +66,11 @@ class MuhafizAlarmActivity : Activity() {
                 MuhafizAlarmKurallari.calmaBittiMi(baslangicMs, System.currentTimeMillis())
             if (bitti) finish() else zamanlayici.postDelayed(this, 1_000L)
         }
+    }
+
+    /** Düğmeler ("Kıldım", "Kapat") UYGULAMANIN arayüz dilinde; başlık/metin yükten (JS etkin dilde yazar). */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase.dildeBaglam())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

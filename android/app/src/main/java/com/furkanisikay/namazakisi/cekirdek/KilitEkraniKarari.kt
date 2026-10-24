@@ -58,22 +58,30 @@ object KilitEkraniKarari {
      * yazılır: telefonu açıp işaretleyin. Kapak dışında ya da kılınabilir olmayan
      * durumda `null` (satır normal içeriğini gösterir).
      */
-    fun kapakIpucu(kapakEkrani: Boolean, kildim: KildimDurumu): String? =
-        if (kapakEkrani && kildim == KildimDurumu.KILINABILIR) KAPAK_IPUCU else null
+    fun kapakIpucu(kapakEkrani: Boolean, kildim: KildimDurumu, dil: String = MetinDili.TR): String? =
+        if (kapakEkrani && kildim == KildimDurumu.KILINABILIR) kapakIpucuMetni(dil) else null
 
-    /** Ekran okuyucu metni — kilit ekranında işaretleme vaadi verilmez. */
+    /** [KAPAK_IPUCU]'nun arayüz dilindeki hâli. */
+    fun kapakIpucuMetni(dil: String = MetinDili.TR): String =
+        MetinDili.sec(dil, KAPAK_IPUCU, "Open your phone to mark it")
+
+    /**
+     * Ekran okuyucu metni — kilit ekranında işaretleme vaadi verilmez. [ad] çağıranın
+     * aynı dilde verdiği görünen vakit adıdır ([VakitKodlari.gorunenAd]).
+     */
     fun erisimMetni(
         ad: String,
         kildim: KildimDurumu,
         kilitEkrani: Boolean,
         kapakEkrani: Boolean = false,
+        dil: String = MetinDili.TR,
     ): String = when (kildim) {
         KildimDurumu.KILINABILIR ->
-            if (kapakEkrani) "$ad namazı kılınmadı. $KAPAK_IPUCU"
-            else if (kilitEkrani) "$ad namazı kılınmadı. İşaretlemek için uygulamayı açın"
-            else "$ad namazını kılındı olarak işaretleyin"
-        KildimDurumu.BEKLIYOR -> "$ad namazı işaretleniyor"
-        KildimDurumu.KILINDI -> "$ad namazı kılındı. Uygulamayı açın"
-        KildimDurumu.YOK -> "Uygulamayı açın"
+            if (kapakEkrani) MetinDili.sec(dil, "$ad namazı kılınmadı. $KAPAK_IPUCU", "$ad not prayed yet. ${kapakIpucuMetni(dil)}")
+            else if (kilitEkrani) MetinDili.sec(dil, "$ad namazı kılınmadı. İşaretlemek için uygulamayı açın", "$ad not prayed yet. Open the app to mark it")
+            else MetinDili.sec(dil, "$ad namazını kılındı olarak işaretleyin", "Mark $ad as prayed")
+        KildimDurumu.BEKLIYOR -> MetinDili.sec(dil, "$ad namazı işaretleniyor", "$ad is being marked as prayed")
+        KildimDurumu.KILINDI -> MetinDili.sec(dil, "$ad namazı kılındı. Uygulamayı açın", "$ad prayed. Open the app")
+        KildimDurumu.YOK -> MetinDili.sec(dil, "Uygulamayı açın", "Open the app")
     }
 }
