@@ -66,6 +66,18 @@ export const genel: Sozluk['genel'] = {
     bilinmiyor: 'Unknown',
   },
   tani: {
+    sayfa: {
+      ozet: "If something goes wrong, you can send us the technical diagnostic log. Nothing is sent automatically, and your personal data isn't shared.",
+      sorunBildirin: 'Report a problem',
+      ayarlarBaslik: 'SETTINGS',
+      hatirlatin: 'Remind me when something goes wrong',
+      hatirlatinAciklama: 'Asks with a notification if an error occurs',
+      araclarBaslik: 'TOOLS',
+      gonderilecek: 'See what will be sent',
+      gonderilecekAciklama: 'You see all of it before sending',
+      kayitlar: 'Open diagnostic logs',
+      kayitlarAciklama: "The app's technical log",
+    },
     rapor: {
       giris: 'Hello, I ran into a problem in the app. The technical diagnostic log is attached.',
       surum: 'Version: {surum}',

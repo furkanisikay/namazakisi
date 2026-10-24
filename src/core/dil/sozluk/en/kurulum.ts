@@ -52,6 +52,7 @@ export const kurulum: Sozluk['kurulum'] = {
     sesliBaslik: 'Should the phone say the prayer time aloud?',
     sesliAciklama: 'The last reminder reads the prayer time aloud.',
     sesliDinleyin: 'Listen to the read-aloud',
+    dinleyin: 'Listen',
     sabahBaslik: 'Wake me for Fajr',
     sabahAciklama: 'The first Fajr reminder rings as an alarm.',
     geceBaslik: 'Keep nights quiet',

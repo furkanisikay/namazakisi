@@ -31,6 +31,7 @@ export const anaEkran: Sozluk['anaEkran'] = {
     masaustuErisim: '{ad}, {aralik}. {sayac}: {kalan}.',
   },
   sayfa: {
+    gecmisGun: 'Viewing a past day',
     vakit: 'Prayer',
     yukleniyor: 'Loading...',
     tekrarDene: 'Try again',

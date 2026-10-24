@@ -56,6 +56,8 @@ export const seri = {
 
   /** Kutlama başlık ve mesajları (`RozetYoneticisiServisi`). */
   kutlama: {
+    rozetEklendi: '🏅 Rozet koleksiyonunuza eklendi',
+    paylasin: 'Paylaşın',
     rozetBaslik: 'Allah daim etsin',
     rozetMesaj: '"{ad}" rozetini kazandınız.',
     hedefBaslik: cogul({ one: '{n} gün', other: '{n} gün' }),
@@ -136,6 +138,18 @@ export const seri = {
 
   /** Toparlanma modalı. */
   toparlanma: {
+    kartBaslik: 'TOPARLANMA MODU',
+    kartAltBaslik: 'Serinize yeniden kavuşabilirsiniz',
+    /** `{vurgu}` kalın çizilen gün sayısıdır (`oncekiGun`). */
+    kartMesaj: '{vurgu} serinize kaldığınız yerden devam edebilirsiniz.',
+    oncekiGun: cogul({ one: '{n} günlük', other: '{n} günlük' }),
+    ilerleme: '{tamam}/{hedef} gün tamamlandı',
+    kalan: cogul({
+      one: '{n} gün daha beş vakti tamamladığınızda seriniz kaldığı yerden sürer.',
+      other: '{n} gün daha beş vakti tamamladığınızda seriniz kaldığı yerden sürer.',
+    }),
+    bugun: 'Bugünü tamamladığınızda seriniz kaldığı yerden sürer.',
+    uyari: 'Bu günleri art arda tamamlamanız yeterli; arada boş gün kalırsa toparlanma yeniden başlar.',
     kapatErisim: 'Toparlanma modalını kapat',
     anladim: 'Anladım',
   },

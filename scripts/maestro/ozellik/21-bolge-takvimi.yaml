@@ -6,12 +6,14 @@ appId: com.furkanisikay.namazakisi
 ---
 - launchApp:
     stopApp: true
-# Acilis modali ("Devam Et") varsa once kapanir: kart ancak o kapaninca acilir.
+# Acilis modali (kutlama "Devam edin", id kutlama-devam) varsa once kapanir: kart ancak o kapaninca acilir.
 - repeat:
     while:
-      visible: "Devam Et"
+      visible:
+        id: "kutlama-devam"
     commands:
-      - tapOn: "Devam Et"
+      - tapOn:
+          id: "kutlama-devam"
 - extendedWaitUntil:
     visible:
       id: "bolge-takvimi-modali"
@@ -24,7 +26,7 @@ appId: com.furkanisikay.namazakisi
 - startRecording: ozk/bolge-takvimi
 - waitForAnimationToEnd:
     timeout: 2000
-- tapOn: "JAKIM takvimine geçin"
+- tapOn: "(JAKIM takvimine geçin|Switch to JAKIM)"
 - extendedWaitUntil:
     visible:
       id: "yontem-cipi"

@@ -27,6 +27,7 @@ export const kible: Sozluk['kible'] = {
     baslatilamadi: "The Qibla service couldn't start.",
   },
   pusula: {
+    ufuk: 'horizon',
     konumAliniyor: 'Getting your location…',
     hazirlaniyor: 'Preparing the compass…',
     kuzeydenAci: 'Qibla is {derece}° from north',

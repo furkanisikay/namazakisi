@@ -9,4 +9,6 @@ export const ortak = {
   evet: 'Evet',
   hayir: 'Hayır',
   ayrintilariAcar: 'Ayrıntıları açar',
+  /** Uygulamanın adı; her dilde aynı (marka). */
+  marka: 'Namaz Akışı',
 } as const;

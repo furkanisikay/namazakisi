@@ -157,7 +157,7 @@ export const PusulaGorunumu: React.FC<{
         accessibilityLabel={bicim(m.pusulaErisim, { cumle })}
       >
         <Animated.View pointerEvents="none" style={[styles.ufuk, { top: UST / 2, borderColor: renkler.sinir }, ufukStili]}>
-          <Text style={[styles.ufukMetni, { color: renkler.metinIkincil }]}>ufuk</Text>
+          <Text style={[styles.ufukMetni, { color: renkler.metinIkincil }]}>{m.ufuk}</Text>
         </Animated.View>
 
         {/* Sabit çentik: telefonun baktığı yön (statikte anlamsız: kadran kuzey yukarı). */}

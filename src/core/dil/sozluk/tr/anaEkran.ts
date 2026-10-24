@@ -31,6 +31,7 @@ export const anaEkran = {
     masaustuErisim: '{ad} vakti, {aralik}. {sayac} {kalan}.',
   },
   sayfa: {
+    gecmisGun: 'Geçmiş gün görüntüleniyor',
     vakit: 'Vakit',
     yukleniyor: 'Yükleniyor...',
     tekrarDene: 'Tekrar Dene',

@@ -41,7 +41,7 @@ const { agac, dokun, getir, kaydirarakDokun, asagiKaydir, bul, bekle, cek } = s;
 
 
 const KAPATILACAK =
-    /^(İzin Ver|Allow|Allow While Using App|Uygulamayı Kullanırken İzin Ver|Allow Once|Bir Kez İzin Ver|Devam Et|Kapat|Tamam|Anladım|OK)$/i;
+    /^(İzin Ver|Allow|Allow While Using App|Uygulamayı Kullanırken İzin Ver|Allow Once|Bir Kez İzin Ver|Devam Et|Devam edin|Continue|Kapat|Close|Tamam|Anladım|Got it|OK)$/i;
 /**
  * Ana ekran capasi — Maestro akislariyla AYNI: header'daki seri dugmesi ("Seri: N gün";
  * toparlanma modunda "Toparlanma modu: …"). Kible Dalga 4'ten beri sekmedir.

@@ -51,6 +51,8 @@ export const seri: Sozluk['seri'] = {
   },
 
   kutlama: {
+    rozetEklendi: '🏅 Added to your badge collection',
+    paylasin: 'Share',
     rozetBaslik: 'May Allah make it lasting',
     rozetMesaj: 'You earned the "{ad}" badge.',
     hedefBaslik: cogul({ one: '{n} day', other: '{n} days' }),
@@ -123,6 +125,17 @@ export const seri: Sozluk['seri'] = {
   },
 
   toparlanma: {
+    kartBaslik: 'RECOVERY MODE',
+    kartAltBaslik: 'You can get your streak back',
+    kartMesaj: 'You can continue your {vurgu} streak where you left off.',
+    oncekiGun: cogul({ one: '{n}-day', other: '{n}-day' }),
+    ilerleme: '{tamam}/{hedef} days completed',
+    kalan: cogul({
+      one: 'Complete all five prayers for {n} more day and your streak continues where it left off.',
+      other: 'Complete all five prayers for {n} more days and your streak continues where it left off.',
+    }),
+    bugun: 'Complete today and your streak continues where it left off.',
+    uyari: 'The days must be consecutive; if a day is missed in between, recovery starts over.',
     kapatErisim: 'Close recovery details',
     anladim: 'Got it',
   },

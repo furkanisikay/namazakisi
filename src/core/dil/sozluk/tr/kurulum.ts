@@ -51,6 +51,7 @@ export const kurulum = {
     sesliBaslik: 'Telefon vakti sesli söylesin mi?',
     sesliAciklama: 'Son hatırlatmada vakti sesle okur.',
     sesliDinleyin: 'Sesli okumayı dinleyin',
+    dinleyin: 'Dinleyin',
     sabahBaslik: 'Sabah beni uyandırsın',
     sabahAciklama: 'Sabahın ilk hatırlatması alarm olarak çalar.',
     geceBaslik: 'Gece sessiz olsun',

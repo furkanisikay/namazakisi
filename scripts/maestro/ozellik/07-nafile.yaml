@@ -6,17 +6,17 @@ appId: com.furkanisikay.namazakisi
 - runFlow:
     file: _liste-kaydir.yaml
     env:
-      HEDEF: "Hatırlatmalar\\..*"
+      HEDEF: "(Hatırlatmalar|Reminders)\\..*"
 - tapOn:
-    text: "Hatırlatmalar\\..*"
+    text: "(Hatırlatmalar|Reminders)\\..*"
 - scrollUntilVisible:
     element:
-      text: "Nafile namazlar\\..*"
+      id: "satir-nafile"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Nafile namazlar\\..*"
+    id: "satir-nafile"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/18-nafile

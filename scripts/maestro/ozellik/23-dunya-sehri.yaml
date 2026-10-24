@@ -7,11 +7,11 @@ appId: com.furkanisikay.namazakisi
 - runFlow:
     file: _liste-kaydir.yaml
     env:
-      HEDEF: "Namaz vakitleri\\..*"
+      HEDEF: "(Namaz vakitleri|Prayer times)\\..*"
 - tapOn:
-    text: "Namaz vakitleri\\..*"
+    text: "(Namaz vakitleri|Prayer times)\\..*"
 - tapOn:
-    text: "Konum\\..*"
+    text: "(Konum|Location)\\..*"
 - extendedWaitUntil:
     visible:
       id: "manuel-bolge-dunya"
@@ -19,23 +19,23 @@ appId: com.furkanisikay.namazakisi
 - tapOn:
     id: "manuel-bolge-dunya"
 - extendedWaitUntil:
-    visible: "Şehir seçin"
+    visible: "(Şehir seçin|Choose a city)"
     timeout: 10000
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/55-konum-dunya
-- tapOn: "Şehir seçin"
+- tapOn: "(Şehir seçin|Choose a city)"
 - extendedWaitUntil:
-    visible: "Ülke ya da şehir arayın"
+    visible: "(Ülke ya da şehir arayın|Search for a country or city)"
     timeout: 10000
 # Ulke listesi 34 bin sehirlik varlik okununca gelir ("Sehir listesi aciliyor" gider).
 - extendedWaitUntil:
-    notVisible: "Şehir listesi açılıyor"
+    notVisible: "(Şehir listesi açılıyor|Opening the city list)"
     timeout: 30000
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/56-ulke-listesi
-- tapOn: "Ülke ya da şehir arayın"
+- tapOn: "(Ülke ya da şehir arayın|Search for a country or city)"
 - inputText: "Kuala"
 - hideKeyboard
 - waitForAnimationToEnd:

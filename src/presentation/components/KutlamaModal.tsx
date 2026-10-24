@@ -279,7 +279,7 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
                 ]}
               >
                 <Text style={[styles.ekstraBilgiMetin, { color: vurguRengi }]}>
-                  🏅 Rozet koleksiyonunuza eklendi!
+                  {metinSozlugu.seri.kutlama.rozetEklendi}
                 </Text>
               </View>
             )}
@@ -301,7 +301,7 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
               </View>
             )}
 
-            {/* Eylem butonlari: Paylas + Devam Et */}
+            {/* Eylem butonlari: Paylaşın + Devam edin */}
             <View style={styles.butonSatiri}>
               {/* Paylas butonu */}
               <TouchableOpacity
@@ -322,17 +322,19 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
                   style={styles.paylasIkon}
                 />
                 <Text style={[styles.paylasButonMetin, { color: vurguRengi }]}>
-                  Paylaş
+                  {metinSozlugu.seri.kutlama.paylasin}
                 </Text>
               </TouchableOpacity>
 
-              {/* Devam Et butonu */}
+              {/* Devam edin butonu (Maestro: id kutlama-devam) */}
               <TouchableOpacity
                 style={[styles.devamButon, { backgroundColor: vurguRengi }]}
                 onPress={handleKapat}
                 activeOpacity={0.8}
+                accessibilityRole="button"
+                testID="kutlama-devam"
               >
-                <Text style={styles.devamButonMetin}>Devam Et</Text>
+                <Text style={styles.devamButonMetin}>{metinSozlugu.ortak.devamEdin}</Text>
               </TouchableOpacity>
             </View>
           </Animated.View>
@@ -429,7 +431,7 @@ const styles = StyleSheet.create({
     fontSize: BOYUTLAR.FONT_NORMAL,
     fontWeight: '600',
   },
-  // Buton satiri: Paylas (sol) + Devam Et (sag)
+  // Buton satiri: Paylaşın (sol) + Devam edin (sağ)
   butonSatiri: {
     flexDirection: 'row',
     alignItems: 'center',

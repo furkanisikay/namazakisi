@@ -7,9 +7,9 @@ appId: com.furkanisikay.namazakisi
 - runFlow:
     file: _liste-kaydir.yaml
     env:
-      HEDEF: "Saat ve widget\\..*"
+      HEDEF: "(Saat ve widget|Watch and widgets)\\..*"
 - tapOn:
-    text: "Saat ve widget\\..*"
+    text: "(Saat ve widget|Watch and widgets)\\..*"
 - scrollUntilVisible:
     element:
       id: "saat-gelismis"
@@ -20,12 +20,12 @@ appId: com.furkanisikay.namazakisi
     id: "saat-gelismis"
 - scrollUntilVisible:
     element:
-      text: "Kıldım işaretleyen uygulamalar\\..*"
+      text: "(Kıldım işaretleyen uygulamalar|Apps that mark I've prayed)\\..*"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Kıldım işaretleyen uygulamalar\\..*"
+    text: "(Kıldım işaretleyen uygulamalar|Apps that mark I've prayed)\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/24-kildim-uygulamalari

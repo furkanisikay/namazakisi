@@ -2,7 +2,8 @@
 /**
  * Dil çıkarımı CIRCIRI: dosya başına kalan Türkçe SABİT metni sayar.
  *
- * Sayılan: Türkçe harf (çğıöşüÇĞİÖŞÜ) içeren dize sabitleri ve JSX metni. Sayılmayan:
+ * Sayılan: Türkçe harf (çğıöşüÇĞİÖŞÜ) içeren dize sabitleri ve JSX metni (kendi satırındaki
+ * çok satırlı metin dahil). Sayılmayan:
  * yorumlar, `Logger.*`/`console.*`/`throw new Error(` satırları (geliştiriciye gider),
  * `// dil-haric` işaretli satırlar (kullanıcıya görünmeyen kod sabiti; gerekçe aynı satırda),
  * testler, sözlüğün kendisi (`src/core/dil/sozluk/`). Sezgiseldir: Türkçe harfsiz
@@ -39,7 +40,6 @@ const HARIC = new Set([
     'src/core/data/SeriSozu.ts',
 ]);
 const DIZE = /(['"`])((?:\\.|(?!\1)[^\\\n])*)\1/g;
-const JSX_METNI = />([^<>{}\n]+)</g;
 
 function dosyalar(dizin, sonuc = []) {
     for (const ad of fs.readdirSync(dizin)) {
@@ -55,7 +55,7 @@ function dosyalar(dizin, sonuc = []) {
     return sonuc;
 }
 
-function say(icerik) {
+function say(icerik, jsx = true) {
     let n = 0;
     let blokYorum = false;
     for (let satir of icerik.split('\n')) {
@@ -79,7 +79,13 @@ function say(icerik) {
         // Satır sonu yorumunu at (dize içindeki // nadiren Türkçe harf taşır; sezgisel).
         const kod = satir.replace(/\s\/\/.*$/, '');
         for (const m of kod.matchAll(DIZE)) if (TR.test(m[2])) n++;
-        for (const m of kod.matchAll(JSX_METNI)) if (TR.test(m[1])) n++;
+        // JSX metni: dizeler, `{...}` ifadeleri ve etiketler atıldıktan sonra kalan Türkçe harf.
+        // Kendi satırındaki (çok satırlı) metni de yakalar; tek satırlık `>metin<` aynı yoldan sayılır.
+        if (jsx) {
+            const disari = kod.replace(DIZE, ' ').replace(/\{[^{}]*\}/g, ' ').replace(/<[^<>]*>/g, ' ');
+            // Türkçe harfli tanımlayıcı taşıyan kod satırı (atama, tip, bildirim) metin değildir.
+            if (TR.test(disari) && !/[=;]|\b(const|let|function|interface|type|return|import|export)\b/.test(disari)) n++;
+        }
     }
     return n;
 }
@@ -89,7 +95,7 @@ function sayim() {
     for (const yol of dosyalar(path.join(KOK, 'src'))) {
         const goreli = path.relative(KOK, yol).split(path.sep).join('/');
         if (goreli.startsWith('src/core/dil/sozluk/') || HARIC.has(goreli)) continue;
-        const n = say(fs.readFileSync(yol, 'utf8'));
+        const n = say(fs.readFileSync(yol, 'utf8'), yol.endsWith('.tsx'));
         if (n > 0) sonuc[goreli] = n;
     }
     return sonuc;

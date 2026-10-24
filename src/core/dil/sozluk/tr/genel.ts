@@ -65,6 +65,18 @@ export const genel = {
     bilinmiyor: 'Bilinmiyor',
   },
   tani: {
+    sayfa: {
+      ozet: 'Bir sorun yaşarsanız teknik tanı kaydını bize iletebilirsiniz. Hiçbir şey otomatik gönderilmez; kişisel verileriniz paylaşılmaz.',
+      sorunBildirin: 'Sorun bildirin',
+      ayarlarBaslik: 'AYARLAR',
+      hatirlatin: 'Sorun olunca hatırlatın',
+      hatirlatinAciklama: 'Bir hata olursa bildirimle sorar',
+      araclarBaslik: 'ARAÇLAR',
+      gonderilecek: 'Gönderilecek bilgiyi görün',
+      gonderilecekAciklama: 'Göndermeden önce tamamını görürsünüz',
+      kayitlar: 'Tanı kayıtlarını açın',
+      kayitlarAciklama: 'Uygulamanın teknik günlüğü',
+    },
     rapor: {
       giris: 'Merhaba, uygulamada bir sorun yaşadım. Teknik tanı kaydı ektedir.',
       surum: 'Sürüm: {surum}',

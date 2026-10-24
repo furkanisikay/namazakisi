@@ -286,7 +286,7 @@ function cek(ad) {
     // Konum izni dugmeleri de burada: Kible ekrani acilirken sistem konum
     // uyarisi cikariyor ve kapatilmazsa sayfayi bloklar (yasandi).
     const KAPATILACAK =
-        /^(İzin Ver|Allow|Allow While Using App|Uygulamayı Kullanırken İzin Ver|Allow Once|Bir Kez İzin Ver|Devam Et|Kapat|Tamam|Anladım|OK)$/i;
+        /^(İzin Ver|Allow|Allow While Using App|Uygulamayı Kullanırken İzin Ver|Allow Once|Bir Kez İzin Ver|Devam Et|Devam edin|Continue|Kapat|Close|Tamam|Anladım|Got it|OK)$/i;
     for (let tur = 0; tur < 5; tur++) {
         const katman = await agac(`acilis-${tur}`);
         if (!(await dokun(katman, KAPATILACAK, `acilis katmani ${tur + 1}`, { bekle: 2000 }))) break;

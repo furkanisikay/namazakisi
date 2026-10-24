@@ -28,6 +28,7 @@ export const kible = {
     baslatilamadi: 'Kıble servisi başlatılamadı.',
   },
   pusula: {
+    ufuk: 'ufuk',
     konumAliniyor: 'Konumunuz alınıyor…',
     hazirlaniyor: 'Pusula hazırlanıyor…',
     kuzeydenAci: 'Kıble kuzeyden {derece}°',

@@ -990,7 +990,7 @@ export const AnaSayfa: React.FC = () => {
           {tarihiGorunumFormatinaCevir(sayfaTarihi)}
         </Text>
         <Text className="text-sm mt-2" style={{ color: renkler.metinIkincil }}>
-          Geçmiş gün görüntüleniyor
+          {metinler.anaEkran.sayfa.gecmisGun}
         </Text>
       </View>
     );

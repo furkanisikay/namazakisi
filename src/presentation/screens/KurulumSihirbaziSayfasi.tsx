@@ -652,7 +652,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                         ))}
                     </View>
                     <Text style={{ marginTop: 6, fontSize: 13, textAlign: 'center', color: renkler.metinIkincil }}>
-                        Adım {adimNo + 1} / {TOPLAM}
+                        {bicim(md.adim, { n: adimNo + 1, toplam: TOPLAM })}
                     </Text>
                 </View>
                 <View style={{ width: 44, height: 44 }} />

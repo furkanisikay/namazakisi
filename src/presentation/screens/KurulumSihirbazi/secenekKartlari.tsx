@@ -194,7 +194,8 @@ export const SoruKarti: React.FC<{
  */
 export const DinleDugmesi: React.FC<{ metin: string }> = ({ metin }) => {
     const renkler = useRenkler();
-    const etiket = useMetin().kurulum.duzey.sesliDinleyin;
+    const duzeyMetni = useMetin().kurulum.duzey;
+    const etiket = duzeyMetni.sesliDinleyin;
     const dinle = () => {
         try {
             const { adimiOnizle } = require('../../../domain/services/AnonsOnizlemeServisi') as typeof import('../../../domain/services/AnonsOnizlemeServisi');
@@ -221,7 +222,7 @@ export const DinleDugmesi: React.FC<{ metin: string }> = ({ metin }) => {
             }}
         >
             <FontAwesome5 name="play" size={11} color={renkler.birincil} solid style={{ marginRight: 7 }} />
-            <Text style={{ fontSize: 14, fontWeight: '700', color: renkler.birincil }}>Dinleyin</Text>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: renkler.birincil }}>{duzeyMetni.dinleyin}</Text>
         </TouchableOpacity>
     );
 };

@@ -102,6 +102,7 @@ export const AdimOnizlemeKarti: React.FC<AdimOnizlemeKartiProps> = ({
     not,
 }) => {
     const renkler = useRenkler();
+    const marka = useMetin().ortak.marka;
     const mo = useMetin().hatirlatma;
     const YALNIZ_SESLI_METNI = mo.onizlemeKart.yalnizSesli;
     // İlk çizimde ikonlar sakin doğar; sonradan AÇILAN kanalın ikonu canlanır.
@@ -135,7 +136,7 @@ export const AdimOnizlemeKarti: React.FC<AdimOnizlemeKartiProps> = ({
                     <FontAwesome5 name={ikon} size={10} color="#FFFFFF" solid />
                 </View>
                 <Text className="text-[11px] font-semibold" style={{ color: renkler.metinIkincil }}>
-                    Namaz Akışı{saat ? `  ${saat}` : ''}
+                    {marka}{saat ? `  ${saat}` : ''}
                 </Text>
                 <View className="flex-1" />
                 <View className="flex-row" style={{ gap: 4 }} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden>

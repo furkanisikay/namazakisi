@@ -10,4 +10,5 @@ export const ortak: Sozluk['ortak'] = {
   evet: 'Yes',
   hayir: 'No',
   ayrintilariAcar: 'Opens details',
+  marka: 'Namaz Akışı',
 };
