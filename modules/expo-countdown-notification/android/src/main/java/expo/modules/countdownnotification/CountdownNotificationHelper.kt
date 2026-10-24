@@ -38,12 +38,15 @@ object CountdownNotificationHelper {
 
     fun createChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Her çağrıda yeniden verilir (eski davranış): var olan kanalın yalnız adı ve
+            // açıklaması güncellenir → dil değişince ad da arayüz diline geçer.
+            val m = context.dildeBaglam()
             val channel = NotificationChannel(
                 FOREGROUND_CHANNEL_ID,
-                "Geri Sayim Bildirimleri",
+                m.getString(R.string.countdown_kanal_genel_ad),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Geri sayim bildirimleri icin kanal"
+                description = m.getString(R.string.countdown_kanal_genel_aciklama)
                 setShowBadge(false)
             }
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -109,7 +112,7 @@ object CountdownNotificationHelper {
                 id = id,
                 hedefMs = targetTimeMs,
                 baslik = title,
-                metin = aciklamaMetni(bodyTemplate, themeType),
+                metin = aciklamaMetni(context, bodyTemplate, themeType),
                 kanalId = channelId,
                 kucukIkon = smallIcon,
                 tema = themeType,
@@ -143,21 +146,33 @@ object CountdownNotificationHelper {
             else -> R.layout.custom_vakit_notification
         }
 
+        // Önek layout'ta DEĞİL kodda: RemoteViews'i SystemUI CİHAZ dilinde şişirir,
+        // uygulamanın arayüz dili ancak buradan verilebilir.
+        val m = context.dildeBaglam()
+        val (onekGenis, onekDar) = when (themeType) {
+            "iftar" -> R.string.countdown_onek_iftar to R.string.countdown_onek_iftar_dar
+            "sahur" -> R.string.countdown_onek_sahur to R.string.countdown_onek_sahur_dar
+            "seri" -> R.string.countdown_onek_seri to R.string.countdown_onek_seri_dar
+            else -> R.string.countdown_onek_vakit to R.string.countdown_onek_vakit_dar
+        }
+
         val baseTimeMs = android.os.SystemClock.elapsedRealtime() + millisRemaining
 
         val remoteViewsCollapsed = RemoteViews(context.packageName, collapsedLayoutRes)
+        remoteViewsCollapsed.setTextViewText(R.id.tv_prefix, m.getString(onekDar))
         remoteViewsCollapsed.setChronometer(R.id.tv_countdown, baseTimeMs, null, true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             remoteViewsCollapsed.setChronometerCountDown(R.id.tv_countdown, true)
         }
 
         val remoteViewsExpanded = RemoteViews(context.packageName, expandedLayoutRes)
+        remoteViewsExpanded.setTextViewText(R.id.tv_prefix, m.getString(onekGenis))
         remoteViewsExpanded.setChronometer(R.id.tv_countdown, baseTimeMs, null, true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             remoteViewsExpanded.setChronometerCountDown(R.id.tv_countdown, true)
         }
 
-        remoteViewsExpanded.setTextViewText(R.id.tv_description, aciklamaMetni(bodyTemplate, themeType))
+        remoteViewsExpanded.setTextViewText(R.id.tv_description, aciklamaMetni(context, bodyTemplate, themeType))
 
         val activeChannelId = if (channelId.isNotEmpty()) channelId else FOREGROUND_CHANNEL_ID
         val builder = NotificationCompat.Builder(context, activeChannelId)
@@ -181,7 +196,7 @@ object CountdownNotificationHelper {
             // Wear OS'a köprülenmesin (yalnız sayaç bildirimleri).
             .setLocalOnly(true)
 
-        builder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "Durdur", stopPendingIntent(context, id))
+        builder.addAction(android.R.drawable.ic_menu_close_clear_cancel, m.getString(R.string.countdown_eylem_durdur), stopPendingIntent(context, id))
 
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         nm.notify(notificationId, builder.build())
@@ -189,15 +204,20 @@ object CountdownNotificationHelper {
 
 
 
-    /** Bildirim gövdesi: şablondaki `{time}` / ⏱️ ayıklanır, boşsa temaya göre yedek. */
-    fun aciklamaMetni(bodyTemplate: String, themeType: String): String {
+    /**
+     * Bildirim gövdesi: şablondaki `{time}` / ⏱️ ayıklanır, boşsa temaya göre yedek
+     * (arayüz dilinde; JS gövdesi zaten etkin dilde gelir).
+     */
+    fun aciklamaMetni(context: Context, bodyTemplate: String, themeType: String): String {
         val descriptionText = bodyTemplate.replace("{time}", "").replace("⏱️", "").trim()
-        return descriptionText.takeIf { it.isNotEmpty() } ?: when (themeType) {
-            "iftar" -> "Zaman daralıyor!"
-            "sahur" -> "Yemeye içmeye devam, imsak yaklaşıyor!"
-            "seri" -> "Bugünkü namazların eksik, serini kaybetme!"
-            else -> "Acele et, vaktin çıkmasına az kaldı!"
-        }
+        return descriptionText.takeIf { it.isNotEmpty() } ?: context.dildeBaglam().getString(
+            when (themeType) {
+                "iftar" -> R.string.countdown_yedek_iftar
+                "sahur" -> R.string.countdown_yedek_sahur
+                "seri" -> R.string.countdown_yedek_seri
+                else -> R.string.countdown_yedek_vakit
+            }
+        )
     }
 
     fun smallIconRes(context: Context, iconName: String): Int = getSmallIconRes(context, iconName)

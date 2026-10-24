@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Camideyim / Namaz modu metinleri — Türkçe (varsayılan). İngilizcesi values-en.
+  Metinler uygulamanın ARAYÜZ dilinden çözülür (`dildeBaglam()`), cihaz dilinden değil.
+  Adlar modül önekiyle başlar (camigeofence_): uygulama ve diğer modüllerle çakışmasın.
+  "Camidesiniz" başlık öneki burada DEĞİL: Samsung Rutinler anahtar kelimesidir, her
+  dilde aynıdır (CamiSabitleri.CAMIDESINIZ_BASLIK_ONEKI, JS CAMIDESINIZ_ANAHTAR_KELIMESI).
+-->
+<resources>
+    <!-- Bildirim kanalları (kimlikler cami_durum / cami_soru değişmez) -->
+    <string name="camigeofence_kanal_durum_ad">Camideyim</string>
+    <string name="camigeofence_kanal_durum_aciklama">Camide olduğunuz algılandığında sessiz bilgi</string>
+    <string name="camigeofence_kanal_soru_ad">Camiden çıkınca</string>
+    <string name="camigeofence_kanal_soru_aciklama">Camiden çıkınca namazı işaretlemeniz için soru</string>
+
+    <!-- "Camidesiniz" bildirimi -->
+    <string name="camigeofence_govde_mod_sessiz">Namaz modu açık. Hatırlatmalar sessiz gelecek.</string>
+    <string name="camigeofence_govde_mod">Namaz modu açık.</string>
+    <string name="camigeofence_govde_sessiz">Hatırlatmalar sessiz gelecek.</string>
+    <string name="camigeofence_govde_normal">Hatırlatmalar her zamanki gibi gelecek.</string>
+    <string name="camigeofence_eylem_modu_kapat">Modu kapat</string>
+    <string name="camigeofence_eylem_cami_degil">Burası cami değil</string>
+
+    <!-- "Camide misiniz?" sorusu (güven puanı sınırda) -->
+    <string name="camigeofence_soru_baslik">Camide misiniz?</string>
+    <string name="camigeofence_soru_govde">%1$s yakınındasınız. Emin olamadığımız için size soruyoruz.</string>
+    <string name="camigeofence_varsayilan_ad">Cami</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Namaz modunu aç</string>
+    <string name="camigeofence_eylem_evet_camideyim">Evet, camideyim</string>
+    <string name="camigeofence_eylem_hayir">Hayır</string>
+
+    <!-- Camiden çıkınca "kıldınız mı?" -->
+    <string name="camigeofence_kildiniz_mi">%1$s kıldınız mı?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Tek dokunuşla işaretleyebilirsiniz.</string>
+    <string name="camigeofence_eylem_kildim">Kıldım</string>
+    <string name="camigeofence_namaz_imsak">Sabah namazını</string>
+    <string name="camigeofence_namaz_ogle">Öğle namazını</string>
+    <string name="camigeofence_namaz_ikindi">İkindi namazını</string>
+    <string name="camigeofence_namaz_aksam">Akşam namazını</string>
+    <string name="camigeofence_namaz_yatsi">Yatsı namazını</string>
+    <string name="camigeofence_namaz_cuma">Cuma namazını</string>
+
+    <!-- Namaz modu (Rahatsız Etmeyin kuralı): kural yalnız kurulurken adlandırılır -->
+    <string name="camigeofence_mod_kural_adi">Namaz</string>
+    <string name="camigeofence_mod_tetik_aciklama">Cuma hutbesinde, camideyken ya da vakit girince Namaz Akışı açar</string>
+</resources>

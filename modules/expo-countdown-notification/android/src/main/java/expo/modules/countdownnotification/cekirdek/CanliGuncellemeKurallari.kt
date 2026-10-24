@@ -37,15 +37,27 @@ object CanliGuncellemeKurallari {
         if (kalanMs <= 0L) 0L else (kalanMs + DAKIKA_MS - 1) / DAKIKA_MS
 
     /**
-     * Durum çubuğu çipi metni (`setShortCriticalText`): "12 dk", "1 sa", "1 sa 5 dk".
-     * Çip dardır; saniye YOK (canlı saniye sayımını chronometer zaten çizer).
+     * Kısa süre birimleri, arayüz diline göre (JS `sozluk/<dil>/sure.ts > kisa`).
+     * Bilinmeyen dil Türkçeye düşer. Yeni dil: buraya bir satır + JS sözlüğü.
      */
-    fun kisaMetin(kalanMs: Long): String {
+    private val KISA_BIRIMLER: Map<String, Pair<String, String>> = mapOf(
+        "tr" to ("sa" to "dk"),
+        "en" to ("h" to "min"),
+    )
+
+    /**
+     * Durum çubuğu çipi metni (`setShortCriticalText`): "12 dk", "1 sa", "1 sa 5 dk"
+     * (İngilizce: "12 min", "1 h", "1 h 5 min"). Çip dardır; saniye YOK (canlı saniye
+     * sayımını chronometer zaten çizer). [dil] arayüz dilidir (`ArayuzDili`), varsayılan
+     * Türkçe — ortak fikstür Türkçe biçimi sınar.
+     */
+    fun kisaMetin(kalanMs: Long, dil: String = "tr"): String {
+        val (saBirim, dkBirim) = KISA_BIRIMLER[dil] ?: KISA_BIRIMLER.getValue("tr")
         val dk = kalanDakika(kalanMs)
-        if (dk < 60) return "$dk dk"
+        if (dk < 60) return "$dk $dkBirim"
         val sa = dk / 60
         val artan = dk % 60
-        return if (artan == 0L) "$sa sa" else "$sa sa $artan dk"
+        return if (artan == 0L) "$sa $saBirim" else "$sa $saBirim $artan $dkBirim"
     }
 
     /**

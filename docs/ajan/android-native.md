@@ -4,6 +4,13 @@ Ne zaman okunur: `android/` Kotlin koduna, widget/hızlı ayarlar/kısayola, nat
 
 Katmanlar: kararlar SAF Kotlin `cekirdek/` (Android import ETMEZ; JVM testi `android/app/src/test`, CI'da `android-build.yml` `:app:test*UnitTest` ile APK'dan önce koşar) → `widget/`, `kildim/`, `otomasyon/`, `asistan/` → JS köprüleri. Uygulama modülü yerel expo modüllerinin sınıflarını görür (autolinking onları `expo` projesine `api` ekler), tersi görmez.
 
+## Çok dil (native metinler)
+- **Metin `res/values` (Türkçe) + `res/values-en` kaynaklarındadır; widget, bildirim, alarm, receiver ve servis metni `dildeBaglam()` ile çözülür** (`namazakisi_dil`/`kod` tercihi; uygulama dili cihaz dilinden farklı olabilir). Yalnız `getString` yerelleştirilmiş bağlamdan; builder, PendingIntent ve RemoteViews özgün bağlamla kurulur. Modüllerde kaynak adları modül önekli (`camigeofence_*`, `countdown_*`, `tvesleme_*`), her modülün kendi `dildeBaglam()` ikizi var (modüller arası bağımlılık yok).
+- **RemoteViews layout'u (widget ve özel bildirim, `res/layout/*widget*`, `custom_*_notification*.xml`) başlatıcı/SystemUI sürecinde CİHAZ dilinde şişirilir:** metni kodda `setTextViewText` ile ver, layout'ta yalnız `tools:text`.
+- **Var olan bildirim kanalının adını güncelleme tarifi:** aynı kimlikle yeniden `createNotificationChannel`, önemi `mevcut.importance`, `setBypassDnd(mevcut.canBypassDnd())`; ses/titreşim/rozete dokunma (kullanıcı ayarı korunur, önem düşmez). Muhafız ve vakit kanalları (`MuhafizKanallari`/`VakitKanallari`) bu tarifi henüz kullanmıyor: dil değişince sistem ayarlarındaki adları eski dilde kalır.
+- **"Camidesiniz · <ad>" başlığı her dilde Türkçedir** (Samsung Rutinler anahtar kelimesi, JS `CAMIDESINIZ_ANAHTAR_KELIMESI` ikizi); gövde etkin dilde. Namaz modu Rahatsız Etmeyin kuralının adı yalnız kurulumda yazılır (mevcut kurulumda eski dilde kalır).
+- **Now Bar planı ve bitiş alarmı JS'in ürettiği METNİ taşır** (kimlik değil): dil değişince yalnız JS yeniden planlayınca yeni dile geçer (`diliKaydet` → `konumDegistiUygula`). Kısa çip metni (`kisaMetin(kalanMs, dil)`) native'de her dakika üretilir; JS ikizi `kisaKritikMetin(kalanMs, kod)` aynı birimleri kullanır (yeni dil = `KISA_BIRIMLER` satırı + `sozluk/<dil>/sure.ts`).
+
 ## Widget 2.0, hızlı ayarlar kutusu, kısayollar (#275/#276)
 
 Widget/kutu/kısayol yalnız İŞARETLER (geri alma uygulamada). Akış: JS `core/widget/widgetYuku.ts` (çizelge + kılınan + `aktifVakitBul` + `kildimIstekKodu`) → `WidgetServisi` → native `WidgetVeri` → `widget/WidgetVeriDeposu` → `widget/WidgetGuncelleyici` (tek çizici/zamanlayıcı) + `kildim/KildimKutusuServisi` + `kildim/KildimKisayolActivity`.
