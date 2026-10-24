@@ -31,7 +31,24 @@
  */
 const { tohumVerisi, gun } = require('./magaza-tohum-verisi');
 
-const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme', 'kildim'];
+const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme', 'kildim', 'dunya', 'dunyaYontem'];
+
+/** `dunya*` varyantlarinin konumu: Kuala Lumpur, elle secilmis dunya sehri. */
+const DUNYA_KONUMU = {
+    konumModu: 'manuel',
+    seciliSehirId: '',
+    seciliIlId: null,
+    seciliIlceId: null,
+    seciliIlAdi: 'Kuala Lumpur',
+    seciliIlceAdi: '',
+    gpsAdres: null,
+    koordinatlar: { lat: 3.1412, lng: 101.6865 },
+    sonGpsGuncellemesi: null,
+    akilliTakipAktif: false,
+    takipHassasiyeti: 'dengeli',
+    ulkeKodu: 'MY',
+    dunyaSehri: { ad: 'Kuala Lumpur', ulke: 'MY', bolge: 'Kuala Lumpur', saatDilimi: 'Asia/Kuala_Lumpur' },
+};
 
 /** `ses` varyantindaki OLU URI: "kendi dosyamiz" olarak kayitli ama MediaStore satiri yok. */
 const OLU_SES_URI = 'content://media/external_primary/audio/media/999999';
@@ -192,6 +209,17 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         // Kare duayi gostersin: kaza onerisi (1,6 sn sonra acilir) bu tohumda KAPALI —
         // yavas emulator/simulatorde dokunus + kare 1,6 sn'yi asip modal duayi ortuyordu.
         depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: false });
+    }
+
+    if (varyant === 'dunya' || varyant === 'dunyaYontem') {
+        // Turkiye disi elle secilmis sehir (Kuala Lumpur). `dunya`: hesap ayari YOK → ana
+        // ekranda "bolgenizin takvimi" karti acilir. `dunyaYontem`: JAKIM secilmis, kart
+        // sorulmus sayilir. Kaza onerisi kapali: iki modal ust uste binmesin.
+        depo['@namaz_akisi/konum_ayarlari'] = JSON.stringify(DUNYA_KONUMU);
+        depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: false });
+        if (varyant === 'dunyaYontem') {
+            depo.hesap_ayari = JSON.stringify({ profil: 'jakim', secildi: true, sorulanUlkeler: ['MY'] });
+        }
     }
 
     if (varyant === 'sade') {

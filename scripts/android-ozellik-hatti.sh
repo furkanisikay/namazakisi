@@ -170,8 +170,26 @@ hazirlik_uygula() {
         if adb shell dumpsys power | grep -qiE "mLowPowerModeEnabled=true|Battery saver: *ON|mBatterySaverEnabled=true"; then break; fi
       done
       adb shell cmd netpolicy set restrict-background true || true
-      echo "sistem durumu: low_power=$(adb shell settings get global low_power | tr -d '') $(adb shell dumpsys power | grep -iE 'mIsPowered|LowPowerMode' | tr -d '' | tr '
+      echo "sistem durumu: low_power=$(adb shell settings get global low_power | tr -d '
+') $(adb shell dumpsys power | grep -iE 'mIsPowered|LowPowerMode' | tr -d '
+' | tr '
 ' ' ')"
+      ;;
+    dunya-kl|dunya-kl-video)
+      # Dunya konumu kareleri: cihaz Kuala Lumpur saatinde (yoksa vakitler Istanbul saatiyle
+      # gosterilir; imsak gece yarisina duser). `-video`: kart gecisi icin animasyonlar ACIK ve
+      # akis boyunca ekran kaydi (bolge-takvimi.mp4). hazirlik_bitir geri alir.
+      adb shell cmd alarm set-timezone Asia/Kuala_Lumpur >/dev/null 2>&1 \
+        || adb shell service call alarm 3 s16 Asia/Kuala_Lumpur >/dev/null 2>&1 || true
+      echo "saat dilimi: $(adb shell getprop persist.sys.timezone | tr -d '\r')"
+      if [ "$1" = "dunya-kl-video" ]; then
+        for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+          adb shell settings put global "$a" 1
+        done
+        adb shell rm -f /sdcard/bolge-takvimi.mp4 || true
+        ( adb shell screenrecord --time-limit 40 --bit-rate 4000000 /sdcard/bolge-takvimi.mp4 >/dev/null 2>&1 & )
+        sleep 1
+      fi
       ;;
     *) echo "UYARI: bilinmeyen hazirlik $1" ;;
   esac
@@ -198,6 +216,20 @@ hazirlik_bitir() {
       adb exec-out screencap -p > "$CIKIS/${PROFIL}-$2/46-katlanabilir-masaustu.png" || true
       adb emu sensor set hinge-angle0 180 || true
       adb shell settings delete global display_features || true
+      ;;
+    dunya-kl|dunya-kl-video)
+      if [ "$1" = "dunya-kl-video" ]; then
+        sleep 2
+        adb shell pkill -INT screenrecord >/dev/null 2>&1 || true
+        sleep 2
+        adb pull /sdcard/bolge-takvimi.mp4 "$CIKIS/${PROFIL}-$2/bolge-takvimi.mp4" >/dev/null 2>&1 \
+          || echo "UYARI: bolge takvimi videosu alinamadi"
+        for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+          adb shell settings put global "$a" 0
+        done
+      fi
+      adb shell cmd alarm set-timezone Europe/Istanbul >/dev/null 2>&1 \
+        || adb shell service call alarm 3 s16 Europe/Istanbul >/dev/null 2>&1 || true
       ;;
     guc-tasarrufu)
       adb shell settings put global low_power 0 || true
