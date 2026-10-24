@@ -57,10 +57,21 @@ export const diliKaydet = createAsyncThunk<DilKodu, DilKodu | 'cihaz'>('dil/kayd
   return secim === 'cihaz' ? aktifDil() : secim;
 });
 
-/** Elle yazılmış sesli okuma metni sayısı (dil değişince "bir kez sor" kapısı). */
+/**
+ * Dil değişince SORULACAK elle yazılmış sesli okuma metni sayısı ("bir kez sor" kapısı).
+ * Metinlerin varsayılan dili (`ozelAnonsDili`) yeni dille aynıysa sorulmaz (geri dönüşte
+ * "önceki dilde kaldı" demek yanlış olur). Hiç metin yoksa varsayılan dil yeni dil olur:
+ * bundan sonra yazılanlar bu dilde yazılır.
+ */
 export const ozelAnonsSay = createAsyncThunk<number>('dil/ozelAnonsSay', async () => {
   const { LocalOzelAnonsServisi } = require('../../data/local/LocalOzelAnonsServisi') as typeof import('../../data/local/LocalOzelAnonsServisi');
-  return LocalOzelAnonsServisi.say();
+  const yeni = aktifDil();
+  const n = await LocalOzelAnonsServisi.say();
+  if (n === 0) {
+    await DilServisi.ozelAnonsDiliniKaydet(yeni).catch((e: unknown) => Logger.warn('dilSlice', 'Metin dili kaydedilemedi', e));
+    return 0;
+  }
+  return (await DilServisi.ozelAnonsDili()) === yeni ? 0 : n;
 });
 
 /**
@@ -71,6 +82,7 @@ export const ozelAnonsSay = createAsyncThunk<number>('dil/ozelAnonsSay', async (
 export const ozelAnonslariDegistir = createAsyncThunk<number, void>('dil/ozelAnonslariDegistir', async (_, { dispatch, getState }) => {
   const { LocalOzelAnonsServisi } = require('../../data/local/LocalOzelAnonsServisi') as typeof import('../../data/local/LocalOzelAnonsServisi');
   const degisen = await LocalOzelAnonsServisi.sablonlaDegistir();
+  await DilServisi.ozelAnonsDiliniKaydet(aktifDil()).catch((e: unknown) => Logger.warn('dilSlice', 'Metin dili kaydedilemedi', e));
   if (degisen.length === 0) return 0;
   try {
     const yukleyiciler: Record<string, () => unknown> = {

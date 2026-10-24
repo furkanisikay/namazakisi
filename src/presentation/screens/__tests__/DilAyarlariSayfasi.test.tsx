@@ -31,6 +31,8 @@ jest.mock('../../../core/dil/diller', () => {
 
 const mockSecimVar = jest.fn(() => Promise.resolve(true));
 const mockKaydet = jest.fn((_k: string) => Promise.resolve(true));
+const mockMetinDili = jest.fn(() => Promise.resolve('tr'));
+const mockMetinDiliKaydet = jest.fn((_k: string) => Promise.resolve());
 jest.mock('../../../domain/services/DilServisi', () => {
   const { aktifDiliKur } = jest.requireActual('../../../core/dil/aktifDil');
   return {
@@ -43,6 +45,8 @@ jest.mock('../../../domain/services/DilServisi', () => {
       },
       cihazDilineDon: () => Promise.resolve(false),
       yukle: () => Promise.resolve('tr'),
+      ozelAnonsDili: () => mockMetinDili(),
+      ozelAnonsDiliniKaydet: (k: string) => mockMetinDiliKaydet(k),
     },
   };
 });
@@ -72,6 +76,8 @@ beforeEach(() => {
   mockSay.mockReset().mockResolvedValue(0);
   mockDegistir.mockReset().mockResolvedValue([]);
   mockKisa.mockReset();
+  mockMetinDili.mockReset().mockResolvedValue('tr');
+  mockMetinDiliKaydet.mockReset().mockResolvedValue(undefined);
 });
 afterEach(() => aktifDilSifirla());
 
@@ -123,4 +129,19 @@ it('"olduğu gibi bırakın" hiçbir şey değiştirmez', async () => {
   fireEvent.press(e.getByText('Keep as is'));
   await waitFor(() => expect(e.queryByText('Read-aloud texts you wrote')).toBeNull());
   expect(mockDegistir).not.toHaveBeenCalled();
+});
+
+it('metinlerin dili yeni dille aynıysa (geri dönüş) sorulmaz; metin yoksa yeni dil varsayılır', async () => {
+  mockSay.mockResolvedValue(3);
+  mockMetinDili.mockResolvedValue('en');
+  const e = ciz();
+  await waitFor(() => expect(mockSecimVar).toHaveBeenCalled());
+  fireEvent.press(e.getByText('English'));
+  await waitFor(() => expect(mockSay).toHaveBeenCalledTimes(1));
+  expect(e.queryByText('Read-aloud texts you wrote')).toBeNull();
+  expect(mockMetinDiliKaydet).not.toHaveBeenCalled();
+
+  mockSay.mockResolvedValue(0);
+  fireEvent.press(e.getByText('Türkçe'));
+  await waitFor(() => expect(mockMetinDiliKaydet).toHaveBeenCalledWith('tr'));
 });

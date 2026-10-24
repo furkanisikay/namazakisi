@@ -12,12 +12,26 @@ import { Logger } from '../../core/utils/Logger';
 import { aktifDil, aktifDiliKur } from '../../core/dil/aktifDil';
 import { cihazDilindenSec, DILLER, dilKoduMu, VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
 
-/** Diskteki kayıt: yalnız kullanıcının açık seçimi. */
+/**
+ * Diskteki kayıt. `kod` yalnız kullanıcının açık seçimidir (yoksa cihaz dili izlenir).
+ * `ozelAnonsDili`: kullanıcının elle yazdığı sesli okuma metinlerinin varsayılan dili
+ * (yoksa Türkçe — uygulama yalnız Türkçeyken yazılmışlardır); dil değişince sorulan
+ * "değiştirilsin mi?" sorusu bu dile dönüşte SORULMAZ.
+ */
 export interface DilAyari {
-  kod: DilKodu;
+  kod?: DilKodu;
+  ozelAnonsDili?: DilKodu;
 }
 
+/** Kayıttaki dil yalnız SEÇİLEBİLİRSE geçerlidir (yedekten gelen yarım dil kendiliğinden açılmaz). */
+const secilebilirKod = (x: unknown): DilKodu | null =>
+  dilKoduMu(x) && DILLER.some((d) => d.kod === x && d.secilebilir) ? x : null;
+
 let yukleme: Promise<DilKodu> | null = null;
+
+/** Bozuk kayıt (dizi, sayı) boş nesne sayılır; bilinmeyen alanlar korunur. */
+const kayitNesnesi = (m: DilAyari | null): DilAyari =>
+  m && typeof m === 'object' && !Array.isArray(m) ? { ...m } : {};
 
 /** Cihazın yerel ayar kimliği ("en_US"); okunamazsa null. Native modül yoksa (jest) sessiz. */
 export function cihazYerelAyari(): string | null {
@@ -53,7 +67,7 @@ function anonsDiliniBildir(kod: DilKodu): void {
 async function diskten(): Promise<DilKodu> {
   try {
     const ham = await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI);
-    const kod = dilKoduMu(ham?.kod) ? ham.kod : (cihazDilindenSec(cihazYerelAyari()) ?? VARSAYILAN_DIL);
+    const kod = secilebilirKod(ham?.kod) ?? cihazDilindenSec(cihazYerelAyari()) ?? VARSAYILAN_DIL;
     aktifDiliKur(kod);
   } catch (e) {
     Logger.warn('DilServisi', 'Dil ayarı okunamadı, Türkçe kullanılıyor', e);
@@ -76,7 +90,7 @@ export const DilServisi = {
 
   /** Kullanıcının seçimini kaydeder ve kurar; dil değiştiyse `true`. */
   async kaydet(kod: DilKodu): Promise<boolean> {
-    await Depolama.yaz(DEPOLAMA_ANAHTARLARI.DIL_AYARI, { kod } satisfies DilAyari);
+    await Depolama.guncelle<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI, (m) => ({ ...kayitNesnesi(m), kod }));
     const degisti = aktifDiliKur(kod);
     yukleme = Promise.resolve(aktifDil());
     anonsDiliniBildir(aktifDil());
@@ -96,9 +110,26 @@ export const DilServisi = {
   /** Açık seçimi siler: cihaz dili (seçilebilirse) ya da Türkçe kurulur. Dil değiştiyse `true`. */
   async cihazDilineDon(): Promise<boolean> {
     const onceki = aktifDil();
-    await Depolama.sil(DEPOLAMA_ANAHTARLARI.DIL_AYARI);
+    await Depolama.guncelle<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI, (m) => {
+      const { kod: _kod, ...kalan } = kayitNesnesi(m);
+      return kalan;
+    });
     const kod = await DilServisi.yukle(true);
     return kod !== onceki;
+  },
+
+  /** Elle yazılmış sesli okuma metinlerinin varsayılan dili (yoksa Türkçe). ASLA reddetmez. */
+  async ozelAnonsDili(): Promise<DilKodu> {
+    try {
+      const ham = await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI);
+      return dilKoduMu(ham?.ozelAnonsDili) ? ham.ozelAnonsDili : VARSAYILAN_DIL;
+    } catch {
+      return VARSAYILAN_DIL;
+    }
+  },
+
+  async ozelAnonsDiliniKaydet(kod: DilKodu): Promise<void> {
+    await Depolama.guncelle<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI, (m) => ({ ...kayitNesnesi(m), ozelAnonsDili: kod }));
   },
 
   /** Testler için. */

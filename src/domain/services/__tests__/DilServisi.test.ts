@@ -5,6 +5,10 @@ jest.mock('../../../data/local/Depolama', () => ({
     yaz: jest.fn(async (k: string, v: unknown) => {
       disk[k] = v;
     }),
+    guncelle: jest.fn(async (k: string, f: (m: unknown) => unknown) => {
+      disk[k] = f(disk[k] ?? null);
+      return disk[k];
+    }),
   },
 }));
 
@@ -49,9 +53,40 @@ describe('DilServisi', () => {
     cihaz('tr_TR');
     await DilServisi.kaydet('en');
     expect(disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI]).toEqual({ kod: 'en' });
+    expect(aktifDil()).toBe('en');
     aktifDilSifirla();
     await DilServisi.yukle(true);
+    const en = DILLER.find((d) => d.kod === 'en')!;
+    expect(aktifDil()).toBe(en.secilebilir ? 'en' : 'tr');
+  });
+
+  it('kayıtlı dil SEÇİLEBİLİR değilse (yedekten gelen yarım dil) kendiliğinden açılmaz', async () => {
+    cihaz('tr_TR');
+    const en = DILLER.find((d) => d.kod === 'en')!;
+    jest.replaceProperty(en, 'secilebilir', false);
+    disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'en' };
+    await DilServisi.yukle(true);
+    expect(aktifDil()).toBe('tr');
+    jest.replaceProperty(en, 'secilebilir', true);
+    await DilServisi.yukle(true);
     expect(aktifDil()).toBe('en');
+  });
+
+  it('cihaz diline dönüş açık seçimi siler, metin dilini korur', async () => {
+    cihaz('de_DE');
+    disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'en', ozelAnonsDili: 'en' };
+    await DilServisi.cihazDilineDon();
+    expect(disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI]).toEqual({ ozelAnonsDili: 'en' });
+    expect(await DilServisi.secimVar()).toBe(false);
+    expect(aktifDil()).toBe('tr');
+    expect(await DilServisi.ozelAnonsDili()).toBe('en');
+  });
+
+  it('elle yazılmış metinlerin varsayılan dili Türkçedir; kayıt seçimi ezmez', async () => {
+    expect(await DilServisi.ozelAnonsDili()).toBe('tr');
+    await DilServisi.kaydet('en');
+    await DilServisi.ozelAnonsDiliniKaydet('en');
+    expect(disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI]).toEqual({ kod: 'en', ozelAnonsDili: 'en' });
   });
 
   it('bozuk kayıt Türkçeye düşer', async () => {
