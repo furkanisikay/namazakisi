@@ -118,6 +118,7 @@ function hesapYaz(h: TvHesapOzeti): TvHesapOzeti {
         a: h.a,
         k: h.k,
         o: [h.o[0], h.o[1], h.o[2], h.o[3], h.o[4], h.o[5]],
+        ...(h.r ? { r: h.r } : {}),
         ...(h.rmz ? { rmz: { b: h.rmz.b, s: h.rmz.s, dk: h.rmz.dk } } : {}),
     };
 }

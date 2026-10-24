@@ -89,7 +89,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         ctaEtiketi: 'Hesap yöntemini görün',
         detaylar: [
             'Konum ayarında "Başka bir ülke"yi seçip 34 binden fazla şehir arasından arayabilirsiniz; internet gerekmez.',
-            'Malezya, Endonezya, Suudi Arabistan, Mısır, Pakistan ve daha birçok ülkede o ülkede camilerin uyduğu takvim kullanılır.',
+            'Malezya, Endonezya, Suudi Arabistan, Mısır, Pakistan ve daha birçok ülkede oradaki camilerin uyduğu takvim kullanılır.',
             'Ana ekrandaki yöntem çipine dokunarak hangi takvimin kullanıldığını görebilir, isterseniz ikindi vaktini ve her vakti dakika dakika camiye göre ayarlayabilirsiniz.',
             'Türkiye\'deki vakitler Diyanet takvimiyle aynı kalır.',
         ],

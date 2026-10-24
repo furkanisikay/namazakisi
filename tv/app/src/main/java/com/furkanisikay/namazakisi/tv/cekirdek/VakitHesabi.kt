@@ -12,6 +12,7 @@ import com.batoulapps.adhan2.PrayerTimes
 import com.batoulapps.adhan2.data.DateComponents
 import com.batoulapps.adhan2.data.TimeComponents
 import com.batoulapps.adhan2.internal.SolarTime
+import com.batoulapps.adhan2.model.Rounding
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import java.time.LocalDate
@@ -80,15 +81,30 @@ object VakitHesabi {
     fun hesapla(lat: Double, lng: Double, tarih: LocalDate, hesap: TvHesap? = null): GunlukVakitler {
         val koordinat = Coordinates(lat, lng)
         val gun = DateComponents(tarih.year, tarih.monthValue, tarih.dayOfMonth)
-        val pt = PrayerTimes(koordinat, gun, hesap?.let { parametreler(it, tarih) } ?: PARAMETRELER)
-        val aksam = hesap?.aksamAcisi?.let { aci -> aciliAksam(koordinat, gun, aci, hesap, pt.isha.toEpochMilliseconds()) }
+        if (hesap == null) {
+            val pt = PrayerTimes(koordinat, gun, PARAMETRELER)
+            return GunlukVakitler(
+                imsak = pt.fajr.toEpochMilliseconds(),
+                gunes = pt.sunrise.toEpochMilliseconds(),
+                ogle = pt.dhuhr.toEpochMilliseconds(),
+                ikindi = pt.asr.toEpochMilliseconds(),
+                aksam = pt.maghrib.toEpochMilliseconds(),
+                yatsi = pt.isha.toEpochMilliseconds(),
+            )
+        }
+        // Genel yol: adhan2 yuvarlamadan hesaplar, yuvarlama adhan JS kuralıyla burada yapılır
+        // (JS "yukarı" saniye 0'da da +1 dk ekler, adhan2 eklemez).
+        val pt = PrayerTimes(koordinat, gun, parametreler(hesap, tarih))
+        val yuvarla = { ms: Long -> jsDakika(ms, hesap.yukari) }
+        val yatsiHam = pt.isha.toEpochMilliseconds()
+        val aksam = hesap.aksamAcisi?.let { aci -> aciliAksam(koordinat, gun, aci, hesap, yatsiHam) }
         return GunlukVakitler(
-            imsak = pt.fajr.toEpochMilliseconds(),
-            gunes = pt.sunrise.toEpochMilliseconds(),
-            ogle = pt.dhuhr.toEpochMilliseconds(),
-            ikindi = pt.asr.toEpochMilliseconds(),
-            aksam = aksam ?: pt.maghrib.toEpochMilliseconds(),
-            yatsi = pt.isha.toEpochMilliseconds(),
+            imsak = yuvarla(pt.fajr.toEpochMilliseconds()),
+            gunes = yuvarla(pt.sunrise.toEpochMilliseconds()),
+            ogle = yuvarla(pt.dhuhr.toEpochMilliseconds()),
+            ikindi = yuvarla(pt.asr.toEpochMilliseconds()),
+            aksam = yuvarla(aksam ?: pt.maghrib.toEpochMilliseconds()),
+            yatsi = yuvarla(yatsiHam),
         )
     }
 
@@ -108,14 +124,14 @@ object VakitHesabi {
                 fajr = h.ofset[0], sunrise = h.ofset[1], dhuhr = h.ofset[2],
                 asr = h.ofset[3], maghrib = h.ofset[4], isha = h.ofset[5],
             ),
+            rounding = Rounding.NONE,
         )
     }
 
     /**
      * adhan JS `PrayerTimes`: güneş `aci` derece batınca akşam olur — yalnız gün batımından
-     * sonra ve yatsıdan önceyse. Sonra akşam düzeltmesi eklenir, en yakın dakikaya yuvarlanır.
-     * Yatsı sınırı için düzeltmesiz yatsı = son yatsı − yatsı düzeltmesi (en çok 30 sn sapma,
-     * yalnız sınırda etkili).
+     * sonra ve yatsıdan önceyse; sonra akşam düzeltmesi eklenir (yuvarlama çağıranda).
+     * `yatsiMs` yuvarlanmamış, düzeltmeli yatsıdır; düzeltme çıkarılınca JS'in ham yatsısı.
      */
     private fun aciliAksam(k: Coordinates, gun: DateComponents, aci: Double, h: TvHesap, yatsiMs: Long): Long? {
         val gunes = SolarTime(gun, k)
@@ -125,13 +141,13 @@ object VakitHesabi {
             ?.dateComponents(gun)?.toInstant(TimeZone.UTC)?.toEpochMilliseconds() ?: return null
         val yatsiHam = yatsiMs - h.ofset[5] * DK_MS
         if (!(batim < acili && yatsiHam > acili)) return null
-        return enYakinDakika(acili + h.ofset[4] * DK_MS)
+        return acili + h.ofset[4] * DK_MS
     }
 
-    /** adhan `roundedMinute` (Nearest): 30 sn ve üstü yukarı. */
-    private fun enYakinDakika(ms: Long): Long {
-        val sn = Math.floorMod(ms / 1000L, 60L)
-        val tabanMs = ms - Math.floorMod(ms, 1000L) - sn * 1000L
-        return if (sn >= 30) tabanMs + DK_MS else tabanMs
+    /** adhan JS `roundedMinute`: en yakın (30 sn ve üstü yukarı) ya da yukarı (saniye 0'da da +1 dk). */
+    private fun jsDakika(ms: Long, yukari: Boolean): Long {
+        val sn = Math.floorMod(Math.floorDiv(ms, 1000L), 60L)
+        val tabanMs = Math.floorDiv(ms, 1000L) * 1000L - sn * 1000L
+        return if (yukari || sn >= 30) tabanMs + DK_MS else tabanMs
     }
 }

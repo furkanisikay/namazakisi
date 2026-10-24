@@ -48,6 +48,8 @@ class VakitHesabiTest {
         val akis = javaClass.classLoader!!.getResourceAsStream("vakit-fiksturu-dunya.json")
         val ornekler = JSONObject(akis.bufferedReader(Charsets.UTF_8).readText()).getJSONArray("ornekler")
         assertTrue(ornekler.length() >= 60)
+        // Tüm sapmalar tek seferde raporlanır (ilk hatada durmak CI turunu boşa harcar).
+        val sapmalar = mutableListOf<String>()
         for (i in 0 until ornekler.length()) {
             val o = ornekler.getJSONObject(i)
             val hesap = TvHesapCozucu.coz(o.getJSONObject("hesap"))
@@ -56,13 +58,11 @@ class VakitHesabiTest {
             val v = VakitHesabi.hesapla(o.getDouble("lat"), o.getDouble("lng"), LocalDate.parse(o.getString("tarih")), hesap)
             val beklenen = o.getJSONObject("vakitler")
             for (vakit in Vakit.entries) {
-                assertEquals(
-                    "${o.getString("ad")} ${o.getString("tarih")} ${vakit.kod}",
-                    beklenen.getLong(vakit.kod),
-                    v.saat(vakit),
-                )
+                val fark = v.saat(vakit) - beklenen.getLong(vakit.kod)
+                if (fark != 0L) sapmalar += "${o.getString("ad")} ${o.getString("tarih")} ${vakit.kod}: ${fark / 1000} sn"
             }
         }
+        assertTrue(sapmalar.joinToString("\n"), sapmalar.isEmpty())
     }
 
     @Test

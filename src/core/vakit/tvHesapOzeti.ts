@@ -10,7 +10,7 @@
  * (üretici `scripts/tv/tv-verisi-uret.js`) ↔ Kotlin `VakitHesabiTest` ↔ jest `TvVakitParitesi`.
  * Saf modül.
  */
-import { CalculationParameters, HighLatitudeRule, Madhab } from 'adhan';
+import { CalculationParameters, HighLatitudeRule, Madhab, Rounding } from 'adhan';
 import {
   diyanetDokunulmamisMi,
   HESAP_PROFILLERI,
@@ -36,6 +36,8 @@ export interface TvHesapOzeti {
   k: TvYuksekEnlem;
   /** Vakit başına toplam dakika düzeltmesi: [imsak, güneş, öğle, ikindi, akşam, yatsı]. */
   o: [number, number, number, number, number, number];
+  /** Dakikaya yuvarlama yukarı (MUIS/Singapur; adhan JS: saniye 0 olsa da +1 dk). Yoksa en yakın. */
+  r?: 'yukari';
   /** Ümmü'l-Kurâ: bu aralıkta (iki uç dahil) yatsı aralığına `dk` eklenir. */
   rmz?: { b: string; s: string; dk: number };
 }
@@ -71,6 +73,7 @@ export function tvHesapOzeti(ayar: HesapAyari, enlem: number, bugun: Date): TvHe
     a: p.madhab === Madhab.Hanafi ? 'sani' : 'evvel',
     k: YUKSEK_ENLEM[String(p.highLatitudeRule)] ?? 'orta',
     o: [ek('fajr'), ek('sunrise'), ek('dhuhr'), ek('asr'), ek('maghrib'), ek('isha')],
+    ...(p.rounding === Rounding.Up ? { r: 'yukari' as const } : {}),
   };
   const profil = HESAP_PROFILLERI[ayar.profil];
   if (profil?.ramazanYatsiEkDk && p.ishaInterval > 0) {

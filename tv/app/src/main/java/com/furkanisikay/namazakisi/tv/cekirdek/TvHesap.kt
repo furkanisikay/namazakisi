@@ -26,6 +26,8 @@ data class TvHesap(
     /** Vakit başına toplam dk düzeltmesi: imsak, güneş, öğle, ikindi, akşam, yatsı. */
     val ofset: List<Int>,
     val ramazan: RamazanEki?,
+    /** Dakikaya yukarı yuvarlama (MUIS); false = en yakın. */
+    val yukari: Boolean = false,
 )
 
 /** Ümmü'l-Kurâ: [bas, son] aralığında (iki uç dahil) yatsı aralığına `dk` eklenir. */
@@ -59,7 +61,9 @@ object TvHesapCozucu {
                 val dk = r.getInt("dk").takeIf { it in 0..120 } ?: return null
                 RamazanEki(LocalDate.parse(r.getString("b")), LocalDate.parse(r.getString("s")), dk)
             }
-            TvHesap(y == "ay", f, i, ia, ma, a == "sani", k, ofset, ramazan)
+            val r = if (o.has("r")) o.getString("r") else null
+            if (r != null && r != "yukari") return null
+            TvHesap(y == "ay", f, i, ia, ma, a == "sani", k, ofset, ramazan, r == "yukari")
         } catch (e: Exception) {
             null
         }
@@ -76,6 +80,7 @@ object TvHesapCozucu {
         o.put("a", if (h.sani) "sani" else "evvel")
         o.put("k", YUKSEK_ENLEM.entries.first { it.value == h.yuksekEnlem }.key)
         o.put("o", JSONArray(h.ofset))
+        if (h.yukari) o.put("r", "yukari")
         h.ramazan?.let { r ->
             o.put("rmz", JSONObject().put("b", r.bas.toString()).put("s", r.son.toString()).put("dk", r.dk))
         }

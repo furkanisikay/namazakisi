@@ -131,6 +131,7 @@ describe('yük', () => {
         const hesap = {
             y: 'diger' as const, f: 17.7, i: 14, ia: 0, ma: 4.5, a: 'sani' as const, k: 'yedide' as const,
             o: [-30, -30, -30, -30, -30, -30] as [number, number, number, number, number, number],
+            r: 'yukari' as const,
             rmz: { b: '2027-02-08', s: '2027-03-08', dk: 30 },
         };
         const durum = {
@@ -141,9 +142,9 @@ describe('yük', () => {
         } as never as Parameters<typeof yukuYaz>[0]['durum'];
         const metin = yukuYaz({ v: 2, durum: { ...durum!, hesap } });
         expect(baytUzunlugu(metin)).toBeLessThanOrEqual(YUK_AZAMI_BAYT);
-        const tersSira = { rmz: hesap.rmz, o: hesap.o, k: hesap.k, a: hesap.a, ma: hesap.ma, ia: hesap.ia, i: hesap.i, f: hesap.f, y: hesap.y };
+        const tersSira = { rmz: hesap.rmz, r: hesap.r, o: hesap.o, k: hesap.k, a: hesap.a, ma: hesap.ma, ia: hesap.ia, i: hesap.i, f: hesap.f, y: hesap.y };
         expect(yukuYaz({ v: 2, durum: { ...durum!, hesap: tersSira } })).toBe(metin);
-        expect(metin).toContain('"hesap":{"y":"diger","f":17.7,"i":14,"ia":0,"ma":4.5,"a":"sani","k":"yedide","o":[-30,-30,-30,-30,-30,-30],"rmz":{"b":"2027-02-08","s":"2027-03-08","dk":30}}');
+        expect(metin).toContain('"hesap":{"y":"diger","f":17.7,"i":14,"ia":0,"ma":4.5,"a":"sani","k":"yedide","o":[-30,-30,-30,-30,-30,-30],"r":"yukari","rmz":{"b":"2027-02-08","s":"2027-03-08","dk":30}}');
     });
 
     it('fikstürdeki düz yük, telefonun yazdığıyla BİREBİR aynı (TV aynı metni çözer)', () => {
