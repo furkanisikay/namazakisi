@@ -34,7 +34,6 @@ import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { cumaMi, sureMetniOlustur } from '../utils/cumaYardimcisi';
 import { VAKIT_ADLARI } from '../utils/muhafizMetinYardimcisi';
 import { bicim, metin } from '../dil/aktifDil';
-import { tr } from '../dil/sozluk/tr';
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
 import { alarmPayinaSigdir } from '../hatirlatma/ekPlan';
@@ -190,13 +189,13 @@ export function camiyeGitMetniOlustur(
 
 /**
  * Sesli anons metni (ibadete çağrı — "sen"). Nass OKUNMAZ; çözülmüş cümle (yer tutucu yok).
- * TÜRKÇE sabit: sesli okuma motoru Türkçe konuşur (TTS dili bağlanınca çevrilir).
  */
 export function camiyeGitAnonsMetni(
     vakit: CamiyeGitVakti,
     kalanDk: number,
     ayarlar: Pick<CamiyeGitAyarlari, 'yurumeDk' | 'hazirlikDk'>
 ): string {
-    const giris = `${tr.vakit.adlar[vakit]} vaktine ${sureMetniOlustur(kalanDk)} kaldı.`;
-    return hazirlikKalanDk(kalanDk, ayarlar) > 0 ? `${giris} Hazırlan, camiye yola çık.` : `${giris} Camiye yola çık.`;
+    const o = metin().anons.otomatik;
+    const giris = bicim(o.camiyeGiris, { vakit: VAKIT_ADLARI[vakit], sure: sureMetniOlustur(kalanDk) });
+    return `${giris} ${hazirlikKalanDk(kalanDk, ayarlar) > 0 ? o.camiyeHazirlan : o.camiyeYola}`;
 }

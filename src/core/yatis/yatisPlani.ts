@@ -39,9 +39,8 @@ import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import type { YatisAyarlari } from './yatisAyarlari';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
 import { alarmPayinaSigdir, ayniAnaDusenleriBirlestir } from '../hatirlatma/ekPlan';
-import { bicim, metin } from '../dil/aktifDil';
+import { bicim, metin, sayili } from '../dil/aktifDil';
 import { VAKIT_ADLARI, VAKIT_ADLARI_KUCUK } from '../utils/muhafizMetinYardimcisi';
-import { tr } from '../dil/sozluk/tr';
 import { adimAnonsMetni } from '../hatirlatma/anonsYerTutucu';
 
 export type FarzVakit = Exclude<VakitAdi, 'gunes'>;
@@ -82,8 +81,7 @@ const MUHASEBE_ID_ONEKI = 'muhasebe_';
 const YATIS_EKI = '_yatis';
 const MUHASEBE_EKI = '_muhasebe';
 
-/** Sesli anons (Türkçe sabit — TTS dili bağlanınca çevrilir). */
-const VAKIT_KUCUK_TR: Record<FarzVakit, string> = tr.vakit.kucuk;
+
 
 export type YatisBildirimTuru = 'yatsi' | 'muhasebeTek' | 'muhasebeCoklu';
 
@@ -249,7 +247,7 @@ export function yatisIcerigiOlustur(
             baslik: bicim(m.yatsiBaslik, { ad: VAKIT_ADLARI.yatsi }),
             govde: `${bicim(m.yatsiGovde, { ad: VAKIT_ADLARI.yatsi })}${satir}`,
             data: { tip: 'yatis', tarih: gun, vakit: 'yatsi', kazayaEklenebilir: [] },
-            anons: 'Yatmadan önce yatsıyı kıl.',
+            anons: metin().anons.otomatik.yatsi,
         };
     }
 
@@ -274,7 +272,7 @@ export function yatisIcerigiOlustur(
                   ? m.tekKaza
                   : m.tekSuruyor,
             data: { tip: 'muhasebe', tarih: gun, vakit: v, kazayaEklenebilir: kaza ? [v] : [] },
-            anons: `Bugün ${VAKIT_KUCUK_TR[v]} vakti işaretlenmemiş görünüyor.`,
+            anons: bicim(metin().anons.otomatik.muhasebeTek, { vakit: VAKIT_ADLARI_KUCUK[v] }),
         };
     }
 
@@ -285,7 +283,7 @@ export function yatisIcerigiOlustur(
         baslik: ozet(eksikler),
         govde: otoSatiri ? bicim(m.cokluOto, { oto: otoSatiri }) : m.coklu,
         data: { tip: 'muhasebe', tarih: gun, kazayaEklenebilir: eksikler.filter(cikmisMi) },
-        anons: `Bugün ${eksikler.length} vakit işaretlenmemiş görünüyor.`,
+        anons: sayili(metin().anons.otomatik.muhasebeCoklu, eksikler.length),
     };
 }
 
@@ -390,7 +388,7 @@ type YatisTetigi = { sira: number; uyari: UyariPlani; zaman: Date };
  */
 export function yatisAdimAnonsu(metin: string | undefined, sureDk: number, otomatik: string): string {
     if (sureDk <= 0 && typeof metin === 'string' && metin.includes('{süre}')) return otomatik;
-    return adimAnonsMetni(metin, { vakit: 'Yatsı', sureDk }, () => otomatik);
+    return adimAnonsMetni(metin, { vakit: VAKIT_ADLARI.yatsi, sureDk }, () => otomatik);
 }
 
 export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {

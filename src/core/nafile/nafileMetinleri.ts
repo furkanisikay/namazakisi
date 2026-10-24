@@ -127,17 +127,16 @@ export function nafileBildirimMetni(g: NafileMetinGirdisi): { baslik: string; go
  */
 export function nafileAnonsMetni(g: NafileMetinGirdisi): string {
     const { ilk, giris, dk, sonUcteBirGirdi } = baglamCoz(g);
+    const o = metin().anons.otomatik;
     switch (g.tur) {
         case 'kusluk':
-            if (!ilk) return 'Kuşluk vakti sürüyor.';
-            return giris ? 'Kuşluk vakti girdi. İki rekât için güzel bir an.' : `Kuşluk vaktinin bitmesine ${dk} dakika var.`;
+            if (!ilk) return o.kuslukSuruyor;
+            return giris ? o.kuslukGirdi : sayili(o.kuslukBitiyor, dk);
         case 'evvabin':
-            if (!ilk) return 'Evvâbîn için vakit sürüyor.';
-            return giris ? 'Evvâbîn vakti. İki rekât için güzel bir an.' : `Evvâbîn için ${dk} dakika var.`;
+            if (!ilk) return o.evvabinSuruyor;
+            return giris ? o.evvabinGirdi : sayili(o.evvabinKalan, dk);
         case 'teheccud':
-            return sonUcteBirGirdi
-                ? 'Teheccüd vakti. Gecenin son üçte biri girdi.'
-                : `Teheccüd vakti. İmsaka ${dk} dakika kaldı.`;
+            return sonUcteBirGirdi ? o.teheccudSonUcte : sayili(o.teheccudKalan, dk);
     }
 }
 

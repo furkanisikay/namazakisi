@@ -20,6 +20,8 @@
  * kullanır, döngüsel bağımlılık doğmaz.
  */
 import type { PencereYonu } from '../muhafiz/pencereTipleri';
+import { canli, metin } from '../dil/aktifDil';
+import { sablonlar, sablonuYerellestir, type SablonListesi } from './anonsSablonlari';
 
 /** Hatırlatma yüzeyleri (ekran ve sözlük ayrımı). */
 export type HatirlatmaYuzeyi = 'muhafiz' | 'nafile' | 'cuma' | 'camiyeGit' | 'yatis' | 'takvim';
@@ -44,10 +46,6 @@ export interface AnonsBaglami {
     yon?: PencereYonu;
 }
 
-const YON_IFADESI: Record<PencereYonu, string> = {
-    cikisaDogru: 'kaldı',
-    girisindenItibaren: 'geçti',
-};
 
 /** Bir metin yer tutucu içeriyor mu? (bilinen ya da bilinmeyen) */
 const YER_TUTUCU = /\{[^{}]*\}/g;
@@ -60,9 +58,10 @@ const YER_TUTUCU = /\{[^{}]*\}/g;
  * tuzağı: `toUpperCase`/`toLowerCase` kullanılmaz).
  */
 export function anonsCoz(sablon: string, baglam: AnonsBaglami): string {
-    let metin = sablon.split('{vakit}').join(baglam.vakit).split('{süre}').join(String(baglam.sureDk));
-    if (baglam.yon) metin = metin.split('{yön}').join(YON_IFADESI[baglam.yon]);
-    return metin
+    // Hazır şablon (herhangi bir dilde) etkin dile çevrilir; kullanıcının yazdığı metin aynen.
+    let cumle = sablonuYerellestir(sablon).split('{vakit}').join(baglam.vakit).split('{süre}').join(String(baglam.sureDk));
+    if (baglam.yon) cumle = cumle.split('{yön}').join(metin().anons.yon[baglam.yon]);
+    return cumle
         .replace(YER_TUTUCU, '')
         .replace(/[ \t]{2,}/g, ' ')
         .replace(/[ \t]+([.,;:!?])/g, '$1')
@@ -98,10 +97,6 @@ export function cozulmusAnonsVeyaNull(metin: string | undefined, baglam: AnonsBa
     return cozulmus.length > 0 ? cozulmus : null;
 }
 
-const VAKIT: YerTutucu = { anahtar: '{vakit}', etiket: 'Vakit adı' };
-const SURE: YerTutucu = { anahtar: '{süre}', etiket: 'Dakika' };
-const YON: YerTutucu = { anahtar: '{yön}', etiket: 'kaldı / geçti' };
-
 export interface YuzeySozlugu {
     yerTutucular: YerTutucu[];
     /**
@@ -117,47 +112,32 @@ export interface YuzeySozlugu {
  * havuzlarından gelir (diskte YAZILI duran metinler — orada birebir korunur); bu yüzden
  * muhafız burada yalnız yer tutucularını taşır.
  */
-export const ANONS_SOZLUKLERI: Record<HatirlatmaYuzeyi, YuzeySozlugu> = {
-    muhafiz: { yerTutucular: [VAKIT, SURE, YON], sablonlar: [] },
-    nafile: {
-        yerTutucular: [VAKIT, SURE, YON],
-        sablonlar: [
-            '{vakit} vakti, {süre} dakika {yön}. İki rekât için güzel bir an.',
-            '{vakit} vakti sürüyor. İki rekât kılmak için güzel bir fırsat.',
-            '{vakit} için {süre} dakika {yön}.',
-        ],
-    },
-    cuma: {
-        yerTutucular: [{ anahtar: '{vakit}', etiket: 'Cuma' }, SURE],
-        sablonlar: [
-            'Cuma namazına {süre} dakika kaldı. Hazırlan, camiye yola çık.',
-            'Cuma vakti yaklaşıyor, {süre} dakika kaldı.',
-            'Hutbeye yetiş, cumaya {süre} dakika kaldı.',
-        ],
-    },
-    camiyeGit: {
-        yerTutucular: [VAKIT, SURE],
-        sablonlar: [
-            '{vakit} vaktine {süre} dakika kaldı. Camiye yola çık.',
-            'Camiye gitme zamanı, {vakit} vaktine {süre} dakika var.',
-            '{vakit} namazı için camiye yola çık.',
-        ],
-    },
-    yatis: {
-        yerTutucular: [{ anahtar: '{vakit}', etiket: 'Yatsı' }, SURE],
-        sablonlar: [
-            'Yatmadan önce yatsıyı kıl.',
-            'Yatsı vakti sürüyor, uyumadan önce namaza dur.',
-            'Yatsıyı kılmadan uyuma.',
-        ],
-    },
-    takvim: {
-        // Etkinlik adı/saati için yer tutucu YOK (gizlilik).
-        yerTutucular: [VAKIT, SURE],
-        sablonlar: [
-            'Takviminizdeki bir etkinlik {vakit} vaktine denk geliyor.',
-            '{vakit} vakti bir etkinlikle çakışıyor; önce kılmayı unutmayın.',
-            '{süre} dakika sonra {vakit} vakti etkinliğinizle çakışıyor; namazı unutmayın.',
-        ],
-    },
+const SABLON_LISTESI: Record<Exclude<HatirlatmaYuzeyi, 'muhafiz'>, SablonListesi> = {
+    nafile: 'nafile',
+    cuma: 'cuma',
+    camiyeGit: 'camiyeGit',
+    yatis: 'yatis',
+    takvim: 'takvim',
 };
+
+/**
+ * Yüzey sözlükleri, etkin dilde (canlı görünüm). Muhafızın hazır cümleleri yöne bağlıdır ve
+ * `core/muhafiz/anonsMetni.ts` havuzlarından gelir; bu yüzden muhafız burada yalnız yer
+ * tutucularını taşır. Çip etiketi arayüzdür, jeton (`{vakit}`) her dilde aynıdır.
+ */
+export const ANONS_SOZLUKLERI: Readonly<Record<HatirlatmaYuzeyi, YuzeySozlugu>> = canli((s) => {
+    const c = s.anons.cip;
+    const VAKIT: YerTutucu = { anahtar: '{vakit}', etiket: c.vakit };
+    const SURE: YerTutucu = { anahtar: '{süre}', etiket: c.sure };
+    const YON: YerTutucu = { anahtar: '{yön}', etiket: c.yon };
+    const sablon = (y: Exclude<HatirlatmaYuzeyi, 'muhafiz'>) => [...sablonlar(SABLON_LISTESI[y])];
+    return {
+        muhafiz: { yerTutucular: [VAKIT, SURE, YON], sablonlar: [] },
+        nafile: { yerTutucular: [VAKIT, SURE, YON], sablonlar: sablon('nafile') },
+        cuma: { yerTutucular: [{ anahtar: '{vakit}', etiket: c.cuma }, SURE], sablonlar: sablon('cuma') },
+        camiyeGit: { yerTutucular: [VAKIT, SURE], sablonlar: sablon('camiyeGit') },
+        yatis: { yerTutucular: [{ anahtar: '{vakit}', etiket: c.yatsi }, SURE], sablonlar: sablon('yatis') },
+        // Etkinlik adı/saati için yer tutucu YOK (gizlilik).
+        takvim: { yerTutucular: [VAKIT, SURE], sablonlar: sablon('takvim') },
+    };
+});

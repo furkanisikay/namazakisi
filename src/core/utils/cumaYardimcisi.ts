@@ -80,12 +80,8 @@ export const namazGorunenAdi = (
 ): string =>
   cumaGosterilsin && namazAdi === NamazAdi.Ogle && cumaMi(tarih) ? metin().vakit.cuma : namazAdiGoster(namazAdi);
 
-/**
- * SESLİ OKUMA süresi ("1 saat 30 dakika") — TÜRKÇE sabit: sesli okuma motoru bugün Türkçe
- * konuşur (`AnonsKonusucu` tr-TR); anons metinleri TTS dili etkin dile bağlanınca çevrilir.
- * Bildirim gövdesi `dakikaUzun` (etkin dil) kullanır.
- */
-export const sureMetniOlustur = (dakika: number): string => dakikaUzun(dakika, 'tr');
+/** Cümle içi süre ("1 saat 30 dakika" / "1 hour 30 minutes"), etkin dilde (sesli okuma da). */
+export const sureMetniOlustur = (dakika: number): string => dakikaUzun(dakika);
 
 /**
  * Cuma hatırlatmasının başlığı — ÖNDEN OKUNUR (issue #287): bileklikler
@@ -129,5 +125,5 @@ export const cumaBildirimMetni = (kalanDk: number, ilk: boolean): { baslik: stri
  * GİRİŞİNE kalan süredir — cuma namazı hutbeyle öğle girdikten sonra başlar.
  */
 export const cumaAnonsMetni = (kalanDk: number): string =>
-  `Cuma için öğle vaktine ${sureMetniOlustur(kalanDk)} kaldı. Hazırlan, camiye yola çık.`;
+  bicim(metin().anons.otomatik.cuma, { sure: sureMetniOlustur(kalanDk) });
 

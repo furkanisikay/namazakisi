@@ -181,5 +181,5 @@ export function geceCapasiGovdesi(kalanDk: number): string {
     return bicim(metin().muhafiz.geceCapasi.govde, { dk: kalanDk });
 }
 
-/** Sesli okuma şablonu ({vakit}, {süre} yer tutucuları `anonsMetniniCoz` ile çözülür). */
-export const GECE_CAPASI_ANONS_SABLONU = 'Gece sessizliğine {süre} dakika var. Yatmadan {vakit} namazını kıl.';
+/** Sesli okuma şablonu ({vakit}, {süre} yer tutucuları `anonsMetniniCoz` ile çözülür), etkin dilde. */
+export const geceCapasiAnonsSablonu = (): string => metin().anons.otomatik.geceCapasi;

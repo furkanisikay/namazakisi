@@ -70,7 +70,6 @@ import type { BildirimPlatformu } from './butceSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { VAKIT_ADLARI, VAKIT_ADLARI_KUCUK } from '../utils/muhafizMetinYardimcisi';
 import { bicim, metin, sayili } from '../dil/aktifDil';
-import { tr } from '../dil/sozluk/tr';
 import { gurubKerahatiBaslangiciMs } from '../vakit/kerahat';
 import { UYGULAMA_TAKVIM_NOTU, type TakvimCakismaAyarlari } from '../takvimCakisma/takvimCakismaAyarlari';
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
@@ -397,8 +396,6 @@ export const takvimCakismaKimligi = (tarih: string, vakit: CakismaVakti): string
 export const takvimCakismaKokuneAitMi = (kimlik: string, kok: string): boolean =>
     kimlik === kok || kimlik.startsWith(`${kok}_`);
 
-/** Sesli anons (Türkçe sabit — TTS dili bağlanınca çevrilir). */
-const VAKIT_KUCUK_TR: Record<CakismaVakti, string> = tr.vakit.kucuk;
 
 const saat = (ms: number): string => {
     const t = new Date(ms);
@@ -451,6 +448,7 @@ export function takvimCakismaMetniOlustur(
  * (rıza modalı ve gizlilik politikası bunu söyler). Nass okunmaz; yer tutucu yoktur.
  */
 export function takvimCakismaAnonsMetni(vakit: CakismaVakti, tur: CakismaTuru): string {
-    const giris = `Takviminizdeki bir etkinlik ${VAKIT_KUCUK_TR[vakit]} vaktine denk geliyor.`;
-    return tur === 'once' ? `${giris} Etkinlikten önce kılmayı unutmayın.` : `${giris} Ara verip kılmayı unutmayın.`;
+    const o = metin().anons.otomatik;
+    const giris = bicim(o.takvimGiris, { vakit: VAKIT_ADLARI_KUCUK[vakit] });
+    return `${giris} ${tur === 'once' ? o.takvimOnce : o.takvimKaplar}`;
 }
