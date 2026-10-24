@@ -32,5 +32,6 @@ import { kible } from './kible';
 import { saat } from './saat';
 import { anons } from './anons';
 import { dilAyar } from './dilAyar';
+import { gununAyeti } from './gununAyeti';
 
-export const en: Sozluk = { ortak, vakit, tarih, sure, anaEkran, hesap, seferilik, kaza, seri, sade, muhafiz, icerik, otomasyon, bildirim, nafile, sayac, nowBar, ilerleme, muhafizAyar, takvim, ayarlar, konum, genel, cami, yedekleme, cihaz, kible, saat, anons, dilAyar, kurulum, hatirlatma, samimiyet };
+export const en: Sozluk = { ortak, vakit, tarih, sure, anaEkran, hesap, seferilik, kaza, seri, sade, muhafiz, icerik, otomasyon, bildirim, nafile, sayac, nowBar, ilerleme, muhafizAyar, takvim, ayarlar, konum, genel, cami, yedekleme, cihaz, kible, saat, anons, dilAyar, gununAyeti, kurulum, hatirlatma, samimiyet };
