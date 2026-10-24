@@ -24,7 +24,7 @@ import java.util.concurrent.Executors
  * - İDEMPOTENT: görsel yalnız İMZA (gün + metin + duvar ayarı, `GununAyetiKurallari.duvarImzasi`)
  *   son başarılı yazımdan farklıysa yazılır. Yük her açılışta / konum değişiminde / arka plan
  *   turunda yeniden yazılır; her `setBitmap` kilit ekranını titretir ve Material You renklerini
- *   yeniden türetir. [simdiUygula] imzayı yok sayar (kullanıcı istedi).
+ *   yeniden türetir. [arkaPlandaSimdiUygula] de imzaya uyar; yalnız sonucu bildirir.
  * - Mevcut duvar kâğıdı SAKLANMAZ (Android 14+'ta okunamaz) → kapatınca geri yükleme yok; yer
  *   değişince eski ekrandaki görsel kalır.
  * - Hata `sonHata = "yazilamadi"` olarak kaydedilir (`DuvarKagidi.durum`), başarıda silinir.
@@ -67,12 +67,17 @@ object DuvarKagidiUygulayici {
         }
     }
 
-    /** Bugünün görselini ŞİMDİ uygular (imza yok sayılır); sonuç arka plan iş parçacığından gelir. */
+    /**
+     * Gerekirse uygular ve SONUCU bildirir (ayar ekranı: açma onayı, yer/zemin değişimi).
+     * İmza denetlenir: JS yükü yazınca [arkaPlandaGerekirseUygula] aynı sıralı kuyrukta önce
+     * koşar; o başardıysa burada ikinci `setBitmap` olmaz (kilit ekranı iki kez titremez),
+     * başaramadıysa imza kaydedilmediği için yeniden denenir.
+     */
     fun arkaPlandaSimdiUygula(context: Context, sonuc: (Boolean) -> Unit) {
         val uygulama = context.applicationContext
         yurutucu.execute {
             val basarili = try {
-                uygula(uygulama, zorla = true)
+                uygula(uygulama, zorla = false)
             } catch (e: Throwable) {
                 Log.e(TAG, "Duvar kagidi uygulanamadi", e)
                 false

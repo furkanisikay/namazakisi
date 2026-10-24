@@ -79,7 +79,9 @@ export const GununAyetiAyarlariSayfasi: React.FC = () => {
 
 const AndroidDuvarKagidi: React.FC = () => {
   const renkler = useRenkler();
-  const m = useMetin().gununAyeti;
+  const sozluk = useMetin();
+  const m = sozluk.gununAyeti;
+  const vazgecin = sozluk.ortak.vazgecin;
   const [ayar, setAyar] = useState<DuvarKagidiAyari | null>(null);
   const [durum, setDurum] = useState<DuvarKagidiDurumu | null>(null);
   const [onayGorunur, setOnayGorunur] = useState(false);
@@ -246,6 +248,7 @@ const AndroidDuvarKagidi: React.FC = () => {
           setOnayGorunur(false);
           kaydet({ ...ayar, acik: true }, true).catch(() => setYazilamadi(true));
         }}
+        kapatEtiketi={vazgecin}
         onKapat={() => setOnayGorunur(false)}
       />
     </View>

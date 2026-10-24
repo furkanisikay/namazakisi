@@ -16,7 +16,7 @@ import com.furkanisikay.namazakisi.widget.GununAyetiDeposu
  *
  * - `durum()` → `{ izinli, sonHata }`: `izinli` = cihaz destekliyor VE yönetim izin veriyor;
  *   false ise ekran "Kullanılamıyor" der (sessiz sapma yok). `sonHata` = "yazilamadi" ya da null.
- * - `simdiUygula()` → bugünün görselini hemen yazar (imza denetlenmez), true/false.
+ * - `simdiUygula()` → gerekirse yazar (imza aynıysa yazmaz) ve sonucu bildirir, true/false.
  * - `onizlemeUret(g, y)` → mevcut ayarla PNG (önbellek), `file://` adresi; yük yoksa null.
  */
 class DuvarKagidiModulu(reactContext: ReactApplicationContext) :
