@@ -30,6 +30,14 @@ Katmanlar: `src/core/dil/` (saf: `tipler`, `cogul`, `bicim`, `diller`, `aktifDil
 - **Tarih ve ay/gün adları sözlükte**, `Intl.DateTimeFormat`/`toLocale*` kullanılmaz (Hermes ICU'ya bağlı).
 - **Cihaz dili:** Android `I18nManager.getConstants().localeIdentifier`, iOS `Settings.get('AppleLanguages')[0]` (`NativeModules.SettingsManager` New Architecture'da güvenilmez; iOS yolu cihazda DOĞRULANMADI); `expo-localization` eklenmedi (native bağımlılık gereksiz). `DIL_AYARI` yedeğin üç beyaz listesindedir; geri yüklemede `diliYukle({ zorla: true })` hesap ayarından hemen sonra, planlanan metinlerden ÖNCE koşar.
 
+## Bir dili seçicide açma kapısı (`secilebilir: true`)
+Her dil için ayrı ayrı; hepsi sağlanmadan açma (yarım dil kendiliğinden de açılır: cihaz dili):
+1. JS cırcırı (`turkce-metin-tavani.json`) sıfıra ya da yalnız bilinçli HARIC'e inmiş; ekranların İngilizce/dil çizim testleri yeşil.
+2. O dilin kullanıcısının gördüğü native yüzeyler (widget, bildirim eylemleri, Wear/TV başlıkları, iOS hedefleri) o dilde (W5).
+3. "Neler Yeni"de dil seçici öğesi (`YeniOzellikler.ts`, `ceviri` ile) ve Ayarlar'da "Dil · Language" satırı.
+4. Sesli okuma: cihazda o dilin TTS sesi denendi ya da sessizce varsayılana düştüğü bilgi satırıyla söyleniyor.
+5. Fıkıh/hitap gözden geçirmesi (terim sözlüğü, "sen"/"siz" eşlemesi) ve `beta: true` rozeti.
+
 ## Hitap kaydı (her dilde eşlenir)
 
 Türkçe kural sürer: kullanıcı uygulamayı yönetiyorsa "siz", uygulama ibadete çağırıyorsa "sen" + emir (AGENTS.md).
