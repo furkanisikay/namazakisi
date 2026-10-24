@@ -173,6 +173,15 @@ describe('bölge önerisi kartı', () => {
     expect(bolgeOnerisi(null, { profil: 'diyanet' })).toBeNull();
   });
 
+  it('Azerbaycan: Sünnî varsayılan, QMİ (Caferî) ikinci seçenek; QMİ seçmişe sorulmaz (sahip kararı)', () => {
+    expect(bolgeOnerisi('AZ', { profil: 'diyanet' })).toEqual({ profil: 'mwl', guven: 'genel', alternatif: 'qmi' });
+    // Varsayılandaki kullanıcıya da BİR KEZ yalnız QMİ sorulur.
+    expect(bolgeOnerisi('AZ', { profil: 'mwl' })).toEqual({ profil: 'mwl', guven: 'genel', alternatif: 'qmi' });
+    expect(bolgeOnerisi('AZ', { profil: 'qmi' })).toBeNull();
+    expect(bolgeOnerisi('AZ', { profil: 'mwl', sorulanUlkeler: ['AZ'] })).toBeNull();
+    expect(ulkeVarsayilani('AZ').profil).not.toBe('qmi');
+  });
+
   it('aynı profil ama farklı ikindi de önerilir (Orta Asya)', () => {
     expect(bolgeOnerisi('UZ', { profil: 'mwl' })?.ikindi).toBe('sani');
   });
@@ -182,5 +191,31 @@ describe('bölge önerisi kartı', () => {
     expect(kayitliUlkeKodu({ konumModu: 'manuel', seciliIlId: null, dunyaSehri: { ulke: 'MY' } })).toBe('MY');
     expect(kayitliUlkeKodu({ konumModu: 'oto', ulkeKodu: 'DE' })).toBe('DE');
     expect(kayitliUlkeKodu({ konumModu: 'oto' })).toBeNull();
+  });
+});
+
+/**
+ * QMİ (Kafkas Müslümanları İdaresi) resmî tablosu, Bakü 2026 — https://qafqazislam.com/teqvim/2026/Baki/{6,10}.jpg
+ * (2026-10-24 okundu). Profil bu tabloya ampirik uyduruldu; her vakit ±2 dk içinde kalmalı.
+ */
+describe('QMİ profili — Bakü resmî tablosu', () => {
+  // [ay, gün, sabah ezanı, güneş, öğle, ikindi, akşam ezanı, yatsı]
+  const TABLO: [number, number, string, string, string, string, string, string][] = [
+    [10, 1, '05:17', '06:37', '12:30', '16:37', '18:36', '19:37'],
+    [10, 16, '05:33', '06:53', '12:26', '16:16', '18:13', '19:13'],
+    [10, 31, '05:48', '07:10', '12:24', '15:57', '17:53', '18:54'],
+    [6, 4, '03:27', '05:11', '12:39', '17:51', '20:24', '21:44'],
+    [6, 22, '03:23', '05:11', '12:43', '17:56', '20:31', '21:53'],
+  ];
+  const dk = (s: string) => Number(s.slice(0, 2)) * 60 + Number(s.slice(3));
+  const yerel = (d: Date) => {
+    const t = new Date(d.getTime() + 4 * 3600e3); // Bakü UTC+4, yaz saati yok
+    return Math.round(t.getUTCHours() * 60 + t.getUTCMinutes() + t.getUTCSeconds() / 60);
+  };
+  it.each(TABLO)('%i/%i', (ay, gun, ...beklenen) => {
+    const p = hesapParametreleriOlustur({ profil: 'qmi' }, { tarih: new Date(Date.UTC(2026, ay - 1, gun, 8)), enlem: 40.41 });
+    const pt = new PrayerTimes(new Coordinates(40.4093, 49.8671), new Date(Date.UTC(2026, ay - 1, gun, 8)), p);
+    const hesap = [pt.fajr, pt.sunrise, pt.dhuhr, pt.asr, pt.maghrib, pt.isha].map(yerel);
+    hesap.forEach((h, i) => expect(Math.abs(h - dk(beklenen[i]))).toBeLessThanOrEqual(2));
   });
 });

@@ -9,13 +9,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { hesapAyariniKaydet } from '../store/hesapSlice';
-import { bolgeOnerisi, type UlkeVarsayilani } from '../../core/vakit/ulkeProfilleri';
+import { bolgeOnerisi, type BolgeOnerisi } from '../../core/vakit/ulkeProfilleri';
 import { kayitliUlkeKodu, koordinatinUlkesi } from '../../core/konum/ulkeTespiti';
 
 export interface BolgeTakvimiOnerisi {
   ulke: string;
-  oneri: UlkeVarsayilani;
+  oneri: BolgeOnerisi;
   kabul: () => void;
+  /** Resmî kurumun alternatif takvimine geçer (yalnız `oneri.alternatif` varken). */
+  alternatifiKabul: () => void;
   reddet: () => void;
 }
 
@@ -76,11 +78,25 @@ export function useBolgeTakvimiOnerisi(): BolgeTakvimiOnerisi | null {
     );
   }, [dispatch, ayar, ulke, oneri]);
 
+  const alternatifiKabul = useCallback(() => {
+    if (!ayar || !ulke || !oneri?.alternatif) return;
+    void dispatch(
+      hesapAyariniKaydet({
+        ...ayar,
+        profil: oneri.alternatif,
+        ikindi: undefined,
+        ofsetler: undefined,
+        aci: undefined,
+        sorulanUlkeler: [...(ayar.sorulanUlkeler ?? []), ulke],
+      }),
+    );
+  }, [dispatch, ayar, ulke, oneri]);
+
   const reddet = useCallback(() => {
     if (!ayar || !ulke) return;
     void dispatch(hesapAyariniKaydet({ ...ayar, sorulanUlkeler: [...(ayar.sorulanUlkeler ?? []), ulke] }));
   }, [dispatch, ayar, ulke]);
 
   if (!oneri || !ulke) return null;
-  return { ulke, oneri, kabul, reddet };
+  return { ulke, oneri, kabul, alternatifiKabul, reddet };
 }

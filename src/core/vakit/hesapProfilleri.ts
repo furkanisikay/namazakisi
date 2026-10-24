@@ -42,7 +42,8 @@ export type HesapProfiliKimligi =
   | 'fas'
   | 'tunus'
   | 'tahran'
-  | 'caferi';
+  | 'caferi'
+  | 'qmi';
 
 export type IkindiYontemi = 'evvel' | 'sani';
 export type ProfilGuveni = 'olculdu' | 'kaynakli' | 'genel';
@@ -183,6 +184,14 @@ export const HESAP_PROFILLERI: Readonly<Record<HesapProfiliKimligi, HesapProfili
     kimlik: 'caferi', kisaAd: 'Ja\'fari', ikindi: 'evvel', yalnizElle: true,
     kaynakUrl: 'https://api.aladhan.com/v1/methods',
     parametre: diger(16, 14, {}, (p) => { p.maghribAngle = 4; }),
+  },
+  // Qafqaz Müsəlmanları İdarəsi (Azerbaycan): resmî takvim Caferî akşamı (güneşin 3,45° altı) ile
+  // Hanefî ikindiyi (gölge iki misli) birleştirir. Ampirik: Bakü Ekim ve Haziran 2026 tablolarına
+  // her vakitte ±1-2 dk (2026-10-24). Yalnız elle / bölge kartının ikinci seçeneği (sahip kararı).
+  qmi: {
+    kimlik: 'qmi', kisaAd: 'QMİ', ikindi: 'sani', yalnizElle: true, // dil-haric: kurum kısaltması (özel ad)
+    kaynakUrl: 'https://qafqazislam.com/teqvim/2026/Baki/10.jpg',
+    parametre: diger(16, 15, {}, (p) => { p.maghribAngle = 3.45; }),
   },
 };
 

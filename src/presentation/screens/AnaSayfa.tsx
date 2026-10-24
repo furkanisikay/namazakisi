@@ -181,6 +181,7 @@ export const AnaSayfa: React.FC = () => {
   const bolgeTakvimi = useBolgeTakvimiOnerisi();
   const bolgeTakvimiKabul = useCallback(() => bolgeTakvimi?.kabul(), [bolgeTakvimi]);
   const bolgeTakvimiReddet = useCallback(() => bolgeTakvimi?.reddet(), [bolgeTakvimi]);
+  const bolgeTakvimiAlternatif = useCallback(() => bolgeTakvimi?.alternatifiKabul(), [bolgeTakvimi]);
   const yontemSayfasiniAc = useCallback(() => {
     (navigation as unknown as { navigate?: (ad: string, p?: object) => void } | undefined)?.navigate?.('Ayarlar', {
       screen: 'HesapYontemiAyarlari',
@@ -1161,6 +1162,7 @@ export const AnaSayfa: React.FC = () => {
           mevcut={hesapAyari}
           oneri={bolgeTakvimi?.oneri ?? { profil: hesapAyari.profil, guven: 'genel' }}
           onKabul={bolgeTakvimiKabul}
+          onAlternatif={bolgeTakvimiAlternatif}
           onReddet={bolgeTakvimiReddet}
         />
         <KerahatOnayModal
@@ -1283,6 +1285,7 @@ export const AnaSayfa: React.FC = () => {
         mevcut={hesapAyari}
         oneri={bolgeTakvimi?.oneri ?? { profil: hesapAyari.profil, guven: 'genel' }}
         onKabul={bolgeTakvimiKabul}
+        onAlternatif={bolgeTakvimiAlternatif}
         onReddet={bolgeTakvimiReddet}
       />
       <KerahatOnayModal

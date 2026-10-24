@@ -21,6 +21,7 @@ export const hesap = {
     tunus: 'Tunus Din İşleri Bakanlığı',
     tahran: 'Tahran Jeofizik Enstitüsü (İran)',
     caferi: 'Caferî (Leva Enstitüsü, Kum)',
+    qmi: 'Kafkas Müslümanları İdaresi (Azerbaycan)',
   },
   guven: {
     olculdu: 'Resmî takvimle ölçüldü',
@@ -40,6 +41,10 @@ export const hesap = {
     genelUyari: '{guven}: bu ülke için doğrulanmış bir resmî takvim bulamadık.',
     gecin: '{ad} takvimine geçin',
     devam: '{ad} ile devam edin',
+    alternatifSoru: '{profil} takvimini kullanmak ister misiniz? Bugün şöyle değişir:',
+    alternatifNotu: {
+      qmi: 'QMİ takvimi Caferî düzendedir: akşam ezanı güneş battıktan yaklaşık 14 dakika sonra okunur, ikindi gölge iki misli olunca girer.',
+    },
     birKez: "Bu soru bu ülke için bir kez sorulur. Ayarlar › Namaz vakitleri › Hesap yöntemi'nden istediğiniz zaman değiştirebilirsiniz.",
   },
   sayfa: {

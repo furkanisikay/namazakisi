@@ -5,7 +5,7 @@
  */
 import * as React from 'react';
 import { Text } from 'react-native';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
   const { Text: T } = require('react-native');
@@ -123,4 +123,24 @@ it('modallar: kaza önerisi, kerahat onayı, seri kartı, bölge takvimi', () =>
   );
   expect(turkceKalanlar(bolge.toJSON() as never, YASAKLI)).toEqual([]);
   expect(bolge.getByText('Switch to JAKIM')).toBeTruthy();
+});
+
+it('bölge takvimi: Azerbaycan — varsayılandaysa yalnız QMİ sorulur; değilse üç seçenek', () => {
+  const ortak = { gorunur: true, ulkeAdi: 'Azerbaijan', yerAdi: 'Baku', koordinat: { lat: 40.41, lng: 49.87 }, onKabul: bos, onReddet: bos };
+  const alternatif = jest.fn();
+  const varsayilanda = render(
+    <BolgeTakvimiModali {...ortak} mevcut={{ profil: 'mwl' }} oneri={{ profil: 'mwl', guven: 'genel', alternatif: 'qmi' }} onAlternatif={alternatif} />,
+  );
+  expect(turkceKalanlar(varsayilanda.toJSON() as never, YASAKLI).filter((m) => !m.includes('QMİ'))).toEqual([]);
+  expect(varsayilanda.getByText(/Would you like to use the Caucasus Muslims Board/)).toBeTruthy();
+  expect(varsayilanda.getByTestId('bolge-alternatif-notu')).toBeTruthy();
+  expect(varsayilanda.queryByTestId('bolge-alternatif')).toBeNull();
+  fireEvent.press(varsayilanda.getByText('Switch to QMİ'));
+  expect(alternatif).toHaveBeenCalledTimes(1);
+
+  const baska = render(
+    <BolgeTakvimiModali {...ortak} mevcut={{ profil: 'diyanet', ikindi: 'evvel' }} oneri={{ profil: 'mwl', guven: 'genel', alternatif: 'qmi' }} onAlternatif={alternatif} />,
+  );
+  expect(baska.getByText('Switch to MWL')).toBeTruthy();
+  expect(baska.getByTestId('bolge-alternatif')).toBeTruthy();
 });
