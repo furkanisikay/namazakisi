@@ -293,13 +293,15 @@ object GununAyetiCizici {
                 textSize = boyutPx
                 typeface = yazitipi
             }
-            return StaticLayout.Builder.obtain(metin, 0, metin.length, boya, genislik)
+            val kurucu = StaticLayout.Builder.obtain(metin, 0, metin.length, boya, genislik)
                 .setAlignment(Layout.Alignment.ALIGN_NORMAL)
                 .setIncludePad(true)
                 .setLineSpacing(0f, 1f)
                 .setBreakStrategy(Layout.BREAK_STRATEGY_HIGH_QUALITY)
                 .setHyphenationFrequency(Layout.HYPHENATION_FREQUENCY_NONE)
-                .build()
+            // TextView (targetSdk ≥ 28) yedek font satır yüksekliğini kullanır; ölçüm de öyle.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) kurucu.setUseLineSpacingFromFallbacks(true)
+            return kurucu.build()
         }
 
         private fun tekSatirYuksekligi(boyutPx: Float, yazitipi: Typeface): Float =

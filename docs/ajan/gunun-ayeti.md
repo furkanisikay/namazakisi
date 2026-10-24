@@ -55,7 +55,7 @@ Katmanlar: saf `cekirdek/GununAyeti.kt` (yük çözümü, `gecerliKayit`, `sonra
 - **`WidgetVeri.gununAyetiKaydet(json)`** — her plan yazımında. Çözülemeyen yük YAZILMAZ (eski yük kalır, logda uyarı). Yazınca widget'lar çizilir, sınır alarmı kurulur, `duvar.acik` ise duvar kâğıdı İMZASI değiştiyse arka planda yazılır. Aynı yükü tekrar yazmak duvar kâğıdını yeniden YAZMAZ.
 - **`DuvarKagidi.durum()`** → `{ izinli: boolean, sonHata: "yazilamadi" | null }`. `izinli` false → ayar satırı "Kullanılamıyor" + açıklama (iş/okul yönetimi). `sonHata` → "Bugünün görseli yerleştirilemedi…" bilgi satırı; başarılı yazımda silinir.
 - **`DuvarKagidi.simdiUygula()`** → `boolean`; imza ve `duvar.acik` denetlenmez (kullanıcı istedi). Açma onayından SONRA önce yükü `acik: true` ile yaz: kaydet zaten uygular; `simdiUygula` "şimdi yenile" içindir.
-- **`DuvarKagidi.onizlemeUret(genislik, yukseklik)`** → `file://…png` (önbellek, her çağrıda yeni ad, eskiler silinir) ya da `null` (yük yok). Yer `ana` ise ana ekran görseli, değilse kilit görseli. Önce yükü yaz, sonra önizle.
+- **`DuvarKagidi.onizlemeUret(genislik, yukseklik)`** → `file://…png` (önbellek, her çağrıda yeni ad, eskiler silinir) ya da `null` (yük yok). Yer `ana` ise ana ekran görseli, değilse kilit görseli. Önizleme KAYITLI yükün `duvar`'ını okur (ayrı depolama yok): kaydedilmemiş bir zemin/Arapça seçimini önizlemek için önce yük yazılır ve `acik: true` ise bu yazım duvar kâğıdını da DEĞİŞTİRİR — ayar ekranı bunu bilerek kurulmalı. `acik: true` yalnız onay penceresinden SONRA yazılır.
 - Derin bağlantı `namazakisi://gunun-ayeti` (widget dokunuşu, MainActivity açık bileşen) JS navigasyonunda karşılanmalı.
 
 ### Widget (`GununAyetiWidget`, #380)
