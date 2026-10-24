@@ -9,7 +9,8 @@ import WidgetKit
 // Android Now Bar'in iOS ikizi: hangi ogenin gosterilecegini uygulama secer
 // (`src/core/sayac/iosCanliEtkinlik.ts`) ve `Activity.request` ile baslatir
 // (`CanliEtkinlikKoprusu`). Bu dosya yalniz CIZER. Geri sayimi ve ilerlemeyi sistem
-// cizer; hedefe varinca `staleDate` dolar → kart "Vakit çıktı" der.
+// cizer; hedefe varinca `staleDate` dolar → kart "Vakit çıktı" der. Sabit metinler CIZIM
+// aninda arayuz dilinde (`WidgetMetin`, W5).
 //
 // "Kildim" yalniz vakit ogesinde ve iOS 17+'da (`KildimDugmesiIntent`,
 // `LiveActivityIntent`: uygulama surecinde, Siri kuyruguna yazar).
@@ -83,9 +84,17 @@ enum CanliMetin {
         VakitSaglayici.tarih(d.hedefMs)
     }
 
+    /// Alt satir CIZIM aninda arayuz dilinde (W5). `d.ad`/`d.baslik` JS'in yazdigi metindir
+    /// (yazim anindaki dil); dil degisince JS etkinligi yeniden esitler.
     static func altSatir(_ d: NamazCanliNitelikleri.ContentState) -> String {
-        if kabulMu(d) { return "\(d.ad) namazı kılındı" }
-        return d.tema == "vakit" ? "Çıkış \(WidgetMetin.saat(d.hedefMs))" : "Bitiş \(WidgetMetin.saat(d.hedefMs))"
+        let m = WidgetMetin.m
+        if kabulMu(d) { return m.bicim(m.kabulAlt, ["ad": d.ad]) }
+        return m.bicim(d.tema == "vakit" ? m.cikisSaat : m.bitisSaat, ["saat": WidgetMetin.saat(d.hedefMs)])
+    }
+
+    /// Kart basligi: son karede (`kabul` temasi) yazilmis dua yerine cizim anindaki dilde dua.
+    static func baslik(_ d: NamazCanliNitelikleri.ContentState) -> String {
+        kabulMu(d) ? WidgetMetin.vm.kabulDuasi : d.baslik
     }
 }
 
@@ -99,9 +108,9 @@ private struct CanliSayac: View {
         if CanliMetin.kabulMu(durum) {
             Image(systemName: "checkmark")
                 .foregroundStyle(WidgetSabitleri.yesil)
-                .accessibilityLabel("Kılındı")
+                .accessibilityLabel(WidgetMetin.vm.kilindi)
         } else if eskidi || hedef <= Date() {
-            Text("Bitti")
+            Text(WidgetMetin.m.bitti)
         } else {
             Text(timerInterval: Date()...hedef, countsDown: true)
                 .monospacedDigit()
@@ -131,11 +140,11 @@ private struct CanliKildimDugmesi: View {
         if #available(iOS 17.0, *) {
             if !eskidi, let tarih = durum.kildimTarih, let vakit = durum.kildimVakit {
                 Button(intent: KildimDugmesiIntent(tarih: tarih, vakit: vakit)) {
-                    Label("Kıldım", systemImage: "checkmark")
+                    Label(WidgetMetin.vm.kildim, systemImage: "checkmark")
                         .font(.caption.weight(.semibold))
                 }
                 .tint(WidgetSabitleri.yesil)
-                .accessibilityLabel("\(durum.ad) namazını kıldım")
+                .accessibilityLabel(WidgetMetin.m.bicim(WidgetMetin.m.kildimErisim, ["ad": durum.ad]))
             }
         }
     }
@@ -151,11 +160,11 @@ private struct CanliKilitEkraniGorunumu: View {
                     .font(.title3)
                     .foregroundStyle(WidgetSabitleri.yesil)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(durum.baslik)
+                    Text(CanliMetin.baslik(durum))
                         .font(.headline)
                         .foregroundStyle(.primary)
                         .lineLimit(1)
-                    Text(eskidi ? "Vakit çıktı" : CanliMetin.altSatir(durum))
+                    Text(eskidi ? WidgetMetin.m.vakitCikti : CanliMetin.altSatir(durum))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

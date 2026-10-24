@@ -98,8 +98,22 @@ enum KomplikasyonMetin {
     /// Dekoratif yesil (#4CAF50); metin sistem rengidir.
     static let yesil = Color(red: 0x4C / 255.0, green: 0xAF / 255.0, blue: 0x50 / 255.0)
 
+    /// Cizim anindaki dil (W5): saat uygulamasinin telefondan alip App Group'a yazdigi kod.
+    static var m: SaatMetinleri { SaatDili.metin }
+
+    /// Gorunen ad, gunes DAHIL, arayuz dilinde.
     static func ad(_ kod: String) -> String {
-        kod == "gunes" ? "Güneş" : VakitKarari.gorunenAd(kod)
+        SaatDili.vakit.vakitAdi(kod)
+    }
+
+    /// "{ad} vakti, çıkış {saat}" — ekran okuyucu.
+    static func cikisErisim(_ kod: String, _ ms: Int64) -> String {
+        m.bicim(m.vaktiCikisErisim, ["ad": ad(kod), "saat": SaatDeposu.saatMetni(ms)])
+    }
+
+    /// "Sıradaki {ad}, {saat}" — ekran okuyucu.
+    static func siradakiErisim(_ kod: String, _ ms: Int64) -> String {
+        m.bicim(m.siradakiErisim, ["ad": ad(kod), "saat": SaatDeposu.saatMetni(ms)])
     }
 
     static func ikon(_ kod: String) -> String {
@@ -139,8 +153,8 @@ struct NamazSaatKomplikasyonu: Widget {
         StaticConfiguration(kind: "NamazSaatKomplikasyonu", provider: SaatSaglayici()) { girdi in
             KomplikasyonGorunumu(girdi: girdi)
         }
-        .configurationDisplayName("Namaz vakti")
-        .description("İçinde bulunulan vakit ve çıkışına kalan süre.")
+        .configurationDisplayName(KomplikasyonMetin.m.komplikasyonAdi)
+        .description(KomplikasyonMetin.m.komplikasyonAciklama)
         .supportedFamilies([.accessoryCircular, .accessoryCorner, .accessoryRectangular, .accessoryInline])
     }
 }
@@ -188,14 +202,14 @@ private struct SatirIci: View {
             } icon: {
                 Image(systemName: "hourglass.bottomhalf.filled")
             }
-            .accessibilityLabel("\(KomplikasyonMetin.ad(s.aktif.vakit)) vakti, çıkış \(SaatDeposu.saatMetni(s.bitis))")
+            .accessibilityLabel(KomplikasyonMetin.cikisErisim(s.aktif.vakit, s.bitis))
         } else if let g = girdi.gorunum, let sonraki = g.sonraki {
             Label {
                 Text("\(KomplikasyonMetin.ad(sonraki.vakit)) \(SaatDeposu.saatMetni(sonraki.ms))")
             } icon: {
                 Image(systemName: KomplikasyonMetin.ikon(sonraki.vakit))
             }
-            .accessibilityLabel("Sıradaki \(KomplikasyonMetin.ad(sonraki.vakit)), \(SaatDeposu.saatMetni(sonraki.ms))")
+            .accessibilityLabel(KomplikasyonMetin.siradakiErisim(sonraki.vakit, sonraki.ms))
         } else {
             Text("Namaz Akışı")
         }
@@ -221,7 +235,7 @@ private struct Dairesel: View {
             )
             .progressViewStyle(.circular)
             .tint(KomplikasyonMetin.yesil)
-            .accessibilityLabel("\(KomplikasyonMetin.ad(s.aktif.vakit)) vakti, çıkış \(SaatDeposu.saatMetni(s.bitis))")
+            .accessibilityLabel(KomplikasyonMetin.cikisErisim(s.aktif.vakit, s.bitis))
         } else if let g = girdi.gorunum, let sonraki = g.sonraki {
             ZStack {
                 AccessoryWidgetBackground()
@@ -235,7 +249,7 @@ private struct Dairesel: View {
                         .minimumScaleFactor(0.6)
                 }
             }
-            .accessibilityLabel("Sıradaki \(KomplikasyonMetin.ad(sonraki.vakit)), \(SaatDeposu.saatMetni(sonraki.ms))")
+            .accessibilityLabel(KomplikasyonMetin.siradakiErisim(sonraki.vakit, sonraki.ms))
         } else {
             ZStack {
                 AccessoryWidgetBackground()
@@ -258,7 +272,7 @@ private struct Kose: View {
                     Text(timerInterval: KomplikasyonMetin.aralik(girdi.date, s.bitis), countsDown: true)
                         .monospacedDigit()
                 }
-                .accessibilityLabel("\(KomplikasyonMetin.ad(s.aktif.vakit)) vakti, çıkış \(SaatDeposu.saatMetni(s.bitis))")
+                .accessibilityLabel(KomplikasyonMetin.cikisErisim(s.aktif.vakit, s.bitis))
         } else if let g = girdi.gorunum, let sonraki = g.sonraki {
             Image(systemName: KomplikasyonMetin.ikon(sonraki.vakit))
                 .font(.title3)
@@ -288,14 +302,14 @@ private struct Dikdortgen: View {
                 Label(SaatDeposu.saatMetni(s.bitis), systemImage: "hourglass.bottomhalf.filled")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                    .accessibilityLabel("Çıkış \(SaatDeposu.saatMetni(s.bitis))")
+                    .accessibilityLabel(KomplikasyonMetin.m.bicim(KomplikasyonMetin.m.cikisSaat, ["saat": SaatDeposu.saatMetni(s.bitis)]))
             } else if let g = girdi.gorunum, let sonraki = g.sonraki {
                 if let aktif = g.aktif, g.kilindi {
-                    Label("\(KomplikasyonMetin.ad(aktif.vakit)) kılındı", systemImage: "checkmark.circle.fill")
+                    Label(KomplikasyonMetin.m.bicim(KomplikasyonMetin.m.kilindiBaslik, ["ad": KomplikasyonMetin.ad(aktif.vakit)]), systemImage: "checkmark.circle.fill")
                         .font(.headline)
                         .widgetAccentable()
                 } else {
-                    Label("Sıradaki", systemImage: "clock")
+                    Label(KomplikasyonMetin.m.siradaki, systemImage: "clock")
                         .font(.headline)
                         .widgetAccentable()
                 }
@@ -306,9 +320,7 @@ private struct Dikdortgen: View {
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
             } else {
-                Text(girdi.veriEski
-                    ? "Vakitleri güncellemek için iPhone'da uygulamayı açın"
-                    : "Vakitler iPhone'unuzdan gelir")
+                Text(girdi.veriEski ? KomplikasyonMetin.m.komplikasyonVeriEski : KomplikasyonMetin.m.vakitlerIphonedan)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                     .minimumScaleFactor(0.7)

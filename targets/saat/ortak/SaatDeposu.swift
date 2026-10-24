@@ -23,6 +23,7 @@ public final class SaatDeposu: @unchecked Sendable {
         static let tesbihatToplam = "namazakisi.saat.tesbihat.toplam"
         static let tesbihatMs = "namazakisi.saat.tesbihat.ms"
         static let kapatilanUyandirma = "namazakisi.saat.uyandirma.kapatilan"
+        static let dil = "namazakisi.saat.dil"
     }
 
     private let defaults: UserDefaults
@@ -72,6 +73,28 @@ public final class SaatDeposu: @unchecked Sendable {
     /// Telefon saatin anlamadigi yeni bir sema gonderdi mi? (saatteki uygulama guncellenmeli)
     public func surumYeniMi() -> Bool {
         return kilitli { defaults.bool(forKey: Anahtar.surumYeni) }
+    }
+
+    // MARK: - Arayuz dili (W5)
+
+    /**
+     * Telefonun arayuz dili (`SaatIletisi.dil`, yukun kardesi). Saat uygulamasi yazar,
+     * komplikasyon da okur; metinler CIZIM aninda bu koddan secilir.
+     * - Returns: kayitli dil degisti mi (degistiyse gorunumler yeniden cizilmeli)
+     */
+    @discardableResult
+    public func diliYaz(_ kod: String) -> Bool {
+        let yeni = ArayuzDili.coz(kod)
+        return kilitli {
+            let degisti = defaults.string(forKey: Anahtar.dil) != yeni
+            if degisti { defaults.set(yeni, forKey: Anahtar.dil) }
+            return degisti
+        }
+    }
+
+    /// Kayitli arayuz dili; telefon hic gondermediyse (eski telefon) Turkce.
+    public func dil() -> String {
+        return ArayuzDili.coz(kilitli { defaults.string(forKey: Anahtar.dil) })
     }
 
     // MARK: - Iyimser "Kildim"

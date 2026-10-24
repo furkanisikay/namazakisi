@@ -51,6 +51,7 @@ public enum Kible {
     }
 
     /// Yon. "Saga" / "Sola" / "Arkanizda" — rakam ayrica `donusDerecesi` ile (5°'lik adim).
+    /// Metinler dil parametresiyle (W5; varsayilan Turkce — fikstur testleri degismez).
     public enum Donus: Equatable { case saga, sola, arkada }
 
     public static func donus(_ hedef: Double) -> Donus {
@@ -63,23 +64,27 @@ public enum Kible {
         return max(5, Int((sapma(hedef) / 5.0).rounded()) * 5)
     }
 
-    /// Wear `donusMetni` ile ayni: "Sağa 35°", "Sola 120°", "Arkanızda".
-    public static func donusMetni(_ hedef: Double) -> String {
+    /// Wear `donusMetni` ile ayni: "Sağa 35°", "Sola 120°", "Arkanızda" (en: "Right 35°"...).
+    public static func donusMetni(_ hedef: Double, dil: String = ArayuzDili.varsayilan) -> String {
+        let en = ArayuzDili.coz(dil) == "en"
         switch donus(hedef) {
-        case .arkada: return "Arkanızda"
-        case .saga: return "Sağa \(donusDerecesi(hedef))°"
-        case .sola: return "Sola \(donusDerecesi(hedef))°"
+        case .arkada: return en ? "Behind you" : "Arkanızda"
+        case .saga: return en ? "Right \(donusDerecesi(hedef))°" : "Sağa \(donusDerecesi(hedef))°"
+        case .sola: return en ? "Left \(donusDerecesi(hedef))°" : "Sola \(donusDerecesi(hedef))°"
         }
     }
 
-    /// Ekran okuyucu: 10°'lik adim (her olayda okunmasin), kibar "siz".
-    public static func erisimMetni(_ hedef: Double, hizali: Bool) -> String {
-        if hizali { return "Kıble yönündesiniz" }
+    /// Ekran okuyucu: 10°'lik adim (her olayda okunmasin), kibar "siz". Ingilizce karsilik
+    /// JS `sozluk/en/kible.ts > yon` ile ayni kalip.
+    public static func erisimMetni(_ hedef: Double, hizali: Bool, dil: String = ArayuzDili.varsayilan) -> String {
+        let en = ArayuzDili.coz(dil) == "en"
+        if hizali { return en ? "You are facing the Qibla" : "Kıble yönündesiniz" }
         let s = sapma(hedef)
-        if s >= 175.0 { return "Kıble arkanızda" }
+        if s >= 175.0 { return en ? "The Qibla is behind you" : "Kıble arkanızda" }
         let adim = max(10, Int((s / 10.0).rounded()) * 10)
-        let taraf = dereceSar(hedef) <= 180.0 ? "sağınızda" : "solunuzda"
-        return "Kıble \(adim) derece \(taraf)"
+        let sagda = dereceSar(hedef) <= 180.0
+        if en { return "The Qibla is \(adim) degrees to your \(sagda ? "right" : "left")" }
+        return "Kıble \(adim) derece \(sagda ? "sağınızda" : "solunuzda")"
     }
 
     /// Ok donusunde EN KISA yol (359 → 1 gecisinde ok geri dolasmaz). Sonuc sarilmaz.
@@ -99,9 +104,11 @@ public enum Kible {
         return 6371.0 * 2 * atan2(a.squareRoot(), (1 - a).squareRoot())
     }
 
-    /// "2.410 km" (Turkce binlik ayraci nokta; 10 km'ye yuvarlanir, 10 km altinda "Kâbe'desiniz").
-    public static func mesafeMetni(_ km: Double) -> String {
-        if km < 10 { return "Kâbe'desiniz" }
+    /// "2.410 km" (Turkce binlik ayraci nokta, Ingilizcede virgul; 10 km'ye yuvarlanir,
+    /// 10 km altinda "Kâbe'desiniz").
+    public static func mesafeMetni(_ km: Double, dil: String = ArayuzDili.varsayilan) -> String {
+        let en = ArayuzDili.coz(dil) == "en"
+        if km < 10 { return en ? "You're at the Kaaba" : "Kâbe'desiniz" }
         let yuvarlak = Int((km / 10).rounded()) * 10
         var rakam = String(yuvarlak)
         var parcalar: [String] = []
@@ -110,7 +117,7 @@ public enum Kible {
             rakam = String(rakam.dropLast(3))
         }
         parcalar.insert(rakam, at: 0)
-        return parcalar.joined(separator: ".") + " km"
+        return parcalar.joined(separator: en ? "," : ".") + " km"
     }
 
     private static func radyan(_ d: Double) -> Double { d * Double.pi / 180.0 }

@@ -142,6 +142,19 @@ esitMi(TvBicim.geriSayim(-5), "00:00", "bicim: eksi sifira")
 esitMi(TvKaydirma.ofset(0).0, 0, "kaydirma: ilk adim")
 esitMi(TvKaydirma.ofset(60_000).0, 6, "kaydirma: ikinci dakika")
 
+// MARK: - 4b) Ingilizce (W5, Android TV `TvDili` ile ayni) — varsayilan dil "tr" degismez
+
+esitMi(TvBicim.tarih(gun, dil: "en"), "Tuesday, 13 October 2026", "en bicim: tarih")
+esitMi(d4.gorunenAd(.ogle, dil: "en"), "Jumu'ah", "en pano: cuma ogle etiketi")
+esitMi(d1.gorunenAd(.ogle, dil: "en"), "Dhuhr", "en pano: ogle")
+esitMi(d1.gorunenAd(.imsak, dil: "en-US"), "Fajr", "en-US pano: imsak")
+esitMi(d1.gorunenAd(.imsak), "İmsak", "tr pano: imsak (varsayilan)")
+esitMi(TvKerahat.Tur.istiva.ad("en"), "Zenith", "en kerahat adi")
+esitMi(TvKerahat.Tur.gurub.aciklama("en"), "Praying is makruh while the sun is setting.", "en kerahat aciklamasi")
+esitMi(TvKerahat.Tur.suruk.ad("tr"), TvKerahat.Tur.suruk.ad, "tr kerahat adi")
+esitMi(TvDili.coz("de-DE"), "tr", "desteklenmeyen dil Turkce")
+esitMi(TvDili.coz(nil), "tr", "dil yok Turkce")
+
 // MARK: - 5) Il listesi (istege bagli ikinci arguman)
 
 if arg.count >= 3 {

@@ -6,6 +6,21 @@ Katmanlar: saf çekirdek `src/core/muhafiz/ios/*` → `domain/services/IosMuhafi
 
 Genel kurallar çekirdekte (AGENTS.md): dosya adları salt ASCII, `.gitignore`'da `/ios/` köke sabit, eas-cli `app.json`'ı yeniden yazabilir, jest'te `Platform.OS` varsayılanı `'ios'`. Gerçek alarm (AlarmKit) ayrıntısı → [gercek-alarm.md](gercek-alarm.md).
 
+## Çok dil (native metinler)
+| Yüzey | Dil kaynağı |
+|---|---|
+| App Intents sabit metinleri (başlık, açıklama, parametre, Siri ifadesi, Odak filtresi), hızlı eylem başlıkları | Cihaz dili (paketin seçtiği `.lproj`) |
+| Siri/Kısayollar dinamik cevapları | Aynı paket dili (`SiriDili` = `Bundle.main.preferredLocalizations`; tek konuşmada iki dil karışmasın) |
+| iPhone widget, Canlı Etkinlik çizimi, Kontrol Merkezi, AlarmKit düğmeleri | Uygulama dili (`SiriDeposu.arayuzDili()`, App Group), ÇİZİM anında okunur |
+| Apple Watch ve komplikasyonlar | Telefonun applicationContext'e koyduğu `"dil"` (Wear yükünün kardeşi; `SaatDeposu`'na yazılır). Eski telefon göndermezse Türkçe |
+| tvOS | Cihaz dili |
+
+- **`.lproj` dosyaları uygulamayı iOS gözünde çok dilli yapar** (Ayarlar'da dil seçici, Siri/Kısayollar cihaz dilinde): `withSiriKisayollari` onları YALNIZ `diller` seçeneğinde birden çok dil varken ekler; liste JS seçicisindeki dillerle aynı olmalı. Bir dil açılırken `app.json`'a `["./plugins/withSiriKisayollari", { "diller": ["tr", "en"] }]`. Nöbetçi: `plugins/__tests__/siriYerellestirme.test.ts`. `tr.lproj` ZORUNLU (yoksa Türkçe cihaz İngilizceye düşer).
+- **`.strings` anahtarı koddaki Türkçe metnin kendisidir:** kodda metin değişirse `targets/siri-kisayollari/<dil>.lproj` de değişmeli. "Sıradaki vaktin adı" eylemi paket dilinde değer döndürür (İngilizce cihazda kurulu "… Öğle ise" karşılaştırmaları kırılır).
+- **Saf Swift dil tablosu `VakitKarari.swift` içindedir** (yeni pod dosyası CI swiftc listelerine ve widget kopya listesine girmek zorunda kalırdı); saat metinleri `targets/saat/ortak/SaatMetinleri.swift` (glob'la derlenir, eklenti saate ve komplikasyona kopyalar). Metin üreten fonksiyonlarda `dil: String = "tr"`; Türkçe beklentiler bayt bayt aynı.
+- **Swift fikstür testleri Linux'ta da koşar:** swift.org 6.0.3 Linux araç zinciri + CI'daki `-swift-version 5` argümanları (SwiftUI tip denetimi yalnız macOS CI'da).
+- İzin metinleri (Info.plist) bugün yalnız Türkçe; açılacaksa `app.json > locales` (`en.json`) — `en.lproj/InfoPlist.strings` (hızlı eylem başlıkları) ile ad çakışır, o başlıklar oraya taşınır.
+
 ## Teslim katmanı (aynı matris, platforma göre teslim)
 
 - **Motor çekirdeği platformdan bağımsız ve SAF kalır; platform farkı YALNIZ teslimcidedir.** `motorAdaptoru`, `kanalKumesi`, `aktifSeviye`, `planButcesi`, `vakitUyariPlaniOlustur` "ne zaman / hangi adım / hangi kanal"ı söyler; bir `UyariPlani`'nın cihazda nasıl duyulacağı `domain/services/MuhafizTeslimcisi.ts` arayüzündedir (`hazirla` / `uyariPlanla` / `yanKanaliIptalEt` / `tumYanKanallariIptalEt` / ops. `tamamla`). `AndroidMuhafizTeslimcisi` eski kodun birebir taşınmışı, `IosMuhafizTeslimcisi` yenidir; `ArkaplanMuhafizServisi` orkestrasyonu değişmedi. Yeni teslim davranışı için servise `Platform.OS` dallanması YAZMA — teslimciye koy.

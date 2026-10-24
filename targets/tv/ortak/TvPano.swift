@@ -5,6 +5,41 @@ import Foundation
 // Kural degisirse iki dil BIRLIKTE degisir (testler: Kotlin `PanoDurumuTest`, Swift
 // `targets/tv/test/main.swift`).
 
+/// PANO DILI (W5, Android TV `TvDili.kt` ikizi): TV CIHAZIN dilini izler. Cekirdek dili
+/// PARAMETRE alir (varsayilan "tr" — mevcut testler degismez); desteklenmeyen dil Turkceye
+/// duser. Ingilizce karsiliklar telefonun JS sozlugunden (`sozluk/en`) ve Android TV ile
+/// BIREBIR ayni.
+public enum TvDili {
+    public static let varsayilan = "tr"
+
+    /// "en", "en-US", "en_GB" → "en"; diger her sey → "tr".
+    public static func coz(_ kod: String?) -> String {
+        guard let kod, !kod.isEmpty else { return varsayilan }
+        let dil = String(kod.split(whereSeparator: { $0 == "-" || $0 == "_" }).first ?? "")
+        return dil == "en" ? "en" : varsayilan
+    }
+
+    /// Cihazin ilk tercih ettigi dil (tvOS Ayarlar > Genel > Dil).
+    public static var cihaz: String { coz(Locale.preferredLanguages.first) }
+
+    static func en(_ dil: String) -> Bool { coz(dil) == "en" }
+}
+
+public extension TvVakit {
+    /// `dil`deki gorunen ad; `ad` Turkcedir.
+    func ad(_ dil: String) -> String {
+        guard TvDili.en(dil) else { return ad }
+        switch self {
+        case .imsak: return "Fajr"
+        case .gunes: return "Sunrise"
+        case .ogle: return "Dhuhr"
+        case .ikindi: return "Asr"
+        case .aksam: return "Maghrib"
+        case .yatsi: return "Isha"
+        }
+    }
+}
+
 /// Saat dilimine gore yerel takvim gunu ve gun ici saat/dakika/saniye.
 public enum TvZaman {
     static func ofsetMs(_ ms: Int64, _ bolge: TimeZone) -> Int64 {
@@ -55,6 +90,25 @@ public enum TvKerahat {
             case .gurub: return "Güneş batarken namaz kılınması mekruhtur."
             }
         }
+
+        /// `dil`deki ad / aciklama (`ad`/`aciklama` Turkcedir).
+        public func ad(_ dil: String) -> String {
+            guard TvDili.en(dil) else { return ad }
+            switch self {
+            case .suruk: return "Sunrise"
+            case .istiva: return "Zenith"
+            case .gurub: return "Sunset"
+            }
+        }
+
+        public func aciklama(_ dil: String) -> String {
+            guard TvDili.en(dil) else { return aciklama }
+            switch self {
+            case .suruk: return "Praying is makruh until the sun has risen well."
+            case .istiva: return "Praying is makruh while the sun is at its zenith."
+            case .gurub: return "Praying is makruh while the sun is setting."
+            }
+        }
     }
 
     public struct Pencere: Equatable {
@@ -95,7 +149,10 @@ public struct TvPanoDurumu: Equatable {
     public let siradakiKerahat: TvKerahat.Pencere?
 
     /// Cuma gunu ogle satiri "Cuma" diye okunur (salt gorunum).
-    public func gorunenAd(_ v: TvVakit) -> String { cuma && v == .ogle ? "Cuma" : v.ad }
+    public func gorunenAd(_ v: TvVakit, dil: String = TvDili.varsayilan) -> String {
+        if cuma && v == .ogle { return TvDili.en(dil) ? "Jumu'ah" : "Cuma" }
+        return v.ad(dil)
+    }
 }
 
 public enum TvPanoHesabi {
@@ -141,11 +198,15 @@ public enum TvPanoHesabi {
     }
 }
 
-/// Metin bicimleri. Ay/gun adlari SABIT (TV'nin sistem dili Ingilizce olabilir).
+/// Metin bicimleri. Ay/gun adlari sabit tablodan (cihazin `Locale`'ine/ICU'ya bagli degil);
+/// dil PARAMETREDIR (varsayilan Turkce), pano cihaz dilini verir (`TvDili.cihaz`).
 public enum TvBicim {
     static let aylar = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
                         "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
     static let gunler = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
+    static let aylarEn = ["January", "February", "March", "April", "May", "June",
+                          "July", "August", "September", "October", "November", "December"]
+    static let gunlerEn = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
     static func iki(_ n: Int) -> String { n < 10 ? "0\(n)" : "\(n)" }
 
@@ -160,9 +221,12 @@ public enum TvBicim {
         iki(TvZaman.gunIciSaniye(ms, bolge) % 60)
     }
 
-    /// "13 Ekim 2026, Salı"
-    public static func tarih(_ g: TvTarih) -> String {
-        "\(g.gun) \(aylar[g.ay - 1]) \(g.yil), \(gunler[g.haftaGunu - 1])"
+    /// "13 Ekim 2026, Salı" / "Tuesday, 13 October 2026"
+    public static func tarih(_ g: TvTarih, dil: String = TvDili.varsayilan) -> String {
+        if TvDili.en(dil) {
+            return "\(gunlerEn[g.haftaGunu - 1]), \(g.gun) \(aylarEn[g.ay - 1]) \(g.yil)"
+        }
+        return "\(g.gun) \(aylar[g.ay - 1]) \(g.yil), \(gunler[g.haftaGunu - 1])"
     }
 
     /// "2:05:09" ya da "05:09"; saniye ASAGI yuvarlanir.

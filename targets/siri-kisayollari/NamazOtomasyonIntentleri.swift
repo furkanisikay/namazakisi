@@ -25,9 +25,11 @@ struct SiradakiVakitAdiIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog {
         let simdi = SiriDeposu.simdiMs()
+        // Deger de cevap dilindedir (W5): Kisayollar kullaniciya cihaz dilinde gorunur,
+        // "Eger … ise" karsilastirmasini kullanici o dilde kurar.
         guard let cizelge = SiriDeposu.varsayilan.cizelge(),
-              let s = OtomasyonKarari.siradakiVakit(cizelge.vakitler, simdiMs: simdi) else {
-            return .result(value: "", dialog: "\(VakitKarari.konumYokMetni)")
+              let s = OtomasyonKarari.siradakiVakit(cizelge.vakitler, simdiMs: simdi, dil: SiriDili.kod) else {
+            return .result(value: "", dialog: "\(SiriDili.metin.konumYok)")
         }
         return .result(value: s.ad, dialog: "\(s.ad)")
     }
@@ -44,11 +46,12 @@ struct SiradakiVakteKalanDakikaIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<Int> & ProvidesDialog {
         let simdi = SiriDeposu.simdiMs()
+        let dil = SiriDili.kod
         guard let cizelge = SiriDeposu.varsayilan.cizelge(),
-              let s = OtomasyonKarari.siradakiVakit(cizelge.vakitler, simdiMs: simdi) else {
-            return .result(value: -1, dialog: "\(VakitKarari.konumYokMetni)")
+              let s = OtomasyonKarari.siradakiVakit(cizelge.vakitler, simdiMs: simdi, dil: dil) else {
+            return .result(value: -1, dialog: "\(SiriDili.metin.konumYok)")
         }
-        return .result(value: s.kalanDk, dialog: "\(s.ad) vaktine \(s.kalanDk) dakika var.")
+        return .result(value: s.kalanDk, dialog: "\(OtomasyonMetni.kalanDakika(ad: s.ad, dakika: s.kalanDk, dil: dil))")
     }
 }
 
@@ -63,8 +66,9 @@ struct SimdikiVakitKilindiMiIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> & ProvidesDialog {
         let depo = SiriDeposu.varsayilan
+        let dil = SiriDili.kod
         guard let cizelge = depo.cizelge(), !cizelge.vakitler.isEmpty else {
-            return .result(value: false, dialog: "\(VakitKarari.konumYokMetni)")
+            return .result(value: false, dialog: "\(SiriDili.metin.konumYok)")
         }
         let sonuc = OtomasyonKarari.simdikiVakitKilindiMi(
             vakitler: cizelge.vakitler,
@@ -73,9 +77,28 @@ struct SimdikiVakitKilindiMiIntent: AppIntent {
             simdiMs: SiriDeposu.simdiMs()
         )
         switch sonuc {
-        case .some(true): return .result(value: true, dialog: "Evet, kılındı olarak işaretli.")
-        case .some(false): return .result(value: false, dialog: "Hayır, henüz işaretlenmedi.")
-        case .none: return .result(value: false, dialog: "Şu an kılınacak vakit yok.")
+        case .some(true): return .result(value: true, dialog: "\(OtomasyonMetni.evetKilindi(dil))")
+        case .some(false): return .result(value: false, dialog: "\(OtomasyonMetni.hayirKilinmadi(dil))")
+        case .none: return .result(value: false, dialog: "\(VakitMetinleri.dil(dil).vakitYok)")
         }
+    }
+}
+
+/// Otomasyon eylemlerinin dinamik cevaplari (W5; dil `SiriDili.kod`). Ingilizce karsiliklar
+/// JS `sozluk/en/genel.ts > kildim.sonuc` ve `sure.dakika` cogulundan.
+enum OtomasyonMetni {
+    static func kalanDakika(ad: String, dakika: Int, dil: String) -> String {
+        if ArayuzDili.coz(dil) == "en" {
+            return "\(ad) begins in \(dakika) \(dakika == 1 ? "minute" : "minutes")."
+        }
+        return "\(ad) vaktine \(dakika) dakika var."
+    }
+
+    static func evetKilindi(_ dil: String) -> String {
+        ArayuzDili.coz(dil) == "en" ? "Yes, it's marked as prayed." : "Evet, kılındı olarak işaretli."
+    }
+
+    static func hayirKilinmadi(_ dil: String) -> String {
+        ArayuzDili.coz(dil) == "en" ? "No, it isn't marked yet." : "Hayır, henüz işaretlenmedi."
     }
 }

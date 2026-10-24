@@ -49,24 +49,29 @@ public struct WidgetKontrolDurumu: Equatable, Sendable {
 public enum WidgetKarari {
     /// Kontrol Merkezi kontrolunun o anki durumu. Karar Siri "Kildim" ile AYNI
     /// (`VakitKarari.kildimKarari`); dokunusta `dugmeKarari` yeniden degerlendirir.
+    /// `dil`: arayuz dili (`ArayuzDili.coz`); baslik CIZIM aninda bu dilde kurulur.
     public static func kontrolDurumu(
         vakitler: [SiriVakitAni]?,
         kilinanlar: [String: [String]],
         bekleyenler: [SiriBekleyenKildim],
-        simdiMs: Int64
+        simdiMs: Int64,
+        dil: String = ArayuzDili.varsayilan
     ) -> WidgetKontrolDurumu {
+        let m = VakitMetinleri.dil(dil)
         guard let vakitler, !vakitler.isEmpty else {
-            return WidgetKontrolDurumu(tur: .vakitYok, baslik: "Uygulamayı açın", tarih: "", vakit: "")
+            return WidgetKontrolDurumu(tur: .vakitYok, baslik: m.uygulamayiAcin, tarih: "", vakit: "")
         }
         switch VakitKarari.kildimKarari(
-            vakitler: vakitler, kilinanlar: kilinanlar, bekleyenler: bekleyenler, simdiMs: simdiMs
+            vakitler: vakitler, kilinanlar: kilinanlar, bekleyenler: bekleyenler, simdiMs: simdiMs, dil: dil
         ) {
         case let .aday(v, kayit, ad):
-            return WidgetKontrolDurumu(tur: .kilinabilir, baslik: "\(ad) · Kıldım", tarih: v.tarih, vakit: kayit)
+            return WidgetKontrolDurumu(
+                tur: .kilinabilir, baslik: VakitMetinleri.bicim(m.kontrolKildim, ["ad": ad]), tarih: v.tarih, vakit: kayit
+            )
         case let .zatenKilindi(ad):
-            return WidgetKontrolDurumu(tur: .kilindi, baslik: "\(ad) kılındı", tarih: "", vakit: "")
+            return WidgetKontrolDurumu(tur: .kilindi, baslik: VakitMetinleri.bicim(m.kontrolKilindi, ["ad": ad]), tarih: "", vakit: "")
         case .vakitYok:
-            return WidgetKontrolDurumu(tur: .vakitYok, baslik: "Kılınacak vakit yok", tarih: "", vakit: "")
+            return WidgetKontrolDurumu(tur: .vakitYok, baslik: m.kontrolVakitYok, tarih: "", vakit: "")
         }
     }
 

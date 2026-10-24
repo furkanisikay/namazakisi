@@ -17,7 +17,10 @@ struct UyandirmaEkrani: View {
     @State private var dalga = false
 
     private var ikon: String { kayit.nafile ? "moon.stars.fill" : "sunrise.fill" }
-    private var ad: String { kayit.nafile ? "Teheccüd" : "Sabah" }
+    /// Cizim anindaki dil (W5, telefondan gelir).
+    private var m: SaatMetinleri { SaatDili.metin }
+    private var vm: VakitMetinleri { SaatDili.vakit }
+    private var ad: String { kayit.nafile ? m.teheccud : vm.ad("sabah") }
     private var ton: Color { SaatGorunum.renk(kayit.nafile ? "yatsi" : "sabah") }
 
     var body: some View {
@@ -56,12 +59,12 @@ struct UyandirmaEkrani: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel(kayit.nafile ? "İmsak \(SaatDeposu.saatMetni(kayit.sonMs))" : "Vaktin sonu \(SaatDeposu.saatMetni(kayit.sonMs))")
+                .accessibilityLabel(m.bicim(kayit.nafile ? m.imsakSaat : m.vaktinSonu, ["saat": SaatDeposu.saatMetni(kayit.sonMs)]))
                 HStack(spacing: 6) {
                     Button {
                         uyandirici.kildim()
                     } label: {
-                        Label("Kıldım", systemImage: "checkmark")
+                        Label(vm.kildim, systemImage: "checkmark")
                             .font(.headline)
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
@@ -69,7 +72,7 @@ struct UyandirmaEkrani: View {
                     }
                     .tint(ton)
                     .buttonStyle(.borderedProminent)
-                    .accessibilityLabel("\(ad) namazını kıldım olarak işaretleyin")
+                    .accessibilityLabel(m.bicim(m.kildimErisim, ["ad": ad]))
                     Button {
                         uyandirici.kapat()
                     } label: {
@@ -77,7 +80,7 @@ struct UyandirmaEkrani: View {
                             .font(.body.weight(.semibold))
                     }
                     .frame(width: 52)
-                    .accessibilityLabel("Uyandırmayı kapatın")
+                    .accessibilityLabel(m.uyandirmayiKapatin)
                 }
                 .padding(.top, 4)
             }

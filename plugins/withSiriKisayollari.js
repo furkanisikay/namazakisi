@@ -23,6 +23,13 @@
  *  - Gelistirme bolgesi `tr`: App Shortcuts ifadeleri koddaki gelistirme dilinde
  *    sayilir; `en` kalsaydi Turkce ifadeler Ingilizce sanilir ve Turkce Siri
  *    eslestiremezdi.
+ *  - Yerellestirme (W5): `targets/siri-kisayollari/<dil>.lproj/` altindaki `.strings`
+ *    dosyalari (`Localizable` = intent basligi/aciklamasi/parametresi, `AppShortcuts` =
+ *    Siri ifadeleri, `InfoPlist` = hizli eylem basliklari) ana hedefin Resources fazina
+ *    eklenir; App Intents metinleri CIHAZ diliyle cozulur. `tr.lproj` ZORUNLUDUR: yalniz
+ *    `en.lproj` olsaydi Turkce cihaz da (eslesen yerellestirme yok) Ingilizceye duserdi.
+ *    Dosyalar Expo `locales` ile ayni yere (`<Proje>/Supporting/<dil>.lproj`) yazilir;
+ *    ileride `app.json > locales` acilirsa `InfoPlist.strings` cakisir (Expo'nunki ezer).
  *  - AppIntents.framework hedefe ZAYIF (Weak) baglanir: dagitim hedefi 15.1,
  *    AppIntents iOS 16'dadir (bkz. `appIntentsZayifBagla`).
  */
@@ -44,6 +51,14 @@ try {
 
 const KAYNAK_DIZINI = path.join(__dirname, '..', 'targets', 'siri-kisayollari');
 const GELISTIRME_BOLGESI = 'tr';
+/**
+ * Varsayilan dil listesi: yalniz gelistirme dili → HIC `.lproj` eklenmez (proje eskisiyle ayni).
+ * `.lproj` dosyalari uygulamayi iOS gozunde cok dilli yapar (Ayarlar'da dil secici, Siri ve
+ * Kisayollar cihaz dilinde) → bir dil ANCAK JS seciciyle AYNI ANDA acilir (yarim dil yok):
+ * `app.json > plugins > ["./plugins/withSiriKisayollari", { "diller": ["tr", "en"] }]`.
+ * Nobetci: `plugins/__tests__/siriYerellestirme.test.ts` (liste = `DILLER.secilebilir`).
+ */
+const VARSAYILAN_DILLER = ['tr'];
 
 /** Kopyalanacak Swift dosyalari (sirali → deterministik proje dosyasi). */
 function swiftDosyalari() {
@@ -68,12 +83,58 @@ function kaynaklariEkle(proje, modRequest) {
   return { proje: sonuc, projeAdi };
 }
 
-function gelistirmeBolgesiniAyarla(proje) {
+function gelistirmeBolgesiniAyarla(proje, diller) {
   const { firstProject } = proje.getFirstProject();
   firstProject.developmentRegion = GELISTIRME_BOLGESI;
   const bolgeler = Array.isArray(firstProject.knownRegions) ? firstProject.knownRegions : [];
   if (!bolgeler.includes(GELISTIRME_BOLGESI)) bolgeler.unshift(GELISTIRME_BOLGESI);
+  for (const dil of diller.length > 1 ? diller : []) {
+    if (!bolgeler.includes(dil)) bolgeler.push(dil);
+  }
   firstProject.knownRegions = bolgeler;
+}
+
+/** Bir dilin `.strings` dosyalari (sirali → deterministik proje dosyasi). */
+function yerellestirmeDosyalari(dil) {
+  const dizin = path.join(KAYNAK_DIZINI, `${dil}.lproj`);
+  if (!fs.existsSync(dizin)) return [];
+  return fs
+    .readdirSync(dizin)
+    .filter((ad) => ad.endsWith('.strings'))
+    .sort();
+}
+
+/**
+ * `.strings` dosyalarini `ios/<Proje>/Supporting/<dil>.lproj/` altina kopyalar ve ANA
+ * hedefin Resources fazina ekler (Expo `Locales.writeStringsFile` deseni). Icerik her
+ * prebuild'de yenilenir; proje kaydi idempotenttir (ayni adli dosya grupta varsa eklenmez).
+ */
+function yerellestirmeleriEkle(proje, modRequest, projeAdi, diller) {
+  if (diller.length <= 1) return proje;
+  const { uuid } = IOSConfig.XcodeUtils.getApplicationNativeTarget({ project: proje, projectName: projeAdi });
+  const destekDizini = path.join(modRequest.platformProjectRoot, projeAdi, 'Supporting');
+  let sonuc = proje;
+  for (const dil of diller) {
+    const dosyalar = yerellestirmeDosyalari(dil);
+    if (dosyalar.length === 0) continue;
+    const hedefDizin = path.join(destekDizini, `${dil}.lproj`);
+    fs.mkdirSync(hedefDizin, { recursive: true });
+    const grupAdi = `${projeAdi}/Supporting/${dil}.lproj`;
+    const grup = IOSConfig.XcodeUtils.ensureGroupRecursively(sonuc, grupAdi);
+    for (const ad of dosyalar) {
+      fs.copyFileSync(path.join(KAYNAK_DIZINI, `${dil}.lproj`, ad), path.join(hedefDizin, ad));
+      if (grup && grup.children.some((cocuk) => cocuk.comment === ad)) continue;
+      sonuc = IOSConfig.XcodeUtils.addResourceFileToGroup({
+        filepath: `${dil}.lproj/${ad}`,
+        groupName: grupAdi,
+        project: sonuc,
+        isBuildFile: true,
+        verbose: true,
+        targetUuid: uuid,
+      });
+    }
+  }
+  return sonuc;
 }
 
 /**
@@ -89,10 +150,12 @@ function appIntentsZayifBagla(proje, projeAdi) {
   proje.addFramework('AppIntents.framework', { weak: true, target: uuid });
 }
 
-module.exports = function withSiriKisayollari(config) {
+module.exports = function withSiriKisayollari(config, secenekler = {}) {
+  const diller = Array.isArray(secenekler.diller) && secenekler.diller.length > 0 ? secenekler.diller : VARSAYILAN_DILLER;
   return withXcodeProject(config, (mod) => {
-    const { proje, projeAdi } = kaynaklariEkle(mod.modResults, mod.modRequest);
-    gelistirmeBolgesiniAyarla(proje);
+    const { proje: kaynakli, projeAdi } = kaynaklariEkle(mod.modResults, mod.modRequest);
+    const proje = yerellestirmeleriEkle(kaynakli, mod.modRequest, projeAdi, diller);
+    gelistirmeBolgesiniAyarla(proje, diller);
     appIntentsZayifBagla(proje, projeAdi);
     mod.modResults = proje;
     return mod;

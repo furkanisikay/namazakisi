@@ -13,6 +13,16 @@ internal import ExpoSiriKisayollari
 // `src/core/siri/siriKarari.ts`, ortak fikstur `modules/expo-siri-kisayollari/test/siri-ornek.json`.
 // Metinler ARAYUZ kaydindadir (kibar "siz"), ibadete cagri degil.
 
+/// SIRI CEVAP DILI (W5). App Intents'in sabit metinleri (baslik, aciklama, ifade) derleme
+/// zamaninda `en.lproj`/`tr.lproj` tablolarindan CIHAZ diliyle cozulur
+/// (`plugins/withSiriKisayollari.js` ekler). Dinamik cevap da AYNI dilde olsun diye paketin
+/// sectigi yerellestirmeden okunur — uygulamanin kendi dil secimi (`arayuzDili()`) degil:
+/// Siri tek konusmada iki dil karistirmasin. Desteklenmeyen dil Turkceye duser.
+enum SiriDili {
+    static var kod: String { ArayuzDili.coz(Bundle.main.preferredLocalizations.first) }
+    static var metin: VakitMetinleri { VakitMetinleri.dil(kod) }
+}
+
 /// "Siradaki namaz ne zaman?" — uygulamayi ACMADAN cevap verir.
 @available(iOS 16.0, *)
 struct SiradakiNamazIntent: AppIntent {
@@ -22,8 +32,9 @@ struct SiradakiNamazIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let depo = SiriDeposu.varsayilan
+        let dil = SiriDili.kod
         guard let cizelge = depo.cizelge(), !cizelge.vakitler.isEmpty else {
-            return .result(dialog: "\(VakitKarari.konumYokMetni)")
+            return .result(dialog: "\(SiriDili.metin.konumYok)")
         }
         let simdi = Date()
         let durum = VakitKarari.aktifVakitBul(cizelge.vakitler, simdiMs: SiriDeposu.simdiMs(simdi))
@@ -32,7 +43,8 @@ struct SiradakiNamazIntent: AppIntent {
             kilinanlar: depo.kilinanlar(),
             bekleyenler: depo.bekleyenler(),
             bugun: SiriDeposu.bugunIso(simdi),
-            saat: SiriDeposu.saatBicimleyici()
+            saat: SiriDeposu.saatBicimleyici(),
+            dil: dil
         )
         return .result(dialog: "\(metin)")
     }
@@ -59,42 +71,44 @@ struct SimdikiVaktiKildimIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let depo = SiriDeposu.varsayilan
+        let dil = SiriDili.kod
         guard let cizelge = depo.cizelge(), !cizelge.vakitler.isEmpty else {
-            return .result(dialog: "\(VakitKarari.konumYokMetni)")
+            return .result(dialog: "\(SiriDili.metin.konumYok)")
         }
         let saat = SiriDeposu.saatBicimleyici()
-        let karar = Self.degerlendir(depo: depo, cizelge: cizelge, simdi: Date())
+        let karar = Self.degerlendir(depo: depo, cizelge: cizelge, simdi: Date(), dil: dil)
         guard case let .aday(vakit, kayitVakti, ad) = karar else {
-            let metin = VakitKarari.kildimMetni(karar, bugun: SiriDeposu.bugunIso(), saat: saat)
+            let metin = VakitKarari.kildimMetni(karar, bugun: SiriDeposu.bugunIso(), saat: saat, dil: dil)
             return .result(dialog: "\(metin)")
         }
 
         if onayIste {
-            try await requestConfirmation(result: .result(dialog: "\(VakitKarari.onayMetni(ad))"))
+            try await requestConfirmation(result: .result(dialog: "\(VakitKarari.onayMetni(ad, dil: dil))"))
             // Onay penceresi acikken vakit degismis ya da namaz baska yoldan
             // isaretlenmis olabilir → YENIDEN degerlendir (Android `adayiIsaretle` ikizi).
-            let yeni = Self.degerlendir(depo: depo, cizelge: cizelge, simdi: Date())
+            let yeni = Self.degerlendir(depo: depo, cizelge: cizelge, simdi: Date(), dil: dil)
             guard case let .aday(yeniVakit, yeniKayit, _) = yeni,
                   yeniVakit.tarih == vakit.tarih, yeniKayit == kayitVakti else {
                 if case .aday = yeni {
-                    return .result(dialog: "Vakit değişti, işaretleme yapılmadı. Lütfen yeniden deneyin.")
+                    return .result(dialog: "\(SiriDili.metin.vakitDegisti)")
                 }
-                let metin = VakitKarari.kildimMetni(yeni, bugun: SiriDeposu.bugunIso(), saat: saat)
+                let metin = VakitKarari.kildimMetni(yeni, bugun: SiriDeposu.bugunIso(), saat: saat, dil: dil)
                 return .result(dialog: "\(metin)")
             }
         }
 
         depo.kildimEkle(tarih: vakit.tarih, vakit: kayitVakti, kaynak: "siri", simdiMs: SiriDeposu.simdiMs())
-        let metin = VakitKarari.kildimMetni(karar, bugun: SiriDeposu.bugunIso(), saat: saat)
+        let metin = VakitKarari.kildimMetni(karar, bugun: SiriDeposu.bugunIso(), saat: saat, dil: dil)
         return .result(dialog: "\(metin)")
     }
 
-    private static func degerlendir(depo: SiriDeposu, cizelge: SiriCizelge, simdi: Date) -> SiriKildimKarari {
+    private static func degerlendir(depo: SiriDeposu, cizelge: SiriCizelge, simdi: Date, dil: String) -> SiriKildimKarari {
         return VakitKarari.kildimKarari(
             vakitler: cizelge.vakitler,
             kilinanlar: depo.kilinanlar(),
             bekleyenler: depo.bekleyenler(),
-            simdiMs: SiriDeposu.simdiMs(simdi)
+            simdiMs: SiriDeposu.simdiMs(simdi),
+            dil: dil
         )
     }
 }

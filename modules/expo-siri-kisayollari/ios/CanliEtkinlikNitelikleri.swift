@@ -61,8 +61,11 @@ public struct NamazCanliNitelikleri: ActivityAttributes {
 
 @available(iOS 16.2, *)
 public extension NamazCanliNitelikleri {
-    /// Kildim sonrasi son karenin metni (telefon `KABUL_DUASI` ile ayni sabit kalip).
-    static let kabulDuasi = "Allah kabul etsin"
+    /// Kildim sonrasi son karenin metni (telefon `KABUL_DUASI` ile ayni sabit kalip),
+    /// arayuz dilinde. Gorunum `kabul` temasinda bu basligi degil cizim anindaki dili cizer.
+    static var kabulDuasi: String {
+        VakitMetinleri.dil(SiriDeposu.varsayilan.arayuzDili()).kabulDuasi
+    }
     /// Son karenin temasi (gorunum bu temada sayac yerine dua cizer).
     static let kabulTemasi = "kabul"
     /// Son karenin kilit ekraninda/Dinamik Ada'da kalma suresi.

@@ -21,22 +21,38 @@ public struct SaatSureParcasi: Equatable {
 
 public enum SaatSure {
     /// Kalan sure (ms, negatif → 0) parcalari. Saniye ASAGI yuvarlanir (JS sayaciyla ayni).
-    public static func parcalar(kalanMs: Int64, saniyesiz: Bool = false) -> [SaatSureParcasi] {
+    /// Birimler dilde (JS `sozluk/<dil>/sure.ts > kisa`: "sa/dk/sn", "h/min/s").
+    public static func parcalar(kalanMs: Int64, saniyesiz: Bool = false, dil: String = ArayuzDili.varsayilan) -> [SaatSureParcasi] {
+        let en = ArayuzDili.coz(dil) == "en"
+        let birimSa = en ? "h" : "sa"
+        let birimDk = en ? "min" : "dk"
+        let birimSn = en ? "s" : "sn"
         let toplam = max(kalanMs, 0) / 1000
         let sa = toplam / 3600
         let dk = (toplam % 3600) / 60
         let sn = toplam % 60
-        if sa > 0 { return [SaatSureParcasi(String(sa), "sa"), SaatSureParcasi(String(dk), "dk")] }
-        if saniyesiz { return [SaatSureParcasi(String(max(dk, sn > 0 ? 1 : 0)), "dk")] }
-        if dk > 0 { return [SaatSureParcasi(String(dk), "dk"), SaatSureParcasi(sn < 10 ? "0\(sn)" : String(sn), "sn")] }
-        return [SaatSureParcasi(String(sn), "sn")]
+        if sa > 0 { return [SaatSureParcasi(String(sa), birimSa), SaatSureParcasi(String(dk), birimDk)] }
+        if saniyesiz { return [SaatSureParcasi(String(max(dk, sn > 0 ? 1 : 0)), birimDk)] }
+        if dk > 0 { return [SaatSureParcasi(String(dk), birimDk), SaatSureParcasi(sn < 10 ? "0\(sn)" : String(sn), birimSn)] }
+        return [SaatSureParcasi(String(sn), birimSn)]
     }
 
-    /// Ekran okuyucu: "1 saat 9 dakika", "9 dakika 5 saniye", "42 saniye".
-    public static func sesli(kalanMs: Int64, saniyesiz: Bool = false) -> String {
-        let adlar = ["sa": "saat", "dk": "dakika", "sn": "saniye"]
-        return parcalar(kalanMs: kalanMs, saniyesiz: saniyesiz)
-            .map { "\(Int($0.sayi) ?? 0) \(adlar[$0.birim] ?? $0.birim)" }
+    /// Ekran okuyucu: "1 saat 9 dakika", "9 dakika 5 saniye", "42 saniye"
+    /// (en: "1 hour 9 minutes", "1 minute 1 second" — JS `sure.saat/dakika/saniye` cogullari).
+    public static func sesli(kalanMs: Int64, saniyesiz: Bool = false, dil: String = ArayuzDili.varsayilan) -> String {
+        let en = ArayuzDili.coz(dil) == "en"
+        // Kisa birim (iki dilde) → uzun ad.
+        let turkce = ["sa": "saat", "dk": "dakika", "sn": "saniye"]
+        let ingilizce = ["h": "hour", "min": "minute", "s": "second"]
+        return parcalar(kalanMs: kalanMs, saniyesiz: saniyesiz, dil: dil)
+            .map { p -> String in
+                let n = Int(p.sayi) ?? 0
+                if en {
+                    let ad = ingilizce[p.birim] ?? p.birim
+                    return "\(n) \(ad)\(n == 1 ? "" : "s")"
+                }
+                return "\(n) \(turkce[p.birim] ?? p.birim)"
+            }
             .joined(separator: " ")
     }
 }

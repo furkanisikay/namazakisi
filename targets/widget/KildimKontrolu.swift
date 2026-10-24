@@ -31,8 +31,10 @@ struct NamazKildimKontrolu: ControlWidget {
                 Label(durum.baslik, systemImage: Self.sembol(durum.tur))
             }
         }
-        .displayName("Vakti kıldım")
-        .description("İçinde bulunduğunuz vakti kılındı olarak işaretler.")
+        // Dinamik metin: interpolasyonla anahtar "%@" olur, deger aynen gosterilir (yerellestirme
+        // tablosu aranmaz) → kontrol galerisinde de arayuz dili (W5).
+        .displayName("\(WidgetMetin.m.kontrolAdi)")
+        .description("\(WidgetMetin.m.kontrolAciklama)")
     }
 
     static func sembol(_ tur: WidgetKontrolDurumu.Tur) -> String {
@@ -47,7 +49,10 @@ struct NamazKildimKontrolu: ControlWidget {
 @available(iOS 18.0, *)
 struct KildimKontrolSaglayici: ControlValueProvider {
     var previewValue: WidgetKontrolDurumu {
-        WidgetKontrolDurumu(tur: .kilinabilir, baslik: "Öğle · Kıldım", tarih: "", vakit: "")
+        let vm = WidgetMetin.vm
+        return WidgetKontrolDurumu(
+            tur: .kilinabilir, baslik: VakitMetinleri.bicim(vm.kontrolKildim, ["ad": vm.ad("ogle")]), tarih: "", vakit: ""
+        )
     }
 
     func currentValue() async throws -> WidgetKontrolDurumu {
@@ -56,7 +61,8 @@ struct KildimKontrolSaglayici: ControlValueProvider {
             vakitler: depo.cizelge()?.vakitler,
             kilinanlar: depo.kilinanlar(),
             bekleyenler: depo.bekleyenler(),
-            simdiMs: SiriDeposu.simdiMs()
+            simdiMs: SiriDeposu.simdiMs(),
+            dil: WidgetMetin.dil
         )
     }
 }

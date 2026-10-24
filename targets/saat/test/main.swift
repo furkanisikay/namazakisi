@@ -515,6 +515,62 @@ do {
     esitMi(SaatSure.sesli(kalanMs: (3600 + 60) * 1000), "1 saat 1 dakika", "sesli saat")
 }
 
+// MARK: - 15) Ingilizce arayuz dili (W5) — Turkce beklentiler yukarida, varsayilan dil "tr"
+
+do {
+    let d = SaatKarari.ekranDurumu(yuk: yuk, bekleyenler: [], simdiMs: ikindi12 + dk, dil: "en")
+    esitMi(d.satirlar.map { $0.ad }, ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], "en gorunen adlar")
+    esitMi(d.satirlar.map { $0.kod }, ["sabah", "ogle", "ikindi", "aksam", "yatsi"], "en kodlar dilden bagimsiz")
+    esitMi(d.kildim, .aday(vakit: ani("ikindi", ikindi12), kayitVakti: "ikindi", ad: "Asr"), "en Kildim adayi")
+    esitMi(SaatKarari.ekranDurumu(yuk: yuk, bekleyenler: [], simdiMs: imsak12 + dk, dil: "en").kildim, .zatenKilindi(ad: "Fajr"), "en sabah zaten kilinmis")
+    esitMi(Kible.donusMetni(35, dil: "en"), "Right 35°", "en saga donus")
+    esitMi(Kible.donusMetni(360 - 121, dil: "en"), "Left 120°", "en sola donus")
+    esitMi(Kible.donusMetni(178, dil: "en"), "Behind you", "en arkada")
+    esitMi(Kible.erisimMetni(36, hizali: false, dil: "en"), "The Qibla is 40 degrees to your right", "en erisim metni")
+    esitMi(Kible.erisimMetni(300, hizali: false, dil: "en"), "The Qibla is 60 degrees to your left", "en erisim metni sol")
+    esitMi(Kible.erisimMetni(0, hizali: true, dil: "en"), "You are facing the Qibla", "en hizali")
+    esitMi(Kible.erisimMetni(300, hizali: false), "Kıble 60 derece solunuzda", "tr erisim metni sol")
+    esitMi(Kible.mesafeMetni(2403.4, dil: "en"), "2,400 km", "en binlik ayraci virgul")
+    esitMi(Kible.mesafeMetni(3, dil: "en"), "You're at the Kaaba", "en 10 km alti")
+    func p(_ ms: Int64, _ s: Bool = false) -> [String] { SaatSure.parcalar(kalanMs: ms, saniyesiz: s, dil: "en").map { "\($0.sayi) \($0.birim)" } }
+    esitMi(p((1 * 3600 + 9 * 60 + 9) * 1000), ["1 h", "9 min"], "en saat ve ustu")
+    esitMi(p((9 * 60 + 5) * 1000), ["9 min", "05 s"], "en saatin alti")
+    esitMi(p(42_000, true), ["1 min"], "en sonuk")
+    esitMi(SaatSure.sesli(kalanMs: (9 * 60 + 5) * 1000, dil: "en"), "9 minutes 5 seconds", "en sesli")
+    esitMi(SaatSure.sesli(kalanMs: (3600 + 60) * 1000, dil: "en"), "1 hour 1 minute", "en sesli tekil")
+    esitMi(SaatSure.sesli(kalanMs: 42_000), "42 saniye", "tr sesli dakikanin alti")
+    esitMi(Samimiyet.kabulDuasi("en"), "May Allah accept it", "en kabul duasi")
+    esitMi(Samimiyet.kabulDuasi, "Allah kabul etsin", "tr kabul duasi sabit")
+    // Iki dilde ayni yer tutucular.
+    func yerTutucular(_ m: SaatMetinleri) -> [String] {
+        let alanlar = [m.kilindiErisim, m.cikisSaat, m.girisSaat, m.siradakiErisim, m.kildimErisim, m.sessizUyandirma,
+                       m.noktaErisim, m.kuzeydenErisim, m.imsakSaat, m.vaktinSonu, m.vaktiCikisErisim, m.kilindiBaslik]
+        return alanlar.map { a in ["{ad}", "{saat}", "{dua}", "{durum}", "{derece}"].filter { a.contains($0) }.joined() }
+    }
+    esitMi(yerTutucular(SaatMetinleri.en), yerTutucular(SaatMetinleri.tr), "saat en/tr yer tutuculari ayni")
+    esitMi(SaatMetinleri.dil("en-US"), SaatMetinleri.en, "saat metinleri en-US → en")
+    esitMi(SaatMetinleri.dil(nil), SaatMetinleri.tr, "saat metinleri dil yok → tr")
+}
+
+// MARK: - 16) Dil telefondan: baglamin kardes anahtari + saat deposu (W5)
+
+do {
+    esitMi(SaatIletisi.dil(SaatIletisi.baglam(yukJson: "{}", dil: "en")), "en", "baglam dili gidis-donus")
+    esitMi(SaatIletisi.dil(SaatIletisi.baglam(yukJson: "{}")), nil, "eski telefon dil gondermez")
+    esitMi(SaatIletisi.yukJson(SaatIletisi.baglam(yukJson: "{}", dil: "en")), "{}", "dil yuku degistirmez")
+    esitMi(SaatIletisi.dil(["yuk": "{}", "dil": "fr"]), "tr", "desteklenmeyen dil Turkceye")
+    esitMi(SaatIletisi.baglam(yukJson: "{}").count, 1, "dil yoksa baglamda tek anahtar (eski sekil)")
+    let suite = "test.namazakisi.saat.dil.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: suite)!
+    let depo = SaatDeposu(defaults: defaults)
+    esitMi(depo.dil(), "tr", "dil yokken Turkce")
+    esitMi(depo.diliYaz("en"), true, "ilk dil degisiklik")
+    esitMi(depo.diliYaz("en-GB"), false, "ayni dil degisiklik degil")
+    esitMi(depo.dil(), "en", "dil okunur")
+    esitMi(depo.diliYaz("tr"), true, "geri donus degisiklik")
+    defaults.removePersistentDomain(forName: suite)
+}
+
 // MARK: - Sonuc
 
 if hatalar.isEmpty {

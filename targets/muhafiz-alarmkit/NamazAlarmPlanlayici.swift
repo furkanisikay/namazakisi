@@ -91,6 +91,12 @@ enum NamazAlarmCekirdegi {
         return Int64((Date().timeIntervalSince1970 * 1000).rounded())
     }
 
+    /// Sistem "Durdur" dugmesinin etiketi (namazi KILINDI SAYMAZ; iOS 26.1+ sistem kendi
+    /// etiketini cizer). Ingilizce JS `hatirlatma.iosDurdur` ("you can stop it") ile ayni fiil.
+    static func durdurEtiketi(_ dil: String) -> String {
+        return ArayuzDili.coz(dil) == "en" ? "Stop" : "Durdur"
+    }
+
     static func durum() -> String {
         switch AlarmManager.shared.authorizationState {
         case .authorized: return "izinli"
@@ -125,9 +131,15 @@ enum NamazAlarmCekirdegi {
         // BILGI alarmi (cuma, camiye gitme, takvim — `AlarmKurallari.alarmTuru`) vakit GIRMEDEN
         // calar: ikinci dugme YOK (yalniz sistemin "Durdur"u); "Kildim" FARZ'i yazardi.
         let bilgiMi = AlarmKurallari.alarmTuru(kayit.kimlik) == "bilgi"
+        // Dugme etiketleri UYGULAMANIN arayuz dilinde (W5; baslik gibi JS'in plan dilinde) —
+        // interpolasyon hilesiyle (asagida) yerellestirme tablosunda aranmaz. Dil degisince JS
+        // planlari yeniden kurar, alarmlar yeni etiketle yenilenir.
+        let metin = VakitMetinleri.dil(SiriDeposu.varsayilan.arayuzDili())
+        let kildimDegeri: String.LocalizationValue = "\(metin.kildim)"
+        let durdurDegeri: String.LocalizationValue = "\(Self.durdurEtiketi(metin.dil))"
         let ikinciDugme: AlarmButton? = bilgiMi
             ? nil
-            : AlarmButton(text: "Kıldım", textColor: .white, systemImageName: "checkmark")
+            : AlarmButton(text: LocalizedStringResource(kildimDegeri), textColor: .white, systemImageName: "checkmark")
         // Baslik DINAMIK metindir: `LocalizedStringResource(stringLiteral:)` onu bir
         // YERELLESTIRME ANAHTARI sayardi. Interpolasyonla anahtar "%@" olur, deger aynen
         // gosterilir (yerellestirme tablosunda karsiligi aranmaz).
@@ -135,7 +147,7 @@ enum NamazAlarmCekirdegi {
         let ikinciDavranis: AlarmPresentation.Alert.SecondaryButtonBehavior? = bilgiMi ? nil : .custom
         let alert = AlarmPresentation.Alert(
             title: LocalizedStringResource(baslikDegeri),
-            stopButton: AlarmButton(text: "Durdur", textColor: .white, systemImageName: "stop.fill"),
+            stopButton: AlarmButton(text: LocalizedStringResource(durdurDegeri), textColor: .white, systemImageName: "stop.fill"),
             secondaryButton: ikinciDugme,
             secondaryButtonBehavior: ikinciDavranis
         )

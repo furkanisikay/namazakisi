@@ -8,6 +8,7 @@
 //     modules/expo-siri-kisayollari/ios/SiriDeposu.swift \
 //     modules/expo-siri-kisayollari/ios/WidgetKarari.swift \
 //     modules/expo-siri-kisayollari/ios/SessizlikKarari.swift \
+//     modules/expo-siri-kisayollari/ios/OtomasyonKarari.swift \
 //     modules/expo-siri-kisayollari/test/main.swift
 //   /tmp/siri-test android/app/src/test/resources/widget-ornek.json \
 //     modules/expo-siri-kisayollari/test/siri-ornek.json \
@@ -412,6 +413,98 @@ if let ogle = widget.vakitler.first(where: { $0.vakit == "ogle" }) {
     esitMi(OtomasyonKarari.simdikiVakitKilindiMi(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [], simdiMs: (sirali.first?.ms ?? 0) - 1) == nil, true, "otomasyon: vakit yokken nil")
 } else {
     hatalar.append("widget fiksturunde ogle yok (otomasyon)")
+}
+
+// MARK: - 9) Ingilizce arayuz dili (W5) — Turkce beklentiler yukarida fiksturle, burada elle
+
+esitMi(ArayuzDili.coz(nil), "tr", "dil: yoksa Turkce")
+esitMi(ArayuzDili.coz(""), "tr", "dil: bos Turkce")
+esitMi(ArayuzDili.coz("en"), "en", "dil: en")
+esitMi(ArayuzDili.coz("en-US"), "en", "dil: en-US → en")
+esitMi(ArayuzDili.coz("en_GB"), "en", "dil: en_GB → en")
+esitMi(ArayuzDili.coz("de"), "tr", "dil: desteklenmeyen → Turkce")
+esitMi(VakitKarari.gorunenAd("ogle"), "Öğle", "varsayilan dil Turkce")
+esitMi(VakitKarari.gorunenAd("sabah", dil: "en"), "Fajr", "en: sabah → Fajr")
+esitMi(VakitKarari.gorunenAd("gunes", dil: "en"), "", "en: gunes namaz degil")
+esitMi(VakitMetinleri.en.vakitAdi("gunes"), "Sunrise", "en: gunes gorunen adi")
+esitMi(VakitMetinleri.tr.vakitAdi("gunes"), "Güneş", "tr: gunes gorunen adi")
+esitMi(VakitMetinleri.dil("en-GB"), VakitMetinleri.en, "metinler: en-GB → en")
+// Iki dilde ayni yer tutucular: eksik/fazla `{…}` cevirinin kaymasi demektir.
+do {
+    func yerTutucular(_ m: VakitMetinleri) -> [String] {
+        let alanlar = [m.girisBugun, m.girisYarin, m.suAnVakti, m.suAnVaktiCikis, m.siradakiNamaz, m.isaretlendi,
+                       m.zatenKilindi, m.vakitYokSiradaki, m.onay, m.kontrolKildim, m.kontrolKilindi]
+        return alanlar.map { a in
+            ["{ad}", "{saat}", "{giris}", "{dua}"].filter { a.contains($0) }.joined()
+        }
+    }
+    esitMi(yerTutucular(VakitMetinleri.en), yerTutucular(VakitMetinleri.tr), "en/tr yer tutuculari ayni")
+    esitMi(Set(VakitMetinleri.en.adlar.keys), Set(VakitMetinleri.tr.adlar.keys), "en/tr vakit kodlari ayni")
+}
+
+do {
+    func durumBul(_ ad: String) -> SiriDurum? { siri.durumlar.first { $0.ad == ad } }
+    func ingilizce(_ ad: String) -> (siradaki: String, kildim: String, onay: String?)? {
+        guard let d = durumBul(ad) else {
+            hatalar.append("siri-ornek.json'da durum yok: \(ad)")
+            return nil
+        }
+        let karar = VakitKarari.kildimKarari(
+            vakitler: siri.vakitler, kilinanlar: d.kilinanlar, bekleyenler: d.bekleyenler, simdiMs: d.simdiMs, dil: "en"
+        )
+        var onay: String? = nil
+        if case let .aday(_, _, vakitAdi) = karar { onay = VakitKarari.onayMetni(vakitAdi, dil: "en") }
+        let durum = VakitKarari.aktifVakitBul(siri.vakitler, simdiMs: d.simdiMs)
+        return (
+            VakitKarari.siradakiNamazMetni(
+                durum: durum, kilinanlar: d.kilinanlar, bekleyenler: d.bekleyenler, bugun: d.bugun, saat: saat, dil: "en"
+            ),
+            VakitKarari.kildimMetni(karar, bugun: d.bugun, saat: saat, dil: "en"),
+            onay
+        )
+    }
+    if let e = ingilizce("ogle surerken kilinmamis") {
+        esitMi(e.siradaki, "It's Dhuhr time now. The next prayer is Asr at 17:11.", "en siradaki: ogle")
+        esitMi(e.kildim, "Dhuhr is marked as prayed. May Allah accept it.", "en kildim: aday")
+        esitMi(e.onay, "Mark Dhuhr as prayed?", "en onay")
+    }
+    if let e = ingilizce("ogle kayitta kilinmis") {
+        esitMi(e.siradaki, "The next prayer is Asr at 17:11.", "en siradaki: kilinmis")
+        esitMi(e.kildim, "Dhuhr is already marked as prayed.", "en kildim: zaten")
+        esitMi(e.onay, nil, "en onay yok")
+    }
+    if let e = ingilizce("yatsi aksam: sabah yarin") {
+        esitMi(e.siradaki, "It's Isha time now. The next prayer is Fajr tomorrow at 03:24.", "en siradaki: yarin")
+    }
+    if let e = ingilizce("sabah: cikis gunes, siradaki ogle") {
+        esitMi(e.siradaki, "It's Fajr time now; it ends at 05:25. The next prayer is Dhuhr at 13:11.", "en siradaki: cikis ayri")
+    }
+    if let e = ingilizce("gunes-ogle arasi") {
+        esitMi(e.kildim, "There is no prayer to mark right now. Next is Dhuhr at 13:11.", "en kildim: vakit yok")
+    }
+    if let e = ingilizce("veri tukendi") {
+        esitMi(e.siradaki, "Prayer times are out of date. Open the app once to update them.", "en veri eski")
+        esitMi(e.kildim, "There is no prayer to mark right now.", "en kildim: siradaki yok")
+    }
+}
+
+if let ogle = widget.vakitler.first(where: { $0.vakit == "ogle" }) {
+    let dokunus = ogle.ms + 60_000
+    esitMi(
+        WidgetKarari.kontrolDurumu(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [], simdiMs: dokunus, dil: "en"),
+        WidgetKontrolDurumu(tur: .kilinabilir, baslik: "Dhuhr · I've prayed", tarih: ogle.tarih, vakit: "ogle"),
+        "en kontrol: kilinabilir (kayit kodu dilden bagimsiz)"
+    )
+    esitMi(
+        WidgetKarari.kontrolDurumu(vakitler: widget.vakitler, kilinanlar: [ogle.tarih: ["ogle"]], bekleyenler: [], simdiMs: dokunus, dil: "en").baslik,
+        "Dhuhr prayed",
+        "en kontrol: kilindi"
+    )
+    esitMi(WidgetKarari.kontrolDurumu(vakitler: nil, kilinanlar: [:], bekleyenler: [], simdiMs: dokunus, dil: "en").baslik, "Open the app", "en kontrol: veri yok")
+    esitMi(WidgetKarari.kontrolDurumu(vakitler: nil, kilinanlar: [:], bekleyenler: [], simdiMs: dokunus).baslik, "Uygulamayı açın", "tr kontrol: veri yok")
+    let s1 = OtomasyonKarari.siradakiVakit(widget.vakitler, simdiMs: ogle.ms - 90_000, dil: "en")
+    esitMi(s1?.ad ?? "-", "Dhuhr", "en otomasyon: siradaki vakit adi")
+    esitMi(s1?.kod ?? "-", "ogle", "en otomasyon: kod dilden bagimsiz")
 }
 
 // MARK: - Sonuc

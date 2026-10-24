@@ -94,9 +94,9 @@ const NATIVE_ETIKETLER = {
     },
     en: {
         kisayol: "I've prayed the current prayer",
-        olay: 'Namaz Akışı: Prayer time event',
-        kosul: 'Namaz Akışı: Prayer time status',
-        eylem: "Namaz Akışı: I've prayed",
+        olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native eklenti etiketi, values-en/)
+        kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native eklenti etiketi, values-en/)
+        eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native eklenti etiketi, values-en/)
     },
 } as const;
 

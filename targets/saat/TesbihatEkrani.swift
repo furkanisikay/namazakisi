@@ -17,6 +17,9 @@ struct TesbihatEkrani: View {
     @State private var durum = Tesbihat.Durum()
     @State private var tac: Double = 0
     @State private var biriktirici = TacBiriktirici(esik: 1.0)
+    /// Cizim anindaki dil (W5). Zikir adlari ve tehlil Arapca okunusun TURKCE yazimidir;
+    /// JS sozlugunde karsiligi olmadigindan cevrilmez.
+    private var m: SaatMetinleri { SaatDili.metin }
 
     var body: some View {
         VStack(spacing: 4) {
@@ -25,11 +28,11 @@ struct TesbihatEkrani: View {
                 .onTapGesture { say() }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Tesbihat.kisaMetin(durum))
-                .accessibilityHint("Saymak için dokunun ya da Digital Crown'u çevirin; ters yöne çevirmek geri alır")
+                .accessibilityHint(m.saymaIpucu)
                 .accessibilityAddTraits(.isButton)
                 .accessibilityAction { say() }
             if durum.tamamMi {
-                Button("Yeniden başlayın") { kaydet(Tesbihat.Durum()) }
+                Button(m.yenidenBaslayin) { kaydet(Tesbihat.Durum()) }
                     .tint(SaatGorunum.yesil)
             }
         }
@@ -58,11 +61,11 @@ struct TesbihatEkrani: View {
                 } label: {
                     Image(systemName: "arrow.uturn.backward")
                 }
-                .accessibilityLabel("Son sayımı geri alın")
+                .accessibilityLabel(m.sonSayimiGeriAlin)
                 .disabled(durum.toplam == 0)
             }
         }
-        .navigationTitle("Tesbihat")
+        .navigationTitle(m.tesbihat)
         .containerBackground(TesbihatRenk.ton.opacity(0.22).gradient, for: .tabView)
         .onAppear {
             durum = SaatDeposu.varsayilan.tesbihatOku(simdiMs: SaatDeposu.simdiMs())
@@ -98,7 +101,7 @@ struct TesbihatEkrani: View {
                 }
             }
             .frame(width: durum.tamamMi ? 52 : 92, height: durum.tamamMi ? 52 : 92)
-            Text(durum.tamamMi ? Samimiyet.kabulDuasi : durum.faz.ad)
+            Text(durum.tamamMi ? Samimiyet.kabulDuasi(SaatDili.kod) : durum.faz.ad)
                 .font(.headline)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)

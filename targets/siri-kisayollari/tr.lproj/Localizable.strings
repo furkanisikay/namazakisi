@@ -1,0 +1,51 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Turkce: kimlik eslemesi. tr.lproj OLMALI: yalniz en.lproj olsaydi Turkce cihaz da Ingilizceye duserdi.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Sıradaki namaz";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Sıradaki namaz vaktini ve giriş saatini söyler.";
+"Şu anki vakti kıldım" = "Şu anki vakti kıldım";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir.";
+"Onay iste" = "Onay iste";
+"Kıbleyi aç" = "Kıbleyi aç";
+"Uygulamayı Kıble pusulasıyla açar." = "Uygulamayı Kıble pusulasıyla açar.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Vakti kıldım";
+"Kıble" = "Kıble";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Sıradaki vaktin adı";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz.";
+"Sıradaki vakte kalan dakika" = "Sıradaki vakte kalan dakika";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner.";
+"Şu anki vakit kılındı mı?" = "Şu anki vakit kılındı mı?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Namaz sessizliği";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır.";
+"Süre (dakika)" = "Süre (dakika)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Vakit girdikten sonraki ${dakika} dakika";
+"Namaz sessizliğinin bitişi" = "Namaz sessizliğinin bitişi";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Vakit girdikten sonraki ${dakika} dakikanın sonu";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Namaz hatırlatmaları";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar.";
+"Hatırlatmaları sessiz ver" = "Hatırlatmaları sessiz ver";
+"Hatırlatmalar sessiz gelir" = "Hatırlatmalar sessiz gelir";
+"Hatırlatmalar her zamanki gibi" = "Hatırlatmalar her zamanki gibi";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Widget'taki vakti kılındı olarak işaretler.";
+"Tarih" = "Tarih";
+"Vakit" = "Vakit";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Namaz alarmını durdur";
+"Namazı kıldım" = "Namazı kıldım";
+"Alarm" = "Alarm";

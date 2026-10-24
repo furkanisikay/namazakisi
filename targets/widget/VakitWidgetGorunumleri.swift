@@ -12,7 +12,8 @@ import WidgetKit
 //
 // Kalan sure ve ilerleme SISTEM tarafindan cizilir (`Text(timerInterval:)`,
 // `ProgressView(timerInterval:)`); zaman cizelgesi yalniz vakit sinirlarinda girdi tasir.
-// Metinler arayuz kaydindadir (kibar/notr; ibadete cagri degil).
+// Metinler arayuz kaydindadir (kibar/notr; ibadete cagri degil). Dil CIZIM aninda
+// App Group'tan okunur (`WidgetMetin.dil`, W5).
 
 enum WidgetSabitleri {
     static let tur = "NamazVakitWidget"
@@ -22,9 +23,99 @@ enum WidgetSabitleri {
     static let yesil = Color(red: 0x4C / 255.0, green: 0xAF / 255.0, blue: 0x50 / 255.0)
 }
 
+/// Widget, canli etkinlik ve kontrol metinleri (W5). Dil CIZIM aninda App Group'tan okunur
+/// (`SiriDeposu.arayuzDili()`, JS `DilServisi` yazar); dil degisince JS'in tetikledigi
+/// zaman cizelgesi tazelemesi widget'i yeni dille yeniden cizer. Ingilizce karsiliklar JS
+/// sozlugunden (`sozluk/en`). Yer tutucular `{ad}`, `{saat}`, `{sonraki}`.
+struct WidgetMetinleri: Equatable {
+    let galeriAdi: String
+    let galeriAciklama: String
+    let veriEski: String
+    let konumYok: String
+    let kilindiSiradaki: String
+    let adCikis: String
+    let siradakiAdSaat: String
+    let vaktiCikisErisim: String
+    let siradakiErisim: String
+    let cikisSaat: String
+    let bitisSaat: String
+    let kilindiBaslik: String
+    let siradaki: String
+    let siradakiAd: String
+    let kildimErisim: String
+    let gunSatiriKilindi: String
+    let bitti: String
+    let vakitCikti: String
+    let kabulAlt: String
+    let kontrolAdi: String
+    let kontrolAciklama: String
+
+    static let tr = WidgetMetinleri(
+        galeriAdi: "Namaz vakti",
+        galeriAciklama: "İçinde bulunulan vakit, çıkışına kalan süre ve günün vakitleri.",
+        veriEski: "Vakitleri güncellemek için uygulamayı açın",
+        konumYok: "Konumunuzu ayarlamak için uygulamayı açın",
+        kilindiSiradaki: "{ad} kılındı · {sonraki} {saat}",
+        adCikis: "{ad} · çıkış {saat}",
+        siradakiAdSaat: "Sıradaki {ad} {saat}",
+        vaktiCikisErisim: "{ad} vakti, çıkış {saat}",
+        siradakiErisim: "Sıradaki {ad}, {saat}",
+        cikisSaat: "Çıkış {saat}",
+        bitisSaat: "Bitiş {saat}",
+        kilindiBaslik: "{ad} kılındı",
+        siradaki: "Sıradaki",
+        siradakiAd: "Sıradaki {ad}",
+        kildimErisim: "{ad} namazını kıldım",
+        gunSatiriKilindi: ", kılındı",
+        bitti: "Bitti",
+        vakitCikti: "Vakit çıktı",
+        kabulAlt: "{ad} namazı kılındı",
+        kontrolAdi: "Vakti kıldım",
+        kontrolAciklama: "İçinde bulunduğunuz vakti kılındı olarak işaretler."
+    )
+
+    static let en = WidgetMetinleri(
+        galeriAdi: "Prayer time",
+        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
+        veriEski: "Open the app to update prayer times",
+        konumYok: "Open the app to set your location",
+        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
+        adCikis: "{ad} · ends {saat}",
+        siradakiAdSaat: "Next {ad} {saat}",
+        vaktiCikisErisim: "{ad} time, ends {saat}",
+        siradakiErisim: "Next {ad}, {saat}",
+        cikisSaat: "Ends {saat}",
+        bitisSaat: "Ends {saat}",
+        kilindiBaslik: "{ad} prayed",
+        siradaki: "Next",
+        siradakiAd: "Next {ad}",
+        kildimErisim: "I've prayed {ad}",
+        gunSatiriKilindi: ", prayed",
+        bitti: "Ended",
+        vakitCikti: "Prayer time is over",
+        kabulAlt: "{ad} prayed",
+        kontrolAdi: "I've prayed",
+        kontrolAciklama: "Marks the current prayer as prayed."
+    )
+
+    static func dil(_ kod: String?) -> WidgetMetinleri {
+        ArayuzDili.coz(kod) == "en" ? en : tr
+    }
+
+    func bicim(_ sablon: String, _ degerler: [String: String]) -> String {
+        VakitMetinleri.bicim(sablon, degerler)
+    }
+}
+
 enum WidgetMetin {
+    /// Cizim anindaki arayuz dili (App Group; uygulama hic acilmadiysa Turkce).
+    static var dil: String { ArayuzDili.coz(SiriDeposu.varsayilan.arayuzDili()) }
+    static var m: WidgetMetinleri { WidgetMetinleri.dil(dil) }
+    static var vm: VakitMetinleri { VakitMetinleri.dil(dil) }
+
+    /// Gorunen vakit adi, gunes DAHIL, arayuz dilinde.
     static func ad(_ kod: String) -> String {
-        kod == "gunes" ? "Güneş" : VakitKarari.gorunenAd(kod)
+        vm.vakitAdi(kod)
     }
 
     static func ikon(_ kod: String) -> String {
@@ -49,8 +140,8 @@ struct NamazVakitWidget: Widget {
         StaticConfiguration(kind: WidgetSabitleri.tur, provider: VakitSaglayici()) { girdi in
             VakitWidgetGorunumu(girdi: girdi)
         }
-        .configurationDisplayName("Namaz vakti")
-        .description("İçinde bulunulan vakit, çıkışına kalan süre ve günün vakitleri.")
+        .configurationDisplayName(WidgetMetin.m.galeriAdi)
+        .description(WidgetMetin.m.galeriAciklama)
         .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline, .systemSmall, .systemMedium])
     }
 }
@@ -84,7 +175,7 @@ private struct VeriYokGorunumu: View {
         VStack(alignment: .leading, spacing: 4) {
             Image(systemName: "location.slash")
                 .foregroundStyle(WidgetSabitleri.yesil)
-            Text(eski ? "Vakitleri güncellemek için uygulamayı açın" : "Konumunuzu ayarlamak için uygulamayı açın")
+            Text(eski ? WidgetMetin.m.veriEski : WidgetMetin.m.konumYok)
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .minimumScaleFactor(0.7)
@@ -97,14 +188,23 @@ private struct VeriYokGorunumu: View {
 private struct SatirIciGorunum: View {
     let girdi: VakitGirdisi
     var body: some View {
+        let m = WidgetMetin.m
         if let g = girdi.gorunum, let aktif = g.aktif, let bitis = g.bitisMs {
             if g.kilindi, let s = g.sonraki {
-                Text("\(WidgetMetin.ad(aktif.vakit)) kılındı · \(WidgetMetin.ad(s.vakit)) \(WidgetMetin.saat(s.ms))")
+                Text(m.bicim(m.kilindiSiradaki, [
+                    "ad": WidgetMetin.ad(aktif.vakit), "sonraki": WidgetMetin.ad(s.vakit), "saat": WidgetMetin.saat(s.ms),
+                ]))
             } else {
-                Label("\(WidgetMetin.ad(aktif.vakit)) · çıkış \(WidgetMetin.saat(bitis))", systemImage: WidgetMetin.ikon(aktif.vakit))
+                Label(
+                    m.bicim(m.adCikis, ["ad": WidgetMetin.ad(aktif.vakit), "saat": WidgetMetin.saat(bitis)]),
+                    systemImage: WidgetMetin.ikon(aktif.vakit)
+                )
             }
         } else if let s = girdi.gorunum?.sonraki {
-            Label("Sıradaki \(WidgetMetin.ad(s.vakit)) \(WidgetMetin.saat(s.ms))", systemImage: WidgetMetin.ikon(s.vakit))
+            Label(
+                m.bicim(m.siradakiAdSaat, ["ad": WidgetMetin.ad(s.vakit), "saat": WidgetMetin.saat(s.ms)]),
+                systemImage: WidgetMetin.ikon(s.vakit)
+            )
         } else {
             Text("Namaz Akışı")
         }
@@ -133,7 +233,7 @@ private struct DaireselGorunum: View {
                 }
             )
             .progressViewStyle(.circular)
-            .accessibilityLabel("\(WidgetMetin.ad(aktif.vakit)) vakti, çıkış \(WidgetMetin.saat(bitis))")
+            .accessibilityLabel(WidgetMetin.m.bicim(WidgetMetin.m.vaktiCikisErisim, ["ad": WidgetMetin.ad(aktif.vakit), "saat": WidgetMetin.saat(bitis)]))
         } else if let s = girdi.gorunum?.sonraki {
             ZStack {
                 AccessoryWidgetBackground()
@@ -145,7 +245,7 @@ private struct DaireselGorunum: View {
                         .minimumScaleFactor(0.6)
                 }
             }
-            .accessibilityLabel("Sıradaki \(WidgetMetin.ad(s.vakit)), \(WidgetMetin.saat(s.ms))")
+            .accessibilityLabel(WidgetMetin.m.bicim(WidgetMetin.m.siradakiErisim, ["ad": WidgetMetin.ad(s.vakit), "saat": WidgetMetin.saat(s.ms)]))
         } else {
             ZStack {
                 AccessoryWidgetBackground()
@@ -168,16 +268,16 @@ private struct DikdortgenGorunum: View {
                 Text(timerInterval: girdi.date...VakitSaglayici.tarih(bitis), countsDown: true)
                     .font(.system(.title3, design: .rounded).weight(.semibold))
                     .monospacedDigit()
-                Text("Çıkış \(WidgetMetin.saat(bitis))")
+                Text(WidgetMetin.m.bicim(WidgetMetin.m.cikisSaat, ["saat": WidgetMetin.saat(bitis)]))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else if let g = girdi.gorunum, let s = g.sonraki {
                 if let aktif = g.aktif, g.kilindi {
-                    Label("\(WidgetMetin.ad(aktif.vakit)) kılındı", systemImage: "checkmark.circle.fill")
+                    Label(WidgetMetin.m.bicim(WidgetMetin.m.kilindiBaslik, ["ad": WidgetMetin.ad(aktif.vakit)]), systemImage: "checkmark.circle.fill")
                         .font(.headline)
                         .widgetAccentable()
                 } else {
-                    Label("Sıradaki", systemImage: "clock")
+                    Label(WidgetMetin.m.siradaki, systemImage: "clock")
                         .font(.headline)
                         .widgetAccentable()
                 }
@@ -232,11 +332,11 @@ private struct AktifVakitPaneli: View {
                 if kilindi {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(WidgetSabitleri.yesil)
-                        .accessibilityLabel("Kılındı")
+                        .accessibilityLabel(WidgetMetin.vm.kilindi)
                 }
             }
             if kilindi, let s = sonraki {
-                Text("Sıradaki \(WidgetMetin.ad(s.vakit))")
+                Text(WidgetMetin.m.bicim(WidgetMetin.m.siradakiAd, ["ad": WidgetMetin.ad(s.vakit)]))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text(WidgetMetin.saat(s.ms))
@@ -254,7 +354,7 @@ private struct AktifVakitPaneli: View {
                     currentValueLabel: { EmptyView() }
                 )
                 .tint(WidgetSabitleri.yesil)
-                Text("Çıkış \(WidgetMetin.saat(bitisMs))")
+                Text(WidgetMetin.m.bicim(WidgetMetin.m.cikisSaat, ["saat": WidgetMetin.saat(bitisMs)]))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -274,7 +374,7 @@ private struct SiradakiPaneli: View {
             HStack(spacing: 6) {
                 Image(systemName: WidgetMetin.ikon(sonraki.vakit))
                     .foregroundStyle(WidgetSabitleri.yesil)
-                Text("Sıradaki")
+                Text(WidgetMetin.m.siradaki)
                     .font(.headline)
             }
             Text("\(WidgetMetin.ad(sonraki.vakit)) \(WidgetMetin.saat(sonraki.ms))")
@@ -312,12 +412,12 @@ private struct KildimDugmesi17: View {
     var body: some View {
         if konteynerGorunur {
             Button(intent: KildimDugmesiIntent(tarih: tarih, vakit: kayitVakti)) {
-                Label("Kıldım", systemImage: "checkmark")
+                Label(WidgetMetin.vm.kildim, systemImage: "checkmark")
                     .font(.caption.weight(.semibold))
                     .frame(maxWidth: .infinity)
             }
             .tint(WidgetSabitleri.yesil)
-            .accessibilityLabel("\(ad) namazını kıldım")
+            .accessibilityLabel(WidgetMetin.m.bicim(WidgetMetin.m.kildimErisim, ["ad": ad]))
         }
     }
 }
@@ -346,7 +446,7 @@ private struct OrtaGorunum: View {
                     .foregroundStyle(.primary)
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel(
-                        "\(WidgetMetin.ad(satir.vakit.vakit)) \(WidgetMetin.saat(satir.vakit.ms))\(satir.kilindi ? ", kılındı" : "")"
+                        "\(WidgetMetin.ad(satir.vakit.vakit)) \(WidgetMetin.saat(satir.vakit.ms))\(satir.kilindi ? WidgetMetin.m.gunSatiriKilindi : "")"
                     )
                 }
             }
