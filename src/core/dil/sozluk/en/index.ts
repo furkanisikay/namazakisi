@@ -12,5 +12,9 @@ import { seferilik } from './seferilik';
 import { kaza } from './kaza';
 import { seri } from './seri';
 import { sade } from './sade';
+import { muhafiz } from './muhafiz';
+import { icerik } from './icerik';
+import { otomasyon } from './otomasyon';
+import { bildirim } from './bildirim';
 
-export const en: Sozluk = { ortak, vakit, tarih, sure, anaEkran, hesap, seferilik, kaza, seri, sade, kurulum, hatirlatma, samimiyet };
+export const en: Sozluk = { ortak, vakit, tarih, sure, anaEkran, hesap, seferilik, kaza, seri, sade, muhafiz, icerik, otomasyon, bildirim, kurulum, hatirlatma, samimiyet };

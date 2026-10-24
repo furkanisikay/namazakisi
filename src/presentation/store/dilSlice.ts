@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
 import { DilServisi } from '../../domain/services/DilServisi';
+import { Logger } from '../../core/utils/Logger';
 
 /**
  * Arayüz dili — ekranların yeniden çizilmesi için store aynası. Gerçek kaynak disk +
@@ -15,13 +16,29 @@ const initialState: DilState = { kod: VARSAYILAN_DIL, yuklendi: false };
 
 export const diliYukle = createAsyncThunk<DilKodu>('dil/yukle', () => DilServisi.yukle());
 
+interface DurumKaynagi {
+  konum?: { koordinatlar?: { lat: number; lng: number } | null };
+}
+
 /**
- * Kaydeder. DİKKAT (seçici açılmadan ÖNCE yapılmalı): planlanmış metinler (bildirim,
- * muhafız adımları, cuma/yatış, sesli okuma, widget) eski dilde kalır → `hesapAyariniKaydet`
- * gibi `konumDegistiUygula` yolundan yeniden kurulmalı.
+ * Kaydeder ve dil DEĞİŞTİYSE planlanmış metinleri yeni dilde yeniden kurar: bildirimler,
+ * muhafız adımları, cuma/yatış, sesli okuma ve widget planı plan anının dilini taşır →
+ * `hesapAyariniKaydet` gibi `konumDegistiUygula` yolundan yayılır (tek yayma noktası).
  */
-export const diliKaydet = createAsyncThunk<DilKodu, DilKodu>('dil/kaydet', async (kod) => {
-  await DilServisi.kaydet(kod);
+export const diliKaydet = createAsyncThunk<DilKodu, DilKodu>('dil/kaydet', async (kod, { getState }) => {
+  const degisti = await DilServisi.kaydet(kod);
+  if (degisti) {
+    const k = (getState() as DurumKaynagi).konum?.koordinatlar;
+    if (k && !(k.lat === 0 && k.lng === 0)) {
+      try {
+        // Tembel require: servis native modüller içerir (ekran testleri, AGENTS.md).
+        const { konumDegistiUygula } = require('../../domain/services/KonumDegisikligiServisi') as typeof import('../../domain/services/KonumDegisikligiServisi');
+        await konumDegistiUygula(k);
+      } catch (e) {
+        Logger.warn('dilSlice', 'Dil değişikliği yayılamadı', e);
+      }
+    }
+  }
   return kod;
 });
 

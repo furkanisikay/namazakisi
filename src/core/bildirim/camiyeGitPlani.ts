@@ -33,6 +33,8 @@ import type { BildirimPlatformu } from './butceSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { cumaMi, sureMetniOlustur } from '../utils/cumaYardimcisi';
 import { VAKIT_ADLARI } from '../utils/muhafizMetinYardimcisi';
+import { bicim, metin } from '../dil/aktifDil';
+import { tr } from '../dil/sozluk/tr';
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
 import { alarmPayinaSigdir } from '../hatirlatma/ekPlan';
@@ -170,29 +172,31 @@ export function camiyeGitMetniOlustur(
     ayarlar: Pick<CamiyeGitAyarlari, 'yurumeDk' | 'hazirlikDk'>
 ): { baslik: string; govde: string } {
     const ad = VAKIT_ADLARI[vakit];
+    const m = metin().bildirim.camiye;
     const sonra = hazirlikKalanDk(kalanDk, ayarlar);
     if (sonra > 0) {
         // Önden okunur (issue #287): vakit + ezana kalan süre başta — bileklikler
         // başlığın yalnız ilk ~16 karakterini gösterir.
         return {
-            baslik: `${ad} · ezana ${kalanDk} dk · camiye hazırlan`,
-            govde: `${ad} namazına camide yetişmek için hazırlan, ${sonra} dk sonra yola çık — ezana ${kalanDk} dk.`,
+            baslik: bicim(m.hazirlanBaslik, { ad, dk: kalanDk }),
+            govde: bicim(m.hazirlanGovde, { ad, dk: kalanDk, sonra }),
         };
     }
     return {
-        baslik: `${ad} · ezana ${kalanDk} dk · camiye yola çık`,
-        govde: `${ad} namazına camide yetişmek için yola çık — ezana ${kalanDk} dk.`,
+        baslik: bicim(m.yolaCikBaslik, { ad, dk: kalanDk }),
+        govde: bicim(m.yolaCikGovde, { ad, dk: kalanDk }),
     };
 }
 
 /**
  * Sesli anons metni (ibadete çağrı — "sen"). Nass OKUNMAZ; çözülmüş cümle (yer tutucu yok).
+ * TÜRKÇE sabit: sesli okuma motoru Türkçe konuşur (TTS dili bağlanınca çevrilir).
  */
 export function camiyeGitAnonsMetni(
     vakit: CamiyeGitVakti,
     kalanDk: number,
     ayarlar: Pick<CamiyeGitAyarlari, 'yurumeDk' | 'hazirlikDk'>
 ): string {
-    const giris = `${VAKIT_ADLARI[vakit]} vaktine ${sureMetniOlustur(kalanDk)} kaldı.`;
+    const giris = `${tr.vakit.adlar[vakit]} vaktine ${sureMetniOlustur(kalanDk)} kaldı.`;
     return hazirlikKalanDk(kalanDk, ayarlar) > 0 ? `${giris} Hazırlan, camiye yola çık.` : `${giris} Camiye yola çık.`;
 }

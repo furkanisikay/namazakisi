@@ -7,6 +7,7 @@ import * as React from 'react';
 import { Text, type StyleProp, type TextStyle } from 'react-native';
 
 import { kalanSureParcalari, kalanSureSesli } from '../../../core/utils/kalanSureParcalari';
+import { useMetin } from '../../hooks/useMetin';
 
 interface BirimliSureProps {
   /** AnaSayfa'nın "SS:DD:ss" sayacı. */
@@ -34,6 +35,8 @@ const BirimliSureBileseni: React.FC<BirimliSureProps> = ({
   minimumFontScale,
   testID,
 }) => {
+  // Birimler etkin dilde: dil değişince `sure` beklemeden yeniden çizilsin (memo bileşen).
+  useMetin();
   const parcalar = kalanSureParcalari(sure);
   const birimStili = { fontSize: Math.round(rakamBoyu * birimOrani), color: birimRengi, fontWeight: '600' as const };
   return (

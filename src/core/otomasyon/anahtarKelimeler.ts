@@ -11,25 +11,25 @@
  * (sentence case) biçimindedir.
  */
 import type { VakitBildirimVakti } from '../bildirim/vakitBildirimPlani';
+import { bicim, metin } from '../dil/aktifDil';
 
-/** Vakit adı (cümle başı, sabit harita — `toUpperCase`/`toLowerCase` KULLANILMAZ). */
-const VAKIT_ADLARI: Record<VakitBildirimVakti, string> = {
-    imsak: 'İmsak',
-    ogle: 'Öğle',
-    ikindi: 'İkindi',
-    aksam: 'Akşam',
-    yatsi: 'Yatsı',
+const VAKITLER: readonly VakitBildirimVakti[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
+
+/** Vakit adı (cümle başı; sabahın girişi "İmsak" — sözlük `vakit.imsakVakti`). */
+const vakitAdi = (vakit: VakitBildirimVakti): string => {
+    const v = metin().vakit;
+    return vakit === 'imsak' ? v.imsakVakti : v.adlar[vakit];
 };
 
-/** Tüm "vakit girdi" bildirimlerinde ortak ek: tek rutinle her vakti yakalamak için. */
-export const VAKIT_GIRDI_EKI = 'vakti girdi';
+/** Tüm "vakit girdi" bildirimlerinde ortak ek (etkin dilde): tek rutinle her vakti yakalamak için. */
+export const vakitGirdiEki = (): string => metin().otomasyon.vakitGirdiEki;
 
-/** "Vakit girdi" bildiriminin başlığı — ör. "Öğle vakti girdi". */
+/** "Vakit girdi" bildiriminin başlığı — ör. "Öğle vakti girdi" / "Dhuhr time has begun". */
 export function vakitGirdiBasligi(vakit: VakitBildirimVakti): string {
-    return `${VAKIT_ADLARI[vakit]} ${VAKIT_GIRDI_EKI}`;
+    return bicim(metin().otomasyon.vakitGirdiBasligi, { ad: vakitAdi(vakit) });
 }
 
-/** Camideyim bildirim başlığının öneki (Kotlin `CamiSabitleri.CAMIDESINIZ_BASLIK_ONEKI`). */
+/** Camideyim bildirim başlığının öneki (Kotlin `CamiSabitleri.CAMIDESINIZ_BASLIK_ONEKI`; native dil W5). */
 export const CAMIDESINIZ_ANAHTAR_KELIMESI = 'Camidesiniz';
 
 export interface AnahtarKelime {
@@ -37,15 +37,15 @@ export interface AnahtarKelime {
     aciklama: string;
 }
 
-/** Rehber ekranında gösterilen anahtar kelimeler (sıra = ekrandaki sıra). */
-export const RUTIN_ANAHTAR_KELIMELERI: AnahtarKelime[] = [
-    { kelime: VAKIT_GIRDI_EKI, aciklama: 'Herhangi bir vakit girdiğinde' },
-    ...(Object.keys(VAKIT_ADLARI) as VakitBildirimVakti[]).map((v) => ({
-        kelime: vakitGirdiBasligi(v),
-        aciklama: `Yalnız ${VAKIT_ADLARI[v]} vakti girdiğinde`,
-    })),
-    { kelime: CAMIDESINIZ_ANAHTAR_KELIMESI, aciklama: 'Camide olduğunuz algılandığında (Camideyim açıkken)' },
-];
+/** Rehber ekranında gösterilen anahtar kelimeler, etkin dilde (sıra = ekrandaki sıra). */
+export function rutinAnahtarKelimeleri(): AnahtarKelime[] {
+    const o = metin().otomasyon;
+    return [
+        { kelime: vakitGirdiEki(), aciklama: o.herhangiVakit },
+        ...VAKITLER.map((v) => ({ kelime: vakitGirdiBasligi(v), aciklama: bicim(o.yalnizVakit, { ad: vakitAdi(v) }) })),
+        { kelime: CAMIDESINIZ_ANAHTAR_KELIMESI, aciklama: o.camide },
+    ];
+}
 
 export interface EklentiDegiskeni {
     ad: string;

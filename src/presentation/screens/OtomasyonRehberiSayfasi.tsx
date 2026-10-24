@@ -19,7 +19,7 @@ import { useRenkler } from '../../core/theme';
 import {
     CIKIYOR_ESIK_DK,
     EKLENTI_DEGISKENLERI,
-    RUTIN_ANAHTAR_KELIMELERI,
+    rutinAnahtarKelimeleri,
 } from '../../core/otomasyon/anahtarKelimeler';
 import { ONE_UI_NOTU, rutinOnkosulNotu } from '../../core/otomasyon/rehberNotlari';
 import { useCihazDurumu } from '../hooks/useCihazDurumu';
@@ -155,7 +155,7 @@ const RutinlerRehberi: React.FC<{ renkler: Renkler; onkosul: string | null }> = 
                 ]}
             />
             <View className="mt-4" style={{ gap: 8 }}>
-                {RUTIN_ANAHTAR_KELIMELERI.map((k) => (
+                {rutinAnahtarKelimeleri().map((k) => (
                     <View
                         key={k.kelime}
                         className="flex-row items-center px-3 py-2 rounded-xl"

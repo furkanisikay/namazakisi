@@ -75,6 +75,14 @@ it('vakit kartı: şu anki, sıradaki (kilitli), kılınmış; kimlik Türkçe, 
   expect(e.getByText('CURRENT PRAYER')).toBeTruthy();
 });
 
+it('cuma: görünen ad "Jumu\'ah", ikon kimlikten (öğle) çözülür', () => {
+  const e = render(
+    <VakitKarti vakitBilgisi={vakitBilgisi} suankiVakitAdi={NamazAdi.Ogle} gorunenVakitAdi="Jumu'ah" vakitAraligi="13:00 - 16:30" tamamlandi={false} onTamamla={bos} />,
+  );
+  expect(e.getByText("Jumu'ah")).toBeTruthy();
+  expect(e.getByTestId('vakit-karti-ikon-ogle', { includeHiddenElements: true })).toBeTruthy();
+});
+
 it('vakit akışı: durumlar ve tam gün satırı', () => {
   const gun = bugunuAl();
   const namazlar = ([NamazAdi.Sabah, NamazAdi.Ogle, NamazAdi.Ikindi, NamazAdi.Aksam, NamazAdi.Yatsi] as const).map((namazAdi, i) => ({

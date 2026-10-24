@@ -6,14 +6,15 @@
  * Kotlin ikizleri (Camideyim başlığı, eklenti değişkenleri) dosyadan okunur: native
  * modül testleri CI'da koşmuyor, bu test her `npm test`'te koşar.
  */
+import { aktifDiliKur, aktifDilSifirla } from '../../dil/aktifDil';
 import * as fs from 'fs';
 import * as path from 'path';
 import {
     CAMIDESINIZ_ANAHTAR_KELIMESI,
     CIKIYOR_ESIK_DK,
     EKLENTI_DEGISKENLERI,
-    RUTIN_ANAHTAR_KELIMELERI,
-    VAKIT_GIRDI_EKI,
+    rutinAnahtarKelimeleri,
+    vakitGirdiEki,
     vakitGirdiBasligi,
 } from '../anahtarKelimeler';
 
@@ -27,10 +28,10 @@ describe('otomasyon anahtar kelimeleri', () => {
         expect(vakitGirdiBasligi('ikindi')).toBe('İkindi vakti girdi');
         expect(vakitGirdiBasligi('aksam')).toBe('Akşam vakti girdi');
         expect(vakitGirdiBasligi('yatsi')).toBe('Yatsı vakti girdi');
-        expect(VAKIT_GIRDI_EKI).toBe('vakti girdi');
+        expect(vakitGirdiEki()).toBe('vakti girdi');
         // Ortak ek her başlıkta geçer: tek rutin her vakti yakalayabilsin.
         (['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] as const).forEach((v) =>
-            expect(vakitGirdiBasligi(v).endsWith(VAKIT_GIRDI_EKI)).toBe(true)
+            expect(vakitGirdiBasligi(v).endsWith(vakitGirdiEki())).toBe(true)
         );
     });
 
@@ -51,7 +52,7 @@ describe('otomasyon anahtar kelimeleri', () => {
     });
 
     it('rehber listesi başlıklarla tutarlı', () => {
-        const kelimeler = RUTIN_ANAHTAR_KELIMELERI.map((k) => k.kelime);
+        const kelimeler = rutinAnahtarKelimeleri().map((k) => k.kelime);
         expect(kelimeler).toEqual([
             'vakti girdi',
             'İmsak vakti girdi',
@@ -68,5 +69,15 @@ describe('otomasyon anahtar kelimeleri', () => {
         const ktDegiskenler = [...kt.matchAll(/const val D_[A-Z_]+ = "(%[a-z]+)"/g)].map((m) => m[1]);
         expect(EKLENTI_DEGISKENLERI.map((d) => d.ad)).toEqual(ktDegiskenler);
         expect(kt).toContain(`const val CIKIYOR_ESIK_DK = ${CIKIYOR_ESIK_DK}`);
+    });
+});
+
+describe('İngilizce: anahtar kelime dile göre, ortak ek her başlıkta', () => {
+    beforeEach(() => aktifDiliKur('en'));
+    afterEach(() => aktifDilSifirla());
+    it('başlık ve ek', () => {
+        expect(vakitGirdiBasligi('imsak')).toBe('Fajr time has begun');
+        expect(vakitGirdiBasligi('ogle')).toBe('Dhuhr time has begun');
+        for (const k of rutinAnahtarKelimeleri().slice(1, 6)) expect(k.kelime.endsWith(vakitGirdiEki())).toBe(true);
     });
 });

@@ -34,6 +34,9 @@
  * Tahriç edilirlerse eklenebilir.
  */
 import type { VakitAdi } from '../types';
+import { aktifDil, metin } from '../dil/aktifDil';
+import type { Sozluk } from '../dil/sozluk/tr';
+import { ayetMeali, hadisGosterilir } from '../icerik/nassDili';
 
 export interface MucadeleIcerigi {
     id: string;
@@ -50,6 +53,13 @@ export interface MucadeleIcerigi {
     vakitler?: VakitAdi[];
     /** 1: teşvik · 2: uyarı · 3: sert · 4: son çağrı */
     siddetSeviyesi: 1 | 2 | 3 | 4;
+    /**
+     * Çok dil: `hadis` yalnız `HADIS_DILLERI`'nde; `ayet` diğer dillerde `ayet` ("sûre:ayet")
+     * mealiyle; tanımsız = kendi sözümüz, çevirisi sözlükte (`muhafiz.icerik[soz]`).
+     */
+    tur?: 'hadis' | 'ayet';
+    ayet?: string;
+    soz?: keyof Sozluk['muhafiz']['icerik'];
 }
 
 export const SEYTANLA_MUCADELE_ICERIGI: MucadeleIcerigi[] = [
@@ -58,6 +68,7 @@ export const SEYTANLA_MUCADELE_ICERIGI: MucadeleIcerigi[] = [
         id: 'berdeyn',
         metin: 'İki serinliği — sabahı ve ikindiyi — kılan cennete girer.',
         kaynak: 'Buhârî, Mevâkîtü\'s-salât 26; Müslim, Mesâcid 215',
+        tur: 'hadis',
         vakitler: ['imsak', 'ikindi'], // "berdeyn" = sabah + ikindi. Başka vakitte KULLANILAMAZ.
         siddetSeviyesi: 1,
     },
@@ -67,6 +78,7 @@ export const SEYTANLA_MUCADELE_ICERIGI: MucadeleIcerigi[] = [
         // Tam metnin devamı cehennem tehdidi içerir → metni UZATMA.
         metin: 'Sabah namazını kılan, Allah\'ın koruması altındadır.',
         kaynak: 'Müslim, Mesâcid 262',
+        tur: 'hadis',
         vakitler: ['imsak'],
         siddetSeviyesi: 1,
     },
@@ -75,10 +87,13 @@ export const SEYTANLA_MUCADELE_ICERIGI: MucadeleIcerigi[] = [
         // Meal ALINTISI değil, ayetin özeti (telif).
         metin: 'Kur\'an, gündüzün iki ucunda ve gecenin ilk saatlerinde namazı emreder; iyilikler kötülükleri giderir.',
         kaynak: 'Hûd sûresi 114 (özet)',
+        tur: 'ayet',
+        ayet: '11:114',
         siddetSeviyesi: 1, // genel
     },
     {
         id: 'firsat',
+        soz: 'firsat',
         metin: 'Vakit daralmaya başladı, fırsat varken kıl.',
         siddetSeviyesi: 1, // kendi sözümüz
     },
@@ -89,11 +104,13 @@ export const SEYTANLA_MUCADELE_ICERIGI: MucadeleIcerigi[] = [
         // FEVT (kaçırma) nassı, TERK değil → gecikmiş kullanıcıya uygun.
         metin: 'İkindiyi kaçıran, ailesini ve malını yitirmiş gibidir.',
         kaynak: 'Buhârî, Mevâkîtü\'s-salât 14; Müslim, Mesâcid 200',
+        tur: 'hadis',
         vakitler: ['ikindi'],
         siddetSeviyesi: 2,
     },
     {
         id: 'sona-birakma',
+        soz: 'sonaBirakma',
         metin: 'Namazı sona bırakma; şimdi kılmak için vakit uygun.',
         siddetSeviyesi: 2, // kendi sözümüz
     },
@@ -101,6 +118,7 @@ export const SEYTANLA_MUCADELE_ICERIGI: MucadeleIcerigi[] = [
     // ── Seviye 3: sert ──────────────────────────────────────────────────────
     {
         id: 'fisilti',
+        soz: 'fisilti',
         // Korku/suçlama dozu düşürüldü (persona çalışması 2026-10-19): iç ses
         // "sonra kılarım" ertelemesine konuşur, kişiyi şeytana uymakla suçlamaz.
         metin: '"Sonra kılarım" deme; vakit bitmek üzere, şimdi kılabilirsin.',
@@ -108,12 +126,14 @@ export const SEYTANLA_MUCADELE_ICERIGI: MucadeleIcerigi[] = [
     },
     {
         id: 'omur',
+        soz: 'omur',
         // "Bu namaz son namazın olabilir" ölüm korkusu kaldırıldı (yeni başlayanı caydırıyordu).
         metin: 'Vakit geçiyor; bu namazı vaktinde kılmak için hâlâ fırsatın var.',
         siddetSeviyesi: 3, // kendi sözümüz
     },
     {
         id: 'keske',
+        soz: 'keske',
         metin: 'Birkaç dakika sonra "keşke" demek yerine şimdi kalk.',
         siddetSeviyesi: 3, // kendi sözümüz
     },
@@ -121,6 +141,7 @@ export const SEYTANLA_MUCADELE_ICERIGI: MucadeleIcerigi[] = [
     // ── Seviye 4: son çağrı ─────────────────────────────────────────────────
     {
         id: 'namaza-dur',
+        soz: 'namazaDur',
         // "secdeye kapan" DEĞİL: secde namazın içindeki rükün, başlangıcı değil.
         // Kılınmış olabilme ihtimaline saygı (persona çalışması 2026-10-19): uyarı
         // yalnız "Kıldım" işaretlenince iptal olur; camide kılıp işaretlemeyene
@@ -130,6 +151,7 @@ export const SEYTANLA_MUCADELE_ICERIGI: MucadeleIcerigi[] = [
     },
     {
         id: 'son-dakika',
+        soz: 'sonDakika',
         metin: 'Son dakikalar. Bırak elindekini, namaza dur.',
         siddetSeviyesi: 4, // kendi sözümüz
     },
@@ -147,7 +169,20 @@ export function uygunIcerikleriBul(
         (i) =>
             i.siddetSeviyesi === seviye &&
             (i.vakitler === undefined || i.vakitler.includes(vakit))
-    );
+    )
+        .map(yerellestir)
+        .filter((i): i is MucadeleIcerigi => i !== null);
+}
+
+/** İçeriğin etkin dildeki hâli; o dilde gösterilemiyorsa (hadis, meali olmayan ayet) `null`. */
+function yerellestir(i: MucadeleIcerigi): MucadeleIcerigi | null {
+    if (aktifDil() === 'tr') return i;
+    if (i.tur === 'hadis') return hadisGosterilir() ? i : null;
+    if (i.tur === 'ayet') {
+        const meal = i.ayet ? ayetMeali(i.ayet) : null;
+        return meal ? { ...i, metin: meal.metin, kaynak: meal.kaynak } : null;
+    }
+    return i.soz ? { ...i, metin: metin().muhafiz.icerik[i.soz] } : null;
 }
 
 /**
