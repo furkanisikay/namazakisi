@@ -59,7 +59,7 @@ class VakitHesabiTest {
             val beklenen = o.getJSONObject("vakitler")
             for (vakit in Vakit.entries) {
                 val fark = v.saat(vakit) - beklenen.getLong(vakit.kod)
-                if (fark != 0L) sapmalar += "${o.getString("ad")} ${o.getString("tarih")} ${vakit.kod}: ${fark / 1000} sn"
+                if (fark != 0L) sapmalar += "${o.getString("ad")} ${o.getString("tarih")} ${vakit.kod}: $fark ms"
             }
         }
         assertTrue(sapmalar.joinToString("\n"), sapmalar.isEmpty())

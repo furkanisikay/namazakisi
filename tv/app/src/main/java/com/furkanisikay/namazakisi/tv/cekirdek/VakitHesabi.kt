@@ -96,10 +96,14 @@ object VakitHesabi {
         // (JS "yukarı" saniye 0'da da +1 dk ekler, adhan2 eklemez).
         val pt = PrayerTimes(koordinat, gun, parametreler(hesap, tarih))
         val yuvarla = { ms: Long -> jsDakika(ms, hesap.yukari) }
-        val yatsiHam = pt.isha.toEpochMilliseconds()
+        // Açı tabanlı yolda sabah/yatsı JS aritmetiğiyle (gece kesri milisaniyeye kırpılır);
+        // Moonsighting'in mevsimsel sınırı tam saniyedir, adhan2'ninki aynı çıkar.
+        val sinir = if (hesap.ay) null else aciliSabahYatsi(koordinat, tarih, hesap, pt.isha.toEpochMilliseconds())
+        val imsak = sinir?.first ?: pt.fajr.toEpochMilliseconds()
+        val yatsiHam = sinir?.second ?: pt.isha.toEpochMilliseconds()
         val aksam = hesap.aksamAcisi?.let { aci -> aciliAksam(koordinat, gun, aci, hesap, yatsiHam) }
         return GunlukVakitler(
-            imsak = yuvarla(pt.fajr.toEpochMilliseconds()),
+            imsak = yuvarla(imsak),
             gunes = yuvarla(pt.sunrise.toEpochMilliseconds()),
             ogle = yuvarla(pt.dhuhr.toEpochMilliseconds()),
             ikindi = yuvarla(pt.asr.toEpochMilliseconds()),
@@ -144,10 +148,50 @@ object VakitHesabi {
         return acili + h.ofset[4] * DK_MS
     }
 
-    /** adhan JS `roundedMinute`: en yakın (30 sn ve üstü yukarı) ya da yukarı (saniye 0'da da +1 dk). */
+    /**
+     * adhan JS `roundedMinute`: saniye alanına bakar, milisaniyeyi KORUR (gece kesrinden gelen
+     * artık sonuçta kalır). En yakın: 30 sn ve üstü ileri; yukarı: saniye 0'da da +1 dk.
+     */
     private fun jsDakika(ms: Long, yukari: Boolean): Long {
         val sn = Math.floorMod(Math.floorDiv(ms, 1000L), 60L)
-        val tabanMs = Math.floorDiv(ms, 1000L) * 1000L - sn * 1000L
-        return if (yukari || sn >= 30) tabanMs + DK_MS else tabanMs
+        val kayma = if (yukari || sn >= 30) 60L - sn else -sn
+        return ms + kayma * 1000L
+    }
+
+    private fun anMs(gun: DateComponents, saat: Double): Long? =
+        TimeComponents.fromDouble(saat)?.dateComponents(gun)?.toInstant(TimeZone.UTC)?.toEpochMilliseconds()
+
+    /**
+     * adhan JS'in açı tabanlı sabah/yatsısı + gece kesri sınırı, DÜZELTMELİ (yuvarlamasız).
+     * JS: `new Date(gunes + (-kesir * geceSn) * 1000)` → milisaniyeye kırpar; adhan2 tam saniyeye
+     * kırptığı için yüksek enlemde (Oslo, Berlin yazın) bir saniyeye kadar ayrışır ve yuvarlama
+     * sınırında dakikayı değiştirebilir. Hesaplanamazsa (kutup) null → adhan2 sonucu.
+     */
+    private fun aciliSabahYatsi(k: Coordinates, tarih: LocalDate, h: TvHesap, adhan2YatsiMs: Long): Pair<Long, Long>? {
+        val gun = DateComponents(tarih.year, tarih.monthValue, tarih.dayOfMonth)
+        val yarin = tarih.plusDays(1)
+        val yarinGun = DateComponents(yarin.year, yarin.monthValue, yarin.dayOfMonth)
+        val gunes = SolarTime(gun, k)
+        val dogus = anMs(gun, gunes.sunrise) ?: return null
+        val batim = anMs(gun, gunes.sunset) ?: return null
+        val yarinDogus = anMs(yarinGun, SolarTime(yarinGun, k).sunrise) ?: return null
+        val geceSn = (yarinDogus - batim) / 1000.0
+        val (sabahKesri, yatsiKesri) = when (h.yuksekEnlem) {
+            HighLatitudeRule.MIDDLE_OF_THE_NIGHT -> 1.0 / 2.0 to 1.0 / 2.0
+            HighLatitudeRule.SEVENTH_OF_THE_NIGHT -> 1.0 / 7.0 to 1.0 / 7.0
+            HighLatitudeRule.TWILIGHT_ANGLE -> h.fecrAcisi / 60.0 to h.yatsiAcisi / 60.0
+        }
+        val guvenliSabah = (dogus + (-sabahKesri * geceSn) * 1000.0).toLong()
+        val sabahAci = anMs(gun, gunes.timeForSolarAngle(-h.fecrAcisi, false))
+        val sabah = if (sabahAci == null || guvenliSabah > sabahAci) guvenliSabah else sabahAci
+        val yatsi = if (h.yatsiAraligi > 0) {
+            // Yatsı aralığı (Ramazan eki dahil) adhan2'de de tam dakikadır.
+            adhan2YatsiMs - h.ofset[5] * DK_MS
+        } else {
+            val guvenliYatsi = (batim + (yatsiKesri * geceSn) * 1000.0).toLong()
+            val yatsiAci = anMs(gun, gunes.timeForSolarAngle(-h.yatsiAcisi, true))
+            if (yatsiAci == null || guvenliYatsi < yatsiAci) guvenliYatsi else yatsiAci
+        }
+        return (sabah + h.ofset[0] * DK_MS) to (yatsi + h.ofset[5] * DK_MS)
     }
 }
