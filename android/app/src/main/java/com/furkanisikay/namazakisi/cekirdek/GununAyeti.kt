@@ -341,13 +341,13 @@ object DuvarKagidiKurallari {
     const val TASARIM_GENISLIGI = 412f
 
     /**
-     * Metin bandı (ekran yüksekliğinin oranı). Kilit: %62–%82 — Android 14+ büyük kilit saati
+     * Metin bandı (ekran yüksekliğinin oranı). Kilit: %64–%82 — Android 14+ büyük kilit saati
      * (bildirim yokken) ekranın ~%28–%62'sini kaplar (emülatör karesi 66 ile ölçüldü), kilit
      * simgesi/parmak izi ~%84'ten başlar; metin ikisinin arasında kalır, sığmazsa küçülür.
      * Ana ekran: simgeler aşağıda olduğu için metin üstte ve küçük.
      */
     fun bant(ekran: DuvarEkrani): Pair<Float, Float> = when (ekran) {
-        DuvarEkrani.KILIT -> 0.62f to 0.82f
+        DuvarEkrani.KILIT -> 0.64f to 0.82f
         DuvarEkrani.ANA -> 0.09f to 0.34f
     }
 

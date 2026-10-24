@@ -263,7 +263,7 @@ class GununAyetiTest {
     fun kilitBandiSaatVeParmakIziDisinda() {
         val (ust, alt) = DuvarKagidiKurallari.bant(DuvarEkrani.KILIT)
         // Büyük kilit saati ~%28–%62, kilit simgesi ~%84'ten başlar.
-        assertTrue(ust >= 0.62f)
+        assertTrue(ust >= 0.64f)
         assertTrue(alt <= 0.83f)
         val (anaUst, anaAlt) = DuvarKagidiKurallari.bant(DuvarEkrani.ANA)
         assertTrue(anaUst < anaAlt && anaAlt <= ust)
