@@ -185,7 +185,7 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
         pressAction: { id: 'default' },
         style: {
           type: AndroidStyle.BIGTEXT,
-          text: 'İmsak vakti girdi, niyet etmeyi unutmayınız!\n\n⚠️ Sabah namazınızı eda edebilirsiniz. Duanızda bize de yer vermeyi unutmayın :)',
+          text: metin().sayac.sahur.girdiUzun,
         },
       },
     };

@@ -33,6 +33,10 @@ const HARIC = new Set([
     'src/domain/services/TurkiyeKonumServisi.ts', // 81 il adı + koordinat
     'src/core/samimiyet/ozelGunler.ts', // Diyanet listesiyle eşleme etiketi; ekranda görünmez (selam `tur`dan)
     'src/core/constants/YeniOzellikler.ts', // Türkçe kaynak kayıt; başka dilde yalnız `ceviri`si olan öğe görünür
+    // Türkçe NASS havuzları: Türkçe dışında hadis gösterilmez, ayet QuranEnc'ten, kendi sözlerimiz sözlükten
+    'src/core/data/SeytanlaMucadeleIcerigi.ts',
+    'src/core/data/VakitBildirimIcerikleri.ts',
+    'src/core/data/SeriSozu.ts',
 ]);
 const DIZE = /(['"`])((?:\\.|(?!\1)[^\\\n])*)\1/g;
 const JSX_METNI = />([^<>{}\n]+)</g;

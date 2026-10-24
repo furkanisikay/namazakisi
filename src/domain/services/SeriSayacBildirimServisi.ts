@@ -130,7 +130,7 @@ export class SeriSayacBildirimServisi extends SayacBildirimTemeli {
         autoCancel: true,
         timeoutAfter: 60 * 1000,
         pressAction: { id: 'default' },
-        style: { type: AndroidStyle.BIGTEXT, text: 'Yeni gün başladı.' },
+        style: { type: AndroidStyle.BIGTEXT, text: metin().sayac.seri.girdiGovde },
       },
     };
   }

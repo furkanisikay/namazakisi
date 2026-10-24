@@ -22,6 +22,7 @@ export const sayac = {
     govde: 'Ezanı duymadan orucunuzu açmayınız!',
     girdiBaslik: '🌙 İftar Vakti!',
     girdiGovde: 'Hayırlı iftarlar!',
+    girdiUzun: 'Hayırlı iftarlar!\n\n⚠️ Ezanı duymadan orucunuzu açmayınız! Duanızda bize de yer vermeyi unutmayın :)',
   },
   sahur: {
     kanal: 'Sahur Sayacı',
@@ -30,6 +31,7 @@ export const sayac = {
     govde: 'Yemeye içmeye devam, imsak yaklaşıyor!',
     girdiBaslik: '🌙 Sahur Vakti Bitti!',
     girdiGovde: 'Niyet etme vakti geldi.',
+    girdiUzun: 'İmsak vakti girdi, niyet etmeyi unutmayınız!\n\n⚠️ Sabah namazınızı eda edebilirsiniz. Duanızda bize de yer vermeyi unutmayın :)',
   },
   seri: {
     kanal: 'Seri Sayacı',

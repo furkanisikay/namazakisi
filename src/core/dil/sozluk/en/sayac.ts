@@ -20,6 +20,7 @@ export const sayac: Sozluk['sayac'] = {
     govde: "Don't break your fast before you hear the adhan!",
     girdiBaslik: '🌙 Iftar time!',
     girdiGovde: 'Have a blessed iftar.',
+    girdiUzun: "Have a blessed iftar.\n\n⚠️ Don't break your fast before you hear the adhan! Remember us in your prayers :)",
   },
   sahur: {
     kanal: 'Suhoor countdown',
@@ -28,6 +29,7 @@ export const sayac: Sozluk['sayac'] = {
     govde: 'You can still eat and drink; the fast begins soon!',
     girdiBaslik: '🌙 Suhoor time is over!',
     girdiGovde: "It's time to make your intention.",
+    girdiUzun: "Fajr time has begun; don't forget to make your intention!\n\n⚠️ You can now pray Fajr. Remember us in your prayers :)",
   },
   seri: {
     kanal: 'Streak countdown',

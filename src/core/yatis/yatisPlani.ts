@@ -387,7 +387,7 @@ type YatisTetigi = { sira: number; uyari: UyariPlani; zaman: Date };
  * içeriyorsa otomatik cümle okunur; "Yatmana 0 dakika kaldı" demektense.
  */
 export function yatisAdimAnonsu(metin: string | undefined, sureDk: number, otomatik: string): string {
-    if (sureDk <= 0 && typeof metin === 'string' && metin.includes('{süre}')) return otomatik;
+    if (sureDk <= 0 && typeof metin === 'string' && metin.includes('{süre}')) return otomatik; // dil-haric: yer tutucu jetonu
     return adimAnonsMetni(metin, { vakit: VAKIT_ADLARI.yatsi, sureDk }, () => otomatik);
 }
 

@@ -333,7 +333,7 @@ export class VakitSayacBildirimServisi {
             pressAction: { id: 'default' },
             actions: [
               {
-                title: '\u2705 Kıldım',
+                title: metin().bildirim.eylem.kildim,
                 pressAction: { id: 'kildim' },
               },
             ],

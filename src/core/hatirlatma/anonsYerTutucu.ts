@@ -28,7 +28,7 @@ export type HatirlatmaYuzeyi = 'muhafiz' | 'nafile' | 'cuma' | 'camiyeGit' | 'ya
 
 /** Editörde çip olarak eklenen yer tutucu. */
 export interface YerTutucu {
-    anahtar: '{vakit}' | '{süre}' | '{yön}';
+    anahtar: '{vakit}' | '{süre}' | '{yön}'; // dil-haric: yer tutucu jetonu
     /** Çip etiketi ("Vakit adı"); erişim etiketi "Ekleyin: <etiket>". */
     etiket: string;
 }
@@ -59,8 +59,8 @@ const YER_TUTUCU = /\{[^{}]*\}/g;
  */
 export function anonsCoz(sablon: string, baglam: AnonsBaglami): string {
     // Hazır şablon (herhangi bir dilde) etkin dile çevrilir; kullanıcının yazdığı metin aynen.
-    let cumle = sablonuYerellestir(sablon).split('{vakit}').join(baglam.vakit).split('{süre}').join(String(baglam.sureDk));
-    if (baglam.yon) cumle = cumle.split('{yön}').join(metin().anons.yon[baglam.yon]);
+    let cumle = sablonuYerellestir(sablon).split('{vakit}').join(baglam.vakit).split('{süre}').join(String(baglam.sureDk)); // dil-haric: yer tutucu jetonu
+    if (baglam.yon) cumle = cumle.split('{yön}').join(metin().anons.yon[baglam.yon]); // dil-haric: yer tutucu jetonu
     return cumle
         .replace(YER_TUTUCU, '')
         .replace(/[ \t]{2,}/g, ' ')
@@ -128,8 +128,8 @@ const SABLON_LISTESI: Record<Exclude<HatirlatmaYuzeyi, 'muhafiz'>, SablonListesi
 export const ANONS_SOZLUKLERI: Readonly<Record<HatirlatmaYuzeyi, YuzeySozlugu>> = canli((s) => {
     const c = s.anons.cip;
     const VAKIT: YerTutucu = { anahtar: '{vakit}', etiket: c.vakit };
-    const SURE: YerTutucu = { anahtar: '{süre}', etiket: c.sure };
-    const YON: YerTutucu = { anahtar: '{yön}', etiket: c.yon };
+    const SURE: YerTutucu = { anahtar: '{süre}', etiket: c.sure }; // dil-haric: yer tutucu jetonu
+    const YON: YerTutucu = { anahtar: '{yön}', etiket: c.yon }; // dil-haric: yer tutucu jetonu
     const sablon = (y: Exclude<HatirlatmaYuzeyi, 'muhafiz'>) => [...sablonlar(SABLON_LISTESI[y])];
     return {
         muhafiz: { yerTutucular: [VAKIT, SURE, YON], sablonlar: [] },

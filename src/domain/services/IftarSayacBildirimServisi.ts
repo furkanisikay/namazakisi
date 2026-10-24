@@ -144,7 +144,7 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
         pressAction: { id: 'default' },
         style: {
           type: AndroidStyle.BIGTEXT,
-          text: 'Hayırlı iftarlar!\n\n⚠️ Ezanı duymadan orucunuzu açmayınız! Duanızda bize de yer vermeyi unutmayın :)',
+          text: metin().sayac.iftar.girdiUzun,
         },
       },
     };

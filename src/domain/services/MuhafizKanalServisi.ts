@@ -133,7 +133,7 @@ export const MuhafizKanalServisi = {
             if (cozulemeyen.size > 0) {
                 Logger.info(
                     'MuhafizKanal',
-                    `${cozulemeyen.size} özel ses çözülemedi; varsayılan sese düşürülüyor`
+                    `${cozulemeyen.size} özel ses çözülemedi; varsayılan sese düşürülüyor` // dil-haric: log
                 );
                 dogrulanmisMatris = cozulemeyenSesleriDusur(matris, cozulemeyen);
             }

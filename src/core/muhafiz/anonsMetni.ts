@@ -69,8 +69,8 @@ export function anonsMetniniCoz(
   const yerel = sablonuYerellestir(sablon);
   const cumle = yerel
     .split('{vakit}').join(VAKIT_ADLARI_ANONS[vakit])
-    .split('{süre}').join(String(olcuDk))
-    .split('{yön}').join(metinYon(yon));
+    .split('{süre}').join(String(olcuDk)) // dil-haric: yer tutucu jetonu
+    .split('{yön}').join(metinYon(yon)); // dil-haric: yer tutucu jetonu
   // Bilinmeyen `{…}` (yazım hatası, başka yüzeyden taşınan metin) BOŞA indirgenir — TTS
   // "süslü parantez" okumasın; ek yüzeylerin `anonsCoz`'uyla aynı kural. Temizlik YALNIZ
   // bilinmeyen yer tutucu varken yapılır: bilinenleri taşıyan metinler birebir aynı kalır

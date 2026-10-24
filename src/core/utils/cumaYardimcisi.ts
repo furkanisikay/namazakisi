@@ -93,7 +93,7 @@ export const cumaBasligiOlustur = (oncedenDk: number): string =>
   bicim(metin().bildirim.cuma.baslik, { sure: dakikaKisa(oncedenDk) });
 
 /** Cuma'ya ÖZGÜ nass (Cuma 62/9) — yalnız bu bildirimde, yalnız cumanın İLK tetiğinde. */
-export const CUMA_NASSI = `"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)`;
+export const CUMA_NASSI = `"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)`; // dil-haric: Türkçe nass
 
 /** Cuma nassı etkin dilde: Türkçede yukarıdaki metin, diğer dillerde QuranEnc meali + künye (yoksa boş). */
 export function cumaNassi(): string {

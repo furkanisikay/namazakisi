@@ -25,8 +25,9 @@ const saatMetni = (t: Date): string =>
     `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`;
 
 export const NAFILE_NASLARI = {
-    kusluk: '"Bunların hepsinin yerine kuşluk vaktinde kılınacak iki rekât namaz yeter." (Müslim, Salâtü\'l-müsâfirîn 84)',
-    teheccud: '"Farz namazlardan sonra en faziletli namaz gece namazıdır." (Müslim, Sıyâm 202-203)',
+    // Türkçe hadis metni (yalnız `hadisGosterilir()` dilinde eklenir).
+    kusluk: '"Bunların hepsinin yerine kuşluk vaktinde kılınacak iki rekât namaz yeter." (Müslim, Salâtü\'l-müsâfirîn 84)', // dil-haric: nass
+    teheccud: '"Farz namazlardan sonra en faziletli namaz gece namazıdır." (Müslim, Sıyâm 202-203)', // dil-haric: nass
 } as const;
 
 /**
