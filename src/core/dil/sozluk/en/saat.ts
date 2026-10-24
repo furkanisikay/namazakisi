@@ -45,7 +45,7 @@ export const saat: Sozluk['saat'] = {
     ],
     anonsBaslik: 'Where should read aloud happen?',
     anonsNotu:
-      "Only reminders with read aloud turned on are read. The two devices don't read the same sentence together. Your watch also stays quiet while you're at the mosque or Prayer mode is on. If your watch has no speaker, text-to-speech engine or Turkish voice, it only vibrates. You can test the watch's sound right away with \"Test the sound\" in the Namaz Akışı watch app.",
+      "Only reminders with read aloud turned on are read. The two devices don't read the same sentence together. Your watch also stays quiet while you're at the mosque or Prayer mode is on. If your watch has no speaker, text-to-speech engine or a voice in the app's language, it only vibrates. You can test the watch's sound right away with \"Test the sound\" in the Namaz Akışı watch app.",
     bilekten: [
       'You can turn Prayer mode on and off with the button on the watch (until the end of the prayer time, at most 30 minutes).',
       'At the mosque, your watch shows the status; you answer "This isn\'t a mosque" and "Are you at the mosque?" from your wrist.',

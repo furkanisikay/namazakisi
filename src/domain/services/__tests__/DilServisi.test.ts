@@ -82,10 +82,41 @@ describe('DilServisi', () => {
     cihaz('de_DE');
     disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'en', ozelAnonsDili: 'en' };
     await DilServisi.cihazDilineDon();
-    expect(disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI]).toEqual({ ozelAnonsDili: 'en' });
+    expect(disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI]).toEqual({ ozelAnonsDili: 'en', goc: 1 });
     expect(await DilServisi.secimVar()).toBe(false);
     expect(aktifDil()).toBe('tr');
     expect(await DilServisi.ozelAnonsDili()).toBe('en');
+  });
+
+  describe('çok dil öncesi kurulum göçü (bir kez)', () => {
+    it('eski kurulum (sihirbaz bitmiş), kayıt yok, telefon İngilizce → Türkçe KAYDEDİLİR, sessiz sapma yok', async () => {
+      cihaz('en_US');
+      disk[DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI] = true;
+      await DilServisi.yukle(true);
+      expect(aktifDil()).toBe('tr');
+      expect(disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI]).toEqual({ kod: 'tr', goc: 1 });
+      expect(await DilServisi.secimVar()).toBe(true);
+    });
+
+    it('yeni kurulum (sihirbaz bitmemiş) → cihaz dili izlenir; sihirbaz sonra bitse de göç tekrar çalışmaz', async () => {
+      cihaz('en_US');
+      await DilServisi.yukle(true);
+      const en = DILLER.find((d) => d.kod === 'en')!;
+      expect(aktifDil()).toBe(en.secilebilir ? 'en' : 'tr');
+      expect(disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI]).toEqual({ goc: 1 });
+      disk[DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI] = true;
+      await DilServisi.yukle(true);
+      expect(disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI]).toEqual({ goc: 1 });
+      expect(aktifDil()).toBe(en.secilebilir ? 'en' : 'tr');
+    });
+
+    it('kayıt varsa seçim korunur, yalnız işaret eklenir', async () => {
+      cihaz('tr_TR');
+      disk[DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI] = true;
+      disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'en', ozelAnonsDili: 'en' };
+      await DilServisi.yukle(true);
+      expect(disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI]).toEqual({ kod: 'en', ozelAnonsDili: 'en', goc: 1 });
+    });
   });
 
   it('elle yazılmış metinlerin varsayılan dili Türkçedir; kayıt seçimi ezmez', async () => {

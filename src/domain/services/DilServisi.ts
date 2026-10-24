@@ -21,6 +21,8 @@ import { cihazDilindenSec, DILLER, dilKoduMu, VARSAYILAN_DIL, type DilKodu } fro
 export interface DilAyari {
   kod?: DilKodu;
   ozelAnonsDili?: DilKodu;
+  /** Çok dil öncesi kurulum göçü yapıldı mı (bkz. `eskiKurulumGocu`). */
+  goc?: 1;
 }
 
 /** Kayıttaki dil yalnız SEÇİLEBİLİRSE geçerlidir (yedekten gelen yarım dil kendiliğinden açılmaz). */
@@ -71,9 +73,24 @@ function anonsDiliniBildir(kod: DilKodu): void {
   }
 }
 
+/**
+ * BİR KEZ: dil seçimi gelmeden önce kurulmuş uygulamada dil kaydı yoktur. Cihaz dili İngilizce
+ * olan mevcut kullanıcı güncellemeden sonra uygulamayı kendiliğinden İngilizce görmesin (sessiz
+ * sapma yok): kurulum sihirbazı DAHA ÖNCE bitmişse Türkçe açıkça kaydedilir. Yeni kurulumda
+ * (sihirbaz bitmemiş) yalnız göç işareti yazılır; cihaz dili izlenmeye devam eder.
+ */
+async function eskiKurulumGocu(ham: DilAyari | null): Promise<DilAyari | null> {
+  if (ham && typeof ham === 'object' && ham.goc === 1) return ham;
+  const eskiKurulum = (await Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI)) != null;
+  return Depolama.guncelle<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI, (m) => {
+    const k = kayitNesnesi(m);
+    return { ...k, ...(eskiKurulum && !dilKoduMu(k.kod) ? { kod: VARSAYILAN_DIL } : {}), goc: 1 };
+  });
+}
+
 async function diskten(): Promise<DilKodu> {
   try {
-    const ham = await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI);
+    const ham = await eskiKurulumGocu(await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI));
     const kod = secilebilirKod(ham?.kod) ?? cihazDilindenSec(cihazYerelAyari()) ?? VARSAYILAN_DIL;
     aktifDiliKur(kod);
   } catch (e) {
