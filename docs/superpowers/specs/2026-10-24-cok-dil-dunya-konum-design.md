@@ -163,7 +163,13 @@ Erişilemeyen: habous.gov.ma (503), awqaf.gov.ae (JS uygulaması).
 ### 6.5 Doğrulanmayanlar
 Reddit/forum alıntıları; Bahreyn, Umman, Orta Asya, Afrika'nın çoğu için yöntem; Diyanet'in güncel Avrupa yatsı kuralı (yayımlanan "akşam + 1 sa 20 dk" kuralı canlı tablolarla tutmuyor); Samsung'da kilit ekranı duvar kâğıdı ve alias davranışı; Wear OS ve Google TV'de uygulama başına dil arayüzü.
 
-## 7. Açık sorular (sahip)
+## 7. Sahip kararları (2026-10-24)
+1. **Hesap:** Türkiye dışında varsayılan yerel otoritenin takvimidir (Güney Asya'da ikindi asr-ı sânî). Caferî yöntem yalnız elle seçilir. AGENTS.md'deki "Hanefî asr-ı sânî KULLANMA" kuralı Türkiye'ye (Diyanet profili) daraltılır; Türkiye bayt bayt aynı kalır.
+2. **Simge:** Android'de vakte göre değişen simge (alias; `MainActivity` etkin kalır, değişim vakit başına en fazla bir ve yalnız kullanıcı açarsa). iOS'ta yalnız tek seferlik seçim. Yan etkiler (ana ekran simgesinin düşmesi, sabitlenmiş kısayol) ayar ekranında söylenir.
+3. **İçerik:** Türkçe dışında yalnız ayet (Tanzil + QuranEnc, sürümlü). Hadis yalnız Türkçede ve repoda kaynağı doğrulanmış öğelerden. Arayüz çevirileri sözlükle hazırlanır; ana dili konuşan biri gözden geçirene kadar "beta" rozetiyle çıkar.
+4. **Önce sor onayları:** yeni bağımlılıklar (`expo-localization`, gerekirse `intl-pluralrules`), `android/`/`wear/`/`tv/`/`targets/` native değişiklikleri, `SET_WALLPAPER`, iş akışı düzenlemeleri ve dalda CI koşuları onaylandı.
+
+## 8. Açık sorular (sahip) — kararlarla kapandı (bkz. §7)
 1. Türkiye dışında hesap politikası ve AGENTS.md'deki "Hanefî asr-ı sânî KULLANMA" kuralının yalnız Türkiye'ye daraltılması.
 2. Şia (Caferî) desteği ve adlandırması.
 3. Dil listesi ve gözden geçirilmemiş dillerin "beta" çıkıp çıkmayacağı.
