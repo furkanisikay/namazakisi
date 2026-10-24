@@ -32,6 +32,11 @@ import {
 } from './wearMuhafizPlani';
 import { wearUyandirmaGecerliMi, type WearUyandirmaKaydi } from './wearUyandirma';
 import type { AnonsYeri } from '../saat/saatAyarlari';
+import { aktifDil } from '../dil/aktifDil';
+import { DILLER } from '../dil/diller';
+
+/** Etkin dilin sesli okuma dili (saat yükü). */
+const anonsTtsDili = (): string => DILLER.find((d) => d.kod === aktifDil())?.ttsDili ?? 'tr-TR';
 
 export const WEAR_YUK_SURUMU = 2;
 
@@ -120,6 +125,11 @@ export interface WearYuku {
      * hiç konuşmaz — eski davranış. EKLEMELİ OPSİYONEL.
      */
     anonsYeri?: AnonsYeri;
+    /**
+     * Anons metninin dili (BCP-47). YALNIZ Türkçe dışında yazılır: saat sesi buna göre seçer
+     * (yoksa `tr-TR`). EKLEMELİ OPSİYONEL; Türkçe yük bayt bayt aynı kalır.
+     */
+    ttsDili?: string;
 }
 
 /**
@@ -232,6 +242,7 @@ export function wearYukuOlustur(g: WearYukGirdisi): WearYuku {
         ...(g.canli ? { canli: g.canli } : {}),
         ...(g.uyandirma ? { uyandirma: g.uyandirma } : {}),
         ...(g.anonsYeri ? { anonsYeri: g.anonsYeri } : {}),
+        ...(anonsTtsDili() !== 'tr-TR' ? { ttsDili: anonsTtsDili() } : {}),
     };
     const konum = g.kibleKonumu ? wearKonumuOlustur(g.koordinat) : undefined;
     if (konum) taban.konum = konum;

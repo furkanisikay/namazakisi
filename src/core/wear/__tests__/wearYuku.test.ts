@@ -340,3 +340,17 @@ describe('saat W3 alanları (uyandirma, anonsYeri, kayıt anons) — eklemeli op
         expect('anonsYeri' in y).toBe(false);
     });
 });
+
+describe('sesli okuma dili (ttsDili) — EKLEMELİ OPSİYONEL', () => {
+    const taban = { koordinat: ISTANBUL, bugunIso: BUGUN, konumAdi: 'x', kilinanlar: {} };
+    it('Türkçede yazılmaz (yük aynı), İngilizcede saat sesi için en-US', () => {
+        const { aktifDiliKur, aktifDilSifirla } = require('../../dil/aktifDil') as typeof import('../../dil/aktifDil');
+        expect('ttsDili' in wearYukuOlustur(taban)).toBe(false);
+        aktifDiliKur('en');
+        try {
+            expect(wearYukuOlustur(taban).ttsDili).toBe('en-US');
+        } finally {
+            aktifDilSifirla();
+        }
+    });
+});

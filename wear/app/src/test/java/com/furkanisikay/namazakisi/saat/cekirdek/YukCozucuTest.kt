@@ -97,6 +97,17 @@ class YukCozucuTest {
     }
 
     @Test
+    fun ttsDiliOpsiyonelBozuguYukuDusurmez() {
+        // Türkçe telefon yazmaz → saat Türkçe ses kullanır.
+        assertEquals(null, (YukCozucu.coz(ornek()) as CozumSonucu.Basarili).yuk.ttsDili)
+        val en = org.json.JSONObject(ornek()).put("ttsDili", "en-US")
+        assertEquals("en-US", (YukCozucu.coz(en.toString()) as CozumSonucu.Basarili).yuk.ttsDili)
+        // Bozuk etiket yalnız bu alanı düşürür, yük geçerli kalır.
+        val bozuk = org.json.JSONObject(ornek()).put("ttsDili", "x; rm -rf")
+        assertEquals(null, (YukCozucu.coz(bozuk.toString()) as CozumSonucu.Basarili).yuk.ttsDili)
+    }
+
+    @Test
     fun saatW3AlanlariOpsiyonelVeKatiDogrulanir() {
         val yuk = (YukCozucu.coz(ornek()) as CozumSonucu.Basarili).yuk
         // Anons (fikir 9): yalnız sesli adımda; diğer kayıtta yok.
