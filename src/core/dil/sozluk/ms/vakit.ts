@@ -1,11 +1,12 @@
 import type { Sozluk } from '../tr';
 
-/** Nama waktu mengikut JAKIM (e-Solat); dalam ayat tetap bermula dengan huruf besar (kata nama khas). */
+/** Vakit adları JAKIM (e-Solat) yazımıyla; özel ad sayılır, cümle içinde de büyük harfle başlar. */
 export const vakit: Sozluk['vakit'] = {
   adlar: { imsak: 'Subuh', gunes: 'Syuruk', ogle: 'Zohor', ikindi: 'Asar', aksam: 'Maghrib', yatsi: 'Isyak' },
   buyuk: { imsak: 'SUBUH', gunes: 'SYURUK', ogle: 'ZOHOR', ikindi: 'ASAR', aksam: 'MAGHRIB', yatsi: 'ISYAK' },
   kucuk: { imsak: 'Subuh', gunes: 'Syuruk', ogle: 'Zohor', ikindi: 'Asar', aksam: 'Maghrib', yatsi: 'Isyak' },
-  imsakVakti: 'Imsak',
+  /** Kemenag/JAKIM'de "Imsak" Subuh'tan ~10 dk önceki ihtiyat saatidir; bizim imsak saatimiz fecirdir (Subuh). */
+  imsakVakti: 'Subuh',
   cuma: 'Jumaat',
   cumaKucuk: 'Jumaat',
   gunesDogusu: 'Matahari terbit',

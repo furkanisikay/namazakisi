@@ -112,9 +112,9 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     iftarKalkar: 'Ia hilang dengan sendirinya 10 minit selepas masuk waktu Maghrib.',
     sahur: 'Sahur',
     sahurSayaci: 'Kiraan detik sahur',
-    sahurAciklama: 'Memaparkan baki masa untuk bersahur, dari Isyak hingga Imsak',
+    sahurAciklama: 'Memaparkan baki masa untuk bersahur, dari Isyak hingga Subuh',
     sahurEtiketi: 'Kiraan detik sahur',
-    sahurKalkar: 'Ia hilang dengan sendirinya 10 minit selepas masuk waktu Imsak.',
+    sahurKalkar: 'Ia hilang dengan sendirinya 10 minit selepas masuk waktu Subuh.',
     not: 'Kiraan detik berdasarkan pengiraan; berbukalah apabila azan. Jadual waktu rasmi tempatan anda yang menjadi pegangan.',
   },
   otomasyon: {

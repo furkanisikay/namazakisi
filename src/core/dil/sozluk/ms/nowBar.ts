@@ -5,7 +5,7 @@ export const nowBar: Sozluk['nowBar'] = {
   aciklama: {
     imsak: 'Baki masa sehingga matahari terbit',
     cikis: 'Baki masa sehingga waktu solat tamat',
-    imsaka: 'Baki masa sehingga Imsak',
+    imsaka: 'Baki masa sehingga Subuh',
     iftar: 'Baki masa sehingga azan Maghrib',
     cuma: 'Baki masa sehingga khutbah',
     kusluk: 'Baki masa sehingga waktunya tamat',
@@ -16,7 +16,7 @@ export const nowBar: Sozluk['nowBar'] = {
     sayacla: 'Dengan kiraan detik',
     girince: 'Apabila masuk waktu',
     sonDk: 'Minit terakhir',
-    imsaktan: 'Dari Imsak',
+    imsaktan: 'Dari Subuh',
     yatsidan: 'Dari Isyak',
     gunesDogunca: 'Apabila matahari terbit',
     sonUcteGirince: 'Pada sepertiga terakhir',

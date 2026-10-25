@@ -24,12 +24,12 @@ export const sayac: Sozluk['sayac'] = {
   },
   sahur: {
     kanal: 'Kiraan detik sahur',
-    kanalAciklama: 'Pemberitahuan kiraan detik ke waktu Imsak (tamat sahur)',
+    kanalAciklama: 'Pemberitahuan kiraan detik ke waktu Subuh (tamat sahur)',
     baslik: '🌙 Kiraan detik sahur',
-    govde: 'Anda masih boleh makan dan minum; Imsak semakin hampir.',
+    govde: 'Anda masih boleh makan dan minum; Subuh semakin hampir.',
     girdiBaslik: '🌙 Waktu sahur telah tamat',
     girdiGovde: 'Sudah tiba masa untuk berniat.',
-    girdiUzun: 'Telah masuk waktu Imsak; jangan lupa berniat.\n\n⚠️ Anda kini boleh menunaikan solat Subuh. Doakan kami juga dalam doa anda :)',
+    girdiUzun: 'Telah masuk waktu Subuh; jangan lupa berniat.\n\n⚠️ Anda kini boleh menunaikan solat Subuh. Doakan kami juga dalam doa anda :)',
   },
   seri: {
     kanal: 'Kiraan detik rentetan',

@@ -8,7 +8,8 @@ export const vakit: Sozluk['vakit'] = {
   adlar: { imsak: 'Subuh', gunes: 'Terbit', ogle: 'Dzuhur', ikindi: 'Ashar', aksam: 'Maghrib', yatsi: 'Isya' },
   buyuk: { imsak: 'SUBUH', gunes: 'TERBIT', ogle: 'DZUHUR', ikindi: 'ASHAR', aksam: 'MAGHRIB', yatsi: 'ISYA' },
   kucuk: { imsak: 'Subuh', gunes: 'terbit', ogle: 'Dzuhur', ikindi: 'Ashar', aksam: 'Maghrib', yatsi: 'Isya' },
-  imsakVakti: 'Imsak',
+  /** Kemenag/JAKIM'de "Imsak" Subuh'tan ~10 dk önceki ihtiyat saatidir; bizim imsak saatimiz fecirdir (Subuh). */
+  imsakVakti: 'Subuh',
   cuma: 'Jumat',
   cumaKucuk: 'Jumat',
   gunesDogusu: 'Matahari terbit',
