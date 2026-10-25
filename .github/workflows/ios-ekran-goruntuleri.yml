@@ -43,13 +43,19 @@ on:
         required: false
         default: false
       dil:
-        description: 'Uygulama dili (tr = Türkçe, mağaza ve README kareleri; en = İngilizce kanıt turu, artifact adları -en ekli)'
+        description: 'Uygulama dili (tr = Türkçe, mağaza ve README kareleri; diğerleri = o dilin kanıt turu, artifact adlarına -<dil> eklenir)'
         type: choice
         required: false
         default: 'tr'
         options:
           - tr
           - en
+          - id
+          - de
+          - fr
+          - bs
+          - ru
+          - ms
       tur:
         description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | ipad (iPad 13" mağaza kareleri) | tv (Apple TV) | saat (Apple Watch) | asc (kare yok, App Store Connect işlemi)'
         type: choice
@@ -336,7 +342,7 @@ jobs:
         if: ${{ always() && inputs.tur != 'ozellik' }}
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ inputs.tur == 'ipad' && 'ios-ipad-ekran-goruntuleri' || 'ios-ekran-goruntuleri' }}${{ inputs.dil == 'en' && '-en' || '' }}
+          name: ${{ inputs.tur == 'ipad' && 'ios-ipad-ekran-goruntuleri' || 'ios-ekran-goruntuleri' }}${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           path: |
             kareler/
             mockup/
@@ -368,7 +374,7 @@ jobs:
         if: ${{ always() && (inputs.tur == 'ozellik' || inputs.tur == 'ikisi') }}
         uses: actions/upload-artifact@v7
         with:
-          name: ios-ozellik-kareleri${{ inputs.dil == 'en' && '-en' || '' }}
+          name: ios-ozellik-kareleri${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           # Kareler + her adimin erisilebilirlik agaci (agac/*.json): bir adim
           # tutmazsa ekranda hangi ogelerin oldugu oradan gorulur.
           path: kareler-ozellik/
@@ -469,7 +475,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v7
         with:
-          name: ios-saat-kareleri${{ inputs.dil == 'en' && '-en' || '' }}
+          name: ios-saat-kareleri${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           path: kareler-saat/
           retention-days: 14
           if-no-files-found: warn
@@ -479,7 +485,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v7
         with:
-          name: ios-saat-videolari${{ inputs.dil == 'en' && '-en' || '' }}
+          name: ios-saat-videolari${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           path: videolar-saat/
           retention-days: 14
           if-no-files-found: warn
@@ -550,7 +556,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v7
         with:
-          name: ios-tv-kareleri${{ inputs.dil == 'en' && '-en' || '' }}
+          name: ios-tv-kareleri${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           path: kareler-tv/
           retention-days: 14
           if-no-files-found: warn
@@ -608,7 +614,7 @@ jobs:
         if: ${{ inputs.asc_islem == 'ekran-yukle' && inputs.asc_pazarlama_run_id == '' && inputs.asc_saat_run_id != '' }}
         uses: actions/download-artifact@v8
         with:
-          name: ios-saat-kareleri${{ inputs.dil == 'en' && '-en' || '' }}
+          name: ios-saat-kareleri${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           path: indirilen-saat
           run-id: ${{ inputs.asc_saat_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}

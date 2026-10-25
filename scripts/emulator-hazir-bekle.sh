@@ -2,7 +2,7 @@
 # Emulatoru kare hattinin diline alir ve paket servisi kararli hale gelene kadar bekler.
 # Kare hatlari `adb wait-for-device`'tan hemen sonra, APK kurmadan once cagirir.
 #
-# Dil: TOHUM_DIL=en → en-US, aksi hâlde tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
+# Dil: TOHUM_DIL (tr, en, id, de, fr, bs, ru, ms) → cihaz dili; bilinmeyen kod tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
 # cihaz Turkce olmali). `-change-locale` emulator secenegi KULLANILMAZ: acilistan hemen sonra
 # framework'u yeniden baslatir ve emulator-runner'in kendi kilit acma adimi (`input keyevent 82`)
 # "Broken pipe" ile duser — o adim kapatilamaz. Burada dil, acilis tamamlandiktan sonra root ile
@@ -12,7 +12,14 @@
 # ART ARDA 3 kez cevap verene dek bekle.
 set -uo pipefail
 
-case "${TOHUM_DIL:-tr}" in en) HEDEF="en-US" ;; *) HEDEF="tr-TR" ;; esac
+case "${TOHUM_DIL:-tr}" in
+  en) HEDEF="en-US" ;; id) HEDEF="id-ID" ;; de) HEDEF="de-DE" ;; fr) HEDEF="fr-FR" ;;
+  bs) HEDEF="bs-BA" ;; ru) HEDEF="ru-RU" ;; ms) HEDEF="ms-MY" ;; *) HEDEF="tr-TR" ;;
+esac
+
+# Maestro akislari iki dillidir ("(Turkce|Ingilizce)" secicileri); baska dilin turunda
+# secicilere sozlukten o dilin karsiligi eklenir (CI kopyasinda, yerinde; tekrar kosmak zararsiz).
+case "${TOHUM_DIL:-tr}" in tr|en) ;; *) node scripts/maestro/akislari-yerellestir.js "$TOHUM_DIL" || echo "UYARI: akislar yerellestirilemedi" ;; esac
 
 bekle() {
   local ardisik=0
