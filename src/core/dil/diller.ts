@@ -5,7 +5,7 @@
  * (widget, bildirim kanalı, saat) üretilmeden dil açılırsa ekranlar yarım çevrili görünür.
  * Gözden geçirilmemiş çeviri `beta: true` taşır (seçicide rozet).
  */
-export type DilKodu = 'tr' | 'en';
+export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms';
 
 export interface DilTanimi {
   kod: DilKodu;
@@ -21,6 +21,13 @@ export interface DilTanimi {
 export const DILLER: readonly DilTanimi[] = [
   { kod: 'tr', yerelAd: 'Türkçe', yon: 'ltr', ttsDili: 'tr-TR', beta: false, secilebilir: true }, // dil-haric: dilin kendi adı (çevrilmez)
   { kod: 'en', yerelAd: 'English', yon: 'ltr', ttsDili: 'en-US', beta: true, secilebilir: true },
+  // W4 (2026-10-25): çeviri ve native metinler tamamlanıp dil kapısı (coklu-dil.md) geçilene kadar kapalı.
+  { kod: 'id', yerelAd: 'Bahasa Indonesia', yon: 'ltr', ttsDili: 'id-ID', beta: true, secilebilir: false },
+  { kod: 'de', yerelAd: 'Deutsch', yon: 'ltr', ttsDili: 'de-DE', beta: true, secilebilir: false },
+  { kod: 'fr', yerelAd: 'Français', yon: 'ltr', ttsDili: 'fr-FR', beta: true, secilebilir: false }, // dil-haric: dilin kendi adı (çevrilmez)
+  { kod: 'bs', yerelAd: 'Bosanski', yon: 'ltr', ttsDili: 'bs-BA', beta: true, secilebilir: false },
+  { kod: 'ru', yerelAd: 'Русский', yon: 'ltr', ttsDili: 'ru-RU', beta: true, secilebilir: false },
+  { kod: 'ms', yerelAd: 'Bahasa Melayu', yon: 'ltr', ttsDili: 'ms-MY', beta: true, secilebilir: false },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';

@@ -24,6 +24,7 @@ import {
 } from '../../core/otomasyon/anahtarKelimeler';
 import { oneUiNotu, rutinOnkosulNotu } from '../../core/otomasyon/rehberNotlari';
 import { bicim, metin } from '../../core/dil/aktifDil';
+import { dilKoduMu, type DilKodu } from '../../core/dil/diller';
 import { useMetin } from '../hooks/useMetin';
 import { cihazYerelAyari } from '../../domain/services/DilServisi';
 import { useCihazDurumu } from '../hooks/useCihazDurumu';
@@ -82,10 +83,12 @@ const SEKMELER: { id: Sekme; readonly etiket: string; ikon: string }[] = [
  */
 /**
  * Native kısayol ve eklenti etiketleri — başlatıcı ve Tasker/MacroDroid onları TELEFONUN
- * diliyle çözer (uygulama dili değil): `android/app/src/main/res/values[-en]`. Rehber de
- * telefonun dilindeki adı gösterir; İngilizce dışındaki cihaz dilleri Türkçe varsayılana düşer.
+ * diliyle çözer (uygulama dili değil): `android/app/src/main/res/values[-xx]`. Rehber de
+ * telefonun dilindeki adı gösterir; tabloda olmayan cihaz dilleri Türkçe varsayılana düşer.
+ * Her `values-xx/strings.xml` çevirisiyle birlikte buraya da aynı metin girer.
  */
-const NATIVE_ETIKETLER = {
+type NativeEtiket = { kisayol: string; olay: string; kosul: string; eylem: string };
+const NATIVE_ETIKETLER: { tr: NativeEtiket } & Partial<Record<DilKodu, NativeEtiket>> = {
     tr: {
         kisayol: 'Şu anki vakti kıldım', // dil-haric: kimlik (native kısayol etiketi, values/)
         olay: 'Namaz Akışı: Vakit olayı', // dil-haric: kimlik (native eklenti etiketi, values/)
@@ -100,7 +103,10 @@ const NATIVE_ETIKETLER = {
     },
 } as const;
 
-const nativeEtiketler = () => (cihazYerelAyari()?.split(/[-_]/)[0] === 'en' ? NATIVE_ETIKETLER.en : NATIVE_ETIKETLER.tr);
+const nativeEtiketler = (): NativeEtiket => {
+    const kod = cihazYerelAyari()?.split(/[-_]/)[0];
+    return (dilKoduMu(kod) ? NATIVE_ETIKETLER[kod] : undefined) ?? NATIVE_ETIKETLER.tr;
+};
 
 const Kart: React.FC<{ renkler: Renkler; ikon: string; baslik: string; children: React.ReactNode; testID?: string }> = ({
     renkler,

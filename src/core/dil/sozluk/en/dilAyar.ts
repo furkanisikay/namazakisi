@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Language · Dil',
   aciklama: 'Choose the app language. Notifications and read-aloud use it too.',
   grup: 'App language',
-  dilAdlari: { tr: 'Turkish', en: 'English' },
+  dilAdlari: { tr: 'Turkish', en: 'English', id: 'Indonesian', de: 'German', fr: 'French', bs: 'Bosnian', ru: 'Russian', ms: 'Malay' },
   cihazDili: 'Device language',
   cihazDiliKullaniliyor: 'Currently {ad}',
   cihazDiliDesteklenmiyor: "Your device language isn't available yet; Turkish is used.",

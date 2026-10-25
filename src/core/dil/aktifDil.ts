@@ -12,9 +12,15 @@ import { cogulSec } from './cogul';
 import { dilKoduMu, VARSAYILAN_DIL, type DilKodu } from './diller';
 import type { CogulMetin } from './tipler';
 import { en } from './sozluk/en';
+import { id } from './sozluk/id';
+import { de } from './sozluk/de';
+import { fr } from './sozluk/fr';
+import { bs } from './sozluk/bs';
+import { ru } from './sozluk/ru';
+import { ms } from './sozluk/ms';
 import { tr, type Sozluk } from './sozluk/tr';
 
-const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en };
+const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, ru, ms };
 
 let aktif: DilKodu = VARSAYILAN_DIL;
 const dinleyiciler = new Set<() => void>();
@@ -75,8 +81,9 @@ export function sayili(
   return bicimle(cogulSec(kod, sablon, n), { n, ...degerler });
 }
 
-const BINLIK: Readonly<Record<DilKodu, string>> = { tr: '.', en: ',' };
-const ONDALIK: Readonly<Record<DilKodu, string>> = { tr: ',', en: '.' };
+// Fransızca binlik ayırıcı dar bölünmez boşluk (U+202F), Rusça bölünmez boşluk (U+00A0) — CLDR.
+const BINLIK: Readonly<Record<DilKodu, string>> = { tr: '.', en: ',', id: '.', de: '.', fr: '\u202f', bs: '.', ru: '\u00a0', ms: ',' };
+const ONDALIK: Readonly<Record<DilKodu, string>> = { tr: ',', en: '.', id: ',', de: ',', fr: ',', bs: ',', ru: ',', ms: '.' };
 
 /**
  * Sayıyı etkin dilin ayırıcılarıyla yazar ("12.450" / "12,450"). `Intl`'e bağlı değil

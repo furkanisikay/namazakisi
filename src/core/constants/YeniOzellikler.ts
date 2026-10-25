@@ -28,6 +28,8 @@
  * Duyurunun yalnız özelliği taşıyan cihazda görünmesi için yetenek anahtarı.
  * Çözümü sunum katmanındadır (`presentation/hooks/yeniOzellikYetenegi.ts`).
  */
+import type { DilKodu } from '../dil/diller';
+
 export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive' | 'ipad' | 'kontrolMerkezi' | 'sesDosyasi';
 
 /** Duyurunun görüneceği platformlar. */
@@ -76,7 +78,7 @@ export interface YeniOzellik {
      * anlamsızdır, yarım çeviri gösterilmez. Metin o dilin kullanıcısı için DOĞRU olmalı
      * (ör. yalnız Türkiye'de çalışan bir yol çeviride anlatılmaz).
      */
-    ceviri?: Partial<Record<'en', YeniOzellikCevirisi>>;
+    ceviri?: Partial<Record<Exclude<DilKodu, 'tr'>, YeniOzellikCevirisi>>;
 }
 
 /** Bir duyurunun çevrilen alanları. */
