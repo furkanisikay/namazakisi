@@ -216,7 +216,8 @@ async function seridiHizala() {
         const yuk = kok ? cerceve(kok).h : 956;
         const hedef = yuk * 0.42;
         const sx = String(Math.round((kok ? cerceve(kok).w : 440) * 0.7)); // iPad: ayrıntı bölmesi
-        const o = bul(a, /ilk hatırlatma/i);
+        // Kimlik dilden bagimsizdir; Turkce cumle yalniz yedek.
+        const o = bul(a, /^zaman-seridi-cumle$|ilk hatırlatma/i);
         // Gorunmuyorsa icerik asagida: yukari surukle.
         const fark = o ? cerceve(o).y + cerceve(o).h / 2 - hedef : yuk * 0.3;
         if (o && Math.abs(fark) < yuk * 0.06) return true;

@@ -170,7 +170,9 @@ sleep 2
 # --- 04: tesbihat sayaci (gercek dokunuslarla) ---
 adb shell am force-stop "$PAKET"
 adb shell am start -W -n "$PAKET/$SINIF.ui.TesbihatAktivite"
-hazir_bekle 'Sübhânallah|Sayın|sayacı' || sleep 5
+# Desen DILDEN BAGIMSIZ: zikir adi dile gore yazilir; bulunamayinca hazir_bekle'nin
+# kaydirmasi sayaci sifirlama onayini aciyordu. "/ 33" her dilde sayacin altindadir.
+hazir_bekle '/ ?33' || sleep 5
 for _ in $(seq 1 21); do dokun_merkez; sleep 0.3; done
 kare 04-tesbihat 2 || true
 
@@ -184,7 +186,7 @@ printf "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n    <in
 adb push /tmp/saat_tesbihat.xml /data/local/tmp/saat_tesbihat.xml
 adb shell run-as "$PAKET" cp /data/local/tmp/saat_tesbihat.xml shared_prefs/saat_tesbihat.xml
 adb shell am start -W -n "$PAKET/$SINIF.ui.TesbihatAktivite"
-hazir_bekle 'Tamamlandı|tamamlandı' || sleep 5
+hazir_bekle 'Tamamlandı|tamamlandı|146' || sleep 5
 kare 09-tesbihat-tamam 2 || true
 
 # --- 08: kible pusulasi ---
@@ -197,7 +199,7 @@ adb emu sensor set acceleration 0:0:9.8 || true
 adb emu sensor set magnetic-field 0:26:-39 || true
 adb shell am force-stop "$PAKET"
 adb shell am start -W -n "$PAKET/$SINIF.ui.KibleAktivite"
-hazir_bekle 'Kıble|kıble|sensörü' || true
+hazir_bekle 'Kıble|kıble|sensörü|°' || true
 if kare 08-kible 3; then
   # Onceki ekranin dokumu kalmasin: dump basarisizsa bayat metinle karar verilmez.
   # Cihazdaki dosya da silinir: dump basarisiz olursa `exec-out cat` eskisini getirirdi.

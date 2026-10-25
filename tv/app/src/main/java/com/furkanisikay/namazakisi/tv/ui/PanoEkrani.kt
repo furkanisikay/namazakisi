@@ -486,6 +486,7 @@ private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: B
                     autoSize = TextAutoSize.StepBased(minFontSize = 20.sp, maxFontSize = 32.sp),
                     modifier = Modifier.weight(1f),
                 )
+                Spacer(Modifier.width(16.dp))
                 // "şimdi" çipi BİLİNÇLİ YOK: dar sütunda "Akşam"ı "Akşa…"ya kesiyordu (kare
                 // turunda görüldü); dolu yeşil zemin + soldaki geri sayım anlamı zaten taşıyor.
                 Text(
