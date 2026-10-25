@@ -1,20 +1,24 @@
 import type { Sozluk } from '../tr';
 
-/** İngilizcede vakit adları özel addır; cümle içinde de büyük harfle başlar. */
+/**
+ * Boşnakça vakit adları IZ BiH (vaktija.ba) takımıdır. `kucuk` cümle içi biçim; Boşnakçada
+ * vakit adı küçük harfle yazılır. `buyuk` elle yazılır (kodda `toUpperCase` yok).
+ */
 export const vakit: Sozluk['vakit'] = {
-  adlar: { imsak: 'Fajr', gunes: 'Sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  buyuk: { imsak: 'FAJR', gunes: 'SUNRISE', ogle: 'DHUHR', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
-  kucuk: { imsak: 'Fajr', gunes: 'sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  imsakVakti: 'Fajr',
-  cuma: "Jumu'ah",
-  cumaKucuk: "Jumu'ah",
-  gunesDogusu: 'Sunrise',
-  gunesDogusuKucuk: 'sunrise',
-  durum: { kilindi: 'Prayed', vaktiGeldi: 'Time to pray', girmedi: 'Not yet time', gecti: 'Not prayed' },
-  durumKucuk: { kilindi: 'prayed', vaktiGeldi: 'time to pray', girmedi: 'not yet time', gecti: 'not prayed' },
-  eylem: { kildim: "I've prayed", kilindi: 'Prayed' },
-  kerahatVakti: 'Makruh time',
-  isaretle: 'Mark as prayed',
-  geriAlEtiketi: '{durum}, tap to undo',
-  geriAlindi: 'Unmarked',
+  adlar: { imsak: 'Zora', gunes: 'Izlazak sunca', ogle: 'Podne', ikindi: 'Ikindija', aksam: 'Akšam', yatsi: 'Jacija' },
+  buyuk: { imsak: 'ZORA', gunes: 'IZLAZAK SUNCA', ogle: 'PODNE', ikindi: 'IKINDIJA', aksam: 'AKŠAM', yatsi: 'JACIJA' },
+  kucuk: { imsak: 'zora', gunes: 'izlazak sunca', ogle: 'podne', ikindi: 'ikindija', aksam: 'akšam', yatsi: 'jacija' },
+  imsakVakti: 'Zora',
+  cuma: 'Džuma',
+  cumaKucuk: 'džuma',
+  gunesDogusu: 'Izlazak sunca',
+  gunesDogusuKucuk: 'izlazak sunca',
+  durum: { kilindi: 'Klanjano', vaktiGeldi: 'Nastupilo vrijeme', girmedi: 'Još nije nastupilo', gecti: 'Nije klanjano' },
+  durumKucuk: { kilindi: 'klanjano', vaktiGeldi: 'nastupilo vrijeme', girmedi: 'još nije nastupilo', gecti: 'nije klanjano' },
+  /** Cinsiyetsiz kalıp: "klanjao/klanjala sam" yerine edilgen "Klanjano". */
+  eylem: { kildim: 'Klanjano', kilindi: 'Klanjano' },
+  kerahatVakti: 'Mekruh vrijeme',
+  isaretle: 'Označi kao klanjano',
+  geriAlEtiketi: '{durum}, dodirnite za poništavanje',
+  geriAlindi: 'Oznaka uklonjena',
 };

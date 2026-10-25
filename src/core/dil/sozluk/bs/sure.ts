@@ -2,8 +2,9 @@ import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 export const sure: Sozluk['sure'] = {
+  /** Standart kısaltmalar (h, min, s) Boşnakçada da aynıdır. */
   kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', few: '{n} hours', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', few: '{n} minutes', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', few: '{n} seconds', other: '{n} seconds' }),
+  saat: cogul({ one: '{n} sat', few: '{n} sata', other: '{n} sati' }),
+  dakika: cogul({ one: '{n} minuta', few: '{n} minute', other: '{n} minuta' }),
+  saniye: cogul({ one: '{n} sekunda', few: '{n} sekunde', other: '{n} sekundi' }),
 };

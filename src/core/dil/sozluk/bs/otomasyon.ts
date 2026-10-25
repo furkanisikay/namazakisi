@@ -1,9 +1,10 @@
 import type { Sozluk } from '../tr';
 
+/** Bildirim başlığı ve rutin anahtar kelimesi; `vakitGirdiEki` başlığın içinde geçmelidir. */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'nastupilo je vrijeme',
+  vakitGirdiBasligi: '{ad}: nastupilo je vrijeme',
+  herhangiVakit: 'Kada nastupi bilo koje namasko vrijeme',
+  yalnizVakit: 'Samo kada nastupi vrijeme: {ad}',
+  camide: 'Kada se otkrije da ste u džamiji (dok je „U džamiji” uključeno)',
 };
