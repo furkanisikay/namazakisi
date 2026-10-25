@@ -268,31 +268,31 @@ public struct VakitMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: id
+    // id — Endonezce (beta); JS `sozluk/id/genel.ts > kildim.sonuc`
     public static let id = VakitMetinleri(
         dil: "id",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Subuh", "ogle": "Dzuhur", "ikindi": "Ashar", "aksam": "Maghrib", "yatsi": "Isya"],
+        gunes: "Terbit",
+        konumYok: "Buka aplikasi dan atur lokasi Anda agar waktu salat dapat dihitung.",
+        veriEski: "Waktu salat sudah usang. Buka aplikasi sekali untuk memperbaruinya.",
+        girisBugun: "pukul {saat}",
+        girisYarin: "besok pukul {saat}",
+        suAnVakti: "Sekarang waktu {ad}.",
+        suAnVaktiCikis: "Sekarang waktu {ad}; berakhir pukul {saat}.",
+        siradakiNamaz: "Salat berikutnya {ad} {giris}.",
+        isaretlendi: "Salat {ad} Anda ditandai sudah ditunaikan. {dua}.",
+        zatenKilindi: "Salat {ad} sudah ditandai ditunaikan.",
+        vakitYok: "Saat ini tidak ada waktu salat yang berjalan.",
+        vakitYokSiradaki: "Saat ini tidak ada waktu salat yang berjalan. Berikutnya {ad}, masuk {giris}.",
+        onay: "Tandai salat {ad} sudah ditunaikan?",
+        vakitDegisti: "Waktu salat berganti, penandaan tidak dilakukan. Coba lagi.",
+        kabulDuasi: "Semoga Allah menerimanya",
+        kildim: "Sudah salat",
+        kilindi: "Ditunaikan",
+        kontrolKildim: "{ad} · Sudah salat",
+        kontrolKilindi: "{ad} ditunaikan",
+        kontrolVakitYok: "Tidak ada waktu salat",
+        uygulamayiAcin: "Buka aplikasi"
     )
 
 

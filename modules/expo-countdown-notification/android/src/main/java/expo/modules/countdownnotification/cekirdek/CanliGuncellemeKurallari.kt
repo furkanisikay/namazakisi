@@ -44,8 +44,8 @@ object CanliGuncellemeKurallari {
     internal val KISA_BIRIMLER: Map<String, Pair<String, String>> = mapOf(
         "tr" to ("sa" to "dk"),
         "en" to ("h" to "min"),
-        // ÇEVİRİ: id
-        "id" to ("h" to "min"),
+        // id
+        "id" to ("j" to "mnt"),
         // ÇEVİRİ: de
         "de" to ("h" to "min"),
         // ÇEVİRİ: fr

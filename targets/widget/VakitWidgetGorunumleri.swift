@@ -99,29 +99,29 @@ struct WidgetMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: id
+    // id — Endonezce (beta); JS `sozluk/id` (vakit.eylem: "Sudah salat" / "Ditunaikan")
     static let id = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Waktu salat",
+        galeriAciklama: "Waktu salat saat ini, sisa waktu hingga berakhir, dan waktu salat hari ini.",
+        veriEski: "Buka aplikasi untuk memperbarui waktu salat",
+        konumYok: "Buka aplikasi untuk mengatur lokasi Anda",
+        kilindiSiradaki: "{ad} ditunaikan · {sonraki} {saat}",
+        adCikis: "{ad} · berakhir {saat}",
+        siradakiAdSaat: "Berikutnya {ad} {saat}",
+        vaktiCikisErisim: "Waktu {ad}, berakhir {saat}",
+        siradakiErisim: "Berikutnya {ad}, {saat}",
+        cikisSaat: "Berakhir {saat}",
+        bitisSaat: "Berakhir {saat}",
+        kilindiBaslik: "{ad} ditunaikan",
+        siradaki: "Berikutnya",
+        siradakiAd: "Berikutnya {ad}",
+        kildimErisim: "Sudah salat {ad}",
+        gunSatiriKilindi: ", ditunaikan",
+        bitti: "Selesai",
+        vakitCikti: "Waktu salat telah berakhir",
+        kabulAlt: "Salat {ad} ditunaikan",
+        kontrolAdi: "Sudah salat",
+        kontrolAciklama: "Menandai waktu salat saat ini sudah ditunaikan."
     )
 
 

@@ -68,18 +68,18 @@ struct GununAyetiYerelMetinleri {
     )
 
 
-    // ÇEVİRİ: id
+    // id — Endonezce (beta); JS `sozluk/id/gununAyeti.ts`, meal 94:6 `gununAyetiHavuzu.ts` (indonesian_affairs)
     static let id = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Ayat hari ini",
+        galeriAciklama: "Ayat dan terjemahannya yang berganti setiap hari saat Subuh.",
+        etiket: "AYAT HARI INI",
+        uygulamayiAcin: "Buka aplikasi untuk melihat ayat hari ini",
+        ornekSigmiyor: "Ayat hari ini tidak muat di ukuran ini. Ketuk untuk membacanya.",
+        ornekAcin: "Buka",
+        ornekArapcaKaynagi: "Arab: Tanzil",
+        ornekMeal: "sesungguhnya bersama kesulitan ada kemudahan.",
+        ornekKisaKunye: "Al-Qur'an 94:6",
+        ornekMealKaynagi: "Ministry of Religious Affairs, QuranEnc 1.0.1"
     )
 
 

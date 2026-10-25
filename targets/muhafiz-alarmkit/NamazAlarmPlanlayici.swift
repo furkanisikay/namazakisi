@@ -101,8 +101,8 @@ enum NamazAlarmCekirdegi {
     static let durdurEtiketleri: [String: String] = [
         "tr": "Durdur",
         "en": "Stop",
-        // ÇEVİRİ: id
-        "id": "Stop",
+        // id
+        "id": "Hentikan",
         // ÇEVİRİ: de
         "de": "Stop",
         // ÇEVİRİ: fr

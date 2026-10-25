@@ -102,19 +102,19 @@ struct TvArayuzMetinleri {
     )
 
 
-    // ÇEVİRİ: id
+    // id — Endonezce (beta)
     static let id = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Pilih kota Anda",
+        ilMerkezi: "Waktu salat dihitung berdasarkan ibu kota provinsi. Anda dapat mengubah pilihan nanti.",
+        ilSecErisim: "{il}, pilih",
+        kalan: "Sisa waktu hingga {ad}",
+        kalanErisim: "Sisa waktu hingga {ad}: {sure}",
+        konumuDegistirin: "Ubah lokasi",
+        kerahatSuruyor: "Waktu makruh: {tur}, berakhir {bitis}. {aciklama}",
+        siradakiKerahat: "Waktu makruh berikutnya: {tur} {bas}–{bit}",
+        cumaBilgisi: "Hari ini Jumat. Salat Jumat ditunaikan pada waktu Dzuhur (masuk {giris}).",
+        suAnkiEk: ", waktu salat saat ini",
+        siradakiEk: ", waktu salat berikutnya"
     )
 
 

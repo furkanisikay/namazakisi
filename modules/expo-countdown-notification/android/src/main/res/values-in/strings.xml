@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: id — İngilizce kopya; çeviri ajanı bu dosyanın tamamını çevirir (Android niteleyicisi values-in: values-id hiç seçilmez). -->
+<!-- id — Endonezce (beta). Android niteleyicisi values-in (values-id hiç seçilmez). Terimler: src/core/dil/sozluk/id (sayac, nowBar). -->
 <resources>
-    <string name="countdown_kanal_canli_ad">Live countdowns</string>
-    <string name="countdown_kanal_canli_aciklama">Countdowns in the Now Bar and the status bar</string>
-    <string name="countdown_kanal_genel_ad">Countdown notifications</string>
-    <string name="countdown_kanal_genel_aciklama">Channel for countdown notifications</string>
+    <string name="countdown_kanal_canli_ad">Hitung mundur langsung</string>
+    <string name="countdown_kanal_canli_aciklama">Hitung mundur di Now Bar dan bilah status</string>
+    <string name="countdown_kanal_genel_ad">Notifikasi hitung mundur</string>
+    <string name="countdown_kanal_genel_aciklama">Saluran untuk notifikasi hitung mundur</string>
 
-    <string name="countdown_eylem_kildim">I\'ve prayed</string>
-    <string name="countdown_eylem_durdur">Stop</string>
+    <string name="countdown_eylem_kildim">Sudah salat</string>
+    <string name="countdown_eylem_durdur">Hentikan</string>
 
-    <string name="countdown_yedek_vakit">Hurry, the prayer time is about to end.</string>
-    <string name="countdown_yedek_iftar">Time is running out.</string>
-    <string name="countdown_yedek_sahur">You can still eat and drink; the fast begins soon!</string>
-    <string name="countdown_yedek_seri">Today\'s prayers aren\'t complete; don\'t lose your streak.</string>
+    <string name="countdown_yedek_vakit">Segera tunaikan salat; waktu hampir habis.</string>
+    <string name="countdown_yedek_iftar">Waktu berbuka makin dekat.</string>
+    <string name="countdown_yedek_sahur">Masih bisa makan dan minum; puasa segera dimulai.</string>
+    <string name="countdown_yedek_seri">Salat hari ini belum lengkap; jangan sampai runtunan Anda terputus.</string>
 
-    <string name="countdown_onek_vakit">Until the time ends</string>
-    <string name="countdown_onek_vakit_dar">Time is ending</string>
-    <string name="countdown_onek_iftar">Until iftar</string>
-    <string name="countdown_onek_iftar_dar">Until iftar</string>
-    <string name="countdown_onek_sahur">Until suhoor ends</string>
-    <string name="countdown_onek_sahur_dar">Suhoor is ending</string>
-    <string name="countdown_onek_seri">To save your streak</string>
-    <string name="countdown_onek_seri_dar">Streak is ending</string>
+    <string name="countdown_onek_vakit">Hingga waktu berakhir</string>
+    <string name="countdown_onek_vakit_dar">Waktu akan berakhir</string>
+    <string name="countdown_onek_iftar">Hingga berbuka</string>
+    <string name="countdown_onek_iftar_dar">Hingga berbuka</string>
+    <string name="countdown_onek_sahur">Hingga sahur berakhir</string>
+    <string name="countdown_onek_sahur_dar">Sahur akan berakhir</string>
+    <string name="countdown_onek_seri">Untuk menyelamatkan runtunan</string>
+    <string name="countdown_onek_seri_dar">Runtunan akan berakhir</string>
 </resources>

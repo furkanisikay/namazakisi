@@ -47,12 +47,12 @@ public struct SaatSureMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: id
+    // id — Endonezce (beta); CLDR yalniz "other" (JS `sozluk/id/sure.ts`)
     public static let id = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "j", birimDk: "mnt", birimSn: "dtk",
+        saat: ["other": "{n} jam"],
+        dakika: ["other": "{n} menit"],
+        saniye: ["other": "{n} detik"]
     )
 
 

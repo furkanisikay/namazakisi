@@ -120,11 +120,11 @@ struct OtomasyonMetinleri {
     )
 
 
-    // ÇEVİRİ: id
+    // id — Endonezce (beta); CLDR yalniz "other"
     static let id = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["other": "{n} menit lagi menuju {ad}."],
+        evetKilindi: "Ya, sudah ditandai ditunaikan.",
+        hayirKilinmadi: "Belum, belum ditandai."
     )
 
 

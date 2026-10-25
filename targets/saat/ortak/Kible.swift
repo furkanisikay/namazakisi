@@ -165,18 +165,18 @@ public struct KibleMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: id
+    // id — Endonezce (beta); JS `sozluk/id/kible.ts > yon`
     public static let id = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Di belakang Anda",
+        saga: "Kanan {derece}°",
+        sola: "Kiri {derece}°",
+        hizali: "Anda menghadap kiblat",
+        arkadaErisim: "Kiblat ada di belakang Anda",
+        sagdaErisim: "Kiblat {derece} derajat di sebelah kanan Anda",
+        soldaErisim: "Kiblat {derece} derajat di sebelah kiri Anda",
+        kabede: "Anda berada di Ka’bah",
         mesafe: "{km} km",
-        binlikAyirici: ","
+        binlikAyirici: "."
     )
 
 
