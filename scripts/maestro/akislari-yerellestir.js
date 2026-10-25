@@ -49,7 +49,14 @@ for (const harita of kaynak) {
 }
 
 const kacir = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const coz = (s) => s.replace(/\\(.)/g, '$1');
+/**
+ * Seçiciler YAML'ın ÇİFT TIRNAKLI dizgesindedir: regex kaçışı orada iki ters bölüdür ("\\\\.").
+ * Okurken önce YAML, sonra regex kaçışı çözülür; yazarken regex kaçışı YAML için ikilenir
+ * (tek "\\." YAML'da geçersiz kaçıştır ve akış hiç ayrıştırılamaz).
+ */
+const yamlCoz = (s) => s.replace(/\\(["\\])/g, '$1');
+const yamlKacir = (s) => s.replace(/[\\"]/g, '\\$&');
+const coz = (s) => yamlCoz(s).replace(/\\(.)/g, '$1');
 
 /** "{ad} vakti hatırlatma ayarları. {ozet}" → ['', '{ad}', ' vakti hatırlatma ayarları. ', '{ozet}', '']. */
 const parcala = (sablon) => sablon.split(/(\{[^{}]+\})/);
@@ -116,6 +123,14 @@ function sablonKarsiliklari(secenek) {
 let degisen = 0;
 const eslesmeyen = new Set();
 
+/** Doğrulayıcı (geçişli bağımlılık); yoksa doğrulama atlanır, akış yine yazılır. */
+let yaml = null;
+try {
+  yaml = require('js-yaml');
+} catch {
+  yaml = null;
+}
+
 function grubuGenislet(govde) {
   const secenekler = govde.split('|');
   const eklenecek = [];
@@ -137,7 +152,7 @@ function grubuGenislet(govde) {
     }
   }
   if (!eslesti) eslesmeyen.add(govde);
-  return eklenecek.length ? [...secenekler, ...eklenecek].join('|') : govde;
+  return eklenecek.length ? [...secenekler, ...eklenecek.map(yamlKacir)].join('|') : govde;
 }
 
 function dosyalar(dizinYolu) {
@@ -163,6 +178,14 @@ for (const dosya of dosyalar(path.join(KOK, 'scripts', 'maestro'))) {
     )
     .join('\n');
   if (yeni !== eski) {
+    // Bozuk YAML akışı Maestro'da sessizce boş koşu olur: yazmadan önce ayrıştır.
+    try {
+      yaml?.loadAll(yeni);
+    } catch (e) {
+      console.error(`${path.relative(KOK, dosya)}: yerelleştirilmiş akış ayrıştırılamadı: ${e.message}`);
+      process.exitCode = 1;
+      continue;
+    }
     fs.writeFileSync(dosya, yeni);
     degisen++;
   }
