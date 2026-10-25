@@ -145,16 +145,16 @@ struct GununAyetiYerelMetinleri {
 
     // ÇEVİRİ: ms
     static let ms = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Ayat hari ini",
+        galeriAciklama: "Satu ayat dan terjemahannya yang bertukar setiap hari pada waktu Subuh.",
+        etiket: "AYAT HARI INI",
+        uygulamayiAcin: "Buka aplikasi untuk melihat ayat hari ini",
+        ornekSigmiyor: "Ayat hari ini tidak muat pada saiz ini. Ketik untuk membacanya.",
+        ornekAcin: "Buka",
+        ornekArapcaKaynagi: "Arab: Tanzil",
+        ornekMeal: "(Sekali lagi ditegaskan): bahawa sesungguhnya tiap-tiap kesukaran disertai kemudahan.",
+        ornekKisaKunye: "Al-Quran 94:6",
+        ornekMealKaynagi: "Abdullah Basumayyah, QuranEnc 1.0.0"
     )
 
     static let tablo: [String: GununAyetiYerelMetinleri] = [

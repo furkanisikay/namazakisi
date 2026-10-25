@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ms — İngilizce kopya; çeviri ajanı bu dosyanın tamamını çevirir. -->
+<!-- ÇEVİRİ: ms — Malayca (beta). -->
 <resources>
-    <string name="countdown_kanal_canli_ad">Live countdowns</string>
-    <string name="countdown_kanal_canli_aciklama">Countdowns in the Now Bar and the status bar</string>
-    <string name="countdown_kanal_genel_ad">Countdown notifications</string>
-    <string name="countdown_kanal_genel_aciklama">Channel for countdown notifications</string>
+    <string name="countdown_kanal_canli_ad">Kiraan detik langsung</string>
+    <string name="countdown_kanal_canli_aciklama">Kiraan detik dalam Now Bar dan bar status</string>
+    <string name="countdown_kanal_genel_ad">Pemberitahuan kiraan detik</string>
+    <string name="countdown_kanal_genel_aciklama">Saluran untuk pemberitahuan kiraan detik</string>
 
-    <string name="countdown_eylem_kildim">I\'ve prayed</string>
-    <string name="countdown_eylem_durdur">Stop</string>
+    <string name="countdown_eylem_kildim">Sudah solat</string>
+    <string name="countdown_eylem_durdur">Hentikan</string>
 
-    <string name="countdown_yedek_vakit">Hurry, the prayer time is about to end.</string>
-    <string name="countdown_yedek_iftar">Time is running out.</string>
-    <string name="countdown_yedek_sahur">You can still eat and drink; the fast begins soon!</string>
-    <string name="countdown_yedek_seri">Today\'s prayers aren\'t complete; don\'t lose your streak.</string>
+    <string name="countdown_yedek_vakit">Segera, waktu solat hampir tamat.</string>
+    <string name="countdown_yedek_iftar">Masa semakin suntuk.</string>
+    <string name="countdown_yedek_sahur">Anda masih boleh makan dan minum; Subuh semakin hampir.</string>
+    <string name="countdown_yedek_seri">Solat hari ini belum lengkap; jangan putuskan rentetan anda.</string>
 
-    <string name="countdown_onek_vakit">Until the time ends</string>
-    <string name="countdown_onek_vakit_dar">Time is ending</string>
-    <string name="countdown_onek_iftar">Until iftar</string>
-    <string name="countdown_onek_iftar_dar">Until iftar</string>
-    <string name="countdown_onek_sahur">Until suhoor ends</string>
-    <string name="countdown_onek_sahur_dar">Suhoor is ending</string>
-    <string name="countdown_onek_seri">To save your streak</string>
-    <string name="countdown_onek_seri_dar">Streak is ending</string>
+    <string name="countdown_onek_vakit">Sehingga waktu tamat</string>
+    <string name="countdown_onek_vakit_dar">Waktu hampir tamat</string>
+    <string name="countdown_onek_iftar">Sehingga berbuka</string>
+    <string name="countdown_onek_iftar_dar">Sehingga berbuka</string>
+    <string name="countdown_onek_sahur">Sehingga sahur tamat</string>
+    <string name="countdown_onek_sahur_dar">Sahur hampir tamat</string>
+    <string name="countdown_onek_seri">Untuk menyelamatkan rentetan</string>
+    <string name="countdown_onek_seri_dar">Rentetan hampir tamat</string>
 </resources>

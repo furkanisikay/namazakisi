@@ -184,17 +184,17 @@ struct TvArayuzMetinleri {
 
     // ÇEVİRİ: ms
     static let ms = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Pilih bandar anda",
+        ilMerkezi: "Waktu solat dikira berdasarkan pusat wilayah. Anda boleh menukar pilihan anda kemudian.",
+        ilSecErisim: "{il}, pilih",
+        kalan: "Baki masa sehingga {ad}",
+        kalanErisim: "Baki masa sehingga {ad}: {sure}",
+        konumuDegistirin: "Tukar lokasi",
+        kerahatSuruyor: "Waktu makruh: {tur}, tamat {bitis}. {aciklama}",
+        siradakiKerahat: "Waktu makruh seterusnya: {tur} {bas}–{bit}",
+        cumaBilgisi: "Hari ini Jumaat. Solat Jumaat ditunaikan pada waktu Zohor (masuk {giris}).",
+        suAnkiEk: ", waktu semasa",
+        siradakiEk: ", waktu seterusnya"
     )
 
     static let tablo: [String: TvArayuzMetinleri] = [

@@ -112,7 +112,7 @@ enum NamazAlarmCekirdegi {
         // ÇEVİRİ: ru
         "ru": "Stop",
         // ÇEVİRİ: ms
-        "ms": "Stop",
+        "ms": "Hentikan",
     ]
 
     static func durum() -> String {

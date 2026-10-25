@@ -162,9 +162,9 @@ struct OtomasyonMetinleri {
 
     // ÇEVİRİ: ms
     static let ms = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{n} minit lagi masuk waktu {ad}.", "other": "{n} minit lagi masuk waktu {ad}."],
+        evetKilindi: "Ya, sudah ditandakan sebagai ditunaikan.",
+        hayirKilinmadi: "Tidak, belum ditandakan."
     )
 
     static let tablo: [String: OtomasyonMetinleri] = [

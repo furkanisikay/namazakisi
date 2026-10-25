@@ -55,7 +55,7 @@ object CanliGuncellemeKurallari {
         // ÇEVİRİ: ru
         "ru" to ("h" to "min"),
         // ÇEVİRİ: ms
-        "ms" to ("h" to "min"),
+        "ms" to ("j" to "min"),
     )
 
     /**
