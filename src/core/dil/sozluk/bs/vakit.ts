@@ -1,13 +1,14 @@
 import type { Sozluk } from '../tr';
 
 /**
- * Boşnakça vakit adları IZ BiH (vaktija.ba) takımıdır. `kucuk` cümle içi biçim; Boşnakçada
+ * Boşnakça vakit adları IZ BiH (vaktija.ba) takımıdır; namaz "sabah", çizelgedeki vakit satırı "Zora"dır
+ * (Türkçedeki Sabah / İmsak ayrımı). `kucuk` cümle içi biçim; Boşnakçada
  * vakit adı küçük harfle yazılır. `buyuk` elle yazılır (kodda `toUpperCase` yok).
  */
 export const vakit: Sozluk['vakit'] = {
-  adlar: { imsak: 'Zora', gunes: 'Izlazak sunca', ogle: 'Podne', ikindi: 'Ikindija', aksam: 'Akšam', yatsi: 'Jacija' },
-  buyuk: { imsak: 'ZORA', gunes: 'IZLAZAK SUNCA', ogle: 'PODNE', ikindi: 'IKINDIJA', aksam: 'AKŠAM', yatsi: 'JACIJA' },
-  kucuk: { imsak: 'zora', gunes: 'izlazak sunca', ogle: 'podne', ikindi: 'ikindija', aksam: 'akšam', yatsi: 'jacija' },
+  adlar: { imsak: 'Sabah', gunes: 'Izlazak sunca', ogle: 'Podne', ikindi: 'Ikindija', aksam: 'Akšam', yatsi: 'Jacija' },
+  buyuk: { imsak: 'SABAH', gunes: 'IZLAZAK SUNCA', ogle: 'PODNE', ikindi: 'IKINDIJA', aksam: 'AKŠAM', yatsi: 'JACIJA' },
+  kucuk: { imsak: 'sabah', gunes: 'izlazak sunca', ogle: 'podne', ikindi: 'ikindija', aksam: 'akšam', yatsi: 'jacija' },
   imsakVakti: 'Zora',
   cuma: 'Džuma',
   cumaKucuk: 'džuma',
