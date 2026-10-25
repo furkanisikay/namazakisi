@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -474,13 +476,14 @@ private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: B
                     32.dp,
                 )
                 Spacer(Modifier.width(20.dp))
-                Text(
+                // Uzun ad ("Sonnenaufgang", "Восход солнца") kesilmez, sütuna sığana dek küçülür.
+                BasicText(
                     durum.gorunenAd(vakit, dil),
-                    color = metinRengi,
-                    fontSize = 32.sp,
-                    fontWeight = if (aktif) FontWeight.Bold else FontWeight.Normal,
+                    style = TextStyle(fontSize = 32.sp, fontWeight = if (aktif) FontWeight.Bold else FontWeight.Normal),
+                    color = { metinRengi },
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    autoSize = TextAutoSize.StepBased(minFontSize = 20.sp, maxFontSize = 32.sp),
                     modifier = Modifier.weight(1f),
                 )
                 // "şimdi" çipi BİLİNÇLİ YOK: dar sütunda "Akşam"ı "Akşa…"ya kesiyordu (kare

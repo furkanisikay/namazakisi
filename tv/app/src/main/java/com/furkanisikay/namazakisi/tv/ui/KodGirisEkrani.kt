@@ -15,6 +15,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -53,10 +55,12 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Border
+import androidx.tv.material3.LocalContentColor
 import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
@@ -184,7 +188,7 @@ fun KodGirisEkrani(
             ) { il ->
                 Column {
                     if (il == null) {
-                        Text(stringResource(R.string.kod_baslik), color = Renkler.metin, fontSize = 36.sp, fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.kod_baslik), color = Renkler.metin, fontSize = 36.sp, lineHeight = 44.sp, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.height(10.dp))
                         Text(
                             stringResource(R.string.kod_yol),
@@ -328,7 +332,16 @@ private fun Tus(
         scale = ClickableSurfaceDefaults.scale(focusedScale = 1.08f),
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(etiket, fontSize = if (kucuk) 24.sp else 34.sp, fontWeight = FontWeight.SemiBold)
+            // Uzun dilde ("Löschen", "Удалить") etiket tek satırda kalır, yazı küçülür.
+            val renk = LocalContentColor.current
+            BasicText(
+                etiket,
+                style = TextStyle(fontSize = if (kucuk) 24.sp else 34.sp, fontWeight = FontWeight.SemiBold),
+                color = { renk },
+                maxLines = 1,
+                autoSize = TextAutoSize.StepBased(minFontSize = 14.sp, maxFontSize = if (kucuk) 24.sp else 34.sp),
+                modifier = Modifier.padding(horizontal = 6.dp),
+            )
         }
     }
 }
