@@ -53,7 +53,7 @@ object CanliGuncellemeKurallari {
         // ÇEVİRİ: bs
         "bs" to ("h" to "min"),
         // ÇEVİRİ: ru
-        "ru" to ("h" to "min"),
+        "ru" to ("ч" to "мин"),
         // ÇEVİRİ: ms
         "ms" to ("j" to "min"),
     )

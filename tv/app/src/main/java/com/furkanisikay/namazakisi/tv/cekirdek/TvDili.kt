@@ -337,46 +337,59 @@ object TvDiliBs : TvDili {
 object TvDiliRu : TvDili {
     override val kod = "ru"
     override fun vakitAdi(vakit: Vakit) = when (vakit) {
-        Vakit.IMSAK -> "Fajr"
-        Vakit.GUNES -> "Sunrise"
-        Vakit.OGLE -> "Dhuhr"
-        Vakit.IKINDI -> "Asr"
-        Vakit.AKSAM -> "Maghrib"
-        Vakit.YATSI -> "Isha"
+        Vakit.IMSAK -> "Фаджр"
+        Vakit.GUNES -> "Восход"
+        Vakit.OGLE -> "Зухр"
+        Vakit.IKINDI -> "Аср"
+        Vakit.AKSAM -> "Магриб"
+        Vakit.YATSI -> "Иша"
     }
-    override val cuma = "Jumu'ah"
-    override val aylar = listOf(
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December",
-    )
-    override val gunler = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $gun $ay $yil"
+    override val cuma = "Джума"
 
-    override val birimSa = "h"
-    override val birimDk = "min"
-    override val birimSn = "s"
-    override fun saatSesli(n: Int) = if (n == 1) "1 hour" else "$n hours"
-    override fun dakikaSesli(n: Int) = if (n == 1) "1 minute" else "$n minutes"
-    override val birDakikadanAz = "less than 1 minute"
+    /** Tarih içinde (ilgi hâli, "25 октября"); tek başına ay adı kullanılmaz. */
+    override val aylar = listOf(
+        "января", "февраля", "марта", "апреля", "мая", "июня",
+        "июля", "августа", "сентября", "октября", "ноября", "декабря",
+    )
+    override val gunler = listOf("Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $gun $ay $yil г."
+
+    /** CLDR ru: one (1, 21…), few (2–4, 22–24…), many (geri kalan tamsayılar). */
+    private fun cogul(n: Int, one: String, few: String, many: String): String {
+        val s10 = n % 10
+        val s100 = n % 100
+        return when {
+            s10 == 1 && s100 != 11 -> one
+            s10 in 2..4 && s100 !in 12..14 -> few
+            else -> many
+        }
+    }
+
+    override val birimSa = "ч"
+    override val birimDk = "мин"
+    override val birimSn = "с"
+    override fun saatSesli(n: Int) = cogul(n, "$n час", "$n часа", "$n часов")
+    override fun dakikaSesli(n: Int) = cogul(n, "$n минута", "$n минуты", "$n минут")
+    override val birDakikadanAz = "меньше минуты"
 
     override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Sunrise"
-        Kerahat.Tur.ISTIVA -> "Zenith"
-        Kerahat.Tur.GURUB -> "Sunset"
+        Kerahat.Tur.SURUK -> "Восход солнца"
+        Kerahat.Tur.ISTIVA -> "Зенит"
+        Kerahat.Tur.GURUB -> "Закат"
     }
 
     override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Praying is makruh until the sun has risen well."
-        Kerahat.Tur.ISTIVA -> "Praying is makruh while the sun is at its zenith."
-        Kerahat.Tur.GURUB -> "Praying is makruh while the sun is setting."
+        Kerahat.Tur.SURUK -> "Совершать намаз нежелательно (макрух), пока солнце не поднимется достаточно высоко."
+        Kerahat.Tur.ISTIVA -> "Совершать намаз нежелательно (макрух), пока солнце в зените."
+        Kerahat.Tur.GURUB -> "Совершать намаз нежелательно (макрух), пока солнце заходит."
     }
 
-    override fun bant(ad: String, dk: Long) = "Time for $ad is running short · $dk min"
-    override val kabulDuasi = "May Allah accept it"
-    override val iftarSelami = "Blessed iftar"
-    override val cumaSelami = "Jumu'ah Mubarak"
-    override val sahuraKalan = "Time left for suhoor"
-    override val iftaraKalan = "Time left until iftar"
+    override fun bant(ad: String, dk: Long) = "Время намаза $ad на исходе · $dk мин"
+    override val kabulDuasi = "Да примет Аллах"
+    override val iftarSelami = "Благословенного ифтара"
+    override val cumaSelami = "Джума мубарак"
+    override val sahuraKalan = "До конца сухура"
+    override val iftaraKalan = "До ифтара"
 }
 
 // ÇEVİRİ: ms

@@ -205,27 +205,27 @@ struct WidgetMetinleri: Equatable {
 
     // ÇEVİRİ: ru
     static let ru = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Время намаза",
+        galeriAciklama: "Текущий намаз, сколько осталось до конца его времени и время намазов на сегодня.",
+        veriEski: "Откройте приложение, чтобы обновить время намазов",
+        konumYok: "Откройте приложение, чтобы указать местоположение",
+        kilindiSiradaki: "{ad} совершён · {sonraki} {saat}",
+        adCikis: "{ad} · до {saat}",
+        siradakiAdSaat: "Следующий: {ad} {saat}",
+        vaktiCikisErisim: "Время намаза {ad}, конец в {saat}",
+        siradakiErisim: "Следующий намаз — {ad}, {saat}",
+        cikisSaat: "Конец {saat}",
+        bitisSaat: "Конец {saat}",
+        kilindiBaslik: "{ad} совершён",
+        siradaki: "Следующий",
+        siradakiAd: "Следующий: {ad}",
+        kildimErisim: "Намаз {ad} совершён",
+        gunSatiriKilindi: ", совершён",
+        bitti: "Завершено",
+        vakitCikti: "Время намаза вышло",
+        kabulAlt: "Намаз {ad} совершён",
+        kontrolAdi: "Намаз совершён",
+        kontrolAciklama: "Отмечает текущий намаз как совершённый."
     )
 
 

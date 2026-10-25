@@ -158,9 +158,14 @@ struct OtomasyonMetinleri {
 
     // ÇEVİRİ: ru
     static let ru = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: [
+            "one": "Время намаза {ad} наступит через {n} минуту.",
+            "few": "Время намаза {ad} наступит через {n} минуты.",
+            "many": "Время намаза {ad} наступит через {n} минут.",
+            "other": "Время намаза {ad} наступит через {n} минуты.",
+        ],
+        evetKilindi: "Да, отмечен как совершённый.",
+        hayirKilinmadi: "Нет, ещё не отмечен."
     )
 
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ru — İngilizce kopya; çeviri ajanı bu dosyanın tamamını çevirir. -->
+<!-- ÇEVİRİ: ru -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">Поместите QR-код с экрана телевизора в рамку</string>
+    <string name="tvesleme_qr_vazgec">Отмена</string>
+    <string name="tvesleme_qr_vazgec_erisim">Отменить сканирование</string>
+    <string name="tvesleme_qr_yabanci">Этот QR-код не относится к Namaz Akışı для ТВ. Отсканируйте код на телевизоре.</string>
+    <string name="tvesleme_qr_okundu">Код отсканирован</string>
 </resources>
