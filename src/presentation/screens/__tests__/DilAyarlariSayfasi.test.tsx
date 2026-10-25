@@ -33,6 +33,8 @@ const mockSecimVar = jest.fn(() => Promise.resolve(true));
 const mockKaydet = jest.fn((_k: string) => Promise.resolve(true));
 const mockMetinDili = jest.fn(() => Promise.resolve('tr'));
 const mockMetinDiliKaydet = jest.fn((_k: string) => Promise.resolve());
+const mockTakimSecimi = jest.fn(() => Promise.resolve(null as string | null));
+const mockTakimKaydet = jest.fn((_id: string | null) => Promise.resolve(true));
 jest.mock('../../../domain/services/DilServisi', () => {
   const { aktifDiliKur } = jest.requireActual('../../../core/dil/aktifDil');
   return {
@@ -47,6 +49,8 @@ jest.mock('../../../domain/services/DilServisi', () => {
       yukle: () => Promise.resolve('tr'),
       ozelAnonsDili: () => mockMetinDili(),
       ozelAnonsDiliniKaydet: (k: string) => mockMetinDiliKaydet(k),
+      vakitTakimiSecimi: () => mockTakimSecimi(),
+      vakitTakimiKaydet: (id: string | null) => mockTakimKaydet(id),
     },
   };
 });
@@ -144,4 +148,22 @@ it('metinlerin dili yeni dille aynıysa (geri dönüş) sorulmaz; metin yoksa ye
   mockSay.mockResolvedValue(0);
   fireEvent.press(e.getByText('Türkçe'));
   await waitFor(() => expect(mockMetinDiliKaydet).toHaveBeenCalledWith('tr'));
+});
+
+it('vakit adı seçimi yalnız birden çok takımı olan dilde; seçim kaydedilir, "ülkeye göre" açık seçimi siler', async () => {
+  mockTakimSecimi.mockResolvedValue(null);
+  const e = ciz();
+  await waitFor(() => expect(mockSecimVar).toHaveBeenCalled());
+  expect(e.queryByTestId('vakit-adlari-secimi')).toBeNull();
+
+  fireEvent.press(e.getByText('Deutsch'));
+  await waitFor(() => expect(e.getByTestId('vakit-adlari-secimi')).toBeTruthy());
+  expect(e.getByText('Fajr · Dhuhr · Asr · Maghrib · Isha')).toBeTruthy();
+  expect(e.getByText('Morgengebet · Mittagsgebet · Nachmittagsgebet · Abendgebet · Nachtgebet')).toBeTruthy();
+  expect(e.getByRole('radio', { name: /^Nach Land/ }).props.accessibilityState.checked).toBe(true);
+
+  fireEvent.press(e.getByText('Diyanet (Deutsch)'));
+  await waitFor(() => expect(mockTakimKaydet).toHaveBeenCalledWith('diyanet-de'));
+  fireEvent.press(e.getByText('Nach Land'));
+  await waitFor(() => expect(mockTakimKaydet).toHaveBeenLastCalledWith(null));
 });

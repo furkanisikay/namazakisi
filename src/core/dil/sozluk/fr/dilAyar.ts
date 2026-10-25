@@ -27,6 +27,13 @@ export const dilAyar: Sozluk['dilAyar'] = {
     koru: 'Laisser tel quel',
     degisti: cogul({ one: '{n} texte remplacé.', many: '{n} de textes remplacés.', other: '{n} textes remplacés.' }),
   },
+  vakitAdlari: {
+    baslik: 'Noms des prières',
+    aciklama: 'Choisissez comment les heures de prière sont nommées.',
+    otomatik: 'Selon le pays',
+    otomatikAciklama: 'Utilise les noms courants dans le pays de votre position.',
+    takimlar: { temel: 'Noms arabes', diyanetDe: 'Diyanet (allemand)', turkce: 'Noms turcs', magrip: 'Graphie maghrébine', cezayir: 'Graphie algérienne' },
+  },
   kaydedilemedi: 'Impossible d’enregistrer la langue. Réessayez.',
   sihirbazBaglantisi: 'Langue · Dil',
   sihirbazBaglantisiAciklama: 'Changer la langue de l’application',

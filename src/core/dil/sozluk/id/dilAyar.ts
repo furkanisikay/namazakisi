@@ -32,6 +32,13 @@ export const dilAyar: Sozluk['dilAyar'] = {
     koru: 'Biarkan apa adanya',
     degisti: cogul({ other: '{n} teks telah diganti.' }),
   },
+  vakitAdlari: {
+    baslik: 'Nama waktu salat',
+    aciklama: 'Pilih cara penamaan waktu salat.',
+    otomatik: 'Sesuai negara',
+    otomatikAciklama: 'Memakai nama yang umum di negara lokasi Anda.',
+    takimlar: { temel: 'Nama Arab', diyanetDe: 'Diyanet (Jerman)', turkce: 'Nama Turki', magrip: 'Ejaan Maghribi', cezayir: 'Ejaan Aljazair' },
+  },
   kaydedilemedi: 'Bahasa tidak dapat disimpan. Coba lagi.',
   sihirbazBaglantisi: 'Bahasa · Dil',
   sihirbazBaglantisiAciklama: 'Ubah bahasa aplikasi',

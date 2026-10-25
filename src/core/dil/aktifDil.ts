@@ -90,6 +90,11 @@ export function sozluk(kod: DilKodu = aktif): Sozluk {
   return kod === aktif ? metin() : SOZLUKLER[kod];
 }
 
+/** Bir dilin takım UYGULANMAMIŞ sözlüğü (vakit adı seçicisinin "temel takım" örneği). */
+export function hamSozluk(kod: DilKodu): Sozluk {
+  return SOZLUKLER[kod];
+}
+
 /** Etkin dilin sözlüğü (headless, servisler ve `useMetin`). Referansı yalnız dil/takım değişince değişir. */
 export function metin(): Sozluk {
   if (!onbellek) {

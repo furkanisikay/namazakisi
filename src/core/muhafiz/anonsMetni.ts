@@ -2,6 +2,7 @@ import type { MuhafizVakti } from './matrisTipleri';
 import type { PencereYonu } from './pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { canli, metin } from '../dil/aktifDil';
+import { dakikaUyumu } from '../dil/sure';
 import { tr } from '../dil/sozluk/tr';
 import { sablonlar, sablonuYerellestir } from '../hatirlatma/anonsSablonlari';
 
@@ -67,10 +68,13 @@ export function anonsMetniniCoz(
 ): string {
   // Hazır şablon (herhangi bir dilde) etkin dile çevrilir; kullanıcının yazdığı metin aynen.
   const yerel = sablonuYerellestir(sablon);
-  const cumle = yerel
-    .split('{vakit}').join(VAKIT_ADLARI_ANONS[vakit])
-    .split('{süre}').join(String(olcuDk)) // dil-haric: yer tutucu jetonu
-    .split('{yön}').join(metinYon(yon)); // dil-haric: yer tutucu jetonu
+  const cumle = dakikaUyumu(
+    yerel
+      .split('{vakit}').join(VAKIT_ADLARI_ANONS[vakit])
+      .split('{süre}').join(String(olcuDk)) // dil-haric: yer tutucu jetonu
+      .split('{yön}').join(metinYon(yon)), // dil-haric: yer tutucu jetonu
+    olcuDk
+  );
   // Bilinmeyen `{…}` (yazım hatası, başka yüzeyden taşınan metin) BOŞA indirgenir — TTS
   // "süslü parantez" okumasın; ek yüzeylerin `anonsCoz`'uyla aynı kural. Temizlik YALNIZ
   // bilinmeyen yer tutucu varken yapılır: bilinenleri taşıyan metinler birebir aynı kalır

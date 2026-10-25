@@ -27,6 +27,13 @@ export const dilAyar: Sozluk['dilAyar'] = {
     koru: 'Ostavite kako jeste',
     degisti: cogul({ one: 'Zamijenjen je {n} tekst.', few: 'Zamijenjena su {n} teksta.', other: 'Zamijenjeno je {n} tekstova.' }),
   },
+  vakitAdlari: {
+    baslik: 'Nazivi vakata',
+    aciklama: 'Odaberite kako se nazivaju namaska vremena.',
+    otomatik: 'Prema državi',
+    otomatikAciklama: 'Koriste se nazivi uobičajeni u državi Vaše lokacije.',
+    takimlar: { temel: 'Arapski nazivi', diyanetDe: 'Diyanet (njemački)', turkce: 'Turski nazivi', magrip: 'Magrebski zapis', cezayir: 'Alžirski zapis' },
+  },
   kaydedilemedi: 'Jezik nije sačuvan. Pokušajte ponovo.',
   sihirbazBaglantisi: 'Jezik · Language',
   sihirbazBaglantisiAciklama: 'Promijenite jezik aplikacije',

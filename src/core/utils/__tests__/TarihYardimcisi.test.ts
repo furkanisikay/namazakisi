@@ -1,3 +1,4 @@
+import { aktifDiliKur, aktifDilSifirla } from '../../dil/aktifDil';
 import {
   ISOTarihiDateNesnesiNeCevir,
   ayAdiniAl,
@@ -167,6 +168,15 @@ describe('TarihYardimcisi — ayAdiniAl', () => {
       'Kasım',
       'Aralık',
     ]);
+  });
+
+  it('başlık için yalın hâli verir (Rusçada tarih içi "октября", başlıkta "Октябрь")', () => {
+    aktifDiliKur('ru');
+    try {
+      expect(ayAdiniAl(9)).toBe('Октябрь');
+    } finally {
+      aktifDilSifirla();
+    }
   });
 });
 

@@ -62,6 +62,24 @@ export const diliKaydet = createAsyncThunk<DilKodu, DilKodu | 'cihaz'>('dil/kayd
 });
 
 /**
+ * Vakit adı takımının açık seçimi (`null` = ülkeye göre). Etkin takım değiştiyse planlanmış
+ * metinler (bildirim, sesli okuma, widget) yeni adlarla yeniden kurulur.
+ */
+export const vakitTakimiKaydet = createAsyncThunk<boolean, string | null>('dil/vakitTakimiKaydet', async (id, { getState }) => {
+  const degisti = await DilServisi.vakitTakimiKaydet(id);
+  const k = (getState() as DurumKaynagi).konum?.koordinatlar;
+  if (degisti && k && !(k.lat === 0 && k.lng === 0)) {
+    try {
+      const { konumDegistiUygula } = require('../../domain/services/KonumDegisikligiServisi') as typeof import('../../domain/services/KonumDegisikligiServisi');
+      await konumDegistiUygula(k);
+    } catch (e) {
+      Logger.warn('dilSlice', 'Vakit adları planlara yayılamadı', e);
+    }
+  }
+  return degisti;
+});
+
+/**
  * Dil değişince SORULACAK elle yazılmış sesli okuma metni sayısı ("bir kez sor" kapısı).
  * Metinlerin varsayılan dili (`ozelAnonsDili`) yeni dille aynıysa sorulmaz (geri dönüşte
  * "önceki dilde kaldı" demek yanlış olur). Hiç metin yoksa varsayılan dil yeni dil olur:

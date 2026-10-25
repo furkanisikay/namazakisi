@@ -27,6 +27,14 @@ export const dilAyar = {
     koru: 'Olduğu gibi bırakın',
     degisti: cogul({ one: '{n} metin değiştirildi.', other: '{n} metin değiştirildi.' }),
   },
+  /** Vakit adı takımı seçimi (`core/dil/vakitTakimlari.ts`); yalnız birden çok takımı olan dilde görünür. */
+  vakitAdlari: {
+    baslik: 'Vakit adları',
+    aciklama: 'Vakitlerin hangi adlarla yazılacağını seçin.',
+    otomatik: 'Ülkenize göre',
+    otomatikAciklama: 'Konumunuzun ülkesinde yaygın olan adlar kullanılır.',
+    takimlar: { temel: 'Arapça adlar', diyanetDe: 'Diyanet (Almanca)', turkce: 'Türkçe adlar', magrip: 'Mağrip yazımı', cezayir: 'Cezayir yazımı' },
+  },
   kaydedilemedi: 'Dil kaydedilemedi. Lütfen tekrar deneyin.',
   /** Kurulum sihirbazındaki bağlantı (cihaz dili Türkçe değilse görünür). */
   sihirbazBaglantisi: 'Dil · Language',

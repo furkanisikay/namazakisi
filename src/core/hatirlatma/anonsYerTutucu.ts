@@ -21,6 +21,7 @@
  */
 import type { PencereYonu } from '../muhafiz/pencereTipleri';
 import { canli, metin } from '../dil/aktifDil';
+import { dakikaUyumu } from '../dil/sure';
 import { sablonlar, sablonuYerellestir, type SablonListesi } from './anonsSablonlari';
 
 /** Hatırlatma yüzeyleri (ekran ve sözlük ayrımı). */
@@ -60,6 +61,7 @@ const YER_TUTUCU = /\{[^{}]*\}/g;
 export function anonsCoz(sablon: string, baglam: AnonsBaglami): string {
     // Hazır şablon (herhangi bir dilde) etkin dile çevrilir; kullanıcının yazdığı metin aynen.
     let cumle = sablonuYerellestir(sablon).split('{vakit}').join(baglam.vakit).split('{süre}').join(String(baglam.sureDk)); // dil-haric: yer tutucu jetonu
+    cumle = dakikaUyumu(cumle, baglam.sureDk);
     if (baglam.yon) cumle = cumle.split('{yön}').join(metin().anons.yon[baglam.yon]); // dil-haric: yer tutucu jetonu
     return cumle
         .replace(YER_TUTUCU, '')

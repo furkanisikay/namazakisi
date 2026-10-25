@@ -28,6 +28,13 @@ export const dilAyar: Sozluk['dilAyar'] = {
     koru: 'Оставить как есть',
     degisti: cogul({ one: 'Заменён {n} текст.', few: 'Заменено {n} текста.', many: 'Заменено {n} текстов.', other: 'Заменено {n} текста.' }),
   },
+  vakitAdlari: {
+    baslik: 'Названия намазов',
+    aciklama: 'Выберите, как называть время намазов.',
+    otomatik: 'По стране',
+    otomatikAciklama: 'Используются названия, принятые в стране вашего местоположения.',
+    takimlar: { temel: 'Арабские названия', diyanetDe: 'Диянет (немецкий)', turkce: 'Турецкие названия', magrip: 'Магрибское написание', cezayir: 'Алжирское написание' },
+  },
   kaydedilemedi: 'Не удалось сохранить язык. Повторите попытку.',
   sihirbazBaglantisi: 'Язык · Language',
   sihirbazBaglantisiAciklama: 'Изменить язык приложения',

@@ -39,9 +39,13 @@ export interface VakitAdlari {
   readonly gunesDogusuKucuk: string;
 }
 
+export type TakimEtiketi = keyof Sozluk['dilAyar']['vakitAdlari']['takimlar'];
+
 export interface VakitAdiTakimi {
   /** Kalıcı kimlik (kayıtta tutulur, asla değişmez). */
   readonly id: string;
+  /** Seçicideki adı (`dilAyar.vakitAdlari.takimlar`). */
+  readonly etiket: TakimEtiketi;
   readonly adlar: VakitAdlari;
 }
 
@@ -57,6 +61,7 @@ export const VAKIT_TAKIMLARI: Partial<Record<DilKodu, readonly VakitAdiTakimi[]>
     {
       // Diyanet DE'nin Almanca adları. Almancada ad cümle içinde de büyük harfle başlar.
       id: 'diyanet-de',
+      etiket: 'diyanetDe',
       adlar: {
         adlar: { imsak: 'Morgengebet', gunes: 'Sonnenaufgang', ogle: 'Mittagsgebet', ikindi: 'Nachmittagsgebet', aksam: 'Abendgebet', yatsi: 'Nachtgebet' },
         buyuk: { imsak: 'MORGENGEBET', gunes: 'SONNENAUFGANG', ogle: 'MITTAGSGEBET', ikindi: 'NACHMITTAGSGEBET', aksam: 'ABENDGEBET', yatsi: 'NACHTGEBET' },
@@ -71,6 +76,7 @@ export const VAKIT_TAKIMLARI: Partial<Record<DilKodu, readonly VakitAdiTakimi[]>
     {
       // Türkçe adlar (DİTİB çevresi). Güneş doğuşu açıklayıcı terimdir, Almanca kalır.
       id: 'turkce',
+      etiket: 'turkce',
       adlar: {
         adlar: { imsak: 'Sabah', gunes: 'Güneş', ogle: 'Öğle', ikindi: 'İkindi', aksam: 'Akşam', yatsi: 'Yatsı' }, // dil-haric: Türkçe ad takımı (veri; Almanca arayüzde seçilir)
         buyuk: { imsak: 'SABAH', gunes: 'GÜNEŞ', ogle: 'ÖĞLE', ikindi: 'İKİNDİ', aksam: 'AKŞAM', yatsi: 'YATSI' }, // dil-haric: Türkçe ad takımı (veri; Almanca arayüzde seçilir)
@@ -87,6 +93,7 @@ export const VAKIT_TAKIMLARI: Partial<Record<DilKodu, readonly VakitAdiTakimi[]>
     {
       // Mağrip yazımı (Tunus, Moritanya; Fas'ta seçenek).
       id: 'magrip',
+      etiket: 'magrip',
       adlar: {
         adlar: { imsak: 'Fajr', gunes: 'Chourouk', ogle: 'Dohr', ikindi: 'Asr', aksam: 'Maghreb', yatsi: 'Icha' },
         buyuk: { imsak: 'FAJR', gunes: 'CHOUROUK', ogle: 'DOHR', ikindi: 'ASR', aksam: 'MAGHREB', yatsi: 'ICHA' },
@@ -101,6 +108,7 @@ export const VAKIT_TAKIMLARI: Partial<Record<DilKodu, readonly VakitAdiTakimi[]>
     {
       // Cezayir yazımı: sabah "Sobh".
       id: 'cezayir',
+      etiket: 'cezayir',
       adlar: {
         adlar: { imsak: 'Sobh', gunes: 'Chourouk', ogle: 'Dohr', ikindi: 'Asr', aksam: 'Maghreb', yatsi: 'Icha' },
         buyuk: { imsak: 'SOBH', gunes: 'CHOUROUK', ogle: 'DOHR', ikindi: 'ASR', aksam: 'MAGHREB', yatsi: 'ICHA' },

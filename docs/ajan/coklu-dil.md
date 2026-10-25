@@ -65,7 +65,20 @@ Türkçe kural sürer: kullanıcı uygulamayı yönetiyorsa "siz", uygulama ibad
 | Dil | Yönetim ("siz") | İbadete çağrı ("sen") |
 |---|---|---|
 | İngilizce | nötr emir, "please"siz ("Select your city") | doğrudan, kısa emir ("Asr ends in 10 minutes. Stand for prayer.") |
+| Almanca | "Sie", "bitte" yok | "Sie" + kısa kalıp ("Auf zum Gebet") |
+| Fransızca | "vous" | "vous" + kısa emir |
+| Endonezce / Malayca | "Anda" / "anda" | aynı zamir, kısa emir ("Tunaikan solat") |
+| Boşnakça | "Vi" (büyük harf) | "Vi" + emir ("Klanjajte"); geçmiş zaman cinsiyetli → "Kıldım" = "Klanjano" |
+| Rusça | "вы" (küçük harf) | "вы" + emir; geçmiş zaman cinsiyetli → "Kıldım" = «Намаз совершён» |
 | Arapça, Urduca | çoğul/saygı kipi | emir kipi cinsiyetlidir → cinsiyetsiz kalıp (isim cümlesi: "حان وقت الصلاة") |
+
+## Terim sözlüğü (diğer diller)
+Her dilin vakit ve terim kararları kendi `sozluk/<dil>/vakit.ts` başındaki yorumdadır; karşılıklar o dosyalardan okunur, serbest çeviri yapılmaz.
+- **Çizelgedeki sabah satırı (`vakit.imsakVakti`) Türkçe dışında "Imsak" DEĞİL, fecir adıdır** (Fajr, Subuh, Фаджр, Zora): Kemenag, JAKIM ve Mawaqit çizelgelerinde Imsak fecirden ~10 dk önceki ihtiyat saatidir, uygulamanın imsak saati ise fecrin girişidir. "Imsak" yalnız Diyanet geleneğindeki takımlarda kalır (Türkçe, Diyanet DE).
+- **Boşnakça:** namaz "Sabah" (`adlar.imsak`), çizelge satırı "Zora" (vaktija.ba).
+- **Rusça/Boşnakça ay adı:** `tarih.aylar` tarih içi biçimdir (Rusça ilgi hâli "октября"); tek başına ay (takvim başlığı) `tarih.aylarYalin` (`ayAdiniAl`).
+- **Sesli okumada "{süre} <dakika>":** şablon ve kullanıcı metni dakikayı tek biçimle yazar; doldurulduktan sonra `dakikaUyumu` sayıya göre çeker (2 минуты, 5 минут, "1 minute"). Nöbetçi: `dakikaUyumu.test.ts`.
+- **Fransızca:** vakit adının önüne "de" yazılmaz (elizyon: "de Asr" yanlış); ad özne ya da iki noktadan sonra durur. `many` biçimi "{n} de …".
 
 ## Terim sözlüğü (İngilizce)
 

@@ -24,3 +24,27 @@ export function dakikaUzun(dk: number, kod: DilKodu = aktifDil()): string {
   const kalan = d % 60;
   return kalan === 0 ? sayili(s.saat, sa, {}, kod) : `${sayili(s.saat, sa, {}, kod)} ${sayili(s.dakika, kalan, {}, kod)}`;
 }
+
+const KACIS = /[.*+?^${}()|[\]\\]/g;
+
+/**
+ * Doldurulmuş cümlede "{sayı} <dakika sözcüğü>" ikilisini sayının doğru çoğul biçimine çeker.
+ * Sesli okuma şablonları ve kullanıcının yazdığı metin dakikayı tek biçimle yazar
+ * ("{süre} минут"); Rusça/Boşnakçada sayıya göre değişir (2 минуты, 5 минут), İngilizcede
+ * "1 minutes" düzelir. Dakika sözcüğünün o dildeki herhangi bir biçimi tanınır; başka metne
+ * dokunulmaz.
+ */
+export function dakikaUyumu(cumle: string, n: number, kod: DilKodu = aktifDil()): string {
+  const sablon = sozluk(kod).sure.dakika;
+  const bicimler = [
+    ...new Set(
+      Object.entries(sablon)
+        .filter(([k, v]) => k !== '__cogul' && typeof v === 'string' && v.startsWith('{n} '))
+        .map(([, v]) => (v as string).slice(4).trim()),
+    ),
+  ].sort((a, b) => b.length - a.length);
+  if (!bicimler.length) return cumle;
+  const ifade = new RegExp(`(^|[^\\d])${n}([ \\u00a0]+)(?:${bicimler.map((b) => b.replace(KACIS, '\\$&')).join('|')})(?=$|[\\s.,;:!?…)»"'”’-])`, 'g');
+  const dogru = sayili(sablon, n, {}, kod).slice(String(n).length).trim();
+  return cumle.replace(ifade, (_, once: string, bosluk: string) => `${once}${n}${bosluk}${dogru}`);
+}

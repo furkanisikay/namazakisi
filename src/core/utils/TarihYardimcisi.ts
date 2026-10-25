@@ -67,10 +67,10 @@ export const gunKisaAdiniAl = (isoTarih: string): string => {
 };
 
 /**
- * Ay adini dondurur
+ * Ay adını TEK BAŞINA kullanım için döndürür ("Ekim 2026" başlığı); tarih içinde `aylar` kullanılır.
  */
 export const ayAdiniAl = (ay: number): string => {
-  return metin().tarih.aylar[ay];
+  return metin().tarih.aylarYalin[ay];
 };
 
 /**

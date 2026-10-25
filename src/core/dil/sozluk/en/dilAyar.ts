@@ -26,6 +26,13 @@ export const dilAyar: Sozluk['dilAyar'] = {
     koru: 'Keep as is',
     degisti: cogul({ one: '{n} text replaced.', other: '{n} texts replaced.' }),
   },
+  vakitAdlari: {
+    baslik: 'Prayer names',
+    aciklama: 'Choose how prayer times are named.',
+    otomatik: 'By country',
+    otomatikAciklama: 'Uses the names common in the country of your location.',
+    takimlar: { temel: 'Arabic names', diyanetDe: 'Diyanet (German)', turkce: 'Turkish names', magrip: 'Maghrebi spelling', cezayir: 'Algerian spelling' },
+  },
   kaydedilemedi: "The language couldn't be saved. Try again.",
   sihirbazBaglantisi: 'Language · Dil',
   sihirbazBaglantisiAciklama: 'Change the app language',
