@@ -1,9 +1,10 @@
 import type { Sozluk } from '../tr';
 
+/** Başlık eke BİTER (`vakitGirdiBasligi(v).endsWith(vakitGirdiEki())`). */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'telah tiba',
+  vakitGirdiBasligi: 'Waktu {ad} telah tiba',
+  herhangiVakit: 'Saat waktu salat mana pun tiba',
+  yalnizVakit: 'Hanya saat waktu {ad} tiba',
+  camide: 'Saat Anda terdeteksi di masjid (dengan Di masjid aktif)',
 };
