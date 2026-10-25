@@ -138,9 +138,9 @@ struct OtomasyonMetinleri {
 
     // ÇEVİRİ: fr
     static let fr = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} commence dans {n} minute.", "many": "{ad} commence dans {n} de minutes.", "other": "{ad} commence dans {n} minutes."],
+        evetKilindi: "Oui, elle est marquée comme accomplie.",
+        hayirKilinmadi: "Non, elle n’est pas encore marquée."
     )
 
 

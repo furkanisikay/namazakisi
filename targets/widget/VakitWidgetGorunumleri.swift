@@ -153,27 +153,27 @@ struct WidgetMetinleri: Equatable {
 
     // ÇEVİRİ: fr
     static let fr = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Heure de prière",
+        galeriAciklama: "La prière en cours, le temps restant avant la fin de son heure et les heures de prière du jour.",
+        veriEski: "Ouvrez l’application pour mettre à jour les heures de prière",
+        konumYok: "Ouvrez l’application pour définir votre position",
+        kilindiSiradaki: "{ad} accompli · {sonraki} {saat}",
+        adCikis: "{ad} · fin {saat}",
+        siradakiAdSaat: "Prochaine : {ad} {saat}",
+        vaktiCikisErisim: "{ad}, fin à {saat}",
+        siradakiErisim: "Prochaine : {ad}, {saat}",
+        cikisSaat: "Fin {saat}",
+        bitisSaat: "Fin {saat}",
+        kilindiBaslik: "{ad} accompli",
+        siradaki: "Prochaine",
+        siradakiAd: "Prochaine : {ad}",
+        kildimErisim: "J’ai prié {ad}",
+        gunSatiriKilindi: ", accompli",
+        bitti: "Terminé",
+        vakitCikti: "L’heure de prière est terminée",
+        kabulAlt: "{ad} accompli",
+        kontrolAdi: "J’ai prié",
+        kontrolAciklama: "Marque la prière en cours comme accomplie."
     )
 
 
