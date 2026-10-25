@@ -1,20 +1,24 @@
 import type { Sozluk } from '../tr';
 
-/** İngilizcede vakit adları özel addır; cümle içinde de büyük harfle başlar. */
+/**
+ * Almancada vakit adları özel addır (geçici temel takım; ülkeye göre biçim sonra). Almancada
+ * isimler cümle içinde de büyük harfle başlar → `kucuk` adlarla aynıdır; yalnız sıfat/ortaç
+ * biçimleri (`durumKucuk`) küçük yazılır.
+ */
 export const vakit: Sozluk['vakit'] = {
-  adlar: { imsak: 'Fajr', gunes: 'Sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  buyuk: { imsak: 'FAJR', gunes: 'SUNRISE', ogle: 'DHUHR', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
-  kucuk: { imsak: 'Fajr', gunes: 'sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  imsakVakti: 'Fajr',
-  cuma: "Jumu'ah",
-  cumaKucuk: "Jumu'ah",
-  gunesDogusu: 'Sunrise',
-  gunesDogusuKucuk: 'sunrise',
-  durum: { kilindi: 'Prayed', vaktiGeldi: 'Time to pray', girmedi: 'Not yet time', gecti: 'Not prayed' },
-  durumKucuk: { kilindi: 'prayed', vaktiGeldi: 'time to pray', girmedi: 'not yet time', gecti: 'not prayed' },
-  eylem: { kildim: "I've prayed", kilindi: 'Prayed' },
-  kerahatVakti: 'Makruh time',
-  isaretle: 'Mark as prayed',
-  geriAlEtiketi: '{durum}, tap to undo',
-  geriAlindi: 'Unmarked',
+  adlar: { imsak: 'Fajr', gunes: 'Sonnenaufgang', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
+  buyuk: { imsak: 'FAJR', gunes: 'SONNENAUFGANG', ogle: 'DHUHR', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
+  kucuk: { imsak: 'Fajr', gunes: 'Sonnenaufgang', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
+  imsakVakti: 'Imsak',
+  cuma: 'Freitagsgebet',
+  cumaKucuk: 'Freitagsgebet',
+  gunesDogusu: 'Sonnenaufgang',
+  gunesDogusuKucuk: 'Sonnenaufgang',
+  durum: { kilindi: 'Gebetet', vaktiGeldi: 'Gebetszeit', girmedi: 'Noch nicht begonnen', gecti: 'Nicht gebetet' },
+  durumKucuk: { kilindi: 'gebetet', vaktiGeldi: 'Gebetszeit', girmedi: 'noch nicht begonnen', gecti: 'nicht gebetet' },
+  eylem: { kildim: 'Ich habe gebetet', kilindi: 'Gebetet' },
+  kerahatVakti: 'Makruh-Zeit',
+  isaretle: 'Als gebetet markieren',
+  geriAlEtiketi: '{durum}, zum Rückgängigmachen tippen',
+  geriAlindi: 'Markierung entfernt',
 };

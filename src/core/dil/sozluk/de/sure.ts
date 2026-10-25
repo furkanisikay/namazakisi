@@ -2,8 +2,8 @@ import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: 'Std.', dk: 'Min.', sn: 'Sek.' },
+  saat: cogul({ one: '{n} Stunde', other: '{n} Stunden' }),
+  dakika: cogul({ one: '{n} Minute', other: '{n} Minuten' }),
+  saniye: cogul({ one: '{n} Sekunde', other: '{n} Sekunden' }),
 };
