@@ -134,6 +134,11 @@ export const PusulaGorunumu: React.FC<{
             testID="kible-yon-cumlesi"
             style={[styles.cumle, { color: ozet.hizali ? renkler.birincil : renkler.metin }]}
             accessibilityRole="header"
+            // Tek satır: blok dikeyde ortalandığı için ikinci satır üstteki ipucunun üzerine
+            // taşar (Rusça "Определяем ваше местоположение…"); uzun dilde yazı küçülür.
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.6}
           >
             {cumle}
           </Text>
