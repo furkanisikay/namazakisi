@@ -350,7 +350,7 @@ val CEKIRDEK_DE = CekirdekMetinleri(
 )
 
 
-// ÇEVİRİ: fr
+// fr
 val CEKIRDEK_FR = CekirdekMetinleri(
     dil = "fr",
     sabah = "Fajr",
@@ -414,7 +414,7 @@ val CEKIRDEK_FR = CekirdekMetinleri(
 )
 
 
-// ÇEVİRİ: bs
+// bs
 val CEKIRDEK_BS = CekirdekMetinleri(
     dil = "bs",
     sabah = "Sabah",
@@ -478,7 +478,7 @@ val CEKIRDEK_BS = CekirdekMetinleri(
 )
 
 
-// ÇEVİRİ: ru
+// ru
 val CEKIRDEK_RU = CekirdekMetinleri(
     dil = "ru",
     sabah = "Фаджр",
@@ -542,7 +542,7 @@ val CEKIRDEK_RU = CekirdekMetinleri(
 )
 
 
-// ÇEVİRİ: ms
+// ms
 val CEKIRDEK_MS = CekirdekMetinleri(
     dil = "ms",
     sabah = "Subuh",

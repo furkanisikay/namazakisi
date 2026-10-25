@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: fr — Fransızca (beta). -->
+<!-- fr — Fransızca (beta). -->
 <resources>
     <string name="countdown_kanal_canli_ad">Comptes à rebours en direct</string>
     <string name="countdown_kanal_canli_aciklama">Comptes à rebours dans la Now Bar et la barre d’état</string>

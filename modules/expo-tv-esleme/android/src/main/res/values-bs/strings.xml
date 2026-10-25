@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: bs — Boşnakça (beta). -->
+<!-- bs — Boşnakça (beta). -->
 <resources>
     <string name="tvesleme_qr_ipucu">Smjestite QR kod s ekrana TV-a u okvir</string>
     <string name="tvesleme_qr_vazgec">Odustanite</string>

@@ -98,7 +98,7 @@ struct GununAyetiYerelMetinleri {
     )
 
 
-    // ÇEVİRİ: fr
+    // fr
     static let fr = GununAyetiYerelMetinleri(
         galeriAdi: "Verset du jour",
         galeriAciklama: "Un verset et sa traduction, renouvelés chaque jour à l’Imsak.",
@@ -113,7 +113,7 @@ struct GununAyetiYerelMetinleri {
     )
 
 
-    // ÇEVİRİ: bs
+    // bs
     static let bs = GununAyetiYerelMetinleri(
         galeriAdi: "Ajet dana",
         galeriAciklama: "Ajet i prijevod njegovog značenja, svaki dan novi u zoru.",
@@ -128,7 +128,7 @@ struct GununAyetiYerelMetinleri {
     )
 
 
-    // ÇEVİRİ: ru
+    // ru
     static let ru = GununAyetiYerelMetinleri(
         galeriAdi: "Аят дня",
         galeriAciklama: "Аят и перевод его смыслов; меняется каждый день в имсак.",
@@ -143,7 +143,7 @@ struct GununAyetiYerelMetinleri {
     )
 
 
-    // ÇEVİRİ: ms
+    // ms
     static let ms = GununAyetiYerelMetinleri(
         galeriAdi: "Ayat hari ini",
         galeriAciklama: "Satu ayat dan terjemahannya yang bertukar setiap hari pada waktu Subuh.",

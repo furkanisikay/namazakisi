@@ -265,7 +265,7 @@ public struct SaatMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: fr
+    // fr
     public static let fr = SaatMetinleri(
         dil: "fr",
         saatiGuncelleyin: "Mettez à jour Namaz Akışı sur votre montre.",
@@ -314,7 +314,7 @@ public struct SaatMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: bs
+    // bs
     public static let bs = SaatMetinleri(
         dil: "bs",
         saatiGuncelleyin: "Ažurirajte Namaz Akışı na satu.",
@@ -363,7 +363,7 @@ public struct SaatMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ru
+    // ru
     public static let ru = SaatMetinleri(
         dil: "ru",
         saatiGuncelleyin: "Обновите Namaz Akışı на часах.",
@@ -412,7 +412,7 @@ public struct SaatMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ms
+    // ms
     public static let ms = SaatMetinleri(
         dil: "ms",
         saatiGuncelleyin: "Kemas kini Namaz Akışı di jam tangan anda.",

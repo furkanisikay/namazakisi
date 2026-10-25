@@ -134,7 +134,7 @@ struct TvArayuzMetinleri {
     )
 
 
-    // ÇEVİRİ: fr
+    // fr
     static let fr = TvArayuzMetinleri(
         sehrinizSecin: "Choisissez votre ville",
         ilMerkezi: "Les heures de prière sont calculées pour le chef-lieu de la province. Vous pourrez modifier votre choix plus tard.",
@@ -150,7 +150,7 @@ struct TvArayuzMetinleri {
     )
 
 
-    // ÇEVİRİ: bs
+    // bs
     static let bs = TvArayuzMetinleri(
         sehrinizSecin: "Odaberite svoj grad",
         ilMerkezi: "Vremena se računaju za centar grada. Izbor kasnije možete promijeniti.",
@@ -166,7 +166,7 @@ struct TvArayuzMetinleri {
     )
 
 
-    // ÇEVİRİ: ru
+    // ru
     static let ru = TvArayuzMetinleri(
         sehrinizSecin: "Выберите свою провинцию",
         ilMerkezi: "Время намазов рассчитывается для центра провинции. Выбор можно изменить позже.",
@@ -182,7 +182,7 @@ struct TvArayuzMetinleri {
     )
 
 
-    // ÇEVİRİ: ms
+    // ms
     static let ms = TvArayuzMetinleri(
         sehrinizSecin: "Pilih bandar anda",
         ilMerkezi: "Waktu solat dikira berdasarkan pusat wilayah. Anda boleh menukar pilihan anda kemudian.",

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ru -->
+<!-- ru -->
 <resources>
     <string name="countdown_kanal_canli_ad">Живые отсчёты</string>
     <string name="countdown_kanal_canli_aciklama">Отсчёты в Now Bar и строке состояния</string>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ru -->
+<!-- ru -->
 <resources>
     <string name="tvesleme_qr_ipucu">Поместите QR-код с экрана телевизора в рамку</string>
     <string name="tvesleme_qr_vazgec">Отмена</string>

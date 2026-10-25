@@ -47,13 +47,13 @@ object CanliGuncellemeKurallari {
         // id
         "id" to ("j" to "mnt"),
         "de" to ("Std." to "Min."),
-        // ÇEVİRİ: fr
+        // fr
         "fr" to ("h" to "min"),
-        // ÇEVİRİ: bs
+        // bs
         "bs" to ("h" to "min"),
-        // ÇEVİRİ: ru
+        // ru
         "ru" to ("ч" to "мин"),
-        // ÇEVİRİ: ms
+        // ms
         "ms" to ("j" to "min"),
     )
 

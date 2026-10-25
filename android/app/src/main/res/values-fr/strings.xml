@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: fr — Fransızca (beta). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/fr (hitap "vous"). -->
+<!-- fr — Fransızca (beta). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/fr (hitap "vous"). -->
 <resources>
   <string name="app_name">Namaz Akışı</string>
   <string name="widget_aciklama">La prière en cours, la fin de son heure et « J’ai prié » d’une seule touche</string>

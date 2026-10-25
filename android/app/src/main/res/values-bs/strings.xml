@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: bs — Boşnakça (beta). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: src/core/dil/sozluk/bs. -->
+<!-- bs — Boşnakça (beta). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: src/core/dil/sozluk/bs. -->
 <resources>
   <string name="app_name">Namaz Akışı</string>
   <string name="widget_aciklama">Trenutni vakat, kada ističe i „Klanjano” jednim dodirom</string>

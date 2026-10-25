@@ -65,7 +65,7 @@ public struct SaatSureMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: fr
+    // fr
     public static let fr = SaatSureMetinleri(
         birimSa: "h", birimDk: "min", birimSn: "s",
         saat: ["one": "{n} heure", "many": "{n} d’heures", "other": "{n} heures"],
@@ -74,7 +74,7 @@ public struct SaatSureMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: bs
+    // bs
     public static let bs = SaatSureMetinleri(
         birimSa: "h", birimDk: "min", birimSn: "s",
         saat: ["one": "{n} sat", "few": "{n} sata", "other": "{n} sati"],
@@ -83,7 +83,7 @@ public struct SaatSureMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ru
+    // ru
     public static let ru = SaatSureMetinleri(
         birimSa: "ч", birimDk: "мин", birimSn: "с",
         saat: ["one": "{n} час", "few": "{n} часа", "many": "{n} часов", "other": "{n} часа"],
@@ -92,7 +92,7 @@ public struct SaatSureMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ms
+    // ms
     public static let ms = SaatSureMetinleri(
         birimSa: "j", birimDk: "min", birimSn: "s",
         saat: ["one": "{n} jam", "other": "{n} jam"],

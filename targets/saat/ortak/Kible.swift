@@ -195,7 +195,7 @@ public struct KibleMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: fr
+    // fr
     public static let fr = KibleMetinleri(
         arkada: "Derrière vous",
         saga: "À droite {derece}°",
@@ -210,7 +210,7 @@ public struct KibleMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: bs
+    // bs
     public static let bs = KibleMetinleri(
         arkada: "Iza Vas",
         saga: "Desno {derece}°",
@@ -225,7 +225,7 @@ public struct KibleMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ru
+    // ru
     public static let ru = KibleMetinleri(
         arkada: "Позади вас",
         saga: "Направо {derece}°",
@@ -240,7 +240,7 @@ public struct KibleMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ms
+    // ms
     public static let ms = KibleMetinleri(
         arkada: "Di belakang anda",
         saga: "Kanan {derece}°",

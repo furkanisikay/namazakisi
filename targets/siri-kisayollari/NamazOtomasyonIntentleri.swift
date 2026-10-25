@@ -136,7 +136,7 @@ struct OtomasyonMetinleri {
     )
 
 
-    // ÇEVİRİ: fr
+    // fr
     static let fr = OtomasyonMetinleri(
         kalanDakika: ["one": "{ad} commence dans {n} minute.", "many": "{ad} commence dans {n} de minutes.", "other": "{ad} commence dans {n} minutes."],
         evetKilindi: "Oui, elle est marquée comme accomplie.",
@@ -144,7 +144,7 @@ struct OtomasyonMetinleri {
     )
 
 
-    // ÇEVİRİ: bs
+    // bs
     static let bs = OtomasyonMetinleri(
         kalanDakika: [
             "one": "{ad}: vakat nastupa za {n} minutu.",
@@ -156,7 +156,7 @@ struct OtomasyonMetinleri {
     )
 
 
-    // ÇEVİRİ: ru
+    // ru
     static let ru = OtomasyonMetinleri(
         kalanDakika: [
             "one": "Время намаза {ad} наступит через {n} минуту.",
@@ -169,7 +169,7 @@ struct OtomasyonMetinleri {
     )
 
 
-    // ÇEVİRİ: ms
+    // ms
     static let ms = OtomasyonMetinleri(
         kalanDakika: ["one": "{n} minit lagi masuk waktu {ad}.", "other": "{n} minit lagi masuk waktu {ad}."],
         evetKilindi: "Ya, sudah ditandakan sebagai ditunaikan.",

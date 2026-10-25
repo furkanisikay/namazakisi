@@ -491,7 +491,7 @@ object SaatDiliDe : SaatDili {
     override val toplam = "Gesamt"
 }
 
-// ÇEVİRİ: fr
+// fr
 /**
  * Fransızca (JS `sozluk/fr`): vakit adları özel addır (Fajr, Lever du soleil, Dhuhr, Asr,
  * Maghrib, Isha); adın önüne "de" yazılmaz (elizyon), ad özne ya da iki noktadan sonra durur.
@@ -582,7 +582,7 @@ object SaatDiliFr : SaatDili {
     override val toplam = "Total"
 }
 
-// ÇEVİRİ: bs
+// bs
 object SaatDiliBs : SaatDili {
     override val kod = "bs"
 
@@ -682,7 +682,7 @@ object SaatDiliBs : SaatDili {
     override val toplam = "Ukupno"
 }
 
-// ÇEVİRİ: ru
+// ru
 object SaatDiliRu : SaatDili {
     override val kod = "ru"
 
@@ -780,7 +780,7 @@ object SaatDiliRu : SaatDili {
     override val toplam = "Всего"
 }
 
-// ÇEVİRİ: ms
+// ms
 /**
  * Malayca (JS `sozluk/ms`): vakit adları JAKIM yazımıyla (Subuh, Syuruk, Zohor, Asar, Maghrib,
  * Isyak); birimler `sure.kisa` (j/min/s); çoğul biçim yok; kısa başlıklar en fazla 7 karakter.

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: fr — Fransızca (beta). -->
+<!-- fr — Fransızca (beta). -->
 <resources>
     <string name="camigeofence_kanal_durum_ad">À la mosquée</string>
     <string name="camigeofence_kanal_durum_aciklama">Une notification discrète quand votre présence à la mosquée est détectée</string>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: fr — Fransızca (beta). Gerçek alarm. "J’ai prié" bildirimdeki düğmeyle aynı ad. -->
+<!-- fr — Fransızca (beta). Gerçek alarm. "J’ai prié" bildirimdeki düğmeyle aynı ad. -->
 <resources>
   <string name="alarm_baslik">Alarme de prière</string>
   <string name="alarm_kildim">J’ai prié</string>

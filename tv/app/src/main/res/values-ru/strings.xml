@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ru -->
+<!-- ru -->
 <!-- Русский (beta). Terimler: src/core/dil/sozluk/ru (hitap "вы"; "il" = провинция, JS cihaz.ts ile aynı). -->
 <resources>
     <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->

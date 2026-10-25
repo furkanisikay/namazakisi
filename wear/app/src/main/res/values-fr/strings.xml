@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: fr — Fransızca (beta). Terimler: JS src/core/dil/sozluk/fr (hitap "vous"). -->
+<!-- fr — Fransızca (beta). Terimler: JS src/core/dil/sozluk/fr (hitap "vous"). -->
 <resources>
     <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
     <string name="dil_kodu">fr</string>

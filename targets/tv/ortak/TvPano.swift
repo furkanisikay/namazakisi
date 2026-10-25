@@ -108,7 +108,7 @@ public struct TvPanoMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: fr
+    // fr
     public static let fr = TvPanoMetinleri(
         vakitAdlari: ["imsak": "Fajr", "gunes": "Lever du soleil", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
         cuma: "Joumoua",
@@ -124,7 +124,7 @@ public struct TvPanoMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: bs
+    // bs
     public static let bs = TvPanoMetinleri(
         vakitAdlari: ["imsak": "Zora", "gunes": "Izlazak sunca", "ogle": "Podne", "ikindi": "Ikindija", "aksam": "Akšam", "yatsi": "Jacija"],
         cuma: "Džuma",
@@ -140,7 +140,7 @@ public struct TvPanoMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ru
+    // ru
     public static let ru = TvPanoMetinleri(
         vakitAdlari: ["imsak": "Фаджр", "gunes": "Восход", "ogle": "Зухр", "ikindi": "Аср", "aksam": "Магриб", "yatsi": "Иша"],
         cuma: "Джума",
@@ -156,7 +156,7 @@ public struct TvPanoMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ms
+    // ms
     public static let ms = TvPanoMetinleri(
         vakitAdlari: ["imsak": "Subuh", "gunes": "Syuruk", "ogle": "Zohor", "ikindi": "Asar", "aksam": "Maghrib", "yatsi": "Isyak"],
         cuma: "Jumaat",

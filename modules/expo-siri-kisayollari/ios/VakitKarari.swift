@@ -324,7 +324,7 @@ public struct VakitMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: fr
+    // fr
     public static let fr = VakitMetinleri(
         dil: "fr",
         adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
@@ -352,7 +352,7 @@ public struct VakitMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: bs
+    // bs
     public static let bs = VakitMetinleri(
         dil: "bs",
         adlar: ["sabah": "Sabah", "ogle": "Podne", "ikindi": "Ikindija", "aksam": "Akšam", "yatsi": "Jacija"],
@@ -380,7 +380,7 @@ public struct VakitMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ru
+    // ru
     public static let ru = VakitMetinleri(
         dil: "ru",
         adlar: ["sabah": "Фаджр", "ogle": "Зухр", "ikindi": "Аср", "aksam": "Магриб", "yatsi": "Иша"],
@@ -408,7 +408,7 @@ public struct VakitMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ms
+    // ms
     public static let ms = VakitMetinleri(
         dil: "ms",
         adlar: ["sabah": "Subuh", "ogle": "Zohor", "ikindi": "Asar", "aksam": "Maghrib", "yatsi": "Isyak"],

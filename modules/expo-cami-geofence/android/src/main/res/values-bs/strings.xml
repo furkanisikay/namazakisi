@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: bs — Boşnakça (beta). -->
+<!-- bs — Boşnakça (beta). -->
 <resources>
     <string name="camigeofence_kanal_durum_ad">U džamiji</string>
     <string name="camigeofence_kanal_durum_aciklama">Tiho obavještenje kada se otkrije da ste u džamiji</string>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ms — Malayca (beta). -->
+<!-- ms — Malayca (beta). -->
 <!-- Malayca kaynaklar (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/ms (Subuh, Syuruk, Zohor, Asar, Maghrib, Isyak; "Sudah solat"). -->
 <resources>
   <string name="app_name">Namaz Akışı</string>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ru -->
+<!-- ru -->
 <!-- Rusça kaynaklar (beta). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/ru (hitap "вы"; "Kıldım" = «Намаз совершён»). -->
 <resources>
   <string name="app_name">Namaz Akışı</string>

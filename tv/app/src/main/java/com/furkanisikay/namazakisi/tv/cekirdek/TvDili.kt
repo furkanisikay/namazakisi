@@ -226,7 +226,7 @@ object TvDiliDe : TvDili {
     override val iftaraKalan = "Verbleibende Zeit bis Iftar"
 }
 
-// ÇEVİRİ: fr
+// fr
 object TvDiliFr : TvDili {
     override val kod = "fr"
     override fun vakitAdi(vakit: Vakit) = when (vakit) {
@@ -272,7 +272,7 @@ object TvDiliFr : TvDili {
     override val iftaraKalan = "Temps restant avant l’iftar"
 }
 
-// ÇEVİRİ: bs
+// bs
 object TvDiliBs : TvDili {
     override val kod = "bs"
 
@@ -333,7 +333,7 @@ object TvDiliBs : TvDili {
     override val iftaraKalan = "Do iftara"
 }
 
-// ÇEVİRİ: ru
+// ru
 object TvDiliRu : TvDili {
     override val kod = "ru"
     override fun vakitAdi(vakit: Vakit) = when (vakit) {
@@ -392,7 +392,7 @@ object TvDiliRu : TvDili {
     override val iftaraKalan = "До ифтара"
 }
 
-// ÇEVİRİ: ms
+// ms
 object TvDiliMs : TvDili {
     override val kod = "ms"
     override fun vakitAdi(vakit: Vakit) = when (vakit) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: bs — Boşnakça (beta). Yedek gövdeler ibadete çağrıdır: "Vi" + emir, "!" yok. -->
+<!-- bs — Boşnakça (beta). Yedek gövdeler ibadete çağrıdır: "Vi" + emir, "!" yok. -->
 <resources>
     <string name="countdown_kanal_canli_ad">Odbrojavanja uživo</string>
     <string name="countdown_kanal_canli_aciklama">Odbrojavanja u Now Baru i statusnoj traci</string>

@@ -1,4 +1,4 @@
-// ÇEVİRİ: bs — Boşnakça (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ.
+// bs — Boşnakça (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ.
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.

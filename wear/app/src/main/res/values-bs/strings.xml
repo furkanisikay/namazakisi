@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: bs — Boşnakça (beta). Terimler: src/core/dil/sozluk/bs. -->
+<!-- bs — Boşnakça (beta). Terimler: src/core/dil/sozluk/bs. -->
 <resources>
     <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
     <string name="dil_kodu">bs</string>

@@ -151,7 +151,7 @@ struct WidgetMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: fr
+    // fr
     static let fr = WidgetMetinleri(
         galeriAdi: "Heure de prière",
         galeriAciklama: "La prière en cours, le temps restant avant la fin de son heure et les heures de prière du jour.",
@@ -177,7 +177,7 @@ struct WidgetMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: bs
+    // bs
     static let bs = WidgetMetinleri(
         galeriAdi: "Namasko vrijeme",
         galeriAciklama: "Trenutni vakat, preostalo vrijeme do njegovog isteka i današnja vremena.",
@@ -203,7 +203,7 @@ struct WidgetMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ru
+    // ru
     static let ru = WidgetMetinleri(
         galeriAdi: "Время намаза",
         galeriAciklama: "Текущий намаз, сколько осталось до конца его времени и время намазов на сегодня.",
@@ -229,7 +229,7 @@ struct WidgetMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ms
+    // ms
     static let ms = WidgetMetinleri(
         galeriAdi: "Waktu solat",
         galeriAciklama: "Waktu solat semasa, baki masa sehingga ia tamat dan waktu solat hari ini.",
