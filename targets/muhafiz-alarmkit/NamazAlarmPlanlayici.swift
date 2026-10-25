@@ -103,8 +103,7 @@ enum NamazAlarmCekirdegi {
         "en": "Stop",
         // id
         "id": "Hentikan",
-        // ÇEVİRİ: de
-        "de": "Stop",
+        "de": "Beenden",
         // ÇEVİRİ: fr
         "fr": "Stop",
         // ÇEVİRİ: bs

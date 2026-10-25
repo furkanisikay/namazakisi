@@ -56,12 +56,12 @@ public struct SaatSureMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: de
+    // de — Almanca (beta): JS `sozluk/de/sure.ts`
     public static let de = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "Std.", birimDk: "Min.", birimSn: "Sek.",
+        saat: ["one": "{n} Stunde", "other": "{n} Stunden"],
+        dakika: ["one": "{n} Minute", "other": "{n} Minuten"],
+        saniye: ["one": "{n} Sekunde", "other": "{n} Sekunden"]
     )
 
 

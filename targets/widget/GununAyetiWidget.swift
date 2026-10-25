@@ -83,18 +83,18 @@ struct GununAyetiYerelMetinleri {
     )
 
 
-    // ÇEVİRİ: de
+    // de — Almanca (beta): JS `sozluk/de/gununAyeti.ts`; meal `gununAyetiHavuzu.ts` 94:6 (BİREBİR), künye `mealler.de`
     static let de = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Vers des Tages",
+        galeriAciklama: "Ein Vers mit Übersetzung, der jeden Tag zu Fajr wechselt.",
+        etiket: "VERS DES TAGES",
+        uygulamayiAcin: "Öffnen Sie die App, um den Vers des Tages zu sehen",
+        ornekSigmiyor: "Der heutige Vers passt nicht in diese Größe. Zum Lesen tippen.",
+        ornekAcin: "Öffnen",
+        ornekArapcaKaynagi: "Arabisch: Tanzil",
+        ornekMeal: "gewiß, mit der Erschwernis ist Erleichterung.",
+        ornekKisaKunye: "Koran 94:6",
+        ornekMealKaynagi: "Frank Bubenheim, QuranEnc 1.1.4"
     )
 
 

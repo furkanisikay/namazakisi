@@ -46,8 +46,7 @@ object CanliGuncellemeKurallari {
         "en" to ("h" to "min"),
         // id
         "id" to ("j" to "mnt"),
-        // ÇEVİRİ: de
-        "de" to ("h" to "min"),
+        "de" to ("Std." to "Min."),
         // ÇEVİRİ: fr
         "fr" to ("h" to "min"),
         // ÇEVİRİ: bs

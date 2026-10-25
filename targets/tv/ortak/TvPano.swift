@@ -92,18 +92,18 @@ public struct TvPanoMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: de
+    // de — Almanca (beta): Android TV `TvDiliDe` ikizi
     public static let de = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sonnenaufgang", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Freitagsgebet",
+        aylar: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+        gunler: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
+        tarih: "{gunAdi}, {gun}. {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sonnenaufgang", "istiva": "Zenit", "gurub": "Sonnenuntergang"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Das Gebet ist makruh, bis die Sonne deutlich gestiegen ist.",
+            "istiva": "Das Gebet ist makruh, solange die Sonne im Zenit steht.",
+            "gurub": "Das Gebet ist makruh, während die Sonne untergeht.",
         ]
     )
 

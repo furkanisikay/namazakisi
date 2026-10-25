@@ -180,18 +180,18 @@ public struct KibleMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: de
+    // de — Almanca (beta): JS `sozluk/de/kible.ts > yon`
     public static let de = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Hinter Ihnen",
+        saga: "Rechts {derece}°",
+        sola: "Links {derece}°",
+        hizali: "Sie sind zur Qibla ausgerichtet",
+        arkadaErisim: "Die Qibla ist hinter Ihnen",
+        sagdaErisim: "Die Qibla ist {derece} Grad rechts von Ihnen",
+        soldaErisim: "Die Qibla ist {derece} Grad links von Ihnen",
+        kabede: "Sie sind an der Kaaba",
         mesafe: "{km} km",
-        binlikAyirici: ","
+        binlikAyirici: "."
     )
 
 

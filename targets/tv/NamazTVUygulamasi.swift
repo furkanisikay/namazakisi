@@ -118,19 +118,19 @@ struct TvArayuzMetinleri {
     )
 
 
-    // ÇEVİRİ: de
+    // de — Almanca (beta): JS `sozluk/de` (hitap "Sie", "bitte" yok)
     static let de = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Wählen Sie Ihre Stadt",
+        ilMerkezi: "Die Gebetszeiten werden für das Stadtzentrum berechnet. Sie können Ihre Auswahl später ändern.",
+        ilSecErisim: "{il}, auswählen",
+        kalan: "Verbleibende Zeit bis {ad}",
+        kalanErisim: "Verbleibende Zeit bis {ad}: {sure}",
+        konumuDegistirin: "Standort ändern",
+        kerahatSuruyor: "Makruh-Zeit: {tur}, endet um {bitis}. {aciklama}",
+        siradakiKerahat: "Nächste Makruh-Zeit: {tur} {bas}–{bit}",
+        cumaBilgisi: "Heute ist Freitag. Das Freitagsgebet wird zur Dhuhr-Zeit verrichtet (Beginn {giris}).",
+        suAnkiEk: ", aktuelle Gebetszeit",
+        siradakiEk: ", nächste Gebetszeit"
     )
 
 

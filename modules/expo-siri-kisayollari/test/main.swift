@@ -612,7 +612,7 @@ if let t = VakitAdlari.coz(takimJson) {
     esitMi(t.imsakVakti, "Imsak", "takim: imsakVakti")
     esitMi(t.buyuk["ogle"], "MITTAGSGEBET", "takim: buyuk")
     esitMi(t.kucuk["ogle"], "mittagsgebet", "takim: kucuk")
-    esitMi(VakitMetinleri.bicim(m.onay, ["ad": m.ad("ogle")]), "Mark Mittagsgebet as prayed?", "takim: metne girer")
+    esitMi(VakitMetinleri.bicim(m.onay, ["ad": m.ad("ogle")]), "Mittagsgebet als gebetet markieren?", "takim: metne girer")
 } else {
     hatalar.append("takim: gecerli JSON cozulemedi")
 }

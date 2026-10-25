@@ -128,11 +128,11 @@ struct OtomasyonMetinleri {
     )
 
 
-    // ÇEVİRİ: de
+    // de — Almanca (beta): JS `sozluk/de`
     static let de = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} beginnt in {n} Minute.", "other": "{ad} beginnt in {n} Minuten."],
+        evetKilindi: "Ja, es ist als gebetet markiert.",
+        hayirKilinmadi: "Nein, es ist noch nicht markiert."
     )
 
 

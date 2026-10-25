@@ -125,29 +125,29 @@ struct WidgetMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: de
+    // de — Almanca (beta): JS `sozluk/de` (hitap "Sie", "bitte" yok)
     static let de = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Gebetszeit",
+        galeriAciklama: "Die aktuelle Gebetszeit, die verbleibende Zeit bis zu ihrem Ende und die heutigen Gebetszeiten.",
+        veriEski: "Öffnen Sie die App, um die Gebetszeiten zu aktualisieren",
+        konumYok: "Öffnen Sie die App, um Ihren Standort festzulegen",
+        kilindiSiradaki: "{ad} gebetet · {sonraki} {saat}",
+        adCikis: "{ad} · endet {saat}",
+        siradakiAdSaat: "Als Nächstes {ad} {saat}",
+        vaktiCikisErisim: "{ad}-Zeit, endet {saat}",
+        siradakiErisim: "Als Nächstes {ad}, {saat}",
+        cikisSaat: "Endet {saat}",
+        bitisSaat: "Ende {saat}",
+        kilindiBaslik: "{ad} gebetet",
+        siradaki: "Als Nächstes",
+        siradakiAd: "Als Nächstes {ad}",
+        kildimErisim: "Ich habe {ad} gebetet",
+        gunSatiriKilindi: ", gebetet",
+        bitti: "Beendet",
+        vakitCikti: "Die Gebetszeit ist vorbei",
+        kabulAlt: "{ad} gebetet",
+        kontrolAdi: "Ich habe gebetet",
+        kontrolAciklama: "Markiert das aktuelle Gebet als gebetet."
     )
 
 

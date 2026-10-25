@@ -296,31 +296,31 @@ public struct VakitMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: de
+    // de — Almanca (beta): JS `sozluk/de` (hitap "Sie", "bitte" yok)
     public static let de = VakitMetinleri(
         dil: "de",
         adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        gunes: "Sonnenaufgang",
+        konumYok: "Öffnen Sie die App und legen Sie Ihren Standort fest, damit die Gebetszeiten berechnet werden können.",
+        veriEski: "Die Gebetszeiten sind veraltet. Öffnen Sie die App einmal, um sie zu aktualisieren.",
+        girisBugun: "um {saat}",
+        girisYarin: "morgen um {saat}",
+        suAnVakti: "Jetzt ist {ad}-Zeit.",
+        suAnVaktiCikis: "Jetzt ist {ad}-Zeit; sie endet um {saat}.",
+        siradakiNamaz: "Das nächste Gebet ist {ad} {giris}.",
+        isaretlendi: "{ad} wurde als gebetet markiert. {dua}.",
+        zatenKilindi: "{ad} ist bereits als gebetet markiert.",
+        vakitYok: "Gerade gibt es keine Gebetszeit zu markieren.",
+        vakitYokSiradaki: "Gerade gibt es keine Gebetszeit zu markieren. Als Nächstes {ad}, Beginn {giris}.",
+        onay: "{ad} als gebetet markieren?",
+        vakitDegisti: "Die Gebetszeit hat gewechselt, daher wurde nichts markiert. Versuchen Sie es erneut.",
+        kabulDuasi: "Möge Allah es annehmen",
+        kildim: "Ich habe gebetet",
+        kilindi: "Gebetet",
+        kontrolKildim: "{ad} · Ich habe gebetet",
+        kontrolKilindi: "{ad} gebetet",
+        kontrolVakitYok: "Kein Gebet zu markieren",
+        uygulamayiAcin: "App öffnen"
     )
 
 

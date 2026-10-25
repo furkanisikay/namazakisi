@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: de — İngilizce kopya; çeviri ajanı bu dosyanın tamamını çevirir. -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- Gerçek alarm (Almanca, beta). "Gebetet" bildirimdeki düğmeyle aynı ad (JS bildirim.eylem.kildim). -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">Gebetsalarm</string>
+  <string name="alarm_kildim">Gebetet</string>
+  <string name="alarm_kapat">Ausschalten</string>
+  <string name="alarm_kanal_aciklamasi">Ein echter Alarm, der bei den von Ihnen gewählten Erinnerungsschritten klingelt</string>
 </resources>
