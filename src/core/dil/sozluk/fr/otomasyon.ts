@@ -1,9 +1,10 @@
 import type { Sozluk } from '../tr';
 
+/** Anahtar kelime kullanıcı tarafından YAZILIR: kesme işareti yok (klavyede ’ zor). */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'a commencé',
+  vakitGirdiBasligi: '{ad} a commencé',
+  herhangiVakit: 'Quand une heure de prière commence',
+  yalnizVakit: 'Seulement quand {ad} commence',
+  camide: 'Quand votre présence à la mosquée est détectée (avec « À la mosquée » activé)',
 };
