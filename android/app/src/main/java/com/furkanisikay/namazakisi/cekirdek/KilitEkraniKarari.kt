@@ -63,7 +63,7 @@ object KilitEkraniKarari {
 
     /** [KAPAK_IPUCU]'nun arayüz dilindeki hâli. */
     fun kapakIpucuMetni(dil: String = MetinDili.TR): String =
-        MetinDili.sec(dil, KAPAK_IPUCU, "Open your phone to mark it")
+        MetinDili.metinler(dil).kapakIpucu
 
     /**
      * Ekran okuyucu metni — kilit ekranında işaretleme vaadi verilmez. [ad] çağıranın
@@ -75,13 +75,16 @@ object KilitEkraniKarari {
         kilitEkrani: Boolean,
         kapakEkrani: Boolean = false,
         dil: String = MetinDili.TR,
-    ): String = when (kildim) {
-        KildimDurumu.KILINABILIR ->
-            if (kapakEkrani) MetinDili.sec(dil, "$ad namazı kılınmadı. $KAPAK_IPUCU", "$ad not prayed yet. ${kapakIpucuMetni(dil)}")
-            else if (kilitEkrani) MetinDili.sec(dil, "$ad namazı kılınmadı. İşaretlemek için uygulamayı açın", "$ad not prayed yet. Open the app to mark it")
-            else MetinDili.sec(dil, "$ad namazını kılındı olarak işaretleyin", "Mark $ad as prayed")
-        KildimDurumu.BEKLIYOR -> MetinDili.sec(dil, "$ad namazı işaretleniyor", "$ad is being marked as prayed")
-        KildimDurumu.KILINDI -> MetinDili.sec(dil, "$ad namazı kılındı. Uygulamayı açın", "$ad prayed. Open the app")
-        KildimDurumu.YOK -> MetinDili.sec(dil, "Uygulamayı açın", "Open the app")
+    ): String {
+        val m = MetinDili.metinler(dil)
+        return when (kildim) {
+            KildimDurumu.KILINABILIR ->
+                if (kapakEkrani) MetinDili.bicim(m.kilitKilinmadiKapak, "ad" to ad, "ipucu" to m.kapakIpucu)
+                else if (kilitEkrani) MetinDili.bicim(m.kilitKilinmadi, "ad" to ad)
+                else MetinDili.bicim(m.kilitIsaretleyin, "ad" to ad)
+            KildimDurumu.BEKLIYOR -> MetinDili.bicim(m.kutuIsaretleniyorErisim, "ad" to ad)
+            KildimDurumu.KILINDI -> MetinDili.bicim(m.kilitKilindi, "ad" to ad)
+            KildimDurumu.YOK -> m.uygulamayiAcin
+        }
     }
 }

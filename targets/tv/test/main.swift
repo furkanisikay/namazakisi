@@ -152,8 +152,31 @@ esitMi(d1.gorunenAd(.imsak), "İmsak", "tr pano: imsak (varsayilan)")
 esitMi(TvKerahat.Tur.istiva.ad("en"), "Zenith", "en kerahat adi")
 esitMi(TvKerahat.Tur.gurub.aciklama("en"), "Praying is makruh while the sun is setting.", "en kerahat aciklamasi")
 esitMi(TvKerahat.Tur.suruk.ad("tr"), TvKerahat.Tur.suruk.ad, "tr kerahat adi")
-esitMi(TvDili.coz("de-DE"), "tr", "desteklenmeyen dil Turkce")
+esitMi(TvDili.coz("ar-SA"), "tr", "desteklenmeyen dil Turkce")
 esitMi(TvDili.coz(nil), "tr", "dil yok Turkce")
+
+// MARK: - 4c) Native dil tablolari (W4) — sekiz dil, Turkce tablo eski sabitlerle ayni
+
+esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms"], "dil: tablo sirasi")
+esitMi(TvDili.coz("de-DE"), "de", "dil: de-DE → de")
+esitMi(TvDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")
+esitMi(Set(TvPanoMetinleri.tablo.keys), Set(TvDili.desteklenenler), "pano metinleri: her dilin tablosu var")
+esitMi(TvVakit.allCases.map { TvPanoMetinleri.tr.vakitAdlari[$0.rawValue] ?? "" }, TvVakit.allCases.map { $0.ad }, "tr tablo: vakit adlari eski sabitler")
+esitMi([TvKerahat.Tur.suruk, .istiva, .gurub].map { $0.ad("tr") }, [TvKerahat.Tur.suruk.ad, TvKerahat.Tur.istiva.ad, TvKerahat.Tur.gurub.ad], "tr tablo: kerahat adlari")
+esitMi([TvKerahat.Tur.suruk, .istiva, .gurub].map { $0.aciklama("tr") }, [TvKerahat.Tur.suruk.aciklama, TvKerahat.Tur.istiva.aciklama, TvKerahat.Tur.gurub.aciklama], "tr tablo: kerahat aciklamalari")
+for d in TvDili.desteklenenler {
+    let m = TvPanoMetinleri.dil(d)
+    esitMi(m.aylar.count, 12, "pano metinleri: \(d) on iki ay")
+    esitMi(m.gunler.count, 7, "pano metinleri: \(d) yedi gun")
+    esitMi(Set(m.vakitAdlari.keys), Set(TvVakit.allCases.map { $0.rawValue }), "pano metinleri: \(d) alti vakit")
+    esitMi(Set(m.kerahatAdlari.keys), ["suruk", "istiva", "gurub"], "pano metinleri: \(d) kerahat adlari")
+    esitMi(Set(m.kerahatAciklamalari.keys), ["suruk", "istiva", "gurub"], "pano metinleri: \(d) kerahat aciklamalari")
+    let yerler = ["{gun}", "{ay}", "{yil}", "{gunAdi}"]
+    esitMi(yerler.filter { m.tarih.contains($0) }, yerler, "pano metinleri: \(d) tarih yer tutuculari")
+    let bos = ([m.cuma, m.tarih] + m.aylar + m.gunler + Array(m.vakitAdlari.values) + Array(m.kerahatAdlari.values)
+        + Array(m.kerahatAciklamalari.values)).filter { $0.isEmpty }
+    esitMi(bos, [], "pano metinleri: \(d) bos metin yok")
+}
 
 // MARK: - 5) Il listesi (istege bagli ikinci arguman)
 

@@ -13,7 +13,7 @@ object KildimOnayMetni {
     const val KABUL_DUASI = "Allah kabul etsin"
 
     /** [KABUL_DUASI]'nın arayüz dilindeki hâli — JS `samimiyet.kabulDuasi` ("May Allah accept it"). */
-    fun kabulDuasi(dil: String = MetinDili.TR): String = MetinDili.sec(dil, KABUL_DUASI, "May Allah accept it")
+    fun kabulDuasi(dil: String = MetinDili.TR): String = MetinDili.metinler(dil).kabulDuasi
 
     /** Bildirimin ekranda kalma süresi (sonra kendiliğinden kalkar). */
     const val GORUNME_MS = 5_000L
@@ -22,15 +22,12 @@ object KildimOnayMetni {
     fun gorunenAd(kayitVakti: String, dil: String = MetinDili.TR): String = when (kayitVakti) {
         "imsak", "sabah" -> VakitKodlari.gorunenAd(VakitKodlari.SABAH, dil)
         "ogle", "ikindi", "aksam", "yatsi" -> VakitKodlari.gorunenAd(kayitVakti, dil)
-        else -> MetinDili.sec(dil, "Namaz", "Prayer")
+        else -> MetinDili.metinler(dil).namaz
     }
 
     fun baslik(kayitVakti: String, dil: String = MetinDili.TR): String =
         "${gorunenAd(kayitVakti, dil)} · ${kabulDuasi(dil)}"
 
-    fun govde(kayitVakti: String, dil: String = MetinDili.TR): String = MetinDili.sec(
-        dil,
-        "${gorunenAd(kayitVakti, dil)} namazınız kılındı olarak işaretlendi.",
-        "${gorunenAd(kayitVakti, dil)} is marked as prayed.",
-    )
+    fun govde(kayitVakti: String, dil: String = MetinDili.TR): String =
+        MetinDili.bicim(MetinDili.metinler(dil).onayGovde, "ad" to gorunenAd(kayitVakti, dil))
 }

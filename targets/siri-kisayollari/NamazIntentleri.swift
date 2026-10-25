@@ -18,8 +18,13 @@ internal import ExpoSiriKisayollari
 /// (`plugins/withSiriKisayollari.js` ekler). Dinamik cevap da AYNI dilde olsun diye paketin
 /// sectigi yerellestirmeden okunur — uygulamanin kendi dil secimi (`arayuzDili()`) degil:
 /// Siri tek konusmada iki dil karistirmasin. Desteklenmeyen dil Turkceye duser.
+/// Kullanicinin vakit adi takimi (`VakitAdlari`) yalniz paket dili uygulamanin arayuz diliyle
+/// AYNIYSA uygulanir (`VakitMetinleri.dil`); `arayuzDili()` okumasi takimi tazeler.
 enum SiriDili {
-    static var kod: String { ArayuzDili.coz(Bundle.main.preferredLocalizations.first) }
+    static var kod: String {
+        _ = SiriDeposu.varsayilan.arayuzDili()
+        return ArayuzDili.coz(Bundle.main.preferredLocalizations.first)
+    }
     static var metin: VakitMetinleri { VakitMetinleri.dil(kod) }
 }
 

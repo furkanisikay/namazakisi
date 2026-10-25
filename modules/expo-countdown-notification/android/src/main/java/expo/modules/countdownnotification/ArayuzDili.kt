@@ -3,20 +3,34 @@ package expo.modules.countdownnotification
 import android.content.Context
 
 /**
- * Uygulamanın ARAYÜZ dili (dil kodu: "tr", "en") — JS etkin dil değişince yazar; uygulama
- * modülü (widget, bildirim, alarm) ve diğer yerel modüller aynı tercih dosyasını okur.
- * Sesli okuma dilinden (`AnonsKonusucu`, BCP-47) AYRIDIR: ses motoru başka dile düşebilir.
- * Uygulama hiç açılmadıysa (JS yazmadı) Türkçe.
+ * Uygulamanın ARAYÜZ dili (dil kodu: "tr", "en", "id", "de", "fr", "bs", "ru", "ms") — JS
+ * etkin dil değişince yazar; uygulama modülü (widget, bildirim, alarm) ve diğer yerel
+ * modüller aynı tercih dosyasını okur. Sesli okuma dilinden (`AnonsKonusucu`, BCP-47)
+ * AYRIDIR: ses motoru başka dile düşebilir. Uygulama hiç açılmadıysa (JS yazmadı) Türkçe.
+ *
+ * Aynı dosyada kullanıcının seçtiği VAKİT ADI TAKIMI da durur ([TERCIH_VAKIT_ADLARI], JSON;
+ * okuyan uygulama modülü `cekirdek/VakitAdlari`). Yoksa her yüzey dil tablosunu kullanır.
  */
 object ArayuzDili {
     const val TERCIH_DOSYASI = "namazakisi_dil"
     const val TERCIH_KOD = "kod"
+    const val TERCIH_VAKIT_ADLARI = "vakit_adlari"
     const val VARSAYILAN = "tr"
 
     fun kaydet(context: Context, kod: String) {
         val temiz = kod.trim().ifEmpty { VARSAYILAN }
         context.applicationContext.getSharedPreferences(TERCIH_DOSYASI, Context.MODE_PRIVATE)
             .edit().putString(TERCIH_KOD, temiz).apply()
+    }
+
+    /**
+     * Vakit adı takımını yazar; `null` ya da boş dize anahtarı SİLER (tablo adlarına dönülür).
+     * İçerik burada doğrulanmaz: okuyan taraf bozuk JSON'da tabloya düşer.
+     */
+    fun vakitAdlariniKaydet(context: Context, json: String?) {
+        val duzen = context.applicationContext.getSharedPreferences(TERCIH_DOSYASI, Context.MODE_PRIVATE).edit()
+        if (json.isNullOrBlank()) duzen.remove(TERCIH_VAKIT_ADLARI) else duzen.putString(TERCIH_VAKIT_ADLARI, json)
+        duzen.apply()
     }
 
     fun oku(context: Context): String = try {

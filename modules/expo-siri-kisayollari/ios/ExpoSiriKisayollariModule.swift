@@ -123,6 +123,12 @@ public class ExpoSiriKisayollariModule: Module {
             SiriDeposu.varsayilan.arayuzDiliniYaz(kod)
         }
 
+        /// Kullanicinin vakit adi takimi (JSON) ya da nil (anahtar silinir, dil tablosu).
+        /// `arayuzDiliniAyarla` gibi yalniz yazar; widget/saat cizimi bir sonraki okumada alir.
+        Function("vakitAdlariniAyarla") { (json: String?) -> Void in
+            SiriDeposu.varsayilan.vakitAdlariniYaz(json)
+        }
+
         /// Canli etkinlik (Live Activity, #295) bu build'de var mi? (Widget uzantisi bayragi.)
         Function("canliEtkinlikDestekli") { () -> Bool in
             return CanliEtkinlikKoprusu.destekleniyor

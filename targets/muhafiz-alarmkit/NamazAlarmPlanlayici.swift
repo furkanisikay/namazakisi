@@ -94,8 +94,26 @@ enum NamazAlarmCekirdegi {
     /// Sistem "Durdur" dugmesinin etiketi (namazi KILINDI SAYMAZ; iOS 26.1+ sistem kendi
     /// etiketini cizer). Ingilizce JS `hatirlatma.iosDurdur` ("you can stop it") ile ayni fiil.
     static func durdurEtiketi(_ dil: String) -> String {
-        return ArayuzDili.coz(dil) == "en" ? "Stop" : "Durdur"
+        return durdurEtiketleri[ArayuzDili.coz(dil)] ?? "Durdur"
     }
+
+    /// Dil tablosu (sira tr, en, id, de, fr, bs, ru, ms; cevrilmemis dil Ingilizce kopya).
+    static let durdurEtiketleri: [String: String] = [
+        "tr": "Durdur",
+        "en": "Stop",
+        // ÇEVİRİ: id
+        "id": "Stop",
+        // ÇEVİRİ: de
+        "de": "Stop",
+        // ÇEVİRİ: fr
+        "fr": "Stop",
+        // ÇEVİRİ: bs
+        "bs": "Stop",
+        // ÇEVİRİ: ru
+        "ru": "Stop",
+        // ÇEVİRİ: ms
+        "ms": "Stop",
+    ]
 
     static func durum() -> String {
         switch AlarmManager.shared.authorizationState {

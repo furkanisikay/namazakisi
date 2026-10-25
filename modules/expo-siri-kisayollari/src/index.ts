@@ -37,6 +37,8 @@ interface SiriNativeModule {
     /** #295 — eski ikilide yok (opsiyonel). */
     /** Arayüz dili (App Group) — eski ikilide yok (opsiyonel). */
     arayuzDiliniAyarla?(kod: string): void;
+    /** Vakit adı takımı (App Group) — eski ikilide yok (opsiyonel). */
+    vakitAdlariniAyarla?(json: string | null): void;
     canliEtkinlikDestekli?(): boolean;
     canliEtkinlikIzniAcik?(): Promise<boolean>;
     canliEtkinlikEsitle?(json: string | null, secenek?: string | null): Promise<string>;
@@ -66,6 +68,22 @@ export function arayuzDiliniAyarla(kod: string): void {
         m.arayuzDiliniAyarla(kod);
     } catch {
         // Eski ikili: uzantılar Türkçe kalır.
+    }
+}
+
+/**
+ * Kullanıcının seçtiği vakit adı takımını (JSON: `{"adlar":{imsak…yatsi},"buyuk":{…},
+ * "kucuk":{…},"cuma","imsakVakti","gunesDogusu"}`) ya da `null`ı (dil tablosuna dön) App
+ * Group'a yazar; iOS widget, canlı etkinlik, Kontrol Merkezi, AlarmKit ve Siri vakit adını
+ * önce buradan okur. Modül/fonksiyon yoksa sessizce atlanır. Asla fırlatmaz.
+ */
+export function vakitAdlariniAyarla(json: string | null): void {
+    const m = modul();
+    if (!m || typeof m.vakitAdlariniAyarla !== 'function') return;
+    try {
+        m.vakitAdlariniAyarla(json);
+    } catch {
+        // Eski ikili: dil tablosundaki adlar kalır.
     }
 }
 

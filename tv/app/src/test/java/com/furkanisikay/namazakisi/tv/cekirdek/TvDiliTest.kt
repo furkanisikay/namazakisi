@@ -32,7 +32,7 @@ class TvDiliTest {
         }
         assertSame(TvDiliTr, tvDili("tr"))
         assertSame(TvDiliEn, tvDili("en"))
-        assertSame(TvDiliTr, tvDili("de"))
+        assertSame(TvDiliTr, tvDili("ar"))
         assertEquals("13 Ekim 2026, Salı", Bicim.tarih(LocalDate.of(2026, 10, 13)))
         assertEquals(Bicim.kalanSesli(sa + 16 * dk), Bicim.kalanSesli(sa + 16 * dk, "tr"))
         assertEquals(EvDurumu.KABUL_DUASI, EvDurumu.kabulDuasi())

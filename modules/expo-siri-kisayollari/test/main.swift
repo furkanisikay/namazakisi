@@ -422,7 +422,7 @@ esitMi(ArayuzDili.coz(""), "tr", "dil: bos Turkce")
 esitMi(ArayuzDili.coz("en"), "en", "dil: en")
 esitMi(ArayuzDili.coz("en-US"), "en", "dil: en-US → en")
 esitMi(ArayuzDili.coz("en_GB"), "en", "dil: en_GB → en")
-esitMi(ArayuzDili.coz("de"), "tr", "dil: desteklenmeyen → Turkce")
+esitMi(ArayuzDili.coz("ar"), "tr", "dil: desteklenmeyen → Turkce")
 esitMi(VakitKarari.gorunenAd("ogle"), "Öğle", "varsayilan dil Turkce")
 esitMi(VakitKarari.gorunenAd("sabah", dil: "en"), "Fajr", "en: sabah → Fajr")
 esitMi(VakitKarari.gorunenAd("gunes", dil: "en"), "", "en: gunes namaz degil")
@@ -550,6 +550,102 @@ esitMi(depo.gununAyeti() == nil, true, "ayet depo: yazilmadan nil")
 depo.gununAyetiYaz(ayetHam)
 esitMi(depo.gununAyetiJson(), ayetHam, "ayet depo: ham yuk birebir saklanir")
 esitMi(depo.gununAyeti()?.plan.count, 3, "ayet depo: cozulmus yuk")
+
+// MARK: - 11) Native dil tablolari (W4) — sekiz dil, Turkceyle ayni alan + yer tutucu
+
+/// Her `String` alanin (ve `[String: String]` alaninin her anahtarinin) `{...}` kumesi.
+func yerTutucuImzasi(_ deger: Any) -> [String: String] {
+    var sonuc: [String: String] = [:]
+    func kume(_ s: String) -> String {
+        var bulunan = Set<String>()
+        var kalan = Substring(s)
+        while let a = kalan.firstIndex(of: "{"), let k = kalan[a...].firstIndex(of: "}") {
+            bulunan.insert(String(kalan[a...k]))
+            kalan = kalan[kalan.index(after: k)...]
+        }
+        return bulunan.sorted().joined()
+    }
+    for c in Mirror(reflecting: deger).children {
+        guard let ad = c.label, ad != "dil" else { continue }
+        if let s = c.value as? String {
+            sonuc[ad] = kume(s) + (s.isEmpty ? "<BOS>" : "")
+        } else if let h = c.value as? [String: String] {
+            for (k, v) in h { sonuc["\(ad).\(k)"] = kume(v) + (v.isEmpty ? "<BOS>" : "") }
+        }
+    }
+    return sonuc
+}
+
+esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms"], "dil: tablo sirasi")
+esitMi(ArayuzDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")
+esitMi(ArayuzDili.coz("de-DE"), "de", "dil: de-DE → de")
+esitMi(ArayuzDili.coz("ms_MY"), "ms", "dil: ms_MY → ms")
+esitMi(Set(VakitMetinleri.tablo.keys), Set(ArayuzDili.desteklenenler), "metinler: her dilin tablosu var")
+for d in ArayuzDili.desteklenenler {
+    let m = VakitMetinleri.dil(d)
+    esitMi(m.dil, d, "metinler: \(d) kendi kodunu tasir")
+    esitMi(yerTutucuImzasi(m), yerTutucuImzasi(VakitMetinleri.tr), "metinler: \(d) Turkceyle ayni yer tutucular")
+}
+
+// CLDR cogul kategorileri (JS `cogul.ts` ikizi, tamsayi).
+esitMi([0, 1, 2, 5].map { CogulKurali.kategori("tr", $0) }, ["other", "one", "other", "other"], "cogul: tr")
+esitMi([0, 1, 2].map { CogulKurali.kategori("en", $0) }, ["other", "one", "other"], "cogul: en")
+esitMi([0, 1, 2, 1_000_000].map { CogulKurali.kategori("fr", $0) }, ["one", "one", "other", "many"], "cogul: fr")
+esitMi([1, 2, 5, 11, 21, 22, 25, 112].map { CogulKurali.kategori("ru", $0) },
+       ["one", "few", "many", "many", "one", "few", "many", "many"], "cogul: ru")
+esitMi([1, 3, 5, 21].map { CogulKurali.kategori("bs", $0) }, ["one", "few", "other", "one"], "cogul: bs")
+esitMi([1, 2].map { CogulKurali.kategori("id", $0) }, ["other", "other"], "cogul: id")
+esitMi(CogulKurali.sec(["one": "{n} minute", "other": "{n} minutes"], "ru", 5), "5 minutes", "cogul: eksik kategori other'a duser")
+
+// MARK: - 12) Vakit adi takimi (kullanicinin sectigi adlar) — var / yok / bozuk / kismi
+
+let takimJson = """
+{"adlar":{"imsak":"Morgengebet","gunes":"Sonnenaufgang","ogle":"Mittagsgebet","ikindi":"Nachmittagsgebet","aksam":"Abendgebet","yatsi":"Nachtgebet"},
+ "buyuk":{"ogle":"MITTAGSGEBET"},"kucuk":{"ogle":"mittagsgebet"},"cuma":"Freitagsgebet","imsakVakti":"Imsak","gunesDogusu":"Sonnenaufgang"}
+"""
+if let t = VakitAdlari.coz(takimJson) {
+    let m = VakitMetinleri.dil("de", adlar: t)
+    esitMi(m.ad("sabah"), "Morgengebet", "takim: sabah ← imsak")
+    esitMi(m.ad("ogle"), "Mittagsgebet", "takim: ogle")
+    esitMi(m.vakitAdi("gunes"), "Sonnenaufgang", "takim: gunes")
+    esitMi(t.cuma, "Freitagsgebet", "takim: cuma")
+    esitMi(t.imsakVakti, "Imsak", "takim: imsakVakti")
+    esitMi(t.buyuk["ogle"], "MITTAGSGEBET", "takim: buyuk")
+    esitMi(t.kucuk["ogle"], "mittagsgebet", "takim: kucuk")
+    esitMi(VakitMetinleri.bicim(m.onay, ["ad": m.ad("ogle")]), "Mark Mittagsgebet as prayed?", "takim: metne girer")
+} else {
+    hatalar.append("takim: gecerli JSON cozulemedi")
+}
+for ham in [nil, "", "   ", "{", "[]", "null", "42", "{}", "{\"adlar\":\"Sabah\"}",
+            "{\"adlar\":{\"ogle\":42,\"ikindi\":null,\"aksam\":\"\"}}", "{\"adlar\":{\"bilinmeyen\":\"X\"}}"] as [String?] {
+    esitMi(VakitAdlari.coz(ham) == nil, true, "takim: yok/bos/bozuk → nil (\(ham ?? "nil"))")
+}
+esitMi(VakitMetinleri.dil("tr", adlar: VakitAdlari.coz("{bozuk")), VakitMetinleri.tr, "takim: bozuk → tablo")
+if let kismi = VakitAdlari.coz("{\"adlar\":{\"ogle\":\"  Mittag  \",\"ikindi\":\"\"}}") {
+    let m = VakitMetinleri.dil("en", adlar: kismi)
+    esitMi(m.ad("ogle"), "Mittag", "takim kismi: verilen ad (kirpilmis)")
+    esitMi(m.ad("ikindi"), "Asr", "takim kismi: eksik alan tabloya duser")
+    esitMi(m.vakitAdi("gunes"), "Sunrise", "takim kismi: gunes tablodan")
+} else {
+    hatalar.append("takim: kismi JSON cozulemedi")
+}
+// Depo: yaz / oku / sil; etkin takim yalniz okundugu ARAYUZ dilinde uygulanir.
+esitMi(depo.vakitAdlari() == nil, true, "takim depo: yazilmadan nil")
+depo.arayuzDiliniYaz("de")
+depo.vakitAdlariniYaz(takimJson)
+esitMi(depo.vakitAdlari()?.adlar["ogle"], "Mittagsgebet", "takim depo: okunur")
+esitMi(depo.arayuzDili(), "de", "takim depo: dil okunur (takim tazelenir)")
+esitMi(VakitMetinleri.dil("de").ad("ogle"), "Mittagsgebet", "takim etkin: ayni dilde uygulanir")
+esitMi(VakitMetinleri.dil("en").ad("ogle"), "Dhuhr", "takim etkin: baska dilde (Siri paket dili) tablo")
+esitMi(VakitKarari.gorunenAd("ogle", dil: "de"), "Mittagsgebet", "takim etkin: gorunenAd")
+depo.vakitAdlariniYaz(nil)
+esitMi(depo.vakitAdlari() == nil, true, "takim depo: nil anahtari siler")
+_ = depo.arayuzDili()
+esitMi(VakitMetinleri.dil("de"), VakitMetinleri.de, "takim depo: silinince tablo")
+depo.vakitAdlariniYaz("   ")
+esitMi(depo.vakitAdlari() == nil, true, "takim depo: bos dize de siler")
+depo.arayuzDiliniYaz("tr")
+_ = depo.arayuzDili()
 
 // MARK: - Sonuc
 

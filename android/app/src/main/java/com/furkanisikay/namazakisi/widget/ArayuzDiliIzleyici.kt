@@ -28,7 +28,7 @@ object ArayuzDiliIzleyici {
         val uygulama = context.applicationContext ?: context
         try {
             val d = SharedPreferences.OnSharedPreferenceChangeListener { _, anahtar ->
-                if (anahtar == ArayuzDili.TERCIH_KOD) WidgetGuncelleyici.tumunuGuncelle(uygulama)
+                if (anahtar == ArayuzDili.TERCIH_KOD || anahtar == ArayuzDili.TERCIH_VAKIT_ADLARI) WidgetGuncelleyici.tumunuGuncelle(uygulama)
             }
             uygulama.getSharedPreferences(ArayuzDili.TERCIH_DOSYASI, Context.MODE_PRIVATE)
                 .registerOnSharedPreferenceChangeListener(d)

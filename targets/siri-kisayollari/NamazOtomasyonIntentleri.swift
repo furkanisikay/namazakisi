@@ -88,17 +88,88 @@ struct SimdikiVakitKilindiMiIntent: AppIntent {
 /// JS `sozluk/en/genel.ts > kildim.sonuc` ve `sure.dakika` cogulundan.
 enum OtomasyonMetni {
     static func kalanDakika(ad: String, dakika: Int, dil: String) -> String {
-        if ArayuzDili.coz(dil) == "en" {
-            return "\(ad) begins in \(dakika) \(dakika == 1 ? "minute" : "minutes")."
-        }
-        return "\(ad) vaktine \(dakika) dakika var."
+        let m = OtomasyonMetinleri.dil(dil)
+        let kalip = m.kalanDakika[CogulKurali.kategori(dil, dakika)] ?? m.kalanDakika["other"] ?? ""
+        return VakitMetinleri.bicim(kalip, ["ad": ad, "n": String(dakika)])
     }
 
-    static func evetKilindi(_ dil: String) -> String {
-        ArayuzDili.coz(dil) == "en" ? "Yes, it's marked as prayed." : "Evet, kılındı olarak işaretli."
-    }
+    static func evetKilindi(_ dil: String) -> String { OtomasyonMetinleri.dil(dil).evetKilindi }
 
-    static func hayirKilinmadi(_ dil: String) -> String {
-        ArayuzDili.coz(dil) == "en" ? "No, it isn't marked yet." : "Hayır, henüz işaretlenmedi."
-    }
+    static func hayirKilinmadi(_ dil: String) -> String { OtomasyonMetinleri.dil(dil).hayirKilinmadi }
+}
+
+/// Otomasyon cevaplarinin dil tablosu. Duzen: dil basina bir `static let`, sira tr, en, id,
+/// de, fr, bs, ru, ms; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
+/// `kalanDakika` CLDR kategorisi ("one", "few", "many", "other"; `CogulKurali`) → kalip;
+/// eksik kategori "other"a duser. Yer tutucular `{ad}`, `{n}`.
+struct OtomasyonMetinleri {
+    let kalanDakika: [String: String]
+    let evetKilindi: String
+    let hayirKilinmadi: String
+
+    static let tr = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} vaktine {n} dakika var.", "other": "{ad} vaktine {n} dakika var."],
+        evetKilindi: "Evet, kılındı olarak işaretli.",
+        hayirKilinmadi: "Hayır, henüz işaretlenmedi."
+    )
+
+    static let en = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+
+    // ÇEVİRİ: id
+    static let id = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+
+    // ÇEVİRİ: de
+    static let de = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+
+    // ÇEVİRİ: fr
+    static let fr = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+
+    // ÇEVİRİ: bs
+    static let bs = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+
+    // ÇEVİRİ: ru
+    static let ru = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+
+    // ÇEVİRİ: ms
+    static let ms = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+    static let tablo: [String: OtomasyonMetinleri] = [
+        "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
+    ]
+
+    static func dil(_ kod: String) -> OtomasyonMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }
 }

@@ -89,6 +89,7 @@ interface CountdownNativeModule {
     /** Yeni köprü — eski native'de yoktur, opsiyonel tiplenir. */
     anonsDiliniAyarla?(dil: string): void;
     arayuzDiliniAyarla?(kod: string): void;
+    vakitAdlariniAyarla?(json: string | null): void;
     iptalEtAnons(id: string): void;
     iptalEtTumAnonslar(): void;
     /** Yeni köprü (issue #273) — eski native'de yoktur, opsiyonel tiplenir. */
@@ -467,6 +468,21 @@ export function arayuzDiliniAyarla(kod: string): void {
         ExpoCountdownNotification.arayuzDiliniAyarla(kod);
     } catch {
         // Eski native: widget/bildirim Türkçe kalır.
+    }
+}
+
+/**
+ * Kullanıcının seçtiği vakit adı takımı (JSON: `{"adlar":{imsak…yatsi},"buyuk":{…},"kucuk":{…},
+ * "cuma","imsakVakti","gunesDogusu"}`) ya da `null` (dil tablosuna dön). Android widget,
+ * bildirim, kısayol ve asistan vakit adını önce buradan okur. Native eski ise sessizce
+ * atlanır. Asla fırlatmaz.
+ */
+export function vakitAdlariniAyarla(json: string | null): void {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.vakitAdlariniAyarla) return;
+    try {
+        ExpoCountdownNotification.vakitAdlariniAyarla(json);
+    } catch {
+        // Eski native: dil tablosundaki adlar kalır.
     }
 }
 

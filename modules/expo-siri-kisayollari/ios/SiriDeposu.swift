@@ -124,7 +124,7 @@ public final class SiriDeposu: @unchecked Sendable {
 
     // MARK: - Arayuz dili (JS yazar; uygulama, widget ve saat koprusu okur)
 
-    /// Arayuz dili anahtari (dil kodu: "tr", "en"). Sesli okuma dilinden AYRIDIR
+    /// Arayuz dili anahtari (dil kodu: "tr", "en", "id"...). Sesli okuma dilinden AYRIDIR
     /// (`namazakisi_anons_dil`, standart depo): ses motoru baska dile dusebilir.
     public static let arayuzDiliAnahtari = "namazakisi_dil_kod"
 
@@ -132,9 +132,37 @@ public final class SiriDeposu: @unchecked Sendable {
         kilitli { defaults.set(kod, forKey: Self.arayuzDiliAnahtari) }
     }
 
-    /// Kayitli arayuz dili; uygulama hic acilmadiysa (JS yazmadi) Turkce.
+    /// Kayitli arayuz dili; uygulama hic acilmadiysa (JS yazmadi) Turkce. Okurken
+    /// kullanicinin vakit adi takimini da tazeler (`VakitAdlari.etkin`): dili okuyan her
+    /// cizim yolu (widget, canli etkinlik, Kontrol Merkezi, AlarmKit, Siri) guncel adlari alir.
     public func arayuzDili() -> String {
-        kilitli { defaults.string(forKey: Self.arayuzDiliAnahtari) ?? "tr" }
+        let (kod, ham) = kilitli {
+            (defaults.string(forKey: Self.arayuzDiliAnahtari) ?? "tr", defaults.string(forKey: Self.vakitAdlariAnahtari))
+        }
+        VakitAdlari.etkinYap(ham, dil: kod)
+        return kod
+    }
+
+    /// Kullanicinin sectigi vakit adi takimi (JSON, `VakitAdlari`); yoksa dil tablosu.
+    /// Arayuz dili anahtarinin KARDESI: JS ikisini birlikte yazar.
+    public static let vakitAdlariAnahtari = "namazakisi_vakit_adlari"
+
+    /// nil ya da bos → anahtar SILINIR (tablo adlarina donulur). Icerik dogrulanmaz: okuyan
+    /// taraf bozuk JSON'da tabloya duser. `arayuzDiliniYaz` gibi yalniz yazar (yeniden cizim
+    /// JS'in ardindan yazdigi widget yukuyle gelir).
+    public func vakitAdlariniYaz(_ json: String?) {
+        kilitli {
+            if let json, !json.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                defaults.set(json, forKey: Self.vakitAdlariAnahtari)
+            } else {
+                defaults.removeObject(forKey: Self.vakitAdlariAnahtari)
+            }
+        }
+    }
+
+    /// Kayitli takim (cozulmus); yok ya da bozuksa nil.
+    public func vakitAdlari() -> VakitAdlari? {
+        VakitAdlari.coz(kilitli { defaults.string(forKey: Self.vakitAdlariAnahtari) })
     }
 
     // MARK: - Gunun ayeti (JS yazar; widget ve "Gunun ayeti gorseli" intent'i okur)

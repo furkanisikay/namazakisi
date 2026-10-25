@@ -552,13 +552,53 @@ do {
     esitMi(SaatMetinleri.dil(nil), SaatMetinleri.tr, "saat metinleri dil yok → tr")
 }
 
+// MARK: - 15b) Native dil tablolari (W4) — sekiz dil, Turkceyle ayni alan + yer tutucu
+
+do {
+    /// Her `String` alanin (ve `[String: String]` alaninin her anahtarinin) `{...}` kumesi.
+    func imza(_ deger: Any) -> [String: String] {
+        var sonuc: [String: String] = [:]
+        func kume(_ s: String) -> String {
+            var bulunan = Set<String>()
+            var kalan = Substring(s)
+            while let a = kalan.firstIndex(of: "{"), let k = kalan[a...].firstIndex(of: "}") {
+                bulunan.insert(String(kalan[a...k]))
+                kalan = kalan[kalan.index(after: k)...]
+            }
+            return bulunan.sorted().joined() + (s.isEmpty ? "<BOS>" : "")
+        }
+        for c in Mirror(reflecting: deger).children {
+            guard let ad = c.label, ad != "dil" else { continue }
+            if let s = c.value as? String { sonuc[ad] = kume(s) }
+            if let h = c.value as? [String: String] {
+                // Cogul kaliplari dilin kategorileriyle degisebilir: "other" zorunlu, hepsi ayni yer tutucu.
+                sonuc["\(ad).other"] = kume(h["other"] ?? "")
+                sonuc["\(ad).*"] = Set(h.values.map(kume)).sorted().joined(separator: "|")
+            }
+        }
+        return sonuc
+    }
+    let kodlar = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms"]
+    esitMi(Set(SaatMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatMetinleri sekiz dil")
+    esitMi(Set(SaatSureMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatSureMetinleri sekiz dil")
+    esitMi(Set(KibleMetinleri.tablo.keys), Set(kodlar), "saat tablolari: KibleMetinleri sekiz dil")
+    for d in kodlar {
+        esitMi(SaatMetinleri.dil(d).dil, d, "saat metinleri: \(d) kendi kodu")
+        esitMi(imza(SaatMetinleri.dil(d)), imza(SaatMetinleri.tr), "saat metinleri: \(d) yer tutuculari")
+        esitMi(imza(SaatSureMetinleri.dil(d)), imza(SaatSureMetinleri.tr), "saat sure: \(d) yer tutuculari")
+        esitMi(imza(KibleMetinleri.dil(d)), imza(KibleMetinleri.tr), "kible metinleri: \(d) yer tutuculari")
+        esitMi(SaatSure.parcalar(kalanMs: 3_725_000, dil: d).count, 2, "saat sure: \(d) parca sayisi")
+        esitMi(Samimiyet.kabulDuasi(d).isEmpty, false, "kabul duasi: \(d) bos degil")
+    }
+}
+
 // MARK: - 16) Dil telefondan: baglamin kardes anahtari + saat deposu (W5)
 
 do {
     esitMi(SaatIletisi.dil(SaatIletisi.baglam(yukJson: "{}", dil: "en")), "en", "baglam dili gidis-donus")
     esitMi(SaatIletisi.dil(SaatIletisi.baglam(yukJson: "{}")), nil, "eski telefon dil gondermez")
     esitMi(SaatIletisi.yukJson(SaatIletisi.baglam(yukJson: "{}", dil: "en")), "{}", "dil yuku degistirmez")
-    esitMi(SaatIletisi.dil(["yuk": "{}", "dil": "fr"]), "tr", "desteklenmeyen dil Turkceye")
+    esitMi(SaatIletisi.dil(["yuk": "{}", "dil": "ar"]), "tr", "desteklenmeyen dil Turkceye")
     esitMi(SaatIletisi.baglam(yukJson: "{}").count, 1, "dil yoksa baglamda tek anahtar (eski sekil)")
     let suite = "test.namazakisi.saat.dil.\(UUID().uuidString)"
     let defaults = UserDefaults(suiteName: suite)!

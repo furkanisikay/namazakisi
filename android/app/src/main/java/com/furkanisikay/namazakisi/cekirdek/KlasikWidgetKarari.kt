@@ -26,18 +26,27 @@ object KlasikWidgetKarari {
      * Geniş widget satır adı. Eski görünümde sabah satırı "İmsak" yazar (İngilizcede
      * JS `vakit.imsakVakti` gibi "Fajr").
      */
-    fun satirAdi(kod: String, dil: String = MetinDili.TR): String =
-        if (kod == VakitKodlari.SABAH) MetinDili.sec(dil, "İmsak", "Fajr") else VakitKodlari.gorunenAd(kod, dil)
+    fun satirAdi(kod: String, dil: String = MetinDili.TR, adlar: VakitAdlari? = VakitAdlari.etkin): String =
+        if (kod == VakitKodlari.SABAH) adlar?.imsakVakti ?: MetinDili.metinler(dil).imsakSatiri
+        else VakitKodlari.gorunenAd(kod, dil, adlar)
 
     /**
      * Yönelme hâli (sabit harita; `toLowerCase` İ'yi bozar). Küçük widget küçük harfli
      * ve iki noktalı ("öğleye:"), geniş widget büyük harfle ("Öğleye") yazar; altında
-     * geri sayım akar. İngilizcede hal eki yok: iki boyutta da "Dhuhr in" (geri sayım
-     * cümleyi tamamlar).
+     * geri sayım akar. Türkçe dışında hal eki yok: iki boyutta da dilin kalıbı
+     * (`CekirdekMetinleri.yonelme`, İngilizce "Dhuhr in"; geri sayım cümleyi tamamlar).
+     * Kullanıcı vakit adı takımı seçtiyse ([adlar]) Türkçede de çekim TÜRETİLMEZ: ad
+     * çekimsiz kalıba girer ("Öğle:").
      */
-    fun yonelmeHali(kod: String, buyukHarf: Boolean, dil: String = MetinDili.TR): String {
-        if (MetinDili.coz(dil) == MetinDili.EN) {
-            return if (kod in SIRA) "${VakitKodlari.gorunenAd(kod, dil)} in" else kod
+    fun yonelmeHali(
+        kod: String,
+        buyukHarf: Boolean,
+        dil: String = MetinDili.TR,
+        adlar: VakitAdlari? = VakitAdlari.etkin,
+    ): String {
+        if (MetinDili.coz(dil) != MetinDili.TR || adlar?.widgetAdi(kod) != null) {
+            if (kod !in SIRA) return kod
+            return MetinDili.bicim(MetinDili.metinler(dil).yonelme, "ad" to VakitKodlari.gorunenAd(kod, dil, adlar))
         }
         val (kucuk, buyuk) = when (kod) {
             VakitKodlari.SABAH -> "sabaha" to "Sabaha"

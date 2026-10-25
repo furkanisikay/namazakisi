@@ -115,7 +115,7 @@ public enum SaatIletisi {
         return r.firstMatch(in: metin, options: [], range: aralik) != nil
     }
 
-    /// Uygulama baglamindaki arayuz dili anahtari (W5; deger: dil KODU, "tr" | "en").
+    /// Uygulama baglamindaki arayuz dili anahtari (W5; deger: dil KODU, "tr", "en", "id"...).
     /// Wear yuku JSON'unun ICINE girmez (ortak fikstur ve Wear sozlesmesi degismez);
     /// yukun KARDESIDIR. Telefon `SiriDeposu.arayuzDili()`'ni gonderme aninda okur.
     public static let dilAnahtari = "dil"

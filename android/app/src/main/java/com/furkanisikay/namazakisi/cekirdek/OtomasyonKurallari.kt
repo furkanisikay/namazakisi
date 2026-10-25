@@ -216,53 +216,36 @@ object OtomasyonKurallari {
     // Özet düzenleme anında host'a yazılır (host saklar); dil değişince eski özet kalır,
     // eklenti yeniden düzenlenince yenilenir. Değişken ADLARI kimliktir, çevrilmez.
 
-    fun ozet(ayar: EklentiAyari, dil: String = MetinDili.TR): String = when (ayar) {
-        is EklentiAyari.Kildim -> MetinDili.sec(dil, "Şu anki vakti kılındı olarak işaretle", "Mark the current prayer as prayed")
-        is EklentiAyari.Kosul -> {
-            val ad = ayar.vakit?.let { VakitKodlari.gorunenAd(it, dil) }
-            when (ayar.olay) {
-                OtomasyonOlayi.VAKIT_GIRDI -> when {
-                    ayar.kip == KosulKipi.OLAY ->
-                        if (ad != null) MetinDili.sec(dil, "$ad vakti girdiğinde", "When $ad time begins")
-                        else MetinDili.sec(dil, "Bir vakit girdiğinde", "When a prayer time begins")
-                    ad != null -> MetinDili.sec(dil, "$ad vakti içindeyken", "While it's $ad time")
-                    else -> MetinDili.sec(dil, "Bir vakit içindeyken", "While it's a prayer time")
+    fun ozet(ayar: EklentiAyari, dil: String = MetinDili.TR): String {
+        val m = MetinDili.metinler(dil)
+        return when (ayar) {
+            is EklentiAyari.Kildim -> m.otoKildim
+            is EklentiAyari.Kosul -> {
+                val ad = ayar.vakit?.let { VakitKodlari.gorunenAd(it, dil) }
+                when (ayar.olay) {
+                    OtomasyonOlayi.VAKIT_GIRDI -> when {
+                        ayar.kip == KosulKipi.OLAY ->
+                            if (ad != null) MetinDili.bicim(m.otoGirdiAdli, "ad" to ad) else m.otoGirdi
+                        ad != null -> MetinDili.bicim(m.otoIcindeAdli, "ad" to ad)
+                        else -> m.otoIcinde
+                    }
+                    OtomasyonOlayi.VAKIT_CIKIYOR ->
+                        if (ad != null) MetinDili.bicim(m.otoCikiyorAdli, "ad" to ad, "dk" to "$CIKIYOR_ESIK_DK")
+                        else MetinDili.bicim(m.otoCikiyor, "dk" to "$CIKIYOR_ESIK_DK")
+                    OtomasyonOlayi.CAMIDE -> if (ayar.kip == KosulKipi.OLAY) m.otoCamideOlay else m.otoCamide
                 }
-                OtomasyonOlayi.VAKIT_CIKIYOR -> MetinDili.sec(
-                    dil,
-                    (if (ad != null) "$ad vakti çıkıyor" else "Vakit çıkıyor") + " ($CIKIYOR_ESIK_DK dk kala)",
-                    (if (ad != null) "$ad time is ending" else "Prayer time is ending") + " ($CIKIYOR_ESIK_DK min left)",
-                )
-                OtomasyonOlayi.CAMIDE ->
-                    if (ayar.kip == KosulKipi.OLAY) MetinDili.sec(dil, "Camide olduğunuz algılandığında", "When you're detected at a mosque")
-                    else MetinDili.sec(dil, "Camideyken", "While at a mosque")
             }
         }
     }
 
     /** Tasker'ın değişken seçicisi: "%ad\nEtiket\nAçıklama". */
     fun ilgiliDegiskenler(olay: OtomasyonOlayi, dil: String = MetinDili.TR): Array<String> {
-        val ortak = listOf(
-            "$D_VAKIT\n" + MetinDili.sec(dil, "Vakit\nVaktin adı (ör. Öğle)", "Prayer\nPrayer name (e.g. Dhuhr)"),
-            "$D_VAKIT_KODU\n" + MetinDili.sec(
-                dil,
-                "Vakit kodu\nsabah, ogle, ikindi, aksam ya da yatsi",
-                "Prayer code\nsabah, ogle, ikindi, aksam or yatsi",
-            ),
-            "$D_TARIH\n" + MetinDili.sec(
-                dil,
-                "Namaz günü\nYYYY-AA-GG; gece yarısından sonraki yatsı bir önceki güne aittir",
-                "Prayer day\nYYYY-MM-DD; Isha after midnight belongs to the previous day",
-            ),
-        )
+        val m = MetinDili.metinler(dil)
+        val ortak = listOf("$D_VAKIT\n" + m.degVakit, "$D_VAKIT_KODU\n" + m.degVakitKodu, "$D_TARIH\n" + m.degTarih)
         return when (olay) {
             OtomasyonOlayi.VAKIT_GIRDI -> ortak
-            OtomasyonOlayi.VAKIT_CIKIYOR -> ortak + ("$D_KALAN_DK\n" + MetinDili.sec(
-                dil,
-                "Kalan dakika\nVaktin çıkmasına kalan dakika",
-                "Minutes left\nMinutes left until the prayer time ends",
-            ))
-            OtomasyonOlayi.CAMIDE -> ortak + ("$D_CAMI\n" + MetinDili.sec(dil, "Cami\nAlgılanan caminin adı", "Mosque\nName of the detected mosque"))
+            OtomasyonOlayi.VAKIT_CIKIYOR -> ortak + ("$D_KALAN_DK\n" + m.degKalanDk)
+            OtomasyonOlayi.CAMIDE -> ortak + ("$D_CAMI\n" + m.degCami)
         }.toTypedArray()
     }
 

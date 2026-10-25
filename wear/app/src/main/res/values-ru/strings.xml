@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ÇEVİRİ: ru — İngilizce kopya; çeviri ajanı bu dosyanın tamamını çevirir. -->
+<!-- English. Terms: docs/ajan/coklu-dil.md glossary + src/core/dil/sozluk/en. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ru</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Next prayer</string>
+    <string name="tile_aciklama">The next prayer and its time</string>
+    <string name="komplikasyon_adi">Time left</string>
+    <string name="cikis_saati_komplikasyon_adi">Prayer end time</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Next prayer</string>
+    <string name="bugun_tile_adi">Today</string>
+    <string name="bugun_tile_aciklama">Today\'s five prayers; mark the ones you prayed with two taps</string>
+    <string name="ilerleme_komplikasyon_adi">Daily progress</string>
+    <string name="dagilim_komplikasyon_adi">Day overview</string>
+    <string name="kerahat_komplikasyon_adi">Makruh time</string>
+    <string name="son_dakikalar_kanal_adi">Last minutes</string>
+    <string name="son_dakikalar_kanal_aciklama">Countdown on the watch face in the last minutes of a prayer you haven\'t prayed</string>
+    <string name="tesbihat_adi">Tasbih</string>
+    <string name="tesbihat_kanal_adi">Tasbih</string>
+    <string name="tesbihat_kanal_aciklama">Quiet icon on the watch face to return to an unfinished tasbih</string>
+    <string name="kible_adi">Qibla</string>
+    <string name="kible_komplikasyon_adi">Qibla</string>
+    <string name="camideyim_kanal_adi">At the mosque</string>
+    <string name="camideyim_kanal_aciklama">Quiet icon on the watch face when your phone reports that you\'re at the mosque</string>
+    <string name="uyandirma_kanal_adi">Silent wake-up</string>
+    <string name="uyandirma_kanal_aciklama">Wakes you with vibration only, for Fajr and Tahajjud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">I\'ve prayed</string>
+    <string name="kilindi_isareti">✓ Prayed</string>
+    <string name="kapat">Dismiss</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Open Namaz Akışı on your phone to see prayer times.</string>
+    <string name="yuk_eskidi">Prayer time data is out of date. Open Namaz Akışı on your phone to refresh it.</string>
+    <string name="guncelleme_gerekli">Update Namaz Akışı on your watch.</string>
+    <string name="bildirim_izni">To get reminders even when your phone isn\'t with you, allow Namaz Akışı notifications in the watch settings.</string>
+    <string name="cami_soru">Are you at the mosque?</string>
+    <string name="cami_evet">Yes</string>
+    <string name="cami_evet_aciklama">Yes, I\'m at the mosque. Turns on Prayer mode</string>
+    <string name="cami_hayir">No</string>
+    <string name="cami_hayir_aciklama">No, I\'m not at the mosque</string>
+    <string name="camidesiniz">You\'re at the mosque</string>
+    <string name="cami_degil">This isn\'t a mosque</string>
+    <string name="cami_degil_aciklama">This isn\'t a mosque. This place won\'t count as a mosque again</string>
+    <string name="tesbihat_ac">Open the tasbih counter</string>
+    <string name="kible_ac">Open the Qibla compass</string>
+    <string name="ses_dene">Test the sound</string>
+    <string name="ses_dene_aciklama">Test the watch\'s read aloud</string>
+    <string name="telefonda_acin">Open on phone</string>
+    <string name="telefonda_ekran_ac">Open %1$s on your phone</string>
+    <string name="ekran_kaza">Qada log</string>
+    <string name="ekran_camideyim">At the mosque</string>
+    <string name="ekran_ayarlar">Settings</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">prayed, syncing</string>
+    <string name="durum_kilindi">prayed</string>
+    <string name="durum_girmedi">not yet time</string>
+    <string name="durum_simdiki">current prayer time, tap to mark</string>
+    <string name="durum_simdiki_kalan">current prayer time, %1$s, tap to mark</string>
+    <string name="durum_kilinmadi">not prayed, tap to mark</string>
+    <string name="isaretleyin">Mark as prayed</string>
+    <string name="esitleniyor">syncing</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Confirm I\'ve prayed</string>
+    <string name="vazgecin">Cancel</string>
+    <string name="vazgec">Cancel</string>
+    <string name="kerahat_vaktindesiniz">It\'s makruh time now.</string>
+    <string name="kilindi_dua">Prayed. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Prayer mode on, ends %1$s. Tap to turn it off</string>
+    <string name="namaz_modu_ac_aciklama">Turn on Prayer mode on your phone</string>
+    <string name="namaz_modu_kapatin">Turn off Prayer mode</string>
+    <string name="namaz_modu_acin">Turn on Prayer mode</string>
+    <string name="namaz_modu_acik_bitis">On, ends %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Finding the direction…</string>
+    <string name="kible_yuk_yok">Open Namaz Akışı on your phone to find the Qibla.</string>
+    <string name="kible_konum_yok">Turn on location on your phone to find the Qibla. If Namaz Akışı isn\'t up to date, update it.</string>
+    <string name="kible_sensor_yok">This watch has no compass sensor. You can see the Qibla direction on your phone.</string>
+    <string name="kible_kuzeyden">Qibla %1$d° (from north)</string>
+    <string name="kible_derece">Qibla %1$d°</string>
+    <string name="kible_telefonda_ac">Open the Qibla on your phone</string>
+    <string name="kible_erisim">%1$s. Qibla is %2$d° from north, %3$s</string>
+    <string name="kible_hizali">You are facing the Qibla</string>
+    <string name="kible_kalibrasyon">To calibrate, move your wrist in a figure 8 in the air</string>
+    <string name="kible_egim">Hold your watch parallel to the ground</string>
+    <string name="kible_titresim_acik">Vibration guidance on. Tap to turn it off</string>
+    <string name="kible_titresim_kapali">Vibration guidance off. Tap to turn it on</string>
+    <string name="kible_harf_kuzey">N</string>
+    <string name="kible_harf_dogu">E</string>
+    <string name="kible_harf_guney">S</string>
+    <string name="kible_harf_bati">W</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak transliterasyondur: çevrilmez. -->
+    <string name="tesbihat_tamam_erisim">Tasbih completed. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Total %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Count</string>
+    <string name="tesbihat_bastan_baslayin">Start over</string>
+    <string name="tesbihat_bastan_soru">Start over?</string>
+    <string name="tesbihat_sifirlanir">The count is reset.</string>
+    <string name="tesbihat_geri_al">Undo</string>
+    <string name="tesbihat_geri_al_aciklama">Undo the last count</string>
+    <string name="tesbihat_yeniden">Start again</string>
+    <string name="tesbihat_yeniden_aciklama">Start the tasbih again</string>
+    <string name="tesbihat_suruyor">Tasbih in progress: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">I\'ve prayed. Dismisses the wake-up</string>
+    <string name="uyandirma_kapat_aciklama">Dismiss the wake-up</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Open Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Tap for prayer times</string>
+    <string name="tile_telefonda_acin">Open the app on your phone</string>
+    <string name="tile_sonra">in %1$s</string>
+    <string name="tile_siradaki_aciklama">Next prayer %1$s, begins at %2$s. Open the app</string>
+    <string name="tile_giris">begins %1$s</string>
+    <string name="tile_cikis">ends %1$s</string>
+    <string name="bugun_bos_satir1">Open the app</string>
+    <string name="bugun_bos_satir2">on your phone</string>
+    <string name="bugun_acma_aciklamasi">Today %1$d/%2$d prayers prayed. Open the app</string>
+    <string name="bugun_sayi">Today %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Makruh time · tap again to confirm</string>
+    <string name="bugun_onay_tekrar">Tap again to confirm</string>
+    <string name="bugun_tamam">Today\'s prayers are complete</string>
+    <string name="bugun_kilinmadi">%1$s not prayed</string>
+    <string name="bugun_siradaki">Next: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Tap again</string>
+    <string name="bugun_kilindi">%1$s prayed</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s prayed, syncing</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Waiting for prayer times; open Namaz Akışı on your phone</string>
+    <string name="komplikasyon_bekleniyor">Waiting for times</string>
+    <string name="komplikasyon_vakit">Prayer</string>
+    <string name="komplikasyon_cikis">Ends</string>
+    <string name="komplikasyon_sirada">Next</string>
+    <string name="gun_durumu_aciklama">Today %2$d of %1$d prayers prayed</string>
+    <string name="gun_durumu_kilinmamis">%1$s; not prayed: %2$s</string>
+    <string name="komplikasyon_namaz">Prayers</string>
+    <string name="komplikasyon_kerahat">Makruh</string>
+    <string name="kerahat_icinde_aciklama">It\'s makruh time, ends %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Next makruh time %1$s</string>
+    <string name="kible_komplikasyon">Qibla is %1$d° from north. Open the compass</string>
+    <string name="kible_komplikasyon_konumlu">Qibla is %1$d° from north, %2$s. Open the compass</string>
+    <string name="kible_komplikasyon_konum_yok">Turn on location on your phone to find the Qibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Urgent reminder · Vibrating</string>
+    <string name="muhafiz_kanal_acil">Urgent reminder</string>
+    <string name="muhafiz_kanal_titresimli">Prayer reminder · Vibrating</string>
+    <string name="muhafiz_kanal">Prayer reminder</string>
+    <string name="muhafiz_kanal_aciklama">Prayer reminders shown on your watch even when your phone isn\'t with you</string>
+    <string name="son_dakikalar_cikis">Ends: %1$s</string>
+    <string name="son_dakikalar_bitis">Ends: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Time left until %1$s ends</string>
+    <string name="son_dakikalar_kalan_erisim">Time left for %1$s</string>
+    <string name="cami_namaz_modu_bitis">Prayer mode · ends %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Opened on your phone</string>
+    <string name="telefona_ulasilamadi">Your phone can\'t be reached</string>
+</resources>

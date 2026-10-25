@@ -25,7 +25,7 @@ class SaatDiliTest {
         for (v in vakitler) assertEquals(VakitHesabi.ADLAR[v], SaatDiliTr.vakitAdi(v))
         assertSame(SaatDiliTr, saatDili("tr"))
         assertSame(SaatDiliEn, saatDili("en"))
-        assertSame(SaatDiliTr, saatDili("de"))
+        assertSame(SaatDiliTr, saatDili("ar"))
         // Varsayılan parametre Türkçedir: açık "tr" ile aynı sonuç.
         assertEquals(KalanSure.gosterim("ogle", "ikindi"), KalanSure.gosterim("ogle", "ikindi", "tr"))
         assertEquals(AnaEkranKarari.kur(yuk, v("ogle") + 10 * dk, bugun.tarih, emptySet()),

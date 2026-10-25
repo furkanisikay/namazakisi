@@ -38,31 +38,170 @@ enum TvRenk {
 /// `values-en` ile ayni. Arayuz kaydi: Turkcede kibar "siz", Ingilizcede notr.
 struct TvMetin {
     let dil: String
-    var en: Bool { dil == "en" }
+    private var t: TvArayuzMetinleri { TvArayuzMetinleri.dil(dil) }
 
-    var sehrinizSecin: String { en ? "Select your city" : "Şehrinizi seçin" }
-    var ilMerkezi: String {
-        en ? "Prayer times are calculated for the province center. You can change your choice later."
-            : "Namaz vakitleri il merkezine göre hesaplanır. Seçiminizi sonra değiştirebilirsiniz."
-    }
-    func ilSecErisim(_ il: String) -> String { en ? "\(il), select" : "\(il), seçin" }
-    func kalan(_ ad: String) -> String { en ? "Time left until \(ad)" : "\(ad) vaktine kalan" }
-    func kalanErisim(_ ad: String, _ sure: String) -> String {
-        en ? "Time left until \(ad): \(sure)" : "\(ad) vaktine kalan süre \(sure)"
-    }
-    var konumuDegistirin: String { en ? "Change location" : "Konumu değiştirin" }
+    var sehrinizSecin: String { t.sehrinizSecin }
+    var ilMerkezi: String { t.ilMerkezi }
+    func ilSecErisim(_ il: String) -> String { TvDili.bicim(t.ilSecErisim, ["il": il]) }
+    func kalan(_ ad: String) -> String { TvDili.bicim(t.kalan, ["ad": ad]) }
+    func kalanErisim(_ ad: String, _ sure: String) -> String { TvDili.bicim(t.kalanErisim, ["ad": ad, "sure": sure]) }
+    var konumuDegistirin: String { t.konumuDegistirin }
     func kerahatSuruyor(_ tur: String, _ bitis: String, _ aciklama: String) -> String {
-        en ? "Makruh time: \(tur), ends \(bitis). \(aciklama)" : "Kerahat vakti: \(tur), bitiş \(bitis). \(aciklama)"
+        TvDili.bicim(t.kerahatSuruyor, ["tur": tur, "bitis": bitis, "aciklama": aciklama])
     }
     func siradakiKerahat(_ tur: String, _ bas: String, _ bit: String) -> String {
-        en ? "Next makruh time: \(tur) \(bas)–\(bit)" : "Sıradaki kerahat: \(tur) \(bas)–\(bit)"
+        TvDili.bicim(t.siradakiKerahat, ["tur": tur, "bas": bas, "bit": bit])
     }
-    func cumaBilgisi(_ giris: String) -> String {
-        en ? "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins \(giris))."
-            : "Bugün cuma. Cuma namazı öğle vaktinde kılınır (giriş \(giris))."
-    }
-    var suAnkiEk: String { en ? ", current prayer" : ", şu anki vakit" }
-    var siradakiEk: String { en ? ", next prayer" : ", sıradaki vakit" }
+    func cumaBilgisi(_ giris: String) -> String { TvDili.bicim(t.cumaBilgisi, ["giris": giris]) }
+    var suAnkiEk: String { t.suAnkiEk }
+    var siradakiEk: String { t.siradakiEk }
+}
+
+/// `TvMetin` dil tablosu. Yer tutucular `{il}`, `{ad}`, `{sure}`, `{tur}`, `{bitis}`,
+/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms;
+/// cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
+struct TvArayuzMetinleri {
+    let sehrinizSecin: String
+    let ilMerkezi: String
+    let ilSecErisim: String
+    let kalan: String
+    let kalanErisim: String
+    let konumuDegistirin: String
+    let kerahatSuruyor: String
+    let siradakiKerahat: String
+    let cumaBilgisi: String
+    let suAnkiEk: String
+    let siradakiEk: String
+
+    static let tr = TvArayuzMetinleri(
+        sehrinizSecin: "Şehrinizi seçin",
+        ilMerkezi: "Namaz vakitleri il merkezine göre hesaplanır. Seçiminizi sonra değiştirebilirsiniz.",
+        ilSecErisim: "{il}, seçin",
+        kalan: "{ad} vaktine kalan",
+        kalanErisim: "{ad} vaktine kalan süre {sure}",
+        konumuDegistirin: "Konumu değiştirin",
+        kerahatSuruyor: "Kerahat vakti: {tur}, bitiş {bitis}. {aciklama}",
+        siradakiKerahat: "Sıradaki kerahat: {tur} {bas}–{bit}",
+        cumaBilgisi: "Bugün cuma. Cuma namazı öğle vaktinde kılınır (giriş {giris}).",
+        suAnkiEk: ", şu anki vakit",
+        siradakiEk: ", sıradaki vakit"
+    )
+
+    static let en = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+
+    // ÇEVİRİ: id
+    static let id = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+
+    // ÇEVİRİ: de
+    static let de = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+
+    // ÇEVİRİ: fr
+    static let fr = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+
+    // ÇEVİRİ: bs
+    static let bs = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+
+    // ÇEVİRİ: ru
+    static let ru = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+
+    // ÇEVİRİ: ms
+    static let ms = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+    static let tablo: [String: TvArayuzMetinleri] = [
+        "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
+    ]
+
+    static func dil(_ kod: String) -> TvArayuzMetinleri { tablo[TvDili.coz(kod)] ?? tr }
 }
 
 struct TvKokGorunumu: View {

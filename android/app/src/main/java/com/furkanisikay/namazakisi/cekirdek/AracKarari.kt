@@ -38,15 +38,10 @@ object AracKarari {
     const val CAMI_YOK_METNI = "Yakınınızda kayıtlı cami bulunamadı."
 
     /** [KONUM_YOK_METNI]'nin arayüz dilindeki hâli. */
-    fun konumYokMetni(dil: String = MetinDili.TR): String = MetinDili.sec(
-        dil,
-        KONUM_YOK_METNI,
-        "Location is needed to show nearby mosques. When your car is safely stopped, open Namaz Akışı on your phone and allow location access.",
-    )
+    fun konumYokMetni(dil: String = MetinDili.TR): String = MetinDili.metinler(dil).aracKonumYok
 
     /** [CAMI_YOK_METNI]'nin arayüz dilindeki hâli. */
-    fun camiYokMetni(dil: String = MetinDili.TR): String =
-        MetinDili.sec(dil, CAMI_YOK_METNI, "No listed mosques were found near you.")
+    fun camiYokMetni(dil: String = MetinDili.TR): String = MetinDili.metinler(dil).aracCamiYok
 
     /** Host sınırı bilinmiyorsa liste en fazla bu kadar cami gösterir. */
     const val VARSAYILAN_CAMI_SAYISI = 6
@@ -71,11 +66,11 @@ object AracKarari {
         if (aktif != null && bitis != null && kildim == KildimDurumu.KILINABILIR) {
             val dk = AsistanKarari.kalanDakika(bitis, simdiMs)
             val ad = VakitKodlari.gorunenAd(aktif.kod, dil)
-            return MetinDili.sec(dil, "$ad · $dk dk kaldı", "$ad · $dk min left")
+            return MetinDili.bicim(MetinDili.metinler(dil).aracKalan, "ad" to ad, "dk" to "$dk")
         }
         val s = durum.sonraki ?: return VARSAYILAN_BASLIK
         val ad = VakitKodlari.gorunenAd(s.kod, dil)
-        return MetinDili.sec(dil, "Sıradaki $ad · ${saat(s.ms)}", "Next: $ad · ${saat(s.ms)}")
+        return MetinDili.bicim(MetinDili.metinler(dil).aracSiradaki, "ad" to ad, "saat" to saat(s.ms))
     }
 
     /** Listede gösterilecek cami sayısı (host sınırı `ConstraintManager`'dan gelir). */

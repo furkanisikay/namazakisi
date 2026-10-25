@@ -38,11 +38,24 @@ object CanliGuncellemeKurallari {
 
     /**
      * Kısa süre birimleri, arayüz diline göre (JS `sozluk/<dil>/sure.ts > kisa`).
-     * Bilinmeyen dil Türkçeye düşer. Yeni dil: buraya bir satır + JS sözlüğü.
+     * Bilinmeyen dil Türkçeye düşer. Yeni dil: buraya bir satır + JS sözlüğü. Sıra tr, en,
+     * id, de, fr, bs, ru, ms; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
      */
-    private val KISA_BIRIMLER: Map<String, Pair<String, String>> = mapOf(
+    internal val KISA_BIRIMLER: Map<String, Pair<String, String>> = mapOf(
         "tr" to ("sa" to "dk"),
         "en" to ("h" to "min"),
+        // ÇEVİRİ: id
+        "id" to ("h" to "min"),
+        // ÇEVİRİ: de
+        "de" to ("h" to "min"),
+        // ÇEVİRİ: fr
+        "fr" to ("h" to "min"),
+        // ÇEVİRİ: bs
+        "bs" to ("h" to "min"),
+        // ÇEVİRİ: ru
+        "ru" to ("h" to "min"),
+        // ÇEVİRİ: ms
+        "ms" to ("h" to "min"),
     )
 
     /**
