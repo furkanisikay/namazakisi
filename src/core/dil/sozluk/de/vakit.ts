@@ -1,7 +1,7 @@
 import type { Sozluk } from '../tr';
 
 /**
- * Almancada vakit adları özel addır (geçici temel takım; ülkeye göre biçim sonra). Almancada
+ * Almancada vakit adları özel addır (temel takım; seçenekler `core/dil/vakitTakimlari.ts`). Almancada
  * isimler cümle içinde de büyük harfle başlar → `kucuk` adlarla aynıdır; yalnız sıfat/ortaç
  * biçimleri (`durumKucuk`) küçük yazılır.
  */
@@ -9,7 +9,8 @@ export const vakit: Sozluk['vakit'] = {
   adlar: { imsak: 'Fajr', gunes: 'Sonnenaufgang', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
   buyuk: { imsak: 'FAJR', gunes: 'SONNENAUFGANG', ogle: 'DHUHR', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
   kucuk: { imsak: 'Fajr', gunes: 'Sonnenaufgang', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  imsakVakti: 'Imsak',
+  /** Mawaqit vb.'de "Imsak" Fajr'dan ~10 dk önceki ihtiyat saatidir; uygulamanın imsak saati fecrin girişidir (Diyanet DE takımı "Imsak" der: Diyanet'te ikisi aynı saattir). */
+  imsakVakti: 'Fajr',
   cuma: 'Freitagsgebet',
   cumaKucuk: 'Freitagsgebet',
   gunesDogusu: 'Sonnenaufgang',
