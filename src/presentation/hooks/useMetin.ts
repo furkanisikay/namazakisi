@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import { aktifDil, dilDegisiminiDinle, sozluk } from '../../core/dil/aktifDil';
+import { aktifDil, dilDegisiminiDinle, metin } from '../../core/dil/aktifDil';
 import type { Sozluk } from '../../core/dil/sozluk/tr';
 import type { DilKodu } from '../../core/dil/diller';
 
@@ -10,7 +10,7 @@ import type { DilKodu } from '../../core/dil/diller';
  * kalıcılık ve ayar ekranı içindir). Yer tutucu/çoğul için `bicim`/`sayili`.
  */
 export function useMetin(): Sozluk {
-  return sozluk(useSyncExternalStore(dilDegisiminiDinle, aktifDil));
+  return useSyncExternalStore(dilDegisiminiDinle, metin);
 }
 
 /** Etkin dil kodu (aynı abonelik; Redux'a bağlı değil). */

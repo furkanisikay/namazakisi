@@ -11,6 +11,7 @@ import { bicimle } from './bicim';
 import { cogulSec } from './cogul';
 import { dilKoduMu, VARSAYILAN_DIL, type DilKodu } from './diller';
 import type { CogulMetin } from './tipler';
+import type { VakitAdiTakimi } from './vakitTakimlari';
 import { en } from './sozluk/en';
 import { id } from './sozluk/id';
 import { de } from './sozluk/de';
@@ -23,6 +24,14 @@ import { tr, type Sozluk } from './sozluk/tr';
 const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, ru, ms };
 
 let aktif: DilKodu = VARSAYILAN_DIL;
+/** Etkin dilin vakit adı takımı (`null` = sözlüğün kendi adları). Dil değişince sıfırlanır. */
+let aktifTakim: VakitAdiTakimi | null = null;
+/**
+ * Etkin dilin takım uygulanmış sözlüğü. ÖNBELLEK zorunlu: `useMetin` bunu
+ * `useSyncExternalStore` anlık görüntüsü olarak döndürür; her çağrıda yeni nesne React'i
+ * sonsuz döngüye sokar. Yalnız dil ya da takım değişince yenilenir.
+ */
+let onbellek: Sozluk | null = null;
 const dinleyiciler = new Set<() => void>();
 
 /** Etkin dil değişince haber al (ekranların `useMetin` aboneliği). Aboneliği bırakan fonksiyon döner. */
@@ -46,24 +55,48 @@ export function aktifDiliKur(kod: unknown): boolean {
   const yeni = dilKoduMu(kod) ? kod : VARSAYILAN_DIL;
   if (yeni === aktif) return false;
   aktif = yeni;
+  aktifTakim = null;
+  onbellek = null;
   bildir();
   return true;
 }
 
 export function aktifDilSifirla(): void {
-  if (aktif === VARSAYILAN_DIL) return;
+  if (aktif === VARSAYILAN_DIL && aktifTakim === null) return;
   aktif = VARSAYILAN_DIL;
+  aktifTakim = null;
+  onbellek = null;
   bildir();
 }
 
-/** Bir dilin sözlüğü (ekran `useMetin`, test ve önizleme için). */
-export function sozluk(kod: DilKodu = aktif): Sozluk {
-  return SOZLUKLER[kod];
+/** Etkin dilin vakit adı takımını kurar (`null` = sözlüğün adları); değiştiyse `true`. */
+export function vakitTakiminiKur(takim: VakitAdiTakimi | null): boolean {
+  if ((takim?.id ?? null) === (aktifTakim?.id ?? null)) return false;
+  aktifTakim = takim;
+  onbellek = null;
+  bildir();
+  return true;
 }
 
-/** Etkin dilin sözlüğü (headless ve servisler için). */
+export function aktifVakitTakimi(): VakitAdiTakimi | null {
+  return aktifTakim;
+}
+
+/**
+ * Bir dilin sözlüğü. Etkin dil için takım uygulanmış (önbellekteki) sözlük döner; başka dil
+ * için ham sözlük (önizleme, test).
+ */
+export function sozluk(kod: DilKodu = aktif): Sozluk {
+  return kod === aktif ? metin() : SOZLUKLER[kod];
+}
+
+/** Etkin dilin sözlüğü (headless, servisler ve `useMetin`). Referansı yalnız dil/takım değişince değişir. */
 export function metin(): Sozluk {
-  return SOZLUKLER[aktif];
+  if (!onbellek) {
+    const temel = SOZLUKLER[aktif];
+    onbellek = aktifTakim ? { ...temel, vakit: { ...temel.vakit, ...aktifTakim.adlar } } : temel;
+  }
+  return onbellek;
 }
 
 /** Yer tutuculu metni doldurur: `bicim(m.kurulum.ileDevam, { ad })`. */

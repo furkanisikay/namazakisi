@@ -9,8 +9,10 @@ import { I18nManager, Platform, Settings } from 'react-native';
 import { Depolama } from '../../data/local/Depolama';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
-import { aktifDil, aktifDiliKur } from '../../core/dil/aktifDil';
+import { aktifDil, aktifDiliKur, aktifVakitTakimi, vakitTakiminiKur } from '../../core/dil/aktifDil';
 import { cihazDilindenSec, DILLER, dilKoduMu, VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
+import { takimCoz, takimKimlikleri } from '../../core/dil/vakitTakimlari';
+import { kayitliUlkeKodu } from '../../core/konum/ulkeTespiti';
 
 /**
  * Diskteki kayıt. `kod` yalnız kullanıcının açık seçimidir (yoksa cihaz dili izlenir).
@@ -23,6 +25,11 @@ export interface DilAyari {
   ozelAnonsDili?: DilKodu;
   /** Çok dil öncesi kurulum göçü yapıldı mı (bkz. `eskiKurulumGocu`). */
   goc?: 1;
+  /**
+   * Dil başına vakit adı takımının AÇIK seçimi (`core/dil/vakitTakimlari`). Yoksa ülke
+   * varsayılanı izlenir; dil değişince her dilin seçimi korunur.
+   */
+  vakitTakimi?: Partial<Record<DilKodu, string>>;
 }
 
 /** Kayıttaki dil yalnız SEÇİLEBİLİRSE geçerlidir (yedekten gelen yarım dil kendiliğinden açılmaz). */
@@ -88,15 +95,59 @@ async function eskiKurulumGocu(ham: DilAyari | null): Promise<DilAyari | null> {
   });
 }
 
-async function diskten(): Promise<DilKodu> {
+/** Kayıtlı konumun ülkesi (ham depolamadan; arka planda store yok). Okunamazsa null. */
+async function kayitliUlke(): Promise<string | null> {
   try {
-    const ham = await eskiKurulumGocu(await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI));
+    const konum = await Depolama.oku<Parameters<typeof kayitliUlkeKodu>[0]>(DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI);
+    return konum && typeof konum === 'object' ? kayitliUlkeKodu(konum) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Takımın adlarını native'e iter (widget, native bildirim, kısayol); `null` = dil tablosu.
+ * Eski native'de fonksiyon yoksa atlanır. Asla fırlatmaz.
+ */
+function vakitAdlariniBildir(): void {
+  const takim = aktifVakitTakimi();
+  const json = takim ? JSON.stringify(takim.adlar) : null;
+  for (const yukle of [
+    () => require('../../../modules/expo-countdown-notification/src'),
+    () => require('../../../modules/expo-siri-kisayollari/src'),
+  ]) {
+    try {
+      (yukle() as { vakitAdlariniAyarla?: (j: string | null) => void }).vakitAdlariniAyarla?.(json);
+    } catch {
+      // Köprü yok (test/eski sürüm): native adlar dil tablosundan gelir.
+    }
+  }
+}
+
+/** Etkin dilin vakit adı takımını kayıttan ve konumun ülkesinden çözüp kurar. Asla fırlatmaz. */
+async function takimiKur(ham?: DilAyari | null): Promise<void> {
+  try {
+    const kayit = ham === undefined ? await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI) : ham;
+    const dil = aktifDil();
+    vakitTakiminiKur(takimCoz(dil, kayitNesnesi(kayit ?? null).vakitTakimi?.[dil], await kayitliUlke()));
+  } catch (e) {
+    Logger.warn('DilServisi', 'Vakit adı takımı çözülemedi, sözlük adları kullanılıyor', e);
+    vakitTakiminiKur(null);
+  }
+  vakitAdlariniBildir();
+}
+
+async function diskten(): Promise<DilKodu> {
+  let ham: DilAyari | null = null;
+  try {
+    ham = await eskiKurulumGocu(await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI));
     const kod = secilebilirKod(ham?.kod) ?? cihazDilindenSec(cihazYerelAyari()) ?? VARSAYILAN_DIL;
     aktifDiliKur(kod);
   } catch (e) {
     Logger.warn('DilServisi', 'Dil ayarı okunamadı, Türkçe kullanılıyor', e);
   }
   anonsDiliniBildir(aktifDil());
+  await takimiKur(ham);
   return aktifDil();
 }
 
@@ -114,11 +165,48 @@ export const DilServisi = {
 
   /** Kullanıcının seçimini kaydeder ve kurar; dil değiştiyse `true`. */
   async kaydet(kod: DilKodu): Promise<boolean> {
-    await Depolama.guncelle<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI, (m) => ({ ...kayitNesnesi(m), kod }));
+    const ham = await Depolama.guncelle<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI, (m) => ({ ...kayitNesnesi(m), kod }));
     const degisti = aktifDiliKur(kod);
-    yukleme = Promise.resolve(aktifDil());
     anonsDiliniBildir(aktifDil());
+    await takimiKur(ham);
+    yukleme = Promise.resolve(aktifDil());
     return degisti;
+  },
+
+  /**
+   * Etkin dilin vakit adı takımının açık seçimi; `null` = otomatik (ülkeye göre). Geçersiz kimlik
+   * kaydedilmez. Kurulan takım değiştiyse `true` (çağıran planları `konumDegistiUygula` ile yeniler).
+   */
+  async vakitTakimiKaydet(id: string | null): Promise<boolean> {
+    const dil = aktifDil();
+    if (id !== null && !takimKimlikleri(dil).includes(id)) return false;
+    const onceki = aktifVakitTakimi()?.id ?? null;
+    const ham = await Depolama.guncelle<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI, (m) => {
+      const k = kayitNesnesi(m);
+      const { [dil]: _eski, ...digerleri } = k.vakitTakimi && typeof k.vakitTakimi === 'object' ? k.vakitTakimi : {};
+      return { ...k, vakitTakimi: id === null ? digerleri : { ...digerleri, [dil]: id } };
+    });
+    await takimiKur(ham);
+    return (aktifVakitTakimi()?.id ?? null) !== onceki;
+  },
+
+  /** Etkin dilin vakit adı takımının açık seçimi (`null` = otomatik). ASLA reddetmez. */
+  async vakitTakimiSecimi(): Promise<string | null> {
+    try {
+      const secim = kayitNesnesi(await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI)).vakitTakimi?.[aktifDil()];
+      return typeof secim === 'string' && takimKimlikleri(aktifDil()).includes(secim) ? secim : null;
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * Konum (ülke) değişince ülke varsayılanını yeniden çözer. Konum yayma noktasının
+   * (`konumDegistiUygula`) İLK adımıdır: metin üreten tüketicilerden önce koşar. Asla fırlatmaz.
+   */
+  async vakitTakiminiYenile(): Promise<void> {
+    await DilServisi.hazir();
+    await takimiKur();
   },
 
   /** Kullanıcının açık bir seçimi var mı (yoksa cihaz dili izlenir)? Okunamazsa `false`. */

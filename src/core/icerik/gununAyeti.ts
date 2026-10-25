@@ -2,8 +2,9 @@
  * Günün ayeti — SAF seçim ve görünüm (widget, duvar kâğıdı ve uygulama aynı kaynaktan).
  *
  * Gün NAMAZ GÜNÜDÜR (sahip kararı 2026-10-24): ayet imsakta değişir; gece yarısından sonra
- * yatsı sürerken dünün ayeti kalır. Seçim namaz gününün tarihinden deterministiktir ve dilden
- * bağımsızdır: aynı gün Türkçe ve İngilizce kullanıcı aynı ayeti görür. Native yüzeyler ayeti
+ * yatsı sürerken dünün ayeti kalır. Seçim namaz gününün tarihinden ve dilin havuzundan
+ * deterministiktir: Türkçe ile İngilizce aynı havuzu paylaşır; diğer diller meali sığan alt
+ * kümeden seçer (`dilHavuzu`), o yüzden aynı gün farklı ayet görebilir. Native yüzeyler ayeti
  * kendileri seçmez; JS bir sonraki günleri `gununAyetiPlani` ile yazar, onlar `baslangicMs`'i
  * geçmiş son kaydı çizer (rakiplerdeki "widget ile uygulama farklı ayet" şikâyetinin çaresi).
  *
@@ -11,7 +12,7 @@
  */
 import { aktifDil, bicim, sozluk } from '../dil/aktifDil';
 import type { DilKodu } from '../dil/diller';
-import { GUNUN_AYETI_HAVUZU, GUNUN_AYETI_KAYNAKLARI, type GununAyetiKaydi } from '../data/gununAyetiHavuzu';
+import { GUNUN_AYETI_HAVUZU, GUNUN_AYETI_KAYNAKLARI, type GununAyetiKaydi, type MealDili } from '../data/gununAyetiHavuzu';
 import { sureAdiTr } from '../data/sureAdlari';
 
 /** Verilen takvim gününün imsakı; kaynak yoksa `null` (yapısal: `ImsakSaglayici`). */
@@ -36,8 +37,26 @@ export function gunNumarasi(namazGunu: string): number {
   return Math.floor(Date.UTC(y, a - 1, g) / 86_400_000);
 }
 
+const mealDiliMi = (dil: DilKodu): dil is DilKodu & MealDili => dil in GUNUN_AYETI_KAYNAKLARI.mealler;
+
+const dilHavuzlari = new Map<DilKodu, readonly GununAyetiKaydi[]>();
+
+/**
+ * Dilin ayet havuzu: o dilde meali olan kayıtlar. Meal kaynağı olmayan dil tüm havuzu
+ * kullanır ve yalnız Arapçayı gösterir.
+ */
+export function dilHavuzu(dil: DilKodu): readonly GununAyetiKaydi[] {
+  let havuz = dilHavuzlari.get(dil);
+  if (!havuz) {
+    havuz = mealDiliMi(dil) ? GUNUN_AYETI_HAVUZU.filter((k) => k.mealler[dil] != null) : GUNUN_AYETI_HAVUZU;
+    dilHavuzlari.set(dil, havuz);
+  }
+  return havuz;
+}
+
 /** Namaz gününün ayeti. Havuz boyu `ADIM`'ın katıysa adım bir artırılır (tam tur korunur). */
-export function gununAyetiKaydi(namazGunu: string, havuz: readonly GununAyetiKaydi[] = GUNUN_AYETI_HAVUZU): GununAyetiKaydi {
+export function gununAyetiKaydi(namazGunu: string, dil: DilKodu = aktifDil()): GununAyetiKaydi {
+  const havuz = dilHavuzu(dil);
   const n = havuz.length;
   let adim = ADIM;
   while (ebob(adim, n) !== 1) adim++;
@@ -61,8 +80,8 @@ export interface GununAyetiGorunumu {
 
 export function gununAyetiGorunumu(kayit: GununAyetiKaydi, dil: DilKodu = aktifDil()): GununAyetiGorunumu {
   const m = sozluk(dil).gununAyeti;
-  const kunye = dil === 'tr' || dil === 'en' ? GUNUN_AYETI_KAYNAKLARI.mealler[dil] : null;
-  const meal = dil === 'tr' || dil === 'en' ? kayit.mealler[dil] : null;
+  const kunye = mealDiliMi(dil) ? GUNUN_AYETI_KAYNAKLARI.mealler[dil] : null;
+  const meal = mealDiliMi(dil) ? (kayit.mealler[dil] ?? null) : null;
   const yayimci = kunye ? { yayimci: kunye.baslik, surum: kunye.surum } : null;
   return {
     ref: kayit.ref,
@@ -125,7 +144,7 @@ export function gununAyetiPlani(
     plan.push({
       gun: gunMetni,
       baslangicMs: gunBaslangici(gun, imsak).getTime(),
-      ...gununAyetiGorunumu(gununAyetiKaydi(gunMetni), dil),
+      ...gununAyetiGorunumu(gununAyetiKaydi(gunMetni, dil), dil),
     });
   }
   return plan;

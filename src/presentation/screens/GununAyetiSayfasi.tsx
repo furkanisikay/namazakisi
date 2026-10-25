@@ -63,7 +63,7 @@ export const GununAyetiSayfasi: React.FC = () => {
   const lng = koordinat?.lng ?? 0;
   const { bugun, ayet, oncekiler } = useMemo(() => {
     const gun = aktifNamazGunu(simdi, koordinatImsakKaynagi(lat === 0 && lng === 0 ? null : { lat, lng }));
-    const gorunum = (t: Date) => gununAyetiGorunumu(gununAyetiKaydi(isoGun(t)), dil);
+    const gorunum = (t: Date) => gununAyetiGorunumu(gununAyetiKaydi(isoGun(t), dil), dil);
     const liste = Array.from({ length: ONCEKI_GUN_SAYISI }, (_, i) => {
       const t = new Date(gun.getFullYear(), gun.getMonth(), gun.getDate() - i - 1);
       return { tarih: t, ayet: gorunum(t) };

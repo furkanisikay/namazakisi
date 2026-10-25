@@ -25,7 +25,10 @@ jest.mock('../../../../modules/expo-muhafiz-anons/src', () => ({ anonsDiliniAyar
 
 import { I18nManager, Platform } from 'react-native';
 import { DilServisi } from '../DilServisi';
-import { aktifDil, aktifDilSifirla } from '../../../core/dil/aktifDil';
+import { aktifDil, aktifDilSifirla, metin } from '../../../core/dil/aktifDil';
+import { de } from '../../../core/dil/sozluk/de';
+import { fr } from '../../../core/dil/sozluk/fr';
+import { TEMEL_TAKIM } from '../../../core/dil/vakitTakimlari';
 import { DILLER } from '../../../core/dil/diller';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 
@@ -150,4 +153,63 @@ describe('DilServisi', () => {
     expect(mockAndroidArayuz).toHaveBeenLastCalledWith('en');
     expect(mockIosArayuz).toHaveBeenLastCalledWith('en');
   });
+
+  describe('vakit adı takımı', () => {
+    const mockAdlar = jest.fn();
+    beforeEach(() => {
+      const k = require('../../../../modules/expo-countdown-notification/src');
+      k.vakitAdlariniAyarla = (j: string | null) => mockAdlar(j);
+      mockAdlar.mockClear();
+    });
+    afterEach(() => {
+      delete require('../../../../modules/expo-countdown-notification/src').vakitAdlariniAyarla;
+    });
+
+    it('seçim yoksa konumun ülkesine göre varsayılan; açık seçim ülkeyi ezer', async () => {
+      disk[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI] = { konumModu: 'otomatik', ulkeKodu: 'DZ' };
+      await DilServisi.kaydet('fr');
+      expect(metin().vakit.adlar.imsak).toBe('Sobh');
+      expect(mockAdlar).toHaveBeenLastCalledWith(expect.stringContaining('Sobh'));
+
+      expect(await DilServisi.vakitTakimiKaydet(TEMEL_TAKIM)).toBe(true);
+      expect(metin().vakit.adlar).toEqual(fr.vakit.adlar);
+      expect(mockAdlar).toHaveBeenLastCalledWith(null);
+      expect(await DilServisi.vakitTakimiSecimi()).toBe(TEMEL_TAKIM);
+    });
+
+    it('konum ülkesi değişince yayma adımı varsayılanı yeniden çözer', async () => {
+      disk[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI] = { konumModu: 'otomatik', ulkeKodu: 'FR' };
+      await DilServisi.kaydet('fr');
+      disk[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI] = { konumModu: 'otomatik', ulkeKodu: 'TN' };
+      await DilServisi.vakitTakiminiYenile();
+      expect(metin().vakit.adlar.ogle).toBe('Dohr');
+      expect(metin().vakit.adlar.aksam).toBe('Maghreb');
+    });
+
+    it('her dilin seçimi ayrı tutulur; bilinmeyen kimlik kaydedilmez ve diskte yok sayılır', async () => {
+      await DilServisi.kaydet('de');
+      expect(await DilServisi.vakitTakimiKaydet('yok-boyle')).toBe(false);
+      expect(await DilServisi.vakitTakimiKaydet('diyanet-de')).toBe(true);
+      expect(metin().vakit.adlar.ogle).toBe('Mittagsgebet');
+      await DilServisi.kaydet('fr');
+      expect(metin().vakit.adlar.ogle).not.toBe('Mittagsgebet');
+      await DilServisi.kaydet('de');
+      expect(metin().vakit.adlar.ogle).toBe('Mittagsgebet');
+
+      disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'de', vakitTakimi: { de: 'silinmis-takim' } };
+      await DilServisi.vakitTakiminiYenile();
+      expect(metin().vakit.adlar).toEqual(de.vakit.adlar);
+      expect(await DilServisi.vakitTakimiSecimi()).toBeNull();
+    });
+
+    it('otomatiğe dönüş yalnız etkin dilin seçimini siler', async () => {
+      await DilServisi.kaydet('de');
+      await DilServisi.vakitTakimiKaydet('turkce');
+      await DilServisi.kaydet('fr');
+      await DilServisi.vakitTakimiKaydet('magrip');
+      await DilServisi.vakitTakimiKaydet(null);
+      expect((disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] as { vakitTakimi: object }).vakitTakimi).toEqual({ de: 'turkce' });
+    });
+  });
 });
+

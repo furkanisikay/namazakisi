@@ -4,7 +4,7 @@ Ne zaman okunur: günün ayeti havuzuna/üreticisine, ayet widget'ına (Android,
 
 ## Sahip kararları (2026-10-24)
 - **Yalnız ayet; hadis EKLENMEZ.** İçerik ayarı yok.
-- **Gün imsakta değişir** (namaz günü). Aynı gün her dilde aynı ayet.
+- **Gün imsakta değişir** (namaz günü). Türkçe ve İngilizce aynı gün aynı ayeti görür; diğer diller kendi alt havuzundan seçer (aşağıda).
 - **Havuz kuralları:** meal her dilde en çok 200 harf; dipnot işaretli, önceki ayetin cümlesini sürdüren, yalnız Peygamber'e hitap eden ve vakte özgü ayet girmez; İsrâ 17/79 yok.
 - **Duvar kâğıdında Arapça varsayılan KAPALI.** Fıkıh notu ("Bazı âlimler, ekranında ayet görünen telefonla lavaboya girilmemesini tavsiye eder.") duvar kâğıdını açarken onay penceresinde ve Arapça satırının altında gösterilir.
 - **iOS'ta duvar kâğıdı uygulamadan değiştirilemez** (genel API yok): Kısayollar rehberi + App Intent.
@@ -12,7 +12,22 @@ Ne zaman okunur: günün ayeti havuzuna/üreticisine, ayet widget'ına (Android,
 
 ## Kaynaklar ve lisans
 - **Arapça: Tanzil Uthmani 1.1, birebir; değiştirilemez.** Gösterildiği her yerde "Tanzil" kaynağı ve tanzil.net bağlantısı (sayfada). Tanzil txt çıktısı sûrelerin 1. ayetine besmele ekler (1 ve 9 hariç) → 1. ayetler havuza girmez.
-- **Mealler: QuranEnc `turkish_rwwad`, `english_saheeh`, birebir ve KESİLMEDEN; yayımcı + "QuranEnc <sürüm>" her yüzeyde.** QuranEnc User-Agent başlığı olmadan 403 döner (üretici gönderir). Yeni sürümde `node scripts/icerik/gunun-ayeti-uret.js` yeniden koşar; nöbetçi `gununAyetiHavuzu.test.ts` kuralları veride yeniden denetler.
+- **Mealler: QuranEnc, birebir ve KESİLMEDEN; yayımcı + "QuranEnc <sürüm>" her yüzeyde.** QuranEnc User-Agent başlığı olmadan 403 döner (üreticiler gönderir). Yeni sürümde `node scripts/icerik/gunun-ayeti-uret.js` ve `ayet-mealleri-uret.js` yeniden koşar; nöbetçi `gununAyetiHavuzu.test.ts` kuralları veride yeniden denetler.
+
+## Meal kaynakları (dil başına)
+| Dil | QuranEnc anahtarı | Dil havuzu (2026-10-25) |
+|---|---|---|
+| tr / en | `turkish_rwwad` / `english_saheeh` | 186 (havuzu bu ikisi belirler) |
+| id | `indonesian_affairs` (Kemenag) | 142 |
+| de | `german_bubenheim` | 175 |
+| fr | `french_rashid` | 149 |
+| bs | `bosnian_rwwad` | 185 |
+| ru | `russian_rwwad` | 184 |
+| ms | `malay_basumayyah` | 102 |
+- **Sürüm her zaman `translations/updates?key=<anahtar>` ucundan okunur.** Liste API'si 87 çeviriyi (ru, ms dahil) göstermez; uç belgelenmemiştir → üretici biçim değişiminde ya da liste sürümüyle çelişkide hata verir, listede olmayanın başlığı `LISTEDE_OLMAYAN_BASLIKLAR`'dadır (sitedeki kart). Tanzil mealleri KULLANILMAZ: "yalnız ticari olmayan kullanım" şartı ve sürüm numarası yok.
+- **Havuzu Türkçe + İngilizce belirler; diğer dilin meali kayda yalnız ≤200 harf ve dipnot işaretsizse girer, o dilin havuzu meali olan kayıtlardır** (`gununAyeti.ts > dilHavuzu`). Gerekçe: bütün dillerde kesişim havuzu 186'dan 89'a indiriyordu (Malayca Basmeih meali parantez içi tefsirle uzun, medyan 188 harf). Dil havuzu 100'ün altına inmez (nöbetçi).
+- **Dipnot işareti (`[915]`, `*`) ya da başta ayet numarası ("2. …") taşıyan meal alınmaz**, metin değiştirilemediği için (`russian_aboadel` her ayetin başında numara taşır → seçilmedi). Bildirim ayetinde (`ayetMealleri.ts`) o ayet o dilde gösterilmez.
+- **Açık risk (ru, ms):** QuranEnc bu çevirilerin indirme düğmelerini yeni sitede kaldırmış; yeniden yayım iznini yazılı teyit etmek sahibin işidir. Ret gelirse `MEALLER`'den anahtarı çıkarmak yeter: o dil yalnız Arapça gösterir (`meal: null`). Malezya'da 2023 Kur'an Metni Basım Yasası (LPPPQ onayı) yurt dışı uygulamayı kapsıyor mu, doğrulanmadı.
 - **Fontlar:** Arapça Amiri Quran (OFL 1.1), meal Noto Serif (OFL). KFGQPC Uthmanic HAFS özel lisanslıdır, PAKETLENMEZ. Android: `android/app/src/main/assets/fonts/AmiriQuran-Regular.ttf` (1.003) + `OFL-AmiriQuran.txt`, `NotoSerif-Regular.ttf` (2.015, statik 400) + `OFL-NotoSerif.txt`; lisans metni her fontun YANINDA kalır. Kaynak: Google Fonts dosyalarının npm aynası `@expo-google-fonts/amiri-quran@0.4.1` ve `@expo-google-fonts/noto-serif@0.4.2` (`LICENSE_FONT` = OFL metni + telif satırı); google/fonts deposuna ajan ortamından erişilemedi (403), ayna aynı Google Fonts ikilisini taşır. Yükseltirken ayna paketin yeni sürümünden kopyala, lisans dosyasını birlikte güncelle. Noto Serif alt kümelenmez (OFL ayrılmış ad kuralı; +500 KB kabul).
 
 ## Tek beyin: JS plan yazar, native çizer

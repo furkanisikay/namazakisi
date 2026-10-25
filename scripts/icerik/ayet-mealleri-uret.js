@@ -11,8 +11,28 @@
 const fs = require('fs');
 const path = require('path');
 
-/** Dil → QuranEnc çeviri anahtarı (Türkçe havuz kendi doğrulanmış metnini taşır). */
-const MEALLER = { en: 'english_saheeh' };
+/**
+ * Dil → QuranEnc çeviri anahtarı (Türkçe havuz kendi doğrulanmış metnini taşır). Günün ayeti
+ * üreticisiyle aynı seçim; gerekçe `docs/ajan/gunun-ayeti.md > Meal kaynakları`.
+ */
+const MEALLER = {
+  en: 'english_saheeh',
+  id: 'indonesian_affairs',
+  de: 'german_bubenheim',
+  fr: 'french_rashid',
+  bs: 'bosnian_rwwad',
+  ru: 'russian_rwwad',
+  ms: 'malay_basumayyah',
+};
+
+/** Liste API'sinde görünmeyen çevirilerin QuranEnc başlığı (sitedeki kartta yazdığı gibi). */
+const LISTEDE_OLMAYAN_BASLIKLAR = {
+  russian_rwwad: 'Russian Translation - Rowwad Translation Center',
+  malay_basumayyah: 'Malay Translation - Abdullah Basumayyah',
+};
+
+/** QuranEnc 403 döner: her istekte tarayıcı benzeri User-Agent ŞART. */
+const BASLIKLAR = { 'User-Agent': 'Mozilla/5.0 (namazakisi icerik uretici)' };
 
 /** Havuzlarda geçen ayetler: [sûre, ayet]. Yeni ayet eklerken buraya ekleyip betiği koş. */
 const AYETLER = [
@@ -23,23 +43,47 @@ const KOK = path.resolve(__dirname, '..', '..');
 const HEDEF = path.join(KOK, 'src', 'core', 'data', 'ayetMealleri.ts');
 
 async function json(url) {
-  const yanit = await fetch(url);
+  const yanit = await fetch(url, { headers: BASLIKLAR });
   if (!yanit.ok) throw new Error(`${url} → ${yanit.status}`);
   return yanit.json();
+}
+
+/**
+ * Sürüm `translations/updates` ucundan (liste API'si bazı çevirileri göstermez); uç
+ * belgelenmemiş olduğu için biçimi değişirse ya da listedeki sürümle çelişirse hata verir.
+ */
+async function kunye(dil, anahtar) {
+  const guncel = await json(`https://quranenc.com/api/v1/translations/updates?key=${anahtar}`);
+  if (guncel.key !== anahtar || !/^\d+\.\d+\.\d+$/.test(String(guncel.version))) {
+    throw new Error(`${anahtar}: updates ucunun yanıtı beklenen biçimde değil`);
+  }
+  const listede = await json(`https://quranenc.com/api/v1/translations/list/${dil}`)
+    .then((l) => l.translations.find((t) => t.key === anahtar))
+    .catch(() => null);
+  if (listede && listede.version !== guncel.version) {
+    throw new Error(`${anahtar}: liste sürümü ${listede.version} ≠ updates sürümü ${guncel.version}`);
+  }
+  const baslik = listede?.title ?? LISTEDE_OLMAYAN_BASLIKLAR[anahtar];
+  if (!baslik) throw new Error(`${anahtar} için başlık yok (LISTEDE_OLMAYAN_BASLIKLAR'a ekleyin)`);
+  return { surum: guncel.version, baslik };
 }
 
 async function main() {
   const veri = {};
   for (const [dil, anahtar] of Object.entries(MEALLER)) {
-    const liste = await json(`https://quranenc.com/api/v1/translations/list/${dil}`);
-    const kunye = liste.translations.find((t) => t.key === anahtar);
-    if (!kunye) throw new Error(`${anahtar} QuranEnc listesinde yok`);
+    const { surum, baslik } = await kunye(dil, anahtar);
     const ayetler = {};
     for (const [sure, ayet] of AYETLER) {
       const { result } = await json(`https://quranenc.com/api/v1/translation/aya/${anahtar}/${sure}/${ayet}`);
+      // Dipnot işaretli ya da başında ayet numarası olan meal metin değiştirilemeyeceği için
+      // ALINMAZ: o ayet o dilde gösterilmez (`nassDili.ayetMeali` null döner).
+      if (/\[\d+\]|\*/.test(result.translation) || /^\d+\.\s/.test(result.translation)) {
+        console.log(`  atlandı ${dil} ${sure}:${ayet} (dipnot işareti)`);
+        continue;
+      }
       ayetler[`${sure}:${ayet}`] = result.translation;
     }
-    veri[dil] = { anahtar, surum: kunye.version, baslik: kunye.title, ayetler };
+    veri[dil] = { anahtar, surum, baslik, ayetler };
   }
   const govde = `/**
  * ÜRETİLMİŞ DOSYA — elle düzenleme; \`node scripts/icerik/ayet-mealleri-uret.js\`.

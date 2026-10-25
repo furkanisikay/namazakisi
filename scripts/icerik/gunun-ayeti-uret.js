@@ -26,8 +26,26 @@ const HEDEF = path.join(KOK, 'src', 'core', 'data', 'gununAyetiHavuzu.ts');
 /** QuranEnc 403 döner: her istekte tarayıcı benzeri User-Agent ŞART. */
 const BASLIKLAR = { 'User-Agent': 'Mozilla/5.0 (namazakisi icerik uretici)' };
 
-/** Dil → QuranEnc çeviri anahtarı. */
-const MEALLER = { tr: 'turkish_rwwad', en: 'english_saheeh' };
+/** Dil → QuranEnc çeviri anahtarı. Seçim gerekçesi: `docs/ajan/gunun-ayeti.md > Meal kaynakları`. */
+const MEALLER = {
+  tr: 'turkish_rwwad',
+  en: 'english_saheeh',
+  id: 'indonesian_affairs',
+  de: 'german_bubenheim',
+  fr: 'french_rashid',
+  bs: 'bosnian_rwwad',
+  ru: 'russian_rwwad',
+  ms: 'malay_basumayyah',
+};
+
+/**
+ * Liste API'sinde görünmeyen çevirilerin QuranEnc başlığı (sitedeki kartta yazdığı gibi).
+ * Sürüm her zaman `translations/updates` ucundan okunur.
+ */
+const LISTEDE_OLMAYAN_BASLIKLAR = {
+  russian_rwwad: 'Russian Translation - Rowwad Translation Center',
+  malay_basumayyah: 'Malay Translation - Abdullah Basumayyah',
+};
 
 const TANZIL_URL = 'https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt-2&agree=true';
 
@@ -108,6 +126,17 @@ const ref = (sure, ayet) => `${sure}:${ayet}`;
 /**
  * Bir adayı kurallardan geçirir; elenme gerekçelerini döner (boş dizi = havuza girer).
  * Kural 3 ve 4 bilinçli olarak tutucudur: emin olunamayan aday elenir.
+ */
+/** Kural 1 ve 2 tek meal için: sığar ve dipnot işareti / baştaki ayet numarası taşımaz. */
+function mealUygun(metin) {
+  return metin.length <= AZAMI_UZUNLUK && !/\[\d+\]|\*/.test(metin) && !/^\d+\.\s/.test(metin);
+}
+
+/**
+ * Havuzu Türkçe ve İngilizce meal belirler (kural 3 ve 4 bu iki dilin metniyle denetlenir).
+ * Diğer dillerin meali kayda yalnız `mealUygun` ise girer; o dilin havuzu meali olan
+ * kayıtlardır (`core/icerik/gununAyeti.ts > dilHavuzu`). Ortak kesişim havuzu yarıya
+ * indirdiği için (Malayca meal parantez içi tefsirle uzundur) dil başına alt küme seçildi.
  */
 function eleme(sure, ayet, tr, en, ar) {
   const gerekce = [];
@@ -198,6 +227,33 @@ function yayimci(baslik) {
   return i >= 0 ? baslik.slice(i + 3) : baslik;
 }
 
+/**
+ * Çevirinin künyesi. Sürüm `translations/updates` ucundan (liste API'si bazı çevirileri
+ * göstermez); uç belgelenmemiş olduğu için biçimi değişirse ya da listedeki sürümle
+ * çelişirse SESSİZCE geçmez, hata verir.
+ */
+async function mealKunyesi(dil, anahtar, onbellek) {
+  const guncel = JSON.parse(
+    await indir(`https://quranenc.com/api/v1/translations/updates?key=${anahtar}`, onbellek, `surum_${anahtar}.json`),
+  );
+  if (guncel.key !== anahtar || !/^\d+\.\d+\.\d+$/.test(String(guncel.version))) {
+    throw new Error(`${anahtar}: updates ucunun yanıtı beklenen biçimde değil: ${JSON.stringify(guncel).slice(0, 200)}`);
+  }
+  let liste = null;
+  try {
+    liste = JSON.parse(await indir(`https://quranenc.com/api/v1/translations/list/${dil}`, onbellek, `liste_${dil}.json`));
+  } catch {
+    liste = null; // Dil listede hiç yok (ru, ms): başlık yedek tablodan.
+  }
+  const listede = liste?.translations?.find((t) => t.key === anahtar);
+  if (listede && listede.version !== guncel.version) {
+    throw new Error(`${anahtar}: liste sürümü ${listede.version} ≠ updates sürümü ${guncel.version}`);
+  }
+  const baslik = listede?.title ?? LISTEDE_OLMAYAN_BASLIKLAR[anahtar];
+  if (!baslik) throw new Error(`${anahtar} için başlık yok (LISTEDE_OLMAYAN_BASLIKLAR'a ekleyin)`);
+  return { anahtar, surum: guncel.version, baslik: yayimci(baslik) };
+}
+
 async function main() {
   const onbellek = onbellekDizini();
 
@@ -215,12 +271,7 @@ async function main() {
   const mealler = {};
   const sureler = [...new Set(ADAYLAR.map(([s]) => s))].sort((x, y) => x - y);
   for (const [dil, anahtar] of Object.entries(MEALLER)) {
-    const liste = JSON.parse(
-      await indir(`https://quranenc.com/api/v1/translations/list/${dil}`, onbellek, `liste_${dil}.json`),
-    );
-    const kunye = liste.translations.find((t) => t.key === anahtar);
-    if (!kunye) throw new Error(`${anahtar} QuranEnc listesinde yok`);
-    kunyeler[dil] = { anahtar, surum: kunye.version, baslik: yayimci(kunye.title) };
+    kunyeler[dil] = await mealKunyesi(dil, anahtar, onbellek);
     mealler[dil] = {};
     for (const sure of sureler) {
       const { result } = JSON.parse(
@@ -234,13 +285,22 @@ async function main() {
   const elenen = [];
   for (const [sure, ayet] of ADAYLAR) {
     const r = ref(sure, ayet);
+    for (const dil of Object.keys(MEALLER)) {
+      if (mealler[dil][r] == null) throw new Error(`${r} için QuranEnc ${dil} meali yok`);
+    }
     const tr = mealler.tr[r];
     const en = mealler.en[r];
-    if (tr == null || en == null) throw new Error(`${r} için QuranEnc meali yok`);
     const ar = tanzil.ayetler[r];
     const gerekce = eleme(sure, ayet, tr, en, ar);
-    if (gerekce.length) elenen.push({ ref: r, gerekce, en });
-    else havuz.push({ ref: r, sure, ayet, ar, mealler: { tr, en } });
+    if (gerekce.length) {
+      elenen.push({ ref: r, gerekce, en });
+      continue;
+    }
+    const ayetMealleri = { tr, en };
+    for (const dil of Object.keys(MEALLER)) {
+      if (dil !== 'tr' && dil !== 'en' && mealUygun(mealler[dil][r])) ayetMealleri[dil] = mealler[dil][r];
+    }
+    havuz.push({ ref: r, sure, ayet, ar, mealler: ayetMealleri });
   }
   havuz.sort((x, y) => x.sure - y.sure || x.ayet - y.ayet);
   elenen.sort((x, y) => {
@@ -272,9 +332,14 @@ export interface GununAyetiKaydi {
   ayet: number;
   /** Tanzil Uthmani, birebir. */
   ar: string;
-  /** QuranEnc mealleri, birebir. */
-  mealler: { tr: string; en: string };
+  /**
+   * QuranEnc mealleri, birebir. Türkçe ve İngilizce her kayıtta var; diğer diller yalnız
+   * meal sığıyor ve dipnot işareti taşımıyorsa (o dilin havuzu meali olan kayıtlardır).
+   */
+  mealler: { readonly tr: string; readonly en: string } & Readonly<Partial<Record<MealDili, string>>>;
 }
+
+export type MealDili = ${Object.keys(MEALLER).map((d) => `'${d}'`).join(' | ')};
 
 export interface MealKunyesi {
   anahtar: string;
@@ -285,7 +350,7 @@ export interface MealKunyesi {
 
 export const GUNUN_AYETI_KAYNAKLARI: {
   readonly ar: { ad: 'Tanzil'; surum: string; url: 'https://tanzil.net' };
-  readonly mealler: Readonly<Record<'tr' | 'en', MealKunyesi>>;
+  readonly mealler: Readonly<Record<MealDili, MealKunyesi>>;
 } = ${JSON.stringify(kaynaklar, null, 2)};
 
 export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = ${JSON.stringify(havuz, null, 2)};
@@ -299,8 +364,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = ${JSON.stringify(h
   console.log('\nKural başına eleme (bir aday birden çok kurala takılabilir):');
   for (const k of Object.keys(sayac).sort()) console.log(`  ${k.padEnd(26)} ${sayac[k]}`);
   console.log(`\nAday: ${ADAYLAR.length}  Havuz: ${havuz.length}  Elenen: ${elenen.length}`);
+  console.log(`Dil havuzları: ${Object.keys(MEALLER).map((d) => `${d} ${havuz.filter((k) => k.mealler[d]).length}`).join(', ')}`);
   console.log(
-    `Sürümler: Tanzil ${tanzil.surum}; QuranEnc tr ${kunyeler.tr.anahtar} ${kunyeler.tr.surum}, en ${kunyeler.en.anahtar} ${kunyeler.en.surum}`,
+    `Sürümler: Tanzil ${tanzil.surum}; QuranEnc ${Object.entries(kunyeler).map(([d, k]) => `${d} ${k.anahtar} ${k.surum}`).join(', ')}`,
   );
   console.log(`${path.relative(KOK, HEDEF)} yazıldı`);
 }

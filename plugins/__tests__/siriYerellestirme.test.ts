@@ -22,7 +22,7 @@ it('Siri/Kısayollar yerelleştirme dilleri = JS seçicisindeki diller (yarım d
 
 it('açık her dil için .lproj dizini var (tr dahil: yoksa Türkçe cihaz İngilizceye düşer)', () => {
   const kaynak = path.join(__dirname, '..', '..', 'targets', 'siri-kisayollari');
-  for (const d of DILLER) {
+  for (const d of DILLER.filter((x) => x.secilebilir)) {
     expect(fs.existsSync(path.join(kaynak, `${d.kod}.lproj`, 'Localizable.strings'))).toBe(true);
   }
 });

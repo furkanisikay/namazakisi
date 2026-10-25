@@ -16,14 +16,29 @@ describe('günün ayeti havuzu', () => {
     expect(GUNUN_AYETI_HAVUZU.length).toBeGreaterThanOrEqual(180);
   });
 
-  it('kural 1: meal her iki dilde en fazla 200 karakter', () => {
-    const uzun = GUNUN_AYETI_HAVUZU.filter((k) => k.mealler.tr.length > 200 || k.mealler.en.length > 200);
-    expect(uzun.map((k) => k.ref)).toEqual([]);
+  const mealler = (k: (typeof GUNUN_AYETI_HAVUZU)[number]) => Object.entries(k.mealler) as [string, string][];
+
+  it('kural 1: kayıttaki her meal en fazla 200 karakter', () => {
+    const uzun = GUNUN_AYETI_HAVUZU.flatMap((k) => mealler(k).filter(([, m]) => m.length > 200).map(([d]) => `${k.ref}:${d}`));
+    expect(uzun).toEqual([]);
   });
 
-  it('kural 2: mealde dipnot işareti yok', () => {
-    const dipnotlu = GUNUN_AYETI_HAVUZU.filter((k) => /\[\d+\]|\*/.test(k.mealler.tr + k.mealler.en));
-    expect(dipnotlu.map((k) => k.ref)).toEqual([]);
+  it('kural 2: mealde dipnot işareti ya da baştaki ayet numarası yok', () => {
+    const dipnotlu = GUNUN_AYETI_HAVUZU.flatMap((k) =>
+      mealler(k).filter(([, m]) => /\[\d+\]|\*/.test(m) || /^\d+\.\s/.test(m)).map(([d]) => `${k.ref}:${d}`),
+    );
+    expect(dipnotlu).toEqual([]);
+  });
+
+  it('Türkçe ve İngilizce her kayıtta; her meal dilinin künyesi var ve havuzu en az 100 ayet', () => {
+    for (const k of GUNUN_AYETI_HAVUZU) expect([k.ref, typeof k.mealler.tr, typeof k.mealler.en]).toEqual([k.ref, 'string', 'string']);
+    for (const dil of Object.keys(GUNUN_AYETI_KAYNAKLARI.mealler)) {
+      const n = GUNUN_AYETI_HAVUZU.filter((k) => (k.mealler as Record<string, string | undefined>)[dil]).length;
+      expect([dil, n >= 100]).toEqual([dil, true]);
+    }
+    for (const k of GUNUN_AYETI_HAVUZU) {
+      for (const dil of Object.keys(k.mealler)) expect(GUNUN_AYETI_KAYNAKLARI.mealler).toHaveProperty(dil);
+    }
   });
 
   it('kural 3: önceki ayetin cümlesinin devamı değil', () => {
@@ -82,8 +97,7 @@ describe('günün ayeti havuzu', () => {
     expect(GUNUN_AYETI_KAYNAKLARI.ar).toEqual(
       expect.objectContaining({ ad: 'Tanzil', url: 'https://tanzil.net', surum: expect.any(String) }),
     );
-    for (const dil of ['tr', 'en'] as const) {
-      const kunye = GUNUN_AYETI_KAYNAKLARI.mealler[dil];
+    for (const kunye of Object.values(GUNUN_AYETI_KAYNAKLARI.mealler)) {
       expect(kunye.anahtar).toBeTruthy();
       expect(kunye.surum).toMatch(/^\d+(\.\d+)*$/);
       expect(kunye.baslik).toBeTruthy();

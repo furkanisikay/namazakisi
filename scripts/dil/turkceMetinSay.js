@@ -39,6 +39,7 @@ const HARIC = new Set([
     'src/core/data/VakitBildirimIcerikleri.ts',
     'src/core/data/SeriSozu.ts',
     'src/core/data/gununAyetiHavuzu.ts', // QuranEnc/Tanzil birebir veri (üretilmiş)
+    'src/core/data/ayetMealleri.ts', // QuranEnc birebir meal verisi (üretilmiş; Almanca ü/ö içerir)
     'src/core/data/sureAdlari.ts', // sûre adları: özel ad, çevrilmez
 ]);
 const DIZE = /(['"`])((?:\\.|(?!\1)[^\\\n])*)\1/g;

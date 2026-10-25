@@ -303,7 +303,7 @@ const IosKisayolRehberi: React.FC = () => {
   const lng = koordinat?.lng ?? 0;
   const ayet = useMemo(() => {
     const gun = aktifNamazGunu(new Date(), koordinatImsakKaynagi(lat === 0 && lng === 0 ? null : { lat, lng }));
-    return gununAyetiGorunumu(gununAyetiKaydi(isoGun(gun)), dil);
+    return gununAyetiGorunumu(gununAyetiKaydi(isoGun(gun), dil), dil);
   }, [lat, lng, dil]);
 
   const kaydet = async () => {

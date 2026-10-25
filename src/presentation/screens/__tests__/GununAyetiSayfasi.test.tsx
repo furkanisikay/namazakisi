@@ -32,7 +32,7 @@ jest.mock('../Ayarlar/AyarSatiri', () => {
 
 /** Konum yokken (0,0) gün sınırı yerel 05:00. */
 const bugununAyeti = (dil: 'tr' | 'en') =>
-    gununAyetiGorunumu(gununAyetiKaydi(isoGun(aktifNamazGunu(new Date(), () => null))), dil);
+    gununAyetiGorunumu(gununAyetiKaydi(isoGun(aktifNamazGunu(new Date(), () => null)), dil), dil);
 
 describe('GununAyetiSayfasi', () => {
     beforeEach(() => {

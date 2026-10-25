@@ -1,7 +1,7 @@
 /**
  * Günün ayeti seçimi: namaz günü sınırı (imsak), dilden bağımsız seçim, tam tur, künye.
  */
-import { aktifNamazGunu, gununAyetiGorunumu, gununAyetiKaydi, gununAyetiPlani, gunNumarasi } from '../gununAyeti';
+import { aktifNamazGunu, dilHavuzu, gununAyetiGorunumu, gununAyetiKaydi, gununAyetiPlani, gunNumarasi } from '../gununAyeti';
 import { GUNUN_AYETI_HAVUZU } from '../../data/gununAyetiHavuzu';
 
 /** Her gün 06:00'da imsak. */
@@ -50,6 +50,19 @@ it('künye: Türkçede sûre adıyla, İngilizcede "Quran"; meal kaynağı yayı
   const en = gununAyetiGorunumu(kayit!, 'en');
   expect(en.kisaKunye).toBe('Quran 94:6');
   expect(en.mealKaynagi).toMatch(/^Noor International Center, QuranEnc \d/);
+});
+
+it('meal kaynağı olan dil yalnız meali sığan ayetlerden seçer; meali hep dolu', () => {
+  const havuz = dilHavuzu('ms');
+  expect(havuz.length).toBeLessThan(GUNUN_AYETI_HAVUZU.length);
+  expect(dilHavuzu('tr')).toHaveLength(GUNUN_AYETI_HAVUZU.length);
+  expect(dilHavuzu('ms')).toBe(havuz);
+  for (let g = 0; g < 400; g++) {
+    const gun = new Date(Date.UTC(2026, 0, 1 + g)).toISOString().slice(0, 10);
+    const gorunum = gununAyetiGorunumu(gununAyetiKaydi(gun, 'ms'), 'ms');
+    expect(gorunum.meal).toBeTruthy();
+    expect(gorunum.mealKaynagi).toMatch(/QuranEnc \d/);
+  }
 });
 
 it('plan süren günden başlar, başlangıçlar imsak ve artan sırada', () => {
