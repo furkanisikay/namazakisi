@@ -9,7 +9,8 @@ export const vakit: Sozluk['vakit'] = {
   adlar: { imsak: 'Фаджр', gunes: 'Восход', ogle: 'Зухр', ikindi: 'Аср', aksam: 'Магриб', yatsi: 'Иша' },
   buyuk: { imsak: 'ФАДЖР', gunes: 'ВОСХОД', ogle: 'ЗУХР', ikindi: 'АСР', aksam: 'МАГРИБ', yatsi: 'ИША' },
   kucuk: { imsak: 'Фаджр', gunes: 'восход', ogle: 'Зухр', ikindi: 'Аср', aksam: 'Магриб', yatsi: 'Иша' },
-  imsakVakti: 'Имсак',
+  /** "Имсак" çoğu çizelgede fecirden önceki ihtiyat saatidir; uygulamanın imsak saati fecrin girişidir. */
+  imsakVakti: 'Фаджр',
   cuma: 'Джума',
   cumaKucuk: 'Джума',
   gunesDogusu: 'Восход солнца',
