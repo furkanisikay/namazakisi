@@ -10,7 +10,8 @@ export const vakit: Sozluk['vakit'] = {
   adlar: { imsak: 'Fajr', gunes: 'Lever du soleil', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
   buyuk: { imsak: 'FAJR', gunes: 'LEVER DU SOLEIL', ogle: 'DHUHR', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
   kucuk: { imsak: 'Fajr', gunes: 'lever du soleil', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  imsakVakti: 'Imsak',
+  /** Mawaqit'te "Imsak" Fajr'dan ~10 dk önceki ihtiyat saatidir; uygulamanın imsak saati fecrin girişidir. */
+  imsakVakti: 'Fajr',
   cuma: 'Joumoua',
   cumaKucuk: 'Joumoua',
   gunesDogusu: 'Lever du soleil',
