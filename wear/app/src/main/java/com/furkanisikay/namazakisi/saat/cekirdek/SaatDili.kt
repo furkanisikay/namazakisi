@@ -102,6 +102,15 @@ interface SaatDili {
     fun vaktiCikiyor(ad: String): String
     val tesbihatTamamlandi: String
     val toplam: String
+
+    // --- Tesbihat okunuşları (ÇEVİRİ DEĞİL): zikir adları, tehlil ve hadis künyesi o dilin
+    // Müslüman topluluğunun yaygın yazımıyla (sahip kararı 2026-10-25). `Tesbihat.Faz.ad(dil)`.
+    val zikirSubhanallah: String
+    val zikirElhamdulillah: String
+    val zikirAllahuEkber: String
+    val zikirTehlil: String
+    val tehlilMetni: String
+    val tesbihatKaynagi: String
 }
 
 /**
@@ -222,6 +231,12 @@ object SaatDiliTr : SaatDili {
     override fun vaktiCikiyor(ad: String) = "$ad vakti çıkıyor"
     override val tesbihatTamamlandi = "Tesbihat tamamlandı"
     override val toplam = "Toplam"
+    override val zikirSubhanallah = "Sübhânallah"
+    override val zikirElhamdulillah = "Elhamdülillâh"
+    override val zikirAllahuEkber = "Allâhü ekber"
+    override val zikirTehlil = "Lâ ilâhe illallâh"
+    override val tehlilMetni = Tesbihat.TEHLIL_METNI
+    override val tesbihatKaynagi = Tesbihat.KAYNAK
 }
 
 /**
@@ -312,6 +327,12 @@ object SaatDiliEn : SaatDili {
     override fun vaktiCikiyor(ad: String) = "$ad is ending"
     override val tesbihatTamamlandi = "Tasbih completed"
     override val toplam = "Total"
+    override val zikirSubhanallah = "Subhanallah"
+    override val zikirElhamdulillah = "Alhamdulillah"
+    override val zikirAllahuEkber = "Allahu akbar"
+    override val zikirTehlil = "La ilaha illallah"
+    override val tehlilMetni = "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa huwa ala kulli shay'in qadir"
+    override val tesbihatKaynagi = "Muslim, Masajid 146"
 }
 
 // id — Endonezce (beta): vakit adları Kemenag yazımı (JS `sozluk/id/vakit.ts`), birimler
@@ -399,6 +420,12 @@ object SaatDiliId : SaatDili {
     override fun vaktiCikiyor(ad: String) = "Waktu $ad akan berakhir"
     override val tesbihatTamamlandi = "Tasbih selesai"
     override val toplam = "Total"
+    override val zikirSubhanallah = "Subhanallah"
+    override val zikirElhamdulillah = "Alhamdulillah"
+    override val zikirAllahuEkber = "Allahu akbar"
+    override val zikirTehlil = "La ilaha illallah"
+    override val tehlilMetni = "La ilaha illallahu wahdahu la syarika lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli syai'in qadir"
+    override val tesbihatKaynagi = "HR. Muslim, Masajid 146"
 }
 
 /**
@@ -489,6 +516,12 @@ object SaatDiliDe : SaatDili {
     override fun vaktiCikiyor(ad: String) = "$ad endet gleich"
     override val tesbihatTamamlandi = "Tasbih abgeschlossen"
     override val toplam = "Gesamt"
+    override val zikirSubhanallah = "Subhanallah"
+    override val zikirElhamdulillah = "Alhamdulillah"
+    override val zikirAllahuEkber = "Allahu akbar"
+    override val zikirTehlil = "La ilaha illallah"
+    override val tehlilMetni = "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa huwa ala kulli shay'in qadir"
+    override val tesbihatKaynagi = "Muslim, Masadschid 146"
 }
 
 // fr
@@ -580,6 +613,12 @@ object SaatDiliFr : SaatDili {
     override fun vaktiCikiyor(ad: String) = "$ad se termine"
     override val tesbihatTamamlandi = "Tasbih terminé"
     override val toplam = "Total"
+    override val zikirSubhanallah = "Soubhanallah"
+    override val zikirElhamdulillah = "Alhamdoulillah"
+    override val zikirAllahuEkber = "Allahou akbar"
+    override val zikirTehlil = "La ilaha illallah"
+    override val tehlilMetni = "La ilaha illallahou wahdahou la charika lah, lahoul-moulkou wa lahoul-hamdou wa houwa 'ala koulli chay'in qadir"
+    override val tesbihatKaynagi = "Mouslim, Masajid 146"
 }
 
 // bs
@@ -680,6 +719,12 @@ object SaatDiliBs : SaatDili {
     override fun vaktiCikiyor(ad: String) = "$ad: vakat ističe"
     override val tesbihatTamamlandi = "Tesbih je završen"
     override val toplam = "Ukupno"
+    override val zikirSubhanallah = "Subhanallah"
+    override val zikirElhamdulillah = "Elhamdulillah"
+    override val zikirAllahuEkber = "Allahu ekber"
+    override val zikirTehlil = "La ilahe illallah"
+    override val tehlilMetni = "La ilahe illallahu vahdehu la šerike leh, lehul-mulku ve lehul-hamdu ve huve ala kulli šej'in kadir"
+    override val tesbihatKaynagi = "Muslim, Mesadžid 146"
 }
 
 // ru
@@ -778,6 +823,12 @@ object SaatDiliRu : SaatDili {
     override fun vaktiCikiyor(ad: String) = "Время намаза $ad заканчивается"
     override val tesbihatTamamlandi = "Тасбих завершён"
     override val toplam = "Всего"
+    override val zikirSubhanallah = "Субханаллах"
+    override val zikirElhamdulillah = "Альхамдулиллях"
+    override val zikirAllahuEkber = "Аллаху акбар"
+    override val zikirTehlil = "Ля иляха илляллах"
+    override val tehlilMetni = "Ля иляха илляллаху вахдаху ля шарика лях, ляхуль-мульку ва ляхуль-хамду ва хуа 'аля кулли шай'ин кадир"
+    override val tesbihatKaynagi = "Муслим, Масаджид 146"
 }
 
 // ms
@@ -868,4 +919,10 @@ object SaatDiliMs : SaatDili {
     override fun vaktiCikiyor(ad: String) = "Waktu $ad hampir tamat"
     override val tesbihatTamamlandi = "Tasbih selesai"
     override val toplam = "Jumlah"
+    override val zikirSubhanallah = "Subhanallah"
+    override val zikirElhamdulillah = "Alhamdulillah"
+    override val zikirAllahuEkber = "Allahuakbar"
+    override val zikirTehlil = "La ilaha illallah"
+    override val tehlilMetni = "La ilaha illallahu wahdahu la syarika lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli syai'in qadir"
+    override val tesbihatKaynagi = "Riwayat Muslim, Masajid 146"
 }

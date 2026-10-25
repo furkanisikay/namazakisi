@@ -155,8 +155,8 @@ class SaatDiliTest {
         assertEquals("May Allah accept it", tamam.baslik)
         assertTrue(tamam.aciklama.startsWith("Tasbih completed. May Allah accept it"))
         val sayim = TesbihatAmbient.icerik(Tesbihat.Durum(45), "en")
-        // Zikir adı transliterasyondur, çevrilmez; yalnız çerçeve İngilizce.
-        assertEquals("${Tesbihat.Faz.ELHAMDULILLAH.ad}, 12 / 33. Total 45 / 100", sayim.aciklama)
+        // Zikir adı çeviri değil, İngilizce konuşan Müslümanların yaygın okunuşu.
+        assertEquals("Alhamdulillah, 12 / 33. Total 45 / 100", sayim.aciklama)
     }
 
     /** İngilizce çıktılarda Türkçe harf kalmaz (yarım dil yok). */
@@ -171,6 +171,8 @@ class SaatDiliTest {
             en.camiBirDahaSorulmaz, en.camiSayilmaz, en.soruGecersiz, en.islemYapilamadi, en.hoparlorYokBilgi,
             en.motorYokBilgi, en.sesYokBilgi, en.otomatikYerAciklamasi, en.saatYerAciklamasi, en.hoparlorYok,
             en.sesCalisti, en.motorYok, en.sesYok, en.sesCalinamadi, en.tesbihatTamamlandi, en.toplam,
+            en.zikirSubhanallah, en.zikirElhamdulillah, en.zikirAllahuEkber, en.zikirTehlil, en.tehlilMetni,
+            en.tesbihatKaynagi,
         )
         for (m in metinler) assertFalse(m, turkceHarf.containsMatchIn(m))
         assertFalse(turkceHarf.containsMatchIn(en.vaktiCikiyor("Asr")))

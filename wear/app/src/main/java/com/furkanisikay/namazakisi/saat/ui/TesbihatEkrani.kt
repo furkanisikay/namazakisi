@@ -97,17 +97,18 @@ fun TesbihatEkrani(
     // Rotary olayları odaklı öğeye gelir.
     LaunchedEffect(Unit) { odak.requestFocus() }
 
-    // Zikir adları ve kaynak her dilde aynı okunuştur (transliterasyon, çeviri değil).
+    // Zikir adları ve kaynak o dilin Müslüman topluluğunun yaygın okunuşuyla (çeviri değil;
+    // bilinmeyen dil Türkçe).
     val dil = stringResource(R.string.dil_kodu)
     val aciklama = if (durum.tamamMi) {
         stringResource(
             R.string.tesbihat_tamam_erisim,
-            AnaEkranKarari.kabulDuasi(dil), Tesbihat.TOPLAM, Tesbihat.TOPLAM, Tesbihat.KAYNAK,
+            AnaEkranKarari.kabulDuasi(dil), Tesbihat.TOPLAM, Tesbihat.TOPLAM, Tesbihat.kaynak(dil),
         )
     } else {
         stringResource(
             R.string.tesbihat_sayim_erisim,
-            durum.faz.ad, durum.fazSayisi, durum.faz.hedef, durum.toplam, Tesbihat.TOPLAM,
+            durum.faz.ad(dil), durum.fazSayisi, durum.faz.hedef, durum.toplam, Tesbihat.TOPLAM,
         )
     }
     val sayinEtiketi = stringResource(R.string.tesbihat_sayin)
@@ -171,6 +172,7 @@ fun TesbihatEkrani(
 
 @Composable
 private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
+    val dil = stringResource(R.string.dil_kodu)
     val azalt = hareketAzaltilmis()
     // Sayım "vuruşu": rakam bir kez hafifçe büyüyüp yaylanarak yerine oturur (olay tetikli;
     // hızlı çevirmede — önceki sayımdan < 120 ms — atlanır, boşta hareket yok).
@@ -197,7 +199,7 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
             // Yüzü tamamlayan tek söz: rakam yerine metnin kendisi okunur. Boyu yazı ölçeğinden
             // bağımsız (uzun metin; büyük ölçekte yuvarlak ekranın kenarına taşıyordu).
             Text(
-                Tesbihat.TEHLIL_METNI,
+                Tesbihat.tehlilMetni(dil),
                 fontSize = sabitBoyut(0.052f),
                 lineHeight = sabitBoyut(0.064f),
                 textAlign = TextAlign.Center,
@@ -210,7 +212,7 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
             // ad sütunun %82'sine sığdırılır ("Sübhânallah" kare ekranda halkaya değiyordu,
             // "Elhamdülillâh" daha uzun). Sığmazsa küçülür, kesilmez.
             SigdirilanMetin(
-                durum.faz.ad,
+                durum.faz.ad(dil),
                 enFazla = sinirliBoyut(0.072f),
                 renk = renk(SaatPaleti.METIN),
                 modifier = Modifier.fillMaxWidth(
@@ -304,20 +306,21 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
         Spacer(Modifier.height(2.dp))
         // Tesbihat bitince dua (sahip isteği: "Tamamlandı" yerine "Allah kabul etsin"). Dua
         // KESİLMEZ, sığmazsa küçülür (Almanca "Möge Allah es annehmen" "…" ile kesiliyordu).
+        val dil = stringResource(R.string.dil_kodu)
         SigdirilanMetin(
-            AnaEkranKarari.kabulDuasi(stringResource(R.string.dil_kodu)),
+            AnaEkranKarari.kabulDuasi(dil),
             enFazla = sinirliBoyut(0.075f),
             renk = renk(SaatPaleti.METIN),
             agirlik = FontWeight.SemiBold,
             modifier = Modifier.fillMaxWidth(),
         )
-        Text(
-            Tesbihat.KAYNAK,
-            fontSize = sinirliBoyut(0.048f),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+        // Künye dile göre ("Riwayat Muslim, Masajid 146" Türkçeden uzun): kesilmez, küçülür.
+        SigdirilanMetin(
+            Tesbihat.kaynak(dil),
+            enFazla = sinirliBoyut(0.048f),
+            renk = MaterialTheme.colorScheme.onSurfaceVariant,
+            agirlik = FontWeight.Normal,
+            modifier = Modifier.fillMaxWidth(),
         )
         Spacer(Modifier.height(2.dp))
         val yenidenAciklama = stringResource(R.string.tesbihat_yeniden_aciklama)

@@ -92,7 +92,7 @@
     <string name="kible_harf_dogu">T</string>
     <string name="kible_harf_guney">S</string>
     <string name="kible_harf_bati">B</string>
-    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak transliterasyondur: çevrilmez. -->
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
     <string name="tesbihat_tamam_erisim">Tasbih selesai. %1$s. %2$d / %3$d. %4$s</string>
     <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Jumlah %4$d / %5$d</string>
     <string name="tesbihat_sayin">Kira</string>

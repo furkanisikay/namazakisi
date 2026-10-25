@@ -56,6 +56,14 @@ public struct SaatMetinleri: Equatable {
     public let saymaIpucu: String
     public let yenidenBaslayin: String
     public let sonSayimiGeriAlin: String
+    /// Okunuslar (CEVIRI DEGIL): zikir adlari, tehlil ve kunye o dilin Musluman toplulugunun
+    /// yaygin yazimiyla (sahip karari 2026-10-25). `Tesbihat.Faz.ad(dil:)`.
+    public let zikirSubhanallah: String
+    public let zikirElhamdulillah: String
+    public let zikirAllahuEkber: String
+    public let zikirTehlil: String
+    public let tehlilMetni: String
+    public let tesbihatKaynagi: String
 
     // Sessiz uyandirma
     public let teheccud: String
@@ -106,6 +114,12 @@ public struct SaatMetinleri: Equatable {
         saymaIpucu: "Saymak için dokunun ya da Digital Crown'u çevirin; ters yöne çevirmek geri alır",
         yenidenBaslayin: "Yeniden başlayın",
         sonSayimiGeriAlin: "Son sayımı geri alın",
+        zikirSubhanallah: "Sübhânallah",
+        zikirElhamdulillah: "Elhamdülillâh",
+        zikirAllahuEkber: "Allâhü ekber",
+        zikirTehlil: "Lâ ilâhe illallâh",
+        tehlilMetni: "Lâ ilâhe illallâhü vahdehû lâ şerîke leh, lehü'l-mülkü ve lehü'l-hamdü ve hüve alâ külli şey'in kadîr",
+        tesbihatKaynagi: "Müslim, Mesâcid 146",
         teheccud: "Teheccüd",
         imsakSaat: "İmsak {saat}",
         vaktinSonu: "Vaktin sonu {saat}",
@@ -153,6 +167,12 @@ public struct SaatMetinleri: Equatable {
         saymaIpucu: "Tap or turn the Digital Crown to count; turn it the other way to undo",
         yenidenBaslayin: "Start again",
         sonSayimiGeriAlin: "Undo the last count",
+        zikirSubhanallah: "Subhanallah",
+        zikirElhamdulillah: "Alhamdulillah",
+        zikirAllahuEkber: "Allahu akbar",
+        zikirTehlil: "La ilaha illallah",
+        tehlilMetni: "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa huwa ala kulli shay'in qadir",
+        tesbihatKaynagi: "Muslim, Masajid 146",
         teheccud: "Tahajjud",
         imsakSaat: "Fajr {saat}",
         vaktinSonu: "Prayer time ends {saat}",
@@ -202,6 +222,12 @@ public struct SaatMetinleri: Equatable {
         saymaIpucu: "Ketuk atau putar Digital Crown untuk menghitung; putar ke arah sebaliknya untuk membatalkan",
         yenidenBaslayin: "Mulai lagi",
         sonSayimiGeriAlin: "Batalkan hitungan terakhir",
+        zikirSubhanallah: "Subhanallah",
+        zikirElhamdulillah: "Alhamdulillah",
+        zikirAllahuEkber: "Allahu akbar",
+        zikirTehlil: "La ilaha illallah",
+        tehlilMetni: "La ilaha illallahu wahdahu la syarika lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli syai'in qadir",
+        tesbihatKaynagi: "HR. Muslim, Masajid 146",
         teheccud: "Tahajud",
         imsakSaat: "Subuh {saat}",
         vaktinSonu: "Waktu salat berakhir {saat}",
@@ -251,6 +277,12 @@ public struct SaatMetinleri: Equatable {
         saymaIpucu: "Zum Zählen tippen oder die Digital Crown drehen; in die andere Richtung drehen macht es rückgängig",
         yenidenBaslayin: "Erneut beginnen",
         sonSayimiGeriAlin: "Letzte Zählung rückgängig machen",
+        zikirSubhanallah: "Subhanallah",
+        zikirElhamdulillah: "Alhamdulillah",
+        zikirAllahuEkber: "Allahu akbar",
+        zikirTehlil: "La ilaha illallah",
+        tehlilMetni: "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa huwa ala kulli shay'in qadir",
+        tesbihatKaynagi: "Muslim, Masadschid 146",
         teheccud: "Tahajjud",
         imsakSaat: "Fajr {saat}",
         vaktinSonu: "Gebetszeit endet {saat}",
@@ -300,6 +332,12 @@ public struct SaatMetinleri: Equatable {
         saymaIpucu: "Touchez ou tournez la Digital Crown pour compter ; tournez-la dans l’autre sens pour annuler",
         yenidenBaslayin: "Recommencer",
         sonSayimiGeriAlin: "Annuler le dernier compte",
+        zikirSubhanallah: "Soubhanallah",
+        zikirElhamdulillah: "Alhamdoulillah",
+        zikirAllahuEkber: "Allahou akbar",
+        zikirTehlil: "La ilaha illallah",
+        tehlilMetni: "La ilaha illallahou wahdahou la charika lah, lahoul-moulkou wa lahoul-hamdou wa houwa 'ala koulli chay'in qadir",
+        tesbihatKaynagi: "Mouslim, Masajid 146",
         teheccud: "Tahajjud",
         imsakSaat: "Fajr {saat}",
         vaktinSonu: "Fin de l’heure de prière {saat}",
@@ -349,6 +387,12 @@ public struct SaatMetinleri: Equatable {
         saymaIpucu: "Za brojanje dodirnite ili okrenite Digital Crown; okretanje u suprotnom smjeru poništava",
         yenidenBaslayin: "Počnite ponovo",
         sonSayimiGeriAlin: "Poništite posljednje brojanje",
+        zikirSubhanallah: "Subhanallah",
+        zikirElhamdulillah: "Elhamdulillah",
+        zikirAllahuEkber: "Allahu ekber",
+        zikirTehlil: "La ilahe illallah",
+        tehlilMetni: "La ilahe illallahu vahdehu la šerike leh, lehul-mulku ve lehul-hamdu ve huve ala kulli šej'in kadir",
+        tesbihatKaynagi: "Muslim, Mesadžid 146",
         teheccud: "Tehedžud",
         imsakSaat: "Zora {saat}",
         vaktinSonu: "Kraj vakta {saat}",
@@ -398,6 +442,12 @@ public struct SaatMetinleri: Equatable {
         saymaIpucu: "Нажмите или поверните Digital Crown, чтобы считать; поворот в обратную сторону отменяет",
         yenidenBaslayin: "Начать заново",
         sonSayimiGeriAlin: "Отменить последний счёт",
+        zikirSubhanallah: "Субханаллах",
+        zikirElhamdulillah: "Альхамдулиллях",
+        zikirAllahuEkber: "Аллаху акбар",
+        zikirTehlil: "Ля иляха илляллах",
+        tehlilMetni: "Ля иляха илляллаху вахдаху ля шарика лях, ляхуль-мульку ва ляхуль-хамду ва хуа 'аля кулли шай'ин кадир",
+        tesbihatKaynagi: "Муслим, Масаджид 146",
         teheccud: "Тахаджуд",
         imsakSaat: "Фаджр {saat}",
         vaktinSonu: "Конец времени {saat}",
@@ -447,6 +497,12 @@ public struct SaatMetinleri: Equatable {
         saymaIpucu: "Ketik atau putar Digital Crown untuk mengira; putar ke arah bertentangan untuk membatalkan",
         yenidenBaslayin: "Mula semula",
         sonSayimiGeriAlin: "Batalkan kiraan terakhir",
+        zikirSubhanallah: "Subhanallah",
+        zikirElhamdulillah: "Alhamdulillah",
+        zikirAllahuEkber: "Allahuakbar",
+        zikirTehlil: "La ilaha illallah",
+        tehlilMetni: "La ilaha illallahu wahdahu la syarika lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli syai'in qadir",
+        tesbihatKaynagi: "Riwayat Muslim, Masajid 146",
         teheccud: "Tahajud",
         imsakSaat: "Subuh {saat}",
         vaktinSonu: "Waktu solat tamat {saat}",

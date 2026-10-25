@@ -53,6 +53,8 @@ class SaatDilTablolariTest {
                 d.camiKaydedildi, d.camiBirDahaSorulmaz, d.camiSayilmaz, d.soruGecersiz, d.islemYapilamadi,
                 d.hoparlorYokBilgi, d.motorYokBilgi, d.sesYokBilgi, d.otomatikYerAciklamasi, d.saatYerAciklamasi,
                 d.hoparlorYok, d.sesCalisti, d.motorYok, d.sesYok, d.sesCalinamadi, d.tesbihatTamamlandi, d.toplam,
+                d.zikirSubhanallah, d.zikirElhamdulillah, d.zikirAllahuEkber, d.zikirTehlil, d.tehlilMetni,
+                d.tesbihatKaynagi,
             )
 
     @Test

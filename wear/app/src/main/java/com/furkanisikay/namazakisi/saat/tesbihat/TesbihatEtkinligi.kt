@@ -44,7 +44,9 @@ object TesbihatEtkinligi {
             Intent(context, TesbihatAktivite::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        val metin = Tesbihat.kisaMetin(durum)
+        // Zikir adı cihaz dilinin yaygın okunuşuyla (bilinmeyen dil Türkçe), ekranla aynı.
+        val dil = context.getString(R.string.dil_kodu)
+        val metin = Tesbihat.kisaMetin(durum, dil)
         val bildirim = NotificationCompat.Builder(context, KANAL)
             .setSmallIcon(R.drawable.ic_tesbihat)
             // Eylem yeşili vurgu: sistem simgeyi boyarsa gri zeminde gri kalmasın.
@@ -68,7 +70,7 @@ object TesbihatEtkinligi {
             .setStatus(durumMetni)
             .setTitle(context.getString(R.string.tesbihat_adi))
             .setContentDescription(
-                context.getString(R.string.tesbihat_suruyor, durum.faz.ad, durum.fazSayisi, durum.faz.hedef)
+                context.getString(R.string.tesbihat_suruyor, durum.faz.ad(dil), durum.fazSayisi, durum.faz.hedef)
             )
             .build()
             .apply(context)

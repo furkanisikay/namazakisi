@@ -91,7 +91,7 @@
     <string name="kible_harf_dogu">I</string>
     <string name="kible_harf_guney">J</string>
     <string name="kible_harf_bati">Z</string>
-    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak transliterasyondur: çevrilmez. -->
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
     <string name="tesbihat_tamam_erisim">Tesbih je završen. %1$s. %2$d / %3$d. %4$s</string>
     <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Ukupno %4$d / %5$d</string>
     <string name="tesbihat_sayin">Brojte</string>

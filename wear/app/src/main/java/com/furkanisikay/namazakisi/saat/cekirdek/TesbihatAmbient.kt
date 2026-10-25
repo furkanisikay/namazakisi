@@ -25,20 +25,21 @@ object TesbihatAmbient {
     data class Icerik(val baslik: String, val sayi: String?, val alt: String, val aciklama: String)
 
     /**
-     * Zikir adları (`Tesbihat.Faz.ad`) her dilde AYNI okunuştur (Arapça zikrin Türkçe
-     * transliterasyonu; çeviri değildir). Çevrilen yalnız çerçeve metnidir ([dil]).
+     * Zikir adı (`Tesbihat.Faz.ad(dil)`) o dilin Müslüman topluluğunun yaygın okunuşudur
+     * (çeviri değil; en "Alhamdulillah", Türkçe "Elhamdülillâh"); çerçeve metni [dil]'de.
      */
     fun icerik(d: Tesbihat.Durum, dil: String = "tr"): Icerik {
         val m = saatDili(dil)
         val alt = "${d.toplam} / ${Tesbihat.TOPLAM}"
+        val ad = d.faz.ad(dil)
         return when {
             d.tamamMi -> Icerik(m.kabulDuasi, null, alt, "${m.tesbihatTamamlandi}. ${m.kabulDuasi}, $alt")
-            d.faz == Tesbihat.Faz.TEHLIL -> Icerik(d.faz.ad, null, alt, "${d.faz.ad}. ${m.toplam} $alt")
+            d.faz == Tesbihat.Faz.TEHLIL -> Icerik(ad, null, alt, "$ad. ${m.toplam} $alt")
             else -> Icerik(
-                d.faz.ad,
+                ad,
                 d.fazSayisi.toString(),
                 alt,
-                "${d.faz.ad}, ${d.fazSayisi} / ${d.faz.hedef}. ${m.toplam} $alt",
+                "$ad, ${d.fazSayisi} / ${d.faz.hedef}. ${m.toplam} $alt",
             )
         }
     }

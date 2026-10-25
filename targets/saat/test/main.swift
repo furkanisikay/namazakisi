@@ -221,6 +221,38 @@ do {
     esitMi(geri.durum.faz, .subhanallah, "geri alma faz sinirini geri gecer")
     esitMi(geri.durum.fazSayisi, 32, "geri alinmis faz sayisi")
     esitMi(Tesbihat.kisaMetin(Tesbihat.Durum(toplam: 45)), "Elhamdülillâh, 12/33", "kisa metin (noktali ayrac yok)")
+    // Okunuslar dile gore (sahip karari 2026-10-25): ceviri degil, o dilin yaygin yazimi.
+    esitMi(Tesbihat.Faz.subhanallah.ad(), "Sübhânallah", "tr zikir adi varsayilan")
+    esitMi(Tesbihat.kaynak(), "Müslim, Mesâcid 146", "tr kunye varsayilan")
+    esitMi(Tesbihat.tehlilMetni().hasPrefix("Lâ ilâhe illallâhü vahdehû"), true, "tr tehlil varsayilan")
+    esitMi(Tesbihat.kisaMetin(Tesbihat.Durum(toplam: 45), dil: "en"), "Alhamdulillah, 12/33", "en kisa metin")
+    esitMi(Tesbihat.Faz.subhanallah.ad(dil: "fr"), "Soubhanallah", "fr zikir adi")
+    esitMi(Tesbihat.Faz.allahuEkber.ad(dil: "ms"), "Allahuakbar", "ms zikir adi")
+    esitMi(Tesbihat.kaynak(dil: "id"), "HR. Muslim, Masajid 146", "id kunye")
+    esitMi(Tesbihat.kaynak(dil: "de"), "Muslim, Masadschid 146", "de kunye")
+    esitMi(Tesbihat.tehlilMetni(dil: "de"), Tesbihat.tehlilMetni(dil: "en"), "de tehlil = en")
+    esitMi(Tesbihat.tehlilMetni(dil: "ms"), Tesbihat.tehlilMetni(dil: "id"), "ms tehlil = id")
+    for kod in ArayuzDili.desteklenenler {
+        for f in Tesbihat.Faz.allCases {
+            esitMi(f.ad(dil: kod).isEmpty, false, "\(kod) zikir adi bos degil")
+        }
+        esitMi(Tesbihat.tehlilMetni(dil: kod).isEmpty, false, "\(kod) tehlil bos degil")
+        esitMi(Tesbihat.kaynak(dil: kod).isEmpty, false, "\(kod) kunye bos degil")
+    }
+    func kirilMi(_ s: String) -> Bool {
+        let harfler = s.unicodeScalars.filter { CharacterSet.letters.contains($0) }
+        return !harfler.isEmpty && harfler.allSatisfy { (0x0400...0x04FF).contains($0.value) }
+    }
+    for f in Tesbihat.Faz.allCases {
+        esitMi(kirilMi(f.ad(dil: "ru")), true, "ru zikir adi Kiril")
+    }
+    esitMi(kirilMi(Tesbihat.tehlilMetni(dil: "ru")), true, "ru tehlil Kiril")
+    esitMi(kirilMi(Tesbihat.kaynak(dil: "ru")), true, "ru kunye Kiril")
+    for f in Tesbihat.Faz.allCases {
+        esitMi(f.ad(dil: "xx"), f.ad(dil: "tr"), "bilinmeyen dil zikir adi Turkce")
+    }
+    esitMi(Tesbihat.tehlilMetni(dil: "xx"), Tesbihat.tehlilMetni(), "bilinmeyen dil tehlil Turkce")
+    esitMi(Tesbihat.kaynak(dil: "xx"), Tesbihat.kaynak(), "bilinmeyen dil kunye Turkce")
     let t0: Int64 = 1_000_000_000_000
     esitMi(Tesbihat.yukle(toplam: 40, sonDokunusMs: t0, simdiMs: t0 + 10 * dk).toplam, 40, "taze oturum korunur")
     esitMi(Tesbihat.yukle(toplam: 40, sonDokunusMs: t0, simdiMs: t0 + 91 * dk).toplam, 0, "eskimis oturum sifirlanir")
