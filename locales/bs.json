@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "Vaša lokacija se koristi za tačno izračunavanje namaskih vremena za mjesto gdje se nalazite. Lokacija ostaje na Vašem uređaju.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Vaša lokacija se koristi za tačno izračunavanje namaskih vremena za mjesto gdje se nalazite i, ako je opcija U džamiji uključena, za uključivanje Režima namaza kada uđete u džamiju. Lokacija ostaje na Vašem uređaju.",
+  "NSLocationAlwaysUsageDescription": "Vaša lokacija se koristi za automatsko ažuriranje namaskih vremena kada promijenite grad i, ako je opcija U džamiji uključena, za uključivanje Režima namaza kada uđete u džamiju. Lokacija ostaje na Vašem uređaju.",
+  "NSCameraUsageDescription": "Kamera se koristi za prikaz smjera kible preko slike s kamere i za skeniranje koda za uparivanje na Vašem TV-u. Slike se ne snimaju i nikada ne napuštaju Vaš uređaj.",
+  "NSCalendarsUsageDescription": "Pristup kalendaru koristi se za dodavanje namaskih vremena u Vaš kalendar i, ako to uključite, za provjeru preklapaju li se događaji iz kalendara s namaskim vremenom. Podaci kalendara ostaju na Vašem uređaju.",
+  "NSCalendarsFullAccessUsageDescription": "Pristup kalendaru koristi se za dodavanje namaskih vremena u Vaš kalendar i, ako to uključite, za provjeru preklapaju li se događaji iz kalendara s namaskim vremenom. Podaci kalendara ostaju na Vašem uređaju.",
+  "NSLocalNetworkUsageDescription": "Aplikacija se povezuje s TV-om u Vašoj lokalnoj mreži kako bi mu poslala namaska vremena i namaze koje ste označili. Podaci su šifrirani i putuju samo između dva uređaja.",
+  "NSAlarmKitUsageDescription": "Koraci podsjetnika za koje odaberete „Pravi alarm” postavljaju se kao alarmi, pa ih čujete i kada je telefon na nečujnom ili je uključen Fokus.",
+  "\"Vakti kıldım\"": "Klanjano",
+  "\"Kıble\"": "Kibla"
 }

@@ -1,102 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: bs — İngilizce kopya; çeviri ajanı bu dosyanın tamamını çevirir. -->
-<!-- English. Terms: docs/ajan/coklu-dil.md glossary + src/core/dil/sozluk/en. -->
+<!-- ÇEVİRİ: bs — Boşnakça (beta). Terimler: src/core/dil/sozluk/bs. -->
 <resources>
     <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
     <string name="dil_kodu">bs</string>
     <string name="app_name">Namaz Akışı</string>
-    <string name="ekran_koruyucu_adi">Prayer times board</string>
-    <string name="ayarlar">Settings</string>
+    <string name="ekran_koruyucu_adi">Pano s namaskim vremenima</string>
+    <string name="ayarlar">Postavke</string>
     <!-- Pano (ui/PanoEkrani) -->
-    <string name="pano_kalan_erisim">%2$s left until %1$s</string>
-    <string name="pano_vaktine">Until %1$s</string>
-    <string name="pano_vaktine_kalan">%1$s in %2$s</string>
-    <string name="pano_kerahat_vakti">Makruh time</string>
-    <string name="pano_bitis">ends %1$s</string>
-    <string name="pano_kerahat_erisim">Makruh time, %1$s, ends %2$s. %3$s</string>
-    <string name="pano_cumaya">Jumu\'ah in %1$s</string>
-    <string name="pano_cikis_geldi">time to leave</string>
-    <string name="pano_cikis">leave at %1$s</string>
-    <string name="pano_cuma_cikis_geldi_erisim">It\'s time to leave for Jumu\'ah</string>
-    <string name="pano_cuma_cikis_erisim">Leave for Jumu\'ah at %1$s</string>
-    <string name="pano_bugun_cuma">Today is Jumu\'ah</string>
-    <string name="pano_ogle">Dhuhr %1$s</string>
-    <string name="pano_bugun_cuma_erisim">Today is Jumu\'ah. The Jumu\'ah prayer is at Dhuhr time, %1$s</string>
-    <string name="pano_ayarlar_erisim">Settings: add a phone, location, connected phones</string>
-    <string name="pano_simdiki_vakit">current prayer time</string>
-    <string name="pano_siradaki_vakit">next prayer time</string>
-    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Add your phone", "Enter code", "I'll choose the city myself", "Add". -->
-    <string name="kodla_girin">Enter code</string>
-    <string name="ili_kendim_secin">I\'ll choose the city myself</string>
-    <string name="yeniden_deneyin">Try again</string>
-    <string name="telefon_varsayilan">Phone</string>
-    <string name="esleme_ekleniyor">Adding %1$s</string>
-    <string name="esleme_gonderiyor">Your phone is sending its location and status…</string>
-    <string name="esleme_tamamlanamadi">Pairing couldn\'t be completed</string>
-    <string name="esleme_saklanamadi">This TV can\'t store the connection key securely. You can enter your location with a code or choose your city.</string>
-    <string name="telefonunuzu_ekleyin">Add your phone</string>
-    <string name="esleme_alt">Prayer times for your location; the prayers you\'ve prayed appear too.</string>
-    <string name="esleme_adim1">Open Namaz Akışı on your phone</string>
-    <string name="esleme_adim2">Settings › My devices › Add a TV</string>
-    <string name="esleme_adim3">Point your phone\'s camera at the code</string>
-    <string name="esleme_ayni_wifi">Your phone and TV must be on the same Wi-Fi network.</string>
-    <string name="esleme_onay_soru">Add this phone?</string>
-    <string name="esleme_onay_aciklama">The added phone can send its location and the prayers it marks to this TV.</string>
-    <string name="ekleyin">Add</string>
-    <string name="hayir">No</string>
-    <string name="esleme_eklendi">%1$s added</string>
-    <string name="konumunuz_geldi">Your location arrived</string>
-    <string name="konuma_gore_hesaplanacak">Prayer times will be calculated for this location.</string>
-    <string name="qr_konum_alindi">Location received</string>
-    <string name="qr_kodu">Pairing code to scan with your phone</string>
-    <string name="ag_yok">The TV isn\'t connected to a network</string>
-    <string name="ag_yok_aciklama">You can continue by entering the 7-digit code from your phone or choosing your city.</string>
+    <string name="pano_kalan_erisim">%1$s: još %2$s</string>
+    <string name="pano_vaktine">Do vakta: %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s za %2$s</string>
+    <string name="pano_kerahat_vakti">Mekruh vrijeme</string>
+    <string name="pano_bitis">ističe %1$s</string>
+    <string name="pano_kerahat_erisim">Mekruh vrijeme, %1$s, ističe u %2$s. %3$s</string>
+    <string name="pano_cumaya">Džuma za %1$s</string>
+    <string name="pano_cikis_geldi">vrijeme je za polazak</string>
+    <string name="pano_cikis">polazak u %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Vrijeme je da krenete na džumu</string>
+    <string name="pano_cuma_cikis_erisim">Polazak na džumu u %1$s</string>
+    <string name="pano_bugun_cuma">Danas je džuma</string>
+    <string name="pano_ogle">podne %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Danas je džuma. Džuma-namaz se klanja u vrijeme podne-namaza, %1$s</string>
+    <string name="pano_ayarlar_erisim">Postavke: dodavanje telefona, lokacija, povezani telefoni</string>
+    <string name="pano_simdiki_vakit">trenutni vakat</string>
+    <string name="pano_siradaki_vakit">sljedeći vakat</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: „Dodajte telefon”, „Unesite kod”, „Dodajte”. -->
+    <string name="kodla_girin">Unesite kod</string>
+    <string name="ili_kendim_secin">Grad ću odabrati ručno</string>
+    <string name="yeniden_deneyin">Pokušajte ponovo</string>
+    <string name="telefon_varsayilan">Telefon</string>
+    <string name="esleme_ekleniyor">Dodavanje: %1$s</string>
+    <string name="esleme_gonderiyor">Vaš telefon šalje svoju lokaciju i stanje…</string>
+    <string name="esleme_tamamlanamadi">Uparivanje nije dovršeno</string>
+    <string name="esleme_saklanamadi">Ovaj TV ne može sigurno sačuvati ključ veze. Lokaciju možete unijeti kodom ili odabrati svoj grad.</string>
+    <string name="telefonunuzu_ekleyin">Dodajte telefon</string>
+    <string name="esleme_alt">Vremena prema Vašoj lokaciji; prikazuju se i namazi koje ste klanjali.</string>
+    <string name="esleme_adim1">Otvorite Namaz Akışı na telefonu</string>
+    <string name="esleme_adim2">Postavke › Moji uređaji › Dodajte TV</string>
+    <string name="esleme_adim3">Usmjerite kameru telefona prema kodu</string>
+    <string name="esleme_ayni_wifi">Telefon i TV moraju biti na istoj Wi-Fi mreži.</string>
+    <string name="esleme_onay_soru">Dodati ovaj telefon?</string>
+    <string name="esleme_onay_aciklama">Dodani telefon može ovom TV-u slati svoju lokaciju i namaze koje označi.</string>
+    <string name="ekleyin">Dodajte</string>
+    <string name="hayir">Ne</string>
+    <string name="esleme_eklendi">%1$s je dodan</string>
+    <string name="konumunuz_geldi">Vaša lokacija je stigla</string>
+    <string name="konuma_gore_hesaplanacak">Vremena će se računati za ovu lokaciju.</string>
+    <string name="qr_konum_alindi">Lokacija je primljena</string>
+    <string name="qr_kodu">Kod za uparivanje koji skenirate telefonom</string>
+    <string name="ag_yok">TV nije povezan na mrežu</string>
+    <string name="ag_yok_aciklama">Možete nastaviti tako što ćete unijeti 7-cifreni kod s telefona ili odabrati svoj grad.</string>
     <!-- Kodla konum (ui/KodGirisEkrani) -->
-    <string name="kod_baslik">Enter the code from your phone</string>
-    <string name="kod_yol">On your phone: Settings › My devices › Add a TV</string>
-    <string name="kod_hatali">The code didn\'t match. Check the 7 digits on your phone; fix a wrong digit with “%1$s”.</string>
-    <string name="kod_rakamli_kumanda">If your remote has number keys, you can also type with them.</string>
-    <string name="kod_bos_hane">empty digit</string>
-    <string name="kod_sil">Delete</string>
-    <string name="kod_sil_aciklama">Delete the last digit</string>
-    <string name="kod_geri">Back</string>
-    <string name="vazgecin">Cancel</string>
+    <string name="kod_baslik">Unesite kod s telefona</string>
+    <string name="kod_yol">Na telefonu: Postavke › Moji uređaji › Dodajte TV</string>
+    <string name="kod_hatali">Kod se ne podudara. Provjerite 7 cifara na telefonu; pogrešnu cifru ispravite opcijom „%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Ako Vaš daljinski upravljač ima tipke s brojevima, možete kucati i njima.</string>
+    <string name="kod_bos_hane">prazna cifra</string>
+    <string name="kod_sil">Obrišite</string>
+    <string name="kod_sil_aciklama">Obrišite posljednju cifru</string>
+    <string name="kod_geri">Nazad</string>
+    <string name="vazgecin">Odustanite</string>
     <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
-    <string name="il_secin">Choose your city</string>
-    <string name="il_merkezine_gore">Prayer times are calculated for the city center.</string>
-    <string name="il_secili">%1$s, selected</string>
-    <string name="dream_il_yok">To see the prayer times board, open the Namaz Akışı app and choose your city.</string>
+    <string name="il_secin">Odaberite svoj grad</string>
+    <string name="il_merkezine_gore">Vremena se računaju za centar grada.</string>
+    <string name="il_secili">%1$s, odabrano</string>
+    <string name="dream_il_yok">Da vidite pano s vremenima, otvorite aplikaciju Namaz Akışı i odaberite svoj grad.</string>
     <!-- TV ayarları (ui/TvAyarlarEkrani) -->
-    <string name="ayar_konum">Location: %1$s</string>
-    <string name="ayar_konum_yok">No location chosen</string>
-    <string name="ayar_telefon_ekleyin">Add a phone</string>
-    <string name="ayar_konumu_kodla">Enter location with a code</string>
-    <string name="ayar_bagli_telefonlar">Phones connected to this TV</string>
-    <string name="ayar_telefon_yok">No phone added yet. Use “%1$s” on the left and scan the code that appears.</string>
-    <string name="kaldirin">Remove</string>
-    <string name="ayar_ne_gonderir">What do phones send?</string>
-    <string name="ayar_madde_konum">Location: prayer times follow it</string>
-    <string name="ayar_madde_namazlar">Prayers marked, for those who choose</string>
-    <string name="ayar_madde_sifreli">Encrypted, only on your home network</string>
-    <string name="son_haber_yok">No information yet</string>
-    <string name="son_haber_az_once">Just now</string>
+    <string name="ayar_konum">Lokacija: %1$s</string>
+    <string name="ayar_konum_yok">Lokacija nije odabrana</string>
+    <string name="ayar_telefon_ekleyin">Dodajte telefon</string>
+    <string name="ayar_konumu_kodla">Unesite lokaciju kodom</string>
+    <string name="ayar_bagli_telefonlar">Telefoni povezani s ovim TV-om</string>
+    <string name="ayar_telefon_yok">Još nije dodan nijedan telefon. Opcijom „%1$s” lijevo skenirajte kod koji se pojavi na ekranu.</string>
+    <string name="kaldirin">Uklonite</string>
+    <string name="ayar_ne_gonderir">Šta telefoni šalju?</string>
+    <string name="ayar_madde_konum">Lokaciju: vremena se ravnaju po njoj</string>
+    <string name="ayar_madde_namazlar">Klanjane namaze, za one koji to žele</string>
+    <string name="ayar_madde_sifreli">Šifrirano, samo u kućnoj mreži</string>
+    <string name="son_haber_yok">Još nema informacija</string>
+    <string name="son_haber_az_once">Upravo sada</string>
     <plurals name="son_haber_dk">
-        <item quantity="one">%1$d min ago</item>
-        <item quantity="few">%1$d min ago</item>
-        <item quantity="other">%1$d min ago</item>
+        <item quantity="one">prije %1$d min</item>
+        <item quantity="few">prije %1$d min</item>
+        <item quantity="other">prije %1$d min</item>
     </plurals>
     <plurals name="son_haber_saat">
-        <item quantity="one">%1$d h ago</item>
-        <item quantity="few">%1$d h ago</item>
-        <item quantity="other">%1$d h ago</item>
+        <item quantity="one">prije %1$d sat</item>
+        <item quantity="few">prije %1$d sata</item>
+        <item quantity="other">prije %1$d sati</item>
     </plurals>
     <plurals name="son_haber_gun">
-        <item quantity="one">%1$d day ago</item>
-        <item quantity="few">%1$d days ago</item>
-        <item quantity="other">%1$d days ago</item>
+        <item quantity="one">prije %1$d dan</item>
+        <item quantity="few">prije %1$d dana</item>
+        <item quantity="other">prije %1$d dana</item>
     </plurals>
-    <string name="kaldir_soru">Remove %1$s?</string>
-    <string name="kaldir_aciklama">This phone will no longer be able to send information to the TV. To add it again, you need to scan the QR code again.</string>
+    <string name="kaldir_soru">Ukloniti uređaj %1$s?</string>
+    <string name="kaldir_aciklama">Ovaj telefon više neće moći slati podatke na TV. Da ga ponovo dodate, morate ponovo skenirati QR kod.</string>
     <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
-    <string name="telefondaki_konum">Your phone\'s location</string>
+    <string name="telefondaki_konum">Lokacija s Vašeg telefona</string>
 </resources>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: bs — İngilizce kopya; çeviri ajanı bu dosyanın tamamını çevirir. -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- ÇEVİRİ: bs — Boşnakça (beta). -->
+<!-- Gerçek alarm (Boşnakça). "Klanjano" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">Alarm za namaz</string>
+  <string name="alarm_kildim">Klanjano</string>
+  <string name="alarm_kapat">Ugasite</string>
+  <string name="alarm_kanal_aciklamasi">Pravi alarm koji zvoni u koracima podsjetnika koje odaberete</string>
 </resources>

@@ -77,9 +77,9 @@ public struct SaatSureMetinleri: Equatable {
     // ÇEVİRİ: bs
     public static let bs = SaatSureMetinleri(
         birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        saat: ["one": "{n} sat", "few": "{n} sata", "other": "{n} sati"],
+        dakika: ["one": "{n} minuta", "few": "{n} minute", "other": "{n} minuta"],
+        saniye: ["one": "{n} sekunda", "few": "{n} sekunde", "other": "{n} sekundi"]
     )
 
 

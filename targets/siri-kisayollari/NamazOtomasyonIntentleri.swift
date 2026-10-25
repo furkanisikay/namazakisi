@@ -146,9 +146,13 @@ struct OtomasyonMetinleri {
 
     // ÇEVİRİ: bs
     static let bs = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: [
+            "one": "{ad}: vakat nastupa za {n} minutu.",
+            "few": "{ad}: vakat nastupa za {n} minute.",
+            "other": "{ad}: vakat nastupa za {n} minuta.",
+        ],
+        evetKilindi: "Da, označeno je kao klanjano.",
+        hayirKilinmadi: "Ne, još nije označeno."
     )
 
 

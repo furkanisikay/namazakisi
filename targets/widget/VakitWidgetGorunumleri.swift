@@ -179,27 +179,27 @@ struct WidgetMetinleri: Equatable {
 
     // ÇEVİRİ: bs
     static let bs = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Namasko vrijeme",
+        galeriAciklama: "Trenutni vakat, preostalo vrijeme do njegovog isteka i današnja vremena.",
+        veriEski: "Otvorite aplikaciju da ažurirate vremena",
+        konumYok: "Otvorite aplikaciju da podesite svoju lokaciju",
+        kilindiSiradaki: "{ad}: klanjano · {sonraki} {saat}",
+        adCikis: "{ad} · ističe {saat}",
+        siradakiAdSaat: "Sljedeći: {ad} {saat}",
+        vaktiCikisErisim: "{ad}, ističe u {saat}",
+        siradakiErisim: "Sljedeći: {ad}, {saat}",
+        cikisSaat: "Ističe {saat}",
+        bitisSaat: "Kraj {saat}",
+        kilindiBaslik: "{ad}: klanjano",
+        siradaki: "Sljedeći",
+        siradakiAd: "Sljedeći: {ad}",
+        kildimErisim: "Klanjano: {ad}",
+        gunSatiriKilindi: ", klanjano",
+        bitti: "Završeno",
+        vakitCikti: "Vakat je istekao",
+        kabulAlt: "{ad}: klanjano",
+        kontrolAdi: "Klanjano",
+        kontrolAciklama: "Označava trenutni vakat kao klanjan."
     )
 
 
