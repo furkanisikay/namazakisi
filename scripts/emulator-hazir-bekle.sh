@@ -54,4 +54,7 @@ if [ "$MEVCUT" != "$HEDEF" ]; then
     echo "UYARI: cihaz dili degistirilemedi (root yok); $MEVCUT ile devam" >&2
   fi
 fi
+# Kök yetkisi olmayan imajda (Android TV) sistem dili degismez; kare hatti uygulama kurulunca
+# uygulamaya ozel dili (Android 13+, `cmd locale set-app-locales`) bu dosyadan okur.
+echo "$HEDEF" > "${RUNNER_TEMP:-/tmp}/kare-hedef-dil"
 echo "emulator hazir (hedef dil: $HEDEF)"

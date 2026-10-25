@@ -302,15 +302,14 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
             drawPath(parca, ust, style = Stroke(width = 3.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round))
         }
         Spacer(Modifier.height(2.dp))
-        // Tesbihat bitince dua (sahip isteği: "Tamamlandı" yerine "Allah kabul etsin").
-        Text(
+        // Tesbihat bitince dua (sahip isteği: "Tamamlandı" yerine "Allah kabul etsin"). Dua
+        // KESİLMEZ, sığmazsa küçülür (Almanca "Möge Allah es annehmen" "…" ile kesiliyordu).
+        SigdirilanMetin(
             AnaEkranKarari.kabulDuasi(stringResource(R.string.dil_kodu)),
-            fontSize = sinirliBoyut(0.075f),
-            fontWeight = FontWeight.SemiBold,
-            color = renk(SaatPaleti.METIN),
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+            enFazla = sinirliBoyut(0.075f),
+            renk = renk(SaatPaleti.METIN),
+            agirlik = FontWeight.SemiBold,
+            modifier = Modifier.fillMaxWidth(),
         )
         Text(
             Tesbihat.KAYNAK,
