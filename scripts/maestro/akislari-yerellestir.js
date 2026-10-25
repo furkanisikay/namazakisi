@@ -51,6 +51,66 @@ for (const harita of kaynak) {
 const kacir = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const coz = (s) => s.replace(/\\(.)/g, '$1');
 
+/** "{ad} vakti hatırlatma ayarları. {ozet}" → ['', '{ad}', ' vakti hatırlatma ayarları. ', '{ozet}', '']. */
+const parcala = (sablon) => sablon.split(/(\{[^{}]+\})/);
+const yerTutucuMu = (p) => /^\{[^{}]+\}$/.test(p);
+
+/** Yer tutuculu yaprakların listesi (yalnız Türkçe ve İngilizce kaynaklardan). */
+const sablonlar = [];
+for (const harita of kaynak) {
+  for (const [yol, metin] of harita) if (/\{[^{}]+\}/.test(metin)) sablonlar.push([yol, metin]);
+}
+
+/** Bir yer tutucu değerinin hedef dildeki karşılığı (regex); bulunamazsa `.*`. */
+function degerKarsiligi(deger) {
+  const adaylar = [...(dizin.get(deger) ?? [])].map((y) => hedef.get(y)).filter((v) => v && !/[{}]/.test(v));
+  const tekil = [...new Set(adaylar)];
+  if (!tekil.length) return '.*';
+  return tekil.length === 1 ? kacir(tekil[0]) : `(?:${tekil.map(kacir).join('|')})`;
+}
+
+/**
+ * Seçenek yer tutuculu bir yaprağın (baştan, sonu kesik olabilir) somut hâliyse hedef dilin
+ * aynı yaprağını yer tutucular eşlenmiş olarak döndürür ("Sabah vakti hatırlatma ayarları"
+ * → "Fajr: Erinnerungseinstellungen\\. .*"). Yoksa boş dizi.
+ */
+function sablonKarsiliklari(secenek) {
+  const sonuc = [];
+  for (const [yol, sablon] of sablonlar) {
+    const parcalar = parcala(sablon);
+    // Son parçaya kadar tam, son literal parça yalnız önekiyle eşleşebilir.
+    for (let k = parcalar.length; k > 0; k--) {
+      const son = parcalar[k - 1];
+      if (yerTutucuMu(son) || !son) continue;
+      const govde = new RegExp(`^${parcalar.slice(0, k - 1).map((p) => (yerTutucuMu(p) ? '(.+?)' : kacir(p))).join('')}$`, 's');
+      // Seçenek = gövde + son literalin (boş olmayan) öneki.
+      let m = null;
+      for (let i = secenek.length - 1; i >= 0 && !m; i--) {
+        if (son.startsWith(secenek.slice(i))) m = govde.exec(secenek.slice(0, i));
+      }
+      if (!m) continue;
+      const degerler = {};
+      parcalar.slice(0, k - 1).filter(yerTutucuMu).forEach((p, i) => (degerler[p] = m[i + 1]));
+      // Yer tutucu sözlükte bilinen bir değer (vakit adı) ya da sayı olmalı; yoksa eşleşme
+      // tesadüfidir ("{ad} …" her metni yutar) ve yanlış öğeye dokunurdu.
+      if (Object.values(degerler).some((d) => !/^\d+$/.test(d) && degerKarsiligi(d) === '.*')) continue;
+      const hedefSablon = hedef.get(yol);
+      if (!hedefSablon) break;
+      const hedefParcalar = parcala(hedefSablon);
+      sonuc.push(
+        hedefParcalar
+          .map((p) => (yerTutucuMu(p) ? (degerler[p] !== undefined ? degerKarsiligi(degerler[p]) : '.*') : kacir(p)))
+          .join(''),
+      );
+      // Önek eşleşmesinde hedefin yer tutucudan önceki baş literali de ("Mode reprise" ← "Recovery mode").
+      const bas = hedefParcalar[0].replace(/[\s:.\u00a0\u202f]+$/, '');
+      if (k === 1 && parcalar.length > 1 && bas) sonuc.push(kacir(bas));
+      break;
+    }
+  }
+  return sonuc;
+}
+
 let degisen = 0;
 const eslesmeyen = new Set();
 
@@ -58,13 +118,20 @@ function grubuGenislet(govde) {
   const secenekler = govde.split('|');
   const eklenecek = [];
   let eslesti = false;
+  const ekle = (k) => {
+    if (!secenekler.includes(k) && !eklenecek.includes(k)) eklenecek.push(k);
+  };
   for (const secenek of secenekler) {
-    for (const yol of dizin.get(coz(secenek)) ?? []) {
+    const duz = coz(secenek);
+    for (const yol of dizin.get(duz) ?? []) {
       eslesti = true;
       const karsilik = hedef.get(yol);
-      if (!karsilik || /[{}]/.test(karsilik)) continue;
-      const k = kacir(karsilik);
-      if (!secenekler.includes(k) && !eklenecek.includes(k)) eklenecek.push(k);
+      if (karsilik && !/[{}]/.test(karsilik)) ekle(kacir(karsilik));
+    }
+    if (dizin.has(duz)) continue;
+    for (const k of sablonKarsiliklari(duz)) {
+      eslesti = true;
+      ekle(k);
     }
   }
   if (!eslesti) eslesmeyen.add(govde);
@@ -84,7 +151,14 @@ for (const dosya of dosyalar(path.join(KOK, 'scripts', 'maestro'))) {
   // Yorum satırlarına dokunulmaz; yalnız iç içe olmayan "(a|b)" grupları.
   const yeni = eski
     .split('\n')
-    .map((satir) => (/^\s*#/.test(satir) ? satir : satir.replace(/\(([^()]*\|[^()]*)\)/g, (_, g) => `(${grubuGenislet(g)})`)))
+    .map((satir) =>
+      /^\s*#/.test(satir)
+        ? satir
+        : satir
+            .replace(/\(([^()]*\|[^()]*)\)/g, (_, g) => `(${grubuGenislet(g)})`)
+            // Fransız yazımı iki noktadan önce bölünmez boşluk koyar ("Série\u00a0: 25 jours").
+            .replace(/\): /g, ')[\u00a0\u202f]?: '),
+    )
     .join('\n');
   if (yeni !== eski) {
     fs.writeFileSync(dosya, yeni);
