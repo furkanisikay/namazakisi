@@ -36,7 +36,7 @@ appId: com.furkanisikay.namazakisi
     text: "(Sabah vakti hatırlatma ayarları|Fajr reminder settings).*"
 - scrollUntilVisible:
     element:
-      text: ".*(ilk hatırlatma|first reminder).*"
+      id: "zaman-seridi-cumle"
     direction: DOWN
     centerElement: true
     timeout: 300000
@@ -47,12 +47,12 @@ appId: com.furkanisikay.namazakisi
 # "… — açın veya kapatın" ANAHTARDIR; ona basmak adimi kapatir.
 - scrollUntilVisible:
     element:
-      text: "(1\\. hatırlatma|Reminder 1).*(düzenleyin|edit).*"
+      id: "adim-duzenle-0"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "(1\\. hatırlatma|Reminder 1).*(düzenleyin|edit).*"
+    id: "adim-duzenle-0"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/08-adim-detay
@@ -129,7 +129,7 @@ appId: com.furkanisikay.namazakisi
     timeout: 3000
 - scrollUntilVisible:
     element:
-      text: ".*(ilk hatırlatma|first reminder).*"
+      id: "zaman-seridi-cumle"
     direction: UP
     centerElement: true
     timeout: 300000

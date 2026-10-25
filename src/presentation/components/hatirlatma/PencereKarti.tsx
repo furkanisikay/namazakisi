@@ -315,6 +315,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                         disabled={!etkilesimli}
                         onPress={() => onAdimSec(indeks)}
                         activeOpacity={0.7}
+                        testID={`adim-duzenle-${indeks}`}
                         accessibilityRole="button"
                         // Önek SABİT ("1. hatırlatma, Nazik — düzenleyin" / "Hatırlatma — düzenleyin"):
                         // ekran testleri ve Maestro/simülatör betikleri buna bağlıdır.

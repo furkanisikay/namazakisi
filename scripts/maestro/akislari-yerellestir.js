@@ -63,6 +63,8 @@ for (const harita of kaynak) {
 
 /** Bir yer tutucu değerinin hedef dildeki karşılığı (regex); bulunamazsa `.*`. */
 function degerKarsiligi(deger) {
+  // Kurum kısaltması ("JAKIM", "MWL") her dilde aynı yazılır.
+  if (/^[A-Z0-9][A-Z0-9 .-]*$/.test(deger)) return kacir(deger);
   const adaylar = [...(dizin.get(deger) ?? [])].map((y) => hedef.get(y)).filter((v) => v && !/[{}]/.test(v));
   const tekil = [...new Set(adaylar)];
   if (!tekil.length) return '.*';

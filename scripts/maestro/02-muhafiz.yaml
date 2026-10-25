@@ -50,7 +50,7 @@ appId: com.furkanisikay.namazakisi
 # ve serit karenin disinda kalabiliyordu (iOS'ta yasandi, App Store'a gitti).
 - scrollUntilVisible:
     element:
-      text: ".*(ilk hatırlatma|first reminder).*"
+      id: "zaman-seridi-cumle"
     direction: DOWN
     centerElement: true
     timeout: 20000
@@ -60,7 +60,7 @@ appId: com.furkanisikay.namazakisi
 # hatirlatma modulu: dort kanal karti yerine iki anahtar). Riza kaydi yoksa once
 # onay modali cikar — onaylanir.
 - tapOn:
-    text: "(1\\. hatırlatma|Reminder 1).*(düzenleyin|edit).*"
+    id: "adim-duzenle-0"
 - waitForAnimationToEnd:
     timeout: 3000
 # Anahtar "Nasıl" ızgarasında, sheet'in ilk ekranının altında kalabilir (özellik
