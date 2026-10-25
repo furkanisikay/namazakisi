@@ -1,14 +1,14 @@
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Коран {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Намаз лучше сна. Спешите к спасению.',
+    araVer: 'Сделайте короткий перерыв в мирских делах и встаньте перед своим Господом.',
+    yorgunluk: 'Намаз Аср ждёт вас, чтобы снять усталость дня и обрести покой.',
+    sukur: 'Намаз Магриб — благодарность за прожитый день. Спешите предстать перед своим Господом.',
+    aksamKisa: 'Время Магриба короткое; оно наступило, совершите намаз без промедления.',
+    geceKaranligi: 'В ночной темноте останьтесь наедине со своим Господом. Намаз Иша — лекарство для души.',
+    davet: 'Вы приглашены на намаз Иша, чтобы завершить день ради довольства Аллаха.',
   },
 };
