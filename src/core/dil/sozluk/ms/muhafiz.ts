@@ -2,59 +2,59 @@ import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * Seruan ibadah dalam bahasa Melayu: arahan ringkas dan langsung, tetap "anda". Ungkapan
+ * sujud TIDAK ditulis (kembar larangan "secdeye kapan") → "dirikan solat". Unit dalam tajuk
+ * "m": "Maghrib · 655m" muat dalam 16 aksara pertama.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk}m berlalu · sudah masuk waktu ⏰',
+    giris2: '{ad} · {dk}m berlalu · jangan lengahkan solat ⚠️',
+    giris3: '{ad} · {dk}m berlalu · solat anda menanti 🔥',
+    giris4: '{ad} · {dk}m berlalu · DIRIKAN SOLAT 🚨',
+    erken3: '{ad} · {dk}m lagi · solat anda menanti 🔥',
+    erken4: '{ad} · {dk}m lagi · DIRIKAN SOLAT 🚨',
+    cikis1: '{ad} · {dk}m lagi ⏰',
+    cikis2: '{ad} · {dk}m · waktu semakin suntuk ⚠️',
+    cikis3: '{ad} · {dk}m · waktu hampir terlepas 🔥',
+    cikis4: '{ad} · {dk}m · WAKTU HAMPIR TAMAT 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Telah masuk waktu solat; tunaikan selagi ada peluang.', 'Tunaikan selagi waktu masih memihak kepada anda; jangan tangguhkan.'],
+    s2: ['Semakin ditangguh, semakin berat; jangan biarkan solat anda ke saat akhir.', 'Waktu terus berjalan — tunaikan solat sekarang.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Semakin anda lengahkan, semakin hampir anda terlepas; tunaikan sekarang.',
+      'Jangan kata "nanti saya solat"; anda boleh solat sekarang.',
+      'Bangunlah sekarang daripada berkata "kalaulah" beberapa minit lagi.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Jangan lengahkan solat lagi — dirikan solat sekarang.', 'Tinggalkan apa yang sedang anda lakukan, dan dirikan solat.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Waktu mula suntuk; tunaikan selagi ada peluang.',
+    s2: 'Jangan biarkan solat anda ke saat akhir; sekarang masa yang sesuai untuk solat.',
+    s3: 'Waktu hampir tamat; anda masih boleh solat sekarang.',
+    s4: 'Jika sudah solat, ketik "Sudah solat"; jika belum, dirikan solat sekarang.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'JANGAN LENGAHKAN SOLAT. Dirikan solat sekarang. ({dk} min berlalu)',
+    giris2: 'Waktu terus berjalan; jangan biarkan solat anda ke saat akhir. ({dk} min berlalu)',
+    giris1: cogul({ other: '{n} minit telah berlalu sejak masuk waktu solat.' }),
+    erken4: 'Jangan lengahkan solat; dirikan solat sekarang. ({dk} min lagi)',
+    cikis4: 'WAKTU HAMPIR TAMAT. Dirikan solat sekarang. ({dk} min lagi)',
+    cikis2: 'Waktu semakin suntuk; jangan biarkan solat anda ke saat akhir. ({dk} min lagi)',
+    cikis1: cogul({ other: '{n} minit lagi waktu solat tamat.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · solat sebelum tidur ⏰',
+    govde: 'Waktu senyap malam bermula dalam {dk} min; tunaikan solat Isyak sebelum tidur.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Waktu mula suntuk; tunaikan selagi ada peluang.',
+    sonaBirakma: 'Jangan biarkan solat anda ke saat akhir; sekarang masa yang sesuai untuk solat.',
+    fisilti: 'Jangan kata "nanti saya solat"; waktu hampir tamat, anda boleh solat sekarang.',
+    omur: 'Waktu terus berlalu; anda masih berpeluang menunaikan solat ini dalam waktunya.',
+    keske: 'Bangunlah sekarang daripada berkata "kalaulah" beberapa minit lagi.',
+    namazaDur: 'Jika sudah solat, ketik "Sudah solat"; jika belum, dirikan solat sekarang.',
+    sonDakika: 'Minit-minit terakhir. Tinggalkan apa yang sedang anda lakukan, dan dirikan solat.',
   },
 };
