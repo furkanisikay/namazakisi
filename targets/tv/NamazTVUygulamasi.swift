@@ -198,19 +198,19 @@ struct TvArayuzMetinleri {
     )
 
 
-    // ÇEVİRİ: ar
+    // ar — Arapça (beta): JS `sozluk/ar` (konum, anaEkran.kerahat, vakit); yönetim metni mastar kalıbı
     static let ar = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "اختيار مدينتك",
+        ilMerkezi: "تُحسب المواقيت وفق مركز المدينة. ويمكن تغيير الاختيار لاحقًا.",
+        ilSecErisim: "{il}، اختيار",
+        kalan: "المتبقي على {ad}",
+        kalanErisim: "المتبقي على {ad}: {sure}",
+        konumuDegistirin: "تغيير الموقع",
+        kerahatSuruyor: "وقت الكراهة: {tur}، ينتهي {bitis}. {aciklama}",
+        siradakiKerahat: "وقت الكراهة التالي: {tur} {bas}–{bit}",
+        cumaBilgisi: "اليوم الجمعة. تُصلّى الجمعة في وقت الظهر (يدخل {giris}).",
+        suAnkiEk: "، الوقت الحالي",
+        siradakiEk: "، الوقت التالي"
     )
 
 

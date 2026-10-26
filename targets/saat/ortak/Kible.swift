@@ -255,17 +255,17 @@ public struct KibleMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ar
+    // ar — Arapça (beta): JS `sozluk/ar/kible.ts > yon`, mesafe `cami.kmIcinde` ("كم")
     public static let ar = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "خلفك",
+        saga: "يمينًا {derece}°",
+        sola: "يسارًا {derece}°",
+        hizali: "أنت باتجاه القبلة",
+        arkadaErisim: "القبلة خلفك",
+        sagdaErisim: "القبلة {derece} درجة إلى يمينك",
+        soldaErisim: "القبلة {derece} درجة إلى يسارك",
+        kabede: "أنت عند الكعبة",
+        mesafe: "{km} كم",
         binlikAyirici: ","
     )
 

@@ -85,10 +85,11 @@ class SaatDilTablolariTest {
             listOf("zero", "one", "two", "few", "few", "many", "many", "other", "other", "few"),
             listOf(0L, 1L, 2L, 3L, 10L, 11L, 99L, 100L, 102L, 103L).map { SaatDiliAr.cogulKategorisi(it) },
         )
-        // İskelet İngilizce kalıplarla dolu: tekil yalnız one.
-        assertEquals("1 minute", SaatDiliAr.dakikaSesli(1))
-        assertEquals("2 minutes", SaatDiliAr.dakikaSesli(2))
-        assertEquals("11 hours", SaatDiliAr.saatSesli(11))
+        // Sesli biçim: tekil ve tesniye sayısız, 3–10 çoğul, 11–99 temyiz tekil.
+        assertEquals("دقيقة واحدة", SaatDiliAr.dakikaSesli(1))
+        assertEquals("دقيقتان", SaatDiliAr.dakikaSesli(2))
+        assertEquals("3 دقائق", SaatDiliAr.dakikaSesli(3))
+        assertEquals("11 ساعة", SaatDiliAr.saatSesli(11))
         // Urduca one/other (JS `sozluk/ur/sure.ts`).
         assertEquals("1 گھنٹہ", SaatDiliUr.saatSesli(1))
         assertEquals("3 گھنٹے", SaatDiliUr.saatSesli(3))

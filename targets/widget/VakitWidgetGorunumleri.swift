@@ -255,29 +255,29 @@ struct WidgetMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ar
+    // ar — Arapça (beta): JS `sozluk/ar` (vakit, genel.kildim); "Kıldım" = صلّيتُ, "Kılındı" = تمّت
     static let ar = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "وقت الصلاة",
+        galeriAciklama: "وقت الصلاة الحالي، والمتبقي على خروجه، ومواقيت اليوم.",
+        veriEski: "لتحديث المواقيت: فتح التطبيق",
+        konumYok: "لضبط موقعك: فتح التطبيق",
+        kilindiSiradaki: "{ad} · تمّت · {sonraki} {saat}",
+        adCikis: "{ad} · النهاية {saat}",
+        siradakiAdSaat: "التالية {ad} {saat}",
+        vaktiCikisErisim: "وقت {ad}، النهاية {saat}",
+        siradakiErisim: "التالية {ad}، {saat}",
+        cikisSaat: "النهاية {saat}",
+        bitisSaat: "النهاية {saat}",
+        kilindiBaslik: "{ad} · تمّت",
+        siradaki: "التالية",
+        siradakiAd: "التالية {ad}",
+        kildimErisim: "صلّيتُ {ad}",
+        gunSatiriKilindi: "، تمّت",
+        bitti: "انتهى",
+        vakitCikti: "خرج الوقت",
+        kabulAlt: "صلاة {ad} تمّت",
+        kontrolAdi: "صلّيتُ",
+        kontrolAciklama: "يضع علامة «تمّت» على الصلاة الحالية."
     )
 
 

@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "يُستخدم موقعك لحساب مواقيت الصلاة بدقة حيث تكون. ويبقى موقعك على جهازك.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "يُستخدم موقعك لحساب مواقيت الصلاة بدقة حيث تكون، ولتفعيل وضع الصلاة عند دخول المسجد إن كان «في المسجد» مفعّلًا. ويبقى موقعك على جهازك.",
+  "NSLocationAlwaysUsageDescription": "يُستخدم موقعك لتحديث مواقيت الصلاة تلقائيًا عند الانتقال إلى مدينة أخرى، ولتفعيل وضع الصلاة عند دخول المسجد إن كان «في المسجد» مفعّلًا. ويبقى موقعك على جهازك.",
+  "NSCameraUsageDescription": "تُستخدم الكاميرا لعرض اتجاه القبلة فوق صورة الكاميرا ولمسح رمز الإقران على التلفاز. لا تُحفظ الصور ولا تغادر جهازك.",
+  "NSCalendarsUsageDescription": "يُستخدم الوصول إلى التقويم لإضافة مواقيت الصلاة إلى تقويمك، وللتحقق عند تفعيل ذلك من تداخل مواعيد تقويمك مع وقت صلاة. وتبقى بيانات تقويمك على جهازك.",
+  "NSCalendarsFullAccessUsageDescription": "يُستخدم الوصول إلى التقويم لإضافة مواقيت الصلاة إلى تقويمك، وللتحقق عند تفعيل ذلك من تداخل مواعيد تقويمك مع وقت صلاة. وتبقى بيانات تقويمك على جهازك.",
+  "NSLocalNetworkUsageDescription": "يتصل التطبيق بالتلفاز على شبكتك المحلية لإرسال مواقيت الصلاة والصلوات المعلَّمة إليه. البيانات مشفّرة وتنتقل بين الجهازين فقط.",
+  "NSAlarmKitUsageDescription": "خطوات التذكير التي يُختار فيها «منبّه حقيقي» تُضبط منبّهاتٍ، فتُسمع حتى حين يكون هاتفك على الصامت أو يكون التركيز مفعّلًا.",
+  "\"Vakti kıldım\"": "صلّيتُ",
+  "\"Kıble\"": "القبلة"
 }

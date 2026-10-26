@@ -112,8 +112,8 @@ enum NamazAlarmCekirdegi {
         "ru": "Остановить",
         // ms
         "ms": "Hentikan",
-        // ÇEVİRİ: ar
-        "ar": "Stop",
+        // ar
+        "ar": "إيقاف",
         // ur
         "ur": "روکیں",
     ]

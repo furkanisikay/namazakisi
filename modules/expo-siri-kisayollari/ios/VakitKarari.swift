@@ -445,31 +445,32 @@ public struct VakitMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ar
+    // ar — Arapça (beta): JS `sozluk/ar` (vakit.adlar, genel.kildim.sonuc, samimiyet.kabulDuasi);
+    // yönetim metni mastar/isim kalıbı, "Kıldım" = صلّيتُ, "Kılındı" = تمّت.
     public static let ar = VakitMetinleri(
         dil: "ar",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "الفجر", "ogle": "الظهر", "ikindi": "العصر", "aksam": "المغرب", "yatsi": "العشاء"],
+        gunes: "الشروق",
+        konumYok: "لحساب المواقيت يلزم فتح التطبيق وضبط موقعك.",
+        veriEski: "المواقيت قديمة. لتحديثها يكفي فتح التطبيق مرة واحدة.",
+        girisBugun: "الساعة {saat}",
+        girisYarin: "غدًا الساعة {saat}",
+        suAnVakti: "الآن وقت {ad}.",
+        suAnVaktiCikis: "الآن وقت {ad}، وينتهي الساعة {saat}.",
+        siradakiNamaz: "الصلاة التالية {ad}، {giris}.",
+        isaretlendi: "وُضعت علامة «تمّت» على صلاة {ad}. {dua}.",
+        zatenKilindi: "صلاة {ad} معلَّمة «تمّت» بالفعل.",
+        vakitYok: "لا صلاة لتعليمها الآن.",
+        vakitYokSiradaki: "لا صلاة لتعليمها الآن. التالية {ad}، {giris}.",
+        onay: "هل تُوضع علامة «تمّت» على صلاة {ad}؟",
+        vakitDegisti: "تغيّر الوقت فلم تُوضع العلامة. يُرجى إعادة المحاولة.",
+        kabulDuasi: "تقبّل الله",
+        kildim: "صلّيتُ",
+        kilindi: "تمّت",
+        kontrolKildim: "{ad} · صلّيتُ",
+        kontrolKilindi: "{ad} · تمّت",
+        kontrolVakitYok: "لا صلاة لتعليمها",
+        uygulamayiAcin: "فتح التطبيق"
     )
 
 
