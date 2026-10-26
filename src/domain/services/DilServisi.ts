@@ -32,9 +32,17 @@ export interface DilAyari {
   vakitTakimi?: Partial<Record<DilKodu, string>>;
 }
 
-/** Kayıttaki dil yalnız SEÇİLEBİLİRSE geçerlidir (yedekten gelen yarım dil kendiliğinden açılmaz). */
+/** `__DEV__` (Metro/jest tanımlar); tanımsızsa üretim sayılır. */
+const gelistirmeDerlemesi = (): boolean => typeof __DEV__ !== 'undefined' && __DEV__ === true;
+
+/**
+ * Kayıttaki dil yalnız SEÇİLEBİLİRSE geçerlidir (yedekten gelen yarım dil kendiliğinden açılmaz).
+ * İSTİSNA yalnız geliştirme derlemesinde (`__DEV__`): kapalı dil (ör. Arapça iskeleti) kare
+ * hattının tohumuyla (`dil_ayari.kod`) açılabilsin; kare iş akışları debug APK koşturur.
+ * Üretim davranışı değişmez; cihaz dili kapalı dili hiçbir derlemede açmaz.
+ */
 const secilebilirKod = (x: unknown): DilKodu | null =>
-  dilKoduMu(x) && DILLER.some((d) => d.kod === x && d.secilebilir) ? x : null;
+  dilKoduMu(x) && DILLER.some((d) => d.kod === x && (d.secilebilir || gelistirmeDerlemesi())) ? x : null;
 
 let yukleme: Promise<DilKodu> | null = null;
 

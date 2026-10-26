@@ -4,7 +4,7 @@
  * Tema ve Feedback destekli
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager, DeviceEventEmitter } from 'react-native';
 import { WearSenkronServisi } from './src/domain/services/WearSenkronServisi';
 import { TvSenkronServisi } from './src/domain/services/TvSenkronServisi';
@@ -47,6 +47,9 @@ import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHe
 import { baglamHazir } from './src/domain/services/baglamHazir';
 import { hesapAyariniYukle } from './src/presentation/store/hesapSlice';
 import { diliYukle } from './src/presentation/store/dilSlice';
+import { DilServisi } from './src/domain/services/DilServisi';
+import { YonServisi } from './src/domain/services/YonServisi';
+import { YonDegisimiModali } from './src/presentation/components/dil/YonDegisimiModali';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from './src/core/utils/vakitSayacYardimcisi';
@@ -114,6 +117,48 @@ const YuklemeEkrani: React.FC = () => {
       </Text>
     </View>
   );
+};
+
+/** Yeniden başlatma isteği bu sürede sonuçlanmazsa açılış sürer (yükleme ekranında takılı kalma yok). */
+const YON_YENIDEN_BASLATMA_ZAMAN_ASIMI_MS = 4000;
+
+/**
+ * Yazı yönü kapısı — İLK ÇİZİMDEN ÖNCE: dil yüklenince etkin dilin yönü native'e yazılır;
+ * çizilen yön farklıysa (cihaz dili Arapça telefonda Türkçe arayüz, yedekten gelen dil…)
+ * kullanıcı henüz bir şey görmeden sessizce yeniden başlatılır. Deneme sayacı diskte, en
+ * fazla 2 (`YonServisi.acilistaDenetle`); açılış zinciri (AppIcerik) ancak kapı açılınca başlar.
+ */
+const YonKapisi: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [hazir, setHazir] = useState(false);
+  useEffect(() => {
+    let iptal = false;
+    let zamanAsimi: ReturnType<typeof setTimeout> | null = null;
+    const ac = () => {
+      if (!iptal) setHazir(true);
+    };
+    (async () => {
+      try {
+        await DilServisi.hazir();
+        // Yalnız uyuşmazlıkta Logger'ı bekle (tükenen denemenin uyarısı tanı kaydına düşsün;
+        // initialize tekildir). Olağan açılışta ilk çizim log okumasını beklemez (D-07).
+        YonServisi.uygula();
+        if (YonServisi.bekliyorMu()) await Logger.initialize().catch(() => undefined);
+        if ((await YonServisi.acilistaDenetle()) === 'yenidenBaslatiliyor') {
+          zamanAsimi = setTimeout(ac, YON_YENIDEN_BASLATMA_ZAMAN_ASIMI_MS);
+          return;
+        }
+      } catch (e) {
+        Logger.warn('App', 'Yazı yönü denetlenemedi', e);
+      }
+      ac();
+    })();
+    return () => {
+      iptal = true;
+      if (zamanAsimi) clearTimeout(zamanAsimi);
+    };
+  }, []);
+  if (!hazir) return <YuklemeEkrani />;
+  return <>{children}</>;
 };
 
 /**
@@ -546,6 +591,8 @@ const AppIcerik: React.FC = () => {
       </ErrorBoundary>
       {/* Tanı/sorun bildirme otomatik uyarı modalı — kök seviyede host edilir */}
       <TaniBildirModali />
+      {/* Dil değişimi yazı yönünü değiştirdiyse "şimdi yeniden başlatılsın mı?" sorusu. */}
+      <YonDegisimiModali />
       {/* Kısa bilgi mesajları (iOS). Android sistem toastını kullanır. */}
       <KisaBildirimKatmani />
       {/* "Geri al" bandı: şaşırtabilecek ama geri alınabilir eylemler (`geriAlBandiGoster`). */}
@@ -579,7 +626,9 @@ export default function App() {
       <View style={styles.container}>
         <Provider store={store}>
           <ProviderWrapper>
-            <AppIcerik />
+            <YonKapisi>
+              <AppIcerik />
+            </YonKapisi>
           </ProviderWrapper>
         </Provider>
       </View>

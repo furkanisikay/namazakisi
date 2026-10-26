@@ -72,6 +72,8 @@ repositories {
 
 dependencies {
   implementation project(':expo-modules-core')
+  // `yenidenBaslat`: ReactApplication.reactHost.reload (expo-cami-geofence ile aynı satır).
+  implementation "com.facebook.react:react-android"
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.23"
 }
 

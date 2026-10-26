@@ -1,6 +1,7 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
 import { DilServisi } from '../../domain/services/DilServisi';
+import { YonServisi } from '../../domain/services/YonServisi';
 import { Logger } from '../../core/utils/Logger';
 import { aktifDil } from '../../core/dil/aktifDil';
 
@@ -8,12 +9,20 @@ import { aktifDil } from '../../core/dil/aktifDil';
  * Arayüz dili — ekranların yeniden çizilmesi için store aynası. Gerçek kaynak disk +
  * `core/dil/aktifDil` (arka planda Redux yoktur).
  */
+/**
+ * Dil değişimi yazı yönünü değiştirdiyse (sahip kararı 2026-10-26): 'soruluyor' → kökteki
+ * `YonDegisimiModali` "şimdi yeniden başlatılsın mı?" diye sorar; 'ertelendi' → kullanıcı
+ * "Sonra" dedi, yön bir sonraki başlatmada değişir (Dil sayfası bilgi satırı gösterir).
+ */
+export type YonDegisimi = 'yok' | 'soruluyor' | 'ertelendi';
+
 export interface DilState {
   kod: DilKodu;
   yuklendi: boolean;
+  yonDegisimi: YonDegisimi;
 }
 
-const initialState: DilState = { kod: VARSAYILAN_DIL, yuklendi: false };
+const initialState: DilState = { kod: VARSAYILAN_DIL, yuklendi: false, yonDegisimi: 'yok' };
 
 /** `zorla`: disk yeniden okunur (yedekten geri yükleme dili değiştirmiş olabilir). */
 export const diliYukle = createAsyncThunk<DilKodu, { zorla?: boolean } | undefined>('dil/yukle', (arg) =>
@@ -29,7 +38,7 @@ interface DurumKaynagi {
  * muhafız adımları, cuma/yatış, sesli okuma ve widget planı plan anının dilini taşır →
  * `hesapAyariniKaydet` gibi `konumDegistiUygula` yolundan yayılır (tek yayma noktası).
  */
-export const diliKaydet = createAsyncThunk<DilKodu, DilKodu | 'cihaz'>('dil/kaydet', async (secim, { getState }) => {
+export const diliKaydet = createAsyncThunk<DilKodu, DilKodu | 'cihaz'>('dil/kaydet', async (secim, { dispatch, getState }) => {
   // 'cihaz': açık seçim silinir, cihaz dili izlenir (seçilebilir değilse Türkçe).
   const degisti = secim === 'cihaz' ? await DilServisi.cihazDilineDon() : await DilServisi.kaydet(secim);
   if (degisti) {
@@ -57,6 +66,10 @@ export const diliKaydet = createAsyncThunk<DilKodu, DilKodu | 'cihaz'>('dil/kayd
       const { GununAyetiServisi } = require('../../domain/services/GununAyetiServisi') as typeof import('../../domain/services/GununAyetiServisi');
       await GununAyetiServisi.getInstance().yaz();
     }
+    // Yazı yönü EN SONDA: yeniden başlatma sorusu planlar yeni dilde kurulduktan sonra gelir
+    // (yön yalnız başlangıçta okunur; "şimdi" denince yarım plan kalmasın).
+    YonServisi.uygula();
+    dispatch(yonDegisimiAyarla(YonServisi.bekliyorMu() ? 'soruluyor' : 'yok'));
   }
   return secim === 'cihaz' ? aktifDil() : secim;
 });
@@ -134,7 +147,11 @@ export const ozelAnonslariDegistir = createAsyncThunk<number, void>('dil/ozelAno
 const dilSlice = createSlice({
   name: 'dil',
   initialState,
-  reducers: {},
+  reducers: {
+    yonDegisimiAyarla(s, a: PayloadAction<YonDegisimi>) {
+      s.yonDegisimi = a.payload;
+    },
+  },
   extraReducers: (b) => {
     b.addCase(diliYukle.fulfilled, (s, a) => {
       s.kod = a.payload;
@@ -148,5 +165,7 @@ const dilSlice = createSlice({
     });
   },
 });
+
+export const { yonDegisimiAyarla } = dilSlice.actions;
 
 export default dilSlice.reducer;

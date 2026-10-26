@@ -6,7 +6,8 @@
  * açıklama satırı arayüz dilindedir; gözden geçirilmemiş çeviri "Beta" taşır.
  *
  * Dil değişince elle yazılmış sesli okuma metinleri için BİR KEZ sorulur (sahip kararı):
- * "değiştirin" denirse yeni dilin hazır şablonu yazılır, denmezse dokunulmaz.
+ * "değiştirin" denirse yeni dilin hazır şablonu yazılır, denmezse dokunulmaz. Dil yazı yönünü
+ * de değiştirdiyse yeniden başlatma sorusu (`YonDegisimiModali`) bu soru kapanınca gelir.
  */
 import * as React from 'react';
 import { useCallback, useMemo, useState } from 'react';
@@ -20,6 +21,7 @@ import { SecenekListesi, type Secenek } from '../ortak/SecenekListesi';
 import { BildirimModali } from '../common/BildirimModali';
 import { kisaBildirimGoster } from '../common/KisaBildirim';
 import { Logger } from '../../../core/utils/Logger';
+import { useYonSorusunuBeklet } from './yonSorusuKapisi';
 
 type Secim = DilKodu | 'cihaz';
 
@@ -39,6 +41,8 @@ export const DilSecici: React.FC<DilSeciciProps> = ({ secimVar, cihazYerelAyari,
   const kod = useAktifDil();
   const [ozelSayi, setOzelSayi] = useState(0);
   const [bekliyor, setBekliyor] = useState(false);
+  // Kayıt sürerken ve sesli okuma sorusu açıkken yön sorusu bekler (iOS kardeş modal kuralı).
+  useYonSorusunuBeklet(bekliyor || ozelSayi > 0);
 
   const cihazDili = cihazDilindenSec(cihazYerelAyari);
   const secili: Secim | '' = secimVar === null ? '' : secimVar ? kod : 'cihaz';
