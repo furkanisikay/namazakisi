@@ -96,11 +96,17 @@ function abone(fn: () => void): () => void {
   };
 }
 
-/** Çocuklardaki dize/sayıları çevirir; öğelere dokunmaz (iç `<Text>` kendi kapısından geçer). */
+/**
+ * Çocuklardaki dize/sayıları çevirir. `Fragment`'in içine iner (çocukları bu `Text`'in metnidir);
+ * diğer öğelere dokunmaz (iç `<Text>` kendi kapısından geçer).
+ */
 function cocuklariCevir(cocuk: React.ReactNode, sistem: RakamSistemi): React.ReactNode {
   if (typeof cocuk === 'string') return rakamlariCevir(cocuk, sistem);
   if (typeof cocuk === 'number') return rakamlariCevir(String(cocuk), sistem);
   if (Array.isArray(cocuk)) return cocuk.map((c: React.ReactNode) => cocuklariCevir(c, sistem));
+  if (React.isValidElement<{ children?: React.ReactNode }>(cocuk) && cocuk.type === React.Fragment) {
+    return React.cloneElement(cocuk, undefined, cocuklariCevir(cocuk.props.children, sistem));
+  }
   return cocuk;
 }
 

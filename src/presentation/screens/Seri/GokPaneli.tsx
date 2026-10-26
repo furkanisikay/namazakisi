@@ -88,6 +88,7 @@ import { AnimasyonluYildiz } from './AnimasyonluYildiz';
 import { Parilti } from './Parilti';
 import { BugununNabzi } from './BugununNabzi';
 import { useMetin } from '../../hooks/useMetin';
+import { useRakamCevir } from '../../components/metin/useRakamCevir';
 
 export interface GokPaneliProps {
   /** `aylikIzgaraOlustur` çıktısı — 28/35/42 hücre. */
@@ -156,6 +157,8 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
   const renkler = useRenkler();
   // Haftanın günleri, pazartesiden başlar (ızgara pazartesi başlıyor); etkin dilde.
   const sozluk = useMetin();
+  // SVG metni metin kapısından geçmez: Arapçada rakamlar burada çevrilir.
+  const rakam = useRakamCevir();
   const gunHarfleri = sozluk.seri.gok.gunHarfleri;
   const [panelGenislik, setPanelGenislik] = useState(0);
 
@@ -402,7 +405,7 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
                   opacity={opaklik}
                   textAnchor="middle"
                 >
-                  {gun.gunNo}
+                  {rakam(gun.gunNo)}
                 </SvgText>
               );
             })}
@@ -418,7 +421,7 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
             fontWeight="600"
             fill={GOK_TONLARI.AY_ADI}
           >
-            {ayAdi}
+            {rakam(ayAdi)}
           </SvgText>
           {gunHarfleri.map((harf, i) => (
             <SvgText

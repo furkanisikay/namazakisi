@@ -74,8 +74,12 @@ class WidgetYapilandirmaActivity : AppCompatActivity() {
                 findViewById<View>(id).visibility = View.GONE
             }
             findViewById<View>(R.id.ayar_zemin_palet).visibility = View.VISIBLE
-            findViewById<View>(R.id.ayar_ayet_icerik_baslik).visibility = View.VISIBLE
-            ayetIcerik.visibility = View.VISIBLE
+            // Mealsiz dilde (Arapça arayüz yalnız Kur'an metnini gösterir) "Meal / hat" seçimi
+            // anlamsız: widget zaten Arapça metni çizer, seçenek gizlenir. Yük yoksa gösterilir.
+            val mealVar = GununAyetiDeposu.yuk(this)?.plan?.any { it.meal != null } ?: true
+            val icerikGorunurlugu = if (mealVar) View.VISIBLE else View.GONE
+            findViewById<View>(R.id.ayar_ayet_icerik_baslik).visibility = icerikGorunurlugu
+            ayetIcerik.visibility = icerikGorunurlugu
             ayetIcerik.check(
                 if (GununAyetiDeposu.icerik(this, appWidgetId) == AyetIcerigi.HAT) R.id.ayar_ayet_icerik_hat
                 else R.id.ayar_ayet_icerik_meal

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
 import Animated, { SharedValue, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
@@ -10,6 +10,9 @@ import { HARF_HALKA_R, KABE_HALKA_R, KadranCizimi } from './KadranCizimi';
 import { KabeSimgesi } from './KabeSimgesi';
 import { HizaHalkasi } from './HizaHalkasi';
 import { KADRAN_AZAMI_YATIS, KADRAN_ORANI, KADRAN_PERSPEKTIF } from './sabitler';
+
+/** Sığdırma kadranı bundan küçültmez (dar ekranda metin kaydırılmaz, kadran okunur kalır). */
+const KADRAN_EN_KUCUK = 160;
 import { bicim } from '../../../core/dil/aktifDil';
 import { useMetin } from '../../hooks/useMetin';
 import { SOLDAN_SAGA } from '../../components/common/yon';
@@ -53,7 +56,29 @@ export const PusulaGorunumu: React.FC<{
   // Yatay pencerede (tablet, açık Fold) yükseklik başlık + mod seçici + sekme çubuğunu da
   // taşır: 0,52 oranı kadranı taşırıyor, ortalanan blok yön cümlesini mod seçicinin
   // ÜSTÜNE itiyordu (tablet karesinde görüldü). Yatayda kadran daha alçak tutulur.
-  const S = Math.min(width * KADRAN_ORANI, height * (width > height ? 0.4 : 0.52), 440);
+  // Metinler uzayınca (Urduca Nestalik satırı ~2,5 em) ortalanan blok alana sığmaz ve yön
+  // cümlesi mod seçicinin üstüne taşar: kadran, ölçülen alandan metinlerin payı düşülerek küçülür.
+  const [alan, setAlan] = useState({ kap: 0, ust: 0, alt: 0 });
+  const olc = useCallback(
+    (anahtar: 'kap' | 'ust' | 'alt') => (e: LayoutChangeEvent) => {
+      const h = Math.round(e.nativeEvent.layout.height);
+      setAlan((a) => (a[anahtar] === h ? a : { ...a, [anahtar]: h }));
+    },
+    []
+  );
+  const kapOlc = olc('kap');
+  const ustOlc = olc('ust');
+  const altOlc = olc('alt');
+  const sahneUstPay = statik ? 28 : 12;
+  // Sahne yüksekliği: dönen modda S + 0,1·S (çentik/ufuk payı), statikte S + 4.
+  const sigan =
+    alan.kap > 0
+      ? (alan.kap - styles.kap.paddingBottom - alan.ust - alan.alt - sahneUstPay - (statik ? 4 : 0)) / (statik ? 1 : 1.1)
+      : Infinity;
+  const S = Math.max(
+    KADRAN_EN_KUCUK,
+    Math.min(width * KADRAN_ORANI, height * (width > height ? 0.4 : 0.52), 440, Math.floor(sigan))
+  );
   // Kâbe küpü dış halkanın İÇİNDE, kıble ışınının ucunda (KadranCizimi birimleri /200).
   const R = (S * KABE_HALKA_R) / 200;
   const KABE = Math.round(S * 0.12);
@@ -124,8 +149,8 @@ export const PusulaGorunumu: React.FC<{
       : yonCumlesi(ozet.fark, ozet.hizali);
 
   return (
-    <View style={styles.kap}>
-      <View style={styles.ust}>
+    <View style={styles.kap} onLayout={kapOlc}>
+      <View style={styles.ust} onLayout={ustOlc}>
         {statik && kibleAcisi !== null ? (
           <Text testID="kible-statik-aci" style={[styles.buyukAci, { color: renkler.metin }]} accessibilityLabel={cumle}>
             {Math.round(kibleAcisi)}°
@@ -158,7 +183,7 @@ export const PusulaGorunumu: React.FC<{
       </View>
 
       <View
-        style={[styles.sahne, { width: S, height: S + UST, marginTop: statik ? 28 : 12 }]}
+        style={[styles.sahne, { width: S, height: S + UST, marginTop: sahneUstPay }]}
         accessible
         accessibilityLabel={bicim(m.pusulaErisim, { cumle })}
       >
@@ -225,6 +250,7 @@ export const PusulaGorunumu: React.FC<{
         )}
       </View>
 
+      <View style={styles.altBlok} onLayout={altOlc}>
       {statik && (
         <View style={styles.statikBilgi}>
           <FontAwesome5 name="info-circle" size={13} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
@@ -252,6 +278,7 @@ export const PusulaGorunumu: React.FC<{
           <Text style={[styles.cipMetni, { color: renkler.metin }]}>{m.kamerayla}</Text>
         </TouchableOpacity>
       )}
+      </View>
     </View>
   );
 };
@@ -279,7 +306,8 @@ const YonHarfi: React.FC<{
   renk: string;
   boyut: number;
 }> = ({ harf, aci, yaricap, merkezX, merkezY, surekli, dik, renk, boyut }) => {
-  const kutu = boyut * 1.6;
+  // Kutu harften geniş: Nestalik gibi uzun iniş/çıkışlı yazıda harf kutuya kırpılmasın.
+  const kutu = boyut * 2.6;
   const stil = useAnimatedStyle(() => {
     const t = (dik.value * KADRAN_AZAMI_YATIS * Math.PI) / 180;
     const th = ((aci - surekli.value) * Math.PI) / 180;
@@ -310,6 +338,7 @@ const styles = StyleSheet.create({
   statikBilgi: { flexDirection: 'row', alignItems: 'center', maxWidth: 340, marginTop: 24 },
   bilgiSatiri: { fontSize: 13, textAlign: 'center' },
   ust: { alignItems: 'center', justifyContent: 'center' },
+  altBlok: { alignItems: 'center' },
   cumle: { fontSize: 22, fontWeight: '700', textAlign: 'center', fontVariant: ['tabular-nums'] },
   alt: { fontSize: 14, marginTop: 4, textAlign: 'center', fontVariant: ['tabular-nums'] },
   // Başlık ile kadran arası ~24–28 dp: ikisi tek blok olarak dikeyde ortalanır.

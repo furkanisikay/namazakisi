@@ -72,6 +72,23 @@ describe('Arapça', () => {
     expect(screen.getByText(/٣ \/ ١٠/)).toBeTruthy();
   });
 
+  it('Fragment içindeki rakamlar da çevrilir (BirimliSure geri sayımı)', () => {
+    render(
+      <Text testID="sure">
+        {[5, 12].map((n, i) => (
+          <React.Fragment key={i}>
+            {i > 0 ? ' ' : ''}
+            {String(n).padStart(2, '0')}
+            <Text>{' dk'}</Text>
+          </React.Fragment>
+        ))}
+      </Text>
+    );
+    expect(screen.getByText(/٠٥/)).toBeTruthy();
+    expect(screen.getByText(/١٢/)).toBeTruthy();
+    expect(screen.queryByText(/05/)).toBeNull();
+  });
+
   it('rakamKoru metne dokunmaz ve prop native bileşene sızmaz', () => {
     render(<Text rakamKoru>1.2.3 (456)</Text>);
     const t = screen.getByText('1.2.3 (456)');
