@@ -5,7 +5,7 @@
  * (widget, bildirim kanalı, saat) üretilmeden dil açılırsa ekranlar yarım çevrili görünür.
  * Gözden geçirilmemiş çeviri `beta: true` taşır (seçicide rozet).
  */
-export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms';
+export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur';
 
 export interface DilTanimi {
   kod: DilKodu;
@@ -27,6 +27,8 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'bs', yerelAd: 'Bosanski', yon: 'ltr', ttsDili: 'bs-BA', beta: true, secilebilir: true },
   { kod: 'ru', yerelAd: 'Русский', yon: 'ltr', ttsDili: 'ru-RU', beta: true, secilebilir: true },
   { kod: 'ms', yerelAd: 'Bahasa Melayu', yon: 'ltr', ttsDili: 'ms-MY', beta: true, secilebilir: true },
+  { kod: 'ar', yerelAd: 'العربية', yon: 'rtl', ttsDili: 'ar-SA', beta: true, secilebilir: false },
+  { kod: 'ur', yerelAd: 'اردو', yon: 'rtl', ttsDili: 'ur-PK', beta: true, secilebilir: false },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';

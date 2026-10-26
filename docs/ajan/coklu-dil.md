@@ -74,7 +74,8 @@ Türkçe kural sürer: kullanıcı uygulamayı yönetiyorsa "siz", uygulama ibad
 | Endonezce / Malayca | "Anda" / "anda" | aynı zamir, kısa emir ("Tunaikan solat") |
 | Boşnakça | "Vi" (büyük harf) | "Vi" + emir ("Klanjajte"); geçmiş zaman cinsiyetli → "Kıldım" = "Klanjano" |
 | Rusça | "вы" (küçük harf) | "вы" + emir; geçmiş zaman cinsiyetli → "Kıldım" = «Намаз совершён» |
-| Arapça, Urduca | çoğul/saygı kipi | emir kipi cinsiyetlidir → cinsiyetsiz kalıp (isim cümlesi: "حان وقت الصلاة") |
+| Arapça | mastar/isim kalıbı, cinsiyetsiz ("اختيار المدينة", düğmede "حفظ"); kaçınılmazsa eril tekil genel kip bilinçli seçimdir | emir cinsiyetlidir → isim cümlesi ("حان وقت صلاة العصر"); "Kıldım" = "صلّيتُ" (1. tekil, cinsiyetsiz), "Kılındı" = "تمّت" |
+| Urduca | "آپ" + saygı emri ("منتخب کریں"); "تو/تم" YOK | "آپ" + saygı emri ("نماز ادا کریں"; Urduca emir cinsiyetsizdir); "Kıldım" = "نماز پڑھ لی" (nesneye uyar, cinsiyetsiz) |
 
 ## Terim sözlüğü (diğer diller)
 Her dilin vakit ve terim kararları kendi `sozluk/<dil>/vakit.ts` başındaki yorumdadır; karşılıklar o dosyalardan okunur, serbest çeviri yapılmaz.

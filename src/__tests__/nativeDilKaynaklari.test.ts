@@ -28,6 +28,8 @@ const COGUL: Record<string, string[]> = {
   fr: ['one', 'many', 'other'],
   bs: ['one', 'few', 'other'],
   ru: ['one', 'few', 'many', 'other'],
+  ar: ['zero', 'one', 'two', 'few', 'many', 'other'],
+  ur: ['one', 'other'],
 };
 
 function resDizinleri(): string[] {

@@ -14,6 +14,8 @@ export const dilAyar: Sozluk['dilAyar'] = {
     bs: 'Bahasa Bosnia',
     ru: 'Bahasa Rusia',
     ms: 'Bahasa Melayu',
+    ar: 'Bahasa Arab',
+    ur: 'Bahasa Urdu',
   },
   cihazDili: 'Bahasa perangkat',
   cihazDiliKullaniliyor: 'Saat ini {ad}',
