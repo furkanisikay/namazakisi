@@ -1,11 +1,10 @@
-// ÇEVİRİ: ur
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'ہندسے',
+  aciklama: 'منتخب کریں کہ اوقات، تاریخوں اور اعداد میں کون سے ہندسے استعمال ہوں۔',
+  otomatik: 'ملک کے مطابق',
+  otomatikAciklama: 'آپ کے مقام کے ملک میں عام ہندسے استعمال ہوتے ہیں۔',
+  dogu: 'مشرقی عربی ہندسے',
+  bati: 'مغربی ہندسے',
 };

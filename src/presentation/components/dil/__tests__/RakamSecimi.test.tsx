@@ -25,7 +25,9 @@ jest.mock('../../../../domain/services/DilServisi', () => ({
 }));
 
 import { RakamSecimi } from '../RakamSecimi';
-import { aktifDiliKur, aktifDilSifirla } from '../../../../core/dil/aktifDil';
+import { aktifDiliKur, aktifDilSifirla, sozluk } from '../../../../core/dil/aktifDil';
+
+const AR = sozluk('ar').rakam;
 import { metinKapisiniKur } from '../../metin/MetinKapisi';
 
 let kaldir: () => void = () => undefined;
@@ -56,10 +58,10 @@ it('Arapçada üç seçenek; örnekler doğru rakamla, seçim kaydedilir ve otom
   // Doğu Arap örneği ve KORUNAN Batı örneği; Batı örneği kapıdan geçse "٠١٢٣…" olurdu.
   expect(screen.getAllByText('٠١٢٣٤٥٦٧٨٩')).toHaveLength(1);
   expect(screen.getByText('0123456789')).toBeTruthy();
-  expect(screen.getByRole('radio', { name: /^By country/ }).props.accessibilityState.checked).toBe(true);
+  expect(screen.getByRole('radio', { name: new RegExp(`^${AR.otomatik}`) }).props.accessibilityState.checked).toBe(true);
 
-  fireEvent.press(screen.getByText('Western numerals'));
+  fireEvent.press(screen.getByText(AR.bati));
   await waitFor(() => expect(mockKaydet).toHaveBeenCalledWith('latn'));
-  fireEvent.press(screen.getByText('By country'));
+  fireEvent.press(screen.getByText(AR.otomatik));
   await waitFor(() => expect(mockKaydet).toHaveBeenLastCalledWith(null));
 });
