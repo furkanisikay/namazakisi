@@ -6,12 +6,12 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Native dil tablosu nöbetçisi (`docs/ajan/coklu-dil.md > Native dil tabloları`): sekiz dilin
+ * Native dil tablosu nöbetçisi (`docs/ajan/coklu-dil.md > Native dil tabloları`): on dilin
  * her nesnesi kendi kodunu taşır, ay/gün listeleri tam ve her metin Türkçeyle AYNI
  * parametreleri kullanır (işaretçi değerlerle çağrılır).
  */
 class TvDilTablolariTest {
-    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms")
+    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur")
     private val isaretciler = listOf("<AD>", "<AY>", "<GUN>", "987", "2468")
 
     private fun metinler(d: TvDili): Map<String, String> = linkedMapOf(
@@ -22,7 +22,7 @@ class TvDilTablolariTest {
     )
 
     @Test
-    fun sekizDilTabloSirasiylaVeKendiKoduyla() {
+    fun herDilTabloSirasiylaVeKendiKoduyla() {
         assertEquals(kodlar, TV_DILLERI.map { it.kod })
         for (d in TV_DILLERI) assertSame(d, tvDili(d.kod))
         assertSame(TvDiliId, tvDili("in"))
@@ -46,5 +46,18 @@ class TvDilTablolariTest {
                 )
             for (m in sabit) assertTrue("${d.kod}: boş metin", m.isNotBlank())
         }
+    }
+
+    @Test
+    fun arapcaCogulAltiKategori() {
+        // CLDR ar (JS `cogul.ts > arapca`): 0, 1, 2, …03–…10, …11–…99, kalanı other.
+        assertEquals(
+            listOf("zero", "one", "two", "few", "few", "many", "many", "other", "other", "few"),
+            listOf(0, 1, 2, 3, 10, 11, 99, 100, 102, 103).map { TvDiliAr.cogulKategorisi(it) },
+        )
+        assertEquals("1 minute", TvDiliAr.dakikaSesli(1))
+        assertEquals("2 minutes", TvDiliAr.dakikaSesli(2))
+        assertEquals("1 hour", TvDiliUr.saatSesli(1))
+        assertEquals("3 hours", TvDiliUr.saatSesli(3))
     }
 }

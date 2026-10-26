@@ -6,13 +6,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Native dil tablosu nöbetçisi (`docs/ajan/coklu-dil.md > Native dil tabloları`): sekiz dilin
+ * Native dil tablosu nöbetçisi (`docs/ajan/coklu-dil.md > Native dil tabloları`): on dilin
  * her nesnesi kendi kodunu taşır ve her metin Türkçeyle AYNI yer tutucuları (parametreleri)
  * kullanır. Arayüz anahtar kümesini derleyici garanti eder; burada çevirmen bir parametreyi
  * (ör. `$ad`) düşürmesin diye işaretçi değerlerle çağrılır.
  */
 class SaatDilTablolariTest {
-    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms")
+    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur")
     private val isaretciler = listOf("<AD>", "<SAAT>", "<SURE>", "<S>", "<D>", "987", "986", "985")
 
     private fun metinler(d: SaatDili): Map<String, String> = linkedMapOf(
@@ -58,7 +58,7 @@ class SaatDilTablolariTest {
             )
 
     @Test
-    fun sekizDilTabloSirasiylaVeKendiKoduyla() {
+    fun herDilTabloSirasiylaVeKendiKoduyla() {
         assertEquals(kodlar, SAAT_DILLERI.map { it.kod })
         for (d in SAAT_DILLERI) assertSame(d, saatDili(d.kod))
         // Endonezce kaynak dizini `values-in`; eski kod da aynı tabloya gider.
@@ -76,5 +76,21 @@ class SaatDilTablolariTest {
             }
             for (m in sabitler(d)) assertTrue("${d.kod}: boş metin", m.isNotBlank())
         }
+    }
+
+    @Test
+    fun arapcaCogulAltiKategori() {
+        // CLDR ar (JS `cogul.ts > arapca`): 0, 1, 2, …03–…10, …11–…99, kalanı other.
+        assertEquals(
+            listOf("zero", "one", "two", "few", "few", "many", "many", "other", "other", "few"),
+            listOf(0L, 1L, 2L, 3L, 10L, 11L, 99L, 100L, 102L, 103L).map { SaatDiliAr.cogulKategorisi(it) },
+        )
+        // İskelet İngilizce kalıplarla dolu: tekil yalnız one.
+        assertEquals("1 minute", SaatDiliAr.dakikaSesli(1))
+        assertEquals("2 minutes", SaatDiliAr.dakikaSesli(2))
+        assertEquals("11 hours", SaatDiliAr.saatSesli(11))
+        // Urduca one/other (İngilizceyle aynı).
+        assertEquals("1 hour", SaatDiliUr.saatSesli(1))
+        assertEquals("3 hours", SaatDiliUr.saatSesli(3))
     }
 }

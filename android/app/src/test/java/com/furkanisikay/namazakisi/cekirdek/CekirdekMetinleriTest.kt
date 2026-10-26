@@ -11,7 +11,7 @@ import org.junit.Test
  * eşlemesi ve Endonezce "in" takma adı. Türkçe çıktı fikstür testlerinde kilitlidir.
  */
 class CekirdekMetinleriTest {
-    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms")
+    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur")
     private val yerTutucu = Regex("""\{\w+\}""")
 
     private fun alanlar(m: CekirdekMetinleri): Map<String, String> =
@@ -30,7 +30,7 @@ class CekirdekMetinleriTest {
             assertEquals(d, MetinDili.metinler(d).dil)
             assertEquals(d, MetinDili.coz("$d-XX"))
         }
-        assertSame(CEKIRDEK_TR, MetinDili.metinler("ar"))
+        assertSame(CEKIRDEK_TR, MetinDili.metinler("xx"))
         assertSame(CEKIRDEK_TR, MetinDili.metinler(null))
     }
 

@@ -58,7 +58,7 @@ struct TvMetin {
 }
 
 /// `TvMetin` dil tablosu. Yer tutucular `{il}`, `{ad}`, `{sure}`, `{tur}`, `{bitis}`,
-/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms;
+/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur;
 /// cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
 struct TvArayuzMetinleri {
     let sehrinizSecin: String
@@ -197,8 +197,41 @@ struct TvArayuzMetinleri {
         siradakiEk: ", waktu seterusnya"
     )
 
+
+    // ÇEVİRİ: ar
+    static let ar = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+
+    // ÇEVİRİ: ur
+    static let ur = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
     static let tablo: [String: TvArayuzMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
+        "ar": ar, "ur": ur,
     ]
 
     static func dil(_ kod: String) -> TvArayuzMetinleri { tablo[TvDili.coz(kod)] ?? tr }

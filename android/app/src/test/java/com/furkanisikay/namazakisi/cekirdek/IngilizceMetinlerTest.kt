@@ -39,7 +39,7 @@ class IngilizceMetinlerTest {
         assertEquals(MetinDili.TR, MetinDili.coz(null))
         assertEquals(MetinDili.TR, MetinDili.coz(""))
         // Tablosu olmayan dil Türkçeye düşer (uygulama hiç açılmamışkenki varsayılan).
-        assertEquals(MetinDili.TR, MetinDili.coz("ar"))
+        assertEquals(MetinDili.TR, MetinDili.coz("xx"))
     }
 
     @Test
