@@ -1,14 +1,14 @@
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'جاری رکھیں',
+  vazgecin: 'منسوخ کریں',
+  kapatin: 'بند کریں',
+  ayarlariAcin: 'ترتیبات کھولیں',
+  simdilikGecin: 'ابھی چھوڑ دیں',
+  tekrarDeneyin: 'دوبارہ کوشش کریں',
+  evet: 'ہاں',
+  hayir: 'نہیں',
+  ayrintilariAcar: 'تفصیلات کھولتا ہے',
   marka: 'Namaz Akışı',
 };
