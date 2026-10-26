@@ -190,6 +190,7 @@ async function diskten(): Promise<DilKodu> {
     ham = await eskiKurulumGocu(await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI));
     const kod = secilebilirKod(ham?.kod) ?? cihazDilindenSec(cihazYerelAyari()) ?? VARSAYILAN_DIL;
     aktifDiliKur(kod);
+    Logger.info('DilServisi', `Dil ${kod} (kayıt: ${String(ham?.kod ?? '-')}, geliştirme: ${gelistirmeDerlemesi()})`);
   } catch (e) {
     Logger.warn('DilServisi', 'Dil ayarı okunamadı, Türkçe kullanılıyor', e);
   }
