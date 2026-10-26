@@ -13,6 +13,7 @@ import {
     Dimensions,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from './common/YonluIkon';
 import { useRenkler } from '../../core/theme';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 import { TurkiyeKonumServisi, Il, Ilce, TURKIYE_ILLERI_OFFLINE } from '../../domain/services/TurkiyeKonumServisi';
@@ -176,7 +177,7 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                         </Text>
                     </View>
                 </View>
-                <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
+                <YonluIkon name="chevron-right" size={12} color={renkler.metinIkincil} />
             </TouchableOpacity>
         );
     }, [seciliIlId, renkler, ilSecHandler, m]);
@@ -294,7 +295,7 @@ export const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                         style={{ backgroundColor: renkler.sinir }}
                                         onPress={geriHandler}
                                     >
-                                        <FontAwesome5 name="arrow-left" size={14} color={renkler.metin} />
+                                        <YonluIkon name="arrow-left" size={14} color={renkler.metin} />
                                     </TouchableOpacity>
                                 )}
                                 <View className="flex-1">

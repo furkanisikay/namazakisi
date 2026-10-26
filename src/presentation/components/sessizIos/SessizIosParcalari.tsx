@@ -13,6 +13,7 @@ import * as React from 'react';
 import { useEffect, useRef } from 'react';
 import { Animated, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { bicim } from '../../../core/dil/aktifDil';
@@ -243,7 +244,7 @@ export const YolCipleri: React.FC<{ adimlar: readonly string[]; testID?: string 
                         </View>
                         {!son && (
                             <View className="mx-1.5">
-                                <FontAwesome5 name="chevron-right" size={9} color={renkler.metinIkincil} />
+                                <YonluIkon name="chevron-right" size={9} color={renkler.metinIkincil} />
                             </View>
                         )}
                     </View>

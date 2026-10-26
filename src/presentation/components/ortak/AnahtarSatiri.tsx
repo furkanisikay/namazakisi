@@ -11,7 +11,7 @@
  */
 import * as React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { Anahtar } from '../common/Anahtar';
 import { IkonCipi } from './IkonCipi';
@@ -63,7 +63,7 @@ export const AnahtarSatiri: React.FC<AnahtarSatiriProps> = ({
                 ) : null}
             </View>
             {onPress ? (
-                <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} style={{ marginHorizontal: 8 }} />
+                <YonluIkon name="chevron-right" size={13} color={renkler.metinIkincil} style={{ marginHorizontal: 8 }} />
             ) : null}
         </>
     );

@@ -27,6 +27,7 @@ import { BolumBasligi } from '../components/ortak/BolumBasligi';
 import { NotSatiri } from '../components/ortak/NotSatiri';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { AyetGorseli, ayetGorseliniPaylas, useArapcaYaziTipi } from '../components/gununAyeti/AyetGorseli';
+import { sagaYasliMetin } from '../components/common/yon';
 
 type Navigasyon = { navigate: (ekran: string) => void };
 
@@ -132,7 +133,8 @@ export const GununAyetiSayfasi: React.FC = () => {
             fontSize: 26,
             lineHeight: 50,
             marginTop: 16,
-            textAlign: 'right',
+            // Her arayüz dilinde sağa yaslı (sağdan solada 'right' sola çevrilir; bkz. yon.ts).
+            ...sagaYasliMetin(),
             writingDirection: 'rtl',
             color: renkler.metin,
           }}

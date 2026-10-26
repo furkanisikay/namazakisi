@@ -22,6 +22,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
@@ -100,7 +101,7 @@ const AksiyonKarti: React.FC<AksiyonKartiProps> = ({
           {aciklama}
         </Text>
       </View>
-      <FontAwesome5
+      <YonluIkon
         name="chevron-right"
         size={14}
         color={renkler.metinIkincil}

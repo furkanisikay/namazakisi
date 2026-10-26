@@ -12,6 +12,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useAppDispatch } from '../../store/hooks';
 import { yeniTabanUygula } from '../../store/kazaSlice';
@@ -104,7 +105,7 @@ export const KazaYenidenHesaplaSayfasi: React.FC = () => {
           <Text style={[stiller.etiket, { color: renkler.metinIkincil }]}>{m.kalanKaza}</Text>
           <View style={stiller.buyukSatir} accessible accessibilityLabel={bicim(m.kalanErisim, { eski: fmt(o.eskiKalan), yeni: fmt(sonKalan) })}>
             <Text style={[stiller.eski, { color: renkler.metinIkincil }]}>{fmt(o.eskiKalan)}</Text>
-            <FontAwesome5 name="arrow-right" size={16} color={renkler.metinIkincil} />
+            <YonluIkon name="arrow-right" size={16} color={renkler.metinIkincil} />
             <Text style={[stiller.yeni, { color: renkler.metin }]}>{fmt(sonKalan)}</Text>
           </View>
           <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>

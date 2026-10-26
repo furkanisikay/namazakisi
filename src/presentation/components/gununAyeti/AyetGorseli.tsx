@@ -16,6 +16,7 @@ import { useFonts } from 'expo-font';
 import { KOYU_TEMA, useRenkler } from '../../../core/theme';
 import type { GununAyetiGorunumu } from '../../../core/icerik/gununAyeti';
 import { useMetin } from '../../hooks/useMetin';
+import { sagaYasliMetin } from '../common/yon';
 
 /** Paketteki Arapça yazı tipi (OFL 1.1, `assets/fonts/OFL.txt`). */
 export const ARAPCA_YAZI_TIPI = 'AmiriQuran';
@@ -84,7 +85,8 @@ export const AyetGorseli = React.forwardRef<View, Props>(({ ayet, tur, yaziTipi 
           fontSize: 24,
           lineHeight: 46,
           marginTop: 14,
-          textAlign: 'right',
+          // Her arayüz dilinde sağa yaslı (sağdan solada 'right' sola çevrilir; bkz. yon.ts).
+          ...sagaYasliMetin(),
           writingDirection: 'rtl',
           color: renkler.metin,
         }}

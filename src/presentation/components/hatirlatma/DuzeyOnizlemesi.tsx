@@ -27,6 +27,7 @@ import { useDonguAcik, useDonguAnimasyonu } from '../hareket/dongu';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { useMetin } from '../../hooks/useMetin';
 import { bicim, metin as etkinMetin } from '../../../core/dil/aktifDil';
+import { yatayIsaret } from '../common/yon';
 
 const GECIS_MS = 3200;
 const BEKLEME_MS = 900;
@@ -202,7 +203,8 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
                                 borderRadius: 1,
                                 backgroundColor: renkler.birincil,
                                 opacity: ilerleme.interpolate({ inputRange: [0, 0.03, 0.97, 1], outputRange: [0, 0.8, 0.8, 0] }),
-                                transform: [{ translateX: ilerleme.interpolate({ inputRange: [0, 1], outputRange: [0, rayGenislik] }) }],
+                                // `left` sağdan solada başa (sağ uca) döner; kayma da sona (sola) yürür.
+                                transform: [{ translateX: ilerleme.interpolate({ inputRange: [0, 1], outputRange: [0, rayGenislik * yatayIsaret()] }) }],
                             }}
                         />
                         {adimlar.map((a, i) => {

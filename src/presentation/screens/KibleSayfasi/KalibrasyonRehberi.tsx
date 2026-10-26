@@ -23,6 +23,7 @@ import {
 import { metin } from '../../../core/dil/aktifDil';
 import { useMetin } from '../../hooks/useMetin';
 import type { KibleKaresi } from '../../hooks/useKible';
+import { SOLDAN_SAGA } from '../../components/common/yon';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -252,7 +253,8 @@ const styles = StyleSheet.create({
   cip: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   cipKucuk: { width: 26, height: 26, borderRadius: 13, alignItems: 'center', justifyContent: 'center', marginRight: 10 },
   baslik: { fontSize: 17, fontWeight: '700', textAlign: 'center' },
-  cizim: { width: CIZIM_G, height: CIZIM_Y, alignSelf: 'center', marginVertical: 12 },
+  // Siluet SVG yolunun koordinatında (`left: 0` + translateX) → aynalanmaz.
+  cizim: { ...SOLDAN_SAGA, width: CIZIM_G, height: CIZIM_Y, alignSelf: 'center', marginVertical: 12 },
   siluet: {
     position: 'absolute',
     left: 0,

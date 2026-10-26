@@ -12,6 +12,7 @@
 import * as React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { durumSec, type DurumAnahtari } from '../../../core/anaEkran/durumAlani';
 import { sayili } from '../../../core/dil/aktifDil';
@@ -97,7 +98,7 @@ export const DurumSeridi: React.FC<DurumSeridiProps> = ({ ikon, renk, baslik, me
                 {metin ? <Text style={{ fontSize: 14, lineHeight: 20, marginTop: 2, color: renkler.metin }}>{metin}</Text> : null}
                 {alt}
             </View>
-            {onPress ? <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} style={{ marginLeft: 8 }} /> : null}
+            {onPress ? <YonluIkon name="chevron-right" size={12} color={renkler.metinIkincil} style={{ marginLeft: 8 }} /> : null}
         </>
     );
     const stil = {

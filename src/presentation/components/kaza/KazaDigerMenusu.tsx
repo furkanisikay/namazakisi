@@ -10,6 +10,7 @@
 import React from 'react';
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { useMetin } from '../../hooks/useMetin';
@@ -77,7 +78,7 @@ export const KazaDigerMenusu: React.FC<KazaDigerMenusuProps> = ({ gorunur, onKap
                     <Text style={[stiller.satirBaslik, { color: renkler.metin }]}>{s.baslik}</Text>
                     {s.alt ? <Text style={[stiller.satirAlt, { color: renkler.metinIkincil }]}>{s.alt}</Text> : null}
                   </View>
-                  <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
+                  <YonluIkon name="chevron-right" size={12} color={renkler.metinIkincil} />
                 </TouchableOpacity>
               );
             })}

@@ -11,6 +11,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
 import { Anahtar } from '../../components/common/Anahtar';
@@ -465,7 +466,7 @@ export const EsitlemeSayfasi: React.FC = () => {
                         <Text className="text-xs font-semibold flex-1" style={{ color: renkler.metin }}>
                           {m.pilUyarisi}
                         </Text>
-                        <FontAwesome5 name="chevron-right" size={11} color={renkler.metinIkincil} />
+                        <YonluIkon name="chevron-right" size={11} color={renkler.metinIkincil} />
                       </TouchableOpacity>
                     )}
                   </>

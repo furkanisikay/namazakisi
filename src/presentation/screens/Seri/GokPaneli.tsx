@@ -238,10 +238,12 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
       accessible
       accessibilityRole="image"
       accessibilityLabel={erisimEtiketi}
+      // SVG gök (ızgara + yıldızlar) aynalanmaz; üstündeki `left:` katmanları (Parilti,
+      // BugununNabzi) SVG koordinatıyla örtüşsün diye sahne soldan sağa sabit.
       style={
         panelGenislik > 0
-          ? { height: govdeYukseklik, borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
-          : { borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
+          ? { direction: 'ltr', height: govdeYukseklik, borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
+          : { direction: 'ltr', borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
       }
     >
       {panelGenislik > 0 && (

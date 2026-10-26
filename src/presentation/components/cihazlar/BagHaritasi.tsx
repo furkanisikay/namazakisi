@@ -10,6 +10,7 @@ import { Text, TouchableOpacity, View, type LayoutChangeEvent } from 'react-nati
 import Svg, { Path } from 'react-native-svg';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
+import { aynaStili } from '../common/yon';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { haritaYerlesimi, HARITA } from '../../../core/cihazAgi/bagHaritasi';
 import { bicim } from '../../../core/dil/aktifDil';
@@ -76,7 +77,14 @@ export const BagHaritasi: React.FC<{ dugumler: HaritaDugumu[]; merkezAdi?: strin
             style={{ height: yer?.yukseklik ?? 330 }}
         >
             {yer && (
-                <Svg width={genislik} height={yer.yukseklik} style={{ position: 'absolute', left: 0, top: 0 }} importantForAccessibility="no-hide-descendants">
+                <Svg
+                    width={genislik}
+                    height={yer.yukseklik}
+                    // Düğüm kartları (`left: d.x`) sağdan solada Yoga ile aynalanır; yalnız çizgi
+                    // taşıyan SVG'yi de aynala ki bağlar kartlara otursun.
+                    style={[{ position: 'absolute', left: 0, top: 0 }, aynaStili()]}
+                    importantForAccessibility="no-hide-descendants"
+                >
                     {yer.dugumler.map((d, i) => {
                         const dugum = dugumler[i];
                         if (!dugum) return null;

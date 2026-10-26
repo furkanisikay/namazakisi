@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleShe
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { yonluIkonStili } from '../common/yon';
 import { BlurView } from 'expo-blur';
 import { useTema } from '../../../core/theme';
 import { PaylasimModal } from '../Sharing/PaylasimModal';
@@ -118,9 +119,9 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
                         {/* Milestones */}
                         <View className="flex-row justify-center items-center gap-2 mb-6">
                             <HedefCircle target={7} icon="eco" color="green-300" />
-                            <MaterialIcons name="arrow-forward" size={16} color="rgba(255,255,255,0.4)" />
+                            <MaterialIcons name="arrow-forward" size={16} color="rgba(255,255,255,0.4)" style={yonluIkonStili('arrow-forward')} />
                             <HedefCircle target={21} icon="local_fire_department" color="yellow-300" />
-                            <MaterialIcons name="arrow-forward" size={16} color="rgba(255,255,255,0.4)" />
+                            <MaterialIcons name="arrow-forward" size={16} color="rgba(255,255,255,0.4)" style={yonluIkonStili('arrow-forward')} />
                             <HedefCircle target={60} icon="diamond" color="blue-300" />
                         </View>
 

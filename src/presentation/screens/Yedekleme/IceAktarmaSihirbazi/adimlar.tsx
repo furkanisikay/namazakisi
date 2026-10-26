@@ -18,6 +18,7 @@ import {
   Animated,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../../components/common/YonluIkon';
 import { styles } from './stiller';
 import { useRenkler } from '../../../../core/theme';
 import { useDonguAcik, useDonguAnimasyonu } from '../../../components/hareket/dongu';
@@ -288,7 +289,7 @@ export const KarsilastirmaAdimi: React.FC<{
               </View>
               {s.gelismis ? (
                 <View style={styles.stratejiSagIkon}>
-                  <FontAwesome5 name="chevron-right" size={15} color={renkler.metinIkincil} />
+                  <YonluIkon name="chevron-right" size={15} color={renkler.metinIkincil} />
                 </View>
               ) : secili ? (
                 <View style={[styles.secimDairesi, { backgroundColor: renk }]}>

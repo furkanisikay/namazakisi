@@ -19,7 +19,7 @@
 import * as React from 'react';
 import { useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
@@ -104,7 +104,7 @@ const GezinmeSatiri: React.FC<{
                     {ozet}
                 </Text>
             </View>
-            <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} style={{ marginHorizontal: 8 }} />
+            <YonluIkon name="chevron-right" size={13} color={renkler.metinIkincil} style={{ marginHorizontal: 8 }} />
         </TouchableOpacity>
     );
 };

@@ -17,6 +17,7 @@ import {
     Dimensions,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { TakvimServisi } from '../../../domain/services/TakvimServisi';
@@ -572,7 +573,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                             disabled={siliniyor}
                                             activeOpacity={0.7}
                                         >
-                                            <FontAwesome5 name="arrow-left" size={13} color={renkler.metinIkincil} style={{ marginRight: 6 }} />
+                                            <YonluIkon name="arrow-left" size={13} color={renkler.metinIkincil} style={{ marginRight: 6 }} />
                                             <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
                                                 {mt.geri}
                                             </Text>

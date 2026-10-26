@@ -17,7 +17,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
@@ -235,7 +235,7 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
             style={stiller.baglanti}
           >
             <Text style={[stiller.baglantiMetin, { color: renkler.metin }]}>{m.mezhepDegistir}</Text>
-            <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
+            <YonluIkon name="chevron-right" size={12} color={renkler.metinIkincil} />
           </TouchableOpacity>
         </KazaKart>
 

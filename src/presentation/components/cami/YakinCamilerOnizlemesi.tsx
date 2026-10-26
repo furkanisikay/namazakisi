@@ -13,6 +13,8 @@ import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
+import { SOLDAN_SAGA } from '../common/yon';
 import { useRenkler } from '../../../core/theme';
 import { HARITA_CAMI_SAYISI, ONIZLEME_SAYIM_M, onizlemeYerlesimi, yakinCamiSayisi } from '../../../core/cami/haritaVerisi';
 import * as kopru from '../../../../modules/expo-cami-geofence/src';
@@ -69,7 +71,8 @@ export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
             style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, marginTop: 12, overflow: 'hidden' }}
         >
             <View
-                style={{ height: ALAN_YUKSEKLIGI, backgroundColor: `${renkler.birincil}10` }}
+                // Coğrafi önizleme: doğu her dilde sağda.
+                style={[SOLDAN_SAGA, { height: ALAN_YUKSEKLIGI, backgroundColor: `${renkler.birincil}10` }]}
                 onLayout={(e) => setGenislik(e.nativeEvent.layout.width)}
                 importantForAccessibility="no-hide-descendants"
                 accessibilityElementsHidden
@@ -140,7 +143,7 @@ export const YakinCamilerOnizlemesi: React.FC<Props> = ({ merkez, onAc }) => {
                     <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.metin }}>{baslik}</Text>
                     <Text style={{ fontSize: 13, marginTop: 2, color: renkler.metinIkincil }}>{alt}</Text>
                 </View>
-                <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} />
+                <YonluIkon name="chevron-right" size={13} color={renkler.metinIkincil} />
             </View>
         </TouchableOpacity>
     );

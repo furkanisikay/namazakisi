@@ -21,6 +21,7 @@ import * as React from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../components/common/YonluIkon';
 import * as Location from 'expo-location';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { LocalKapatmaOncesiSecim } from '../../data/local/LocalKapatmaOncesiSecim';
@@ -422,7 +423,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                 </Text>
                 <View className="items-center mr-2.5" style={{ width: 24 }}>
                     <View className="w-6 h-6 rounded-full items-center justify-center" style={{ backgroundColor: `${renk}26` }}>
-                        <FontAwesome5 name={o.ikon} size={10} color={o.ton === 'uyari' ? renkler.metin : renk} solid />
+                        <YonluIkon name={o.ikon} size={10} color={o.ton === 'uyari' ? renkler.metin : renk} solid />
                     </View>
                     {!son && <View style={{ flex: 1, width: 2, minHeight: 14, backgroundColor: renkler.sinir }} />}
                 </View>
@@ -491,7 +492,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                     </View>
                                 ) : null}
                             </View>
-                            <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} style={{ marginHorizontal: 8 }} />
+                            <YonluIkon name="chevron-right" size={13} color={renkler.metinIkincil} style={{ marginHorizontal: 8 }} />
                         </TouchableOpacity>
                     </View>
                 </View>

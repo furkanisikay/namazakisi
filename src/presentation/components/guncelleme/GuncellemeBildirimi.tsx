@@ -26,6 +26,7 @@ import {
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { yonluIkonStili } from '../common/yon';
 import { useRenkler } from '../../../core/theme';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { Logger } from '../../../core/utils/Logger';
@@ -406,7 +407,7 @@ export const GuncellemeBildirimi: React.FC = () => {
                 name="arrow-forward"
                 size={12}
                 color={renkler.metinIkincil}
-                style={{ marginHorizontal: 4 }}
+                style={[{ marginHorizontal: 4 }, yonluIkonStili('arrow-forward')]}
               />
               <Text
                 style={{

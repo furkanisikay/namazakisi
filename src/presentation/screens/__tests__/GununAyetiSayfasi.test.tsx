@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { act, fireEvent, render } from '@testing-library/react-native';
-import { Linking, Share } from 'react-native';
+import { I18nManager, Linking, Share, StyleSheet } from 'react-native';
 import { GununAyetiSayfasi, ayetPaylasimMetni } from '../GununAyetiSayfasi';
 import { aktifNamazGunu, gununAyetiGorunumu, gununAyetiKaydi, isoGun } from '../../../core/icerik/gununAyeti';
 import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
@@ -48,6 +48,24 @@ describe('GununAyetiSayfasi', () => {
         expect(e.getByText(/^Dün/)).toBeTruthy();
         fireEvent.press(e.getByText(/^Widget ve duvar kâğıdı/));
         expect(mockNavigate).toHaveBeenCalledWith('GununAyetiAyarlari');
+    });
+
+    // RN 0.86 sağdan solada textAlign 'right'ı SOLA çevirir: Arapça ayet her arayüz dilinde sağda
+    // kalsın diye orada hiza bırakılır (yon.ts > sagaYasliMetin).
+    it.each([
+        [false, 'right'],
+        [true, undefined],
+    ])('Arapça ayet sağa yaslı (isRTL=%s → textAlign %s), yazı yönü rtl', (rtl, hiza) => {
+        const geriAl = jest.replaceProperty(I18nManager, 'isRTL', rtl).restore;
+        try {
+            const a = bugununAyeti('tr');
+            const e = render(<GununAyetiSayfasi />);
+            const stil = StyleSheet.flatten(e.getAllByText(a.ar)[0].props.style);
+            expect(stil.textAlign).toBe(hiza);
+            expect(stil.writingDirection).toBe('rtl');
+        } finally {
+            geriAl();
+        }
     });
 
     it('metin paylaşımı Arapça, meal ve meal kaynağını birlikte gönderir', () => {

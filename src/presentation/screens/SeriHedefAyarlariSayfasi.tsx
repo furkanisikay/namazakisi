@@ -18,6 +18,7 @@ import {
   Easing,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../components/common/YonluIkon';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -373,7 +374,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
                 {m.verileriSifirlaAlt}
               </Text>
             </View>
-            <FontAwesome5 name="chevron-right" size={14} color="#DC2626" />
+            <YonluIkon name="chevron-right" size={14} color="#DC2626" />
           </TouchableOpacity>
         </View>
 

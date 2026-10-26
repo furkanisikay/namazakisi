@@ -34,6 +34,7 @@ import {
 } from 'react-native';
 import { Anahtar } from '../common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { SayisalSecici } from '../common/SayisalSecici';
@@ -839,7 +840,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                     accessibilityLabel={gelismisOzeti ? bicim(ma.gelismisEtiketOzet, { ozet: gelismisOzeti }) : ma.gelismisEtiket}
                                     testID="adim-gelismis"
                                 >
-                                    <FontAwesome5
+                                    <YonluIkon
                                         name={gelismisAcik ? 'chevron-down' : 'chevron-right'}
                                         size={12}
                                         color={renkler.metinIkincil}

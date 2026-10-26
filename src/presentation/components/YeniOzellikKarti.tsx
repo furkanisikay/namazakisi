@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from './common/YonluIkon';
 import { useRenkler } from '../../core/theme';
 import type { YeniOzellik } from '../../core/constants/YeniOzellikler';
 import { useMetin } from '../hooks/useMetin';
@@ -91,7 +92,7 @@ export const YeniOzellikKarti: React.FC<YeniOzellikKartiProps> = ({ ozellik, onA
                     onPress={onAc}
                     activeOpacity={0.85}
                 >
-                    <FontAwesome5 name="arrow-right" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+                    <YonluIkon name="arrow-right" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                     <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
                         {ozellik.ctaEtiketi ?? m.incele}
                     </Text>

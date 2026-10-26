@@ -16,6 +16,7 @@ import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { ozelSesMi, sesGorunenAdi } from '../../../core/muhafiz/sesKimligi';
 import { bicim } from '../../../core/dil/aktifDil';
@@ -335,7 +336,7 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                     <FontAwesome5 name="play" size={12} color={renkler.birincil} solid />
                 </TouchableOpacity>
 
-                <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} />
+                <YonluIkon name="chevron-right" size={13} color={renkler.metinIkincil} />
             </View>
             {eylemler.length > 0 ? eylemListesi : null}
         </View>

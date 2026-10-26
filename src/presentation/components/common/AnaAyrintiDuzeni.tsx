@@ -16,7 +16,7 @@ import * as React from 'react';
 import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { NavigationContext } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from './YonluIkon';
 
 import { useRenkler } from '../../../core/theme';
 import { anaAyrintiMi } from '../../../core/utils/ekranSinifi';
@@ -81,7 +81,7 @@ const AyrintiBasligi: React.FC<{ baslik?: string; geri?: () => void }> = ({ basl
                     hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                     style={stil.geri}
                 >
-                    <FontAwesome5 name="chevron-left" size={18} color={renkler.birincil} />
+                    <YonluIkon name="chevron-left" size={18} color={renkler.birincil} />
                 </Pressable>
             ) : (
                 <View style={stil.geriBosluk} />

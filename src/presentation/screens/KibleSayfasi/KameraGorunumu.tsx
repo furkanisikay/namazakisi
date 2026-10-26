@@ -12,6 +12,7 @@ import { HizaHalkasi } from './HizaHalkasi';
 import { KibleYolu } from './KibleYolu';
 import { bicim } from '../../../core/dil/aktifDil';
 import { useMetin } from '../../hooks/useMetin';
+import { SOLDAN_SAGA } from '../../components/common/yon';
 
 /** Kamera üstündeki yazılar için koyu tül (görüntü ne olursa olsun okunur). Dekoratif zemin. */
 const TUL = 'rgba(0,0,0,0.55)';
@@ -234,7 +235,9 @@ export const KameraGorunumu: React.FC<{
 };
 
 const styles = StyleSheet.create({
-  kap: { flex: 1, overflow: 'hidden', backgroundColor: '#000000' },
+  // Coğrafi sahne: Kâbe işareti `left: 0` + translateX (kamera pikseli), sağ/sol okları
+  // FİZİKSEL dönüş yönü → sağdan sola arayüzde de aynalanmaz.
+  kap: { ...SOLDAN_SAGA, flex: 1, overflow: 'hidden', backgroundColor: '#000000' },
   dusus: { flex: 1, justifyContent: 'center', padding: 16 },
   kart: { borderRadius: 24, borderWidth: 1, padding: 20, alignItems: 'center' },
   cip: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', marginBottom: 12 },

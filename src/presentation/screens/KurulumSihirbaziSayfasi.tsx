@@ -24,7 +24,7 @@ import { hatirlatmaKapisiDegisti } from '../hooks/useHatirlatmaKapisi';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Animated, Dimensions, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../components/common/YonluIkon';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
@@ -77,6 +77,7 @@ import { cihazYerelAyari, DilServisi } from '../../domain/services/DilServisi';
 import { dilSeciciGorunur } from '../../core/dil/diller';
 import { useAlarmIzinleri } from '../hooks/useAlarmIzinleri';
 import { usePlatformYetenekleri } from '../hooks/usePlatformYetenekleri';
+import { yatayIsaret } from '../components/common/yon';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'KurulumSihirbazi'>;
 
@@ -192,7 +193,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
         };
     }, [konumYenidenOku, bildirimYenidenOku]);
 
-    // ─── Adım geçişi: opaklık + 16 dp kayma (ileri sağdan, geri soldan) ─────────
+    // ─── Adım geçişi: opaklık + 16 dp kayma (ileri sondan, geri baştan; sağdan solada aynalı) ─
     const opaklik = useRef(new Animated.Value(1)).current;
     const kayma = useRef(new Animated.Value(0)).current;
     const gec = useCallback(
@@ -202,7 +203,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                 setAdimNo(hedef);
                 return;
             }
-            const yon = hedef > adimNo ? 1 : -1;
+            const yon = (hedef > adimNo ? 1 : -1) * yatayIsaret();
             Animated.parallel([
                 Animated.timing(opaklik, { toValue: 0, duration: 120, easing: EGRI.cikis, useNativeDriver: true }),
                 Animated.timing(kayma, { toValue: -KAYMA * yon, duration: 120, easing: EGRI.cikis, useNativeDriver: true }),
@@ -468,7 +469,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                 <ActivityIndicator color={renkler.birincilMetin} />
             ) : (
                 <>
-                    <FontAwesome5 name={ikon} size={15} color={renkler.birincilMetin} solid style={{ marginRight: 10 }} />
+                    <YonluIkon name={ikon} size={15} color={renkler.birincilMetin} solid style={{ marginRight: 10 }} />
                     <Text style={{ fontSize: 17, fontWeight: '700', color: renkler.birincilMetin }}>{etiket}</Text>
                 </>
             )}
@@ -625,7 +626,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                         testID="geri"
                         style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
                     >
-                        <FontAwesome5 name="arrow-left" size={17} color={renkler.metin} />
+                        <YonluIkon name="arrow-left" size={17} color={renkler.metin} />
                     </TouchableOpacity>
                 ) : (
                     <View style={{ width: 44, height: 44 }} />

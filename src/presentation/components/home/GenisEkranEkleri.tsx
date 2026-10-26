@@ -12,6 +12,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
 import { yarinVakitleriniHesapla } from '../../../core/anaEkran/genisEkranEkleri';
@@ -179,7 +180,7 @@ export const BuHaftaPaneli: React.FC<Props> = React.memo(({ lat, lng, gunTarihiI
                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
                                 {m.acin}
                             </Text>
-                            <FontAwesome5 name="chevron-right" size={11} color={renkler.metin} />
+                            <YonluIkon name="chevron-right" size={11} color={renkler.metin} />
                         </TouchableOpacity>
                     </View>
                 </Bolum>

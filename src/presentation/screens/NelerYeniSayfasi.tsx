@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../components/common/YonluIkon';
 import { useRenkler } from '../../core/theme';
 import { useAppDispatch } from '../store/hooks';
 import { ozellikGorulduIsaretle } from '../store/ozelliklerSlice';
@@ -85,7 +86,7 @@ const OzellikKarti: React.FC<OzellikKartiProps> = ({ ozellik, acik, onTogglePres
                     </Text>
                 </View>
                 <Animated.View style={{ transform: [{ rotate: okDonus }] }}>
-                    <FontAwesome5 name="chevron-right" size={14} color={renkler.metinIkincil} />
+                    <YonluIkon name="chevron-right" size={14} color={renkler.metinIkincil} />
                 </Animated.View>
             </TouchableOpacity>
 
@@ -132,7 +133,7 @@ const OzellikKarti: React.FC<OzellikKartiProps> = ({ ozellik, acik, onTogglePres
                             onPress={onAc}
                             activeOpacity={0.85}
                         >
-                            <FontAwesome5 name="arrow-right" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+                            <YonluIkon name="arrow-right" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                             <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
                                 {ozellik.ctaEtiketi ?? m.inceleyin}
                             </Text>

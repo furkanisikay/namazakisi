@@ -25,7 +25,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../../components/common/YonluIkon';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 
@@ -362,9 +362,9 @@ export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
       accessibilityRole="button"
       accessibilityLabel={etiket}
     >
-      {!ikonSonda && ikon && <FontAwesome5 name={ikon} size={16} color="#fff" />}
+      {!ikonSonda && ikon && <YonluIkon name={ikon} size={16} color="#fff" />}
       <Text style={styles.butonMetin}>{etiket}</Text>
-      {ikonSonda && ikon && <FontAwesome5 name={ikon} size={16} color="#fff" />}
+      {ikonSonda && ikon && <YonluIkon name={ikon} size={16} color="#fff" />}
     </TouchableOpacity>
   );
 
@@ -376,7 +376,7 @@ export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
       accessibilityRole="button"
       accessibilityLabel={etiket}
     >
-      {ikon && <FontAwesome5 name={ikon} size={15} color={renkler.metinIkincil} />}
+      {ikon && <YonluIkon name={ikon} size={15} color={renkler.metinIkincil} />}
       <Text style={[styles.butonIkincilMetin, { color: renkler.metin }]}>{etiket}</Text>
     </TouchableOpacity>
   );
@@ -451,7 +451,7 @@ export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
             accessibilityRole="button"
             accessibilityLabel={ms.geri}
           >
-            <FontAwesome5 name="arrow-left" size={16} color={renkler.metinIkincil} />
+            <YonluIkon name="arrow-left" size={16} color={renkler.metinIkincil} />
           </TouchableOpacity>
         ) : (
           <View style={styles.geriButon} />

@@ -14,6 +14,7 @@ import {
 import { Anahtar } from '../components/common/Anahtar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../components/common/YonluIkon';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../core/theme';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -163,7 +164,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
                 {m.gonderilecekAciklama}
               </Text>
             </View>
-            <FontAwesome5
+            <YonluIkon
               name="chevron-right"
               size={14}
               color={renkler.metinIkincil}
@@ -202,7 +203,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
                 {m.kayitlarAciklama}
               </Text>
             </View>
-            <FontAwesome5
+            <YonluIkon
               name="chevron-right"
               size={14}
               color={renkler.metinIkincil}

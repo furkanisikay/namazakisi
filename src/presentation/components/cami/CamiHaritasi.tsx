@@ -36,6 +36,7 @@ import {
 import type { NativeSyntheticEvent } from 'react-native';
 import { useRenkler, useTema } from '../../../core/theme';
 import { kisaBildirimGoster } from '../common/KisaBildirim';
+import { SOLDAN_SAGA } from '../common/yon';
 import { SinirAyari } from './SinirAyari';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import {
@@ -535,7 +536,8 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
             <View className="flex-1">
                 <Harita
                     testID="cami-haritasi"
-                    style={StyleSheet.absoluteFill}
+                    // Harita coğrafidir: native süslemeler (atıf) sağdan sola arayüzde de yerinde kalsın.
+                    style={[StyleSheet.absoluteFill, SOLDAN_SAGA]}
                     mapStyle={koyuMu ? HARITA_STILI_KOYU : HARITA_STILI_ACIK}
                     logo={false}
                     attribution

@@ -14,6 +14,7 @@
 import * as React from 'react';
 import { Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../components/common/YonluIkon';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../core/theme';
 import {
@@ -352,7 +353,7 @@ export const OtomasyonRehberiSayfasi: React.FC = () => {
                         {mo.guvenAciklama}
                     </Text>
                 </View>
-                <FontAwesome5 name="chevron-right" size={14} color={renkler.metinIkincil} />
+                <YonluIkon name="chevron-right" size={14} color={renkler.metinIkincil} />
             </TouchableOpacity>
         </ScrollView>
     );

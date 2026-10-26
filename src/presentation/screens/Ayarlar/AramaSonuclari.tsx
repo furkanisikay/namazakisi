@@ -17,6 +17,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { AYAR_INDEKSI, type AyarIndeksKaydi } from '../../../core/ayarlar/aramaIndeksi';
 import type { AyarlarStackParamList } from '../../../navigation/ayarlarEkranlari';
@@ -110,7 +111,7 @@ export const AramaSonuclari: React.FC<AramaSonuclariProps> = ({ sonuclar }) => {
                 {baglamOlustur(kayit)}
               </Text>
             </View>
-            <FontAwesome5
+            <YonluIkon
               name="chevron-right"
               size={14}
               color={renkler.metinIkincil}

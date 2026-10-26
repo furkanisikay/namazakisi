@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent, act, waitFor } from '@testing-library/react-native';
+import { I18nManager, StyleSheet, type ViewStyle } from 'react-native';
 import { KibleSayfasi } from '../KibleSayfasi';
 import { kalibrasyonOturumunuSifirla } from '../KalibrasyonRehberi';
 import { useKible } from '../../../hooks/useKible';
@@ -336,6 +337,36 @@ describe('KibleSayfasi', () => {
       fireEvent.press(getByLabelText('Kamera modu'));
       expect(getByText('Kamera görünümü bu telefonda kullanılamıyor')).toBeTruthy();
       expect(UNSAFE_root.findAll((n: { type: unknown }) => n.type === 'CameraView').length).toBe(0);
+    });
+  });
+
+  // Coğrafi görünüm sağdan sola arayüzde AYNALANMAZ: Kâbe işareti `left:` + translateX ile
+  // oturur, doğu sağdadır. Kapsayıcıda Yoga `direction: 'ltr'` (yon.ts > SOLDAN_SAGA).
+  describe('sağdan sola arayüz', () => {
+    let geriAl: () => void;
+    beforeEach(() => {
+      geriAl = jest.replaceProperty(I18nManager, 'isRTL', true).restore;
+    });
+    afterEach(() => geriAl());
+    const ltrAtasiVar = (dugum: { parent: unknown; props: { style?: unknown } } | null): boolean => {
+      for (let d = dugum; d; d = d.parent as typeof d) {
+        if ((StyleSheet.flatten(d.props.style as ViewStyle) as ViewStyle | undefined)?.direction === 'ltr') return true;
+      }
+      return false;
+    };
+
+    it('pusula sahnesi soldan sağa sabit', () => {
+      const { getByTestId } = render(<KibleSayfasi />);
+      expect(ltrAtasiVar(getByTestId('kible-kabe-isareti') as never)).toBe(true);
+      // Kontrol: ekranın geri kalanı (başlık, sekmeler) sabitlenmez.
+      expect(ltrAtasiVar(getByTestId('kible-yon-cumlesi') as never)).toBe(false);
+    });
+
+    it('kamera görünümü soldan sağa sabit (sağ/sol okları fiziksel dönüş yönü)', () => {
+      kamera.__izinAyarla({ granted: true, canAskAgain: true, status: 'granted' });
+      const { getByLabelText, getByTestId } = render(<KibleSayfasi />);
+      fireEvent.press(getByLabelText('Kamera modu'));
+      expect(ltrAtasiVar(getByTestId('kamera-kabe-isareti') as never)).toBe(true);
     });
   });
 });

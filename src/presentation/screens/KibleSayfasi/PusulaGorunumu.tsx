@@ -12,6 +12,7 @@ import { HizaHalkasi } from './HizaHalkasi';
 import { KADRAN_AZAMI_YATIS, KADRAN_ORANI, KADRAN_PERSPEKTIF } from './sabitler';
 import { bicim } from '../../../core/dil/aktifDil';
 import { useMetin } from '../../hooks/useMetin';
+import { SOLDAN_SAGA } from '../../components/common/yon';
 
 /**
  * Kamerasız 3B pusula.
@@ -312,7 +313,8 @@ const styles = StyleSheet.create({
   cumle: { fontSize: 22, fontWeight: '700', textAlign: 'center', fontVariant: ['tabular-nums'] },
   alt: { fontSize: 14, marginTop: 4, textAlign: 'center', fontVariant: ['tabular-nums'] },
   // Başlık ile kadran arası ~24–28 dp: ikisi tek blok olarak dikeyde ortalanır.
-  sahne: { alignItems: 'center', marginTop: 24 },
+  // Coğrafi sahne: sağdan sola arayüzde de doğu sağda, işaretler `left:` + translateX ile oturur.
+  sahne: { ...SOLDAN_SAGA, alignItems: 'center', marginTop: 24 },
   ufuk: { position: 'absolute', left: 0, right: 0, borderTopWidth: 1, alignItems: 'flex-end' },
   ufukMetni: { fontSize: 11, marginTop: 2 },
   centik: { position: 'absolute', zIndex: 3, alignSelf: 'center' },

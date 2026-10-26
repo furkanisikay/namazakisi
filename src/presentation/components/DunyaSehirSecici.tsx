@@ -22,6 +22,7 @@ import {
   View,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from './common/YonluIkon';
 import { useRenkler } from '../../core/theme';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 import { sehirAra, aramaAnahtari, type DunyaSehirVerisi, type DunyaSehri } from '../../core/konum/dunyaSehirleri';
@@ -173,7 +174,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
               {item.ad}
             </Text>
             <ProfilCipi ulke={item.kod} />
-            <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} style={{ marginLeft: 10 }} />
+            <YonluIkon name="chevron-right" size={12} color={renkler.metinIkincil} style={{ marginLeft: 10 }} />
           </TouchableOpacity>
         );
       }
@@ -267,7 +268,7 @@ export const DunyaSehirSecici: React.FC<DunyaSehirSeciciProps> = ({ secili, onSe
                   accessibilityRole="button"
                   accessibilityLabel={m.ulkeListesineDon}
                 >
-                  <FontAwesome5 name="arrow-left" size={14} color={renkler.metin} />
+                  <YonluIkon name="arrow-left" size={14} color={renkler.metin} />
                 </TouchableOpacity>
               )}
               <View className="flex-1">

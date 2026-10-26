@@ -15,6 +15,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Anahtar } from '../common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import type { SeviyeAyari, VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
@@ -203,7 +204,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                     }}
                 >
                     <View className="flex-row items-center">
-                        <FontAwesome5
+                        <YonluIkon
                             name={secenek.ikon}
                             size={12}
                             color={secili ? renkler.birincil : renkler.metinIkincil}
@@ -356,7 +357,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                 )}
                             </View>
                         </View>
-                        <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
+                        <YonluIkon name="chevron-right" size={12} color={renkler.metinIkincil} />
                     </TouchableOpacity>
 
                     {onAdimAcKapa && etkilesimli && (
