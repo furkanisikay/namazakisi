@@ -1,14 +1,15 @@
 import type { Sozluk } from '../tr';
 
+/** Çağrı metinleri isim cümlesidir (Arapçada emir cinsiyetlidir). "الصلاة خير من النوم" ve "حيّ على الفلاح" ezan lafzıdır. */
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'القرآن الكريم {ref} · {yayimci}، QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'الصلاة خير من النوم. حيّ على الفلاح.',
+    araVer: 'استراحة قصيرة من شواغل الدنيا، ووقوف بين يدي الله.',
+    yorgunluk: 'صلاة العصر راحة من تعب النهار وسكينة للقلب.',
+    sukur: 'صلاة المغرب شكرٌ على اليوم، والمبادرة إليها أولى.',
+    aksamKisa: 'وقت المغرب قصير وقد دخل. الصلاة دون تأخير.',
+    geceKaranligi: 'في ظلمة الليل خلوة مع الله. صلاة العشاء دواء للروح.',
+    davet: 'صلاة العشاء دعوة لختام اليوم ابتغاء مرضاة الله.',
   },
 };
