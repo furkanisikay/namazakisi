@@ -68,6 +68,9 @@ import dilReducer from '../../store/dilSlice';
 import { DilAyarlariSayfasi } from '../DilAyarlariSayfasi';
 import { aktifDilSifirla } from '../../../core/dil/aktifDil';
 import { turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
+import { I18nManager } from 'react-native';
+import { YonDegisimiModali } from '../../components/dil/YonDegisimiModali';
+import { ar } from '../../../core/dil/sozluk/ar';
 
 const ciz = () => {
   const store = configureStore({ reducer: { dil: dilReducer, konum: (s: unknown = { koordinatlar: null }) => s } });
@@ -166,4 +169,52 @@ it('vakit adı seçimi yalnız birden çok takımı olan dilde; seçim kaydedili
   await waitFor(() => expect(mockTakimKaydet).toHaveBeenCalledWith('diyanet-de'));
   fireEvent.press(e.getByText('Nach Land'));
   await waitFor(() => expect(mockTakimKaydet).toHaveBeenLastCalledWith(null));
+});
+
+describe('yazı yönü (sağdan sola dil)', () => {
+  const cizKokle = () => {
+    const store = configureStore({ reducer: { dil: dilReducer, konum: (s: unknown = { koordinatlar: null }) => s } });
+    return {
+      store,
+      ...render(
+        <Provider store={store}>
+          <DilAyarlariSayfasi />
+          <YonDegisimiModali />
+        </Provider>
+      ),
+    };
+  };
+  afterEach(() => jest.restoreAllMocks());
+
+  it('önce sesli okuma sorusu, o kapanınca yeniden başlatma sorusu; "Sonra" → sayfada kalıcı satır + düğme', async () => {
+    jest.replaceProperty(I18nManager, 'isRTL', false);
+    mockSay.mockResolvedValue(1);
+    const e = cizKokle();
+    await waitFor(() => expect(mockSecimVar).toHaveBeenCalled());
+    expect(e.queryByTestId('yon-bekliyor')).toBeNull();
+    fireEvent.press(e.getByText('العربية'));
+    await waitFor(() => expect(e.getByText(ar.dilAyar.ozelAnons.baslik)).toBeTruthy());
+    expect(e.store.getState().dil.yonDegisimi).toBe('soruluyor');
+    // İki kardeş modal aynı anda yok (iOS).
+    expect(e.queryByTestId('yon-degisimi')).toBeNull();
+    fireEvent.press(e.getByText(ar.dilAyar.ozelAnons.koru));
+    await waitFor(() => expect(e.getByTestId('yon-degisimi')).toBeTruthy(), { timeout: 2000 });
+    expect(e.getByText(ar.yon.baslik)).toBeTruthy();
+    fireEvent.press(e.getByTestId('yon-sonra'));
+    expect(mockKisa).toHaveBeenCalledWith(ar.yon.bekliyor);
+    await waitFor(() => expect(e.queryByTestId('yon-degisimi')).toBeNull());
+    expect(e.getByTestId('yon-bekliyor')).toBeTruthy();
+    expect(e.getByRole('button', { name: ar.yon.simdiBaslat })).toBeTruthy();
+  });
+
+  it('aynı yönde dil değişiminde soru ve satır yok', async () => {
+    jest.replaceProperty(I18nManager, 'isRTL', false);
+    const e = cizKokle();
+    await waitFor(() => expect(mockSecimVar).toHaveBeenCalled());
+    fireEvent.press(e.getByText('English'));
+    await waitFor(() => expect(e.store.getState().dil.kod).toBe('en'));
+    expect(e.store.getState().dil.yonDegisimi).toBe('yok');
+    expect(e.queryByTestId('yon-degisimi')).toBeNull();
+    expect(e.queryByTestId('yon-bekliyor')).toBeNull();
+  });
 });

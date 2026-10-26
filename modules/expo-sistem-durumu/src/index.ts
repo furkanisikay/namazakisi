@@ -19,6 +19,7 @@ interface Abonelik {
 
 interface SistemNativeModulu {
     durumAl?(): Promise<HamSistemDurumu>;
+    yenidenBaslat?(): Promise<boolean>;
     addListener?(olay: string, dinleyici: (veri: HamSistemDurumu) => void): Abonelik;
 }
 
@@ -50,5 +51,19 @@ export function sistemDurumunuDinle(dinleyici: (veri: HamSistemDurumu) => void):
         return m.addListener('onSistemDurumuDegisti', dinleyici);
     } catch {
         return { remove: () => undefined };
+    }
+}
+
+/**
+ * Uygulamayı (JS paketini) hemen yeniden yükler — yazı yönü değişince (`I18nManager` yönü
+ * yalnız başlangıçta okunur). Yayın derlemesinde de çalışır. Modül ya da fonksiyon yoksa
+ * (eski build, jest) ya da native reddederse `false`; ASLA fırlatmaz.
+ */
+export async function yenidenBaslat(): Promise<boolean> {
+    try {
+        if (!modul?.yenidenBaslat) return false;
+        return (await modul.yenidenBaslat()) === true;
+    } catch {
+        return false;
     }
 }

@@ -11,8 +11,11 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.os.BatteryManager
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.util.Log
+import com.facebook.react.ReactApplication
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
@@ -36,6 +39,10 @@ import expo.modules.kotlin.modules.ModuleDefinition
  *
  * Dinleme yalnız JS dinleyici varken (OnStartObserving/OnStopObserving); her çağrı
  * binder olduğu için durum okuması AsyncFunction'dır.
+ *
+ * `yenidenBaslat`: JS paketini yeniden yükler (yazı yönü değişince; `I18nManager` yönü
+ * yalnız başlangıçta okunur). Yayın derlemesinde de çalışır: `ReactHost.reload` geliştirici
+ * menüsüne bağlı değildir. Ana iş parçacığına postalanır; söz önce çözülür, yükleme ardından.
  */
 class ExpoSistemDurumuModule : Module() {
 
@@ -51,6 +58,8 @@ class ExpoSistemDurumuModule : Module() {
         Events(OLAY)
 
         AsyncFunction("durumAl") { durum() }
+
+        AsyncFunction("yenidenBaslat") { yenidenBaslat() }
 
         OnStartObserving { dinlemeyiBaslat() }
 
@@ -108,6 +117,20 @@ class ExpoSistemDurumuModule : Module() {
             }
         }
         return sonuc
+    }
+
+    /** Uygulamanın ReactHost'unu yeniden yükler; host yoksa `false` (JS ertelenmiş sayar). */
+    private fun yenidenBaslat(): Boolean {
+        val uygulama = baglam() as? ReactApplication ?: return false
+        val host = uygulama.reactHost ?: return false
+        Handler(Looper.getMainLooper()).post {
+            try {
+                host.reload("yazi-yonu")
+            } catch (e: Exception) {
+                Log.w(TAG, "Yeniden baslatilamadi: ${e.javaClass.simpleName}")
+            }
+        }
+        return true
     }
 
     private inline fun guvenli(alan: String, blok: () -> Unit) {

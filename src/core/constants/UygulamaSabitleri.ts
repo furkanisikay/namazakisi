@@ -255,6 +255,10 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Arayüz dili (`core/dil`). Yokluğu = cihaz dili (seçilebilirse) ya da Türkçe. Etkin durum
   // `core/dil/aktifDil.ts`; yükleme `DilServisi`. Seçici açılınca YEDEKLENECEK (beyaz listenin üç yeri).
   DIL_AYARI: 'dil_ayari',
+  // Açılışta yazı yönü eşleşmediğinde yapılan sessiz yeniden başlatma denemesi sayacı
+  // (`YonServisi.acilistaDenetle`; en fazla 2, eşleşince silinir). JS belleği yeniden
+  // başlatmada sıfırlandığı için diskte. CİHAZA ÖZGÜ, YEDEKLENMEZ.
+  YON_DENEMESI: '@namaz_akisi/yon_denemesi',
   // Günün ayeti duvar kâğıdı (#381). CİHAZA ÖZGÜ, YEDEKLENMEZ: duvar kâğıdını değiştirmek o
   // cihazda verilen açık onaya bağlı (`core/icerik/gununAyetiYuku.ts`).
   GUNUN_AYETI_DUVAR: 'gunun_ayeti_duvar',

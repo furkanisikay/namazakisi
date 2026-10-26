@@ -69,16 +69,44 @@ describe('DilServisi', () => {
     expect(aktifDil()).toBe(en.secilebilir ? 'en' : 'tr');
   });
 
-  it('kayıtlı dil SEÇİLEBİLİR değilse (yedekten gelen yarım dil) kendiliğinden açılmaz', async () => {
-    cihaz('tr_TR');
-    const en = DILLER.find((d) => d.kod === 'en')!;
-    jest.replaceProperty(en, 'secilebilir', false);
-    disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'en' };
-    await DilServisi.yukle(true);
-    expect(aktifDil()).toBe('tr');
-    jest.replaceProperty(en, 'secilebilir', true);
-    await DilServisi.yukle(true);
-    expect(aktifDil()).toBe('en');
+  describe('kapalı (seçilemez) dil kaydı', () => {
+    const genel = globalThis as unknown as { __DEV__: boolean };
+    const oncekiDev = genel.__DEV__;
+    afterEach(() => {
+      genel.__DEV__ = oncekiDev;
+    });
+
+    it('ÜRETİMDE kayıtlı dil SEÇİLEBİLİR değilse (yedekten gelen yarım dil) kendiliğinden açılmaz', async () => {
+      genel.__DEV__ = false;
+      cihaz('tr_TR');
+      const en = DILLER.find((d) => d.kod === 'en')!;
+      jest.replaceProperty(en, 'secilebilir', false);
+      disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'en' };
+      await DilServisi.yukle(true);
+      expect(aktifDil()).toBe('tr');
+      jest.replaceProperty(en, 'secilebilir', true);
+      await DilServisi.yukle(true);
+      expect(aktifDil()).toBe('en');
+    });
+
+    it('NÖBETÇİ: kapalı dil (Arapça) yalnız GELİŞTİRME derlemesinde kayıttan kurulur (kare hattı)', async () => {
+      cihaz('tr_TR');
+      expect(DILLER.find((d) => d.kod === 'ar')!.secilebilir).toBe(false);
+      disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'ar', goc: 1 };
+      genel.__DEV__ = false;
+      await DilServisi.yukle(true);
+      expect(aktifDil()).toBe('tr');
+      genel.__DEV__ = true;
+      await DilServisi.yukle(true);
+      expect(aktifDil()).toBe('ar');
+    });
+
+    it('cihaz dili kapalı dili geliştirme derlemesinde de açmaz', async () => {
+      genel.__DEV__ = true;
+      cihaz('ar_SA');
+      await DilServisi.yukle(true);
+      expect(aktifDil()).toBe('tr');
+    });
   });
 
   it('cihaz diline dönüş açık seçimi siler, metin dilini korur', async () => {
