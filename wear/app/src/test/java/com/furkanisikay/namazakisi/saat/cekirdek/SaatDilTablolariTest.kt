@@ -89,8 +89,8 @@ class SaatDilTablolariTest {
         assertEquals("1 minute", SaatDiliAr.dakikaSesli(1))
         assertEquals("2 minutes", SaatDiliAr.dakikaSesli(2))
         assertEquals("11 hours", SaatDiliAr.saatSesli(11))
-        // Urduca one/other (İngilizceyle aynı).
-        assertEquals("1 hour", SaatDiliUr.saatSesli(1))
-        assertEquals("3 hours", SaatDiliUr.saatSesli(3))
+        // Urduca one/other (JS `sozluk/ur/sure.ts`).
+        assertEquals("1 گھنٹہ", SaatDiliUr.saatSesli(1))
+        assertEquals("3 گھنٹے", SaatDiliUr.saatSesli(3))
     }
 }

@@ -173,18 +173,18 @@ struct GununAyetiYerelMetinleri {
     )
 
 
-    // ÇEVİRİ: ur
+    // ur — meal 94:6 `gununAyetiHavuzu.ts` (urdu_junagarhi)
     static let ur = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "آج کی آیت",
+        galeriAciklama: "ایک آیت اور اس کا ترجمہ جو ہر روز فجر کے وقت بدلتا ہے۔",
+        etiket: "آج کی آیت",
+        uygulamayiAcin: "آج کی آیت دیکھنے کے لیے ایپ کھولیں",
+        ornekSigmiyor: "آج کی آیت اس سائز میں نہیں سماتی۔ پڑھنے کے لیے تھپتھپائیں۔",
+        ornekAcin: "کھولیں",
+        ornekArapcaKaynagi: "عربی: Tanzil",
+        ornekMeal: "بیشک مشکل کے ساتھ آسانی ہے.",
+        ornekKisaKunye: "قرآن 94:6",
+        ornekMealKaynagi: "Muhammad Junagarhi، QuranEnc 1.1.3"
     )
 
     static let tablo: [String: GununAyetiYerelMetinleri] = [

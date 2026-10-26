@@ -57,7 +57,7 @@ class TvDilTablolariTest {
         )
         assertEquals("1 minute", TvDiliAr.dakikaSesli(1))
         assertEquals("2 minutes", TvDiliAr.dakikaSesli(2))
-        assertEquals("1 hour", TvDiliUr.saatSesli(1))
-        assertEquals("3 hours", TvDiliUr.saatSesli(3))
+        assertEquals("1 گھنٹہ", TvDiliUr.saatSesli(1))
+        assertEquals("3 گھنٹے", TvDiliUr.saatSesli(3))
     }
 }

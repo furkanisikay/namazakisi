@@ -192,11 +192,11 @@ struct OtomasyonMetinleri {
     )
 
 
-    // ÇEVİRİ: ur
+    // ur
     static let ur = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} کا وقت {n} منٹ میں شروع ہوگا۔", "other": "{ad} کا وقت {n} منٹ میں شروع ہوگا۔"],
+        evetKilindi: "ہاں، اس پر ادا شدہ کا نشان لگا ہے۔",
+        hayirKilinmadi: "نہیں، ابھی نشان نہیں لگا۔"
     )
 
     static let tablo: [String: OtomasyonMetinleri] = [

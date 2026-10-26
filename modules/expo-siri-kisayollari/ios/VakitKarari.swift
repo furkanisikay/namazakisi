@@ -473,31 +473,31 @@ public struct VakitMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ur
+    // ur
     public static let ur = VakitMetinleri(
         dil: "ur",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "فجر", "ogle": "ظہر", "ikindi": "عصر", "aksam": "مغرب", "yatsi": "عشاء"],
+        gunes: "طلوعِ آفتاب",
+        konumYok: "نماز کے اوقات معلوم کرنے کے لیے ایپ کھولیں اور اپنا مقام منتخب کریں۔",
+        veriEski: "نماز کے اوقات پرانے ہو گئے ہیں۔ اپ ڈیٹ کرنے کے لیے ایپ ایک بار کھولیں۔",
+        girisBugun: "{saat} پر",
+        girisYarin: "کل {saat} پر",
+        suAnVakti: "ابھی {ad} کا وقت ہے۔",
+        suAnVaktiCikis: "ابھی {ad} کا وقت ہے؛ یہ {saat} پر ختم ہوتا ہے۔",
+        siradakiNamaz: "اگلی نماز {ad} ہے، {giris}۔",
+        isaretlendi: "{ad} کی نماز پر ادا شدہ کا نشان لگ گیا۔ {dua}۔",
+        zatenKilindi: "{ad} کی نماز پر پہلے سے ادا شدہ کا نشان لگا ہے۔",
+        vakitYok: "اس وقت نشان لگانے کے لیے کوئی نماز نہیں۔",
+        vakitYokSiradaki: "اس وقت نشان لگانے کے لیے کوئی نماز نہیں۔ اگلی نماز {ad} ہے، {giris}۔",
+        onay: "{ad} کی نماز پر ادا شدہ کا نشان لگائیں؟",
+        vakitDegisti: "نماز کا وقت بدل گیا، اس لیے نشان نہیں لگایا گیا۔ دوبارہ کوشش کریں۔",
+        kabulDuasi: "اللہ قبول فرمائے",
+        kildim: "نماز پڑھ لی",
+        kilindi: "ادا شدہ",
+        kontrolKildim: "{ad} · نماز پڑھ لی",
+        kontrolKilindi: "{ad} ادا شدہ",
+        kontrolVakitYok: "نشان لگانے کو کوئی نماز نہیں",
+        uygulamayiAcin: "ایپ کھولیں"
     )
 
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).

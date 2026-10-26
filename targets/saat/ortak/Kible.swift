@@ -270,17 +270,17 @@ public struct KibleMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ur
+    // ur
     public static let ur = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "پیچھے",
+        saga: "دائیں {derece}°",
+        sola: "بائیں {derece}°",
+        hizali: "آپ قبلہ رخ ہیں",
+        arkadaErisim: "قبلہ آپ کے پیچھے ہے",
+        sagdaErisim: "قبلہ آپ کے دائیں جانب {derece} درجے پر ہے",
+        soldaErisim: "قبلہ آپ کے بائیں جانب {derece} درجے پر ہے",
+        kabede: "آپ کعبہ کے پاس ہیں",
+        mesafe: "{km} کلومیٹر",
         binlikAyirici: ","
     )
 

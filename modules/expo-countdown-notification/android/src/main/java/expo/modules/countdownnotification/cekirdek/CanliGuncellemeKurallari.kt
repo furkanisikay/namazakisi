@@ -57,8 +57,8 @@ object CanliGuncellemeKurallari {
         "ms" to ("j" to "min"),
         // ÇEVİRİ: ar
         "ar" to ("h" to "min"),
-        // ÇEVİRİ: ur
-        "ur" to ("h" to "min"),
+        // ur
+        "ur" to ("گھنٹے" to "منٹ"),
     )
 
     /**

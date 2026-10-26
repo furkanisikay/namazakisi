@@ -281,29 +281,29 @@ struct WidgetMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ur
+    // ur
     static let ur = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "نماز کا وقت",
+        galeriAciklama: "موجودہ نماز کا وقت، اس کے ختم ہونے میں باقی وقت اور آج کی نمازوں کے اوقات۔",
+        veriEski: "نماز کے اوقات اپ ڈیٹ کرنے کے لیے ایپ کھولیں",
+        konumYok: "اپنا مقام منتخب کرنے کے لیے ایپ کھولیں",
+        kilindiSiradaki: "{ad} ادا شدہ · {sonraki} {saat}",
+        adCikis: "{ad} · اختتام {saat}",
+        siradakiAdSaat: "اگلی {ad} {saat}",
+        vaktiCikisErisim: "{ad} کا وقت، اختتام {saat}",
+        siradakiErisim: "اگلی نماز {ad}، {saat}",
+        cikisSaat: "اختتام {saat}",
+        bitisSaat: "اختتام {saat}",
+        kilindiBaslik: "{ad} ادا شدہ",
+        siradaki: "اگلی",
+        siradakiAd: "اگلی {ad}",
+        kildimErisim: "{ad} کی نماز پڑھ لی",
+        gunSatiriKilindi: "، ادا شدہ",
+        bitti: "ختم",
+        vakitCikti: "نماز کا وقت ختم ہو گیا",
+        kabulAlt: "{ad} کی نماز ادا شدہ",
+        kontrolAdi: "نماز پڑھ لی",
+        kontrolAciklama: "موجودہ نماز پر ادا شدہ کا نشان لگاتا ہے۔"
     )
 
     /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur; cevrilmemis dil `// ÇEVİRİ: <kod>`
