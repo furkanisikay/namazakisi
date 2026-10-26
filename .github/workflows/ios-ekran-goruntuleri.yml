@@ -332,7 +332,9 @@ jobs:
           node scripts/simulator-ipad-genis.js "${{ steps.sim.outputs.udid }}" "${{ steps.kurulum.outputs.bundle }}" "$APP" kareler-genis
 
       - name: 🎨 Mockup üret
-        if: ${{ inputs.tur != 'ozellik' }}
+        # Mockup basliklari yalniz Turkce (magaza Turkce); diger dillerin turu kanittir,
+        # mockup uretmez (Arapca turda headless Chrome iki kez dustu, kareler etkilenmedi).
+        if: ${{ inputs.tur != 'ozellik' && (inputs.dil == '' || inputs.dil == 'tr') }}
         run: |
           # Magazaya giden kare ham ekran goruntusu DEGIL, basligi ve cihaz
           # cercevesi olan mockup'tir. Adimlar Chrome'u headless kullanir.

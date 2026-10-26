@@ -30,6 +30,7 @@ Genel ilke: **bu hatlardaki tuzakların hepsi SESSİZDİR** — adım "başarıl
 - **Simülatör saat dilimi UTC → iş düzeyi `env`'de `SIMCTL_CHILD_TZ: Europe/Istanbul`** (`simctl launch` `SIMCTL_CHILD_` önekini uygulamaya geçirir); yoksa vakitler UTC çizilir (öğle "09:55").
 - **İzinleri baştan ver:** `simctl privacy <udid> grant location <bundle>` + `simctl location <udid> set <lat>,<lng>` (Kıble konum uyarısı sayfayı bloklar).
 - **`simctl spawn <udid> defaults write -g AppleLanguages` KULLANMA** — cfprefsd'yi bekleyip adımı süresiz kilitler; betik izin diyaloğunun iki dilini de tanısın.
+- **iOS `🎨 Mockup üret` adımı yalnız Türkçe turda koşar** (`dil` boş ya da `tr`): mockup başlıkları Türkçedir, diğer dillerin turu kanıttır; Arapça turda macOS headless Chrome bu adımda iki kez çöktü (kareler etkilenmedi, koşu kırmızıydı).
 - **iPad 13" seti = `tur: ipad`:** aynı iş, aynı betik; cihaz `iPad Pro 13-inch (M…)` (2064×2752), mockup `--platform ipad` (3:4 tuval, dar cihaz), artifact `ios-ipad-ekran-goruntuleri`, ASC tipi `APP_IPAD_PRO_3GEN_129`. iPad'de ana ekran iki bölmelidir ve `idb ui swipe` x=220'de SOL bölmeyi kaydırır; ayar sayfaları 640 dp ortalı sütundadır (x=220 sütunun içinde kalır).
 - **Kırılgan adımlar (Kıble) SONA ve uygulama yeniden başlatılarak:** açık bottom-sheet sekme çubuğunu erişilemez yapar; aksaklıkta yalnız o kare kaybedilir.
 
