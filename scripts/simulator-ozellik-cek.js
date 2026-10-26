@@ -229,7 +229,7 @@ async function bolum(ad, fn) {
         if (!(await hatirlatmalaraGit('nafile-hub'))) return;
         if (!(await kaydirarakDokun(new RegExp(`^${m('Nafile namazlar')}\\.`, 'i'), 'nafile satiri', 'nafile', { bekle: 3000 }))) return;
         cek('17-nafile');
-        if (await getir(/nafile-kart-teheccud|^Teheccüd hatırlatması(?: \||$)/i, 'teheccud', { ust: 0.15, alt: 0.45 })) {
+        if (await getir(new RegExp(`nafile-kart-teheccud|^${sablon('{ad} hatırlatması', { ad: m('Teheccüd') })}(?: \\||$)`, 'i'), 'teheccud', { ust: 0.15, alt: 0.45 })) {
             cek('18-nafile-teheccud');
         }
     });
