@@ -36,6 +36,7 @@ const MEALLER = {
   bs: 'bosnian_rwwad',
   ru: 'russian_rwwad',
   ms: 'malay_basumayyah',
+  ur: 'urdu_junagarhi',
 };
 
 /**
@@ -128,6 +129,16 @@ const ref = (sure, ayet) => `${sure}:${ayet}`;
  * Kural 3 ve 4 bilinçli olarak tutucudur: emin olunamayan aday elenir.
  */
 /** Kural 1 ve 2 tek meal için: sığar ve dipnot işareti / baştaki ayet numarası taşımaz. */
+/**
+ * Not numarası silinen diller (sahip kararı 2026-10-26): Urduca mealde ayetlerin çoğu "[1]"
+ * gibi dipnot numarası taşır; dipnot gösterilmediği için yalnız numara silinir, meal sözcükleri
+ * birebir kalır. Diğer dillerde numaralı meal alınmaz (`mealUygun`).
+ */
+const NOT_NUMARASI_SILINEN = new Set(['ur']);
+function notNumarasiz(dil, metin) {
+  return NOT_NUMARASI_SILINEN.has(dil) ? metin.replace(/\s*\[\d+\]/g, '').trim() : metin;
+}
+
 function mealUygun(metin) {
   return metin.length <= AZAMI_UZUNLUK && !/\[\d+\]|\*/.test(metin) && !/^\d+\.\s/.test(metin);
 }
@@ -277,7 +288,7 @@ async function main() {
       const { result } = JSON.parse(
         await indir(`https://quranenc.com/api/v1/translation/sura/${anahtar}/${sure}`, onbellek, `${anahtar}_${sure}.json`),
       );
-      for (const r of result) mealler[dil][ref(Number(r.sura), Number(r.aya))] = r.translation;
+      for (const r of result) mealler[dil][ref(Number(r.sura), Number(r.aya))] = notNumarasiz(dil, r.translation);
     }
   }
 

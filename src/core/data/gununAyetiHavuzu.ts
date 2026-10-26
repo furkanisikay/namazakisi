@@ -24,7 +24,7 @@ export interface GununAyetiKaydi {
   mealler: { readonly tr: string; readonly en: string } & Readonly<Partial<Record<MealDili, string>>>;
 }
 
-export type MealDili = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms';
+export type MealDili = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ur';
 
 export interface MealKunyesi {
   anahtar: string;
@@ -82,6 +82,11 @@ export const GUNUN_AYETI_KAYNAKLARI: {
       "anahtar": "malay_basumayyah",
       "surum": "1.0.0",
       "baslik": "Abdullah Basumayyah"
+    },
+    "ur": {
+      "anahtar": "urdu_junagarhi",
+      "surum": "1.1.3",
+      "baslik": "Muhammad Junagarhi"
     }
   }
 };
@@ -100,7 +105,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "C’est Toi seul que nous adorons et de Toi seul que nous implorons aide.",
       "bs": "Samo Tebe obožavamo i samo od Tebe pomoć tražimo!",
       "ru": "Тебе одному мы поклоняемся, и Тебя одного просим о помощи.",
-      "ms": "Engkaulah sahaja (Ya Allah) Yang Kami sembah, dan kepada Engkaulah sahaja kami memohon pertolongan."
+      "ms": "Engkaulah sahaja (Ya Allah) Yang Kami sembah, dan kepada Engkaulah sahaja kami memohon pertolongan.",
+      "ur": "ہم صرف تیری ہی عبادت کرتے ہیں اور صرف تجھ ہی سے مدد چاہتے ہیں۔"
     }
   },
   {
@@ -114,7 +120,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Tidakkah kamu tahu bahwa Allah memiliki kerajaan langit dan bumi? Dan tidak ada bagimu pelindung dan penolong selain Allah.",
       "de": "Weißt du denn nicht, daß Allah es ist, Der die Herrschaft über die Himmel und die Erde hat, und daß ihr außer Allah weder Schutzherrn noch Helfer habt?",
       "fr": "Ne sais-tu pas qu’Allah règne en Maître absolu sur les cieux et la terre ? Vous n’avez d’autre soutien et d’autre protecteur qu’Allah.",
-      "bs": "Zar ti ne znaš da Allahu pripada vlast i na nebesima i na Zemlji i da, osim Allaha, ni zaštitnika ni pomagača nemate?!"
+      "bs": "Zar ti ne znaš da Allahu pripada vlast i na nebesima i na Zemlji i da, osim Allaha, ni zaštitnika ni pomagača nemate?!",
+      "ur": "کیا تجھے علم نہیں کہ زمین و آسمان کا ملک اللہ ہی کے لئے ہے اور اللہ کے سوا تمہارا کوئی ولی اور مددگار نہیں۔"
     }
   },
   {
@@ -129,7 +136,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "O die ihr glaubt, sucht Hilfe in der Standhaftigkeit und im Gebet! Allah ist mit den Standhaften.",
       "fr": "Vous qui croyez ! Armez-vous de patience et aidez-vous de la prière. Allah est avec ceux qui font preuve de constance.",
       "bs": "O vi koji vjerujete, tražite sebi pomoć u strpljivosti i namazu! Allah je, doista, uz strpljive.",
-      "ru": "О вы, которые уверовали! Ищите помощи посредством терпения и молитвы. Воистину, Аллах — с терпеливыми."
+      "ru": "О вы, которые уверовали! Ищите помощи посредством терпения и молитвы. Воистину, Аллах — с терпеливыми.",
+      "ur": "اے ایمان والو! صبر اور نماز کے ذریعہ مدد چاہو، اللہ تعالی صبر والوں کا ساتھ دیتا ہے۔"
     }
   },
   {
@@ -144,7 +152,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "O ihr Menschen! Eßt von dem, was es auf der Erde gibt, als etwas Erlaubtem und Gutem, und folgt nicht den Fußstapfen des Satans! Er ist euch ein deutlicher Feind.",
       "bs": "O ljudi, jedite od onoga što ima na Zemlji, što je dozvoljeno i lijepo, i ne slijedite šejtanove stope! On vam je, zaista, neprijatelj očevidni.",
       "ru": "О люди! Ешьте из того, что на земле, дозволенное и благое, и не следуйте по стопам шайтана. Воистину, он для вас — явный враг.",
-      "ms": "Wahai sekalian manusia! Makanlah dari apa yang ada di bumi yang halal lagi baik, dan janganlah kamu ikut jejak langkah Syaitan; kerana sesungguhnya Syaitan itu ialah musuh yang terang nyata bagi kamu."
+      "ms": "Wahai sekalian manusia! Makanlah dari apa yang ada di bumi yang halal lagi baik, dan janganlah kamu ikut jejak langkah Syaitan; kerana sesungguhnya Syaitan itu ialah musuh yang terang nyata bagi kamu.",
+      "ur": "لوگو! زمین میں جتنی بھی حلال اور پاکیزه چیزیں ہیں انہیں کھاؤ پیو اور شیطانی راه پر نہ چلو ، وه تمہارا کھلا ہوا دشمن ہے۔"
     }
   },
   {
@@ -160,7 +169,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Vous qui croyez ! Nourrissez-vous des aliments purs et sains que Nous vous avons attribués et montrez-vous reconnaissants envers Allah, si c’est Lui que vous adorez.",
       "bs": "O vi koji vjerujete, jedite dobra kojim smo vas opskrbili i Allahu zahvaljujte, ako, doista, samo Njemu ibadet činite.",
       "ru": "О вы, которые уверовали! Ешьте из благих даров, которыми Мы наделили вас, и благодарите Аллаха, если вы поклоняетесь только Ему.",
-      "ms": "Wahai orang-orang yang beriman! Makanlah dari benda-benda yang baik (yang halal) yang telah Kami berikan kepada kamu, dan bersyukurlah kepada Allah, jika betul kamu hanya beribadat kepadanya."
+      "ms": "Wahai orang-orang yang beriman! Makanlah dari benda-benda yang baik (yang halal) yang telah Kami berikan kepada kamu, dan bersyukurlah kepada Allah, jika betul kamu hanya beribadat kepadanya.",
+      "ur": "اے ایمان والو! جو پاکیزه چیزیں ہم نے تمہیں دے رکھی ہیں انہیں کھاؤ، پیو اور اللہ تعالیٰ کا شکر کرو، اگر تم خاص اسی کی عبادت کرتے ہو۔"
     }
   },
   {
@@ -175,7 +185,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "O die ihr glaubt, tretet allesamt in den Islam ein und folgt nicht den Fußstapfen des Satans! Er ist euch ja ein deutlicher Feind.",
       "fr": "Vous qui croyez ! Adhérez pleinement à l’islam. Gardez-vous de suivre les suggestions de Satan, votre ennemi déclaré.",
       "bs": "O vi koji vjerujete, uđite u islam potpuno i ne idite stopama šejtanovim; on vam je, doista, neprijatelj otvoreni!",
-      "ru": "О вы, которые уверовали! Войдите в покорность (ислам) всецело и не следуйте по стопам шайтана. Воистину, он для вас — явный враг."
+      "ru": "О вы, которые уверовали! Войдите в покорность (ислам) всецело и не следуйте по стопам шайтана. Воистину, он для вас — явный враг.",
+      "ur": "ایمان والو! اسلام میں پورے پورے داخل ہوجاؤ اور شیطان کے قدموں کی تابعداری نہ کرو وه تمہارا کھلا دشمن ہے۔"
     }
   },
   {
@@ -188,7 +199,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "Kind speech and forgiveness are better than charity followed by injury. And Allāh is Free of need and Forbearing.",
       "de": "Freundliche Worte und Vergebung sind besser als ein Almosen, dem Beleidigungen nachfolgen. Allah ist Unbedürftig und Nachsichtig.",
       "bs": "Lijepa riječ i oprost vredniji su od sadake popraćene vrijeđanjem. A Allah je neovisan i Onaj Koji ne žuri s kaznom.",
-      "ru": "Доброе слово и прощение лучше пожертвования, сопровождаемого причинением обиды. Аллах — богатый, сдержанный."
+      "ru": "Доброе слово и прощение лучше пожертвования, сопровождаемого причинением обиды. Аллах — богатый, сдержанный.",
+      "ur": "نرم بات کہنا اور معاف کردینا اس صدقہ سے بہتر ہے جس کے بعد ایذا رسانی ہو اور اللہ تعالیٰ بےنیاز اور بردبار ہے۔"
     }
   },
   {
@@ -202,7 +214,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Setan menjanjikan (menakut-nakuti) kemiskinan kepadamu dan menyuruh kamu berbuat keji (kikir), sedangkan Allah menjanjikan ampunan dan karunia-Nya kepadamu. Dan Allah Mahaluas, Maha Mengetahui.",
       "de": "Der Satan verspricht euch Armut und befiehlt euch Schändliches. Allah aber verspricht euch Vergebung von Sich aus und Huld. Allah ist Allumfassend und Allwissend.",
       "bs": "Šejtan vas plaši siromaštvom i navodi vas na zlo, a Allah vam obećava oprost i dobro. Allah je neizmjerno darežljiv i Onaj Koji sve zna.",
-      "ru": "Шайтан устрашает вас бедностью и повелевает вам мерзость, а Аллах обещает вам прощение и Свою щедрость. Аллах — объемлющий, знающий."
+      "ru": "Шайтан устрашает вас бедностью и повелевает вам мерзость, а Аллах обещает вам прощение и Свою щедрость. Аллах — объемлющий, знающий.",
+      "ur": "شیطان تمہیں فقیری سے دھمکاتا ہے اور بےحیائی کا حکم دیتا ہے ، اور اللہ تعالیٰ تم سے اپنی بخشش اور فضل کا وعده کرتا ہے، اللہ تعالیٰ وسعت واﻻ اور علم واﻻ ہے۔"
     }
   },
   {
@@ -214,7 +227,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "tr": "Şüphesiz iman edenler, salih amel işleyenler, namazı dosdoğru kılanlar ve zekâtı verenler için Rableri katında mükâfatları vardır. Onlara korku yoktur. Onlar, mahzun da olmayacaklardır.",
       "en": "Indeed, those who believe and do righteous deeds and establish prayer and give zakāh will have their reward with their Lord, and there will be no fear concerning them, nor will they grieve.",
       "bs": "Doista će oni koji vjeruju, i dobra djela čine, i namaz obavljaju, i zekat daju, imati nagradu u Gospodara svoga. Za njih nema straha i oni ne treba da se žaloste!",
-      "ru": "Воистину, те, которые уверовали, совершали праведные деяния, выстаивали молитву и выплачивали закят, — для них их награда у их Господа, и не будет над ними страха, и они не опечалятся."
+      "ru": "Воистину, те, которые уверовали, совершали праведные деяния, выстаивали молитву и выплачивали закят, — для них их награда у их Господа, и не будет над ними страха, и они не опечалятся.",
+      "ur": "بے شک جو لوگ ایمان کے ساتھ ﴿سنت کے مطابق﴾ نیک کام کرتے ہیں، نمازوں کو قائم کرتے ہیں اور زکوٰة ادا کرتے ہیں، ان کا اجر ان کے رب تعالیٰ کے پاس ہے، ان پر نہ تو کوئی خوف ہے، نہ اداسی اور غم۔"
     }
   },
   {
@@ -230,7 +244,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Rien, sur terre ou dans le ciel, n’échappe à Allah.",
       "bs": "Allahu, doista, ništa nije skriveno, ni na Zemlji, ni na nebu.",
       "ru": "Воистину, Аллах — не скроется от Него ничто на земле, ни на небе.",
-      "ms": "Sesungguhnya Allah tidak tersembunyi kepadaNya sesuatu pun yang ada di bumi dan juga yang ada di langit."
+      "ms": "Sesungguhnya Allah tidak tersembunyi kepadaNya sesuatu pun yang ada di bumi dan juga yang ada di langit.",
+      "ur": "یقیناً اللہ تعالیٰ پر زمین وآسمان کی کوئی چیز پوشیده نہیں۔"
     }
   },
   {
@@ -246,7 +261,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "C’est Lui qui vous forme à Son gré dans les matrices de vos mères. Il n’est de divinité en droit d’être adorée que Lui, le Tout-Puissant, l’infiniment Sage.",
       "bs": "On je Onaj Koji vas oblikuje u matericama kako On hoće; nema drugog boga osim Njega, Silnog i Mudrog.",
       "ru": "Он — Тот, Кто придаёт вам облик в утробах, как пожелает. Нет божества, кроме Него, Он — Могущественный, Мудрый.",
-      "ms": "Dia lah yang membentuk rupa kamu dalam rahim (ibu kamu) sebagaimana yang dikehendakiNya. Tiada Tuhan (yang berhak disembah) melainkan Dia, Yang Maha Kuasa, lagi Maha Bijaksana."
+      "ms": "Dia lah yang membentuk rupa kamu dalam rahim (ibu kamu) sebagaimana yang dikehendakiNya. Tiada Tuhan (yang berhak disembah) melainkan Dia, Yang Maha Kuasa, lagi Maha Bijaksana.",
+      "ur": "وه ماں کے پیٹ میں تمہاری صورتیں جس طرح چاہتا ہے بناتا ہے ۔ اس کے سواکوئی معبود برحق نہیں وه غالب ہے، حکمت واﻻ ہے۔"
     }
   },
   {
@@ -259,7 +275,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "Indeed, the first House [of worship] established for mankind was that at Bakkah [i.e., Makkah] - blessed and a guidance for the worlds.",
       "de": "Das erste (Gottes)haus, das für die Menschen gegründet wurde, ist wahrlich dasjenige in Bakka, als ein gesegnetes (Haus) und eine Rechtleitung für die Weltenbewohner.",
       "ru": "Воистину, первый Дом, который был возведён для людей, — тот, что в Бекке, как благословение и руководство для миров.",
-      "ms": "Sesungguhnya Rumah Ibadat yang mula-mula dibina untuk manusia (beribadat kepada Tuhannya) ialah Baitullah yang di Makkah yang berkat dan (dijadikan) petunjuk hidayah bagi umat manusia."
+      "ms": "Sesungguhnya Rumah Ibadat yang mula-mula dibina untuk manusia (beribadat kepada Tuhannya) ialah Baitullah yang di Makkah yang berkat dan (dijadikan) petunjuk hidayah bagi umat manusia.",
+      "ur": "اللہ تعالیٰ کا پہلا گھر جو لوگوں کے لئے مقرر کیا گیا وہی ہے جو مکہ (شریف) میں ہے جو تمام دنیا کے لئے برکت وہدایت واﻻ ہے."
     }
   },
   {
@@ -275,7 +292,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Vous qui croyez ! Craignez Allah comme Il le mérite et demeurez-Lui entièrement soumis jusqu’à la mort.",
       "bs": "O vi koji vjerujete, bojte se Allaha istinskom bogobojaznošću i nipošto ne umirite osim kao muslimani!",
       "ru": "О вы, которые уверовали! Бойтесь Аллаха должным образом и не умирайте иначе как будучи мусульманами.",
-      "ms": "Wahai orang-orang yang beriman! Bertaqwalah kamu kepada Allah dengan sebenar-benar taqwa, dan jangan sekali-kali kamu mati melainkan dalam keadaan Islam."
+      "ms": "Wahai orang-orang yang beriman! Bertaqwalah kamu kepada Allah dengan sebenar-benar taqwa, dan jangan sekali-kali kamu mati melainkan dalam keadaan Islam.",
+      "ur": "اے ایمان والو! اللہ تعالیٰ سے اتنا ڈرو جتنا اس سے ڈرنا چاہئیے اور دیکھو مرتے دم تک مسلمان ہی رہنا."
     }
   },
   {
@@ -291,7 +309,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "A Allah appartient tout ce qui se trouve dans les cieux et sur la terre. Et c’est à Allah que tout doit revenir.",
       "bs": "Allahu pripada sve što je na nebesima i što je na Zemlji, i Allahu se sve vraća.",
       "ru": "Аллаху принадлежит всё, что в небесах, и всё, что на земле, и к Аллаху возвращаются дела.",
-      "ms": "Dan bagi Allah jualah hak milik segala yang ada di langit dan yang ada di bumi, dan kepada Allah jualah dikembalikan segala urusan."
+      "ms": "Dan bagi Allah jualah hak milik segala yang ada di langit dan yang ada di bumi, dan kepada Allah jualah dikembalikan segala urusan.",
+      "ur": "اللہ تعالیٰ ہی کے لئے ہے جو کچھ آسمانوں اور زمین میں ہے اور اللہ تعالیٰ ہی کی طرف تمام کام لوٹائے جاتے ہیں."
     }
   },
   {
@@ -307,7 +326,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Voilà un exposé clair de la vérité, une sûre direction et une exhortation pour quiconque craint le Seigneur.",
       "bs": "To je objašnjenje ljudima, i uputa i pouka za one koji se Allaha boje.",
       "ru": "Это — разъяснение для людей, руководство и назидание для богобоязненных.",
-      "ms": "(Al-Quran) ini ialah penerangan kepada seluruh umat manusia, dan petunjuk serta pengajaran bagi orang-orang yang (hendak) bertaqwa."
+      "ms": "(Al-Quran) ini ialah penerangan kepada seluruh umat manusia, dan petunjuk serta pengajaran bagi orang-orang yang (hendak) bertaqwa.",
+      "ur": "عام لوگوں کے لئے تو یہ (قرآن) بیان ہے اور پرہیزگاروں کے لئے ہدایت ونصیحت ہے."
     }
   },
   {
@@ -320,7 +340,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "If Allāh should aid you, no one can overcome you; but if He should forsake you, who is there that can aid you after Him? And upon Allāh let the believers rely.",
       "fr": "Si Allah vous porte secours, nul ne pourra vous vaincre. Mais s’Il vous abandonne, qui donc après cela pourra vous secourir ? C’est à Allah seul que doivent s’en remettre les croyants.",
       "bs": "Ako vas Allah pomogne, niko vas pobijediti neće; a ako vas napusti, pa ko je taj koji vam, osim Njega, može pomoći?! Pa, na Allaha neka se zato oslanjaju vjernici!",
-      "ru": "Если Аллах поможет вам, то никто не одолеет вас, а если Он оставит вас без помощи, то кто же поможет вам после Него? На Аллаха пусть уповают верующие."
+      "ru": "Если Аллах поможет вам, то никто не одолеет вас, а если Он оставит вас без помощи, то кто же поможет вам после Него? На Аллаха пусть уповают верующие.",
+      "ur": "اگر اللہ تعالیٰ تمہاری مدد کرے تو تم پر کوئی غالب نہیں آسکتا اور اگر وہ تمہیں چھوڑ دے تو اس کے بعد کون ہے جو تمہاری مدد کرے؟ ایمان والوں کو اللہ تعالیٰ ہی پر بھروسہ رکھنا چاہئے."
     }
   },
   {
@@ -334,7 +355,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Allah will euch Klarheit geben und euch rechtleiten nach den Gesetzmäßigkeiten derer, die vor euch waren, und eure Reue annehmen. Allah ist Allwissend und Allweise.",
       "fr": "Allah entend vous exposer Ses lois, vous indiquer la voie suivie par vos devanciers et accepter votre repentir. Allah est Omniscient et infiniment Sage.",
       "bs": "Allah vam želi objasniti i uputiti vas putevima kojima su išli oni prije vas i oprostiti vam. Allah je Onaj Koji sve zna i mudar je.",
-      "ru": "Аллах желает разъяснить вам и повести вас путями тех, которые были до вас, и принять ваше покаяние. Аллах — знающий, мудрый."
+      "ru": "Аллах желает разъяснить вам и повести вас путями тех, которые были до вас, и принять ваше покаяние. Аллах — знающий, мудрый.",
+      "ur": "اللہ تعالیٰ چاہتا ہے کہ تمہارے واسطے خوب کھول کر بیان کرے اور تمہیں تم سے پہلے کے (نیک) لوگوں کی راه پر چلائے اور تمہاری توبہ قبول کرے، اور اللہ تعالیٰ جاننے واﻻ حکمت واﻻ ہے۔"
     }
   },
   {
@@ -349,7 +371,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Und Allah will eure Reue annehmen; diejenigen aber, die den Begierden folgen, wollen, daß ihr (vom rechten Weg) völlig abweicht.",
       "fr": "Allah entend vous guider vers le repentir, tandis que ceux qui suivent aveuglément leurs passions voudraient que vous vous écartiez dangereusement du droit chemin.",
       "bs": "Allah vam želi oprostiti, a oni koji se za strastima svojim povode žele da daleko skrenete.",
-      "ru": "Аллах желает принять ваше покаяние, а те, которые следуют страстям, желают, чтобы вы отклонились от истины самым пагубным образом."
+      "ru": "Аллах желает принять ваше покаяние, а те, которые следуют страстям, желают, чтобы вы отклонились от истины самым пагубным образом.",
+      "ur": "اور اللہ چاہتا ہے کہ تمہاری توبہ قبول کرے اور جو لوگ خواہشات کے پیرو ہیں وه چاہتے ہیں کہ تم اس سے بہت دور ہٹ جاؤ۔"
     }
   },
   {
@@ -365,7 +388,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Si vous évitez les péchés les plus graves qui vous sont interdits, Nous effacerons vos péchés véniels et vous réserverons un digne accueil au Paradis.",
       "bs": "Ako se budete klonili velikih grijeha koji su vam zabranjeni, Mi ćemo pokriti vaša loša djela i u divno mjesto vas uvesti.",
       "ru": "Если вы будете избегать великих грехов, которые вам запрещены, Мы искупим ваши дурные деяния и введём вас в почётное место.",
-      "ms": "Jika kamu menjauhkan dosa-dosa besar yang dilarang kamu melakukannya, Kami akan ampunkan kesalahan-kesalahan (dosa kecil) kamu, dan kami akan masukkan kamu ke tempat yang mulia (syurga)."
+      "ms": "Jika kamu menjauhkan dosa-dosa besar yang dilarang kamu melakukannya, Kami akan ampunkan kesalahan-kesalahan (dosa kecil) kamu, dan kami akan masukkan kamu ke tempat yang mulia (syurga).",
+      "ur": "اگر تم ان بڑے گناہوں سے بچتے رہوگے جن سے تم کو منع کیا جاتا ہے تو ہم تمہارے چھوٹے گناه دور کر دیں گے اور عزت وبزرگی کی جگہ داخل کریں گے۔"
     }
   },
   {
@@ -379,7 +403,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Allah tut gewiß nicht im Gewicht eines Stäubchens Unrecht. Und wenn es eine gute Tat ist, vervielfacht Er sie und gibt von Sich aus großartigen Lohn.",
       "fr": "Allah, en vérité, ne lèse en rien Ses serviteurs, décuplant au contraire le salaire de leurs œuvres et leur accordant de surcroît, par un effet de Sa grâce, une immense récompense.",
       "bs": "Zaista Allah ni trunku nepravde ne čini, pa ako to bude dobro djelo, On će ga umnogostručiti i od Sebe nagradu veliku dati.",
-      "ru": "Воистину, Аллах не поступит несправедливо даже на вес пылинки. И если это будет благо — Он приумножит его и дарует от Себя великую награду."
+      "ru": "Воистину, Аллах не поступит несправедливо даже на вес пылинки. И если это будет благо — Он приумножит его и дарует от Себя великую награду.",
+      "ur": "بے شک اللہ تعالیٰ ایک ذره برابر ﻇلم نہیں کرتا اور اگر نیکی ہو تو اسے دوگنی کر دیتا ہے اور خاص اپنے پاس سے بہت بڑا ﺛواب دیتا ہے۔"
     }
   },
   {
@@ -394,7 +419,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Allah - es gibt keinen Gott außer Ihm. Er wird euch ganz gewiß zum Tag der Auferstehung versammeln, an dem es keinen Zweifel gibt. Und wer ist wahrhaftiger als Allah in der Aussage?",
       "fr": "Allah - il n’est de divinité digne d’être adorée que Lui - vous rassemblera sans l’ombre d’un doute le Jour, inéluctable, de la résurrection. Est-il parole plus véridique que celle d’Allah ?",
       "bs": "Allah, osim Koga drugoga boga nema, sigurno će vas sakupiti na Sudnjem danu, u što nema nimalo sumnje, a čiji je govor istinitiji od Allahovog?!",
-      "ru": "Аллах — нет божества, кроме Него. Он непременно соберёт вас ко Дню воскресения, нет в том сомнения. А кто же правдивее Аллаха в речи?"
+      "ru": "Аллах — нет божества, кроме Него. Он непременно соберёт вас ко Дню воскресения, нет в том сомнения. А кто же правдивее Аллаха в речи?",
+      "ur": "اللہ وه ہے جس کے سوا کوئی معبود (برحق) نہیں وه تم سب کو یقیناً قیامت کے دن جمع کرے گا، جس کے (آنے) میں کوئی شک نہیں، اللہ تعالیٰ سے زیاده سچی بات واﻻ اور کون ہوگا۔"
     }
   },
   {
@@ -409,7 +435,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Wer immer die Belohnung des Diesseits will, so ist bei Allah die Belohnung des Diesseits und des Jenseits. Allah ist Allhörend und Allsehend.",
       "fr": "Que celui qui convoite la récompense de ce bas monde sache que c’est Allah qui détient la récompense terrestre et celle de l’au-delà. Allah entend tout et voit tout.",
       "bs": "Onaj koji želi nagradu ovoga svijeta, pa u Allaha je nagrada i ovoga i onoga svijeta; Allah je Onaj Koji sve čuje i Onaj Koji sve vidi.",
-      "ru": "Кто желает награды этого мира, то у Аллаха — награда и этого мира, и Последней жизни. Аллах всегда был [и пребудет] слышащим, видящим."
+      "ru": "Кто желает награды этого мира, то у Аллаха — награда и этого мира, и Последней жизни. Аллах всегда был [и пребудет] слышащим, видящим.",
+      "ur": "جو شخص دنیا کا ﺛواب چاہتا ہو تو (یاد رکھو کہ) اللہ تعالیٰ کے پاس تو دنیا اور آخرت (دونوں) کا ﺛواب موجود ہے اور اللہ تعالیٰ بہت سننے واﻻ اور خوب دیکھنے واﻻ ہے۔"
     }
   },
   {
@@ -422,7 +449,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "Allāh does not like the public mention of evil except by one who has been wronged. And ever is Allāh Hearing and Knowing.",
       "de": "Allah liebt nicht den laut vernehmbaren Gebrauch von bösen Worten, außer durch jemanden, dem Unrecht zugefügt worden ist. Allah ist Allhörend und Allwissend.",
       "bs": "Allah ne voli da se o zlu glasno govori, to može samo onaj kome je nepravda učinjena. A Allah je Onaj Koji sve čuje i Onaj Koji sve zna.",
-      "ru": "Аллах не любит произнесения дурных слов вслух, кроме как от того, с кем поступили несправедливо. Аллах всегда был [и пребудет] слышащим, знающим."
+      "ru": "Аллах не любит произнесения дурных слов вслух, кроме как от того, с кем поступили несправедливо. Аллах всегда был [и пребудет] слышащим, знающим.",
+      "ur": "برائی کے ساتھ آواز بلند کرنے کو اللہ تعالیٰ پسند نہیں فرماتا مگر مظلوم کی اجازت ہے اور اللہ تعالیٰ خوب سنتا جانتا ہے۔"
     }
   },
   {
@@ -438,7 +466,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah a promis à ceux qui croient et accomplissent de bonnes œuvres Son pardon et une immense récompense.",
       "bs": "Allah je onima koji vjeruju i dobra djela čine obećao oprost i nagradu veliku;",
       "ru": "Аллах обещал тем, кто уверовал и совершал праведные деяния: для них — прощение и великая награда.",
-      "ms": "Allah menjanjikan kepada orang-orang yang beriman dan beramal soleh, mereka akan beroleh keampunan dan pahala yang besar."
+      "ms": "Allah menjanjikan kepada orang-orang yang beriman dan beramal soleh, mereka akan beroleh keampunan dan pahala yang besar.",
+      "ur": "اللہ تعالیٰ کا وعده ہے کہ جو ایمان ﻻئیں اور نیک کام کریں ان کے لئے وسیع مغفرت اور بہت بڑا اجر و ﺛواب ہے۔"
     }
   },
   {
@@ -453,7 +482,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "O die ihr glaubt, fürchtet Allah und trachtet nach einem Mittel zu Ihm und müht euch auf Seinem Weg ab, auf daß es euch wohl ergehen möge!",
       "fr": "Vous qui croyez ! Craignez Allah, cherchez à vous rapprocher de Lui et luttez pour Sa cause afin de faire votre bonheur et votre salut.",
       "bs": "O vi koji vjerujete, Allaha se bojte i tražite ono što će vas Njemu približiti, i na putu Njegovu se borite da biste uspjeli.",
-      "ru": "О вы, которые уверовали! Бойтесь Аллаха, ищите средства приблизиться к Нему и усердствуйте на Его пути, — быть может, вы преуспеете."
+      "ru": "О вы, которые уверовали! Бойтесь Аллаха, ищите средства приблизиться к Нему и усердствуйте на Его пути, — быть может, вы преуспеете.",
+      "ur": "مسلمانو! اللہ تعالیٰ سے ڈرتے رہو اور اس کا قرب تلاش کرو اور اس کی راه میں جہاد کرو تاکہ تمہارا بھلا ہو۔"
     }
   },
   {
@@ -468,7 +498,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Weißt du nicht, daß Allah die Herrschaft über die Himmel und die Erde gehört? Er straft, wen Er will, und vergibt, wem Er will. Und Allah hat zu allem die Macht.",
       "fr": "Ne sais-tu pas qu’Allah règne en Maître absolu sur les cieux et la terre, qu’Il châtie qui Il veut et pardonne à qui Il veut, et qu’Il a pouvoir sur toute chose ?",
       "bs": "Ti sigurno znaš da samo Allah ima vlast na nebesima i na Zemlji. On patnji podvrgava onoga koga hoće, a prašta onome kome hoće. Allah nad svime ima moć.",
-      "ru": "Разве ты не знаешь, что Аллах — Ему принадлежит владычество небес и земли? Он подвергает наказанию, кого пожелает, и прощает, кому пожелает. Аллах всемогущ над всем сущим."
+      "ru": "Разве ты не знаешь, что Аллах — Ему принадлежит владычество небес и земли? Он подвергает наказанию, кого пожелает, и прощает, кому пожелает. Аллах всемогущ над всем сущим.",
+      "ur": "کیا تجھے معلوم نہیں کہ اللہ تعالیٰ ہی کے لئے زمین و آسمان کی بادشاہت ہے؟ جسے چاہے سزا دے اور جسے چاہے معاف کردے، اللہ تعالیٰ ہر چیز پر قادر ہے۔"
     }
   },
   {
@@ -481,7 +512,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "O you who have believed, do not prohibit the good things which Allāh has made lawful to you and do not transgress. Indeed, Allāh does not like transgressors.",
       "de": "O die ihr glaubt, verbietet nicht die guten Dinge, die Allah euch erlaubt hat. und übertretet nicht! Allah liebt nicht die Übertreter.",
       "bs": "O vi koji vjerujete, ne zabranjujte sebi ono što je lijepo, što je Allah dozvolio, samo ne prelazite granicu! Zaista Allah ne voli one koji granicu prelaze.",
-      "ru": "О вы, которые уверовали! Не объявляйте запретными блага, которые Аллах сделал для вас дозволенными, и не преступайте границы. Воистину, Аллах не любит преступающих границы."
+      "ru": "О вы, которые уверовали! Не объявляйте запретными блага, которые Аллах сделал для вас дозволенными, и не преступайте границы. Воистину, Аллах не любит преступающих границы.",
+      "ur": "اے ایمان والو! اللہ تعالیٰ نے جو پاکیزه چیزیں تمہارے واسطے حلال کی ہیں ان کو حرام مت کرو اور حد سے آگے مت نکلو، بےشک اللہ تعالیٰ حد سے نکلنے والوں کو پسند نہیں کرتا۔"
     }
   },
   {
@@ -495,7 +527,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Der Satan will (ja) zwischen euch nur Feindschaft und Haß säen durch berauschenden Trank und Glücksspiel und euch vom Gedenken Allahs und vom Gebet abhalten. Werdet ihr (damit) nun wohl aufhören?",
       "fr": "Satan ne cherche, à travers les boissons alcoolisées et les jeux de hasard, qu’à semer parmi vous haine et animosité et à vous détourner d’Allah et de la prière. Allez-vous donc y renoncer ?",
       "bs": "Šejtan želi pomoću opojnih pića i kocke unijeti među vas neprijateljstvo i mržnju i od sjećanja na Allaha i obavljanja namaza odvratiti vas. Pa, hoćete li se okaniti?",
-      "ru": "Воистину, шайтан хочет лишь посеять между вами вражду и ненависть через вино и азартные игры и отвратить вас от поминания Аллаха и от молитвы. Так прекратите ли вы?"
+      "ru": "Воистину, шайтан хочет лишь посеять между вами вражду и ненависть через вино и азартные игры и отвратить вас от поминания Аллаха и от молитвы. Так прекратите ли вы?",
+      "ur": "شیطان تو یوں چاہتا ہے کہ شراب اور جوئے کے ذریعے سے تمہارے آپس میں عداوت اور بغض واقع کرا دے اور اللہ تعالیٰ کی یاد سے اور نماز سے تم کو باز رکھے سو اب بھی باز آجاؤ۔"
     }
   },
   {
@@ -510,7 +543,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Wisset, daß Allah streng im Bestrafen, daß Allah (aber auch) Allvergebend und Barmherzig ist.",
       "fr": "Sachez qu’Allah est implacable lorsqu’Il décide de châtier, mais qu’Il est aussi Très Clément et Très Miséricordieux.",
       "bs": "Znajte da Allah strogo kažnjava, ali i da je Onaj Koji oprašta grijehe i milostiv je.",
-      "ru": "Знайте, что Аллах суров в возмездии, и что Аллах — прощающий, милующий."
+      "ru": "Знайте, что Аллах суров в возмездии, и что Аллах — прощающий, милующий.",
+      "ur": "تم یقین جانو کہ اللہ تعالیٰ سزا بھی سخت دینے واﻻ ہے اور اللہ تعالیٰ بڑی مغفرت اور بڑی رحمت واﻻ بھی ہے۔"
     }
   },
   {
@@ -526,7 +560,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah règne en Maître absolu sur les cieux, la terre et tout ce qui s’y trouve. Et Il a pouvoir sur toute chose.",
       "bs": "Allahova je vlast na nebesima i na Zemlji i nad onim što je na njima; On nad svime ima moć.",
       "ru": "Аллаху принадлежит власть над небесами и землёй, и всем, что в них, и Он всемогущ над всем сущим.",
-      "ms": "Allah jualah yang menguasai alam langit dan bumi serta segala yang ada padanya; dan Dia lah jua yang Maha Kuasa atas tiap-tiap sesuatu."
+      "ms": "Allah jualah yang menguasai alam langit dan bumi serta segala yang ada padanya; dan Dia lah jua yang Maha Kuasa atas tiap-tiap sesuatu.",
+      "ur": "اللہ ہی کی ہے سلطنت آسمانوں کی اور زمین کی اور ان چیزوں کی جو ان میں موجود ہیں اور وه ہر شے پر پوری قدرت رکھتا ہے۔"
     }
   },
   {
@@ -541,7 +576,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Dies ist doch Allah, euer Herr. Es gibt keinen Gott außer Ihm, dem Schöpfer von allem. So dient Ihm! Er ist Sachwalter über alles.",
       "fr": "Tel est Allah, votre Seigneur. Il n’est de divinité digne d’être adorée que Lui. Adorez donc Allah qui est le Créateur de tout ce qui existe et qui veille à toute chose.",
       "bs": "To vam je Allah, Gospodar vaš, nema drugog boga osim Njega, Stvoritelja svega; zato Njemu ibadet činite; On nad svime bdi.",
-      "ru": "Таков Аллах, ваш Господь! Нет божества, кроме Него, Творец всего сущего. Так поклоняйтесь же Ему. Он — попечитель над всем сущим."
+      "ru": "Таков Аллах, ваш Господь! Нет божества, кроме Него, Творец всего сущего. Так поклоняйтесь же Ему. Он — попечитель над всем сущим.",
+      "ur": "یہ ہے اللہ تعالیٰ تمہارا رب! اس کے سوا کوئی عبادت کے ﻻئق نہیں، ہر چیز کا پیدا کرنے واﻻ ہے، تو تم اس کی عبادت کرو اور وه ہر چیز کا کارساز ہے۔"
     }
   },
   {
@@ -557,7 +593,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Ton Seigneur sait parfaitement qui s’écarte de Sa voie et qui suit le droit chemin.",
       "bs": "Zaista Gospodar tvoj najbolje zna one koji su skrenuli s Njegova puta i On najbolje zna one koji su na Pravom putu.",
       "ru": "Воистину, твой Господь — Он лучше знает тех, кто сбивается с Его пути, Он лучше знает и следующих верным путём.",
-      "ms": "Sesungguhnya Tuhanmu, Dia lah yang lebih mengetahui akan sesiapa yang sesat dari jalannya, dan Dia lah yang lebih mengetahui akan orang-orang yang mendapat petunjuk."
+      "ms": "Sesungguhnya Tuhanmu, Dia lah yang lebih mengetahui akan sesiapa yang sesat dari jalannya, dan Dia lah yang lebih mengetahui akan orang-orang yang mendapat petunjuk.",
+      "ur": "بالیقین آپ کا رب ان کو خوب جانتا ہے جو اس کی راه سے بے راه ہوجاتا ہے۔ اور وه ان کو بھی خوب جانتا ہے جو اس کی راه پر چلتے ہیں۔"
     }
   },
   {
@@ -571,7 +608,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Ikutilah apa yang diturunkan kepadamu dari Tuhanmu, dan janganlah kamu ikuti selain Dia sebagai pemimpin. Sedikit sekali kamu mengambil pelajaran.",
       "de": "Folgt dem, was zu euch von eurem Herrn herabgesandt worden ist, und folgt außer Ihm keinen (anderen) Schutzherren! Wie wenig ihr bedenkt!",
       "bs": "Slijedite ono što vam se od Gospodara vašeg objavljuje i pored Njega ne slijedite druge kao zaštitnike! A kako se vi malo prisjećate i pouku primate?!",
-      "ru": "Следуйте тому, что ниспослано вам от вашего Господа, и не следуйте покровителям помимо Него. Как же мало вы внимаете напоминанию!"
+      "ru": "Следуйте тому, что ниспослано вам от вашего Господа, и не следуйте покровителям помимо Него. Как же мало вы внимаете напоминанию!",
+      "ur": "تم لوگ اس کا اتباع کرو جو تمہارے رب کی طرف سے آئی ہے اور اللہ تعالیٰ کو چھوڑ کر من گھڑت سرپرستوں کی اتباع مت کرو تم لوگ بہت ہی کم نصیحت پکڑتے ہو۔"
     }
   },
   {
@@ -586,7 +624,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Lorsque les pieux croyants sont tentés par Satan, ils se souviennent d’Allah et aussitôt redeviennent clairvoyants.",
       "bs": "Doista, oni koji se Allaha boje, čim ih dodirne sablazan šejtanska, sjete se, i postanu razboriti,",
       "ru": "Воистину, те, которые богобоязненны, когда их коснётся наущение от шайтана, — вспоминают [Аллаха], и вот — они прозревают.",
-      "ms": "Sesungguhnya orang-orang yang bertaqwa, apabila mereka disentuh oleh sesuatu imbasan hasutan dari Syaitan, mereka ingat (kepada ajaran Allah) maka dengan itu mereka nampak (jalan yang benar)."
+      "ms": "Sesungguhnya orang-orang yang bertaqwa, apabila mereka disentuh oleh sesuatu imbasan hasutan dari Syaitan, mereka ingat (kepada ajaran Allah) maka dengan itu mereka nampak (jalan yang benar).",
+      "ur": "یقیناً جو لوگ خدا ترس ہیں جب ان کو کوئی خطره شیطان کی طرف سے آجاتا ہے تو وه یاد میں لگ جاتے ہیں، سو یکایک ان کی آنکھیں کھل جاتی ہیں۔"
     }
   },
   {
@@ -601,7 +640,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Les anges qui se tiennent auprès de ton Seigneur ne refusent jamais par fierté de L’adorer. Ils ne cessent de célébrer Sa gloire et Sa sainteté et, devant Lui, de se prosterner.",
       "bs": "Oni koji su kod Gospodara tvoga, doista ne zaziru da Mu ibadet čine; samo Njega hvale i samo Njemu na sedždu padaju.",
       "ru": "Воистину, те, которые у твоего Господа, — они не превозносятся над поклонением Ему, прославляют Его и падают пред Ним ниц.",
-      "ms": "Sesungguhnya mereka (malaikat) yang ada di sisi Tuhanmu tidak bersikap angkuh (ingkar) daripada beribadat kepadaNya, dan mereka pula bertasbih bagiNya, dan kepadaNyalah jua mereka sujud."
+      "ms": "Sesungguhnya mereka (malaikat) yang ada di sisi Tuhanmu tidak bersikap angkuh (ingkar) daripada beribadat kepadaNya, dan mereka pula bertasbih bagiNya, dan kepadaNyalah jua mereka sujud.",
+      "ur": "یقیناً جو تیرے رب کے نزدیک ہیں وه اس کی عبادت سے تکبر نہیں کرتے اور اس کی پاکی بیان کرتے ہیں اور اس کو سجده کرتے ہیں۔"
     }
   },
   {
@@ -616,7 +656,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Allah hat die Herrschaft über die Himmel und die Erde. Er macht lebendig und läßt sterben. Ihr habt außer Allah weder Schutzherrn noch Helfer.",
       "fr": "Allah règne en Maître absolu sur les cieux et la terre. Il donne la vie et la mort. Vous n’avez d’autre soutien et protecteur que le Seigneur.",
       "bs": "Zaista je Allahova vlast na nebesima i na Zemlji, On život i smrt daje, i vi osim Allaha nemate ni zaštitnika ni pomagača.",
-      "ru": "Воистину, Аллах — Ему принадлежит владычество небес и земли. Он оживляет и умерщвляет. И нет у вас, помимо Аллаха, ни покровителя, ни помощника."
+      "ru": "Воистину, Аллах — Ему принадлежит владычество небес и земли. Он оживляет и умерщвляет. И нет у вас, помимо Аллаха, ни покровителя, ни помощника.",
+      "ur": "بلاشبہ اللہ ہی کی سلطنت ہے آسمانوں اور زمین میں۔ وہی جلاتا اور مارتا ہے، اور تمہارا اللہ کے سوا نہ کوئی یار ہے اور نہ کوئی مدد گار ہے۔"
     }
   },
   {
@@ -632,7 +673,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Vous qui croyez ! Craignez Allah et comportez-vous en hommes véridiques et sincères !",
       "bs": "O vi koji vjerujete, bojte se Allaha i budite s onima koji su iskreni!",
       "ru": "О вы, которые уверовали! Бойтесь Аллаха и будьте с правдивыми.",
-      "ms": "Wahai orang-orang yang beriman! Bertaqwalah kamu kepada Allah, dan hendaklah kamu berada bersama-sama orang-orang yang benar."
+      "ms": "Wahai orang-orang yang beriman! Bertaqwalah kamu kepada Allah, dan hendaklah kamu berada bersama-sama orang-orang yang benar.",
+      "ur": "اے ایمان والو! اللہ تعالیٰ سے ڈرو اور سچوں کے ساتھ رہو۔"
     }
   },
   {
@@ -645,7 +687,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "There has certainly come to you a Messenger from among yourselves. Grievous to him is what you suffer; [he is] concerned over you [i.e., your guidance] and to the believers is kind and merciful.",
       "fr": "Voilà que vous est venu un Messager issu de vous, à la fois sensible à vos souffrances, désireux de vous voir embrasser la foi et plein de compassion et de miséricorde envers les croyants.",
       "bs": "Došao vam je Poslanik, jedan od vas, teško mu je što ćete na muke udariti, jedva čeka da Pravim putem pođete, a prema vjernicima je milosrdan i milostiv.",
-      "ru": "Действительно, к вам пришёл Посланник из вас самих. Ему тягостны ваши страдания; он заботится о вас, а к верующим — сострадателен и милосерден."
+      "ru": "Действительно, к вам пришёл Посланник из вас самих. Ему тягостны ваши страдания; он заботится о вас, а к верующим — сострадателен и милосерден.",
+      "ur": "تمہارے پاس ایک ایسے پیغمبر تشریف ﻻئے ہیں جو تمہاری جنس سے ہیں جن کو تمہاری مضرت کی بات نہایت گراں گزرتی ہے جو تمہاری منفعت کے بڑے خواہش مند رہتے ہیں ایمان والوں کے ساتھ بڑے ہی شفیق اور مہربان ہیں۔"
     }
   },
   {
@@ -660,7 +703,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Gewiß, in dem Unterschied von Nacht und Tag und in dem, was Allah in den Himmeln und auf der Erde erschaffen hat, sind wahrlich Zeichen für Leute, die gottesfürchtig sind.",
       "fr": "Dans l’alternance du jour et de la nuit, et dans tout ce qu’Allah a créé dans les cieux et sur la terre, il est des signes suffisamment clairs pour des hommes qui craignent leur Seigneur.",
       "bs": "U smjeni noći i dana i u onom što je Allah na nebesima i na Zemlji stvorio, zaista, postoje znakovi za ljude koji se Allahove kazne čuvaju.",
-      "ru": "Воистину, в чередовании ночи и дня, и в том, что Аллах сотворил на небесах и на земле, — ясные знамения для людей, которые богобоязненны."
+      "ru": "Воистину, в чередовании ночи и дня, и в том, что Аллах сотворил на небесах и на земле, — ясные знамения для людей, которые богобоязненны.",
+      "ur": "بلاشبہ رات اور دن کے یکے بعد دیگرے آنے میں اور اللہ تعالیٰ نے جو کچھ آسمانوں اور زمین میں پیدا کیا ہے ان سب میں ان لوگوں کے واسطے دﻻئل ہیں جو اللہ کا ڈر رکھتے ہیں۔"
     }
   },
   {
@@ -676,7 +720,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah ne lèse en rien les hommes qui, en réalité, se lèsent eux-mêmes.",
       "bs": "Allah, zaista, nikakvu nepravdu ne čini ljudima, ljudi je sami sebi čine.",
       "ru": "Воистину, Аллах не поступает с людьми несправедливо, но они поступают несправедливо с самими собой.",
-      "ms": "Sesungguhnya Allah tidak menganiaya manusia sedikitpun, akan tetapi manusia jualah yang menganiaya diri mereka sendiri."
+      "ms": "Sesungguhnya Allah tidak menganiaya manusia sedikitpun, akan tetapi manusia jualah yang menganiaya diri mereka sendiri.",
+      "ur": "یہ یقینی بات ہے کہ اللہ لوگوں پر کچھ ﻇلم نہیں کرتا لیکن لوگ خود ہی اپنی جانوں پر ﻇلم کرتے ہیں."
     }
   },
   {
@@ -692,7 +737,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "C’est à Allah, en vérité, qu’appartient tout ce qui se trouve dans les cieux et sur la terre. La promesse d’Allah s’accomplira inéluctablement, mais la plupart des hommes n’en sont pas conscients.",
       "bs": "Zasigurno, Allahovo je sve što je na nebesima i na Zemlji! Zasigurno, Allahovo obećanje je istinito, ali većina njih ne zna.",
       "ru": "Знайте же: воистину, Аллаху принадлежит всё, что в небесах и на земле! Знайте же: воистину, обещание Аллаха — истина, однако большинство из них не знает!",
-      "ms": "Ingatlah! Sesungguhnya segala yang ada di langit dan di bumi adalah kepunyaan Allah. Awaslah! Sesungguhnya janji Allah itu adalah benar, tetapi kebanyakan manusia tidak mengetahui."
+      "ms": "Ingatlah! Sesungguhnya segala yang ada di langit dan di bumi adalah kepunyaan Allah. Awaslah! Sesungguhnya janji Allah itu adalah benar, tetapi kebanyakan manusia tidak mengetahui.",
+      "ur": "یاد رکھو کہ جتنی چیزیں آسمانوں میں اور زمین میں ہیں سب اللہ ہی کی ملک ہیں۔ یاد رکھو کہ اللہ تعالیٰ کا وعده سچا ہے لیکن بہت سے آدمی علم ہی نہیں رکھتے."
     }
   },
   {
@@ -708,7 +754,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "C’est Lui qui donne la vie et la mort et c’est à Lui que vous serez tous ramenés.",
       "bs": "On život i smrt daje i Njemu ćete se vratiti.",
       "ru": "Он оживляет и умерщвляет, и к Нему вы будете возвращены.",
-      "ms": "Dia lah yang menghidupkan dan yang mematikan, dan kepadaNyalah kamu akan dikembalikan untuk menerima balasan."
+      "ms": "Dia lah yang menghidupkan dan yang mematikan, dan kepadaNyalah kamu akan dikembalikan untuk menerima balasan.",
+      "ur": "وہی جان ڈالتا ہے وہی جان نکالتا ہے اور تم سب اسی کے پاس ﻻئے جاؤ گے."
     }
   },
   {
@@ -722,7 +769,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Wahai manusia! Sungguh, telah datang kepadamu pelajaran (Al-Qur`an) dari Tuhanmu, penyembuh bagi penyakit yang ada dalam dada, dan petunjuk serta rahmat bagi orang yang beriman.",
       "de": "O ihr Menschen, zu euch ist nunmehr eine Ermahnung von eurem Herrn gekommen und eine Heilung für das, was in den Brüsten ist, eine Rechtleitung und Barmherzigkeit für die Gläubigen.",
       "bs": "O ljudi, već vam je stigla Opomena od Gospodara vašega, i lijek za vaša srca, i uputa i milost vjernicima.",
-      "ru": "О люди! К вам уже пришло назидание от вашего Господа и исцеление от того, что в сердцах, а также руководство, и милость для верующих."
+      "ru": "О люди! К вам уже пришло назидание от вашего Господа и исцеление от того, что в сердцах, а также руководство, и милость для верующих.",
+      "ur": "اے لوگو! تمہارے پاس تمہارے رب کی طرف سے ایک ایسی چیز آئی ہے جو نصیحت ہے اور دلوں میں جو روگ ہیں ان کے لیے شفا ہےاور رہنمائی کرنے والی ہے اور رحمت ہے ایمان والوں کے لیے."
     }
   },
   {
@@ -738,7 +786,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Quant à ceux qui croient, accomplissent de bonnes œuvres et sont humblement soumis à leur Seigneur, ils sont promis au Paradis où ils demeureront éternellement.",
       "bs": "A oni koji budu vjerovali, Allahu pokorni i dobra djela činili, oni će stanovnici Dženneta biti; u njemu će vječno boraviti.",
       "ru": "Воистину, те, которые уверовали, совершали праведные деяния и были смиренны пред своим Господом, такие — обитатели Рая, они пребудут в нём вечно.",
-      "ms": "Sesungguhnya orang-orang yang beriman dan mengerjakan amal yang soleh, serta tunduk taat menunaikan ibadat kepada Tuhan mereka dengan khusyuk, mereka itulah ahli Syurga, mereka kekal di dalamnya."
+      "ms": "Sesungguhnya orang-orang yang beriman dan mengerjakan amal yang soleh, serta tunduk taat menunaikan ibadat kepada Tuhan mereka dengan khusyuk, mereka itulah ahli Syurga, mereka kekal di dalamnya.",
+      "ur": "یقیناً جو لوگ ایمان ﻻئے اور انہوں نے کام بھی نیک کئے اور اپنے پالنے والے کی طرف جھکتے رہے، وہی جنت میں جانے والے ہیں، جہاں وه ہمیشہ ہی رہنے والے ہیں."
     }
   },
   {
@@ -752,7 +801,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Ich verlasse mich auf Allah, meinen Herrn und euren Herrn. Es gibt kein Tier, das Er nicht an seiner Stirnlocke hielte. Gewiß, mein Herr befindet sich auf einem geraden Weg.",
       "fr": "Je m’en remets pour ma part à Allah, mon Seigneur et le vôtre. Il n’est pas de créature qu’Il ne tienne en Son pouvoir. Mon Seigneur est toute justice.",
       "bs": "ja se uzdam u Allaha, u moga i vašeg Gospodara! Sve živo samo je Njemu potčinjeno; Gospodar moj je, zaista, na putu pravome.\"",
-      "ru": "Воистину, я уповаю на Аллаха, моего Господа и вашего Господа. Нет ни одного живого существа, которого Он не держал бы за чуб. Воистину, мой Господь — на прямом пути."
+      "ru": "Воистину, я уповаю на Аллаха, моего Господа и вашего Господа. Нет ни одного живого существа, которого Он не держал бы за чуб. Воистину, мой Господь — на прямом пути.",
+      "ur": "میرا بھروسہ صرف اللہ تعالیٰ پر ہی ہے، جو میرا اور تم سب کا پروردگار ہے جتنے بھی پاؤں دھرنے والے ہیں سب کی پیشانی وہی تھامے ہوئے ہے ۔ یقیناً میرا رب بالکل صحیح راه پر ہے۔"
     }
   },
   {
@@ -768,7 +818,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Nulle différence pour Lui entre celui parmi vous qui parle tout bas et celui qui s’exprime à haute voix, entre celui qui se dissimule à la faveur de la nuit et celui qui agit au grand jour.",
       "bs": "Za Njega je jednak onaj od vas koji tiho govori i onaj koji to glasno čini, onaj koji se noću skriva i onaj koji po danu hodi.",
       "ru": "Равны перед Ним и тот из вас, кто скрывает речь, и тот, кто произносит её вслух; и тот, кто таится ночью, и тот, кто свободно движется днём.",
-      "ms": "Sama sahaja kepadaNya: sesiapa di antara kamu yang merahsiakan kata-katanya dalam hati dan yang menyatakannya; juga yang bersembunyi pada waktu malam dan yang keluar berjalan pada waktu siang."
+      "ms": "Sama sahaja kepadaNya: sesiapa di antara kamu yang merahsiakan kata-katanya dalam hati dan yang menyatakannya; juga yang bersembunyi pada waktu malam dan yang keluar berjalan pada waktu siang.",
+      "ur": "تم میں سے کسی کا اپنی بات کو چھپا کر کہنا اور بﺂواز بلند اسے کہنا اور جو رات کو چھپا ہوا ہو اور جو دن میں چل رہا ہو، سب اللہ پر برابر ویکساں ہیں."
     }
   },
   {
@@ -781,7 +832,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "Allāh extends provision for whom He wills and restricts [it]. And they rejoice in the worldly life, while the worldly life is not, compared to the Hereafter, except [brief] enjoyment.",
       "de": "Allah gewährt die Versorgung großzügig, wem Er will, und bemißt auch. Und sie sind froh über das diesseitige Leben; aber das diesseitige Leben (zählt) im Jenseits nur als (vergänglicher) Nießbrauch.",
       "bs": "Kome hoće, Allah daje opskrbu u obilju, i uskraćuje. Oni se raduju životu na ovom svijetu, a život na ovom svijetu prema onome samo je prolazno uživanje.",
-      "ru": "Аллах расширяет удел, кому пожелает, и ограничивает [его]. И они обрадовались мирской жизни, а мирская жизнь по сравнению с Последней — лишь пользование [благами]."
+      "ru": "Аллах расширяет удел, кому пожелает, и ограничивает [его]. И они обрадовались мирской жизни, а мирская жизнь по сравнению с Последней — лишь пользование [благами].",
+      "ur": "اللہ تعالیٰ جس کی روزی چاہتا ہے بڑھاتا ہے اور گھٹاتا ہے یہ تو دنیا کی زندگی میں مست ہو گئے۔ حاﻻنکہ دنیا آخرت کے مقابلے میں نہایت (حقیر) پونجی ہے."
     }
   },
   {
@@ -794,7 +846,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "Have you not considered how Allāh presents an example, [making] a good word like a good tree, whose root is firmly fixed and its branches [high] in the sky?",
       "de": "Siehst du nicht, wie Allah ein Gleichnis von einem guten Wort geprägt hat? (Es ist) wie ein guter Baum, dessen Wurzeln fest sitzen und dessen Zweige in den Himmel (reichen).",
       "bs": "Zar ne vidiš kako Allah navodi primjer – lijepa je riječ kao lijepo drvo: korijen mu je čvrsto u zemlji, a grane prema nebu.",
-      "ru": "Разве ты не видишь, как Аллах приводит в пример благое слово? Оно подобно благому дереву: корень его прочен, а ветви — в небе."
+      "ru": "Разве ты не видишь, как Аллах приводит в пример благое слово? Оно подобно благому дереву: корень его прочен, а ветви — в небе.",
+      "ur": "کیا آپ نے نہیں دیکھا کہ اللہ تعالیٰ نے پاکیزه بات کی مثال کس طرح بیان فرمائی، مثل ایک پاکیزه درخت کے جس کی جڑ مضبوط ہے اور جس کی ٹہنیاں آسمان میں ہیں."
     }
   },
   {
@@ -808,7 +861,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Dies ist eine Botschaft an die Menschen, damit sie dadurch gewarnt werden und damit sie wissen, daß Er nur ein Einziger Gott ist, und damit diejenigen bedenken, die Verstand besitzen.",
       "fr": "Voilà un message adressé aux hommes afin qu’ils soient mis en garde, qu’ils sachent qu’Allah est la seule divinité digne d’être adorée et que les hommes doués de raison en tirent des leçons.",
       "bs": "Ovo je obznana ljudima, i da njome budu opomenuti, i da znaju da je samo On Jedan Bog, i da prime pouku oni koji razum imaju!",
-      "ru": "Это — послание людям, чтобы они были им предостережены, и чтобы знали, что лишь Он — единственный Бог, и чтобы вняли назиданию обладатели разума."
+      "ru": "Это — послание людям, чтобы они были им предостережены, и чтобы знали, что лишь Он — единственный Бог, и чтобы вняли назиданию обладатели разума.",
+      "ur": "یہ قرآن تمام لوگوں کے لیے اطلاع نامہ ہے کہ اس کے ذریعہ سے وه ہوشیار کر دیے جائیں اور بخوبی معلوم کرلیں کہ اللہ ایک ہی معبود ہے اور تاکہ عقلمند لوگ سوچ سمجھ لیں."
     }
   },
   {
@@ -822,7 +876,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Gewiß, Wir sind es, die Wir die Ermahnung offenbart haben, und Wir werden wahrlich ihr Hüter sein.",
       "bs": "Mi, uistinu, Kur’an objavljujemo i zaista ćemo Mi nad njim bdjeti!",
       "ru": "Воистину, Мы ниспослали Напоминание, и, воистину, Мы его непременно оберегаем.",
-      "ms": "Sesungguhnya Kamilah yang menurunkan Al-Quran, dan Kamilah yang memelihara dan menjaganya."
+      "ms": "Sesungguhnya Kamilah yang menurunkan Al-Quran, dan Kamilah yang memelihara dan menjaganya.",
+      "ur": "ہم نے ہی اس قرآن کو نازل فرمایا ہے اور ہم ہی اس کے محافﻆ ہیں."
     }
   },
   {
@@ -838,7 +893,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Ton Seigneur, en vérité, est le Créateur de toute chose, l’Omniscient.",
       "bs": "Gospodar tvoj sve stvara i On je Sveznajući.",
       "ru": "Воистину, твой Господь — Он непрестанно Творящий, Знающий.",
-      "ms": "Sesungguhnya Tuhanmu, Dia lah yang menciptakan sekalian makhluk, lagi Yang Maha Mengetahui (akan hal mereka)."
+      "ms": "Sesungguhnya Tuhanmu, Dia lah yang menciptakan sekalian makhluk, lagi Yang Maha Mengetahui (akan hal mereka).",
+      "ur": "یقیناً تیرا پروردگار ہی پیدا کرنے واﻻ اور جاننے واﻻ ہے."
     }
   },
   {
@@ -854,7 +910,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il a créé les cieux et la terre selon une sagesse infinie. Il est bien au-dessus de tous les faux dieux qu’ils peuvent Lui associer.",
       "bs": "On je s Istinom nebesa i Zemlju stvorio, neka je On vrlo visoko iznad onoga što Mu pridružuju.",
       "ru": "Он сотворил небеса и землю с истиной. Превыше Он того, что они придают Ему в сотоварищи.",
-      "ms": "Ia menciptakan langit dan bumi dengan cara yang sungguh layak dan berhikmat; Maha Tinggilah Ia dari perbuatan syirik yang mereka lakukan."
+      "ms": "Ia menciptakan langit dan bumi dengan cara yang sungguh layak dan berhikmat; Maha Tinggilah Ia dari perbuatan syirik yang mereka lakukan.",
+      "ur": "اسی نے آسمانوں اور زمین کو حق کے ساتھ پیدا کیا وه اس سے بری ہے جو مشرک کرتے ہیں."
     }
   },
   {
@@ -869,7 +926,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Er ist es, Der vom Himmel Wasser herabkommen läßt; davon habt ihr zu trinken, und davon (wachsen) Bäume, unter denen ihr (euer Vieh) frei weiden laßt.",
       "fr": "C’est Lui qui fait descendre du ciel cette eau dont vous vous abreuvez et qui fait pousser par elle une végétation qui sert de pâturage à vos bestiaux.",
       "bs": "On spušta s neba vodu koju pijete i kojom se natapa rastinje kojim stoku napasate.",
-      "ru": "Он — Тот, Кто ниспослал с неба воду: вам от неё — питьё, и от неё — растения, на которых вы выпасаете [скот]."
+      "ru": "Он — Тот, Кто ниспослал с неба воду: вам от неё — питьё, и от неё — растения, на которых вы выпасаете [скот].",
+      "ur": "وہی تمہارے فائدے کے لیے آسمان سے پانی برساتا ہے جسے تم پیتے بھی ہو اور اسی سے اگے ہوئے درختوں کو تم اپنے جانوروں کو چراتے ہو."
     }
   },
   {
@@ -883,7 +941,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Er läßt euch damit Getreide wachsen, und Ölbäume, Palmen, Rebstöcke und von allen Früchten. Darin ist wahrlich ein Zeichen für Leute, die nachdenken.",
       "fr": "Par elle encore, Il fait pousser pour vous céréales, oliviers, dattiers, vignes et toutes variétés d’arbres fruitiers. Voilà bien un signe pour des hommes capables de le méditer.",
       "bs": "On čini da vam pomoću nje raste žito, i masline, i palme, i grožđe, i svakovrsni plodovi – to je, zaista, dokaz za ljude koji razmišljaju.",
-      "ru": "Ею Он взращивает для вас посевы, маслины, пальмы, виноград и всякие плоды. Воистину, в этом — знамение для людей, которые размышляют."
+      "ru": "Ею Он взращивает для вас посевы, маслины, пальмы, виноград и всякие плоды. Воистину, в этом — знамение для людей, которые размышляют.",
+      "ur": "اسی سے وه تمہارے لیے کھیتی اور زیتون اور کھجور اور انگور اور ہر قسم کے پھل اگاتا ہے بےشک ان لوگوں کے لیے تو اس میں بڑی نشانی ہے جو غوروفکر کرتے ہیں."
     }
   },
   {
@@ -898,7 +957,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Euer Gott ist ein Einziger Gott. Diejenigen aber, die nicht an das Jenseits glauben, deren Herzen weisen (es) ab, und sie verhalten sich hochmütig.",
       "fr": "Votre véritable Dieu est un dieu unique. Vérité que renient les cœurs pétris d’orgueil de ceux qui ne croient pas en l’autre vie.",
       "bs": "Vaš Bog je – jedan Bog! Srca onih koji u onaj svijet ne vjeruju, poriču, oni se ohološću razmeću.",
-      "ru": "Ваш Бог — Бог Единственный. А те, которые не веруют в Последнюю жизнь, — их сердца отвергают [это], и они проявляют высокомерие."
+      "ru": "Ваш Бог — Бог Единственный. А те, которые не веруют в Последнюю жизнь, — их сердца отвергают [это], и они проявляют высокомерие.",
+      "ur": "تم سب کا معبود صرف اللہ تعالیٰ اکیلا ہے اور آخرت پر ایمان نہ رکھنے والوں کے دل منکر ہیں اور وه خود تکبر سے بھرے ہوئے ہیں."
     }
   },
   {
@@ -913,7 +973,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Haben sie nicht auf (all) die Dinge gesehen, die Allah erschaffen hat, wie sich ihre Schatten nach rechts und links wenden, indem sie sich demütigend vor Allah niederwerfen?",
       "fr": "Ne voient-ils pas les ombres de toutes choses créées par Allah s’étirer sur la droite et sur la gauche, se prosternant à leur manière, humblement soumises à leur Seigneur ?",
       "bs": "Zar oni ne vide da sve ono što je Allah stvorio sad desno, sad lijevo, pruža sjene svoje Allahu sedždu čineći i da je sve to pokorno?",
-      "ru": "Неужели они не видели то, что сотворил Аллах? Их тени склоняются вправо и влево, падая ниц перед Аллахом, тогда как сами [эти творения] смиренны?"
+      "ru": "Неужели они не видели то, что сотворил Аллах? Их тени склоняются вправо и влево, падая ниц перед Аллахом, тогда как сами [эти творения] смиренны?",
+      "ur": "کیا انہوں نے اللہ کی مخلوق میں سے کسی کو بھی نہیں دیکھا؟ کہ اس کے سائے دائیں بائیں جھک جھک کر اللہ تعالیٰ کے سامنے سر بسجود ہوتے اور عاجزی کا اﻇہار کرتے ہیں."
     }
   },
   {
@@ -927,7 +988,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Haben sie nicht auf die Vögel gesehen, die im Luftraum des Himmels dienstbar gemacht worden sind? Nur Allah hält sie (oben). Darin sind wahrlich Zeichen für Leute, die glauben.",
       "fr": "Ne voient-ils pas les oiseaux voler entre ciel et terre par le pouvoir du Seigneur qui, seul, les maintient en l’air ? Voilà, pour des hommes qui ont la foi, des signes suffisamment clairs.",
       "bs": "Zar oni ne vide kako ptice u prostranstvu nebeskom bez muke lete, njih samo Allah drži. To su, zaista, dokazi ljudima koji budu vjerovali.",
-      "ru": "Разве они не видели птиц, покорных в воздухе небес? Не удерживает их никто, кроме Аллаха. Воистину, в этом — знамения для людей, которые веруют."
+      "ru": "Разве они не видели птиц, покорных в воздухе небес? Не удерживает их никто, кроме Аллаха. Воистину, в этом — знамения для людей, которые веруют.",
+      "ur": "کیا ان لوگوں نے پرندوں کو نہیں دیکھا جو تابع فرمان ہو کر فضا میں ہیں، جنہیں بجز اللہ تعالیٰ کے کوئی اور تھامے ہوئے نہیں ، بیشک اس میں ایمان ﻻنے والے لوگوں کے لیے بڑی نشانیاں ہیں."
     }
   },
   {
@@ -939,7 +1001,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "tr": "Şüphesiz Allah; adaleti, iyilik yapmayı, yakınlara yardım etmeyi emreder; hayâsızlığı, fenalık ve azgınlığı da yasaklar. O, düşünüp tutasınız diye size öğüt veriyor.",
       "en": "Indeed, Allāh orders justice and good conduct and giving [help] to relatives and forbids immorality and bad conduct and oppression. He admonishes you that perhaps you will be reminded.",
       "de": "Allah gebietet Gerechtigkeit, gütig zu sein und den Verwandten zu geben; Er verbietet das Schändliche, das Verwerfliche und die Gewalttätigkeit. Er ermahnt euch, auf daß ihr bedenken möget.",
-      "bs": "Allah zahtijeva da se svačije pravo poštuje, dobro čini, i da se bližnjima udjeljuje, a razvrat i sve što je odvratno i nasilje zabranjuje – da pouku primite, On vas savjetuje."
+      "bs": "Allah zahtijeva da se svačije pravo poštuje, dobro čini, i da se bližnjima udjeljuje, a razvrat i sve što je odvratno i nasilje zabranjuje – da pouku primite, On vas savjetuje.",
+      "ur": "اللہ تعالیٰ عدل کا، بھلائی کا اور قرابت داروں کے ساتھ سلوک کرنے کا حکم دیتا ہے اور بےحیائی کے کاموں، ناشائستہ حرکتوں اور ﻇلم وزیادتی سے روکتا ہے ، وه خود تمہیں نصیحتیں کر رہا ہے کہ تم نصیحت حاصل کرو."
     }
   },
   {
@@ -952,7 +1015,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "Whatever you have will end, but what Allāh has is lasting. And We will surely give those who were patient their reward according to the best of what they used to do.",
       "de": "Was bei euch ist, geht zu Ende; was aber bei Allah ist, ist bleibend. Wir werden denjenigen, die standhaft sind, ganz gewiß mit ihrem Lohn das Beste vergelten von dem, was sie taten.",
       "bs": "Ono što je u vas – prolazno je, a ono što je u Allaha – vječno je. One koji su trpjeli Mi ćemo, sigurno, nagraditi mnogostrukom nagradom za ono što su činili.",
-      "ru": "То, что у вас, иссякает, а то, что у Аллаха — остаётся. И Мы непременно воздадим тем, которые были терпеливы, их награду — по наилучшему из того, что они совершали."
+      "ru": "То, что у вас, иссякает, а то, что у Аллаха — остаётся. И Мы непременно воздадим тем, которые были терпеливы, их награду — по наилучшему из того, что они совершали.",
+      "ur": "تمہارے پاس جو کچھ ہے سب فانی ہے اور اللہ تعالیٰ کے پاس جو کچھ ہے باقی ہے۔ اور صبر کرنے والوں کو ہم بھلے اعمال کا بہترین بدلہ ضرور عطا فرمائیں گے."
     }
   },
   {
@@ -968,7 +1032,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah, en vérité, est avec ceux qui fuient le péché et ne cessent de faire le bien.",
       "bs": "Allah je zaista na strani onih koji se Njega boje i koji dobra djela čine.",
       "ru": "Воистину, Аллах — с теми, которые богобоязненны, и с теми, которые добродетельны.",
-      "ms": "Sesungguhnya Allah beserta orang-orang yang bertaqwa, dan orang-orang yang berusaha memperbaiki amalannya."
+      "ms": "Sesungguhnya Allah beserta orang-orang yang bertaqwa, dan orang-orang yang berusaha memperbaiki amalannya.",
+      "ur": "یقین مانو کہ اللہ تعالیٰ پرہیزگاروں اور نیک کاروں کے ساتھ ہے."
     }
   },
   {
@@ -984,7 +1049,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Garde-toi d’associer d’autres divinités à Allah, car tu serais à jamais réprouvé et abandonné.",
       "bs": "Ne stavljaj uz Allaha nekog drugog boga da ne bi osudu zaslužio i bez podrške ostao.",
       "ru": "Не устанавливай наряду с Аллахом другого бога, иначе останешься порицаемым, покинутым.",
-      "ms": "Janganlah engkau adakan tuhan yang lain bersama Allah (dalam ibadatmu), kerana akibatnya engkau akan tinggal dalam keadaan tercela dan kecewa dari mendapat pertolongan."
+      "ms": "Janganlah engkau adakan tuhan yang lain bersama Allah (dalam ibadatmu), kerana akibatnya engkau akan tinggal dalam keadaan tercela dan kecewa dari mendapat pertolongan.",
+      "ur": "اللہ کے ساتھ کسی اور کو معبود نہ ٹھہرا کہ آخرش تو برے حالوں بےکس ہو کر بیٹھ رہے گا."
     }
   },
   {
@@ -999,7 +1065,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Gewiß, dein Herr gewährt die Versorgung großzügig, wem Er will, und bemißt auch. Gewiß, Er kennt und sieht Seine Diener wohl.",
       "fr": "Ton Seigneur dispense Ses faveurs à qui Il veut, comblant certaines de Ses créatures, accordant aux autres avec mesure. Il connaît parfaitement Ses serviteurs dont aucun secret ne Lui échappe.",
       "bs": "Gospodar tvoj pruža obilnu opskrbu onom kome hoće, a i ograničava je, jer zna i vidi robove Svoje.",
-      "ru": "Воистину, твой Господь увеличивает удел кому пожелает и ограничивает его. Воистину, Он всегда был [и пребудет] о Своих рабах сведущим, видящим."
+      "ru": "Воистину, твой Господь увеличивает удел кому пожелает и ограничивает его. Воистину, Он всегда был [и пребудет] о Своих рабах сведущим, видящим.",
+      "ur": "یقیناً تیرا رب جس کے لئے چاہے روزی کشاده کردیتا ہے اور جس کے لئے چاہے تنگ ۔ یقیناً وه اپنے بندوں سے باخبر اور خوب دیکھنے واﻻ ہے."
     }
   },
   {
@@ -1015,7 +1082,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "C’est votre Seigneur qui, pour vous, fait voguer en mer les vaisseaux à bord desquels vous partez à la recherche de Ses faveurs. Il est, envers vous, Très Miséricordieux.",
       "bs": "Gospodar vaš, vas radi, pokreće lađe po moru da biste tražili Njegove blagodati, jer je On prema vama milostiv.",
       "ru": "Ваш Господь — Тот, Кто движет для вас корабли по морю, чтобы вы искали от Его щедрот. Воистину, Он всегда [был и пребудет] к вам милующим.",
-      "ms": "Tuhan kamulah yang menjalankan untuk kamu kapal-kapal di laut, supaya kamu dapat mencari rezeki dari limpah kurniaNya; sesungguhnya Ia adalah Maha Mengasihani kepada kamu."
+      "ms": "Tuhan kamulah yang menjalankan untuk kamu kapal-kapal di laut, supaya kamu dapat mencari rezeki dari limpah kurniaNya; sesungguhnya Ia adalah Maha Mengasihani kepada kamu.",
+      "ur": "تمہارا پروردگار وه ہے جو تمہارے لئے دریا میں کشتیاں چلاتا ہے تاکہ تم اس کا فضل تلاش کرو۔ وه تمہارے اوپر بہت ہی مہربان ہے."
     }
   },
   {
@@ -1031,7 +1099,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Nous avons, en vérité, fait de ce que porte la terre une parure pour cette dernière afin de mettre les hommes à l’épreuve et de voir qui d’entre eux accomplira les œuvres les plus méritoires.",
       "bs": "Sve što je na Zemlji Mi smo kao ukras njoj stvorili da iskušamo ljude ko će od njih bolje postupati,",
       "ru": "Воистину, Мы сделали всё, что на земле, украшением для неё, чтобы испытать их — кто из них лучше по деяниям.",
-      "ms": "Sesungguhnya Kami telah jadikan apa yang ada di muka bumi sebagai perhiasan baginya, kerana kami hendak menguji mereka, siapakah di antaranya yang lebih baik amalnya."
+      "ms": "Sesungguhnya Kami telah jadikan apa yang ada di muka bumi sebagai perhiasan baginya, kerana kami hendak menguji mereka, siapakah di antaranya yang lebih baik amalnya.",
+      "ur": "روئے زمین پر جو کچھ ہے ہم نے اسے زمین کی رونق کا باعﺚ بنایا ہے کہ ہم انہیں آزمالیں کہ ان میں سے کون نیک اعمال واﻻ ہے."
     }
   },
   {
@@ -1047,7 +1116,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Quant à ceux qui croient et accomplissent de bonnes œuvres, qu’ils sachent que Nous ne laisserons jamais se perdre la récompense de ceux qui font le bien.",
       "bs": "One koji budu vjerovali i dobra djela činili – a Mi, doista, ne uništavamo nagradu onome koji je dobra djela činio –",
       "ru": "Воистину, те, которые уверовали и совершали праведные деяния, —Мы не дадим пропасть награде тех, кто поступает добродетельно.",
-      "ms": "Sebenarnya orang-orang yang beriman dan beramal soleh sudah tetap Kami tidak akan menghilangkan pahala orang-orang yang berusaha memperbaiki amalnya."
+      "ms": "Sebenarnya orang-orang yang beriman dan beramal soleh sudah tetap Kami tidak akan menghilangkan pahala orang-orang yang berusaha memperbaiki amalnya.",
+      "ur": "یقیناً جو لوگ ایمان ﻻئیں اور نیک اعمال کریں تو ہم کسی نیک عمل کرنے والے کا ﺛواب ضائع نہیں کرتے."
     }
   },
   {
@@ -1062,7 +1132,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "C’est Nous qui hériterons de la terre et de ceux qui la peuplent, c’est à Nous qu’ils seront tous ramenés.",
       "bs": "Mi ćemo Zemlju i one koji žive na njoj naslijediti i Nama će se oni vratiti.",
       "ru": "Воистину, Мы унаследуем землю и тех, кто на ней, и к Нам они будут возвращены.",
-      "ms": "Sesungguhnya Kamilah yang mewarisi bumi dan segala makhluk yang ada di atasnya; dan kepada Kamilah mereka akan dikembalikan."
+      "ms": "Sesungguhnya Kamilah yang mewarisi bumi dan segala makhluk yang ada di atasnya; dan kepada Kamilah mereka akan dikembalikan.",
+      "ur": "خود زمین کے اور تمام زمین والوں کے وارث ہم ہی ہوں گے اور سب لوگ ہماری ہی طرف لوٹا کر ﻻئے جائیں گے."
     }
   },
   {
@@ -1078,7 +1149,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "L’homme ne se souvient-il pas que Nous l’avons, avant cela, tiré du néant ?",
       "bs": "A zar se čovjek ne sjeća da smo ga još prije stvorili, a da nije bio ništa?",
       "ru": "Неужели человек не вспомнит, что Мы сотворили его прежде, тогда как прежде он был ничем?",
-      "ms": "Patutkah manusia itu berkata demikian dan tidak memikirkan bahawa Kami telah menciptakan dia dahulu sedang ia pada masa itu belum ada sebarang apapun?"
+      "ms": "Patutkah manusia itu berkata demikian dan tidak memikirkan bahawa Kami telah menciptakan dia dahulu sedang ia pada masa itu belum ada sebarang apapun?",
+      "ur": "کیا یہ انسان اتنا بھی یاد نہیں رکھتا کہ ہم نے اسے اس سے پہلے پیدا کیا حاﻻنکہ وه کچھ بھی نہ تھا."
     }
   },
   {
@@ -1094,7 +1166,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Tous les êtres qui peuplent les cieux et la terre se présenteront en toute soumission devant le Tout Miséricordieux.",
       "bs": "Svi će, i oni na nebesima i oni na Zemlji, kao robovi u Milostivog tražiti utočište!",
       "ru": "Нет никого в небесах и на земле, кто не предстанет пред Всемилостивым как раб.",
-      "ms": "Tidak ada sesiapapun di langit dan di bumi melainkan ia akan datang kepada (Allah) Ar-Rahman, sebagai hamba."
+      "ms": "Tidak ada sesiapapun di langit dan di bumi melainkan ia akan datang kepada (Allah) Ar-Rahman, sebagai hamba.",
+      "ur": "آسمان وزمین میں جو بھی ہیں سب کے سب اللہ کے غلام بن کر ہی آنے والے ہیں."
     }
   },
   {
@@ -1110,7 +1183,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il possède tout ce qui se trouve dans les cieux, sur la terre et entre eux, ainsi que ce qui se trouve sous terre.",
       "bs": "Njegovo je što je na nebesima i na Zemlji i što je između njih i što je pod zemljom!",
       "ru": "Ему принадлежит всё, что в небесах, всё, что на земле, всё, что между ними, и всё, что под землёй.",
-      "ms": "Dia lah jua yang memiliki segala yang ada di langit dan yang ada di bumi serta yang ada di antara keduanya dan juga yang ada di bawah tanah basah di perut bumi."
+      "ms": "Dia lah jua yang memiliki segala yang ada di langit dan yang ada di bumi serta yang ada di antara keduanya dan juga yang ada di bawah tanah basah di perut bumi.",
+      "ur": "جس کی ملکیت آسمانوں اور زمین اور ان دونوں کے درمیان اور (کرہٴ خاک) کے نیچے کی ہر ایک چیز پر ہے."
     }
   },
   {
@@ -1126,7 +1200,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il est le vrai Dieu et la seule divinité digne d’être adorée. Il possède les noms les plus sublimes.",
       "bs": "Allah, drugog boga osim Njega nema, najljepša imena ima!",
       "ru": "Аллах — нет божества, кроме Него. У Него — самые прекрасные имена.",
-      "ms": "Allah! Tiada Tuhan yang berhak disembah melainkan Dia, bagiNyalah segala nama yang baik."
+      "ms": "Allah! Tiada Tuhan yang berhak disembah melainkan Dia, bagiNyalah segala nama yang baik.",
+      "ur": "وہی اللہ ہے جس کے سوا کوئی معبود نہیں، بہترین نام اسی کے ہیں."
     }
   },
   {
@@ -1142,7 +1217,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Nous vous avons créés de cette terre où Nous vous ferons retourner et dont Nous vous ferons sortir une nouvelle fois.",
       "bs": "Od zemlje vas stvaramo i u nju vas vraćamo i iz nje ćemo vas po drugi put izvesti.",
       "ru": "Из неё Мы сотворили вас, и в неё вернём вас, и из неё выведем вас ещё раз».",
-      "ms": "Dari bumilah Kami ciptakan kamu, dan ke dalamnya Kami akan mengembalikan kamu, dan daripadanya pula Kami akan mengeluarkan kamu sekali lagi."
+      "ms": "Dari bumilah Kami ciptakan kamu, dan ke dalamnya Kami akan mengembalikan kamu, dan daripadanya pula Kami akan mengeluarkan kamu sekali lagi.",
+      "ur": "اسی زمین میں سے ہم نے تمہیں پیدا کیا اور اسی میں پھر واپس لوٹائیں گے اور اسی سے پھر دوباره تم سب کو نکال کھڑا کریں گے."
     }
   },
   {
@@ -1157,7 +1233,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Ihm gehört, wer in den Himmeln und auf der Erde ist. Und diejenigen, die bei Ihm sind, sind weder zu hochmütig, Ihm zu dienen, noch werden sie (dessen) müde.",
       "fr": "Il est le Maître de tous les êtres qui peuplent les cieux et la terre. Les anges qui se trouvent auprès de Lui ne refusent jamais par orgueil de L’adorer et ne se lassent jamais de Le vénérer.",
       "bs": "Njegovo je ono što je na nebesima i na Zemlji! A oni koji su kod Njega ne zaziru da Ga obožavaju i ne zamaraju se.",
-      "ru": "Ему принадлежат все, кто в небесах и на земле. И те, кто у Него, не превозносятся над поклонением Ему и не устают."
+      "ru": "Ему принадлежат все, кто в небесах и на земле. И те, кто у Него, не превозносятся над поклонением Ему и не устают.",
+      "ur": "آسمانوں اور زمین میں جو ہے اسی اللہ کا ہے اور جو اس کے پاس ہیں وه اس کی عبادت سے نہ سرکشی کرتے ہیں اور نہ تھکتے ہیں."
     }
   },
   {
@@ -1172,7 +1249,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Wenn es in ihnen beiden andere Götter als Allah gäbe, gerieten sie (beide) wahrlich ins Verderben. Preis sei Allah, dem Herrn des Thrones! (Erhaben ist Er) über das, was sie (Ihm) zuschreiben.",
       "fr": "S’il se trouvait au ciel ou sur terre d’autres divinités qu’Allah, tous deux seraient livrés au chaos. Gloire donc à Allah, Maître du Trône, que leurs blasphèmes ne sauraient atteindre !",
       "bs": "Da Zemljom i nebesima upravljaju drugi bogovi, a ne Allah, poremetili bi se. Pa neka je uzvišen Allah, Gospodar Arša, od onog što Mu pripisuju!",
-      "ru": "Если бы на небесах и земле были боги, кроме Аллаха, то они непременно разрушились бы. Пречист Аллах, Господь Трона, превыше того, что они Ему приписывают!"
+      "ru": "Если бы на небесах и земле были боги, кроме Аллаха, то они непременно разрушились бы. Пречист Аллах, Господь Трона, превыше того, что они Ему приписывают!",
+      "ur": "اگر آسمان وزمین میں سوائے اللہ تعالیٰ کے اور بھی معبود ہوتے تو یہ دونوں درہم برہم ہوجاتے پس اللہ تعالیٰ عرش کا رب ہر اس وصف سے پاک ہے جو یہ مشرک بیان کرتے ہیں."
     }
   },
   {
@@ -1184,7 +1262,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "tr": "Kâfirler, görmez mi ki gökler ve yer birleşik iken onları (biz) ayırdık ve her şeye sudan hayat verdik. Hâlâ iman etmezler mi?",
       "en": "Have those who disbelieved not considered that the heavens and the earth were a joined entity, and then We separated them and made from water every living thing? Then will they not believe?",
       "bs": "Zar ne znaju nevjernici da su nebesa i Zemlja bili jedna cjelina, pa smo ih Mi raskomadali, i da Mi od vode sve živo stvaramo? I zar neće vjerovati?",
-      "ru": "Неужели те, которые отвергли веру, не видели, что небеса и земля были единым целым, а Мы разъединили их и создали из воды всё живое? Неужели они не уверуют?"
+      "ru": "Неужели те, которые отвергли веру, не видели, что небеса и земля были единым целым, а Мы разъединили их и создали из воды всё живое? Неужели они не уверуют?",
+      "ur": "کیا کافر لوگوں نے یہ نہیں دیکھا کہ آسمان وزمین باہم ملے جلے تھے پھر ہم نے انہیں جدا کیا اور ہر زنده چیز کو ہم نے پانی سے پیدا کیا، کیا یہ لوگ پھر بھی ایمان نہیں ﻻتے."
     }
   },
   {
@@ -1199,7 +1278,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Jede Seele wird den Tod kosten. Und Wir prüfen euch mit Schlechtem und Gutem als Versuchung. Und zu Uns werdet ihr zurückgebracht.",
       "bs": "Svako živo biće smrt će okusiti! Mi vas stavljamo na kušnju i u zlu i u dobru i Nama ćete se vratiti.",
       "ru": "Каждая душа вкусит смерть. Мы подвергаем вас испытанию злом и добром, и к Нам вы будете возвращены.",
-      "ms": "Tiap-tiap diri akan merasai mati, dan Kami menguji kamu dengan kesusahan dan kesenangan sebagai cubaan; dan kepada Kamilah kamu semua akan dikembalikan."
+      "ms": "Tiap-tiap diri akan merasai mati, dan Kami menguji kamu dengan kesusahan dan kesenangan sebagai cubaan; dan kepada Kamilah kamu semua akan dikembalikan.",
+      "ur": "ہر جان دار موت کا مزه چکھنے واﻻ ہے۔ ہم بطریق امتحان تم میں سے ہر ایک کو برائی بھلائی میں مبتلا کرتے ہیں اور تم سب ہماری ہی طرف لوٹائے جاؤ گے."
     }
   },
   {
@@ -1215,7 +1295,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Quant aux croyants qui accomplissent de bonnes œuvres, Allah les admettra dans des jardins traversés de rivières. Allah agit toujours comme Il l’entend.",
       "bs": "Allah će one koji vjeruju i čine dobra djela, zaista, uvesti u džennetske bašče kroz koje rijeke teku. – Allah radi ono što hoće!",
       "ru": "Воистину, Аллах введёт тех, которые уверовали и совершали праведные деяния, в сады, внизу которых текут реки. Воистину, Аллах вершит то, что пожелает.",
-      "ms": "Sesungguhnya Allah akan memasukkan orang-orang yang beriman dan beramal soleh ke dalam Syurga yang mengalir di bawahnya beberapa sungai; sesungguhnya Allah melakukan apa yang ditentukanNya."
+      "ms": "Sesungguhnya Allah akan memasukkan orang-orang yang beriman dan beramal soleh ke dalam Syurga yang mengalir di bawahnya beberapa sungai; sesungguhnya Allah melakukan apa yang ditentukanNya.",
+      "ur": "ایمان اور نیک اعمال والوں کو اللہ تعالیٰ بہتی ہوئی نہروں والی جنتوں میں داخل کرے گا۔ اللہ جو اراده کرے اسے کر کے رہتا ہے."
     }
   },
   {
@@ -1231,7 +1312,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah protégera toujours les croyants contre leurs ennemis. Allah n’aime pas les hommes sans fidélité et sans foi.",
       "bs": "Allah, doista, štiti vjernike, Allah sigurno ne voli nijednog izdajnika, nezahvalnika.",
       "ru": "Воистину, Аллах защищает тех, которые уверовали. Воистину, Аллах не любит всякого вероломного, неблагодарного.",
-      "ms": "Sesungguhnya Allah membela orang-orang yang beriman; sesungguhnya Allah tidak suka kepada tiap-tiap seorang yang khianat, lagi tidak bersyukur."
+      "ms": "Sesungguhnya Allah membela orang-orang yang beriman; sesungguhnya Allah tidak suka kepada tiap-tiap seorang yang khianat, lagi tidak bersyukur.",
+      "ur": "سن رکھو! یقیناً سچے مومنوں کے دشمنوں کو خود اللہ تعالیٰ ہٹا دیتا ہے ۔ کوئی خیانت کرنے واﻻ ناشکرا اللہ تعالیٰ کو ہرگز پسند نہیں."
     }
   },
   {
@@ -1247,7 +1329,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il possède tout ce qui se trouve dans les cieux et sur la terre. Allah, en vérité, est Celui qui peut parfaitement se passer des hommes et qui est digne de toutes les louanges.",
       "bs": "Njegovo je ono što je na nebesima i ono što je na Zemlji! Allah, doista, nije ni o kome ovisan, i On je Hvaljeni.",
       "ru": "Ему принадлежит всё, что в небесах, и всё, что на земле. И воистину, Аллах — Он Богатый, Достохвальный.",
-      "ms": "Segala yang ada di langit dan di bumi adalah kepunyaanNya. Dan sesungguhnya Allah, Dia lah jua Yang Maha Kaya, lagi Maha Terpuji."
+      "ms": "Segala yang ada di langit dan di bumi adalah kepunyaanNya. Dan sesungguhnya Allah, Dia lah jua Yang Maha Kaya, lagi Maha Terpuji.",
+      "ur": "آسمانوں اور زمین میں جو کچھ ہے اسی کا ہے اور یقیناً اللہ وہی ہے بے نیاز تعریفوں واﻻ."
     }
   },
   {
@@ -1263,7 +1346,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah choisit des messagers parmi les anges et les hommes. Allah entend tout et voit tout.",
       "bs": "Allah odabire poslanike među melekima i ljudima. – Allah sve čuje i sve vidi.",
       "ru": "Аллах избирает посланников из числа ангелов и из числа людей. Воистину, Аллах — слышащий, видящий.",
-      "ms": "Allah memilih utusan-utusanNya dari malaikat dan dari manusia; sesungguhnya Allah Maha Mendengar, lagi Maha Mengetahui."
+      "ms": "Allah memilih utusan-utusanNya dari malaikat dan dari manusia; sesungguhnya Allah Maha Mendengar, lagi Maha Mengetahui.",
+      "ur": "فرشتوں میں سے اور انسانوں میں سے پیغام پہونچانے والوں کو اللہ ہی چھانٹ لیتا ہے، بیشک اللہ تعالیٰ سننے واﻻ دیکھنے واﻻ ہے."
     }
   },
   {
@@ -1278,7 +1362,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "O die ihr glaubt, verbeugt euch, werft euch nieder und dient eurem Herrn und tut das Gute, auf daß es euch wohl ergehen möge!",
       "fr": "Vous qui croyez ! Inclinez-vous et prosternez-vous en prière. Vouez à votre Seigneur un culte exclusif et sincère et faites le bien dans l’espoir de faire votre bonheur et votre salut.",
       "bs": "O vjernici, pred Allahom se sagibajte i čelima po tlu padajte, Gospodara svog obožavajte i dobra djela činite da biste postigli ono što želite.",
-      "ru": "О вы, которые уверовали! Кланяйтесь и падайте ниц, поклоняйтесь своему Господу и совершайте добро, — быть может, вы преуспеете."
+      "ru": "О вы, которые уверовали! Кланяйтесь и падайте ниц, поклоняйтесь своему Господу и совершайте добро, — быть может, вы преуспеете.",
+      "ur": "اے ایمان والو! رکوع سجده کرتے رہو اور اپنے پروردگار کی عبادت میں لگے رہو اور نیک کام کرتے رہو تاکہ تم کامیاب ہو جاؤ."
     }
   },
   {
@@ -1294,7 +1379,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah fait alterner le jour et la nuit. Voilà bien une preuve de Sa toute-puissance pour des esprits pleins de clairvoyance.",
       "bs": "On čini da noć i dan naizmjenice nastupaju i u tome je, doista, pouka za one koji pameti imaju.",
       "ru": "Аллах чередует ночь и день. Воистину, в этом — поучительный пример для обладающих зрением.",
-      "ms": "Allah menukarkan malam dan siang silih berganti; sesungguhnya yang demikian mengandungi pelajaran yang mendatangkan iktibar bagi orang-orang yang celik mata hatinya berfikir."
+      "ms": "Allah menukarkan malam dan siang silih berganti; sesungguhnya yang demikian mengandungi pelajaran yang mendatangkan iktibar bagi orang-orang yang celik mata hatinya berfikir.",
+      "ur": "اللہ تعالیٰ ہی دن اور رات کو ردوبدل کرتا رہتا ہے آنکھوں والوں کے لیے تو اس میں یقیناً بڑی بڑی عبرتیں ہیں."
     }
   },
   {
@@ -1309,7 +1395,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Wir haben ja Zeichen hinabgesandt, die (alles) klar machen. Und Allah leitet, wen Er will, zu einem geraden Weg.",
       "fr": "Nous avons, en vérité, révélé des versets d’une grande clarté. Allah met cependant qui Il veut sur le droit chemin.",
       "bs": "Mi objavljujemo ajete jasne. A Allah ukazuje na Pravi put onom kome On hoće.",
-      "ru": "Действительно, Мы ниспослали разъясняющие аяты. А Аллах наставляет, кого пожелает, к прямому пути."
+      "ru": "Действительно, Мы ниспослали разъясняющие аяты. А Аллах наставляет, кого пожелает, к прямому пути.",
+      "ur": "بلاشک و شبہ ہم نے روشن اور واضح آیتیں اتار دی ہیں اللہ تعالیٰ جسے چاہے سیدھی راه دکھا دیتا ہے."
     }
   },
   {
@@ -1321,7 +1408,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "tr": "Aralarında hüküm verilmek üzere Allah’a ve Rasûlüne çağrılan Müminlerin sözü sadece; “İşittik ve itaat ettik”dir. İşte asıl bunlar kurtuluşa erenlerdir.",
       "en": "The only statement of the [true] believers when they are called to Allāh and His Messenger to judge between them is that they say, \"We hear and we obey.\" And those are the successful.",
       "bs": "Kad se vjernici Allahu i Poslaniku Njegovu pozovu da im presudi, samo reknu: “Slušamo i pokoravamo se!” Oni će uspjeti.",
-      "ru": "Воистину, слово верующих, когда их призывают к Аллаху и Его Посланнику, чтобы он рассудил между ними, — лишь то, что они говорят: «Мы услышали и повиновались». И такие и есть преуспевшие."
+      "ru": "Воистину, слово верующих, когда их призывают к Аллаху и Его Посланнику, чтобы он рассудил между ними, — лишь то, что они говорят: «Мы услышали и повиновались». И такие и есть преуспевшие.",
+      "ur": "ایمان والوں کا قول تو یہ ہے کہ جب انہیں اس لئے بلایا جاتا ہے کہ اللہ اور اس کا رسول ان میں فیصلہ کردے تو وه کہتے ہیں کہ ہم نے سنا اور مان لیا ۔ یہی لوگ کامیاب ہونے والے ہیں."
     }
   },
   {
@@ -1336,7 +1424,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Segensreich ist Derjenige, Der im Himmel Türme gesetzt und darin einen Lichtkörper und einen leuchtenden Mond gesetzt hat!",
       "bs": "Neka je uzvišen Onaj Koji je na nebu sazviježđa stvorio i na njemu dao svjetiljku i Mjesec koji sija.",
       "ru": "Благословен Тот, Кто создал в небе созвездия, и создал в нём светоч и сияющую луну.",
-      "ms": "Maha Berkat Tuhan yang telah menjadikan di langit, tempat-tempat peredaran bintang, dan menjadikan padanya matahari serta bulan yang menerangi."
+      "ms": "Maha Berkat Tuhan yang telah menjadikan di langit, tempat-tempat peredaran bintang, dan menjadikan padanya matahari serta bulan yang menerangi.",
+      "ur": "بابرکت ہے وه جس نے آسمان میں برج بنائے اور اس میں آفتاب بنایا اور منور مہتاب بھی."
     }
   },
   {
@@ -1352,7 +1441,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il est Celui qui entend tout et sait tout.",
       "bs": "jer On, doista, sve čuje i sve zna.",
       "ru": "Воистину, Он — Слышащий, Знающий.",
-      "ms": "Sesungguhnya Dia lah jua yang Maha Mendengar, lagi Maha Mengetahui."
+      "ms": "Sesungguhnya Dia lah jua yang Maha Mendengar, lagi Maha Mengetahui.",
+      "ur": "وه بڑا ہی سننے واﻻ اور خوب ہی جاننے واﻻ ہے."
     }
   },
   {
@@ -1366,7 +1456,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Sehen sie nicht, daß Wir die Nacht gemacht haben, damit sie in ihr ruhen, und den Tag hell? Darin sind wahrlich Zeichen für Leute, die glauben.",
       "fr": "Ne voient-ils pas que Nous avons établi l’obscurité de la nuit pour leur repos et la lumière du jour pour leurs activités. Voilà des signes suffisamment clairs pour des hommes de foi.",
       "bs": "Zar nisu vidjeli da smo učinili noć da u njoj otpočinu, a dan vidnim? To su, zaista, dokazi za narod koji vjeruje.",
-      "ru": "Неужели они не видят, что Мы сделали ночь, чтобы они могли обрести в ней покой, и день — позволяющим видеть? Воистину, в этом — знамения для людей, которые веруют."
+      "ru": "Неужели они не видят, что Мы сделали ночь, чтобы они могли обрести в ней покой, и день — позволяющим видеть? Воистину, в этом — знамения для людей, которые веруют.",
+      "ur": "کیا وه دیکھ نہیں رہے ہیں کہ ہم نے رات کو اس لیے بنایا ہے کہ وه اس میں آرام حاصل کرلیں اور دن کو ہم نے دکھلانے واﻻ بنایا ہے، یقیناً اس میں ان لوگوں کے لیے نشانیاں ہیں جو ایمان ویقین رکھتے ہیں."
     }
   },
   {
@@ -1381,7 +1472,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Wer mit einer guten Tat kommt, wird etwas Besseres als sie erhalten. Und sie sind vor (jedem) Schrecken an jenem Tag in Sicherheit.",
       "fr": "Ceux qui se présenteront avec de bonnes œuvres recevront une récompense bien supérieure et seront, ce Jour-là, préservés de toute frayeur.",
       "bs": "Ko učini dobro djelo, dobit će veliku nagradu za njega i bit će straha na Sudnjem danu pošteđen.",
-      "ru": "Кто явится с добрым деянием, тому будет [воздано] лучшим, чем оно, и они в тот день будут в безопасности от ужаса."
+      "ru": "Кто явится с добрым деянием, тому будет [воздано] лучшим, чем оно, и они в тот день будут в безопасности от ужаса.",
+      "ur": "جو لوگ نیک عمل ﻻئیں گے انھیں اس سے بہتر بدلہ ملے گا اور وه اس دن کی گھبراہٹ سے بےخوف ہوں گے."
     }
   },
   {
@@ -1395,7 +1487,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Das ist die jenseitige Wohnstätte. Wir bestimmen sie für diejenigen, die weder Überheblichkeit auf der Erde noch Unheil begehren. Und das (gute) Ende gehört den Gottesfürchtigen.",
       "fr": "Nous destinons cette demeure dernière à ceux qui ne cherchent ni à s’élever sur terre, ni à commettre le péché. Ce sont en effet ceux qui craignent le Seigneur qui connaîtront une fin heureuse.",
       "bs": "Taj drugi svijet dat ćemo onima koji se ne žele na Zemlji oholiti i nered činiti, a one koji se Allaha boje čeka sretan kraj.",
-      "ru": "Ту Последнюю обитель Мы предназначаем тем, кто не желает ни превознесения на земле, ни беззакония. А благой итог — для богобоязненных."
+      "ru": "Ту Последнюю обитель Мы предназначаем тем, кто не желает ни превознесения на земле, ни беззакония. А благой итог — для богобоязненных.",
+      "ur": "آخرت کا یہ بھلا گھر ہم ان ہی کے لیے مقرر کر دیتے ہیں جو زمین میں اونچائی بڑائی اور فخر نہیں کرتے نہ فساد کی چاہت رکھتے ہیں۔ پرہیزگاروں کے لیے نہایت ہی عمده انجام ہے."
     }
   },
   {
@@ -1411,7 +1504,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Les hommes pensent-ils que Nous les laisserons affirmer qu’ils croient sans éprouver leur foi ?",
       "bs": "Misle li ljudi da će biti ostavljeni na miru ako kažu: “Mi vjerujemo!”, i da u iskušenje neće biti dovedeni?",
       "ru": "Неужели люди полагали, что их оставят только за то, что они скажут: «Мы уверовали», тогда как они не будут подвергнуты испытанию?",
-      "ms": "Patutkah manusia menyangka bahawa mereka akan dibiarkan dengan hanya berkata: “Kami beriman”, sedang mereka tidak diuji (dengan sesuatu cubaan)?"
+      "ms": "Patutkah manusia menyangka bahawa mereka akan dibiarkan dengan hanya berkata: “Kami beriman”, sedang mereka tidak diuji (dengan sesuatu cubaan)?",
+      "ur": "کیا لوگوں نے یہ گمان کر رکھا ہے کہ ان کے صرف اس دعوے پر کہ ہم ایمان ﻻئے ہیں ہم انہیں بغیر آزمائے ہوئے ہی چھوڑ دیں گے؟."
     }
   },
   {
@@ -1426,7 +1520,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Wer die Begegnung mit Allah erwartet-, so wird Allahs Frist sicher kommen. Und Er ist der Allhörende und Allwissende.",
       "fr": "Que celui qui espère rencontrer Allah sache que le terme fixé par Allah arrivera inéluctablement. Il est Celui qui entend tout et sait tout.",
       "bs": "A ko se nada susretu s Allahom, pa od Allaha određeno vrijeme će doći, a On je Svečujući i Sveznajući!",
-      "ru": "Тот, кто надеется на встречу с Аллахом, [пусть знает:] воистину, срок Аллаха непременно наступит. И Он — Слышащий, Знающий."
+      "ru": "Тот, кто надеется на встречу с Аллахом, [пусть знает:] воистину, срок Аллаха непременно наступит. И Он — Слышащий, Знающий.",
+      "ur": "جسے اللہ کی ملاقات کی امید ہو پس اللہ کا ٹھہرایا ہوا وقت یقیناً آنے واﻻ ہے ، وه سب کچھ سننے واﻻ، سب کچھ جاننے واﻻ ہے."
     }
   },
   {
@@ -1441,7 +1536,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Haben sie denn nicht gesehen, wie Allah die Schöpfung am Anfang macht und sie hierauf wiederholt? Gewiß, das ist für Allah ein leichtes.",
       "fr": "Ne savent-ils pas qu’Allah, qui est à l’origine de la Création, est capable de la recommencer ? Voilà qui, pour Allah, est si aisé.",
       "bs": "Zar oni ne vide kako Allah započinje stvaranje?! On će to opet učiniti; Allahu je to, zaista, lahko.",
-      "ru": "Неужели они не видят, как Аллах создаёт творение впервые, а затем воссоздаёт его ? Воистину, это для Аллаха легко."
+      "ru": "Неужели они не видят, как Аллах создаёт творение впервые, а затем воссоздаёт его ? Воистину, это для Аллаха легко.",
+      "ur": "کیا انہوں نے نہیں دیکھا کہ مخلوق کی ابتدا کس طرح اللہ نے کی پھر اللہ اس کا اعاده کرے گا ، یہ تو اللہ تعالیٰ پر بہت ہی آسان ہے."
     }
   },
   {
@@ -1454,7 +1550,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "The example of those who take allies other than Allāh is like that of the spider who takes [i.e., constructs] a home. And indeed, the weakest of homes is the home of the spider, if they only knew.",
       "id": "Perumpamaan orang-orang yang mengambil pelindung selain Allah adalah seperti laba-laba yang membuat rumah. Dan sesungguhnya rumah yang paling lemah ialah rumah laba-laba, sekiranya mereka mengetahui.",
       "bs": "Oni koji, mimo Allaha, zaštitnike uzimaju slični su pauku koji sebi isplete kuću – a najslabija je kuća, uistinu, paukova kuća, neka znaju!",
-      "ru": "Притча о тех, которые взяли себе помимо Аллаха покровителей, подобна притче о пауке, который свил себе дом, — тогда как, воистину, самый непрочный из домов — дом паука, если бы они только знали."
+      "ru": "Притча о тех, которые взяли себе помимо Аллаха покровителей, подобна притче о пауке, который свил себе дом, — тогда как, воистину, самый непрочный из домов — дом паука, если бы они только знали.",
+      "ur": "جن لوگوں نے اللہ تعالیٰ کے سوا اور کارساز مقرر کر رکھے ہیں ان کی مثال مکڑی کی سی ہے کہ وه بھی ایک گھر بنا لیتی ہے، حاﻻنکہ تمام گھروں سے زیاده بودا گھر مکڑی کا گھر ہی ہے ، کاش! وه جان لیتے."
     }
   },
   {
@@ -1469,7 +1566,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah a créé les cieux et la terre selon une sagesse infinie. Voilà assurément un signe pour les croyants.",
       "bs": "Allah je nebesa i Zemlju s razlogom stvorio; to je, doista, pouka onima koji vjeruju.",
       "ru": "Аллах сотворил небеса и землю с истиной. Воистину, в этом — знамение для верующих.",
-      "ms": "Allah mencipta langit dan bumi dengan cara yang layak dan berhikmat; sesungguhnya yang demikian itu mengandungi satu tanda (yang membuktikan kebijaksanaan Allah) bagi orang-orang yang beriman."
+      "ms": "Allah mencipta langit dan bumi dengan cara yang layak dan berhikmat; sesungguhnya yang demikian itu mengandungi satu tanda (yang membuktikan kebijaksanaan Allah) bagi orang-orang yang beriman.",
+      "ur": "اللہ تعالیٰ نے آسمانوں اور زمین کو مصلحت اور حق کے ساتھ پیدا کیا ہے ، ایمان والوں کے لیے تو اس میں بڑی بھاری دلیل ہے."
     }
   },
   {
@@ -1483,7 +1581,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Wahai hamba-hamba-Ku yang beriman! Sungguh, bumi-Ku luas, maka sembahlah Aku (saja).",
       "de": "O Meine Diener, die ihr glaubt, gewiß, Meine Erde ist weit. So dient Mir, ja, allein Mir.",
       "bs": "O robovi Moji koji vjerujete, Moja je Zemlja prostrana, zato samo Meni ibadet činite!",
-      "ru": "О Мои рабы, которые уверовали! Воистину, Моя земля обширна, так поклоняйтесь же только Мне."
+      "ru": "О Мои рабы, которые уверовали! Воистину, Моя земля обширна, так поклоняйтесь же только Мне.",
+      "ur": "اے میرے ایمان والے بندو! میری زمین بہت کشاده ہے سو تم میری ہی عبادت کرو."
     }
   },
   {
@@ -1498,7 +1597,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Jede Seele wird den Tod kosten. Hierauf werdet ihr zu Uns zurückgebracht.",
       "bs": "Svako će živo biće smrt okusiti, i Nama ćete se poslije vratiti.",
       "ru": "Каждая душа непременно вкусит смерть, затем к Нам вы будете возвращены.",
-      "ms": "Tiap-tiap diri (sudah tetap) akan merasai mati, kemudian kamu akan dikembalikan kepada Kami (untuk menerima balasan)."
+      "ms": "Tiap-tiap diri (sudah tetap) akan merasai mati, kemudian kamu akan dikembalikan kepada Kami (untuk menerima balasan).",
+      "ur": "ہر جاندار موت کا مزه چکھنے واﻻ ہےاور تم سب ہماری ہی طرف لوٹائے جاؤ گے."
     }
   },
   {
@@ -1514,7 +1614,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah dispense Ses faveurs à qui Il veut parmi Ses serviteurs, comblant certaines de Ses créatures, accordant aux autres avec mesure. Allah, en vérité, a une parfaite connaissance de toute chose.",
       "bs": "Allah u izobilju daje hranu onom kome hoće od robova Svojih, a nekom i uskraćuje. – Allah, zaista, zna sve.",
       "ru": "Аллах увеличивает удел тому, кому пожелает из Своих рабов, и ограничивает его. Воистину, Аллах — знающий обо всём сущем.",
-      "ms": "Allah memewahkan rezeki bagi sesiapa yang dikehendakiNya di antara hamba-hambaNya dan menyempitkan (rezeki itu) baginya; sesungguhnya Allah Maha Mengetahui akan tiap-tiap sesuatu."
+      "ms": "Allah memewahkan rezeki bagi sesiapa yang dikehendakiNya di antara hamba-hambaNya dan menyempitkan (rezeki itu) baginya; sesungguhnya Allah Maha Mengetahui akan tiap-tiap sesuatu.",
+      "ur": "اللہ تعالیٰ اپنے بندوں میں سے جسے چاہے فراخ روزی دیتا ہے اور جسے چاہے تنگ ۔ یقیناً اللہ تعالیٰ ہر چیز کا جاننے واﻻ ہے."
     }
   },
   {
@@ -1530,7 +1631,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah est à l’origine de la Création qu’Il recommencera. C’est à Lui alors que vous serez ramenés.",
       "bs": "Allah je počeo stvaranje, zatim ga ponavlja i na kraju Njemu ćete se vratiti.",
       "ru": "Аллах создаёт творение впервые, а затем воссоздаёт его, а потом к Нему вы будете возвращены.",
-      "ms": "Allah memulakan kejadian sekalian makhluk, kemudian Ia mengembalikannya (hidup semula pada hari kiamat), kemudian kepadaNyalah kamu akan dikembalikan (untuk menerima balasan)."
+      "ms": "Allah memulakan kejadian sekalian makhluk, kemudian Ia mengembalikannya (hidup semula pada hari kiamat), kemudian kepadaNyalah kamu akan dikembalikan (untuk menerima balasan).",
+      "ur": "اللہ تعالیٰ ہی مخلوق کی ابتدا کرتا ہے پھر وہی اسے دوباره پیدا کرے گا پھر تم سب اسی کی طرف لوٹائے جاؤ گے."
     }
   },
   {
@@ -1546,7 +1648,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "A Allah appartient tout ce qui se trouve dans les cieux et sur la terre. Allah, en vérité, peut se passer de toute chose et Il est digne de toute louange.",
       "bs": "Allahovo je sve na nebesima i na Zemlji! Allah je, uistinu, neovisan i hvale dostojan.",
       "ru": "Аллаху принадлежит всё, что в небесах и на земле. Воистину, Аллах — Он Богатый, Достохвальный.",
-      "ms": "Allah jua yang memiliki segala yang ada di langit dan di bumi; sesungguhnya Allah Dia lah jua yang Maha Kaya, lagi sentiasa Terpuji."
+      "ms": "Allah jua yang memiliki segala yang ada di langit dan di bumi; sesungguhnya Allah Dia lah jua yang Maha Kaya, lagi sentiasa Terpuji.",
+      "ur": "آسمانوں میں اور زمین میں جو کچھ ہے وه سب اللہ ہی کا ہے یقیناً اللہ تعالیٰ بہت بڑا بے نیاز اور سزاوار حمد وﺛنا ہے."
     }
   },
   {
@@ -1560,7 +1663,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Nur diejenigen glauben an Unsere Zeichen, die, wenn sie damit ermahnt werden, ehrerbietig niederfallen und ihren Herrn lobpreisen und sich nicht hochmütig verhalten.",
       "fr": "Seuls croient vraiment en Nos versets ceux qui, lorsqu’ils leur sont rappelés, tombent à terre prosternés et célèbrent, par les louanges, la gloire de leur Seigneur en toute humilité,",
       "bs": "U Naše riječi vjeruju samo oni koji, kad se njima opomenu, licem na tlo padaju i koji Gospodara svog veličaju i hvale i koji se ne ohole.",
-      "ru": "Воистину, в Наши знамения веруют лишь те, которые, когда напоминают им о них, падают, преклоняясь ниц, и прославляют своего Господа хвалой, не превозносясь."
+      "ru": "Воистину, в Наши знамения веруют лишь те, которые, когда напоминают им о них, падают, преклоняясь ниц, и прославляют своего Господа хвалой, не превозносясь.",
+      "ur": "ہماری آیتوں پر وہی ایمان ﻻتے ہیں جنہیں جب کبھی ان سے نصیحت کی جاتی ہے تو وه سجدے میں گر پڑتے ہیں اور اپنے رب کی حمد کے ساتھ اس کی تسبیح پڑھتے ہیں اور تکبر نہیں کرتے ہیں."
     }
   },
   {
@@ -1576,7 +1680,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Que vous révéliez vos intentions ou que vous les dissimuliez, Allah a une parfaite connaissance de toute chose.",
       "bs": "Iznosili vi o tome šta u javnost ili to u sebi krili – pa, Allah sve zna.",
       "ru": "Если вы сделаете что-либо явно или тайно — то, воистину, Аллах всегда был [и пребудет] знающим обо всём сущем.",
-      "ms": "(Awasilah keadaan-keadaan kamu, kerana) jika kamu nyatakan sesuatu atau kamu sembunyikan dia, maka sesungguhnya Allah sentiasa Mengetahui akan segala-galanya."
+      "ms": "(Awasilah keadaan-keadaan kamu, kerana) jika kamu nyatakan sesuatu atau kamu sembunyikan dia, maka sesungguhnya Allah sentiasa Mengetahui akan segala-galanya.",
+      "ur": "تم کسی چیز کو ﻇاہر کرو یا مخفی رکھو اللہ تو ہر چیز کا بخوبی علم رکھنے واﻻ ہے."
     }
   },
   {
@@ -1590,7 +1695,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Gewiß, Allah und Seine Engel sprechen den Segen über den Propheten. O die ihr glaubt, sprecht den Segen über ihn und grüßt ihn mit gehörigem Gruß.",
       "fr": "Allah et Ses anges bénissent le Prophète. Vous qui croyez ! Bénissez-le et saluez-le vous aussi !",
       "bs": "Zaista, Allah i meleci Njegovi blagosiljaju Vjerovjesnika. O vi koji vjerujete, blagosiljajte ga i vi i njemu selam šaljite!",
-      "ru": "Воистину, Аллах и Его ангелы благословляют Пророка. О вы, которые уверовали! Благословляйте его и приветствуйте его должным приветствием."
+      "ru": "Воистину, Аллах и Его ангелы благословляют Пророка. О вы, которые уверовали! Благословляйте его и приветствуйте его должным приветствием.",
+      "ur": "اللہ تعالیٰ اور اس کے فرشتے اس نبی پر رحمت بھیجتے ہیں۔ اے ایمان والو! تم (بھی) ان پر درود بھیجو اور خوب سلام (بھی) بھیجتے رہا کرو."
     }
   },
   {
@@ -1606,7 +1712,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Vous qui croyez ! Craignez Allah ! Tenez des propos justes !",
       "bs": "O vjernici, bojte se Allaha i govorite samo istinu,",
       "ru": "О вы, которые уверовали! Бойтесь Аллаха и говорите правильное слово —",
-      "ms": "Wahai orang-orang yang beriman, bertaqwalah kepada Allah, dan katakanlah perkataan yang tepat - benar (dalam segala perkara),"
+      "ms": "Wahai orang-orang yang beriman, bertaqwalah kepada Allah, dan katakanlah perkataan yang tepat - benar (dalam segala perkara),",
+      "ur": "اے ایمان والو! اللہ تعالیٰ سے ڈرو اور سیدھی سیدھی (سچی) باتیں کیا کرو."
     }
   },
   {
@@ -1622,7 +1729,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il sait ce qui pénètre dans la terre et ce qui en sort, ce qui descend du ciel et ce qui y monte. Il est le Très Miséricordieux, le Très Clément.",
       "bs": "On zna šta u zemlju ulazi, a šta iz nje izlazi, i šta se s neba spušta, a šta se na njega uspinje; On je samilostan i On prašta grijehe.",
       "ru": "Он знает, что проникает в землю и что выходит из неё, и что нисходит с неба и что возносится в него, и Он — Милующий, Прощающий.",
-      "ms": "Ia mengetahui apa yang masuk ke bumi serta apa yang keluar daripadanya, dan apa yang turun dari langit serta apa yang naik kepadanya; dan Dia lah jua yang Maha Mengasihani, lagi Maha Pengampun."
+      "ms": "Ia mengetahui apa yang masuk ke bumi serta apa yang keluar daripadanya, dan apa yang turun dari langit serta apa yang naik kepadanya; dan Dia lah jua yang Maha Mengasihani, lagi Maha Pengampun.",
+      "ur": "جو زمین میں جائے اور جو اس سے نکلے جو آسمان سے اترے اور جو چڑھ کر اس میں جائے وه سب سے باخبر ہے۔ اور وه مہربان نہایت بخشش واﻻ ہے."
     }
   },
   {
@@ -1635,7 +1743,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "Whatever Allāh grants to people of mercy - none can withhold it; and whatever He withholds - none can release it thereafter. And He is the Exalted in Might, the Wise.",
       "de": "Was Allah den Menschen an Barmherzigkeit auftut, das kann keiner zurückhalten. Und was Er zurückhält, das kann keiner nach Ihm freigeben. Und Er ist der Allmächtige und Allweise.",
       "bs": "Milost koju Allah podari ljudima niko ne može uskratiti, a ono što On uskrati niko ne može, poslije Njega, dati; On je silan i mudar.",
-      "ru": "То, что Аллах откроет людям из Своей милости, никто не удержит. А то, что Он удержит, никто после Него не пошлёт. Он — Могущественный, Мудрый."
+      "ru": "То, что Аллах откроет людям из Своей милости, никто не удержит. А то, что Он удержит, никто после Него не пошлёт. Он — Могущественный, Мудрый.",
+      "ur": "اللہ تعالیٰ جو رحمت لوگوں کے لئے کھول دے سو اس کا کوئی بند کرنے واﻻ نہیں اور جس کو بند کردے سو اس کے بعد اس کا کوئی جاری کرنے واﻻ نہیں اور وہی غالب حکمت واﻻ ہے."
     }
   },
   {
@@ -1650,7 +1759,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "O ihr Menschen, gewiß, Allahs Versprechen ist wahr. So soll euch das diesseitige Leben nicht täuschen, und nicht täuschen soll euch hinsichtlich Allahs der Täuscher.",
       "fr": "Ô hommes ! La promesse d’Allah s’accomplira inéluctablement. Ne vous laissez donc pas abuser par cette vie et ne vous laissez pas tromper, au sujet du Seigneur, par l’infâme séducteur.",
       "bs": "O ljudi, Allahova prijetnja je zaista istina, pa neka vas nikako život na ovom svijetu ne zaslijepi i neka vas šejtan u Allaha ne pokoleba.",
-      "ru": "О люди! Воистину, обещание Аллаха истинно. Так пусть же не обольстит вас мирская жизнь, и пусть не обольстит вас в отношении Аллаха обольститель."
+      "ru": "О люди! Воистину, обещание Аллаха истинно. Так пусть же не обольстит вас мирская жизнь, и пусть не обольстит вас в отношении Аллаха обольститель.",
+      "ur": "لوگو! اللہ تعالیٰ کا وعده سچا ہے تمہیں زندگانیٴ دنیا دھوکے میں نہ ڈالے، اور نہ دھوکے باز شیطان تمہیں غفلت میں ڈالے."
     }
   },
   {
@@ -1666,7 +1776,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "En vérité, Satan est votre ennemi juré. Traitez-le donc comme tel ! Il ne poursuit qu’un seul dessein : tromper ses partisans afin de les faire entrer dans les flammes de l’Enfer.",
       "bs": "Šejtan je, uistinu, vaš neprijatelj, pa ga takvim i smatrajte! On poziva pristaše svoje da budu stanovnici u Vatri.",
       "ru": "Воистину, шайтан — ваш враг, так относитесь же к нему как к врагу. Воистину, он призывает своих сторонников лишь для того, чтобы они оказались обитателями пылающего огня.",
-      "ms": "Sesungguhnya Syaitan adalah musuh bagi kamu, maka jadikanlah dia musuh (yang mesti dijauhi tipu dayanya); sebenarnya dia hanyalah mengajak golongannya supaya menjadi dari penduduk neraka."
+      "ms": "Sesungguhnya Syaitan adalah musuh bagi kamu, maka jadikanlah dia musuh (yang mesti dijauhi tipu dayanya); sebenarnya dia hanyalah mengajak golongannya supaya menjadi dari penduduk neraka.",
+      "ur": "یاد رکھو! شیطان تمہارا دشمن ہے، تم اسے دشمن جانو وه تو اپنے گروه کو صرف اس لئے ہی بلاتا ہے کہ وه سب جہنم واصل ہو جائیں."
     }
   },
   {
@@ -1681,7 +1792,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "O ihr Menschen, ihr seid es, die Allahs bedürftig sind; Allah aber ist der Unbedürftige und Lobenswürdige.",
       "fr": "Ô hommes ! C’est vous qui avez besoin d’Allah qui, pour Sa part, peut parfaitement se passer de vous et qui est digne de toute louange.",
       "bs": "O ljudi, vi ste siromasi, vi trebate Allaha, a Allah je nezavisan i hvale dostojan.",
-      "ru": "О люди! Вы — нуждающиеся в Аллахе, а Аллах, — Он Богатый, Достохвальный."
+      "ru": "О люди! Вы — нуждающиеся в Аллахе, а Аллах, — Он Богатый, Достохвальный.",
+      "ur": "اے لوگو! تم اللہ کے محتاج ہو اور اللہ بےنیاز خوبیوں واﻻ ہے."
     }
   },
   {
@@ -1697,7 +1809,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il pourrait, s’Il le voulait, vous faire disparaître et vous remplacer par de nouvelles créatures.",
       "bs": "Ako On hoće, uklonit će vas i nova stvorenja dovesti.",
       "ru": "Если Он пожелает, Он погубит вас и приведёт [на ваше место] новое творение.",
-      "ms": "Jika Ia mahu, nescaya Ia membinasakan kamu dan mendatangkan makhluk yang baharu."
+      "ms": "Jika Ia mahu, nescaya Ia membinasakan kamu dan mendatangkan makhluk yang baharu.",
+      "ur": "اگر وه چاہے تو تم کو فنا کردے اور ایک نئی مخلوق پیدا کردے."
     }
   },
   {
@@ -1725,7 +1838,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah connaît aussi bien les mystères des cieux et de la terre que les secrets des cœurs.",
       "bs": "Allah sigurno zna tajne nebesa i Zemlje, On dobro zna sve što grudi kriju.",
       "ru": "Воистину, Аллах — знающий сокровенное небес и земли. Воистину, Он — знающий то, что таится в сердцах.",
-      "ms": "Sesungguhnya Allah mengetahui segala rahsia di langit dan di bumi; sesungguhnya Ia mengetahui akan segala (isi hati) yang terkandung di dalam dada."
+      "ms": "Sesungguhnya Allah mengetahui segala rahsia di langit dan di bumi; sesungguhnya Ia mengetahui akan segala (isi hati) yang terkandung di dalam dada.",
+      "ur": "بےشک اللہ تعالیٰ جاننے واﻻ ہے آسمانوں اور زمین کی پوشیده چیزوں کا ، بےشک وہی جاننے واﻻ ہے سینوں کی باتوں کا."
     }
   },
   {
@@ -1738,7 +1852,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "Indeed, it is We who bring the dead to life and record what they have put forth and what they left behind, and all things We have enumerated in a clear register.",
       "de": "Gewiß, Wir sind es, Die Wir die Toten wieder lebendig machen. Und Wir schreiben auf, was sie vorausgeschickt haben und (auch) ihre Spuren. Alles haben Wir in einem deutlichen Verzeichnis erfaßt.",
       "bs": "Mi, zaista, mrtve oživljavamo i Mi bilježimo ono što su uradili i tragove koje iza sebe ostave; sve smo Mi to u Knjizi jasnoj pobrojali.",
-      "ru": "Воистину, Мы оживляем мёртвых и записываем то, что они совершили прежде, и их следы. И всё Мы подсчитали в ясном Писании."
+      "ru": "Воистину, Мы оживляем мёртвых и записываем то, что они совершили прежде, и их следы. И всё Мы подсчитали в ясном Писании.",
+      "ur": "بےشک ہم مُردوں کو زنده کریں گے ، اور ہم لکھتے جاتے ہیں وه اعمال بھی جن کو لوگ آگے بھیجتے ہیں اور ان کے وه اعمال بھی جن کو پیچھے چھوڑ جاتے ہیں، اور ہم نے ہر چیز کو ایک واضح کتاب میں ضبط کر رکھا ہے."
     }
   },
   {
@@ -1753,7 +1868,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Weder ziemt es der Sonne, den Mond einzuholen, noch wird die Nacht dem Tag zuvorkommen; alle laufen in einer (jeweils eigenen) Umlaufbahn.",
       "fr": "Le soleil ne saurait rattraper la lune, ni la nuit devancer le jour. Chaque astre décrit une orbite bien déterminée.",
       "bs": "Niti Sunce može dostići Mjesec niti noć može prestići dan, svi oni u svemiru plove.",
-      "ru": "Ни солнцу не подобает догонять луну, ни ночь не опережает день. И каждый из них плывёт по своему небосводу."
+      "ru": "Ни солнцу не подобает догонять луну, ни ночь не опережает день. И каждый из них плывёт по своему небосводу.",
+      "ur": "نہ آفتاب کی یہ مجال ہے کہ چاند کو پکڑے اور نہ رات دن پرآگے بڑھ جانے والی ہے، اور سب کے سب آسمان میں تیرتے پھرتے ہیں."
     }
   },
   {
@@ -1768,7 +1884,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Hat nicht Derjenige, Der die Himmel und die Erde erschaffen hat, (auch) die Macht, ihresgleichen zu erschaffen? Ja doch! Und Er ist der Allerschaffer und Allwissende.",
       "fr": "Celui qui a créé les cieux et la terre n’est-Il pas capable de créer d’autres hommes comme eux ? Si, car Il est le Créateur de toute chose, l’Omniscient !",
       "bs": "Zar Onaj Koji je stvorio nebesa i Zemlju nije kadar stvoriti njima slične? Jest, On sve stvara i On je Sveznajući.",
-      "ru": "Неужели Тот, Кто сотворил небеса и землю, не способен сотворить подобных им? Отнюдь! Он — Многотворящий, Знающий!"
+      "ru": "Неужели Тот, Кто сотворил небеса и землю, не способен сотворить подобных им? Отнюдь! Он — Многотворящий, Знающий!",
+      "ur": "جس نے آسمانوں اور زمین کو پیدا کیا ہے کیا وه ان جیسوں کے پیدا کرنے پرقادر نہیں، بےشک قادر ہے۔ اور وہی تو پیدا کرنے واﻻ دانا (بینا) ہے."
     }
   },
   {
@@ -1784,7 +1901,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il Lui suffit, lorsqu’Il veut une chose, de dire : « Sois ! » et celle-ci s’accomplit.",
       "bs": "Kad nešto hoće, On samo za to rekne: “Budi!”, i ono bude.",
       "ru": "Воистину, Его повеление, когда Он желает чего-либо, — лишь сказать ему: «Будь!» — и оно бывает.",
-      "ms": "Sesungguhnya keadaan kekuasaanNya apabila Ia menghendaki adanya sesuatu, hanyalah Ia berfirman kepada (hakikat) benda itu: “Jadilah engkau!”. Maka ia terus menjadi."
+      "ms": "Sesungguhnya keadaan kekuasaanNya apabila Ia menghendaki adanya sesuatu, hanyalah Ia berfirman kepada (hakikat) benda itu: “Jadilah engkau!”. Maka ia terus menjadi.",
+      "ur": "وه جب کبھی کسی چیز کا اراده کرتا ہے اسے اتنا فرما دینا (کافی ہے) کہ ہو جا، وه اسی وقت ہو جاتی ہے."
     }
   },
   {
@@ -1800,7 +1918,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Gloire à ton Seigneur Tout-Puissant que leurs blasphèmes ne sauraient atteindre !",
       "bs": "Uzvišen je Gospodar tvoj, Gospodar dostojanstva, u odnosu na ono kako ga opisuju!",
       "ru": "Пречист твой Господь, Господь величия, от того, что они приписывают!",
-      "ms": "Akuilah kesucian Tuhanmu, - Tuhan yang mempunyai keagungan dan kekuasaan, - dari apa yang mereka katakan!"
+      "ms": "Akuilah kesucian Tuhanmu, - Tuhan yang mempunyai keagungan dan kekuasaan, - dari apa yang mereka katakan!",
+      "ur": "پاک ہے آپ کا رب جو بہت بڑی عزت واﻻ ہے ہر اس چیز سے (جو مشرک) بیان کرتے ہیں."
     }
   },
   {
@@ -1813,7 +1932,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "Do they not know that Allāh extends provision for whom He wills and restricts [it]? Indeed in that are signs for a people who believe.",
       "de": "Wissen sie denn nicht, daß Allah die Versorgung großzügig gewährt, wem Er will, und auch bemißt? Darin sind wahrlich Zeichen für Leute, die glauben.",
       "bs": "Kako ne znaju da Allah daje obilje onom kome hoće, i da ga uskraćuje – to su, zaista, pouke narodu koji vjeruje.",
-      "ru": "Неужели они не знали, что Аллах увеличивает удел, кому пожелает, и ограничивает? Воистину, в этом — знамения для людей, которые веруют."
+      "ru": "Неужели они не знали, что Аллах увеличивает удел, кому пожелает, и ограничивает? Воистину, в этом — знамения для людей, которые веруют.",
+      "ur": "کیا انہیں یہ معلوم نہیں کہ اللہ تعالیٰ جس کے لیے چاہے روزی کشاده کر دیتا ہے اور تنگ (بھی)، ایمان ﻻنے والوں کے لیے اس میں (بڑی بڑی) نشانیاں ہیں."
     }
   },
   {
@@ -1829,7 +1949,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah est le Créateur de tout ce qui existe. Il veille à toute chose",
       "bs": "Allah je Stvoritelj svega i On upravlja svim.",
       "ru": "Аллах — Творец всего сущего, и Он попечитель над всем сущим.",
-      "ms": "Allah Yang Menciptakan tiap-tiap sesuatu, dan Dia lah Yang Mentadbirkan serta menguasai segala-galanya."
+      "ms": "Allah Yang Menciptakan tiap-tiap sesuatu, dan Dia lah Yang Mentadbirkan serta menguasai segala-galanya.",
+      "ur": "اللہ ہر چیز کا پیدا کرنے واﻻ ہے اور وہی ہر چیز پر نگہبان ہے."
     }
   },
   {
@@ -1843,7 +1964,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Milik-Nyalah kunci-kunci (perbendaharaan) langit dan bumi. Dan orang-orang yang kafir terhadap ayat-ayat Allah, mereka itulah orang yang rugi.",
       "de": "Ihm gehören die Schlüssel der Himmel und der Erde. Diejenigen, die Allahs Zeichen verleugnen, das sind die Verlierer.",
       "bs": "U Njega su ključevi nebesa i Zemlje! A oni koji u Allahove dokaze ne vjeruju, oni će biti izgubljeni!",
-      "ru": "Ему принадлежат ключи небес и земли. Те, которые отвергли знамения Аллаха — такие и есть потерпевшие убыток."
+      "ru": "Ему принадлежат ключи небес и земли. Те, которые отвергли знамения Аллаха — такие и есть потерпевшие убыток.",
+      "ur": "آسمانوں اور زمین کی کنجیوں کامالک وہی ہے جن جن لوگوں نے اللہ کی آیتوں کا انکار کیا وہی خساره پانے والے ہیں."
     }
   },
   {
@@ -1858,7 +1980,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah connaît aussi bien les regards furtifs que le secret des cœurs.",
       "bs": "On zna poglede koji kriomice u ono što je zabranjeno gledaju, a i ono što grudi kriju.",
       "ru": "Знает Он и предательский взгляд, и то, что таится в сердцах.",
-      "ms": "Allah mengetahui pengkhianatan (penyelewengan dan ketiadaan jujur) pandangan mata seseorang, serta mengetahui akan apa yang tersembunyi di dalam hati."
+      "ms": "Allah mengetahui pengkhianatan (penyelewengan dan ketiadaan jujur) pandangan mata seseorang, serta mengetahui akan apa yang tersembunyi di dalam hati.",
+      "ur": "وه آنکھوں کی خیانت کو اور سینوں کی پوشیده باتوں کو (خوب) جانتا ہے."
     }
   },
   {
@@ -1874,7 +1997,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Mon peuple ! Cette vie n’est que jouissance éphémère. Seule la demeure de l’au-delà est éternelle.",
       "bs": "O narode moj, život na ovom svijetu samo je prolazno uživanje, a onaj je svijet, zaista, Kuća vječna.",
       "ru": "О народ мой! Воистину, эта мирская жизнь — лишь временное пользование. И воистину, Последняя жизнь — это обитель вечного пребывания.",
-      "ms": "“Wahai kaumku! Sesungguhnya kehidupan dunia ini hanyalah kesenangan (untuk sementara waktu sahaja), dan sesungguhnya hari akhirat itulah sahaja negeri yang kekal."
+      "ms": "“Wahai kaumku! Sesungguhnya kehidupan dunia ini hanyalah kesenangan (untuk sementara waktu sahaja), dan sesungguhnya hari akhirat itulah sahaja negeri yang kekal.",
+      "ur": "اے میری قوم! یہ حیات دنیا متاع فانی ہے ، (یقین مانو کہ قرار) اور ہمیشگی کا گھر تو آخرت ہی ہے."
     }
   },
   {
@@ -1888,7 +2012,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Sungguh, penciptaan langit dan bumi itu lebih besar daripada penciptaan manusia, akan tetapi kebanyakan manusia tidak mengetahui.",
       "de": "Wahrlich die Erschaffung der Himmel und der Erde ist größer als die Erschaffung der Menschen. Aber die meisten Menschen wissen nicht.",
       "bs": "Stvaranje nebesa i Zemlje sigurno je veće nego stvaranje roda ljudskog, ali većina ljudi ne zna.",
-      "ru": "Безусловно, сотворение небес и земли больше, чем сотворение людей, однако большинство людей не знает."
+      "ru": "Безусловно, сотворение небес и земли больше, чем сотворение людей, однако большинство людей не знает.",
+      "ur": "آسمان و زمین کی پیدائش یقیناً انسان کی پیدائش سے بہت بڑا کام ہے، لیکن (یہ اور بات ہے کہ) اکثر لوگ بےعلم ہیں."
     }
   },
   {
@@ -1904,7 +2029,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "L’Heure sonnera inéluctablement, mais la plupart des hommes ne croient pas en son avènement.",
       "bs": "Doći će Čas oživljenja, u to nema nimalo sumnje, ali većina ljudi neće da vjeruje.",
       "ru": "Воистину, Час безусловно настанет, в этом нет сомнения, однако большинство людей не верует.",
-      "ms": "Sesungguhnya hari kiamat tetap akan datang, tidak ada sebarang syak tentang kedatangannya; akan tetapi kebanyakan manusia tidak beriman (akan hakikat itu)."
+      "ms": "Sesungguhnya hari kiamat tetap akan datang, tidak ada sebarang syak tentang kedatangannya; akan tetapi kebanyakan manusia tidak beriman (akan hakikat itu).",
+      "ur": "قیامت بالیقین اور بےشبہ آنے والی ہے، لیکن (یہ اور بات ہے کہ) بہت سے لوگ ایمان نہیں ﻻتے."
     }
   },
   {
@@ -1919,7 +2045,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Dies ist doch Allah, euer Herr, der Schöpfer von allem. Es gibt keinen Gott außer Ihm. Wie laßt ihr euch also abwendig machen?",
       "fr": "Tel est Allah, votre Seigneur, Créateur de toute chose. Il n’est de divinité digne d’être adorée que Lui. Comment pouvez-vous encore vous détourner ?",
       "bs": "To vam je, eto, Allah, Gospodar vaš, Stvoritelj svega, drugog boga osim Njega nema, pa kuda se onda odmećete?",
-      "ru": "Таков Аллах, ваш Господь, Творец всего сущего! Нет божества, кроме Него. Так как же вы можете быть настолько отвращены от истины?!"
+      "ru": "Таков Аллах, ваш Господь, Творец всего сущего! Нет божества, кроме Него. Так как же вы можете быть настолько отвращены от истины?!",
+      "ur": "یہی اللہ ہے تم سب کا رب ہر چیز کا خالق اس کے سوا کوئی معبود نہیں پھر کہاں تم پھرے جاتے ہو."
     }
   },
   {
@@ -1935,7 +2062,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Quant à ceux qui croient et accomplissent de bonnes œuvres, leur est réservée une récompense dont ils ne seront jamais privés.",
       "bs": "One koji vjeruju i dobra djela čine zbilja čeka nagrada neprekidna.”",
       "ru": "Воистину, те, которые уверовали и совершали праведные деяния, — для них неиссякаемая награда.",
-      "ms": "Sesungguhnya orang-orang yang beriman dan mengerjakan amal yang soleh, mereka beroleh balasan pahala yang tidak putus-putus."
+      "ms": "Sesungguhnya orang-orang yang beriman dan mengerjakan amal yang soleh, mereka beroleh balasan pahala yang tidak putus-putus.",
+      "ur": "بیشک جو لوگ ایمان ﻻئیں اور بھلے کام کریں ان کے لیے نہ ختم ہونے واﻻ اجر ہے."
     }
   },
   {
@@ -1949,7 +2077,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Wer rechtschaffen handelt, der (tut es) zu seinem eigenen Vorteil, und wer Böses tut, der (tut es) zu seinem eigenen Nachteil. Und dein Herr ist keiner, der den Dienern Unrecht zufügt.",
       "fr": "Quiconque fait le bien, le fera dans son seul intérêt et quiconque commet le mal, en subira seul les effets. Car Allah n’est jamais injuste envers Ses serviteurs.",
       "bs": "Ko čini dobro, u svoju korist čini, a ko radi zlo, na svoju štetu radi. – A Gospodar tvoj nije nepravedan prema robovima Svojim.",
-      "ru": "Кто совершил праведное дело, тот поступил во благо себе, а кто совершил зло, тот поступил во вред себе. И твой Господь вовсе не поступает несправедливо со Своими рабами."
+      "ru": "Кто совершил праведное дело, тот поступил во благо себе, а кто совершил зло, тот поступил во вред себе. И твой Господь вовсе не поступает несправедливо со Своими рабами.",
+      "ur": "جو شخص نیک کام کرے گا وه اپنے نفع کے لیے اور جو برا کام کرے گا اس کا وبال اسی پر ہے۔ اور آپ کا رب بندوں پر ﻇلم کرنے واﻻ نہیں."
     }
   },
   {
@@ -1963,7 +2092,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Milik-Nyalah perbendaharaan langit dan bumi; Dia melapangkan rezeki dan membatasinya bagi siapa yang Dia kehendaki. Sungguh, Dia Maha Mengetahui segala sesuatu.",
       "de": "Ihm gehören die Schlüssel der Himmel und der Erde. Er gewährt die Versorgung großzügig, wem Er will, und bemißt auch. Gewiß, Er weiß über alles Bescheid.",
       "bs": "U Njega su ključevi nebesa i Zemlje, On daje opskrbu u izobilju kome hoće, a i uskraćuje; On, uistinu, zna sve.",
-      "ru": "Ему принадлежат ключи небес и земли. Он увеличивает удел кому пожелает, и ограничивает. Воистину, Он — знающий обо всём сущем."
+      "ru": "Ему принадлежат ключи небес и земли. Он увеличивает удел кому пожелает, и ограничивает. Воистину, Он — знающий обо всём сущем.",
+      "ur": "آسمانوں اور زمین کی کنجیاں اسی کی ہیں ، جس کی چاہے روزی کشاده کردے اور تنگ کردے، یقیناً وه ہر چیز کو جاننے واﻻ ہے."
     }
   },
   {
@@ -1977,7 +2107,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Allah yang menurunkan kitab (Al-Qur`an) dengan (membawa) kebenaran dan neraca (keadilan). Dan tahukah kamu, boleh jadi hari Kiamat itu sudah dekat?",
       "de": "Allah ist es, Der das Buch mit der Wahrheit herabgesandt hat, und (auch) die Waage. Was läßt dich wissen? Vielleicht ist die Stunde nahe.",
       "bs": "Allah je Onaj Koji je Knjigu s Istinom i Mjerilo objavio! A šta ti znaš – možda je Čas kijameta blizu!",
-      "ru": "Аллах — Тот, Кто ниспослал Писание с истиной и весы. А откуда тебе знать — быть может, Час уже близок?"
+      "ru": "Аллах — Тот, Кто ниспослал Писание с истиной и весы. А откуда тебе знать — быть может, Час уже близок?",
+      "ur": "اللہ تعالیٰ نے حق کے ساتھ کتاب نازل فرمائی ہے اور ترازو بھی (اتاری ہے) اور آپ کو کیا خبر شاید قیامت قریب ہی ہو."
     }
   },
   {
@@ -1993,7 +2124,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Nous avons révélé le Livre sous forme d’une récitation en langue arabe afin que vous en compreniez la signification.",
       "bs": "Mi je objavljujemo kao Kur’an na arapskom jeziku da biste razumjeli,",
       "ru": "Воистину, Мы сделали его Кораном на арабском языке — быть может, вы уразумеете.",
-      "ms": "Sesungguhnya Kami jadikan Kitab itu sebagai Quran yang diturunkan dengan bahasa Arab, supaya kamu (menggunakan akal) memahaminya."
+      "ms": "Sesungguhnya Kami jadikan Kitab itu sebagai Quran yang diturunkan dengan bahasa Arab, supaya kamu (menggunakan akal) memahaminya.",
+      "ur": "ہم نے اس کو عربی زبان کا قرآن بنایا ہے کہ تم سمجھ لو."
     }
   },
   {
@@ -2009,7 +2141,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Gloire au Seigneur des cieux et de la terre, Seigneur du Trône que leurs blasphèmes ne sauraient toucher !",
       "bs": "Neka je slavljen i uzvišen Gospodar nebesa i Zemlje, i Gospodar Arša, od onoga kako Ga oni opisuju!",
       "ru": "Преславен Господь небес и земли, Господь Трона, от того, что они приписывают!",
-      "ms": "Maha Suci Allah Tuhan yang menciptakan langit dan bumi, - tuhan yang mempunyai Arasy (yang melambangkan kebesarannya), - (Maha Sucilah Ia) dari apa yang mereka katakan itu."
+      "ms": "Maha Suci Allah Tuhan yang menciptakan langit dan bumi, - tuhan yang mempunyai Arasy (yang melambangkan kebesarannya), - (Maha Sucilah Ia) dari apa yang mereka katakan itu.",
+      "ur": "آسمانوں اور زمین اور عرش کا رب جو کچھ یہ بیان کرتے ہیں اس سے (بہت) پاک ہے."
     }
   },
   {
@@ -2025,7 +2158,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il n’est de divinité digne d’être adorée que Lui. Il donne la vie et la mort. Il est votre Seigneur et celui de vos ancêtres les plus éloignés.",
       "bs": "drugog boga osim Njega nema; On život i smrt daje – Gospodar vaš i Gospodar vaših predaka davnih!",
       "ru": "Нет божества, кроме Него. Он оживляет и умерщвляет, ваш Господь и Господь ваших праотцов.",
-      "ms": "Tiada Tuhan yang berhak disembah melainkan Dia; Dia lah Yang menghidupkan dan Yang mematikan; (Dia lah jua) Tuhan kamu dan Tuhan datuk nenek kamu yang telah lalu."
+      "ms": "Tiada Tuhan yang berhak disembah melainkan Dia; Dia lah Yang menghidupkan dan Yang mematikan; (Dia lah jua) Tuhan kamu dan Tuhan datuk nenek kamu yang telah lalu.",
+      "ur": "کوئی معبود نہیں اس کے سوا وہی جلاتا ہے اور مارتا ہے، وہی تمہارا رب ہے اور تمہارے اگلے باپ دادوں کا."
     }
   },
   {
@@ -2041,7 +2175,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il est dans les cieux et sur la terre bien des signes pour les croyants.",
       "bs": "Na nebesima i na Zemlji, zaista, postoje znakovi za vjernike.",
       "ru": "Воистину, в небесах и на земле — знамения для верующих.",
-      "ms": "Sesungguhnya pada langit dan bumi terdapat tanda-tanda (yang membuktikan kekuasaan Allah) bagi orang-orang yang beriman."
+      "ms": "Sesungguhnya pada langit dan bumi terdapat tanda-tanda (yang membuktikan kekuasaan Allah) bagi orang-orang yang beriman.",
+      "ur": "آسمانوں اور زمین میں ایمان داروں کے لیے یقیناً بہت سی نشانیاں ہیں."
     }
   },
   {
@@ -2057,7 +2192,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "C’est Allah qui vous a soumis la mer sur laquelle, par Sa volonté, voguent des vaisseaux à bord desquels vous partez en quête de Ses faveurs. Peut-être Lui en serez-vous reconnaissants !",
       "bs": "Allah je Onaj Koji vam je potčinio more da bi lađe, odredbom Njegovom, po njemu plovile, da biste mogli tražiti blagodati Njegove i da biste bili zahvalni.",
       "ru": "Аллах — Тот, Кто подчинил вам море, чтобы по Его велению корабли плыли по нему, и чтобы вы искали из Его щедрости — быть может, вы будете благодарны.",
-      "ms": "Allah yang memudahkan laut bagi kegunaan kamu, supaya kapal-kapal belayar padanya dengan perintahNya, dan supaya kamu mencari rezeki dari limpah kurniaNya, dan juga supaya kamu bersyukur."
+      "ms": "Allah yang memudahkan laut bagi kegunaan kamu, supaya kapal-kapal belayar padanya dengan perintahNya, dan supaya kamu mencari rezeki dari limpah kurniaNya, dan juga supaya kamu bersyukur.",
+      "ur": "اللہ ہی ہے جس نے تمہارے لیے دریا کو تابع بنادیا تاکہ اس کے حکم سے اس میں کشتیاں چلیں اور تم اس کا فضل تلاش کرو اور تاکہ تم شکر بجاﻻؤ."
     }
   },
   {
@@ -2072,7 +2208,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Wer rechtschaffen handelt, der (tut es) zu seinem eigenen Vorteil, und wer Böses tut, der (tut es) zu seinem eigenen Nachteil. Hierauf werdet ihr zu eurem Herrn zurückgebracht.",
       "fr": "Quiconque fait le bien, le fera dans son seul intérêt et quiconque commet le mal, en subira seul les effets. Puis c’est à votre Seigneur que vous serez tous ramenés.",
       "bs": "Onaj koji čini dobro – sebi ga čini, a onaj koji čini zlo – protiv sebe radi; a na kraju ćete se Gospodaru svome vratiti.",
-      "ru": "Кто совершал праведное — себе во благо, а кто совершал дурное — себе во вред. Затем к своему Господу вы будете возвращены."
+      "ru": "Кто совершал праведное — себе во благо, а кто совершал дурное — себе во вред. Затем к своему Господу вы будете возвращены.",
+      "ur": "جو نیکی کرے گا وه اپنے ذاتی بھلے کے لیے اور جو برائی کرے گا اس کا وبال اسی پر ہے ، پھر تم سب اپنے پروردگار کی طرف لوٹائے جاؤ گے."
     }
   },
   {
@@ -2088,7 +2225,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Voici un livre propre à éclairer les hommes, à assurer leur salut et plein de miséricorde pour ceux qui croient fermement.",
       "bs": "Ovaj Kur’an putokaz je ljudima, i uputa i milost onima koji čvrsto vjeruju.",
       "ru": "Это — наглядные доводы для людей, верное руководство и милость для людей, которые убеждены.",
-      "ms": "Al-Quran ini menjadi panduan-panduan yang membuka matahati manusia, dan menjadi hidayah petunjuk serta membawa rahmat bagi kaum yang meyakini (kebenarannya)."
+      "ms": "Al-Quran ini menjadi panduan-panduan yang membuka matahati manusia, dan menjadi hidayah petunjuk serta membawa rahmat bagi kaum yang meyakini (kebenarannya).",
+      "ur": "یہ (قرآن) لوگوں کے لیے بصیرت کی باتیں اور ہدایت ورحمت ہے اس قوم کے لیے جو یقین رکھتی ہے."
     }
   },
   {
@@ -2101,7 +2239,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "We did not create the heavens and earth and what is between them except in truth and [for] a specified term. But those who disbelieve, from that of which they are warned, are turning away.",
       "fr": "Nous n’avons créé les cieux, la terre et ce qui se trouve entre eux que pour une juste raison et un terme déjà fixé. Les mécréants restent cependant sourds à Nos avertissements.",
       "bs": "Mi smo nebesa i Zemlju, i ono što je između njih, samo s Istinom stvorili i do roka određenog, ali oni koji ne vjeruju okreću se od onoga čime upozoravani budu.",
-      "ru": "Мы сотворили небеса и землю, и то, что между ними, не иначе как с истиной и на назначенный срок. А те, которые отвергли веру, отворачиваются от того, в чём они были предостережены."
+      "ru": "Мы сотворили небеса и землю, и то, что между ними, не иначе как с истиной и на назначенный срок. А те, которые отвергли веру, отворачиваются от того, в чём они были предостережены.",
+      "ur": "ہم نے آسمانوں اور زمین اور ان دونوں کے درمیان کی تمام چیزوں کو بہترین تدبیر کے ساتھ ہی ایک مدت معین کے لئے پیدا کیا ہے ، اور کافر لوگ جس چیز سے ڈرائے جاتے ہیں منھ موڑ لیتے ہیں."
     }
   },
   {
@@ -2114,7 +2253,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "Do they not see that Allāh, who created the heavens and earth and did not fail in their creation, is able to give life to the dead? Yes. Indeed, He is over all things competent.",
       "fr": "Ne savent-ils pas qu’Allah, qui a créé sans aucune peine les cieux et la terre, est en mesure de ressusciter les morts ? Il est pourtant capable de toute chose.",
       "bs": "Zar ne znaju da je Allah – Koji je nebesa i Zemlju stvorio i Koji se nije nimalo umorio dok ih je stvarao – moćan oživiti mrtve? Jest, On sve može.",
-      "ru": "Неужели они не видят, что Аллах, Который сотворил небеса и землю и не утомился их сотворением, способен оживить мёртвых? Напротив! Воистину, Он всемогущ над всем сущим."
+      "ru": "Неужели они не видят, что Аллах, Который сотворил небеса и землю и не утомился их сотворением, способен оживить мёртвых? Напротив! Воистину, Он всемогущ над всем сущим.",
+      "ur": "کیا وه نہیں دیکھتے کہ جس اللہ نے آسمانوں اور زمین کو پیدا کیا اور ان کے پیدا کرنے سے وه نہ تھکا، وه یقیناً مُردوں کو زنده کرنے پر قادر ہے؟ کیوں نہ ہو؟ وه یقیناً ہر چیز پر قادر ہے."
     }
   },
   {
@@ -2130,7 +2270,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Vous qui croyez ! Si vous soutenez la cause d’Allah, Il raffermira vos pas, vous permettant de triompher de vos ennemis.",
       "bs": "O vjernici, ako Allaha pomognete, i On će vama pomoći i korake vaše učvrstiti.",
       "ru": "О вы, которые уверовали! Если вы поможете Аллаху — Он поможет вам и укрепит ваши стопы.",
-      "ms": "Wahai orang-orang yang beriman, kalau kamu membela (ugama) Allah nescaya Allah membela kamu (untuk mencapai kemenangan) dan meneguhkan tapak pendirian kamu."
+      "ms": "Wahai orang-orang yang beriman, kalau kamu membela (ugama) Allah nescaya Allah membela kamu (untuk mencapai kemenangan) dan meneguhkan tapak pendirian kamu.",
+      "ur": "اے ایمان والو! اگر تم اللہ (کے دین) کی مدد کرو گے تو وه تمہاری مدد کرے گا اور تمہیں ﺛابت قدم رکھے گا."
     }
   },
   {
@@ -2146,7 +2287,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Vous qui croyez ! Obéissez à Allah et obéissez au Messager ! Ne rendez pas vaines vos œuvres !",
       "bs": "O vjernici, pokoravajte se Allahu i pokoravajte se Poslaniku, i ne ništite djela svoja!",
       "ru": "О вы, которые уверовали! Повинуйтесь Аллаху и повинуйтесь Посланнику, и не делайте тщетными свои деяния.",
-      "ms": "Wahai orang-orang yang beriman! Taatlah kamu kepada Allah dan taatlah kepada Rasul Allah, dan janganlah kamu batalkan amal-amal kamu!"
+      "ms": "Wahai orang-orang yang beriman! Taatlah kamu kepada Allah dan taatlah kepada Rasul Allah, dan janganlah kamu batalkan amal-amal kamu!",
+      "ur": "اے ایمان والو! اللہ کی اطاعت کرو اور رسول کا کہا مانو اور اپنے اعمال کو غارت نہ کرو."
     }
   },
   {
@@ -2161,7 +2303,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Das diesseitige Leben ist nur Spiel und Zerstreuung. Wenn ihr glaubt und gottesfürchtig seid, wird Er euch euren Lohn geben und von euch nicht euren (gesamten) Besitz verlangen.",
       "fr": "Cette vie n’est que jeu et vanité. Mais si vous avez la foi et craignez Allah, Il vous accordera la récompense que vous méritez sans pour autant exiger vos biens en totalité.",
       "bs": "Život na ovom svijetu je samo igra i zabava! A ako budete vjerovali i grijehe izbjegavali, On će vas nagraditi i imanja vaša od vas neće tražiti.",
-      "ru": "Воистину, мирская жизнь — лишь игра и забава. Но если вы уверуете и будете богобоязненны, Он дарует вам ваши награды и не потребует от вас вашего имущества."
+      "ru": "Воистину, мирская жизнь — лишь игра и забава. Но если вы уверуете и будете богобоязненны, Он дарует вам ваши награды и не потребует от вас вашего имущества.",
+      "ur": "واقعی زندگانیٴ دنیا تو صرف کھیل کود ہے اور اگر تم ایمان لے آؤ گے اور تقویٰ اختیار کرو گے تو اللہ تمہیں تمہارے اجر دے گا اور وه تم سے تمہارے مال نہیں مانگتا."
     }
   },
   {
@@ -2175,7 +2318,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Dialah yang mengutus Rasul-Nya dengan membawa petunjuk dan agama yang benar, agar dimenangkan-Nya terhadap semua agama. Dan cukuplah Allah sebagai saksi.",
       "de": "Er ist es, Der Seinen Gesandten mit der Rechtleitung und der Religion der Wahrheit gesandt hat, um ihr die Oberhand über alle Religion zu geben. Und Allah genügt als Zeuge.",
       "bs": "On je poslao Poslanika Svog s Uputom i vjerom istinitom da bi je uzdigao iznad svih vjera. A Allah je dovoljan Svjedok!",
-      "ru": "Он — Тот, Кто послал Своего посланника с верным руководством и религией истины, чтобы возвысить её над всеми религиями. Достаточно Аллаха в качестве свидетеля."
+      "ru": "Он — Тот, Кто послал Своего посланника с верным руководством и религией истины, чтобы возвысить её над всеми религиями. Достаточно Аллаха в качестве свидетеля.",
+      "ur": "وہی ہے جس نےاپنے رسول کو ہدایت اور دین حق کے ساتھ بھیجا تاکہ اسے ہر دین پر غالب کرے ، اور اللہ تعالیٰ کافی ہے گواہی دینے واﻻ."
     }
   },
   {
@@ -2188,7 +2332,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "O you who have believed, if there comes to you a disobedient one with information, investigate, lest you harm a people out of ignorance and become, over what you have done, regretful.",
       "fr": "Vous qui croyez ! Si un homme sans moralité vous apporte une nouvelle, assurez-vous de sa véracité, de crainte de porter préjudice à des innocents sans le vouloir et ensuite de le regretter.",
       "bs": "O vjernici, ako vam nekakav nepošten čovjek donese kakvu vijest, dobro je provjerite, da u neznanju nekom zlo ne učinite, pa da se zbog onog što ste učinili pokajete.",
-      "ru": "О вы, которые уверовали! Если к вам придёт нечестивец с вестью, то удостоверьтесь, чтобы по неведению не нанести вред людям, и чтобы потом не сожалеть о содеянном."
+      "ru": "О вы, которые уверовали! Если к вам придёт нечестивец с вестью, то удостоверьтесь, чтобы по неведению не нанести вред людям, и чтобы потом не сожалеть о содеянном.",
+      "ur": "اے مسلمانو! اگر تمہیں کوئی فاسق خبر دے تو تم اس کی اچھی طرح تحقیق کر لیا کرو ایسا نہ ہو کہ نادانی میں کسی قوم کو ایذا پہنچا دو پھر اپنے کیے پر پشیمانی اٹھاؤ."
     }
   },
   {
@@ -2204,7 +2349,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "En réalité, les croyants sont des frères. Réconciliez donc vos frères ! Craignez Allah de manière à être touchés par Sa grâce !",
       "bs": "Vjernici su samo braća, zato pomirite vaša dva brata i bojte se Allaha da bi vam se milost ukazala.",
       "ru": "Воистину, верующие — лишь братья. Так примиряйте же ваших братьев и бойтесь Аллаха — быть может, вы будете помилованы.",
-      "ms": "Sebenarnya orang-orang yang beriman itu adalah bersaudara, maka damaikanlah di antara dua saudara kamu (yang bertelingkah) itu; dan bertaqwalah kepada Allah supaya kamu beroleh rahmat."
+      "ms": "Sebenarnya orang-orang yang beriman itu adalah bersaudara, maka damaikanlah di antara dua saudara kamu (yang bertelingkah) itu; dan bertaqwalah kepada Allah supaya kamu beroleh rahmat.",
+      "ur": "(یاد رکھو) سارے مسلمان بھائی بھائی ہیں پس اپنے دو بھائیوں میں ملاپ کرا دیا کرو ، اور اللہ سے ڈرتے رہو تاکہ تم پر رحم کیا جائے."
     }
   },
   {
@@ -2220,7 +2366,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah seul connaît les mystères des cieux et de la terre et Il voit parfaitement ce que vous faites.",
       "bs": "Allah, sigurno, zna tajne nebesa i Zemlje i Allah dobro vidi ono što radite.”",
       "ru": "Воистину, Аллах знает сокровенное небес и земли. Аллах — видящий то, что вы совершаете.",
-      "ms": "“Sesungguhnya Allah mengetahui segala rahsia langit dan bumi, dan Allah Maha Melihat akan segala yang kamu kerjakan”."
+      "ms": "“Sesungguhnya Allah mengetahui segala rahsia langit dan bumi, dan Allah Maha Melihat akan segala yang kamu kerjakan”.",
+      "ur": "یقین مانو کہ آسمانوں اور زمین کی پوشیده باتیں اللہ خوب جانتا ہے۔ اور جو کچھ تم کر رہے ہو اسے اللہ خوب دیکھ رہا ہے."
     }
   },
   {
@@ -2235,7 +2382,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Schauen sie denn nicht zum Himmel über ihnen, wie Wir ihn aufgebaut und geschmückt haben, und daß er keine Spalten hat?",
       "fr": "Ne voient-ils pas le ciel au-dessus d’eux, comme Nous l’avons édifié, paré d’étoiles et créé sans faille ?",
       "bs": "A zašto ne pogledaju nebo iznad sebe – kako smo ga sazdali i ukrasili i kako u njemu nema nereda!?",
-      "ru": "Неужели они не смотрели на небо над собой, как Мы воздвигли его и украсили, и нет в нём никаких расщелин?"
+      "ru": "Неужели они не смотрели на небо над собой, как Мы воздвигли его и украсили, и нет в нём никаких расщелин?",
+      "ur": "کیا انہوں نے آسمان کو اپنے اوپر نہیں دیکھا؟ کہ ہم نے اسے کس طرح بنایا ہے اور زینت دی ہے اس میں کوئی شگاف نہیں."
     }
   },
   {
@@ -2251,7 +2399,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il ne prononce, en effet, aucun mot sans avoir à ses côtés un ange prêt à le consigner.",
       "bs": "on ne izusti ni jednu riječ, a da pored njega nije prisutan onaj koji bdije.",
       "ru": "Он не произнесёт ни единого слова, без того чтобы при нём не был бдительный наблюдатель.",
-      "ms": "Tidak ada sebarang perkataan yang dilafazkannya (atau perbuatan yang dilakukannya) melainkan ada di sisinya malaikat pengawas yang sentiasa sedia (menerima dan menulisnya)."
+      "ms": "Tidak ada sebarang perkataan yang dilafazkannya (atau perbuatan yang dilakukannya) melainkan ada di sisinya malaikat pengawas yang sentiasa sedia (menerima dan menulisnya).",
+      "ur": "(انسان) منھ سے کوئی لفﻆ نکال نہیں پاتا مگر کہ اس کے پاس نگہبان تیار ہے."
     }
   },
   {
@@ -2267,7 +2416,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Nous avons créé toute chose selon un décret préalable.",
       "bs": "Mi, doista, sve s određenjem stvaramo",
       "ru": "Воистину, всё сущее Мы сотворили по предопределению.",
-      "ms": "Sesungguhnya Kami menciptakan tiap-tiap sesuatu menurut takdir (yang telah ditentukan)."
+      "ms": "Sesungguhnya Kami menciptakan tiap-tiap sesuatu menurut takdir (yang telah ditentukan).",
+      "ur": "بیشک ہم نے ہر چیز کو ایک (مقرره) اندازے پر پیدا کیا ہے."
     }
   },
   {
@@ -2283,7 +2433,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Y aurait-il d’autre récompense pour ceux qui font le bien que l’éternelle félicité ?",
       "bs": "Zar za dobro učinjeno djelo nagrada može biti nešto drugo do dobro?!",
       "ru": "Разве может быть воздаяние за добродетель иным, кроме добродетели?",
-      "ms": "Bukankah tidak ada balasan bagi amal yang baik - melainkan balasan yang baik juga?"
+      "ms": "Bukankah tidak ada balasan bagi amal yang baik - melainkan balasan yang baik juga?",
+      "ur": "احسان کا بدلہ احسان کے سوا کیا ہے."
     }
   },
   {
@@ -2299,7 +2450,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Béni soit le nom de ton Seigneur, Dieu de majesté et de générosité.",
       "bs": "Neka je uzvišeno ime Gospodara tvoga, Veličanstvenog i Plemenitog!",
       "ru": "Благословенно имя твоего Господа, Обладателя величия и щедрости.",
-      "ms": "Maha Sucilah nama Tuhanmu yang mempunyai Kebesaran dan Kemuliaan."
+      "ms": "Maha Sucilah nama Tuhanmu yang mempunyai Kebesaran dan Kemuliaan.",
+      "ur": "تیرے پروردگار کا نام بابرکت ہے جو عزت وجلال واﻻ ہے."
     }
   },
   {
@@ -2315,7 +2467,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "que le Coran est une sublime récitation,",
       "bs": "On je, zaista, Kur’an plemeniti",
       "ru": "Воистину, это — благородный Коран,",
-      "ms": "Bahawa sesungguhnya (yang dibacakan kepada kamu) itu ialah Al-Quran yang mulia, (yang sentiasa memberi ajaran dan pimpinan),"
+      "ms": "Bahawa sesungguhnya (yang dibacakan kepada kamu) itu ialah Al-Quran yang mulia, (yang sentiasa memberi ajaran dan pimpinan),",
+      "ur": "کہ بیشک یہ قرآن بہت بڑی عزت واﻻ ہے."
     }
   },
   {
@@ -2331,7 +2484,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il règne en Maître absolu sur les cieux et la terre. Il donne la vie et la mort, et Il a pouvoir sur toute chose.",
       "bs": "Njegova je vlast na nebesima i na Zemlji; On život i smrt daje, i On nad svime ima moć.",
       "ru": "Ему принадлежит владычество небес и земли. Он оживляет и умерщвляет, и Он — всемогущ над всем сущим.",
-      "ms": "Dia lah sahaja yang menguasai dan memiliki langit dan bumi; Ia menghidupkan dan mematikan; dan Ia Maha Kuasa atas tiap-tiap sesuatu."
+      "ms": "Dia lah sahaja yang menguasai dan memiliki langit dan bumi; Ia menghidupkan dan mematikan; dan Ia Maha Kuasa atas tiap-tiap sesuatu.",
+      "ur": "آسمانوں اور زمین کی بادشاہت اسی کی ہے ، وہی زندگی دیتا ہے اور موت بھی اور وه ہر چیز پر قادر ہے."
     }
   },
   {
@@ -2347,7 +2501,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il règne en Maître absolu sur les cieux et la terre, et c’est à Allah que tout doit revenir.",
       "bs": "Njegova je vlast na nebesima i na Zemlji, i Allahu će se sve vratiti!",
       "ru": "Ему принадлежит владычество небес и земли, к Аллаху возвращаются все дела.",
-      "ms": "Dia lah sahaja yang menguasai dan memiliki langit dan bumi; dan kepada Allah jualah dikembalikan segala urusan."
+      "ms": "Dia lah sahaja yang menguasai dan memiliki langit dan bumi; dan kepada Allah jualah dikembalikan segala urusan.",
+      "ur": "آسمانوں کی اور زمین کی بادشاہی اسی کی ہے۔ اور تمام کام اسی کی طرف لوٹائے جاتے ہیں."
     }
   },
   {
@@ -2362,7 +2517,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Er läßt die Nacht in den Tag eindringen und läßt den Tag in die Nacht eindringen. Und Er weiß über das Innerste der Brüste Bescheid.",
       "fr": "Il fait pénétrer la nuit dans le jour et le jour dans la nuit, et Il sait parfaitement ce que renferment les cœurs.",
       "bs": "On uvodi noć u dan i dan u noć, i On zna što se u grudima skriva.",
-      "ru": "Он вводит ночь в день и вводит день в ночь. Он — знающий то, что таится в сердцах."
+      "ru": "Он вводит ночь в день и вводит день в ночь. Он — знающий то, что таится в сердцах.",
+      "ur": "وہی رات کو دن میں لے جاتا ہے اور وہی دن کو رات میں داخل کر دیتا ہے اور سینوں کے بھیدوں کا وه پورا عالم ہے."
     }
   },
   {
@@ -2376,7 +2532,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Er ist es, Der Seinem Diener klare Zeichen offenbart, damit Er euch aus den Finsternissen ins Licht hinausbringt. Und Allah ist wahrlich mit euch Gnädig und Barmherzig.",
       "fr": "C’est Lui qui révèle à Son serviteur des versets parfaitement clairs afin de vous tirer des ténèbres vers la lumière. Allah est, envers vous, toute bonté et toute miséricorde.",
       "bs": "On robu Svome objavljuje jasne ajete da bi vas iz tmina na svjetlo izveo – a Allah je, uistinu, prema vama milosrdan i milostiv.",
-      "ru": "Он — Тот, Кто ниспосылает Своему рабу ясные знамения, чтобы вывести вас из тьмы к свету. И воистину, Аллах к вам — сострадательный, милующий."
+      "ru": "Он — Тот, Кто ниспосылает Своему рабу ясные знамения, чтобы вывести вас из тьмы к свету. И воистину, Аллах к вам — сострадательный, милующий.",
+      "ur": "وه (اللہ) ہی ہے جو اپنے بندے پر واضح آیتیں اتارتا ہے تاکہ وه تمہیں اندھیروں سے نور کی طرف لے جائے یقیناً اللہ تعالیٰ تم پر نرمی کرنے واﻻ رحم کرنے واﻻ ہے."
     }
   },
   {
@@ -2390,7 +2547,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Gewiß, denjenigen Männern, die Almosen geben und denjenigen Frauen, die Almosen geben und (damit) ein gutes Darlehen geben, wird es vervielfacht werden; und für sie wird es trefflichen Lohn geben.",
       "fr": "Les hommes et les femmes qui, par leurs aumônes, font à Allah un prêt sincère obtiendront en retour une récompense décuplée et une généreuse rétribution.",
       "bs": "Onima koji milostinju i zekat budu udjeljivali i onima koje je budu udjeljivale, i koji drage volje Allahu zajam budu davali – mnogostruko će se vratiti i njih čeka nagrada divna.",
-      "ru": "Воистину, делающим пожертвования мужчинам и делающим пожертвования женщинам, и тем, кто дал Аллаху благой заём, будет приумножено, и для них — щедрая награда."
+      "ru": "Воистину, делающим пожертвования мужчинам и делающим пожертвования женщинам, и тем, кто дал Аллаху благой заём, будет приумножено, и для них — щедрая награда.",
+      "ur": "بیشک صدقہ دینے والے مرد اور صدقہ دینے والی عورتیں اور جو اللہ کو خلوص کے ساتھ قرض دے رہے ہیں۔ ان کے لیے یہ بڑھایا جائے گا اور ان کے لیے پسندیده اجر وﺛواب ہے."
     }
   },
   {
@@ -2406,7 +2564,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah a décrété : « Je triompherai assurément, ainsi que Mes Messagers. » Allah est Fort et Tout-Puissant.",
       "bs": "Allah je zapisao: \"Ja i poslanici Moji sigurno ćemo pobijediti!\" Allah je, zaista, moćan i silan.",
       "ru": "Аллах предначертал: «Я непременно одержу верх — Я и Мои посланники!» Воистину, Аллах — сильный, могущественный.",
-      "ms": "Allah telah menetapkan: “Sesungguhnya Aku dan Rasul-rasulKu tetap mengalahkan (golongan yang menentang)”. Sesungguhnya Allah Maha Kuat, lagi Maha kuasa."
+      "ms": "Allah telah menetapkan: “Sesungguhnya Aku dan Rasul-rasulKu tetap mengalahkan (golongan yang menentang)”. Sesungguhnya Allah Maha Kuat, lagi Maha kuasa.",
+      "ur": "اللہ تعالیٰ لکھ چکا ہے کہ بیشک میں اور میرے پیغمبر غالب رہیں گے۔ یقیناً اللہ تعالیٰ زور آور اور غالب ہے."
     }
   },
   {
@@ -2420,7 +2579,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "O die ihr glaubt, fürchtet Allah. Und eine jede Seele schaue, was sie für morgen vorausschickt. Und fürchtet Allah; gewiß, Allah ist Kundig dessen, was ihr tut.",
       "fr": "Vous qui croyez ! Craignez Allah et que chacun considère les œuvres qu’il a accomplies pour le salut de son âme. Craignez Allah qui est parfaitement informé de ce que vous faites.",
       "bs": "O vi koji vjerujete, Allaha se bojte, i neka svaki čovjek gleda šta je za sutra pripremio, i Allaha se bojte. Allah, zaista, u potpunosti zna ono što radite.",
-      "ru": "О вы, которые уверовали! Бойтесь Аллаха, и пусть каждая душа посмотрит, что она приготовила на завтра. И бойтесь Аллаха. Воистину, Аллах — сведущий о том, что вы совершаете."
+      "ru": "О вы, которые уверовали! Бойтесь Аллаха, и пусть каждая душа посмотрит, что она приготовила на завтра. И бойтесь Аллаха. Воистину, Аллах — сведущий о том, что вы совершаете.",
+      "ur": "اے ایمان والو! اللہ سے ڈرتے رہو اور ہر شخص دیکھ (بھال) لے کہ کل (قیامت) کے واسطے اس نے (اعمال کا) کیا (ذخیره) بھیجا ہے۔ اور (ہر وقت) اللہ سے ڈرتے رہو۔ اللہ تمہارے سب اعمال سے باخبر ہے."
     }
   },
   {
@@ -2436,7 +2596,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Les damnés de l’Enfer ne sont en rien comparables aux élus du Paradis. Seuls les élus du Paradis ont gagné leur salut.",
       "bs": "Nisu jednaki stanovnici Džehennema i stanovnici Dženneta; stanovnici Dženneta baš su uspješni.",
       "ru": "Не равны обитатели адского огня и обитатели Рая. Обитатели Рая — они и есть преуспевшие.",
-      "ms": "Tidaklah sama ahli neraka dan ahli Syurga; ahli Syurgalah orang-orang yang beroleh kemenangan (mendapat segala yang diingini)."
+      "ms": "Tidaklah sama ahli neraka dan ahli Syurga; ahli Syurgalah orang-orang yang beroleh kemenangan (mendapat segala yang diingini).",
+      "ur": "اہل نار اور اہل جنت (باہم) برابر نہیں ۔ جو اہل جنت ہیں وہی کامیاب ہیں (اور جو اہل نار ہیں وه ناکام ہیں)."
     }
   },
   {
@@ -2448,7 +2609,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "tr": "Biz bu Kur’an’ı bir dağın üzerine indirseydik, onun Allah korkusundan baş eğerek parça parça olduğunu görürdün. İşte biz, bu örnekleri insanlar düşünsünler diye veriyoruz.",
       "en": "If We had sent down this Qur’ān upon a mountain, you would have seen it humbled and splitting from fear of Allāh. And these examples We present to the people that perhaps they will give thought.",
       "bs": "Da ovaj Kur'an kakvom brdu objavimo, ti bi vidio kako je strahopoštovanja puno i kako bi se od straha pred Allahom raspalo. Takve primjere navodimo ljudima da bi razmislili.",
-      "ru": "Если бы Мы ниспослали этот Коран на гору, ты увидел бы её смиренной и раскалывающейся от страха перед Аллахом. Эти притчи Мы приводим людям — быть может, они поразмыслят."
+      "ru": "Если бы Мы ниспослали этот Коран на гору, ты увидел бы её смиренной и раскалывающейся от страха перед Аллахом. Эти притчи Мы приводим людям — быть может, они поразмыслят.",
+      "ur": "اگر ہم اس قرآن کو کسی پہاڑ پر اتارتے تو تو دیکھتا کہ خوف الٰہی سے وه پست ہوکر ٹکڑے ٹکڑے ہو جاتا ہم ان مثالوں کو لوگوں کے سامنے بیان کرتے ہیں تاکہ وه غور وفکر کریں."
     }
   },
   {
@@ -2464,7 +2626,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Vous qui croyez ! Pourquoi vos paroles ne sont-elles pas suivies d’actes ?",
       "bs": "O vi koji vjerujete, zašto govorite ono što ne činite?!",
       "ru": "О вы, которые уверовали! Почему вы говорите то, чего не делаете?",
-      "ms": "Wahai orang-orang yang beriman! Mengapa kamu memperkatakan apa yang kamu tidak melakukannya!"
+      "ms": "Wahai orang-orang yang beriman! Mengapa kamu memperkatakan apa yang kamu tidak melakukannya!",
+      "ur": "اے ایمان والو ! تم وه بات کیوں کہتے ہو جو کرتے نہیں."
     }
   },
   {
@@ -2480,7 +2643,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah a en horreur l’attitude des hommes qui ne traduisent pas leurs paroles en actes.",
       "bs": "Kako samo Allah prezire da govorite ono što ne činite!",
       "ru": "Велика ненависть Аллаха к тому, что вы говорите то, чего не делаете!",
-      "ms": "Amat besar kebenciannya di sisi Allah - kamu memperkatakan sesuatu yang kamu tidak melakukannya."
+      "ms": "Amat besar kebenciannya di sisi Allah - kamu memperkatakan sesuatu yang kamu tidak melakukannya.",
+      "ur": "تم جو کرتے نہیں اس کا کہنا اللہ تعالیٰ کو سخت ناپسند ہے."
     }
   },
   {
@@ -2495,7 +2659,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "O die ihr glaubt, nicht ablenken sollen euch euer Besitz und eure Kinder von Allahs Gedenken. Diejenigen, die dies tun, das sind die Verlierer.",
       "fr": "Vous qui croyez ! Ne laissez pas vos biens et vos enfants vous détourner du souvenir d’Allah. Ceux qui se laissent ainsi distraire sont perdus.",
       "bs": "O vi koji vjerujete, neka vas imanja vaša i djeca vaša ne zabave od spominjanja Allaha. A oni koji to učine, pravi su gubitnici.",
-      "ru": "О вы, которые уверовали! Пусть ни ваше имущество, ни ваши дети не отвлекают вас от поминания Аллаха. А кто поступит так, такие — они и есть потерпевшие убыток."
+      "ru": "О вы, которые уверовали! Пусть ни ваше имущество, ни ваши дети не отвлекают вас от поминания Аллаха. А кто поступит так, такие — они и есть потерпевшие убыток.",
+      "ur": "اے مسلمانو! تمہارے مال اور تمہاری اوﻻد تمہیں اللہ کے ذکر سے غافل نہ کر دیں ۔ اور جو ایسا کریں وه بڑے ہی زیاں کار لوگ ہیں."
     }
   },
   {
@@ -2509,7 +2674,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Dialah yang menciptakan kamu, lalu di antara kamu ada yang kafir dan di antara kamu (juga) ada yang mukmin. Dan Allah Maha Melihat apa yang kamu kerjakan.",
       "de": "Er ist es, Der euch erschaffen hat. So gibt es unter euch Ungläubige und gibt es unter euch Gläubige, und was ihr tut, sieht Allah wohl.",
       "bs": "On je Onaj Koji vas stvara, pa ima među vama i nevjernika, a ima među vama i vjernika. Sve što vi radite Allah dobro vidi.",
-      "ru": "Он — Тот, Кто сотворил вас: и среди вас есть отвергший веру, и среди вас есть верующий. И Аллах — видящий то, что вы совершаете."
+      "ru": "Он — Тот, Кто сотворил вас: и среди вас есть отвергший веру, и среди вас есть верующий. И Аллах — видящий то, что вы совершаете.",
+      "ur": "اسی نے تمہیں پیدا کیا ہے سو تم میں سے بعضے تو کافر ہیں اور بعض ایمان والے ہیں، اور جو کچھ تم کر رہے ہو اللہ تعالیٰ خوب دیکھ رہا ہے."
     }
   },
   {
@@ -2523,7 +2689,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Dia mengetahui apa yang ada di langit dan di bumi, dan mengetahui apa yang kamu rahasiakan dan apa yang kamu nyatakan. Dan Allah Maha Mengetahui segala isi hati.",
       "de": "Er weiß, was in den Himmeln und auf der Erde ist, und Er weiß, was ihr geheimhaltet und was ihr offenlegt. Und Allah weiß über das Innerste der Brüste Bescheid.",
       "bs": "On zna šta na nebesima i na Zemlji postoji i zna šta krijete i šta pokazujete! Allah dobro zna šta grudi kriju.",
-      "ru": "Он знает всё, что на небесах и на земле, и знает, что вы скрываете и что объявляете открыто. Аллах — знающий то, что таится в сердцах."
+      "ru": "Он знает всё, что на небесах и на земле, и знает, что вы скрываете и что объявляете открыто. Аллах — знающий то, что таится в сердцах.",
+      "ur": "وه آسمان وزمین کی ہر ہر چیز کا علم رکھتا ہے اور جو کچھ تم چھپاؤ اور جو ﻇاہر کرو وه (سب کو) جانتا ہے۔ اللہ تو سینوں کی باتوں تک کو جاننے واﻻ ہے."
     }
   },
   {
@@ -2536,7 +2703,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "en": "No disaster strikes except by permission of Allāh. And whoever believes in Allāh - He will guide his heart. And Allāh is Knowing of all things.",
       "de": "Kein Unglück trifft (jemanden), außer mit Allahs Erlaubnis. Und wer an Allah glaubt, dessen Herz leitet Er recht. Und Allah weiß über alles Bescheid.",
       "bs": "Nikakva nevolja ne pogađa osim s Allahovom dozvolom! A ko u Allaha vjeruje, On će uputiti njegovo srce, a Allah sve dobro zna.",
-      "ru": "Никакое бедствие не постигает [никого] иначе как с дозволения Аллаха. А кто верует в Аллаха, тому Он наставляет сердце. Аллах — знающий обо всём."
+      "ru": "Никакое бедствие не постигает [никого] иначе как с дозволения Аллаха. А кто верует в Аллаха, тому Он наставляет сердце. Аллах — знающий обо всём.",
+      "ur": "کوئی مصیبت اللہ کی اجازت کے بغیر نہیں پہنچ سکتی ، جو اللہ پر ایمان ﻻئے اللہ اس کے دل کو ہدایت دیتا ہے اور اللہ ہر چیز کو خوب جاننے واﻻ ہے."
     }
   },
   {
@@ -2552,7 +2720,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah ! Il n’est de divinité digne d’être adorée que Lui. Que les croyants s’en remettent donc uniquement à Allah !",
       "bs": "Samo je Allah Bog, i neka se vjernici samo u Allaha pouzdaju!",
       "ru": "Аллах — нет божества, кроме Него. Так пусть же на Аллаха уповают верующие.",
-      "ms": "Allah, tiada Tuhan melainkan Dia; dan dengan yang demikian, kepada Allah jualah orang-orang yang beriman wajib berserah diri."
+      "ms": "Allah, tiada Tuhan melainkan Dia; dan dengan yang demikian, kepada Allah jualah orang-orang yang beriman wajib berserah diri.",
+      "ur": "اللہ کے سوا کوئی معبود برحق نہیں اور مومنوں کو اللہ ہی پر توکل رکھنا چاہئے."
     }
   },
   {
@@ -2568,7 +2737,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Vos biens et vos enfants ne sont pour vous que tentation et épreuve, tandis qu’auprès d’Allah se trouve une immense récompense.",
       "bs": "Imanja vaša i djeca vaša samo su iskušenje, a u Allaha je nagrada velika.",
       "ru": "Воистину, ваше имущество и ваши дети — лишь испытание. А у Аллаха — великая награда.",
-      "ms": "Sesungguhnya harta benda kamu dan anak-anak kamu itu hanyalah menjadi ujian, dan di sisi Allah jualah pahala yang besar."
+      "ms": "Sesungguhnya harta benda kamu dan anak-anak kamu itu hanyalah menjadi ujian, dan di sisi Allah jualah pahala yang besar.",
+      "ur": "تمہارے مال اور اوﻻد تو سراسر تمہاری آزمائش ہیں ۔ اور بہت بڑا اجر اللہ کے پاس ہے."
     }
   },
   {
@@ -2584,7 +2754,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Il connaît le monde visible comme le monde invisible. Il est le Tout-Puissant, l’infiniment Sage.",
       "bs": "Poznavatelj onoga što je čulima nedokučivo i onoga što je pojavno, Silni i Mudri.",
       "ru": "Знающий сокровенное и явное, Могущественный, Мудрый.",
-      "ms": "Dia lah yang mengetahui segala yang ghaib dan yang nyata, (dan Dia lah jua) yang Maha Kuasa, lagi Maha Bijaksana."
+      "ms": "Dia lah yang mengetahui segala yang ghaib dan yang nyata, (dan Dia lah jua) yang Maha Kuasa, lagi Maha Bijaksana.",
+      "ur": "وه پوشیده اور ﻇاہر کا جاننے واﻻ ہے زبردست حکمت واﻻ (ہے)."
     }
   },
   {
@@ -2600,7 +2771,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Quant à ceux qui, loin des regards, craignent leur Seigneur, ils obtiendront Son pardon et seront généreusement récompensés.",
       "bs": "Onima koji se Gospodara svoga boje i kad ih niko ne vidi – pripada oprost i nagrada velika!",
       "ru": "Воистину, те, которые страшатся своего Господа втайне, — для них прощение и большая награда.",
-      "ms": "Sesungguhnya orang-orang yang takut (melanggar hukum) Tuhannya semasa mereka tidak dilihat orang dan semasa mereka tidak melihat azab Tuhan, mereka beroleh keampunan dan pahala yang besar."
+      "ms": "Sesungguhnya orang-orang yang takut (melanggar hukum) Tuhannya semasa mereka tidak dilihat orang dan semasa mereka tidak melihat azab Tuhan, mereka beroleh keampunan dan pahala yang besar.",
+      "ur": "بیشک جو لوگ اپنے پروردگار سےغائبانہ طور پر ڈرتے رہتے ہیں ان کے لیے بخشش ہے اور بڑا ﺛواب ہے."
     }
   },
   {
@@ -2614,7 +2786,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Sehen sie denn nicht auf die Vögel über ihnen, wie sie ihre Flügel ausgebreitet halten und einziehen? Nur der Allerbarmer hält sie. Gewiß, Er sieht alles wohl.",
       "fr": "N’ont-ils pas observé, au-dessus d’eux, les oiseaux planant dans les airs ou battant des ailes ? Seul le Tout Miséricordieux les maintient en l’air, Lui qui connaît parfaitement Sa création.",
       "bs": "Zar oni ne vide ptice iznad sebe kako raširenih krila lete, a i skupljaju ih? Samo ih Svemilosni drži; On, zaista, sve dobro vidi.",
-      "ru": "Разве они не видят птиц над собой, распростёрших и складывающих крылья? Не удерживает их никто, кроме Всемилостивого. Воистину, Он видит всё сущее."
+      "ru": "Разве они не видят птиц над собой, распростёрших и складывающих крылья? Не удерживает их никто, кроме Всемилостивого. Воистину, Он видит всё сущее.",
+      "ur": "کیا یہ اپنے اوپر پر کھولے ہوئے اور (کبھی کبھی) سمیٹے ہوئے (اڑنے والے) پرندوں کو نہیں دیکھتے ، انہیں (اللہ) رحمٰن ہی (ہوا وفضا میں) تھامے ہوئے ہے۔ بیشک ہر چیز اس کی نگاه میں ہے."
     }
   },
   {
@@ -2630,7 +2803,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "A ceux qui craignent Allah sont promis, auprès de leur Seigneur, les jardins des délices.",
       "bs": "Za one koji se budu bojali Allaha bit će, zaista, dženneti uživanja u Gospodara njihova,\n malim slovom je pisano i u štampama",
       "ru": "Воистину, для богобоязненных у их Господа — сады блаженства!",
-      "ms": "Sesungguhnya orang-orang yang bertaqwa, disediakan bagi mereka taman-taman Syurga yang penuh nikmat, di sisi Tuhan mereka."
+      "ms": "Sesungguhnya orang-orang yang bertaqwa, disediakan bagi mereka taman-taman Syurga yang penuh nikmat, di sisi Tuhan mereka.",
+      "ur": "پرہیزگاروں کے لیے ان کے رب کے پاس نعمتوں والی جنتیں ہیں."
     }
   },
   {
@@ -2645,7 +2819,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Gewiß, dies ist eine Erinnerung; wer nun will, (der) nimmt (so diesen) einen Weg zu seinem Herrn.",
       "fr": "Voici une exhortation. Que celui qui le veut suive donc la voie de son Seigneur !",
       "bs": "Ovo je, doista, pouka; i ko hoće, put ka Gospodaru svome prihvatit će!",
-      "ru": "Воистину, это — напоминание. И кто пожелает, изберёт путь к своему Господу."
+      "ru": "Воистину, это — напоминание. И кто пожелает, изберёт путь к своему Господу.",
+      "ur": "بیشک یہ نصیحت ہے پس جو چاہے اپنے رب کی طرف راه اختیار کرے."
     }
   },
   {
@@ -2661,7 +2836,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Celui qui a pu créer cet être n’est-Il pas capable de ressusciter les morts ?!",
       "bs": "i zar Taj nije kadar mrtve oživjeti?!",
       "ru": "Неужели Тот, [Кто] это сделал, не способен оживить мёртвых?",
-      "ms": "Adakah (Tuhan yang menjadikan semuanya) itu - tidak berkuasa menghidupkan orang-orang yang mati? (Tentulah berkuasa)!"
+      "ms": "Adakah (Tuhan yang menjadikan semuanya) itu - tidak berkuasa menghidupkan orang-orang yang mati? (Tentulah berkuasa)!",
+      "ur": "کیا (اللہ تعالیٰ) اس (امر) پر قادر نہیں کہ مردے کو زنده کردے."
     }
   },
   {
@@ -2675,7 +2851,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "id": "Sungguh, Kami telah menunjukkan kepadanya jalan yang lurus; ada yang bersyukur dan ada pula yang kufur.",
       "de": "Wir haben ihn ja den (rechten) Weg geleitet, ob er nun dankbar oder undankbar sein mag.",
       "bs": "Mi mu na Pravi put ukazujemo, pa ili je zahvalan ili nezahvalan.",
-      "ru": "Воистину, Мы указали ему путь: [и он] либо благодарный, либо неблагодарный."
+      "ru": "Воистину, Мы указали ему путь: [и он] либо благодарный, либо неблагодарный.",
+      "ur": "ہم نے اسے راه دکھائی اب خواه وه شکر گزار بنے خواه ناشکرا."
     }
   },
   {
@@ -2691,7 +2868,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "N’avons-Nous pas fait de la terre une vaste étendue",
       "bs": "Zar Zemlju posteljom nismo učinili,",
       "ru": "Разве Мы не сделали землю ложем,",
-      "ms": "(Mengapa kamu ragu-ragukan kekuasaan Kami menghidupkan semula orang-orang yang telah mati?) Bukankah Kami telah menjadikan bumi (terbentang luas) sebagai hamparan?"
+      "ms": "(Mengapa kamu ragu-ragukan kekuasaan Kami menghidupkan semula orang-orang yang telah mati?) Bukankah Kami telah menjadikan bumi (terbentang luas) sebagai hamparan?",
+      "ur": "کیا ہم نے زمین کو فرش نہیں بنایا؟"
     }
   },
   {
@@ -2707,7 +2885,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Quant à ceux qui croient et accomplissent de bonnes œuvres, leur sont réservés des jardins traversés de rivières. Voilà le bonheur suprême.",
       "bs": "Zaista, onima koji su vjerovali i radili dobra djela pripadaju bašče džennetske, kroz koje rijeke teku, a to je uspjeh veliki.",
       "ru": "Воистину, те, которые уверовали и совершали праведные деяния, — для них сады, внизу которых текут реки. Это — великий успех.",
-      "ms": "Sesungguhnya orang-orang yang beriman dan beramal soleh, mereka akan beroleh Syurga yang mengalir di bawahnya beberapa sungai; yang demikian itu ialah kemenangan yang besar."
+      "ms": "Sesungguhnya orang-orang yang beriman dan beramal soleh, mereka akan beroleh Syurga yang mengalir di bawahnya beberapa sungai; yang demikian itu ialah kemenangan yang besar.",
+      "ur": "بیشک ایمان قبول کرنے والوں اور نیک کام کرنے والوں کے لئے وه باغات ہیں۔ جن کے نیچے بہریں بہہ رہی ہیں۔ یہی بڑی کامیابی ہے."
     }
   },
   {
@@ -2723,7 +2902,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "C’est Lui qui est à l’origine de la Création qu’Il recommencera.",
       "bs": "On ni iz čega stvara, i ponovo će to učiniti;",
       "ru": "Воистину, Он начинает [творение], а затем повторяет его.",
-      "ms": "Sesungguhnya Dia lah yang menciptakan (sekalian makhluk) pada mulanya, dan yang mengembalikannya (hidup semula sesudah mati)."
+      "ms": "Sesungguhnya Dia lah yang menciptakan (sekalian makhluk) pada mulanya, dan yang mengembalikannya (hidup semula sesudah mati).",
+      "ur": "وہی پہلی مرتبہ پیدا کرتا ہے اور وہی دوباره پیدا کرے گا."
     }
   },
   {
@@ -2738,7 +2918,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Es gibt keine Seele, über der nicht ein Hüter (eingesetzt) ist.",
       "bs": "Nema čovjeka nad kojim neko ne bdije.",
       "ru": "Нет ни одной души, над которой не поставлен хранитель.",
-      "ms": "Tiada sesuatu diri juapun melainkan ada malaikat yang menjaga (keadaannya serta menyimpan catitan mengenai segala bawaannya)."
+      "ms": "Tiada sesuatu diri juapun melainkan ada malaikat yang menjaga (keadaannya serta menyimpan catitan mengenai segala bawaannya).",
+      "ur": "کوئی ایسا نہیں جس پر نگہبان فرشتہ نہ ہو."
     }
   },
   {
@@ -2754,7 +2935,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Ton Seigneur observe les hommes attentivement.",
       "bs": "a Gospodar tvoj je, zaista, u zasjedi.",
       "ru": "Воистину, твой Господь — в засаде.",
-      "ms": "Sesungguhnya Tuhanmu tetap mengawas dan membalas, (terutama balasan akhirat)"
+      "ms": "Sesungguhnya Tuhanmu tetap mengawas dan membalas, (terutama balasan akhirat)",
+      "ur": "یقیناً تیرا رب گھات میں ہے."
     }
   },
   {
@@ -2770,7 +2952,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Ne l’avons-Nous pas doté de deux yeux,",
       "bs": "Zar mu nismo dali oka dva,",
       "ru": "Разве Мы не создали ему два глаза,",
-      "ms": "(Mengapa manusia terpedaya dan bermegah-megah?) Tidakkah Kami telah menjadikan baginya: dua mata (untuk ia memerhatikan kekuasaan dan kekayaan Kami?) -"
+      "ms": "(Mengapa manusia terpedaya dan bermegah-megah?) Tidakkah Kami telah menjadikan baginya: dua mata (untuk ia memerhatikan kekuasaan dan kekayaan Kami?) -",
+      "ur": "کیا ہم نے اس کی دو آنکھیں نہیں بنائیں."
     }
   },
   {
@@ -2786,7 +2969,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Vous poursuivez, par vos œuvres, des buts éloignés.",
       "bs": "vaš trud je, zaista, različit.",
       "ru": "Воистину, ваши усилия различны.",
-      "ms": "Sesungguhnya amal usaha kamu adalah berbagai-bagai keadaannya."
+      "ms": "Sesungguhnya amal usaha kamu adalah berbagai-bagai keadaannya.",
+      "ur": "یقیناً تمہاری کوشش مختلف قسم کی ہے."
     }
   },
   {
@@ -2802,7 +2986,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Sache qu’il n’est d’épreuve qui ne soit suivie d’une délivrance.",
       "bs": "Pa, zaista, s mukom je olakšanje,",
       "ru": "Воистину, с трудностью — облегчение.",
-      "ms": "Oleh itu, maka (tetapkanlah kepercayaanmu) bahawa sesungguhnya tiap-tiap kesukaran disertai kemudahan,"
+      "ms": "Oleh itu, maka (tetapkanlah kepercayaanmu) bahawa sesungguhnya tiap-tiap kesukaran disertai kemudahan,",
+      "ur": "پس یقیناً مشکل کے ساتھ آسانی ہے."
     }
   },
   {
@@ -2818,7 +3003,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Oui, il n’est pas d’épreuve qui ne soit suivie d’une délivrance.",
       "bs": "zaista, s mukom je olakšanje!",
       "ru": "Воистину, с трудностью — облегчение.",
-      "ms": "(Sekali lagi ditegaskan): bahawa sesungguhnya tiap-tiap kesukaran disertai kemudahan."
+      "ms": "(Sekali lagi ditegaskan): bahawa sesungguhnya tiap-tiap kesukaran disertai kemudahan.",
+      "ur": "بیشک مشکل کے ساتھ آسانی ہے."
     }
   },
   {
@@ -2834,7 +3020,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Allah n’est-Il pas le plus équitable et le plus sage des juges ?",
       "bs": "Zar Allah nije sudija najpravedniji?!",
       "ru": "Разве Аллах — не Наимудрейший из судящих?",
-      "ms": "Bukankah Allah (yang demikian kekuasaanNya) seadil-adil Hakim?"
+      "ms": "Bukankah Allah (yang demikian kekuasaanNya) seadil-adil Hakim?",
+      "ur": "کیا اللہ تعالیٰ (سب) حاکموں کا حاکم نہیں ہے."
     }
   },
   {
@@ -2850,7 +3037,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "oubliant qu’il fera retour à ton Seigneur.",
       "bs": "a Gospodaru tvome će se, doista, svi vratiti!",
       "ru": "Воистину, к твоему Господу — возвращение.",
-      "ms": "(Ingatlah) sesungguhnya kepada Tuhanmu lah tempat kembali (untuk menerima balasan)."
+      "ms": "(Ingatlah) sesungguhnya kepada Tuhanmu lah tempat kembali (untuk menerima balasan).",
+      "ur": "یقیناً لوٹنا تیرے رب کی طرف ہے."
     }
   },
   {
@@ -2865,7 +3053,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "de": "Die Nacht der Bestimmung ist besser als tausend Monate.",
       "bs": "Noć Kadr bolja je od hiljadu mjeseci;",
       "ru": "Ночь предопределения лучше тысячи месяцев.",
-      "ms": "Malam Lailatul-Qadar lebih baik daripada seribu bulan."
+      "ms": "Malam Lailatul-Qadar lebih baik daripada seribu bulan.",
+      "ur": "شب قدر ایک ہزار مہینوں سے بہتر ہے."
     }
   },
   {
@@ -2881,7 +3070,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "fr": "Quant à ceux qui croient et accomplissent de bonnes œuvres, ce sont les êtres les plus nobles de l’humanité.",
       "bs": "A oni koji vjeruju i čine dobra djela – oni su, zbilja, najbolja stvorenja.",
       "ru": "Воистину, те, которые уверовали и совершали праведные деяния, — такие и есть лучшие из созданий.",
-      "ms": "Seungguhnya orang-orang yang beriman dan beramal soleh, mereka itulah sebaik-baik makhluk."
+      "ms": "Seungguhnya orang-orang yang beriman dan beramal soleh, mereka itulah sebaik-baik makhluk.",
+      "ur": "بیشک جو لوگ ایمان ﻻئےاور نیک عمل کیے یہ لوگ بہترین خلائق ہیں."
     }
   }
 ];

@@ -99,5 +99,18 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
       "29:45": "Bacalah serta ikutlah (wahai Muhammad) akan apa yang diwahyukan kepadamu dari Al-Quran, dan dirikanlah sembahyang (dengan tekun); sesungguhnya sembahyang itu mencegah dari perbuatan yang keji dan mungkar; dan sesungguhnya mengingati Allah adalah lebih besar (faedahnya dan kesannya); dan (ingatlah) Allah mengetahui akan apa yang kamu kerjakan.",
       "62:9": "Wahai orang-orang yang beriman! Apabila diserukan azan (bang) untuk mengerjakan sembahyang pada hari Jumaat, maka segeralah kamu pergi (ke masjid) untuk mengingati Allah (dengan mengerjakan sembahyang jumaat) dan tinggalkanlah berjual-beli (pada saat itu); yang demikian adalah baik bagi kamu, jika kamu mengetahui (hakikat yang sebenarnya),"
     }
+  },
+  "ur": {
+    "anahtar": "urdu_junagarhi",
+    "surum": "1.1.3",
+    "baslik": "Urdu Translation - Muhammad Junagarhi",
+    "ayetler": {
+      "2:153": "اے ایمان والو! صبر اور نماز کے ذریعہ مدد چاہو، اللہ تعالی صبر والوں کا ساتھ دیتا ہے۔",
+      "2:238": "نمازوں کی حفاﻇت کرو، بالخصوص درمیان والی نماز کی اور اللہ تعالیٰ کے لئے باادب کھڑے رہا کرو۔",
+      "4:103": "پھر جب تم نماز ادا کر چکو تو اٹھتے بیٹھتے اور لیٹے اللہ تعالیٰ کا ذکر کرتے رہو اور جب اطمینان پاؤ تو نماز قائم کرو! یقیناً نماز مومنوں پر مقرره وقتوں پر فرض ہے۔",
+      "11:114": "دن کے دونوں سروں میں نماز برپا رکھ اور رات کی کئی ساعتوں میں بھی ، یقیناً نیکیاں برائیوں کو دور کر دیتی ہیں۔ یہ نصیحت ہے نصیحت پکڑنے والوں کے لئے.",
+      "29:45": "جو کتاب آپ کی طرف وحی کی گئی ہے اسے پڑھئے اور نماز قائم کریں، یقیناً نماز بے حیائی اور برائی سے روکتی ہے، بیشک اللہ کا ذکر بہت بڑی چیز ہے، تم جو کچھ کر رہے ہو اس سے اللہ خبردار ہے.",
+      "62:9": "اے وه لوگو جو ایمان ﻻئے ہو! جمعہ کے دن نماز کی اذان دی جائے تو تم اللہ کے ذکر کی طرف دوڑ پڑو اور خرید وفروخت چھوڑ دو ۔ یہ تمہارے حق میں بہت ہی بہتر ہے اگر تم جانتے ہو."
+    }
   }
 };

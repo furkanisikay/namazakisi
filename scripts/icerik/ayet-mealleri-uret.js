@@ -23,6 +23,7 @@ const MEALLER = {
   bs: 'bosnian_rwwad',
   ru: 'russian_rwwad',
   ms: 'malay_basumayyah',
+  ur: 'urdu_junagarhi',
 };
 
 /** Liste API'sinde görünmeyen çevirilerin QuranEnc başlığı (sitedeki kartta yazdığı gibi). */
@@ -75,6 +76,8 @@ async function main() {
     const ayetler = {};
     for (const [sure, ayet] of AYETLER) {
       const { result } = await json(`https://quranenc.com/api/v1/translation/aya/${anahtar}/${sure}/${ayet}`);
+      // Urducada yalnız "[1]" türü not numarası silinir (sahip kararı 2026-10-26; gunun-ayeti-uret.js).
+      if (dil === 'ur') result.translation = result.translation.replace(/\s*\[\d+\]/g, '').trim();
       // Dipnot işaretli ya da başında ayet numarası olan meal metin değiştirilemeyeceği için
       // ALINMAZ: o ayet o dilde gösterilmez (`nassDili.ayetMeali` null döner).
       if (/\[\d+\]|\*/.test(result.translation) || /^\d+\.\s/.test(result.translation)) {
