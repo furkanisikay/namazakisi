@@ -26,6 +26,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
 import com.furkanisikay.namazakisi.saat.hatirlatma.KildimAlicisi
 import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
 import com.furkanisikay.namazakisi.saat.ui.TesbihatAktivite
+import com.furkanisikay.namazakisi.saat.ui.yerelSifirRakami
 import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 import com.google.common.util.concurrent.ListenableFuture
 
@@ -67,6 +68,9 @@ class BugunTileServisi : TileService() {
 
     /** Metin dili: kaynak sisteminin seçtiği values-xx (cihaz dili; tile her istekte kurulur). */
     private val dil: String get() = getString(R.string.dil_kodu)
+
+    /** Rakam: cihaz yerel ayarının sıfırı (ar-SA'da '٠'); her statik metin bundan geçer. */
+    private val sifir: Char get() = yerelSifirRakami()
 
     private fun isle(tiklanan: String?): TileBuilders.Tile {
         val depo = YukDeposu(this)
@@ -155,10 +159,10 @@ class BugunTileServisi : TileService() {
             .addContent(
                 LayoutElementBuilders.Column.Builder()
                     .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
-                    .addContent(TileOrtak.metin(getString(R.string.bugun_tile_adi), 16f, SaatPaleti.METIN, true))
+                    .addContent(TileOrtak.metin(getString(R.string.bugun_tile_adi), 16f, SaatPaleti.METIN, true, sifir = sifir))
                     .addContent(bosluk(6f))
-                    .addContent(TileOrtak.metin(getString(R.string.bugun_bos_satir1), 13f, SaatPaleti.METIN2))
-                    .addContent(TileOrtak.metin(getString(R.string.bugun_bos_satir2), 13f, SaatPaleti.METIN2))
+                    .addContent(TileOrtak.metin(getString(R.string.bugun_bos_satir1), 13f, SaatPaleti.METIN2, sifir = sifir))
+                    .addContent(TileOrtak.metin(getString(R.string.bugun_bos_satir2), 13f, SaatPaleti.METIN2, sifir = sifir))
                     .build()
             )
             .build()
@@ -195,7 +199,7 @@ class BugunTileServisi : TileService() {
             sutun.addContent(
                 LayoutElementBuilders.Box.Builder()
                     .setModifiers(tiklanabilir(UYGULAMAYI_AC, uygulamayiAc(), acmaAciklamasi))
-                    .addContent(TileOrtak.metin(sayilan.ad(dil), 20f, SaatPaleti.vakitRengi(sayilan.vakit), true))
+                    .addContent(TileOrtak.metin(sayilan.ad(dil), 20f, SaatPaleti.vakitRengi(sayilan.vakit), true, sifir = sifir))
                     .build()
             )
             sutun.addContent(
@@ -204,13 +208,15 @@ class BugunTileServisi : TileService() {
                         sayilan.hedef,
                         getString(if (girisMi) R.string.tile_giris else R.string.tile_cikis, VakitHesabi.saat(sayilan.hedef)),
                         dil,
+                        sifir = sifir,
                     ),
                     15f, SaatPaleti.METIN, true,
                     // En geniş kalıp ("23 sa 59 dk sonra") — Türkçede eski sabitle aynı genişlik.
                     kalip = TileOrtak.kalanKalibi(dil, getString(R.string.tile_sonra, TileOrtak.YER_TUTUCU)),
+                    sifir = sifir,
                 )
             )
-            sutun.addContent(TileOrtak.metin(AnaEkranKarari.altYazi(sayilan.mod, dil), 11f, SaatPaleti.METIN2))
+            sutun.addContent(TileOrtak.metin(AnaEkranKarari.altYazi(sayilan.mod, dil), 11f, SaatPaleti.METIN2, sifir = sifir))
         } else {
             sutun.addContent(
                 LayoutElementBuilders.Box.Builder()
@@ -220,6 +226,7 @@ class BugunTileServisi : TileService() {
                             getString(R.string.bugun_sayi, ozet.kilinanSayisi, GunDurumu.FARZ_SAYISI),
                             12f,
                             SaatPaleti.METIN2,
+                            sifir = sifir,
                         )
                     )
                     .build()
@@ -241,6 +248,7 @@ class BugunTileServisi : TileService() {
                 TileOrtak.metin(
                     ipucu(yuk, ozet, an, onay, aktif, dil), 11f,
                     if (onay != null) SaatPaleti.KERAHAT else SaatPaleti.METIN2,
+                    sifir = sifir,
                 )
             }
         )
@@ -324,7 +332,7 @@ class BugunTileServisi : TileService() {
         return LayoutElementBuilders.Box.Builder()
             .setHeight(dp(DUGME_YUKSEKLIK_DP))
             .setModifiers(belirtec.build())
-            .addContent(TileOrtak.metin(g.etiket, 14f, g.yazi, true))
+            .addContent(TileOrtak.metin(g.etiket, 14f, g.yazi, true, sifir = sifir))
             .build()
     }
 
@@ -443,7 +451,7 @@ class BugunTileServisi : TileService() {
                     )
                     .build()
             )
-            .addContent(TileOrtak.metin(getString(R.string.tesbihat_adi), 11f, SaatPaleti.METIN))
+            .addContent(TileOrtak.metin(getString(R.string.tesbihat_adi), 11f, SaatPaleti.METIN, sifir = sifir))
             .build()
 
     private fun uygulamayiAc(): ActionBuilders.Action =

@@ -58,9 +58,9 @@ class UyandirmaAktivite : ComponentActivity() {
                             verticalArrangement = Arrangement.spacedBy(6.dp),
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                         ) {
-                            Text(kayit.baslik, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, maxLines = 2)
+                            Text(yerelRakam(kayit.baslik), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, maxLines = 2)
                             Text(
-                                kayit.govde,
+                                yerelRakam(kayit.govde),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = renk(SaatPaleti.METIN2),
                                 textAlign = TextAlign.Center,

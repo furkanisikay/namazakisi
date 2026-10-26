@@ -13,6 +13,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.PlanKaydi
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.komplikasyon.KomplikasyonOrtak
 import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
+import com.furkanisikay.namazakisi.saat.ui.yerelRakamla
 
 /**
  * Saatin KENDİ muhafız bildirimleri (issue #280).
@@ -92,9 +93,10 @@ object MuhafizBildirimci {
             // Vaktin simgesi; acil uyarıda kum saatli ("vakit çıkıyor") — `CanliIkon`.
             .setSmallIcon(KomplikasyonOrtak.canliIkonu(CanliIkon.muhafiz(kayit.vakit, kayit.acil)))
             .setColor(SaatPaleti.int(if (kayit.acil) SaatPaleti.ACIL else SaatPaleti.vakitRengi(kayit.vakit)))
-            .setContentTitle(kayit.baslik)
-            .setContentText(kayit.govde)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(kayit.govde))
+            // Telefonun hazır metni Batı rakamıyla gelir; görünen rakam saatin yerel ayarıyla.
+            .setContentTitle(context.yerelRakamla(kayit.baslik))
+            .setContentText(context.yerelRakamla(kayit.govde))
+            .setStyle(NotificationCompat.BigTextStyle().bigText(context.yerelRakamla(kayit.govde)))
             .setCategory(if (kayit.acil) NotificationCompat.CATEGORY_ALARM else NotificationCompat.CATEGORY_REMINDER)
             .setPriority(if (kayit.acil) NotificationCompat.PRIORITY_MAX else NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)

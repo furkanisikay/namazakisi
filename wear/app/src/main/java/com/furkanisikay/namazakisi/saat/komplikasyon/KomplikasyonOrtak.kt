@@ -11,6 +11,7 @@ import androidx.wear.watchface.complications.data.SmallImage
 import androidx.wear.watchface.complications.data.SmallImageType
 import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
+import com.furkanisikay.namazakisi.saat.ui.yerelRakamla
 
 /**
  * Komplikasyon servislerinin ortak parçaları (issue #281).
@@ -53,7 +54,13 @@ object KomplikasyonOrtak {
     fun kucukIkon(context: Context, ikon: Int): SmallImage =
         SmallImage.Builder(Icon.createWithResource(context, ikon), SmallImageType.ICON).build()
 
-    fun duz(metin: String): ComplicationText = PlainComplicationText.Builder(metin).build()
+    /**
+     * Düz komplikasyon metni — kadrana giden HER düz metnin tek kapısı. Rakamlar cihaz yerel
+     * ayarının rakamıyla yazılır (ar-SA'da "١٥:٤٢", `cekirdek/Rakam.kt`); Context uzantısıdır,
+     * servisler içinden `duz(…)` diye çağrılır. `TimeDifferenceComplicationText` sistemce
+     * (yerel ayarla) çizilir, buradan geçmez.
+     */
+    fun Context.duz(metin: String): ComplicationText = PlainComplicationText.Builder(yerelRakamla(metin)).build()
 
     /** Dokunuş uygulamayı açar (kıldım işaretleme orada / Bugün tile'ında). */
     fun uygulamayiAc(context: Context): PendingIntent = PendingIntent.getActivity(

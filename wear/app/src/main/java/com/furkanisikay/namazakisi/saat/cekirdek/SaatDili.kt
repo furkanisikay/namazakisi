@@ -13,6 +13,8 @@ package com.furkanisikay.namazakisi.saat.cekirdek
  * `docs/ajan/coklu-dil.md` terim sözlüğünden alınır; serbest çeviri yok. Ad sabit
  * haritadan gelir; `uppercase()`/`lowercase()` ya da ek üretimi YOK (Türkçe İ tuzağı).
  * Yeni dil = yeni `values-xx` dizini + burada yeni nesne + [saatDili] / [SAAT_DILLERI] eşlemesi.
+ * Metinlerdeki rakamlar BATI rakamıdır (Arapçada da); cihaz yerel ayarının rakamına çizim
+ * kenarında çevrilir (`Rakam.kt`) — burada Doğu Arap rakamı YAZMA.
  * Düzen: dil başına bir nesne, sıra tr, en, id, de, fr, bs, ru, ms, ar, ur; çevrilmemiş dilin nesnesi
  * İngilizcenin birebir kopyasıdır ve `// ÇEVİRİ: <kod>` satırıyla başlar (çeviri ajanları
  * yalnız kendi bloklarına dokunur). Nöbetçi: `SaatDiliTest`.

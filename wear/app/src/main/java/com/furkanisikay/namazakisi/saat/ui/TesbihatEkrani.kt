@@ -220,7 +220,7 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
                 ),
             )
             Text(
-                durum.fazSayisi.toString(),
+                yerelRakam(durum.fazSayisi.toString()),
                 style = RAKAM,
                 fontSize = sabitBoyut(0.24f),
                 fontWeight = FontWeight.SemiBold,
@@ -234,7 +234,7 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
         }
         // Fazın hedefi; toplam 100 halkadan okunur (üç yay).
         Text(
-            if (durum.faz == Tesbihat.Faz.TEHLIL) "${durum.toplam} / ${Tesbihat.TOPLAM}" else "/ ${durum.faz.hedef}",
+            yerelRakam(if (durum.faz == Tesbihat.Faz.TEHLIL) "${durum.toplam} / ${Tesbihat.TOPLAM}" else "/ ${durum.faz.hedef}"),
             fontSize = sinirliBoyut(0.052f),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,

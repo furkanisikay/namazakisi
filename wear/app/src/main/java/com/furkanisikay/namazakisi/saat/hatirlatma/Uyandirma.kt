@@ -18,6 +18,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.UyandirmaZinciri
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
 import com.furkanisikay.namazakisi.saat.telefon.TelefonIstemcisi
 import com.furkanisikay.namazakisi.saat.ui.UyandirmaAktivite
+import com.furkanisikay.namazakisi.saat.ui.yerelRakamla
 import com.furkanisikay.namazakisi.saat.veri.Senkron
 import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 import kotlinx.coroutines.CoroutineScope
@@ -109,8 +110,8 @@ object UyandirmaBildirimi {
         )
         val b = NotificationCompat.Builder(context, KANAL)
             .setSmallIcon(R.drawable.ic_vakit)
-            .setContentTitle(kayit.baslik)
-            .setContentText(kayit.govde)
+            .setContentTitle(context.yerelRakamla(kayit.baslik))
+            .setContentText(context.yerelRakamla(kayit.govde))
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setSilent(false)

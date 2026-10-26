@@ -42,14 +42,14 @@ fun CamiSatiri(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
     ) {
         Text(
-            baslik,
+            yerelRakam(baslik),
             style = MaterialTheme.typography.titleSmall,
             color = renk(SaatPaleti.EYLEM),
             textAlign = TextAlign.Center,
             modifier = Modifier.semantics { heading() },
         )
         if (alt.isNotEmpty()) {
-            Text(alt, style = MaterialTheme.typography.labelSmall, color = renk(SaatPaleti.METIN2), textAlign = TextAlign.Center, maxLines = 2)
+            Text(yerelRakam(alt), style = MaterialTheme.typography.labelSmall, color = renk(SaatPaleti.METIN2), textAlign = TextAlign.Center, maxLines = 2)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 4.dp)) {
             for ((etiket, aciklama, eylem) in dugmeler) {
@@ -96,7 +96,7 @@ fun NamazModuSatiri(acikBitis: String?, kilitli: Boolean, onDokun: () -> Unit) {
             },
         )
         if (acikBitis != null) {
-            Text(stringResource(R.string.namaz_modu_acik_bitis, acikBitis), style = MaterialTheme.typography.labelSmall, color = renk(SaatPaleti.METIN2))
+            Text(yerelRakam(stringResource(R.string.namaz_modu_acik_bitis, acikBitis)), style = MaterialTheme.typography.labelSmall, color = renk(SaatPaleti.METIN2))
         }
     }
 }

@@ -67,7 +67,7 @@ fun TesbihatAmbientEkrani(durum: Tesbihat.Durum, ambient: AmbientDurumu) {
                     modifier = Modifier.fillMaxWidth(guvenliGenislikOrani()),
                 ) {
                     Text(
-                        icerik.baslik,
+                        yerelRakam(icerik.baslik),
                         fontSize = sinirliBoyut(0.075f),
                         fontWeight = FontWeight.Light,
                         color = Color.White,
@@ -78,7 +78,7 @@ fun TesbihatAmbientEkrani(durum: Tesbihat.Durum, ambient: AmbientDurumu) {
                     icerik.sayi?.let {
                         // Dış hatlı rakam: yanan piksel az (düşük güç).
                         Text(
-                            it,
+                            yerelRakam(it),
                             style = RAKAM.copy(drawStyle = Stroke(width = 2f)),
                             fontSize = sabitBoyut(0.24f),
                             fontWeight = FontWeight.Medium,
@@ -86,7 +86,7 @@ fun TesbihatAmbientEkrani(durum: Tesbihat.Durum, ambient: AmbientDurumu) {
                         )
                     }
                     Text(
-                        icerik.alt,
+                        yerelRakam(icerik.alt),
                         fontSize = sinirliBoyut(0.052f),
                         maxLines = 1,
                         fontWeight = FontWeight.Light,

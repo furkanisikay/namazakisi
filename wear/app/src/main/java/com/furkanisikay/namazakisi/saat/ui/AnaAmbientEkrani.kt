@@ -59,7 +59,7 @@ fun AnaAmbientEkrani(g: AnaEkranKarari.Gorunum?, bilgi: String, ambient: Ambient
                 TimeText()
                 if (g == null) {
                     Text(
-                        bilgi,
+                        yerelRakam(bilgi),
                         color = ikincil,
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyMedium,
@@ -95,7 +95,7 @@ fun AnaAmbientEkrani(g: AnaEkranKarari.Gorunum?, bilgi: String, ambient: Ambient
                         birimAgirligi = FontWeight.Light,
                     )
                     Text(
-                        g.altYazi,
+                        yerelRakam(g.altYazi),
                         color = ikincil,
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Light,

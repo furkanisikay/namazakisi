@@ -14,6 +14,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.Tesbihat
 import com.furkanisikay.namazakisi.saat.hatirlatma.MuhafizBildirimci
 import com.furkanisikay.namazakisi.saat.ui.TesbihatAktivite
+import com.furkanisikay.namazakisi.saat.ui.yerelRakamla
 
 /**
  * Yarım tesbihat oturumunun kadrandaki dokunulabilir simgesi (Ongoing Activity,
@@ -46,7 +47,8 @@ object TesbihatEtkinligi {
         )
         // Zikir adı cihaz dilinin yaygın okunuşuyla (bilinmeyen dil Türkçe), ekranla aynı.
         val dil = context.getString(R.string.dil_kodu)
-        val metin = Tesbihat.kisaMetin(durum, dil)
+        // Görünen sayım ("Sübhânallah 12/33") saatin yerel rakamıyla (`cekirdek/Rakam.kt`).
+        val metin = context.yerelRakamla(Tesbihat.kisaMetin(durum, dil))
         val bildirim = NotificationCompat.Builder(context, KANAL)
             .setSmallIcon(R.drawable.ic_tesbihat)
             // Eylem yeşili vurgu: sistem simgeyi boyarsa gri zeminde gri kalmasın.

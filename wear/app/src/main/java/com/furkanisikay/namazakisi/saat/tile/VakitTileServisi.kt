@@ -17,6 +17,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
 import com.furkanisikay.namazakisi.saat.cekirdek.ZamanCizelgesi
 import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
+import com.furkanisikay.namazakisi.saat.ui.yerelSifirRakami
 import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 import com.google.common.util.concurrent.ListenableFuture
 
@@ -50,6 +51,9 @@ class VakitTileServisi : TileService() {
 
     /** Metin dili: kaynak sisteminin seçtiği values-xx (cihaz dili; tile her istekte kurulur). */
     private val dil: String get() = getString(R.string.dil_kodu)
+
+    /** Rakam: cihaz yerel ayarının sıfırı (ar-SA'da '٠'); her statik metin bundan geçer. */
+    private val sifir: Char get() = yerelSifirRakami()
 
     private fun tileOlustur(yuk: Yuk?, simdi: Long): TileBuilders.Tile {
         val cizelge = TimelineBuilders.Timeline.Builder()
@@ -92,12 +96,13 @@ class VakitTileServisi : TileService() {
         kutu(
             LayoutElementBuilders.Column.Builder()
                 .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
-                .addContent(TileOrtak.metin(getString(R.string.app_name), 18f, SaatPaleti.METIN, true))
+                .addContent(TileOrtak.metin(getString(R.string.app_name), 18f, SaatPaleti.METIN, true, sifir = sifir))
                 .addContent(
                     TileOrtak.metin(
                         getString(if (yukVar) R.string.tile_vakitler_icin else R.string.tile_telefonda_acin),
                         13f,
                         SaatPaleti.METIN2,
+                        sifir = sifir,
                     )
                 )
                 .build(),
@@ -111,14 +116,15 @@ class VakitTileServisi : TileService() {
         val sonra = getString(R.string.tile_sonra, TileOrtak.YER_TUTUCU)
         val sutun = LayoutElementBuilders.Column.Builder()
             .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
-            .addContent(TileOrtak.metin(ad, 16f, SaatPaleti.vakitRengi(siradaki.vakit), true))
-            .addContent(TileOrtak.metin(saat, 40f, SaatPaleti.METIN, true))
+            .addContent(TileOrtak.metin(ad, 16f, SaatPaleti.vakitRengi(siradaki.vakit), true, sifir = sifir))
+            .addContent(TileOrtak.metin(saat, 40f, SaatPaleti.METIN, true, sifir = sifir))
             .addContent(
                 TileOrtak.dinamikMetin(
-                    TileOrtak.kalanMetni(siradaki.ms, getString(R.string.tile_adi), dil, sonra),
+                    TileOrtak.kalanMetni(siradaki.ms, getString(R.string.tile_adi), dil, sonra, sifir = sifir),
                     13f,
                     SaatPaleti.METIN2,
                     kalip = TileOrtak.kalanKalibi(dil, sonra),
+                    sifir = sifir,
                 )
             )
         if (sonrakiler.isNotEmpty()) {
@@ -132,9 +138,9 @@ class VakitTileServisi : TileService() {
     private fun sonrakiSatiri(v: VakitHesabi.VakitAni, dil: String): LayoutElementBuilders.LayoutElement =
         LayoutElementBuilders.Row.Builder()
             .setVerticalAlignment(LayoutElementBuilders.VERTICAL_ALIGN_CENTER)
-            .addContent(TileOrtak.metin(v.ad(dil), 12f, SaatPaleti.METIN2))
+            .addContent(TileOrtak.metin(v.ad(dil), 12f, SaatPaleti.METIN2, sifir = sifir))
             .addContent(LayoutElementBuilders.Spacer.Builder().setWidth(dp(10f)).build())
-            .addContent(TileOrtak.metin(VakitHesabi.saat(v.ms), 12f, SaatPaleti.METIN))
+            .addContent(TileOrtak.metin(VakitHesabi.saat(v.ms), 12f, SaatPaleti.METIN, sifir = sifir))
             .build()
 
     private fun kutu(icerik: LayoutElementBuilders.LayoutElement, aciklama: String): LayoutElementBuilders.LayoutElement =

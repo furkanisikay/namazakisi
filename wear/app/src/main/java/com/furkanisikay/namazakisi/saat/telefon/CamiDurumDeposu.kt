@@ -16,6 +16,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.TelefonKomutu
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.hatirlatma.MuhafizBildirimci
 import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
+import com.furkanisikay.namazakisi.saat.ui.yerelRakamla
 
 /**
  * Telefondan gelen Camideyim / Namaz modu GÖSTERİM durumu (saat W3, fikir 1 + 5).
@@ -71,7 +72,9 @@ object CamideBildirimi {
             Intent(context, AnaAktivite::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        val metin = durum.modBitisMs?.let { context.getString(R.string.cami_namaz_modu_bitis, VakitHesabi.saat(it)) } ?: camide.ad
+        val metin = context.yerelRakamla(
+            durum.modBitisMs?.let { context.getString(R.string.cami_namaz_modu_bitis, VakitHesabi.saat(it)) } ?: camide.ad
+        )
         val camidesiniz = context.getString(R.string.camidesiniz)
         val bildirim = NotificationCompat.Builder(context, KANAL)
             .setSmallIcon(R.drawable.ic_cami)

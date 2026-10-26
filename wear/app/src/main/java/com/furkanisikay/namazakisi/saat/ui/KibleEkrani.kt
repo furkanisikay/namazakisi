@@ -185,7 +185,7 @@ private fun PusulaIcerigi(g: KibleGorunumu.Pusula, yonlendirme: Boolean, onYonle
             ) {
                 Crossfade(targetState = g.hizali, animationSpec = tween(if (azalt) 0 else 250), label = "kibleBaslik") { hizali ->
                     Text(
-                        if (hizali) hizaliMetni else g.donus,
+                        yerelRakam(if (hizali) hizaliMetni else g.donus),
                         style = RAKAM,
                         fontSize = sinirliBoyut(if (hizali) 0.068f else 0.095f),
                         fontWeight = FontWeight.SemiBold,
@@ -197,14 +197,14 @@ private fun PusulaIcerigi(g: KibleGorunumu.Pusula, yonlendirme: Boolean, onYonle
                     )
                 }
                 Text(
-                    stringResource(R.string.kible_derece, derece(g.kibleAcisi)),
+                    yerelRakam(stringResource(R.string.kible_derece, derece(g.kibleAcisi))),
                     fontSize = sinirliBoyut(0.05f),
                     color = renk(SaatPaleti.METIN),
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                 )
                 Text(
-                    g.konumAdi,
+                    yerelRakam(g.konumAdi),
                     fontSize = sinirliBoyut(0.042f),
                     color = renk(SaatPaleti.METIN2),
                     textAlign = TextAlign.Center,
@@ -265,7 +265,7 @@ private fun Mesaj(metin: String, alt: String? = null) {
         modifier = Modifier.fillMaxWidth(guvenliGenislikOrani()),
     ) {
         Text(
-            metin,
+            yerelRakam(metin),
             fontSize = sinirliBoyut(0.058f),
             color = renk(SaatPaleti.METIN),
             textAlign = TextAlign.Center,
@@ -274,7 +274,7 @@ private fun Mesaj(metin: String, alt: String? = null) {
         )
         if (alt != null) {
             Text(
-                alt,
+                yerelRakam(alt),
                 fontSize = sinirliBoyut(0.046f),
                 color = renk(SaatPaleti.METIN2),
                 textAlign = TextAlign.Center,

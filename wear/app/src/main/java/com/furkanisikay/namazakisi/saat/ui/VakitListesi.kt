@@ -93,7 +93,7 @@ fun VakitSatiri(
             .padding(start = 14.dp, end = 12.dp, top = 6.dp, bottom = 6.dp),
     ) {
         Text(
-            saat,
+            yerelRakam(saat),
             style = RAKAM,
             fontSize = MaterialTheme.typography.titleSmall.fontSize,
             fontWeight = FontWeight.SemiBold,
@@ -150,7 +150,7 @@ private fun DurumDairesi(kilindi: Boolean, halka: Color) {
 @Composable
 fun BilgiMetni(metin: String, modifier: Modifier = Modifier) {
     Text(
-        metin,
+        yerelRakam(metin),
         textAlign = androidx.compose.ui.text.style.TextAlign.Center,
         style = MaterialTheme.typography.bodyMedium,
         color = renk(SaatPaleti.METIN2),
