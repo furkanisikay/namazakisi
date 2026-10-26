@@ -99,7 +99,7 @@ enum OtomasyonMetni {
 }
 
 /// Otomasyon cevaplarinin dil tablosu. Duzen: dil basina bir `static let`, sira tr, en, id,
-/// de, fr, bs, ru, ms; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
+/// de, fr, bs, ru, ms, ar, ur; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
 /// `kalanDakika` CLDR kategorisi ("one", "few", "many", "other"; `CogulKurali`) → kalip;
 /// eksik kategori "other"a duser. Yer tutucular `{ad}`, `{n}`.
 struct OtomasyonMetinleri {
@@ -176,8 +176,32 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Tidak, belum ditandakan."
     )
 
+
+    // ÇEVİRİ: ar
+    static let ar = OtomasyonMetinleri(
+        kalanDakika: [
+            "zero": "{ad} begins in {n} minutes.",
+            "one": "{ad} begins in {n} minute.",
+            "two": "{ad} begins in {n} minutes.",
+            "few": "{ad} begins in {n} minutes.",
+            "many": "{ad} begins in {n} minutes.",
+            "other": "{ad} begins in {n} minutes.",
+        ],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+
+    // ÇEVİRİ: ur
+    static let ur = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
     static let tablo: [String: OtomasyonMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
+        "ar": ar, "ur": ur,
     ]
 
     static func dil(_ kod: String) -> OtomasyonMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

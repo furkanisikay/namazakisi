@@ -25,7 +25,7 @@ enum GununAyetiSabitleri {
 /// Yuk yokken (uygulama hic acilmadi) ve galeride gereken metinler. Ingilizce karsiliklar
 /// JS sozlugunden (`sozluk/en/gununAyeti.ts > baslik, etiket`).
 ///
-/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms; cevrilmemis dil
+/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms, ar, ur; cevrilmemis dil
 /// Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`). `ornek*` alanlari galeri onizlemesindeki
 /// 94:6'dir: meal o dilin QuranEnc mealinden BIREBIR (kesilmeden) ve kunyesiyle yazilir
 /// (`docs/ajan/coklu-dil.md > Nass kurali`; dilde meal yoksa `ornekMeal` bos → yalniz Arapca).
@@ -157,8 +157,39 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Abdullah Basumayyah, QuranEnc 1.0.0"
     )
 
+
+    // ÇEVİRİ: ar
+    static let ar = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
+
+    // ÇEVİRİ: ur
+    static let ur = GununAyetiYerelMetinleri(
+        galeriAdi: "Verse of the day",
+        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
+        etiket: "VERSE OF THE DAY",
+        uygulamayiAcin: "Open the app to see the verse of the day",
+        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
+        ornekAcin: "Open",
+        ornekArapcaKaynagi: "Arabic: Tanzil",
+        ornekMeal: "Indeed, with hardship [will be] ease.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+    )
+
     static let tablo: [String: GununAyetiYerelMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
+        "ar": ar, "ur": ur,
     ]
 
     static var simdiki: GununAyetiYerelMetinleri {

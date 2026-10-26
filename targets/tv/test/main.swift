@@ -152,12 +152,13 @@ esitMi(d1.gorunenAd(.imsak), "İmsak", "tr pano: imsak (varsayilan)")
 esitMi(TvKerahat.Tur.istiva.ad("en"), "Zenith", "en kerahat adi")
 esitMi(TvKerahat.Tur.gurub.aciklama("en"), "Praying is makruh while the sun is setting.", "en kerahat aciklamasi")
 esitMi(TvKerahat.Tur.suruk.ad("tr"), TvKerahat.Tur.suruk.ad, "tr kerahat adi")
-esitMi(TvDili.coz("ar-SA"), "tr", "desteklenmeyen dil Turkce")
+esitMi(TvDili.coz("xx-XX"), "tr", "desteklenmeyen dil Turkce")
 esitMi(TvDili.coz(nil), "tr", "dil yok Turkce")
 
-// MARK: - 4c) Native dil tablolari (W4) — sekiz dil, Turkce tablo eski sabitlerle ayni
+// MARK: - 4c) Native dil tablolari (W4) — on dil, Turkce tablo eski sabitlerle ayni
 
-esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms"], "dil: tablo sirasi")
+esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur"], "dil: tablo sirasi")
+esitMi(TvDili.coz("ar-SA"), "ar", "dil: ar-SA → ar")
 esitMi(TvDili.coz("de-DE"), "de", "dil: de-DE → de")
 esitMi(TvDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")
 esitMi(Set(TvPanoMetinleri.tablo.keys), Set(TvDili.desteklenenler), "pano metinleri: her dilin tablosu var")

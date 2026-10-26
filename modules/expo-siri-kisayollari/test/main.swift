@@ -422,7 +422,7 @@ esitMi(ArayuzDili.coz(""), "tr", "dil: bos Turkce")
 esitMi(ArayuzDili.coz("en"), "en", "dil: en")
 esitMi(ArayuzDili.coz("en-US"), "en", "dil: en-US → en")
 esitMi(ArayuzDili.coz("en_GB"), "en", "dil: en_GB → en")
-esitMi(ArayuzDili.coz("ar"), "tr", "dil: desteklenmeyen → Turkce")
+esitMi(ArayuzDili.coz("xx"), "tr", "dil: desteklenmeyen → Turkce")
 esitMi(VakitKarari.gorunenAd("ogle"), "Öğle", "varsayilan dil Turkce")
 esitMi(VakitKarari.gorunenAd("sabah", dil: "en"), "Fajr", "en: sabah → Fajr")
 esitMi(VakitKarari.gorunenAd("gunes", dil: "en"), "", "en: gunes namaz degil")
@@ -551,7 +551,7 @@ depo.gununAyetiYaz(ayetHam)
 esitMi(depo.gununAyetiJson(), ayetHam, "ayet depo: ham yuk birebir saklanir")
 esitMi(depo.gununAyeti()?.plan.count, 3, "ayet depo: cozulmus yuk")
 
-// MARK: - 11) Native dil tablolari (W4) — sekiz dil, Turkceyle ayni alan + yer tutucu
+// MARK: - 11) Native dil tablolari (W4) — on dil, Turkceyle ayni alan + yer tutucu
 
 /// Her `String` alanin (ve `[String: String]` alaninin her anahtarinin) `{...}` kumesi.
 func yerTutucuImzasi(_ deger: Any) -> [String: String] {
@@ -576,10 +576,12 @@ func yerTutucuImzasi(_ deger: Any) -> [String: String] {
     return sonuc
 }
 
-esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms"], "dil: tablo sirasi")
+esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur"], "dil: tablo sirasi")
 esitMi(ArayuzDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")
 esitMi(ArayuzDili.coz("de-DE"), "de", "dil: de-DE → de")
 esitMi(ArayuzDili.coz("ms_MY"), "ms", "dil: ms_MY → ms")
+esitMi(ArayuzDili.coz("ar-SA"), "ar", "dil: ar-SA → ar")
+esitMi(ArayuzDili.coz("ur_PK"), "ur", "dil: ur_PK → ur")
 esitMi(Set(VakitMetinleri.tablo.keys), Set(ArayuzDili.desteklenenler), "metinler: her dilin tablosu var")
 for d in ArayuzDili.desteklenenler {
     let m = VakitMetinleri.dil(d)
@@ -595,6 +597,9 @@ esitMi([1, 2, 5, 11, 21, 22, 25, 112].map { CogulKurali.kategori("ru", $0) },
        ["one", "few", "many", "many", "one", "few", "many", "many"], "cogul: ru")
 esitMi([1, 3, 5, 21].map { CogulKurali.kategori("bs", $0) }, ["one", "few", "other", "one"], "cogul: bs")
 esitMi([1, 2].map { CogulKurali.kategori("id", $0) }, ["other", "other"], "cogul: id")
+esitMi([0, 1, 2, 3, 10, 11, 99, 100, 102, 103].map { CogulKurali.kategori("ar", $0) },
+       ["zero", "one", "two", "few", "few", "many", "many", "other", "other", "few"], "cogul: ar")
+esitMi([0, 1, 2, 5].map { CogulKurali.kategori("ur", $0) }, ["other", "one", "other", "other"], "cogul: ur")
 esitMi(CogulKurali.sec(["one": "{n} minute", "other": "{n} minutes"], "ru", 5), "5 minutes", "cogul: eksik kategori other'a duser")
 
 // MARK: - 12) Vakit adi takimi (kullanicinin sectigi adlar) — var / yok / bozuk / kismi

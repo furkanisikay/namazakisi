@@ -22,7 +22,7 @@ public struct SaatSureParcasi: Equatable {
 /// Sure metinleri — dil basina bir ornek (JS `sozluk/<dil>/sure.ts` ikizi: `kisa` birimleri ve
 /// `saat/dakika/saniye` cogullari). Cogul kaliplari CLDR kategorisi ("one", "few", "many",
 /// "other"; `CogulKurali`) → kalip, yer tutucu `{n}`; eksik kategori "other"a duser.
-/// Duzen: sira tr, en, id, de, fr, bs, ru, ms; cevrilmemis dil Ingilizce kopya
+/// Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur; cevrilmemis dil Ingilizce kopya
 /// (`// ÇEVİRİ: <kod>`).
 public struct SaatSureMetinleri: Equatable {
     public let birimSa: String
@@ -100,8 +100,27 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} saat", "other": "{n} saat"]
     )
 
+
+    // ÇEVİRİ: ar
+    public static let ar = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["zero": "{n} hours", "one": "{n} hour", "two": "{n} hours", "few": "{n} hours", "many": "{n} hours", "other": "{n} hours"],
+        dakika: ["zero": "{n} minutes", "one": "{n} minute", "two": "{n} minutes", "few": "{n} minutes", "many": "{n} minutes", "other": "{n} minutes"],
+        saniye: ["zero": "{n} seconds", "one": "{n} second", "two": "{n} seconds", "few": "{n} seconds", "many": "{n} seconds", "other": "{n} seconds"]
+    )
+
+
+    // ÇEVİRİ: ur
+    public static let ur = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["one": "{n} hour", "other": "{n} hours"],
+        dakika: ["one": "{n} minute", "other": "{n} minutes"],
+        saniye: ["one": "{n} second", "other": "{n} seconds"]
+    )
+
     public static let tablo: [String: SaatSureMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
+        "ar": ar, "ur": ur,
     ]
 
     public static func dil(_ kod: String?) -> SaatSureMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

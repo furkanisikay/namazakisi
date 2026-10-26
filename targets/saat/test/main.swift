@@ -584,7 +584,7 @@ do {
     esitMi(SaatMetinleri.dil(nil), SaatMetinleri.tr, "saat metinleri dil yok → tr")
 }
 
-// MARK: - 15b) Native dil tablolari (W4) — sekiz dil, Turkceyle ayni alan + yer tutucu
+// MARK: - 15b) Native dil tablolari (W4) — on dil, Turkceyle ayni alan + yer tutucu
 
 do {
     /// Her `String` alanin (ve `[String: String]` alaninin her anahtarinin) `{...}` kumesi.
@@ -610,10 +610,13 @@ do {
         }
         return sonuc
     }
-    let kodlar = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms"]
-    esitMi(Set(SaatMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatMetinleri sekiz dil")
-    esitMi(Set(SaatSureMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatSureMetinleri sekiz dil")
-    esitMi(Set(KibleMetinleri.tablo.keys), Set(kodlar), "saat tablolari: KibleMetinleri sekiz dil")
+    let kodlar = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur"]
+    esitMi(Set(SaatMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatMetinleri her dil")
+    esitMi(Set(SaatSureMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatSureMetinleri her dil")
+    esitMi(Set(KibleMetinleri.tablo.keys), Set(kodlar), "saat tablolari: KibleMetinleri her dil")
+    // Arapca cogul alti kategori (iskelet Ingilizce kaliplarla): tekil yalniz "one".
+    esitMi([1, 2, 11].map { CogulKurali.sec(SaatSureMetinleri.ar.dakika, "ar", $0) }, ["1 minute", "2 minutes", "11 minutes"], "saat sure: ar cogul")
+    esitMi(Set(SaatSureMetinleri.ar.saat.keys), ["zero", "one", "two", "few", "many", "other"], "saat sure: ar alti kategori")
     for d in kodlar {
         esitMi(SaatMetinleri.dil(d).dil, d, "saat metinleri: \(d) kendi kodu")
         esitMi(imza(SaatMetinleri.dil(d)), imza(SaatMetinleri.tr), "saat metinleri: \(d) yer tutuculari")
@@ -630,7 +633,7 @@ do {
     esitMi(SaatIletisi.dil(SaatIletisi.baglam(yukJson: "{}", dil: "en")), "en", "baglam dili gidis-donus")
     esitMi(SaatIletisi.dil(SaatIletisi.baglam(yukJson: "{}")), nil, "eski telefon dil gondermez")
     esitMi(SaatIletisi.yukJson(SaatIletisi.baglam(yukJson: "{}", dil: "en")), "{}", "dil yuku degistirmez")
-    esitMi(SaatIletisi.dil(["yuk": "{}", "dil": "ar"]), "tr", "desteklenmeyen dil Turkceye")
+    esitMi(SaatIletisi.dil(["yuk": "{}", "dil": "xx"]), "tr", "desteklenmeyen dil Turkceye")
     esitMi(SaatIletisi.baglam(yukJson: "{}").count, 1, "dil yoksa baglamda tek anahtar (eski sekil)")
     let suite = "test.namazakisi.saat.dil.\(UUID().uuidString)"
     let defaults = UserDefaults(suiteName: suite)!
