@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ar — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Tasker / MacroDroid / Automate eklentisi (İngilizce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<!-- ar — Arapça (beta). -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Arapça). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
 <resources>
-  <string name="otomasyon_eylem_etiket">Namaz Akışı: I\'ve prayed</string>
-  <string name="otomasyon_kosul_etiket">Namaz Akışı: Prayer time status</string>
-  <string name="otomasyon_olay_etiket">Namaz Akışı: Prayer time event</string>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: صلّيتُ</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: حالة وقت الصلاة</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: حدث وقت الصلاة</string>
 
   <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
-  <string name="otomasyon_bilgi_baslik">This setting is added from an automation app</string>
-  <string name="otomasyon_bilgi_tarayici">Browsers can\'t get permanent permission. Add it from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_bilgi_eklenti">Add it by choosing \"Namaz Akışı\" from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_engelli_baslik">%1$s is blocked</string>
-  <string name="otomasyon_engelli_mesaj">You blocked this app from marking your prayers before. You can allow it in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_baslik">Use with %1$s?</string>
-  <string name="otomasyon_izin_kosul">%1$s can learn when a prayer time begins, when it\'s ending and when you\'re at a mosque, and run your automations. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_kildim">%1$s can mark the current prayer as prayed with the automation you set up. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_ver">Allow</string>
-  <string name="otomasyon_engelle">Block</string>
-  <string name="otomasyon_vazgec">Cancel</string>
-  <string name="otomasyon_tamam">OK</string>
-  <string name="otomasyon_tur_baslik">When should it run?</string>
-  <string name="otomasyon_ileri">Next</string>
-  <string name="otomasyon_vakit_baslik">Which prayer?</string>
-  <string name="otomasyon_herhangi_vakit">Any prayer time</string>
-  <string name="otomasyon_kaydet">Save</string>
-  <string name="otomasyon_kosul_icinde">While it\'s a prayer time</string>
-  <string name="otomasyon_kosul_cikiyor">While a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_kosul_camide">While at a mosque</string>
-  <string name="otomasyon_olay_girdi">When a prayer time begins</string>
-  <string name="otomasyon_olay_cikiyor">When a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_olay_camide">When you\'re detected at a mosque</string>
+  <string name="otomasyon_bilgi_baslik">يُضاف هذا الإعداد من تطبيق أتمتة</string>
+  <string name="otomasyon_bilgi_tarayici">لا تحصل المتصفحات على إذن دائم. تتم الإضافة من قائمة الإضافات في تطبيق مثل Tasker أو MacroDroid أو Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">تتم الإضافة باختيار «Namaz Akışı» من قائمة الإضافات في تطبيق مثل Tasker أو MacroDroid أو Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s محظور</string>
+  <string name="otomasyon_engelli_mesaj">سبق حظر هذا التطبيق من وضع علامة على صلواتك. يمكن السماح له في Namaz Akışı من الإعدادات &gt; الاستخدام مع الأتمتة &gt; التطبيقات التي تضع علامة «صلّيتُ».</string>
+  <string name="otomasyon_izin_baslik">هل يُستخدم مع %1$s؟</string>
+  <string name="otomasyon_izin_kosul">يستطيع %1$s معرفة دخول وقت الصلاة واقتراب خروجه ووجودك في المسجد، وتشغيل الأتمتة الخاصة بك. يمكن تغيير قرارك في Namaz Akışı من الإعدادات &gt; الاستخدام مع الأتمتة &gt; التطبيقات التي تضع علامة «صلّيتُ».</string>
+  <string name="otomasyon_izin_kildim">يستطيع %1$s وضع علامة «تمّت» على الصلاة الحالية عبر الأتمتة المُعدّة. يمكن تغيير قرارك في Namaz Akışı من الإعدادات &gt; الاستخدام مع الأتمتة &gt; التطبيقات التي تضع علامة «صلّيتُ».</string>
+  <string name="otomasyon_izin_ver">السماح</string>
+  <string name="otomasyon_engelle">الحظر</string>
+  <string name="otomasyon_vazgec">إلغاء</string>
+  <string name="otomasyon_tamam">موافق</string>
+  <string name="otomasyon_tur_baslik">متى يعمل؟</string>
+  <string name="otomasyon_ileri">التالي</string>
+  <string name="otomasyon_vakit_baslik">أيّ صلاة؟</string>
+  <string name="otomasyon_herhangi_vakit">أيّ وقت صلاة</string>
+  <string name="otomasyon_kaydet">حفظ</string>
+  <string name="otomasyon_kosul_icinde">أثناء وقت صلاة</string>
+  <string name="otomasyon_kosul_cikiyor">أثناء اقتراب خروج الوقت (بقيت %1$d د، مع تفعيل «قبل خروج الوقت»)</string>
+  <string name="otomasyon_kosul_camide">أثناء الوجود في المسجد</string>
+  <string name="otomasyon_olay_girdi">عند دخول وقت صلاة</string>
+  <string name="otomasyon_olay_cikiyor">عند اقتراب خروج الوقت (بقيت %1$d د، مع تفعيل «قبل خروج الوقت»)</string>
+  <string name="otomasyon_olay_camide">عند رصد وجودك في المسجد</string>
 </resources>

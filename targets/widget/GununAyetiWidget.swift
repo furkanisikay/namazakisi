@@ -158,18 +158,19 @@ struct GununAyetiYerelMetinleri {
     )
 
 
-    // ÇEVİRİ: ar
+    // ar — Arapça (beta): JS `sozluk/ar/gununAyeti.ts`; Arapçada ayet YALNIZ Kur'an metnidir
+    // (meal yok, sahip kararı) → `ornekMeal` ve `ornekMealKaynagi` boş, künye `kuran` + ref.
     static let ar = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "آية اليوم",
+        galeriAciklama: "آية من القرآن الكريم تتجدّد كل يوم عند الفجر.",
+        etiket: "آية اليوم",
+        uygulamayiAcin: "لعرض آية اليوم: فتح التطبيق",
+        ornekSigmiyor: "آية اليوم لا تتسع في هذا الحجم. انقر لقراءتها.",
+        ornekAcin: "فتح",
+        ornekArapcaKaynagi: "النص القرآني: تنزيل",
+        ornekMeal: "",
+        ornekKisaKunye: "القرآن الكريم 94:6",
+        ornekMealKaynagi: ""
     )
 
 

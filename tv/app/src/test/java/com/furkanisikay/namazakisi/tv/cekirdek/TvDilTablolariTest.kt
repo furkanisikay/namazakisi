@@ -55,8 +55,9 @@ class TvDilTablolariTest {
             listOf("zero", "one", "two", "few", "few", "many", "many", "other", "other", "few"),
             listOf(0, 1, 2, 3, 10, 11, 99, 100, 102, 103).map { TvDiliAr.cogulKategorisi(it) },
         )
-        assertEquals("1 minute", TvDiliAr.dakikaSesli(1))
-        assertEquals("2 minutes", TvDiliAr.dakikaSesli(2))
+        assertEquals("دقيقة واحدة", TvDiliAr.dakikaSesli(1))
+        assertEquals("دقيقتان", TvDiliAr.dakikaSesli(2))
+        assertEquals("11 دقيقة", TvDiliAr.dakikaSesli(11))
         assertEquals("1 hour", TvDiliUr.saatSesli(1))
         assertEquals("3 hours", TvDiliUr.saatSesli(3))
     }

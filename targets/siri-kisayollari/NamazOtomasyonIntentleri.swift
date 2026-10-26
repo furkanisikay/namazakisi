@@ -177,18 +177,18 @@ struct OtomasyonMetinleri {
     )
 
 
-    // ÇEVİRİ: ar
+    // ar — Arapça (beta): JS `sozluk/ar` (sure.dakika, vakit.eylem); 3–10 çoğul, diğerleri rakamla tekil
     static let ar = OtomasyonMetinleri(
         kalanDakika: [
-            "zero": "{ad} begins in {n} minutes.",
-            "one": "{ad} begins in {n} minute.",
-            "two": "{ad} begins in {n} minutes.",
-            "few": "{ad} begins in {n} minutes.",
-            "many": "{ad} begins in {n} minutes.",
-            "other": "{ad} begins in {n} minutes.",
+            "zero": "يدخل وقت {ad} بعد {n} دقيقة.",
+            "one": "يدخل وقت {ad} بعد {n} دقيقة.",
+            "two": "يدخل وقت {ad} بعد {n} دقيقة.",
+            "few": "يدخل وقت {ad} بعد {n} دقائق.",
+            "many": "يدخل وقت {ad} بعد {n} دقيقة.",
+            "other": "يدخل وقت {ad} بعد {n} دقيقة.",
         ],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        evetKilindi: "نعم، معلَّمة «تمّت».",
+        hayirKilinmadi: "لا، لم تُوضع العلامة بعد."
     )
 
 

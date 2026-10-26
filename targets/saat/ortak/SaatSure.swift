@@ -101,12 +101,12 @@ public struct SaatSureMetinleri: Equatable {
     )
 
 
-    // ÇEVİRİ: ar
+    // ar — Arapça (beta): JS `sozluk/ar/sure.ts` birebir (3–10 çoğul, diğerleri rakamla tekil)
     public static let ar = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["zero": "{n} hours", "one": "{n} hour", "two": "{n} hours", "few": "{n} hours", "many": "{n} hours", "other": "{n} hours"],
-        dakika: ["zero": "{n} minutes", "one": "{n} minute", "two": "{n} minutes", "few": "{n} minutes", "many": "{n} minutes", "other": "{n} minutes"],
-        saniye: ["zero": "{n} seconds", "one": "{n} second", "two": "{n} seconds", "few": "{n} seconds", "many": "{n} seconds", "other": "{n} seconds"]
+        birimSa: "س", birimDk: "د", birimSn: "ث",
+        saat: ["zero": "{n} ساعة", "one": "{n} ساعة", "two": "{n} ساعة", "few": "{n} ساعات", "many": "{n} ساعة", "other": "{n} ساعة"],
+        dakika: ["zero": "{n} دقيقة", "one": "{n} دقيقة", "two": "{n} دقيقة", "few": "{n} دقائق", "many": "{n} دقيقة", "other": "{n} دقيقة"],
+        saniye: ["zero": "{n} ثانية", "one": "{n} ثانية", "two": "{n} ثانية", "few": "{n} ثوانٍ", "many": "{n} ثانية", "other": "{n} ثانية"]
     )
 
 

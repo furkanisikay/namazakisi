@@ -55,8 +55,8 @@ object CanliGuncellemeKurallari {
         "ru" to ("ч" to "мин"),
         // ms
         "ms" to ("j" to "min"),
-        // ÇEVİRİ: ar
-        "ar" to ("h" to "min"),
+        // ar
+        "ar" to ("س" to "د"),
         // ÇEVİRİ: ur
         "ur" to ("h" to "min"),
     )

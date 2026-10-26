@@ -615,7 +615,7 @@ do {
     esitMi(Set(SaatSureMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatSureMetinleri her dil")
     esitMi(Set(KibleMetinleri.tablo.keys), Set(kodlar), "saat tablolari: KibleMetinleri her dil")
     // Arapca cogul alti kategori (iskelet Ingilizce kaliplarla): tekil yalniz "one".
-    esitMi([1, 2, 11].map { CogulKurali.sec(SaatSureMetinleri.ar.dakika, "ar", $0) }, ["1 minute", "2 minutes", "11 minutes"], "saat sure: ar cogul")
+    esitMi([1, 3, 11].map { CogulKurali.sec(SaatSureMetinleri.ar.dakika, "ar", $0) }, ["1 دقيقة", "3 دقائق", "11 دقيقة"], "saat sure: ar cogul")
     esitMi(Set(SaatSureMetinleri.ar.saat.keys), ["zero", "one", "two", "few", "many", "other"], "saat sure: ar alti kategori")
     for d in kodlar {
         esitMi(SaatMetinleri.dil(d).dil, d, "saat metinleri: \(d) kendi kodu")
