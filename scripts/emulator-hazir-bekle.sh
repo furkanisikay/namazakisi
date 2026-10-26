@@ -15,7 +15,7 @@ set -uo pipefail
 case "${TOHUM_DIL:-tr}" in
   en) HEDEF="en-US" ;; id) HEDEF="id-ID" ;; de) HEDEF="de-DE" ;; fr) HEDEF="fr-FR" ;;
   bs) HEDEF="bs-BA" ;; ru) HEDEF="ru-RU" ;; ms) HEDEF="ms-MY" ;;
-  # ar/ur seçicide kapalıdır: debug APK'da tohumun dil kaydı (`dil_ayari.kod`) açar (`__DEV__` kapısı).
+  # ar/ur seçicide kapalıdır: tohumun dil kaydını (`dil_ayari.kod`) kare hattı işareti (`@namaz_akisi/kare_turu`) açar.
   ar) HEDEF="ar-SA" ;; ur) HEDEF="ur-PK" ;; *) HEDEF="tr-TR" ;;
 esac
 

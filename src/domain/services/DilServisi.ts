@@ -50,12 +50,22 @@ const gelistirmeDerlemesi = (): boolean => typeof __DEV__ !== 'undefined' && __D
 
 /**
  * Kayıttaki dil yalnız SEÇİLEBİLİRSE geçerlidir (yedekten gelen yarım dil kendiliğinden açılmaz).
- * İSTİSNA yalnız geliştirme derlemesinde (`__DEV__`): kapalı dil (ör. Arapça iskeleti) kare
- * hattının tohumuyla (`dil_ayari.kod`) açılabilsin; kare iş akışları debug APK koşturur.
- * Üretim davranışı değişmez; cihaz dili kapalı dili hiçbir derlemede açmaz.
+ * İSTİSNA: geliştirme derlemesi (`__DEV__`) ya da kare hattı işareti (`KARE_TURU`) varken kapalı
+ * dil (ör. Arapça) kayıttan kurulabilir. Kare hattı JS geliştirme modunu KAPATIR
+ * (`js_dev_mode_debug=false`, temiz kare), bu yüzden `__DEV__` orada yanlıştır; işareti yalnız
+ * tohum yazar ve yedekten geri gelmez. Cihaz dili kapalı dili hiçbir durumda açmaz.
  */
-const secilebilirKod = (x: unknown): DilKodu | null =>
-  dilKoduMu(x) && DILLER.some((d) => d.kod === x && (d.secilebilir || gelistirmeDerlemesi())) ? x : null;
+const secilebilirKod = (x: unknown, kapaliAcik = false): DilKodu | null =>
+  dilKoduMu(x) && DILLER.some((d) => d.kod === x && (d.secilebilir || kapaliAcik || gelistirmeDerlemesi())) ? x : null;
+
+/** Kare hattı işareti okunur; okunamazsa `false`. */
+async function kareTuruMu(): Promise<boolean> {
+  try {
+    return (await Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.KARE_TURU)) === true;
+  } catch {
+    return false;
+  }
+}
 
 let yukleme: Promise<DilKodu> | null = null;
 
@@ -188,9 +198,10 @@ async function diskten(): Promise<DilKodu> {
   let ham: DilAyari | null = null;
   try {
     ham = await eskiKurulumGocu(await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI));
-    const kod = secilebilirKod(ham?.kod) ?? cihazDilindenSec(cihazYerelAyari()) ?? VARSAYILAN_DIL;
+    const kareTuru = ham?.kod != null && !secilebilirKod(ham.kod) ? await kareTuruMu() : false;
+    const kod = secilebilirKod(ham?.kod, kareTuru) ?? cihazDilindenSec(cihazYerelAyari()) ?? VARSAYILAN_DIL;
     aktifDiliKur(kod);
-    Logger.info('DilServisi', `Dil ${kod} (kayıt: ${String(ham?.kod ?? '-')}, geliştirme: ${gelistirmeDerlemesi()})`);
+    Logger.info('DilServisi', `Dil ${kod} (kayıt: ${String(ham?.kod ?? '-')}, kare turu: ${kareTuru})`);
   } catch (e) {
     Logger.warn('DilServisi', 'Dil ayarı okunamadı, Türkçe kullanılıyor', e);
   }

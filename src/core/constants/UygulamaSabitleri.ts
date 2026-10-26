@@ -259,6 +259,11 @@ export const DEPOLAMA_ANAHTARLARI = {
   // (`YonServisi.acilistaDenetle`; en fazla 2, eşleşince silinir). JS belleği yeniden
   // başlatmada sıfırlandığı için diskte. CİHAZA ÖZGÜ, YEDEKLENMEZ.
   YON_DENEMESI: '@namaz_akisi/yon_denemesi',
+  /**
+   * Kare hattı işareti (`'true'`): kapalı dili kayıttan açar. YALNIZ kare hattının tohumu yazar
+   * (hata ayıklama APK'sında run-as); yedek beyaz listesinde YOK → yedekten geri gelemez.
+   */
+  KARE_TURU: '@namaz_akisi/kare_turu',
   // Günün ayeti duvar kâğıdı (#381). CİHAZA ÖZGÜ, YEDEKLENMEZ: duvar kâğıdını değiştirmek o
   // cihazda verilen açık onaya bağlı (`core/icerik/gununAyetiYuku.ts`).
   GUNUN_AYETI_DUVAR: 'gunun_ayeti_duvar',

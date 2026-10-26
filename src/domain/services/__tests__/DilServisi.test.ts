@@ -101,6 +101,18 @@ describe('DilServisi', () => {
       expect(aktifDil()).toBe('ar');
     });
 
+    it('NÖBETÇİ: kare hattı işareti kapalı dili geliştirme modu KAPALIYKEN de açar (kare hattı js_dev_mode=false)', async () => {
+      cihaz('tr_TR');
+      genel.__DEV__ = false;
+      disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'ar', goc: 1 };
+      await DilServisi.yukle(true);
+      expect(aktifDil()).toBe('tr');
+      disk[DEPOLAMA_ANAHTARLARI.KARE_TURU] = true;
+      await DilServisi.yukle(true);
+      expect(aktifDil()).toBe('ar');
+      delete disk[DEPOLAMA_ANAHTARLARI.KARE_TURU];
+    });
+
     it('cihaz dili kapalı dili geliştirme derlemesinde de açmaz', async () => {
       genel.__DEV__ = true;
       cihaz('ar_SA');
