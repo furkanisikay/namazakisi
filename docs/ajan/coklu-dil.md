@@ -60,6 +60,7 @@ Her dil için ayrı ayrı; hepsi sağlanmadan açma (yarım dil kendiliğinden d
 3. "Neler Yeni"de dil seçici öğesi (`YeniOzellikler.ts`, `ceviri` ile) ve Ayarlar'da "Dil · Language" satırı.
 4. Sesli okuma: cihazda o dilin TTS sesi denendi ya da sessizce varsayılana düştüğü bilgi satırıyla söyleniyor.
 5. Fıkıh/hitap gözden geçirmesi (terim sözlüğü, "sen"/"siz" eşlemesi) ve `beta: true` rozeti.
+6. Kare kanıtı: dil iki kare iş akışının `dil` seçeneklerinde; `android-ekran-goruntuleri.yml` (`tur`: magaza, ozellik, cihazlar) ve `ios-ekran-goruntuleri.yml` (`tur: ikisi`) o dille koşuldu, kareler gözle incelendi. Türkçe turdan az kare = betik seçicisi o dile duyarlı değil, uygulama hatası sanma ([magaza-ekran-goruntuleri](magaza-ekran-goruntuleri.md)).
 
 ## Hitap kaydı (her dilde eşlenir)
 
