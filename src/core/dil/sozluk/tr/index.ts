@@ -37,7 +37,8 @@ import { saat } from './saat';
 import { anons } from './anons';
 import { dilAyar } from './dilAyar';
 import { gununAyeti } from './gununAyeti';
+import { rakam } from './rakam';
 
-export const tr = { ortak, vakit, tarih, sure, anaEkran, hesap, seferilik, kaza, seri, sade, muhafiz, icerik, otomasyon, bildirim, nafile, sayac, nowBar, ilerleme, muhafizAyar, takvim, ayarlar, konum, genel, cami, yedekleme, cihaz, kible, saat, anons, dilAyar, gununAyeti, kurulum, hatirlatma, samimiyet } as const;
+export const tr = { ortak, vakit, tarih, sure, anaEkran, hesap, seferilik, kaza, seri, sade, muhafiz, icerik, otomasyon, bildirim, nafile, sayac, nowBar, ilerleme, muhafizAyar, takvim, ayarlar, konum, genel, cami, yedekleme, cihaz, kible, saat, anons, dilAyar, gununAyeti, rakam, kurulum, hatirlatma, samimiyet } as const;
 
 export type Sozluk = Genislet<typeof tr>;

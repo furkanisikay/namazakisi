@@ -39,6 +39,8 @@ interface SiriNativeModule {
     arayuzDiliniAyarla?(kod: string): void;
     /** Vakit adı takımı (App Group) — eski ikilide yok (opsiyonel). */
     vakitAdlariniAyarla?(json: string | null): void;
+    /** Rakam sistemi (App Group) — eski ikilide yok (opsiyonel). */
+    rakamSisteminiAyarla?(kod: string | null): void;
     canliEtkinlikDestekli?(): boolean;
     canliEtkinlikIzniAcik?(): Promise<boolean>;
     canliEtkinlikEsitle?(json: string | null, secenek?: string | null): Promise<string>;
@@ -84,6 +86,21 @@ export function vakitAdlariniAyarla(json: string | null): void {
         m.vakitAdlariniAyarla(json);
     } catch {
         // Eski ikili: dil tablosundaki adlar kalır.
+    }
+}
+
+/**
+ * Arayüzün rakam sistemini App Group'a yazar: `'arab'` (Doğu Arap rakamı) ya da `null` (anahtar
+ * silinir, Batı rakamı). Native okuyan taraf henüz yok. Modül/fonksiyon yoksa sessizce atlanır.
+ * Asla fırlatmaz.
+ */
+export function rakamSisteminiAyarla(kod: string | null): void {
+    const m = modul();
+    if (!m || typeof m.rakamSisteminiAyarla !== 'function') return;
+    try {
+        m.rakamSisteminiAyarla(kod);
+    } catch {
+        // Eski ikili: Batı rakamı kalır.
     }
 }
 

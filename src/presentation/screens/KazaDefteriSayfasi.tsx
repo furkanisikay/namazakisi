@@ -58,6 +58,7 @@ import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { tekKabulDuasi } from '../../core/samimiyet/kabulDuasi';
 import { KAZA_ADLARI } from '../../core/kaza/farzSonrasiKazaOnerisi';
 import { bicim, metin, sayili, sayiYaz } from '../../core/dil/aktifDil';
+import { rakamlariNormallestir } from '../../core/dil/rakam';
 import { useMetin } from '../hooks/useMetin';
 import { useFeedback } from '../../core/feedback';
 import type { KazaStackParamList } from '../../navigation/kazaEkranlari';
@@ -755,7 +756,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                   placeholder={bicim(m.ornek, { n: 1995 })}
                   placeholderTextColor={renkler.metinIkincil}
                   value={sihirbazDogumYili}
-                  onChangeText={setSihirbazDogumYili}
+                  onChangeText={(t) => setSihirbazDogumYili(rakamlariNormallestir(t))}
                   autoFocus
                   maxLength={4}
                 />

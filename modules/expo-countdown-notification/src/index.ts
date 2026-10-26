@@ -90,6 +90,7 @@ interface CountdownNativeModule {
     anonsDiliniAyarla?(dil: string): void;
     arayuzDiliniAyarla?(kod: string): void;
     vakitAdlariniAyarla?(json: string | null): void;
+    rakamSisteminiAyarla?(kod: string | null): void;
     iptalEtAnons(id: string): void;
     iptalEtTumAnonslar(): void;
     /** Yeni köprü (issue #273) — eski native'de yoktur, opsiyonel tiplenir. */
@@ -483,6 +484,20 @@ export function vakitAdlariniAyarla(json: string | null): void {
         ExpoCountdownNotification.vakitAdlariniAyarla(json);
     } catch {
         // Eski native: dil tablosundaki adlar kalır.
+    }
+}
+
+/**
+ * Arayüzün rakam sistemi: `'arab'` (Doğu Arap rakamı, ٠١٢٣) ya da `null` (anahtar silinir, Batı
+ * rakamı). JS etkin dil/ülke/seçimden çözülmüş değeri yazar (`core/dil/rakam`). Native okuyan
+ * taraf henüz yok. Native eski ise sessizce atlanır. Asla fırlatmaz.
+ */
+export function rakamSisteminiAyarla(kod: string | null): void {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.rakamSisteminiAyarla) return;
+    try {
+        ExpoCountdownNotification.rakamSisteminiAyarla(kod);
+    } catch {
+        // Eski native: Batı rakamı kalır.
     }
 }
 

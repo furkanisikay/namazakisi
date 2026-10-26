@@ -69,6 +69,14 @@ describe('SayiGirisModali', () => {
     expect(onDegisim).toHaveBeenCalledWith('12');
   });
 
+  it('Arapça/Urduca klavyenin Doğu rakamları Batı rakamına çevrilerek verilir', () => {
+    const onDegisim = jest.fn();
+    const { getByPlaceholderText } = render(<SayiGirisModali {...temelProps} onDegisim={onDegisim} />);
+    fireEvent.changeText(getByPlaceholderText('Örn'), '\u0661\u0662');
+    fireEvent.changeText(getByPlaceholderText('Örn'), '\u06f3\u06f0');
+    expect(onDegisim.mock.calls).toEqual([['12'], ['30']]);
+  });
+
   // Gap 1: Controlled value bağlanması — value={deger} invariant'ı.
   // deger prop'u TextInput.value'ya yansımazsa bileşen kontrollü olmaktan çıkar
   // (yazılan değer ekranda görünmez / dışarıdan güncellenemez).

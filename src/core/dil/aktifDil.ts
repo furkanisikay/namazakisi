@@ -12,6 +12,7 @@ import { cogulSec } from './cogul';
 import { dilKoduMu, VARSAYILAN_DIL, type DilKodu } from './diller';
 import type { CogulMetin } from './tipler';
 import type { VakitAdiTakimi } from './vakitTakimlari';
+import { dilRakamVarsayilani, type RakamSistemi } from './rakam';
 import { en } from './sozluk/en';
 import { id } from './sozluk/id';
 import { de } from './sozluk/de';
@@ -28,6 +29,12 @@ const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, r
 let aktif: DilKodu = VARSAYILAN_DIL;
 /** Etkin dilin vakit adı takımı (`null` = sözlüğün kendi adları). Dil değişince sıfırlanır. */
 let aktifTakim: VakitAdiTakimi | null = null;
+/**
+ * Etkin dilin rakam sistemi (`core/dil/rakam`). Dil değişince dilin varsayılanına döner;
+ * `DilServisi` açık seçimi ve ülkeyi okuyup yeniden çözer. Sözlüğü DEĞİŞTİRMEZ (dönüşüm
+ * çizim katmanında): `metin()` önbelleği bozulmaz.
+ */
+let aktifRakam: RakamSistemi = dilRakamVarsayilani(VARSAYILAN_DIL);
 /**
  * Etkin dilin takım uygulanmış sözlüğü. ÖNBELLEK zorunlu: `useMetin` bunu
  * `useSyncExternalStore` anlık görüntüsü olarak döndürür; her çağrıda yeni nesne React'i
@@ -58,15 +65,18 @@ export function aktifDiliKur(kod: unknown): boolean {
   if (yeni === aktif) return false;
   aktif = yeni;
   aktifTakim = null;
+  aktifRakam = dilRakamVarsayilani(yeni);
   onbellek = null;
   bildir();
   return true;
 }
 
 export function aktifDilSifirla(): void {
-  if (aktif === VARSAYILAN_DIL && aktifTakim === null) return;
+  const rakam = dilRakamVarsayilani(VARSAYILAN_DIL);
+  if (aktif === VARSAYILAN_DIL && aktifTakim === null && aktifRakam === rakam) return;
   aktif = VARSAYILAN_DIL;
   aktifTakim = null;
+  aktifRakam = rakam;
   onbellek = null;
   bildir();
 }
@@ -82,6 +92,18 @@ export function vakitTakiminiKur(takim: VakitAdiTakimi | null): boolean {
 
 export function aktifVakitTakimi(): VakitAdiTakimi | null {
   return aktifTakim;
+}
+
+/** Etkin dilin rakam sistemini kurar; değiştiyse `true` (dinleyicilere haber verilir). */
+export function rakamSisteminiKur(sistem: RakamSistemi): boolean {
+  if (sistem === aktifRakam) return false;
+  aktifRakam = sistem;
+  bildir();
+  return true;
+}
+
+export function aktifRakamSistemi(): RakamSistemi {
+  return aktifRakam;
 }
 
 /**

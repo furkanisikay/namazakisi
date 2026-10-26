@@ -160,6 +160,21 @@ public final class SiriDeposu: @unchecked Sendable {
         }
     }
 
+    /// Arayuzun rakam sistemi ("arab" = Dogu Arap rakami); yoksa Bati rakami. JS etkin dil,
+    /// ulke ve kullanici seciminden cozulmus degeri yazar (`core/dil/rakam`).
+    public static let rakamSistemiAnahtari = "namazakisi_rakam_sistemi"
+
+    /// nil ya da bos → anahtar SILINIR (Bati rakami). Yalniz yazar.
+    public func rakamSisteminiYaz(_ kod: String?) {
+        kilitli {
+            if let kod, !kod.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                defaults.set(kod, forKey: Self.rakamSistemiAnahtari)
+            } else {
+                defaults.removeObject(forKey: Self.rakamSistemiAnahtari)
+            }
+        }
+    }
+
     /// Kayitli takim (cozulmus); yok ya da bozuksa nil.
     public func vakitAdlari() -> VakitAdlari? {
         VakitAdlari.coz(kilitli { defaults.string(forKey: Self.vakitAdlariAnahtari) })

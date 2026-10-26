@@ -59,7 +59,9 @@ const BilgiSatiri: React.FC<BilgiSatiriProps> = ({ etiket, deger, ikonAdi, onPre
             color={onPress ? renkler.birincil : renkler.metin}
           />
         )}
+        {/* rakamKoru: sürüm numarası ve bağlantı adları Batı rakamıyla kalır (metin kapısı). */}
         <Text
+          rakamKoru
           className="text-sm font-semibold"
           style={{ color: onPress ? renkler.birincil : renkler.metin }}
         >

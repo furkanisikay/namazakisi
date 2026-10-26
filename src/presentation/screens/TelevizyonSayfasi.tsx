@@ -278,7 +278,9 @@ export const TelevizyonSayfasi: React.FC = () => {
                                 <Text style={{ fontSize: 14, lineHeight: 20, color: renkler.metinIkincil, marginTop: 6 }}>
                                     {m.kodYonerge}
                                 </Text>
+                                {/* rakamKoru: TV'ye kumandayla Batı rakamı girilir (metin kapısı çevirmesin). */}
                                 <Text
+                                    rakamKoru
                                     testID="tv-konum-kodu"
                                     accessibilityLabel={bicim(m.kodErisim, { kod: kod.split('').join(' ') })}
                                     style={{

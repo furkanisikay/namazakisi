@@ -76,7 +76,9 @@ export const AyetGorseli = React.forwardRef<View, Props>(({ ayet, tur, yaziTipi 
       style={{ width: KART_GENISLIGI, padding: 24, backgroundColor: renkler.kartArkaplan, borderRadius: 24 }}
     >
       <Text style={{ fontSize: 11, fontWeight: '700', letterSpacing: 1.5, color: renkler.birincil }}>{m.etiket}</Text>
+      {/* rakamKoru: Tanzil metni birebir; metin kapısı (rakam, Urduca yazı tipi) dokunmaz. */}
       <Text
+        rakamKoru
         style={{
           fontFamily: yaziTipi,
           fontSize: 24,
