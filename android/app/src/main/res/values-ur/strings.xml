@@ -42,7 +42,7 @@
   <string name="widget_ayar_zemin_acik">ہلکا</string>
   <string name="widget_ayar_zemin_koyu">گہرا</string>
   <string name="widget_ayar_zemin_seffaf">شفاف</string>
-  <string name="widget_ayar_opaklik">پس منظر کی شفافیت</string>
+  <string name="widget_ayar_opaklik">پس منظر کی غیر شفافیت</string>
   <string name="widget_ayar_gosterim">بڑے متن میں دکھائیں</string>
   <string name="widget_ayar_gosterim_kalan">باقی وقت</string>
   <string name="widget_ayar_gosterim_bitis">اختتام کا وقت</string>
