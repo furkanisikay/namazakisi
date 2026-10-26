@@ -2,59 +2,59 @@ import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Urducada: "آپ" + saygı emri, kısa ve doğrudan; "!" yok. Secde emri
+ * YAZILMAZ → "نماز کے لیے کھڑے ہو جائیں" / "نماز ادا کریں". Birinci tekil geniş/gelecek zaman
+ * (konuşanın cinsiyetine göre çekilir) kullanılmaz. Başlıkta vakit adı + süre ilk 16 karakterde.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} منٹ گزرے · وقت ہو گیا ⏰',
+    giris2: '{ad} · {dk} منٹ گزرے · نماز میں تاخیر نہ کریں ⚠️',
+    giris3: '{ad} · {dk} منٹ گزرے · نماز آپ کی منتظر ہے 🔥',
+    giris4: '{ad} · {dk} منٹ گزرے · ابھی نماز ادا کریں 🚨',
+    erken3: '{ad} · {dk} منٹ باقی · نماز آپ کی منتظر ہے 🔥',
+    erken4: '{ad} · {dk} منٹ باقی · ابھی نماز ادا کریں 🚨',
+    cikis1: '{ad} · {dk} منٹ باقی ⏰',
+    cikis2: '{ad} · {dk} منٹ · وقت تنگ ہو رہا ہے ⚠️',
+    cikis3: '{ad} · {dk} منٹ · وقت نکل رہا ہے 🔥',
+    cikis4: '{ad} · {dk} منٹ · وقت ختم ہو رہا ہے 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['نماز کا وقت ہو گیا؛ موقع ہے تو ابھی پڑھ لیں۔', 'جب تک وقت آپ کے حق میں ہے نماز پڑھ لیں، بعد پر نہ چھوڑیں۔'],
+    s2: ['ٹالنے سے نماز بھاری ہوتی جاتی ہے؛ اسے آخر تک نہ چھوڑیں۔', 'وقت گزر رہا ہے — ابھی نماز پڑھیں۔'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'نماز میں جتنی تاخیر ہو، اس کے چھوٹ جانے کا خطرہ اتنا بڑھتا ہے؛ فوراً پڑھیں۔',
+      'نماز کو "بعد میں" پر نہ ٹالیں؛ ابھی پڑھی جا سکتی ہے۔',
+      'چند منٹ بعد "کاش" کہنے کے بجائے ابھی اٹھیں۔',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['نماز میں مزید تاخیر نہ کریں — ابھی نماز کے لیے کھڑے ہو جائیں۔', 'ہاتھ کا کام چھوڑیں اور نماز کے لیے کھڑے ہو جائیں۔'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'وقت تنگ ہونے لگا ہے، موقع ہے تو ابھی پڑھ لیں۔',
+    s2: 'نماز کو آخر تک نہ چھوڑیں؛ ابھی پڑھنے کا مناسب وقت ہے۔',
+    s3: 'وقت ختم ہونے کو ہے؛ ابھی پڑھی جا سکتی ہے۔',
+    s4: 'اگر نماز پڑھ لی ہے تو "نماز پڑھ لی" دبائیں؛ ورنہ ابھی نماز کے لیے کھڑے ہو جائیں۔',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'نماز میں تاخیر نہ کریں۔ ابھی نماز کے لیے کھڑے ہو جائیں۔ ({dk} منٹ گزر گئے)',
+    giris2: 'وقت گزر رہا ہے، نماز کو آخر تک نہ چھوڑیں۔ ({dk} منٹ گزر گئے)',
+    giris1: cogul({ one: 'نماز کا وقت شروع ہوئے {n} منٹ ہو گیا۔', other: 'نماز کا وقت شروع ہوئے {n} منٹ ہو گئے۔' }),
+    erken4: 'نماز میں تاخیر نہ کریں، ابھی نماز کے لیے کھڑے ہو جائیں۔ ({dk} منٹ باقی)',
+    cikis4: 'وقت ختم ہو رہا ہے۔ ابھی نماز کے لیے کھڑے ہو جائیں۔ ({dk} منٹ باقی)',
+    cikis2: 'وقت تنگ ہو رہا ہے، نماز کو آخر تک نہ چھوڑیں۔ ({dk} منٹ باقی)',
+    cikis1: cogul({ one: 'نماز کا وقت ختم ہونے میں {n} منٹ باقی ہے۔', other: 'نماز کا وقت ختم ہونے میں {n} منٹ باقی ہیں۔' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · سونے سے پہلے پڑھیں ⏰',
+    govde: 'رات کے خاموش اوقات میں {dk} منٹ باقی ہیں؛ سونے سے پہلے عشاء پڑھ لیں۔',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'وقت تنگ ہونے لگا ہے، موقع ہے تو ابھی پڑھ لیں۔',
+    sonaBirakma: 'نماز کو آخر تک نہ چھوڑیں؛ ابھی پڑھنے کا مناسب وقت ہے۔',
+    fisilti: 'نماز کو "بعد میں" پر نہ ٹالیں؛ وقت ختم ہونے کو ہے، ابھی پڑھی جا سکتی ہے۔',
+    omur: 'وقت گزر رہا ہے؛ اس نماز کو وقت پر ادا کرنے کا موقع ابھی باقی ہے۔',
+    keske: 'چند منٹ بعد "کاش" کہنے کے بجائے ابھی اٹھیں۔',
+    namazaDur: 'اگر نماز پڑھ لی ہے تو "نماز پڑھ لی" دبائیں؛ ورنہ ابھی نماز کے لیے کھڑے ہو جائیں۔',
+    sonDakika: 'آخری منٹ۔ ہاتھ کا کام چھوڑیں اور نماز کے لیے کھڑے ہو جائیں۔',
   },
 };

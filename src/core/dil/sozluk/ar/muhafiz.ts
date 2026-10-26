@@ -2,59 +2,73 @@ import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Arapçada isim cümlesidir: emir kipi cinsiyetli olduğu için emir YOK;
+ * "حيّ على الصلاة" (ezan kalıbı) ve "القيام إلى الصلاة" kullanılır. "Secdeye kapan" karşılığı
+ * YAZILMAZ. Başlıkta süre birimi "د" (دقيقة): "المغرب · 655 د" ilk 16 karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} د مضت · دخل الوقت ⏰',
+    giris2: '{ad} · {dk} د مضت · لا تأخير للصلاة ⚠️',
+    giris3: '{ad} · {dk} د مضت · الصلاة في انتظارك 🔥',
+    giris4: '{ad} · {dk} د مضت · حيّ على الصلاة 🚨',
+    erken3: '{ad} · {dk} د متبقية · الصلاة في انتظارك 🔥',
+    erken4: '{ad} · {dk} د متبقية · حيّ على الصلاة 🚨',
+    cikis1: '{ad} · {dk} د متبقية ⏰',
+    cikis2: '{ad} · {dk} د · الوقت يضيق ⚠️',
+    cikis3: '{ad} · {dk} د · الوقت يفلت 🔥',
+    cikis4: '{ad} · {dk} د · الوقت يخرج 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['دخل وقت الصلاة؛ الصلاة الآن والفرصة سانحة.', 'الصلاة ما دام الوقت متّسعًا، دون تأجيل.'],
+    s2: ['كلما طال التأجيل ثقلت الصلاة؛ لا تأجيل إلى آخر الوقت.', 'الوقت يمضي — الصلاة الآن.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'كلما تأخرت الصلاة اقتربت من الفوات؛ الصلاة الآن.',
+      'لا مكان لـ«سأصلي لاحقًا»؛ الصلاة ممكنة الآن.',
+      'القيام الآن خير من قول «ليت» بعد دقائق.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['لا مزيد من التأخير — حيّ على الصلاة الآن.', 'ترك ما في اليد، والقيام إلى الصلاة.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'الوقت بدأ يضيق، والفرصة ما زالت سانحة للصلاة.',
+    s2: 'لا تأجيل للصلاة إلى آخر الوقت؛ الآن وقت مناسب لأدائها.',
+    s3: 'الوقت يوشك أن ينتهي؛ الصلاة ما زالت ممكنة الآن.',
+    s4: 'إن أُدّيت الصلاة فالضغط على «صلّيتُ»، وإلا فالقيام إليها الآن.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began.", zero: "It's been {n} minutes since prayer time began.", two: "It's been {n} minutes since prayer time began.", few: "It's been {n} minutes since prayer time began.", many: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.', zero: '{n} minutes left until the prayer time ends.', two: '{n} minutes left until the prayer time ends.', few: '{n} minutes left until the prayer time ends.', many: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'لا تأخير للصلاة! حيّ على الصلاة الآن! (مضت {dk} د)',
+    giris2: 'الوقت يمضي، لا تأجيل للصلاة إلى آخر الوقت. (مضت {dk} د)',
+    giris1: cogul({
+      zero: 'مضت {n} دقيقة على دخول وقت الصلاة.',
+      one: 'مضت دقيقة واحدة على دخول وقت الصلاة.',
+      two: 'مضت دقيقتان على دخول وقت الصلاة.',
+      few: 'مضت {n} دقائق على دخول وقت الصلاة.',
+      many: 'مضت {n} دقيقة على دخول وقت الصلاة.',
+      other: 'مضت {n} دقيقة على دخول وقت الصلاة.',
+    }),
+    erken4: 'لا تأخير للصلاة، حيّ على الصلاة الآن! (بقيت {dk} د)',
+    cikis4: 'الوقت يخرج! حيّ على الصلاة الآن! (بقيت {dk} د)',
+    cikis2: 'الوقت يضيق، لا تأجيل للصلاة إلى آخر الوقت. (بقيت {dk} د)',
+    cikis1: cogul({
+      zero: 'بقيت {n} دقيقة على خروج وقت الصلاة.',
+      one: 'بقيت دقيقة واحدة على خروج وقت الصلاة.',
+      two: 'بقيت دقيقتان على خروج وقت الصلاة.',
+      few: 'بقيت {n} دقائق على خروج وقت الصلاة.',
+      many: 'بقيت {n} دقيقة على خروج وقت الصلاة.',
+      other: 'بقيت {n} دقيقة على خروج وقت الصلاة.',
+    }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · الصلاة قبل النوم ⏰',
+    govde: 'بقيت {dk} د على وقت الهدوء الليلي؛ صلاة العشاء قبل النوم.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'الوقت بدأ يضيق، والفرصة ما زالت سانحة للصلاة.',
+    sonaBirakma: 'لا تأجيل للصلاة إلى آخر الوقت؛ الآن وقت مناسب لأدائها.',
+    fisilti: 'لا مكان لـ«سأصلي لاحقًا»؛ الوقت يوشك أن ينتهي، والصلاة ممكنة الآن.',
+    omur: 'الوقت يمضي، وما زالت الفرصة قائمة لأداء هذه الصلاة في وقتها.',
+    keske: 'القيام الآن خير من قول «ليت» بعد دقائق.',
+    namazaDur: 'إن أُدّيت الصلاة فالضغط على «صلّيتُ»، وإلا فالقيام إليها الآن.',
+    sonDakika: 'الدقائق الأخيرة. ترك ما في اليد، والقيام إلى الصلاة.',
   },
 };

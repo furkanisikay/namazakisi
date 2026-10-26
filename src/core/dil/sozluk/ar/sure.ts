@@ -1,9 +1,13 @@
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/**
+ * Her biçim "{n} " ile başlar: `dakikaUyumu` sayıyı kesip yalnız birimi değiştirir.
+ * 3–10 çoğul (دقائق), 11–99 temyiz tekil (دقيقة), 0/1/2 ve 100+ rakamla tekil.
+ */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours', zero: '{n} hours', two: '{n} hours', few: '{n} hours', many: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes', zero: '{n} minutes', two: '{n} minutes', few: '{n} minutes', many: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds', zero: '{n} seconds', two: '{n} seconds', few: '{n} seconds', many: '{n} seconds' }),
+  kisa: { sa: 'س', dk: 'د', sn: 'ث' },
+  saat: cogul({ zero: '{n} ساعة', one: '{n} ساعة', two: '{n} ساعة', few: '{n} ساعات', many: '{n} ساعة', other: '{n} ساعة' }),
+  dakika: cogul({ zero: '{n} دقيقة', one: '{n} دقيقة', two: '{n} دقيقة', few: '{n} دقائق', many: '{n} دقيقة', other: '{n} دقيقة' }),
+  saniye: cogul({ zero: '{n} ثانية', one: '{n} ثانية', two: '{n} ثانية', few: '{n} ثوانٍ', many: '{n} ثانية', other: '{n} ثانية' }),
 };
