@@ -25,7 +25,7 @@ jest.mock('../../../../modules/expo-muhafiz-anons/src', () => ({ anonsDiliniAyar
 
 import { I18nManager, Platform } from 'react-native';
 import { DilServisi } from '../DilServisi';
-import { aktifDil, aktifDilSifirla, metin } from '../../../core/dil/aktifDil';
+import { aktifDil, aktifDilSifirla, aktifRakamSistemi, metin } from '../../../core/dil/aktifDil';
 import { de } from '../../../core/dil/sozluk/de';
 import { fr } from '../../../core/dil/sozluk/fr';
 import { TEMEL_TAKIM } from '../../../core/dil/vakitTakimlari';
@@ -237,6 +237,71 @@ describe('DilServisi', () => {
       await DilServisi.vakitTakimiKaydet('magrip');
       await DilServisi.vakitTakimiKaydet(null);
       expect((disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] as { vakitTakimi: object }).vakitTakimi).toEqual({ de: 'turkce' });
+    });
+  });
+  describe('rakam sistemi', () => {
+    const mockAndroidRakam = jest.fn();
+    const mockIosRakam = jest.fn();
+    beforeEach(() => {
+      require('../../../../modules/expo-countdown-notification/src').rakamSisteminiAyarla = (k: string | null) => mockAndroidRakam(k);
+      require('../../../../modules/expo-siri-kisayollari/src').rakamSisteminiAyarla = (k: string | null) => mockIosRakam(k);
+      mockAndroidRakam.mockClear();
+      mockIosRakam.mockClear();
+    });
+    afterEach(() => {
+      delete require('../../../../modules/expo-countdown-notification/src').rakamSisteminiAyarla;
+      delete require('../../../../modules/expo-siri-kisayollari/src').rakamSisteminiAyarla;
+    });
+
+    it('Arapçada ülkeye göre: Körfez Doğu Arap, Mağrip Batı rakamı; native çözülmüş değeri alır', async () => {
+      disk[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI] = { konumModu: 'otomatik', ulkeKodu: 'SA' };
+      await DilServisi.kaydet('ar');
+      expect(aktifRakamSistemi()).toBe('arab');
+      expect(mockAndroidRakam).toHaveBeenLastCalledWith('arab');
+      expect(mockIosRakam).toHaveBeenLastCalledWith('arab');
+
+      disk[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI] = { konumModu: 'otomatik', ulkeKodu: 'MA' };
+      await DilServisi.vakitTakiminiYenile();
+      expect(aktifRakamSistemi()).toBe('latn');
+      expect(mockAndroidRakam).toHaveBeenLastCalledWith(null);
+      expect(mockIosRakam).toHaveBeenLastCalledWith(null);
+    });
+
+    it('açık seçim kaydedilir ve ülkeyi ezer; otomatiğe dönüş seçimi siler', async () => {
+      disk[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI] = { konumModu: 'otomatik', ulkeKodu: 'DZ' };
+      await DilServisi.kaydet('ar');
+      expect(aktifRakamSistemi()).toBe('latn');
+      expect(await DilServisi.rakamSecimi()).toBeNull();
+
+      expect(await DilServisi.rakamKaydet('arab')).toBe(true);
+      expect(aktifRakamSistemi()).toBe('arab');
+      expect(mockAndroidRakam).toHaveBeenLastCalledWith('arab');
+      expect(await DilServisi.rakamSecimi()).toBe('arab');
+      expect((disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] as { rakam: object }).rakam).toEqual({ ar: 'arab' });
+
+      expect(await DilServisi.rakamKaydet(null)).toBe(true);
+      expect(aktifRakamSistemi()).toBe('latn');
+      expect((disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] as { rakam: object }).rakam).toEqual({});
+    });
+
+    it('seçimi olmayan dilde kaydedilmez; dil değişince Batı rakamına dönülür, seçim korunur', async () => {
+      await DilServisi.kaydet('ar');
+      await DilServisi.rakamKaydet('latn');
+      await DilServisi.kaydet('ur');
+      expect(aktifRakamSistemi()).toBe('latn');
+      expect(await DilServisi.rakamKaydet('arab')).toBe(false);
+      expect(aktifRakamSistemi()).toBe('latn');
+      expect(mockAndroidRakam).toHaveBeenLastCalledWith(null);
+      await DilServisi.kaydet('ar');
+      expect(aktifRakamSistemi()).toBe('latn');
+      expect(await DilServisi.rakamSecimi()).toBe('latn');
+    });
+
+    it('bozuk kayıttaki seçim yok sayılır', async () => {
+      disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'ar', rakam: { ar: 'hindi' } };
+      await DilServisi.kaydet('ar');
+      expect(aktifRakamSistemi()).toBe('arab');
+      expect(await DilServisi.rakamSecimi()).toBeNull();
     });
   });
 });

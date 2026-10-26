@@ -51,6 +51,8 @@ jest.mock('../../../domain/services/DilServisi', () => {
       ozelAnonsDiliniKaydet: (k: string) => mockMetinDiliKaydet(k),
       vakitTakimiSecimi: () => mockTakimSecimi(),
       vakitTakimiKaydet: (id: string | null) => mockTakimKaydet(id),
+      rakamSecimi: () => Promise.resolve(null),
+      rakamKaydet: () => Promise.resolve(false),
     },
   };
 });

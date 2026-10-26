@@ -13,6 +13,7 @@ import {
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { useMetin } from '../../hooks/useMetin';
+import { rakamlariNormallestir } from '../../../core/dil/rakam';
 
 /**
  * Tek sayı girişli onay modalı (number-pad + İptal/Onay).
@@ -68,7 +69,7 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
             placeholder={placeholder}
             placeholderTextColor={renkler.metinIkincil}
             value={deger}
-            onChangeText={onDegisim}
+            onChangeText={(t) => onDegisim(rakamlariNormallestir(t))}
             autoFocus
           />
           <View style={styles.modalButonlar}>

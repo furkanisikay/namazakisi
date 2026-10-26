@@ -196,6 +196,16 @@ class ExpoCountdownNotificationModule : Module() {
             Unit
         }
 
+        /**
+         * Arayüzün rakam sistemi ("arab" = Doğu Arap rakamı) ya da `null` (anahtar silinir, Batı
+         * rakamı). Yalnız yazar; okuyan native yüzeyler sonra eklenecek.
+         */
+        Function("rakamSisteminiAyarla") { kod: String? ->
+            val context = appContext.reactContext
+            if (context != null) ArayuzDili.rakamSisteminiKaydet(context.applicationContext, kod)
+            Unit
+        }
+
         Function("anonsDiliniAyarla") { dil: String ->
             val context = appContext.reactContext
             if (context != null) AnonsKonusucu.diliKaydet(context.applicationContext, dil)

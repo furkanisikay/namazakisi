@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRenkler } from '../../core/theme';
 import { useAktifDil, useMetin } from '../hooks/useMetin';
 import { DilSecici } from '../components/dil/DilSecici';
+import { RakamSecimi } from '../components/dil/RakamSecimi';
 import { NotSatiri } from '../components/ortak/NotSatiri';
 import { SecenekListesi, type Secenek } from '../components/ortak/SecenekListesi';
 import { useAppDispatch } from '../store/hooks';
@@ -158,6 +159,7 @@ export const DilAyarlariSayfasi: React.FC = () => {
         <YonBekliyorSatiri />
         <DilSecici secimVar={secimVar} cihazYerelAyari={cihazYerelAyari()} onDegisti={degisti} testID="dil-secici" />
         <VakitAdlariSecimi kod={kod} />
+        <RakamSecimi kod={kod} />
         <View style={{ marginTop: 20, gap: 6 }}>
           {beta ? <NotSatiri metin={m.notlar.beta} /> : null}
           <NotSatiri metin={m.notlar.vakit} ikon="clock" />

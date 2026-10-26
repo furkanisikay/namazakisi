@@ -124,7 +124,9 @@ export const GununAyetiSayfasi: React.FC = () => {
         >
           <Text style={{ fontSize: 13, fontWeight: '700', color: renkler.birincil }}>{ayet.kisaKunye}</Text>
         </View>
+        {/* rakamKoru: Tanzil metni birebir; metin kapısı (rakam, Urduca yazı tipi) dokunmaz. */}
         <Text
+          rakamKoru
           style={{
             fontFamily: yaziTipi,
             fontSize: 26,

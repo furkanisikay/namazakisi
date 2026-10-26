@@ -73,6 +73,11 @@ import { GeriAlBandiKatmani } from './src/presentation/components/ortak/GeriAlBa
 import { EsitlemeTetikleyici } from './src/presentation/components/esitleme/EsitlemeTetikleyici';
 import { hatirlatmaAyariniYukle } from './src/presentation/store/taniSlice';
 import { nowBarDegistiUygula } from './src/domain/services/NowBarDegisikligiServisi';
+import { metinKapisiniKur, NastalikYukleyici } from './src/presentation/components/metin/MetinKapisi';
+import { useAktifDil } from './src/presentation/hooks/useMetin';
+
+// Metin kapısı (rakam sistemi + Urduca Nestalik): RN `Text`'in çizim katmanı, ilk çizimden önce.
+metinKapisiniKur();
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
 // Kullanici bildirimden "Kildim" yaptiginda Redux store'u gunceller
@@ -364,6 +369,7 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
 const AppIcerik: React.FC = () => {
   const { yukleniyor, koyuMu } = useTema();
   const renkler = useRenkler();
+  const dil = useAktifDil();
 
   useEffect(() => {
     // Logger'i baslat; initialize tamamlanmadan once cagirilan Logger.info/error
@@ -599,6 +605,8 @@ const AppIcerik: React.FC = () => {
       <GeriAlBandiKatmani />
       {/* Cihazlar arası eşitleme (issue #288): açılış + öne geliş turu; kapalıyken etkisiz. */}
       <EsitlemeTetikleyici />
+      {/* Urduca Nestalik yazı tipi yalnız Urducada yüklenir (metin kapısı kullanır). */}
+      {dil === 'ur' ? <NastalikYukleyici /> : null}
     </View>
   );
 };

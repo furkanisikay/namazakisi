@@ -14,7 +14,7 @@
  * Biçim eskisiyle birebir: `SS:DD:ss`, geçmiş hedefte `00:00:00`.
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Text, type TextProps } from 'react-native';
+import { Text, type TextProps, type TextStyle } from 'react-native';
 
 import { useEkranCanli } from '../hareket/dongu';
 import { BirimliSure } from '../common/BirimliSure';
@@ -85,10 +85,17 @@ interface GeriSayimMetniProps extends Omit<TextProps, 'children'> {
     onBitti?: () => void;
 }
 
-const GeriSayimMetniBileseni: React.FC<GeriSayimMetniProps> = ({ hedefIso, onBitti, ...metinProplari }) => {
+/** Sabit genişlikli rakam: saniye değişince metin titremesin (Doğu Arap rakamları dahil). */
+const SABIT_RAKAM: TextStyle = { fontVariant: ['tabular-nums'] };
+
+const GeriSayimMetniBileseni: React.FC<GeriSayimMetniProps> = ({ hedefIso, onBitti, style, ...metinProplari }) => {
     const hedefMs = useMemo(() => hedefMsCoz(hedefIso), [hedefIso]);
     const metin = useKalanSure(hedefMs, onBitti);
-    return <Text {...metinProplari}>{metin}</Text>;
+    return (
+        <Text {...metinProplari} style={[SABIT_RAKAM, style]}>
+            {metin}
+        </Text>
+    );
 };
 
 export const GeriSayimMetni = React.memo(GeriSayimMetniBileseni);

@@ -9,9 +9,17 @@ import { I18nManager, Platform, Settings } from 'react-native';
 import { Depolama } from '../../data/local/Depolama';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
-import { aktifDil, aktifDiliKur, aktifVakitTakimi, vakitTakiminiKur } from '../../core/dil/aktifDil';
+import {
+  aktifDil,
+  aktifDiliKur,
+  aktifRakamSistemi,
+  aktifVakitTakimi,
+  rakamSisteminiKur,
+  vakitTakiminiKur,
+} from '../../core/dil/aktifDil';
 import { cihazDilindenSec, DILLER, dilKoduMu, VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
 import { takimCoz, takimKimlikleri } from '../../core/dil/vakitTakimlari';
+import { dilRakamVarsayilani, rakamSecilebilir, rakamSistemiCoz, rakamSistemiMi, type RakamSistemi } from '../../core/dil/rakam';
 import { kayitliUlkeKodu } from '../../core/konum/ulkeTespiti';
 
 /**
@@ -30,6 +38,11 @@ export interface DilAyari {
    * varsayılanı izlenir; dil değişince her dilin seçimi korunur.
    */
   vakitTakimi?: Partial<Record<DilKodu, string>>;
+  /**
+   * Dil başına rakam sisteminin AÇIK seçimi (`core/dil/rakam`; bugün yalnız Arapça). Yoksa
+   * ülke varsayılanı (Mağrip Batı rakamı) ya da dilin varsayılanı izlenir.
+   */
+  rakam?: Partial<Record<DilKodu, RakamSistemi>>;
 }
 
 /** `__DEV__` (Metro/jest tanımlar); tanımsızsa üretim sayılır. */
@@ -132,17 +145,43 @@ function vakitAdlariniBildir(): void {
   }
 }
 
-/** Etkin dilin vakit adı takımını kayıttan ve konumun ülkesinden çözüp kurar. Asla fırlatmaz. */
+/**
+ * Etkin rakam sistemini native'e iter (Android `namazakisi_dil/rakam_sistemi`, iOS App Group
+ * `namazakisi_rakam_sistemi`): Doğu Arap rakamıysa `'arab'`, değilse `null` (anahtar silinir,
+ * Batı rakamı). Native OKUYAN taraf henüz yok. Eski native'de fonksiyon yoksa atlanır.
+ */
+function rakamSisteminiBildir(): void {
+  const kod = aktifRakamSistemi() === 'arab' ? 'arab' : null;
+  for (const yukle of [
+    () => require('../../../modules/expo-countdown-notification/src'),
+    () => require('../../../modules/expo-siri-kisayollari/src'),
+  ]) {
+    try {
+      (yukle() as { rakamSisteminiAyarla?: (k: string | null) => void }).rakamSisteminiAyarla?.(kod);
+    } catch {
+      // Köprü yok (test/eski sürüm): native yüzeyler Batı rakamı yazar.
+    }
+  }
+}
+
+/**
+ * Etkin dilin vakit adı takımını ve rakam sistemini kayıttan ve konumun ülkesinden çözüp kurar.
+ * Asla fırlatmaz.
+ */
 async function takimiKur(ham?: DilAyari | null): Promise<void> {
+  const dil = aktifDil();
   try {
-    const kayit = ham === undefined ? await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI) : ham;
-    const dil = aktifDil();
-    vakitTakiminiKur(takimCoz(dil, kayitNesnesi(kayit ?? null).vakitTakimi?.[dil], await kayitliUlke()));
+    const kayit = kayitNesnesi((ham === undefined ? await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI) : ham) ?? null);
+    const ulke = await kayitliUlke();
+    vakitTakiminiKur(takimCoz(dil, kayit.vakitTakimi?.[dil], ulke));
+    rakamSisteminiKur(rakamSistemiCoz(dil, kayit.rakam?.[dil], ulke));
   } catch (e) {
-    Logger.warn('DilServisi', 'Vakit adı takımı çözülemedi, sözlük adları kullanılıyor', e);
+    Logger.warn('DilServisi', 'Vakit adı takımı / rakam sistemi çözülemedi, varsayılanlar kullanılıyor', e);
     vakitTakiminiKur(null);
+    rakamSisteminiKur(dilRakamVarsayilani(dil));
   }
   vakitAdlariniBildir();
+  rakamSisteminiBildir();
 }
 
 async function diskten(): Promise<DilKodu> {
@@ -203,6 +242,33 @@ export const DilServisi = {
     try {
       const secim = kayitNesnesi(await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI)).vakitTakimi?.[aktifDil()];
       return typeof secim === 'string' && takimKimlikleri(aktifDil()).includes(secim) ? secim : null;
+    } catch {
+      return null;
+    }
+  },
+
+  /**
+   * Etkin dilin rakam sisteminin açık seçimi; `null` = otomatik (ülkeye göre). Seçimi olmayan
+   * dilde (Arapça dışı) ve geçersiz değerde kaydedilmez. Kurulan sistem değiştiyse `true`.
+   */
+  async rakamKaydet(secim: RakamSistemi | null): Promise<boolean> {
+    const dil = aktifDil();
+    if (!rakamSecilebilir(dil) || (secim !== null && !rakamSistemiMi(secim))) return false;
+    const onceki = aktifRakamSistemi();
+    const ham = await Depolama.guncelle<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI, (m) => {
+      const k = kayitNesnesi(m);
+      const { [dil]: _eski, ...digerleri } = k.rakam && typeof k.rakam === 'object' ? k.rakam : {};
+      return { ...k, rakam: secim === null ? digerleri : { ...digerleri, [dil]: secim } };
+    });
+    await takimiKur(ham);
+    return aktifRakamSistemi() !== onceki;
+  },
+
+  /** Etkin dilin rakam sisteminin açık seçimi (`null` = otomatik). ASLA reddetmez. */
+  async rakamSecimi(): Promise<RakamSistemi | null> {
+    try {
+      const secim = kayitNesnesi(await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI)).rakam?.[aktifDil()];
+      return rakamSecilebilir(aktifDil()) && rakamSistemiMi(secim) ? secim : null;
     } catch {
       return null;
     }

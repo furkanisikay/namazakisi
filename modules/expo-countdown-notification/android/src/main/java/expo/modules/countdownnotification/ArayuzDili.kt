@@ -10,11 +10,13 @@ import android.content.Context
  *
  * Aynı dosyada kullanıcının seçtiği VAKİT ADI TAKIMI da durur ([TERCIH_VAKIT_ADLARI], JSON;
  * okuyan uygulama modülü `cekirdek/VakitAdlari`). Yoksa her yüzey dil tablosunu kullanır.
+ * RAKAM SİSTEMİ de buradadır ([TERCIH_RAKAM_SISTEMI]: "arab" = Doğu Arap rakamı; yoksa Batı).
  */
 object ArayuzDili {
     const val TERCIH_DOSYASI = "namazakisi_dil"
     const val TERCIH_KOD = "kod"
     const val TERCIH_VAKIT_ADLARI = "vakit_adlari"
+    const val TERCIH_RAKAM_SISTEMI = "rakam_sistemi"
     const val VARSAYILAN = "tr"
 
     fun kaydet(context: Context, kod: String) {
@@ -30,6 +32,13 @@ object ArayuzDili {
     fun vakitAdlariniKaydet(context: Context, json: String?) {
         val duzen = context.applicationContext.getSharedPreferences(TERCIH_DOSYASI, Context.MODE_PRIVATE).edit()
         if (json.isNullOrBlank()) duzen.remove(TERCIH_VAKIT_ADLARI) else duzen.putString(TERCIH_VAKIT_ADLARI, json)
+        duzen.apply()
+    }
+
+    /** Rakam sistemini yazar; `null` ya da boş dize anahtarı SİLER (Batı rakamı). */
+    fun rakamSisteminiKaydet(context: Context, kod: String?) {
+        val duzen = context.applicationContext.getSharedPreferences(TERCIH_DOSYASI, Context.MODE_PRIVATE).edit()
+        if (kod.isNullOrBlank()) duzen.remove(TERCIH_RAKAM_SISTEMI) else duzen.putString(TERCIH_RAKAM_SISTEMI, kod.trim())
         duzen.apply()
     }
 

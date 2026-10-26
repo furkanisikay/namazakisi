@@ -129,6 +129,12 @@ public class ExpoSiriKisayollariModule: Module {
             SiriDeposu.varsayilan.vakitAdlariniYaz(json)
         }
 
+        /// Arayuzun rakam sistemi ("arab" = Dogu Arap rakami) ya da nil (anahtar silinir, Bati).
+        /// Yalniz yazar; okuyan uzantilar sonra eklenecek.
+        Function("rakamSisteminiAyarla") { (kod: String?) -> Void in
+            SiriDeposu.varsayilan.rakamSisteminiYaz(kod)
+        }
+
         /// Canli etkinlik (Live Activity, #295) bu build'de var mi? (Widget uzantisi bayragi.)
         Function("canliEtkinlikDestekli") { () -> Bool in
             return CanliEtkinlikKoprusu.destekleniyor
