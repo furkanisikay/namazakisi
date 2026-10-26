@@ -19,7 +19,7 @@ Katmanlar: `core/vakit/hesapProfilleri.ts` (profil tablosu, `hesapParametreleriO
 ## Dünya konumu
 
 - **Dünya şehirleri GeoNames (CC BY 4.0) varlığıdır, OSM (ODbL) cami verisinden AYRI tutulur:** `assets/konum/dunya.bin` (`scripts/konum/dunya-sehirleri-uret.js`, Türkiye hariç; Türkiye il/ilçe listesi değişmedi), atıf Hakkında sayfasında ve `assets/konum/LICENSE.md`'de. Okuyucu `data/local/dunyaSehirVerisi.ts` (expo-asset + `File.text()`), ekranda TEMBEL `require` + try/catch (jest'te expo-asset yok). **Release APK'da varlık okuması cihazda DOĞRULANMADI.**
-- **Ülke adları üretilmiş tablodur** (`scripts/konum/ulke-adlari-uret.js` → `ulkeAdlariVerisi.ts`, Node `Intl.DisplayNames` CLDR'den): Hermes'te `Intl.DisplayNames` yok.
+- **Ülke adları üretilmiş tablodur** (`scripts/konum/ulke-adlari-uret.js` → `ulkeAdlariVerisi.ts`, Node `Intl.DisplayNames` CLDR'den): Hermes'te `Intl.DisplayNames` yok. Yeni arayüz dili eklenince üreticiyi BÜTÜN dillerle yeniden koş (`node scripts/konum/ulke-adlari-uret.js tr en … ar ur`); tablo dışı dil İngilizceye düşer. Çağrıda dili ver: `ulkeAdi(kod, aktifDil())` (varsayılan `tr`). Nöbetçi: `dunyaSehirleri.test.ts > her arayüz dilinin kendi ülke adı tablosu`.
 - **Ülke kodu konum kaydıyla birlikte tazelenir:** GPS/geofence `yeniKonumuUygula` ters kodlamadan `ulkeKodu` yazar ve `dunyaSehri`'ni siler; `konumKaydiTutarliHale` Türkiye ili ↔ dünya şehri seçimini birbirini silecek şekilde tutar. `kayitliUlkeKodu` dünya şehrini YALNIZ elle modda okur. Kayıtta ülke yoksa `koordinatinUlkesi` çevrimdışı tespit eder (Türkiye ilçe merkezleri + en yakın dünya şehri). Nöbetçi: `konumKaydiTutarliligi.test.ts`.
 - **Ekranda Türkçe ek getirme:** ülke adına hal eki ("…'dasınız") yazma; ses uyumu ada göre değişir → "Bulunduğunuz yer · <ad>".
 

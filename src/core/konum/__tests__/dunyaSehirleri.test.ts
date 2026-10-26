@@ -3,6 +3,8 @@ import * as path from 'path';
 import { aramaAnahtari, dunyaVerisiniCoz, enYakinSehir, sehirAra } from '../dunyaSehirleri';
 import { koordinatinUlkesi } from '../ulkeTespiti';
 import { ulkeAdi } from '../ulkeAdlari';
+import { ULKE_ADLARI } from '../ulkeAdlariVerisi';
+import { DILLER } from '../../dil/diller';
 import { ulkeVarsayilani } from '../../vakit/ulkeProfilleri';
 
 const veri = dunyaVerisiniCoz(fs.readFileSync(path.join(__dirname, '../../../../assets/konum/dunya.bin'), 'utf8'));
@@ -52,6 +54,11 @@ describe('dünya şehirleri verisi (GeoNames)', () => {
     }
     expect(ulkeAdi('MY')).toBe('Malezya');
     expect(ulkeVarsayilani('MY').profil).toBe('jakim');
+  });
+
+  it('her arayüz dilinin kendi ülke adı tablosu var (İngilizceye düşmez)', () => {
+    for (const { kod } of DILLER) expect(Object.keys(ULKE_ADLARI[kod] ?? {}).length).toBeGreaterThan(200);
+    expect(ulkeAdi('MY', 'ar')).toBe('ماليزيا');
   });
 
   it('bozuk satırlar atlanır, fırlatmaz', () => {

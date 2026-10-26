@@ -66,7 +66,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useBolgeTakvimiOnerisi } from '../hooks/useBolgeTakvimiOnerisi';
 import { BolgeTakvimiModali } from '../components/home/BolgeTakvimiModali';
 import { ulkeAdi } from '../../core/konum/ulkeAdlari';
-import { bicim, sayili } from '../../core/dil/aktifDil';
+import { aktifDil, bicim, sayili } from '../../core/dil/aktifDil';
 import { useMetin } from '../hooks/useMetin';
 import { kayitliUlkeKodu } from '../../core/konum/ulkeTespiti';
 import { Logger } from '../../core/utils/Logger';
@@ -1156,7 +1156,7 @@ export const AnaSayfa: React.FC = () => {
         />
         <BolgeTakvimiModali
           gorunur={!!bolgeTakvimi && !ilkKutlama && !(kazaOneriVar && kazaOneriHazir)}
-          ulkeAdi={bolgeTakvimi ? ulkeAdi(bolgeTakvimi.ulke) : ''}
+          ulkeAdi={bolgeTakvimi ? ulkeAdi(bolgeTakvimi.ulke, aktifDil()) : ''}
           yerAdi={konumMetni ?? ''}
           koordinat={konumAyarlari.koordinatlar ?? null}
           mevcut={hesapAyari}
@@ -1279,7 +1279,7 @@ export const AnaSayfa: React.FC = () => {
 
       <BolgeTakvimiModali
         gorunur={!!bolgeTakvimi && !ilkKutlama && !(kazaOneriVar && kazaOneriHazir)}
-        ulkeAdi={bolgeTakvimi ? ulkeAdi(bolgeTakvimi.ulke) : ''}
+        ulkeAdi={bolgeTakvimi ? ulkeAdi(bolgeTakvimi.ulke, aktifDil()) : ''}
         yerAdi={konumMetni ?? ''}
         koordinat={konumAyarlari.koordinatlar ?? null}
         mevcut={hesapAyari}

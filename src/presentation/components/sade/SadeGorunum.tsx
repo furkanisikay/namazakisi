@@ -43,7 +43,7 @@ import {
   type SadeVakitKodu,
 } from '../../../core/sade/sadeGorunum';
 import { sesliOku, sesliOkumaDestekleniyorMu } from '../../../domain/services/SesliOkumaServisi';
-import { bicim } from '../../../core/dil/aktifDil';
+import { aktifDil, bicim } from '../../../core/dil/aktifDil';
 import { useMetin } from '../../hooks/useMetin';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
 
@@ -159,6 +159,9 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
   // Halka çapı: pencereye göre (telefon, açık katlanabilir, yatay tablet).
   const cap = Math.round(Math.max(200, Math.min(320, Math.min(width - 64, height * 0.42))));
   const yaricap = (cap - HALKA_KALINLIK) / 2;
+  // Urduca Nestalik'in kendi satır yüksekliği ~2,5 em: halkadaki dört satır çemberi aşar.
+  // Satır yüksekliği verilince metin kapısı onu 1,8 em'e çeker; diğer dillerde dokunulmaz.
+  const satir = (punto: number) => (aktifDil() === 'ur' ? { lineHeight: punto } : null);
   const cevre = 2 * Math.PI * yaricap;
 
   // Kılındı geçişinde ölçülü bir "oturma" — hareket azaltıldıysa hiç kurulmaz.
@@ -271,12 +274,12 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
                 </Svg>
               </View>
               <View style={{ alignItems: 'center', paddingHorizontal: HALKA_KALINLIK * 2, maxWidth: cap - HALKA_KALINLIK * 2 }}>
-                <Text style={{ color: renkler.metin, fontSize: 20, fontWeight: '600' }} maxFontSizeMultiplier={1.6}>
+                <Text style={[{ color: renkler.metin, fontSize: 20, fontWeight: '600' }, satir(20)]} maxFontSizeMultiplier={1.6}>
                   {durum.ustEtiket}
                 </Text>
                 <Text
                   testID="sade-vakit-adi"
-                  style={{ color: renkler.metin, fontSize: 52, fontWeight: '800' }}
+                  style={[{ color: renkler.metin, fontSize: 52, fontWeight: '800' }, satir(52)]}
                   numberOfLines={1}
                   adjustsFontSizeToFit
                   minimumFontScale={0.5}
@@ -286,12 +289,12 @@ const SadeGorunumBileseni: React.FC<SadeGorunumProps> = ({
                 </Text>
                 {durum.tur !== 'yok' && (
                   <>
-                    <Text style={{ color: renkler.metin, fontSize: 18, marginTop: 6 }} maxFontSizeMultiplier={1.6}>
+                    <Text style={[{ color: renkler.metin, fontSize: 18, marginTop: 6 }, satir(18)]} maxFontSizeMultiplier={1.6}>
                       {durum.kalanEtiketi}
                     </Text>
                     <Text
                       testID="sade-kalan"
-                      style={{ color: renkler.metin, fontSize: 38, fontWeight: '700' }}
+                      style={[{ color: renkler.metin, fontSize: 38, fontWeight: '700' }, satir(38)]}
                       numberOfLines={1}
                       adjustsFontSizeToFit
                       minimumFontScale={0.5}
