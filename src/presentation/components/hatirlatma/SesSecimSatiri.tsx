@@ -184,7 +184,7 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                         {e.etiket}
                     </Text>
                     {kompakt && e.ipucu ? (
-                        <Text className="text-xs ml-2" style={{ color: renkler.metinIkincil }}>
+                        <Text className="text-xs ml-2" style={{ color: renkler.metinIkincil, flexShrink: 1 }}>
                             {e.ipucu}
                         </Text>
                     ) : null}
