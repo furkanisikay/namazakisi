@@ -1,15 +1,14 @@
-// ÇEVİRİ: nl — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Koran {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Het gebed is beter dan de slaap. Kom tot het succes.',
+    araVer: 'Neem even pauze van wereldse zaken en sta voor uw Heer.',
+    yorgunluk: 'Asr wacht op u, om de vermoeidheid van de dag af te schudden en rust te vinden.',
+    sukur: 'Maghrib is de dank voor de dag. Haast u om voor uw Heer te staan.',
+    aksamKisa: 'De tijd van Maghrib is kort; ze is begonnen, bid zonder uitstel.',
+    geceKaranligi: 'Wees in het donker van de nacht alleen met uw Heer. Isha is een medicijn voor de ziel.',
+    davet: 'U bent uitgenodigd voor Isha, om de dag te besluiten met het welbehagen van Allah.',
   },
 };

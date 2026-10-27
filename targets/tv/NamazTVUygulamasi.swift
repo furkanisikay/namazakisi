@@ -244,19 +244,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: nl
+    // nl — Felemenkçe (beta): JS `sozluk/nl` (hitap "u")
     static let nl = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Kies uw stad",
+        ilMerkezi: "De gebedstijden worden berekend voor het centrum van de stad. U kunt uw keuze later wijzigen.",
+        ilSecErisim: "{il}, kiezen",
+        kalan: "Resterende tijd tot {ad}",
+        kalanErisim: "Resterende tijd tot {ad}: {sure}",
+        konumuDegistirin: "Locatie wijzigen",
+        kerahatSuruyor: "Makruh-tijd: {tur}, eindigt {bitis}. {aciklama}",
+        siradakiKerahat: "Volgende makruh-tijd: {tur} {bas}–{bit}",
+        cumaBilgisi: "Vandaag is het vrijdag. Het Djoemoe'a-gebed wordt op de tijd van Dhuhr verricht (begint {giris}).",
+        suAnkiEk: ", huidig gebed",
+        siradakiEk: ", volgend gebed"
     )
 
     // ÇEVİRİ: sq
