@@ -126,12 +126,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} second", "other": "{n} seconds", "many": "{n} seconds"]
     )
 
-    // ÇEVİRİ: nl
+    // nl — Felemenkçe (beta): JS `sozluk/nl/sure.ts`
     public static let nl = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "u", birimDk: "min", birimSn: "s",
+        saat: ["one": "{n} uur", "other": "{n} uur"],
+        dakika: ["one": "{n} minuut", "other": "{n} minuten"],
+        saniye: ["one": "{n} seconde", "other": "{n} seconden"]
     )
 
     // ÇEVİRİ: sq

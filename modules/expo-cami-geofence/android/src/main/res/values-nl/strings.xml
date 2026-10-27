@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: nl — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="camigeofence_kanal_durum_ad">At the mosque</string>
-    <string name="camigeofence_kanal_durum_aciklama">A quiet notice when you\'re detected at a mosque</string>
-    <string name="camigeofence_kanal_soru_ad">After leaving the mosque</string>
-    <string name="camigeofence_kanal_soru_aciklama">A question so you can mark your prayer after you leave the mosque</string>
+    <string name="camigeofence_kanal_durum_ad">In de moskee</string>
+    <string name="camigeofence_kanal_durum_aciklama">Een stille melding wanneer wordt herkend dat u in de moskee bent</string>
+    <string name="camigeofence_kanal_soru_ad">Na het verlaten van de moskee</string>
+    <string name="camigeofence_kanal_soru_aciklama">Een vraag zodat u uw gebed kunt markeren nadat u de moskee hebt verlaten</string>
 
-    <string name="camigeofence_govde_mod_sessiz">Prayer mode is on. Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_mod">Prayer mode is on.</string>
-    <string name="camigeofence_govde_sessiz">Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_normal">Reminders will arrive as usual.</string>
-    <string name="camigeofence_eylem_modu_kapat">Turn off mode</string>
-    <string name="camigeofence_eylem_cami_degil">Not a mosque</string>
+    <string name="camigeofence_govde_mod_sessiz">De gebedsmodus staat aan. Herinneringen komen stil aan.</string>
+    <string name="camigeofence_govde_mod">De gebedsmodus staat aan.</string>
+    <string name="camigeofence_govde_sessiz">Herinneringen komen stil aan.</string>
+    <string name="camigeofence_govde_normal">Herinneringen komen zoals gewoonlijk aan.</string>
+    <string name="camigeofence_eylem_modu_kapat">Modus uitzetten</string>
+    <string name="camigeofence_eylem_cami_degil">Geen moskee</string>
 
-    <string name="camigeofence_soru_baslik">Are you at the mosque?</string>
-    <string name="camigeofence_soru_govde">You\'re near %1$s. We\'re not sure, so we\'re asking you.</string>
-    <string name="camigeofence_varsayilan_ad">Mosque</string>
-    <string name="camigeofence_eylem_namaz_modunu_ac">Turn on Prayer mode</string>
-    <string name="camigeofence_eylem_evet_camideyim">Yes, I\'m at the mosque</string>
-    <string name="camigeofence_eylem_hayir">No</string>
+    <string name="camigeofence_soru_baslik">Bent u in de moskee?</string>
+    <string name="camigeofence_soru_govde">U bent in de buurt van %1$s. We weten het niet zeker, daarom vragen we het u.</string>
+    <string name="camigeofence_varsayilan_ad">Moskee</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Gebedsmodus aanzetten</string>
+    <string name="camigeofence_eylem_evet_camideyim">Ja, ik ben in de moskee</string>
+    <string name="camigeofence_eylem_hayir">Nee</string>
 
-    <string name="camigeofence_kildiniz_mi">Have you prayed %1$s?</string>
-    <string name="camigeofence_kildiniz_mi_govde">You can mark it with a single tap.</string>
-    <string name="camigeofence_eylem_kildim">I\'ve prayed</string>
+    <string name="camigeofence_kildiniz_mi">Hebt u %1$s gebeden?</string>
+    <string name="camigeofence_kildiniz_mi_govde">U kunt het met één tik markeren.</string>
+    <string name="camigeofence_eylem_kildim">Gebeden</string>
     <string name="camigeofence_namaz_imsak">Fajr</string>
     <string name="camigeofence_namaz_ogle">Dhuhr</string>
     <string name="camigeofence_namaz_ikindi">Asr</string>
     <string name="camigeofence_namaz_aksam">Maghrib</string>
     <string name="camigeofence_namaz_yatsi">Isha</string>
-    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+    <string name="camigeofence_namaz_cuma">Djoemoe\'a</string>
 
-    <string name="camigeofence_mod_kural_adi">Prayer</string>
-    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı turns it on during the Jumu\'ah sermon, at the mosque or when a prayer time begins</string>
+    <string name="camigeofence_mod_kural_adi">Gebed</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı zet het aan tijdens de khutba van Djoemoe\'a, in de moskee of wanneer een gebedstijd begint</string>
 </resources>

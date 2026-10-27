@@ -298,18 +298,18 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: nl
+    // nl — Felemenkçe (beta): JS `sozluk/nl/kible.ts > yon`; binlik ayırıcı nokta (JS `BINLIK.nl`)
     public static let nl = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Achter u",
+        saga: "Rechts {derece}°",
+        sola: "Links {derece}°",
+        hizali: "U staat in de richting van de qibla",
+        arkadaErisim: "De qibla is achter u",
+        sagdaErisim: "De qibla is {derece} graden rechts van u",
+        soldaErisim: "De qibla is {derece} graden links van u",
+        kabede: "U bent bij de Kaaba",
         mesafe: "{km} km",
-        binlikAyirici: ","
+        binlikAyirici: "."
     )
 
     // ÇEVİRİ: sq

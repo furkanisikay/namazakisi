@@ -1,61 +1,61 @@
-// ÇEVİRİ: nl — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Felemenkçede: zamirsiz kısa emir ("Bid nu", "Sta op voor het gebed"),
+ * iyelikte "uw"; "alstublieft" yok. "Neerknielen/prosterneren" YAZILMAZ (Türkçedeki "secdeye
+ * kapan" yasağının ikizi) → "sta op voor het gebed". Başlıkta süre birimi "min":
+ * "Maghrib · 65 min" ilk 16 karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} min bezig · gebedstijd ⏰',
+    giris2: '{ad} · {dk} min bezig · stel uw gebed niet uit ⚠️',
+    giris3: '{ad} · {dk} min bezig · uw gebed wacht 🔥',
+    giris4: '{ad} · {dk} min bezig · STA OP VOOR HET GEBED 🚨',
+    erken3: '{ad} · nog {dk} min · uw gebed wacht 🔥',
+    erken4: '{ad} · nog {dk} min · STA OP VOOR HET GEBED 🚨',
+    cikis1: '{ad} · nog {dk} min ⏰',
+    cikis2: '{ad} · {dk} min · de tijd wordt krap ⚠️',
+    cikis3: '{ad} · {dk} min · de tijd glipt weg 🔥',
+    cikis4: '{ad} · {dk} min · DE TIJD LOOPT AF 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['De gebedstijd is begonnen; bid nu u de kans hebt.', 'Bid nu de tijd aan uw kant staat; schuif het niet op.'],
+    s2: ['Hoe langer u het uitstelt, hoe zwaarder het wordt; laat uw gebed niet tot het laatst.', 'De tijd verstrijkt — bid nu.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Hoe langer u uitstelt, hoe dichter u bij het missen komt; bid meteen.',
+      'Zeg niet "ik bid straks"; u kunt nu bidden.',
+      'Sta nu op, in plaats van over een paar minuten "had ik maar" te zeggen.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Stel uw gebed niet langer uit — sta nu op voor het gebed.', 'Leg neer waar u mee bezig bent en sta op voor het gebed.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'De tijd begint krap te worden; bid nu u de kans hebt.',
+    s2: 'Laat uw gebed niet tot het laatst; dit is een goed moment om te bidden.',
+    s3: 'De tijd is bijna om; u kunt nu nog bidden.',
+    s4: 'Hebt u gebeden, tik dan op "Gebeden"; zo niet, sta nu op voor het gebed.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'STEL UW GEBED NIET UIT! Sta nu op voor het gebed! ({dk} min voorbij)',
+    giris2: 'De tijd verstrijkt; laat uw gebed niet tot het laatst. ({dk} min voorbij)',
+    giris1: cogul({ one: 'De gebedstijd is {n} minuut geleden begonnen.', other: 'De gebedstijd is {n} minuten geleden begonnen.' }),
+    erken4: 'Stel uw gebed niet uit; sta nu op voor het gebed! (nog {dk} min)',
+    cikis4: 'DE TIJD LOOPT AF! Sta nu op voor het gebed! (nog {dk} min)',
+    cikis2: 'De tijd wordt krap; laat uw gebed niet tot het laatst. (nog {dk} min)',
+    cikis1: cogul({ one: 'Nog {n} minuut tot de gebedstijd eindigt.', other: 'Nog {n} minuten tot de gebedstijd eindigt.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · bid voor u gaat slapen ⏰',
+    govde: 'De nachtrust begint over {dk} min; bid Isha voordat u naar bed gaat.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'De tijd begint krap te worden; bid nu u de kans hebt.',
+    sonaBirakma: 'Laat uw gebed niet tot het laatst; dit is een goed moment om te bidden.',
+    fisilti: 'Zeg niet "ik bid straks"; de tijd is bijna om, u kunt nu bidden.',
+    omur: 'De tijd verstrijkt; u hebt nog de kans om dit gebed op tijd te verrichten.',
+    keske: 'Sta nu op, in plaats van over een paar minuten "had ik maar" te zeggen.',
+    namazaDur: 'Hebt u gebeden, tik dan op "Gebeden"; zo niet, sta nu op voor het gebed.',
+    sonDakika: 'De laatste minuten. Leg neer waar u mee bezig bent en sta op voor het gebed.',
   },
 };

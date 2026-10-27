@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
+  "NSLocationWhenInUseUsageDescription": "Uw locatie wordt gebruikt om de gebedstijden nauwkeurig te berekenen voor de plek waar u bent. Uw locatie blijft op uw apparaat.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Uw locatie wordt gebruikt om de gebedstijden nauwkeurig te berekenen voor de plek waar u bent en, als In de moskee aanstaat, om de gebedsmodus aan te zetten wanneer u een moskee binnengaat. Uw locatie blijft op uw apparaat.",
+  "NSLocationAlwaysUsageDescription": "Uw locatie wordt gebruikt om de gebedstijden automatisch bij te werken als u van stad wisselt en, als In de moskee aanstaat, om de gebedsmodus aan te zetten wanneer u een moskee binnengaat. Uw locatie blijft op uw apparaat.",
+  "NSCameraUsageDescription": "Uw camera wordt gebruikt om de richting van de qibla in het camerabeeld te tonen en om de koppelcode op uw tv te scannen. Beelden worden niet bewaard en verlaten uw apparaat nooit.",
+  "NSCalendarsUsageDescription": "Toegang tot de agenda wordt gebruikt om gebedstijden aan uw agenda toe te voegen en, als u dat aanzet, om te controleren of afspraken in uw agenda een gebedstijd overlappen. Uw agendagegevens blijven op uw apparaat.",
+  "NSCalendarsFullAccessUsageDescription": "Toegang tot de agenda wordt gebruikt om gebedstijden aan uw agenda toe te voegen en, als u dat aanzet, om te controleren of afspraken in uw agenda een gebedstijd overlappen. Uw agendagegevens blijven op uw apparaat.",
+  "NSLocalNetworkUsageDescription": "De app maakt verbinding met de tv in uw lokale netwerk om uw gebedstijden en de gebeden die u hebt gemarkeerd ernaartoe te sturen. De gegevens zijn versleuteld en gaan alleen tussen de twee apparaten.",
+  "NSAlarmKitUsageDescription": "Herinneringsstappen waarbij u “Echt alarm” kiest, worden als alarm ingesteld, zodat u ze ook hoort als uw telefoon op stil staat of een focus aanstaat.",
+  "\"Vakti kıldım\"": "Gebeden",
   "\"Kıble\"": "Qibla"
 }

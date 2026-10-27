@@ -61,8 +61,8 @@ object CanliGuncellemeKurallari {
         "ur" to ("گھنٹے" to "منٹ"),
         // ÇEVİRİ: es
         "es" to ("h" to "min"),
-        // ÇEVİRİ: nl
-        "nl" to ("h" to "min"),
+        // nl
+        "nl" to ("u" to "min"),
         // ÇEVİRİ: sq
         "sq" to ("h" to "min"),
         // ÇEVİRİ: hi

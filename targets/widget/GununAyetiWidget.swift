@@ -202,18 +202,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: nl
+    // nl — meal 94:6 `gununAyetiHavuzu.ts` (dutch_center, Rowwad Translation Center)
     static let nl = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Vers van de dag",
+        galeriAciklama: "Een vers met vertaling dat elke dag bij Fajr wisselt.",
+        etiket: "VERS VAN DE DAG",
+        uygulamayiAcin: "Open de app om het vers van de dag te zien",
+        ornekSigmiyor: "Het vers van vandaag past niet in dit formaat. Tik om het te lezen.",
+        ornekAcin: "Openen",
+        ornekArapcaKaynagi: "Arabisch: Tanzil",
+        ornekMeal: "Waarlijk, na ongemak komen er weer betere tijden.",
+        ornekKisaKunye: "Koran 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 2.0.10"
     )
 
     // ÇEVİRİ: sq

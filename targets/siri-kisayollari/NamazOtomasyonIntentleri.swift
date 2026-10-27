@@ -206,11 +206,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: nl
+    // nl — Felemenkçe (beta): JS `sozluk/nl` (CLDR one/other)
     static let nl = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} begint over {n} minuut.", "other": "{ad} begint over {n} minuten."],
+        evetKilindi: "Ja, het is als gebeden gemarkeerd.",
+        hayirKilinmadi: "Nee, het is nog niet gemarkeerd."
     )
 
     // ÇEVİRİ: sq

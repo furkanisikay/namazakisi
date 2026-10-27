@@ -1,35 +1,36 @@
-// ÇEVİRİ: nl — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Felemenkçe konuşan Müslümanların yerleşik kalıpları (çeviri değil): "Moge Allah het accepteren"
+ * baskın kalıp; "Taqabbal Allah" Arapça kalıbın Felemenkçe metinlerde de kullanılan yazımı.
+ * Harf çevirisi Felemenkçe yazımı izler (u → oe: "Djoemoe'a moebarak", "Eid moebarak").
+ * Kandil selamı Hollanda/Belçika'da yalnız Türk diasporası geleneğidir (`selam.ts > KANDIL_ULKELERI`
+ * NL/BE'yi içermez); tip bütünlüğü için yazıldı.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Moge het gezegend zijn.',
+  kabulDualari: ['Moge Allah het accepteren', 'Taqabbal Allah', 'Moge Allah het accepteren', 'Moge onze Heer het accepteren'],
+  kabulDuasi: 'Moge Allah het accepteren',
+  ekSabah: 'Een gezegende ochtend',
+  ekYatsi: 'Een gezegende nacht',
+  tamGunAna: 'Moge Allah het accepteren',
+  tamGunAlt: 'U hebt vandaag alle vijf gebeden verricht.',
+  kazaKabul: 'Eén inhaalgebed ({vakit}) is van uw inhaallogboek afgeschreven. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Een gezegende Regaib-nacht',
+    mirac: "Een gezegende nacht van Isra en Mi'raj",
+    berat: "Een gezegende nacht van Bara'a",
+    mevlid: 'Een gezegende Mawlid',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'Een gezegende suhoor',
+    bayram: 'Eid moebarak',
+    iftar: 'Een gezegende iftar',
+    kadir: 'Een gezegende Laylat al-Qadr',
+    arefe: 'Een gezegende vooravond van het feest',
+    hicriYilbasi: 'Een gezegend islamitisch nieuwjaar',
+    cuma: "Djoemoe'a moebarak",
+    ramazan: 'Ramadan moebarak',
+    sabah: 'Een gezegende ochtend',
   },
 };

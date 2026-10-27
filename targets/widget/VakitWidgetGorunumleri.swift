@@ -331,29 +331,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: nl
+    // nl — Felemenkçe (beta): JS `sozluk/nl` (hitap "u"; "Kıldım"/"Kılındı" = "Gebeden")
     static let nl = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Gebedstijd",
+        galeriAciklama: "De huidige gebedstijd, de resterende tijd tot het einde en de gebedstijden van vandaag.",
+        veriEski: "Open de app om de gebedstijden bij te werken",
+        konumYok: "Open de app om uw locatie in te stellen",
+        kilindiSiradaki: "{ad} gebeden · {sonraki} {saat}",
+        adCikis: "{ad} · eindigt {saat}",
+        siradakiAdSaat: "Hierna {ad} {saat}",
+        vaktiCikisErisim: "{ad}-tijd, eindigt {saat}",
+        siradakiErisim: "Hierna {ad}, {saat}",
+        cikisSaat: "Eindigt {saat}",
+        bitisSaat: "Einde {saat}",
+        kilindiBaslik: "{ad} gebeden",
+        siradaki: "Hierna",
+        siradakiAd: "Hierna {ad}",
+        kildimErisim: "{ad} gebeden",
+        gunSatiriKilindi: ", gebeden",
+        bitti: "Voorbij",
+        vakitCikti: "De gebedstijd is voorbij",
+        kabulAlt: "{ad} gebeden",
+        kontrolAdi: "Gebeden",
+        kontrolAciklama: "Markeert het huidige gebed als gebeden."
     )
 
     // ÇEVİRİ: sq

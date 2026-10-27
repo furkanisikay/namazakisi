@@ -586,31 +586,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: nl
+    // nl — Felemenkçe (beta): JS `sozluk/nl` (hitap "u"; "Kıldım"/"Kılındı" = "Gebeden")
     public static let nl = VakitMetinleri(
         dil: "nl",
         adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        gunes: "Zonsopkomst",
+        konumYok: "Open de app en stel uw locatie in, zodat de gebedstijden kunnen worden berekend.",
+        veriEski: "De gebedstijden zijn verouderd. Open de app één keer om ze bij te werken.",
+        girisBugun: "om {saat}",
+        girisYarin: "morgen om {saat}",
+        suAnVakti: "Het is nu tijd voor {ad}.",
+        suAnVaktiCikis: "Het is nu tijd voor {ad}; die eindigt om {saat}.",
+        siradakiNamaz: "Het volgende gebed is {ad} {giris}.",
+        isaretlendi: "{ad} is als gebeden gemarkeerd. {dua}.",
+        zatenKilindi: "{ad} is al als gebeden gemarkeerd.",
+        vakitYok: "Er is nu geen gebed om te markeren.",
+        vakitYokSiradaki: "Er is nu geen gebed om te markeren. Hierna komt {ad} {giris}.",
+        onay: "{ad} als gebeden markeren?",
+        vakitDegisti: "De gebedstijd is veranderd, daarom is er niets gemarkeerd. Probeer het opnieuw.",
+        kabulDuasi: "Moge Allah het accepteren",
+        kildim: "Gebeden",
+        kilindi: "Gebeden",
+        kontrolKildim: "{ad} · Gebeden",
+        kontrolKilindi: "{ad} gebeden",
+        kontrolVakitYok: "Geen gebed om te markeren",
+        uygulamayiAcin: "Open de app"
     )
 
     // ÇEVİRİ: sq
