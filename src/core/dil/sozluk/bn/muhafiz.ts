@@ -1,61 +1,60 @@
-// ÇEVİRİ: bn — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Bengalcede: "আপনি" + kısa saygı emri ("নামাজে দাঁড়ান"), "দয়া করে" yok.
+ * "Secdeye kapan" karşılığı YAZILMAZ → "নামাজে দাঁড়ান" (namaza durun). Başlıkta süre birimi
+ * "মি": vakit adı + süre ilk 16 karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} মি পার · ওয়াক্ত হয়েছে ⏰',
+    giris2: '{ad} · {dk} মি পার · নামাজে দেরি করবেন না ⚠️',
+    giris3: '{ad} · {dk} মি পার · নামাজ আপনার অপেক্ষায় 🔥',
+    giris4: '{ad} · {dk} মি পার · এখনই নামাজে দাঁড়ান 🚨',
+    erken3: '{ad} · {dk} মি বাকি · নামাজ আপনার অপেক্ষায় 🔥',
+    erken4: '{ad} · {dk} মি বাকি · এখনই নামাজে দাঁড়ান 🚨',
+    cikis1: '{ad} · {dk} মি বাকি ⏰',
+    cikis2: '{ad} · {dk} মি · সময় কমে আসছে ⚠️',
+    cikis3: '{ad} · {dk} মি · সময় চলে যাচ্ছে 🔥',
+    cikis4: '{ad} · {dk} মি · ওয়াক্ত শেষ হচ্ছে 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['নামাজের ওয়াক্ত হয়েছে; সুযোগ থাকতেই পড়ে নিন।', 'সময় আপনার অনুকূলে থাকতেই পড়ুন, পরে রেখে দেবেন না।'],
+    s2: ['যত দেরি করবেন, তত ভারী হবে; নামাজ শেষ সময়ের জন্য রেখে দেবেন না।', 'সময় এগিয়ে যাচ্ছে — এখনই নামাজ পড়ুন।'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'যত দেরি করবেন, নামাজ ছুটে যাওয়ার তত কাছে যাবেন; এখনই পড়ুন।',
+      '"পরে পড়ব" বলবেন না; এখনই পড়তে পারেন।',
+      'কয়েক মিনিট পর "হায়, যদি পড়তাম" বলার চেয়ে এখনই উঠুন।',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['নামাজে আর দেরি করবেন না — এখনই নামাজে দাঁড়ান।', 'হাতের কাজ রেখে নামাজে দাঁড়ান।'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'সময় কমে আসতে শুরু করেছে; সুযোগ থাকতেই পড়ে নিন।',
+    s2: 'নামাজ শেষ সময়ের জন্য রেখে দেবেন না; এখনই পড়ার ভালো সময়।',
+    s3: 'সময় প্রায় শেষ; এখনো পড়তে পারেন।',
+    s4: 'পড়ে থাকলে "নামাজ পড়েছি" চাপুন; না পড়লে এখনই নামাজে দাঁড়ান।',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'নামাজে দেরি করবেন না! এখনই নামাজে দাঁড়ান! ({dk} মিনিট পার হয়েছে)',
+    giris2: 'সময় এগিয়ে যাচ্ছে; নামাজ শেষ সময়ের জন্য রেখে দেবেন না। ({dk} মিনিট পার হয়েছে)',
+    giris1: cogul({ one: 'নামাজের ওয়াক্ত শুরু হওয়ার {n} মিনিট হয়ে গেছে।', other: 'নামাজের ওয়াক্ত শুরু হওয়ার {n} মিনিট হয়ে গেছে।' }),
+    erken4: 'নামাজে দেরি করবেন না; এখনই নামাজে দাঁড়ান! ({dk} মিনিট বাকি)',
+    cikis4: 'ওয়াক্ত শেষ হচ্ছে! এখনই নামাজে দাঁড়ান! ({dk} মিনিট বাকি)',
+    cikis2: 'সময় কমে আসছে; নামাজ শেষ সময়ের জন্য রেখে দেবেন না। ({dk} মিনিট বাকি)',
+    cikis1: cogul({ one: 'নামাজের ওয়াক্ত শেষ হতে {n} মিনিট বাকি।', other: 'নামাজের ওয়াক্ত শেষ হতে {n} মিনিট বাকি।' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · ঘুমানোর আগে পড়ুন ⏰',
+    govde: '{dk} মিনিট পর নীরব সময় শুরু হবে; শুতে যাওয়ার আগে ইশা পড়ে নিন।',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'সময় কমে আসতে শুরু করেছে; সুযোগ থাকতেই পড়ে নিন।',
+    sonaBirakma: 'নামাজ শেষ সময়ের জন্য রেখে দেবেন না; এখনই পড়ার ভালো সময়।',
+    fisilti: '"পরে পড়ব" বলবেন না; সময় প্রায় শেষ, এখনো পড়তে পারেন।',
+    omur: 'সময় চলে যাচ্ছে; এই নামাজ ওয়াক্তের মধ্যে পড়ার সুযোগ এখনো আছে।',
+    keske: 'কয়েক মিনিট পর "হায়, যদি পড়তাম" বলার চেয়ে এখনই উঠুন।',
+    namazaDur: 'পড়ে থাকলে "নামাজ পড়েছি" চাপুন; না পড়লে এখনই নামাজে দাঁড়ান।',
+    sonDakika: 'শেষ কয়েক মিনিট। হাতের কাজ রেখে নামাজে দাঁড়ান।',
   },
 };

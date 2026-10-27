@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "আপনি যেখানে আছেন সেখানকার নামাজের সময় সঠিকভাবে হিসাব করতে আপনার অবস্থান ব্যবহার করা হয়। আপনার অবস্থান আপনার ডিভাইসেই থাকে।",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "আপনি যেখানে আছেন সেখানকার নামাজের সময় সঠিকভাবে হিসাব করতে এবং মসজিদে আছি চালু থাকলে মসজিদে প্রবেশ করলে নামাজ মোড চালু করতে আপনার অবস্থান ব্যবহার করা হয়। আপনার অবস্থান আপনার ডিভাইসেই থাকে।",
+  "NSLocationAlwaysUsageDescription": "শহর বদলালে নামাজের সময় স্বয়ংক্রিয়ভাবে হালনাগাদ করতে এবং মসজিদে আছি চালু থাকলে মসজিদে প্রবেশ করলে নামাজ মোড চালু করতে আপনার অবস্থান ব্যবহার করা হয়। আপনার অবস্থান আপনার ডিভাইসেই থাকে।",
+  "NSCameraUsageDescription": "ক্যামেরার দৃশ্যের ওপর কিবলার দিক দেখাতে এবং আপনার টিভির জোড়া লাগানোর কোড স্ক্যান করতে ক্যামেরা ব্যবহার করা হয়। ছবি সংরক্ষণ করা হয় না এবং কখনো আপনার ডিভাইসের বাইরে যায় না।",
+  "NSCalendarsUsageDescription": "নামাজের সময় আপনার ক্যালেন্ডারে যোগ করতে এবং আপনি চালু করলে ক্যালেন্ডারের ইভেন্ট কোনো নামাজের ওয়াক্তের সাথে মিলে যায় কি না দেখতে ক্যালেন্ডারে প্রবেশাধিকার ব্যবহার করা হয়। আপনার ক্যালেন্ডারের তথ্য আপনার ডিভাইসেই থাকে।",
+  "NSCalendarsFullAccessUsageDescription": "নামাজের সময় আপনার ক্যালেন্ডারে যোগ করতে এবং আপনি চালু করলে ক্যালেন্ডারের ইভেন্ট কোনো নামাজের ওয়াক্তের সাথে মিলে যায় কি না দেখতে ক্যালেন্ডারে প্রবেশাধিকার ব্যবহার করা হয়। আপনার ক্যালেন্ডারের তথ্য আপনার ডিভাইসেই থাকে।",
+  "NSLocalNetworkUsageDescription": "আপনার নামাজের সময় ও চিহ্নিত নামাজ পাঠাতে অ্যাপটি আপনার লোকাল নেটওয়ার্কের টিভির সাথে সংযুক্ত হয়। তথ্য এনক্রিপ্ট করা থাকে এবং শুধু দুটি ডিভাইসের মধ্যেই যায়।",
+  "NSAlarmKitUsageDescription": "যে রিমাইন্ডার ধাপে আপনি “আসল অ্যালার্ম” বেছে নেন সেগুলো অ্যালার্ম হিসেবে সেট হয়, তাই ফোন সাইলেন্টে বা Focus চালু থাকলেও শুনতে পান।",
+  "\"Vakti kıldım\"": "নামাজ পড়েছি",
+  "\"Kıble\"": "কিবলা"
 }

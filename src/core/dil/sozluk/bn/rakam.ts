@@ -1,11 +1,11 @@
-// ÇEVİRİ: bn — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Bengalcede `dogu` yerel rakam (বাংলা সংখ্যা) etiketidir, Doğu Arap rakamı değil. */
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'সংখ্যা',
+  aciklama: 'সময়, তারিখ ও সংখ্যা কোন অঙ্কে লেখা হবে তা বেছে নিন।',
+  otomatik: 'দেশ অনুযায়ী',
+  otomatikAciklama: 'আপনার অবস্থানের দেশে প্রচলিত অঙ্ক ব্যবহার করা হয়।',
+  dogu: 'বাংলা সংখ্যা',
+  bati: 'ইংরেজি সংখ্যা',
 };

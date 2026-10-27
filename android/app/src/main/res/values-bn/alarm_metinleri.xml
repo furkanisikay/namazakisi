@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: bn — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- bn — Bengalce (beta). -->
+<!-- Gerçek alarm (Bengalce). "নামাজ পড়েছি" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">নামাজের অ্যালার্ম</string>
+  <string name="alarm_kildim">নামাজ পড়েছি</string>
+  <string name="alarm_kapat">বন্ধ করুন</string>
+  <string name="alarm_kanal_aciklamasi">আপনার বেছে নেওয়া রিমাইন্ডার ধাপে বাজা আসল অ্যালার্ম</string>
 </resources>

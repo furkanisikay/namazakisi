@@ -67,8 +67,8 @@ object CanliGuncellemeKurallari {
         "sq" to ("h" to "min"),
         // hi
         "hi" to ("घंटे" to "मिनट"),
-        // ÇEVİRİ: bn
-        "bn" to ("h" to "min"),
+        // bn
+        "bn" to ("ঘ" to "মি"),
     )
 
     /**

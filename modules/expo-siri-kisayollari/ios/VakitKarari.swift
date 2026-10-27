@@ -691,31 +691,32 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "ऐप खोलें"
     )
 
-    // ÇEVİRİ: bn
+    // bn — Bengalce (beta): JS `sozluk/bn` (vakit.adlar, genel.kildim.sonuc, samimiyet.kabulDuasi);
+    // "Kıldım" = "নামাজ পড়েছি", "Kılındı" = "পড়া হয়েছে"; rakam Batı (0-9).
     public static let bn = VakitMetinleri(
         dil: "bn",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ফজর", "ogle": "যোহর", "ikindi": "আসর", "aksam": "মাগরিব", "yatsi": "ইশা"],
+        gunes: "সূর্যোদয়",
+        konumYok: "নামাজের সময় হিসাব করতে অ্যাপ খুলে আপনার অবস্থান সেট করুন।",
+        veriEski: "নামাজের সময়ের তথ্য পুরোনো হয়ে গেছে। হালনাগাদ করতে একবার অ্যাপ খুলুন।",
+        girisBugun: "{saat}-এ",
+        girisYarin: "আগামীকাল {saat}-এ",
+        suAnVakti: "এখন {ad}-এর ওয়াক্ত।",
+        suAnVaktiCikis: "এখন {ad}-এর ওয়াক্ত; শেষ হবে {saat}-এ।",
+        siradakiNamaz: "পরবর্তী নামাজ {ad}, {giris}।",
+        isaretlendi: "{ad} পড়া হয়েছে হিসেবে চিহ্নিত হয়েছে। {dua}।",
+        zatenKilindi: "{ad} আগেই পড়া হয়েছে হিসেবে চিহ্নিত আছে।",
+        vakitYok: "এখন চিহ্নিত করার মতো কোনো নামাজ নেই।",
+        vakitYokSiradaki: "এখন চিহ্নিত করার মতো কোনো নামাজ নেই। পরবর্তী {ad}, {giris}।",
+        onay: "{ad} পড়া হয়েছে হিসেবে চিহ্নিত করবেন?",
+        vakitDegisti: "নামাজের ওয়াক্ত বদলে গেছে, তাই কিছু চিহ্নিত হয়নি। আবার চেষ্টা করুন।",
+        kabulDuasi: "আল্লাহ কবুল করুন",
+        kildim: "নামাজ পড়েছি",
+        kilindi: "পড়া হয়েছে",
+        kontrolKildim: "{ad} · নামাজ পড়েছি",
+        kontrolKilindi: "{ad} পড়া হয়েছে",
+        kontrolVakitYok: "চিহ্নিত করার মতো নামাজ নেই",
+        uygulamayiAcin: "অ্যাপ খুলুন"
     )
 
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).

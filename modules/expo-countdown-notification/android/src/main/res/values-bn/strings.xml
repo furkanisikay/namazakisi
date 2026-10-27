@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: bn — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- bn — Bengalce (beta). -->
 <resources>
-    <string name="countdown_kanal_canli_ad">Live countdowns</string>
-    <string name="countdown_kanal_canli_aciklama">Countdowns in the Now Bar and the status bar</string>
-    <string name="countdown_kanal_genel_ad">Countdown notifications</string>
-    <string name="countdown_kanal_genel_aciklama">Channel for countdown notifications</string>
+    <string name="countdown_kanal_canli_ad">লাইভ কাউন্টডাউন</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar ও স্ট্যাটাস বারে কাউন্টডাউন</string>
+    <string name="countdown_kanal_genel_ad">কাউন্টডাউন নোটিফিকেশন</string>
+    <string name="countdown_kanal_genel_aciklama">কাউন্টডাউন নোটিফিকেশনের চ্যানেল</string>
 
-    <string name="countdown_eylem_kildim">I\'ve prayed</string>
-    <string name="countdown_eylem_durdur">Stop</string>
+    <string name="countdown_eylem_kildim">নামাজ পড়েছি</string>
+    <string name="countdown_eylem_durdur">থামান</string>
 
-    <string name="countdown_yedek_vakit">Hurry, the prayer time is about to end.</string>
-    <string name="countdown_yedek_iftar">Time is running out.</string>
-    <string name="countdown_yedek_sahur">You can still eat and drink; the fast begins soon!</string>
-    <string name="countdown_yedek_seri">Today\'s prayers aren\'t complete; don\'t lose your streak.</string>
+    <string name="countdown_yedek_vakit">তাড়াতাড়ি করুন, নামাজের ওয়াক্ত শেষ হতে চলেছে।</string>
+    <string name="countdown_yedek_iftar">সময় ফুরিয়ে আসছে।</string>
+    <string name="countdown_yedek_sahur">এখনো খাওয়া-দাওয়া করতে পারেন; শিগগিরই রোজা শুরু হবে!</string>
+    <string name="countdown_yedek_seri">আজকের নামাজ এখনো পূর্ণ হয়নি; ধারাবাহিকতা হারাবেন না।</string>
 
-    <string name="countdown_onek_vakit">Until the time ends</string>
-    <string name="countdown_onek_vakit_dar">Time is ending</string>
-    <string name="countdown_onek_iftar">Until iftar</string>
-    <string name="countdown_onek_iftar_dar">Until iftar</string>
-    <string name="countdown_onek_sahur">Until suhoor ends</string>
-    <string name="countdown_onek_sahur_dar">Suhoor is ending</string>
-    <string name="countdown_onek_seri">To save your streak</string>
-    <string name="countdown_onek_seri_dar">Streak is ending</string>
+    <string name="countdown_onek_vakit">ওয়াক্ত শেষ হতে বাকি</string>
+    <string name="countdown_onek_vakit_dar">ওয়াক্ত শেষ হচ্ছে</string>
+    <string name="countdown_onek_iftar">ইফতার পর্যন্ত</string>
+    <string name="countdown_onek_iftar_dar">ইফতার পর্যন্ত</string>
+    <string name="countdown_onek_sahur">সাহরি শেষ হতে বাকি</string>
+    <string name="countdown_onek_sahur_dar">সাহরি শেষ হচ্ছে</string>
+    <string name="countdown_onek_seri">ধারাবাহিকতা রক্ষা করতে</string>
+    <string name="countdown_onek_seri_dar">ধারাবাহিকতা শেষ হচ্ছে</string>
 </resources>
