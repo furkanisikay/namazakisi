@@ -19,7 +19,7 @@ import {
 } from '../../core/dil/aktifDil';
 import { cihazDilindenSec, DILLER, dilKoduMu, VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
 import { takimCoz, takimKimlikleri } from '../../core/dil/vakitTakimlari';
-import { dilRakamVarsayilani, rakamSecilebilir, rakamSistemiCoz, rakamSistemiMi, type RakamSistemi } from '../../core/dil/rakam';
+import { dilRakamVarsayilani, rakamSecilebilir, rakamSecimiGecerliMi, rakamSistemiCoz, type RakamSistemi } from '../../core/dil/rakam';
 import { kayitliUlkeKodu } from '../../core/konum/ulkeTespiti';
 
 /**
@@ -39,8 +39,8 @@ export interface DilAyari {
    */
   vakitTakimi?: Partial<Record<DilKodu, string>>;
   /**
-   * Dil başına rakam sisteminin AÇIK seçimi (`core/dil/rakam`; bugün yalnız Arapça). Yoksa
-   * ülke varsayılanı (Mağrip Batı rakamı) ya da dilin varsayılanı izlenir.
+   * Dil başına rakam sisteminin AÇIK seçimi (`core/dil/rakam`; yerel rakamlı dillerde: Arapça,
+   * Bengalce). Yoksa ülke varsayılanı (Arapçada Mağrip Batı rakamı) ya da dilin varsayılanı.
    */
   rakam?: Partial<Record<DilKodu, RakamSistemi>>;
 }
@@ -157,12 +157,14 @@ function vakitAdlariniBildir(): void {
 
 /**
  * Etkin rakam sistemini native'e iter (Android `namazakisi_dil/rakam_sistemi`, iOS App Group
- * `namazakisi_rakam_sistemi`): Doğu Arap rakamıysa `'arab'`, değilse `null` (anahtar silinir,
- * Batı rakamı). Native yüzeyler (widget, bildirim, canlı etkinlik, Siri) yalnız Arapça arayüzde
- * uygular. Eski native'de fonksiyon yoksa atlanır.
+ * `namazakisi_rakam_sistemi`): yerel rakamsa sistemin CLDR adı (`'arab'`, `'beng'`), Batıysa
+ * `null` (anahtar silinir). Native yüzeyler (widget, bildirim, canlı etkinlik, Siri) kaydı yalnız
+ * arayüz dilinin KENDİ yerel sistemiyle eşleşirse uygular (Arapçada `arab`, Bengalcede `beng`).
+ * Eski native'de fonksiyon yoksa atlanır.
  */
 function rakamSisteminiBildir(): void {
-  const kod = aktifRakamSistemi() === 'arab' ? 'arab' : null;
+  const sistem = aktifRakamSistemi();
+  const kod = sistem === 'latn' ? null : sistem;
   for (const yukle of [
     () => require('../../../modules/expo-countdown-notification/src'),
     () => require('../../../modules/expo-siri-kisayollari/src'),
@@ -261,12 +263,12 @@ export const DilServisi = {
   },
 
   /**
-   * Etkin dilin rakam sisteminin açık seçimi; `null` = otomatik (ülkeye göre). Seçimi olmayan
-   * dilde (Arapça dışı) ve geçersiz değerde kaydedilmez. Kurulan sistem değiştiyse `true`.
+   * Etkin dilin rakam sisteminin açık seçimi; `null` = otomatik (ülkeye göre). Yerel rakamı
+   * olmayan dilde ve dile ait olmayan değerde (Bengalcede `arab`) kaydedilmez. Kurulan sistem değiştiyse `true`.
    */
   async rakamKaydet(secim: RakamSistemi | null): Promise<boolean> {
     const dil = aktifDil();
-    if (!rakamSecilebilir(dil) || (secim !== null && !rakamSistemiMi(secim))) return false;
+    if (!rakamSecilebilir(dil) || (secim !== null && !rakamSecimiGecerliMi(dil, secim))) return false;
     const onceki = aktifRakamSistemi();
     const ham = await Depolama.guncelle<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI, (m) => {
       const k = kayitNesnesi(m);
@@ -281,7 +283,7 @@ export const DilServisi = {
   async rakamSecimi(): Promise<RakamSistemi | null> {
     try {
       const secim = kayitNesnesi(await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI)).rakam?.[aktifDil()];
-      return rakamSecilebilir(aktifDil()) && rakamSistemiMi(secim) ? secim : null;
+      return rakamSecimiGecerliMi(aktifDil(), secim) ? secim : null;
     } catch {
       return null;
     }

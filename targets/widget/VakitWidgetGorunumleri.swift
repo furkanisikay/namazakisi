@@ -477,15 +477,16 @@ enum WidgetMetin {
     /// Cizim anindaki rakam kaydi (App Group; JS cozulmus degeri yazar).
     static var rakamKaydi: String? { SiriDeposu.varsayilan.rakamSistemi() }
 
-    /// Gorunen metnin rakamlari: Arapca arayuzde "arab" secildiyse Dogu Arap rakami, aksi halde
-    /// metin AYNEN (Turkce dahil). JS'in yazdigi metin (canli etkinlik basligi, kunye) de
+    /// Gorunen metnin rakamlari: Arapca arayuzde "arab" secildiyse Dogu Arap, Bengalcede "beng"
+    /// secildiyse Bengalce rakam, aksi halde metin AYNEN (Turkce dahil). JS'in yazdigi metin (canli etkinlik basligi, kunye) de
     /// buradan gecer; cekirdek ve yuk Bati rakamiyla kalir.
     static func rakam(_ metin: String) -> String {
-        RakamSistemi.cevir(metin, dogu: RakamSistemi.doguMu(dil: dil, kayitli: rakamKaydi))
+        RakamSistemi.cevir(metin, sistem: RakamSistemi.etkin(dil: dil, kayitli: rakamKaydi))
     }
 
     /// Sistem cizimli sayilarin (`Text(timerInterval:)`, `ProgressView`) yerel ayari: yalniz
-    /// Arapcada "ar@numbers=…"; diger dillerde nil (cihazin ayari, birebir bugunku gibi).
+    /// yerel rakamli dilde "ar@numbers=…" / "bn@numbers=…"; diger dillerde nil (cihazin ayari,
+    /// birebir bugunku gibi).
     static var rakamYerelAyari: Locale? {
         RakamSistemi.yerelAyarKimligi(dil: dil, kayitli: rakamKaydi).map { Locale(identifier: $0) }
     }

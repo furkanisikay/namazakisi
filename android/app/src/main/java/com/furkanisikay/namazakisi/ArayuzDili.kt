@@ -29,9 +29,9 @@ object ArayuzDili {
     const val TERCIH_VAKIT_ADLARI = "vakit_adlari"
 
     /**
-     * Arayüzün rakam sistemi: "arab" (Doğu Arap rakamı) ya da anahtar yok (Batı). JS ÇÖZÜLMÜŞ
-     * değeri yazar (`DilServisi > rakamSisteminiBildir`); yalnız Arapça arayüzde uygulanır
-     * (`cekirdek/Rakam`).
+     * Arayüzün rakam sistemi: yerel rakamın CLDR adı ("arab" Doğu Arap, "beng" Bengalce) ya da
+     * anahtar yok (Batı). JS ÇÖZÜLMÜŞ değeri yazar (`DilServisi > rakamSisteminiBildir`); yalnız
+     * arayüz dilinin kendi yerel sistemiyle eşleşirse uygulanır (`cekirdek/Rakam`).
      */
     const val TERCIH_RAKAM_SISTEMI = "rakam_sistemi"
 
@@ -52,7 +52,7 @@ object ArayuzDili {
         VARSAYILAN
     }
 
-    /** Ham rakam kaydı ("arab" ya da null); yorumu `Rakam.sistem` yapar. */
+    /** Ham rakam kaydı ("arab", "beng" ya da null); yorumu `Rakam.sistem` yapar. */
     fun rakamKaydi(context: Context): String? = try {
         (context.applicationContext ?: context)
             .getSharedPreferences(TERCIH_DOSYASI, Context.MODE_PRIVATE)
@@ -77,8 +77,9 @@ fun Context.arayuzDili(): String = ArayuzDili.oku(this)
  */
 // Endonezce: JS "id" yazar; `Locale.forLanguageTag("id")` Android'de eski "in" koduna döner ve
 // kaynak sistemi `values-in`'i seçer (`values-id` hiç seçilmez — lint `LocaleFolder`).
-// Arapçada etiket `-u-nu-<sistem>` taşır (`Rakam.yerelEtiketi`): kaynak `%d`'si ve tarih
-// biçimleyicileri kullanıcının seçtiği rakamla yazar; diğer dillerde etiket aynen.
+// Yerel rakamlı dilde (Arapça, Bengalce) etiket `-u-nu-<sistem>` taşır (`Rakam.yerelEtiketi`):
+// kaynak `%d`'si ve tarih biçimleyicileri kullanıcının seçtiği rakamla yazar; diğer dillerde
+// etiket aynen.
 fun Context.dildeBaglam(): Context = try {
     val yapilandirma = Configuration(resources.configuration)
     yapilandirma.setLocale(Locale.forLanguageTag(Rakam.yerelEtiketi(arayuzDili(), ArayuzDili.rakamKaydi(this))))
@@ -88,8 +89,8 @@ fun Context.dildeBaglam(): Context = try {
 }
 
 /**
- * Çizim kenarının sıfır rakamı: Arapça arayüzde "arab" seçiliyse '٠', aksi halde '0'
- * (Türkçe dahil diğer dillerde metin aynen kalır). Bir çizim turunda BİR KEZ okunur.
+ * Çizim kenarının sıfır rakamı: Arapça arayüzde "arab" seçiliyse '٠', Bengalcede "beng" ise
+ * '০', aksi halde '0' (Türkçe dahil diğer dillerde metin aynen kalır). Bir çizim turunda BİR KEZ okunur.
  */
 fun Context.rakamSifiri(): Char = Rakam.sifir(arayuzDili(), ArayuzDili.rakamKaydi(this))
 

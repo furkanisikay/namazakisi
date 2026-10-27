@@ -21,4 +21,12 @@ describe('useRakamCevir', () => {
     act(() => rakamSisteminiKur('latn'));
     expect(result.current(26)).toBe('26');
   });
+
+  it('Bengalcede Bengalce rakama çevirir; Batı seçimi değişince izler', () => {
+    const { result } = renderHook(() => useRakamCevir());
+    act(() => aktifDiliKur('bn'));
+    expect(result.current('অক্টোবর 2026')).toBe('অক্টোবর ২০২৬');
+    act(() => rakamSisteminiKur('latn'));
+    expect(result.current(26)).toBe('26');
+  });
 });

@@ -21,6 +21,17 @@ class RakamTest {
     }
 
     @Test
+    fun bengalceYerelAyarBengalceSifirVerir() {
+        // CLDR: bn (BD ve IN) varsayılan rakamı Bengalcedir (`beng`, ০ U+09E6); telefonun
+        // Bengalce varsayılanıyla aynı. `-u-nu-latn` tercihi Batıya çevirir.
+        assertEquals('০', yerelSifir(yerel("bn-BD")))
+        assertEquals('০', yerelSifir(yerel("bn-IN")))
+        assertEquals('০', yerelSifir(yerel("bn")))
+        assertEquals('0', yerelSifir(yerel("bn-BD-u-nu-latn")))
+        assertEquals("০৫:৫৫", rakamlariYerellestir("05:55", yerelSifir(yerel("bn-BD"))))
+    }
+
+    @Test
     fun batiRakamliYerelAyarlarSifirVerir() {
         for (etiket in listOf("tr-TR", "tr", "en-US", "en", "ur-PK", "ar-MA", "ar-DZ", "ar-TN", "id-ID", "de-DE", "ru-RU")) {
             assertEquals(etiket, '0', yerelSifir(yerel(etiket)))

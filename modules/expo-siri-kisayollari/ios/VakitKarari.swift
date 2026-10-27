@@ -83,39 +83,57 @@ public enum ArayuzDili {
 }
 
 /// RAKAM SISTEMI — kullanicinin uygulamada SECTIGI rakam (Android `cekirdek/Rakam.kt` ve Wear
-/// `saat/cekirdek/Rakam.kt` ikizi). JS COZULMUS degeri App Group'a yazar
-/// (`SiriDeposu.rakamSistemiAnahtari`: "arab" ya da yok); YALNIZ arayuz/cevap dili Arapcayken
-/// uygulanir, diger her dilde (Turkce dahil) cikti BIREBIR ayni kalir.
+/// `saat/cekirdek/Rakam.kt` ikizi; esleme JS `core/dil/rakam.ts > YEREL_RAKAMLAR`). JS COZULMUS
+/// degeri App Group'a yazar (`SiriDeposu.rakamSistemiAnahtari`: yerel rakamin CLDR adi "arab" /
+/// "beng" ya da yok); kayit YALNIZ arayuz/cevap dilinin KENDI yerel sistemiyse uygulanir
+/// (Arapcada "arab", Bengalcede "beng"), diger her dilde (Turkce dahil) cikti BIREBIR ayni kalir.
 ///
 /// Kural: cekirdek metni Bati rakamiyla URETIR (fikstur, kimlik, veri ayni); donusum yalniz
 /// CIZIM KENARINDA (`WidgetMetin.rakam`, Siri `dialog`). Sistemin cizdigi sayilar
 /// (`Text(timerInterval:)`, `ProgressView(timerInterval:)`, `DateFormatter`) yerel ayari izler →
-/// Arapcada `yerelAyarKimligi` ("ar@numbers=arab|latn") verilir. Bu dosyada: pod, widget ve
-/// saat kopyalari ile CI swiftc listeleri zaten onu derler (yeni dosya acilmadi).
+/// yerel rakamli dilde `yerelAyarKimligi` ("ar@numbers=arab|latn", "bn@numbers=beng|latn")
+/// verilir. Bu dosyada: pod, widget ve saat kopyalari ile CI swiftc listeleri zaten onu derler
+/// (yeni dosya acilmadi).
 public enum RakamSistemi {
     public static let arab = "arab"
+    public static let beng = "beng"
     public static let latn = "latn"
 
-    /// Etkin sistem: YALNIZ dil Arapca VE kayit "arab" iken `arab`; aksi halde `latn`.
-    public static func etkin(dil: String?, kayitli: String?) -> String {
-        guard ArayuzDili.coz(dil) == "ar",
-              kayitli?.trimmingCharacters(in: .whitespacesAndNewlines) == arab else { return latn }
-        return arab
+    /// Dil koku → yerel rakam sistemi (TEK esleme; listede olmayan dil Bati rakami yazar).
+    static let yerel: [String: String] = ["ar": arab, "bn": beng]
+
+    /// Yerel sistemin sifirinin kod noktasi (dizi Unicode'da ardisik).
+    static let sifirlar: [String: UInt32] = [arab: 0x0660, beng: 0x09E6]
+
+    /// Dilin yerel rakam sistemi ("arab", "beng") ya da nil (yalniz Bati rakami).
+    public static func yerelSistem(dil: String?) -> String? {
+        yerel[ArayuzDili.coz(dil)]
     }
 
+    /// Etkin sistem: kayit dilin KENDI yerel sistemiyse o ("ar" + "arab", "bn" + "beng");
+    /// kayit yok, "latn", bozuk, baska dilin sistemi ya da dil yerel rakamsizsa `latn`.
+    public static func etkin(dil: String?, kayitli: String?) -> String {
+        guard let sistem = yerelSistem(dil: dil),
+              kayitli?.trimmingCharacters(in: .whitespacesAndNewlines) == sistem else { return latn }
+        return sistem
+    }
+
+    /// Arapca arayuzde Dogu Arap rakami etkin mi (eski cagiranlar icin; yeni kod `etkin` kullanir).
     public static func doguMu(dil: String?, kayitli: String?) -> Bool {
         etkin(dil: dil, kayitli: kayitli) == arab
     }
 
-    /// ASCII 0-9 → Dogu Arap rakami (U+0660–0669); `dogu` false ya da rakam yoksa metin AYNEN.
-    /// Harf, ":", zaten Dogu rakami olan metin degismez (idempotent).
-    public static func cevir(_ metin: String, dogu: Bool) -> String {
-        guard dogu, metin.unicodeScalars.contains(where: { $0.value >= 0x30 && $0.value <= 0x39 }) else {
+    /// ASCII 0-9 → sistemin rakamlari (Dogu Arap U+0660–0669, Bengalce U+09E6–09EF); `latn`,
+    /// bilinmeyen sistem ya da rakamsiz metin AYNEN. Harf, ":", zaten yerel rakam olan metin
+    /// degismez (idempotent).
+    public static func cevir(_ metin: String, sistem: String) -> String {
+        guard let sifir = sifirlar[sistem],
+              metin.unicodeScalars.contains(where: { $0.value >= 0x30 && $0.value <= 0x39 }) else {
             return metin
         }
         var sonuc = String.UnicodeScalarView()
         for u in metin.unicodeScalars {
-            if u.value >= 0x30 && u.value <= 0x39, let d = Unicode.Scalar(0x0660 + u.value - 0x30) {
+            if u.value >= 0x30 && u.value <= 0x39, let d = Unicode.Scalar(sifir + u.value - 0x30) {
                 sonuc.append(d)
             } else {
                 sonuc.append(u)
@@ -124,11 +142,17 @@ public enum RakamSistemi {
         return String(sonuc)
     }
 
-    /// Sistem cizimli sayilarin yerel ayari: yalniz Arapcada "ar@numbers=<sistem>" (Bati secen
-    /// Magrip kullanicisi da Bati gorur); diger dillerde nil → DOKUNULMAZ (cihazin ayari).
+    /// Eski imza: `dogu` true → Dogu Arap rakami. Yeni kod `cevir(_:sistem:)` kullanir.
+    public static func cevir(_ metin: String, dogu: Bool) -> String {
+        cevir(metin, sistem: dogu ? arab : latn)
+    }
+
+    /// Sistem cizimli sayilarin yerel ayari: yalniz yerel rakamli dilde "<dil>@numbers=<sistem>"
+    /// (Bati secen Magrip ya da Bengalce kullanicisi da Bati gorur); diger dillerde nil →
+    /// DOKUNULMAZ (cihazin ayari).
     public static func yerelAyarKimligi(dil: String?, kayitli: String?) -> String? {
-        guard ArayuzDili.coz(dil) == "ar" else { return nil }
-        return "ar@numbers=\(etkin(dil: dil, kayitli: kayitli))"
+        guard yerelSistem(dil: dil) != nil else { return nil }
+        return "\(ArayuzDili.coz(dil))@numbers=\(etkin(dil: dil, kayitli: kayitli))"
     }
 }
 

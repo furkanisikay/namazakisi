@@ -197,7 +197,7 @@ class ExpoCountdownNotificationModule : Module() {
         }
 
         /**
-         * Arayüzün rakam sistemi ("arab" = Doğu Arap rakamı) ya da `null` (anahtar silinir, Batı
+         * Arayüzün rakam sistemi ("arab" Doğu Arap, "beng" Bengalce) ya da `null` (anahtar silinir, Batı
          * rakamı). Yalnız yazar; okuyanlar `ArayuzDili.rakamSifiri` (bu modül) ve uygulama
          * modülündeki `rakamSifiri()` — widget'ı `ArayuzDiliIzleyici` anahtar değişince yeniden çizer.
          */

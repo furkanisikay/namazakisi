@@ -27,12 +27,13 @@ enum SiriDili {
     }
     static var metin: VakitMetinleri { VakitMetinleri.dil(kod) }
 
-    /// Cevabin (`dialog`) rakamlari: YALNIZ cevap dili Arapca VE kullanici uygulamada "arab"
-    /// sectiyse Dogu Arap rakami (`RakamSistemi`); diger her durumda metin aynen. Kayit uygulama
+    /// Cevabin (`dialog`) rakamlari: YALNIZ cevap dili yerel rakamliysa VE kullanici uygulamada
+    /// o dilin rakamini sectiyse (Arapcada "arab", Bengalcede "beng"; `RakamSistemi`) yerel
+    /// rakam; diger her durumda metin aynen. Kayit uygulama
     /// dili Arapcayken yazilir → paket dili ile uygulama dili ayrissa Bati kalir. Donen DEGER
     /// (`value:`, otomasyon karsilastirmasi) Bati rakamiyla kalir.
     static func rakam(_ metin: String) -> String {
-        RakamSistemi.cevir(metin, dogu: RakamSistemi.doguMu(dil: kod, kayitli: SiriDeposu.varsayilan.rakamSistemi()))
+        RakamSistemi.cevir(metin, sistem: RakamSistemi.etkin(dil: kod, kayitli: SiriDeposu.varsayilan.rakamSistemi()))
     }
 }
 

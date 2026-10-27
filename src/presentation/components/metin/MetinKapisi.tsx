@@ -4,8 +4,9 @@
  * Uygulamada merkezi bir sayı biçimleyicisi yok (onlarca dosyada `padStart(2…)`), bu yüzden
  * rakam sistemi ve Urduca yazı tipi metnin YAZILDIĞI yerde değil ÇİZİLDİĞİ yerde uygulanır:
  *
- *  - Arapça + Doğu Arap rakamı (`core/dil/rakam`): `Text` çocuklarındaki dize/sayıların Batı
- *    rakamları ٠١٢٣…'e çevrilir. Sözlük ve kod her zaman Batı rakamıyla yazar.
+ *  - Yerel rakamlı dil (`core/dil/rakam`: Arapça ٠١٢٣, Bengalce ০১২৩) ve yerel rakam seçiliyken:
+ *    `Text` çocuklarındaki dize/sayıların Batı rakamları o dilin rakamına çevrilir. Sözlük ve
+ *    kod her zaman Batı rakamıyla yazar.
  *  - Urduca: açık `fontFamily`'si olmayan metne Noto Nastaliq Urdu (kalın ağırlıkta kalın
  *    dosya) verilir; sabit `lineHeight` en az 1.8 × `fontSize`'a çıkarılır (Nestalik'in
  *    iniş/çıkışları kırpılmasın; satır yüksekliği verilmemişse yazı tipinin kendi ölçüsü
@@ -15,7 +16,7 @@
  * NASIL TAKILIR: RN 0.86'da `Text` düz bir fonksiyon bileşenidir (`forwardRef` değil, `render`
  * yok) → yamanamaz. Bunun yerine NativeWind'in JSX katmanı kullanılır: her `<Text>` öğesi
  * oluşturulurken css-interop `interopComponents.get(Text)` ile sarmalayıcısını seçer. Kapı
- * gerekirken (etkin dil `ar` ya da `ur`) bu kayıt bizim sarmalayıcımıza (css-interop'un kendi
+ * gerekirken (etkin dil yerel rakamlı — `ar`, `bn` — ya da `ur`) bu kayıt bizim sarmalayıcımıza (css-interop'un kendi
  * `cssInterop`'uyla sarılmış `MetinKapisi`) çevrilir: `className` önce çözülür, kapı ÇÖZÜLMÜŞ
  * stili görür (`text-lg`'nin satır yüksekliği dahil), sonra ham `Text`'i çizer. Diğer dillerde
  * kayıt css-interop'un özgün sarmalayıcısıdır: Türkçede SIFIR ek maliyet.
@@ -32,7 +33,7 @@ import { StyleSheet, Text, type StyleProp, type TextProps, type TextStyle } from
 import { useFonts } from 'expo-font';
 import { cssInterop } from 'nativewind';
 import { aktifDil, aktifRakamSistemi, dilDegisiminiDinle } from '../../../core/dil/aktifDil';
-import { rakamlariCevir, type RakamSistemi } from '../../../core/dil/rakam';
+import { rakamlariCevir, rakamSecilebilir, type RakamSistemi } from '../../../core/dil/rakam';
 import type { DilKodu } from '../../../core/dil/diller';
 import { Logger } from '../../../core/utils/Logger';
 
@@ -55,8 +56,8 @@ export const NASTALIK_SATIR_ORANI = 1.8;
 export const NASTALIK_EN_KUCUK_OLCEK = 0.85;
 const VARSAYILAN_PUNTO = 14;
 
-/** Kapı gereken diller: Arapça (rakam), Urduca (yazı tipi). */
-export const kapiGerekli = (dil: DilKodu): boolean => dil === 'ar' || dil === 'ur';
+/** Kapı gereken diller: yerel rakamlı diller (Arapça, Bengalce; `core/dil/rakam`), Urduca (yazı tipi). */
+export const kapiGerekli = (dil: DilKodu): boolean => rakamSecilebilir(dil) || dil === 'ur';
 
 let nastalikHazir = false;
 const yaziTipiDinleyicileri = new Set<() => void>();
@@ -79,7 +80,7 @@ let durumOnbellek: KapiDurumu = { rakam: 'latn', urduca: false, nastalik: false 
 /** `useSyncExternalStore` anlık görüntüsü: değerler değişmedikçe AYNI nesne. */
 function kapiDurumu(): KapiDurumu {
   const dil = aktifDil();
-  const rakam = dil === 'ar' ? aktifRakamSistemi() : 'latn';
+  const rakam = rakamSecilebilir(dil) ? aktifRakamSistemi() : 'latn';
   const urduca = dil === 'ur';
   const nastalik = urduca && nastalikHazir;
   const d = durumOnbellek;

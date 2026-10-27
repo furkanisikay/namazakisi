@@ -557,7 +557,8 @@ enum AyetTarihi {
         f.calendar = takvim
         f.timeZone = .current
         // Yukun dili (yalniz native tabloda olan diller degil): ay/gun adlari sistemden.
-        // Arapcada rakam sistemi acikca verilir (ciplak "ar" Dogu rakami yazar, Bati secen de).
+        // Yerel rakamli dilde (ar, bn) rakam sistemi acikca verilir (ciplak "ar"/"bn" yerel rakam
+        // yazar, Bati secen de).
         f.locale = Locale(identifier: RakamSistemi.yerelAyarKimligi(dil: dil, kayitli: WidgetMetin.rakamKaydi)
             ?? (dil.isEmpty ? ArayuzDili.varsayilan : dil))
         f.setLocalizedDateFormatFromTemplate("EEEEdMMMM")

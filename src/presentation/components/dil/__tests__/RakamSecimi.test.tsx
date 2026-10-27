@@ -1,6 +1,7 @@
 /**
- * Rakam seçimi (Ayarlar > Dil): yalnız Arapçada görünür; seçim kaydedilir. Metin kapısı
- * takılıyken "0123" örneği Doğu Arap rakamı etkinken de Batı rakamıyla kalır (`aciklamaRakamKoru`).
+ * Rakam seçimi (Ayarlar > Dil): yalnız yerel rakamlı dilde (Arapça, Bengalce) görünür; seçim
+ * kaydedilir. Metin kapısı takılıyken "0123" örneği yerel rakam etkinken de Batı rakamıyla kalır
+ * (`aciklamaRakamKoru`).
  */
 import * as React from 'react';
 import { act, fireEvent, render, screen, setupAllComponents, waitFor } from 'react-native-css-interop/test';
@@ -28,6 +29,7 @@ import { RakamSecimi } from '../RakamSecimi';
 import { aktifDiliKur, aktifDilSifirla, sozluk } from '../../../../core/dil/aktifDil';
 
 const AR = sozluk('ar').rakam;
+const BN = sozluk('bn').rakam;
 import { metinKapisiniKur } from '../../metin/MetinKapisi';
 
 let kaldir: () => void = () => undefined;
@@ -42,8 +44,11 @@ afterEach(() => {
   act(() => aktifDilSifirla());
 });
 
-it('Arapça dışında çizilmez', async () => {
+it('yerel rakamı olmayan dilde (Fransızca, Urduca) çizilmez', async () => {
   render(<RakamSecimi kod="fr" />);
+  await act(async () => undefined);
+  expect(screen.queryByTestId('rakam-secimi')).toBeNull();
+  render(<RakamSecimi kod="ur" />);
   await act(async () => undefined);
   expect(screen.queryByTestId('rakam-secimi')).toBeNull();
   expect(mockSecim).not.toHaveBeenCalled();
@@ -64,4 +69,21 @@ it('Arapçada üç seçenek; örnekler doğru rakamla, seçim kaydedilir ve otom
   await waitFor(() => expect(mockKaydet).toHaveBeenCalledWith('latn'));
   fireEvent.press(screen.getByText(AR.otomatik));
   await waitFor(() => expect(mockKaydet).toHaveBeenLastCalledWith(null));
+});
+
+it('Bengalcede yerel seçenek Bengalce rakamdır (Doğu Arap değil); seçim "beng" kaydedilir', async () => {
+  act(() => {
+    aktifDiliKur('bn');
+  });
+  mockSecim.mockResolvedValue('latn');
+  render(<RakamSecimi kod="bn" />);
+  await waitFor(() => expect(screen.getByTestId('rakam-secimi')).toBeTruthy());
+  expect(screen.getByText('০১২৩৪৫৬৭৮৯')).toBeTruthy();
+  expect(screen.getByText('0123456789')).toBeTruthy();
+  expect(screen.queryByText('٠١٢٣٤٥٦٧٨٩')).toBeNull();
+  expect(screen.getAllByRole('radio')).toHaveLength(3);
+  expect(screen.getByRole('radio', { name: new RegExp(`^${BN.bati}`) }).props.accessibilityState.checked).toBe(true);
+
+  fireEvent.press(screen.getByText(BN.dogu));
+  await waitFor(() => expect(mockKaydet).toHaveBeenCalledWith('beng'));
 });

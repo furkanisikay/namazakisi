@@ -115,6 +115,38 @@ describe('Arapça', () => {
   });
 });
 
+describe('Bengalce', () => {
+  beforeEach(() => {
+    act(() => {
+      aktifDiliKur('bn');
+    });
+  });
+
+  it('Bengalce rakama çevirir; NativeWind stili korunur, yazı tipine dokunmaz', () => {
+    render(<Text className="text-lg">05:12 · 1447</Text>);
+    expect(stil('০৫:১২ · ১৪৪৭')).toMatchObject({ fontSize: 18, lineHeight: 28 });
+    expect(stil('০৫:১২ · ১৪৪৭').fontFamily).toBeUndefined();
+    expect(screen.queryByText('05:12 · 1447')).toBeNull();
+  });
+
+  it('Batı rakamı seçilince dokunmaz; Bengalceye dönünce çizili metin güncellenir', () => {
+    act(() => {
+      rakamSisteminiKur('latn');
+    });
+    render(<Text>2026</Text>);
+    expect(screen.getByText('2026')).toBeTruthy();
+    act(() => {
+      rakamSisteminiKur('beng');
+    });
+    expect(screen.getByText('২০২৬')).toBeTruthy();
+  });
+
+  it('rakamKoru metne dokunmaz', () => {
+    render(<Text rakamKoru>1.2.3</Text>);
+    expect(screen.getByText('1.2.3')).toBeTruthy();
+  });
+});
+
 describe('Urduca', () => {
   beforeEach(() => {
     act(() => {

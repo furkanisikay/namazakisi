@@ -12,7 +12,7 @@ import { cogulSec } from './cogul';
 import { dilKoduMu, VARSAYILAN_DIL, type DilKodu } from './diller';
 import type { CogulMetin } from './tipler';
 import type { VakitAdiTakimi } from './vakitTakimlari';
-import { dilRakamVarsayilani, type RakamSistemi } from './rakam';
+import { dilRakamVarsayilani, rakamSecimiGecerliMi, type RakamSistemi } from './rakam';
 import { en } from './sozluk/en';
 import { id } from './sozluk/id';
 import { de } from './sozluk/de';
@@ -99,10 +99,15 @@ export function aktifVakitTakimi(): VakitAdiTakimi | null {
   return aktifTakim;
 }
 
-/** Etkin dilin rakam sistemini kurar; değiştiyse `true` (dinleyicilere haber verilir). */
+/**
+ * Etkin dilin rakam sistemini kurar; değiştiyse `true` (dinleyicilere haber verilir). Etkin
+ * dilde geçersiz sistem (Bengalcede `arab`, Türkçede yerel rakam) dilin varsayılanına düşer:
+ * `aktifRakamSistemi()` her zaman etkin dilin `latn`'ı ya da KENDİ yerel rakamıdır.
+ */
 export function rakamSisteminiKur(sistem: RakamSistemi): boolean {
-  if (sistem === aktifRakam) return false;
-  aktifRakam = sistem;
+  const gecerli = rakamSecimiGecerliMi(aktif, sistem) ? sistem : dilRakamVarsayilani(aktif);
+  if (gecerli === aktifRakam) return false;
+  aktifRakam = gecerli;
   bildir();
   return true;
 }

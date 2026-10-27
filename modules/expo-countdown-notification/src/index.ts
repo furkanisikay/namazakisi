@@ -488,9 +488,10 @@ export function vakitAdlariniAyarla(json: string | null): void {
 }
 
 /**
- * Arayüzün rakam sistemi: `'arab'` (Doğu Arap rakamı, ٠١٢٣) ya da `null` (anahtar silinir, Batı
- * rakamı). JS etkin dil/ülke/seçimden çözülmüş değeri yazar (`core/dil/rakam`); native yüzeyler
- * (widget, kutu, bildirim, alarm, Live Update) yalnız Arapça arayüzde uygular (`cekirdek/Rakam`).
+ * Arayüzün rakam sistemi: yerel rakamın CLDR adı (`'arab'` Doğu Arap, `'beng'` Bengalce) ya da
+ * `null` (anahtar silinir, Batı rakamı). JS etkin dil/ülke/seçimden çözülmüş değeri yazar
+ * (`core/dil/rakam`); native yüzeyler (widget, kutu, bildirim, alarm, Live Update) kaydı yalnız
+ * arayüz dilinin kendi yerel sistemiyle eşleşirse uygular (`cekirdek/Rakam`).
  * Native eski ise sessizce atlanır. Asla fırlatmaz.
  */
 export function rakamSisteminiAyarla(kod: string | null): void {

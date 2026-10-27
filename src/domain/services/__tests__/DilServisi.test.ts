@@ -329,6 +329,44 @@ describe('DilServisi', () => {
       expect(aktifRakamSistemi()).toBe('arab');
       expect(await DilServisi.rakamSecimi()).toBeNull();
     });
+
+    it('Bengalcede Bangladeş ve Hindistan dahil her ülkede Bengalce rakam; native "beng" alır', async () => {
+      for (const ulkeKodu of ['BD', 'IN', 'GB']) {
+        disk[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI] = { konumModu: 'otomatik', ulkeKodu };
+        await DilServisi.kaydet('bn');
+        await DilServisi.vakitTakiminiYenile();
+        expect(aktifRakamSistemi()).toBe('beng');
+        expect(mockAndroidRakam).toHaveBeenLastCalledWith('beng');
+        expect(mockIosRakam).toHaveBeenLastCalledWith('beng');
+      }
+    });
+
+    it('Bengalcede Batı seçilebilir; başka dilin yerel rakamı kaydedilmez; seçim dil başına ayrı', async () => {
+      await DilServisi.kaydet('ar');
+      await DilServisi.rakamKaydet('latn');
+      await DilServisi.kaydet('bn');
+      expect(aktifRakamSistemi()).toBe('beng');
+      expect(await DilServisi.rakamSecimi()).toBeNull();
+
+      expect(await DilServisi.rakamKaydet('arab')).toBe(false);
+      expect(aktifRakamSistemi()).toBe('beng');
+      expect(await DilServisi.rakamKaydet('latn')).toBe(true);
+      expect(aktifRakamSistemi()).toBe('latn');
+      expect(mockAndroidRakam).toHaveBeenLastCalledWith(null);
+      expect(mockIosRakam).toHaveBeenLastCalledWith(null);
+      expect((disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] as { rakam: object }).rakam).toEqual({ ar: 'latn', bn: 'latn' });
+
+      expect(await DilServisi.rakamKaydet('beng')).toBe(true);
+      expect(await DilServisi.rakamSecimi()).toBe('beng');
+      expect(mockAndroidRakam).toHaveBeenLastCalledWith('beng');
+    });
+
+    it('kayıtta Bengalceye yazılmış Doğu Arap seçimi yok sayılır', async () => {
+      disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'bn', rakam: { bn: 'arab' } };
+      await DilServisi.kaydet('bn');
+      expect(aktifRakamSistemi()).toBe('beng');
+      expect(await DilServisi.rakamSecimi()).toBeNull();
+    });
   });
 });
 
