@@ -17,6 +17,8 @@ import com.furkanisikay.namazakisi.cekirdek.SorguSonucu
 import com.furkanisikay.namazakisi.kildim.KildimGuvenDeposu
 import com.furkanisikay.namazakisi.kildim.KildimIslemleri
 import com.furkanisikay.namazakisi.widget.WidgetVeriDeposu
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 
 /**
  * Dışa açık eklenti alıcılarının ORTAK doğrulaması (issue #278).
@@ -75,7 +77,7 @@ class OtomasyonEylemAlici : BroadcastReceiver() {
         if (ayar !is EklentiAyari.Kildim) return
         try {
             val sonuc = KildimIslemleri.simdikiVaktiKuyrugaAl(context, KildimKuyruguKurallari.KAYNAK_OTOMASYON)
-            Toast.makeText(context.applicationContext, KildimIslemleri.sonucMetni(context, sonuc), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context.applicationContext, KildimIslemleri.sonucMetni(context, sonuc).rakamla(context.rakamSifiri()), Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Log.w("OtomasyonEylemAlici", "Kildim islenemedi", e)
         }

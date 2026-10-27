@@ -2,7 +2,11 @@ package com.furkanisikay.namazakisi
 
 import android.content.Context
 import android.content.res.Configuration
+import android.text.Spanned
+import android.text.SpannableStringBuilder
+import com.furkanisikay.namazakisi.cekirdek.Rakam
 import com.furkanisikay.namazakisi.cekirdek.VakitAdlari
+import com.furkanisikay.namazakisi.cekirdek.rakamlariYerellestir
 import java.util.Locale
 
 /**
@@ -25,6 +29,13 @@ object ArayuzDili {
     const val TERCIH_VAKIT_ADLARI = "vakit_adlari"
 
     /**
+     * Arayüzün rakam sistemi: "arab" (Doğu Arap rakamı) ya da anahtar yok (Batı). JS ÇÖZÜLMÜŞ
+     * değeri yazar (`DilServisi > rakamSisteminiBildir`); yalnız Arapça arayüzde uygulanır
+     * (`cekirdek/Rakam`).
+     */
+    const val TERCIH_RAKAM_SISTEMI = "rakam_sistemi"
+
+    /**
      * Arayüz dili kodu ("tr", "en", "id", "de"…; `cekirdek/MetinDili.coz` çözer). Okurken
      * vakit adı takımını da tazeler ([VakitAdlari.etkin]): dili okuyan her çizim/metin yolu
      * (widget, bildirim, kısayol, asistan) aynı anda güncel adları alır.
@@ -39,6 +50,15 @@ object ArayuzDili {
             ?: VARSAYILAN
     } catch (_: Exception) {
         VARSAYILAN
+    }
+
+    /** Ham rakam kaydı ("arab" ya da null); yorumu `Rakam.sistem` yapar. */
+    fun rakamKaydi(context: Context): String? = try {
+        (context.applicationContext ?: context)
+            .getSharedPreferences(TERCIH_DOSYASI, Context.MODE_PRIVATE)
+            .getString(TERCIH_RAKAM_SISTEMI, null)
+    } catch (_: Exception) {
+        null
     }
 }
 
@@ -57,10 +77,38 @@ fun Context.arayuzDili(): String = ArayuzDili.oku(this)
  */
 // Endonezce: JS "id" yazar; `Locale.forLanguageTag("id")` Android'de eski "in" koduna döner ve
 // kaynak sistemi `values-in`'i seçer (`values-id` hiç seçilmez — lint `LocaleFolder`).
+// Arapçada etiket `-u-nu-<sistem>` taşır (`Rakam.yerelEtiketi`): kaynak `%d`'si ve tarih
+// biçimleyicileri kullanıcının seçtiği rakamla yazar; diğer dillerde etiket aynen.
 fun Context.dildeBaglam(): Context = try {
     val yapilandirma = Configuration(resources.configuration)
-    yapilandirma.setLocale(Locale.forLanguageTag(arayuzDili()))
+    yapilandirma.setLocale(Locale.forLanguageTag(Rakam.yerelEtiketi(arayuzDili(), ArayuzDili.rakamKaydi(this))))
     createConfigurationContext(yapilandirma)
 } catch (_: Exception) {
     this
 }
+
+/**
+ * Çizim kenarının sıfır rakamı: Arapça arayüzde "arab" seçiliyse '٠', aksi halde '0'
+ * (Türkçe dahil diğer dillerde metin aynen kalır). Bir çizim turunda BİR KEZ okunur.
+ */
+fun Context.rakamSifiri(): Char = Rakam.sifir(arayuzDili(), ArayuzDili.rakamKaydi(this))
+
+/**
+ * Görünen metnin ASCII rakamlarını [sifir] dizisine çevirir (`cekirdek/rakamlariYerellestir`).
+ * Biçimli metinde (Spanned) uzunluk korunarak yerinde değiştirilir, biçim kaybolmaz. '0'da
+ * ya da rakamsız metinde AYNI nesne döner. Yalnız GÖRÜNEN metne uygula: kimlik, veri, sesli
+ * okuma ve erişilebilirlik açıklaması Batı rakamıyla kalır.
+ */
+fun CharSequence.rakamla(sifir: Char): CharSequence {
+    if (sifir == '0' || none { it in '0'..'9' }) return this
+    if (this !is Spanned) return rakamlariYerellestir(toString(), sifir)
+    val sb = SpannableStringBuilder(this)
+    val fark = sifir - '0'
+    for (i in 0 until sb.length) {
+        val c = sb[i]
+        if (c in '0'..'9') sb.replace(i, i + 1, (c + fark).toString())
+    }
+    return sb
+}
+
+fun String.rakamla(sifir: Char): String = rakamlariYerellestir(this, sifir)

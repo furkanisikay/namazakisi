@@ -164,15 +164,25 @@ public final class SiriDeposu: @unchecked Sendable {
     /// ulke ve kullanici seciminden cozulmus degeri yazar (`core/dil/rakam`).
     public static let rakamSistemiAnahtari = "namazakisi_rakam_sistemi"
 
-    /// nil ya da bos → anahtar SILINIR (Bati rakami). Yalniz yazar.
-    public func rakamSisteminiYaz(_ kod: String?) {
+    /// nil ya da bos → anahtar SILINIR (Bati rakami). Deger DEGISTIYSE true doner: cagiran
+    /// widget zaman cizelgelerini tazeler (widget yuku ayni kaldigi icin JS yeniden yazmaz).
+    @discardableResult
+    public func rakamSisteminiYaz(_ kod: String?) -> Bool {
         kilitli {
+            let onceki = defaults.string(forKey: Self.rakamSistemiAnahtari)
             if let kod, !kod.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 defaults.set(kod, forKey: Self.rakamSistemiAnahtari)
+                return onceki != kod
             } else {
                 defaults.removeObject(forKey: Self.rakamSistemiAnahtari)
+                return onceki != nil
             }
         }
+    }
+
+    /// Ham rakam kaydi ("arab" ya da nil); yorumu `RakamSistemi.etkin` yapar (yalniz Arapcada).
+    public func rakamSistemi() -> String? {
+        kilitli { defaults.string(forKey: Self.rakamSistemiAnahtari) }
     }
 
     /// Kayitli takim (cozulmus); yok ya da bozuksa nil.

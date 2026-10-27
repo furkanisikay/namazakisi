@@ -6,7 +6,8 @@ import android.util.Log
 import com.furkanisikay.namazakisi.ArayuzDili
 
 /**
- * Arayüz dili değişince widget'ları ve hızlı ayarlar kutusunu yeniden çizer.
+ * Arayüz dili, vakit adı takımı ya da rakam sistemi değişince widget'ları ve hızlı ayarlar
+ * kutusunu yeniden çizer.
  *
  * Neden gerekli: widget yükü dil taşımaz ve `WidgetServisi` (JS) içerik aynıysa native'e
  * YAZMAZ (D-21) → dil değişiminden sonra widget bir sonraki vakit sınırına (ya da saatlik
@@ -28,7 +29,11 @@ object ArayuzDiliIzleyici {
         val uygulama = context.applicationContext ?: context
         try {
             val d = SharedPreferences.OnSharedPreferenceChangeListener { _, anahtar ->
-                if (anahtar == ArayuzDili.TERCIH_KOD || anahtar == ArayuzDili.TERCIH_VAKIT_ADLARI) WidgetGuncelleyici.tumunuGuncelle(uygulama)
+                if (anahtar == ArayuzDili.TERCIH_KOD || anahtar == ArayuzDili.TERCIH_VAKIT_ADLARI ||
+                    anahtar == ArayuzDili.TERCIH_RAKAM_SISTEMI
+                ) {
+                    WidgetGuncelleyici.tumunuGuncelle(uygulama)
+                }
             }
             uygulama.getSharedPreferences(ArayuzDili.TERCIH_DOSYASI, Context.MODE_PRIVATE)
                 .registerOnSharedPreferenceChangeListener(d)

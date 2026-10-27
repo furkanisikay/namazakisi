@@ -91,8 +91,8 @@ export function vakitAdlariniAyarla(json: string | null): void {
 
 /**
  * Arayüzün rakam sistemini App Group'a yazar: `'arab'` (Doğu Arap rakamı) ya da `null` (anahtar
- * silinir, Batı rakamı). Native okuyan taraf henüz yok. Modül/fonksiyon yoksa sessizce atlanır.
- * Asla fırlatmaz.
+ * silinir, Batı rakamı). Widget, canlı etkinlik ve Siri cevabı yalnız Arapçada uygular
+ * (`VakitKarari.swift > RakamSistemi`). Modül/fonksiyon yoksa sessizce atlanır. Asla fırlatmaz.
  */
 export function rakamSisteminiAyarla(kod: string | null): void {
     const m = modul();

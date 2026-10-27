@@ -23,6 +23,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.RemoteViews
+import com.furkanisikay.namazakisi.ArayuzDili
 import com.furkanisikay.namazakisi.MainActivity
 import com.furkanisikay.namazakisi.R
 import com.furkanisikay.namazakisi.cekirdek.AyetAdayi
@@ -36,9 +37,12 @@ import com.furkanisikay.namazakisi.cekirdek.DuvarAyari
 import com.furkanisikay.namazakisi.cekirdek.DuvarKagidiKurallari
 import com.furkanisikay.namazakisi.cekirdek.GununAyetiKurallari
 import com.furkanisikay.namazakisi.cekirdek.GununAyetiYuku
+import com.furkanisikay.namazakisi.cekirdek.Rakam
 import com.furkanisikay.namazakisi.cekirdek.WidgetAyari
 import com.furkanisikay.namazakisi.cekirdek.WidgetZemini
 import com.furkanisikay.namazakisi.dildeBaglam
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 import java.text.DateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -218,6 +222,9 @@ object GununAyetiCizici {
     ) {
         private val dm = context.resources.displayMetrics
         private val dokunus: PendingIntent? = dokunusNiyeti(context)
+
+        /** Görünen metnin rakamı (künye, meal, etiket); Arapça ayet resmi Tanzil birebir kalır. */
+        private val sifir: Char = context.rakamSifiri()
         private val erisim: String = when {
             yuk != null && kayit != null -> GununAyetiKurallari.erisimMetni(kayit, yuk.metin)
             else -> context.dildeBaglam().getString(R.string.widget_uygulamayi_acin)
@@ -339,7 +346,7 @@ object GununAyetiCizici {
         }
 
         private fun baslik(v: RemoteViews, etiket: String, etiketSp: Float) {
-            v.setTextViewText(R.id.ayet_etiket, etiket)
+            v.setTextViewText(R.id.ayet_etiket, etiket.rakamla(sifir))
             v.setTextViewTextSize(R.id.ayet_etiket, TypedValue.COMPLEX_UNIT_SP, etiketSp)
             metinBoya(context, v, R.id.ayet_etiket, renk.vurgu)
             gorselBoya(context, v, R.id.ayet_yildiz, renk.vurgu)
@@ -356,7 +363,7 @@ object GununAyetiCizici {
             if (!serit) {
                 v.setViewVisibility(R.id.ayet_baslik, if (o.baslik) View.VISIBLE else View.GONE)
                 baslik(v, y.metin.etiket, o.etiketSp)
-                val tarih = if (o.tarih) tarihMetni(k.gun, y.dil) else null
+                val tarih = if (o.tarih) tarihMetni(context, k.gun, y.dil) else null
                 v.setViewVisibility(R.id.ayet_tarih, if (tarih != null) View.VISIBLE else View.GONE)
                 if (tarih != null) {
                     v.setTextViewText(R.id.ayet_tarih, tarih)
@@ -377,7 +384,7 @@ object GununAyetiCizici {
             }
 
             if (h.mealVar) {
-                v.setTextViewText(R.id.ayet_meal, k.meal)
+                v.setTextViewText(R.id.ayet_meal, k.meal?.rakamla(sifir))
                 v.setTextViewTextSize(R.id.ayet_meal, TypedValue.COMPLEX_UNIT_SP, o.mealSp)
                 v.setInt(R.id.ayet_meal, "setGravity", hiza)
                 v.setViewPadding(R.id.ayet_meal, 0, if (arapca != null) dpi(o.boslukDp) else 0, 0, 0)
@@ -387,7 +394,7 @@ object GununAyetiCizici {
                 v.setViewVisibility(R.id.ayet_meal, View.GONE)
             }
 
-            v.setTextViewText(R.id.ayet_kunye, h.kunye)
+            v.setTextViewText(R.id.ayet_kunye, h.kunye.rakamla(sifir))
             v.setTextViewTextSize(R.id.ayet_kunye, TypedValue.COMPLEX_UNIT_SP, o.kunyeSp)
             v.setInt(R.id.ayet_kunye, "setGravity", hiza)
             v.setViewPadding(R.id.ayet_kunye, 0, if (serit) dpi(o.boslukDp) else 0, 0, 0)
@@ -403,7 +410,7 @@ object GununAyetiCizici {
                 v.setTextViewText(R.id.ayet_dokunun_acin, y.metin.acin)
                 metinBoya(context, v, R.id.ayet_dokunun_acin, renk.vurgu)
             }
-            v.setTextViewText(R.id.ayet_dokunun_kunye, k.kisaKunye)
+            v.setTextViewText(R.id.ayet_dokunun_kunye, k.kisaKunye.rakamla(sifir))
             v.setTextViewText(R.id.ayet_dokunun_metin, y.metin.sigmiyor)
             return v
         }
@@ -433,14 +440,19 @@ object GununAyetiCizici {
         }
     }
 
-    /** 4×3'ün tarih satırı: namaz gününün takvim tarihi, yükün dilinde ("24 Ekim 2026"). */
-    private fun tarihMetni(gun: String, dil: String): String? = try {
+    /**
+     * 4×3'ün tarih satırı: namaz gününün takvim tarihi, yükün dilinde ("24 Ekim 2026").
+     * Arapçada biçimleyici seçilen rakamla yazar (`-u-nu-`, `Rakam.yerelEtiketi`); diğer
+     * dillerde yerel ayar aynen.
+     */
+    private fun tarihMetni(context: Context, gun: String, dil: String): String? = try {
         val p = gun.split('-').map { it.toInt() }
         val c = Calendar.getInstance().apply {
             clear()
             set(p[0], p[1] - 1, p[2])
         }
-        DateFormat.getDateInstance(DateFormat.LONG, Locale.forLanguageTag(dil)).format(c.time)
+        val yerel = Locale.forLanguageTag(Rakam.yerelEtiketi(dil, ArayuzDili.rakamKaydi(context)))
+        DateFormat.getDateInstance(DateFormat.LONG, yerel).format(c.time)
     } catch (_: Exception) {
         null
     }

@@ -344,9 +344,39 @@ enum WidgetMetin {
         }
     }
 
-    /// `HH:mm` (cihaz saat dilimi). Hal eki EKLENMEZ ("Çıkış 16:00").
+    /// `HH:mm` (cihaz saat dilimi), secilen rakamla. Hal eki EKLENMEZ ("Çıkış 16:00").
     static func saat(_ ms: Int64) -> String {
-        SiriDeposu.saatBicimleyici()(ms)
+        rakam(SiriDeposu.saatBicimleyici()(ms))
+    }
+
+    /// Cizim anindaki rakam kaydi (App Group; JS cozulmus degeri yazar).
+    static var rakamKaydi: String? { SiriDeposu.varsayilan.rakamSistemi() }
+
+    /// Gorunen metnin rakamlari: Arapca arayuzde "arab" secildiyse Dogu Arap rakami, aksi halde
+    /// metin AYNEN (Turkce dahil). JS'in yazdigi metin (canli etkinlik basligi, kunye) de
+    /// buradan gecer; cekirdek ve yuk Bati rakamiyla kalir.
+    static func rakam(_ metin: String) -> String {
+        RakamSistemi.cevir(metin, dogu: RakamSistemi.doguMu(dil: dil, kayitli: rakamKaydi))
+    }
+
+    /// Sistem cizimli sayilarin (`Text(timerInterval:)`, `ProgressView`) yerel ayari: yalniz
+    /// Arapcada "ar@numbers=…"; diger dillerde nil (cihazin ayari, birebir bugunku gibi).
+    static var rakamYerelAyari: Locale? {
+        RakamSistemi.yerelAyarKimligi(dil: dil, kayitli: rakamKaydi).map { Locale(identifier: $0) }
+    }
+}
+
+extension View {
+    /// Sistemin cizdigi geri sayim ve ilerleme Arapcada secilen rakamla; diger dillerde
+    /// hicbir sey uygulanmaz. CIHAZDA DOGRULANMADI (WidgetKit zamanlayicisinin `\.locale`
+    /// rakamini izledigi).
+    @ViewBuilder
+    func rakamYerelAyari() -> some View {
+        if let yerel = WidgetMetin.rakamYerelAyari {
+            environment(\.locale, yerel)
+        } else {
+            self
+        }
     }
 }
 
@@ -367,6 +397,7 @@ struct VakitWidgetGorunumu: View {
 
     var body: some View {
         icerik
+            .rakamYerelAyari()
             .widgetURL(WidgetSabitleri.acilis)
             .widgetArkaplani(aile)
     }

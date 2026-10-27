@@ -489,8 +489,9 @@ export function vakitAdlariniAyarla(json: string | null): void {
 
 /**
  * Arayüzün rakam sistemi: `'arab'` (Doğu Arap rakamı, ٠١٢٣) ya da `null` (anahtar silinir, Batı
- * rakamı). JS etkin dil/ülke/seçimden çözülmüş değeri yazar (`core/dil/rakam`). Native okuyan
- * taraf henüz yok. Native eski ise sessizce atlanır. Asla fırlatmaz.
+ * rakamı). JS etkin dil/ülke/seçimden çözülmüş değeri yazar (`core/dil/rakam`); native yüzeyler
+ * (widget, kutu, bildirim, alarm, Live Update) yalnız Arapça arayüzde uygular (`cekirdek/Rakam`).
+ * Native eski ise sessizce atlanır. Asla fırlatmaz.
  */
 export function rakamSisteminiAyarla(kod: string | null): void {
     if (Platform.OS !== 'android' || !ExpoCountdownNotification?.rakamSisteminiAyarla) return;

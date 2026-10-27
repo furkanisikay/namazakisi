@@ -130,9 +130,13 @@ public class ExpoSiriKisayollariModule: Module {
         }
 
         /// Arayuzun rakam sistemi ("arab" = Dogu Arap rakami) ya da nil (anahtar silinir, Bati).
-        /// Yalniz yazar; okuyan uzantilar sonra eklenecek.
+        /// Widget, canli etkinlik ve Siri cevabi CIZIM aninda okur (`RakamSistemi`). Deger
+        /// degistiyse widget'lar tazelenir (yuk ayni kaldigi icin JS yeniden yazmaz, D-21);
+        /// WidgetCenter XPC'si JS thread'ini bekletmesin diye arka planda.
         Function("rakamSisteminiAyarla") { (kod: String?) -> Void in
-            SiriDeposu.varsayilan.rakamSisteminiYaz(kod)
+            if SiriDeposu.varsayilan.rakamSisteminiYaz(kod) {
+                DispatchQueue.global(qos: .utility).async { CanliEtkinlikKoprusu.widgetlariTazele() }
+            }
         }
 
         /// Canli etkinlik (Live Activity, #295) bu build'de var mi? (Widget uzantisi bayragi.)

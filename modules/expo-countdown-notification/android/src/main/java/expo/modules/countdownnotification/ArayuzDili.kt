@@ -1,6 +1,7 @@
 package expo.modules.countdownnotification
 
 import android.content.Context
+import expo.modules.countdownnotification.cekirdek.Rakam
 
 /**
  * Uygulamanın ARAYÜZ dili (dil kodu: "tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur") — JS
@@ -48,4 +49,15 @@ object ArayuzDili {
     } catch (_: Exception) {
         VARSAYILAN
     }
+
+    /** Ham rakam kaydı ("arab" ya da null); yorumu `cekirdek/Rakam.sistem` yapar (yalnız Arapçada). */
+    fun rakamKaydi(context: Context): String? = try {
+        context.applicationContext.getSharedPreferences(TERCIH_DOSYASI, Context.MODE_PRIVATE)
+            .getString(TERCIH_RAKAM_SISTEMI, null)
+    } catch (_: Exception) {
+        null
+    }
+
+    /** Görünen metnin sıfır rakamı: Arapça arayüzde "arab" → '٠', aksi halde '0' (metin aynen). */
+    fun rakamSifiri(context: Context): Char = Rakam.sifir(oku(context), rakamKaydi(context))
 }

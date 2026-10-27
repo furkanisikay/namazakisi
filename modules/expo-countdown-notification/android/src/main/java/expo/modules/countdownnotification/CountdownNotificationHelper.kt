@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import android.widget.RemoteViews
 import expo.modules.countdownnotification.cekirdek.CanliGuncellemeKurallari
+import expo.modules.countdownnotification.cekirdek.rakamlariYerellestir
 
 object CountdownNotificationHelper {
 
@@ -172,12 +173,15 @@ object CountdownNotificationHelper {
             remoteViewsExpanded.setChronometerCountDown(R.id.tv_countdown, true)
         }
 
-        remoteViewsExpanded.setTextViewText(R.id.tv_description, aciklamaMetni(context, bodyTemplate, themeType))
+        // Görünen metin seçilen rakamla (Arapçada "arab" → ٠-٩). Kalan süre `Chronometer`'ı
+        // SystemUI'de CİHAZ yerel ayarıyla çizilir; uygulama onu zorlayamaz.
+        val sifir = ArayuzDili.rakamSifiri(context)
+        remoteViewsExpanded.setTextViewText(R.id.tv_description, rakamlariYerellestir(aciklamaMetni(context, bodyTemplate, themeType), sifir))
 
         val activeChannelId = if (channelId.isNotEmpty()) channelId else FOREGROUND_CHANNEL_ID
         val builder = NotificationCompat.Builder(context, activeChannelId)
             .setSmallIcon(getSmallIconRes(context, smallIcon))
-            .setContentTitle(title)
+            .setContentTitle(rakamlariYerellestir(title, sifir))
             .setCustomContentView(remoteViewsCollapsed)
             .setCustomBigContentView(remoteViewsExpanded)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())

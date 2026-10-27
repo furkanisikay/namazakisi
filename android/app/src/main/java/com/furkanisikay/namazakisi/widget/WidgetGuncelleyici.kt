@@ -29,6 +29,8 @@ import com.furkanisikay.namazakisi.cekirdek.WidgetZemini
 import com.furkanisikay.namazakisi.cekirdek.kildimIstekKodu
 import com.furkanisikay.namazakisi.cekirdek.saatMetni
 import com.furkanisikay.namazakisi.dildeBaglam
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 import com.furkanisikay.namazakisi.kildim.KildimKutusuServisi
 import com.furkanisikay.namazakisi.otomasyon.OtomasyonDeposu
 
@@ -52,6 +54,11 @@ import com.furkanisikay.namazakisi.otomasyon.OtomasyonDeposu
  * XML'deki `@string` başlatıcının sürecinde ve CİHAZ dilinde çözülür, uygulama dili farklıysa
  * widget yanlış dilde kalırdı. Kaynak metinleri `dildeBaglam()`'dan, saf kararların metinleri
  * `dil` parametresiyle (`arayuzDili()`) gelir.
+ *
+ * RAKAM: görünen metin (saat, "Çıkış 15:42", sıradaki satırı) `DilMetni.r` ile kullanıcının
+ * seçtiği rakama çevrilir (Arapçada "arab" → ٠-٩; diğer dillerde aynen). Erişilebilirlik
+ * açıklaması Batı rakamıyla kalır. Kalan süre `Chronometer`'ı başlatıcının sürecinde CİHAZ
+ * yerel ayarıyla çizilir; uygulama onu zorlayamaz.
  */
 object WidgetGuncelleyici {
     private const val TAG = "WidgetGuncelleyici"
@@ -163,7 +170,7 @@ object WidgetGuncelleyici {
         anlik: WidgetVeriDeposu.Anlik,
     ): RemoteViews {
         val saglayici = yonetici.getAppWidgetInfo(id)?.provider?.className
-        val dm = DilMetni(context.dildeBaglam(), context.arayuzDili())
+        val dm = DilMetni(context.dildeBaglam(), context.arayuzDili(), context.rakamSifiri())
         // Klasik (yeşil) widget'lar: sabit tek düzen, boyut haritası ve ayar YOK.
         if (saglayici == NamazKlasikWidget::class.java.name) return klasikCiz(context, genis = false, anlik, dm)
         if (saglayici == NamazKlasikGenisWidget::class.java.name) return klasikCiz(context, genis = true, anlik, dm)
@@ -202,10 +209,14 @@ object WidgetGuncelleyici {
 
     /**
      * Bir çizim turunun dili: [m] arayüz dilindeki kaynak bağlamı (YALNIZ metin çözmek için;
-     * renk/niyet asıl bağlamla), [dil] saf kararlara verilen kod.
+     * renk/niyet asıl bağlamla), [dil] saf kararlara verilen kod, [sifir] görünen metnin
+     * rakam dizisi (`rakamSifiri`; Batıda '0' → [r] metni aynen döndürür).
      */
-    private class DilMetni(val m: Context, val dil: String) {
+    private class DilMetni(val m: Context, val dil: String, val sifir: Char) {
         fun s(id: Int, vararg args: Any): String = m.getString(id, *args)
+
+        /** Görünen metin (çizim kenarı); erişilebilirlik açıklamasına UYGULANMAZ. */
+        fun r(metin: String): String = metin.rakamla(sifir)
     }
 
     private fun ciz(
@@ -251,7 +262,7 @@ object WidgetGuncelleyici {
         else dm.s(R.string.widget_uygulamayi_acin)
 
         if (duzen == WidgetDuzeni.KUCUK) {
-            v.setTextViewText(R.id.widget_bitis, bitisMetni)
+            v.setTextViewText(R.id.widget_bitis, dm.r(bitisMetni))
             metinRengi(context, v, R.id.widget_bitis, p.ikincil)
             gorselRengi(context, v, R.id.widget_kildim, if (a.kildim == KildimDurumu.YOK) p.ikincil else p.vurgu)
             isaretiCiz(context, v, R.id.widget_kildim_ikon, a.kildim, p)
@@ -273,8 +284,8 @@ object WidgetGuncelleyici {
         v.setViewVisibility(R.id.widget_buyuk_saat, if (buyukKalan) View.GONE else View.VISIBLE)
         v.setViewVisibility(R.id.widget_kalan_kucuk, if (sayacVar && !buyukKalan) View.VISIBLE else View.GONE)
         v.setViewVisibility(R.id.widget_bitis, if (buyukKalan || !sayacVar) View.VISIBLE else View.GONE)
-        v.setTextViewText(R.id.widget_bitis, bitisMetni)
-        v.setTextViewText(R.id.widget_buyuk_saat, if (sayacVar) bitisMetni else "--:--")
+        v.setTextViewText(R.id.widget_bitis, dm.r(bitisMetni))
+        v.setTextViewText(R.id.widget_buyuk_saat, if (sayacVar) dm.r(bitisMetni) else "--:--")
         metinRengi(context, v, R.id.widget_kalan, p.metin)
         metinRengi(context, v, R.id.widget_buyuk_saat, p.metin)
         metinRengi(context, v, R.id.widget_kalan_kucuk, p.ikincil)
@@ -288,7 +299,7 @@ object WidgetGuncelleyici {
             else -> dm.s(R.string.widget_kilinacak_vakit_yok)
         }
         v.setViewVisibility(R.id.widget_sonraki, if (sonrakiMetni == null) View.GONE else View.VISIBLE)
-        v.setTextViewText(R.id.widget_sonraki, sonrakiMetni ?: "")
+        v.setTextViewText(R.id.widget_sonraki, dm.r(sonrakiMetni ?: ""))
         metinRengi(context, v, R.id.widget_sonraki, p.ikincil)
 
         dugmeyiCiz(context, v, a.kildim, sayacVar, kilitEkrani, p, dm)
@@ -347,7 +358,7 @@ object WidgetGuncelleyici {
         for (satir in KlasikWidgetKarari.satirlar(a.vakitler, a.simdiMs)) {
             val (satirId, satirAdId, saatId) = KLASIK_SATIRLAR[satir.kod] ?: continue
             v.setTextViewText(satirAdId, KlasikWidgetKarari.satirAdi(satir.kod, dm.dil))
-            v.setTextViewText(saatId, satir.ms?.let { saatMetni(it) } ?: "--:--")
+            v.setTextViewText(saatId, satir.ms?.let { dm.r(saatMetni(it)) } ?: "--:--")
             v.setInt(satirId, "setBackgroundResource", if (satir.aktif) R.drawable.widget_klasik_satir_aktif else 0)
             val renk = if (satir.aktif) R.color.widget_klasik_metin else R.color.widget_klasik_metin_soluk
             metinRengi(context, v, satirAdId, renk)
@@ -422,7 +433,7 @@ object WidgetGuncelleyici {
             val giris = vakitler.firstOrNull { it.kod == kod }
             val buSatirAktif = aktif != null && aktif.kod == kod && aktif.tarih == gun
             v.setTextViewText(adId, VakitKodlari.gorunenAd(kod, dm.dil))
-            v.setTextViewText(saatId, if (giris != null) saatMetni(giris.ms) else "--:--")
+            v.setTextViewText(saatId, if (giris != null) dm.r(saatMetni(giris.ms)) else "--:--")
             metinRengi(context, v, adId, if (buSatirAktif) p.metin else p.ikincil)
             metinRengi(context, v, saatId, if (buSatirAktif) p.metin else p.ikincil)
             v.setInt(satir, "setBackgroundResource", if (buSatirAktif) R.drawable.widget_satir_aktif else 0)

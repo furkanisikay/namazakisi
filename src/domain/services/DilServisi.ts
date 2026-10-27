@@ -158,7 +158,8 @@ function vakitAdlariniBildir(): void {
 /**
  * Etkin rakam sistemini native'e iter (Android `namazakisi_dil/rakam_sistemi`, iOS App Group
  * `namazakisi_rakam_sistemi`): Doğu Arap rakamıysa `'arab'`, değilse `null` (anahtar silinir,
- * Batı rakamı). Native OKUYAN taraf henüz yok. Eski native'de fonksiyon yoksa atlanır.
+ * Batı rakamı). Native yüzeyler (widget, bildirim, canlı etkinlik, Siri) yalnız Arapça arayüzde
+ * uygular. Eski native'de fonksiyon yoksa atlanır.
  */
 function rakamSisteminiBildir(): void {
   const kod = aktifRakamSistemi() === 'arab' ? 'arab' : null;

@@ -17,6 +17,8 @@ import com.furkanisikay.namazakisi.cekirdek.DuvarRenkleri
 import com.furkanisikay.namazakisi.cekirdek.DuvarZemini
 import com.furkanisikay.namazakisi.cekirdek.GununAyetiKurallari
 import com.furkanisikay.namazakisi.cekirdek.GununAyetiYuku
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 import com.furkanisikay.namazakisi.widget.AyetYazitipleri
 
 /**
@@ -120,7 +122,10 @@ object DuvarKagidiCizici {
     ): Blok {
         val o = olcek * carpan
         val parcalar = ArrayList<Parca>()
-        val meal = kayit.meal
+        // Meal ve künye seçilen rakamla (Arapçada "arab" → ٠-٩); Arapça ayet ve atıf satırı
+        // (kaynak/sürüm) birebir kalır.
+        val sifir = context.rakamSifiri()
+        val meal = kayit.meal?.rakamla(sifir)
         if (arapca) {
             val ar = yerlesim(kayit.ar, boya(AyetYazitipleri.arapca(context), 28f * o, renk.metin), genislik, 1f, rtl = true)
             parcalar += Parca(0f, ar.height.toFloat()) { t, x, y, _ -> yerlesimCiz(t, ar, x, y) }
@@ -142,7 +147,7 @@ object DuvarKagidiCizici {
             parcalar += Parca((if (arapca) 14f else 18f) * o, m.height.toFloat()) { t, x, y, _ -> yerlesimCiz(t, m, x, y) }
         }
         val kunyeBoyasi = boya(Typeface.create("sans-serif", Typeface.NORMAL), 12f * o, renk.kunye).apply { letterSpacing = 0.04f }
-        val kunye = yerlesim(kayit.kisaKunye, kunyeBoyasi, genislik, 1f)
+        val kunye = yerlesim(kayit.kisaKunye.rakamla(sifir), kunyeBoyasi, genislik, 1f)
         parcalar += Parca((if (arapca) 14f else 18f) * o, kunye.height.toFloat()) { t, x, y, _ -> yerlesimCiz(t, kunye, x, y) }
 
         val atifMetni = GununAyetiKurallari.atifSatiri(kayit, yuk.metin, arapca)

@@ -21,7 +21,12 @@ import android.widget.LinearLayout
 import android.widget.TextClock
 import android.widget.TextView
 import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.arayuzDili
+import com.furkanisikay.namazakisi.cekirdek.Rakam
+import com.furkanisikay.namazakisi.cekirdek.rakamlariEsitle
 import com.furkanisikay.namazakisi.dildeBaglam
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari.KildimYolu
 
@@ -228,6 +233,8 @@ class MuhafizAlarmActivity : Activity() {
     }
 
     private fun arayuz(yuk: MuhafizAlarmKurallari.Yuk): View {
+        // Görünen metin seçilen rakamla (Arapçada "arab" → ٠-٩); yük ve kimlik aynen kalır.
+        val sifir = rakamSifiri()
         val kok = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
@@ -252,10 +259,11 @@ class MuhafizAlarmActivity : Activity() {
         }
         kok.addView(ikon, LinearLayout.LayoutParams(dp(96), dp(96)).apply { topMargin = dp(24) })
         kok.addView(
-            metin(yuk.vakitAdi.ifBlank { getString(R.string.alarm_baslik) }, 34f, R.color.alarm_metin, kalin = true),
+            metin(yuk.vakitAdi.ifBlank { getString(R.string.alarm_baslik) }.rakamla(sifir), 34f, R.color.alarm_metin, kalin = true),
             LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(20) },
         )
-        val saat = TextClock(this).apply {
+        // TextClock cihaz yerel ayarıyla yazar; Arapça arayüzde seçilen rakama eşitlenir.
+        val saat = RakamliSaat(this, if (Rakam.arapcaMi(arayuzDili())) sifir else null).apply {
             format24Hour = "HH:mm"
             format12Hour = "HH:mm"
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 64f)
@@ -265,12 +273,12 @@ class MuhafizAlarmActivity : Activity() {
         }
         kok.addView(saat, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
         kok.addView(
-            metin(yuk.baslik, 18f, R.color.alarm_metin, kalin = true),
+            metin(yuk.baslik.rakamla(sifir), 18f, R.color.alarm_metin, kalin = true),
             LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(16) },
         )
         if (yuk.metin.isNotBlank()) {
             kok.addView(
-                metin(yuk.metin, 15f, R.color.alarm_ikincil),
+                metin(yuk.metin.rakamla(sifir), 15f, R.color.alarm_ikincil),
                 LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(8) },
             )
         }
@@ -301,5 +309,18 @@ class MuhafizAlarmActivity : Activity() {
 
     companion object {
         const val EK_BASLANGIC = "baslangicMs"
+    }
+}
+
+/**
+ * Seçilen rakamla çizen saat. `TextClock` biçimi `Locale.getDefault()` (CİHAZ yerel ayarı)
+ * ile yapar, uygulamanın arayüz dilini görmez: ar-SA cihazda Batı seçene Doğu, tr cihazda
+ * Doğu seçene Batı rakamı yazardı. [sifir] null → dokunulmaz (Arapça dışı arayüz: cihazın
+ * biçimi birebir). Üst sınıf kurucusu da `setText` çağırır; o an alan henüz null'dır.
+ */
+private class RakamliSaat(context: Context, private val sifir: Char?) : TextClock(context) {
+    override fun setText(text: CharSequence?, type: TextView.BufferType?) {
+        val s = sifir
+        super.setText(if (s == null || text == null) text else rakamlariEsitle(text.toString(), s), type)
     }
 }

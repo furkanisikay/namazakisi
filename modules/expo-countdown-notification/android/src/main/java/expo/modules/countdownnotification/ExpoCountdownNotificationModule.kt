@@ -198,7 +198,8 @@ class ExpoCountdownNotificationModule : Module() {
 
         /**
          * Arayüzün rakam sistemi ("arab" = Doğu Arap rakamı) ya da `null` (anahtar silinir, Batı
-         * rakamı). Yalnız yazar; okuyan native yüzeyler sonra eklenecek.
+         * rakamı). Yalnız yazar; okuyanlar `ArayuzDili.rakamSifiri` (bu modül) ve uygulama
+         * modülündeki `rakamSifiri()` — widget'ı `ArayuzDiliIzleyici` anahtar değişince yeniden çizer.
          */
         Function("rakamSisteminiAyarla") { kod: String? ->
             val context = appContext.reactContext

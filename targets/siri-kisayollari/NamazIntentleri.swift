@@ -26,6 +26,14 @@ enum SiriDili {
         return ArayuzDili.coz(Bundle.main.preferredLocalizations.first)
     }
     static var metin: VakitMetinleri { VakitMetinleri.dil(kod) }
+
+    /// Cevabin (`dialog`) rakamlari: YALNIZ cevap dili Arapca VE kullanici uygulamada "arab"
+    /// sectiyse Dogu Arap rakami (`RakamSistemi`); diger her durumda metin aynen. Kayit uygulama
+    /// dili Arapcayken yazilir → paket dili ile uygulama dili ayrissa Bati kalir. Donen DEGER
+    /// (`value:`, otomasyon karsilastirmasi) Bati rakamiyla kalir.
+    static func rakam(_ metin: String) -> String {
+        RakamSistemi.cevir(metin, dogu: RakamSistemi.doguMu(dil: kod, kayitli: SiriDeposu.varsayilan.rakamSistemi()))
+    }
 }
 
 /// "Siradaki namaz ne zaman?" — uygulamayi ACMADAN cevap verir.
@@ -51,7 +59,7 @@ struct SiradakiNamazIntent: AppIntent {
             saat: SiriDeposu.saatBicimleyici(),
             dil: dil
         )
-        return .result(dialog: "\(metin)")
+        return .result(dialog: "\(SiriDili.rakam(metin))")
     }
 }
 
@@ -84,7 +92,7 @@ struct SimdikiVaktiKildimIntent: AppIntent {
         let karar = Self.degerlendir(depo: depo, cizelge: cizelge, simdi: Date(), dil: dil)
         guard case let .aday(vakit, kayitVakti, ad) = karar else {
             let metin = VakitKarari.kildimMetni(karar, bugun: SiriDeposu.bugunIso(), saat: saat, dil: dil)
-            return .result(dialog: "\(metin)")
+            return .result(dialog: "\(SiriDili.rakam(metin))")
         }
 
         if onayIste {
@@ -98,13 +106,13 @@ struct SimdikiVaktiKildimIntent: AppIntent {
                     return .result(dialog: "\(SiriDili.metin.vakitDegisti)")
                 }
                 let metin = VakitKarari.kildimMetni(yeni, bugun: SiriDeposu.bugunIso(), saat: saat, dil: dil)
-                return .result(dialog: "\(metin)")
+                return .result(dialog: "\(SiriDili.rakam(metin))")
             }
         }
 
         depo.kildimEkle(tarih: vakit.tarih, vakit: kayitVakti, kaynak: "siri", simdiMs: SiriDeposu.simdiMs())
         let metin = VakitKarari.kildimMetni(karar, bugun: SiriDeposu.bugunIso(), saat: saat, dil: dil)
-        return .result(dialog: "\(metin)")
+        return .result(dialog: "\(SiriDili.rakam(metin))")
     }
 
     private static func degerlendir(depo: SiriDeposu, cizelge: SiriCizelge, simdi: Date, dil: String) -> SiriKildimKarari {

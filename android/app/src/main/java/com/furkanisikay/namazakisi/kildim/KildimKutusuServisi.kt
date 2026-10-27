@@ -8,6 +8,8 @@ import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
 import com.furkanisikay.namazakisi.cekirdek.KutuDurumu
 import com.furkanisikay.namazakisi.cekirdek.KutuGorunumKarari
 import com.furkanisikay.namazakisi.cekirdek.saatMetni
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 import com.furkanisikay.namazakisi.widget.WidgetVeriDeposu
 
 /**
@@ -41,8 +43,10 @@ class KildimKutusuServisi : TileService() {
         val a = WidgetVeriDeposu.anlik(this)
         // Metin UYGULAMANIN arayüz dilinde (dil değişince `ArayuzDiliIzleyici` kutuyu tazeler).
         val g = KutuGorunumKarari.hesapla(a.durum, a.kildim, { saatMetni(it) }, arayuzDili())
-        kutu.label = g.etiket
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) kutu.subtitle = g.altEtiket
+        // Görünen metin seçilen rakamla ("Giriş 12:58" → Arapçada ١٢:٥٨); açıklama aynen.
+        val sifir = rakamSifiri()
+        kutu.label = g.etiket.rakamla(sifir)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) kutu.subtitle = g.altEtiket.rakamla(sifir)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) kutu.stateDescription = g.altEtiket
         kutu.contentDescription = g.aciklama
         kutu.state = when (g.durum) {

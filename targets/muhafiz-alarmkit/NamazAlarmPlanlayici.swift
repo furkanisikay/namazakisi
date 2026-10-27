@@ -164,7 +164,12 @@ enum NamazAlarmCekirdegi {
         // Baslik DINAMIK metindir: `LocalizedStringResource(stringLiteral:)` onu bir
         // YERELLESTIRME ANAHTARI sayardi. Interpolasyonla anahtar "%@" olur, deger aynen
         // gosterilir (yerellestirme tablosunda karsiligi aranmaz).
-        let baslikDegeri: String.LocalizationValue = "\(kayit.baslik)"
+        // Basligin rakamlari secilen sistemle (Arapcada "arab" → Dogu Arap); kayit Bati kalir.
+        let baslik = RakamSistemi.cevir(
+            kayit.baslik,
+            dogu: RakamSistemi.doguMu(dil: metin.dil, kayitli: SiriDeposu.varsayilan.rakamSistemi())
+        )
+        let baslikDegeri: String.LocalizationValue = "\(baslik)"
         let ikinciDavranis: AlarmPresentation.Alert.SecondaryButtonBehavior? = bilgiMi ? nil : .custom
         let alert = AlarmPresentation.Alert(
             title: LocalizedStringResource(baslikDegeri),

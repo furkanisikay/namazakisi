@@ -339,7 +339,9 @@ private struct MealMetni: View {
     let meal: String
     let stil: Font.TextStyle
     var body: some View {
-        Text(meal)
+        // Meal ve kunye secilen rakamla (Arapcada "arab" → Dogu Arap); Arapca ayet (Tanzil)
+        // birebir kalir.
+        Text(WidgetMetin.rakam(meal))
             .font(.system(stil, design: .serif))
             .foregroundStyle(.primary)
             .fixedSize(horizontal: false, vertical: true)
@@ -364,7 +366,7 @@ private struct ArapcaMetin: View {
 private struct KunyeSatiri: View {
     let metin: String
     var body: some View {
-        Text(metin)
+        Text(WidgetMetin.rakam(metin))
             .font(.caption2)
             .foregroundStyle(.secondary)
             .fixedSize(horizontal: false, vertical: true)
@@ -378,7 +380,7 @@ private struct SigmiyorKarti: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             AyetEtiketi(metin: metin.etiket)
-            Text(kayit.kisaKunye)
+            Text(WidgetMetin.rakam(kayit.kisaKunye))
                 .font(.system(.headline, design: .serif))
                 .lineLimit(2)
                 .minimumScaleFactor(0.7)
@@ -485,7 +487,9 @@ enum AyetTarihi {
         f.calendar = takvim
         f.timeZone = .current
         // Yukun dili (yalniz native tabloda olan diller degil): ay/gun adlari sistemden.
-        f.locale = Locale(identifier: dil.isEmpty ? ArayuzDili.varsayilan : dil)
+        // Arapcada rakam sistemi acikca verilir (ciplak "ar" Dogu rakami yazar, Bati secen de).
+        f.locale = Locale(identifier: RakamSistemi.yerelAyarKimligi(dil: dil, kayitli: WidgetMetin.rakamKaydi)
+            ?? (dil.isEmpty ? ArayuzDili.varsayilan : dil))
         f.setLocalizedDateFormatFromTemplate("EEEEdMMMM")
         return f.string(from: tarih)
     }
@@ -504,11 +508,11 @@ private struct KilitAyetGorunumu: View {
                     Text(metin.etiket)
                         .font(.caption2.weight(.semibold))
                         .widgetAccentable()
-                    Text(meal)
+                    Text(WidgetMetin.rakam(meal))
                         .font(.footnote)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                Text(meal)
+                Text(WidgetMetin.rakam(meal))
                     .font(.footnote)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -519,7 +523,7 @@ private struct KilitAyetGorunumu: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                     .widgetAccentable()
-                Text(kayit.kisaKunye)
+                Text(WidgetMetin.rakam(kayit.kisaKunye))
                     .font(.headline)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)

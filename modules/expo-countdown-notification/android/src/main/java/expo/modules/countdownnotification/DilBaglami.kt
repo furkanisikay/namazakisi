@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
+import expo.modules.countdownnotification.cekirdek.Rakam
 import java.util.Locale
 
 /**
@@ -15,9 +16,11 @@ import java.util.Locale
  * (eylem düğmeleri, kanal adları, yedek gövde, sayaç öneki) `getString` ile BU bağlamdan
  * çözülür; bildirim kurucusuna, PendingIntent'e ve RemoteViews'e özgün bağlam verilir.
  */
+// Arapçada etiket `-u-nu-<sistem>` taşır (`Rakam.yerelEtiketi`): kaynak biçimlemesi seçilen
+// rakamı izler; diğer dillerde etiket aynen.
 internal fun Context.dildeBaglam(): Context = try {
     val yapi = Configuration(resources.configuration)
-    yapi.setLocale(Locale.forLanguageTag(ArayuzDili.oku(this)))
+    yapi.setLocale(Locale.forLanguageTag(Rakam.yerelEtiketi(ArayuzDili.oku(this), ArayuzDili.rakamKaydi(this))))
     createConfigurationContext(yapi)
 } catch (_: Exception) {
     this

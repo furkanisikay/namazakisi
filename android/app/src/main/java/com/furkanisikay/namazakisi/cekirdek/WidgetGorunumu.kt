@@ -1,6 +1,7 @@
 package com.furkanisikay.namazakisi.cekirdek
 
 import java.util.Calendar
+import java.util.Locale
 import java.util.TimeZone
 
 /**
@@ -119,10 +120,14 @@ object KildimDurumKarari {
     }
 }
 
-/** "HH:mm" — saat dilimi enjekte edilir (testte deterministik). */
+/**
+ * "HH:mm" — saat dilimi enjekte edilir (testte deterministik). DAİMA Batı rakamı
+ * (`Locale.ROOT`): örtük varsayılan yerel ayar ar-SA cihazda Doğu rakamı yazıp seçimi
+ * atlıyordu; seçilen rakam çizim kenarında uygulanır (`cekirdek/Rakam`).
+ */
 fun saatMetni(ms: Long, saatDilimi: TimeZone = TimeZone.getDefault()): String {
     val c = Calendar.getInstance(saatDilimi).apply { timeInMillis = ms }
-    return "%02d:%02d".format(c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE))
+    return "%02d:%02d".format(Locale.ROOT, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE))
 }
 
 enum class KutuDurumu { AKTIF, PASIF, KULLANILAMAZ }

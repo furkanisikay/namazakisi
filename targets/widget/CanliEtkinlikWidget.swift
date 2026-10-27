@@ -26,7 +26,7 @@ struct NamazCanliEtkinlikWidget: Widget {
             let eskidi = context.isStale
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Label(durum.ad, systemImage: CanliMetin.ikon(durum))
+                    Label(WidgetMetin.rakam(durum.ad), systemImage: CanliMetin.ikon(durum))
                         .font(.headline)
                         .foregroundStyle(WidgetSabitleri.yesil)
                         .lineLimit(1)
@@ -85,16 +85,17 @@ enum CanliMetin {
     }
 
     /// Alt satir CIZIM aninda arayuz dilinde (W5). `d.ad`/`d.baslik` JS'in yazdigi metindir
-    /// (yazim anindaki dil); dil degisince JS etkinligi yeniden esitler.
+    /// (yazim anindaki dil); dil degisince JS etkinligi yeniden esitler. Rakamlar CIZIM aninda
+    /// secilen sistemle (`WidgetMetin.rakam`; saat zaten `WidgetMetin.saat`'ten gelir).
     static func altSatir(_ d: NamazCanliNitelikleri.ContentState) -> String {
         let m = WidgetMetin.m
-        if kabulMu(d) { return m.bicim(m.kabulAlt, ["ad": d.ad]) }
+        if kabulMu(d) { return m.bicim(m.kabulAlt, ["ad": WidgetMetin.rakam(d.ad)]) }
         return m.bicim(d.tema == "vakit" ? m.cikisSaat : m.bitisSaat, ["saat": WidgetMetin.saat(d.hedefMs)])
     }
 
     /// Kart basligi: son karede (`kabul` temasi) yazilmis dua yerine cizim anindaki dilde dua.
     static func baslik(_ d: NamazCanliNitelikleri.ContentState) -> String {
-        kabulMu(d) ? WidgetMetin.vm.kabulDuasi : d.baslik
+        kabulMu(d) ? WidgetMetin.vm.kabulDuasi : WidgetMetin.rakam(d.baslik)
     }
 }
 
@@ -115,6 +116,8 @@ private struct CanliSayac: View {
             Text(timerInterval: Date()...hedef, countsDown: true)
                 .monospacedDigit()
                 .multilineTextAlignment(.trailing)
+                // Sistem cizer: Arapcada secilen rakamla (yerel ayar), diger dillerde dokunulmaz.
+                .rakamYerelAyari()
         }
     }
 }

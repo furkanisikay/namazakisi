@@ -82,6 +82,56 @@ public enum ArayuzDili {
     }
 }
 
+/// RAKAM SISTEMI — kullanicinin uygulamada SECTIGI rakam (Android `cekirdek/Rakam.kt` ve Wear
+/// `saat/cekirdek/Rakam.kt` ikizi). JS COZULMUS degeri App Group'a yazar
+/// (`SiriDeposu.rakamSistemiAnahtari`: "arab" ya da yok); YALNIZ arayuz/cevap dili Arapcayken
+/// uygulanir, diger her dilde (Turkce dahil) cikti BIREBIR ayni kalir.
+///
+/// Kural: cekirdek metni Bati rakamiyla URETIR (fikstur, kimlik, veri ayni); donusum yalniz
+/// CIZIM KENARINDA (`WidgetMetin.rakam`, Siri `dialog`). Sistemin cizdigi sayilar
+/// (`Text(timerInterval:)`, `ProgressView(timerInterval:)`, `DateFormatter`) yerel ayari izler →
+/// Arapcada `yerelAyarKimligi` ("ar@numbers=arab|latn") verilir. Bu dosyada: pod, widget ve
+/// saat kopyalari ile CI swiftc listeleri zaten onu derler (yeni dosya acilmadi).
+public enum RakamSistemi {
+    public static let arab = "arab"
+    public static let latn = "latn"
+
+    /// Etkin sistem: YALNIZ dil Arapca VE kayit "arab" iken `arab`; aksi halde `latn`.
+    public static func etkin(dil: String?, kayitli: String?) -> String {
+        guard ArayuzDili.coz(dil) == "ar",
+              kayitli?.trimmingCharacters(in: .whitespacesAndNewlines) == arab else { return latn }
+        return arab
+    }
+
+    public static func doguMu(dil: String?, kayitli: String?) -> Bool {
+        etkin(dil: dil, kayitli: kayitli) == arab
+    }
+
+    /// ASCII 0-9 → Dogu Arap rakami (U+0660–0669); `dogu` false ya da rakam yoksa metin AYNEN.
+    /// Harf, ":", zaten Dogu rakami olan metin degismez (idempotent).
+    public static func cevir(_ metin: String, dogu: Bool) -> String {
+        guard dogu, metin.unicodeScalars.contains(where: { $0.value >= 0x30 && $0.value <= 0x39 }) else {
+            return metin
+        }
+        var sonuc = String.UnicodeScalarView()
+        for u in metin.unicodeScalars {
+            if u.value >= 0x30 && u.value <= 0x39, let d = Unicode.Scalar(0x0660 + u.value - 0x30) {
+                sonuc.append(d)
+            } else {
+                sonuc.append(u)
+            }
+        }
+        return String(sonuc)
+    }
+
+    /// Sistem cizimli sayilarin yerel ayari: yalniz Arapcada "ar@numbers=<sistem>" (Bati secen
+    /// Magrip kullanicisi da Bati gorur); diger dillerde nil → DOKUNULMAZ (cihazin ayari).
+    public static func yerelAyarKimligi(dil: String?, kayitli: String?) -> String? {
+        guard ArayuzDili.coz(dil) == "ar" else { return nil }
+        return "ar@numbers=\(etkin(dil: dil, kayitli: kayitli))"
+    }
+}
+
 /// CLDR cogul kategorisi ("zero", "one", "two", "few", "many", "other") — JS
 /// `src/core/dil/cogul.ts` ikizi (tamsayi icin); Urduca (ur) `default` dalindadir (one/other).
 /// Cogul metin tablolari kategori → kalip tasir; dilde olmayan kategori "other"a duser.

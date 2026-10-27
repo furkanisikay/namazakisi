@@ -51,7 +51,7 @@ struct SiradakiVakteKalanDakikaIntent: AppIntent {
               let s = OtomasyonKarari.siradakiVakit(cizelge.vakitler, simdiMs: simdi, dil: dil) else {
             return .result(value: -1, dialog: "\(SiriDili.metin.konumYok)")
         }
-        return .result(value: s.kalanDk, dialog: "\(OtomasyonMetni.kalanDakika(ad: s.ad, dakika: s.kalanDk, dil: dil))")
+        return .result(value: s.kalanDk, dialog: "\(SiriDili.rakam(OtomasyonMetni.kalanDakika(ad: s.ad, dakika: s.kalanDk, dil: dil)))")
     }
 }
 

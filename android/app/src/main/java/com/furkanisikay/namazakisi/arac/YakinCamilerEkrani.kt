@@ -35,6 +35,8 @@ import com.furkanisikay.namazakisi.arayuzDili
 import com.furkanisikay.namazakisi.cekirdek.AracKarari
 import com.furkanisikay.namazakisi.dildeBaglam
 import com.furkanisikay.namazakisi.cekirdek.saatMetni
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 import com.furkanisikay.namazakisi.widget.WidgetVeriDeposu
 import expo.modules.camigeofence.CamiDepo
 import expo.modules.camigeofence.CamiVeriKaynagi
@@ -111,7 +113,8 @@ class YakinCamilerEkrani(carContext: CarContext) : Screen(carContext) {
         val dil = carContext.arayuzDili()
         val baslik = try {
             val a = WidgetVeriDeposu.anlik(carContext, simdi)
-            AracKarari.baslik(a.durum, a.kildim, simdi, { saatMetni(it) }, dil)
+            // Başlıktaki saat seçilen rakamla (mesafeyi `DistanceSpan` ile araç sistemi çizer).
+            AracKarari.baslik(a.durum, a.kildim, simdi, { saatMetni(it) }, dil).rakamla(carContext.rakamSifiri())
         } catch (e: Exception) {
             Log.w(TAG, "vakit okunamadi", e)
             AracKarari.VARSAYILAN_BASLIK
