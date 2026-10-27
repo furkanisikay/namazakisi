@@ -1,40 +1,49 @@
-// ÇEVİRİ: hi — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Nafile: चाश्त (इशराक़ ilk vakti) · अव्वाबीन · तहज्जुद. Çağrı "आप" + saygı emri ("उठें"). */
 export const nafile: Sozluk['nafile'] = {
-  adlar: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
-  kucuk: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
+  adlar: { kusluk: 'चाश्त', evvabin: 'अव्वाबीन', teheccud: 'तहज्जुद' },
+  kucuk: { kusluk: 'चाश्त', evvabin: 'अव्वाबीन', teheccud: 'तहज्जुद' },
   aciklamalar: {
     kusluk:
-      'Starts about 45 minutes after sunrise and lasts until 10 minutes before Dhuhr. Ishraq is its earliest time; the most virtuous is after the first quarter of the day has passed.',
-    evvabin: 'Prayed after Maghrib, until Isha time.',
-    teheccud: 'Prayed after sleeping and waking following Isha, until Fajr time. Its most virtuous time is the last third of the night.',
+      'सूर्योदय के लगभग 45 मिनट बाद शुरू होती है और ज़ुहर से 10 मिनट पहले तक रहती है। इशराक़ इसका पहला वक़्त है; अफ़ज़ल वक़्त दिन का पहला चौथाई हिस्सा गुज़रने के बाद है।',
+    evvabin: 'मग़रिब की नमाज़ के बाद, इशा के वक़्त तक पढ़ी जाती है।',
+    teheccud: 'इशा के बाद सोकर उठने पर, फ़ज्र के वक़्त तक पढ़ी जाती है। इसका अफ़ज़ल वक़्त रात का आख़िरी तिहाई हिस्सा है।',
   },
-  bilgiBugun: '{aciklama}\n\nToday: {bas} – {son}',
-  enFaziletli: ' · most virtuous after {saat}',
-  sonUcteBir: ' · last third {saat}',
-  durumAktif: 'Time has begun · ends {saat}',
-  durumNafile: 'Nafl · {bas}–{son}',
+  bilgiBugun: '{aciklama}\n\nआज: {bas} – {son}',
+  enFaziletli: ' · अफ़ज़ल वक़्त {saat} के बाद',
+  sonUcteBir: ' · आख़िरी तिहाई {saat}',
+  durumAktif: 'वक़्त हो गया · ख़त्म {saat}',
+  durumNafile: 'नफ़्ल · {bas}–{son}',
   bildirim: {
-    kuslukBaslik: 'Duha time',
-    kuslukSuruyor: 'Duha time is on; you can pray until {son}.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats; it lasts until {son}.',
+    kuslukBaslik: 'चाश्त का वक़्त',
+    kuslukSuruyor: 'चाश्त का वक़्त जारी है; {son} तक पढ़ी जा सकती है।',
+    kuslukGirdi: 'चाश्त का वक़्त हो गया। दो रकअत के लिए अच्छा मौक़ा है; वक़्त {son} तक है।',
     kuslukBitiyor: cogul({
-      one: '{n} minute left in Duha time. A good moment for two rakats; it lasts until {son}.',
-      other: '{n} minutes left in Duha time. A good moment for two rakats; it lasts until {son}.',
+      one: 'चाश्त का वक़्त ख़त्म होने में {n} मिनट बाक़ी है। दो रकअत के लिए अच्छा मौक़ा है; वक़्त {son} तक है।',
+      other: 'चाश्त का वक़्त ख़त्म होने में {n} मिनट बाक़ी हैं। दो रकअत के लिए अच्छा मौक़ा है; वक़्त {son} तक है।',
     }),
-    evvabinBaslik: 'Awwabin',
-    evvabinSuruyor: 'There is still time for Awwabin. Isha begins at {son}.',
-    evvabinGirdi: 'After Maghrib, a good moment for Awwabin. Isha begins at {son}.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin. Isha begins at {son}.', other: '{n} minutes left for Awwabin. Isha begins at {son}.' }),
-    teheccudBaslik: 'Tahajjud time',
-    uyandirSonUcte: 'Get up; the last third of the night has begun. Fajr begins at {son}.',
-    uyandirKalan: cogul({ one: 'Get up; {n} minute left until Fajr. Fajr begins at {son}.', other: 'Get up; {n} minutes left until Fajr. Fajr begins at {son}.' }),
-    sonUcteBaslik: 'The last third of the night',
-    sonUcteGovde: 'The most blessed hours for Tahajjud. Fajr begins at {son}.',
-    teheccudKalan: cogul({ one: '{n} minute left until Fajr. A good time for Tahajjud.', other: '{n} minutes left until Fajr. A good time for Tahajjud.' }),
+    evvabinBaslik: 'अव्वाबीन',
+    evvabinSuruyor: 'अव्वाबीन का वक़्त अभी बाक़ी है। इशा का वक़्त {son}।',
+    evvabinGirdi: 'मग़रिब के बाद अव्वाबीन के लिए अच्छा मौक़ा है। इशा का वक़्त {son}।',
+    evvabinKalan: cogul({
+      one: 'अव्वाबीन के लिए {n} मिनट बाक़ी है। इशा का वक़्त {son}।',
+      other: 'अव्वाबीन के लिए {n} मिनट बाक़ी हैं। इशा का वक़्त {son}।',
+    }),
+    teheccudBaslik: 'तहज्जुद का वक़्त',
+    uyandirSonUcte: 'उठें; रात का आख़िरी तिहाई हिस्सा शुरू हो गया। फ़ज्र का वक़्त {son}।',
+    uyandirKalan: cogul({
+      one: 'उठें; फ़ज्र में {n} मिनट बाक़ी है। फ़ज्र का वक़्त {son}।',
+      other: 'उठें; फ़ज्र में {n} मिनट बाक़ी हैं। फ़ज्र का वक़्त {son}।',
+    }),
+    sonUcteBaslik: 'रात का आख़िरी तिहाई हिस्सा',
+    sonUcteGovde: 'तहज्जुद के लिए सबसे बाबरकत घड़ियां। फ़ज्र का वक़्त {son}।',
+    teheccudKalan: cogul({
+      one: 'फ़ज्र में {n} मिनट बाक़ी है। तहज्जुद के लिए अच्छा वक़्त है।',
+      other: 'फ़ज्र में {n} मिनट बाक़ी हैं। तहज्जुद के लिए अच्छा वक़्त है।',
+    }),
   },
-  uyandirmaKanali: 'Tahajjud wake-up',
-  uyandirmaKanaliAciklama: 'Wakes you for the night prayer; rings even in silent mode',
+  uyandirmaKanali: 'तहज्जुद के लिए जगाना',
+  uyandirmaKanaliAciklama: 'रात की नमाज़ के लिए जगाता है; साइलेंट मोड में भी बजता है',
 };

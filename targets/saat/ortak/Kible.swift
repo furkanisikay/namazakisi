@@ -326,17 +326,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: hi
+    // hi — Hintçe (beta): JS `sozluk/hi/kible.ts > yon`, mesafe `cami.kmIcinde` ("किलोमीटर")
     public static let hi = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "पीछे",
+        saga: "दाएं {derece}°",
+        sola: "बाएं {derece}°",
+        hizali: "आप क़िबला रुख़ हैं",
+        arkadaErisim: "क़िबला आपके पीछे है",
+        sagdaErisim: "क़िबला आपकी दाईं तरफ़ {derece} डिग्री पर है",
+        soldaErisim: "क़िबला आपकी बाईं तरफ़ {derece} डिग्री पर है",
+        kabede: "आप काबा के पास हैं",
+        mesafe: "{km} किलोमीटर",
         binlikAyirici: ","
     )
 

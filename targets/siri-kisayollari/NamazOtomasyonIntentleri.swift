@@ -220,11 +220,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: hi
+    // hi
     static let hi = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} का वक़्त {n} मिनट में शुरू होगा।", "other": "{ad} का वक़्त {n} मिनट में शुरू होगा।"],
+        evetKilindi: "हाँ, इस पर \"पढ़ ली गई\" का निशान लगा है।",
+        hayirKilinmadi: "नहीं, अभी निशान नहीं लगा।"
     )
 
     // ÇEVİRİ: bn

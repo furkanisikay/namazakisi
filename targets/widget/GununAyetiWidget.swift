@@ -230,18 +230,19 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: hi
+    // hi — Hintçe (beta): JS `sozluk/hi/gununAyeti.ts`. `gununAyetiHavuzu.ts`'te 94:6 için Hintçe
+    // (hindi_omari) meal YOK → `ornekMeal` ve `ornekMealKaynagi` boş (uydurma çeviri yok), yalnız Arapça.
     static let hi = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "आज की आयत",
+        galeriAciklama: "एक आयत और उसका तर्जुमा, जो हर दिन फ़ज्र के वक़्त बदलता है।",
+        etiket: "आज की आयत",
+        uygulamayiAcin: "आज की आयत देखने के लिए ऐप खोलें",
+        ornekSigmiyor: "आज की आयत इस साइज़ में नहीं समाती। पढ़ने के लिए टैप करें।",
+        ornekAcin: "खोलें",
+        ornekArapcaKaynagi: "अरबी: Tanzil",
+        ornekMeal: "",
+        ornekKisaKunye: "क़ुरआन 94:6",
+        ornekMealKaynagi: ""
     )
 
     // ÇEVİRİ: bn

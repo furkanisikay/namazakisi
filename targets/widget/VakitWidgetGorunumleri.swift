@@ -381,29 +381,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: hi
+    // hi — Hintçe (beta): JS `sozluk/hi` (Kıldım "नमाज़ पढ़ ली", Kılındı "पढ़ ली गई")
     static let hi = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "नमाज़ का वक़्त",
+        galeriAciklama: "मौजूदा नमाज़ का वक़्त, उसके ख़त्म होने में बाक़ी समय और आज की नमाज़ों के वक़्त।",
+        veriEski: "नमाज़ के वक़्त अपडेट करने के लिए ऐप खोलें",
+        konumYok: "अपनी लोकेशन चुनने के लिए ऐप खोलें",
+        kilindiSiradaki: "{ad} पढ़ ली गई · {sonraki} {saat}",
+        adCikis: "{ad} · ख़त्म {saat}",
+        siradakiAdSaat: "अगली {ad} {saat}",
+        vaktiCikisErisim: "{ad} का वक़्त, ख़त्म {saat}",
+        siradakiErisim: "अगली नमाज़ {ad}, {saat}",
+        cikisSaat: "ख़त्म {saat}",
+        bitisSaat: "ख़त्म {saat}",
+        kilindiBaslik: "{ad} पढ़ ली गई",
+        siradaki: "अगली",
+        siradakiAd: "अगली {ad}",
+        kildimErisim: "{ad} की नमाज़ पढ़ ली",
+        gunSatiriKilindi: ", पढ़ ली गई",
+        bitti: "ख़त्म",
+        vakitCikti: "नमाज़ का वक़्त ख़त्म हो गया",
+        kabulAlt: "{ad} की नमाज़ पढ़ ली गई",
+        kontrolAdi: "नमाज़ पढ़ ली",
+        kontrolAciklama: "मौजूदा नमाज़ पर \"पढ़ ली गई\" का निशान लगाता है।"
     )
 
     // ÇEVİRİ: bn
