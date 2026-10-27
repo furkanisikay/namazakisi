@@ -47,6 +47,11 @@ Katmanlar: `src/core/dil/` (saf: `tipler`, `cogul`, `bicim`, `diller`, `aktifDil
 
 ## Sıradaki diller (W4)
 Araştırma ve kaynaklar: `docs/superpowers/specs/2026-10-24-dil-onceligi-arastirmasi.md` (öncelik, ülke/otorite, yerleşik vakit adları, QuranEnc anahtarları, çoğul, hitap, kullanıcı şikâyetleri). Sahip kararları (2026-10-24): Azerbaycan'da Sünnî varsayılan, QMİ (Caferî) takvimi yalnız öneri; Arapça arayüzde ayet yalnız Kur'an metni (Tanzil, künyeli), meal/tefsir yok. Meal kaynakları ve sürüm okuma: [gunun-ayeti](gunun-ayeti.md) > Meal kaynakları.
+- **Dalga sırası (sahip kararı 2026-10-27):** 5 es nl sq hi bn → 6 sağdan sola fa ps ckb ug → 7 Orta Asya az uz kk ky tg → 8 Afrika sw ha am om so (+ff yo) → 9 zh ta ml th ko vi → 10 pt it sv uk ro hr sr el → 11 kmr tk tt sd pl ja gu bg mk.
+- **Kürtçe Soranî (`ckb`) ve Kurmancî (`kmr`) AYRI dillerdir** (yazı ve kitle farklı). **Farsça tek `fa`dır;** Afganistan için ülke vakit takımı, meal `persian_ih`.
+- **Alfabe ülkeye göre varsayılan, kullanıcı değiştirebilir:** Özbekçe Latin varsayılan (Kiril seçilebilir), Kazakça Kiril varsayılan (Latin seçilebilir). QuranEnc mealleri yalnız Kiril.
+- **Farsça ve Peştuca Fars rakamıyla (۰-۹, `arabext`) başlar,** Batı rakamına geçilebilir (Arapçadaki gibi).
+- **Mealin başındaki/sonundaki ayet numarası SİLİNİR** (Urduca dipnot kararının genişlemesi): üreticideki silme kümesine ekle, eleme ve silme `\p{Nd}` ile.
 
 ## Vakit adı takımları (dil içi seçenek)
 - **Bir dilde birden çok yerleşik adlandırma varsa alternatifler `core/dil/vakitTakimlari.ts`'te; sözlüğün `vakit.*` adları o dilin TEMEL takımıdır.** Çözüm: kullanıcının açık seçimi (`DIL_AYARI.vakitTakimi[dil]`, dil başına) → ülke varsayılanı (`ULKE_VARSAYILANLARI`, konum kaydının ülkesi) → temel. Bilinmeyen kimlik yok sayılır. Takım YALNIZ adlandırma alanlarını geçersiz kılar (`TAKIM_ALANLARI`); nöbetçi `vakitTakimlari.test.ts`.
