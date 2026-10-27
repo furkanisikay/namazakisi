@@ -216,18 +216,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 2.0.10"
     )
 
-    // ÇEVİRİ: sq
+    // sq — JS `sozluk/sq/gununAyeti.ts`; örnek meal `gununAyetiHavuzu.ts` 94:6 (albanian_nahi 1.1.0) birebir
     static let sq = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Ajeti i ditës",
+        galeriAciklama: "Një ajet me përkthimin e tij, që ndryshon çdo ditë në sabah.",
+        etiket: "AJETI I DITËS",
+        uygulamayiAcin: "Hapni aplikacionin për të parë ajetin e ditës",
+        ornekSigmiyor: "Ajeti i sotëm nuk nxë në këtë madhësi. Prekni për ta lexuar.",
+        ornekAcin: "Hapni",
+        ornekArapcaKaynagi: "Arabisht: Tanzil",
+        ornekMeal: "Me të vërtetë, pas vështirësisë - vjen lehtësimi!",
+        ornekKisaKunye: "Kur'ani 94:6",
+        ornekMealKaynagi: "Hassan Nahi, QuranEnc 1.1.0"
     )
 
     // hi — Hintçe (beta): JS `sozluk/hi/gununAyeti.ts`. `gununAyetiHavuzu.ts`'te 94:6 için Hintçe

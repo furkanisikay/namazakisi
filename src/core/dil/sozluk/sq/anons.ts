@@ -1,63 +1,66 @@
-// ÇEVİRİ: sq — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
-/** İbadete çağrı kaydı: doğrudan, kısa; "prostrate" yok. Sıra Türkçe şablonlarla BİREBİR eşleşir. */
+/**
+ * İbadete çağrı kaydı: "ju" + kısa çoğul emir; secde karşılığı yok ("ngrihuni për namaz").
+ * Vakit adı yalın hâlde kalır (iki nokta ya da "deri te" + yalın). Dakika her yerde
+ * "{süre} minuta" (`dakikaUyumu` 1 için "minutë"ye çeker). Sıra Türkçe şablonlarla BİREBİR eşleşir.
+ */
 export const anons: Sozluk['anons'] = {
-  yon: { cikisaDogru: 'left', girisindenItibaren: 'passed' },
-  cip: { vakit: 'Prayer name', sure: 'Minutes', yon: 'left / passed', cuma: "Jumu'ah", yatsi: 'Isha' },
+  yon: { cikisaDogru: 'kanë mbetur', girisindenItibaren: 'kanë kaluar' },
+  cip: { vakit: 'Emri i vaktit', sure: 'Minuta', yon: 'kanë mbetur / kanë kaluar', cuma: 'Xhumaja', yatsi: 'Jacia' },
   sablon: {
     muhafizCikis: [
-      '{vakit} time is ending, {süre} minutes left.',
-      "Don't miss {vakit}, {süre} minutes left.",
-      'Time is running short, {süre} minutes until {vakit} ends.',
+      '{vakit}: koha po del, edhe {süre} minuta.',
+      '{vakit}: mos e humbni, kanë mbetur {süre} minuta.',
+      'Koha po ngushtohet, edhe {süre} minuta derisa të dalë {vakit}.',
     ],
     muhafizGiris: [
-      '{vakit} time has begun, {süre} minutes have passed.',
-      "Don't delay {vakit}, {süre} minutes have passed.",
-      'Time is moving on, stand for {vakit}, it has been {süre} minutes.',
+      '{vakit}: ka hyrë koha, kanë kaluar {süre} minuta.',
+      '{vakit}: mos e vononi, kanë kaluar {süre} minuta.',
+      'Koha po ecën, ngrihuni për namaz: {vakit}, kanë kaluar {süre} minuta.',
     ],
     nafile: [
-      '{vakit} time, {süre} minutes {yön}. A good moment for two rakats.',
-      '{vakit} time is on. A good chance to pray two rakats.',
-      '{süre} minutes {yön} for {vakit}.',
+      '{vakit}: {yön} {süre} minuta. Moment i mirë për dy rekate.',
+      '{vakit}: koha vazhdon. Rast i mirë për të falur dy rekate.',
+      '{vakit}: {yön} {süre} minuta.',
     ],
     cuma: [
-      "{süre} minutes left until Jumu'ah. Get ready and head to the mosque.",
-      "Jumu'ah is approaching, {süre} minutes left.",
-      "Catch the khutbah, {süre} minutes left until Jumu'ah.",
+      'Edhe {süre} minuta deri te xhumaja. Përgatituni dhe nisuni për në xhami.',
+      'Xhumaja po afron, kanë mbetur {süre} minuta.',
+      'Arrini hutben, edhe {süre} minuta deri te xhumaja.',
     ],
     camiyeGit: [
-      '{süre} minutes left until {vakit}. Head to the mosque.',
-      'Time to go to the mosque, {süre} minutes until {vakit}.',
-      'Head to the mosque for {vakit}.',
+      'Edhe {süre} minuta deri te {vakit}. Nisuni për në xhami.',
+      'Është koha të shkoni në xhami, edhe {süre} minuta deri te {vakit}.',
+      '{vakit}: nisuni për në xhami.',
     ],
-    yatis: ['Pray Isha before you go to bed.', 'Isha time is still on, stand for prayer before you sleep.', "Don't sleep before you pray Isha."],
+    yatis: ['Falni jacinë para se të flini.', 'Koha e jacisë vazhdon, ngrihuni për namaz para se të flini.', 'Mos flini pa e falur jacinë.'],
     takvim: [
-      'An event in your calendar falls during {vakit} time.',
-      "{vakit} time clashes with an event; don't forget to pray first.",
-      "In {süre} minutes {vakit} time clashes with your event; don't forget your prayer.",
+      'Një ngjarje në kalendarin tuaj bie në kohën e namazit: {vakit}.',
+      '{vakit}: koha përputhet me një ngjarje; mos harroni ta falni më parë.',
+      'Pas {süre} minuta, {vakit} përputhet me ngjarjen tuaj; mos e harroni namazin.',
     ],
   },
   otomatik: {
-    cuma: "{sure} until Dhuhr for Jumu'ah. Get ready and head to the mosque.",
-    camiyeGiris: '{sure} until {vakit}.',
-    camiyeHazirlan: 'Get ready and head to the mosque.',
-    camiyeYola: 'Head to the mosque.',
-    takvimGiris: 'An event in your calendar falls during {vakit} time.',
-    takvimOnce: "Don't forget to pray before the event.",
-    takvimKaplar: "Don't forget to take a break and pray.",
-    yatsi: 'Pray Isha before you go to bed.',
-    muhasebeTek: '{vakit} looks unmarked today.',
-    muhasebeCoklu: cogul({ one: '{n} prayer looks unmarked today.', other: '{n} prayers look unmarked today.' }),
-    geceCapasi: 'Quiet hours start in {süre} minutes. Pray {vakit} before you go to bed.',
-    kuslukSuruyor: 'Duha time is on.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats.',
-    kuslukBitiyor: cogul({ one: '{n} minute left in Duha time.', other: '{n} minutes left in Duha time.' }),
-    evvabinSuruyor: 'There is still time for Awwabin.',
-    evvabinGirdi: 'Awwabin time. A good moment for two rakats.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin.', other: '{n} minutes left for Awwabin.' }),
-    teheccudSonUcte: 'Tahajjud time. The last third of the night has begun.',
-    teheccudKalan: cogul({ one: 'Tahajjud time. {n} minute left until Fajr.', other: 'Tahajjud time. {n} minutes left until Fajr.' }),
+    cuma: 'Edhe {sure} deri te dreka e xhumasë. Përgatituni dhe nisuni për në xhami.',
+    camiyeGiris: 'Edhe {sure} deri te {vakit}.',
+    camiyeHazirlan: 'Përgatituni dhe nisuni për në xhami.',
+    camiyeYola: 'Nisuni për në xhami.',
+    takvimGiris: 'Një ngjarje në kalendarin tuaj bie në kohën e namazit: {vakit}.',
+    takvimOnce: 'Mos harroni ta falni para ngjarjes.',
+    takvimKaplar: 'Mos harroni të bëni një pushim dhe ta falni.',
+    yatsi: 'Falni jacinë para se të flini.',
+    muhasebeTek: '{vakit}: sot duket pa shënim.',
+    muhasebeCoklu: cogul({ one: 'Sot {n} namaz duket pa shënim.', other: 'Sot {n} namaze duken pa shënim.' }),
+    geceCapasi: 'Edhe {süre} minuta deri në orët e qetësisë. {vakit}: falni para se të flini.',
+    kuslukSuruyor: 'Koha e duhasë vazhdon.',
+    kuslukGirdi: 'Hyri koha e duhasë. Moment i mirë për dy rekate.',
+    kuslukBitiyor: cogul({ one: 'Edhe {n} minutë deri në fund të kohës së duhasë.', other: 'Edhe {n} minuta deri në fund të kohës së duhasë.' }),
+    evvabinSuruyor: 'Koha për evvabin vazhdon.',
+    evvabinGirdi: 'Koha e evvabinit. Moment i mirë për dy rekate.',
+    evvabinKalan: cogul({ one: 'Edhe {n} minutë për evvabin.', other: 'Edhe {n} minuta për evvabin.' }),
+    teheccudSonUcte: 'Koha e tehexhudit. Hyri e treta e fundit e natës.',
+    teheccudKalan: cogul({ one: 'Koha e tehexhudit. Edhe {n} minutë deri te sabahu.', other: 'Koha e tehexhudit. Edhe {n} minuta deri te sabahu.' }),
   },
 };

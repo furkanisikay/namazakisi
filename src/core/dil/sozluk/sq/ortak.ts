@@ -1,15 +1,14 @@
-// ÇEVİRİ: sq — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Vazhdoni',
+  vazgecin: 'Anuloni',
+  kapatin: 'Mbyllni',
+  ayarlariAcin: 'Hapni cilësimet',
+  simdilikGecin: 'Kapërceni për tani',
+  tekrarDeneyin: 'Provoni sërish',
+  evet: 'Po',
+  hayir: 'Jo',
+  ayrintilariAcar: 'Hap detajet',
   marka: 'Namaz Akışı',
 };

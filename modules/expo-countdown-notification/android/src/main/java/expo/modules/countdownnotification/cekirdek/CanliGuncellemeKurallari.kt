@@ -63,8 +63,8 @@ object CanliGuncellemeKurallari {
         "es" to ("h" to "min"),
         // nl
         "nl" to ("u" to "min"),
-        // ÇEVİRİ: sq
-        "sq" to ("h" to "min"),
+        // sq
+        "sq" to ("orë" to "min"),
         // hi
         "hi" to ("घंटे" to "मिनट"),
         // bn

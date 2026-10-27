@@ -1,10 +1,10 @@
-// ÇEVİRİ: sq — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Fjala kyçe (`vakitGirdiEki`) duhet të gjendet brenda titullit (`vakitGirdiBasligi`). */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'ka hyrë koha',
+  vakitGirdiBasligi: '{ad}: ka hyrë koha',
+  herhangiVakit: 'Kur hyn koha e çdo namazi',
+  yalnizVakit: 'Vetëm kur hyn koha: {ad}',
+  camide: 'Kur zbulohet se jeni në xhami (me "Në xhami" aktiv)',
 };

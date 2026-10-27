@@ -120,8 +120,8 @@ enum NamazAlarmCekirdegi {
         "es": "Detener",
         // nl
         "nl": "Stoppen",
-        // ÇEVİRİ: sq
-        "sq": "Stop",
+        // sq
+        "sq": "Ndalo",
         // hi
         "hi": "रोकें",
         // bn

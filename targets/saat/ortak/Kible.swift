@@ -312,18 +312,18 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: "."
     )
 
-    // ÇEVİRİ: sq
+    // sq — JS `sozluk/sq/kible.ts`; binlik ayırıcı bölünmez boşluk (JS `aktifDil.ts > BINLIK`)
     public static let sq = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Pas jush",
+        saga: "Djathtas {derece}°",
+        sola: "Majtas {derece}°",
+        hizali: "Jeni drejt kibles",
+        arkadaErisim: "Kibla është pas jush",
+        sagdaErisim: "Kibla është {derece} gradë në të djathtën tuaj",
+        soldaErisim: "Kibla është {derece} gradë në të majtën tuaj",
+        kabede: "Jeni te Qabeja",
         mesafe: "{km} km",
-        binlikAyirici: ","
+        binlikAyirici: "\u{00A0}"
     )
 
     // hi — Hintçe (beta): JS `sozluk/hi/kible.ts > yon`, mesafe `cami.kmIcinde` ("किलोमीटर")
