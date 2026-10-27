@@ -114,14 +114,15 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
     }
   },
   "es": {
-    "anahtar": "spanish_montada_latin",
-    "surum": "1.0.1",
-    "baslik": "Spanish Translation (Latin American) - issued by Noor International",
+    "anahtar": "spanish_garcia",
+    "surum": "1.0.2",
+    "baslik": "Spanish Translation - Isa Garcia",
     "ayetler": {
-      "2:153": "¡Oh, creyentes!, busquen ayuda en la paciencia y en el salat. En verdad, Al-lah está con los pacientes.",
-      "4:103": "Y, una vez finalizado el salat, glorifiquen a Al-lah de pie, sentados o recostados. Pero, cuando estén a salvo, recen a Al-lah (como Él les ha ordenado, con devoción y recogimiento y respetando todas las obligaciones). En verdad, los rezos han sido prescritos a unas horas determinadas.",
-      "29:45": "Recita (¡oh, Muhammad!) lo que te ha sido revelado del Libro (el Corán; obra según él y transmítelo a los demás) y realiza el salat. En verdad, (la práctica constante) del salat evita (que el hombre caiga en) la inmoralidad y en las malas acciones. Y glorificar a Al-lah (dentro y fuera del salat) es más importante (que el resto de las buenas acciones). Y Al-lah sabe lo que hacen.",
-      "62:9": "¡Oh, creyentes!, cuando se efectúe la llamada del rezo en congregación del viernes (salatul yumu’ah), apresúrense a glorificar a Al-lah y dejen sus negocios. Esto es mejor para ustedes; ¡si supieran!"
+      "2:153": "¡Oh, creyentes! Busquen ayuda en la paciencia y la oración; que Dios está con los pacientes.",
+      "2:238": "Cumplan con la oración prescrita, especialmente la oración de la tarde, y preséntense ante Dios con total devoción.",
+      "4:103": "Cuando hayan terminado la oración recuerden a Dios de pie, sentados o recostados. Y cuando estén fuera de peligro hagan la oración [normalmente]. La oración ha sido prescrita a los creyentes para ser realizada en horarios específicos.",
+      "11:114": "Observa las oraciones prescritas en los dos extremos del día y durante la noche, pues las obras buenas borran las obras malas. Esto es una exhortación para quienes reflexionan.",
+      "62:9": "¡Creyentes! Cuando sea realizado el llamado a la oración del día viernes, acudan al recuerdo de Dios y abandonen el comercio, es lo mejor para ustedes. ¡Si supieran!"
     }
   },
   "nl": {

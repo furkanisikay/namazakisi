@@ -37,7 +37,7 @@ const MEALLER = {
   ru: 'russian_rwwad',
   ms: 'malay_basumayyah',
   ur: 'urdu_junagarhi',
-  es: 'spanish_montada_latin',
+  es: 'spanish_garcia',
   nl: 'dutch_center',
   sq: 'albanian_nahi',
   hi: 'hindi_omari',
@@ -145,8 +145,18 @@ const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn']);
 /** Dipnot numarası, herhangi bir yazının rakamıyla ("[12]", "[১২]", "[१२]"); `\p{Nd}` + `u`. */
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
+/**
+ * Ayet numarası silinen diller (sahip kararı 2026-10-27): mealin HER ayeti baştaki "153. " ya da
+ * sondaki "(153)" numarasını taşır; numara çeviri değil işarettir, silinir (künye ayeti zaten
+ * yazar). Yalnız bu kümede: başka dilde numaralı meal eskisi gibi alınmaz.
+ */
+const AYET_NUMARASI_SILINEN = new Set(['es']);
+const BASTAKI_AYET_NO = /^\s*\p{Nd}+\s*[.)]\s*/u;
+const SONDAKI_AYET_NO = /\s*\(\p{Nd}+\)(\s*[.।]?)\s*$/u;
 function notNumarasiz(dil, metin) {
-  return NOT_NUMARASI_SILINEN.has(dil) ? metin.replace(NOT_NUMARASI, '').trim() : metin;
+  let m = NOT_NUMARASI_SILINEN.has(dil) ? metin.replace(NOT_NUMARASI, '').trim() : metin;
+  if (AYET_NUMARASI_SILINEN.has(dil)) m = m.replace(BASTAKI_AYET_NO, '').replace(SONDAKI_AYET_NO, '$1').trim();
+  return m;
 }
 
 /**

@@ -24,7 +24,7 @@ const MEALLER = {
   ru: 'russian_rwwad',
   ms: 'malay_basumayyah',
   ur: 'urdu_junagarhi',
-  es: 'spanish_montada_latin',
+  es: 'spanish_garcia',
   nl: 'dutch_center',
   sq: 'albanian_nahi',
   hi: 'hindi_omari',
@@ -46,6 +46,8 @@ const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn']);
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
 /** Gömülü numara kalıpları (`gunun-ayeti-uret.js > DIPNOT`, `BASTA_NUMARA`, `SONDA_NUMARA` ile aynı). */
+/** Ayet numarası silinen diller (`gunun-ayeti-uret.js > AYET_NUMARASI_SILINEN` ile AYNI). */
+const AYET_NUMARASI_SILINEN = new Set(['es']);
 const NUMARALI = [/\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u, /^\s*\p{Nd}+\s*[.)]\s/u, /\(\p{Nd}+\)\s*[.।]?\s*$/u];
 
 /** QuranEnc 403 döner: her istekte tarayıcı benzeri User-Agent ŞART. */
@@ -94,6 +96,12 @@ async function main() {
       const { result } = await json(`https://quranenc.com/api/v1/translation/aya/${anahtar}/${sure}/${ayet}`);
       // Urducada ve Bengalcede yalnız "[1]" / "[১]" türü not numarası silinir (gunun-ayeti-uret.js).
       if (NOT_NUMARASI_SILINEN.has(dil)) result.translation = result.translation.replace(NOT_NUMARASI, '').trim();
+      if (AYET_NUMARASI_SILINEN.has(dil)) {
+        result.translation = result.translation
+          .replace(/^\s*\p{Nd}+\s*[.)]\s*/u, '')
+          .replace(/\s*\(\p{Nd}+\)(\s*[.।]?)\s*$/u, '$1')
+          .trim();
+      }
       // Dipnot işaretli ya da başında ayet numarası olan meal metin değiştirilemeyeceği için
       // ALINMAZ: o ayet o dilde gösterilmez (`nassDili.ayetMeali` null döner).
       if (NUMARALI.some((d) => d.test(result.translation))) {
