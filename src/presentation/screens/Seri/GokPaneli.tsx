@@ -89,6 +89,7 @@ import { Parilti } from './Parilti';
 import { BugununNabzi } from './BugununNabzi';
 import { useMetin } from '../../hooks/useMetin';
 import { useRakamCevir } from '../../components/metin/useRakamCevir';
+import { sagdanSolaCiziliyor } from '../../components/common/yon';
 
 export interface GokPaneliProps {
   /** `aylikIzgaraOlustur` çıktısı — 28/35/42 hücre. */
@@ -191,6 +192,8 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
   }, []);
 
   const satirSayisi = Math.max(1, Math.ceil(izgara.length / SUTUN_SAYISI));
+  // Panel soldan sağa çizilir (koordinatlar fiziksel); takvim sırası burada aynalanır.
+  const sagdanSola = sagdanSolaCiziliyor();
 
   const olculer: GokOlculeri = useMemo(
     () => ({
@@ -199,8 +202,9 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
       yatayPay: PANEL_YATAY_PAY,
       ustPay: PANEL_UST_PAY,
       satirAraligi: SATIR_ARALIGI,
+      sagdanSola,
     }),
-    [panelGenislik, satirSayisi]
+    [panelGenislik, satirSayisi, sagdanSola]
   );
 
   const yerlesim = useMemo(() => gokYerlesimi(olculer), [olculer]);
@@ -415,7 +419,8 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
               header payında). Gün harfleri ızgaranın sütun merkezleriyle (satır 0)
               birebir hizalanır (`yerlesim.merkez(i).x`, i=0..6). */}
           <SvgText
-            x={PANEL_YATAY_PAY}
+            x={sagdanSola ? panelGenislik - PANEL_YATAY_PAY : PANEL_YATAY_PAY}
+            textAnchor={sagdanSola ? 'end' : 'start'}
             y={20}
             fontSize={13}
             fontWeight="600"

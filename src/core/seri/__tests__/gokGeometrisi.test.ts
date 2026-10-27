@@ -148,3 +148,26 @@ describe('yolUzunlugu', () => {
     expect(goreceliHata).toBeLessThan(0.01);
   });
 });
+
+describe('sağdan sola takvim', () => {
+  const olculer = { panelGenislik: 360, satirSayisi: 5, yatayPay: 10, ustPay: 8, satirAraligi: 4 };
+
+  it('haftanın ilk günü sağda, son günü solda; satırlar değişmez', () => {
+    const ltr = gokYerlesimi(olculer);
+    const rtl = gokYerlesimi({ ...olculer, sagdanSola: true });
+    expect(rtl.merkez(0).x).toBeCloseTo(ltr.merkez(6).x);
+    expect(rtl.merkez(6).x).toBeCloseTo(ltr.merkez(0).x);
+    expect(rtl.merkez(9).y).toBeCloseTo(ltr.merkez(9).y);
+    expect(rtl.merkez(0).x + ltr.merkez(0).x).toBeCloseTo(olculer.panelGenislik);
+  });
+
+  it('satır sarması yayı iki yönde de uçları satır ucunun dışına çeker (ayna simetrik)', () => {
+    const ltr = gokYerlesimi(olculer);
+    const rtl = gokYerlesimi({ ...olculer, sagdanSola: true });
+    const sayilar = (y: string) => (y.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number);
+    const l = sayilar(bagYolu(ltr.merkez(6), ltr.merkez(7), true, 60, 5));
+    const r = sayilar(bagYolu(rtl.merkez(6), rtl.merkez(7), true, 60, 5));
+    // x değerleri (çift indeksler) aynanın karşılığı, y değerleri aynı.
+    l.forEach((v, i) => (i % 2 === 0 ? expect(r[i]).toBeCloseTo(olculer.panelGenislik - v) : expect(r[i]).toBeCloseTo(v)));
+  });
+});
