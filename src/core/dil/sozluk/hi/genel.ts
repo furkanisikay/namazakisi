@@ -159,7 +159,7 @@ export const genel: Sozluk['genel'] = {
     Cihazlarim: 'मेरे डिवाइस',
     CihazEkle: 'डिवाइस जोड़ें',
     TelevizyonAyarlari: 'टीवी जोड़ें',
-    KildimUygulamalari: '"नमाज़ पढ़ ली" लगाने वाले ऐप',
+    KildimUygulamalari: 'अनुमति वाले ऐप',
     OtomasyonRehberi: 'ऑटोमेशन के साथ इस्तेमाल करें',
     DebugLogs: 'जाँच का रिकॉर्ड',
     TakvimAyarlari: 'नमाज़ के वक़्त कैलेंडर में जोड़ें',

@@ -38,6 +38,7 @@ Katmanlar: `src/core/dil/` (saf: `tipler`, `cogul`, `bicim`, `diller`, `aktifDil
 - **Navigasyon başlıkları:** ekran tanımında `baslik: (e) => e.<Rota>` (`genel.ekranlar`), navigator bileşeni `useMetin()` çağırır; ana-ayrıntı düzeninde başlık tablosu canlı görünüm, varsayılan başlık getter.
 - **Durum metinle karşılaştırılmaz:** özet hook'u metin döndürüyorsa yanında boolean bayrak da döndürür (`useCamideyimOzeti.camiKapali`); "Kapalı" ile eşitlik dil değişince bozulur.
 - **Takvim etkinlik başlığı etkin dildedir** ("Dhuhr prayer"); temizleme süzgeci BÜTÜN dillerdeki başlıkları eşler (`TakvimAyarlari/sabitler.ts > vakitTemizleBasliklari`), yoksa dil değiştiren kullanıcının eski etkinlikleri silinmez.
+- **Sayfa başlığı (`genel.ekranlar.*`) tek satırdır ve kısalmaz, yalnız kesilir:** Android başlık çubuğuna Latin yazıda ~25 karakter sığar. Uzun başlığı açıklama cümlesi yapma; kısa ad ver ("Yetkili uygulamalar"), ayrıntıyı giriş satırı ve sayfa metni taşır. Yeni dilde başlık karelerine bak.
 - **Etkin dili ekranda `useAktifDil()` / `useMetin()` ile oku, `state.dil` ile değil:** paylaşılan bileşenler (sihirbaz, modallar) dil slice'ı olmayan test store'larıyla da çizilir.
 - **Maestro akışlarında metinle değil `testID` ile seç:** dil başına kare turu metin seçicilerini kırar.
 - **Çoğul ELLE yazılmış CLDR kuralıyla** (`cogul.ts`; Hermes'te `Intl.PluralRules`'a güvenilmez). Yeni dil eklerken kuralını yaz; nöbetçi `cogul.test.ts` Node ICU ile 0–1000 karşılaştırır, `aktifDil.test.ts` her çoğul metnin o dilin bütün kategorilerini taşıdığını denetler.

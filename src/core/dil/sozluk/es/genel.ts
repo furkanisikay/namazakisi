@@ -159,7 +159,7 @@ export const genel: Sozluk['genel'] = {
     Cihazlarim: 'Mis dispositivos',
     CihazEkle: 'Añadir un dispositivo',
     TelevizyonAyarlari: 'Añadir un televisor',
-    KildimUygulamalari: 'Aplicaciones que marcan «Ya recé»',
+    KildimUygulamalari: 'Apps autorizadas',
     OtomasyonRehberi: 'Usar con automatizaciones',
     DebugLogs: 'Registros de diagnóstico',
     TakvimAyarlari: 'Añadir las horas al calendario',

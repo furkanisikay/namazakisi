@@ -159,7 +159,7 @@ export const genel: Sozluk['genel'] = {
     Cihazlarim: 'Peranti saya',
     CihazEkle: 'Tambah peranti',
     TelevizyonAyarlari: 'Tambah TV',
-    KildimUygulamalari: 'Aplikasi yang boleh menandakan Sudah solat',
+    KildimUygulamalari: 'Aplikasi dibenarkan',
     OtomasyonRehberi: 'Gunakan dengan automasi',
     DebugLogs: 'Log diagnostik',
     TakvimAyarlari: 'Tambah waktu solat ke kalendar',
