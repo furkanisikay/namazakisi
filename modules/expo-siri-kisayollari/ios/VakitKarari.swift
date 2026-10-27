@@ -640,31 +640,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: hi
+    // hi — Hintçe (beta): JS `sozluk/hi`; Kıldım "नमाज़ पढ़ ली", Kılındı "पढ़ ली गई"
     public static let hi = VakitMetinleri(
         dil: "hi",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "फ़ज्र", "ogle": "ज़ुहर", "ikindi": "अस्र", "aksam": "मग़रिब", "yatsi": "इशा"],
+        gunes: "सूर्योदय",
+        konumYok: "नमाज़ के वक़्त जानने के लिए ऐप खोलें और अपनी लोकेशन चुनें।",
+        veriEski: "नमाज़ के वक़्त पुराने हो गए हैं। अपडेट करने के लिए ऐप एक बार खोलें।",
+        girisBugun: "{saat} पर",
+        girisYarin: "कल {saat} पर",
+        suAnVakti: "अभी {ad} का वक़्त है।",
+        suAnVaktiCikis: "अभी {ad} का वक़्त है; यह {saat} पर ख़त्म होता है।",
+        siradakiNamaz: "अगली नमाज़ {ad} है, {giris}।",
+        isaretlendi: "{ad} की नमाज़ पर \"पढ़ ली गई\" का निशान लग गया। {dua}।",
+        zatenKilindi: "{ad} की नमाज़ पर पहले से \"पढ़ ली गई\" का निशान लगा है।",
+        vakitYok: "अभी निशान लगाने के लिए कोई नमाज़ नहीं है।",
+        vakitYokSiradaki: "अभी निशान लगाने के लिए कोई नमाज़ नहीं है। अगली नमाज़ {ad} है, {giris}।",
+        onay: "{ad} की नमाज़ पर \"पढ़ ली गई\" का निशान लगाएं?",
+        vakitDegisti: "नमाज़ का वक़्त बदल गया, इसलिए निशान नहीं लगाया गया। फिर से कोशिश करें।",
+        kabulDuasi: "अल्लाह क़बूल करे",
+        kildim: "नमाज़ पढ़ ली",
+        kilindi: "पढ़ ली गई",
+        kontrolKildim: "{ad} · नमाज़ पढ़ ली",
+        kontrolKilindi: "{ad} पढ़ ली गई",
+        kontrolVakitYok: "निशान के लिए कोई नमाज़ नहीं",
+        uygulamayiAcin: "ऐप खोलें"
     )
 
     // ÇEVİRİ: bn

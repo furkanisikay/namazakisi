@@ -1,10 +1,10 @@
-// ÇEVİRİ: hi — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Hintçede süre birimi kısaltılmaz (Urduca gibi); kısa biçim de tam sözcüktür. one = 0 ve 1. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: 'घंटे', dk: 'मिनट', sn: 'सेकंड' },
+  saat: cogul({ one: '{n} घंटा', other: '{n} घंटे' }),
+  dakika: cogul({ one: '{n} मिनट', other: '{n} मिनट' }),
+  saniye: cogul({ one: '{n} सेकंड', other: '{n} सेकंड' }),
 };

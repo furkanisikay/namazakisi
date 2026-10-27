@@ -142,12 +142,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} second", "other": "{n} seconds"]
     )
 
-    // ÇEVİRİ: hi
+    // hi — Hintçe (beta): JS `sozluk/hi/sure.ts` birebir (birim kısaltılmaz; one = 0 ve 1)
     public static let hi = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "घंटे", birimDk: "मिनट", birimSn: "सेकंड",
+        saat: ["one": "{n} घंटा", "other": "{n} घंटे"],
+        dakika: ["one": "{n} मिनट", "other": "{n} मिनट"],
+        saniye: ["one": "{n} सेकंड", "other": "{n} सेकंड"]
     )
 
     // ÇEVİRİ: bn

@@ -274,19 +274,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: hi
+    // hi — Hintçe (beta): JS `sozluk/hi`
     static let hi = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "अपना शहर चुनें",
+        ilMerkezi: "नमाज़ के वक़्त प्रांत के मुख्य शहर के अनुसार निकाले जाते हैं। अपना चुनाव बाद में बदला जा सकता है।",
+        ilSecErisim: "{il}, चुनें",
+        kalan: "{ad} तक बाक़ी समय",
+        kalanErisim: "{ad} तक बाक़ी समय: {sure}",
+        konumuDegistirin: "लोकेशन बदलें",
+        kerahatSuruyor: "मकरूह वक़्त: {tur}, ख़त्म {bitis}। {aciklama}",
+        siradakiKerahat: "अगला मकरूह वक़्त: {tur} {bas}–{bit}",
+        cumaBilgisi: "आज जुमा है। जुमा की नमाज़ ज़ुहर के वक़्त में पढ़ी जाती है (शुरू {giris})।",
+        suAnkiEk: ", मौजूदा नमाज़",
+        siradakiEk: ", अगली नमाज़"
     )
 
     // ÇEVİRİ: bn

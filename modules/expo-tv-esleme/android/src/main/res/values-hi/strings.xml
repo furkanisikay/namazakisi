@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: hi — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- TV eşleştirme QR tarayıcısı — Hintçe (beta). -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">टीवी स्क्रीन वाला QR कोड फ़्रेम के अंदर लाएं</string>
+    <string name="tvesleme_qr_vazgec">रद्द करें</string>
+    <string name="tvesleme_qr_vazgec_erisim">स्कैन रद्द करें</string>
+    <string name="tvesleme_qr_yabanci">यह QR कोड Namaz Akışı TV का नहीं है। टीवी पर दिखने वाला कोड स्कैन करें।</string>
+    <string name="tvesleme_qr_okundu">कोड स्कैन हो गया</string>
 </resources>
