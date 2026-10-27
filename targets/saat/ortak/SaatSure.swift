@@ -134,12 +134,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} second", "other": "{n} seconds"]
     )
 
-    // ÇEVİRİ: sq
+    // sq — JS `sozluk/sq/sure.ts` (orë/min/sek; "orë" njëjës = shumës)
     public static let sq = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "orë", birimDk: "min", birimSn: "sek",
+        saat: ["one": "{n} orë", "other": "{n} orë"],
+        dakika: ["one": "{n} minutë", "other": "{n} minuta"],
+        saniye: ["one": "{n} sekondë", "other": "{n} sekonda"]
     )
 
     // ÇEVİRİ: hi

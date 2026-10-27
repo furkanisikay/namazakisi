@@ -213,11 +213,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: sq
+    // sq — Arnavutça (beta): JS `sozluk/sq` (vakit adı yalın hâlde, iki nokta ile)
     static let sq = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad}: hyn pas {n} minute.", "other": "{ad}: hyn pas {n} minutash."],
+        evetKilindi: "Po, është shënuar si i falur.",
+        hayirKilinmadi: "Jo, ende nuk është shënuar."
     )
 
     // ÇEVİRİ: hi

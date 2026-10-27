@@ -1,10 +1,10 @@
-// ÇEVİRİ: sq — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** "orë" njëjës = shumës; "min", "sek" shkurtimet e zakonshme. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: 'orë', dk: 'min', sn: 'sek' },
+  saat: cogul({ one: '{n} orë', other: '{n} orë' }),
+  dakika: cogul({ one: '{n} minutë', other: '{n} minuta' }),
+  saniye: cogul({ one: '{n} sekondë', other: '{n} sekonda' }),
 };

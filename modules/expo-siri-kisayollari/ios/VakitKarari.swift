@@ -613,31 +613,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: sq
+    // sq — Arnavutça (beta): JS `sozluk/sq/genel.ts > kildim.sonuc` (hitap "ju", "E fala" / "U fal")
     public static let sq = VakitMetinleri(
         dil: "sq",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Sabahu", "ogle": "Dreka", "ikindi": "Ikindia", "aksam": "Akshami", "yatsi": "Jacia"],
+        gunes: "Lindja e Diellit",
+        konumYok: "Hapni aplikacionin dhe caktoni vendndodhjen që të llogariten kohët e namazit.",
+        veriEski: "Kohët e namazit janë të vjetruara. Hapni aplikacionin një herë për t’i përditësuar.",
+        girisBugun: "në orën {saat}",
+        girisYarin: "nesër në orën {saat}",
+        suAnVakti: "Tani është koha: {ad}.",
+        suAnVaktiCikis: "Tani është koha: {ad}; del në orën {saat}.",
+        siradakiNamaz: "Namazi i radhës: {ad}, {giris}.",
+        isaretlendi: "{ad}: u shënua si i falur. {dua}.",
+        zatenKilindi: "{ad}: është shënuar tashmë si i falur.",
+        vakitYok: "Tani nuk ka vakt për t’u shënuar.",
+        vakitYokSiradaki: "Tani nuk ka vakt për t’u shënuar. Në vijim: {ad}, {giris}.",
+        onay: "{ad}: ta shënoni si të falur?",
+        vakitDegisti: "Vakti ndryshoi, prandaj nuk u shënua asgjë. Provoni sërish.",
+        kabulDuasi: "Allahu e pranoftë",
+        kildim: "E fala",
+        kilindi: "U fal",
+        kontrolKildim: "{ad} · E fala",
+        kontrolKilindi: "{ad}: u fal",
+        kontrolVakitYok: "Nuk ka vakt për t’u shënuar",
+        uygulamayiAcin: "Hapni aplikacionin"
     )
 
     // ÇEVİRİ: hi

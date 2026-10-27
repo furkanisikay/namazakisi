@@ -259,19 +259,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: sq
+    // sq — Arnavutça (beta): JS `sozluk/sq` (hitap "ju")
     static let sq = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Zgjidhni qytetin tuaj",
+        ilMerkezi: "Kohët e namazit llogariten për qendrën e provincës. Zgjedhjen mund ta ndryshoni më vonë.",
+        ilSecErisim: "{il}, zgjidhni",
+        kalan: "Koha e mbetur deri te: {ad}",
+        kalanErisim: "Koha e mbetur deri te {ad}: {sure}",
+        konumuDegistirin: "Ndryshoni vendndodhjen",
+        kerahatSuruyor: "Koha mekruh: {tur}, mbaron {bitis}. {aciklama}",
+        siradakiKerahat: "Koha mekruh e radhës: {tur} {bas}–{bit}",
+        cumaBilgisi: "Sot është e premte. Namazi i xhumasë falet në kohën e drekës (hyn {giris}).",
+        suAnkiEk: ", vakti aktual",
+        siradakiEk: ", vakti i radhës"
     )
 
     // ÇEVİRİ: hi

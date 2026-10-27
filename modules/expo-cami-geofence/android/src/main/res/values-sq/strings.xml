@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: sq — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="camigeofence_kanal_durum_ad">At the mosque</string>
-    <string name="camigeofence_kanal_durum_aciklama">A quiet notice when you\'re detected at a mosque</string>
-    <string name="camigeofence_kanal_soru_ad">After leaving the mosque</string>
-    <string name="camigeofence_kanal_soru_aciklama">A question so you can mark your prayer after you leave the mosque</string>
+    <string name="camigeofence_kanal_durum_ad">Në xhami</string>
+    <string name="camigeofence_kanal_durum_aciklama">Një njoftim i qetë kur zbulohet se jeni në xhami</string>
+    <string name="camigeofence_kanal_soru_ad">Pas daljes nga xhamia</string>
+    <string name="camigeofence_kanal_soru_aciklama">Një pyetje që ta shënoni namazin pasi të dilni nga xhamia</string>
 
-    <string name="camigeofence_govde_mod_sessiz">Prayer mode is on. Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_mod">Prayer mode is on.</string>
-    <string name="camigeofence_govde_sessiz">Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_normal">Reminders will arrive as usual.</string>
-    <string name="camigeofence_eylem_modu_kapat">Turn off mode</string>
-    <string name="camigeofence_eylem_cami_degil">Not a mosque</string>
+    <string name="camigeofence_govde_mod_sessiz">Modaliteti i namazit është aktiv. Kujtesat do të vijnë në heshtje.</string>
+    <string name="camigeofence_govde_mod">Modaliteti i namazit është aktiv.</string>
+    <string name="camigeofence_govde_sessiz">Kujtesat do të vijnë në heshtje.</string>
+    <string name="camigeofence_govde_normal">Kujtesat do të vijnë si zakonisht.</string>
+    <string name="camigeofence_eylem_modu_kapat">Çaktivizoni modalitetin</string>
+    <string name="camigeofence_eylem_cami_degil">Jo xhami</string>
 
-    <string name="camigeofence_soru_baslik">Are you at the mosque?</string>
-    <string name="camigeofence_soru_govde">You\'re near %1$s. We\'re not sure, so we\'re asking you.</string>
-    <string name="camigeofence_varsayilan_ad">Mosque</string>
-    <string name="camigeofence_eylem_namaz_modunu_ac">Turn on Prayer mode</string>
-    <string name="camigeofence_eylem_evet_camideyim">Yes, I\'m at the mosque</string>
-    <string name="camigeofence_eylem_hayir">No</string>
+    <string name="camigeofence_soru_baslik">A jeni në xhami?</string>
+    <string name="camigeofence_soru_govde">Jeni afër: %1$s. Nuk jemi të sigurt, prandaj ju pyesim.</string>
+    <string name="camigeofence_varsayilan_ad">Xhami</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Aktivizoni Modalitetin e namazit</string>
+    <string name="camigeofence_eylem_evet_camideyim">Po, jam në xhami</string>
+    <string name="camigeofence_eylem_hayir">Jo</string>
 
-    <string name="camigeofence_kildiniz_mi">Have you prayed %1$s?</string>
-    <string name="camigeofence_kildiniz_mi_govde">You can mark it with a single tap.</string>
-    <string name="camigeofence_eylem_kildim">I\'ve prayed</string>
-    <string name="camigeofence_namaz_imsak">Fajr</string>
-    <string name="camigeofence_namaz_ogle">Dhuhr</string>
-    <string name="camigeofence_namaz_ikindi">Asr</string>
-    <string name="camigeofence_namaz_aksam">Maghrib</string>
-    <string name="camigeofence_namaz_yatsi">Isha</string>
-    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+    <string name="camigeofence_kildiniz_mi">%1$s: e falët?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Mund ta shënoni me një prekje.</string>
+    <string name="camigeofence_eylem_kildim">E fala</string>
+    <string name="camigeofence_namaz_imsak">Sabahu</string>
+    <string name="camigeofence_namaz_ogle">Dreka</string>
+    <string name="camigeofence_namaz_ikindi">Ikindia</string>
+    <string name="camigeofence_namaz_aksam">Akshami</string>
+    <string name="camigeofence_namaz_yatsi">Jacia</string>
+    <string name="camigeofence_namaz_cuma">Xhumaja</string>
 
-    <string name="camigeofence_mod_kural_adi">Prayer</string>
-    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı turns it on during the Jumu\'ah sermon, at the mosque or when a prayer time begins</string>
+    <string name="camigeofence_mod_kural_adi">Namaz</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı e aktivizon gjatë hutbes së xhumasë, në xhami ose kur hyn koha e namazit</string>
 </resources>

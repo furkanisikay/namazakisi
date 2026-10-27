@@ -356,29 +356,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: sq
+    // sq — Arnavutça (beta): JS `sozluk/sq` ("E fala" / "U fal", hitap "ju")
     static let sq = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Koha e namazit",
+        galeriAciklama: "Vakti aktual, koha e mbetur derisa të dalë dhe kohët e ditës.",
+        veriEski: "Hapni aplikacionin për të përditësuar kohët",
+        konumYok: "Hapni aplikacionin për të caktuar vendndodhjen",
+        kilindiSiradaki: "{ad}: u fal · {sonraki} {saat}",
+        adCikis: "{ad} · del {saat}",
+        siradakiAdSaat: "Në vijim {ad} {saat}",
+        vaktiCikisErisim: "{ad}, del {saat}",
+        siradakiErisim: "Në vijim: {ad}, {saat}",
+        cikisSaat: "Del {saat}",
+        bitisSaat: "Mbaron {saat}",
+        kilindiBaslik: "{ad}: u fal",
+        siradaki: "Në vijim",
+        siradakiAd: "Në vijim: {ad}",
+        kildimErisim: "{ad}: e fala",
+        gunSatiriKilindi: ", u fal",
+        bitti: "Mbaroi",
+        vakitCikti: "Koha doli",
+        kabulAlt: "{ad}: u fal",
+        kontrolAdi: "E fala",
+        kontrolAciklama: "E shënon vaktin aktual si të falur."
     )
 
     // ÇEVİRİ: hi

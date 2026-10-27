@@ -1,11 +1,10 @@
-// ÇEVİRİ: sq — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Shifrat',
+  aciklama: 'Zgjidhni me cilat shifra shkruhen orët, datat dhe numrat.',
+  otomatik: 'Sipas vendit',
+  otomatikAciklama: 'Përdoren shifrat e zakonshme në vendin ku ndodheni.',
+  dogu: 'Shifrat arabe lindore',
+  bati: 'Shifrat perëndimore',
 };
