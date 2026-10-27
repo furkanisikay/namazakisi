@@ -229,19 +229,19 @@ struct TvArayuzMetinleri {
         siradakiEk: "، اگلی نماز"
     )
 
-    // ÇEVİRİ: es
+    // es — İspanyolca (beta); terimler JS sozluk/es (hitap "usted", cuma "Yumu’a")
     static let es = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Elija su ciudad",
+        ilMerkezi: "Las horas de rezo se calculan para el centro de la provincia. Puede cambiar su elección más tarde.",
+        ilSecErisim: "{il}, elegir",
+        kalan: "Tiempo restante hasta {ad}",
+        kalanErisim: "Tiempo restante hasta {ad}: {sure}",
+        konumuDegistirin: "Cambiar la ubicación",
+        kerahatSuruyor: "Tiempo makruh: {tur}, termina {bitis}. {aciklama}",
+        siradakiKerahat: "Siguiente tiempo makruh: {tur} {bas}–{bit}",
+        cumaBilgisi: "Hoy es viernes. El rezo de Yumu’a se hace a la hora de Dhuhr (comienza {giris}).",
+        suAnkiEk: ", rezo actual",
+        siradakiEk: ", siguiente rezo"
     )
 
     // nl — Felemenkçe (beta): JS `sozluk/nl` (hitap "u")

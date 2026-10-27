@@ -188,18 +188,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Muhammad Junagarhi، QuranEnc 1.1.3"
     )
 
-    // ÇEVİRİ: es
+    // es — İspanyolca (beta); JS sozluk/es/gununAyeti; meal 94:6 gununAyetiHavuzu.ts'ten birebir (Isa Garcia, QuranEnc 1.0.2)
     static let es = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Aleya del día",
+        galeriAciklama: "Una aleya y su traducción, que cambian cada día en Fajr.",
+        etiket: "ALEYA DEL DÍA",
+        uygulamayiAcin: "Abra la aplicación para ver la aleya del día",
+        ornekSigmiyor: "La aleya de hoy no cabe en este tamaño. Toque para leerla.",
+        ornekAcin: "Abrir",
+        ornekArapcaKaynagi: "Árabe: Tanzil",
+        ornekMeal: "Realmente, con toda dificultad viene una facilidad.",
+        ornekKisaKunye: "Corán 94:6",
+        ornekMealKaynagi: "Isa Garcia, QuranEnc 1.0.2"
     )
 
     // nl — meal 94:6 `gununAyetiHavuzu.ts` (dutch_center, Rowwad Translation Center)

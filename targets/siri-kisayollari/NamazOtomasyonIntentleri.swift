@@ -199,11 +199,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "نہیں، ابھی نشان نہیں لگا۔"
     )
 
-    // ÇEVİRİ: es
+    // es — İspanyolca (beta); CLDR es one/other/many (many = milyonlar, "{n} de minutos")
     static let es = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes.", "many": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "Falta {n} minuto para {ad}.", "other": "Faltan {n} minutos para {ad}.", "many": "Faltan {n} de minutos para {ad}."],
+        evetKilindi: "Sí, está marcado como rezado.",
+        hayirKilinmadi: "No, aún no está marcado."
     )
 
     // nl — Felemenkçe (beta): JS `sozluk/nl` (CLDR one/other)

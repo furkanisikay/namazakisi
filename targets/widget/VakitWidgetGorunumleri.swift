@@ -306,29 +306,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "موجودہ نماز پر ادا شدہ کا نشان لگاتا ہے۔"
     )
 
-    // ÇEVİRİ: es
+    // es — İspanyolca (beta); terimler JS sozluk/es (Kıldım "Ya recé", Kılındı "Rezado")
     static let es = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Hora del rezo",
+        galeriAciklama: "La hora del rezo actual, el tiempo que falta para que termine y las horas de rezo de hoy.",
+        veriEski: "Abra la aplicación para actualizar las horas de rezo",
+        konumYok: "Abra la aplicación para establecer su ubicación",
+        kilindiSiradaki: "{ad} rezado · {sonraki} {saat}",
+        adCikis: "{ad} · termina {saat}",
+        siradakiAdSaat: "Siguiente {ad} {saat}",
+        vaktiCikisErisim: "{ad}, termina {saat}",
+        siradakiErisim: "Siguiente {ad}, {saat}",
+        cikisSaat: "Termina {saat}",
+        bitisSaat: "Fin {saat}",
+        kilindiBaslik: "{ad} rezado",
+        siradaki: "Siguiente",
+        siradakiAd: "Siguiente {ad}",
+        kildimErisim: "Ya recé {ad}",
+        gunSatiriKilindi: ", rezado",
+        bitti: "Terminado",
+        vakitCikti: "La hora del rezo terminó",
+        kabulAlt: "{ad} rezado",
+        kontrolAdi: "Ya recé",
+        kontrolAciklama: "Marca como rezado el rezo actual."
     )
 
     // nl — Felemenkçe (beta): JS `sozluk/nl` (hitap "u"; "Kıldım"/"Kılındı" = "Gebeden")

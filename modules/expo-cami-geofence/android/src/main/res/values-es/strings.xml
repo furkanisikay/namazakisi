@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: es — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- es — İspanyolca (beta). Terimler: JS src/core/dil/sozluk/es (Camideyim «En la mezquita», Namaz modu «modo rezo»). -->
 <resources>
-    <string name="camigeofence_kanal_durum_ad">At the mosque</string>
-    <string name="camigeofence_kanal_durum_aciklama">A quiet notice when you\'re detected at a mosque</string>
-    <string name="camigeofence_kanal_soru_ad">After leaving the mosque</string>
-    <string name="camigeofence_kanal_soru_aciklama">A question so you can mark your prayer after you leave the mosque</string>
+    <string name="camigeofence_kanal_durum_ad">En la mezquita</string>
+    <string name="camigeofence_kanal_durum_aciklama">Un aviso discreto cuando se detecta que está en una mezquita</string>
+    <string name="camigeofence_kanal_soru_ad">Al salir de la mezquita</string>
+    <string name="camigeofence_kanal_soru_aciklama">Una pregunta para que pueda marcar su rezo al salir de la mezquita</string>
 
-    <string name="camigeofence_govde_mod_sessiz">Prayer mode is on. Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_mod">Prayer mode is on.</string>
-    <string name="camigeofence_govde_sessiz">Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_normal">Reminders will arrive as usual.</string>
-    <string name="camigeofence_eylem_modu_kapat">Turn off mode</string>
-    <string name="camigeofence_eylem_cami_degil">Not a mosque</string>
+    <string name="camigeofence_govde_mod_sessiz">El modo rezo está activado. Los recordatorios llegarán en silencio.</string>
+    <string name="camigeofence_govde_mod">El modo rezo está activado.</string>
+    <string name="camigeofence_govde_sessiz">Los recordatorios llegarán en silencio.</string>
+    <string name="camigeofence_govde_normal">Los recordatorios llegarán como siempre.</string>
+    <string name="camigeofence_eylem_modu_kapat">Desactivar el modo</string>
+    <string name="camigeofence_eylem_cami_degil">No es una mezquita</string>
 
-    <string name="camigeofence_soru_baslik">Are you at the mosque?</string>
-    <string name="camigeofence_soru_govde">You\'re near %1$s. We\'re not sure, so we\'re asking you.</string>
-    <string name="camigeofence_varsayilan_ad">Mosque</string>
-    <string name="camigeofence_eylem_namaz_modunu_ac">Turn on Prayer mode</string>
-    <string name="camigeofence_eylem_evet_camideyim">Yes, I\'m at the mosque</string>
+    <string name="camigeofence_soru_baslik">¿Está en la mezquita?</string>
+    <string name="camigeofence_soru_govde">Está cerca de %1$s. No estamos seguros, así que se lo preguntamos.</string>
+    <string name="camigeofence_varsayilan_ad">Mezquita</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Activar el modo rezo</string>
+    <string name="camigeofence_eylem_evet_camideyim">Sí, estoy en la mezquita</string>
     <string name="camigeofence_eylem_hayir">No</string>
 
-    <string name="camigeofence_kildiniz_mi">Have you prayed %1$s?</string>
-    <string name="camigeofence_kildiniz_mi_govde">You can mark it with a single tap.</string>
-    <string name="camigeofence_eylem_kildim">I\'ve prayed</string>
+    <string name="camigeofence_kildiniz_mi">¿Ya rezó %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Puede marcarlo con un solo toque.</string>
+    <string name="camigeofence_eylem_kildim">Ya recé</string>
     <string name="camigeofence_namaz_imsak">Fajr</string>
     <string name="camigeofence_namaz_ogle">Dhuhr</string>
     <string name="camigeofence_namaz_ikindi">Asr</string>
     <string name="camigeofence_namaz_aksam">Maghrib</string>
     <string name="camigeofence_namaz_yatsi">Isha</string>
-    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+    <string name="camigeofence_namaz_cuma">Yumu’a</string>
 
-    <string name="camigeofence_mod_kural_adi">Prayer</string>
-    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı turns it on during the Jumu\'ah sermon, at the mosque or when a prayer time begins</string>
+    <string name="camigeofence_mod_kural_adi">Rezo</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı lo activa durante el sermón de Yumu’a, en la mezquita o al comenzar una hora de rezo</string>
 </resources>
