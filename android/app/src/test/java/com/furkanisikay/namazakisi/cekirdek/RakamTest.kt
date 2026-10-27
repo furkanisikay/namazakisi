@@ -24,7 +24,7 @@ class RakamTest {
         assertEquals(Rakam.LATN, Rakam.sistem("ar", "ARAB"))
         assertEquals('0', Rakam.sifir("ar", null))
         // Arapça dışı dilde kayıt yok sayılır (dil değişimiyle yazım yarışı olsa bile).
-        for (dil in listOf("tr", "en", "id", "in", "de", "fr", "bs", "ru", "ms", "ur", "", null)) {
+        for (dil in listOf("tr", "en", "id", "in", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "bn", "", null)) {
             assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "arab"))
             assertEquals("$dil", '0', Rakam.sifir(dil, "arab"))
         }
@@ -36,7 +36,7 @@ class RakamTest {
         assertEquals("ar-u-nu-latn", Rakam.yerelEtiketi("ar", null))
         assertEquals("ar-u-nu-latn", Rakam.yerelEtiketi("ar", "latn"))
         // Diğer diller AYNEN (Endonezce "id" → Android "in" eşlemesi bozulmasın).
-        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur")) {
+        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "bn")) {
             assertEquals(dil, Rakam.yerelEtiketi(dil, "arab"))
         }
     }

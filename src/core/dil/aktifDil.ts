@@ -22,9 +22,14 @@ import { ru } from './sozluk/ru';
 import { ms } from './sozluk/ms';
 import { ar } from './sozluk/ar';
 import { ur } from './sozluk/ur';
+import { es } from './sozluk/es';
+import { nl } from './sozluk/nl';
+import { sq } from './sozluk/sq';
+import { hi } from './sozluk/hi';
+import { bn } from './sozluk/bn';
 import { tr, type Sozluk } from './sozluk/tr';
 
-const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, ru, ms, ar, ur };
+const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn };
 
 let aktif: DilKodu = VARSAYILAN_DIL;
 /** Etkin dilin vakit adı takımı (`null` = sözlüğün kendi adları). Dil değişince sıfırlanır. */
@@ -143,9 +148,10 @@ export function sayili(
   return bicimle(cogulSec(kod, sablon, n), { n, ...degerler });
 }
 
-// Fransızca binlik ayırıcı dar bölünmez boşluk (U+202F), Rusça bölünmez boşluk (U+00A0) — CLDR.
-const BINLIK: Readonly<Record<DilKodu, string>> = { tr: '.', en: ',', id: '.', de: '.', fr: '\u202f', bs: '.', ru: '\u00a0', ms: ',', ar: ',', ur: ',' };
-const ONDALIK: Readonly<Record<DilKodu, string>> = { tr: ',', en: '.', id: ',', de: ',', fr: ',', bs: ',', ru: ',', ms: '.', ar: '.', ur: '.' };
+// Fransızca binlik ayırıcı dar bölünmez boşluk (U+202F), Rusça ve Arnavutça bölünmez boşluk (U+00A0) — CLDR.
+// Hintçe ve Bengalcede CLDR Hint gruplaması (1,23,456) yerine üçlü gruplama bilinçli (tek kural).
+const BINLIK: Readonly<Record<DilKodu, string>> = { tr: '.', en: ',', id: '.', de: '.', fr: '\u202f', bs: '.', ru: '\u00a0', ms: ',', ar: ',', ur: ',', es: '.', nl: '.', sq: '\u00a0', hi: ',', bn: ',' };
+const ONDALIK: Readonly<Record<DilKodu, string>> = { tr: ',', en: '.', id: ',', de: ',', fr: ',', bs: ',', ru: ',', ms: '.', ar: '.', ur: '.', es: ',', nl: ',', sq: ',', hi: '.', bn: '.' };
 
 /**
  * Sayıyı etkin dilin ayırıcılarıyla yazar ("12.450" / "12,450"). `Intl`'e bağlı değil

@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'اللغة · Language',
   aciklama: 'اختيار لغة التطبيق. الإشعارات والقراءة الصوتية تكون بهذه اللغة أيضًا.',
   grup: 'لغة التطبيق',
-  dilAdlari: { tr: 'التركية', en: 'الإنجليزية', id: 'الإندونيسية', de: 'الألمانية', fr: 'الفرنسية', bs: 'البوسنية', ru: 'الروسية', ms: 'الملايوية', ar: 'العربية', ur: 'الأردية' },
+  dilAdlari: { tr: 'التركية', en: 'الإنجليزية', id: 'الإندونيسية', de: 'الألمانية', fr: 'الفرنسية', bs: 'البوسنية', ru: 'الروسية', ms: 'الملايوية', ar: 'العربية', ur: 'الأردية', es: 'Spanish', nl: 'Dutch', sq: 'Albanian', hi: 'Hindi', bn: 'Bengali' },
   cihazDili: 'لغة الجهاز',
   cihazDiliKullaniliyor: 'حاليًا {ad}',
   cihazDiliDesteklenmiyor: 'لغة جهازك غير متاحة بعد؛ تُستخدم التركية.',

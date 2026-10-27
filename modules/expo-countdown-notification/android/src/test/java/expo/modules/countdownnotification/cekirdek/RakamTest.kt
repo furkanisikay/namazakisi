@@ -11,7 +11,7 @@ class RakamTest {
         assertEquals('٠', Rakam.sifir("ar", "arab"))
         assertEquals('0', Rakam.sifir("ar", null))
         assertEquals('0', Rakam.sifir("ar", "latn"))
-        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", null)) {
+        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "bn", null)) {
             assertEquals("$dil", '0', Rakam.sifir(dil, "arab"))
         }
         assertEquals("ar-u-nu-arab", Rakam.yerelEtiketi("ar", "arab"))

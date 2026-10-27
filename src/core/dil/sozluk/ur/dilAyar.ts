@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'زبان · Language',
   aciklama: 'ایپ کی زبان منتخب کریں۔ اطلاعات اور بلند آواز میں پڑھائی بھی اسی زبان میں ہوگی۔',
   grup: 'ایپ کی زبان',
-  dilAdlari: { tr: 'ترکی', en: 'انگریزی', id: 'انڈونیشیائی', de: 'جرمن', fr: 'فرانسیسی', bs: 'بوسنیائی', ru: 'روسی', ms: 'مالے', ar: 'عربی', ur: 'اردو' },
+  dilAdlari: { tr: 'ترکی', en: 'انگریزی', id: 'انڈونیشیائی', de: 'جرمن', fr: 'فرانسیسی', bs: 'بوسنیائی', ru: 'روسی', ms: 'مالے', ar: 'عربی', ur: 'اردو', es: 'Spanish', nl: 'Dutch', sq: 'Albanian', hi: 'Hindi', bn: 'Bengali' },
   cihazDili: 'آلے کی زبان',
   cihazDiliKullaniliyor: 'اس وقت {ad}',
   cihazDiliDesteklenmiyor: 'آپ کے آلے کی زبان ابھی دستیاب نہیں؛ ترکی استعمال ہو رہی ہے۔',

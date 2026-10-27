@@ -4,7 +4,7 @@ import android.content.Context
 import expo.modules.countdownnotification.cekirdek.Rakam
 
 /**
- * Uygulamanın ARAYÜZ dili (dil kodu: "tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur") — JS
+ * Uygulamanın ARAYÜZ dili (dil kodu: "tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn") — JS
  * etkin dil değişince yazar; uygulama modülü (widget, bildirim, alarm) ve diğer yerel
  * modüller aynı tercih dosyasını okur. Sesli okuma dilinden (`AnonsKonusucu`, BCP-47)
  * AYRIDIR: ses motoru başka dile düşebilir. Uygulama hiç açılmadıysa (JS yazmadı) Türkçe.

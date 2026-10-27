@@ -551,7 +551,7 @@ depo.gununAyetiYaz(ayetHam)
 esitMi(depo.gununAyetiJson(), ayetHam, "ayet depo: ham yuk birebir saklanir")
 esitMi(depo.gununAyeti()?.plan.count, 3, "ayet depo: cozulmus yuk")
 
-// MARK: - 11) Native dil tablolari (W4) — on dil, Turkceyle ayni alan + yer tutucu
+// MARK: - 11) Native dil tablolari (W4) — on bes dil, Turkceyle ayni alan + yer tutucu
 
 /// Her `String` alanin (ve `[String: String]` alaninin her anahtarinin) `{...}` kumesi.
 func yerTutucuImzasi(_ deger: Any) -> [String: String] {
@@ -576,7 +576,7 @@ func yerTutucuImzasi(_ deger: Any) -> [String: String] {
     return sonuc
 }
 
-esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur"], "dil: tablo sirasi")
+esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn"], "dil: tablo sirasi")
 esitMi(ArayuzDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")
 esitMi(ArayuzDili.coz("de-DE"), "de", "dil: de-DE → de")
 esitMi(ArayuzDili.coz("ms_MY"), "ms", "dil: ms_MY → ms")
@@ -600,6 +600,11 @@ esitMi([1, 2].map { CogulKurali.kategori("id", $0) }, ["other", "other"], "cogul
 esitMi([0, 1, 2, 3, 10, 11, 99, 100, 102, 103].map { CogulKurali.kategori("ar", $0) },
        ["zero", "one", "two", "few", "few", "many", "many", "other", "other", "few"], "cogul: ar")
 esitMi([0, 1, 2, 5].map { CogulKurali.kategori("ur", $0) }, ["other", "one", "other", "other"], "cogul: ur")
+esitMi([0, 1, 2, 1_000_000, 1_000_001].map { CogulKurali.kategori("es", $0) }, ["other", "one", "other", "many", "other"], "cogul: es")
+esitMi([0, 1, 2].map { CogulKurali.kategori("hi", $0) }, ["one", "one", "other"], "cogul: hi")
+esitMi([0, 1, 2].map { CogulKurali.kategori("bn", $0) }, ["one", "one", "other"], "cogul: bn")
+esitMi([0, 1, 2].map { CogulKurali.kategori("nl", $0) }, ["other", "one", "other"], "cogul: nl")
+esitMi([0, 1, 2].map { CogulKurali.kategori("sq", $0) }, ["other", "one", "other"], "cogul: sq")
 esitMi(CogulKurali.sec(["one": "{n} minute", "other": "{n} minutes"], "ru", 5), "5 minutes", "cogul: eksik kategori other'a duser")
 
 // MARK: - 12) Vakit adi takimi (kullanicinin sectigi adlar) — var / yok / bozuk / kismi
@@ -657,7 +662,7 @@ _ = depo.arayuzDili()
 esitMi(RakamSistemi.etkin(dil: "ar", kayitli: "arab"), "arab", "rakam: ar + arab")
 esitMi(RakamSistemi.etkin(dil: "ar", kayitli: nil), "latn", "rakam: ar + kayit yok → Bati")
 esitMi(RakamSistemi.etkin(dil: "ar", kayitli: "latn"), "latn", "rakam: ar + latn")
-for dil in ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "", "xx"] {
+for dil in ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "bn", "", "xx"] {
     esitMi(RakamSistemi.doguMu(dil: dil, kayitli: "arab"), false, "rakam: \(dil) kaydi yok sayar")
     esitMi(RakamSistemi.yerelAyarKimligi(dil: dil, kayitli: "arab"), nil, "rakam: \(dil) yerel ayara dokunmaz")
 }

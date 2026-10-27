@@ -92,7 +92,7 @@ function tohumVerisi(simdi = new Date()) {
         // Uygulama dili: kurulum tamam görünen tohumda dil göçü Türkçeyi sabitler; İngilizce
         // kanıt turu (`TOHUM_DIL=en`) dili açık seçim olarak yazar.
         dil_ayari: JSON.stringify({ kod: process.env.TOHUM_DIL || 'tr', goc: 1 }),
-        // Kapalı dili (ar/ur) açan kare hattı işareti: kare hattı JS geliştirme modunu kapattığı için
+        // Kapalı dili (es, nl, sq, hi, bn) açan kare hattı işareti: kare hattı JS geliştirme modunu kapattığı için
         // `__DEV__` orada yanlıştır (DilServisi > secilebilirKod).
         '@namaz_akisi/kare_turu': 'true',
         // Tek beyin (#364): tablet/iPad karelerinde "ana telefonunuz mu?" sorusu çıkmasın
