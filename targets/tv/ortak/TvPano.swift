@@ -203,18 +203,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: es
+    // es — İspanyolca (beta): JS `sozluk/es` (vakit, tarih, anaEkran.kerahat); Android `TvDiliEs` ikizi
     public static let es = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Salida del sol", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Yumu’a",
+        aylar: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+        gunler: ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"],
+        tarih: "{gunAdi}, {gun} de {ay} de {yil}",
+        kerahatAdlari: ["suruk": "Salida del sol", "istiva": "Cénit", "gurub": "Puesta del sol"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Es makruh rezar hasta que el sol haya subido bien.",
+            "istiva": "Es makruh rezar cuando el sol está en el cénit.",
+            "gurub": "Es makruh rezar durante la puesta del sol.",
         ]
     )
 

@@ -59,7 +59,7 @@ object CanliGuncellemeKurallari {
         "ar" to ("س" to "د"),
         // ur
         "ur" to ("گھنٹے" to "منٹ"),
-        // ÇEVİRİ: es
+        // es
         "es" to ("h" to "min"),
         // ÇEVİRİ: nl
         "nl" to ("h" to "min"),

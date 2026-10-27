@@ -284,18 +284,18 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: es
+    // es — İspanyolca (beta): JS `sozluk/es/kible.ts > yon` (alquibla); binlik ayırıcı "." (JS `aktifDil.ts > BINLIK`)
     public static let es = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Detrás de usted",
+        saga: "Derecha {derece}°",
+        sola: "Izquierda {derece}°",
+        hizali: "Está frente a la alquibla",
+        arkadaErisim: "La alquibla está detrás de usted",
+        sagdaErisim: "La alquibla está {derece} grados a su derecha",
+        soldaErisim: "La alquibla está {derece} grados a su izquierda",
+        kabede: "Está en la Kaaba",
         mesafe: "{km} km",
-        binlikAyirici: ","
+        binlikAyirici: "."
     )
 
     // ÇEVİRİ: nl

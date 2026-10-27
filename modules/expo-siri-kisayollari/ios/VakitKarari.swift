@@ -559,31 +559,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "ایپ کھولیں"
     )
 
-    // ÇEVİRİ: es
+    // es — İspanyolca (beta); terimler JS sozluk/es (Kıldım "Ya recé", Kılındı "Rezado", hitap "usted")
     public static let es = VakitMetinleri(
         dil: "es",
         adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        gunes: "Salida del sol",
+        konumYok: "Abra la aplicación y establezca su ubicación para poder calcular las horas de rezo.",
+        veriEski: "Las horas de rezo no están actualizadas. Abra la aplicación una vez para actualizarlas.",
+        girisBugun: "a las {saat}",
+        girisYarin: "mañana a las {saat}",
+        suAnVakti: "Ahora es la hora de {ad}.",
+        suAnVaktiCikis: "Ahora es la hora de {ad}; termina a las {saat}.",
+        siradakiNamaz: "El siguiente rezo es {ad}, {giris}.",
+        isaretlendi: "{ad} se marcó como rezado. {dua}.",
+        zatenKilindi: "{ad} ya está marcado como rezado.",
+        vakitYok: "Ahora no hay ningún rezo para marcar.",
+        vakitYokSiradaki: "Ahora no hay ningún rezo para marcar. Siguiente: {ad}, {giris}.",
+        onay: "¿Marcar {ad} como rezado?",
+        vakitDegisti: "La hora del rezo cambió y no se marcó nada. Vuelva a intentarlo.",
+        kabulDuasi: "Que Allah lo acepte",
+        kildim: "Ya recé",
+        kilindi: "Rezado",
+        kontrolKildim: "{ad} · Ya recé",
+        kontrolKilindi: "{ad} rezado",
+        kontrolVakitYok: "No hay rezo para marcar",
+        uygulamayiAcin: "Abra la aplicación"
     )
 
     // ÇEVİRİ: nl

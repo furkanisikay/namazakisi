@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: es — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- es — İspanyolca (beta). Gerçek alarm. "Ya recé" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">Alarma de rezo</string>
+  <string name="alarm_kildim">Ya recé</string>
+  <string name="alarm_kapat">Apagar</string>
+  <string name="alarm_kanal_aciklamasi">Una alarma real que suena en los pasos de recordatorio que elija</string>
 </resources>

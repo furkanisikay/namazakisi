@@ -116,8 +116,8 @@ enum NamazAlarmCekirdegi {
         "ar": "إيقاف",
         // ur
         "ur": "روکیں",
-        // ÇEVİRİ: es
-        "es": "Stop",
+        // es
+        "es": "Detener",
         // ÇEVİRİ: nl
         "nl": "Stop",
         // ÇEVİRİ: sq
