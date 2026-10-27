@@ -32,6 +32,10 @@ import {
     type UyariPlani,
 } from '../../../core/muhafiz/motorAdaptoru';
 import { MUHAFIZ_MAKS_ADIM } from '../../../core/muhafiz/matrisTipleri';
+import { bicim, canli, metin as sozlukMetni } from '../../../core/dil/aktifDil';
+
+/** Pencere metinleri (etkin dilde, okunduğu an). */
+const pm = () => sozlukMetni().hatirlatma.pencere;
 import type { EsikSinirlari } from '../../../core/muhafiz/esikSinirlari';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
@@ -47,6 +51,7 @@ import {
 } from '../../../core/hatirlatma/anonsYerTutucu';
 import {
     VAKIT_ADLARI,
+    VAKIT_ADLARI_KUCUK,
     basligiOlustur,
     bildirimGovdesiOlustur,
     type MuhafizSeviye,
@@ -62,20 +67,8 @@ import {
     NAFILE_VARSAYILAN_TEKRAR_DK,
 } from '../../../core/nafile/nafileTipleri';
 
-/**
- * CUMLE ICINDE gecen kucuk harfli pencere adlari ("… yatsı bugün 6 sa 40 dk").
- *
- * SABIT HARITA — `VAKIT_ADLARI[...].toLowerCase()` YAZMA: 'İkindi'.toLowerCase()
- * JS'te 'i̇kindi' (i + birlesik nokta) uretir. AGENTS.md'deki toUpperCase tuzaginin
- * ikizidir; yalniz `i`/`İ` iceren sozcukleri bozdugu icin testlerden kolayca kacar.
- */
-export const VAKIT_ADLARI_KUCUK: Record<MuhafizVakti, string> = {
-    imsak: 'sabah',
-    ogle: 'öğle',
-    ikindi: 'ikindi',
-    aksam: 'akşam',
-    yatsi: 'yatsı',
-};
+/** Cümle içindeki küçük harfli vakit adları — tek kaynak sözlük (`vakit.kucuk`). */
+export { VAKIT_ADLARI_KUCUK };
 
 export interface AdimBilgisi {
     baslik: string;
@@ -85,22 +78,17 @@ export interface AdimBilgisi {
 
 /** Gorunen adlar spec 8 uyarinca: "Seytanla Mucadele" ekranda "Sert uyari"dir. */
 export const SEVIYE_BILGILERI: Record<SeviyeKademe, AdimBilgisi> = {
-    nazik: { baslik: 'Nazik hatırlatma', ikon: 'bell', renk: '#4CAF50' },
-    uyari: { baslik: 'Uyarı', ikon: 'exclamation-triangle', renk: '#FF9800' },
-    sert: { baslik: 'Sert uyarı', ikon: 'fire-alt', renk: '#F44336' },
-    acil: { baslik: 'Acil', ikon: 'exclamation-circle', renk: '#D32F2F' },
+    nazik: { get baslik() { return pm().seviye.nazik; }, ikon: 'bell', renk: '#4CAF50' },
+    uyari: { get baslik() { return pm().seviye.uyari; }, ikon: 'exclamation-triangle', renk: '#FF9800' },
+    sert: { get baslik() { return pm().seviye.sert; }, ikon: 'fire-alt', renk: '#F44336' },
+    acil: { get baslik() { return pm().seviye.acil; }, ikon: 'exclamation-circle', renk: '#D32F2F' },
 };
 
 /**
  * TON secicinin kisa etiketleri (issue #274). Kademe artik bir SIRA degil,
  * hatirlatmanin TONUdur; liste "N. hatirlatma · Ton" der.
  */
-export const TON_ETIKETLERI: Record<SeviyeKademe, string> = {
-    nazik: 'Nazik',
-    uyari: 'Uyarı',
-    sert: 'Sert',
-    acil: 'Acil',
-};
+export const TON_ETIKETLERI: Readonly<Record<SeviyeKademe, string>> = canli((s) => s.hatirlatma.pencere.ton);
 
 /** Muhafizin dort TONU (renk/ikon) — seviye no 1..4 sirasinda; serit ve onizleme renkleri. */
 export const MUHAFIZ_ADIM_BILGILERI: AdimBilgisi[] = [
@@ -121,10 +109,7 @@ export const MUHAFIZ_ADIM_BILGILERI: AdimBilgisi[] = [
  */
 export type AnaKanal = 'bildirim' | 'sesli';
 
-export const BILDIRIM_ETIKETI = 'Bildirim';
-export const BILDIRIM_ACIKLAMASI = 'Ekranda bildirim olarak gelir.';
-export const SESLI_ETIKETI = 'Sesli okuma';
-export const SESLI_ACIKLAMASI = 'Telefonunuz hatırlatmayı sesli okur.';
+/** Anahtar metinleri: `useMetin().hatirlatma.pencere` (bildirimEtiketi, sesliEtiketi, …). */
 
 /** Bu ana kanal adımın SON açık ana kanalı mı? (kapatılamaz — kapatmanın yeri liste anahtarı) */
 export function sonAcikAnaKanalMi(kanallar: UyariKanallari | undefined, kanal: AnaKanal): boolean {
@@ -211,8 +196,8 @@ export function gelismisOzetiOlustur(
 ): string {
     const o = gelismisOzetiVerisi(seviye, tanim, kardesler);
     const parcalar: string[] = [];
-    if (o.tekrarDk) parcalar.push(`her ${o.tekrarDk} dk tekrar`);
-    if (o.ton) parcalar.push(`${TON_ETIKETLERI[o.ton]} sertliği`);
+    if (o.tekrarDk) parcalar.push(bicim(pm().gelismisTekrar, { dk: o.tekrarDk }));
+    if (o.ton) parcalar.push(bicim(pm().gelismisTon, { ton: TON_ETIKETLERI[o.ton] }));
     return parcalar.join(', ');
 }
 
@@ -233,44 +218,29 @@ export function tekrarCumlesiOlustur(
         // Hazır düzeylerin tek atış türevi `herDk = esikDk` kullanıcının seçimi değildir →
         // yalnız gerçekten daha sık bir aralık seçilmiş ama tetik doğmuyorsa açıklanır.
         const etkisiz = seviye.siklik !== 'birkez' && seviye.siklik.herDk < seviye.esikDk;
-        return etkisiz ? 'Bir kez gelir; sonraki hatırlatma daha önce başlar.' : 'Bir kez gelir.';
+        return etkisiz ? pm().birKezEtkisiz : pm().birKez;
     }
-    const her = `Her ${tekrarDk} dk'da bir`;
-    if (!sonAdim) return `${her}, sonraki hatırlatmaya kadar.`;
-    return namazaKadar ? `${her}, kılana kadar.` : `${her} tekrarlanır.`;
+    const m = pm();
+    if (!sonAdim) return bicim(m.tekrarSonraki, { dk: tekrarDk });
+    return bicim(namazaKadar ? m.tekrarKilana : m.tekrarlanir, { dk: tekrarDk });
 }
 
-/** Titresim anahtarinin ekran metinleri (kibar "siz"). */
-export const TITRESIM_ETIKETI = 'Titreşim';
-export const TITRESIM_ACIKLAMASI = 'Uyarı gelince cihazınız da titrer.';
-
-/** Gercek alarm anahtarinin ekran metinleri (issue #74, kibar "siz"). */
-export const ALARM_ETIKETI = 'Gerçek alarm';
-export const ALARM_ACIKLAMASI =
-    'İlk hatırlatmada telefonunuzun alarmı çalar; tekrarlar bildirimle gelir.';
-
 /** Alarm kapsamı seçimi (issue #74 — "Yalnız ilk uyarıda" / "Her uyarıda"). */
-export const ALARM_KAPSAMI_SECENEKLERI: { kapsam: AlarmKapsami; etiket: string; ikon: string }[] = [
-    { kapsam: 'ilk', etiket: 'Yalnız ilk uyarıda', ikon: 'dot-circle' },
-    { kapsam: 'hepsi', etiket: 'Her uyarıda', ikon: 'redo' },
+export const ALARM_KAPSAMI_SECENEKLERI: { kapsam: AlarmKapsami; readonly etiket: string; ikon: string }[] = [
+    { kapsam: 'ilk', get etiket() { return pm().alarmKapsami.ilk; }, ikon: 'dot-circle' },
+    { kapsam: 'hepsi', get etiket() { return pm().alarmKapsami.hepsi; }, ikon: 'redo' },
 ];
 
 /** Alarm anahtarının açıklaması seçilen kapsamı söyler (sessiz sapma yok). */
 export const alarmAciklamasiOlustur = (kapsam: AlarmKapsami | undefined): string =>
-    kapsam === 'hepsi'
-        ? 'Bu adımın her hatırlatmasında telefonunuzun alarmı çalar.'
-        : ALARM_ACIKLAMASI;
+    kapsam === 'hepsi' ? pm().alarmHepsiAciklamasi : pm().alarmAciklamasi;
 
 /**
  * Önizlemede GERÇEK ALARM çalan tetiğin etiketi ("Alarm çalar: 13:52" — saate hal eki
  * eklenmez). Saat bilinmiyorsa (pencere yok) yalnız "Alarm çalar". Ekran okuyucu da aynısını okur.
  */
-export const alarmOnizlemeEtiketi = (saat?: string): string => (saat ? `Alarm çalar: ${saat}` : 'Alarm çalar');
-
-/** "Her uyarıda" seçiliyken bedeli. iPhone satırı yalnız iOS'ta eklenir. */
-export const ALARM_KAPSAMI_NOTU = 'Her alarm tam ekran açılır ve bildirim sınırına sayılır.';
-export const IOS_ALARM_KAPSAMI_NOTU =
-    "iPhone'da aynı anda kurulabilecek alarm sayısı sınırlıdır; sınırı aşan uyarılar bildirim olarak gelir.";
+export const alarmOnizlemeEtiketi = (saat?: string): string =>
+    saat ? bicim(pm().alarmCalarSaat, { saat }) : pm().alarmCalar;
 
 /** "Akisi onizle" tarama siniri — bir pencerenin en genis halini kapsar (dk). */
 export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;
@@ -576,25 +546,23 @@ export const YON_SECENEKLERI: {
 }[] = [
         {
             yon: 'cikisaDogru',
-            etiket: 'Vakit çıkarken',
-            kisaAciklama: 'Sona doğru sıklaşır',
-            aciklama: 'Vaktin sonuna yaklaştıkça hatırlatılırsınız.',
-            uzunAciklama:
-                'Vakit boyunca sessiz kalır, sona yaklaşınca hatırlatır. Namazı genelde kılan ama bazen sona bırakanlar için.',
+            get etiket() { return pm().yon.cikis.etiket; },
+            get kisaAciklama() { return pm().yon.cikis.kisa; },
+            get aciklama() { return pm().yon.cikis.aciklama; },
+            get uzunAciklama() { return pm().yon.cikis.uzun; },
             // Kapi metaforu: cikis kapisi. Kum saati ikonu iki yonde de "zaman
             // geciyor" diyordu, yonu anlatmiyordu.
             ikon: 'sign-out-alt',
         },
         {
             yon: 'girisindenItibaren',
-            etiket: 'Vakit girer girmez',
+            get etiket() { return pm().yon.giris.etiket; },
             // "cikana kadar hatirlatilirsiniz" DENMEZ: 'hafif' yogunlukta dort adim
             // da tek atistir, yani vaktin sonuna kadar suren bir tekrar YOKTUR.
             // Metin her yogunlukta dogru olmali.
-            kisaAciklama: 'Baştan, kılana kadar',
-            aciklama: 'Vakit girdikten sonra, kılana kadar aralıklarla hatırlatılırsınız.',
-            uzunAciklama:
-                'Vakit girince hemen hatırlatır, kılana kadar peşinizi bırakmaz. Namazı ilk fırsatta kılmak isteyenler için.',
+            get kisaAciklama() { return pm().yon.giris.kisa; },
+            get aciklama() { return pm().yon.giris.aciklama; },
+            get uzunAciklama() { return pm().yon.giris.uzun; },
             ikon: 'sign-in-alt',
         },
     ];
@@ -606,8 +574,7 @@ export const YON_SECENEKLERI: {
  * garantisi tersine doner) → sesi arka plan alarmi verir. Sonuc: uygulama
  * acikken banner ile ses bir dakikaya kadar ayrisabilir. Bu sessiz birakilamaz.
  */
-export const GIRIS_SESLI_GECIKME_NOTU =
-    'Uygulama açıkken sesli okuma, ekrandaki uyarıdan en fazla bir dakika sonra duyulur.';
+export const girisSesliGecikmeNotu = (): string => pm().girisSesliGecikme;
 
 /**
  * Bir adimin gorunumu (renk/ikon) — ton secilebilen pencerede adimin ETKIN
@@ -629,39 +596,38 @@ export function adimBasligiOlustur(
     seviye: SeviyeAyari,
     indeks: number
 ): string {
-    return tanim.tonSecilebilir ? `${indeks + 1}. hatırlatma` : adimBilgisiAl(tanim, seviye, indeks).baslik;
+    return tanim.tonSecilebilir ? bicim(pm().adimNumara, { n: indeks + 1 }) : adimBilgisiAl(tanim, seviye, indeks).baslik;
 }
 
 /** Ton notu (issue #274): hatirlatma bir oncekinden YUMUSAKSA ekranda kisa bilgi. */
 export const tonGeriNotuOlustur = (numara: number): string =>
-    `${numara}. hatırlatma bir öncekinden daha yumuşak. Bilerek seçtiyseniz sorun yok.`;
+    bicim(pm().tonGeri, { n: numara });
 
 /** Acil ton cipi devre disiyken altindaki aciklama. */
 export const acilTonKisitNotu = (yon: PencereYonu): string =>
     yon === 'girisindenItibaren'
-        ? '“Vakit girer girmez” seçeneğinde “Acil” seçilemez.'
-        : `“Acil” yalnız vaktin son ${ACIL_TON_UST_DK} dakikasında seçilebilir.`;
+        ? pm().acilGiris
+        : bicim(pm().acilCikis, { dk: ACIL_TON_UST_DK });
 
 /** Ekleme sinirina ulasildiginda dugmenin yerine cikan metin. */
 export const adimSiniriNotu = (maksAdim: number): string =>
-    `Bir vakit için en fazla ${maksAdim} hatırlatma kurabilirsiniz.`;
-export const ADIM_SINIRI_NOTU = adimSiniriNotu(MUHAFIZ_MAKS_ADIM);
+    bicim(pm().adimSiniri, { n: maksAdim });
 
 /** Esik bolumu basligi (yon varsayilani). */
 export const esikBasligiOlustur = (yon: PencereYonu): string =>
-    yon === 'girisindenItibaren' ? 'GİRİŞTEN NE KADAR SONRA' : 'KAÇ DK KALA';
+    yon === 'girisindenItibaren' ? pm().esikBaslik.giris : pm().esikBaslik.cikis;
 
 /** Esik satiri aciklamasi (yon varsayilani). */
 export const esikAciklamasiOlustur = (yon: PencereYonu): string =>
-    yon === 'girisindenItibaren' ? 'Vakit girdikten sonra' : 'Vaktin çıkmasına';
+    yon === 'girisindenItibaren' ? pm().esikAciklama.giris : pm().esikAciklama.cikis;
 
 /** SayisalSecici erisim adi (yon varsayilani). */
 export const esikErisimAdiOlustur = (yon: PencereYonu): string =>
-    yon === 'girisindenItibaren' ? 'Kaç dk sonra' : 'Kaç dk kala';
+    yon === 'girisindenItibaren' ? pm().esikErisim.giris : pm().esikErisim.cikis;
 
 /** Esik birimi (yon varsayilani). */
 export const esikBirimiOlustur = (yon: PencereYonu): string =>
-    yon === 'girisindenItibaren' ? 'dk sonra' : 'dk kala';
+    yon === 'girisindenItibaren' ? pm().esikBirim.giris : pm().esikBirim.cikis;
 
 /**
  * Muhafizin bir vakti icin pencere tanimi.
@@ -795,8 +761,8 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
     const renk = SEVIYE_BILGILERI.nazik.renk;
     const adimBilgileri: AdimBilgisi[] =
         secenekler.adimSayisi > 1
-            ? Array.from({ length: secenekler.maksAdim }, (_, i) => ({ baslik: `${i + 1}. hatırlatma`, ikon: 'bell', renk }))
-            : [{ baslik: 'Hatırlatma', ikon: 'bell', renk }];
+            ? Array.from({ length: secenekler.maksAdim }, (_, i) => ({ baslik: bicim(pm().adimNumara, { n: i + 1 }), ikon: 'bell', renk }))
+            : [{ baslik: pm().hatirlatma, ikon: 'bell', renk }];
     return {
         ...platformaGoreStandart(yetenekler),
         // İSTİSNALAR — gerekçe fonksiyonun belgesinde (K3–K5).
@@ -856,7 +822,7 @@ export function cevrilemeyenAnonsVarMi(seviyeler: SeviyeAyari[], yon: PencereYon
         if (!kanalAcikMi(s.kanallar, 'sesli')) return false;
         const metin = s.anonsMetni ?? '';
         if (metin.length === 0) return false;
-        if (metin.includes('{yön}')) return false;
+        if (metin.includes('{yön}')) return false; // dil-haric: kimlik (yer tutucu jetonu)
         return !havuz.includes(metin);
     });
 }
@@ -900,11 +866,11 @@ export function nafilePencereTanimi(secenekler: {
     const adimBilgileri: AdimBilgisi[] =
         secenekler.adimSayisi > 1
             ? Array.from({ length: NAFILE_MAKS_ADIM }, (_, i) => ({
-                baslik: `${i + 1}. hatırlatma`,
+                baslik: bicim(pm().adimNumara, { n: i + 1 }),
                 ikon: 'bell',
                 renk,
             }))
-            : [{ baslik: 'Hatırlatma', ikon: 'bell', renk }];
+            : [{ baslik: pm().hatirlatma, ikon: 'bell', renk }];
     return {
         ...platformaGoreStandart(yetenekler),
         // İSTİSNALAR — gerekçe fonksiyonun belgesinde.

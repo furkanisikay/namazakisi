@@ -21,6 +21,8 @@ import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.CompactButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
+import androidx.compose.ui.res.stringResource
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.hatirlatma.UyandirmaAlicisi
 import com.furkanisikay.namazakisi.saat.veri.YukDeposu
@@ -56,25 +58,27 @@ class UyandirmaAktivite : ComponentActivity() {
                             verticalArrangement = Arrangement.spacedBy(6.dp),
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                         ) {
-                            Text(kayit.baslik, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, maxLines = 2)
+                            Text(yerelRakam(kayit.baslik), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, maxLines = 2)
                             Text(
-                                kayit.govde,
+                                yerelRakam(kayit.govde),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = renk(SaatPaleti.METIN2),
                                 textAlign = TextAlign.Center,
                                 maxLines = 3,
                             )
+                            val kildimAciklama = stringResource(R.string.uyandirma_kildim_aciklama)
+                            val kapatAciklama = stringResource(R.string.uyandirma_kapat_aciklama)
                             CompactButton(
                                 onClick = { gonder(UyandirmaAlicisi.KILDIM) },
                                 colors = ButtonDefaults.buttonColors(),
-                                modifier = Modifier.semantics { contentDescription = "Kıldım. Uyandırmayı kapatır" },
-                                label = { Text("Kıldım") },
+                                modifier = Modifier.semantics { contentDescription = kildimAciklama },
+                                label = { Text(stringResource(R.string.kildim)) },
                             )
                             CompactButton(
                                 onClick = { gonder(UyandirmaAlicisi.KAPAT) },
                                 colors = ButtonDefaults.filledTonalButtonColors(),
-                                modifier = Modifier.semantics { contentDescription = "Uyandırmayı kapat" },
-                                label = { Text("Kapat") },
+                                modifier = Modifier.semantics { contentDescription = kapatAciklama },
+                                label = { Text(stringResource(R.string.kapat)) },
                             )
                         }
                     }

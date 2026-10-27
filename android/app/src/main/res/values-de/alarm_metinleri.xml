@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Almanca, beta). "Gebetet" bildirimdeki düğmeyle aynı ad (JS bildirim.eylem.kildim). -->
+<resources>
+  <string name="alarm_baslik">Gebetsalarm</string>
+  <string name="alarm_kildim">Gebetet</string>
+  <string name="alarm_kapat">Ausschalten</string>
+  <string name="alarm_kanal_aciklamasi">Ein echter Alarm, der bei den von Ihnen gewählten Erinnerungsschritten klingelt</string>
+</resources>

@@ -14,6 +14,8 @@ import com.furkanisikay.namazakisi.kildim.BildirimKildimIsleyici
 import com.furkanisikay.namazakisi.kildim.EskiErteleYaniti
 import com.furkanisikay.namazakisi.kildim.NafileKildimIsleyici
 import com.furkanisikay.namazakisi.otomasyon.OtomasyonOlaylari
+import com.furkanisikay.namazakisi.rakamSifiri
+import com.furkanisikay.namazakisi.rakamla
 import expo.modules.notifications.notifications.model.Notification
 import expo.modules.notifications.notifications.model.NotificationBehaviorRecord
 import expo.modules.notifications.service.NotificationsService
@@ -103,6 +105,13 @@ class KopruEtiketliBildirimServisi : NotificationsService() {
             notificationBehavior: NotificationBehaviorRecord?,
         ): android.app.Notification {
             val bildirim = super.createNotification(notification, notificationBehavior)
+            // Görünen metin seçilen rakamla (TEK kapı: JS'in planladığı her bildirim buradan
+            // çizilir; JS metni Batı rakamıyla yazar). Kimlik, yük ve sesli okuma aynen kalır.
+            try {
+                rakamlariCevir(context, bildirim)
+            } catch (_: Exception) {
+                // Çevrilemezse bildirim Batı rakamıyla gösterilir.
+            }
             val kimlik = notification.notificationRequest?.identifier ?: return bildirim
             // Otomasyon "vakit çıkıyor" olayı (issue #278): muhafızın ≤45 dk kala ilk
             // plan bildirimi. Ayrı alarm yok; koşul paketi yoksa hiçbir şey yapmaz.
@@ -165,6 +174,32 @@ class KopruEtiketliBildirimServisi : NotificationsService() {
             } catch (_: Exception) {
                 // Mağaza okunamazsa geçiş temizliği atlanır.
             }
+        }
+
+        /** Standart şablon metinleri (API 24+'da SystemUI görünümü bu eklerden kurar). */
+        private val METIN_EKLERI = arrayOf(
+            android.app.Notification.EXTRA_TITLE,
+            android.app.Notification.EXTRA_TITLE_BIG,
+            android.app.Notification.EXTRA_TEXT,
+            android.app.Notification.EXTRA_BIG_TEXT,
+            android.app.Notification.EXTRA_SUB_TEXT,
+            android.app.Notification.EXTRA_SUMMARY_TEXT,
+            android.app.Notification.EXTRA_INFO_TEXT,
+        )
+
+        /**
+         * Arapça arayüzde "arab" seçiliyse bildirimin görünen metinlerindeki Batı rakamlarını
+         * Doğu Arap rakamına çevirir; diğer her durumda hiçbir şeye dokunmaz.
+         */
+        fun rakamlariCevir(context: Context, bildirim: android.app.Notification) {
+            val sifir = context.rakamSifiri()
+            if (sifir == '0') return
+            val ekler = bildirim.extras ?: return
+            for (anahtar in METIN_EKLERI) {
+                val metin = ekler.getCharSequence(anahtar) ?: continue
+                ekler.putCharSequence(anahtar, metin.rakamla(sifir))
+            }
+            bildirim.tickerText = bildirim.tickerText?.rakamla(sifir)
         }
 
         fun koprulemeEtiketiEkle(context: Context, bildirim: android.app.Notification) {

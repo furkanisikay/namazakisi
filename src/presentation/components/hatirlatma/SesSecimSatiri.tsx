@@ -16,8 +16,11 @@ import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { ozelSesMi, sesGorunenAdi } from '../../../core/muhafiz/sesKimligi';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 /** Satırın altındaki/açılır listedeki ikincil eylem. */
 interface Eylem {
@@ -77,12 +80,15 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
     dosyaAktariliyor = false,
     onVarsayilanaDon,
     varsayilanAdi,
-    varsayilanaDonEtiketi = 'Uygulama sesine dön',
+    varsayilanaDonEtiketi: varsayilanaDonEtiketiProp,
     kompakt = false,
-    sesEtiketi = 'Bildirim sesi',
+    sesEtiketi: sesEtiketiProp,
     testID,
 }) => {
     const renkler = useRenkler();
+    const ms = useMetin().hatirlatma.sesSecim;
+    const varsayilanaDonEtiketi = varsayilanaDonEtiketiProp ?? ms.varsayilanaDon;
+    const sesEtiketi = sesEtiketiProp ?? ms.sesEtiketi;
     const ozelMi = ozelSesMi(bildirimSesi);
     const ad = !ozelMi && varsayilanAdi ? varsayilanAdi : sesGorunenAdi(bildirimSesi, sesAdi);
     const mesgul = seciliyor || dosyaAktariliyor;
@@ -92,8 +98,8 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
     if (kompakt) {
         eylemler.push({
             ikon: 'bell',
-            etiket: 'Telefonun sesleri',
-            erisimEtiketi: `${sesEtiketi}: telefonun seslerinden seçin`,
+            etiket: ms.telefonSesleri,
+            erisimEtiketi: bicim(ms.telefonSesleriErisim, { ses: sesEtiketi }),
             onPress: () => {
                 setAcik(false);
                 onSec();
@@ -104,9 +110,9 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
     if (onDosyadanSec) {
         eylemler.push({
             ikon: 'folder-open',
-            etiket: 'Kendi dosyanızdan seçin',
-            erisimEtiketi: `${sesEtiketi}: kendi dosyanızdan seçin`,
-            ipucu: 'Örneğin bir ezan kaydı',
+            etiket: ms.dosyadan,
+            erisimEtiketi: bicim(ms.dosyadanErisim, { ses: sesEtiketi }),
+            ipucu: ms.dosyaIpucu,
             onPress: () => {
                 setAcik(false);
                 onDosyadanSec();
@@ -118,7 +124,7 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
         eylemler.push({
             ikon: 'undo',
             etiket: varsayilanaDonEtiketi,
-            erisimEtiketi: `${varsayilanaDonEtiketi}ün`,
+            erisimEtiketi: bicim(ms.donErisim, { etiket: varsayilanaDonEtiketi }),
             onPress: () => {
                 setAcik(false);
                 onVarsayilanaDon();
@@ -201,8 +207,8 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                         accessibilityState={{ disabled: mesgul, expanded: acik }}
                         accessibilityLabel={
                             mesgul
-                                ? 'Ses ekleniyor, lütfen bekleyin'
-                                : `${sesEtiketi}: ${ad}. Değiştirmek için dokunun.`
+                                ? ms.ekleniyorErisim
+                                : bicim(ms.degistirErisim, { ses: sesEtiketi, ad })
                         }
                     >
                         <FontAwesome5
@@ -228,7 +234,7 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                                 ],
                             }}
                         >
-                            {mesgul ? 'Ses ekleniyor…' : gosterilenAd}
+                            {mesgul ? ms.ekleniyor : gosterilenAd}
                         </Animated.Text>
                         <FontAwesome5
                             name={acik ? 'chevron-up' : 'chevron-down'}
@@ -242,7 +248,7 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                         onPress={onDinle}
                         activeOpacity={0.7}
                         accessibilityRole="button"
-                        accessibilityLabel={`${sesEtiketi}ni dinleyin`}
+                        accessibilityLabel={bicim(ms.dinleErisim, { ses: sesEtiketi })}
                     >
                         <FontAwesome5 name="play" size={11} color={renkler.birincil} solid />
                     </TouchableOpacity>
@@ -272,8 +278,8 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                     accessibilityState={{ disabled: seciliyor }}
                     accessibilityLabel={
                         seciliyor
-                            ? 'Ses seçici açılıyor, lütfen bekleyin'
-                            : `Bildirim sesi: ${ad}. Değiştirmek için dokunun.`
+                            ? ms.aciliyorErisim
+                            : bicim(ms.degistirErisim, { ses: ms.sesEtiketi, ad })
                     }
                 >
                     <View
@@ -308,10 +314,10 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                         </Animated.Text>
                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                             {seciliyor
-                                ? 'Ses seçici açılıyor…'
+                                ? ms.aciliyor
                                 : ozelMi
-                                  ? 'Kendi seçtiğiniz ses'
-                                  : 'Dokunarak değiştirin'}
+                                  ? ms.kendiSesiniz
+                                  : ms.dokunarak}
                         </Text>
                     </View>
                 </TouchableOpacity>
@@ -325,12 +331,12 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                     onPress={onDinle}
                     activeOpacity={0.7}
                     accessibilityRole="button"
-                    accessibilityLabel="Seçili bildirim sesini dinleyin"
+                    accessibilityLabel={ms.seciliDinle}
                 >
                     <FontAwesome5 name="play" size={12} color={renkler.birincil} solid />
                 </TouchableOpacity>
 
-                <FontAwesome5 name="chevron-right" size={13} color={renkler.metinIkincil} />
+                <YonluIkon name="chevron-right" size={13} color={renkler.metinIkincil} />
             </View>
             {eylemler.length > 0 ? eylemListesi : null}
         </View>

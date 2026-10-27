@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ru -->
+<!-- Gerçek alarm (Rusça). «Намаз совершён» bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Будильник намаза</string>
+  <string name="alarm_kildim">Намаз совершён</string>
+  <string name="alarm_kapat">Выключить</string>
+  <string name="alarm_kanal_aciklamasi">Настоящий будильник, который звонит на выбранных вами шагах напоминания</string>
+</resources>

@@ -15,6 +15,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Anahtar } from '../common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import type { SeviyeAyari, VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
@@ -34,7 +35,7 @@ import {
     adimBasligiOlustur,
     adimBilgisiAl,
     cevrilemeyenAnonsVarMi,
-    GIRIS_SESLI_GECIKME_NOTU,
+    girisSesliGecikmeNotu,
     TON_ETIKETLERI,
     tonGeriNotuOlustur,
     pencerePlaniOlustur,
@@ -43,6 +44,8 @@ import {
 } from './pencereTanimi';
 import { ZamanSeridi } from './ZamanSeridi';
 import { ParcaliSecici } from './ParcaliSecici';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { BildirimModali } from '../common/BildirimModali';
 import {
     saatMetni,
@@ -107,6 +110,8 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
     stil = 'kart',
 }) => {
     const renkler = useRenkler();
+    const sozluk = useMetin();
+    const mk = sozluk.hatirlatma.kart;
     const [bilgiAcik, setBilgiAcik] = useState(false);
 
     const tekAdimli = tanim.maksAdim === 1;
@@ -161,7 +166,9 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
             tumAdimlarKapali: tamamenKapali,
             gunEtiketi: tanim.seritGunEtiketi,
         });
-    }, [seritCizilir, pencere, plan, pencereUzunluguDk, yon, simdi, tamamenKapali, tanim.seritGunEtiketi]);
+        // Dil değişince cümle yeniden kurulur (sözlük bağımlılığı).
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [seritCizilir, pencere, plan, pencereUzunluguDk, yon, simdi, tamamenKapali, tanim.seritGunEtiketi, sozluk]);
 
     /** "?" modalindaki iki blok: once secili yon, sonra digeri. */
     const bilgiBloklari = () => {
@@ -197,7 +204,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                     }}
                 >
                     <View className="flex-row items-center">
-                        <FontAwesome5
+                        <YonluIkon
                             name={secenek.ikon}
                             size={12}
                             color={secili ? renkler.birincil : renkler.metinIkincil}
@@ -208,7 +215,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                         </Text>
                         {secili && (
                             <Text className="text-[11px] font-semibold" style={{ color: renkler.birincil }}>
-                                Seçili
+                                {mk.secili}
                             </Text>
                         )}
                     </View>
@@ -309,10 +316,16 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                         disabled={!etkilesimli}
                         onPress={() => onAdimSec(indeks)}
                         activeOpacity={0.7}
+                        testID={`adim-duzenle-${indeks}`}
                         accessibilityRole="button"
                         // Önek SABİT ("1. hatırlatma, Nazik — düzenleyin" / "Hatırlatma — düzenleyin"):
                         // ekran testleri ve Maestro/simülatör betikleri buna bağlıdır.
-                        accessibilityLabel={`${adimBasligi}${tonEtiketi ? `, ${tonEtiketi}` : ''} — düzenleyin. ${ozetMetni}${notMetni ? `. ${notMetni}` : ''}`}
+                        accessibilityLabel={bicim(mk.duzenleEtiketi, {
+                            adim: adimBasligi,
+                            ton: tonEtiketi ? `, ${tonEtiketi}` : '',
+                            ozet: ozetMetni,
+                            not: notMetni ? `. ${notMetni}` : '',
+                        })}
                     >
                         <View className="flex-1">
                             {/* Başlık = ZAMAN. Ton ADI ve sıra numarası yazılmaz: sertlik
@@ -330,7 +343,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                             style={{ marginRight: 5 }}
                                         />
                                         <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                                            Kapalı
+                                            {mk.kapali}
                                         </Text>
                                     </View>
                                 ) : (
@@ -344,7 +357,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                 )}
                             </View>
                         </View>
-                        <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
+                        <YonluIkon name="chevron-right" size={12} color={renkler.metinIkincil} />
                     </TouchableOpacity>
 
                     {onAdimAcKapa && etkilesimli && (
@@ -359,7 +372,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                 thumbColor={acik ? bilgi.renk : '#f4f3f4'}
                                 accessibilityRole="switch"
                                 accessibilityState={{ checked: acik }}
-                                accessibilityLabel={`${adimBasligi} — açın veya kapatın`}
+                                accessibilityLabel={bicim(mk.acKapaEtiketi, { adim: adimBasligi })}
                             />
                         </View>
                     )}
@@ -445,10 +458,10 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                             onPress={onAdimEkle}
                             activeOpacity={0.7}
                             accessibilityRole="button"
-                            accessibilityLabel={`${tanim.baslik} vaktine hatırlatma ekleyin`}
+                            accessibilityLabel={bicim(mk.ekleEtiketi, { ad: tanim.baslik })}
                         >
                             <Text className="text-sm font-semibold" style={{ color: renkler.birincil }}>
-                                Hatırlatma ekleyin
+                                {mk.ekle}
                             </Text>
                         </TouchableOpacity>
                     </RayEkleSatiri>
@@ -480,7 +493,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                     activeOpacity={0.7}
                     accessibilityRole="button"
                     accessibilityState={{ expanded: acikMi }}
-                    accessibilityLabel={`${tanim.baslik} vakti hatırlatma ayarları. ${ozet}`}
+                    accessibilityLabel={bicim(mk.ayarlarEtiketi, { ad: tanim.baslik, ozet })}
                 >
                     <View
                         className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
@@ -501,7 +514,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                         {/* Özet: ilk uyarının anı + kullanılan kanallar (ikon çipi; tam cümle etikette). */}
                         <View className="flex-row items-center flex-wrap mt-1" style={{ gap: 6 }}>
                             <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                                {vakitOzeti.kapali ? 'Kapalı' : `${vakitOzeti.baslangic} başlar`}
+                                {vakitOzeti.kapali ? mk.kapali : bicim(mk.baslar, { bas: vakitOzeti.baslangic })}
                             </Text>
                             {!vakitOzeti.kapali && (
                                 <OzetCipleri kanallar={vakitOzeti.kanallar} renk={renkler.birincil} boyut="kucuk" />
@@ -558,14 +571,14 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                         className="text-[11px] font-semibold tracking-wider"
                                         style={{ color: renkler.metinIkincil }}
                                     >
-                                        NE ZAMAN HATIRLATILSIN
+                                        {mk.neZaman}
                                     </Text>
                                     <TouchableOpacity
                                         className="w-11 h-11 items-center justify-center -mr-3"
                                         onPress={() => setBilgiAcik(true)}
                                         activeOpacity={0.7}
                                         accessibilityRole="button"
-                                        accessibilityLabel="Bu seçenek ne anlama geliyor?"
+                                        accessibilityLabel={mk.neAnlamda}
                                     >
                                         <FontAwesome5 name="question-circle" size={15} color={renkler.metinIkincil} />
                                     </TouchableOpacity>
@@ -627,8 +640,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                     notlar={[
                                         {
                                             tip: 'uyari',
-                                            metin:
-                                                'Kendi yazdığınız sesli okuma metni bu seçenekte ters okunabilir; adımın ayrıntısından güncelleyebilirsiniz.',
+                                            metin: mk.tersOkunur,
                                         },
                                     ]}
                                 />
@@ -636,7 +648,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
 
                             {/* Giris yonunun kullaniciya gorunen bedeli (Faz 1 / B3) */}
                             {girisYonu && sesliAdimVar && tanim.onPlanBanneriVar !== false && (
-                                <AdimNotlari notlar={[{ tip: 'bilgi', metin: GIRIS_SESLI_GECIKME_NOTU }]} />
+                                <AdimNotlari notlar={[{ tip: 'bilgi', metin: girisSesliGecikmeNotu() }]} />
                             )}
                             <View className="h-2.5" />
                         </>
@@ -653,11 +665,11 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                             onPress={onAkisiOnizle}
                             activeOpacity={0.7}
                             accessibilityRole="button"
-                            accessibilityLabel={`${tanim.baslik} akışını önizleyin`}
+                            accessibilityLabel={bicim(mk.onizleEtiketi, { ad: tanim.baslik })}
                         >
                             <FontAwesome5 name="stream" size={13} color={renkler.birincil} style={{ marginRight: 8 }} />
                             <Text className="text-sm font-semibold" style={{ color: renkler.birincil }}>
-                                Akışı önizle
+                                {mk.onizle}
                             </Text>
                         </TouchableOpacity>
                     )}
@@ -670,11 +682,11 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                             onPress={onTumPencerelereUygula}
                             activeOpacity={0.7}
                             accessibilityRole="button"
-                            accessibilityLabel="Tüm vakitlere uygula"
+                            accessibilityLabel={mk.tumVakitler}
                         >
                             <FontAwesome5 name="clone" size={13} color={renkler.birincil} style={{ marginRight: 8 }} />
                             <Text className="text-sm font-semibold" style={{ color: renkler.birincil }}>
-                                Tüm vakitlere uygula
+                                {mk.tumVakitler}
                             </Text>
                         </TouchableOpacity>
                     )}
@@ -685,12 +697,11 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                 <BildirimModali
                     gorunur={bilgiAcik}
                     tip="bilgi"
-                    baslik="Hatırlatmalar ne zaman gelsin?"
+                    baslik={mk.bilgiBaslik}
                     mesaj={
                         (pencere
-                            ? `${tanim.baslik} vakti bugün ${saatMetni(pencere.baslangic)}–${saatMetni(pencere.bitis)}. `
-                            : '') +
-                        'İki seçenek de aynı hatırlatmaları kullanır; fark, hatırlatmaların vaktin neresinde geldiğidir.'
+                            ? bicim(mk.bilgiBugun, { ad: tanim.baslik, bas: saatMetni(pencere.baslangic), bit: saatMetni(pencere.bitis) })
+                            : '') + mk.bilgiMesaj
                     }
                     icerik={
                         <>
@@ -702,16 +713,16 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                         className="text-xs leading-4 mb-2"
                                         style={{ color: renkler.metinIkincil }}
                                     >
-                                        {secenek.etiket}: {secenek.uzunAciklama}
+                                        {bicim(mk.bilgiSecenek, { etiket: secenek.etiket, aciklama: secenek.uzunAciklama })}
                                     </Text>
                                 ))}
                             <Text className="text-[11px] leading-4" style={{ color: renkler.metinIkincil }}>
-                                İstediğiniz zaman değiştirebilirsiniz; her seçeneğin zamanlaması ayrı saklanır.
+                                {mk.bilgiNot}
                             </Text>
                         </>
                     }
                     onKapat={() => setBilgiAcik(false)}
-                    kapatEtiketi="Anladım"
+                    kapatEtiketi={mk.anladim}
                 />
             )}
         </View>

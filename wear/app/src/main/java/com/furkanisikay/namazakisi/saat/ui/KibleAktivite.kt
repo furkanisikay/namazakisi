@@ -4,6 +4,7 @@ import android.hardware.GeomagneticField
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.telefon.TelefondaAc
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -46,6 +47,9 @@ class KibleAktivite : ComponentActivity() {
     private var sonTikMs = 0L
 
     private var ekran by mutableStateOf<KibleGorunumu>(KibleGorunumu.Bekleniyor)
+
+    /** Çekirdek metinlerinin dili (cihaz dili; dil değişince aktivite yeniden kurulur). */
+    private val dil by lazy { getString(R.string.dil_kodu) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,8 +145,8 @@ class KibleAktivite : ComponentActivity() {
             yonCizim = onceki?.let { KibleKarari.enKisaYol(it.yonCizim, yon) } ?: yon,
             hedefCizim = onceki?.let { KibleKarari.enKisaYol(it.hedefCizim, hedef) } ?: hedef,
             hizali = hiza.hizali,
-            erisim = KibleKarari.erisimMetni(hedef, hiza.hizali),
-            donus = KibleKarari.donusMetni(hedef),
+            erisim = KibleKarari.erisimMetni(hedef, hiza.hizali, dil),
+            donus = KibleKarari.donusMetni(hedef, dil),
             egimIpucu = KibleKarari.egimIpucu(o.egim),
             kalibrasyon = o.kalibrasyon,
         )

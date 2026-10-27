@@ -1,5 +1,8 @@
 package com.furkanisikay.namazakisi.tv.ui
 
+import com.furkanisikay.namazakisi.tv.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -65,25 +68,30 @@ fun TvAyarlarEkrani(
         // 10-foot: iki dengeli sütun; sol eylemler, sağ bağlı telefonlar + ne gönderdikleri.
         Row(Modifier.fillMaxSize().padding(horizontal = 56.dp, vertical = 44.dp), horizontalArrangement = Arrangement.spacedBy(56.dp)) {
             Column(Modifier.weight(1f)) {
-                Text("Ayarlar", color = Renkler.metin, fontSize = 48.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.ayarlar), color = Renkler.metin, fontSize = 48.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    if (konumAdi != null) "Konum: $konumAdi" else "Konum seçilmedi",
+                    if (konumAdi != null) stringResource(R.string.ayar_konum, konumAdi) else stringResource(R.string.ayar_konum_yok),
                     color = Renkler.metinIkincil, fontSize = 26.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(Modifier.height(40.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(18.dp)) {
-                    EslemeDugmesi("Telefon ekleyin", onTelefonEkle, Modifier.focusRequester(ilkOdak).fillMaxWidth(), birincil = true)
-                    EslemeDugmesi("Konumu kodla girin", onKodla, Modifier.fillMaxWidth())
-                    EslemeDugmesi("İli kendim seçeyim", onIlSec, Modifier.fillMaxWidth())
+                    EslemeDugmesi(
+                        stringResource(R.string.ayar_telefon_ekleyin),
+                        onTelefonEkle,
+                        Modifier.focusRequester(ilkOdak).fillMaxWidth(),
+                        birincil = true,
+                    )
+                    EslemeDugmesi(stringResource(R.string.ayar_konumu_kodla), onKodla, Modifier.fillMaxWidth())
+                    EslemeDugmesi(stringResource(R.string.ili_kendim_secin), onIlSec, Modifier.fillMaxWidth())
                 }
             }
             Column(Modifier.weight(1.25f)) {
-                Text("Bu TV'ye bağlı telefonlar", color = Renkler.metin, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.ayar_bagli_telefonlar), color = Renkler.metin, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.height(20.dp))
                 if (uyeler.isEmpty()) {
                     Text(
-                        "Henüz telefon eklenmedi. Soldaki “Telefon ekleyin” ile ekranda çıkan kodu okutun.",
+                        stringResource(R.string.ayar_telefon_yok, stringResource(R.string.ayar_telefon_ekleyin)),
                         color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
                     )
                 } else {
@@ -106,7 +114,7 @@ fun TvAyarlarEkrani(
                                         color = Renkler.metinIkincil, fontSize = 24.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier.weight(1f).padding(start = 76.dp, end = 12.dp),
                                     )
-                                    EslemeDugmesi("Kaldırın", { kaldirilacak = u })
+                                    EslemeDugmesi(stringResource(R.string.kaldirin), { kaldirilacak = u })
                                 }
                             }
                         }
@@ -133,10 +141,10 @@ private fun GonderilenlerKarti() {
         Modifier.fillMaxWidth().border(1.dp, Renkler.sinir, RoundedCornerShape(28.dp)).padding(horizontal = 28.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Text("Telefonlar ne gönderir?", color = Renkler.metin, fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
-        Madde("Konum: vakitler ona göre")
-        Madde("İsteyenin kıldığı namazlar")
-        Madde("Şifreli, yalnız ev ağında")
+        Text(stringResource(R.string.ayar_ne_gonderir), color = Renkler.metin, fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
+        Madde(stringResource(R.string.ayar_madde_konum))
+        Madde(stringResource(R.string.ayar_madde_namazlar))
+        Madde(stringResource(R.string.ayar_madde_sifreli))
     }
 }
 
@@ -149,14 +157,17 @@ private fun Madde(metin: String) {
     }
 }
 
+/** "12 dk önce" (JS `cihaz.zaman` ile aynı karşılıklar); çoğul `plurals` kaynağından. */
+@Composable
 private fun sonHaberMetni(son: Long, simdi: Long): String {
-    if (son <= 0) return "Henüz bilgi gelmedi"
+    if (son <= 0) return stringResource(R.string.son_haber_yok)
+    val k = LocalContext.current.resources
     val dk = (simdi - son) / 60_000
     return when {
-        dk < 1 -> "Az önce"
-        dk < 60 -> "$dk dk önce"
-        dk < 24 * 60 -> "${dk / 60} saat önce"
-        else -> "${dk / (24 * 60)} gün önce"
+        dk < 1 -> stringResource(R.string.son_haber_az_once)
+        dk < 60 -> dk.toInt().let { k.getQuantityString(R.plurals.son_haber_dk, it, it) }
+        dk < 24 * 60 -> (dk / 60).toInt().let { k.getQuantityString(R.plurals.son_haber_saat, it, it) }
+        else -> (dk / (24 * 60)).toInt().let { k.getQuantityString(R.plurals.son_haber_gun, it, it) }
     }
 }
 
@@ -172,16 +183,16 @@ private fun KaldirOnayi(ad: String, onEvet: () -> Unit, onHayir: () -> Unit) {
     }
     Box(Modifier.fillMaxSize().background(Renkler.arkaplan.copy(alpha = 0.96f)), contentAlignment = Alignment.Center) {
         Column(Modifier.width(760.dp).background(Renkler.kart, RoundedCornerShape(36.dp)).padding(horizontal = 56.dp, vertical = 48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("$ad kaldırılsın mı?", color = Renkler.metin, fontSize = 40.sp, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.kaldir_soru, ad), color = Renkler.metin, fontSize = 40.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(12.dp))
             Text(
-                "Bu telefon artık TV'ye bilgi gönderemez. Yeniden eklemek için kare kodu tekrar okutmanız gerekir.",
+                stringResource(R.string.kaldir_aciklama),
                 color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
             )
             Spacer(Modifier.height(40.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(28.dp)) {
-                EslemeDugmesi("Vazgeçin", onHayir, Modifier.focusRequester(odak), buyuk = true)
-                EslemeDugmesi("Kaldırın", onEvet, buyuk = true)
+                EslemeDugmesi(stringResource(R.string.vazgecin), onHayir, Modifier.focusRequester(odak), buyuk = true)
+                EslemeDugmesi(stringResource(R.string.kaldirin), onEvet, buyuk = true)
             }
         }
     }

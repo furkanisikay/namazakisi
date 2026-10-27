@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bs — Boşnakça (beta). -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Boşnakça). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Klanjano</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Stanje vakta</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Događaj vakta</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "Vi". -->
+  <string name="otomasyon_bilgi_baslik">Ova postavka se dodaje iz aplikacije za automatizaciju</string>
+  <string name="otomasyon_bilgi_tarayici">Preglednici ne mogu dobiti trajnu dozvolu. Dodajte je s liste dodataka aplikacije kao što su Tasker, MacroDroid ili Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Dodajte je tako što ćete odabrati „Namaz Akışı” s liste dodataka aplikacije kao što su Tasker, MacroDroid ili Automate.</string>
+  <string name="otomasyon_engelli_baslik">Blokirano: %1$s</string>
+  <string name="otomasyon_engelli_mesaj">Ranije ste ovoj aplikaciji zabranili da označava Vaše namaze. Možete je dozvoliti u aplikaciji Namaz Akışı, u Postavke &gt; „Aplikacije koje označavaju klanjano”.</string>
+  <string name="otomasyon_izin_baslik">Koristiti s aplikacijom %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s može saznati kada vakat nastupi, kada ističe i kada ste u džamiji te pokretati Vaše automatizacije. Odluku možete promijeniti u aplikaciji Namaz Akışı, u Postavke &gt; „Aplikacije koje označavaju klanjano”.</string>
+  <string name="otomasyon_izin_kildim">%1$s može automatizacijom koju ste postavili označiti trenutni vakat kao klanjan. Odluku možete promijeniti u aplikaciji Namaz Akışı, u Postavke &gt; „Aplikacije koje označavaju klanjano”.</string>
+  <string name="otomasyon_izin_ver">Dozvolite</string>
+  <string name="otomasyon_engelle">Blokirajte</string>
+  <string name="otomasyon_vazgec">Odustanite</string>
+  <string name="otomasyon_tamam">U redu</string>
+  <string name="otomasyon_tur_baslik">Kada da se pokrene?</string>
+  <string name="otomasyon_ileri">Dalje</string>
+  <string name="otomasyon_vakit_baslik">Koji vakat?</string>
+  <string name="otomasyon_herhangi_vakit">Bilo koji vakat</string>
+  <string name="otomasyon_kaydet">Sačuvajte</string>
+  <string name="otomasyon_kosul_icinde">Dok traje namasko vrijeme</string>
+  <string name="otomasyon_kosul_cikiyor">Dok vakat ističe (još %1$d min, Čuvar namaza uključen)</string>
+  <string name="otomasyon_kosul_camide">Dok ste u džamiji</string>
+  <string name="otomasyon_olay_girdi">Kada nastupi namasko vrijeme</string>
+  <string name="otomasyon_olay_cikiyor">Kada vakat ističe (još %1$d min, Čuvar namaza uključen)</string>
+  <string name="otomasyon_olay_camide">Kada se otkrije da ste u džamiji</string>
+</resources>

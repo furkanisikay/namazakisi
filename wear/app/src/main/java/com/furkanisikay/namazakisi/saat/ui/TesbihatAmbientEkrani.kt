@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.Tesbihat
 import com.furkanisikay.namazakisi.saat.cekirdek.TesbihatAmbient
@@ -37,7 +39,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.TesbihatAmbient
  */
 @Composable
 fun TesbihatAmbientEkrani(durum: Tesbihat.Durum, ambient: AmbientDurumu) {
-    val icerik = TesbihatAmbient.icerik(durum)
+    val icerik = TesbihatAmbient.icerik(durum, stringResource(R.string.dil_kodu))
     val kaydirma = TesbihatAmbient.kaydirma(ambient.adim, ambient.burnInKorumasi, Build.VERSION.SDK_INT)
     val ikincil = if (ambient.dusukBit) Color.White else renk(SaatPaleti.AMBIENT_IKINCIL)
     val iz = if (ambient.dusukBit) Color.White else renk(SaatPaleti.AMBIENT_IZ)
@@ -65,7 +67,7 @@ fun TesbihatAmbientEkrani(durum: Tesbihat.Durum, ambient: AmbientDurumu) {
                     modifier = Modifier.fillMaxWidth(guvenliGenislikOrani()),
                 ) {
                     Text(
-                        icerik.baslik,
+                        yerelRakam(icerik.baslik),
                         fontSize = sinirliBoyut(0.075f),
                         fontWeight = FontWeight.Light,
                         color = Color.White,
@@ -76,7 +78,7 @@ fun TesbihatAmbientEkrani(durum: Tesbihat.Durum, ambient: AmbientDurumu) {
                     icerik.sayi?.let {
                         // Dış hatlı rakam: yanan piksel az (düşük güç).
                         Text(
-                            it,
+                            yerelRakam(it),
                             style = RAKAM.copy(drawStyle = Stroke(width = 2f)),
                             fontSize = sabitBoyut(0.24f),
                             fontWeight = FontWeight.Medium,
@@ -84,7 +86,7 @@ fun TesbihatAmbientEkrani(durum: Tesbihat.Durum, ambient: AmbientDurumu) {
                         )
                     }
                     Text(
-                        icerik.alt,
+                        yerelRakam(icerik.alt),
                         fontSize = sinirliBoyut(0.052f),
                         maxLines = 1,
                         fontWeight = FontWeight.Light,

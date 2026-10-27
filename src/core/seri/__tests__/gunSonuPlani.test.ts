@@ -10,8 +10,8 @@
  * `simdi` ve imsak saglayicisi enjekte — sabit tarih, gercek konum yok.
  */
 import {
-  GUN_SONU_BASLIK,
-  GUN_SONU_GOVDE,
+  gunSonuBasligi,
+  gunSonuGovdesi,
   GUN_SONU_ID_ONEKI,
   gunSonuKimligindenGun,
   gunSonuPlaniOlustur,
@@ -166,14 +166,14 @@ describe('gun sonu bildirim metni (NOBETCI)', () => {
   test('telas simgesi yok, baslik ayar satiriyla eslesir, seri hadisi korunur', () => {
     // 2026-10-19 BILINCLI degisiklik: "🚨 Seri Hatırlatıcı" gece telas yaratiyordu
     // ve ayar satiri ("Günü tamamlamadıysam") ile eslesmiyordu.
-    expect(GUN_SONU_BASLIK).toBe('Günü tamamlamadınız · seri');
-    expect(GUN_SONU_BASLIK).not.toMatch(/🚨/u);
-    expect(GUN_SONU_GOVDE).toBe(
+    expect(gunSonuBasligi()).toBe('Günü tamamlamadınız · seri');
+    expect(gunSonuBasligi()).not.toMatch(/🚨/u);
+    expect(gunSonuGovdesi()).toBe(
       `Kıldığınız namazları gün bitmeden işaretlerseniz seriniz sürer.
 
 «${SERI_SOZU.metin}» (${SERI_SOZU.kaynak})`
     );
-    expect(GUN_SONU_GOVDE).toContain('Allah katında amellerin en sevimlisi, az da olsa devamlı olanıdır.');
+    expect(gunSonuGovdesi()).toContain('Allah katında amellerin en sevimlisi, az da olsa devamlı olanıdır.');
   });
 });
 

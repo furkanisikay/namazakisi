@@ -24,11 +24,11 @@ import { hatirlatmaKapisiDegisti } from '../hooks/useHatirlatmaKapisi';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Animated, Dimensions, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../components/common/YonluIkon';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useRenkler, useTema } from '../../core/theme';
@@ -37,9 +37,16 @@ import { Logger } from '../../core/utils/Logger';
 import { tumVakitBildirimAyarlariniGuncelle } from '../store/vakitBildirimSlice';
 import { muhafizAyarlariniGuncelle, presetAyarlariniOlustur } from '../store/muhafizSlice';
 import { konumAyarlariniGuncelle } from '../store/konumSlice';
+import { hesapAyariniKaydet } from '../store/hesapSlice';
+import { bolgeOnerisi } from '../../core/vakit/ulkeProfilleri';
+import { HESAP_PROFILLERI } from '../../core/vakit/hesapProfilleri';
+import { IKINDI_ADLARI } from '../../core/vakit/profilAdlari';
+import type { DunyaSehri } from '../../core/konum/dunyaSehirleri';
+import { useAktifDil, useMetin } from '../hooks/useMetin';
+import { bicim, metin } from '../../core/dil/aktifDil';
 import { hatirlatmaRizasiVer } from '../store/hatirlatmaRizaSlice';
 import { sadeGorunumuAyarla } from '../store/sadeGorunumSlice';
-import type { AppDispatch } from '../store/store';
+import type { AppDispatch, RootState } from '../store/store';
 import type { RootStackParamList } from '../../navigation/AppNavigator';
 import type { Il } from '../../domain/services/TurkiyeKonumServisi';
 import { alaniOku } from '../../domain/services/CihazDurumOkuyucu';
@@ -56,6 +63,7 @@ import {
     HosgeldinizAdimi,
     KonumAdimi,
     VARSAYILAN_KURULUM_SECIMLERI,
+    type ManuelBolge,
     type KurulumSecimleri,
 } from './KurulumSihirbazi/adimlar';
 import { cumaHatirlatmaAyariniGuncelle } from '../store/cumaHatirlatmaSlice';
@@ -64,8 +72,12 @@ import { VARSAYILAN_GECE_SESSIZLIGI } from '../../core/muhafiz/geceSessizligi';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { sesliBilgiMetni } from '../../core/hatirlatma/duzeyOzeti';
 import { AlarmOnayModal } from '../components/hatirlatma/AlarmOnayModal';
+import { DilSecimModali } from '../components/dil/DilSecimModali';
+import { cihazYerelAyari, DilServisi } from '../../domain/services/DilServisi';
+import { dilSeciciGorunur } from '../../core/dil/diller';
 import { useAlarmIzinleri } from '../hooks/useAlarmIzinleri';
 import { usePlatformYetenekleri } from '../hooks/usePlatformYetenekleri';
+import { yatayIsaret } from '../components/common/yon';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'KurulumSihirbazi'>;
 
@@ -76,7 +88,7 @@ export const GPS_ZAMAN_ASIMI_MS = 15000;
 
 export function zamanAsimiyla<T>(is: Promise<T>, ms: number): Promise<T> {
     return new Promise<T>((coz, reddet) => {
-        const z = setTimeout(() => reddet(new Error('zaman aşımı')), ms);
+        const z = setTimeout(() => reddet(new Error('zaman aşımı')), ms); // dil-haric: iç hata, ekranda gösterilmez
         is.then(
             (d) => {
                 clearTimeout(z);
@@ -98,6 +110,8 @@ const bildirimIzniIste = () => Notifications.requestPermissionsAsync();
 export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     const dispatch = useDispatch<AppDispatch>();
     const renkler = useRenkler();
+    const m = useMetin();
+    const md = m.kurulum.dugme;
     const { koyuMu } = useTema();
     const azalt = useHareketAzalt();
 
@@ -110,6 +124,11 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     const [konumBilgi, setKonumBilgi] = useState('');
     const [konumHata, setKonumHata] = useState<string | null>(null);
     const [manuelIl, setManuelIl] = useState<Il | null>(null);
+    const [manuelBolge, setManuelBolge] = useState<ManuelBolge>('turkiye');
+    const [dunyaSehri, setDunyaSehri] = useState<DunyaSehri | null>(null);
+    /** Türkiye dışında kurulan hesap yöntemi (özet satırı). */
+    const [kurulanYontem, setKurulanYontem] = useState<string | undefined>(undefined);
+    const hesap = useSelector((s: RootState) => s.hesap);
 
     // Bildirim
     const bildirimIzin = useIzinAkisi({ oku: bildirimIzniOku, iste: bildirimIzniIste, kapanisBeklemeMs: 0 });
@@ -139,7 +158,25 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     const yetenekler = usePlatformYetenekleri();
     const alarmIzinleri = useAlarmIzinleri(adim === 'duzey', yetenekler.platform);
     const [alarmOnayAcik, setAlarmOnayAcik] = useState(false);
-    const sesliOrnek = useMemo(() => anonsMetniniCoz(ANONS_SABLONLARI[0], 'ogle', 3), []);
+    const dilKodu = useAktifDil();
+    // Hazır şablon çözüm anında etkin dile çevrilir → dil değişince örnek yeniden üretilir.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const sesliOrnek = useMemo(() => anonsMetniniCoz(ANONS_SABLONLARI[0], 'ogle', 3), [dilKodu]);
+
+    // Dil bağlantısı: cihaz dili Türkçe değilse ve seçilebilir birden çok dil varsa (sahip kararı).
+    const yerel = useMemo(() => cihazYerelAyari(), []);
+    const dilBaglantisi = useMemo(
+        () => !!yerel && yerel.split(/[-_]/)[0] !== 'tr' && dilSeciciGorunur(),
+        [yerel],
+    );
+    const [dilModali, setDilModali] = useState(false);
+    const [dilSecimVar, setDilSecimVar] = useState<boolean | null>(null);
+    const dilModaliniAc = useCallback(() => {
+        setDilModali(true);
+        void DilServisi.secimVar().then(setDilSecimVar);
+    }, []);
+    const dilModaliniKapat = useCallback(() => setDilModali(false), []);
+    const dilDegisti = useCallback((secim: string) => setDilSecimVar(secim !== 'cihaz'), []);
 
     // Kayıt
     const [kaydediliyor, setKaydediliyor] = useState(false);
@@ -156,7 +193,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
         };
     }, [konumYenidenOku, bildirimYenidenOku]);
 
-    // ─── Adım geçişi: opaklık + 16 dp kayma (ileri sağdan, geri soldan) ─────────
+    // ─── Adım geçişi: opaklık + 16 dp kayma (ileri sondan, geri baştan; sağdan solada aynalı) ─
     const opaklik = useRef(new Animated.Value(1)).current;
     const kayma = useRef(new Animated.Value(0)).current;
     const gec = useCallback(
@@ -166,7 +203,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                 setAdimNo(hedef);
                 return;
             }
-            const yon = hedef > adimNo ? 1 : -1;
+            const yon = (hedef > adimNo ? 1 : -1) * yatayIsaret();
             Animated.parallel([
                 Animated.timing(opaklik, { toValue: 0, duration: 120, easing: EGRI.cikis, useNativeDriver: true }),
                 Animated.timing(kayma, { toValue: -KAYMA * yon, duration: 120, easing: EGRI.cikis, useNativeDriver: true }),
@@ -199,6 +236,36 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     useDonanimGeriTusu(adimNo > 0, donanimGeri);
 
     // ─── Konum ───────────────────────────────────────────────────────────────
+    /**
+     * İlk kurulumda Türkiye dışı ülke seçilince o ülkenin yöntemi DOĞRUDAN kurulur ve "Her şey
+     * hazır" özetinde söylenir (ana ekranda ayrıca sorulmaz: ülke `sorulanUlkeler`'e yazılır).
+     * Hesap ayarı yüklenmediyse karar ana ekrandaki tek seferlik soruya kalır.
+     */
+    const ulkeHesabiniKur = useCallback(
+        (ulke: string) => {
+            const ayar = hesap?.ayar;
+            if (!hesap?.yuklendi || !ayar) return;
+            const oneri = bolgeOnerisi(ulke, ayar);
+            if (!oneri) {
+                setKurulanYontem(undefined);
+                return;
+            }
+            void dispatch(
+                hesapAyariniKaydet({
+                    ...ayar,
+                    profil: oneri.profil,
+                    ikindi: oneri.ikindi,
+                    ofsetler: undefined,
+                    aci: undefined,
+                    sorulanUlkeler: [...(ayar.sorulanUlkeler ?? []), ulke],
+                }),
+            );
+            const profil = HESAP_PROFILLERI[oneri.profil];
+            setKurulanYontem(`${profil.kisaAd} · ${IKINDI_ADLARI[oneri.ikindi ?? profil.ikindi]}`);
+        },
+        [hesap, dispatch],
+    );
+
     const konumuAl = useCallback(async () => {
         setKonumHata(null);
         setKonumDurumu('aliniyor');
@@ -211,9 +278,11 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             if (tur !== konumTuru.current) return; // Kullanıcı vazgeçti.
             const { latitude: lat, longitude: lng } = konum.coords;
             let gpsAdres = { il: '', ilce: '', semt: '' };
+            let ulkeKodu: string | undefined;
             try {
                 const g = (await Location.reverseGeocodeAsync({ latitude: lat, longitude: lng }))[0];
                 if (g) gpsAdres = { il: g.city || g.region || '', ilce: g.district || g.subregion || '', semt: g.street || '' };
+                ulkeKodu = g?.isoCountryCode || undefined;
             } catch (error) {
                 // Ters geocode isteğe bağlı; koordinat yine kullanılır.
                 Logger.warn('KurulumSihirbazi', 'Ters geocode başarısız', error);
@@ -225,17 +294,20 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                     koordinatlar: { lat, lng },
                     gpsAdres,
                     sonGpsGuncellemesi: new Date().toISOString(),
+                    ulkeKodu,
+                    dunyaSehri: null,
                 }),
             );
-            setKonumBilgi(gpsAdres.ilce || gpsAdres.il || 'Bulunduğunuz yer');
+            if (ulkeKodu) ulkeHesabiniKur(ulkeKodu);
+            setKonumBilgi(gpsAdres.ilce || gpsAdres.il || metin().kurulum.konum.bulunduguYer);
             setKonumDurumu('alindi');
         } catch (error) {
             if (tur !== konumTuru.current) return;
             Logger.warn('KurulumSihirbazi', 'Konum alınamadı', error);
-            setKonumHata('Konumunuz bulunamadı. Şehrinizi seçin.');
+            setKonumHata(metin().kurulum.konum.bulunamadi);
             setKonumDurumu('manuel');
         }
-    }, [dispatch]);
+    }, [dispatch, ulkeHesabiniKur]);
 
     const { istekBaslat: konumIstekBaslat, durum: konumIzinDurumu } = konumIzin;
     const konumBul = useCallback(async () => {
@@ -248,7 +320,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             const sonuc = await konumIstekBaslat();
             if (sonuc === null) {
                 // Durum okunamadı: sessiz kalma, yedek yolu söyle.
-                setKonumHata('Konum izni okunamadı. Şehrinizi seçin.');
+                setKonumHata(metin().kurulum.konum.izinOkunamadi);
                 setKonumDurumu('manuel');
                 return;
             }
@@ -272,11 +344,34 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                 koordinatlar: { lat: manuelIl.lat, lng: manuelIl.lng },
                 seciliIlceId: null,
                 seciliIlceAdi: '',
+                ulkeKodu: 'TR',
+                dunyaSehri: null,
             }),
         );
+        ulkeHesabiniKur('TR');
         setKonumBilgi(manuelIl.ad);
         ilerle();
-    }, [manuelIl, dispatch, ilerle]);
+    }, [manuelIl, dispatch, ilerle, ulkeHesabiniKur]);
+
+    const dunyaKonumuKaydet = useCallback(() => {
+        if (!dunyaSehri) return;
+        dispatch(
+            konumAyarlariniGuncelle({
+                konumModu: 'manuel',
+                seciliSehirId: '',
+                seciliIlId: null,
+                seciliIlceId: null,
+                seciliIlAdi: dunyaSehri.ad,
+                seciliIlceAdi: '',
+                koordinatlar: { lat: dunyaSehri.lat, lng: dunyaSehri.lng },
+                ulkeKodu: dunyaSehri.ulke,
+                dunyaSehri: { ad: dunyaSehri.ad, ulke: dunyaSehri.ulke, bolge: dunyaSehri.bolge, saatDilimi: dunyaSehri.saatDilimi },
+            }),
+        );
+        ulkeHesabiniKur(dunyaSehri.ulke);
+        setKonumBilgi(dunyaSehri.ad);
+        ilerle();
+    }, [dunyaSehri, dispatch, ilerle, ulkeHesabiniKur]);
 
     // ─── Tamamla ─────────────────────────────────────────────────────────────
     const kurulumuTamamla = useCallback(async () => {
@@ -344,7 +439,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             navigation.replace('MainTabs');
         } catch (error) {
             Logger.error('KurulumSihirbazi', 'Kurulum tamamlanamadı', error);
-            setKayitHatasi('Ayarlar kaydedilemedi. Tekrar deneyin.');
+            setKayitHatasi(metin().kurulum.hazir.kayitHatasi);
             setKaydediliyor(false);
         }
     }, [dispatch, duzey, sade, secimler, navigation, rolSorusu, anaCihaz]);
@@ -374,7 +469,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                 <ActivityIndicator color={renkler.birincilMetin} />
             ) : (
                 <>
-                    <FontAwesome5 name={ikon} size={15} color={renkler.birincilMetin} solid style={{ marginRight: 10 }} />
+                    <YonluIkon name={ikon} size={15} color={renkler.birincilMetin} solid style={{ marginRight: 10 }} />
                     <Text style={{ fontSize: 17, fontWeight: '700', color: renkler.birincilMetin }}>{etiket}</Text>
                 </>
             )}
@@ -391,32 +486,37 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.birincil }}>{etiket}</Text>
         </TouchableOpacity>
     );
-    const devam = () => birincil('Devam edin', 'arrow-right', ilerle, 'devam');
+    const devam = () => birincil(m.ortak.devamEdin, 'arrow-right', ilerle, 'devam');
 
     const dugmeler = (): React.ReactNode => {
         switch (adim) {
             case 'hosgeldiniz':
-                return birincil('Başlayın', 'arrow-right', ilerle, 'basla');
+                return birincil(md.baslayin, 'arrow-right', ilerle, 'basla');
             case 'konum': {
                 if (konumDurumu === 'alindi') return devam();
                 if (konumDurumu === 'aliniyor') {
                     return (
                         <>
-                            {birincil('Konum bulunuyor', 'map-marker-alt', () => undefined, 'konum-bul', true)}
-                            {ikincil('Vazgeçin, şehrimi seçeceğim', konumVazgec, 'konum-vazgec')}
+                            {birincil(md.konumBulunuyor, 'map-marker-alt', () => undefined, 'konum-bul', true)}
+                            {ikincil(md.vazgecSehrimiSecerim, konumVazgec, 'konum-vazgec')}
                         </>
                     );
+                }
+                if (konumDurumu === 'manuel' && manuelBolge === 'dunya') {
+                    return dunyaSehri
+                        ? birincil(bicim(md.ileDevam, { ad: dunyaSehri.ad }), 'check', dunyaKonumuKaydet, 'manuel-devam')
+                        : birincil(md.sehirSecin, 'city', () => undefined, 'manuel-devam', false, true);
                 }
                 if (konumDurumu === 'manuel') {
                     return (
                         <>
                             {manuelIl
-                                ? birincil(`${manuelIl.ad} ile devam edin`, 'check', manuelKonumKaydet, 'manuel-devam')
-                                : birincil('Şehir seçin', 'city', () => undefined, 'manuel-devam', false, true)}
+                                ? birincil(bicim(md.ileDevam, { ad: manuelIl.ad }), 'check', manuelKonumKaydet, 'manuel-devam')
+                                : birincil(md.sehirSecin, 'city', () => undefined, 'manuel-devam', false, true)}
                             {konumIzin.durum === 'verildi'
-                                ? ikincil('Konumumu bulun', () => void konumBul(), 'konum-bul')
+                                ? ikincil(md.konumumuBulun, () => void konumBul(), 'konum-bul')
                                 : konumIzin.sonuc === 'ayarlar' || konumIzin.durum === 'reddedildi'
-                                  ? ikincil('Ayarları açın', () => void konumIzin.ayarlariAc(), 'konum-ayarlar')
+                                  ? ikincil(m.ortak.ayarlariAcin, () => void konumIzin.ayarlariAc(), 'konum-ayarlar')
                                   : null}
                         </>
                     );
@@ -425,13 +525,13 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                 return (
                     <>
                         {birincil(
-                            konumIzin.durum === 'verildi' ? 'Konumumu kullanın' : 'Konumumu bulun',
+                            konumIzin.durum === 'verildi' ? md.konumumuKullanin : md.konumumuBulun,
                             'crosshairs',
                             () => void konumBul(),
                             'konum-bul',
                             konumIzin.istiyor,
                         )}
-                        {ikincil('Şehrimi kendim seçeceğim', () => setKonumDurumu('manuel'), 'konum-manuel')}
+                        {ikincil(md.sehrimiKendimSecerim, () => setKonumDurumu('manuel'), 'konum-manuel')}
                     </>
                 );
             }
@@ -442,34 +542,34 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                 return (
                     <>
                         {kalici
-                            ? birincil('Ayarları açın', 'cog', () => void bildirimIzin.ayarlariAc(), 'bildirim-ayarlar')
+                            ? birincil(m.ortak.ayarlariAcin, 'cog', () => void bildirimIzin.ayarlariAc(), 'bildirim-ayarlar')
                             : birincil(
-                                  bildirimIzin.sonuc === 'tekrarDene' ? 'Tekrar deneyin' : 'Bildirimlere izin verin',
+                                  bildirimIzin.sonuc === 'tekrarDene' ? m.ortak.tekrarDeneyin : md.bildirimeIzin,
                                   'bell',
                                   () => void bildirimIzin.istekBaslat(),
                                   'bildirim-izin',
                                   bildirimIzin.istiyor,
                               )}
-                        {ikincil('Şimdilik geçin', ilerle, 'bildirim-gec')}
+                        {ikincil(m.ortak.simdilikGecin, ilerle, 'bildirim-gec')}
                     </>
                 );
             }
             case 'duzey':
                 return devam();
             case 'hazir':
-                return birincil(kayitHatasi ? 'Tekrar deneyin' : 'Başlayın', 'check', () => void kurulumuTamamla(), 'tamamla', kaydediliyor);
+                return birincil(kayitHatasi ? m.ortak.tekrarDeneyin : md.baslayin, 'check', () => void kurulumuTamamla(), 'tamamla', kaydediliyor);
         }
     };
 
     const hazirOzeti = useMemo(
-        () => ({ konum: konumBilgi, bildirim: bildirimIzin.durum === 'verildi', duzey, sade, secimler }),
-        [konumBilgi, bildirimIzin.durum, duzey, sade, secimler],
+        () => ({ konum: konumBilgi, bildirim: bildirimIzin.durum === 'verildi', duzey, sade, secimler, yontem: kurulanYontem }),
+        [konumBilgi, bildirimIzin.durum, duzey, sade, secimler, kurulanYontem],
     );
 
     const icerik = (): React.ReactNode => {
         switch (adim) {
             case 'hosgeldiniz':
-                return <HosgeldinizAdimi />;
+                return <HosgeldinizAdimi onDil={dilBaglantisi ? dilModaliniAc : undefined} />;
             case 'konum':
                 return (
                     <KonumAdimi
@@ -480,6 +580,10 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                         hata={konumHata}
                         manuelIl={manuelIl}
                         onIlSec={setManuelIl}
+                        bolge={manuelBolge}
+                        onBolge={setManuelBolge}
+                        dunyaSehri={dunyaSehri}
+                        onDunyaSehriSec={setDunyaSehri}
                     />
                 );
             case 'bildirim':
@@ -506,7 +610,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     };
 
     // Liste (il seçimi) kendi kayar; diğer adımlar tek ScrollView.
-    const listeli = adim === 'konum' && konumDurumu === 'manuel';
+    const listeli = adim === 'konum' && konumDurumu === 'manuel' && manuelBolge === 'turkiye';
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: renkler.arkaplan }} edges={['top', 'bottom', 'left', 'right']}>
@@ -518,11 +622,11 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                     <TouchableOpacity
                         onPress={geriDon}
                         accessibilityRole="button"
-                        accessibilityLabel="Önceki adım"
+                        accessibilityLabel={md.oncekiAdim}
                         testID="geri"
                         style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
                     >
-                        <FontAwesome5 name="arrow-left" size={17} color={renkler.metin} />
+                        <YonluIkon name="arrow-left" size={17} color={renkler.metin} />
                     </TouchableOpacity>
                 ) : (
                     <View style={{ width: 44, height: 44 }} />
@@ -531,7 +635,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                     style={{ flex: 1, marginHorizontal: 8 }}
                     accessible
                     accessibilityRole="progressbar"
-                    accessibilityLabel={`Adım ${adimNo + 1} / ${TOPLAM}`}
+                    accessibilityLabel={bicim(md.adim, { n: adimNo + 1, toplam: TOPLAM })}
                     accessibilityValue={{ min: 1, max: TOPLAM, now: adimNo + 1 }}
                     testID="ilerleme"
                 >
@@ -549,7 +653,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                         ))}
                     </View>
                     <Text style={{ marginTop: 6, fontSize: 13, textAlign: 'center', color: renkler.metinIkincil }}>
-                        Adım {adimNo + 1} / {TOPLAM}
+                        {bicim(md.adim, { n: adimNo + 1, toplam: TOPLAM })}
                     </Text>
                 </View>
                 <View style={{ width: 44, height: 44 }} />
@@ -584,6 +688,13 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                     onIptal={() => setAlarmOnayAcik(false)}
                 />
             ) : null}
+            <DilSecimModali
+                gorunur={dilModali}
+                onKapat={dilModaliniKapat}
+                secimVar={dilSecimVar}
+                cihazYerelAyari={yerel}
+                onDegisti={dilDegisti}
+            />
         </SafeAreaView>
     );
 };

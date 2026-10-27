@@ -3,6 +3,8 @@ import { View, Text, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 interface PaylasilabilirSeriProps {
     mevcutSeri: number;
@@ -13,6 +15,8 @@ const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.85;
 
 export const PaylasilabilirSeri: React.FC<PaylasilabilirSeriProps> = ({ mevcutSeri, enUzunSeri }) => {
+    // Paylaşılan kart kişinin kendi sesidir (ben dili), etkin dilde.
+    const m = useMetin().seri.paylasim;
 
     return (
         <LinearGradient
@@ -35,7 +39,7 @@ export const PaylasilabilirSeri: React.FC<PaylasilabilirSeriProps> = ({ mevcutSe
                     style={{ marginRight: 6 }}
                 />
                 <Text className="text-white/90 text-xs font-semibold">
-                    En Uzun Serim: {enUzunSeri} Gün
+                    {sayili(m.seriEnUzun, enUzunSeri)}
                 </Text>
             </View>
 
@@ -57,13 +61,13 @@ export const PaylasilabilirSeri: React.FC<PaylasilabilirSeriProps> = ({ mevcutSe
                 </Text>
 
                 <Text className="text-white/90 text-xl font-bold uppercase tracking-widest mb-8">
-                    GÜNDÜR ZİNCİRİ KIRMADIM!
+                    {sayili(m.seriZincir, mevcutSeri)}
                 </Text>
 
                 {/* Motivasyon Mesajı */}
                 <View className="bg-white/10 px-6 py-4 rounded-2xl backdrop-blur-md border border-white/20">
                     <Text className="text-white text-center font-medium text-base leading-6 italic">
-                        "Her gün küçük bir adım, ruhumda büyük bir huzur. 🔥"
+                        {m.seriSoz}
                     </Text>
                 </View>
 
@@ -72,7 +76,7 @@ export const PaylasilabilirSeri: React.FC<PaylasilabilirSeriProps> = ({ mevcutSe
             {/* Alt Logo */}
             <View className="absolute bottom-8 flex-row items-center opacity-90">
                 <FontAwesome5 name="mosque" size={16} color="white" style={{ marginRight: 8 }} />
-                <Text className="text-white font-bold tracking-widest uppercase text-xs">Namaz Akışı</Text>
+                <Text className="text-white font-bold tracking-widest uppercase text-xs">{m.marka}</Text>
             </View>
 
         </LinearGradient>

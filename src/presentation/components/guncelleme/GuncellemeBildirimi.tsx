@@ -26,6 +26,7 @@ import {
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { yonluIkonStili } from '../common/yon';
 import { useRenkler } from '../../../core/theme';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { Logger } from '../../../core/utils/Logger';
@@ -37,6 +38,7 @@ import {
 } from '../../store/guncellemeSlice';
 import { yayinTarihiniFormatla, guvenilirBaglantiMi } from '../../../domain/services/GuncellemeServisi';
 import { PlayStoreModulu } from '../../../domain/services/PlayStoreGuncellemeModulu';
+import { useMetin } from '../../hooks/useMetin';
 
 /**
  * Guncelleme bildirimi bileseni
@@ -44,6 +46,7 @@ import { PlayStoreModulu } from '../../../domain/services/PlayStoreGuncellemeMod
  */
 export const GuncellemeBildirimi: React.FC = () => {
   const renkler = useRenkler();
+  const m = useMetin().genel.guncelleme;
   const dispatch = useAppDispatch();
 
   const guncellemeMevcut = useAppSelector((state) => state.guncelleme.guncellemeMevcut);
@@ -249,17 +252,17 @@ export const GuncellemeBildirimi: React.FC = () => {
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 15, fontWeight: '700', color: renkler.metin }}>
-                Güncelleme indirildi
+                {m.indirildi}
               </Text>
               <Text style={{ fontSize: 12, color: renkler.metinIkincil, marginTop: 2 }}>
-                Kurulumu tamamlamak için uygulamayı yeniden başlatın.
+                {m.yenidenBaslatin}
               </Text>
             </View>
             <TouchableOpacity
               onPress={() => dispatch(indirmeDurumuSifirla())}
               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
               accessibilityRole="button"
-              accessibilityLabel="Bildirimi kapat"
+              accessibilityLabel={m.bildirimiKapat}
               style={{
                 width: 28,
                 height: 28,
@@ -285,7 +288,7 @@ export const GuncellemeBildirimi: React.FC = () => {
             <TouchableOpacity
               onPress={yenidenBaslatBasildi}
               accessibilityRole="button"
-              accessibilityLabel="Uygulamayı yeniden başlat"
+              accessibilityLabel={m.yenidenBaslatErisim}
               style={{
                 flex: 1,
                 flexDirection: 'row',
@@ -300,7 +303,7 @@ export const GuncellemeBildirimi: React.FC = () => {
             >
               <MaterialIcons name="restart-alt" size={16} color="#FFFFFF" />
               <Text style={{ fontSize: 13, fontWeight: '700', color: '#FFFFFF' }}>
-                Yeniden Başlat
+                {m.yenidenBaslat}
               </Text>
             </TouchableOpacity>
           </View>
@@ -383,7 +386,7 @@ export const GuncellemeBildirimi: React.FC = () => {
                 color: renkler.metin,
               }}
             >
-              Yeni Sürüm Mevcut
+              {m.yeniSurumMevcut}
             </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
               <FontAwesome5
@@ -404,7 +407,7 @@ export const GuncellemeBildirimi: React.FC = () => {
                 name="arrow-forward"
                 size={12}
                 color={renkler.metinIkincil}
-                style={{ marginHorizontal: 4 }}
+                style={[{ marginHorizontal: 4 }, yonluIkonStili('arrow-forward')]}
               />
               <Text
                 style={{
@@ -434,7 +437,7 @@ export const GuncellemeBildirimi: React.FC = () => {
             onPress={sonraBasildi}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
             accessibilityRole="button"
-            accessibilityLabel="Bildirimi kapat"
+            accessibilityLabel={m.bildirimiKapat}
             style={{
               width: 28,
               height: 28,
@@ -490,7 +493,7 @@ export const GuncellemeBildirimi: React.FC = () => {
           <TouchableOpacity
             onPress={sonraBasildi}
             accessibilityRole="button"
-            accessibilityLabel="Sonra güncelle"
+            accessibilityLabel={m.sonraGuncelle}
             style={{
               flex: 1,
               paddingVertical: 10,
@@ -508,7 +511,7 @@ export const GuncellemeBildirimi: React.FC = () => {
                 color: renkler.metinIkincil,
               }}
             >
-              Sonra
+              {m.sonra}
             </Text>
           </TouchableOpacity>
 
@@ -516,7 +519,7 @@ export const GuncellemeBildirimi: React.FC = () => {
           <TouchableOpacity
             onPress={guncelleBasildi}
             accessibilityRole="button"
-            accessibilityLabel="Şimdi güncelle"
+            accessibilityLabel={m.simdiGuncelle}
             style={{
               flex: 2,
               flexDirection: 'row',
@@ -541,7 +544,7 @@ export const GuncellemeBildirimi: React.FC = () => {
                 color: '#FFFFFF',
               }}
             >
-              Güncelle
+              {m.guncelle}
             </Text>
           </TouchableOpacity>
         </View>

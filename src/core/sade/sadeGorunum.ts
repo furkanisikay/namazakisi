@@ -19,6 +19,8 @@
  */
 import { NamazAdi } from '../constants/UygulamaSabitleri';
 import { namazGorunenAdi } from '../utils/cumaYardimcisi';
+import { bicim, metin } from '../dil/aktifDil';
+import { dakikaKisa, dakikaUzun } from '../dil/sure';
 import { kontrastOrani } from '../utils/kontrastOrani';
 
 /** `NamazVaktiHesaplayiciServisi.VakitBilgisi.vakit` ile aynı uzay (yapısal uyum). */
@@ -47,28 +49,17 @@ const KOD_NAMAZ: Record<SadeVakitKodu, NamazAdi> = {
   yatsi: NamazAdi.Yatsi,
 };
 
-/** Cümle içi küçük harf — SABİT harita (Türkçe `i/İ` tuzağı). */
-const KUCUK_AD: Record<string, string> = {
-  Sabah: 'sabah',
-  Güneş: 'güneş',
-  Öğle: 'öğle',
-  İkindi: 'ikindi',
-  Akşam: 'akşam',
-  Yatsı: 'yatsı',
-  Cuma: 'cuma',
+/** Cümle içi küçük ad (sözlükte sabit harita — Türkçe `i/İ` tuzağı). Cuma, öğlenin görünen adıdır. */
+const kucukAd = (kod: SadeVakitKodu, gorunenAd: string): string => {
+  const v = metin().vakit;
+  return gorunenAd === v.cuma ? v.cumaKucuk : v.kucuk[kod];
 };
 
 /** "Sıradaki" satırında güneş bir namaz değil, sabah vaktinin bitişidir. */
-const SONRAKI_ETIKET: Record<SadeVakitKodu, string> = {
-  imsak: 'Sabah',
-  gunes: 'Güneş doğuşu',
-  ogle: 'Öğle',
-  ikindi: 'İkindi',
-  aksam: 'Akşam',
-  yatsi: 'Yatsı',
+const sonrakiEtiketi = (kod: SadeVakitKodu): string => {
+  const v = metin().vakit;
+  return kod === 'gunes' ? v.gunesDogusu : v.adlar[kod];
 };
-
-const kucukAd = (ad: string): string => KUCUK_AD[ad] ?? ad;
 
 const saatMetni = (t: Date): string =>
   `${t.getHours().toString().padStart(2, '0')}:${t.getMinutes().toString().padStart(2, '0')}`;
@@ -80,20 +71,10 @@ export function kalanDakika(kalanMs: number): number {
 }
 
 /** Ekranda: "42 dk", "1 sa 5 dk", "2 sa". */
-export function kalanSureKisa(dk: number): string {
-  if (dk < 60) return `${dk} dk`;
-  const sa = Math.floor(dk / 60);
-  const kalan = dk % 60;
-  return kalan === 0 ? `${sa} sa` : `${sa} sa ${kalan} dk`;
-}
+export const kalanSureKisa = dakikaKisa;
 
 /** Sesli okumada: "42 dakika", "1 saat 5 dakika". */
-export function kalanSureUzun(dk: number): string {
-  if (dk < 60) return `${dk} dakika`;
-  const sa = Math.floor(dk / 60);
-  const kalan = dk % 60;
-  return kalan === 0 ? `${sa} saat` : `${sa} saat ${kalan} dakika`;
-}
+export const kalanSureUzun = dakikaUzun;
 
 export interface SadeDurumGirdisi {
   /** Şu anki vakit (`VakitBilgisi.vakit`); hesap hazır değilse null. */
@@ -142,11 +123,11 @@ export interface SadeDurum {
   okunacakMetin: string;
 }
 
-const BOS_DURUM: SadeDurum = {
+const bosDurum = (): SadeDurum => ({
   tur: 'yok',
   namazAdi: null,
-  vakitAdi: 'Namaz vakti',
-  ustEtiket: 'Hesaplanıyor',
+  vakitAdi: metin().sade.bosBaslik,
+  ustEtiket: metin().sade.hesaplaniyor,
   kalanDk: 0,
   kalanMetni: '',
   kalanEtiketi: '',
@@ -155,12 +136,13 @@ const BOS_DURUM: SadeDurum = {
   kildimEtkin: false,
   kerahat: false,
   sonrakiMetni: null,
-  okunacakMetin: 'Vakit bilgisi henüz hazır değil. Konumunuzu kontrol edin.',
-};
+  okunacakMetin: metin().sade.hazirDegil,
+});
 
 /** Sade görünümün tek karar noktası. */
 export function sadeDurumuHesapla(g: SadeDurumGirdisi): SadeDurum {
-  if (!g.vakit || !g.sonrakiGiris || Number.isNaN(g.sonrakiGiris.getTime())) return BOS_DURUM;
+  if (!g.vakit || !g.sonrakiGiris || Number.isNaN(g.sonrakiGiris.getTime())) return bosDurum();
+  const m = metin().sade;
 
   const kalanDk = kalanDakika(g.sonrakiGiris.getTime() - g.simdi.getTime());
   const kalanMetni = kalanSureKisa(kalanDk);
@@ -168,17 +150,15 @@ export function sadeDurumuHesapla(g: SadeDurumGirdisi): SadeDurum {
   if (g.vakit === 'gunes') {
     const ad = namazGorunenAdi(NamazAdi.Ogle, g.simdi, g.cumaEtiketi);
     return {
-      ...BOS_DURUM,
+      ...bosDurum(),
       tur: 'girmedi',
       vakitAdi: ad,
-      ustEtiket: 'Henüz girmedi',
+      ustEtiket: m.henuzGirmedi,
       kalanDk,
       kalanMetni,
-      kalanEtiketi: 'Girmesine',
-      sonrakiMetni: `Giriş · ${saatMetni(g.sonrakiGiris)}`,
-      okunacakMetin:
-        `${ad} vakti henüz girmedi. Girmesine ${kalanSureUzun(kalanDk)} var. ` +
-        `Giriş saati ${saatMetni(g.sonrakiGiris)}.`,
+      kalanEtiketi: m.girmesine,
+      sonrakiMetni: bicim(m.giris, { saat: saatMetni(g.sonrakiGiris) }),
+      okunacakMetin: bicim(m.girmediSesli, { ad, sure: kalanSureUzun(kalanDk), saat: saatMetni(g.sonrakiGiris) }),
     };
   }
 
@@ -194,27 +174,31 @@ export function sadeDurumuHesapla(g: SadeDurumGirdisi): SadeDurum {
   }
 
   // Bilinmeyen kod (bozuk girdi) "undefined · 18:12" yazmasın: satır hiç çizilmez.
-  const sonrakiEtiket = g.sonrakiVakit ? SONRAKI_ETIKET[g.sonrakiVakit] : undefined;
-  const sonrakiMetni = sonrakiEtiket ? `${sonrakiEtiket} · ${saatMetni(g.sonrakiGiris)}` : null;
+  const sonrakiKod = g.sonrakiVakit && g.sonrakiVakit in KOD_NAMAZ ? g.sonrakiVakit : null;
+  const sonrakiEtiket = sonrakiKod ? sonrakiEtiketi(sonrakiKod) : undefined;
+  const sonrakiMetni = sonrakiEtiket ? bicim(m.sonraki, { ad: sonrakiEtiket, saat: saatMetni(g.sonrakiGiris) }) : null;
   const kerahat = g.mekruhMu && !g.tamamlandi;
 
-  const cumleler = [`Şimdi ${kucukAd(ad)} vakti.`];
-  if (g.tamamlandi) cumleler.push(`${ad} namazını kıldınız.${g.kabulMetni ? ` ${g.kabulMetni}.` : ''}`);
-  cumleler.push(`Çıkmasına ${kalanSureUzun(kalanDk)} var.`);
-  if (kerahat) cumleler.push('Şu an kerahat vakti.');
-  if (sonrakiEtiket) {
-    const sonrakiAd = g.sonrakiVakit === 'gunes' ? 'güneş doğuşu' : `${kucukAd(sonrakiEtiket)} vakti`;
-    cumleler.push(`Sıradaki ${sonrakiAd}, saat ${saatMetni(g.sonrakiGiris)}.`);
+  const cumleler = [bicim(m.simdiSesli, { ad: kucukAd(g.vakit, ad) })];
+  if (g.tamamlandi) cumleler.push(`${bicim(m.kildinizSesli, { ad })}${g.kabulMetni ? ` ${g.kabulMetni}.` : ''}`);
+  cumleler.push(bicim(m.cikmasinaSesli, { sure: kalanSureUzun(kalanDk) }));
+  if (kerahat) cumleler.push(m.kerahatSesli);
+  if (sonrakiKod) {
+    const sonrakiAd =
+      sonrakiKod === 'gunes'
+        ? metin().vakit.gunesDogusuKucuk
+        : bicim(m.siradakiVakit, { ad: kucukAd(sonrakiKod, sonrakiEtiketi(sonrakiKod)) });
+    cumleler.push(bicim(m.siradakiSesli, { ad: sonrakiAd, saat: saatMetni(g.sonrakiGiris) }));
   }
 
   return {
     tur: 'vakit',
     namazAdi,
     vakitAdi: ad,
-    ustEtiket: 'Şimdi',
+    ustEtiket: m.simdi,
     kalanDk,
     kalanMetni,
-    kalanEtiketi: 'Çıkmasına',
+    kalanEtiketi: m.cikmasina,
     ilerleme,
     tamamlandi: g.tamamlandi,
     kildimEtkin: g.kayitHazir && !g.tamamlandi,

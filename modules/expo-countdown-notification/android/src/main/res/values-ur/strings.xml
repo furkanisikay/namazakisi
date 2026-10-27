@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Geri sayım metinleri — Urduca (beta). Terimler: JS src/core/dil/sozluk/ur (sayac, nowBar). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">لائیو الٹی گنتیاں</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar اور اسٹیٹس بار میں الٹی گنتیاں</string>
+    <string name="countdown_kanal_genel_ad">الٹی گنتی کی اطلاعات</string>
+    <string name="countdown_kanal_genel_aciklama">الٹی گنتی کی اطلاعات کے لیے</string>
+
+    <string name="countdown_eylem_kildim">نماز پڑھ لی</string>
+    <string name="countdown_eylem_durdur">روکیں</string>
+
+    <string name="countdown_yedek_vakit">جلدی کریں، نماز کا وقت ختم ہونے والا ہے۔</string>
+    <string name="countdown_yedek_iftar">وقت کم ہو رہا ہے۔</string>
+    <string name="countdown_yedek_sahur">ابھی کھایا پیا جا سکتا ہے؛ روزہ جلد شروع ہوگا۔</string>
+    <string name="countdown_yedek_seri">آج کی نمازیں نامکمل ہیں، اپنا تسلسل نہ کھوئیں۔</string>
+
+    <string name="countdown_onek_vakit">وقت ختم ہونے میں</string>
+    <string name="countdown_onek_vakit_dar">وقت ختم ہو رہا ہے</string>
+    <string name="countdown_onek_iftar">افطار تک</string>
+    <string name="countdown_onek_iftar_dar">افطار تک</string>
+    <string name="countdown_onek_sahur">سحری ختم ہونے میں</string>
+    <string name="countdown_onek_sahur_dar">سحری ختم ہو رہی ہے</string>
+    <string name="countdown_onek_seri">تسلسل بچانے کے لیے</string>
+    <string name="countdown_onek_seri_dar">تسلسل ختم ہو رہا ہے</string>
+</resources>

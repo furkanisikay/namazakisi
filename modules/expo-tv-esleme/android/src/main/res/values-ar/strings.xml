@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ar — Arapça (beta). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">إدخال رمز QR الظاهر على شاشة التلفاز داخل الإطار</string>
+    <string name="tvesleme_qr_vazgec">إلغاء</string>
+    <string name="tvesleme_qr_vazgec_erisim">إلغاء المسح</string>
+    <string name="tvesleme_qr_yabanci">رمز QR هذا لا يخص Namaz Akışı TV. يُمسح الرمز الظاهر على التلفاز.</string>
+    <string name="tvesleme_qr_okundu">مُسح الرمز</string>
+</resources>

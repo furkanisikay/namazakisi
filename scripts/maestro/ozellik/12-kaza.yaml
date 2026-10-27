@@ -3,7 +3,7 @@
 appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _acilis.yaml
-- tapOn: "Kaza"
+- tapOn: "(Kaza|Qada)"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/28-kaza
@@ -11,10 +11,10 @@ appId: com.furkanisikay.namazakisi
 - tapOn:
     id: "kaza-diger-dugmesi"
 - tapOn:
-    text: "Kaza ayarları.*"
+    text: "(Kaza ayarları|Qada settings).*"
 - scrollUntilVisible:
     element:
-      text: "Her farzdan sonra kaza önerin"
+      text: "(Her farzdan sonra kaza önerin|Suggest a qada after each obligatory prayer)"
     direction: DOWN
     centerElement: true
     timeout: 300000

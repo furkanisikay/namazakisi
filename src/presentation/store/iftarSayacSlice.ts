@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import type { RootState } from './store';
+import { metin } from '../../core/dil/aktifDil';
 
 /**
  * İftar sayacı ayarları
@@ -96,7 +97,7 @@ const iftarSayacSlice = createSlice({
     });
     builder.addCase(iftarSayacAyarlariniYukle.rejected, (state, action) => {
       state.yukleniyor = false;
-      state.hata = action.error.message || 'Ayarlar yüklenemedi';
+      state.hata = action.error.message || metin().muhafizAyar.hata.yuklenemedi;
     });
 
     // Güncelleme
@@ -104,7 +105,7 @@ const iftarSayacSlice = createSlice({
       state.ayarlar = action.payload;
     });
     builder.addCase(iftarSayacAyariniGuncelle.rejected, (state, action) => {
-      state.hata = action.error.message || 'Ayar güncellenemedi';
+      state.hata = action.error.message || metin().muhafizAyar.hata.guncellenemedi;
     });
   },
 });

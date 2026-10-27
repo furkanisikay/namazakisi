@@ -44,6 +44,7 @@ jest.mock('@expo/vector-icons', () => {
 jest.mock('../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
 
 import { YardimSayfasi } from '../YardimSayfasi';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 describe('YardimSayfasi', () => {
   beforeEach(() => jest.clearAllMocks());
@@ -70,5 +71,20 @@ describe('YardimSayfasi', () => {
       expect(AsyncStorage.removeItem).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
     });
+  });
+});
+
+describe('YardimSayfasi — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+  });
+  afterEach(() => geriAl());
+
+  it('satırlar ve onay modalı İngilizce', async () => {
+    const e = render(<YardimSayfasi />);
+    fireEvent.press(e.getByText('Restart setup'));
+    await waitFor(() => expect(e.getByText('Restart setup?')).toBeTruthy());
+    expect(turkceKalanlar(e.toJSON() as never, ['Kurulum', 'Neler', 'Vazge', 'Kapat', 'Yeni'])).toEqual([]);
   });
 });

@@ -1,5 +1,16 @@
 {
   "expo": {
+    "locales": {
+      "en": "./locales/en.json",
+      "id": "./locales/id.json",
+      "de": "./locales/de.json",
+      "fr": "./locales/fr.json",
+      "bs": "./locales/bs.json",
+      "ru": "./locales/ru.json",
+      "ms": "./locales/ms.json",
+      "ar": "./locales/ar.json",
+      "ur": "./locales/ur.json"
+    },
     "name": "Namaz Akışı",
     "slug": "namazakisi",
     "version": "0.70.1",
@@ -68,7 +79,7 @@
     },
     "plugins": [
       "./plugins/withPlayStoreDependency",
-      "./plugins/withSiriKisayollari",
+      ["./plugins/withSiriKisayollari", { "diller": ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur"] }],
       "./plugins/withMuhafizAlarmKit",
       [
         "./plugins/withNamazWidget",

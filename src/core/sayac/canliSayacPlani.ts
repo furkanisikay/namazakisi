@@ -26,6 +26,7 @@ import {
   type CanliGuncellemeYuku,
   type SayacTemasi,
 } from './canliGuncelleme';
+import { bicim, metin } from '../dil/aktifDil';
 import {
   NOW_BAR_ONCELIK,
   NOW_BAR_VAKITLERI,
@@ -194,8 +195,8 @@ export function nowBarAdaylariniOlustur(g: NowBarAdayGirdisi): CanliAday[] {
         baslangicMs: giris,
         dogalBaslangicMs: giris,
         hedefMs: cikis,
-        baslik: `⏱️ ${ad} Namazı`,
-        govdeSablonu: `${ad} vaktinin çıkmasına kalan süre\n⏱️ {time}`,
+        baslik: bicim(metin().sayac.vakit.baslik, { ad }),
+        govdeSablonu: `${bicim(metin().sayac.canli.vakitGovde, { ad })}\n⏱️ {time}`,
         kanalId: CANLI_SAYAC_KANALI,
         tema: 'vakit',
         hedefteKaybol: true,
@@ -222,8 +223,8 @@ export function nowBarAdaylariniOlustur(g: NowBarAdayGirdisi): CanliAday[] {
           baslangicMs: bas,
           dogalBaslangicMs: bas,
           hedefMs: hedef,
-          baslik: '🕌 Cuma Namazı',
-          govdeSablonu: 'Öğle vaktine (hutbeye) kalan süre\n⏱️ {time}',
+          baslik: metin().sayac.canli.cumaBaslik,
+          govdeSablonu: `${metin().sayac.canli.cumaGovde}\n⏱️ {time}`,
           kanalId: CANLI_SAYAC_KANALI,
           tema: 'cuma',
           hedefteKaybol: true,
@@ -252,7 +253,7 @@ export function nowBarAdaylariniOlustur(g: NowBarAdayGirdisi): CanliAday[] {
         dogalBaslangicMs: dogal,
         hedefMs: hedef,
         baslik: `✨ ${ad}`,
-        govdeSablonu: `${ad} vaktinin bitişine kalan süre\n⏱️ {time}`,
+        govdeSablonu: `${bicim(metin().sayac.canli.nafileGovde, { ad })}\n⏱️ {time}`,
         kanalId: CANLI_SAYAC_KANALI,
         tema: 'nafile',
         hedefteKaybol: true,

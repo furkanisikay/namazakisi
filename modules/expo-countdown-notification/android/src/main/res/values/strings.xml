@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Geri sayım bildirimi metinleri — Türkçe (varsayılan). İngilizcesi values-en.
+  Metinler uygulamanın ARAYÜZ dilinden çözülür (`dildeBaglam()` → ArayuzDili), cihaz
+  dilinden değil. Başlık ve gövde JS'ten (etkin dilde) gelir; buradakiler native'in
+  kendi ürettikleridir. Adlar modül önekiyle başlar (countdown_): çakışma olmasın.
+  Bildirim layout'larında (RemoteViews) sabit metin YOKTUR: SystemUI layout'u cihaz
+  dilinde şişirir → önek ve açıklama kodda `setTextViewText` ile verilir.
+-->
+<resources>
+    <!-- Bildirim kanalları (kimlikler canli_sayac / countdown_fg_channel değişmez) -->
+    <string name="countdown_kanal_canli_ad">Canlı sayaçlar</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar ve durum çubuğundaki geri sayımlar</string>
+    <string name="countdown_kanal_genel_ad">Geri sayım bildirimleri</string>
+    <string name="countdown_kanal_genel_aciklama">Geri sayım bildirimleri için kanal</string>
+
+    <!-- Bildirim eylemleri -->
+    <string name="countdown_eylem_kildim">Kıldım</string>
+    <string name="countdown_eylem_durdur">Durdur</string>
+
+    <!-- JS gövde vermediğinde temaya göre yedek gövde (ibadete çağrı: "sen" + emir) -->
+    <string name="countdown_yedek_vakit">Acele et, vaktin çıkmasına az kaldı!</string>
+    <string name="countdown_yedek_iftar">Zaman daralıyor!</string>
+    <string name="countdown_yedek_sahur">Yemeye içmeye devam, imsak yaklaşıyor!</string>
+    <string name="countdown_yedek_seri">Bugünkü namazların eksik, serini kaybetme!</string>
+
+    <!-- Sayacın üstündeki önek (geniş / dar görünüm) -->
+    <string name="countdown_onek_vakit">Vaktin Çıkmasına</string>
+    <string name="countdown_onek_vakit_dar">Vakit Çıkıyor</string>
+    <string name="countdown_onek_iftar">İftara</string>
+    <string name="countdown_onek_iftar_dar">İftara</string>
+    <string name="countdown_onek_sahur">Sahurun Bitmesine</string>
+    <string name="countdown_onek_sahur_dar">Sahur Bitiyor</string>
+    <string name="countdown_onek_seri">Serini Kurtarmana</string>
+    <string name="countdown_onek_seri_dar">Seri Bitiyor</string>
+</resources>

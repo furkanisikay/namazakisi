@@ -1,0 +1,58 @@
+// fr — Fransızca (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Fransizca terimler: src/core/dil/sozluk/fr (hitap "vous").
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Prochaine prière";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Indique la prochaine prière et l’heure à laquelle elle commence.";
+"Şu anki vakti kıldım" = "J’ai prié la prière en cours";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Marque la prière en cours comme accomplie. L’enregistrement est ajouté à l’ouverture de l’application.";
+"Onay iste" = "Demander une confirmation";
+"Kıbleyi aç" = "Ouvrir la Qibla";
+"Uygulamayı Kıble pusulasıyla açar." = "Ouvre l’application sur la boussole de la Qibla.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "J’ai prié";
+"Kıble" = "Qibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Nom de la prochaine prière";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Donne le nom de la prochaine prière. Vous pouvez l’utiliser comme condition dans Raccourcis.";
+"Sıradaki vakte kalan dakika" = "Minutes avant la prochaine prière";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Donne le nombre de minutes restantes avant le début de la prochaine prière. Renvoie -1 en l’absence d’information.";
+"Şu anki vakit kılındı mı?" = "La prière en cours est-elle accomplie ?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Renvoie oui si la prière en cours est marquée comme accomplie. Renvoie non s’il n’y a aucune prière à marquer.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Silence de prière";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Renvoie vrai pendant les premières minutes après le début d’une heure de prière. Sert à activer une concentration dans Raccourcis.";
+"Süre (dakika)" = "Durée (minutes)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Les ${dakika} minutes après le début d’une heure de prière";
+"Namaz sessizliğinin bitişi" = "Fin du silence de prière";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Donne l’heure de fin du silence. Donne l’heure actuelle s’il n’y a pas de silence en ce moment.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Fin des ${dakika} minutes après le début d’une heure de prière";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Rappels de prière";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Quand cette concentration est activée, les rappels de prière arrivent sans son et sans allumer l’écran.";
+"Hatırlatmaları sessiz ver" = "Rappels en sourdine";
+"Hatırlatmalar sessiz gelir" = "Les rappels arrivent en silence";
+"Hatırlatmalar her zamanki gibi" = "Rappels comme d’habitude";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Marque comme accomplie la prière affichée dans le widget.";
+"Tarih" = "Date";
+"Vakit" = "Prière";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Arrêter l’alarme de prière";
+"Namazı kıldım" = "J’ai prié";
+"Alarm" = "Alarme";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Image du verset du jour";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Fournit le verset du jour sous forme d’image à la taille de votre écran. Vous pouvez l’utiliser avec l’action de fond d’écran dans Raccourcis.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Ouvrez l’application une fois pour préparer le verset du jour.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Impossible de préparer l’image. Réessayez dans un instant.";

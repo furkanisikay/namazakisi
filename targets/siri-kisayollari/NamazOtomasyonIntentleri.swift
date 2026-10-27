@@ -25,9 +25,11 @@ struct SiradakiVakitAdiIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog {
         let simdi = SiriDeposu.simdiMs()
+        // Deger de cevap dilindedir (W5): Kisayollar kullaniciya cihaz dilinde gorunur,
+        // "Eger … ise" karsilastirmasini kullanici o dilde kurar.
         guard let cizelge = SiriDeposu.varsayilan.cizelge(),
-              let s = OtomasyonKarari.siradakiVakit(cizelge.vakitler, simdiMs: simdi) else {
-            return .result(value: "", dialog: "\(VakitKarari.konumYokMetni)")
+              let s = OtomasyonKarari.siradakiVakit(cizelge.vakitler, simdiMs: simdi, dil: SiriDili.kod) else {
+            return .result(value: "", dialog: "\(SiriDili.metin.konumYok)")
         }
         return .result(value: s.ad, dialog: "\(s.ad)")
     }
@@ -44,11 +46,12 @@ struct SiradakiVakteKalanDakikaIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<Int> & ProvidesDialog {
         let simdi = SiriDeposu.simdiMs()
+        let dil = SiriDili.kod
         guard let cizelge = SiriDeposu.varsayilan.cizelge(),
-              let s = OtomasyonKarari.siradakiVakit(cizelge.vakitler, simdiMs: simdi) else {
-            return .result(value: -1, dialog: "\(VakitKarari.konumYokMetni)")
+              let s = OtomasyonKarari.siradakiVakit(cizelge.vakitler, simdiMs: simdi, dil: dil) else {
+            return .result(value: -1, dialog: "\(SiriDili.metin.konumYok)")
         }
-        return .result(value: s.kalanDk, dialog: "\(s.ad) vaktine \(s.kalanDk) dakika var.")
+        return .result(value: s.kalanDk, dialog: "\(SiriDili.rakam(OtomasyonMetni.kalanDakika(ad: s.ad, dakika: s.kalanDk, dil: dil)))")
     }
 }
 
@@ -63,8 +66,9 @@ struct SimdikiVakitKilindiMiIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> & ProvidesDialog {
         let depo = SiriDeposu.varsayilan
+        let dil = SiriDili.kod
         guard let cizelge = depo.cizelge(), !cizelge.vakitler.isEmpty else {
-            return .result(value: false, dialog: "\(VakitKarari.konumYokMetni)")
+            return .result(value: false, dialog: "\(SiriDili.metin.konumYok)")
         }
         let sonuc = OtomasyonKarari.simdikiVakitKilindiMi(
             vakitler: cizelge.vakitler,
@@ -73,9 +77,132 @@ struct SimdikiVakitKilindiMiIntent: AppIntent {
             simdiMs: SiriDeposu.simdiMs()
         )
         switch sonuc {
-        case .some(true): return .result(value: true, dialog: "Evet, kılındı olarak işaretli.")
-        case .some(false): return .result(value: false, dialog: "Hayır, henüz işaretlenmedi.")
-        case .none: return .result(value: false, dialog: "Şu an kılınacak vakit yok.")
+        case .some(true): return .result(value: true, dialog: "\(OtomasyonMetni.evetKilindi(dil))")
+        case .some(false): return .result(value: false, dialog: "\(OtomasyonMetni.hayirKilinmadi(dil))")
+        case .none: return .result(value: false, dialog: "\(VakitMetinleri.dil(dil).vakitYok)")
         }
     }
+}
+
+/// Otomasyon eylemlerinin dinamik cevaplari (W5; dil `SiriDili.kod`). Ingilizce karsiliklar
+/// JS `sozluk/en/genel.ts > kildim.sonuc` ve `sure.dakika` cogulundan.
+enum OtomasyonMetni {
+    static func kalanDakika(ad: String, dakika: Int, dil: String) -> String {
+        let m = OtomasyonMetinleri.dil(dil)
+        let kalip = m.kalanDakika[CogulKurali.kategori(dil, dakika)] ?? m.kalanDakika["other"] ?? ""
+        return VakitMetinleri.bicim(kalip, ["ad": ad, "n": String(dakika)])
+    }
+
+    static func evetKilindi(_ dil: String) -> String { OtomasyonMetinleri.dil(dil).evetKilindi }
+
+    static func hayirKilinmadi(_ dil: String) -> String { OtomasyonMetinleri.dil(dil).hayirKilinmadi }
+}
+
+/// Otomasyon cevaplarinin dil tablosu. Duzen: dil basina bir `static let`, sira tr, en, id,
+/// de, fr, bs, ru, ms, ar, ur; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
+/// `kalanDakika` CLDR kategorisi ("one", "few", "many", "other"; `CogulKurali`) → kalip;
+/// eksik kategori "other"a duser. Yer tutucular `{ad}`, `{n}`.
+struct OtomasyonMetinleri {
+    let kalanDakika: [String: String]
+    let evetKilindi: String
+    let hayirKilinmadi: String
+
+    static let tr = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} vaktine {n} dakika var.", "other": "{ad} vaktine {n} dakika var."],
+        evetKilindi: "Evet, kılındı olarak işaretli.",
+        hayirKilinmadi: "Hayır, henüz işaretlenmedi."
+    )
+
+    static let en = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+
+    // id — Endonezce (beta); CLDR yalniz "other"
+    static let id = OtomasyonMetinleri(
+        kalanDakika: ["other": "{n} menit lagi menuju {ad}."],
+        evetKilindi: "Ya, sudah ditandai ditunaikan.",
+        hayirKilinmadi: "Belum, belum ditandai."
+    )
+
+
+    // de — Almanca (beta): JS `sozluk/de`
+    static let de = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} beginnt in {n} Minute.", "other": "{ad} beginnt in {n} Minuten."],
+        evetKilindi: "Ja, es ist als gebetet markiert.",
+        hayirKilinmadi: "Nein, es ist noch nicht markiert."
+    )
+
+
+    // fr
+    static let fr = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} commence dans {n} minute.", "many": "{ad} commence dans {n} de minutes.", "other": "{ad} commence dans {n} minutes."],
+        evetKilindi: "Oui, elle est marquée comme accomplie.",
+        hayirKilinmadi: "Non, elle n’est pas encore marquée."
+    )
+
+
+    // bs
+    static let bs = OtomasyonMetinleri(
+        kalanDakika: [
+            "one": "{ad}: vakat nastupa za {n} minutu.",
+            "few": "{ad}: vakat nastupa za {n} minute.",
+            "other": "{ad}: vakat nastupa za {n} minuta.",
+        ],
+        evetKilindi: "Da, označeno je kao klanjano.",
+        hayirKilinmadi: "Ne, još nije označeno."
+    )
+
+
+    // ru
+    static let ru = OtomasyonMetinleri(
+        kalanDakika: [
+            "one": "Время намаза {ad} наступит через {n} минуту.",
+            "few": "Время намаза {ad} наступит через {n} минуты.",
+            "many": "Время намаза {ad} наступит через {n} минут.",
+            "other": "Время намаза {ad} наступит через {n} минуты.",
+        ],
+        evetKilindi: "Да, отмечен как совершённый.",
+        hayirKilinmadi: "Нет, ещё не отмечен."
+    )
+
+
+    // ms
+    static let ms = OtomasyonMetinleri(
+        kalanDakika: ["one": "{n} minit lagi masuk waktu {ad}.", "other": "{n} minit lagi masuk waktu {ad}."],
+        evetKilindi: "Ya, sudah ditandakan sebagai ditunaikan.",
+        hayirKilinmadi: "Tidak, belum ditandakan."
+    )
+
+
+    // ar — Arapça (beta): JS `sozluk/ar` (sure.dakika, vakit.eylem); 3–10 çoğul, diğerleri rakamla tekil
+    static let ar = OtomasyonMetinleri(
+        kalanDakika: [
+            "zero": "يدخل وقت {ad} بعد {n} دقيقة.",
+            "one": "يدخل وقت {ad} بعد {n} دقيقة.",
+            "two": "يدخل وقت {ad} بعد {n} دقيقة.",
+            "few": "يدخل وقت {ad} بعد {n} دقائق.",
+            "many": "يدخل وقت {ad} بعد {n} دقيقة.",
+            "other": "يدخل وقت {ad} بعد {n} دقيقة.",
+        ],
+        evetKilindi: "نعم، معلَّمة «تمّت».",
+        hayirKilinmadi: "لا، لم تُوضع العلامة بعد."
+    )
+
+
+    // ur
+    static let ur = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} کا وقت {n} منٹ میں شروع ہوگا۔", "other": "{ad} کا وقت {n} منٹ میں شروع ہوگا۔"],
+        evetKilindi: "ہاں، اس پر ادا شدہ کا نشان لگا ہے۔",
+        hayirKilinmadi: "نہیں، ابھی نشان نہیں لگا۔"
+    )
+
+    static let tablo: [String: OtomasyonMetinleri] = [
+        "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
+        "ar": ar, "ur": ur,
+    ]
+
+    static func dil(_ kod: String) -> OtomasyonMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }
 }

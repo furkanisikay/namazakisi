@@ -19,12 +19,16 @@
  *   - Vakit karti     "… vakti hatırlatma ayarları" (PencereKarti)
  *   - Adim satiri     "1. hatırlatma, … — düzenleyin" (PencereKarti)
  *
+ * Turkce disi turda (`TOHUM_DIL`) her etiket sozlukteki ayni anahtarin o dildeki karsiligini
+ * da kabul eder (`sozlukKaliplari.js`); Turkce turda kaliplar degismez.
+ *
  * Her adimda erisilebilirlik agaci `<cikis>/agac/NN-<ad>.json` icine yazilir —
  * bir adim tutmazsa hangi ogelerin ekranda oldugu oradan gorulur.
  */
 const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const { m, sablon } = require('./sozlukKaliplari');
 
 const cikis = process.argv[2];
 if (!cikis) {
@@ -188,12 +192,15 @@ async function yenidenBaslat() {
  * Ana ekran capasi — Maestro akislariyla AYNI: header'daki seri dugmesi ("Seri: N gün";
  * toparlanma modunda "Toparlanma modu: …"). Kible Dalga 4'ten beri sekmedir.
  */
-const ANA_EKRAN_CAPASI = /^(Seri|Toparlanma modu): /i;
+const ANA_EKRAN_CAPASI = new RegExp(
+    `^(?:${sablon('Seri: {n} gün')}|${sablon('Toparlanma modu: {tamamlanan}/{hedef} gün tamamlandı')})`,
+    'i',
+);
 
 // iPad kenar gezinmesinde (KenarGezinme) sekme etiketi farklı gelebiliyor; ASCII testID
 // (`gezinme-<rota>`) ile de tanı. Türkçe harfli etiketler (İlerleme, Kıble) iPad'de bulunamıyordu.
 const SEKME_ROTA = { 'İlerleme': 'Ilerleme', 'Kıble': 'Kible', 'Kaza': 'KazaDefteri', 'Ayarlar': 'Ayarlar', 'Bugün': 'AnaSayfa' };
-const SEKME = (ad) => new RegExp(`^(${ad}(,|$)|gezinme-${SEKME_ROTA[ad] || ad}$)`, 'i');
+const SEKME = (ad) => new RegExp(`^(${m(ad)}(,|$)|gezinme-${SEKME_ROTA[ad] || ad}$)`, 'i');
 
 /**
  * Zaman seridini ekranin orta bandina getirir (GERI BESLEMELI).
@@ -209,7 +216,8 @@ async function seridiHizala() {
         const yuk = kok ? cerceve(kok).h : 956;
         const hedef = yuk * 0.42;
         const sx = String(Math.round((kok ? cerceve(kok).w : 440) * 0.7)); // iPad: ayrıntı bölmesi
-        const o = bul(a, /ilk hatırlatma/i);
+        // Kimlik dilden bagimsizdir (iOS kimligi kapsayicida tasir); Turkce cumle yalniz yedek.
+        const o = bul(a, /^zaman-seridi(-cumle)?$|ilk hatırlatma/i);
         // Gorunmuyorsa icerik asagida: yukari surukle.
         const fark = o ? cerceve(o).y + cerceve(o).h / 2 - hedef : yuk * 0.3;
         if (o && Math.abs(fark) < yuk * 0.06) return true;
@@ -285,8 +293,10 @@ function cek(ad) {
     // aramak onu ekranda birakir ve sonraki TUM adimlari bloklar (yasandi).
     // Konum izni dugmeleri de burada: Kible ekrani acilirken sistem konum
     // uyarisi cikariyor ve kapatilmazsa sayfayi bloklar (yasandi).
-    const KAPATILACAK =
-        /^(İzin Ver|Allow|Allow While Using App|Uygulamayı Kullanırken İzin Ver|Allow Once|Bir Kez İzin Ver|Devam Et|Kapat|Tamam|Anladım|OK)$/i;
+    const KAPATILACAK = new RegExp(
+        `^(İzin Ver|Allow|Allow While Using App|Uygulamayı Kullanırken İzin Ver|Allow Once|Bir Kez İzin Ver|Devam Et|Continue|Close|Got it|OK|${m('Devam edin', 'Kapat', 'Tamam', 'Anladım')})$`,
+        'i',
+    );
     for (let tur = 0; tur < 5; tur++) {
         const katman = await agac(`acilis-${tur}`);
         if (!(await dokun(katman, KAPATILACAK, `acilis katmani ${tur + 1}`, { bekle: 2000 }))) break;
@@ -316,8 +326,8 @@ function cek(ad) {
         // "Vakit çıkmadan" satiri Hatirlatmalar sayfasinda sekme cubugunun hizasinda
         // (y≈873/956) duruyor: kaydirmadan dokunmak KAZA sekmesine basiyordu (yasandi).
         const muhafizaGit =
-            (await dokun(a, /^Hatırlatmalar\./i, 'hatirlatmalar satiri', { bekle: 3000 })) &&
-            (await kaydirarakDokun(/^Vakit çıkmadan\./i, 'vakit cikmadan satiri', 'hatirlatmalar', { bekle: 3000 }));
+            (await dokun(a, new RegExp(`^${m('Hatırlatmalar')}\\.`, 'i'), 'hatirlatmalar satiri', { bekle: 3000 })) &&
+            (await kaydirarakDokun(new RegExp(`^${m('Vakit çıkmadan')}\\.`, 'i'), 'vakit cikmadan satiri', 'hatirlatmalar', { bekle: 3000 }));
         // Sabah'in "Ozel" parcasi "Kendim ayarlayayim" katini ve Sabah kartini BIRLIKTE
         // acar (simulator-ozellik-cek.js ile ayni yol). Sayfanin dibindeki eski
         // "Kendim ayarlayayim" satiri yalniz yedek yoldur.
@@ -348,19 +358,19 @@ function cek(ad) {
             // Adim detayi (bottom sheet). "adımını açın veya kapatın" ANAHTARDIR,
             // ona basmak adimi kapatir — bu yuzden kalip "düzenleyin" ile kesinlestirildi.
             a = await agac('adim-oncesi');
-            if (await kaydirarakDokun(/1\. hatırlatma.* — düzenleyin/i, 'adim satiri', 'adim', { bekle: 3000 })) {
+            if (await kaydirarakDokun(/^adim-duzenle-0$|1\. hatırlatma.* — düzenleyin/i, 'adim satiri', 'adim', { bekle: 3000 })) {
                 // "Gelişmiş" bolumunu ac: sheet tekrar/ton satirlariyla dolar.
                 // (Birlesik modul: kanal kartlari yerine anahtar var; `idb ui tap`
                 // UISwitch'i toggle etmez, bu yuzden anahtar yerine bolum acilir.)
                 const sheet = await agac('adim-kanal-oncesi');
-                await dokun(sheet, /^Gelişmiş ayarlar/i, 'gelismis bolumu', { bekle: 2500 });
+                await dokun(sheet, new RegExp(`^${m('Gelişmiş ayarlar')}`, 'i'), 'gelismis bolumu', { bekle: 2500 });
                 await agac('adim-detay');
                 cek('03-adim-detay');
 
                 // --- Akis onizleme (06): sheet'i kapat, "… akışını önizleyin" ---
                 a = await agac('adim-kapat');
-                await dokun(a, /^Kapat$/, 'adim detayini kapat', { bekle: 2000 });
-                if (await kaydirarakDokun(/sabah akışını önizleyin/i, 'akis onizleme', 'onizle', { bekle: 3000 })) {
+                await dokun(a, new RegExp(`^${m('Kapat')}$`), 'adim detayini kapat', { bekle: 2000 });
+                if (await kaydirarakDokun(new RegExp(sablon('{ad} akışını önizleyin', { ad: m('Sabah', 'sabah') }), 'i'), 'akis onizleme', 'onizle', { bekle: 3000 })) {
                     await agac('akis-onizleme');
                     cek('06-akis-onizleme');
                 }
@@ -388,9 +398,9 @@ function cek(ad) {
         // Etiket ", Aylık": ikonun bos etiketi virgulle eklenebiliyor. Secici artik
         // AXValue tasiyor ("radio button, unchecked") ve `metin` onu " | " ile
         // ekliyor → satir sonu capasi tek basina TUTMAZ (yasandi).
-        if (await kaydirarakDokun(/(^|, )Aylık( \||$)/, 'aylik secici', 'aylik', { bekle: 4000 })) {
+        if (await kaydirarakDokun(new RegExp(`(^|, )${m('Aylık')}( \\||$)`), 'aylik secici', 'aylik', { bekle: 4000 })) {
             // Aylik icerik secicinin ALTINDA: "Vakit vakit" kartini orta banda getir.
-            await ortayaGetir(/^Vakit vakit$/, 'vakit-vakit');
+            await ortayaGetir(new RegExp(`^${m('Vakit vakit')}$`), 'vakit-vakit');
             await agac('aylik');
             cek('08-istatistik');
         }
@@ -432,8 +442,9 @@ function cek(ad) {
         cek('09-kabul');
         const sonra = await agac('kabul-sonra');
         // Kerahat vaktindeyse once kibar onay modali gelir.
-        if (bul(sonra, /^Yine de işaretleyin$/)) {
-            await dokun(sonra, /^Yine de işaretleyin$/, 'kerahat onayi', { bekle: 900 });
+        const yineDe = new RegExp(`^${m('Yine de işaretleyin')}$`);
+        if (bul(sonra, yineDe)) {
+            await dokun(sonra, yineDe, 'kerahat onayi', { bekle: 900 });
             cek('09-kabul');
         }
     }

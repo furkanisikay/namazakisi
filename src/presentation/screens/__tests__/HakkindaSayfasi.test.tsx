@@ -4,6 +4,7 @@ import { HakkindaSayfasi } from '../HakkindaSayfasi';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
 import { UYGULAMA } from '../../../core/constants/UygulamaSabitleri';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 jest.mock('../../store/hooks');
 jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
@@ -68,5 +69,26 @@ describe('HakkindaSayfasi', () => {
   it('sürüm metni render edilir', () => {
     const { getByText } = render(<HakkindaSayfasi />);
     expect(getByText(UYGULAMA.VERSIYON)).toBeTruthy();
+  });
+});
+
+describe('HakkindaSayfasi — İngilizce', () => {
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+    (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
+    (useAppDispatch as jest.Mock).mockReturnValue(jest.fn());
+    (useAppSelector as jest.Mock).mockImplementation(
+      (selector: (state: { guncelleme: typeof guncellemeState }) => unknown) =>
+        selector({ guncelleme: guncellemeState })
+    );
+  });
+  afterEach(() => geriAl());
+
+  it('sayfada Türkçe metin kalmaz (marka ve geliştirici adı hariç)', () => {
+    const e = render(<HakkindaSayfasi />);
+    expect(turkceKalanlar(e.toJSON() as never, ['Versiyon', 'Kapat', 'Yeni'])).toEqual([]);
+    expect(e.getByText('Check for updates')).toBeTruthy();
+    expect(e.getByText('Daily prayer tracking app')).toBeTruthy();
   });
 });

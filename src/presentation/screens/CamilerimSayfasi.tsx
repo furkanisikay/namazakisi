@@ -9,16 +9,18 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { useCamideyim } from '../hooks/useCamideyim';
 import { CamiHaritasi } from '../components/cami/CamiHaritasi';
+import { useMetin } from '../hooks/useMetin';
 
 export const CamilerimSayfasi: React.FC = () => {
     const renkler = useRenkler();
     const c = useCamideyim();
+    const m = useMetin().cami.camilerim;
     if (!c.kullanilabilir) {
         return (
             <View style={{ flex: 1, padding: 24, alignItems: 'center', justifyContent: 'center', backgroundColor: renkler.arkaplan }}>
                 <FontAwesome5 name="mosque" size={28} color={renkler.metinIkincil} solid />
                 <Text style={{ fontSize: 14, textAlign: 'center', marginTop: 12, color: renkler.metinIkincil }}>
-                    Camilerim bu telefonda yok.
+                    {m.yok}
                 </Text>
             </View>
         );

@@ -1,0 +1,63 @@
+# tohum: ozellik
+# hazirlik: gunun-ayeti-cihaz
+# profil: telefon
+# Günün ayeti cihaz yüzeyleri (#380, #381): ayar sayfasından widget ana ekrana eklenir
+# (başlatıcının "ana ekrana ekle" penceresi), duvar kâğıdı onayla açılır, önizleme çekilir,
+# ana ekrana dönülür. Kilit ekranı karesi (66) hazirlik_bitir'de adb ile çekilir.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- runFlow:
+    file: _liste-kaydir.yaml
+    env:
+      HEDEF: "(Günün ayeti|Verse of the day)\\..*"
+- tapOn:
+    text: "(Günün ayeti|Verse of the day)\\..*"
+- extendedWaitUntil:
+    visible:
+      id: "gunun-ayeti-kart"
+    timeout: 10000
+- tapOn:
+    text: "(Widget ve duvar kâğıdı|Widget and wallpaper)\\..*"
+- extendedWaitUntil:
+    visible:
+      id: "gunun-ayeti-widget-ekle"
+    timeout: 10000
+- tapOn:
+    id: "gunun-ayeti-widget-ekle"
+- waitForAnimationToEnd:
+    timeout: 4000
+- takeScreenshot: ozk/63-gunun-ayeti-widget-ekle
+# Launcher3 AddItemActivity: "Add to home screen" / "Ana ekrana ekle" (büyük harfle de çizilebilir).
+- tapOn:
+    text: "(?i)(add to home screen|ana ekrana ekle)"
+- waitForAnimationToEnd:
+    timeout: 4000
+# Duvar kâğıdı: anahtar → onay → "Açın"; uygulama native'de hemen yazar.
+- tapOn:
+    id: "gunun-ayeti-duvar-anahtar"
+- tapOn:
+    text: "(Açın|Turn on)"
+- extendedWaitUntil:
+    visible:
+      id: "gunun-ayeti-onizle"
+    timeout: 15000
+# Önizleme duvar kâğıdıyla aynı sıralı kuyruktan geçer: görününce duvar kâğıdı da yazılmıştır.
+- scrollUntilVisible:
+    element:
+      id: "gunun-ayeti-onizle"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    id: "gunun-ayeti-onizle"
+- scrollUntilVisible:
+    element:
+      text: "(Bugünün duvar kâğıdı önizlemesi|Preview of today's wallpaper)"
+    direction: DOWN
+    timeout: 30000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/64-gunun-ayeti-duvar-onizleme
+- pressKey: Home
+- waitForAnimationToEnd:
+    timeout: 5000
+- takeScreenshot: ozk/65-gunun-ayeti-ana-ekran

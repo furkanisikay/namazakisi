@@ -8,6 +8,8 @@
  * TAŞINMIŞTIR — davranış birebir korunmuştur, o dosya artık bunu yeniden
  * dışa aktarır.
  */
+import { metin } from '../dil/aktifDil';
+
 export interface KonumMetniGirdisi {
   /** Konum modu: oto (GPS) veya manuel (şehir seçimi) */
   konumModu: 'oto' | 'manuel';
@@ -20,16 +22,17 @@ export interface KonumMetniGirdisi {
 }
 
 export function konumMetniHesapla(konum: KonumMetniGirdisi): string {
+  const m = metin().konum.metin;
   if (konum.konumModu === 'oto') {
     if (konum.gpsAdres) {
       const { ilce, il } = konum.gpsAdres;
       if (ilce && il) return `${ilce}, ${il}`;
-      return ilce || il || 'GPS konumu alındı';
+      return ilce || il || m.gpsAlindi;
     }
-    return 'Konum takip ediliyor';
+    return m.takipEdiliyor;
   }
   if (konum.seciliIlceAdi && konum.seciliIlAdi) {
     return `${konum.seciliIlceAdi}, ${konum.seciliIlAdi}`;
   }
-  return konum.seciliIlAdi || 'Konum seçilmedi';
+  return konum.seciliIlAdi || m.secilmedi;
 }

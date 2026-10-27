@@ -19,6 +19,7 @@
 
 import type { KazaNamazAdi } from '../types/KazaTipleri';
 import type { VakitAdi } from '../types';
+import { canli } from '../dil/aktifDil';
 
 // ==================== VAKİT KODLARI ====================
 
@@ -30,33 +31,33 @@ export const KAZA_VAKITLERI: readonly KazaVakti[] = ['sabah', 'ogle', 'ikindi', 
 /** Namaz kaydında izlenen farzlar (vitir namaz kaydında YOKTUR). */
 export const FARZ_KAZA_VAKITLERI: readonly KazaVakti[] = ['sabah', 'ogle', 'ikindi', 'aksam', 'yatsi'];
 
-/** Vakit kodu → ekrandaki (ve eski `KazaDurumu`'ndaki) ad. */
+/**
+ * Vakit kodu → KİMLİK adı (`KazaNamazAdi`, eski `KazaDurumu` anahtarı). EKRANA ÇIKMAZ:
+ * görünen ad `kazaVaktiGoster(v)` (etkin dilde).
+ */
 export const KAZA_VAKTI_ADI: Record<KazaVakti, KazaNamazAdi> = {
   sabah: 'Sabah',
-  ogle: 'Öğle',
-  ikindi: 'İkindi',
-  aksam: 'Akşam',
-  yatsi: 'Yatsı',
+  ogle: 'Öğle', // dil-haric: kimlik
+  ikindi: 'İkindi', // dil-haric: kimlik
+  aksam: 'Akşam', // dil-haric: kimlik
+  yatsi: 'Yatsı', // dil-haric: kimlik
   vitir: 'Vitir',
 };
 
-/** Cümle içinde küçük harfli ad (sabit harita — `toLowerCase` 'İ'yi bozar). */
-export const KAZA_VAKTI_KUCUK: Record<KazaVakti, string> = {
-  sabah: 'sabah',
-  ogle: 'öğle',
-  ikindi: 'ikindi',
-  aksam: 'akşam',
-  yatsi: 'yatsı',
-  vitir: 'vitir',
-};
+/** Vakit kodunun görünen adı, etkin dilde ("Öğle" / "Dhuhr"). */
+const KAZA_VAKTI_GORUNEN: Readonly<Record<KazaVakti, string>> = canli((s) => s.kaza.adlar);
+export const kazaVaktiGoster = (v: KazaVakti): string => KAZA_VAKTI_GORUNEN[v];
+
+/** Cümle içinde küçük harfli ad, etkin dilde (sözlük — `toLowerCase` 'İ'yi bozar). */
+export const KAZA_VAKTI_KUCUK: Readonly<Record<KazaVakti, string>> = canli((s) => s.kaza.kucuk);
 
 /** Ad → kod (namaz kaydı anahtarları ve eski `KazaDurumu.namazlar[].namazAdi`). */
 export const KAZA_ADINDAN_VAKTE: Record<string, KazaVakti> = {
   Sabah: 'sabah',
-  'Öğle': 'ogle',
-  'İkindi': 'ikindi',
-  'Akşam': 'aksam',
-  'Yatsı': 'yatsi',
+  'Öğle': 'ogle', // dil-haric: kimlik
+  'İkindi': 'ikindi', // dil-haric: kimlik
+  'Akşam': 'aksam', // dil-haric: kimlik
+  'Yatsı': 'yatsi', // dil-haric: kimlik
   Vitir: 'vitir',
 };
 

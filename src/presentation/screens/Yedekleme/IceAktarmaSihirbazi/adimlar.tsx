@@ -18,9 +18,12 @@ import {
   Animated,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../../components/common/YonluIkon';
 import { styles } from './stiller';
 import { useRenkler } from '../../../../core/theme';
 import { useDonguAcik, useDonguAnimasyonu } from '../../../components/hareket/dongu';
+import { bicim, metin, sayili } from '../../../../core/dil/aktifDil';
+import { useMetin } from '../../../hooks/useMetin';
 import type {
   BirlestirmeStratejisi,
   KategoriStratejisi,
@@ -41,42 +44,16 @@ export interface StratejiMeta {
   gelismis?: boolean;
 }
 
-export const STRATEJILER: StratejiMeta[] = [
-  {
-    id: 'akilli',
-    ad: 'Akıllı birleştir',
-    ikon: 'object-group',
-    aciklama:
-      'Hiçbir kayıt kaybolmaz; kılınan namazlarınız birleşir, puanınız yeniden hesaplanır.',
-    renkAnahtar: 'bilgi',
-    onerilen: true,
-  },
-  {
-    id: 'uzerineYaz',
-    ad: 'Üzerine yaz',
-    ikon: 'sync-alt',
-    aciklama:
-      'Yedek baz alınır; mevcut verileriniz yedektekiyle değiştirilir.',
-    renkAnahtar: 'uyari',
-  },
-  {
-    id: 'eksikleriEkle',
-    ad: 'Sadece eksikleri ekle',
-    ikon: 'plus',
-    aciklama:
-      'Sizde olmayanlar eklenir; çakışan her şey olduğu gibi korunur.',
-    renkAnahtar: 'basarili',
-  },
-  {
-    id: 'gelismis',
-    ad: 'Gelişmiş',
-    ikon: 'sliders-h',
-    aciklama:
-      'Namaz, puan, kaza ve ayarlar için ayrı ayrı strateji seçin.',
-    renkAnahtar: 'birincil',
-    gelismis: true,
-  },
-];
+/** Birleştirme stratejileri, etkin dilde (metinler `yedekleme.sihirbaz.strateji`). */
+export function stratejiler(): StratejiMeta[] {
+  const m = metin().yedekleme.sihirbaz.strateji;
+  return [
+    { id: 'akilli', ad: m.akilli, ikon: 'object-group', aciklama: m.akilliAciklama, renkAnahtar: 'bilgi', onerilen: true },
+    { id: 'uzerineYaz', ad: m.uzerineYaz, ikon: 'sync-alt', aciklama: m.uzerineYazAciklama, renkAnahtar: 'uyari' },
+    { id: 'eksikleriEkle', ad: m.eksikleriEkle, ikon: 'plus', aciklama: m.eksikleriEkleAciklama, renkAnahtar: 'basarili' },
+    { id: 'gelismis', ad: m.gelismis, ikon: 'sliders-h', aciklama: m.gelismisAciklama, renkAnahtar: 'birincil', gelismis: true },
+  ];
+}
 
 const stratejiRengi = (renkler: Renkler, anahtar: StratejiMeta['renkAnahtar']): string =>
   renkler[anahtar];
@@ -104,6 +81,7 @@ export const InfoKutu: React.FC<{
 // ─── Adım 0: Dosya seç ───────────────────────────────────────────────────────
 
 export const DosyaSecAdimi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
+  const m = useMetin().yedekleme.sihirbaz;
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   // Sihirbaz sahnesi: görünürken döngü, tek kapı `hareket/dongu` (D-16; eskiden temizliksizdi).
@@ -127,24 +105,24 @@ export const DosyaSecAdimi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
       >
         <FontAwesome5 name="file-import" size={42} color={renkler.birincil} />
       </Animated.View>
-      <Text style={[styles.adimBaslik, { color: renkler.metin }]}>Yedek Dosyanızı Seçin</Text>
+      <Text style={[styles.adimBaslik, { color: renkler.metin }]}>{m.dosyaSecBaslik}</Text>
       <Text style={[styles.adimAltBaslik, { color: renkler.metinIkincil }]}>
-        Daha önce oluşturduğunuz Namaz Akışı yedek dosyasını seçerek verilerinizi geri yükleyin
+        {m.dosyaSecAlt}
       </Text>
 
       <InfoKutu
         renkler={renkler}
         ikon="lock"
         renk={renkler.basarili}
-        baslik="Verileriniz güvende"
-        aciklama="Yedeğiniz yalnızca cihazınızda çözülür; hiçbir veri sunucuya gönderilmez."
+        baslik={m.guvendeBaslik}
+        aciklama={m.guvendeAciklama}
       />
       <InfoKutu
         renkler={renkler}
         ikon="shield-alt"
         renk={renkler.bilgi}
-        baslik="Mevcut verileriniz korunur"
-        aciklama="İçe aktarmadan önce nasıl birleştirileceğini siz seçersiniz; istemeden hiçbir şey kaybolmaz."
+        baslik={m.korunurBaslik}
+        aciklama={m.korunurAciklama}
       />
     </ScrollView>
   );
@@ -152,35 +130,39 @@ export const DosyaSecAdimi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
 
 // ─── Adım 1: Çöz & doğrula (yükleme) ─────────────────────────────────────────
 
-export const CozumleniyorAdimi: React.FC<{ renkler: Renkler }> = ({ renkler }) => (
-  <View style={styles.merkezliIcerik}>
-    <ActivityIndicator size="large" color={renkler.birincil} style={{ marginBottom: 20 }} />
-    <Text style={[styles.adimBaslik, { color: renkler.metin }]}>Dosyanız İnceleniyor...</Text>
-    <Text style={[styles.adimAltBaslik, { color: renkler.metinIkincil }]}>
-      Yedeğiniz çözülüyor ve doğrulanıyor, lütfen bekleyin
-    </Text>
-  </View>
-);
+export const CozumleniyorAdimi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
+  const m = useMetin().yedekleme.sihirbaz;
+  return (
+    <View style={styles.merkezliIcerik}>
+      <ActivityIndicator size="large" color={renkler.birincil} style={{ marginBottom: 20 }} />
+      <Text style={[styles.adimBaslik, { color: renkler.metin }]}>{m.inceleniyor}</Text>
+      <Text style={[styles.adimAltBaslik, { color: renkler.metinIkincil }]}>{m.inceleniyorAlt}</Text>
+    </View>
+  );
+};
 
 // ─── Hata ekranı (çözme hatası) ──────────────────────────────────────────────
 
-export const CozmeHatasiAdimi: React.FC<{ renkler: Renkler }> = ({ renkler }) => (
+export const CozmeHatasiAdimi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
+  const m = useMetin().yedekleme.sihirbaz;
+  return (
   <View style={styles.merkezliIcerik}>
     <View style={[styles.buyukIkonCember, { backgroundColor: `${renkler.hata}18` }]}>
       <FontAwesome5 name="exclamation-triangle" size={42} color={renkler.hata} />
     </View>
-    <Text style={[styles.adimBaslik, { color: renkler.metin }]}>Dosya Okunamadı</Text>
+    <Text style={[styles.adimBaslik, { color: renkler.metin }]}>{m.okunamadi}</Text>
     <Text style={[styles.adimAltBaslik, { color: renkler.metinIkincil }]}>
-      Bu dosya bir Namaz Akışı yedeği değil veya bozulmuş. Lütfen doğru yedek dosyasını seçtiğinizden emin olun.
+      {m.okunamadiAlt}
     </Text>
     <View style={[styles.hataKutu, { backgroundColor: `${renkler.bilgi}12`, borderColor: `${renkler.bilgi}40` }]}>
       <FontAwesome5 name="info-circle" size={14} color={renkler.bilgi} />
       <Text style={[styles.hataKutuMetin, { color: renkler.metinIkincil }]}>
-        Yedek dosyaları "namaz-yedek-…json" biçimindedir ve yalnızca bu uygulama ile oluşturulur.
+        {m.dosyaBicimi}
       </Text>
     </View>
   </View>
-);
+  );
+};
 
 // ─── Adım 2: Karşılaştır & strateji ──────────────────────────────────────────
 
@@ -206,26 +188,27 @@ export const KarsilastirmaAdimi: React.FC<{
   seciliStrateji: BirlestirmeStratejisi;
   onStratejiSec: (s: BirlestirmeStratejisi) => void;
 }> = ({ renkler, fark, seciliStrateji, onStratejiSec }) => {
+  const m = useMetin().yedekleme.sihirbaz;
   const icerikSatirlari: { ikon: string; renk: string; metin: string }[] = [
     {
       ikon: 'calendar-check',
       renk: renkler.bilgi,
-      metin: `Cihazınızda şu an ${fark.mevcutGunSayisi} günlük namaz kaydı var.`,
+      metin: sayili(m.mevcutGun, fark.mevcutGunSayisi),
     },
     {
       ikon: 'medal',
       renk: renkler.uyari,
-      metin: fark.rozetVar ? 'Yedekte rozet kazanımlarınız var.' : 'Yedekte rozet kaydı yok.',
+      metin: fark.rozetVar ? m.rozetVar : m.rozetYok,
     },
     {
       ikon: 'book',
       renk: renkler.basarili,
-      metin: fark.kazaVar ? 'Yedekte kaza namazı defteri var.' : 'Yedekte kaza defteri yok.',
+      metin: fark.kazaVar ? m.kazaVar : m.kazaYok,
     },
     {
       ikon: 'cog',
       renk: renkler.metinIkincil,
-      metin: fark.ayarVar ? 'Yedekte uygulama ayarlarınız var.' : 'Yedekte ayar kaydı yok.',
+      metin: fark.ayarVar ? m.ayarVar : m.ayarYok,
     },
   ];
 
@@ -234,9 +217,9 @@ export const KarsilastirmaAdimi: React.FC<{
       <View style={[styles.buyukIkonCember, { backgroundColor: `${renkler.birincil}20`, alignSelf: 'center' }]}>
         <FontAwesome5 name="balance-scale" size={40} color={renkler.birincil} />
       </View>
-      <Text style={[styles.adimBaslik, { color: renkler.metin }]}>Yedeğiniz Hazır</Text>
+      <Text style={[styles.adimBaslik, { color: renkler.metin }]}>{m.hazir}</Text>
       <Text style={[styles.adimAltBaslik, { color: renkler.metinIkincil }]}>
-        Yedeğinizi nasıl birleştirmek istediğinizi seçin
+        {m.hazirAlt}
       </Text>
 
       {/* Özet metrikler */}
@@ -246,14 +229,14 @@ export const KarsilastirmaAdimi: React.FC<{
           ikon="calendar-alt"
           renk={renkler.bilgi}
           sayi={fark.gelenGunSayisi}
-          etiket="Yedekteki gün"
+          etiket={m.yedektekiGun}
         />
         <MetrikKart
           renkler={renkler}
           ikon="code-branch"
           renk={renkler.uyari}
           sayi={fark.cakisanGunSayisi}
-          etiket="Çakışan gün"
+          etiket={m.cakisanGun}
         />
       </View>
 
@@ -267,10 +250,10 @@ export const KarsilastirmaAdimi: React.FC<{
         ))}
       </View>
 
-      <Text style={[styles.bolumBaslik, { color: renkler.metin }]}>Birleştirme Yöntemi</Text>
+      <Text style={[styles.bolumBaslik, { color: renkler.metin }]}>{m.yontem}</Text>
 
       <View style={styles.stratejiListe}>
-        {STRATEJILER.map((s) => {
+        {stratejiler().map((s) => {
           const renk = stratejiRengi(renkler, s.renkAnahtar);
           const secili = seciliStrateji === s.id;
           return (
@@ -298,7 +281,7 @@ export const KarsilastirmaAdimi: React.FC<{
                   <Text style={[styles.stratejiAdi, { color: secili ? renk : renkler.metin }]}>{s.ad}</Text>
                   {s.onerilen && (
                     <View style={[styles.stratejiRozet, { backgroundColor: `${renk}18` }]}>
-                      <Text style={[styles.stratejiRozetMetin, { color: renk }]}>ÖNERİLEN</Text>
+                      <Text style={[styles.stratejiRozetMetin, { color: renk }]}>{m.onerilen}</Text>
                     </View>
                   )}
                 </View>
@@ -306,7 +289,7 @@ export const KarsilastirmaAdimi: React.FC<{
               </View>
               {s.gelismis ? (
                 <View style={styles.stratejiSagIkon}>
-                  <FontAwesome5 name="chevron-right" size={15} color={renkler.metinIkincil} />
+                  <YonluIkon name="chevron-right" size={15} color={renkler.metinIkincil} />
                 </View>
               ) : secili ? (
                 <View style={[styles.secimDairesi, { backgroundColor: renk }]}>
@@ -332,34 +315,43 @@ export interface KategoriMeta {
   ikon: string;
 }
 
-export const KATEGORILER: KategoriMeta[] = [
-  { id: 'namaz', ad: 'Namaz Kayıtları', aciklama: 'Kıldığınız namazlar', ikon: 'pray' },
-  { id: 'puan', ad: 'Puan & Rozetler', aciklama: 'İlerleme ve kazanımlar', ikon: 'star' },
-  { id: 'kaza', ad: 'Kaza Defteri', aciklama: 'Kaza namazı takibi', ikon: 'book' },
-  { id: 'ayarlar', ad: 'Uygulama Ayarları', aciklama: 'Konum, bildirim, tema', ikon: 'cog' },
-];
+/** Gelişmiş birleştirmenin veri türleri, etkin dilde. */
+export function kategoriler(): KategoriMeta[] {
+  const m = metin().yedekleme.sihirbaz.kategori;
+  return [
+    { id: 'namaz', ad: m.namaz, aciklama: m.namazAciklama, ikon: 'pray' },
+    { id: 'puan', ad: m.puan, aciklama: m.puanAciklama, ikon: 'star' },
+    { id: 'kaza', ad: m.kaza, aciklama: m.kazaAciklama, ikon: 'book' },
+    { id: 'ayarlar', ad: m.ayarlar, aciklama: m.ayarlarAciklama, ikon: 'cog' },
+  ];
+}
 
-const KATEGORI_SECENEKLERI: { id: KategoriStratejisi; kisa: string }[] = [
-  { id: 'akilli', kisa: 'Akıllı' },
-  { id: 'uzerineYaz', kisa: 'Üzerine yaz' },
-  { id: 'eksikleriEkle', kisa: 'Eksikler' },
-];
+const kategoriSecenekleri = (): { id: KategoriStratejisi; kisa: string }[] => {
+  const m = metin().yedekleme.sihirbaz;
+  return [
+    { id: 'akilli', kisa: m.kisaAkilli },
+    { id: 'uzerineYaz', kisa: m.kisaUzerineYaz },
+    { id: 'eksikleriEkle', kisa: m.kisaEksikler },
+  ];
+};
 
 export const GelismisAdimi: React.FC<{
   renkler: Renkler;
   secimler: Record<KategoriMeta['id'], KategoriStratejisi>;
   onDegis: (kategori: KategoriMeta['id'], strateji: KategoriStratejisi) => void;
-}> = ({ renkler, secimler, onDegis }) => (
+}> = ({ renkler, secimler, onDegis }) => {
+  const m = useMetin().yedekleme.sihirbaz;
+  return (
   <ScrollView style={styles.scrollAdim} contentContainerStyle={styles.scrollIcerik} showsVerticalScrollIndicator={false}>
     <View style={[styles.buyukIkonCember, { backgroundColor: `${renkler.birincil}20`, alignSelf: 'center' }]}>
       <FontAwesome5 name="sliders-h" size={40} color={renkler.birincil} />
     </View>
-    <Text style={[styles.adimBaslik, { color: renkler.metin }]}>Gelişmiş Birleştirme</Text>
+    <Text style={[styles.adimBaslik, { color: renkler.metin }]}>{m.gelismisBaslik}</Text>
     <Text style={[styles.adimAltBaslik, { color: renkler.metinIkincil }]}>
-      Her veri türü için ayrı bir yöntem belirleyebilirsiniz
+      {m.gelismisAlt}
     </Text>
 
-    {KATEGORILER.map((k) => {
+    {kategoriler().map((k) => {
       const secili = secimler[k.id];
       return (
         <View
@@ -376,13 +368,13 @@ export const GelismisAdimi: React.FC<{
             </View>
           </View>
           <View style={[styles.segmentSatir, { backgroundColor: renkler.arkaplan }]}>
-            {KATEGORI_SECENEKLERI.map((sec) => {
+            {kategoriSecenekleri().map((sec) => {
               const aktif = secili === sec.id;
               return (
                 <TouchableOpacity
                   key={sec.id}
                   accessibilityRole="button"
-                  accessibilityLabel={`${k.ad} — ${sec.kisa}`}
+                  accessibilityLabel={bicim(m.segmentErisim, { kategori: k.ad, secenek: sec.kisa })}
                   accessibilityState={{ selected: aktif }}
                   style={[styles.segmentButon, aktif && { backgroundColor: renkler.birincil }]}
                   onPress={() => onDegis(k.id, sec.id)}
@@ -404,30 +396,34 @@ export const GelismisAdimi: React.FC<{
       );
     })}
   </ScrollView>
-);
+  );
+};
 
 // ─── Adım 3: Uygulanıyor (ilerleme) ──────────────────────────────────────────
 
-export const UygulaniyorAdimi: React.FC<{ renkler: Renkler }> = ({ renkler }) => (
-  <View style={styles.merkezliIcerik}>
-    <ActivityIndicator size="large" color={renkler.birincil} style={{ marginBottom: 20 }} />
-    <Text style={[styles.adimBaslik, { color: renkler.metin }]}>İçe Aktarılıyor...</Text>
-    <Text style={[styles.yukleniyorMetin, { color: renkler.metinIkincil }]}>
-      Verileriniz güvenle birleştiriliyor.{'\n'}Bu işlem birkaç saniye sürebilir.
-    </Text>
-  </View>
-);
+export const UygulaniyorAdimi: React.FC<{ renkler: Renkler }> = ({ renkler }) => {
+  const m = useMetin().yedekleme.sihirbaz;
+  return (
+    <View style={styles.merkezliIcerik}>
+      <ActivityIndicator size="large" color={renkler.birincil} style={{ marginBottom: 20 }} />
+      <Text style={[styles.adimBaslik, { color: renkler.metin }]}>{m.aktariliyor}</Text>
+      <Text style={[styles.yukleniyorMetin, { color: renkler.metinIkincil }]}>{m.aktariliyorAlt}</Text>
+    </View>
+  );
+};
 
 // ─── Uygulama hatası ─────────────────────────────────────────────────────────
 
-export const UygulamaHatasiAdimi: React.FC<{ renkler: Renkler; hata: string | null }> = ({ renkler, hata }) => (
+export const UygulamaHatasiAdimi: React.FC<{ renkler: Renkler; hata: string | null }> = ({ renkler, hata }) => {
+  const m = useMetin().yedekleme.sihirbaz;
+  return (
   <View style={styles.merkezliIcerik}>
     <View style={[styles.buyukIkonCember, { backgroundColor: `${renkler.hata}18` }]}>
       <FontAwesome5 name="times-circle" size={44} color={renkler.hata} />
     </View>
-    <Text style={[styles.adimBaslik, { color: renkler.metin }]}>İçe Aktarma Tamamlanamadı</Text>
+    <Text style={[styles.adimBaslik, { color: renkler.metin }]}>{m.hataBaslik}</Text>
     <Text style={[styles.adimAltBaslik, { color: renkler.metinIkincil }]}>
-      Verileriniz birleştirilirken bir sorun oluştu. Mevcut verileriniz olduğu gibi korundu; lütfen tekrar deneyin.
+      {m.hataAlt}
     </Text>
     {hata ? (
       <View style={[styles.hataKutu, { backgroundColor: `${renkler.hata}12`, borderColor: `${renkler.hata}40` }]}>
@@ -436,7 +432,8 @@ export const UygulamaHatasiAdimi: React.FC<{ renkler: Renkler; hata: string | nu
       </View>
     ) : null}
   </View>
-);
+  );
+};
 
 // ─── Adım 4: Özet (başarı) ───────────────────────────────────────────────────
 
@@ -444,6 +441,7 @@ export const OzetAdimi: React.FC<{ renkler: Renkler; yazilanAnahtarSayisi: numbe
   renkler,
   yazilanAnahtarSayisi,
 }) => {
+  const m = useMetin().yedekleme.sihirbaz;
   const bounceAnim = useRef(new Animated.Value(0.6)).current;
 
   useEffect(() => {
@@ -460,30 +458,30 @@ export const OzetAdimi: React.FC<{ renkler: Renkler; yazilanAnahtarSayisi: numbe
       <Animated.View style={[styles.basariIkonAlani, { transform: [{ scale: bounceAnim }] }]}>
         <FontAwesome5 name="check-circle" size={92} color={renkler.basarili} />
       </Animated.View>
-      <Text style={[styles.adimBaslik, { color: renkler.metin }]}>İçe Aktarma Tamamlandı</Text>
+      <Text style={[styles.adimBaslik, { color: renkler.metin }]}>{m.tamamBaslik}</Text>
       <Text style={[styles.adimAltBaslik, { color: renkler.metinIkincil }]}>
-        Yedeğiniz başarıyla geri yüklendi. Verileriniz hazır!
+        {m.tamamAlt}
       </Text>
 
       <View style={[styles.ozetKutu, { backgroundColor: renkler.kartArkaplan, borderColor: `${renkler.sinir}80` }]}>
         <View style={styles.ozetSatir}>
           <FontAwesome5 name="check" size={14} color={renkler.basarili} />
           <Text style={[styles.ozetSatirMetin, { color: renkler.metinIkincil }]}>
-            Namaz kayıtlarınız, puanınız ve ayarlarınız güncellendi.
+            {m.guncellendi}
           </Text>
         </View>
         {yazilanAnahtarSayisi > 0 && (
           <View style={styles.ozetSatir}>
             <FontAwesome5 name="database" size={14} color={renkler.bilgi} />
             <Text style={[styles.ozetSatirMetin, { color: renkler.metinIkincil }]}>
-              {yazilanAnahtarSayisi} veri kümesi güvenle birleştirildi.
+              {sayili(m.birlestirildi, yazilanAnahtarSayisi)}
             </Text>
           </View>
         )}
         <View style={styles.ozetSatir}>
           <FontAwesome5 name="heart" size={14} color={renkler.hata} />
           <Text style={[styles.ozetSatirMetin, { color: renkler.metinIkincil }]}>
-            Hayırlı namazlar!
+            {m.hayirli}
           </Text>
         </View>
       </View>

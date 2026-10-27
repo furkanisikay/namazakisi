@@ -38,15 +38,15 @@ class KibleKomplikasyonServisi : GuvenliKomplikasyonServisi() {
     override fun onizleme(type: ComplicationType): ComplicationData? = veri(type, 152, "Fatih, İstanbul")
 
     private fun veri(tur: ComplicationType, aci: Int?, konumAdi: String?): ComplicationData? {
-        val aciklama = if (aci != null) {
-            "Kıble kuzeyden $aci derece${konumAdi?.let { ", $it" } ?: ""}. Pusulayı açın"
-        } else {
-            "Kıble için telefonunuzda konumu açın"
+        val aciklama = when {
+            aci != null && konumAdi != null -> getString(R.string.kible_komplikasyon_konumlu, aci, konumAdi)
+            aci != null -> getString(R.string.kible_komplikasyon, aci)
+            else -> getString(R.string.kible_komplikasyon_konum_yok)
         }
         return when (tur) {
             ComplicationType.SHORT_TEXT ->
                 ShortTextComplicationData.Builder(duz(if (aci != null) "$aci°" else "—"), duz(aciklama))
-                    .setTitle(duz("Kıble"))
+                    .setTitle(duz(getString(R.string.kible_adi)))
                     .setMonochromaticImage(KomplikasyonOrtak.monokrom(this, R.drawable.ic_kible))
                     .setTapAction(kibleyiAc(this))
                     .build()

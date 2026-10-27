@@ -5,6 +5,8 @@ import {
     ozellikKartiKapat,
 } from '../store/ozelliklerSlice';
 import { YENI_OZELLIKLER, type YeniOzellik } from '../../core/constants/YeniOzellikler';
+import { yeniOzelliklerDilde } from '../../core/constants/yeniOzellikDili';
+import { useMetin } from './useMetin';
 import { yeniOzellikGorunurMu } from './yeniOzellikYetenegi';
 import { gorulmeAnahtari, ozellikKayittaMi } from '../../core/utils/yeniOzellikGorulme';
 
@@ -26,10 +28,13 @@ function anahtarlaraCevir(id: string | string[]): string[] {
 export function useYeniOzellikler() {
     const dispatch = useAppDispatch();
     const { gorulenIdler, kapatilanKartIdler } = useAppSelector(s => s.ozellikler);
+    // Etkin dilde (çevirisi olmayan duyuru o dilde görünmez); dil değişince yeniden hesaplanır.
+    const metinler = useMetin();
 
     const okunmamis = useMemo(
-        () => YENI_OZELLIKLER.filter(o => yeniOzellikGorunurMu(o) && !ozellikKayittaMi(o, gorulenIdler)),
-        [gorulenIdler]
+        () => yeniOzelliklerDilde().filter(o => yeniOzellikGorunurMu(o) && !ozellikKayittaMi(o, gorulenIdler)),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [gorulenIdler, metinler]
     );
 
     // Ayarlar üstünde gösterilecek tek tanıtım kartı (en güncel, kapatılmamış)

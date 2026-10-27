@@ -221,6 +221,38 @@ do {
     esitMi(geri.durum.faz, .subhanallah, "geri alma faz sinirini geri gecer")
     esitMi(geri.durum.fazSayisi, 32, "geri alinmis faz sayisi")
     esitMi(Tesbihat.kisaMetin(Tesbihat.Durum(toplam: 45)), "Elhamdülillâh, 12/33", "kisa metin (noktali ayrac yok)")
+    // Okunuslar dile gore (sahip karari 2026-10-25): ceviri degil, o dilin yaygin yazimi.
+    esitMi(Tesbihat.Faz.subhanallah.ad(), "Sübhânallah", "tr zikir adi varsayilan")
+    esitMi(Tesbihat.kaynak(), "Müslim, Mesâcid 146", "tr kunye varsayilan")
+    esitMi(Tesbihat.tehlilMetni().hasPrefix("Lâ ilâhe illallâhü vahdehû"), true, "tr tehlil varsayilan")
+    esitMi(Tesbihat.kisaMetin(Tesbihat.Durum(toplam: 45), dil: "en"), "Alhamdulillah, 12/33", "en kisa metin")
+    esitMi(Tesbihat.Faz.subhanallah.ad(dil: "fr"), "Soubhanallah", "fr zikir adi")
+    esitMi(Tesbihat.Faz.allahuEkber.ad(dil: "ms"), "Allahuakbar", "ms zikir adi")
+    esitMi(Tesbihat.kaynak(dil: "id"), "HR. Muslim, Masajid 146", "id kunye")
+    esitMi(Tesbihat.kaynak(dil: "de"), "Muslim, Masadschid 146", "de kunye")
+    esitMi(Tesbihat.tehlilMetni(dil: "de"), Tesbihat.tehlilMetni(dil: "en"), "de tehlil = en")
+    esitMi(Tesbihat.tehlilMetni(dil: "ms"), Tesbihat.tehlilMetni(dil: "id"), "ms tehlil = id")
+    for kod in ArayuzDili.desteklenenler {
+        for f in Tesbihat.Faz.allCases {
+            esitMi(f.ad(dil: kod).isEmpty, false, "\(kod) zikir adi bos degil")
+        }
+        esitMi(Tesbihat.tehlilMetni(dil: kod).isEmpty, false, "\(kod) tehlil bos degil")
+        esitMi(Tesbihat.kaynak(dil: kod).isEmpty, false, "\(kod) kunye bos degil")
+    }
+    func kirilMi(_ s: String) -> Bool {
+        let harfler = s.unicodeScalars.filter { CharacterSet.letters.contains($0) }
+        return !harfler.isEmpty && harfler.allSatisfy { (0x0400...0x04FF).contains($0.value) }
+    }
+    for f in Tesbihat.Faz.allCases {
+        esitMi(kirilMi(f.ad(dil: "ru")), true, "ru zikir adi Kiril")
+    }
+    esitMi(kirilMi(Tesbihat.tehlilMetni(dil: "ru")), true, "ru tehlil Kiril")
+    esitMi(kirilMi(Tesbihat.kaynak(dil: "ru")), true, "ru kunye Kiril")
+    for f in Tesbihat.Faz.allCases {
+        esitMi(f.ad(dil: "xx"), f.ad(dil: "tr"), "bilinmeyen dil zikir adi Turkce")
+    }
+    esitMi(Tesbihat.tehlilMetni(dil: "xx"), Tesbihat.tehlilMetni(), "bilinmeyen dil tehlil Turkce")
+    esitMi(Tesbihat.kaynak(dil: "xx"), Tesbihat.kaynak(), "bilinmeyen dil kunye Turkce")
     let t0: Int64 = 1_000_000_000_000
     esitMi(Tesbihat.yukle(toplam: 40, sonDokunusMs: t0, simdiMs: t0 + 10 * dk).toplam, 40, "taze oturum korunur")
     esitMi(Tesbihat.yukle(toplam: 40, sonDokunusMs: t0, simdiMs: t0 + 91 * dk).toplam, 0, "eskimis oturum sifirlanir")
@@ -513,6 +545,105 @@ do {
     esitMi(p(42_000, true), ["1 dk"], "sonuk: dakikanin alti 1 dk")
     esitMi(SaatSure.sesli(kalanMs: (9 * 60 + 5) * 1000), "9 dakika 5 saniye", "sesli")
     esitMi(SaatSure.sesli(kalanMs: (3600 + 60) * 1000), "1 saat 1 dakika", "sesli saat")
+}
+
+// MARK: - 15) Ingilizce arayuz dili (W5) — Turkce beklentiler yukarida, varsayilan dil "tr"
+
+do {
+    let d = SaatKarari.ekranDurumu(yuk: yuk, bekleyenler: [], simdiMs: ikindi12 + dk, dil: "en")
+    esitMi(d.satirlar.map { $0.ad }, ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], "en gorunen adlar")
+    esitMi(d.satirlar.map { $0.kod }, ["sabah", "ogle", "ikindi", "aksam", "yatsi"], "en kodlar dilden bagimsiz")
+    esitMi(d.kildim, .aday(vakit: ani("ikindi", ikindi12), kayitVakti: "ikindi", ad: "Asr"), "en Kildim adayi")
+    esitMi(SaatKarari.ekranDurumu(yuk: yuk, bekleyenler: [], simdiMs: imsak12 + dk, dil: "en").kildim, .zatenKilindi(ad: "Fajr"), "en sabah zaten kilinmis")
+    esitMi(Kible.donusMetni(35, dil: "en"), "Right 35°", "en saga donus")
+    esitMi(Kible.donusMetni(360 - 121, dil: "en"), "Left 120°", "en sola donus")
+    esitMi(Kible.donusMetni(178, dil: "en"), "Behind you", "en arkada")
+    esitMi(Kible.erisimMetni(36, hizali: false, dil: "en"), "The Qibla is 40 degrees to your right", "en erisim metni")
+    esitMi(Kible.erisimMetni(300, hizali: false, dil: "en"), "The Qibla is 60 degrees to your left", "en erisim metni sol")
+    esitMi(Kible.erisimMetni(0, hizali: true, dil: "en"), "You are facing the Qibla", "en hizali")
+    esitMi(Kible.erisimMetni(300, hizali: false), "Kıble 60 derece solunuzda", "tr erisim metni sol")
+    esitMi(Kible.mesafeMetni(2403.4, dil: "en"), "2,400 km", "en binlik ayraci virgul")
+    esitMi(Kible.mesafeMetni(3, dil: "en"), "You're at the Kaaba", "en 10 km alti")
+    func p(_ ms: Int64, _ s: Bool = false) -> [String] { SaatSure.parcalar(kalanMs: ms, saniyesiz: s, dil: "en").map { "\($0.sayi) \($0.birim)" } }
+    esitMi(p((1 * 3600 + 9 * 60 + 9) * 1000), ["1 h", "9 min"], "en saat ve ustu")
+    esitMi(p((9 * 60 + 5) * 1000), ["9 min", "05 s"], "en saatin alti")
+    esitMi(p(42_000, true), ["1 min"], "en sonuk")
+    esitMi(SaatSure.sesli(kalanMs: (9 * 60 + 5) * 1000, dil: "en"), "9 minutes 5 seconds", "en sesli")
+    esitMi(SaatSure.sesli(kalanMs: (3600 + 60) * 1000, dil: "en"), "1 hour 1 minute", "en sesli tekil")
+    esitMi(SaatSure.sesli(kalanMs: 42_000), "42 saniye", "tr sesli dakikanin alti")
+    esitMi(Samimiyet.kabulDuasi("en"), "May Allah accept it", "en kabul duasi")
+    esitMi(Samimiyet.kabulDuasi, "Allah kabul etsin", "tr kabul duasi sabit")
+    // Iki dilde ayni yer tutucular.
+    func yerTutucular(_ m: SaatMetinleri) -> [String] {
+        let alanlar = [m.kilindiErisim, m.cikisSaat, m.girisSaat, m.siradakiErisim, m.kildimErisim, m.sessizUyandirma,
+                       m.noktaErisim, m.kuzeydenErisim, m.imsakSaat, m.vaktinSonu, m.vaktiCikisErisim, m.kilindiBaslik]
+        return alanlar.map { a in ["{ad}", "{saat}", "{dua}", "{durum}", "{derece}"].filter { a.contains($0) }.joined() }
+    }
+    esitMi(yerTutucular(SaatMetinleri.en), yerTutucular(SaatMetinleri.tr), "saat en/tr yer tutuculari ayni")
+    esitMi(SaatMetinleri.dil("en-US"), SaatMetinleri.en, "saat metinleri en-US → en")
+    esitMi(SaatMetinleri.dil(nil), SaatMetinleri.tr, "saat metinleri dil yok → tr")
+}
+
+// MARK: - 15b) Native dil tablolari (W4) — on dil, Turkceyle ayni alan + yer tutucu
+
+do {
+    /// Her `String` alanin (ve `[String: String]` alaninin her anahtarinin) `{...}` kumesi.
+    func imza(_ deger: Any) -> [String: String] {
+        var sonuc: [String: String] = [:]
+        func kume(_ s: String) -> String {
+            var bulunan = Set<String>()
+            var kalan = Substring(s)
+            while let a = kalan.firstIndex(of: "{"), let k = kalan[a...].firstIndex(of: "}") {
+                bulunan.insert(String(kalan[a...k]))
+                kalan = kalan[kalan.index(after: k)...]
+            }
+            return bulunan.sorted().joined() + (s.isEmpty ? "<BOS>" : "")
+        }
+        for c in Mirror(reflecting: deger).children {
+            guard let ad = c.label, ad != "dil" else { continue }
+            if let s = c.value as? String { sonuc[ad] = kume(s) }
+            if let h = c.value as? [String: String] {
+                // Cogul kaliplari dilin kategorileriyle degisebilir: "other" zorunlu, hepsi ayni yer tutucu.
+                sonuc["\(ad).other"] = kume(h["other"] ?? "")
+                sonuc["\(ad).*"] = Set(h.values.map(kume)).sorted().joined(separator: "|")
+            }
+        }
+        return sonuc
+    }
+    let kodlar = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur"]
+    esitMi(Set(SaatMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatMetinleri her dil")
+    esitMi(Set(SaatSureMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatSureMetinleri her dil")
+    esitMi(Set(KibleMetinleri.tablo.keys), Set(kodlar), "saat tablolari: KibleMetinleri her dil")
+    // Arapca cogul alti kategori (iskelet Ingilizce kaliplarla): tekil yalniz "one".
+    esitMi([1, 3, 11].map { CogulKurali.sec(SaatSureMetinleri.ar.dakika, "ar", $0) }, ["1 دقيقة", "3 دقائق", "11 دقيقة"], "saat sure: ar cogul")
+    esitMi(Set(SaatSureMetinleri.ar.saat.keys), ["zero", "one", "two", "few", "many", "other"], "saat sure: ar alti kategori")
+    for d in kodlar {
+        esitMi(SaatMetinleri.dil(d).dil, d, "saat metinleri: \(d) kendi kodu")
+        esitMi(imza(SaatMetinleri.dil(d)), imza(SaatMetinleri.tr), "saat metinleri: \(d) yer tutuculari")
+        esitMi(imza(SaatSureMetinleri.dil(d)), imza(SaatSureMetinleri.tr), "saat sure: \(d) yer tutuculari")
+        esitMi(imza(KibleMetinleri.dil(d)), imza(KibleMetinleri.tr), "kible metinleri: \(d) yer tutuculari")
+        esitMi(SaatSure.parcalar(kalanMs: 3_725_000, dil: d).count, 2, "saat sure: \(d) parca sayisi")
+        esitMi(Samimiyet.kabulDuasi(d).isEmpty, false, "kabul duasi: \(d) bos degil")
+    }
+}
+
+// MARK: - 16) Dil telefondan: baglamin kardes anahtari + saat deposu (W5)
+
+do {
+    esitMi(SaatIletisi.dil(SaatIletisi.baglam(yukJson: "{}", dil: "en")), "en", "baglam dili gidis-donus")
+    esitMi(SaatIletisi.dil(SaatIletisi.baglam(yukJson: "{}")), nil, "eski telefon dil gondermez")
+    esitMi(SaatIletisi.yukJson(SaatIletisi.baglam(yukJson: "{}", dil: "en")), "{}", "dil yuku degistirmez")
+    esitMi(SaatIletisi.dil(["yuk": "{}", "dil": "xx"]), "tr", "desteklenmeyen dil Turkceye")
+    esitMi(SaatIletisi.baglam(yukJson: "{}").count, 1, "dil yoksa baglamda tek anahtar (eski sekil)")
+    let suite = "test.namazakisi.saat.dil.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: suite)!
+    let depo = SaatDeposu(defaults: defaults)
+    esitMi(depo.dil(), "tr", "dil yokken Turkce")
+    esitMi(depo.diliYaz("en"), true, "ilk dil degisiklik")
+    esitMi(depo.diliYaz("en-GB"), false, "ayni dil degisiklik degil")
+    esitMi(depo.dil(), "en", "dil okunur")
+    esitMi(depo.diliYaz("tr"), true, "geri donus degisiklik")
+    defaults.removePersistentDomain(forName: suite)
 }
 
 // MARK: - Sonuc

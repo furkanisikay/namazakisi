@@ -30,6 +30,8 @@ import {
     type SimdikiVakitSonucu,
 } from '../../domain/services/KildimKuyruguServisi';
 import { Logger } from '../../core/utils/Logger';
+import { bicim, metin } from '../../core/dil/aktifDil';
+import { namazAdiGoster } from '../../core/constants/UygulamaSabitleri';
 
 const saatMetni = (ms: number): string => {
     const t = new Date(ms);
@@ -41,29 +43,33 @@ const saatMetni = (ms: number): string => {
  * Saate hal eki EKLENMEZ ("12:58'de" okunuşa göre değişir — AGENTS.md).
  */
 export function kildimSonucMetni(sonuc: SimdikiVakitSonucu): string {
+    const s = metin();
+    const m = s.genel.kildim.sonuc;
     switch (sonuc.tur) {
         case 'isaretlendi':
-            return `${sonuc.vakitAdi} namazınız kılındı olarak işaretlendi. Allah kabul etsin.`;
+            // Vakit adı kimliktir (Türkçe `NamazAdi`); ekranda etkin dilin adı.
+            return bicim(m.isaretlendi, { vakit: namazAdiGoster(sonuc.vakitAdi), dua: s.samimiyet.kabulDuasi });
         case 'zatenKilindi':
-            return `${sonuc.vakitAdi} namazı zaten kılındı olarak işaretli.`;
+            return bicim(m.zatenKilindi, { vakit: namazAdiGoster(sonuc.vakitAdi) });
         case 'vakitYok':
             return sonuc.siradakiAdi && sonuc.girisMs != null
-                ? `Şu an kılınacak vakit yok. Sıradaki ${sonuc.siradakiAdi}, giriş ${saatMetni(sonuc.girisMs)}.`
-                : 'Şu an kılınacak vakit yok.';
+                ? bicim(m.vakitYokSiradaki, { siradaki: namazAdiGoster(sonuc.siradakiAdi), saat: saatMetni(sonuc.girisMs) })
+                : m.vakitYok;
         case 'konumYok':
-            return 'Vakitleri hesaplayabilmek için önce konumunuzu ayarlayın.';
+            return m.konumYok;
         case 'vakitDegisti':
-            return 'Vakit değişti, işaretleme yapılmadı. Lütfen yeniden deneyin.';
+            return m.vakitDegisti;
     }
 }
 
 /** Onay penceresi metni (kibar "siz"). */
 export const kildimOnayBasligi = (aday: KildimAdayi): string =>
-    `${aday.vakitAdi} namazı kılındı olarak işaretlensin mi?`;
-/** Başlatanı BİLİNMEYEN bağlantıda (karar saklanamaz) gösterilen açıklama. */
-export const KILDIM_ONAY_MESAJI = 'Bu istek bir bağlantı üzerinden geldi. Namazınızı kıldıysanız onaylayın.';
+    bicim(metin().genel.kildim.onayBasligi, { vakit: namazAdiGoster(aday.vakitAdi) });
+/** Başlatanı BİLİNMEYEN bağlantıda (karar saklanamaz) gösterilen açıklama (etkin dilde). */
+export const kildimOnayMesaji = (): string => metin().genel.kildim.onayMesaji;
 
-const HATA_METNI = 'İşaretleme yapılamadı. Lütfen uygulamadan işaretleyin.';
+/** İşaretleme hatası kısa bildirimi (Siri hızlı eylemi de kullanır). */
+export const kildimHataMetni = (): string => metin().genel.kildim.hataMetni;
 
 export interface KildimDerinBaglantiOnayi {
     /** Onay bekleyen vakit; yoksa null (pencere kapalı). */
@@ -123,7 +129,7 @@ export function useKildimDerinBaglantisi(etkin: boolean): KildimDerinBaglantiOna
                 else kisaBildirimGoster(kildimSonucMetni(d));
             } catch (e) {
                 Logger.warn('KildimDerinBaglanti', 'Derin baglanti degerlendirilemedi', e);
-                kisaBildirimGoster(HATA_METNI);
+                kisaBildirimGoster(kildimHataMetni());
             }
         };
         if (!acilisBaglantisiIslendi) {
@@ -147,7 +153,7 @@ export function useKildimDerinBaglantisi(etkin: boolean): KildimDerinBaglantiOna
             .then((sonuc) => kisaBildirimGoster(kildimSonucMetni(sonuc)))
             .catch((e) => {
                 Logger.warn('KildimDerinBaglanti', 'Derin baglantidan isaretleme basarisiz', e);
-                kisaBildirimGoster(HATA_METNI);
+                kisaBildirimGoster(kildimHataMetni());
             });
     }, []);
 

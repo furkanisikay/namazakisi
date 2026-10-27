@@ -3,35 +3,22 @@
  * Hiçbiri store/React/AsyncStorage/native modül import ETMEZ; girdiler
  * parametre olarak alınır (`AGENTS.md`: core saf kalmalı).
  */
+import { bicim, metin, sayili } from '../dil/aktifDil';
 import { konumMetniHesapla, type KonumMetniGirdisi } from './konumMetni';
-
-const AY_ADLARI = [
-  'Ocak',
-  'Şubat',
-  'Mart',
-  'Nisan',
-  'Mayıs',
-  'Haziran',
-  'Temmuz',
-  'Ağustos',
-  'Eylül',
-  'Ekim',
-  'Kasım',
-  'Aralık',
-] as const;
 
 /**
  * Konum satırının özetini üretir: konum metni + mod bilgisi.
  * örn. "Kadıköy, İstanbul · otomatik"
  */
 export function konumOzeti(konum: KonumMetniGirdisi): string {
-  const mod = konum.konumModu === 'oto' ? 'otomatik' : 'manuel';
-  return `${konumMetniHesapla(konum)} · ${mod}`;
+  const m = metin().ayarlar.ozet;
+  return bicim(m.konum, { konum: konumMetniHesapla(konum), mod: konum.konumModu === 'oto' ? m.otomatik : m.manuel });
 }
 
 /** Takvim entegrasyonu satırının özeti. */
 export function takvimOzeti(aktif: boolean): string {
-  return aktif ? 'Açık' : 'Kapalı';
+  const m = metin().ayarlar.ozet;
+  return aktif ? m.acik : m.kapali;
 }
 
 export interface MuhafizOzetiGirdisi {
@@ -40,20 +27,14 @@ export interface MuhafizOzetiGirdisi {
 }
 
 /**
- * Ham `yogunluk` enum değeri doğrudan ekrana basılmaz (ör. 'yogun' diakritiksiz
- * görünür) — görünen ad haritası kullanılır.
+ * Muhafız satırının özeti. Ham `yogunluk` enum değeri doğrudan ekrana basılmaz
+ * (ör. 'yogun' diakritiksiz görünür) — sözlükteki görünen ad kullanılır.
  */
-const YOGUNLUK_GORUNEN_ADLARI: Record<'hafif' | 'normal' | 'yogun', string> = {
-  hafif: 'hafif',
-  normal: 'normal',
-  yogun: 'yoğun',
-};
-
-/** Muhafız satırının özeti. */
 export function muhafizOzeti(g: MuhafizOzetiGirdisi): string {
-  if (!g.aktif) return 'Kapalı';
-  if (g.yogunluk === 'ozel') return 'Açık · özel ayarlar';
-  return `Açık · ${YOGUNLUK_GORUNEN_ADLARI[g.yogunluk]} yoğunluk`;
+  const m = metin().ayarlar.ozet;
+  if (!g.aktif) return m.kapali;
+  if (g.yogunluk === 'ozel') return m.muhafizOzel;
+  return bicim(m.muhafizDuzey, { duzey: m.yogunluk[g.yogunluk] });
 }
 
 /**
@@ -62,11 +43,12 @@ export function muhafizOzeti(g: MuhafizOzetiGirdisi): string {
  * hangi alanların "vakit" sayıldığına karar vermez, yalnız sayıyı biçimler).
  */
 export function bildirimOzeti(acikSayisi: number, cumaAktif: boolean): string {
+  const m = metin().ayarlar.ozet;
   if (acikSayisi === 0) {
-    return cumaAktif ? 'Yalnız cuma hatırlatması' : 'Kapalı';
+    return cumaAktif ? m.yalnizCuma : m.kapali;
   }
-  const temel = `${acikSayisi} vakit`;
-  return cumaAktif ? `${temel} · cuma hatırlatması açık` : temel;
+  const temel = sayili(m.vakitSayisi, acikSayisi);
+  return cumaAktif ? bicim(m.cumaAcik, { temel }) : temel;
 }
 
 export interface SeriOzetiGirdisi {
@@ -79,7 +61,7 @@ export interface SeriOzetiGirdisi {
  * taşındı (`gunSonuBildirimAktif` artık burada gösterilmez; alan geriye uyum için kalır).
  */
 export function seriOzeti(g: SeriOzetiGirdisi): string {
-  return `Tam gün: ${g.tamGunEsigi} namaz`;
+  return sayili(metin().ayarlar.ozet.tamGun, g.tamGunEsigi);
 }
 
 /** Nafile namazlar satırının özeti (issue #77). */
@@ -89,26 +71,28 @@ export function nafileOzeti(g: {
   teheccud: boolean;
   gosterge: boolean;
 }): string {
-  // [açık mı, cümle başı, cümle içi] — sabit adlar: Türkçe büyük/küçük harf
-  // dönüşümü YAPILMAZ (AGENTS.md toUpperCase/toLowerCase tuzağı).
+  // [açık mı, sözlük anahtarı] — cümle başı `adlar`, cümle içi `kucuk`: büyük/küçük
+  // harf dönüşümü YAPILMAZ (AGENTS.md toUpperCase/toLowerCase tuzağı).
+  const s = metin();
   const acik = (
     [
-      [g.kusluk, 'Kuşluk', 'kuşluk'],
-      [g.evvabin, 'Evvâbîn', 'evvâbîn'],
-      [g.teheccud, 'Teheccüd', 'teheccüd'],
+      [g.kusluk, 'kusluk'],
+      [g.evvabin, 'evvabin'],
+      [g.teheccud, 'teheccud'],
     ] as const
   ).filter(([a]) => a);
-  if (acik.length === 0) return g.gosterge ? 'Ana ekranda gösteriliyor' : 'Kapalı';
-  const adlar = acik.map(([, bas, ic], i) => (i === 0 ? bas : ic));
-  return `${adlar.join(', ')} hatırlatması açık`;
+  if (acik.length === 0) return g.gosterge ? s.ayarlar.ozet.nafileGosterge : s.ayarlar.ozet.kapali;
+  const adlar = acik.map(([, k], i) => (i === 0 ? s.nafile.adlar[k] : s.nafile.kucuk[k]));
+  return sayili(s.ayarlar.ozet.nafileAcik, adlar.length, { adlar: adlar.join(', ') });
 }
 
 /** Ramazan (iftar/sahur sayacı) satırının özeti. */
 export function ramazanOzeti(iftarAktif: boolean, sahurAktif: boolean): string {
-  if (iftarAktif && sahurAktif) return 'İftar ve sahur sayacı açık';
-  if (iftarAktif) return 'İftar sayacı açık';
-  if (sahurAktif) return 'Sahur sayacı açık';
-  return 'Kapalı';
+  const m = metin().ayarlar.ozet;
+  if (iftarAktif && sahurAktif) return m.iftarSahur;
+  if (iftarAktif) return m.iftar;
+  if (sahurAktif) return m.sahur;
+  return m.kapali;
 }
 
 /**
@@ -117,8 +101,8 @@ export function ramazanOzeti(iftarAktif: boolean, sahurAktif: boolean): string {
  * 'sistem' de içerebilen `useTema().mod` DEĞİLDİR.
  */
 export function gorunumOzeti(temaModu: 'acik' | 'koyu', paletAdi: string): string {
-  const temaEtiketi = temaModu === 'koyu' ? 'Koyu tema' : 'Açık tema';
-  return `${temaEtiketi} · ${paletAdi}`;
+  const m = metin().ayarlar.ozet;
+  return bicim(m.gorunum, { tema: temaModu === 'koyu' ? m.koyuTema : m.acikTema, palet: paletAdi });
 }
 
 /**
@@ -127,17 +111,18 @@ export function gorunumOzeti(temaModu: 'acik' | 'koyu', paletAdi: string): strin
  * fonksiyon içinde `new Date()` çağırmak testi yılbaşında kırardı.
  */
 export function yedeklemeOzeti(sonDisaAktarmaISO: string | null, simdi: Date): string {
-  if (!sonDisaAktarmaISO) return 'Henüz dışa aktarılmadı';
+  const s = metin();
+  const m = s.ayarlar.ozet;
+  if (!sonDisaAktarmaISO) return m.disaAktarilmadi;
   const tarih = new Date(sonDisaAktarmaISO);
-  if (Number.isNaN(tarih.getTime())) return 'Henüz dışa aktarılmadı';
-  const gun = tarih.getDate();
-  const ay = AY_ADLARI[tarih.getMonth()];
+  if (Number.isNaN(tarih.getTime())) return m.disaAktarilmadi;
+  const degerler = { gun: tarih.getDate(), ay: s.tarih.aylar[tarih.getMonth()], yil: tarih.getFullYear() };
   const ayniYilMi = tarih.getFullYear() === simdi.getFullYear();
-  const yilKismi = ayniYilMi ? '' : ` ${tarih.getFullYear()}`;
-  return `Son dışa aktarma: ${gun} ${ay}${yilKismi}`;
+  return bicim(m.sonDisaAktarma, { tarih: bicim(ayniYilMi ? m.tarihYilsiz : s.tarih.uzun, degerler) });
 }
 
 /** Hakkında satırının özeti. */
 export function hakkindaOzeti(surum: string, guncellemeVar: boolean): string {
-  return `Sürüm ${surum} · ${guncellemeVar ? 'güncelleme var' : 'güncel'}`;
+  const m = metin().ayarlar.ozet;
+  return bicim(m.surum, { surum, durum: guncellemeVar ? m.guncellemeVar : m.guncel });
 }

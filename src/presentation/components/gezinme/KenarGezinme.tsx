@@ -14,6 +14,7 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useRenkler } from '../../../core/theme';
+import { useMetin } from '../../hooks/useMetin';
 import { KENAR_GENISLIGI_DP, RAY_GENISLIGI_DP, type GezinmeTuru } from '../../../core/utils/ekranSinifi';
 
 interface Props extends BottomTabBarProps {
@@ -22,6 +23,7 @@ interface Props extends BottomTabBarProps {
 
 export const KenarGezinme: React.FC<Props> = ({ state, descriptors, navigation, insets, tur }) => {
     const renkler = useRenkler();
+    const marka = useMetin().ortak.marka;
     const odak = descriptors[state.routes[state.index].key]?.options;
     // Sade görünüm sekme çubuğunu gizler (`tabBarStyle: { display: 'none' }`); kenar da gizlenir.
     const gizli = (odak?.tabBarStyle as { display?: string } | undefined)?.display === 'none';
@@ -46,7 +48,7 @@ export const KenarGezinme: React.FC<Props> = ({ state, descriptors, navigation, 
         >
             {kenar ? (
                 <Text className="text-xl font-bold px-5 mb-6" style={{ color: renkler.metin }} accessibilityRole="header">
-                    Namaz Akışı
+                    {marka}
                 </Text>
             ) : null}
             {state.routes.map((route, i) => {

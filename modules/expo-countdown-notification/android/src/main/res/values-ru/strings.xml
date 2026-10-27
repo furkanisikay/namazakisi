@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ru -->
+<resources>
+    <string name="countdown_kanal_canli_ad">Живые отсчёты</string>
+    <string name="countdown_kanal_canli_aciklama">Отсчёты в Now Bar и строке состояния</string>
+    <string name="countdown_kanal_genel_ad">Уведомления с отсчётом</string>
+    <string name="countdown_kanal_genel_aciklama">Канал для уведомлений с отсчётом</string>
+
+    <string name="countdown_eylem_kildim">Намаз совершён</string>
+    <string name="countdown_eylem_durdur">Остановить</string>
+
+    <string name="countdown_yedek_vakit">Поспешите, время намаза скоро закончится.</string>
+    <string name="countdown_yedek_iftar">Время на исходе.</string>
+    <string name="countdown_yedek_sahur">Ещё можно есть и пить, имсак приближается.</string>
+    <string name="countdown_yedek_seri">Сегодняшние намазы не завершены — не потеряйте серию.</string>
+
+    <string name="countdown_onek_vakit">До конца времени</string>
+    <string name="countdown_onek_vakit_dar">Время уходит</string>
+    <string name="countdown_onek_iftar">До ифтара</string>
+    <string name="countdown_onek_iftar_dar">До ифтара</string>
+    <string name="countdown_onek_sahur">До конца сухура</string>
+    <string name="countdown_onek_sahur_dar">Сухур кончается</string>
+    <string name="countdown_onek_seri">Чтобы сохранить серию</string>
+    <string name="countdown_onek_seri_dar">Серия под угрозой</string>
+</resources>

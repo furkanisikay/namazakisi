@@ -24,9 +24,15 @@ import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import { trDestekleniyorMu } from '../../../modules/expo-countdown-notification/src';
 import { anonsModuluVarMi, trSesTanimlayici } from '../../../modules/expo-muhafiz-anons/src';
+import { useAktifDil } from './useMetin';
 
+/**
+ * Ad tarihseldir: soru ETKİN dilin sesidir (native taraf kayıtlı sesli okuma dilini sorar:
+ * Android `AnonsKonusucu.dilDestekleniyorMu`, iOS `dilOneki`). Dil değişince yeniden sorulur.
+ */
 export function useTurkceTtsDestegi(): boolean | null {
     const [destekli, setDestekli] = useState<boolean | null>(null);
+    const dil = useAktifDil();
 
     useEffect(() => {
         let iptalEdildi = false;
@@ -59,7 +65,7 @@ export function useTurkceTtsDestegi(): boolean | null {
         return () => {
             iptalEdildi = true;
         };
-    }, []);
+    }, [dil]);
 
     return destekli;
 }

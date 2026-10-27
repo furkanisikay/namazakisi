@@ -7,15 +7,17 @@ appId: com.furkanisikay.namazakisi
 # Ana ekran capasi: header'daki seri dugmesi ("Seri: N gün"; toparlanmada "Toparlanma modu: …"). Kıble Dalga 4'ten
 # beri sekmedir; header'daki "Kıble yönünü bul" kisayolu kalkti.
 - extendedWaitUntil:
-    visible: "(Seri|Toparlanma modu): .*"
+    visible: "(Seri|Toparlanma modu|Streak|Recovery mode): .*"
     timeout: 90000
 - repeat:
     while:
-      visible: "Devam Et"
+      visible:
+        id: "kutlama-devam"
     commands:
-      - tapOn: "Devam Et"
+      - tapOn:
+          id: "kutlama-devam"
 # Kıble kendi sekmesinde (Dalga 4).
-- tapOn: "Kıble"
+- tapOn: "(Kıble|Qibla)"
 - waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: kareler/05-kible

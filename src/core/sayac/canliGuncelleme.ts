@@ -11,6 +11,10 @@
  * eder: `modules/expo-countdown-notification/android/src/test/resources/kisa-metin-ornekleri.json`.
  */
 
+import { aktifDil } from '../dil/aktifDil';
+import type { DilKodu } from '../dil/diller';
+import { dakikaKisa } from '../dil/sure';
+
 export type SayacTemasi = 'vakit' | 'iftar' | 'sahur' | 'seri';
 
 const DAKIKA_MS = 60_000;
@@ -40,12 +44,9 @@ export function kalanDakika(kalanMs: number): number {
 }
 
 /** Durum çubuğu çipi metni: "12 dk", "1 sa", "1 sa 5 dk". Saniye yok (onu chronometer çizer). */
-export function kisaKritikMetin(kalanMs: number): string {
-  const dk = kalanDakika(kalanMs);
-  if (dk < 60) return `${dk} dk`;
-  const sa = Math.floor(dk / 60);
-  const artan = dk % 60;
-  return artan === 0 ? `${sa} sa` : `${sa} sa ${artan} dk`;
+export function kisaKritikMetin(kalanMs: number, kod: DilKodu = aktifDil()): string {
+  // Kotlin ikizi `CanliGuncellemeKurallari.kisaMetin(kalanMs, dil)` aynı birimleri kullanır.
+  return dakikaKisa(kalanDakika(kalanMs), kod);
 }
 
 /**

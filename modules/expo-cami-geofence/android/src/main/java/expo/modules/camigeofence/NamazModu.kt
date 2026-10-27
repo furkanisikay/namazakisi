@@ -111,13 +111,17 @@ object NamazModu {
             if (var_) return "tamam"
         }
         return try {
-            val ad = "Namaz"
+            // Ad ve tetik açıklaması kural KURULURKEN arayüz dilinde yazılır; kural sonra
+            // güncellenmez (kullanıcının mod ekranındaki özelleştirmesi ezilmesin) → dil
+            // değişse de mevcut kuralın adı kurulduğu dilde kalır.
+            val m = ctx.dildeBaglam()
+            val ad = m.getString(R.string.camigeofence_mod_kural_adi)
             val ayarEkrani = ctx.packageManager.getLaunchIntentForPackage(ctx.packageName)?.component
                 ?: ComponentName(ctx.packageName, "${ctx.packageName}.MainActivity")
             val kural = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                 AutomaticZenRule.Builder(ad, kosulUri(ctx))
                     .setType(AutomaticZenRule.TYPE_OTHER)
-                    .setTriggerDescription("Cuma hutbesinde, camideyken ya da vakit girince Namaz Akışı açar")
+                    .setTriggerDescription(m.getString(R.string.camigeofence_mod_tetik_aciklama))
                     .setIconResId(R.drawable.ic_namaz_modu)
                     .setManualInvocationAllowed(true)
                     .setConfigurationActivity(ayarEkrani)
@@ -314,10 +318,12 @@ object NamazModu {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val id = kuralId(ctx) ?: return false
                 val durum = if (acik) Condition.STATE_TRUE else Condition.STATE_FALSE
+                // Koşul özeti sistem arayüzünde görünür → arayüz dilinde (kimlik `kosulUri`'dir).
+                val ozet = ctx.dildeBaglam().getString(R.string.camigeofence_mod_kural_adi)
                 val kosul = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                    Condition(kosulUri(ctx), "Namaz", durum, Condition.SOURCE_CONTEXT)
+                    Condition(kosulUri(ctx), ozet, durum, Condition.SOURCE_CONTEXT)
                 } else {
-                    Condition(kosulUri(ctx), "Namaz", durum)
+                    Condition(kosulUri(ctx), ozet, durum)
                 }
                 nm(ctx).setAutomaticZenRuleState(id, kosul)
             } else {

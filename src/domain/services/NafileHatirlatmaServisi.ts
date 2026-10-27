@@ -19,6 +19,7 @@ import {
     type NafileBildirimPlani,
 } from '../../core/nafile/nafilePlani';
 import type { MuhafizTeslimcisi } from './MuhafizTeslimcisi';
+import { metin } from '../../core/dil/aktifDil';
 import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 
 /**
@@ -371,10 +372,11 @@ export class NafileHatirlatmaServisi {
         try {
             const kanalId = BILDIRIM_SABITLERI.KANALLAR.NAFILE_UYANDIRMA;
             const mevcut = await Notifications.getNotificationChannelAsync(kanalId);
+            // Var olan kanala DOKUNULMAZ (nöbetçi): adı oluşturulduğu dilde kalır.
             if (mevcut) return;
             await Notifications.setNotificationChannelAsync(kanalId, {
-                name: 'Teheccüd Uyandırması',
-                description: 'Gece namazı için uyandırır; sessiz modda da çalar',
+                name: metin().nafile.uyandirmaKanali,
+                description: metin().nafile.uyandirmaKanaliAciklama,
                 importance: Notifications.AndroidImportance.MAX,
                 sound: 'bildirim.mp3',
                 audioAttributes: {

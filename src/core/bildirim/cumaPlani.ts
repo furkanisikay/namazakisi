@@ -14,8 +14,8 @@
  * (`cuma_hatirlatma_<ISO>`) korur — göçten gelen tek adımlı kayıt birebir aynı kimlikleri
  * üretir; diğerleri `_<kalanDk>` ekiyle ayrışır (bir dakikada tek tetik → tekil).
  */
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../vakit/aktifHesap';
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
@@ -76,7 +76,6 @@ export function cumaPlaniOlustur(
 ): CumaPlanKaydi[] {
     if (!ayarlar.aktif || !Array.isArray(ayarlar.adimlar) || ayarlar.adimlar.length === 0) return [];
     const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
-    const params = turkiyeHesapParametreleri();
 
     // Tarama en uzak eşikten başlar (çıkış yönü: ölçü azalarak öğleye yaklaşır).
     const enBuyukEsik = Math.max(...ayarlar.adimlar.map((a) => a.esikDk));
@@ -87,7 +86,7 @@ export function cumaPlaniOlustur(
         const iso = tarihiISOFormatinaCevir(cuma);
         if (gunAtlanirMi(iso)) continue;
         // Vakit hesabı GÜN BAZINDA: her cuma için ayrı PrayerTimes.
-        const ogle = new PrayerTimes(coordinates, cuma, params).dhuhr;
+        const ogle = aktifPrayerTimes(coordinates, cuma).dhuhr;
         // Motor çıktısı kalanDk'ya göre AZALAN = kronolojik; ilk = cumanın ilk tetiği.
         for (const [sira, uyari] of adimPlani.entries()) {
             const zaman = hatirlatmaZamaniHesapla(ogle, uyari.kalanDk);

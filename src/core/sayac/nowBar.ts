@@ -13,6 +13,8 @@
  * React'a, store'a ve native köprüye bağımlı DEĞİLDİR.
  */
 
+import { canli, metin } from '../dil/aktifDil';
+
 export const NOW_BAR_OGELERI = [
   'imsak',
   'ogle',
@@ -201,92 +203,86 @@ export interface NowBarOgeBilgisi {
   sayacGereksinimi?: string;
 }
 
-const VAKIT_ETIKETLERI = { sayacla: 'Sayaçla', girince: 'Vakit girince', sonDk: 'Son dakikalar' } as const;
-const VAKIT_GEREKSINIMI =
-  '"Sayaçla" vakit sayacına bağlıdır (Bildirimler > Vakit sayacı); muhafızın uyardığı vakitte sayaç çıkmaz. Her zaman görmek için "Vakit girince" ya da "Son dakikalar"ı seçin.';
-
-export const NOW_BAR_OGE_BILGILERI: Record<NowBarOgesi, NowBarOgeBilgisi> = {
-  imsak: {
-    ad: 'Sabah',
-    ikon: 'cloud-sun',
-    aciklama: 'Güneşin doğuşuna kalan süre',
-    baslangicEtiketleri: VAKIT_ETIKETLERI,
-    sayacGereksinimi: VAKIT_GEREKSINIMI,
-  },
-  ogle: {
-    ad: 'Öğle',
-    ikon: 'sun',
-    aciklama: 'Vaktin çıkışına kalan süre',
-    baslangicEtiketleri: VAKIT_ETIKETLERI,
-    sayacGereksinimi: VAKIT_GEREKSINIMI,
-  },
-  ikindi: {
-    ad: 'İkindi',
-    ikon: 'cloud-sun',
-    aciklama: 'Vaktin çıkışına kalan süre',
-    baslangicEtiketleri: VAKIT_ETIKETLERI,
-    sayacGereksinimi: VAKIT_GEREKSINIMI,
-  },
-  aksam: {
-    ad: 'Akşam',
-    ikon: 'cloud-moon',
-    aciklama: 'Vaktin çıkışına kalan süre',
-    baslangicEtiketleri: VAKIT_ETIKETLERI,
-    sayacGereksinimi: VAKIT_GEREKSINIMI,
-  },
-  yatsi: {
-    ad: 'Yatsı',
-    ikon: 'moon',
-    aciklama: 'İmsaka kalan süre',
-    baslangicEtiketleri: VAKIT_ETIKETLERI,
-    sayacGereksinimi: VAKIT_GEREKSINIMI,
-  },
-  iftar: {
-    ad: 'İftar',
-    ikon: 'utensils',
-    aciklama: 'Akşam ezanına kalan süre',
-    baslangicEtiketleri: { sayacla: 'İmsaktan itibaren', sonDk: 'Son dakikalar' },
-    sayacGereksinimi: 'İftar sayacı açıkken çalışır (Ramazan özel).',
-  },
-  sahur: {
-    ad: 'Sahur',
-    ikon: 'mug-hot',
-    aciklama: 'İmsaka kalan süre',
-    baslangicEtiketleri: { sayacla: 'Yatsıdan itibaren', sonDk: 'Son dakikalar' },
-    sayacGereksinimi: 'Sahur sayacı açıkken çalışır (Ramazan özel).',
-  },
-  cuma: {
-    ad: 'Cuma',
-    ikon: 'mosque',
-    aciklama: 'Hutbeye kalan süre',
-    baslangicEtiketleri: { girince: 'Güneş doğunca', sonDk: 'Son dakikalar' },
-  },
-  kusluk: {
-    ad: 'Kuşluk',
-    ikon: 'sun',
-    aciklama: 'Vaktin bitişine kalan süre',
-    baslangicEtiketleri: { girince: 'Vakit girince', sonDk: 'Son dakikalar' },
-  },
-  evvabin: {
-    ad: 'Evvâbîn',
-    ikon: 'cloud-sun',
-    aciklama: 'Yatsıya kalan süre',
-    baslangicEtiketleri: { girince: 'Vakit girince', sonDk: 'Son dakikalar' },
-  },
-  teheccud: {
-    ad: 'Teheccüd',
-    ikon: 'star',
-    aciklama: 'İmsaka kalan süre',
-    baslangicEtiketleri: { girince: 'Son üçte bir girince', sonDk: 'Son dakikalar' },
-  },
-  seri: {
-    ad: 'Seri',
-    ikon: 'fire',
-    aciklama: 'Gün sonuna kalan süre',
-    baslangicEtiketleri: { sayacla: 'Son 2 saatte', sonDk: 'Son dakikalar' },
-    sayacGereksinimi: 'Gün sonu hatırlatması açıkken ve gün eksikken çalışır.',
-  },
+const IKONLAR: Record<NowBarOgesi, string> = {
+  imsak: 'cloud-sun',
+  ogle: 'sun',
+  ikindi: 'cloud-sun',
+  aksam: 'cloud-moon',
+  yatsi: 'moon',
+  iftar: 'utensils',
+  sahur: 'mug-hot',
+  cuma: 'mosque',
+  kusluk: 'sun',
+  evvabin: 'cloud-sun',
+  teheccud: 'star',
+  seri: 'fire',
 };
+
+/** Öğe bilgileri etkin dilde (canlı görünüm; ekran ve planlayıcı aynı kaynaktan). */
+export const NOW_BAR_OGE_BILGILERI: Readonly<Record<NowBarOgesi, NowBarOgeBilgisi>> = canli((s) => {
+  const n = s.nowBar;
+  const e = n.etiket;
+  const vakitEtiketleri = { sayacla: e.sayacla, girince: e.girince, sonDk: e.sonDk };
+  const vakit = (v: 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi', aciklama: string): NowBarOgeBilgisi => ({
+    ad: s.vakit.adlar[v],
+    ikon: IKONLAR[v],
+    aciklama,
+    baslangicEtiketleri: vakitEtiketleri,
+    sayacGereksinimi: n.gereksinim.vakit,
+  });
+  return {
+    imsak: vakit('imsak', n.aciklama.imsak),
+    ogle: vakit('ogle', n.aciklama.cikis),
+    ikindi: vakit('ikindi', n.aciklama.cikis),
+    aksam: vakit('aksam', n.aciklama.cikis),
+    yatsi: vakit('yatsi', n.aciklama.imsaka),
+    iftar: {
+      ad: n.adlar.iftar,
+      ikon: IKONLAR.iftar,
+      aciklama: n.aciklama.iftar,
+      baslangicEtiketleri: { sayacla: e.imsaktan, sonDk: e.sonDk },
+      sayacGereksinimi: n.gereksinim.iftar,
+    },
+    sahur: {
+      ad: n.adlar.sahur,
+      ikon: IKONLAR.sahur,
+      aciklama: n.aciklama.imsaka,
+      baslangicEtiketleri: { sayacla: e.yatsidan, sonDk: e.sonDk },
+      sayacGereksinimi: n.gereksinim.sahur,
+    },
+    cuma: {
+      ad: s.vakit.cuma,
+      ikon: IKONLAR.cuma,
+      aciklama: n.aciklama.cuma,
+      baslangicEtiketleri: { girince: e.gunesDogunca, sonDk: e.sonDk },
+    },
+    kusluk: {
+      ad: s.nafile.adlar.kusluk,
+      ikon: IKONLAR.kusluk,
+      aciklama: n.aciklama.kusluk,
+      baslangicEtiketleri: { girince: e.girince, sonDk: e.sonDk },
+    },
+    evvabin: {
+      ad: s.nafile.adlar.evvabin,
+      ikon: IKONLAR.evvabin,
+      aciklama: n.aciklama.evvabin,
+      baslangicEtiketleri: { girince: e.girince, sonDk: e.sonDk },
+    },
+    teheccud: {
+      ad: s.nafile.adlar.teheccud,
+      ikon: IKONLAR.teheccud,
+      aciklama: n.aciklama.imsaka,
+      baslangicEtiketleri: { girince: e.sonUcteGirince, sonDk: e.sonDk },
+    },
+    seri: {
+      ad: n.adlar.seri,
+      ikon: IKONLAR.seri,
+      aciklama: n.aciklama.seri,
+      baslangicEtiketleri: { sayacla: e.son2Saat, sonDk: e.sonDk },
+      sayacGereksinimi: n.gereksinim.seri,
+    },
+  };
+});
 
 /**
  * "Sayaçla" seçili VAKİT öğesinin altındaki satır — ölçerek konuşur (sade tasarım).
@@ -301,19 +297,19 @@ export function vakitSayacGereksinimNotu(
   muhafizBuVaktiUyariyor: boolean | null,
 ): string | null {
   // Sayaç kapalıyken kart başına not YOK: sayfanın üstünde TEK satır söylenir
-  // (`VAKIT_SAYACI_KAPALI_NOTU`) ve "Sayaçla" etkin olarak "Vakit girince"ye döner
+  // (`vakitSayaciKapaliNotu`) ve "Sayaçla" etkin olarak "Vakit girince"ye döner
   // (`etkinVakitBaslangici`).
   if (sayacAktif === false) return null;
   if (muhafizBuVaktiUyariyor === true) {
     // Sayaç BİLDİRİMİ bastırılır (#90) ama Now Bar adayı yine bildirilir
     // (`VakitSayacBildirimServisi.nowBarYedekAdayi`): geri sayım aynı anda öne çıkar.
-    return 'Namaz Muhafızı bu vakti uyardığı için ayrı bir sayaç bildirimi çıkmaz; geri sayım, sayacın başlayacağı anda yalnız öne çıkan sayaç olarak görünür.';
+    return metin().nowBar.muhafizNotu;
   }
   return null;
 }
 
 /** Vakit sayacı kapalıyken sayfanın üstündeki TEK satır (görsel inceleme: kart başına tekrar etmesin). */
-export const VAKIT_SAYACI_KAPALI_NOTU = 'Vakit sayacı kapalı; "Sayaçla" seçili vakitler vakit girince başlar.';
+export const vakitSayaciKapaliNotu = (): string => metin().nowBar.kapaliNotu;
 
 /**
  * Vakit öğesinin ETKİN başlangıcı. Vakit sayacı KAPALIYKEN "Sayaçla"nın dayandığı
@@ -341,5 +337,4 @@ export function nowBarEtkinAyarlari(ayarlar: NowBarAyarlari, sayacAktif: boolean
 }
 
 /** Ekrandaki zorunlu uyarı satırı (sahibin isteği; metin değişirse test de değişmeli). */
-export const NOW_BAR_POLITIKA_UYARISI =
-  'Google sürekli açık kartları önermez; telefonunuz öne çıkarmayı geri çekebilir.';
+export const nowBarPolitikaUyarisi = (): string => metin().nowBar.politika;

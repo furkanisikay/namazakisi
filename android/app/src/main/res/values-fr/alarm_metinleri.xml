@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- fr — Fransızca (beta). Gerçek alarm. "J’ai prié" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Alarme de prière</string>
+  <string name="alarm_kildim">J’ai prié</string>
+  <string name="alarm_kapat">Arrêter</string>
+  <string name="alarm_kanal_aciklamasi">Une véritable alarme qui sonne aux étapes de rappel que vous choisissez</string>
+</resources>

@@ -33,6 +33,210 @@ enum TvRenk {
     static let uyari = Color(red: 0xFF / 255, green: 0xCA / 255, blue: 0x28 / 255)
 }
 
+/// Pano arayuz metinleri (W5) — TV CIHAZIN dilini izler (`TvDili.cihaz`; Android TV kaynak
+/// sistemiyle ayni karar). Ingilizce karsiliklar JS sozlugunden (`sozluk/en`) ve Android TV
+/// `values-en` ile ayni. Arayuz kaydi: Turkcede kibar "siz", Ingilizcede notr.
+struct TvMetin {
+    let dil: String
+    private var t: TvArayuzMetinleri { TvArayuzMetinleri.dil(dil) }
+
+    var sehrinizSecin: String { t.sehrinizSecin }
+    var ilMerkezi: String { t.ilMerkezi }
+    func ilSecErisim(_ il: String) -> String { TvDili.bicim(t.ilSecErisim, ["il": il]) }
+    func kalan(_ ad: String) -> String { TvDili.bicim(t.kalan, ["ad": ad]) }
+    func kalanErisim(_ ad: String, _ sure: String) -> String { TvDili.bicim(t.kalanErisim, ["ad": ad, "sure": sure]) }
+    var konumuDegistirin: String { t.konumuDegistirin }
+    func kerahatSuruyor(_ tur: String, _ bitis: String, _ aciklama: String) -> String {
+        TvDili.bicim(t.kerahatSuruyor, ["tur": tur, "bitis": bitis, "aciklama": aciklama])
+    }
+    func siradakiKerahat(_ tur: String, _ bas: String, _ bit: String) -> String {
+        TvDili.bicim(t.siradakiKerahat, ["tur": tur, "bas": bas, "bit": bit])
+    }
+    func cumaBilgisi(_ giris: String) -> String { TvDili.bicim(t.cumaBilgisi, ["giris": giris]) }
+    var suAnkiEk: String { t.suAnkiEk }
+    var siradakiEk: String { t.siradakiEk }
+}
+
+/// `TvMetin` dil tablosu. Yer tutucular `{il}`, `{ad}`, `{sure}`, `{tur}`, `{bitis}`,
+/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur;
+/// cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
+struct TvArayuzMetinleri {
+    let sehrinizSecin: String
+    let ilMerkezi: String
+    let ilSecErisim: String
+    let kalan: String
+    let kalanErisim: String
+    let konumuDegistirin: String
+    let kerahatSuruyor: String
+    let siradakiKerahat: String
+    let cumaBilgisi: String
+    let suAnkiEk: String
+    let siradakiEk: String
+
+    static let tr = TvArayuzMetinleri(
+        sehrinizSecin: "Şehrinizi seçin",
+        ilMerkezi: "Namaz vakitleri il merkezine göre hesaplanır. Seçiminizi sonra değiştirebilirsiniz.",
+        ilSecErisim: "{il}, seçin",
+        kalan: "{ad} vaktine kalan",
+        kalanErisim: "{ad} vaktine kalan süre {sure}",
+        konumuDegistirin: "Konumu değiştirin",
+        kerahatSuruyor: "Kerahat vakti: {tur}, bitiş {bitis}. {aciklama}",
+        siradakiKerahat: "Sıradaki kerahat: {tur} {bas}–{bit}",
+        cumaBilgisi: "Bugün cuma. Cuma namazı öğle vaktinde kılınır (giriş {giris}).",
+        suAnkiEk: ", şu anki vakit",
+        siradakiEk: ", sıradaki vakit"
+    )
+
+    static let en = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+
+    // id — Endonezce (beta)
+    static let id = TvArayuzMetinleri(
+        sehrinizSecin: "Pilih kota Anda",
+        ilMerkezi: "Waktu salat dihitung berdasarkan ibu kota provinsi. Anda dapat mengubah pilihan nanti.",
+        ilSecErisim: "{il}, pilih",
+        kalan: "Sisa waktu hingga {ad}",
+        kalanErisim: "Sisa waktu hingga {ad}: {sure}",
+        konumuDegistirin: "Ubah lokasi",
+        kerahatSuruyor: "Waktu makruh: {tur}, berakhir {bitis}. {aciklama}",
+        siradakiKerahat: "Waktu makruh berikutnya: {tur} {bas}–{bit}",
+        cumaBilgisi: "Hari ini Jumat. Salat Jumat ditunaikan pada waktu Dzuhur (masuk {giris}).",
+        suAnkiEk: ", waktu salat saat ini",
+        siradakiEk: ", waktu salat berikutnya"
+    )
+
+
+    // de — Almanca (beta): JS `sozluk/de` (hitap "Sie", "bitte" yok)
+    static let de = TvArayuzMetinleri(
+        sehrinizSecin: "Wählen Sie Ihre Stadt",
+        ilMerkezi: "Die Gebetszeiten werden für das Stadtzentrum berechnet. Sie können Ihre Auswahl später ändern.",
+        ilSecErisim: "{il}, auswählen",
+        kalan: "Verbleibende Zeit bis {ad}",
+        kalanErisim: "Verbleibende Zeit bis {ad}: {sure}",
+        konumuDegistirin: "Standort ändern",
+        kerahatSuruyor: "Makruh-Zeit: {tur}, endet um {bitis}. {aciklama}",
+        siradakiKerahat: "Nächste Makruh-Zeit: {tur} {bas}–{bit}",
+        cumaBilgisi: "Heute ist Freitag. Das Freitagsgebet wird zur Dhuhr-Zeit verrichtet (Beginn {giris}).",
+        suAnkiEk: ", aktuelle Gebetszeit",
+        siradakiEk: ", nächste Gebetszeit"
+    )
+
+
+    // fr
+    static let fr = TvArayuzMetinleri(
+        sehrinizSecin: "Choisissez votre ville",
+        ilMerkezi: "Les heures de prière sont calculées pour le chef-lieu de la province. Vous pourrez modifier votre choix plus tard.",
+        ilSecErisim: "{il}, choisir",
+        kalan: "Temps restant avant {ad}",
+        kalanErisim: "Temps restant avant {ad} : {sure}",
+        konumuDegistirin: "Changer de position",
+        kerahatSuruyor: "Moment makrouh : {tur}, fin à {bitis}. {aciklama}",
+        siradakiKerahat: "Prochain moment makrouh : {tur} {bas}–{bit}",
+        cumaBilgisi: "Aujourd’hui, c’est vendredi. Joumoua se prie à l’heure de Dhuhr (début à {giris}).",
+        suAnkiEk: ", prière en cours",
+        siradakiEk: ", prochaine prière"
+    )
+
+
+    // bs
+    static let bs = TvArayuzMetinleri(
+        sehrinizSecin: "Odaberite svoj grad",
+        ilMerkezi: "Vremena se računaju za centar grada. Izbor kasnije možete promijeniti.",
+        ilSecErisim: "{il}, odaberite",
+        kalan: "Do vakta: {ad}",
+        kalanErisim: "{ad}: još {sure}",
+        konumuDegistirin: "Promijenite lokaciju",
+        kerahatSuruyor: "Mekruh vrijeme: {tur}, ističe u {bitis}. {aciklama}",
+        siradakiKerahat: "Sljedeće mekruh vrijeme: {tur} {bas}–{bit}",
+        cumaBilgisi: "Danas je petak. Džuma-namaz se klanja u vrijeme podne-namaza (nastupa u {giris}).",
+        suAnkiEk: ", trenutni vakat",
+        siradakiEk: ", sljedeći vakat"
+    )
+
+
+    // ru
+    static let ru = TvArayuzMetinleri(
+        sehrinizSecin: "Выберите свою провинцию",
+        ilMerkezi: "Время намазов рассчитывается для центра провинции. Выбор можно изменить позже.",
+        ilSecErisim: "{il}, выбрать",
+        kalan: "{ad} через",
+        kalanErisim: "{ad} через {sure}",
+        konumuDegistirin: "Изменить местоположение",
+        kerahatSuruyor: "Время макрух: {tur}, до {bitis}. {aciklama}",
+        siradakiKerahat: "Следующее время макрух: {tur} {bas}–{bit}",
+        cumaBilgisi: "Сегодня пятница. Джума-намаз совершается во время Зухр (начало в {giris}).",
+        suAnkiEk: ", текущий намаз",
+        siradakiEk: ", следующий намаз"
+    )
+
+
+    // ms
+    static let ms = TvArayuzMetinleri(
+        sehrinizSecin: "Pilih bandar anda",
+        ilMerkezi: "Waktu solat dikira berdasarkan pusat wilayah. Anda boleh menukar pilihan anda kemudian.",
+        ilSecErisim: "{il}, pilih",
+        kalan: "Baki masa sehingga {ad}",
+        kalanErisim: "Baki masa sehingga {ad}: {sure}",
+        konumuDegistirin: "Tukar lokasi",
+        kerahatSuruyor: "Waktu makruh: {tur}, tamat {bitis}. {aciklama}",
+        siradakiKerahat: "Waktu makruh seterusnya: {tur} {bas}–{bit}",
+        cumaBilgisi: "Hari ini Jumaat. Solat Jumaat ditunaikan pada waktu Zohor (masuk {giris}).",
+        suAnkiEk: ", waktu semasa",
+        siradakiEk: ", waktu seterusnya"
+    )
+
+
+    // ar — Arapça (beta): JS `sozluk/ar` (konum, anaEkran.kerahat, vakit); yönetim metni mastar kalıbı
+    static let ar = TvArayuzMetinleri(
+        sehrinizSecin: "اختيار مدينتك",
+        ilMerkezi: "تُحسب المواقيت وفق مركز المدينة. ويمكن تغيير الاختيار لاحقًا.",
+        ilSecErisim: "{il}، اختيار",
+        kalan: "المتبقي على {ad}",
+        kalanErisim: "المتبقي على {ad}: {sure}",
+        konumuDegistirin: "تغيير الموقع",
+        kerahatSuruyor: "وقت الكراهة: {tur}، ينتهي {bitis}. {aciklama}",
+        siradakiKerahat: "وقت الكراهة التالي: {tur} {bas}–{bit}",
+        cumaBilgisi: "اليوم الجمعة. تُصلّى الجمعة في وقت الظهر (يدخل {giris}).",
+        suAnkiEk: "، الوقت الحالي",
+        siradakiEk: "، الوقت التالي"
+    )
+
+
+    // ur
+    static let ur = TvArayuzMetinleri(
+        sehrinizSecin: "اپنا شہر منتخب کریں",
+        ilMerkezi: "نماز کے اوقات صوبے کے مرکزی شہر کے مطابق نکالے جاتے ہیں۔ اپنا انتخاب بعد میں بدلا جا سکتا ہے۔",
+        ilSecErisim: "{il}، منتخب کریں",
+        kalan: "{ad} تک باقی وقت",
+        kalanErisim: "{ad} تک باقی وقت: {sure}",
+        konumuDegistirin: "مقام بدلیں",
+        kerahatSuruyor: "مکروہ وقت: {tur}، اختتام {bitis}۔ {aciklama}",
+        siradakiKerahat: "اگلا مکروہ وقت: {tur} {bas}–{bit}",
+        cumaBilgisi: "آج جمعہ ہے۔ جمعہ کی نماز ظہر کے وقت میں ادا کی جاتی ہے (آغاز {giris})۔",
+        suAnkiEk: "، موجودہ نماز",
+        siradakiEk: "، اگلی نماز"
+    )
+
+    static let tablo: [String: TvArayuzMetinleri] = [
+        "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
+        "ar": ar, "ur": ur,
+    ]
+
+    static func dil(_ kod: String) -> TvArayuzMetinleri { tablo[TvDili.coz(kod)] ?? tr }
+}
+
 struct TvKokGorunumu: View {
     @AppStorage("il_plaka") private var plaka: String = ""
     private let iller: [TvIl] = {
@@ -58,13 +262,14 @@ struct TvKokGorunumu: View {
 struct TvIlSecimGorunumu: View {
     let iller: [TvIl]
     let secildi: (TvIl) -> Void
+    private let m = TvMetin(dil: TvDili.cihaz)
 
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
-            Text("Şehrinizi seçin")
+            Text(m.sehrinizSecin)
                 .font(.system(size: 52, weight: .semibold))
                 .foregroundColor(TvRenk.metin)
-            Text("Namaz vakitleri il merkezine göre hesaplanır. Seçiminizi sonra değiştirebilirsiniz.")
+            Text(m.ilMerkezi)
                 .font(.system(size: 28))
                 .foregroundColor(TvRenk.metinIkincil)
             ScrollView {
@@ -77,7 +282,7 @@ struct TvIlSecimGorunumu: View {
                                 .font(.system(size: 30))
                                 .frame(maxWidth: .infinity, minHeight: 72)
                         }
-                        .accessibilityLabel("\(il.ad), seçin")
+                        .accessibilityLabel(m.ilSecErisim(il.ad))
                     }
                 }
                 .padding(.vertical, 24)
@@ -93,6 +298,9 @@ struct TvPanoGorunumu: View {
     let il: TvIl
     let konumuDegistir: () -> Void
     private let bolge = TimeZone.current
+    /// Cihaz dili (W5); ay/gun, vakit ve kerahat adlari da bu dilde.
+    private let dil = TvDili.cihaz
+    private var m: TvMetin { TvMetin(dil: dil) }
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { baglam in
@@ -122,7 +330,7 @@ struct TvPanoGorunumu: View {
         VStack(alignment: .leading, spacing: 28) {
             VStack(alignment: .leading, spacing: 6) {
                 Text(il.ad).font(.system(size: 46, weight: .semibold)).foregroundColor(TvRenk.metin)
-                Text(TvBicim.tarih(durum.tarih)).font(.system(size: 30)).foregroundColor(TvRenk.metinIkincil)
+                Text(TvBicim.tarih(durum.tarih, dil: dil)).font(.system(size: 30)).foregroundColor(TvRenk.metinIkincil)
             }
             HStack(alignment: .lastTextBaseline, spacing: 10) {
                 Text(TvBicim.saat(simdi, bolge))
@@ -133,17 +341,17 @@ struct TvPanoGorunumu: View {
                     .foregroundColor(TvRenk.metinIkincil)
             }
             VStack(alignment: .leading, spacing: 4) {
-                Text("\(durum.gorunenAd(durum.siradaki)) vaktine kalan")
+                Text(m.kalan(durum.gorunenAd(durum.siradaki, dil: dil)))
                     .font(.system(size: 32)).foregroundColor(TvRenk.metinIkincil)
                 Text(TvBicim.geriSayim(durum.kalanMs))
                     .font(.system(size: 96, weight: .semibold).monospacedDigit())
                     .foregroundColor(TvRenk.metin)
-                    .accessibilityLabel("\(durum.gorunenAd(durum.siradaki)) vaktine kalan süre \(TvBicim.geriSayim(durum.kalanMs))")
+                    .accessibilityLabel(m.kalanErisim(durum.gorunenAd(durum.siradaki, dil: dil), TvBicim.geriSayim(durum.kalanMs)))
             }
             bilgiSeridi(durum: durum)
             Spacer(minLength: 0)
             Button(action: konumuDegistir) {
-                Label("Konumu değiştirin", systemImage: "mappin.and.ellipse").font(.system(size: 26))
+                Label(m.konumuDegistirin, systemImage: "mappin.and.ellipse").font(.system(size: 26))
             }
         }
     }
@@ -153,12 +361,12 @@ struct TvPanoGorunumu: View {
         VStack(alignment: .leading, spacing: 12) {
             if let k = durum.kerahat {
                 // Saate hal eki EKLENMEZ ("07:42'e" okunusa gore degisir).
-                bilgiSatiri(TvRenk.uyari, "Kerahat vakti: \(k.tur.ad), bitiş \(TvBicim.saat(k.bitis, bolge)). \(k.tur.aciklama)")
+                bilgiSatiri(TvRenk.uyari, m.kerahatSuruyor(k.tur.ad(dil), TvBicim.saat(k.bitis, bolge), k.tur.aciklama(dil)))
             } else if let s = durum.siradakiKerahat {
-                bilgiSatiri(TvRenk.sinir, "Sıradaki kerahat: \(s.tur.ad) \(TvBicim.saat(s.baslangic, bolge))–\(TvBicim.saat(s.bitis, bolge))")
+                bilgiSatiri(TvRenk.sinir, m.siradakiKerahat(s.tur.ad(dil), TvBicim.saat(s.baslangic, bolge), TvBicim.saat(s.bitis, bolge)))
             }
             if durum.cuma {
-                bilgiSatiri(TvRenk.birincil, "Bugün cuma. Cuma namazı öğle vaktinde kılınır (giriş \(TvBicim.saat(durum.vakitler.ogle, bolge))).")
+                bilgiSatiri(TvRenk.birincil, m.cumaBilgisi(TvBicim.saat(durum.vakitler.ogle, bolge)))
             }
         }
     }
@@ -177,7 +385,7 @@ struct TvPanoGorunumu: View {
                 let aktif = vakit == durum.aktif
                 let siradaki = vakit == durum.siradaki && durum.siradakiMs == durum.vakitler.saat(vakit)
                 HStack {
-                    Text(durum.gorunenAd(vakit))
+                    Text(durum.gorunenAd(vakit, dil: dil))
                         .font(.system(size: 44, weight: aktif ? .bold : .regular))
                     Spacer()
                     Text(TvBicim.saat(durum.vakitler.saat(vakit), bolge))
@@ -190,8 +398,8 @@ struct TvPanoGorunumu: View {
                 .overlay(RoundedRectangle(cornerRadius: 24).stroke(siradaki ? TvRenk.birincil : .clear, lineWidth: 3))
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel(
-                    "\(durum.gorunenAd(vakit)) \(TvBicim.saat(durum.vakitler.saat(vakit), bolge))"
-                        + (aktif ? ", şu anki vakit" : "") + (siradaki ? ", sıradaki vakit" : "")
+                    "\(durum.gorunenAd(vakit, dil: dil)) \(TvBicim.saat(durum.vakitler.saat(vakit), bolge))"
+                        + (aktif ? m.suAnkiEk : "") + (siradaki ? m.siradakiEk : "")
                 )
             }
         }

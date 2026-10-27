@@ -25,6 +25,9 @@ import { HATIRLATMA_PRESETLERI } from '../../store/muhafizSlice';
 import type { PresetSeviyeleri } from '../../../core/muhafiz/matrisIslemleri';
 import { useDonguAcik, useDonguAnimasyonu } from '../hareket/dongu';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
+import { useMetin } from '../../hooks/useMetin';
+import { bicim, metin as etkinMetin } from '../../../core/dil/aktifDil';
+import { yatayIsaret } from '../common/yon';
 
 const GECIS_MS = 3200;
 const BEKLEME_MS = 900;
@@ -45,8 +48,6 @@ export interface DuzeyEtiketi {
 /** Etiket genişliği tahmini (12 px yazı + ikon): binme denetimi için yeterli. */
 const etiketGenisligi = (metin: string): number => 16 + metin.length * 6.5;
 
-/** Bayrağın ÜSTÜNDE duran pencere sonu yazısı (etiket satırında yer kaplamaz). */
-export const VAKIT_CIKAR_METNI = 'Vakit çıkar';
 /** Bir etiket satırının yüksekliği (dp). */
 export const ETIKET_SATIRI_DP = 18;
 
@@ -67,7 +68,7 @@ export function duzeyEtiketleriniYerlestir(
     const sonuc: DuzeyEtiketi[] = [];
     const satirSonlari: number[] = [];
     for (const a of adimlar) {
-        const metin = `${a.kalanDk} dk`;
+        const metin = bicim(etkinMetin().hatirlatma.onizleme.dk, { dk: a.kalanDk });
         const w = etiketGenisligi(metin);
         const merkez = raySol + (1 - a.kalanDk / ilkDk) * ray;
         const sol = Math.min(Math.max(0, merkez - w / 2), Math.max(0, genislik - w));
@@ -98,6 +99,7 @@ export interface DuzeyOnizlemesiProps {
 
 export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(function DuzeyOnizlemesi({ duzey, dongu = false, sesliAcik = true, seviyeler, testID }) {
     const renkler = useRenkler();
+    const mo = useMetin().hatirlatma.onizleme;
     const azalt = useHareketAzalt();
     const donguAcik = useDonguAcik();
     const [genislik, setGenislik] = React.useState(0);
@@ -147,7 +149,9 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
     const konum = (kalanDk: number) => (ilkDk > 0 ? 1 - kalanDk / ilkDk : 0);
     const etiketler = React.useMemo(
         () => duzeyEtiketleriniYerlestir(adimlar, genislik, raySol, ilkDk),
-        [adimlar, genislik, ilkDk],
+        // mo: dil değişince "N dk" etiketleri yeniden ölçülür (etkin dili okur).
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [adimlar, genislik, ilkDk, mo],
     );
     const etiketSatiri = etiketler.reduce((n, e) => Math.max(n, e.satir + 1), 0);
 
@@ -175,7 +179,7 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
                     style={{ alignSelf: 'flex-end', flexDirection: 'row', alignItems: 'center', marginBottom: -2 }}
                 >
                     <Text style={{ fontSize: 12, color: renkler.metinIkincil }} numberOfLines={1}>
-                        {VAKIT_CIKAR_METNI}
+                        {mo.vakitCikar}
                     </Text>
                     <FontAwesome5 name="flag-checkered" size={12} color={renkler.metinIkincil} style={{ marginLeft: 5 }} />
                 </View>
@@ -199,7 +203,8 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
                                 borderRadius: 1,
                                 backgroundColor: renkler.birincil,
                                 opacity: ilerleme.interpolate({ inputRange: [0, 0.03, 0.97, 1], outputRange: [0, 0.8, 0.8, 0] }),
-                                transform: [{ translateX: ilerleme.interpolate({ inputRange: [0, 1], outputRange: [0, rayGenislik] }) }],
+                                // `left` sağdan solada başa (sağ uca) döner; kayma da sona (sola) yürür.
+                                transform: [{ translateX: ilerleme.interpolate({ inputRange: [0, 1], outputRange: [0, rayGenislik * yatayIsaret()] }) }],
                             }}
                         />
                         {adimlar.map((a, i) => {
@@ -273,9 +278,9 @@ export const DuzeyOnizlemesi: React.FC<DuzeyOnizlemesiProps> = React.memo(functi
             {kapali || genislik === 0 ? (
                 <View style={{ flexDirection: 'row', justifyContent: kapali ? 'center' : 'space-between', marginTop: 6 }}>
                     <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>
-                        {kapali ? 'Hatırlatma yok' : `${ilkDk} dk`}
+                        {kapali ? mo.hatirlatmaYok : bicim(mo.dk, { dk: ilkDk })}
                     </Text>
-                    {!kapali ? <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>{VAKIT_CIKAR_METNI}</Text> : null}
+                    {!kapali ? <Text style={{ fontSize: 12, color: renkler.metinIkincil }}>{mo.vakitCikar}</Text> : null}
                 </View>
             ) : null}
         </View>

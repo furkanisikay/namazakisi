@@ -10,6 +10,7 @@ import { useCallback } from 'react';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { konumuYenileAsync } from '../store/konumSlice';
+import { metin } from '../../core/dil/aktifDil';
 
 export interface KonumYenileDurumu {
   /** Konum otomatik modda mı (yenileme yalnız o zaman anlamlı) */
@@ -30,20 +31,21 @@ export function useKonumYenile(): KonumYenileDurumu {
 
     void (async () => {
       const sonuc = await dispatch(konumuYenileAsync()).unwrap().catch(() => null);
+      const m = metin().konum.yenile;
 
       if (sonuc?.durum === 'basarili') {
-        kisaBildirimGoster('Konumunuz güncellendi');
+        kisaBildirimGoster(m.basarili);
         return;
       }
 
       if (sonuc?.durum === 'izinYok') {
         // İzin diyaloğu, Play "Prominent Disclosure" metniyle birlikte Konum
         // Ayarları'nda açılır; buradan sessizce izin istemek o bağlamı atlardı.
-        kisaBildirimGoster('Konum izni gerekiyor: Ayarlar > Konum', true);
+        kisaBildirimGoster(m.izinYok, true);
         return;
       }
 
-      kisaBildirimGoster('Konum güncellenemedi, lütfen tekrar deneyin');
+      kisaBildirimGoster(m.hata);
     })();
   }, [dispatch, yenileniyor]);
 

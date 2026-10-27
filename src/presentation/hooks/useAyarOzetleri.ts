@@ -37,6 +37,8 @@ import {
 import { kurulumSagligi, type Sorun } from '../../core/ayarlar/kurulumSagligi';
 import { konumMetniHesapla } from '../../core/ayarlar/konumMetni';
 import type { SistemDurumu } from './useSistemDurumu';
+import { bicim } from '../../core/dil/aktifDil';
+import { useMetin } from './useMetin';
 
 export interface AyarOzetleri {
   /** Ayarlar kökündeki "Hatırlatmalar" satırı (Dalga 3): düzey + açık diğerleri. */
@@ -72,6 +74,8 @@ export function useAyarOzetleri(sistem?: Pick<SistemDurumu, 'pil' | 'tamAlarm'>)
   saglikOzetSatiri: string;
 } {
   const { tema, palet } = useTema();
+  // Dile abone: özetler `metin()`'den üretilir; dil değişince yeniden hesaplanır.
+  const m = useMetin().ayarlar.ozet;
   const dispatch = useAppDispatch();
   // Güç/veri tasarrufu, arka plan kısıtı (köprüsüz build'de "bilinmiyor" → kontrol yok).
   const kosullar = useSistemKosullari();
@@ -190,8 +194,10 @@ export function useAyarOzetleri(sistem?: Pick<SistemDurumu, 'pil' | 'tamAlarm'>)
     hakkinda: hakkindaOzeti(UYGULAMA.VERSIYON, guncellemeMevcut),
   };
 
-  const saglikOzetSatiri =
-    `Kurulumunuz eksiksiz · ${konumMetniHesapla(konumGirdisi)} · vakit çıkmadan hatırlatma ${muhafizAktif ? 'açık' : 'kapalı'}`;
+  const saglikOzetSatiri = bicim(m.saglikSatiri, {
+    konum: konumMetniHesapla(konumGirdisi),
+    durum: muhafizAktif ? m.acikKucuk : m.kapaliKucuk,
+  });
 
   return { ozetler, sorunlar, saglikOzetSatiri };
 }

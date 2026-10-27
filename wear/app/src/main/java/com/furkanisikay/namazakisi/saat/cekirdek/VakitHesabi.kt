@@ -15,14 +15,22 @@ import java.time.format.DateTimeFormatter
  */
 object VakitHesabi {
 
-    /** Görünen adlar — sabit harita (Türkçe büyük/küçük harf dönüşümü yapılmaz). */
+    /**
+     * Görünen TÜRKÇE adlar — sabit harita (Türkçe büyük/küçük harf dönüşümü yapılmaz).
+     * Başka dil için [ad] (`SaatDili`); `ad` özellikleri Türkçedir (testler/eski çağıranlar).
+     */
     val ADLAR = mapOf(
         "imsak" to "Sabah", "gunes" to "Güneş", "ogle" to "Öğle",
         "ikindi" to "İkindi", "aksam" to "Akşam", "yatsi" to "Yatsı",
     )
 
+    /** Vaktin [dil]deki görünen adı. */
+    fun ad(vakit: String, dil: String = "tr"): String = saatDili(dil).vakitAdi(vakit)
+
     data class VakitAni(val tarih: String, val vakit: String, val ms: Long) {
         val ad: String get() = ADLAR[vakit] ?: vakit
+
+        fun ad(dil: String): String = VakitHesabi.ad(vakit, dil)
     }
 
     data class Satir(
@@ -89,6 +97,8 @@ object VakitHesabi {
         val siradaki: VakitAni,
     ) {
         val ad: String get() = ADLAR[vakit] ?: vakit
+
+        fun ad(dil: String): String = VakitHesabi.ad(vakit, dil)
 
         fun kalanMs(simdi: Long): Long = (hedef - simdi).coerceAtLeast(0L)
 
@@ -185,29 +195,31 @@ object VakitHesabi {
     fun tarih(ms: Long, bolge: ZoneId = ZoneId.systemDefault()): String =
         Instant.ofEpochMilli(ms).atZone(bolge).toLocalDate().toString()
 
-    /** "1 sa 12 dk" / "12 dk" / "1 dk'dan az" */
-    fun kalanMetni(ms: Long): String {
+    /** "1 sa 12 dk" / "12 dk" / "1 dk'dan az" (İngilizce "1 h 12 min" / "<1 min") */
+    fun kalanMetni(ms: Long, dil: String = "tr"): String {
+        val d = saatDili(dil)
         val dk = ms / 60_000L
-        if (dk < 1) return "1 dk'dan az"
+        if (dk < 1) return d.birDakikadanAzKisa
         val sa = dk / 60
         val kalanDk = dk % 60
         return when {
-            sa == 0L -> "$kalanDk dk"
-            kalanDk == 0L -> "$sa sa"
-            else -> "$sa sa $kalanDk dk"
+            sa == 0L -> "$kalanDk ${d.birimDk}"
+            kalanDk == 0L -> "$sa ${d.birimSa}"
+            else -> "$sa ${d.birimSa} $kalanDk ${d.birimDk}"
         }
     }
 
     /** Ekran okuyucu için uzun biçim: "1 saat 58 dakika" / "58 dakika" / "1 dakikadan az". */
-    fun kalanSesliMetni(ms: Long): String {
+    fun kalanSesliMetni(ms: Long, dil: String = "tr"): String {
+        val d = saatDili(dil)
         val dk = ms / DK
-        if (dk < 1) return "1 dakikadan az"
+        if (dk < 1) return d.birDakikadanAzSesli
         val sa = dk / 60
         val kalanDk = dk % 60
         return when {
-            sa == 0L -> "$kalanDk dakika"
-            kalanDk == 0L -> "$sa saat"
-            else -> "$sa saat $kalanDk dakika"
+            sa == 0L -> d.dakikaSesli(kalanDk)
+            kalanDk == 0L -> d.saatSesli(sa)
+            else -> d.sesliBirlesik(d.saatSesli(sa), d.dakikaSesli(kalanDk))
         }
     }
 

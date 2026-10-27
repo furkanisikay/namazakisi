@@ -12,6 +12,11 @@ Katmanlar: depolama `src/data/local/Depolama.ts` + `LocalNamazServisi` · puan/s
 - **`onEkiOlanAnahtarlar(önek)` kullanan yeni anahtar öneki çakıştırmamalı** (ör. göç bayrağı ayrı `@namaz_akisi/...` önekinde).
 - **Aralık okuması `cogunuOku` (multiGet) ile tek turdur ama HAM string döner → `JSON.parse` yerine `hamGunVerisiniCoz`.** `JSON.parse('null')`/`('42')` nesne-dışı sonuç verir ve downstream `gun[ad]`/`Object.entries(gun)` çöker.
 
+## Çok dil: saklanan metin yükleme anının dilinde kalır
+- **Rozet, seviye, hedef ve gün bitişi adını kimlikten çiz, saklanan metinden değil:** `seriSlice.rozetDetaylari` ve diske yazılan `rank` yükleme anının dilini taşır. `SERI_HEDEFLERI`, `ROZET_TANIMLARI`, `SEVIYE_TANIMLARI`, `GUN_BITIS_SAATI_SECENEKLERI` metin alanları okunduğu anda sözlükten çözülür; ekranlar `rozetMetni(id)`, `seviyeAdi(seviye)`, gün/ay adını `gunKisaAdiniAl`/`ayAdiniAl` ile çizer. Nöbetçi: `IlerlemeSayfasi.test.tsx` (İngilizce bölümü).
+- **Kaza kimlik haritaları Türkçe kalır** (`KAZA_VAKTI_ADI`, `KAZA_ADINDAN_VAKTE`, göç eşlemesi; `// dil-haric: kimlik`); görünen ad `kazaVaktiGoster(v)` / `KAZA_ADLARI`.
+- Seri sözü hadistir: yalnız `hadisGosterilir()` iken (`SeriSekmesi`).
+
 ## Puanlama (türev/defter modeli)
 
 - **`toplamKilinanNamaz`, `mukemmelGunSayisi` (eşik `tamGunEsigi` 3/4/5) ve `tabanPuan` (kılınan × 5) kayıtlardan `puanlamayiYenidenHesapla` (reconcile) ile TÜRETİLİR; olay-tetiklemeli sayaç artırma YAPMA.** "Kıldım/kılmadım" toggle'ı sayacı şişirir.

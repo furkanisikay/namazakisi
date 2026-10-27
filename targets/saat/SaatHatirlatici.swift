@@ -26,7 +26,14 @@ final class SaatHatirlatici: NSObject, UNUserNotificationCenterDelegate, @unchec
     /// Uygulama baslarken (delege erken atanmali: bildirim eylemi uygulamayi arka planda acar).
     func baslat() {
         merkez.delegate = self
-        let kildim = UNNotificationAction(identifier: Self.kildimEylemi, title: "Kıldım", options: [])
+        kategorileriKur()
+    }
+
+    /// "Kildim" eyleminin etiketi arayuz dilindedir (W5); telefondan yeni dil gelince
+    /// `SaatBaglantisi` yeniden kurar (kimlikler degismez).
+    func kategorileriKur() {
+        let baslik = VakitMetinleri.dil(SaatDili.kod).kildim
+        let kildim = UNNotificationAction(identifier: Self.kildimEylemi, title: baslik, options: [])
         merkez.setNotificationCategories([
             UNNotificationCategory(identifier: Self.kategori, actions: [kildim], intentIdentifiers: [], options: []),
         ])

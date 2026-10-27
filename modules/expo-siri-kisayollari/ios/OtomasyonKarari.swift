@@ -16,7 +16,7 @@ import Foundation
 public struct SiradakiVakitDegeri: Equatable {
     /// Widget kodu (`sabah`, `ogle` …) — Android `%vakitkodu` ile ayni uzay.
     public let kod: String
-    /// Gorunen ad ("Sabah", "Öğle" …).
+    /// Gorunen ad ("Sabah", "Öğle" … / "Fajr", "Dhuhr" …).
     public let ad: String
     public let girisMs: Int64
     /// Girise kalan tam dakika, YUKARI yuvarlanir (59 sn kala "1" der, "0" demez).
@@ -25,11 +25,16 @@ public struct SiradakiVakitDegeri: Equatable {
 
 public enum OtomasyonKarari {
     /// Siradaki kilinabilir vakit; cizelge biterse `nil` (veri eski, uygulama acilmali).
-    public static func siradakiVakit(_ vakitler: [SiriVakitAni], simdiMs: Int64) -> SiradakiVakitDegeri? {
+    /// `ad` verilen dildedir (Kisayollar'da DEGER olarak doner; Turkce varsayilan).
+    public static func siradakiVakit(
+        _ vakitler: [SiriVakitAni],
+        simdiMs: Int64,
+        dil: String = ArayuzDili.varsayilan
+    ) -> SiradakiVakitDegeri? {
         guard let s = VakitKarari.aktifVakitBul(vakitler, simdiMs: simdiMs).sonraki else { return nil }
         let fark = max(Int64(0), s.ms - simdiMs)
         let kalan = Int((fark + 59_999) / 60_000)
-        return SiradakiVakitDegeri(kod: s.vakit, ad: VakitKarari.gorunenAd(s.vakit), girisMs: s.ms, kalanDk: kalan)
+        return SiradakiVakitDegeri(kod: s.vakit, ad: VakitKarari.gorunenAd(s.vakit, dil: dil), girisMs: s.ms, kalanDk: kalan)
     }
 
     /// "Su anki vakit kilindi mi?" — `true`/`false`; kilinacak vakit yoksa (gunes→ogle arasi,

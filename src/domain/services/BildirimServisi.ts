@@ -12,6 +12,7 @@ import { eskiErteleEylemiMi } from '../../core/muhafiz/planKimligi';
 import { gosterimGrubu } from '../../core/muhafiz/teslimSahipligi';
 import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
 import { VAKIT_ADINDAN_KAZAYA, isoGunMu, type KazaVakti } from '../../core/kaza/kazaHareketi';
+import { metin } from '../../core/dil/aktifDil';
 import { localKazayaBorcEkle } from '../../data/local/LocalKazaServisi';
 
 /**
@@ -540,6 +541,54 @@ export class BildirimServisi {
   }
 
   /**
+   * Android temel bildirim kanalları. Ad ve açıklama etkin dilde (sistem bildirim ayarlarında
+   * görünür); kimlik ve ses değişmez → dil değişince yeniden çağrılır, Android adı günceller.
+   */
+  public async temelKanallariKur(): Promise<void> {
+    if (Platform.OS !== 'android') return;
+    const k = metin().bildirim.kanal;
+
+    // Varsayilan kanal
+    await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.VARSAYILAN, {
+      name: k.genel,
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+
+    // Muhafiz kanali (normal)
+    await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ, {
+      name: k.muhafiz,
+      description: k.muhafizAciklama,
+      importance: Notifications.AndroidImportance.HIGH,
+      vibrationPattern: [0, 500, 200, 500],
+      lightColor: '#FF9500',
+      sound: 'bildirim.mp3',
+    });
+
+    // Muhafiz acil kanali (seviye 3-4)
+    await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ_ACIL, {
+      name: k.acil,
+      description: k.acilAciklama,
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 1000, 500, 1000, 500, 1000],
+      lightColor: '#FF3B30',
+      sound: 'bildirim.mp3',
+      enableVibrate: true,
+      bypassDnd: true,
+    });
+
+    // Vakit Bildirimleri kanali
+    await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM, {
+      name: k.vakit,
+      description: k.vakitAciklama,
+      importance: Notifications.AndroidImportance.DEFAULT,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#4CAF50',
+    });
+  }
+
+  /**
    * Bildirim izinlerini kontrol et ve iste
    */
   public async izinIste(): Promise<boolean> {
@@ -569,47 +618,7 @@ export class BildirimServisi {
       return false;
     }
 
-    // Android icin bildirim kanallarini olustur
-    if (Platform.OS === 'android') {
-      // Varsayilan kanal
-      await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.VARSAYILAN, {
-        name: 'Genel Bildirimler',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-
-      // Muhafiz kanali (normal)
-      await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ, {
-        name: 'Namaz Muhafızı',
-        description: 'Namaz vakti hatırlatmaları',
-        importance: Notifications.AndroidImportance.HIGH,
-        vibrationPattern: [0, 500, 200, 500],
-        lightColor: '#FF9500',
-        sound: 'bildirim.mp3',
-      });
-
-      // Muhafiz acil kanali (seviye 3-4)
-      await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ_ACIL, {
-        name: 'Acil Namaz Hatırlatıcı',
-        description: 'Vakit çıkmak üzere - acil hatırlatmalar',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 1000, 500, 1000, 500, 1000],
-        lightColor: '#FF3B30',
-        sound: 'bildirim.mp3',
-        enableVibrate: true,
-        bypassDnd: true,
-      });
-
-      // Vakit Bildirimleri kanali
-      await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM, {
-        name: 'Vakit Bildirimleri',
-        description: 'Vakit girdiğinde gönderilen hatırlatmalar',
-        importance: Notifications.AndroidImportance.DEFAULT,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#4CAF50',
-      });
-    }
+    await this.temelKanallariKur();
 
     return true;
   }

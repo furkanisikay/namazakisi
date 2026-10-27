@@ -74,7 +74,7 @@ export const TAKVIM_CAKISMA_ADIM_KISITLARI: AdimKisitlari = {
  * Çakışma taramasında bu nottaki etkinlikler HARİÇ tutulur — yoksa uygulama
  * kendi koyduğu "İkindi Namazı" etkinliğini ikindiye engel sanırdı.
  */
-export const UYGULAMA_TAKVIM_NOTU = 'Namaz Akışı tarafından oluşturuldu';
+export const UYGULAMA_TAKVIM_NOTU = 'Namaz Akışı tarafından oluşturuldu'; // dil-haric: kimlik (eski etkinlikler bu notla tanınır)
 
 const nesneMi = (d: unknown): d is Record<string, unknown> => !!d && typeof d === 'object' && !Array.isArray(d);
 

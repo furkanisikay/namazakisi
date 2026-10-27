@@ -1,0 +1,18 @@
+// ru
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+
+// NamazKisayollari.swift
+"${applicationName} sıradaki namaz ne zaman" = "Когда следующий намаз в ${applicationName}";
+"${applicationName} sıradaki namaz" = "${applicationName} следующий намаз";
+"${applicationName} ile sıradaki namazı söyle" = "Скажи следующий намаз в ${applicationName}";
+"${applicationName} namaz vakti" = "${applicationName} время намаза";
+"${applicationName} şu anki vakti kıldım" = "Отметь текущий намаз в ${applicationName}";
+"${applicationName} namazımı kıldım" = "Намаз совершён в ${applicationName}";
+"${applicationName} ile vakti kıldım olarak işaretle" = "Отметь намаз как совершённый в ${applicationName}";
+"${applicationName} kıbleyi aç" = "Открой киблу в ${applicationName}";
+"${applicationName} ile kıbleyi göster" = "Покажи киблу в ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} картинка аята дня";
+"${applicationName} ile günün ayeti görselini hazırla" = "Подготовь картинку аята дня в ${applicationName}";

@@ -15,6 +15,8 @@ import { useRenkler } from '../../core/theme';
 import { BOYUTLAR, SERI_RENKLERI } from '../../core/constants/UygulamaSabitleri';
 import { ToparlanmaDurumu } from '../../core/types/SeriTipleri';
 import { useDonguAcik, useDonguAnimasyonu } from './hareket/dongu';
+import { useMetin } from '../hooks/useMetin';
+import { bicim, sayili } from '../../core/dil/aktifDil';
 
 interface ToparlanmaKartiProps {
   toparlanmaDurumu: ToparlanmaDurumu;
@@ -30,6 +32,7 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
   oncekiSeri,
 }) => {
   const renkler = useRenkler();
+  const m = useMetin().seri.toparlanma;
 
   // Sadece ikon için hafif pulse — tek kapı `hareket/dongu` (D-16): odak/ön plan/azaltılmış
   // hareket kapısı + temizlik; dinlenme pozu ölçek 1.
@@ -61,6 +64,8 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
   }
 
   const kalanGun = toparlanmaDurumu.hedefGunSayisi - toparlanmaDurumu.tamamlananGun;
+  // Kalın gün sayısı cümlenin içinde; yeri dile göre değişir (`{vurgu}`).
+  const [mesajOnce, mesajSonra = ''] = m.kartMesaj.split('{vurgu}');
 
   return (
     <View
@@ -77,10 +82,10 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
         <Animated.Text style={[styles.uyariIkon, { transform: [{ scale: ikonPulseAnim }] }]}>⚠️</Animated.Text>
         <View style={styles.baslikMetinler}>
           <Text style={[styles.baslik, { color: SERI_RENKLERI.TOPARLANMA }]}>
-            TOPARLANMA MODU
+            {m.kartBaslik}
           </Text>
           <Text style={[styles.altBaslik, { color: renkler.metinIkincil }]}>
-            Serinize yeniden kavuşabilirsiniz
+            {m.kartAltBaslik}
           </Text>
         </View>
       </View>
@@ -88,7 +93,9 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
       {/* Motivasyon mesaji */}
       <View style={styles.mesajContainer}>
         <Text style={[styles.mesaj, { color: renkler.metin }]}>
-          <Text style={styles.vurgulu}>{oncekiSeri} günlük</Text> serinize kaldığınız yerden devam edebilirsiniz.
+          {mesajOnce}
+          <Text style={styles.vurgulu}>{sayili(m.oncekiGun, oncekiSeri)}</Text>
+          {mesajSonra}
         </Text>
       </View>
 
@@ -98,7 +105,7 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
           {daireler}
         </View>
         <Text style={[styles.progressYazisi, { color: renkler.metinIkincil }]}>
-          {toparlanmaDurumu.tamamlananGun}/{toparlanmaDurumu.hedefGunSayisi} gün tamamlandı
+          {bicim(m.ilerleme, { tamam: toparlanmaDurumu.tamamlananGun, hedef: toparlanmaDurumu.hedefGunSayisi })}
         </Text>
       </View>
 
@@ -106,11 +113,11 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
       <View style={styles.altMesajContainer}>
         {kalanGun > 0 ? (
           <Text style={[styles.altMesaj, { color: SERI_RENKLERI.TOPARLANMA }]}>
-            {kalanGun} gün daha beş vakti tamamladığınızda seriniz kaldığı yerden sürer.
+            {sayili(m.kalan, kalanGun)}
           </Text>
         ) : (
           <Text style={[styles.altMesaj, { color: renkler.durum.basarili }]}>
-            Bugünü tamamladığınızda seriniz kaldığı yerden sürer.
+            {m.bugun}
           </Text>
         )}
       </View>
@@ -119,7 +126,7 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
       <View style={[styles.uyariContainer, { backgroundColor: 'rgba(255,193,7,0.2)' }]}>
         <Text style={styles.uyariIkonKucuk}>⚡</Text>
         <Text style={[styles.uyariMetin, { color: renkler.metinIkincil }]}>
-          Bu günleri art arda tamamlamanız yeterli; arada boş gün kalırsa toparlanma yeniden başlar.
+          {m.uyari}
         </Text>
       </View>
     </View>

@@ -26,17 +26,43 @@ object Tesbihat {
      */
     const val ESKIME_MS = 90L * 60 * 1000
 
+    /** Türkçe tehlil (Türkçe tablonun kaynağı); ekran dile göre [tehlilMetni] çağırır. */
     const val TEHLIL_METNI =
         "Lâ ilâhe illallâhü vahdehû lâ şerîke leh, lehü'l-mülkü ve lehü'l-hamdü ve hüve alâ külli şey'in kadîr"
 
+    /** Türkçe hadis künyesi (Türkçe tablonun kaynağı); ekran dile göre [kaynak] çağırır. */
     const val KAYNAK = "Müslim, Mesâcid 146"
 
+    /**
+     * Zikir adları, tehlil metni ve künye ÇEVİRİ DEĞİL, o dilin Müslüman topluluğunun yaygın
+     * yazımıdır (sahip kararı 2026-10-25): en "Subhanallah", ru "Субханаллах". Tablo `SaatDili`
+     * bloklarında; bilinmeyen dil Türkçeye düşer ([saatDili]).
+     */
+    fun tehlilMetni(dil: String = "tr"): String = saatDili(dil).tehlilMetni
+
+    fun kaynak(dil: String = "tr"): String = saatDili(dil).tesbihatKaynagi
+
     /** @param baslangic bu fazdan önce sayılmış toplam */
-    enum class Faz(val ad: String, val hedef: Int, val baslangic: Int) {
-        SUBHANALLAH("Sübhânallah", FAZ_HEDEFI, 0),
-        ELHAMDULILLAH("Elhamdülillâh", FAZ_HEDEFI, FAZ_HEDEFI),
-        ALLAHU_EKBER("Allâhü ekber", FAZ_HEDEFI, 2 * FAZ_HEDEFI),
-        TEHLIL("Lâ ilâhe illallâh", 1, 3 * FAZ_HEDEFI),
+    enum class Faz(val hedef: Int, val baslangic: Int) {
+        SUBHANALLAH(FAZ_HEDEFI, 0),
+        ELHAMDULILLAH(FAZ_HEDEFI, FAZ_HEDEFI),
+        ALLAHU_EKBER(FAZ_HEDEFI, 2 * FAZ_HEDEFI),
+        TEHLIL(1, 3 * FAZ_HEDEFI),
+        ;
+
+        /** Türkçe okunuş ("Sübhânallah"); ekranlar dile göre `ad(dil)` çağırır. */
+        val ad: String get() = ad("tr")
+
+        /** Zikrin o dildeki yaygın okunuşu; bilinmeyen dil Türkçeye düşer. */
+        fun ad(dil: String): String {
+            val m = saatDili(dil)
+            return when (this) {
+                SUBHANALLAH -> m.zikirSubhanallah
+                ELHAMDULILLAH -> m.zikirElhamdulillah
+                ALLAHU_EKBER -> m.zikirAllahuEkber
+                TEHLIL -> m.zikirTehlil
+            }
+        }
     }
 
     data class Durum(val toplam: Int = 0) {
@@ -101,8 +127,8 @@ object Tesbihat {
     /** Kadrandaki sürekli etkinlik yalnız YARIM oturumda anlamlıdır. */
     fun suruyorMu(d: Durum): Boolean = d.toplam in 1 until TOPLAM
 
-    /** Kısa durum metni (Ongoing durumu, ekran okuyucu): "Elhamdülillâh · 12/33". */
-    fun kisaMetin(d: Durum): String = "${d.faz.ad} · ${d.fazSayisi}/${d.faz.hedef}"
+    /** Kısa durum metni (Ongoing durumu, ekran okuyucu): "Elhamdülillâh · 12/33" (en "Alhamdulillah · 12/33"). */
+    fun kisaMetin(d: Durum, dil: String = "tr"): String = "${d.faz.ad(dil)} · ${d.fazSayisi}/${d.faz.hedef}"
 }
 
 /**

@@ -34,6 +34,7 @@ import {
 } from 'react-native';
 import { Anahtar } from '../common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { SayisalSecici } from '../common/SayisalSecici';
@@ -72,16 +73,7 @@ import {
     acilTonKisitNotu,
     adimBasligiOlustur,
     adimBilgisiAl,
-    BILDIRIM_ACIKLAMASI,
-    BILDIRIM_ETIKETI,
-    SESLI_ACIKLAMASI,
-    SESLI_ETIKETI,
-    TITRESIM_ACIKLAMASI,
-    TITRESIM_ETIKETI,
-    ALARM_ETIKETI,
-    ALARM_KAPSAMI_NOTU,
     ALARM_KAPSAMI_SECENEKLERI,
-    IOS_ALARM_KAPSAMI_NOTU,
     alarmAciklamasiOlustur,
     gelismisAcikBaslarMi,
     gelismisOzetiOlustur,
@@ -105,6 +97,8 @@ import { kalanDkAni, saatMetni } from '../../../core/muhafiz/zamanSeridi';
 import { KANAL_IKONLARI, OzetCipleri } from './OzetCipleri';
 import { AdimOnizlemeKarti } from './AdimOnizlemeKarti';
 import { GirisKademesi } from './GirisKademesi';
+import { bicim, metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 /**
  * Geniş ekranda (iPad, tablet, Fold iç ekranı) sheet tam genişliğe YAYILMAZ: anahtarlar
@@ -123,8 +117,8 @@ const DND_ALANLARI = ['dndErisimi'] as const;
  */
 export function acilTonOrnekNotu(ton: string, platform: string, dndErisimi: boolean | null): string {
     if (ton !== 'acil' || platform !== 'android') return '';
-    if (dndErisimi === false) return 'Bildirim ekranın üstünde kalır; Rahatsız Etmeyin açıkken susar.';
-    return 'Bildirim ekranın üstünde kalır; Rahatsız Etmeyin modunu delebilir.';
+    const a = metin().hatirlatma.adim;
+    return dndErisimi === false ? a.acilNotDndYok : a.acilNotDnd;
 }
 
 export interface AdimRizasi {
@@ -252,6 +246,11 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     sesliOnayMetinleri,
 }) => {
     const renkler = useRenkler();
+    const sozluk = useMetin();
+    const mh = sozluk.hatirlatma;
+    const ortakMetin = sozluk.ortak;
+    const ma = mh.adim;
+    const mp = mh.pencere;
     const seviye = seviyeler[indeks];
     /** Gerçek alarm rıza modalı açık mı (anahtar ilk kez açılırken). */
     const [alarmOnayAcik, setAlarmOnayAcik] = useState(false);
@@ -474,7 +473,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
         if (seciciAcik) return;
         setSeciciAcik(true);
         try {
-            const secilen = await sesSec(ozelSesMi(seviye.bildirimSesi) ? seviye.bildirimSesi : null, 'Bildirim sesi');
+            const secilen = await sesSec(ozelSesMi(seviye.bildirimSesi) ? seviye.bildirimSesi : null, ma.sesSeciciBaslik);
             if (!secilen) return;
             onDegistir({ ...seviye, bildirimSesi: secilen.uri, sesAdi: secilen.ad });
         } finally {
@@ -552,7 +551,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                                     {/* Ton adı başlıkta YAZILMAZ (jargon); sertlik "Gelişmiş"te seçilir. */}
                                     {tanim.tonSecilebilir
-                                        ? `${tanim.baslik} vakti, ${adimBasligi}`
+                                        ? bicim(ma.altBaslikVakit, { ad: tanim.baslik, adim: adimBasligi })
                                         : tanim.baslik}
                                 </Text>
                             </View>
@@ -561,7 +560,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                 onPress={kapat}
                                 activeOpacity={0.7}
                                 accessibilityRole="button"
-                                accessibilityLabel="Kapat"
+                                accessibilityLabel={ma.kapat}
                             >
                                 <FontAwesome5 name="times" size={18} color={renkler.metinIkincil} />
                             </TouchableOpacity>
@@ -572,9 +571,9 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                             <View className="items-center py-10">
                                 <FontAwesome5 name="bell-slash" size={34} color={renkler.metinIkincil} />
                                 <Text className="text-sm text-center mt-3" style={{ color: renkler.metinIkincil }}>
-                                    Bu hatırlatma kapalı. {tanim.baslik} için bu aşamada uyarı almazsınız.
+                                    {bicim(ma.kapaliMetin, { ad: tanim.baslik })}
                                     {/* Sahip: kullanılmayan adım kapalı durmasın, silinsin. */}
-                                    {onSil ? ' Kullanmayacaksanız aşağıdan silebilirsiniz.' : ''}
+                                    {onSil ? ma.kapaliSil : ''}
                                 </Text>
                                 <TouchableOpacity
                                     className="flex-row items-center justify-center rounded-2xl mt-4 px-6"
@@ -582,12 +581,12 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                     onPress={() => onDegistir(seviyeyiAc(seviye, tanim.yon, !tanim.bosMetinOtomatik))}
                                     activeOpacity={0.8}
                                     accessibilityRole="button"
-                                    accessibilityLabel={`${adimBasligi} — açın`}
+                                    accessibilityLabel={bicim(ma.acinEtiket, { adim: adimBasligi })}
                                     testID="adim-ac-dugmesi"
                                 >
                                     <FontAwesome5 name="bell" size={13} color="#FFFFFF" solid style={{ marginRight: 8 }} />
                                     <Text className="text-sm font-semibold" style={{ color: '#FFFFFF' }}>
-                                        Açın
+                                        {ma.acin}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
@@ -619,7 +618,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                             {tanim.esikAciklamasi ?? esikAciklamasiOlustur(tanim.yon)}
                                         </Text>
                                         <Text className="text-[11px] mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                            {sinirlar.min}–{sinirlar.max} dk arası seçebilirsiniz
+                                            {bicim(ma.aralik, { min: sinirlar.min, max: sinirlar.max })}
                                         </Text>
                                     </View>
                                     <SayisalSecici
@@ -645,7 +644,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                         <AnahtarSatiri
                                             ikon="redo"
                                             renk={bilgi.renk}
-                                            etiket="Tekrarla"
+                                            etiket={ma.tekrarla}
                                             aciklama={tekrarCumlesi}
                                             deger={tekrarliMi}
                                             onDegis={tekrariAyarla}
@@ -654,18 +653,18 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                             {tekrarliMi && (
                                                 <View className="flex-row items-center justify-between mt-2">
                                                     <Text className="text-sm font-medium flex-1 pr-3" style={{ color: renkler.metin }}>
-                                                        Her
+                                                        {ma.her}
                                                     </Text>
                                                     <SayisalSecici
                                                         deger={tekrarDk}
                                                         min={tanim.tekrarMinDk}
                                                         max={tanim.tekrarMaxDk}
                                                         adim={1}
-                                                        birim="dk'da bir"
+                                                        birim={ma.dakikadaBir}
                                                         onChange={(val) => onDegistir({ ...seviye, siklik: { herDk: val } })}
                                                         renk={bilgi.renk}
                                                         degerGenisligi={96}
-                                                        aciklama="Tekrar aralığı"
+                                                        aciklama={ma.tekrarAraligi}
                                                     />
                                                 </View>
                                             )}
@@ -679,13 +678,13 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                     genişler (`genislet`). iOS'ta ses/titreşim yok → Bildirim kartı başlıktır. */}
                                 {tanim.kanalSecimiVar && (
                                     <GirisKademesi sira={2}>
-                                        <BolumBasligi metin="NASIL" />
+                                        <BolumBasligi metin={ma.nasil} />
                                         <View style={{ rowGap: 8 }}>
                                             <KanalKarti
                                                 ikon={KANAL_IKONLARI.bildirim}
                                                 renk={bilgi.renk}
-                                                etiket={BILDIRIM_ETIKETI}
-                                                ipucu={BILDIRIM_ACIKLAMASI}
+                                                etiket={mp.bildirimEtiketi}
+                                                ipucu={mp.bildirimAciklamasi}
                                                 deger={bildirimliMi}
                                                 onDegis={(v) => anaKanalDegis('bildirim', v)}
                                                 testID="adim-bildirim-anahtari"
@@ -718,8 +717,8 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                         <AltAnahtarSatiri
                                                             ikon={KANAL_IKONLARI.titresim}
                                                             renk={bilgi.renk}
-                                                            etiket={TITRESIM_ETIKETI}
-                                                            ipucu={TITRESIM_ACIKLAMASI}
+                                                            etiket={mp.titresimEtiketi}
+                                                            ipucu={mp.titresimAciklamasi}
                                                             deger={titresimliMi}
                                                             onDegis={titresimiAyarla}
                                                             testID="adim-titresim-anahtari"
@@ -731,8 +730,8 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                             <KanalKarti
                                                 ikon={KANAL_IKONLARI.sesli}
                                                 renk={bilgi.renk}
-                                                etiket={SESLI_ETIKETI}
-                                                ipucu={SESLI_ACIKLAMASI}
+                                                etiket={mp.sesliEtiketi}
+                                                ipucu={mp.sesliAciklamasi}
                                                 deger={sesliMi}
                                                 onDegis={(v) => anaKanalDegis('sesli', v)}
                                                 testID="adim-sesli-anahtari"
@@ -755,7 +754,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                 <KanalKarti
                                                     ikon={KANAL_IKONLARI.alarm}
                                                     renk={bilgi.renk}
-                                                    etiket={ALARM_ETIKETI}
+                                                    etiket={mp.alarmEtiketi}
                                                     ipucu={alarmAciklamasiOlustur(alarmliMi ? seviye.alarmKapsami : undefined)}
                                                     deger={alarmliMi}
                                                     onDegis={alarmiAyarla}
@@ -784,7 +783,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                                         activeOpacity={0.7}
                                                                         accessibilityRole="button"
                                                                         accessibilityState={{ selected: secili }}
-                                                                        accessibilityLabel={`Alarm: ${s.etiket}`}
+                                                                        accessibilityLabel={bicim(ma.alarmKapsamEtiket, { etiket: s.etiket })}
                                                                     >
                                                                         <FontAwesome5
                                                                             name={s.ikon}
@@ -804,9 +803,9 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                         </View>
                                                         {seviye.alarmKapsami === 'hepsi' && (
                                                             <Text className="text-xs mt-2" style={{ color: renkler.metinIkincil }}>
-                                                                {ALARM_KAPSAMI_NOTU}
+                                                                {mp.alarmKapsamiNotu}
                                                                 {tanim.yetenekler.platform === 'ios' && alarmIzinleri.alarmKit === 'izinli'
-                                                                    ? ` ${IOS_ALARM_KAPSAMI_NOTU}`
+                                                                    ? ` ${mp.iosAlarmKapsamiNotu}`
                                                                     : ''}
                                                             </Text>
                                                         )}
@@ -838,10 +837,10 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                     activeOpacity={0.7}
                                     accessibilityRole="button"
                                     accessibilityState={{ expanded: gelismisAcik }}
-                                    accessibilityLabel={`Gelişmiş ayarlar${gelismisOzeti ? `: ${gelismisOzeti}` : ''}`}
+                                    accessibilityLabel={gelismisOzeti ? bicim(ma.gelismisEtiketOzet, { ozet: gelismisOzeti }) : ma.gelismisEtiket}
                                     testID="adim-gelismis"
                                 >
-                                    <FontAwesome5
+                                    <YonluIkon
                                         name={gelismisAcik ? 'chevron-down' : 'chevron-right'}
                                         size={12}
                                         color={renkler.metinIkincil}
@@ -852,7 +851,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                         className="text-[11px] font-semibold tracking-wider flex-1"
                                         style={{ color: renkler.metinIkincil }}
                                     >
-                                        GELİŞMİŞ
+                                        {ma.gelismis}
                                     </Text>
                                     {gelismisOzeti ? (
                                         // Seçim varsa ikon çipiyle özetlenir (tam cümle etikette).
@@ -866,7 +865,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                         />
                                     ) : (
                                         <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                                            Sertlik
+                                            {ma.sertlik}
                                         </Text>
                                     )}
                                 </TouchableOpacity>
@@ -881,7 +880,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                     className="text-[11px] font-semibold tracking-wider mb-2 mt-2"
                                                     style={{ color: renkler.metinIkincil }}
                                                 >
-                                                    SERTLİK
+                                                    {ma.sertlikBuyuk}
                                                 </Text>
                                                 <View className="flex-row gap-1.5">
                                                     {SEVIYE_KADEMELERI.map((kademe) => {
@@ -904,7 +903,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                                 activeOpacity={0.7}
                                                                 accessibilityRole="button"
                                                                 accessibilityState={{ selected: secili, disabled: devreDisi }}
-                                                                accessibilityLabel={`Sertlik: ${TON_ETIKETLERI[kademe]}`}
+                                                                accessibilityLabel={bicim(ma.sertlikEtiket, { ton: TON_ETIKETLERI[kademe] })}
                                                             >
                                                                 <FontAwesome5
                                                                     name={tonBilgi.ikon}
@@ -950,11 +949,11 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                 onPress={onSil}
                                 activeOpacity={0.7}
                                 accessibilityRole="button"
-                                accessibilityLabel={`${adimBasligi} — silin`}
+                                accessibilityLabel={bicim(ma.silEtiket, { adim: adimBasligi })}
                             >
                                 <FontAwesome5 name="trash-alt" size={13} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
                                 <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                    Bu hatırlatmayı silin
+                                    {ma.sil}
                                 </Text>
                             </TouchableOpacity>
                         )}
@@ -989,16 +988,16 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                     <BildirimModali
                         gorunur
                         tip="bilgi"
-                        baslik="Bu hatırlatma kapansın mı?"
-                        mesaj="Hiçbir uyarı yolu açık kalmıyor. Ayarlarınız saklanır; dilediğiniz zaman yeniden açabilirsiniz."
-                        birincilEtiket="Kapatın"
+                        baslik={ma.kapatOnayBaslik}
+                        mesaj={ma.kapatOnayMesaj}
+                        birincilEtiket={ortakMetin.kapatin}
                         birincilIkon="bell-slash"
                         onBirincil={() => {
                             setKapatOnayi(false);
                             onDegistir(seviyeyiKapat(seviye));
                         }}
                         onKapat={() => setKapatOnayi(false)}
-                        kapatEtiketi="Vazgeç"
+                        kapatEtiketi={ma.vazgec}
                     />
                 )}
 
@@ -1007,10 +1006,8 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                 {sesliBekleyen && (
                     <SesliOnayModal
                         gorunur
-                        altBaslik={sesliOnayMetinleri?.altBaslik ?? `${tanim.baslik} hatırlatmasında sesli okuma`}
-                        kapatmaNotu={
-                            sesliOnayMetinleri?.kapatmaNotu ?? 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.'
-                        }
+                        altBaslik={sesliOnayMetinleri?.altBaslik ?? bicim(ma.sesliAltBaslik, { ad: tanim.baslik })}
+                        kapatmaNotu={sesliOnayMetinleri?.kapatmaNotu ?? ma.sesliKapatmaNotu}
                         ornekMetin={
                             sesliBekleyen.anonsMetni
                                 ? tanim.anonsCoz(sesliBekleyen.anonsMetni, sesliBekleyen)

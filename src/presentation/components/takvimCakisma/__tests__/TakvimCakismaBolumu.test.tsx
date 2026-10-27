@@ -5,7 +5,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import takvimCakismaReducer from '../../../store/takvimCakismaSlice';
 import {
     takvimCakismaAyarlariniNormalize,
@@ -68,7 +68,7 @@ jest.mock('../../../../domain/services/TakvimEtkinlikOkuyucu', () => ({
     takvimIzniIste: (...a: unknown[]) => mockIzinIste(...a),
 }));
 
-import { TakvimCakismaBolumu, TAKVIM_CAKISMA_YON_GEREKCESI } from '../TakvimCakismaBolumu';
+import { TakvimCakismaBolumu, takvimCakismaYonGerekcesi } from '../TakvimCakismaBolumu';
 import rizaReducer from '../../../store/hatirlatmaRizaSlice';
 
 const KONUM = { lat: 41.0, lng: 29.0 };
@@ -180,7 +180,7 @@ describe('TakvimCakismaBolumu', () => {
         mockIzinDurumu.mockResolvedValue('verildi');
         const ekran = kur();
         expect(await ekran.findByTestId('yon-sabit-gerekcesi')).toBeTruthy();
-        expect(ekran.getByText(TAKVIM_CAKISMA_YON_GEREKCESI)).toBeTruthy();
+        expect(ekran.getByText(takvimCakismaYonGerekcesi())).toBeTruthy();
         expect(ekran.getByText(/Sesli okumada ve gerçek alarm ekranında ad hiçbir zaman yer almaz/)).toBeTruthy();
         expect(ekran.getByText(/ilk uyarı etkinlikten 30 dk önce gelir/)).toBeTruthy();
         fireEvent.press(ekran.getByLabelText('Takvim çakışması akışını önizleyin'));
@@ -221,5 +221,24 @@ describe('TakvimCakismaBolumu', () => {
         await waitFor(() => expect(store.getState().takvimCakisma.ayarlar.aktif).toBe(false));
         expect(mockDisk).toMatchObject({ sesliOnayi: true, alarmOnayi: true });
         expect(mockDisk.rizaZamani).toBeUndefined();
+    });
+});
+
+describe('TakvimCakismaBolumu — İngilizce', () => {
+    const YASAKLI = ['Takvim', 'dk\\b', 'kala', 'Kapat', 'Bildirim', 'Tekrar', 'Vakit', 'vakit'];
+    it('açık bölüm (izin kapalı satırı dahil) ve rıza modalı İngilizce', async () => {
+        const { ingilizceyeGec, turkceKalanlar } = require('../../../../__tests__/yardimci/ingilizceDenetimi') as typeof import('../../../../__tests__/yardimci/ingilizceDenetimi');
+        const geri = ingilizceyeGec();
+        try {
+            mockDisk = takvimCakismaAyarlariniNormalize({ aktif: true, rizaZamani: '2026-10-01T00:00:00.000Z' });
+            const e = kur();
+            await e.findByText('Show the event name');
+            expect(turkceKalanlar(e.toJSON() as never, YASAKLI)).toEqual([]);
+            const riza = kur({ acilistaAc: true });
+            await riza.findByText('Allow reading your calendar?');
+            expect(turkceKalanlar(riza.toJSON() as never, YASAKLI)).toEqual([]);
+        } finally {
+            act(() => geri());
+        }
     });
 });

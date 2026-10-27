@@ -17,11 +17,12 @@ import { hatirlatmaKurulabilirMi } from '../../data/local/LocalCihazRoluServisi'
 import { AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../../core/vakit/aktifHesap';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { metin } from '../../core/dil/aktifDil';
 import { iftarCanliYukuOlustur } from '../../core/sayac/canliGuncelleme';
 
 interface IftarSayacAyarlari {
@@ -47,10 +48,10 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
       idOneki: BILDIRIM_SABITLERI.ONEKLEME.IFTAR_SAYAC,
       kanalId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
       eskiKanalId: 'iftar_sayac',
-      kanalAdi: 'İftar Sayacı',
-      kanalAciklamasi: 'İftar vaktine geri sayım bildirimi',
-      countdownBaslik: '🌙 İftar Sayacı',
-      countdownBodyTemplate: 'Ezanı duymadan orucunuzu açmayınız!\n⏱️ {time}',
+      kanalAdi: metin().sayac.iftar.kanal,
+      kanalAciklamasi: metin().sayac.iftar.kanalAciklama,
+      countdownBaslik: metin().sayac.iftar.baslik,
+      countdownBodyTemplate: `${metin().sayac.iftar.govde}\n⏱️ {time}`,
       themeType: 'iftar',
     };
   }
@@ -79,9 +80,8 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
 
     const { lat, lng } = ayarlar.koordinatlar;
     const coordinates = new Coordinates(lat, lng);
-    const params = turkiyeHesapParametreleri();
     const simdi = new Date();
-    const prayerTimes = new PrayerTimes(coordinates, simdi, params);
+    const prayerTimes = aktifPrayerTimes(coordinates, simdi);
 
     const sabahVakti = prayerTimes.fajr;
     const aksamVakti = prayerTimes.maghrib;
@@ -134,8 +134,8 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
   protected vakitGirdiBildirimIcerigi(bildirimId: string, _aksamVaktiMs: number): any {
     return {
       id: bildirimId,
-      title: '🌙 İftar Vakti!',
-      body: 'Hayırlı iftarlar!',
+      title: metin().sayac.iftar.girdiBaslik,
+      body: metin().sayac.iftar.girdiGovde,
       android: {
         channelId: this.konfig.kanalId,
         ongoing: false,
@@ -144,7 +144,7 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
         pressAction: { id: 'default' },
         style: {
           type: AndroidStyle.BIGTEXT,
-          text: 'Hayırlı iftarlar!\n\n⚠️ Ezanı duymadan orucunuzu açmayınız! Duanızda bize de yer vermeyi unutmayın :)',
+          text: metin().sayac.iftar.girdiUzun,
         },
       },
     };

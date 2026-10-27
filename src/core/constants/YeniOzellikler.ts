@@ -28,6 +28,8 @@
  * Duyurunun yalnız özelliği taşıyan cihazda görünmesi için yetenek anahtarı.
  * Çözümü sunum katmanındadır (`presentation/hooks/yeniOzellikYetenegi.ts`).
  */
+import type { DilKodu } from '../dil/diller';
+
 export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive' | 'ipad' | 'kontrolMerkezi' | 'sesDosyasi';
 
 /** Duyurunun görüneceği platformlar. */
@@ -70,9 +72,510 @@ export interface YeniOzellik {
     detaylar?: string[];
     /** Verilirse duyuru yalnız bu yetenek varken görünür (ör. iPhone widget'ı). */
     yetenek?: YeniOzellikYetenegi;
+    /**
+     * Diğer dillerdeki metin. Türkçe dışında YALNIZ çevirisi olan öğe gösterilir
+     * (`core/constants/yeniOzellikDili.ts`): eski duyurular yeni dilin kullanıcısına
+     * anlamsızdır, yarım çeviri gösterilmez. Metin o dilin kullanıcısı için DOĞRU olmalı
+     * (ör. yalnız Türkiye'de çalışan bir yol çeviride anlatılmaz).
+     */
+    ceviri?: Partial<Record<Exclude<DilKodu, 'tr'>, YeniOzellikCevirisi>>;
 }
 
+/** Bir duyurunun çevrilen alanları. */
+export type YeniOzellikCevirisi = Pick<YeniOzellik, 'baslik' | 'aciklama' | 'detayAciklama' | 'ctaEtiketi' | 'detaylar'>;
+
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Günün ayeti (#380 widget, #381 duvar kâğıdı). Duvar kâğıdı platforma göre farklı
+    // olduğundan iki öğe: Android'de uygulama değiştirir, iPhone'da Kısayollar rehberi.
+    {
+        id: 'gunun-ayeti-android',
+        platformlar: ['android'],
+        surum: '0.71.0',
+        tarih: '2026-10-24',
+        baslik: 'Günün ayeti ana ekranınızda',
+        aciklama:
+            'Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza widget olarak ekleyebilir, isterseniz kilit ekranınızın duvar kâğıdı yapabilirsiniz.',
+        detayAciklama:
+            "Widget, duvar kâğıdı ve uygulamadaki \"Günün ayeti\" sayfası aynı ayeti gösterir. Arapça metin Tanzil Projesi'nden, mealler QuranEnc'ten değiştirilmeden alınır.",
+        ikon: 'book-open',
+        hedefSayfa: 'GununAyeti',
+        ctaEtiketi: 'Günün ayetini açın',
+        detaylar: [
+            'Meal hiçbir boyutta kesilmez; sığmadığı gün widget okumak için dokunmanızı ister.',
+            'Duvar kâğıdında Arapça metin isteğe bağlıdır ve başta kapalıdır.',
+            'Ayeti metin ya da görsel olarak paylaşabilirsiniz.',
+        ],
+        ceviri: {
+            en: {
+                baslik: 'Verse of the day on your home screen',
+                aciklama:
+                    'Add a verse and its translation that changes every day at Fajr to your home screen as a widget, and make it your lock screen wallpaper if you like.',
+                detayAciklama:
+                    'The widget, the wallpaper and the "Verse of the day" page in the app show the same verse. The Arabic text comes from the Tanzil Project and translations from QuranEnc, unchanged.',
+                ctaEtiketi: 'Open the verse of the day',
+                detaylar: [
+                    "The translation is never cut off; on days it doesn't fit, the widget asks you to tap to read it.",
+                    'Arabic text on the wallpaper is optional and starts off.',
+                    'You can share the verse as text or as an image.',
+                ],
+            },
+            id: {
+                baslik: 'Ayat hari ini di layar utama Anda',
+                aciklama: 'Tambahkan ayat beserta terjemahannya, yang berganti setiap hari saat Subuh, ke layar utama sebagai widget, dan jika mau, jadikan wallpaper layar kunci Anda.',
+                detayAciklama: 'Widget, wallpaper, dan halaman "Ayat hari ini" di aplikasi menampilkan ayat yang sama. Teks Arab berasal dari Proyek Tanzil dan terjemahan dari QuranEnc, tanpa diubah.',
+                ctaEtiketi: 'Buka ayat hari ini',
+                detaylar: [
+                    'Terjemahan tidak pernah dipotong; pada hari terjemahan tidak muat, widget meminta Anda mengetuk untuk membacanya.',
+                    'Teks Arab di wallpaper bersifat opsional dan awalnya nonaktif.',
+                    'Anda dapat membagikan ayat sebagai teks atau gambar.',
+                ],
+            },
+            de: {
+                baslik: 'Vers des Tages auf Ihrem Startbildschirm',
+                aciklama: 'Fügen Sie einen Vers mit Übersetzung, der jeden Tag zu Fajr wechselt, als Widget zu Ihrem Startbildschirm hinzu und machen Sie ihn auf Wunsch zum Hintergrundbild Ihres Sperrbildschirms.',
+                detayAciklama: 'Widget, Hintergrundbild und die Seite „Vers des Tages“ in der App zeigen denselben Vers. Der arabische Text stammt vom Tanzil-Projekt, die Übersetzungen unverändert von QuranEnc.',
+                ctaEtiketi: 'Vers des Tages öffnen',
+                detaylar: [
+                    'Die Übersetzung wird nie abgeschnitten; passt sie an einem Tag nicht, bittet das Widget Sie, zum Lesen zu tippen.',
+                    'Der arabische Text auf dem Hintergrundbild ist optional und anfangs aus.',
+                    'Sie können den Vers als Text oder als Bild teilen.',
+                ],
+            },
+            fr: {
+                baslik: 'Le verset du jour sur votre écran d’accueil',
+                aciklama: 'Ajoutez sur votre écran d’accueil, sous forme de widget, un verset et sa traduction qui changent chaque jour à l’Imsak, et faites-en si vous le souhaitez le fond d’écran de votre écran de verrouillage.',
+                detayAciklama: 'Le widget, le fond d’écran et la page « Verset du jour » de l’application affichent le même verset. Le texte arabe vient du Tanzil Project et les traductions de QuranEnc, sans modification.',
+                ctaEtiketi: 'Ouvrir le verset du jour',
+                detaylar: [
+                    'La traduction n’est jamais coupée ; les jours où elle ne tient pas, le widget vous invite à la toucher pour la lire.',
+                    'Le texte arabe sur le fond d’écran est facultatif et désactivé au départ.',
+                    'Vous pouvez partager le verset en texte ou en image.',
+                ],
+            },
+            bs: {
+                baslik: 'Ajet dana na početnom ekranu',
+                aciklama: 'Dodajte na početni ekran widget s ajetom i prijevodom njegovog značenja koji se mijenja svaki dan u zoru, a ako želite, postavite ga i kao pozadinu zaključanog ekrana.',
+                detayAciklama: 'Widget, pozadina i stranica „Ajet dana” u aplikaciji prikazuju isti ajet. Arapski tekst dolazi iz Projekta Tanzil, a prijevodi značenja s QuranEnca, bez izmjena.',
+                ctaEtiketi: 'Otvorite ajet dana',
+                detaylar: [
+                    'Prijevod značenja se nikada ne skraćuje; u danima kada ne stane, widget Vas poziva da ga dodirnete i pročitate.',
+                    'Arapski tekst na pozadini je opcionalan i u početku je isključen.',
+                    'Ajet možete podijeliti kao tekst ili kao sliku.',
+                ],
+            },
+            ru: {
+                baslik: 'Аят дня на главном экране',
+                aciklama: 'Добавьте на главный экран виджет с аятом и переводом смыслов, который меняется каждый день в имсак, а при желании сделайте его обоями экрана блокировки.',
+                detayAciklama: 'Виджет, обои и страница «Аят дня» в приложении показывают один и тот же аят. Арабский текст взят из проекта Tanzil, переводы смыслов — с QuranEnc, без изменений.',
+                ctaEtiketi: 'Открыть аят дня',
+                detaylar: [
+                    'Перевод смыслов никогда не обрезается; если в какой-то день он не помещается, виджет предложит нажать, чтобы прочитать.',
+                    'Арабский текст на обоях — по желанию, по умолчанию выключен.',
+                    'Аятом можно поделиться текстом или картинкой.',
+                ],
+            },
+            ms: {
+                baslik: 'Ayat hari ini di skrin utama anda',
+                aciklama: 'Tambahkan sepotong ayat beserta terjemahannya yang bertukar setiap hari pada waktu Subuh ke skrin utama anda sebagai widget, dan jadikannya kertas dinding skrin kunci jika anda mahu.',
+                detayAciklama: 'Widget, kertas dinding dan halaman "Ayat hari ini" dalam aplikasi memaparkan ayat yang sama. Teks Arab diambil daripada Projek Tanzil dan terjemahan daripada QuranEnc, tanpa diubah.',
+                ctaEtiketi: 'Buka ayat hari ini',
+                detaylar: [
+                    'Terjemahan tidak sekali-kali dipotong; pada hari ia tidak muat, widget meminta anda mengetik untuk membacanya.',
+                    'Teks Arab pada kertas dinding adalah pilihan dan dimatikan pada mulanya.',
+                    'Anda boleh berkongsi ayat sebagai teks atau imej.',
+                ],
+            },
+            ar: {
+                baslik: 'آية اليوم على شاشتك الرئيسية',
+                aciklama: 'آية تتجدد كل يوم عند الفجر، تُضاف إلى الشاشة الرئيسية كأداة، ويمكن جعلها خلفية لشاشة القفل.',
+                detayAciklama: 'الأداة والخلفية وصفحة «آية اليوم» في التطبيق تعرض الآية نفسها. النص القرآني من مشروع تنزيل، دون تغيير.',
+                ctaEtiketi: 'فتح آية اليوم',
+                detaylar: [
+                    'لا تُقطع الآية أبدًا؛ وفي الأيام التي لا تتسع فيها تدعو الأداة إلى النقر لقراءتها.',
+                    'يمكن اختيار الخلفية اللونية للصورة ومكانها: شاشة القفل أو الشاشة الرئيسية أو كلتاهما.',
+                    'يمكن مشاركة الآية نصًّا أو صورة.',
+                ],
+            },
+            ur: {
+                baslik: 'آج کی آیت آپ کی ہوم اسکرین پر',
+                aciklama: 'ہر روز فجر کے وقت بدلنے والی ایک آیت اور اس کا ترجمہ ویجیٹ کے طور پر ہوم اسکرین پر شامل کریں، اور چاہیں تو اسے لاک اسکرین کا وال پیپر بنائیں۔',
+                detayAciklama: 'ویجیٹ، وال پیپر اور ایپ کا “آج کی آیت” صفحہ ایک ہی آیت دکھاتے ہیں۔ عربی متن Tanzil پروجیکٹ سے اور تراجم QuranEnc سے بغیر تبدیلی کے لیے جاتے ہیں۔',
+                ctaEtiketi: 'آج کی آیت کھولیں',
+                detaylar: [
+                    'ترجمہ کبھی کاٹا نہیں جاتا؛ جس دن پورا نہ سمائے، ویجیٹ پڑھنے کے لیے تھپتھپانے کو کہتا ہے۔',
+                    'وال پیپر پر عربی متن اختیاری ہے اور شروع میں بند ہوتا ہے۔',
+                    'آیت متن یا تصویر کے طور پر شیئر کی جا سکتی ہے۔',
+                ],
+            },
+        },
+    },
+    {
+        id: 'gunun-ayeti-ios',
+        platformlar: ['ios'],
+        yetenek: 'iosWidget',
+        surum: '0.71.0',
+        tarih: '2026-10-24',
+        baslik: 'Günün ayeti ana ekranınızda',
+        aciklama:
+            'Her gün imsakta değişen bir ayeti ve mealini ana ekranınıza ve kilit ekranınıza widget olarak ekleyebilirsiniz.',
+        detayAciklama:
+            "Widget ve uygulamadaki \"Günün ayeti\" sayfası aynı ayeti gösterir. Arapça metin Tanzil Projesi'nden, mealler QuranEnc'ten değiştirilmeden alınır.",
+        ikon: 'book-open',
+        hedefSayfa: 'GununAyeti',
+        ctaEtiketi: 'Günün ayetini açın',
+        detaylar: [
+            'Meal hiçbir boyutta kesilmez; sığmadığı gün widget okumak için dokunmanızı ister.',
+            'Kısayollar uygulamasıyla günün ayetini her sabah duvar kâğıdınız yapabilirsiniz; adımlar uygulamada anlatılır.',
+            'Ayeti metin ya da görsel olarak paylaşabilirsiniz.',
+        ],
+        ceviri: {
+            en: {
+                baslik: 'Verse of the day on your home screen',
+                aciklama:
+                    'Add a verse and its translation that changes every day at Fajr to your Home Screen and Lock Screen as a widget.',
+                detayAciklama:
+                    'The widget and the "Verse of the day" page in the app show the same verse. The Arabic text comes from the Tanzil Project and translations from QuranEnc, unchanged.',
+                ctaEtiketi: 'Open the verse of the day',
+                detaylar: [
+                    "The translation is never cut off; on days it doesn't fit, the widget asks you to tap to read it.",
+                    'With the Shortcuts app you can make the verse of the day your wallpaper every morning; the app walks you through the steps.',
+                    'You can share the verse as text or as an image.',
+                ],
+            },
+            id: {
+                baslik: 'Ayat hari ini di layar utama Anda',
+                aciklama: 'Tambahkan ayat beserta terjemahannya, yang berganti setiap hari saat Subuh, ke Layar Utama dan Layar Kunci sebagai widget.',
+                detayAciklama: 'Widget dan halaman "Ayat hari ini" di aplikasi menampilkan ayat yang sama. Teks Arab berasal dari Proyek Tanzil dan terjemahan dari QuranEnc, tanpa diubah.',
+                ctaEtiketi: 'Buka ayat hari ini',
+                detaylar: [
+                    'Terjemahan tidak pernah dipotong; pada hari terjemahan tidak muat, widget meminta Anda mengetuk untuk membacanya.',
+                    'Dengan aplikasi Pintasan, Anda dapat menjadikan ayat hari ini sebagai wallpaper setiap pagi; aplikasi memandu langkah-langkahnya.',
+                    'Anda dapat membagikan ayat sebagai teks atau gambar.',
+                ],
+            },
+            de: {
+                baslik: 'Vers des Tages auf Ihrem Home-Bildschirm',
+                aciklama: 'Fügen Sie einen Vers mit Übersetzung, der jeden Tag zu Fajr wechselt, als Widget zu Ihrem Home-Bildschirm und Sperrbildschirm hinzu.',
+                detayAciklama: 'Das Widget und die Seite „Vers des Tages“ in der App zeigen denselben Vers. Der arabische Text stammt vom Tanzil-Projekt, die Übersetzungen unverändert von QuranEnc.',
+                ctaEtiketi: 'Vers des Tages öffnen',
+                detaylar: [
+                    'Die Übersetzung wird nie abgeschnitten; passt sie an einem Tag nicht, bittet das Widget Sie, zum Lesen zu tippen.',
+                    'Mit der App Kurzbefehle können Sie den Vers des Tages jeden Morgen zum Hintergrundbild machen; die App führt Sie durch die Schritte.',
+                    'Sie können den Vers als Text oder als Bild teilen.',
+                ],
+            },
+            fr: {
+                baslik: 'Le verset du jour sur votre écran d’accueil',
+                aciklama: 'Ajoutez sur votre écran d’accueil et votre écran de verrouillage, sous forme de widget, un verset et sa traduction qui changent chaque jour à l’Imsak.',
+                detayAciklama: 'Le widget et la page « Verset du jour » de l’application affichent le même verset. Le texte arabe vient du Tanzil Project et les traductions de QuranEnc, sans modification.',
+                ctaEtiketi: 'Ouvrir le verset du jour',
+                detaylar: [
+                    'La traduction n’est jamais coupée ; les jours où elle ne tient pas, le widget vous invite à la toucher pour la lire.',
+                    'Avec l’app Raccourcis, vous pouvez faire du verset du jour votre fond d’écran chaque matin ; l’application vous guide pas à pas.',
+                    'Vous pouvez partager le verset en texte ou en image.',
+                ],
+            },
+            bs: {
+                baslik: 'Ajet dana na početnom ekranu',
+                aciklama: 'Dodajte na početni i zaključani ekran widget s ajetom i prijevodom njegovog značenja koji se mijenja svaki dan u zoru.',
+                detayAciklama: 'Widget i stranica „Ajet dana” u aplikaciji prikazuju isti ajet. Arapski tekst dolazi iz Projekta Tanzil, a prijevodi značenja s QuranEnca, bez izmjena.',
+                ctaEtiketi: 'Otvorite ajet dana',
+                detaylar: [
+                    'Prijevod značenja se nikada ne skraćuje; u danima kada ne stane, widget Vas poziva da ga dodirnete i pročitate.',
+                    'Pomoću aplikacije Prečice ajet dana svako jutro može postati Vaša pozadina; aplikacija Vas vodi kroz korake.',
+                    'Ajet možete podijeliti kao tekst ili kao sliku.',
+                ],
+            },
+            ru: {
+                baslik: 'Аят дня на главном экране',
+                aciklama: 'Добавьте на экран «Домой» и экран блокировки виджет с аятом и переводом смыслов, который меняется каждый день в имсак.',
+                detayAciklama: 'Виджет и страница «Аят дня» в приложении показывают один и тот же аят. Арабский текст взят из проекта Tanzil, переводы смыслов — с QuranEnc, без изменений.',
+                ctaEtiketi: 'Открыть аят дня',
+                detaylar: [
+                    'Перевод смыслов никогда не обрезается; если в какой-то день он не помещается, виджет предложит нажать, чтобы прочитать.',
+                    'С приложением «Быстрые команды» аят дня может каждое утро становиться вашими обоями; приложение покажет все шаги.',
+                    'Аятом можно поделиться текстом или картинкой.',
+                ],
+            },
+            ms: {
+                baslik: 'Ayat hari ini di skrin utama anda',
+                aciklama: 'Tambahkan sepotong ayat beserta terjemahannya yang bertukar setiap hari pada waktu Subuh ke Skrin Utama dan Skrin Kunci anda sebagai widget.',
+                detayAciklama: 'Widget dan halaman "Ayat hari ini" dalam aplikasi memaparkan ayat yang sama. Teks Arab diambil daripada Projek Tanzil dan terjemahan daripada QuranEnc, tanpa diubah.',
+                ctaEtiketi: 'Buka ayat hari ini',
+                detaylar: [
+                    'Terjemahan tidak sekali-kali dipotong; pada hari ia tidak muat, widget meminta anda mengetik untuk membacanya.',
+                    'Dengan aplikasi Pintasan, anda boleh menjadikan ayat hari ini kertas dinding anda setiap pagi; aplikasi membimbing anda langkah demi langkah.',
+                    'Anda boleh berkongsi ayat sebagai teks atau imej.',
+                ],
+            },
+            ar: {
+                baslik: 'آية اليوم على شاشتك الرئيسية',
+                aciklama: 'آية تتجدد كل يوم عند الفجر، تُضاف إلى الشاشة الرئيسية وشاشة القفل كأداة.',
+                detayAciklama: 'الأداة وصفحة «آية اليوم» في التطبيق تعرضان الآية نفسها. النص القرآني من مشروع تنزيل، دون تغيير.',
+                ctaEtiketi: 'فتح آية اليوم',
+                detaylar: [
+                    'لا تُقطع الآية أبدًا؛ وفي الأيام التي لا تتسع فيها تدعو الأداة إلى النقر لقراءتها.',
+                    'بتطبيق الاختصارات يمكن جعل آية اليوم خلفية كل صباح؛ ويرشدك التطبيق خطوة بخطوة.',
+                    'يمكن مشاركة الآية نصًّا أو صورة.',
+                ],
+            },
+            ur: {
+                baslik: 'آج کی آیت آپ کی ہوم اسکرین پر',
+                aciklama: 'ہر روز فجر کے وقت بدلنے والی ایک آیت اور اس کا ترجمہ ویجیٹ کے طور پر ہوم اسکرین اور لاک اسکرین پر شامل کریں۔',
+                detayAciklama: 'ویجیٹ اور ایپ کا “آج کی آیت” صفحہ ایک ہی آیت دکھاتے ہیں۔ عربی متن Tanzil پروجیکٹ سے اور تراجم QuranEnc سے بغیر تبدیلی کے لیے جاتے ہیں۔',
+                ctaEtiketi: 'آج کی آیت کھولیں',
+                detaylar: [
+                    'ترجمہ کبھی کاٹا نہیں جاتا؛ جس دن پورا نہ سمائے، ویجیٹ پڑھنے کے لیے تھپتھپانے کو کہتا ہے۔',
+                    'Shortcuts ایپ سے آج کی آیت کو ہر صبح وال پیپر بنایا جا سکتا ہے؛ ایپ مراحل میں رہنمائی کرتی ہے۔',
+                    'آیت متن یا تصویر کے طور پر شیئر کی جا سکتی ہے۔',
+                ],
+            },
+        },
+    },
+    // Arayüz dili: İngilizce (beta) ve dil seçici (spec 2026-10-24 §9).
+    {
+        id: 'uygulama-dili',
+        platformlar: ['android', 'ios'],
+        surum: '0.71.0',
+        tarih: '2026-10-24',
+        baslik: 'Uygulamayı İngilizce de kullanabilirsiniz',
+        aciklama: 'Ayarlar › Dil bölümünden İngilizceyi seçebilirsiniz. Bildirimler, sesli okuma ve widget da seçtiğiniz dilde olur.',
+        detayAciklama:
+            'Telefonunuzun dili İngilizceyse uygulama kendiliğinden İngilizce açılır. "Cihazın dili" ya da Türkçe seçeneğiyle istediğiniz zaman değiştirebilirsiniz.',
+        ikon: 'language',
+        hedefSayfa: 'DilAyarlari',
+        ctaEtiketi: 'Dil ayarını açın',
+        detaylar: [
+            'İngilizce çeviri beta aşamasındadır.',
+            'Dil, namaz vakitlerinin hesabını değiştirmez.',
+            'Türkçe dışındaki dillerde ayetler QuranEnc mealiyle gösterilir; hadisler gösterilmez.',
+        ],
+        ceviri: {
+            en: {
+                baslik: 'Use the app in English',
+                aciklama: 'Choose English in Settings › Language. Notifications, read-aloud and widgets follow the language you choose.',
+                detayAciklama:
+                    'If your phone is set to English, the app opens in English. You can switch to "Device language" or Turkish at any time.',
+                ctaEtiketi: 'Open language settings',
+                detaylar: [
+                    'The English translation is in beta.',
+                    "The language doesn't change how prayer times are calculated.",
+                    'In languages other than Turkish, Quran verses are shown with the QuranEnc translation; hadith are not shown.',
+                ],
+            },
+            id: {
+                baslik: 'Gunakan aplikasi dalam bahasa Indonesia',
+                aciklama: 'Pilih Bahasa Indonesia di Pengaturan › Bahasa. Notifikasi, pembacaan suara, dan widget mengikuti bahasa yang Anda pilih.',
+                detayAciklama: 'Jika ponsel Anda berbahasa Indonesia, aplikasi terbuka dalam bahasa Indonesia. Anda dapat beralih ke "Bahasa perangkat" atau bahasa lain kapan saja.',
+                ctaEtiketi: 'Buka pengaturan bahasa',
+                detaylar: [
+                    'Terjemahan bahasa Indonesia masih dalam tahap beta.',
+                    'Bahasa tidak mengubah perhitungan waktu salat.',
+                    "Dalam bahasa selain Turki, ayat Al-Qur'an ditampilkan dengan terjemahan QuranEnc; hadis tidak ditampilkan.",
+                ],
+            },
+            de: {
+                baslik: 'Die App auf Deutsch nutzen',
+                aciklama: 'Wählen Sie Deutsch unter Einstellungen › Sprache. Benachrichtigungen, Vorlesen und Widgets folgen der gewählten Sprache.',
+                detayAciklama: 'Ist Ihr Telefon auf Deutsch eingestellt, öffnet sich die App auf Deutsch. Sie können jederzeit zu „Gerätesprache“ oder einer anderen Sprache wechseln.',
+                ctaEtiketi: 'Spracheinstellungen öffnen',
+                detaylar: [
+                    'Die deutsche Übersetzung ist in der Beta-Phase.',
+                    'Die Sprache ändert nichts an der Berechnung der Gebetszeiten.',
+                    'In anderen Sprachen als Türkisch werden Koranverse mit der Übersetzung von QuranEnc angezeigt; Hadithe werden nicht angezeigt.',
+                ],
+            },
+            fr: {
+                baslik: 'Utilisez l’application en français',
+                aciklama: 'Choisissez le français dans Réglages › Langue. Les notifications, la lecture à voix haute et les widgets suivent la langue choisie.',
+                detayAciklama: 'Si votre téléphone est en français, l’application s’ouvre en français. Vous pouvez à tout moment passer à « Langue de l’appareil » ou à une autre langue.',
+                ctaEtiketi: 'Ouvrir les réglages de langue',
+                detaylar: [
+                    'La traduction française est en version bêta.',
+                    'La langue ne modifie pas le calcul des heures de prière.',
+                    'Dans les langues autres que le turc, les versets du Coran sont affichés avec la traduction de QuranEnc ; les hadiths ne sont pas affichés.',
+                ],
+            },
+            bs: {
+                baslik: 'Koristite aplikaciju na bosanskom',
+                aciklama: 'Odaberite bosanski u Postavke › Jezik. Obavještenja, čitanje naglas i widgeti prate jezik koji odaberete.',
+                detayAciklama: 'Ako je Vaš telefon podešen na bosanski, aplikacija se otvara na bosanskom. Bilo kada možete preći na „Jezik uređaja” ili na turski.',
+                ctaEtiketi: 'Otvorite postavke jezika',
+                detaylar: [
+                    'Bosanski prijevod je u beta fazi.',
+                    'Jezik ne mijenja način izračuna namaskih vremena.',
+                    'Na jezicima osim turskog ajeti se prikazuju s prijevodom značenja s QuranEnca; hadisi se ne prikazuju.',
+                ],
+            },
+            ru: {
+                baslik: 'Приложение на русском языке',
+                aciklama: 'Выберите русский язык в Настройки › Язык. Уведомления, озвучивание и виджеты будут на выбранном языке.',
+                detayAciklama: 'Если на телефоне установлен русский язык, приложение откроется на русском. В любой момент можно переключиться на «Язык устройства» или турецкий.',
+                ctaEtiketi: 'Открыть настройки языка',
+                detaylar: [
+                    'Русский перевод находится в бета-версии.',
+                    'Язык не влияет на расчёт времени намазов.',
+                    'На языках, кроме турецкого, аяты Корана показываются с переводом смыслов QuranEnc; хадисы не показываются.',
+                ],
+            },
+            ms: {
+                baslik: 'Gunakan aplikasi dalam bahasa Melayu',
+                aciklama: 'Pilih Bahasa Melayu di Tetapan › Bahasa. Pemberitahuan, bacaan suara dan widget mengikut bahasa yang anda pilih.',
+                detayAciklama: 'Jika telefon anda ditetapkan kepada bahasa Melayu, aplikasi dibuka dalam bahasa Melayu. Anda boleh bertukar kepada "Bahasa peranti" atau bahasa Turki bila-bila masa.',
+                ctaEtiketi: 'Buka tetapan bahasa',
+                detaylar: [
+                    'Terjemahan bahasa Melayu masih dalam versi beta.',
+                    'Bahasa tidak mengubah cara waktu solat dikira.',
+                    'Dalam bahasa selain bahasa Turki, ayat al-Quran dipaparkan dengan terjemahan QuranEnc; hadis tidak dipaparkan.',
+                ],
+            },
+            ar: {
+                baslik: 'استخدام التطبيق بالعربية',
+                aciklama: 'اختيار العربية من الإعدادات › اللغة. الإشعارات والقراءة الصوتية والأدوات تتبع اللغة المختارة.',
+                detayAciklama: 'إن كانت لغة هاتفك العربية، يُفتح التطبيق بالعربية. ويمكن التبديل إلى «لغة الجهاز» أو التركية في أي وقت.',
+                ctaEtiketi: 'فتح إعدادات اللغة',
+                detaylar: [
+                    'الترجمة العربية تجريبية.',
+                    'اللغة لا تغيّر طريقة حساب مواقيت الصلاة.',
+                    'في العربية تُعرض الآيات بنصّها القرآني فقط؛ ولا تُعرض الأحاديث.',
+                ],
+            },
+            ur: {
+                baslik: 'ایپ اردو میں استعمال کریں',
+                aciklama: 'ترتیبات › زبان میں اردو منتخب کریں۔ اطلاعات، بلند خوانی اور ویجیٹ آپ کی منتخب زبان کے مطابق ہوتے ہیں۔',
+                detayAciklama: 'اگر آپ کا فون اردو پر سیٹ ہے تو ایپ اردو میں کھلتی ہے۔ کسی بھی وقت “آلے کی زبان” یا ترکی پر واپس جایا جا سکتا ہے۔',
+                ctaEtiketi: 'زبان کی ترتیبات کھولیں',
+                detaylar: [
+                    'اردو ترجمہ بیٹا مرحلے میں ہے۔',
+                    'زبان نماز کے اوقات کے حساب کو نہیں بدلتی۔',
+                    'ترکی کے علاوہ دیگر زبانوں میں قرآن کی آیات QuranEnc کے ترجمے کے ساتھ دکھائی جاتی ہیں؛ احادیث نہیں دکھائی جاتیں۔',
+                ],
+            },
+        },
+    },
+    // Dünya geneli konum + ülkeye göre hesap yöntemi (spec 2026-10-24).
+    {
+        id: 'dunya-konum-hesap-yontemi',
+        platformlar: ['android', 'ios'],
+        surum: '0.71.0',
+        tarih: '2026-10-24',
+        baslik: 'Dünyanın her yerinde doğru vakit',
+        aciklama:
+            'Türkiye dışındaki bir şehri de seçebilirsiniz. Vakitler o ülkenin camilerinin uyduğu takvime göre hesaplanır.',
+        detayAciklama:
+            'Başka bir ülkeye gittiğinizde uygulama o ülkenin takvimini bir kez önerir ve bugünkü vakitleri yan yana gösterir. Siz onaylamadan yöntem değişmez.',
+        ikon: 'globe-europe',
+        hedefSayfa: 'HesapYontemiAyarlari',
+        ctaEtiketi: 'Hesap yöntemini görün',
+        detaylar: [
+            'Konum ayarında "Başka bir ülke"yi seçip 34 binden fazla şehir arasından arayabilirsiniz; internet gerekmez.',
+            'Malezya, Endonezya, Suudi Arabistan, Mısır, Pakistan ve daha birçok ülkede oradaki camilerin uyduğu takvim kullanılır.',
+            'Ana ekrandaki yöntem çipine dokunarak hangi takvimin kullanıldığını görebilir, isterseniz ikindi vaktini ve her vakti dakika dakika camiye göre ayarlayabilirsiniz.',
+            'Türkiye\'deki vakitler Diyanet takvimiyle aynı kalır.',
+        ],
+        ceviri: {
+            en: {
+                baslik: 'Accurate prayer times anywhere in the world',
+                aciklama: 'Choose any city in the world. Prayer times follow the timetable the mosques in that country use.',
+                detayAciklama:
+                    "When you travel to another country, the app suggests that country's timetable once and shows today's times side by side. The method never changes without your approval.",
+                ctaEtiketi: 'See the calculation method',
+                detaylar: [
+                    'In Location, choose "Another country" and search more than 34,000 cities; no internet needed.',
+                    'In Malaysia, Indonesia, Saudi Arabia, Egypt, Pakistan and many other countries, the timetable of the local mosques is used.',
+                    'Tap the method chip on the home screen to see which timetable is used, and adjust Asr and each prayer time minute by minute to match your mosque.',
+                ],
+            },
+            id: {
+                baslik: 'Waktu salat akurat di mana pun di dunia',
+                aciklama: 'Pilih kota mana pun di dunia. Waktu salat mengikuti jadwal yang digunakan masjid di negara tersebut.',
+                detayAciklama: 'Saat Anda bepergian ke negara lain, aplikasi menyarankan jadwal negara itu satu kali dan menampilkan waktu salat hari ini secara berdampingan. Metode tidak pernah berubah tanpa persetujuan Anda.',
+                ctaEtiketi: 'Lihat metode perhitungan',
+                detaylar: [
+                    'Di Lokasi, pilih "Negara lain" dan cari di antara lebih dari 34.000 kota; tidak perlu internet.',
+                    'Di Malaysia, Indonesia, Arab Saudi, Mesir, Pakistan, dan banyak negara lain, digunakan jadwal masjid setempat.',
+                    'Ketuk label metode di layar utama untuk melihat jadwal yang digunakan, lalu sesuaikan Ashar dan setiap waktu salat per menit agar sesuai dengan masjid Anda.',
+                ],
+            },
+            de: {
+                baslik: 'Genaue Gebetszeiten überall auf der Welt',
+                aciklama: 'Wählen Sie eine beliebige Stadt der Welt. Die Gebetszeiten folgen dem Kalender, den die Moscheen in diesem Land verwenden.',
+                detayAciklama: 'Wenn Sie in ein anderes Land reisen, schlägt die App einmal den Kalender dieses Landes vor und zeigt die heutigen Zeiten nebeneinander. Die Methode ändert sich nie ohne Ihre Zustimmung.',
+                ctaEtiketi: 'Berechnungsmethode ansehen',
+                detaylar: [
+                    'Wählen Sie unter Standort „Ein anderes Land“ und suchen Sie unter mehr als 34.000 Städten; ohne Internet.',
+                    'In Malaysia, Indonesien, Saudi-Arabien, Ägypten, Pakistan und vielen weiteren Ländern wird der Kalender der Moscheen vor Ort verwendet.',
+                    'Tippen Sie auf der Startseite auf die Methode, um zu sehen, welcher Kalender gilt, und passen Sie Asr und jede Gebetszeit minutengenau an Ihre Moschee an.',
+                ],
+            },
+            fr: {
+                baslik: 'Des heures de prière justes partout dans le monde',
+                aciklama: 'Choisissez n’importe quelle ville du monde. Les heures de prière suivent le calendrier utilisé par les mosquées de ce pays.',
+                detayAciklama: 'Quand vous partez dans un autre pays, l’application vous propose une fois le calendrier de ce pays et affiche côte à côte les heures d’aujourd’hui. La méthode ne change jamais sans votre accord.',
+                ctaEtiketi: 'Voir la méthode de calcul',
+                detaylar: [
+                    'Dans Position, choisissez « Un autre pays » et cherchez parmi plus de 34 000 villes ; aucune connexion Internet n’est nécessaire.',
+                    'En Malaisie, en Indonésie, en Arabie saoudite, en Égypte, au Pakistan et dans bien d’autres pays, c’est le calendrier des mosquées locales qui est utilisé.',
+                    'Touchez la puce de méthode sur l’écran d’accueil pour voir quel calendrier est utilisé, et ajustez Asr et chaque heure de prière à la minute près selon votre mosquée.',
+                ],
+            },
+            bs: {
+                baslik: 'Tačna namaska vremena bilo gdje u svijetu',
+                aciklama: 'Odaberite bilo koji grad na svijetu. Vremena prate vaktiju koju koriste džamije u toj državi.',
+                detayAciklama: 'Kada otputujete u drugu državu, aplikacija jednom predlaže vaktiju te države i prikazuje današnja vremena jedno pored drugog. Metoda se nikada ne mijenja bez Vaše saglasnosti.',
+                ctaEtiketi: 'Pogledajte metodu izračuna',
+                detaylar: [
+                    'U opciji Lokacija odaberite „Druga država” i pretražite više od 34.000 gradova; internet nije potreban.',
+                    'U Maleziji, Indoneziji, Saudijskoj Arabiji, Egiptu, Pakistanu i mnogim drugim državama koristi se vaktija lokalnih džamija.',
+                    'Dodirnite oznaku metode na početnom ekranu da vidite koja se vaktija koristi, a ikindiju i svaki vakat podesite minutu po minutu prema svojoj džamiji.',
+                ],
+            },
+            ru: {
+                baslik: 'Точное время намазов в любой точке мира',
+                aciklama: 'Выберите любой город мира. Время намазов рассчитывается по расписанию, которым пользуются мечети этой страны.',
+                detayAciklama: 'Когда вы приезжаете в другую страну, приложение один раз предлагает расписание этой страны и показывает сегодняшнее время для сравнения. Метод никогда не меняется без вашего согласия.',
+                ctaEtiketi: 'Посмотреть метод расчёта',
+                detaylar: [
+                    'В разделе «Местоположение» выберите «Другая страна» и найдите любой из более чем 34 000 городов; интернет не нужен.',
+                    'В Малайзии, Индонезии, Саудовской Аравии, Египте, Пакистане и многих других странах используется расписание местных мечетей.',
+                    'Нажмите на метку метода на главном экране, чтобы увидеть, какое расписание используется, и подстройте Аср и время каждого намаза по минутам под вашу мечеть.',
+                ],
+            },
+            ms: {
+                baslik: 'Waktu solat yang tepat di mana-mana sahaja di dunia',
+                aciklama: 'Pilih mana-mana bandar di dunia. Waktu solat mengikut jadual waktu yang digunakan oleh masjid di negara itu.',
+                detayAciklama: 'Apabila anda ke negara lain, aplikasi mencadangkan jadual waktu negara itu sekali dan memaparkan waktu hari ini bersebelahan. Kaedah pengiraan tidak sekali-kali berubah tanpa persetujuan anda.',
+                ctaEtiketi: 'Lihat kaedah pengiraan',
+                detaylar: [
+                    'Dalam Lokasi, pilih "Negara lain" dan cari lebih daripada 34,000 bandar; tanpa internet.',
+                    'Di Malaysia, Indonesia, Arab Saudi, Mesir, Pakistan dan banyak negara lain, jadual waktu masjid tempatan digunakan.',
+                    'Ketik cip kaedah di skrin utama untuk melihat jadual waktu yang digunakan, dan laraskan Asar serta setiap waktu solat minit demi minit mengikut masjid anda.',
+                ],
+            },
+            ar: {
+                baslik: 'مواقيت دقيقة في أي مكان من العالم',
+                aciklama: 'اختيار أي مدينة في العالم. تتبع المواقيت التقويم الذي تعتمده مساجد ذلك البلد.',
+                detayAciklama: 'عند السفر إلى بلد آخر يقترح التطبيق تقويم ذلك البلد مرة واحدة، ويعرض مواقيت اليوم جنبًا إلى جنب. ولا تتغير الطريقة أبدًا دون موافقتك.',
+                ctaEtiketi: 'عرض طريقة الحساب',
+                detaylar: [
+                    'في «الموقع» يُختار «بلد آخر» للبحث في أكثر من 34,000 مدينة؛ دون حاجة إلى الإنترنت.',
+                    'في ماليزيا وإندونيسيا والسعودية ومصر وباكستان وبلدان كثيرة أخرى يُستخدم تقويم المساجد المحلية.',
+                    'النقر على شارة الطريقة في الشاشة الرئيسية يُظهر التقويم المستخدم، ويمكن ضبط العصر وكل وقت بالدقيقة ليطابق مسجدك.',
+                ],
+            },
+            ur: {
+                baslik: 'دنیا میں کہیں بھی درست نماز کے اوقات',
+                aciklama: 'دنیا کا کوئی بھی شہر منتخب کریں۔ نماز کے اوقات اس ملک کی مساجد کے نظام الاوقات کے مطابق ہوتے ہیں۔',
+                detayAciklama: 'کسی دوسرے ملک کے سفر پر ایپ ایک بار اس ملک کا نظام الاوقات تجویز کرتی ہے اور آج کے اوقات ساتھ ساتھ دکھاتی ہے۔ طریقہ آپ کی منظوری کے بغیر کبھی نہیں بدلتا۔',
+                ctaEtiketi: 'حساب کا طریقہ دیکھیں',
+                detaylar: [
+                    'مقام میں “کوئی اور ملک” منتخب کر کے 34,000 سے زیادہ شہروں میں تلاش کریں؛ انٹرنیٹ کی ضرورت نہیں۔',
+                    'ملائیشیا، انڈونیشیا، سعودی عرب، مصر، پاکستان اور کئی دوسرے ممالک میں مقامی مساجد کا نظام الاوقات استعمال ہوتا ہے۔',
+                    'ہوم اسکرین پر طریقے والے نشان پر تھپتھپا کر دیکھیں کہ کون سا نظام الاوقات استعمال ہو رہا ہے، اور عصر اور ہر نماز کا وقت اپنی مسجد کے مطابق منٹ منٹ درست کریں۔',
+                ],
+            },
+        },
+    },
     // Samimiyet: "Kılındı" yerine dua, günün selamı, saat ailesiyle aynı vakit simgeleri.
     {
         id: 'samimiyet-kabul-olsun',
@@ -91,6 +594,109 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Her vakte ayrı, saatinizle aynı simge',
         ],
         ikon: 'pray',
+        ceviri: {
+            en: {
+                baslik: 'May Allah accept it',
+                aciklama:
+                    'When you mark a prayer, it says "May Allah accept it". On Fridays, Eid and in Ramadan you see a short greeting at the top.',
+                detayAciklama:
+                    'The I\'ve prayed button, your watch and the voice assistant say the same prayer; on a day you complete all five prayers, a short card appears. Each prayer now has its own icon, the same as on your watch.',
+                detaylar: [
+                    '"May Allah accept it" after you pray — a short greeting at Fajr and Isha',
+                    'A short card when all five prayers are done',
+                    'Friday, Eid and Ramadan greetings',
+                    'A separate icon for each prayer, the same as on your watch',
+                ],
+            },
+            id: {
+                baslik: 'Semoga Allah menerimanya',
+                aciklama: 'Saat Anda menandai salat, tampil "Semoga Allah menerimanya". Pada hari Jumat, Hari Raya, dan bulan Ramadan, Anda melihat salam singkat di bagian atas.',
+                detayAciklama: 'Tombol Sudah salat, jam tangan Anda, dan asisten suara mengucapkan doa yang sama; pada hari Anda menunaikan kelima salat, muncul kartu singkat. Setiap waktu salat kini memiliki ikon sendiri, sama seperti di jam tangan Anda.',
+                detaylar: [
+                    '"Semoga Allah menerimanya" setelah salat — salam singkat saat Subuh dan Isya',
+                    'Kartu singkat saat kelima salat telah ditunaikan',
+                    'Salam Jumat, Hari Raya, dan Ramadan',
+                    'Ikon tersendiri untuk setiap waktu salat, sama seperti di jam tangan Anda',
+                ],
+            },
+            de: {
+                baslik: 'Möge Allah es annehmen',
+                aciklama: 'Wenn Sie ein Gebet markieren, erscheint „Möge Allah es annehmen“. Freitags, an den Festtagen und im Ramadan sehen Sie oben einen kurzen Gruß.',
+                detayAciklama: 'Die Taste „Ich habe gebetet“, Ihre Uhr und der Sprachassistent sprechen dasselbe Bittgebet; an einem Tag, an dem Sie alle fünf Gebete verrichten, erscheint eine kurze Karte. Jedes Gebet hat jetzt ein eigenes Symbol, dasselbe wie auf Ihrer Uhr.',
+                detaylar: [
+                    '„Möge Allah es annehmen“ nach dem Gebet — ein kurzer Gruß zu Fajr und Isha',
+                    'Eine kurze Karte, wenn alle fünf Gebete verrichtet sind',
+                    'Grüße zum Freitag, zu den Festtagen und im Ramadan',
+                    'Ein eigenes Symbol für jedes Gebet, dasselbe wie auf Ihrer Uhr',
+                ],
+            },
+            fr: {
+                baslik: 'Qu’Allah l’accepte',
+                aciklama: 'Quand vous marquez une prière, l’application vous dit « Qu’Allah l’accepte ». Le vendredi, pendant l’Aïd et pendant le Ramadan, une courte salutation apparaît en haut de l’écran.',
+                detayAciklama: 'Le bouton « J’ai prié », votre montre et l’assistant vocal disent la même invocation ; le jour où vous accomplissez les cinq prières, une courte carte apparaît. Chaque prière a désormais sa propre icône, la même que sur votre montre.',
+                detaylar: [
+                    '« Qu’Allah l’accepte » après la prière — une courte salutation à Fajr et à Isha',
+                    'Une courte carte quand les cinq prières sont accomplies',
+                    'Salutations du vendredi, de l’Aïd et du Ramadan',
+                    'Une icône propre à chaque prière, la même que sur votre montre',
+                ],
+            },
+            bs: {
+                baslik: 'Allah kabul ejlesun',
+                aciklama: 'Kada označite namaz, aplikacija kaže „Allah kabul ejlesun”. Petkom, za bajram i u ramazanu na vrhu vidite kratku čestitku.',
+                detayAciklama: 'Dugme „Klanjano”, Vaš sat i glasovni asistent izgovaraju istu dovu; na dan kada klanjate svih pet vakata pojavljuje se kratka kartica. Svaki vakat sada ima vlastitu ikonu, istu kao na Vašem satu.',
+                detaylar: [
+                    '„Allah kabul ejlesun” nakon namaza — kratak selam u zoru i na jaciji',
+                    'Kratka kartica kada su klanjani svi vakti',
+                    'Čestitke za džumu, bajram i ramazan',
+                    'Posebna ikona za svaki vakat, ista kao na Vašem satu',
+                ],
+            },
+            ru: {
+                baslik: 'Да примет Аллах',
+                aciklama: 'Когда вы отмечаете намаз, приложение говорит «Да примет Аллах». По пятницам, в праздники Ид и в Рамадан вверху появляется короткое приветствие.',
+                detayAciklama: 'Кнопка «Намаз совершён», часы и голосовой помощник произносят одно и то же пожелание; в день, когда совершены все пять намазов, появляется короткая карточка. У каждого намаза теперь свой значок — такой же, как на часах.',
+                detaylar: [
+                    '«Да примет Аллах» после намаза — короткое приветствие на Фаджр и Иша',
+                    'Короткая карточка, когда совершены все пять намазов',
+                    'Приветствия в пятницу, на Ид и в Рамадан',
+                    'Отдельный значок для каждого намаза, такой же, как на часах',
+                ],
+            },
+            ms: {
+                baslik: 'Semoga Allah menerimanya',
+                aciklama: 'Apabila anda menandakan solat, aplikasi mengucapkan "Semoga Allah menerimanya". Pada hari Jumaat, Hari Raya dan bulan Ramadan, anda melihat ucapan ringkas di bahagian atas.',
+                detayAciklama: 'Butang Sudah solat, jam tangan anda dan pembantu suara mengucapkan doa yang sama; pada hari anda melengkapkan kelima-lima waktu, satu kad ringkas dipaparkan. Setiap waktu solat kini mempunyai ikonnya sendiri, sama seperti di jam tangan anda.',
+                detaylar: [
+                    '"Semoga Allah menerimanya" selepas anda solat — ucapan ringkas pada waktu Subuh dan Isyak',
+                    'Kad ringkas apabila kelima-lima waktu selesai',
+                    'Ucapan Jumaat, Hari Raya dan Ramadan',
+                    'Ikon berasingan bagi setiap waktu, sama seperti di jam tangan anda',
+                ],
+            },
+            ar: {
+                baslik: 'تقبّل الله',
+                aciklama: 'عند وضع علامة على صلاة يظهر «تقبّل الله». وفي الجمعة والعيد ورمضان تظهر تحية قصيرة في الأعلى.',
+                detayAciklama: 'زر «صلّيتُ» وساعتك والمساعد الصوتي تقول الدعاء نفسه؛ وفي اليوم الذي تكتمل فيه الصلوات الخمس تظهر بطاقة قصيرة. ولكل صلاة الآن أيقونتها الخاصة، كما في ساعتك.',
+                detaylar: [
+                    '«تقبّل الله» بعد الصلاة — وتحية قصيرة عند الفجر والعشاء',
+                    'بطاقة قصيرة عند اكتمال الصلوات الخمس',
+                    'تحيات الجمعة والعيد ورمضان',
+                    'أيقونة مستقلة لكل صلاة، كما في ساعتك',
+                ],
+            },
+            ur: {
+                baslik: 'اللہ قبول فرمائے',
+                aciklama: 'نماز پر نشان لگانے پر “اللہ قبول فرمائے” کہا جاتا ہے۔ جمعہ، عید اور رمضان میں اوپر ایک مختصر سلام نظر آتا ہے۔',
+                detayAciklama: '“نماز پڑھ لی” کا بٹن، آپ کی گھڑی اور صوتی معاون ایک ہی دعا کہتے ہیں؛ جس دن پانچوں نمازیں مکمل ہوں، ایک مختصر کارڈ نظر آتا ہے۔ اب ہر نماز کا اپنا آئیکن ہے، بالکل گھڑی کی طرح۔',
+                detaylar: [
+                    'نماز کے بعد “اللہ قبول فرمائے” — فجر اور عشاء میں ایک مختصر سلام',
+                    'پانچوں نمازیں مکمل ہونے پر ایک مختصر کارڈ',
+                    'جمعہ، عید اور رمضان کے سلام',
+                    'ہر نماز کا الگ آئیکن، بالکل گھڑی کی طرح',
+                ],
+            },
+        },
     },
     // Cihazlar arası eşitleme (#288). Yalnız Android: Drive yetkisi yerleşik Google
     // hesabı onayıyla alınır. iOS'ta iCloud yolu ayrı bayrağa bağlı ve henüz açık değil.
@@ -118,6 +724,136 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         kartGoster: true,
         // Google Play hizmetleri olmayan cihazda (Huawei vb.) Drive kartı görünmez → duyuru da yok.
         yetenek: 'googleDrive',
+        ceviri: {
+            en: {
+                baslik: 'Your data on all your devices',
+                aciklama:
+                    'Keep your prayers, streak and Qada log in your own Google Drive and sync them with your other phone or tablet. Your data is encrypted with a password you choose.',
+                detayAciklama:
+                    "Connect your Google account with one tap; the app sees only its own hidden folder in Drive, never your files. Your data is encrypted with your password before it leaves the phone; we don't know the password either, so don't forget it. A prayer syncs as soon as you mark it; you can also sync hourly or daily, only on Wi-Fi or only while charging. With battery saver on, sync waits for charging. Prayers marked on two devices are merged; none are deleted.",
+                ctaEtiketi: 'Turn on sync',
+                detaylar: [
+                    'Connect with your Google account in one tap',
+                    'End-to-end encryption: only you know the password',
+                    "A hidden folder that belongs only to the app and doesn't show in Drive",
+                    'Prayers, streak and Qada log are merged',
+                    'You choose how often, and whether only on Wi-Fi or while charging',
+                    'Disconnect whenever you like',
+                ],
+            },
+            id: {
+                baslik: 'Data Anda di semua perangkat',
+                aciklama: 'Simpan catatan salat, runtunan, dan Catatan Qada di Google Drive Anda sendiri dan sinkronkan dengan ponsel atau tablet Anda yang lain. Data Anda dienkripsi dengan kata sandi pilihan Anda.',
+                detayAciklama: 'Hubungkan akun Google Anda dengan satu ketukan; aplikasi hanya melihat folder tersembunyinya sendiri di Drive, tidak pernah file Anda. Data dienkripsi dengan kata sandi Anda sebelum keluar dari ponsel; kami pun tidak mengetahui kata sandinya, jadi jangan sampai lupa. Salat disinkronkan begitu Anda menandainya; Anda juga dapat menyinkronkan setiap jam atau setiap hari, hanya di Wi-Fi atau hanya saat diisi daya. Saat penghemat baterai aktif, sinkronisasi menunggu hingga diisi daya. Salat yang ditandai di dua perangkat digabungkan; tidak ada yang dihapus.',
+                ctaEtiketi: 'Aktifkan sinkronisasi',
+                detaylar: [
+                    'Hubungkan dengan akun Google Anda dalam satu ketukan',
+                    'Enkripsi menyeluruh: hanya Anda yang tahu kata sandinya',
+                    'Folder tersembunyi khusus aplikasi yang tidak tampil di Drive',
+                    'Catatan salat, runtunan, dan Catatan Qada digabungkan',
+                    'Anda yang menentukan frekuensinya, serta apakah hanya di Wi-Fi atau saat diisi daya',
+                    'Putuskan koneksi kapan saja',
+                ],
+            },
+            de: {
+                baslik: 'Ihre Daten auf all Ihren Geräten',
+                aciklama: 'Bewahren Sie Ihre Gebete, Ihre Serie und Ihr Nachholbuch in Ihrem eigenen Google Drive auf und synchronisieren Sie sie mit Ihrem anderen Telefon oder Tablet. Ihre Daten werden mit einem Passwort Ihrer Wahl verschlüsselt.',
+                detayAciklama: 'Verbinden Sie Ihr Google-Konto mit einem Tippen; die App sieht in Drive nur ihren eigenen versteckten Ordner, nie Ihre Dateien. Ihre Daten werden mit Ihrem Passwort verschlüsselt, bevor sie das Telefon verlassen; auch wir kennen das Passwort nicht, vergessen Sie es also nicht. Ein Gebet wird synchronisiert, sobald Sie es markieren; Sie können auch stündlich oder täglich, nur im WLAN oder nur beim Laden synchronisieren. Bei aktivem Energiesparen wartet die Synchronisierung auf das Laden. Auf zwei Geräten markierte Gebete werden zusammengeführt; keines wird gelöscht.',
+                ctaEtiketi: 'Synchronisierung einschalten',
+                detaylar: [
+                    'Mit einem Tippen mit Ihrem Google-Konto verbinden',
+                    'Ende-zu-Ende-Verschlüsselung: Nur Sie kennen das Passwort',
+                    'Ein versteckter Ordner, der nur der App gehört und in Drive nicht erscheint',
+                    'Gebete, Serie und Nachholbuch werden zusammengeführt',
+                    'Sie wählen, wie oft und ob nur im WLAN oder beim Laden',
+                    'Verbindung jederzeit trennen',
+                ],
+            },
+            fr: {
+                baslik: 'Vos données sur tous vos appareils',
+                aciklama: 'Conservez vos prières, votre série et votre carnet de rattrapage dans votre propre Google Drive et synchronisez-les avec votre autre téléphone ou votre tablette. Vos données sont chiffrées avec un mot de passe que vous choisissez.',
+                detayAciklama: 'Vous connectez votre compte Google d’un seul geste ; l’application ne voit que son propre dossier caché dans Drive, jamais vos fichiers. Vos données sont chiffrées avec votre mot de passe avant de quitter le téléphone ; nous ne connaissons pas ce mot de passe, il est donc important de ne pas l’oublier. Une prière est synchronisée dès que vous la marquez ; vous pouvez aussi choisir une synchronisation toutes les heures ou une fois par jour, seulement en Wi-Fi ou seulement pendant la charge. Quand l’économie d’énergie est activée, la synchronisation attend la charge. Les prières marquées sur deux appareils sont fusionnées ; aucune n’est supprimée.',
+                ctaEtiketi: 'Activer la synchronisation',
+                detaylar: [
+                    'Connexion avec votre compte Google d’un seul geste',
+                    'Chiffrement de bout en bout : vous seul connaissez le mot de passe',
+                    'Un dossier caché, propre à l’application, invisible dans Drive',
+                    'Prières, série et carnet de rattrapage sont fusionnés',
+                    'Vous choisissez la fréquence, et si la synchronisation se fait seulement en Wi-Fi ou pendant la charge',
+                    'Déconnexion à tout moment',
+                ],
+            },
+            bs: {
+                baslik: 'Vaši podaci na svim Vašim uređajima',
+                aciklama: 'Čuvajte namaze, niz i evidenciju kada-namaza na vlastitom Google Driveu i sinhronizujte ih s drugim telefonom ili tabletom. Vaši podaci se šifriraju lozinkom koju sami odaberete.',
+                detayAciklama: 'Povežite Google račun jednim dodirom; aplikacija vidi samo svoju skrivenu mapu na Driveu, nikada Vaše datoteke. Prije nego što napuste telefon, podaci se šifriraju Vašom lozinkom; ni mi ne znamo lozinku, zato je nemojte zaboraviti. Namaz se sinhronizuje čim ga označite; možete sinhronizovati i svaki sat ili jednom dnevno, samo na Wi-Fi mreži ili samo tokom punjenja. Dok je uključena ušteda baterije, sinhronizacija čeka punjenje. Namazi označeni na dva uređaja se spajaju; nijedan se ne briše.',
+                ctaEtiketi: 'Uključite sinhronizaciju',
+                detaylar: [
+                    'Povezivanje s Google računom jednim dodirom',
+                    'Šifriranje s kraja na kraj: lozinku znate samo Vi',
+                    'Skrivena mapa koja pripada samo aplikaciji i ne vidi se na Driveu',
+                    'Namazi, niz i evidencija kada-namaza se spajaju',
+                    'Vi birate učestalost i da li samo na Wi-Fi mreži ili tokom punjenja',
+                    'Prekinite vezu kada god želite',
+                ],
+            },
+            ru: {
+                baslik: 'Ваши данные на всех устройствах',
+                aciklama: 'Храните намазы, серию и журнал каза на своём Google Диске и синхронизируйте их со вторым телефоном или планшетом. Данные шифруются выбранным вами паролем.',
+                detayAciklama: 'Подключите аккаунт Google одним нажатием; приложение видит на Диске только свою скрытую папку и никогда не видит ваши файлы. Данные шифруются вашим паролем ещё до того, как покинут телефон; мы тоже не знаем пароль, поэтому не забывайте его. Намаз синхронизируется сразу после отметки; можно также синхронизировать раз в час или раз в день, только по Wi-Fi или только на зарядке. При включённом энергосбережении синхронизация ждёт зарядки. Намазы, отмеченные на двух устройствах, объединяются; ни один не удаляется.',
+                ctaEtiketi: 'Включить синхронизацию',
+                detaylar: [
+                    'Подключение аккаунта Google одним нажатием',
+                    'Сквозное шифрование: пароль знаете только вы',
+                    'Скрытая папка, которая принадлежит только приложению и не видна на Диске',
+                    'Намазы, серия и журнал каза объединяются',
+                    'Вы выбираете частоту, а также только Wi-Fi или только зарядку',
+                    'Отключиться можно в любой момент',
+                ],
+            },
+            ms: {
+                baslik: 'Data anda pada semua peranti anda',
+                aciklama: 'Simpan solat, rentetan dan Catatan Qada anda dalam Google Drive anda sendiri dan segerakkan dengan telefon atau tablet anda yang lain. Data anda disulitkan dengan kata laluan pilihan anda.',
+                detayAciklama: 'Sambungkan akaun Google anda dengan satu ketikan; aplikasi hanya melihat folder tersembunyinya sendiri dalam Drive, bukan fail anda. Data anda disulitkan dengan kata laluan anda sebelum keluar dari telefon; kami juga tidak mengetahui kata laluan itu, jadi jangan lupakannya. Solat disegerakkan sebaik sahaja anda menandakannya; anda juga boleh menyegerakkan setiap jam atau setiap hari, hanya pada Wi-Fi atau hanya ketika dicas. Apabila penjimat bateri dihidupkan, penyegerakan menunggu sehingga dicas. Solat yang ditandakan pada dua peranti digabungkan; tiada yang dipadam.',
+                ctaEtiketi: 'Hidupkan penyegerakan',
+                detaylar: [
+                    'Sambung dengan akaun Google anda dalam satu ketikan',
+                    'Penyulitan hujung ke hujung: hanya anda yang mengetahui kata laluan',
+                    'Folder tersembunyi milik aplikasi sahaja yang tidak kelihatan dalam Drive',
+                    'Solat, rentetan dan Catatan Qada digabungkan',
+                    'Anda memilih kekerapan, dan sama ada hanya pada Wi-Fi atau ketika dicas',
+                    'Putuskan sambungan bila-bila masa',
+                ],
+            },
+            ar: {
+                baslik: 'بياناتك على كل أجهزتك',
+                aciklama: 'حفظ صلواتك وسلسلتك وسجل القضاء في Google Drive الخاص بك، ومزامنتها مع هاتفك الآخر أو جهازك اللوحي. تُشفَّر بياناتك بكلمة مرور تختارها.',
+                detayAciklama: 'ربط حساب Google بلمسة واحدة؛ ولا يرى التطبيق في Drive إلا مجلده المخفي الخاص، لا ملفاتك. تُشفَّر بياناتك بكلمة مرورك قبل أن تغادر الهاتف؛ ولا نعرف كلمة المرور نحن أيضًا، فيُرجى عدم نسيانها. تُزامَن الصلاة فور وضع العلامة عليها؛ ويمكن أيضًا المزامنة كل ساعة أو يوميًا، أو عبر Wi-Fi فقط، أو أثناء الشحن فقط. ومع تفعيل توفير البطارية تنتظر المزامنة الشحن. وتُدمج الصلوات المعلَّمة على جهازين؛ ولا يُحذف شيء منها.',
+                ctaEtiketi: 'تفعيل المزامنة',
+                detaylar: [
+                    'الربط بحساب Google بلمسة واحدة',
+                    'تشفير من طرف إلى طرف: كلمة المرور لا يعرفها غيرك',
+                    'مجلد مخفي خاص بالتطبيق لا يظهر في Drive',
+                    'تُدمج الصلوات والسلسلة وسجل القضاء',
+                    'اختيار التكرار، وعبر Wi-Fi فقط أو أثناء الشحن',
+                    'إلغاء الربط متى شئت',
+                ],
+            },
+            ur: {
+                baslik: 'آپ کا ڈیٹا آپ کے تمام آلات پر',
+                aciklama: 'اپنی نمازیں، تسلسل اور قضا ریکارڈ اپنے Google Drive میں رکھیں اور دوسرے فون یا ٹیبلیٹ کے ساتھ ہم آہنگ کریں۔ آپ کا ڈیٹا آپ کے چنے ہوئے پاس ورڈ سے خفیہ کیا جاتا ہے۔',
+                detayAciklama: 'اپنا Google اکاؤنٹ ایک ٹچ سے جوڑیں؛ ایپ Drive میں صرف اپنا پوشیدہ فولڈر دیکھتی ہے، آپ کی فائلیں کبھی نہیں۔ فون سے نکلنے سے پہلے آپ کا ڈیٹا آپ کے پاس ورڈ سے خفیہ کیا جاتا ہے؛ پاس ورڈ ہمیں بھی معلوم نہیں، اس لیے اسے یاد رکھیں۔ نماز پر نشان لگتے ہی ہم آہنگی ہو جاتی ہے؛ ہر گھنٹے یا روزانہ، صرف Wi-Fi پر یا صرف چارجنگ کے دوران ہم آہنگی بھی منتخب کی جا سکتی ہے۔ بیٹری سیور آن ہو تو ہم آہنگی چارجنگ کا انتظار کرتی ہے۔ دو آلات پر لگے نماز کے نشان یکجا ہو جاتے ہیں؛ کوئی حذف نہیں ہوتا۔',
+                ctaEtiketi: 'ہم آہنگی آن کریں',
+                detaylar: [
+                    'اپنے Google اکاؤنٹ سے ایک ٹچ میں جڑیں',
+                    'مکمل خفیہ کاری: پاس ورڈ صرف آپ کو معلوم ہے',
+                    'ایک پوشیدہ فولڈر جو صرف ایپ کا ہے اور Drive میں نظر نہیں آتا',
+                    'نمازیں، تسلسل اور قضا ریکارڈ یکجا ہوتے ہیں',
+                    'کتنی بار ہو، اور صرف Wi-Fi پر یا چارجنگ کے دوران، یہ آپ طے کریں',
+                    'جب چاہیں کنکشن ختم کریں',
+                ],
+            },
+        },
     },
     // Cihaz ağı: telefon ↔ tablet "Kıldım" eşitlemesi (olay günlüğü, yerel ağ).
     {
@@ -138,6 +874,109 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         ikon: 'tablet-alt',
         hedefSayfa: 'CihazEkle',
         ctaEtiketi: 'Cihaz ekleyin',
+        ceviri: {
+            en: {
+                baslik: 'Phone and tablet together',
+                aciklama:
+                    'Add your tablet to your phone: a prayer you mark on one is marked on the other. No account, no server; just your home Wi-Fi.',
+                detayAciklama:
+                    'My devices › Add a tablet or phone: show a code on one device and scan it on the other; both screens ask for approval. On the same Wi-Fi with the app open on both, a prayer passes over right away; otherwise the next time both are open together.',
+                ctaEtiketi: 'Add a device',
+                detaylar: [
+                    'Encrypted pairing approved on both screens',
+                    "I've prayed is marked on both devices",
+                    'Remove it from either side at any time',
+                ],
+            },
+            id: {
+                baslik: 'Ponsel dan tablet bersama',
+                aciklama: 'Hubungkan tablet dengan ponsel Anda: salat yang Anda tandai di satu perangkat juga tertandai di perangkat lainnya. Tanpa akun, tanpa server; cukup Wi-Fi rumah Anda.',
+                detayAciklama: 'Perangkat saya › Tambahkan tablet atau ponsel: tampilkan kode di satu perangkat dan pindai dengan perangkat lainnya; kedua layar meminta persetujuan. Jika berada di Wi-Fi yang sama dan aplikasi terbuka di keduanya, salat langsung berpindah; jika tidak, saat keduanya terbuka bersamaan berikutnya.',
+                ctaEtiketi: 'Tambahkan perangkat',
+                detaylar: [
+                    'Pemasangan terenkripsi yang disetujui di kedua layar',
+                    'Sudah salat tertandai di kedua perangkat',
+                    'Hapus dari sisi mana pun kapan saja',
+                ],
+            },
+            de: {
+                baslik: 'Telefon und Tablet zusammen',
+                aciklama: 'Fügen Sie Ihr Tablet Ihrem Telefon hinzu: Ein Gebet, das Sie auf einem Gerät markieren, wird auch auf dem anderen markiert. Kein Konto, kein Server; nur Ihr WLAN zu Hause.',
+                detayAciklama: 'Meine Geräte › Tablet oder Telefon hinzufügen: Zeigen Sie auf einem Gerät einen Code an und scannen Sie ihn mit dem anderen; beide Bildschirme fragen nach Bestätigung. Im selben WLAN und mit geöffneter App auf beiden Geräten wird ein Gebet sofort übertragen; sonst beim nächsten Mal, wenn beide gleichzeitig geöffnet sind.',
+                ctaEtiketi: 'Gerät hinzufügen',
+                detaylar: [
+                    'Verschlüsselte Kopplung, auf beiden Bildschirmen bestätigt',
+                    '„Ich habe gebetet“ wird auf beiden Geräten markiert',
+                    'Jederzeit auf einer der beiden Seiten entfernen',
+                ],
+            },
+            fr: {
+                baslik: 'Téléphone et tablette ensemble',
+                aciklama: 'Ajoutez votre tablette à votre téléphone : une prière marquée sur l’un l’est aussi sur l’autre. Pas de compte, pas de serveur ; seulement le Wi-Fi de votre maison.',
+                detayAciklama: 'Mes appareils › Ajouter une tablette ou un téléphone : affichez un code sur un appareil et scannez-le avec l’autre ; une confirmation est demandée sur les deux écrans. Sur le même Wi-Fi, avec l’application ouverte sur les deux, la prière passe immédiatement ; sinon, la prochaine fois que les deux sont ouverts en même temps.',
+                ctaEtiketi: 'Ajouter un appareil',
+                detaylar: [
+                    'Association chiffrée, confirmée sur les deux écrans',
+                    '« J’ai prié » est marqué sur les deux appareils',
+                    'Retirez l’association à tout moment, d’un côté ou de l’autre',
+                ],
+            },
+            bs: {
+                baslik: 'Telefon i tablet zajedno',
+                aciklama: 'Dodajte tablet svom telefonu: namaz koji označite na jednom označava se i na drugom. Bez računa, bez servera; samo Vaša kućna Wi-Fi mreža.',
+                detayAciklama: 'Moji uređaji › Dodajte tablet ili telefon: na jednom uređaju prikažite kod, a drugim ga skenirajte; oba ekrana traže potvrdu. Na istoj Wi-Fi mreži, s otvorenom aplikacijom na oba uređaja, namaz prelazi odmah; inače kada sljedeći put oba budu otvorena zajedno.',
+                ctaEtiketi: 'Dodajte uređaj',
+                detaylar: [
+                    'Šifrirano uparivanje potvrđeno na oba ekrana',
+                    '„Klanjano” se označava na oba uređaja',
+                    'Uklonite ga s bilo koje strane bilo kada',
+                ],
+            },
+            ru: {
+                baslik: 'Телефон и планшет вместе',
+                aciklama: 'Свяжите планшет с телефоном: намаз, отмеченный на одном, отмечается и на другом. Без аккаунта и сервера — только ваш домашний Wi-Fi.',
+                detayAciklama: 'Мои устройства › Добавить планшет или телефон: покажите код на одном устройстве и отсканируйте его на другом; подтверждение запрашивается на обоих экранах. В одной сети Wi-Fi и при открытом приложении на обоих намаз передаётся сразу; иначе — когда оба в следующий раз будут открыты одновременно.',
+                ctaEtiketi: 'Добавить устройство',
+                detaylar: [
+                    'Зашифрованная связь с подтверждением на обоих экранах',
+                    '«Намаз совершён» отмечается на обоих устройствах',
+                    'Удалить связь можно с любой стороны в любой момент',
+                ],
+            },
+            ms: {
+                baslik: 'Telefon dan tablet bersama',
+                aciklama: 'Tambahkan tablet anda pada telefon: solat yang anda tandakan pada satu peranti turut ditandakan pada peranti yang lain. Tiada akaun, tiada pelayan; hanya Wi-Fi rumah anda.',
+                detayAciklama: 'Peranti saya › Tambah tablet atau telefon: tunjukkan kod pada satu peranti dan imbasnya pada peranti yang lain; kedua-dua skrin meminta persetujuan. Pada Wi-Fi yang sama dengan aplikasi dibuka pada kedua-duanya, solat berpindah serta-merta; jika tidak, pada kali seterusnya kedua-duanya dibuka bersama.',
+                ctaEtiketi: 'Tambah peranti',
+                detaylar: [
+                    'Gandingan tersulit yang disahkan pada kedua-dua skrin',
+                    'Sudah solat ditandakan pada kedua-dua peranti',
+                    'Keluarkan dari mana-mana pihak bila-bila masa',
+                ],
+            },
+            ar: {
+                baslik: 'الهاتف والجهاز اللوحي معًا',
+                aciklama: 'إضافة جهازك اللوحي إلى هاتفك: الصلاة المعلَّمة على أحدهما تُعلَّم على الآخر. لا حساب ولا خادم؛ فقط شبكة Wi-Fi في منزلك.',
+                detayAciklama: 'أجهزتي › إضافة جهاز لوحي أو هاتف: عرض رمز على أحد الجهازين ومسحه بالآخر؛ وتطلب الشاشتان الموافقة. على شبكة Wi-Fi نفسها والتطبيق مفتوح على كليهما تنتقل الصلاة فورًا؛ وإلا ففي المرة التالية التي يُفتحان فيها معًا.',
+                ctaEtiketi: 'إضافة جهاز',
+                detaylar: [
+                    'اقتران مشفّر بموافقة الشاشتين',
+                    'تُوضع علامة «صلّيتُ» على الجهازين',
+                    'الإزالة من أي طرف في أي وقت',
+                ],
+            },
+            ur: {
+                baslik: 'فون اور ٹیبلیٹ ایک ساتھ',
+                aciklama: 'اپنا ٹیبلیٹ فون سے جوڑیں: ایک پر لگایا گیا نماز کا نشان دوسرے پر بھی لگ جاتا ہے۔ نہ اکاؤنٹ، نہ سرور؛ صرف آپ کے گھر کا Wi-Fi۔',
+                detayAciklama: 'میرے آلات › ٹیبلیٹ یا فون شامل کریں: ایک آلے پر کوڈ دکھائیں اور دوسرے پر اسکین کریں؛ دونوں اسکرینیں منظوری مانگتی ہیں۔ ایک ہی Wi-Fi پر اور دونوں پر ایپ کھلی ہو تو نماز کا نشان فوراً منتقل ہوتا ہے؛ ورنہ اگلی بار جب دونوں ساتھ کھلے ہوں۔',
+                ctaEtiketi: 'آلہ شامل کریں',
+                detaylar: [
+                    'دونوں اسکرینوں پر منظوری کے ساتھ خفیہ جوڑ',
+                    '“نماز پڑھ لی” دونوں آلات پر لگتا ہے',
+                    'کسی بھی طرف سے کسی بھی وقت ہٹایا جا سکتا ہے',
+                ],
+            },
+        },
     },
     // Cihaz ağı v2: şifreli TV eşitlemesi + Cihazlarım (tasarım 2026-10-21).
     {
@@ -160,6 +999,127 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         ikon: 'tv',
         hedefSayfa: 'Cihazlarim',
         ctaEtiketi: 'Cihazlarımı açın',
+        ceviri: {
+            en: {
+                baslik: 'Your TV knows the prayers you pray',
+                aciklama:
+                    "Manage the TVs at home from My devices. If you like, the TV knows which prayers you have prayed; when time runs short and you haven't prayed, it shows a quiet band at the bottom of the screen.",
+                detayAciklama:
+                    'On first pairing, the phone and TV approve each other: you see the TV\'s name on your phone and press "Add" with the remote on the TV. After that everything is encrypted and stays on your home Wi-Fi. Counting your status on the TV is off by default; unless you turn it on, the TV only shows prayer times. In Ramadan the iftar and suhoor countdowns, and on Fridays the Jumu\'ah card, appear on the big screen too.',
+                ctaEtiketi: 'Open My devices',
+                detaylar: [
+                    'Pairing approved on both the phone and the TV',
+                    'Encrypted, only on your home network',
+                    'A quiet reminder band on the TV when time runs short',
+                    "Iftar and suhoor countdowns in Ramadan, the Jumu'ah card on Fridays",
+                    'Remove the TV from either side at any time',
+                ],
+            },
+            id: {
+                baslik: 'TV Anda tahu salat yang sudah Anda tunaikan',
+                aciklama: 'Kelola TV di rumah dari Perangkat saya. Jika Anda mau, TV mengetahui salat yang sudah Anda tunaikan; saat waktu makin sempit dan Anda belum salat, TV menampilkan pita senyap di bagian bawah layar.',
+                detayAciklama: 'Pada pemasangan pertama, ponsel dan TV saling menyetujui: Anda melihat nama TV di ponsel dan menekan "Tambahkan" di TV dengan remote. Setelah itu semuanya terenkripsi dan tetap di Wi-Fi rumah Anda. Penghitungan status Anda di TV awalnya nonaktif; jika tidak Anda aktifkan, TV hanya menampilkan waktu salat. Saat Ramadan, hitung mundur berbuka dan sahur, serta kartu Jumat pada hari Jumat, juga tampil di layar besar.',
+                ctaEtiketi: 'Buka Perangkat saya',
+                detaylar: [
+                    'Pemasangan disetujui di ponsel dan di TV',
+                    'Terenkripsi, hanya di jaringan rumah Anda',
+                    'Pita pengingat senyap di TV saat waktu makin sempit',
+                    'Hitung mundur berbuka dan sahur saat Ramadan, kartu Jumat pada hari Jumat',
+                    'Hapus TV dari sisi mana pun kapan saja',
+                ],
+            },
+            de: {
+                baslik: 'Ihr Fernseher kennt Ihre verrichteten Gebete',
+                aciklama: 'Verwalten Sie die Fernseher zu Hause unter Meine Geräte. Auf Wunsch weiß der Fernseher, welche Gebete Sie verrichtet haben; wird die Zeit knapp und Sie haben noch nicht gebetet, zeigt er unten auf dem Bildschirm ein stilles Band.',
+                detayAciklama: 'Beim ersten Koppeln bestätigen sich Telefon und Fernseher gegenseitig: Sie sehen den Namen des Fernsehers auf Ihrem Telefon und drücken am Fernseher mit der Fernbedienung auf „Hinzufügen“. Danach ist alles verschlüsselt und bleibt in Ihrem WLAN zu Hause. Ihren Stand auf dem Fernseher zu berücksichtigen, ist anfangs aus; solange Sie es nicht einschalten, zeigt der Fernseher nur die Gebetszeiten. Im Ramadan erscheinen auch die Countdowns für Iftar und Suhur und freitags die Karte zum Freitagsgebet auf dem großen Bildschirm.',
+                ctaEtiketi: 'Meine Geräte öffnen',
+                detaylar: [
+                    'Kopplung, auf Telefon und Fernseher bestätigt',
+                    'Verschlüsselt, nur in Ihrem Heimnetz',
+                    'Ein stilles Erinnerungsband auf dem Fernseher, wenn die Zeit knapp wird',
+                    'Countdowns für Iftar und Suhur im Ramadan, freitags die Karte zum Freitagsgebet',
+                    'Den Fernseher jederzeit auf einer der beiden Seiten entfernen',
+                ],
+            },
+            fr: {
+                baslik: 'Votre téléviseur connaît les prières que vous accomplissez',
+                aciklama: 'Gérez les téléviseurs de la maison depuis Mes appareils. Si vous le souhaitez, le téléviseur sait quelles prières vous avez accomplies ; quand l’heure se termine et que vous n’avez pas prié, il affiche un bandeau discret en bas de l’écran.',
+                detayAciklama: 'Lors de la première association, le téléphone et le téléviseur se confirment l’un l’autre : vous voyez le nom du téléviseur sur votre téléphone et appuyez sur « Ajouter » avec la télécommande. Ensuite, tout est chiffré et reste sur le Wi-Fi de votre maison. La prise en compte de vos prières sur le téléviseur est désactivée par défaut ; si vous ne l’activez pas, le téléviseur affiche seulement les heures de prière. Pendant le Ramadan, les comptes à rebours de l’iftar et du souhour, et le vendredi la carte de Joumoua, apparaissent aussi sur le grand écran.',
+                ctaEtiketi: 'Ouvrir Mes appareils',
+                detaylar: [
+                    'Association confirmée sur le téléphone et sur le téléviseur',
+                    'Informations chiffrées, uniquement sur le réseau de votre maison',
+                    'Un bandeau de rappel discret sur le téléviseur quand l’heure se termine',
+                    'Comptes à rebours de l’iftar et du souhour pendant le Ramadan, carte de Joumoua le vendredi',
+                    'Retirez le téléviseur à tout moment, d’un côté ou de l’autre',
+                ],
+            },
+            bs: {
+                baslik: 'Vaš TV zna koje namaze klanjate',
+                aciklama: 'Upravljajte televizorima u kući iz opcije Moji uređaji. Ako želite, TV zna koje ste namaze klanjali; kada vakat ističe, a niste klanjali, na dnu ekrana prikazuje tihu traku.',
+                detayAciklama: 'Pri prvom uparivanju telefon i TV potvrđuju jedno drugo: na telefonu vidite naziv TV-a, a na TV-u daljinskim upravljačem pritisnete „Dodajte”. Nakon toga je sve šifrirano i ostaje na Vašoj kućnoj Wi-Fi mreži. Računanje Vašeg stanja na TV-u je po zadanom isključeno; dok ga ne uključite, TV samo prikazuje vremena. U ramazanu se na velikom ekranu prikazuju i odbrojavanja do iftara i sehura, a petkom kartica za džumu.',
+                ctaEtiketi: 'Otvorite Moji uređaji',
+                detaylar: [
+                    'Uparivanje potvrđeno i na telefonu i na TV-u',
+                    'Šifrirano, samo na Vašoj kućnoj mreži',
+                    'Tiha traka-podsjetnik na TV-u kada vakat ističe',
+                    'Odbrojavanja do iftara i sehura u ramazanu, kartica za džumu petkom',
+                    'Uklonite TV s bilo koje strane bilo kada',
+                ],
+            },
+            ru: {
+                baslik: 'Телевизор знает, какие намазы вы совершили',
+                aciklama: 'Управляйте домашними телевизорами в разделе «Мои устройства». При желании телевизор будет знать, какие намазы вы совершили; когда время уходит, а намаз не совершён, внизу экрана появится тихая полоса.',
+                detayAciklama: 'При первом подключении телефон и телевизор подтверждают друг друга: на телефоне вы видите название телевизора, а на телевизоре нажимаете пультом «Добавить». После этого всё зашифровано и остаётся в вашей домашней сети Wi-Fi. Учёт вашего состояния на телевизоре по умолчанию выключен; пока вы его не включите, телевизор только показывает время намазов. В Рамадан на большом экране также видны отсчёты до ифтара и до конца сухура, а по пятницам — карточка джума-намаза.',
+                ctaEtiketi: 'Открыть «Мои устройства»',
+                detaylar: [
+                    'Подключение с подтверждением и на телефоне, и на телевизоре',
+                    'Шифрование, только в вашей домашней сети',
+                    'Тихая полоса-напоминание на телевизоре, когда время уходит',
+                    'Отсчёты до ифтара и конца сухура в Рамадан, карточка джума-намаза по пятницам',
+                    'Удалить телевизор можно с любой стороны в любой момент',
+                ],
+            },
+            ms: {
+                baslik: 'TV anda mengetahui solat yang anda tunaikan',
+                aciklama: 'Urus TV di rumah dari Peranti saya. Jika anda mahu, TV mengetahui solat yang telah anda tunaikan; apabila waktu semakin suntuk dan anda belum solat, ia memaparkan jalur senyap di bahagian bawah skrin.',
+                detayAciklama: 'Pada gandingan pertama, telefon dan TV saling mengesahkan: anda melihat nama TV pada telefon dan menekan "Tambah" dengan alat kawalan jauh pada TV. Selepas itu semuanya disulitkan dan kekal dalam Wi-Fi rumah anda. Pengiraan status anda di TV dimatikan secara lalai; selagi anda tidak menghidupkannya, TV hanya memaparkan waktu solat. Pada bulan Ramadan, kiraan detik berbuka dan sahur, dan pada hari Jumaat, kad Jumaat, turut dipaparkan pada skrin besar.',
+                ctaEtiketi: 'Buka Peranti saya',
+                detaylar: [
+                    'Gandingan yang disahkan pada telefon dan TV',
+                    'Tersulit, hanya dalam rangkaian rumah anda',
+                    'Jalur peringatan senyap di TV apabila waktu semakin suntuk',
+                    'Kiraan detik berbuka dan sahur pada bulan Ramadan, kad Jumaat pada hari Jumaat',
+                    'Keluarkan TV dari mana-mana pihak bila-bila masa',
+                ],
+            },
+            ar: {
+                baslik: 'تلفازك يعرف صلواتك المؤدّاة',
+                aciklama: 'إدارة أجهزة التلفاز في المنزل من «أجهزتي». وإن شئت يعرف التلفاز الصلوات المؤدّاة؛ وحين يضيق الوقت ولم تُؤدَّ الصلاة يُظهر شريطًا هادئًا أسفل الشاشة.',
+                detayAciklama: 'عند الاقتران الأول يوافق الهاتف والتلفاز أحدهما على الآخر: يظهر اسم التلفاز على هاتفك، ويُضغط «إضافة» بجهاز التحكم على التلفاز. وبعدها يكون كل شيء مشفّرًا ويبقى على شبكة Wi-Fi في منزلك. احتساب حالتك على التلفاز معطّل افتراضيًا؛ وما لم يُفعَّل يعرض التلفاز المواقيت فقط. وفي رمضان يظهر عدّادا الإفطار والسحور، وفي الجمعة بطاقة الجمعة، على الشاشة الكبيرة أيضًا.',
+                ctaEtiketi: 'فتح أجهزتي',
+                detaylar: [
+                    'اقتران بموافقة الهاتف والتلفاز معًا',
+                    'مشفّر، وعلى شبكة منزلك فقط',
+                    'شريط تذكير هادئ على التلفاز حين يضيق الوقت',
+                    'عدّادا الإفطار والسحور في رمضان، وبطاقة الجمعة يوم الجمعة',
+                    'إزالة التلفاز من أي طرف في أي وقت',
+                ],
+            },
+            ur: {
+                baslik: 'آپ کا ٹی وی آپ کی ادا کردہ نمازیں جانتا ہے',
+                aciklama: 'گھر کے ٹی وی میرے آلات سے سنبھالیں۔ چاہیں تو ٹی وی جانتا ہے کہ کون سی نمازیں ادا ہو چکی ہیں؛ وقت تنگ ہو اور نماز ادا نہ ہوئی ہو تو اسکرین کے نیچے ایک خاموش پٹی دکھاتا ہے۔',
+                detayAciklama: 'پہلی بار جوڑنے پر فون اور ٹی وی ایک دوسرے کی منظوری دیتے ہیں: فون پر ٹی وی کا نام نظر آتا ہے اور ٹی وی پر ریموٹ سے “شامل کریں” دبایا جاتا ہے۔ اس کے بعد سب کچھ خفیہ رہتا ہے اور آپ کے گھر کے Wi-Fi پر ہی رہتا ہے۔ ٹی وی پر آپ کی نمازوں کا شمار طے شدہ طور پر بند ہے؛ آن نہ کرنے تک ٹی وی صرف نماز کے اوقات دکھاتا ہے۔ رمضان میں افطار اور سحری کی الٹی گنتی، اور جمعہ کو جمعہ کا کارڈ بھی بڑی اسکرین پر نظر آتا ہے۔',
+                ctaEtiketi: 'میرے آلات کھولیں',
+                detaylar: [
+                    'فون اور ٹی وی دونوں پر منظوری کے ساتھ جوڑ',
+                    'خفیہ، صرف آپ کے گھر کے نیٹ ورک پر',
+                    'وقت تنگ ہونے پر ٹی وی پر خاموش یاد دہانی کی پٹی',
+                    'رمضان میں افطار اور سحری کی الٹی گنتی، جمعہ کو جمعہ کا کارڈ',
+                    'ٹی وی کسی بھی طرف سے کسی بھی وقت ہٹایا جا سکتا ہے',
+                ],
+            },
+        },
     },
     // Vakit girdi bildirimine vakit başına ses + kendi ses dosyanız (ezan kaydı dahil).
     {
@@ -183,6 +1143,118 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         ctaEtiketi: 'Ses seçin',
         kartGoster: true,
         yetenek: 'sesDosyasi',
+        ceviri: {
+            en: {
+                baslik: 'Play your own sound when a prayer time begins',
+                aciklama:
+                    'Choose a separate notification sound for each prayer; you can also add a sound file from your phone, such as a favorite adhan recording.',
+                detayAciklama:
+                    'Under Reminders › When a prayer time begins, each enabled prayer has a sound row. Pick one of your phone\'s sounds or add your own file. The file is copied to your phone\'s Notifications folder, so the sound keeps playing even if you delete the original. The same option is available in Prayer Guardian steps.',
+                ctaEtiketi: 'Choose a sound',
+                detaylar: [
+                    'A separate sound for Fajr, Dhuhr, Asr, Maghrib and Isha',
+                    'Your own sound file: MP3, M4A, OGG or WAV',
+                    'The sound plays when the notification arrives and stops when you dismiss it',
+                    'You can pick your own file in Prayer Guardian steps too',
+                ],
+            },
+            id: {
+                baslik: 'Putar suara pilihan Anda saat masuk waktu salat',
+                aciklama: 'Pilih suara notifikasi terpisah untuk setiap waktu salat; Anda juga dapat menambahkan file suara dari ponsel, misalnya rekaman azan favorit Anda.',
+                detayAciklama: 'Di Pengingat › Saat masuk waktu, setiap waktu salat yang aktif memiliki baris suara. Pilih salah satu suara ponsel atau tambahkan file Anda sendiri. File disalin ke folder Notifikasi di ponsel Anda, sehingga suara tetap berbunyi meskipun file aslinya dihapus. Pilihan yang sama tersedia di langkah-langkah Penjaga Salat.',
+                ctaEtiketi: 'Pilih suara',
+                detaylar: [
+                    'Suara terpisah untuk Subuh, Dzuhur, Ashar, Maghrib, dan Isya',
+                    'File suara Anda sendiri: MP3, M4A, OGG, atau WAV',
+                    'Suara berbunyi saat notifikasi datang dan berhenti saat Anda menutupnya',
+                    'Anda juga dapat memilih file sendiri di langkah-langkah Penjaga Salat',
+                ],
+            },
+            de: {
+                baslik: 'Ihr eigener Ton zum Beginn der Gebetszeit',
+                aciklama: 'Wählen Sie für jede Gebetszeit einen eigenen Benachrichtigungston; Sie können auch eine Audiodatei von Ihrem Telefon hinzufügen, etwa Ihre liebste Adhan-Aufnahme.',
+                detayAciklama: 'Unter Erinnerungen › Bei Beginn der Gebetszeit hat jede eingeschaltete Gebetszeit eine Zeile für den Ton. Wählen Sie einen Ton Ihres Telefons oder fügen Sie Ihre eigene Datei hinzu. Die Datei wird in den Ordner „Notifications“ Ihres Telefons kopiert, sodass der Ton weiter erklingt, auch wenn Sie das Original löschen. Dieselbe Möglichkeit gibt es in den Schritten des Gebetswächters.',
+                ctaEtiketi: 'Ton wählen',
+                detaylar: [
+                    'Ein eigener Ton für Fajr, Dhuhr, Asr, Maghrib und Isha',
+                    'Ihre eigene Audiodatei: MP3, M4A, OGG oder WAV',
+                    'Der Ton erklingt, wenn die Benachrichtigung kommt, und verstummt, wenn Sie sie schließen',
+                    'Auch in den Schritten des Gebetswächters können Sie eine eigene Datei wählen',
+                ],
+            },
+            fr: {
+                baslik: 'Votre propre son au début de l’heure de prière',
+                aciklama: 'Choisissez un son de notification distinct pour chaque prière ; vous pouvez aussi ajouter un fichier audio de votre téléphone, par exemple un enregistrement d’adhan que vous aimez.',
+                detayAciklama: 'Dans Rappels › Au début de l’heure, chaque prière activée a une ligne de son. Choisissez parmi les sons du téléphone ou ajoutez votre propre fichier. Le fichier est copié dans le dossier Notifications de votre téléphone ; le son continue de jouer même si vous supprimez l’original. La même option existe dans les étapes du Gardien de la prière.',
+                ctaEtiketi: 'Choisir un son',
+                detaylar: [
+                    'Un son distinct pour Fajr, Dhuhr, Asr, Maghrib et Isha',
+                    'Votre propre fichier audio : MP3, M4A, OGG ou WAV',
+                    'Le son joue à l’arrivée de la notification et s’arrête quand vous la fermez',
+                    'Vous pouvez aussi choisir votre propre fichier dans les étapes du Gardien de la prière',
+                ],
+            },
+            bs: {
+                baslik: 'Vaš vlastiti zvuk kada vakat nastupi',
+                aciklama: 'Odaberite poseban zvuk obavještenja za svaki vakat; možete dodati i zvučnu datoteku s telefona, na primjer omiljeni snimak ezana.',
+                detayAciklama: 'U Podsjetnici › Kada vakat nastupi svaki uključeni vakat ima red za zvuk. Odaberite jedan od zvukova telefona ili dodajte vlastitu datoteku. Datoteka se kopira u mapu Obavještenja na telefonu, pa zvuk radi i ako izbrišete original. Ista mogućnost postoji i u koracima Čuvara namaza.',
+                ctaEtiketi: 'Odaberite zvuk',
+                detaylar: [
+                    'Poseban zvuk za zoru, podne, ikindiju, akšam i jaciju',
+                    'Vaša vlastita zvučna datoteka: MP3, M4A, OGG ili WAV',
+                    'Zvuk svira kada stigne obavještenje i prestaje kada ga zatvorite',
+                    'Vlastitu datoteku možete odabrati i u koracima Čuvara namaza',
+                ],
+            },
+            ru: {
+                baslik: 'Свой звук при наступлении времени намаза',
+                aciklama: 'Выберите отдельный звук уведомления для каждого намаза; можно также добавить звуковой файл с телефона, например любимую запись азана.',
+                detayAciklama: 'В разделе Напоминания › С наступлением времени у каждого включённого намаза есть строка звука. Выберите один из звуков телефона или добавьте свой файл. Файл копируется в папку уведомлений телефона, поэтому звук продолжит играть, даже если удалить оригинал. Та же возможность есть в шагах Стража намаза.',
+                ctaEtiketi: 'Выбрать звук',
+                detaylar: [
+                    'Отдельный звук для Фаджра, Зухра, Асра, Магриба и Иша',
+                    'Свой звуковой файл: MP3, M4A, OGG или WAV',
+                    'Звук играет при поступлении уведомления и умолкает, когда вы его закрываете',
+                    'Свой файл можно выбрать и в шагах Стража намаза',
+                ],
+            },
+            ms: {
+                baslik: 'Mainkan bunyi anda sendiri apabila masuk waktu solat',
+                aciklama: 'Pilih bunyi pemberitahuan berasingan bagi setiap waktu; anda juga boleh menambah fail bunyi dari telefon anda, seperti rakaman azan kegemaran anda.',
+                detayAciklama: 'Di Peringatan › Apabila masuk waktu, setiap waktu yang dihidupkan mempunyai baris bunyi. Pilih salah satu bunyi telefon anda atau tambah fail anda sendiri. Fail itu disalin ke folder Pemberitahuan telefon anda, jadi bunyi tetap dimainkan walaupun anda memadam fail asal. Pilihan yang sama tersedia dalam langkah Penjaga Solat.',
+                ctaEtiketi: 'Pilih bunyi',
+                detaylar: [
+                    'Bunyi berasingan untuk Subuh, Zohor, Asar, Maghrib dan Isyak',
+                    'Fail bunyi anda sendiri: MP3, M4A, OGG atau WAV',
+                    'Bunyi dimainkan apabila pemberitahuan sampai dan berhenti apabila anda menutupnya',
+                    'Anda juga boleh memilih fail anda sendiri dalam langkah Penjaga Solat',
+                ],
+            },
+            ar: {
+                baslik: 'صوتك الخاص عند دخول الوقت',
+                aciklama: 'اختيار صوت إشعار مستقل لكل صلاة؛ ويمكن أيضًا إضافة ملف صوتي من هاتفك، مثل تسجيل أذان مفضّل.',
+                detayAciklama: 'في التذكيرات › عند دخول الوقت، لكل صلاة مفعّلة سطر للصوت. يمكن اختيار أحد أصوات هاتفك أو إضافة ملفك الخاص. يُنسخ الملف إلى مجلد الإشعارات في هاتفك، فيبقى الصوت يعمل حتى لو حُذف الأصل. والخيار نفسه متاح في خطوات «قبل خروج الوقت».',
+                ctaEtiketi: 'اختيار صوت',
+                detaylar: [
+                    'صوت مستقل للفجر والظهر والعصر والمغرب والعشاء',
+                    'ملفك الصوتي الخاص: MP3 أو M4A أو OGG أو WAV',
+                    'يُشغَّل الصوت عند وصول الإشعار ويتوقف عند إغلاقه',
+                    'يمكن اختيار ملفك الخاص في خطوات «قبل خروج الوقت» أيضًا',
+                ],
+            },
+            ur: {
+                baslik: 'نماز کا وقت شروع ہونے پر اپنی پسند کی آواز',
+                aciklama: 'ہر نماز کے لیے الگ اطلاع کی آواز منتخب کریں؛ فون سے کوئی آواز کی فائل بھی شامل کی جا سکتی ہے، جیسے پسندیدہ اذان کی ریکارڈنگ۔',
+                detayAciklama: 'یاد دہانیاں › وقت شروع ہونے پر میں ہر آن نماز کی آواز کی ایک قطار ہے۔ فون کی آوازوں میں سے کوئی چنیں یا اپنی فائل شامل کریں۔ فائل فون کے Notifications فولڈر میں نقل ہو جاتی ہے، اس لیے اصل فائل حذف کرنے پر بھی آواز بجتی رہتی ہے۔ یہی سہولت نماز محافظ کے مراحل میں بھی ہے۔',
+                ctaEtiketi: 'آواز منتخب کریں',
+                detaylar: [
+                    'فجر، ظہر، عصر، مغرب اور عشاء کے لیے الگ آواز',
+                    'اپنی آواز کی فائل: MP3، M4A، OGG یا WAV',
+                    'آواز اطلاع آنے پر بجتی ہے اور اطلاع بند کرنے پر رک جاتی ہے',
+                    'نماز محافظ کے مراحل میں بھی اپنی فائل چنی جا سکتی ہے',
+                ],
+            },
+        },
     },
     // iPhone "Namazda sessiz" — Odak + Kısayollar rehberi (Android'de Camideyim + Namaz modu var).
     {
@@ -206,6 +1278,127 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         hedefSayfa: 'CamideyimAyarlari',
         ctaEtiketi: 'Kurulumu açın',
         kartGoster: true,
+        ceviri: {
+            en: {
+                baslik: 'Silence your phone at the mosque',
+                aciklama:
+                    'Set up a Prayer focus once: when you arrive at the mosque or a place you choose, your iPhone goes silent, and it switches back when you leave.',
+                detayAciklama:
+                    "iPhone can only silence itself with a Focus; the app can't turn it on by itself. The Silent during prayer page guides you in three short steps: create a Prayer focus, add a location with the name of a mosque near you, and if you like, use Shortcuts to turn it on in the minutes after a prayer time begins. While the Prayer focus is on, our reminders arrive without sound and without lighting up the screen.",
+                ctaEtiketi: 'Open the setup',
+                detaylar: [
+                    'A Prayer focus that turns on at the mosque and off when you leave',
+                    'Nearby mosques in a list; tap a name to see it in Maps',
+                    'The same works for home, work or any other place',
+                    'Silent in the minutes after a prayer time begins, with Shortcuts',
+                    'Reminders arrive silently while the Focus is on; none are lost',
+                ],
+            },
+            id: {
+                baslik: 'Ponsel Anda senyap di masjid',
+                aciklama: 'Atur Fokus Salat sekali: saat Anda tiba di masjid atau tempat pilihan Anda, iPhone menjadi senyap, dan kembali seperti semula saat Anda pergi.',
+                detayAciklama: 'iPhone hanya dapat dibisukan dengan Fokus; aplikasi tidak dapat mengaktifkannya sendiri. Halaman Senyap saat salat memandu Anda dalam tiga langkah singkat: buat Fokus Salat, tambahkan lokasi dengan nama masjid di dekat Anda, dan jika mau, gunakan Pintasan untuk mengaktifkannya pada menit-menit setelah masuk waktu salat. Saat Fokus Salat aktif, pengingat kami datang tanpa suara dan tanpa menyalakan layar.',
+                ctaEtiketi: 'Buka panduan',
+                detaylar: [
+                    'Fokus Salat yang aktif di masjid dan nonaktif saat Anda pergi',
+                    'Daftar masjid terdekat; ketuk nama untuk melihatnya di Peta',
+                    'Cara yang sama berlaku untuk rumah, kantor, atau tempat lain',
+                    'Senyap pada menit-menit setelah masuk waktu salat, dengan Pintasan',
+                    'Pengingat datang tanpa suara saat Fokus aktif; tidak ada yang hilang',
+                ],
+            },
+            de: {
+                baslik: 'Ihr Telefon in der Moschee stummschalten',
+                aciklama: 'Richten Sie einmal einen Fokus „Gebet“ ein: Wenn Sie an der Moschee oder einem gewählten Ort ankommen, wird Ihr iPhone stumm, und beim Verlassen schaltet es zurück.',
+                detayAciklama: 'Das iPhone schaltet sich nur über einen Fokus stumm; die App kann ihn nicht selbst einschalten. Die Seite „Stumm beim Gebet“ führt Sie in drei kurzen Schritten: Fokus „Gebet“ erstellen, einen Ort mit dem Namen einer Moschee in Ihrer Nähe hinzufügen und auf Wunsch mit Kurzbefehle in den Minuten nach Beginn einer Gebetszeit einschalten. Solange der Fokus „Gebet“ an ist, kommen unsere Erinnerungen ohne Ton und ohne den Bildschirm einzuschalten.',
+                ctaEtiketi: 'Einrichtung öffnen',
+                detaylar: [
+                    'Ein Fokus „Gebet“, der sich in der Moschee ein- und beim Verlassen ausschaltet',
+                    'Moscheen in der Nähe als Liste; tippen Sie auf einen Namen, um ihn in Karten zu sehen',
+                    'Dasselbe funktioniert für Zuhause, die Arbeit oder jeden anderen Ort',
+                    'Stumm in den Minuten nach Beginn einer Gebetszeit, mit Kurzbefehle',
+                    'Bei aktivem Fokus kommen Erinnerungen lautlos; keine geht verloren',
+                ],
+            },
+            fr: {
+                baslik: 'Votre téléphone en silencieux à la mosquée',
+                aciklama: 'Configurez une fois la concentration Prière : quand vous arrivez à la mosquée ou dans un lieu de votre choix, votre iPhone passe en silencieux, et il revient à la normale quand vous partez.',
+                detayAciklama: 'Sur iPhone, le silence passe uniquement par Concentration ; l’application ne peut pas l’activer elle-même. La page Silencieux pendant la prière vous guide en trois étapes courtes : créez la concentration Prière, ajoutez un lieu avec le nom d’une mosquée proche, et si vous le souhaitez, utilisez Raccourcis pour l’activer dans les minutes qui suivent le début de l’heure de prière. Quand la concentration Prière est activée, nos rappels arrivent sans son et sans allumer l’écran.',
+                ctaEtiketi: 'Ouvrir la configuration',
+                detaylar: [
+                    'Une concentration Prière qui s’active à la mosquée et se désactive quand vous partez',
+                    'Les mosquées proches dans une liste ; touchez un nom pour le voir dans Plans',
+                    'La même chose pour la maison, le travail ou tout autre lieu',
+                    'Silencieux dans les minutes qui suivent le début de l’heure de prière, avec Raccourcis',
+                    'Les rappels arrivent en silence quand la concentration est activée ; aucun n’est perdu',
+                ],
+            },
+            bs: {
+                baslik: 'Utišajte telefon u džamiji',
+                aciklama: 'Jednom postavite Fokus Namaz: kada stignete u džamiju ili na mjesto koje odaberete, Vaš iPhone se utiša, a kada odete, vraća se.',
+                detayAciklama: 'iPhone se može utišati samo pomoću Fokusa; aplikacija ga ne može sama uključiti. Stranica Tiho tokom namaza vodi Vas kroz tri kratka koraka: napravite Fokus Namaz, dodajte lokaciju s nazivom obližnje džamije i, ako želite, pomoću Prečica uključite ga u minutama nakon nastupa vakta. Dok je Fokus Namaz uključen, naši podsjetnici stižu bez zvuka i bez paljenja ekrana.',
+                ctaEtiketi: 'Otvorite podešavanje',
+                detaylar: [
+                    'Fokus Namaz koji se uključuje u džamiji i isključuje kada odete',
+                    'Obližnje džamije na listi; dodirnite naziv da je vidite u Mapama',
+                    'Isto radi za kuću, posao ili bilo koje drugo mjesto',
+                    'Tiho u minutama nakon nastupa vakta, pomoću Prečica',
+                    'Dok je Fokus uključen, podsjetnici stižu tiho; nijedan se ne gubi',
+                ],
+            },
+            ru: {
+                baslik: 'Тишина в мечети',
+                aciklama: 'Один раз настройте фокусирование «Намаз»: когда вы приходите в мечеть или выбранное место, iPhone переходит в беззвучный режим, а когда уходите — возвращается обратно.',
+                detayAciklama: 'iPhone отключает звук только через фокусирование; приложение не может включить его само. Страница «Тишина во время намаза» проведёт вас через три коротких шага: создайте фокусирование «Намаз», добавьте геопозицию с названием ближайшей мечети и, если хотите, с помощью «Быстрых команд» включайте его в первые минуты после наступления времени намаза. Пока фокусирование «Намаз» включено, наши напоминания приходят без звука и не включают экран.',
+                ctaEtiketi: 'Открыть настройку',
+                detaylar: [
+                    'Фокусирование «Намаз», которое включается в мечети и выключается, когда вы уходите',
+                    'Ближайшие мечети списком; нажмите на название, чтобы увидеть её в Картах',
+                    'То же работает для дома, работы или любого другого места',
+                    'Тишина в первые минуты после наступления времени — с «Быстрыми командами»',
+                    'Пока фокусирование включено, напоминания приходят без звука; ни одно не теряется',
+                ],
+            },
+            ms: {
+                baslik: 'Senyapkan telefon anda di masjid',
+                aciklama: 'Sediakan Fokus Solat sekali: apabila anda tiba di masjid atau tempat yang anda pilih, iPhone anda menjadi senyap, dan kembali seperti biasa apabila anda pergi.',
+                detayAciklama: 'iPhone hanya boleh menyenyapkan dirinya melalui Fokus; aplikasi tidak boleh menghidupkannya sendiri. Halaman Senyap ketika solat membimbing anda dalam tiga langkah ringkas: cipta Fokus Solat, tambah lokasi dengan nama masjid berhampiran anda, dan jika mahu, gunakan Pintasan untuk menghidupkannya pada minit-minit selepas masuk waktu solat. Ketika Fokus Solat dihidupkan, peringatan kami datang tanpa bunyi dan tanpa menyalakan skrin.',
+                ctaEtiketi: 'Buka panduan persediaan',
+                detaylar: [
+                    'Fokus Solat yang dihidupkan di masjid dan dimatikan apabila anda pergi',
+                    'Senarai masjid berhampiran; ketik nama untuk melihatnya dalam Peta',
+                    'Cara yang sama untuk rumah, tempat kerja atau mana-mana tempat lain',
+                    'Senyap pada minit-minit selepas masuk waktu solat, dengan Pintasan',
+                    'Peringatan datang secara senyap ketika Fokus dihidupkan; tiada yang hilang',
+                ],
+            },
+            ar: {
+                baslik: 'كتم الهاتف في المسجد',
+                aciklama: 'إعداد تركيز «الصلاة» مرة واحدة: عند الوصول إلى المسجد أو مكان تختاره يُكتم iPhone، ويعود عند المغادرة.',
+                detayAciklama: 'لا يُكتم iPhone إلا عبر التركيز؛ ولا يستطيع التطبيق تفعيله بنفسه. ترشدك صفحة «الصمت أثناء الصلاة» في ثلاث خطوات قصيرة: إنشاء تركيز «الصلاة»، وإضافة موقع باسم مسجد قريب منك، وإن شئت استخدام الاختصارات لتفعيله في الدقائق التي تلي دخول الوقت. وأثناء تفعيل تركيز «الصلاة» تصل تذكيراتنا دون صوت ودون إضاءة الشاشة.',
+                ctaEtiketi: 'فتح الإعداد',
+                detaylar: [
+                    'تركيز «الصلاة» يُفعَّل في المسجد ويُوقف عند المغادرة',
+                    'المساجد القريبة في قائمة؛ والنقر على الاسم يعرضه في الخرائط',
+                    'يعمل الأمر نفسه للمنزل أو العمل أو أي مكان آخر',
+                    'صمت في الدقائق التي تلي دخول الوقت، عبر الاختصارات',
+                    'تصل التذكيرات بصمت أثناء التركيز؛ ولا يضيع شيء منها',
+                ],
+            },
+            ur: {
+                baslik: 'مسجد میں فون خاموش کریں',
+                aciklama: 'ایک بار نماز فوکس سیٹ کریں: مسجد یا آپ کی منتخب جگہ پہنچنے پر iPhone خاموش ہو جاتا ہے، اور وہاں سے نکلنے پر واپس آ جاتا ہے۔',
+                detayAciklama: 'iPhone خود کو صرف فوکس کے ذریعے خاموش کرتا ہے؛ ایپ اسے خود آن نہیں کر سکتی۔ نماز میں خاموش والا صفحہ تین مختصر مراحل میں رہنمائی کرتا ہے: نماز فوکس بنائیں، قریبی مسجد کے نام سے مقام شامل کریں، اور چاہیں تو Shortcuts سے اسے نماز کا وقت شروع ہونے کے بعد کے منٹوں میں آن کریں۔ نماز فوکس آن ہونے پر ہماری یاد دہانیاں آواز اور اسکرین روشن کیے بغیر آتی ہیں۔',
+                ctaEtiketi: 'سیٹ اپ کھولیں',
+                detaylar: [
+                    'نماز فوکس جو مسجد میں آن اور نکلنے پر بند ہوتا ہے',
+                    'قریبی مساجد فہرست میں؛ کسی نام پر تھپتھپا کر Maps میں دیکھیں',
+                    'گھر، دفتر یا کسی اور جگہ کے لیے بھی یہی طریقہ',
+                    'Shortcuts سے نماز کا وقت شروع ہونے کے بعد کے منٹوں میں خاموشی',
+                    'فوکس آن ہونے پر یاد دہانیاں خاموشی سے آتی ہیں؛ کوئی ضائع نہیں ہوتی',
+                ],
+            },
+        },
     },
     // Android TV panosuna telefondan konum aktarma (QR / 7 haneli kod) + ana ekranda izin onarımı.
     {
@@ -249,6 +1442,127 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'İnternetsiz; görüntü kaydedilmez',
         ],
         ikon: 'kaaba',
+        ceviri: {
+            en: {
+                baslik: 'Find the Qibla with your camera',
+                aciklama:
+                    'On the Qibla tab, hold your phone upright and look around with the camera: the Kaaba marker appears in the Qibla direction, with your distance to the Kaaba next to it. The compass turns as soon as it opens and moves smoothly.',
+                detayAciklama:
+                    'If the Kaaba marker is off screen, an arrow at the edge shows which way to turn; when the marker settles in the center ring, the ring turns green and the phone vibrates once. No internet needed, and nothing is recorded. In Compass view without the camera, holding the phone flat shows a classic compass; as you raise it, the compass tilts to the horizon and the Kaaba cube stands up in the Qibla direction. If the direction drifts, move your phone in a figure 8 a few times. With a screen reader on, the direction is read as "Qibla 30° to your right".',
+                detaylar: [
+                    'The Kaaba marker and your distance to the Kaaba on camera',
+                    '"Turn right/left" arrows when it is off screen',
+                    'A green ring and a single vibration when aligned',
+                    'A 3D compass that tilts to the horizon as you raise the phone',
+                    'A compass that works right away and stays steady',
+                    'Works offline; nothing is recorded',
+                ],
+            },
+            id: {
+                baslik: 'Temukan kiblat dengan kamera',
+                aciklama: "Di tab Kiblat, pegang ponsel tegak dan lihat sekeliling dengan kamera: tanda Ka'bah muncul di arah kiblat, dengan jarak Anda ke Ka'bah di sebelahnya. Kompas langsung berputar begitu dibuka dan bergerak dengan mulus.",
+                detayAciklama: 'Jika tanda Ka\'bah di luar layar, panah di tepi menunjukkan arah putar; saat tanda berada di lingkaran tengah, lingkaran berubah hijau dan ponsel bergetar sekali. Tidak perlu internet, dan tidak ada yang direkam. Di tampilan Kompas tanpa kamera, ponsel yang dipegang mendatar menampilkan kompas klasik; saat diangkat, kompas miring ke arah cakrawala dan kubus Ka\'bah berdiri di arah kiblat. Jika arah bergeser, gerakkan ponsel membentuk angka 8 beberapa kali. Saat pembaca layar aktif, arah dibacakan seperti "Kiblat 30° di sebelah kanan Anda".',
+                detaylar: [
+                    "Tanda Ka'bah dan jarak Anda ke Ka'bah di kamera",
+                    'Panah "putar ke kanan/kiri" saat tanda di luar layar',
+                    'Lingkaran hijau dan satu getaran saat arah sudah tepat',
+                    'Kompas 3D yang miring ke arah cakrawala saat ponsel diangkat',
+                    'Kompas yang langsung berfungsi dan tetap stabil',
+                    'Berfungsi tanpa internet; tidak ada yang direkam',
+                ],
+            },
+            de: {
+                baslik: 'Die Qibla mit der Kamera finden',
+                aciklama: 'Halten Sie im Tab Qibla Ihr Telefon aufrecht und schauen Sie sich mit der Kamera um: Das Kaaba-Zeichen erscheint in Richtung der Qibla, daneben Ihre Entfernung zur Kaaba. Der Kompass dreht sich sofort beim Öffnen und bewegt sich ruhig.',
+                detayAciklama: 'Liegt das Kaaba-Zeichen außerhalb des Bildschirms, zeigt ein Pfeil am Rand, in welche Richtung Sie sich drehen müssen; erreicht das Zeichen den Ring in der Mitte, wird der Ring grün und das Telefon vibriert einmal. Kein Internet nötig, nichts wird aufgezeichnet. In der Kompassansicht ohne Kamera zeigt das flach gehaltene Telefon einen klassischen Kompass; heben Sie es an, neigt sich der Kompass zum Horizont und der Kaaba-Würfel richtet sich in Richtung der Qibla auf. Weicht die Richtung ab, bewegen Sie Ihr Telefon einige Male in Form einer Acht. Mit eingeschaltetem Screenreader wird die Richtung zum Beispiel als „Die Qibla ist 30° rechts von Ihnen“ vorgelesen.',
+                detaylar: [
+                    'Kaaba-Zeichen und Ihre Entfernung zur Kaaba im Kamerabild',
+                    'Pfeile „nach rechts/links drehen“, wenn es außerhalb des Bildschirms liegt',
+                    'Ein grüner Ring und eine einzige Vibration bei richtiger Ausrichtung',
+                    'Ein 3D-Kompass, der sich beim Anheben des Telefons zum Horizont neigt',
+                    'Ein Kompass, der sofort funktioniert und ruhig bleibt',
+                    'Funktioniert offline; nichts wird aufgezeichnet',
+                ],
+            },
+            fr: {
+                baslik: 'Trouvez la Qibla avec votre caméra',
+                aciklama: 'Dans l’onglet Qibla, tenez votre téléphone à la verticale et regardez autour de vous avec la caméra : le repère de la Kaaba apparaît dans la direction de la Qibla, avec votre distance jusqu’à la Kaaba. La boussole tourne dès l’ouverture et se déplace sans à-coups.',
+                detayAciklama: 'Si le repère de la Kaaba est hors de l’écran, une flèche sur le bord indique de quel côté tourner ; quand le repère se place dans l’anneau central, l’anneau devient vert et le téléphone vibre une fois. Aucune connexion Internet n’est nécessaire et rien n’est enregistré. Dans la vue Boussole sans caméra, en tenant le téléphone à plat, vous voyez une boussole classique ; à mesure que vous le redressez, la boussole bascule vers l’horizon et le cube de la Kaaba se dresse dans la direction de la Qibla. Si la direction dérive, déplacez votre téléphone plusieurs fois en dessinant un 8. Avec un lecteur d’écran, la direction est lue ainsi : « La Qibla est à 30° sur votre droite ».',
+                detaylar: [
+                    'Le repère de la Kaaba et votre distance jusqu’à la Kaaba à la caméra',
+                    'Des flèches « tournez à droite/à gauche » quand il est hors de l’écran',
+                    'Un anneau vert et une seule vibration une fois aligné',
+                    'Une boussole 3D qui bascule vers l’horizon quand vous redressez le téléphone',
+                    'Une boussole qui fonctionne dès l’ouverture et reste stable',
+                    'Fonctionne hors ligne ; rien n’est enregistré',
+                ],
+            },
+            bs: {
+                baslik: 'Pronađite kiblu kamerom',
+                aciklama: 'Na kartici Kibla držite telefon uspravno i pogledajte oko sebe kamerom: oznaka Kabe pojavljuje se u smjeru kible, a pored nje Vaša udaljenost do Kabe. Kompas se okreće čim se otvori i kreće se glatko.',
+                detayAciklama: 'Ako je oznaka Kabe izvan ekrana, strelica na rubu pokazuje na koju stranu da se okrenete; kada se oznaka smjesti u središnji krug, krug postaje zelen i telefon jednom zavibrira. Internet nije potreban i ništa se ne snima. U prikazu Kompas bez kamere, kada telefon držite položeno, vidite klasični kompas; kako ga podižete, kompas se naginje prema horizontu, a kocka Kabe se uspravlja u smjeru kible. Ako smjer odstupa, nekoliko puta pomjerite telefon kao da crtate osmicu. Uz čitač ekrana smjer se čita kao „Kibla je 30° desno od Vas”.',
+                detaylar: [
+                    'Oznaka Kabe i Vaša udaljenost do Kabe na kameri',
+                    'Strelice „okrenite se desno/lijevo” kada je izvan ekrana',
+                    'Zeleni krug i jedna vibracija kada ste poravnati',
+                    '3D kompas koji se naginje prema horizontu dok podižete telefon',
+                    'Kompas koji radi odmah i ostaje stabilan',
+                    'Radi bez interneta; ništa se ne snima',
+                ],
+            },
+            ru: {
+                baslik: 'Найдите киблу через камеру',
+                aciklama: 'На вкладке «Кибла» держите телефон вертикально и осмотритесь через камеру: знак Каабы появится в направлении киблы, а рядом — расстояние до Каабы. Компас поворачивается сразу после открытия и движется плавно.',
+                detayAciklama: 'Если знак Каабы за краем экрана, стрелка у края показывает, куда повернуться; когда знак встаёт в центральное кольцо, кольцо становится зелёным и телефон один раз вибрирует. Интернет не нужен, ничего не записывается. В режиме компаса без камеры, если держать телефон горизонтально, виден классический компас; когда вы поднимаете телефон, компас наклоняется к горизонту, а куб Каабы встаёт в направлении киблы. Если направление сбивается, несколько раз поводите телефоном, рисуя восьмёрку. При включённой программе чтения с экрана направление озвучивается так: «Кибла на 30° справа от вас».',
+                detaylar: [
+                    'Знак Каабы и расстояние до неё на изображении камеры',
+                    'Стрелки «Повернитесь вправо/влево», когда знак за краем экрана',
+                    'Зелёное кольцо и одна вибрация при совпадении',
+                    'Объёмный компас, который наклоняется к горизонту, когда вы поднимаете телефон',
+                    'Компас, который работает сразу и не дрожит',
+                    'Работает без интернета; ничего не записывается',
+                ],
+            },
+            ms: {
+                baslik: 'Cari arah kiblat dengan kamera anda',
+                aciklama: 'Pada tab Kiblat, pegang telefon secara tegak dan lihat sekeliling dengan kamera: tanda Kaabah muncul ke arah kiblat, dengan jarak anda ke Kaabah di sebelahnya. Kompas berpusing sebaik sahaja dibuka dan bergerak dengan lancar.',
+                detayAciklama: 'Jika tanda Kaabah berada di luar skrin, anak panah di tepi menunjukkan arah untuk berpusing; apabila tanda berada di dalam gelang tengah, gelang bertukar hijau dan telefon bergetar sekali. Tanpa internet, dan tiada apa-apa yang dirakam. Dalam paparan Kompas tanpa kamera, memegang telefon secara mendatar memaparkan kompas biasa; apabila anda mengangkatnya, kompas condong ke arah ufuk dan kiub Kaabah berdiri ke arah kiblat. Jika arah tersasar, gerakkan telefon anda seperti melukis angka 8 beberapa kali. Dengan pembaca skrin dihidupkan, arah dibacakan sebagai "Kiblat 30° di sebelah kanan anda".',
+                detaylar: [
+                    'Tanda Kaabah dan jarak anda ke Kaabah pada kamera',
+                    'Anak panah "Pusing ke kanan/kiri" apabila ia di luar skrin',
+                    'Gelang hijau dan satu getaran apabila sejajar',
+                    'Kompas 3D yang condong ke arah ufuk apabila anda mengangkat telefon',
+                    'Kompas yang terus berfungsi dan kekal stabil',
+                    'Berfungsi di luar talian; tiada apa-apa yang dirakam',
+                ],
+            },
+            ar: {
+                baslik: 'تحديد القبلة بالكاميرا',
+                aciklama: 'في تبويب القبلة، إمساك الهاتف عموديًا والنظر حولك بالكاميرا: تظهر علامة الكعبة في اتجاه القبلة، وبجانبها المسافة إلى الكعبة. وتدور البوصلة فور فتحها وتتحرك بسلاسة.',
+                detayAciklama: 'إن كانت علامة الكعبة خارج الشاشة، يدل سهم على الحافة على جهة الاستدارة؛ وحين تستقر العلامة في الحلقة الوسطى تخضرّ الحلقة ويهتز الهاتف مرة واحدة. لا حاجة إلى الإنترنت، ولا يُسجَّل شيء. وفي عرض البوصلة دون كاميرا يظهر عند وضع الهاتف أفقيًا بوصلة تقليدية؛ ومع رفعه تميل البوصلة نحو الأفق ويقف مكعب الكعبة في اتجاه القبلة. وإن انحرف الاتجاه، يُحرَّك الهاتف على شكل الرقم 8 بضع مرات. ومع تفعيل قارئ الشاشة يُقرأ الاتجاه هكذا: «القبلة 30° إلى يمينك».',
+                detaylar: [
+                    'علامة الكعبة والمسافة إليها على الكاميرا',
+                    'أسهم «يمينًا/يسارًا» حين تكون خارج الشاشة',
+                    'حلقة خضراء واهتزاز واحد عند المحاذاة',
+                    'بوصلة ثلاثية الأبعاد تميل نحو الأفق مع رفع الهاتف',
+                    'بوصلة تعمل فورًا وتبقى ثابتة',
+                    'تعمل دون إنترنت؛ ولا يُسجَّل شيء',
+                ],
+            },
+            ur: {
+                baslik: 'کیمرے سے قبلہ معلوم کریں',
+                aciklama: 'قبلہ ٹیب پر فون سیدھا پکڑ کر کیمرے سے اردگرد دیکھیں: کعبہ کا نشان قبلہ کی سمت میں ظاہر ہوتا ہے اور ساتھ کعبہ تک آپ کا فاصلہ۔ قطب نما کھلتے ہی گھومتا ہے اور ہموار انداز میں حرکت کرتا ہے۔',
+                detayAciklama: 'اگر کعبہ کا نشان اسکرین سے باہر ہو تو کنارے پر ایک تیر بتاتا ہے کہ کس طرف مڑنا ہے؛ نشان درمیانی دائرے میں ٹھہرنے پر دائرہ سبز ہو جاتا ہے اور فون ایک بار وائبریٹ کرتا ہے۔ انٹرنیٹ کی ضرورت نہیں اور کچھ ریکارڈ نہیں ہوتا۔ کیمرے کے بغیر قطب نما منظر میں فون سیدھا لٹانے پر عام قطب نما نظر آتا ہے؛ فون اٹھانے پر قطب نما افق کی طرف جھکتا ہے اور کعبہ کا مکعب قبلہ کی سمت میں کھڑا ہو جاتا ہے۔ اگر سمت ہلے تو فون کو چند بار 8 کی شکل میں گھمائیں۔ اسکرین ریڈر آن ہو تو سمت یوں پڑھی جاتی ہے: “قبلہ آپ کے دائیں جانب 30° پر ہے”۔',
+                detaylar: [
+                    'کیمرے پر کعبہ کا نشان اور کعبہ تک آپ کا فاصلہ',
+                    'اسکرین سے باہر ہونے پر “دائیں/بائیں مڑیں” کے تیر',
+                    'سیدھ میں آنے پر سبز دائرہ اور ایک وائبریشن',
+                    'فون اٹھانے پر افق کی طرف جھکنے والا 3D قطب نما',
+                    'فوراً کام کرنے والا اور مستحکم قطب نما',
+                    'آف لائن کام کرتا ہے؛ کچھ ریکارڈ نہیں ہوتا',
+                ],
+            },
+        },
     },
     // Sade tasarım (Dalga 2 + 3 + 4). Bugünkü kullanıcıya anlamlı olanı söyler.
     {

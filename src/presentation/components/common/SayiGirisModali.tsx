@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { useMetin } from '../../hooks/useMetin';
+import { rakamlariNormallestir } from '../../../core/dil/rakam';
 
 /**
  * Tek sayı girişli onay modalı (number-pad + İptal/Onay).
@@ -41,6 +43,7 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
   onOnay,
 }) => {
   const renkler = useRenkler();
+  const m = useMetin().genel.ortak;
 
   useDonanimGeriTusu(gorunur, onIptal);
 
@@ -66,7 +69,7 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
             placeholder={placeholder}
             placeholderTextColor={renkler.metinIkincil}
             value={deger}
-            onChangeText={onDegisim}
+            onChangeText={(t) => onDegisim(rakamlariNormallestir(t))}
             autoFocus
           />
           <View style={styles.modalButonlar}>
@@ -74,9 +77,9 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
               onPress={onIptal}
               style={[styles.modalIptalButon, { borderColor: renkler.sinir }]}
               accessibilityRole="button"
-              accessibilityLabel="İptal"
+              accessibilityLabel={m.iptal}
             >
-              <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>İptal</Text>
+              <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>{m.iptal}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={onOnay}

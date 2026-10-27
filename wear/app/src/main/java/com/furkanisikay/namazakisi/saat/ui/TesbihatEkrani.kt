@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -57,6 +58,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.TesbihatYaylari
@@ -95,11 +97,22 @@ fun TesbihatEkrani(
     // Rotary olayları odaklı öğeye gelir.
     LaunchedEffect(Unit) { odak.requestFocus() }
 
+    // Zikir adları ve kaynak o dilin Müslüman topluluğunun yaygın okunuşuyla (çeviri değil;
+    // bilinmeyen dil Türkçe).
+    val dil = stringResource(R.string.dil_kodu)
     val aciklama = if (durum.tamamMi) {
-        "Tesbihat tamamlandı. ${AnaEkranKarari.KABUL_DUASI}. ${Tesbihat.TOPLAM} / ${Tesbihat.TOPLAM}. ${Tesbihat.KAYNAK}"
+        stringResource(
+            R.string.tesbihat_tamam_erisim,
+            AnaEkranKarari.kabulDuasi(dil), Tesbihat.TOPLAM, Tesbihat.TOPLAM, Tesbihat.kaynak(dil),
+        )
     } else {
-        "${durum.faz.ad}, ${durum.fazSayisi} / ${durum.faz.hedef}. Toplam ${durum.toplam} / ${Tesbihat.TOPLAM}"
+        stringResource(
+            R.string.tesbihat_sayim_erisim,
+            durum.faz.ad(dil), durum.fazSayisi, durum.faz.hedef, durum.toplam, Tesbihat.TOPLAM,
+        )
     }
+    val sayinEtiketi = stringResource(R.string.tesbihat_sayin)
+    val bastanEtiketi = stringResource(R.string.tesbihat_bastan_baslayin)
 
     SaatTemasi {
         AppScaffold(timeText = { TimeText() }) {
@@ -120,8 +133,8 @@ fun TesbihatEkrani(
                     .focusable()
                     .combinedClickable(
                         enabled = !durum.tamamMi,
-                        onClickLabel = "Sayın",
-                        onLongClickLabel = "Baştan başlayın",
+                        onClickLabel = sayinEtiketi,
+                        onLongClickLabel = bastanEtiketi,
                         onLongClick = { if (durum.toplam > 0) sifirlamaOnayi = true },
                         onClick = onSay,
                     )
@@ -141,8 +154,8 @@ fun TesbihatEkrani(
             AlertDialog(
                 visible = sifirlamaOnayi,
                 onDismissRequest = { sifirlamaOnayi = false },
-                title = { Text("Baştan başlansın mı?", textAlign = TextAlign.Center) },
-                text = { Text("Sayım sıfırlanır.", textAlign = TextAlign.Center) },
+                title = { Text(stringResource(R.string.tesbihat_bastan_soru), textAlign = TextAlign.Center) },
+                text = { Text(stringResource(R.string.tesbihat_sifirlanir), textAlign = TextAlign.Center) },
                 confirmButton = {
                     AlertDialogDefaults.ConfirmButton(onClick = {
                         sifirlamaOnayi = false
@@ -159,6 +172,7 @@ fun TesbihatEkrani(
 
 @Composable
 private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
+    val dil = stringResource(R.string.dil_kodu)
     val azalt = hareketAzaltilmis()
     // Sayım "vuruşu": rakam bir kez hafifçe büyüyüp yaylanarak yerine oturur (olay tetikli;
     // hızlı çevirmede — önceki sayımdan < 120 ms — atlanır, boşta hareket yok).
@@ -185,7 +199,7 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
             // Yüzü tamamlayan tek söz: rakam yerine metnin kendisi okunur. Boyu yazı ölçeğinden
             // bağımsız (uzun metin; büyük ölçekte yuvarlak ekranın kenarına taşıyordu).
             Text(
-                Tesbihat.TEHLIL_METNI,
+                Tesbihat.tehlilMetni(dil),
                 fontSize = sabitBoyut(0.052f),
                 lineHeight = sabitBoyut(0.064f),
                 textAlign = TextAlign.Center,
@@ -198,7 +212,7 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
             // ad sütunun %82'sine sığdırılır ("Sübhânallah" kare ekranda halkaya değiyordu,
             // "Elhamdülillâh" daha uzun). Sığmazsa küçülür, kesilmez.
             SigdirilanMetin(
-                durum.faz.ad,
+                durum.faz.ad(dil),
                 enFazla = sinirliBoyut(0.072f),
                 renk = renk(SaatPaleti.METIN),
                 modifier = Modifier.fillMaxWidth(
@@ -206,7 +220,7 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
                 ),
             )
             Text(
-                durum.fazSayisi.toString(),
+                yerelRakam(durum.fazSayisi.toString()),
                 style = RAKAM,
                 fontSize = sabitBoyut(0.24f),
                 fontWeight = FontWeight.SemiBold,
@@ -220,18 +234,19 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
         }
         // Fazın hedefi; toplam 100 halkadan okunur (üç yay).
         Text(
-            if (durum.faz == Tesbihat.Faz.TEHLIL) "${durum.toplam} / ${Tesbihat.TOPLAM}" else "/ ${durum.faz.hedef}",
+            yerelRakam(if (durum.faz == Tesbihat.Faz.TEHLIL) "${durum.toplam} / ${Tesbihat.TOPLAM}" else "/ ${durum.faz.hedef}"),
             fontSize = sinirliBoyut(0.052f),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
         )
         Spacer(Modifier.height(4.dp))
+        val geriAlAciklama = stringResource(R.string.tesbihat_geri_al_aciklama)
         CompactButton(
             onClick = onGeriAl,
             enabled = durum.toplam > 0,
             colors = ButtonDefaults.filledTonalButtonColors(),
-            modifier = Modifier.semantics { contentDescription = "Son sayımı geri alın" },
-            label = { Text("Geri al", maxLines = 1, overflow = TextOverflow.Ellipsis) },
+            modifier = Modifier.semantics { contentDescription = geriAlAciklama },
+            label = { Text(stringResource(R.string.tesbihat_geri_al), maxLines = 1, overflow = TextOverflow.Ellipsis) },
         )
     }
 }
@@ -289,30 +304,38 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
             drawPath(parca, ust, style = Stroke(width = 3.5.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round))
         }
         Spacer(Modifier.height(2.dp))
-        // Tesbihat bitince dua (sahip isteği: "Tamamlandı" yerine "Allah kabul etsin").
-        Text(
-            AnaEkranKarari.KABUL_DUASI,
-            fontSize = sinirliBoyut(0.075f),
-            fontWeight = FontWeight.SemiBold,
-            color = renk(SaatPaleti.METIN),
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+        // Tesbihat bitince dua (sahip isteği: "Tamamlandı" yerine "Allah kabul etsin"). Dua
+        // KESİLMEZ, sığmazsa küçülür (Almanca "Möge Allah es annehmen" "…" ile kesiliyordu).
+        val dil = stringResource(R.string.dil_kodu)
+        SigdirilanMetin(
+            AnaEkranKarari.kabulDuasi(dil),
+            enFazla = sinirliBoyut(0.075f),
+            renk = renk(SaatPaleti.METIN),
+            agirlik = FontWeight.SemiBold,
+            modifier = Modifier.fillMaxWidth(),
         )
-        Text(
-            Tesbihat.KAYNAK,
-            fontSize = sinirliBoyut(0.048f),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+        // Künye dile göre ("Riwayat Muslim, Masajid 146" Türkçeden uzun): kesilmez, küçülür.
+        SigdirilanMetin(
+            Tesbihat.kaynak(dil),
+            enFazla = sinirliBoyut(0.048f),
+            renk = MaterialTheme.colorScheme.onSurfaceVariant,
+            agirlik = FontWeight.Normal,
+            modifier = Modifier.fillMaxWidth(),
         )
         Spacer(Modifier.height(2.dp))
+        val yenidenAciklama = stringResource(R.string.tesbihat_yeniden_aciklama)
         CompactButton(
             onClick = onYenidenBasla,
             colors = ButtonDefaults.buttonColors(containerColor = yesil, contentColor = ust),
-            modifier = Modifier.semantics { contentDescription = "Tesbihata yeniden başlayın" },
-            label = { Text("Yeniden başla", fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+            modifier = Modifier.semantics { contentDescription = yenidenAciklama },
+            label = {
+                Text(
+                    stringResource(R.string.tesbihat_yeniden),
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            },
         )
     }
 }

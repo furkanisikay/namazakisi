@@ -3,7 +3,7 @@
 appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _acilis.yaml
-- tapOn: "Kıble"
+- tapOn: "(Kıble|Qibla)"
 - waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: ozk/32-kible

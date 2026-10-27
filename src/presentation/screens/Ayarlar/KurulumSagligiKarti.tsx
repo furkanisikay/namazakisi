@@ -20,6 +20,8 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import type { Sorun, SorunSeviyesi } from '../../../core/ayarlar/kurulumSagligi';
+import { useMetin } from '../../hooks/useMetin';
+import { sayili } from '../../../core/dil/aktifDil';
 
 export interface KurulumSagligiKartiProps {
   sorunlar: Sorun[];
@@ -40,6 +42,7 @@ export const KurulumSagligiKarti: React.FC<KurulumSagligiKartiProps> = ({
   ozetSatiri,
 }) => {
   const renkler = useRenkler();
+  const m = useMetin().ayarlar.ana;
   const [genisletildiMi, setGenisletildiMi] = useState(false);
 
   const seviyeRengi = (seviye: SorunSeviyesi): string => {
@@ -132,10 +135,10 @@ export const KurulumSagligiKarti: React.FC<KurulumSagligiKartiProps> = ({
           activeOpacity={0.7}
           style={{ minHeight: 44, justifyContent: 'center' }}
           accessibilityRole="button"
-          accessibilityLabel={`${kalanSayi} sorun daha göster`}
+          accessibilityLabel={sayili(m.dahaFazlaSorunErisim, kalanSayi)}
         >
           <Text className="text-xs font-semibold" style={{ color: renkler.birincil }}>
-            {kalanSayi} sorun daha
+            {sayili(m.dahaFazlaSorun, kalanSayi)}
           </Text>
         </TouchableOpacity>
       )}

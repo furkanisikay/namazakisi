@@ -3,10 +3,13 @@ import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleShe
 import { LinearGradient } from 'expo-linear-gradient';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { yonluIkonStili } from '../common/yon';
 import { BlurView } from 'expo-blur';
 import { useTema } from '../../../core/theme';
 import { PaylasimModal } from '../Sharing/PaylasimModal';
 import { PaylasilabilirSeri } from '../Sharing/PaylasilabilirSeri';
+import { bicim, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 
 interface SeriKartiModalProps {
@@ -23,6 +26,7 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
     enUzunSeri
 }) => {
     const { koyuMu } = useTema();
+    const m = useMetin().seri.kart;
     const [paylasimModalGorunur, setPaylasimModalGorunur] = useState(false);
     // Paylaşım modalı açıkken geri tuşu önce onu kapatsın, değilse ana modalı
     useDonanimGeriTusu(gorunur && !paylasimModalGorunur, onKapat);
@@ -93,10 +97,10 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
                         <View className="flex-row justify-between items-start mb-2">
                             <View>
                                 <Text className="font-bold text-lg leading-tight uppercase tracking-wide text-white opacity-90">
-                                    Seri ateşin yanıyor!
+                                    {m.baslik}
                                 </Text>
                                 <Text className="text-sm text-orange-100 mt-1">
-                                    En uzun seri: {enUzunSeri} gün
+                                    {sayili(m.enUzun, enUzunSeri)}
                                 </Text>
                             </View>
                             <MaterialIcons name="local-fire-department" size={40} color="#fde047" />
@@ -108,16 +112,16 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
                                 {mevcutSeri}
                             </Text>
                             <Text className="text-xl font-medium tracking-widest uppercase text-white opacity-90 mt-1">
-                                GÜN
+                                {sayili(m.gunBuyuk, mevcutSeri)}
                             </Text>
                         </View>
 
                         {/* Milestones */}
                         <View className="flex-row justify-center items-center gap-2 mb-6">
                             <HedefCircle target={7} icon="eco" color="green-300" />
-                            <MaterialIcons name="arrow-forward" size={16} color="rgba(255,255,255,0.4)" />
+                            <MaterialIcons name="arrow-forward" size={16} color="rgba(255,255,255,0.4)" style={yonluIkonStili('arrow-forward')} />
                             <HedefCircle target={21} icon="local_fire_department" color="yellow-300" />
-                            <MaterialIcons name="arrow-forward" size={16} color="rgba(255,255,255,0.4)" />
+                            <MaterialIcons name="arrow-forward" size={16} color="rgba(255,255,255,0.4)" style={yonluIkonStili('arrow-forward')} />
                             <HedefCircle target={60} icon="diamond" color="blue-300" />
                         </View>
 
@@ -125,7 +129,10 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
                         <View className="items-center mb-4">
                             <View className="bg-black/10 px-4 py-1.5 rounded-full">
                                 <Text className="text-xs text-orange-100 font-medium">
-                                    Sonraki hedef: {sonrakiHedef}. Gün ({kalanGun > 0 ? `${kalanGun} gün kaldı` : 'Tamamlandı!'})
+                                    {bicim(m.sonrakiHedef, {
+                                        hedef: sonrakiHedef,
+                                        durum: kalanGun > 0 ? sayili(m.kalanGun, kalanGun) : m.tamamlandi,
+                                    })}
                                 </Text>
                             </View>
                         </View>
@@ -136,11 +143,11 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
                             className="bg-white/20 py-3 rounded-xl flex-row items-center justify-center space-x-2 border border-white/30"
                             activeOpacity={0.8}
                             accessibilityRole="button"
-                            accessibilityLabel="Başarınızı paylaşın"
+                            accessibilityLabel={m.paylasErisim}
                         >
                             <FontAwesome5 name="share-alt" size={16} color="white" style={{ marginRight: 8 }} />
                             {/* Sabit büyük harf: toUpperCase() Türkçe İ/ı'yı bozar (AGENTS.md) */}
-                            <Text className="text-white font-bold text-sm">BAŞARINIZI PAYLAŞIN</Text>
+                            <Text className="text-white font-bold text-sm">{m.paylasBuyuk}</Text>
                         </TouchableOpacity>
 
                     </LinearGradient>

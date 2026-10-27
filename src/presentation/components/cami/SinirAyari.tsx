@@ -10,6 +10,8 @@ import * as React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { SayisalSecici } from '../common/SayisalSecici';
 import { SecenekCipleri } from './SecenekCipleri';
 import { ALAN_ADIM_M, ALAN_MAX_M, ALAN_MIN_M, type YerKaydi } from '../../../core/cami/camiTipleri';
@@ -38,13 +40,14 @@ interface Props {
     testIDOnEki?: string;
 }
 
-const KIPLER = [
-    { deger: 'bina' as const, etiket: 'Bina sınırı', ikon: 'draw-polygon' },
-    { deger: 'daire' as const, etiket: 'Daire', ikon: 'circle' },
-];
 
 export const SinirAyari: React.FC<Props> = ({ girdi, ad, onDegistir, testIDOnEki = 'sinir' }) => {
     const renkler = useRenkler();
+    const m = useMetin().cami.sinir;
+    const kipler = [
+        { deger: 'bina' as const, etiket: m.kipBina, ikon: 'draw-polygon' },
+        { deger: 'daire' as const, etiket: m.kipDaire, ikon: 'circle' },
+    ];
     const kip = sinirModu(girdi);
     const ustYuzde = olcekUstYuzde(girdi.yaricapM);
     const ozgun = ozgunSinirdaMi(girdi);
@@ -52,19 +55,19 @@ export const SinirAyari: React.FC<Props> = ({ girdi, ad, onDegistir, testIDOnEki
     return (
         <View testID={`${testIDOnEki}-ayari`}>
             <Text className="text-sm font-medium" style={{ color: renkler.metin }}>
-                Algılama alanı
+                {m.baslik}
             </Text>
             <Text className="text-xs mb-2" style={{ color: renkler.metinIkincil }} testID={`${testIDOnEki}-aciklama`}>
-                {sinirAciklamasi(girdi)} Bu alanın içindeyseniz camide sayılırsınız.
+                {sinirAciklamasi(girdi)} {m.icindeyseniz}
             </Text>
 
             {girdi.poligonVar && (
                 <View className="mb-2">
                     <SecenekCipleri<SinirModu>
-                        secenekler={KIPLER}
+                        secenekler={kipler}
                         secili={kip}
                         onSec={(k) => k !== kip && onDegistir(kipDegisikligi(girdi, k), true)}
-                        grupEtiketi={`${ad} sınır biçimi`}
+                        grupEtiketi={bicim(m.kipErisim, { ad })}
                         testIDOnEki={`${testIDOnEki}-kip`}
                     />
                 </View>
@@ -72,7 +75,7 @@ export const SinirAyari: React.FC<Props> = ({ girdi, ad, onDegistir, testIDOnEki
 
             <View className="flex-row items-center justify-between mb-1">
                 <Text className="text-xs flex-1 pr-2" style={{ color: renkler.metinIkincil }}>
-                    {kip === 'bina' ? 'Merkezden büyütme' : 'Yarıçap'}
+                    {kip === 'bina' ? m.merkezdenBuyutme : m.yaricap}
                 </Text>
                 {kip === 'bina' ? (
                     ustYuzde > 100 ? (
@@ -84,11 +87,11 @@ export const SinirAyari: React.FC<Props> = ({ girdi, ad, onDegistir, testIDOnEki
                             birim="%"
                             onChange={(v) => onDegistir(olcekDegisikligi(v), false)}
                             renk={renkler.birincil}
-                            aciklama={`${ad} bina sınırı büyütme`}
+                            aciklama={bicim(m.buyutmeErisim, { ad })}
                         />
                     ) : (
                         <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                            Bina zaten geniş; büyütülemez
+                            {m.zatenGenis}
                         </Text>
                     )
                 ) : (
@@ -100,7 +103,7 @@ export const SinirAyari: React.FC<Props> = ({ girdi, ad, onDegistir, testIDOnEki
                         birim="m"
                         onChange={(v) => onDegistir(daireDegisikligi(v), false)}
                         renk={renkler.birincil}
-                        aciklama={`${ad} alanı`}
+                        aciklama={bicim(m.alanErisim, { ad })}
                     />
                 )}
             </View>
@@ -112,12 +115,12 @@ export const SinirAyari: React.FC<Props> = ({ girdi, ad, onDegistir, testIDOnEki
                     style={{ minHeight: 44 }}
                     onPress={() => onDegistir(OZGUN_SINIR_DEGISIKLIGI, true)}
                     accessibilityRole="button"
-                    accessibilityLabel={`${ad}: özgün sınıra dönün`}
+                    accessibilityLabel={bicim(m.ozgunErisim, { ad })}
                     hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
                 >
                     <FontAwesome5 name="undo" size={11} color={renkler.birincil} style={{ marginRight: 6 }} />
                     <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                        {girdi.poligonVar ? 'Özgün bina sınırına dönün' : 'Varsayılan alana dönün'}
+                        {girdi.poligonVar ? m.ozgunBina : m.varsayilanAlan}
                     </Text>
                 </TouchableOpacity>
             )}

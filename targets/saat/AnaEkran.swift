@@ -18,7 +18,8 @@ import WatchKit
 //
 // Karar iPhone widget'iyla AYNI saf koddan (`SaatKarari` → `WidgetKarari`/`VakitKarari`);
 // geri sayim BIRIMLI ("1 sa 9 dk", saatin altinda "9 dk 05 sn"; telefon/TV/Wear ile ayni,
-// saf `SaatSure`). Arayuz metni kibar "siz".
+// saf `SaatSure`). Arayuz metni kibar "siz"; dil telefondan gelir ve CIZIM aninda okunur
+// (`SaatDili`, `SaatMetinleri` — W5).
 
 enum SaatGorunum {
     /// Uygulamanin birincil yesili (#4CAF50) — "kilindi" durumunun rengi. Dekoratif.
@@ -122,7 +123,9 @@ struct AnaEkran: View {
     private func sayfalar(simdi: Date, yenileme: Int) -> some View {
         let depo = SaatDeposu.varsayilan
         if let yuk = depo.yuk() {
-            let durum = SaatKarari.ekranDurumu(yuk: yuk, bekleyenler: depo.bekleyenler(), simdiMs: SaatDeposu.simdiMs(simdi))
+            let durum = SaatKarari.ekranDurumu(
+                yuk: yuk, bekleyenler: depo.bekleyenler(), simdiMs: SaatDeposu.simdiMs(simdi), dil: SaatDili.kod
+            )
             TabView(selection: $sayfa) {
                 SimdiSayfasi(durum: durum, simdi: simdi, surumYeni: depo.surumYeniMi(), kuruluUyandirma: uyandirici.kurulu)
                     .tag(SaatSayfa.simdi)
@@ -146,12 +149,11 @@ private struct BosDurum: View {
     let surumYeni: Bool
 
     var body: some View {
+        let m = SaatDili.metin
         ScrollView {
             BilgiKarti(
                 ikon: surumYeni ? "arrow.down.app" : "iphone",
-                metin: surumYeni
-                    ? "Saatinizdeki Namaz Akışı'nı güncelleyin."
-                    : "Vakitler iPhone'unuzdan gelir. iPhone'unuzda Namaz Akışı'nı bir kez açın."
+                metin: surumYeni ? m.saatiGuncelleyin : m.iphonedaBirKezAcin
             )
             .padding(.vertical, 8)
         }
@@ -204,10 +206,15 @@ struct SimdiSayfasi: View {
         return nil
     }
 
+    /// Cizim anindaki dil (telefondan gelir; `SaatDili`).
+    private var dil: String { SaatDili.kod }
+    private var m: SaatMetinleri { SaatMetinleri.dil(dil) }
+    private var vm: VakitMetinleri { VakitMetinleri.dil(dil) }
+
     var body: some View {
         VStack(spacing: 6) {
             if durum.veriEski {
-                BilgiKarti(ikon: "arrow.clockwise", metin: "Vakitleri güncellemek için iPhone'unuzda Namaz Akışı'nı açın.")
+                BilgiKarti(ikon: "arrow.clockwise", metin: m.veriEski)
             } else {
                 // Halka kalan alanin tamamini alir; sure punto boyu halka capina gore
                 // (`Text(timerInterval:)` `minimumScaleFactor` ile kuculmez, tasardi).
@@ -221,9 +228,9 @@ struct SimdiSayfasi: View {
         .padding(.horizontal, 4)
         .navigationTitle(baslik)
         .containerBackground(ton.opacity(sonuk ? 0.08 : 0.28).gradient, for: .tabView)
-        .confirmationDialog(VakitKarari.onayMetni(aday?.ad ?? ""), isPresented: $onayAcik, titleVisibility: .visible) {
-            Button("İşaretle") { isaretle() }
-            Button("Vazgeç", role: .cancel) {}
+        .confirmationDialog(VakitKarari.onayMetni(aday?.ad ?? "", dil: dil), isPresented: $onayAcik, titleVisibility: .visible) {
+            Button(m.isaretle) { isaretle() }
+            Button(m.vazgec, role: .cancel) {}
         }
         .onAppear {
             // Yalniz simulator kare cekimi (cihazda acilisEkrani daima nil).
@@ -239,8 +246,8 @@ struct SimdiSayfasi: View {
     }
 
     private var baslik: String {
-        if let a = durum.gorunum.aktif { return VakitKarari.gorunenAd(a.vakit) }
-        if let s = durum.gorunum.sonraki { return VakitKarari.gorunenAd(s.vakit) }
+        if let a = durum.gorunum.aktif { return vm.ad(a.vakit) }
+        if let s = durum.gorunum.sonraki { return vm.ad(s.vakit) }
         return "Namaz Akışı"
     }
 
@@ -269,7 +276,7 @@ struct SimdiSayfasi: View {
                     .trim(from: 0, to: tik)
                     .stroke(SaatGorunum.yesil.opacity(sonuk ? 0.6 : 1), style: StrokeStyle(lineWidth: 7, lineCap: .round, lineJoin: .round))
                     .frame(width: cap * 0.34, height: cap * 0.28)
-                    .accessibilityLabel("\(baslik) kılındı. \(Samimiyet.kabulDuasi)")
+                    .accessibilityLabel(m.bicim(m.kilindiErisim, ["ad": baslik, "dua": vm.kabulDuasi]))
             } else {
                 VStack(spacing: 0) {
                     Image(systemName: SaatGorunum.ikon(odakKodu))
@@ -278,8 +285,8 @@ struct SimdiSayfasi: View {
                         .font(.system(size: cap * 0.14, weight: .semibold))
                         .accessibilityHidden(true)
                     if let hedefMs {
-                        BirimliSure(hedefMs: hedefMs, cap: cap, sonuk: sonuk)
-                            .accessibilityLabel(durum.gorunum.aktif != nil ? "Çıkışa kalan süre" : "Girişe kalan süre")
+                        BirimliSure(hedefMs: hedefMs, cap: cap, sonuk: sonuk, dil: dil)
+                            .accessibilityLabel(durum.gorunum.aktif != nil ? m.cikisaKalan : m.giriseKalan)
                         Label {
                             Text(SaatDeposu.saatMetni(hedefMs)).monospacedDigit()
                         } icon: {
@@ -288,7 +295,7 @@ struct SimdiSayfasi: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                         .accessibilityElement(children: .ignore)
-                        .accessibilityLabel("\(durum.gorunum.aktif != nil ? "Çıkış" : "Giriş") \(SaatDeposu.saatMetni(hedefMs))")
+                        .accessibilityLabel(m.bicim(durum.gorunum.aktif != nil ? m.cikisSaat : m.girisSaat, ["saat": SaatDeposu.saatMetni(hedefMs)]))
                     }
                 }
             }
@@ -304,7 +311,7 @@ struct SimdiSayfasi: View {
     private var altSatir: some View {
         if kilindiMi && kabulGoster {
             // Kildim ANI: birkac saniye dua, sonra siradaki vakit (sahip istegi).
-            Text(Samimiyet.kabulDuasi)
+            Text(vm.kabulDuasi)
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(SaatGorunum.yesil)
                 .lineLimit(1)
@@ -313,7 +320,7 @@ struct SimdiSayfasi: View {
             // Sonraki vakit, tek satirda: ikon + ad + saat.
             if let s = durum.gorunum.sonraki {
                 Label {
-                    Text("\(VakitKarari.gorunenAd(s.vakit)) \(SaatDeposu.saatMetni(s.ms))")
+                    Text("\(vm.ad(s.vakit)) \(SaatDeposu.saatMetni(s.ms))")
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                 } icon: {
@@ -322,20 +329,20 @@ struct SimdiSayfasi: View {
                         .foregroundStyle(SaatGorunum.renk(s.vakit))
                 }
                 .font(.footnote.weight(.semibold))
-                .accessibilityLabel("Sıradaki \(VakitKarari.gorunenAd(s.vakit)), \(SaatDeposu.saatMetni(s.ms))")
+                .accessibilityLabel(m.bicim(m.siradakiErisim, ["ad": vm.ad(s.vakit), "saat": SaatDeposu.saatMetni(s.ms)]))
             }
         } else if let aday, !sonuk {
             Button {
                 onayAcik = true
             } label: {
-                Label("Kıldım", systemImage: "checkmark")
+                Label(vm.kildim, systemImage: "checkmark")
                     .font(.headline)
                     .foregroundStyle(.black)
                     .frame(maxWidth: .infinity, minHeight: 40)
                     .background(Capsule().fill(ton))
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("\(aday.ad) namazını kıldım olarak işaretleyin")
+            .accessibilityLabel(m.bicim(m.kildimErisim, ["ad": aday.ad]))
         } else if let u = kuruluUyandirma, !sonuk {
             Label {
                 Text(SaatDeposu.saatMetni(u.ms)).monospacedDigit()
@@ -345,9 +352,9 @@ struct SimdiSayfasi: View {
                     .foregroundStyle(ton)
             }
             .font(.footnote)
-            .accessibilityLabel("Sessiz uyandırma \(SaatDeposu.saatMetni(u.ms))")
+            .accessibilityLabel(m.bicim(m.sessizUyandirma, ["saat": SaatDeposu.saatMetni(u.ms)]))
         } else if surumYeni, !sonuk {
-            Label("Güncelleyin", systemImage: "arrow.down.app")
+            Label(m.guncelleyin, systemImage: "arrow.down.app")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -389,13 +396,14 @@ struct BirimliSure: View {
     let hedefMs: Int64
     let cap: CGFloat
     let sonuk: Bool
+    var dil: String = ArayuzDili.varsayilan
 
     var body: some View {
         let saniyeli = !sonuk && hedefMs - SaatDeposu.simdiMs() < 3_600_000
         TimelineView(saniyeli ? .periodic(from: Date(), by: 1) : .periodic(from: Date(), by: 60)) { baglam in
             let kalan = hedefMs - SaatDeposu.simdiMs(baglam.date)
             HStack(alignment: .firstTextBaseline, spacing: 2) {
-                ForEach(Array(SaatSure.parcalar(kalanMs: kalan, saniyesiz: sonuk).enumerated()), id: \.offset) { i, p in
+                ForEach(Array(SaatSure.parcalar(kalanMs: kalan, saniyesiz: sonuk, dil: dil).enumerated()), id: \.offset) { i, p in
                     Text(p.sayi)
                         .font(.system(size: cap * 0.2, weight: .semibold, design: .rounded))
                         .monospacedDigit()
@@ -408,7 +416,7 @@ struct BirimliSure: View {
             .lineLimit(1)
             .fixedSize()
             .accessibilityElement(children: .ignore)
-            .accessibilityValue(SaatSure.sesli(kalanMs: kalan, saniyesiz: sonuk))
+            .accessibilityValue(SaatSure.sesli(kalanMs: kalan, saniyesiz: sonuk, dil: dil))
         }
     }
 }

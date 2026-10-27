@@ -9,6 +9,8 @@ import androidx.wear.protolayout.expression.DynamicBuilders.DynamicInstant
 import androidx.wear.protolayout.expression.DynamicBuilders.DynamicInt32
 import androidx.wear.protolayout.expression.DynamicBuilders.DynamicString
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
+import com.furkanisikay.namazakisi.saat.cekirdek.rakamlariYerellestir
+import com.furkanisikay.namazakisi.saat.cekirdek.saatDili
 import java.time.Instant
 
 /**
@@ -19,10 +21,30 @@ import java.time.Instant
  * dinamik zaman ifadesiyle ÇİZİCİDE hesaplanır (şema 1.2, protolayout 1.4.2'de
  * doğrulandı). Eski çizici yalnız STATİK değeri okur → statik yedek asla bayatlamayan
  * bir metin olmalı (ör. "çıkış 15:56"), "1 sa 58 dk" gibi bir an değeri DEĞİL.
+ *
+ * RAKAM: tile'ın her statik metni ve dinamik metnin sabit parçaları ZORUNLU `sifir`
+ * parametresiyle cihaz yerel ayarının rakamına çevrilir (`cekirdek/Rakam.kt`; servis
+ * `yerelSifirRakami()` geçer). `DynamicInt32.format()` rakamı çizicide zaten yerel ayarla
+ * yazar → ar-SA'da "٧ س ١٨ د" ile statik "تنتهي ١٥:٥٦" aynı rakamla çizilir.
  */
 object TileOrtak {
     /** Dinamik metnin kaplayabileceği en geniş kalıp — yer ayrılır, metin titremez/kırpılmaz. */
     const val KALAN_KALIBI = "23 sa 59 dk sonra"
+
+    /**
+     * [kalip] dilindeki en geniş kalıp: "23 sa 59 dk sonra" / "in 23 h 59 min". [kalip]
+     * `%1$s` yer tutuculu kaynak dizgesidir ("%1$s sonra" / "in %1$s"); yoksa yalnız süre.
+     */
+    fun kalanKalibi(dil: String, kalip: String = YER_TUTUCU): String {
+        val d = saatDili(dil)
+        return kalip.replace(YER_TUTUCU, "23 ${d.birimSa} 59 ${d.birimDk}")
+    }
+
+    /**
+     * Kalıp dizgesindeki yer tutucu. Ham kalıp `getString(R.string.tile_sonra, YER_TUTUCU)` ile
+     * alınır (biçimlendirme yer tutucuyu kendisiyle değiştirir; lint argüman sayısını doğrular).
+     */
+    const val YER_TUTUCU = "%1\$s"
 
     private fun sabit(s: String): DynamicString = DynamicString.constant(s)
 
@@ -33,21 +55,34 @@ object TileOrtak {
             .toIntMinutes()
 
     /**
-     * "1 sa 58 dk" / "2 sa" / "12 dk" / "1 dk'dan az" + [sonEk] — `VakitHesabi.kalanMetni`
-     * kuralının ÇİZİCİDEKİ ikizi.
+     * "1 sa 58 dk" / "2 sa" / "12 dk" / "1 dk'dan az" — `VakitHesabi.kalanMetni` kuralının
+     * ÇİZİCİDEKİ ikizi; birimler [dil]den (`SaatDili`). [kalip] `%1$s` yer tutuculu kaynak
+     * dizgesidir ("%1$s sonra" / "in %1$s"): yer tutucunun önü ve arkası sabit eklenir.
      */
-    fun kalanMetni(hedefMs: Long, sonEk: String, statikYedek: String): TypeBuilders.StringProp {
+    fun kalanMetni(
+        hedefMs: Long,
+        statikYedek: String,
+        dil: String,
+        kalip: String = YER_TUTUCU,
+        sifir: Char,
+    ): TypeBuilders.StringProp {
+        val d = saatDili(dil)
+        val i = kalip.indexOf(YER_TUTUCU)
+        val onEk = if (i >= 0) kalip.substring(0, i) else ""
+        val sonEk = if (i >= 0) kalip.substring(i + YER_TUTUCU.length) else ""
+        // Sabit parçalar ("1 dk'dan az" rakam taşır) yerel rakamla; `format()` çizicide yerelleşir.
+        fun yerel(s: String) = sabit(rakamlariYerellestir(s, sifir))
         val dk = kalanDakika(hedefMs)
         val sa = dk.div(60)
         val kalanDk = dk.rem(60)
         val saatli = DynamicString.onCondition(kalanDk.eq(0))
-            .use(sa.format().concat(sabit(" sa")))
-            .elseUse(sa.format().concat(sabit(" sa ")).concat(kalanDk.format()).concat(sabit(" dk")))
+            .use(sa.format().concat(yerel(" ${d.birimSa}")))
+            .elseUse(sa.format().concat(yerel(" ${d.birimSa} ")).concat(kalanDk.format()).concat(yerel(" ${d.birimDk}")))
         val dakikali = DynamicString.onCondition(dk.gt(0))
-            .use(dk.format().concat(sabit(" dk")))
-            .elseUse(sabit("1 dk'dan az"))
-        val metin = DynamicString.onCondition(sa.gt(0)).use(saatli).elseUse(dakikali).concat(sabit(sonEk))
-        return TypeBuilders.StringProp.Builder(statikYedek).setDynamicValue(metin).build()
+            .use(dk.format().concat(yerel(" ${d.birimDk}")))
+            .elseUse(yerel(d.birDakikadanAzKisa))
+        val metin = yerel(onEk).concat(DynamicString.onCondition(sa.gt(0)).use(saatli).elseUse(dakikali)).concat(yerel(sonEk))
+        return TypeBuilders.StringProp.Builder(rakamlariYerellestir(statikYedek, sifir)).setDynamicValue(metin).build()
     }
 
     /**
@@ -73,18 +108,29 @@ object TileOrtak {
             .setWeight(if (kalin) LayoutElementBuilders.FONT_WEIGHT_BOLD else LayoutElementBuilders.FONT_WEIGHT_NORMAL)
             .build()
 
-    fun metin(yazi: String, boyut: Float, renk: Long, kalin: Boolean = false): LayoutElementBuilders.Text =
+    /** Statik metin; rakamları [sifir]'ın dizisiyle (cihaz yerel ayarı) çizilir. */
+    fun metin(yazi: String, boyut: Float, renk: Long, kalin: Boolean = false, sifir: Char): LayoutElementBuilders.Text =
         LayoutElementBuilders.Text.Builder()
-            .setText(yazi)
+            .setText(rakamlariYerellestir(yazi, sifir))
             .setMaxLines(1)
             .setFontStyle(yaziStili(boyut, renk, kalin))
             .build()
 
-    /** Dinamik metin: en geniş kalıp yer ayırır (aksi halde çizici metni kırpar). */
-    fun dinamikMetin(prop: TypeBuilders.StringProp, boyut: Float, renk: Long, kalin: Boolean = false): LayoutElementBuilders.Text =
+    /**
+     * Dinamik metin: en geniş kalıp ([kalip], dilde) yer ayırır (aksi halde çizici metni kırpar).
+     * Kalıp da yerel rakamla ölçülür (çizilecek rakamın genişliği).
+     */
+    fun dinamikMetin(
+        prop: TypeBuilders.StringProp,
+        boyut: Float,
+        renk: Long,
+        kalin: Boolean = false,
+        kalip: String = KALAN_KALIBI,
+        sifir: Char,
+    ): LayoutElementBuilders.Text =
         LayoutElementBuilders.Text.Builder()
             .setText(prop)
-            .setLayoutConstraintsForDynamicText(TypeBuilders.StringLayoutConstraint.Builder(KALAN_KALIBI).build())
+            .setLayoutConstraintsForDynamicText(TypeBuilders.StringLayoutConstraint.Builder(rakamlariYerellestir(kalip, sifir)).build())
             .setMaxLines(1)
             .setFontStyle(yaziStili(boyut, renk, kalin))
             .build()

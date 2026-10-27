@@ -24,9 +24,21 @@ class NamazWidgetAlarmAlici : BroadcastReceiver() {
         // Otomasyon "vakit girdi" olayı (issue #278): yalnız sınır alarmında; koşul paketi
         // yoksa hiçbir şey yapmaz, aynı vakit için ikinci kez olay üretmez.
         if (intent.action == WidgetGuncelleyici.SINIR_EYLEMI) OtomasyonOlaylari.vakitSiniri(context)
+        // Günün ayeti (#380/#381) aynı sistem olaylarında yeniden hesaplanır: manifest filtresi
+        // ikinci kez yazılmaz, paket içi açık yayınla kendi alıcısına iletilir (duvar kâğıdı
+        // işi orada `goAsync` ile). Kilitli açılışta depo okunamaz → BOOT_COMPLETED beklenir.
+        if (intent.action in AYETE_ILETILEN) GununAyetiGuncelleyici.yenidenHesaplat(context)
     }
 
     companion object {
+        private val AYETE_ILETILEN = setOf(
+            Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_MY_PACKAGE_REPLACED,
+            Intent.ACTION_TIME_CHANGED,
+            Intent.ACTION_TIMEZONE_CHANGED,
+            Intent.ACTION_DATE_CHANGED,
+        )
+
         private val EYLEMLER = setOf(
             WidgetGuncelleyici.SINIR_EYLEMI,
             Intent.ACTION_BOOT_COMPLETED,

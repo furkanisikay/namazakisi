@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- fr — Fransızca (beta). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Placez le QR code de l’écran du téléviseur dans le cadre</string>
+    <string name="tvesleme_qr_vazgec">Annuler</string>
+    <string name="tvesleme_qr_vazgec_erisim">Annuler la lecture du code</string>
+    <string name="tvesleme_qr_yabanci">Ce QR code n’appartient pas à Namaz Akışı TV. Scannez le code du téléviseur.</string>
+    <string name="tvesleme_qr_okundu">Code scanné</string>
+</resources>

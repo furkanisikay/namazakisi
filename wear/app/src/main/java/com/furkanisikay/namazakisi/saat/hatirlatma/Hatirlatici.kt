@@ -193,7 +193,10 @@ class AndroidAlarmKurucu(private val context: Context) : AlarmKurucu {
 class MuhafizAlarmAlicisi : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val metin = Hatirlatici.tetiklendi(context)?.anons ?: return
-        val yer = YukDeposu(context).yuk()?.anonsYeri
+        val yuk = YukDeposu(context).yuk()
+        val yer = yuk?.anonsYeri
+        // Anons metni telefonun dilindedir; ses de o dilde seçilir (yoksa Türkçe).
+        val ttsDili = yuk?.ttsDili ?: "tr-TR"
         // Camideyken / Namaz modu açıkken saat de susar (telefondaki camide kapısının ikizi).
         val sessiz = try {
             AnonsKarari.sessizMi(CamiDurumDeposu(context).durum(), System.currentTimeMillis())
@@ -209,7 +212,7 @@ class MuhafizAlarmAlicisi : BroadcastReceiver() {
             try {
                 val yakinda = sorulmali && TelefonIstemcisi.yakindaTelefonVarMi(app)
                 if (AnonsKarari.saatKonusurMu(yer, metin, yakinda, SaatAnonsu.hoparlorVarMi(app), sessiz)) {
-                    suspendCancellableCoroutine { devam -> SaatAnonsu.konus(app, metin) { if (devam.isActive) devam.resume(Unit) } }
+                    suspendCancellableCoroutine { devam -> SaatAnonsu.konus(app, metin, ttsDili) { if (devam.isActive) devam.resume(Unit) } }
                 }
             } catch (e: Exception) {
                 Log.w("MuhafizAlarm", "Saat anonsu yapilamadi", e)

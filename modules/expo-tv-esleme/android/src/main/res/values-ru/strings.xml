@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ru -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Поместите QR-код с экрана телевизора в рамку</string>
+    <string name="tvesleme_qr_vazgec">Отмена</string>
+    <string name="tvesleme_qr_vazgec_erisim">Отменить сканирование</string>
+    <string name="tvesleme_qr_yabanci">Этот QR-код не относится к Namaz Akışı для ТВ. Отсканируйте код на телевизоре.</string>
+    <string name="tvesleme_qr_okundu">Код отсканирован</string>
+</resources>

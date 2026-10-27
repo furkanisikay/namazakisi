@@ -1,0 +1,24 @@
+# tohum: jakim
+# hazirlik: dunya-kl
+# Ana ekrandaki yontem cipinden Hesap yontemi sayfasi: yontem karti (guven + kaynak),
+# yontem listesi, ikindi secimi ve vakit basina dakika ayari.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _acilis.yaml
+- tapOn:
+    id: "yontem-cipi"
+- extendedWaitUntil:
+    visible:
+      id: "hesap-yontemi-karti"
+    timeout: 20000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/52-hesap-yontemi
+- scrollUntilVisible:
+    element:
+      id: "ikindi-secimi"
+    direction: DOWN
+    centerElement: true
+    timeout: 60000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/53-hesap-yontemi-ikindi

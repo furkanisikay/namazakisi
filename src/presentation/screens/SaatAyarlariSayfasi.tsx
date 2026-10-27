@@ -16,6 +16,9 @@ import { useRenkler } from '../../core/theme';
 import { AyarGrubu } from './Ayarlar/AyarGrubu';
 import { useSaatAyarlari } from '../hooks/useSaatAyarlari';
 import { SAAT_YEDEK_GECIKMESI_DK, type AnonsYeri, type UyandirmaYeri } from '../../core/saat/saatAyarlari';
+import { bicim } from '../../core/dil/aktifDil';
+import type { Sozluk } from '../../core/dil/sozluk/tr';
+import { useMetin } from '../hooks/useMetin';
 
 type AyarNavigasyonu = { navigate: (ekran: string) => void };
 
@@ -26,70 +29,41 @@ interface Secenek<T extends string> {
     aciklama: string;
 }
 
-const UYANDIRMA_SECENEKLERI: Secenek<UyandirmaYeri>[] = [
-    {
-        deger: 'telefon',
-        ikon: 'mobile-alt',
-        baslik: 'Telefonda',
-        aciklama: 'Sabah alarmı ve teheccüd uyandırması telefonunuzda çalar.',
-    },
-    {
-        deger: 'saat',
-        ikon: 'clock',
-        baslik: 'Saatte, sessizce',
-        aciklama: `Yalnız bileğiniz titrer, yanınızda uyuyan uyanmaz. Saatte kapatmazsanız telefonunuz ${SAAT_YEDEK_GECIKMESI_DK} dakika sonra yedek olarak çalar. Saatinizde Namaz Akışı yoksa ya da güncel değilse telefonunuz her sabah ${SAAT_YEDEK_GECIKMESI_DK} dakika geç çalar.`,
-    },
-    {
-        deger: 'ikisi',
-        ikon: 'clone',
-        baslik: 'İkisinde birden',
-        aciklama: 'Saat ve telefon aynı anda çalar; saatte kapatmanız telefonu da susturur.',
-    },
-];
+type SaatMetinleri = Sozluk['saat'];
 
-/** Apple Watch metni: watchOS'ta sessiz alarm yalnız saat uygulaması açıkken kurulabilir. */
-const IOS_UYANDIRMA_SECENEKLERI: Secenek<UyandirmaYeri>[] = [
-    UYANDIRMA_SECENEKLERI[0],
-    {
-        deger: 'saat',
-        ikon: 'clock',
-        baslik: 'Saatte, sessizce',
-        aciklama: `Yalnız bileğiniz titrer, yanınızda uyuyan uyanmaz. Saatte kapatmazsanız iPhone'unuz ${SAAT_YEDEK_GECIKMESI_DK} dakika sonra yedek olarak çalar.`,
-    },
-    {
-        deger: 'ikisi',
-        ikon: 'clone',
-        baslik: 'İkisinde birden',
-        aciklama: "Saat ve iPhone aynı anda çalar; saatte kapatmanız iPhone'u da susturur.",
-    },
-];
+function uyandirmaSecenekleri(m: SaatMetinleri, ios: boolean): Secenek<UyandirmaYeri>[] {
+    const dk = SAAT_YEDEK_GECIKMESI_DK;
+    return [
+        { deger: 'telefon', ikon: 'mobile-alt', baslik: m.uyandirma.telefonBaslik, aciklama: m.uyandirma.telefonAciklama },
+        {
+            deger: 'saat',
+            ikon: 'clock',
+            baslik: m.uyandirma.saatBaslik,
+            // Apple Watch metni: watchOS'ta sessiz alarm yalnız saat uygulaması açıkken kurulabilir.
+            aciklama: bicim(ios ? m.uyandirma.saatAciklamaIos : m.uyandirma.saatAciklama, { dk }),
+        },
+        {
+            deger: 'ikisi',
+            ikon: 'clone',
+            baslik: m.uyandirma.ikisiBaslik,
+            aciklama: ios ? m.uyandirma.ikisiAciklamaIos : m.uyandirma.ikisiAciklama,
+        },
+    ];
+}
 
-const ANONS_SECENEKLERI: Secenek<AnonsYeri>[] = [
-    {
-        deger: 'otomatik',
-        ikon: 'exchange-alt',
-        baslik: 'Telefonda, uzaktaysa saatte',
-        aciklama:
-            'Telefonunuz yanınızdayken okumayı telefonunuz yapar, saatiniz bilerek konuşmaz (iki cihaz aynı cümleyi okumasın). Telefonunuz uzaktayken okumayı saatiniz yapar.',
-    },
-    {
-        deger: 'saat',
-        ikon: 'clock',
-        baslik: 'Yalnız saatte',
-        aciklama:
-            'Sesli okumayı her zaman saatiniz yapar, telefonunuz konuşmaz. Saatiniz şarjdayken, telefonunuzla bağlantısı yokken ya da saatte Namaz Akışı yoksa okuma hiç duyulmaz; bunu istemiyorsanız ilk seçeneği kullanın.',
-    },
-    {
-        deger: 'telefon',
-        ikon: 'mobile-alt',
-        baslik: 'Yalnız telefonda',
-        aciklama: 'Saatiniz hiç konuşmaz.',
-    },
-];
+function anonsSecenekleri(m: SaatMetinleri): Secenek<AnonsYeri>[] {
+    return [
+        { deger: 'otomatik', ikon: 'exchange-alt', baslik: m.anons.otomatikBaslik, aciklama: m.anons.otomatikAciklama },
+        { deger: 'saat', ikon: 'clock', baslik: m.anons.saatBaslik, aciklama: m.anons.saatAciklama },
+        { deger: 'telefon', ikon: 'mobile-alt', baslik: m.anons.telefonBaslik, aciklama: m.anons.telefonAciklama },
+    ];
+}
 
 export const SaatAyarlariSayfasi: React.FC = () => {
     const renkler = useRenkler();
     const navigation = useNavigation() as unknown as AyarNavigasyonu | undefined;
+    const metinler = useMetin().saat;
+    const m = metinler.ayarlar;
     const { ayarlar, guncelle } = useSaatAyarlari();
     if (!ayarlar) return null;
     const ios = Platform.OS === 'ios';
@@ -100,7 +74,7 @@ export const SaatAyarlariSayfasi: React.FC = () => {
             onPress={onSec}
             accessibilityRole="radio"
             accessibilityState={{ selected: secili, checked: secili }}
-            accessibilityLabel={`${s.baslik}. ${s.aciklama}`}
+            accessibilityLabel={bicim(m.secenekErisim, { baslik: s.baslik, aciklama: s.aciklama })}
             className="flex-row items-center px-4 py-3"
             style={{ minHeight: 56 }}
         >
@@ -146,42 +120,33 @@ export const SaatAyarlariSayfasi: React.FC = () => {
         <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['bottom', 'left', 'right']}>
             <ScrollView contentContainerStyle={{ paddingTop: 16, paddingBottom: 32 }}>
                 <Text className="text-sm leading-5 mx-4 mb-4" style={{ color: renkler.metinIkincil }}>
-                    {ios
-                        ? "Apple Watch'unuzda Namaz Akışı yüklüyse iPhone'unuzla işleri bölüşür. Burada uyandırmanın nerede çalacağını seçersiniz."
-                        : 'Saatinizde Namaz Akışı yüklüyse telefonunuzla işleri bölüşür. Burada uyandırmanın ve sesli anonsun nerede duyulacağını seçersiniz.'}
+                    {ios ? m.girisIos : m.giris}
                 </Text>
 
-                <AyarGrubu baslik="Uyandırma nerede çalsın?">
-                    {(ios ? IOS_UYANDIRMA_SECENEKLERI : UYANDIRMA_SECENEKLERI).map((s) =>
+                <AyarGrubu baslik={m.uyandirmaBaslik}>
+                    {uyandirmaSecenekleri(metinler, ios).map((s) =>
                         secenekSatiri(s, ayarlar.uyandirmaYeri === s.deger, () => {
                             void guncelle({ uyandirmaYeri: s.deger });
                         })
                     )}
                 </AyarGrubu>
                 <Text className="text-xs leading-5 mx-4 -mt-4 mb-2" style={{ color: renkler.metinIkincil }}>
-                    Uyandırma, "Vakit çıkmadan" hatırlatmasında sabah vaktine açtığınız gerçek alarm ve Nafile Namazlar'da açtığınız
-                    teheccüd uyandırmasıdır.{' '}
-                    {ios
-                        ? "watchOS sessiz alarmı yalnız saat uygulaması açıkken kurabilir: saatinizde Namaz Akışı'nı günde bir kez açın, sıradaki uyandırma o an kurulur. Saat şarjdayken ya da uygulama açılmadıysa iPhone'unuzun yedeği çalar."
-                        : 'Saatiniz şarjdayken çalmaz; o zaman telefonunuz çalar.'}
+                    {m.uyandirmaNotu}{' '}
+                    {ios ? m.uyandirmaNotuIos : m.uyandirmaNotuAndroid}
                 </Text>
-                {gecisDugmesi('"Vakit çıkmadan" ayarlarını açın', 'MuhafizAyarlari', 'shield-alt')}
-                {gecisDugmesi('Nafile namaz ayarlarını açın', 'NafileAyarlari', 'star-and-crescent')}
+                {gecisDugmesi(m.muhafizAyarlari, 'MuhafizAyarlari', 'shield-alt')}
+                {gecisDugmesi(m.nafileAyarlari, 'NafileAyarlari', 'star-and-crescent')}
 
                 {ios ? (
                     <>
                         <View className="h-6" />
-                        <AyarGrubu baslik="Bilekten yapabilecekleriniz">
+                        <AyarGrubu baslik={m.bilektenBaslik}>
                             <View className="px-4 py-3">
-                                {[
-                                    'iPhone uzaktayken hatırlatmalar saatinizde çalar; ikisi birden çalmaz.',
-                                    'Kıldığınız namazı bilekten işaretlersiniz; iPhone kaydı alır.',
-                                    'Tesbihatı Digital Crown ile sayar, kıbleyi saatinizde bulursunuz.',
-                                ].map((m) => (
-                                    <View key={m} className="flex-row mb-2">
+                                {m.bilektenIos.map((madde) => (
+                                    <View key={madde} className="flex-row mb-2">
                                         <FontAwesome5 name="check" size={11} color={renkler.birincil} style={{ marginTop: 4, marginRight: 8 }} />
                                         <Text className="flex-1 text-sm leading-5" style={{ color: renkler.metin }}>
-                                            {m}
+                                            {madde}
                                         </Text>
                                     </View>
                                 ))}
@@ -191,40 +156,33 @@ export const SaatAyarlariSayfasi: React.FC = () => {
                 ) : (
                     <>
                 <View className="h-6" />
-                <AyarGrubu baslik="Sesli okuma nerede yapılsın?">
-                    {ANONS_SECENEKLERI.map((s) =>
+                <AyarGrubu baslik={m.anonsBaslik}>
+                    {anonsSecenekleri(metinler).map((s) =>
                         secenekSatiri(s, ayarlar.anonsYeri === s.deger, () => {
                             void guncelle({ anonsYeri: s.deger });
                         })
                     )}
                 </AyarGrubu>
                 <Text className="text-xs leading-5 mx-4 -mt-4 mb-6" style={{ color: renkler.metinIkincil }}>
-                    Yalnız sesli anonsu açık hatırlatmalar okunur. İki cihaz aynı cümleyi birlikte okumaz. Camideyken ya
-                    da Namaz modu açıkken saatiniz de konuşmaz. Saatinizde hoparlör, metin okuma motoru ya da Türkçe ses
-                    yoksa saat yalnız titreşir. Saatin sesini Namaz Akışı saat uygulamasındaki &quot;Sesi deneyin&quot; ile
-                    hemen deneyebilirsiniz.
+                    {m.anonsNotu}
                 </Text>
 
-                <AyarGrubu baslik="Bilekten yapabilecekleriniz">
+                <AyarGrubu baslik={m.bilektenBaslik}>
                     <View className="px-4 py-3">
-                        {[
-                            'Namaz modunu saatteki düğmeyle açıp kapatabilirsiniz (vaktin sonuna, en fazla 30 dakika).',
-                            'Camideyken saatiniz durumu gösterir; "Burası cami değil" ve "Camide misiniz?" sorusunu bilekten cevaplarsınız.',
-                            'Saate sığmayan ekranları (Kaza Defteri, Camideyim, ayarlar) "Telefonda açın" ile telefonunuzda açarsınız.',
-                        ].map((m) => (
-                            <View key={m} className="flex-row mb-2">
+                        {m.bilekten.map((madde) => (
+                            <View key={madde} className="flex-row mb-2">
                                 <FontAwesome5 name="check" size={11} color={renkler.birincil} style={{ marginTop: 4, marginRight: 8 }} />
                                 <Text className="flex-1 text-sm leading-5" style={{ color: renkler.metin }}>
-                                    {m}
+                                    {madde}
                                 </Text>
                             </View>
                         ))}
                     </View>
                 </AyarGrubu>
                 <Text className="text-xs leading-5 mx-4 -mt-4 mb-2" style={{ color: renkler.metinIkincil }}>
-                    Namaz modunu saatten açabilmek için önce telefonunuzda bir kez açmanız gerekir.
+                    {m.namazModuNotu}
                 </Text>
-                {gecisDugmesi('Namaz modu ayarlarını açın', 'NamazModuAyarlari', 'moon')}
+                {gecisDugmesi(m.namazModuAyarlari, 'NamazModuAyarlari', 'moon')}
                     </>
                 )}
             </ScrollView>

@@ -9,9 +9,9 @@ appId: com.furkanisikay.namazakisi
 - runFlow:
     file: _liste-kaydir.yaml
     env:
-      HEDEF: "Cihazlarım\\..*"
+      HEDEF: "(Cihazlarım|My devices)\\..*"
 - tapOn:
-    text: "Cihazlarım\\..*"
+    text: "(Cihazlarım|My devices)\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/32-cihazlarim

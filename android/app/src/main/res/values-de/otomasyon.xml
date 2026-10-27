@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Almanca, beta). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Ich habe gebetet</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Status der Gebetszeit</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Ereignis zur Gebetszeit</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Diese Einstellung wird in einer Automations-App hinzugefügt</string>
+  <string name="otomasyon_bilgi_tarayici">Browser können keine dauerhafte Erlaubnis erhalten. Fügen Sie sie über die Plugin-Liste einer App wie Tasker, MacroDroid oder Automate hinzu.</string>
+  <string name="otomasyon_bilgi_eklenti">Fügen Sie sie hinzu, indem Sie in der Plugin-Liste einer App wie Tasker, MacroDroid oder Automate „Namaz Akışı“ wählen.</string>
+  <string name="otomasyon_engelli_baslik">%1$s ist blockiert</string>
+  <string name="otomasyon_engelli_mesaj">Sie haben dieser App zuvor verboten, Ihre Gebete zu markieren. Sie können es in Namaz Akışı unter Einstellungen &gt; „Apps, die Gebete markieren dürfen“ erlauben.</string>
+  <string name="otomasyon_izin_baslik">Mit %1$s verwenden?</string>
+  <string name="otomasyon_izin_kosul">%1$s kann erfahren, wann eine Gebetszeit beginnt, wann sie endet und wann Sie in der Moschee sind, und Ihre Automationen ausführen. Sie können Ihre Entscheidung in Namaz Akışı unter Einstellungen &gt; „Apps, die Gebete markieren dürfen“ ändern.</string>
+  <string name="otomasyon_izin_kildim">%1$s kann das aktuelle Gebet mit der von Ihnen eingerichteten Automation als gebetet markieren. Sie können Ihre Entscheidung in Namaz Akışı unter Einstellungen &gt; „Apps, die Gebete markieren dürfen“ ändern.</string>
+  <string name="otomasyon_izin_ver">Erlauben</string>
+  <string name="otomasyon_engelle">Blockieren</string>
+  <string name="otomasyon_vazgec">Abbrechen</string>
+  <string name="otomasyon_tamam">OK</string>
+  <string name="otomasyon_tur_baslik">Wann soll es ausgeführt werden?</string>
+  <string name="otomasyon_ileri">Weiter</string>
+  <string name="otomasyon_vakit_baslik">Welches Gebet?</string>
+  <string name="otomasyon_herhangi_vakit">Beliebige Gebetszeit</string>
+  <string name="otomasyon_kaydet">Speichern</string>
+  <string name="otomasyon_kosul_icinde">Während einer Gebetszeit</string>
+  <string name="otomasyon_kosul_cikiyor">Während eine Gebetszeit endet (noch %1$d Min., Gebetswächter an)</string>
+  <string name="otomasyon_kosul_camide">Während Sie in der Moschee sind</string>
+  <string name="otomasyon_olay_girdi">Wenn eine Gebetszeit beginnt</string>
+  <string name="otomasyon_olay_cikiyor">Wenn eine Gebetszeit endet (noch %1$d Min., Gebetswächter an)</string>
+  <string name="otomasyon_olay_camide">Wenn erkannt wird, dass Sie in der Moschee sind</string>
+</resources>

@@ -58,22 +58,33 @@ object KilitEkraniKarari {
      * yazılır: telefonu açıp işaretleyin. Kapak dışında ya da kılınabilir olmayan
      * durumda `null` (satır normal içeriğini gösterir).
      */
-    fun kapakIpucu(kapakEkrani: Boolean, kildim: KildimDurumu): String? =
-        if (kapakEkrani && kildim == KildimDurumu.KILINABILIR) KAPAK_IPUCU else null
+    fun kapakIpucu(kapakEkrani: Boolean, kildim: KildimDurumu, dil: String = MetinDili.TR): String? =
+        if (kapakEkrani && kildim == KildimDurumu.KILINABILIR) kapakIpucuMetni(dil) else null
 
-    /** Ekran okuyucu metni — kilit ekranında işaretleme vaadi verilmez. */
+    /** [KAPAK_IPUCU]'nun arayüz dilindeki hâli. */
+    fun kapakIpucuMetni(dil: String = MetinDili.TR): String =
+        MetinDili.metinler(dil).kapakIpucu
+
+    /**
+     * Ekran okuyucu metni — kilit ekranında işaretleme vaadi verilmez. [ad] çağıranın
+     * aynı dilde verdiği görünen vakit adıdır ([VakitKodlari.gorunenAd]).
+     */
     fun erisimMetni(
         ad: String,
         kildim: KildimDurumu,
         kilitEkrani: Boolean,
         kapakEkrani: Boolean = false,
-    ): String = when (kildim) {
-        KildimDurumu.KILINABILIR ->
-            if (kapakEkrani) "$ad namazı kılınmadı. $KAPAK_IPUCU"
-            else if (kilitEkrani) "$ad namazı kılınmadı. İşaretlemek için uygulamayı açın"
-            else "$ad namazını kılındı olarak işaretleyin"
-        KildimDurumu.BEKLIYOR -> "$ad namazı işaretleniyor"
-        KildimDurumu.KILINDI -> "$ad namazı kılındı. Uygulamayı açın"
-        KildimDurumu.YOK -> "Uygulamayı açın"
+        dil: String = MetinDili.TR,
+    ): String {
+        val m = MetinDili.metinler(dil)
+        return when (kildim) {
+            KildimDurumu.KILINABILIR ->
+                if (kapakEkrani) MetinDili.bicim(m.kilitKilinmadiKapak, "ad" to ad, "ipucu" to m.kapakIpucu)
+                else if (kilitEkrani) MetinDili.bicim(m.kilitKilinmadi, "ad" to ad)
+                else MetinDili.bicim(m.kilitIsaretleyin, "ad" to ad)
+            KildimDurumu.BEKLIYOR -> MetinDili.bicim(m.kutuIsaretleniyorErisim, "ad" to ad)
+            KildimDurumu.KILINDI -> MetinDili.bicim(m.kilitKilindi, "ad" to ad)
+            KildimDurumu.YOK -> m.uygulamayiAcin
+        }
     }
 }

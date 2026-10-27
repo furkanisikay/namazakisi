@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Urduca). "نماز پڑھ لی" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">نماز الارم</string>
+  <string name="alarm_kildim">نماز پڑھ لی</string>
+  <string name="alarm_kapat">بند کریں</string>
+  <string name="alarm_kanal_aciklamasi">آپ کے منتخب کردہ یاد دہانی کے مراحل پر بجنے والا اصل الارم</string>
+</resources>

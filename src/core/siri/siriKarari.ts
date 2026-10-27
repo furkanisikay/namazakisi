@@ -26,6 +26,7 @@ import {
     type WidgetVakitAni,
     type WidgetVakitKodu,
 } from '../widget/widgetYuku';
+import { namazAdiGoster } from '../constants/UygulamaSabitleri';
 
 /** Kuyrukta bekleyen (henüz uygulamada işlenmemiş) "Kıldım" — kayıt vakit kodu (`imsak`…). */
 export interface SiriBekleyenKildim {
@@ -38,8 +39,18 @@ export type SiriKildimKarari =
     | { tur: 'zatenKilindi'; ad: string }
     | { tur: 'vakitYok'; siradaki: WidgetVakitAni | null };
 
-/** Widget kodu → görünen ad ("Öğle"); güneş için boş dize (namaz değildir). */
-export const vakitGorunenAdi = (kod: WidgetVakitKodu): string => widgetKoduNamazAdina(kod) ?? '';
+/** Widget kodu → etkin dilde görünen ad ("Öğle" / "Dhuhr"); güneş için boş dize (namaz değildir). */
+export const vakitGorunenAdi = (kod: WidgetVakitKodu): string => {
+    const ad = widgetKoduNamazAdina(kod);
+    return ad ? namazAdiGoster(ad) : '';
+};
+
+/**
+ * Siri metinlerinin vakit adı: TÜRKÇE kimlik değeri ("Öğle"). Cevabı Swift
+ * (`VakitKarari.swift`) üretir ve native metinler henüz Türkçedir (W5); bu dosyanın
+ * metinleri fikstürle (`siri-ornek.json`) kilitli test aynasıdır → etkin dile bağlanmaz.
+ */
+const siriAdi = (kod: WidgetVakitKodu): string => widgetKoduNamazAdina(kod) ?? '';
 
 /** Aktif vakit kılındı mı (kayıt VEYA kuyrukta bekleyen işaretleme)? */
 function kilindiMi(
@@ -67,7 +78,7 @@ export function siriKildimKarari(
     const aktif = durum.aktif;
     const kayitVakti = aktif ? widgetKoduVakitAdina(aktif.vakit) : null;
     if (!aktif || !kayitVakti) return { tur: 'vakitYok', siradaki: durum.sonraki };
-    const ad = vakitGorunenAdi(aktif.vakit);
+    const ad = siriAdi(aktif.vakit);
     if (kilindiMi(aktif, kilinanlar, bekleyenler)) return { tur: 'zatenKilindi', ad };
     return { tur: 'aday', vakit: aktif, kayitVakti, ad };
 }
@@ -76,13 +87,13 @@ export function siriKildimKarari(
 export type SaatBicimleyici = (ms: number) => string;
 
 /** Veri hiç yokken (uygulama hiç açılmamış / konum yok) verilen cevap. */
-export const SIRI_KONUM_YOK_METNI = 'Vakitleri hesaplayabilmek için uygulamayı açıp konumunuzu ayarlayın.';
+export const SIRI_KONUM_YOK_METNI = 'Vakitleri hesaplayabilmek için uygulamayı açıp konumunuzu ayarlayın.'; // dil-haric: Swift ikizi (fikstür)
 
 /** Çizelge tükenmişken (uygulama ~bir haftadır açılmamış) verilen cevap. */
-export const SIRI_VERI_ESKI_METNI = 'Vakit bilgisi eskimiş. Güncellemek için uygulamayı bir kez açın.';
+export const SIRI_VERI_ESKI_METNI = 'Vakit bilgisi eskimiş. Güncellemek için uygulamayı bir kez açın.'; // dil-haric: Swift ikizi (fikstür)
 
 const girisMetni = (v: WidgetVakitAni, bugun: string, saat: SaatBicimleyici): string =>
-    `${v.tarih > bugun ? 'yarın ' : ''}saat ${saat(v.ms)}`;
+    `${v.tarih > bugun ? 'yarın ' : ''}saat ${saat(v.ms)}`; // dil-haric: Swift ikizi (fikstür)
 
 /**
  * "Sıradaki namaz ne zaman?" cevabı.
@@ -102,18 +113,18 @@ export function siradakiNamazMetni(
 ): string {
     const parcalar: string[] = [];
     if (durum.aktif && durum.bitisMs != null && !kilindiMi(durum.aktif, kilinanlar, bekleyenler)) {
-        const ad = vakitGorunenAdi(durum.aktif.vakit);
+        const ad = siriAdi(durum.aktif.vakit);
         // Çıkış sıradaki namazın girişiyle aynıysa (öğle→ikindi) saat iki kez okunmaz;
         // farklıysa (sabah güneşte biter, sıradaki öğle) çıkış ayrıca söylenir.
         parcalar.push(
             durum.sonraki?.ms === durum.bitisMs
-                ? `Şu an ${ad} vakti.`
-                : `Şu an ${ad} vakti, çıkışı saat ${saat(durum.bitisMs)}.`
+                ? `Şu an ${ad} vakti.` // dil-haric: Swift ikizi (fikstür)
+                : `Şu an ${ad} vakti, çıkışı saat ${saat(durum.bitisMs)}.` // dil-haric: Swift ikizi (fikstür)
         );
     }
     if (durum.sonraki) {
         parcalar.push(
-            `Sıradaki namaz ${vakitGorunenAdi(durum.sonraki.vakit)}, ${girisMetni(durum.sonraki, bugun, saat)}.`
+            `Sıradaki namaz ${siriAdi(durum.sonraki.vakit)}, ${girisMetni(durum.sonraki, bugun, saat)}.` // dil-haric: Swift ikizi (fikstür)
         );
     }
     return parcalar.length > 0 ? parcalar.join(' ') : SIRI_VERI_ESKI_METNI;
@@ -127,15 +138,15 @@ export function siriKildimMetni(
 ): string {
     switch (karar.tur) {
         case 'aday':
-            return `${karar.ad} namazınız kılındı olarak işaretlendi. Allah kabul etsin.`;
+            return `${karar.ad} namazınız kılındı olarak işaretlendi. Allah kabul etsin.`; // dil-haric: Swift ikizi (fikstür)
         case 'zatenKilindi':
-            return `${karar.ad} namazı zaten kılındı olarak işaretli.`;
+            return `${karar.ad} namazı zaten kılındı olarak işaretli.`; // dil-haric: Swift ikizi (fikstür)
         case 'vakitYok':
             return karar.siradaki
-                ? `Şu an kılınacak vakit yok. Sıradaki ${vakitGorunenAdi(karar.siradaki.vakit)}, ${girisMetni(karar.siradaki, bugun, saat)}.`
-                : 'Şu an kılınacak vakit yok.';
+                ? `Şu an kılınacak vakit yok. Sıradaki ${siriAdi(karar.siradaki.vakit)}, ${girisMetni(karar.siradaki, bugun, saat)}.` // dil-haric: Swift ikizi (fikstür)
+                : 'Şu an kılınacak vakit yok.'; // dil-haric: Swift ikizi (fikstür)
     }
 }
 
 /** Siri'nin onay sorusu (`requestConfirmation`). */
-export const siriKildimOnayMetni = (ad: string): string => `${ad} namazı kılındı olarak işaretlensin mi?`;
+export const siriKildimOnayMetni = (ad: string): string => `${ad} namazı kılındı olarak işaretlensin mi?`; // dil-haric: Swift ikizi (fikstür)

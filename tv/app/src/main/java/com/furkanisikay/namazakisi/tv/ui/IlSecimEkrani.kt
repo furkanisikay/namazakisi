@@ -1,5 +1,6 @@
 package com.furkanisikay.namazakisi.tv.ui
 
+import androidx.compose.ui.res.stringResource
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -88,11 +89,11 @@ fun IlSecimEkrani(
                 modifier = Modifier.size(36.dp),
             )
             Spacer(Modifier.width(14.dp))
-            Text("Bulunduğunuz ili seçin", color = Renkler.metin, fontSize = 36.sp, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.il_secin), color = Renkler.metin, fontSize = 36.sp, fontWeight = FontWeight.SemiBold)
         }
         Spacer(Modifier.height(6.dp))
         // Tek kısa satır: ayrıntı (aynı hesap yöntemi, sonradan değiştirme) panoda zaten görünür.
-        Text("Vakitler il merkezine göre hesaplanır.", color = Renkler.metinIkincil, fontSize = 24.sp)
+        Text(stringResource(R.string.il_merkezine_gore), color = Renkler.metinIkincil, fontSize = 24.sp)
         Spacer(Modifier.height(16.dp))
         // 3 sütun: en uzun il adı ("Afyonkarahisar", "Kahramanmaraş") 10-foot boyda kesilmeden sığar.
         LazyVerticalGrid(
@@ -105,12 +106,13 @@ fun IlSecimEkrani(
         ) {
             itemsIndexed(iller, key = { _, il -> il.plaka }) { i, il ->
                 val secili = il.plaka == seciliPlaka
+                val seciliAciklama = stringResource(R.string.il_secili, il.ad)
                 Surface(
                     onClick = { onSec(il) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .then(if (i == baslangic) Modifier.focusRequester(odak) else Modifier)
-                        .semantics { contentDescription = if (secili) "${il.ad}, seçili" else il.ad },
+                        .semantics { contentDescription = if (secili) seciliAciklama else il.ad },
                     shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(12.dp)),
                     colors = ClickableSurfaceDefaults.colors(
                         containerColor = if (secili) Renkler.birincilKoyu else Renkler.kart,

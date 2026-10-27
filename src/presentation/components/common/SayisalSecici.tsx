@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { AYARLANABILIR_EYLEMLER, useSayisalAdim } from '../../hooks/useSayisalAdim';
+import { useMetin } from '../../hooks/useMetin';
+import { bicim } from '../../../core/dil/aktifDil';
 
 /**
  * Numerik artir/azalt (kare buton) bileseni.
@@ -34,15 +36,18 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
   min,
   max,
   adim = 1,
-  birim = 'dk',
+  birim: birimProp,
   onChange,
   renk,
   degerGenisligi = 80,
   aciklama,
 }) => {
   const renkler = useRenkler();
-  const azaltEtiketi = aciklama ? `${aciklama} azalt` : 'Azalt';
-  const artirEtiketi = aciklama ? `${aciklama} artır` : 'Artır';
+  const s = useMetin();
+  const m = s.genel.ortak;
+  const birim = birimProp ?? s.sure.kisa.dk;
+  const azaltEtiketi = aciklama ? bicim(m.azaltAciklamali, { ad: aciklama }) : m.azalt;
+  const artirEtiketi = aciklama ? bicim(m.artirAciklamali, { ad: aciklama }) : m.artir;
   const { gorunenDeger, azaltDugmesi, artirDugmesi, erisilebilirlikEylemi } = useSayisalAdim({
     deger,
     min,
@@ -63,7 +68,7 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityLabel={azaltEtiketi}
-        accessibilityHint="Basılı tutarak hızlıca değiştirebilirsiniz"
+        accessibilityHint={m.basiliTut}
       >
         <FontAwesome5 name="minus" size={12} color="#FFF" />
       </TouchableOpacity>
@@ -72,7 +77,7 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         style={{ backgroundColor: renkler.kartArkaplan, minWidth: degerGenisligi }}
         accessible
         accessibilityRole="adjustable"
-        accessibilityLabel={aciklama ?? 'Değer'}
+        accessibilityLabel={aciklama ?? m.deger}
         accessibilityValue={{ min, max, now: gorunenDeger, text: `${gorunenDeger} ${birim}`.trim() }}
         accessibilityActions={AYARLANABILIR_EYLEMLER}
         onAccessibilityAction={erisilebilirlikEylemi}
@@ -88,7 +93,7 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityLabel={artirEtiketi}
-        accessibilityHint="Basılı tutarak hızlıca değiştirebilirsiniz"
+        accessibilityHint={m.basiliTut}
       >
         <FontAwesome5 name="plus" size={12} color="#FFF" />
       </TouchableOpacity>

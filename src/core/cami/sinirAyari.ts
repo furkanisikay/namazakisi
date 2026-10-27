@@ -14,6 +14,7 @@
  * iki alanı birden siler.
  */
 import { ALAN_ADIM_M, ALAN_MAX_M, ALAN_MIN_M, OLCEK_MAX, OLCEK_MIN, type YerKaydi } from './camiTipleri';
+import { bicim, metin } from '../dil/aktifDil';
 import { alanYaricapiM, etkinOlcek } from './geometri';
 
 export type SinirModu = 'bina' | 'daire';
@@ -83,14 +84,11 @@ export const OZGUN_SINIR_DEGISIKLIGI: Partial<YerKaydi> = { alanM: undefined, ol
 
 /** Ekran ve ekran okuyucu için tek satırlık durum açıklaması (kibar "siz"). */
 export function sinirAciklamasi(g: SinirGirdisi): string {
+    const m = metin().cami.sinir;
     if (sinirModu(g) === 'daire') {
-        if (g.kendi) return 'Bu yerin çevresinde seçtiğiniz yarıçapta bir daire kullanılıyor.';
-        return g.poligonVar
-            ? 'Bina sınırının yerine seçtiğiniz daire kullanılıyor.'
-            : 'Caminin noktası çevresinde seçtiğiniz daire kullanılıyor.';
+        if (g.kendi) return m.kendiDaire;
+        return g.poligonVar ? m.binaYerineDaire : m.noktaDaire;
     }
     const yuzde = gorunenOlcekYuzde(g);
-    return yuzde > 100
-        ? `Bina sınırı merkezinden %${yuzde} büyütülerek kullanılıyor.`
-        : 'Caminin kendi bina sınırı kullanılıyor.';
+    return yuzde > 100 ? bicim(m.buyutulmus, { yuzde }) : m.kendiSinir;
 }

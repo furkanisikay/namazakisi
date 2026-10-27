@@ -17,6 +17,7 @@ import {
     tamEkranIzniVarMi,
 } from '../../domain/services/MuhafizAlarmKoprusu';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
+import { metin } from '../../core/dil/aktifDil';
 import type { MuhafizPlatformu } from '../../core/muhafiz/ios/platformYetenekleri';
 import {
     alarmKitDurumu,
@@ -107,16 +108,16 @@ export function useAlarmIzinleri(etkin: boolean, platform: MuhafizPlatformu = 'a
                 setTamAlarm(alarm);
                 if (alarm === true) {
                     muhafiziYenidenPlanla();
-                    kisaBildirimGoster('Alarm artık tam saatinde kurulacak');
+                    kisaBildirimGoster(metin().muhafizAyar.kanca.tamAlarmAcildi);
                 }
                 return;
             }
             if ((await oku()) !== true) return;
             if (ios) {
                 muhafiziYenidenPlanla();
-                kisaBildirimGoster('Gerçek alarm artık iPhone alarmı olarak çalacak');
+                kisaBildirimGoster(metin().muhafizAyar.kanca.iosAlarmAcildi);
             } else {
-                kisaBildirimGoster('Alarm artık kilit ekranında tam ekran açılacak');
+                kisaBildirimGoster(metin().muhafizAyar.kanca.tamEkranAcildi);
             }
         });
         return () => abonelik.remove();
@@ -137,7 +138,7 @@ export function useAlarmIzinleri(etkin: boolean, platform: MuhafizPlatformu = 'a
         }
         if (!acildi) {
             donusBekleniyor.current = null;
-            kisaBildirimGoster('Ayar ekranı açılamadı; telefonunuzun Ayarlar bölümünden açabilirsiniz.', true);
+            kisaBildirimGoster(metin().muhafizAyar.kanca.ayarAcilamadi, true);
         }
     }, [ios]);
 

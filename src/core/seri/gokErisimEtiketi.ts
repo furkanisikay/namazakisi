@@ -16,6 +16,7 @@
  */
 import { IzgaraGunu } from './aylikIzgara';
 import { gunTamMi } from './gunTamMi';
+import { bicim, metin, sayili } from '../dil/aktifDil';
 
 const BES_VAKIT = 5;
 
@@ -54,8 +55,12 @@ export function gokErisimEtiketi(
     }
   }
 
-  return (
-    `${ayAdi}. ${hedefTutulan} gün hedef tutuldu, ${besVakitTamamlanan} günde beş vakit tamamlandı, ` +
-    `${dondurulmus} gün dondurulmuş. Mevcut seri ${mevcutSeri} gün.`
-  );
+  const m = metin().seri.gok;
+  return bicim(m.erisim, {
+    ay: ayAdi,
+    hedef: sayili(m.hedefTutuldu, hedefTutulan),
+    bes: sayili(m.besVakit, besVakitTamamlanan),
+    donmus: sayili(m.dondurulmus, dondurulmus),
+    seri: sayili(m.mevcutSeri, mevcutSeri),
+  });
 }

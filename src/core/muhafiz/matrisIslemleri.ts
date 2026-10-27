@@ -14,6 +14,7 @@ import type { PencereYonu } from './pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { sesliAnonsGerekliMi } from './motorAdaptoru';
 import { anonsSablonlari, varsayilanAnonsMetni } from './anonsMetni';
+import { sablonKonumu } from '../hatirlatma/anonsSablonlari';
 import type { ZamanlamaAyari, ZamanlamaSeviyeleri } from './girisZamanlamasi';
 import { girisZamanlamasiniSec } from './girisZamanlamasi';
 import { esikSiralamasiGecerliMi } from './aktifSeviye';
@@ -335,12 +336,14 @@ export function yonDegisimindeMetniCevir(
   hedefYon: PencereYonu
 ): VakitMuhafizAyari {
   const mevcutYon = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
-  const kaynakHavuz = anonsSablonlari(mevcutYon);
+  const kaynakListe = mevcutYon === 'girisindenItibaren' ? 'muhafizGiris' : 'muhafizCikis';
   const hedefHavuz = anonsSablonlari(hedefYon);
 
   let degisti = mevcutYon !== hedefYon;
   const seviyeler = vakitAyari.seviyeler.map((s) => {
-    const i = s.anonsMetni ? kaynakHavuz.indexOf(s.anonsMetni) : -1;
+    // Kaynak şablon herhangi bir dilde olabilir (dil değişmiş olabilir); sırası korunur.
+    const konum = s.anonsMetni ? sablonKonumu(s.anonsMetni) : null;
+    const i = konum && konum.liste === kaynakListe ? konum.sira : -1;
     if (i < 0 || hedefHavuz[i] === undefined || hedefHavuz[i] === s.anonsMetni) return s;
     degisti = true;
     return { ...s, anonsMetni: hedefHavuz[i] };

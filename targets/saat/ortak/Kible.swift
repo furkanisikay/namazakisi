@@ -51,6 +51,7 @@ public enum Kible {
     }
 
     /// Yon. "Saga" / "Sola" / "Arkanizda" — rakam ayrica `donusDerecesi` ile (5°'lik adim).
+    /// Metinler dil parametresiyle (W5; varsayilan Turkce — fikstur testleri degismez).
     public enum Donus: Equatable { case saga, sola, arkada }
 
     public static func donus(_ hedef: Double) -> Donus {
@@ -63,23 +64,26 @@ public enum Kible {
         return max(5, Int((sapma(hedef) / 5.0).rounded()) * 5)
     }
 
-    /// Wear `donusMetni` ile ayni: "Sağa 35°", "Sola 120°", "Arkanızda".
-    public static func donusMetni(_ hedef: Double) -> String {
+    /// Wear `donusMetni` ile ayni: "Sağa 35°", "Sola 120°", "Arkanızda" (en: "Right 35°"...).
+    public static func donusMetni(_ hedef: Double, dil: String = ArayuzDili.varsayilan) -> String {
+        let m = KibleMetinleri.dil(dil)
         switch donus(hedef) {
-        case .arkada: return "Arkanızda"
-        case .saga: return "Sağa \(donusDerecesi(hedef))°"
-        case .sola: return "Sola \(donusDerecesi(hedef))°"
+        case .arkada: return m.arkada
+        case .saga: return VakitMetinleri.bicim(m.saga, ["derece": String(donusDerecesi(hedef))])
+        case .sola: return VakitMetinleri.bicim(m.sola, ["derece": String(donusDerecesi(hedef))])
         }
     }
 
-    /// Ekran okuyucu: 10°'lik adim (her olayda okunmasin), kibar "siz".
-    public static func erisimMetni(_ hedef: Double, hizali: Bool) -> String {
-        if hizali { return "Kıble yönündesiniz" }
+    /// Ekran okuyucu: 10°'lik adim (her olayda okunmasin), kibar "siz". Ingilizce karsilik
+    /// JS `sozluk/en/kible.ts > yon` ile ayni kalip.
+    public static func erisimMetni(_ hedef: Double, hizali: Bool, dil: String = ArayuzDili.varsayilan) -> String {
+        let m = KibleMetinleri.dil(dil)
+        if hizali { return m.hizali }
         let s = sapma(hedef)
-        if s >= 175.0 { return "Kıble arkanızda" }
+        if s >= 175.0 { return m.arkadaErisim }
         let adim = max(10, Int((s / 10.0).rounded()) * 10)
-        let taraf = dereceSar(hedef) <= 180.0 ? "sağınızda" : "solunuzda"
-        return "Kıble \(adim) derece \(taraf)"
+        let sagda = dereceSar(hedef) <= 180.0
+        return VakitMetinleri.bicim(sagda ? m.sagdaErisim : m.soldaErisim, ["derece": String(adim)])
     }
 
     /// Ok donusunde EN KISA yol (359 → 1 gecisinde ok geri dolasmaz). Sonuc sarilmaz.
@@ -99,9 +103,11 @@ public enum Kible {
         return 6371.0 * 2 * atan2(a.squareRoot(), (1 - a).squareRoot())
     }
 
-    /// "2.410 km" (Turkce binlik ayraci nokta; 10 km'ye yuvarlanir, 10 km altinda "Kâbe'desiniz").
-    public static func mesafeMetni(_ km: Double) -> String {
-        if km < 10 { return "Kâbe'desiniz" }
+    /// "2.410 km" (Turkce binlik ayraci nokta, Ingilizcede virgul; 10 km'ye yuvarlanir,
+    /// 10 km altinda "Kâbe'desiniz").
+    public static func mesafeMetni(_ km: Double, dil: String = ArayuzDili.varsayilan) -> String {
+        let m = KibleMetinleri.dil(dil)
+        if km < 10 { return m.kabede }
         let yuvarlak = Int((km / 10).rounded()) * 10
         var rakam = String(yuvarlak)
         var parcalar: [String] = []
@@ -110,9 +116,178 @@ public enum Kible {
             rakam = String(rakam.dropLast(3))
         }
         parcalar.insert(rakam, at: 0)
-        return parcalar.joined(separator: ".") + " km"
+        return VakitMetinleri.bicim(m.mesafe, ["km": parcalar.joined(separator: m.binlikAyirici)])
     }
 
     private static func radyan(_ d: Double) -> Double { d * Double.pi / 180.0 }
     private static func derece(_ r: Double) -> Double { r * 180.0 / Double.pi }
+}
+
+/// Kible metinleri — dil basina bir ornek (Wear `SaatDili` kible alanlari ve JS
+/// `sozluk/<dil>/kible.ts > yon` ikizi). Yer tutucular `{derece}`, `{km}`. Duzen: sira tr, en,
+/// id, de, fr, bs, ru, ms, ar, ur; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
+public struct KibleMetinleri: Equatable {
+    public let arkada: String
+    public let saga: String
+    public let sola: String
+    public let hizali: String
+    public let arkadaErisim: String
+    public let sagdaErisim: String
+    public let soldaErisim: String
+    public let kabede: String
+    public let mesafe: String
+    public let binlikAyirici: String
+
+    public static let tr = KibleMetinleri(
+        arkada: "Arkanızda",
+        saga: "Sağa {derece}°",
+        sola: "Sola {derece}°",
+        hizali: "Kıble yönündesiniz",
+        arkadaErisim: "Kıble arkanızda",
+        sagdaErisim: "Kıble {derece} derece sağınızda",
+        soldaErisim: "Kıble {derece} derece solunuzda",
+        kabede: "Kâbe'desiniz",
+        mesafe: "{km} km",
+        binlikAyirici: "."
+    )
+
+    public static let en = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+
+    // id — Endonezce (beta); JS `sozluk/id/kible.ts > yon`
+    public static let id = KibleMetinleri(
+        arkada: "Di belakang Anda",
+        saga: "Kanan {derece}°",
+        sola: "Kiri {derece}°",
+        hizali: "Anda menghadap kiblat",
+        arkadaErisim: "Kiblat ada di belakang Anda",
+        sagdaErisim: "Kiblat {derece} derajat di sebelah kanan Anda",
+        soldaErisim: "Kiblat {derece} derajat di sebelah kiri Anda",
+        kabede: "Anda berada di Ka’bah",
+        mesafe: "{km} km",
+        binlikAyirici: "."
+    )
+
+
+    // de — Almanca (beta): JS `sozluk/de/kible.ts > yon`
+    public static let de = KibleMetinleri(
+        arkada: "Hinter Ihnen",
+        saga: "Rechts {derece}°",
+        sola: "Links {derece}°",
+        hizali: "Sie sind zur Qibla ausgerichtet",
+        arkadaErisim: "Die Qibla ist hinter Ihnen",
+        sagdaErisim: "Die Qibla ist {derece} Grad rechts von Ihnen",
+        soldaErisim: "Die Qibla ist {derece} Grad links von Ihnen",
+        kabede: "Sie sind an der Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: "."
+    )
+
+
+    // fr
+    public static let fr = KibleMetinleri(
+        arkada: "Derrière vous",
+        saga: "À droite {derece}°",
+        sola: "À gauche {derece}°",
+        hizali: "Vous êtes face à la Qibla",
+        arkadaErisim: "La Qibla est derrière vous",
+        sagdaErisim: "La Qibla est à {derece} degrés sur votre droite",
+        soldaErisim: "La Qibla est à {derece} degrés sur votre gauche",
+        kabede: "Vous êtes à la Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: "\u{202F}"
+    )
+
+
+    // bs
+    public static let bs = KibleMetinleri(
+        arkada: "Iza Vas",
+        saga: "Desno {derece}°",
+        sola: "Lijevo {derece}°",
+        hizali: "Okrenuti ste prema kibli",
+        arkadaErisim: "Kibla je iza Vas",
+        sagdaErisim: "Kibla je {derece}° desno od Vas",
+        soldaErisim: "Kibla je {derece}° lijevo od Vas",
+        kabede: "U Kabi ste",
+        mesafe: "{km} km",
+        binlikAyirici: "."
+    )
+
+
+    // ru
+    public static let ru = KibleMetinleri(
+        arkada: "Позади вас",
+        saga: "Направо {derece}°",
+        sola: "Налево {derece}°",
+        hizali: "Вы повёрнуты к кибле",
+        arkadaErisim: "Кибла позади вас",
+        sagdaErisim: "Кибла на {derece}° справа от вас",
+        soldaErisim: "Кибла на {derece}° слева от вас",
+        kabede: "Вы у Каабы",
+        mesafe: "{km} км",
+        binlikAyirici: "\u{00A0}"
+    )
+
+
+    // ms
+    public static let ms = KibleMetinleri(
+        arkada: "Di belakang anda",
+        saga: "Kanan {derece}°",
+        sola: "Kiri {derece}°",
+        hizali: "Anda menghadap kiblat",
+        arkadaErisim: "Kiblat di belakang anda",
+        sagdaErisim: "Kiblat {derece} darjah di sebelah kanan anda",
+        soldaErisim: "Kiblat {derece} darjah di sebelah kiri anda",
+        kabede: "Anda berada di Kaabah",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+
+    // ar — Arapça (beta): JS `sozluk/ar/kible.ts > yon`, mesafe `cami.kmIcinde` ("كم")
+    public static let ar = KibleMetinleri(
+        arkada: "خلفك",
+        saga: "يمينًا {derece}°",
+        sola: "يسارًا {derece}°",
+        hizali: "أنت باتجاه القبلة",
+        arkadaErisim: "القبلة خلفك",
+        sagdaErisim: "القبلة {derece} درجة إلى يمينك",
+        soldaErisim: "القبلة {derece} درجة إلى يسارك",
+        kabede: "أنت عند الكعبة",
+        mesafe: "{km} كم",
+        binlikAyirici: ","
+    )
+
+
+    // ur
+    public static let ur = KibleMetinleri(
+        arkada: "پیچھے",
+        saga: "دائیں {derece}°",
+        sola: "بائیں {derece}°",
+        hizali: "آپ قبلہ رخ ہیں",
+        arkadaErisim: "قبلہ آپ کے پیچھے ہے",
+        sagdaErisim: "قبلہ آپ کے دائیں جانب {derece} درجے پر ہے",
+        soldaErisim: "قبلہ آپ کے بائیں جانب {derece} درجے پر ہے",
+        kabede: "آپ کعبہ کے پاس ہیں",
+        mesafe: "{km} کلومیٹر",
+        binlikAyirici: ","
+    )
+
+    public static let tablo: [String: KibleMetinleri] = [
+        "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
+        "ar": ar, "ur": ur,
+    ]
+
+    public static func dil(_ kod: String?) -> KibleMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }
 }

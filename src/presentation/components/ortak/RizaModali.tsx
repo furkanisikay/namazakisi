@@ -16,6 +16,7 @@ import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithout
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { useMetin } from '../../hooks/useMetin';
 import { IkonCipi } from './IkonCipi';
 
 export interface RizaMaddesi {
@@ -57,7 +58,7 @@ export const RizaModali: React.FC<RizaModaliProps> = ({
     ornek,
     onaylaEtiketi,
     onaylaIkonu = 'check',
-    vazgecEtiketi = 'Vazgeç',
+    vazgecEtiketi: vazgecEtiketiProp,
     onOnayla,
     onVazgec,
     ikincil,
@@ -65,6 +66,8 @@ export const RizaModali: React.FC<RizaModaliProps> = ({
     testID,
 }) => {
     const renkler = useRenkler();
+    const varsayilanVazgec = useMetin().genel.ortak.vazgec;
+    const vazgecEtiketi = vazgecEtiketiProp ?? varsayilanVazgec;
     useDonanimGeriTusu(gorunur, onVazgec);
     if (__DEV__ && maddeler.length > RIZA_AZAMI_MADDE) {
         // eslint-disable-next-line no-console -- geliştirici uyarısı (metin bütçesi)

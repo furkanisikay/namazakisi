@@ -35,6 +35,7 @@ import * as TaskManager from 'expo-task-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mesafeHesapla } from '../../core/utils/MesafeHesaplayici';
 import { Logger } from '../../core/utils/Logger';
+import { baglamHazir } from './baglamHazir';
 import { konumTazeMi, olayIslenebilirMi } from '../../core/utils/geofenceKararYardimcisi';
 import { konumDegistiUygula } from './KonumDegisikligiServisi';
 import { BILINMEYEN_SISTEM_DURUMU, konumDogrulugunuSinirla } from '../../core/sistem/sistemDurumu';
@@ -171,6 +172,8 @@ TaskManager.defineTask(KONUM_GEOFENCE_GOREVI, async ({ data, error }: TaskManage
         // Giriş olayı beklenmiyor (notifyOnEnter:false) — gelirse yok say.
         return;
     }
+    // Yayma kararı ve planlar kullanıcının hesap ayarıyla hesaplansın.
+    await baglamHazir();
 
     try {
         // Mevcut konum ayarlarini al
@@ -311,6 +314,9 @@ export async function yeniKonumuUygula(
 
     // Reverse geocoding ile adres al
     let gpsAdres: { semt: string; ilce: string; il: string } | null = null;
+    // Ülke ters kodlamadan TAZE yazılır; bilinmiyorsa SİLİNİR (eski ülke kalırsa bölge
+    // takvimi önerisi yeni ülkede hiç çıkmaz; yokluğunda koordinattan bulunur).
+    let ulkeKodu: string | undefined;
     try {
         const adresler = await Location.reverseGeocodeAsync({
             latitude: yeniLat,
@@ -323,6 +329,7 @@ export async function yeniKonumuUygula(
                 ilce: adres.district || adres.subregion || '',
                 il: adres.city || adres.region || '',
             };
+            if (adres.isoCountryCode && /^[A-Z]{2}$/.test(adres.isoCountryCode)) ulkeKodu = adres.isoCountryCode;
         }
     } catch (geoError) {
         Logger.warn('KonumTakip', 'Reverse geocoding hatasi:', geoError);
@@ -349,6 +356,8 @@ export async function yeniKonumuUygula(
             koordinatlar: { lat: yeniLat, lng: yeniLng },
             gpsAdres: gpsAdres,
             sonGpsGuncellemesi: simdi,
+            ulkeKodu,
+            dunyaSehri: null,
             ...ekAlanlar,
         }));
         Logger.info('KonumTakip', 'Konum guncellendi; vakitler ve yer adi degismedi, yayma atlandi');
@@ -367,6 +376,8 @@ export async function yeniKonumuUygula(
         koordinatlar: { lat: yeniLat, lng: yeniLng },
         gpsAdres: gpsAdres,
         sonGpsGuncellemesi: simdi,
+        ulkeKodu,
+        dunyaSehri: null,
         ...ekAlanlar,
     }));
     Logger.info('KonumTakip', 'Konum guncellendi');

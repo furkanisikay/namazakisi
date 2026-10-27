@@ -29,10 +29,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
-import { Coordinates, PrayerTimes } from 'adhan';
+import { Coordinates } from 'adhan';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useHesapSurumu } from '../../hooks/useHesapSurumu';
 import { camiyeGitAyariniGuncelle, camiyeGitAyarlariniYukle } from '../../store/camiyeGitSlice';
 import { Anahtar } from '../common/Anahtar';
 import { SayisalSecici } from '../common/SayisalSecici';
@@ -67,15 +68,17 @@ import { camiyeGitAnonsMetni, camiyeGitMetniOlustur } from '../../../core/bildir
 import { adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
 import { enYakinFavoriCami, type FavoriCami } from '../../../core/camiyeGit/yurumeSuresi';
 import { camideyimAyarlariniNormalize } from '../../../core/cami/camideyimAyarlari';
-import { turkiyeHesapParametreleri } from '../../../core/vakit/hesapParametreleri';
+import { aktifPrayerTimes } from '../../../core/vakit/aktifHesap';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
+import { bicim, metin, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import * as camiKoprusu from '../../../../modules/expo-cami-geofence/src';
 
 /** Stepper'a arka arkaya basmak TEK yazmaya insin (cuma bölümüyle aynı gerekçe). */
 export const CAMIYE_GIT_YAZMA_GECIKMESI_MS = 1200;
 
 /** Yön sabit gerekçesi (plan §3.3) — kartta seçici yerine yazılır. */
-export const CAMIYE_GIT_YON_GEREKCESI = 'Hatırlatma vakit girmeden önce gelir; camiye zamanında varmanız için.';
+export const camiyeGitYonGerekcesi = (): string => metin().hatirlatma.camiye.yonGerekce;
 
 type AyarNavigasyonu = { navigate: (ekran: string) => void };
 
@@ -83,8 +86,12 @@ type AyarNavigasyonu = { navigate: (ekran: string) => void };
 const oneriUygulanmaz = (): boolean => false;
 
 /** Mesafeyi okunur yazar: 850 m · 1,2 km. */
-const mesafeMetni = (m: number): string =>
-    m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1).replace('.', ',')} km`;
+const mesafeMetni = (m: number): string => {
+    const c = metin().hatirlatma.camiye;
+    if (m < 1000) return bicim(c.metre, { m: Math.round(m / 10) * 10 });
+    const [tam, kesir] = (m / 1000).toFixed(1).split('.');
+    return bicim(c.km, { tam, kesir });
+};
 
 /** Adım dönüşümleri (yüzey kısıtlarıyla) — modül düzeyinde, referans sabit. */
 const CAMIYE_GIT_ISLEMLERI = ekAdimIslemleri<CamiyeGitAyarlari>(CAMIYE_GIT_ADIM_KISITLARI);
@@ -103,7 +110,7 @@ function siradakiPencere(
         const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
         for (let i = 0; i < 2; i++) {
             const gun = new Date(simdi.getFullYear(), simdi.getMonth(), simdi.getDate() + i);
-            const pt = new PrayerTimes(coordinates, gun, turkiyeHesapParametreleri());
+            const pt = aktifPrayerTimes(coordinates, gun);
             const girisler: Record<CamiyeGitVakti, Date> = {
                 imsak: pt.fajr,
                 ogle: pt.dhuhr,
@@ -131,6 +138,9 @@ function siradakiPencere(
 
 export const CamiyeGitBolumu: React.FC = () => {
     const renkler = useRenkler();
+    const sozluk = useMetin();
+    const mh = sozluk.hatirlatma;
+    const mc = mh.camiye;
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const kayitli = useAppSelector((s) => s.camiyeGit.ayarlar);
@@ -207,7 +217,7 @@ export const CamiyeGitBolumu: React.FC = () => {
         {
             oneriFiltresi: oneriUygulanmaz,
             ekYol: navigation
-                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: mh.ek.ekYol, onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );
@@ -292,14 +302,14 @@ export const CamiyeGitBolumu: React.FC = () => {
     const kaynakSatiri = (() => {
         if (ayarlar.yurumeKaynagi === 'tahmin' && ayarlar.camiAdi && !elleDuzenleniyor) {
             return favori
-                ? `${ayarlar.camiAdi} için tahmin (${mesafeMetni(favori.mesafeM)}). Gerekirse düzeltebilirsiniz.`
-                : `${ayarlar.camiAdi} için tahmin. Gerekirse düzeltebilirsiniz.`;
+                ? bicim(mc.tahminMesafe, { cami: ayarlar.camiAdi, mesafe: mesafeMetni(favori.mesafeM) })
+                : bicim(mc.tahmin, { cami: ayarlar.camiAdi });
         }
         if (favori && !favoriYurumeMesafesinde) {
-            return `${favori.ad} yürüme mesafesinde görünmüyor (${mesafeMetni(favori.mesafeM)}); süreyi siz ayarlayın.`;
+            return bicim(mc.uzak, { cami: favori.ad, mesafe: mesafeMetni(favori.mesafeM) });
         }
         if (camideyimVar && !favori) {
-            return "Camideyim'de bir camiyi favorilere eklerseniz yürüme süresi oradan hesaplanır.";
+            return mc.favoriYok;
         }
         return null;
     })();
@@ -311,9 +321,12 @@ export const CamiyeGitBolumu: React.FC = () => {
         ayarlar.yurumeDk !== favori.yurumeDk;
 
     // ── Pencere tanımı ──
+    const hesapSurumu = useHesapSurumu();
     const pencere = useMemo(
         () => siradakiPencere(koordinat, ayarlar.vakitler, new Date()),
-        [koordinat, ayarlar.vakitler]
+        // hesapSurumu: yöntem değişince yeniden hesaplanır (değer kapanışta okunmaz).
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [koordinat, ayarlar.vakitler, hesapSurumu]
     );
     const ornekVakit: CamiyeGitVakti = pencere?.vakit ?? CAMIYE_GIT_VAKITLERI.find((v) => ayarlar.vakitler[v]) ?? 'ogle';
     const sure = useMemo(() => ({ yurumeDk: ayarlar.yurumeDk, hazirlikDk: ayarlar.hazirlikDk }), [ayarlar.yurumeDk, ayarlar.hazirlikDk]);
@@ -323,11 +336,11 @@ export const CamiyeGitBolumu: React.FC = () => {
                 kaynak: 'camiyeGit',
                 yuzey: 'camiyeGit',
                 anonsVakitAdi: VAKIT_ADLARI[ornekVakit],
-                baslik: 'Camiye gitme vakti',
-                baslikKucuk: 'camiye gitme',
+                baslik: metin().hatirlatma.camiye.baslik,
+                baslikKucuk: metin().hatirlatma.camiye.baslikKucuk,
                 ikon: 'walking',
                 vakit: ornekVakit,
-                yonSabitGerekcesi: CAMIYE_GIT_YON_GEREKCESI,
+                yonSabitGerekcesi: camiyeGitYonGerekcesi(),
                 adimSayisi: ayarlar.adimlar.length,
                 maksAdim: CAMIYE_GIT_ADIM_KISITLARI.maksAdim,
                 esikSinirlari: { min: CAMIYE_GIT_ESIK_MIN_DK, max: CAMIYE_GIT_ESIK_MAX_DK },
@@ -335,13 +348,15 @@ export const CamiyeGitBolumu: React.FC = () => {
                 tekrarMinDk: CAMIYE_GIT_TEKRAR_MIN_DK,
                 tekrarMaxDk: CAMIYE_GIT_TEKRAR_MAX_DK,
                 varsayilanTekrarDk: CAMIYE_GIT_VARSAYILAN_TEKRAR_DK,
-                esikBasligi: 'NE KADAR ÖNCE',
-                esikAciklamasi: 'Ezana',
-                esikErisimAdi: 'Ezandan kaç dk önce',
-                esikBirimi: 'dk kala',
+                esikBasligi: metin().hatirlatma.ek.neKadarOnce,
+                esikAciklamasi: metin().hatirlatma.camiye.esikAciklamasi,
+                esikErisimAdi: metin().hatirlatma.camiye.esikErisimAdi,
+                esikBirimi: metin().hatirlatma.ek.dkKala,
                 pencere: pencere ? { baslangic: pencere.baslangic, bitis: pencere.bitis } : undefined,
                 seritGunEtiketi: pencere
-                    ? `${pencere.bugun ? 'Bugün' : 'Yarın'} ${VAKIT_ADLARI_KUCUK[pencere.vakit]} için`
+                    ? bicim(pencere.bugun ? metin().hatirlatma.camiye.seritBugun : metin().hatirlatma.camiye.seritYarin, {
+                          vakit: VAKIT_ADLARI_KUCUK[pencere.vakit],
+                      })
                     : undefined,
                 yetenekler,
                 otomatikAnons: (s) => camiyeGitAnonsMetni(ornekVakit, s.esikDk, sure),
@@ -349,9 +364,11 @@ export const CamiyeGitBolumu: React.FC = () => {
                     ...camiyeGitMetniOlustur(ornekVakit, adim.kalanDk, sure),
                     anons: camiyeGitAnonsMetni(ornekVakit, adim.kalanDk, sure),
                 }),
-                onizlemeOzeti: (adet) => `Seçtiğiniz her vakitte ezandan önce ${adet} hatırlatma alırsınız`,
+                onizlemeOzeti: (adet) => sayili(metin().hatirlatma.camiye.onizlemeOzeti, adet),
             }),
-        [ayarlar.adimlar.length, ornekVakit, pencere, sure, yetenekler]
+        // Dil değişince tanım (başlık, eşik metinleri) yeniden kurulur.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [ayarlar.adimlar.length, ornekVakit, pencere, sure, yetenekler, sozluk]
     );
 
     /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
@@ -379,10 +396,10 @@ export const CamiyeGitBolumu: React.FC = () => {
                     </View>
                     <View className="flex-1">
                         <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                            Camiye gitme vakti
+                            {mc.baslik}
                         </Text>
                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                            Ezandan, camiye yürüme süreniz kadar önce hatırlatalım
+                            {mc.altBaslik}
                         </Text>
                     </View>
                     <Anahtar
@@ -390,14 +407,14 @@ export const CamiyeGitBolumu: React.FC = () => {
                         onValueChange={anaAnahtar}
                         trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                         thumbColor={ayarlar.aktif ? renkler.birincil : '#f4f3f4'}
-                        accessibilityLabel="Camiye gitme vakti hatırlatması"
+                        accessibilityLabel={mc.anahtarEtiketi}
                     />
                 </View>
 
                 {ayarlar.aktif && (
                     <View className="px-4 pb-4 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
                         <Text className="text-xs font-semibold mt-4 mb-3" style={{ color: renkler.metinIkincil }}>
-                            Hangi vakitlerde camiye gidiyorsunuz?
+                            {mc.hangiVakitler}
                         </Text>
                         <View className="flex-row flex-wrap gap-2">
                             {CAMIYE_GIT_VAKITLERI.map((vakit) => {
@@ -415,7 +432,7 @@ export const CamiyeGitBolumu: React.FC = () => {
                                         }}
                                         accessibilityRole="checkbox"
                                         accessibilityState={{ checked: secili }}
-                                        accessibilityLabel={`${VAKIT_ADLARI[vakit]} namazı`}
+                                        accessibilityLabel={bicim(mc.vakitEtiketi, { ad: VAKIT_ADLARI[vakit] })}
                                     >
                                         {secili && (
                                             <FontAwesome5
@@ -437,16 +454,16 @@ export const CamiyeGitBolumu: React.FC = () => {
                         </View>
 
                         <Text className="text-xs font-semibold mt-5" style={{ color: renkler.metinIkincil }}>
-                            Yola çıkış: {camiyeGitOncedenDk(ayarlar)} dk (yürüme {ayarlar.yurumeDk} + hazırlık {ayarlar.hazirlikDk})
+                            {bicim(mc.yolaCikis, { dk: camiyeGitOncedenDk(ayarlar), yurume: ayarlar.yurumeDk, hazirlik: ayarlar.hazirlikDk })}
                         </Text>
 
                         <View className="flex-row items-center justify-between mt-3">
                             <View className="flex-1 mr-3">
                                 <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                    Yürüme süresi
+                                    {mc.yurume}
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                    Evden camiye
+                                    {mc.evdenCamiye}
                                 </Text>
                             </View>
                             <SayisalSecici
@@ -455,7 +472,7 @@ export const CamiyeGitBolumu: React.FC = () => {
                                 max={YURUME_MAX_DK}
                                 onChange={(d) => yaz({ yurumeDk: d, yurumeKaynagi: 'elle' })}
                                 renk={renkler.birincil}
-                                aciklama="Yürüme süresi"
+                                aciklama={mc.yurume}
                             />
                         </View>
                         {kaynakSatiri && (
@@ -469,11 +486,11 @@ export const CamiyeGitBolumu: React.FC = () => {
                                 className="flex-row items-center self-start mt-2 px-3 rounded-xl"
                                 style={{ minHeight: 44, backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                                 accessibilityRole="button"
-                                accessibilityLabel={`Favori caminize göre hesaplayın: ${favori.yurumeDk} dakika`}
+                                accessibilityLabel={bicim(mc.favoriEtiketi, { dk: favori.yurumeDk })}
                             >
                                 <FontAwesome5 name="map-marker-alt" size={12} color={renkler.birincil} style={{ marginRight: 8 }} />
                                 <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                    Favori caminize göre: {favori.yurumeDk} dk
+                                    {bicim(mc.favori, { dk: favori.yurumeDk })}
                                 </Text>
                             </TouchableOpacity>
                         )}
@@ -481,10 +498,10 @@ export const CamiyeGitBolumu: React.FC = () => {
                         <View className="flex-row items-center justify-between mt-5">
                             <View className="flex-1 mr-3">
                                 <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                    Hazırlık payı
+                                    {mc.hazirlik}
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                    Abdest ve giyinme
+                                    {mc.abdest}
                                 </Text>
                             </View>
                             <SayisalSecici
@@ -494,11 +511,11 @@ export const CamiyeGitBolumu: React.FC = () => {
                                 adim={HAZIRLIK_ADIM_DK}
                                 onChange={(d) => yaz({ hazirlikDk: d })}
                                 renk={renkler.birincil}
-                                aciklama="Hazırlık payı"
+                                aciklama={mc.hazirlik}
                             />
                         </View>
                         <Text className="text-xs mt-2" style={{ color: renkler.metinIkincil }}>
-                            Süreyi değiştirince aşağıdaki hatırlatmaların hepsi aynı farkla kayar.
+                            {mc.kayar}
                         </Text>
 
                         <View className="mt-4">
@@ -512,8 +529,8 @@ export const CamiyeGitBolumu: React.FC = () => {
                                 sesliOnayiVar={genelRiza.sesli}
                                 alarmOnayiVar={genelRiza.alarm}
                                 sesliOnayMetinleri={{
-                                    altBaslik: 'Camiye gitme hatırlatmasında sesli okuma',
-                                    kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',
+                                    altBaslik: mc.sesliAltBaslik,
+                                    kapatmaNotu: mh.adim.sesliKapatmaNotu,
                                 }}
                                 silinebilirMi={(a) => a.adimlar.length > 1}
                                 // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
@@ -526,11 +543,9 @@ export const CamiyeGitBolumu: React.FC = () => {
                             <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
                             <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
                                 {seciliVakitSayisi === 0
-                                    ? 'Hiçbir vakit seçili değil; hatırlatma gönderilmez.'
-                                    : `Seçtiğiniz vakitlerde ilk hatırlatma ezandan ${enErkenDk} dk önce gelir.`}
-                                {cumaAcik && ayarlar.vakitler.ogle
-                                    ? ' Cuma günleri öğle için cuma hatırlatmanız gelir; bu hatırlatma ayrıca gönderilmez.'
-                                    : ''}
+                                    ? mc.vakitYok
+                                    : bicim(mc.ilkHatirlatma, { dk: enErkenDk })}
+                                {cumaAcik && ayarlar.vakitler.ogle ? mc.cumaNotu : ''}
                             </Text>
                         </View>
                     </View>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TV eşleştirme QR tarayıcısı — Urduca (beta). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">ٹی وی اسکرین والا QR کوڈ فریم کے اندر لائیں</string>
+    <string name="tvesleme_qr_vazgec">منسوخ کریں</string>
+    <string name="tvesleme_qr_vazgec_erisim">اسکین منسوخ کریں</string>
+    <string name="tvesleme_qr_yabanci">یہ QR کوڈ Namaz Akışı TV کا نہیں ہے۔ ٹی وی پر نظر آنے والا کوڈ اسکین کریں۔</string>
+    <string name="tvesleme_qr_okundu">کوڈ اسکین ہو گیا</string>
+</resources>

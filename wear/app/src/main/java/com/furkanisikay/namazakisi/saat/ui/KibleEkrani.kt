@@ -50,6 +50,7 @@ import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.IconButtonDefaults
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.furkanisikay.namazakisi.saat.R
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
@@ -86,12 +87,11 @@ sealed interface KibleGorunumu {
     ) : KibleGorunumu
 }
 
-/**
+/*
  * Ekran metinleri SÖZLEŞMEDİR: kare hattı (`scripts/saat-kare-hatti.sh`, `08-kible`)
- * içerik açıklamasından "sensörü bulunmuyor" ile sensörsüz emülatörü ayırt eder.
+ * içerik açıklamasından "sensörü bulunmuyor" ile sensörsüz emülatörü ayırt eder
+ * (`R.string.kible_sensor_yok`, Türkçe metin değişmedi; hat Türkçe cihaz dilinde koşmalı).
  */
-const val KIBLE_SENSOR_YOK_METNI =
-    "Bu saatte pusula sensörü bulunmuyor. Kıble yönünü telefonunuzdan görebilirsiniz."
 
 /**
  * Kıble pusulası: kenarda dönen kadran (5°'lik çentikler, K/D/G/B), üstte saatin baktığı
@@ -113,28 +113,30 @@ fun KibleEkrani(
         AppScaffold(timeText = { TimeText() }) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 when (g) {
-                    KibleGorunumu.Bekleniyor -> Mesaj("Yön ölçülüyor…")
-                    KibleGorunumu.YukYok -> Mesaj("Kıble için telefonunuzda Namaz Akışı'nı açın.")
-                    KibleGorunumu.KonumYok -> Mesaj(
-                        "Kıble için telefonunuzda konumu açın. Namaz Akışı güncel değilse güncelleyin.",
-                    )
+                    KibleGorunumu.Bekleniyor -> Mesaj(stringResource(R.string.kible_olculuyor))
+                    KibleGorunumu.YukYok -> Mesaj(stringResource(R.string.kible_yuk_yok))
+                    KibleGorunumu.KonumYok -> Mesaj(stringResource(R.string.kible_konum_yok))
                     is KibleGorunumu.SensorYok -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Mesaj(
-                            KIBLE_SENSOR_YOK_METNI,
-                            alt = "Kıble ${derece(g.kibleAcisi)}° (kuzeyden)\n${g.konumAdi}",
+                            stringResource(R.string.kible_sensor_yok),
+                            alt = stringResource(R.string.kible_kuzeyden, derece(g.kibleAcisi)) + "\n" + g.konumAdi,
                         )
                         if (onTelefondaAc != null) {
+                            val aciklama = stringResource(R.string.kible_telefonda_ac)
                             CompactButton(
                                 onClick = onTelefondaAc,
                                 colors = ButtonDefaults.filledTonalButtonColors(),
-                                modifier = Modifier.padding(top = 6.dp).semantics { contentDescription = "Kıbleyi telefonunuzda açın" },
-                                label = { Text("Telefonda açın") },
+                                modifier = Modifier.padding(top = 6.dp).semantics { contentDescription = aciklama },
+                                label = { Text(stringResource(R.string.telefonda_acin)) },
                             )
                         }
                     }
                     is KibleGorunumu.Olculuyor -> {
                         Halka(yonCizim = 0.0, hedefCizim = null, hizali = false)
-                        Mesaj("Yön ölçülüyor…", alt = "Kıble ${derece(g.kibleAcisi)}°\n${g.konumAdi}")
+                        Mesaj(
+                            stringResource(R.string.kible_olculuyor),
+                            alt = stringResource(R.string.kible_derece, derece(g.kibleAcisi)) + "\n" + g.konumAdi,
+                        )
                     }
                     is KibleGorunumu.Pusula -> PusulaIcerigi(g, yonlendirme, onYonlendirme)
                 }
@@ -154,6 +156,8 @@ private fun PusulaIcerigi(g: KibleGorunumu.Pusula, yonlendirme: Boolean, onYonle
     val hedef by animateFloatAsState(g.hedefCizim.toFloat(), yay, label = "kibleHedef")
     // Hizada iç zemine yeşil hâle yumuşakça gelir/gider (olay tetikli, 300 ms; sonra durağan).
     val hale by animateFloatAsState(if (g.hizali) 1f else 0f, if (azalt) snap() else tween(300), label = "kibleHale")
+    val aciklama = stringResource(R.string.kible_erisim, g.erisim, derece(g.kibleAcisi), g.konumAdi)
+    val hizaliMetni = stringResource(R.string.kible_hizali)
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize(),
@@ -176,12 +180,12 @@ private fun PusulaIcerigi(g: KibleGorunumu.Pusula, yonlendirme: Boolean, onYonle
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth().clearAndSetSemantics {
-                    contentDescription = "${g.erisim}. Kıble ${derece(g.kibleAcisi)} derece, ${g.konumAdi}"
+                    contentDescription = aciklama
                 },
             ) {
                 Crossfade(targetState = g.hizali, animationSpec = tween(if (azalt) 0 else 250), label = "kibleBaslik") { hizali ->
                     Text(
-                        if (hizali) "Kıble yönündesiniz" else g.donus,
+                        yerelRakam(if (hizali) hizaliMetni else g.donus),
                         style = RAKAM,
                         fontSize = sinirliBoyut(if (hizali) 0.068f else 0.095f),
                         fontWeight = FontWeight.SemiBold,
@@ -193,14 +197,14 @@ private fun PusulaIcerigi(g: KibleGorunumu.Pusula, yonlendirme: Boolean, onYonle
                     )
                 }
                 Text(
-                    "Kıble ${derece(g.kibleAcisi)}°",
+                    yerelRakam(stringResource(R.string.kible_derece, derece(g.kibleAcisi))),
                     fontSize = sinirliBoyut(0.05f),
                     color = renk(SaatPaleti.METIN),
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                 )
                 Text(
-                    g.konumAdi,
+                    yerelRakam(g.konumAdi),
                     fontSize = sinirliBoyut(0.042f),
                     color = renk(SaatPaleti.METIN2),
                     textAlign = TextAlign.Center,
@@ -209,8 +213,8 @@ private fun PusulaIcerigi(g: KibleGorunumu.Pusula, yonlendirme: Boolean, onYonle
                 )
                 // Uyarılar tek satırda, öncelik sırasıyla: kalibrasyon yönü bozar, eğim azaltır.
                 val ipucu = when {
-                    g.kalibrasyon -> "Kalibrasyon için bileğinizle havada 8 çizin"
-                    g.egimIpucu -> "Saatinizi yere paralel tutun"
+                    g.kalibrasyon -> stringResource(R.string.kible_kalibrasyon)
+                    g.egimIpucu -> stringResource(R.string.kible_egim)
                     else -> null
                 }
                 if (ipucu != null) {
@@ -237,18 +241,13 @@ private fun PusulaIcerigi(g: KibleGorunumu.Pusula, yonlendirme: Boolean, onYonle
  */
 @Composable
 private fun TitresimDugmesi(acik: Boolean, onDokun: () -> Unit) {
+    val aciklama = stringResource(if (acik) R.string.kible_titresim_acik else R.string.kible_titresim_kapali)
     FilledTonalIconButton(
         onClick = onDokun,
         modifier = Modifier
             .padding(top = 4.dp)
             .size(IconButtonDefaults.SmallButtonSize)
-            .semantics {
-                contentDescription = if (acik) {
-                    "Titreşimle yönlendirme açık. Kapatmak için dokunun"
-                } else {
-                    "Titreşimle yönlendirme kapalı. Açmak için dokunun"
-                }
-            },
+            .semantics { contentDescription = aciklama },
     ) {
         Icon(
             painterResource(if (acik) R.drawable.ic_titresim else R.drawable.ic_titresim_kapali),
@@ -266,7 +265,7 @@ private fun Mesaj(metin: String, alt: String? = null) {
         modifier = Modifier.fillMaxWidth(guvenliGenislikOrani()),
     ) {
         Text(
-            metin,
+            yerelRakam(metin),
             fontSize = sinirliBoyut(0.058f),
             color = renk(SaatPaleti.METIN),
             textAlign = TextAlign.Center,
@@ -275,7 +274,7 @@ private fun Mesaj(metin: String, alt: String? = null) {
         )
         if (alt != null) {
             Text(
-                alt,
+                yerelRakam(alt),
                 fontSize = sinirliBoyut(0.046f),
                 color = renk(SaatPaleti.METIN2),
                 textAlign = TextAlign.Center,
@@ -314,7 +313,14 @@ private fun Halka(
     val kabeGovde = renk(SaatPaleti.KABE)
     val olcucu = rememberTextMeasurer()
     val harfStili = TextStyle(fontSize = sabitBoyut(0.045f), fontWeight = FontWeight.SemiBold)
-    val harfler = remember(harfStili) { YON_HARFLERI.map { olcucu.measure(it, harfStili) } }
+    // Yön harfleri sözlükten (JS `kible.harf`: K/D/G/B ↔ N/E/S/W); dil değişince yeniden ölçülür.
+    val yonHarfleri = listOf(
+        stringResource(R.string.kible_harf_kuzey),
+        stringResource(R.string.kible_harf_dogu),
+        stringResource(R.string.kible_harf_guney),
+        stringResource(R.string.kible_harf_bati),
+    )
+    val harfler = remember(harfStili, yonHarfleri) { yonHarfleri.map { olcucu.measure(it, harfStili) } }
     Canvas(Modifier.fillMaxSize().padding(4.dp)) {
         val r = min(size.width, size.height) / 2f
         val merkez = center
@@ -480,7 +486,6 @@ private fun kabeOturmasi(hizali: Boolean): Float {
 
 private const val HIZA_VURGU_MS = 700
 private const val KABE_OTURMA_OLCEGI = 1.35f
-private val YON_HARFLERI = listOf("K", "D", "G", "B")
 
 /** Merkezden `yaricap` uzaklıkta, kuzeyden saat yönünde `aci` (radyan) noktası. */
 private fun nokta(merkez: Offset, yaricap: Float, aci: Double): Offset =

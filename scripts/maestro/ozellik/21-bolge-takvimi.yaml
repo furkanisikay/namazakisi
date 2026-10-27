@@ -1,0 +1,59 @@
+# tohum: dunya
+# hazirlik: dunya-kl-video
+# Turkiye disinda (Kuala Lumpur) hesap ayari olmayan kullaniciya ana ekranda BIR KEZ
+# acilan "bolgenizin takvimi" karti; kabulden sonra ana ekran JAKIM ile.
+appId: com.furkanisikay.namazakisi
+---
+- launchApp:
+    stopApp: true
+# Acilis modali (kutlama "Devam edin", id kutlama-devam) varsa once kapanir: kart ancak o kapaninca acilir.
+- repeat:
+    while:
+      visible:
+        id: "kutlama-devam"
+    commands:
+      - tapOn:
+          id: "kutlama-devam"
+- extendedWaitUntil:
+    visible:
+      id: "bolge-takvimi-modali"
+    timeout: 90000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/50-bolge-takvimi
+# Video kart gorunurken baslar (acilis/Metro yuklemesi kayda girmez): kart → kabul →
+# ana ekranin JAKIM'le yeniden cizilmesi → yontem cipinden Hesap yontemi sayfasi.
+- startRecording: ozk/bolge-takvimi
+- waitForAnimationToEnd:
+    timeout: 2000
+- tapOn: "(JAKIM takvimine geçin|Switch to JAKIM)"
+- extendedWaitUntil:
+    visible:
+      id: "yontem-cipi"
+    timeout: 20000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/51-ana-ekran-jakim
+- scrollUntilVisible:
+    element:
+      id: "nafile-satir-kusluk"
+    direction: DOWN
+    centerElement: true
+    timeout: 30000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/51b-ana-ekran-jakim-akis
+- scrollUntilVisible:
+    element:
+      id: "yontem-cipi"
+    direction: UP
+    timeout: 30000
+    waitToSettleTimeoutMs: 1000
+- tapOn:
+    id: "yontem-cipi"
+- extendedWaitUntil:
+    visible:
+      id: "hesap-yontemi-karti"
+    timeout: 20000
+- waitForAnimationToEnd:
+    timeout: 3000
+- stopRecording

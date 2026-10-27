@@ -5,6 +5,8 @@
  */
 import type { CamideyimAyarlari } from './camideyimAyarlari';
 import { acilisBiciminiUygula, guvenPuaniniHesapla, type GuvenKarari, type GuvenSiniflari } from './guvenPuani';
+import { canli, metin } from '../dil/aktifDil';
+import type { Sozluk } from '../dil/sozluk/tr';
 
 export interface GuvenOrnegi {
     id: string;
@@ -15,25 +17,25 @@ export interface GuvenOrnegi {
     olculmez?: boolean;
 }
 
+type OrnekKimligi = keyof Sozluk['cami']['ornek'];
+
 interface Tanim {
-    id: string;
+    id: OrnekKimligi;
     ikon: string;
-    baslik: string;
     siniflar: GuvenSiniflari;
     dogrulukM: number;
     vakitDisi?: boolean;
 }
 
 const TANIMLAR: readonly Tanim[] = [
-    { id: 'ezan', ikon: 'mosque', baslik: 'Ezan vaktinde caminin içinde', siniflar: { zaman: 'ezanYakin', yer: 'poligonIci', hareket: 'durgun' }, dogrulukM: 8 },
-    { id: 'cuma', ikon: 'users', baslik: 'Cuma namazında', siniflar: { zaman: 'cuma', yer: 'poligonIci', hareket: 'bilinmiyor' }, dogrulukM: 15 },
-    { id: 'trafik', ikon: 'car', baslik: 'Trafikte caminin önünde beklemek', siniflar: { zaman: 'ezanYakin', yer: 'tampon', hareket: 'durgun' }, dogrulukM: 6 },
-    { id: 'gecis', ikon: 'walking', baslik: 'Önünden yürüyerek geçmek', siniflar: { zaman: 'ezanYakin', yer: 'tampon', hareket: 'hareketli' }, dogrulukM: 12 },
-    { id: 'kafe', ikon: 'coffee', baslik: 'Hemen yanındaki kafede oturmak', siniflar: { zaman: 'kapiIci', yer: 'tampon', hareket: 'durgun' }, dogrulukM: 9 },
+    { id: 'ezan', ikon: 'mosque', siniflar: { zaman: 'ezanYakin', yer: 'poligonIci', hareket: 'durgun' }, dogrulukM: 8 },
+    { id: 'cuma', ikon: 'users', siniflar: { zaman: 'cuma', yer: 'poligonIci', hareket: 'bilinmiyor' }, dogrulukM: 15 },
+    { id: 'trafik', ikon: 'car', siniflar: { zaman: 'ezanYakin', yer: 'tampon', hareket: 'durgun' }, dogrulukM: 6 },
+    { id: 'gecis', ikon: 'walking', siniflar: { zaman: 'ezanYakin', yer: 'tampon', hareket: 'hareketli' }, dogrulukM: 12 },
+    { id: 'kafe', ikon: 'coffee', siniflar: { zaman: 'kapiIci', yer: 'tampon', hareket: 'durgun' }, dogrulukM: 9 },
     {
         id: 'vakitDisi',
         ikon: 'clock',
-        baslik: 'Vakit dışında uğramak',
         siniflar: { zaman: 'serbest', yer: 'poligonIci', hareket: 'durgun' },
         dogrulukM: 8,
         vakitDisi: true,
@@ -41,15 +43,13 @@ const TANIMLAR: readonly Tanim[] = [
 ];
 
 export function guvenOrnekleriOlustur(a: Pick<CamideyimAyarlari, 'acilisBicimi' | 'beklemeDk' | 'vakitKapisi'>): GuvenOrnegi[] {
+    const basliklar = metin().cami.ornek;
     return TANIMLAR.map((t) => {
-        if (t.vakitDisi && a.vakitKapisi) return { id: t.id, ikon: t.ikon, baslik: t.baslik, eylem: 'hicbir', olculmez: true };
+        const baslik = basliklar[t.id];
+        if (t.vakitDisi && a.vakitKapisi) return { id: t.id, ikon: t.ikon, baslik, eylem: 'hicbir', olculmez: true };
         const g = guvenPuaniniHesapla(t.siniflar, t.dogrulukM, a.beklemeDk);
-        return { id: t.id, ikon: t.ikon, baslik: t.baslik, eylem: acilisBiciminiUygula(g.karar, a.acilisBicimi) };
+        return { id: t.id, ikon: t.ikon, baslik, eylem: acilisBiciminiUygula(g.karar, a.acilisBicimi) };
     });
 }
 
-export const EYLEM_METNI: Readonly<Record<GuvenKarari, string>> = {
-    otomatik: 'Kendiliğinden açılır',
-    sor: 'Size sorulur',
-    hicbir: 'Hiçbir şey olmaz',
-};
+export const EYLEM_METNI: Readonly<Record<GuvenKarari, string>> = canli((s) => s.cami.eylem);

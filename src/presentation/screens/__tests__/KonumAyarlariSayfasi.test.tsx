@@ -7,6 +7,7 @@ import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { KonumTakipServisi } from '../../../domain/services/KonumTakipServisi';
 import { konumAyarlariniGuncelle } from '../../store/konumSlice';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 // Mocklar
 // Navigasyon mock'u ZORUNLU: sayfa arama vurgusu için `useVurguKurulumu`
@@ -131,6 +132,25 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
     expect(queryByText('Enlem')).toBeNull();
     fireEvent.press(getByLabelText('Gelişmiş'));
     expect(await findByText('Enlem')).toBeTruthy();
+  });
+
+  it('elle konumda "Başka bir ülke" dünya şehri seçicisini açar; kayıtlı dünya şehri seçili gelir', async () => {
+    (useAppSelector as unknown as jest.Mock).mockImplementation((selector: any) =>
+      selector({
+        konum: {
+          ...konumState,
+          konumModu: 'manuel',
+          seciliIlAdi: 'Kuala Lumpur',
+          dunyaSehri: { ad: 'Kuala Lumpur', ulke: 'MY', bolge: 'Kuala Lumpur', saatDilimi: 'Asia/Kuala_Lumpur' },
+        },
+      })
+    );
+    const { getByTestId, getByLabelText } = SayfaYukle();
+    await waitFor(() => expect(getByTestId('konum-durum-karti')).toBeTruthy());
+    expect(getByTestId('manuel-bolge-dunya').props.accessibilityState).toMatchObject({ selected: true });
+    expect(getByLabelText('Şehir: Kuala Lumpur, Malezya. Değiştirmek için dokunun')).toBeTruthy();
+    fireEvent.press(getByTestId('manuel-bolge-turkiye'));
+    await waitFor(() => expect(getByTestId('manuel-bolge-turkiye').props.accessibilityState).toMatchObject({ selected: true }));
   });
 
   it('takip başlatılamazsa "İzin Gerekli" onay modalı (Alert DEĞİL) gösterilir', async () => {
@@ -309,5 +329,59 @@ describe('KonumAyarlariSayfasi — manuel ilçe seçimi', () => {
 
     const yuk = (konumAyarlariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
     expect(yuk.koordinatlar).toEqual({ lat: 39.9334, lng: 32.8597 });
+  });
+});
+
+describe('KonumAyarlariSayfasi — İngilizce', () => {
+  let geriAl: () => void;
+  const servisMock = {
+    aktifMi: jest.fn().mockResolvedValue(true),
+    arkaPlanIzniVarMi: jest.fn().mockResolvedValue(true),
+    baslat: jest.fn(),
+    durdur: jest.fn().mockResolvedValue(undefined),
+  };
+  const YASAKLI = ['Konum', 'Otomatik', 'Elle', 'Yenile', 'Dengeli', 'Hassas', 'Enlem', 'Boylam', 'Manuel', 'Kapat'];
+  const yerAdi = (m: string) => m === 'İstanbul';
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    geriAl = ingilizceyeGec();
+    jest.replaceProperty(Platform, 'OS', 'android');
+    (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
+    (useFeedback as jest.Mock).mockReturnValue({ butonTiklandiFeedback: jest.fn().mockResolvedValue(undefined) });
+    (useAppDispatch as unknown as jest.Mock).mockReturnValue(jest.fn());
+    (KonumTakipServisi.getInstance as jest.Mock).mockReturnValue(servisMock);
+  });
+  afterEach(() => {
+    geriAl();
+    jest.restoreAllMocks();
+  });
+
+  const SayfaYukle = (konum: Record<string, unknown>) => {
+    (useAppSelector as unknown as jest.Mock).mockImplementation(
+      (selector: (s: { konum: Record<string, unknown> }) => unknown) => selector({ konum }),
+    );
+    const { KonumAyarlariSayfasi } = require('../KonumAyarlariSayfasi');
+    return render(<KonumAyarlariSayfasi />);
+  };
+
+  it('otomatik mod: durum kartı, yolculuk takibi, gelişmiş katı İngilizce', async () => {
+    const e = SayfaYukle({
+      ...konumState,
+      akilliTakipAktif: true,
+      sonGpsGuncellemesi: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+    });
+    await waitFor(() => expect(e.getByText('Update prayer times when traveling')).toBeTruthy());
+    expect(e.getByText('Updated 5 minutes ago')).toBeTruthy();
+    fireEvent.press(e.getByLabelText('Advanced'));
+    expect(await e.findByText('Latitude')).toBeTruthy();
+    expect(e.getByText('41.0000°N')).toBeTruthy();
+    expect(turkceKalanlar(e.toJSON() as never, YASAKLI).filter((m) => !yerAdi(m))).toEqual([]);
+  });
+
+  it('elle mod: Türkiye / başka ülke sekmeleri İngilizce', async () => {
+    const e = SayfaYukle({ ...konumState, konumModu: 'manuel' });
+    await waitFor(() => expect(e.getByText('Another country')).toBeTruthy());
+    expect(turkceKalanlar(e.toJSON() as never, YASAKLI).filter((m) => !yerAdi(m))).toEqual([]);
   });
 });

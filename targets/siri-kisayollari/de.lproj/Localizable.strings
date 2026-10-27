@@ -1,0 +1,58 @@
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Almanca (beta) terimler: src/core/dil/sozluk/de (cami.ts > ios: "Gebetsstille", Fokusfilter;
+// gununAyeti.ts: "Bild zum Vers des Tages").
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Nächstes Gebet";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Nennt das nächste Gebet und die Uhrzeit, zu der es beginnt.";
+"Şu anki vakti kıldım" = "Aktuelles Gebet verrichtet";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Markiert das aktuelle Gebet als gebetet. Der Eintrag wird übernommen, wenn Sie die App öffnen.";
+"Onay iste" = "Nach Bestätigung fragen";
+"Kıbleyi aç" = "Qibla öffnen";
+"Uygulamayı Kıble pusulasıyla açar." = "Öffnet die App mit dem Qibla-Kompass.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Ich habe gebetet";
+"Kıble" = "Qibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Name des nächsten Gebets";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Liefert den Namen des nächsten Gebets. Sie können ihn in Kurzbefehlen als Bedingung verwenden.";
+"Sıradaki vakte kalan dakika" = "Minuten bis zum nächsten Gebet";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Liefert, wie viele Minuten bis zum Beginn des nächsten Gebets bleiben. Gibt -1 zurück, wenn keine Information vorliegt.";
+"Şu anki vakit kılındı mı?" = "Ist das aktuelle Gebet als gebetet markiert?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Liefert Ja, wenn das aktuelle Gebet als gebetet markiert ist. Liefert Nein, wenn kein Gebet zu markieren ist.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Gebetsstille";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Gibt in den ersten Minuten nach Beginn einer Gebetszeit „wahr“ zurück. Wird in Kurzbefehlen verwendet, um einen Fokus einzuschalten.";
+"Süre (dakika)" = "Dauer (Minuten)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Die ${dakika} Minuten nach Beginn der Gebetszeit";
+"Namaz sessizliğinin bitişi" = "Ende der Gebetsstille";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Liefert die Uhrzeit, zu der die Stille endet. Liefert die aktuelle Uhrzeit, wenn gerade keine Stille ist.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Ende der ${dakika} Minuten nach Beginn der Gebetszeit";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Gebetserinnerungen";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Solange dieser Fokus aktiv ist, kommen Gebetserinnerungen ohne Ton und ohne den Bildschirm einzuschalten.";
+"Hatırlatmaları sessiz ver" = "Erinnerungen lautlos zustellen";
+"Hatırlatmalar sessiz gelir" = "Erinnerungen kommen lautlos";
+"Hatırlatmalar her zamanki gibi" = "Erinnerungen wie gewohnt";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Markiert das im Widget angezeigte Gebet als gebetet.";
+"Tarih" = "Datum";
+"Vakit" = "Gebet";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Gebetsalarm beenden";
+"Namazı kıldım" = "Gebetet";
+"Alarm" = "Alarm";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Bild zum Vers des Tages";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Liefert den heutigen Vers als Bild in der Größe Ihres Bildschirms. Sie können es in Kurzbefehlen mit der Aktion zum Festlegen des Hintergrundbilds verwenden.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Öffnen Sie die App einmal, um den Vers des Tages vorzubereiten.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Das Bild konnte nicht erstellt werden. Versuchen Sie es gleich noch einmal.";

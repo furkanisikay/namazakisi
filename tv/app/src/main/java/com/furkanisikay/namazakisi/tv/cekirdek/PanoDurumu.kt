@@ -30,7 +30,8 @@ data class PanoDurumu(
     val siradakiKerahat: Kerahat.Pencere?,
 ) {
     /** Cuma günü öğle satırı "Cuma" diye okunur (telefondaki `namazGorunenAdi` gibi; salt görünüm). */
-    fun gorunenAd(vakit: Vakit): String = if (cuma && vakit == Vakit.OGLE) "Cuma" else vakit.ad
+    fun gorunenAd(vakit: Vakit, dil: String = "tr"): String =
+        if (cuma && vakit == Vakit.OGLE) tvDili(dil).cuma else vakit.ad(dil)
 }
 
 object PanoHesabi {

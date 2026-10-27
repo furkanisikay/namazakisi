@@ -15,6 +15,7 @@ import androidx.wear.protolayout.TimelineBuilders
 import androidx.wear.tiles.RequestBuilders
 import androidx.wear.tiles.TileBuilders
 import androidx.wear.tiles.TileService
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.BugunTileKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.GunDurumu
@@ -25,6 +26,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
 import com.furkanisikay.namazakisi.saat.hatirlatma.KildimAlicisi
 import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
 import com.furkanisikay.namazakisi.saat.ui.TesbihatAktivite
+import com.furkanisikay.namazakisi.saat.ui.yerelSifirRakami
 import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 import com.google.common.util.concurrent.ListenableFuture
 
@@ -63,6 +65,12 @@ class BugunTileServisi : TileService() {
             tamamlayici.set(ResourceBuilders.Resources.Builder().setVersion(KAYNAK_SURUMU).build())
             "BugunTileKaynak"
         }
+
+    /** Metin dili: kaynak sisteminin seçtiği values-xx (cihaz dili; tile her istekte kurulur). */
+    private val dil: String get() = getString(R.string.dil_kodu)
+
+    /** Rakam: cihaz yerel ayarının sıfırı (ar-SA'da '٠'); her statik metin bundan geçer. */
+    private val sifir: Char get() = yerelSifirRakami()
 
     private fun isle(tiklanan: String?): TileBuilders.Tile {
         val depo = YukDeposu(this)
@@ -147,14 +155,14 @@ class BugunTileServisi : TileService() {
     private fun bosDuzen(): LayoutElementBuilders.LayoutElement =
         LayoutElementBuilders.Box.Builder()
             .setWidth(expand()).setHeight(expand())
-            .setModifiers(tiklanabilir(UYGULAMAYI_AC, uygulamayiAc(), "Namaz Akışı'nı açın"))
+            .setModifiers(tiklanabilir(UYGULAMAYI_AC, uygulamayiAc(), getString(R.string.uygulamayi_acin)))
             .addContent(
                 LayoutElementBuilders.Column.Builder()
                     .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
-                    .addContent(TileOrtak.metin("Bugün", 16f, SaatPaleti.METIN, true))
+                    .addContent(TileOrtak.metin(getString(R.string.bugun_tile_adi), 16f, SaatPaleti.METIN, true, sifir = sifir))
                     .addContent(bosluk(6f))
-                    .addContent(TileOrtak.metin("Telefonunuzda", 13f, SaatPaleti.METIN2))
-                    .addContent(TileOrtak.metin("uygulamayı açın", 13f, SaatPaleti.METIN2))
+                    .addContent(TileOrtak.metin(getString(R.string.bugun_bos_satir1), 13f, SaatPaleti.METIN2, sifir = sifir))
+                    .addContent(TileOrtak.metin(getString(R.string.bugun_bos_satir2), 13f, SaatPaleti.METIN2, sifir = sifir))
                     .build()
             )
             .build()
@@ -184,37 +192,49 @@ class BugunTileServisi : TileService() {
         // (kılınan yeşil). Sayı ekran okuyucuda kalır; uygulamayı açma dokunuşu vakit adına geçti.
         val sutun = LayoutElementBuilders.Column.Builder()
             .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
-        val acmaAciklamasi = "Bugün ${ozet.kilinanSayisi}/${GunDurumu.FARZ_SAYISI} vakit kılındı. Uygulamayı açın"
+        val dil = this.dil
+        val acmaAciklamasi = getString(R.string.bugun_acma_aciklamasi, ozet.kilinanSayisi, GunDurumu.FARZ_SAYISI)
         if (sayilan != null) {
             val girisMi = sayilan.mod == KalanSure.Mod.GIRIS
             sutun.addContent(
                 LayoutElementBuilders.Box.Builder()
                     .setModifiers(tiklanabilir(UYGULAMAYI_AC, uygulamayiAc(), acmaAciklamasi))
-                    .addContent(TileOrtak.metin(sayilan.ad, 20f, SaatPaleti.vakitRengi(sayilan.vakit), true))
+                    .addContent(TileOrtak.metin(sayilan.ad(dil), 20f, SaatPaleti.vakitRengi(sayilan.vakit), true, sifir = sifir))
                     .build()
             )
             sutun.addContent(
                 TileOrtak.dinamikMetin(
                     TileOrtak.kalanMetni(
                         sayilan.hedef,
-                        "",
-                        "${if (girisMi) "giriş" else "çıkış"} ${VakitHesabi.saat(sayilan.hedef)}",
+                        getString(if (girisMi) R.string.tile_giris else R.string.tile_cikis, VakitHesabi.saat(sayilan.hedef)),
+                        dil,
+                        sifir = sifir,
                     ),
                     15f, SaatPaleti.METIN, true,
+                    // En geniş kalıp ("23 sa 59 dk sonra") — Türkçede eski sabitle aynı genişlik.
+                    kalip = TileOrtak.kalanKalibi(dil, getString(R.string.tile_sonra, TileOrtak.YER_TUTUCU)),
+                    sifir = sifir,
                 )
             )
-            sutun.addContent(TileOrtak.metin(AnaEkranKarari.altYazi(sayilan.mod), 11f, SaatPaleti.METIN2))
+            sutun.addContent(TileOrtak.metin(AnaEkranKarari.altYazi(sayilan.mod, dil), 11f, SaatPaleti.METIN2, sifir = sifir))
         } else {
             sutun.addContent(
                 LayoutElementBuilders.Box.Builder()
                     .setModifiers(tiklanabilir(UYGULAMAYI_AC, uygulamayiAc(), acmaAciklamasi))
-                    .addContent(TileOrtak.metin("Bugün ${ozet.kilinanSayisi}/${GunDurumu.FARZ_SAYISI}", 12f, SaatPaleti.METIN2))
+                    .addContent(
+                        TileOrtak.metin(
+                            getString(R.string.bugun_sayi, ozet.kilinanSayisi, GunDurumu.FARZ_SAYISI),
+                            12f,
+                            SaatPaleti.METIN2,
+                            sifir = sifir,
+                        )
+                    )
                     .build()
             )
         }
         sutun.addContent(bosluk(6f))
         val dugme = aktifSatir?.let { s ->
-            kildimDugmesi(s, uretim, onay?.takeIf { it.kimlik == VakitHesabi.kimlik(s.tarih, s.vakit) })
+            kildimDugmesi(s, uretim, onay?.takeIf { it.kimlik == VakitHesabi.kimlik(s.tarih, s.vakit) }, dil)
         }
         if (dugme != null) {
             sutun.addContent(dugme)
@@ -226,8 +246,9 @@ class BugunTileServisi : TileService() {
                 tesbihatKisayolu()
             } else {
                 TileOrtak.metin(
-                    ipucu(yuk, ozet, an, onay, aktif), 11f,
+                    ipucu(yuk, ozet, an, onay, aktif, dil), 11f,
                     if (onay != null) SaatPaleti.KERAHAT else SaatPaleti.METIN2,
+                    sifir = sifir,
                 )
             }
         )
@@ -244,14 +265,17 @@ class BugunTileServisi : TileService() {
         an: Long,
         onay: BugunTileKarari.Karar.OnayBekle?,
         aktif: Int?,
+        dil: String,
     ): String = when {
-        onay != null && VakitHesabi.kerahatMi(yuk, an) -> "Kerahat vakti · onay için tekrar"
-        onay != null -> "Onaylamak için tekrar dokunun"
-        ozet.kilinanSayisi == GunDurumu.FARZ_SAYISI -> "Bugünün namazları tamam"
+        onay != null && VakitHesabi.kerahatMi(yuk, an) -> getString(R.string.bugun_kerahat_tekrar)
+        onay != null -> getString(R.string.bugun_onay_tekrar)
+        ozet.kilinanSayisi == GunDurumu.FARZ_SAYISI -> getString(R.string.bugun_tamam)
         else -> ozet.satirlar.withIndex()
             .firstOrNull { (i, s) -> i != aktif && GunDurumu.halBul(s) == GunDurumu.Hal.KALAN }
-            ?.let { "${it.value.ad} kılınmadı" }
-            ?: ozet.satirlar.firstOrNull { !it.girdi }?.let { "Sıradaki: ${it.ad} ${VakitHesabi.saat(it.ms)}" }
+            ?.let { getString(R.string.bugun_kilinmadi, VakitHesabi.ad(it.value.vakit, dil)) }
+            ?: ozet.satirlar.firstOrNull { !it.girdi }?.let {
+                getString(R.string.bugun_siradaki, VakitHesabi.ad(it.vakit, dil), VakitHesabi.saat(it.ms))
+            }
             ?: ""
     }
 
@@ -260,16 +284,24 @@ class BugunTileServisi : TileService() {
         s: VakitHesabi.Satir,
         uretim: Long,
         onay: BugunTileKarari.Karar.OnayBekle?,
+        dil: String,
     ): LayoutElementBuilders.LayoutElement? {
         val hal = GunDurumu.halBul(s)
         val kimlik = VakitHesabi.kimlik(s.tarih, s.vakit)
+        val ad = VakitHesabi.ad(s.vakit, dil)
         val g = when {
-            onay != null -> Gorunum(SaatPaleti.KERAHAT, SaatPaleti.ZEMIN, "Tekrar dokunun", "Onaylamak için tekrar dokunun")
-            hal == GunDurumu.Hal.KILINDI -> Gorunum(
-                SaatPaleti.YUZEY2, SaatPaleti.EYLEM, "✓ Kılındı",
-                if (s.esitleniyor) "${s.ad} kılındı, eşitleniyor" else "${s.ad} kılındı",
+            onay != null -> Gorunum(
+                SaatPaleti.KERAHAT, SaatPaleti.ZEMIN,
+                getString(R.string.bugun_tekrar_dokunun), getString(R.string.bugun_onay_tekrar),
             )
-            s.isaretlenebilir -> Gorunum(SaatPaleti.EYLEM, SaatPaleti.EYLEM_USTU, "Kıldım", AnaEkranKarari.dugmeAciklamasi(s.ad))
+            hal == GunDurumu.Hal.KILINDI -> Gorunum(
+                SaatPaleti.YUZEY2, SaatPaleti.EYLEM, getString(R.string.kilindi_isareti),
+                getString(if (s.esitleniyor) R.string.bugun_kilindi_esitleniyor else R.string.bugun_kilindi, ad),
+            )
+            s.isaretlenebilir -> Gorunum(
+                SaatPaleti.EYLEM, SaatPaleti.EYLEM_USTU,
+                getString(R.string.kildim), AnaEkranKarari.dugmeAciklamasi(ad, dil),
+            )
             else -> return null
         }
         val belirtec = ModifiersBuilders.Modifiers.Builder()
@@ -300,7 +332,7 @@ class BugunTileServisi : TileService() {
         return LayoutElementBuilders.Box.Builder()
             .setHeight(dp(DUGME_YUKSEKLIK_DP))
             .setModifiers(belirtec.build())
-            .addContent(TileOrtak.metin(g.etiket, 14f, g.yazi, true))
+            .addContent(TileOrtak.metin(g.etiket, 14f, g.yazi, true, sifir = sifir))
             .build()
     }
 
@@ -404,7 +436,7 @@ class BugunTileServisi : TileService() {
                     )
                     .setSemantics(
                         ModifiersBuilders.Semantics.Builder()
-                            .setContentDescription("Tesbihat sayacını açın")
+                            .setContentDescription(getString(R.string.tesbihat_ac))
                             .setRole(ModifiersBuilders.SEMANTICS_ROLE_BUTTON)
                             .build()
                     )
@@ -419,7 +451,7 @@ class BugunTileServisi : TileService() {
                     )
                     .build()
             )
-            .addContent(TileOrtak.metin("Tesbihat", 11f, SaatPaleti.METIN))
+            .addContent(TileOrtak.metin(getString(R.string.tesbihat_adi), 11f, SaatPaleti.METIN, sifir = sifir))
             .build()
 
     private fun uygulamayiAc(): ActionBuilders.Action =

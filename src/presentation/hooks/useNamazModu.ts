@@ -16,6 +16,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 import { useAppSelector } from '../store/hooks';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
+import { metin } from '../../core/dil/aktifDil';
 import {
     namazModuAyarlariniNormalize,
     VARSAYILAN_NAMAZ_MODU_AYARLARI,
@@ -76,10 +77,7 @@ export function useNamazModu(): NamazModuEkranDurumu {
                 setRehberGorunur(true);
             } else if (yeni.etkin && (sonuc === 'erisimYok' || sonuc === 'hata')) {
                 // Erişim var ama telefon modu kurmadı: Ayarlar'a göndermek çözmez.
-                kisaBildirimGoster(
-                    'Namaz modu bu telefonda şu an kurulamadı. Biraz sonra tekrar deneyin; sürerse Sorun bildir ile bize iletin.',
-                    true
-                );
+                kisaBildirimGoster(metin().cami.namazModu.kurulamadi, true);
             }
         },
         [yenile]
@@ -95,7 +93,7 @@ export function useNamazModu(): NamazModuEkranDurumu {
             if (beklenen && d?.erisim) {
                 // Erişim verildi: etkin ayar kuralı şimdi kurabilsin.
                 if (ayarlarRef.current.etkin) await yaz(ayarlarRef.current).catch(() => undefined);
-                kisaBildirimGoster('Namaz modu hazır');
+                kisaBildirimGoster(metin().cami.namazModu.hazir);
             }
         });
         return () => abonelik.remove();
@@ -111,21 +109,18 @@ export function useNamazModu(): NamazModuEkranDurumu {
             await yenile().catch(() => null);
             // Etkinse kuralı kurmayı dene (kurulamazsa `yaz` kendi bilgisini verir).
             if (ayarlarRef.current.etkin) await yaz(ayarlarRef.current).catch(() => undefined);
-            else kisaBildirimGoster('Rahatsız Etmeyin erişimi zaten açık.');
+            else kisaBildirimGoster(metin().cami.namazModu.erisimZatenAcik);
             return;
         }
         if (sonuc !== 'acildi') {
             donusBekleniyor.current = false;
-            kisaBildirimGoster(
-                'Ayar ekranı açılamadı; telefonunuzun Ayarlar > Bildirimler > Rahatsız Etmeyin erişimi bölümünden açabilirsiniz.',
-                true
-            );
+            kisaBildirimGoster(metin().cami.namazModu.ayarAcilamadi, true);
         }
     }, [yenile, yaz]);
 
     const modAyarlariniAc = useCallback(async () => {
         const acildi = await kopru.modAyarlariniAc();
-        if (!acildi) kisaBildirimGoster('Ayar ekranı açılamadı; telefonunuzun Rahatsız Etmeyin/mod ayarlarından açabilirsiniz.', true);
+        if (!acildi) kisaBildirimGoster(metin().cami.namazModu.modAyariAcilamadi, true);
     }, []);
 
     return {

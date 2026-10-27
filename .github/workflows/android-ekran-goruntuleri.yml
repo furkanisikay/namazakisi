@@ -36,6 +36,22 @@ on:
         description: 'Önceki koşunun debug APK artifact''ını kullan (boş = yeniden derle). JS Metro''dan geldiği için APK yalnız native kod değişince yenilenmeli.'
         required: false
         default: ''
+      dil:
+        description: 'Uygulama dili (tr = Türkçe, mağaza ve README kareleri; diğerleri = o dilin kanıt turu, artifact adlarına -<dil> eklenir)'
+        type: choice
+        required: false
+        default: 'tr'
+        options:
+          - tr
+          - en
+          - id
+          - de
+          - fr
+          - bs
+          - ru
+          - ms
+          - ar
+          - ur
       tur:
         description: 'Hangi kareler: magaza (Play kareleri) | ozellik (yeni ekranlar turu) | ikisi | tablet (yalnız tablet özellik turu) | katlanabilir (Pixel Fold: açık + masaüstü postürü) | saat (Wear OS) | tv (Android TV) | cihazlar (saat + tv)'
         type: choice
@@ -79,6 +95,11 @@ on:
 
 permissions:
   contents: read
+
+env:
+  # Tohum betiği (`scripts/magaza-tohum-verisi.js`) uygulamanın dil kaydını, `scripts/emulator-hazir-bekle.sh`
+  # emülatörün cihaz dilini buna göre yazar (`-change-locale` kullanılmaz: açılış yarışı).
+  TOHUM_DIL: ${{ inputs.dil || 'tr' }}
 
 jobs:
   kareler:
@@ -191,7 +212,7 @@ jobs:
         if: ${{ always() && inputs.tur != 'ozellik' && inputs.tur != 'tablet' && inputs.tur != 'katlanabilir' }}
         uses: actions/upload-artifact@v7
         with:
-          name: android-ekran-goruntuleri
+          name: android-ekran-goruntuleri${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           # YALNIZ kareler: disaridan bir yol (~/.maestro) eklenince ortak kok
           # degisiyor ve kareler artifact icinde alt klasore iniyordu.
           path: kareler/
@@ -279,7 +300,7 @@ jobs:
         if: ${{ always() && inputs.tur != 'magaza' }}
         uses: actions/upload-artifact@v7
         with:
-          name: android-ozellik-kareleri
+          name: android-ozellik-kareleri${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           path: kareler-ozellik/
           retention-days: 14
           if-no-files-found: warn
@@ -288,7 +309,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: android-maestro-ciktisi
+          name: android-maestro-ciktisi${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           path: ~/.maestro/tests/
           retention-days: 7
           if-no-files-found: ignore
@@ -375,7 +396,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: android-saat-kareleri
+          name: android-saat-kareleri${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           path: kareler-saat/
           retention-days: 14
           if-no-files-found: warn
@@ -386,7 +407,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: android-saat-videolari
+          name: android-saat-videolari${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           path: videolar-saat/
           retention-days: 14
           if-no-files-found: warn
@@ -454,7 +475,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: android-tv-kareleri
+          name: android-tv-kareleri${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           path: kareler-tv/
           retention-days: 14
           if-no-files-found: warn
@@ -465,7 +486,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: android-tv-videolari
+          name: android-tv-videolari${{ (inputs.dil && inputs.dil != 'tr') && format('-{0}', inputs.dil) || '' }}
           path: videolar-tv/
           retention-days: 14
           if-no-files-found: warn

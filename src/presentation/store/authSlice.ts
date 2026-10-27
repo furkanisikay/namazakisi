@@ -17,7 +17,7 @@ const baslangicDurumu: AuthState = {
   kullanici: {
     id: 'local-user',
     email: 'yerel@kullanici.com',
-    adSoyad: 'Misafir Kullanıcı',
+    adSoyad: 'Misafir Kullanıcı', // dil-haric: ekranda gösterilmez (yer tutucu profil)
     olusturulmaTarihi: new Date().toISOString(),
   },
   durum: 'girisYapildi', // Varsayılan olarak giriş yapılmış kabul ediyoruz

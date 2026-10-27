@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bs — Boşnakça (beta). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: src/core/dil/sozluk/bs. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Trenutni vakat, kada ističe i „Klanjano” jednim dodirom</string>
+  <string name="widget_genis_aciklama">Današnjih pet vakata, odbrojavanje i „Klanjano” jednim dodirom</string>
+  <string name="widget_kapak_adi">Vremena na vanjskom ekranu</string>
+  <string name="widget_kapak_aciklama">Današnja vremena i odbrojavanje za vanjski ekran Galaxy Z Flipa</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Klasični</string>
+  <string name="widget_klasik_aciklama">Klasični zeleni izgled: preostalo vrijeme do sljedećeg vakta</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klasični široki</string>
+  <string name="widget_klasik_genis_aciklama">Klasični zeleni izgled: odbrojavanje i današnja vremena</string>
+  <string name="widget_ayet_adi">Ajet dana</string>
+  <string name="widget_ayet_aciklama">Ajet i prijevod njegovog značenja, svaki dan novi u zoru</string>
+  <string name="widget_ayar_zemin_palet">Boja aplikacije (svijetla nijansa)</string>
+  <string name="widget_ayar_ayet_icerik">Prikaz u kvadratnoj veličini</string>
+  <string name="widget_ayar_ayet_icerik_meal">Prijevod značenja</string>
+  <string name="widget_ayar_ayet_icerik_hat">Arapski tekst (kaligrafija)</string>
+  <string name="kutu_kildim_etiket">Klanjano</string>
+  <string name="kisayol_kildim_kisa">Klanjano</string>
+  <string name="kisayol_kildim_uzun">Klanjano: trenutni vakat</string>
+  <string name="kisayol_kible_kisa">Kibla</string>
+  <string name="kisayol_kible_uzun">Prikažite smjer kible</string>
+  <string name="kisayol_kaza_kisa">Kada-namazi</string>
+  <string name="kisayol_kaza_uzun">Otvorite evidenciju kada-namaza</string>
+  <string name="kildim_onay_baslik">Označiti namaz (%1$s) kao klanjan?</string>
+  <string name="kildim_onay_mesaj">Nije jasno koja je aplikacija poslala ovaj zahtjev. Ako ste klanjali, potvrdite.</string>
+  <string name="kildim_onay_evet">Klanjano</string>
+  <string name="kildim_onay_vazgec">Odustanite</string>
+  <string name="kildim_guven_baslik">Dozvoliti da %1$s označava Vaše namaze kao klanjane?</string>
+  <string name="kildim_guven_mesaj">Vakat koji bi se sada označio: %1$s. Odluku kasnije možete promijeniti u Postavke &gt; Aplikacije koje označavaju klanjano.</string>
+  <string name="kildim_guven_tarayici_mesaj">Vakat koji bi se sada označio: %1$s. Ovaj zahtjev je došao iz preglednika; budući da svaka web stranica može otvoriti ovu vezu, trajna dozvola se ne može dati.</string>
+  <string name="kildim_guven_her_zaman">Uvijek dozvolite</string>
+  <string name="kildim_guven_bu_sefer">Samo ovaj put</string>
+  <string name="kildim_guven_engelle">Blokirajte</string>
+  <string name="kildim_guven_engellendi">%1$s više ne može označavati Vaše namaze. Možete to promijeniti u postavkama.</string>
+  <string name="widget_ayar_baslik">Prilagodite widget</string>
+  <string name="widget_ayar_zemin">Podloga</string>
+  <string name="widget_ayar_zemin_material">Boje pozadine ekrana</string>
+  <string name="widget_ayar_zemin_sistem">Tema sistema</string>
+  <string name="widget_ayar_zemin_acik">Svijetla</string>
+  <string name="widget_ayar_zemin_koyu">Tamna</string>
+  <string name="widget_ayar_zemin_seffaf">Providna</string>
+  <string name="widget_ayar_opaklik">Neprozirnost podloge</string>
+  <string name="widget_ayar_gosterim">Krupni prikaz</string>
+  <string name="widget_ayar_gosterim_kalan">Preostalo vrijeme</string>
+  <string name="widget_ayar_gosterim_bitis">Vrijeme isteka</string>
+  <string name="widget_ayar_gosterim_not">Vrijeme isteka prikazuje se u svakoj veličini.</string>
+  <string name="widget_ayar_sonraki">Prikažite sljedeći vakat</string>
+  <string name="widget_ayar_vazgec">Odustanite</string>
+  <string name="widget_ayar_kaydet">Sačuvajte</string>
+  <string name="kildim_onay_kanal_adi">Potvrda „Klanjano”</string>
+  <string name="kildim_onay_kanal_aciklama">Tiha potvrda koja se na nekoliko sekundi prikaže kada u obavještenju dodirnete „Klanjano”</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Ističe %1$s</string>
+  <string name="widget_giris">Nastupa %1$s</string>
+  <string name="widget_namaz_vakti">Namasko vrijeme</string>
+  <string name="widget_uygulamayi_acin">Otvorite aplikaciju</string>
+  <string name="widget_siradaki">Sljedeći: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Trenutno nema vakta za klanjanje</string>
+  <string name="widget_dugme_kildim">Klanjano</string>
+  <string name="widget_dugme_isaretleniyor">Označavanje</string>
+  <string name="widget_dugme_kilindi">Klanjano</string>
+  <string name="widget_dugme_vakit_girmedi">Još nije nastupilo</string>
+  <string name="widget_klasik_uygulamayi_acin">otvorite aplikaciju</string>
+  <string name="widget_klasik_erisim_veri_yok">Otvorite aplikaciju da vidite vremena</string>
+  <string name="widget_klasik_erisim_siradaki">Sljedeći vakat: %1$s, nastupa u %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Podne za</string>
+  <string name="widget_onizleme_klasik_genis">Akšam za</string>
+  <string name="widget_onizleme_imsak">Zora</string>
+  <string name="widget_onizleme_gunes">Izlazak sunca</string>
+  <string name="widget_onizleme_ogle">Podne</string>
+  <string name="widget_onizleme_ikindi">Ikindija</string>
+  <string name="widget_onizleme_aksam">Akšam</string>
+  <string name="widget_onizleme_yatsi">Jacija</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s: Vaš namaz je označen kao klanjan. Allah kabul ejlesun.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s: namaz je već označen kao klanjan.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Trenutno nema vakta za klanjanje. Sljedeći je %1$s, nastupa u %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Trenutno nema vakta za klanjanje.</string>
+  <string name="kildim_sonuc_veri_yok">Nema podataka o vremenima. Otvorite aplikaciju jednom.</string>
+  <string name="kildim_sonuc_vakit_degisti">Vakat se promijenio, označavanje nije izvršeno. Pokušajte ponovo.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Aplikacija za navigaciju se nije mogla otvoriti.</string>
+  <string name="arac_adsiz_cami">Džamija</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Podaci o vremenima nisu se mogli pročitati.</string>
+  <string name="asistan_isaretleme_yapilamadi">Označavanje nije uspjelo.</string>
+  <string name="asistan_aciklama">Možete pitati za namaska vremena, označiti trenutni vakat kao klanjan i otvoriti ekran kible.</string>
+</resources>

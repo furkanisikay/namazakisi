@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -50,9 +51,11 @@ import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.CompactButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.GunDurumu
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
+import com.furkanisikay.namazakisi.saat.cekirdek.rakamlariYerellestir
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
@@ -202,7 +205,7 @@ fun VakitSayaci(
                 // olay tetikli, 300 ms, boşta hareket yok. Azaltılmış harekette anında.
                 Crossfade(targetState = g.adSatiri, animationSpec = tween(if (azalt) 0 else 300), label = "vakitAdi") { ad ->
                     Text(
-                        ad,
+                        yerelRakam(ad),
                         color = renk,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
@@ -218,7 +221,7 @@ fun VakitSayaci(
                     saniyeRengi = if (g.acil) renk else renk(SaatPaleti.METIN2),
                 )
                 Text(
-                    g.altYazi,
+                    yerelRakam(g.altYazi),
                     style = MaterialTheme.typography.labelSmall,
                     color = renk(SaatPaleti.METIN2),
                     maxLines = 1,
@@ -256,11 +259,12 @@ fun SureGosterimi(
 ) {
     val rakamBoyu = sabitBoyut(if (sayac.haneSayisi(saniyeGoster) >= 4) 0.165f else 0.20f)
     val birimBoyu = sabitBoyut(0.072f)
+    val sifir = sifirRakami()
     Row(verticalAlignment = Alignment.Bottom) {
         sayac.gorunur(saniyeGoster).forEachIndexed { i, p ->
             if (i > 0) Spacer(Modifier.width(5.dp))
             Text(
-                p.sayi,
+                rakamlariYerellestir(p.sayi, sifir),
                 style = rakamStili,
                 fontSize = if (p.saniye) sabitBoyut(0.09f) else rakamBoyu,
                 fontWeight = if (p.saniye) FontWeight.Medium else rakamAgirligi,
@@ -281,6 +285,8 @@ fun SureGosterimi(
 
 @Composable
 private fun KildimDugmesi(dugme: AnaEkranKarari.Dugme, g: AnaEkranKarari.Gorunum, onKildim: () -> Unit) {
+    val dil = stringResource(R.string.dil_kodu)
+    val aciklama = AnaEkranKarari.dugmeAciklamasi(g.sayilan.ad(dil), dil)
     when (dugme) {
         AnaEkranKarari.Dugme.ISARETLE -> CompactButton(
             onClick = onKildim,
@@ -288,8 +294,8 @@ private fun KildimDugmesi(dugme: AnaEkranKarari.Dugme, g: AnaEkranKarari.Gorunum
                 containerColor = renk(SaatPaleti.EYLEM),
                 contentColor = renk(SaatPaleti.EYLEM_USTU),
             ),
-            modifier = Modifier.semantics { contentDescription = AnaEkranKarari.dugmeAciklamasi(g.sayilan.ad) },
-            label = { Text("Kıldım", fontWeight = FontWeight.Bold) },
+            modifier = Modifier.semantics { contentDescription = aciklama },
+            label = { Text(stringResource(R.string.kildim), fontWeight = FontWeight.Bold) },
         )
         AnaEkranKarari.Dugme.KILINDI, AnaEkranKarari.Dugme.ESITLENIYOR -> Box(
             contentAlignment = Alignment.Center,
@@ -303,7 +309,7 @@ private fun KildimDugmesi(dugme: AnaEkranKarari.Dugme, g: AnaEkranKarari.Gorunum
             // Telefon onayı beklenirken metin AYNI, yalnız soluk: "✓ Kılındı · eşitleniyor"
             // yuvarlak ekranda kenara taşıp "Kılındı ·" diye kesiliyordu (kayıtta görüldü).
             Text(
-                "✓ Kılındı",
+                stringResource(R.string.kilindi_isareti),
                 color = renk(SaatPaleti.EYLEM).copy(alpha = if (dugme == AnaEkranKarari.Dugme.ESITLENIYOR) 0.6f else 1f),
                 style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
@@ -381,11 +387,13 @@ fun SigdirilanMetin(
     ) {
         val olcer = androidx.compose.ui.text.rememberTextMeasurer()
         val genislik = constraints.maxWidth
-        val boy = remember(metin, genislik, enFazla, agirlik) {
+        // Ölçülen metin çizilen metindir: rakamlar yerel ayarın rakamıyla (ar-SA'da ٠-٩).
+        val yazi = yerelRakam(metin)
+        val boy = remember(yazi, genislik, enFazla, agirlik) {
             var b = enFazla.value
             while (b > enAz.value &&
                 olcer.measure(
-                    metin,
+                    yazi,
                     stil.merge(TextStyle(fontSize = b.sp, fontWeight = agirlik)),
                     maxLines = 1,
                     softWrap = false,
@@ -396,7 +404,7 @@ fun SigdirilanMetin(
             b.sp
         }
         Text(
-            metin,
+            yazi,
             style = stil,
             fontSize = boy,
             fontWeight = agirlik,

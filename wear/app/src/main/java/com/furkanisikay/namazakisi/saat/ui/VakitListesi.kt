@@ -22,6 +22,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
+import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 
@@ -50,13 +52,17 @@ fun VakitSatiri(
 ) {
     val vakitRengi = renk(SaatPaleti.vakitRengi(satir.vakit))
     val saat = VakitHesabi.saat(satir.ms)
+    val ad = VakitHesabi.ad(satir.vakit, stringResource(R.string.dil_kodu))
     val durum = when {
-        satir.esitleniyor -> "kılındı, eşitleniyor"
-        satir.kilindi -> "kılındı"
-        !satir.girdi -> "vakti henüz girmedi"
-        aktif -> "şu anki vakit${kalanMetni?.let { ", $it" } ?: ""}, işaretlemek için dokunun"
-        else -> "kılınmadı, işaretlemek için dokunun"
+        satir.esitleniyor -> stringResource(R.string.durum_esitleniyor)
+        satir.kilindi -> stringResource(R.string.durum_kilindi)
+        !satir.girdi -> stringResource(R.string.durum_girmedi)
+        aktif && kalanMetni != null -> stringResource(R.string.durum_simdiki_kalan, kalanMetni)
+        aktif -> stringResource(R.string.durum_simdiki)
+        else -> stringResource(R.string.durum_kilinmadi)
     }
+    val isaretleyin = stringResource(R.string.isaretleyin)
+    val esitleniyor = stringResource(R.string.esitleniyor)
     val zemin = when {
         aktif -> renk(SaatPaleti.YUZEY2)
         else -> renk(SaatPaleti.YUZEY)
@@ -80,14 +86,14 @@ fun VakitSatiri(
             .clickable(
                 enabled = satir.isaretlenebilir,
                 role = Role.Button,
-                onClickLabel = "İşaretleyin",
+                onClickLabel = isaretleyin,
                 onClick = onSec,
             )
-            .semantics(mergeDescendants = true) { contentDescription = "${satir.ad}, $saat, $durum" }
+            .semantics(mergeDescendants = true) { contentDescription = "$ad, $saat, $durum" }
             .padding(start = 14.dp, end = 12.dp, top = 6.dp, bottom = 6.dp),
     ) {
         Text(
-            saat,
+            yerelRakam(saat),
             style = RAKAM,
             fontSize = MaterialTheme.typography.titleSmall.fontSize,
             fontWeight = FontWeight.SemiBold,
@@ -96,9 +102,9 @@ fun VakitSatiri(
             modifier = Modifier.width(46.dp).clearAndSetSemantics { },
         )
         Column(Modifier.weight(1f).clearAndSetSemantics { }) {
-            Text(satir.ad, style = MaterialTheme.typography.titleSmall, color = yazi, maxLines = 1)
+            Text(ad, style = MaterialTheme.typography.titleSmall, color = yazi, maxLines = 1)
             val alt = when {
-                satir.esitleniyor -> "eşitleniyor"
+                satir.esitleniyor -> esitleniyor
                 // "kaldı" eki kare ekranda "2 sa 41 dk"yı "2 sa 41"e kesiyordu; süre tek başına okunur.
                 aktif && kalanMetni != null -> kalanMetni
                 else -> null
@@ -144,7 +150,7 @@ private fun DurumDairesi(kilindi: Boolean, halka: Color) {
 @Composable
 fun BilgiMetni(metin: String, modifier: Modifier = Modifier) {
     Text(
-        metin,
+        yerelRakam(metin),
         textAlign = androidx.compose.ui.text.style.TextAlign.Center,
         style = MaterialTheme.typography.bodyMedium,
         color = renk(SaatPaleti.METIN2),

@@ -12,8 +12,11 @@
 import * as React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { durumSec, type DurumAnahtari } from '../../../core/anaEkran/durumAlani';
+import { sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { IkonCipi } from '../ortak/IkonCipi';
 
 export interface DurumAlaniOgesi {
@@ -25,6 +28,7 @@ export interface DurumAlaniOgesi {
 
 export const DurumAlani: React.FC<{ ogeler: readonly DurumAlaniOgesi[] }> = ({ ogeler }) => {
     const renkler = useRenkler();
+    const m = useMetin().anaEkran.durumAlani;
     const [acik, setAcik] = React.useState(false);
     const secim = durumSec(ogeler.map((o) => o.anahtar));
     // Öne çıkan uyarı değişince açık liste kapanır (eski açıklık yeni duruma taşınmasın).
@@ -47,7 +51,7 @@ export const DurumAlani: React.FC<{ ogeler: readonly DurumAlaniOgesi[] }> = ({ o
                     accessibilityRole="button"
                     accessibilityState={{ expanded: genis }}
                     accessibilityLabel={
-                        genis ? 'Diğer uyarıları gizleyin' : `${gizli.length} uyarı daha: ${gizli.map((o) => o.ozet).join(', ')}`
+                        genis ? m.gizle : sayili(m.dahaFazlaErisim, gizli.length, { liste: gizli.map((o) => o.ozet).join(', ') })
                     }
                     hitSlop={{ top: 8, bottom: 8 }}
                     style={{
@@ -62,7 +66,7 @@ export const DurumAlani: React.FC<{ ogeler: readonly DurumAlaniOgesi[] }> = ({ o
                     }}
                 >
                     <Text style={{ fontSize: 13, fontWeight: '600', color: renkler.metin }}>
-                        {genis ? 'Daha az' : `+${gizli.length} daha`}
+                        {genis ? m.dahaAz : sayili(m.dahaFazla, gizli.length)}
                     </Text>
                     <FontAwesome5 name={genis ? 'chevron-up' : 'chevron-down'} size={10} color={renkler.metinIkincil} style={{ marginLeft: 6 }} />
                 </TouchableOpacity>
@@ -94,7 +98,7 @@ export const DurumSeridi: React.FC<DurumSeridiProps> = ({ ikon, renk, baslik, me
                 {metin ? <Text style={{ fontSize: 14, lineHeight: 20, marginTop: 2, color: renkler.metin }}>{metin}</Text> : null}
                 {alt}
             </View>
-            {onPress ? <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} style={{ marginLeft: 8 }} /> : null}
+            {onPress ? <YonluIkon name="chevron-right" size={12} color={renkler.metinIkincil} style={{ marginLeft: 8 }} /> : null}
         </>
     );
     const stil = {

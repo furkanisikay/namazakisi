@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ar — Arapça (beta). -->
+<!-- Gerçek alarm (Arapça). «صلّيتُ» bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">منبّه الصلاة</string>
+  <string name="alarm_kildim">صلّيتُ</string>
+  <string name="alarm_kapat">إيقاف</string>
+  <string name="alarm_kanal_aciklamasi">منبّه حقيقي يرنّ في خطوات التذكير المختارة</string>
+</resources>

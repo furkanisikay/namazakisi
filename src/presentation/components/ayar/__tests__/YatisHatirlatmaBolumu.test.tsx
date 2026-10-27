@@ -80,7 +80,7 @@ import reducer from '../../../store/yatisHatirlatmaSlice';
 import rizaReducer from '../../../store/hatirlatmaRizaSlice';
 import {
     YatisHatirlatmaBolumu,
-    YATIS_YON_GEREKCESI,
+    yatisYonGerekcesi,
     pencereDakikasindanSaate,
     saatiPencereDakikasinaCevir,
 } from '../YatisHatirlatmaBolumu';
@@ -200,7 +200,7 @@ describe('YatisHatirlatmaBolumu', () => {
         it('YÖN GEREKÇESİ ekranda; akış önizlemesi yatışın GERÇEK içeriğini gösterir', () => {
             const ekran = kur({ aktif: true });
             expect(ekran.getByTestId('yon-sabit-gerekcesi')).toBeTruthy();
-            expect(ekran.getByText(YATIS_YON_GEREKCESI)).toBeTruthy();
+            expect(ekran.getByText(yatisYonGerekcesi())).toBeTruthy();
             fireEvent.press(ekran.getByLabelText('Yatış hatırlatması akışını önizleyin'));
             expect(ekran.getByText('Yatış hatırlatması akışı')).toBeTruthy();
             expect(ekran.getAllByText(/^Yatsı · yatmadan önce kıl/).length).toBeGreaterThan(0);
@@ -229,5 +229,21 @@ describe('YatisHatirlatmaBolumu', () => {
             await waitFor(() => expect(mockKaydet).toHaveBeenCalledTimes(1));
             expect(mockKaydet.mock.calls[0][0].adimlar.map((a: { esikDk: number }) => a.esikDk)).toEqual([35, 30]);
         });
+    });
+});
+
+describe('YatisHatirlatmaBolumu — İngilizce', () => {
+    const YASAKLI = ['Yatsı', 'dk\\b', 'kala', 'Kapat', 'Bildirim', 'Tekrar', 'Vakit', 'vakit', 'Gece'];
+    it('açık bölüm: saat seçici, alt seçenekler, ortak kart ve yatsı notu İngilizce', () => {
+        const { ingilizceyeGec, turkceKalanlar } = require('../../../../__tests__/yardimci/ingilizceDenetimi') as typeof import('../../../../__tests__/yardimci/ingilizceDenetimi');
+        const geri = ingilizceyeGec();
+        try {
+            mockYatsiOncesi.mockReturnValue({ yatsiGiris: new Date(2026, 5, 15, 22, 10) });
+            const e = kur({ aktif: true });
+            expect(turkceKalanlar(e.toJSON() as never, YASAKLI)).toEqual([]);
+            expect(e.getByText('What time do you usually go to bed?')).toBeTruthy();
+        } finally {
+            act(() => geri());
+        }
     });
 });

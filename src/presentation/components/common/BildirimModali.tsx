@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleShe
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { useMetin } from '../../hooks/useMetin';
 
 /** Bildirim türü — ikon ve renk bununla belirlenir */
 export type BildirimTipi = 'hata' | 'bilgi' | 'basari';
@@ -62,10 +63,12 @@ export const BildirimModali: React.FC<BildirimModaliProps> = ({
     birincilIkon = 'redo',
     tehlikeli = false,
     onKapat,
-    kapatEtiketi = 'Kapat',
+    kapatEtiketi: kapatEtiketiProp,
     icerik,
 }) => {
     const renkler = useRenkler();
+    const varsayilanKapat = useMetin().genel.ortak.kapat;
+    const kapatEtiketi = kapatEtiketiProp ?? varsayilanKapat;
 
     // Modal "fade" ile kapanırken parent başlık/mesajı boşaltabilir; son geçerli
     // metni önbelleğe alıp animasyon boyunca göstererek kaymayı (flicker) önle.

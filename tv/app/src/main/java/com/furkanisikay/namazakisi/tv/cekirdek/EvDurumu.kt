@@ -29,7 +29,7 @@ object EvDurumu {
      * 4. özel günde değil, 5. içinde bulunulan farzı kılmamış — ve vaktin son 30 dakikası.
      * Metin kişi ya da sayı İMA ETMEZ ("kimin kılmadığı" açık edilmez): yalnız kalan süre.
      */
-    fun bant(pano: PanoDurumu, uyeler: List<UyeHali>, simdiMs: Long): String? {
+    fun bant(pano: PanoDurumu, uyeler: List<UyeHali>, simdiMs: Long, dil: String = "tr"): String? {
         if (pano.aktif == Vakit.GUNES) return null
         if (pano.kalanMs <= 0 || pano.kalanMs > BANT_ESIGI_MS) return null
         val gun = pano.tarih.toString()
@@ -42,11 +42,14 @@ object EvDurumu {
         }
         if (!biriBekliyor) return null
         val dk = ((pano.kalanMs + 59_999) / 60_000).coerceAtLeast(1)
-        return "${pano.gorunenAd(pano.aktif)} vakti daralıyor · $dk dk"
+        return tvDili(dil).bant(pano.gorunenAd(pano.aktif, dil), dk)
     }
 
     /** Bant kalkınca gösterilen sessiz dua (telefon/saat ile aynı sabit kalıp). */
     const val KABUL_DUASI = "Allah kabul etsin"
+
+    /** [KABUL_DUASI]nın [dil]deki sabit kalıbı (İngilizce JS `samimiyet.kabulDuasi`). */
+    fun kabulDuasi(dil: String = "tr"): String = tvDili(dil).kabulDuasi
 
     /** Duanın ekranda kalma süresi (kısa; sonra pano sakin hâline döner). */
     const val KABUL_SURESI_MS = 2L * 60_000
@@ -78,9 +81,9 @@ object EvDurumu {
      * dediyse) akşam vaktinde "Hayırlı iftarlar". Bayram/kandil tablosu TV'de YOK (telefonun
      * Diyanet tablosu yük şemasına girmedi) — yanlış günde "mübarek olsun" demektense susar.
      */
-    fun selam(pano: PanoDurumu, uyeler: List<UyeHali>, simdiMs: Long): String? = when {
-        ramazan(uyeler, simdiMs) && pano.aktif == Vakit.AKSAM -> "Hayırlı iftarlar"
-        pano.tarih.dayOfWeek == DayOfWeek.FRIDAY -> "Hayırlı cumalar"
+    fun selam(pano: PanoDurumu, uyeler: List<UyeHali>, simdiMs: Long, dil: String = "tr"): String? = when {
+        ramazan(uyeler, simdiMs) && pano.aktif == Vakit.AKSAM -> tvDili(dil).iftarSelami
+        pano.tarih.dayOfWeek == DayOfWeek.FRIDAY -> tvDili(dil).cumaSelami
         else -> null
     }
 
@@ -90,14 +93,24 @@ object EvDurumu {
 
     data class Sayac(val baslik: String, val hedefMs: Long)
 
+    /** Ramazan sayacının KİMLİĞİ (simge seçimi metinden değil buradan; metin dile göre değişir). */
+    enum class SayacTuru { SAHUR, IFTAR }
+
+    /** İmsak–akşam arası iftar, değilse sahur ([ramazanSayaci] ile aynı kural). */
+    fun ramazanSayacTuru(bugun: GunlukVakitler, simdiMs: Long): SayacTuru =
+        if (simdiMs >= bugun.imsak && simdiMs < bugun.aksam) SayacTuru.IFTAR else SayacTuru.SAHUR
+
     /**
      * Ramazan sayacı (takvim gününe göre): imsaktan önce "Sahura kalan" (bugünün imsakı),
      * imsak–akşam "İftara kalan" (bugünün akşamı), akşamdan sonra "Sahura kalan" (yarının imsakı).
      */
-    fun ramazanSayaci(bugun: GunlukVakitler, yarinImsakMs: Long, simdiMs: Long): Sayac = when {
-        simdiMs < bugun.imsak -> Sayac("Sahura kalan", bugun.imsak)
-        simdiMs < bugun.aksam -> Sayac("İftara kalan", bugun.aksam)
-        else -> Sayac("Sahura kalan", yarinImsakMs)
+    fun ramazanSayaci(bugun: GunlukVakitler, yarinImsakMs: Long, simdiMs: Long, dil: String = "tr"): Sayac {
+        val d = tvDili(dil)
+        return when {
+            simdiMs < bugun.imsak -> Sayac(d.sahuraKalan, bugun.imsak)
+            simdiMs < bugun.aksam -> Sayac(d.iftaraKalan, bugun.aksam)
+            else -> Sayac(d.sahuraKalan, yarinImsakMs)
+        }
     }
 
     /**

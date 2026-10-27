@@ -27,17 +27,15 @@ import { useRenkler } from '../../../core/theme';
 import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { EGRI, SURE, YAY } from './sureler';
 import { NAMAZ_EYLEMI } from '../../../core/vakit/durumSozlugu';
+import { bicim, metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { kildimDugmesiRenkleri } from '../../../core/anaEkran/kildimDugmesiRenkleri';
 
 export const KILDIM_DUGMESI_YUKSEKLIK = 56;
 const IKON = 20;
 
-/** Kılınmamışken düğmede yazan (eski kartın metni, sentence case). */
-export const KILDIM_ISARETLE_METNI = 'Kılındı olarak işaretle';
-/** Kılınmışken (geri alınabilirse) ekran okuyucu etiketi: durum + ne olacağı. */
-export const KILDIM_GERI_AL_ETIKETI = `${NAMAZ_EYLEMI.kilindi}, geri almak için dokunun`;
-/** Geri almada ekran okuyucuya duyurulan. */
-export const KILDIM_GERI_ALINDI_METNI = 'İşaret kaldırıldı';
+// Metinler sözlükte (`vakit.isaretle`, `vakit.geriAlEtiketi`, `vakit.geriAlindi`): kılınmamışken
+// düğmede yazan, kılınmışken (geri alınabilirse) ekran okuyucu etiketi ve geri almada duyurulan.
 
 export interface KildimDugmesiProps {
     kilindi: boolean;
@@ -73,6 +71,7 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
     testID,
 }) {
     const renkler = useRenkler();
+    const m = useMetin().vakit;
     const azalt = useHareketAzalt();
     const baslangic = kilindi ? 1 : 0;
     /** Zemin + metin çaprazı (0 = kılınmadı, 1 = kılındı). */
@@ -97,7 +96,7 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
             isaret.setValue(hedef);
             halka.setValue(0);
             if (gercekGecis) {
-                AccessibilityInfo.announceForAccessibility?.(kilindi ? kilindiDuyurusu : KILDIM_GERI_ALINDI_METNI);
+                AccessibilityInfo.announceForAccessibility?.(kilindi ? kilindiDuyurusu : metin().vakit.geriAlindi);
             }
             return;
         }
@@ -118,7 +117,7 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
                 Animated.timing(isaret, { toValue: 0, duration: SURE.durum, easing: EGRI.cikis, useNativeDriver: true }),
                 Animated.timing(gecis, { toValue: 0, duration: SURE.buzulme, easing: EGRI.giris, useNativeDriver: true }),
             ]).start();
-            AccessibilityInfo.announceForAccessibility?.(KILDIM_GERI_ALINDI_METNI);
+            AccessibilityInfo.announceForAccessibility?.(metin().vakit.geriAlindi);
         }
     // kilindiDuyurusu bağımlılık DEĞİL: dua metni gün/vakitle değişir, geçiş tetiklemez.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -127,9 +126,9 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
     const dokunulabilir = !devreDisi && (!kilindi || !!onGeriAl);
     // Etiket DURUMU söyler; kılınmış ve geri alınabilirse ne olacağını da (ipucu kapalı olabilir).
     const durumMetni = !kilindi
-        ? KILDIM_ISARETLE_METNI
+        ? m.isaretle
         : onGeriAl
-          ? `${kilindiDuyurusu}, geri almak için dokunun`
+          ? bicim(m.geriAlEtiketi, { durum: kilindiDuyurusu })
           : kilindiDuyurusu;
     const etiket = vakitAdi ? `${vakitAdi} — ${durumMetni}` : durumMetni;
     // Metin rengi zemine göre ÖLÇÜLÜR (beyaz yeşil/turuncu zeminde AA'yı tutmaz).
@@ -169,7 +168,7 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
                 ]}
             >
                 <FontAwesome5 name="pray" size={IKON} color={isaretleMetin} />
-                <Text style={[styles.yazi, { color: isaretleMetin }]}>{KILDIM_ISARETLE_METNI}</Text>
+                <Text style={[styles.yazi, { color: isaretleMetin }]}>{m.isaretle}</Text>
             </Animated.View>
 
             {/* Kılınmış içerik: ✓ yayla oturur (halka bir kez), "Kılındı" aşağıdan gelir. */}

@@ -6,6 +6,7 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { EsitlemeSayfasi, esitlemeZamaniniBicimle } from '../EsitlemeSayfasi';
 import type { EsitlemeDurumu } from '../../../../core/esitleme/esitlemeTipleri';
 import type { EsitlemeTercihleri } from '../../../../core/esitleme/esitlemePolitikasi';
+import { ingilizceyeGec, turkceKalanlar } from '../../../../__tests__/yardimci/ingilizceDenetimi';
 
 const mockKanca = {
   durum: {
@@ -322,11 +323,78 @@ describe('EsitlemeSayfasi', () => {
     expect(esitlemeZamaniniBicimle(null)).toBe('Henüz eşitlenmedi');
     expect(esitlemeZamaniniBicimle('bozuk')).toBe('Henüz eşitlenmedi');
     const t = new Date(2026, 9, 13, 9, 5);
-    expect(esitlemeZamaniniBicimle(t.toISOString())).toBe('13.10.2026 09:05');
+    expect(esitlemeZamaniniBicimle(t.toISOString())).toBe('13 Ekim 2026 09:05');
+    const geriAl = ingilizceyeGec();
+    try {
+      expect(esitlemeZamaniniBicimle(t.toISOString())).toBe('13 October 2026 09:05');
+    } finally {
+      geriAl();
+    }
   });
 
   it('yenileme odakta çağrılır', async () => {
     render(<EsitlemeSayfasi />);
     await waitFor(() => expect(mockKanca.yenile).toHaveBeenCalled());
+  });
+});
+
+describe('EsitlemeSayfasi — İngilizce', () => {
+  const YASAKLI = ['Kapal', 'Parola', 'Cihaz', 'Vazge', 'Yeniden', 'Saatte', 'Yalniz', 'Otomatik'];
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+    jest.clearAllMocks();
+    mockKanca.durum = kapaliDurum();
+    mockKanca.saglayicilar = [{ kimlik: 'googleDrive', ad: 'Google Drive' }];
+    mockKanca.tercihler = { siklik: 'degisince', yalnizWifi: false, yalnizSarjda: false };
+    mockKanca.uzakDurumu.mockResolvedValue({ tur: 'var' });
+    mockKanca.kur.mockResolvedValue({ tur: 'hata', kod: 'parolaYanlis' });
+    mockKanca.baglan.mockResolvedValue({ tur: 'tamam' });
+  });
+  afterEach(() => act(() => geriAl()));
+  const kalan = (agac: unknown) => turkceKalanlar(agac as never, YASAKLI);
+
+  it('kapalı ekran, rıza, parola, unuttum ve yeni parola adımları İngilizce', async () => {
+    const e = render(<EsitlemeSayfasi />);
+    expect(e.getByText('Off')).toBeTruthy();
+    expect(kalan(e.toJSON())).toEqual([]);
+    fireEvent(e.getByLabelText('Sync across devices'), 'valueChange', true);
+    expect(kalan(e.toJSON())).toEqual([]);
+    fireEvent.press(e.getByText('Got it, continue'));
+    await e.findByText('Enter your sync password');
+    fireEvent.changeText(e.getByLabelText('Password'), 'wrong password');
+    await act(async () => {
+      fireEvent.press(e.getByText('Start syncing'));
+    });
+    expect(e.getByText(/The password didn't match/)).toBeTruthy();
+    expect(kalan(e.toJSON())).toEqual([]);
+    fireEvent.press(e.getByText('I forgot my password'));
+    expect(kalan(e.toJSON())).toEqual([]);
+    fireEvent.press(e.getByText('Delete the cloud data and start over'));
+    await e.findByText('Create a sync password');
+    fireEvent.changeText(e.getByLabelText('Password'), 'short');
+    fireEvent.press(e.getByText('Save password'));
+    expect(e.getByText('Your password must be at least 10 characters.')).toBeTruthy();
+    expect(kalan(e.toJSON())).toEqual([]);
+  });
+
+  it('açık ekran: son eşitleme, çözüm, sıklık ve pil uyarısı İngilizce', async () => {
+    mockPil.muaf = false;
+    mockKanca.durum = { ...kapaliDurum(), aktif: true, saglayici: 'googleDrive', sonEsitleme: '2026-10-13T11:05:00.000Z', sonHata: 'parolaYanlis', sonBekleme: 'wifi' };
+    const e = render(<EsitlemeSayfasi />);
+    expect(e.getByText('On · Google Drive')).toBeTruthy();
+    expect(e.getByText(/^Last sync: /)).toBeTruthy();
+    fireEvent.press(e.getByTestId('esitleme-nasil-calisir'));
+    expect(kalan(e.toJSON())).toEqual([]);
+    fireEvent(e.getByLabelText('Sync across devices'), 'valueChange', false);
+    expect(e.getByText('Turn off sync')).toBeTruthy();
+    expect(kalan(e.toJSON())).toEqual([]);
+    mockPil.muaf = null;
+  });
+
+  it('sağlayıcı yoksa bilgi satırı İngilizce', () => {
+    mockKanca.saglayicilar = [];
+    const e = render(<EsitlemeSayfasi />);
+    expect(kalan(e.toJSON())).toEqual([]);
   });
 });

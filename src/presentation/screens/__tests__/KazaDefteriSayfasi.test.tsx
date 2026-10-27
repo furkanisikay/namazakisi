@@ -12,6 +12,7 @@ import kazaReducer, { borcEkle, kazaTamamla, kazaVerileriniYukle } from '../../s
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { _testIcinSifirla, hareketleriEkle } from '../../../data/local/LocalKazaServisi';
 import { gunEkle, tarihiISOFormatinaCevir } from '../../../core/utils/TarihYardimcisi';
+import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
 
 const mockStore = new Map<string, string>();
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -294,5 +295,125 @@ describe('KazaTemizlikSayfasi', () => {
     fireEvent.press(getByLabelText('Elle'));
     expect(await findByText('2 kayıt gizlenecek')).toBeTruthy();
     expect(await findByText('Kalan kaza 4 → 0')).toBeTruthy();
+  });
+});
+
+describe('Kaza Defteri ekranları — İngilizce', () => {
+  /** Türkçe harfsiz ama Türkçe sözcükler (bu ekranlarda geçebilecek). */
+  const YASAKLI = [
+    'Kaza', 'kaza', 'Sabah', 'Vitir', 'vitir', 'Elle', 'elle', 'Otomatik', 'otomatik', 'Hesaplama', 'Temizlik',
+    'Tempo', 'Tamam', 'Geri', 'Kaydet', 'Kalan', 'Neden', 'Kimlik', 'Cihaz', 'Mezhep', 'Vakit', 'vakit', 'Ekim',
+    'Kaynak', 'Ekleyin', 'Taban', 'namaz', 'Namaz', 'Borç', 'kayıt', 'Yok sayın', 'Hepsini', 'Tarih', 'Son \\d', 'Hanefi',
+  ];
+  let geriAl: () => void;
+  beforeEach(() => {
+    geriAl = ingilizceyeGec();
+  });
+  // Dil geri dönerken takılı ekranlar yeniden çizilir → act içinde.
+  afterEach(() => act(() => geriAl()));
+
+  const cizEn = async (Bilesen: React.ComponentType, store = storeKur()) => {
+    const r = render(
+      <Provider store={store}>
+        <Bilesen />
+      </Provider>
+    );
+    await waitFor(() => expect(r.queryByText('Loading...')).toBeNull());
+    return { ...r, store };
+  };
+  const kalan = (r: { toJSON: () => unknown }) => turkceKalanlar(r.toJSON() as never, YASAKLI);
+
+  it('kök sayfa: kalan kartı, kaynak özeti, fazla, bekleyen günler, bozuk ay bandı ve modallar', async () => {
+    mockStore.set(`${DEPOLAMA_ANAHTARLARI.KAZA_HAREKET_ONEK}2026-03`, '{bozuk');
+    await hareketleriEkle([
+      { id: 'oto1', zaman: new Date().toISOString(), cihaz: 'a', kaynak: 'otoAyar', aktif: true, gun: gunEkle(bugun(), -3), kayitsiz: 'sor' },
+    ]);
+    const store = storeKur();
+    await store.dispatch(borcEkle({ namazAdi: 'Öğle', sayi: 2 }));
+    await store.dispatch(kazaTamamla({ namazAdi: 'Öğle', sayi: 5 }));
+    const r = await cizEn(anaSayfa(), store);
+    expect(r.getByText('Qada log')).toBeTruthy();
+    expect(r.getByText('Dhuhr')).toBeTruthy();
+    expect(r.getByLabelText('Mark a Dhuhr qada as prayed')).toBeTruthy();
+    expect(r.getByText(/3 extra prayed/)).toBeTruthy();
+    expect(kalan(r)).toEqual([]);
+
+    // "Diğer" menüsü (tempo + satırlar)
+    fireEvent.press(r.getByLabelText('More: goal, history, settings'));
+    expect(kalan(r)).toEqual([]);
+    // Günlük hedef → geçersiz giriş modalı
+    fireEvent.press(r.getByLabelText(/^Daily goal\./));
+    fireEvent.changeText(await waitFor(() => r.getByPlaceholderText('E.g. 3')), 'abc');
+    fireEvent.press(r.getByText('Save'));
+    await waitFor(() => expect(r.getByText('Enter a valid number (0 = no goal).')).toBeTruthy());
+    expect(kalan(r)).toEqual([]);
+  });
+
+  it('kök sayfa: kontrol bekleyen günler sayfası ve sihirbaz adımları', async () => {
+    await hareketleriEkle([
+      { id: 'oto1', zaman: new Date().toISOString(), cihaz: 'a', kaynak: 'otoAyar', aktif: true, gun: gunEkle(bugun(), -3), kayitsiz: 'sor' },
+    ]);
+    const r = await cizEn(anaSayfa());
+    fireEvent.press(r.getByLabelText('Review the days waiting for a decision'));
+    expect(r.getByText('Add all')).toBeTruthy();
+    expect(kalan(r)).toEqual([]);
+
+    const r2 = await cizEn(anaSayfa());
+    fireEvent.press(r2.getByLabelText('More: goal, history, settings'));
+    fireEvent.press(r2.getByLabelText(/^Calculate my qada\./));
+    fireEvent.changeText(await waitFor(() => r2.getByPlaceholderText('E.g. 1995')), '1990');
+    expect(kalan(r2)).toEqual([]);
+    fireEvent.press(r2.getByLabelText('Next'));
+    expect(r2.getByText('At what age did you reach puberty?')).toBeTruthy();
+    expect(kalan(r2)).toEqual([]);
+    fireEvent.press(r2.getByLabelText('Next'));
+    expect(r2.getByText('Preview')).toBeTruthy();
+    expect(kalan(r2)).toEqual([]);
+  });
+
+  it('geçmiş + hareket ayrıntısı', async () => {
+    const sayfa = require('../Kaza/KazaGecmisiSayfasi').KazaGecmisiSayfasi as React.ComponentType;
+    const store = storeKur();
+    await store.dispatch(borcEkle({ namazAdi: 'İkindi', sayi: 2 }));
+    const r = await cizEn(sayfa, store);
+    expect(r.getByText('Asr · added manually')).toBeTruthy();
+    expect(r.getByText(/^Today · /)).toBeTruthy();
+    expect(kalan(r)).toEqual([]);
+    fireEvent.press(r.getByLabelText(/Asr · added manually.*Tap for details\./));
+    expect(r.getByLabelText('Remove from the log')).toBeTruthy();
+    expect(kalan(r)).toEqual([]);
+  });
+
+  it('kaza ayarları', async () => {
+    const sayfa = require('../Kaza/KazaOtomatikAyarSayfasi').KazaOtomatikAyarSayfasi as React.ComponentType;
+    const r = await cizEn(sayfa);
+    await r.findByLabelText('Suggest a qada after each obligatory prayer');
+    await waitFor(() => expect(r.queryByText('Reading your school of thought…')).toBeNull());
+    expect(r.getByText('Last 7 days')).toBeTruthy();
+    expect(kalan(r)).toEqual([]);
+  });
+
+  it('temizlik', async () => {
+    const sayfa = require('../Kaza/KazaTemizlikSayfasi').KazaTemizlikSayfasi as React.ComponentType;
+    const store = storeKur();
+    await store.dispatch(borcEkle({ namazAdi: 'Öğle', sayi: 3 }));
+    await store.dispatch(borcEkle({ namazAdi: 'Akşam', sayi: 1 }));
+    const r = await cizEn(sayfa, store);
+    expect(await r.findByText('No records match the filter')).toBeTruthy();
+    fireEvent.press(r.getByLabelText('Manual'));
+    expect(await r.findByText('2 records will be hidden')).toBeTruthy();
+    expect(await r.findByText('Qada left 4 → 0')).toBeTruthy();
+    expect(kalan(r)).toEqual([]);
+  });
+
+  it('yeniden hesapla', async () => {
+    const sayfa = require('../Kaza/KazaYenidenHesaplaSayfasi').KazaYenidenHesaplaSayfasi as React.ComponentType;
+    mockRoute.params = { girdi: { dogumTarihi: '2000-01-01', ergenlikYasi: 14, kildigiTahminiYuzdesi: 90 } };
+    const store = storeKur();
+    await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 30 }));
+    const r = await cizEn(sayfa, store);
+    expect(await r.findByText('Added manually')).toBeTruthy();
+    expect(r.getByLabelText('Apply calculation')).toBeTruthy();
+    expect(kalan(r)).toEqual([]);
   });
 });

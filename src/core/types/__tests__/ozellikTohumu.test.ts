@@ -81,7 +81,9 @@ describe('ozellik turu tohumu', () => {
         expect(cuma).toEqual(ham(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI));
         expect(cuma.aktif).toBe(true);
 
-        expect(await LocalKazaOneriServisi.ayarlariGetir()).toEqual({ farzSonrasiOner: varyant !== 'kildim' });
+        expect(await LocalKazaOneriServisi.ayarlariGetir()).toEqual({
+            farzSonrasiOner: !['kildim', 'dunya', 'jakim'].includes(varyant),
+        });
         expect((await LocalSadeGorunumServisi.getAyarlar()).aktif).toBe(varyant === 'sade');
     });
 
@@ -96,6 +98,27 @@ describe('ozellik turu tohumu', () => {
         expect(await LocalVakitBildirimServisi.getSesler()).toEqual(
             JSON.parse(depo[DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_SESLERI])
         );
+    });
+
+    it.each(['dunya', 'jakim'])('%s varyanti: dünya şehri ve hesap ayarı uygulamanın okuma yolundan geçer', async (varyant) => {
+        const { localKonumAyarlariniGetir } = require('../../../data/local/LocalKonumServisi');
+        const { HesapAyariServisi } = require('../../../domain/services/HesapAyariServisi');
+        const { kayitliUlkeKodu } = require('../../konum/ulkeTespiti');
+        const { bolgeOnerisi } = require('../../vakit/ulkeProfilleri');
+        const depo = ozellikTohumVerisi({ varyant });
+        await yaz(depo);
+        const konum = (await localKonumAyarlariniGetir()).veri;
+        expect(konum).toMatchObject(JSON.parse(depo[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI]));
+        expect(kayitliUlkeKodu(konum)).toBe('MY');
+        const ayar = await HesapAyariServisi.yukle(true);
+        if (varyant === 'dunya') {
+            expect(depo[DEPOLAMA_ANAHTARLARI.HESAP_AYARI]).toBeUndefined();
+            // Kart açılır: Diyanet'ten JAKIM'e öneri.
+            expect(bolgeOnerisi('MY', ayar)).toMatchObject({ profil: 'jakim' });
+        } else {
+            expect(ayar).toEqual(JSON.parse(depo[DEPOLAMA_ANAHTARLARI.HESAP_AYARI]));
+            expect(bolgeOnerisi('MY', ayar)).toBeNull();
+        }
     });
 
     it('esitleme varyanti: durum ve tercihler uygulamanin normalize yolundan DEGISMEDEN gecer', () => {

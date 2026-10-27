@@ -642,7 +642,10 @@ describe('Arka Plan Bolge Gorevi (defineTask callback)', () => {
 
         await bolgeGorevi(cikisOlayi());
 
-        expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+        // Konum kaydına yazılmaz. (Taklit her anahtara aynı kaydı döndürdüğü için bağlam kapısının
+        // bir kerelik dil göçü `dil_ayari`'na yazabilir; konum seçimiyle ilgisi yoktur.)
+        const yazilanAnahtarlar = (AsyncStorage.setItem as jest.Mock).mock.calls.map((c) => c[0]);
+        expect(yazilanAnahtarlar.filter((k) => k !== 'dil_ayari')).toEqual([]);
         expect(Location.reverseGeocodeAsync).not.toHaveBeenCalled();
         expect(Location.startGeofencingAsync).not.toHaveBeenCalled();
     });

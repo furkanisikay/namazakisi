@@ -7,6 +7,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { IkonCipi } from '../ortak/IkonCipi';
+import { useMetin } from '../../hooks/useMetin';
 
 export const VarsayilanOneriKarti: React.FC<{ onUygula: () => void; onKapat: () => void; kendiAyari?: boolean }> = ({
     onUygula,
@@ -14,6 +15,8 @@ export const VarsayilanOneriKarti: React.FC<{ onUygula: () => void; onKapat: () 
     kendiAyari = false,
 }) => {
     const renkler = useRenkler();
+    const m = useMetin();
+    const mo = m.hatirlatma.varsayilanOneri;
     return (
         <View
             testID="varsayilan-oneri-karti"
@@ -30,11 +33,11 @@ export const VarsayilanOneriKarti: React.FC<{ onUygula: () => void; onKapat: () 
                 <IkonCipi ikon="leaf" />
                 <View style={{ flex: 1, marginLeft: 12 }}>
                     <Text accessibilityRole="header" style={{ fontSize: 16, fontWeight: '700', color: renkler.metin }}>
-                        Daha az bildirim
+                        {mo.baslik}
                     </Text>
                     <Text style={{ fontSize: 14, lineHeight: 20, marginTop: 2, color: renkler.metin }}>
-                        Önerilen ayar: vakit başına 3 hatırlatma, gece 23:00 – imsak sessiz.
-                        {kendiAyari ? ' Kendi ayarınız saklanır, "Kendi ayarınız" ile geri dönebilirsiniz.' : ''}
+                        {mo.metin}
+                        {kendiAyari ? mo.kendiAyari : ''}
                     </Text>
                 </View>
             </View>
@@ -43,7 +46,7 @@ export const VarsayilanOneriKarti: React.FC<{ onUygula: () => void; onKapat: () 
                     testID="varsayilan-oneri-kapat"
                     onPress={onKapat}
                     accessibilityRole="button"
-                    accessibilityLabel="Kapatın"
+                    accessibilityLabel={m.ortak.kapatin}
                     style={{
                         flex: 1,
                         minHeight: 44,
@@ -55,13 +58,13 @@ export const VarsayilanOneriKarti: React.FC<{ onUygula: () => void; onKapat: () 
                         backgroundColor: renkler.arkaplan,
                     }}
                 >
-                    <Text style={{ fontSize: 15, fontWeight: '600', color: renkler.metin }}>Kapatın</Text>
+                    <Text style={{ fontSize: 15, fontWeight: '600', color: renkler.metin }}>{m.ortak.kapatin}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     testID="varsayilan-oneri-uygula"
                     onPress={onUygula}
                     accessibilityRole="button"
-                    accessibilityLabel="Önerilen ayarı uygulayın"
+                    accessibilityLabel={mo.uygulaEtiketi}
                     style={{
                         flex: 1.3,
                         minHeight: 44,
@@ -73,7 +76,7 @@ export const VarsayilanOneriKarti: React.FC<{ onUygula: () => void; onKapat: () 
                     }}
                 >
                     <FontAwesome5 name="check" size={13} color={renkler.birincilMetin} solid style={{ marginRight: 8 }} />
-                    <Text style={{ fontSize: 15, fontWeight: '700', color: renkler.birincilMetin }}>Uygulayın</Text>
+                    <Text style={{ fontSize: 15, fontWeight: '700', color: renkler.birincilMetin }}>{mo.uygula}</Text>
                 </TouchableOpacity>
             </View>
         </View>

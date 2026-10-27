@@ -18,6 +18,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.UyandirmaZinciri
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
 import com.furkanisikay.namazakisi.saat.telefon.TelefonIstemcisi
 import com.furkanisikay.namazakisi.saat.ui.UyandirmaAktivite
+import com.furkanisikay.namazakisi.saat.ui.yerelRakamla
 import com.furkanisikay.namazakisi.saat.veri.Senkron
 import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 import kotlinx.coroutines.CoroutineScope
@@ -109,16 +110,16 @@ object UyandirmaBildirimi {
         )
         val b = NotificationCompat.Builder(context, KANAL)
             .setSmallIcon(R.drawable.ic_vakit)
-            .setContentTitle(kayit.baslik)
-            .setContentText(kayit.govde)
+            .setContentTitle(context.yerelRakamla(kayit.baslik))
+            .setContentText(context.yerelRakamla(kayit.govde))
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setSilent(false)
             .setLocalOnly(true)
             .setTimeoutAfter(UyandirmaZinciri.CALMA_SURESI_MS)
             .setContentIntent(ac)
-            .addAction(0, "Kapat", eylem(context, kayit.id, UyandirmaAlicisi.KAPAT))
-            .addAction(0, "Kıldım", eylem(context, kayit.id, UyandirmaAlicisi.KILDIM))
+            .addAction(0, context.getString(R.string.kapat), eylem(context, kayit.id, UyandirmaAlicisi.KAPAT))
+            .addAction(0, context.getString(R.string.kildim), eylem(context, kayit.id, UyandirmaAlicisi.KILDIM))
         val n = b.build().apply { flags = flags or Notification.FLAG_INSISTENT }
         try {
             NotificationManagerCompat.from(context).notify(etiket(kayit.id), BILDIRIM_NO, n)
@@ -138,10 +139,14 @@ object UyandirmaBildirimi {
 
     private fun kanaliGarantile(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
-        if (nm.getNotificationChannel(KANAL) != null) return
+        val ad = context.getString(R.string.uyandirma_kanal_adi)
+        val aciklama = context.getString(R.string.uyandirma_kanal_aciklama)
+        // Var olan kanalda yalnız ad/açıklama (cihaz dili değişince) güncellenir; desen sabit kalır.
+        val mevcut = nm.getNotificationChannel(KANAL)
+        if (mevcut != null && mevcut.name?.toString() == ad && mevcut.description == aciklama) return
         nm.createNotificationChannel(
-            NotificationChannel(KANAL, context.getString(R.string.uyandirma_kanal_adi), NotificationManager.IMPORTANCE_HIGH).apply {
-                description = context.getString(R.string.uyandirma_kanal_aciklama)
+            NotificationChannel(KANAL, ad, NotificationManager.IMPORTANCE_HIGH).apply {
+                description = aciklama
                 setSound(null, null)
                 enableVibration(true)
                 vibrationPattern = DESEN

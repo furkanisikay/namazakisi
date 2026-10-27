@@ -14,6 +14,8 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { BildirimModali } from '../common/BildirimModali';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import type { NafileZincirSatiri as Satir } from '../../../core/nafile/nafileZinciri';
 
 export interface NafileZincirSatiriProps {
@@ -26,6 +28,7 @@ export interface NafileZincirSatiriProps {
 
 const NafileZincirSatiriIc: React.FC<NafileZincirSatiriProps> = ({ satir, ustCizgi, altCizgi, cizgiDolu }) => {
     const renkler = useRenkler();
+    const metinler = useMetin();
     const [bilgiAcik, setBilgiAcik] = useState(false);
     const aktif = satir.durum === 'aktif';
     const opacity = satir.durum === 'gecti' ? 0.5 : 1;
@@ -39,7 +42,7 @@ const NafileZincirSatiriIc: React.FC<NafileZincirSatiriProps> = ({ satir, ustCiz
                 activeOpacity={0.7}
                 onPress={() => setBilgiAcik(true)}
                 accessibilityRole="button"
-                accessibilityLabel={`${satir.ad}, nafile, ${satir.durumMetni}. Ayrıntı için dokunun.`}
+                accessibilityLabel={bicim(metinler.anaEkran.akis.nafileErisim, { ad: satir.ad, durum: satir.durumMetni })}
             >
                 <View className="w-12 justify-center items-end" style={{ opacity }}>
                     <Text

@@ -3,7 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { VakitBilgisi } from '../../../domain/services/NamazVaktiHesaplayiciServisi';
-import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
+import { NamazAdi, namazAdiGoster } from '../../../core/constants/UygulamaSabitleri';
+import { bicim, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { NAMAZ_DURUMLARI } from '../../../core/vakit/durumSozlugu';
 import { KildimDugmesi, KILDIM_DUGMESI_YUKSEKLIK } from '../hareket/KildimDugmesi';
@@ -46,6 +48,10 @@ interface VakitKartiProps {
     onKonumYenile?: () => void;
     /** Yenileme sürerken çip beklemeye geçer (metin "Güncelleniyor…", tekrar basılamaz) */
     konumYenileniyor?: boolean;
+    /** Hesap yönteminin kısa adı ("Diyanet", "JAKIM"); verilirse konum çipinin yanında çip olur. */
+    yontemAdi?: string;
+    /** Yöntem çipine dokununca (yöntem sayfası). */
+    onYontem?: () => void;
     /**
      * Basligta gosterilecek ad. Verilmezse `suankiVakitAdi` kullanilir.
      * Cuma gunu ogle icin "Cuma" olur — SALT GORUNUM; ikon ve tum kimlik
@@ -68,13 +74,13 @@ interface VakitKartiProps {
 
 const getVakitIkonu = (vakit: string): string => {
     switch (vakit) {
-        case 'İmsak': return 'cloud-sun';
-        case 'Sabah': return 'cloud-sun';
-        case 'Güneş': return 'sun';
-        case 'Öğle': return 'sun';
-        case 'İkindi': return 'cloud-sun'; // afternoon
-        case 'Akşam': return 'moon';
-        case 'Yatsı': return 'star-and-crescent';
+        case 'İmsak': return 'cloud-sun'; // dil-haric: kimlik (servis vakit adı)
+        case NamazAdi.Sabah: return 'cloud-sun';
+        case NamazAdi.Gunes: return 'sun';
+        case NamazAdi.Ogle: return 'sun';
+        case NamazAdi.Ikindi: return 'cloud-sun'; // afternoon
+        case NamazAdi.Aksam: return 'moon';
+        case NamazAdi.Yatsi: return 'star-and-crescent';
         default: return 'mosque';
     }
 };
@@ -94,12 +100,15 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     konumMetni,
     onKonumYenile,
     konumYenileniyor = false,
+    yontemAdi,
+    onYontem,
     gorunenVakitAdi,
     genis = false,
     kabulMetni,
     kabulEki,
 }) => {
     const renkler = useRenkler();
+    const m = useMetin().anaEkran.kart;
     // Gri "Henüz girmedi" düğmesinin metni zemine göre ölçülür (koyu temada gri açıktır).
     const { girmediMetin } = kildimDugmesiRenkleri({
         birincil: renkler.birincil,
@@ -110,7 +119,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     // Saat/TV ile aynı simge ailesi (FontAwesome "sun" küçükte dişliye benziyordu).
     const ikonKodu = vakitIkonKodu(suankiVakitAdi);
     const ikonAdi = getVakitIkonu(suankiVakitAdi);
-    const baslikAdi = gorunenVakitAdi ?? suankiVakitAdi;
+    const baslikAdi = gorunenVakitAdi ?? namazAdiGoster(suankiVakitAdi);
     const konumYenilenebilir = konumModu === 'oto' && !!onKonumYenile;
 
     return (
@@ -133,7 +142,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
 
             <View className="p-6 text-center items-center" style={genis ? stiller.genisIcerik : undefined}>
                 {/* Badge Satırı: Şu Anki Vakit + Konum */}
-                <View className="flex-row items-center gap-2 mb-4">
+                <View className="flex-row flex-wrap items-center gap-2 mb-4">
                     {/* Eski kartın rozeti. Nokta STATİK: boşta sıfır hareket (eski `animate-ping`
                         sonsuz döngüydü). Kılındı bilgisini düğme taşır; rozet tekrar etmez. */}
                     <View className="flex-row items-center gap-2 px-3 py-1 rounded-full"
@@ -143,7 +152,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                         )}
                         {/* Metin daima tema metni: birincil renkli küçük metin açık zeminde AA'yı tutmaz. */}
                         <Text className="text-xs font-bold" style={{ color: renkler.metin }}>
-                            {kilitli ? 'SIRADAKİ VAKİT' : 'ŞU ANKİ VAKİT'}
+                            {kilitli ? m.siradakiVakit : m.suankiVakit}
                         </Text>
                     </View>
 
@@ -156,7 +165,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                                     color={renkler.metinIkincil}
                                 />
                                 <Text className="text-xs font-semibold" style={{ color: renkler.metinIkincil }}>
-                                    {konumYenileniyor ? 'Güncelleniyor…' : konumMetni}
+                                    {konumYenileniyor ? m.guncelleniyor : konumMetni}
                                 </Text>
                                 {konumYenilenebilir && (
                                     <FontAwesome5
@@ -187,14 +196,33 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                                 disabled={konumYenileniyor}
                                 hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                                 accessibilityRole="button"
-                                accessibilityLabel="Konumu yenile"
-                                accessibilityHint="Şu anki konumunuzu alır ve namaz vakitlerini ona göre günceller"
+                                accessibilityLabel={m.konumuYenile}
+                                accessibilityHint={m.konumuYenileIpucu}
                                 accessibilityState={{ disabled: konumYenileniyor, busy: konumYenileniyor }}
                             >
                                 {cipIcerigi}
                             </TouchableOpacity>
                         );
                     })()}
+
+                    {yontemAdi ? (
+                        <TouchableOpacity
+                            className="flex-row items-center gap-1 px-3 py-1 rounded-full"
+                            style={{ backgroundColor: renkler.birincil + '15' }}
+                            onPress={onYontem}
+                            disabled={!onYontem}
+                            hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}
+                            accessibilityRole="button"
+                            accessibilityLabel={bicim(m.yontemErisim, { ad: yontemAdi })}
+                            accessibilityHint={m.yontemIpucu}
+                            testID="yontem-cipi"
+                        >
+                            <FontAwesome5 name="mosque" size={9} color={renkler.metinIkincil} />
+                            <Text className="text-xs font-semibold" style={{ color: renkler.metin }}>
+                                {yontemAdi}
+                            </Text>
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
 
                 {/* İkon ve Başlık */}
@@ -228,7 +256,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                         minimumFontScale={0.6}
                     />
                     <Text className="text-sm font-medium mt-1" style={{ color: renkler.metinIkincil }}>
-                        Kalan süre
+                        {m.kalanSure}
                     </Text>
                 </View>
 
@@ -279,8 +307,8 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                     <View className="flex-row items-center justify-center mt-4 gap-2" testID="vakit-karti-tesvik">
                         <FontAwesome5 name="star" size={10} color={renkler.birincil} />
                         <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                            <Text className="font-bold" style={{ color: renkler.metin }}>+{PUAN_DEGERLERI.namaz_kilindi} puan</Text>
-                            {' · Serinizi koruyun'}
+                            <Text className="font-bold" style={{ color: renkler.metin }}>{sayili(m.puan, PUAN_DEGERLERI.namaz_kilindi)}</Text>
+                            {` · ${m.seriniziKoruyun}`}
                         </Text>
                     </View>
                 )}

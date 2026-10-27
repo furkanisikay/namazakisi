@@ -3,26 +3,35 @@
  * SOLID prensiplerini takip ederek arayuz sabitlerini ayiriyoruz
  */
 
+import { canli, metin } from '../dil/aktifDil';
+
 // Namaz isimleri (Veritabanı ve Kod içinde kullanım için)
 // NOT: Veritabanında Türkçe karakterli saklandığı için değerler Türkçe olmalı.
 export enum NamazAdi {
   Sabah = 'Sabah',
-  Gunes = 'Güneş', // UI ve Vakit hesaplama için gerekli, DB'de yok
-  Ogle = 'Öğle',
-  Ikindi = 'İkindi',
-  Aksam = 'Akşam',
-  Yatsi = 'Yatsı',
+  Gunes = 'Güneş', // dil-haric: kimlik · UI ve Vakit hesaplama için gerekli, DB'de yok
+  Ogle = 'Öğle', // dil-haric: kimlik (depolama anahtarı)
+  Ikindi = 'İkindi', // dil-haric: kimlik
+  Aksam = 'Akşam', // dil-haric: kimlik
+  Yatsi = 'Yatsı', // dil-haric: kimlik
 }
 
-// UI'da gösterilecek isimler (Enum değerleri zaten Türkçe olduğu için birebir aynı olabilir, veya farklı formatlanabilir)
-export const NAMAZ_GORUNUM_ISIMLERI: Record<NamazAdi, string> = {
-  [NamazAdi.Sabah]: 'Sabah',
-  [NamazAdi.Gunes]: 'Güneş',
-  [NamazAdi.Ogle]: 'Öğle',
-  [NamazAdi.Ikindi]: 'İkindi',
-  [NamazAdi.Aksam]: 'Akşam',
-  [NamazAdi.Yatsi]: 'Yatsı',
-};
+/**
+ * Ekranda gösterilecek ad. Enum DEĞERİ Türkçedir ve depolama anahtarıdır (çevrilmez);
+ * görünen ad etkin dilin sözlüğünden gelir (canlı görünüm).
+ */
+export const NAMAZ_GORUNUM_ISIMLERI: Readonly<Record<NamazAdi, string>> = canli((s) => ({
+  [NamazAdi.Sabah]: s.vakit.adlar.imsak,
+  [NamazAdi.Gunes]: s.vakit.adlar.gunes,
+  [NamazAdi.Ogle]: s.vakit.adlar.ogle,
+  [NamazAdi.Ikindi]: s.vakit.adlar.ikindi,
+  [NamazAdi.Aksam]: s.vakit.adlar.aksam,
+  [NamazAdi.Yatsi]: s.vakit.adlar.yatsi,
+}));
+
+/** Namaz kaydının ekrandaki adı; tanınmayan değer olduğu gibi döner. */
+export const namazAdiGoster = (ad: string): string =>
+  (NAMAZ_GORUNUM_ISIMLERI as Record<string, string>)[ad] ?? ad;
 
 // Veritabanı oluşturulurken kullanılan liste (5 Vakit)
 // Güneş vakti namaz olarak kılınmadığı/işaretlenmediği için burada yer almaz.
@@ -36,9 +45,12 @@ export const NAMAZ_ISIMLERI = [
 
 // Uygulama meta verileri
 export const UYGULAMA = {
-  ADI: 'Namaz Akışı',
+  ADI: 'Namaz Akışı', // dil-haric: marka adı (her dilde aynı)
   VERSIYON: '0.70.1',
-  ACIKLAMA: 'Günlük namaz takip uygulaması',
+  /** Etkin dilde (getter). */
+  get ACIKLAMA(): string {
+    return metin().genel.hakkinda.uygulamaAciklamasi;
+  },
   GITHUB_REPO: 'furkanisikay/namazakisi',
   DESTEK_EPOSTA: 'support@furkanisikay.com',
 } as const;
@@ -236,6 +248,25 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Ortak mezhep ayarı (seferîlik kartı + kaza defterinde vitir). Namaz vakti
   // hesabına DOKUNMAZ. YEDEKLENİR (beyaz listenin üç yeri).
   MEZHEP_AYARI: 'mezhep_ayari',
+  // Namaz vakti hesap ayarı (yöntem/profil, ikindi, vakit başına dakika, özel açı,
+  // sorulan ülkeler). Yokluğu = Diyanet (eski kurulumlar). YEDEKLENİR (beyaz listenin
+  // üç yeri). Etkin durum `core/vakit/aktifHesap.ts`; yükleme `HesapAyariServisi`.
+  HESAP_AYARI: 'hesap_ayari',
+  // Arayüz dili (`core/dil`). Yokluğu = cihaz dili (seçilebilirse) ya da Türkçe. Etkin durum
+  // `core/dil/aktifDil.ts`; yükleme `DilServisi`. Seçici açılınca YEDEKLENECEK (beyaz listenin üç yeri).
+  DIL_AYARI: 'dil_ayari',
+  // Açılışta yazı yönü eşleşmediğinde yapılan sessiz yeniden başlatma denemesi sayacı
+  // (`YonServisi.acilistaDenetle`; en fazla 2, eşleşince silinir). JS belleği yeniden
+  // başlatmada sıfırlandığı için diskte. CİHAZA ÖZGÜ, YEDEKLENMEZ.
+  YON_DENEMESI: '@namaz_akisi/yon_denemesi',
+  /**
+   * Kare hattı işareti (`'true'`): kapalı dili kayıttan açar. YALNIZ kare hattının tohumu yazar
+   * (hata ayıklama APK'sında run-as); yedek beyaz listesinde YOK → yedekten geri gelemez.
+   */
+  KARE_TURU: '@namaz_akisi/kare_turu',
+  // Günün ayeti duvar kâğıdı (#381). CİHAZA ÖZGÜ, YEDEKLENMEZ: duvar kâğıdını değiştirmek o
+  // cihazda verilen açık onaya bağlı (`core/icerik/gununAyetiYuku.ts`).
+  GUNUN_AYETI_DUVAR: 'gunun_ayeti_duvar',
   // "Her farzla bir kaza" önerisi (issue #294) — ayar YEDEKLENİR (beyaz listenin
   // ÜÇ yerinde); sorulma hafızası cihaza özgü, tek günlük → yedeklemeye GİRMEZ.
   KAZA_ONERI_AYARLARI: 'kaza_oneri_ayarlari',

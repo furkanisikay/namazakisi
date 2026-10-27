@@ -33,6 +33,10 @@ describe('kisaKritikMetin — Kotlin ile ortak fikstür', () => {
   test('örnekler: "12 dk", "1 sa 5 dk"', () => {
     expect(kisaKritikMetin(12 * DK)).toBe('12 dk');
     expect(kisaKritikMetin(65 * DK)).toBe('1 sa 5 dk');
+    // İngilizce birimler native çiple aynı ("min", "h").
+    expect(kisaKritikMetin(12 * DK, 'en')).toBe('12 min');
+    expect(kisaKritikMetin(65 * DK, 'en')).toBe('1 h 5 min');
+    expect(kisaKritikMetin(120 * DK, 'en')).toBe('2 h');
   });
 });
 

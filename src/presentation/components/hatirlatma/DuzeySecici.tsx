@@ -25,9 +25,7 @@ import {
     DUZEY_ADLARI,
     DUZEY_IKONLARI,
     HATIRLATMA_DUZEYLERI,
-    OZEL_DUZEY_ACIKLAMASI,
-    OZEL_DUZEY_ADI,
-    OZEL_DUZEY_CUMLESI,
+    OZEL_DUZEY,
     OZEL_DUZEY_IKONU,
     duzeyCumlesi,
     duzeyFarki,
@@ -39,6 +37,8 @@ import {
 } from '../../../core/hatirlatma/duzeyOzeti';
 import { HATIRLATMA_PRESETLERI } from '../../store/muhafizSlice';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
+import { useMetin } from '../../hooks/useMetin';
+import { bicim } from '../../../core/dil/aktifDil';
 
 export type { HatirlatmaDuzeyi };
 
@@ -52,8 +52,6 @@ export type DuzeySecimi = HatirlatmaDuzeyi | 'ozel';
  * Normal ayarınız sürüyor. Güncel Normal için karta dokunun." anlaşılmıyordu).
  * Gerçek plan ölçülemezse yedek altyazı.
  */
-export const ESKI_DUZEY_ACIKLAMASI = 'Önceki ayarınız';
-export const ESKI_DUZEY_GUNCELLE = 'Yeni öneriyi uygulayın';
 
 /** Preset'ler sabit → ölçü bir kez (modül yüklenirken değil, ilk kullanımda). */
 let olculer: Record<HatirlatmaDuzeyi, DuzeyOlcusu | null> | null = null;
@@ -130,6 +128,8 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
     // eski davranış: düğme görünür, fark sözcüğü yok).
     const fark = eskiGoster && eskiOlcu ? duzeyFarki(eskiOlcu, o[secili as HatirlatmaDuzeyi], sesliIzinVar) : null;
     const guncelleGoster = eskiGoster && (eskiOlcu ? fark !== null : true);
+    const m = useMetin();
+    const ms = m.hatirlatma.secici;
     const secenekler = React.useMemo<Secenek<DuzeySecimi>[]>(
         () => [
             ...HATIRLATMA_DUZEYLERI.map((d) => ({
@@ -139,7 +139,7 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                     eskiGoster && d === secili
                         ? eskiOlcu
                             ? duzeyKisaAciklamasi(d, eskiOlcu, sesliIzinVar)
-                            : ESKI_DUZEY_ACIKLAMASI
+                            : ms.eskiAciklama
                         : duzeyKisaAciklamasi(d, o[d], sesliIzinVar),
                 ikon: DUZEY_IKONLARI[d],
             })),
@@ -147,22 +147,24 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                 ? [
                       {
                           deger: 'ozel' as DuzeySecimi,
-                          etiket: OZEL_DUZEY_ADI,
-                          aciklama: secili === 'ozel' ? OZEL_DUZEY_ACIKLAMASI.secili : OZEL_DUZEY_ACIKLAMASI.geri,
+                          etiket: OZEL_DUZEY.ad,
+                          aciklama: secili === 'ozel' ? OZEL_DUZEY.secili : OZEL_DUZEY.geri,
                           ikon: OZEL_DUZEY_IKONU,
                       },
                   ]
                 : []),
         ],
-        [o, ozelVar, secili, sesliIzinVar, eskiGoster, eskiOlcu],
+        // m: dil değişince etiketler yeniden kurulur (DUZEY_ADLARI/OZEL_DUZEY etkin dili okur).
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [o, ozelVar, secili, sesliIzinVar, eskiGoster, eskiOlcu, m],
     );
     const cumle =
         secili === 'ozel'
-            ? OZEL_DUZEY_CUMLESI
+            ? OZEL_DUZEY.cumle
             : eskiGoster
               ? eskiOlcu
                   ? duzeyCumlesi(secili, eskiOlcu, sesliIzinVar)
-                  : `Önceki ${DUZEY_ADLARI[secili]} ayarınız kullanılıyor.`
+                  : bicim(ms.eskiKullaniliyor, { duzey: DUZEY_ADLARI[secili] })
               : duzeyCumlesi(secili, o[secili], sesliIzinVar);
     const sesliBilgi = secili !== 'ozel' && sesliBilgiGosterildiMi(secili, sesliBilgiGoster);
     const bilgiMetni = sesliBilgiMetni(usePlatformYetenekleri().sessizligiDelebilir);
@@ -173,7 +175,7 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
 
     return (
         <View style={style} testID={testID}>
-            <SecenekListesi secenekler={secenekler} secili={secili} onSec={onSec} erisimEtiketi="Hatırlatma düzeyi" />
+            <SecenekListesi secenekler={secenekler} secili={secili} onSec={onSec} erisimEtiketi={ms.erisimEtiketi} />
             {/* Canlı önizleme: seçim değişince yerinde güncellenir (ekran okuyucu duyurur). */}
             <View
                 accessibilityLiveRegion="polite"
@@ -189,7 +191,11 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                     onPress={() => onSec(secili)}
                     activeOpacity={0.75}
                     accessibilityRole="button"
-                    accessibilityLabel={`${ESKI_DUZEY_GUNCELLE}: güncel ${DUZEY_ADLARI[secili as HatirlatmaDuzeyi]} düzey${fark ? `, ${fark}` : ''}`}
+                    accessibilityLabel={bicim(fark ? ms.eskiGuncelleEtiketFark : ms.eskiGuncelleEtiket, {
+                        eylem: ms.eskiGuncelle,
+                        duzey: DUZEY_ADLARI[secili as HatirlatmaDuzeyi],
+                        fark: fark ?? '',
+                    })}
                     style={{
                         alignSelf: 'flex-start',
                         flexDirection: 'row',
@@ -205,7 +211,7 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                     }}
                 >
                     <FontAwesome5 name="sync-alt" size={12} color={renkler.birincil} style={{ marginRight: 8 }} />
-                    <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.birincil }}>{ESKI_DUZEY_GUNCELLE}</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.birincil }}>{ms.eskiGuncelle}</Text>
                     {fark ? (
                         <View
                             testID="duzey-guncelle-fark"

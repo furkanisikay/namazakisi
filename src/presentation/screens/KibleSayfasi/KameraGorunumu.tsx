@@ -10,6 +10,9 @@ import type { KibleKaresi, KibleOzeti } from '../../hooks/useKible';
 import { KabeSimgesi } from './KabeSimgesi';
 import { HizaHalkasi } from './HizaHalkasi';
 import { KibleYolu } from './KibleYolu';
+import { bicim } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
+import { SOLDAN_SAGA } from '../../components/common/yon';
 
 /** Kamera üstündeki yazılar için koyu tül (görüntü ne olursa olsun okunur). Dekoratif zemin. */
 const TUL = 'rgba(0,0,0,0.55)';
@@ -39,6 +42,8 @@ export const KameraGorunumu: React.FC<{
   onPusulaya: () => void;
 }> = ({ aktif, kibleAcisi, konum, ozet, abone, vektorGuvenilir, hareketAzalt, onPusulaya }) => {
   const renkler = useRenkler();
+  const metinler = useMetin().kible;
+  const m = metinler.kamera;
   const [izin, izinIste] = useCameraPermissions();
   const [kameraHatasi, setKameraHatasi] = useState(false);
   const [alan, setAlan] = useState({ w: 0, h: 0 });
@@ -119,11 +124,11 @@ export const KameraGorunumu: React.FC<{
         <TouchableOpacity
           onPress={onPusulaya}
           accessibilityRole="button"
-          accessibilityLabel="Pusulayı kullanın"
+          accessibilityLabel={m.pusulayiKullanin}
           style={[styles.ikincil, { backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }]}
         >
           <FontAwesome5 name="compass" size={14} color={renkler.metin} style={{ marginRight: 8 }} />
-          <Text style={[styles.ikincilMetin, { color: renkler.metin }]}>Pusulayı kullanın</Text>
+          <Text style={[styles.ikincilMetin, { color: renkler.metin }]}>{m.pusulayiKullanin}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -132,8 +137,8 @@ export const KameraGorunumu: React.FC<{
   if (vektorGuvenilir === false) {
     return dususKarti(
       'exclamation-circle',
-      'Kamera görünümü bu telefonda kullanılamıyor',
-      'Telefonunuzun algılayıcıları dik tutuşta güvenilir yön vermiyor. Pusula yönü doğru göstermeye devam eder.',
+      m.kullanilamiyorBaslik,
+      m.kullanilamiyorMetin,
     );
   }
   if (!izin) return <View style={styles.dusus} />;
@@ -141,27 +146,27 @@ export const KameraGorunumu: React.FC<{
     return izin.canAskAgain
       ? dususKarti(
           'camera',
-          'Kıbleyi kamerayla görün',
-          'Telefonunuzu dik tutup çevrenize baktığınızda Kâbe işareti kıble yönünde belirir. Bunun için kamera izni gerekiyor; görüntü kaydedilmez ve telefonunuzdan çıkmaz.',
-          { etiket: 'Kamerayı açın', ikon: 'camera', onPress: () => void izinIste().catch(() => undefined) },
+          m.izinBaslik,
+          m.izinMetin,
+          { etiket: m.kamerayiAcin, ikon: 'camera', onPress: () => void izinIste().catch(() => undefined) },
         )
       : dususKarti(
           'camera',
-          'Kamera izni kapalı',
-          'Kameralı görünüm için Ayarlar’dan kamera iznini açabilirsiniz. Pusula izinsiz de çalışır.',
-          { etiket: 'Ayarları açın', ikon: 'cog', onPress: ayarlariAc },
+          m.izinKapaliBaslik,
+          m.izinKapaliMetin,
+          { etiket: m.ayarlariAcin, ikon: 'cog', onPress: ayarlariAc },
         );
   }
   if (kameraHatasi) {
-    return dususKarti('video-slash', 'Kamera açılamadı', 'Kamera şu an kullanılamıyor. Pusula ile kıble yönünü bulabilirsiniz.');
+    return dususKarti('video-slash', m.acilamadiBaslik, m.acilamadiMetin);
   }
 
   const mesafe = konum ? mesafeMetni(kabeyeMesafeKm(konum.lat, konum.lng)) : null;
   const cumle =
     !ozet.hazir || kibleAcisi === null || ozet.fark === null
-      ? 'Yön hesaplanıyor…'
+      ? m.hesaplaniyor
       : !ozet.dik
-        ? 'Telefonunuzu dik tutun'
+        ? m.dikTutun
         : yonCumlesi(ozet.fark, ozet.hizali);
 
   return (
@@ -223,14 +228,16 @@ export const KameraGorunumu: React.FC<{
         <Text testID="kamera-yon-cumlesi" style={styles.panelCumle}>
           {cumle}
         </Text>
-        {mesafe && <Text style={styles.panelAlt}>Kâbe {mesafe} uzakta</Text>}
+        {mesafe && <Text style={styles.panelAlt}>{bicim(metinler.pusula.kabeUzakta, { mesafe })}</Text>}
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  kap: { flex: 1, overflow: 'hidden', backgroundColor: '#000000' },
+  // Coğrafi sahne: Kâbe işareti `left: 0` + translateX (kamera pikseli), sağ/sol okları
+  // FİZİKSEL dönüş yönü → sağdan sola arayüzde de aynalanmaz.
+  kap: { ...SOLDAN_SAGA, flex: 1, overflow: 'hidden', backgroundColor: '#000000' },
   dusus: { flex: 1, justifyContent: 'center', padding: 16 },
   kart: { borderRadius: 24, borderWidth: 1, padding: 20, alignItems: 'center' },
   cip: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', marginBottom: 12 },

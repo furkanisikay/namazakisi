@@ -29,128 +29,39 @@ import {
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
+import { useMetin } from '../hooks/useMetin';
 
 export type IzinTipi = 'onPlan' | 'arkaPlan' | 'camideyim';
 
-interface DisclosureMaddesi {
-  ikon: string;
-  baslik: string;
-  aciklama: string;
-  renk: string;
-}
-
-const MADDELER: Record<IzinTipi, {
-  baslik: string;
-  altBaslik: string;
-  ikon: string;
-  maddeler: DisclosureMaddesi[];
-  kabulButonMetni: string;
-  reddetButonMetni: string;
-}> = {
+/** Görsel (ikon, renk) kodda; metinler sözlükte (`konum.izin`), madde sırası aynı. */
+const GORSEL: Record<IzinTipi, { ikon: string; maddeler: { ikon: string; renk: string }[] }> = {
   onPlan: {
-    baslik: 'Konum Verisi Kullanımı',
-    altBaslik: 'Devam etmeden önce, konum bilginizin nasıl kullanılacağını lütfen gözden geçirin.',
     ikon: 'map-marker-alt',
     maddeler: [
-      {
-        ikon: 'clock',
-        baslik: 'Namaz Vakitleri',
-        aciklama: 'GPS koordinatları yalnızca bulunduğunuz konuma uygun namaz vakitlerini hesaplamak için kullanılır.',
-        renk: '#10b981',
-      },
-      {
-        ikon: 'compass',
-        baslik: 'Kıble Yönü',
-        aciklama: 'Kıble pusulasını Kâbe’ye göre doğru hizalamak için enlem ve boylam bilgisi kullanılır.',
-        renk: '#f59e0b',
-      },
-      {
-        ikon: 'mobile-alt',
-        baslik: 'Yalnızca Cihazda',
-        aciklama: 'Veriniz yalnızca cihazınızda işlenir ve saklanır. Sunucularımıza gönderilmez, üçüncü taraflarla paylaşılmaz.',
-        renk: '#3b82f6',
-      },
-      {
-        ikon: 'ban',
-        baslik: 'Reklam ve Analitik Yok',
-        aciklama: 'Konum verisi reklam, izleme veya analitik amacıyla asla kullanılmaz.',
-        renk: '#ef4444',
-      },
+      { ikon: 'clock', renk: '#10b981' },
+      { ikon: 'compass', renk: '#f59e0b' },
+      { ikon: 'mobile-alt', renk: '#3b82f6' },
+      { ikon: 'ban', renk: '#ef4444' },
     ],
-    kabulButonMetni: 'Devam Et ve İzin Ekranını Aç',
-    reddetButonMetni: 'Şimdi Değil',
   },
   arkaPlan: {
-    baslik: 'Arka Plan Konum Kullanımı',
-    altBaslik: 'Seyahatte otomatik güncelleme açılmadan önce, arka plan konum verisinin nasıl kullanılacağını lütfen gözden geçirin.',
     ikon: 'route',
     maddeler: [
-      {
-        ikon: 'plane-departure',
-        baslik: 'Seyahatte Otomatik Güncelleme',
-        aciklama: 'Uygulama kapalıyken bile, şehirler arası seyahat ettiğinizde namaz vakitleri konumunuza göre sessizce güncellenir.',
-        renk: '#8b5cf6',
-      },
-      {
-        ikon: 'battery-half',
-        baslik: 'Pil Dostu Tetikleme',
-        aciklama: 'Seçtiğiniz hassasiyet profiline göre (2–10 km / 5–30 dk) tetiklenir; sürekli GPS okuması yapılmaz.',
-        renk: '#10b981',
-      },
-      {
-        ikon: 'mosque',
-        baslik: 'Camiye Girince Namaz Modu',
-        aciklama: 'Camideyim özelliğini açarsanız, vakit yakınında bir camide durduğunuz anlaşılır ve telefonunuzun Namaz modu açılır.',
-        renk: '#2E7D32',
-      },
-      {
-        ikon: 'mobile-alt',
-        baslik: 'Yalnızca Cihazda İşlenir',
-        aciklama: 'Arka planda alınan konum verisi yalnızca cihazınızda kullanılır; sunucularımıza gönderilmez, üçüncü taraflarla paylaşılmaz.',
-        renk: '#3b82f6',
-      },
-      {
-        ikon: 'toggle-off',
-        baslik: 'İstediğiniz Zaman Kapatın',
-        aciklama: 'Bu özelliği uygulama içinden kapatabilir veya Android Ayarlar → Uygulamalar → İzinler yolundan "Her zaman" iznini geri alabilirsiniz.',
-        renk: '#f59e0b',
-      },
+      { ikon: 'plane-departure', renk: '#8b5cf6' },
+      { ikon: 'battery-half', renk: '#10b981' },
+      { ikon: 'mosque', renk: '#2E7D32' },
+      { ikon: 'mobile-alt', renk: '#3b82f6' },
+      { ikon: 'toggle-off', renk: '#f59e0b' },
     ],
-    kabulButonMetni: 'Devam Et ve İzin Ekranını Aç',
-    reddetButonMetni: 'Vazgeç',
   },
   camideyim: {
-    baslik: 'Camideyim için Konum',
-    altBaslik: 'Camiye girince Namaz modunun açılabilmesi için konum izninin "Her zaman" olması gerekir. Devam etmeden önce nasıl kullanıldığını gözden geçirin.',
     ikon: 'mosque',
     maddeler: [
-      {
-        ikon: 'mosque',
-        baslik: 'Camiye Girince Namaz Modu',
-        aciklama: 'Uygulama kapalıyken bile, vakit yakınında bir camide birkaç dakika kaldığınız anlaşılır ve telefonunuzun Namaz modu açılır.',
-        renk: '#2E7D32',
-      },
-      {
-        ikon: 'battery-half',
-        baslik: 'Sürekli Konum Okunmaz',
-        aciklama: 'Yakındaki camilerin çevresini telefonun kendi konum servisi izler; uygulama yalnız bir camide beklediğinizde tek bir ölçüm yapar.',
-        renk: '#10b981',
-      },
-      {
-        ikon: 'mobile-alt',
-        baslik: 'Yalnızca Cihazda İşlenir',
-        aciklama: 'Hangi camiye gittiğiniz telefonunuzda kalır; sunucularımıza gönderilmez, üçüncü taraflarla paylaşılmaz.',
-        renk: '#3b82f6',
-      },
-      {
-        ikon: 'toggle-off',
-        baslik: 'İstediğiniz Zaman Kapatın',
-        aciklama: 'Camideyim ayarlarından kapatabilir ya da Android Ayarlar → Uygulamalar → İzinler yolundan "Her zaman" iznini geri alabilirsiniz.',
-        renk: '#f59e0b',
-      },
+      { ikon: 'mosque', renk: '#2E7D32' },
+      { ikon: 'battery-half', renk: '#10b981' },
+      { ikon: 'mobile-alt', renk: '#3b82f6' },
+      { ikon: 'toggle-off', renk: '#f59e0b' },
     ],
-    kabulButonMetni: 'Devam Et ve İzin Ekranını Aç',
-    reddetButonMetni: 'Vazgeç',
   },
 };
 
@@ -173,7 +84,13 @@ export const KonumIzniDisclosureModali: React.FC<Props> = ({
   const ikonOlcek = useRef(new Animated.Value(0.6)).current;
   const icerikOpacity = useRef(new Animated.Value(0)).current;
 
-  const icerik = MADDELER[tip];
+  const metinler = useMetin().konum.izin[tip];
+  const gorsel = GORSEL[tip];
+  const icerik = {
+    ...metinler,
+    ikon: gorsel.ikon,
+    maddeler: gorsel.maddeler.map((g, i) => ({ ...g, ...metinler.maddeler[i] })),
+  };
 
   useEffect(() => {
     if (gorunur) {

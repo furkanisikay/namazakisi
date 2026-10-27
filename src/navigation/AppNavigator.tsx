@@ -32,6 +32,8 @@ import {
   OzelGunSayfasi,
   NamazVakitleriSayfasi,
   SaatVeWidgetSayfasi,
+  GununAyetiSayfasi,
+  GununAyetiAyarlariSayfasi,
   YardimSayfasi,
   CamilerimSayfasi,
   SeriHedefAyarlariSayfasi,
@@ -58,6 +60,7 @@ import {
   KurulumSihirbaziSayfasi,
   TakvimAyarlariSayfasi,
   SeferilikAyarlariSayfasi,
+  HesapYontemiSayfasi,
   NelerYeniSayfasi,
   YedeklemeSayfasi,
   IceAktarmaSihirbaziSayfasi,
@@ -65,9 +68,13 @@ import {
   TaniGeriBildirimSayfasi,
 } from '../presentation/screens';
 import type { AyarlarEkranAdi, AyarlarStackParamList } from './ayarlarEkranlari';
+import { DilAyarlariSayfasi } from '../presentation/screens/DilAyarlariSayfasi';
 import { KAZA_EKRAN_BASLIKLARI, type KazaStackParamList } from './kazaEkranlari';
 import { DEPOLAMA_ANAHTARLARI } from '../core/constants/UygulamaSabitleri';
 import { useRenkler } from '../core/theme';
+import { canli, metin } from '../core/dil/aktifDil';
+import type { Sozluk } from '../core/dil/sozluk/tr';
+import { useMetin } from '../presentation/hooks/useMetin';
 import { useAppDispatch, useAppSelector } from '../presentation/store/hooks';
 import { useEvEkraniAyari } from '../presentation/hooks/useEvEkraniAyari';
 import { EvEkraniPanosu } from '../presentation/components/evEkrani/EvEkraniPanosu';
@@ -80,7 +87,7 @@ import ErrorBoundary from '../presentation/components/common/ErrorBoundary';
 import {
   useKildimDerinBaglantisi,
   kildimOnayBasligi,
-  KILDIM_ONAY_MESAJI,
+  kildimOnayMesaji,
 } from '../presentation/hooks/useKildimDerinBaglantisi';
 import { KildimIzinModali } from '../presentation/components/kildim/KildimIzinModali';
 import { useSiriEkranIstegi } from '../presentation/hooks/useSiriEkranIstegi';
@@ -116,64 +123,75 @@ const KazaStackNav = createNativeStackNavigator<KazaStackParamList>();
  * derleme zamanı garantisi (task-1-brief.md).
  *
  * Başlıklar ve `headerShown` değerleri eski satır-satır tanımlardan BİREBİR
- * korunmuştur — davranış değişmez.
+ * korunmuştur — davranış değişmez. Başlık metni sözlükte (`genel.ekranlar`).
  */
+type EkranBasliklari = Sozluk['genel']['ekranlar'];
+
 const AYARLAR_EKRAN_TANIMLARI: Record<
   AyarlarEkranAdi,
-  { component: React.ComponentType; options?: NativeStackNavigationOptions }
+  {
+    component: React.ComponentType;
+    options?: NativeStackNavigationOptions;
+    /** Başlık etkin dilin sözlüğünden (dil değişince `AyarlarStack` yeniden çizer). */
+    baslik?: (e: EkranBasliklari) => string;
+  }
 > = {
   // `title` baslik icin degil (header gizli): iOS geri dugmesinin erisilebilirlik
   // etiketi ve uzun basista acilan gecmis menusu onceki ekranin basligini okur.
-  AyarlarAna: { component: AyarlarSayfasi, options: { headerShown: false, title: 'Ayarlar' } },
+  AyarlarAna: { component: AyarlarSayfasi, options: { headerShown: false }, baslik: (e) => e.AyarlarAna },
   // Sade tasarım (Dalga 3): tek Hatırlatmalar sayfası + ayrıntıları.
-  Hatirlatmalar: { component: HatirlatmalarSayfasi, options: { title: 'Hatırlatmalar' } },
-  VakitGirinceAyarlari: { component: VakitGirinceSayfasi, options: { title: 'Vakit girince' } },
-  CumaHatirlatmaAyarlari: { component: CumaHatirlatmaSayfasi, options: { title: 'Cuma namazı' } },
-  CamiyeGitAyarlari: { component: CamiyeGitSayfasi, options: { title: 'Camiye gitme vakti' } },
-  YatisHatirlatmaAyarlari: { component: YatisHatirlatmaSayfasi, options: { title: 'Yatmadan önce' } },
-  TakvimCakismaAyarlari: { component: TakvimCakismaSayfasi, options: { title: 'Toplantı çakışırsa' } },
-  GunSonuAyarlari: { component: GunSonuSayfasi, options: { title: 'Günü tamamlamadıysam' } },
-  OzelGunAyarlari: { component: OzelGunSayfasi, options: { title: 'Özel gün' } },
-  NamazVakitleriAyarlari: { component: NamazVakitleriSayfasi, options: { title: 'Namaz vakitleri' } },
-  SaatVeWidgetAyarlari: { component: SaatVeWidgetSayfasi, options: { title: 'Saat ve widget' } },
-  Yardim: { component: YardimSayfasi, options: { title: 'Yardım' } },
-  Camilerim: { component: CamilerimSayfasi, options: { title: 'Camilerim' } },
-  KonumAyarlari: { component: KonumAyarlariSayfasi, options: { title: 'Konum' } },
-  GorünumAyarlari: { component: GorunumAyarlariSayfasi, options: { title: 'Görünüm' } },
+  Hatirlatmalar: { component: HatirlatmalarSayfasi, baslik: (e) => e.Hatirlatmalar },
+  VakitGirinceAyarlari: { component: VakitGirinceSayfasi, baslik: (e) => e.VakitGirinceAyarlari },
+  CumaHatirlatmaAyarlari: { component: CumaHatirlatmaSayfasi, baslik: (e) => e.CumaHatirlatmaAyarlari },
+  CamiyeGitAyarlari: { component: CamiyeGitSayfasi, baslik: (e) => e.CamiyeGitAyarlari },
+  YatisHatirlatmaAyarlari: { component: YatisHatirlatmaSayfasi, baslik: (e) => e.YatisHatirlatmaAyarlari },
+  TakvimCakismaAyarlari: { component: TakvimCakismaSayfasi, baslik: (e) => e.TakvimCakismaAyarlari },
+  GunSonuAyarlari: { component: GunSonuSayfasi, baslik: (e) => e.GunSonuAyarlari },
+  OzelGunAyarlari: { component: OzelGunSayfasi, baslik: (e) => e.OzelGunAyarlari },
+  NamazVakitleriAyarlari: { component: NamazVakitleriSayfasi, baslik: (e) => e.NamazVakitleriAyarlari },
+  SaatVeWidgetAyarlari: { component: SaatVeWidgetSayfasi, baslik: (e) => e.SaatVeWidgetAyarlari },
+  GununAyeti: { component: GununAyetiSayfasi, baslik: (e) => e.GununAyeti },
+  GununAyetiAyarlari: { component: GununAyetiAyarlariSayfasi, baslik: (e) => e.GununAyetiAyarlari },
+  Yardim: { component: YardimSayfasi, baslik: (e) => e.Yardim },
+  Camilerim: { component: CamilerimSayfasi, baslik: (e) => e.Camilerim },
+  KonumAyarlari: { component: KonumAyarlariSayfasi, baslik: (e) => e.KonumAyarlari },
+  GorünumAyarlari: { component: GorunumAyarlariSayfasi, baslik: (e) => e.GorunumAyarlari }, // dil-haric: kimlik (rota adı)
+  DilAyarlari: { component: DilAyarlariSayfasi, baslik: (e) => e.DilAyarlari },
   // Eski "Bildirimler" rotası (Neler Yeni, eski bağlantılar) Hatırlatmalar sayfasını açar.
-  BildirimAyarlari: { component: HatirlatmalarSayfasi, options: { title: 'Hatırlatmalar' } },
-  SeriHedefAyarlari: { component: SeriHedefAyarlariSayfasi, options: { title: 'Seri hedefi' } },
-  MuhafizAyarlari: { component: MuhafizAyarlariSayfasi, options: { title: 'Vakit çıkmadan' } },
-  Hakkinda: { component: HakkindaSayfasi, options: { title: 'Hakkında' } },
-  RamazanAyarlari: { component: RamazanAyarlariSayfasi, options: { title: 'Ramazan' } },
-  NafileAyarlari: { component: NafileAyarlariSayfasi, options: { title: 'Nafile Namazlar' } },
+  BildirimAyarlari: { component: HatirlatmalarSayfasi, baslik: (e) => e.BildirimAyarlari },
+  SeriHedefAyarlari: { component: SeriHedefAyarlariSayfasi, baslik: (e) => e.SeriHedefAyarlari },
+  MuhafizAyarlari: { component: MuhafizAyarlariSayfasi, baslik: (e) => e.MuhafizAyarlari },
+  Hakkinda: { component: HakkindaSayfasi, baslik: (e) => e.Hakkinda },
+  RamazanAyarlari: { component: RamazanAyarlariSayfasi, baslik: (e) => e.RamazanAyarlari },
+  NafileAyarlari: { component: NafileAyarlariSayfasi, baslik: (e) => e.NafileAyarlari },
   // iOS (#295): ayni secim canli etkinlik (Dinamik Ada / kilit ekrani) olarak calisir.
   NowBarAyarlari: {
     component: NowBarAyarlariSayfasi,
     // Ad marka terimi DEĞİL (Now Bar yalnız Samsung'da); kök satırıyla aynı ad.
-    options: { title: Platform.OS === 'ios' ? 'Canlı etkinlikler' : 'Canlı sayaçlar' },
+    baslik: (e) => (Platform.OS === 'ios' ? e.NowBarIos : e.NowBarAndroid),
   },
   // Camideyim + Namaz modu TEK sayfa ("Namazda sessiz"); iki eski rota da onu açar
   // (derin bağlantı `namazakisi://camideyim` ve saat W3 çalışmaya devam eder).
   // iPhone'da Camideyim modülü yok; aynı rota Odak + Kısayollar kurulum rehberini açar.
-  CamideyimAyarlari: { component: Platform.OS === 'ios' ? NamazdaSessizIosSayfasi : NamazdaSessizSayfasi, options: { title: 'Namazda sessiz' } },
-  NamazModuAyarlari: { component: Platform.OS === 'ios' ? NamazdaSessizIosSayfasi : NamazdaSessizSayfasi, options: { title: 'Namazda sessiz' } },
+  CamideyimAyarlari: { component: Platform.OS === 'ios' ? NamazdaSessizIosSayfasi : NamazdaSessizSayfasi, baslik: (e) => e.CamideyimAyarlari },
+  NamazModuAyarlari: { component: Platform.OS === 'ios' ? NamazdaSessizIosSayfasi : NamazdaSessizSayfasi, baslik: (e) => e.NamazModuAyarlari },
   // Wear OS saati ile iş bölümü (saat W3) — listede yalnız Android'de görünür.
-  SaatAyarlari: { component: SaatAyarlariSayfasi, options: { title: 'Akıllı saat' } },
-  Cihazlarim: { component: CihazlarimSayfasi, options: { title: 'Cihazlarım' } },
-  CihazEkle: { component: CihazEkleSayfasi, options: { title: 'Cihaz ekleyin' } },
+  SaatAyarlari: { component: SaatAyarlariSayfasi, baslik: (e) => e.SaatAyarlari },
+  Cihazlarim: { component: CihazlarimSayfasi, baslik: (e) => e.Cihazlarim },
+  CihazEkle: { component: CihazEkleSayfasi, baslik: (e) => e.CihazEkle },
   // TV ekranı "Ayarlar › Cihazlarım › TV ekleyin" der; başlık bu yolla birebir aynı kalmalı.
-  TelevizyonAyarlari: { component: TelevizyonSayfasi, options: { title: 'TV ekleyin' } },
-  KildimUygulamalari: { component: KildimUygulamalariSayfasi, options: { title: 'Kıldım İşaretleyen Uygulamalar' } },
-  OtomasyonRehberi: { component: OtomasyonRehberiSayfasi, options: { title: 'Otomasyonlarla Kullanın' } },
-  DebugLogs: { component: DebugLogsSayfasi, options: { title: 'Tanı kayıtları' } },
-  TakvimAyarlari: { component: TakvimAyarlariSayfasi, options: { title: 'Vakitleri takvime ekleyin' } },
-  SeferilikAyarlari: { component: SeferilikAyarlariSayfasi, options: { title: 'Yolculuk Bilgisi' } },
-  NelerYeni: { component: NelerYeniSayfasi, options: { title: 'Neler Yeni' } },
-  YedeklemeAktarim: { component: YedeklemeSayfasi, options: { title: 'Yedek ve eşitleme' } },
+  TelevizyonAyarlari: { component: TelevizyonSayfasi, baslik: (e) => e.TelevizyonAyarlari },
+  KildimUygulamalari: { component: KildimUygulamalariSayfasi, baslik: (e) => e.KildimUygulamalari },
+  OtomasyonRehberi: { component: OtomasyonRehberiSayfasi, baslik: (e) => e.OtomasyonRehberi },
+  DebugLogs: { component: DebugLogsSayfasi, baslik: (e) => e.DebugLogs },
+  TakvimAyarlari: { component: TakvimAyarlariSayfasi, baslik: (e) => e.TakvimAyarlari },
+  SeferilikAyarlari: { component: SeferilikAyarlariSayfasi, baslik: (e) => e.SeferilikAyarlari },
+  HesapYontemiAyarlari: { component: HesapYontemiSayfasi, baslik: (e) => e.HesapYontemiAyarlari },
+  NelerYeni: { component: NelerYeniSayfasi, baslik: (e) => e.NelerYeni },
+  YedeklemeAktarim: { component: YedeklemeSayfasi, baslik: (e) => e.YedeklemeAktarim },
   IceAktarmaSihirbazi: { component: IceAktarmaSihirbaziSayfasi, options: { headerShown: false } },
-  EsitlemeAyarlari: { component: EsitlemeSayfasi, options: { title: 'Cihazlar arası eşitleme' } },
-  TaniGeriBildirim: { component: TaniGeriBildirimSayfasi, options: { title: 'Tanı ve Geri Bildirim' } },
+  EsitlemeAyarlari: { component: EsitlemeSayfasi, baslik: (e) => e.EsitlemeAyarlari },
+  TaniGeriBildirim: { component: TaniGeriBildirimSayfasi, baslik: (e) => e.TaniGeriBildirim },
 };
 
 /**
@@ -192,9 +210,14 @@ const ayarlarYerlesimi = anaAyrintiYerlesimiOlustur(
     Ana: AyarlarSayfasi,
     Varsayilan: HatirlatmalarSayfasi,
     varsayilanRota: 'Hatirlatmalar',
-    varsayilanBaslik: 'Hatırlatmalar',
-    basliklar: Object.fromEntries(
-      Object.entries(AYARLAR_EKRAN_TANIMLARI).map(([ad, t]) => [ad, t.options?.title as string | undefined])
+    // Etkin dilde okunur (getter + canlı görünüm); `AnaAyrintiCercevesi` dile abonedir.
+    get varsayilanBaslik() {
+      return metin().genel.ekranlar.Hatirlatmalar;
+    },
+    basliklar: canli((s) =>
+      Object.fromEntries(
+        Object.entries(AYARLAR_EKRAN_TANIMLARI).map(([ad, t]) => [ad, t.baslik?.(s.genel.ekranlar)])
+      )
     ),
   },
   ['IceAktarmaSihirbazi']
@@ -206,7 +229,9 @@ const kazaYerlesimi = anaAyrintiYerlesimiOlustur({
   Ana: KazaDefteriSayfasi,
   Varsayilan: KazaGecmisiSayfasi,
   varsayilanRota: 'KazaGecmisi',
-  varsayilanBaslik: KAZA_EKRAN_BASLIKLARI.KazaGecmisi,
+  get varsayilanBaslik() {
+    return KAZA_EKRAN_BASLIKLARI.KazaGecmisi;
+  },
   basliklar: KAZA_EKRAN_BASLIKLARI,
 });
 
@@ -216,6 +241,8 @@ const kazaYerlesimi = anaAyrintiYerlesimiOlustur({
  */
 const AyarlarStack: React.FC = () => {
   const renkler = useRenkler();
+  // Dil değişince başlıklar yeniden kurulsun (options her çizimde sözlükten okunur).
+  const ekranlar = useMetin().genel.ekranlar;
   // Ana-ayrıntıda başlık yalnız ayrıntının üstünde çizilir (native başlık tam genişlikti).
   const anaAyrinti = anaAyrintiMi(useWindowDimensions().width);
 
@@ -242,7 +269,12 @@ const AyarlarStack: React.FC = () => {
       {(Object.entries(AYARLAR_EKRAN_TANIMLARI) as Array<
         [AyarlarEkranAdi, (typeof AYARLAR_EKRAN_TANIMLARI)[AyarlarEkranAdi]]
       >).map(([ad, tanim]) => (
-        <Stack.Screen key={ad} name={ad} component={tanim.component} options={tanim.options} />
+        <Stack.Screen
+          key={ad}
+          name={ad}
+          component={tanim.component}
+          options={tanim.baslik ? { ...tanim.options, title: tanim.baslik(ekranlar) } : tanim.options}
+        />
       ))}
     </Stack.Navigator>
   );
@@ -254,6 +286,7 @@ const AyarlarStack: React.FC = () => {
  */
 const KazaStack: React.FC = () => {
   const renkler = useRenkler();
+  const m = useMetin().genel;
   const anaAyrinti = anaAyrintiMi(useWindowDimensions().width);
   return (
     <KazaStackNav.Navigator
@@ -269,7 +302,7 @@ const KazaStack: React.FC = () => {
       <KazaStackNav.Screen
         name="KazaDefteriAna"
         component={KazaDefteriSayfasi}
-        options={{ headerShown: false, title: 'Kaza Defteri' }}
+        options={{ headerShown: false, title: m.sekmeler.kazaDefteri }}
       />
       <KazaStackNav.Screen name="KazaGecmisi" component={KazaGecmisiSayfasi} options={{ title: KAZA_EKRAN_BASLIKLARI.KazaGecmisi }} />
       <KazaStackNav.Screen
@@ -295,6 +328,7 @@ const KazaStack: React.FC = () => {
  */
 const MainTabs: React.FC = () => {
   const renkler = useRenkler();
+  const sekme = useMetin().genel.sekmeler;
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const { okunmamisVarMi } = useYeniOzellikler();
@@ -384,9 +418,9 @@ const MainTabs: React.FC = () => {
         name="AnaSayfa"
         component={AnaSayfa}
         options={{
-          title: 'Namaz Akışı',
+          title: 'Namaz Akışı', // dil-haric: marka adı
           // Rota adı `AnaSayfa` KALIR (derin bağlantı `ana`, testler); görünen ad "Bugün".
-          tabBarLabel: 'Bugün',
+          tabBarLabel: sekme.bugun,
           headerShown: false,
           ...(sade.etkin ? { tabBarStyle: { display: 'none' as const } } : {}),
           tabBarIcon: ({ focused }) => (
@@ -400,8 +434,8 @@ const MainTabs: React.FC = () => {
         // Tablet/açık katlanabilirde okunabilir sütun (Ayarlar/Kaza yığınlarıyla aynı sarmalayıcı).
         layout={ayarEkraniYerlesimi}
         options={{
-          title: 'Kıble',
-          tabBarLabel: 'Kıble',
+          title: sekme.kible,
+          tabBarLabel: sekme.kible,
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <FontAwesome5 name="compass" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
@@ -412,9 +446,9 @@ const MainTabs: React.FC = () => {
         name="KazaDefteri"
         component={KazaStack}
         options={{
-          title: 'Kaza Defteri',
+          title: sekme.kazaDefteri,
           headerShown: false,
-          tabBarLabel: 'Kaza',
+          tabBarLabel: sekme.kaza,
           tabBarIcon: ({ focused }) => (
             <FontAwesome5 name="book" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
           ),
@@ -426,8 +460,8 @@ const MainTabs: React.FC = () => {
         // Tablet/açık katlanabilirde okunabilir sütun (Ayarlar/Kaza yığınlarıyla aynı sarmalayıcı).
         layout={ayarEkraniYerlesimi}
         options={{
-          title: 'İlerleme',
-          tabBarLabel: 'İlerleme',
+          title: sekme.ilerleme,
+          tabBarLabel: sekme.ilerleme,
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <FontAwesome5 name="star" solid size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
@@ -439,7 +473,7 @@ const MainTabs: React.FC = () => {
         component={AyarlarStack}
         options={{
           headerShown: false,
-          tabBarLabel: 'Ayarlar',
+          tabBarLabel: sekme.ayarlar,
           // Okunmamış yeni özellik varsa küçük nokta rozeti (anasayfa akışını bozmaz)
           tabBarBadge: okunmamisVarMi ? '' : undefined,
           tabBarBadgeStyle: {
@@ -479,6 +513,8 @@ const MainTabs: React.FC = () => {
  */
 export const AppNavigator: React.FC = () => {
   const [ilkKurulum, setIlkKurulum] = useState<boolean | null>(null);
+  // Dile abone: kök düzeyindeki onay metinleri (Kıldım bağlantısı) dil değişince tazelensin.
+  useMetin();
 
   useEffect(() => {
     AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI).then(deger => {
@@ -520,7 +556,7 @@ export const AppNavigator: React.FC = () => {
         vakitAdi={kildimOnayi.onayAdayi?.vakitAdi ?? null}
         baslatan={kildimOnayi.baslatan}
         kimliksizBaslik={kildimOnayi.onayAdayi ? kildimOnayBasligi(kildimOnayi.onayAdayi) : ''}
-        kimliksizMesaj={KILDIM_ONAY_MESAJI}
+        kimliksizMesaj={kildimOnayMesaji()}
         onHerZaman={kildimOnayi.herZamanIzinVer}
         onBuSefer={kildimOnayi.onayla}
         onEngelle={kildimOnayi.engelle}

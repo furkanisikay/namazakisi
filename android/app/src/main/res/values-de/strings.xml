@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Almanca kaynaklar (W4, beta). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/de (hitap "Sie", "bitte" yok). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Das aktuelle Gebet, wann es endet, und „Ich habe gebetet“ mit einem Tippen</string>
+  <string name="widget_genis_aciklama">Die fünf Gebete des Tages, ein Countdown und „Ich habe gebetet“ mit einem Tippen</string>
+  <string name="widget_kapak_adi">Gebetszeiten für den Außenbildschirm</string>
+  <string name="widget_kapak_aciklama">Die heutigen Gebetszeiten und ein Countdown für den Außenbildschirm des Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Klassisch</string>
+  <string name="widget_klasik_aciklama">Klassischer grüner Look: verbleibende Zeit bis zum nächsten Gebet</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klassisch breit</string>
+  <string name="widget_klasik_genis_aciklama">Klassischer grüner Look: Countdown und die heutigen Gebetszeiten</string>
+  <string name="widget_ayet_adi">Vers des Tages</string>
+  <string name="widget_ayet_aciklama">Ein Vers mit Übersetzung, täglich zu Fajr erneuert</string>
+  <string name="widget_ayar_zemin_palet">App-Farbe (heller Ton)</string>
+  <string name="widget_ayar_ayet_icerik">In quadratischer Größe anzeigen</string>
+  <string name="widget_ayar_ayet_icerik_meal">Übersetzung</string>
+  <string name="widget_ayar_ayet_icerik_hat">Arabischer Text (Kalligrafie)</string>
+  <string name="kutu_kildim_etiket">Gebetet</string>
+  <string name="kisayol_kildim_kisa">Gebetet</string>
+  <string name="kisayol_kildim_uzun">Ich habe gebetet</string>
+  <string name="kisayol_kible_kisa">Qibla</string>
+  <string name="kisayol_kible_uzun">Qibla-Richtung anzeigen</string>
+  <string name="kisayol_kaza_kisa">Nachholbuch</string>
+  <string name="kisayol_kaza_uzun">Nachholbuch öffnen</string>
+  <string name="kildim_onay_baslik">%1$s als gebetet markieren?</string>
+  <string name="kildim_onay_mesaj">Es ist nicht klar, welche App diese Anfrage gesendet hat. Bestätigen Sie, wenn Sie gebetet haben.</string>
+  <string name="kildim_onay_evet">Ich habe gebetet</string>
+  <string name="kildim_onay_vazgec">Abbrechen</string>
+  <string name="kildim_guven_baslik">Darf %1$s Ihre Gebete als gebetet markieren?</string>
+  <string name="kildim_guven_mesaj">Jetzt zu markierende Gebetszeit: %1$s. Ihre Entscheidung können Sie später unter Einstellungen &gt; Mit Automationen verwenden &gt; Apps, die Gebete markieren dürfen ändern.</string>
+  <string name="kildim_guven_tarayici_mesaj">Jetzt zu markierende Gebetszeit: %1$s. Diese Anfrage kam aus einem Browser; da jede Webseite diesen Link öffnen kann, ist keine dauerhafte Erlaubnis möglich.</string>
+  <string name="kildim_guven_her_zaman">Immer erlauben</string>
+  <string name="kildim_guven_bu_sefer">Nur dieses Mal</string>
+  <string name="kildim_guven_engelle">Blockieren</string>
+  <string name="kildim_guven_engellendi">%1$s kann Ihre Gebete nicht mehr markieren. Sie können das in den Einstellungen ändern.</string>
+  <string name="widget_ayar_baslik">Widget anpassen</string>
+  <string name="widget_ayar_zemin">Hintergrund</string>
+  <string name="widget_ayar_zemin_material">Hintergrundbildfarben</string>
+  <string name="widget_ayar_zemin_sistem">Systemdesign</string>
+  <string name="widget_ayar_zemin_acik">Hell</string>
+  <string name="widget_ayar_zemin_koyu">Dunkel</string>
+  <string name="widget_ayar_zemin_seffaf">Transparent</string>
+  <string name="widget_ayar_opaklik">Deckkraft des Hintergrunds</string>
+  <string name="widget_ayar_gosterim">In großer Schrift anzeigen</string>
+  <string name="widget_ayar_gosterim_kalan">Verbleibende Zeit</string>
+  <string name="widget_ayar_gosterim_bitis">Endzeit</string>
+  <string name="widget_ayar_gosterim_not">Die Endzeit wird in jeder Größe angezeigt.</string>
+  <string name="widget_ayar_sonraki">Nächstes Gebet anzeigen</string>
+  <string name="widget_ayar_vazgec">Abbrechen</string>
+  <string name="widget_ayar_kaydet">Speichern</string>
+  <string name="kildim_onay_kanal_adi">Bestätigung „Gebetet“</string>
+  <string name="kildim_onay_kanal_aciklama">Eine leise Bestätigung, die einige Sekunden lang erscheint, wenn Sie in einer Benachrichtigung auf „Gebetet“ tippen</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Endet %1$s</string>
+  <string name="widget_giris">Beginnt %1$s</string>
+  <string name="widget_namaz_vakti">Gebetszeit</string>
+  <string name="widget_uygulamayi_acin">App öffnen</string>
+  <string name="widget_siradaki">Als Nächstes: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Derzeit kein Gebet zu markieren</string>
+  <string name="widget_dugme_kildim">Ich habe gebetet</string>
+  <string name="widget_dugme_isaretleniyor">Wird markiert</string>
+  <string name="widget_dugme_kilindi">Gebetet</string>
+  <string name="widget_dugme_vakit_girmedi">Noch nicht begonnen</string>
+  <string name="widget_klasik_uygulamayi_acin">App öffnen</string>
+  <string name="widget_klasik_erisim_veri_yok">Öffnen Sie die App, um die Gebetszeiten zu sehen</string>
+  <string name="widget_klasik_erisim_siradaki">Nächstes Gebet: %1$s, beginnt um %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Dhuhr in</string>
+  <string name="widget_onizleme_klasik_genis">Maghrib in</string>
+  <string name="widget_onizleme_imsak">Fajr</string>
+  <string name="widget_onizleme_gunes">Sonnenaufgang</string>
+  <string name="widget_onizleme_ogle">Dhuhr</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Maghrib</string>
+  <string name="widget_onizleme_yatsi">Isha</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s wurde als gebetet markiert. Möge Allah es annehmen.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s ist bereits als gebetet markiert.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Gerade gibt es keine Gebetszeit zu markieren. Als Nächstes %1$s, Beginn %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Gerade gibt es keine Gebetszeit zu markieren.</string>
+  <string name="kildim_sonuc_veri_yok">Keine Gebetszeiten vorhanden. Öffnen Sie die App einmal.</string>
+  <string name="kildim_sonuc_vakit_degisti">Die Gebetszeit hat gewechselt, daher wurde nichts markiert. Versuchen Sie es erneut.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Die Navigations-App konnte nicht geöffnet werden.</string>
+  <string name="arac_adsiz_cami">Moschee</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Die Gebetszeiten konnten nicht gelesen werden.</string>
+  <string name="asistan_isaretleme_yapilamadi">Das Gebet konnte nicht markiert werden.</string>
+  <string name="asistan_aciklama">Sie können nach den Gebetszeiten fragen, das aktuelle Gebet als gebetet markieren und den Qibla-Bildschirm öffnen.</string>
+</resources>

@@ -15,7 +15,7 @@
 import * as React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Anahtar } from '../../components/common/Anahtar';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { YeniRozet } from '../../components/YeniRozet';
@@ -103,7 +103,7 @@ export const AyarSatiri: React.FC<AyarSatiriProps> = (props) => {
       >
         {ikonCipi}
         {metinBlogu}
-        <FontAwesome5 name="chevron-right" size={14} color={renkler.metinIkincil} style={{ marginLeft: 8 }} />
+        <YonluIkon name="chevron-right" size={14} color={renkler.metinIkincil} style={{ marginLeft: 8 }} />
       </TouchableOpacity>
     );
 

@@ -21,6 +21,8 @@ import { useRenkler } from '../../core/theme';
 import { Logger, LogLevel, LogEntry } from '../../core/utils/Logger';
 import { loglariMaskele } from '../../domain/services/TaniRaporuServisi';
 import { BildirimModali, BildirimTipi } from '../components/common/BildirimModali';
+import { useMetin } from '../hooks/useMetin';
+import { metin, sayili } from '../../core/dil/aktifDil';
 
 /**
  * Bildirim/onay modalı durumu — Alert.alert yerine tema-uyumlu BildirimModali ile gösterilir.
@@ -85,9 +87,11 @@ const LogItem: React.FC<LogItemProps> = ({ log }) => {
   const renkler = useRenkler();
   const [expanded, setExpanded] = useState(false);
 
+  // `toLocale*` Hermes'te ICU'ya bağlıdır (AGENTS.md) → sabit biçim: 14:05:09 • 24.10.2026.
   const date = new Date(log.timestamp);
-  const timeStr = date.toLocaleTimeString('tr-TR');
-  const dateStr = date.toLocaleDateString('tr-TR');
+  const iki = (n: number) => String(n).padStart(2, '0');
+  const timeStr = `${iki(date.getHours())}:${iki(date.getMinutes())}:${iki(date.getSeconds())}`;
+  const dateStr = `${iki(date.getDate())}.${iki(date.getMonth() + 1)}.${date.getFullYear()}`;
 
   const levelColor = getLevelColor(log.level, renkler);
   const iconName = getLevelIcon(log.level);
@@ -148,6 +152,7 @@ const LogItem: React.FC<LogItemProps> = ({ log }) => {
  */
 export const DebugLogsSayfasi: React.FC = () => {
   const renkler = useRenkler();
+  const m = useMetin().genel.loglar;
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [debugEnabled, setDebugEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -181,7 +186,8 @@ export const DebugLogsSayfasi: React.FC = () => {
       setDebugEnabled(enabled);
     } catch (error) {
       Logger.error('DebugLogsSayfasi', 'Loglar yuklenirken hata', error);
-      basitBildirimGoster('hata', 'Bir hata oluştu', 'Loglar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.');
+      const t = metin().genel.loglar;
+      basitBildirimGoster('hata', t.hataBaslik, t.yuklemeHatasi);
     } finally {
       setLoading(false);
     }
@@ -198,19 +204,11 @@ export const DebugLogsSayfasi: React.FC = () => {
     if (!saved) {
       // Storage yazimi basarisiz: UI'yi eski haline getir ve kullaniciya bildir
       setDebugEnabled(!value);
-      basitBildirimGoster(
-        'hata',
-        'Ayar kaydedilemedi',
-        'Debug modu ayarı kaydedilemedi. Depolamada yer açıp tekrar deneyin.'
-      );
+      basitBildirimGoster('hata', m.ayarKaydedilemedi, m.ayarKaydedilemediMesaj);
       return;
     }
     if (value) {
-      basitBildirimGoster(
-        'bilgi',
-        'Debug Modu Aktif',
-        'Debug logları artık kaydediliyor. Uygulama kullanımınız sırasında oluşan olaylar loglanacak.'
-      );
+      basitBildirimGoster('bilgi', m.aktifBaslik, m.aktifMesaj);
     }
   };
 
@@ -219,12 +217,12 @@ export const DebugLogsSayfasi: React.FC = () => {
     setBildirim({
       gorunur: true,
       tip: 'hata',
-      baslik: 'Logları Temizle',
-      mesaj: 'Tüm loglar silinecek. Emin misiniz?',
-      birincilEtiket: 'Temizle',
+      baslik: m.temizleBaslik,
+      mesaj: m.temizleMesaj,
+      birincilEtiket: m.temizle,
       birincilIkon: 'trash-alt',
       tehlikeli: true,
-      kapatEtiketi: 'İptal',
+      kapatEtiketi: metin().genel.ortak.iptal,
       onBirincil: async () => {
         bildirimKapat();
         try {
@@ -232,7 +230,7 @@ export const DebugLogsSayfasi: React.FC = () => {
           await loadLogs();
         } catch (error) {
           Logger.error('DebugLogsSayfasi', 'Log temizleme hatasi', error);
-          basitBildirimGoster('hata', 'Bir hata oluştu', 'Loglar temizlenirken bir hata oluştu. Lütfen tekrar deneyin.');
+          basitBildirimGoster('hata', m.hataBaslik, m.temizlemeHatasi);
         }
       },
     });
@@ -241,7 +239,7 @@ export const DebugLogsSayfasi: React.FC = () => {
   // Loglari paylas
   const handleShareLogs = async () => {
     if (logs.length === 0) {
-      basitBildirimGoster('bilgi', 'Paylaşılacak log yok', 'Paylaşılacak log bulunamadı.');
+      basitBildirimGoster('bilgi', m.paylasilacakYok, m.paylasilacakYokMesaj);
       return;
     }
 
@@ -262,14 +260,14 @@ export const DebugLogsSayfasi: React.FC = () => {
       if (canShare) {
         await Sharing.shareAsync(fileUri, {
           mimeType: 'text/plain',
-          dialogTitle: 'Debug Loglarını Paylaş',
+          dialogTitle: m.paylasDiyalog,
         });
       } else {
-        basitBildirimGoster('bilgi', 'Paylaşım kullanılamıyor', 'Paylaşım bu cihazda desteklenmiyor.');
+        basitBildirimGoster('bilgi', m.paylasimYok, m.paylasimYokMesaj);
       }
     } catch (error) {
       Logger.error('DebugLogsSayfasi', 'Log paylasim hatasi', error);
-      basitBildirimGoster('hata', 'Bir hata oluştu', 'Loglar paylaşılırken bir hata oluştu. Lütfen tekrar deneyin.');
+      basitBildirimGoster('hata', m.hataBaslik, m.paylasimHatasi);
     }
   };
 
@@ -319,12 +317,10 @@ export const DebugLogsSayfasi: React.FC = () => {
         <View className="flex-row items-center justify-between mb-4">
           <View className="flex-1 mr-4">
             <Text className="text-base font-bold mb-1" style={{ color: renkler.metin }}>
-              Debug Modu
+              {m.debugModu}
             </Text>
             <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-              {debugEnabled
-                ? 'Loglar kaydediliyor'
-                : 'Loglar kaydedilmiyor'}
+              {debugEnabled ? m.kaydediliyor : m.kaydedilmiyor}
             </Text>
           </View>
           <Anahtar
@@ -346,7 +342,7 @@ export const DebugLogsSayfasi: React.FC = () => {
           >
             <MaterialIcons name="refresh" size={18} color="#FFFFFF" />
             <Text className="text-sm font-semibold ml-2" style={{ color: '#FFFFFF' }}>
-              Yenile
+              {m.yenile}
             </Text>
           </TouchableOpacity>
 
@@ -362,7 +358,7 @@ export const DebugLogsSayfasi: React.FC = () => {
           >
             <MaterialIcons name="share" size={18} color="#FFFFFF" />
             <Text className="text-sm font-semibold ml-2" style={{ color: '#FFFFFF' }}>
-              Paylaş
+              {m.paylas}
             </Text>
           </TouchableOpacity>
 
@@ -378,7 +374,7 @@ export const DebugLogsSayfasi: React.FC = () => {
           >
             <MaterialIcons name="delete" size={18} color="#FFFFFF" />
             <Text className="text-sm font-semibold ml-2" style={{ color: '#FFFFFF' }}>
-              Temizle
+              {m.temizle}
             </Text>
           </TouchableOpacity>
         </View>
@@ -395,7 +391,7 @@ export const DebugLogsSayfasi: React.FC = () => {
           className="px-4 py-3"
           contentContainerStyle={{ paddingRight: 16, alignItems: 'center' }}
         >
-          <LevelFilterButton level="ALL" label="Tümü" />
+          <LevelFilterButton level="ALL" label={m.tumu} />
           <LevelFilterButton level={LogLevel.DEBUG} label="Debug" />
           <LevelFilterButton level={LogLevel.INFO} label="Info" />
           <LevelFilterButton level={LogLevel.WARN} label="Warn" />
@@ -417,15 +413,13 @@ export const DebugLogsSayfasi: React.FC = () => {
             style={{ marginBottom: 16 }}
           />
           <Text className="text-base font-semibold mb-2" style={{ color: renkler.metin }}>
-            {debugEnabled ? 'Henüz log yok' : 'Debug modu kapalı'}
+            {debugEnabled ? m.henuzYok : m.kapali}
           </Text>
           <Text
             className="text-sm text-center"
             style={{ color: renkler.metinIkincil }}
           >
-            {debugEnabled
-              ? 'Uygulama kullanımınız sırasında oluşan olaylar burada görünecek'
-              : 'Logları görmek için debug modunu açın'}
+            {debugEnabled ? m.henuzYokAciklama : m.kapaliAciklama}
           </Text>
         </View>
       ) : (
@@ -434,7 +428,7 @@ export const DebugLogsSayfasi: React.FC = () => {
           showsVerticalScrollIndicator={true}
         >
           <Text className="text-xs mb-3" style={{ color: renkler.metinIkincil }}>
-            {filteredLogs.length} log bulundu
+            {sayili(m.bulundu, filteredLogs.length)}
           </Text>
           {filteredLogs.map((log, index) => (
             <LogItem key={`${log.timestamp}-${index}`} log={log} />

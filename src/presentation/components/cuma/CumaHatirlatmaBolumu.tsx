@@ -22,7 +22,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
-import { Coordinates, PrayerTimes } from 'adhan';
+import { Coordinates } from 'adhan';
 import { useRenkler } from '../../../core/theme';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { cumaHatirlatmaAyariniGuncelle } from '../../store/cumaHatirlatmaSlice';
@@ -48,7 +48,9 @@ import {
 } from '../../../core/cuma/cumaAyarlari';
 import { adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
 import { cumaAnonsMetni, cumaBildirimMetni, cumaMi, sonrakiCumalar } from '../../../core/utils/cumaYardimcisi';
-import { turkiyeHesapParametreleri } from '../../../core/vakit/hesapParametreleri';
+import { aktifPrayerTimes } from '../../../core/vakit/aktifHesap';
+import { metin, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
 
 /** Taslağın diske yazılmadan önce beklediği süre (stepper → tek yazma). */
@@ -64,8 +66,7 @@ type AyarNavigasyonu = { navigate: (ekran: string) => void };
 const oneriUygulanmaz = (): boolean => false;
 
 /** Yön sabit gerekçesi (plan §3.3) — kartta seçici yerine yazılır. */
-export const CUMA_YON_GEREKCESI =
-    'Hatırlatma öğle vaktinden önce gelir.';
+export const cumaYonGerekcesi = (): string => metin().hatirlatma.cuma.yonGerekce;
 
 /** Bu cumanın (öğlesi henüz geçmemiş ilk cuma) penceresi: [öğle − 180 dk, öğle]. */
 function buCumaninPenceresi(
@@ -76,7 +77,7 @@ function buCumaninPenceresi(
     try {
         const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
         for (const cuma of sonrakiCumalar(simdi, 2)) {
-            const ogle = new PrayerTimes(coordinates, cuma, turkiyeHesapParametreleri()).dhuhr;
+            const ogle = aktifPrayerTimes(coordinates, cuma).dhuhr;
             if (ogle.getTime() <= simdi.getTime()) continue;
             return {
                 baslangic: new Date(ogle.getTime() - CUMA_ONCEDEN_MAX_DK * 60000),
@@ -100,6 +101,9 @@ export interface CumaHatirlatmaBolumuProps {
 
 export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ baslikGizle = false }) => {
     const renkler = useRenkler();
+    const sozluk = useMetin();
+    const mh = sozluk.hatirlatma;
+    const mc = mh.cuma;
     const dispatch = useAppDispatch();
     const kayitli = useAppSelector((s) => s.cumaHatirlatma.ayarlar);
     const koordinat = useAppSelector((s) => s.konum?.koordinatlar);
@@ -158,7 +162,7 @@ export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ basl
         {
             oneriFiltresi: oneriUygulanmaz,
             ekYol: navigation
-                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: mh.ek.ekYol, onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );
@@ -183,12 +187,12 @@ export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ basl
                 kaynak: 'cuma',
                 yuzey: 'cuma',
                 anonsVakitAdi: 'Cuma',
-                baslik: 'Cuma namazı',
-                baslikKucuk: 'cuma namazı',
+                baslik: metin().hatirlatma.cuma.baslik,
+                baslikKucuk: metin().hatirlatma.cuma.baslikKucuk,
                 ikon: 'mosque',
                 // Kimlik öğle namazıdır; "Cuma" salt görünüm (AGENTS.md).
                 vakit: 'ogle',
-                yonSabitGerekcesi: CUMA_YON_GEREKCESI,
+                yonSabitGerekcesi: cumaYonGerekcesi(),
                 adimSayisi: ayarlar.adimlar.length,
                 maksAdim: CUMA_ADIM_KISITLARI.maksAdim,
                 esikSinirlari: { min: CUMA_ONCEDEN_MIN_DK, max: CUMA_ONCEDEN_MAX_DK },
@@ -196,18 +200,20 @@ export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ basl
                 tekrarMinDk: CUMA_TEKRAR_MIN_DK,
                 tekrarMaxDk: CUMA_TEKRAR_MAX_DK,
                 varsayilanTekrarDk: CUMA_VARSAYILAN_TEKRAR_DK,
-                esikBasligi: 'NE KADAR ÖNCE',
-                esikAciklamasi: 'Öğle vaktine',
-                esikErisimAdi: 'Ne kadar önce',
-                esikBirimi: 'dk kala',
+                esikBasligi: metin().hatirlatma.ek.neKadarOnce,
+                esikAciklamasi: metin().hatirlatma.cuma.esikAciklamasi,
+                esikErisimAdi: metin().hatirlatma.cuma.esikErisimAdi,
+                esikBirimi: metin().hatirlatma.ek.dkKala,
                 pencere: pencere ? { baslangic: pencere.baslangic, bitis: pencere.bitis } : undefined,
-                seritGunEtiketi: pencere?.bugun ? 'Bugün' : 'Bu cuma',
+                seritGunEtiketi: pencere?.bugun ? metin().hatirlatma.cuma.bugun : metin().hatirlatma.cuma.buCuma,
                 yetenekler,
                 otomatikAnons: (s) => cumaAnonsMetni(s.esikDk),
                 onizlemeMetni: (adim, ilk) => ({ ...cumaBildirimMetni(adim.kalanDk, ilk), anons: cumaAnonsMetni(adim.kalanDk) }),
-                onizlemeOzeti: (adet) => `Öğle vaktinden önce ${adet} hatırlatma alırsınız`,
+                onizlemeOzeti: (adet) => sayili(metin().hatirlatma.cuma.onizlemeOzeti, adet),
             }),
-        [ayarlar.adimlar.length, pencere, yetenekler]
+        // Dil değişince tanım (başlık, eşik metinleri) yeniden kurulur.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [ayarlar.adimlar.length, pencere, yetenekler, sozluk]
     );
 
     /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
@@ -226,7 +232,7 @@ export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ basl
         <View className="mb-6">
             {!baslikGizle && (
                 <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
-                    CUMA NAMAZI
+                    {mc.bolumBaslik}
                 </Text>
             )}
 
@@ -240,10 +246,10 @@ export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ basl
                     </View>
                     <View className="flex-1">
                         <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                            Cuma hatırlatması
+                            {mc.hatirlatma}
                         </Text>
                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                            Her cuma, öğle vaktinden önce hatırlatalım
+                            {mc.altBaslik}
                         </Text>
                     </View>
                     <Anahtar
@@ -253,7 +259,7 @@ export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ basl
                         }}
                         trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                         thumbColor={ayarlar.aktif ? renkler.birincil : '#f4f3f4'}
-                        accessibilityLabel="Cuma hatırlatması"
+                        accessibilityLabel={mc.hatirlatma}
                     />
                 </View>
 
@@ -269,8 +275,8 @@ export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ basl
                             sesliOnayiVar={genelRiza.sesli}
                             alarmOnayiVar={genelRiza.alarm}
                             sesliOnayMetinleri={{
-                                altBaslik: 'Cuma hatırlatmasında sesli okuma',
-                                kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',
+                                altBaslik: mc.sesliAltBaslik,
+                                kapatmaNotu: mh.adim.sesliKapatmaNotu,
                             }}
                             silinebilirMi={(a) => a.adimlar.length > 1}
                             // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
@@ -282,7 +288,7 @@ export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ basl
                         <View className="flex-row items-center mt-4 gap-2">
                             <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} />
                             <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }} numberOfLines={1}>
-                                Kılınca öğle namazını işaretleyin.
+                                {mc.kilinca}
                             </Text>
                         </View>
                     </View>

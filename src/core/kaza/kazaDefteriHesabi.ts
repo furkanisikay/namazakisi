@@ -589,7 +589,7 @@ export function eskiDurumdanHareketler(ham: unknown, zaman: string, cihaz: strin
       if (!n || typeof n !== 'object') continue;
       const kayit = n as Record<string, unknown>;
       const v = (
-        { Sabah: 'sabah', 'Öğle': 'ogle', 'İkindi': 'ikindi', 'Akşam': 'aksam', 'Yatsı': 'yatsi', Vitir: 'vitir' } as Record<
+        { Sabah: 'sabah', 'Öğle': 'ogle', 'İkindi': 'ikindi', 'Akşam': 'aksam', 'Yatsı': 'yatsi', Vitir: 'vitir' } as Record< // dil-haric: kimlik
           string,
           KazaVakti
         >

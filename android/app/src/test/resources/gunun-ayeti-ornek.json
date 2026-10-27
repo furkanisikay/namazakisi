@@ -1,0 +1,55 @@
+{
+  "v": 1,
+  "dil": "tr",
+  "metin": {
+    "etiket": "GÜNÜN AYETİ",
+    "sigmiyor": "Bugünün ayeti bu boyuta sığmıyor. Okumak için dokunun.",
+    "acin": "Açın",
+    "arapcaKaynagi": "Arapça: Tanzil"
+  },
+  "plan": [
+    {
+      "gun": "2026-10-25",
+      "baslangicMs": 1792913040000,
+      "ref": "8:46",
+      "ar": "وَأَطِيعُواْ ٱللَّهَ وَرَسُولَهُۥ وَلَا تَنَٰزَعُواْ فَتَفۡشَلُواْ وَتَذۡهَبَ رِيحُكُمۡۖ وَٱصۡبِرُوٓاْۚ إِنَّ ٱللَّهَ مَعَ ٱلصَّٰبِرِينَ",
+      "meal": "Allah’a ve Rasûlüne itaat edin; çekişip ayrılığa düşmeyin. Yoksa korkar ve gücünüzü kaybedersiniz. Sabredin! Çünkü Allah sabredenlerle beraberdir.",
+      "kisaKunye": "Enfâl 8:46",
+      "mealKaynagi": "Rowwad Translation Center, QuranEnc 1.0.4",
+      "tamKunye": "Enfâl 8:46 · Rowwad Translation Center, QuranEnc 1.0.4 · Arapça: Tanzil"
+    },
+    {
+      "gun": "2026-10-24",
+      "baslangicMs": 1792826580000,
+      "ref": "94:6",
+      "ar": "إِنَّ مَعَ ٱلۡعُسۡرِ يُسۡرٗا",
+      "meal": "Gerçekten güçlükle beraber bir kolaylık vardır.",
+      "kisaKunye": "İnşirâh 94:6",
+      "mealKaynagi": "Rowwad Translation Center, QuranEnc 1.0.4",
+      "tamKunye": "İnşirâh 94:6 · Rowwad Translation Center, QuranEnc 1.0.4 · Arapça: Tanzil"
+    },
+    {
+      "gun": "2026-10-26",
+      "baslangicMs": 1792999500000,
+      "ref": "16:128",
+      "ar": "إِنَّ ٱللَّهَ مَعَ ٱلَّذِينَ ٱتَّقَواْ وَّٱلَّذِينَ هُم مُّحۡسِنُونَ",
+      "meal": null,
+      "kisaKunye": "Nahl 16:128",
+      "mealKaynagi": null,
+      "tamKunye": "16:128 · Arapça: Tanzil"
+    },
+    {
+      "gun": "2026-10-27",
+      "ref": "eksik başlangıç: atlanır",
+      "ar": "x"
+    }
+  ],
+  "duvar": { "acik": true, "yer": "ikisi", "zemin": "palet", "arapca": false, "paletRenk": "#2E7D32" },
+  "durumlar": [
+    { "ad": "plan başlamadan önce (saat geri): ilk kayıt", "simdiMs": 1792800000000, "gun": "2026-10-24", "sonrakiSinirMs": 1792826580000 },
+    { "ad": "ilk günün imsakı tam an", "simdiMs": 1792826580000, "gun": "2026-10-24", "sonrakiSinirMs": 1792913040000 },
+    { "ad": "ikinci günün imsakından bir dakika önce", "simdiMs": 1792912980000, "gun": "2026-10-24", "sonrakiSinirMs": 1792913040000 },
+    { "ad": "ikinci gün", "simdiMs": 1792913040001, "gun": "2026-10-25", "sonrakiSinirMs": 1792999500000 },
+    { "ad": "plan bitti: son kayıtta kalır, alarm yok", "simdiMs": 1793500000000, "gun": "2026-10-26", "sonrakiSinirMs": null }
+  ]
+}

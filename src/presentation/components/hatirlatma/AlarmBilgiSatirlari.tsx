@@ -7,6 +7,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import type { AlarmNotu } from '../../../core/muhafiz/alarmNotlari';
+import { useMetin } from '../../hooks/useMetin';
 
 export { alarmNotlariniOlustur } from '../../../core/muhafiz/alarmNotlari';
 
@@ -21,15 +22,16 @@ export interface AlarmBilgiSatirlariProps {
 }
 
 /** Eylem düğmesinin görünüşü — metin ve ikon eyleme göre. */
-const EYLEM_DUGMELERI: Record<NonNullable<AlarmNotu['eylem']>, { ikon: string; metin: string; etiket: string }> = {
-    tamEkranIzni: { ikon: 'unlock-alt', metin: 'İzni açın', etiket: 'Tam ekran iznini açın' },
-    ayarlar: { ikon: 'cog', metin: 'Ayarları açın', etiket: 'Alarm iznini Ayarlar’dan açın' },
-    alarmIzni: { ikon: 'clock', metin: 'İzin verin', etiket: 'Alarm iznini verin' },
-    tamAlarm: { ikon: 'stopwatch', metin: 'İzni açın', etiket: 'Tam saatinde alarm iznini açın' },
+const EYLEM_IKONLARI: Record<NonNullable<AlarmNotu['eylem']>, string> = {
+    tamEkranIzni: 'unlock-alt',
+    ayarlar: 'cog',
+    alarmIzni: 'clock',
+    tamAlarm: 'stopwatch',
 };
 
 export const AlarmBilgiSatirlari: React.FC<AlarmBilgiSatirlariProps> = ({ notlar, onIzinAyari, onAlarmIzni, onTamAlarm }) => {
     const renkler = useRenkler();
+    const eylemler = useMetin().hatirlatma.alarmEylem;
     if (notlar.length === 0) return null;
     return (
         <View className="mt-3">
@@ -59,16 +61,16 @@ export const AlarmBilgiSatirlari: React.FC<AlarmBilgiSatirlariProps> = ({ notlar
                                     }
                                     activeOpacity={0.85}
                                     accessibilityRole="button"
-                                    accessibilityLabel={EYLEM_DUGMELERI[not.eylem].etiket}
+                                    accessibilityLabel={eylemler[not.eylem].etiket}
                                 >
                                     <FontAwesome5
-                                        name={EYLEM_DUGMELERI[not.eylem].ikon}
+                                        name={EYLEM_IKONLARI[not.eylem]}
                                         size={12}
                                         color="#FFF"
                                         style={{ marginRight: 8 }}
                                     />
                                     <Text className="text-sm font-bold" style={{ color: '#FFF' }}>
-                                        {EYLEM_DUGMELERI[not.eylem].metin}
+                                        {eylemler[not.eylem].metin}
                                     </Text>
                                 </TouchableOpacity>
                             )}

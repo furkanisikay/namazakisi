@@ -9,6 +9,7 @@
  *
  * Kaynaklar: `docs/superpowers/specs/2026-10-13-seferilik-bilgi-karti-kaynaklar.md`.
  */
+import { sayiYaz } from '../dil/aktifDil';
 import { mesafeHesapla } from '../utils/MesafeHesaplayici';
 import { konumAdiMetni } from '../konum/konumDegisimBildirimi';
 import {
@@ -116,7 +117,7 @@ export function mesafeYuvarla(km: number): number {
 
 /** "1.250" gibi binlik ayraçlı yazım (Intl/ICU'ya bağlı değil — Hermes). */
 export function kmMetni(km: number): string {
-  return String(mesafeYuvarla(km)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return sayiYaz(mesafeYuvarla(km));
 }
 
 /**

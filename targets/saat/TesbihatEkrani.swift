@@ -17,6 +17,9 @@ struct TesbihatEkrani: View {
     @State private var durum = Tesbihat.Durum()
     @State private var tac: Double = 0
     @State private var biriktirici = TacBiriktirici(esik: 1.0)
+    /// Cizim anindaki dil (W5). Zikir adlari ve tehlil o dilin Musluman toplulugunun yaygin
+    /// okunusuyla (ceviri degil; `Tesbihat.Faz.ad(dil:)`, bilinmeyen dil Turkce).
+    private var m: SaatMetinleri { SaatDili.metin }
 
     var body: some View {
         VStack(spacing: 4) {
@@ -24,12 +27,12 @@ struct TesbihatEkrani: View {
                 .contentShape(Rectangle())
                 .onTapGesture { say() }
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel(Tesbihat.kisaMetin(durum))
-                .accessibilityHint("Saymak için dokunun ya da Digital Crown'u çevirin; ters yöne çevirmek geri alır")
+                .accessibilityLabel(Tesbihat.kisaMetin(durum, dil: SaatDili.kod))
+                .accessibilityHint(m.saymaIpucu)
                 .accessibilityAddTraits(.isButton)
                 .accessibilityAction { say() }
             if durum.tamamMi {
-                Button("Yeniden başlayın") { kaydet(Tesbihat.Durum()) }
+                Button(m.yenidenBaslayin) { kaydet(Tesbihat.Durum()) }
                     .tint(SaatGorunum.yesil)
             }
         }
@@ -58,11 +61,11 @@ struct TesbihatEkrani: View {
                 } label: {
                     Image(systemName: "arrow.uturn.backward")
                 }
-                .accessibilityLabel("Son sayımı geri alın")
+                .accessibilityLabel(m.sonSayimiGeriAlin)
                 .disabled(durum.toplam == 0)
             }
         }
-        .navigationTitle("Tesbihat")
+        .navigationTitle(m.tesbihat)
         .containerBackground(TesbihatRenk.ton.opacity(0.22).gradient, for: .tabView)
         .onAppear {
             durum = SaatDeposu.varsayilan.tesbihatOku(simdiMs: SaatDeposu.simdiMs())
@@ -98,12 +101,12 @@ struct TesbihatEkrani: View {
                 }
             }
             .frame(width: durum.tamamMi ? 52 : 92, height: durum.tamamMi ? 52 : 92)
-            Text(durum.tamamMi ? Samimiyet.kabulDuasi : durum.faz.ad)
+            Text(durum.tamamMi ? Samimiyet.kabulDuasi(SaatDili.kod) : durum.faz.ad(dil: SaatDili.kod))
                 .font(.headline)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
             if durum.tamamMi {
-                Text(Tesbihat.tehlilMetni)
+                Text(Tesbihat.tehlilMetni(dil: SaatDili.kod))
                     .font(.caption2)
                     .multilineTextAlignment(.center)
                     .lineLimit(3)

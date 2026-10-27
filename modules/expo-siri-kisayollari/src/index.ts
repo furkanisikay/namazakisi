@@ -32,7 +32,15 @@ interface SiriNativeModule {
     basarisiz(id: string): Promise<void>;
     odakDurumuAl(): Promise<string | null>;
     ekranIstegiAl(): Promise<string | null>;
+    /** Günün ayeti yükü v1 (`docs/ajan/gunun-ayeti.md`) — eski ikilide yok (opsiyonel). */
+    gununAyetiKaydet?(json: string): Promise<void>;
     /** #295 — eski ikilide yok (opsiyonel). */
+    /** Arayüz dili (App Group) — eski ikilide yok (opsiyonel). */
+    arayuzDiliniAyarla?(kod: string): void;
+    /** Vakit adı takımı (App Group) — eski ikilide yok (opsiyonel). */
+    vakitAdlariniAyarla?(json: string | null): void;
+    /** Rakam sistemi (App Group) — eski ikilide yok (opsiyonel). */
+    rakamSisteminiAyarla?(kod: string | null): void;
     canliEtkinlikDestekli?(): boolean;
     canliEtkinlikIzniAcik?(): Promise<boolean>;
     canliEtkinlikEsitle?(json: string | null, secenek?: string | null): Promise<string>;
@@ -51,10 +59,60 @@ const ExpoSiriKisayollari = requireOptionalNativeModule<SiriNativeModule>('ExpoS
 const modul = (): SiriNativeModule | null =>
     Platform.OS === 'ios' && ExpoSiriKisayollari ? ExpoSiriKisayollari : null;
 
+/**
+ * Arayüz dilini App Group'a yazar (iOS widget, saat köprüsü ve Siri metinleri okur).
+ * Modül/fonksiyon yoksa (Android, eski ikili) sessizce atlanır. Asla fırlatmaz.
+ */
+export function arayuzDiliniAyarla(kod: string): void {
+    const m = modul();
+    if (!m || typeof m.arayuzDiliniAyarla !== 'function') return;
+    try {
+        m.arayuzDiliniAyarla(kod);
+    } catch {
+        // Eski ikili: uzantılar Türkçe kalır.
+    }
+}
+
+/**
+ * Kullanıcının seçtiği vakit adı takımını (JSON: `{"adlar":{imsak…yatsi},"buyuk":{…},
+ * "kucuk":{…},"cuma","imsakVakti","gunesDogusu"}`) ya da `null`ı (dil tablosuna dön) App
+ * Group'a yazar; iOS widget, canlı etkinlik, Kontrol Merkezi, AlarmKit ve Siri vakit adını
+ * önce buradan okur. Modül/fonksiyon yoksa sessizce atlanır. Asla fırlatmaz.
+ */
+export function vakitAdlariniAyarla(json: string | null): void {
+    const m = modul();
+    if (!m || typeof m.vakitAdlariniAyarla !== 'function') return;
+    try {
+        m.vakitAdlariniAyarla(json);
+    } catch {
+        // Eski ikili: dil tablosundaki adlar kalır.
+    }
+}
+
+/**
+ * Arayüzün rakam sistemini App Group'a yazar: `'arab'` (Doğu Arap rakamı) ya da `null` (anahtar
+ * silinir, Batı rakamı). Widget, canlı etkinlik ve Siri cevabı yalnız Arapçada uygular
+ * (`VakitKarari.swift > RakamSistemi`). Modül/fonksiyon yoksa sessizce atlanır. Asla fırlatmaz.
+ */
+export function rakamSisteminiAyarla(kod: string | null): void {
+    const m = modul();
+    if (!m || typeof m.rakamSisteminiAyarla !== 'function') return;
+    try {
+        m.rakamSisteminiAyarla(kod);
+    } catch {
+        // Eski ikili: Batı rakamı kalır.
+    }
+}
+
 /** Widget yükü arayüzü (Android `WidgetVeri` ile aynı). iOS'ta Siri'nin okuduğu çizelge. */
 export interface SiriVeriYazici {
     vakitlerKaydet(json: string): Promise<void>;
     kilinanlarKaydet(json: string): Promise<void>;
+    /**
+     * Günün ayeti yükü v1 (Android `WidgetVeri.gununAyetiKaydet` ile aynı ad): App Group'a
+     * yazar, yalnız ayet widget'ını tazeler. Eski ikilide yok → opsiyonel (`?.` ile çağırın).
+     */
+    gununAyetiKaydet?(json: string): Promise<void>;
 }
 
 /** "Kıldım" kuyruğu arayüzü (Android `KildimKuyrugu` ile aynı). */

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- id — Endonezce (beta). Android niteleyicisi values-in (values-id hiç seçilmez); dil_kodu yine "id". Terimler: src/core/dil/sozluk/id. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">id</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Salat berikutnya</string>
+    <string name="tile_aciklama">Salat berikutnya dan waktunya</string>
+    <string name="komplikasyon_adi">Sisa waktu</string>
+    <string name="cikis_saati_komplikasyon_adi">Waktu salat berakhir</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Salat berikutnya</string>
+    <string name="bugun_tile_adi">Hari ini</string>
+    <string name="bugun_tile_aciklama">Lima waktu salat hari ini; tandai yang sudah Anda tunaikan dengan dua ketukan</string>
+    <string name="ilerleme_komplikasyon_adi">Kemajuan harian</string>
+    <string name="dagilim_komplikasyon_adi">Ringkasan hari</string>
+    <string name="kerahat_komplikasyon_adi">Waktu makruh</string>
+    <string name="son_dakikalar_kanal_adi">Menit terakhir</string>
+    <string name="son_dakikalar_kanal_aciklama">Hitung mundur di tampilan jam pada menit-menit terakhir salat yang belum Anda tunaikan</string>
+    <string name="tesbihat_adi">Tasbih</string>
+    <string name="tesbihat_kanal_adi">Tasbih</string>
+    <string name="tesbihat_kanal_aciklama">Ikon senyap di tampilan jam untuk kembali ke tasbih yang belum selesai</string>
+    <string name="kible_adi">Kiblat</string>
+    <string name="kible_komplikasyon_adi">Kiblat</string>
+    <string name="camideyim_kanal_adi">Di masjid</string>
+    <string name="camideyim_kanal_aciklama">Ikon senyap di tampilan jam saat ponsel Anda melaporkan bahwa Anda di masjid</string>
+    <string name="uyandirma_kanal_adi">Pembangun senyap</string>
+    <string name="uyandirma_kanal_aciklama">Membangunkan Anda hanya dengan getaran, untuk Subuh dan Tahajud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Sudah salat</string>
+    <string name="kilindi_isareti">✓ Ditunaikan</string>
+    <string name="kapat">Tutup</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Buka Namaz Akışı di ponsel Anda untuk melihat waktu salat.</string>
+    <string name="yuk_eskidi">Data waktu salat sudah usang. Buka Namaz Akışı di ponsel Anda untuk memperbaruinya.</string>
+    <string name="guncelleme_gerekli">Perbarui Namaz Akışı di jam tangan Anda.</string>
+    <string name="bildirim_izni">Agar tetap menerima pengingat saat ponsel tidak bersama Anda, izinkan notifikasi Namaz Akışı di pengaturan jam tangan.</string>
+    <string name="cami_soru">Apakah Anda di masjid?</string>
+    <string name="cami_evet">Ya</string>
+    <string name="cami_evet_aciklama">Ya, saya di masjid. Mengaktifkan Mode salat</string>
+    <string name="cami_hayir">Tidak</string>
+    <string name="cami_hayir_aciklama">Tidak, saya tidak di masjid</string>
+    <string name="camidesiniz">Anda di masjid</string>
+    <string name="cami_degil">Ini bukan masjid</string>
+    <string name="cami_degil_aciklama">Ini bukan masjid. Tempat ini tidak akan dianggap masjid lagi</string>
+    <string name="tesbihat_ac">Buka penghitung tasbih</string>
+    <string name="kible_ac">Buka kompas kiblat</string>
+    <string name="ses_dene">Coba suara</string>
+    <string name="ses_dene_aciklama">Coba pembacaan suara jam tangan</string>
+    <string name="telefonda_acin">Buka di ponsel</string>
+    <string name="telefonda_ekran_ac">Buka %1$s di ponsel Anda</string>
+    <string name="ekran_kaza">Catatan Qada</string>
+    <string name="ekran_camideyim">Di masjid</string>
+    <string name="ekran_ayarlar">Pengaturan</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">ditunaikan, menyinkronkan</string>
+    <string name="durum_kilindi">ditunaikan</string>
+    <string name="durum_girmedi">belum masuk waktu</string>
+    <string name="durum_simdiki">waktu salat saat ini, ketuk untuk menandai</string>
+    <string name="durum_simdiki_kalan">waktu salat saat ini, %1$s, ketuk untuk menandai</string>
+    <string name="durum_kilinmadi">belum ditunaikan, ketuk untuk menandai</string>
+    <string name="isaretleyin">Tandai sudah ditunaikan</string>
+    <string name="esitleniyor">menyinkronkan</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Konfirmasi Sudah salat</string>
+    <string name="vazgecin">Batal</string>
+    <string name="vazgec">Batal</string>
+    <string name="kerahat_vaktindesiniz">Sekarang waktu makruh.</string>
+    <string name="kilindi_dua">Ditunaikan. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Mode salat aktif, berakhir %1$s. Ketuk untuk menonaktifkan</string>
+    <string name="namaz_modu_ac_aciklama">Aktifkan Mode salat di ponsel Anda</string>
+    <string name="namaz_modu_kapatin">Nonaktifkan Mode salat</string>
+    <string name="namaz_modu_acin">Aktifkan Mode salat</string>
+    <string name="namaz_modu_acik_bitis">Aktif, berakhir %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Mencari arah…</string>
+    <string name="kible_yuk_yok">Buka Namaz Akışı di ponsel Anda untuk menemukan kiblat.</string>
+    <string name="kible_konum_yok">Aktifkan lokasi di ponsel Anda untuk menemukan kiblat. Jika Namaz Akışı belum diperbarui, perbarui terlebih dahulu.</string>
+    <string name="kible_sensor_yok">Jam tangan ini tidak memiliki sensor kompas. Anda dapat melihat arah kiblat di ponsel Anda.</string>
+    <string name="kible_kuzeyden">Kiblat %1$d° (dari utara)</string>
+    <string name="kible_derece">Kiblat %1$d°</string>
+    <string name="kible_telefonda_ac">Buka kiblat di ponsel Anda</string>
+    <string name="kible_erisim">%1$s. Kiblat %2$d° dari utara, %3$s</string>
+    <string name="kible_hizali">Anda menghadap kiblat</string>
+    <string name="kible_kalibrasyon">Untuk kalibrasi, gerakkan pergelangan tangan Anda di udara membentuk angka 8</string>
+    <string name="kible_egim">Pegang jam tangan Anda sejajar dengan tanah</string>
+    <string name="kible_titresim_acik">Panduan getaran aktif. Ketuk untuk menonaktifkan</string>
+    <string name="kible_titresim_kapali">Panduan getaran nonaktif. Ketuk untuk mengaktifkan</string>
+    <string name="kible_harf_kuzey">U</string>
+    <string name="kible_harf_dogu">T</string>
+    <string name="kible_harf_guney">S</string>
+    <string name="kible_harf_bati">B</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbih selesai. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Total %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Hitung</string>
+    <string name="tesbihat_bastan_baslayin">Mulai dari awal</string>
+    <string name="tesbihat_bastan_soru">Mulai dari awal?</string>
+    <string name="tesbihat_sifirlanir">Hitungan diatur ulang.</string>
+    <string name="tesbihat_geri_al">Batalkan</string>
+    <string name="tesbihat_geri_al_aciklama">Batalkan hitungan terakhir</string>
+    <string name="tesbihat_yeniden">Mulai lagi</string>
+    <string name="tesbihat_yeniden_aciklama">Mulai tasbih lagi</string>
+    <string name="tesbihat_suruyor">Tasbih berlangsung: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Sudah salat. Mematikan pembangun</string>
+    <string name="uyandirma_kapat_aciklama">Matikan pembangun</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Buka Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Ketuk untuk waktu salat</string>
+    <string name="tile_telefonda_acin">Buka aplikasi di ponsel Anda</string>
+    <string name="tile_sonra">dalam %1$s</string>
+    <string name="tile_siradaki_aciklama">Salat berikutnya %1$s, masuk pukul %2$s. Buka aplikasi</string>
+    <string name="tile_giris">masuk %1$s</string>
+    <string name="tile_cikis">berakhir %1$s</string>
+    <string name="bugun_bos_satir1">Buka aplikasi</string>
+    <string name="bugun_bos_satir2">di ponsel Anda</string>
+    <string name="bugun_acma_aciklamasi">Hari ini %1$d/%2$d salat ditunaikan. Buka aplikasi</string>
+    <string name="bugun_sayi">Hari ini %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Waktu makruh · ketuk lagi untuk konfirmasi</string>
+    <string name="bugun_onay_tekrar">Ketuk lagi untuk konfirmasi</string>
+    <string name="bugun_tamam">Salat hari ini sudah lengkap</string>
+    <string name="bugun_kilinmadi">%1$s belum ditunaikan</string>
+    <string name="bugun_siradaki">Berikutnya: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Ketuk lagi</string>
+    <string name="bugun_kilindi">%1$s ditunaikan</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s ditunaikan, menyinkronkan</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Menunggu waktu salat; buka Namaz Akışı di ponsel Anda</string>
+    <string name="komplikasyon_bekleniyor">Menunggu waktu</string>
+    <string name="komplikasyon_vakit">Waktu</string>
+    <string name="komplikasyon_cikis">Akhir</string>
+    <string name="komplikasyon_sirada">Berikut</string>
+    <string name="gun_durumu_aciklama">Hari ini %2$d dari %1$d salat ditunaikan</string>
+    <string name="gun_durumu_kilinmamis">%1$s; belum ditunaikan: %2$s</string>
+    <string name="komplikasyon_namaz">Salat</string>
+    <string name="komplikasyon_kerahat">Makruh</string>
+    <string name="kerahat_icinde_aciklama">Sekarang waktu makruh, berakhir %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Waktu makruh berikutnya %1$s</string>
+    <string name="kible_komplikasyon">Kiblat %1$d° dari utara. Buka kompas</string>
+    <string name="kible_komplikasyon_konumlu">Kiblat %1$d° dari utara, %2$s. Buka kompas</string>
+    <string name="kible_komplikasyon_konum_yok">Aktifkan lokasi di ponsel Anda untuk menemukan kiblat</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Pengingat mendesak · Bergetar</string>
+    <string name="muhafiz_kanal_acil">Pengingat mendesak</string>
+    <string name="muhafiz_kanal_titresimli">Pengingat salat · Bergetar</string>
+    <string name="muhafiz_kanal">Pengingat salat</string>
+    <string name="muhafiz_kanal_aciklama">Pengingat salat yang tampil di jam tangan Anda meskipun ponsel tidak bersama Anda</string>
+    <string name="son_dakikalar_cikis">Berakhir: %1$s</string>
+    <string name="son_dakikalar_bitis">Berakhir: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Sisa waktu hingga %1$s berakhir</string>
+    <string name="son_dakikalar_kalan_erisim">Sisa waktu untuk %1$s</string>
+    <string name="cami_namaz_modu_bitis">Mode salat · berakhir %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Dibuka di ponsel Anda</string>
+    <string name="telefona_ulasilamadi">Ponsel Anda tidak dapat dijangkau</string>
+</resources>

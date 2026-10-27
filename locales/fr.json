@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Votre position sert à calculer précisément les heures de prière là où vous êtes. Votre position reste sur votre appareil.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Votre position sert à calculer précisément les heures de prière là où vous êtes et, si « À la mosquée » est activé, à activer le mode prière quand vous entrez dans une mosquée. Votre position reste sur votre appareil.",
+  "NSLocationAlwaysUsageDescription": "Votre position sert à mettre à jour automatiquement les heures de prière quand vous changez de ville et, si « À la mosquée » est activé, à activer le mode prière quand vous entrez dans une mosquée. Votre position reste sur votre appareil.",
+  "NSCameraUsageDescription": "La caméra sert à afficher la direction de la Qibla sur l’image de la caméra et à scanner le code d’association de votre téléviseur. Les images ne sont pas enregistrées et ne quittent jamais votre appareil.",
+  "NSCalendarsUsageDescription": "L’accès au calendrier sert à ajouter les heures de prière à votre calendrier et, si vous l’activez, à vérifier si des événements de votre calendrier chevauchent une heure de prière. Les données de votre calendrier restent sur votre appareil.",
+  "NSCalendarsFullAccessUsageDescription": "L’accès au calendrier sert à ajouter les heures de prière à votre calendrier et, si vous l’activez, à vérifier si des événements de votre calendrier chevauchent une heure de prière. Les données de votre calendrier restent sur votre appareil.",
+  "NSLocalNetworkUsageDescription": "L’application se connecte au téléviseur de votre réseau local pour lui envoyer vos heures de prière et les prières que vous avez marquées. Les données sont chiffrées et circulent uniquement entre les deux appareils.",
+  "NSAlarmKitUsageDescription": "Les étapes de rappel pour lesquelles vous choisissez « Véritable alarme » sont réglées comme des alarmes ; vous les entendez même quand votre téléphone est en silencieux ou qu’une concentration est activée.",
+  "\"Vakti kıldım\"": "J’ai prié",
+  "\"Kıble\"": "Qibla"
+}

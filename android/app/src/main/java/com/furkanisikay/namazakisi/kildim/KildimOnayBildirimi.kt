@@ -7,6 +7,8 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.arayuzDili
+import com.furkanisikay.namazakisi.dildeBaglam
 import com.furkanisikay.namazakisi.cekirdek.BildirimKildimKurallari
 import com.furkanisikay.namazakisi.cekirdek.KildimOnayMetni
 
@@ -19,7 +21,8 @@ import com.furkanisikay.namazakisi.cekirdek.KildimOnayMetni
  * (`MuhafizKanallari.copleriTopla`) `muhafiz_*` olup listede olmayanı siler.
  * `setLocalOnly(true)`: saate köprülenmez (saat kendi onay animasyonunu gösterir; bileğe
  * ikinci bir titreşim gitmesin). Bildirim izni yoksa ya da herhangi bir hata olursa sessizce
- * vazgeçilir — işaretleme zaten kuyruğa yazılmıştır.
+ * vazgeçilir — işaretleme zaten kuyruğa yazılmıştır. Metin ve kanal adı UYGULAMANIN arayüz
+ * dilindedir (`arayuzDili` / `dildeBaglam`).
  */
 object KildimOnayBildirimi {
     private const val TAG = "KildimOnay"
@@ -37,10 +40,11 @@ object KildimOnayBildirimi {
                 @Suppress("DEPRECATION")
                 Notification.Builder(context).setPriority(Notification.PRIORITY_LOW)
             }
+            val dil = context.arayuzDili()
             val bildirim = builder
                 .setSmallIcon(R.drawable.ic_qs_kildim)
-                .setContentTitle(KildimOnayMetni.baslik(v.vakit))
-                .setContentText(KildimOnayMetni.govde(v.vakit))
+                .setContentTitle(KildimOnayMetni.baslik(v.vakit, dil))
+                .setContentText(KildimOnayMetni.govde(v.vakit, dil))
                 .setOnlyAlertOnce(true)
                 .setAutoCancel(true)
                 .setLocalOnly(true)
@@ -54,15 +58,24 @@ object KildimOnayBildirimi {
         }
     }
 
+    /**
+     * Kanal yoksa kurar; varsa yalnız AD/AÇIKLAMA arayüz diline göre güncellenir
+     * (`createNotificationChannel` var olan kanalda ses/önem ayarına dokunmaz; önemi
+     * yalnız düşürebilir, burada aynı değer verilir).
+     */
     private fun kanaliGarantile(context: Context, nm: NotificationManager) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        if (nm.getNotificationChannel(KANAL_ID) != null) return
+        val m = context.dildeBaglam()
+        val ad = m.getString(R.string.kildim_onay_kanal_adi)
+        val aciklama = m.getString(R.string.kildim_onay_kanal_aciklama)
+        val mevcut = nm.getNotificationChannel(KANAL_ID)
+        if (mevcut != null && mevcut.name?.toString() == ad && mevcut.description == aciklama) return
         val kanal = NotificationChannel(
             KANAL_ID,
-            context.getString(R.string.kildim_onay_kanal_adi),
+            ad,
             NotificationManager.IMPORTANCE_LOW,
         ).apply {
-            description = context.getString(R.string.kildim_onay_kanal_aciklama)
+            description = aciklama
             setSound(null, null)
             enableVibration(false)
             setShowBadge(false)

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- id — Endonezce (beta). Gerçek alarm. "Sudah salat" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Alarm salat</string>
+  <string name="alarm_kildim">Sudah salat</string>
+  <string name="alarm_kapat">Matikan</string>
+  <string name="alarm_kanal_aciklamasi">Alarm sungguhan yang berbunyi pada langkah pengingat yang Anda pilih</string>
+</resources>

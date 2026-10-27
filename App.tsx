@@ -4,7 +4,7 @@
  * Tema ve Feedback destekli
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager, DeviceEventEmitter } from 'react-native';
 import { WearSenkronServisi } from './src/domain/services/WearSenkronServisi';
 import { TvSenkronServisi } from './src/domain/services/TvSenkronServisi';
@@ -44,6 +44,12 @@ import { nafileAyarlariniYukle } from './src/presentation/store/nafileSlice';
 import { hatirlatmaRizalariniYukle } from './src/presentation/store/hatirlatmaRizaSlice';
 import { NafileHatirlatmaServisi } from './src/domain/services/NafileHatirlatmaServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
+import { baglamHazir } from './src/domain/services/baglamHazir';
+import { hesapAyariniYukle } from './src/presentation/store/hesapSlice';
+import { diliYukle } from './src/presentation/store/dilSlice';
+import { DilServisi } from './src/domain/services/DilServisi';
+import { YonServisi } from './src/domain/services/YonServisi';
+import { YonDegisimiModali } from './src/presentation/components/dil/YonDegisimiModali';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from './src/core/utils/vakitSayacYardimcisi';
@@ -56,6 +62,7 @@ import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 import { guncellemeKontrolEt, indirmeTamamlandiIsaretle } from './src/presentation/store/guncellemeSlice';
 import { PlayStoreModulu } from './src/domain/services/PlayStoreGuncellemeModulu';
 import { WidgetServisi } from './src/domain/services/WidgetServisi';
+import { GununAyetiServisi } from './src/domain/services/GununAyetiServisi';
 import { CanliSayacPlanlayici } from './src/domain/services/CanliSayacPlanlayici';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from './src/core/constants/UygulamaSabitleri';
@@ -66,6 +73,11 @@ import { GeriAlBandiKatmani } from './src/presentation/components/ortak/GeriAlBa
 import { EsitlemeTetikleyici } from './src/presentation/components/esitleme/EsitlemeTetikleyici';
 import { hatirlatmaAyariniYukle } from './src/presentation/store/taniSlice';
 import { nowBarDegistiUygula } from './src/domain/services/NowBarDegisikligiServisi';
+import { metinKapisiniKur, NastalikYukleyici } from './src/presentation/components/metin/MetinKapisi';
+import { useAktifDil } from './src/presentation/hooks/useMetin';
+
+// Metin kapısı (rakam sistemi + Urduca Nestalik): RN `Text`'in çizim katmanı, ilk çizimden önce.
+metinKapisiniKur();
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
 // Kullanici bildirimden "Kildim" yaptiginda Redux store'u gunceller
@@ -110,6 +122,48 @@ const YuklemeEkrani: React.FC = () => {
       </Text>
     </View>
   );
+};
+
+/** Yeniden başlatma isteği bu sürede sonuçlanmazsa açılış sürer (yükleme ekranında takılı kalma yok). */
+const YON_YENIDEN_BASLATMA_ZAMAN_ASIMI_MS = 4000;
+
+/**
+ * Yazı yönü kapısı — İLK ÇİZİMDEN ÖNCE: dil yüklenince etkin dilin yönü native'e yazılır;
+ * çizilen yön farklıysa (cihaz dili Arapça telefonda Türkçe arayüz, yedekten gelen dil…)
+ * kullanıcı henüz bir şey görmeden sessizce yeniden başlatılır. Deneme sayacı diskte, en
+ * fazla 2 (`YonServisi.acilistaDenetle`); açılış zinciri (AppIcerik) ancak kapı açılınca başlar.
+ */
+const YonKapisi: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [hazir, setHazir] = useState(false);
+  useEffect(() => {
+    let iptal = false;
+    let zamanAsimi: ReturnType<typeof setTimeout> | null = null;
+    const ac = () => {
+      if (!iptal) setHazir(true);
+    };
+    (async () => {
+      try {
+        await DilServisi.hazir();
+        // Yalnız uyuşmazlıkta Logger'ı bekle (tükenen denemenin uyarısı tanı kaydına düşsün;
+        // initialize tekildir). Olağan açılışta ilk çizim log okumasını beklemez (D-07).
+        YonServisi.uygula();
+        if (YonServisi.bekliyorMu()) await Logger.initialize().catch(() => undefined);
+        if ((await YonServisi.acilistaDenetle()) === 'yenidenBaslatiliyor') {
+          zamanAsimi = setTimeout(ac, YON_YENIDEN_BASLATMA_ZAMAN_ASIMI_MS);
+          return;
+        }
+      } catch (e) {
+        Logger.warn('App', 'Yazı yönü denetlenemedi', e);
+      }
+      ac();
+    })();
+    return () => {
+      iptal = true;
+      if (zamanAsimi) clearTimeout(zamanAsimi);
+    };
+  }, []);
+  if (!hazir) return <YuklemeEkrani />;
+  return <>{children}</>;
 };
 
 /**
@@ -178,6 +232,11 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     const kurulumOkumasi = AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI);
     kurulumOkumasi.catch(() => undefined);
 
+    // 0. Hesap ayarı (yöntem/ikindi) ve arayüz dili vakit/metin üreten her şeyden ÖNCE.
+    await baglamHazir();
+    store.dispatch(hesapAyariniYukle());
+    store.dispatch(diliYukle());
+
     // 1. Konum en basta yuklenmeli (muhafiz, vakit sayaci ve iftar sayaci konuma bagimli)
     await store.dispatch(konumAyarlariniYukle()).unwrap();
     const konumState = store.getState().konum;
@@ -190,6 +249,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       });
       // Widget verilerini güncelle (fire-and-forget, kritik değil)
       WidgetServisi.getInstance().vakitleriyaz(konumState.koordinatlar).catch(() => {});
+      // Günün ayeti (widget + duvar kâğıdı): imsak sınırı konuma bağlı → `KonumDegisikligiServisi`
+      // listesinde de var (ikiz liste).
+      GununAyetiServisi.getInstance().yaz(konumState.koordinatlar).catch(() => {});
       // Wear OS saati (issue #269): 8 günlük vakit + kılınmışlık. Konuma bağlı
       // tüketicidir → `KonumDegisikligiServisi` listesinde de var (ikiz liste).
       WearSenkronServisi.getInstance().gonder().catch(() => {});
@@ -307,6 +369,7 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
 const AppIcerik: React.FC = () => {
   const { yukleniyor, koyuMu } = useTema();
   const renkler = useRenkler();
+  const dil = useAktifDil();
 
   useEffect(() => {
     // Logger'i baslat; initialize tamamlanmadan once cagirilan Logger.info/error
@@ -534,12 +597,16 @@ const AppIcerik: React.FC = () => {
       </ErrorBoundary>
       {/* Tanı/sorun bildirme otomatik uyarı modalı — kök seviyede host edilir */}
       <TaniBildirModali />
+      {/* Dil değişimi yazı yönünü değiştirdiyse "şimdi yeniden başlatılsın mı?" sorusu. */}
+      <YonDegisimiModali />
       {/* Kısa bilgi mesajları (iOS). Android sistem toastını kullanır. */}
       <KisaBildirimKatmani />
       {/* "Geri al" bandı: şaşırtabilecek ama geri alınabilir eylemler (`geriAlBandiGoster`). */}
       <GeriAlBandiKatmani />
       {/* Cihazlar arası eşitleme (issue #288): açılış + öne geliş turu; kapalıyken etkisiz. */}
       <EsitlemeTetikleyici />
+      {/* Urduca Nestalik yazı tipi yalnız Urducada yüklenir (metin kapısı kullanır). */}
+      {dil === 'ur' ? <NastalikYukleyici /> : null}
     </View>
   );
 };
@@ -567,7 +634,9 @@ export default function App() {
       <View style={styles.container}>
         <Provider store={store}>
           <ProviderWrapper>
-            <AppIcerik />
+            <YonKapisi>
+              <AppIcerik />
+            </YonKapisi>
           </ProviderWrapper>
         </Provider>
       </View>

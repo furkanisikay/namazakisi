@@ -20,15 +20,19 @@ import { BolumBasligi } from '../ortak/BolumBasligi';
 import { SecenekListesi, type Secenek } from '../ortak/SecenekListesi';
 import { NotSatiri } from '../ortak/NotSatiri';
 import { SayisalSecici } from '../common/SayisalSecici';
+import { bicim, metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
+
+const gs = () => metin().hatirlatma.gunSonu;
 
 const MODLAR: readonly Secenek<GunSonuBildirimModu>[] = [
-    { deger: 'otomatik', etiket: 'İmsaktan önce', ikon: 'sync-alt' },
-    { deger: 'sabit', etiket: 'Sabit saatte', ikon: 'clock' },
+    { deger: 'otomatik', get etiket() { return gs().modOtomatik; }, ikon: 'sync-alt' },
+    { deger: 'sabit', get etiket() { return gs().modSabit; }, ikon: 'clock' },
 ];
 
 const GUNLER: readonly Secenek<BildirimGunSecimi>[] = [
-    { deger: 'ayniGun', etiket: 'Aynı gün' },
-    { deger: 'ertesiGun', etiket: 'Ertesi gün' },
+    { deger: 'ayniGun', get etiket() { return gs().ayniGun; } },
+    { deger: 'ertesiGun', get etiket() { return gs().ertesiGun; } },
 ];
 
 /**
@@ -53,6 +57,7 @@ const saatYazisi = (t: Date | null | undefined) =>
 
 export const GunSonuBolumu: React.FC = () => {
     const renkler = useRenkler();
+    const m = useMetin().hatirlatma.gunSonu;
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const ayarlar = useAppSelector((s) => s.seri.ayarlar);
@@ -71,8 +76,8 @@ export const GunSonuBolumu: React.FC = () => {
                 <AnahtarSatiri
                     ikon="bell"
                     kapaliIkon="bell-slash"
-                    baslik="Günü tamamlamadıysam"
-                    ozet="Gün bitmeden serinizi hatırlatalım"
+                    baslik={m.baslik}
+                    ozet={m.ozet}
                     deger={ayarlar.gunSonuBildirimAktif}
                     onDegistir={async (v) => {
                         await butonTiklandiFeedback();
@@ -84,26 +89,26 @@ export const GunSonuBolumu: React.FC = () => {
 
             {ayarlar.gunSonuBildirimAktif ? (
                 <View style={{ marginTop: 20 }}>
-                    <BolumBasligi metin="Ne zaman" />
+                    <BolumBasligi metin={m.neZaman} />
                     <SecenekListesi
                         secenekler={MODLAR}
                         secili={ayarlar.gunSonuBildirimModu}
                         onSec={(m) => yaz({ gunSonuBildirimModu: m })}
                         gorunum="cip"
-                        erisimEtiketi="Hatırlatma zamanı"
+                        erisimEtiketi={m.zamanEtiketi}
                     />
 
                     {ayarlar.gunSonuBildirimModu === 'otomatik' ? (
                         <View style={{ marginTop: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={{ flex: 1, fontSize: 15, color: renkler.metin }}>İmsaktan kaç dk önce</Text>
+                            <Text style={{ flex: 1, fontSize: 15, color: renkler.metin }}>{m.imsakOncesi}</Text>
                             <SayisalSecici
                                 deger={ayarlar.bildirimImsakOncesiDk || 30}
                                 min={5}
                                 max={120}
                                 adim={5}
-                                birim="dk"
+                                birim={m.dk}
                                 renk={renkler.birincil}
-                                aciklama="İmsaktan önce"
+                                aciklama={m.imsaktanOnce}
                                 onChange={(dk) => yaz({ bildirimImsakOncesiDk: dk })}
                             />
                         </View>
@@ -114,7 +119,7 @@ export const GunSonuBolumu: React.FC = () => {
                                 secili={ayarlar.bildirimGunSecimi}
                                 onSec={(g) => yaz({ bildirimGunSecimi: g })}
                                 gorunum="cip"
-                                erisimEtiketi="Hangi gün"
+                                erisimEtiketi={m.hangiGun}
                             />
                             <View style={{ marginTop: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                                 <SayisalSecici
@@ -122,7 +127,7 @@ export const GunSonuBolumu: React.FC = () => {
                                     min={saatMin}
                                     max={saatMax}
                                     renk={renkler.birincil}
-                                    aciklama="Saat"
+                                    aciklama={m.saat}
                                     onChange={(saat) => yaz({ bildirimSaati: saat })}
                                 />
                                 <Text style={{ fontSize: 22, fontWeight: '700', color: renkler.metin }}>:</Text>
@@ -132,15 +137,15 @@ export const GunSonuBolumu: React.FC = () => {
                                     max={45}
                                     adim={15}
                                     renk={renkler.birincil}
-                                    aciklama="Dakika"
+                                    aciklama={m.dakika}
                                     onChange={(dk) => yaz({ bildirimDakikasi: dk })}
                                 />
                             </View>
                             <NotSatiri
                                 metin={
                                     ayniGun
-                                        ? `Yatsı${saatYazisi(yatsi) ? ` (${saatYazisi(yatsi)})` : ''} vaktinden önce seçilemez.`
-                                        : `İmsak${saatYazisi(imsak) ? ` (${saatYazisi(imsak)})` : ''} vaktinden sonra seçilemez.`
+                                        ? bicim(m.yatsiOnce, { saat: saatYazisi(yatsi) ? ` (${saatYazisi(yatsi)})` : '' })
+                                        : bicim(m.imsakSonra, { saat: saatYazisi(imsak) ? ` (${saatYazisi(imsak)})` : '' })
                                 }
                                 style={{ marginTop: 12 }}
                             />

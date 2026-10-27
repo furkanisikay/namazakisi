@@ -64,15 +64,15 @@ class VakitKomplikasyonServisi : GuvenliKomplikasyonServisi() {
 
     /** Telefon henüz veri göndermediyse ya da çizelge tükendiyse: "—", geri sayım YOK. */
     override fun varsayilan(tur: ComplicationType): ComplicationData? {
-        val aciklama = duz("Vakit bilgisi bekleniyor; telefonda Namaz Akışı'nı açın")
+        val aciklama = duz(getString(R.string.komplikasyon_bekleniyor_aciklama))
         val ikon = KomplikasyonOrtak.monokrom(this, R.drawable.ic_vakit)
         val dokunus = KomplikasyonOrtak.uygulamayiAc(this)
         return when (tur) {
             ComplicationType.SHORT_TEXT ->
                 ShortTextComplicationData.Builder(duz("—"), aciklama)
-                    .setTitle(duz("Vakit")).setMonochromaticImage(ikon).setTapAction(dokunus).build()
+                    .setTitle(duz(getString(R.string.komplikasyon_vakit))).setMonochromaticImage(ikon).setTapAction(dokunus).build()
             ComplicationType.LONG_TEXT ->
-                LongTextComplicationData.Builder(duz("Vakitler bekleniyor"), aciklama)
+                LongTextComplicationData.Builder(duz(getString(R.string.komplikasyon_bekleniyor)), aciklama)
                     .setMonochromaticImage(ikon).setTapAction(dokunus).build()
             ComplicationType.MONOCHROMATIC_IMAGE ->
                 MonochromaticImageComplicationData.Builder(ikon, aciklama).setTapAction(dokunus).build()
@@ -93,7 +93,7 @@ class VakitKomplikasyonServisi : GuvenliKomplikasyonServisi() {
 
     private fun veri(tur: ComplicationType, a: ZamanCizelgesi.Aralik): ComplicationData? {
         val bitis = a.siradaki.ms
-        val g = KalanSure.gosterim(a.onceki?.vakit, a.siradaki.vakit)
+        val g = KalanSure.gosterim(a.onceki?.vakit, a.siradaki.vakit, dil)
         // Sayılan an ana ekran ve tile ile AYNI kuraldan (tek kaynak).
         val sayilan = VakitHesabi.sayilanAn(a.onceki, a.siradaki)
         val aciklama = duz(g.aciklama)

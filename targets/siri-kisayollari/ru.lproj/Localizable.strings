@@ -1,0 +1,58 @@
+// ru
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Rusca terimler: src/core/dil/sozluk/ru (hitap "вы"; Kıldım = «Намаз совершён»).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Следующий намаз";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Сообщает следующий намаз и время его начала.";
+"Şu anki vakti kıldım" = "Текущий намаз совершён";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Отмечает текущий намаз как совершённый. Запись добавится, когда вы откроете приложение.";
+"Onay iste" = "Запрашивать подтверждение";
+"Kıbleyi aç" = "Открыть киблу";
+"Uygulamayı Kıble pusulasıyla açar." = "Открывает приложение с компасом киблы.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Намаз совершён";
+"Kıble" = "Кибла";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Название следующего намаза";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Выдаёт название следующего намаза. Его можно использовать как условие в «Быстрых командах».";
+"Sıradaki vakte kalan dakika" = "Минут до следующего намаза";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Выдаёт, сколько минут осталось до начала времени следующего намаза. Если данных нет, возвращает -1.";
+"Şu anki vakit kılındı mı?" = "Текущий намаз совершён?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Выдаёт «да», если текущий намаз отмечен как совершённый. Если намаза для отметки нет, выдаёт «нет».";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Тишина на время намаза";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Возвращает «истина» в первые минуты после наступления времени намаза. Используется в «Быстрых командах», чтобы включить фокусирование.";
+"Süre (dakika)" = "Длительность (минуты)";
+"Vakit girdikten sonraki ${dakika} dakika" = "${dakika} мин после наступления времени намаза";
+"Namaz sessizliğinin bitişi" = "Конец тишины на время намаза";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Выдаёт время окончания тишины. Если сейчас тишины нет, выдаёт текущее время.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Конец ${dakika} мин после наступления времени намаза";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Напоминания о намазе";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Пока включено это фокусирование, напоминания о намазе приходят без звука и не включают экран.";
+"Hatırlatmaları sessiz ver" = "Присылать напоминания беззвучно";
+"Hatırlatmalar sessiz gelir" = "Напоминания приходят беззвучно";
+"Hatırlatmalar her zamanki gibi" = "Напоминания как обычно";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Отмечает намаз из виджета как совершённый.";
+"Tarih" = "Дата";
+"Vakit" = "Намаз";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Остановить будильник намаза";
+"Namazı kıldım" = "Намаз совершён";
+"Alarm" = "Будильник";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Картинка аята дня";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Выдаёт сегодняшний аят картинкой размером с ваш экран. Её можно использовать с действием установки обоев в «Быстрых командах».";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Откройте приложение один раз, чтобы подготовить аят дня.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Не удалось подготовить картинку. Повторите попытку чуть позже.";

@@ -9,7 +9,7 @@ import Foundation
  * (`targets/saat/test/main.swift`) → UIKit/WatchConnectivity IMPORT ETMEZ.
  *
  * Iki yon:
- *   1. Telefon → saat: `updateApplicationContext([yukAnahtari: <Wear yuku JSON>])`.
+ *   1. Telefon → saat: `updateApplicationContext([yukAnahtari: <Wear yuku JSON>, dilAnahtari: <dil kodu>])`.
  *      "Son durum" kanalidir (kuyruk DEGIL): saat her zaman yalniz en yeni yuku gorur.
  *      Yuk Wear OS saatine giden yukun AYNISIDIR (`src/core/wear/wearYuku.ts`); saat
  *      ikinci bir vakit motoru KURMAZ.
@@ -115,15 +115,29 @@ public enum SaatIletisi {
         return r.firstMatch(in: metin, options: [], range: aralik) != nil
     }
 
-    /// Telefon → saat baglami.
-    public static func baglam(yukJson: String) -> [String: Any] {
-        return [yukAnahtari: yukJson]
+    /// Uygulama baglamindaki arayuz dili anahtari (W5; deger: dil KODU, "tr", "en", "id"...).
+    /// Wear yuku JSON'unun ICINE girmez (ortak fikstur ve Wear sozlesmesi degismez);
+    /// yukun KARDESIDIR. Telefon `SiriDeposu.arayuzDili()`'ni gonderme aninda okur.
+    public static let dilAnahtari = "dil"
+
+    /// Telefon → saat baglami. `dil` verilmezse anahtar yazilmaz (eski davranis).
+    public static func baglam(yukJson: String, dil: String? = nil) -> [String: Any] {
+        var b: [String: Any] = [yukAnahtari: yukJson]
+        if let dil, !dil.isEmpty { b[dilAnahtari] = dil }
+        return b
     }
 
     /// Saat: baglamdan yuk JSON'u (yoksa nil).
     public static func yukJson(_ baglam: [String: Any]) -> String? {
         guard let ham = baglam[yukAnahtari] as? String, !ham.isEmpty else { return nil }
         return ham
+    }
+
+    /// Saat: baglamdaki arayuz dili, desteklenen koda cozulmus. Eski telefon gondermezse nil
+    /// (saat o zaman kayitli dili korur; hic yoksa Turkce — eski telefonun metinleri Turkcedir).
+    public static func dil(_ baglam: [String: Any]) -> String? {
+        guard let ham = baglam[dilAnahtari] as? String, !ham.isEmpty else { return nil }
+        return ArayuzDili.coz(ham)
     }
 
     /// `YYYY-MM-DD` (yalniz rakam ve tire; takvim gecerliligi aranmaz — JS ile ayni katilik).

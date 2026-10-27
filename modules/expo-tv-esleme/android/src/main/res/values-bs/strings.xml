@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bs — Boşnakça (beta). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Smjestite QR kod s ekrana TV-a u okvir</string>
+    <string name="tvesleme_qr_vazgec">Odustanite</string>
+    <string name="tvesleme_qr_vazgec_erisim">Odustanite od skeniranja</string>
+    <string name="tvesleme_qr_yabanci">Ovaj QR kod ne pripada aplikaciji Namaz Akışı za TV. Skenirajte kod s TV-a.</string>
+    <string name="tvesleme_qr_okundu">Kod je skeniran</string>
+</resources>

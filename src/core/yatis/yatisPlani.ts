@@ -31,14 +31,16 @@
  * SAF: `simdi` enjekte edilir; adhan core'da zaten kullanılıyor.
  */
 import { yatisSahipliMi } from '../muhafiz/teslimSahipligi';
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../vakit/aktifHesap';
 import type { VakitAdi } from '../types';
 import { BILDIRIM_SABITLERI } from '../constants/UygulamaSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import type { YatisAyarlari } from './yatisAyarlari';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
 import { alarmPayinaSigdir, ayniAnaDusenleriBirlestir } from '../hatirlatma/ekPlan';
+import { bicim, metin, sayili } from '../dil/aktifDil';
+import { VAKIT_ADLARI, VAKIT_ADLARI_KUCUK } from '../utils/muhafizMetinYardimcisi';
 import { adimAnonsMetni } from '../hatirlatma/anonsYerTutucu';
 
 export type FarzVakit = Exclude<VakitAdi, 'gunes'>;
@@ -79,13 +81,7 @@ const MUHASEBE_ID_ONEKI = 'muhasebe_';
 const YATIS_EKI = '_yatis';
 const MUHASEBE_EKI = '_muhasebe';
 
-const VAKIT_KUCUK: Record<FarzVakit, string> = {
-    imsak: 'sabah',
-    ogle: 'öğle',
-    ikindi: 'ikindi',
-    aksam: 'akşam',
-    yatsi: 'yatsı',
-};
+
 
 export type YatisBildirimTuru = 'yatsi' | 'muhasebeTek' | 'muhasebeCoklu';
 
@@ -165,9 +161,8 @@ export function yatisTetikAni(gun: Date, ayarlar: Pick<YatisAyarlari, 'saat' | '
 /** Namaz günü `gun`ün beş vaktinin pencereleri (yatsı ertesi imsakta biter). */
 export function namazGunuVakitleri(koordinat: { lat: number; lng: number }, gun: Date): Record<FarzVakit, VakitPenceresi> {
     const konum = new Coordinates(koordinat.lat, koordinat.lng);
-    const params = turkiyeHesapParametreleri();
-    const b = new PrayerTimes(konum, gunKaydir(gun, 0), params);
-    const y = new PrayerTimes(konum, gunKaydir(gun, 1), params);
+    const b = aktifPrayerTimes(konum, gunKaydir(gun, 0));
+    const y = aktifPrayerTimes(konum, gunKaydir(gun, 1));
     return {
         imsak: { giris: b.fajr, cikis: b.sunrise },
         ogle: { giris: b.dhuhr, cikis: b.asr },
@@ -215,7 +210,7 @@ export function yatsiOncesiTetikBilgisi(
     }
 }
 
-const adListesi = (vakitler: readonly FarzVakit[]): string => vakitler.map((v) => VAKIT_KUCUK[v]).join(', ');
+const adListesi = (vakitler: readonly FarzVakit[]): string => vakitler.map((v) => VAKIT_ADLARI_KUCUK[v]).join(', ');
 
 /**
  * Bir namaz gününün bildirim içeriği (ya da `null` = bildirim yok).
@@ -237,7 +232,8 @@ export function yatisIcerigiOlustur(
     const girmis = FARZ_VAKITLER.filter((v) => vakitler[v].giris.getTime() <= tetikMs);
     const eksikler = girmis.filter((v) => !kilindi.has(v));
     const cikmisMi = (v: FarzVakit) => vakitler[v].cikis.getTime() <= tetikMs;
-    const ozet = (liste: readonly FarzVakit[]) => `Bugün ${kilinanSayi}/5 · ${adListesi(liste)} işaretlenmemiş`;
+    const m = metin().bildirim.yatis;
+    const ozet = (liste: readonly FarzVakit[]) => bicim(m.ozet, { kilinan: kilinanSayi, liste: adListesi(liste) });
 
     // 1. Yatsı hatırlatması (ibadete çağrı: "sen" + emir kipi).
     if (ayarlar.yatsiHatirlatmasi && eksikler.includes('yatsi') && !cikmisMi('yatsi')) {
@@ -248,10 +244,10 @@ export function yatisIcerigiOlustur(
             kimlik: vakitKimligi(gun, 'yatsi', YATIS_EKI),
             kategori: BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
             // Önden okunur (issue #287): vakit adı başta, ikon sonda.
-            baslik: 'Yatsı · yatmadan önce kıl 🌙',
-            govde: `Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.${satir}`,
+            baslik: bicim(m.yatsiBaslik, { ad: VAKIT_ADLARI.yatsi }),
+            govde: `${bicim(m.yatsiGovde, { ad: VAKIT_ADLARI.yatsi })}${satir}`,
             data: { tip: 'yatis', tarih: gun, vakit: 'yatsi', kazayaEklenebilir: [] },
-            anons: 'Yatmadan önce yatsıyı kıl.',
+            anons: metin().anons.otomatik.yatsi,
         };
     }
 
@@ -271,12 +267,12 @@ export function yatisIcerigiOlustur(
             kategori: kaza ? MUHASEBE_KATEGORILERI.TEK : BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
             baslik: ozet(eksikler),
             govde: otoSatiri
-                ? `Kıldıysanız işaretleyin. ${otoSatiri}`
+                ? bicim(m.tekOto, { oto: otoSatiri })
                 : kaza
-                  ? 'Kıldıysanız işaretleyin; kılamadıysanız kaza defterinize ekleyin.'
-                  : 'Kıldıysanız işaretleyin. Vakit hâlâ sürüyor.',
+                  ? m.tekKaza
+                  : m.tekSuruyor,
             data: { tip: 'muhasebe', tarih: gun, vakit: v, kazayaEklenebilir: kaza ? [v] : [] },
-            anons: `Bugün ${VAKIT_KUCUK[v]} vakti işaretlenmemiş görünüyor.`,
+            anons: bicim(metin().anons.otomatik.muhasebeTek, { vakit: VAKIT_ADLARI_KUCUK[v] }),
         };
     }
 
@@ -285,11 +281,9 @@ export function yatisIcerigiOlustur(
         kimlik: `${MUHASEBE_ID_ONEKI}${gun}`,
         kategori: MUHASEBE_KATEGORILERI.COKLU,
         baslik: ozet(eksikler),
-        govde: otoSatiri
-            ? `Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin. ${otoSatiri}`
-            : 'Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.',
+        govde: otoSatiri ? bicim(m.cokluOto, { oto: otoSatiri }) : m.coklu,
         data: { tip: 'muhasebe', tarih: gun, kazayaEklenebilir: eksikler.filter(cikmisMi) },
-        anons: `Bugün ${eksikler.length} vakit işaretlenmemiş görünüyor.`,
+        anons: sayili(metin().anons.otomatik.muhasebeCoklu, eksikler.length),
     };
 }
 
@@ -332,9 +326,9 @@ export function otomatikKazaSatiri(
 ): string | null {
     if (!oto || gun < oto.baslangic) return null;
     if (kilinanSayi === 0 && oto.kayitsizSor) {
-        return "İşaretlemezseniz bu gün Kaza Defteri'nde size sorulacak.";
+        return metin().bildirim.yatis.otoSor;
     }
-    return 'İşaretlemezseniz namaz günü bitince kazaya eklenecek.';
+    return metin().bildirim.yatis.otoEkle;
 }
 
 export interface YatisPlanGirdisi {
@@ -393,8 +387,8 @@ type YatisTetigi = { sira: number; uyari: UyariPlani; zaman: Date };
  * içeriyorsa otomatik cümle okunur; "Yatmana 0 dakika kaldı" demektense.
  */
 export function yatisAdimAnonsu(metin: string | undefined, sureDk: number, otomatik: string): string {
-    if (sureDk <= 0 && typeof metin === 'string' && metin.includes('{süre}')) return otomatik;
-    return adimAnonsMetni(metin, { vakit: 'Yatsı', sureDk }, () => otomatik);
+    if (sureDk <= 0 && typeof metin === 'string' && metin.includes('{süre}')) return otomatik; // dil-haric: yer tutucu jetonu
+    return adimAnonsMetni(metin, { vakit: VAKIT_ADLARI.yatsi, sureDk }, () => otomatik);
 }
 
 export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {

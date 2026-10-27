@@ -11,7 +11,7 @@ import { useHareketAzalt } from '../../hooks/useHareketAzalt';
 import { DurumSatiri } from '../../components/ortak/DurumSatiri';
 import { Depolama } from '../../../data/local/Depolama';
 import { useAppSelector } from '../../store/hooks';
-import { konumMetniHesapla } from '../../../core/ayarlar/konumMetni';
+import { useMetin } from '../../hooks/useMetin';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { PusulaGorunumu } from './PusulaGorunumu';
 import { KameraGorunumu } from './KameraGorunumu';
@@ -23,21 +23,23 @@ type Mod = 'pusula' | 'kamera';
 /**
  * İki mod, farkı TEK cümle. Etiketler ekranda görünenle birebir (Maestro/simülatör
  * betikleri "Kıble" sekmesine metinle gider; varsayılan mod Pusula — emülatörde kamera yok).
+ * Metinler sözlükten (`kible.sekme`).
  */
-const SEKMELER: Array<{ key: Mod; label: string; a11yLabel: string; aciklama: string }> = [
-  {
-    key: 'pusula',
-    label: 'Pusula',
-    a11yLabel: 'Pusula modu',
-    aciklama: 'Kâbe işareti üstteki çentiğe gelince kıble yönündesiniz.',
-  },
-  {
-    key: 'kamera',
-    label: 'Kamera',
-    a11yLabel: 'Kamera modu',
-    aciklama: 'Telefonu dik tutun; Kâbe işareti kıble yönünde belirir.',
-  },
-];
+const MODLAR: readonly Mod[] = ['pusula', 'kamera'];
+
+/**
+ * Ekranda gösterilecek gerçek yer adı; yoksa `null` (yer tutucu metinler — "Konum seçilmedi"
+ * vb. — gösterilmez). Yer tutucuya dizeyle bakmak dil değişince kırılırdı → kayıttan karar.
+ */
+function gercekYerAdi(k: { konumModu: 'oto' | 'manuel'; gpsAdres: { ilce: string; il: string } | null; seciliIlceAdi: string; seciliIlAdi: string }): string | null {
+  if (k.konumModu === 'oto') {
+    if (!k.gpsAdres) return null;
+    const { ilce, il } = k.gpsAdres;
+    return ilce && il ? `${ilce}, ${il}` : ilce || il || null;
+  }
+  if (k.seciliIlceAdi && k.seciliIlAdi) return `${k.seciliIlceAdi}, ${k.seciliIlAdi}`;
+  return k.seciliIlAdi || null;
+}
 
 /**
  * Kıble sekmesi. Yön tek kaynaktan (`useKible`) gelir; iki mod aynı aboneliği paylaşır,
@@ -52,25 +54,21 @@ export const KibleSayfasi = () => {
   const odakta = useIsFocused();
   const hareketAzalt = useHareketAzalt();
   const kible = useKible(odakta);
+  const m = useMetin().kible;
   const konumKaydi = useAppSelector((s) => s.konum);
-  // Yalnız gerçek bir yer adı (yer tutucu metinler — "Konum seçilmedi" vb. — gösterilmez).
-  const yerAdi = (() => {
-    if (!konumKaydi) return null;
-    const ad = konumMetniHesapla({
-      konumModu: konumKaydi.konumModu,
-      gpsAdres: konumKaydi.gpsAdres,
-      seciliIlceAdi: konumKaydi.seciliIlceAdi,
-      seciliIlAdi: konumKaydi.seciliIlAdi,
-    });
-    return ['Konum seçilmedi', 'Konum takip ediliyor', 'GPS konumu alındı'].includes(ad) ? null : ad;
-  })();
+  const yerAdi = konumKaydi ? gercekYerAdi(konumKaydi) : null;
+  const sekmeler = MODLAR.map((key) =>
+    key === 'pusula'
+      ? { key, label: m.sekme.pusula, a11yLabel: m.sekme.pusulaErisim, aciklama: m.sekme.pusulaAciklama }
+      : { key, label: m.sekme.kamera, a11yLabel: m.sekme.kameraErisim, aciklama: m.sekme.kameraAciklama },
+  );
   const pusulaYok = kible.pusulaVar === false;
   const kalibrasyonNedeniHesapla = kalibrasyonNedeni({
     dogruluk: kible.pusulaDogrulugu,
     alanBozuk: kible.teshis?.alanBozuk ?? false,
     tutarsiz: kible.teshis?.tutarsiz ?? false,
   });
-  const aktifSekme = SEKMELER.find((t) => t.key === mod) ?? SEKMELER[0];
+  const aktifSekme = sekmeler.find((t) => t.key === mod) ?? sekmeler[0];
   useKibleGeriBildirimi(kible.ozet, odakta && kible.izinVerildi);
 
   // Son seçilen görünüm hatırlanır (yol haritası 3.4: kamera birincil yol). İlk açılış
@@ -106,7 +104,7 @@ export const KibleSayfasi = () => {
   } else if (kible.yukleniyor) {
     govde = (
       <View style={styles.orta}>
-        <Text style={[styles.bilgiMetni, { color: renkler.metinIkincil }]}>Pusula başlatılıyor…</Text>
+        <Text style={[styles.bilgiMetni, { color: renkler.metinIkincil }]}>{m.sayfa.baslatiliyor}</Text>
       </View>
     );
   } else if (kible.hata) {
@@ -121,7 +119,7 @@ export const KibleSayfasi = () => {
             style={{ marginTop: 16, alignSelf: 'stretch' }}
             durum={{
               tip: 'uyari',
-              metin: 'Konum izni kapalı; yönü bulmak için konumunuz gerekiyor.',
+              metin: m.sayfa.izinKapali,
               eylem: kible.izinTekrarSorulabilir ? 'konumIzni' : 'uygulamaAyarlari',
             }}
             onSonra={() => void kible.izinIste()}
@@ -163,13 +161,13 @@ export const KibleSayfasi = () => {
     <SafeAreaView style={[styles.container, { backgroundColor: renkler.arkaplan }]} edges={['top', 'left', 'right']}>
       <View style={[styles.header, { borderBottomColor: renkler.sinir }]}>
         <Text style={[styles.title, { color: renkler.metin }]} accessibilityRole="header">
-          Kıble
+          {m.baslik}
         </Text>
       </View>
 
       <View style={styles.tabWrapper}>
         <View style={[styles.tabContainer, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
-          {SEKMELER.map((tab) => (
+          {sekmeler.map((tab) => (
             <TouchableOpacity
               key={tab.key}
               style={[styles.tabButton, mod === tab.key && { backgroundColor: renkler.birincil }]}

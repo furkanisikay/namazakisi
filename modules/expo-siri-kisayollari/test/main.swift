@@ -8,6 +8,7 @@
 //     modules/expo-siri-kisayollari/ios/SiriDeposu.swift \
 //     modules/expo-siri-kisayollari/ios/WidgetKarari.swift \
 //     modules/expo-siri-kisayollari/ios/SessizlikKarari.swift \
+//     modules/expo-siri-kisayollari/ios/OtomasyonKarari.swift \
 //     modules/expo-siri-kisayollari/test/main.swift
 //   /tmp/siri-test android/app/src/test/resources/widget-ornek.json \
 //     modules/expo-siri-kisayollari/test/siri-ornek.json \
@@ -413,6 +414,277 @@ if let ogle = widget.vakitler.first(where: { $0.vakit == "ogle" }) {
 } else {
     hatalar.append("widget fiksturunde ogle yok (otomasyon)")
 }
+
+// MARK: - 9) Ingilizce arayuz dili (W5) — Turkce beklentiler yukarida fiksturle, burada elle
+
+esitMi(ArayuzDili.coz(nil), "tr", "dil: yoksa Turkce")
+esitMi(ArayuzDili.coz(""), "tr", "dil: bos Turkce")
+esitMi(ArayuzDili.coz("en"), "en", "dil: en")
+esitMi(ArayuzDili.coz("en-US"), "en", "dil: en-US → en")
+esitMi(ArayuzDili.coz("en_GB"), "en", "dil: en_GB → en")
+esitMi(ArayuzDili.coz("xx"), "tr", "dil: desteklenmeyen → Turkce")
+esitMi(VakitKarari.gorunenAd("ogle"), "Öğle", "varsayilan dil Turkce")
+esitMi(VakitKarari.gorunenAd("sabah", dil: "en"), "Fajr", "en: sabah → Fajr")
+esitMi(VakitKarari.gorunenAd("gunes", dil: "en"), "", "en: gunes namaz degil")
+esitMi(VakitMetinleri.en.vakitAdi("gunes"), "Sunrise", "en: gunes gorunen adi")
+esitMi(VakitMetinleri.tr.vakitAdi("gunes"), "Güneş", "tr: gunes gorunen adi")
+esitMi(VakitMetinleri.dil("en-GB"), VakitMetinleri.en, "metinler: en-GB → en")
+// Iki dilde ayni yer tutucular: eksik/fazla `{…}` cevirinin kaymasi demektir.
+do {
+    func yerTutucular(_ m: VakitMetinleri) -> [String] {
+        let alanlar = [m.girisBugun, m.girisYarin, m.suAnVakti, m.suAnVaktiCikis, m.siradakiNamaz, m.isaretlendi,
+                       m.zatenKilindi, m.vakitYokSiradaki, m.onay, m.kontrolKildim, m.kontrolKilindi]
+        return alanlar.map { a in
+            ["{ad}", "{saat}", "{giris}", "{dua}"].filter { a.contains($0) }.joined()
+        }
+    }
+    esitMi(yerTutucular(VakitMetinleri.en), yerTutucular(VakitMetinleri.tr), "en/tr yer tutuculari ayni")
+    esitMi(Set(VakitMetinleri.en.adlar.keys), Set(VakitMetinleri.tr.adlar.keys), "en/tr vakit kodlari ayni")
+}
+
+do {
+    func durumBul(_ ad: String) -> SiriDurum? { siri.durumlar.first { $0.ad == ad } }
+    func ingilizce(_ ad: String) -> (siradaki: String, kildim: String, onay: String?)? {
+        guard let d = durumBul(ad) else {
+            hatalar.append("siri-ornek.json'da durum yok: \(ad)")
+            return nil
+        }
+        let karar = VakitKarari.kildimKarari(
+            vakitler: siri.vakitler, kilinanlar: d.kilinanlar, bekleyenler: d.bekleyenler, simdiMs: d.simdiMs, dil: "en"
+        )
+        var onay: String? = nil
+        if case let .aday(_, _, vakitAdi) = karar { onay = VakitKarari.onayMetni(vakitAdi, dil: "en") }
+        let durum = VakitKarari.aktifVakitBul(siri.vakitler, simdiMs: d.simdiMs)
+        return (
+            VakitKarari.siradakiNamazMetni(
+                durum: durum, kilinanlar: d.kilinanlar, bekleyenler: d.bekleyenler, bugun: d.bugun, saat: saat, dil: "en"
+            ),
+            VakitKarari.kildimMetni(karar, bugun: d.bugun, saat: saat, dil: "en"),
+            onay
+        )
+    }
+    if let e = ingilizce("ogle surerken kilinmamis") {
+        esitMi(e.siradaki, "It's Dhuhr time now. The next prayer is Asr at 17:11.", "en siradaki: ogle")
+        esitMi(e.kildim, "Dhuhr is marked as prayed. May Allah accept it.", "en kildim: aday")
+        esitMi(e.onay, "Mark Dhuhr as prayed?", "en onay")
+    }
+    if let e = ingilizce("ogle kayitta kilinmis") {
+        esitMi(e.siradaki, "The next prayer is Asr at 17:11.", "en siradaki: kilinmis")
+        esitMi(e.kildim, "Dhuhr is already marked as prayed.", "en kildim: zaten")
+        esitMi(e.onay, nil, "en onay yok")
+    }
+    if let e = ingilizce("yatsi aksam: sabah yarin") {
+        esitMi(e.siradaki, "It's Isha time now. The next prayer is Fajr tomorrow at 03:24.", "en siradaki: yarin")
+    }
+    if let e = ingilizce("sabah: cikis gunes, siradaki ogle") {
+        esitMi(e.siradaki, "It's Fajr time now; it ends at 05:25. The next prayer is Dhuhr at 13:11.", "en siradaki: cikis ayri")
+    }
+    if let e = ingilizce("gunes-ogle arasi") {
+        esitMi(e.kildim, "There is no prayer to mark right now. Next is Dhuhr at 13:11.", "en kildim: vakit yok")
+    }
+    if let e = ingilizce("veri tukendi") {
+        esitMi(e.siradaki, "Prayer times are out of date. Open the app once to update them.", "en veri eski")
+        esitMi(e.kildim, "There is no prayer to mark right now.", "en kildim: siradaki yok")
+    }
+}
+
+if let ogle = widget.vakitler.first(where: { $0.vakit == "ogle" }) {
+    let dokunus = ogle.ms + 60_000
+    esitMi(
+        WidgetKarari.kontrolDurumu(vakitler: widget.vakitler, kilinanlar: [:], bekleyenler: [], simdiMs: dokunus, dil: "en"),
+        WidgetKontrolDurumu(tur: .kilinabilir, baslik: "Dhuhr · I've prayed", tarih: ogle.tarih, vakit: "ogle"),
+        "en kontrol: kilinabilir (kayit kodu dilden bagimsiz)"
+    )
+    esitMi(
+        WidgetKarari.kontrolDurumu(vakitler: widget.vakitler, kilinanlar: [ogle.tarih: ["ogle"]], bekleyenler: [], simdiMs: dokunus, dil: "en").baslik,
+        "Dhuhr prayed",
+        "en kontrol: kilindi"
+    )
+    esitMi(WidgetKarari.kontrolDurumu(vakitler: nil, kilinanlar: [:], bekleyenler: [], simdiMs: dokunus, dil: "en").baslik, "Open the app", "en kontrol: veri yok")
+    esitMi(WidgetKarari.kontrolDurumu(vakitler: nil, kilinanlar: [:], bekleyenler: [], simdiMs: dokunus).baslik, "Uygulamayı açın", "tr kontrol: veri yok")
+    let s1 = OtomasyonKarari.siradakiVakit(widget.vakitler, simdiMs: ogle.ms - 90_000, dil: "en")
+    esitMi(s1?.ad ?? "-", "Dhuhr", "en otomasyon: siradaki vakit adi")
+    esitMi(s1?.kod ?? "-", "ogle", "en otomasyon: kod dilden bagimsiz")
+}
+
+// MARK: - 10) Gunun ayeti (#380 iOS) — yuk v1 cozumu + "su anki kayit" + zaman cizelgesi
+
+// Sozlesme ornegi (`docs/ajan/gunun-ayeti.md`), uc gunluk plan; `duvar` iOS'ta yok sayilir.
+let ayetHam = """
+{"v":1,"dil":"tr",
+ "metin":{"etiket":"GÜNÜN AYETİ","sigmiyor":"Bugünün ayeti bu boyuta sığmıyor. Okumak için dokunun.","acin":"Açın","arapcaKaynagi":"Arapça: Tanzil"},
+ "plan":[
+  {"gun":"2026-10-24","baslangicMs":1000,"ref":"94:6","ar":"إِنَّ مَعَ ٱلۡعُسۡرِ يُسۡرٗا","meal":"Gerçekten güçlükle beraber bir kolaylık vardır.","kisaKunye":"İnşirâh 94:6","mealKaynagi":"Rowwad Translation Center, QuranEnc 1.0.4"},
+  {"gun":"2026-10-26","baslangicMs":3000,"ref":"2:286","ar":"ا","meal":null,"kisaKunye":"Bakara 2:286","mealKaynagi":null},
+  {"gun":"2026-10-25","baslangicMs":2000,"ref":"13:28","ar":"ب","meal":"Kalpler ancak Allah'ı anmakla huzur bulur.","kisaKunye":"Ra'd 13:28","mealKaynagi":"Rowwad Translation Center, QuranEnc 1.0.4"}
+ ],
+ "duvar":{"acik":false,"yer":"kilit","zemin":"gece","arapca":false,"paletRenk":"#2E7D32"}}
+"""
+if let ayet = GununAyetiKarari.coz(ayetHam) {
+    let refler: ([GununAyetiGirdisi]) -> [String] = { $0.map { "\($0.ms)=\($0.kayit.ref)" } }
+    esitMi(ayet.metin.etiket, "GÜNÜN AYETİ", "ayet: metin cozulur")
+    esitMi(ayet.plan[1].meal, nil, "ayet: meal null olabilir")
+    esitMi(GununAyetiKarari.gecerliKayit(ayet.plan, simdiMs: 1000)?.ref, "94:6", "ayet: baslangic aninda o kayit (<=)")
+    esitMi(GununAyetiKarari.gecerliKayit(ayet.plan, simdiMs: 2500)?.ref, "13:28", "ayet: sirasiz planda baslamis SON kayit")
+    esitMi(GununAyetiKarari.gecerliKayit(ayet.plan, simdiMs: 99_999)?.ref, "2:286", "ayet: plan bitince son kayit kalir")
+    esitMi(GununAyetiKarari.gecerliKayit(ayet.plan, simdiMs: 500)?.ref, "94:6", "ayet: hicbiri baslamadiysa ilk kayit")
+    esitMi(GununAyetiKarari.gecerliKayit([], simdiMs: 500)?.ref, nil, "ayet: bos plan → nil")
+    esitMi(refler(GununAyetiKarari.girdiler(ayet.plan, simdiMs: 1500)), ["1500=94:6", "2000=13:28", "3000=2:286"], "ayet: simdiki + gelecek girdiler")
+    esitMi(refler(GununAyetiKarari.girdiler(ayet.plan, simdiMs: 99_999)), ["99999=2:286"], "ayet: plan bitti → tek girdi")
+    esitMi(refler(GununAyetiKarari.girdiler(ayet.plan, simdiMs: 500)), ["500=94:6", "2000=13:28", "3000=2:286"], "ayet: erken → ilk kayit tekrarlanmaz")
+    esitMi(
+        GununAyetiKarari.kunyeSatiri(ayet.plan[0], metin: ayet.metin, arapcaVar: false),
+        "İnşirâh 94:6 · Rowwad Translation Center, QuranEnc 1.0.4", "ayet: kunye (meal kaynagi zorunlu)"
+    )
+    esitMi(
+        GununAyetiKarari.kunyeSatiri(ayet.plan[1], metin: ayet.metin, arapcaVar: true),
+        "Bakara 2:286 · Arapça: Tanzil", "ayet: mealsiz kunye + Arapca kaynagi"
+    )
+} else {
+    hatalar.append("ayet: sozlesme ornegi cozulemedi")
+}
+esitMi(GununAyetiKarari.coz(ayetHam.replacingOccurrences(of: "\"v\":1", with: "\"v\":2")) == nil, true, "ayet: baska surum okunmaz")
+esitMi(GununAyetiKarari.coz("{bozuk") == nil, true, "ayet: bozuk JSON → nil")
+esitMi(GununAyetiKarari.coz(nil) == nil, true, "ayet: yok → nil")
+esitMi(depo.gununAyeti() == nil, true, "ayet depo: yazilmadan nil")
+depo.gununAyetiYaz(ayetHam)
+esitMi(depo.gununAyetiJson(), ayetHam, "ayet depo: ham yuk birebir saklanir")
+esitMi(depo.gununAyeti()?.plan.count, 3, "ayet depo: cozulmus yuk")
+
+// MARK: - 11) Native dil tablolari (W4) — on dil, Turkceyle ayni alan + yer tutucu
+
+/// Her `String` alanin (ve `[String: String]` alaninin her anahtarinin) `{...}` kumesi.
+func yerTutucuImzasi(_ deger: Any) -> [String: String] {
+    var sonuc: [String: String] = [:]
+    func kume(_ s: String) -> String {
+        var bulunan = Set<String>()
+        var kalan = Substring(s)
+        while let a = kalan.firstIndex(of: "{"), let k = kalan[a...].firstIndex(of: "}") {
+            bulunan.insert(String(kalan[a...k]))
+            kalan = kalan[kalan.index(after: k)...]
+        }
+        return bulunan.sorted().joined()
+    }
+    for c in Mirror(reflecting: deger).children {
+        guard let ad = c.label, ad != "dil" else { continue }
+        if let s = c.value as? String {
+            sonuc[ad] = kume(s) + (s.isEmpty ? "<BOS>" : "")
+        } else if let h = c.value as? [String: String] {
+            for (k, v) in h { sonuc["\(ad).\(k)"] = kume(v) + (v.isEmpty ? "<BOS>" : "") }
+        }
+    }
+    return sonuc
+}
+
+esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur"], "dil: tablo sirasi")
+esitMi(ArayuzDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")
+esitMi(ArayuzDili.coz("de-DE"), "de", "dil: de-DE → de")
+esitMi(ArayuzDili.coz("ms_MY"), "ms", "dil: ms_MY → ms")
+esitMi(ArayuzDili.coz("ar-SA"), "ar", "dil: ar-SA → ar")
+esitMi(ArayuzDili.coz("ur_PK"), "ur", "dil: ur_PK → ur")
+esitMi(Set(VakitMetinleri.tablo.keys), Set(ArayuzDili.desteklenenler), "metinler: her dilin tablosu var")
+for d in ArayuzDili.desteklenenler {
+    let m = VakitMetinleri.dil(d)
+    esitMi(m.dil, d, "metinler: \(d) kendi kodunu tasir")
+    esitMi(yerTutucuImzasi(m), yerTutucuImzasi(VakitMetinleri.tr), "metinler: \(d) Turkceyle ayni yer tutucular")
+}
+
+// CLDR cogul kategorileri (JS `cogul.ts` ikizi, tamsayi).
+esitMi([0, 1, 2, 5].map { CogulKurali.kategori("tr", $0) }, ["other", "one", "other", "other"], "cogul: tr")
+esitMi([0, 1, 2].map { CogulKurali.kategori("en", $0) }, ["other", "one", "other"], "cogul: en")
+esitMi([0, 1, 2, 1_000_000].map { CogulKurali.kategori("fr", $0) }, ["one", "one", "other", "many"], "cogul: fr")
+esitMi([1, 2, 5, 11, 21, 22, 25, 112].map { CogulKurali.kategori("ru", $0) },
+       ["one", "few", "many", "many", "one", "few", "many", "many"], "cogul: ru")
+esitMi([1, 3, 5, 21].map { CogulKurali.kategori("bs", $0) }, ["one", "few", "other", "one"], "cogul: bs")
+esitMi([1, 2].map { CogulKurali.kategori("id", $0) }, ["other", "other"], "cogul: id")
+esitMi([0, 1, 2, 3, 10, 11, 99, 100, 102, 103].map { CogulKurali.kategori("ar", $0) },
+       ["zero", "one", "two", "few", "few", "many", "many", "other", "other", "few"], "cogul: ar")
+esitMi([0, 1, 2, 5].map { CogulKurali.kategori("ur", $0) }, ["other", "one", "other", "other"], "cogul: ur")
+esitMi(CogulKurali.sec(["one": "{n} minute", "other": "{n} minutes"], "ru", 5), "5 minutes", "cogul: eksik kategori other'a duser")
+
+// MARK: - 12) Vakit adi takimi (kullanicinin sectigi adlar) — var / yok / bozuk / kismi
+
+let takimJson = """
+{"adlar":{"imsak":"Morgengebet","gunes":"Sonnenaufgang","ogle":"Mittagsgebet","ikindi":"Nachmittagsgebet","aksam":"Abendgebet","yatsi":"Nachtgebet"},
+ "buyuk":{"ogle":"MITTAGSGEBET"},"kucuk":{"ogle":"mittagsgebet"},"cuma":"Freitagsgebet","imsakVakti":"Imsak","gunesDogusu":"Sonnenaufgang"}
+"""
+if let t = VakitAdlari.coz(takimJson) {
+    let m = VakitMetinleri.dil("de", adlar: t)
+    esitMi(m.ad("sabah"), "Morgengebet", "takim: sabah ← imsak")
+    esitMi(m.ad("ogle"), "Mittagsgebet", "takim: ogle")
+    esitMi(m.vakitAdi("gunes"), "Sonnenaufgang", "takim: gunes")
+    esitMi(t.cuma, "Freitagsgebet", "takim: cuma")
+    esitMi(t.imsakVakti, "Imsak", "takim: imsakVakti")
+    esitMi(t.buyuk["ogle"], "MITTAGSGEBET", "takim: buyuk")
+    esitMi(t.kucuk["ogle"], "mittagsgebet", "takim: kucuk")
+    esitMi(VakitMetinleri.bicim(m.onay, ["ad": m.ad("ogle")]), "Mittagsgebet als gebetet markieren?", "takim: metne girer")
+} else {
+    hatalar.append("takim: gecerli JSON cozulemedi")
+}
+for ham in [nil, "", "   ", "{", "[]", "null", "42", "{}", "{\"adlar\":\"Sabah\"}",
+            "{\"adlar\":{\"ogle\":42,\"ikindi\":null,\"aksam\":\"\"}}", "{\"adlar\":{\"bilinmeyen\":\"X\"}}"] as [String?] {
+    esitMi(VakitAdlari.coz(ham) == nil, true, "takim: yok/bos/bozuk → nil (\(ham ?? "nil"))")
+}
+esitMi(VakitMetinleri.dil("tr", adlar: VakitAdlari.coz("{bozuk")), VakitMetinleri.tr, "takim: bozuk → tablo")
+if let kismi = VakitAdlari.coz("{\"adlar\":{\"ogle\":\"  Mittag  \",\"ikindi\":\"\"}}") {
+    let m = VakitMetinleri.dil("en", adlar: kismi)
+    esitMi(m.ad("ogle"), "Mittag", "takim kismi: verilen ad (kirpilmis)")
+    esitMi(m.ad("ikindi"), "Asr", "takim kismi: eksik alan tabloya duser")
+    esitMi(m.vakitAdi("gunes"), "Sunrise", "takim kismi: gunes tablodan")
+} else {
+    hatalar.append("takim: kismi JSON cozulemedi")
+}
+// Depo: yaz / oku / sil; etkin takim yalniz okundugu ARAYUZ dilinde uygulanir.
+esitMi(depo.vakitAdlari() == nil, true, "takim depo: yazilmadan nil")
+depo.arayuzDiliniYaz("de")
+depo.vakitAdlariniYaz(takimJson)
+esitMi(depo.vakitAdlari()?.adlar["ogle"], "Mittagsgebet", "takim depo: okunur")
+esitMi(depo.arayuzDili(), "de", "takim depo: dil okunur (takim tazelenir)")
+esitMi(VakitMetinleri.dil("de").ad("ogle"), "Mittagsgebet", "takim etkin: ayni dilde uygulanir")
+esitMi(VakitMetinleri.dil("en").ad("ogle"), "Dhuhr", "takim etkin: baska dilde (Siri paket dili) tablo")
+esitMi(VakitKarari.gorunenAd("ogle", dil: "de"), "Mittagsgebet", "takim etkin: gorunenAd")
+depo.vakitAdlariniYaz(nil)
+esitMi(depo.vakitAdlari() == nil, true, "takim depo: nil anahtari siler")
+_ = depo.arayuzDili()
+esitMi(VakitMetinleri.dil("de"), VakitMetinleri.de, "takim depo: silinince tablo")
+depo.vakitAdlariniYaz("   ")
+esitMi(depo.vakitAdlari() == nil, true, "takim depo: bos dize de siler")
+depo.arayuzDiliniYaz("tr")
+_ = depo.arayuzDili()
+
+// MARK: - 13) Rakam sistemi — yalniz Arapca + "arab" Dogu Arap; diger her durumda metin aynen
+
+esitMi(RakamSistemi.etkin(dil: "ar", kayitli: "arab"), "arab", "rakam: ar + arab")
+esitMi(RakamSistemi.etkin(dil: "ar", kayitli: nil), "latn", "rakam: ar + kayit yok → Bati")
+esitMi(RakamSistemi.etkin(dil: "ar", kayitli: "latn"), "latn", "rakam: ar + latn")
+for dil in ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "", "xx"] {
+    esitMi(RakamSistemi.doguMu(dil: dil, kayitli: "arab"), false, "rakam: \(dil) kaydi yok sayar")
+    esitMi(RakamSistemi.yerelAyarKimligi(dil: dil, kayitli: "arab"), nil, "rakam: \(dil) yerel ayara dokunmaz")
+}
+esitMi(RakamSistemi.yerelAyarKimligi(dil: "ar", kayitli: "arab"), "ar@numbers=arab", "rakam: ar yerel ayari arab")
+esitMi(RakamSistemi.yerelAyarKimligi(dil: "ar", kayitli: nil), "ar@numbers=latn", "rakam: ar yerel ayari latn")
+esitMi(RakamSistemi.cevir("النهاية 15:42", dogu: true), "النهاية ١٥:٤٢", "rakam: saat cevrilir")
+esitMi(RakamSistemi.cevir("1 س 5 د", dogu: true), "١ س ٥ د", "rakam: sure cevrilir")
+esitMi(RakamSistemi.cevir("١٢:٠٩", dogu: true), "١٢:٠٩", "rakam: idempotent")
+esitMi(RakamSistemi.cevir("Çıkış 15:42", dogu: false), "Çıkış 15:42", "rakam: Bati'da aynen")
+esitMi(RakamSistemi.cevir("--:--", dogu: true), "--:--", "rakam: rakamsiz metin aynen")
+esitMi(RakamSistemi.cevir(SiriDeposu.saatBicimleyici(TimeZone(identifier: "UTC")!)(0), dogu: false), "00:00",
+       "rakam: cekirdek saat Bati rakamiyla uretilir")
+// Dogu rakami yalniz cizimde: Arapca tablolar Bati rakami tasir (Magrip kullanicisi karisik gormesin).
+let doguRakamlari = CharacterSet(charactersIn: "٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹")
+for (ad, m) in [("VakitMetinleri.ar", "\(VakitMetinleri.dil("ar"))"), ("VakitMetinleri.ur", "\(VakitMetinleri.dil("ur"))")] {
+    esitMi(m.unicodeScalars.contains(where: { doguRakamlari.contains($0) }), false, "rakam: \(ad) Dogu rakami tasimaz")
+}
+depo.arayuzDiliniYaz("ar")
+esitMi(depo.rakamSisteminiYaz("arab"), true, "rakam depo: yeni deger degisti der")
+esitMi(depo.rakamSisteminiYaz("arab"), false, "rakam depo: ayni deger degismedi der")
+esitMi(depo.rakamSistemi(), "arab", "rakam depo: okunur")
+esitMi(RakamSistemi.doguMu(dil: depo.arayuzDili(), kayitli: depo.rakamSistemi()), true, "rakam depo: ar + arab Dogu")
+esitMi(depo.rakamSisteminiYaz(nil), true, "rakam depo: silme degisti der")
+esitMi(depo.rakamSistemi(), nil, "rakam depo: nil anahtari siler")
+esitMi(depo.rakamSisteminiYaz(nil), false, "rakam depo: yoku silmek degismedi der")
+depo.arayuzDiliniYaz("tr")
+_ = depo.arayuzDili()
 
 // MARK: - Sonuc
 

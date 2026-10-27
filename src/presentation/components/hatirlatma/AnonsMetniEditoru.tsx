@@ -31,8 +31,10 @@ import { varsayilanAnonsMetni } from '../../../core/muhafiz/anonsMetni';
 import { anonsMetniDoluMu } from '../../../core/hatirlatma/anonsYerTutucu';
 import { DinleButonu } from './AnonsBilesenleri';
 import type { PencereTanimi } from './pencereTanimi';
+import { bicim, metin } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 
-export const OTOMATIK_ETIKETI = 'Otomatik';
+export const otomatikEtiketi = (): string => metin().hatirlatma.editor.otomatik;
 
 /** Metni imlecin olduğu yere ekler (seçim varsa yerine yazar). SAF. */
 export function imlecteEkle(metin: string, ek: string, secim: { start: number; end: number } | null): string {
@@ -100,6 +102,7 @@ export interface AnonsMetniEditoruProps {
 
 export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, seviye, taslak, onTaslak, onCommit }) => {
     const renkler = useRenkler();
+    const me = useMetin().hatirlatma.editor;
     const [secim, setSecim] = useState<{ start: number; end: number } | null>(null);
     const otomatikBos = tanim.bosMetinOtomatik;
     const otomatikMetin = otomatikBos ? '' : varsayilanAnonsMetni(tanim.yon);
@@ -117,7 +120,7 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
     // Yer tutucusu ham şablon DEĞİL, bu adımda okunacak cümle.
     const ilkSablon = tanim.anonsSablonlari[0] ?? '';
     const yerTutucu = otomatikBos
-        ? `Boş bırakırsanız: ${tanim.otomatikAnons?.(seviye) ?? ''}`
+        ? bicim(me.bosBirakirsaniz, { metin: tanim.otomatikAnons?.(seviye) ?? '' })
         : tanim.anonsCoz(ilkSablon, seviye) || ilkSablon;
 
     const cipEkle = (anahtar: string) => {
@@ -135,7 +138,7 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
         return (
             <View testID="anons-ornegi" className="p-3 rounded-2xl mt-2" style={{ backgroundColor: `${renkler.birincil}10` }}>
                 <Text className="text-[10px] font-semibold tracking-wider mb-1" style={{ color: renkler.metinIkincil }}>
-                    TELEFONUNUZ ŞÖYLE OKUR
+                    {me.soyleOkur}
                 </Text>
                 <View className="flex-row items-center">
                     <Text className="flex-1 text-sm pr-3" style={{ color: renkler.metin }}>
@@ -145,7 +148,7 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
                         kanallar={seviye.kanallar}
                         bildirimSesi={seviye.bildirimSesi}
                         cozulmusMetin={okunacak}
-                        erisimEtiketi="Örnek okunuşu dinleyin"
+                        erisimEtiketi={me.ornekDinle}
                     />
                 </View>
             </View>
@@ -155,7 +158,7 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
     const okunusKutusu = (
         <View className="p-3 rounded-2xl" style={{ backgroundColor: `${renkler.birincil}10` }}>
             <Text className="text-[10px] font-semibold tracking-wider mb-1" style={{ color: renkler.metinIkincil }}>
-                TELEFONUNUZ ŞÖYLE OKUR
+                {me.soyleOkur}
             </Text>
             {okunacak ? (
                 <View className="flex-row items-center">
@@ -168,14 +171,14 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
                         cozulmusMetin={okunacak}
                         erisimEtiketi={
                             kanalAcikMi(seviye.kanallar, 'bildirim')
-                                ? 'Bildirim sesini ve örnek okunuşu dinleyin'
-                                : 'Örnek okunuşu dinleyin'
+                                ? me.sesVeOrnekDinle
+                                : me.ornekDinle
                         }
                     />
                 </View>
             ) : (
                 <Text testID="anons-okunus" className="text-xs leading-4" style={{ color: renkler.metin }}>
-                    Metin boş: bu hatırlatma sesli okumaz.
+                    {me.metinBos}
                 </Text>
             )}
         </View>
@@ -193,11 +196,11 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
                 activeOpacity={0.7}
                 accessibilityRole="button"
                 accessibilityState={{ expanded: duzenleAcik }}
-                accessibilityLabel="Metni değiştirin"
+                accessibilityLabel={me.degistirEtiketi}
             >
                 <FontAwesome5 name="pen" size={11} color={renkler.birincil} style={{ marginRight: 8 }} solid />
                 <Text className="text-xs font-semibold flex-1" style={{ color: renkler.birincil }}>
-                    Metni değiştir
+                    {me.degistir}
                 </Text>
                 <FontAwesome5 name={duzenleAcik ? 'chevron-up' : 'chevron-down'} size={11} color={renkler.metinIkincil} />
             </TouchableOpacity>
@@ -215,7 +218,7 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
                         multiline
                         placeholder={yerTutucu}
                         placeholderTextColor={renkler.metinIkincil}
-                        accessibilityLabel="Sesli okuma metni"
+                        accessibilityLabel={me.kutuEtiketi}
                         testID="anons-metni-kutusu"
                         className="text-sm p-3.5 rounded-2xl border"
                         style={{
@@ -229,7 +232,7 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
 
                     {/* Yer tutucular — imlecin olduğu yere eklenir. */}
                     <Text className="text-[11px] mt-2.5 mb-1" style={{ color: renkler.metinIkincil }}>
-                        Ekleyin:
+                        {me.ekleyin}
                     </Text>
                     <View className="flex-row flex-wrap" style={{ marginHorizontal: -3 }}>
                         {tanim.anonsYerTutuculari.map((y) => (
@@ -238,25 +241,25 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
                                 etiket={y.etiket}
                                 ikon="plus"
                                 onPress={() => cipEkle(y.anahtar)}
-                                erisim={`Ekleyin: ${y.etiket}`}
+                                erisim={bicim(me.ekleyinEtiketi, { etiket: y.etiket })}
                             />
                         ))}
                     </View>
 
                     {/* Hazır cümleler — "Otomatik" ilk sırada. */}
                     <Text className="text-[11px] mt-1 mb-1" style={{ color: renkler.metinIkincil }}>
-                        Hazır cümleler:
+                        {me.hazirCumleler}
                     </Text>
                     <View className="flex-row flex-wrap" style={{ marginHorizontal: -3 }}>
                         <Cip
-                            etiket={OTOMATIK_ETIKETI}
+                            etiket={me.otomatik}
                             ikon="magic"
                             secili={otomatikSecili}
                             onPress={() => sablonSec(otomatikMetin)}
                             erisim={
                                 otomatikBos
-                                    ? 'Otomatik cümle: hatırlatmanın kendi cümlesi okunur'
-                                    : `Otomatik cümle: ${tanim.anonsCoz(otomatikMetin, seviye) || otomatikMetin}`
+                                    ? me.otomatikOtoEtiket
+                                    : bicim(me.otomatikEtiket, { metin: tanim.anonsCoz(otomatikMetin, seviye) || otomatikMetin })
                             }
                         />
                         {sablonlar.map((sablon) => {
@@ -268,15 +271,15 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
                                     etiket={gorunen}
                                     secili={taslak === sablon}
                                     onPress={() => sablonSec(sablon)}
-                                    erisim={`Hazır cümle: ${gorunen}`}
+                                    erisim={bicim(me.hazirEtiket, { metin: gorunen })}
                                 />
                             );
                         })}
                     </View>
                     <Text className="text-[11px] mt-1.5 leading-4" style={{ color: renkler.metinIkincil }}>
                         {otomatikBos
-                            ? 'Boş bırakırsanız hatırlatmanın kendi cümlesi okunur.'
-                            : 'Boş bırakırsanız bu hatırlatma sesli okumaz.'}
+                            ? me.bosOtomatik
+                            : me.bosSessiz}
                         {tanim.anonsNotu ? ` ${tanim.anonsNotu}` : ''}
                     </Text>
                 </View>

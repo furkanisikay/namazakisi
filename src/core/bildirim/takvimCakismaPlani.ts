@@ -63,12 +63,13 @@
  *
  * SAF: `simdi` enjekte edilir; React/expo import ETMEZ.
  */
-import { Coordinates, PrayerTimes } from 'adhan';
-import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import { Coordinates } from 'adhan';
+import { aktifPrayerTimes } from '../vakit/aktifHesap';
 import type { VakitAdi } from '../types';
 import type { BildirimPlatformu } from './butceSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
-import { VAKIT_ADLARI } from '../utils/muhafizMetinYardimcisi';
+import { VAKIT_ADLARI, VAKIT_ADLARI_KUCUK } from '../utils/muhafizMetinYardimcisi';
+import { bicim, metin, sayili } from '../dil/aktifDil';
 import { gurubKerahatiBaslangiciMs } from '../vakit/kerahat';
 import { UYGULAMA_TAKVIM_NOTU, type TakvimCakismaAyarlari } from '../takvimCakisma/takvimCakismaAyarlari';
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
@@ -258,9 +259,8 @@ export interface TakvimCakismaPlanGirdisi {
 const adimlarGecerliMi = (adimlar: unknown): adimlar is SeviyeAyari[] => Array.isArray(adimlar) && adimlar.length > 0;
 
 const vakitAraliklari = (gun: Date, coordinates: Coordinates): Record<CakismaVakti, VakitAraligi> | null => {
-    const params = turkiyeHesapParametreleri();
-    const pt = new PrayerTimes(coordinates, gun, params);
-    const yarin = new PrayerTimes(coordinates, new Date(gun.getFullYear(), gun.getMonth(), gun.getDate() + 1), params);
+    const pt = aktifPrayerTimes(coordinates, gun);
+    const yarin = aktifPrayerTimes(coordinates, new Date(gun.getFullYear(), gun.getMonth(), gun.getDate() + 1));
     const zamanlar = [pt.fajr, pt.sunrise, pt.dhuhr, pt.asr, pt.maghrib, pt.isha, yarin.fajr];
     if (zamanlar.some((z) => !(z instanceof Date) || !Number.isFinite(z.getTime()))) return null;
     return {
@@ -396,13 +396,6 @@ export const takvimCakismaKimligi = (tarih: string, vakit: CakismaVakti): string
 export const takvimCakismaKokuneAitMi = (kimlik: string, kok: string): boolean =>
     kimlik === kok || kimlik.startsWith(`${kok}_`);
 
-const VAKIT_KUCUK: Record<CakismaVakti, string> = {
-    imsak: 'sabah',
-    ogle: 'öğle',
-    ikindi: 'ikindi',
-    aksam: 'akşam',
-    yatsi: 'yatsı',
-};
 
 const saat = (ms: number): string => {
     const t = new Date(ms);
@@ -422,32 +415,30 @@ export function takvimCakismaMetniOlustur(
     >,
     ayarlar: Pick<TakvimCakismaAyarlari, 'baslikGoster'>
 ): { baslik: string; govde: string } {
+    const m = metin().bildirim.takvim;
     const ad = VAKIT_ADLARI[kayit.vakit];
-    const kucuk = VAKIT_KUCUK[kayit.vakit];
+    const kucuk = VAKIT_ADLARI_KUCUK[kayit.vakit];
     const aralik = `${saat(kayit.blokBaslangicMs)}–${saat(kayit.blokBitisMs)}`;
     const etkinlik =
         ayarlar.baslikGoster && kayit.etkinlikSayisi === 1 && kayit.tekBaslik
-            ? `“${kayit.tekBaslik}”`
+            ? bicim(m.etkinlikTek, { ad: kayit.tekBaslik })
             : kayit.etkinlikSayisi > 1
-                ? `Takvimindeki ${kayit.etkinlikSayisi} etkinlik art arda`
-                : 'Takvimindeki bir etkinlik';
+                ? sayili(m.etkinlikCoklu, kayit.etkinlikSayisi)
+                : m.etkinlikBir;
 
     if (kayit.tur === 'once') {
         const sonAn =
             kayit.vakit === 'ikindi'
-                ? `ikindi için son uygun an ${saat(kayit.sonAnMs)} (sonrası kerahat)`
-                : `${kucuk} vaktinin çıkışı ${saat(kayit.sonAnMs)}`;
+                ? bicim(m.sonAnIkindi, { saat: saat(kayit.sonAnMs) })
+                : bicim(m.sonAnVakit, { kucuk, saat: saat(kayit.sonAnMs) });
         return {
-            baslik: `${ad} · etkinlik ${saat(kayit.blokBaslangicMs)} · önce kıl`,
-            govde: `${etkinlik} ${aralik} arası sürüyor; ${sonAn}. Etkinlik başlamadan ${kucuk} namazını kıl.`,
+            baslik: bicim(m.onceBaslik, { ad, saat: saat(kayit.blokBaslangicMs) }),
+            govde: bicim(m.onceGovde, { etkinlik, aralik, sonAn, kucuk }),
         };
     }
     return {
-        baslik: `${ad} · etkinlik vakti kaplıyor`,
-        govde:
-            `${etkinlik} ${aralik} arası sürüyor ve ${kucuk} vaktini ` +
-            `(${saat(kayit.girisMs)}–${saat(kayit.sonAnMs)}) kaplıyor. ` +
-            `Kısa bir ara verip ${kucuk} namazını kılmayı şimdiden planla.`,
+        baslik: bicim(m.kaplarBaslik, { ad }),
+        govde: bicim(m.kaplarGovde, { etkinlik, aralik, kucuk, giris: saat(kayit.girisMs), son: saat(kayit.sonAnMs) }),
     };
 }
 
@@ -457,6 +448,7 @@ export function takvimCakismaMetniOlustur(
  * (rıza modalı ve gizlilik politikası bunu söyler). Nass okunmaz; yer tutucu yoktur.
  */
 export function takvimCakismaAnonsMetni(vakit: CakismaVakti, tur: CakismaTuru): string {
-    const giris = `Takviminizdeki bir etkinlik ${VAKIT_KUCUK[vakit]} vaktine denk geliyor.`;
-    return tur === 'once' ? `${giris} Etkinlikten önce kılmayı unutmayın.` : `${giris} Ara verip kılmayı unutmayın.`;
+    const o = metin().anons.otomatik;
+    const giris = bicim(o.takvimGiris, { vakit: VAKIT_ADLARI_KUCUK[vakit] });
+    return `${giris} ${tur === 'once' ? o.takvimOnce : o.takvimKaplar}`;
 }

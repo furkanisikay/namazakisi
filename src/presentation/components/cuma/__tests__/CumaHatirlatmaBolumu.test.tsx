@@ -8,12 +8,12 @@
  * ile boşaltılır.
  */
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { act, render, fireEvent, waitFor } from '@testing-library/react-native';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { useRenkler } from '../../../../core/theme';
 import { cumaHatirlatmaAyariniGuncelle } from '../../../store/cumaHatirlatmaSlice';
 import { cumaAyarlariniNormalize, type CumaHatirlatmaAyarlari } from '../../../../core/cuma/cumaAyarlari';
-import { CumaHatirlatmaBolumu, CUMA_YON_GEREKCESI } from '../CumaHatirlatmaBolumu';
+import { CumaHatirlatmaBolumu, cumaYonGerekcesi } from '../CumaHatirlatmaBolumu';
 
 jest.mock('../../../store/hooks');
 jest.mock('../../../../core/theme', () => ({ useRenkler: jest.fn() }));
@@ -100,7 +100,7 @@ describe('CumaHatirlatmaBolumu', () => {
     it('açıkken ortak kart: YÖN GEREKÇESİ ekranda, akış önizlemesi ve adım ekleme var', () => {
         const ekran = kur(ACIK);
         expect(ekran.getByTestId('yon-sabit-gerekcesi')).toBeTruthy();
-        expect(ekran.getByText(CUMA_YON_GEREKCESI)).toBeTruthy();
+        expect(ekran.getByText(cumaYonGerekcesi())).toBeTruthy();
         // Yön seçici çizilmez (istisna sessiz değil, gerekçeli).
         expect(ekran.queryByText('NE ZAMAN HATIRLATILSIN')).toBeNull();
         expect(ekran.getByLabelText('Cuma namazı akışını önizleyin')).toBeTruthy();
@@ -231,5 +231,22 @@ describe('CumaHatirlatmaBolumu — TEK RIZA (Dalga 3)', () => {
         const d = guncelleMock.mock.calls.at(-1)[0];
         expect(d.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
         expect(rizaVerMock).not.toHaveBeenCalled();
+    });
+});
+
+describe('CumaHatirlatmaBolumu — İngilizce', () => {
+    const YASAKLI = ['Cuma', 'cuma', 'dk\\b', 'kala', 'Kapat', 'Bildirim', 'Hatırlatma', 'Tekrar', 'Vakit'];
+    it('kapalı ve açık bölüm (ortak kart dahil) İngilizce', () => {
+        const { ingilizceyeGec, turkceKalanlar } = require('../../../../__tests__/yardimci/ingilizceDenetimi') as typeof import('../../../../__tests__/yardimci/ingilizceDenetimi');
+        const geri = ingilizceyeGec();
+        try {
+            expect(turkceKalanlar(kur(KAPALI).toJSON() as never, YASAKLI)).toEqual([]);
+            const e = kur(ACIK);
+            expect(turkceKalanlar(e.toJSON() as never, YASAKLI)).toEqual([]);
+            expect(e.getByText('JUMU’AH PRAYER')).toBeTruthy();
+            expect(e.getByText('The reminder arrives before Dhuhr time.')).toBeTruthy();
+        } finally {
+            act(() => geri());
+        }
     });
 });

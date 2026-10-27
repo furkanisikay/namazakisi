@@ -20,6 +20,9 @@ struct BugunSayfasi: View {
     @State private var tac: Double = -1
 
     private var sonuk: Bool { sistemSonuk || SaatSimulatorTohumu.sonuk }
+    /// Cizim anindaki dil (W5, telefondan gelir).
+    private var m: SaatMetinleri { SaatDili.metin }
+    private var vm: VakitMetinleri { SaatDili.vakit }
     private var satirlar: [SaatVakitSatiri] { durum.satirlar }
     private var dilimler: [SaatKadranDilimi] {
         durum.gorunum.gunTarihi.map { SaatKadran.dilimler(yuk: yuk, tarih: $0) } ?? []
@@ -46,7 +49,7 @@ struct BugunSayfasi: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(2)
-        .navigationTitle("Bugün")
+        .navigationTitle(m.bugun)
         .containerBackground(SaatGorunum.renk(odakKodu).opacity(sonuk ? 0.06 : 0.2).gradient, for: .tabView)
         .focusable(!sonuk)
         .digitalCrownRotation(
@@ -142,9 +145,11 @@ struct BugunSayfasi: View {
         .offset(konum(kesir: SaatKadran.kesir(d.basMs), yaricap: yaricap))
         .animation(hareketAzalt ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: secili)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(
-            "\(VakitKarari.gorunenAd(d.kod)), \(SaatDeposu.saatMetni(d.basMs)), \(kilindi ? "kılındı" : "kılınmadı")"
-        )
+        .accessibilityLabel(m.bicim(m.noktaErisim, [
+            "ad": vm.ad(d.kod),
+            "saat": SaatDeposu.saatMetni(d.basMs),
+            "durum": kilindi ? m.kilindiKucuk : m.kilinmadiKucuk,
+        ]))
         .accessibilityAddTraits(secili ? [.isButton, .isSelected] : .isButton)
     }
 
@@ -160,11 +165,11 @@ struct BugunSayfasi: View {
         let dilim = dilimler.first { $0.kod == kod }
         let durumMetni: (String, String, Color) = {
             guard let satir else { return ("", "circle", .secondary) }
-            if satir.kilindi { return ("Kılındı", "checkmark.circle.fill", SaatGorunum.yesil) }
-            if satir.aktif { return ("Şimdi", "circle.inset.filled", SaatGorunum.renk(kod)) }
+            if satir.kilindi { return (vm.kilindi, "checkmark.circle.fill", SaatGorunum.yesil) }
+            if satir.aktif { return (m.durumSimdi, "circle.inset.filled", SaatGorunum.renk(kod)) }
             let simdiMs = SaatDeposu.simdiMs(simdi)
-            if let dilim, dilim.bitisMs <= simdiMs { return ("Geçti", "exclamationmark.circle", .secondary) }
-            return ("Sırada", "clock", .secondary)
+            if let dilim, dilim.bitisMs <= simdiMs { return (m.durumGecti, "exclamationmark.circle", .secondary) }
+            return (m.durumSirada, "clock", .secondary)
         }()
         return VStack(spacing: 1) {
             Image(systemName: SaatGorunum.ikon(kod))
@@ -172,7 +177,7 @@ struct BugunSayfasi: View {
                 .foregroundStyle(SaatGorunum.renk(kod))
                 .font(.system(size: 16, weight: .semibold))
                 .accessibilityHidden(true)
-            Text(VakitKarari.gorunenAd(kod))
+            Text(vm.ad(kod))
                 .font(.footnote.weight(.semibold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)

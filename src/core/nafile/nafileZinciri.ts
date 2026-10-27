@@ -14,6 +14,7 @@
 import { NamazAdi } from '../constants/UygulamaSabitleri';
 import { NAFILE_ADLARI, type NafileTuru, type TeheccudPenceresi } from './nafileTipleri';
 import { NAFILE_ACIKLAMALARI } from './nafileMetinleri';
+import { bicim, metin } from '../dil/aktifDil';
 import { teheccudPenceresiniUygula, type NafilePencere } from './nafileVakitleri';
 
 const saatMetni = (t: Date): string =>
@@ -53,9 +54,10 @@ const etkinBasi = (p: NafilePencere, teheccud: TeheccudPenceresi): Date =>
     teheccudPenceresiniUygula(p, teheccud).baslangic;
 
 const bilgiMetniOlustur = (p: NafilePencere): string => {
-    let bilgi = `${NAFILE_ACIKLAMALARI[p.tur]}\n\nBugün: ${saatMetni(p.baslangic)} – ${saatMetni(p.bitis)}`;
-    if (p.tur === 'kusluk') bilgi += ` · en faziletli ${saatMetni(p.faziletli)} sonrası`;
-    if (p.tur === 'teheccud') bilgi += ` · son üçte bir ${saatMetni(p.faziletli)}`;
+    const m = metin().nafile;
+    let bilgi = bicim(m.bilgiBugun, { aciklama: NAFILE_ACIKLAMALARI[p.tur], bas: saatMetni(p.baslangic), son: saatMetni(p.bitis) });
+    if (p.tur === 'kusluk') bilgi += bicim(m.enFaziletli, { saat: saatMetni(p.faziletli) });
+    if (p.tur === 'teheccud') bilgi += bicim(m.sonUcteBir, { saat: saatMetni(p.faziletli) });
     return bilgi;
 };
 
@@ -84,8 +86,8 @@ export function nafileZincirSatirlariOlustur(
             durum,
             durumMetni:
                 durum === 'aktif'
-                    ? `Vakti girdi · bitiş ${saatMetni(p.bitis)}`
-                    : `Nafile · ${saatMetni(bas)}–${saatMetni(p.bitis)}`,
+                    ? bicim(metin().nafile.durumAktif, { saat: saatMetni(p.bitis) })
+                    : bicim(metin().nafile.durumNafile, { bas: saatMetni(bas), son: saatMetni(p.bitis) }),
             bilgiBaslik: ad,
             bilgiMetni: bilgiMetniOlustur(p),
         };

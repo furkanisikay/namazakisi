@@ -1,0 +1,18 @@
+// id — Endonezce (beta). Anahtar = koddaki Türkçe metin, DEĞİŞMEZ; yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+
+// NamazKisayollari.swift
+"${applicationName} sıradaki namaz ne zaman" = "Kapan salat berikutnya di ${applicationName}";
+"${applicationName} sıradaki namaz" = "${applicationName} salat berikutnya";
+"${applicationName} ile sıradaki namazı söyle" = "Sebutkan salat berikutnya dengan ${applicationName}";
+"${applicationName} namaz vakti" = "${applicationName} waktu salat";
+"${applicationName} şu anki vakti kıldım" = "Sudah salat untuk waktu saat ini di ${applicationName}";
+"${applicationName} namazımı kıldım" = "Saya sudah salat di ${applicationName}";
+"${applicationName} ile vakti kıldım olarak işaretle" = "Tandai salat saat ini sudah ditunaikan di ${applicationName}";
+"${applicationName} kıbleyi aç" = "Buka kiblat di ${applicationName}";
+"${applicationName} ile kıbleyi göster" = "Tampilkan kiblat dengan ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} gambar ayat hari ini";
+"${applicationName} ile günün ayeti görselini hazırla" = "Siapkan gambar ayat hari ini dengan ${applicationName}";

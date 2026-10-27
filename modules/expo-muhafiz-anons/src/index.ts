@@ -22,6 +22,8 @@ import { Platform } from 'react-native';
 
 interface AnonsNativeModule {
     trSesTanimlayici(): Promise<string | null>;
+    /** Yeni köprü — eski native'de yoktur. */
+    anonsDiliniAyarla?(dil: string): void;
     varMi(dosyaAdi: string): Promise<boolean>;
     sentezle(metin: string, dosyaAdi: string): Promise<boolean>;
     kullanilmayanlariSil(korunacak: string[], onek: string): Promise<number>;
@@ -53,7 +55,20 @@ export function anonsModuluVarMi(): boolean {
 }
 
 /**
- * Cihazdaki Turkce sesin tanimlayicisi; yoksa `null`.
+ * Anons dilini (BCP-47) kaydeder: iOS ses seçimi (klip sentezi, önizleme) bundan sonra bu
+ * dildedir. Eski native'de fonksiyon yoksa atlanır (Türkçe kalır). Asla fırlatmaz.
+ */
+export function anonsDiliniAyarla(dil: string): void {
+    if (!kullanilabilirMi() || typeof ExpoMuhafizAnons?.anonsDiliniAyarla !== 'function') return;
+    try {
+        ExpoMuhafizAnons.anonsDiliniAyarla(dil);
+    } catch {
+        // Eski native: anons varsayılan dilde kalır.
+    }
+}
+
+/**
+ * Cihazdaki anons dilinin (varsayılan Türkçe) sesinin tanimlayicisi; yoksa `null`.
  *
  * IKI YERDE KULLANILIR:
  *  1. Klip adinin hash girdisi — ses degisince (kullanici gelismis Turkce sesi

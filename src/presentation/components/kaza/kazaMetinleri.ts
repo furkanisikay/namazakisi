@@ -1,14 +1,17 @@
 /**
  * Kaza Defteri 2.0 — ekran metinleri ve kaynak görünümü (SAF; React'e bağlı değil).
  *
- * Metinler kibar "siz" dilinde; vakit adları sabit haritadan (`toUpperCase` /
- * `toLowerCase` YOK — 'İ' bozulur). Kaynak renkleri yalnız DEKORATİF (ikon +
+ * Metinler sözlükten (`kaza` ad alanı, etkin dil; kibar "siz"); vakit adları da
+ * sözlükten (`toUpperCase` / `toLowerCase` YOK — 'İ' bozulur). Fonksiyonlar her
+ * çağrıda etkin dili okur. Kaynak renkleri yalnız DEKORATİF (ikon +
  * çip zemini); metin daima tema metnidir.
  */
 
 import { ayAdiniAl, ISOTarihiDateNesnesiNeCevir, tarihiISOFormatinaCevir, gunEkle } from '../../../core/utils/TarihYardimcisi';
-import { KAZA_VAKTI_ADI, type KazaVakti } from '../../../core/kaza/kazaHareketi';
+import { kazaVaktiGoster, type KazaVakti } from '../../../core/kaza/kazaHareketi';
 import type { GecmisSatiri, GecmisTuru, TemizlikKaynagi } from '../../../core/kaza/kazaDefteriHesabi';
+import { bicim, canli, metin, sayili, sayiYaz } from '../../../core/dil/aktifDil';
+import type { Sozluk } from '../../../core/dil/sozluk/tr';
 
 /** Tema renk anahtarı (useRenkler alanı) — hardcoded renk YOK. */
 export type KaynakRenkAnahtari = 'bilgi' | 'vurgu' | 'dikkat' | 'basarili' | 'birincil' | 'uyari' | 'metinIkincil';
@@ -16,52 +19,74 @@ export type KaynakRenkAnahtari = 'bilgi' | 'vurgu' | 'dikkat' | 'basarili' | 'bi
 export interface KaynakGorunumu {
   ikon: string;
   renk: KaynakRenkAnahtari;
-  /** Süzgeç çipi etiketi. */
-  etiket: string;
+  /** Süzgeç çipi etiketi (etkin dilde; okunduğu an çözülür). */
+  readonly etiket: string;
+}
+
+type KaynakAnahtari = keyof Sozluk['kaza']['kaynak'];
+
+/** Etiketi okunduğu an etkin dilden çözen görünüm. */
+function gorunum(ikon: string, renk: KaynakRenkAnahtari, anahtar: KaynakAnahtari): KaynakGorunumu {
+  return {
+    ikon,
+    renk,
+    get etiket() {
+      return metin().kaza.kaynak[anahtar];
+    },
+  };
 }
 
 export const KAYNAK_GORUNUMU: Record<GecmisTuru, KaynakGorunumu> = {
-  otomatik: { ikon: 'robot', renk: 'bilgi', etiket: 'Otomatik' },
-  otomatikGeri: { ikon: 'undo', renk: 'basarili', etiket: 'Otomatik' },
-  manuel: { ikon: 'pen', renk: 'vurgu', etiket: 'Elle' },
-  bildirim: { ikon: 'bell', renk: 'dikkat', etiket: 'Bildirimden' },
-  kilindi: { ikon: 'check', renk: 'basarili', etiket: 'Kılınan' },
-  duzeltme: { ikon: 'sliders-h', renk: 'uyari', etiket: 'Düzeltme' },
-  taban: { ikon: 'calculator', renk: 'birincil', etiket: 'Hesaplama' },
-  temizlik: { ikon: 'broom', renk: 'metinIkincil', etiket: 'Temizlik' },
-  temizlikGeriAl: { ikon: 'undo', renk: 'metinIkincil', etiket: 'Temizlik' },
-  gunKarari: { ikon: 'calendar-check', renk: 'bilgi', etiket: 'Gün kararı' },
-  otoAyar: { ikon: 'robot', renk: 'bilgi', etiket: 'Otomatik' },
-  eskiGorunum: { ikon: 'sync-alt', renk: 'basarili', etiket: 'Eşitleme' },
+  otomatik: gorunum('robot', 'bilgi', 'otomatik'),
+  otomatikGeri: gorunum('undo', 'basarili', 'otomatik'),
+  manuel: gorunum('pen', 'vurgu', 'elle'),
+  bildirim: gorunum('bell', 'dikkat', 'bildirimden'),
+  kilindi: gorunum('check', 'basarili', 'kilinan'),
+  duzeltme: gorunum('sliders-h', 'uyari', 'duzeltme'),
+  taban: gorunum('calculator', 'birincil', 'hesaplama'),
+  temizlik: gorunum('broom', 'metinIkincil', 'temizlik'),
+  temizlikGeriAl: gorunum('undo', 'metinIkincil', 'temizlik'),
+  gunKarari: gorunum('calendar-check', 'bilgi', 'gunKarari'),
+  otoAyar: gorunum('robot', 'bilgi', 'otomatik'),
+  eskiGorunum: gorunum('sync-alt', 'basarili', 'esitleme'),
 };
 
-export const TEMIZLIK_KAYNAK_ETIKETI: Record<TemizlikKaynagi, string> = {
-  otomatik: 'Otomatik',
-  manuel: 'Elle',
-  bildirim: 'Bildirimden',
-  kilindi: 'Kılınan',
-  duzeltme: 'Düzeltme',
-};
+export const TEMIZLIK_KAYNAK_ETIKETI: Readonly<Record<TemizlikKaynagi, string>> = canli((s) => ({
+  otomatik: s.kaza.kaynak.otomatik,
+  manuel: s.kaza.kaynak.elle,
+  bildirim: s.kaza.kaynak.bildirimden,
+  kilindi: s.kaza.kaynak.kilinan,
+  duzeltme: s.kaza.kaynak.duzeltme,
+}));
 
-/** Cümle içi küçük harfli kaynak adı (sabit harita — `toLowerCase` 'İ'yi bozar). */
-export const TEMIZLIK_KAYNAK_KUCUK: Record<TemizlikKaynagi, string> = {
-  otomatik: 'otomatik',
-  manuel: 'elle',
-  bildirim: 'bildirimden',
-  kilindi: 'kılınan',
-  duzeltme: 'düzeltme',
-};
+/** Cümle içi küçük harfli kaynak adı (sözlük — `toLowerCase` 'İ'yi bozar). */
+export const TEMIZLIK_KAYNAK_KUCUK: Readonly<Record<TemizlikKaynagi, string>> = canli((s) => ({
+  otomatik: s.kaza.kaynakKucuk.otomatik,
+  manuel: s.kaza.kaynakKucuk.elle,
+  bildirim: s.kaza.kaynakKucuk.bildirimden,
+  kilindi: s.kaza.kaynakKucuk.kilinan,
+  duzeltme: s.kaza.kaynakKucuk.duzeltme,
+}));
 
 /** Geçmiş süzgeç çipleri (Tümü hariç). */
 export type GecmisSuzgeci = 'tumu' | 'otomatik' | 'manuel' | 'bildirim' | 'kilindi' | 'taban';
 
-export const GECMIS_SUZGECLERI: ReadonlyArray<{ id: GecmisSuzgeci; etiket: string }> = [
-  { id: 'tumu', etiket: 'Tümü' },
-  { id: 'otomatik', etiket: 'Otomatik' },
-  { id: 'manuel', etiket: 'Elle' },
-  { id: 'bildirim', etiket: 'Bildirimden' },
-  { id: 'kilindi', etiket: 'Kılınan' },
-  { id: 'taban', etiket: 'Hesaplama' },
+function suzgec(id: GecmisSuzgeci, anahtar: KaynakAnahtari): { id: GecmisSuzgeci; readonly etiket: string } {
+  return {
+    id,
+    get etiket() {
+      return metin().kaza.kaynak[anahtar];
+    },
+  };
+}
+
+export const GECMIS_SUZGECLERI: ReadonlyArray<{ id: GecmisSuzgeci; readonly etiket: string }> = [
+  suzgec('tumu', 'tumu'),
+  suzgec('otomatik', 'otomatik'),
+  suzgec('manuel', 'elle'),
+  suzgec('bildirim', 'bildirimden'),
+  suzgec('kilindi', 'kilinan'),
+  suzgec('taban', 'hesaplama'),
 ];
 
 export function suzgeceUyarMi(satir: GecmisSatiri, s: GecmisSuzgeci): boolean {
@@ -70,10 +95,10 @@ export function suzgeceUyarMi(satir: GecmisSatiri, s: GecmisSuzgeci): boolean {
   return satir.tur === s;
 }
 
-/** '2026-10-14' → '14 Ekim'. */
+/** '2026-10-14' → '14 Ekim' / '14 October'. */
 export function gunMetni(iso: string): string {
   const t = ISOTarihiDateNesnesiNeCevir(iso);
-  return Number.isFinite(t.getTime()) ? `${t.getDate()} ${ayAdiniAl(t.getMonth())}` : iso;
+  return Number.isFinite(t.getTime()) ? bicim(metin().kaza.gunAy, { gun: t.getDate(), ay: ayAdiniAl(t.getMonth()) }) : iso;
 }
 
 /** ISO zaman → yerel 'HH:mm'. */
@@ -87,42 +112,44 @@ export function saatMetni(zaman: string): string {
 export function gunBasligi(zaman: string, bugun: Date = new Date()): string {
   const gun = tarihiISOFormatinaCevir(new Date(zaman));
   const bugunIso = tarihiISOFormatinaCevir(bugun);
-  if (gun === bugunIso) return `Bugün · ${gunMetni(gun)}`;
-  if (gun === gunEkle(bugunIso, -1)) return `Dün · ${gunMetni(gun)}`;
+  const m = metin().kaza.satir;
+  if (gun === bugunIso) return bicim(m.bugun, { gun: gunMetni(gun) });
+  if (gun === gunEkle(bugunIso, -1)) return bicim(m.dun, { gun: gunMetni(gun) });
   return gunMetni(gun);
 }
 
-export const vakitAdi = (v: KazaVakti | undefined): string => (v ? KAZA_VAKTI_ADI[v] : '');
+export const vakitAdi = (v: KazaVakti | undefined): string => (v ? kazaVaktiGoster(v) : '');
 
 /** Geçmiş satırının başlığı. */
 export function satirBasligi(s: GecmisSatiri): string {
   const ad = vakitAdi(s.vakit);
   const h = s.hareket;
+  const m = metin().kaza.satir;
   switch (s.tur) {
     case 'otomatik':
-      return `${ad} · otomatik eklendi`;
+      return bicim(m.otomatik, { ad });
     case 'otomatikGeri':
-      return `${ad} · otomatik kayıt geri alındı`;
+      return bicim(m.otomatikGeri, { ad });
     case 'manuel':
-      return `${ad} · elle eklendi`;
+      return bicim(m.manuel, { ad });
     case 'bildirim':
-      return `${ad} · bildirimden eklendi`;
+      return bicim(m.bildirim, { ad });
     case 'kilindi':
-      return h?.gocmis ? `${ad} · önceki sürümde kılınanlar` : `${ad} · kılındı`;
+      return bicim(h?.gocmis ? m.kilindiGocmis : m.kilindi, { ad });
     case 'duzeltme':
-      return (h?.adet ?? 0) < 0 ? `${ad} · fazla kılınan sıfırlandı` : `${ad} · düzeltme`;
+      return bicim((h?.adet ?? 0) < 0 ? m.fazlaSifirlandi : m.duzeltme, { ad });
     case 'taban':
-      return h?.gocmis ? 'Önceki sürümden aktarılan borç' : 'Yeniden hesaplandı';
+      return h?.gocmis ? m.tabanGocmis : m.taban;
     case 'temizlik':
-      return `Temizlik · ${h?.hedefIdler?.length ?? 0} kayıt gizlendi`;
+      return sayili(m.temizlik, h?.hedefIdler?.length ?? 0);
     case 'temizlikGeriAl':
-      return 'Temizlik geri alındı';
+      return metin().kaza.temizlikGeriAlindi;
     case 'gunKarari':
-      return h?.karar === 'ekle' ? 'İşaretsiz gün kazaya eklendi' : 'İşaretsiz gün yok sayıldı';
+      return h?.karar === 'ekle' ? m.gunEklendi : m.gunYokSayildi;
     case 'otoAyar':
-      return h?.aktif ? 'Otomatik ekleme açıldı' : 'Otomatik ekleme kapatıldı';
+      return h?.aktif ? m.otoAcildi : m.otoKapatildi;
     case 'eskiGorunum':
-      return 'Eski sürümlü cihazdaki kılınanlar eşitlendi';
+      return m.eskiGorunum;
     default:
       return '';
   }
@@ -130,17 +157,18 @@ export function satirBasligi(s: GecmisSatiri): string {
 
 /** Geçmiş satırının alt satırı. */
 export function satirAltMetni(s: GecmisSatiri, cihaz: string | null): string {
+  const m = metin().kaza.satir;
   const parcalar: string[] = [];
-  if (s.gun) parcalar.push(s.tur === 'gunKarari' ? gunMetni(s.gun) : `${gunMetni(s.gun)} namazı`);
+  if (s.gun) parcalar.push(s.tur === 'gunKarari' ? gunMetni(s.gun) : bicim(m.namazi, { gun: gunMetni(s.gun) }));
   if (s.hareket?.not) parcalar.push(`"${s.hareket.not}"`);
   if (s.tur === 'taban' && s.hareket?.taban) {
     const toplam = Object.values(s.hareket.taban).reduce((t, n) => t + n, 0);
-    parcalar.push(`Taban ${toplam.toLocaleString('tr-TR')}`);
+    parcalar.push(bicim(m.tabanToplam, { n: sayiYaz(toplam) }));
   }
-  if (s.tur === 'otoAyar' && s.hareket?.gun) parcalar.push(`${gunMetni(s.hareket.gun)} itibarıyla`);
+  if (s.tur === 'otoAyar' && s.hareket?.gun) parcalar.push(bicim(m.itibariyla, { gun: gunMetni(s.hareket.gun) }));
   parcalar.push(saatMetni(s.zaman));
-  if (s.cihaz && cihaz) parcalar.push(s.cihaz === cihaz ? 'bu cihaz' : 'başka cihaz');
-  else if (!s.cihaz && s.tur === 'otomatik') parcalar.push('otomatik tarama');
+  if (s.cihaz && cihaz) parcalar.push(s.cihaz === cihaz ? m.buCihaz : m.baskaCihaz);
+  else if (!s.cihaz && s.tur === 'otomatik') parcalar.push(m.otoTarama);
   return parcalar.filter(Boolean).join(' · ');
 }
 
@@ -153,8 +181,9 @@ export function deltaMetni(s: GecmisSatiri): string {
 
 /** Satırın erişilebilirlik etiketi. */
 export function satirErisimEtiketi(s: GecmisSatiri, cihaz: string | null): string {
+  const m = metin().kaza.satir;
   const delta = deltaMetni(s);
-  const etki = delta && delta !== '=' ? `, kalana etkisi ${delta.replace('−', 'eksi ')}` : '';
-  const gizli = s.gizli ? ', gizlenmiş' : '';
-  return `${satirBasligi(s)}, ${satirAltMetni(s, cihaz)}${etki}${gizli}. Ayrıntı için dokunun.`;
+  const etki = delta && delta !== '=' ? bicim(m.etki, { delta: delta.replace('−', m.eksi) }) : '';
+  const gizli = s.gizli ? m.gizlenmisErisim : '';
+  return bicim(m.erisim, { baslik: satirBasligi(s), alt: satirAltMetni(s, cihaz), etki, gizli });
 }

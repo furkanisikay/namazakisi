@@ -22,10 +22,15 @@ export const AYARLAR_EKRANLARI = [
   'OzelGunAyarlari',
   'NamazVakitleriAyarlari',
   'SaatVeWidgetAyarlari',
+  // Günün ayeti (#380 widget, #381 duvar kâğıdı): sayfa widget'tan da açılır (`namazakisi://gunun-ayeti`)
+  'GununAyeti',
+  'GununAyetiAyarlari',
   'Yardim',
   'Camilerim',
   'KonumAyarlari',
-  'GorünumAyarlari',
+  'GorünumAyarlari', // dil-haric: kimlik (rota adı)
+  // Arayüz dili (seçicide birden çok dil varken Ayarlar'da satırı görünür)
+  'DilAyarlari',
   'BildirimAyarlari',
   'SeriHedefAyarlari',
   'MuhafizAyarlari',
@@ -47,6 +52,8 @@ export const AYARLAR_EKRANLARI = [
   'DebugLogs',
   'TakvimAyarlari',
   'SeferilikAyarlari',
+  // Hesap yöntemi (ülkeye göre takvim, ikindi, dakika düzeltmesi)
+  'HesapYontemiAyarlari',
   'NelerYeni',
   'YedeklemeAktarim',
   'IceAktarmaSihirbazi',

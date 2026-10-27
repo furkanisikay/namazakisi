@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Lokasi Anda digunakan untuk menghitung waktu salat dengan tepat sesuai tempat Anda berada. Lokasi Anda tetap di perangkat Anda.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Lokasi Anda digunakan untuk menghitung waktu salat dengan tepat sesuai tempat Anda berada dan, jika Di masjid aktif, untuk mengaktifkan Mode salat saat Anda memasuki masjid. Lokasi Anda tetap di perangkat Anda.",
+  "NSLocationAlwaysUsageDescription": "Lokasi Anda digunakan untuk memperbarui waktu salat secara otomatis saat Anda berpindah kota dan, jika Di masjid aktif, untuk mengaktifkan Mode salat saat Anda memasuki masjid. Lokasi Anda tetap di perangkat Anda.",
+  "NSCameraUsageDescription": "Kamera Anda digunakan untuk menampilkan arah kiblat di atas tampilan kamera dan untuk memindai kode di TV Anda. Gambar tidak disimpan dan tidak pernah keluar dari perangkat Anda.",
+  "NSCalendarsUsageDescription": "Akses kalender digunakan untuk menambahkan waktu salat ke kalender Anda dan, jika Anda mengaktifkannya, untuk memeriksa apakah acara di kalender Anda bertepatan dengan waktu salat. Data kalender Anda tetap di perangkat Anda.",
+  "NSCalendarsFullAccessUsageDescription": "Akses kalender digunakan untuk menambahkan waktu salat ke kalender Anda dan, jika Anda mengaktifkannya, untuk memeriksa apakah acara di kalender Anda bertepatan dengan waktu salat. Data kalender Anda tetap di perangkat Anda.",
+  "NSLocalNetworkUsageDescription": "Aplikasi terhubung ke TV di jaringan lokal Anda untuk mengirim waktu salat dan salat yang sudah Anda tandai. Data dienkripsi dan hanya berpindah di antara kedua perangkat.",
+  "NSAlarmKitUsageDescription": "Langkah pengingat yang Anda setel ke “Alarm sungguhan” dipasang sebagai alarm, sehingga tetap terdengar meskipun ponsel Anda dalam mode senyap atau Fokus aktif.",
+  "\"Vakti kıldım\"": "Sudah salat",
+  "\"Kıble\"": "Kiblat"
+}

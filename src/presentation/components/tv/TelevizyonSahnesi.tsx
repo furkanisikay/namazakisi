@@ -14,6 +14,7 @@ import { Animated, Easing, View, type LayoutChangeEvent } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
+import { SOLDAN_SAGA } from '../common/yon';
 
 export type SahneDurumu = 'hazir' | 'gonderiliyor' | 'tamam' | 'hata';
 
@@ -130,7 +131,8 @@ export const TelevizyonSahnesi: React.FC<Props> = ({ durum, hareketAzalt }) => {
     return (
         <View
             onLayout={(e: LayoutChangeEvent) => setGenislik(e.nativeEvent.layout.width)}
-            style={{ height: YUKSEKLIK }}
+            // Resim: `left:` katmanları SVG koordinatında → aynalanmaz.
+            style={[SOLDAN_SAGA, { height: YUKSEKLIK }]}
             importantForAccessibility="no-hide-descendants"
             accessibilityElementsHidden
         >

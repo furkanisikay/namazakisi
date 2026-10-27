@@ -1,10 +1,11 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { act, render, fireEvent, waitFor } from '@testing-library/react-native';
 import { YedeklemeSayfasi } from '../YedeklemeSayfasi';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../../core/theme';
 import { useFeedback } from '../../../../core/feedback';
 import { yedeginiPaylas } from '../../../../domain/services/YedeklemeServisi';
+import { ingilizceyeGec, turkceKalanlar } from '../../../../__tests__/yardimci/ingilizceDenetimi';
 
 // Mocklar
 jest.mock('@react-navigation/native');
@@ -159,6 +160,27 @@ describe('YedeklemeSayfasi', () => {
       await waitFor(() => {
         expect(mockNavigation.navigate).toHaveBeenCalledWith('EsitlemeAyarlari');
       });
+    });
+  });
+  describe('İngilizce', () => {
+    const YASAKLI = ['Yedek', 'Kapat', 'Tekrar', 'Cihaz', 'Son '];
+    let geriAl: () => void;
+    beforeEach(() => {
+      geriAl = ingilizceyeGec();
+    });
+    afterEach(() => act(() => geriAl()));
+
+    it('sayfa, eşitleme kartı ve hata modalı İngilizce', async () => {
+      mockKullanilabilir.mockReturnValue([{ kimlik: 'googleDrive', ad: 'Google Drive' }]);
+      (yedeginiPaylas as jest.Mock).mockRejectedValue(new Error('boom'));
+      const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const e = render(<YedeklemeSayfasi />);
+      expect(e.getByText('Sync across devices')).toBeTruthy();
+      fireEvent.press(e.getByText('Create a backup'));
+      await waitFor(() => expect(e.getByText("Backup couldn't be created")).toBeTruthy());
+      expect(turkceKalanlar(e.toJSON() as never, YASAKLI)).toEqual([]);
+      errSpy.mockRestore();
+      mockKullanilabilir.mockReturnValue([]);
     });
   });
 });

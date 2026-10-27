@@ -41,17 +41,27 @@ object VakitKodlari {
 
     /**
      * Görünen ad. `toUpperCase` gibi dönüşümler YAPILMAZ (AGENTS.md: 'İkindi'.toUpperCase()
-     * noktalı İ'yi bozar) — sabit harita.
+     * noktalı İ'yi bozar) — sabit harita. İngilizce karşılıklar JS sözlüğü `vakit.adlar` ile
+     * AYNI (terim sözlüğü: Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha).
+     *
+     * Kullanıcının seçtiği vakit adı takımı ([adlar], varsayılan Android katmanının son
+     * okuduğu [VakitAdlari.etkin]) ÖNCE okunur; o vakit takımda yoksa dil tablosu.
      */
-    fun gorunenAd(kod: String): String = when (kod) {
-        SABAH -> "Sabah"
-        GUNES -> "Güneş"
-        OGLE -> "Öğle"
-        IKINDI -> "İkindi"
-        AKSAM -> "Akşam"
-        YATSI -> "Yatsı"
-        else -> kod
+    fun gorunenAd(kod: String, dil: String = MetinDili.TR, adlar: VakitAdlari? = VakitAdlari.etkin): String {
+        if (kod !in SIRA) return kod
+        adlar?.widgetAdi(kod)?.let { return it }
+        val m = MetinDili.metinler(dil)
+        return when (kod) {
+            SABAH -> m.sabah
+            GUNES -> m.gunes
+            OGLE -> m.ogle
+            IKINDI -> m.ikindi
+            AKSAM -> m.aksam
+            else -> m.yatsi
+        }
     }
+
+    private val SIRA = setOf(SABAH, GUNES, OGLE, IKINDI, AKSAM, YATSI)
 }
 
 /**

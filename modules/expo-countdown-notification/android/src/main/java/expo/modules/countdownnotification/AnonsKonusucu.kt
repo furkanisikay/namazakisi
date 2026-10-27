@@ -43,6 +43,26 @@ object AnonsKonusucu {
     /** TTS motorunun baglanmasi icin beklenen azami sure (dil sorgusu). */
     private const val SORGU_ZAMAN_ASIMI_MS = 5_000L
 
+    /** Anons dili tercihi (BCP-47, ör. "tr-TR"/"en-US"); JS etkin dil değişince yazar. */
+    private const val TERCIH_DOSYASI = "namazakisi_anons"
+    private const val TERCIH_DIL = "dil"
+    private const val VARSAYILAN_DIL = "tr-TR"
+
+    /** JS'in etkin dilini kaydeder (planlı anonslar konuşma anında bunu okur). */
+    fun diliKaydet(context: Context, dil: String) {
+        val temiz = dil.trim().ifEmpty { VARSAYILAN_DIL }
+        context.applicationContext.getSharedPreferences(TERCIH_DOSYASI, Context.MODE_PRIVATE)
+            .edit().putString(TERCIH_DIL, temiz).apply()
+    }
+
+    /** Kayıtlı anons dili; hiç yazılmadıysa Türkçe (eski sürümle aynı davranış). */
+    fun dilOku(context: Context): String = try {
+        context.applicationContext.getSharedPreferences(TERCIH_DOSYASI, Context.MODE_PRIVATE)
+            .getString(TERCIH_DIL, VARSAYILAN_DIL) ?: VARSAYILAN_DIL
+    } catch (_: Exception) {
+        VARSAYILAN_DIL
+    }
+
     private fun sesOzellikleri(): AudioAttributes =
         AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_ALARM)
@@ -119,9 +139,10 @@ object AnonsKonusucu {
                 return@TextToSpeech
             }
             try {
-                val dilSonucu = aktifMotor.setLanguage(Locale.forLanguageTag("tr-TR"))
+                val dil = dilOku(uygulama)
+                val dilSonucu = aktifMotor.setLanguage(Locale.forLanguageTag(dil))
                 if (dilSonucu == TextToSpeech.LANG_MISSING_DATA || dilSonucu == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Log.w(ETIKET, "Turkce TTS verisi yok (sonuc=$dilSonucu); anons atlandi")
+                    Log.w(ETIKET, "TTS verisi yok ($dil, sonuc=$dilSonucu); anons atlandi")
                     temizle()
                     return@TextToSpeech
                 }
@@ -169,10 +190,11 @@ object AnonsKonusucu {
     }
 
     /**
-     * Cihazda Turkce TTS verisi kurulu mu? JS tarafi bunu sorup ekranda uyari
-     * gosterebilsin diye. Hata/zaman asiminda `null` (bilinmiyor) doner (asla firlatmaz).
+     * Cihazda anons dilinin (kayitli tercih; varsayilan Turkce) TTS verisi kurulu mu? JS tarafi
+     * bunu sorup ekranda uyari gosterebilsin diye. Hata/zaman asiminda `null` (bilinmiyor)
+     * doner (asla firlatmaz).
      */
-    fun turkceDestekleniyorMu(context: Context, sonucaVar: (Boolean?) -> Unit) {
+    fun dilDestekleniyorMu(context: Context, sonucaVar: (Boolean?) -> Unit) {
         val uygulama = context.applicationContext
         val isleyici = Handler(Looper.getMainLooper())
         val bitti = AtomicBoolean(false)
@@ -199,7 +221,7 @@ object AnonsKonusucu {
                     return@TextToSpeech
                 }
                 val kod: Int? = try {
-                    motor?.isLanguageAvailable(Locale.forLanguageTag("tr-TR"))
+                    motor?.isLanguageAvailable(Locale.forLanguageTag(dilOku(uygulama)))
                 } catch (e: Exception) {
                     Log.w(ETIKET, "Dil sorgusu basarisiz: ${e.message}")
                     null

@@ -2,6 +2,6 @@
 appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _acilis.yaml
-- tapOn: "Ayarlar"
+- tapOn: "(Ayarlar|Settings)"
 - waitForAnimationToEnd:
     timeout: 3000

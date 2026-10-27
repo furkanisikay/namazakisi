@@ -11,7 +11,7 @@
  */
 import * as React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 
 export interface ParcaliSecenek<T extends string> {
@@ -56,7 +56,7 @@ export function ParcaliSecici<T extends string>({ secenekler, secili, onSec, boy
                         accessibilityLabel={s.erisimEtiketi ?? s.etiket}
                     >
                         {s.ikon && (
-                            <FontAwesome5
+                            <YonluIkon
                                 name={s.ikon}
                                 size={12}
                                 color={seciliMi ? '#FFFFFF' : renkler.metinIkincil}

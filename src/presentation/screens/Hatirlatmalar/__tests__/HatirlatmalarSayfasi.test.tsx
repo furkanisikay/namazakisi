@@ -7,7 +7,7 @@
  * rızasız açılamaz → anahtar ayrıntıya `ac: true` ile gider; hidrasyon odakta.
  */
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { varsayilanCumaAyarlari } from '../../../../core/cuma/cumaAyarlari';
 import { VARSAYILAN_CAMIYE_GIT_AYARLARI } from '../../../../core/camiyeGit/camiyeGitAyarlari';
 import { varsayilanYatisAyarlari } from '../../../../core/yatis/yatisAyarlari';
@@ -345,5 +345,22 @@ describe('HatirlatmalarSayfasi — "Daha az bildirim" önerisi (mevcut kullanıc
         mockMatrisCoz.mockImplementation(() => presetMatrisiOlustur(P.normal.seviyeler, false));
         durumKur({ muhafiz: { aktif: true, yogunluk: 'normal', geceSessizligi: { aktif: true, baslangicSaat: 23, baslangicDakika: 0 } } });
         expect(render(<HatirlatmalarSayfasi />).queryByTestId('varsayilan-oneri-karti')).toBeNull();
+    });
+});
+
+describe('HatirlatmalarSayfasi — İngilizce', () => {
+    /** Türkçe harfsiz ama Türkçe sözcükler (bu sayfada geçebilecek). */
+    const YASAKLI = ['Vakit', 'vakit', 'Cuma', 'Camiye', 'Nafile', 'Ramazan', 'dk\\b', 'Kapat', 'Hafif', 'Uygula', 'Sabah', 'Beş'];
+    it('satır başlıkları, canlı özetler ve öneri kartı İngilizce', () => {
+        const { ingilizceyeGec, turkceKalanlar } = require('../../../../__tests__/yardimci/ingilizceDenetimi') as typeof import('../../../../__tests__/yardimci/ingilizceDenetimi');
+        const geri = ingilizceyeGec();
+        try {
+            const e = render(<HatirlatmalarSayfasi />);
+            expect(turkceKalanlar(e.toJSON() as never, YASAKLI)).toEqual([]);
+            expect(e.getByText('When a prayer time begins')).toBeTruthy();
+            expect(e.getByText('Fajr, Maghrib')).toBeTruthy();
+        } finally {
+            act(() => geri());
+        }
     });
 });

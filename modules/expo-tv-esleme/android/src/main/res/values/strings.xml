@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  TV eşleştirme QR tarayıcısı metinleri — Türkçe (varsayılan). İngilizcesi values-en.
+  Uygulamanın ARAYÜZ dilinden çözülür (`dildeBaglam()`), cihaz dilinden değil.
+  Adlar modül önekiyle başlar (tvesleme_): çakışma olmasın.
+-->
+<resources>
+    <string name="tvesleme_qr_ipucu">TV ekranındaki kare kodu çerçeveye alın</string>
+    <string name="tvesleme_qr_vazgec">Vazgeçin</string>
+    <string name="tvesleme_qr_vazgec_erisim">Taramadan vazgeçin</string>
+    <string name="tvesleme_qr_yabanci">Bu kod Namaz Akışı TV\'ye ait değil. TV\'deki kodu okutun.</string>
+    <string name="tvesleme_qr_okundu">Kod okundu</string>
+</resources>

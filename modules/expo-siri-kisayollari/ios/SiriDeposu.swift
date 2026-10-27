@@ -15,6 +15,7 @@ import Foundation
  *
  * TEK YAZICI kurali: her anahtari tek taraf yazar.
  *   - cizelge, kilinanlar        → JS (WidgetServisi yuku)
+ *   - gunun ayeti (`namazakisi_gunun_ayeti`) → JS (GununAyetiServisi); widget + gorsel intent'i okur
  *   - kildimKuyrugu              → intent/widget dugmesi EKLER, JS (bu sinif uzerinden) DUSER —
  *                                  widget dugmesi `LiveActivityIntent`'tir, UYGULAMA
  *                                  surecinde calisir → ayni kilit, kayip yazim olmaz
@@ -119,6 +120,93 @@ public final class SiriDeposu: @unchecked Sendable {
 
     public func kilinanlariYaz(_ json: String) {
         kilitli { defaults.set(json, forKey: Anahtar.kilinanlar) }
+    }
+
+    // MARK: - Arayuz dili (JS yazar; uygulama, widget ve saat koprusu okur)
+
+    /// Arayuz dili anahtari (dil kodu: "tr", "en", "id"...). Sesli okuma dilinden AYRIDIR
+    /// (`namazakisi_anons_dil`, standart depo): ses motoru baska dile dusebilir.
+    public static let arayuzDiliAnahtari = "namazakisi_dil_kod"
+
+    public func arayuzDiliniYaz(_ kod: String) {
+        kilitli { defaults.set(kod, forKey: Self.arayuzDiliAnahtari) }
+    }
+
+    /// Kayitli arayuz dili; uygulama hic acilmadiysa (JS yazmadi) Turkce. Okurken
+    /// kullanicinin vakit adi takimini da tazeler (`VakitAdlari.etkin`): dili okuyan her
+    /// cizim yolu (widget, canli etkinlik, Kontrol Merkezi, AlarmKit, Siri) guncel adlari alir.
+    public func arayuzDili() -> String {
+        let (kod, ham) = kilitli {
+            (defaults.string(forKey: Self.arayuzDiliAnahtari) ?? "tr", defaults.string(forKey: Self.vakitAdlariAnahtari))
+        }
+        VakitAdlari.etkinYap(ham, dil: kod)
+        return kod
+    }
+
+    /// Kullanicinin sectigi vakit adi takimi (JSON, `VakitAdlari`); yoksa dil tablosu.
+    /// Arayuz dili anahtarinin KARDESI: JS ikisini birlikte yazar.
+    public static let vakitAdlariAnahtari = "namazakisi_vakit_adlari"
+
+    /// nil ya da bos → anahtar SILINIR (tablo adlarina donulur). Icerik dogrulanmaz: okuyan
+    /// taraf bozuk JSON'da tabloya duser. `arayuzDiliniYaz` gibi yalniz yazar (yeniden cizim
+    /// JS'in ardindan yazdigi widget yukuyle gelir).
+    public func vakitAdlariniYaz(_ json: String?) {
+        kilitli {
+            if let json, !json.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                defaults.set(json, forKey: Self.vakitAdlariAnahtari)
+            } else {
+                defaults.removeObject(forKey: Self.vakitAdlariAnahtari)
+            }
+        }
+    }
+
+    /// Arayuzun rakam sistemi ("arab" = Dogu Arap rakami); yoksa Bati rakami. JS etkin dil,
+    /// ulke ve kullanici seciminden cozulmus degeri yazar (`core/dil/rakam`).
+    public static let rakamSistemiAnahtari = "namazakisi_rakam_sistemi"
+
+    /// nil ya da bos → anahtar SILINIR (Bati rakami). Deger DEGISTIYSE true doner: cagiran
+    /// widget zaman cizelgelerini tazeler (widget yuku ayni kaldigi icin JS yeniden yazmaz).
+    @discardableResult
+    public func rakamSisteminiYaz(_ kod: String?) -> Bool {
+        kilitli {
+            let onceki = defaults.string(forKey: Self.rakamSistemiAnahtari)
+            if let kod, !kod.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                defaults.set(kod, forKey: Self.rakamSistemiAnahtari)
+                return onceki != kod
+            } else {
+                defaults.removeObject(forKey: Self.rakamSistemiAnahtari)
+                return onceki != nil
+            }
+        }
+    }
+
+    /// Ham rakam kaydi ("arab" ya da nil); yorumu `RakamSistemi.etkin` yapar (yalniz Arapcada).
+    public func rakamSistemi() -> String? {
+        kilitli { defaults.string(forKey: Self.rakamSistemiAnahtari) }
+    }
+
+    /// Kayitli takim (cozulmus); yok ya da bozuksa nil.
+    public func vakitAdlari() -> VakitAdlari? {
+        VakitAdlari.coz(kilitli { defaults.string(forKey: Self.vakitAdlariAnahtari) })
+    }
+
+    // MARK: - Gunun ayeti (JS yazar; widget ve "Gunun ayeti gorseli" intent'i okur)
+
+    /// Gunun ayeti yuku v1 (`docs/ajan/gunun-ayeti.md`). OLAY anahtari DEGIL: JS her
+    /// acilista ve dil/konum degisiminde yeniden yazar → goce (`gocEt`) girmesi gerekmez.
+    public static let gununAyetiAnahtari = "namazakisi_gunun_ayeti"
+
+    public func gununAyetiYaz(_ json: String) {
+        kilitli { defaults.set(json, forKey: Self.gununAyetiAnahtari) }
+    }
+
+    public func gununAyetiJson() -> String? {
+        kilitli { defaults.string(forKey: Self.gununAyetiAnahtari) }
+    }
+
+    /// Cozulmus yuk; yoksa / bozuksa / baska surumse nil.
+    public func gununAyeti() -> GununAyetiYuku? {
+        GununAyetiKarari.coz(gununAyetiJson())
     }
 
     public func cizelge() -> SiriCizelge? {

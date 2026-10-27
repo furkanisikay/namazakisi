@@ -17,12 +17,15 @@ import {
     Dimensions,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { YonluIkon } from '../../components/common/YonluIkon';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { TakvimServisi } from '../../../domain/services/TakvimServisi';
 import { Logger } from '../../../core/utils/Logger';
 import type { TakvimVakitAdi } from '../../store/takvimSlice';
-import { VAKIT_SIRASI, VAKIT_GORUNTU_ADLARI, VAKIT_TEMIZLE_BASLIK, saatFormatla } from './sabitler';
+import { VAKIT_SIRASI, VAKIT_GORUNTU_ADLARI, vakitEtkinlikBasligi, vakitTemizleBasliklari, saatFormatla } from './sabitler';
+import { bicim, metin, sayili } from '../../../core/dil/aktifDil';
+import { useMetin } from '../../hooks/useMetin';
 import { OzetSatir, takvimUygulamasiniAc, BasariIcerigi } from './bilesenler';
 import { SayisalSecici } from '../../components/common/SayisalSecici';
 
@@ -48,13 +51,10 @@ interface TemizleModaliProps {
     onSilindi?: () => void;
 }
 
-/** Silme akışının üç adımı (tarama ikinci adımın parçası). */
-const ADIM_ADLARI = ['Seçin', 'Gözden geçirin', 'Tamam'] as const;
-
-const ARALIK_PRESETLER: { gun: number; etiket: string; aciklama: string }[] = [
-    { gun: 7,  etiket: '7 Gün',  aciklama: 'Bu hafta' },
-    { gun: 30, etiket: '30 Gün', aciklama: 'Bu ay' },
-    { gun: 90, etiket: '90 Gün', aciklama: '3 ay' },
+const ARALIK_PRESETLER: { gun: number; anahtar: 'hafta' | 'ay' | 'ucAy' }[] = [
+    { gun: 7, anahtar: 'hafta' },
+    { gun: 30, anahtar: 'ay' },
+    { gun: 90, anahtar: 'ucAy' },
 ];
 
 export const TemizleModali: React.FC<TemizleModaliProps> = ({
@@ -62,6 +62,9 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
     secilenTakvimId, secilenTakvimAdi, cihazTakvimleri, onSilindi,
 }) => {
     const renkler = useRenkler();
+    const mt = useMetin().takvim.temizle;
+    /** Silme akışının üç adımı (tarama ikinci adımın parçası). */
+    const ADIM_ADLARI = mt.adimlar;
 
     const [adim, setAdim] = useState<TemizleAdim>('kriter');
     const [takvimMod, setTakvimMod] = useState<TakvimModTipi>('secili');
@@ -127,7 +130,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
             const tumVakitlerSecili = secilenVakitler.size === VAKIT_SIRASI.length;
             const vakitBasliklari = tumVakitlerSecili
                 ? undefined
-                : Array.from(secilenVakitler).map(v => VAKIT_TEMIZLE_BASLIK[v]);
+                : Array.from(secilenVakitler).flatMap(v => vakitTemizleBasliklari(v));
 
             const etkinlikler = await TakvimServisi.getInstance().etkinlikleriGetir(
                 takvimIds, baslangic, bitis, vakitBasliklari
@@ -139,7 +142,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
         } catch (error) {
             Logger.error('TakvimAyarlari', 'Etkinlikler getirilemedi', error);
             // Hata YUTULMAZ: kriter adımına dönülür ve sebep yazılır.
-            setHata('Etkinlikler okunamadı. Tekrar deneyin.');
+            setHata(metin().takvim.temizle.okunamadi);
             setAdim('kriter');
         }
     };
@@ -157,7 +160,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
         } catch (error) {
             Logger.error('TakvimAyarlari', 'Etkinlikler silinemedi', error);
             setSiliniyor(false);
-            setHata('Etkinlikler silinemedi. Tekrar deneyin.');
+            setHata(metin().takvim.temizle.silinemedi);
         }
     };
 
@@ -166,18 +169,18 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
     };
 
     const temizlemeOzetSatirlari: OzetSatir[] = [
-        { ikon: 'trash-alt', etiket: 'Silinen', deger: `${silinenSayi} etkinlik` },
+        { ikon: 'trash-alt', etiket: mt.silinen, deger: sayili(mt.silinenDeger, silinenSayi) },
         {
             ikon: takvimMod === 'tumu' ? 'layer-group' : 'bookmark',
-            etiket: 'Takvim',
-            deger: takvimMod === 'tumu' ? 'Tüm takvimler' : (secilenTakvimAdi ?? 'Seçili takvim'),
+            etiket: mt.takvim,
+            deger: takvimMod === 'tumu' ? mt.tumTakvimler : (secilenTakvimAdi ?? mt.seciliTakvim),
         },
-        { ikon: 'clock', etiket: 'Aralık', deger: `${aralikGun} gün` },
+        { ikon: 'clock', etiket: mt.aralikEtiketi, deger: sayili(mt.gunDeger, aralikGun) },
         {
             ikon: 'list-ul',
-            etiket: 'Vakitler',
+            etiket: mt.vakitler,
             deger: secilenVakitler.size === VAKIT_SIRASI.length
-                ? 'Tüm vakitler'
+                ? mt.tumVakitler
                 : Array.from(secilenVakitler).map(v => VAKIT_GORUNTU_ADLARI[v]).join(', '),
         },
     ];
@@ -246,7 +249,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                             <View
                                 testID="temizle-adim-gostergesi"
                                 accessible
-                                accessibilityLabel={`Adım ${adimNo} / 3: ${ADIM_ADLARI[adimNo - 1]}`}
+                                accessibilityLabel={bicim(mt.adimEtiketi, { no: adimNo, ad: ADIM_ADLARI[adimNo - 1] })}
                                 className="flex-row items-center justify-center mb-3"
                             >
                                 {ADIM_ADLARI.map((ad, i) => (
@@ -263,7 +266,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                     </View>
                                 ))}
                                 <Text className="text-xs ml-2" style={{ color: renkler.metinIkincil }}>
-                                    {`Adım ${adimNo} / 3 · ${ADIM_ADLARI[adimNo - 1]}`}
+                                    {bicim(mt.adimMetni, { no: adimNo, ad: ADIM_ADLARI[adimNo - 1] })}
                                 </Text>
                             </View>
                             {hata && (
@@ -289,17 +292,17 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                         </View>
                                         <View className="flex-1">
                                             <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                                Etkinlikleri silin
+                                                {mt.baslik}
                                             </Text>
                                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                                Silmeden önce listede göreceksiniz
+                                                {mt.altBaslik}
                                             </Text>
                                         </View>
                                     </View>
 
                                     {/* Takvim Seçimi */}
                                     <Text className="text-xs font-bold tracking-wider mb-2" style={{ color: renkler.metinIkincil }}>
-                                        HANGİ TAKVİM
+                                        {mt.hangiTakvim}
                                     </Text>
                                     <View
                                         className="rounded-2xl overflow-hidden mb-4"
@@ -308,15 +311,15 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                         {[
                                             {
                                                 mod: 'secili' as TakvimModTipi,
-                                                baslik: secilenTakvimAdi ?? 'Seçili Takvim',
-                                                aciklama: secilenTakvimAdi ? 'Sadece bu takvimde ara' : 'Önce bir takvim seçin',
+                                                baslik: secilenTakvimAdi ?? mt.seciliTakvimBaslik,
+                                                aciklama: secilenTakvimAdi ? mt.sadeceBu : mt.onceSecin,
                                                 ikon: 'bookmark',
                                                 disabled: !secilenTakvimId,
                                             },
                                             {
                                                 mod: 'tumu' as TakvimModTipi,
-                                                baslik: 'Tüm Takvimler',
-                                                aciklama: `${cihazTakvimleri.length} takvimde ara`,
+                                                baslik: mt.tumTakvimlerBaslik,
+                                                aciklama: sayili(mt.takvimdeAra, cihazTakvimleri.length),
                                                 ikon: 'layer-group',
                                                 disabled: false,
                                             },
@@ -363,10 +366,11 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
 
                                     {/* Zaman Aralığı */}
                                     <Text className="text-xs font-bold tracking-wider mb-2" style={{ color: renkler.metinIkincil }}>
-                                        ZAMAN ARALIĞI (BUGÜNDEN İTİBAREN)
+                                        {mt.zamanAraligi}
                                     </Text>
                                     <View className="flex-row gap-2 mb-2">
-                                        {ARALIK_PRESETLER.map(({ gun, etiket, aciklama }) => {
+                                        {ARALIK_PRESETLER.map(({ gun, anahtar }) => {
+                                            const { etiket, aciklama } = mt.aralik[anahtar];
                                             const secili = !ozelAralikAktif && aralikGun === gun;
                                             return (
                                                 <TouchableOpacity
@@ -406,25 +410,25 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                             activeOpacity={0.7}
                                         >
                                             <Text className="text-sm font-bold" style={{ color: ozelAralikAktif ? renkler.birincilMetin : renkler.metin }}>
-                                                Özel
+                                                {mt.ozel}
                                             </Text>
                                             <Text className="text-xs mt-0.5" style={{ color: ozelAralikAktif ? `${renkler.birincilMetin}C0` : renkler.metinIkincil }}>
-                                                Gün girin
+                                                {mt.gunGirin}
                                             </Text>
                                         </TouchableOpacity>
                                     </View>
                                     {ozelAralikAktif && (
                                         <View className="flex-row items-center justify-between mt-1 mb-2">
-                                            <Text className="text-sm" style={{ color: renkler.metin }}>Gün sayısı</Text>
+                                            <Text className="text-sm" style={{ color: renkler.metin }}>{mt.gunSayisi}</Text>
                                             <SayisalSecici
                                                 deger={aralikGun}
                                                 min={1}
                                                 max={365}
                                                 adim={1}
-                                                birim="gün"
+                                                birim={mt.gunBirim}
                                                 onChange={setAralikGun}
                                                 renk={renkler.birincil}
-                                                aciklama="Silinecek gün aralığı"
+                                                aciklama={mt.gunAraligi}
                                             />
                                         </View>
                                     )}
@@ -433,11 +437,11 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                     {/* Vakitler */}
                                     <View className="flex-row items-center justify-between mb-2">
                                         <Text className="text-xs font-bold tracking-wider" style={{ color: renkler.metinIkincil }}>
-                                            VAKİTLER
+                                            {mt.vakitlerBuyuk}
                                         </Text>
                                         <TouchableOpacity onPress={tumunuSec}>
                                             <Text className="text-xs font-semibold" style={{ color: renkler.birincil }}>
-                                                {secilenVakitler.size === VAKIT_SIRASI.length ? 'Seçimi Kaldır' : 'Tümünü Seç'}
+                                                {secilenVakitler.size === VAKIT_SIRASI.length ? mt.secimiKaldir : mt.tumunuSec}
                                             </Text>
                                         </TouchableOpacity>
                                     </View>
@@ -470,10 +474,10 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                                         {secili && <FontAwesome5 name="check" size={10} color={renkler.birincilMetin} />}
                                                     </View>
                                                     <Text className="text-sm" style={{ color: renkler.metin, fontWeight: secili ? '600' : '400' }}>
-                                                        {VAKIT_GORUNTU_ADLARI[vakit]} Namazı
+                                                        {vakitEtkinlikBasligi(vakit)}
                                                     </Text>
                                                     <Text className="ml-auto text-xs" style={{ color: renkler.metinIkincil }}>
-                                                        {VAKIT_TEMIZLE_BASLIK[vakit]}
+                                                        {vakitEtkinlikBasligi(vakit)}
                                                     </Text>
                                                 </TouchableOpacity>
                                             );
@@ -492,13 +496,13 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                     >
                                         <FontAwesome5 name="search" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                                         <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
-                                            Etkinlikleri Tara
+                                            {mt.tara}
                                         </Text>
                                     </TouchableOpacity>
 
                                     {!taraButonuAktif && (
                                         <Text className="text-xs text-center mt-2" style={{ color: renkler.metinIkincil }}>
-                                            Önce takvim ayarlarından bir takvim seçin
+                                            {mt.takvimSecin}
                                         </Text>
                                     )}
                                 </ScrollView>
@@ -509,7 +513,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                 <View className="items-center justify-center py-16">
                                     <ActivityIndicator size="large" color={renkler.hata} />
                                     <Text className="text-sm mt-4" style={{ color: renkler.metinIkincil }}>
-                                        Etkinlikler taranıyor…
+                                        {mt.taraniyor}
                                     </Text>
                                 </View>
                             )}
@@ -521,7 +525,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                     <View className="px-5 pb-3">
                                         <View className="flex-row items-center mb-1">
                                             <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                                Silinecek Etkinlikler
+                                                {mt.silinecekler}
                                             </Text>
                                             <View
                                                 className="ml-2 px-2 py-0.5 rounded-full"
@@ -533,9 +537,9 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                             </View>
                                         </View>
                                         <Text className="text-xs leading-4" style={{ color: renkler.metinIkincil }}>
-                                            {takvimMod === 'tumu' ? 'Tüm takvimler' : (secilenTakvimAdi ?? 'Seçili takvim')}
-                                            {'  ·  '}{aralikGun} gün
-                                            {'  ·  '}{secilenVakitler.size === VAKIT_SIRASI.length ? 'Tüm vakitler' : Array.from(secilenVakitler).map(v => VAKIT_GORUNTU_ADLARI[v]).join(', ')}
+                                            {takvimMod === 'tumu' ? mt.tumTakvimler : (secilenTakvimAdi ?? mt.seciliTakvim)}
+                                            {'  ·  '}{sayili(mt.ozetGun, aralikGun)}
+                                            {'  ·  '}{secilenVakitler.size === VAKIT_SIRASI.length ? mt.tumVakitler : Array.from(secilenVakitler).map(v => VAKIT_GORUNTU_ADLARI[v]).join(', ')}
                                         </Text>
                                     </View>
 
@@ -543,10 +547,10 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                         <View className="flex-1 items-center justify-center py-10 px-5">
                                             <FontAwesome5 name="calendar-check" size={40} color={renkler.metinIkincil} />
                                             <Text className="text-sm font-semibold mt-3 text-center" style={{ color: renkler.metin }}>
-                                                Etkinlik Bulunamadı
+                                                {mt.bulunamadi}
                                             </Text>
                                             <Text className="text-xs text-center mt-1.5 leading-5" style={{ color: renkler.metinIkincil }}>
-                                                Belirtilen kriterlerde silinecek etkinlik bulunamadı.
+                                                {mt.bulunamadiAciklama}
                                             </Text>
                                         </View>
                                     ) : (
@@ -569,9 +573,9 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                             disabled={siliniyor}
                                             activeOpacity={0.7}
                                         >
-                                            <FontAwesome5 name="arrow-left" size={13} color={renkler.metinIkincil} style={{ marginRight: 6 }} />
+                                            <YonluIkon name="arrow-left" size={13} color={renkler.metinIkincil} style={{ marginRight: 6 }} />
                                             <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
-                                                Geri
+                                                {mt.geri}
                                             </Text>
                                         </TouchableOpacity>
 
@@ -591,8 +595,8 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                                     <FontAwesome5 name="trash-alt" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                                                     <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
                                                         {bulunanEtkinlikler.length > 0
-                                                            ? `${bulunanEtkinlikler.length} Etkinliği Sil`
-                                                            : 'Silinecek Etkinlik Yok'}
+                                                            ? sayili(mt.sil, bulunanEtkinlikler.length)
+                                                            : mt.silinecekYok}
                                                     </Text>
                                                 </>
                                             )}
@@ -609,10 +613,8 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                 >
                                     <BasariIcerigi
                                         tip="temizleme"
-                                        baslik="Etkinlikler Temizlendi"
-                                        altBaslik={silinenSayi > 0
-                                            ? 'Seçtiğiniz etkinlikler takviminizden başarıyla silindi.'
-                                            : 'Belirttiğiniz kriterlerde silinecek etkinlik kalmadı.'}
+                                        baslik={mt.temizlendi}
+                                        altBaslik={silinenSayi > 0 ? mt.silindi : mt.kalmadi}
                                         satirlar={temizlemeOzetSatirlari}
                                         onTakvimiAc={handleTakvimiAc}
                                         onKapat={onKapat}

@@ -20,6 +20,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
 import com.furkanisikay.namazakisi.saat.komplikasyon.KomplikasyonOrtak
 import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
+import com.furkanisikay.namazakisi.saat.ui.yerelRakamla
 
 /**
  * "Son dakikalar" (issue #281): vaktin KILINMAMIŞ son penceresinde kadranda
@@ -65,7 +66,7 @@ object SonDakikalarBildirimi {
     )
 
     fun guncelle(context: Context, yuk: Yuk?, bekleyen: Set<String>, simdi: Long) {
-        val pencere = CanliGosterim.aktif(yuk, bekleyen, simdi)
+        val pencere = CanliGosterim.aktif(yuk, bekleyen, simdi, context.getString(R.string.dil_kodu))
         if (pencere == null || !MuhafizBildirimci.bildirimIzniVar(context)) {
             kaldir(context)
             return
@@ -82,10 +83,14 @@ object SonDakikalarBildirimi {
 
     private fun kanaliGarantile(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
-        if (nm.getNotificationChannel(KANAL) != null) return
+        val ad = context.getString(R.string.son_dakikalar_kanal_adi)
+        val aciklama = context.getString(R.string.son_dakikalar_kanal_aciklama)
+        // Var olan kanalda yalnız ad/açıklama (cihaz dili değişince) güncellenir.
+        val mevcut = nm.getNotificationChannel(KANAL)
+        if (mevcut != null && mevcut.name?.toString() == ad && mevcut.description == aciklama) return
         nm.createNotificationChannel(
-            NotificationChannel(KANAL, context.getString(R.string.son_dakikalar_kanal_adi), NotificationManager.IMPORTANCE_LOW).apply {
-                description = context.getString(R.string.son_dakikalar_kanal_aciklama)
+            NotificationChannel(KANAL, ad, NotificationManager.IMPORTANCE_LOW).apply {
+                description = aciklama
                 enableVibration(false)
                 setSound(null, null)
             }
@@ -101,9 +106,15 @@ object SonDakikalarBildirimi {
             context, 0, Intent(context, AnaAktivite::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        val baslik = p.baslik
+        // Görünen rakamlar saatin yerel ayarıyla (ar-SA'da ٠-٩; `cekirdek/Rakam.kt`).
+        val baslik = context.yerelRakamla(p.baslik)
         // Saate hal eki EKLENMEZ ("17:43'te" okunuşa göre değişir) — AGENTS.md.
-        val govde = if (p.sonDakikalar) "Çıkış: ${VakitHesabi.saat(p.bitis)}" else "Bitiş: ${VakitHesabi.saat(p.bitis)}"
+        val govde = context.yerelRakamla(
+            context.getString(
+                if (p.sonDakikalar) R.string.son_dakikalar_cikis else R.string.son_dakikalar_bitis,
+                VakitHesabi.saat(p.bitis),
+            )
+        )
         val bildirim = NotificationCompat.Builder(context, KANAL)
             .setSmallIcon(ikon)
             // Vurgu rengi: son dakikalarda acil tonu (ana ekrandaki son-dakika rengiyle aynı),
@@ -137,14 +148,14 @@ object SonDakikalarBildirimi {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
             // Buton etiketi (arayüz) — muhafız bildirimindeki "Kıldım" ile aynı.
-            bildirim.addAction(0, "Kıldım", kildim)
+            bildirim.addAction(0, context.getString(R.string.kildim), kildim)
         }
 
         // Ongoing zaman damgaları elapsedRealtime tabanındadır (duvar saati DEĞİL).
         val sifirAni = SystemClock.elapsedRealtime() + (p.bitis - System.currentTimeMillis())
         val durum = Status.Builder()
             .addTemplate("#vakit# · #kalan#")
-            .addPart("vakit", Status.TextPart(p.ad))
+            .addPart("vakit", Status.TextPart(context.yerelRakamla(p.ad)))
             .addPart("kalan", Status.TimerPart(sifirAni))
             .build()
         OngoingActivity.Builder(context, ETIKET, BILDIRIM_NO, bildirim)
@@ -153,7 +164,10 @@ object SonDakikalarBildirimi {
             .setStatus(durum)
             .setTitle(baslik)
             .setContentDescription(
-                if (p.sonDakikalar) "${p.ad} vaktinin çıkmasına kalan süre" else "${p.ad} için kalan süre"
+                context.getString(
+                    if (p.sonDakikalar) R.string.son_dakikalar_cikis_erisim else R.string.son_dakikalar_kalan_erisim,
+                    p.ad,
+                )
             )
             .build()
             .apply(context)

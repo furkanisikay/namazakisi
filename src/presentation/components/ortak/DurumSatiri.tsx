@@ -26,6 +26,7 @@ import { EYLEM_ETIKETLERI, type DurumEylemi, type DurumNotu } from '../../../cor
 import { kisaBildirimGoster } from '../common/KisaBildirim';
 import { KonumIzniDisclosureModali } from '../KonumIzniDisclosureModali';
 import { useIzinAkisi } from './useIzinAkisi';
+import { metin } from '../../../core/dil/aktifDil';
 import type { IzinDurumu } from '../../../core/cihaz/durumNotlari';
 
 const konumIzniOku = async (): Promise<IzinDurumu | null> => {
@@ -120,7 +121,7 @@ export const DurumSatiri: React.FC<DurumSatiriProps> = ({ durum, onEylem, onSonr
                 // Tembel: eylemler native köprü çeker (test ve iOS güvenliği).
                 const { durumEylemiUygula } = require('../../../domain/services/DurumEylemleri') as typeof import('../../../domain/services/DurumEylemleri');
                 const acildi = await durumEylemiUygula(eylem);
-                if (!acildi) kisaBildirimGoster('Ayar ekranı açılamadı; telefonunuzun Ayarlar bölümünden açabilirsiniz.', true);
+                if (!acildi) kisaBildirimGoster(metin().genel.ortak.ayarEkraniAcilamadi, true);
             }
             onSonra?.();
         } finally {

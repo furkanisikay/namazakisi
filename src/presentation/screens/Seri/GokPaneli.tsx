@@ -87,6 +87,9 @@ import { AnimasyonluBag } from './AnimasyonluBag';
 import { AnimasyonluYildiz } from './AnimasyonluYildiz';
 import { Parilti } from './Parilti';
 import { BugununNabzi } from './BugununNabzi';
+import { useMetin } from '../../hooks/useMetin';
+import { useRakamCevir } from '../../components/metin/useRakamCevir';
+import { sagdanSolaCiziliyor } from '../../components/common/yon';
 
 export interface GokPaneliProps {
   /** `aylikIzgaraOlustur` çıktısı — 28/35/42 hücre. */
@@ -143,8 +146,6 @@ const PARILTI_CAP_ORANI = 1.3;
 const GUN_NUMARASI_FONT_ORANI = 0.18;
 const GUN_NUMARASI_ALT_PAY_ORANI = 0.08;
 
-/** Haftanın günleri, pazartesiden başlar (ızgara pazartesi başlıyor). */
-const GUN_HARFLERI = ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'];
 
 export const GokPaneli: React.FC<GokPaneliProps> = ({
   izgara,
@@ -155,6 +156,11 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
   mevcutSeri,
 }) => {
   const renkler = useRenkler();
+  // Haftanın günleri, pazartesiden başlar (ızgara pazartesi başlıyor); etkin dilde.
+  const sozluk = useMetin();
+  // SVG metni metin kapısından geçmez: Arapçada rakamlar burada çevrilir.
+  const rakam = useRakamCevir();
+  const gunHarfleri = sozluk.seri.gok.gunHarfleri;
   const [panelGenislik, setPanelGenislik] = useState(0);
 
   // Açılış animasyonu bir kez oynatma sentinel'i (spec 2c). `AnimasyonluBag`/
@@ -186,6 +192,8 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
   }, []);
 
   const satirSayisi = Math.max(1, Math.ceil(izgara.length / SUTUN_SAYISI));
+  // Panel soldan sağa çizilir (koordinatlar fiziksel); takvim sırası burada aynalanır.
+  const sagdanSola = sagdanSolaCiziliyor();
 
   const olculer: GokOlculeri = useMemo(
     () => ({
@@ -194,15 +202,18 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
       yatayPay: PANEL_YATAY_PAY,
       ustPay: PANEL_UST_PAY,
       satirAraligi: SATIR_ARALIGI,
+      sagdanSola,
     }),
-    [panelGenislik, satirSayisi]
+    [panelGenislik, satirSayisi, sagdanSola]
   );
 
   const yerlesim = useMemo(() => gokYerlesimi(olculer), [olculer]);
 
   const erisimEtiketi = useMemo(
     () => gokErisimEtiketi(izgara, ayAdi, mevcutSeri, tamGunEsigi),
-    [izgara, ayAdi, mevcutSeri, tamGunEsigi]
+    // `sozluk`: etiket etkin dilde yeniden kurulsun.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [izgara, ayAdi, mevcutSeri, tamGunEsigi, sozluk]
   );
 
   // Açılış zaman çizelgesi — SAF (core/seri/acilisCizelgesi), zamanlama
@@ -234,10 +245,12 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
       accessible
       accessibilityRole="image"
       accessibilityLabel={erisimEtiketi}
+      // SVG gök (ızgara + yıldızlar) aynalanmaz; üstündeki `left:` katmanları (Parilti,
+      // BugununNabzi) SVG koordinatıyla örtüşsün diye sahne soldan sağa sabit.
       style={
         panelGenislik > 0
-          ? { height: govdeYukseklik, borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
-          : { borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
+          ? { direction: 'ltr', height: govdeYukseklik, borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
+          : { direction: 'ltr', borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
       }
     >
       {panelGenislik > 0 && (
@@ -396,7 +409,7 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
                   opacity={opaklik}
                   textAnchor="middle"
                 >
-                  {gun.gunNo}
+                  {rakam(gun.gunNo)}
                 </SvgText>
               );
             })}
@@ -406,15 +419,16 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
               header payında). Gün harfleri ızgaranın sütun merkezleriyle (satır 0)
               birebir hizalanır (`yerlesim.merkez(i).x`, i=0..6). */}
           <SvgText
-            x={PANEL_YATAY_PAY}
+            x={sagdanSola ? panelGenislik - PANEL_YATAY_PAY : PANEL_YATAY_PAY}
+            textAnchor={sagdanSola ? 'end' : 'start'}
             y={20}
             fontSize={13}
             fontWeight="600"
             fill={GOK_TONLARI.AY_ADI}
           >
-            {ayAdi}
+            {rakam(ayAdi)}
           </SvgText>
-          {GUN_HARFLERI.map((harf, i) => (
+          {gunHarfleri.map((harf, i) => (
             <SvgText
               key={`gun-adi-${i}`}
               x={yerlesim.merkez(i).x}

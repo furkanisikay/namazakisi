@@ -86,6 +86,11 @@ interface CountdownNativeModule {
     stopCountdown(id: string): void;
     stopAll(): void;
     planlaAnons(id: string, tetikZamanMs: number, metin: string): void;
+    /** Yeni köprü — eski native'de yoktur, opsiyonel tiplenir. */
+    anonsDiliniAyarla?(dil: string): void;
+    arayuzDiliniAyarla?(kod: string): void;
+    vakitAdlariniAyarla?(json: string | null): void;
+    rakamSisteminiAyarla?(kod: string | null): void;
     iptalEtAnons(id: string): void;
     iptalEtTumAnonslar(): void;
     /** Yeni köprü (issue #273) — eski native'de yoktur, opsiyonel tiplenir. */
@@ -455,7 +460,64 @@ export async function alarmSesiAcikMi(): Promise<boolean | null> {
 }
 
 /**
- * Cihazda Turkce TTS dil verisi kurulu mu? UC DURUMLU, asla firlatmaz:
+ * Arayüz dili ("tr", "en"): Android widget, bildirim ve alarm metinleri bunu okur. Native
+ * eski ise sessizce atlanır (Türkçe kalır). Asla fırlatmaz.
+ */
+export function arayuzDiliniAyarla(kod: string): void {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.arayuzDiliniAyarla) return;
+    try {
+        ExpoCountdownNotification.arayuzDiliniAyarla(kod);
+    } catch {
+        // Eski native: widget/bildirim Türkçe kalır.
+    }
+}
+
+/**
+ * Kullanıcının seçtiği vakit adı takımı (JSON: `{"adlar":{imsak…yatsi},"buyuk":{…},"kucuk":{…},
+ * "cuma","imsakVakti","gunesDogusu"}`) ya da `null` (dil tablosuna dön). Android widget,
+ * bildirim, kısayol ve asistan vakit adını önce buradan okur. Native eski ise sessizce
+ * atlanır. Asla fırlatmaz.
+ */
+export function vakitAdlariniAyarla(json: string | null): void {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.vakitAdlariniAyarla) return;
+    try {
+        ExpoCountdownNotification.vakitAdlariniAyarla(json);
+    } catch {
+        // Eski native: dil tablosundaki adlar kalır.
+    }
+}
+
+/**
+ * Arayüzün rakam sistemi: `'arab'` (Doğu Arap rakamı, ٠١٢٣) ya da `null` (anahtar silinir, Batı
+ * rakamı). JS etkin dil/ülke/seçimden çözülmüş değeri yazar (`core/dil/rakam`); native yüzeyler
+ * (widget, kutu, bildirim, alarm, Live Update) yalnız Arapça arayüzde uygular (`cekirdek/Rakam`).
+ * Native eski ise sessizce atlanır. Asla fırlatmaz.
+ */
+export function rakamSisteminiAyarla(kod: string | null): void {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.rakamSisteminiAyarla) return;
+    try {
+        ExpoCountdownNotification.rakamSisteminiAyarla(kod);
+    } catch {
+        // Eski native: Batı rakamı kalır.
+    }
+}
+
+/**
+ * Planli anonslarin konusma dili (BCP-47, ör. "en-US"). Native eski ise (fonksiyon yok)
+ * sessizce atlanir: anons Turkce konusur. Asla firlatmaz.
+ */
+export function anonsDiliniAyarla(dil: string): void {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.anonsDiliniAyarla) return;
+    try {
+        ExpoCountdownNotification.anonsDiliniAyarla(dil);
+    } catch {
+        // Eski native ya da bağlam yok: anons varsayılan dilde kalır.
+    }
+}
+
+/**
+ * Cihazda anons dilinin (kayitli tercih; varsayilan Turkce) TTS verisi kurulu mu?
+ * UC DURUMLU, asla firlatmaz:
  *   `true`  → kurulu, `false` → motor dili GERCEKTEN desteklemiyor (uyari gosterilir),
  *   `null`  → bilinmiyor: Android disi, modul yok, native zaman asimi / motor acilamadi /
  *             hata. "Yok" demek, yavas acilan TTS motorunda yanlis uyari yakardi.

@@ -27,6 +27,7 @@ import type { KazaNamazAdi } from '../../core/types/KazaTipleri';
 import { mekruhVakitKontrolEt } from '../../domain/services/KazaHesaplayiciServisi';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { Logger } from '../../core/utils/Logger';
+import { bicim, metin } from '../../core/dil/aktifDil';
 import { kazaKabulMetni } from '../../core/samimiyet/kabulDuasi';
 
 export interface KazaOnerisi {
@@ -110,7 +111,7 @@ export const useFarzSonrasiKazaOnerisi = () => {
       if (!kazaVerileriniYukle.fulfilled.match(yuk)) throw new Error('Kaza defteri okunamadi');
       const borc = yuk.payload.kazaDurumu.namazlar.find((n) => n.namazAdi === oneri.kazaNamazi)?.kalanBorc ?? 0;
       if (borc <= 0) {
-        kisaBildirimGoster(`Bu ${kucukAd} kazası için borcunuz kalmamış.`);
+        kisaBildirimGoster(bicim(metin().kaza.oneri.borcYok, { kaza: kucukAd }));
         return;
       }
       const sonuc = await dispatch(kazaTamamla({ namazAdi: oneri.kazaNamazi, sayi: 1 }));
@@ -118,7 +119,7 @@ export const useFarzSonrasiKazaOnerisi = () => {
       kisaBildirimGoster(kazaKabulMetni(kucukAd));
     } catch (e) {
       Logger.warn('KazaOnerisi', 'Kaza dusulemedi', e);
-      kisaBildirimGoster("Kaza kaydedilemedi. Kaza Defteri'nden işaretleyebilirsiniz.", true);
+      kisaBildirimGoster(metin().kaza.oneri.kaydedilemedi, true);
     } finally {
       setOneri(null);
       setIsleniyor(false);
@@ -138,9 +139,9 @@ export const useFarzSonrasiKazaOnerisi = () => {
     setOneri(null);
     const sonuc = await dispatch(kazaOneriAyarlariniGuncelle({ farzSonrasiOner: false }));
     if (kazaOneriAyarlariniGuncelle.fulfilled.match(sonuc)) {
-      kisaBildirimGoster("Kaza önerisi kapatıldı. Kaza Defteri'nden yeniden açabilirsiniz.", true);
+      kisaBildirimGoster(metin().kaza.oneri.kapatildi, true);
     } else {
-      kisaBildirimGoster('Ayar kaydedilemedi. Lütfen yeniden deneyin.');
+      kisaBildirimGoster(metin().kaza.oneri.ayarKaydedilemedi);
     }
   }, [dispatch, oneri]);
 

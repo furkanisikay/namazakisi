@@ -174,7 +174,46 @@ class ExpoCountdownNotificationModule : Module() {
         // SESLI ANONS (muhafiz TTS) — Foreground Service KULLANILMAZ
         // ============================================================
 
-        /** Verilen zamanda [metin]'i Turkce TTS ile seslendirecek exact alarm kurar. */
+        /**
+         * Anons dilini (BCP-47) kaydeder; planli anonslar konusma aninda bunu kullanir.
+         * Yazilmadiysa Turkce (eski surumle ayni).
+         */
+        /** Arayüz dili ("tr", "en", "id"…); widget ve bildirim metinleri bunu okur ([ArayuzDili]). */
+        Function("arayuzDiliniAyarla") { kod: String ->
+            val context = appContext.reactContext
+            if (context != null) ArayuzDili.kaydet(context.applicationContext, kod)
+            Unit
+        }
+
+        /**
+         * Kullanıcının seçtiği vakit adı takımı (JSON) ya da `null` (anahtar silinir, dil
+         * tablosu). Widget'lar `arayuzDiliniAyarla`'daki gibi tercih dinleyicisiyle
+         * (`ArayuzDiliIzleyici`) yeniden çizilir.
+         */
+        Function("vakitAdlariniAyarla") { json: String? ->
+            val context = appContext.reactContext
+            if (context != null) ArayuzDili.vakitAdlariniKaydet(context.applicationContext, json)
+            Unit
+        }
+
+        /**
+         * Arayüzün rakam sistemi ("arab" = Doğu Arap rakamı) ya da `null` (anahtar silinir, Batı
+         * rakamı). Yalnız yazar; okuyanlar `ArayuzDili.rakamSifiri` (bu modül) ve uygulama
+         * modülündeki `rakamSifiri()` — widget'ı `ArayuzDiliIzleyici` anahtar değişince yeniden çizer.
+         */
+        Function("rakamSisteminiAyarla") { kod: String? ->
+            val context = appContext.reactContext
+            if (context != null) ArayuzDili.rakamSisteminiKaydet(context.applicationContext, kod)
+            Unit
+        }
+
+        Function("anonsDiliniAyarla") { dil: String ->
+            val context = appContext.reactContext
+            if (context != null) AnonsKonusucu.diliKaydet(context.applicationContext, dil)
+            Unit
+        }
+
+        /** Verilen zamanda [metin]'i kayitli anons diliyle seslendirecek exact alarm kurar. */
         Function("planlaAnons") { id: String, tetikZamanMs: Double, metin: String ->
             val context = appContext.reactContext
             if (context != null) {
@@ -492,7 +531,8 @@ class ExpoCountdownNotificationModule : Module() {
         }
 
         /**
-         * Cihazda Turkce TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.)
+         * Cihazda anons dilinin TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.) Ad
+         * geriye uyumluluk icin "tr" kalir; soru kayitli anons dilini sorar.
          * Uc durum: true / false (gercekten yok) / null (bilinmiyor: baglam yok, zaman
          * asimi, hata). JS yalniz `false`ta uyari gosterir.
          */
@@ -502,7 +542,7 @@ class ExpoCountdownNotificationModule : Module() {
                 promise.resolve(null)
             } else {
                 try {
-                    AnonsKonusucu.turkceDestekleniyorMu(context.applicationContext) { destekleniyor ->
+                    AnonsKonusucu.dilDestekleniyorMu(context.applicationContext) { destekleniyor ->
                         promise.resolve(destekleniyor)
                     }
                 } catch (e: Exception) {

@@ -115,6 +115,39 @@ class TesbihatTest {
         assertTrue(Tesbihat.TEHLIL_METNI.startsWith("Lâ ilâhe illallâhü vahdehû"))
         assertTrue(Tesbihat.TEHLIL_METNI.endsWith("alâ külli şey'in kadîr"))
         assertEquals("Müslim, Mesâcid 146", Tesbihat.KAYNAK)
+        // Varsayılan dil Türkçe: dil parametreli yollar eski sabitlerle aynı.
+        assertEquals(Tesbihat.TEHLIL_METNI, Tesbihat.tehlilMetni())
+        assertEquals(Tesbihat.KAYNAK, Tesbihat.kaynak("tr"))
+        assertEquals("Sübhânallah", Faz.SUBHANALLAH.ad)
+        assertEquals("Lâ ilâhe illallâh", Faz.TEHLIL.ad("tr"))
+    }
+
+    /** Okunuşlar dile göre (sahip kararı 2026-10-25): çeviri değil, o dilin yaygın yazımı. */
+    @Test
+    fun okunuslarDileGore() {
+        for (kod in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur")) {
+            for (f in Faz.entries) assertTrue("$kod $f", f.ad(kod).isNotBlank())
+            assertTrue(kod, Tesbihat.tehlilMetni(kod).isNotBlank())
+            assertTrue(kod, Tesbihat.kaynak(kod).isNotBlank())
+        }
+        assertEquals("Alhamdulillah · 12/33", Tesbihat.kisaMetin(Durum(45), "en"))
+        assertEquals("Soubhanallah", Faz.SUBHANALLAH.ad("fr"))
+        assertEquals("Allahuakbar", Faz.ALLAHU_EKBER.ad("ms"))
+        assertEquals("HR. Muslim, Masajid 146", Tesbihat.kaynak("id"))
+        assertEquals("HR. Muslim, Masajid 146", Tesbihat.kaynak("in"))
+        assertEquals("Muslim, Masadschid 146", Tesbihat.kaynak("de"))
+        assertEquals(Tesbihat.tehlilMetni("en"), Tesbihat.tehlilMetni("de"))
+        assertEquals(Tesbihat.tehlilMetni("id"), Tesbihat.tehlilMetni("ms"))
+        // Rusça Kiril yazılır.
+        val kiril = Regex("^[\\u0400-\\u04FF0-9 ,.'-]+$")
+        for (f in Faz.entries) assertTrue(f.ad("ru"), kiril.matches(f.ad("ru")))
+        assertTrue(kiril.matches(Tesbihat.tehlilMetni("ru")))
+        assertTrue(kiril.matches(Tesbihat.kaynak("ru")))
+        // Bilinmeyen dil Türkçeye düşer.
+        for (f in Faz.entries) assertEquals(f.ad("tr"), f.ad("xx"))
+        assertEquals(Tesbihat.TEHLIL_METNI, Tesbihat.tehlilMetni("xx"))
+        assertEquals(Tesbihat.KAYNAK, Tesbihat.kaynak("xx"))
+        assertEquals(Tesbihat.kisaMetin(Durum(45)), Tesbihat.kisaMetin(Durum(45), "xx"))
     }
 
     // --- Taç / çerçeve ---------------------------------------------------------

@@ -22,9 +22,12 @@ import {
     guvenListesiniSirala,
     type KildimGuvenKaydi,
 } from '../../core/kildim/kildimGuven';
+import { useMetin } from '../hooks/useMetin';
+import { bicim, metin } from '../../core/dil/aktifDil';
 
 export const KildimUygulamalariSayfasi: React.FC = () => {
     const renkler = useRenkler();
+    const m = useMetin().genel.kildimUygulamalari;
     const [liste, setListe] = React.useState<KildimGuvenKaydi[] | null>(null);
 
     const yukle = React.useCallback(() => {
@@ -47,7 +50,7 @@ export const KildimUygulamalariSayfasi: React.FC = () => {
         const tamam = await KildimGuvenServisi.kararDegistir(k.paket, karar);
         if (!tamam) {
             setListe((l) => l && l.map((x) => (x.paket === k.paket ? k : x)));
-            kisaBildirimGoster('Karar kaydedilemedi. Lütfen yeniden deneyin.');
+            kisaBildirimGoster(metin().genel.kildimUygulamalari.kararKaydedilemedi);
         }
     }, []);
 
@@ -55,9 +58,9 @@ export const KildimUygulamalariSayfasi: React.FC = () => {
         const tamam = await KildimGuvenServisi.kaldir(k.paket);
         if (tamam) {
             setListe((l) => l && l.filter((x) => x.paket !== k.paket));
-            kisaBildirimGoster(`${k.ad} listeden kaldırıldı. Bir dahaki istekte size yeniden sorulacak.`);
+            kisaBildirimGoster(bicim(metin().genel.kildimUygulamalari.kaldirildi, { uygulama: k.ad }));
         } else {
-            kisaBildirimGoster('Kayıt kaldırılamadı. Lütfen yeniden deneyin.');
+            kisaBildirimGoster(metin().genel.kildimUygulamalari.kaldirilamadi);
         }
     }, []);
 
@@ -66,7 +69,7 @@ export const KildimUygulamalariSayfasi: React.FC = () => {
             <View className="flex-1 p-6 items-center justify-center" style={{ backgroundColor: renkler.arkaplan }}>
                 <FontAwesome5 name="user-shield" size={28} color={renkler.metinIkincil} solid />
                 <Text className="text-sm text-center mt-3" style={{ color: renkler.metinIkincil }}>
-                    Bu ayar yalnız Android telefonlarda kullanılabilir.
+                    {m.yalnizAndroid}
                 </Text>
             </View>
         );
@@ -80,8 +83,7 @@ export const KildimUygulamalariSayfasi: React.FC = () => {
             showsVerticalScrollIndicator={false}
         >
             <Text className="text-sm mb-4" style={{ color: renkler.metinIkincil }}>
-                Samsung Rutinler, Tasker gibi bir uygulama namazınızı kılındı olarak işaretlemek istediğinde size bir kez
-                sorulur. Verdiğiniz kararlar burada listelenir; dilediğiniz zaman değiştirebilirsiniz.
+                {m.giris}
             </Text>
 
             {liste != null && liste.length === 0 && (
@@ -97,10 +99,10 @@ export const KildimUygulamalariSayfasi: React.FC = () => {
                         <FontAwesome5 name="user-shield" size={18} color={renkler.birincil} solid />
                     </View>
                     <Text className="text-base font-bold text-center mb-1" style={{ color: renkler.metin }}>
-                        Henüz bir karar vermediniz
+                        {m.bosBaslik}
                     </Text>
                     <Text className="text-sm text-center" style={{ color: renkler.metinIkincil }}>
-                        Bir otomasyon ilk kez &quot;Kıldım&quot; gönderdiğinde size sorulur ve kararınız burada görünür.
+                        {m.bosAciklama}
                     </Text>
                 </View>
             )}
@@ -140,7 +142,7 @@ export const KildimUygulamalariSayfasi: React.FC = () => {
                                         }}
                                         trackColor={{ false: renkler.sinir, true: renkler.birincil + '60' }}
                                         thumbColor={izinli ? renkler.birincil : '#f4f3f4'}
-                                        accessibilityLabel={`${k.ad}: namazlarınızı işaretleyebilsin`}
+                                        accessibilityLabel={bicim(m.anahtarEtiketi, { uygulama: k.ad })}
                                     />
                                 </View>
                                 <TouchableOpacity
@@ -150,11 +152,11 @@ export const KildimUygulamalariSayfasi: React.FC = () => {
                                         kaldir(k).catch(() => undefined);
                                     }}
                                     accessibilityRole="button"
-                                    accessibilityLabel={`${k.ad} uygulamasını listeden kaldırın`}
+                                    accessibilityLabel={bicim(m.kaldirEtiketi, { uygulama: k.ad })}
                                 >
                                     <FontAwesome5 name="trash-alt" size={13} color={renkler.metinIkincil} style={{ marginRight: 8 }} />
                                     <Text className="text-sm" style={{ color: renkler.metinIkincil }}>
-                                        Listeden kaldırın
+                                        {m.kaldir}
                                     </Text>
                                 </TouchableOpacity>
                             </View>
@@ -164,8 +166,7 @@ export const KildimUygulamalariSayfasi: React.FC = () => {
             )}
 
             <Text className="text-xs mt-4" style={{ color: renkler.metinIkincil }}>
-                Ana ekrandaki kısayollar, widget ve hızlı ayarlar kutusu her zaman çalışır; bu listeye girmez.
-                Tarayıcılara kalıcı izin verilmez, çünkü her web sayfası bu bağlantıyı açabilir.
+                {m.not}
             </Text>
         </ScrollView>
     );

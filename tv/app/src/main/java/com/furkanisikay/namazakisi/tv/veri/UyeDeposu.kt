@@ -7,6 +7,7 @@ import android.provider.Settings
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Log
+import com.furkanisikay.namazakisi.tv.R
 import com.furkanisikay.namazakisi.tv.cekirdek.CihazKanali
 import com.furkanisikay.namazakisi.tv.cekirdek.CihazYukuCozucu
 import com.furkanisikay.namazakisi.tv.cekirdek.UyeDeposuArayuzu
@@ -71,7 +72,7 @@ class UyeDeposu(context: Context, private val konum: KonumDeposu) : UyeDeposuAra
         return o.keys().asSequence().map { u ->
             val k = o.getJSONObject(u)
             val d = k.optString("son").takeIf { it.isNotEmpty() }?.let { CihazYukuCozucu.coz(it)?.durum }
-            UyeOzeti(u, k.optString("ad", "Telefon"), k.optLong("sonHaber", 0), d?.durumumSayilsin == true)
+            UyeOzeti(u, k.optString("ad", baglam.getString(R.string.telefon_varsayilan)), k.optLong("sonHaber", 0), d?.durumumSayilsin == true)
         }.sortedBy { it.ad }.toList()
     }
 
@@ -146,9 +147,10 @@ class UyeDeposu(context: Context, private val konum: KonumDeposu) : UyeDeposuAra
         val d = yuk.durum
         if (d?.lat != null && d.lng != null && p.getString(K_KONUM_SAHIBI, null) == uye) {
             val mevcut = konum.telefondanGelen()
-            val ad = d.ad ?: mevcut?.ad ?: "Telefonunuzdaki konum"
-            if (mevcut == null || mevcut.lat != d.lat || mevcut.lng != d.lng || mevcut.ad != ad) {
-                konum.telefondanKaydet(ad, d.lat, d.lng)
+            // Yedek ad kayda YAZILIR (veri): o anki cihaz dilinde kalır; telefon adı gönderince değişir.
+            val ad = d.ad ?: mevcut?.ad ?: baglam.getString(R.string.telefondaki_konum)
+            if (mevcut == null || mevcut.lat != d.lat || mevcut.lng != d.lng || mevcut.ad != ad || mevcut.hesap != d.hesap) {
+                konum.telefondanKaydet(ad, d.lat, d.lng, d.hesap)
             }
         }
     }

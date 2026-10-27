@@ -8,6 +8,10 @@
  *     (`adhan` JS, `CalculationMethod.Turkey()`, madhab VERİLMEZ = Şafiî/asr-ı evvel)
  *     + kerahat sabitleri (`KAZA_SABITLERI.MEKRUH_TOLERANS_DK`, `ISTIVA_TOLERANS_DK`).
  *
+ *  3. `tv/app/src/test/resources/vakit-fiksturu-dunya.json` ← Türkiye dışı yöntemler: telefonun
+ *     `hesapParametreleriOlustur` çıktısı + TV'ye giden özet (`tvHesapOzeti`). TS kaynağı
+ *     `sucrase/register` ile doğrudan okunur (kopya mantık yok).
+ *
  * İki taraf da kilitli: Kotlin `VakitHesabiTest` fikstürü kendi adhan2 hesabıyla,
  * jest `TvVakitParitesi.test.ts` aynı fikstürü telefonun servisiyle doğrular.
  * Telefon hesabı/kerahat sabiti değişirse bu betiği yeniden koşun:
@@ -104,6 +108,78 @@ function main() {
   const fiksturYolu = path.join(KOK, 'tv/app/src/test/resources/vakit-fiksturu.json');
   fs.writeFileSync(fiksturYolu, JSON.stringify(fikstur, null, 1) + '\n');
   console.log(`iller: ${iller.length}, ornek: ${ornekler.length}`);
+  dunyaFiksturu();
+}
+
+/** Türkiye dışı yöntemler: her profil kendi bölgesinde + elle düzeltme/açı + yüksek enlem + Ramazan. */
+const DUNYA_ORNEKLERI = [
+  { ad: 'Kuala Lumpur', lat: 3.139, lng: 101.687, ayar: { profil: 'jakim' } },
+  { ad: 'Jakarta', lat: -6.2, lng: 106.817, ayar: { profil: 'kemenag' } },
+  { ad: 'Singapur', lat: 1.29, lng: 103.85, ayar: { profil: 'muis' } },
+  { ad: 'Mekke', lat: 21.389, lng: 39.858, ayar: { profil: 'ummulKura' } },
+  { ad: 'Kahire', lat: 30.044, lng: 31.236, ayar: { profil: 'misir' } },
+  { ad: 'Lahor', lat: 31.558, lng: 74.351, ayar: { profil: 'karachi' } },
+  { ad: 'Londra', lat: 51.507, lng: -0.128, ayar: { profil: 'moonsighting' } },
+  { ad: 'Oslo', lat: 59.913, lng: 10.752, ayar: { profil: 'mwl' } },
+  { ad: 'New York', lat: 40.713, lng: -74.006, ayar: { profil: 'isna' } },
+  { ad: 'Toronto', lat: 43.651, lng: -79.383, ayar: { profil: 'kanada' } },
+  { ad: 'Dubai', lat: 25.276, lng: 55.296, ayar: { profil: 'dubai' } },
+  { ad: 'Doha', lat: 25.286, lng: 51.533, ayar: { profil: 'katar' } },
+  { ad: 'Amman', lat: 31.954, lng: 35.911, ayar: { profil: 'urdun' } },
+  { ad: 'Saraybosna', lat: 43.856, lng: 18.413, ayar: { profil: 'bosna' } },
+  { ad: 'Kazablanka', lat: 33.573, lng: -7.59, ayar: { profil: 'fas' } },
+  { ad: 'Tahran', lat: 35.689, lng: 51.389, ayar: { profil: 'tahran' } },
+  { ad: 'Necef', lat: 32.0, lng: 44.336, ayar: { profil: 'caferi' } },
+  { ad: 'Taşkent', lat: 41.311, lng: 69.24, ayar: { profil: 'mwl', ikindi: 'sani' } },
+  { ad: 'Berlin', lat: 52.52, lng: 13.405, ayar: { profil: 'mwl', ofsetler: { imsak: -3, aksam: 2, yatsi: 5 }, aci: { fecr: 15, yatsi: 15 } } },
+  { ad: 'İstanbul', lat: 41.008, lng: 28.978, ayar: { profil: 'diyanet', ofsetler: { ogle: 1, ikindi: -2 } } },
+];
+// Ramazan (Ümmü'l-Kurâ 2026: 18 Şubat–19 Mart), yaz ve kış dönümü.
+const DUNYA_TARIHLERI = ['2026-03-01', '2026-06-21', '2026-12-21'];
+
+function dunyaFiksturu() {
+  require('sucrase/register/ts');
+  const { Coordinates, PrayerTimes } = require('adhan');
+  const { hesapParametreleriOlustur } = require('../../src/core/vakit/hesapProfilleri.ts');
+  const { tvHesapOzeti } = require('../../src/core/vakit/tvHesapOzeti.ts');
+  const ornekler = [];
+  for (const o of DUNYA_ORNEKLERI) {
+    for (const tarih of DUNYA_TARIHLERI) {
+      const [yil, ay, gun] = tarih.split('-').map(Number);
+      const gunTarihi = new Date(yil, ay - 1, gun);
+      const hesap = tvHesapOzeti(o.ayar, o.lat, gunTarihi);
+      if (!hesap) throw new Error(`${o.ad}: özet bekleniyordu`);
+      const pt = new PrayerTimes(
+        new Coordinates(o.lat, o.lng),
+        gunTarihi,
+        hesapParametreleriOlustur(o.ayar, { tarih: gunTarihi, enlem: o.lat }),
+      );
+      ornekler.push({
+        ad: o.ad,
+        lat: o.lat,
+        lng: o.lng,
+        tarih,
+        ayar: o.ayar,
+        hesap,
+        vakitler: {
+          imsak: pt.fajr.getTime(),
+          gunes: pt.sunrise.getTime(),
+          ogle: pt.dhuhr.getTime(),
+          ikindi: pt.asr.getTime(),
+          aksam: pt.maghrib.getTime(),
+          yatsi: pt.isha.getTime(),
+        },
+      });
+    }
+  }
+  const fikstur = {
+    aciklama:
+      'Telefonun Turkiye disi hesap yolu (hesapParametreleriOlustur) + TV ozeti (tvHesapOzeti). Uretici: scripts/tv/tv-verisi-uret.js',
+    ornekler,
+  };
+  const yol = path.join(KOK, 'tv/app/src/test/resources/vakit-fiksturu-dunya.json');
+  fs.writeFileSync(yol, JSON.stringify(fikstur, null, 1) + '\n');
+  console.log(`dunya ornek: ${ornekler.length}`);
 }
 
 main();

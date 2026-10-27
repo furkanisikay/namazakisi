@@ -6,32 +6,34 @@ appId: com.furkanisikay.namazakisi
 # Ana ekran capasi: header'daki seri dugmesi ("Seri: N gün"; toparlanmada "Toparlanma modu: …"). Kıble Dalga 4'ten
 # beri sekmedir; header'daki "Kıble yönünü bul" kisayolu kalkti.
 - extendedWaitUntil:
-    visible: "(Seri|Toparlanma modu): .*"
+    visible: "(Seri|Toparlanma modu|Streak|Recovery mode): .*"
     timeout: 90000
 - repeat:
     while:
-      visible: "Devam Et"
+      visible:
+        id: "kutlama-devam"
     commands:
-      - tapOn: "Devam Et"
+      - tapOn:
+          id: "kutlama-devam"
 
-- tapOn: "Ayarlar"
+- tapOn: "(Ayarlar|Settings)"
 # Ayarlar > Hatirlatmalar > Vakit cikmadan; vakit vakit ayar "Kendim ayarlayayim" katinda.
 - scrollUntilVisible:
     element:
-      text: "Hatırlatmalar\\..*"
+      text: "(Hatırlatmalar|Reminders)\\..*"
     direction: DOWN
     timeout: 20000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Hatırlatmalar\\..*"
+    text: "(Hatırlatmalar|Reminders)\\..*"
 - scrollUntilVisible:
     element:
-      text: "Vakit çıkmadan\\..*"
+      id: "satir-vakit-cikmadan"
     direction: DOWN
     timeout: 20000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Vakit çıkmadan\\..*"
+    id: "satir-vakit-cikmadan"
 - scrollUntilVisible:
     element:
       id: "kendim-ayarlayayim"
@@ -43,12 +45,12 @@ appId: com.furkanisikay.namazakisi
 
 # SABAH: listenin son karti acilinca icerik ekran disinda kalir.
 - tapOn:
-    text: "Sabah vakti hatırlatma ayarları.*"
+    text: "(Sabah vakti hatırlatma ayarları|Fajr reminder settings).*"
 # Seridi ORTALA: sabit mesafeli kaydirma momentumla her kosuda farkli kayiyor
 # ve serit karenin disinda kalabiliyordu (iOS'ta yasandi, App Store'a gitti).
 - scrollUntilVisible:
     element:
-      text: ".*ilk hatırlatma.*"
+      id: "zaman-seridi-cumle"
     direction: DOWN
     centerElement: true
     timeout: 20000
@@ -58,7 +60,7 @@ appId: com.furkanisikay.namazakisi
 # hatirlatma modulu: dort kanal karti yerine iki anahtar). Riza kaydi yoksa once
 # onay modali cikar — onaylanir.
 - tapOn:
-    text: "1\\. hatırlatma.*düzenleyin.*"
+    id: "adim-duzenle-0"
 - waitForAnimationToEnd:
     timeout: 3000
 # Anahtar "Nasıl" ızgarasında, sheet'in ilk ekranının altında kalabilir (özellik
@@ -74,9 +76,9 @@ appId: com.furkanisikay.namazakisi
     id: "adim-sesli-anahtari"
 - runFlow:
     when:
-      visible: "Sesli okumayı açın"
+      visible: "(Sesli okumayı açın|Turn on read aloud)"
     commands:
-      - tapOn: "Sesli okumayı açın"
+      - tapOn: "(Sesli okumayı açın|Turn on read aloud)"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: kareler/03-adim-detay
@@ -86,10 +88,10 @@ appId: com.furkanisikay.namazakisi
 - back
 - scrollUntilVisible:
     element:
-      text: "Sabah akışını önizleyin"
+      text: "(Sabah akışını önizleyin|Preview the Fajr flow)"
     direction: DOWN
     timeout: 20000
-- tapOn: "Sabah akışını önizleyin"
+- tapOn: "(Sabah akışını önizleyin|Preview the Fajr flow)"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: kareler/06-akis-onizleme

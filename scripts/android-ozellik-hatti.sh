@@ -28,6 +28,7 @@ CIKIS="kareler-ozellik"
 mkdir -p "$CIKIS"
 
 adb wait-for-device
+bash scripts/emulator-hazir-bekle.sh
 adb reverse tcp:8081 tcp:8081
 
 APK=$(find android -name '*.apk' -path '*debug*' | head -1)
@@ -170,8 +171,29 @@ hazirlik_uygula() {
         if adb shell dumpsys power | grep -qiE "mLowPowerModeEnabled=true|Battery saver: *ON|mBatterySaverEnabled=true"; then break; fi
       done
       adb shell cmd netpolicy set restrict-background true || true
-      echo "sistem durumu: low_power=$(adb shell settings get global low_power | tr -d '') $(adb shell dumpsys power | grep -iE 'mIsPowered|LowPowerMode' | tr -d '' | tr '
+      echo "sistem durumu: low_power=$(adb shell settings get global low_power | tr -d '
+') $(adb shell dumpsys power | grep -iE 'mIsPowered|LowPowerMode' | tr -d '
+' | tr '
 ' ' ')"
+      ;;
+    dunya-kl|dunya-kl-video)
+      # Dunya konumu kareleri: cihaz Kuala Lumpur saatinde (yoksa vakitler Istanbul saatiyle
+      # gosterilir; imsak gece yarisina duser). `-video`: kart gecisi icin animasyonlar ACIK
+      # (kayit akistaki startRecording'le). hazirlik_bitir geri alir.
+      adb shell cmd alarm set-timezone Asia/Kuala_Lumpur >/dev/null 2>&1 \
+        || adb shell service call alarm 3 s16 Asia/Kuala_Lumpur >/dev/null 2>&1 || true
+      echo "saat dilimi: $(adb shell getprop persist.sys.timezone | tr -d '\r')"
+      if [ "$1" = "dunya-kl-video" ]; then
+        # Kayit akistaki Maestro startRecording ile (kart gorununce baslar); burada yalniz
+        # animasyonlar ACIK, yoksa kart gecisi "hareketi azalt" sayilip atlanir.
+        for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+          adb shell settings put global "$a" 1
+        done
+      fi
+      ;;
+    gunun-ayeti-cihaz)
+      # Kilit ekrani karesi icin tus kilidi (kaydirma) acik olmali; emulator imajinda kapali olabilir.
+      adb shell locksettings set-disabled false >/dev/null 2>&1 || true
       ;;
     *) echo "UYARI: bilinmeyen hazirlik $1" ;;
   esac
@@ -198,6 +220,25 @@ hazirlik_bitir() {
       adb exec-out screencap -p > "$CIKIS/${PROFIL}-$2/46-katlanabilir-masaustu.png" || true
       adb emu sensor set hinge-angle0 180 || true
       adb shell settings delete global display_features || true
+      ;;
+    dunya-kl|dunya-kl-video)
+      if [ "$1" = "dunya-kl-video" ]; then
+        for a in window_animation_scale transition_animation_scale animator_duration_scale; do
+          adb shell settings put global "$a" 0
+        done
+      fi
+      adb shell cmd alarm set-timezone Europe/Istanbul >/dev/null 2>&1 \
+        || adb shell service call alarm 3 s16 Europe/Istanbul >/dev/null 2>&1 || true
+      ;;
+    gunun-ayeti-cihaz)
+      # Kilit ekrani: ekrani kapatip ac, tus kilidi gorunurken cek, sonra kilidi kaldir.
+      adb shell input keyevent KEYCODE_SLEEP || true
+      sleep 3
+      adb shell input keyevent KEYCODE_WAKEUP || true
+      sleep 4
+      adb exec-out screencap -p > "$CIKIS/${PROFIL}-$2/66-gunun-ayeti-kilit.png" || echo "UYARI: kilit ekrani karesi alinamadi"
+      adb shell wm dismiss-keyguard >/dev/null 2>&1 || adb shell input keyevent KEYCODE_MENU || true
+      sleep 2
       ;;
     guc-tasarrufu)
       adb shell settings put global low_power 0 || true

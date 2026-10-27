@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ar — Arapça (beta). -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">في المسجد</string>
+    <string name="camigeofence_kanal_durum_aciklama">إشعار هادئ عند رصد وجودك في المسجد</string>
+    <string name="camigeofence_kanal_soru_ad">بعد مغادرة المسجد</string>
+    <string name="camigeofence_kanal_soru_aciklama">سؤال لوضع علامة على الصلاة بعد مغادرة المسجد</string>
+
+    <string name="camigeofence_govde_mod_sessiz">وضع الصلاة مفعّل. ستصل التذكيرات بصمت.</string>
+    <string name="camigeofence_govde_mod">وضع الصلاة مفعّل.</string>
+    <string name="camigeofence_govde_sessiz">ستصل التذكيرات بصمت.</string>
+    <string name="camigeofence_govde_normal">ستصل التذكيرات كالمعتاد.</string>
+    <string name="camigeofence_eylem_modu_kapat">إيقاف الوضع</string>
+    <string name="camigeofence_eylem_cami_degil">ليس مسجدًا</string>
+
+    <string name="camigeofence_soru_baslik">هل أنت في المسجد؟</string>
+    <string name="camigeofence_soru_govde">أنت قرب %1$s. لسنا متأكدين، لذلك نسألك.</string>
+    <string name="camigeofence_varsayilan_ad">المسجد</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">تفعيل وضع الصلاة</string>
+    <string name="camigeofence_eylem_evet_camideyim">نعم، في المسجد</string>
+    <string name="camigeofence_eylem_hayir">لا</string>
+
+    <string name="camigeofence_kildiniz_mi">هل أُدّيت %1$s؟</string>
+    <string name="camigeofence_kildiniz_mi_govde">يمكن وضع العلامة بنقرة واحدة.</string>
+    <string name="camigeofence_eylem_kildim">صلّيتُ</string>
+    <string name="camigeofence_namaz_imsak">صلاة الفجر</string>
+    <string name="camigeofence_namaz_ogle">صلاة الظهر</string>
+    <string name="camigeofence_namaz_ikindi">صلاة العصر</string>
+    <string name="camigeofence_namaz_aksam">صلاة المغرب</string>
+    <string name="camigeofence_namaz_yatsi">صلاة العشاء</string>
+    <string name="camigeofence_namaz_cuma">صلاة الجمعة</string>
+
+    <string name="camigeofence_mod_kural_adi">الصلاة</string>
+    <string name="camigeofence_mod_tetik_aciklama">يفعّله Namaz Akışı أثناء خطبة الجمعة، أو في المسجد، أو عند دخول وقت الصلاة</string>
+</resources>
