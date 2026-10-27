@@ -63,7 +63,7 @@ Araştırma ve kaynaklar: `docs/superpowers/specs/2026-10-24-dil-onceligi-arasti
 - **Geri sayım `fontVariant: ['tabular-nums']`** taşır (`GeriSayimMetni`, `BirimliSure`): Doğu rakamları sabit genişlikte değil. Sistem Arapça yazı tipinde etkisi cihazda DOĞRULANMADI.
 
 ## Bir dili seçicide açma kapısı (`secilebilir: true`)
-Açık diller: Türkçe; İngilizce (beta, 2026-10-24); Endonezce, Almanca, Fransızca, Boşnakça, Rusça, Malayca (beta, 2026-10-25). Android cihaz dili Endonezceyi eski kod `in` ile verir (`cihazDilindenSec` eşler; native kaynaklar `values-in`). Bir dil açılırken AYNI commit'te: `diller.ts > secilebilir`, `app.json` Siri eklentisi `diller` listesi ve `locales/<dil>.json` (iOS izin metinleri + hızlı eylem başlıkları; nöbetçi `plugins/__tests__/siriYerellestirme.test.ts`), "Neler Yeni" öğesi `ceviri`si.
+Açık diller: Türkçe; İngilizce (beta, 2026-10-24); Endonezce, Almanca, Fransızca, Boşnakça, Rusça, Malayca (beta, 2026-10-25); Arapça, Urduca (beta, sağdan sola, 2026-10-27). Android cihaz dili Endonezceyi eski kod `in` ile verir (`cihazDilindenSec` eşler; native kaynaklar `values-in`). Bir dil açılırken AYNI commit'te: `diller.ts > secilebilir`, `app.json` Siri eklentisi `diller` listesi ve `locales/<dil>.json` (iOS izin metinleri + hızlı eylem başlıkları; nöbetçi `plugins/__tests__/siriYerellestirme.test.ts`), "Neler Yeni" öğesi `ceviri`si.
 Her dil için ayrı ayrı; hepsi sağlanmadan açma (yarım dil kendiliğinden de açılır: cihaz dili):
 1. JS cırcırı (`turkce-metin-tavani.json`) sıfıra ya da yalnız bilinçli HARIC'e inmiş; ekranların İngilizce/dil çizim testleri yeşil.
 2. O dilin kullanıcısının gördüğü native yüzeyler (widget, bildirim eylemleri, Wear/TV başlıkları, iOS hedefleri) o dilde (W5).

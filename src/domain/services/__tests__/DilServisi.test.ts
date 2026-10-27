@@ -89,9 +89,12 @@ describe('DilServisi', () => {
       expect(aktifDil()).toBe('en');
     });
 
-    it('NÖBETÇİ: kapalı dil (Arapça) yalnız GELİŞTİRME derlemesinde kayıttan kurulur (kare hattı)', async () => {
+    // Bugün kapalı dil yok: Arapça bu testlerde kapalı sayılır (yeni dil açılmadan önceki durum).
+    const arapcayiKapat = () => jest.replaceProperty(DILLER.find((d) => d.kod === 'ar')!, 'secilebilir', false);
+
+    it('NÖBETÇİ: kapalı dil yalnız GELİŞTİRME derlemesinde kayıttan kurulur (kare hattı)', async () => {
+      arapcayiKapat();
       cihaz('tr_TR');
-      expect(DILLER.find((d) => d.kod === 'ar')!.secilebilir).toBe(false);
       disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'ar', goc: 1 };
       genel.__DEV__ = false;
       await DilServisi.yukle(true);
@@ -102,6 +105,7 @@ describe('DilServisi', () => {
     });
 
     it('NÖBETÇİ: kare hattı işareti kapalı dili geliştirme modu KAPALIYKEN de açar (kare hattı js_dev_mode=false)', async () => {
+      arapcayiKapat();
       cihaz('tr_TR');
       genel.__DEV__ = false;
       disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'ar', goc: 1 };
@@ -114,11 +118,21 @@ describe('DilServisi', () => {
     });
 
     it('cihaz dili kapalı dili geliştirme derlemesinde de açmaz', async () => {
+      arapcayiKapat();
       genel.__DEV__ = true;
       cihaz('ar_SA');
       await DilServisi.yukle(true);
       expect(aktifDil()).toBe('tr');
     });
+  });
+
+  it('açık sağdan sola diller cihaz dilinden kurulur (ar_SA → ar, ur_PK → ur)', async () => {
+    cihaz('ar_SA');
+    await DilServisi.yukle(true);
+    expect(aktifDil()).toBe('ar');
+    cihaz('ur_PK');
+    await DilServisi.yukle(true);
+    expect(aktifDil()).toBe('ur');
   });
 
   it('cihaz diline dönüş açık seçimi siler, metin dilini korur', async () => {
