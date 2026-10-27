@@ -150,12 +150,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} second", "other": "{n} seconds"]
     )
 
-    // ÇEVİRİ: bn
+    // bn — JS `sozluk/bn/sure.ts`; Bengalcede sayıdan sonra isim çekimlenmez (one = other).
     public static let bn = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "ঘ", birimDk: "মি", birimSn: "সে",
+        saat: ["one": "{n} ঘণ্টা", "other": "{n} ঘণ্টা"],
+        dakika: ["one": "{n} মিনিট", "other": "{n} মিনিট"],
+        saniye: ["one": "{n} সেকেন্ড", "other": "{n} সেকেন্ড"]
     )
 
     public static let tablo: [String: SaatSureMetinleri] = [

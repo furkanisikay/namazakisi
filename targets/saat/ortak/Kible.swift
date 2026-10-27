@@ -340,17 +340,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: bn
+    // bn — JS `sozluk/bn/kible.ts > yon`
     public static let bn = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "পেছনে",
+        saga: "ডানে {derece}°",
+        sola: "বামে {derece}°",
+        hizali: "আপনি কিবলামুখী আছেন",
+        arkadaErisim: "কিবলা আপনার পেছনে",
+        sagdaErisim: "কিবলা আপনার ডানে {derece} ডিগ্রি",
+        soldaErisim: "কিবলা আপনার বামে {derece} ডিগ্রি",
+        kabede: "আপনি কাবার কাছে আছেন",
+        mesafe: "{km} কিমি",
         binlikAyirici: ","
     )
 

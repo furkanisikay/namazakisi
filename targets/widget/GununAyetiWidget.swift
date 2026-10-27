@@ -244,18 +244,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: bn
+    // bn — Bengalce (beta); JS `sozluk/bn/gununAyeti.ts`, meal 94:6 `gununAyetiHavuzu.ts` (bengali_zakaria, BİREBİR), künye `mealler.bn`
     static let bn = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "দিনের আয়াত",
+        galeriAciklama: "প্রতিদিন ফজরে বদলানো একটি আয়াত ও তার অনুবাদ।",
+        etiket: "দিনের আয়াত",
+        uygulamayiAcin: "দিনের আয়াত দেখতে অ্যাপ খুলুন",
+        ornekSigmiyor: "আজকের আয়াত এই আকারে আঁটে না। পড়তে ট্যাপ করুন।",
+        ornekAcin: "খুলুন",
+        ornekArapcaKaynagi: "আরবি: Tanzil",
+        ornekMeal: "নিশ্চয় কষ্টের সাথেই স্বস্তি আছে।",
+        ornekKisaKunye: "কুরআন 94:6",
+        ornekMealKaynagi: "Abu Bakr Zakaria, QuranEnc 1.1.1"
     )
 
     static let tablo: [String: GununAyetiYerelMetinleri] = [

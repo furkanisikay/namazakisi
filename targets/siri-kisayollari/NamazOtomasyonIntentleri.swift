@@ -227,11 +227,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: bn
+    // bn — Bengalce (beta); CLDR one = 0 ve 1, other (Bengalcede isim çekimlenmez)
     static let bn = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{n} মিনিট পর {ad} শুরু হবে।", "other": "{n} মিনিট পর {ad} শুরু হবে।"],
+        evetKilindi: "হ্যাঁ, পড়া হয়েছে হিসেবে চিহ্নিত আছে।",
+        hayirKilinmadi: "না, এখনো চিহ্নিত হয়নি।"
     )
 
     static let tablo: [String: OtomasyonMetinleri] = [

@@ -289,19 +289,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: bn
+    // bn — Bengalce (beta); Android TV `values-bn` ile aynı
     static let bn = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "আপনার শহর বেছে নিন",
+        ilMerkezi: "নামাজের সময় প্রদেশের কেন্দ্র অনুযায়ী হিসাব করা হয়। পরে আপনার বাছাই বদলাতে পারেন।",
+        ilSecErisim: "{il}, বেছে নিন",
+        kalan: "{ad} পর্যন্ত বাকি সময়",
+        kalanErisim: "{ad} পর্যন্ত বাকি সময়: {sure}",
+        konumuDegistirin: "অবস্থান বদলান",
+        kerahatSuruyor: "মাকরূহ সময়: {tur}, শেষ {bitis}। {aciklama}",
+        siradakiKerahat: "পরবর্তী মাকরূহ সময়: {tur} {bas}–{bit}",
+        cumaBilgisi: "আজ শুক্রবার। জুমার নামাজ যোহরের ওয়াক্তে পড়া হয় (শুরু {giris})।",
+        suAnkiEk: ", বর্তমান নামাজ",
+        siradakiEk: ", পরবর্তী নামাজ"
     )
 
     static let tablo: [String: TvArayuzMetinleri] = [

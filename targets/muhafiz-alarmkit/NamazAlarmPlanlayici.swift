@@ -124,8 +124,8 @@ enum NamazAlarmCekirdegi {
         "sq": "Stop",
         // ÇEVİRİ: hi
         "hi": "Stop",
-        // ÇEVİRİ: bn
-        "bn": "Stop",
+        // bn
+        "bn": "থামান",
     ]
 
     static func durum() -> String {
