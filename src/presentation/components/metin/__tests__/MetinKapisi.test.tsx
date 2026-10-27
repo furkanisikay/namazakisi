@@ -17,13 +17,15 @@ import {
   metinKapisiniKur,
   nastalikStili,
   nastalikYuklendiKur,
+  ustIsaretliStili,
 } from '../MetinKapisi';
 
 jest.mock('expo-font', () => ({ useFonts: () => [true] }));
 
 let kaldir: () => void = () => undefined;
 
-const CSS = '.text-lg { font-size: 18px; line-height: 28px; } .font-bold { font-weight: 700; }';
+const CSS =
+  '.text-lg { font-size: 18px; line-height: 28px; } .text-4xl { font-size: 36px; line-height: 40px; } .font-bold { font-weight: 700; }';
 
 beforeEach(() => {
   setupAllComponents();
@@ -145,6 +147,41 @@ describe('Bengalce', () => {
     render(<Text rakamKoru>1.2.3</Text>);
     expect(screen.getByText('1.2.3')).toBeTruthy();
   });
+
+  it('dar satır yüksekliği üst işaretler kesilmesin diye 1.5 × puntoya çıkar', () => {
+    render(<Text className="text-4xl">মাগরিব</Text>);
+    // text-4xl: 36 / 40 → 36 × 1.5 = 54
+    expect(stil('মাগরিব')).toMatchObject({ fontSize: 36, lineHeight: 54 });
+  });
+});
+
+describe('Hintçe', () => {
+  beforeEach(() => {
+    act(() => {
+      aktifDiliKur('hi');
+    });
+  });
+
+  it('Batı rakamı kalır; dar satır yüksekliği 1.5 × puntoya çıkar, yeterliye dokunmaz', () => {
+    render(
+      <>
+        <Text className="text-4xl">मग़रिब 12</Text>
+        <Text className="text-lg">सेटिंग</Text>
+      </>
+    );
+    expect(stil('मग़रिब 12')).toMatchObject({ fontSize: 36, lineHeight: 54 });
+    // text-lg: 18 / 28 ≥ 27 → olduğu gibi
+    expect(stil('सेटिंग')).toMatchObject({ fontSize: 18, lineHeight: 28 });
+  });
+
+  it('rakamKoru satır yüksekliğine de dokunmaz', () => {
+    render(
+      <Text rakamKoru className="text-4xl">
+        1.2.3
+      </Text>
+    );
+    expect(stil('1.2.3').lineHeight).toBe(40);
+  });
 });
 
 describe('Urduca', () => {
@@ -209,6 +246,14 @@ describe('nastalikStili', () => {
   });
   it('punto yoksa 14 sayılır', () => {
     expect(nastalikStili({ lineHeight: 20 })?.lineHeight).toBe(26);
+  });
+});
+
+describe('ustIsaretliStili', () => {
+  it('satır yüksekliği yoksa ya da yeterliyse eklemez; punto yoksa 14 sayılır', () => {
+    expect(ustIsaretliStili({ fontSize: 20 })).toBeNull();
+    expect(ustIsaretliStili({ fontSize: 20, lineHeight: 30 })).toBeNull();
+    expect(ustIsaretliStili({ lineHeight: 18 })).toEqual({ lineHeight: 21 });
   });
 });
 
