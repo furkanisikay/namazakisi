@@ -172,8 +172,8 @@ adb shell am force-stop "$PAKET"
 adb shell am start -W -n "$PAKET/$SINIF.ui.TesbihatAktivite"
 # Desen DILDEN BAGIMSIZ: zikir adi dile gore yazilir; bulunamayinca hazir_bekle'nin
 # kaydirmasi sayaci sifirlama onayini aciyordu. "/ 33" her dilde sayacin altindadir;
-# Dogu Arap rakamli yerel ayarda (ar-SA) "/ ٣٣" yazilir (saat rakami yerel ayardan alir).
-hazir_bekle '/ ?(33|٣٣)' || sleep 5
+# Yerel rakamli ayarda "/ ٣٣" (ar-SA) ya da "/ ৩৩" (bn-BD) yazilir (saat rakami yerel ayardan alir).
+hazir_bekle '/ ?(33|٣٣|৩৩)' || sleep 5
 for _ in $(seq 1 21); do dokun_merkez; sleep 0.3; done
 kare 04-tesbihat 2 || true
 
@@ -187,7 +187,7 @@ printf "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n    <in
 adb push /tmp/saat_tesbihat.xml /data/local/tmp/saat_tesbihat.xml
 adb shell run-as "$PAKET" cp /data/local/tmp/saat_tesbihat.xml shared_prefs/saat_tesbihat.xml
 adb shell am start -W -n "$PAKET/$SINIF.ui.TesbihatAktivite"
-hazir_bekle 'Tamamlandı|tamamlandı|146|١٤٦' || sleep 5
+hazir_bekle 'Tamamlandı|tamamlandı|146|١٤٦|১৪৬' || sleep 5
 kare 09-tesbihat-tamam 2 || true
 
 # --- 08: kible pusulasi ---
