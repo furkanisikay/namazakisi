@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Jezik · Language',
   aciklama: 'Odaberite jezik aplikacije. Obavještenja i čitanje naglas također će biti na tom jeziku.',
   grup: 'Jezik aplikacije',
-  dilAdlari: { tr: 'Turski', en: 'Engleski', id: 'Indonezijski', de: 'Njemački', fr: 'Francuski', bs: 'Bosanski', ru: 'Ruski', ms: 'Malajski', ar: 'Arapski', ur: 'Urdu', es: 'Spanish', nl: 'Dutch', sq: 'Albanian', hi: 'Hindi', bn: 'Bengali' },
+  dilAdlari: { tr: 'Turski', en: 'Engleski', id: 'Indonezijski', de: 'Njemački', fr: 'Francuski', bs: 'Bosanski', ru: 'Ruski', ms: 'Malajski', ar: 'Arapski', ur: 'Urdu', es: 'Španski', nl: 'Nizozemski', sq: 'Albanski', hi: 'Hindi', bn: 'Bengalski' },
   cihazDili: 'Jezik uređaja',
   cihazDiliKullaniliyor: 'Trenutno: {ad}',
   cihazDiliDesteklenmiyor: 'Jezik Vašeg uređaja još nije dostupan; koristi se turski.',

@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Sprache · Language',
   aciklama: 'Wählen Sie die Sprache der App. Auch Benachrichtigungen und das Vorlesen verwenden diese Sprache.',
   grup: 'App-Sprache',
-  dilAdlari: { tr: 'Türkisch', en: 'Englisch', id: 'Indonesisch', de: 'Deutsch', fr: 'Französisch', bs: 'Bosnisch', ru: 'Russisch', ms: 'Malaiisch', ar: 'Arabisch', ur: 'Urdu', es: 'Spanish', nl: 'Dutch', sq: 'Albanian', hi: 'Hindi', bn: 'Bengali' },
+  dilAdlari: { tr: 'Türkisch', en: 'Englisch', id: 'Indonesisch', de: 'Deutsch', fr: 'Französisch', bs: 'Bosnisch', ru: 'Russisch', ms: 'Malaiisch', ar: 'Arabisch', ur: 'Urdu', es: 'Spanisch', nl: 'Niederländisch', sq: 'Albanisch', hi: 'Hindi', bn: 'Bengalisch' },
   cihazDili: 'Gerätesprache',
   cihazDiliKullaniliyor: 'Derzeit {ad}',
   cihazDiliDesteklenmiyor: 'Die Sprache Ihres Geräts ist noch nicht verfügbar; Türkisch wird verwendet.',
