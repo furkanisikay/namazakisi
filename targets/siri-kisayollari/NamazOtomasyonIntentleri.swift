@@ -234,11 +234,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "না, এখনো চিহ্নিত হয়নি।"
     )
 
-    // ÇEVİRİ: fa
+    // fa — Farsça (beta): JS `sozluk/fa`; CLDR fa one = 0 ve 1, sayıdan sonra ad tekil (one = other)
     static let fa = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{n} دقیقه تا وقت {ad} مانده است.", "other": "{n} دقیقه تا وقت {ad} مانده است."],
+        evetKilindi: "بله، خوانده‌شده علامت خورده است.",
+        hayirKilinmadi: "نه، هنوز علامت نخورده است."
     )
 
     // ÇEVİRİ: ps

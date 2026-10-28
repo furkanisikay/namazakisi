@@ -1,35 +1,35 @@
-// ÇEVİRİ: fa — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Farsça konuşan Müslümanların namaz sonrası ve selam için kullandığı yerleşik kalıplar (çeviri
+ * değil). Kabul duası "قبول باشد" (baskın, iki yuva) ve "خدا/خداوند قبول کند"; "التماس دعا"
+ * dua isteğidir, kabul duası DEĞİL → yok. Övgü ve "!" yok. Kandil ve hicrî yılbaşı selamı
+ * yalnız ülke listesindeki gecelerde söylenir (`selam.ts > KANDIL_ULKELERI`).
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'مبارک باشد.',
+  kabulDualari: ['قبول باشد', 'خدا قبول کند', 'قبول باشد', 'خداوند قبول کند'],
+  kabulDuasi: 'قبول باشد',
+  ekSabah: 'صبح بخیر',
+  ekYatsi: 'شب بخیر',
+  tamGunAna: 'قبول باشد',
+  tamGunAlt: 'امروز هر پنج نماز را خواندید.',
+  kazaKabul: 'یک نماز قضای {vakit} از دفترتان کم شد. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'شب رغائب مبارک',
+    mirac: 'شب معراج مبارک',
+    berat: 'شب برات مبارک',
+    mevlid: 'میلاد پیامبر مبارک',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'سحرتان پربرکت',
+    bayram: 'عید مبارک',
+    iftar: 'افطارتان گوارا',
+    kadir: 'شب قدرتان پربرکت',
+    arefe: 'پیشاپیش عید مبارک',
+    hicriYilbasi: 'سال نو هجری قمری مبارک',
+    cuma: 'جمعه مبارک',
+    ramazan: 'رمضان مبارک',
+    sabah: 'صبح بخیر',
   },
 };

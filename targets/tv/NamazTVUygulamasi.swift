@@ -304,19 +304,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", পরবর্তী নামাজ"
     )
 
-    // ÇEVİRİ: fa
+    // fa — Farsça (beta); JS `sozluk/fa` (konum.il, genel.evEkrani, anaEkran.kerahat), hitap "شما"
     static let fa = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "شهر خود را انتخاب کنید",
+        ilMerkezi: "اوقات نماز بر اساس مرکز استان محاسبه می‌شود. بعداً می‌توانید انتخاب خود را تغییر دهید.",
+        ilSecErisim: "{il}، انتخاب",
+        kalan: "تا وقت {ad}",
+        kalanErisim: "زمان باقی‌مانده تا وقت {ad}: {sure}",
+        konumuDegistirin: "تغییر موقعیت",
+        kerahatSuruyor: "وقت مکروه: {tur}، پایان {bitis}. {aciklama}",
+        siradakiKerahat: "وقت مکروه بعدی: {tur} {bas}–{bit}",
+        cumaBilgisi: "امروز جمعه است. نماز جمعه در وقت ظهر خوانده می‌شود (آغاز {giris}).",
+        suAnkiEk: "، نماز کنونی",
+        siradakiEk: "، نماز بعدی"
     )
 
     // ÇEVİRİ: ps

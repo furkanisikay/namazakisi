@@ -354,17 +354,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: fa
+    // fa — JS `sozluk/fa/kible.ts` (binlik ayırıcı JS `aktifDil > BINLIK.fa` ile aynı)
     public static let fa = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "پشت سر",
+        saga: "راست {derece}°",
+        sola: "چپ {derece}°",
+        hizali: "رو به قبله هستید",
+        arkadaErisim: "قبله پشت سر شماست",
+        sagdaErisim: "قبله {derece} درجه سمت راست شماست",
+        soldaErisim: "قبله {derece} درجه سمت چپ شماست",
+        kabede: "کنار کعبه هستید",
+        mesafe: "{km} کیلومتر",
         binlikAyirici: ","
     )
 

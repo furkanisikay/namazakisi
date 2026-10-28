@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: fa — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- TV eşleştirme tarayıcısı — Farsça (beta). Terimler: JS src/core/dil/sozluk/fa/cihaz.ts. -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">کد QR روی صفحهٔ تلویزیون را درون کادر قرار دهید</string>
+    <string name="tvesleme_qr_vazgec">انصراف</string>
+    <string name="tvesleme_qr_vazgec_erisim">لغو اسکن</string>
+    <string name="tvesleme_qr_yabanci">این کد QR متعلق به Namaz Akışı TV نیست. کد روی تلویزیون را اسکن کنید.</string>
+    <string name="tvesleme_qr_okundu">کد اسکن شد</string>
 </resources>

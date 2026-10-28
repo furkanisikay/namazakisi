@@ -1,15 +1,14 @@
-// ÇEVİRİ: fa — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'ادامه',
+  vazgecin: 'انصراف',
+  kapatin: 'بستن',
+  ayarlariAcin: 'باز کردن تنظیمات',
+  simdilikGecin: 'فعلاً رد شوید',
+  tekrarDeneyin: 'دوباره امتحان کنید',
+  evet: 'بله',
+  hayir: 'خیر',
+  ayrintilariAcar: 'جزئیات را باز می‌کند',
   marka: 'Namaz Akışı',
 };

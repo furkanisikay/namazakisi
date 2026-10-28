@@ -431,29 +431,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "বর্তমান নামাজ পড়া হয়েছে হিসেবে চিহ্নিত করে।"
     )
 
-    // ÇEVİRİ: fa
+    // fa — Farsça (beta); JS `sozluk/fa` (Kıldım "خواندم", Kılındı "خوانده شد")
     static let fa = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "وقت نماز",
+        galeriAciklama: "وقت نماز کنونی، زمان باقی‌مانده تا پایان آن و اوقات نماز امروز.",
+        veriEski: "برای به‌روزرسانی اوقات نماز، برنامه را باز کنید",
+        konumYok: "برای تنظیم موقعیت، برنامه را باز کنید",
+        kilindiSiradaki: "{ad} خوانده شد · {sonraki} {saat}",
+        adCikis: "{ad} · پایان {saat}",
+        siradakiAdSaat: "بعدی {ad} {saat}",
+        vaktiCikisErisim: "وقت {ad}، پایان {saat}",
+        siradakiErisim: "بعدی {ad}، {saat}",
+        cikisSaat: "پایان {saat}",
+        bitisSaat: "پایان {saat}",
+        kilindiBaslik: "{ad} خوانده شد",
+        siradaki: "بعدی",
+        siradakiAd: "بعدی {ad}",
+        kildimErisim: "نماز {ad} را خواندم",
+        gunSatiriKilindi: "، خوانده شد",
+        bitti: "تمام شد",
+        vakitCikti: "وقت نماز گذشت",
+        kabulAlt: "نماز {ad} خوانده شد",
+        kontrolAdi: "خواندم",
+        kontrolAciklama: "نماز کنونی را خوانده‌شده علامت می‌زند."
     )
 
     // ÇEVİRİ: ps

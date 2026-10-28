@@ -158,12 +158,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} সেকেন্ড", "other": "{n} সেকেন্ড"]
     )
 
-    // ÇEVİRİ: fa
+    // fa — JS `sozluk/fa/sure.ts` birebir (birim kısaltılmaz; sayıdan sonra ad tekil, one = other)
     public static let fa = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "ساعت", birimDk: "دقیقه", birimSn: "ثانیه",
+        saat: ["one": "{n} ساعت", "other": "{n} ساعت"],
+        dakika: ["one": "{n} دقیقه", "other": "{n} دقیقه"],
+        saniye: ["one": "{n} ثانیه", "other": "{n} ثانیه"]
     )
 
     // ÇEVİRİ: ps

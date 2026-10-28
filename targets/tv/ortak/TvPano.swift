@@ -278,18 +278,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: fa
+    // fa — Farsça (beta); JS `sozluk/fa` (vakit, tarih, anaEkran.kerahat), Android TV `TvDiliFa` ikizi
     public static let fa = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "صبح", "gunes": "طلوع آفتاب", "ogle": "ظهر", "ikindi": "عصر", "aksam": "مغرب", "yatsi": "عشا"],
+        cuma: "جمعه",
+        aylar: ["ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن", "ژوئیه", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"],
+        gunler: ["دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه", "یکشنبه"],
+        tarih: "{gunAdi}، {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "طلوع آفتاب", "istiva": "زوال", "gurub": "غروب آفتاب"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "تا وقتی آفتاب خوب بالا نیامده، نماز خواندن مکروه است.",
+            "istiva": "وقتی آفتاب درست در میانهٔ آسمان است، نماز خواندن مکروه است.",
+            "gurub": "هنگام غروب آفتاب، نماز خواندن مکروه است.",
         ]
     )
 

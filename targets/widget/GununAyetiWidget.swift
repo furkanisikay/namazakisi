@@ -259,18 +259,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Abu Bakr Zakaria, QuranEnc 1.1.1"
     )
 
-    // ÇEVİRİ: fa
+    // fa — meal 94:6 `gununAyetiHavuzu.ts` (persian_ih), künye `GUNUN_AYETI_KAYNAKLARI.mealler.fa`
     static let fa = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "آیهٔ روز",
+        galeriAciklama: "آیه‌ای همراه با ترجمه‌اش که هر روز هنگام صبح عوض می‌شود.",
+        etiket: "آیهٔ روز",
+        uygulamayiAcin: "برای دیدن آیهٔ روز، برنامه را باز کنید",
+        ornekSigmiyor: "آیهٔ امروز در این اندازه جا نمی‌شود. برای خواندن ضربه بزنید.",
+        ornekAcin: "باز کردن",
+        ornekArapcaKaynagi: "عربی: Tanzil",
+        ornekMeal: "[آری؛] مسلماً با [هر] دشواری، آسانی است.",
+        ornekKisaKunye: "قرآن 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center، QuranEnc 1.1.3"
     )
 
     // ÇEVİRİ: ps

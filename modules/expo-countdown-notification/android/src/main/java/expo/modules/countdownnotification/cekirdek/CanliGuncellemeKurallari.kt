@@ -69,8 +69,8 @@ object CanliGuncellemeKurallari {
         "hi" to ("घंटे" to "मिनट"),
         // bn
         "bn" to ("ঘ" to "মি"),
-        // ÇEVİRİ: fa
-        "fa" to ("h" to "min"),
+        // fa
+        "fa" to ("ساعت" to "دقیقه"),
         // ÇEVİRİ: ps
         "ps" to ("h" to "min"),
         // ÇEVİRİ: ckb

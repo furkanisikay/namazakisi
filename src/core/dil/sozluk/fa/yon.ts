@@ -1,10 +1,9 @@
-// ÇEVİRİ: fa — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'جهت نوشتار تغییر می‌کند',
+  aciklama: 'زبانی که انتخاب کردید در جهت دیگری نوشته می‌شود. برای اینکه صفحه‌ها به جهت جدید بروند، برنامه باید دوباره راه‌اندازی شود.',
+  simdiBaslat: 'اکنون دوباره راه‌اندازی کنید',
+  sonra: 'بعداً',
+  bekliyor: 'جهت نوشتار پس از راه‌اندازی دوباره برنامه تغییر می‌کند.',
 };

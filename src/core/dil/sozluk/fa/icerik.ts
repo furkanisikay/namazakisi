@@ -1,15 +1,15 @@
-// ÇEVİRİ: fa — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Vakit girdi bildirimi: ibadete çağrı → "تو" + emir. */
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'قرآن {ref} · {yayimci}، QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'نماز از خواب بهتر است. به سوی رستگاری بشتاب.',
+    araVer: 'کمی از کارهای دنیا دست بکش و در پیشگاه پروردگارت بایست.',
+    yorgunluk: 'نماز عصر منتظر توست تا خستگی روز را بزدایی و آرامش بیابی.',
+    sukur: 'نماز مغرب شکر روز است. برای ایستادن در پیشگاه پروردگارت بشتاب.',
+    aksamKisa: 'وقت مغرب کوتاه است؛ وقتش رسید، بی‌درنگ بخوان.',
+    geceKaranligi: 'در تاریکی شب با پروردگارت خلوت کن. نماز عشا داروی جان است.',
+    davet: 'برای پایان دادن روز با خشنودی الله، به نماز عشا دعوت شده‌ای.',
   },
 };
