@@ -1,35 +1,35 @@
-// ÇEVİRİ: ug — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Uygur Müslümanlarının namaz sonrası ve selam için kullandığı yerleşik kalıplar (çeviri değil).
+ * Kabul duası "ئاللاھ قوبۇل قىلسۇن" ve yaygın varyantları ("قوبۇل بولسۇن", "ئاللاھ تائالا قوبۇل
+ * قىلسۇن"); övgü ve "!" yok. Kandil selamı yalnız ülke listesindeki gecelerde söylenir
+ * (`selam.ts > KANDIL_ULKELERI`); buradaki karşılıklar tip bütünlüğü içindir.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'مۇبارەك بولسۇن.',
+  kabulDualari: ['ئاللاھ قوبۇل قىلسۇن', 'قوبۇل بولسۇن', 'ئاللاھ قوبۇل قىلسۇن', 'ئاللاھ تائالا قوبۇل قىلسۇن'],
+  kabulDuasi: 'ئاللاھ قوبۇل قىلسۇن',
+  ekSabah: 'خەيرلىك ئەتىگەن',
+  ekYatsi: 'خەيرلىك كېچە',
+  tamGunAna: 'ئاللاھ قوبۇل قىلسۇن',
+  tamGunAlt: 'بۈگۈن بەش ۋاخ نامازنى تولۇق ئادا قىلدىڭىز.',
+  kazaKabul: 'خاتىرىڭىزدىن بىر {vakit} قازاسى چىقىرىۋېتىلدى. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'رەغائىب كېچىڭىز مۇبارەك بولسۇن',
+    mirac: 'مىراج كېچىڭىز مۇبارەك بولسۇن',
+    berat: 'بەرات كېچىڭىز مۇبارەك بولسۇن',
+    mevlid: 'مەۋلۇد كېچىڭىز مۇبارەك بولسۇن',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'سەھەرلىكىڭىز مۇبارەك بولسۇن',
+    bayram: 'ھېيتىڭىز مۇبارەك بولسۇن',
+    iftar: 'ئىپتارىڭىز مۇبارەك بولسۇن',
+    kadir: 'قەدىر كېچىڭىز مۇبارەك بولسۇن',
+    arefe: 'ئەرەپە كۈنىڭىز مۇبارەك بولسۇن',
+    hicriYilbasi: 'ھىجرىيە يېڭى يىلىڭىز مۇبارەك بولسۇن',
+    cuma: 'جۈمە مۇبارەك بولسۇن',
+    ramazan: 'رامىزان ئېيىڭىز مۇبارەك بولسۇن',
+    sabah: 'خەيرلىك ئەتىگەن',
   },
 };

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ug — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- ug — Uygurca (beta). -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">تېلېۋىزور ئېكرانىدىكى QR كودنى رامكا ئىچىگە كىرگۈزۈڭ</string>
+    <string name="tvesleme_qr_vazgec">ۋاز كېچىڭ</string>
+    <string name="tvesleme_qr_vazgec_erisim">سىكانىرلاشتىن ۋاز كېچىڭ</string>
+    <string name="tvesleme_qr_yabanci">بۇ QR كود Namaz Akışı تېلېۋىزورىغا تەۋە ئەمەس. تېلېۋىزوردىكى كودنى سىكانىرلاڭ.</string>
+    <string name="tvesleme_qr_okundu">كود سىكانىرلاندى</string>
 </resources>

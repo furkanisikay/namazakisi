@@ -1,15 +1,14 @@
-// ÇEVİRİ: ug — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'داۋاملاشتۇرۇڭ',
+  vazgecin: 'بىكار قىلىڭ',
+  kapatin: 'تاقاڭ',
+  ayarlariAcin: 'تەڭشەكلەرنى ئېچىڭ',
+  simdilikGecin: 'ھازىرچە ئاتلاڭ',
+  tekrarDeneyin: 'قايتا سىناڭ',
+  evet: 'ھەئە',
+  hayir: 'ياق',
+  ayrintilariAcar: 'تەپسىلاتىنى ئاچىدۇ',
   marka: 'Namaz Akışı',
 };

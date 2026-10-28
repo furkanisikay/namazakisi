@@ -396,17 +396,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: ug
+    // ug — Uygurca (beta); JS `sozluk/ug/kible.ts`
     public static let ug = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "ئارقىڭىزدا",
+        saga: "ئوڭغا {derece}°",
+        sola: "سولغا {derece}°",
+        hizali: "قىبلە تەرەپكە قاراپ تۇرۇۋاتىسىز",
+        arkadaErisim: "قىبلە ئارقىڭىزدا",
+        sagdaErisim: "قىبلە ئوڭ تەرىپىڭىزدە {derece} گرادۇس",
+        soldaErisim: "قىبلە سول تەرىپىڭىزدە {derece} گرادۇس",
+        kabede: "كەئبىدىسىز",
+        mesafe: "{km} كىلومېتىر",
         binlikAyirici: ","
     )
 

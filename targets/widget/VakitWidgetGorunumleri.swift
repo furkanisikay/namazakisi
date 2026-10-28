@@ -506,29 +506,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: ug
+    // ug — Uygurca (beta); JS `sozluk/ug` ("ناماز ئوقۇدۇم" / "ئوقۇلدى")
     static let ug = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "ناماز ۋاقتى",
+        galeriAciklama: "ھازىرقى ناماز ۋاقتى، ئۇنىڭ چىقىشىغا قالغان ۋاقىت ۋە بۈگۈنكى ناماز ۋاقىتلىرى.",
+        veriEski: "ناماز ۋاقىتلىرىنى يېڭىلاش ئۈچۈن ئەپنى ئېچىڭ",
+        konumYok: "ئورنىڭىزنى تەڭشەش ئۈچۈن ئەپنى ئېچىڭ",
+        kilindiSiradaki: "{ad} ئوقۇلدى · {sonraki} {saat}",
+        adCikis: "{ad} · چىقىشى {saat}",
+        siradakiAdSaat: "كېيىنكىسى {ad} {saat}",
+        vaktiCikisErisim: "{ad} ۋاقتى، چىقىشى {saat}",
+        siradakiErisim: "كېيىنكىسى {ad}، {saat}",
+        cikisSaat: "چىقىشى {saat}",
+        bitisSaat: "ئاخىرلىشىشى {saat}",
+        kilindiBaslik: "{ad} ئوقۇلدى",
+        siradaki: "كېيىنكى",
+        siradakiAd: "كېيىنكىسى {ad}",
+        kildimErisim: "{ad} نامىزىنى ئوقۇدۇم",
+        gunSatiriKilindi: "، ئوقۇلدى",
+        bitti: "ئاخىرلاشتى",
+        vakitCikti: "ناماز ۋاقتى چىقتى",
+        kabulAlt: "{ad} ئوقۇلدى",
+        kontrolAdi: "ناماز ئوقۇدۇم",
+        kontrolAciklama: "ھازىرقى ۋاقىتنى ئوقۇلدى دەپ بەلگىلەيدۇ."
     )
 
     /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil `// ÇEVİRİ: <kod>`

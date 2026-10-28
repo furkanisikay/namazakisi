@@ -255,11 +255,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: ug
+    // ug — Uygurca (beta); CLDR ug one/other (sayıdan sonra çoğul eki yok)
     static let ug = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} ۋاقتىنىڭ كىرىشىگە {n} مىنۇت بار.", "other": "{ad} ۋاقتىنىڭ كىرىشىگە {n} مىنۇت بار."],
+        evetKilindi: "ھەئە، ئوقۇلدى دەپ بەلگىلەنگەن.",
+        hayirKilinmadi: "ياق، تېخى بەلگىلەنمىگەن."
     )
 
     static let tablo: [String: OtomasyonMetinleri] = [

@@ -1,10 +1,10 @@
-// ÇEVİRİ: ug — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Uygurcada sayıdan sonra ad çoğul eki almaz: `one` ve `other` aynı biçimdir. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: 'سائەت', dk: 'مىنۇت', sn: 'سېكۇنت' },
+  saat: cogul({ one: '{n} سائەت', other: '{n} سائەت' }),
+  dakika: cogul({ one: '{n} مىنۇت', other: '{n} مىنۇت' }),
+  saniye: cogul({ one: '{n} سېكۇنت', other: '{n} سېكۇنت' }),
 };

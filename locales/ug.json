@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "ئورنىڭىز تۇرۇۋاتقان جايىڭىزنىڭ ناماز ۋاقىتلىرىنى توغرا ھېسابلاش ئۈچۈن ئىشلىتىلىدۇ. ئورنىڭىز ئۈسكۈنىڭىزدە قالىدۇ.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "ئورنىڭىز تۇرۇۋاتقان جايىڭىزنىڭ ناماز ۋاقىتلىرىنى توغرا ھېسابلاش ئۈچۈن، «مەسچىتتىمەن» ئوچۇق بولسا مەسچىتكە كىرگىنىڭىزدە ناماز ھالىتىنى ئېچىش ئۈچۈن ئىشلىتىلىدۇ. ئورنىڭىز ئۈسكۈنىڭىزدە قالىدۇ.",
+  "NSLocationAlwaysUsageDescription": "ئورنىڭىز شەھەر ئالماشتۇرغىنىڭىزدا ناماز ۋاقىتلىرىنى ئاپتوماتىك يېڭىلاش ئۈچۈن، «مەسچىتتىمەن» ئوچۇق بولسا مەسچىتكە كىرگىنىڭىزدە ناماز ھالىتىنى ئېچىش ئۈچۈن ئىشلىتىلىدۇ. ئورنىڭىز ئۈسكۈنىڭىزدە قالىدۇ.",
+  "NSCameraUsageDescription": "كامېرا قىبلە يۆنىلىشىنى كامېرا كۆرۈنۈشى ئۈستىدە كۆرسىتىش ۋە تېلېۋىزوردىكى جۈپلەش كودىنى سىكانىرلاش ئۈچۈن ئىشلىتىلىدۇ. سۈرەتلەر ساقلانمايدۇ ۋە ئۈسكۈنىڭىزدىن چىقمايدۇ.",
+  "NSCalendarsUsageDescription": "كالېندار زىيارىتى ناماز ۋاقىتلىرىنى كالېندارىڭىزغا قوشۇش ئۈچۈن، ئاچسىڭىز كالېندارىڭىزدىكى پائالىيەتلەرنىڭ ناماز ۋاقتى بىلەن توقۇنۇشىدىغان-توقۇنۇشمايدىغانلىقىنى تەكشۈرۈش ئۈچۈن ئىشلىتىلىدۇ. كالېندار سانلىق مەلۇماتلىرىڭىز ئۈسكۈنىڭىزدە قالىدۇ.",
+  "NSCalendarsFullAccessUsageDescription": "كالېندار زىيارىتى ناماز ۋاقىتلىرىنى كالېندارىڭىزغا قوشۇش ئۈچۈن، ئاچسىڭىز كالېندارىڭىزدىكى پائالىيەتلەرنىڭ ناماز ۋاقتى بىلەن توقۇنۇشىدىغان-توقۇنۇشمايدىغانلىقىنى تەكشۈرۈش ئۈچۈن ئىشلىتىلىدۇ. كالېندار سانلىق مەلۇماتلىرىڭىز ئۈسكۈنىڭىزدە قالىدۇ.",
+  "NSLocalNetworkUsageDescription": "ئەپ ناماز ۋاقىتلىرىڭىزنى ۋە بەلگىلىگەن نامازلىرىڭىزنى ئەۋەتىش ئۈچۈن يەرلىك تورىڭىزدىكى تېلېۋىزورغا ئۇلىنىدۇ. سانلىق مەلۇمات شىفىرلىنىدۇ ۋە پەقەت ئىككى ئۈسكۈنە ئارىسىدا يۆتكىلىدۇ.",
+  "NSAlarmKitUsageDescription": "«ھەقىقىي ئويغاتقۇچ» تاللىغان ئەسكەرتىش قەدەملىرى ئويغاتقۇچ سۈپىتىدە بەلگىلىنىدۇ، شۇڭا تېلېفونىڭىز ئۈنسىز ياكى دىققەت ھالىتى ئوچۇق بولسىمۇ ئاڭلايسىز.",
+  "\"Vakti kıldım\"": "ناماز ئوقۇدۇم",
+  "\"Kıble\"": "قىبلە"
 }
