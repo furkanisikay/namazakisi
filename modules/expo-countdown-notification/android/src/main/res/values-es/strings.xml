@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- es — İspanyolca (beta). Terimler: JS src/core/dil/sozluk/es (hitap "usted"; ibadete çağrı kısa emir, "¡…!" yok). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">Cuentas atrás en directo</string>
+    <string name="countdown_kanal_canli_aciklama">Cuentas atrás en la Now Bar y en la barra de estado</string>
+    <string name="countdown_kanal_genel_ad">Notificaciones de cuenta atrás</string>
+    <string name="countdown_kanal_genel_aciklama">Canal de las notificaciones de cuenta atrás</string>
+
+    <string name="countdown_eylem_kildim">Ya recé</string>
+    <string name="countdown_eylem_durdur">Detener</string>
+
+    <string name="countdown_yedek_vakit">Dese prisa, la hora del rezo está a punto de terminar.</string>
+    <string name="countdown_yedek_iftar">Se acerca el iftar.</string>
+    <string name="countdown_yedek_sahur">Aún puede comer y beber; se acerca el Imsak.</string>
+    <string name="countdown_yedek_seri">Los rezos de hoy están incompletos; no pierda su racha.</string>
+
+    <string name="countdown_onek_vakit">Hasta que termine la hora</string>
+    <string name="countdown_onek_vakit_dar">La hora termina</string>
+    <string name="countdown_onek_iftar">Hasta el iftar</string>
+    <string name="countdown_onek_iftar_dar">Hasta el iftar</string>
+    <string name="countdown_onek_sahur">Hasta que termine el suhur</string>
+    <string name="countdown_onek_sahur_dar">El suhur termina</string>
+    <string name="countdown_onek_seri">Para salvar su racha</string>
+    <string name="countdown_onek_seri_dar">La racha termina</string>
+</resources>

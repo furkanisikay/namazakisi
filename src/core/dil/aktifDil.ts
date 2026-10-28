@@ -12,7 +12,7 @@ import { cogulSec } from './cogul';
 import { dilKoduMu, VARSAYILAN_DIL, type DilKodu } from './diller';
 import type { CogulMetin } from './tipler';
 import type { VakitAdiTakimi } from './vakitTakimlari';
-import { dilRakamVarsayilani, type RakamSistemi } from './rakam';
+import { dilRakamVarsayilani, rakamSecimiGecerliMi, type RakamSistemi } from './rakam';
 import { en } from './sozluk/en';
 import { id } from './sozluk/id';
 import { de } from './sozluk/de';
@@ -22,9 +22,14 @@ import { ru } from './sozluk/ru';
 import { ms } from './sozluk/ms';
 import { ar } from './sozluk/ar';
 import { ur } from './sozluk/ur';
+import { es } from './sozluk/es';
+import { nl } from './sozluk/nl';
+import { sq } from './sozluk/sq';
+import { hi } from './sozluk/hi';
+import { bn } from './sozluk/bn';
 import { tr, type Sozluk } from './sozluk/tr';
 
-const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, ru, ms, ar, ur };
+const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn };
 
 let aktif: DilKodu = VARSAYILAN_DIL;
 /** Etkin dilin vakit adı takımı (`null` = sözlüğün kendi adları). Dil değişince sıfırlanır. */
@@ -94,10 +99,15 @@ export function aktifVakitTakimi(): VakitAdiTakimi | null {
   return aktifTakim;
 }
 
-/** Etkin dilin rakam sistemini kurar; değiştiyse `true` (dinleyicilere haber verilir). */
+/**
+ * Etkin dilin rakam sistemini kurar; değiştiyse `true` (dinleyicilere haber verilir). Etkin
+ * dilde geçersiz sistem (Bengalcede `arab`, Türkçede yerel rakam) dilin varsayılanına düşer:
+ * `aktifRakamSistemi()` her zaman etkin dilin `latn`'ı ya da KENDİ yerel rakamıdır.
+ */
 export function rakamSisteminiKur(sistem: RakamSistemi): boolean {
-  if (sistem === aktifRakam) return false;
-  aktifRakam = sistem;
+  const gecerli = rakamSecimiGecerliMi(aktif, sistem) ? sistem : dilRakamVarsayilani(aktif);
+  if (gecerli === aktifRakam) return false;
+  aktifRakam = gecerli;
   bildir();
   return true;
 }
@@ -143,9 +153,10 @@ export function sayili(
   return bicimle(cogulSec(kod, sablon, n), { n, ...degerler });
 }
 
-// Fransızca binlik ayırıcı dar bölünmez boşluk (U+202F), Rusça bölünmez boşluk (U+00A0) — CLDR.
-const BINLIK: Readonly<Record<DilKodu, string>> = { tr: '.', en: ',', id: '.', de: '.', fr: '\u202f', bs: '.', ru: '\u00a0', ms: ',', ar: ',', ur: ',' };
-const ONDALIK: Readonly<Record<DilKodu, string>> = { tr: ',', en: '.', id: ',', de: ',', fr: ',', bs: ',', ru: ',', ms: '.', ar: '.', ur: '.' };
+// Fransızca binlik ayırıcı dar bölünmez boşluk (U+202F), Rusça ve Arnavutça bölünmez boşluk (U+00A0) — CLDR.
+// Hintçe ve Bengalcede CLDR Hint gruplaması (1,23,456) yerine üçlü gruplama bilinçli (tek kural).
+const BINLIK: Readonly<Record<DilKodu, string>> = { tr: '.', en: ',', id: '.', de: '.', fr: '\u202f', bs: '.', ru: '\u00a0', ms: ',', ar: ',', ur: ',', es: '.', nl: '.', sq: '\u00a0', hi: ',', bn: ',' };
+const ONDALIK: Readonly<Record<DilKodu, string>> = { tr: ',', en: '.', id: ',', de: ',', fr: ',', bs: ',', ru: ',', ms: '.', ar: '.', ur: '.', es: ',', nl: ',', sq: ',', hi: '.', bn: '.' };
 
 /**
  * Sayıyı etkin dilin ayırıcılarıyla yazar ("12.450" / "12,450"). `Intl`'e bağlı değil

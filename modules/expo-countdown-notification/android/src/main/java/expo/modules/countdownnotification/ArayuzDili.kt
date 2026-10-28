@@ -4,14 +4,14 @@ import android.content.Context
 import expo.modules.countdownnotification.cekirdek.Rakam
 
 /**
- * Uygulamanın ARAYÜZ dili (dil kodu: "tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur") — JS
+ * Uygulamanın ARAYÜZ dili (dil kodu: "tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn") — JS
  * etkin dil değişince yazar; uygulama modülü (widget, bildirim, alarm) ve diğer yerel
  * modüller aynı tercih dosyasını okur. Sesli okuma dilinden (`AnonsKonusucu`, BCP-47)
  * AYRIDIR: ses motoru başka dile düşebilir. Uygulama hiç açılmadıysa (JS yazmadı) Türkçe.
  *
  * Aynı dosyada kullanıcının seçtiği VAKİT ADI TAKIMI da durur ([TERCIH_VAKIT_ADLARI], JSON;
  * okuyan uygulama modülü `cekirdek/VakitAdlari`). Yoksa her yüzey dil tablosunu kullanır.
- * RAKAM SİSTEMİ de buradadır ([TERCIH_RAKAM_SISTEMI]: "arab" = Doğu Arap rakamı; yoksa Batı).
+ * RAKAM SİSTEMİ de buradadır ([TERCIH_RAKAM_SISTEMI]: "arab" Doğu Arap, "beng" Bengalce; yoksa Batı).
  */
 object ArayuzDili {
     const val TERCIH_DOSYASI = "namazakisi_dil"
@@ -50,7 +50,7 @@ object ArayuzDili {
         VARSAYILAN
     }
 
-    /** Ham rakam kaydı ("arab" ya da null); yorumu `cekirdek/Rakam.sistem` yapar (yalnız Arapçada). */
+    /** Ham rakam kaydı ("arab", "beng" ya da null); yorumu `cekirdek/Rakam.sistem` yapar (yalnız dilin kendi sistemi). */
     fun rakamKaydi(context: Context): String? = try {
         context.applicationContext.getSharedPreferences(TERCIH_DOSYASI, Context.MODE_PRIVATE)
             .getString(TERCIH_RAKAM_SISTEMI, null)
@@ -58,6 +58,6 @@ object ArayuzDili {
         null
     }
 
-    /** Görünen metnin sıfır rakamı: Arapça arayüzde "arab" → '٠', aksi halde '0' (metin aynen). */
+    /** Görünen metnin sıfır rakamı: Arapçada "arab" → '٠', Bengalcede "beng" → '০', aksi halde '0' (metin aynen). */
     fun rakamSifiri(context: Context): Char = Rakam.sifir(oku(context), rakamKaydi(context))
 }

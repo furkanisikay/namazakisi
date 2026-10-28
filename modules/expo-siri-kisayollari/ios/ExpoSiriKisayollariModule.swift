@@ -129,7 +129,7 @@ public class ExpoSiriKisayollariModule: Module {
             SiriDeposu.varsayilan.vakitAdlariniYaz(json)
         }
 
-        /// Arayuzun rakam sistemi ("arab" = Dogu Arap rakami) ya da nil (anahtar silinir, Bati).
+        /// Arayuzun rakam sistemi ("arab" Dogu Arap, "beng" Bengalce) ya da nil (anahtar silinir, Bati).
         /// Widget, canli etkinlik ve Siri cevabi CIZIM aninda okur (`RakamSistemi`). Deger
         /// degistiyse widget'lar tazelenir (yuk ayni kaldigi icin JS yeniden yazmaz, D-21);
         /// WidgetCenter XPC'si JS thread'ini bekletmesin diye arka planda.

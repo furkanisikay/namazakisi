@@ -1,0 +1,25 @@
+# tohum: ozellik
+# Dil seçici: açık diller ve beta rozetleri (dil başına kare turunun kanıtı).
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- runFlow:
+    file: _liste-kaydir.yaml
+    env:
+      HEDEF: "(Dil · Language|Language · Dil)"
+- tapOn:
+    text: "(Dil · Language|Language · Dil)"
+- extendedWaitUntil:
+    visible:
+      id: "dil-secici"
+    timeout: 15000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/67-dil-secimi
+- swipe:
+    start: 50%, 80%
+    end: 50%, 30%
+    duration: 600
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/68-dil-secimi-alt

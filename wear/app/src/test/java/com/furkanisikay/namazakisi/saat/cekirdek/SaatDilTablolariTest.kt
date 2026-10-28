@@ -6,13 +6,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Native dil tablosu nöbetçisi (`docs/ajan/coklu-dil.md > Native dil tabloları`): on dilin
+ * Native dil tablosu nöbetçisi (`docs/ajan/coklu-dil.md > Native dil tabloları`): on beş dilin
  * her nesnesi kendi kodunu taşır ve her metin Türkçeyle AYNI yer tutucuları (parametreleri)
  * kullanır. Arayüz anahtar kümesini derleyici garanti eder; burada çevirmen bir parametreyi
  * (ör. `$ad`) düşürmesin diye işaretçi değerlerle çağrılır.
  */
 class SaatDilTablolariTest {
-    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur")
+    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn")
     private val isaretciler = listOf("<AD>", "<SAAT>", "<SURE>", "<S>", "<D>", "987", "986", "985")
 
     private fun metinler(d: SaatDili): Map<String, String> = linkedMapOf(

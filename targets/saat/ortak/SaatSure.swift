@@ -22,7 +22,7 @@ public struct SaatSureParcasi: Equatable {
 /// Sure metinleri — dil basina bir ornek (JS `sozluk/<dil>/sure.ts` ikizi: `kisa` birimleri ve
 /// `saat/dakika/saniye` cogullari). Cogul kaliplari CLDR kategorisi ("one", "few", "many",
 /// "other"; `CogulKurali`) → kalip, yer tutucu `{n}`; eksik kategori "other"a duser.
-/// Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur; cevrilmemis dil Ingilizce kopya
+/// Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn; cevrilmemis dil Ingilizce kopya
 /// (`// ÇEVİRİ: <kod>`).
 public struct SaatSureMetinleri: Equatable {
     public let birimSa: String
@@ -118,9 +118,49 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} سیکنڈ", "other": "{n} سیکنڈ"]
     )
 
+    // es — İspanyolca (beta): JS `sozluk/es/sure.ts` birebir (one = 1, many = milyonlar "{n} de …")
+    public static let es = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["one": "{n} hora", "other": "{n} horas", "many": "{n} de horas"],
+        dakika: ["one": "{n} minuto", "other": "{n} minutos", "many": "{n} de minutos"],
+        saniye: ["one": "{n} segundo", "other": "{n} segundos", "many": "{n} de segundos"]
+    )
+
+    // nl — Felemenkçe (beta): JS `sozluk/nl/sure.ts`
+    public static let nl = SaatSureMetinleri(
+        birimSa: "u", birimDk: "min", birimSn: "s",
+        saat: ["one": "{n} uur", "other": "{n} uur"],
+        dakika: ["one": "{n} minuut", "other": "{n} minuten"],
+        saniye: ["one": "{n} seconde", "other": "{n} seconden"]
+    )
+
+    // sq — JS `sozluk/sq/sure.ts` (orë/min/sek; "orë" njëjës = shumës)
+    public static let sq = SaatSureMetinleri(
+        birimSa: "orë", birimDk: "min", birimSn: "sek",
+        saat: ["one": "{n} orë", "other": "{n} orë"],
+        dakika: ["one": "{n} minutë", "other": "{n} minuta"],
+        saniye: ["one": "{n} sekondë", "other": "{n} sekonda"]
+    )
+
+    // hi — Hintçe (beta): JS `sozluk/hi/sure.ts` birebir (birim kısaltılmaz; one = 0 ve 1)
+    public static let hi = SaatSureMetinleri(
+        birimSa: "घंटे", birimDk: "मिनट", birimSn: "सेकंड",
+        saat: ["one": "{n} घंटा", "other": "{n} घंटे"],
+        dakika: ["one": "{n} मिनट", "other": "{n} मिनट"],
+        saniye: ["one": "{n} सेकंड", "other": "{n} सेकंड"]
+    )
+
+    // bn — JS `sozluk/bn/sure.ts`; Bengalcede sayıdan sonra isim çekimlenmez (one = other).
+    public static let bn = SaatSureMetinleri(
+        birimSa: "ঘ", birimDk: "মি", birimSn: "সে",
+        saat: ["one": "{n} ঘণ্টা", "other": "{n} ঘণ্টা"],
+        dakika: ["one": "{n} মিনিট", "other": "{n} মিনিট"],
+        saniye: ["one": "{n} সেকেন্ড", "other": "{n} সেকেন্ড"]
+    )
+
     public static let tablo: [String: SaatSureMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
-        "ar": ar, "ur": ur,
+        "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
     ]
 
     public static func dil(_ kod: String?) -> SaatSureMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

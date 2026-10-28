@@ -13,6 +13,8 @@ const birDiger: Kural = (n) => (n === 1 ? 'one' : 'other');
 const hepDiger: Kural = () => 'other';
 /** Fransızca: 0 ve 1 tekil; 1.000.000 ve katları `many`. */
 const fransizca: Kural = (n) => (n === 0 || n === 1 ? 'one' : n !== 0 && n % 1000000 === 0 ? 'many' : 'other');
+/** İspanyolca: yalnız 1 tekil (0 çoğul); 1.000.000 ve katları `many`. */
+const ispanyolca: Kural = (n) => (n === 1 ? 'one' : n !== 0 && n % 1000000 === 0 ? 'many' : 'other');
 /** Doğu Slav (Rusça): 1, 21… one; 2–4, 22–24… few; gerisi many. */
 const rusca: Kural = (n) => {
   const s10 = n % 10;
@@ -35,7 +37,7 @@ const arapca: Kural = (n) => {
   if (s100 >= 11 && s100 <= 99) return 'many';
   return 'other';
 };
-/** Farsça ve Bengalce: 0 ve 1 tekil. */
+/** Farsça, Hintçe ve Bengalce: 0 ve 1 tekil. */
 const sifirBir: Kural = (n) => (n === 0 || n === 1 ? 'one' : 'other');
 
 const KURALLAR: Record<string, Kural> = {
@@ -47,6 +49,7 @@ const KURALLAR: Record<string, Kural> = {
   uz: birDiger,
   kk: birDiger,
   sq: birDiger,
+  nl: birDiger,
   id: hepDiger,
   ms: hepDiger,
   fr: fransizca,
@@ -55,6 +58,8 @@ const KURALLAR: Record<string, Kural> = {
   ar: arapca,
   fa: sifirBir,
   bn: sifirBir,
+  hi: sifirBir,
+  es: ispanyolca,
 };
 
 /** Desteklenen dil kodları (nöbetçi testin taradığı liste). */

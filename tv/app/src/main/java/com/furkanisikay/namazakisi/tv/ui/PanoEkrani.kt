@@ -569,6 +569,16 @@ private fun SessizBant(metin: String, vurgu: Color = Renkler.uyari) {
     ) {
         Box(Modifier.size(12.dp).background(vurgu, CircleShape))
         Spacer(Modifier.width(14.dp))
-        Text(metin, color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.Medium)
+        // Tek satır: uzun dilde ("De tijd voor Asr wordt krap · 30 min") sayı alt satıra düşüyordu
+        // (kare turu); metin bandın sığdığı kadar küçülür, `fill = false` bandı içerik kadar tutar.
+        BasicText(
+            metin,
+            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Medium),
+            color = { Renkler.metin },
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            autoSize = TextAutoSize.StepBased(minFontSize = 16.sp, maxFontSize = 24.sp),
+            modifier = Modifier.weight(1f, fill = false),
+        )
     }
 }

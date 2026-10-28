@@ -25,3 +25,10 @@ it('metinden kategori seçer, yoksa other', () => {
   expect(cogulSec('en', m, 2)).toBe('{n} günler');
   expect(cogulSec('ar', m, 3)).toBe('{n} günler');
 });
+
+it('yeni diller: es 0 çoğul ve milyon katı many, hi/bn 0 tekil, nl/sq one/other', () => {
+  expect([0, 1, 2, 1000000, 1000001].map((n) => cogulKategorisi('es', n))).toEqual(['other', 'one', 'other', 'many', 'other']);
+  expect([0, 1, 2].map((n) => cogulKategorisi('hi', n))).toEqual(['one', 'one', 'other']);
+  expect([0, 1, 2].map((n) => cogulKategorisi('bn', n))).toEqual(['one', 'one', 'other']);
+  for (const dil of ['nl', 'sq']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'one', 'other']);
+});

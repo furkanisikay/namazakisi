@@ -6,29 +6,45 @@ package expo.modules.countdownnotification.cekirdek
  *
  * İKİZ: uygulama modülündeki `com.furkanisikay.namazakisi.cekirdek.Rakam` (kural ve gerekçe
  * orada). Modül uygulama sınıflarını göremediği için kopya; biri değişirse ikisini birlikte
- * değiştir. Değeri JS yazar (`ArayuzDili.TERCIH_RAKAM_SISTEMI`, ÇÖZÜLMÜŞ: "arab" ya da yok);
- * yalnız arayüz dili Arapçayken uygulanır, diğer dillerde çıktı BİREBİR aynı.
+ * değiştir. Değeri JS yazar (`ArayuzDili.TERCIH_RAKAM_SISTEMI`, ÇÖZÜLMÜŞ: "arab", "beng" ya da
+ * yok); yalnız arayüz dilinin kendi yerel sistemiyle eşleşirse uygulanır (Arapçada "arab",
+ * Bengalcede "beng"), diğer dillerde çıktı BİREBİR aynı.
  */
 object Rakam {
     const val ARAB = "arab"
+    const val BENG = "beng"
     const val LATN = "latn"
 
     /** Doğu Arap (Arapça-Hint) sıfırı, U+0660. */
     const val DOGU_SIFIR = '٠'
 
-    fun arapcaMi(dil: String?): Boolean =
-        dil?.trim()?.substringBefore('-')?.substringBefore('_') == "ar"
+    /** Bengalce sıfır, U+09E6. */
+    const val BENG_SIFIR = '০'
 
-    fun sistem(dil: String?, kayitli: String?): String =
-        if (arapcaMi(dil) && kayitli?.trim() == ARAB) ARAB else LATN
+    /** Dil kökü → yerel rakam sistemi (TEK eşleme; listede olmayan dil Batı rakamı yazar). */
+    private val YEREL = mapOf("ar" to ARAB, "bn" to BENG)
 
-    fun sifir(sistem: String): Char = if (sistem == ARAB) DOGU_SIFIR else '0'
+    private val SIFIRLAR = mapOf(ARAB to DOGU_SIFIR, BENG to BENG_SIFIR)
+
+    private fun kok(dil: String?): String = dil?.trim()?.substringBefore('-')?.substringBefore('_').orEmpty()
+
+    fun yerelSistem(dil: String?): String? = YEREL[kok(dil)]
+
+    fun yerelRakamli(dil: String?): Boolean = yerelSistem(dil) != null
+
+    /** Kayıt dilin KENDİ yerel sistemiyse o; aksi halde [LATN]. */
+    fun sistem(dil: String?, kayitli: String?): String {
+        val yerel = yerelSistem(dil) ?: return LATN
+        return if (kayitli?.trim() == yerel) yerel else LATN
+    }
+
+    fun sifir(sistem: String): Char = SIFIRLAR[sistem] ?: '0'
 
     fun sifir(dil: String?, kayitli: String?): Char = sifir(sistem(dil, kayitli))
 
-    /** Arapçada `-u-nu-<sistem>` uzantılı etiket; diğer dillerde etiket AYNEN. */
+    /** Yerel rakamlı dilde `-u-nu-<sistem>` uzantılı etiket; diğer dillerde etiket AYNEN. */
     fun yerelEtiketi(dil: String, kayitli: String?): String =
-        if (arapcaMi(dil)) "ar-u-nu-${sistem(dil, kayitli)}" else dil
+        if (yerelRakamli(dil)) "${kok(dil)}-u-nu-${sistem(dil, kayitli)}" else dil
 }
 
 /** ASCII 0-9 → [sifir]dan başlayan rakamlar; '0'da ya da rakamsız metinde AYNI nesne döner. */

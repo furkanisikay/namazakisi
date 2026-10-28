@@ -125,7 +125,7 @@ public enum Kible {
 
 /// Kible metinleri — dil basina bir ornek (Wear `SaatDili` kible alanlari ve JS
 /// `sozluk/<dil>/kible.ts > yon` ikizi). Yer tutucular `{derece}`, `{km}`. Duzen: sira tr, en,
-/// id, de, fr, bs, ru, ms, ar, ur; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
+/// id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
 public struct KibleMetinleri: Equatable {
     public let arkada: String
     public let saga: String
@@ -284,9 +284,79 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
+    // es — İspanyolca (beta): JS `sozluk/es/kible.ts > yon` (alquibla); binlik ayırıcı "." (JS `aktifDil.ts > BINLIK`)
+    public static let es = KibleMetinleri(
+        arkada: "Detrás de usted",
+        saga: "Derecha {derece}°",
+        sola: "Izquierda {derece}°",
+        hizali: "Está frente a la alquibla",
+        arkadaErisim: "La alquibla está detrás de usted",
+        sagdaErisim: "La alquibla está {derece} grados a su derecha",
+        soldaErisim: "La alquibla está {derece} grados a su izquierda",
+        kabede: "Está en la Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: "."
+    )
+
+    // nl — Felemenkçe (beta): JS `sozluk/nl/kible.ts > yon`; binlik ayırıcı nokta (JS `BINLIK.nl`)
+    public static let nl = KibleMetinleri(
+        arkada: "Achter u",
+        saga: "Rechts {derece}°",
+        sola: "Links {derece}°",
+        hizali: "U staat in de richting van de qibla",
+        arkadaErisim: "De qibla is achter u",
+        sagdaErisim: "De qibla is {derece} graden rechts van u",
+        soldaErisim: "De qibla is {derece} graden links van u",
+        kabede: "U bent bij de Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: "."
+    )
+
+    // sq — JS `sozluk/sq/kible.ts`; binlik ayırıcı bölünmez boşluk (JS `aktifDil.ts > BINLIK`)
+    public static let sq = KibleMetinleri(
+        arkada: "Pas jush",
+        saga: "Djathtas {derece}°",
+        sola: "Majtas {derece}°",
+        hizali: "Jeni drejt kibles",
+        arkadaErisim: "Kibla është pas jush",
+        sagdaErisim: "Kibla është {derece} gradë në të djathtën tuaj",
+        soldaErisim: "Kibla është {derece} gradë në të majtën tuaj",
+        kabede: "Jeni te Qabeja",
+        mesafe: "{km} km",
+        binlikAyirici: "\u{00A0}"
+    )
+
+    // hi — Hintçe (beta): JS `sozluk/hi/kible.ts > yon`, mesafe `cami.kmIcinde` ("किलोमीटर")
+    public static let hi = KibleMetinleri(
+        arkada: "पीछे",
+        saga: "दाएं {derece}°",
+        sola: "बाएं {derece}°",
+        hizali: "आप क़िबला रुख़ हैं",
+        arkadaErisim: "क़िबला आपके पीछे है",
+        sagdaErisim: "क़िबला आपकी दाईं तरफ़ {derece} डिग्री पर है",
+        soldaErisim: "क़िबला आपकी बाईं तरफ़ {derece} डिग्री पर है",
+        kabede: "आप काबा के पास हैं",
+        mesafe: "{km} किलोमीटर",
+        binlikAyirici: ","
+    )
+
+    // bn — JS `sozluk/bn/kible.ts > yon`
+    public static let bn = KibleMetinleri(
+        arkada: "পেছনে",
+        saga: "ডানে {derece}°",
+        sola: "বামে {derece}°",
+        hizali: "আপনি কিবলামুখী আছেন",
+        arkadaErisim: "কিবলা আপনার পেছনে",
+        sagdaErisim: "কিবলা আপনার ডানে {derece} ডিগ্রি",
+        soldaErisim: "কিবলা আপনার বামে {derece} ডিগ্রি",
+        kabede: "আপনি কাবার কাছে আছেন",
+        mesafe: "{km} কিমি",
+        binlikAyirici: ","
+    )
+
     public static let tablo: [String: KibleMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
-        "ar": ar, "ur": ur,
+        "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
     ]
 
     public static func dil(_ kod: String?) -> KibleMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

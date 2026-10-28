@@ -1,14 +1,14 @@
 /**
  * Metin kapısının (`MetinKapisi`) görmediği yüzeyler için rakam çevirici: SVG `Text`,
- * `Animated.Text`, `TextInput` değeri. Etkin dil Arapça ve rakam sistemi Doğu Arap ise
- * Batı rakamlarını ٠١٢…'e çevirir; dil ya da rakam seçimi değişince yeniden çizdirir.
+ * `Animated.Text`, `TextInput` değeri. Etkin dil yerel rakamlıysa (Arapça, Bengalce) ve yerel
+ * rakam seçiliyse Batı rakamlarını o dilin rakamına (٠١٢… / ০১২…) çevirir; dil ya da rakam seçimi değişince yeniden çizdirir.
  * Kapıdan ayrı dosyadadır: kapı yazı tipi yükleyicisini (expo-font) taşır, bu hook taşımaz.
  */
 import { useCallback, useSyncExternalStore } from 'react';
 import { aktifDil, aktifRakamSistemi, dilDegisiminiDinle } from '../../../core/dil/aktifDil';
-import { rakamlariCevir, type RakamSistemi } from '../../../core/dil/rakam';
+import { rakamlariCevir, rakamSecilebilir, type RakamSistemi } from '../../../core/dil/rakam';
 
-const etkinSistem = (): RakamSistemi => (aktifDil() === 'ar' ? aktifRakamSistemi() : 'latn');
+const etkinSistem = (): RakamSistemi => (rakamSecilebilir(aktifDil()) ? aktifRakamSistemi() : 'latn');
 
 export function useRakamCevir(): (deger: string | number) => string {
   const sistem = useSyncExternalStore(dilDegisiminiDinle, etkinSistem);

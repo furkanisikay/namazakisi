@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bn — Bengalce (beta). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">লাইভ কাউন্টডাউন</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar ও স্ট্যাটাস বারে কাউন্টডাউন</string>
+    <string name="countdown_kanal_genel_ad">কাউন্টডাউন নোটিফিকেশন</string>
+    <string name="countdown_kanal_genel_aciklama">কাউন্টডাউন নোটিফিকেশনের চ্যানেল</string>
+
+    <string name="countdown_eylem_kildim">নামাজ পড়েছি</string>
+    <string name="countdown_eylem_durdur">থামান</string>
+
+    <string name="countdown_yedek_vakit">তাড়াতাড়ি করুন, নামাজের ওয়াক্ত শেষ হতে চলেছে।</string>
+    <string name="countdown_yedek_iftar">সময় ফুরিয়ে আসছে।</string>
+    <string name="countdown_yedek_sahur">এখনো খাওয়া-দাওয়া করতে পারেন; শিগগিরই রোজা শুরু হবে!</string>
+    <string name="countdown_yedek_seri">আজকের নামাজ এখনো পূর্ণ হয়নি; ধারাবাহিকতা হারাবেন না।</string>
+
+    <string name="countdown_onek_vakit">ওয়াক্ত শেষ হতে বাকি</string>
+    <string name="countdown_onek_vakit_dar">ওয়াক্ত শেষ হচ্ছে</string>
+    <string name="countdown_onek_iftar">ইফতার পর্যন্ত</string>
+    <string name="countdown_onek_iftar_dar">ইফতার পর্যন্ত</string>
+    <string name="countdown_onek_sahur">সাহরি শেষ হতে বাকি</string>
+    <string name="countdown_onek_sahur_dar">সাহরি শেষ হচ্ছে</string>
+    <string name="countdown_onek_seri">ধারাবাহিকতা রক্ষা করতে</string>
+    <string name="countdown_onek_seri_dar">ধারাবাহিকতা শেষ হচ্ছে</string>
+</resources>

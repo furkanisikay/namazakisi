@@ -30,6 +30,11 @@ const COGUL: Record<string, string[]> = {
   ru: ['one', 'few', 'many', 'other'],
   ar: ['zero', 'one', 'two', 'few', 'many', 'other'],
   ur: ['one', 'other'],
+  es: ['one', 'many', 'other'],
+  nl: ['one', 'other'],
+  sq: ['one', 'other'],
+  hi: ['one', 'other'],
+  bn: ['one', 'other'],
 };
 
 function resDizinleri(): string[] {

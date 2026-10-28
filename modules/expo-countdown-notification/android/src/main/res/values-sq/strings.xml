@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Numërimet e drejtpërdrejta</string>
+    <string name="countdown_kanal_canli_aciklama">Numërimet në Now Bar dhe në shiritin e statusit</string>
+    <string name="countdown_kanal_genel_ad">Njoftimet e numërimit</string>
+    <string name="countdown_kanal_genel_aciklama">Kanali për njoftimet e numërimit mbrapsht</string>
+
+    <string name="countdown_eylem_kildim">E fala</string>
+    <string name="countdown_eylem_durdur">Ndalo</string>
+
+    <string name="countdown_yedek_vakit">Nxitoni, koha e namazit po del.</string>
+    <string name="countdown_yedek_iftar">Koha po mbaron.</string>
+    <string name="countdown_yedek_sahur">Mund të hani e të pini ende; agjërimi fillon së shpejti.</string>
+    <string name="countdown_yedek_seri">Namazet e sotme janë të paplota; mos e humbni serinë.</string>
+
+    <string name="countdown_onek_vakit">Derisa të dalë koha</string>
+    <string name="countdown_onek_vakit_dar">Koha po del</string>
+    <string name="countdown_onek_iftar">Deri në iftar</string>
+    <string name="countdown_onek_iftar_dar">Deri në iftar</string>
+    <string name="countdown_onek_sahur">Deri në fund të syfyrit</string>
+    <string name="countdown_onek_sahur_dar">Syfyri po mbaron</string>
+    <string name="countdown_onek_seri">Për ta ruajtur serinë</string>
+    <string name="countdown_onek_seri_dar">Seria po mbaron</string>
+</resources>

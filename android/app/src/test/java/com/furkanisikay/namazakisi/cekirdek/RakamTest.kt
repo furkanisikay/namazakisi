@@ -1,6 +1,7 @@
 package com.furkanisikay.namazakisi.cekirdek
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -9,8 +10,9 @@ import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 /**
- * Telefonun native yüzeyleri kullanıcının SEÇTİĞİ rakamı yalnız Arapça arayüzde uygular
- * (`Rakam.kt`); çekirdek Batı rakamıyla üretmeye devam eder, diğer dillerde çıktı birebir aynı.
+ * Telefonun native yüzeyleri kullanıcının SEÇTİĞİ rakamı yalnız yerel rakamlı arayüzde (Arapça,
+ * Bengalce) ve yalnız dilin KENDİ sistemiyle uygular (`Rakam.kt`); çekirdek Batı rakamıyla
+ * üretmeye devam eder, diğer dillerde çıktı birebir aynı.
  */
 class RakamTest {
     @Test
@@ -23,11 +25,31 @@ class RakamTest {
         assertEquals(Rakam.LATN, Rakam.sistem("ar", "latn"))
         assertEquals(Rakam.LATN, Rakam.sistem("ar", "ARAB"))
         assertEquals('0', Rakam.sifir("ar", null))
-        // Arapça dışı dilde kayıt yok sayılır (dil değişimiyle yazım yarışı olsa bile).
-        for (dil in listOf("tr", "en", "id", "in", "de", "fr", "bs", "ru", "ms", "ur", "", null)) {
+        // Yerel rakamsız dilde kayıt yok sayılır (dil değişimiyle yazım yarışı olsa bile).
+        for (dil in listOf("tr", "en", "id", "in", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "", null)) {
             assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "arab"))
+            assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "beng"))
             assertEquals("$dil", '0', Rakam.sifir(dil, "arab"))
+            assertEquals("$dil", '0', Rakam.sifir(dil, "beng"))
         }
+        // Başka dilin yerel sistemi geçersiz: Arapçada "beng", Bengalcede "arab" → Batı.
+        assertEquals(Rakam.LATN, Rakam.sistem("ar", "beng"))
+        assertEquals(Rakam.LATN, Rakam.sistem("bn", "arab"))
+    }
+
+    @Test
+    fun bengalcedeBengKaydiBengalceRakamVerir() {
+        assertEquals(Rakam.BENG, Rakam.sistem("bn", "beng"))
+        assertEquals(Rakam.BENG, Rakam.sistem("bn-BD", " beng "))
+        assertEquals(Rakam.BENG, Rakam.sistem("bn_IN", "beng"))
+        assertEquals('০', Rakam.sifir("bn", "beng"))
+        assertEquals(Rakam.LATN, Rakam.sistem("bn", null))
+        assertEquals(Rakam.LATN, Rakam.sistem("bn", "latn"))
+        assertEquals('0', Rakam.sifir("bn", "latn"))
+        assertTrue(Rakam.yerelRakamli("bn") && Rakam.yerelRakamli("ar-SA"))
+        assertFalse(Rakam.yerelRakamli("ur") || Rakam.yerelRakamli("hi") || Rakam.yerelRakamli("tr") || Rakam.yerelRakamli(null))
+        assertEquals("আসর ১৫:৪২", rakamlariYerellestir("আসর 15:42", Rakam.sifir("bn", "beng")))
+        assertEquals("০১২৩৪৫৬৭৮৯", rakamlariYerellestir("0123456789", Rakam.BENG_SIFIR))
     }
 
     @Test
@@ -35,9 +57,14 @@ class RakamTest {
         assertEquals("ar-u-nu-arab", Rakam.yerelEtiketi("ar", "arab"))
         assertEquals("ar-u-nu-latn", Rakam.yerelEtiketi("ar", null))
         assertEquals("ar-u-nu-latn", Rakam.yerelEtiketi("ar", "latn"))
+        assertEquals("ar-u-nu-latn", Rakam.yerelEtiketi("ar", "beng"))
+        assertEquals("bn-u-nu-beng", Rakam.yerelEtiketi("bn", "beng"))
+        assertEquals("bn-u-nu-latn", Rakam.yerelEtiketi("bn", null))
+        assertEquals("bn-u-nu-latn", Rakam.yerelEtiketi("bn", "arab"))
         // Diğer diller AYNEN (Endonezce "id" → Android "in" eşlemesi bozulmasın).
-        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur")) {
+        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi")) {
             assertEquals(dil, Rakam.yerelEtiketi(dil, "arab"))
+            assertEquals(dil, Rakam.yerelEtiketi(dil, "beng"))
         }
     }
 
@@ -49,6 +76,13 @@ class RakamTest {
         assertEquals("٥", String.format(Locale.forLanguageTag("ar-u-nu-arab"), "%d", 5))
         assertEquals("5", String.format(Locale.forLanguageTag("ar-u-nu-latn"), "%d", 5))
         assertEquals("ar", Locale.forLanguageTag("ar-u-nu-arab").language)
+        // Bengalce: CLDR varsayılanı Bengalce rakam → Batı seçen kullanıcı için uzantı ŞART.
+        assertEquals('০', DecimalFormatSymbols.getInstance(Locale.forLanguageTag("bn")).zeroDigit)
+        assertEquals('০', DecimalFormatSymbols.getInstance(Locale.forLanguageTag(Rakam.yerelEtiketi("bn", "beng"))).zeroDigit)
+        assertEquals('0', DecimalFormatSymbols.getInstance(Locale.forLanguageTag(Rakam.yerelEtiketi("bn", null))).zeroDigit)
+        assertEquals("৫", String.format(Locale.forLanguageTag("bn-u-nu-beng"), "%d", 5))
+        assertEquals("5", String.format(Locale.forLanguageTag("bn-u-nu-latn"), "%d", 5))
+        assertEquals("bn", Locale.forLanguageTag("bn-u-nu-latn").language)
     }
 
     @Test
@@ -86,6 +120,11 @@ class RakamTest {
         assertSame(ayni, rakamlariEsitle(ayni, '0'))
         val dogu = "٠٥:٣٠"
         assertSame(dogu, rakamlariEsitle(dogu, Rakam.DOGU_SIFIR))
+        // bn-BD cihazda TextClock Bengalce yazar: Batı seçene Batı, Bengalce seçene Bengalce.
+        assertEquals("05:30", rakamlariEsitle("০৫:৩০", '0'))
+        assertEquals("০৫:৩০", rakamlariEsitle("05:30", Rakam.BENG_SIFIR))
+        val beng = "০৫:৩০"
+        assertSame(beng, rakamlariEsitle(beng, Rakam.BENG_SIFIR))
     }
 
     @Test
@@ -98,16 +137,16 @@ class RakamTest {
 
     @Test
     fun cekirdekVeArapcaKaynaklarDoguRakamiTasimaz() {
-        // Doğu rakamı yalnız çizimde üretilir; tabloya/kaynağa yazılırsa Batı rakamı seçen
-        // (Mağrip) kullanıcı karışık rakam görür. Çalışma dizini `android/app` (Gradle birim testi).
+        // Yerel rakam yalnız çizimde üretilir; tabloya/kaynağa yazılırsa Batı rakamı seçen
+        // (Mağrip, Batı seçen Bengalce) kullanıcı karışık rakam görür. Çalışma dizini `android/app` (Gradle birim testi).
         val dosyalar = (File("src/main/java/com/furkanisikay/namazakisi/cekirdek").listFiles().orEmpty().toList() +
             File("src/main/res").listFiles().orEmpty().filter { it.name.startsWith("values") }
                 .flatMap { d -> d.listFiles().orEmpty().filter { it.name.endsWith(".xml") } })
             .filter { it.name != "Rakam.kt" }
         assertTrue(dosyalar.size > 10)
         for (f in dosyalar) {
-            val dogu = f.readText().filter { it in '٠'..'٩' || it in '۰'..'۹' }
-            assertEquals("${f.path} Doğu rakamı taşıyor", "", dogu)
+            val dogu = f.readText().filter { it in '٠'..'٩' || it in '۰'..'۹' || it in '০'..'৯' }
+            assertEquals("${f.path} yerel rakam taşıyor", "", dogu)
         }
     }
 }

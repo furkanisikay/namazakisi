@@ -112,5 +112,64 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
       "29:45": "جو کتاب آپ کی طرف وحی کی گئی ہے اسے پڑھئے اور نماز قائم کریں، یقیناً نماز بے حیائی اور برائی سے روکتی ہے، بیشک اللہ کا ذکر بہت بڑی چیز ہے، تم جو کچھ کر رہے ہو اس سے اللہ خبردار ہے.",
       "62:9": "اے وه لوگو جو ایمان ﻻئے ہو! جمعہ کے دن نماز کی اذان دی جائے تو تم اللہ کے ذکر کی طرف دوڑ پڑو اور خرید وفروخت چھوڑ دو ۔ یہ تمہارے حق میں بہت ہی بہتر ہے اگر تم جانتے ہو."
     }
+  },
+  "es": {
+    "anahtar": "spanish_garcia",
+    "surum": "1.0.2",
+    "baslik": "Spanish Translation - Isa Garcia",
+    "ayetler": {
+      "2:153": "¡Oh, creyentes! Busquen ayuda en la paciencia y la oración; que Dios está con los pacientes.",
+      "2:238": "Cumplan con la oración prescrita, especialmente la oración de la tarde, y preséntense ante Dios con total devoción.",
+      "4:103": "Cuando hayan terminado la oración recuerden a Dios de pie, sentados o recostados. Y cuando estén fuera de peligro hagan la oración [normalmente]. La oración ha sido prescrita a los creyentes para ser realizada en horarios específicos.",
+      "11:114": "Observa las oraciones prescritas en los dos extremos del día y durante la noche, pues las obras buenas borran las obras malas. Esto es una exhortación para quienes reflexionan.",
+      "62:9": "¡Creyentes! Cuando sea realizado el llamado a la oración del día viernes, acudan al recuerdo de Dios y abandonen el comercio, es lo mejor para ustedes. ¡Si supieran!"
+    }
+  },
+  "nl": {
+    "anahtar": "dutch_center",
+    "surum": "2.0.10",
+    "baslik": "Dutch Translation - Rowwad Translation Center",
+    "ayetler": {
+      "2:153": "O gij die gelooft! Zoek hulp in geduld en gebed. Waarlijk. Allah is met de geduldigen.",
+      "2:238": "Behoed nauw de gebeden en speciaal het middelste gebed. En sta in gehoorzaamheid voor Allah.",
+      "4:103": "Als jullie met het gebed klaar zijn, gedenkt Allah dan staand, zittend en liggend op jullie zijden, maar als jullie buiten gevaar zijn, verricht de gebeden dan correct. Waarlijk, het gebed is de gelovigen op verplichte tijden opgelegd.",
+      "11:114": "En verricht het gebed perfect aan de twee uiteinden (dus de vijf verplichte gebeden) van de dag en in wat uren van de nacht. Waarlijk, de goede daden verwijderen de slechte daden. Dat is een advies voor degenen die denken.",
+      "29:45": "Reciteer wat aan jouw van het Boek is geopenbaard en verricht je gebeden perfect. Voorwaar, het gebed weerhoudt van onzedelijkheid en slechte zaken en het gedenken (dhikr) van Allah is voorwaar groter. En Allah weet wat jullie doen.",
+      "62:9": "O jullie die geloven! Wanneer de oproep voor het gebed op de djoemah (vrijdag) wordt afgeroepen, haast jullie dan voor de gedenking van Allah en laat je (wereldse) zaken, dat is beter voor jullie als jullie het maar wisten!"
+    }
+  },
+  "sq": {
+    "anahtar": "albanian_nahi",
+    "surum": "1.1.0",
+    "baslik": "Albanian Translation - Hassan Nahi",
+    "ayetler": {
+      "2:153": "O besimtarë! Kërkoni ndihmë për veten nëpërmjet durimit dhe namazit! Në të vërtetë, Allahu është me të duruarit.",
+      "4:103": "Pasi të kryeni namazin, përmendeni Allahun duke qëndruar në këmbë, ulur ose të shtrirë. Kur të jeni jashtë rrezikut, atëherë faleni namazin të plotë, sepse namazi është detyrë për besimtarët në kohë të caktuar.",
+      "11:114": "Fale namazin në mëngjes e mbrëmje dhe në një kohë të natës, sepse veprat e mira i shlyejnë veprat e këqija. Kjo këshillë vlen për ata që i pranojnë këshillat.",
+      "29:45": "Lexo (o Muhamed) atë që të është zbritur ty prej Librit (Kuranit) dhe fale namazin! Vërtet që namazi të ruan nga shthurja dhe nga çdo vepër e shëmtuar dhe vërtet që përmendja e Allahut është më e madhe! Allahu di gjithçka që ju bëni.",
+      "62:9": "O besimtarë, kur të thirreni për (të falur) namazin (e xhumasë) në ditën e premte, nxitoni për ta përmendur Allahun dhe pezulloni tregtinë! Kjo, që ta dini, është më mirë për ju!"
+    }
+  },
+  "hi": {
+    "anahtar": "hindi_omari",
+    "surum": "1.1.5",
+    "baslik": "Hindi Translation - Azizul Haq Al-Omari",
+    "ayetler": {
+      "2:153": "ऐ ईमान वालो! धैर्य तथा नमाज़ के साथ मदद प्राप्त करो। निःसंदेह अल्लाह धैर्य रखने वालों के साथ है।",
+      "4:103": "फिर जब तुम नमाज़ पूरी कर लो, तो खड़े और बैठे और लेटे (प्रत्येक स्थिति में) अल्लाह को याद करते रहो और जब तुम भयमुक्त हो जाओ, तो (पहले की तरह) नमाज़ क़ायम करो। निःसंदेह नमाज़ ईमान वालों पर निर्धारित समय पर फ़र्ज़ की गई है।"
+    }
+  },
+  "bn": {
+    "anahtar": "bengali_zakaria",
+    "surum": "1.1.1",
+    "baslik": "Bengali Translation - Abu Bakr Zakaria",
+    "ayetler": {
+      "2:153": "হে ঈমানদারগণ ! তোমরা সাহায্য চাও সবর ও সালাতের মাধ্যমে। নিশ্চয় আল্লাহ্‌ সবরকারীদের সাথে আছেন।",
+      "2:238": "তোমরা সালাতের প্রতি যত্নবান হবে, বিশেষত মধ্যবর্তী সালাতের এবং আল্লাহ্‌র উদ্দেশ্যে তোমরা দাঁড়াবে বিনীতভাবে;",
+      "4:103": "অতঃপর যখন তোমরা সালাত সমাপ্ত করবে তখন দাঁড়িয়ে, বসে এবং শুয়ে আল্লাহকে স্মরণ করবে, অতঃপর যখন তোমরা নিরাপদ হবে তখন যথাযথ সালাত কায়েম করবে; নির্ধারিত সময়ে সালাত কায়েম করা মুমিনদের জন্য অবশ্য কর্তব্য।",
+      "11:114": "আর আপনি সালাত কায়েম করুন দিনের দু প্রান্তভাগে ও রাতের প্রথমাংশে। নিশ্চয় সৎকাজ অসৎ কাজকে মিটিয়ে দেয়। উপদেশ গ্রহণকারীদের জন্য এটা এক উপদেশ।",
+      "29:45": "আপনি তেলাওয়াত করুন কিতাব থেকে যা আপনার প্রতি ওহী করা হয় এবং সালাত কায়েম করুন। নিশ্চয় সালাত বিরত রাখে অশ্লীল ও মন্দ কাজ থেকে। আর আল্লাহর স্মরণই তো সর্বশ্রেষ্ঠ। তোমরা যা কর আল্লাহ্ তা জানেন।",
+      "62:9": "হে ঈমানদারগণ! জুমু’আর দিনে যখন সালাতের জন্য ডাকা হয় তখন তোমরা আল্লাহর স্বরণে ধাবিত হও এবং কেনা-বেচা ত্যাগ কর, এটাই তোমাদের জন্য সর্বোত্তম, যদি তোমরা জানতে।"
+    }
   }
 };

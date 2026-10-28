@@ -1,0 +1,58 @@
+// hi — Hintçe (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Hintçe terimler: src/core/dil/sozluk/hi ("नमाज़ पढ़ ली" / "पढ़ ली गई", क़िबला).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "अगली नमाज़";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "अगली नमाज़ और उसके शुरू होने का समय बताता है।";
+"Şu anki vakti kıldım" = "मौजूदा नमाज़ पढ़ ली";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "मौजूदा नमाज़ पर \"पढ़ ली गई\" का निशान लगाता है। रिकॉर्ड ऐप खोलने पर जुड़ जाता है।";
+"Onay iste" = "पुष्टि मांगें";
+"Kıbleyi aç" = "क़िबला खोलें";
+"Uygulamayı Kıble pusulasıyla açar." = "ऐप को क़िबला कम्पास के साथ खोलता है।";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "नमाज़ पढ़ ली";
+"Kıble" = "क़िबला";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "अगली नमाज़ का नाम";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "अगली नमाज़ का नाम देता है। इसे Shortcuts में शर्त के रूप में इस्तेमाल किया जा सकता है।";
+"Sıradaki vakte kalan dakika" = "अगली नमाज़ तक बाक़ी मिनट";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "अगली नमाज़ का वक़्त शुरू होने में बाक़ी मिनट देता है। जानकारी न हो तो -1 देता है।";
+"Şu anki vakit kılındı mı?" = "क्या मौजूदा नमाज़ पर \"पढ़ ली गई\" का निशान है?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "मौजूदा नमाज़ पर \"पढ़ ली गई\" का निशान हो तो हाँ देता है। निशान लगाने के लिए कोई नमाज़ न हो तो नहीं देता है।";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "नमाज़ की ख़ामोशी";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "नमाज़ का वक़्त शुरू होने के बाद के शुरुआती मिनटों में सही (true) देता है। Shortcuts में फ़ोकस चालू करने के लिए इस्तेमाल होता है।";
+"Süre (dakika)" = "अवधि (मिनट)";
+"Vakit girdikten sonraki ${dakika} dakika" = "नमाज़ का वक़्त शुरू होने के बाद के ${dakika} मिनट";
+"Namaz sessizliğinin bitişi" = "नमाज़ की ख़ामोशी का अंत";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "ख़ामोशी ख़त्म होने का समय देता है। अभी ख़ामोशी न हो तो मौजूदा समय देता है।";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "नमाज़ का वक़्त शुरू होने के बाद के ${dakika} मिनट का अंत";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "नमाज़ के रिमाइंडर";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "यह फ़ोकस चालू होने पर नमाज़ के रिमाइंडर आवाज़ और स्क्रीन जलाए बिना आते हैं।";
+"Hatırlatmaları sessiz ver" = "रिमाइंडर चुपचाप दें";
+"Hatırlatmalar sessiz gelir" = "रिमाइंडर चुपचाप आते हैं";
+"Hatırlatmalar her zamanki gibi" = "रिमाइंडर हमेशा की तरह";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "विजेट में दिखाई गई नमाज़ पर \"पढ़ ली गई\" का निशान लगाता है।";
+"Tarih" = "तारीख़";
+"Vakit" = "नमाज़";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "नमाज़ अलार्म रोकें";
+"Namazı kıldım" = "नमाज़ पढ़ ली";
+"Alarm" = "अलार्म";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "आज की आयत की तस्वीर";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "आज की आयत आपकी स्क्रीन के साइज़ की तस्वीर के रूप में देता है। इसे Shortcuts में Set Wallpaper क़दम के साथ इस्तेमाल किया जा सकता है।";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "आज की आयत तैयार करने के लिए ऐप एक बार खोलें।";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "तस्वीर तैयार नहीं हो सकी। थोड़ी देर बाद फिर से कोशिश करें।";

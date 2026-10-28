@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bn — Bengalce (beta). -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">মসজিদে আছি</string>
+    <string name="camigeofence_kanal_durum_aciklama">আপনি মসজিদে আছেন শনাক্ত হলে একটি নীরব বার্তা</string>
+    <string name="camigeofence_kanal_soru_ad">মসজিদ থেকে বের হওয়ার পর</string>
+    <string name="camigeofence_kanal_soru_aciklama">মসজিদ থেকে বের হওয়ার পর নামাজ চিহ্নিত করার জন্য একটি প্রশ্ন</string>
+
+    <string name="camigeofence_govde_mod_sessiz">নামাজ মোড চালু। রিমাইন্ডার নীরবে আসবে।</string>
+    <string name="camigeofence_govde_mod">নামাজ মোড চালু।</string>
+    <string name="camigeofence_govde_sessiz">রিমাইন্ডার নীরবে আসবে।</string>
+    <string name="camigeofence_govde_normal">রিমাইন্ডার আগের মতোই আসবে।</string>
+    <string name="camigeofence_eylem_modu_kapat">মোড বন্ধ করুন</string>
+    <string name="camigeofence_eylem_cami_degil">মসজিদ নয়</string>
+
+    <string name="camigeofence_soru_baslik">আপনি কি মসজিদে আছেন?</string>
+    <string name="camigeofence_soru_govde">আপনি %1$s-এর কাছে আছেন। আমরা নিশ্চিত নই, তাই আপনাকে জিজ্ঞেস করছি।</string>
+    <string name="camigeofence_varsayilan_ad">মসজিদ</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">নামাজ মোড চালু করুন</string>
+    <string name="camigeofence_eylem_evet_camideyim">হ্যাঁ, আমি মসজিদে আছি</string>
+    <string name="camigeofence_eylem_hayir">না</string>
+
+    <string name="camigeofence_kildiniz_mi">আপনি কি %1$s পড়েছেন?</string>
+    <string name="camigeofence_kildiniz_mi_govde">এক ট্যাপে চিহ্নিত করতে পারেন।</string>
+    <string name="camigeofence_eylem_kildim">নামাজ পড়েছি</string>
+    <string name="camigeofence_namaz_imsak">ফজর</string>
+    <string name="camigeofence_namaz_ogle">যোহর</string>
+    <string name="camigeofence_namaz_ikindi">আসর</string>
+    <string name="camigeofence_namaz_aksam">মাগরিব</string>
+    <string name="camigeofence_namaz_yatsi">ইশা</string>
+    <string name="camigeofence_namaz_cuma">জুমা</string>
+
+    <string name="camigeofence_mod_kural_adi">নামাজ</string>
+    <string name="camigeofence_mod_tetik_aciklama">জুমার খুতবার সময়, মসজিদে থাকলে বা নামাজের ওয়াক্ত শুরু হলে Namaz Akışı এটি চালু করে</string>
+</resources>

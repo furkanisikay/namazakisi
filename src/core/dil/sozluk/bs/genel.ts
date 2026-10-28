@@ -159,7 +159,7 @@ export const genel: Sozluk['genel'] = {
     Cihazlarim: 'Moji uređaji',
     CihazEkle: 'Dodajte uređaj',
     TelevizyonAyarlari: 'Dodajte TV',
-    KildimUygulamalari: 'Aplikacije koje označavaju klanjano',
+    KildimUygulamalari: 'Dozvoljene aplikacije',
     OtomasyonRehberi: 'Koristite s automatizacijama',
     DebugLogs: 'Dijagnostički zapisi',
     TakvimAyarlari: 'Dodajte vremena u kalendar',

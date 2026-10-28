@@ -90,9 +90,9 @@ export function vakitAdlariniAyarla(json: string | null): void {
 }
 
 /**
- * Arayüzün rakam sistemini App Group'a yazar: `'arab'` (Doğu Arap rakamı) ya da `null` (anahtar
- * silinir, Batı rakamı). Widget, canlı etkinlik ve Siri cevabı yalnız Arapçada uygular
- * (`VakitKarari.swift > RakamSistemi`). Modül/fonksiyon yoksa sessizce atlanır. Asla fırlatmaz.
+ * Arayüzün rakam sistemini App Group'a yazar: yerel rakamın CLDR adı (`'arab'`, `'beng'`) ya da
+ * `null` (anahtar silinir, Batı rakamı). Widget, canlı etkinlik ve Siri cevabı kaydı yalnız
+ * arayüz dilinin kendi yerel sistemiyle eşleşirse uygular (`VakitKarari.swift > RakamSistemi`). Modül/fonksiyon yoksa sessizce atlanır. Asla fırlatmaz.
  */
 export function rakamSisteminiAyarla(kod: string | null): void {
     const m = modul();

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Plaats de QR-code op het tv-scherm binnen het kader</string>
+    <string name="tvesleme_qr_vazgec">Annuleren</string>
+    <string name="tvesleme_qr_vazgec_erisim">Scannen annuleren</string>
+    <string name="tvesleme_qr_yabanci">Deze QR-code hoort niet bij Namaz Akışı TV. Scan de code op de tv.</string>
+    <string name="tvesleme_qr_okundu">Code gescand</string>
+</resources>

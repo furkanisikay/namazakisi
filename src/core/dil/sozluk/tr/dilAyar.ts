@@ -6,7 +6,7 @@ export const dilAyar = {
   baslik: 'Dil · Language',
   aciklama: 'Uygulamanın dilini seçin. Bildirimler ve sesli okuma da bu dilde olur.',
   grup: 'Uygulama dili',
-  dilAdlari: { tr: 'Türkçe', en: 'İngilizce', id: 'Endonezce', de: 'Almanca', fr: 'Fransızca', bs: 'Boşnakça', ru: 'Rusça', ms: 'Malayca', ar: 'Arapça', ur: 'Urduca' },
+  dilAdlari: { tr: 'Türkçe', en: 'İngilizce', id: 'Endonezce', de: 'Almanca', fr: 'Fransızca', bs: 'Boşnakça', ru: 'Rusça', ms: 'Malayca', ar: 'Arapça', ur: 'Urduca', es: 'İspanyolca', nl: 'Felemenkçe', sq: 'Arnavutça', hi: 'Hintçe', bn: 'Bengalce' },
   cihazDili: 'Cihazın dili',
   cihazDiliKullaniliyor: 'Şu an {ad}',
   cihazDiliDesteklenmiyor: 'Cihazınızın dili henüz yok; Türkçe kullanılıyor.',

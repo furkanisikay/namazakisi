@@ -99,7 +99,7 @@ enum OtomasyonMetni {
 }
 
 /// Otomasyon cevaplarinin dil tablosu. Duzen: dil basina bir `static let`, sira tr, en, id,
-/// de, fr, bs, ru, ms, ar, ur; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
+/// de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
 /// `kalanDakika` CLDR kategorisi ("one", "few", "many", "other"; `CogulKurali`) → kalip;
 /// eksik kategori "other"a duser. Yer tutucular `{ad}`, `{n}`.
 struct OtomasyonMetinleri {
@@ -199,9 +199,44 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "نہیں، ابھی نشان نہیں لگا۔"
     )
 
+    // es — İspanyolca (beta); CLDR es one/other/many (many = milyonlar, "{n} de minutos")
+    static let es = OtomasyonMetinleri(
+        kalanDakika: ["one": "Falta {n} minuto para {ad}.", "other": "Faltan {n} minutos para {ad}.", "many": "Faltan {n} de minutos para {ad}."],
+        evetKilindi: "Sí, está marcado como rezado.",
+        hayirKilinmadi: "No, aún no está marcado."
+    )
+
+    // nl — Felemenkçe (beta): JS `sozluk/nl` (CLDR one/other)
+    static let nl = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begint over {n} minuut.", "other": "{ad} begint over {n} minuten."],
+        evetKilindi: "Ja, het is als gebeden gemarkeerd.",
+        hayirKilinmadi: "Nee, het is nog niet gemarkeerd."
+    )
+
+    // sq — Arnavutça (beta): JS `sozluk/sq` (vakit adı yalın hâlde, iki nokta ile)
+    static let sq = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad}: hyn pas {n} minute.", "other": "{ad}: hyn pas {n} minutash."],
+        evetKilindi: "Po, është shënuar si i falur.",
+        hayirKilinmadi: "Jo, ende nuk është shënuar."
+    )
+
+    // hi
+    static let hi = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} का वक़्त {n} मिनट में शुरू होगा।", "other": "{ad} का वक़्त {n} मिनट में शुरू होगा।"],
+        evetKilindi: "हाँ, इस पर \"पढ़ ली गई\" का निशान लगा है।",
+        hayirKilinmadi: "नहीं, अभी निशान नहीं लगा।"
+    )
+
+    // bn — Bengalce (beta); CLDR one = 0 ve 1, other (Bengalcede isim çekimlenmez)
+    static let bn = OtomasyonMetinleri(
+        kalanDakika: ["one": "{n} মিনিট পর {ad} শুরু হবে।", "other": "{n} মিনিট পর {ad} শুরু হবে।"],
+        evetKilindi: "হ্যাঁ, পড়া হয়েছে হিসেবে চিহ্নিত আছে।",
+        hayirKilinmadi: "না, এখনো চিহ্নিত হয়নি।"
+    )
+
     static let tablo: [String: OtomasyonMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
-        "ar": ar, "ur": ur,
+        "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
     ]
 
     static func dil(_ kod: String) -> OtomasyonMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

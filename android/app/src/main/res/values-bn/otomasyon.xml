@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bn — Bengalce (beta). -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Bengalce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: নামাজ পড়েছি</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: নামাজের ওয়াক্তের অবস্থা</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: নামাজের ওয়াক্তের ঘটনা</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "আপনি". -->
+  <string name="otomasyon_bilgi_baslik">এই সেটিং একটি অটোমেশন অ্যাপ থেকে যোগ করা হয়</string>
+  <string name="otomasyon_bilgi_tarayici">ব্রাউজার স্থায়ী অনুমতি পায় না। Tasker, MacroDroid বা Automate-এর মতো কোনো অ্যাপের প্লাগইন তালিকা থেকে যোগ করুন।</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid বা Automate-এর মতো কোনো অ্যাপের প্লাগইন তালিকা থেকে \"Namaz Akışı\" বেছে নিয়ে যোগ করুন।</string>
+  <string name="otomasyon_engelli_baslik">%1$s ব্লক করা আছে</string>
+  <string name="otomasyon_engelli_mesaj">আপনি আগে এই অ্যাপকে আপনার নামাজ চিহ্নিত করা থেকে ব্লক করেছিলেন। Namaz Akışı-এর সেটিংস &gt; \"যে অ্যাপগুলো নামাজ পড়েছি চিহ্নিত করতে পারে\" থেকে অনুমতি দিতে পারেন।</string>
+  <string name="otomasyon_izin_baslik">%1$s-এর সাথে ব্যবহার করবেন?</string>
+  <string name="otomasyon_izin_kosul">%1$s জানতে পারবে কখন নামাজের ওয়াক্ত শুরু হয়, কখন শেষ হয় এবং কখন আপনি মসজিদে আছেন, এবং আপনার অটোমেশন চালাতে পারবে। Namaz Akışı-এর সেটিংস &gt; \"যে অ্যাপগুলো নামাজ পড়েছি চিহ্নিত করতে পারে\" থেকে সিদ্ধান্ত বদলাতে পারেন।</string>
+  <string name="otomasyon_izin_kildim">%1$s আপনার সেট করা অটোমেশন দিয়ে বর্তমান নামাজ পড়া হয়েছে হিসেবে চিহ্নিত করতে পারবে। Namaz Akışı-এর সেটিংস &gt; \"যে অ্যাপগুলো নামাজ পড়েছি চিহ্নিত করতে পারে\" থেকে সিদ্ধান্ত বদলাতে পারেন।</string>
+  <string name="otomasyon_izin_ver">অনুমতি দিন</string>
+  <string name="otomasyon_engelle">ব্লক করুন</string>
+  <string name="otomasyon_vazgec">বাতিল করুন</string>
+  <string name="otomasyon_tamam">ঠিক আছে</string>
+  <string name="otomasyon_tur_baslik">কখন চলবে?</string>
+  <string name="otomasyon_ileri">পরবর্তী</string>
+  <string name="otomasyon_vakit_baslik">কোন নামাজ?</string>
+  <string name="otomasyon_herhangi_vakit">যেকোনো নামাজের ওয়াক্ত</string>
+  <string name="otomasyon_kaydet">সংরক্ষণ করুন</string>
+  <string name="otomasyon_kosul_icinde">নামাজের ওয়াক্ত চলাকালে</string>
+  <string name="otomasyon_kosul_cikiyor">নামাজের ওয়াক্ত শেষ হওয়ার সময় (%1$d মিনিট বাকি, নামাজ প্রহরী চালু)</string>
+  <string name="otomasyon_kosul_camide">মসজিদে থাকাকালে</string>
+  <string name="otomasyon_olay_girdi">নামাজের ওয়াক্ত শুরু হলে</string>
+  <string name="otomasyon_olay_cikiyor">নামাজের ওয়াক্ত শেষ হতে চললে (%1$d মিনিট বাকি, নামাজ প্রহরী চালু)</string>
+  <string name="otomasyon_olay_camide">আপনি মসজিদে আছেন শনাক্ত হলে</string>
+</resources>

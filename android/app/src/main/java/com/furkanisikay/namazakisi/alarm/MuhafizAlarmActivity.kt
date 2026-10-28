@@ -262,8 +262,8 @@ class MuhafizAlarmActivity : Activity() {
             metin(yuk.vakitAdi.ifBlank { getString(R.string.alarm_baslik) }.rakamla(sifir), 34f, R.color.alarm_metin, kalin = true),
             LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(20) },
         )
-        // TextClock cihaz yerel ayarıyla yazar; Arapça arayüzde seçilen rakama eşitlenir.
-        val saat = RakamliSaat(this, if (Rakam.arapcaMi(arayuzDili())) sifir else null).apply {
+        // TextClock cihaz yerel ayarıyla yazar; yerel rakamlı arayüzde (Arapça, Bengalce) seçilen rakama eşitlenir.
+        val saat = RakamliSaat(this, if (Rakam.yerelRakamli(arayuzDili())) sifir else null).apply {
             format24Hour = "HH:mm"
             format12Hour = "HH:mm"
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 64f)
@@ -314,9 +314,9 @@ class MuhafizAlarmActivity : Activity() {
 
 /**
  * Seçilen rakamla çizen saat. `TextClock` biçimi `Locale.getDefault()` (CİHAZ yerel ayarı)
- * ile yapar, uygulamanın arayüz dilini görmez: ar-SA cihazda Batı seçene Doğu, tr cihazda
- * Doğu seçene Batı rakamı yazardı. [sifir] null → dokunulmaz (Arapça dışı arayüz: cihazın
- * biçimi birebir). Üst sınıf kurucusu da `setText` çağırır; o an alan henüz null'dır.
+ * ile yapar, uygulamanın arayüz dilini görmez: ar-SA / bn-BD cihazda Batı seçene yerel, tr
+ * cihazda yerel rakam seçene Batı rakamı yazardı. [sifir] null → dokunulmaz (yerel rakamsız
+ * arayüz: cihazın biçimi birebir). Üst sınıf kurucusu da `setText` çağırır; o an alan henüz null'dır.
  */
 private class RakamliSaat(context: Context, private val sifir: Char?) : TextClock(context) {
     override fun setText(text: CharSequence?, type: TextView.BufferType?) {

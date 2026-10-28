@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 13+ uygulama başına dil listesi (Ayarlar › Uygulamalar › Namaz Akışı › Dil).
+  YALNIZ seçilebilir diller (src/core/dil/diller.ts > secilebilir); kapalı dil burada olursa
+  sistemden seçilir ama uygulama Türkçeye düşer. Nöbetçi: src/__tests__/androidDilListesi.test.ts
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+  <locale android:name="tr"/>
+  <locale android:name="en"/>
+  <locale android:name="id"/>
+  <locale android:name="de"/>
+  <locale android:name="fr"/>
+  <locale android:name="bs"/>
+  <locale android:name="ru"/>
+  <locale android:name="ms"/>
+  <locale android:name="ar"/>
+  <locale android:name="ur"/>
+  <locale android:name="es"/>
+  <locale android:name="nl"/>
+  <locale android:name="sq"/>
+  <locale android:name="hi"/>
+  <locale android:name="bn"/>
+</locale-config>

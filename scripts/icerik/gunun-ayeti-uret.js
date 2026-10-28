@@ -37,6 +37,11 @@ const MEALLER = {
   ru: 'russian_rwwad',
   ms: 'malay_basumayyah',
   ur: 'urdu_junagarhi',
+  es: 'spanish_garcia',
+  nl: 'dutch_center',
+  sq: 'albanian_nahi',
+  hi: 'hindi_omari',
+  bn: 'bengali_zakaria',
 };
 
 /**
@@ -46,6 +51,7 @@ const MEALLER = {
 const LISTEDE_OLMAYAN_BASLIKLAR = {
   russian_rwwad: 'Russian Translation - Rowwad Translation Center',
   malay_basumayyah: 'Malay Translation - Abdullah Basumayyah',
+  bengali_zakaria: 'Bengali Translation - Abu Bakr Zakaria',
 };
 
 const TANZIL_URL = 'https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt-2&agree=true';
@@ -130,17 +136,49 @@ const ref = (sure, ayet) => `${sure}:${ayet}`;
  */
 /** Kural 1 ve 2 tek meal için: sığar ve dipnot işareti / baştaki ayet numarası taşımaz. */
 /**
- * Not numarası silinen diller (sahip kararı 2026-10-26): Urduca mealde ayetlerin çoğu "[1]"
- * gibi dipnot numarası taşır; dipnot gösterilmediği için yalnız numara silinir, meal sözcükleri
- * birebir kalır. Diğer dillerde numaralı meal alınmaz (`mealUygun`).
+ * Not numarası silinen diller (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27): mealde
+ * ayetlerin çoğu "[1]" / "[১]" (Bengalce rakam) gibi dipnot numarası taşır; dipnot gösterilmediği
+ * için yalnız numara silinir, meal sözcükleri birebir kalır. Diğer dillerde numaralı meal alınmaz
+ * (`mealUygun`). `ayet-mealleri-uret.js` aynı kümeyi ve deseni kullanır.
  */
-const NOT_NUMARASI_SILINEN = new Set(['ur']);
+const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn']);
+/** Dipnot numarası, herhangi bir yazının rakamıyla ("[12]", "[১২]", "[१२]"); `\p{Nd}` + `u`. */
+// Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
+const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
+/**
+ * Ayet numarası silinen diller (sahip kararı 2026-10-27): mealin HER ayeti baştaki "153. " ya da
+ * sondaki "(153)" numarasını taşır; numara çeviri değil işarettir, silinir (künye ayeti zaten
+ * yazar). Yalnız bu kümede: başka dilde numaralı meal eskisi gibi alınmaz.
+ */
+const AYET_NUMARASI_SILINEN = new Set(['es']);
+const BASTAKI_AYET_NO = /^\s*\p{Nd}+\s*[.)]\s*/u;
+const SONDAKI_AYET_NO = /\s*\(\p{Nd}+\)(\s*[.।]?)\s*$/u;
 function notNumarasiz(dil, metin) {
-  return NOT_NUMARASI_SILINEN.has(dil) ? metin.replace(/\s*\[\d+\]/g, '').trim() : metin;
+  let m = NOT_NUMARASI_SILINEN.has(dil) ? metin.replace(NOT_NUMARASI, '').trim() : metin;
+  if (AYET_NUMARASI_SILINEN.has(dil)) m = m.replace(BASTAKI_AYET_NO, '').replace(SONDAKI_AYET_NO, '$1').trim();
+  return m;
+}
+
+/**
+ * Metne gömülü numara kalıpları — rakam HER yazıda (`\p{Nd}`: Batı, Devanagari २, Bengalce ১,
+ * Gucarati ૨, Arap-Hint ٢…); ASCII `\d` bunları kaçırır. Nöbetçi testteki kural 2 aynı desenler.
+ */
+const DIPNOT = /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u; // "[915]", "[১]", "*"
+const BASTA_NUMARA = /^\s*\p{Nd}+\s*[.)]\s/u; // "153. …", "२. …"
+const SONDA_NUMARA = /\(\p{Nd}+\)\s*[.।]?\s*$/u; // "… (153)", "… (१५३)।"
+
+/** Bir mealin elenme gerekçeleri (boş = uygun). */
+function mealGerekce(metin) {
+  const g = [];
+  if (metin.length > AZAMI_UZUNLUK) g.push('uzunluk');
+  if (DIPNOT.test(metin)) g.push('dipnot');
+  if (BASTA_NUMARA.test(metin)) g.push('basta-numara');
+  if (SONDA_NUMARA.test(metin)) g.push('sonda-numara');
+  return g;
 }
 
 function mealUygun(metin) {
-  return metin.length <= AZAMI_UZUNLUK && !/\[\d+\]|\*/.test(metin) && !/^\d+\.\s/.test(metin);
+  return mealGerekce(metin).length === 0;
 }
 
 /**
@@ -154,7 +192,9 @@ function eleme(sure, ayet, tr, en, ar) {
   // 1 — uzunluk (her iki dilde)
   if (tr.length > AZAMI_UZUNLUK || en.length > AZAMI_UZUNLUK) gerekce.push('1-uzunluk');
   // 2 — dipnot işareti ("[1354]", "*")
-  if (/\[\d+\]/.test(tr) || /\[\d+\]/.test(en) || /\*/.test(tr + en)) gerekce.push('2-dipnot');
+  if (DIPNOT.test(tr) || DIPNOT.test(en) || BASTA_NUMARA.test(tr) || BASTA_NUMARA.test(en) || SONDA_NUMARA.test(tr) || SONDA_NUMARA.test(en)) {
+    gerekce.push('2-dipnot');
+  }
   // 3 — önceki ayetin cümlesinin devamı / kıssaya bağlı anlatım
   const devam =
     // Türkçe: bağlaç/zamir devamı ya da küçük harfle başlama ("\b" Türkçe harfte çalışmaz → açık ayraç)
@@ -279,16 +319,21 @@ async function main() {
   const tanzil = tanzilCoz(await indir(TANZIL_URL, onbellek, 'tanzil-uthmani.txt'));
 
   const kunyeler = {};
-  const mealler = {};
+  /** `ham`: not numarası silinmeden önceki metin (yalnız eleme özeti için). */
+  const mealler = { ham: {} };
   const sureler = [...new Set(ADAYLAR.map(([s]) => s))].sort((x, y) => x - y);
   for (const [dil, anahtar] of Object.entries(MEALLER)) {
     kunyeler[dil] = await mealKunyesi(dil, anahtar, onbellek);
     mealler[dil] = {};
+    mealler.ham[dil] = {};
     for (const sure of sureler) {
       const { result } = JSON.parse(
         await indir(`https://quranenc.com/api/v1/translation/sura/${anahtar}/${sure}`, onbellek, `${anahtar}_${sure}.json`),
       );
-      for (const r of result) mealler[dil][ref(Number(r.sura), Number(r.aya))] = notNumarasiz(dil, r.translation);
+      for (const r of result) {
+        mealler[dil][ref(Number(r.sura), Number(r.aya))] = notNumarasiz(dil, r.translation);
+        mealler.ham[dil][ref(Number(r.sura), Number(r.aya))] = r.translation;
+      }
     }
   }
 
@@ -375,6 +420,17 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = ${JSON.stringify(h
   console.log('\nKural başına eleme (bir aday birden çok kurala takılabilir):');
   for (const k of Object.keys(sayac).sort()) console.log(`  ${k.padEnd(26)} ${sayac[k]}`);
   console.log(`\nAday: ${ADAYLAR.length}  Havuz: ${havuz.length}  Elenen: ${elenen.length}`);
+  // Dil başına eleme özeti: havuzdaki her kayıt adaydır; meal kuralına takılanlar gerekçesiyle.
+  console.log('\nDil başına meal elemesi (havuz kaydı → dil havuzu; gerekçe sayıları):');
+  for (const dil of Object.keys(MEALLER).filter((d) => d !== 'tr' && d !== 'en')) {
+    const sayac2 = {};
+    for (const k of havuz) for (const g of mealGerekce(mealler[dil][k.ref])) sayac2[g] = (sayac2[g] || 0) + 1;
+    const ham = havuz.filter((k) => /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/u.test(mealler.ham[dil][k.ref])).length;
+    console.log(
+      `  ${dil.padEnd(3)} ${havuz.length} → ${havuz.filter((k) => k.mealler[dil]).length}  ` +
+        `${JSON.stringify(sayac2)}  (silinmeden önce not numaralı: ${ham})`,
+    );
+  }
   console.log(`Dil havuzları: ${Object.keys(MEALLER).map((d) => `${d} ${havuz.filter((k) => k.mealler[d]).length}`).join(', ')}`);
   console.log(
     `Sürümler: Tanzil ${tanzil.surum}; QuranEnc ${Object.entries(kunyeler).map(([d, k]) => `${d} ${k.anahtar} ${k.surum}`).join(', ')}`,

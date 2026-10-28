@@ -69,8 +69,8 @@ public enum SiriKildimKarari: Equatable {
 /// yeni ornek + `tablo` eslemesi + `desteklenenler`'e kod (`docs/ajan/coklu-dil.md`).
 public enum ArayuzDili {
     public static let varsayilan = "tr"
-    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur).
-    public static let desteklenenler: [String] = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur"]
+    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn).
+    public static let desteklenenler: [String] = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn"]
 
     /// "en", "en-US", "de_DE" → kok kod; bilinmeyen ya da bos kod → "tr". Eski Endonezce
     /// kodu "in" (Java/Android mirasi) "id" sayilir; iOS'ta Endonezce zaten "id"dir.
@@ -83,39 +83,57 @@ public enum ArayuzDili {
 }
 
 /// RAKAM SISTEMI — kullanicinin uygulamada SECTIGI rakam (Android `cekirdek/Rakam.kt` ve Wear
-/// `saat/cekirdek/Rakam.kt` ikizi). JS COZULMUS degeri App Group'a yazar
-/// (`SiriDeposu.rakamSistemiAnahtari`: "arab" ya da yok); YALNIZ arayuz/cevap dili Arapcayken
-/// uygulanir, diger her dilde (Turkce dahil) cikti BIREBIR ayni kalir.
+/// `saat/cekirdek/Rakam.kt` ikizi; esleme JS `core/dil/rakam.ts > YEREL_RAKAMLAR`). JS COZULMUS
+/// degeri App Group'a yazar (`SiriDeposu.rakamSistemiAnahtari`: yerel rakamin CLDR adi "arab" /
+/// "beng" ya da yok); kayit YALNIZ arayuz/cevap dilinin KENDI yerel sistemiyse uygulanir
+/// (Arapcada "arab", Bengalcede "beng"), diger her dilde (Turkce dahil) cikti BIREBIR ayni kalir.
 ///
 /// Kural: cekirdek metni Bati rakamiyla URETIR (fikstur, kimlik, veri ayni); donusum yalniz
 /// CIZIM KENARINDA (`WidgetMetin.rakam`, Siri `dialog`). Sistemin cizdigi sayilar
 /// (`Text(timerInterval:)`, `ProgressView(timerInterval:)`, `DateFormatter`) yerel ayari izler →
-/// Arapcada `yerelAyarKimligi` ("ar@numbers=arab|latn") verilir. Bu dosyada: pod, widget ve
-/// saat kopyalari ile CI swiftc listeleri zaten onu derler (yeni dosya acilmadi).
+/// yerel rakamli dilde `yerelAyarKimligi` ("ar@numbers=arab|latn", "bn@numbers=beng|latn")
+/// verilir. Bu dosyada: pod, widget ve saat kopyalari ile CI swiftc listeleri zaten onu derler
+/// (yeni dosya acilmadi).
 public enum RakamSistemi {
     public static let arab = "arab"
+    public static let beng = "beng"
     public static let latn = "latn"
 
-    /// Etkin sistem: YALNIZ dil Arapca VE kayit "arab" iken `arab`; aksi halde `latn`.
-    public static func etkin(dil: String?, kayitli: String?) -> String {
-        guard ArayuzDili.coz(dil) == "ar",
-              kayitli?.trimmingCharacters(in: .whitespacesAndNewlines) == arab else { return latn }
-        return arab
+    /// Dil koku → yerel rakam sistemi (TEK esleme; listede olmayan dil Bati rakami yazar).
+    static let yerel: [String: String] = ["ar": arab, "bn": beng]
+
+    /// Yerel sistemin sifirinin kod noktasi (dizi Unicode'da ardisik).
+    static let sifirlar: [String: UInt32] = [arab: 0x0660, beng: 0x09E6]
+
+    /// Dilin yerel rakam sistemi ("arab", "beng") ya da nil (yalniz Bati rakami).
+    public static func yerelSistem(dil: String?) -> String? {
+        yerel[ArayuzDili.coz(dil)]
     }
 
+    /// Etkin sistem: kayit dilin KENDI yerel sistemiyse o ("ar" + "arab", "bn" + "beng");
+    /// kayit yok, "latn", bozuk, baska dilin sistemi ya da dil yerel rakamsizsa `latn`.
+    public static func etkin(dil: String?, kayitli: String?) -> String {
+        guard let sistem = yerelSistem(dil: dil),
+              kayitli?.trimmingCharacters(in: .whitespacesAndNewlines) == sistem else { return latn }
+        return sistem
+    }
+
+    /// Arapca arayuzde Dogu Arap rakami etkin mi (eski cagiranlar icin; yeni kod `etkin` kullanir).
     public static func doguMu(dil: String?, kayitli: String?) -> Bool {
         etkin(dil: dil, kayitli: kayitli) == arab
     }
 
-    /// ASCII 0-9 → Dogu Arap rakami (U+0660–0669); `dogu` false ya da rakam yoksa metin AYNEN.
-    /// Harf, ":", zaten Dogu rakami olan metin degismez (idempotent).
-    public static func cevir(_ metin: String, dogu: Bool) -> String {
-        guard dogu, metin.unicodeScalars.contains(where: { $0.value >= 0x30 && $0.value <= 0x39 }) else {
+    /// ASCII 0-9 → sistemin rakamlari (Dogu Arap U+0660–0669, Bengalce U+09E6–09EF); `latn`,
+    /// bilinmeyen sistem ya da rakamsiz metin AYNEN. Harf, ":", zaten yerel rakam olan metin
+    /// degismez (idempotent).
+    public static func cevir(_ metin: String, sistem: String) -> String {
+        guard let sifir = sifirlar[sistem],
+              metin.unicodeScalars.contains(where: { $0.value >= 0x30 && $0.value <= 0x39 }) else {
             return metin
         }
         var sonuc = String.UnicodeScalarView()
         for u in metin.unicodeScalars {
-            if u.value >= 0x30 && u.value <= 0x39, let d = Unicode.Scalar(0x0660 + u.value - 0x30) {
+            if u.value >= 0x30 && u.value <= 0x39, let d = Unicode.Scalar(sifir + u.value - 0x30) {
                 sonuc.append(d)
             } else {
                 sonuc.append(u)
@@ -124,22 +142,36 @@ public enum RakamSistemi {
         return String(sonuc)
     }
 
-    /// Sistem cizimli sayilarin yerel ayari: yalniz Arapcada "ar@numbers=<sistem>" (Bati secen
-    /// Magrip kullanicisi da Bati gorur); diger dillerde nil → DOKUNULMAZ (cihazin ayari).
+    /// Eski imza: `dogu` true → Dogu Arap rakami. Yeni kod `cevir(_:sistem:)` kullanir.
+    public static func cevir(_ metin: String, dogu: Bool) -> String {
+        cevir(metin, sistem: dogu ? arab : latn)
+    }
+
+    /// Sistem cizimli sayilarin yerel ayari: yalniz yerel rakamli dilde "<dil>@numbers=<sistem>"
+    /// (Bati secen Magrip ya da Bengalce kullanicisi da Bati gorur); diger dillerde nil →
+    /// DOKUNULMAZ (cihazin ayari).
     public static func yerelAyarKimligi(dil: String?, kayitli: String?) -> String? {
-        guard ArayuzDili.coz(dil) == "ar" else { return nil }
-        return "ar@numbers=\(etkin(dil: dil, kayitli: kayitli))"
+        guard yerelSistem(dil: dil) != nil else { return nil }
+        return "\(ArayuzDili.coz(dil))@numbers=\(etkin(dil: dil, kayitli: kayitli))"
     }
 }
 
 /// CLDR cogul kategorisi ("zero", "one", "two", "few", "many", "other") — JS
-/// `src/core/dil/cogul.ts` ikizi (tamsayi icin); Urduca (ur) `default` dalindadir (one/other).
+/// `src/core/dil/cogul.ts` ikizi (tamsayi icin); Urduca, Felemenkce ve Arnavutca (ur, nl, sq)
+/// `default` dalindadir (one/other).
 /// Cogul metin tablolari kategori → kalip tasir; dilde olmayan kategori "other"a duser.
 public enum CogulKurali {
     public static func kategori(_ dil: String, _ n: Int) -> String {
         let i = abs(n)
         switch ArayuzDili.coz(dil) {
         case "id", "ms": return "other"
+        case "es":
+            // `cogul.ts > ispanyolca`: yalniz 1 tekil (0 cogul); 1.000.000 katlari "many".
+            if i == 1 { return "one" }
+            return (i != 0 && i % 1_000_000 == 0) ? "many" : "other"
+        case "hi", "bn":
+            // `cogul.ts > sifirBir`: 0 ve 1 tekil.
+            return (i == 0 || i == 1) ? "one" : "other"
         case "fr":
             if i == 0 || i == 1 { return "one" }
             return (i != 0 && i % 1_000_000 == 0) ? "many" : "other"
@@ -242,7 +274,7 @@ public struct VakitAdlari: Equatable {
 /// Yer tutucular `{ad}`, `{saat}`, `{giris}`, `{dua}` — `bicim` doldurur.
 ///
 /// Duzen (ceviri ajanlari icin): dil basina bir `static let`, sira tr, en, id, de, fr, bs,
-/// ru, ms, ar, ur; cevrilmemis dilin ornegi Ingilizcenin birebir kopyasidir ve `// ÇEVİRİ: <kod>`
+/// ru, ms, ar, ur, es, nl, sq, hi, bn; cevrilmemis dilin ornegi Ingilizcenin birebir kopyasidir ve `// ÇEVİRİ: <kod>`
 /// satiriyla baslar. Nobetci: `test/main.swift` (her dil Turkceyle ayni yer tutucular).
 public struct VakitMetinleri: Equatable {
     public let dil: String
@@ -551,10 +583,146 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "ایپ کھولیں"
     )
 
+    // es — İspanyolca (beta); terimler JS sozluk/es (Kıldım "Ya recé", Kılındı "Rezado", hitap "usted")
+    public static let es = VakitMetinleri(
+        dil: "es",
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Salida del sol",
+        konumYok: "Abra la aplicación y establezca su ubicación para poder calcular las horas de rezo.",
+        veriEski: "Las horas de rezo no están actualizadas. Abra la aplicación una vez para actualizarlas.",
+        girisBugun: "a las {saat}",
+        girisYarin: "mañana a las {saat}",
+        suAnVakti: "Ahora es la hora de {ad}.",
+        suAnVaktiCikis: "Ahora es la hora de {ad}; termina a las {saat}.",
+        siradakiNamaz: "El siguiente rezo es {ad}, {giris}.",
+        isaretlendi: "{ad} se marcó como rezado. {dua}.",
+        zatenKilindi: "{ad} ya está marcado como rezado.",
+        vakitYok: "Ahora no hay ningún rezo para marcar.",
+        vakitYokSiradaki: "Ahora no hay ningún rezo para marcar. Siguiente: {ad}, {giris}.",
+        onay: "¿Marcar {ad} como rezado?",
+        vakitDegisti: "La hora del rezo cambió y no se marcó nada. Vuelva a intentarlo.",
+        kabulDuasi: "Que Allah lo acepte",
+        kildim: "Ya recé",
+        kilindi: "Rezado",
+        kontrolKildim: "{ad} · Ya recé",
+        kontrolKilindi: "{ad} rezado",
+        kontrolVakitYok: "No hay rezo para marcar",
+        uygulamayiAcin: "Abra la aplicación"
+    )
+
+    // nl — Felemenkçe (beta): JS `sozluk/nl` (hitap "u"; "Kıldım"/"Kılındı" = "Gebeden")
+    public static let nl = VakitMetinleri(
+        dil: "nl",
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Zonsopkomst",
+        konumYok: "Open de app en stel uw locatie in, zodat de gebedstijden kunnen worden berekend.",
+        veriEski: "De gebedstijden zijn verouderd. Open de app één keer om ze bij te werken.",
+        girisBugun: "om {saat}",
+        girisYarin: "morgen om {saat}",
+        suAnVakti: "Het is nu tijd voor {ad}.",
+        suAnVaktiCikis: "Het is nu tijd voor {ad}; die eindigt om {saat}.",
+        siradakiNamaz: "Het volgende gebed is {ad} {giris}.",
+        isaretlendi: "{ad} is als gebeden gemarkeerd. {dua}.",
+        zatenKilindi: "{ad} is al als gebeden gemarkeerd.",
+        vakitYok: "Er is nu geen gebed om te markeren.",
+        vakitYokSiradaki: "Er is nu geen gebed om te markeren. Hierna komt {ad} {giris}.",
+        onay: "{ad} als gebeden markeren?",
+        vakitDegisti: "De gebedstijd is veranderd, daarom is er niets gemarkeerd. Probeer het opnieuw.",
+        kabulDuasi: "Moge Allah het accepteren",
+        kildim: "Gebeden",
+        kilindi: "Gebeden",
+        kontrolKildim: "{ad} · Gebeden",
+        kontrolKilindi: "{ad} gebeden",
+        kontrolVakitYok: "Geen gebed om te markeren",
+        uygulamayiAcin: "Open de app"
+    )
+
+    // sq — Arnavutça (beta): JS `sozluk/sq/genel.ts > kildim.sonuc` (hitap "ju", "E fala" / "U fal")
+    public static let sq = VakitMetinleri(
+        dil: "sq",
+        adlar: ["sabah": "Sabahu", "ogle": "Dreka", "ikindi": "Ikindia", "aksam": "Akshami", "yatsi": "Jacia"],
+        gunes: "Lindja e Diellit",
+        konumYok: "Hapni aplikacionin dhe caktoni vendndodhjen që të llogariten kohët e namazit.",
+        veriEski: "Kohët e namazit janë të vjetruara. Hapni aplikacionin një herë për t’i përditësuar.",
+        girisBugun: "në orën {saat}",
+        girisYarin: "nesër në orën {saat}",
+        suAnVakti: "Tani është koha: {ad}.",
+        suAnVaktiCikis: "Tani është koha: {ad}; del në orën {saat}.",
+        siradakiNamaz: "Namazi i radhës: {ad}, {giris}.",
+        isaretlendi: "{ad}: u shënua si i falur. {dua}.",
+        zatenKilindi: "{ad}: është shënuar tashmë si i falur.",
+        vakitYok: "Tani nuk ka vakt për t’u shënuar.",
+        vakitYokSiradaki: "Tani nuk ka vakt për t’u shënuar. Në vijim: {ad}, {giris}.",
+        onay: "{ad}: ta shënoni si të falur?",
+        vakitDegisti: "Vakti ndryshoi, prandaj nuk u shënua asgjë. Provoni sërish.",
+        kabulDuasi: "Allahu e pranoftë",
+        kildim: "E fala",
+        kilindi: "U fal",
+        kontrolKildim: "{ad} · E fala",
+        kontrolKilindi: "{ad}: u fal",
+        kontrolVakitYok: "Nuk ka vakt për t’u shënuar",
+        uygulamayiAcin: "Hapni aplikacionin"
+    )
+
+    // hi — Hintçe (beta): JS `sozluk/hi`; Kıldım "नमाज़ पढ़ ली", Kılındı "पढ़ ली गई"
+    public static let hi = VakitMetinleri(
+        dil: "hi",
+        adlar: ["sabah": "फ़ज्र", "ogle": "ज़ुहर", "ikindi": "अस्र", "aksam": "मग़रिब", "yatsi": "इशा"],
+        gunes: "सूर्योदय",
+        konumYok: "नमाज़ के वक़्त जानने के लिए ऐप खोलें और अपनी लोकेशन चुनें।",
+        veriEski: "नमाज़ के वक़्त पुराने हो गए हैं। अपडेट करने के लिए ऐप एक बार खोलें।",
+        girisBugun: "{saat} पर",
+        girisYarin: "कल {saat} पर",
+        suAnVakti: "अभी {ad} का वक़्त है।",
+        suAnVaktiCikis: "अभी {ad} का वक़्त है; यह {saat} पर ख़त्म होता है।",
+        siradakiNamaz: "अगली नमाज़ {ad} है, {giris}।",
+        isaretlendi: "{ad} की नमाज़ पर \"पढ़ ली गई\" का निशान लग गया। {dua}।",
+        zatenKilindi: "{ad} की नमाज़ पर पहले से \"पढ़ ली गई\" का निशान लगा है।",
+        vakitYok: "अभी निशान लगाने के लिए कोई नमाज़ नहीं है।",
+        vakitYokSiradaki: "अभी निशान लगाने के लिए कोई नमाज़ नहीं है। अगली नमाज़ {ad} है, {giris}।",
+        onay: "{ad} की नमाज़ पर \"पढ़ ली गई\" का निशान लगाएं?",
+        vakitDegisti: "नमाज़ का वक़्त बदल गया, इसलिए निशान नहीं लगाया गया। फिर से कोशिश करें।",
+        kabulDuasi: "अल्लाह क़बूल करे",
+        kildim: "नमाज़ पढ़ ली",
+        kilindi: "पढ़ ली गई",
+        kontrolKildim: "{ad} · नमाज़ पढ़ ली",
+        kontrolKilindi: "{ad} पढ़ ली गई",
+        kontrolVakitYok: "निशान के लिए कोई नमाज़ नहीं",
+        uygulamayiAcin: "ऐप खोलें"
+    )
+
+    // bn — Bengalce (beta): JS `sozluk/bn` (vakit.adlar, genel.kildim.sonuc, samimiyet.kabulDuasi);
+    // "Kıldım" = "নামাজ পড়েছি", "Kılındı" = "পড়া হয়েছে"; rakam Batı (0-9).
+    public static let bn = VakitMetinleri(
+        dil: "bn",
+        adlar: ["sabah": "ফজর", "ogle": "যোহর", "ikindi": "আসর", "aksam": "মাগরিব", "yatsi": "ইশা"],
+        gunes: "সূর্যোদয়",
+        konumYok: "নামাজের সময় হিসাব করতে অ্যাপ খুলে আপনার অবস্থান সেট করুন।",
+        veriEski: "নামাজের সময়ের তথ্য পুরোনো হয়ে গেছে। হালনাগাদ করতে একবার অ্যাপ খুলুন।",
+        girisBugun: "{saat}-এ",
+        girisYarin: "আগামীকাল {saat}-এ",
+        suAnVakti: "এখন {ad}-এর ওয়াক্ত।",
+        suAnVaktiCikis: "এখন {ad}-এর ওয়াক্ত; শেষ হবে {saat}-এ।",
+        siradakiNamaz: "পরবর্তী নামাজ {ad}, {giris}।",
+        isaretlendi: "{ad} পড়া হয়েছে হিসেবে চিহ্নিত হয়েছে। {dua}।",
+        zatenKilindi: "{ad} আগেই পড়া হয়েছে হিসেবে চিহ্নিত আছে।",
+        vakitYok: "এখন চিহ্নিত করার মতো কোনো নামাজ নেই।",
+        vakitYokSiradaki: "এখন চিহ্নিত করার মতো কোনো নামাজ নেই। পরবর্তী {ad}, {giris}।",
+        onay: "{ad} পড়া হয়েছে হিসেবে চিহ্নিত করবেন?",
+        vakitDegisti: "নামাজের ওয়াক্ত বদলে গেছে, তাই কিছু চিহ্নিত হয়নি। আবার চেষ্টা করুন।",
+        kabulDuasi: "আল্লাহ কবুল করুন",
+        kildim: "নামাজ পড়েছি",
+        kilindi: "পড়া হয়েছে",
+        kontrolKildim: "{ad} · নামাজ পড়েছি",
+        kontrolKilindi: "{ad} পড়া হয়েছে",
+        kontrolVakitYok: "চিহ্নিত করার মতো নামাজ নেই",
+        uygulamayiAcin: "অ্যাপ খুলুন"
+    )
+
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).
     public static let tablo: [String: VakitMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
-        "ar": ar, "ur": ur,
+        "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
     ]
 
     /// Dil koduna gore metinler ("en-US" → Ingilizce; bilinmeyen → Turkce). Kullanicinin

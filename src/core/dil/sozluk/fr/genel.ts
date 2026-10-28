@@ -159,7 +159,7 @@ export const genel: Sozluk['genel'] = {
     Cihazlarim: 'Mes appareils',
     CihazEkle: 'Ajouter un appareil',
     TelevizyonAyarlari: 'Ajouter un téléviseur',
-    KildimUygulamalari: 'Applications pouvant marquer « J’ai prié »',
+    KildimUygulamalari: 'Applis autorisées',
     OtomasyonRehberi: 'Utiliser avec des automatisations',
     DebugLogs: 'Journaux de diagnostic',
     TakvimAyarlari: 'Ajouter les heures à l’agenda',

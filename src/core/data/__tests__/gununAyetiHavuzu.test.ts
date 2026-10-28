@@ -23,9 +23,15 @@ describe('günün ayeti havuzu', () => {
     expect(uzun).toEqual([]);
   });
 
-  it('kural 2: mealde dipnot işareti ya da baştaki ayet numarası yok', () => {
+  it('kural 2: mealde dipnot işareti, baştaki ya da sondaki ayet numarası yok (her yazının rakamı)', () => {
+    // `\p{Nd}`: Batı, Devanagari (२), Bengalce (১), Gucarati (૨)…; ayraç içinde görünmez biçim karakteri olabilir.
     const dipnotlu = GUNUN_AYETI_HAVUZU.flatMap((k) =>
-      mealler(k).filter(([, m]) => /\[\d+\]|\*/.test(m) || /^\d+\.\s/.test(m)).map(([d]) => `${k.ref}:${d}`),
+      mealler(k)
+        .filter(
+          ([, m]) =>
+            /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u.test(m) || /^\s*\p{Nd}+\s*[.)]\s/u.test(m) || /\(\p{Nd}+\)\s*[.।]?\s*$/u.test(m),
+        )
+        .map(([d]) => `${k.ref}:${d}`),
     );
     expect(dipnotlu).toEqual([]);
   });

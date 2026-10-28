@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bn — Bengalce (beta). -->
+<!-- Bengalce. Terimler: JS src/core/dil/sozluk/bn (ফজর, সূর্যোদয়, যোহর, আসর, মাগরিব, ইশা; জুমা; মাকরূহ সময়). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">bn</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">নামাজের সময়ের বোর্ড</string>
+    <string name="ayarlar">সেটিংস</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s পর্যন্ত %2$s বাকি</string>
+    <string name="pano_vaktine">%1$s পর্যন্ত</string>
+    <string name="pano_vaktine_kalan">%2$s পর %1$s</string>
+    <string name="pano_kerahat_vakti">মাকরূহ সময়</string>
+    <string name="pano_bitis">শেষ %1$s</string>
+    <string name="pano_kerahat_erisim">মাকরূহ সময়, %1$s, শেষ %2$s। %3$s</string>
+    <string name="pano_cumaya">%1$s পর জুমা</string>
+    <string name="pano_cikis_geldi">বের হওয়ার সময়</string>
+    <string name="pano_cikis">%1$s-এ বের হোন</string>
+    <string name="pano_cuma_cikis_geldi_erisim">জুমার জন্য বের হওয়ার সময় হয়েছে</string>
+    <string name="pano_cuma_cikis_erisim">জুমার জন্য %1$s-এ বের হোন</string>
+    <string name="pano_bugun_cuma">আজ জুমা</string>
+    <string name="pano_ogle">যোহর %1$s</string>
+    <string name="pano_bugun_cuma_erisim">আজ জুমা। জুমার নামাজ যোহরের ওয়াক্তে, %1$s</string>
+    <string name="pano_ayarlar_erisim">সেটিংস: ফোন যোগ করুন, অবস্থান, সংযুক্ত ফোন</string>
+    <string name="pano_simdiki_vakit">বর্তমান ওয়াক্ত</string>
+    <string name="pano_siradaki_vakit">পরবর্তী ওয়াক্ত</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "আপনার ফোন যোগ করুন", "কোড লিখুন", "আমি নিজেই শহর বেছে নেব", "যোগ করুন". -->
+    <string name="kodla_girin">কোড লিখুন</string>
+    <string name="ili_kendim_secin">আমি নিজেই শহর বেছে নেব</string>
+    <string name="yeniden_deneyin">আবার চেষ্টা করুন</string>
+    <string name="telefon_varsayilan">ফোন</string>
+    <string name="esleme_ekleniyor">%1$s যোগ হচ্ছে</string>
+    <string name="esleme_gonderiyor">আপনার ফোন অবস্থান ও অবস্থা পাঠাচ্ছে…</string>
+    <string name="esleme_tamamlanamadi">জোড়া লাগানো সম্পূর্ণ করা যায়নি</string>
+    <string name="esleme_saklanamadi">এই টিভি সংযোগের চাবি নিরাপদে রাখতে পারে না। কোড দিয়ে অবস্থান লিখতে বা আপনার শহর বেছে নিতে পারেন।</string>
+    <string name="telefonunuzu_ekleyin">আপনার ফোন যোগ করুন</string>
+    <string name="esleme_alt">আপনার অবস্থানের নামাজের সময়; আপনার পড়া নামাজও দেখা যায়।</string>
+    <string name="esleme_adim1">ফোনে Namaz Akışı খুলুন</string>
+    <string name="esleme_adim2">সেটিংস › আমার ডিভাইস › টিভি যোগ করুন</string>
+    <string name="esleme_adim3">ফোনের ক্যামেরা কোডের দিকে ধরুন</string>
+    <string name="esleme_ayni_wifi">আপনার ফোন ও টিভিকে একই Wi-Fi নেটওয়ার্কে থাকতে হবে।</string>
+    <string name="esleme_onay_soru">এই ফোনটি যোগ করবেন?</string>
+    <string name="esleme_onay_aciklama">যোগ করা ফোন এই টিভিতে তার অবস্থান ও চিহ্নিত নামাজ পাঠাতে পারবে।</string>
+    <string name="ekleyin">যোগ করুন</string>
+    <string name="hayir">না</string>
+    <string name="esleme_eklendi">%1$s যোগ হয়েছে</string>
+    <string name="konumunuz_geldi">আপনার অবস্থান এসেছে</string>
+    <string name="konuma_gore_hesaplanacak">নামাজের সময় এই অবস্থানের জন্য হিসাব করা হবে।</string>
+    <string name="qr_konum_alindi">অবস্থান পাওয়া গেছে</string>
+    <string name="qr_kodu">ফোন দিয়ে স্ক্যান করার জোড়া লাগানোর কোড</string>
+    <string name="ag_yok">টিভি কোনো নেটওয়ার্কে সংযুক্ত নেই</string>
+    <string name="ag_yok_aciklama">ফোনের 7 অঙ্কের কোড লিখে বা আপনার শহর বেছে নিয়ে চালিয়ে যেতে পারেন।</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">ফোনের কোডটি লিখুন</string>
+    <string name="kod_yol">ফোনে: সেটিংস › আমার ডিভাইস › টিভি যোগ করুন</string>
+    <string name="kod_hatali">কোড মেলেনি। ফোনের 7টি অঙ্ক দেখে নিন; ভুল অঙ্ক “%1$s” দিয়ে ঠিক করুন।</string>
+    <string name="kod_rakamli_kumanda">আপনার রিমোটে সংখ্যার বোতাম থাকলে সেগুলো দিয়েও লিখতে পারেন।</string>
+    <string name="kod_bos_hane">খালি অঙ্ক</string>
+    <string name="kod_sil">মুছুন</string>
+    <string name="kod_sil_aciklama">শেষ অঙ্কটি মুছুন</string>
+    <string name="kod_geri">পেছনে</string>
+    <string name="vazgecin">বাতিল করুন</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">আপনার শহর বেছে নিন</string>
+    <string name="il_merkezine_gore">নামাজের সময় শহরের কেন্দ্র অনুযায়ী হিসাব করা হয়।</string>
+    <string name="il_secili">%1$s, বেছে নেওয়া</string>
+    <string name="dream_il_yok">নামাজের সময়ের বোর্ড দেখতে Namaz Akışı অ্যাপ খুলে আপনার শহর বেছে নিন।</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">অবস্থান: %1$s</string>
+    <string name="ayar_konum_yok">কোনো অবস্থান বেছে নেওয়া হয়নি</string>
+    <string name="ayar_telefon_ekleyin">ফোন যোগ করুন</string>
+    <string name="ayar_konumu_kodla">কোড দিয়ে অবস্থান লিখুন</string>
+    <string name="ayar_bagli_telefonlar">এই টিভিতে সংযুক্ত ফোন</string>
+    <string name="ayar_telefon_yok">এখনো কোনো ফোন যোগ করা হয়নি। বাঁ দিকের “%1$s” ব্যবহার করে দেখানো কোডটি স্ক্যান করুন।</string>
+    <string name="kaldirin">সরান</string>
+    <string name="ayar_ne_gonderir">ফোন কী পাঠায়?</string>
+    <string name="ayar_madde_konum">অবস্থান: নামাজের সময় এটি অনুসরণ করে</string>
+    <string name="ayar_madde_namazlar">চিহ্নিত নামাজ, যারা বেছে নেন তাদের জন্য</string>
+    <string name="ayar_madde_sifreli">এনক্রিপ্টেড, শুধু আপনার বাড়ির নেটওয়ার্কে</string>
+    <string name="son_haber_yok">এখনো কোনো তথ্য নেই</string>
+    <string name="son_haber_az_once">এইমাত্র</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d মিনিট আগে</item>
+        <item quantity="other">%1$d মিনিট আগে</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d ঘণ্টা আগে</item>
+        <item quantity="other">%1$d ঘণ্টা আগে</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d দিন আগে</item>
+        <item quantity="other">%1$d দিন আগে</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s সরাবেন?</string>
+    <string name="kaldir_aciklama">এই ফোন আর টিভিতে তথ্য পাঠাতে পারবে না। আবার যোগ করতে QR কোড আবার স্ক্যান করতে হবে।</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">আপনার ফোনের অবস্থান</string>
+</resources>

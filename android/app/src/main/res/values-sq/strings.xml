@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Burimet në shqip (W5). Grupi i çelësave është PLOTËSISHT I NJËJTË si values/strings.xml (përveç translatable="false"). Termat: JS src/core/dil/sozluk/sq. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Vakti aktual, kur del, dhe \"E fala\" me një prekje</string>
+  <string name="widget_genis_aciklama">Pesë vaktet e sotme, numërimi mbrapsht dhe \"E fala\" me një prekje</string>
+  <string name="widget_kapak_adi">Kohët e namazit në ekranin e kapakut</string>
+  <string name="widget_kapak_aciklama">Kohët e sotme dhe numërimi mbrapsht për ekranin e kapakut të Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Klasik</string>
+  <string name="widget_klasik_aciklama">Pamje klasike e gjelbër: koha e mbetur deri te vakti i radhës</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klasik i gjerë</string>
+  <string name="widget_klasik_genis_aciklama">Pamje klasike e gjelbër: numërimi mbrapsht dhe kohët e sotme</string>
+  <string name="widget_ayet_adi">Ajeti i ditës</string>
+  <string name="widget_ayet_aciklama">Një ajet me përkthimin e tij, i ri çdo ditë në sabah</string>
+  <string name="widget_ayar_zemin_palet">Ngjyra e aplikacionit (ton i çelët)</string>
+  <string name="widget_ayar_ayet_icerik">Në madhësinë katrore, shfaqni</string>
+  <string name="widget_ayar_ayet_icerik_meal">Përkthimin</string>
+  <string name="widget_ayar_ayet_icerik_hat">Tekstin arab (kaligrafi)</string>
+  <string name="kutu_kildim_etiket">E fala</string>
+  <string name="kisayol_kildim_kisa">E fala</string>
+  <string name="kisayol_kildim_uzun">E fala vaktin aktual</string>
+  <string name="kisayol_kible_kisa">Kibla</string>
+  <string name="kisayol_kible_uzun">Tregoni drejtimin e kibles</string>
+  <string name="kisayol_kaza_kisa">Regjistri i kazave</string>
+  <string name="kisayol_kaza_uzun">Hapni Regjistrin e kazave</string>
+  <string name="kildim_onay_baslik">%1$s: ta shënoni si të falur?</string>
+  <string name="kildim_onay_mesaj">Nuk është e qartë cili aplikacion e dërgoi këtë kërkesë. Konfirmoni nëse e keni falur.</string>
+  <string name="kildim_onay_evet">E fala</string>
+  <string name="kildim_onay_vazgec">Anuloni</string>
+  <string name="kildim_guven_baslik">T’i lejohet %1$s të shënojë namazet tuaja si të falura?</string>
+  <string name="kildim_guven_mesaj">Vakti që do të shënohet tani: %1$s. Vendimin mund ta ndryshoni më vonë te Cilësimet &gt; Aplikacionet që shënojnë \"E fala\".</string>
+  <string name="kildim_guven_tarayici_mesaj">Vakti që do të shënohet tani: %1$s. Kjo kërkesë erdhi nga një shfletues; meqë çdo faqe interneti mund ta hapë këtë lidhje, nuk mund të jepet leje e përhershme.</string>
+  <string name="kildim_guven_her_zaman">Lejo gjithmonë</string>
+  <string name="kildim_guven_bu_sefer">Vetëm këtë herë</string>
+  <string name="kildim_guven_engelle">Blloko</string>
+  <string name="kildim_guven_engellendi">%1$s nuk mund t’i shënojë më namazet tuaja. Këtë mund ta ndryshoni te Cilësimet.</string>
+  <string name="widget_ayar_baslik">Përshtatni widget-in</string>
+  <string name="widget_ayar_zemin">Sfondi</string>
+  <string name="widget_ayar_zemin_material">Ngjyrat e sfondit të ekranit</string>
+  <string name="widget_ayar_zemin_sistem">Tema e sistemit</string>
+  <string name="widget_ayar_zemin_acik">E çelët</string>
+  <string name="widget_ayar_zemin_koyu">E errët</string>
+  <string name="widget_ayar_zemin_seffaf">I tejdukshëm</string>
+  <string name="widget_ayar_opaklik">Patejdukshmëria e sfondit</string>
+  <string name="widget_ayar_gosterim">Shfaqni me shkronja të mëdha</string>
+  <string name="widget_ayar_gosterim_kalan">Kohën e mbetur</string>
+  <string name="widget_ayar_gosterim_bitis">Orën e daljes</string>
+  <string name="widget_ayar_gosterim_not">Ora e daljes shfaqet në çdo madhësi.</string>
+  <string name="widget_ayar_sonraki">Shfaqni vaktin e radhës</string>
+  <string name="widget_ayar_vazgec">Anuloni</string>
+  <string name="widget_ayar_kaydet">Ruani</string>
+  <string name="kildim_onay_kanal_adi">Konfirmimi \"E fala\"</string>
+  <string name="kildim_onay_kanal_aciklama">Një konfirmim i qetë që shfaqet për disa sekonda kur prekni \"E fala\" në një njoftim</string>
+
+  <!-- Vizatimi i widget-it (WidgetGuncelleyici) — teksti jepet në KOD, jo në XML-in e paraqitjes (W5). -->
+  <string name="widget_cikis">Del %1$s</string>
+  <string name="widget_giris">Hyn %1$s</string>
+  <string name="widget_namaz_vakti">Koha e namazit</string>
+  <string name="widget_uygulamayi_acin">Hapni aplikacionin</string>
+  <string name="widget_siradaki">Në vijim: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Tani nuk ka vakt për t’u shënuar</string>
+  <string name="widget_dugme_kildim">E fala</string>
+  <string name="widget_dugme_isaretleniyor">Po shënohet</string>
+  <string name="widget_dugme_kilindi">U fal</string>
+  <string name="widget_dugme_vakit_girmedi">Ende pa hyrë</string>
+  <string name="widget_klasik_uygulamayi_acin">hapni aplikacionin</string>
+  <string name="widget_klasik_erisim_veri_yok">Hapni aplikacionin për të parë kohët e namazit</string>
+  <string name="widget_klasik_erisim_siradaki">Vakti i radhës: %1$s, hyn në %2$s</string>
+  <!-- PAMJA PARAPRAKE e zgjedhësit të widget-it klasik (previewLayout; nisësi e zgjidh në gjuhën e pajisjes). Nuk përdoret në vizatim. -->
+  <string name="widget_onizleme_klasik_kucuk">Dreka pas</string>
+  <string name="widget_onizleme_klasik_genis">Akshami pas</string>
+  <string name="widget_onizleme_imsak">Sabahu</string>
+  <string name="widget_onizleme_gunes">Lindja e Diellit</string>
+  <string name="widget_onizleme_ogle">Dreka</string>
+  <string name="widget_onizleme_ikindi">Ikindia</string>
+  <string name="widget_onizleme_aksam">Akshami</string>
+  <string name="widget_onizleme_yatsi">Jacia</string>
+  <!-- Rezultati "E fala" për widget / pllakë / shkurtore / automatizim / asistent (KildimIslemleri.sonucMetni) — binjaku i JS genel.kildim.sonuc. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s: u shënua si i falur. Allahu e pranoftë.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s: është shënuar tashmë si i falur.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Tani nuk ka vakt për t’u shënuar. Në vijim: %1$s, në orën %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Tani nuk ka vakt për t’u shënuar.</string>
+  <string name="kildim_sonuc_veri_yok">Nuk ka të dhëna për kohët. Hapni aplikacionin një herë.</string>
+  <string name="kildim_sonuc_vakit_degisti">Vakti ndryshoi, prandaj nuk u shënua asgjë. Provoni sërish.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Aplikacioni i navigimit nuk u hap.</string>
+  <string name="arac_adsiz_cami">Xhami</string>
+  <!-- Asistenti (AppFunctions): gabimet dhe përshkrimi në cilësimet e sistemit (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Të dhënat e kohëve nuk u lexuan.</string>
+  <string name="asistan_isaretleme_yapilamadi">Namazi nuk u shënua.</string>
+  <string name="asistan_aciklama">Mund të pyesni për kohët e namazit, ta shënoni vaktin aktual si të falur dhe të hapni ekranin e kibles.</string>
+</resources>

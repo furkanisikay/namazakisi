@@ -1,10 +1,12 @@
 /**
- * Rakam sistemi seçimi (Ayarlar > Dil > "Rakamlar") — yalnız seçimi olan dilde (bugün Arapça)
- * çizilir. Otomatik: konumun ülkesine göre (Mağrip Batı, diğerleri Doğu Arap rakamı).
+ * Rakam sistemi seçimi (Ayarlar > Dil > "Rakamlar") — yalnız yerel rakamı olan dilde (Arapça,
+ * Bengalce; `core/dil/rakam`) çizilir. Seçenekler: otomatik (ülkeye göre: Arapçada Mağrip Batı,
+ * diğerleri Doğu Arap; Bengalcede her ülkede Bengalce), dilin yerel rakamı (sözlükte
+ * `rakam.dogu` etiketi) ve Batı.
  * Görsel dil `VakitAdlariSecimi` ile aynı (başlık + açıklama + radyo kartları).
  *
  * Örnek rakamlar sözlükte değil burada üretilir ve metin kapısından KORUNUR: "0123" seçeneği
- * Doğu Arap rakamı etkinken de Batı rakamıyla görünmeli.
+ * yerel rakam etkinken de Batı rakamıyla görünmeli.
  */
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -12,7 +14,7 @@ import { Text, View } from 'react-native';
 import { useRenkler } from '../../../core/theme';
 import { useMetin } from '../../hooks/useMetin';
 import { SecenekListesi, type Secenek } from '../ortak/SecenekListesi';
-import { rakamlariCevir, rakamSecilebilir, type RakamSistemi } from '../../../core/dil/rakam';
+import { dilYerelRakami, rakamlariCevir, type RakamSistemi } from '../../../core/dil/rakam';
 import type { DilKodu } from '../../../core/dil/diller';
 import { DilServisi } from '../../../domain/services/DilServisi';
 import { Logger } from '../../../core/utils/Logger';
@@ -25,7 +27,8 @@ const ORNEK = '0123456789';
 export const RakamSecimi: React.FC<{ kod: DilKodu }> = ({ kod }) => {
   const renkler = useRenkler();
   const m = useMetin().rakam;
-  const secimli = rakamSecilebilir(kod);
+  const yerel = dilYerelRakami(kod);
+  const secimli = yerel !== null;
   const [secili, setSecili] = useState<Deger | null>(null);
 
   useEffect(() => {
@@ -42,10 +45,10 @@ export const RakamSecimi: React.FC<{ kod: DilKodu }> = ({ kod }) => {
   const secenekler = useMemo<Secenek<Deger>[]>(
     () => [
       { deger: OTOMATIK, etiket: m.otomatik, aciklama: m.otomatikAciklama },
-      { deger: 'arab', etiket: m.dogu, aciklama: rakamlariCevir(ORNEK, 'arab'), aciklamaRakamKoru: true },
+      ...(yerel ? [{ deger: yerel, etiket: m.dogu, aciklama: rakamlariCevir(ORNEK, yerel), aciklamaRakamKoru: true }] : []),
       { deger: 'latn', etiket: m.bati, aciklama: ORNEK, aciklamaRakamKoru: true },
     ],
-    [m]
+    [m, yerel]
   );
 
   const sec = useCallback((deger: Deger) => {

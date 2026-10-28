@@ -1,7 +1,8 @@
 /**
- * Rakam sistemi seçimi (`core/dil/rakam.ts`; Ayarlar > Dil, yalnız Arapçada görünür).
- * Seçenek açıklamasındaki örnek rakamlar SÖZLÜĞE YAZILMAZ (Doğu Arap rakamı sözlükte yasak,
- * nöbetçi `rakam.test.ts`): ekran kodda üretir.
+ * Rakam sistemi seçimi (`core/dil/rakam.ts`; Ayarlar > Dil, yalnız yerel rakamı olan dilde
+ * görünür: Arapça, Bengalce). `dogu` = o dilin YEREL rakamı (Arapçada Doğu Arap, Bengalcede
+ * Bengalce). Örnek rakamlar SÖZLÜĞE YAZILMAZ (yerel rakam sözlükte yasak, nöbetçi
+ * `rakam.test.ts`): ekran kodda üretir.
  */
 export const rakam = {
   baslik: 'Rakamlar',

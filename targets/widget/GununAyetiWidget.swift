@@ -25,7 +25,7 @@ enum GununAyetiSabitleri {
 /// Yuk yokken (uygulama hic acilmadi) ve galeride gereken metinler. Ingilizce karsiliklar
 /// JS sozlugunden (`sozluk/en/gununAyeti.ts > baslik, etiket`).
 ///
-/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms, ar, ur; cevrilmemis dil
+/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn; cevrilmemis dil
 /// Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`). `ornek*` alanlari galeri onizlemesindeki
 /// 94:6'dir: meal o dilin QuranEnc mealinden BIREBIR (kesilmeden) ve kunyesiyle yazilir
 /// (`docs/ajan/coklu-dil.md > Nass kurali`; dilde meal yoksa `ornekMeal` bos → yalniz Arapca).
@@ -188,9 +188,80 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Muhammad Junagarhi، QuranEnc 1.1.3"
     )
 
+    // es — İspanyolca (beta); JS sozluk/es/gununAyeti; meal 94:6 gununAyetiHavuzu.ts'ten birebir (Isa Garcia, QuranEnc 1.0.2)
+    static let es = GununAyetiYerelMetinleri(
+        galeriAdi: "Aleya del día",
+        galeriAciklama: "Una aleya y su traducción, que cambian cada día en Fajr.",
+        etiket: "ALEYA DEL DÍA",
+        uygulamayiAcin: "Abra la aplicación para ver la aleya del día",
+        ornekSigmiyor: "La aleya de hoy no cabe en este tamaño. Toque para leerla.",
+        ornekAcin: "Abrir",
+        ornekArapcaKaynagi: "Árabe: Tanzil",
+        ornekMeal: "Realmente, con toda dificultad viene una facilidad.",
+        ornekKisaKunye: "Corán 94:6",
+        ornekMealKaynagi: "Isa Garcia, QuranEnc 1.0.2"
+    )
+
+    // nl — meal 94:6 `gununAyetiHavuzu.ts` (dutch_center, Rowwad Translation Center)
+    static let nl = GununAyetiYerelMetinleri(
+        galeriAdi: "Vers van de dag",
+        galeriAciklama: "Een vers met vertaling dat elke dag bij Fajr wisselt.",
+        etiket: "VERS VAN DE DAG",
+        uygulamayiAcin: "Open de app om het vers van de dag te zien",
+        ornekSigmiyor: "Het vers van vandaag past niet in dit formaat. Tik om het te lezen.",
+        ornekAcin: "Openen",
+        ornekArapcaKaynagi: "Arabisch: Tanzil",
+        ornekMeal: "Waarlijk, na ongemak komen er weer betere tijden.",
+        ornekKisaKunye: "Koran 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 2.0.10"
+    )
+
+    // sq — JS `sozluk/sq/gununAyeti.ts`; örnek meal `gununAyetiHavuzu.ts` 94:6 (albanian_nahi 1.1.0) birebir
+    static let sq = GununAyetiYerelMetinleri(
+        galeriAdi: "Ajeti i ditës",
+        galeriAciklama: "Një ajet me përkthimin e tij, që ndryshon çdo ditë në sabah.",
+        etiket: "AJETI I DITËS",
+        uygulamayiAcin: "Hapni aplikacionin për të parë ajetin e ditës",
+        ornekSigmiyor: "Ajeti i sotëm nuk nxë në këtë madhësi. Prekni për ta lexuar.",
+        ornekAcin: "Hapni",
+        ornekArapcaKaynagi: "Arabisht: Tanzil",
+        ornekMeal: "Me të vërtetë, pas vështirësisë - vjen lehtësimi!",
+        ornekKisaKunye: "Kur'ani 94:6",
+        ornekMealKaynagi: "Hassan Nahi, QuranEnc 1.1.0"
+    )
+
+    // hi — Hintçe (beta): JS `sozluk/hi/gununAyeti.ts`. `gununAyetiHavuzu.ts`'te 94:6 için Hintçe
+    // (hindi_omari) meal YOK → `ornekMeal` ve `ornekMealKaynagi` boş (uydurma çeviri yok), yalnız Arapça.
+    static let hi = GununAyetiYerelMetinleri(
+        galeriAdi: "आज की आयत",
+        galeriAciklama: "एक आयत और उसका तर्जुमा, जो हर दिन फ़ज्र के वक़्त बदलता है।",
+        etiket: "आज की आयत",
+        uygulamayiAcin: "आज की आयत देखने के लिए ऐप खोलें",
+        ornekSigmiyor: "आज की आयत इस साइज़ में नहीं समाती। पढ़ने के लिए टैप करें।",
+        ornekAcin: "खोलें",
+        ornekArapcaKaynagi: "अरबी: Tanzil",
+        ornekMeal: "",
+        ornekKisaKunye: "क़ुरआन 94:6",
+        ornekMealKaynagi: ""
+    )
+
+    // bn — Bengalce (beta); JS `sozluk/bn/gununAyeti.ts`, meal 94:6 `gununAyetiHavuzu.ts` (bengali_zakaria, BİREBİR), künye `mealler.bn`
+    static let bn = GununAyetiYerelMetinleri(
+        galeriAdi: "দিনের আয়াত",
+        galeriAciklama: "প্রতিদিন ফজরে বদলানো একটি আয়াত ও তার অনুবাদ।",
+        etiket: "দিনের আয়াত",
+        uygulamayiAcin: "দিনের আয়াত দেখতে অ্যাপ খুলুন",
+        ornekSigmiyor: "আজকের আয়াত এই আকারে আঁটে না। পড়তে ট্যাপ করুন।",
+        ornekAcin: "খুলুন",
+        ornekArapcaKaynagi: "আরবি: Tanzil",
+        ornekMeal: "নিশ্চয় কষ্টের সাথেই স্বস্তি আছে।",
+        ornekKisaKunye: "কুরআন 94:6",
+        ornekMealKaynagi: "Abu Bakr Zakaria, QuranEnc 1.1.1"
+    )
+
     static let tablo: [String: GununAyetiYerelMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
-        "ar": ar, "ur": ur,
+        "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
     ]
 
     static var simdiki: GununAyetiYerelMetinleri {
@@ -487,7 +558,8 @@ enum AyetTarihi {
         f.calendar = takvim
         f.timeZone = .current
         // Yukun dili (yalniz native tabloda olan diller degil): ay/gun adlari sistemden.
-        // Arapcada rakam sistemi acikca verilir (ciplak "ar" Dogu rakami yazar, Bati secen de).
+        // Yerel rakamli dilde (ar, bn) rakam sistemi acikca verilir (ciplak "ar"/"bn" yerel rakam
+        // yazar, Bati secen de).
         f.locale = Locale(identifier: RakamSistemi.yerelAyarKimligi(dil: dil, kayitli: WidgetMetin.rakamKaydi)
             ?? (dil.isEmpty ? ArayuzDili.varsayilan : dil))
         f.setLocalizedDateFormatFromTemplate("EEEEdMMMM")

@@ -4,18 +4,22 @@
  * Uygulamada merkezi bir sayı biçimleyicisi yok (onlarca dosyada `padStart(2…)`), bu yüzden
  * rakam sistemi ve Urduca yazı tipi metnin YAZILDIĞI yerde değil ÇİZİLDİĞİ yerde uygulanır:
  *
- *  - Arapça + Doğu Arap rakamı (`core/dil/rakam`): `Text` çocuklarındaki dize/sayıların Batı
- *    rakamları ٠١٢٣…'e çevrilir. Sözlük ve kod her zaman Batı rakamıyla yazar.
+ *  - Yerel rakamlı dil (`core/dil/rakam`: Arapça ٠١٢٣, Bengalce ০১২৩) ve yerel rakam seçiliyken:
+ *    `Text` çocuklarındaki dize/sayıların Batı rakamları o dilin rakamına çevrilir. Sözlük ve
+ *    kod her zaman Batı rakamıyla yazar.
  *  - Urduca: açık `fontFamily`'si olmayan metne Noto Nastaliq Urdu (kalın ağırlıkta kalın
  *    dosya) verilir; sabit `lineHeight` en az 1.8 × `fontSize`'a çıkarılır (Nestalik'in
  *    iniş/çıkışları kırpılmasın; satır yüksekliği verilmemişse yazı tipinin kendi ölçüsü
  *    2.5 em'dir). `adjustsFontSizeToFit` küçültmesi en çok 0.85'e iner. Yazı tipi
  *    yüklenene kadar sistem yazı tipi kalır.
+ *  - Üst işaretli yazılar (Hintçe Devanagari, Bengalce): sabit `lineHeight` en az
+ *    `UST_ISARETLI_SATIR_ORANI` × `fontSize`'a çıkarılır. Ünlü işaretleri (ি, ि) üst çizginin
+ *    üstüne çıkar; Tailwind'in `text-4xl`'i (36/40) iOS'ta onları keser ("মাগরিব" → "মাগারব").
  *
  * NASIL TAKILIR: RN 0.86'da `Text` düz bir fonksiyon bileşenidir (`forwardRef` değil, `render`
  * yok) → yamanamaz. Bunun yerine NativeWind'in JSX katmanı kullanılır: her `<Text>` öğesi
  * oluşturulurken css-interop `interopComponents.get(Text)` ile sarmalayıcısını seçer. Kapı
- * gerekirken (etkin dil `ar` ya da `ur`) bu kayıt bizim sarmalayıcımıza (css-interop'un kendi
+ * gerekirken (etkin dil yerel rakamlı — `ar`, `bn` — ya da `ur`, `hi`) bu kayıt bizim sarmalayıcımıza (css-interop'un kendi
  * `cssInterop`'uyla sarılmış `MetinKapisi`) çevrilir: `className` önce çözülür, kapı ÇÖZÜLMÜŞ
  * stili görür (`text-lg`'nin satır yüksekliği dahil), sonra ham `Text`'i çizer. Diğer dillerde
  * kayıt css-interop'un özgün sarmalayıcısıdır: Türkçede SIFIR ek maliyet.
@@ -32,7 +36,7 @@ import { StyleSheet, Text, type StyleProp, type TextProps, type TextStyle } from
 import { useFonts } from 'expo-font';
 import { cssInterop } from 'nativewind';
 import { aktifDil, aktifRakamSistemi, dilDegisiminiDinle } from '../../../core/dil/aktifDil';
-import { rakamlariCevir, type RakamSistemi } from '../../../core/dil/rakam';
+import { rakamlariCevir, rakamSecilebilir, type RakamSistemi } from '../../../core/dil/rakam';
 import type { DilKodu } from '../../../core/dil/diller';
 import { Logger } from '../../../core/utils/Logger';
 
@@ -54,9 +58,14 @@ export const NASTALIK_SATIR_ORANI = 1.8;
 /** Urducada `adjustsFontSizeToFit` küçültmesinin alt sınırı. */
 export const NASTALIK_EN_KUCUK_OLCEK = 0.85;
 const VARSAYILAN_PUNTO = 14;
+/** Üst işaretli yazıda sabit satır yüksekliğinin alt sınırı (× fontSize). */
+export const UST_ISARETLI_SATIR_ORANI = 1.5;
+/** Ünlü işareti üst çizginin üstüne çıkan yazıyla yazılan diller. */
+const UST_ISARETLI_DILLER: ReadonlySet<DilKodu> = new Set<DilKodu>(['hi', 'bn']);
 
-/** Kapı gereken diller: Arapça (rakam), Urduca (yazı tipi). */
-export const kapiGerekli = (dil: DilKodu): boolean => dil === 'ar' || dil === 'ur';
+/** Kapı gereken diller: yerel rakamlı diller (Arapça, Bengalce; `core/dil/rakam`), Urduca (yazı tipi), üst işaretli yazılar. */
+export const kapiGerekli = (dil: DilKodu): boolean =>
+  rakamSecilebilir(dil) || dil === 'ur' || UST_ISARETLI_DILLER.has(dil);
 
 let nastalikHazir = false;
 const yaziTipiDinleyicileri = new Set<() => void>();
@@ -72,18 +81,22 @@ interface KapiDurumu {
   readonly rakam: RakamSistemi;
   readonly urduca: boolean;
   readonly nastalik: boolean;
+  readonly ustIsaretli: boolean;
 }
 
-let durumOnbellek: KapiDurumu = { rakam: 'latn', urduca: false, nastalik: false };
+let durumOnbellek: KapiDurumu = { rakam: 'latn', urduca: false, nastalik: false, ustIsaretli: false };
 
 /** `useSyncExternalStore` anlık görüntüsü: değerler değişmedikçe AYNI nesne. */
 function kapiDurumu(): KapiDurumu {
   const dil = aktifDil();
-  const rakam = dil === 'ar' ? aktifRakamSistemi() : 'latn';
+  const rakam = rakamSecilebilir(dil) ? aktifRakamSistemi() : 'latn';
   const urduca = dil === 'ur';
   const nastalik = urduca && nastalikHazir;
+  const ustIsaretli = UST_ISARETLI_DILLER.has(dil);
   const d = durumOnbellek;
-  if (d.rakam !== rakam || d.urduca !== urduca || d.nastalik !== nastalik) durumOnbellek = { rakam, urduca, nastalik };
+  if (d.rakam !== rakam || d.urduca !== urduca || d.nastalik !== nastalik || d.ustIsaretli !== ustIsaretli) {
+    durumOnbellek = { rakam, urduca, nastalik, ustIsaretli };
+  }
   return durumOnbellek;
 }
 
@@ -126,6 +139,15 @@ export function nastalikStili(stil: StyleProp<TextStyle>): TextStyle | null {
   return ek;
 }
 
+/** Üst işaretli yazı eki: sabit satır yüksekliği dar ise genişletir; gerek yoksa `null`. */
+export function ustIsaretliStili(stil: StyleProp<TextStyle>): TextStyle | null {
+  const duz = StyleSheet.flatten(stil) ?? {};
+  if (typeof duz.lineHeight !== 'number') return null;
+  const punto = typeof duz.fontSize === 'number' ? duz.fontSize : VARSAYILAN_PUNTO;
+  const alt = Math.ceil(punto * UST_ISARETLI_SATIR_ORANI);
+  return duz.lineHeight < alt ? { lineHeight: alt } : null;
+}
+
 type KapiProps = TextProps & { ref?: React.Ref<React.ComponentRef<typeof Text>> };
 
 /**
@@ -139,10 +161,10 @@ export const MetinKapisi = React.forwardRef<React.ComponentRef<typeof Text>, Kap
 ) {
   const durum = useSyncExternalStore(abone, kapiDurumu);
   const ortak = { ...kalan, ref, adjustsFontSizeToFit, cssInterop: false };
-  if (rakamKoru || (!durum.urduca && durum.rakam === 'latn')) {
+  if (rakamKoru || (!durum.urduca && !durum.ustIsaretli && durum.rakam === 'latn')) {
     return React.createElement(Text, { ...ortak, style, minimumFontScale }, children);
   }
-  const ek = durum.nastalik ? nastalikStili(style) : null;
+  const ek = durum.nastalik ? nastalikStili(style) : durum.ustIsaretli ? ustIsaretliStili(style) : null;
   const olcek =
     durum.urduca && adjustsFontSizeToFit ? Math.max(minimumFontScale ?? 0, NASTALIK_EN_KUCUK_OLCEK) : minimumFontScale;
   return React.createElement(

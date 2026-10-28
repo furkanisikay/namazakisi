@@ -306,11 +306,136 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "موجودہ نماز پر ادا شدہ کا نشان لگاتا ہے۔"
     )
 
-    /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur; cevrilmemis dil `// ÇEVİRİ: <kod>`
+    // es — İspanyolca (beta); terimler JS sozluk/es (Kıldım "Ya recé", Kılındı "Rezado")
+    static let es = WidgetMetinleri(
+        galeriAdi: "Hora del rezo",
+        galeriAciklama: "La hora del rezo actual, el tiempo que falta para que termine y las horas de rezo de hoy.",
+        veriEski: "Abra la aplicación para actualizar las horas de rezo",
+        konumYok: "Abra la aplicación para establecer su ubicación",
+        kilindiSiradaki: "{ad} rezado · {sonraki} {saat}",
+        adCikis: "{ad} · termina {saat}",
+        siradakiAdSaat: "Siguiente {ad} {saat}",
+        vaktiCikisErisim: "{ad}, termina {saat}",
+        siradakiErisim: "Siguiente {ad}, {saat}",
+        cikisSaat: "Termina {saat}",
+        bitisSaat: "Fin {saat}",
+        kilindiBaslik: "{ad} rezado",
+        siradaki: "Siguiente",
+        siradakiAd: "Siguiente {ad}",
+        kildimErisim: "Ya recé {ad}",
+        gunSatiriKilindi: ", rezado",
+        bitti: "Terminado",
+        vakitCikti: "La hora del rezo terminó",
+        kabulAlt: "{ad} rezado",
+        kontrolAdi: "Ya recé",
+        kontrolAciklama: "Marca como rezado el rezo actual."
+    )
+
+    // nl — Felemenkçe (beta): JS `sozluk/nl` (hitap "u"; "Kıldım"/"Kılındı" = "Gebeden")
+    static let nl = WidgetMetinleri(
+        galeriAdi: "Gebedstijd",
+        galeriAciklama: "De huidige gebedstijd, de resterende tijd tot het einde en de gebedstijden van vandaag.",
+        veriEski: "Open de app om de gebedstijden bij te werken",
+        konumYok: "Open de app om uw locatie in te stellen",
+        kilindiSiradaki: "{ad} gebeden · {sonraki} {saat}",
+        adCikis: "{ad} · eindigt {saat}",
+        siradakiAdSaat: "Hierna {ad} {saat}",
+        vaktiCikisErisim: "{ad}-tijd, eindigt {saat}",
+        siradakiErisim: "Hierna {ad}, {saat}",
+        cikisSaat: "Eindigt {saat}",
+        bitisSaat: "Einde {saat}",
+        kilindiBaslik: "{ad} gebeden",
+        siradaki: "Hierna",
+        siradakiAd: "Hierna {ad}",
+        kildimErisim: "{ad} gebeden",
+        gunSatiriKilindi: ", gebeden",
+        bitti: "Voorbij",
+        vakitCikti: "De gebedstijd is voorbij",
+        kabulAlt: "{ad} gebeden",
+        kontrolAdi: "Gebeden",
+        kontrolAciklama: "Markeert het huidige gebed als gebeden."
+    )
+
+    // sq — Arnavutça (beta): JS `sozluk/sq` ("E fala" / "U fal", hitap "ju")
+    static let sq = WidgetMetinleri(
+        galeriAdi: "Koha e namazit",
+        galeriAciklama: "Vakti aktual, koha e mbetur derisa të dalë dhe kohët e ditës.",
+        veriEski: "Hapni aplikacionin për të përditësuar kohët",
+        konumYok: "Hapni aplikacionin për të caktuar vendndodhjen",
+        kilindiSiradaki: "{ad}: u fal · {sonraki} {saat}",
+        adCikis: "{ad} · del {saat}",
+        siradakiAdSaat: "Në vijim {ad} {saat}",
+        vaktiCikisErisim: "{ad}, del {saat}",
+        siradakiErisim: "Në vijim: {ad}, {saat}",
+        cikisSaat: "Del {saat}",
+        bitisSaat: "Mbaron {saat}",
+        kilindiBaslik: "{ad}: u fal",
+        siradaki: "Në vijim",
+        siradakiAd: "Në vijim: {ad}",
+        kildimErisim: "{ad}: e fala",
+        gunSatiriKilindi: ", u fal",
+        bitti: "Mbaroi",
+        vakitCikti: "Koha doli",
+        kabulAlt: "{ad}: u fal",
+        kontrolAdi: "E fala",
+        kontrolAciklama: "E shënon vaktin aktual si të falur."
+    )
+
+    // hi — Hintçe (beta): JS `sozluk/hi` (Kıldım "नमाज़ पढ़ ली", Kılındı "पढ़ ली गई")
+    static let hi = WidgetMetinleri(
+        galeriAdi: "नमाज़ का वक़्त",
+        galeriAciklama: "मौजूदा नमाज़ का वक़्त, उसके ख़त्म होने में बाक़ी समय और आज की नमाज़ों के वक़्त।",
+        veriEski: "नमाज़ के वक़्त अपडेट करने के लिए ऐप खोलें",
+        konumYok: "अपनी लोकेशन चुनने के लिए ऐप खोलें",
+        kilindiSiradaki: "{ad} पढ़ ली गई · {sonraki} {saat}",
+        adCikis: "{ad} · ख़त्म {saat}",
+        siradakiAdSaat: "अगली {ad} {saat}",
+        vaktiCikisErisim: "{ad} का वक़्त, ख़त्म {saat}",
+        siradakiErisim: "अगली नमाज़ {ad}, {saat}",
+        cikisSaat: "ख़त्म {saat}",
+        bitisSaat: "ख़त्म {saat}",
+        kilindiBaslik: "{ad} पढ़ ली गई",
+        siradaki: "अगली",
+        siradakiAd: "अगली {ad}",
+        kildimErisim: "{ad} की नमाज़ पढ़ ली",
+        gunSatiriKilindi: ", पढ़ ली गई",
+        bitti: "ख़त्म",
+        vakitCikti: "नमाज़ का वक़्त ख़त्म हो गया",
+        kabulAlt: "{ad} की नमाज़ पढ़ ली गई",
+        kontrolAdi: "नमाज़ पढ़ ली",
+        kontrolAciklama: "मौजूदा नमाज़ पर \"पढ़ ली गई\" का निशान लगाता है।"
+    )
+
+    // bn — Bengalce (beta); JS `sozluk/bn` (vakit.eylem: "নামাজ পড়েছি" / "পড়া হয়েছে")
+    static let bn = WidgetMetinleri(
+        galeriAdi: "নামাজের সময়",
+        galeriAciklama: "বর্তমান নামাজের ওয়াক্ত, তা শেষ হতে বাকি সময় ও আজকের নামাজের সময়।",
+        veriEski: "নামাজের সময় হালনাগাদ করতে অ্যাপ খুলুন",
+        konumYok: "আপনার অবস্থান সেট করতে অ্যাপ খুলুন",
+        kilindiSiradaki: "{ad} পড়া হয়েছে · {sonraki} {saat}",
+        adCikis: "{ad} · শেষ {saat}",
+        siradakiAdSaat: "পরবর্তী {ad} {saat}",
+        vaktiCikisErisim: "{ad}-এর ওয়াক্ত, শেষ {saat}",
+        siradakiErisim: "পরবর্তী {ad}, {saat}",
+        cikisSaat: "শেষ {saat}",
+        bitisSaat: "শেষ {saat}",
+        kilindiBaslik: "{ad} পড়া হয়েছে",
+        siradaki: "পরবর্তী",
+        siradakiAd: "পরবর্তী {ad}",
+        kildimErisim: "{ad} নামাজ পড়েছি",
+        gunSatiriKilindi: ", পড়া হয়েছে",
+        bitti: "শেষ",
+        vakitCikti: "নামাজের ওয়াক্ত শেষ",
+        kabulAlt: "{ad} পড়া হয়েছে",
+        kontrolAdi: "নামাজ পড়েছি",
+        kontrolAciklama: "বর্তমান নামাজ পড়া হয়েছে হিসেবে চিহ্নিত করে।"
+    )
+
+    /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn; cevrilmemis dil `// ÇEVİRİ: <kod>`
     /// ile baslayan Ingilizce kopya).
     static let tablo: [String: WidgetMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
-        "ar": ar, "ur": ur,
+        "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
     ]
 
     static func dil(_ kod: String?) -> WidgetMetinleri {
@@ -352,15 +477,16 @@ enum WidgetMetin {
     /// Cizim anindaki rakam kaydi (App Group; JS cozulmus degeri yazar).
     static var rakamKaydi: String? { SiriDeposu.varsayilan.rakamSistemi() }
 
-    /// Gorunen metnin rakamlari: Arapca arayuzde "arab" secildiyse Dogu Arap rakami, aksi halde
-    /// metin AYNEN (Turkce dahil). JS'in yazdigi metin (canli etkinlik basligi, kunye) de
+    /// Gorunen metnin rakamlari: Arapca arayuzde "arab" secildiyse Dogu Arap, Bengalcede "beng"
+    /// secildiyse Bengalce rakam, aksi halde metin AYNEN (Turkce dahil). JS'in yazdigi metin (canli etkinlik basligi, kunye) de
     /// buradan gecer; cekirdek ve yuk Bati rakamiyla kalir.
     static func rakam(_ metin: String) -> String {
-        RakamSistemi.cevir(metin, dogu: RakamSistemi.doguMu(dil: dil, kayitli: rakamKaydi))
+        RakamSistemi.cevir(metin, sistem: RakamSistemi.etkin(dil: dil, kayitli: rakamKaydi))
     }
 
     /// Sistem cizimli sayilarin (`Text(timerInterval:)`, `ProgressView`) yerel ayari: yalniz
-    /// Arapcada "ar@numbers=…"; diger dillerde nil (cihazin ayari, birebir bugunku gibi).
+    /// yerel rakamli dilde "ar@numbers=…" / "bn@numbers=…"; diger dillerde nil (cihazin ayari,
+    /// birebir bugunku gibi).
     static var rakamYerelAyari: Locale? {
         RakamSistemi.yerelAyarKimligi(dil: dil, kayitli: rakamKaydi).map { Locale(identifier: $0) }
     }

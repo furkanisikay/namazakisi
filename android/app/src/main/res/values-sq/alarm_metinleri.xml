@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Alarmi i vërtetë (shqip). "E fala" është i njëjti emër si butoni në njoftim. -->
+<resources>
+  <string name="alarm_baslik">Alarmi i namazit</string>
+  <string name="alarm_kildim">E fala</string>
+  <string name="alarm_kapat">Fikeni</string>
+  <string name="alarm_kanal_aciklamasi">Një alarm i vërtetë që bie në hapat e kujtesës që zgjidhni</string>
+</resources>

@@ -160,7 +160,7 @@ public final class SiriDeposu: @unchecked Sendable {
         }
     }
 
-    /// Arayuzun rakam sistemi ("arab" = Dogu Arap rakami); yoksa Bati rakami. JS etkin dil,
+    /// Arayuzun rakam sistemi ("arab" Dogu Arap, "beng" Bengalce); yoksa Bati rakami. JS etkin dil,
     /// ulke ve kullanici seciminden cozulmus degeri yazar (`core/dil/rakam`).
     public static let rakamSistemiAnahtari = "namazakisi_rakam_sistemi"
 
@@ -180,7 +180,7 @@ public final class SiriDeposu: @unchecked Sendable {
         }
     }
 
-    /// Ham rakam kaydi ("arab" ya da nil); yorumu `RakamSistemi.etkin` yapar (yalniz Arapcada).
+    /// Ham rakam kaydi ("arab", "beng" ya da nil); yorumu `RakamSistemi.etkin` yapar (yalniz dilin kendi sistemi).
     public func rakamSistemi() -> String? {
         kilitli { defaults.string(forKey: Self.rakamSistemiAnahtari) }
     }

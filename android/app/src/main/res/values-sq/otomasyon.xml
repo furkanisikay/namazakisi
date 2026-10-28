@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shtojca për Tasker / MacroDroid / Automate (shqip). Etiketat zgjidhen në aplikacionin pritës sipas gjuhës së PAJISJES. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: E fala</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Gjendja e vaktit</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Ngjarje e vaktit</string>
+
+  <!-- Dritaret e redaktimit të shtojcës (otomasyon/OtomasyonDuzenleActivity) — "ju" i sjellshëm. -->
+  <string name="otomasyon_bilgi_baslik">Ky cilësim shtohet nga një aplikacion automatizimi</string>
+  <string name="otomasyon_bilgi_tarayici">Shfletuesit nuk mund të marrin leje të përhershme. Shtojeni nga lista e shtojcave të një aplikacioni si Tasker, MacroDroid ose Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Shtojeni duke zgjedhur \"Namaz Akışı\" nga lista e shtojcave të një aplikacioni si Tasker, MacroDroid ose Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s është i bllokuar</string>
+  <string name="otomasyon_engelli_mesaj">Më parë e bllokuat këtë aplikacion që të mos shënojë namazet tuaja. Mund ta lejoni në Namaz Akışı te Cilësimet &gt; \"Aplikacionet që shënojnë E fala\".</string>
+  <string name="otomasyon_izin_baslik">Ta përdorni me %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s mund të mësojë kur hyn koha e namazit, kur po del dhe kur jeni në xhami, dhe të ekzekutojë automatizimet tuaja. Vendimin mund ta ndryshoni në Namaz Akışı te Cilësimet &gt; \"Aplikacionet që shënojnë E fala\".</string>
+  <string name="otomasyon_izin_kildim">%1$s mund ta shënojë vaktin aktual si të falur me automatizimin që keni krijuar. Vendimin mund ta ndryshoni në Namaz Akışı te Cilësimet &gt; \"Aplikacionet që shënojnë E fala\".</string>
+  <string name="otomasyon_izin_ver">Lejoni</string>
+  <string name="otomasyon_engelle">Bllokoni</string>
+  <string name="otomasyon_vazgec">Anuloni</string>
+  <string name="otomasyon_tamam">Në rregull</string>
+  <string name="otomasyon_tur_baslik">Kur të ekzekutohet?</string>
+  <string name="otomasyon_ileri">Përpara</string>
+  <string name="otomasyon_vakit_baslik">Cili vakt?</string>
+  <string name="otomasyon_herhangi_vakit">Çdo vakt</string>
+  <string name="otomasyon_kaydet">Ruani</string>
+  <string name="otomasyon_kosul_icinde">Gjatë kohës së një namazi</string>
+  <string name="otomasyon_kosul_cikiyor">Kur koha e namazit po del (edhe %1$d min, Rojtari i namazit aktiv)</string>
+  <string name="otomasyon_kosul_camide">Kur jeni në xhami</string>
+  <string name="otomasyon_olay_girdi">Kur hyn koha e namazit</string>
+  <string name="otomasyon_olay_cikiyor">Kur koha e namazit po del (edhe %1$d min, Rojtari i namazit aktiv)</string>
+  <string name="otomasyon_olay_camide">Kur zbulohet se jeni në xhami</string>
+</resources>
