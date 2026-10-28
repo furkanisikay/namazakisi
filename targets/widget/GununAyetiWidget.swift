@@ -273,18 +273,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rowwad Translation Center، QuranEnc 1.1.3"
     )
 
-    // ÇEVİRİ: ps
+    // ps — Peştuca (beta): meal QuranEnc `pashto_rwwad` (havuzdaki 94:6 birebir), künye mealler.ps
     static let ps = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "د ورځې آیت",
+        galeriAciklama: "یو آیت او د هغه ژباړه چې هره ورځ د سهار په وخت بدلېږي.",
+        etiket: "د ورځې آیت",
+        uygulamayiAcin: "د ورځې د آیت د لیدلو لپاره اپ پرانیزئ",
+        ornekSigmiyor: "د نن آیت په دې اندازه کې نه ځایېږي. د لوستلو لپاره یې کېکاږئ.",
+        ornekAcin: "پرانیزئ",
+        ornekArapcaKaynagi: "عربي: Tanzil",
+        ornekMeal: "بېشکه چې له سختۍ سره آساني هم شته.",
+        ornekKisaKunye: "قرآن 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center، QuranEnc 1.0.1"
     )
 
     // ÇEVİRİ: ckb

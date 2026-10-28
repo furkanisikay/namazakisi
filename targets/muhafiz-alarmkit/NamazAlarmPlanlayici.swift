@@ -128,8 +128,8 @@ enum NamazAlarmCekirdegi {
         "bn": "থামান",
         // fa
         "fa": "توقف",
-        // ÇEVİRİ: ps
-        "ps": "Stop",
+        // ps
+        "ps": "ودروئ",
         // ÇEVİRİ: ckb
         "ckb": "Stop",
         // ÇEVİRİ: ug

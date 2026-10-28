@@ -748,31 +748,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "باز کردن برنامه"
     )
 
-    // ÇEVİRİ: ps
+    // ps — Peştuca (beta); terimler JS sozluk/ps (Kıldım "لمونځ مې وکړ", Kılındı "ادا شو", hitap "تاسو")
     public static let ps = VakitMetinleri(
         dil: "ps",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "سهار", "ogle": "ماسپښین", "ikindi": "مازدیګر", "aksam": "ماښام", "yatsi": "ماسخوتن"],
+        gunes: "لمر ختل",
+        konumYok: "د دې لپاره چې د لمانځه وختونه حساب شي، اپ پرانیزئ او خپل موقعیت برابر کړئ.",
+        veriEski: "د لمانځه وختونه زاړه دي. د تازه کولو لپاره اپ یو ځل پرانیزئ.",
+        girisBugun: "په {saat} بجو",
+        girisYarin: "سبا په {saat} بجو",
+        suAnVakti: "اوس د {ad} وخت دی.",
+        suAnVaktiCikis: "اوس د {ad} وخت دی؛ په {saat} بجو پای ته رسېږي.",
+        siradakiNamaz: "بل لمونځ {ad} دی، {giris}.",
+        isaretlendi: "د {ad} لمونځ د ادا شوي په توګه نښه شو. {dua}.",
+        zatenKilindi: "د {ad} لمونځ دمخه د ادا شوي په توګه نښه شوی.",
+        vakitYok: "اوس د نښه کولو لمونځ نشته.",
+        vakitYokSiradaki: "اوس د نښه کولو لمونځ نشته. بل {ad} دی، {giris}.",
+        onay: "ایا د {ad} لمونځ د ادا شوي په توګه نښه شي؟",
+        vakitDegisti: "د لمانځه وخت بدل شو، نو هېڅ نښه نه شو. بیا هڅه وکړئ.",
+        kabulDuasi: "الله دې قبول کړي",
+        kildim: "لمونځ مې وکړ",
+        kilindi: "ادا شو",
+        kontrolKildim: "{ad} · لمونځ مې وکړ",
+        kontrolKilindi: "{ad} ادا شو",
+        kontrolVakitYok: "د نښه کولو لمونځ نشته",
+        uygulamayiAcin: "اپ پرانیزئ"
     )
 
     // ÇEVİRİ: ckb

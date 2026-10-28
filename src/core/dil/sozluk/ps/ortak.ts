@@ -1,15 +1,14 @@
-// ÇEVİRİ: ps — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'ادامه ورکړئ',
+  vazgecin: 'لغوه یې کړئ',
+  kapatin: 'وتړئ',
+  ayarlariAcin: 'ترتیبات پرانیزئ',
+  simdilikGecin: 'اوس یې پرېږدئ',
+  tekrarDeneyin: 'بیا هڅه وکړئ',
+  evet: 'هو',
+  hayir: 'نه',
+  ayrintilariAcar: 'جزئیات پرانیزي',
   marka: 'Namaz Akışı',
 };

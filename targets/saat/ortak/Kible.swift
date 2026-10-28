@@ -368,17 +368,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: ps
+    // ps — Peştuca (beta): JS `sozluk/ps/kible.ts`
     public static let ps = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "شاته",
+        saga: "ښي لور ته {derece}°",
+        sola: "کیڼ لور ته {derece}°",
+        hizali: "تاسو د قبلې په لور یاست",
+        arkadaErisim: "قبله ستاسو شاته ده",
+        sagdaErisim: "قبله ستاسو ښي لور ته {derece} درجې ده",
+        soldaErisim: "قبله ستاسو کیڼ لور ته {derece} درجې ده",
+        kabede: "تاسو د کعبې سره یاست",
+        mesafe: "{km} کیلومتره",
         binlikAyirici: ","
     )
 
