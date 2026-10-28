@@ -29,11 +29,11 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'ms', yerelAd: 'Bahasa Melayu', yon: 'ltr', ttsDili: 'ms-MY', beta: true, secilebilir: true },
   { kod: 'ar', yerelAd: 'العربية', yon: 'rtl', ttsDili: 'ar-SA', beta: true, secilebilir: true },
   { kod: 'ur', yerelAd: 'اردو', yon: 'rtl', ttsDili: 'ur-PK', beta: true, secilebilir: true },
-  { kod: 'es', yerelAd: 'Español', yon: 'ltr', ttsDili: 'es-ES', beta: true, secilebilir: false },
-  { kod: 'nl', yerelAd: 'Nederlands', yon: 'ltr', ttsDili: 'nl-NL', beta: true, secilebilir: false },
-  { kod: 'sq', yerelAd: 'Shqip', yon: 'ltr', ttsDili: 'sq-AL', beta: true, secilebilir: false },
-  { kod: 'hi', yerelAd: 'हिन्दी', yon: 'ltr', ttsDili: 'hi-IN', beta: true, secilebilir: false },
-  { kod: 'bn', yerelAd: 'বাংলা', yon: 'ltr', ttsDili: 'bn-BD', beta: true, secilebilir: false },
+  { kod: 'es', yerelAd: 'Español', yon: 'ltr', ttsDili: 'es-ES', beta: true, secilebilir: true },
+  { kod: 'nl', yerelAd: 'Nederlands', yon: 'ltr', ttsDili: 'nl-NL', beta: true, secilebilir: true },
+  { kod: 'sq', yerelAd: 'Shqip', yon: 'ltr', ttsDili: 'sq-AL', beta: true, secilebilir: true },
+  { kod: 'hi', yerelAd: 'हिन्दी', yon: 'ltr', ttsDili: 'hi-IN', beta: true, secilebilir: true },
+  { kod: 'bn', yerelAd: 'বাংলা', yon: 'ltr', ttsDili: 'bn-BD', beta: true, secilebilir: true },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';

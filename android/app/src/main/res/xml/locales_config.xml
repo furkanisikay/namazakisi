@@ -15,4 +15,9 @@
   <locale android:name="ms"/>
   <locale android:name="ar"/>
   <locale android:name="ur"/>
+  <locale android:name="es"/>
+  <locale android:name="nl"/>
+  <locale android:name="sq"/>
+  <locale android:name="hi"/>
+  <locale android:name="bn"/>
 </locale-config>
