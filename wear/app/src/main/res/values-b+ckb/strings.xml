@@ -101,7 +101,7 @@
     <string name="tesbihat_sifirlanir">ژمارەکە سفر دەکرێتەوە.</string>
     <string name="tesbihat_geri_al">گەڕاندنەوە</string>
     <string name="tesbihat_geri_al_aciklama">گەڕاندنەوەی دوا ژماردن</string>
-    <string name="tesbihat_yeniden">دووبارە دەستپێکردنەوە</string>
+    <string name="tesbihat_yeniden">سەرلەنوێ</string>
     <string name="tesbihat_yeniden_aciklama">دووبارە دەستپێکردنەوەی تەسبیحات</string>
     <string name="tesbihat_suruyor">تەسبیحات بەردەوامە: %1$s، %2$d / %3$d</string>
     <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
