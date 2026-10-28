@@ -50,21 +50,50 @@ describe('rakamSistemiCoz', () => {
     expect(rakamSecimiGecerliMi('tr', 'latn')).toBe(false);
   });
 
-  it('dil → yerel rakam eşlemesi TEK yerde: yalnız Arapça ve Bengalce', () => {
-    expect([...RAKAM_SECIMLI_DILLER].sort()).toEqual(['ar', 'bn']);
+  it('dil → yerel rakam eşlemesi TEK yerde: Arapça, Bengalce, Farsça, Peştuca, Soranî', () => {
+    expect([...RAKAM_SECIMLI_DILLER].sort()).toEqual(['ar', 'bn', 'ckb', 'fa', 'ps']);
     expect(dilYerelRakami('ar')).toBe('arab');
     expect(dilYerelRakami('bn')).toBe('beng');
+    expect(dilYerelRakami('fa')).toBe('arabext');
+    expect(dilYerelRakami('ps')).toBe('arabext');
+    expect(dilYerelRakami('ckb')).toBe('arab');
     expect(dilYerelRakami('ur')).toBeNull();
+    expect(dilYerelRakami('ug')).toBeNull();
+  });
+
+  it('Farsça ve Peştuca Fars rakamıyla, Soranî Doğu Arap rakamıyla başlar; seçim yalnız kendi sistemi ya da Batı', () => {
+    for (const ulke of [null, 'IR', 'AF', 'TR']) {
+      expect(rakamSistemiCoz('fa', undefined, ulke)).toBe('arabext');
+      expect(rakamSistemiCoz('ps', undefined, ulke)).toBe('arabext');
+      expect(rakamSistemiCoz('ckb', undefined, ulke)).toBe('arab');
+    }
+    expect(rakamSistemiCoz('fa', 'latn', 'IR')).toBe('latn');
+    expect(rakamSistemiCoz('ps', 'latn', 'AF')).toBe('latn');
+    expect(rakamSistemiCoz('ckb', 'latn', 'IQ')).toBe('latn');
+    // Başka sistemin seçimi geçersiz: Farsçada `arab`, Soranîde `arabext`.
+    expect(rakamSecimiGecerliMi('fa', 'arab')).toBe(false);
+    expect(rakamSecimiGecerliMi('ps', 'arab')).toBe(false);
+    expect(rakamSecimiGecerliMi('fa', 'arabext')).toBe(true);
+    expect(rakamSecimiGecerliMi('fa', 'latn')).toBe(true);
+    expect(rakamSecimiGecerliMi('ckb', 'arabext')).toBe(false);
+    expect(rakamSecimiGecerliMi('ckb', 'arab')).toBe(true);
+    expect(rakamSecimiGecerliMi('ar', 'arabext')).toBe(false);
+    expect(rakamSistemiCoz('fa', 'arab', 'IR')).toBe('arabext');
+    expect(rakamSistemiCoz('ckb', 'arabext', 'IQ')).toBe('arab');
+    // Uygurcada yerel rakam yok: seçici yok, her zaman Batı.
+    expect(rakamSecilebilir('ug')).toBe(false);
+    expect(rakamSistemiCoz('ug', 'arabext', 'CN')).toBe('latn');
   });
 
   it('Urduca ve diğer diller her zaman Batı rakamı; seçim ve ülke yok sayılır (seçici yok)', () => {
     expect(rakamSistemiCoz('ur', 'arab', 'PK')).toBe('latn');
     for (const d of DILLER) {
-      if (d.kod === 'ar' || d.kod === 'bn') continue;
+      if (RAKAM_SECIMLI_DILLER.includes(d.kod)) continue;
       expect(rakamSecilebilir(d.kod)).toBe(false);
       expect(dilYerelRakami(d.kod)).toBeNull();
       expect(rakamSistemiCoz(d.kod, 'arab', 'SA')).toBe('latn');
       expect(rakamSistemiCoz(d.kod, 'beng', 'BD')).toBe('latn');
+      expect(rakamSistemiCoz(d.kod, 'arabext', 'IR')).toBe('latn');
       expect(dilRakamVarsayilani(d.kod)).toBe('latn');
     }
     expect(rakamSecilebilir('ar')).toBe(true);
@@ -84,6 +113,11 @@ describe('rakamlariCevir / rakamlariNormallestir', () => {
     expect(rakamlariCevir('আসর 15:42', 'beng')).toBe('আসর ১৫:৪২');
   });
 
+  it('Batı rakamlarını Fars rakamına çevirir (۰ U+06F0)', () => {
+    expect(rakamlariCevir('0123456789', 'arabext')).toBe('۰۱۲۳۴۵۶۷۸۹');
+    expect(rakamlariCevir('12:05', 'arabext')).toBe('۱۲:۰۵');
+  });
+
   it('girişte Doğu Arap ve Farsça/Urduca rakamları Batıya çevirir', () => {
     expect(rakamlariNormallestir('١٩٩٥')).toBe('1995');
     expect(rakamlariNormallestir('۲۰۲۶')).toBe('2026');
@@ -101,6 +135,7 @@ describe('rakamlariCevir / rakamlariNormallestir', () => {
     const ornek = '2026-10-26 18:45';
     expect(rakamlariNormallestir(rakamlariCevir(ornek, 'arab'))).toBe(ornek);
     expect(rakamlariNormallestir(rakamlariCevir(ornek, 'beng'))).toBe(ornek);
+    expect(rakamlariNormallestir(rakamlariCevir(ornek, 'arabext'))).toBe(ornek);
   });
 });
 
@@ -117,6 +152,12 @@ describe('etkin rakam sistemi (aktifDil)', () => {
     expect(aktifRakamSistemi()).toBe('latn');
     aktifDiliKur('bn');
     expect(aktifRakamSistemi()).toBe('beng');
+    aktifDiliKur('fa');
+    expect(aktifRakamSistemi()).toBe('arabext');
+    aktifDiliKur('ckb');
+    expect(aktifRakamSistemi()).toBe('arab');
+    aktifDiliKur('ug');
+    expect(aktifRakamSistemi()).toBe('latn');
   });
 
   it('etkin dile ait olmayan sistem kurulamaz (dilin varsayılanına düşer)', () => {

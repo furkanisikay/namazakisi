@@ -58,7 +58,7 @@ struct TvMetin {
 }
 
 /// `TvMetin` dil tablosu. Yer tutucular `{il}`, `{ad}`, `{sure}`, `{tur}`, `{bitis}`,
-/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn;
+/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug;
 /// cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
 struct TvArayuzMetinleri {
     let sehrinizSecin: String
@@ -304,9 +304,70 @@ struct TvArayuzMetinleri {
         siradakiEk: ", পরবর্তী নামাজ"
     )
 
+    // ÇEVİRİ: fa
+    static let fa = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+    // ÇEVİRİ: ps
+    static let ps = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+    // ÇEVİRİ: ckb
+    static let ckb = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
+    // ÇEVİRİ: ug
+    static let ug = TvArayuzMetinleri(
+        sehrinizSecin: "Select your city",
+        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
+        ilSecErisim: "{il}, select",
+        kalan: "Time left until {ad}",
+        kalanErisim: "Time left until {ad}: {sure}",
+        konumuDegistirin: "Change location",
+        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
+        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
+        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
+        suAnkiEk: ", current prayer",
+        siradakiEk: ", next prayer"
+    )
+
     static let tablo: [String: TvArayuzMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
+        "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
     ]
 
     static func dil(_ kod: String) -> TvArayuzMetinleri { tablo[TvDili.coz(kod)] ?? tr }

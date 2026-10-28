@@ -27,9 +27,13 @@ import { nl } from './sozluk/nl';
 import { sq } from './sozluk/sq';
 import { hi } from './sozluk/hi';
 import { bn } from './sozluk/bn';
+import { fa } from './sozluk/fa';
+import { ps } from './sozluk/ps';
+import { ckb } from './sozluk/ckb';
+import { ug } from './sozluk/ug';
 import { tr, type Sozluk } from './sozluk/tr';
 
-const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn };
+const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug };
 
 let aktif: DilKodu = VARSAYILAN_DIL;
 /** Etkin dilin vakit adı takımı (`null` = sözlüğün kendi adları). Dil değişince sıfırlanır. */
@@ -155,8 +159,10 @@ export function sayili(
 
 // Fransızca binlik ayırıcı dar bölünmez boşluk (U+202F), Rusça ve Arnavutça bölünmez boşluk (U+00A0) — CLDR.
 // Hintçe ve Bengalcede CLDR Hint gruplaması (1,23,456) yerine üçlü gruplama bilinçli (tek kural).
-const BINLIK: Readonly<Record<DilKodu, string>> = { tr: '.', en: ',', id: '.', de: '.', fr: '\u202f', bs: '.', ru: '\u00a0', ms: ',', ar: ',', ur: ',', es: '.', nl: '.', sq: '\u00a0', hi: ',', bn: ',' };
-const ONDALIK: Readonly<Record<DilKodu, string>> = { tr: ',', en: '.', id: ',', de: ',', fr: ',', bs: ',', ru: ',', ms: '.', ar: '.', ur: '.', es: ',', nl: ',', sq: ',', hi: '.', bn: '.' };
+// Farsça, Peştuca ve Soranîde rakam çizimde yerelleşir, ayırıcı Latin kalır (Arapça gibi): ٬ ٫ biçimine en
+// yakın ',' '.' — Peştucanın Batı rakamlı CLDR biçimi ('.' ',') bilinçli izlenmez (varsayılanı Fars rakamı).
+const BINLIK: Readonly<Record<DilKodu, string>> = { tr: '.', en: ',', id: '.', de: '.', fr: '\u202f', bs: '.', ru: '\u00a0', ms: ',', ar: ',', ur: ',', es: '.', nl: '.', sq: '\u00a0', hi: ',', bn: ',', fa: ',', ps: ',', ckb: ',', ug: ',' };
+const ONDALIK: Readonly<Record<DilKodu, string>> = { tr: ',', en: '.', id: ',', de: ',', fr: ',', bs: ',', ru: ',', ms: '.', ar: '.', ur: '.', es: ',', nl: ',', sq: ',', hi: '.', bn: '.', fa: '.', ps: '.', ckb: '.', ug: '.' };
 
 /**
  * Sayıyı etkin dilin ayırıcılarıyla yazar ("12.450" / "12,450"). `Intl`'e bağlı değil

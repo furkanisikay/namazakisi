@@ -262,7 +262,7 @@ class MuhafizAlarmActivity : Activity() {
             metin(yuk.vakitAdi.ifBlank { getString(R.string.alarm_baslik) }.rakamla(sifir), 34f, R.color.alarm_metin, kalin = true),
             LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(20) },
         )
-        // TextClock cihaz yerel ayarıyla yazar; yerel rakamlı arayüzde (Arapça, Bengalce) seçilen rakama eşitlenir.
+        // TextClock cihaz yerel ayarıyla yazar; yerel rakamlı arayüzde (Arapça, Bengalce, Farsça, Peştuca, Soranî) seçilen rakama eşitlenir.
         val saat = RakamliSaat(this, if (Rakam.yerelRakamli(arayuzDili())) sifir else null).apply {
             format24Hour = "HH:mm"
             format12Hour = "HH:mm"

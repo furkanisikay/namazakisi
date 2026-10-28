@@ -5,7 +5,7 @@
  * (widget, bildirim kanalı, saat) üretilmeden dil açılırsa ekranlar yarım çevrili görünür.
  * Gözden geçirilmemiş çeviri `beta: true` taşır (seçicide rozet).
  */
-export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn';
+export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug';
 
 export interface DilTanimi {
   kod: DilKodu;
@@ -34,6 +34,10 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'sq', yerelAd: 'Shqip', yon: 'ltr', ttsDili: 'sq-AL', beta: true, secilebilir: true },
   { kod: 'hi', yerelAd: 'हिन्दी', yon: 'ltr', ttsDili: 'hi-IN', beta: true, secilebilir: true },
   { kod: 'bn', yerelAd: 'বাংলা', yon: 'ltr', ttsDili: 'bn-BD', beta: true, secilebilir: true },
+  { kod: 'fa', yerelAd: 'فارسی', yon: 'rtl', ttsDili: 'fa-IR', beta: true, secilebilir: false },
+  { kod: 'ps', yerelAd: 'پښتو', yon: 'rtl', ttsDili: 'ps-AF', beta: true, secilebilir: false },
+  { kod: 'ckb', yerelAd: 'کوردی', yon: 'rtl', ttsDili: 'ckb-IQ', beta: true, secilebilir: false },
+  { kod: 'ug', yerelAd: 'ئۇيغۇرچە', yon: 'rtl', ttsDili: 'ug-CN', beta: true, secilebilir: false },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';

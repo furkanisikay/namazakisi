@@ -63,7 +63,7 @@ export const UST_ISARETLI_SATIR_ORANI = 1.5;
 /** Ünlü işareti üst çizginin üstüne çıkan yazıyla yazılan diller. */
 const UST_ISARETLI_DILLER: ReadonlySet<DilKodu> = new Set<DilKodu>(['hi', 'bn']);
 
-/** Kapı gereken diller: yerel rakamlı diller (Arapça, Bengalce; `core/dil/rakam`), Urduca (yazı tipi), üst işaretli yazılar. */
+/** Kapı gereken diller: yerel rakamlı diller (Arapça, Bengalce, Farsça, Peştuca, Soranî; `core/dil/rakam`), Urduca (yazı tipi), üst işaretli yazılar. */
 export const kapiGerekli = (dil: DilKodu): boolean =>
   rakamSecilebilir(dil) || dil === 'ur' || UST_ISARETLI_DILLER.has(dil);
 

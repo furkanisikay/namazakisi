@@ -121,11 +121,35 @@ export const VAKIT_TAKIMLARI: Partial<Record<DilKodu, readonly VakitAdiTakimi[]>
       },
     },
   ],
+  fa: [
+    {
+      // Afganistan (Darî) adları; Farsça tek dildir (`fa`), sözlüğün `vakit.*` adları İran Farsçası
+      // temel takımıdır (sahip kararı). Kaynaklar (2026-10-28): sabah صبح, akşam شام, yatsı خفتن
+      // (fa.wikipedia "نماز (اسلام)"; Afganistan köy gözlemi "Namaz-e Sobh / Digar / Shaam /
+      // Khoftan"), ikindi دیگر (en.wikipedia "Asr" tablosu: İran, Afganistan, Tacikistan), güneş
+      // طلوع آفتاب (taqwim.af, afghanistan.af). Öğle پیشین Afganistan kullanımında DOĞRULANMADI →
+      // resmî Afgan takvimlerinin (taqwim.af, afghanistan.af) ve İran temelinin adı ظهر.
+      // Arap harfinde büyük/küçük harf yoktur: üç harita aynı.
+      id: 'afgan',
+      etiket: 'afgan',
+      adlar: {
+        adlar: { imsak: 'صبح', gunes: 'طلوع آفتاب', ogle: 'ظهر', ikindi: 'دیگر', aksam: 'شام', yatsi: 'خفتن' },
+        buyuk: { imsak: 'صبح', gunes: 'طلوع آفتاب', ogle: 'ظهر', ikindi: 'دیگر', aksam: 'شام', yatsi: 'خفتن' },
+        kucuk: { imsak: 'صبح', gunes: 'طلوع آفتاب', ogle: 'ظهر', ikindi: 'دیگر', aksam: 'شام', yatsi: 'خفتن' },
+        imsakVakti: 'صبح',
+        cuma: 'جمعه',
+        cumaKucuk: 'جمعه',
+        gunesDogusu: 'طلوع آفتاب',
+        gunesDogusuKucuk: 'طلوع آفتاب',
+      },
+    },
+  ],
 };
 
 /** Dil başına ülke (ISO 3166-1 alfa-2) → varsayılan takım kimliği. Listede olmayan ülke temel takımı alır. */
 export const ULKE_VARSAYILANLARI: Partial<Record<DilKodu, Readonly<Record<string, string>>>> = {
   fr: { DZ: 'cezayir', TN: 'magrip', MR: 'magrip' },
+  fa: { AF: 'afgan' },
 };
 
 /** Dilin seçilebilir takım kimlikleri (temel dahil). Tek seçenekse seçici gösterilmez. */

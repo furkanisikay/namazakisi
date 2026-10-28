@@ -488,7 +488,7 @@ export function vakitAdlariniAyarla(json: string | null): void {
 }
 
 /**
- * Arayüzün rakam sistemi: yerel rakamın CLDR adı (`'arab'` Doğu Arap, `'beng'` Bengalce) ya da
+ * Arayüzün rakam sistemi: yerel rakamın CLDR adı (`'arab'` Doğu Arap, `'arabext'` Fars, `'beng'` Bengalce) ya da
  * `null` (anahtar silinir, Batı rakamı). JS etkin dil/ülke/seçimden çözülmüş değeri yazar
  * (`core/dil/rakam`); native yüzeyler (widget, kutu, bildirim, alarm, Live Update) kaydı yalnız
  * arayüz dilinin kendi yerel sistemiyle eşleşirse uygular (`cekirdek/Rakam`).

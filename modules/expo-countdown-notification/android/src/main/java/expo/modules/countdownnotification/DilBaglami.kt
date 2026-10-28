@@ -16,7 +16,7 @@ import java.util.Locale
  * (eylem düğmeleri, kanal adları, yedek gövde, sayaç öneki) `getString` ile BU bağlamdan
  * çözülür; bildirim kurucusuna, PendingIntent'e ve RemoteViews'e özgün bağlam verilir.
  */
-// Yerel rakamlı dilde (Arapça, Bengalce) etiket `-u-nu-<sistem>` taşır (`Rakam.yerelEtiketi`): kaynak biçimlemesi seçilen
+// Yerel rakamlı dilde (Arapça, Bengalce, Farsça, Peştuca, Soranî) etiket `-u-nu-<sistem>` taşır (`Rakam.yerelEtiketi`): kaynak biçimlemesi seçilen
 // rakamı izler; diğer dillerde etiket aynen.
 internal fun Context.dildeBaglam(): Context = try {
     val yapi = Configuration(resources.configuration)

@@ -1,18 +1,20 @@
 /**
  * Rakam sistemi — arayüzde rakamların Batı (0123) ya da dilin YEREL rakamıyla yazılması
- * (CLDR numbering system adları: `arab` Doğu Arap ٠١٢٣ U+0660–0669, `beng` Bengalce ০১২৩
- * U+09E6–09EF; ileride Farsça/Peştuca için `arabext` ۰۱۲۳ U+06F0–06F9 aynı tabloya girer).
+ * (CLDR numbering system adları: `arab` Doğu Arap ٠١٢٣ U+0660–0669, `arabext` Fars rakamı
+ * ۰۱۲۳ U+06F0–06F9, `beng` Bengalce ০১২৩ U+09E6–09EF).
  *
  * Sahip kararları:
  *  - 2026-10-26 Arapça: Körfez/Ortadoğu Doğu Arap, Mağrip (DZ, MA, TN, LY, MR, EH) Batı rakamı.
  *  - 2026-10-27 Bengalce: Bangladeş ve Hindistan dahil HER ülkede Bengalce rakam.
+ *  - 2026-10-27 Farsça ve Peştuca Fars rakamıyla (`arabext`) başlar; Soranî Kürtçesi Doğu Arap
+ *    (`arab`, CLDR ckb varsayılanı). Uygurcada yerel rakam yok (Batı, seçici YOK).
  *  - Urducada Batı rakamı (Pakistan uygulamaları gibi; seçici YOK). Diğer diller değişmez.
  * Yerel rakamı olan her dilde kullanıcı Ayarlar > Dil'den değiştirebilir ("Ülkeye göre" /
  * yerel / Batı).
  *
  * TEK EŞLEME `YEREL_RAKAMLAR`: dil → yerel rakam sistemi. Listede olan dil yerel rakamla
  * başlar, seçici gösterir ve metin kapısından geçer; seçim yalnız `latn` ya da o dilin kendi
- * sistemi olabilir (Bengalcede `arab` geçersizdir).
+ * sistemi olabilir (Bengalcede `arab`, Farsçada `arab` geçersizdir; Soranîde `arabext`).
  *
  * Çözüm sırası (`takimCoz` deseni): açık seçim → ülke varsayılanı → dil varsayılanı.
  * Yerel rakamı olmayan dilde seçim ve ülke yok sayılır.
@@ -26,6 +28,7 @@ import type { DilKodu } from './diller';
 /** Batı dışı (yerel) rakam sistemleri — CLDR adı ve sıfırın kod noktası. */
 const SIFIRLAR = {
   arab: 0x0660,
+  arabext: 0x06f0,
   beng: 0x09e6,
 } as const;
 
@@ -34,10 +37,16 @@ export type RakamSistemi = YerelRakamSistemi | 'latn';
 
 /**
  * Dil → yerel rakam sistemi (TEK yer). Listede olmayan dil her zaman Batı rakamı kullanır.
- * Farsça/Peştuca eklenirken: `SIFIRLAR`'a `arabext: 0x06f0`, buraya `fa`/`ps` ve native ikizler
- * (`cekirdek/Rakam.kt` ×2, `VakitKarari.swift > RakamSistemi`).
+ * Yeni dil/sistem: `SIFIRLAR`, buradaki eşleme ve native ikizler (`cekirdek/Rakam.kt` ×2,
+ * `VakitKarari.swift > RakamSistemi`) birlikte değişir.
  */
-const YEREL_RAKAMLAR: Partial<Record<DilKodu, YerelRakamSistemi>> = { ar: 'arab', bn: 'beng' };
+const YEREL_RAKAMLAR: Partial<Record<DilKodu, YerelRakamSistemi>> = {
+  ar: 'arab',
+  bn: 'beng',
+  fa: 'arabext',
+  ps: 'arabext',
+  ckb: 'arab',
+};
 
 /** Rakam seçicisi gösterilen diller (seçim yalnız bunlarda geçerlidir). */
 export const RAKAM_SECIMLI_DILLER: readonly DilKodu[] = Object.keys(YEREL_RAKAMLAR) as DilKodu[];
@@ -65,7 +74,7 @@ export function rakamSecilebilir(dil: DilKodu): boolean {
   return dilYerelRakami(dil) !== null;
 }
 
-/** `secim` bu dil için geçerli mi: Batı ya da dilin KENDİ yerel sistemi (Bengalcede `arab` değil). */
+/** `secim` bu dil için geçerli mi: Batı ya da dilin KENDİ yerel sistemi (Bengalcede, Farsçada `arab` değil). */
 export function rakamSecimiGecerliMi(dil: DilKodu, secim: unknown): secim is RakamSistemi {
   return secim === 'latn' ? rakamSecilebilir(dil) : secim !== null && secim === dilYerelRakami(dil);
 }

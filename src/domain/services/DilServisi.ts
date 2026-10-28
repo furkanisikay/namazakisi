@@ -157,9 +157,9 @@ function vakitAdlariniBildir(): void {
 
 /**
  * Etkin rakam sistemini native'e iter (Android `namazakisi_dil/rakam_sistemi`, iOS App Group
- * `namazakisi_rakam_sistemi`): yerel rakamsa sistemin CLDR adı (`'arab'`, `'beng'`), Batıysa
+ * `namazakisi_rakam_sistemi`): yerel rakamsa sistemin CLDR adı (`'arab'`, `'arabext'`, `'beng'`), Batıysa
  * `null` (anahtar silinir). Native yüzeyler (widget, bildirim, canlı etkinlik, Siri) kaydı yalnız
- * arayüz dilinin KENDİ yerel sistemiyle eşleşirse uygular (Arapçada `arab`, Bengalcede `beng`).
+ * arayüz dilinin KENDİ yerel sistemiyle eşleşirse uygular (Arapçada ve Soranîde `arab`, Farsça ve Peştucada `arabext`, Bengalcede `beng`).
  * Eski native'de fonksiyon yoksa atlanır.
  */
 function rakamSisteminiBildir(): void {

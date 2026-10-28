@@ -26,9 +26,10 @@ class RakamTest {
         assertEquals(Rakam.LATN, Rakam.sistem("ar", "ARAB"))
         assertEquals('0', Rakam.sifir("ar", null))
         // Yerel rakamsız dilde kayıt yok sayılır (dil değişimiyle yazım yarışı olsa bile).
-        for (dil in listOf("tr", "en", "id", "in", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "", null)) {
+        for (dil in listOf("tr", "en", "id", "in", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "", null)) {
             assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "arab"))
             assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "beng"))
+            assertEquals("$dil", Rakam.LATN, Rakam.sistem(dil, "arabext"))
             assertEquals("$dil", '0', Rakam.sifir(dil, "arab"))
             assertEquals("$dil", '0', Rakam.sifir(dil, "beng"))
         }
@@ -53,6 +54,43 @@ class RakamTest {
     }
 
     @Test
+    fun farscaPestucaFarsSoraniDoguArapRakamiVerir() {
+        // Farsça ve Peştuca "arabext" (۰ U+06F0), Soranî "arab" (٠ U+0660); başka sistemin kaydı Batı.
+        assertEquals(Rakam.ARABEXT, Rakam.sistem("fa", "arabext"))
+        assertEquals(Rakam.ARABEXT, Rakam.sistem("fa-IR", " arabext "))
+        assertEquals(Rakam.ARABEXT, Rakam.sistem("ps_AF", "arabext"))
+        assertEquals(Rakam.ARAB, Rakam.sistem("ckb", "arab"))
+        assertEquals(Rakam.ARAB, Rakam.sistem("ckb-IQ", "arab"))
+        assertEquals(Rakam.LATN, Rakam.sistem("fa", "arab"))
+        assertEquals(Rakam.LATN, Rakam.sistem("ps", "beng"))
+        assertEquals(Rakam.LATN, Rakam.sistem("ckb", "arabext"))
+        assertEquals(Rakam.LATN, Rakam.sistem("ar", "arabext"))
+        assertEquals(Rakam.LATN, Rakam.sistem("fa", null))
+        assertEquals(Rakam.LATN, Rakam.sistem("ckb", "latn"))
+        assertEquals(Rakam.ARABEXT_SIFIR, Rakam.sifir("fa", "arabext"))
+        assertEquals(Rakam.ARABEXT_SIFIR, Rakam.sifir("ps", "arabext"))
+        assertEquals(Rakam.DOGU_SIFIR, Rakam.sifir("ckb", "arab"))
+        assertEquals('0', Rakam.sifir("fa", "latn"))
+        assertTrue(Rakam.yerelRakamli("fa") && Rakam.yerelRakamli("ps-AF") && Rakam.yerelRakamli("ckb"))
+        assertFalse(Rakam.yerelRakamli("ug"))
+        assertEquals("۰۱۲۳۴۵۶۷۸۹", rakamlariYerellestir("0123456789", Rakam.ARABEXT_SIFIR))
+        assertEquals("۰۵:۳۰", rakamlariEsitle("٠٥:٣٠", Rakam.ARABEXT_SIFIR))
+        assertEquals("fa-u-nu-arabext", Rakam.yerelEtiketi("fa", "arabext"))
+        assertEquals("fa-u-nu-latn", Rakam.yerelEtiketi("fa", "arab"))
+        assertEquals("ps-u-nu-arabext", Rakam.yerelEtiketi("ps", "arabext"))
+        assertEquals("ckb-u-nu-arab", Rakam.yerelEtiketi("ckb", "arab"))
+        assertEquals("ckb-u-nu-latn", Rakam.yerelEtiketi("ckb", null))
+        assertEquals("ug", Rakam.yerelEtiketi("ug", "arabext"))
+        // JDK CLDR: çıplak fa/ps Fars, ckb Doğu Arap rakamı yazar → Batı seçene uzantı ŞART.
+        assertEquals('۰', DecimalFormatSymbols.getInstance(Locale.forLanguageTag("fa")).zeroDigit)
+        assertEquals('٠', DecimalFormatSymbols.getInstance(Locale.forLanguageTag("ckb")).zeroDigit)
+        assertEquals("۵", String.format(Locale.forLanguageTag("fa-u-nu-arabext"), "%d", 5))
+        assertEquals("5", String.format(Locale.forLanguageTag(Rakam.yerelEtiketi("ps", null)), "%d", 5))
+        assertEquals("٥", String.format(Locale.forLanguageTag(Rakam.yerelEtiketi("ckb", "arab")), "%d", 5))
+        assertEquals("ckb", Locale.forLanguageTag("ckb-u-nu-arab").language)
+    }
+
+    @Test
     fun yerelEtiketiYalnizArapcadaUzantiTasir() {
         assertEquals("ar-u-nu-arab", Rakam.yerelEtiketi("ar", "arab"))
         assertEquals("ar-u-nu-latn", Rakam.yerelEtiketi("ar", null))
@@ -62,7 +100,7 @@ class RakamTest {
         assertEquals("bn-u-nu-latn", Rakam.yerelEtiketi("bn", null))
         assertEquals("bn-u-nu-latn", Rakam.yerelEtiketi("bn", "arab"))
         // Diğer diller AYNEN (Endonezce "id" → Android "in" eşlemesi bozulmasın).
-        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi")) {
+        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug")) {
             assertEquals(dil, Rakam.yerelEtiketi(dil, "arab"))
             assertEquals(dil, Rakam.yerelEtiketi(dil, "beng"))
         }

@@ -6,7 +6,8 @@
  * `targets/siri-kisayollari/<dil>.lproj` ve `locales/<dil>.json` için.
  *
  * Endonezce Android niteleyicisi `in`dir (`values-id` hiç seçilmez: `java.util.Locale` "id"yi
- * "in"e çevirir — lint `LocaleFolder`); `dil_kodu` dizgesi yine "id". Kural:
+ * "in"e çevirir — lint `LocaleFolder`); `dil_kodu` dizgesi yine "id". Soranî Kürtçesi üç harflidir:
+ * niteleyici BCP-47 biçimi `b+ckb` (`values-ckb` aapt'ta geçersiz niteleyicidir). Kural:
  * `docs/ajan/coklu-dil.md > Native dil tabloları`.
  */
 import * as fs from 'fs';
@@ -16,7 +17,7 @@ import { DILLER as TANIMLI_DILLER } from '../core/dil/diller';
 const KOK = path.join(__dirname, '..', '..');
 const DILLER = TANIMLI_DILLER.map((d) => d.kod).filter((k) => k !== 'tr');
 /** Android kaynak niteleyicisi (dil kodundan farklıysa). */
-const NITELEYICI: Record<string, string> = { id: 'in' };
+const NITELEYICI: Record<string, string> = { id: 'in', ckb: 'b+ckb' };
 const nitelik = (dil: string) => NITELEYICI[dil] ?? dil;
 /** Android lint `MissingQuantity` HATA'dır: dilin CLDR çoğul kategorileri `<plurals>`'ta olmalı. */
 const COGUL: Record<string, string[]> = {
@@ -35,6 +36,10 @@ const COGUL: Record<string, string[]> = {
   sq: ['one', 'other'],
   hi: ['one', 'other'],
   bn: ['one', 'other'],
+  fa: ['one', 'other'],
+  ps: ['one', 'other'],
+  ckb: ['one', 'other'],
+  ug: ['one', 'other'],
 };
 
 function resDizinleri(): string[] {
@@ -89,6 +94,10 @@ describe.each(resDizinleri())('%s', (res) => {
 
   it('Endonezce yalnız values-in (values-id hiç seçilmez)', () => {
     expect(fs.existsSync(path.join(KOK, res, 'values-id'))).toBe(false);
+  });
+
+  it('Soranî yalnız values-b+ckb (values-ckb geçersiz niteleyici, derleme düşer)', () => {
+    expect(fs.existsSync(path.join(KOK, res, 'values-ckb'))).toBe(false);
   });
 });
 

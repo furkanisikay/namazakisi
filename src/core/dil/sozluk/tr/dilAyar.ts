@@ -6,7 +6,7 @@ export const dilAyar = {
   baslik: 'Dil · Language',
   aciklama: 'Uygulamanın dilini seçin. Bildirimler ve sesli okuma da bu dilde olur.',
   grup: 'Uygulama dili',
-  dilAdlari: { tr: 'Türkçe', en: 'İngilizce', id: 'Endonezce', de: 'Almanca', fr: 'Fransızca', bs: 'Boşnakça', ru: 'Rusça', ms: 'Malayca', ar: 'Arapça', ur: 'Urduca', es: 'İspanyolca', nl: 'Felemenkçe', sq: 'Arnavutça', hi: 'Hintçe', bn: 'Bengalce' },
+  dilAdlari: { tr: 'Türkçe', en: 'İngilizce', id: 'Endonezce', de: 'Almanca', fr: 'Fransızca', bs: 'Boşnakça', ru: 'Rusça', ms: 'Malayca', ar: 'Arapça', ur: 'Urduca', es: 'İspanyolca', nl: 'Felemenkçe', sq: 'Arnavutça', hi: 'Hintçe', bn: 'Bengalce', fa: 'Farsça', ps: 'Peştuca', ckb: 'Orta Kürtçe', ug: 'Uygurca' },
   cihazDili: 'Cihazın dili',
   cihazDiliKullaniliyor: 'Şu an {ad}',
   cihazDiliDesteklenmiyor: 'Cihazınızın dili henüz yok; Türkçe kullanılıyor.',
@@ -33,7 +33,7 @@ export const dilAyar = {
     aciklama: 'Vakitlerin hangi adlarla yazılacağını seçin.',
     otomatik: 'Ülkenize göre',
     otomatikAciklama: 'Konumunuzun ülkesinde yaygın olan adlar kullanılır.',
-    takimlar: { temel: 'Arapça adlar', diyanetDe: 'Diyanet (Almanca)', turkce: 'Türkçe adlar', magrip: 'Mağrip yazımı', cezayir: 'Cezayir yazımı' },
+    takimlar: { temel: 'Arapça adlar', diyanetDe: 'Diyanet (Almanca)', turkce: 'Türkçe adlar', magrip: 'Mağrip yazımı', cezayir: 'Cezayir yazımı', afgan: 'Afganistan adları' },
   },
   kaydedilemedi: 'Dil kaydedilemedi. Lütfen tekrar deneyin.',
   /** Kurulum sihirbazındaki bağlantı (cihaz dili Türkçe değilse görünür). */
