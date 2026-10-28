@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ckb — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Tasker / MacroDroid / Automate eklentisi (İngilizce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<!-- ckb -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Soranî). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
 <resources>
-  <string name="otomasyon_eylem_etiket">Namaz Akışı: I\'ve prayed</string>
-  <string name="otomasyon_kosul_etiket">Namaz Akışı: Prayer time status</string>
-  <string name="otomasyon_olay_etiket">Namaz Akışı: Prayer time event</string>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: نوێژم کرد</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: دۆخی کاتی نوێژ</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: ڕووداوی کاتی نوێژ</string>
 
-  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
-  <string name="otomasyon_bilgi_baslik">This setting is added from an automation app</string>
-  <string name="otomasyon_bilgi_tarayici">Browsers can\'t get permanent permission. Add it from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_bilgi_eklenti">Add it by choosing \"Namaz Akışı\" from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_engelli_baslik">%1$s is blocked</string>
-  <string name="otomasyon_engelli_mesaj">You blocked this app from marking your prayers before. You can allow it in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_baslik">Use with %1$s?</string>
-  <string name="otomasyon_izin_kosul">%1$s can learn when a prayer time begins, when it\'s ending and when you\'re at a mosque, and run your automations. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_kildim">%1$s can mark the current prayer as prayed with the automation you set up. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_ver">Allow</string>
-  <string name="otomasyon_engelle">Block</string>
-  <string name="otomasyon_vazgec">Cancel</string>
-  <string name="otomasyon_tamam">OK</string>
-  <string name="otomasyon_tur_baslik">When should it run?</string>
-  <string name="otomasyon_ileri">Next</string>
-  <string name="otomasyon_vakit_baslik">Which prayer?</string>
-  <string name="otomasyon_herhangi_vakit">Any prayer time</string>
-  <string name="otomasyon_kaydet">Save</string>
-  <string name="otomasyon_kosul_icinde">While it\'s a prayer time</string>
-  <string name="otomasyon_kosul_cikiyor">While a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_kosul_camide">While at a mosque</string>
-  <string name="otomasyon_olay_girdi">When a prayer time begins</string>
-  <string name="otomasyon_olay_cikiyor">When a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_olay_camide">When you\'re detected at a mosque</string>
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "ئێوە". -->
+  <string name="otomasyon_bilgi_baslik">ئەم ڕێکخستنە لە ئەپێکی ئۆتۆماتیکەوە زیاد دەکرێت</string>
+  <string name="otomasyon_bilgi_tarayici">وێبگەڕەکان ناتوانن ڕێگەپێدانی ھەمیشەیی وەربگرن. لە لیستی پێوەکراوەکانی ئەپێکی وەک Tasker، MacroDroid یان Automate زیادی بکەن.</string>
+  <string name="otomasyon_bilgi_eklenti">بە ھەڵبژاردنی «Namaz Akışı» لە لیستی پێوەکراوەکانی ئەپێکی وەک Tasker، MacroDroid یان Automate زیادی بکەن.</string>
+  <string name="otomasyon_engelli_baslik">%1$s بلۆک کراوە</string>
+  <string name="otomasyon_engelli_mesaj">پێشتر ئەم ئەپەتان لە نیشانەکردنی نوێژەکانتان بلۆک کردووە. دەتوانن لە Namaz Akışı لە ڕێکخستنەکان &gt; «ئەو ئەپانەی نوێژم کرد نیشانە دەکەن» ڕێگەی پێبدەن.</string>
+  <string name="otomasyon_izin_baslik">لەگەڵ %1$s بەکاربھێنرێت؟</string>
+  <string name="otomasyon_izin_kosul">%1$s دەتوانێت بزانێت کاتی نوێژ کەی دێت، کەی دەردەچێت و کەی لە مزگەوتن، و ئۆتۆماتیکەکانتان جێبەجێ بکات. دەتوانن بڕیارەکەتان لە Namaz Akışı لە ڕێکخستنەکان &gt; «ئەو ئەپانەی نوێژم کرد نیشانە دەکەن» بگۆڕن.</string>
+  <string name="otomasyon_izin_kildim">%1$s دەتوانێت بەو ئۆتۆماتیکەی دانتان ناوە نوێژی ئێستا وەک کراو نیشانە بکات. دەتوانن بڕیارەکەتان لە Namaz Akışı لە ڕێکخستنەکان &gt; «ئەو ئەپانەی نوێژم کرد نیشانە دەکەن» بگۆڕن.</string>
+  <string name="otomasyon_izin_ver">ڕێگەدان</string>
+  <string name="otomasyon_engelle">بلۆککردن</string>
+  <string name="otomasyon_vazgec">پاشگەزبوونەوە</string>
+  <string name="otomasyon_tamam">باشە</string>
+  <string name="otomasyon_tur_baslik">کەی کار بکات؟</string>
+  <string name="otomasyon_ileri">دواتر</string>
+  <string name="otomasyon_vakit_baslik">کام نوێژ؟</string>
+  <string name="otomasyon_herhangi_vakit">ھەر کاتێکی نوێژ</string>
+  <string name="otomasyon_kaydet">پاشەکەوتکردن</string>
+  <string name="otomasyon_kosul_icinde">تا کاتی نوێژە</string>
+  <string name="otomasyon_kosul_cikiyor">تا کاتی نوێژ خەریکە دەردەچێت (%1$d خولەک ماوە، پارێزەری نوێژ چالاکە)</string>
+  <string name="otomasyon_kosul_camide">تا لە مزگەوتن</string>
+  <string name="otomasyon_olay_girdi">کاتێک کاتی نوێژ دێت</string>
+  <string name="otomasyon_olay_cikiyor">کاتێک کاتی نوێژ خەریکە دەردەچێت (%1$d خولەک ماوە، پارێزەری نوێژ چالاکە)</string>
+  <string name="otomasyon_olay_camide">کاتێک دەزانرێت لە مزگەوتن</string>
 </resources>

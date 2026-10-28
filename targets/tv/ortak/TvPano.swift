@@ -308,18 +308,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: ckb
+    // ckb
     public static let ckb = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "بەیانی", "gunes": "خۆرھەڵاتن", "ogle": "نیوەڕۆ", "ikindi": "عەسر", "aksam": "ئێوارە", "yatsi": "خەوتنان"],
+        cuma: "ھەینی",
+        aylar: ["کانوونی دووەم", "شوبات", "ئازار", "نیسان", "ئایار", "حوزەیران", "تەمووز", "ئاب", "ئەیلوول", "تشرینی یەکەم", "تشرینی دووەم", "کانوونی یەکەم"],
+        gunler: ["دووشەممە", "سێشەممە", "چوارشەممە", "پێنجشەممە", "ھەینی", "شەممە", "یەکشەممە"],
+        tarih: "{gunAdi}، {gun}ی {ay}ی {yil}",
+        kerahatAdlari: ["suruk": "خۆرھەڵاتن", "istiva": "ناوەڕاستی ئاسمان", "gurub": "خۆرئاوابوون"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "نوێژکردن مەکروھە تا خۆر باش بەرز دەبێتەوە.",
+            "istiva": "نوێژکردن مەکروھە تا خۆر لە ناوەڕاستی ئاسماندایە.",
+            "gurub": "نوێژکردن مەکروھە تا خۆر ئاوا دەبێت.",
         ]
     )
 

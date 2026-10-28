@@ -130,8 +130,8 @@ enum NamazAlarmCekirdegi {
         "fa": "Stop",
         // ÇEVİRİ: ps
         "ps": "Stop",
-        // ÇEVİRİ: ckb
-        "ckb": "Stop",
+        // ckb
+        "ckb": "وەستاندن",
         // ÇEVİRİ: ug
         "ug": "Stop",
     ]

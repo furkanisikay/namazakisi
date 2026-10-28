@@ -1,58 +1,58 @@
-/* ÇEVİRİ: ckb */
+/* ckb */
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
-// Ingilizce terimler: src/core/dil/sozluk/en + docs/ajan/coklu-dil.md terim sozlugu.
+// Sorani terimler: src/core/dil/sozluk/ckb (vakit.ts bas yorumu).
 
 // NamazIntentleri.swift
-"Sıradaki namaz" = "Next prayer";
-"Sıradaki namaz vaktini ve giriş saatini söyler." = "Tells you the next prayer and the time it begins.";
-"Şu anki vakti kıldım" = "I've prayed the current prayer";
-"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Marks the current prayer as prayed. The record is added when you open the app.";
-"Onay iste" = "Ask for confirmation";
-"Kıbleyi aç" = "Open Qibla";
-"Uygulamayı Kıble pusulasıyla açar." = "Opens the app with the Qibla compass.";
+"Sıradaki namaz" = "نوێژی داھاتوو";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "نوێژی داھاتوو و کاتی دەستپێکردنەکەی دەڵێت.";
+"Şu anki vakti kıldım" = "نوێژی ئێستام کرد";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "نوێژی ئێستا وەک کراو نیشانە دەکات. تۆمارەکە کاتێک ئەپەکە دەکەنەوە زیاد دەکرێت.";
+"Onay iste" = "داوای پشتڕاستکردنەوە بکە";
+"Kıbleyi aç" = "قیبلە بکەرەوە";
+"Uygulamayı Kıble pusulasıyla açar." = "ئەپەکە بە قیبلەنماوە دەکاتەوە.";
 
 // NamazKisayollari.swift (shortTitle)
-"Vakti kıldım" = "I've prayed";
-"Kıble" = "Qibla";
+"Vakti kıldım" = "نوێژم کرد";
+"Kıble" = "قیبلە";
 
 // NamazOtomasyonIntentleri.swift
-"Sıradaki vaktin adı" = "Next prayer name";
-"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Gives the name of the next prayer. You can use it as a condition in Shortcuts.";
-"Sıradaki vakte kalan dakika" = "Minutes until next prayer";
-"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Gives how many minutes are left until the next prayer begins. Returns -1 if there's no information.";
-"Şu anki vakit kılındı mı?" = "Is the current prayer marked as prayed?";
-"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Gives yes if the current prayer is marked as prayed. Gives no if there's no prayer to mark.";
+"Sıradaki vaktin adı" = "ناوی نوێژی داھاتوو";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "ناوی نوێژی داھاتوو دەدات. دەتوانن لە Shortcuts وەک مەرج بەکاری بھێنن.";
+"Sıradaki vakte kalan dakika" = "خولەکی ماوە تا نوێژی داھاتوو";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "دەڵێت چەند خولەک ماوە تا کاتی نوێژی داھاتوو دێت. ئەگەر زانیاری نەبێت -1 دەگەڕێنێتەوە.";
+"Şu anki vakit kılındı mı?" = "ئایا نوێژی ئێستا وەک کراو نیشانە کراوە؟";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "ئەگەر نوێژی ئێستا وەک کراو نیشانە کرابێت بەڵێ دەدات. ئەگەر ھیچ نوێژێک بۆ کردن نەبێت نەخێر دەدات.";
 
 // NamazSessizlikIntentleri.swift
-"Namaz sessizliği" = "Prayer silence";
-"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Returns true during the first minutes after a prayer time begins. Used in Shortcuts to turn on a Focus.";
-"Süre (dakika)" = "Duration (minutes)";
-"Vakit girdikten sonraki ${dakika} dakika" = "The ${dakika} minutes after a prayer time begins";
-"Namaz sessizliğinin bitişi" = "End of prayer silence";
-"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Gives the time the silence ends. Gives the current time if there's no silence now.";
-"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "End of the ${dakika} minutes after a prayer time begins";
+"Namaz sessizliği" = "بێدەنگیی نوێژ";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "لە یەکەم خولەکەکانی دوای ھاتنی کاتی نوێژدا ڕاست دەگەڕێنێتەوە. لە Shortcuts بۆ چالاککردنی Focus بەکاردێت.";
+"Süre (dakika)" = "ماوە (خولەک)";
+"Vakit girdikten sonraki ${dakika} dakika" = "ئەو ${dakika} خولەکەی دوای ھاتنی کاتی نوێژ";
+"Namaz sessizliğinin bitişi" = "کۆتایی بێدەنگیی نوێژ";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "ئەو کاتە دەدات کە بێدەنگییەکە کۆتایی دێت. ئەگەر ئێستا بێدەنگی نەبێت، کاتی ئێستا دەدات.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "کۆتایی ئەو ${dakika} خولەکەی دوای ھاتنی کاتی نوێژ";
 
 // NamazOdakFiltresi.swift
-"Namaz hatırlatmaları" = "Prayer reminders";
-"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "While this Focus is on, prayer reminders arrive without sound and without lighting up the screen.";
-"Hatırlatmaları sessiz ver" = "Deliver reminders quietly";
-"Hatırlatmalar sessiz gelir" = "Reminders arrive quietly";
-"Hatırlatmalar her zamanki gibi" = "Reminders as usual";
+"Namaz hatırlatmaları" = "بیرخستنەوەکانی نوێژ";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "تا ئەم Focus ە چالاکە، بیرخستنەوەکانی نوێژ بەبێ دەنگ و بەبێ ڕووناککردنەوەی شاشە دێن.";
+"Hatırlatmaları sessiz ver" = "بیرخستنەوەکان بە بێدەنگی بگەیەنە";
+"Hatırlatmalar sessiz gelir" = "بیرخستنەوەکان بە بێدەنگی دێن";
+"Hatırlatmalar her zamanki gibi" = "بیرخستنەوەکان وەک ھەمیشە";
 
 // targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
-"Widget'taki vakti kılındı olarak işaretler." = "Marks the prayer shown in the widget as prayed.";
-"Tarih" = "Date";
-"Vakit" = "Prayer";
+"Widget'taki vakti kılındı olarak işaretler." = "ئەو نوێژەی لە ویجێتەکەدا پیشان دراوە وەک کراو نیشانە دەکات.";
+"Tarih" = "بەروار";
+"Vakit" = "نوێژ";
 
 // targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
-"Namaz alarmını durdur" = "Stop prayer alarm";
-"Namazı kıldım" = "I've prayed";
-"Alarm" = "Alarm";
+"Namaz alarmını durdur" = "وەستاندنی ئاگادارکەرەوەی نوێژ";
+"Namazı kıldım" = "نوێژم کرد";
+"Alarm" = "ئاگادارکەرەوە";
 
 // GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
-"Günün ayeti görseli" = "Verse of the day image";
-"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Gives today's verse as an image the size of your screen. You can use it with the Set Wallpaper step in Shortcuts.";
-"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Open the app once to prepare the verse of the day.";
-"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "The image couldn't be prepared. Try again in a moment.";
+"Günün ayeti görseli" = "وێنەی ئایەتی ڕۆژ";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "ئایەتی ئەمڕۆ وەک وێنەیەک بە قەبارەی شاشەکەتان دەدات. دەتوانن لە Shortcuts لەگەڵ ھەنگاوی Set Wallpaper بەکاری بھێنن.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "بۆ ئامادەکردنی ئایەتی ڕۆژ یەک جار ئەپەکە بکەنەوە.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "وێنەکە ئامادە نەکرا. کەمێکی تر دووبارە ھەوڵ بدەنەوە.";

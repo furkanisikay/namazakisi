@@ -73,8 +73,8 @@ object CanliGuncellemeKurallari {
         "fa" to ("h" to "min"),
         // ÇEVİRİ: ps
         "ps" to ("h" to "min"),
-        // ÇEVİRİ: ckb
-        "ckb" to ("h" to "min"),
+        // ckb
+        "ckb" to ("ک" to "خ"),
         // ÇEVİRİ: ug
         "ug" to ("h" to "min"),
     )

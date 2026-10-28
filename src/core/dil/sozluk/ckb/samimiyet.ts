@@ -1,35 +1,36 @@
-// ÇEVİRİ: ckb — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Soranî konuşan Müslümanların namaz sonrası ve bayram/özel gün kalıpları (çeviri değil):
+ * "خوا قبوڵی بکات" (Allah kabul etsin, baskın kalıp, iki yuva), "قبوڵ بێت" (kabul olsun),
+ * "خوای گەورە قبوڵی بکات" (Yüce Allah kabul etsin). Selamlar "… پیرۆز بێت" kalıbıyla
+ * (جەژنتان پیرۆز بێت, ڕەمەزانتان پیرۆز بێت); sabah/gece "…تان باش". Kandil ve hicrî
+ * yılbaşı selamı ülke başınadır (`selam.ts`; IQ listede yok), metinler tip bütünlüğü içindir.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'پیرۆز بێت.',
+  kabulDualari: ['خوا قبوڵی بکات', 'قبوڵ بێت', 'خوا قبوڵی بکات', 'خوای گەورە قبوڵی بکات'],
+  kabulDuasi: 'خوا قبوڵی بکات',
+  ekSabah: 'بەیانیتان باش',
+  ekYatsi: 'شەوتان باش',
+  tamGunAna: 'خوا قبوڵی بکات',
+  tamGunAlt: 'ئەمڕۆ ھەر پێنج نوێژەکەتان تەواو کرد.',
+  kazaKabul: 'یەک قەزای {vakit} لە دەفتەرەکەتان کەم کرایەوە. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'شەوی ڕەغائیبتان پیرۆز بێت',
+    mirac: 'شەوی ئیسرا و میعراجتان پیرۆز بێت',
+    berat: 'شەوی بەراتتان پیرۆز بێت',
+    mevlid: 'یادی لەدایکبوونی پێغەمبەرتان پیرۆز بێت',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'پارشێوتان پیرۆز بێت',
+    bayram: 'جەژنتان پیرۆز بێت',
+    iftar: 'بەربانگتان پیرۆز بێت',
+    kadir: 'شەوی قەدرتان پیرۆز بێت',
+    arefe: 'ڕۆژی عەرەفەتان پیرۆز بێت',
+    hicriYilbasi: 'ساڵی نوێی کۆچیتان پیرۆز بێت',
+    cuma: 'ھەینیتان پیرۆز بێت',
+    ramazan: 'ڕەمەزانتان پیرۆز بێت',
+    sabah: 'بەیانیتان باش',
   },
 };

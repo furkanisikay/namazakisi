@@ -287,18 +287,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: ckb
+    // ckb — meal Muhammad Salih Bamoki (QuranEnc `kurdish_bamoki`), `gununAyetiHavuzu.ts` 94:6 birebir.
     static let ckb = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "ئایەتی ڕۆژ",
+        galeriAciklama: "ئایەتێک و وەرگێڕانەکەی کە ھەموو ڕۆژێک لە کاتی بەیانیدا دەگۆڕێت.",
+        etiket: "ئایەتی ڕۆژ",
+        uygulamayiAcin: "بۆ بینینی ئایەتی ڕۆژ ئەپەکە بکەنەوە",
+        ornekSigmiyor: "ئایەتی ئەمڕۆ لەم قەبارەیەدا جێی نابێتەوە. بۆ خوێندنەوە دەستی لێ بدەن.",
+        ornekAcin: "کردنەوە",
+        ornekArapcaKaynagi: "عەرەبی: Tanzil",
+        ornekMeal: "بێگومان لەگەڵ ھەموو تەنگانەیەکدا خۆشی وئاسانی دێت",
+        ornekKisaKunye: "قورئان 94:6",
+        ornekMealKaynagi: "Muhammad Salih Bamoki، QuranEnc 1.1.1"
     )
 
     // ÇEVİRİ: ug

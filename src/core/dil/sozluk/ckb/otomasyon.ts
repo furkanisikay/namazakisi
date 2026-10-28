@@ -1,10 +1,10 @@
-// ÇEVİRİ: ckb — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Anahtar kelime başlığın önündedir (izafe: "کاتی {ad}"), Samsung Rutinler "içerir" eşleşmesi için. */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'دەستپێکی کاتی',
+  vakitGirdiBasligi: 'دەستپێکی کاتی {ad}',
+  herhangiVakit: 'کاتێک کاتی ھەر نوێژێک دەست پێدەکات',
+  yalnizVakit: 'تەنیا کاتێک کاتی {ad} دەست پێدەکات',
+  camide: 'کاتێک دەزانرێت لە مزگەوتن (کاتێک «لە مزگەوتم» چالاکە)',
 };

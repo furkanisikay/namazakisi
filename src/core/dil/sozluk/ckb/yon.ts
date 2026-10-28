@@ -1,10 +1,9 @@
-// ÇEVİRİ: ckb — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'ئاراستەی نووسین دەگۆڕێت',
+  aciklama: 'ئەو زمانەی ھەڵتانبژارد بە ئاراستەیەکی جیاواز دەنووسرێت. بۆ ئەوەی شاشەکان بگۆڕێن، پێویستە ئەپەکە دووبارە دەست پێبکاتەوە.',
+  simdiBaslat: 'ئێستا دەستپێکردنەوە',
+  sonra: 'دواتر',
+  bekliyor: 'ئاراستەی نووسین کاتێک دەگۆڕێت کە ئەپەکە دووبارە دەست پێدەکاتەوە.',
 };

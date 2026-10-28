@@ -1,61 +1,60 @@
-// ÇEVİRİ: ckb — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Soranîde: "تۆ" + kısa emir, "ھەستە بۆ نوێژ" (namaza dur); secde sözü
+ * YAZILMAZ. Başlıkta dakika "خ" (خولەک): "خەوتنان · 120 خ" ilk 16 karaktere sığar.
+ * Arap harfinde büyük harf yok: Türkçedeki BÜYÜK başlıklar düz yazılır, "!" kullanılmaz.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} خ تێپەڕی · کاتی نوێژە ⏰',
+    giris2: '{ad} · {dk} خ تێپەڕی · نوێژەکەت دوا مەخە ⚠️',
+    giris3: '{ad} · {dk} خ تێپەڕی · نوێژەکەت چاوەڕێتە 🔥',
+    giris4: '{ad} · {dk} خ تێپەڕی · ھەستە بۆ نوێژ 🚨',
+    erken3: '{ad} · {dk} خ ماوە · نوێژەکەت چاوەڕێتە 🔥',
+    erken4: '{ad} · {dk} خ ماوە · ھەستە بۆ نوێژ 🚨',
+    cikis1: '{ad} · {dk} خ ماوە ⏰',
+    cikis2: '{ad} · {dk} خ · کات کەم دەبێتەوە ⚠️',
+    cikis3: '{ad} · {dk} خ · کات لە دەست دەچێت 🔥',
+    cikis4: '{ad} · {dk} خ · کات دەردەچێت 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['کاتی نوێژ ھات؛ تا دەرفەتت ھەیە نوێژ بکە.', 'تا کات لە بەرژەوەندی تۆدایە نوێژ بکە، بۆ دواتری مەھێڵەوە.'],
+    s2: ['ھەتا دوای بخەیت قورستر دەبێت؛ نوێژەکەت بۆ کۆتایی مەھێڵەوە.', 'کات تێدەپەڕێت — ئێستا نوێژەکەت بکە.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'ھەتا نوێژ دوا بخەیت لە لەدەستدانی نزیکتر دەبیتەوە؛ ئێستا نوێژ بکە.',
+      'مەڵێ «دواتر دەیکەم»؛ ئێستا دەتوانیت نوێژ بکەیت.',
+      'لەبری ئەوەی چەند خولەکی تر بڵێیت «خۆزگە»، ئێستا ھەستە.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['ئیتر نوێژەکەت دوا مەخە — ئێستا ھەستە بۆ نوێژ.', 'ئەوەی بەدەستتەوەیە دایبنێ و ھەستە بۆ نوێژ.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'کات خەریکە کەم دەبێتەوە؛ تا دەرفەتت ھەیە نوێژ بکە.',
+    s2: 'نوێژەکەت بۆ کۆتایی مەھێڵەوە؛ ئێستا کاتێکی گونجاوە بۆ نوێژکردن.',
+    s3: 'کات خەریکە تەواو دەبێت؛ ئێستاش دەتوانیت نوێژ بکەیت.',
+    s4: 'ئەگەر نوێژت کردووە «نوێژم کرد» دابگرە؛ ئەگەر نا، ئێستا ھەستە بۆ نوێژ.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'نوێژەکەت دوا مەخە. ئێستا ھەستە بۆ نوێژ. ({dk} خولەک تێپەڕی)',
+    giris2: 'کات تێدەپەڕێت؛ نوێژەکەت بۆ کۆتایی مەھێڵەوە. ({dk} خولەک تێپەڕی)',
+    giris1: cogul({ one: '{n} خولەک بەسەر ھاتنی کاتی نوێژدا تێپەڕیوە.', other: '{n} خولەک بەسەر ھاتنی کاتی نوێژدا تێپەڕیوە.' }),
+    erken4: 'نوێژەکەت دوا مەخە؛ ئێستا ھەستە بۆ نوێژ. ({dk} خولەک ماوە)',
+    cikis4: 'کات دەردەچێت. ئێستا ھەستە بۆ نوێژ. ({dk} خولەک ماوە)',
+    cikis2: 'کات کەم دەبێتەوە؛ نوێژەکەت بۆ کۆتایی مەھێڵەوە. ({dk} خولەک ماوە)',
+    cikis1: cogul({ one: '{n} خولەک ماوە تا کاتی نوێژ دەردەچێت.', other: '{n} خولەک ماوە تا کاتی نوێژ دەردەچێت.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · پێش خەوتن نوێژ بکە ⏰',
+    govde: '{dk} خولەک ماوە بۆ بێدەنگیی شەو؛ پێش خەوتن نوێژی خەوتنان بکە.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'کات خەریکە کەم دەبێتەوە؛ تا دەرفەتت ھەیە نوێژ بکە.',
+    sonaBirakma: 'نوێژەکەت بۆ کۆتایی مەھێڵەوە؛ ئێستا کاتێکی گونجاوە بۆ نوێژکردن.',
+    fisilti: 'مەڵێ «دواتر دەیکەم»؛ کات خەریکە تەواو دەبێت، ئێستا دەتوانیت نوێژ بکەیت.',
+    omur: 'کات تێدەپەڕێت؛ ھێشتا دەرفەتت ھەیە ئەم نوێژە لە کاتی خۆیدا بکەیت.',
+    keske: 'لەبری ئەوەی چەند خولەکی تر بڵێیت «خۆزگە»، ئێستا ھەستە.',
+    namazaDur: 'ئەگەر نوێژت کردووە «نوێژم کرد» دابگرە؛ ئەگەر نا، ئێستا ھەستە بۆ نوێژ.',
+    sonDakika: 'دوا خولەکەکان. ئەوەی بەدەستتەوەیە دایبنێ و ھەستە بۆ نوێژ.',
   },
 };
