@@ -71,8 +71,8 @@ object CanliGuncellemeKurallari {
         "bn" to ("ঘ" to "মি"),
         // ÇEVİRİ: fa
         "fa" to ("h" to "min"),
-        // ÇEVİRİ: ps
-        "ps" to ("h" to "min"),
+        // ps
+        "ps" to ("ساعته" to "دقیقې"),
         // ÇEVİRİ: ckb
         "ckb" to ("h" to "min"),
         // ÇEVİRİ: ug

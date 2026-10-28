@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ps — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- Gerçek alarm (Peştuca). "لمونځ مې وکړ" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">د لمانځه الارم</string>
+  <string name="alarm_kildim">لمونځ مې وکړ</string>
+  <string name="alarm_kapat">بند یې کړئ</string>
+  <string name="alarm_kanal_aciklamasi">ریښتینی الارم چې ستاسو د ټاکلو یادونو په ګامونو کې زنګ وهي</string>
 </resources>

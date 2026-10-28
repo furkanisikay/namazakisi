@@ -456,29 +456,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: ps
+    // ps — Peştuca (beta); terimler JS sozluk/ps ("لمونځ مې وکړ" / "ادا شو")
     static let ps = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "د لمانځه وخت",
+        galeriAciklama: "اوسنی وخت، د هغه تر پایه پاتې وخت او د نن د لمانځه وختونه.",
+        veriEski: "د لمانځه د وختونو د تازه کولو لپاره اپ پرانیزئ",
+        konumYok: "د موقعیت د برابرولو لپاره اپ پرانیزئ",
+        kilindiSiradaki: "{ad} ادا شو · {sonraki} {saat}",
+        adCikis: "{ad} · پای {saat}",
+        siradakiAdSaat: "بل {ad} {saat}",
+        vaktiCikisErisim: "د {ad} وخت، پای {saat}",
+        siradakiErisim: "بل {ad}، {saat}",
+        cikisSaat: "پای {saat}",
+        bitisSaat: "پای {saat}",
+        kilindiBaslik: "{ad} ادا شو",
+        siradaki: "بل",
+        siradakiAd: "بل {ad}",
+        kildimErisim: "د {ad} لمونځ مې وکړ",
+        gunSatiriKilindi: "، ادا شو",
+        bitti: "پای ته ورسېد",
+        vakitCikti: "د لمانځه وخت ووت",
+        kabulAlt: "{ad} ادا شو",
+        kontrolAdi: "لمونځ مې وکړ",
+        kontrolAciklama: "اوسنی لمونځ د ادا شوي په توګه نښه کوي."
     )
 
     // ÇEVİRİ: ckb

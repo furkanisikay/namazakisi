@@ -241,11 +241,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: ps
+    // ps — Peştuca (beta): JS sozluk/ps (sure.dakika one/other)
     static let ps = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} په {n} دقیقه کې پیلېږي.", "other": "{ad} په {n} دقیقو کې پیلېږي."],
+        evetKilindi: "هو، د ادا شوي په توګه نښه شوی.",
+        hayirKilinmadi: "نه، لا نښه شوی نه دی."
     )
 
     // ÇEVİRİ: ckb

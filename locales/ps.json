@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "ستاسو موقعیت کارول کېږي تر څو د لمانځه وختونه ستاسو د ځای لپاره په سمه توګه حساب شي. ستاسو موقعیت ستاسو په وسیله کې پاتې کېږي.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "ستاسو موقعیت کارول کېږي تر څو د لمانځه وختونه ستاسو د ځای لپاره په سمه توګه حساب شي او، که «په جومات کې یم» فعال وي، جومات ته په ننوتو د لمانځه حالت فعال شي. ستاسو موقعیت ستاسو په وسیله کې پاتې کېږي.",
+  "NSLocationAlwaysUsageDescription": "ستاسو موقعیت کارول کېږي تر څو د ښار په بدلون د لمانځه وختونه پخپله تازه شي او، که «په جومات کې یم» فعال وي، جومات ته په ننوتو د لمانځه حالت فعال شي. ستاسو موقعیت ستاسو په وسیله کې پاتې کېږي.",
+  "NSCameraUsageDescription": "ستاسو کمره کارول کېږي تر څو د قبلې لوری د کمرې پر لید وښيي او ستاسو په TV کې د جوړه کولو کوډ سکن کړي. انځورونه نه ساتل کېږي او هېڅکله ستاسو له وسیلې نه وځي.",
+  "NSCalendarsUsageDescription": "کلیز ته لاسرسی کارول کېږي تر څو د لمانځه وختونه ستاسو کلیز ته اضافه شي او، که یې فعال کړئ، وکتل شي چې ستاسو په کلیز کې پېښې له لمانځه وخت سره ټکر کوي که نه. ستاسو د کلیز معلومات ستاسو په وسیله کې پاتې کېږي.",
+  "NSCalendarsFullAccessUsageDescription": "کلیز ته لاسرسی کارول کېږي تر څو د لمانځه وختونه ستاسو کلیز ته اضافه شي او، که یې فعال کړئ، وکتل شي چې ستاسو په کلیز کې پېښې له لمانځه وخت سره ټکر کوي که نه. ستاسو د کلیز معلومات ستاسو په وسیله کې پاتې کېږي.",
+  "NSLocalNetworkUsageDescription": "اپ ستاسو په محلي شبکه کې له TV سره وصلېږي تر څو ستاسو د لمانځه وختونه او نښه کړي لمونځونه ورته ولېږي. معلومات کوډ شوي دي او یوازې د دوو وسیلو ترمنځ ځي.",
+  "NSAlarmKitUsageDescription": "د یادونې هغه ګامونه چې «ریښتینی الارم» پکې ټاکئ، د الارم په توګه جوړېږي، تر څو هغه وخت هم واورېدل شي چې ستاسو موبایل چوپ وي یا Focus فعال وي.",
+  "\"Vakti kıldım\"": "لمونځ مې وکړ",
+  "\"Kıble\"": "قبله"
 }

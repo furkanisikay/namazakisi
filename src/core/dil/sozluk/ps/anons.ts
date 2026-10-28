@@ -1,63 +1,66 @@
-// ÇEVİRİ: ps — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
-/** İbadete çağrı kaydı: doğrudan, kısa; "prostrate" yok. Sıra Türkçe şablonlarla BİREBİR eşleşir. */
+/**
+ * İbadete çağrı kaydı Peştucada: "ته" + emir, kısa ve doğrudan; secde emri yok ("لمانځه ته
+ * ودرېږه"). Sıra Türkçe şablonlarla BİREBİR eşleşir. Dakika tek biçimle ("{süre} دقیقې")
+ * yazılır; `dakikaUyumu` 1 için "دقیقه"ya çeker (sözcükten sonra boşluk ya da nokta gelmeli).
+ */
 export const anons: Sozluk['anons'] = {
-  yon: { cikisaDogru: 'left', girisindenItibaren: 'passed' },
-  cip: { vakit: 'Prayer name', sure: 'Minutes', yon: 'left / passed', cuma: "Jumu'ah", yatsi: 'Isha' },
+  yon: { cikisaDogru: 'پاتې', girisindenItibaren: 'تېرې شوې' },
+  cip: { vakit: 'د لمانځه نوم', sure: 'دقیقې', yon: 'پاتې / تېرې شوې', cuma: 'جمعه', yatsi: 'ماسخوتن' },
   sablon: {
     muhafizCikis: [
-      '{vakit} time is ending, {süre} minutes left.',
-      "Don't miss {vakit}, {süre} minutes left.",
-      'Time is running short, {süre} minutes until {vakit} ends.',
+      'د {vakit} وخت پای ته رسېږي، وروستۍ {süre} دقیقې.',
+      'د {vakit} لمونځ له لاسه مه ورکوه، {süre} دقیقې پاتې دي.',
+      'وخت تنګېږي، د {vakit} لمانځه ته {süre} دقیقې.',
     ],
     muhafizGiris: [
-      '{vakit} time has begun, {süre} minutes have passed.',
-      "Don't delay {vakit}, {süre} minutes have passed.",
-      'Time is moving on, stand for {vakit}, it has been {süre} minutes.',
+      'د {vakit} وخت پیل شو، {süre} دقیقې تېرې شوې.',
+      'د {vakit} لمونځ مه ځنډوه، {süre} دقیقې تېرې شوې.',
+      'وخت تېرېږي، د {vakit} لمانځه ته ودرېږه، {süre} دقیقې وشوې.',
     ],
     nafile: [
-      '{vakit} time, {süre} minutes {yön}. A good moment for two rakats.',
-      '{vakit} time is on. A good chance to pray two rakats.',
-      '{süre} minutes {yön} for {vakit}.',
+      'د {vakit} وخت، {süre} دقیقې {yön}. د دوو رکعتونو لپاره ښه شېبه ده.',
+      'د {vakit} وخت روان دی. د دوو رکعتونو د کولو لپاره ښه فرصت دی.',
+      'د {vakit} لپاره {süre} دقیقې {yön}.',
     ],
     cuma: [
-      "{süre} minutes left until Jumu'ah. Get ready and head to the mosque.",
-      "Jumu'ah is approaching, {süre} minutes left.",
-      "Catch the khutbah, {süre} minutes left until Jumu'ah.",
+      'د جمعې تر لمانځه {süre} دقیقې پاتې دي. چمتو شه او جومات ته روان شه.',
+      'د جمعې وخت نږدې کېږي، {süre} دقیقې پاتې دي.',
+      'خطبې ته ځان ورسوه، د جمعې تر لمانځه {süre} دقیقې پاتې دي.',
     ],
     camiyeGit: [
-      '{süre} minutes left until {vakit}. Head to the mosque.',
-      'Time to go to the mosque, {süre} minutes until {vakit}.',
-      'Head to the mosque for {vakit}.',
+      'د {vakit} تر وخته {süre} دقیقې پاتې دي. جومات ته روان شه.',
+      'جومات ته د تګ وخت دی، د {vakit} تر وخته {süre} دقیقې دي.',
+      'د {vakit} لمانځه لپاره جومات ته روان شه.',
     ],
-    yatis: ['Pray Isha before you go to bed.', 'Isha time is still on, stand for prayer before you sleep.', "Don't sleep before you pray Isha."],
+    yatis: ['له ویده کېدو مخکې د ماسخوتن لمونځ وکړه.', 'د ماسخوتن وخت لا روان دی، له خوب مخکې لمانځه ته ودرېږه.', 'د ماسخوتن تر لمانځه مخکې مه ویده کېږه.'],
     takvim: [
-      'An event in your calendar falls during {vakit} time.',
-      "{vakit} time clashes with an event; don't forget to pray first.",
-      "In {süre} minutes {vakit} time clashes with your event; don't forget your prayer.",
+      'ستاسو په کلیز کې یوه پېښه د {vakit} له وخت سره سمون خوري.',
+      'د {vakit} وخت له یوې پېښې سره ټکر کوي؛ مه هېروئ چې لومړی لمونځ وکړئ.',
+      '{süre} دقیقې وروسته د {vakit} وخت ستاسو له پېښې سره ټکر کوي؛ لمونځ مه هېروئ.',
     ],
   },
   otomatik: {
-    cuma: "{sure} until Dhuhr for Jumu'ah. Get ready and head to the mosque.",
-    camiyeGiris: '{sure} until {vakit}.',
-    camiyeHazirlan: 'Get ready and head to the mosque.',
-    camiyeYola: 'Head to the mosque.',
-    takvimGiris: 'An event in your calendar falls during {vakit} time.',
-    takvimOnce: "Don't forget to pray before the event.",
-    takvimKaplar: "Don't forget to take a break and pray.",
-    yatsi: 'Pray Isha before you go to bed.',
-    muhasebeTek: '{vakit} looks unmarked today.',
-    muhasebeCoklu: cogul({ one: '{n} prayer looks unmarked today.', other: '{n} prayers look unmarked today.' }),
-    geceCapasi: 'Quiet hours start in {süre} minutes. Pray {vakit} before you go to bed.',
-    kuslukSuruyor: 'Duha time is on.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats.',
-    kuslukBitiyor: cogul({ one: '{n} minute left in Duha time.', other: '{n} minutes left in Duha time.' }),
-    evvabinSuruyor: 'There is still time for Awwabin.',
-    evvabinGirdi: 'Awwabin time. A good moment for two rakats.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin.', other: '{n} minutes left for Awwabin.' }),
-    teheccudSonUcte: 'Tahajjud time. The last third of the night has begun.',
-    teheccudKalan: cogul({ one: 'Tahajjud time. {n} minute left until Fajr.', other: 'Tahajjud time. {n} minutes left until Fajr.' }),
+    cuma: 'د جمعې لپاره د ماسپښین تر وخته {sure} پاتې دي. چمتو شه او جومات ته روان شه.',
+    camiyeGiris: 'د {vakit} تر وخته {sure} پاتې دي.',
+    camiyeHazirlan: 'چمتو شه او جومات ته روان شه.',
+    camiyeYola: 'جومات ته روان شه.',
+    takvimGiris: 'ستاسو په کلیز کې یوه پېښه د {vakit} له وخت سره سمون خوري.',
+    takvimOnce: 'مه هېروئ چې له پېښې مخکې لمونځ وکړئ.',
+    takvimKaplar: 'مه هېروئ چې لنډه وقفه واخلئ او لمونځ وکړئ.',
+    yatsi: 'له ویده کېدو مخکې د ماسخوتن لمونځ وکړه.',
+    muhasebeTek: 'داسې ښکاري چې نن د {vakit} لمونځ نښه شوی نه دی.',
+    muhasebeCoklu: cogul({ one: 'داسې ښکاري چې نن {n} لمونځ نښه شوی نه دی.', other: 'داسې ښکاري چې نن {n} لمونځونه نښه شوي نه دي.' }),
+    geceCapasi: 'د شپې تر چوپتیا {süre} دقیقې پاتې دي. له ویده کېدو مخکې د {vakit} لمونځ وکړه.',
+    kuslukSuruyor: 'د څاښت وخت روان دی.',
+    kuslukGirdi: 'د څاښت وخت پیل شو. د دوو رکعتونو لپاره ښه شېبه ده.',
+    kuslukBitiyor: cogul({ one: 'د څاښت د وخت تر پایه {n} دقیقه پاتې ده.', other: 'د څاښت د وخت تر پایه {n} دقیقې پاتې دي.' }),
+    evvabinSuruyor: 'د اوابینو لپاره لا وخت شته.',
+    evvabinGirdi: 'د اوابینو وخت. د دوو رکعتونو لپاره ښه شېبه ده.',
+    evvabinKalan: cogul({ one: 'د اوابینو لپاره {n} دقیقه پاتې ده.', other: 'د اوابینو لپاره {n} دقیقې پاتې دي.' }),
+    teheccudSonUcte: 'د تهجد وخت. د شپې وروستۍ درېیمه برخه پیل شوه.',
+    teheccudKalan: cogul({ one: 'د تهجد وخت. د سهار تر وخته {n} دقیقه پاتې ده.', other: 'د تهجد وخت. د سهار تر وخته {n} دقیقې پاتې دي.' }),
   },
 };

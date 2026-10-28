@@ -166,12 +166,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} second", "other": "{n} seconds"]
     )
 
-    // ÇEVİRİ: ps
+    // ps — Peştuca (beta): JS `sozluk/ps/sure.ts` birebir (birim kısaltılmaz)
     public static let ps = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "ساعته", birimDk: "دقیقې", birimSn: "ثانیې",
+        saat: ["one": "{n} ساعت", "other": "{n} ساعته"],
+        dakika: ["one": "{n} دقیقه", "other": "{n} دقیقې"],
+        saniye: ["one": "{n} ثانیه", "other": "{n} ثانیې"]
     )
 
     // ÇEVİRİ: ckb
