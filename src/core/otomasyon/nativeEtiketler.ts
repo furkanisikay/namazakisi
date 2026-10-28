@@ -1,0 +1,135 @@
+/**
+ * Android kısayol ve otomasyon eklentisi etiketleri: başlatıcı ve Tasker/MacroDroid bunları
+ * TELEFONUN diliyle (uygulama dili değil) `android/app/src/main/res/values[-xx]`'ten çözer.
+ * Otomasyon rehberi kullanıcının o ekranlarda gördüğü adı aynen yazar. Kaynak dizini olmayan
+ * cihaz dili Android'de varsayılan `values/`'e (Türkçe) düşer; burada da öyle.
+ * Nöbetçi: `__tests__/nativeEtiketler.test.ts` (her `values-*` dizini bu tabloyla birebir).
+ */
+import type { DilKodu } from '../dil/diller';
+
+export type NativeEtiket = { kisayol: string; olay: string; kosul: string; eylem: string };
+
+export const NATIVE_ETIKETLER: { tr: NativeEtiket } & Partial<Record<DilKodu, NativeEtiket>> = {
+  tr: {
+    kisayol: 'Şu anki vakti kıldım', // dil-haric: kimlik (native etiket, values/)
+    olay: 'Namaz Akışı: Vakit olayı', // dil-haric: kimlik (native etiket, values/)
+    kosul: 'Namaz Akışı: Vakit durumu', // dil-haric: kimlik (native etiket, values/)
+    eylem: 'Namaz Akışı: Kıldım', // dil-haric: kimlik (native etiket, values/)
+  },
+  en: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  id: {
+    kisayol: 'Sudah salat untuk waktu saat ini',
+    olay: 'Namaz Akışı: Peristiwa waktu salat', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Status waktu salat', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Sudah salat', // dil-haric: marka adı (native etiket)
+  },
+  de: {
+    kisayol: 'Ich habe gebetet',
+    olay: 'Namaz Akışı: Ereignis zur Gebetszeit', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Status der Gebetszeit', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Ich habe gebetet', // dil-haric: marka adı (native etiket)
+  },
+  fr: {
+    kisayol: 'J’ai prié la prière en cours',
+    olay: 'Namaz Akışı : événement de l’heure de prière', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı : état de l’heure de prière', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı : J’ai prié', // dil-haric: marka adı (native etiket)
+  },
+  bs: {
+    kisayol: 'Klanjano: trenutni vakat',
+    olay: 'Namaz Akışı: Događaj vakta', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Stanje vakta', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Klanjano', // dil-haric: marka adı (native etiket)
+  },
+  ru: {
+    kisayol: 'Текущий намаз совершён',
+    olay: 'Namaz Akışı: Событие времени намаза', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Состояние времени намаза', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Намаз совершён', // dil-haric: marka adı (native etiket)
+  },
+  ms: {
+    kisayol: 'Sudah solat waktu semasa',
+    olay: 'Namaz Akışı: Peristiwa waktu solat', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Status waktu solat', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Sudah solat', // dil-haric: marka adı (native etiket)
+  },
+  ar: {
+    kisayol: 'صلّيتُ الصلاة الحالية',
+    olay: 'Namaz Akışı: حدث وقت الصلاة', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: حالة وقت الصلاة', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: صلّيتُ', // dil-haric: marka adı (native etiket)
+  },
+  ur: {
+    kisayol: 'موجودہ نماز پڑھ لی',
+    olay: 'Namaz Akışı: نماز کے وقت کا واقعہ', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: نماز کے وقت کی حالت', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: نماز پڑھ لی', // dil-haric: marka adı (native etiket)
+  },
+  es: {
+    kisayol: 'Ya recé el rezo actual',
+    olay: 'Namaz Akışı: Evento de la hora del rezo', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Estado de la hora del rezo', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Ya recé', // dil-haric: marka adı (native etiket)
+  },
+  nl: {
+    kisayol: 'Het huidige gebed is gebeden',
+    olay: 'Namaz Akışı: Gebeurtenis bij gebedstijd', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Status van de gebedstijd', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Gebeden', // dil-haric: marka adı (native etiket)
+  },
+  sq: {
+    kisayol: 'E fala vaktin aktual',
+    olay: 'Namaz Akışı: Ngjarje e vaktit', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Gjendja e vaktit', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: E fala', // dil-haric: marka adı (native etiket)
+  },
+  hi: {
+    kisayol: 'मौजूदा नमाज़ पढ़ ली',
+    olay: 'Namaz Akışı: नमाज़ के वक़्त की घटना', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: नमाज़ के वक़्त की हालत', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: नमाज़ पढ़ ली', // dil-haric: marka adı (native etiket)
+  },
+  bn: {
+    kisayol: 'বর্তমান নামাজ পড়েছি',
+    olay: 'Namaz Akışı: নামাজের ওয়াক্তের ঘটনা', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: নামাজের ওয়াক্তের অবস্থা', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: নামাজ পড়েছি', // dil-haric: marka adı (native etiket)
+  },
+  fa: {
+    kisayol: 'نماز کنونی را خواندم',
+    olay: 'Namaz Akışı: رویداد وقت نماز', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: وضعیت وقت نماز', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: خواندم', // dil-haric: marka adı (native etiket)
+  },
+  ps: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  ckb: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  ug: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+};
+
+/** Cihaz yerel ayarından ('ckb_IQ', 'in_ID', 'fa-IR') etiket kümesi; tabloda yoksa Türkçe. */
+export function nativeEtiketleri(yerel: string | null | undefined): NativeEtiket {
+  const ham = yerel?.split(/[-_]/)[0];
+  // Java `Locale` Endonezceyi eski kod 'in' ile verir; kaynak dizini de `values-in`.
+  const kod = ham === 'in' ? 'id' : ham;
+  return (kod ? (NATIVE_ETIKETLER as Partial<Record<string, NativeEtiket>>)[kod] : undefined) ?? NATIVE_ETIKETLER.tr;
+}
