@@ -775,31 +775,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "اپ پرانیزئ"
     )
 
-    // ÇEVİRİ: ckb
+    // ckb
     public static let ckb = VakitMetinleri(
         dil: "ckb",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "بەیانی", "ogle": "نیوەڕۆ", "ikindi": "عەسر", "aksam": "ئێوارە", "yatsi": "خەوتنان"],
+        gunes: "خۆرھەڵاتن",
+        konumYok: "ئەپەکە بکەنەوە و شوێنەکەتان دیاری بکەن بۆ ئەوەی کاتەکانی نوێژ ھەژمار بکرێن.",
+        veriEski: "کاتەکانی نوێژ کۆن بوون. بۆ نوێکردنەوە یەک جار ئەپەکە بکەنەوە.",
+        girisBugun: "کاتژمێر {saat}",
+        girisYarin: "سبەینێ کاتژمێر {saat}",
+        suAnVakti: "ئێستا کاتی {ad} ھاتووە.",
+        suAnVaktiCikis: "ئێستا کاتی {ad} ھاتووە؛ لە {saat} کۆتایی دێت.",
+        siradakiNamaz: "نوێژی داھاتوو {ad}، {giris}.",
+        isaretlendi: "{ad} وەک کراو نیشانە کرا. {dua}.",
+        zatenKilindi: "{ad} پێشتر وەک کراو نیشانە کراوە.",
+        vakitYok: "ئێستا ھیچ نوێژێک بۆ نیشانەکردن نییە.",
+        vakitYokSiradaki: "ئێستا ھیچ نوێژێک بۆ نیشانەکردن نییە. داھاتوو: {ad}، {giris}.",
+        onay: "{ad} وەک کراو نیشانە بکرێت؟",
+        vakitDegisti: "کاتی نوێژ گۆڕا، بۆیە ھیچ شتێک نیشانە نەکرا. دووبارە ھەوڵ بدەنەوە.",
+        kabulDuasi: "خوا قبوڵی بکات",
+        kildim: "نوێژم کرد",
+        kilindi: "کرا",
+        kontrolKildim: "{ad} · نوێژم کرد",
+        kontrolKilindi: "{ad} کرا",
+        kontrolVakitYok: "ھیچ نوێژێک بۆ نیشانەکردن نییە",
+        uygulamayiAcin: "ئەپەکە بکەنەوە"
     )
 
     // ug — Uygurca (beta); terimler src/core/dil/sozluk/ug ("ناماز ئوقۇدۇم" / "ئوقۇلدى", hitap "سىز")

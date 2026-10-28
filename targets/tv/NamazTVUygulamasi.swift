@@ -334,19 +334,19 @@ struct TvArayuzMetinleri {
         siradakiEk: "، بل وخت"
     )
 
-    // ÇEVİRİ: ckb
+    // ckb
     static let ckb = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "شارەکەتان ھەڵبژێرن",
+        ilMerkezi: "کاتەکانی نوێژ بۆ ناوەندی پارێزگا ھەژمار دەکرێن. دەتوانن دواتر ھەڵبژاردنەکەتان بگۆڕن.",
+        ilSecErisim: "{il}، ھەڵبژاردن",
+        kalan: "کاتی ماوە تا {ad}",
+        kalanErisim: "کاتی ماوە تا {ad}: {sure}",
+        konumuDegistirin: "گۆڕینی شوێن",
+        kerahatSuruyor: "کاتی مەکروھ: {tur}، کۆتایی {bitis}. {aciklama}",
+        siradakiKerahat: "کاتی مەکروھی داھاتوو: {tur} {bas}–{bit}",
+        cumaBilgisi: "ئەمڕۆ ھەینییە. نوێژی ھەینی لە کاتی نیوەڕۆدا دەکرێت (دەستپێک {giris}).",
+        suAnkiEk: "، نوێژی ئێستا",
+        siradakiEk: "، نوێژی داھاتوو"
     )
 
     // ug — Uygurca (beta); JS `sozluk/ug` (hitap "سىز")

@@ -248,11 +248,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "نه، لا نښه شوی نه دی."
     )
 
-    // ÇEVİRİ: ckb
+    // ckb
     static let ckb = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} دوای {n} خولەک دەست پێدەکات.", "other": "{ad} دوای {n} خولەک دەست پێدەکات."],
+        evetKilindi: "بەڵێ، وەک کراو نیشانە کراوە.",
+        hayirKilinmadi: "نەخێر، ھێشتا نیشانە نەکراوە."
     )
 
     // ug — Uygurca (beta); CLDR ug one/other (sayıdan sonra çoğul eki yok)

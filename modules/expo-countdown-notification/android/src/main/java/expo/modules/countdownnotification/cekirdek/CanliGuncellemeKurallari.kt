@@ -73,8 +73,8 @@ object CanliGuncellemeKurallari {
         "fa" to ("ساعت" to "دقیقه"),
         // ps
         "ps" to ("ساعت" to "دقیقې"),
-        // ÇEVİRİ: ckb
-        "ckb" to ("h" to "min"),
+        // ckb
+        "ckb" to ("ک" to "خ"),
         // ug
         "ug" to ("سائەت" to "مىنۇت"),
     )

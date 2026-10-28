@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ckb — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- ckb -->
+<!-- Gerçek alarm (Soranî). "نوێژم کرد" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">ئاگادارکەرەوەی نوێژ</string>
+  <string name="alarm_kildim">نوێژم کرد</string>
+  <string name="alarm_kapat">کوژاندنەوە</string>
+  <string name="alarm_kanal_aciklamasi">ئاگادارکەرەوەیەکی ڕاستەقینە کە لەو ھەنگاوانەی بیرخستنەوەدا زەنگ لێدەدات کە ھەڵیاندەبژێرن</string>
 </resources>

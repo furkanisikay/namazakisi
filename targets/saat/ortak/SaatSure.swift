@@ -174,12 +174,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} ثانیه", "other": "{n} ثانیې"]
     )
 
-    // ÇEVİRİ: ckb
+    // ckb — JS `sozluk/ckb/sure.ts`; Soranîde sayıdan sonra isim tekil (one = other).
     public static let ckb = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "ک", birimDk: "خ", birimSn: "چ",
+        saat: ["one": "{n} کاتژمێر", "other": "{n} کاتژمێر"],
+        dakika: ["one": "{n} خولەک", "other": "{n} خولەک"],
+        saniye: ["one": "{n} چرکە", "other": "{n} چرکە"]
     )
 
     // ug — Uygurca (beta); JS `sozluk/ug/sure.ts` (sayıdan sonra çoğul eki yok)

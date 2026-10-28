@@ -1,15 +1,14 @@
-// ÇEVİRİ: ckb — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'قورئان {ref} · {yayimci}، QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'نوێژ لە خەو چاکترە. وەرە بۆ سەرفرازی.',
+    araVer: 'کەمێک دەست لە کاری دونیا ھەڵبگرە و لەبەردەم پەروەردگارتدا ڕاوەستە.',
+    yorgunluk: 'نوێژی عەسر چاوەڕێتە، تا ماندوویی ڕۆژ لە خۆت دووربخەیتەوە و ئارامی بدۆزیتەوە.',
+    sukur: 'نوێژی ئێوارە سوپاسی ڕۆژە. پەلە بکە بۆ ڕاوەستان لەبەردەم پەروەردگارت.',
+    aksamKisa: 'کاتی ئێوارە کورتە؛ کاتەکەی ھات، بێ دواخستن نوێژ بکە.',
+    geceKaranligi: 'لە تاریکی شەودا لەگەڵ پەروەردگارت تەنیا بە. نوێژی خەوتنان دەرمانی ڕۆحە.',
+    davet: 'بانگھێشت کراویت بۆ نوێژی خەوتنان، تا ڕۆژەکەت بە ڕەزامەندی خوا کۆتایی پێبھێنیت.',
   },
 };

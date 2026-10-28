@@ -105,13 +105,14 @@ Türkçe kural sürer: kullanıcı uygulamayı yönetiyorsa "siz", uygulama ibad
 | Bengalce | "আপনি" + saygı emri ("শহর বেছে নিন"); "তুমি/তুই" YOK | "আপনি" + saygı emri ("নামাজ আদায় করুন"); Bengalce fiil cinsiyetsizdir |
 | Farsça | "شما" + kibar emir ("…کنید": "شهر را انتخاب کنید"); "تو" YOK | "تو" + emir ("نماز بخوان"; Farsça fiil cinsiyetsizdir) — sahip kararı, yerli okuyucuyla DOĞRULANMADI |
 | Peştuca | "تاسو" + çoğul/kibar emir ("…کړئ": "ښار وټاکئ"); "ته" YOK | "ته" + emir ("لمونځ وکړه") — DOĞRULANMADI |
-| Soranî | "ئێوە" + kibar emir ("…بکەن": "شار هەڵبژێرن"); "تۆ" YOK | "تۆ" + emir ("نوێژ بکە") — DOĞRULANMADI |
+| Soranî | "ئێوە" + çoğul kibar emir ("…ن": "شار ھەڵبژێرن", "دووبارە ھەوڵ بدەنەوە"), düğmede mastar ("پاشەکەوتکردن"); "تۆ" YOK | "تۆ" + tekil emir ("نوێژ بکە", "ھەستە بۆ نوێژ"); fiil cinsiyetsiz → "Kıldım" = "نوێژم کرد", "Kılındı" = "کرا" — yerli okuyucuyla DOĞRULANMADI |
 | Uygurca | "سىز" + kibar emir ("…ڭ" / "…ڭىز": "شەھەرنى تاللاڭ"); "سەن" YOK | "سەن" + emir ("ناماز ئوقۇ") — DOĞRULANMADI |
 
 ## Terim sözlüğü (diğer diller)
 Her dilin vakit ve terim kararları kendi `sozluk/<dil>/vakit.ts` başındaki yorumdadır; karşılıklar o dosyalardan okunur, serbest çeviri yapılmaz.
 - **Çizelgedeki sabah satırı (`vakit.imsakVakti`) Türkçe dışında "Imsak" DEĞİL, fecir adıdır** (Fajr, Subuh, Фаджр, Zora): Kemenag, JAKIM ve Mawaqit çizelgelerinde Imsak fecirden ~10 dk önceki ihtiyat saatidir, uygulamanın imsak saati ise fecrin girişidir. "Imsak" yalnız Diyanet geleneğindeki takımlarda kalır (Türkçe, Diyanet DE).
 - **Boşnakça:** namaz "Sabah" (`adlar.imsak`), çizelge satırı "Zora" (vaktija.ba).
+- **Soranî imlası:** ünsüz h her yerde ھ (U+06BE; CLDR "ھەینی", ckb Vikipedi ve widget'ta yan yana duran QuranEnc `kurdish_bamoki` meali böyle), ünlü e ە (U+06D5); ه/ي/ك (U+0647/064A/0643) sözlükte ve native tablolarda OLMAZ. İlçe "شارۆچکە" (Irak'taki "قەزا" kaza namazıyla karışır).
 - **Rusça/Boşnakça ay adı:** `tarih.aylar` tarih içi biçimdir (Rusça ilgi hâli "октября"); tek başına ay (takvim başlığı) `tarih.aylarYalin` (`ayAdiniAl`).
 - **Sesli okumada "{süre} <dakika>":** şablon ve kullanıcı metni dakikayı tek biçimle yazar; doldurulduktan sonra `dakikaUyumu` sayıya göre çeker (2 минуты, 5 минут, "1 minute"). Nöbetçi: `dakikaUyumu.test.ts`.
 - **Fransızca:** vakit adının önüne "de" yazılmaz (elizyon: "de Asr" yanlış); ad özne ya da iki noktadan sonra durur. `many` biçimi "{n} de …".

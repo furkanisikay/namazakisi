@@ -481,29 +481,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "اوسنی لمونځ د ادا شوي په توګه نښه کوي."
     )
 
-    // ÇEVİRİ: ckb
+    // ckb
     static let ckb = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "کاتی نوێژ",
+        galeriAciklama: "کاتی نوێژی ئێستا، کاتی ماوە تا دەرچوونی و کاتەکانی نوێژی ئەمڕۆ.",
+        veriEski: "بۆ نوێکردنەوەی کاتەکانی نوێژ ئەپەکە بکەنەوە",
+        konumYok: "بۆ دیاریکردنی شوێنەکەتان ئەپەکە بکەنەوە",
+        kilindiSiradaki: "{ad} کرا · {sonraki} {saat}",
+        adCikis: "{ad} · کۆتایی {saat}",
+        siradakiAdSaat: "داھاتوو {ad} {saat}",
+        vaktiCikisErisim: "کاتی {ad}، کۆتایی {saat}",
+        siradakiErisim: "داھاتوو {ad}، {saat}",
+        cikisSaat: "کۆتایی {saat}",
+        bitisSaat: "کۆتایی {saat}",
+        kilindiBaslik: "{ad} کرا",
+        siradaki: "داھاتوو",
+        siradakiAd: "داھاتوو {ad}",
+        kildimErisim: "نوێژی {ad}م کرد",
+        gunSatiriKilindi: "، کرا",
+        bitti: "تەواو بوو",
+        vakitCikti: "کاتی نوێژ دەرچوو",
+        kabulAlt: "{ad} کرا",
+        kontrolAdi: "نوێژم کرد",
+        kontrolAciklama: "نوێژی ئێستا وەک کراو نیشانە دەکات."
     )
 
     // ug — Uygurca (beta); JS `sozluk/ug` ("ناماز ئوقۇدۇم" / "ئوقۇلدى")
