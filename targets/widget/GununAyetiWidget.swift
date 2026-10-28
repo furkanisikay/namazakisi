@@ -301,18 +301,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: ug
+    // ug — Uygurca (beta); meal `gununAyetiHavuzu.ts` 94:6 birebir, künye `mealler.ug` (uyghur_saleh 1.0.2)
     static let ug = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "كۈننىڭ ئايىتى",
+        galeriAciklama: "ھەر كۈنى بامداتتا ئالمىشىدىغان بىر ئايەت ۋە تەرجىمىسى.",
+        etiket: "كۈننىڭ ئايىتى",
+        uygulamayiAcin: "كۈننىڭ ئايىتىنى كۆرۈش ئۈچۈن ئەپنى ئېچىڭ",
+        ornekSigmiyor: "بۈگۈنكى ئايەت بۇ چوڭلۇققا پاتمايدۇ. ئوقۇش ئۈچۈن چېكىڭ.",
+        ornekAcin: "ئېچىڭ",
+        ornekArapcaKaynagi: "ئەرەبچە: Tanzil",
+        ornekMeal: "ئەلۋەتتە شۇ مۈشكۈللۈك بىلەن يەنە بىر ئاسانلىق بار.",
+        ornekKisaKunye: "قۇرئان 94:6",
+        ornekMealKaynagi: "Muhammad Saleh، QuranEnc 1.0.2"
     )
 
     static let tablo: [String: GununAyetiYerelMetinleri] = [

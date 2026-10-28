@@ -1,11 +1,11 @@
-// ÇEVİRİ: ug — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Uygurcada yerel rakam yok (CLDR `latn`); seçici görünmez, anahtarlar tip için doludur. */
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'رەقەملەر',
+  aciklama: 'ۋاقىت، چېسلا ۋە سانلاردا قايسى رەقەملەرنىڭ ئىشلىتىلىشىنى تاللاڭ.',
+  otomatik: 'دۆلەتكە قاراپ',
+  otomatikAciklama: 'ئورنىڭىز تۇرغان دۆلەتتە كەڭ قوللىنىلىدىغان رەقەملەرنى ئىشلىتىدۇ.',
+  dogu: 'شەرقىي ئەرەب رەقەملىرى',
+  bati: 'غەربىي رەقەملەر',
 };

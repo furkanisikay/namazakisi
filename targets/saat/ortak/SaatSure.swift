@@ -182,12 +182,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} second", "other": "{n} seconds"]
     )
 
-    // ÇEVİRİ: ug
+    // ug — Uygurca (beta); JS `sozluk/ug/sure.ts` (sayıdan sonra çoğul eki yok)
     public static let ug = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "سائەت", birimDk: "مىنۇت", birimSn: "سېكۇنت",
+        saat: ["one": "{n} سائەت", "other": "{n} سائەت"],
+        dakika: ["one": "{n} مىنۇت", "other": "{n} مىنۇت"],
+        saniye: ["one": "{n} سېكۇنت", "other": "{n} سېكۇنت"]
     )
 
     public static let tablo: [String: SaatSureMetinleri] = [

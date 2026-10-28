@@ -75,8 +75,8 @@ object CanliGuncellemeKurallari {
         "ps" to ("h" to "min"),
         // ÇEVİRİ: ckb
         "ckb" to ("h" to "min"),
-        // ÇEVİRİ: ug
-        "ug" to ("h" to "min"),
+        // ug
+        "ug" to ("سائەت" to "مىنۇت"),
     )
 
     /**

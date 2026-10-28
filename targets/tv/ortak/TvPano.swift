@@ -323,18 +323,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: ug
+    // ug — Uygurca (beta); JS `sozluk/ug` (vakit, tarih, anaEkran.kerahat), Android `TvDiliUg` ikizi
     public static let ug = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "بامدات", "gunes": "قۇياش چىقىش", "ogle": "پېشىن", "ikindi": "ئەسىر", "aksam": "شام", "yatsi": "خۇپتەن"],
+        cuma: "جۈمە",
+        aylar: ["يانۋار", "فېۋرال", "مارت", "ئاپرېل", "ماي", "ئىيۇن", "ئىيۇل", "ئاۋغۇست", "سېنتەبىر", "ئۆكتەبىر", "نويابىر", "دېكابىر"],
+        gunler: ["دۈشەنبە", "سەيشەنبە", "چارشەنبە", "پەيشەنبە", "جۈمە", "شەنبە", "يەكشەنبە"],
+        tarih: "{yil}-يىلى {gun}-{ay}، {gunAdi}",
+        kerahatAdlari: ["suruk": "قۇياش چىقىش", "istiva": "ئىستىۋا", "gurub": "قۇياش پېتىش"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "قۇياش ياخشى كۆتۈرۈلگۈچە ناماز ئوقۇش مەكرۇھ.",
+            "istiva": "قۇياش دەل چوققىدا تۇرغاندا ناماز ئوقۇش مەكرۇھ.",
+            "gurub": "قۇياش پېتىۋاتقاندا ناماز ئوقۇش مەكرۇھ.",
         ]
     )
 

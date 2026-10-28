@@ -1,61 +1,60 @@
-// ÇEVİRİ: ug — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Uygurcada: "سەن" + kısa emir ("نامازغا تۇر"). "Secdeye kapan" karşılığı
+ * YAZILMAZ (kişi namaza durur). Arap harfinde büyük harf yok: acil düzey metin aynen yazılır.
+ * Başlık önden okunur: vakit adı + süre ilk karakterlerde (bileklik).
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} مىنۇت ئۆتتى · ۋاقىت كىردى ⏰',
+    giris2: '{ad} · {dk} مىنۇت ئۆتتى · نامىزىڭنى كېچىكتۈرمە ⚠️',
+    giris3: '{ad} · {dk} مىنۇت ئۆتتى · نامىزىڭ سېنى كۈتۈۋاتىدۇ 🔥',
+    giris4: '{ad} · {dk} مىنۇت ئۆتتى · نامازغا تۇر 🚨',
+    erken3: '{ad} · {dk} مىنۇت قالدى · نامىزىڭ سېنى كۈتۈۋاتىدۇ 🔥',
+    erken4: '{ad} · {dk} مىنۇت قالدى · نامازغا تۇر 🚨',
+    cikis1: '{ad} · {dk} مىنۇت قالدى ⏰',
+    cikis2: '{ad} · {dk} مىنۇت · ۋاقىت تارىيىۋاتىدۇ ⚠️',
+    cikis3: '{ad} · {dk} مىنۇت · ۋاقىت قولدىن كېتىۋاتىدۇ 🔥',
+    cikis4: '{ad} · {dk} مىنۇت · ۋاقىت چىقىۋاتىدۇ 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['ناماز ۋاقتى كىردى؛ پۇرسەت بارىدا ئوقۇ.', 'ۋاقىت سېنىڭ پايداڭغا ئىشلەۋاتقاندا ئوقۇ، كېيىنگە قالدۇرما.'],
+    s2: ['كەينىگە سۈرگەنسېرى ئېغىرلىشىدۇ؛ نامازنى ئاخىرىغا قالدۇرما.', 'ۋاقىت ئۆتۈۋاتىدۇ — نامىزىڭنى ھازىر ئوقۇ.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'نامازنى كېچىكتۈرگەنسېرى قولدىن بېرىشكە يېقىنلىشىسەن؛ دەرھال ئوقۇ.',
+      '«كېيىن ئوقۇيمەن» دېمە؛ ھازىر ئوقۇيالايسەن.',
+      'بىر نەچچە مىنۇتتىن كېيىن «كاشكى» دېگەندىن كۆرە ھازىر ئورنۇڭدىن تۇر.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['نامازنى ئەمدى كېچىكتۈرمە — دەرھال نامازغا تۇر.', 'قولۇڭدىكى ئىشنى قوي، نامازغا تۇر.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'ۋاقىت تارىيىشقا باشلىدى، پۇرسەت بارىدا ئوقۇ.',
+    s2: 'نامازنى ئاخىرىغا قالدۇرما؛ ھازىر ئوقۇشقا ۋاقىت مۇۋاپىق.',
+    s3: 'ۋاقىت ئاخىرلىشاي دەپ قالدى؛ ھازىر ئوقۇيالايسەن.',
+    s4: 'ئوقۇغان بولساڭ «ناماز ئوقۇدۇم» نى باس؛ ئوقۇمىغان بولساڭ دەرھال نامازغا تۇر.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'نامازنى كېچىكتۈرمە. دەرھال نامازغا تۇر. ({dk} مىنۇت ئۆتتى)',
+    giris2: 'ۋاقىت ئۆتۈۋاتىدۇ، نامازنى ئاخىرىغا قالدۇرما. ({dk} مىنۇت ئۆتتى)',
+    giris1: cogul({ one: 'ناماز ۋاقتى كىرگىلى {n} مىنۇت بولدى.', other: 'ناماز ۋاقتى كىرگىلى {n} مىنۇت بولدى.' }),
+    erken4: 'نامازنى كېچىكتۈرمە، دەرھال نامازغا تۇر. ({dk} مىنۇت قالدى)',
+    cikis4: 'ۋاقىت چىقىۋاتىدۇ. دەرھال نامازغا تۇر. ({dk} مىنۇت قالدى)',
+    cikis2: 'ۋاقىت تارىيىۋاتىدۇ، نامازنى ئاخىرىغا قالدۇرما. ({dk} مىنۇت قالدى)',
+    cikis1: cogul({ one: 'ناماز ۋاقتىنىڭ ئاخىرلىشىشىغا {n} مىنۇت قالدى.', other: 'ناماز ۋاقتىنىڭ ئاخىرلىشىشىغا {n} مىنۇت قالدى.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · ئۇخلاشتىن بۇرۇن ئوقۇ ⏰',
+    govde: 'كېچىلىك جىمجىتلىققا {dk} مىنۇت بار؛ ياتماستىن بۇرۇن خۇپتەننى ئوقۇ.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'ۋاقىت تارىيىشقا باشلىدى، پۇرسەت بارىدا ئوقۇ.',
+    sonaBirakma: 'نامازنى ئاخىرىغا قالدۇرما؛ ھازىر ئوقۇشقا ۋاقىت مۇۋاپىق.',
+    fisilti: '«كېيىن ئوقۇيمەن» دېمە؛ ۋاقىت ئاخىرلىشاي دەپ قالدى، ھازىر ئوقۇيالايسەن.',
+    omur: 'ۋاقىت ئۆتۈۋاتىدۇ؛ بۇ نامازنى ۋاقتىدا ئوقۇشقا تېخىچە پۇرسىتىڭ بار.',
+    keske: 'بىر نەچچە مىنۇتتىن كېيىن «كاشكى» دېگەندىن كۆرە ھازىر ئورنۇڭدىن تۇر.',
+    namazaDur: 'ئوقۇغان بولساڭ «ناماز ئوقۇدۇم» نى باس؛ ئوقۇمىغان بولساڭ دەرھال نامازغا تۇر.',
+    sonDakika: 'ئاخىرقى مىنۇتلار. قولۇڭدىكى ئىشنى قوي، نامازغا تۇر.',
   },
 };

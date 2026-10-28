@@ -802,31 +802,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: ug
+    // ug — Uygurca (beta); terimler src/core/dil/sozluk/ug ("ناماز ئوقۇدۇم" / "ئوقۇلدى", hitap "سىز")
     public static let ug = VakitMetinleri(
         dil: "ug",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "بامدات", "ogle": "پېشىن", "ikindi": "ئەسىر", "aksam": "شام", "yatsi": "خۇپتەن"],
+        gunes: "قۇياش چىقىش",
+        konumYok: "ۋاقىتلارنى ھېسابلاش ئۈچۈن ئەپنى ئېچىپ ئورنىڭىزنى تەڭشەڭ.",
+        veriEski: "ۋاقىت ئۇچۇرى كونىراپ كەتتى. يېڭىلاش ئۈچۈن ئەپنى بىر قېتىم ئېچىڭ.",
+        girisBugun: "سائەت {saat} دا",
+        girisYarin: "ئەتە سائەت {saat} دا",
+        suAnVakti: "ھازىر {ad} ۋاقتى.",
+        suAnVaktiCikis: "ھازىر {ad} ۋاقتى، چىقىشى سائەت {saat}.",
+        siradakiNamaz: "كېيىنكى ناماز {ad}، {giris}.",
+        isaretlendi: "{ad} نامىزىڭىز ئوقۇلدى دەپ بەلگىلەندى. {dua}.",
+        zatenKilindi: "{ad} نامىزى ئاللىبۇرۇن ئوقۇلدى دەپ بەلگىلەنگەن.",
+        vakitYok: "ھازىر ئوقۇلىدىغان ۋاقىت يوق.",
+        vakitYokSiradaki: "ھازىر ئوقۇلىدىغان ۋاقىت يوق. كېيىنكىسى {ad}، {giris}.",
+        onay: "{ad} نامىزى ئوقۇلدى دەپ بەلگىلەنسۇنمۇ؟",
+        vakitDegisti: "ۋاقىت ئۆزگەردى، بەلگىلەنمىدى. قايتا سىناڭ.",
+        kabulDuasi: "ئاللاھ قوبۇل قىلسۇن",
+        kildim: "ناماز ئوقۇدۇم",
+        kilindi: "ئوقۇلدى",
+        kontrolKildim: "{ad} · ناماز ئوقۇدۇم",
+        kontrolKilindi: "{ad} ئوقۇلدى",
+        kontrolVakitYok: "ئوقۇلىدىغان ۋاقىت يوق",
+        uygulamayiAcin: "ئەپنى ئېچىڭ"
     )
 
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).

@@ -349,19 +349,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: ug
+    // ug — Uygurca (beta); JS `sozluk/ug` (hitap "سىز")
     static let ug = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "شەھىرىڭىزنى تاللاڭ",
+        ilMerkezi: "ناماز ۋاقىتلىرى شەھەر مەركىزى بويىچە ھېسابلىنىدۇ. تاللىشىڭىزنى كېيىن ئۆزگەرتەلەيسىز.",
+        ilSecErisim: "{il}، تاللاڭ",
+        kalan: "{ad} ۋاقتىغا قالغان ۋاقىت",
+        kalanErisim: "{ad} ۋاقتىغا قالغان ۋاقىت: {sure}",
+        konumuDegistirin: "ئورۇننى ئۆزگەرتىڭ",
+        kerahatSuruyor: "مەكرۇھ ۋاقىت: {tur}، ئاخىرلىشىشى {bitis}. {aciklama}",
+        siradakiKerahat: "كېيىنكى مەكرۇھ ۋاقىت: {tur} {bas}–{bit}",
+        cumaBilgisi: "بۈگۈن جۈمە. جۈمە نامىزى پېشىن ۋاقتىدا ئوقۇلىدۇ (كىرىشى {giris}).",
+        suAnkiEk: "، ھازىرقى ۋاقىت",
+        siradakiEk: "، كېيىنكى ۋاقىت"
     )
 
     static let tablo: [String: TvArayuzMetinleri] = [
