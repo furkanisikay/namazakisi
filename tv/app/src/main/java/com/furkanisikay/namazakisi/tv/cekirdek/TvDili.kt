@@ -924,9 +924,9 @@ object TvDiliCkb : TvDili {
     override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "${gunAdi}، ${gun}ی ${ay}ی ${yil}"
 
     // Soranîde sayıdan sonra isim tekil: one = other.
-    override val birimSa = "ک"
-    override val birimDk = "خ"
-    override val birimSn = "چ"
+    override val birimSa = "کاتژمێر"
+    override val birimDk = "خولەک"
+    override val birimSn = "چرکە"
     override fun saatSesli(n: Int) = "$n کاتژمێر"
     override fun dakikaSesli(n: Int) = "$n خولەک"
     override val birDakikadanAz = "کەمتر لە 1 خولەک"

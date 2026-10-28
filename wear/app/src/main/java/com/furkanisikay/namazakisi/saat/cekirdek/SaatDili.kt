@@ -1831,10 +1831,10 @@ object SaatDiliCkb : SaatDili {
     override fun vakitAdi(vakit: String) = ADLAR[vakit] ?: vakit
 
     // Soranîde sayıdan sonra isim tekil: one = other.
-    override val birimSa = "ک"
-    override val birimDk = "خ"
-    override val birimSn = "چ"
-    override val birDakikadanAzKisa = "<1 خ"
+    override val birimSa = "کاتژمێر"
+    override val birimDk = "خولەک"
+    override val birimSn = "چرکە"
+    override val birDakikadanAzKisa = "<1 خولەک"
     override fun saatSesli(n: Long) = "$n کاتژمێر"
     override fun dakikaSesli(n: Long) = "$n خولەک"
     override val birDakikadanAzSesli = "کەمتر لە 1 خولەک"

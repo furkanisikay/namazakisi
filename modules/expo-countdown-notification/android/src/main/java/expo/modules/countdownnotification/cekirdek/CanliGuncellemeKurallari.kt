@@ -74,7 +74,7 @@ object CanliGuncellemeKurallari {
         // ps
         "ps" to ("ساعت" to "دقیقې"),
         // ckb
-        "ckb" to ("ک" to "خ"),
+        "ckb" to ("کاتژمێر" to "خولەک"),
         // ug
         "ug" to ("سائەت" to "مىنۇت"),
     )

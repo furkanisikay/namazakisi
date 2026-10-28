@@ -176,7 +176,7 @@ public struct SaatSureMetinleri: Equatable {
 
     // ckb — JS `sozluk/ckb/sure.ts`; Soranîde sayıdan sonra isim tekil (one = other).
     public static let ckb = SaatSureMetinleri(
-        birimSa: "ک", birimDk: "خ", birimSn: "چ",
+        birimSa: "کاتژمێر", birimDk: "خولەک", birimSn: "چرکە",
         saat: ["one": "{n} کاتژمێر", "other": "{n} کاتژمێر"],
         dakika: ["one": "{n} خولەک", "other": "{n} خولەک"],
         saniye: ["one": "{n} چرکە", "other": "{n} چرکە"]
