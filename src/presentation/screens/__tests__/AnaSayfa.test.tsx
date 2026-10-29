@@ -45,6 +45,8 @@ interface PagerProplari {
 const mockPagerProplari: PagerProplari[] = [];
 const mockPagerSetPage = jest.fn();
 const mockPagerSetPageWithoutAnimation = jest.fn();
+/** Pager'ın her mount'unda (doğuşunda) aldığı açılış sayfası. */
+const mockPagerDogumlari: number[] = [];
 
 // ── DateTimePicker: aldığı prop'ları dışa verir (referans stabilitesi ölçümü) ─
 interface TarihSeciciProplari {
@@ -63,6 +65,9 @@ jest.mock('react-native-pager-view', () => {
   const { View } = require('react-native');
   const Pager = ReactMock.forwardRef((props: PagerProplari, ref: unknown) => {
     mockPagerProplari.push(props);
+    ReactMock.useEffect(() => {
+      mockPagerDogumlari.push(props.initialPage);
+    }, []);
     ReactMock.useImperativeHandle(ref, () => ({
       setPage: mockPagerSetPage,
       setPageWithoutAnimation: mockPagerSetPageWithoutAnimation,
@@ -428,6 +433,7 @@ describe('AnaSayfa', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockPagerProplari.length = 0;
+    mockPagerDogumlari.length = 0;
     mockTarihSeciciProplari.length = 0;
     mockPagerCocuklari.ciz = false;
     mockVakitAkisiProplari.length = 0;
@@ -570,11 +576,11 @@ describe('AnaSayfa', () => {
 
     /**
      * Konum diskten açılıştan SONRA gelir: ilk hesap varsayılan konumla aktif günü dün
-     * bulur, pager orada doğar; gerçek konumla aktif gün bugün olur ve sayfa komutu gider.
-     * Native pager bu komutu layout'tan önce yutup açılış sayfasını bildirirse komut
-     * yenilenmeli, yoksa ana ekran dünde kalır (vakit kartı çizilmez).
+     * bulur, pager orada doğar; gerçek konumla aktif gün bugün olur. İmperatif sayfa
+     * komutu native'de layout'tan önce yutulabildiği (ve ardından hiçbir olay gelmediği)
+     * için pager komut almaz, hedef sayfada YENİDEN doğar; yoksa ana ekran dünde kalır.
      */
-    it('aktif gün açılıştan sonra değişince yutulan sayfa komutu yenilenir', async () => {
+    it('aktif gün açılıştan sonra değişince pager hedef sayfada yeniden doğar', async () => {
       geceYarisiSenaryosu();
       const ekran = await kur(gunEkle(bugunuAl(), -1));
       expect(mockPagerProplari[0].initialPage).toBe(BUGUN_INDEKSI - 1);
@@ -591,19 +597,9 @@ describe('AnaSayfa', () => {
           yenidenCiz(ekran);
           await Promise.resolve();
         });
-        expect(mockPagerSetPageWithoutAnimation).toHaveBeenLastCalledWith(BUGUN_INDEKSI);
-
-        const pager = mockPagerProplari[mockPagerProplari.length - 1] as unknown as {
-          onPageSelected: (e: { nativeEvent: { position: number } }) => void;
-        };
-        // Komut yutuldu: pager açılış sayfasını bildiriyor → komut yenilenir.
-        act(() => pager.onPageSelected({ nativeEvent: { position: BUGUN_INDEKSI - 1 } }));
-        expect(mockPagerSetPageWithoutAnimation).toHaveBeenCalledTimes(2);
-        expect(mockPagerSetPageWithoutAnimation).toHaveBeenLastCalledWith(BUGUN_INDEKSI);
-
-        // Komut uygulandı: yeni komut yok.
-        act(() => pager.onPageSelected({ nativeEvent: { position: BUGUN_INDEKSI } }));
-        expect(mockPagerSetPageWithoutAnimation).toHaveBeenCalledTimes(2);
+        expect(mockPagerDogumlari).toEqual([BUGUN_INDEKSI - 1, BUGUN_INDEKSI]);
+        expect(mockPagerSetPage).not.toHaveBeenCalled();
+        expect(mockPagerSetPageWithoutAnimation).not.toHaveBeenCalled();
       }
     });
   });
