@@ -131,7 +131,7 @@ fun IlSecimEkrani(
                     ) {
                         // Plaka ikincil ve sabit genişlikte: adlar tek hizada başlar.
                         Text(
-                            il.plaka,
+                            il.plaka.yerelRakam(),
                             fontSize = 20.sp,
                             modifier = Modifier.width(36.dp).alpha(0.7f),
                         )

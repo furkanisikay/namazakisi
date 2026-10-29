@@ -3,8 +3,18 @@ package com.furkanisikay.namazakisi.tv.cekirdek
 import org.json.JSONArray
 
 /** Telefonun manuel konum listesindeki bir il (`TURKIYE_ILLERI_OFFLINE`). */
-/** `hesap`: telefondan gelen konumla birlikte gelen hesap yöntemi (null = Türkiye yolu). */
-data class Il(val plaka: String, val ad: String, val lat: Double, val lng: Double, val hesap: TvHesap? = null)
+/**
+ * `hesap`: telefondan gelen konumla birlikte gelen hesap yöntemi (null = Türkiye yolu).
+ * `rakam`: telefondan gelen konumun ülkesi ve rakam seçimleri (null = elle il ya da eski telefon).
+ */
+data class Il(
+    val plaka: String,
+    val ad: String,
+    val lat: Double,
+    val lng: Double,
+    val hesap: TvHesap? = null,
+    val rakam: TvRakam? = null,
+)
 
 /**
  * `assets/iller.json` çözücüsü. Dosya TEK KAYNAKTAN üretilir

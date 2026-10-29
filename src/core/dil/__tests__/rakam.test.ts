@@ -10,6 +10,7 @@ import {
   rakamlariNormallestir,
   rakamSecilebilir,
   rakamSistemiCoz,
+  tvRakamOzeti,
 } from '../rakam';
 import { DILLER } from '../diller';
 import { aktifDiliKur, aktifDilSifirla, aktifRakamSistemi, rakamSisteminiKur } from '../aktifDil';
@@ -196,5 +197,37 @@ describe('nöbetçi: sözlükte yerel rakam yok', () => {
         .flatMap((satir, i) => (/[\u0660-\u0669\u06F0-\u06F9\u09E6-\u09EF]/.test(satir) ? [`${path.relative(kok, p)}:${i + 1}`] : []))
     );
     expect(ihlaller).toEqual([]);
+  });
+});
+
+describe('TV rakam özeti (cihaz ağı yükü)', () => {
+  it('ülke ve yalnız GEÇERLİ açık seçimler gider; ikisi de yoksa null', () => {
+    expect(tvRakamOzeti('MA', { ar: 'latn', fa: 'arab', bn: 'beng', ur: 'latn', xx: 'arab' })).toEqual({
+      u: 'MA',
+      s: { ar: 'latn', bn: 'beng' },
+    });
+    expect(tvRakamOzeti(null, { fa: 'arabext' })).toEqual({ s: { fa: 'arabext' } });
+    expect(tvRakamOzeti('SA', null)).toEqual({ u: 'SA' });
+    expect(tvRakamOzeti('sa', 'bozuk')).toBeNull();
+    expect(tvRakamOzeti(null, undefined)).toBeNull();
+  });
+
+  /**
+   * TV kararı kendi dilinde verir (`tv/.../cekirdek/Rakam.kt > RakamKarari`): eşlemeler telefonla
+   * birebir kalmalı, yoksa aynı ülkede TV ile telefon farklı rakam yazar.
+   */
+  it('NÖBETÇİ: TV eşlemesi telefonla aynı (dil → yerel sistem, ülke istisnaları)', () => {
+    const kt = fs.readFileSync(
+      path.join(__dirname, '../../../../tv/app/src/main/java/com/furkanisikay/namazakisi/tv/cekirdek/Rakam.kt'),
+      'utf8'
+    );
+    const yerel = Object.fromEntries(
+      [...kt.match(/private val YEREL = mapOf\(([^)]*)\)/)![1].matchAll(/"(\w+)" to "(\w+)"/g)].map((m) => [m[1], m[2]])
+    );
+    expect(yerel).toEqual(Object.fromEntries(RAKAM_SECIMLI_DILLER.map((d) => [d, dilYerelRakami(d)])));
+    const ulke = kt.match(/private val ULKE = mapOf\("(\w+)" to setOf\(([^)]*)\)\.associateWith \{ "latn" \}\)/)!;
+    const ulkeler = [...ulke[2].matchAll(/"([A-Z]{2})"/g)].map((m) => m[1]);
+    const beklenen = Object.entries(RAKAM_ULKE_VARSAYILANLARI).map(([d, t]) => [d, Object.keys(t!).sort(), Object.values(t!)]);
+    expect(beklenen).toEqual([[ulke[1], [...ulkeler].sort(), ulkeler.map(() => 'latn')]]);
   });
 });

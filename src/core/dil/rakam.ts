@@ -95,6 +95,29 @@ export function rakamSistemiCoz(dil: DilKodu, secim: unknown, ulke: string | nul
   return ulkeninki ?? dilRakamVarsayilani(dil);
 }
 
+/**
+ * TV'ye giden rakam kararı girdisi (cihaz ağı yükü `durum.rakam`; TV ikizi `tv/.../cekirdek/Rakam.kt`).
+ * TV kendi dilinde aynı sırayla çözer (açık seçim → ülke → dil): `u` konumun ülkesi, `s` yalnız
+ * GEÇERLİ açık seçimler (dil başına). İkisi de yoksa `null` (alan gönderilmez).
+ */
+export interface TvRakamOzeti {
+  u?: string;
+  s?: Record<string, RakamSistemi>;
+}
+
+export function tvRakamOzeti(ulke: string | null, secimler: unknown): TvRakamOzeti | null {
+  const s: Record<string, RakamSistemi> = {};
+  if (secimler && typeof secimler === 'object') {
+    for (const dil of RAKAM_SECIMLI_DILLER) {
+      const secim = (secimler as Record<string, unknown>)[dil];
+      if (rakamSecimiGecerliMi(dil, secim)) s[dil] = secim;
+    }
+  }
+  const u = ulke && /^[A-Z]{2}$/.test(ulke) ? ulke : undefined;
+  if (!u && Object.keys(s).length === 0) return null;
+  return { ...(u ? { u } : {}), ...(Object.keys(s).length > 0 ? { s } : {}) };
+}
+
 const BATI_RAKAMI = /[0-9]/g;
 /** Girişte Batıya çevrilen yerel rakamlar: Doğu Arap, Farsça/Urduca (genişletilmiş), Bengalce. */
 const NORMALLESEN_SIFIRLAR = [0x0660, 0x06f0, 0x09e6] as const;

@@ -73,44 +73,47 @@ private fun Uygulama(depo: KonumDeposu, sunucu: TvSunucusu) {
         }
     }
 
-    when {
-        il != null && ekran == Ekran.Pano ->
-            PanoEkrani(il = il, ekraniAcikTut = true, uyeler = uyeler, onAyarlar = { ekran = Ekran.Ayarlar })
-        ekran == Ekran.Ayarlar -> TvAyarlarEkrani(
-            uyeler = uyeOzetleri,
-            konumAdi = il?.ad,
-            onTelefonEkle = { ekran = Ekran.Esleme },
-            onKodla = { ekran = Ekran.Kod },
-            onIlSec = { ekran = Ekran.Il },
-            onKaldir = { sunucu.depo.uyeSil(it) },
-            onGeri = { ekran = if (il != null) Ekran.Pano else Ekran.Esleme },
-        )
-        ekran == Ekran.Kod -> KodGirisEkrani(
-            depo = depo,
-            onTamam = {
-                sunucu.depo.konumSahibiniBirak()
-                tamam(it)
-            },
-            onGeri = { ekran = if (il != null) Ekran.Ayarlar else Ekran.Esleme },
-        )
-        ekran == Ekran.Il -> IlSecimEkrani(
-            iller = depo.iller,
-            seciliPlaka = depo.seciliPlaka(),
-            onSec = {
-                depo.kaydet(it.plaka)
-                sunucu.depo.konumSahibiniBirak()
-                tamam(it)
-            },
-            onGeri = { ekran = if (il != null) Ekran.Ayarlar else Ekran.Esleme },
-        )
-        else -> EslemeEkrani(
-            sunucu = sunucu,
-            konum = depo,
-            onTamam = tamam,
-            onKodla = { ekran = Ekran.Kod },
-            onIlSec = { ekran = Ekran.Il },
-            // İlk kurulumda null → geri tuşu uygulamadan çıkar.
-            onGeri = if (il != null) ({ ekran = Ekran.Ayarlar }) else null,
-        )
+    // Rakam sistemi konumun ülkesine göre (telefonla aynı karar, `cekirdek/Rakam.kt`).
+    RakamSaglayici(il) {
+        when {
+            il != null && ekran == Ekran.Pano ->
+                PanoEkrani(il = il, ekraniAcikTut = true, uyeler = uyeler, onAyarlar = { ekran = Ekran.Ayarlar })
+            ekran == Ekran.Ayarlar -> TvAyarlarEkrani(
+                uyeler = uyeOzetleri,
+                konumAdi = il?.ad,
+                onTelefonEkle = { ekran = Ekran.Esleme },
+                onKodla = { ekran = Ekran.Kod },
+                onIlSec = { ekran = Ekran.Il },
+                onKaldir = { sunucu.depo.uyeSil(it) },
+                onGeri = { ekran = if (il != null) Ekran.Pano else Ekran.Esleme },
+            )
+            ekran == Ekran.Kod -> KodGirisEkrani(
+                depo = depo,
+                onTamam = {
+                    sunucu.depo.konumSahibiniBirak()
+                    tamam(it)
+                },
+                onGeri = { ekran = if (il != null) Ekran.Ayarlar else Ekran.Esleme },
+            )
+            ekran == Ekran.Il -> IlSecimEkrani(
+                iller = depo.iller,
+                seciliPlaka = depo.seciliPlaka(),
+                onSec = {
+                    depo.kaydet(it.plaka)
+                    sunucu.depo.konumSahibiniBirak()
+                    tamam(it)
+                },
+                onGeri = { ekran = if (il != null) Ekran.Ayarlar else Ekran.Esleme },
+            )
+            else -> EslemeEkrani(
+                sunucu = sunucu,
+                konum = depo,
+                onTamam = tamam,
+                onKodla = { ekran = Ekran.Kod },
+                onIlSec = { ekran = Ekran.Il },
+                // İlk kurulumda null → geri tuşu uygulamadan çıkar.
+                onGeri = if (il != null) ({ ekran = Ekran.Ayarlar }) else null,
+            )
+        }
     }
 }

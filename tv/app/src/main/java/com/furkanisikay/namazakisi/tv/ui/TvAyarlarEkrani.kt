@@ -110,7 +110,7 @@ fun TvAyarlarEkrani(
                                 Spacer(Modifier.height(8.dp))
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
-                                        sonHaberMetni(u.sonHaberMs, simdi),
+                                        sonHaberMetni(u.sonHaberMs, simdi).yerelRakam(),
                                         color = Renkler.metinIkincil, fontSize = 24.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier.weight(1f).padding(start = 76.dp, end = 12.dp),
                                     )
