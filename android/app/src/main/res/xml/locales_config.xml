@@ -24,4 +24,9 @@
   <locale android:name="ps"/>
   <locale android:name="ckb"/>
   <locale android:name="ug"/>
+  <locale android:name="az"/>
+  <locale android:name="uz"/>
+  <locale android:name="kk"/>
+  <locale android:name="ky"/>
+  <locale android:name="tg"/>
 </locale-config>
