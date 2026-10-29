@@ -27,7 +27,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler, useTema } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
-import { bugunuAl } from '../../../core/utils/TarihYardimcisi';
+import { bugunuAl, gunEkle } from '../../../core/utils/TarihYardimcisi';
 import { VARSAYILAN_NAFILE_AYARLARI } from '../../../core/nafile/nafileTipleri';
 import { useEkranSinifi } from '../../hooks/useEkranSinifi';
 
@@ -566,6 +566,45 @@ describe('AnaSayfa', () => {
 
       expect(mockPagerSetPage).not.toHaveBeenCalled();
       expect(mockPagerSetPageWithoutAnimation).not.toHaveBeenCalled();
+    });
+
+    /**
+     * Konum diskten açılıştan SONRA gelir: ilk hesap varsayılan konumla aktif günü dün
+     * bulur, pager orada doğar; gerçek konumla aktif gün bugün olur ve sayfa komutu gider.
+     * Native pager bu komutu layout'tan önce yutup açılış sayfasını bildirirse komut
+     * yenilenmeli, yoksa ana ekran dünde kalır (vakit kartı çizilmez).
+     */
+    it('aktif gün açılıştan sonra değişince yutulan sayfa komutu yenilenir', async () => {
+      geceYarisiSenaryosu();
+      const ekran = await kur(gunEkle(bugunuAl(), -1));
+      expect(mockPagerProplari[0].initialPage).toBe(BUGUN_INDEKSI - 1);
+
+      {
+        // Konum diskten geldi: koordinat değişir, aktif gün yeniden hesaplanır (bugün).
+        gunduzSenaryosu();
+        const ilk = stateOlustur(gunEkle(bugunuAl(), -1));
+        const yeni = { ...ilk, konum: { ...ilk.konum, koordinatlar: { lat: 3.139, lng: 101.6869 } } };
+        (useAppSelector as unknown as jest.Mock).mockImplementation(
+          (selector: (s: typeof yeni) => unknown) => selector(yeni)
+        );
+        await act(async () => {
+          yenidenCiz(ekran);
+          await Promise.resolve();
+        });
+        expect(mockPagerSetPageWithoutAnimation).toHaveBeenLastCalledWith(BUGUN_INDEKSI);
+
+        const pager = mockPagerProplari[mockPagerProplari.length - 1] as unknown as {
+          onPageSelected: (e: { nativeEvent: { position: number } }) => void;
+        };
+        // Komut yutuldu: pager açılış sayfasını bildiriyor → komut yenilenir.
+        act(() => pager.onPageSelected({ nativeEvent: { position: BUGUN_INDEKSI - 1 } }));
+        expect(mockPagerSetPageWithoutAnimation).toHaveBeenCalledTimes(2);
+        expect(mockPagerSetPageWithoutAnimation).toHaveBeenLastCalledWith(BUGUN_INDEKSI);
+
+        // Komut uygulandı: yeni komut yok.
+        act(() => pager.onPageSelected({ nativeEvent: { position: BUGUN_INDEKSI } }));
+        expect(mockPagerSetPageWithoutAnimation).toHaveBeenCalledTimes(2);
+      }
     });
   });
 

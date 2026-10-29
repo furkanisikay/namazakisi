@@ -228,6 +228,10 @@ export const AnaSayfa: React.FC = () => {
   // gelmez) → kullanıcının bir sonraki elle kaydırmasındaki "gelecek gün" uyarısı
   // yutulurdu. Bu yüzden ref, sayfanın değiştiği ÜÇ yerde elle yazılır.
   const mevcutSayfaIndeksiRef = useRef(BASLANGIC_SAYFA_INDEKSI);
+  // Açılıştan hemen sonra (konum diskten gelince aktif gün değişir) gönderilen sayfa
+  // komutunu native pager layout'tan önce YUTABİLİR; ardından açılış sayfasını bildirir
+  // ve seçili gün eski güne döner. Bekleyen hedef, böyle bir bildirimde komutu yeniler.
+  const bekleyenSayfaRef = useRef<{ indeks: number; zaman: number; deneme: number } | null>(null);
   /** İlk render mı? Açılış sayfası state'ini bir kez hizalamak için. */
   const ilkKareRef = useRef(true);
 
@@ -421,6 +425,7 @@ export const AnaSayfa: React.FC = () => {
       // bir sonraki elle kaydırmasındaki uyarıyı yutardı.
       if (yeniIndeks !== mevcutSayfaIndeksiRef.current) {
         programatikGecisRef.current = true;
+        bekleyenSayfaRef.current = { indeks: yeniIndeks, zaman: Date.now(), deneme: 0 };
         pagerRef.current?.setPageWithoutAnimation(yeniIndeks);
       }
       mevcutSayfaIndeksiRef.current = yeniIndeks;
@@ -1219,6 +1224,20 @@ export const AnaSayfa: React.FC = () => {
         initialPage={ilkSayfaIndeksi}
         onPageSelected={(e) => {
           const yeniIndeks = e.nativeEvent.position;
+
+          // Yutulan programatik komut: pager hedef yerine eski sayfayı bildiriyor → yenile.
+          // Süre ve deneme sınırlı: geç gelen bir ELLE kaydırma geri çevrilmesin.
+          const bekleyen = bekleyenSayfaRef.current;
+          if (bekleyen) {
+            if (yeniIndeks !== bekleyen.indeks && bekleyen.deneme < 2 && Date.now() - bekleyen.zaman < 3000) {
+              bekleyen.deneme += 1;
+              programatikGecisRef.current = true;
+              pagerRef.current?.setPageWithoutAnimation(bekleyen.indeks);
+              return;
+            }
+            bekleyenSayfaRef.current = null;
+          }
+
           const yeniTarih = sayfaIndeksiniTariheCevir(yeniIndeks);
 
           // Programatik geçiş (açılış snap'i / tarih seçici / aktif güne dönüş) ise toast
