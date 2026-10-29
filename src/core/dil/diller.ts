@@ -34,10 +34,10 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'sq', yerelAd: 'Shqip', yon: 'ltr', ttsDili: 'sq-AL', beta: true, secilebilir: true },
   { kod: 'hi', yerelAd: 'हिन्दी', yon: 'ltr', ttsDili: 'hi-IN', beta: true, secilebilir: true },
   { kod: 'bn', yerelAd: 'বাংলা', yon: 'ltr', ttsDili: 'bn-BD', beta: true, secilebilir: true },
-  { kod: 'fa', yerelAd: 'فارسی', yon: 'rtl', ttsDili: 'fa-IR', beta: true, secilebilir: false },
-  { kod: 'ps', yerelAd: 'پښتو', yon: 'rtl', ttsDili: 'ps-AF', beta: true, secilebilir: false },
-  { kod: 'ckb', yerelAd: 'کوردی', yon: 'rtl', ttsDili: 'ckb-IQ', beta: true, secilebilir: false },
-  { kod: 'ug', yerelAd: 'ئۇيغۇرچە', yon: 'rtl', ttsDili: 'ug-CN', beta: true, secilebilir: false },
+  { kod: 'fa', yerelAd: 'فارسی', yon: 'rtl', ttsDili: 'fa-IR', beta: true, secilebilir: true },
+  { kod: 'ps', yerelAd: 'پښتو', yon: 'rtl', ttsDili: 'ps-AF', beta: true, secilebilir: true },
+  { kod: 'ckb', yerelAd: 'کوردی', yon: 'rtl', ttsDili: 'ckb-IQ', beta: true, secilebilir: true },
+  { kod: 'ug', yerelAd: 'ئۇيغۇرچە', yon: 'rtl', ttsDili: 'ug-CN', beta: true, secilebilir: true },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';

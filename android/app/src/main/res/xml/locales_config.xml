@@ -20,4 +20,8 @@
   <locale android:name="sq"/>
   <locale android:name="hi"/>
   <locale android:name="bn"/>
+  <locale android:name="fa"/>
+  <locale android:name="ps"/>
+  <locale android:name="ckb"/>
+  <locale android:name="ug"/>
 </locale-config>
