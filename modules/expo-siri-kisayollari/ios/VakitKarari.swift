@@ -911,31 +911,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: ky
+    // ky
     public static let ky = VakitMetinleri(
         dil: "ky",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Багымдат", "ogle": "Бешим", "ikindi": "Аср", "aksam": "Шам", "yatsi": "Куптан"],
+        gunes: "Күн чыгыш",
+        konumYok: "Намаз убактылары эсептелиши үчүн колдонмону ачып, жайгашкан жериңизди коюңуз.",
+        veriEski: "Намаз убактылары эскирген. Аларды жаңыртуу үчүн колдонмону бир жолу ачыңыз.",
+        girisBugun: "саат {saat}",
+        girisYarin: "эртең саат {saat}",
+        suAnVakti: "Азыр {ad} убактысы.",
+        suAnVaktiCikis: "Азыр {ad} убактысы; ал саат {saat} бүтөт.",
+        siradakiNamaz: "Кийинки намаз — {ad}, {giris}.",
+        isaretlendi: "{ad} окулду деп белгиленди. {dua}.",
+        zatenKilindi: "{ad} мурунтан эле окулду деп белгиленген.",
+        vakitYok: "Азыр белгилей турган намаз жок.",
+        vakitYokSiradaki: "Азыр белгилей турган намаз жок. Кийинкиси {ad}, {giris}.",
+        onay: "{ad} окулду деп белгиленсинби?",
+        vakitDegisti: "Намаз убактысы өзгөргөндүктөн эч нерсе белгиленген жок. Кайра аракет кылыңыз.",
+        kabulDuasi: "Алла кабыл кылсын",
+        kildim: "Окудум",
+        kilindi: "Окулду",
+        kontrolKildim: "{ad} · Окудум",
+        kontrolKilindi: "{ad} окулду",
+        kontrolVakitYok: "Белгилей турган намаз жок",
+        uygulamayiAcin: "Колдонмону ачыңыз"
     )
 
     // ÇEVİRİ: tg

@@ -1,11 +1,10 @@
-// ÇEVİRİ: ky — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Сандар',
+  aciklama: 'Убакыт, дата жана сандар үчүн кайсы сандар колдонуларын тандаңыз.',
+  otomatik: 'Өлкөгө жараша',
+  otomatikAciklama: 'Жайгашкан жериңиздин өлкөсүндө кеңири колдонулган сандар колдонулат.',
+  dogu: 'Чыгыш араб сандары',
+  bati: 'Батыш сандары',
 };
