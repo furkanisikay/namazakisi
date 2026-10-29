@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: az — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- TV cütləşdirmə QR skaneri mətnləri — Azərbaycan dili (JS src/core/dil/sozluk/az). -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">TV ekranındakı QR kodu çərçivəyə salın</string>
+    <string name="tvesleme_qr_vazgec">Ləğv edin</string>
+    <string name="tvesleme_qr_vazgec_erisim">Skanlamanı ləğv edin</string>
+    <string name="tvesleme_qr_yabanci">Bu kod Namaz Akışı TV tətbiqinə aid deyil. TV-dəki kodu oxudun.</string>
+    <string name="tvesleme_qr_okundu">Kod oxundu</string>
 </resources>

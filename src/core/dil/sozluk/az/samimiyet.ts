@@ -1,35 +1,33 @@
-// ÇEVİRİ: az — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Azərbaycan müsəlmanlarının namazdan sonra və bayramlarda işlətdiyi ənənəvi ifadələr (tərcümə deyil):
+ * "Allah qəbul etsin", "Qəbul olsun", "Namazınız qəbul olsun". Tərif, "!" və qılınmamışa hökm yoxdur.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Xeyirli olsun.',
+  kabulDualari: ['Allah qəbul etsin', 'Qəbul olsun', 'Allah qəbul etsin', 'Namazınız qəbul olsun'],
+  kabulDuasi: 'Allah qəbul etsin',
+  ekSabah: 'Sabahınız xeyir',
+  ekYatsi: 'Gecəniz xeyrə qalsın',
+  tamGunAna: 'Allah qəbul etsin',
+  tamGunAlt: 'Bu gün beş vaxt namazı tamamladınız.',
+  kazaKabul: 'Dəftərinizdən bir {vakit} qəzası çıxıldı. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Rəğaib gecəniz mübarək olsun',
+    mirac: 'Merac gecəniz mübarək olsun',
+    berat: 'Bərat gecəniz mübarək olsun',
+    mevlid: 'Mövlud gecəniz mübarək olsun',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'Sahurunuz xeyirli olsun',
+    bayram: 'Bayramınız mübarək olsun',
+    iftar: 'İftarınız xeyirli olsun',
+    kadir: 'Qədr gecəniz mübarək olsun',
+    arefe: 'Ərəfəniz mübarək olsun',
+    hicriYilbasi: 'Hicri yeni iliniz mübarək olsun',
+    cuma: 'Cüməniz mübarək olsun',
+    ramazan: 'Ramazan ayınız mübarək olsun',
+    sabah: 'Sabahınız xeyir',
   },
 };

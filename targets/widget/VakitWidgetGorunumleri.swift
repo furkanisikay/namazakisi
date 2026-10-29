@@ -531,29 +531,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "ھازىرقى ۋاقىتنى ئوقۇلدى دەپ بەلگىلەيدۇ."
     )
 
-    // ÇEVİRİ: az
+    // az — Azerice (beta); JS `sozluk/az` ("Qıldım" / "Qılındı")
     static let az = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Namaz vaxtı",
+        galeriAciklama: "Hazırkı vaxt, onun çıxmasına qalan müddət və günün vaxtları.",
+        veriEski: "Vaxtları yeniləmək üçün tətbiqi açın",
+        konumYok: "Məkanınızı tənzimləmək üçün tətbiqi açın",
+        kilindiSiradaki: "{ad} qılındı · {sonraki} {saat}",
+        adCikis: "{ad} · çıxış {saat}",
+        siradakiAdSaat: "Növbəti {ad} {saat}",
+        vaktiCikisErisim: "{ad} vaxtı, çıxış {saat}",
+        siradakiErisim: "Növbəti {ad}, {saat}",
+        cikisSaat: "Çıxış {saat}",
+        bitisSaat: "Bitmə {saat}",
+        kilindiBaslik: "{ad} qılındı",
+        siradaki: "Növbəti",
+        siradakiAd: "Növbəti {ad}",
+        kildimErisim: "{ad} namazını qıldım",
+        gunSatiriKilindi: ", qılındı",
+        bitti: "Bitdi",
+        vakitCikti: "Vaxt çıxdı",
+        kabulAlt: "{ad} namazı qılındı",
+        kontrolAdi: "Vaxtı qıldım",
+        kontrolAciklama: "Hazırkı vaxtı qılındı kimi qeyd edir."
     )
 
     // ÇEVİRİ: uz

@@ -134,8 +134,8 @@ enum NamazAlarmCekirdegi {
         "ckb": "وەستاندن",
         // ug
         "ug": "توختىتىش",
-        // ÇEVİRİ: az
-        "az": "Stop",
+        // az
+        "az": "Dayandır",
         // ÇEVİRİ: uz
         "uz": "Stop",
         // ÇEVİRİ: kk

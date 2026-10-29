@@ -315,18 +315,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Muhammad Saleh، QuranEnc 1.0.2"
     )
 
-    // ÇEVİRİ: az
+    // az — Azerice (beta); JS `sozluk/az/gununAyeti.ts`, meal 94:6 `gununAyetiHavuzu.ts` (azeri_musayev)
     static let az = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
+        galeriAdi: "Günün ayəsi",
+        galeriAciklama: "Hər gün sübhdə dəyişən bir ayə və onun tərcüməsi.",
+        etiket: "GÜNÜN AYƏSİ",
+        uygulamayiAcin: "Günün ayəsini görmək üçün tətbiqi açın",
+        ornekSigmiyor: "Bu günün ayəsi bu ölçüyə sığmır. Oxumaq üçün toxunun.",
+        ornekAcin: "Açın",
+        ornekArapcaKaynagi: "Ərəbcə: Tanzil",
+        ornekMeal: "Əlbəttə ki, çətinliklə bərabər bir asanlıq vardır.",
         ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        ornekMealKaynagi: "Ali Khan Musayev, QuranEnc 1.0.4"
     )
 
     // ÇEVİRİ: uz

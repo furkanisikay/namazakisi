@@ -1,15 +1,14 @@
-// ÇEVİRİ: az — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Davam edin',
+  vazgecin: 'Ləğv edin',
+  kapatin: 'Bağlayın',
+  ayarlariAcin: 'Parametrləri açın',
+  simdilikGecin: 'Hələlik keçin',
+  tekrarDeneyin: 'Yenidən cəhd edin',
+  evet: 'Bəli',
+  hayir: 'Xeyr',
+  ayrintilariAcar: 'Ətraflı məlumatı açır',
   marka: 'Namaz Akışı',
 };
