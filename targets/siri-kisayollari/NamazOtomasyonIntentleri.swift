@@ -269,11 +269,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Xeyr, hələ qeyd olunmayıb."
     )
 
-    // ÇEVİRİ: uz
+    // uz — Özbekçe (beta, LATİN); JS `sozluk/uz` (sayıdan sonra çoğul eki yok)
     static let uz = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} kirishiga {n} daqiqa qoldi.", "other": "{ad} kirishiga {n} daqiqa qoldi."],
+        evetKilindi: "Ha, oʻqildi deb belgilangan.",
+        hayirKilinmadi: "Yoʻq, hali belgilanmagan."
     )
 
     // kk — Kazakca (beta, Kiril); sayidan sonra isim cogul eki almaz

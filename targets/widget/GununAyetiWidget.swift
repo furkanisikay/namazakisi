@@ -329,18 +329,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Ali Khan Musayev, QuranEnc 1.0.4"
     )
 
-    // ÇEVİRİ: uz
+    // uz — Özbekçe (beta, LATİN); meal `gununAyetiHavuzu.ts` 94:6 (uzbek_rwwad, Kiril) kirildenLatine ile — JS `yaziyaCevir` ikizi
     static let uz = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Kun oyati",
+        galeriAciklama: "Har kuni bomdodda almashadigan oyat va uning tarjimasi.",
+        etiket: "KUN OYATI",
+        uygulamayiAcin: "Kun oyatini koʻrish uchun ilovani oching",
+        ornekSigmiyor: "Bugungi oyat bu oʻlchamga sigʻmaydi. Oʻqish uchun bosing.",
+        ornekAcin: "Ochish",
+        ornekArapcaKaynagi: "Arabcha: Tanzil",
+        ornekMeal: "Albatta, bir qiyinchilik bilan bir osonlik bordir.",
+        ornekKisaKunye: "Qurʼon 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.4"
     )
 
     // kk — Kazakça (beta, Kiril): meal `gununAyetiHavuzu.ts` 94:6 birebir (kazakh_altai), künye `mealler.kk`

@@ -424,18 +424,18 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: "."
     )
 
-    // ÇEVİRİ: uz
+    // uz — Özbekçe (beta, LATİN); JS `sozluk/uz/kible.ts` (binlik ayırıcı CLDR uz: bölünmez boşluk)
     public static let uz = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Orqangizda",
+        saga: "Oʻngga {derece}°",
+        sola: "Chapga {derece}°",
+        hizali: "Siz qiblaga qarab turibsiz",
+        arkadaErisim: "Qibla orqangizda",
+        sagdaErisim: "Qibla oʻng tomoningizda, {derece} daraja",
+        soldaErisim: "Qibla chap tomoningizda, {derece} daraja",
+        kabede: "Kaʼbadasiz",
         mesafe: "{km} km",
-        binlikAyirici: ","
+        binlikAyirici: "\u{00A0}"
     )
 
     // kk — Kazakça (beta, Kiril); JS `sozluk/kk/kible.ts`. Binlik ayırıcı CLDR kk: bölünmez boşluk.

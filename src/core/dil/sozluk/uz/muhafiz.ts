@@ -1,61 +1,60 @@
-// ÇEVİRİ: uz — İngilizce iskelet; çeviri KİRİL yazılır (Latin biçim çalışma anında `kirildenLatine`, core/dil/yazi.ts), çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı: "сен" + yalın emir, kısa; secde ifadesi YAZILMAZ →
+ * "намозга тур". Övgü ve "!" yok. Başlıkta süre birimi "дақ": "Хуфтон · 655 дақ" ilk 16
+ * karaktere sığar (bileklik).
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} дақ ўтди · вақт кирди ⏰',
+    giris2: '{ad} · {dk} дақ ўтди · намозни кечиктирма ⚠️',
+    giris3: '{ad} · {dk} дақ ўтди · намоз сени кутмоқда 🔥',
+    giris4: '{ad} · {dk} дақ ўтди · НАМОЗГА ТУР 🚨',
+    erken3: '{ad} · {dk} дақ қолди · намоз сени кутмоқда 🔥',
+    erken4: '{ad} · {dk} дақ қолди · НАМОЗГА ТУР 🚨',
+    cikis1: '{ad} · {dk} дақ қолди ⏰',
+    cikis2: '{ad} · {dk} дақ · вақт торайяпти ⚠️',
+    cikis3: '{ad} · {dk} дақ · вақт қўлдан кетяпти 🔥',
+    cikis4: '{ad} · {dk} дақ · ВАҚТ ЧИҚЯПТИ 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Намоз вақти кирди; имконинг борида ўқи.', 'Вақт сен томонда экан, ўқи, кейинга қолмасин.'],
+    s2: ['Кечиктирганинг сари оғирлашади; намозни охирига қолдирма.', 'Вақт ўтмоқда — намозингни ҳозир ўқи.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Намозни кечиктирганинг сари уни қолдиришга яқинлашасан; дарҳол ўқи.',
+      '«Кейин ўқийман» дема; ҳозир ўқишинг мумкин.',
+      'Бир неча дақиқадан кейин «кошки» дейиш ўрнига ҳозир тур.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Намозни бошқа кечиктирма — дарҳол намозга тур.', 'Қўлингдаги ишни қўй, намозга тур.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Вақт торая бошлади, имконинг борида ўқи.',
+    s2: 'Намозни охирига қолдирма; ҳозир ўқиш учун вақт қулай.',
+    s3: 'Вақт тугаш арафасида; ҳозир ўқишинг мумкин.',
+    s4: 'Ўқиган бўлсанг, «Ўқидим»ни бос; ўқимаган бўлсанг, дарҳол намозга тур.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'НАМОЗНИ КЕЧИКТИРМА. Дарҳол намозга тур. ({dk} дақ ўтди)',
+    giris2: 'Вақт ўтмоқда, намозни охирига қолдирма. ({dk} дақ ўтди)',
+    giris1: cogul({ one: 'Намоз вақти кирганига {n} дақиқа бўлди.', other: 'Намоз вақти кирганига {n} дақиқа бўлди.' }),
+    erken4: 'Намозни кечиктирма, дарҳол намозга тур. ({dk} дақ қолди)',
+    cikis4: 'ВАҚТ ЧИҚЯПТИ. Дарҳол намозга тур. ({dk} дақ қолди)',
+    cikis2: 'Вақт торайяпти, намозни охирига қолдирма. ({dk} дақ қолди)',
+    cikis1: cogul({ one: 'Намоз вақти тугашига {n} дақиқа қолди.', other: 'Намоз вақти тугашига {n} дақиқа қолди.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · ухлашдан олдин ўқи ⏰',
+    govde: 'Сокин соатларга {dk} дақ қолди; ётишдан олдин хуфтонингни ўқи.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Вақт торая бошлади, имконинг борида ўқи.',
+    sonaBirakma: 'Намозни охирига қолдирма; ҳозир ўқиш учун вақт қулай.',
+    fisilti: '«Кейин ўқийман» дема; вақт тугаш арафасида, ҳозир ўқишинг мумкин.',
+    omur: 'Вақт ўтмоқда; бу намозни вақтида ўқиш учун ҳали имконинг бор.',
+    keske: 'Бир неча дақиқадан кейин «кошки» дейиш ўрнига ҳозир тур.',
+    namazaDur: 'Ўқиган бўлсанг, «Ўқидим»ни бос; ўқимаган бўлсанг, дарҳол намозга тур.',
+    sonDakika: 'Сўнгги дақиқалар. Қўлингдаги ишни қўй, намозга тур.',
   },
 };

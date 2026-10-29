@@ -379,19 +379,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", növbəti vaxt"
     )
 
-    // ÇEVİRİ: uz
+    // uz — Özbekçe (beta, LATİN): JS `sozluk/uz` (hitap "Siz", Kiril kaynak → kirildenLatine)
     static let uz = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Shahringizni tanlang",
+        ilMerkezi: "Namoz vaqtlari viloyat markazi uchun hisoblanadi. Tanlovingizni keyinroq oʻzgartirishingiz mumkin.",
+        ilSecErisim: "{il}, tanlash",
+        kalan: "{ad} vaqtigacha qolgan vaqt",
+        kalanErisim: "{ad} vaqtigacha qolgan vaqt: {sure}",
+        konumuDegistirin: "Joylashuvni oʻzgartirish",
+        kerahatSuruyor: "Makruh vaqt: {tur}, tugashi {bitis}. {aciklama}",
+        siradakiKerahat: "Keyingi makruh vaqt: {tur} {bas}–{bit}",
+        cumaBilgisi: "Bugun juma. Juma namozi peshin vaqtida oʻqiladi (kirishi {giris}).",
+        suAnkiEk: ", joriy namoz",
+        siradakiEk: ", keyingi namoz"
     )
 
     // kk — Kazakça (beta, Kiril): JS `sozluk/kk` (konum, anaEkran.kerahat, vakit)

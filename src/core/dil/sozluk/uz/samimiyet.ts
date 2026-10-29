@@ -1,35 +1,35 @@
-// ÇEVİRİ: uz — İngilizce iskelet; çeviri KİRİL yazılır (Latin biçim çalışma anında `kirildenLatine`, core/dil/yazi.ts), çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Özbek Müslümanlarının namazdan sonra ve mübarek günlerde söylediği yerleşik kalıplar
+ * (muslim.uz / islom.uz kullanımı), çeviri değil. "Аллоҳ қабул қилсин" baskın kalıp (iki yuva),
+ * "Қабул бўлсин" ve "Намозингиз қабул бўлсин" gündelik kullanım. Kandil geceleri Özbekistan'da
+ * resmî din kurumu takviminde (Рағоиб, Меърож, Бароат, Мавлид). Övgü ve "!" yok.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Хайрли бўлсин.',
+  kabulDualari: ['Аллоҳ қабул қилсин', 'Қабул бўлсин', 'Аллоҳ қабул қилсин', 'Намозингиз қабул бўлсин'],
+  kabulDuasi: 'Аллоҳ қабул қилсин',
+  ekSabah: 'Хайрли тонг',
+  ekYatsi: 'Хайрли тун',
+  tamGunAna: 'Аллоҳ қабул қилсин',
+  tamGunAlt: 'Бугун беш вақт намозни тўлиқ ўқидингиз.',
+  kazaKabul: 'Битта {vakit} қазоси дафтарингиздан чиқарилди. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Рағоиб кечаси муборак бўлсин',
+    mirac: 'Меърож кечаси муборак бўлсин',
+    berat: 'Бароат кечаси муборак бўлсин',
+    mevlid: 'Мавлид муборак бўлсин',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'Саҳарлигингиз хайрли бўлсин',
+    bayram: 'Ҳайитингиз муборак бўлсин',
+    iftar: 'Ифторингиз муборак бўлсин',
+    kadir: 'Қадр кечаси муборак бўлсин',
+    arefe: 'Арафа кунингиз муборак бўлсин',
+    hicriYilbasi: 'Ҳижрий янги йил муборак бўлсин',
+    cuma: 'Жума муборак',
+    ramazan: 'Рамазон ойи муборак бўлсин',
+    sabah: 'Хайрли тонг',
   },
 };

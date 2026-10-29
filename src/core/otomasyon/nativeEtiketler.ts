@@ -130,12 +130,12 @@ export const NATIVE_ETIKETLER: { tr: NativeEtiket } & Partial<Record<DilKodu, Na
     kosul: 'Namaz Akışı: Vaxt vəziyyəti', // dil-haric: marka adı (native etiket)
     eylem: 'Namaz Akışı: Qıldım', // dil-haric: marka adı (native etiket)
   },
-  // ÇEVİRİ: uz — values-uz İngilizce iskelet; çevrilince bu blok da güncellenir
+  // uz — values-uz LATİN (Android kaynakları Latin; docs/ajan/coklu-dil.md > Alfabe)
   uz: {
-    kisayol: "I've prayed the current prayer",
-    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
-    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
-    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+    kisayol: 'Joriy namozni oʻqidim',
+    olay: 'Namaz Akışı: Namoz vaqti hodisasi', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Namoz vaqti holati', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Oʻqidim', // dil-haric: marka adı (native etiket)
   },
   kk: {
     kisayol: 'Қазіргі намазды оқыдым',
