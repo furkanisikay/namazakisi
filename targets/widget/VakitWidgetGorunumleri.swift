@@ -556,29 +556,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: uz
+    // uz — Özbekçe (beta, LATİN): JS `sozluk/uz` (Kiril kaynak → kirildenLatine); "Oʻqidim" / "Oʻqildi"
     static let uz = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Namoz vaqti",
+        galeriAciklama: "Joriy namoz vaqti, uning tugashigacha qolgan vaqt va bugungi namoz vaqtlari.",
+        veriEski: "Namoz vaqtlarini yangilash uchun ilovani oching",
+        konumYok: "Joylashuvingizni belgilash uchun ilovani oching",
+        kilindiSiradaki: "{ad} oʻqildi · {sonraki} {saat}",
+        adCikis: "{ad} · tugashi {saat}",
+        siradakiAdSaat: "Keyingisi {ad} {saat}",
+        vaktiCikisErisim: "{ad} vaqti, tugashi {saat}",
+        siradakiErisim: "Keyingisi {ad}, {saat}",
+        cikisSaat: "Tugashi {saat}",
+        bitisSaat: "Tugashi {saat}",
+        kilindiBaslik: "{ad} oʻqildi",
+        siradaki: "Keyingi",
+        siradakiAd: "Keyingisi {ad}",
+        kildimErisim: "{ad} namozini oʻqidim",
+        gunSatiriKilindi: ", oʻqildi",
+        bitti: "Tugadi",
+        vakitCikti: "Vaqt chiqdi",
+        kabulAlt: "{ad} namozi oʻqildi",
+        kontrolAdi: "Oʻqidim",
+        kontrolAciklama: "Joriy namoz vaqtini oʻqildi deb belgilaydi."
     )
 
     // ÇEVİRİ: kk

@@ -1,4 +1,3 @@
-// ÇEVİRİ: uz — İngilizce iskelet; çeviri KİRİL yazılır (Latin biçim çalışma anında `kirildenLatine`, core/dil/yazi.ts), çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 import { ortak } from './ortak';
 import { kurulum } from './kurulum';

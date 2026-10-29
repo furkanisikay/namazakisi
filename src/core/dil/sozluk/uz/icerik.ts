@@ -1,15 +1,15 @@
-// ÇEVİRİ: uz — İngilizce iskelet; çeviri KİRİL yazılır (Latin biçim çalışma anında `kirildenLatine`, core/dil/yazi.ts), çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Vakit girdi metinleri ibadete çağrıdır: "сен" + yalın emir, kısa; övgü ve "!" yok. */
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Қуръон {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Намоз уйқудан яхшироқдир. Нажотга шошил.',
+    araVer: 'Дунё ишларига қисқа танаффус бер, Роббинг ҳузурида тур.',
+    yorgunluk: 'Кун чарчоғини тўкиб, хотиржамлик топишинг учун аср намози сени кутмоқда.',
+    sukur: 'Шом намози куннинг шукридир. Роббинг ҳузурига боришга шошил.',
+    aksamKisa: 'Шом вақти қисқа; вақт кирди, кечиктирмай ўқи.',
+    geceKaranligi: 'Тун қоронғусида Роббинг билан ёлғиз қол. Хуфтон намози руҳга шифодир.',
+    davet: 'Кунни Аллоҳнинг розилиги билан якунлаш учун хуфтон намозига чақириласан.',
   },
 };

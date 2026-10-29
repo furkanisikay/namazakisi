@@ -79,8 +79,8 @@ object CanliGuncellemeKurallari {
         "ug" to ("سائەت" to "مىنۇت"),
         // ÇEVİRİ: az
         "az" to ("h" to "min"),
-        // ÇEVİRİ: uz
-        "uz" to ("h" to "min"),
+        // uz (Latin)
+        "uz" to ("soat" to "daq"),
         // ÇEVİRİ: kk
         "kk" to ("h" to "min"),
         // ÇEVİRİ: ky

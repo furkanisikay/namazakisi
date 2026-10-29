@@ -1,11 +1,10 @@
-// ÇEVİRİ: uz — İngilizce iskelet; çeviri KİRİL yazılır (Latin biçim çalışma anında `kirildenLatine`, core/dil/yazi.ts), çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Рақамлар',
+  aciklama: 'Вақт, сана ва сонларда қайси рақамлар ишлатилишини танланг.',
+  otomatik: 'Мамлакатга кўра',
+  otomatikAciklama: 'Жойлашувингиз мамлакатида кенг тарқалган рақамлар ишлатилади.',
+  dogu: 'Шарқий араб рақамлари',
+  bati: 'Ғарб рақамлари',
 };

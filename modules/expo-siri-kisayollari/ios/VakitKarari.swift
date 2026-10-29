@@ -857,31 +857,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: uz
+    // uz — Ozbekce (beta, LATIN); terimler src/core/dil/sozluk/uz (Kiril kaynak → kirildenLatine; "Oʻqidim" / "Oʻqildi", hitap "Siz")
     public static let uz = VakitMetinleri(
         dil: "uz",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Bomdod", "ogle": "Peshin", "ikindi": "Asr", "aksam": "Shom", "yatsi": "Xufton"],
+        gunes: "Quyosh",
+        konumYok: "Namoz vaqtlarini hisoblash uchun ilovani ochib, joylashuvingizni belgilang.",
+        veriEski: "Namoz vaqtlari eskirgan. Yangilash uchun ilovani bir marta oching.",
+        girisBugun: "soat {saat} da",
+        girisYarin: "ertaga soat {saat} da",
+        suAnVakti: "Hozir {ad} vaqti.",
+        suAnVaktiCikis: "Hozir {ad} vaqti; soat {saat} da tugaydi.",
+        siradakiNamaz: "Keyingi namoz {ad}, {giris}.",
+        isaretlendi: "{ad} namozi oʻqildi deb belgilandi. {dua}.",
+        zatenKilindi: "{ad} namozi allaqachon oʻqildi deb belgilangan.",
+        vakitYok: "Hozir belgilanadigan namoz yoʻq.",
+        vakitYokSiradaki: "Hozir belgilanadigan namoz yoʻq. Keyingisi {ad}, {giris}.",
+        onay: "{ad} namozi oʻqildi deb belgilansinmi?",
+        vakitDegisti: "Namoz vaqti oʻzgardi, shuning uchun hech narsa belgilanmadi. Qayta urinib koʻring.",
+        kabulDuasi: "Alloh qabul qilsin",
+        kildim: "Oʻqidim",
+        kilindi: "Oʻqildi",
+        kontrolKildim: "{ad} · Oʻqidim",
+        kontrolKilindi: "{ad} oʻqildi",
+        kontrolVakitYok: "Belgilanadigan namoz yoʻq",
+        uygulamayiAcin: "Ilovani oching"
     )
 
     // ÇEVİRİ: kk

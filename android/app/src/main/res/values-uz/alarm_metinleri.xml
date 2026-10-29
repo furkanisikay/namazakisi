@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: uz — İngilizce iskelet (Latin alfabesiyle çevrilir: docs/ajan/coklu-dil.md > Alfabe), çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- uz -->
+<!-- Gerçek alarm (Özbekçe, LATİN). «Oʻqidim» bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">Namoz signali</string>
+  <string name="alarm_kildim">Oʻqidim</string>
+  <string name="alarm_kapat">Oʻchirish</string>
+  <string name="alarm_kanal_aciklamasi">Siz tanlagan eslatma qadamlarida jiringlaydigan haqiqiy signal</string>
 </resources>

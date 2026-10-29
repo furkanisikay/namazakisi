@@ -1,10 +1,10 @@
-// ÇEVİRİ: uz — İngilizce iskelet; çeviri KİRİL yazılır (Latin biçim çalışma anında `kirildenLatine`, core/dil/yazi.ts), çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Özbekçede sayıdan sonra isim çoğul eki almaz ("5 дақиқа"); iki kategori de aynı. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: 'соат', dk: 'дақ', sn: 'с' },
+  saat: cogul({ one: '{n} соат', other: '{n} соат' }),
+  dakika: cogul({ one: '{n} дақиқа', other: '{n} дақиқа' }),
+  saniye: cogul({ one: '{n} сония', other: '{n} сония' }),
 };

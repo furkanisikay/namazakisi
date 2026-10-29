@@ -1,15 +1,14 @@
-// ÇEVİRİ: uz — İngilizce iskelet; çeviri KİRİL yazılır (Latin biçim çalışma anında `kirildenLatine`, core/dil/yazi.ts), çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Давом этиш',
+  vazgecin: 'Бекор қилиш',
+  kapatin: 'Ёпиш',
+  ayarlariAcin: 'Созламаларни очиш',
+  simdilikGecin: 'Ҳозирча ўтказиб юбориш',
+  tekrarDeneyin: 'Қайта уриниш',
+  evet: 'Ҳа',
+  hayir: 'Йўқ',
+  ayrintilariAcar: 'Тафсилотларни очади',
   marka: 'Namaz Akışı',
 };

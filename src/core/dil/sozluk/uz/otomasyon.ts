@@ -1,10 +1,9 @@
-// ÇEVİRİ: uz — İngilizce iskelet; çeviri KİRİL yazılır (Latin biçim çalışma anında `kirildenLatine`, core/dil/yazi.ts), çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'вақти кирди',
+  vakitGirdiBasligi: '{ad} вақти кирди',
+  herhangiVakit: 'Исталган намоз вақти кирганда',
+  yalnizVakit: 'Фақат {ad} вақти кирганда',
+  camide: 'Масжидда эканлигингиз аниқланганда (Масжиддаман ёниқ бўлса)',
 };
