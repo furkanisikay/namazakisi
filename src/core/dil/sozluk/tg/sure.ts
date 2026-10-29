@@ -1,10 +1,10 @@
-// ÇEVİRİ: tg — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Tacikçede sayıdan sonra ad tekildir ("5 дақиқа"); kısa birimler "соат", "дақ", "сон". */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: 'соат', dk: 'дақ', sn: 'сон' },
+  saat: cogul({ one: '{n} соат', other: '{n} соат' }),
+  dakika: cogul({ one: '{n} дақиқа', other: '{n} дақиқа' }),
+  saniye: cogul({ one: '{n} сония', other: '{n} сония' }),
 };

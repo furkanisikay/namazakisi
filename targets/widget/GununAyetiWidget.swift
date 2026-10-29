@@ -371,18 +371,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Shamsuddin Hakimov, QuranEnc 1.0.2"
     )
 
-    // ÇEVİRİ: tg
+    // tg — meal 94:6 `gununAyetiHavuzu.ts` (tajik_arifi), künye `GUNUN_AYETI_KAYNAKLARI.mealler.tg`
     static let tg = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Ояти рӯз",
+        galeriAciklama: "Оят бо тарҷумааш, ки ҳар рӯз ҳангоми бомдод иваз мешавад.",
+        etiket: "ОЯТИ РӮЗ",
+        uygulamayiAcin: "Барои дидани ояти рӯз барномаро кушоед",
+        ornekSigmiyor: "Ояти имрӯз ба ин андоза намеғунҷад. Барои хондан пахш кунед.",
+        ornekAcin: "Кушодан",
+        ornekArapcaKaynagi: "Арабӣ: Tanzil",
+        ornekMeal: "[Оре] Мусалламан, бо [ҳар] душворӣ осонӣ аст",
+        ornekKisaKunye: "Қуръон 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.2"
     )
 
     static let tablo: [String: GununAyetiYerelMetinleri] = [

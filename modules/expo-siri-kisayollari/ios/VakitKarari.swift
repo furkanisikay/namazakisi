@@ -938,31 +938,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Колдонмону ачыңыз"
     )
 
-    // ÇEVİRİ: tg
+    // tg — Tacikçe (beta): JS `sozluk/tg` (Kıldım "Хондам", Kılındı "Хонда шуд", hitap "Шумо")
     public static let tg = VakitMetinleri(
         dil: "tg",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Бомдод", "ogle": "Пешин", "ikindi": "Аср", "aksam": "Шом", "yatsi": "Хуфтан"],
+        gunes: "Тулӯъ",
+        konumYok: "Барои ҳисоб кардани вақтҳо барномаро кушода, макони худро танзим кунед.",
+        veriEski: "Вақтҳои намоз кӯҳна шудаанд. Барои навсозӣ барномаро як бор кушоед.",
+        girisBugun: "соати {saat}",
+        girisYarin: "фардо соати {saat}",
+        suAnVakti: "Ҳозир вақти {ad} аст.",
+        suAnVaktiCikis: "Ҳозир вақти {ad} аст; соати {saat} ба охир мерасад.",
+        siradakiNamaz: "Намози навбатӣ {ad}, {giris}.",
+        isaretlendi: "Намози {ad} ҳамчун хондашуда қайд шуд. {dua}.",
+        zatenKilindi: "Намози {ad} аллакай ҳамчун хондашуда қайд шудааст.",
+        vakitYok: "Ҳоло вақте барои қайд нест.",
+        vakitYokSiradaki: "Ҳоло вақте барои қайд нест. Навбатӣ {ad}, {giris}.",
+        onay: "Намози {ad} ҳамчун хондашуда қайд шавад?",
+        vakitDegisti: "Вақт иваз шуд, қайд анҷом нашуд. Боз кӯшиш кунед.",
+        kabulDuasi: "Худо қабул кунад",
+        kildim: "Хондам",
+        kilindi: "Хонда шуд",
+        kontrolKildim: "{ad} · Хондам",
+        kontrolKilindi: "{ad} хонда шуд",
+        kontrolVakitYok: "Вақте барои қайд нест",
+        uygulamayiAcin: "Барномаро кушоед"
     )
 
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).

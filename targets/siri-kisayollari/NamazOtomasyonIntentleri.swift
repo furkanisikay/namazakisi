@@ -290,11 +290,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Жок, ал азырынча белгилене элек."
     )
 
-    // ÇEVİRİ: tg
+    // tg — Tacikçe (beta): JS `sozluk/tg`; CLDR tg one/other, sayıdan sonra ad tekil (one = other)
     static let tg = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "То вақти {ad} {n} дақиқа монд.", "other": "То вақти {ad} {n} дақиқа монд."],
+        evetKilindi: "Ҳа, ҳамчун хондашуда қайд шудааст.",
+        hayirKilinmadi: "Не, ҳанӯз қайд нашудааст."
     )
 
     static let tablo: [String: OtomasyonMetinleri] = [

@@ -222,12 +222,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} секунд", "other": "{n} секунд"]
     )
 
-    // ÇEVİRİ: tg
+    // tg — Tacikçe (beta): JS `sozluk/tg/sure.ts` birebir (kısa birim соат/дақ/сон; sayıdan sonra ad tekil, one = other)
     public static let tg = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "соат", birimDk: "дақ", birimSn: "сон",
+        saat: ["one": "{n} соат", "other": "{n} соат"],
+        dakika: ["one": "{n} дақиқа", "other": "{n} дақиқа"],
+        saniye: ["one": "{n} сония", "other": "{n} сония"]
     )
 
     public static let tablo: [String: SaatSureMetinleri] = [
