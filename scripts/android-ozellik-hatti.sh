@@ -191,6 +191,11 @@ hazirlik_uygula() {
         done
       fi
       ;;
+    dunya-baku)
+      # Azerbaycan karti: cihaz Baki saatinde (vakitler yerel saatle).
+      adb shell cmd alarm set-timezone Asia/Baku >/dev/null 2>&1 \
+        || adb shell service call alarm 3 s16 Asia/Baku >/dev/null 2>&1 || true
+      ;;
     gunun-ayeti-cihaz)
       # Kilit ekrani karesi icin tus kilidi (kaydirma) acik olmali; emulator imajinda kapali olabilir.
       adb shell locksettings set-disabled false >/dev/null 2>&1 || true
@@ -227,6 +232,10 @@ hazirlik_bitir() {
           adb shell settings put global "$a" 0
         done
       fi
+      adb shell cmd alarm set-timezone Europe/Istanbul >/dev/null 2>&1 \
+        || adb shell service call alarm 3 s16 Europe/Istanbul >/dev/null 2>&1 || true
+      ;;
+    dunya-baku)
       adb shell cmd alarm set-timezone Europe/Istanbul >/dev/null 2>&1 \
         || adb shell service call alarm 3 s16 Europe/Istanbul >/dev/null 2>&1 || true
       ;;
