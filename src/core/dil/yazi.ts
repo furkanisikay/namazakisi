@@ -161,8 +161,18 @@ function uzHarf(harf: string, onceki: string | undefined): string {
  * harf: tek büyük harf → "Sh", komşu harf de büyükse (önce sonraki, yoksa önceki Kiril harfe bakılır)
  * "SH".
  */
+/**
+ * Özbekçe resmî Latin yazımı harf harf çeviriden ayrılan sözcükler (ay adları "sentabr",
+ * "oktabr"; harf çevirisi "sentyabr" verirdi). Kök değişir, ek aynen çevrilir.
+ */
+const UZ_ISTISNALAR: ReadonlyArray<readonly [RegExp, string]> = [
+  [/СЕНТЯБР/g, 'SENTABR'], [/Сентябр/g, 'Sentabr'], [/сентябр/g, 'sentabr'],
+  [/ОКТЯБР/g, 'OKTABR'], [/Октябр/g, 'Oktabr'], [/октябр/g, 'oktabr'],
+];
+
 export function kirildenLatine(dil: DilKodu, metin: string): string {
   if (dil !== 'uz' && dil !== 'kk') return metin;
+  if (dil === 'uz') for (const [desen, latin] of UZ_ISTISNALAR) metin = metin.replace(desen, latin);
   const buyuge = dil === 'uz' ? UZ_BUYUGE : KK_BUYUGE;
   let cikti = '';
   for (let i = 0; i < metin.length; i++) {

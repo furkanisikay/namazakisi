@@ -1067,7 +1067,7 @@ object TvDiliUz : TvDili {
     override val cuma = "Juma"
     override val aylar = listOf(
         "yanvar", "fevral", "mart", "aprel", "may", "iyun",
-        "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr",
+        "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr",
     )
     override val gunler = listOf("Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba")
     override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $yil yil $gun $ay"

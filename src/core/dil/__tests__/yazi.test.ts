@@ -48,6 +48,12 @@ afterEach(() => aktifDilSifirla());
 describe('Özbekçe Kiril → Latin (1995)', () => {
   const uz = (s: string) => kirildenLatine('uz', s);
 
+  it('resmî yazımı harf çevirisinden ayrılan ay adları: sentabr, oktabr (ekler korunur)', () => {
+    expect(uz('сентябрь')).toBe('sentabr');
+    expect(uz('Октябрь ойи, 29 октябрда')).toBe('Oktabr oyi, 29 oktabrda');
+    expect(uz('ноябрь январь')).toBe('noyabr yanvar');
+  });
+
   it('temel harfler, ʻ (U+02BB) ve ʼ (U+02BC)', () => {
     expect(uz('Ўзбекистон')).toBe('Oʻzbekiston');
     expect(uz('ғалаба')).toBe('gʻalaba');

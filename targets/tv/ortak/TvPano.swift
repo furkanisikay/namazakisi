@@ -357,7 +357,7 @@ public struct TvPanoMetinleri: Equatable {
     public static let uz = TvPanoMetinleri(
         vakitAdlari: ["imsak": "Bomdod", "gunes": "Quyosh", "ogle": "Peshin", "ikindi": "Asr", "aksam": "Shom", "yatsi": "Xufton"],
         cuma: "Juma",
-        aylar: ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"],
+        aylar: ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"],
         gunler: ["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba"],
         tarih: "{gunAdi}, {yil} yil {gun} {ay}",
         kerahatAdlari: ["suruk": "Quyosh chiqishi", "istiva": "Istivo", "gurub": "Quyosh botishi"],
