@@ -172,7 +172,7 @@ export const genel: Sozluk['genel'] = {
     NowBarIos: 'Жандуу иш-аракеттер',
     NowBarAndroid: 'Жандуу артка санактар',
   },
-  sekmeler: { bugun: 'Бүгүн', kible: 'Кыбыла', kaza: 'Каза', kazaDefteri: 'Каза дептери', ilerleme: 'Жетишкендик', ayarlar: 'Жөндөөлөр' },
+  sekmeler: { bugun: 'Бүгүн', kible: 'Кыбыла', kaza: 'Каза', kazaDefteri: 'Каза дептери', ilerleme: 'Илгерилөө', ayarlar: 'Жөндөөлөр' },
   ortak: {
     geri: 'Артка',
     artir: 'Көбөйтүү',

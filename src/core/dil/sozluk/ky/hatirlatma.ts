@@ -321,7 +321,7 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',
-    ozel: 'Өзүңүз коюу',
+    ozel: 'Жеке',
     ozelEtiketi: '{ad}: өзүңүздүн жөндөөңүз',
     ozelDuzenle: '{ad}: өзүңүздүн жөндөөңүз, кадамдарды түзөтүү',
     yatsiDustu: 'Бүгүн куптан түнкү тынчтык башталгандан кийин кирет; куптан эскертмеси келбейт.',

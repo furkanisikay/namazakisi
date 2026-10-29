@@ -3,7 +3,7 @@
  * ve README üreticisi onu doğrudan okur; diğer dillerde YALNIZ `ceviri`si olan öğe gösterilir
  * (eski duyurular yeni dilin kullanıcısına anlamsız, yarım çeviri gösterilmez). SAF.
  */
-import { aktifDil } from '../dil/aktifDil';
+import { aktifDil, yaziyaCevir } from '../dil/aktifDil';
 import type { DilKodu } from '../dil/diller';
 import { YENI_OZELLIKLER, type YeniOzellik } from './YeniOzellikler';
 
@@ -12,13 +12,15 @@ export function yeniOzellikDilde(o: YeniOzellik, dil: DilKodu = aktifDil()): Yen
   if (dil === 'tr') return o;
   const c = o.ceviri?.[dil];
   if (!c) return null;
+  // Çeviri sözlük dışıdır: Kiril yazılan dil (Özbekçe) Latin gösterilirken burada da çevrilir.
+  const y = (m: string) => yaziyaCevir(m, dil);
   return {
     ...o,
-    baslik: c.baslik,
-    aciklama: c.aciklama,
-    detayAciklama: c.detayAciklama,
-    ctaEtiketi: c.ctaEtiketi,
-    detaylar: c.detaylar,
+    baslik: y(c.baslik),
+    aciklama: y(c.aciklama),
+    detayAciklama: c.detayAciklama === undefined ? undefined : y(c.detayAciklama),
+    ctaEtiketi: c.ctaEtiketi === undefined ? undefined : y(c.ctaEtiketi),
+    detaylar: c.detaylar?.map(y),
   };
 }
 

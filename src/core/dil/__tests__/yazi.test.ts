@@ -275,3 +275,15 @@ it('takvim temizleme süzgeci iki alfabeli dilde her alfabedeki başlığı eşl
   const basliklar = vakitTemizleBasliklari('ogle');
   expect(basliklar).toEqual(expect.arrayContaining(['Peshin prayer', 'Пешин prayer', 'Dhuhr prayer']));
 });
+
+it('"Neler Yeni" çevirisi (sözlük dışı) da gösterilen yazıyla: Özbekçe Latin varsayılanda Kiril harf kalmaz', () => {
+  const { yeniOzelliklerDilde } = require('../../constants/yeniOzellikDili') as typeof import('../../constants/yeniOzellikDili');
+  const KIRIL = /[Ѐ-ӿ]/;
+  aktifDiliKur('uz');
+  const ogeler = yeniOzelliklerDilde('uz');
+  expect(ogeler.length).toBeGreaterThan(0);
+  const metinler = ogeler.flatMap((o) => [o.baslik, o.aciklama, o.detayAciklama ?? '', o.ctaEtiketi ?? '', ...(o.detaylar ?? [])]);
+  expect(metinler.filter((m) => KIRIL.test(m))).toEqual([]);
+  yaziSisteminiKur('cyrl');
+  expect(KIRIL.test(yeniOzelliklerDilde('uz')[0].baslik)).toBe(true);
+});
