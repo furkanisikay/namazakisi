@@ -171,7 +171,10 @@ fun EslemeEkrani(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+                // Metin bloğu esnek: uzun dilde (Soranî) satırlar çoğalınca kumandanın tek yolu
+                // olan düğmeler ekranın altına itilmesin; sığmayan kısım metinden kesilir.
                 AnimatedContent(
+                    modifier = Modifier.weight(1f, fill = false),
                     targetState = gelen,
                     transitionSpec = {
                         (fadeIn(tween(320, delayMillis = 140)) + slideInVertically(tween(320, delayMillis = 140)) { it / 6 })

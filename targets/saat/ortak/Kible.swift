@@ -125,7 +125,7 @@ public enum Kible {
 
 /// Kible metinleri — dil basina bir ornek (Wear `SaatDili` kible alanlari ve JS
 /// `sozluk/<dil>/kible.ts > yon` ikizi). Yer tutucular `{derece}`, `{km}`. Duzen: sira tr, en,
-/// id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
+/// id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
 public struct KibleMetinleri: Equatable {
     public let arkada: String
     public let saga: String
@@ -354,9 +354,66 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
+    // fa — JS `sozluk/fa/kible.ts` (binlik ayırıcı JS `aktifDil > BINLIK.fa` ile aynı)
+    public static let fa = KibleMetinleri(
+        arkada: "پشت سر",
+        saga: "راست {derece}°",
+        sola: "چپ {derece}°",
+        hizali: "رو به قبله هستید",
+        arkadaErisim: "قبله پشت سر شماست",
+        sagdaErisim: "قبله {derece} درجه سمت راست شماست",
+        soldaErisim: "قبله {derece} درجه سمت چپ شماست",
+        kabede: "کنار کعبه هستید",
+        mesafe: "{km} کیلومتر",
+        binlikAyirici: ","
+    )
+
+    // ps — Peştuca (beta): JS `sozluk/ps/kible.ts`
+    public static let ps = KibleMetinleri(
+        arkada: "شاته",
+        saga: "ښي لور ته {derece}°",
+        sola: "کیڼ لور ته {derece}°",
+        hizali: "تاسو د قبلې په لور یاست",
+        arkadaErisim: "قبله ستاسو شاته ده",
+        sagdaErisim: "قبله ستاسو ښي لور ته {derece} درجې ده",
+        soldaErisim: "قبله ستاسو کیڼ لور ته {derece} درجې ده",
+        kabede: "تاسو د کعبې سره یاست",
+        mesafe: "{km} کیلومتره",
+        binlikAyirici: ","
+    )
+
+    // ckb
+    public static let ckb = KibleMetinleri(
+        arkada: "لە پشتەوە",
+        saga: "ڕاست {derece}°",
+        sola: "چەپ {derece}°",
+        hizali: "ڕووتان لە قیبلەیە",
+        arkadaErisim: "قیبلە لە پشتتانەوەیە",
+        sagdaErisim: "قیبلە {derece} پلە لە لای ڕاستتانە",
+        soldaErisim: "قیبلە {derece} پلە لە لای چەپتانە",
+        kabede: "لە کەعبەدان",
+        mesafe: "{km} کم",
+        binlikAyirici: ","
+    )
+
+    // ug — Uygurca (beta); JS `sozluk/ug/kible.ts`
+    public static let ug = KibleMetinleri(
+        arkada: "ئارقىڭىزدا",
+        saga: "ئوڭغا {derece}°",
+        sola: "سولغا {derece}°",
+        hizali: "قىبلە تەرەپكە قاراپ تۇرۇۋاتىسىز",
+        arkadaErisim: "قىبلە ئارقىڭىزدا",
+        sagdaErisim: "قىبلە ئوڭ تەرىپىڭىزدە {derece} گرادۇس",
+        soldaErisim: "قىبلە سول تەرىپىڭىزدە {derece} گرادۇس",
+        kabede: "كەئبىدىسىز",
+        mesafe: "{km} كىلومېتىر",
+        binlikAyirici: ","
+    )
+
     public static let tablo: [String: KibleMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
+        "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
     ]
 
     public static func dil(_ kod: String?) -> KibleMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

@@ -584,7 +584,7 @@ do {
     esitMi(SaatMetinleri.dil(nil), SaatMetinleri.tr, "saat metinleri dil yok → tr")
 }
 
-// MARK: - 15b) Native dil tablolari (W4) — on bes dil, Turkceyle ayni alan + yer tutucu
+// MARK: - 15b) Native dil tablolari (W4) — on dokuz dil, Turkceyle ayni alan + yer tutucu
 
 do {
     /// Her `String` alanin (ve `[String: String]` alaninin her anahtarinin) `{...}` kumesi.
@@ -610,7 +610,7 @@ do {
         }
         return sonuc
     }
-    let kodlar = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn"]
+    let kodlar = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug"]
     esitMi(Set(SaatMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatMetinleri her dil")
     esitMi(Set(SaatSureMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatSureMetinleri her dil")
     esitMi(Set(KibleMetinleri.tablo.keys), Set(kodlar), "saat tablolari: KibleMetinleri her dil")

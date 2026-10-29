@@ -63,19 +63,21 @@ class PanoDreamServisi : DreamService(), LifecycleOwner, SavedStateRegistryOwner
             setViewTreeSavedStateRegistryOwner(this@PanoDreamServisi)
             setContent {
                 PanoTemasi {
-                    if (il != null) {
-                        PanoEkrani(il = il, ekraniAcikTut = false, uyeler = uyeler, onAyarlar = null)
-                    } else {
-                        Box(
-                            Modifier.fillMaxSize().background(Renkler.arkaplan).padding(48.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                stringResource(R.string.dream_il_yok),
-                                color = Renkler.metin,
-                                fontSize = 28.sp,
-                                textAlign = TextAlign.Center,
-                            )
+                    RakamSaglayici(il) {
+                        if (il != null) {
+                            PanoEkrani(il = il, ekraniAcikTut = false, uyeler = uyeler, onAyarlar = null)
+                        } else {
+                            Box(
+                                Modifier.fillMaxSize().background(Renkler.arkaplan).padding(48.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    stringResource(R.string.dream_il_yok),
+                                    color = Renkler.metin,
+                                    fontSize = 28.sp,
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
                         }
                     }
                 }

@@ -1,0 +1,58 @@
+/* ps */
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Pestuca terimler: src/core/dil/sozluk/ps (vakit.ts basindaki terim yorumu).
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "بل لمونځ";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "بل لمونځ او د هغه د پیل وخت درته وايي.";
+"Şu anki vakti kıldım" = "اوسنی لمونځ مې وکړ";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "اوسنی وخت د ادا شوي په توګه نښه کوي. ریکارډ هغه وخت اضافه کېږي چې اپ پرانیزئ.";
+"Onay iste" = "تایید وغواړئ";
+"Kıbleyi aç" = "قبله پرانیزئ";
+"Uygulamayı Kıble pusulasıyla açar." = "اپ د قبلې له قطب نما سره پرانیزي.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "لمونځ مې وکړ";
+"Kıble" = "قبله";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "د بل لمانځه نوم";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "د بل لمانځه نوم ورکوي. په Shortcuts کې یې د شرط په توګه کارولای شئ.";
+"Sıradaki vakte kalan dakika" = "بل لمانځه ته پاتې دقیقې";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "دا ورکوي چې د بل لمانځه تر پیله څو دقیقې پاتې دي. که معلومات نه وي، -1 ورکوي.";
+"Şu anki vakit kılındı mı?" = "ایا اوسنی لمونځ ادا شوی؟";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "که اوسنی وخت د ادا شوي په توګه نښه وي، هو ورکوي. که د نښه کولو لمونځ نه وي، نه ورکوي.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "د لمانځه چوپتیا";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "که د لمانځه د وخت له پیل وروسته په لومړیو دقیقو کې یاست، سم (true) ورکوي. په Shortcuts کې د Focus د فعالولو لپاره کارول کېږي.";
+"Süre (dakika)" = "موده (دقیقې)";
+"Vakit girdikten sonraki ${dakika} dakika" = "د وخت له پیل وروسته ${dakika} دقیقې";
+"Namaz sessizliğinin bitişi" = "د لمانځه د چوپتیا پای";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "هغه وخت ورکوي چې چوپتیا پکې پای ته رسېږي. که اوس چوپتیا نه وي، اوسنی وخت ورکوي.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "د وخت له پیل وروسته د ${dakika} دقیقو پای";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "د لمانځه یادونې";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "کله چې دا Focus فعال وي، د لمانځه یادونې پرته له غږه او پرته له دې چې سکرین روښانه کړي راځي.";
+"Hatırlatmaları sessiz ver" = "یادونې چوپې ورکړئ";
+"Hatırlatmalar sessiz gelir" = "یادونې چوپې راځي";
+"Hatırlatmalar her zamanki gibi" = "یادونې د تل په څېر";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "په ویجټ کې ښودل شوی وخت د ادا شوي په توګه نښه کوي.";
+"Tarih" = "نېټه";
+"Vakit" = "وخت";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "د لمانځه الارم ودروئ";
+"Namazı kıldım" = "لمونځ مې وکړ";
+"Alarm" = "الارم";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "د ورځې د آیت انځور";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "د نن آیت ستاسو د سکرین په اندازه د انځور په توګه ورکوي. په Shortcuts کې یې د Set Wallpaper له ګام سره کارولای شئ.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "د ورځې د آیت د چمتو کولو لپاره اپ یو ځل پرانیزئ.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "انځور چمتو نه شو. لږ وروسته بیا هڅه وکړئ.";

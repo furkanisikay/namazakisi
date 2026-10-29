@@ -42,8 +42,9 @@ export const hesap: Sozluk['hesap'] = {
     genelUyari: '{guven}: za ovu državu nismo pronašli provjerenu zvaničnu vaktiju.',
     gecin: 'Pređite na vaktiju: {ad}',
     devam: 'Nastavite s: {ad}',
-    alternatifSoru: 'Želite li koristiti vaktiju {profil}? Danas bi se promijenila ovako:',
+    ikiTakvimSoru: 'Ovdje se koriste dvije vaktije. Prema kojoj da računamo vremena namaza? Danas izgledaju ovako:',
     alternatifNotu: {
+      mwl: 'U vaktiji MWL akšamski ezan uči se pri zalasku sunca, a ikindija nastupa kada je sjena jednaka dužini predmeta.',
       qmi: 'Vaktija QMİ slijedi džaferijski raspored: akšamski ezan uči se otprilike 14 minuta nakon zalaska sunca, a ikindija nastupa kada je sjena dvostruka dužina predmeta.',
     },
     birKez: 'Ovo pitamo samo jednom za ovu državu. Možete to promijeniti bilo kada u Postavke › Namaska vremena › Metoda izračuna.',

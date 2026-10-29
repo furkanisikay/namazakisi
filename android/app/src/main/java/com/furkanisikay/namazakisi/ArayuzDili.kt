@@ -77,7 +77,7 @@ fun Context.arayuzDili(): String = ArayuzDili.oku(this)
  */
 // Endonezce: JS "id" yazar; `Locale.forLanguageTag("id")` Android'de eski "in" koduna döner ve
 // kaynak sistemi `values-in`'i seçer (`values-id` hiç seçilmez — lint `LocaleFolder`).
-// Yerel rakamlı dilde (Arapça, Bengalce) etiket `-u-nu-<sistem>` taşır (`Rakam.yerelEtiketi`):
+// Yerel rakamlı dilde (Arapça, Bengalce, Farsça, Peştuca, Soranî) etiket `-u-nu-<sistem>` taşır (`Rakam.yerelEtiketi`):
 // kaynak `%d`'si ve tarih biçimleyicileri kullanıcının seçtiği rakamla yazar; diğer dillerde
 // etiket aynen.
 fun Context.dildeBaglam(): Context = try {

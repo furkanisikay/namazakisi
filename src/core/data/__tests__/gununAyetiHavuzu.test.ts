@@ -29,11 +29,20 @@ describe('günün ayeti havuzu', () => {
       mealler(k)
         .filter(
           ([, m]) =>
-            /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u.test(m) || /^\s*\p{Nd}+\s*[.)]\s/u.test(m) || /\(\p{Nd}+\)\s*[.।]?\s*$/u.test(m),
+            /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u.test(m) ||
+            /^\s*\p{Nd}+\s*[.)]\s/u.test(m) ||
+            /\(\p{Nd}+\)\s*[.।]?\s*$/u.test(m) ||
+            // Silinemeyen ayet numarası metnin içinde (uyghur_saleh: "(24)،", "(ـ18).", "(8ـ10)").
+            /\([\p{Cf}\sـ\-–]*\p{Nd}[\p{Nd}\p{Cf}\sـ\-–]*\)/u.test(m),
         )
         .map(([d]) => `${k.ref}:${d}`),
     );
     expect(dipnotlu).toEqual([]);
+  });
+
+  it('mealin başında ve sonunda boşluk yok (kurdish_bamoki her ayeti satır sonuyla bitirir; üretici kırpar)', () => {
+    const bosluklu = GUNUN_AYETI_HAVUZU.flatMap((k) => mealler(k).filter(([, m]) => m !== m.trim()).map(([d]) => `${k.ref}:${d}`));
+    expect(bosluklu).toEqual([]);
   });
 
   it('Türkçe ve İngilizce her kayıtta; her meal dilinin künyesi var ve havuzu en az 100 ayet', () => {

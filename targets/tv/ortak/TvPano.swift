@@ -11,8 +11,8 @@ import Foundation
 /// BIREBIR ayni.
 public enum TvDili {
     public static let varsayilan = "tr"
-    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn).
-    public static let desteklenenler = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn"]
+    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug).
+    public static let desteklenenler = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug"]
 
     /// "en", "en-US", "de_DE" → kok kod; desteklenmeyen → "tr". Eski Endonezce kodu "in" → "id".
     public static func coz(_ kod: String?) -> String {
@@ -35,7 +35,7 @@ public enum TvDili {
 
 /// Pano cekirdek metinleri — dil basina bir ornek (Android TV `TvDili.kt` nesneleri ikizi).
 /// Anahtarlar `TvVakit` / `TvKerahat.Tur` ham degerleridir. Yer tutucular `{gun}`, `{ay}`,
-/// `{yil}`, `{gunAdi}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn; cevrilmemis dil Ingilizce
+/// `{yil}`, `{gunAdi}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil Ingilizce
 /// kopya (`// ÇEVİRİ: <kod>`). Nobetci: `targets/tv/test/main.swift` §4c.
 public struct TvPanoMetinleri: Equatable {
     public let vakitAdlari: [String: String]
@@ -278,9 +278,70 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
+    // fa — Farsça (beta); JS `sozluk/fa` (vakit, tarih, anaEkran.kerahat), Android TV `TvDiliFa` ikizi
+    public static let fa = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "صبح", "gunes": "طلوع آفتاب", "ogle": "ظهر", "ikindi": "عصر", "aksam": "مغرب", "yatsi": "عشا"],
+        cuma: "جمعه",
+        aylar: ["ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن", "ژوئیه", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"],
+        gunler: ["دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه", "یکشنبه"],
+        tarih: "{gunAdi}، {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "طلوع آفتاب", "istiva": "زوال", "gurub": "غروب آفتاب"],
+        kerahatAciklamalari: [
+            "suruk": "تا وقتی آفتاب خوب بالا نیامده، نماز خواندن مکروه است.",
+            "istiva": "وقتی آفتاب درست در میانهٔ آسمان است، نماز خواندن مکروه است.",
+            "gurub": "هنگام غروب آفتاب، نماز خواندن مکروه است.",
+        ]
+    )
+
+    // ps — Peştuca (beta): JS sozluk/ps (vakit, tarih, anaEkran.kerahat); gün/ay adları CLDR ps
+    public static let ps = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "سهار", "gunes": "لمر ختل", "ogle": "ماسپښین", "ikindi": "مازدیګر", "aksam": "ماښام", "yatsi": "ماسخوتن"],
+        cuma: "جمعه",
+        aylar: ["جنوري", "فبروري", "مارچ", "اپریل", "مۍ", "جون", "جولای", "اګست", "سپتمبر", "اکتوبر", "نومبر", "دسمبر"],
+        gunler: ["دونۍ", "درېنۍ", "څلرنۍ", "پينځنۍ", "جمعه", "اونۍ", "يونۍ"],
+        tarih: "{gunAdi}، {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "شروق", "istiva": "استوا", "gurub": "غروب"],
+        kerahatAciklamalari: [
+            "suruk": "تر هغه چې لمر ښه پورته شي، لمونځ کول مکروه دي.",
+            "istiva": "کله چې لمر د سر پر سر وي، لمونځ کول مکروه دي.",
+            "gurub": "کله چې لمر لوېږي، لمونځ کول مکروه دي.",
+        ]
+    )
+
+    // ckb
+    public static let ckb = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "بەیانی", "gunes": "خۆرھەڵاتن", "ogle": "نیوەڕۆ", "ikindi": "عەسر", "aksam": "ئێوارە", "yatsi": "خەوتنان"],
+        cuma: "ھەینی",
+        aylar: ["کانوونی دووەم", "شوبات", "ئازار", "نیسان", "ئایار", "حوزەیران", "تەمووز", "ئاب", "ئەیلوول", "تشرینی یەکەم", "تشرینی دووەم", "کانوونی یەکەم"],
+        gunler: ["دووشەممە", "سێشەممە", "چوارشەممە", "پێنجشەممە", "ھەینی", "شەممە", "یەکشەممە"],
+        tarih: "{gunAdi}، {gun}ی {ay}ی {yil}",
+        kerahatAdlari: ["suruk": "خۆرھەڵاتن", "istiva": "ناوەڕاستی ئاسمان", "gurub": "خۆرئاوابوون"],
+        kerahatAciklamalari: [
+            "suruk": "نوێژکردن مەکروھە تا خۆر باش بەرز دەبێتەوە.",
+            "istiva": "نوێژکردن مەکروھە تا خۆر لە ناوەڕاستی ئاسماندایە.",
+            "gurub": "نوێژکردن مەکروھە تا خۆر ئاوا دەبێت.",
+        ]
+    )
+
+    // ug — Uygurca (beta); JS `sozluk/ug` (vakit, tarih, anaEkran.kerahat), Android `TvDiliUg` ikizi
+    public static let ug = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "بامدات", "gunes": "قۇياش چىقىش", "ogle": "پېشىن", "ikindi": "ئەسىر", "aksam": "شام", "yatsi": "خۇپتەن"],
+        cuma: "جۈمە",
+        aylar: ["يانۋار", "فېۋرال", "مارت", "ئاپرېل", "ماي", "ئىيۇن", "ئىيۇل", "ئاۋغۇست", "سېنتەبىر", "ئۆكتەبىر", "نويابىر", "دېكابىر"],
+        gunler: ["دۈشەنبە", "سەيشەنبە", "چارشەنبە", "پەيشەنبە", "جۈمە", "شەنبە", "يەكشەنبە"],
+        tarih: "{yil}-يىلى {gun}-{ay}، {gunAdi}",
+        kerahatAdlari: ["suruk": "قۇياش چىقىش", "istiva": "ئىستىۋا", "gurub": "قۇياش پېتىش"],
+        kerahatAciklamalari: [
+            "suruk": "قۇياش ياخشى كۆتۈرۈلگۈچە ناماز ئوقۇش مەكرۇھ.",
+            "istiva": "قۇياش دەل چوققىدا تۇرغاندا ناماز ئوقۇش مەكرۇھ.",
+            "gurub": "قۇياش پېتىۋاتقاندا ناماز ئوقۇش مەكرۇھ.",
+        ]
+    )
+
     public static let tablo: [String: TvPanoMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
+        "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
     ]
 
     public static func dil(_ kod: String?) -> TvPanoMetinleri { tablo[TvDili.coz(kod)] ?? tr }

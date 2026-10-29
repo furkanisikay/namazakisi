@@ -4,7 +4,7 @@
  * ad sözlükten çözülmelidir. Cırcırın göremediği Türkçe harfsiz sözcükler `YASAKLI` ile yakalanır.
  */
 import * as React from 'react';
-import { Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { fireEvent, render } from '@testing-library/react-native';
 
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
@@ -125,22 +125,35 @@ it('modallar: kaza önerisi, kerahat onayı, seri kartı, bölge takvimi', () =>
   expect(bolge.getByText('Switch to JAKIM')).toBeTruthy();
 });
 
-it('bölge takvimi: Azerbaycan — varsayılandaysa yalnız QMİ sorulur; değilse üç seçenek', () => {
-  const ortak = { gorunur: true, ulkeAdi: 'Azerbaijan', yerAdi: 'Baku', koordinat: { lat: 40.41, lng: 49.87 }, onKabul: bos, onReddet: bos };
+it('bölge takvimi: Azerbaycan — iki takvim EŞİT seçenek, önerilen yok (sahip kararı 2026-10-29)', () => {
+  const kabul = jest.fn();
   const alternatif = jest.fn();
-  const varsayilanda = render(
-    <BolgeTakvimiModali {...ortak} mevcut={{ profil: 'mwl' }} oneri={{ profil: 'mwl', guven: 'genel', alternatif: 'qmi' }} onAlternatif={alternatif} />,
+  const ekran = render(
+    <BolgeTakvimiModali
+      gorunur
+      ulkeAdi="Azerbaijan"
+      yerAdi="Baku"
+      koordinat={{ lat: 40.41, lng: 49.87 }}
+      mevcut={{ profil: 'diyanet', ikindi: 'evvel' }}
+      oneri={{ profil: 'mwl', guven: 'genel', alternatif: 'qmi' }}
+      onKabul={kabul}
+      onAlternatif={alternatif}
+      onReddet={bos}
+    />,
   );
-  expect(turkceKalanlar(varsayilanda.toJSON() as never, YASAKLI).filter((m) => !m.includes('QMİ'))).toEqual([]);
-  expect(varsayilanda.getByText(/Would you like to use the Caucasus Muslims Board/)).toBeTruthy();
-  expect(varsayilanda.getByTestId('bolge-alternatif-notu')).toBeTruthy();
-  expect(varsayilanda.queryByTestId('bolge-alternatif')).toBeNull();
-  fireEvent.press(varsayilanda.getByText('Switch to QMİ'));
+  expect(turkceKalanlar(ekran.toJSON() as never, YASAKLI).filter((m) => !m.includes('QMİ'))).toEqual([]);
+  expect(ekran.getByText(/Two timetables are used here/)).toBeTruthy();
+  // Tablo üç sütun: mevcut, MWL, QMİ; iki takvimin de notu var; "doğrulanmamış" uyarısı yok.
+  expect(ekran.getByText('MWL')).toBeTruthy();
+  expect(ekran.getByText('QMİ')).toBeTruthy();
+  expect(ekran.getAllByTestId('bolge-alternatif-notu')).toHaveLength(2);
+  expect(ekran.queryByText(/couldn't find a verified/)).toBeNull();
+  // İki seçenek aynı ağırlıkta: ikisi de dolu birincil değil, çerçeveli düğme.
+  const zemin = (id: string) => StyleSheet.flatten(ekran.getByTestId(id).props.style).backgroundColor;
+  expect(zemin('bolge-kabul')).toBe(zemin('bolge-alternatif'));
+  fireEvent.press(ekran.getByText('Switch to MWL'));
+  fireEvent.press(ekran.getByText('Switch to QMİ'));
+  expect(kabul).toHaveBeenCalledTimes(1);
   expect(alternatif).toHaveBeenCalledTimes(1);
-
-  const baska = render(
-    <BolgeTakvimiModali {...ortak} mevcut={{ profil: 'diyanet', ikindi: 'evvel' }} oneri={{ profil: 'mwl', guven: 'genel', alternatif: 'qmi' }} onAlternatif={alternatif} />,
-  );
-  expect(baska.getByText('Switch to MWL')).toBeTruthy();
-  expect(baska.getByTestId('bolge-alternatif')).toBeTruthy();
+  expect(ekran.getByText('Continue with Diyanet')).toBeTruthy();
 });

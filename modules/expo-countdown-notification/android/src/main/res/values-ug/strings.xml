@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ug — Uygurca (beta). -->
+<resources>
+    <string name="countdown_kanal_canli_ad">جانلىق ساناقچىلار</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar ۋە ھالەت ستونىدىكى تەتۈر ساناقلار</string>
+    <string name="countdown_kanal_genel_ad">تەتۈر ساناش ئۇقتۇرۇشلىرى</string>
+    <string name="countdown_kanal_genel_aciklama">تەتۈر ساناش ئۇقتۇرۇشلىرى قانىلى</string>
+
+    <string name="countdown_eylem_kildim">ناماز ئوقۇدۇم</string>
+    <string name="countdown_eylem_durdur">توختىتىش</string>
+
+    <string name="countdown_yedek_vakit">ئالدىرا، ۋاقىتنىڭ چىقىشىغا ئاز قالدى.</string>
+    <string name="countdown_yedek_iftar">ۋاقىت تارىيىۋاتىدۇ.</string>
+    <string name="countdown_yedek_sahur">يەپ-ئىچىشنى داۋاملاشتۇرالايسىز، بامدات يېقىنلاشماقتا.</string>
+    <string name="countdown_yedek_seri">بۈگۈنكى نامازلىرىڭ كەم، ئۇدا كۈنلىرىڭنى يوقاتما.</string>
+
+    <string name="countdown_onek_vakit">ۋاقىت چىقىشقا</string>
+    <string name="countdown_onek_vakit_dar">ۋاقىت چىقىۋاتىدۇ</string>
+    <string name="countdown_onek_iftar">ئىپتارغا</string>
+    <string name="countdown_onek_iftar_dar">ئىپتارغا</string>
+    <string name="countdown_onek_sahur">سەھەرلىك ئاخىرلىشىشقا</string>
+    <string name="countdown_onek_sahur_dar">سەھەرلىك ئاخىرلىشىۋاتىدۇ</string>
+    <string name="countdown_onek_seri">ئۇدا كۈنلىرىڭنى قۇتقۇزۇشقا</string>
+    <string name="countdown_onek_seri_dar">ئۇدا كۈن ئاخىرلىشىۋاتىدۇ</string>
+</resources>

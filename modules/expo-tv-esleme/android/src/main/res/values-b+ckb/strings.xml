@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ckb -->
+<resources>
+    <string name="tvesleme_qr_ipucu">کۆدی QR ی سەر شاشەی تەلەڤزیۆنەکە بخەنە ناو چوارچێوەکەوە</string>
+    <string name="tvesleme_qr_vazgec">پاشگەزبوونەوە</string>
+    <string name="tvesleme_qr_vazgec_erisim">ڕاگرتنی خوێندنەوە</string>
+    <string name="tvesleme_qr_yabanci">ئەم کۆدی QR ە ھی Namaz Akışı TV نییە. کۆدەکەی سەر تەلەڤزیۆنەکە بخوێننەوە.</string>
+    <string name="tvesleme_qr_okundu">کۆدەکە خوێندرایەوە</string>
+</resources>

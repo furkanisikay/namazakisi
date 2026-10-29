@@ -217,7 +217,7 @@ private fun SolSutun(
     Column(modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
         Column {
             Text(il.ad, color = Renkler.metin, fontSize = 32.sp, fontWeight = FontWeight.SemiBold)
-            Text(Bicim.tarih(durum.tarih, dil), color = Renkler.metinIkincil, fontSize = 24.sp)
+            Text(Bicim.tarih(durum.tarih, dil).yerelRakam(), color = Renkler.metinIkincil, fontSize = 24.sp)
             if (bant != null) {
                 Spacer(Modifier.height(10.dp))
                 SessizBant(bant)
@@ -231,7 +231,7 @@ private fun SolSutun(
 
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
-                Bicim.saat(simdi, bolge),
+                Bicim.saat(simdi, bolge).yerelRakam(),
                 style = RAKAM,
                 color = Renkler.metin,
                 // Bant görünürken saat küçülür: sütun taşıp "Ayarlar" düğmesi ekrandan çıkmasın.
@@ -240,7 +240,7 @@ private fun SolSutun(
                 lineHeight = if (bant != null || kabul) 96.sp else 120.sp,
             )
             Text(
-                Bicim.saniye(simdi, bolge),
+                Bicim.saniye(simdi, bolge).yerelRakam(),
                 style = RAKAM,
                 color = Renkler.metinIkincil,
                 fontSize = 40.sp,
@@ -287,7 +287,7 @@ private fun KalanBlogu(durum: PanoDurumu, simdi: Long, azalt: Boolean) {
             Bicim.kalanParcalari(durum.kalanMs, dil).forEachIndexed { i, p ->
                 if (i > 0) Spacer(Modifier.width(18.dp))
                 Text(
-                    p.sayi,
+                    p.sayi.yerelRakam(),
                     style = RAKAM,
                     color = Renkler.metin,
                     fontSize = 76.sp,
@@ -383,9 +383,9 @@ private fun BilgiCipi(simge: Int, simgeRengi: Color, baslik: String, ek: String,
             modifier = Modifier.size(40.dp).background(simgeRengi.copy(alpha = 0.18f), CircleShape),
         ) { Simge(simge, simgeRengi, 24.dp) }
         Spacer(Modifier.width(14.dp))
-        Text(baslik, color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+        Text(baslik.yerelRakam(), color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.width(12.dp))
-        Text(ek, style = RAKAM, color = Renkler.metinIkincil, fontSize = 24.sp)
+        Text(ek.yerelRakam(), style = RAKAM, color = Renkler.metinIkincil, fontSize = 24.sp)
     }
 }
 
@@ -490,7 +490,7 @@ private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: B
                 // "şimdi" çipi BİLİNÇLİ YOK: dar sütunda "Akşam"ı "Akşa…"ya kesiyordu (kare
                 // turunda görüldü); dolu yeşil zemin + soldaki geri sayım anlamı zaten taşıyor.
                 Text(
-                    Bicim.saat(durum.vakitler.saat(vakit), bolge),
+                    Bicim.saat(durum.vakitler.saat(vakit), bolge).yerelRakam(),
                     style = RAKAM,
                     color = metinRengi,
                     fontSize = 36.sp,
@@ -531,7 +531,7 @@ private fun RamazanBlogu(sayac: EvDurumu.Sayac, tur: EvDurumu.SayacTuru, durum: 
         Row(verticalAlignment = Alignment.Bottom) {
             Bicim.kalanParcalari(kalan, dil).forEachIndexed { i, p ->
                 if (i > 0) Spacer(Modifier.width(18.dp))
-                Text(p.sayi, style = RAKAM, color = Renkler.metin, fontSize = 76.sp, fontWeight = FontWeight.SemiBold, lineHeight = 80.sp)
+                Text(p.sayi.yerelRakam(), style = RAKAM, color = Renkler.metin, fontSize = 76.sp, fontWeight = FontWeight.SemiBold, lineHeight = 80.sp)
                 Text(p.birim, color = Renkler.metinIkincil, fontSize = 32.sp, modifier = Modifier.padding(start = 6.dp, bottom = 12.dp))
             }
         }
@@ -544,7 +544,7 @@ private fun RamazanBlogu(sayac: EvDurumu.Sayac, tur: EvDurumu.SayacTuru, durum: 
                     R.string.pano_vaktine_kalan,
                     durum.gorunenAd(durum.siradaki, dil),
                     Bicim.kalanKisa(durum.kalanMs, dil),
-                ),
+                ).yerelRakam(),
                 style = RAKAM,
                 color = Renkler.metinIkincil,
                 fontSize = 24.sp,
@@ -572,7 +572,7 @@ private fun SessizBant(metin: String, vurgu: Color = Renkler.uyari) {
         // Tek satır: uzun dilde ("De tijd voor Asr wordt krap · 30 min") sayı alt satıra düşüyordu
         // (kare turu); metin bandın sığdığı kadar küçülür, `fill = false` bandı içerik kadar tutar.
         BasicText(
-            metin,
+            metin.yerelRakam(),
             style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Medium),
             color = { Renkler.metin },
             maxLines = 1,

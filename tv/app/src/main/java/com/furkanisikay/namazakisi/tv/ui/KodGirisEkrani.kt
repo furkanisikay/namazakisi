@@ -66,6 +66,7 @@ import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import com.furkanisikay.namazakisi.tv.cekirdek.EslemeKodu
 import com.furkanisikay.namazakisi.tv.cekirdek.Il
+import com.furkanisikay.namazakisi.tv.cekirdek.TvRakam
 import com.furkanisikay.namazakisi.tv.veri.KonumDeposu
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -136,8 +137,10 @@ fun KodGirisEkrani(
             return@LaunchedEffect
         }
         val ad = EslemeKodu.konumAdi(depo.iller, konum.first, konum.second)
-        depo.telefondanKaydet(ad, konum.first, konum.second)
-        val il = Il(KonumDeposu.PLAKA_TELEFON, ad, konum.first, konum.second)
+        // 7 haneli kod Türkiye ızgarasıdır: rakam sistemi Türkiye'ye göre çözülür.
+        val rakam = TvRakam("TR")
+        depo.telefondanKaydet(ad, konum.first, konum.second, rakam = rakam)
+        val il = Il(KonumDeposu.PLAKA_TELEFON, ad, konum.first, konum.second, rakam = rakam)
         gelen = il
         if (!animasyon) {
             katlanma.snapTo(1f); igne.snapTo(1f); halka.snapTo(1f)

@@ -58,7 +58,7 @@ struct TvMetin {
 }
 
 /// `TvMetin` dil tablosu. Yer tutucular `{il}`, `{ad}`, `{sure}`, `{tur}`, `{bitis}`,
-/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn;
+/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug;
 /// cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
 struct TvArayuzMetinleri {
     let sehrinizSecin: String
@@ -304,9 +304,70 @@ struct TvArayuzMetinleri {
         siradakiEk: ", পরবর্তী নামাজ"
     )
 
+    // fa — Farsça (beta); JS `sozluk/fa` (konum.il, genel.evEkrani, anaEkran.kerahat), hitap "شما"
+    static let fa = TvArayuzMetinleri(
+        sehrinizSecin: "شهر خود را انتخاب کنید",
+        ilMerkezi: "اوقات نماز بر اساس مرکز استان محاسبه می‌شود. بعداً می‌توانید انتخاب خود را تغییر دهید.",
+        ilSecErisim: "{il}، انتخاب",
+        kalan: "تا وقت {ad}",
+        kalanErisim: "زمان باقی‌مانده تا وقت {ad}: {sure}",
+        konumuDegistirin: "تغییر موقعیت",
+        kerahatSuruyor: "وقت مکروه: {tur}، پایان {bitis}. {aciklama}",
+        siradakiKerahat: "وقت مکروه بعدی: {tur} {bas}–{bit}",
+        cumaBilgisi: "امروز جمعه است. نماز جمعه در وقت ظهر خوانده می‌شود (آغاز {giris}).",
+        suAnkiEk: "، نماز کنونی",
+        siradakiEk: "، نماز بعدی"
+    )
+
+    // ps — Peştuca (beta): JS sozluk/ps
+    static let ps = TvArayuzMetinleri(
+        sehrinizSecin: "خپل ښار وټاکئ",
+        ilMerkezi: "د لمانځه وختونه د ولایت د مرکز لپاره حسابېږي. خپل انتخاب وروسته بدلولای شئ.",
+        ilSecErisim: "{il}، وټاکئ",
+        kalan: "د {ad} تر وخته پاتې",
+        kalanErisim: "د {ad} تر وخته پاتې: {sure}",
+        konumuDegistirin: "موقعیت بدل کړئ",
+        kerahatSuruyor: "مکروه وخت: {tur}، پای {bitis}. {aciklama}",
+        siradakiKerahat: "بل مکروه وخت: {tur} {bas}–{bit}",
+        cumaBilgisi: "نن جمعه ده. د جمعې لمونځ د ماسپښین په وخت کېږي (پیل {giris}).",
+        suAnkiEk: "، اوسنی وخت",
+        siradakiEk: "، بل وخت"
+    )
+
+    // ckb
+    static let ckb = TvArayuzMetinleri(
+        sehrinizSecin: "شارەکەتان ھەڵبژێرن",
+        ilMerkezi: "کاتەکانی نوێژ بۆ ناوەندی پارێزگا ھەژمار دەکرێن. دەتوانن دواتر ھەڵبژاردنەکەتان بگۆڕن.",
+        ilSecErisim: "{il}، ھەڵبژاردن",
+        kalan: "کاتی ماوە تا {ad}",
+        kalanErisim: "کاتی ماوە تا {ad}: {sure}",
+        konumuDegistirin: "گۆڕینی شوێن",
+        kerahatSuruyor: "کاتی مەکروھ: {tur}، کۆتایی {bitis}. {aciklama}",
+        siradakiKerahat: "کاتی مەکروھی داھاتوو: {tur} {bas}–{bit}",
+        cumaBilgisi: "ئەمڕۆ ھەینییە. نوێژی ھەینی لە کاتی نیوەڕۆدا دەکرێت (دەستپێک {giris}).",
+        suAnkiEk: "، نوێژی ئێستا",
+        siradakiEk: "، نوێژی داھاتوو"
+    )
+
+    // ug — Uygurca (beta); JS `sozluk/ug` (hitap "سىز")
+    static let ug = TvArayuzMetinleri(
+        sehrinizSecin: "شەھىرىڭىزنى تاللاڭ",
+        ilMerkezi: "ناماز ۋاقىتلىرى شەھەر مەركىزى بويىچە ھېسابلىنىدۇ. تاللىشىڭىزنى كېيىن ئۆزگەرتەلەيسىز.",
+        ilSecErisim: "{il}، تاللاڭ",
+        kalan: "{ad} ۋاقتىغا قالغان ۋاقىت",
+        kalanErisim: "{ad} ۋاقتىغا قالغان ۋاقىت: {sure}",
+        konumuDegistirin: "ئورۇننى ئۆزگەرتىڭ",
+        kerahatSuruyor: "مەكرۇھ ۋاقىت: {tur}، ئاخىرلىشىشى {bitis}. {aciklama}",
+        siradakiKerahat: "كېيىنكى مەكرۇھ ۋاقىت: {tur} {bas}–{bit}",
+        cumaBilgisi: "بۈگۈن جۈمە. جۈمە نامىزى پېشىن ۋاقتىدا ئوقۇلىدۇ (كىرىشى {giris}).",
+        suAnkiEk: "، ھازىرقى ۋاقىت",
+        siradakiEk: "، كېيىنكى ۋاقىت"
+    )
+
     static let tablo: [String: TvArayuzMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
+        "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
     ]
 
     static func dil(_ kod: String) -> TvArayuzMetinleri { tablo[TvDili.coz(kod)] ?? tr }

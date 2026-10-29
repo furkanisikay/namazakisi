@@ -551,7 +551,7 @@ depo.gununAyetiYaz(ayetHam)
 esitMi(depo.gununAyetiJson(), ayetHam, "ayet depo: ham yuk birebir saklanir")
 esitMi(depo.gununAyeti()?.plan.count, 3, "ayet depo: cozulmus yuk")
 
-// MARK: - 11) Native dil tablolari (W4) — on bes dil, Turkceyle ayni alan + yer tutucu
+// MARK: - 11) Native dil tablolari (W4) — on dokuz dil, Turkceyle ayni alan + yer tutucu
 
 /// Her `String` alanin (ve `[String: String]` alaninin her anahtarinin) `{...}` kumesi.
 func yerTutucuImzasi(_ deger: Any) -> [String: String] {
@@ -576,7 +576,7 @@ func yerTutucuImzasi(_ deger: Any) -> [String: String] {
     return sonuc
 }
 
-esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn"], "dil: tablo sirasi")
+esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug"], "dil: tablo sirasi")
 esitMi(ArayuzDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")
 esitMi(ArayuzDili.coz("de-DE"), "de", "dil: de-DE → de")
 esitMi(ArayuzDili.coz("ms_MY"), "ms", "dil: ms_MY → ms")
@@ -605,6 +605,10 @@ esitMi([0, 1, 2].map { CogulKurali.kategori("hi", $0) }, ["one", "one", "other"]
 esitMi([0, 1, 2].map { CogulKurali.kategori("bn", $0) }, ["one", "one", "other"], "cogul: bn")
 esitMi([0, 1, 2].map { CogulKurali.kategori("nl", $0) }, ["other", "one", "other"], "cogul: nl")
 esitMi([0, 1, 2].map { CogulKurali.kategori("sq", $0) }, ["other", "one", "other"], "cogul: sq")
+esitMi([0, 1, 2].map { CogulKurali.kategori("fa", $0) }, ["one", "one", "other"], "cogul: fa")
+for dil in ["ps", "ckb", "ug"] {
+    esitMi([0, 1, 2].map { CogulKurali.kategori(dil, $0) }, ["other", "one", "other"], "cogul: \(dil)")
+}
 esitMi(CogulKurali.sec(["one": "{n} minute", "other": "{n} minutes"], "ru", 5), "5 minutes", "cogul: eksik kategori other'a duser")
 
 // MARK: - 12) Vakit adi takimi (kullanicinin sectigi adlar) — var / yok / bozuk / kismi
@@ -657,7 +661,7 @@ esitMi(depo.vakitAdlari() == nil, true, "takim depo: bos dize de siler")
 depo.arayuzDiliniYaz("tr")
 _ = depo.arayuzDili()
 
-// MARK: - 13) Rakam sistemi — yalniz yerel rakamli dil (ar "arab", bn "beng") + kendi kaydi; diger her durumda metin aynen
+// MARK: - 13) Rakam sistemi — yalniz yerel rakamli dil (ar/ckb "arab", fa/ps "arabext", bn "beng") + kendi kaydi; diger her durumda metin aynen
 
 esitMi(RakamSistemi.etkin(dil: "ar", kayitli: "arab"), "arab", "rakam: ar + arab")
 esitMi(RakamSistemi.etkin(dil: "ar", kayitli: nil), "latn", "rakam: ar + kayit yok → Bati")
@@ -668,9 +672,10 @@ esitMi(RakamSistemi.etkin(dil: "bn-BD", kayitli: " beng "), "beng", "rakam: bn-B
 esitMi(RakamSistemi.etkin(dil: "bn", kayitli: nil), "latn", "rakam: bn + kayit yok → Bati")
 esitMi(RakamSistemi.etkin(dil: "bn", kayitli: "arab"), "latn", "rakam: bn + arab → Bati")
 esitMi(RakamSistemi.doguMu(dil: "bn", kayitli: "beng"), false, "rakam: bn Dogu Arap degil")
-for dil in ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "", "xx"] {
+for dil in ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "", "xx"] {
     esitMi(RakamSistemi.etkin(dil: dil, kayitli: "arab"), "latn", "rakam: \(dil) arab kaydini yok sayar")
     esitMi(RakamSistemi.etkin(dil: dil, kayitli: "beng"), "latn", "rakam: \(dil) beng kaydini yok sayar")
+    esitMi(RakamSistemi.etkin(dil: dil, kayitli: "arabext"), "latn", "rakam: \(dil) arabext kaydini yok sayar")
     esitMi(RakamSistemi.yerelAyarKimligi(dil: dil, kayitli: "arab"), nil, "rakam: \(dil) yerel ayara dokunmaz")
 }
 esitMi(RakamSistemi.yerelAyarKimligi(dil: "ar", kayitli: "arab"), "ar@numbers=arab", "rakam: ar yerel ayari arab")
@@ -678,6 +683,16 @@ esitMi(RakamSistemi.yerelAyarKimligi(dil: "ar", kayitli: nil), "ar@numbers=latn"
 esitMi(RakamSistemi.yerelAyarKimligi(dil: "bn", kayitli: "beng"), "bn@numbers=beng", "rakam: bn yerel ayari beng")
 esitMi(RakamSistemi.yerelAyarKimligi(dil: "bn", kayitli: nil), "bn@numbers=latn", "rakam: bn yerel ayari latn")
 esitMi(RakamSistemi.cevir("আসর 15:42", sistem: "beng"), "আসর ১৫:৪২", "rakam: Bengalce saat cevrilir")
+esitMi(RakamSistemi.etkin(dil: "fa", kayitli: "arabext"), "arabext", "rakam: fa + arabext")
+esitMi(RakamSistemi.etkin(dil: "ps-AF", kayitli: "arabext"), "arabext", "rakam: ps-AF + arabext")
+esitMi(RakamSistemi.etkin(dil: "fa", kayitli: "arab"), "latn", "rakam: fa + arab → Bati")
+esitMi(RakamSistemi.etkin(dil: "ckb", kayitli: "arab"), "arab", "rakam: ckb + arab")
+esitMi(RakamSistemi.etkin(dil: "ckb", kayitli: "arabext"), "latn", "rakam: ckb + arabext → Bati")
+esitMi(RakamSistemi.etkin(dil: "ar", kayitli: "arabext"), "latn", "rakam: ar + arabext → Bati")
+esitMi(RakamSistemi.yerelAyarKimligi(dil: "fa", kayitli: "arabext"), "fa@numbers=arabext", "rakam: fa yerel ayari arabext")
+esitMi(RakamSistemi.yerelAyarKimligi(dil: "ckb", kayitli: nil), "ckb@numbers=latn", "rakam: ckb yerel ayari latn")
+esitMi(RakamSistemi.cevir("12:05", sistem: "arabext"), "۱۲:۰۵", "rakam: Fars rakamina cevrilir")
+esitMi(RakamSistemi.cevir("۱۲:۰۵", sistem: "arabext"), "۱۲:۰۵", "rakam: Fars idempotent")
 esitMi(RakamSistemi.cevir("০৫:৩০", sistem: "beng"), "০৫:৩০", "rakam: Bengalce idempotent")
 esitMi(RakamSistemi.cevir("15:42", sistem: "latn"), "15:42", "rakam: latn aynen")
 esitMi(RakamSistemi.cevir("15:42", sistem: RakamSistemi.etkin(dil: "bn", kayitli: "beng")), "১৫:৪২", "rakam: bn etkin sistemle")
@@ -688,9 +703,11 @@ esitMi(RakamSistemi.cevir("Çıkış 15:42", dogu: false), "Çıkış 15:42", "r
 esitMi(RakamSistemi.cevir("--:--", dogu: true), "--:--", "rakam: rakamsiz metin aynen")
 esitMi(RakamSistemi.cevir(SiriDeposu.saatBicimleyici(TimeZone(identifier: "UTC")!)(0), dogu: false), "00:00",
        "rakam: cekirdek saat Bati rakamiyla uretilir")
-// Yerel rakam yalniz cizimde: Arapca/Urduca/Bengalce tablolar Bati rakami tasir (Bati secen karisik gormesin).
+// Yerel rakam yalniz cizimde: Arapca/Urduca/Bengalce/Farsca/Pestuca/Sorani tablolar Bati rakami tasir (Bati secen karisik gormesin).
 let doguRakamlari = CharacterSet(charactersIn: "٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹০১২৩৪৫৬৭৮৯")
-for (ad, m) in [("VakitMetinleri.ar", "\(VakitMetinleri.dil("ar"))"), ("VakitMetinleri.ur", "\(VakitMetinleri.dil("ur"))"), ("VakitMetinleri.bn", "\(VakitMetinleri.dil("bn"))")] {
+for (ad, m) in [("VakitMetinleri.ar", "\(VakitMetinleri.dil("ar"))"), ("VakitMetinleri.ur", "\(VakitMetinleri.dil("ur"))"), ("VakitMetinleri.bn", "\(VakitMetinleri.dil("bn"))"),
+                ("VakitMetinleri.fa", "\(VakitMetinleri.dil("fa"))"), ("VakitMetinleri.ps", "\(VakitMetinleri.dil("ps"))"),
+                ("VakitMetinleri.ckb", "\(VakitMetinleri.dil("ckb"))")] {
     esitMi(m.unicodeScalars.contains(where: { doguRakamlari.contains($0) }), false, "rakam: \(ad) Dogu rakami tasimaz")
 }
 depo.arayuzDiliniYaz("ar")

@@ -4,6 +4,9 @@
  * Bugünün vakitlerini iki yöntemle yan yana gösterir; kullanıcı ya bölgenin takvimine
  * geçer ya mevcut yöntemde kalır. İkisi de cevabı hafızaya yazar (`sorulanUlkeler`),
  * aynı ülke için bir daha sorulmaz. Yöntem asla sessizce değişmez.
+ *
+ * Ülkede eşit iki takvim varsa (`oneri.alternatif`; Azerbaycan: MWL ve QMİ) öneri YOKTUR:
+ * tablo mevcut yöntemi ve iki takvimi yan yana gösterir, iki seçenek aynı ağırlıkta çizilir.
  */
 import React, { useMemo } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
@@ -25,7 +28,7 @@ interface Props {
   mevcut: HesapAyari;
   oneri: BolgeOnerisi;
   onKabul: () => void;
-  /** Resmî kurumun alternatif takvimi (Azerbaycan: QMİ); yalnız `oneri.alternatif` varken. */
+  /** Eşit ikinci takvime geçer (Azerbaycan: QMİ); yalnız `oneri.alternatif` varken. */
   onAlternatif?: () => void;
   onReddet: () => void;
 }
@@ -47,30 +50,27 @@ export const BolgeTakvimiModali: React.FC<Props> = ({ gorunur, ulkeAdi, yerAdi, 
   const m = metinler.hesap.oneri;
   useDonanimGeriTusu(gorunur, onReddet);
 
-  // Kullanıcı ülke varsayılanındaysa kart yalnız alternatifi sorar (tablo mevcut ↔ alternatif).
+  // Eşit iki takvim: öneri yok, iki seçenek aynı ağırlıkta.
   const alternatif = onAlternatif ? oneri.alternatif : undefined;
-  const varsayilanda =
-    oneri.profil === mevcut.profil &&
-    (oneri.ikindi ?? HESAP_PROFILLERI[oneri.profil].ikindi) === (mevcut.ikindi ?? HESAP_PROFILLERI[mevcut.profil]?.ikindi);
-  const yalnizAlternatif = !!alternatif && varsayilanda;
-  const hedef = yalnizAlternatif && alternatif ? { profil: alternatif, ikindi: undefined } : { profil: oneri.profil, ikindi: oneri.ikindi };
 
   const satirlar = useMemo(() => {
     if (!koordinat) return [];
     const k = new Coordinates(koordinat.lat, koordinat.lng);
     const bugun = new Date();
     const baglam = { tarih: bugun, enlem: koordinat.lat };
-    const a = new PrayerTimes(k, bugun, hesapParametreleriOlustur(mevcut, baglam));
-    const b = new PrayerTimes(k, bugun, hesapParametreleriOlustur(hedef, baglam));
-    return VAKITLER.map(([kod, alan]) => ({ kod, eski: ss(a[alan]), yeni: ss(b[alan]) }));
-    // `hedef` her çizimde yeni nesnedir; kimliği profil + ikindi belirler.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [koordinat, mevcut, hedef.profil, hedef.ikindi]);
+    const vakitler = (ayar: HesapAyari) => new PrayerTimes(k, bugun, hesapParametreleriOlustur(ayar, baglam));
+    const a = vakitler(mevcut);
+    const b = vakitler({ profil: oneri.profil, ikindi: oneri.ikindi });
+    const c = alternatif ? vakitler({ profil: alternatif }) : null;
+    return VAKITLER.map(([kod, alan]) => ({ kod, eski: ss(a[alan]), yeni: ss(b[alan]), ikinci: c ? ss(c[alan]) : null }));
+  }, [koordinat, mevcut, oneri.profil, oneri.ikindi, alternatif]);
 
   const eskiAd = HESAP_PROFILLERI[mevcut.profil]?.kisaAd ?? '';
-  const yeniAd = HESAP_PROFILLERI[hedef.profil].kisaAd;
+  const yeniAd = HESAP_PROFILLERI[oneri.profil].kisaAd;
   const alternatifAd = alternatif ? HESAP_PROFILLERI[alternatif].kisaAd : '';
-  const alternatifNotu = alternatif ? (m.alternatifNotu as Partial<Record<string, string>>)[alternatif] : undefined;
+  const notlar = m.alternatifNotu as Partial<Record<string, string>>;
+  const takvimNotlari = alternatif ? [notlar[oneri.profil], notlar[alternatif]].filter((n): n is string => !!n) : [];
+  const esitDugme = { backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.birincil, minHeight: 48 };
 
   return (
     <Modal visible={gorunur} animationType="fade" transparent statusBarTranslucent onRequestClose={onReddet}>
@@ -106,9 +106,7 @@ export const BolgeTakvimiModali: React.FC<Props> = ({ gorunur, ulkeAdi, yerAdi, 
           </View>
 
           <Text className="text-sm leading-5 mb-3" style={{ color: renkler.metin }}>
-            {yalnizAlternatif && alternatif
-              ? bicim(m.alternatifSoru, { profil: PROFIL_ADLARI[alternatif] })
-              : bicim(m.soru, { profil: PROFIL_ADLARI[oneri.profil] })}
+            {alternatif ? m.ikiTakvimSoru : bicim(m.soru, { profil: PROFIL_ADLARI[oneri.profil] })}
           </Text>
 
           {satirlar.length > 0 && (
@@ -120,9 +118,14 @@ export const BolgeTakvimiModali: React.FC<Props> = ({ gorunur, ulkeAdi, yerAdi, 
                 <Text className="flex-1 text-xs font-bold text-center" style={{ color: renkler.metinIkincil }}>
                   {eskiAd}
                 </Text>
-                <Text className="flex-1 text-xs font-bold text-center" style={{ color: renkler.metinIkincil }}>
+                <Text className="flex-1 text-xs font-bold text-center" style={{ color: alternatif ? renkler.metin : renkler.metinIkincil }}>
                   {yeniAd}
                 </Text>
+                {alternatif ? (
+                  <Text className="flex-1 text-xs font-bold text-center" style={{ color: renkler.metin }}>
+                    {alternatifAd}
+                  </Text>
+                ) : null}
               </View>
               {satirlar.map((s) => (
                 <View key={s.kod} className="flex-row px-3 py-1.5" style={{ borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: renkler.sinir }}>
@@ -135,39 +138,60 @@ export const BolgeTakvimiModali: React.FC<Props> = ({ gorunur, ulkeAdi, yerAdi, 
                   <Text className="flex-1 text-sm text-center font-bold" style={{ color: renkler.metin }}>
                     {s.yeni}
                   </Text>
+                  {s.ikinci ? (
+                    <Text className="flex-1 text-sm text-center font-bold" style={{ color: renkler.metin }}>
+                      {s.ikinci}
+                    </Text>
+                  ) : null}
                 </View>
               ))}
             </View>
           )}
 
-          {alternatifNotu ? (
-            <Text className="text-xs mb-3" style={{ color: renkler.metinIkincil }} testID="bolge-alternatif-notu">
-              {alternatifNotu}
+          {takvimNotlari.map((not) => (
+            <Text key={not} className="text-xs mb-3" style={{ color: renkler.metinIkincil }} testID="bolge-alternatif-notu">
+              {not}
             </Text>
-          ) : null}
+          ))}
 
-          {oneri.guven === 'genel' && !yalnizAlternatif && (
+          {oneri.guven === 'genel' && !alternatif && (
             <Text className="text-xs mb-3" style={{ color: renkler.metinIkincil }}>
               {bicim(m.genelUyari, { guven: GUVEN_METNI.genel })}
             </Text>
           )}
 
-          <TouchableOpacity
-            className="flex-row items-center justify-center rounded-2xl mb-2"
-            style={{ backgroundColor: renkler.birincil, minHeight: 50 }}
-            onPress={yalnizAlternatif ? onAlternatif : onKabul}
-            accessibilityRole="button"
-            accessibilityLabel={bicim(m.gecin, { ad: yeniAd })}
-          >
-            <FontAwesome5 name="check" size={14} color="#FFFFFF" style={{ marginRight: 8 }} />
-            <Text className="text-base font-bold" style={{ color: '#FFFFFF' }}>
-              {bicim(m.gecin, { ad: yeniAd })}
-            </Text>
-          </TouchableOpacity>
-          {alternatif && !yalnizAlternatif ? (
+          {alternatif ? (
             <TouchableOpacity
               className="items-center justify-center rounded-2xl mb-2"
-              style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.birincil, minHeight: 48 }}
+              style={esitDugme}
+              onPress={onKabul}
+              accessibilityRole="button"
+              accessibilityLabel={bicim(m.gecin, { ad: yeniAd })}
+              testID="bolge-kabul"
+            >
+              <Text className="text-base font-semibold" style={{ color: renkler.birincil }}>
+                {bicim(m.gecin, { ad: yeniAd })}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              className="flex-row items-center justify-center rounded-2xl mb-2"
+              style={{ backgroundColor: renkler.birincil, minHeight: 50 }}
+              onPress={onKabul}
+              accessibilityRole="button"
+              accessibilityLabel={bicim(m.gecin, { ad: yeniAd })}
+              testID="bolge-kabul"
+            >
+              <FontAwesome5 name="check" size={14} color="#FFFFFF" style={{ marginRight: 8 }} />
+              <Text className="text-base font-bold" style={{ color: '#FFFFFF' }}>
+                {bicim(m.gecin, { ad: yeniAd })}
+              </Text>
+            </TouchableOpacity>
+          )}
+          {alternatif ? (
+            <TouchableOpacity
+              className="items-center justify-center rounded-2xl mb-2"
+              style={esitDugme}
               onPress={onAlternatif}
               accessibilityRole="button"
               accessibilityLabel={bicim(m.gecin, { ad: alternatifAd })}

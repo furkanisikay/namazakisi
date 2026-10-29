@@ -42,8 +42,9 @@ export const hesap: Sozluk['hesap'] = {
     genelUyari: '{guven}: nuk gjetëm takvim zyrtar të verifikuar për këtë vend.',
     gecin: 'Kaloni te takvimi {ad}',
     devam: 'Vazhdoni me {ad}',
-    alternatifSoru: 'Dëshironi të përdorni takvimin {profil}? Sot ndryshon kështu:',
+    ikiTakvimSoru: 'Këtu përdoren dy takvime. Sipas cilit t’i llogarisim kohët e namazit? Sot duken kështu:',
     alternatifNotu: {
+      mwl: 'Në takvimin MWL ezani i akshamit thirret në perëndim të diellit, dhe ikindia hyn kur hija bëhet sa gjatësia e sendit.',
       qmi: 'Takvimi i QMİ ndjek rendin xhaferi: ezani i akshamit thirret rreth 14 minuta pas perëndimit të diellit, dhe ikindia hyn kur hija bëhet dyfishi i gjatësisë.',
     },
     birKez: 'Kjo pyetje bëhet vetëm një herë për këtë vend. Mund ta ndryshoni kurdo te Cilësimet › Kohët e namazit › Metoda e llogaritjes.',

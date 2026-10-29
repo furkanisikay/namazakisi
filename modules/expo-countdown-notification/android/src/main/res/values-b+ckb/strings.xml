@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ckb -->
+<resources>
+    <string name="countdown_kanal_canli_ad">ژماردنە زیندووەکان</string>
+    <string name="countdown_kanal_canli_aciklama">ژماردنی پێچەوانە لە Now Bar و شریتی دۆخدا</string>
+    <string name="countdown_kanal_genel_ad">ئاگادارکردنەوەکانی ژماردن</string>
+    <string name="countdown_kanal_genel_aciklama">کەناڵی ئاگادارکردنەوەکانی ژماردنی پێچەوانە</string>
+
+    <string name="countdown_eylem_kildim">نوێژم کرد</string>
+    <string name="countdown_eylem_durdur">وەستاندن</string>
+
+    <!-- JS gövde vermediğinde temaya göre yedek gövde (ibadete çağrı: "تۆ" + emir) -->
+    <string name="countdown_yedek_vakit">پەلە بکە، کاتی نوێژ خەریکە دەردەچێت.</string>
+    <string name="countdown_yedek_iftar">کات کەم دەبێتەوە.</string>
+    <string name="countdown_yedek_sahur">ھێشتا دەتوانیت بخۆیت و بخۆیتەوە؛ ڕۆژوو بەم زووانە دەست پێدەکات.</string>
+    <string name="countdown_yedek_seri">نوێژەکانی ئەمڕۆت تەواو نین؛ زنجیرەکەت لەدەست مەدە.</string>
+
+    <string name="countdown_onek_vakit">ماوە تا دەرچوونی کات</string>
+    <string name="countdown_onek_vakit_dar">کات دەردەچێت</string>
+    <string name="countdown_onek_iftar">ماوە تا بەربانگ</string>
+    <string name="countdown_onek_iftar_dar">تا بەربانگ</string>
+    <string name="countdown_onek_sahur">ماوە تا کۆتایی پارشێو</string>
+    <string name="countdown_onek_sahur_dar">پارشێو تەواو دەبێت</string>
+    <string name="countdown_onek_seri">بۆ ڕزگارکردنی زنجیرەکەت</string>
+    <string name="countdown_onek_seri_dar">زنجیرە تەواو دەبێت</string>
+</resources>

@@ -431,11 +431,112 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "বর্তমান নামাজ পড়া হয়েছে হিসেবে চিহ্নিত করে।"
     )
 
-    /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn; cevrilmemis dil `// ÇEVİRİ: <kod>`
+    // fa — Farsça (beta); JS `sozluk/fa` (Kıldım "خواندم", Kılındı "خوانده شد")
+    static let fa = WidgetMetinleri(
+        galeriAdi: "وقت نماز",
+        galeriAciklama: "وقت نماز کنونی، زمان باقی‌مانده تا پایان آن و اوقات نماز امروز.",
+        veriEski: "برای به‌روزرسانی اوقات نماز، برنامه را باز کنید",
+        konumYok: "برای تنظیم موقعیت، برنامه را باز کنید",
+        kilindiSiradaki: "{ad} خوانده شد · {sonraki} {saat}",
+        adCikis: "{ad} · پایان {saat}",
+        siradakiAdSaat: "بعدی {ad} {saat}",
+        vaktiCikisErisim: "وقت {ad}، پایان {saat}",
+        siradakiErisim: "بعدی {ad}، {saat}",
+        cikisSaat: "پایان {saat}",
+        bitisSaat: "پایان {saat}",
+        kilindiBaslik: "{ad} خوانده شد",
+        siradaki: "بعدی",
+        siradakiAd: "بعدی {ad}",
+        kildimErisim: "نماز {ad} را خواندم",
+        gunSatiriKilindi: "، خوانده شد",
+        bitti: "تمام شد",
+        vakitCikti: "وقت نماز گذشت",
+        kabulAlt: "نماز {ad} خوانده شد",
+        kontrolAdi: "خواندم",
+        kontrolAciklama: "نماز کنونی را خوانده‌شده علامت می‌زند."
+    )
+
+    // ps — Peştuca (beta); terimler JS sozluk/ps ("لمونځ مې وکړ" / "ادا شو")
+    static let ps = WidgetMetinleri(
+        galeriAdi: "د لمانځه وخت",
+        galeriAciklama: "اوسنی وخت، د هغه تر پایه پاتې وخت او د نن د لمانځه وختونه.",
+        veriEski: "د لمانځه د وختونو د تازه کولو لپاره اپ پرانیزئ",
+        konumYok: "د موقعیت د برابرولو لپاره اپ پرانیزئ",
+        kilindiSiradaki: "{ad} ادا شو · {sonraki} {saat}",
+        adCikis: "{ad} · پای {saat}",
+        siradakiAdSaat: "بل {ad} {saat}",
+        vaktiCikisErisim: "د {ad} وخت، پای {saat}",
+        siradakiErisim: "بل {ad}، {saat}",
+        cikisSaat: "پای {saat}",
+        bitisSaat: "پای {saat}",
+        kilindiBaslik: "{ad} ادا شو",
+        siradaki: "بل",
+        siradakiAd: "بل {ad}",
+        kildimErisim: "د {ad} لمونځ مې وکړ",
+        gunSatiriKilindi: "، ادا شو",
+        bitti: "پای ته ورسېد",
+        vakitCikti: "د لمانځه وخت ووت",
+        kabulAlt: "{ad} ادا شو",
+        kontrolAdi: "لمونځ مې وکړ",
+        kontrolAciklama: "اوسنی لمونځ د ادا شوي په توګه نښه کوي."
+    )
+
+    // ckb
+    static let ckb = WidgetMetinleri(
+        galeriAdi: "کاتی نوێژ",
+        galeriAciklama: "کاتی نوێژی ئێستا، کاتی ماوە تا دەرچوونی و کاتەکانی نوێژی ئەمڕۆ.",
+        veriEski: "بۆ نوێکردنەوەی کاتەکانی نوێژ ئەپەکە بکەنەوە",
+        konumYok: "بۆ دیاریکردنی شوێنەکەتان ئەپەکە بکەنەوە",
+        kilindiSiradaki: "{ad} کرا · {sonraki} {saat}",
+        adCikis: "{ad} · کۆتایی {saat}",
+        siradakiAdSaat: "داھاتوو {ad} {saat}",
+        vaktiCikisErisim: "کاتی {ad}، کۆتایی {saat}",
+        siradakiErisim: "داھاتوو {ad}، {saat}",
+        cikisSaat: "کۆتایی {saat}",
+        bitisSaat: "کۆتایی {saat}",
+        kilindiBaslik: "{ad} کرا",
+        siradaki: "داھاتوو",
+        siradakiAd: "داھاتوو {ad}",
+        kildimErisim: "نوێژی {ad}م کرد",
+        gunSatiriKilindi: "، کرا",
+        bitti: "تەواو بوو",
+        vakitCikti: "کاتی نوێژ دەرچوو",
+        kabulAlt: "{ad} کرا",
+        kontrolAdi: "نوێژم کرد",
+        kontrolAciklama: "نوێژی ئێستا وەک کراو نیشانە دەکات."
+    )
+
+    // ug — Uygurca (beta); JS `sozluk/ug` ("ناماز ئوقۇدۇم" / "ئوقۇلدى")
+    static let ug = WidgetMetinleri(
+        galeriAdi: "ناماز ۋاقتى",
+        galeriAciklama: "ھازىرقى ناماز ۋاقتى، ئۇنىڭ چىقىشىغا قالغان ۋاقىت ۋە بۈگۈنكى ناماز ۋاقىتلىرى.",
+        veriEski: "ناماز ۋاقىتلىرىنى يېڭىلاش ئۈچۈن ئەپنى ئېچىڭ",
+        konumYok: "ئورنىڭىزنى تەڭشەش ئۈچۈن ئەپنى ئېچىڭ",
+        kilindiSiradaki: "{ad} ئوقۇلدى · {sonraki} {saat}",
+        adCikis: "{ad} · چىقىشى {saat}",
+        siradakiAdSaat: "كېيىنكىسى {ad} {saat}",
+        vaktiCikisErisim: "{ad} ۋاقتى، چىقىشى {saat}",
+        siradakiErisim: "كېيىنكىسى {ad}، {saat}",
+        cikisSaat: "چىقىشى {saat}",
+        bitisSaat: "ئاخىرلىشىشى {saat}",
+        kilindiBaslik: "{ad} ئوقۇلدى",
+        siradaki: "كېيىنكى",
+        siradakiAd: "كېيىنكىسى {ad}",
+        kildimErisim: "{ad} نامىزىنى ئوقۇدۇم",
+        gunSatiriKilindi: "، ئوقۇلدى",
+        bitti: "ئاخىرلاشتى",
+        vakitCikti: "ناماز ۋاقتى چىقتى",
+        kabulAlt: "{ad} ئوقۇلدى",
+        kontrolAdi: "ناماز ئوقۇدۇم",
+        kontrolAciklama: "ھازىرقى ۋاقىتنى ئوقۇلدى دەپ بەلگىلەيدۇ."
+    )
+
+    /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil `// ÇEVİRİ: <kod>`
     /// ile baslayan Ingilizce kopya).
     static let tablo: [String: WidgetMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
+        "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
     ]
 
     static func dil(_ kod: String?) -> WidgetMetinleri {

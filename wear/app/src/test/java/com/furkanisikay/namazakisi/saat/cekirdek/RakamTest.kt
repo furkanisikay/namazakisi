@@ -32,8 +32,20 @@ class RakamTest {
     }
 
     @Test
+    fun farscaPestucaFarsSoraniDoguArapRakamiVerir() {
+        // CLDR: fa ve ps varsayılanı Fars rakamı (`arabext`, ۰ U+06F0), ckb Doğu Arap (`arab`, ٠);
+        // telefonun aynı dillerdeki varsayılanıyla aynı. Uygurca (ug-CN) Batı rakamı.
+        assertEquals('۰', yerelSifir(yerel("fa-IR")))
+        assertEquals('۰', yerelSifir(yerel("fa-AF")))
+        assertEquals('۰', yerelSifir(yerel("ps-AF")))
+        assertEquals('٠', yerelSifir(yerel("ckb-IQ")))
+        assertEquals('0', yerelSifir(yerel("fa-IR-u-nu-latn")))
+        assertEquals("۰۵:۵۵", rakamlariYerellestir("05:55", yerelSifir(yerel("ps-AF"))))
+    }
+
+    @Test
     fun batiRakamliYerelAyarlarSifirVerir() {
-        for (etiket in listOf("tr-TR", "tr", "en-US", "en", "ur-PK", "ar-MA", "ar-DZ", "ar-TN", "id-ID", "de-DE", "ru-RU")) {
+        for (etiket in listOf("tr-TR", "tr", "en-US", "en", "ur-PK", "ar-MA", "ar-DZ", "ar-TN", "id-ID", "de-DE", "ru-RU", "ug-CN")) {
             assertEquals(etiket, '0', yerelSifir(yerel(etiket)))
         }
     }

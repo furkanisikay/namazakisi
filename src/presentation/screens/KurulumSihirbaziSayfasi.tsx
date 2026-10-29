@@ -239,14 +239,15 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     /**
      * İlk kurulumda Türkiye dışı ülke seçilince o ülkenin yöntemi DOĞRUDAN kurulur ve "Her şey
      * hazır" özetinde söylenir (ana ekranda ayrıca sorulmaz: ülke `sorulanUlkeler`'e yazılır).
-     * Hesap ayarı yüklenmediyse karar ana ekrandaki tek seferlik soruya kalır.
+     * Hesap ayarı yüklenmediyse ya da ülkede eşit iki takvim varsa (Azerbaycan) karar ana
+     * ekrandaki tek seferlik soruya kalır: uygulama orada takvim seçmez.
      */
     const ulkeHesabiniKur = useCallback(
         (ulke: string) => {
             const ayar = hesap?.ayar;
             if (!hesap?.yuklendi || !ayar) return;
             const oneri = bolgeOnerisi(ulke, ayar);
-            if (!oneri) {
+            if (!oneri || oneri.alternatif) {
                 setKurulanYontem(undefined);
                 return;
             }

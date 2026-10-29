@@ -42,8 +42,9 @@ export const hesap: Sozluk['hesap'] = {
     genelUyari: '{guven}: no encontramos un calendario oficial verificado para este país.',
     gecin: 'Cambiar a {ad}',
     devam: 'Continuar con {ad}',
-    alternatifSoru: '¿Desea usar el calendario {profil}? Hoy las horas cambiarían así:',
+    ikiTakvimSoru: 'Aquí se usan dos calendarios. ¿Con cuál calculamos las horas de oración? Hoy se comparan así:',
     alternatifNotu: {
+      mwl: 'En el calendario MWL, el adhan de Maghrib se hace a la puesta del sol, y Asr comienza cuando la sombra iguala la altura del objeto.',
       qmi: 'El calendario QMİ sigue la escuela yafarí: el adhan de Maghrib se hace unos 14 minutos después de la puesta del sol, y Asr comienza cuando la sombra duplica la altura del objeto.',
     },
     birKez: 'Esta pregunta se hace una sola vez para este país. Puede cambiarlo cuando quiera en Ajustes › Horas de rezo › Método de cálculo.',

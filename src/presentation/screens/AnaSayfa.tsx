@@ -228,6 +228,10 @@ export const AnaSayfa: React.FC = () => {
   // gelmez) → kullanıcının bir sonraki elle kaydırmasındaki "gelecek gün" uyarısı
   // yutulurdu. Bu yüzden ref, sayfanın değiştiği ÜÇ yerde elle yazılır.
   const mevcutSayfaIndeksiRef = useRef(BASLANGIC_SAYFA_INDEKSI);
+  // Aktif gün açılıştan sonra değişince (konum diskten ilk render'dan SONRA gelir) pager
+  // bu anahtarla hedef sayfada YENİDEN doğar; imperatif sayfa komutu native'de layout'tan
+  // önce yutulabiliyor ve ana ekran dünde kalıyordu.
+  const [pagerAnahtari, setPagerAnahtari] = useState(0);
   /** İlk render mı? Açılış sayfası state'ini bir kez hizalamak için. */
   const ilkKareRef = useRef(true);
 
@@ -420,8 +424,8 @@ export const AnaSayfa: React.FC = () => {
       // setPage event üretmeyeceği için programatik bayrak asılı kalır ve kullanıcının
       // bir sonraki elle kaydırmasındaki uyarıyı yutardı.
       if (yeniIndeks !== mevcutSayfaIndeksiRef.current) {
-        programatikGecisRef.current = true;
-        pagerRef.current?.setPageWithoutAnimation(yeniIndeks);
+        ilkSayfaIndeksiRef.current = yeniIndeks;
+        setPagerAnahtari((a) => a + 1);
       }
       mevcutSayfaIndeksiRef.current = yeniIndeks;
     }
@@ -1214,6 +1218,7 @@ export const AnaSayfa: React.FC = () => {
 
       {/* Pager */}
       <PagerView
+        key={pagerAnahtari}
         ref={pagerRef}
         style={{ flex: 1 }}
         initialPage={ilkSayfaIndeksi}

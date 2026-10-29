@@ -25,7 +25,7 @@ enum GununAyetiSabitleri {
 /// Yuk yokken (uygulama hic acilmadi) ve galeride gereken metinler. Ingilizce karsiliklar
 /// JS sozlugunden (`sozluk/en/gununAyeti.ts > baslik, etiket`).
 ///
-/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn; cevrilmemis dil
+/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil
 /// Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`). `ornek*` alanlari galeri onizlemesindeki
 /// 94:6'dir: meal o dilin QuranEnc mealinden BIREBIR (kesilmeden) ve kunyesiyle yazilir
 /// (`docs/ajan/coklu-dil.md > Nass kurali`; dilde meal yoksa `ornekMeal` bos → yalniz Arapca).
@@ -259,9 +259,66 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Abu Bakr Zakaria, QuranEnc 1.1.1"
     )
 
+    // fa — meal 94:6 `gununAyetiHavuzu.ts` (persian_ih), künye `GUNUN_AYETI_KAYNAKLARI.mealler.fa`
+    static let fa = GununAyetiYerelMetinleri(
+        galeriAdi: "آیهٔ روز",
+        galeriAciklama: "آیه‌ای همراه با ترجمه‌اش که هر روز هنگام صبح عوض می‌شود.",
+        etiket: "آیهٔ روز",
+        uygulamayiAcin: "برای دیدن آیهٔ روز، برنامه را باز کنید",
+        ornekSigmiyor: "آیهٔ امروز در این اندازه جا نمی‌شود. برای خواندن ضربه بزنید.",
+        ornekAcin: "باز کردن",
+        ornekArapcaKaynagi: "عربی: Tanzil",
+        ornekMeal: "[آری؛] مسلماً با [هر] دشواری، آسانی است.",
+        ornekKisaKunye: "قرآن 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center، QuranEnc 1.1.3"
+    )
+
+    // ps — Peştuca (beta): meal QuranEnc `pashto_rwwad` (havuzdaki 94:6 birebir), künye mealler.ps
+    static let ps = GununAyetiYerelMetinleri(
+        galeriAdi: "د ورځې آیت",
+        galeriAciklama: "یو آیت او د هغه ژباړه چې هره ورځ د سهار په وخت بدلېږي.",
+        etiket: "د ورځې آیت",
+        uygulamayiAcin: "د ورځې د آیت د لیدلو لپاره اپ پرانیزئ",
+        ornekSigmiyor: "د نن آیت په دې اندازه کې نه ځایېږي. د لوستلو لپاره یې کېکاږئ.",
+        ornekAcin: "پرانیزئ",
+        ornekArapcaKaynagi: "عربي: Tanzil",
+        ornekMeal: "بېشکه چې له سختۍ سره آساني هم شته.",
+        ornekKisaKunye: "قرآن 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center، QuranEnc 1.0.1"
+    )
+
+    // ckb — meal Muhammad Salih Bamoki (QuranEnc `kurdish_bamoki`), `gununAyetiHavuzu.ts` 94:6 birebir.
+    static let ckb = GununAyetiYerelMetinleri(
+        galeriAdi: "ئایەتی ڕۆژ",
+        galeriAciklama: "ئایەتێک و وەرگێڕانەکەی کە ھەموو ڕۆژێک لە کاتی بەیانیدا دەگۆڕێت.",
+        etiket: "ئایەتی ڕۆژ",
+        uygulamayiAcin: "بۆ بینینی ئایەتی ڕۆژ ئەپەکە بکەنەوە",
+        ornekSigmiyor: "ئایەتی ئەمڕۆ لەم قەبارەیەدا جێی نابێتەوە. بۆ خوێندنەوە دەستی لێ بدەن.",
+        ornekAcin: "کردنەوە",
+        ornekArapcaKaynagi: "عەرەبی: Tanzil",
+        ornekMeal: "بێگومان لەگەڵ ھەموو تەنگانەیەکدا خۆشی وئاسانی دێت",
+        ornekKisaKunye: "قورئان 94:6",
+        ornekMealKaynagi: "Muhammad Salih Bamoki، QuranEnc 1.1.1"
+    )
+
+    // ug — Uygurca (beta); meal `gununAyetiHavuzu.ts` 94:6 birebir, künye `mealler.ug` (uyghur_saleh 1.0.2)
+    static let ug = GununAyetiYerelMetinleri(
+        galeriAdi: "كۈننىڭ ئايىتى",
+        galeriAciklama: "ھەر كۈنى بامداتتا ئالمىشىدىغان بىر ئايەت ۋە تەرجىمىسى.",
+        etiket: "كۈننىڭ ئايىتى",
+        uygulamayiAcin: "كۈننىڭ ئايىتىنى كۆرۈش ئۈچۈن ئەپنى ئېچىڭ",
+        ornekSigmiyor: "بۈگۈنكى ئايەت بۇ چوڭلۇققا پاتمايدۇ. ئوقۇش ئۈچۈن چېكىڭ.",
+        ornekAcin: "ئېچىڭ",
+        ornekArapcaKaynagi: "ئەرەبچە: Tanzil",
+        ornekMeal: "ئەلۋەتتە شۇ مۈشكۈللۈك بىلەن يەنە بىر ئاسانلىق بار.",
+        ornekKisaKunye: "قۇرئان 94:6",
+        ornekMealKaynagi: "Muhammad Saleh، QuranEnc 1.0.2"
+    )
+
     static let tablo: [String: GununAyetiYerelMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
+        "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
     ]
 
     static var simdiki: GununAyetiYerelMetinleri {

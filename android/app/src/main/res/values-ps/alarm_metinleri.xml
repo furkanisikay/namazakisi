@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Peştuca). "لمونځ مې وکړ" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">د لمانځه الارم</string>
+  <string name="alarm_kildim">لمونځ مې وکړ</string>
+  <string name="alarm_kapat">بند یې کړئ</string>
+  <string name="alarm_kanal_aciklamasi">ریښتینی الارم چې ستاسو د ټاکلو یادونو په ګامونو کې زنګ وهي</string>
+</resources>

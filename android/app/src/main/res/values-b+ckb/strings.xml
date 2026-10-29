@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ckb -->
+<!-- Soranî kaynaklar. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/ckb (vakit.ts baş yorumu). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">نوێژی ئێستا، کاتی دەرچوونی، و «نوێژم کرد» بە یەک دەستلێدان</string>
+  <string name="widget_genis_aciklama">پێنج نوێژی ئەمڕۆ، ژماردنی پێچەوانە، و «نوێژم کرد» بە یەک دەستلێدان</string>
+  <string name="widget_kapak_adi">کاتەکانی نوێژ بۆ شاشەی دەرەوە</string>
+  <string name="widget_kapak_aciklama">کاتەکانی نوێژی ئەمڕۆ و ژماردنی پێچەوانە بۆ شاشەی دەرەوەی Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — کلاسیک</string>
+  <string name="widget_klasik_aciklama">ڕووکاری سەوزی کلاسیک: کاتی ماوە تا نوێژی داھاتوو</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — کلاسیکی پان</string>
+  <string name="widget_klasik_genis_aciklama">ڕووکاری سەوزی کلاسیک: ژماردنی پێچەوانە و کاتەکانی نوێژی ئەمڕۆ</string>
+  <string name="widget_ayet_adi">ئایەتی ڕۆژ</string>
+  <string name="widget_ayet_aciklama">ئایەتێک و وەرگێڕانەکەی، ھەموو ڕۆژێک لە کاتی بەیانیدا نوێ دەبێتەوە</string>
+  <string name="widget_ayar_zemin_palet">ڕەنگی ئەپ (ڕەنگی کاڵ)</string>
+  <string name="widget_ayar_ayet_icerik">لە قەبارەی چوارگۆشەدا پیشان بدرێت</string>
+  <string name="widget_ayar_ayet_icerik_meal">وەرگێڕان</string>
+  <string name="widget_ayar_ayet_icerik_hat">دەقی عەرەبی (خۆشنووسی)</string>
+  <string name="kutu_kildim_etiket">نوێژم کرد</string>
+  <string name="kisayol_kildim_kisa">نوێژم کرد</string>
+  <string name="kisayol_kildim_uzun">نوێژی ئێستام کرد</string>
+  <string name="kisayol_kible_kisa">قیبلە</string>
+  <string name="kisayol_kible_uzun">پیشاندانی ئاراستەی قیبلە</string>
+  <string name="kisayol_kaza_kisa">دەفتەری قەزا</string>
+  <string name="kisayol_kaza_uzun">کردنەوەی دەفتەری قەزا</string>
+  <string name="kildim_onay_baslik">%1$s وەک کراو نیشانە بکرێت؟</string>
+  <string name="kildim_onay_mesaj">ڕوون نییە کام ئەپ ئەم داواکارییەی ناردووە. ئەگەر نوێژتان کردووە پشتڕاستی بکەنەوە.</string>
+  <string name="kildim_onay_evet">نوێژم کرد</string>
+  <string name="kildim_onay_vazgec">پاشگەزبوونەوە</string>
+  <string name="kildim_guven_baslik">ڕێگە بە %1$s دەدەن نوێژەکانتان وەک کراو نیشانە بکات؟</string>
+  <string name="kildim_guven_mesaj">ئەو نوێژەی ئێستا نیشانە دەکرێت: %1$s. دەتوانن دواتر بڕیارەکەتان لە ڕێکخستنەکان &gt; ئەو ئەپانەی «نوێژم کرد» نیشانە دەکەن بگۆڕن.</string>
+  <string name="kildim_guven_tarayici_mesaj">ئەو نوێژەی ئێستا نیشانە دەکرێت: %1$s. ئەم داواکارییە لە وێبگەڕێکەوە ھات؛ لەبەر ئەوەی ھەر پەڕەیەکی وێب دەتوانێت ئەم بەستەرە بکاتەوە، ڕێگەپێدانی ھەمیشەیی نادرێت.</string>
+  <string name="kildim_guven_her_zaman">ھەمیشە ڕێگە بدە</string>
+  <string name="kildim_guven_bu_sefer">تەنیا ئەم جارە</string>
+  <string name="kildim_guven_engelle">بلۆککردن</string>
+  <string name="kildim_guven_engellendi">%1$s ئیتر ناتوانێت نوێژەکانتان نیشانە بکات. دەتوانن ئەمە لە ڕێکخستنەکاندا بگۆڕن.</string>
+  <string name="widget_ayar_baslik">ڕێکخستنی ویجێت</string>
+  <string name="widget_ayar_zemin">پاشبنەما</string>
+  <string name="widget_ayar_zemin_material">ڕەنگەکانی وێنەی پاشبنەما</string>
+  <string name="widget_ayar_zemin_sistem">تێمی سیستەم</string>
+  <string name="widget_ayar_zemin_acik">ڕووناک</string>
+  <string name="widget_ayar_zemin_koyu">تاریک</string>
+  <string name="widget_ayar_zemin_seffaf">ڕوون</string>
+  <string name="widget_ayar_opaklik">ناڕوونیی پاشبنەما</string>
+  <string name="widget_ayar_gosterim">بە دەقی گەورە پیشان بدرێت</string>
+  <string name="widget_ayar_gosterim_kalan">کاتی ماوە</string>
+  <string name="widget_ayar_gosterim_bitis">کاتی کۆتایی</string>
+  <string name="widget_ayar_gosterim_not">کاتی کۆتایی لە ھەموو قەبارەیەکدا پیشان دەدرێت.</string>
+  <string name="widget_ayar_sonraki">پیشاندانی نوێژی داھاتوو</string>
+  <string name="widget_ayar_vazgec">پاشگەزبوونەوە</string>
+  <string name="widget_ayar_kaydet">پاشەکەوتکردن</string>
+  <string name="kildim_onay_kanal_adi">پشتڕاستکردنەوەی «نوێژم کرد»</string>
+  <string name="kildim_onay_kanal_aciklama">پشتڕاستکردنەوەیەکی بێدەنگ کە بۆ چەند چرکەیەک پیشان دەدرێت کاتێک لە ئاگادارکردنەوەیەکدا دەست لە «نوێژم کرد» دەدەن</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">کۆتایی %1$s</string>
+  <string name="widget_giris">دەستپێک %1$s</string>
+  <string name="widget_namaz_vakti">کاتی نوێژ</string>
+  <string name="widget_uygulamayi_acin">ئەپەکە بکەنەوە</string>
+  <string name="widget_siradaki">داھاتوو: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">ئێستا ھیچ نوێژێک بۆ نیشانەکردن نییە</string>
+  <string name="widget_dugme_kildim">نوێژم کرد</string>
+  <string name="widget_dugme_isaretleniyor">نیشانە دەکرێت</string>
+  <string name="widget_dugme_kilindi">کرا</string>
+  <string name="widget_dugme_vakit_girmedi">ھێشتا کاتی نەھاتووە</string>
+  <string name="widget_klasik_uygulamayi_acin">ئەپەکە بکەنەوە</string>
+  <string name="widget_klasik_erisim_veri_yok">بۆ بینینی کاتەکانی نوێژ ئەپەکە بکەنەوە</string>
+  <string name="widget_klasik_erisim_siradaki">نوێژی داھاتوو: %1$s، کاتژمێر %2$s دەست پێدەکات</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">ماوە بۆ نیوەڕۆ</string>
+  <string name="widget_onizleme_klasik_genis">ماوە بۆ ئێوارە</string>
+  <string name="widget_onizleme_imsak">بەیانی</string>
+  <string name="widget_onizleme_gunes">خۆرھەڵاتن</string>
+  <string name="widget_onizleme_ogle">نیوەڕۆ</string>
+  <string name="widget_onizleme_ikindi">عەسر</string>
+  <string name="widget_onizleme_aksam">ئێوارە</string>
+  <string name="widget_onizleme_yatsi">خەوتنان</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s وەک کراو نیشانە کرا. خوا قبوڵی بکات.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s پێشتر وەک کراو نیشانە کراوە.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">ئێستا ھیچ نوێژێک بۆ نیشانەکردن نییە. داھاتوو: %1$s، کاتژمێر %2$s دەست پێدەکات.</string>
+  <string name="kildim_sonuc_vakit_yok">ئێستا ھیچ نوێژێک بۆ نیشانەکردن نییە.</string>
+  <string name="kildim_sonuc_veri_yok">زانیاریی کاتی نوێژ نییە. یەک جار ئەپەکە بکەنەوە.</string>
+  <string name="kildim_sonuc_vakit_degisti">کاتی نوێژ گۆڕا، بۆیە ھیچ شتێک نیشانە نەکرا. دووبارە ھەوڵ بدەنەوە.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">ئەپی ڕێنیشاندەر نەکرایەوە.</string>
+  <string name="arac_adsiz_cami">مزگەوت</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">زانیاریی کاتی نوێژ نەخوێندرایەوە.</string>
+  <string name="asistan_isaretleme_yapilamadi">نوێژەکە نیشانە نەکرا.</string>
+  <string name="asistan_aciklama">دەتوانن داوای کاتەکانی نوێژ بکەن، نوێژی ئێستا وەک کراو نیشانە بکەن و شاشەی قیبلە بکەنەوە.</string>
+</resources>

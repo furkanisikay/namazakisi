@@ -32,3 +32,8 @@ it('yeni diller: es 0 çoğul ve milyon katı many, hi/bn 0 tekil, nl/sq one/oth
   expect([0, 1, 2].map((n) => cogulKategorisi('bn', n))).toEqual(['one', 'one', 'other']);
   for (const dil of ['nl', 'sq']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'one', 'other']);
 });
+
+it('sağdan sola dalga: fa 0 tekil, ps/ckb/ug one/other', () => {
+  expect([0, 1, 2].map((n) => cogulKategorisi('fa', n))).toEqual(['one', 'one', 'other']);
+  for (const dil of ['ps', 'ckb', 'ug']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'one', 'other']);
+});

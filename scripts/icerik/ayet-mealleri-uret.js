@@ -29,6 +29,10 @@ const MEALLER = {
   sq: 'albanian_nahi',
   hi: 'hindi_omari',
   bn: 'bengali_zakaria',
+  fa: 'persian_ih',
+  ps: 'pashto_rwwad',
+  ckb: 'kurdish_bamoki',
+  ug: 'uyghur_saleh',
 };
 
 /** Liste API'sinde görünmeyen çevirilerin QuranEnc başlığı (sitedeki kartta yazdığı gibi). */
@@ -36,6 +40,8 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   russian_rwwad: 'Russian Translation - Rowwad Translation Center',
   malay_basumayyah: 'Malay Translation - Abdullah Basumayyah',
   bengali_zakaria: 'Bengali Translation - Abu Bakr Zakaria',
+  // QuranEnc Kürtçeyi "ku" diliyle listeler; uygulamanın kodu Soranî "ckb" → dil listesinde bulunmaz.
+  kurdish_bamoki: 'Kurdish Translation - Muhammad Salih Bamoki',
 };
 
 /**
@@ -47,8 +53,13 @@ const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn']);
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
 /** Gömülü numara kalıpları (`gunun-ayeti-uret.js > DIPNOT`, `BASTA_NUMARA`, `SONDA_NUMARA` ile aynı). */
 /** Ayet numarası silinen diller (`gunun-ayeti-uret.js > AYET_NUMARASI_SILINEN` ile AYNI). */
-const AYET_NUMARASI_SILINEN = new Set(['es']);
-const NUMARALI = [/\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u, /^\s*\p{Nd}+\s*[.)]\s/u, /\(\p{Nd}+\)\s*[.।]?\s*$/u];
+const AYET_NUMARASI_SILINEN = new Set(['es', 'ug']);
+const NUMARALI = [
+  /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u,
+  /^\s*\p{Nd}+\s*[.)]\s/u,
+  /\(\p{Nd}+\)\s*[.।]?\s*$/u,
+  /\([\p{Cf}\sـ\-–]*\p{Nd}[\p{Nd}\p{Cf}\sـ\-–]*\)/u, // `ARA_NUMARA`: "(24)،", "(ـ18)", "(8ـ10)"
+];
 
 /** QuranEnc 403 döner: her istekte tarayıcı benzeri User-Agent ŞART. */
 const BASLIKLAR = { 'User-Agent': 'Mozilla/5.0 (namazakisi icerik uretici)' };
@@ -102,6 +113,8 @@ async function main() {
           .replace(/\s*\(\p{Nd}+\)(\s*[.।]?)\s*$/u, '$1')
           .trim();
       }
+      // Baştaki/sondaki boşluk metin değildir (kurdish_bamoki "\n" ile biter).
+      result.translation = result.translation.trim();
       // Dipnot işaretli ya da başında ayet numarası olan meal metin değiştirilemeyeceği için
       // ALINMAZ: o ayet o dilde gösterilmez (`nassDili.ayetMeali` null döner).
       if (NUMARALI.some((d) => d.test(result.translation))) {

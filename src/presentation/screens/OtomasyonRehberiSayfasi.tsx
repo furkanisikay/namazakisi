@@ -25,7 +25,7 @@ import {
 } from '../../core/otomasyon/anahtarKelimeler';
 import { oneUiNotu, rutinOnkosulNotu } from '../../core/otomasyon/rehberNotlari';
 import { bicim, metin } from '../../core/dil/aktifDil';
-import { dilKoduMu, type DilKodu } from '../../core/dil/diller';
+import { nativeEtiketleri } from '../../core/otomasyon/nativeEtiketler';
 import { useMetin } from '../hooks/useMetin';
 import { cihazYerelAyari } from '../../domain/services/DilServisi';
 import { useCihazDurumu } from '../hooks/useCihazDurumu';
@@ -78,36 +78,7 @@ const SEKMELER: { id: Sekme; readonly etiket: string; ikon: string }[] = [
     { id: 'eklenti', get etiket() { return metin().muhafizAyar.otomasyon.sekmeEklenti; }, ikon: 'puzzle-piece' },
 ];
 
-/**
- * Native etiketler (Android `res/values`, W5'e kadar YALNIZ Türkçe): rehber bunları
- * kullanıcının ekranda gördüğü gibi aynen yazar; çevrilmiş ad bulunamazdı.
- */
-/**
- * Native kısayol ve eklenti etiketleri — başlatıcı ve Tasker/MacroDroid onları TELEFONUN
- * diliyle çözer (uygulama dili değil): `android/app/src/main/res/values[-xx]`. Rehber de
- * telefonun dilindeki adı gösterir; tabloda olmayan cihaz dilleri Türkçe varsayılana düşer.
- * Her `values-xx/strings.xml` çevirisiyle birlikte buraya da aynı metin girer.
- */
-type NativeEtiket = { kisayol: string; olay: string; kosul: string; eylem: string };
-const NATIVE_ETIKETLER: { tr: NativeEtiket } & Partial<Record<DilKodu, NativeEtiket>> = {
-    tr: {
-        kisayol: 'Şu anki vakti kıldım', // dil-haric: kimlik (native kısayol etiketi, values/)
-        olay: 'Namaz Akışı: Vakit olayı', // dil-haric: kimlik (native eklenti etiketi, values/)
-        kosul: 'Namaz Akışı: Vakit durumu', // dil-haric: kimlik (native eklenti etiketi, values/)
-        eylem: 'Namaz Akışı: Kıldım', // dil-haric: kimlik (native eklenti etiketi, values/)
-    },
-    en: {
-        kisayol: "I've prayed the current prayer",
-        olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native eklenti etiketi, values-en/)
-        kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native eklenti etiketi, values-en/)
-        eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native eklenti etiketi, values-en/)
-    },
-} as const;
-
-const nativeEtiketler = (): NativeEtiket => {
-    const kod = cihazYerelAyari()?.split(/[-_]/)[0];
-    return (dilKoduMu(kod) ? NATIVE_ETIKETLER[kod] : undefined) ?? NATIVE_ETIKETLER.tr;
-};
+const nativeEtiketler = () => nativeEtiketleri(cihazYerelAyari());
 
 const Kart: React.FC<{ renkler: Renkler; ikon: string; baslik: string; children: React.ReactNode; testID?: string }> = ({
     renkler,

@@ -149,8 +149,8 @@ class UyeDeposu(context: Context, private val konum: KonumDeposu) : UyeDeposuAra
             val mevcut = konum.telefondanGelen()
             // Yedek ad kayda YAZILIR (veri): o anki cihaz dilinde kalır; telefon adı gönderince değişir.
             val ad = d.ad ?: mevcut?.ad ?: baglam.getString(R.string.telefondaki_konum)
-            if (mevcut == null || mevcut.lat != d.lat || mevcut.lng != d.lng || mevcut.ad != ad || mevcut.hesap != d.hesap) {
-                konum.telefondanKaydet(ad, d.lat, d.lng, d.hesap)
+            if (mevcut == null || mevcut.lat != d.lat || mevcut.lng != d.lng || mevcut.ad != ad || mevcut.hesap != d.hesap || mevcut.rakam != d.rakam) {
+                konum.telefondanKaydet(ad, d.lat, d.lng, d.hesap, d.rakam)
             }
         }
     }

@@ -12,7 +12,7 @@ package com.furkanisikay.namazakisi.tv.cekirdek
  * `vakit.cuma`, `sure.kisa`, `tarih`, `samimiyet`) ve `docs/ajan/coklu-dil.md` terim
  * sözlüğünden; serbest çeviri yok. `uppercase()`/`lowercase()` ya da ek üretimi YOK.
  * Yeni dil = yeni `values-xx` dizini + burada yeni nesne + [tvDili] / [TV_DILLERI] eşlemesi.
- * Düzen: dil başına bir nesne, sıra tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn; çevrilmemiş dilin nesnesi
+ * Düzen: dil başına bir nesne, sıra tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; çevrilmemiş dilin nesnesi
  * İngilizcenin birebir kopyasıdır ve `// ÇEVİRİ: <kod>` satırıyla başlar. Endonezce kaynak
  * dizini `values-in`'dir (`dil_kodu` yine "id"). Nöbetçi: `TvDiliTest`.
  */
@@ -61,13 +61,18 @@ fun tvDili(dil: String): TvDili = when (dil) {
     "sq" -> TvDiliSq
     "hi" -> TvDiliHi
     "bn" -> TvDiliBn
+    "fa" -> TvDiliFa
+    "ps" -> TvDiliPs
+    "ckb" -> TvDiliCkb
+    "ug" -> TvDiliUg
     else -> TvDiliTr
 }
 
-/** Tablosu olan diller, düzen sırasıyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn). */
+/** Tablosu olan diller, düzen sırasıyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug). */
 val TV_DILLERI: List<TvDili> = listOf(
     TvDiliTr, TvDiliEn, TvDiliId, TvDiliDe, TvDiliFr, TvDiliBs, TvDiliRu, TvDiliMs, TvDiliAr, TvDiliUr,
     TvDiliEs, TvDiliNl, TvDiliSq, TvDiliHi, TvDiliBn,
+    TvDiliFa, TvDiliPs, TvDiliCkb, TvDiliUg,
 )
 
 object TvDiliTr : TvDili {
@@ -803,4 +808,192 @@ object TvDiliBn : TvDili {
     override val cumaSelami = "জুমা মোবারক"
     override val sahuraKalan = "সাহরির বাকি সময়"
     override val iftaraKalan = "ইফতার পর্যন্ত বাকি সময়"
+}
+
+// fa — Farsça (beta): JS `sozluk/fa` (vakit, tarih, sure, samimiyet). Miladi ay adları İran yazımı.
+// CLDR fa: one = 0 ve 1, other (JS `cogul.ts > sifirBir`); sayıdan sonra ad tekildir → iki biçim aynı.
+object TvDiliFa : TvDili {
+    override val kod = "fa"
+    override fun vakitAdi(vakit: Vakit) = when (vakit) {
+        Vakit.IMSAK -> "صبح"
+        Vakit.GUNES -> "طلوع آفتاب"
+        Vakit.OGLE -> "ظهر"
+        Vakit.IKINDI -> "عصر"
+        Vakit.AKSAM -> "مغرب"
+        Vakit.YATSI -> "عشا"
+    }
+    override val cuma = "جمعه"
+    override val aylar = listOf(
+        "ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن",
+        "ژوئیه", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر",
+    )
+    override val gunler = listOf("دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه", "یکشنبه")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi، $gun $ay $yil"
+
+    override val birimSa = "ساعت"
+    override val birimDk = "دقیقه"
+    override val birimSn = "ثانیه"
+    override fun saatSesli(n: Int) = "$n ساعت"
+    override fun dakikaSesli(n: Int) = "$n دقیقه"
+    override val birDakikadanAz = "کمتر از 1 دقیقه"
+
+    override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "طلوع آفتاب"
+        Kerahat.Tur.ISTIVA -> "زوال"
+        Kerahat.Tur.GURUB -> "غروب آفتاب"
+    }
+
+    override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "تا وقتی آفتاب خوب بالا نیامده، نماز خواندن مکروه است."
+        Kerahat.Tur.ISTIVA -> "وقتی آفتاب درست در میانهٔ آسمان است، نماز خواندن مکروه است."
+        Kerahat.Tur.GURUB -> "هنگام غروب آفتاب، نماز خواندن مکروه است."
+    }
+
+    override fun bant(ad: String, dk: Long) = "وقت $ad رو به تنگی است · $dk دقیقه"
+    override val kabulDuasi = "قبول باشد"
+    override val iftarSelami = "افطارتان گوارا"
+    override val cumaSelami = "جمعه مبارک"
+    override val sahuraKalan = "زمان باقی‌مانده برای سحر"
+    override val iftaraKalan = "زمان باقی‌مانده تا افطار"
+}
+
+// ps — Peştuca (beta): JS `sozluk/ps` (vakit, tarih, sure.kisa, samimiyet, anaEkran.kerahat); rakam Batı.
+// CLDR ps: one/other. Peştucada süre birimi kısaltılmaz (ساعته/دقیقې/ثانیې); gün/ay adları CLDR ps.
+object TvDiliPs : TvDili {
+    override val kod = "ps"
+    override fun vakitAdi(vakit: Vakit) = when (vakit) {
+        Vakit.IMSAK -> "سهار"
+        Vakit.GUNES -> "لمر ختل"
+        Vakit.OGLE -> "ماسپښین"
+        Vakit.IKINDI -> "مازدیګر"
+        Vakit.AKSAM -> "ماښام"
+        Vakit.YATSI -> "ماسخوتن"
+    }
+    override val cuma = "جمعه"
+    override val aylar = listOf(
+        "جنوري", "فبروري", "مارچ", "اپریل", "مۍ", "جون",
+        "جولای", "اګست", "سپتمبر", "اکتوبر", "نومبر", "دسمبر",
+    )
+    override val gunler = listOf("دونۍ", "درېنۍ", "څلرنۍ", "پينځنۍ", "جمعه", "اونۍ", "يونۍ")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi، $gun $ay $yil"
+
+    override val birimSa = "ساعته"
+    override val birimDk = "دقیقې"
+    override val birimSn = "ثانیې"
+    override fun saatSesli(n: Int) = if (n == 1) "1 ساعت" else "$n ساعته"
+    override fun dakikaSesli(n: Int) = if (n == 1) "1 دقیقه" else "$n دقیقې"
+    override val birDakikadanAz = "له یوې دقیقې لږ"
+
+    override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "شروق"
+        Kerahat.Tur.ISTIVA -> "استوا"
+        Kerahat.Tur.GURUB -> "غروب"
+    }
+
+    override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "تر هغه چې لمر ښه پورته شي، لمونځ کول مکروه دي."
+        Kerahat.Tur.ISTIVA -> "کله چې لمر د سر پر سر وي، لمونځ کول مکروه دي."
+        Kerahat.Tur.GURUB -> "کله چې لمر لوېږي، لمونځ کول مکروه دي."
+    }
+
+    override fun bant(ad: String, dk: Long) = "د $ad وخت تنګېږي · $dk دقیقې"
+    override val kabulDuasi = "الله دې قبول کړي"
+    override val iftarSelami = "افطار مو مبارک شه"
+    override val cumaSelami = "جمعه مو مبارک شه"
+    override val sahuraKalan = "د پېشمني تر پایه پاتې وخت"
+    override val iftaraKalan = "تر افطاره پاتې وخت"
+}
+
+// ckb
+object TvDiliCkb : TvDili {
+    override val kod = "ckb"
+    override fun vakitAdi(vakit: Vakit) = when (vakit) {
+        Vakit.IMSAK -> "بەیانی"
+        Vakit.GUNES -> "خۆرھەڵاتن"
+        Vakit.OGLE -> "نیوەڕۆ"
+        Vakit.IKINDI -> "عەسر"
+        Vakit.AKSAM -> "ئێوارە"
+        Vakit.YATSI -> "خەوتنان"
+    }
+    override val cuma = "ھەینی"
+    override val aylar = listOf(
+        "کانوونی دووەم", "شوبات", "ئازار", "نیسان", "ئایار", "حوزەیران",
+        "تەمووز", "ئاب", "ئەیلوول", "تشرینی یەکەم", "تشرینی دووەم", "کانوونی یەکەم",
+    )
+    override val gunler = listOf("دووشەممە", "سێشەممە", "چوارشەممە", "پێنجشەممە", "ھەینی", "شەممە", "یەکشەممە")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "${gunAdi}، ${gun}ی ${ay}ی ${yil}"
+
+    // Soranîde sayıdan sonra isim tekil: one = other.
+    override val birimSa = "کاتژمێر"
+    override val birimDk = "خولەک"
+    override val birimSn = "چرکە"
+    override fun saatSesli(n: Int) = "$n کاتژمێر"
+    override fun dakikaSesli(n: Int) = "$n خولەک"
+    override val birDakikadanAz = "کەمتر لە 1 خولەک"
+
+    override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "خۆرھەڵاتن"
+        Kerahat.Tur.ISTIVA -> "ناوەڕاستی ئاسمان"
+        Kerahat.Tur.GURUB -> "خۆرئاوابوون"
+    }
+
+    override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "نوێژکردن مەکروھە تا خۆر باش بەرز دەبێتەوە."
+        Kerahat.Tur.ISTIVA -> "نوێژکردن مەکروھە تا خۆر لە ناوەڕاستی ئاسماندایە."
+        Kerahat.Tur.GURUB -> "نوێژکردن مەکروھە تا خۆر ئاوا دەبێت."
+    }
+
+    override fun bant(ad: String, dk: Long) = "کاتی ${ad} کەم ماوە · ${dk} خ"
+    override val kabulDuasi = "خوا قبوڵی بکات"
+    override val iftarSelami = "بەربانگتان پیرۆز بێت"
+    override val cumaSelami = "ھەینیتان پیرۆز بێت"
+    override val sahuraKalan = "کاتی ماوە بۆ پارشێو"
+    override val iftaraKalan = "کاتی ماوە تا بەربانگ"
+}
+
+// ug — Uygurca (beta): JS `sozluk/ug` (vakit, tarih, sure, samimiyet, anaEkran.kerahat); rakam Batı.
+// CLDR ug: one/other; Uygurcada sayıdan sonra isim çoğul eki almaz, süre birimi kısaltılmaz.
+object TvDiliUg : TvDili {
+    override val kod = "ug"
+    override fun vakitAdi(vakit: Vakit) = when (vakit) {
+        Vakit.IMSAK -> "بامدات"
+        Vakit.GUNES -> "قۇياش چىقىش"
+        Vakit.OGLE -> "پېشىن"
+        Vakit.IKINDI -> "ئەسىر"
+        Vakit.AKSAM -> "شام"
+        Vakit.YATSI -> "خۇپتەن"
+    }
+    override val cuma = "جۈمە"
+    override val aylar = listOf(
+        "يانۋار", "فېۋرال", "مارت", "ئاپرېل", "ماي", "ئىيۇن",
+        "ئىيۇل", "ئاۋغۇست", "سېنتەبىر", "ئۆكتەبىر", "نويابىر", "دېكابىر",
+    )
+    override val gunler = listOf("دۈشەنبە", "سەيشەنبە", "چارشەنبە", "پەيشەنبە", "جۈمە", "شەنبە", "يەكشەنبە")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$yil-يىلى $gun-$ay، $gunAdi"
+
+    override val birimSa = "سائەت"
+    override val birimDk = "مىنۇت"
+    override val birimSn = "سېكۇنت"
+    override fun saatSesli(n: Int) = "$n سائەت"
+    override fun dakikaSesli(n: Int) = "$n مىنۇت"
+    override val birDakikadanAz = "1 مىنۇتتىن ئاز"
+
+    override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "قۇياش چىقىش"
+        Kerahat.Tur.ISTIVA -> "ئىستىۋا"
+        Kerahat.Tur.GURUB -> "قۇياش پېتىش"
+    }
+
+    override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "قۇياش ياخشى كۆتۈرۈلگۈچە ناماز ئوقۇش مەكرۇھ."
+        Kerahat.Tur.ISTIVA -> "قۇياش دەل چوققىدا تۇرغاندا ناماز ئوقۇش مەكرۇھ."
+        Kerahat.Tur.GURUB -> "قۇياش پېتىۋاتقاندا ناماز ئوقۇش مەكرۇھ."
+    }
+
+    override fun bant(ad: String, dk: Long) = "$ad ۋاقتى تارىيىۋاتىدۇ · $dk مىنۇت"
+    override val kabulDuasi = "ئاللاھ قوبۇل قىلسۇن"
+    override val iftarSelami = "ئىپتارىڭىز مۇبارەك بولسۇن"
+    override val cumaSelami = "جۈمە مۇبارەك بولسۇن"
+    override val sahuraKalan = "سەھەرلىككە قالغان ۋاقىت"
+    override val iftaraKalan = "ئىپتارغا قالغان ۋاقىت"
 }

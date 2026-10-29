@@ -27,7 +27,7 @@ import { useRenkler } from '../../core/theme';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 import { sehirAra, aramaAnahtari, type DunyaSehirVerisi, type DunyaSehri } from '../../core/konum/dunyaSehirleri';
 import { ulkeAdi } from '../../core/konum/ulkeAdlari';
-import { ulkeVarsayilani } from '../../core/vakit/ulkeProfilleri';
+import { ulkeVarsayilani, esitSecenekler } from '../../core/vakit/ulkeProfilleri';
 import { HESAP_PROFILLERI } from '../../core/vakit/hesapProfilleri';
 import type { DunyaSehriKaydi } from '../../data/local/LocalKonumServisi';
 import { useMetin } from '../hooks/useMetin';
@@ -48,7 +48,9 @@ function ProfilCipi({ ulke }: { ulke: string }) {
   const renkler = useRenkler();
   const m = useMetin().konum.dunya;
   const v = ulkeVarsayilani(ulke);
-  const genel = v.guven === 'genel';
+  // Eşit iki takvimli ülke (Azerbaycan): iki takvim birlikte, uyarı rengi yok (seçim kullanıcının).
+  const esit = esitSecenekler(ulke);
+  const genel = v.guven === 'genel' && !esit;
   return (
     <View
       className="px-2 py-1 rounded-lg ml-2"
@@ -59,7 +61,7 @@ function ProfilCipi({ ulke }: { ulke: string }) {
       }}
     >
       <Text className="text-xs font-bold" style={{ color: renkler.metin }}>
-        {genel ? m.genelYontem : HESAP_PROFILLERI[v.profil].kisaAd}
+        {esit ? esit.map((p) => HESAP_PROFILLERI[p].kisaAd).join(' · ') : genel ? m.genelYontem : HESAP_PROFILLERI[v.profil].kisaAd}
       </Text>
     </View>
   );

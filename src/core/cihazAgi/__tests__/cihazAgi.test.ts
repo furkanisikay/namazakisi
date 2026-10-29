@@ -147,6 +147,13 @@ describe('yük', () => {
         expect(metin).toContain('"hesap":{"y":"diger","f":17.7,"i":14,"ia":0,"ma":4.5,"a":"sani","k":"yedide","o":[-30,-30,-30,-30,-30,-30],"r":"yukari","rmz":{"b":"2027-02-08","s":"2027-03-08","dk":30}}');
     });
 
+    it('rakam özeti (ülke + seçimler) anahtar sırası sabit, yük tavanın altında', () => {
+        const metin = yukuYaz({ v: 2, durum: { ...durum, rakam: { u: 'MA', s: { fa: 'latn', ar: 'arab' } } } });
+        expect(metin).toContain('"rakam":{"u":"MA","s":{"ar":"arab","fa":"latn"}}');
+        expect(yukuYaz({ v: 2, durum: { ...durum, rakam: { s: { ar: 'arab', fa: 'latn' }, u: 'MA' } } })).toBe(metin);
+        expect(baytUzunlugu(metin)).toBeLessThanOrEqual(YUK_AZAMI_BAYT);
+    });
+
     it('fikstürdeki düz yük, telefonun yazdığıyla BİREBİR aynı (TV aynı metni çözer)', () => {
         expect(
             yukuYaz({

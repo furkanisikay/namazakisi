@@ -42,8 +42,9 @@ export const hesap: Sozluk['hesap'] = {
     genelUyari: '{guven}: we hebben voor dit land geen gecontroleerd officieel rooster gevonden.',
     gecin: 'Overstappen op {ad}',
     devam: 'Doorgaan met {ad}',
-    alternatifSoru: 'Wilt u het rooster van {profil} gebruiken? Vandaag verandert het zo:',
+    ikiTakvimSoru: 'Hier worden twee roosters gebruikt. Volgens welk rooster zullen we de gebedstijden berekenen? Vandaag zien ze er zo uit:',
     alternatifNotu: {
+      mwl: 'In het MWL-rooster klinkt de adhan voor Maghrib bij zonsondergang, en Asr begint als de schaduw even lang is als het voorwerp.',
       qmi: "Het QMİ-rooster volgt de Ja'fari-indeling: de adhan voor Maghrib klinkt ongeveer 14 minuten na zonsondergang, en Asr begint als de schaduw twee keer zo lang is als het voorwerp.",
     },
     birKez: 'We vragen dit maar één keer voor dit land. U kunt het altijd wijzigen bij Instellingen › Gebedstijden › Berekeningsmethode.',

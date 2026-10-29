@@ -82,7 +82,7 @@ describe('ozellik turu tohumu', () => {
         expect(cuma.aktif).toBe(true);
 
         expect(await LocalKazaOneriServisi.ayarlariGetir()).toEqual({
-            farzSonrasiOner: !['kildim', 'dunya', 'jakim'].includes(varyant),
+            farzSonrasiOner: !['kildim', 'dunya', 'jakim', 'baku'].includes(varyant),
         });
         expect((await LocalSadeGorunumServisi.getAyarlar()).aktif).toBe(varyant === 'sade');
     });
@@ -119,6 +119,20 @@ describe('ozellik turu tohumu', () => {
             expect(ayar).toEqual(JSON.parse(depo[DEPOLAMA_ANAHTARLARI.HESAP_AYARI]));
             expect(bolgeOnerisi('MY', ayar)).toBeNull();
         }
+    });
+
+    it('baku varyanti: Azerbaycan konumu okunur, hesap ayarı yok → kart iki takvimi eşit sorar', async () => {
+        const { localKonumAyarlariniGetir } = require('../../../data/local/LocalKonumServisi');
+        const { HesapAyariServisi } = require('../../../domain/services/HesapAyariServisi');
+        const { kayitliUlkeKodu } = require('../../konum/ulkeTespiti');
+        const { bolgeOnerisi } = require('../../vakit/ulkeProfilleri');
+        const depo = ozellikTohumVerisi({ varyant: 'baku' });
+        await yaz(depo);
+        const konum = (await localKonumAyarlariniGetir()).veri;
+        expect(konum).toMatchObject(JSON.parse(depo[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI]));
+        expect(kayitliUlkeKodu(konum)).toBe('AZ');
+        expect(depo[DEPOLAMA_ANAHTARLARI.HESAP_AYARI]).toBeUndefined();
+        expect(bolgeOnerisi('AZ', await HesapAyariServisi.yukle(true))).toMatchObject({ profil: 'mwl', alternatif: 'qmi' });
     });
 
     it('esitleme varyanti: durum ve tercihler uygulamanin normalize yolundan DEGISMEDEN gecer', () => {

@@ -6,7 +6,7 @@ import org.junit.Test
 
 /**
  * Uygulama modülündeki `RakamTest`'in ikizi: sayaç/Live Update metinleri seçimi yalnız yerel
- * rakamlı dilde (Arapça, Bengalce) ve yalnız dilin kendi sistemiyle uygular.
+ * rakamlı dilde (Arapça, Bengalce, Farsça, Peştuca, Soranî) ve yalnız dilin kendi sistemiyle uygular.
  */
 class RakamTest {
     @Test
@@ -15,9 +15,10 @@ class RakamTest {
         assertEquals('0', Rakam.sifir("ar", null))
         assertEquals('0', Rakam.sifir("ar", "latn"))
         assertEquals('0', Rakam.sifir("ar", "beng"))
-        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", null)) {
+        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", null)) {
             assertEquals("$dil", '0', Rakam.sifir(dil, "arab"))
             assertEquals("$dil", '0', Rakam.sifir(dil, "beng"))
+            assertEquals("$dil", '0', Rakam.sifir(dil, "arabext"))
         }
         assertEquals("ar-u-nu-arab", Rakam.yerelEtiketi("ar", "arab"))
         assertEquals("ar-u-nu-latn", Rakam.yerelEtiketi("ar", null))
@@ -36,6 +37,22 @@ class RakamTest {
         val kisa = CanliGuncellemeKurallari.kisaMetin(65 * 60_000L, "bn")
         assertEquals("15", kisa.filter { it in '0'..'9' })
         assertEquals("১৫", rakamlariYerellestir(kisa, Rakam.BENG_SIFIR).filter { it in '০'..'৯' })
+    }
+
+    @Test
+    fun farscaPestucaFarsSoraniDoguArapRakamiVerir() {
+        assertEquals('۰', Rakam.sifir("fa", "arabext"))
+        assertEquals('۰', Rakam.sifir("ps-AF", "arabext"))
+        assertEquals('٠', Rakam.sifir("ckb", "arab"))
+        assertEquals('0', Rakam.sifir("fa", "arab"))
+        assertEquals('0', Rakam.sifir("ckb", "arabext"))
+        assertEquals('0', Rakam.sifir("ps", null))
+        assertEquals("fa-u-nu-arabext", Rakam.yerelEtiketi("fa", "arabext"))
+        assertEquals("ckb-u-nu-arab", Rakam.yerelEtiketi("ckb", "arab"))
+        assertEquals("ps-u-nu-latn", Rakam.yerelEtiketi("ps", "latn"))
+        val kisa = CanliGuncellemeKurallari.kisaMetin(65 * 60_000L, "fa")
+        assertEquals("15", kisa.filter { it in '0'..'9' })
+        assertEquals("۱۵", rakamlariYerellestir(kisa, Rakam.ARABEXT_SIFIR).filter { it in '۰'..'۹' })
     }
 
     @Test

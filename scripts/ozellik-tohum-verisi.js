@@ -31,7 +31,7 @@
  */
 const { tohumVerisi, gun } = require('./magaza-tohum-verisi');
 
-const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme', 'kildim', 'dunya', 'jakim'];
+const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme', 'kildim', 'dunya', 'jakim', 'baku'];
 
 /** `dunya*` varyantlarinin konumu: Kuala Lumpur, elle secilmis dunya sehri. */
 const DUNYA_KONUMU = {
@@ -48,6 +48,15 @@ const DUNYA_KONUMU = {
     takipHassasiyeti: 'dengeli',
     ulkeKodu: 'MY',
     dunyaSehri: { ad: 'Kuala Lumpur', ulke: 'MY', bolge: 'Kuala Lumpur', saatDilimi: 'Asia/Kuala_Lumpur' },
+};
+
+/** `baku` varyantinin konumu: Baki (Azerbaycan; iki takvim esit secenek, varsayilan yok). */
+const BAKU_KONUMU = {
+    ...DUNYA_KONUMU,
+    seciliIlAdi: 'Bakı',
+    koordinatlar: { lat: 40.4093, lng: 49.8671 },
+    ulkeKodu: 'AZ',
+    dunyaSehri: { ad: 'Bakı', ulke: 'AZ', bolge: 'Bakı', saatDilimi: 'Asia/Baku' },
 };
 
 /** `ses` varyantindaki OLU URI: "kendi dosyamiz" olarak kayitli ama MediaStore satiri yok. */
@@ -220,6 +229,12 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         if (varyant === 'jakim') {
             depo.hesap_ayari = JSON.stringify({ profil: 'jakim', secildi: true, sorulanUlkeler: ['MY'] });
         }
+    }
+
+    if (varyant === 'baku') {
+        // Azerbaycan: hesap ayari YOK → ana ekranda iki takvimi (MWL, QMİ) esit soran kart.
+        depo['@namaz_akisi/konum_ayarlari'] = JSON.stringify(BAKU_KONUMU);
+        depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: false });
     }
 
     if (varyant === 'sade') {

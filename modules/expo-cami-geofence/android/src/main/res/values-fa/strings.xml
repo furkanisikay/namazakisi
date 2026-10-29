@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Camideyim / Namaz modu metinleri — Farsça (beta). Terimler: JS src/core/dil/sozluk/fa/cami.ts («در مسجدم»، «حالت نماز»). -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">در مسجدم</string>
+    <string name="camigeofence_kanal_durum_aciklama">پیامی آرام وقتی حضور شما در مسجد تشخیص داده شود</string>
+    <string name="camigeofence_kanal_soru_ad">پس از بیرون رفتن از مسجد</string>
+    <string name="camigeofence_kanal_soru_aciklama">پرسشی تا پس از بیرون رفتن از مسجد بتوانید نمازتان را علامت بزنید</string>
+
+    <string name="camigeofence_govde_mod_sessiz">حالت نماز روشن است. یادآوری‌ها بی‌صدا می‌رسند.</string>
+    <string name="camigeofence_govde_mod">حالت نماز روشن است.</string>
+    <string name="camigeofence_govde_sessiz">یادآوری‌ها بی‌صدا می‌رسند.</string>
+    <string name="camigeofence_govde_normal">یادآوری‌ها مثل همیشه می‌رسند.</string>
+    <string name="camigeofence_eylem_modu_kapat">خاموش کردن حالت</string>
+    <string name="camigeofence_eylem_cami_degil">مسجد نیست</string>
+
+    <string name="camigeofence_soru_baslik">در مسجد هستید؟</string>
+    <string name="camigeofence_soru_govde">نزدیک %1$s هستید. مطمئن نیستیم، برای همین از شما می‌پرسیم.</string>
+    <string name="camigeofence_varsayilan_ad">مسجد</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">روشن کردن حالت نماز</string>
+    <string name="camigeofence_eylem_evet_camideyim">بله، در مسجدم</string>
+    <string name="camigeofence_eylem_hayir">نه</string>
+
+    <string name="camigeofence_kildiniz_mi">نماز %1$s را خواندید؟</string>
+    <string name="camigeofence_kildiniz_mi_govde">می‌توانید با یک ضربه علامت بزنید.</string>
+    <string name="camigeofence_eylem_kildim">خواندم</string>
+    <string name="camigeofence_namaz_imsak">صبح</string>
+    <string name="camigeofence_namaz_ogle">ظهر</string>
+    <string name="camigeofence_namaz_ikindi">عصر</string>
+    <string name="camigeofence_namaz_aksam">مغرب</string>
+    <string name="camigeofence_namaz_yatsi">عشا</string>
+    <string name="camigeofence_namaz_cuma">جمعه</string>
+
+    <string name="camigeofence_mod_kural_adi">نماز</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı آن را هنگام خطبهٔ جمعه، در مسجد یا هنگام رسیدن وقت نماز روشن می‌کند</string>
+</resources>

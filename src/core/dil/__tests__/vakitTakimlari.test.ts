@@ -66,3 +66,15 @@ it('etkin sözlük referansı kararlı; yalnız dil ya da takım değişince yen
   expect(metin().vakit.adlar.imsak).not.toBe('Sobh');
   expect(sozluk('fr').vakit.adlar.imsak).not.toBe('Sobh');
 });
+
+it('Farsçada Afganistan Darî takımını, İran ve diğer ülkeler temel takımı alır', () => {
+  expect(takimCoz('fa', undefined, 'AF')?.id).toBe('afgan');
+  expect(takimCoz('fa', undefined, 'IR')).toBeNull();
+  expect(takimCoz('fa', undefined, null)).toBeNull();
+  expect(takimCoz('fa', TEMEL_TAKIM, 'AF')).toBeNull();
+  // Başka dilde Afganistan takımı yok (Peştuca kendi sözlüğüyle).
+  expect(takimCoz('ps', undefined, 'AF')).toBeNull();
+  const afgan = takimCoz('fa', undefined, 'AF');
+  expect(afgan?.adlar.adlar.yatsi).toBe('خفتن');
+  expect(afgan?.adlar.imsakVakti).not.toBe('امساک');
+});

@@ -6,8 +6,9 @@ package com.furkanisikay.namazakisi.cekirdek
  *
  * Seçimi JS çözer (`core/dil/rakam.ts > rakamSistemiCoz`: açık seçim → ülke → dil) ve
  * ÇÖZÜLMÜŞ değeri yazar: `namazakisi_dil/rakam_sistemi` = yerel rakamın CLDR adı ("arab" Doğu
- * Arap, "beng" Bengalce) ya da anahtar yok (Batı). Native taraf kaydı YALNIZ arayüz dilinin
- * kendi yerel sistemiyle eşleşirse uygular ([YEREL]: Arapçada "arab", Bengalcede "beng"); diğer
+ * Arap, "arabext" Fars, "beng" Bengalce) ya da anahtar yok (Batı). Native taraf kaydı YALNIZ arayüz
+ * dilinin kendi yerel sistemiyle eşleşirse uygular ([YEREL]: Arapçada ve Soranîde "arab", Farsça ve
+ * Peştucada "arabext", Bengalcede "beng"); diğer
  * her durumda (Türkçe dahil, dil değişimiyle yazım yarışında da) çıktı BİREBİR aynı kalır.
  *
  * Kural (Wear `saat/cekirdek/Rakam.kt` deseni): çekirdek metni Batı rakamıyla ÜRETİR (testler,
@@ -24,20 +25,24 @@ package com.furkanisikay.namazakisi.cekirdek
  */
 object Rakam {
     const val ARAB = "arab"
+    const val ARABEXT = "arabext"
     const val BENG = "beng"
     const val LATN = "latn"
 
     /** Doğu Arap (Arapça-Hint) sıfırı, U+0660. */
     const val DOGU_SIFIR = '٠'
 
+    /** Fars (genişletilmiş Arapça-Hint) sıfırı, U+06F0 — Farsça ve Peştuca. */
+    const val ARABEXT_SIFIR = '۰'
+
     /** Bengalce sıfır, U+09E6. */
     const val BENG_SIFIR = '০'
 
     /** Dil kökü → yerel rakam sistemi (TEK eşleme; listede olmayan dil Batı rakamı yazar). */
-    private val YEREL = mapOf("ar" to ARAB, "bn" to BENG)
+    private val YEREL = mapOf("ar" to ARAB, "bn" to BENG, "fa" to ARABEXT, "ps" to ARABEXT, "ckb" to ARAB)
 
     /** Yerel sistem → sıfır rakamı (dizi Unicode'da ardışık). */
-    private val SIFIRLAR = mapOf(ARAB to DOGU_SIFIR, BENG to BENG_SIFIR)
+    private val SIFIRLAR = mapOf(ARAB to DOGU_SIFIR, ARABEXT to ARABEXT_SIFIR, BENG to BENG_SIFIR)
 
     /** "ar", "ar-SA", "bn_BD" → "ar" / "bn"; null → "". */
     private fun kok(dil: String?): String = dil?.trim()?.substringBefore('-')?.substringBefore('_').orEmpty()
@@ -45,7 +50,7 @@ object Rakam {
     /** Dilin yerel rakam sistemi ("arab", "beng") ya da null (yalnız Batı rakamı). */
     fun yerelSistem(dil: String?): String? = YEREL[kok(dil)]
 
-    /** Arayüz dilinin yerel rakamı (dolayısıyla rakam seçimi) var mı? (Arapça, Bengalce) */
+    /** Arayüz dilinin yerel rakamı (dolayısıyla rakam seçimi) var mı? (Arapça, Bengalce, Farsça, Peştuca, Soranî) */
     fun yerelRakamli(dil: String?): Boolean = yerelSistem(dil) != null
 
     /**
@@ -58,7 +63,7 @@ object Rakam {
         return if (kayitli?.trim() == yerel) yerel else LATN
     }
 
-    /** Sistemin sıfır rakamı ([rakamlariYerellestir]'e verilir): yerel → '٠'/'০', Batı → '0'. */
+    /** Sistemin sıfır rakamı ([rakamlariYerellestir]'e verilir): yerel → '٠'/'۰'/'০', Batı → '0'. */
     fun sifir(sistem: String): Char = SIFIRLAR[sistem] ?: '0'
 
     fun sifir(dil: String?, kayitli: String?): Char = sifir(sistem(dil, kayitli))

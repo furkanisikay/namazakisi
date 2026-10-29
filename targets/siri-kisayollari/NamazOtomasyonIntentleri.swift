@@ -99,7 +99,7 @@ enum OtomasyonMetni {
 }
 
 /// Otomasyon cevaplarinin dil tablosu. Duzen: dil basina bir `static let`, sira tr, en, id,
-/// de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
+/// de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
 /// `kalanDakika` CLDR kategorisi ("one", "few", "many", "other"; `CogulKurali`) → kalip;
 /// eksik kategori "other"a duser. Yer tutucular `{ad}`, `{n}`.
 struct OtomasyonMetinleri {
@@ -234,9 +234,38 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "না, এখনো চিহ্নিত হয়নি।"
     )
 
+    // fa — Farsça (beta): JS `sozluk/fa`; CLDR fa one = 0 ve 1, sayıdan sonra ad tekil (one = other)
+    static let fa = OtomasyonMetinleri(
+        kalanDakika: ["one": "{n} دقیقه تا وقت {ad} مانده است.", "other": "{n} دقیقه تا وقت {ad} مانده است."],
+        evetKilindi: "بله، خوانده‌شده علامت خورده است.",
+        hayirKilinmadi: "نه، هنوز علامت نخورده است."
+    )
+
+    // ps — Peştuca (beta): JS sozluk/ps (sure.dakika one/other)
+    static let ps = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} په {n} دقیقه کې پیلېږي.", "other": "{ad} په {n} دقیقو کې پیلېږي."],
+        evetKilindi: "هو، د ادا شوي په توګه نښه شوی.",
+        hayirKilinmadi: "نه، لا نښه شوی نه دی."
+    )
+
+    // ckb
+    static let ckb = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} دوای {n} خولەک دەست پێدەکات.", "other": "{ad} دوای {n} خولەک دەست پێدەکات."],
+        evetKilindi: "بەڵێ، وەک کراو نیشانە کراوە.",
+        hayirKilinmadi: "نەخێر، ھێشتا نیشانە نەکراوە."
+    )
+
+    // ug — Uygurca (beta); CLDR ug one/other (sayıdan sonra çoğul eki yok)
+    static let ug = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} ۋاقتىنىڭ كىرىشىگە {n} مىنۇت بار.", "other": "{ad} ۋاقتىنىڭ كىرىشىگە {n} مىنۇت بار."],
+        evetKilindi: "ھەئە، ئوقۇلدى دەپ بەلگىلەنگەن.",
+        hayirKilinmadi: "ياق، تېخى بەلگىلەنمىگەن."
+    )
+
     static let tablo: [String: OtomasyonMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
+        "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
     ]
 
     static func dil(_ kod: String) -> OtomasyonMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

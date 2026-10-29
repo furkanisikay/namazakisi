@@ -90,7 +90,7 @@ export function vakitAdlariniAyarla(json: string | null): void {
 }
 
 /**
- * Arayüzün rakam sistemini App Group'a yazar: yerel rakamın CLDR adı (`'arab'`, `'beng'`) ya da
+ * Arayüzün rakam sistemini App Group'a yazar: yerel rakamın CLDR adı (`'arab'`, `'arabext'`, `'beng'`) ya da
  * `null` (anahtar silinir, Batı rakamı). Widget, canlı etkinlik ve Siri cevabı kaydı yalnız
  * arayüz dilinin kendi yerel sistemiyle eşleşirse uygular (`VakitKarari.swift > RakamSistemi`). Modül/fonksiyon yoksa sessizce atlanır. Asla fırlatmaz.
  */

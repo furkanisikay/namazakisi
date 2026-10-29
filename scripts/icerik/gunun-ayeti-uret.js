@@ -42,6 +42,10 @@ const MEALLER = {
   sq: 'albanian_nahi',
   hi: 'hindi_omari',
   bn: 'bengali_zakaria',
+  fa: 'persian_ih',
+  ps: 'pashto_rwwad',
+  ckb: 'kurdish_bamoki',
+  ug: 'uyghur_saleh',
 };
 
 /**
@@ -52,6 +56,8 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   russian_rwwad: 'Russian Translation - Rowwad Translation Center',
   malay_basumayyah: 'Malay Translation - Abdullah Basumayyah',
   bengali_zakaria: 'Bengali Translation - Abu Bakr Zakaria',
+  // QuranEnc Kürtçeyi "ku" diliyle listeler; uygulamanın kodu Soranî "ckb" → dil listesinde bulunmaz.
+  kurdish_bamoki: 'Kurdish Translation - Muhammad Salih Bamoki',
 };
 
 const TANZIL_URL = 'https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt-2&agree=true';
@@ -150,13 +156,14 @@ const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
  * sondaki "(153)" numarasını taşır; numara çeviri değil işarettir, silinir (künye ayeti zaten
  * yazar). Yalnız bu kümede: başka dilde numaralı meal eskisi gibi alınmaz.
  */
-const AYET_NUMARASI_SILINEN = new Set(['es']);
+const AYET_NUMARASI_SILINEN = new Set(['es', 'ug']);
 const BASTAKI_AYET_NO = /^\s*\p{Nd}+\s*[.)]\s*/u;
 const SONDAKI_AYET_NO = /\s*\(\p{Nd}+\)(\s*[.।]?)\s*$/u;
 function notNumarasiz(dil, metin) {
   let m = NOT_NUMARASI_SILINEN.has(dil) ? metin.replace(NOT_NUMARASI, '').trim() : metin;
   if (AYET_NUMARASI_SILINEN.has(dil)) m = m.replace(BASTAKI_AYET_NO, '').replace(SONDAKI_AYET_NO, '$1').trim();
-  return m;
+  // Baştaki/sondaki boşluk metin değildir (kurdish_bamoki her ayeti "\n" ile bitirir); sözcüklere dokunulmaz.
+  return m.trim();
 }
 
 /**
@@ -166,6 +173,8 @@ function notNumarasiz(dil, metin) {
 const DIPNOT = /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u; // "[915]", "[১]", "*"
 const BASTA_NUMARA = /^\s*\p{Nd}+\s*[.)]\s/u; // "153. …", "२. …"
 const SONDA_NUMARA = /\(\p{Nd}+\)\s*[.।]?\s*$/u; // "… (153)", "… (१५३)।"
+/** Silinemeyen ayet numarası, metnin herhangi bir yerinde: "(24)،", "(ـ18).", "(8ـ10)" (uyghur_saleh). */
+const ARA_NUMARA = /\([\p{Cf}\sـ\-–]*\p{Nd}[\p{Nd}\p{Cf}\sـ\-–]*\)/u;
 
 /** Bir mealin elenme gerekçeleri (boş = uygun). */
 function mealGerekce(metin) {
@@ -174,6 +183,7 @@ function mealGerekce(metin) {
   if (DIPNOT.test(metin)) g.push('dipnot');
   if (BASTA_NUMARA.test(metin)) g.push('basta-numara');
   if (SONDA_NUMARA.test(metin)) g.push('sonda-numara');
+  else if (ARA_NUMARA.test(metin)) g.push('ara-numara');
   return g;
 }
 
