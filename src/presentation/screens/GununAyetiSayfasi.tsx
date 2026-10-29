@@ -70,7 +70,9 @@ export const GununAyetiSayfasi: React.FC = () => {
       return { tarih: t, ayet: gorunum(t) };
     });
     return { bugun: gun, ayet: gorunum(gun), oncekiler: liste };
-  }, [simdi, lat, lng, dil]);
+    // `s`: alfabe (Latin/Kiril) değişince meal yeniden çevrilir; dil aynı kalır, sözlük referansı değişir.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [simdi, lat, lng, dil, s]);
 
   const tarihBasligi = bicim(m.sayfa.tarih, {
     gunAdi: s.tarih.gunler[bugun.getDay()],

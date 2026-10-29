@@ -33,6 +33,13 @@ const MEALLER = {
   ps: 'pashto_rwwad',
   ckb: 'kurdish_bamoki',
   ug: 'uyghur_saleh',
+  // Orta Asya (dalga 7). Özbekçe ve Kazakça mealler KİRİLDİR: Latin alfabe seçilince çalışma anında
+  // çevrilir (`core/dil/yazi.ts > kirildenLatine`), veri Kiril kalır.
+  az: 'azeri_musayev',
+  uz: 'uzbek_rwwad',
+  kk: 'kazakh_altai',
+  ky: 'kyrgyz_hakimov',
+  tg: 'tajik_arifi',
 };
 
 /** Liste API'sinde görünmeyen çevirilerin QuranEnc başlığı (sitedeki kartta yazdığı gibi). */
@@ -42,6 +49,8 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   bengali_zakaria: 'Bengali Translation - Abu Bakr Zakaria',
   // QuranEnc Kürtçeyi "ku" diliyle listeler; uygulamanın kodu Soranî "ckb" → dil listesinde bulunmaz.
   kurdish_bamoki: 'Kurdish Translation - Muhammad Salih Bamoki',
+  // QuranEnc Kazakçayı liste API'sinde vermez (`translations/list/kk` boş); sitedeki kartın başlığı.
+  kazakh_altai: 'Kazakh Translation - Khalifa Altai',
 };
 
 /**

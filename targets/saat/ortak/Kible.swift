@@ -125,7 +125,7 @@ public enum Kible {
 
 /// Kible metinleri — dil basina bir ornek (Wear `SaatDili` kible alanlari ve JS
 /// `sozluk/<dil>/kible.ts > yon` ikizi). Yer tutucular `{derece}`, `{km}`. Duzen: sira tr, en,
-/// id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
+/// id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
 public struct KibleMetinleri: Equatable {
     public let arkada: String
     public let saga: String
@@ -410,10 +410,81 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
+    // ÇEVİRİ: az
+    public static let az = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: uz
+    public static let uz = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: kk
+    public static let kk = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: ky
+    public static let ky = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ÇEVİRİ: tg
+    public static let tg = KibleMetinleri(
+        arkada: "Behind you",
+        saga: "Right {derece}°",
+        sola: "Left {derece}°",
+        hizali: "You are facing the Qibla",
+        arkadaErisim: "The Qibla is behind you",
+        sagdaErisim: "The Qibla is {derece} degrees to your right",
+        soldaErisim: "The Qibla is {derece} degrees to your left",
+        kabede: "You're at the Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
     public static let tablo: [String: KibleMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
+        "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
     ]
 
     public static func dil(_ kod: String?) -> KibleMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

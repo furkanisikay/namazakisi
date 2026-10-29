@@ -6,8 +6,9 @@
  * aynı listesindeki bir şablonsa ETKİN dilin aynı sıradaki şablonuna çevrilir. Kullanıcının
  * kendi yazdığı metin (tabloda yok) olduğu gibi kalır (sahip kararı: dil değişince bir kez sorulur).
  */
-import { aktifDil, sozluk } from '../dil/aktifDil';
+import { aktifDil, sozluk, yaziliSozluk } from '../dil/aktifDil';
 import { DILLER, type DilKodu } from '../dil/diller';
+import { YAZI_SECENEKLERI } from '../dil/yazi';
 import type { Sozluk } from '../dil/sozluk/tr';
 
 export type SablonListesi = keyof Sozluk['anons']['sablon'];
@@ -17,13 +18,20 @@ export function sablonlar(liste: SablonListesi, dil: DilKodu = aktifDil()): read
   return sozluk(dil).anons.sablon[liste];
 }
 
+/** Dilin şablon tabloları: iki alfabeli dilde (Özbekçe, Kazakça) HER alfabedeki biçim (yazılırken seçili olan kalır). */
+const dilinSablonlari = (kod: DilKodu): Sozluk['anons']['sablon'][] => {
+  const yazilar = YAZI_SECENEKLERI[kod];
+  return yazilar ? yazilar.map((y) => yaziliSozluk(kod, y).anons.sablon) : [sozluk(kod).anons.sablon];
+};
+
 /** Metin bir dilin hazır şablonu mu? Öyleyse liste ve sıra; değilse `null`. */
 export function sablonKonumu(metin: string): { liste: SablonListesi; sira: number } | null {
   for (const d of DILLER) {
-    const s = sozluk(d.kod).anons.sablon;
-    for (const liste of Object.keys(s) as SablonListesi[]) {
-      const sira = s[liste].indexOf(metin);
-      if (sira >= 0) return { liste, sira };
+    for (const s of dilinSablonlari(d.kod)) {
+      for (const liste of Object.keys(s) as SablonListesi[]) {
+        const sira = s[liste].indexOf(metin);
+        if (sira >= 0) return { liste, sira };
+      }
     }
   }
   return null;

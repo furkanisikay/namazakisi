@@ -531,12 +531,138 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "ھازىرقى ۋاقىتنى ئوقۇلدى دەپ بەلگىلەيدۇ."
     )
 
-    /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil `// ÇEVİRİ: <kod>`
+    // ÇEVİRİ: az
+    static let az = WidgetMetinleri(
+        galeriAdi: "Prayer time",
+        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
+        veriEski: "Open the app to update prayer times",
+        konumYok: "Open the app to set your location",
+        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
+        adCikis: "{ad} · ends {saat}",
+        siradakiAdSaat: "Next {ad} {saat}",
+        vaktiCikisErisim: "{ad} time, ends {saat}",
+        siradakiErisim: "Next {ad}, {saat}",
+        cikisSaat: "Ends {saat}",
+        bitisSaat: "Ends {saat}",
+        kilindiBaslik: "{ad} prayed",
+        siradaki: "Next",
+        siradakiAd: "Next {ad}",
+        kildimErisim: "I've prayed {ad}",
+        gunSatiriKilindi: ", prayed",
+        bitti: "Ended",
+        vakitCikti: "Prayer time is over",
+        kabulAlt: "{ad} prayed",
+        kontrolAdi: "I've prayed",
+        kontrolAciklama: "Marks the current prayer as prayed."
+    )
+
+    // ÇEVİRİ: uz
+    static let uz = WidgetMetinleri(
+        galeriAdi: "Prayer time",
+        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
+        veriEski: "Open the app to update prayer times",
+        konumYok: "Open the app to set your location",
+        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
+        adCikis: "{ad} · ends {saat}",
+        siradakiAdSaat: "Next {ad} {saat}",
+        vaktiCikisErisim: "{ad} time, ends {saat}",
+        siradakiErisim: "Next {ad}, {saat}",
+        cikisSaat: "Ends {saat}",
+        bitisSaat: "Ends {saat}",
+        kilindiBaslik: "{ad} prayed",
+        siradaki: "Next",
+        siradakiAd: "Next {ad}",
+        kildimErisim: "I've prayed {ad}",
+        gunSatiriKilindi: ", prayed",
+        bitti: "Ended",
+        vakitCikti: "Prayer time is over",
+        kabulAlt: "{ad} prayed",
+        kontrolAdi: "I've prayed",
+        kontrolAciklama: "Marks the current prayer as prayed."
+    )
+
+    // ÇEVİRİ: kk
+    static let kk = WidgetMetinleri(
+        galeriAdi: "Prayer time",
+        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
+        veriEski: "Open the app to update prayer times",
+        konumYok: "Open the app to set your location",
+        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
+        adCikis: "{ad} · ends {saat}",
+        siradakiAdSaat: "Next {ad} {saat}",
+        vaktiCikisErisim: "{ad} time, ends {saat}",
+        siradakiErisim: "Next {ad}, {saat}",
+        cikisSaat: "Ends {saat}",
+        bitisSaat: "Ends {saat}",
+        kilindiBaslik: "{ad} prayed",
+        siradaki: "Next",
+        siradakiAd: "Next {ad}",
+        kildimErisim: "I've prayed {ad}",
+        gunSatiriKilindi: ", prayed",
+        bitti: "Ended",
+        vakitCikti: "Prayer time is over",
+        kabulAlt: "{ad} prayed",
+        kontrolAdi: "I've prayed",
+        kontrolAciklama: "Marks the current prayer as prayed."
+    )
+
+    // ÇEVİRİ: ky
+    static let ky = WidgetMetinleri(
+        galeriAdi: "Prayer time",
+        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
+        veriEski: "Open the app to update prayer times",
+        konumYok: "Open the app to set your location",
+        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
+        adCikis: "{ad} · ends {saat}",
+        siradakiAdSaat: "Next {ad} {saat}",
+        vaktiCikisErisim: "{ad} time, ends {saat}",
+        siradakiErisim: "Next {ad}, {saat}",
+        cikisSaat: "Ends {saat}",
+        bitisSaat: "Ends {saat}",
+        kilindiBaslik: "{ad} prayed",
+        siradaki: "Next",
+        siradakiAd: "Next {ad}",
+        kildimErisim: "I've prayed {ad}",
+        gunSatiriKilindi: ", prayed",
+        bitti: "Ended",
+        vakitCikti: "Prayer time is over",
+        kabulAlt: "{ad} prayed",
+        kontrolAdi: "I've prayed",
+        kontrolAciklama: "Marks the current prayer as prayed."
+    )
+
+    // ÇEVİRİ: tg
+    static let tg = WidgetMetinleri(
+        galeriAdi: "Prayer time",
+        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
+        veriEski: "Open the app to update prayer times",
+        konumYok: "Open the app to set your location",
+        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
+        adCikis: "{ad} · ends {saat}",
+        siradakiAdSaat: "Next {ad} {saat}",
+        vaktiCikisErisim: "{ad} time, ends {saat}",
+        siradakiErisim: "Next {ad}, {saat}",
+        cikisSaat: "Ends {saat}",
+        bitisSaat: "Ends {saat}",
+        kilindiBaslik: "{ad} prayed",
+        siradaki: "Next",
+        siradakiAd: "Next {ad}",
+        kildimErisim: "I've prayed {ad}",
+        gunSatiriKilindi: ", prayed",
+        bitti: "Ended",
+        vakitCikti: "Prayer time is over",
+        kabulAlt: "{ad} prayed",
+        kontrolAdi: "I've prayed",
+        kontrolAciklama: "Marks the current prayer as prayed."
+    )
+
+    /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil `// ÇEVİRİ: <kod>`
     /// ile baslayan Ingilizce kopya).
     static let tablo: [String: WidgetMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
+        "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
     ]
 
     static func dil(_ kod: String?) -> WidgetMetinleri {

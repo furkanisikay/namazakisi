@@ -25,7 +25,7 @@ jest.mock('../../../../modules/expo-muhafiz-anons/src', () => ({ anonsDiliniAyar
 
 import { I18nManager, Platform } from 'react-native';
 import { DilServisi } from '../DilServisi';
-import { aktifDil, aktifDilSifirla, aktifRakamSistemi, metin } from '../../../core/dil/aktifDil';
+import { aktifDil, aktifDilSifirla, aktifRakamSistemi, aktifYaziSistemi, metin } from '../../../core/dil/aktifDil';
 import { de } from '../../../core/dil/sozluk/de';
 import { fr } from '../../../core/dil/sozluk/fr';
 import { TEMEL_TAKIM } from '../../../core/dil/vakitTakimlari';
@@ -368,5 +368,38 @@ describe('DilServisi', () => {
       expect(await DilServisi.rakamSecimi()).toBeNull();
     });
   });
-});
 
+  describe('alfabe (yazı sistemi)', () => {
+    it('Özbekçe Latin, Kazakça Kiril varsayılan; açık seçim dil başına kaydedilir, otomatiğe dönüş siler', async () => {
+      await DilServisi.kaydet('uz');
+      expect(aktifYaziSistemi()).toBe('latn');
+      expect(await DilServisi.yaziSecimi()).toBeNull();
+      expect(await DilServisi.yaziKaydet('cyrl')).toBe(true);
+      expect(aktifYaziSistemi()).toBe('cyrl');
+      expect(await DilServisi.yaziSecimi()).toBe('cyrl');
+
+      await DilServisi.kaydet('kk');
+      expect(aktifYaziSistemi()).toBe('cyrl');
+      expect(await DilServisi.yaziKaydet('latn')).toBe(true);
+      expect((disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] as { yazi: object }).yazi).toEqual({ uz: 'cyrl', kk: 'latn' });
+
+      await DilServisi.kaydet('uz');
+      expect(aktifYaziSistemi()).toBe('cyrl');
+      expect(await DilServisi.yaziKaydet(null)).toBe(true);
+      expect(aktifYaziSistemi()).toBe('latn');
+      expect((disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] as { yazi: object }).yazi).toEqual({ kk: 'latn' });
+    });
+
+    it('alfabe seçimi olmayan dilde ve geçersiz değerde kaydedilmez; bozuk kayıt yok sayılır', async () => {
+      await DilServisi.kaydet('ru');
+      expect(await DilServisi.yaziKaydet('latn')).toBe(false);
+      expect(aktifYaziSistemi()).toBeNull();
+      await DilServisi.kaydet('uz');
+      expect(await DilServisi.yaziKaydet('arab' as never)).toBe(false);
+      disk[DEPOLAMA_ANAHTARLARI.DIL_AYARI] = { kod: 'kk', yazi: { kk: 'arab' } };
+      await DilServisi.kaydet('kk');
+      expect(aktifYaziSistemi()).toBe('cyrl');
+      expect(await DilServisi.yaziSecimi()).toBeNull();
+    });
+  });
+});

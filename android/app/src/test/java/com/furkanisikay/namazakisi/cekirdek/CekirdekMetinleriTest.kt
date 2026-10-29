@@ -11,7 +11,7 @@ import org.junit.Test
  * eşlemesi ve Endonezce "in" takma adı. Türkçe çıktı fikstür testlerinde kilitlidir.
  */
 class CekirdekMetinleriTest {
-    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug")
+    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg")
     private val yerTutucu = Regex("""\{\w+\}""")
 
     private fun alanlar(m: CekirdekMetinleri): Map<String, String> =

@@ -4,6 +4,7 @@ import { DilServisi } from '../../domain/services/DilServisi';
 import { YonServisi } from '../../domain/services/YonServisi';
 import { Logger } from '../../core/utils/Logger';
 import { aktifDil } from '../../core/dil/aktifDil';
+import type { YaziSistemi } from '../../core/dil/yazi';
 
 /**
  * Arayüz dili — ekranların yeniden çizilmesi için store aynası. Gerçek kaynak disk +
@@ -87,6 +88,24 @@ export const vakitTakimiKaydet = createAsyncThunk<boolean, string | null>('dil/v
       await konumDegistiUygula(k);
     } catch (e) {
       Logger.warn('dilSlice', 'Vakit adları planlara yayılamadı', e);
+    }
+  }
+  return degisti;
+});
+
+/**
+ * Alfabe (Latin/Kiril) seçimini kaydeder; kurulan yazı değiştiyse metin üreten planlar (bildirim,
+ * sesli okuma, widget ve günün ayeti yükü) konum yayma noktasından yeniden kurulur.
+ */
+export const yaziKaydet = createAsyncThunk<boolean, YaziSistemi | null>('dil/yaziKaydet', async (secim, { getState }) => {
+  const degisti = await DilServisi.yaziKaydet(secim);
+  const k = (getState() as DurumKaynagi).konum?.koordinatlar;
+  if (degisti && k && !(k.lat === 0 && k.lng === 0)) {
+    try {
+      const { konumDegistiUygula } = require('../../domain/services/KonumDegisikligiServisi') as typeof import('../../domain/services/KonumDegisikligiServisi');
+      await konumDegistiUygula(k);
+    } catch (e) {
+      Logger.warn('dilSlice', 'Alfabe değişimi planlara yayılamadı', e);
     }
   }
   return degisti;

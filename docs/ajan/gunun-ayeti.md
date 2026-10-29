@@ -34,6 +34,11 @@ Ne zaman okunur: günün ayeti havuzuna/üreticisine, ayet widget'ına (Android,
 | ps | `pashto_rwwad` 1.0.1 | 184 |
 | ckb | `kurdish_bamoki` 1.1.1 (QuranEnc Kürtçeyi `ku` listesinde verir → başlık `LISTEDE_OLMAYAN_BASLIKLAR`) | 176 (sondaki satır sonu kırpılır) |
 | ug | `uyghur_saleh` 1.0.2 | 138 (ayet numarası silinir; silinemeyen 3 kayıt elenir) |
+| az | `azeri_musayev` 1.0.4 (Latin) | 185 (2026-10-29) |
+| uz | `uzbek_rwwad` 1.0.4 (KİRİL; Latin alfabede çalışma anında çevrilir, `core/dil/yazi.ts`) | 186 |
+| kk | `kazakh_altai` 1.0.0 (KİRİL; liste API'sinde yok → başlık `LISTEDE_OLMAYAN_BASLIKLAR`, sürüm `updates` ucundan) | 183 |
+| ky | `kyrgyz_hakimov` 1.0.2 (Kiril; `[1]` dipnot işaretli 28 havuz kaydı elenir — not numarası silinmez, sahibe sorulmadı) | 149 |
+| tg | `tajik_arifi` 1.0.2 (Kiril; köşeli ayraçlı tefsir eki "[Парвардигоро]" metnin parçası) | 167 |
 | ar | — (yalnız Kur'an metni, sahip kararı) | 186 |
 - **Sürüm her zaman `translations/updates?key=<anahtar>` ucundan okunur.** Liste API'si 87 çeviriyi (ru, ms dahil) göstermez; uç belgelenmemiştir → üretici biçim değişiminde ya da liste sürümüyle çelişkide hata verir, listede olmayanın başlığı `LISTEDE_OLMAYAN_BASLIKLAR`'dadır (sitedeki kart). Tanzil mealleri KULLANILMAZ: "yalnız ticari olmayan kullanım" şartı ve sürüm numarası yok.
 - **Havuzu Türkçe + İngilizce belirler; diğer dilin meali kayda yalnız ≤200 harf ve dipnot işaretsizse girer, o dilin havuzu meali olan kayıtlardır** (`gununAyeti.ts > dilHavuzu`). Gerekçe: bütün dillerde kesişim havuzu 186'dan 89'a indiriyordu (Malayca Basmeih meali parantez içi tefsirle uzun, medyan 188 harf). Dil havuzu 100'ün altına inmez (nöbetçi).

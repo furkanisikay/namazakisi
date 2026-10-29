@@ -10,7 +10,7 @@
  *
  * Yalnız ayet (sahip kararı: hadis eklenmez). Meal QuranEnc'ten, Arapça Tanzil'den birebir.
  */
-import { aktifDil, bicim, sozluk } from '../dil/aktifDil';
+import { aktifDil, bicim, sozluk, yaziyaCevir } from '../dil/aktifDil';
 import type { DilKodu } from '../dil/diller';
 import { GUNUN_AYETI_HAVUZU, GUNUN_AYETI_KAYNAKLARI, type GununAyetiKaydi, type MealDili } from '../data/gununAyetiHavuzu';
 import { sureAdiTr } from '../data/sureAdlari';
@@ -82,11 +82,12 @@ export function gununAyetiGorunumu(kayit: GununAyetiKaydi, dil: DilKodu = aktifD
   const m = sozluk(dil).gununAyeti;
   const kunye = mealDiliMi(dil) ? GUNUN_AYETI_KAYNAKLARI.mealler[dil] : null;
   const meal = mealDiliMi(dil) ? (kayit.mealler[dil] ?? null) : null;
-  const yayimci = kunye ? { yayimci: kunye.baslik, surum: kunye.surum } : null;
+  // QuranEnc mealleri ve yayımcı başlığı Kiril olabilir (uz, kk): dilin gösterilen yazısına çevrilir (`core/dil/yazi`).
+  const yayimci = kunye ? { yayimci: yaziyaCevir(kunye.baslik, dil), surum: kunye.surum } : null;
   return {
     ref: kayit.ref,
     ar: kayit.ar,
-    meal,
+    meal: meal === null ? null : yaziyaCevir(meal, dil),
     kisaKunye: bicim(m.kisaKunye, { sure: dil === 'tr' ? sureAdiTr(kayit.sure) : m.kuran, ref: kayit.ref }),
     mealKaynagi: yayimci ? bicim(m.mealKaynagi, yayimci) : null,
     tamKunye: yayimci ? bicim(m.sayfaKunye, { ref: kayit.ref, ...yayimci }) : `${kayit.ref} · ${m.arapcaKaynagi}`,

@@ -14,12 +14,15 @@ import {
   aktifDiliKur,
   aktifRakamSistemi,
   aktifVakitTakimi,
+  aktifYaziSistemi,
   rakamSisteminiKur,
   vakitTakiminiKur,
+  yaziSisteminiKur,
 } from '../../core/dil/aktifDil';
 import { cihazDilindenSec, DILLER, dilKoduMu, VARSAYILAN_DIL, type DilKodu } from '../../core/dil/diller';
 import { takimCoz, takimKimlikleri } from '../../core/dil/vakitTakimlari';
 import { dilRakamVarsayilani, rakamSecilebilir, rakamSecimiGecerliMi, rakamSistemiCoz, type RakamSistemi } from '../../core/dil/rakam';
+import { dilYaziVarsayilani, yaziSecilebilir, yaziSecimiGecerliMi, yaziSistemiCoz, type YaziSistemi } from '../../core/dil/yazi';
 import { kayitliUlkeKodu } from '../../core/konum/ulkeTespiti';
 
 /**
@@ -43,6 +46,12 @@ export interface DilAyari {
    * Bengalce). Yoksa ülke varsayılanı (Arapçada Mağrip Batı rakamı) ya da dilin varsayılanı.
    */
   rakam?: Partial<Record<DilKodu, RakamSistemi>>;
+  /**
+   * Dil başına alfabenin AÇIK seçimi (`core/dil/yazi`; iki alfabeli dillerde: Özbekçe, Kazakça).
+   * Yoksa ülke varsayılanı ya da dilin varsayılanı (Özbekçe Latin, Kazakça Kiril). Native yüzeyler
+   * bu seçimi İZLEMEZ (dilin varsayılan yazısıyla yazılır; `docs/ajan/coklu-dil.md > Alfabe`).
+   */
+  yazi?: Partial<Record<DilKodu, YaziSistemi>>;
 }
 
 /** `__DEV__` (Metro/jest tanımlar); tanımsızsa üretim sayılır. */
@@ -178,8 +187,8 @@ function rakamSisteminiBildir(): void {
 }
 
 /**
- * Etkin dilin vakit adı takımını ve rakam sistemini kayıttan ve konumun ülkesinden çözüp kurar.
- * Asla fırlatmaz.
+ * Etkin dilin vakit adı takımını, rakam sistemini ve alfabesini kayıttan ve konumun ülkesinden
+ * çözüp kurar. Asla fırlatmaz.
  */
 async function takimiKur(ham?: DilAyari | null): Promise<void> {
   const dil = aktifDil();
@@ -188,10 +197,12 @@ async function takimiKur(ham?: DilAyari | null): Promise<void> {
     const ulke = await kayitliUlke();
     vakitTakiminiKur(takimCoz(dil, kayit.vakitTakimi?.[dil], ulke));
     rakamSisteminiKur(rakamSistemiCoz(dil, kayit.rakam?.[dil], ulke));
+    yaziSisteminiKur(yaziSistemiCoz(dil, kayit.yazi?.[dil], ulke));
   } catch (e) {
-    Logger.warn('DilServisi', 'Vakit adı takımı / rakam sistemi çözülemedi, varsayılanlar kullanılıyor', e);
+    Logger.warn('DilServisi', 'Vakit adı takımı / rakam sistemi / alfabe çözülemedi, varsayılanlar kullanılıyor', e);
     vakitTakiminiKur(null);
     rakamSisteminiKur(dilRakamVarsayilani(dil));
+    yaziSisteminiKur(dilYaziVarsayilani(dil));
   }
   vakitAdlariniBildir();
   rakamSisteminiBildir();
@@ -277,6 +288,34 @@ export const DilServisi = {
     });
     await takimiKur(ham);
     return aktifRakamSistemi() !== onceki;
+  },
+
+  /**
+   * Etkin dilin alfabesinin açık seçimi; `null` = otomatik (ülkeye göre). Alfabe seçimi olmayan
+   * dilde ve dile ait olmayan değerde kaydedilmez. Kurulan yazı değiştiyse `true` (metin değişir:
+   * çağıran planları `konumDegistiUygula` ile yeniler).
+   */
+  async yaziKaydet(secim: YaziSistemi | null): Promise<boolean> {
+    const dil = aktifDil();
+    if (!yaziSecilebilir(dil) || (secim !== null && !yaziSecimiGecerliMi(dil, secim))) return false;
+    const onceki = aktifYaziSistemi();
+    const ham = await Depolama.guncelle<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI, (m) => {
+      const k = kayitNesnesi(m);
+      const { [dil]: _eski, ...digerleri } = k.yazi && typeof k.yazi === 'object' ? k.yazi : {};
+      return { ...k, yazi: secim === null ? digerleri : { ...digerleri, [dil]: secim } };
+    });
+    await takimiKur(ham);
+    return aktifYaziSistemi() !== onceki;
+  },
+
+  /** Etkin dilin alfabesinin açık seçimi (`null` = otomatik). ASLA reddetmez. */
+  async yaziSecimi(): Promise<YaziSistemi | null> {
+    try {
+      const secim = kayitNesnesi(await Depolama.oku<DilAyari>(DEPOLAMA_ANAHTARLARI.DIL_AYARI)).yazi?.[aktifDil()];
+      return yaziSecimiGecerliMi(aktifDil(), secim) ? secim : null;
+    } catch {
+      return null;
+    }
   },
 
   /** Etkin dilin rakam sisteminin açık seçimi (`null` = otomatik). ASLA reddetmez. */

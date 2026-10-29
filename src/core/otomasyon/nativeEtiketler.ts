@@ -124,6 +124,41 @@ export const NATIVE_ETIKETLER: { tr: NativeEtiket } & Partial<Record<DilKodu, Na
     kosul: 'Namaz Akışı: ناماز ۋاقتى ھالىتى', // dil-haric: marka adı (native etiket)
     eylem: 'Namaz Akışı: ناماز ئوقۇدۇم', // dil-haric: marka adı (native etiket)
   },
+  // ÇEVİRİ: az — values-az İngilizce iskelet; çevrilince bu blok da güncellenir
+  az: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: uz — values-uz İngilizce iskelet; çevrilince bu blok da güncellenir
+  uz: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: kk — values-kk İngilizce iskelet; çevrilince bu blok da güncellenir
+  kk: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: ky — values-ky İngilizce iskelet; çevrilince bu blok da güncellenir
+  ky: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
+  // ÇEVİRİ: tg — values-tg İngilizce iskelet; çevrilince bu blok da güncellenir
+  tg: {
+    kisayol: "I've prayed the current prayer",
+    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
+    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+  },
 };
 
 /** Cihaz yerel ayarından ('ckb_IQ', 'in_ID', 'fa-IR') etiket kümesi; tabloda yoksa Türkçe. */

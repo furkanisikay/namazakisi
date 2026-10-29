@@ -18,8 +18,8 @@ object MetinDili {
     const val TR = "tr"
     const val EN = "en"
 
-    /** Sıra tablo düzeniyle aynı (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug). */
-    val DESTEKLENENLER = listOf(TR, EN, "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug")
+    /** Sıra tablo düzeniyle aynı (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg). */
+    val DESTEKLENENLER = listOf(TR, EN, "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg")
 
     /**
      * "en", "en-US", "de_DE" → kök kod; desteklenmeyen ya da boş → "tr". Java/Android eski
@@ -51,6 +51,11 @@ object MetinDili {
         "ps" -> CEKIRDEK_PS
         "ckb" -> CEKIRDEK_CKB
         "ug" -> CEKIRDEK_UG
+        "az" -> CEKIRDEK_AZ
+        "uz" -> CEKIRDEK_UZ
+        "kk" -> CEKIRDEK_KK
+        "ky" -> CEKIRDEK_KY
+        "tg" -> CEKIRDEK_TG
         else -> CEKIRDEK_TR
     }
 

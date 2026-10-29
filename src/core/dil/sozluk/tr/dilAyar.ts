@@ -6,7 +6,7 @@ export const dilAyar = {
   baslik: 'Dil · Language',
   aciklama: 'Uygulamanın dilini seçin. Bildirimler ve sesli okuma da bu dilde olur.',
   grup: 'Uygulama dili',
-  dilAdlari: { tr: 'Türkçe', en: 'İngilizce', id: 'Endonezce', de: 'Almanca', fr: 'Fransızca', bs: 'Boşnakça', ru: 'Rusça', ms: 'Malayca', ar: 'Arapça', ur: 'Urduca', es: 'İspanyolca', nl: 'Felemenkçe', sq: 'Arnavutça', hi: 'Hintçe', bn: 'Bengalce', fa: 'Farsça', ps: 'Peştuca', ckb: 'Orta Kürtçe', ug: 'Uygurca' },
+  dilAdlari: { tr: 'Türkçe', en: 'İngilizce', id: 'Endonezce', de: 'Almanca', fr: 'Fransızca', bs: 'Boşnakça', ru: 'Rusça', ms: 'Malayca', ar: 'Arapça', ur: 'Urduca', es: 'İspanyolca', nl: 'Felemenkçe', sq: 'Arnavutça', hi: 'Hintçe', bn: 'Bengalce', fa: 'Farsça', ps: 'Peştuca', ckb: 'Orta Kürtçe', ug: 'Uygurca', az: 'Azerbaycan dili', uz: 'Özbekçe', kk: 'Kazakça', ky: 'Kırgızca', tg: 'Tacikçe' },
   cihazDili: 'Cihazın dili',
   cihazDiliKullaniliyor: 'Şu an {ad}',
   cihazDiliDesteklenmiyor: 'Cihazınızın dili henüz yok; Türkçe kullanılıyor.',
@@ -34,6 +34,15 @@ export const dilAyar = {
     otomatik: 'Ülkenize göre',
     otomatikAciklama: 'Konumunuzun ülkesinde yaygın olan adlar kullanılır.',
     takimlar: { temel: 'Arapça adlar', diyanetDe: 'Diyanet (Almanca)', turkce: 'Türkçe adlar', magrip: 'Mağrip yazımı', cezayir: 'Cezayir yazımı', afgan: 'Afganistan adları' },
+  },
+  /** Alfabe seçimi (`core/dil/yazi.ts`; Ayarlar > Dil, yalnız iki alfabeli dilde: Özbekçe, Kazakça). */
+  yazi: {
+    baslik: 'Alfabe',
+    aciklama: 'Metinlerin hangi alfabeyle yazılacağını seçin.',
+    otomatik: 'Ülkenize göre',
+    otomatikAciklama: 'Konumunuzun ülkesinde yaygın olan alfabe kullanılır.',
+    latin: 'Latin alfabesi',
+    kiril: 'Kiril alfabesi',
   },
   kaydedilemedi: 'Dil kaydedilemedi. Lütfen tekrar deneyin.',
   /** Kurulum sihirbazındaki bağlantı (cihaz dili Türkçe değilse görünür). */
