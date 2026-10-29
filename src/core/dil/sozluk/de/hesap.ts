@@ -42,8 +42,9 @@ export const hesap: Sozluk['hesap'] = {
     genelUyari: '{guven}: Für dieses Land haben wir keinen geprüften offiziellen Kalender gefunden.',
     gecin: 'Zu {ad} wechseln',
     devam: 'Mit {ad} fortfahren',
-    alternatifSoru: 'Möchten Sie den Kalender {profil} verwenden? Heute ändert sich Folgendes:',
+    ikiTakvimSoru: 'Hier werden zwei Kalender verwendet. Nach welchem sollen wir die Gebetszeiten berechnen? Heute sehen sie so aus:',
     alternatifNotu: {
+      mwl: 'Im MWL-Kalender wird der Maghrib-Adhan bei Sonnenuntergang gerufen, Asr beginnt bei einfacher Schattenlänge.',
       qmi: 'Der QMİ-Kalender folgt der dschafaritischen Ordnung: Der Maghrib-Adhan wird etwa 14 Minuten nach Sonnenuntergang gerufen, Asr beginnt bei doppelter Schattenlänge.',
     },
     birKez: 'Diese Frage wird für dieses Land nur einmal gestellt. Sie können es jederzeit unter Einstellungen › Gebetszeiten › Berechnungsmethode ändern.',

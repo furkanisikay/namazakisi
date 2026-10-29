@@ -97,14 +97,26 @@ const kodNormal = (ulkeKodu: string): string =>
   ulkeKodu.length === 2 ? ulkeKodu.replace(/[a-z]/g, (h) => String.fromCharCode(h.charCodeAt(0) - 32)) : '';
 
 /**
- * Ülkenin resmî kurumu yalnız-elle bir profil yayımlıyorsa bölge kartının İKİNCİ seçeneği.
- * Sahip kararı (2026-10-24): Azerbaycan'da Sünnî varsayılan (MWL), QMİ'nin Caferî takvimi öneri.
+ * Varsayılanı KULLANICININ seçtiği ülkeler: iki takvim yaygın, uygulama birini seçmez.
+ * Kurulum yöntemi kendiliğinden kurmaz; bölge kartı iki takvimi EŞİT seçenek olarak sorar
+ * (önerilen yok), kullanıcı ikisinden birini seçince bir daha sorulmaz.
+ * Sahip kararı (2026-10-29): Azerbaycan'da Sünnî (MWL) ve QMİ'nin Caferî takvimi eşit.
  */
 export const ULKE_ALTERNATIFLERI: Readonly<Record<string, HesapProfiliKimligi>> = {
   AZ: 'qmi',
 };
 
-/** Bölge kartının önerisi: ülke varsayılanı + (varsa) resmî kurumun alternatif profili. */
+/** Ülkede eşit iki takvim varsa `[varsayılan profil, alternatif]`; yoksa null. */
+export function esitSecenekler(ulkeKodu: string | null | undefined): readonly [HesapProfiliKimligi, HesapProfiliKimligi] | null {
+  if (!ulkeKodu) return null;
+  const alternatif = ULKE_ALTERNATIFLERI[kodNormal(ulkeKodu)];
+  return alternatif ? [ulkeVarsayilani(ulkeKodu).profil, alternatif] : null;
+}
+
+/**
+ * Bölge kartının önerisi: ülke varsayılanı; `alternatif` varsa iki takvim EŞİT seçenektir
+ * (`profil` yalnız sıradır, öneri değil).
+ */
 export interface BolgeOnerisi extends UlkeVarsayilani {
   alternatif?: HesapProfiliKimligi;
 }
@@ -128,11 +140,10 @@ export function bolgeOnerisi(
   if (!ulkeKodu || ayar.sorulanUlkeler?.includes(ulkeKodu)) return null;
   const v = ulkeVarsayilani(ulkeKodu);
   const alternatif = ULKE_ALTERNATIFLERI[kodNormal(ulkeKodu)];
-  // Kurumun takvimini zaten seçmiş kullanıcıya varsayılan önerilmez.
-  if (alternatif && ayar.profil === alternatif) return null;
+  // Eşit iki takvimden birini zaten kullanan kişiye sorulmaz (seçim onundur).
+  if (alternatif) return ayar.profil === alternatif || ayar.profil === v.profil ? null : { ...v, alternatif };
   const onerilenIkindi = v.ikindi ?? HESAP_PROFILLERI[v.profil].ikindi;
   const mevcutIkindi = ayar.ikindi ?? HESAP_PROFILLERI[ayar.profil]?.ikindi;
-  const ayni = v.profil === ayar.profil && onerilenIkindi === mevcutIkindi;
-  if (ayni && !alternatif) return null;
-  return alternatif ? { ...v, alternatif } : v;
+  if (v.profil === ayar.profil && onerilenIkindi === mevcutIkindi) return null;
+  return v;
 }

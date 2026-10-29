@@ -42,8 +42,9 @@ export const hesap: Sozluk['hesap'] = {
     genelUyari: '{guven}: kami tidak menemukan jadwal resmi yang terverifikasi untuk negara ini.',
     gecin: 'Beralih ke {ad}',
     devam: 'Lanjutkan dengan {ad}',
-    alternatifSoru: 'Ingin menggunakan jadwal {profil}? Hari ini berubah seperti ini:',
+    ikiTakvimSoru: 'Di sini digunakan dua jadwal. Jadwal mana yang ingin Anda gunakan untuk waktu salat? Hari ini perbandingannya seperti ini:',
     alternatifNotu: {
+      mwl: 'Dalam jadwal MWL, azan Maghrib dikumandangkan saat matahari terbenam, dan Ashar masuk saat bayangan sama panjang dengan benda.',
       qmi: "Jadwal QMİ mengikuti pola Ja'fari: azan Maghrib dikumandangkan sekitar 14 menit setelah matahari terbenam, dan Ashar masuk saat bayangan dua kali panjang benda.",
     },
     birKez: 'Pertanyaan ini hanya diajukan sekali untuk negara ini. Anda dapat mengubahnya kapan saja di Pengaturan › Waktu salat › Metode perhitungan.',

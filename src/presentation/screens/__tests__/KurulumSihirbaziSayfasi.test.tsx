@@ -40,11 +40,14 @@ const mockDurum = { hesap: { ayar: { profil: 'diyanet' }, yuklendi: true, yuklen
 jest.mock('react-redux', () => ({ useDispatch: () => mockDispatch, useSelector: (f: (s: unknown) => unknown) => f(mockDurum) }));
 jest.mock('../../store/hesapSlice', () => ({ hesapAyariniKaydet: (a: unknown) => ({ type: 'test/hesap', payload: a }) }));
 const mockKualaLumpur = { ad: 'Kuala Lumpur', ascii: 'kuala lumpur', lat: 3.139, lng: 101.687, ulke: 'MY', bolge: 'Kuala Lumpur', saatDilimi: 'Asia/Kuala_Lumpur', nufus: 1 };
+const mockBaku = { ad: 'Baku', ascii: 'baku', lat: 40.41, lng: 49.87, ulke: 'AZ', bolge: 'Baku', saatDilimi: 'Asia/Baku', nufus: 1 };
+/** Dünya şehri seçicisinin seçtiği şehir (varsayılan Kuala Lumpur). */
+const mockSecilen = { sehir: mockKualaLumpur };
 jest.mock('../../components/DunyaSehirSecici', () => {
     const { Text } = require('react-native');
     return {
         DunyaSehirSecici: ({ onSec }: { onSec: (s: unknown) => void }) => (
-            <Text testID="dunya-sehir-sec" onPress={() => onSec(mockKualaLumpur)}>
+            <Text testID="dunya-sehir-sec" onPress={() => onSec(mockSecilen.sehir)}>
                 Şehir seçin
             </Text>
         ),
@@ -173,6 +176,25 @@ describe('KurulumSihirbaziSayfasi', () => {
         await waitFor(() => e.getByLabelText('Adım 3 / 5'));
         const konum = mockDispatch.mock.calls.map((c) => c[0] as { type?: string; payload?: { konumModu?: string } }).find((a) => a?.payload?.konumModu === 'manuel');
         expect(konum).toBeTruthy();
+    });
+
+    it('NÖBETÇİ: eşit iki takvimli ülkede (Azerbaycan) yöntem KURULMAZ, karar ana ekrandaki soruya kalır', async () => {
+        mockSecilen.sehir = mockBaku;
+        try {
+            const e = await kur();
+            fireEvent.press(e.getByTestId('basla'));
+            await waitFor(() => e.getByTestId('konum-manuel'));
+            fireEvent.press(e.getByTestId('konum-manuel'));
+            fireEvent.press(e.getByTestId('kurulum-bolge-dunya'));
+            fireEvent.press(e.getByTestId('dunya-sehir-sec'));
+            fireEvent.press(e.getByText('Baku ile devam edin'));
+            await waitFor(() => e.getByLabelText('Adım 3 / 5'));
+            const eylemler = mockDispatch.mock.calls.map((c) => c[0] as { type?: string; payload?: Record<string, unknown> });
+            expect(eylemler.find((a) => a?.type === 'konum/konumAyarlariniGuncelle')?.payload).toMatchObject({ ulkeKodu: 'AZ' });
+            expect(eylemler.find((a) => a?.type === 'test/hesap')).toBeUndefined();
+        } finally {
+            mockSecilen.sehir = mockKualaLumpur;
+        }
     });
 
     it('başka bir ülkeden şehir seçilince konum ülkesiyle yazılır, o ülkenin yöntemi kurulur ve özette söylenir', async () => {

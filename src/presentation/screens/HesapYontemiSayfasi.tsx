@@ -22,7 +22,7 @@ import {
   type IkindiYontemi,
   type VakitOfsetAnahtari,
 } from '../../core/vakit/hesapProfilleri';
-import { ulkeVarsayilani } from '../../core/vakit/ulkeProfilleri';
+import { ulkeVarsayilani, esitSecenekler } from '../../core/vakit/ulkeProfilleri';
 import { aciOzeti, GUVEN_METNI, IKINDI_ACIKLAMASI, IKINDI_ADLARI, PROFIL_ADLARI } from '../../core/vakit/profilAdlari';
 import { kayitliUlkeKodu } from '../../core/konum/ulkeTespiti';
 import { ulkeAdi } from '../../core/konum/ulkeAdlari';
@@ -108,6 +108,8 @@ export const HesapYontemiSayfasi: React.FC = () => {
 
   const ulke = kayitliUlkeKodu(konum);
   const onerilen = ulkeVarsayilani(ulke);
+  // Eşit iki takvimli ülkede (Azerbaycan) "önerilen" etiketi yok: seçim kullanıcının.
+  const esit = esitSecenekler(ulke) !== null;
   const profil = HESAP_PROFILLERI[ayar.profil] ?? HESAP_PROFILLERI.diyanet;
   const enlem = konum.koordinatlar?.lat;
   const parametre = useMemo(() => hesapParametreleriOlustur({ profil: ayar.profil }, { enlem }), [ayar.profil, enlem]);
@@ -127,13 +129,13 @@ export const HesapYontemiSayfasi: React.FC = () => {
         deger: p,
         etiket: PROFIL_ADLARI[p],
         aciklama:
-          p === onerilen.profil && ulke
+          p === onerilen.profil && ulke && !esit
             ? bicim(m.onerilen, { ulke: ulkeAdi(ulke, aktifDil()) })
             : aciOzeti(hesapParametreleriOlustur({ profil: p })),
       })),
     // Profil adları canlı görünümdür: dil değişince liste yeniden kurulsun.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onerilen.profil, ulke, s],
+    [onerilen.profil, ulke, esit, s],
   );
 
   const ikindiSecenekleri = useMemo<Secenek<IkindiYontemi>[]>(

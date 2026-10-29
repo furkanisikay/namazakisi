@@ -42,8 +42,9 @@ export const hesap: Sozluk['hesap'] = {
     genelUyari: '{guven} : nous n’avons pas trouvé de calendrier officiel vérifié pour ce pays.',
     gecin: 'Passer à {ad}',
     devam: 'Continuer avec {ad}',
-    alternatifSoru: 'Voulez-vous utiliser le calendrier {profil} ? Aujourd’hui, les heures changeraient ainsi :',
+    ikiTakvimSoru: 'Deux calendriers sont utilisés ici. Lequel faut-il suivre pour les heures de prière ? Aujourd’hui, ils se comparent ainsi :',
     alternatifNotu: {
+      mwl: 'Dans le calendrier MWL, l’adhan de Maghrib est appelé au coucher du soleil, et Asr commence quand l’ombre atteint la taille de l’objet.',
       qmi: 'Le calendrier QMİ suit le rite ja’fari : l’adhan de Maghrib est appelé environ 14 minutes après le coucher du soleil, et Asr commence quand l’ombre atteint deux fois la taille de l’objet.',
     },
     birKez: 'Cette question n’est posée qu’une fois pour ce pays. Vous pouvez la modifier à tout moment dans Réglages › Heures de prière › Méthode de calcul.',

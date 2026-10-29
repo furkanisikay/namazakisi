@@ -173,12 +173,16 @@ describe('bölge önerisi kartı', () => {
     expect(bolgeOnerisi(null, { profil: 'diyanet' })).toBeNull();
   });
 
-  it('Azerbaycan: Sünnî varsayılan, QMİ (Caferî) ikinci seçenek; QMİ seçmişe sorulmaz (sahip kararı)', () => {
+  it('Azerbaycan: MWL ve QMİ (Caferî) EŞİT iki seçenek; ikisinden birini kullanana sorulmaz (sahip kararı 2026-10-29)', () => {
+    const { esitSecenekler } = require('../ulkeProfilleri') as typeof import('../ulkeProfilleri');
+    expect(esitSecenekler('AZ')).toEqual(['mwl', 'qmi']);
+    expect(esitSecenekler('az')).toEqual(['mwl', 'qmi']);
+    expect(esitSecenekler('TR')).toBeNull();
     expect(bolgeOnerisi('AZ', { profil: 'diyanet' })).toEqual({ profil: 'mwl', guven: 'genel', alternatif: 'qmi' });
-    // Varsayılandaki kullanıcıya da BİR KEZ yalnız QMİ sorulur.
-    expect(bolgeOnerisi('AZ', { profil: 'mwl' })).toEqual({ profil: 'mwl', guven: 'genel', alternatif: 'qmi' });
+    expect(bolgeOnerisi('AZ', { profil: 'mwl' })).toBeNull();
     expect(bolgeOnerisi('AZ', { profil: 'qmi' })).toBeNull();
-    expect(bolgeOnerisi('AZ', { profil: 'mwl', sorulanUlkeler: ['AZ'] })).toBeNull();
+    expect(bolgeOnerisi('AZ', { profil: 'diyanet', sorulanUlkeler: ['AZ'] })).toBeNull();
+    // Caferî profil hiçbir ülkenin varsayılanı olamaz (yalnız eşit seçenek).
     expect(ulkeVarsayilani('AZ').profil).not.toBe('qmi');
   });
 

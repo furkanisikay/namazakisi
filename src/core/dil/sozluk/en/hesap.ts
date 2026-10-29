@@ -42,8 +42,9 @@ export const hesap: Sozluk['hesap'] = {
     genelUyari: "{guven}: we couldn't find a verified official timetable for this country.",
     gecin: 'Switch to {ad}',
     devam: 'Continue with {ad}',
-    alternatifSoru: 'Would you like to use the {profil} timetable? Today changes like this:',
+    ikiTakvimSoru: 'Two timetables are used here. Which one should we use for prayer times? Today they compare like this:',
     alternatifNotu: {
+      mwl: "In the MWL timetable, Maghrib is called at sunset, and Asr begins when an object's shadow equals its length.",
       qmi: "The QMİ timetable follows the Ja'fari pattern: Maghrib is called about 14 minutes after sunset, and Asr begins when an object's shadow is twice its length.",
     },
     birKez: 'We ask this only once for this country. You can change it anytime in Settings › Prayer times › Calculation method.',

@@ -41,8 +41,9 @@ export const hesap = {
     genelUyari: '{guven}: bu ülke için doğrulanmış bir resmî takvim bulamadık.',
     gecin: '{ad} takvimine geçin',
     devam: '{ad} ile devam edin',
-    alternatifSoru: '{profil} takvimini kullanmak ister misiniz? Bugün şöyle değişir:',
+    ikiTakvimSoru: 'Burada iki takvim kullanılıyor. Vakitleri hangisine göre hesaplayalım? Bugün ikisi şöyle:',
     alternatifNotu: {
+      mwl: 'MWL takviminde akşam ezanı güneş batınca okunur, ikindi gölge bir misli olunca girer.',
       qmi: 'QMİ takvimi Caferî düzendedir: akşam ezanı güneş battıktan yaklaşık 14 dakika sonra okunur, ikindi gölge iki misli olunca girer.',
     },
     birKez: "Bu soru bu ülke için bir kez sorulur. Ayarlar › Namaz vakitleri › Hesap yöntemi'nden istediğiniz zaman değiştirebilirsiniz.",
