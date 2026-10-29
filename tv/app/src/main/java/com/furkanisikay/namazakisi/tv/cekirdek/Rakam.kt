@@ -51,7 +51,8 @@ object RakamKarari {
         o.optJSONObject("s")?.let { s ->
             for (dil in s.keys()) {
                 val sistem = s.optString(dil)
-                if (sistem == "latn" || YEREL[dil] == sistem) secimler[dil] = sistem
+                val yerel = YEREL[dil] ?: continue
+                if (sistem == "latn" || sistem == yerel) secimler[dil] = sistem
             }
         }
         return if (ulke == null && secimler.isEmpty()) null else TvRakam(ulke, secimler)
