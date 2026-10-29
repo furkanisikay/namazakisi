@@ -262,11 +262,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "ياق، تېخى بەلگىلەنمىگەن."
     )
 
-    // ÇEVİRİ: az
+    // az — Azerice (beta); CLDR one/other, sayıdan sonra isim tekil
     static let az = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} vaxtına {n} dəqiqə qalıb.", "other": "{ad} vaxtına {n} dəqiqə qalıb."],
+        evetKilindi: "Bəli, qılındı kimi qeyd olunub.",
+        hayirKilinmadi: "Xeyr, hələ qeyd olunmayıb."
     )
 
     // ÇEVİRİ: uz

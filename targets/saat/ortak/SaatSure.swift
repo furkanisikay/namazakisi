@@ -190,12 +190,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} سېكۇنت", "other": "{n} سېكۇنت"]
     )
 
-    // ÇEVİRİ: az
+    // az — Azerice (beta); JS `sozluk/az/sure.ts` (sayıdan sonra isim tekil)
     public static let az = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "saat", birimDk: "dəq", birimSn: "san",
+        saat: ["one": "{n} saat", "other": "{n} saat"],
+        dakika: ["one": "{n} dəqiqə", "other": "{n} dəqiqə"],
+        saniye: ["one": "{n} saniyə", "other": "{n} saniyə"]
     )
 
     // ÇEVİRİ: uz

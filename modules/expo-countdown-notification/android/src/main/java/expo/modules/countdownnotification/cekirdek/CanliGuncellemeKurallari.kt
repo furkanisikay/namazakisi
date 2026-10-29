@@ -77,8 +77,8 @@ object CanliGuncellemeKurallari {
         "ckb" to ("کاتژمێر" to "خولەک"),
         // ug
         "ug" to ("سائەت" to "مىنۇت"),
-        // ÇEVİRİ: az
-        "az" to ("h" to "min"),
+        // az
+        "az" to ("saat" to "dəq"),
         // ÇEVİRİ: uz
         "uz" to ("h" to "min"),
         // kk

@@ -364,19 +364,19 @@ struct TvArayuzMetinleri {
         siradakiEk: "، كېيىنكى ۋاقىت"
     )
 
-    // ÇEVİRİ: az
+    // az — Azerice (beta); JS `sozluk/az` (hitap "siz")
     static let az = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Şəhərinizi seçin",
+        ilMerkezi: "Namaz vaxtları vilayət mərkəzinə görə hesablanır. Seçiminizi sonra dəyişə bilərsiniz.",
+        ilSecErisim: "{il}, seçin",
+        kalan: "{ad} vaxtına qalan",
+        kalanErisim: "{ad} vaxtına qalan müddət {sure}",
+        konumuDegistirin: "Məkanı dəyişin",
+        kerahatSuruyor: "Məkruh vaxt: {tur}, bitmə {bitis}. {aciklama}",
+        siradakiKerahat: "Növbəti məkruh vaxt: {tur} {bas}–{bit}",
+        cumaBilgisi: "Bu gün cümədir. Cümə namazı zöhr vaxtında qılınır (giriş {giris}).",
+        suAnkiEk: ", hazırkı vaxt",
+        siradakiEk: ", növbəti vaxt"
     )
 
     // ÇEVİRİ: uz

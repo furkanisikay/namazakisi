@@ -1,15 +1,15 @@
-// ÇEVİRİ: az — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** `vakitGirdi` ibadətə çağırışdır: "sən" + əmr. */
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Qurani-Kərim {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Namaz yuxudan xeyirlidir. Qurtuluşa gəl.',
+    araVer: 'Dünya işlərinə qısa fasilə ver, Rəbbinin hüzurunda dur.',
+    yorgunluk: 'Günün yorğunluğunu atmaq və rahatlıq tapmaq üçün əsr namazı səni gözləyir.',
+    sukur: 'Məğrib namazı günün şükrüdür. Rəbbinin hüzuruna tələs.',
+    aksamKisa: 'Məğribin vaxtı qısadır; vaxt daxil oldu, gecikdirmədən qıl.',
+    geceKaranligi: 'Gecənin qaranlığında Rəbbinlə baş-başa qal. İşa namazı ruhun dərmanıdır.',
+    davet: 'Günü Allahın razılığı ilə bitirmək üçün işa namazına dəvətlisən.',
   },
 };
