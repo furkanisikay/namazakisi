@@ -114,6 +114,11 @@ Türkçe kural sürer: kullanıcı uygulamayı yönetiyorsa "siz", uygulama ibad
 | Peştuca | "تاسو" + çoğul/kibar emir ("…کړئ": "ښار وټاکئ"); "ته" YOK | "ته" + emir ("لمونځ وکړه") — DOĞRULANMADI |
 | Soranî | "ئێوە" + çoğul kibar emir ("…ن": "شار ھەڵبژێرن", "دووبارە ھەوڵ بدەنەوە"), düğmede mastar ("پاشەکەوتکردن"); "تۆ" YOK | "تۆ" + tekil emir ("نوێژ بکە", "ھەستە بۆ نوێژ"); fiil cinsiyetsiz → "Kıldım" = "نوێژم کرد", "Kılındı" = "کرا" — yerli okuyucuyla DOĞRULANMADI |
 | Uygurca | "سىز" + kibar emir ("…ڭ" / "…ڭىز": "شەھەرنى تاللاڭ"); "سەن" YOK | "سەن" + emir ("ناماز ئوقۇ") — DOĞRULANMADI |
+| Azerice | "siz" + kibar emir ("əlavə edin", "seçin"); "sən" YOK | "sən" + emir ("namaza dur", "namazını qıl"); "Kıldım" = "Qıldım", "Kılındı" = "Qılındı" — DOĞRULANMADI |
+| Özbekçe (Kiril kaynak) | "Сиз" + kibar emir ("қўшинг", "танланг") | "сен" + emir ("намозни ўқи"); "Kıldım" = "Ўқидим", "Kılındı" = "Ўқилди" — DOĞRULANMADI |
+| Kazakça | "Сіз" + kibar emir ("қосыңыз", "таңдаңыз") | "сен" + emir ("намазды оқы"); "Kıldım" = "Оқыдым", "Kılındı" = "Оқылды" — DOĞRULANMADI |
+| Kırgızca | "Сиз" + kibar emir ("кошуңуз", "тандаңыз") | "сен" + emir ("оку", "намазга тур"); "Kıldım" = "Окудум", "Kılındı" = "Окулду" — DOĞRULANMADI |
+| Tacikçe | "Шумо" + kibar emir ("интихоб кунед") | "ту" + emir ("намоз бихон", "ба намоз биист"); fiil cinsiyetsiz → "Kıldım" = "Хондам", "Kılındı" = "Хонда шуд" — DOĞRULANMADI |
 
 ## Terim sözlüğü (diğer diller)
 Her dilin vakit ve terim kararları kendi `sozluk/<dil>/vakit.ts` başındaki yorumdadır; karşılıklar o dosyalardan okunur, serbest çeviri yapılmaz.
