@@ -466,18 +466,18 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: tg
+    // tg — Tacikçe (beta): JS `sozluk/tg/kible.ts` (binlik ayırıcı JS `aktifDil > BINLIK.tg` ile aynı, bölünmez boşluk)
     public static let tg = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
-        binlikAyirici: ","
+        arkada: "Дар пас",
+        saga: "Рост {derece}°",
+        sola: "Чап {derece}°",
+        hizali: "Шумо рӯ ба қибла ҳастед",
+        arkadaErisim: "Қибла дар паси Шумост",
+        sagdaErisim: "Қибла {derece} дараҷа аз тарафи рости Шумост",
+        soldaErisim: "Қибла {derece} дараҷа аз тарафи чапи Шумост",
+        kabede: "Шумо дар назди Каъба ҳастед",
+        mesafe: "{km} км",
+        binlikAyirici: "\u{00A0}"
     )
 
     public static let tablo: [String: KibleMetinleri] = [

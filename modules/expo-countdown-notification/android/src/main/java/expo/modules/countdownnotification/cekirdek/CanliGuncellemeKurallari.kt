@@ -85,8 +85,8 @@ object CanliGuncellemeKurallari {
         "kk" to ("h" to "min"),
         // ÇEVİRİ: ky
         "ky" to ("h" to "min"),
-        // ÇEVİRİ: tg
-        "tg" to ("h" to "min"),
+        // tg
+        "tg" to ("соат" to "дақ"),
     )
 
     /**

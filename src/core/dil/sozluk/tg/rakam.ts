@@ -1,11 +1,10 @@
-// ÇEVİRİ: tg — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Рақамҳо',
+  aciklama: 'Интихоб кунед, ки вақт, сана ва шумораҳо бо кадом рақамҳо навишта шаванд.',
+  otomatik: 'Мувофиқи кишвар',
+  otomatikAciklama: 'Рақамҳое истифода мешаванд, ки дар кишвари макони Шумо маъмуланд.',
+  dogu: 'Рақамҳои арабии шарқӣ',
+  bati: 'Рақамҳои ғарбӣ',
 };

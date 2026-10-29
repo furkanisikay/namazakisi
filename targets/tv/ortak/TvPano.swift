@@ -398,18 +398,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: tg
+    // tg — Tacikçe (beta); JS `sozluk/tg` (vakit, tarih, anaEkran.kerahat), Android TV `TvDiliTg` ikizi
     public static let tg = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        vakitAdlari: ["imsak": "Бомдод", "gunes": "Тулӯъ", "ogle": "Пешин", "ikindi": "Аср", "aksam": "Шом", "yatsi": "Хуфтан"],
+        cuma: "Ҷумъа",
+        aylar: ["январ", "феврал", "март", "апрел", "май", "июн", "июл", "август", "сентябр", "октябр", "ноябр", "декабр"],
+        gunler: ["Душанбе", "Сешанбе", "Чоршанбе", "Панҷшанбе", "Ҷумъа", "Шанбе", "Якшанбе"],
         tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAdlari: ["suruk": "Тулӯи офтоб", "istiva": "Истиво", "gurub": "Ғуруби офтоб"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "То хуб баланд шудани офтоб намоз хондан макрӯҳ аст.",
+            "istiva": "Вақте ки офтоб дар авҷи осмон аст, намоз хондан макрӯҳ аст.",
+            "gurub": "Ҳангоми ғуруби офтоб намоз хондан макрӯҳ аст.",
         ]
     )
 

@@ -631,29 +631,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: tg
+    // tg — Tacikçe (beta); JS `sozluk/tg` (Kıldım "Хондам", Kılındı "Хонда шуд")
     static let tg = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Вақти намоз",
+        galeriAciklama: "Вақти ҷорӣ, вақти боқимонда то анҷоми он ва вақтҳои имрӯз.",
+        veriEski: "Барои навсозии вақтҳо барномаро кушоед",
+        konumYok: "Барои танзими макон барномаро кушоед",
+        kilindiSiradaki: "{ad} хонда шуд · {sonraki} {saat}",
+        adCikis: "{ad} · анҷом {saat}",
+        siradakiAdSaat: "Навбатӣ {ad} {saat}",
+        vaktiCikisErisim: "Вақти {ad}, анҷом {saat}",
+        siradakiErisim: "Навбатӣ {ad}, {saat}",
+        cikisSaat: "Анҷом {saat}",
+        bitisSaat: "Анҷом {saat}",
+        kilindiBaslik: "{ad} хонда шуд",
+        siradaki: "Навбатӣ",
+        siradakiAd: "Навбатӣ {ad}",
+        kildimErisim: "Намози {ad}-ро хондам",
+        gunSatiriKilindi: ", хонда шуд",
+        bitti: "Анҷом ёфт",
+        vakitCikti: "Вақт гузашт",
+        kabulAlt: "Намози {ad} хонда шуд",
+        kontrolAdi: "Хондам",
+        kontrolAciklama: "Вақти ҷориро ҳамчун хондашуда қайд мекунад."
     )
 
     /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil `// ÇEVİRİ: <kod>`

@@ -424,19 +424,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: tg
+    // tg — Tacikçe (beta); JS `sozluk/tg` (konum.il, genel.evEkrani, anaEkran.kerahat), hitap "Шумо"
     static let tg = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Шаҳратонро интихоб кунед",
+        ilMerkezi: "Вақтҳо барои маркази вилоят ҳисоб карда мешаванд. Интихоби худро баъдтар иваз карда метавонед.",
+        ilSecErisim: "{il}, интихоб кунед",
+        kalan: "То вақти {ad}",
+        kalanErisim: "То вақти {ad}: {sure}",
+        konumuDegistirin: "Маконро иваз кунед",
+        kerahatSuruyor: "Вақти макрӯҳ: {tur}, анҷом {bitis}. {aciklama}",
+        siradakiKerahat: "Вақти макрӯҳи навбатӣ: {tur} {bas}–{bit}",
+        cumaBilgisi: "Имрӯз ҷумъа аст. Намози ҷумъа дар вақти пешин хонда мешавад (оғоз {giris}).",
+        suAnkiEk: ", вақти ҷорӣ",
+        siradakiEk: ", вақти навбатӣ"
     )
 
     static let tablo: [String: TvArayuzMetinleri] = [
