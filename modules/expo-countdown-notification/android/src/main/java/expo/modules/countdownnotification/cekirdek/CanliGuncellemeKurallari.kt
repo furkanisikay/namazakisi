@@ -83,8 +83,8 @@ object CanliGuncellemeKurallari {
         "uz" to ("h" to "min"),
         // kk
         "kk" to ("сағ" to "мин"),
-        // ÇEVİRİ: ky
-        "ky" to ("h" to "min"),
+        // ky
+        "ky" to ("ст" to "мүн"),
         // ÇEVİRİ: tg
         "tg" to ("h" to "min"),
     )

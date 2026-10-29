@@ -357,18 +357,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Khalifa Altai, QuranEnc 1.0.0"
     )
 
-    // ÇEVİRİ: ky
+    // ky
     static let ky = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Күндүн аяты",
+        galeriAciklama: "Күн сайын багымдатта алмашып турган аят жана анын котормосу.",
+        etiket: "КҮНДҮН АЯТЫ",
+        uygulamayiAcin: "Күндүн аятын көрүү үчүн колдонмону ачыңыз",
+        ornekSigmiyor: "Бүгүнкү аят бул өлчөмгө батпайт. Окуу үчүн басыңыз.",
+        ornekAcin: "Ачуу",
+        ornekArapcaKaynagi: "Арабча: Tanzil",
+        ornekMeal: "Албетте, кыйынчылык менен бирге жеңилдик бар.",
+        ornekKisaKunye: "Куран 94:6",
+        ornekMealKaynagi: "Shamsuddin Hakimov, QuranEnc 1.0.2"
     )
 
     // ÇEVİRİ: tg

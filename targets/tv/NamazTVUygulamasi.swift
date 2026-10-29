@@ -409,19 +409,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", келесі намаз уақыты"
     )
 
-    // ÇEVİRİ: ky
+    // ky
     static let ky = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Шаарыңызды тандаңыз",
+        ilMerkezi: "Намаз убактылары облустун борбору үчүн эсептелет. Тандооңузду кийин өзгөртө аласыз.",
+        ilSecErisim: "{il}, тандоо",
+        kalan: "{ad} убактысына калган убакыт",
+        kalanErisim: "{ad} убактысына калган убакыт: {sure}",
+        konumuDegistirin: "Жайгашкан жерди өзгөртүү",
+        kerahatSuruyor: "Макрух убакыт: {tur}, {bitis} бүтөт. {aciklama}",
+        siradakiKerahat: "Кийинки макрух убакыт: {tur} {bas}–{bit}",
+        cumaBilgisi: "Бүгүн жума. Жума намазы бешим убактысында окулат (саат {giris} кирет).",
+        suAnkiEk: ", азыркы намаз",
+        siradakiEk: ", кийинки намаз"
     )
 
     // ÇEVİRİ: tg

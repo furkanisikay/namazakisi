@@ -606,29 +606,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Қазіргі намазды оқылды деп белгілейді."
     )
 
-    // ÇEVİRİ: ky
+    // ky
     static let ky = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Намаз убактысы",
+        galeriAciklama: "Азыркы намаз убактысы, анын бүтүшүнө калган убакыт жана бүгүнкү намаз убактылары.",
+        veriEski: "Намаз убактыларын жаңыртуу үчүн колдонмону ачыңыз",
+        konumYok: "Жайгашкан жериңизди коюу үчүн колдонмону ачыңыз",
+        kilindiSiradaki: "{ad} окулду · {sonraki} {saat}",
+        adCikis: "{ad} · {saat} бүтөт",
+        siradakiAdSaat: "Кийинки {ad} {saat}",
+        vaktiCikisErisim: "{ad} убактысы, {saat} бүтөт",
+        siradakiErisim: "Кийинкиси {ad}, {saat}",
+        cikisSaat: "Бүтөт {saat}",
+        bitisSaat: "Бүтөт {saat}",
+        kilindiBaslik: "{ad} окулду",
+        siradaki: "Кийинки",
+        siradakiAd: "Кийинки {ad}",
+        kildimErisim: "{ad} намазын окудум",
+        gunSatiriKilindi: ", окулду",
+        bitti: "Бүттү",
+        vakitCikti: "Намаз убактысы бүттү",
+        kabulAlt: "{ad} окулду",
+        kontrolAdi: "Окудум",
+        kontrolAciklama: "Азыркы намазды окулду деп белгилейт."
     )
 
     // ÇEVİRİ: tg

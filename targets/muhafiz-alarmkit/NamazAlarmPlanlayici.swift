@@ -140,8 +140,8 @@ enum NamazAlarmCekirdegi {
         "uz": "Stop",
         // kk
         "kk": "Тоқтату",
-        // ÇEVİRİ: ky
-        "ky": "Stop",
+        // ky
+        "ky": "Токтотуу",
         // ÇEVİRİ: tg
         "tg": "Stop",
     ]
