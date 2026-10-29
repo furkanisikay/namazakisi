@@ -16,7 +16,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
     kisaTarih: '{gun} {ay}',
     metniPaylasin: 'اشتراک‌گذاری متن',
     paylasilamadi: 'اشتراک‌گذاری روی این دستگاه در دسترس نیست.',
-    gorselPaylasin: 'اشتراک‌گذاری به‌صورت تصویر',
+    gorselPaylasin: 'اشتراک‌گذاری تصویر',
     widgetVeDuvar: 'ابزارک و تصویر زمینه',
     widgetVeDuvarAciklama: 'به صفحهٔ اصلی اضافه کنید، روی صفحهٔ قفل ببینید',
     oncekiGunler: 'روزهای پیشین',

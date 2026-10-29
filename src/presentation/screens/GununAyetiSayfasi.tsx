@@ -159,6 +159,8 @@ export const GununAyetiSayfasi: React.FC = () => {
             flex: 1,
             minHeight: 48,
             marginRight: 6,
+            paddingHorizontal: 12,
+            paddingVertical: 6,
             borderRadius: 16,
             borderWidth: 1,
             borderColor: renkler.sinir,
@@ -169,7 +171,7 @@ export const GununAyetiSayfasi: React.FC = () => {
           }}
         >
           <FontAwesome5 name="share-alt" size={14} color={renkler.metin} />
-          <Text style={{ marginLeft: 8, fontSize: 15, fontWeight: '600', color: renkler.metin }}>{m.sayfa.metniPaylasin}</Text>
+          <Text style={{ marginLeft: 8, flexShrink: 1, textAlign: 'center', fontSize: 15, fontWeight: '600', color: renkler.metin }}>{m.sayfa.metniPaylasin}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           testID="gunun-ayeti-gorsel-paylas"
@@ -182,6 +184,8 @@ export const GununAyetiSayfasi: React.FC = () => {
             flex: 1,
             minHeight: 48,
             marginLeft: 6,
+            paddingHorizontal: 12,
+            paddingVertical: 6,
             borderRadius: 16,
             backgroundColor: renkler.birincil,
             opacity: paylasiliyor ? 0.6 : 1,
@@ -191,7 +195,7 @@ export const GununAyetiSayfasi: React.FC = () => {
           }}
         >
           <FontAwesome5 name="image" size={14} color="#FFFFFF" />
-          <Text style={{ marginLeft: 8, fontSize: 15, fontWeight: '600', color: '#FFFFFF' }}>{m.sayfa.gorselPaylasin}</Text>
+          <Text style={{ marginLeft: 8, flexShrink: 1, textAlign: 'center', fontSize: 15, fontWeight: '600', color: '#FFFFFF' }}>{m.sayfa.gorselPaylasin}</Text>
         </TouchableOpacity>
       </View>
 
