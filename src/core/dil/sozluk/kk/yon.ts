@@ -1,10 +1,9 @@
-// ÇEVİRİ: kk — İngilizce iskelet; çeviri KİRİL yazılır (Latin biçim çalışma anında `kirildenLatine`, core/dil/yazi.ts), çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Жазу бағыты өзгереді',
+  aciklama: 'Таңдаған тіліңіз басқа бағытта жазылады. Экрандар жаңа бағытқа көшуі үшін қолданбаны қайта іске қосу керек.',
+  simdiBaslat: 'Қазір қайта іске қосу',
+  sonra: 'Кейінірек',
+  bekliyor: 'Жазу бағыты қолданба қайта іске қосылғанда өзгереді.',
 };

@@ -394,19 +394,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: kk
+    // kk — Kazakça (beta, Kiril): JS `sozluk/kk` (konum, anaEkran.kerahat, vakit)
     static let kk = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Қалаңызды таңдаңыз",
+        ilMerkezi: "Намаз уақыттары қала орталығына қарай есептеледі. Таңдауыңызды кейін өзгерте аласыз.",
+        ilSecErisim: "{il}, таңдау",
+        kalan: "{ad} уақытына қалды",
+        kalanErisim: "{ad} уақытына {sure} қалды",
+        konumuDegistirin: "Орынды өзгерту",
+        kerahatSuruyor: "Мәкрүһ уақыт: {tur}, аяқталуы {bitis}. {aciklama}",
+        siradakiKerahat: "Келесі мәкрүһ уақыт: {tur} {bas}–{bit}",
+        cumaBilgisi: "Бүгін жұма. Жұма намазы бесін уақытында оқылады (кіруі {giris}).",
+        suAnkiEk: ", қазіргі намаз уақыты",
+        siradakiEk: ", келесі намаз уақыты"
     )
 
     // ÇEVİRİ: ky

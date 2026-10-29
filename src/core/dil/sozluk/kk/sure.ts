@@ -1,10 +1,10 @@
-// ÇEVİRİ: kk — İngilizce iskelet; çeviri KİRİL yazılır (Latin biçim çalışma anında `kirildenLatine`, core/dil/yazi.ts), çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Kazakçada sayıdan sonra isim çoğul eki almaz ("5 минут"): one ve other aynı. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: 'сағ', dk: 'мин', sn: 'с' },
+  saat: cogul({ one: '{n} сағат', other: '{n} сағат' }),
+  dakika: cogul({ one: '{n} минут', other: '{n} минут' }),
+  saniye: cogul({ one: '{n} секунд', other: '{n} секунд' }),
 };

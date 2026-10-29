@@ -368,18 +368,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: kk
+    // kk — Kazakca (beta, Kiril): Android TV `TvDiliKk` ikizi; tarih CLDR kk uzun bicimi
     public static let kk = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "Таң", "gunes": "Күн", "ogle": "Бесін", "ikindi": "Екінті", "aksam": "Ақшам", "yatsi": "Құптан"],
+        cuma: "Жұма",
+        aylar: ["қаңтар", "ақпан", "наурыз", "сәуір", "мамыр", "маусым", "шілде", "тамыз", "қыркүйек", "қазан", "қараша", "желтоқсан"],
+        gunler: ["дүйсенбі", "сейсенбі", "сәрсенбі", "бейсенбі", "жұма", "сенбі", "жексенбі"],
+        tarih: "{yil} ж. {gun} {ay}, {gunAdi}",
+        kerahatAdlari: ["suruk": "Күн шығуы", "istiva": "Истиуа", "gurub": "Күн батуы"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Күн әбден көтерілгенше намаз оқу мәкрүһ.",
+            "istiva": "Күн дәл төбеде тұрғанда намаз оқу мәкрүһ.",
+            "gurub": "Күн батып бара жатқанда намаз оқу мәкрүһ.",
         ]
     )
 

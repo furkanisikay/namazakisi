@@ -884,31 +884,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: kk
+    // kk — Kazakça (beta, Kiril): JS `sozluk/kk` (vakit adları QMDB; "Kıldım" = «Оқыдым», "Kılındı" = «Оқылды»).
     public static let kk = VakitMetinleri(
         dil: "kk",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Таң", "ogle": "Бесін", "ikindi": "Екінті", "aksam": "Ақшам", "yatsi": "Құптан"],
+        gunes: "Күн",
+        konumYok: "Намаз уақыттарын есептеу үшін қолданбаны ашып, орналасқан жеріңізді баптаңыз.",
+        veriEski: "Намаз уақыттары ескірген. Жаңарту үшін қолданбаны бір рет ашыңыз.",
+        girisBugun: "сағат {saat}",
+        girisYarin: "ертең сағат {saat}",
+        suAnVakti: "Қазір {ad} уақыты.",
+        suAnVaktiCikis: "Қазір {ad} уақыты, шығуы сағат {saat}.",
+        siradakiNamaz: "Келесі намаз — {ad}, {giris}.",
+        isaretlendi: "{ad} намазыңыз оқылды деп белгіленді. {dua}.",
+        zatenKilindi: "{ad} намазы оқылды деп бұрын белгіленген.",
+        vakitYok: "Қазір оқылатын намаз уақыты жоқ.",
+        vakitYokSiradaki: "Қазір оқылатын намаз уақыты жоқ. Келесісі — {ad}, {giris}.",
+        onay: "{ad} намазы оқылды деп белгіленсін бе?",
+        vakitDegisti: "Намаз уақыты өзгерді, белгі қойылмады. Қайталап көріңіз.",
+        kabulDuasi: "Алла қабыл етсін",
+        kildim: "Оқыдым",
+        kilindi: "Оқылды",
+        kontrolKildim: "{ad} · Оқыдым",
+        kontrolKilindi: "{ad} оқылды",
+        kontrolVakitYok: "Белгіленетін намаз жоқ",
+        uygulamayiAcin: "Қолданбаны ашыңыз"
     )
 
     // ÇEVİRİ: ky

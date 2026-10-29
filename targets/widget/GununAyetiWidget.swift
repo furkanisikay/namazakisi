@@ -343,18 +343,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: kk
+    // kk — Kazakça (beta, Kiril): meal `gununAyetiHavuzu.ts` 94:6 birebir (kazakh_altai), künye `mealler.kk`
     static let kk = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Күннің аяты",
+        galeriAciklama: "Күн сайын таң уақытында ауысатын аят және оның аудармасы.",
+        etiket: "КҮННІҢ АЯТЫ",
+        uygulamayiAcin: "Күннің аятын көру үшін қолданбаны ашыңыз",
+        ornekSigmiyor: "Бүгінгі аят бұл өлшемге сыймайды. Оқу үшін түртіңіз.",
+        ornekAcin: "Ашу",
+        ornekArapcaKaynagi: "Арабша: Tanzil",
+        ornekMeal: "Шын мәнінде қиыншылықпен бірге бір оңайлық бар.",
+        ornekKisaKunye: "Құран 94:6",
+        ornekMealKaynagi: "Khalifa Altai, QuranEnc 1.0.0"
     )
 
     // ÇEVİRİ: ky

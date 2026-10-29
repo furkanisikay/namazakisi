@@ -581,29 +581,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: kk
+    // kk — Kazakça (beta, Kiril): JS `sozluk/kk` ("Kıldım" = «Оқыдым», "Kılındı" = «Оқылды»)
     static let kk = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Намаз уақыты",
+        galeriAciklama: "Қазіргі намаз уақыты, оның шығуына қалған уақыт және бүгінгі намаз уақыттары.",
+        veriEski: "Намаз уақыттарын жаңарту үшін қолданбаны ашыңыз",
+        konumYok: "Орналасқан жеріңізді белгілеу үшін қолданбаны ашыңыз",
+        kilindiSiradaki: "{ad} оқылды · {sonraki} {saat}",
+        adCikis: "{ad} · шығуы {saat}",
+        siradakiAdSaat: "Келесі {ad} {saat}",
+        vaktiCikisErisim: "{ad} уақыты, шығуы {saat}",
+        siradakiErisim: "Келесі {ad}, {saat}",
+        cikisSaat: "Шығуы {saat}",
+        bitisSaat: "Аяқталуы {saat}",
+        kilindiBaslik: "{ad} оқылды",
+        siradaki: "Келесі",
+        siradakiAd: "Келесі {ad}",
+        kildimErisim: "{ad} намазын оқыдым",
+        gunSatiriKilindi: ", оқылды",
+        bitti: "Аяқталды",
+        vakitCikti: "Намаз уақыты шықты",
+        kabulAlt: "{ad} оқылды",
+        kontrolAdi: "Оқыдым",
+        kontrolAciklama: "Қазіргі намазды оқылды деп белгілейді."
     )
 
     // ÇEVİRİ: ky

@@ -276,11 +276,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: kk
+    // kk — Kazakca (beta, Kiril); sayidan sonra isim cogul eki almaz
     static let kk = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} уақытына {n} минут қалды.", "other": "{ad} уақытына {n} минут қалды."],
+        evetKilindi: "Иә, оқылды деп белгіленген.",
+        hayirKilinmadi: "Жоқ, әлі белгіленбеген."
     )
 
     // ÇEVİRİ: ky

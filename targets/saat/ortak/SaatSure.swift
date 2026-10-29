@@ -206,12 +206,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} second", "other": "{n} seconds"]
     )
 
-    // ÇEVİRİ: kk
+    // kk — Kazakca (beta, Kiril); JS `sozluk/kk/sure.ts`. Sayidan sonra isim cogul eki almaz.
     public static let kk = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "сағ", birimDk: "мин", birimSn: "с",
+        saat: ["one": "{n} сағат", "other": "{n} сағат"],
+        dakika: ["one": "{n} минут", "other": "{n} минут"],
+        saniye: ["one": "{n} секунд", "other": "{n} секунд"]
     )
 
     // ÇEVİRİ: ky

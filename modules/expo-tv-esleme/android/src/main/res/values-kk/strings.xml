@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: kk — İngilizce iskelet (Kiril alfabesiyle çevrilir: docs/ajan/coklu-dil.md > Alfabe), çevrilince bu satır silinir -->
+<!-- kk -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">Теледидар экранындағы QR кодты жақтаудың ішіне сыйғызыңыз</string>
+    <string name="tvesleme_qr_vazgec">Бас тарту</string>
+    <string name="tvesleme_qr_vazgec_erisim">Сканерлеуден бас тарту</string>
+    <string name="tvesleme_qr_yabanci">Бұл QR код Namaz Akışı TV қолданбасына тиесілі емес. Теледидардағы кодты сканерлеңіз.</string>
+    <string name="tvesleme_qr_okundu">Код сканерленді</string>
 </resources>
