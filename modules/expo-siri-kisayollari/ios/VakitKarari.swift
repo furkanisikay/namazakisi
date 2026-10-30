@@ -1127,31 +1127,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: yo
+    // yo
     public static let yo = VakitMetinleri(
         dil: "yo",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Subh", "ogle": "Ṭḥuhr", "ikindi": "‘Asr", "aksam": "Mọgrib", "yatsi": "‘Iṣā’"],
+        gunes: "Yíyọ òòrùn",
+        konumYok: "Ẹ ṣí ìṣàfilọ́lẹ̀, kí ẹ sì ṣètò ibùdó yín kí a lè ṣírò àwọn àkókò ìrun.",
+        veriEski: "Àwọn àkókò ìrun ti pẹ́. Ẹ ṣí ìṣàfilọ́lẹ̀ lẹ́ẹ̀kan láti ṣe àfikún wọn.",
+        girisBugun: "ní {saat}",
+        girisYarin: "ní ọ̀la ní {saat}",
+        suAnVakti: "Àkókò {ad} ni báyìí.",
+        suAnVaktiCikis: "Àkókò {ad} ni báyìí; yóò parí ní {saat}.",
+        siradakiNamaz: "Ìrun tó kàn ni {ad} {giris}.",
+        isaretlendi: "A ti sàmì sí {ad} pé ẹ ti kí i. {dua}.",
+        zatenKilindi: "A ti sàmì sí {ad} tẹ́lẹ̀ pé ẹ ti kí i.",
+        vakitYok: "Kò sí ìrun tí a lè sàmì sí báyìí.",
+        vakitYokSiradaki: "Kò sí ìrun tí a lè sàmì sí báyìí. Èyí tó kàn ni {ad} {giris}.",
+        onay: "Ṣé kí a sàmì sí {ad} pé ẹ ti kí i?",
+        vakitDegisti: "Àkókò ìrun ti yí padà, nítorí náà a kò sàmì sí nǹkankan. Ẹ gbìyànjú lẹ́ẹ̀kan sí i.",
+        kabulDuasi: "Kí Allāhu gbà á",
+        kildim: "Mo ti kírun",
+        kilindi: "Ti kírun",
+        kontrolKildim: "{ad} · Mo ti kírun",
+        kontrolKilindi: "{ad}: ti kírun",
+        kontrolVakitYok: "Kò sí ìrun láti sàmì sí",
+        uygulamayiAcin: "Ṣí ìṣàfilọ́lẹ̀"
     )
 
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).

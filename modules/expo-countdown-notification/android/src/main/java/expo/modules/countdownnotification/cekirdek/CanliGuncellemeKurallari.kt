@@ -99,8 +99,8 @@ object CanliGuncellemeKurallari {
         "so" to ("s" to "daq"),
         // ÇEVİRİ: ff
         "ff" to ("h" to "min"),
-        // ÇEVİRİ: yo
-        "yo" to ("h" to "min"),
+        // yo
+        "yo" to ("wkt" to "ìṣj"),
     )
 
     /**

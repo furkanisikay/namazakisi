@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: yo — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Tasker / MacroDroid / Automate eklentisi (İngilizce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Yoruba). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
 <resources>
-  <string name="otomasyon_eylem_etiket">Namaz Akışı: I\'ve prayed</string>
-  <string name="otomasyon_kosul_etiket">Namaz Akışı: Prayer time status</string>
-  <string name="otomasyon_olay_etiket">Namaz Akışı: Prayer time event</string>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Mo ti kírun</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Ipò àkókò ìrun</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Ìṣẹ̀lẹ̀ àkókò ìrun</string>
 
   <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
-  <string name="otomasyon_bilgi_baslik">This setting is added from an automation app</string>
-  <string name="otomasyon_bilgi_tarayici">Browsers can\'t get permanent permission. Add it from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_bilgi_eklenti">Add it by choosing \"Namaz Akışı\" from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_engelli_baslik">%1$s is blocked</string>
-  <string name="otomasyon_engelli_mesaj">You blocked this app from marking your prayers before. You can allow it in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_baslik">Use with %1$s?</string>
-  <string name="otomasyon_izin_kosul">%1$s can learn when a prayer time begins, when it\'s ending and when you\'re at a mosque, and run your automations. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_kildim">%1$s can mark the current prayer as prayed with the automation you set up. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_ver">Allow</string>
-  <string name="otomasyon_engelle">Block</string>
-  <string name="otomasyon_vazgec">Cancel</string>
-  <string name="otomasyon_tamam">OK</string>
-  <string name="otomasyon_tur_baslik">When should it run?</string>
-  <string name="otomasyon_ileri">Next</string>
-  <string name="otomasyon_vakit_baslik">Which prayer?</string>
-  <string name="otomasyon_herhangi_vakit">Any prayer time</string>
-  <string name="otomasyon_kaydet">Save</string>
-  <string name="otomasyon_kosul_icinde">While it\'s a prayer time</string>
-  <string name="otomasyon_kosul_cikiyor">While a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_kosul_camide">While at a mosque</string>
-  <string name="otomasyon_olay_girdi">When a prayer time begins</string>
-  <string name="otomasyon_olay_cikiyor">When a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_olay_camide">When you\'re detected at a mosque</string>
+  <string name="otomasyon_bilgi_baslik">A ń fi ètò yìí kún un láti inú ìṣàfilọ́lẹ̀ ìṣe aládàáṣe</string>
+  <string name="otomasyon_bilgi_tarayici">Aṣàwákiri kò lè gba àṣẹ títí lọ. Ẹ fi kún un láti inú àkójọ plugin ìṣàfilọ́lẹ̀ bí Tasker, MacroDroid tàbí Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Ẹ fi kún un nípa yíyan “Namaz Akışı” láti inú àkójọ plugin ìṣàfilọ́lẹ̀ bí Tasker, MacroDroid tàbí Automate.</string>
+  <string name="otomasyon_engelli_baslik">A ti dí %1$s</string>
+  <string name="otomasyon_engelli_mesaj">Ẹ ti dí ìṣàfilọ́lẹ̀ yìí lọ́wọ́ láti sàmì sí àwọn ìrun yín tẹ́lẹ̀. Ẹ lè gbà á láàyè nínú Namaz Akışı lábẹ́ Ètò &gt; “Àwọn ìṣàfilọ́lẹ̀ tí ó lè sàmì sí ìrun”.</string>
+  <string name="otomasyon_izin_baslik">Ṣé kí a lò ó pẹ̀lú %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s lè mọ̀ nígbà tí àkókò ìrun bá wọlé, nígbà tí ó ń parí àti nígbà tí ẹ bá wà ní mọ́sálásí, kí ó sì ṣiṣẹ́ àwọn ìṣe aládàáṣe yín. Ẹ lè yí ìpinnu yín padà nínú Namaz Akışı lábẹ́ Ètò &gt; “Àwọn ìṣàfilọ́lẹ̀ tí ó lè sàmì sí ìrun”.</string>
+  <string name="otomasyon_izin_kildim">%1$s lè sàmì sí ìrun lọ́wọ́lọ́wọ́ pé a ti kí i pẹ̀lú ìṣe aládàáṣe tí ẹ ṣètò. Ẹ lè yí ìpinnu yín padà nínú Namaz Akışı lábẹ́ Ètò &gt; “Àwọn ìṣàfilọ́lẹ̀ tí ó lè sàmì sí ìrun”.</string>
+  <string name="otomasyon_izin_ver">Gbà láàyè</string>
+  <string name="otomasyon_engelle">Dí i</string>
+  <string name="otomasyon_vazgec">Fagilé</string>
+  <string name="otomasyon_tamam">Ó dáa</string>
+  <string name="otomasyon_tur_baslik">Ìgbà wo ni kí ó ṣiṣẹ́?</string>
+  <string name="otomasyon_ileri">Èyí tó kàn</string>
+  <string name="otomasyon_vakit_baslik">Ìrun wo?</string>
+  <string name="otomasyon_herhangi_vakit">Àkókò ìrun èyíkéyìí</string>
+  <string name="otomasyon_kaydet">Fi pamọ́</string>
+  <string name="otomasyon_kosul_icinde">Nígbà tí ó jẹ́ àkókò ìrun</string>
+  <string name="otomasyon_kosul_cikiyor">Nígbà tí àkókò ìrun ń parí (ìṣj %1$d ló kù, Olùṣọ́ Ìrun wà ní títàn)</string>
+  <string name="otomasyon_kosul_camide">Nígbà tí ẹ wà ní mọ́sálásí</string>
+  <string name="otomasyon_olay_girdi">Nígbà tí àkókò ìrun bá wọlé</string>
+  <string name="otomasyon_olay_cikiyor">Nígbà tí àkókò ìrun ń parí (ìṣj %1$d ló kù, Olùṣọ́ Ìrun wà ní títàn)</string>
+  <string name="otomasyon_olay_camide">Nígbà tí a bá rí i pé ẹ wà ní mọ́sálásí</string>
 </resources>

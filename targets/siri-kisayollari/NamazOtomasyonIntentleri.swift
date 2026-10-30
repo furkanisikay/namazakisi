@@ -339,11 +339,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: yo
+    // yo
     static let yo = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} yóò bẹ̀rẹ̀ lẹ́yìn ìṣẹ́jú {n}.", "other": "{ad} yóò bẹ̀rẹ̀ lẹ́yìn ìṣẹ́jú {n}."],
+        evetKilindi: "Bẹ́ẹ̀ ni, a ti sàmì sí i pé ẹ ti kí i.",
+        hayirKilinmadi: "Bẹ́ẹ̀ kọ́, a kò tíì sàmì sí i."
     )
 
     static let tablo: [String: OtomasyonMetinleri] = [

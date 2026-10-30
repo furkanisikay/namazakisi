@@ -1,61 +1,60 @@
-// ÇEVİRİ: yo — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Yorubada tekil emir ("Kírun", 11:114; "dúró kírun" = namaza dur, 2:238),
+ * iyelik "rẹ". Secde karşılığı YAZILMAZ. Başlıkta dakika "ìṣj": "Mọgrib · ìṣj 655" ilk 16
+ * karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · ìṣj {dk} kọjá · àkókò ìrun ti tó ⏰',
+    giris2: '{ad} · ìṣj {dk} kọjá · má fi ìrun rẹ falẹ̀ ⚠️',
+    giris3: '{ad} · ìṣj {dk} kọjá · ìrun rẹ ń dúró dè ọ́ 🔥',
+    giris4: '{ad} · ìṣj {dk} kọjá · DÚRÓ KÍRUN 🚨',
+    erken3: '{ad} · ìṣj {dk} ló kù · ìrun rẹ ń dúró dè ọ́ 🔥',
+    erken4: '{ad} · ìṣj {dk} ló kù · DÚRÓ KÍRUN 🚨',
+    cikis1: '{ad} · ìṣj {dk} ló kù ⏰',
+    cikis2: '{ad} · ìṣj {dk} · àkókò ń kúrú ⚠️',
+    cikis3: '{ad} · ìṣj {dk} · àkókò ń yọ̀ lọ 🔥',
+    cikis4: '{ad} · ìṣj {dk} · ÀKÓKÒ Ń PARÍ 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Àkókò ìrun ti tó; kírun nígbà tí àǹfààní ṣì wà.', 'Kírun nígbà tí àkókò ṣì wà fún ọ; má ṣe fi í sílẹ̀ di ẹ̀yìn.'],
+    s2: ['Bí o bá ṣe ń sún un síwájú tó, bẹ́ẹ̀ ni yóò ṣe wúwo tó; má fi ìrun rẹ sílẹ̀ di òpin.', 'Àkókò ń lọ — kírun báyìí.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Bí o bá ṣe ń fi falẹ̀ tó, bẹ́ẹ̀ ni o ṣe ń súnmọ́ pípàdánù rẹ̀ tó; kírun báyìí.',
+      'Má sọ pé “Màá kírun lẹ́yìn náà”; o lè kírun báyìí.',
+      'Dìde báyìí kí o má baà sọ pé “ìbá ṣe pé” ní ìṣẹ́jú díẹ̀ sí i.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Má fi ìrun rẹ falẹ̀ mọ́ — dúró kírun báyìí.', 'Fi ohun tí ò ń ṣe sílẹ̀, kí o sì dúró kírun.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Àkókò ti ń kúrú; kírun nígbà tí àǹfààní ṣì wà.',
+    s2: 'Má fi ìrun rẹ sílẹ̀ di òpin; àsìkò tó dára láti kírun ni báyìí.',
+    s3: 'Àkókò ti fẹ́rẹ̀ẹ́ tán; o ṣì lè kírun báyìí.',
+    s4: 'Tí o bá ti kírun, tẹ “Mo ti kírun”; tí o kò bá tíì kírun, dúró kírun báyìí.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'MÁ FI ÌRUN RẸ FALẸ̀. Dúró kírun báyìí. (ìṣj {dk} ti kọjá)',
+    giris2: 'Àkókò ń lọ; má fi ìrun rẹ sílẹ̀ di òpin. (ìṣj {dk} ti kọjá)',
+    giris1: cogul({ other: 'Ìṣẹ́jú {n} ti kọjá láti ìgbà tí àkókò ìrun ti wọlé.' }),
+    erken4: 'Má fi ìrun rẹ falẹ̀; dúró kírun báyìí. (ìṣj {dk} ló kù)',
+    cikis4: 'ÀKÓKÒ Ń PARÍ. Dúró kírun báyìí. (ìṣj {dk} ló kù)',
+    cikis2: 'Àkókò ń kúrú; má fi ìrun rẹ sílẹ̀ di òpin. (ìṣj {dk} ló kù)',
+    cikis1: cogul({ other: 'Ìṣẹ́jú {n} ló kù kí àkókò ìrun tó parí.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · kírun kí o tó sùn ⏰',
+    govde: 'Àkókò ìdákẹ́jẹ́ẹ́ yóò bẹ̀rẹ̀ lẹ́yìn ìṣẹ́jú {dk}; kí ìrun ‘Iṣā’ kí o tó lọ sùn.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Àkókò ti ń kúrú; kírun nígbà tí àǹfààní ṣì wà.',
+    sonaBirakma: 'Má fi ìrun rẹ sílẹ̀ di òpin; àsìkò tó dára láti kírun ni báyìí.',
+    fisilti: 'Má sọ pé “Màá kírun lẹ́yìn náà”; àkókò ti fẹ́rẹ̀ẹ́ tán, o lè kírun báyìí.',
+    omur: 'Àkókò ń kọjá; o ṣì ní àǹfààní láti kí ìrun yìí ní àkókò rẹ̀.',
+    keske: 'Dìde báyìí kí o má baà sọ pé “ìbá ṣe pé” ní ìṣẹ́jú díẹ̀ sí i.',
+    namazaDur: 'Tí o bá ti kírun, tẹ “Mo ti kírun”; tí o kò bá tíì kírun, dúró kírun báyìí.',
+    sonDakika: 'Ìṣẹ́jú tó kẹ́yìn. Fi ohun tí ò ń ṣe sílẹ̀, kí o sì dúró kírun.',
   },
 };

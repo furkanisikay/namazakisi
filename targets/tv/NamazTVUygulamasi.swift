@@ -529,19 +529,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: yo
+    // yo
     static let yo = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Ẹ yan ìlú yín",
+        ilMerkezi: "A ń ṣírò àwọn àkókò ìrun fún àárín ìpínlẹ̀. Ẹ lè yí àṣàyàn yín padà lẹ́yìn náà.",
+        ilSecErisim: "{il}, yàn án",
+        kalan: "Àkókò tó kù sí {ad}",
+        kalanErisim: "Àkókò tó kù sí {ad}: {sure}",
+        konumuDegistirin: "Yí ibùdó padà",
+        kerahatSuruyor: "Àkókò makrūh: {tur}, yóò parí {bitis}. {aciklama}",
+        siradakiKerahat: "Àkókò makrūh tó kàn: {tur} {bas}–{bit}",
+        cumaBilgisi: "Òní ni Ọjọ́ Ẹtì. A máa ń kí Jum‘ah ní àkókò Ṭḥuhr (yóò bẹ̀rẹ̀ {giris}).",
+        suAnkiEk: ", ìrun lọ́wọ́lọ́wọ́",
+        siradakiEk: ", ìrun tó kàn"
     )
 
     static let tablo: [String: TvArayuzMetinleri] = [
