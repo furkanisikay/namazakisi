@@ -681,29 +681,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: ha
+    // ha — Hausa (beta): JS `sozluk/ha` (Kıldım "Na yi salla", Kılındı "An yi salla")
     static let ha = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Lokacin salla",
+        galeriAciklama: "Lokacin sallar yanzu, lokacin da ya rage kafin ya fita da lokutan sallar yau.",
+        veriEski: "Buɗe manhaja don sabunta lokutan salla",
+        konumYok: "Buɗe manhaja don saita wurinku",
+        kilindiSiradaki: "An yi {ad} · {sonraki} {saat}",
+        adCikis: "{ad} · za ta fita {saat}",
+        siradakiAdSaat: "Na gaba {ad} {saat}",
+        vaktiCikisErisim: "Lokacin {ad}, zai fita {saat}",
+        siradakiErisim: "Na gaba {ad}, {saat}",
+        cikisSaat: "Za ta fita {saat}",
+        bitisSaat: "Za ta ƙare {saat}",
+        kilindiBaslik: "An yi sallar {ad}",
+        siradaki: "Na gaba",
+        siradakiAd: "Na gaba {ad}",
+        kildimErisim: "Na yi sallar {ad}",
+        gunSatiriKilindi: ", an yi",
+        bitti: "Ya ƙare",
+        vakitCikti: "Lokacin salla ya fita",
+        kabulAlt: "An yi sallar {ad}",
+        kontrolAdi: "Na yi salla",
+        kontrolAciklama: "Yana yin alamar an yi sallar yanzu."
     )
 
     // ÇEVİRİ: am

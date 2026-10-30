@@ -304,11 +304,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: ha
+    // ha — Hausa (beta): JS `sozluk/ha`; CLDR ha one/other, sayı addan sonra, ad çekilmez (one = other)
     static let ha = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} za ta yi cikin minti {n}.", "other": "{ad} za ta yi cikin minti {n}."],
+        evetKilindi: "Ee, an yi mata alama an yi ta.",
+        hayirKilinmadi: "Aʼa, ba a yi mata alama ba tukuna."
     )
 
     // ÇEVİRİ: am

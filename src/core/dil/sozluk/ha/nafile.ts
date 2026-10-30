@@ -1,40 +1,49 @@
-// ÇEVİRİ: ha — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Kuşluk "Walaha" (Hausa'da yerleşik "Sallar Walaha"), evvâbîn "Awwabin", teheccüd "Tahajjudi" (Gummi 17:79 dipnotu "tahajjudi"). */
 export const nafile: Sozluk['nafile'] = {
-  adlar: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
-  kucuk: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
+  adlar: { kusluk: 'Walaha', evvabin: 'Awwabin', teheccud: 'Tahajjudi' },
+  kucuk: { kusluk: 'Walaha', evvabin: 'Awwabin', teheccud: 'Tahajjudi' },
   aciklamalar: {
     kusluk:
-      'Starts about 45 minutes after sunrise and lasts until 10 minutes before Dhuhr. Ishraq is its earliest time; the most virtuous is after the first quarter of the day has passed.',
-    evvabin: 'Prayed after Maghrib, until Isha time.',
-    teheccud: 'Prayed after sleeping and waking following Isha, until Fajr time. Its most virtuous time is the last third of the night.',
+      'Tana farawa kusan minti 45 bayan fitowar rana kuma tana ci gaba har zuwa minti 10 kafin Azahar. Ishraƙ shi ne lokacinta na farko; mafi falala shi ne bayan kashi ɗaya cikin huɗu na yini ya wuce.',
+    evvabin: 'Ana yin ta bayan Magariba, har zuwa lokacin Isha.',
+    teheccud: 'Ana yin ta bayan an yi barci an farka bayan Isha, har zuwa lokacin Asuba. Lokacinta mafi falala shi ne kashi na uku na ƙarshe na dare.',
   },
-  bilgiBugun: '{aciklama}\n\nToday: {bas} – {son}',
-  enFaziletli: ' · most virtuous after {saat}',
-  sonUcteBir: ' · last third {saat}',
-  durumAktif: 'Time has begun · ends {saat}',
-  durumNafile: 'Nafl · {bas}–{son}',
+  bilgiBugun: '{aciklama}\n\nYau: {bas} – {son}',
+  enFaziletli: ' · mafi falala bayan {saat}',
+  sonUcteBir: ' · kashi na uku na ƙarshe {saat}',
+  durumAktif: 'Lokaci ya yi · zai ƙare {saat}',
+  durumNafile: 'Nafila · {bas}–{son}',
   bildirim: {
-    kuslukBaslik: 'Duha time',
-    kuslukSuruyor: 'Duha time is on; you can pray until {son}.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats; it lasts until {son}.',
+    kuslukBaslik: 'Lokacin Walaha',
+    kuslukSuruyor: 'Lokacin Walaha yana nan; kana iya yin salla har zuwa {son}.',
+    kuslukGirdi: 'Lokacin Walaha ya yi. Lokaci mai kyau don rakaʼa biyu; zai kai har {son}.',
     kuslukBitiyor: cogul({
-      one: '{n} minute left in Duha time. A good moment for two rakats; it lasts until {son}.',
-      other: '{n} minutes left in Duha time. A good moment for two rakats; it lasts until {son}.',
+      one: 'Minti {n} ya rage a lokacin Walaha. Lokaci mai kyau don rakaʼa biyu; zai kai har {son}.',
+      other: 'Minti {n} sun rage a lokacin Walaha. Lokaci mai kyau don rakaʼa biyu; zai kai har {son}.',
     }),
     evvabinBaslik: 'Awwabin',
-    evvabinSuruyor: 'There is still time for Awwabin. Isha begins at {son}.',
-    evvabinGirdi: 'After Maghrib, a good moment for Awwabin. Isha begins at {son}.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin. Isha begins at {son}.', other: '{n} minutes left for Awwabin. Isha begins at {son}.' }),
-    teheccudBaslik: 'Tahajjud time',
-    uyandirSonUcte: 'Get up; the last third of the night has begun. Fajr begins at {son}.',
-    uyandirKalan: cogul({ one: 'Get up; {n} minute left until Fajr. Fajr begins at {son}.', other: 'Get up; {n} minutes left until Fajr. Fajr begins at {son}.' }),
-    sonUcteBaslik: 'The last third of the night',
-    sonUcteGovde: 'The most blessed hours for Tahajjud. Fajr begins at {son}.',
-    teheccudKalan: cogul({ one: '{n} minute left until Fajr. A good time for Tahajjud.', other: '{n} minutes left until Fajr. A good time for Tahajjud.' }),
+    evvabinSuruyor: 'Akwai sauran lokaci don Awwabin. Isha za ta yi da ƙarfe {son}.',
+    evvabinGirdi: 'Bayan Magariba, lokaci mai kyau don Awwabin. Isha za ta yi da ƙarfe {son}.',
+    evvabinKalan: cogul({
+      one: 'Minti {n} ya rage don Awwabin. Isha za ta yi da ƙarfe {son}.',
+      other: 'Minti {n} sun rage don Awwabin. Isha za ta yi da ƙarfe {son}.',
+    }),
+    teheccudBaslik: 'Lokacin Tahajjudi',
+    uyandirSonUcte: 'Ka tashi; kashi na uku na ƙarshe na dare ya fara. Asuba za ta yi da ƙarfe {son}.',
+    uyandirKalan: cogul({
+      one: 'Ka tashi; minti {n} ya rage zuwa Asuba. Asuba za ta yi da ƙarfe {son}.',
+      other: 'Ka tashi; minti {n} sun rage zuwa Asuba. Asuba za ta yi da ƙarfe {son}.',
+    }),
+    sonUcteBaslik: 'Kashi na uku na ƙarshe na dare',
+    sonUcteGovde: 'Awowi mafi albarka don Tahajjudi. Asuba za ta yi da ƙarfe {son}.',
+    teheccudKalan: cogul({
+      one: 'Minti {n} ya rage zuwa Asuba. Lokaci mai kyau don Tahajjudi.',
+      other: 'Minti {n} sun rage zuwa Asuba. Lokaci mai kyau don Tahajjudi.',
+    }),
   },
-  uyandirmaKanali: 'Tahajjud wake-up',
-  uyandirmaKanaliAciklama: 'Wakes you for the night prayer; rings even in silent mode',
+  uyandirmaKanali: 'Tashin Tahajjudi',
+  uyandirmaKanaliAciklama: 'Yana tashe ku don sallar dare; yana ƙara ko da a yanayin shiru',
 };

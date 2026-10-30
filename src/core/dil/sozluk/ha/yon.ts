@@ -1,10 +1,9 @@
-// ÇEVİRİ: ha — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Hanyar rubutu za ta canja',
+  aciklama: 'Harshen da kuka zaɓa ana rubuta shi ta wata hanya daban. Dole ne manhajar ta sake farawa kafin shafuka su koma gare ta.',
+  simdiBaslat: 'Sake farawa yanzu',
+  sonra: 'Daga baya',
+  bekliyor: 'Hanyar rubutu za ta canja idan manhajar ta sake farawa.',
 };

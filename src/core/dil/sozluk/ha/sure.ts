@@ -1,10 +1,10 @@
-// ÇEVİRİ: ha — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Hausa'da sayı addan sonra gelir ("minti 5"); ad sayıyla çekilmez. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: 'awa', dk: 'min', sn: 'daƙ' },
+  saat: cogul({ one: 'awa {n}', other: 'awa {n}' }),
+  dakika: cogul({ one: 'minti {n}', other: 'minti {n}' }),
+  saniye: cogul({ one: 'daƙiƙa {n}', other: 'daƙiƙa {n}' }),
 };

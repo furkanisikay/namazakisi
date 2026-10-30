@@ -1,61 +1,59 @@
-// ÇEVİRİ: ha — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı: tekil "Ka …" emri (QuranEnc `hausa_gummi` 17:78 "Ka tsayar da salla"); övgü ve
+ * suçlama yok, "secde" yok. Başlıkta süre birimi "m": "Magariba · 655m" ilk 16 karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk}m da shiga · lokacin salla ne ⏰',
+    giris2: '{ad} · {dk}m da shiga · kada ka jinkirta salla ⚠️',
+    giris3: '{ad} · {dk}m da shiga · sallarka na jiranka 🔥',
+    giris4: '{ad} · {dk}m da shiga · KA TSAYAR DA SALLA 🚨',
+    erken3: '{ad} · {dk}m ya rage · sallarka na jiranka 🔥',
+    erken4: '{ad} · {dk}m ya rage · KA TSAYAR DA SALLA 🚨',
+    cikis1: '{ad} · {dk}m ya rage ⏰',
+    cikis2: '{ad} · {dk}m · lokaci yana ƙurewa ⚠️',
+    cikis3: '{ad} · {dk}m · lokaci yana kuɓucewa 🔥',
+    cikis4: '{ad} · {dk}m · LOKACI YANA ƘAREWA 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Lokacin salla ne; ka yi salla tun kana da dama.', 'Ka yi salla tun lokaci yana tare da kai; kada ka bar ta sai anjima.'],
+    s2: ['Yawan jinkirtawa yana ƙara mata nauyi; kada ka bar sallarka zuwa ƙarshe.', 'Lokaci yana tafiya — ka yi salla yanzu.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Yawan jinkirtawa yana kusantar da kai ga rasa ta; ka yi salla yanzu.',
+      'Kada ka ce "zan yi daga baya"; kana iya yin salla yanzu.',
+      'Ka tashi yanzu maimakon ka ce "da ma" bayan ʼyan mintuna.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Kada ka ƙara jinkirta sallarka — ka tsayar da salla yanzu.', 'Ka ajiye abin da kake yi ka tsayar da salla.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Lokaci ya fara ƙurewa; ka yi salla tun kana da dama.',
+    s2: 'Kada ka bar sallarka zuwa ƙarshe; yanzu lokaci ne mai kyau na yin salla.',
+    s3: 'Lokaci ya kusa ƙarewa; har yanzu kana iya yin salla.',
+    s4: 'Idan ka yi salla, taɓa "Na yi salla"; idan ba ka yi ba, ka tsayar da salla yanzu.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'KADA KA JINKIRTA SALLARKA. Ka tsayar da salla yanzu. (minti {dk} sun wuce)',
+    giris2: 'Lokaci yana tafiya; kada ka bar sallarka zuwa ƙarshe. (minti {dk} sun wuce)',
+    giris1: cogul({ one: 'Minti {n} ya wuce tun lokacin salla ya yi.', other: 'Minti {n} sun wuce tun lokacin salla ya yi.' }),
+    erken4: 'Kada ka jinkirta sallarka; ka tsayar da salla yanzu. (minti {dk} sun rage)',
+    cikis4: 'LOKACI YANA ƘAREWA. Ka tsayar da salla yanzu. (minti {dk} sun rage)',
+    cikis2: 'Lokaci yana ƙurewa; kada ka bar sallarka zuwa ƙarshe. (minti {dk} sun rage)',
+    cikis1: cogul({ one: 'Minti {n} ya rage kafin lokacin salla ya ƙare.', other: 'Minti {n} sun rage kafin lokacin salla ya ƙare.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · ka yi salla kafin ka yi barci ⏰',
+    govde: 'Lokacin shiru zai fara cikin minti {dk}; ka yi sallar Isha kafin ka kwanta.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Lokaci ya fara ƙurewa; ka yi salla tun kana da dama.',
+    sonaBirakma: 'Kada ka bar sallarka zuwa ƙarshe; yanzu lokaci ne mai kyau na yin salla.',
+    fisilti: 'Kada ka ce "zan yi daga baya"; lokaci ya kusa ƙarewa, kana iya yin salla yanzu.',
+    omur: 'Lokaci yana wucewa; har yanzu kana da damar yin wannan salla a lokacinta.',
+    keske: 'Ka tashi yanzu maimakon ka ce "da ma" bayan ʼyan mintuna.',
+    namazaDur: 'Idan ka yi salla, taɓa "Na yi salla"; idan ba ka yi ba, ka tsayar da salla yanzu.',
+    sonDakika: 'Mintunan ƙarshe. Ka ajiye abin da kake yi ka tsayar da salla.',
   },
 };

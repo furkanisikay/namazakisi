@@ -1,15 +1,14 @@
-// ÇEVİRİ: ha — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Alƙurʼani {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Salla ta fi barci alheri. Ka zo zuwa ga rabauta.',
+    araVer: 'Ka ɗan huta daga aikin duniya ka tsaya a gaban Ubangijinka.',
+    yorgunluk: 'Laʼasar na jiranka, don ka kawar da gajiyar yini ka sami nutsuwa.',
+    sukur: 'Magariba godiyar yini ce. Ka gaggauta tsayawa a gaban Ubangijinka.',
+    aksamKisa: 'Lokacin Magariba gajere ne; ya yi, ka yi salla ba tare da jinkiri ba.',
+    geceKaranligi: 'A cikin duhun dare, ka kaɗaita da Ubangijinka. Isha magani ce ga zuciya.',
+    davet: 'An gayyace ka zuwa Isha, don ka rufe yini kana neman yardar Allah.',
   },
 };

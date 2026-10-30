@@ -2610,95 +2610,96 @@ object SaatDiliSw : SaatDili {
     override val tesbihatKaynagi = "Muslim, Masajid 146"
 }
 
-// ÇEVİRİ: ha
+// ha
+// CLDR ha: one/other (0 çoğul). Hausa'da sayı addan sonra gelir, ad çekilmez ("minti 5").
 object SaatDiliHa : SaatDili {
     override val kod = "ha"
 
     private val ADLAR = mapOf(
-        "imsak" to "Fajr", "gunes" to "Sunrise", "ogle" to "Dhuhr",
-        "ikindi" to "Asr", "aksam" to "Maghrib", "yatsi" to "Isha",
+        "imsak" to "Asuba", "gunes" to "Fitowar Rana", "ogle" to "Azahar",
+        "ikindi" to "Laʼasar", "aksam" to "Magariba", "yatsi" to "Isha",
     )
 
     override fun vakitAdi(vakit: String) = ADLAR[vakit] ?: vakit
 
-    override val birimSa = "h"
+    override val birimSa = "awa"
     override val birimDk = "min"
-    override val birimSn = "s"
+    override val birimSn = "daƙ"
     override val birDakikadanAzKisa = "<1 min"
-    override fun saatSesli(n: Long) = if (n == 1L) "1 hour" else "$n hours"
-    override fun dakikaSesli(n: Long) = if (n == 1L) "1 minute" else "$n minutes"
-    override val birDakikadanAzSesli = "less than 1 minute"
+    override fun saatSesli(n: Long) = "awa $n"
+    override fun dakikaSesli(n: Long) = "minti $n"
+    override val birDakikadanAzSesli = "ƙasa da minti 1"
 
-    override fun cikisaUzun(ad: String) = "$ad ends in"
-    override fun cikisaAciklama(ad: String) = "Time left until $ad ends"
+    override fun cikisaUzun(ad: String) = "$ad za ta fita cikin"
+    override fun cikisaAciklama(ad: String) = "Lokacin da ya rage kafin $ad ta fita"
     override fun giriseKisa(vakit: String) = vakitAdi(vakit)
-    override fun giriseUzun(vakit: String) = "${vakitAdi(vakit)} in"
-    override fun giriseAciklama(ad: String) = "Time left until $ad"
+    override fun giriseUzun(vakit: String) = "Zuwa ${vakitAdi(vakit)}"
+    override fun giriseAciklama(ad: String) = "Lokacin da ya rage zuwa $ad"
 
-    override val cikisBasligi = "Ends"
-    override val girisBasligi = "Begins"
-    override fun cikisUzun(ad: String, saat: String) = "$ad ends $saat"
-    override fun cikisAciklama(ad: String, saat: String) = "$ad ends at $saat"
-    override fun girisUzun(ad: String, saat: String) = "$ad begins $saat"
-    override fun girisAciklama(ad: String, saat: String) = "$ad begins at $saat"
-    override fun siradakiUzun(ad: String, saat: String) = "Next: $ad $saat"
-    override fun siradakiAciklama(ad: String, saat: String) = "Next prayer $ad, begins at $saat"
+    override val cikisBasligi = "Fita"
+    override val girisBasligi = "Farawa"
+    override fun cikisUzun(ad: String, saat: String) = "$ad za ta fita $saat"
+    override fun cikisAciklama(ad: String, saat: String) = "$ad za ta fita da ƙarfe $saat"
+    override fun girisUzun(ad: String, saat: String) = "$ad za ta yi $saat"
+    override fun girisAciklama(ad: String, saat: String) = "$ad za ta yi da ƙarfe $saat"
+    override fun siradakiUzun(ad: String, saat: String) = "Na gaba: $ad $saat"
+    override fun siradakiAciklama(ad: String, saat: String) = "Salla ta gaba $ad, za ta yi da ƙarfe $saat"
 
     override fun altYazi(mod: KalanSure.Mod) =
-        if (mod == KalanSure.Mod.CIKIS) "until it ends" else "until it begins"
+        if (mod == KalanSure.Mod.CIKIS) "kafin ta fita" else "kafin ta yi"
 
     override fun sayacAciklamasi(ad: String, mod: KalanSure.Mod, sure: String): String {
-        val fiil = if (mod == KalanSure.Mod.CIKIS) "ends" else "begins"
-        return "$ad $fiil in $sure"
+        val fiil = if (mod == KalanSure.Mod.CIKIS) "za ta fita" else "za ta yi"
+        return "$ad $fiil cikin $sure"
     }
 
-    override val kilindiEki = ", prayed"
-    override fun sonDakikaEki(dk: Int) = ", last $dk minutes"
-    override fun bugunEki(kilinan: Int, toplam: Int) = ". Today $kilinan/$toplam prayed"
-    override fun acilAdSatiri(ad: String, dk: Int) = "$ad · last $dk min"
-    override fun dugmeAciklamasi(ad: String) = "Mark $ad as prayed"
-    override fun onaySorusuSatirlari(ad: String) = "Have you prayed" to "$ad?"
-    override val vakitDegisti = "The prayer time changed; not marked."
-    override val kabulDuasi = "May Allah accept it"
+    override val kilindiEki = ", an yi"
+    override fun sonDakikaEki(dk: Int) = ", minti $dk na ƙarshe"
+    override fun bugunEki(kilinan: Int, toplam: Int) = ". Yau an yi $kilinan/$toplam"
+    override fun acilAdSatiri(ad: String, dk: Int) = "$ad · minti $dk na ƙarshe"
+    override fun dugmeAciklamasi(ad: String) = "Yi alama an yi sallar $ad"
+    override fun onaySorusuSatirlari(ad: String) = "Kun yi sallar" to "$ad?"
+    override val vakitDegisti = "Lokacin salla ya canja; ba a yi alama ba."
+    override val kabulDuasi = "Allah ya karɓa"
 
-    override val kibleHizali = "You are facing the Qibla"
-    override val kibleArkada = "The Qibla is behind you"
-    override fun kibleTarafta(adim: Int, sag: Boolean) = "The Qibla is $adim° to your ${if (sag) "right" else "left"}"
-    override val donusArkada = "Behind you"
-    override fun donus(adim: Int, sag: Boolean) = "${if (sag) "Right" else "Left"} $adim°"
+    override val kibleHizali = "Kuna fuskantar Alƙibla"
+    override val kibleArkada = "Alƙibla tana bayanku"
+    override fun kibleTarafta(adim: Int, sag: Boolean) = "Alƙibla tana ${if (sag) "dama" else "hagu"} da ku da $adim°"
+    override val donusArkada = "A bayanku"
+    override fun donus(adim: Int, sag: Boolean) = "${if (sag) "Dama" else "Hagu"} $adim°"
 
-    override fun namazModuAcikBitis(saat: String) = "Prayer mode on · ends $saat"
-    override val namazModuAcik = "Prayer mode on"
-    override val namazModuKapandi = "Prayer mode turned off"
-    override val namazModuTelefondaAcin = "Turn on Prayer mode once on your phone"
-    override val telefonaUlasilamadi = "Your phone can't be reached"
-    override val namazModuAcilamadi = "Prayer mode couldn't be turned on. Try from your phone"
-    override val camiKaydedildi = "Saved that you're at the mosque"
-    override val camiBirDahaSorulmaz = "You won't be asked again for this prayer time"
-    override val camiSayilmaz = "This place won't count as a mosque again"
-    override val soruGecersiz = "This question is no longer valid"
-    override val islemYapilamadi = "Couldn't complete this. Try from your phone"
+    override fun namazModuAcikBitis(saat: String) = "Yanayin salla a kunne · zai ƙare $saat"
+    override val namazModuAcik = "Yanayin salla a kunne"
+    override val namazModuKapandi = "An kashe Yanayin salla"
+    override val namazModuTelefondaAcin = "Ku kunna Yanayin salla sau ɗaya a wayarku"
+    override val telefonaUlasilamadi = "Ba a iya kaiwa ga wayarku ba"
+    override val namazModuAcilamadi = "Ba a iya kunna Yanayin salla ba. Ku gwada daga wayarku"
+    override val camiKaydedildi = "An ajiye cewa kuna masallaci"
+    override val camiBirDahaSorulmaz = "Ba za a sake tambayar ku ba a wannan lokacin salla"
+    override val camiSayilmaz = "Ba za a sake ƙidaya wannan wuri a matsayin masallaci ba"
+    override val soruGecersiz = "Wannan tambaya ba ta aiki kuma"
+    override val islemYapilamadi = "Ba a iya kammala wannan ba. Ku gwada daga wayarku"
 
-    override val hoparlorYokBilgi = "Your watch has no speaker; spoken announcements only vibrate."
-    override val motorYokBilgi = "No text-to-speech engine was found on your watch; spoken announcements only vibrate."
-    override val sesYokBilgi = "Your watch has no Turkish voice; spoken announcements only vibrate."
+    override val hoparlorYokBilgi = "Agogonku ba shi da lasifika; sanarwa da murya tana girgiza kawai."
+    override val motorYokBilgi = "Ba a sami injin karatu da murya a agogonku ba; sanarwa da murya tana girgiza kawai."
+    override val sesYokBilgi = "Agogonku ba shi da muryar Hausa; sanarwa da murya tana girgiza kawai."
     override val otomatikYerAciklamasi =
-        "When your phone is with you, your phone reads aloud; your watch only speaks when your phone is away. Only reminders with read aloud turned on are read."
-    override val saatYerAciklamasi = "Your watch reads aloud. Only reminders with read aloud turned on are read."
-    override val hoparlorYok = "Your watch has no speaker"
-    override val sesCalisti = "The sound worked"
-    override val motorYok = "No text-to-speech engine"
-    override val sesYok = "No Turkish voice"
-    override val sesCalinamadi = "The sound couldn't play"
+        "Idan wayarku tana tare da ku, wayar ce ke karantawa da murya; agogonku yana magana ne kawai idan wayarku ba ta kusa. Tunatarwar da aka kunna karatu da murya kaɗai ake karantawa."
+    override val saatYerAciklamasi = "Agogonku yana karantawa da murya. Tunatarwar da aka kunna karatu da murya kaɗai ake karantawa."
+    override val hoparlorYok = "Agogonku ba shi da lasifika"
+    override val sesCalisti = "Sautin ya yi aiki"
+    override val motorYok = "Babu injin karatu da murya"
+    override val sesYok = "Babu muryar Hausa"
+    override val sesCalinamadi = "Sautin bai kunna ba"
 
-    override fun vaktiCikiyor(ad: String) = "$ad is ending"
-    override val tesbihatTamamlandi = "Tasbih completed"
-    override val toplam = "Total"
-    override val zikirSubhanallah = "Subhanallah"
-    override val zikirElhamdulillah = "Alhamdulillah"
-    override val zikirAllahuEkber = "Allahu akbar"
-    override val zikirTehlil = "La ilaha illallah"
-    override val tehlilMetni = "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa huwa ala kulli shay'in qadir"
+    override fun vaktiCikiyor(ad: String) = "$ad tana ƙarewa"
+    override val tesbihatTamamlandi = "An kammala tasbihi"
+    override val toplam = "Jimilla"
+    override val zikirSubhanallah = "Subhanallahi"
+    override val zikirElhamdulillah = "Alhamdulillahi"
+    override val zikirAllahuEkber = "Allahu Akbar"
+    override val zikirTehlil = "La ilaha illallahu"
+    override val tehlilMetni = "La ilaha illallahu wahdahu la sharika lahu, lahul-mulku wa lahul-hamdu wa huwa ala kulli shayʼin qadir"
     override val tesbihatKaynagi = "Muslim, Masajid 146"
 }
 

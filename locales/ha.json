@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "Ana amfani da wurinku don lissafa lokutan salla daidai da inda kuke. Wurinku yana zama a naʼurarku.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Ana amfani da wurinku don lissafa lokutan salla daidai da inda kuke kuma, idan A masallaci yana kunne, don kunna Yanayin salla idan kuka shiga masallaci. Wurinku yana zama a naʼurarku.",
+  "NSLocationAlwaysUsageDescription": "Ana amfani da wurinku don sabunta lokutan salla kai tsaye idan kuka canja birni kuma, idan A masallaci yana kunne, don kunna Yanayin salla idan kuka shiga masallaci. Wurinku yana zama a naʼurarku.",
+  "NSCameraUsageDescription": "Ana amfani da kyamararku don nuna hanyar Alƙibla a kan kallon kyamara da kuma karanta lambar haɗawa da ke kan talabijin ɗinku. Ba a ajiye hotuna kuma ba sa barin naʼurarku.",
+  "NSCalendarsUsageDescription": "Ana amfani da damar kalanda don ƙara lokutan salla a kalandarku kuma, idan kuka kunna shi, don duba ko taruka a kalandarku sun ci karo da lokacin salla. Bayanan kalandarku suna zama a naʼurarku.",
+  "NSCalendarsFullAccessUsageDescription": "Ana amfani da damar kalanda don ƙara lokutan salla a kalandarku kuma, idan kuka kunna shi, don duba ko taruka a kalandarku sun ci karo da lokacin salla. Bayanan kalandarku suna zama a naʼurarku.",
+  "NSLocalNetworkUsageDescription": "Manhajar tana haɗawa da talabijin a hanyar sadarwar gidanku don aika mata lokutan sallarku da sallolin da kuka yi wa alama. An ɓoye bayanan kuma suna tafiya ne tsakanin naʼurori biyun kaɗai.",
+  "NSAlarmKitUsageDescription": "Matakan tunatarwa da kuka zaɓi “Ainihin ƙararrawa” ana saita su a matsayin ƙararrawa, don ku ji su ko da wayarku tana kan shiru ko Focus a kunne.",
+  "\"Vakti kıldım\"": "Na yi salla",
+  "\"Kıble\"": "Alƙibla"
 }

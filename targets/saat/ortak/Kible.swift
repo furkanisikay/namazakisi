@@ -494,17 +494,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: ha
+    // ha — Hausa (beta): JS `sozluk/ha/kible.ts`
     public static let ha = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "A bayanku",
+        saga: "Dama {derece}°",
+        sola: "Hagu {derece}°",
+        hizali: "Kuna fuskantar Alƙibla",
+        arkadaErisim: "Alƙibla tana bayanku",
+        sagdaErisim: "Alƙibla tana dama da ku da digiri {derece}",
+        soldaErisim: "Alƙibla tana hagu da ku da digiri {derece}",
+        kabede: "Kuna a Kaʼaba",
+        mesafe: "km {km}",
         binlikAyirici: ","
     )
 

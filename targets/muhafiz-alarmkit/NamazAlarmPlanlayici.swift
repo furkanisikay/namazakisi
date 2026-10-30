@@ -146,8 +146,8 @@ enum NamazAlarmCekirdegi {
         "tg": "Қатъ кардан",
         // ÇEVİRİ: sw
         "sw": "Stop",
-        // ÇEVİRİ: ha
-        "ha": "Stop",
+        // ha
+        "ha": "Tsayar",
         // ÇEVİRİ: am
         "am": "Stop",
         // ÇEVİRİ: om

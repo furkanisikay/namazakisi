@@ -399,18 +399,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: ha
+    // ha — meal 94:6 `gununAyetiHavuzu.ts` (hausa_gummi, birebir), künye `GUNUN_AYETI_KAYNAKLARI.mealler.ha`
     static let ha = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Ayar yau",
+        galeriAciklama: "Aya da fassararta da ke canjawa kowace rana a Asuba.",
+        etiket: "AYAR YAU",
+        uygulamayiAcin: "Buɗe manhaja don ganin ayar yau",
+        ornekSigmiyor: "Ayar yau ba ta dace da wannan girma ba. Ku taɓa don karanta ta.",
+        ornekAcin: "Buɗe",
+        ornekArapcaKaynagi: "Larabci: Tanzil",
+        ornekMeal: "Lalle ne tãre da tsananin nan akwai wani sauƙi.",
+        ornekKisaKunye: "Alƙurʼani 94:6",
+        ornekMealKaynagi: "Abu Bakr Jumi, QuranEnc 1.2.2"
     )
 
     // ÇEVİRİ: am
