@@ -5,7 +5,7 @@
  * (widget, bildirim kanalı, saat) üretilmeden dil açılırsa ekranlar yarım çevrili görünür.
  * Gözden geçirilmemiş çeviri `beta: true` taşır (seçicide rozet).
  */
-export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg';
+export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo';
 
 export interface DilTanimi {
   kod: DilKodu;
@@ -44,6 +44,14 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'kk', yerelAd: 'Қазақша', yon: 'ltr', ttsDili: 'kk-KZ', beta: true, secilebilir: true },
   { kod: 'ky', yerelAd: 'Кыргызча', yon: 'ltr', ttsDili: 'ky-KG', beta: true, secilebilir: true },
   { kod: 'tg', yerelAd: 'Тоҷикӣ', yon: 'ltr', ttsDili: 'tg-TJ', beta: true, secilebilir: true },
+  // Afrika (dalga 8). Fula = Pular (Gine, Fuuta Jallon; QuranEnc `fulani_rwwad` "Firo e Pular-Fulfulde"), Latin; Adlam yok.
+  { kod: 'sw', yerelAd: 'Kiswahili', yon: 'ltr', ttsDili: 'sw-TZ', beta: true, secilebilir: true },
+  { kod: 'ha', yerelAd: 'Hausa', yon: 'ltr', ttsDili: 'ha-NG', beta: true, secilebilir: true },
+  { kod: 'am', yerelAd: 'አማርኛ', yon: 'ltr', ttsDili: 'am-ET', beta: true, secilebilir: true },
+  { kod: 'om', yerelAd: 'Afaan Oromoo', yon: 'ltr', ttsDili: 'om-ET', beta: true, secilebilir: true },
+  { kod: 'so', yerelAd: 'Soomaali', yon: 'ltr', ttsDili: 'so-SO', beta: true, secilebilir: true },
+  { kod: 'ff', yerelAd: 'Pular', yon: 'ltr', ttsDili: 'ff-GN', beta: true, secilebilir: true },
+  { kod: 'yo', yerelAd: 'Èdè Yorùbá', yon: 'ltr', ttsDili: 'yo-NG', beta: true, secilebilir: true },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';

@@ -288,5 +288,88 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
       "29:45": "[Эй Паёмбар] Он чиро аз ин китоб бар ту ваҳй шудааст, тиловат кун ва намоз барпо дор. Ба ростӣ, ки намоз инсонро аз гуноҳ ва зишткорӣ бозмедорад ва, албатта, ёди Аллоҳ таоло [аз ҳар коре] болотар аст ва Аллоҳ таоло медонад, ки чи мекунед",
       "62:9": "Эй касоне, ки имон овардаед, ҳангоме ки дар рӯзи ҷумъа барои намоз азон гуфта шавад, ба сӯйи [намозу] зикри Аллоҳ таоло бишитобед ва хариду фурӯшро раҳо кунед. Агар бидонед, ин барои шумо беҳтар аст"
     }
+  },
+  "sw": {
+    "anahtar": "swahili_rwwad",
+    "surum": "1.0.5",
+    "baslik": "Swahili Translation - Rowad Translation Center",
+    "ayetler": {
+      "2:153": "Enyi mlioamini! Takeni msaada kwa subira na Swala. Hakika, Mwenyezi Mungu yu pamoja na wanaosubiri.",
+      "2:238": "Zilindeni Swala, na hasa Swala ya katikati. Na simameni kwa ajili ya Mwenyezi Mungu kwa unyenyekevu.",
+      "4:103": "Na mkishamaliza Swala, basi mtajeni Mwenyezi Mungu hali ya kuwa mmesimama, na mkikaa, na kwa mbavu zenu. Na mtakapotulia, basi simamisheni Swala. Kwani, hakika Swala juu ya Waumini ni andiko lililowekewa nyakati maalumu.",
+      "11:114": "Na dumisha Swala katika ncha mbili za mchana na nyakati za usiku zilizo karibu na mchana. Hakika mazuri huondoa mabaya. Huu ni ukumbusho kwa wanaokumbuka.",
+      "29:45": "Soma yale uliyofunuliwa katika Kitabu, na ushike Swala. Hakika Swala inazuilia mambo machafu na maovu. Na kwa yakini kumdhukuru Mwenyezi Mungu ndilo jambo kubwa kabisa. Na Mwenyezi Mungu anayajua mnayoyatenda.",
+      "62:9": "Enyi mlioamini! Ikiadhiniwa kwa ajili ya Sala siku ya Ijumaa, nendeni upesi kwenye utajo wa Mwenyezi Mungu, na wacheni biashara. Hayo ni bora kwenu, lau kama mnajua."
+    }
+  },
+  "ha": {
+    "anahtar": "hausa_gummi",
+    "surum": "1.2.2",
+    "baslik": "Hausa Translation - Abu Bakr Jumi",
+    "ayetler": {
+      "4:103": "Sa'an nan idan kun ƙãre salla, to ku ambaci Allah tsaye da zaune da a kan sãsanninku. Sa'an nan idan kun natsu, to, ku tsayar da Salla. Lalle ne salla tã kasance a kan mũminai, farilla mai ƙayyadaddun lõkuta.",
+      "29:45": "Ka karanta abin da ake yin wahayi zuwa gare ka daga Littãfi, kuma ka tsayar da salla. Lalle salla tanã hanãwa daga alfãsha da abni ƙyãma, kuma lalle ambaton Allah yafi girma, kuma Allah Yanã sane da abin da kuke aikatãwa."
+    }
+  },
+  "am": {
+    "anahtar": "amharic_sadiq",
+    "surum": "1.1.2",
+    "baslik": "Amharic Translation - Muhammad Sadiq",
+    "ayetler": {
+      "2:153": "እናንተ ያመናችሁ ሆይ! በመታገስና በሶላት ተረዱ፡፡ አላህ (በእርዳታው) ከታጋሾች ጋር ነውና፡፡",
+      "2:238": "በሶላቶች (በተለይ) በመካከለኛይቱም ሶላት ላይ ተጠባበቁ፡፡ ታዛዦች ኾናችሁም ለአላህ ቁሙ፡፡",
+      "4:103": "ሶላትንም በፈጸማችሁ ጊዜ ቆማችሁም ተቀምጣችሁም በጎኖቻችሁም ላይ ተጋድማችሁ አላህን አውሱ፡፡ በረጋችሁም ጊዜ ሶላትን (አሟልታችሁ) ስገዱ፡፡ ሶላት በምእምናን ላይ በጊዜያት የተወሰነች ግዴታ ናትና፡፡",
+      "11:114": "ሶላትንም በቀን ጫፎች ከሌሊትም ክፍሎች ፈጽም፡፡ መልካም ሥራዎች ኀጢአቶችን ያስወገድዳሉና፡፡ ይህ ለተገሳጮች ግሳጼ ነው፡፡",
+      "29:45": "ከመጽሐፍ ወደ አንተ የተወረደውን አንብብ፡፡ ሶላትንም ደንቡን ጠብቀህ ስገድ፡፡ ሶላት ከመጥፎና ከሚጠላ ነገር ሁሉ ትከለክላለችና፡፡ አላህንም ማውሳት ከሁሉ ነገር በላጭ ነው፤ አላህም የምትሠሩትን ሁሉ ያውቃል፡፡",
+      "62:9": "እናንተ ያመናችሁ ሆይ! በዐርብ ቀን ለስግደት ጥሪ በተደረገ ጊዜ ወደ አላህ ማውሳት ኺዱ፡፡ መሸጥንም ተዉ፡፡ ይህ የምታውቁ ብትኾኑ ለእናንተ በጣም የተሻለ ነወ፡፡"
+    }
+  },
+  "om": {
+    "anahtar": "oromo_ababor",
+    "surum": "1.0.3",
+    "baslik": "Oromo Translation - Gali Ababor",
+    "ayetler": {
+      "2:153": "Yaa warra amantan! Obsaafi salaataan gargaarsa barbaadaa. Dhugumatti, Rabbiin warra obsan waliin jira.",
+      "2:238": "Salaatowwan irratti,tikfadhaa keessattuu salaatattii giddu galeessaa irratti. Haala Rabbiif ajajamoo taataniin dhaabbadhaa.",
+      "4:103": "Yeroo salaata raawwattan, dhaabbataa, taa'aafi cinaachoowwan keessan irra haala taataniin Rabbiin faarsaa. Yeroo tasgabbooftan salaata dhaabaa. Dhugumatti, salaanni mu’uminoota irratti dirqama yeroon isaa murtaa’e ta’eera.",
+      "11:114": "Qaccee lamaan guyyaatiifi yeroo halkan irraa ta’e salaata dhaabi, Toltuuwwan hamtuuwwan ni deemsisu, Kun warra gorfamaniif gorsa.",
+      "29:45": "(Yaa Muhammad!) kitaaba irraa waan gara kee buufame dubbisi. Salaatas haqa isaa guutii sagadi. salaanni wantoota fokkatoofi jibbamoo ta’an irraa dhorgiti. Zikrii (faaruu) Rabbiitu (waan hunda irra) guddaadha. Rabbiin waan isin hojjattan ni beeka.",
+      "62:9": "Yaa warra amantan! Yeroo guyyaa Jimaataa keessatti salaataaf lallabame gara zikrii Rabbii deemaa; gurgurtaa dhiisaa. kanatu isiniif caala Yoo kan beektan taataniif."
+    }
+  },
+  "so": {
+    "anahtar": "somali_yacob",
+    "surum": "1.0.26",
+    "baslik": "Somali Translation - Abdullah Hasan Yaqoub",
+    "ayetler": {
+      "2:153": "Kuwa (Xaqa) rumeeyoow! Kaalmaysta samirka iyo salaadda. Hubaal! Alle wuxuu la jiraa kuwa samirka badan.",
+      "4:103": "Markaad gudataan salaadda, xusa Alle joog iyo fadhi iyo idinkoo u jiifaba dhinacyadiinna, Markase aad nabad degtaan, u ooga salaadda si wanaagsan. Hubaal, salaadda waxay ku tahay mu’miniinta waajib leh waqtiyo go’an.",
+      "29:45": "Akhri (Nabi Muxammadow) waxa laguu soo waxyooday oo ka mid ah Kitaabka (Qur’aanka), oogna salaadda. hubaal, salaaddu waxay ka reebtaa (qofka) xumaanta iyo munkarka (falalka la naco). Xusidda Alle baa xaqiiq weyn. Alle wuu Og yahay waxaad sameyneysaan.",
+      "62:9": "Kuwa (Xaqa) rumeeyow! Marka la isugu yeedho salaadda maalinta Jimcaha,  u degedga Xusidda Alle, kana taga ganacsiga, sidaas baa idiin khayr badan, haddaad ogtihiin."
+    }
+  },
+  "ff": {
+    "anahtar": "fulani_rwwad",
+    "surum": "1.0.2",
+    "baslik": "Fulani Translation - Rowwad Translation Center",
+    "ayetler": {
+      "2:153": "Heey mon gomɗimɓe (goongɗinɓe), wallitoree muññaare (muñal) e juulde. Pellet, Allah Hino Wonndi he muññiiɓe ɓen.",
+      "2:238": "Reenee  juulɗe ɗen, e juulde hakkundeere nden. Daranoɗon Alla ko o toƴƴiniiɓe",
+      "4:103": "Si on gaynii juulde nde, jaŋtoree Alla e darnnde, e jonɗde e ka hoore baŋŋeeje mon. Si on ndeeƴii, ñiiɓnee juude nde Pellet, juulde nde woni e dow gooɗinɓe ɓefarilla mbo waktu dottaaɗo",
+      "11:114": "Ñiiɓnu juulde nde ka seraaji ɗiɗi ñalawma e saa'iiji jemma. Pellet moƴƴi ɗin hino momta bonɗi ɗin. Ɗuum ko waaju wonan´de ɓeen waajitotooɓe.",
+      "29:45": "Janngu ɗum ko waayinaa e maaɗa ka deftere, ñiiɓaa e juulde nden. Pellet, juulde nden no haɗa paŋkare e ko añinii. Ko jantagol Alla ngol ɓuri (hu'unde kala) mawnude. Alla no anndi ko ngolloton kon.",
+      "62:9": "Ko onon yo gooŋɗinɓe ! Si juulde nden noddinanaama ñalnde Juma, njaccee e jaŋtagol Allah, ngacciton njeengu. Ko ɗuum ɓuri moƴƴannde on, si tawno ko on annduɓe !"
+    }
+  },
+  "yo": {
+    "anahtar": "yoruba_mikail",
+    "surum": "1.0.9",
+    "baslik": "Yoruba Translation - Abu Rahimah Mikael",
+    "ayetler": {
+      "2:153": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo,ẹ fi sùúrù àti ìrun kíkí tọrọ oore (lọ́dọ̀ Allāhu). Dájúdájú Allāhu ń bẹ pẹ̀lú àwọn onísùúrù.",
+      "2:238": "Ẹ ṣọ́ àwọn ìrun (wákàtí márààrún) àti (ní pàápàá jùlọ) ìrun ààrin. Kí ẹ sì dúró kírun fún Allāhu ní olùbẹ̀rù Rẹ̀ (láì sì níí sọ̀rọ̀ tó jẹmọ́ tayé lórí ìrun).",
+      "4:103": "Nígbà tí ẹ bá parí ìrun, kí ẹ ṣe (gbólóhùn) ìrántí Allāhu ní ìdúró, ìjókòó àti ìdùbúlẹ̀ yín. Nígbà tí ẹ bá sì fọkàn balẹ̀, kí ẹ kírun (ní pípé). Dájúdájú ìrun kíkí jẹ́ ọ̀ran-anyàn tí A fi àkókò sí fún àwọn onígbàgbọ́ òdodo.",
+      "62:9": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, nígbà tí wọ́n bá pe ìrun ní ọjọ́ Jum‘ah, ẹ yára lọ síbi ìrántí Allāhu, kí ẹ sì pa kátà-kárà tì. Ìyẹn lóore jùlọ fún yín tí ẹ bá mọ̀."
+    }
   }
 };

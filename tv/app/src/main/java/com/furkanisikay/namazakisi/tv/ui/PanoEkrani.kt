@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -229,15 +230,18 @@ private fun SolSutun(
             }
         }
 
-        Row(verticalAlignment = Alignment.Bottom) {
-            Text(
+        // Saat sütunun ESNEK öğesidir: öteki öğeler (başlık, sayaç, çipler, "Ayarlar") önce
+        // ölçülür, saat kalan yüksekliğe sığana dek küçülür. Uzun dilde (Hausa, Amharca) çip ya da
+        // sayaç başlığı büyüyünce "Ayarlar" düğmesi ekranın altından kesiliyordu (2026-10-30).
+        val saatBoyu = if (bant != null || kabul) 96.sp else 120.sp
+        Row(Modifier.weight(1f, fill = false), verticalAlignment = Alignment.Bottom) {
+            BasicText(
                 Bicim.saat(simdi, bolge).yerelRakam(),
-                style = RAKAM,
-                color = Renkler.metin,
-                // Bant görünürken saat küçülür: sütun taşıp "Ayarlar" düğmesi ekrandan çıkmasın.
-                fontSize = if (bant != null || kabul) 96.sp else 120.sp,
-                fontWeight = FontWeight.Light,
-                lineHeight = if (bant != null || kabul) 96.sp else 120.sp,
+                style = RAKAM.copy(fontSize = saatBoyu, fontWeight = FontWeight.Light),
+                color = { Renkler.metin },
+                maxLines = 1,
+                softWrap = false,
+                autoSize = TextAutoSize.StepBased(minFontSize = 56.sp, maxFontSize = saatBoyu, stepSize = 4.sp),
             )
             Text(
                 Bicim.saniye(simdi, bolge).yerelRakam(),
@@ -276,11 +280,7 @@ private fun KalanBlogu(durum: PanoDurumu, simdi: Long, azalt: Boolean) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Simge(vakitSimgesi(v), Renkler.birincil, 30.dp)
                 Spacer(Modifier.width(12.dp))
-                Text(
-                    stringResource(R.string.pano_vaktine, durum.gorunenAd(v, dil)),
-                    color = Renkler.metinIkincil,
-                    fontSize = 28.sp,
-                )
+                TekSatirEtiket(stringResource(R.string.pano_vaktine, durum.gorunenAd(v, dil)))
             }
         }
         Row(verticalAlignment = Alignment.Bottom) {
@@ -383,9 +383,19 @@ private fun BilgiCipi(simge: Int, simgeRengi: Color, baslik: String, ek: String,
             modifier = Modifier.size(40.dp).background(simgeRengi.copy(alpha = 0.18f), CircleShape),
         ) { Simge(simge, simgeRengi, 24.dp) }
         Spacer(Modifier.width(14.dp))
-        Text(baslik.yerelRakam(), color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+        // Tek satır: uzun dilde ek ("Azahar 12:53") alt satıra düşüp çipi büyütüyor, "Ayarlar"
+        // düğmesini ekrandan itiyordu (Hausa, 2026-10-30). Başlık sığana dek küçülür; ek (saat) bölünmez.
+        BasicText(
+            baslik.yerelRakam(),
+            style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.SemiBold),
+            color = { Renkler.metin },
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            autoSize = TextAutoSize.StepBased(minFontSize = 16.sp, maxFontSize = 24.sp),
+            modifier = Modifier.weight(1f, fill = false),
+        )
         Spacer(Modifier.width(12.dp))
-        Text(ek.yerelRakam(), style = RAKAM, color = Renkler.metinIkincil, fontSize = 24.sp)
+        Text(ek.yerelRakam(), style = RAKAM, color = Renkler.metinIkincil, fontSize = 24.sp, maxLines = 1, softWrap = false)
     }
 }
 
@@ -501,6 +511,20 @@ private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: B
     }
 }
 
+/** Sayaç başlığı: tek satır, sığmazsa küçülür (sütunun yüksekliği dile göre değişmesin). */
+@Composable
+private fun RowScope.TekSatirEtiket(metin: String) {
+    BasicText(
+        metin,
+        style = TextStyle(fontSize = 28.sp),
+        color = { Renkler.metinIkincil },
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        autoSize = TextAutoSize.StepBased(minFontSize = 18.sp, maxFontSize = 28.sp),
+        modifier = Modifier.weight(1f, fill = false),
+    )
+}
+
 @Composable
 private fun Simge(kaynak: Int, renk: Color, boyut: Dp) {
     Image(
@@ -526,7 +550,8 @@ private fun RamazanBlogu(sayac: EvDurumu.Sayac, tur: EvDurumu.SayacTuru, durum: 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Simge(simge, Renkler.birincil, 30.dp)
             Spacer(Modifier.width(12.dp))
-            Text(sayac.baslik, color = Renkler.metinIkincil, fontSize = 28.sp)
+            // "Lokacin da ya rage zuwa buɗa baki" (Hausa) iki satıra kırılıp sütunu taşırıyordu.
+            TekSatirEtiket(sayac.baslik)
         }
         Row(verticalAlignment = Alignment.Bottom) {
             Bicim.kalanParcalari(kalan, dil).forEachIndexed { i, p ->

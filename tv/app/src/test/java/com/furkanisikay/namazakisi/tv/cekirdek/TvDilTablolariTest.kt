@@ -11,7 +11,7 @@ import org.junit.Test
  * parametreleri kullanır (işaretçi değerlerle çağrılır).
  */
 class TvDilTablolariTest {
-    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg")
+    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo")
     private val isaretciler = listOf("<AD>", "<AY>", "<GUN>", "987", "2468")
 
     private fun metinler(d: TvDili): Map<String, String> = linkedMapOf(

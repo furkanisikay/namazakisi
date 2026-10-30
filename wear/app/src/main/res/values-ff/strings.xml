@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pular. Terimler: src/core/dil/sozluk/ff (vakit.ts başlık yorumu). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ff</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Juulde garoore</string>
+    <string name="tile_aciklama">Juulde garoore e saa’i mum</string>
+    <string name="komplikasyon_adi">Saa’i heddiiɗo</string>
+    <string name="cikis_saati_komplikasyon_adi">Saa’i gasgol juulde</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Juulde garoore</string>
+    <string name="bugun_tile_adi">Hannde</string>
+    <string name="bugun_tile_aciklama">Juulɗe njoy hannde; maandinee ɗe on juulii e doɓe ɗiɗi</string>
+    <string name="ilerleme_komplikasyon_adi">Ɓeydoral ñalawma</string>
+    <string name="dagilim_komplikasyon_adi">Ndaarol ñalawma</string>
+    <string name="kerahat_komplikasyon_adi">Waqutu makruuhu</string>
+    <string name="son_dakikalar_kanal_adi">Hojomaaji sakkitoraaji</string>
+    <string name="son_dakikalar_kanal_aciklama">Saa’i heddiiɗo e yeeso montoro e hojomaaji sakkitoraaji juulde nde on juulaali</string>
+    <string name="tesbihat_adi">Tasbiihu</string>
+    <string name="tesbihat_kanal_adi">Tasbiihu</string>
+    <string name="tesbihat_kanal_aciklama">Maande deƴƴunde e yeeso montoro ngam rutto e tasbiihu timmaani</string>
+    <string name="kible_adi">Qibla</string>
+    <string name="kible_komplikasyon_adi">Qibla</string>
+    <string name="camideyim_kanal_adi">E juulirde</string>
+    <string name="camideyim_kanal_aciklama">Maande deƴƴunde e yeeso montoro so talifon mon tintinii ko on e juulirde</string>
+    <string name="uyandirma_kanal_adi">Finninde deƴƴunde</string>
+    <string name="uyandirma_kanal_aciklama">Hino finna on e dillinde tan, ngam subaka e tahajjudi</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Mi juulii</string>
+    <string name="kilindi_isareti">✓ Juulaama</string>
+    <string name="kapat">Uddee</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Udditee Namaz Akışı e talifon mon ngam yiyde saa’iiji juulɗe.</string>
+    <string name="yuk_eskidi">Keɓe saa’iiji juulɗe ɓooyii. Udditee Namaz Akışı e talifon mon ngam hesɗitinde ɗe.</string>
+    <string name="guncelleme_gerekli">Hesɗitinee Namaz Akışı e montoro mon.</string>
+    <string name="bildirim_izni">Ngam heɓde siftinooje hay so talifon mon alaa e mon, jamiree tintine Namaz Akışı e teelte montoro.</string>
+    <string name="cami_soru">Hiɗon e juulirde?</string>
+    <string name="cami_evet">Awa</string>
+    <string name="cami_evet_aciklama">Awa, mi e juulirde. Hino huɓɓina Mode juulde</string>
+    <string name="cami_hayir">Aa’a</string>
+    <string name="cami_hayir_aciklama">Aa’a, mi alaa e juulirde</string>
+    <string name="camidesiniz">Hiɗon e juulirde</string>
+    <string name="cami_degil">Ɗoo wonaa juulirde</string>
+    <string name="cami_degil_aciklama">Ɗoo wonaa juulirde. Nokku ngoo limtetaake wa juulirde kadi</string>
+    <string name="tesbihat_ac">Udditee limoowo tasbiihu</string>
+    <string name="kible_ac">Udditee busol qibla</string>
+    <string name="ses_dene">Etee sowto</string>
+    <string name="ses_dene_aciklama">Etee janngugol e hito montoro</string>
+    <string name="telefonda_acin">Uddit e talifon</string>
+    <string name="telefonda_ekran_ac">Udditee %1$s e talifon mon</string>
+    <string name="ekran_kaza">Deftere qadaa</string>
+    <string name="ekran_camideyim">E juulirde</string>
+    <string name="ekran_ayarlar">Teelte</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">juulaama, hino fotondiree</string>
+    <string name="durum_kilindi">juulaama</string>
+    <string name="durum_girmedi">waqutu on heewaali</string>
+    <string name="durum_simdiki">waqutu juulde jooni, dobee ngam maandinde</string>
+    <string name="durum_simdiki_kalan">waqutu juulde jooni, %1$s, dobee ngam maandinde</string>
+    <string name="durum_kilinmadi">juulaaka, dobee ngam maandinde</string>
+    <string name="isaretleyin">Maandinee ko juulaama</string>
+    <string name="esitleniyor">hino fotondiree</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Gooŋɗinee Mi juulii</string>
+    <string name="vazgecin">Haaytee</string>
+    <string name="vazgec">Haaytee</string>
+    <string name="kerahat_vaktindesiniz">Jooni ko waqutu makruuhu.</string>
+    <string name="kilindi_dua">Juulaama. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Mode juulde huɓɓinaa, gasay %1$s. Dobee ngam ñifde</string>
+    <string name="namaz_modu_ac_aciklama">Huɓɓinee Mode juulde e talifon mon</string>
+    <string name="namaz_modu_kapatin">Ñifee Mode juulde</string>
+    <string name="namaz_modu_acin">Huɓɓinee Mode juulde</string>
+    <string name="namaz_modu_acik_bitis">Huɓɓinaa, gasay %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Baŋŋe ngal hino yiylee…</string>
+    <string name="kible_yuk_yok">Udditee Namaz Akışı e talifon mon ngam heɓde qibla.</string>
+    <string name="kible_konum_yok">Huɓɓinee nokkuure e talifon mon ngam heɓde qibla. So Namaz Akışı hesɗitinaaka, hesɗitinee ɗum.</string>
+    <string name="kible_sensor_yok">Montoro ngoo alaa kaɓirgal busol. Hiɗon mbaawi yiyde baŋŋe qibla e talifon mon.</string>
+    <string name="kible_kuzeyden">Qibla %1$d° (gila rewo)</string>
+    <string name="kible_derece">Qibla %1$d°</string>
+    <string name="kible_telefonda_ac">Udditee qibla e talifon mon</string>
+    <string name="kible_erisim">%1$s. Qibla hino %2$d° gila rewo, %3$s</string>
+    <string name="kible_hizali">Hiɗon ndaari qibla</string>
+    <string name="kible_kalibrasyon">Ngam feewnude, dillinee jungo mon e kene wa limoore 8</string>
+    <string name="kible_egim">Ñiiɓnee montoro mon fotondiri e leydi</string>
+    <string name="kible_titresim_acik">Kollirgal dillinde huɓɓinaa. Dobee ngam ñifde</string>
+    <string name="kible_titresim_kapali">Kollirgal dillinde ñifaa. Dobee ngam huɓɓinde</string>
+    <string name="kible_harf_kuzey">R</string>
+    <string name="kible_harf_dogu">F</string>
+    <string name="kible_harf_guney">W</string>
+    <string name="kible_harf_bati">H</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbiihu timmii. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Fow %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Limee</string>
+    <string name="tesbihat_bastan_baslayin">Fuɗɗitee</string>
+    <string name="tesbihat_bastan_soru">Fuɗɗitee?</string>
+    <string name="tesbihat_sifirlanir">Limoore ndee hino fuɗɗitee.</string>
+    <string name="tesbihat_geri_al">Firtee</string>
+    <string name="tesbihat_geri_al_aciklama">Firtee limoore sakkitoore</string>
+    <string name="tesbihat_yeniden">Fuɗɗitee kadi</string>
+    <string name="tesbihat_yeniden_aciklama">Fuɗɗitee tasbiihu kadi</string>
+    <string name="tesbihat_suruyor">Tasbiihu hino jokki: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Mi juulii. Hino ñifa finninde ndee</string>
+    <string name="uyandirma_kapat_aciklama">Ñifee finninde ndee</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Udditee Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Dobee ngam saa’iiji juulɗe</string>
+    <string name="tile_telefonda_acin">Udditee jaaɓngal ngal e talifon mon</string>
+    <string name="tile_sonra">caggal %1$s</string>
+    <string name="tile_siradaki_aciklama">Juulde garoore %1$s, fuɗɗoto e %2$s. Udditee jaaɓngal ngal</string>
+    <string name="tile_giris">fuɗɗoto %1$s</string>
+    <string name="tile_cikis">gasay %1$s</string>
+    <string name="bugun_bos_satir1">Udditee jaaɓngal ngal</string>
+    <string name="bugun_bos_satir2">e talifon mon</string>
+    <string name="bugun_acma_aciklamasi">Hannde %1$d/%2$d juulɗe juulaama. Udditee jaaɓngal ngal</string>
+    <string name="bugun_sayi">Hannde %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Waqutu makruuhu · dobee kadi ngam gooŋɗinde</string>
+    <string name="bugun_onay_tekrar">Dobee kadi ngam gooŋɗinde</string>
+    <string name="bugun_tamam">Juulɗe hannde timmii</string>
+    <string name="bugun_kilinmadi">%1$s juulaaka</string>
+    <string name="bugun_siradaki">Garoore: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Dobee kadi</string>
+    <string name="bugun_kilindi">%1$s juulaama</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s juulaama, hino fotondiree</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Hino sabbi saa’iiji juulɗe; udditee Namaz Akışı e talifon mon</string>
+    <string name="komplikasyon_bekleniyor">Hino sabbi</string>
+    <string name="komplikasyon_vakit">Juulde</string>
+    <string name="komplikasyon_cikis">Gasay</string>
+    <string name="komplikasyon_sirada">Garoore</string>
+    <string name="gun_durumu_aciklama">Hannde %2$d e juulɗe %1$d juulaama</string>
+    <string name="gun_durumu_kilinmamis">%1$s; juulaaka: %2$s</string>
+    <string name="komplikasyon_namaz">Juulɗe</string>
+    <string name="komplikasyon_kerahat">Makruuhu</string>
+    <string name="kerahat_icinde_aciklama">Ko waqutu makruuhu, gasay %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Waqutu makruuhu garoowo %1$s</string>
+    <string name="kible_komplikasyon">Qibla hino %1$d° gila rewo. Udditee busol</string>
+    <string name="kible_komplikasyon_konumlu">Qibla hino %1$d° gila rewo, %2$s. Udditee busol</string>
+    <string name="kible_komplikasyon_konum_yok">Huɓɓinee nokkuure e talifon mon ngam heɓde qibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Siftinoore teeŋtunde · Dillinde</string>
+    <string name="muhafiz_kanal_acil">Siftinoore teeŋtunde</string>
+    <string name="muhafiz_kanal_titresimli">Siftinoore juulde · Dillinde</string>
+    <string name="muhafiz_kanal">Siftinoore juulde</string>
+    <string name="muhafiz_kanal_aciklama">Siftinooje juulde ɓannginteeje e montoro mon hay so talifon mon alaa e mon</string>
+    <string name="son_dakikalar_cikis">Gasay: %1$s</string>
+    <string name="son_dakikalar_bitis">Gasay: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Saa’i heddiiɗo haa %1$s gasa</string>
+    <string name="son_dakikalar_kalan_erisim">Saa’i heddiiɗo ngam %1$s</string>
+    <string name="cami_namaz_modu_bitis">Mode juulde · gasay %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Udditaama e talifon mon</string>
+    <string name="telefona_ulasilamadi">Talifon mon hewtaaka</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Yoruba). "Mo ti kírun" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Aago ìdágìrì ìrun</string>
+  <string name="alarm_kildim">Mo ti kírun</string>
+  <string name="alarm_kapat">Pa á</string>
+  <string name="alarm_kanal_aciklamasi">Aago ìdágìrì gidi tí ń dún ní àwọn ìgbésẹ̀ ìránnilétí tí ẹ yàn</string>
+</resources>

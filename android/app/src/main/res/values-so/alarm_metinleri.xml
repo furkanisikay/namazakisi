@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Somalice). "Waan tukaday" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Alaarmiga salaadda</string>
+  <string name="alarm_kildim">Waan tukaday</string>
+  <string name="alarm_kapat">Dami</string>
+  <string name="alarm_kanal_aciklamasi">Alaarm dhab ah oo u dhawaaqa tallaabooyinka xusuusinta ee aad doorato</string>
+</resources>

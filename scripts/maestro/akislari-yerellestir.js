@@ -112,7 +112,7 @@ function sablonKarsiliklari(secenek) {
           .join(''),
       );
       // Önek eşleşmesinde hedefin yer tutucudan önceki baş literali de ("Mode reprise" ← "Recovery mode").
-      const bas = hedefParcalar[0].replace(/[\s:.\u00a0\u202f]+$/, '');
+      const bas = hedefParcalar[0].replace(/[\s:፦.\u00a0\u202f]+$/, '');
       if (k === 1 && parcalar.length > 1 && bas) sonuc.push(kacir(bas));
       break;
     }
@@ -131,7 +131,8 @@ try {
   yaml = null;
 }
 
-function grubuGenislet(govde) {
+/** `etiket`: grup "(…): " biçiminde, ardından iki nokta gelen bir erişilebilirlik etiketi. */
+function grubuGenislet(govde, etiket) {
   const secenekler = govde.split('|');
   const eklenecek = [];
   let eslesti = false;
@@ -145,7 +146,10 @@ function grubuGenislet(govde) {
       const karsilik = hedef.get(yol);
       if (karsilik && !/[{}]/.test(karsilik)) ekle(kacir(karsilik));
     }
-    if (dizin.has(duz)) continue;
+    // "Etiket: …" seçicisinde birebir eşleşen sözcük bir şablonun başı da olabilir: "Seri" sekme
+    // adı Somalicede "Taxane", ama "Seri: {n} gün" etiketi "Taxanaha: {n} maalin". İkisi de eklenir;
+    // öteki seçicilerde (sekme, düğme) eklenmez, uzun cümle başı yanlış öğeye dokunurdu.
+    if (dizin.has(duz) && !etiket) continue;
     for (const k of sablonKarsiliklari(duz)) {
       eslesti = true;
       ekle(k);
@@ -172,9 +176,10 @@ for (const dosya of dosyalar(path.join(KOK, 'scripts', 'maestro'))) {
       /^\s*#/.test(satir)
         ? satir
         : satir
-            .replace(/\(([^()]*\|[^()]*)\)/g, (_, g) => `(${grubuGenislet(g)})`)
-            // Fransız yazımı iki noktadan önce bölünmez boşluk koyar ("Série\u00a0: 25 jours").
-            .replace(/\): /g, ')[\u00a0\u202f]?: '),
+            .replace(/\(([^()]*\|[^()]*)\)(?=(: )?)/g, (_, g, iki) => `(${grubuGenislet(g, Boolean(iki))})`)
+            // Fransız yazımı iki noktadan önce bölünmez boşluk koyar ("Série\u00a0: 25 jours");
+            // Amharca iki nokta yerine Etiyopya önsöz iki noktası yazar ("ተከታታይነት፦ 5 ቀናት").
+            .replace(/\): /g, ')[\u00a0\u202f]?[:፦] '),
     )
     .join('\n');
   if (yeni !== eski) {

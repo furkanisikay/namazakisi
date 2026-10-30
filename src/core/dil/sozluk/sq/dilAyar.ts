@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Gjuha · Language',
   aciklama: 'Zgjidhni gjuhën e aplikacionit. Njoftimet dhe leximi me zë do të jenë në këtë gjuhë.',
   grup: 'Gjuha e aplikacionit',
-  dilAdlari: { tr: 'Turqisht', en: 'Anglisht', id: 'Indonezisht', de: 'Gjermanisht', fr: 'Frëngjisht', bs: 'Boshnjakisht', ru: 'Rusisht', ms: 'Malajisht', ar: 'Arabisht', ur: 'Urdu', es: 'Spanjisht', nl: 'Holandisht', sq: 'Shqip', hi: 'Hindisht', bn: 'Bengalisht', fa: 'Persisht', ps: 'Pashtoisht', ckb: 'Kurdishte qendrore', ug: 'Ujgurisht', az: 'Azerbajxhanisht', uz: 'Uzbekisht', kk: 'Kazakisht', ky: 'Kirgizisht', tg: 'Taxhikisht' },
+  dilAdlari: { tr: 'Turqisht', en: 'Anglisht', id: 'Indonezisht', de: 'Gjermanisht', fr: 'Frëngjisht', bs: 'Boshnjakisht', ru: 'Rusisht', ms: 'Malajisht', ar: 'Arabisht', ur: 'Urdu', es: 'Spanjisht', nl: 'Holandisht', sq: 'Shqip', hi: 'Hindisht', bn: 'Bengalisht', fa: 'Persisht', ps: 'Pashtoisht', ckb: 'Kurdishte qendrore', ug: 'Ujgurisht', az: 'Azerbajxhanisht', uz: 'Uzbekisht', kk: 'Kazakisht', ky: 'Kirgizisht', tg: 'Taxhikisht', sw: 'Suahilisht', ha: 'Hausisht', am: 'Amarisht', om: 'Oromoisht', so: 'Somalisht', ff: 'Fulaisht', yo: 'Jorubaisht' },
   cihazDili: 'Gjuha e pajisjes',
   cihazDiliKullaniliyor: 'Tani: {ad}',
   cihazDiliDesteklenmiyor: 'Gjuha e pajisjes suaj nuk është ende në dispozicion; përdoret turqishtja.',

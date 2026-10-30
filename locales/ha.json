@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Ana amfani da wurinku don lissafa lokutan salla daidai da inda kuke. Wurinku yana zama a naʼurarku.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Ana amfani da wurinku don lissafa lokutan salla daidai da inda kuke kuma, idan A masallaci yana kunne, don kunna Yanayin salla idan kuka shiga masallaci. Wurinku yana zama a naʼurarku.",
+  "NSLocationAlwaysUsageDescription": "Ana amfani da wurinku don sabunta lokutan salla kai tsaye idan kuka canja birni kuma, idan A masallaci yana kunne, don kunna Yanayin salla idan kuka shiga masallaci. Wurinku yana zama a naʼurarku.",
+  "NSCameraUsageDescription": "Ana amfani da kyamararku don nuna hanyar Alƙibla a kan kallon kyamara da kuma karanta lambar haɗawa da ke kan talabijin ɗinku. Ba a ajiye hotuna kuma ba sa barin naʼurarku.",
+  "NSCalendarsUsageDescription": "Ana amfani da damar kalanda don ƙara lokutan salla a kalandarku kuma, idan kuka kunna shi, don duba ko taruka a kalandarku sun ci karo da lokacin salla. Bayanan kalandarku suna zama a naʼurarku.",
+  "NSCalendarsFullAccessUsageDescription": "Ana amfani da damar kalanda don ƙara lokutan salla a kalandarku kuma, idan kuka kunna shi, don duba ko taruka a kalandarku sun ci karo da lokacin salla. Bayanan kalandarku suna zama a naʼurarku.",
+  "NSLocalNetworkUsageDescription": "Manhajar tana haɗawa da talabijin a hanyar sadarwar gidanku don aika mata lokutan sallarku da sallolin da kuka yi wa alama. An ɓoye bayanan kuma suna tafiya ne tsakanin naʼurori biyun kaɗai.",
+  "NSAlarmKitUsageDescription": "Matakan tunatarwa da kuka zaɓi “Ainihin ƙararrawa” ana saita su a matsayin ƙararrawa, don ku ji su ko da wayarku tana kan shiru ko Focus a kunne.",
+  "\"Vakti kıldım\"": "Na yi salla",
+  "\"Kıble\"": "Alƙibla"
+}

@@ -143,7 +143,7 @@ object DuvarKagidiCizici {
             parcalar += Parca(0f, boyut) { t, x, y, g -> yildizCiz(t, x + g / 2f, y + boyut / 2f, boyut / 24f, renk.kunye, 1f, 1.6f, daire = false) }
         }
         if (meal != null) {
-            val m = yerlesim(meal, boya(AyetYazitipleri.meal(context), (if (arapca) 17f else 24f) * o, renk.metin), genislik, 1.1f)
+            val m = yerlesim(meal, boya(AyetYazitipleri.meal(context, meal), (if (arapca) 17f else 24f) * o, renk.metin), genislik, 1.1f)
             parcalar += Parca((if (arapca) 14f else 18f) * o, m.height.toFloat()) { t, x, y, _ -> yerlesimCiz(t, m, x, y) }
         }
         val kunyeBoyasi = boya(Typeface.create("sans-serif", Typeface.NORMAL), 12f * o, renk.kunye).apply { letterSpacing = 0.04f }

@@ -24,7 +24,7 @@ export interface GununAyetiKaydi {
   mealler: { readonly tr: string; readonly en: string } & Readonly<Partial<Record<MealDili, string>>>;
 }
 
-export type MealDili = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg';
+export type MealDili = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo';
 
 export interface MealKunyesi {
   anahtar: string;
@@ -157,6 +157,41 @@ export const GUNUN_AYETI_KAYNAKLARI: {
       "anahtar": "tajik_arifi",
       "surum": "1.0.2",
       "baslik": "Rowwad Translation Center"
+    },
+    "sw": {
+      "anahtar": "swahili_rwwad",
+      "surum": "1.0.5",
+      "baslik": "Rowad Translation Center"
+    },
+    "ha": {
+      "anahtar": "hausa_gummi",
+      "surum": "1.2.2",
+      "baslik": "Abu Bakr Jumi"
+    },
+    "am": {
+      "anahtar": "amharic_sadiq",
+      "surum": "1.1.2",
+      "baslik": "Muhammad Sadiq"
+    },
+    "om": {
+      "anahtar": "oromo_ababor",
+      "surum": "1.0.3",
+      "baslik": "Gali Ababor"
+    },
+    "so": {
+      "anahtar": "somali_yacob",
+      "surum": "1.0.26",
+      "baslik": "Abdullah Hasan Yaqoub"
+    },
+    "ff": {
+      "anahtar": "fulani_rwwad",
+      "surum": "1.0.2",
+      "baslik": "Rowwad Translation Center"
+    },
+    "yo": {
+      "anahtar": "yoruba_mikail",
+      "surum": "1.0.9",
+      "baslik": "Abu Rahimah Mikael"
     }
   }
 };
@@ -187,7 +222,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Сенгагина ибодат қиламиз ва Сендангина ёрдам сўраймиз.",
       "kk": "(Әй Алла!) Саған ғана құлшыдық қыламыз, әрі Сенен ғана жәрдем тілейміз!",
       "ky": "Жалгыз Сага гана сыйынабыз жана Сенден гана жардам сурайбыз!",
-      "tg": "[Парвардигоро] Танҳо Туро мепарастем ва танҳо аз Ту ёрӣ меҷӯем."
+      "tg": "[Парвардигоро] Танҳо Туро мепарастем ва танҳо аз Ту ёрӣ меҷӯем.",
+      "sw": "Ni Wewe tu tunayeabudu, na ni Wewe tu tunayeomba msaada.",
+      "ha": "Kai muke bautawa, kuma Kai kadai muke neman taimakonKa",
+      "am": "አንተን ብቻ እንግገዛለን፤ አንተንም ብቻ እርዳታን እንለምናለን፡፡",
+      "om": "Si qofa gabbarra; Si qofatti gargaarsifannas.",
+      "so": "Adigoo Keliya baynu (Allow) ku caabudi, oo Adigoo Keliya baynu ku weydiisan kaalmo.",
+      "ff": "Ko Aan tan min ndewata te ko Aan tan min mballintoo."
     }
   },
   {
@@ -216,7 +257,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Еру осмонлар ёлғиз Аллоҳнинг мулки эканини ва сизлар учун Аллоҳдан ўзга бирон дўст ёки ёрдамчи йўқ эканини билмадингизми?",
       "kk": "білмедің бе? Көктер мен жердің иелігі Аллаға тән. сендер үшін Алладан өзге не дос, не жәрдемші жоқ.",
       "ky": "Асмандар жана жер өкүмдарлыгы (жалгыз) Аллахка таандык экенин жана силерге Аллахтан башка эч бир кожоюн, эч бир жардамчы жок экенин билбейсиңби?!",
-      "tg": "Оё намедонӣ, ки фармонравоии осмонҳо ва замин аз они Аллоҳ таоло аст ва шумо ба ҷуз Аллоҳ таоло [ҳеҷ] дӯсту ёваре надоред [ки корсозатон бошад]"
+      "tg": "Оё намедонӣ, ки фармонравоии осмонҳо ва замин аз они Аллоҳ таоло аст ва шумо ба ҷуз Аллоҳ таоло [ҳеҷ] дӯсту ёваре надоред [ки корсозатон бошад]",
+      "sw": "Je, hujui kwamba Mwenyezi Mungu ana ufalme wa Mbingu na Ardhi? Nanyi hamna mlinzi wala msaidizi isipokuwa Mwenyezi Mungu.",
+      "ha": "Shin ba ka sani ba, cẽwa lalle ne Allah, Shĩ ne da mulkin sammai da ƙasa kuma bã ku da, baicin Allah, wani majiɓinci, kuma bã ku da wani mataimaki?",
+      "am": "አላህ የሰማያትና የምድር ንግሥና ለርሱ ብቻ መኾኑን አታውቅምን? ለእናንተም ከአላህ ሌላ ዘመድና ረዳት ምንም የላችሁም፡፡",
+      "om": "Sila ati hinbeektuu Rabbiin mootummaan samiileefii dachii tan isaa tahuu? Isiniifis Rabbiin ala jaalalleefi gargaaraan hin jiru.",
+      "so": "Miyaadan ogeyn in Alle leeyahay Boqortooyada (runta ah ee) samooyinka iyo arlada, oo aydaan lahayn Alle ka sokow sokeeye iyo gargaare midna.",
+      "ff": "Mbela a anndaa wonde ko Alla jeyi laamu asamaanji e lesdi on ngalaa keedanoowo mon wolla ballo sonaa Alla.",
+      "yo": "Ṣé ìwọ kò mọ̀ pé dájúdájú ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀? Kò sì sí aláàbò àti alárànṣe kan fún yín lẹ́yìn Allāhu."
     }
   },
   {
@@ -246,7 +294,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй мўминлар, сабр қилиш ва намоз ўқиш билан (Аллоҳдан) мадад сўранглар! Албатта, Аллоҳ сабр қилгувчилар билан биргадир.",
       "kk": "Әй мүміндер! Сабыр және намазбенен (Алладан) жәрдем тілеңдер, күдіксіз Алла (Т.) сабыр етушілермен бірге.",
       "ky": "Оо, момундар! (диний жана дүйнөлүк ишиңерде) сабыр жана намаз менен кубаттангыла! Албетте, Аллах, сабырдуулар менен бирге.",
-      "tg": "Эй касоне, ки имон овардаед, аз шикебоиву намоз ёрӣ биҷӯед [ки] бе тардид Аллоҳ таоло бо сабркунандагон аст"
+      "tg": "Эй касоне, ки имон овардаед, аз шикебоиву намоз ёрӣ биҷӯед [ки] бе тардид Аллоҳ таоло бо сабркунандагон аст",
+      "sw": "Enyi mlioamini! Takeni msaada kwa subira na Swala. Hakika, Mwenyezi Mungu yu pamoja na wanaosubiri.",
+      "am": "እናንተ ያመናችሁ ሆይ! በመታገስና በሶላት ተረዱ፡፡ አላህ (በእርዳታው) ከታጋሾች ጋር ነውና፡፡",
+      "om": "Yaa warra amantan! Obsaafi salaataan gargaarsa barbaadaa. Dhugumatti, Rabbiin warra obsan waliin jira.",
+      "so": "Kuwa (Xaqa) rumeeyoow! Kaalmaysta samirka iyo salaadda. Hubaal! Alle wuxuu la jiraa kuwa samirka badan.",
+      "ff": "Heey mon gomɗimɓe (goongɗinɓe), wallitoree muññaare (muñal) e juulde. Pellet, Allah Hino Wonndi he muññiiɓe ɓen.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo,ẹ fi sùúrù àti ìrun kíkí tọrọ oore (lọ́dọ̀ Allāhu). Dájúdájú Allāhu ń bẹ pẹ̀lú àwọn onísùúrù."
     }
   },
   {
@@ -275,7 +329,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй одамлар! Ер юзидаги нарсалардан ҳалол-покларини енглар ва шайтон изидан эргашманглар, чунки у сизларга очиқ душмандир.",
       "kk": "Әй адам баласы! Жер жүзінде болған халал, таза нәрседен жеңдер және шайтанның ізімен жүрмеңдер! Өйткені ол сендерге ашық дұшпан.",
       "ky": "Оо, адамдар! Жер бетиндеги нерселерден адал, таза болгондорун жегиле жана шайтан баштаган жолдорго жүрбөгүлө. Ал силерге анык душман!",
-      "tg": "Эй мардум, аз он чи дар замин аст ҳалолу покиза бихӯред ва аз [роҳҳо ва] гомҳои шайтон [ки ба василаи онҳо ба тадриҷ шуморо ба сӯйи азоб мекашад], пайравӣ накунед, ки ба ростӣ ӯ душмани ошкори шумост"
+      "tg": "Эй мардум, аз он чи дар замин аст ҳалолу покиза бихӯред ва аз [роҳҳо ва] гомҳои шайтон [ки ба василаи онҳо ба тадриҷ шуморо ба сӯйи азоб мекашад], пайравӣ накунед, ки ба ростӣ ӯ душмани ошкори шумост",
+      "sw": "Enyi watu! Kuleni vilivyo katika ardhi, halali na vizuri, wala msifuate nyayo za Shetani. Hakika yeye ni adui yenu aliye dhahiri.",
+      "am": "እናንተ ሰዎች ሆይ! በምድር ካለው ነገር የተፈቀደ ጣፋጭ ሲኾን ብሉ፡፡ የሰይጣንን እርምጃዎች አትከታተሉ፡፡ እርሱ ለእናንተ ግልጽ ጠላት ነውና፡፡",
+      "om": "isinYaa namootaa! Waan dachii keessa jiru irraa halaala gaarii ta’e nyaadhaa,Tarkaanfiilee sheyxaanaa hin hordofinaa, Dhugumatti, inni isiniif diina ifa bahaadha.",
+      "ff": "Heey mo yimɓe! Ñaamee yoga he ko woni ka leydi koo, dagii ko laaɓi, wata on jokku juri=taaɓe (taaɓe) seytaane ɗin : Pellet, ko o gaño mo'on feeñuɗo.",
+      "yo": "Ẹ̀yin ènìyàn, ẹ jẹ nínú ohun tí ń bẹ nínú ilẹ̀ (tó jẹ́) ẹ̀tọ́ (àti n̄ǹkan) dáadáa. Ẹ má sì ṣe tẹ̀lé àwọn ojú-ẹsẹ̀ aṣ-Ṣaetọ̄n. Dájúdájú òun ni ọ̀tá pọ́nńbélé fún yín."
     }
   },
   {
@@ -305,7 +364,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй иймон келтирганлар! Сизларга ризқ қилиб берганимиз пок нарсалардан енглар ва Аллоҳга шукр қилинглар, агар Унгагина ибодат қиладиган бўлсангизлар.",
       "kk": "Әй мүміндер! Ризықтандырғанымыздың жақсысынан жеңдер. Әрі Аллаға шүкірлік етіңдер, егер Оған ғана құлшылық ететін болсаңдар.",
       "ky": "Оо, ыйман келтиргендер! Эгер Аллахтын Өзүнө ибадат кылчу болсоңор, Биз силерге ырыскы кылып берген таза нерселерден жегиле жана Аллахка шүгүр кылгыла.",
-      "tg": "Эй касоне, ки имон овардаед, аз чизҳои покизае, ки рӯзии шумо кардаем, бихӯред ва шукри Аллоҳро ба ҷо оваред, агар танҳо Ӯро мепарастед"
+      "tg": "Эй касоне, ки имон овардаед, аз чизҳои покизае, ки рӯзии шумо кардаем, бихӯред ва шукри Аллоҳро ба ҷо оваред, агар танҳо Ӯро мепарастед",
+      "sw": "Enyi mlioamini! Kuleni katika vizuri tulivyokuruzukuni, na mumshukuru Mwenyezi Mungu, ikiwa kweli mnamuabudu Yeye tu.",
+      "ha": "Yã ku waɗanda suka yi ĩmãni! Ku ci ku sha daga mãsu dãɗin abin da Muka azurta ku. Kuma ku gõde wa Allah, idan kun kasance Shi kuke bauta wa.",
+      "am": "እናንተ ያመናችሁ ሆይ! ከነዚያ ከሰጠናችሁ ጣፋጮች ብሉ፡፡ ለአላህም እርሱን ብቻ የምትገዙ እንደኾናችሁ አመስግኑ፡፡",
+      "om": "Yaa warra amantan! Gaggaarii waan nuti isiniif kenninee irraa nyaadhaa, Rabbiif galata galchaa yoo kan Isa (qofa) gabbartan taatan.",
+      "ff": "Heey mon gomɗimɓe! Ñamee immorde he laaɓuɗi ɗi men Arsiki on, jaarnon Allah si on wonii ko kanko rewoton.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ jẹ nínú àwọn n̄ǹkan dáadáa tí A pèsè fún yín, kí ẹ sì dúpẹ́ fún Allāhu tí ó bá jẹ́ pé Òun nìkan ṣoṣo ni ẹ̀ ń jọ́sìn fún."
     }
   },
   {
@@ -332,7 +397,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй иймон келтирганлар! Исломга тўлиғича киринг ва шайтоннинг изидан эргашманг. Албатта, у сизга очиқ душмандир.",
       "kk": "Әй мүміндер! Исламға бүтіндей кіріңдер. Шайтанның ізіне ермеңдер. өйткені ол, сендерге ашық дұшпан.",
       "ky": "Оо, ыйман келтиргендер! Исламга толук киргиле! Шайтандын изинен ээрчибегиле! Ал силерге анык душман!",
-      "tg": "Эй касоне, ки имон овардаед, ҳамагӣ ба ислом [ва итоати Аллоҳ таоло] дароед ва аз қадамҳо [роҳҳо]-и шайтон пайравӣ накунед. Ба ростӣ, ки ӯ душмани ошкори шумост"
+      "tg": "Эй касоне, ки имон овардаед, ҳамагӣ ба ислом [ва итоати Аллоҳ таоло] дароед ва аз қадамҳо [роҳҳо]-и шайтон пайравӣ накунед. Ба ростӣ, ки ӯ душмани ошкори шумост",
+      "sw": "Enyi mlioamini! Ingieni katika Uislamu kwa ukamilifu, wala msifuate nyayo za Shetani. Hakika, yeye kwenu ni adui wa wazi.",
+      "ha": "Yã ku waɗanda suka yi ĩmani! Ku shiga cikin Musulunci gabã ɗaya; kuma kada ku bi zambiyõyin Shaiɗan; lalle ne shĩ a gare ku maƙiyine, bayyanan ne.",
+      "am": "እናንተ ያመናችሁ ሆይ! ሁላችሁም በመታዘዝ ውስጥ ግቡ፡፡ የሰይጣንንም እርምጃዎች አትከተሉ፤ እርሱ ለእናንተ ግልጽ ጠላት ነውና፡፡",
+      "om": "Isin yaa warra amantan! Islaamummaa keessa guutuu guutuutti seenaa; tarkaanfilee shayxaanaa hin hordofinaa. Dhugumatti, inni (shayxaanni) isiniif diina ifa bahaadha.",
+      "so": "Kuwa (Xaqa) rumeeyoow! U soo gala Islaamka si dhan waaxid iyo wadarba, hana raacina tallaabooyinka Shaydaanka. Hubaal, wuxuu idiin yahay cadow cad.",
+      "ff": "Heey mon gomɗimɓe, naatee he kisal  denndanngal, wata on jokku juri (taaɓe) seytaane ɗin (ɗee). On ko gaño mooɗon ɓaŋnguɗo.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ kó s’ínú ẹ̀sìn ’Islām pátápátá. Ẹ̀yin kò sì gbọdọ̀ tẹ̀lé ojú-ẹsẹ̀ aṣ-Ṣaetọ̄n. Dájúdájú òun ni ọ̀tá pọ́nńbélé fún yín."
     }
   },
   {
@@ -360,7 +432,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ортидан озор келадиган садақадан кўра яхши гап ва кечириш яхшироқ. Аллоҳ Беҳожат ва Ҳалимдир.",
       "kk": "Көркем сөз және кешірімділік, артынан бұлдану, кейіту араласқан садақан жақсы. Алла (Т.) бай, жұмсақ.",
       "ky": "Ширин сөз жана кечирүү - (өзүнүн артынан) заар сөз ээрчиген садакадан жакшы. Аллах – Беймуктаж (жана пейили) Жумшак.",
-      "tg": "Сухани писандида [дар бархурд бо ниёзмандон] ва гузашт [аз исрору тундии онон], беҳтар аз садақае аст, ки озоре ба дунболаш бошад; ва Аллоҳ таоло бениёзу бурдбор аст"
+      "tg": "Сухани писандида [дар бархурд бо ниёзмандон] ва гузашт [аз исрору тундии онон], беҳтар аз садақае аст, ки озоре ба дунболаш бошад; ва Аллоҳ таоло бениёзу бурдбор аст",
+      "sw": "Kauli njema na msamaha ni bora kuliko sadaka inayofuatwa na maudhi. Na Mwenyezi Mungu ndiye Mwenye kujitosheleza, Mstahamilivu.",
+      "ha": "Magana mai kyau da gãfartawa su ne mafi alhẽri daga sadaka wadda wata cũtarwa take biyar ta. Kuma Allah Wadatacce ne, Mai haƙuri.",
+      "am": "መልካም ንግግርና ምሕረት ማድረግ ማስከፋት ከሚከተላት ምጽዋት በላጭ ነው፡፡ አላህም ተብቃቂ ታጋሽ ነው፡፡",
+      "om": "Jecha gaariifi dhiifamatu sadaqaa rakkisuun isa hordofu irra caala. Rabbiin dureessa, obsaadha.",
+      "so": "Hadal san iyo saamaxaad baa ka roon sadaqo ay raacdo waxyeello. Alle waa Deeqtoone, Dulqaad Badan.",
+      "ff": "Konngol lobbol ɓuri moƴƴude e sadaka dewnateeɗo lorla, Alla ko galo yondaniiɗo muñoowo.",
+      "yo": "Ọ̀rọ̀ rere àti àforíjìn lóore ju sàráà tí ìpalára tẹ̀lé. Allāhu sì ni Ọlọ́rọ̀, Aláfaradà."
     }
   },
   {
@@ -384,7 +463,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Şeytan sizi yoxsulluqla qorxudur və sizə pis işlər görməyi əmr edir. Allah isə sizə Öz tərəfindən bağışlanma və lütf vəd edir. Allahın (lütfü) genişdir, O (hər şeyi) biləndir.",
       "uz": "Шайтон сизларни камбағал бўлиб қолишингиздан қўрқитади ва фаҳш ишларга буюради. Аллоҳ сизларга Ўз тарафидан мағфират ва фазлу карам ваъда қилади. Аллоҳ (фазлу карами) кенг ва Билгувчидир.",
       "kk": "Шайтан сендерді кедейлікпен қорқытады да арсыздықты әмір етеді. Ал Алла (Т.) сендерге өз қасынан жарылқауды, кеңшілікті уәде етеді. Алла аса кең, толық білуші.",
-      "ky": "Шайтан силерди кембагалдык менен коркутат жана бузукулуктарга буюрат. Аллах болсо, силерге Өзүнүн кечиримин, пазилетин убада кылат. Аллах (тын ырайым-пазилети ) Кенен, Билүүчү."
+      "ky": "Шайтан силерди кембагалдык менен коркутат жана бузукулуктарга буюрат. Аллах болсо, силерге Өзүнүн кечиримин, пазилетин убада кылат. Аллах (тын ырайым-пазилети ) Кенен, Билүүчү.",
+      "sw": "Shetani anawatia hofu ya ufakiri, na anawaamrisha machafu. Na Mwenyezi Mungu anawaahidi msamaha kutoka kwake na fadhila. Na Mwenyezi Mungu ni Mwenye wasaa, Mwenye kujua.",
+      "am": "ሰይጣን (እንዳትለግሱ) ድኽነትን ያስፈራራችኋል፡፡ በመጥፎም ያዛችኋል፡፡ አላህ ከርሱ የኾነን ምሕረትና ችሮታን ይቀጥራችኋል፡፡ አላህም ችሮታው ሰፊ ዐዋቂ ነው፡፡",
+      "om": "Shayxaanni hiyyummaan isin sodaachisa, hamtutti isin ajaja, Rabbiin araaramaafi tola Isa biraa ta’e waadaa isiniif seena. Rabbiin (kenni isaa) bal’aa, beekaadha.",
+      "ff": "Seytaane na fodana on baasal o yamira on pankare, Alla noon na fodana on yaafuya ummaade e makko e ɓural Alla ko jaajɗo ko o ganndo.",
+      "yo": "Aṣ-Ṣaetọ̄n ń fi òṣì dẹ́rù bà yín, ó sì ń pa yín ní àṣẹ ìbàjẹ́ ṣíṣe. Allāhu sì ń ṣe àdéhùn àforíjìn àti oore àjùlọ láti ọ̀dọ̀ Rẹ̀ fún yín. Allāhu ní Oníbúọlá, Onímọ̀."
     }
   },
   {
@@ -408,7 +492,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Həqiqətən, iman gətirib saleh əməllər edən, namaz qılan və zəkat verənlərin Rəbbi yanında mükafatları vardır. Onlara heç bir qorxu yoxdur və onlar kədərlənməyəcəklər.",
       "uz": "Албатта, иймон келтирган, яхши амаллар қилган ва намозни тўкис адо қилиб, закотни берган зотлар учун Парвардигорлари ҳузурида ажр бор. Улар учун ҳеч қандай хавф йўқ ва улар ғамгин бўлмайдилар.",
       "kk": "Негізінен иман келтіріп ізгі іс істегендер, намазды толық орындап, зекет бергендер, олар үшін Раббыларынын қасында сыйлық бар. Оларға қорқу жоқ әрі олар қайғырмайды",
-      "tg": "Касоне, ки имон овардаанд ва корҳои шоиста анҷом додаанд ва намоз барпо доштаанд ва закот пардохтаанд, подошашон назди Парвардигорашон [маҳфуз] аст; на тарсе хоҳанд дошт ва на андӯҳгин мешаванд"
+      "tg": "Касоне, ки имон овардаанд ва корҳои шоиста анҷом додаанд ва намоз барпо доштаанд ва закот пардохтаанд, подошашон назди Парвардигорашон [маҳфуз] аст; на тарсе хоҳанд дошт ва на андӯҳгин мешаванд",
+      "sw": "Hakika, wale walioamini na wakatenda mema na wakashika Swala na wakatoa Zaka, wao watapata ujira wao kwa Mola wao Mlezi. Wala haitakuwa hofu juu yao, wala hawatahuzunika.",
+      "am": "እነዚያ ያመኑ፡፡ መልካም ሥራዎችንም የሠሩ፡፡ ሶላትንም ያስተካከሉ፡፡ ዘካንም የሰጡ ለነርሱ በጌታቸው ዘንድ ምንዳቸው አላቸው፡፡ በእነርሱም ላይ ፍርሃት የለባቸውም እነርሱም አያዝኑም፡፡",
+      "so": "Hubaal kuwa (Xaqa) rumeeyey oo samaha fala oo ooga salaadda oo bixiya Zakada, waxay ka heli abaalgudkooda Rabbigood agti. Cabsi ma ahaaneyso korkooda, mana murugoonayaan.",
+      "ff": "ɓeen goongɗinɓe ngolli ko moƴƴi ɓe darni juulde ɓe tottiri askal woodaniiɓe njobdi mumen ummaade ko joomi mumen kulol alanaaɓe ɓe ngonaa sunatooɓe.",
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n ṣe àwọn iṣẹ́ rere, tí wọ́n kírun, tí wọ́n sì yọ Zakāh, ẹ̀san wọn ń bẹ fún wọn ní ọ̀dọ̀ Olúwa wọn. Kò sí ìpáyà fún wọn. Wọn kò sì níí banújẹ́."
     }
   },
   {
@@ -439,7 +528,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, Аллоҳга еру кўкдаги бирон нарса махфий эмас.",
       "kk": "Шын мәнінде Алла (Т.) ға жердегі, көктегі еш нәрсе жасырын емес.",
       "ky": "Албетте, Аллахка жердеги жана асмандагы эч бир нерсе жашыруун эмес.",
-      "tg": "Бе тардид, ҳеҷ чиз - [на] дар замин ва на дар осмон – аз Аллоҳ таоло пӯшида намемонад"
+      "tg": "Бе тардид, ҳеҷ чиз - [на] дар замин ва на дар осмон – аз Аллоҳ таоло пӯшида намемонад",
+      "sw": "Hakika, Mwenyezi Mungu hakifichikani chochote kwake, katika dunia wala katika mbingu.",
+      "ha": "Lalle ne, Allah bãbu wani abin da ke ɓõyuwa gare Shi a cikin ƙasa, kuma bãbu a cikin sama.",
+      "am": "አላህ በምድርም በሰማይም ምንም ነገር በርሱ ላይ አይሰወርም፡፡",
+      "om": "Rabbiin dhugumatti homtuu isa jalaa hindhokatu, dachii keessattiifii samii keessattis.",
+      "so": "Hubaal, Alle waxba kama qarsoona ku sugan arlada ama samada.",
+      "ff": "Pellet, Alla, huunde suuɗotaako mo ka leydi wanaa ka kammu.",
+      "yo": "Dájúdájú Allāhu, kò sí kiní kan tó pamọ́ fún Un nínú ilẹ̀ àti nínú sánmọ̀."
     }
   },
   {
@@ -470,7 +566,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "У сизларни бачадонларда Ўзи хоҳлаган суратга соладиган Зотдир. Ундан ўзга илоҳ йўқ. У Азиз ва Ҳаким Зотдир.",
       "kk": "Ол сондай Алла (Т.) сендерді жатырларда қалауынша бейнелейді. Одан басқа ешбір тәңір жоқ. Өте үстем, хикмет иесі",
       "ky": "Ал силерди (энеңердин) жатындар(ын)да Өзү каалаган кейипке киргизет. Эч бир сыйынууга татыктуу кудай жок, жалгыз Анын Өзү бар. (Ал) Кудуреттүү, Даанышман.",
-      "tg": "Ӯст, ки шуморо ҳар гуна ки бихоҳад дар раҳимҳо шакл медиҳад. Ҳеҷ маъбуде [ба ҳақ] ҷуз Ӯ шикастнопазиру ҳаким нест"
+      "tg": "Ӯст, ки шуморо ҳар гуна ки бихоҳад дар раҳимҳо шакл медиҳад. Ҳеҷ маъбуде [ба ҳақ] ҷуз Ӯ шикастнопазиру ҳаким нест",
+      "sw": "Yeye ndiye anayewaunda ndani ya matumbo ya uzazi kwa namna apendavyo. Hakuna mungu isipokuwa Yeye, Mwenye nguvu, Mwenye hekima.",
+      "ha": "Shi ne wanda Yake suranta ku a cikin mahaifu yadda Yake so. Bãbu abin bautãwa fãce Shi Mabuwãyi, Mai hikima.",
+      "am": "እርሱ ያ በማሕጸኖች ውስጥ እንደሚሻ አድርጎ የሚቀርጻችሁ ነው፡፡ ከእርሱ በስተቀር ሌላ አምላክ የለም፡፡ አሸናፊው ጥበበኛው ነው፡፡",
+      "om": "Inni Isa gadaamessaawwan keessatti akka fedhetti isintolchu.Haqaan gabbaramaan isa malee hin jiru. [Inni] injifataa, ogeessa.",
+      "so": "Waa Kan idiinku sawira (qaab siiya) ilma galeennada siduu doono. Ma jiro ilaah (xaq lagu caabudo) aan Isaga ahayn, waa Adkaadaha, Xakiimka ah.",
+      "ff": "Ko kaŋko woni mba'dinoowo on ka renngaaji  no o muuyiri. Reweteeɗo woo alaa si wanaa kaŋko, fooluɗo, ñeeñuɗo.",
+      "yo": "Òun ni Ẹni tí Ó ń yàwòrán yín sínú àpòlùkẹ́ bí Ó ṣe fẹ́. Kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun, Alágbára Ọlọ́gbọ́n."
     }
   },
   {
@@ -498,7 +601,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, одамлар ибодат қилишлари учун қурилган биринчи уй Маккадаги муборак ва бутун оламлар учун ҳидоят (маёғи бўлган Каъбадир).",
       "kk": "Негізінен адам баласы үшін  Меккеде алғаш құрылған үй (Қағба) бүкіл әлемге мүбарак және тура жол.",
       "ky": "Адамдар (Аллахка сыйынуулары) үчүн курулган эң биринчи Үй (Кааба мечити) Меккеде. Ал ыйык жана ааламдар (адамдар) үчүн туура жол.",
-      "tg": "Дар ҳақиқат, нахустин хонае, ки барои [ибодати] мардум қарор дода шуд, ҳамонест, ки дар Макка қарор дорад, ки пурбаракат ва [мояи] ҳидояти ҷаҳониён аст"
+      "tg": "Дар ҳақиқат, нахустин хонае, ки барои [ибодати] мардум қарор дода шуд, ҳамонест, ки дар Макка қарор дорад, ки пурбаракат ва [мояи] ҳидояти ҷаҳониён аст",
+      "sw": "Hakika, Nyumba ya kwanza waliyowekewa watu kwa ibada ni ile iliyo Bakka, iliyobarikiwa na yenye uongofu kwa walimwengu.",
+      "am": "ለሰዎች (የአላህ ማምለኪያ) መጀመሪያ የተኖረው ቤት ብሩክና ለዓለማት ሁሉ መመሪያ ሲኾን ያ በበካህ (በመካ) ያለው ነው፡፡",
+      "om": "Dhugumatti manni jalqaba ilma namaatiif kaayame isa Bakkaan (Makkaan) jiruudha. haala barakeeffamaafi qajeelfama aalama hundaaf ta’een.",
+      "ff": "Pellet, aranndu e Suudu waɗanaandu yimɓe ɓen, ko ndun wondu Bakkata; barkinaandu e peewal wonan de Winndere nden."
     }
   },
   {
@@ -529,7 +636,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй мўминлар, Аллоҳдан чин дилдан қўрқинглар ва фақат мусулмон бўлган ҳолингизда дунёдан ўтинглар!",
       "kk": "Әй мүміндер! Алладан шынайы қорқумен қорқыңдар да Мұсылман болған күйде ғана өліңдер.",
       "ky": "О, ыйман келтирген адамдар! Аллахтан чындап корккула жана мусулман (ыймандуу) болуп гана өлгүлө.",
-      "tg": "Эй касоне, ки имон овардаед, аз Аллоҳ таоло – он гуна ки шоистаи парво кардан [тарсидан] аз Ӯст – парво кунед [битарсед] ва ҷуз дар мусулмонӣ намиред"
+      "tg": "Эй касоне, ки имон овардаед, аз Аллоҳ таоло – он гуна ки шоистаи парво кардан [тарсидан] аз Ӯст – парво кунед [битарсед] ва ҷуз дар мусулмонӣ намиред",
+      "sw": "Enyi mlioamini! Mcheni Mwenyezi Mungu haki ya kumcha, wala kamwe msife isipokuwa nyinyi ni Waislamu.",
+      "ha": "Ya ku waɗanda suka yi ĩmãni! Ku bi Allah da taƙawa, a kan hakkin binsa da taƙawa, kuma kada ku mutu fãce kuna mãsu sallamawa (Musulmi).",
+      "am": "እናንተ ያመናችሁ ሆይ! አላህን ተገቢውን መጠንቀቅ ተጠንቀቁት፡፡ እናንተም ሙስሊሞች ኾናችሁ እንጅ አትሙቱ፡፡",
+      "om": "Yaa warra amantan! Dhugaa sodaa isaa Rabbiin sodaadhaa; Muslimoota taatan malee hin du’inaa.",
+      "so": "Kuwa (Xaqa) rumeeyow! Ka cabsada Alle ka cabsashada xaqa ah uu mudan yahay (oo u dhowra si dhan Amarradiisa), hana dhimannina idinkoo aan aheyn Muslimiin (kuwo u hoggaansan Alle).",
+      "ff": "Hey mon gomɗimɓe, kuliree Alla no O Haaniri hulireede, wata on maayu dey, si wanaa hara ko on jebbiliiɓe.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu bí ó ṣe tọ́ láti bẹ̀rù Rẹ̀. Ẹ̀yin kò sì gbọdọ̀ kú àyàfi kí ẹ wà ní ipò mùsùlùmí."
     }
   },
   {
@@ -560,7 +674,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ердаги нарсалар Аллоҳникидир. Ишлар Аллоҳга қайтарилажак.",
       "kk": "Көктердегі және жердегі нәрселер Алланың иелігінде және барлық істер Аллаға қайтарылады.",
       "ky": "Асмандардагы жана жердеги бардык нерселер Аллахтын мүлкү. Жана бардык иштер Аллахка кайтарылат.",
-      "tg": "Ва ҳар чи дар осмонҳо ва замин аст, аз они Аллоҳ таоло аст ва [ҳама] корҳо ба сӯйи Аллоҳ таоло бозгардонда мешавад"
+      "tg": "Ва ҳар чи дар осмонҳо ва замин аст, аз они Аллоҳ таоло аст ва [ҳама] корҳо ба сӯйи Аллоҳ таоло бозгардонда мешавад",
+      "sw": "Na ni cha Mwenyezi Mungu kilicho katika mbingu na kilicho katika ardhi, na kwa Mwenyezi Mungu ndiko mambo yote yatarejeshwa.",
+      "ha": "Kuma abin da ke cikin sammai da abin da ke cikin ƙasa na Allah ne, kuma zuwa gare Shi ake mayar da al'amurra.",
+      "am": "በሰማያት ያለውና በምድር ያለውም ሁሉ የአላህ ነው፡፡ ነገሮችም ሁሉ ወደ አላህ ብቻ ይመለሳሉ፡፡",
+      "om": "Wantoonni samiifi wantoonni dachii keessa jiran (hundi) kan Rabbiiti. Wantoonni hunduu gara Rabbiitti deebifamu.",
+      "so": "Alle baana leh waxa ku sugan samooyinka iyo waxa ku sugan arlada. xagga Allayna umuurahoo dhan u noqdaan.",
+      "ff": "Ko Alla Woodani kala ko woni deer kammuuji e leydi, ko faade ka Alla woni ruttorde fiyakuuji ɗin.",
+      "yo": "Ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ohunkóhun tó wà nínú ilẹ̀. Ọ̀dọ̀ Allāhu sì ni wọ́n máa ṣẹ́rí àwọn ọ̀rọ̀ ẹ̀dá padà sí."
     }
   },
   {
@@ -591,7 +712,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Бу одамлар учун баёндир. Тақво эгалари учун ҳидоят ва панд-насиҳатдир.",
       "kk": "Бұл (Құран) адам баласы үшін ашық түсінік, тура жол және тақуалар үшін насихат.",
       "ky": "Бул (окуялар) адамдар үчүн баян, туура жол жана такыба кишилер үчүн эскертүү - насаат.",
-      "tg": "Ин [Қуръон] баёни ошкор барои мардум ва ҳидояту андарзе барои парҳезгорон аст"
+      "tg": "Ин [Қуръон] баёни ошкор барои мардум ва ҳидояту андарзе барои парҳезгорон аст",
+      "sw": "Huu ni ubainisho kwa watu wote, na ni uongofu, na mawaidha kwa wacha Mungu.",
+      "ha": "Wannan bayãni ne ga mutãne, kuma shiryuwa ce da wa'azi ga mãsu taƙawa.",
+      "am": "ይህ ለሰዎች ገላጭ፤ ለጥንቁቆች መሪና ገሳጭ ነው፡፡",
+      "om": "Kun namootaaf ibsa; qajeelfamaafi warra (Rabbiin) sodaataniif gorsa.",
+      "so": "Kanu (Qur’aanku) waa hadal u cad dadka, waana u hanuun iyo waano kuwa Alle ka cabsada (ee iska jira xumaha).",
+      "ff": "Ɗum ɗoo, ko Ɓanngannduyee wonannde yimɓe ɓen, e peewal e waaju wonannde gooŋɗuɓe ɓen.",
+      "yo": "Èyí ni àlàyé fún àwọn ènìyàn. Ìmọ̀nà àti wáàsí sì ni fún àwọn olùbẹ̀rù (Allāhu)."
     }
   },
   {
@@ -617,7 +745,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Əgər Allah sizə kömək edərsə, heç kəs sizə qalib gələ bilməz. Yox, əgər sizi zəlil edərsə, Ondan sonra kim sizə yardım edə bilər?! Qoy möminlər Allaha təvəkkül etsinlər!",
       "uz": "Агар сизларга Аллоҳ нусрат берса, ҳеч ким сизлардан ғолиб бўлмас. Сизларни ёрдамсиз қўйса, Ундан ўзга бирон зот ёрдамчи бўлмас. Мўминлар Аллоҳгагина таваккал қилсинлар!",
       "ky": "Эгер Аллах жардам берсе, силерди эч ким жеңе албайт. Эгерде жардамсыз (өзүңөрдү-өзүңөргө) таштап койсо, Аллахтан кийин силерге ким жардам берет?! Ыймандуулар Аллахка гана тобокел кылышсын!",
-      "tg": "Агар Аллоҳ таоло шуморо ёрӣ кунад, ҳеҷ кас бар шумо пирӯз нахоҳад шуд ва [аммо] агар шуморо ба худ вогузорад, кист, ки пас аз Ӯ ёриатон кунад? Ва муъминон бояд танҳо бар Аллоҳ таоло таваккал кунанд"
+      "tg": "Агар Аллоҳ таоло шуморо ёрӣ кунад, ҳеҷ кас бар шумо пирӯз нахоҳад шуд ва [аммо] агар шуморо ба худ вогузорад, кист, ки пас аз Ӯ ёриатон кунад? Ва муъминон бояд танҳо бар Аллоҳ таоло таваккал кунанд",
+      "sw": "Ikiwa Mwenyezi Mungu atakunusuruni, basi hakuna wa kukushindeni. Na akikutupeni, basi ni nani huyo baada yake atakayekunusuruni? Na kwa Mwenyezi Mungu tu, basi na wategemee Waumini.",
+      "ha": "Idan Allah Ya taimake ku, to, bãbu marinjayi a gare ku. Kuma idan Ya yarɓe ku, to, wãnẽ ne wanda yake taimakon ku bãyanSa? Kuma ga Allah sai mũminai su dõgara.",
+      "am": "አላህ ቢረዳችሁ ለእናንተ አሸናፊ የለም፡፡ ቢያዋርዳችሁም ያ ከርሱ (ማዋረድ) በኋላ የሚረዳችሁ ማነው በአላህም ላይ ብቻ ምእምናን ይመኩ፡፡",
+      "om": "Yoo Rabbiin isin gargaare, injifataan isiniif hin jiru. Yoo Inni isin xiqqeesse immoo, inni booda isaatii isin gargaaru sun eenyu? Mu’uminoonni Rabbuma irratti haa hirkatanu.",
+      "so": "Hadduu Alle idiin gargaari, markaa ma jiraan wax idinka adkaan kara; hadduu idinka goostona, waa kuma kan idiin gargaari Isaga ka dambow? Alle uun ha isku halleeyeen mu’miniintu oo ha tala saarteen.",
+      "ff": "Si Alla Wallii on pooloowo on alaa., si O Hoynii on ko hommbo wallata on ɓaawo Makko? Ko e Alla woni ko goŋɗimɓe ɓen haani fawaade.",
+      "yo": "Tí Allāhu bá ṣe àrànṣe fún yín, kò sí ẹni tí ó máa borí yín. Tí Ó bá sì yẹpẹrẹ yín, ta sì ni ẹni tí ó máa ṣe àrànṣe fún yín lẹ́yìn Rẹ̀? Allāhu ni kí àwọn onígbàgbọ́ òdodo gbáralé."
     }
   },
   {
@@ -645,7 +780,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ сизларга баён айлашни, сизларни олдингиларнинг йўлига ҳидоят этишни ва тавбаларингизни қабул қилишни истайди. Аллоҳ Билувчи ва Ҳикматли Зотдир.",
       "kk": "Алла (Т.) сендерге түсіндіруді және сендерді өздеріңнен бұрынғылардың тура жолдарына салуды сондай-ақ тәубелеріңді қабыл етуді қалайды. Алла толық білуші, хикмет еисі.",
       "ky": "Аллах силерге (бардык адал-арам маселелерди) баян кылып берүүнү жана силерди мурун өткөн (салих-таза) адамдардын жолуна салып, тообоңорду кабыл алууну каалайт. Аллах – Билүүчү, Даанышман.",
-      "tg": "Аллоҳ таоло мехоҳад, ки [аҳкоми хешро] бароятон равшан созад ва шуморо ба роҳу равиши касоне, ки пеш аз шумо буданд, роҳнамоӣ кунад ва Аллоҳ таоло донои ҳаким аст"
+      "tg": "Аллоҳ таоло мехоҳад, ки [аҳкоми хешро] бароятон равшан созад ва шуморо ба роҳу равиши касоне, ки пеш аз шумо буданд, роҳнамоӣ кунад ва Аллоҳ таоло донои ҳаким аст",
+      "sw": "Mwenyezi Mungu anataka kwamba awabainishie, na awaongoze nyendo za wale waliokuwa kabla yenu, na akubali toba zenu. Na Mwenyezi Mungu ni Mwenye kujua, Mwenye hekima.",
+      "ha": "Allah Yanã nufin Ya bayyana muku, kuma Ya shiryar da ku hanyõyin waɗanda suke a gabãninku kuma Ya karɓi tũbanku. Kuma Allah Masani ne Mai hikima.",
+      "am": "አላህ (የሃይማኖታችሁን ሕግጋት) ሊያብራራላችሁ ከእናንተ በፊትም የነበሩትን ነቢያት ደንቦች ሊመራችሁ በእናንተም ላይ ጸጸትን ሊቀበል ይሻል፡፡ አላህም ዐዋቂ ጥበበኛ ነው፡፡",
+      "om": "Rabbiin (waan eeyyamamaafi dhorgamaa ta’an) isiniif ibsuu barbaada, karaalee warra isin dura turanii isin qajeelchuufi tawbaa keessan qeebaluu (barbaada). Rabbiin beekaa, ogeessasi.",
+      "so": "Alle Wuxuu rabaa inuu idiin caddeeyo oo idinku hanuuniyo jidadka kuwii idin ka horreeyay, oo uu idinka tawbad aqbalo. Alle waa wax walba Ogsoone, Xakiim ah.",
+      "ff": "Allaahu O o faala Ɓann laɓɓinanade on O Feewna  on e laabi ɓeya adinooɓe on, O Jaɓana on tuubuubuyee. Alla ko gannduɗo, Ñeeñɗo.",
+      "yo": "Allāhu fẹ́ ṣàlàyé (òfin) fún yín, Ó fẹ́ tọ yín sí ọ̀nà àwọn tó ṣíwájú yín, Ó sì fẹ́ gba ìronúpìwàdà yín. Allāhu sì ni Onímọ̀, Ọlọ́gbọ́n."
     }
   },
   {
@@ -673,7 +815,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ тавбаларингизни қабул қилишни истайди, ҳою ҳавасга берилган кимсалар эса (ҳақ йўлдан) бутунлай оғиб кетишингизни истайдилар.",
       "kk": "Алла (Т.) тәубелеріңді қабыл етуді қалайды. Сондай-ақ шаһуат қуғандар (жыныстық уәесқойлар) сендердің зор ауытқумен жолдан шығуларыңды қалайды.",
       "ky": "Аллах силердин (бакыт-таалайга жеткизе турган) тообоңорду кабыл алууну каалайт. Ал эми, кумар-ышкынын артынан түшкөн адамдар болсо, экинчи кайткыс болуп (ак жолдон) адашып кетишиңерди каалайт.",
-      "tg": "Ва Аллоҳ таоло мехоҳад тавбаи шуморо бипазирад [ва аз олудагии гуноҳ покатон намояд], ва [-ле] касоне, ки пайрави шаҳавот ҳастанд, мехоҳанд, ки шумо дастхуши инҳирофи бузурге шавед"
+      "tg": "Ва Аллоҳ таоло мехоҳад тавбаи шуморо бипазирад [ва аз олудагии гуноҳ покатон намояд], ва [-ле] касоне, ки пайрави шаҳавот ҳастанд, мехоҳанд, ки шумо дастхуши инҳирофи бузурге шавед",
+      "sw": "Na Mwenyezi Mungu anataka kuwakubalia toba zenu, na wale wanaofuata matamanio wanataka kwamba mjipinde kujipinda kukubwa.",
+      "ha": "Kuma Allah Yanã nufin Ya karɓi tũbarku. Kuma waɗanda suke bin sha'awõyi suna nufin ku karkata, karkata mai girma.",
+      "am": "አላህም በእናንተ ላይ ጸጸትን ሊቀበል ይሻል፡፡ እነዚያም ፍላጎታቸውን የሚከተሉት (ከውነት) ትልቅን መዘንበል እንድትዘነበሉ ይፈልጋሉ፡፡",
+      "om": "Rabbiin tawbaa keessan qeebaluu fedha. Warri fedha lubbuu isaanii hordofan immoo isin jallina guddaa jallachuu fedhu.",
+      "so": "Alle Wuxuu rabaa inuu idinka tawbad aqbalo, kuwase raaca shahwadooda, waxay rabaan inaad weecataan weecasho weyn.",
+      "ff": "Alla no Faala de O Jaɓanta on tuubuubuyee, ɓeen jokkuɓe beleeɗe faalaa de ooñorton ooñannde mawnde.",
+      "yo": "Àti pé Allāhu fẹ́ gba ìronúpìwàdà yín. Àwọn tó sì ń tẹ̀lé ìfẹ́-adùn ara sì ń fẹ́ kí ẹ yẹ̀ kúrò (nínú ẹ̀sìn) ní yíyẹ̀ tó tóbi pátápátá."
     }
   },
   {
@@ -703,7 +852,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Катта гуноҳлардан тийилсангизлар, кичик гуноҳларингизни ўчириб юборамиз ва сизларни улуғ манзилга киритамиз.",
       "kk": "Егер сендер тыйым салынған нәрселердің үлкенінен сақтансаңдар, сендердің жамандықтарыңды жасырып, өздеріңді құрметті орыңға кіргіземіз.",
       "ky": "Эгер тыюу салынган чоң күнөөлөрдөн сактансаңар (жана парыз ибадаттарды үзбөй жасап жүрсөңөр) Биз силердин (бардык) күнөөңөрдү өчүрөбүз жана Улук Орунга-бейишке киргизебиз.",
-      "tg": "[Эй муъминон] Агар аз гуноҳони бузурге, ки аз он наҳй шудаед, дурӣ кунед, гуноҳон [-и сағиратон]-ро аз шумо мезудоем ва шуморо дар ҷойгоҳи шоистаи [биҳишт] ворид мекунем"
+      "tg": "[Эй муъминон] Агар аз гуноҳони бузурге, ки аз он наҳй шудаед, дурӣ кунед, гуноҳон [-и сағиратон]-ро аз шумо мезудоем ва шуморо дар ҷойгоҳи шоистаи [биҳишт] ворид мекунем",
+      "sw": "Mkiyaepuka makubwa ya yale mnayokatazwa, tutawafutia makosa yenu madogo, na tutawaingiza pahali pa kuingia patukufu.",
+      "ha": "Idan kuka nĩsanci manyan abubuwan da ake hana ku aikatãwa, to, zã Mu kankare mũnanan ayyukanku daga gare ku, kuma Mu shigar da ku mashiga ta karimci.",
+      "am": "ከእርሱ ከተከለከላችሁት ታላላቆቹን (ኀጢአቶች) ብትርቁ (ትናንሾቹን) ኀጢአቶቻችሁን ከእናንተ እናብሳለን፡፡ የተከበረንም ስፍራ (ገነትን) እናገባችኋለን፡፡",
+      "om": "Yoo badii gugurdoo irraa dhoowwamtantanirraa fagaattan, badiilee (xixiqqaa) keessan isin irraa haqna, seensa kabajaa isin seensifna.",
+      "so": "Haddaad ka fogaataan denbiyada waaweyn ee la idinka reebay, waxaan idin dhaafi denbiyadiinna (yar yar), waxaana idin gelin meel gelitaan sharaf leh (Janno).",
+      "ff": "Si on woɗɗitike [bakkaatu] mawɗi ɗi haɗaɗon ɗin e mun, Mein poppanat on bonɗi mon ɗin, Min Naatnira on e  naatirgal teddungal.",
+      "yo": "Tí ẹ bá jìnnà sí àwọn ẹ̀ṣẹ̀ ńlá ńlá tí A kọ̀ fún yín, A máa pa àwọn ìwà àìdáa yín rẹ́ fún yín, A sì máa mu yín wọ àyè alápọ̀n-ọ́nlé."
     }
   },
   {
@@ -732,7 +888,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ заррача ҳам зулм қилмайди. Яхшилик бўлса, унинг савобини кўпайтириб беради ва Ўз ҳузуридан улуғ ажр ато этади.",
       "kk": "Негізінен Алла (Т.), тозаң түйірінің салмағындай да әділсіздік етпейді. Егер бір жақсылық болса, оны неше есе арттырады әрі өз жанынан да ірі сыйлық береді.",
       "ky": "«Албетте, Аллах эч кимге чаң бүртүгүнүн салмагындай да зулум кылбайт. Эгер (пенденин ишинде чаңдын бүртүгүнчө) жакшылык болсо, аны көбөйтөт жана Өзүнүн алдынан чоң сооп берет».",
-      "tg": "Бе гумон, Аллоҳ таоло ба андозаи заррае [ба бандагонаш] ситам намекунад ва агар кори неке бошад, онро дучандон мекунад ва аз пешгоҳи худ [ба онон] подоши бузурге ато мекунад"
+      "tg": "Бе гумон, Аллоҳ таоло ба андозаи заррае [ба бандагонаш] ситам намекунад ва агар кори неке бошад, онро дучандон мекунад ва аз пешгоҳи худ [ба онон] подоши бузурге ато мекунад",
+      "sw": "Hakika Mwenyezi Mungu hadhulumu hata uzito wa chembe moja. Na ikiwa ni jambo zuri, atalizidisha na atapeana kutoka kwake malipo makubwa.",
+      "ha": "Lalle ne, Allah bã Ya zãluncin gwargwadon nauyin zarra, idan ta kasance alhẽri ce, zai riɓanya ta, kuma Ya kãwo daga gunsa ijãra mai girma.",
+      "am": "አላህ የብናኝን ክብደት ያህል አይበድልም፡፡ መልካም ሥራ ብትኾንም ይደራርባታል፡፡ ከእርሱም ዘንድ ታላቅን ምንዳ ይሰጣል፡፡",
+      "om": "Dhugumatti Rabbiin hanga madaala atomii tokkoo hin miidhu, Yoo isheen dalagaa gaarii taate dachaa ishee taasisa; mindaa guddaa Isa biraa ta’es (dabalaan) ni kenna.",
+      "so": "Hubaal, Alle ma dulmiyo 'dadka' wax saxar le’egba ha ahaatee, hadday wanaag falaanna, wuu labo laabaa, wuxuuna ka bixiyaa Xaggiisa Ajar Weyn.",
+      "ff": "Pellet, Alla Tooñataa hay fotde gabbel- jarra si wonii ko moƴƴere, O Soway nde, O Okka immorde ka Mokko njoɓdi mawndi.",
+      "yo": "Dájúdájú Allāhu kò níí ṣàbòsí òdíwọ̀n ọmọ iná-igún. Tí ó bá jẹ iṣẹ́ rere, Ó máa ṣàdìpèlé (ẹ̀san) rẹ̀. Ó sì máa fún (olùṣe rere) ní ẹ̀san ńlá láti ọ̀dọ̀ Rẹ̀."
     }
   },
   {
@@ -758,7 +921,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ckb": "ھیچ پەرستراوێکی ڕاست نیە جگە لەخوا سوێند بەخوا بێگومان کۆتان دەکاتەوە بۆ (لێپرسینەوەی) ئەو ڕۆژی دواییەی کە ھیچ گومانی تێدا نیە جا کێ لە خوا قسە (و بەڵێنی) ڕاستترە",
       "az": "Allah, Özündən başqa heç bir məbud olmayandır. (O,) Sizi qiyamət günündə mütləq (bir yerə) toplayacaqdır. Bunda əsla şübhə yoxdur. Allahdan daha doğru danışan kim ola bilər?",
       "uz": "Аллоҳ. Ундан ўзга илоҳ йўқдир. У сизларни (рўй бериши) шак-шубҳасиз бўлган Қиёмат кунида тўплайди. Аллоҳдан кўра ростгўйроқ ким бор?!",
-      "tg": "Аллоҳ таоло [ки маъбуди ростин аст ва] ҳеҷ маъбуде ҷуз Ӯ нест, яқинан, ҳамагӣ шуморо рӯзи қиёмат, ки тардиде дар [вуқуи] он нест, ҷамъ мекунад. Ва кист, ки аз Аллоҳ таоло ростгӯйтар бошад?"
+      "tg": "Аллоҳ таоло [ки маъбуди ростин аст ва] ҳеҷ маъбуде ҷуз Ӯ нест, яқинан, ҳамагӣ шуморо рӯзи қиёмат, ки тардиде дар [вуқуи] он нест, ҷамъ мекунад. Ва кист, ки аз Аллоҳ таоло ростгӯйтар бошад?",
+      "sw": "Mwenyezi Mungu, hapana mungu isipokuwa Yeye. Kwa yakini, atawakusanya Siku ya Kiyama. Halina shaka hilo. Na ni nani mkweli zaidi katika mazungumzo kuliko Mwenyezi Mungu?",
+      "am": "አላህ ከእርሱ በስተቀር አምላክ የለም፡፡ ወደ ትንሣኤ ቀን በርሱ ጥርጥር የሌለበት ሲኾን በእርግጥ ይሰበስባችኋል፡፡ በንግግርም ከአላህ ይበልጥ እውነተኛ ማነው",
+      "om": "Rabbiin dhugaan gabbaramaan isa malee hin jiru. Dhugumatti, Guyyaa Qiyaamaa keessa walitti isin qaba; isa keessa mamiin hin jiru. Eenyutu Rabbiin caalaa haasa’a dhugaa dubbata?",
+      "so": "Allaah! Ma jiro Ilaah (xaq lagu caabudo) aan Isaga ahayn. Wuxuu idiin soo kulmin Maalinta Qiyaamaha, shaki kuma jiro. Yaa ka run sheeg badan Alle oo hadla.",
+      "ff": "Alla, deweteeɗo alaa si wonaa Kaŋko, ma o Mooɓi on ñande Darngal, sikke alaa e mayre. Alaa  ɓurɗo gooŋuɗude Alla yeewtere ?",
+      "yo": "Allāhu, kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Dájúdájú Ó máa ko yín jọ ní Ọjọ́ Àjíǹde, kò sí iyèméjì nínú rẹ̀. Ta ló sọ̀dodo ọ̀rọ̀ ju Allāhu?"
     }
   },
   {
@@ -787,7 +956,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ким дунё савобини истаса, (билсинки), Аллоҳнинг ҳузурида бу дунёнинг ҳам, у дунёнинг ҳам савоби бордир. Аллоҳ Эшитувчи ва Кўрувчи бўлган Зотдир.",
       "kk": "Кім дүниенің пайдасын тілесе, Сонда дүние, ахиреттің пайдасы Алланың қасында. Сондай-ақ Алла әр нәрсені естуші, ерекше мейірімді.",
       "ky": "Ким дүйнө сообун кааласа,.. Дүйнөнүн да, Акыреттин да сообу Аллахтын алдында. Аллах Угуучу, Көрүүчү.",
-      "tg": "Ҳар ки [дар қиболи корҳояш] подоши дунёро мехоҳад, пас, [бидонад, ки] подоши дунё ва охират назди Аллоҳ таоло аст ва Аллоҳ таоло ҳамвора шунавову биност"
+      "tg": "Ҳар ки [дар қиболи корҳояш] подоши дунёро мехоҳад, пас, [бидонад, ки] подоши дунё ва охират назди Аллоҳ таоло аст ва Аллоҳ таоло ҳамвора шунавову биност",
+      "sw": "Mwenye kutaka malipo ya dunia, basi kwa Mwenyezi Mungu yapo malipo ya dunia na Akhera. Na Mwenyezi Mungu ni Mwenye kusikia vyema, Mwenye kuona yote.",
+      "am": "የቅርቢቱን ዓለም ምንዳ የሚፈልግ የኾነ ሰው አላህ ዘንድ የቅርቢቱና የመጨረሻይቱ ምንዳ አልለ፡፡ አላህም ሰሚ ተመልካች ነው፡፡",
+      "om": "Namni mindaa addunyaa kan fedhu ta'e, mindaan addunyaafi Aakhiraa Rabbiin bira qofa jira. Rabbiin dhaga’aa, argaa ta’eera.",
+      "so": "Qofkii raba abaalka adduunyadan, Alle baa haya abaalka adduunyadan iyo Aakhiradaba. Alle waa wax kasta Maqle, wax kasta Arka.",
+      "ff": "Kala laatiiɗo o yiɗi koa njoɓdi aduna,  ko  Alla  jogi njoɓdi aduna e laakara woni. Alla seeraani ko nanoowo , Yi'oowo.",
+      "yo": "Ẹnikẹ́ni tí ó bá ń fẹ́ ẹ̀san nílé ayé, ṣebí lọ́dọ̀ Allāhu ní ẹ̀san ti ayé àti ti ọ̀run wà. Allāhu sì ń jẹ́ Olùgbọ́, Olùríran."
     }
   },
   {
@@ -813,7 +988,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ ёмон сўзларнинг ошкора айтилишини хуш кўрмайди. (Бу ишнинг) мазлум томонидан бўлиши бундан мустасно. Аллоҳ Эшитгувчи, Билгувчи бўлган Зотдир.",
       "kk": "Алла (Т.) жаман сөздің жарияланып сөйленуін жақсы көрмейді. Бірақ зұлымдыққа ұшыраған біреудікі басқа. Алла әр нәрсені естиді, біледі.",
       "ky": "Аллах (ар кандай) жаман сөздүн ашкере айтылуусун сүйбөйт. Бир гана залым көргөн адамдар үчүн (заалымды каргап, тескери дуба кылуулары) мүмкүн. Аллах Угуучу, Билүүчү.",
-      "tg": "Аллоҳ таоло бадгӯии ошкорро дӯст намедорад, магар аз ҷониби касе, ки ба ӯ ситам шудааст [ва ночор забон ба шикояту нафрин мекушояд]. Ва Аллоҳ таоло ҳамвора шунавову доност"
+      "tg": "Аллоҳ таоло бадгӯии ошкорро дӯст намедорад, магар аз ҷониби касе, ки ба ӯ ситам шудааст [ва ночор забон ба шикояту нафрин мекушояд]. Ва Аллоҳ таоло ҳамвора шунавову доност",
+      "sw": "Mwenyezi Mungu hapendi kutajwa mabaya hadharani isipokuwa kwa aliyedhulumiwa. Na Mwenyezi Mungu ni Mwenye kusikia, Mwenye kujua.",
+      "am": "አላህ ከንግግር በክፉው መጮህን ከተበደለ ሰው (ጩኸት) በቀር አይወድም፡፡ አላህ ሰሚ ዐዋቂ ነው፡፡",
+      "om": "Yoo nama miidhame ta’e malee Rabbiin jecha irraa hamaa ifa baasuu hin jaalatu. Rabbiinis dhagayaa, beekaa ta'eera.",
+      "so": "Alle ma jecla ku dhawaaqa hadalka kiisa xun, mid maahee uu yidhaahdo qof la dulmiyey (oo dacwoonaya). Alle waa wax kasta Maqle, wax kasta Ogsoon.",
+      "ff": "Alla Yiɗaa ko feeñi ko e bone immorde e koŋngol, si wanaa on tooñaaɗo. Alla seeraani ko nanoow ko gannduɗo."
     }
   },
   {
@@ -844,7 +1024,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ иймон келтирган ва яхши амаллар қилган зотларга улар учун мағфират ва улуғ ажр борлигини ваъда қилди.",
       "kk": "Алла (Т.) сондай иман келтіріп, ізгі іс істегендерге жарылқау әрі ірі сыйлық уәде етті.",
       "ky": "Ыйман келтирип, жакшы иштерди кылгандарга Аллах кечирим жана чоң сооп-сыйлык болорун убада кылды.",
-      "tg": "Аллоҳ таоло ба онон, ки имон овардаанд ва корҳои шоиста анҷом додаанд, ваъдаи омурзиш ва подоши бузурге додааст"
+      "tg": "Аллоҳ таоло ба онон, ки имон овардаанд ва корҳои шоиста анҷом додаанд, ваъдаи омурзиш ва подоши бузурге додааст",
+      "sw": "Mwenyezi Mungu amewaahidi wale walioamini na wakatenda mema kwamba wana kufutiwa dhambi na malipo makubwa.",
+      "ha": "Allah Yã yi wa'adi ga waɗanda suka yi ĩmãni, kuma suka aikata ayyukan ƙwarai. Sunã da wata gãfara da lãda mai girma.",
+      "am": "እነዚያንም ያመኑትንና በጎ ሥራዎችን የሠሩትን አላህ (ገነትን) ተስፋ አደረገላቸው፡፡ ለእነርሱ ምሕረትና ታላቅ ምንዳ አላቸው፡፡",
+      "om": "Rabbiin isaan amananii gaggaarii hojjatan, isaaniif araaramaafi mindaa guddaatu jira (jechuun) waadaa seeneera.",
+      "so": "Alle wuxuu u ballan qaaday kuwa rumeeyey oo samaha fala inay leeyihiin denbi dhaaf iyo Ajar weyn (Janno).",
+      "ff": "Alla Fodiini ɓeen gooɗinɓe ɓe ngolli golle moƴƴe, no woodani yaafuyo e njoɓdi mawnndi.",
+      "yo": "Allāhu ṣe àdéhùn fún àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣiṣẹ́ rere (pé) àforíjìn àti ẹ̀san ńlá ń bẹ fún wọn."
     }
   },
   {
@@ -873,7 +1060,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй иймон келтирганлар, Аллоҳдан қўрқингиз ва Унга васила излангиз ҳамда Унинг йўлида жиҳод қилингиз. Шоядки, шунда нажот топсангиз.",
       "kk": "Әй иман келтіргендер! Алладан қорқыңдар, оған жақындасуды іздеңдер. (Бой ұсыну арқылы тырысыңдар.) Және екі дүниеде құтылып мұратқа жетулерің үшін, Оның жолында күресіңдер.",
       "ky": "О, ыйман келтиргендер! Аллахтан корккула, Ага жакын болуунун жолун издегиле жана Анын жолунда жихад кылгыла. (Ошондо гана) силер жеңишке жетүүңөр мүмкүн.",
-      "tg": "Эй касоне, ки имон овардаед, аз Аллоҳ таоло парво кунед [битарсед] ва [бо анҷоми корҳои нек, барои тақарруб] ба сӯйи Ӯ васила биҷӯед ва дар роҳаш ҷиҳод кунед, бошад, ки растагор шавед"
+      "tg": "Эй касоне, ки имон овардаед, аз Аллоҳ таоло парво кунед [битарсед] ва [бо анҷоми корҳои нек, барои тақарруб] ба сӯйи Ӯ васила биҷӯед ва дар роҳаш ҷиҳод кунед, бошад, ки растагор шавед",
+      "sw": "Enyi mlioamini! Mcheni Mwenyezi Mungu, na tafuteni njia ya kumfikia. Na pambaneni kwa juhudi katika njia yake ili mfaulu.",
+      "am": "እናንተ ያመናችሁ ሆይ! አላህን ፍሩ፡፡ ወደርሱም መቃረቢያን (መልካም ሥራን) ፈልጉ፡፡ ትድኑ ዘንድም በእርሱ መንገድ ታገሉ፡፡",
+      "om": "Yaa warra amantan! Rabbiin sodaadhaa. Waan gara Isaatti dhihaattaniin barbaadaa.karaa Isaa keessattis qabsaa’aa. Akka milkooftaniif jecha.",
+      "so": "Kuwa (Xaqa) rumeeyow! Alle ka cabsada, oo u doonta xaggiisa dhowaansho, una jihaada Jidkiisa Aad liibaantaane.",
+      "ff": "Eeheymon yo gooŋɗimɓe, kulee Alla, ɗaɓɓiron e Makko jokkorgal, tiiɗnoɗon e Laawol Makko, mbelajo'o, on maloyte."
     }
   },
   {
@@ -903,7 +1095,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ер Аллоҳнинг мулки эканини, (У Зот) истаган бандасини азоблаб, истаган бандасини кечириб юборишини билмадингизми? Аллоҳ ҳар нарсага Қодирдир.",
       "kk": "Расында көктер мен жердің әкімшілігі Аллаға тән екенін білмедің бе? Кімді қаласа жазалайды да, кімді қаласа жарылқайды. Әрі Алланың әр нәрсеге күші жетуші.",
       "ky": "(О, Мухаммад!) Сен асмандар жана жерде болгондун баары Аллахтын мүлкү экенин, Аллах каалаганын азаптап, каалаганына кечирим берерин билбедиңби?! Аллах бардык нерсеге Кудуреттүү.",
-      "tg": "Оё намедонӣ, ки фармонравоии осмонҳо ва замин аз они Аллоҳ таоло аст, [ва] ҳар киро бихоҳад азоб мекунад ва ҳар киро бихоҳад мебахшад? Ва Аллоҳ таоло бар ҳар чизе тавоност"
+      "tg": "Оё намедонӣ, ки фармонравоии осмонҳо ва замин аз они Аллоҳ таоло аст, [ва] ҳар киро бихоҳад азоб мекунад ва ҳар киро бихоҳад мебахшад? Ва Аллоҳ таоло бар ҳар чизе тавоност",
+      "sw": "Je, hukujua ya kwamba Mwenyezi Mungu anao ufalme wa mbingu na ardhi? Humuadhibu amtakaye, na humsamehe amtakaye. Na Mwenyezi Mungu ni Muweza wa kila kitu.",
+      "ha": "Shin, ba ka sani ba cewa lalle ne, Allah Shi ne da mulkin sammai da ƙasa, Yanã azãbtar da wanda Yake so, kuma Yanã yin gãfara ga wanda yake so, kuma Allah a dukkan kõme, Mai ĩkon yi ne?",
+      "am": "የሰማያትና የምድር ንግሥና የሱ (የአላህ) ብቻ መኾኑን አላወቅክምን የሚሻውን ሰው ይቀጣል፡፡ ለሚሻውም ሰው ይምራል፡፡ አላህም በነገሩ ሁሉ ላይ ቻይ ነው፡፡",
+      "om": "Sila ati Rabbiin mootummaan samiileefi dachii kan Isaa ta’uu hin beeknee! Nama fedhe ni adaba; nama fedheef ni araarama. Rabbiin waan hunda irratti danda’aadha.",
+      "so": "Miyaadan ogeyn in Alle leeyahay Boqortooyada (runta ah ee) samooyinka iyo arlada. Wuxuu cadaabi qofkuu doono oo u denbi dhaafi qofkuu doono. Alle wax walba wuu Karaa.",
+      "ff": "E a anndaa won de no woodani Alla Laamu kammuuli ɗin e leydi ndin, Homo Lepta on mo O muuyi, o yaafo on mo O muuyi. Alla ko kattanɗo kala huunde.",
+      "yo": "Ṣé o ò mọ̀ pé dájúdájú ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀? Ó máa jẹ ẹni tí Ó bá fẹ́ níyà. Ó sì máa forí jin ẹni tí Ó bá fẹ́. Allāhu sì ni Alágbára lórí gbogbo n̄ǹkan."
     }
   },
   {
@@ -927,7 +1126,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Ey iman gətirənlər! Allahın sizə halal buyurduğu pak nemətləri (özünüzə) haram etməyin və həddi aşmayın. Həqiqətən, Allah həddi aşanları sevməz.",
       "uz": "Эй иймон келтирганлар, Аллоҳ сизларга ҳалол қилган ёқимли нарсаларни (ўзингизга) ҳаром қилиб олмангиз. Ҳаддингиздан ошмангиз. Аллоҳ ҳаддидан ошадиганларни ёқтирмас.",
       "kk": "Әй мүміндер! Алланың сендерге халал еткен жақсы нәрселерді арам етіп шектен аспаңдар. Шынында Алла шектен шығушыларды жақсы көрмейді.",
-      "ky": "О, ыйман келтиргендер! Аллах силерге адал кылган таза нерселерди арам кылып албагыла! Жана чектен чыкпагыла! Чынында, Аллах чектен чыккандарды жакшы көрбөйт!"
+      "ky": "О, ыйман келтиргендер! Аллах силерге адал кылган таза нерселерди арам кылып албагыла! Жана чектен чыкпагыла! Чынында, Аллах чектен чыккандарды жакшы көрбөйт!",
+      "sw": "Enyi mlioamini! Msiviharamishe vizuri alivyowahalalishia Mwenyezi Mungu, wala msivuke mipaka. Hakika Mwenyezi Mungu hawapendi wavukao mipaka.",
+      "am": "እናንተ ያመናችሁ ሆይ! አላህ ለናንተ የፈቀደላችሁን ጣፋጮች እርም አታድርጉ፡፡ ወሰንንም አትለፉ፡፡ አላህ ወሰን አላፊዎችን አይወድምና፡፡",
+      "om": "Yaa warra amantan! gaggaarii waan Rabbiin isiniif hayyamee haraama hin taasisinaa. Daangaa hin dabrinaa; Dhugumatti, Rabbiin warra daangaa dabranu hin jaalatu.",
+      "so": "Kuwa (Xaqa) rumeeyow! Ha xarrimina Waxyaalaha wanaagsan uu Alle idiin banneeyey, hana xad gudbina. Hubaal, Alle ma jecla kuwa xadgudba.",
+      "ff": "Eehey mon yo gooŋɗinɓe, wota on karrmin laaɓuɗi ɗi Alla dakginani on, wata on njatu. Pe keerol, Alla Yiɗaa yawtooɓe ɓn.keeri Alla",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ má ṣe sọ àwọn n̄ǹkan dáadáa tí Allāhu ṣe ní ẹ̀tọ́ fún yín di èèwọ̀. Ẹ sì má ṣe tayọ ẹnu-ààlà. Dájúdájú Allāhu kò fẹ́ràn àwọn olùtayọ ẹnu-ààlà."
     }
   },
   {
@@ -954,7 +1159,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Həqiqətən, şeytan şərab və qumar vasitəsilə sizin aranıza ədavət və kin salmaq, sizi Allahı anmaqdan və namazdan ayırmaq istər. Bunlara son qoyacaqsınızmı?",
       "uz": "Ичкилик ва қиморда шайтон ораларингизга нафрат ва адоват солишни ҳамда сизларни Аллоҳнинг зикри ва намоздан тўсишни истайди. Энди тўхтарсизлар!",
       "kk": "Негізінен шайтан, арақта, құмарда араларыңа дұшпандық әрі кек салып, Алланы еске алудан және намаздан тосуды қалайды. Ал сонда да тыйылмайсыңдар ма?",
-      "ky": "Арак жана кумар себептүү шайтан силердин араңарга жек көрүү жана душманчылык салууну жана силерди намаздан, Аллахты эскерүүдөн тосууну каалайт! Эми, кайтасыңарбы?!"
+      "ky": "Арак жана кумар себептүү шайтан силердин араңарга жек көрүү жана душманчылык салууну жана силерди намаздан, Аллахты эскерүүдөн тосууну каалайт! Эми, кайтасыңарбы?!",
+      "sw": "Hakika Shetani anataka kutia kati yenu uadui na chuki katika mvinyo na kamari, na awazuie kumkumbuka Mwenyezi Mungu na kuswali. Basi je, mmeacha?",
+      "ha": "Abin sani kawaĩ Shaiɗan yanã nufin ya aukar da adãwa da ƙeta a tsakãninku, a cikin giya da cãca, kuma ya kange ku daga ambaton Allah, kuma daga sallah. To, shin, ku mãsu hanuwa ne?",
+      "am": "ሰይጣን የሚፈልገው በሚያሰክር መጠጥና በቁማር በመካከላችሁ ጠብንና ጥላቻን ሊጥል አላህን ከማውሳትና ከስግደትም ሊያግዳችሁ ብቻ ነው፡፡ ታዲያ እናንተ (ከእነዚህ) ተከልካዮች ናችሁን (ተከልከሉ)፡፡",
+      "om": "Wanti sheyxaanni fedhu gidduu keessanitti diinummaafi wal jibbaa dhugaatii macheessaniifi qumaaraan buusuudha. Rabbiin yaadachuufi salaata irraa isin dhorguudha. Sila isin hin dhorgamtanuu?",
+      "so": "Shaydaan wuxuu rabaa inuu idinku dhex dhigo colaad iyo isnac khamrada iyo qamaarka, oo idinka jeediyo xusidda Alle iyo salaadda, ee ma ka joogeysaan?",
+      "ff": "Nganndee ko seytaane faalaa, ko nde o liɓata ngañgu e konnaagu(tikere)hakkunde mo'on ka siwram e ka karte, o faddoo on ga e jaŋtagol Alla e juulde nden. Hara onon ko on haɗitotooɓe ?(woppooɓe)?"
     }
   },
   {
@@ -984,7 +1195,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Билингизки, Аллоҳнинг азоби қаттиқдир ва Аллоҳ Кечиримли, Раҳмлидир.",
       "kk": "Біліңдер! Күдіксіз Алла қатты азап иесі, шынында Алла өте жарылқаушы, ерекше мейірімді.",
       "ky": "Билип койгула, Аллах – катуу азап берүүчү жана Аллах – Кечиримдүү, Мээримдүү",
-      "tg": "[Эй мардум] Бидонед, ки Аллоҳ таоло сахткайфар аст ва [дар айни ҳол] Аллоҳ таоло омурзандаи меҳрубон аст"
+      "tg": "[Эй мардум] Бидонед, ки Аллоҳ таоло сахткайфар аст ва [дар айни ҳол] Аллоҳ таоло омурзандаи меҳрубон аст",
+      "sw": "Jueni kwamba Mwenyezi Mungu ni Mkali wa kuadhibu, na ya kwamba Mwenyezi Mungu ni Mwenye kufuta dhambi, Mwenye kurehemu.",
+      "ha": "Ku sani cewa lalle Allah Mai tsananin uƙuba ne, kuma lalle Allah Mai gãfara ne, Mai jin ƙai.",
+      "am": "አላህ ቅጣተ ብርቱ መኾኑን አላህም መሓሪ አዛኝ መኾኑን እወቁ፡፡",
+      "om": "Beekaa! Dhugumatti Rabbiin (abbaa) adabbii cimaati. Dhugumatti Rabbiin araaramaa, rahmata godhaadha.",
+      "so": "Ogaada in Alle Ciqaabkiisu Daran yahay, iyo in Alle Denbi Dhaaf iyo Naxariis Badan yahay.",
+      "ff": "Nganndee won de pellet, Alla ko caɗtuɗo lepte, e won de pellet, Alla ko kaforoowo, jurmotooɗo.",
+      "yo": "Ẹ mọ̀ pé dájúdájú Allāhu le níbi ìyà. Àti pé dájúdájú Allāhu ni Aláforíjìn, Àṣàkẹ́-ọ̀run."
     }
   },
   {
@@ -1014,7 +1232,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ернинг ва улар орасидаги нарсаларнинг мулки Аллоҳникидир. У ҳар нарсага Қодирдир.",
       "kk": "Көктер мен жер әрі екі арасындағылар Алланың меншігінде. Оның әрі нәрсеге күші толық жетеді.",
       "ky": "Асмандарда, Жерде жана экөөсүнүн арасындагынын баары Аллахтын мүлкү! Ал бардык нерсеге Кудуреттүү!»",
-      "tg": "Фармонравоии осмонҳо ва замин ва он чи дар онҳост, аз они Аллоҳ таоло аст ва Ӯ бар ҳар чизе тавоност"
+      "tg": "Фармонравоии осмонҳо ва замин ва он чи дар онҳост, аз они Аллоҳ таоло аст ва Ӯ бар ҳар чизе тавоност",
+      "sw": "Ni wa Mwenyezi Mungu ufalme wa mbingu na ardhi na vilivyo ndani yake. Naye ni Muweza mno wa kila kitu.",
+      "ha": "Allah ne da mallakar sammai da ƙasa da abin da ke a cikinsu kuma shi, a kan dukkan kõme Mai ĩkon yi ne.",
+      "am": "የሰማያትና የምድር በውስጣቸውም ያለው ሁሉ ንግሥና የአላህ ብቻ ነው፡፡ እሱም በነገሩ ሁሉ ላይ ቻይ ነው፡፡",
+      "om": "Mootummaan samii, dachiifi wantoota isaan keessaa kan Rabbiiti. Inni waan hunda irratti danda’aadha.",
+      "so": "Alle baa iska leh (Mulkiga, Maamulka iyo) Boqortooyada (runta ah ee) samooyinka iyo arlada iyo waxa gudahooda ah. Alle wax kasta (uu doono) wuu Karaa.",
+      "ff": "Ko Alla woodani laamu kammuuli ɗin, e leydi ndin e ko woni nder majji. Kanko ko O kattanɗo kala huunde.",
+      "yo": "Ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀ àti ohunkóhun tó wà nínú wọn. Òun sì ni Alágbára lórí gbogbo n̄ǹkan."
     }
   },
   {
@@ -1044,7 +1269,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Мана шу Аллоҳ Парвардигорингиздир. Ундан ўзга маъбуд йўқдир. У ҳамма нарсанинг яратувчисидир. Бас, Унга бандалик қилингиз! У ҳамма нарсага Вакилдир.",
       "kk": "Міне бұл сипаттарға ие болған Раббыларың Алла. Одан басқа ешбір тәңір жоқ. Ол, барлық нәрсені жаратушы. Ендеше Оған құлшылық қылыңдар. Ол әр нәрсеге кепіл.",
       "ky": "Ушул Аллах - силердин Раббиңер! Ибадат кылууга татыктуу эч бир кудай жок, Анын Өзү бар. Ал ар бир нерсенин жаратуучусу. Эми, Ага гана ибадат кылгыла! Ал бардык нерселердин Башкаруучусу.",
-      "tg": "Ин аст Аллоҳ таоло-Парвардигори шумо, ҳеҷ маъбуде [ба ҳақ] ҷуз Ӯ нест, офаринандаи ҳама чиз аст, пас, Ӯро бипарастед ва [бидонед, ки] Ӯ [муроқибу] коргузори ҳама чиз аст"
+      "tg": "Ин аст Аллоҳ таоло-Парвардигори шумо, ҳеҷ маъбуде [ба ҳақ] ҷуз Ӯ нест, офаринандаи ҳама чиз аст, пас, Ӯро бипарастед ва [бидонед, ки] Ӯ [муроқибу] коргузори ҳама чиз аст",
+      "sw": "Huyo ndiye Mwenyezi Mungu, Mola wenu Mlezi, hakuna mungu isipokuwa Yeye, Muumba wa kila kitu. Basi muabuduni Yeye tu. Naye ni Mtegemewa wa kila kitu.",
+      "ha": "Wancan ne Allah Ubangijinku. Bãbu wani abin bautãwa fãce Shĩ, Mahaliccin dukan kõme. Sabõda haka ku bauta Masa kuma Shi ne wakĩli a kan dukan, kõme.",
+      "am": "ይህ ጌታችሁ አላህ ነው፡፡ ከእርሱ በቀር (በእውነት የምመለክ) አምላክ የለም፡፡ ነገርን ሁሉ ፈጣሪ ነው፡፡ ስለዚህ ተገዙት፡፡ እርሱም በነገሩ ሁሉ ላይ ተጠባባቂ ነው፡፡",
+      "om": "(Kan akkana hojjate) kun Rabbii keessani, Isa malee dhugaan gabbaramaan hin jiru, (Inni) uumaa waan hundaatii, Isa (qofa) gabbaraa, Inni waan hunda tiksaadha.",
+      "so": "Kaasi waa Allaah, Rabbigiin, Ma jiro Ilaah (xaq lagu caabudo) aan Isaga ahayn. Abuuraha wax kasta, ee caabuda Keligii,  Isagaa wax kasta u wakiil ah (ilaaliya).",
+      "ff": "Oon mon ko Alla, Joomi mon! deweteeɗo alaa (e goonga) si wanaa Kaŋko, Takɗo kala huunde. ndewee Mo. Kaŋko e dow kala huunde ko O fawtiiɗo.(deenɗo).",
+      "yo": "Ìyẹn ni Allāhu, Olúwa yín; kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun, Ẹlẹ́dàá gbogbo n̄ǹkan. Nítorí náà, ẹ jọ́sìn fún Un. Òun sì ni Olùṣọ́ lórí gbogbo n̄ǹkan."
     }
   },
   {
@@ -1075,7 +1307,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, Парвардигорингиз Унинг йўлидан адашган кимсаларни жуда яхши билгувчидир ва У ҳақ йўлда юргувчиларни ҳам жуда яхши билгувчидир.",
       "kk": "Күдіксіз Раббың жолынан адасқандарды жақсы біледі. Әрі Ол, тура жолдағыларды да әбден біледі.",
       "ky": "Албетте, сенин Раббиң, Өзүнө алып барчу жолдон адашып кеткендерди эң жакшы билет жана туура жол тапкандарды да эң жакшы билет.",
-      "tg": "Бе тардид, Парвардигорат ба [ҳоли] касе, ки аз роҳи Ӯ мунҳариф мешавад, донотар аст ва Ӯ ба [ҳоли] роҳёфтагон [низ] донотар аст"
+      "tg": "Бе тардид, Парвардигорат ба [ҳоли] касе, ки аз роҳи Ӯ мунҳариф мешавад, донотар аст ва Ӯ ба [ҳоли] роҳёфтагон [низ] донотар аст",
+      "sw": "Hakika Mola wako Mlezi ndiye anayejua vyema yule aliyepotea Njia yake, naye ndiye anayejua vyema wale walioongoka.",
+      "ha": "Lalle ne Ubangijinka Shĩ ne Mafi sani ga wanda yake ɓacẽwa daga hanyarsa kuma Shi ne mafi sani ga masu shiryuwa.",
+      "am": "ጌታህ እርሱ ከመንገዱ የሚሳሳቱትን ዐዋቂ ነው፡፡ እርሱም ተመሪዎቹን ዐዋቂ ነው፡፡",
+      "om": "Dhugumatti, Gooftaan kee Isumatu nama karaa Isaa irraa jallatu irra beeka; warra qajeelanis Isumatu beeka.",
+      "so": "Hubaal Rabbigaa baa Og midka ka luma Jidkiisa, Isagaana Og cidda hanuunsan.",
+      "ff": "Pellet, ko Joomi maa ɓuri Anndude on majjuɗo laawol makko ngol, ko Kaŋko kadi ɓuri Anndude feewuɓe ɓeen.",
+      "yo": "Dájúdájú Olúwa rẹ, Òun l’Ó nímọ̀ jùlọ nípa ẹni tó ṣìnà kúrò lójú ọ̀nà (ẹ̀sìn) Rẹ̀. Àti pé, Òun l’Ó nímọ̀ jùlọ nípa àwọn olùmọ̀nà."
     }
   },
   {
@@ -1103,7 +1342,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Сизларга Парвардигорингиздан нозил қилинган нарсага эргашингиз, ундан ўзга «дўстларга» эргашмангиз! Жуда оз эслатма олурсизлар.",
       "kk": "Раббыларыңнан сендерге түсірілгенге бой ұсыныңдар да Одан өзгені дос тұтып ілеспеңдер. Нендей аз ғана үгіт тыңдайсыңдар!",
       "ky": "(О, адамдар!) Силерге Раббиңер тарабынан түшүрүлгөн нерсеге (Куранга) ээрчигиле! Андан башкасын жол башчы тутуп, ээрчибегиле! Азыраак эскерип жатасыңар!",
-      "tg": "[Эй мардум] Он чиро аз ҷониби Парвардигоратон бар шумо нозил шудааст, пайравӣ кунед ва аз [дӯстону] корсозони дигар ба ҷуз Ӯ пайравӣ накунед, чи андак панд мепазиред!"
+      "tg": "[Эй мардум] Он чиро аз ҷониби Парвардигоратон бар шумо нозил шудааст, пайравӣ кунед ва аз [дӯстону] корсозони дигар ба ҷуз Ӯ пайравӣ накунед, чи андак панд мепазиред!",
+      "sw": "Yafuateni yale yaliyoteremshwa kwenu kutoka kwa Mola wenu Mlezi, wala msifuate marafiki wasaidizi wowote badala yake. Ni machache mnayoyakumbuka.",
+      "ha": "Ku bi abin da aka saukar zuwa gare ku daga Ubangijinku, kuma kada ku dinga bin wasu majiɓinta baicinSa. Kaɗan ƙwarai kuke tunãwa.",
+      "am": "ከጌታችሁ ወደ እናንተ የተወረደውን ተከተሉ፡፡ ከአላህም ሌላ ረዳቶችን አትከተሉ፡፡ ጥቂትን ብቻ ትገሰጻላችሁ፡፡",
+      "om": "Waan Gooftaa keessan irraa gara keessanitti buufame hordofaa, Jaalalleewwan (biraa) isaa gaditti hin hordofinaa, Xiqqoo qofa gorfamtu",
+      "so": "Raaca 'Qur’aanka' la idiinka soo dejiyey xagga Rabbigiin, hana raacina sokadii awliyo (aad la barbar caabuddaan Alle oo u yeedhataan).Yaraa intaad waantowdaan.",
+      "ff": "Njokkee ko Jippinaa e mon kon immorde ka Joomi mon, wota on njokku gah ɗuum, weldiiɓe, famɗii ko mbaactortoɗon."
     }
   },
   {
@@ -1133,7 +1378,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Тақво қилувчи кишиларга шайтон томонидан бирон васваса етса, (Аллоҳни) эслайдилар. Қарабсизки, (тўғри йўлни) кўра бошлайдилар.",
       "kk": "Тақуаларға шайтан тарапынан бір сыбыс тисе, олар Алланы еске алады да қырағылық істейді.",
       "ky": "Чынында, такыба адамдарды шайтан азгырыгы кармаганда (ошол замат) Аллахты эстешип (туура жолду) көрө башташат.",
-      "tg": "Дар ҳақиқат, касоне, ки [аз Аллоҳ таоло] парво мекунанд, чун васвасае аз ҷониби шайтон ба онон расад, [Аллоҳ таолоро] ба ёд меоваранд ва он гоҳ [нисбат ба ҳақиқат] бино мешаванд"
+      "tg": "Дар ҳақиқат, касоне, ки [аз Аллоҳ таоло] парво мекунанд, чун васвасае аз ҷониби шайтон ба онон расад, [Аллоҳ таолоро] ба ёд меоваранд ва он гоҳ [нисбат ба ҳақиқат] бино мешаванд",
+      "sw": "Hakika wale wamchao Mungu, zinapowagusa pepesi kutoka kwa Shetani, mara huzindukana na hapo huwa wenye kuiona haki.",
+      "ha": "Lalle ne waɗanda suka yi taƙawa idan wani tãshin hankali daga Shaiɗan ya shãfe su, sai su tuna (Allah) sai gã su, sun zama masu basĩra.",
+      "am": "እነዚያ የተጠነቀቁት ከሰይጣን የኾነ ዘዋሪ በነካቸው ጊዜ (ጌታቸውን) ይገነዘባሉ፡፡ ወዲያውም እነሱ ተመልካቾች ይኾናሉ፡፡",
+      "om": "Isaan Rabbiin sodaatan yeroo naanna'aan shayxaana irraa ta’e isaan tuqe, (Rabbiin) yaadatu, Achumaan isaan argoodha..",
+      "so": "Xaqiiq kuwa ka cabsada Alle, markay taabato meerto Shaydaan, way ku baraarugaan oo kolkiiba (xaqa) arkaan.",
+      "ff": "Pellet, ɓeen hulɓɓe(Alla), si sowonsinoore heɓii ɓe immorde e sytaane, ɓe ngannditay [Alla] : jaka yoo kamɓe ko ɓe yi'ooɓe.",
+      "yo": "Dájúdájú àwọn tó bẹ̀rù (Allāhu), nígbà tí ròyíròyí kan bá ṣẹlẹ̀ sí wọn láti ọ̀dọ̀ aṣ-Ṣaetọ̄n, tí wọ́n bá rántí (Allāhu), nígbà náà ojú wọn yó sì ríran (rí òdodo)."
     }
   },
   {
@@ -1161,7 +1413,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, Парвардигорингизнинг ҳузуридаги зотлар Унга ибодат қилишдан ўзларини катта олмайдилар. Унга тасбеҳ айтадилар ва Унгагина сажда қиладилар.",
       "kk": "Расында раббыңның қасындағылар (періштелер) Оған құлшылық қылудан менменсімейді де Оны дәріптеп, Оған сәжде қылады.",
       "ky": "Чынында, Раббиңдин алдындагылар (периштелер) деле Ага ибадат кылуудан текеберленишпейт, Аны даңазалашат жана Ага сажда кылышат.",
-      "tg": "[Эй Паёмбар] Касоне, ки назди Парвардигори ту ҳастанд [фариштагон], яқинан, аз парастиши Вай [саркашӣ ва] такаббур намеварзанд ва Ӯро ба покӣ меситоянд ва барояш саҷда мекунанд"
+      "tg": "[Эй Паёмбар] Касоне, ки назди Парвардигори ту ҳастанд [фариштагон], яқинан, аз парастиши Вай [саркашӣ ва] такаббур намеварзанд ва Ӯро ба покӣ меситоянд ва барояш саҷда мекунанд",
+      "sw": "Hakika wale walio kwa Mola wako Mlezi hawajivuni wakaacha kumuabudu, na wanamtakasa, na wanamsujudia Yeye.",
+      "ha": "Lalle ne, waɗanda ke wurin Ubangijinka bã su yin girman kai ga bauta Masa, kuma sunã tsarake shi da tasbĩhi, kuma a gare shi suke yin sujada.",
+      "ff": "Pellet, ɓeen [maleykaaji] won ɓe ka Joomi maa, ɓe townitantaako dewgol Mo, hiɓe subbunhinanoo Mo, ko Kaŋko woni ko ɓe cujjanta.",
+      "yo": "Dájúdájú àwọn tó ń bẹ lọ́dọ̀ Olúwa rẹ, wọn kì í jọra wọn lójú láti jọ́sìn fún Un. Wọ́n ń ṣàfọ̀mọ́ fún Un. Wọ́n sì ń forí kanlẹ̀ fún Un."
     }
   },
   {
@@ -1191,7 +1447,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ шундай Зотки, осмонлару ер Унинг мулкидир. Тирилтирур ва ўлдирур. Сизларга Аллоҳдан бошқа бирон бир дўст ва мададкор йўқдир.",
       "kk": "Шынында көктердің және жердің иелігі Аллаға тән.Ол, тірілтеді, өлтіреді. Сондай-ақ сендер үшін Алладан өзге не дос не жәрдемші жоқ.",
       "ky": "Чынында, асмандар жана Жер мүлкүнүн баары Аллахка таандык. (Ал) жашоо жана өлүм берет. Силерге Аллахтан башка эч бир (пайда берүүчү) Башчы да, (зыяндан сактоочу) Жардамчы да жок!",
-      "tg": "Дар ҳақиқат, фармонравоии осмонҳо ва замин аз они Аллоҳ таолост. [Ӯст, ки] зинда мекунад ва мемиронад ва шумо ба ҷуз Аллоҳ таоло ҳеҷ корсозу ёваре надоред"
+      "tg": "Дар ҳақиқат, фармонравоии осмонҳо ва замин аз они Аллоҳ таолост. [Ӯст, ки] зинда мекунад ва мемиронад ва шумо ба ҷуз Аллоҳ таоло ҳеҷ корсозу ёваре надоред",
+      "sw": "Hakika Mwenyezi Mungu anao ufalme wa mbingu zote na ardhi; huhuisha na hufisha. Nanyi hamna mlinzi yeyote wala msaidizi kando na Mwenyezi Mungu.",
+      "am": "አላህ የሰማያትና የምድር ንግስና የርሱ ብቻ ነው፡፡ ሕያው ያደርጋል፤ ይገድላልም፡፡ ለእናንተም ከርሱ በቀር ጠባቂም ረዳትም የላችሁም፡፡",
+      "om": "Dhugumatti, Rabbiin mootummaan samiileefi dachii kan Isaati. Ni jiraachisa; ni ajjeesas. Rabbiin alatti tiksaafi tumsaan tokkollee isiniif hin jiru.",
+      "so": "Alle baa iska leh (Mulkiga, Maamulka iyo) Boqortooyada (runta ah ee) samooyinka iyo aralda, Isagaa wax nooleeya oo dhinsiiya. Ma lihidin Alle ka sokow sokeeye iyo gargaare midna.",
+      "ff": "Pellet, Ko Alla woodani laamu kammuuli ɗin e leydi ndin. Himo wuurna, himo wara. Alanaa on gah Alla giɗo, wanaa balloowo",
+      "yo": "Dájúdájú Allāhu ló ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Kò sì sí aláàbò àti alárànṣe kan fún yín lẹ́yìn Allāhu."
     }
   },
   {
@@ -1222,7 +1484,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй мўминлар, Аллоҳдан тақво қилингиз ва содиқлар билан бирга бўлингиз!",
       "kk": "Әй мүміндер! Алладан қорқыңдар және шыншылдармен бірге болыңдар.",
       "ky": "Оо, ыйман келтиргендер! Аллахтан корккула жана чынчылдар менен болгула!",
-      "tg": "Эй касоне, ки имон овардаед, аз Аллоҳ таоло парво кунед ва бо ростгӯён бошед"
+      "tg": "Эй касоне, ки имон овардаед, аз Аллоҳ таоло парво кунед ва бо ростгӯён бошед",
+      "sw": "Enyi mlioamini! Mcheni Mwenyezi Mungu, na kuweni pamoja na wakweli.",
+      "ha": "Ya ku waɗanda suka yi ĩmãni! Ku bi Allah da taƙawa, kuma ku kasance tãre da mãsu gaskiya.",
+      "am": "እናንተ ያመናችሁ ሆይ! አላህን ፍሩ፤ ከእውነተኞቹም ጋር ኹኑ፡፡",
+      "om": "Yaa warra amantan! Rabbiin sodaadhaa; warra dhugaa wajjiiniis ta’aa.",
+      "so": "Kuwa (Xaqa) rumeeyow! Alle ka cabsada, oo ahaada la jirka kuwa runlowyada ah.",
+      "ff": "Eeymon gooŋɗiiɓe, kulee Alla laatodon e gooŋɗuɓe ɓeen.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu, kí ẹ sì wà pẹ̀lú àwọn olódodo."
     }
   },
   {
@@ -1246,7 +1515,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Сизларга ўз орангиздан қийналишингиздан қийналадиган, сизларни қаттиқ қайғурадиган ва мўминларга раҳмдил, меҳрибон бир пайғамбар келди.",
       "kk": "Расында сендерге іштеріңнен ардақты бір Пайғамбар келді. Оған, қиналуларың ауыр тиеді. Сендерге өте ынтық, мүміндерге өте жұмсақ, ерекше мейірімді",
       "ky": "(О, ыймандуу пенделер!) Силерге өз араңардан болгон, силердин кайгыңар үчүн азап чеккен (тозоктон кутулуп калышыңарга) катуу умтулган жана ыймандуулар үчүн ырайымдуу, боорукер пайгамбар келди го!",
-      "tg": "Яқинан, паёмбаре аз [миёни] худи шумо ба сӯятон омад, ки ранҷдиданатон бар ӯ [гарону] душвор аст ва бар [ҳидояти] шумо сахт исрор дорад ва [нисбат] ба муъминон дилсӯз [ва] меҳрубон аст"
+      "tg": "Яқинан, паёмбаре аз [миёни] худи шумо ба сӯятон омад, ки ранҷдиданатон бар ӯ [гарону] душвор аст ва бар [ҳидояти] шумо сахт исрор дорад ва [нисбат] ба муъминон дилсӯз [ва] меҳрубон аст",
+      "sw": "Hakika amekwishawajia Mtume kutokana na nyinyi wenyewe; yanamhuzunisha yale yanayowataabisha, anawajali sana, kwa Waumini ni mpole na mwenye kuwarehemu.",
+      "am": "ከጎሳችሁ የሆነ ችግራችሁ በእርሱ ላይ ጽኑ የሆነ፣ በእናንተ (እምነት) ላይ የሚጓጓ፣ በምእምናን (ላይ) ርኅሩኅ አዛኝ የኾነ መልክተኛ በእርግጥ መጣላችሁ፡፡",
+      "om": "Dhugumatti, iisinitti dhufe ergamaan isin irraa ta’e, kan rakkinni keessan isa irratti jabaatu, kan isiniif (akka amantanuuf) bololu, mu’uminootaaf immoo mararfataa, rahmata godhaa ta’e.",
+      "so": "Waxaa dhab ahaan idiin yimid Rasuul idinka mid ah 'waa Nabi Muxammad s.c.w', oo ay ku adag tahay waxa idin dhiba, idiin roon oo dadaal badan, mu’miniinta u turid iyo naxariis badan.",
+      "ff": "Mi  wooɗndi nulaaɗo arii  e mooɗon, jeyaaɗo emon hino saɗta e makko ko tampoton, deerɗuɗo e mooɗon, newaniiɗo hinnotooɗo(yurmotoodo) gooŋɗinɓe ɓeen.",
+      "yo": "Dájúdájú Òjíṣẹ́ kan ti wá ba yín láti ààrin yín. Ohun tí ó máa kó wàhálà ba yín lágbára lára rẹ̀. Ó ń ṣe àkólékàn (oore) fún yín; aláàánú àti oníkẹ̀ẹ́ ni fún àwọn oní gbàgbọ́ òdodo."
     }
   },
   {
@@ -1275,7 +1550,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, кеча ва кундузнинг алмашиб туришида ва Аллоҳ осмонлару ерда яратиб қўйган нарсаларда тақво қиладиган қавм учун оят-аломатлар бор.",
       "kk": "Расында түн мен күннің ауысып келуінде және Алланың көктер мен жердегі жаратқан нәрселерінде әрине сақтанатын ел үшін дәлелдер бар.",
       "ky": "Чынында, түн менен күндүздүн алмашып турушунда жана жер-асмандардагы Аллах жараткан нерселерде такыба адамдар үчүн (Аллахтын кудуретине) белгилер бар.",
-      "tg": "Бе гумон, дар омадушуди шабу рӯз ва ончи Аллоҳ таоло дар осмонҳо ва замин офаридааст, барои касоне, ки парво мекунанд, нишонаҳо[-и қудрати илоҳӣ] аст"
+      "tg": "Бе гумон, дар омадушуди шабу рӯз ва ончи Аллоҳ таоло дар осмонҳо ва замин офаридааст, барои касоне, ки парво мекунанд, нишонаҳо[-и қудрати илоҳӣ] аст",
+      "sw": "Hakika katika kuhitilafiana usiku na mchana, na katika vile alivyoviumba Mwenyezi Mungu katika mbingu na ardhi, zipo Ishara kwa kaumu wamchao.",
+      "ha": "Lalle ne a cikin sãɓãwar dare da yini, da abin da Allah Ya halitta a cikin sammai da ƙasa, haƙĩƙaakwai ãyõyi ga mutãne waɗan da suke yin taƙawa.",
+      "am": "ሌሊትና ቀን በመተካካታቸው አላህም በሰማያትና በምድር ውስጥ በፈጠረው ሁሉ ለሚጠነቀቁ ሕዝቦች ምልክቶች አሉ፡፡",
+      "om": "Dhugumatti, bakka wal bu’uu halkaniifi guyyaa keessa, waan Rabbiin samiileefi dachii keessatti uume keessaas namoota (Rabbiin) sodaataniif mallattooleetu jira",
+      "so": "Xaqiiq is beddelka habeenka iyo maalinta iyo waxa Alle ku abuuray cirarka iyo dhulka, waxaa ugu sugan calaamooyin ciddii Alle ka cabsan (oo iska jiri xumaha).",
+      "ff": "Hino e luutindirgol jemma e ñalama ngol, e kon ko Alla tagi ka kammuuli e ka leydi, maandeeji wonan´de yimɓe gooŋɗuɓe.",
+      "yo": "Dájúdájú àwọn àmì wà nínú ìtẹ̀léǹtẹ̀lé òru àti ọ̀sán àti ohun tí Allāhu dá sínú àwọn sánmọ̀ àti ilẹ̀; (àmì wà nínú wọn) fún ìjọ tó ń bẹ̀rù (Allāhu)."
     }
   },
   {
@@ -1305,7 +1587,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, Аллоҳ инсонларга бирон нарсада зулм қилмайди. Лекин инсонлар ўзларига ўзлари зулм қиладилар.",
       "kk": "Расында Алла адамдарға еш зұлымдық қылмайды. Бірақ адамдар өздеріне- өздері зұлымдық қылады.",
       "ky": "Аллах адамдарга эч зулумдук кылбайт. Бирок, адамдар өздөрүнө-өздөрү зулумдук кылып алышат.",
-      "tg": "Яқинан, Аллоҳ таоло ба мардум ҳеҷ ситаме намекунад, вале мардум [ҳастанд, ки бо ширку нофармонӣ] ба хештан ситам мекунанд"
+      "tg": "Яқинан, Аллоҳ таоло ба мардум ҳеҷ ситаме намекунад, вале мардум [ҳастанд, ки бо ширку нофармонӣ] ба хештан ситам мекунанд",
+      "sw": "Hakika Mwenyezi Mungu hawadhulumu watu kitu chochote, lakini watu wenyewe wanazidhulumu nafsi zao.",
+      "ha": "Lalle ne Allah ba Ya zãluntar mutãne da kõme, amma mutãnen ne ke zãluntar kansu.",
+      "am": "አላህ ሰዎችን ምንም አይበድልም፡፡ ግን ሰዎች ነፍሶቻቸውን ይበድላሉ፡፡",
+      "om": "Rabbiin namoota homaa hin miidhu, Garuu namoonni ofiif lubbuulee isaanii miidhu.",
+      "so": "Hubaal Alle kama dulmiyo dadka waxba;dadkuse iyagaa nafahooda dulmiya.",
+      "ff": "Pellet Alla tooñirta yimɓe ɓeen huunde, ko woni, ko yimɓe ɓe tooñata ko'e muen.",
+      "yo": "Dájúdájú Allāhu kò níí fí kiní kan ṣàbòsí sí ènìyàn. Ṣùgbọ́n ènìyàn ló ń ṣàbòsí sí ẹ̀mí ara wọn."
     }
   },
   {
@@ -1336,7 +1625,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Огоҳ бўлингизким, осмонлару ердаги ҳамма нарса Аллоҳнинг мулкидир. Огоҳ бўлингизким, Аллоҳнинг ваъдаси ҳақдир. Лекин уларнинг кўплари буни билмайдилар.",
       "kk": "Сақ болыңдар! Расында көктердегі әрі жердегі нәрселер Алланікі. Біліңдер! Алланыі уәдесі хақ. Бірақ олардың көбі білмейді.",
       "ky": "Көңүл бургула! Чынында, асмандар жана жердеги нерсенин бардыгы Аллахка таандык! Көңүл бургула! Чынында, Аллахтын убадасы – Акыйкат! Бирок муну алардын көпчүлүгү билишпейт!",
-      "tg": "Огоҳ бошед! Дар ҳақиқат ончи дар осмонҳо ва замин аст, [ҳама] аз они Аллоҳ таолост. Огоҳ бошед! Бе тардид, ваъдаи Аллоҳ таоло [дар мавриди кайфари кофирон] рост аст, вале бештарашон намедонанд"
+      "tg": "Огоҳ бошед! Дар ҳақиқат ончи дар осмонҳо ва замин аст, [ҳама] аз они Аллоҳ таолост. Огоҳ бошед! Бе тардид, ваъдаи Аллоҳ таоло [дар мавриди кайфари кофирон] рост аст, вале бештарашон намедонанд",
+      "sw": "Jueni kuwa hakika ni vya Mwenyezi Mungu vyote vilivyo katika mbingu na katika ardhi. Jueni kuwa hakika ahadi ya Mwenyezi Mungu ni ya haki. Lakini wengi wao hawajui.",
+      "ha": "To! Haƙĩƙa Allah Ya mallaki abin da yake a cikin sammai da ƙasa. To! Haƙĩƙa wa'adin Allah gaskiya ne. Amma kuma mafi yawansu ba su sani ba.",
+      "am": "ንቁ! በሰማያትና በምድር ያለው ሁሉ የአላህ ነው፡፡ ንቁ! የአላህ ተስፋ ቃል እርግጥ ነው፡፡ ግን አብዛኞቻቸው አያውቁም፡፡",
+      "om": "Dhagayaa! Dhugumatti, wanti samiileefi dachii keessa jiru kan Rabbiiti. Dhagayaa! Dhugumatti, waadaan Rabbii dhugaadha. Garuu irra baay’een isaanii hin beekan.",
+      "so": "Ogaada, hubaal, waxaa iska leh Alle waxa ku sugan samooyinka iyo arlada. Ogaada, hubaal, Ballanka Alle waa xaq. Badankooduse ma ogsoona.",
+      "ff": "Ngandee ko Alla woodani ko woni ka kammuuli e ka leydi. Ngandee pellet, fodoore Alla nde ko goonga. Kono ko ɓuri ɗuuɗude e yimɓe he  ɓe nganndaa.",
+      "yo": "Gbọ́, dájúdájú ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Gbọ́! Dájúdájú àdéhùn Allāhu ni òdodo, ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ wọn kò nímọ̀."
     }
   },
   {
@@ -1366,7 +1662,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "У тирилтирур, ўлдирур ва Унгагина қайтарилурсиз.",
       "kk": "Ол тірілтеді, өлтіреді. Сондай-ақ Оның алдына қайтарыласыңдар.",
       "ky": "Ал өлтүрөт жана тирилтет. (Мында Ага эч ким шерик боло албайт) Жана Анын Өзүнө кайтарыласыңар.",
-      "tg": "Ӯст, ки зинда мекунад ва мемиронад ва [ҳамагӣ] ба сӯйи Ӯ бозгардонда мешавед"
+      "tg": "Ӯст, ки зинда мекунад ва мемиронад ва [ҳамагӣ] ба сӯйи Ӯ бозгардонда мешавед",
+      "sw": "Yeye ndiye anayehuisha na anayefisha. Na kwake mtarejeshwa.",
+      "ha": "Shi ne Yake rãyarwa kuma Yake matarwa. Kuma zuwa gare Shi ne ake mayar da ku.",
+      "am": "እርሱ ሕያው ያደርጋል፤ ይገድላልም ወደ እርሱም ትመለሳላችሁ፡፡",
+      "om": "Inni ni jiraachisa; ni ajjeesas; gara Isaatitti deebifamtu.",
+      "so": "Isagaa wax nooleeya, oo  dhinsiiya, Xaggiisaana dib la idiinku soo celin.",
+      "ff": "Kaŋko Hombo wuurna hombo wara; ko faade ka makko nduttoteɗon.",
+      "yo": "Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Ọ̀dọ̀ Rẹ̀ sì ni wọn yóò da yín padà sí."
     }
   },
   {
@@ -1394,7 +1697,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй одамлар, сизларга Парвардигорингиз тарафидан бир насиҳат, дилларингиздаги нарсаларга шифо ҳамда мўминларга ҳидоят ва раҳмат келди.",
       "kk": "Әй адамдар! Сендерге Раббыларың тарапынан бір үгіт, жүректегілерге бір шипа, сенушілер үшін тура жол және рахмет (түрінде Құран) келді.",
       "ky": "О, адамдар! Силерге Раббиңер тарабынан насаат, көкүрөктөгү бузулууларга шыпаа, туура жол жана бүт ааламдар үчүн ырайым (болуп Куран китеби) келди.",
-      "tg": "Эй мардум, баростӣ, барои шумо аз ҷониби Парвардигоратон мавъизае омадааст ва шифое барои ончи дар дилҳост ва ҳидояту раҳмате барои муъминон"
+      "tg": "Эй мардум, баростӣ, барои шумо аз ҷониби Парвардигоратон мавъизае омадааст ва шифое барои ончи дар дилҳост ва ҳидояту раҳмате барои муъминон",
+      "sw": "Enyi watu! Yamekwishawajia mawaidha kutoka kwa Mola wenu Mlezi, na ponya ya yale yaliyo katika vifua, na uongofu, na rehema kwa Waumini.",
+      "ha": "Ya ku mutãne! Lalle wa'azi yã jẽ muku daga Ubangijinku, da waraka ga abin da yake a cikin ƙirãza, da shiriya da rahama ga muminai.",
+      "am": "እናንተ ሰዎች ሆይ! ከጌታችሁ ግሳጼ በደረቶች ውስጥም ላለው (የመጠራጠር በሽታ) መድኃኒት ለምእምናንም ብርሃንና እዝነት በእርግጥ መጣችላችሁ፡፡",
+      "om": "Yaa namootaa! Dhugumatti, gorsi Gooftaa keessan irraa taate isinitti dhufte, qorichi waan qomoowwan keessaas, qajeelfamaafi rahmanni mu’uminootaas.",
+      "so": "Dadow! Waxaa idiinka yimid waano wanaagsan xagga Rabbigiin iyo reysasho lagaga bogsado waxa ku jira laabaha (oo cudurro ah) oo u ah hanuuun iyo naxariis  mu’miniinta.",
+      "ff": "Eehey mon yimɓe, gooŋɗii waaju arii e mon immorde e Joomi mon, e lekki fii (ñabbuuji) ko woni e ɓerɗe, e peewal, e yurmeende wonannan´de gooŋɗinɓe ɓe.",
+      "yo": "Èyin ènìyàn, ìṣítí kan láti ọ̀dọ̀ Olúwa yín ti dé ba yín. Ìwòsàn ni fún n̄ǹkan tó wà nínú àwọn igbá-àyà ẹ̀dá. Ìmọ̀nà àti ìkẹ́ ni fún àwọn onígbàgbọ́ òdodo."
     }
   },
   {
@@ -1425,7 +1735,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Иймон келтирган, яхши амаллар қилган ва Парвардигорига хушуъ билан бўйсунганлар жаннат эгаларидир ва у ерда абадий қолурлар.",
       "kk": "Дау жоқ, иман келтіріп ізгі іс істегендер, раббыларына бой ұсынғандар, олар жаннаттық. Олар, онда мәңгі қалады.",
       "ky": "Ыйман келтирип, сооптуу иштерди жасаган жана Раббисине моюн сунган адамдар бейиш ээлери болуп, анда түбөлүк калышат!”",
-      "tg": "Касоне, ки имон овардаанд ва корҳои шоиста кардаанд ва дар баробари Парвардигорашон фурӯтанӣ намудаанд, инон яқинан биҳиштианд [ва] ҳам инон дар он ҷовидонанд"
+      "tg": "Касоне, ки имон овардаанд ва корҳои шоиста кардаанд ва дар баробари Парвардигорашон фурӯтанӣ намудаанд, инон яқинан биҳиштианд [ва] ҳам инон дар он ҷовидонанд",
+      "sw": "Hakika, wale walioamini, na wakatenda mema, na wakanyenyekea kwa Mola wao Mlezi, hao ndio watu wa Bustanini, humo watadumu.",
+      "ha": "Lalle ne waɗan da suka yi ĩmãni kuma suka aikata ayyukan ƙwarai, kuma suka yi tawãlu'i zuwa ga Ubangijin su, waɗan nan ne abõkan Aljanna, sunã madawwama a cikinta.",
+      "am": "እነዚያ ያመኑትና በጎ ሥራዎችን የሠሩት ወደ ጌታቸውም የተዋረዱት እነዚያ የገነት ሰዎች ናቸው፡፡ እነሱ በውስጧ ዘላለም ዘውታሪዎች ናቸው፡፡",
+      "om": "Isaan amananii gaggaarii hojjatanii, Rabbii isaaniitiif gadi jedhan isaan sun warra jannataati. Isaan ishee keessatti hafoodha.",
+      "so": "Hubaal, kuwa (Xaqa) rumeeyey oo samaha fala oo u khushuuca Rabbigood - waa kuwaa ehlu Jannadu iyagoo ku dhex waari weligood.",
+      "ff": "Ɓeen gooŋɗinɓe, ɓe ngolli golle moƴƴe, ɓe njankinanii Joomi maɓɓe, ko ɓe ngoni yimɓe Aljanna ɓen, kamɓe ko ɓe duumotooɓe toon.",
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n ṣe àwọn iṣẹ́ rere, tí wọ́n sì dúnní mọ́ ìronúpìwàdà sọ́dọ̀ Olúwa wọn, àwọn wọ̀nyẹn ni èrò inú Ọgbà Ìdẹ̀ra. Olùṣegbére ni wọ́n nínú rẹ̀."
     }
   },
   {
@@ -1452,7 +1769,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, мен Парвардигорим ва Парвардигорингиз Аллоҳга таваккул қилдим. Бирон бир ўрмалаган жон йўқки, У Зот унинг пешонасидан тутмаган бўлса. Шубҳасиз, Парвардигорим тўғри йўл устидадир.",
       "kk": "«Расында мен, менің Раббым әрі сендердің Раббыларың Аллаға тәуекел еттім. Ол, маңдайынан ұстамаған (толық меңгермеген) ешбір жандық жоқ. Күдіксіз Раббым тура жолда»",
       "ky": "Менин жана силердин Раббиңер – Аллахка өзүмдү тапшырдым. Аллах маңдайынан мыкчыбаган (Өз өкүмүн өткөрбөгөн) эч бир жан жок! Чынында менин Раббим туура жол үстүндө.",
-      "tg": "Ман бар Аллоҳ таоло, ки Парвардигори ману шумост, таваккал кардам. Ҳеҷ ҷунбандае нест, магар ин ки дар зери қудрат ва фармонравоии Ӯст. Бе тардид, Парвардигорам бар роҳи рост аст"
+      "tg": "Ман бар Аллоҳ таоло, ки Парвардигори ману шумост, таваккал кардам. Ҳеҷ ҷунбандае нест, магар ин ки дар зери қудрат ва фармонравоии Ӯст. Бе тардид, Парвардигорам бар роҳи рост аст",
+      "sw": "Hakika mimi nimemtegemea Mwenyezi Mungu, Mola wangu Mlezi na Mola wenu Mlezi. Hakuna kiumbe yeyote isipokuwa Yeye anamwendesha atakavyo. Hakika Mola wangu Mlezi yuko kwenye njia iliyonyooka.\"",
+      "am": "«እኔ በጌታዬና በጌታችሁ በአላህ ላይ ተጠጋሁ፡፡ በምድር ላይ ምንም ተንቀሳቃሽ የለችም እርሱ አናትዋን የያዛት ብትሆን እንጂ፡፡ ጌታዬ (ቃሉም ሥራውም) በቀጥተኛው መንገድ ላይ ነው» (አላቸው)፡፡",
+      "om": "Ani Rabbii Gooftaa kiyyaafi Gooftaa keessan ta’e irratti irkadheera. lubbu qabaan tokkos Inni sammuu isaa qabu malee hintaane. Gooftaan kiyya karaa qajeelaa irra jira.",
+      "so": "Anigu waxaan xaqiiq tala saartay Allaah, Rabbigay iyo Rabbigiinba, ma jiro (noole) jooga (dhulka) oo uusan heyn foodda. Hubaal, Rabbigay wuxuu ku sugan yahay Jid Toosan (umuurahiisa oo dhan).",
+      "ff": "Min mi fawike e Alla, Joomi am e Joomi mon. Alaa e ruugayngel si wanaa ko O nannguɗo jubuuru maggel. Pellet, Joomi am no e laawol poocciingol.",
+      "yo": "Dájúdájú èmi gbáralé Allāhu, Olúwa mi àti Olúwa yín. Kò sí ẹ̀dá abẹ̀mí kan àfi kí (ó jẹ́ pé) Òun l’Ó máa fi àásó orí rẹ̀ mú un. Dájúdájú Olúwa mi wà lórí ọ̀nà tààrà."
     }
   },
   {
@@ -1482,7 +1805,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Aranızdan sözü gizlədən də, onu açıq deyən də, gecə gizlənən də, gündüz gəzib dolanan da (Allah üçün) eynidir.",
       "uz": "Сизлардан кимдир яшириб гапирадими, ошкора гапирадими, кимдир кечасига яшириниб оладими, кундузида ошкор юрадими, У Зот учун баробардир.",
       "kk": "Сендерден кім сөзді жасырса да жарияласа да және кім түнде жасырынып, күндіз шықса да Аллаға бәрі бірдей.",
-      "ky": "Силердин араңардан сөздү сыр туткан менен ашкере сүйлөгөн, түндөсү жашынып жаткан менен күндүзү ашкере жүргөн адам (Аллахтын алдында) бирдей (белгилүү)."
+      "ky": "Силердин араңардан сөздү сыр туткан менен ашкере сүйлөгөн, түндөсү жашынып жаткан менен күндүзү ашкере жүргөн адам (Аллахтын алдында) бирдей (белгилүү).",
+      "sw": "Ni sawa anayeficha kauli yake miongoni mwenu na anayeidhihirisha, na anayejibanza usiku na anayetembea jahara mchana.",
+      "am": "ከእናንተ ውስጥ ቃሉን ዝቅ ያደረገ ሰው በእርሱ የጮኸም ሰው እርሱ በሌሊት ተደባቂም በቀን (ተገልጾ) ኺያጅም የኾነ ሰው (እርሱ ዘንድ) እኩል ነው፡፡",
+      "om": "Isin irraa namni jechaan (sagalee) gadi qabeefi ol fuudhes waluma qixa. namni halkan dhokateefi guyyaa ifatti ba’es (waluma qixa).",
+      "so": "Waa isugu mid (Alle) kiinna idinka mid ah ee hadalkiisa qarsada iyo kan kor ugu dhawaaqa, iyo kan isku qariya habeenka iyo (kan) socda dharaar cad.",
+      "ff": "Hino fota [ka makko ganndugol] oon cuuɗuɗo konngol e mooɗon, e on peññinɗo ngol, on cuuɗiratɗo jemma, e on jaltiniroowo ñalawma.",
+      "yo": "Bákan náà ni (lọ́dọ̀ Allāhu), ẹni tí ó fi ọ̀rọ̀ pamọ́ sínú nínú yín àti ẹni tí ó sọ ọ́ síta pẹ̀lú ẹni tí ó fi òru bojú àti ẹni tí ó ń rìn kiri ní ọ̀sán."
     }
   },
   {
@@ -1505,7 +1834,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Allah istədiyi kimsənin ruzisini bol edər, (istədiyinin) də azaldar. (Kafirlər) dünya həyatı ilə sevinirlər. Halbuki dünya həyatı axirətlə müqayisədə keçici bir zövqdür.",
       "uz": "Аллоҳ Ўзи истаган одамига ризқни кенг қилади, (истаганига) танг қилади. Улар дунё ҳаётига хурсанд бўлдилар. Ҳолбуки, дунё ҳаёти охират олдида бир арзимас матодир.",
       "kk": "Алла (Т.) қалаған кісісінің несібесін кеңітіп, тарылтады. Олар, дүние тіршілігіне мәз болды. Негізінде дүние тіршілігі; ақиреттің жанында тек қана бір күн көріс.",
-      "tg": "Аллоҳ таоло [неъмату] рӯзиро бар ҳар ки бихоҳад, густурда медорад ва ё танг мегирад ва [кофирон] ба зиндагии дунё шод шуданд, ва[-ле] зиндагии дунё дар [баробари] охират ҷуз баҳрае [ночиз] нест"
+      "tg": "Аллоҳ таоло [неъмату] рӯзиро бар ҳар ки бихоҳад, густурда медорад ва ё танг мегирад ва [кофирон] ба зиндагии дунё шод шуданд, ва[-ле] зиндагии дунё дар [баробари] охират ҷуз баҳрае [ночиз] нест",
+      "sw": "Mwenyezi Mungu humkunjulia riziki amtakaye, na humkunjia kwa kipimo. Na waliufurahia uhai wa dunia. Na uhai wa dunia kwa kulinganisha na Akhera si kitu isipokuwa ni starehe ndogo.",
+      "am": "አላህ ለሚሻው ሰው ሲሳይን ያሰፋል፤ ያጠባልም፡፡ (ከሓዲዎች) በቅርቢቱም ሕይወት ተደሰቱ፡፡ የቅርቢቱም ሕይወት በመጨረሻይቱ አንጻር (ትንሽ) መጠቀሚያ እንጂ ምንም አይደለችም፡፡",
+      "om": "Rabbiin nama fedheef hiree bal’isa; (nama fedhe) itti dhiphisa. Isaan jireenya addunyaa kanaatti gammadani. Jireenyi addunyaa jireenya Aakhiraa biratti qananii yeroo gabaabaa malee hin taane.",
+      "ff": "Alla no yaññana arsike on mo o muuyi, Himo ɓittina. heɓe mbeltora nguurndam aduna, nguurndam aduna non wonaani ka laakara, si wanaa dakamme-hoy.",
+      "yo": "Allāhu ń tẹ́ arísìkí sílẹ̀ rẹgẹdẹ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹni tí Ó bá fẹ́). Wọ́n sì dunnú sí ìṣẹ̀mí ilé ayé! Kí sì ni ìṣẹ̀mí ayé ní ẹ̀gbẹ́ ti ọ̀run bí kò ṣe ìgbádùn bín-íntín."
     }
   },
   {
@@ -1529,7 +1863,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Allahın necə məsəl çəkdiyini görmürsənmi? Gözəl söz (lə ilahə illəllah) kökü (yerdə) möhkəm olan, budaqları isə göyə ucalan gözəl bir ağac (xurma ağacı) kimidir.",
       "uz": "Аллоҳ қандай мисол келтирганига боқмайсизми? Яхши сўз бир яхши дарахтга ўхшайди, унинг асли мустаҳкам, шохлари эса осмонда.",
       "kk": "(Мұхаммед Ғ.С.) көрмейсің бе? Алла қандай мысал берді: Көркем сөз, (“Алладан басқа ешбір Тәңір жоқ” деген сөз. Б.Ж.М.Р.Х.Т.Ж-Қ) тамыры мықты, бұтағы көктегі бір көркем ағаш тәрізді.",
-      "ky": "(О, инсан), Аллах таза сөздү (ыйман келмесин) таза даракка (курмага) окшотуп мисал келтиргенин карабайсыңбы. Ал дарактын тамыры (жер койнунда) бекем, бутактары болсо, асманда."
+      "ky": "(О, инсан), Аллах таза сөздү (ыйман келмесин) таза даракка (курмага) окшотуп мисал келтиргенин карабайсыңбы. Ал дарактын тамыры (жер койнунда) бекем, бутактары болсо, асманда.",
+      "sw": "Je, hukuona vipi Mwenyezi Mungu alivyopiga mfano wa neno zuri? Ni kama mti mzuri, mizizi yake ni imara, na matawi yake yako mbinguni.",
+      "am": "አላህ መልካምን ቃል ሥርዋ (በምድር ውስጥ) የተደላደለች ቅርንጫፍዋም ወደ ሰማይ (የረዘመች) እንደሆነች መልካም ዛፍ አድርጎ ምሳሌን እንዴት እንደገለጸ አላየኽምን?",
+      "om": "Sila akkamitti akka Rabbiin fakkeenya godhe hin arginee? jechi gaariin akka muka gaarii hundeen ishee gadi dhaabbataa ta’ee, dameen ishee samii keessatti ta’eetti.",
+      "ff": "E a yi'aani ko honno Alla piyiri misal konngol laaɓungol, ko wano leggal welngal, binndeere maggal ko tabituɗi, caalɗi maggal no ka weeyo?",
+      "yo": "Ṣé o kò wòye sí bí Allāhu ṣe ṣàkàwé ọ̀rọ̀ dáadáa pẹ̀lú igi dáadáa, tí gbòǹgbò rẹ̀ fi ìdí múlẹ̀ ṣinṣin, tí ẹ̀ka rẹ̀ sì wà nínú sánmọ̀,"
     }
   },
   {
@@ -1557,7 +1896,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "(Қуръон) инсонлар огоҳлантирилишлари ва У Зотнинг ягона маъбудлигини билишлари ҳамда ақл эгалари эслатма-ибрат олишлари учун бир баёнотдир.",
       "kk": "Бұл (Құран) адам баласына бір құлақтандыру. Бұл арқылы сескенсін және шын мәнінде Алланың жалғыз Тәңір екенін білсін. Әрі ақыл иелері үгіт алсын.",
       "ky": "Бул (Куран) адамдарга арналган кемчиликсиз Баян! Эми, ал себептүү (жаман ишинин акыбетинен) сестенишсин, Анын Жалгыз Кудай экенин билишсин жана акылдуу адамдар андан үлгү-сабак алышсын!",
-      "tg": "Ин [Қуръон] паёме расо барои мардум аст [то ба василаи он ҳидоят шаванд] ва бо он ҳушдор ёбанд ва бидонанд, ки Ӯ маъбуде яктост ва то хирадмандон панд гиранд"
+      "tg": "Ин [Қуръон] паёме расо барои мардум аст [то ба василаи он ҳидоят шаванд] ва бо он ҳушдор ёбанд ва бидонанд, ки Ӯ маъбуде яктост ва то хирадмандон панд гиранд",
+      "sw": "Huu ni ufikishaji kwa watu, ili waonywe kwao, na wapate kujua kuwa hakika Yeye ni Mungu Mmoja, na wapate kukumbuka wenye akili zilizo sawa.",
+      "ha": "Wannan iyarwa ce ga mutãne, kuma dõmin a yi musu gargaɗi da shi, kuma dõmin su sani cẽwa, abin sani kawai, shĩ ne abin bautawa guda. Kuma dõmin masu hankali su riƙa tunãwa.",
+      "am": "ይህ (ቁርኣን) ለሰዎች ገላጭ ነው፡፡ (ሊመከሩበት)፣ በእርሱም ሊስፈራሩበት፣ እርሱም አንድ አምላክ ብቻ መኾኑን ሊያውቁበት፣ የአእምሮ ባለቤቶችም ሊገሰፁበት (የተወረደ) ነው፡፡",
+      "om": "(Qur’aanni) kun ergaa gayaa ilma namaati, akka ittiin akeekkachiifamanuuf, Inni (Rabbiin) gabbaramaa haqaa tokkicha ta’uu akka beekaniifi warri sammuu qaban akka ittiin gorfamaniif.",
+      "so": "Kani (Qur’aanku) ugu filan gaarsiin cad dadka, iyo in loogu digo, iyo inay ogaadaan in Macbuudka Xaqa ahi Ilaah Keliya uun yahay ee Mid ah (Allaah), iyo inay ku waano qaataan (arrinkaa) waxgaradku.",
+      "ff": "Ndee (Alqur'aanaare) ko yottinoore yimɓe ɓeen fii yo ɓe waajitornde, e yooɓe nganndu kadi, won´de Kaŋko ko o deweteeɗo Gooto, e fii yo joomiraaɓe haqqillaaji ɓren waajitor."
     }
   },
   {
@@ -1583,7 +1928,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, Биз зикрни нозил қилдик ва Биз уни сақлагувчилармиз.",
       "kk": "Расында Құранды Біз түсірдік. Әрі шын мәнінде, оны Біз қорғаушымыз.",
       "ky": "«Биз Зикирди (Куранды) Өзүбүз түшүрдүк жана аны Өзүбүз сактайбыз».",
-      "tg": "Ба ростӣ, ки мо худ Қуръонро нозил кардем ва ҳатман, худ низ [аз ҳар гуна табдилу таҳрифе] нигаҳбонаш ҳастем"
+      "tg": "Ба ростӣ, ки мо худ Қуръонро нозил кардем ва ҳатман, худ низ [аз ҳар гуна табдилу таҳрифе] нигаҳбонаш ҳастем",
+      "sw": "Hakika Sisi ndio tuliouteremsha Ukumbusho huu, na hakika Sisi ndio tutakaoulinda.",
+      "ha": "Lalle Mũ ne, Muka saukar da Ambato (Alƙur'ãni), kuma lale Mũ, haƙĩƙa, Mãsu kiyayẽwane gare shi.",
+      "am": "እኛ ቁርኣንን እኛው አወረድነው፡፡ እኛም ለእርሱ ጠባቂዎቹ ነን፡፡",
+      "om": "Nuti Zikrii (Qur'aana) Numatu buuse, Numatu isaaf tiksoodha.",
+      "ff": "Minen min njippinii deftere nden, minen kadi ko min reenooɓe nde.",
+      "yo": "Dájúdájú Àwa l’A sọ Tírà Ìrántí kalẹ̀ (ìyẹn al-Ƙur’ān). Dájúdájú Àwa sì ni Olùṣọ́ rẹ̀."
     }
   },
   {
@@ -1614,7 +1965,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, яратувчи ҳам, билгувчи ҳам Парвардигорингизнинг Ўзидир.",
       "kk": "Шынында Раббың, Ол толық жаратушы, аса білуші.",
       "ky": "Албетте, сенин Раббиң - Ал гана (бардык макулуктарды) Жаратуучу, Билүүчү!",
-      "tg": "Бе тардид, Парвардигорат ҳамон офаринишгари доност."
+      "tg": "Бе тардид, Парвардигорат ҳамон офаринишгари доност.",
+      "sw": "Hakika Mola wako Mlezi ndiye Muumbaji, Mwenye kujua zaidi.",
+      "ha": "Lalle ne Ubangijinka, shi ne Mai yawan halitta, Masani.",
+      "am": "ጌታህ እርሱ (ያልነበረን) ፈጣሪው ዐዋቂው ነው፡፡",
+      "om": "Rabbiin kee isatu akkaan uumaa, beekaadha",
+      "so": "Hubaal Rabbigaa waa Abuuraha wax kasta ee jira, wax waliba Ogsoonaha ah.",
+      "ff": "Tabitii ko Joomi maa woni Takɗo, gannduɗo.",
+      "yo": "Dájúdájú Olúwa rẹ ni Ẹlẹ́dàá, Onímọ̀."
     }
   },
   {
@@ -1645,7 +2003,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ерни ҳақ билан яратди. Улар келтираётган ширклардан олий бўлди.",
       "kk": "Ол көктерді және жерді шындықпен жаратты. Олардың қосқан шеріктерінен жоғары.",
       "ky": "Асмандар менен жерди Акыйкат менен жараткан (Аллах) алардын ширктеринен Жогору - Бийик!",
-      "tg": "Ӯ осмонҳо ва заминро ба ҳақ [ва ҳадафманд] офарид [ва] аз он чи [бо вай] шарик месозанд, бартар аст"
+      "tg": "Ӯ осмонҳо ва заминро ба ҳақ [ва ҳадафманд] офарид [ва] аз он чи [бо вай] шарик месозанд, бартар аст",
+      "sw": "Ameziumba mbingu na ardhi kwa Haki. Ametukuka na hayo wanayomshirikisha nayo.",
+      "ha": "Ya halicci sammai da ƙasa da gaskiya. Ya ɗaukaka daga abin da suke yi na shirka.",
+      "am": "ሰማያትንና ምድርን በእውነት ፈጠረ ከሚያጋሩት ሁሉ ጠራ፡፡",
+      "om": "Samiifi dachii dhugaadhaan uumeera, Inni waan isaan (Isatti) qindeessan irraa ol ta’eera.",
+      "so": "(Alle) wuxuu u abuuray samooyinka iyo arlada Xaq. Waa ka Sarreeyaa oo ka Kor yahay waxay la wadaajiyaan (cibaadada).",
+      "ff": "O tagiri kammuuli ɗiin e leydi ndin goonga. o toowii e ko ɓe sirkoobe cirkata ko.",
+      "yo": "Ó ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ pẹ̀lú òdodo. Ó ga tayọ n̄ǹkan tí wọ́n ń fi ṣẹbọ sí I."
     }
   },
   {
@@ -1675,7 +2040,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "У сизларга осмондан сув (ёмғир) ёғдирган Зотдир. Ичимлигингиз ҳам ундан, ҳайвонларингизни боқадиган дов-дарахт (ўт-ўланлар) ҳам ундан.",
       "kk": "Ол сондай Алла, сендерге көктен жаңбыр жаудырып, одан сусын және ол арқылы малдарыңды жаятын орман шығарды.",
       "ky": "Ал силерге асмандан суу түшүрдү. Ичер сууңар да ошондон, жаныбарларды бага турган чөп-дарак да ошондон.",
-      "tg": "Ӯст, ки аз осмон обе фурӯ фиристод, ки ошомидании шумо аз он аст ва [гиёҳ ва] дарахте, ки [чаҳорпоёни худро] дар он мечаронед, [низ] аз он [об] аст"
+      "tg": "Ӯст, ки аз осмон обе фурӯ фиристод, ки ошомидании шумо аз он аст ва [гиёҳ ва] дарахте, ки [чаҳорпоёни худро] дар он мечаронед, [низ] аз он [об] аст",
+      "sw": "Yeye ndiye anayewateremshia maji kutoka mbinguni. Katika hayo nyinyi mnapata ya kunywa, na miti ya kulishia.",
+      "ha": "Shĩ ne Wanda Ya saukar da ruwa daga sama dõminku, daga gare shi akwai abin sha, kuma daga gare shi itãce yake, a cikinsa kuke yin kĩwo.",
+      "am": "እርሱ ያ ከሰማይ ውሃን ያወረደ ነው፡፡ ከእርሱ ለእናንተ መጠጥ አላችሁ፡፡ ከእርሱም (እንስሳዎችን) በእርሱ የምታሰማሩበት ዛፍ (ይበቅልበታል)፡፡",
+      "om": "Inni Isa samii irraa bishaan buuse. Isiniif isa irraa dhugaatiitu jira. Isa irraas muka isin ishee keessatti (beyladoota) tikfattantu (marga).",
+      "so": "Waa Isaga Kan idiinka soo dejiya biyo (roob) daruuraha, waxaad ka heshaan cabbitaan, biyahaasoo (soo saara sidoo kale) geedaha aad daaqsataan (xoolaha).",
+      "ff": "Ko Kaŋko woni jippinirɗo ndiyam ka kammu, hino woodani on e majjam njaram, leɗɗe no (yalta) e majjam, ko e majjam kadi oornoton.",
+      "yo": "Òun ni Ẹni tó ń sọ omi kalẹ̀ (fún yín) láti sánmọ̀. Mímu wà fún yín nínú rẹ̀. Igi ewéko tún ń wù jáde láti inú rẹ̀, tí ẹ fi ń bọ́ àwọn ẹran-ọ̀sìn."
     }
   },
   {
@@ -1700,7 +2072,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ckb": "بەو (ئاوە خوا) بۆتان دەڕوێنێت کشتوکاڵ و زەیتون و دار خورما مێو و ڕەز و ھەموو بەرو میوەیەک بەڕاستی لەوەدا (باس کرا) بەڵگەیەکی ڕوون ھەیە بۆ ئەو کەسانەی بیردەکەنەوە",
       "az": "Allah onunla sizin üçün dənli bitkilər, zeytun, xurma, üzüm və (başqa) meyvələrin hamısından yetişdirir. Həqiqətən, bunda düşünən qövm üçün dəlillər vardır.",
       "uz": "Сизларга у орқали экин, зайтун, хурмо, узумлар ва ҳамма мевалардан ўстириб беради. Албатта, бу ишда фикр юритадиган қавм учун оят-аломат бордир.",
-      "kk": "Алла, сендерге су арқылы егін, зәйтін, құрма ағаштары, жүзімдер және бүкіл өсімдіктер өсіреді. Тақ осында түсінетін ел үшін әрине белгілер бар."
+      "kk": "Алла, сендерге су арқылы егін, зәйтін, құрма ағаштары, жүзімдер және бүкіл өсімдіктер өсіреді. Тақ осында түсінетін ел үшін әрине белгілер бар.",
+      "sw": "Kwa hayo Yeye anawaoteshea mimea, na mizaituni, na mitende, na mizabibu, na kila aina ya matunda. Hakika katika hayo ipo ishara kwa kaumu wanaotafakari.",
+      "ha": "Yanã tsirar da shũka game da shi, dõminku zaitũni da dabĩnai da inabai, kuma daga dukan 'yã'yan itãce. Lalle ne a cikin wancan haƙĩƙa, akwai ãyã ga mutãne waɗanda suke yin tunãni.",
+      "am": "በእርሱ ለእናንተ አዝመራን፣ (የዘይት) ወይራንም፣ ዘምባባዎችንም (ተምርን)፣ ወይኖችንም፣ ከፍሬዎችም ሁሉ ያበቅልላችኋል፡፡ በዚህ ውስጥ ለሚያስተነትኑ ሕዝቦች በእርግጥ ተዓምርአልለ፡፡",
+      "om": "Isaan sanyii midhaanii, Zeytuuna, mukkeen Timiraa, Inaboowwaniifi fuduraalee hunda irraa isiniif magarsa. Dhugumatti, kana keessa ummata xiinxalaniif mallattootu jira.",
+      "so": "Wuxuu idiinku soo bixiyaa sarac, zaytuun, geedaha timirta, canabyo iyo nooc walba oo midhaha ah. Arrinkani waxaa xaqiiq ugu sugan calaamo ciddii fikiri.",
+      "ff": "Homo fuɗnirana on ɗam aawruuji, nebbanteeje, e tamarooje, e inabuuje, e kala dimɗe.ɓesnoje wonii e ɗuum, tasakuyee wonan´de yimɓe miijitotooɓe.",
+      "yo": "(Allāhu) tún ń fi (omi yìí) hu àwọn irúgbìn, igi òróró zaetūn, igi dàbínù, igi àjàrà àti gbogbo àwọn èso (yòókù) jáde fún yín. Dájúdájú àmì wà nínú ìyẹn fún ìjọ tó ní àròjinlẹ̀."
     }
   },
   {
@@ -1730,7 +2109,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Илоҳингиз ягона илоҳдир. Охиратга ишонмайдиганларнинг қалблари мункирдир, ўзлари эса мутакаббирдирлар.",
       "kk": "Тәңірлерің бір-ақ Тәңір. Сондай ақиретке нанбаушылардың жүректері қарсы. Сондай олар менменсушілер.",
       "ky": "Силердин кудайыңар - жалгыз Кудай (Аллах). Ал эми, Акыретке ишенбеген адамдардын жүрөктөрү (бул ишенимге) каршы чыгуучу. Алар (Аллахка баш ийүүдөн) текеберленишет.",
-      "tg": "Маъбуди шумо маъбуде ягона аст ва касоне, ки ба охират имон надоранд, дилҳояшон инкоркунанда [-и ҳақ] аст ва худ мутакаббиранд"
+      "tg": "Маъбуди шумо маъбуде ягона аст ва касоне, ки ба охират имон надоранд, дилҳояшон инкоркунанда [-и ҳақ] аст ва худ мутакаббиранд",
+      "sw": "Mungu wenu ni Mungu Mmoja. Lakini wale wasioiamini Akhera nyoyo zao zinakataa, nao wanatakabari.",
+      "ha": "Abin bautawarku, abin bautãwa ne guda, to, waɗanda ba su yin ĩmãni da Lãhira, zukãtansu mãsu musu ne, kuma su makangara ne.",
+      "am": "አምላካችሁ አንድ አምላክ ብቻ ነው፡፡ እነዚያም በመጨረሻይቱ ዓለም የማያምኑት ልቦቻቸው ከሓዲዎች ናቸው፡፡ እነሱም የኮሩ ናቸው፤ (አያምኑም)፡፡",
+      "om": "Dhugumatti gabbaramaan keessan gabbaramaa tokkicha. Isaan Aakhiraatti hin amanne, onneewwan isaanii (tokkichummaa Rabbii) mormituudha; isaan boontota.",
+      "so": "Ilaahiinnu waa Ilaah Mid Keliya ah (Allaah). Kuwase aan rumeysneyn Aakhirada, quluubtoodu way diidaan (Towxiidka), wayna isla weyn yihiin.",
+      "ff": "deweteeɗo mon on ko deweteeɗo gooto. ɓeen ɓe ngooŋɗinaa laakara, ɓerɗe maɓɓe ɗen ko jedduɗe, ɓen ko townitiiɓe.",
+      "yo": "Ọlọ́hun yín tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo, Ọlọ́hun Ọ̀kan ṣoṣo ni. Àmọ́ àwọn tí kò ní ìgbàgbọ́ nínú Ọjọ́ Ìkẹ́yìn ni ọkàn wọn takò ó, tí wọ́n sì ń ṣègbéraga."
     }
   },
   {
@@ -1758,7 +2144,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Məgər onlar Allahın xəlq etdiyi hər hansı bir şeyi müşahidə etməyiblərmi? Onların kölgələri müti surətdə Allaha səcdə edərək sağa-sola əyilir.",
       "uz": "Аллоҳ яратган ҳар бир нарсанинг соялари ўнгу сўлларга мойил бўлиб, эгилган ҳолларида Аллоҳга сажда қилаётганларини кўрмадиларми?",
       "kk": "(Сәжде аяты) олар Алланың жаратқан нәрселерінің оң және сол жақтардан ауытқып, Алла бас қойған түрде, олардың бой ұсынғанын көрмей ме?",
-      "ky": "Алар (шектенгендер) Аллах жараткан нерселерге карашпайбы? Алардын көлөкөсү, (Аллахтын кудуретине) моюн сунуп, сажда кылган абалда оңго-солго ийилип жатканын көрбөй жатышабы?!"
+      "ky": "Алар (шектенгендер) Аллах жараткан нерселерге карашпайбы? Алардын көлөкөсү, (Аллахтын кудуретине) моюн сунуп, сажда кылган абалда оңго-солго ийилип жатканын көрбөй жатышабы?!",
+      "sw": "Je, hawavioni vitu alivyoviumba Mwenyezi Mungu, vivuli vyao vinaelekea kushotoni na kuliani, vikimsujudia Mwenyezi Mungu na vikinyenyekea?",
+      "ha": "Shin, ba su Iura ba da abin da Allah Ya halitta kõ mene ne inuwõyinsu suna karkata daga dãma da wajãjen hagu, suna masu sujada ga Allah, alhãli suna masu ƙasƙantar da kai?",
+      "am": "ወደዚያ ከማንኛውም ነገር አላህ ወደ ፈጠረው ጥላዎቹ እነርሱ የተዋረዱ ሲኾኑ ለአላህ ሰጋጆች ኾነው ከቀኝና ከግራዎች ወደሚዛወሩት አላዩምን?",
+      "om": "Sila wantoota irraa gara waan Rabbiin uumee hin ilaalanii? kan gaaddisoonni isaa gara mirgaafi bitaawwanitti dabu xiqqaatoo ta’anii Rabbiif sujuudan.",
+      "so": "Miyeyna u fiirsan wax kastoo uu Alle abuuray, (sida) hoosaskoodu ugu iishaan midig iyo bidix, oo ugu sujuudaan Alle iyagoo u khushuucsan.",
+      "ff": "E ɓee njii'aani ko Alla tagi kon e huunde nde ɗowɗe mun yiiltondirta ñaamo e nano, sujjangol Alla, hara ko ɗi jankiniiɗi."
     }
   },
   {
@@ -1784,7 +2176,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Məgər onlar Allaha tabe olub, havada uçan quşları görmürlərmi?! Onları (havada) saxlayan ancaq Allahdır. Həqiqətən, bunda iman gətirən bir qövm üçün dəlillər vardır.",
       "uz": "Осмони фалакда бўйсундирилган қушларга боқмайдиларми? Уларни фақат Аллоҳ ушлаб турибди. Албатта, бу ишда иймон келтирган қавм учун оят-аломатлар бор.",
       "kk": "Олар аспан бостығындағы бағынышты құсты көрмей ме? Оларды Алладан басқа ешкім ұстап тұра алмайды. Негізінен сонда иман келтірген қауым үшін әлбетте белгілер бар.",
-      "ky": "Асман койнунда туткун болгон куштарга карашпайбы? Аларды (абада) Аллахтан башка ким кармап турат?! Албетте, мында ыймандуу адамдар үчүн (Аллахтын кудуретине ишаарат кылган) белгилер бар!"
+      "ky": "Асман койнунда туткун болгон куштарга карашпайбы? Аларды (абада) Аллахтан башка ким кармап турат?! Албетте, мында ыймандуу адамдар үчүн (Аллахтын кудуретине ишаарат кылган) белгилер бар!",
+      "sw": "Je, hawawaoni ndege walivyotiishwa katika anga la mbingu? Hakuna mwenye kuwashikilia isipokuwa Mwenyezi Mungu. Hakika katika haya zipo ishara kwa kaumu wanaoamini.",
+      "am": "ወደ በራሪዎች በሰማይ አየር ውስጥ (ለመብረር) የተገሩ ሲኾኑ (ከመውደቅ) አላህ እንጂ ሌላ የማይዛቸው ኾነው አይመለከቱምን በዚህ ውስጥ ለሚያምኑ ሕዝቦች በእርግጥ ተዓምራቶች አሉ፡፡",
+      "so": "Miyeyna arkayn shimbiraha loo sakhiray (oo ku duulaya) hawada samada? Cidina ma qaban karto aan ahayn Allaah. hubaal, arrinkani waxaa ugu sugan calaamooyin ciddii rumayn.",
+      "ff": "E ɓe nji'aani colli ɗiin ko ɗi eltaaɗi ka weeyo kammu (won´de) jogitaaki ɗi si wanaa Alla? Wonii e ɗuum, maandeeji wonan´de yimɓe gooŋɗinooɓe ɓen.",
+      "yo": "Ṣé wọn kò wòye sí àwọn ẹyẹ tí A rọ̀ (fún fífò) nínú òfurufú (lábẹ́) sánmọ̀? Kò sí ẹni tó ń mú wọn dúró (sínú òfurufú) bí kò ṣe Allāhu. Dájúdájú àwọn àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo."
     }
   },
   {
@@ -1807,7 +2204,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ckb": "بەڕاستی خوا فەرمان دەدات بە دادگەری و بە چاکە و بە بەخشین بە خزم و خوێش وە (خوا) ڕێگری دەکات لە داوێن پیسی و خراپە و دەستدرێژی ئامۆژگاریتان دەکات بۆ ئەوەی پەند وەرگرن و بیربکەنەوە",
       "uz": "Албатта, Аллоҳ адолатга, эзгуликка, қариндошларга яхшилик қилишга буюради. Бузуқликдан, гуноҳдан ва зулмдан эса қайтаради. Сизларга насиҳат қилади. Шоядки, эслатма-ибрат олсангизлар.",
       "kk": "Негізінде Алла әділетті, игілікті және ағайынға қарайласуды бұйырады. Және де арсыздықтан, қарсылықтан әм зорекерліктен тыяды. Сендерге насихат береді. Әрине түсінерсіңдер.",
-      "tg": "Дар ҳақиқат, Аллоҳ таоло [шуморо] ба адлу накукорӣ ва бахшиш ба хешовандон фармон медиҳад ва аз фаҳшо ва зишткорӣ ва саркашӣ наҳй мекунад. Ӯ шуморо панд медиҳад; бошад, ки панд гиред"
+      "tg": "Дар ҳақиқат, Аллоҳ таоло [шуморо] ба адлу накукорӣ ва бахшиш ба хешовандон фармон медиҳад ва аз фаҳшо ва зишткорӣ ва саркашӣ наҳй мекунад. Ӯ шуморо панд медиҳад; бошад, ки панд гиред",
+      "sw": "Hakika Mwenyezi Mungu anaamrisha kufanya uadilifu, na hisani, na kuwapa jamaa, na anakataza uchafu, na uovu, na dhuluma. Anawaaidhi ili mpate kukumbuka.",
+      "ha": "Lalle Allah nã yin umurni da ãdalci da kyautatãwa, da bai wa ma'abũcin zumunta, kuma yanã hani ga alfãsha da abin da aka ƙi da rarrabe jama'a. Yanã yi muku gargaɗi, ɗammãnin ku, kunã tunãwa.",
+      "am": "አላህ በማስተካከል፣ በማሳመርም፣ ለዝምድና ባለቤት በመስጠትም ያዛል፡፡ ከአስከፊም (ከማመንዘር)፣ ከሚጠላም ነገር ሁሉ፣ ከመበደልም ይከለክላል፡፡ ትገነዘቡ ዘንድ ይገስጻችኋል፡፡",
+      "om": "Dhugumatti, Rabbiin haqatti, toltuu hojjachuufi firootaaf (gargaarsa) kennuutti ajaja. Wantoota fokkatoo, waan jibbamaadhaafi miidhaa irraas ni dhorga. Akka gorfamtaniif jechas isin gorsa.",
+      "so": "Hubaal Alle wuxuu amraa caddaaladda, axsaan falka iyo siinta qaraabada, wuxuuna reebaa xumaanta, munkarka iyo gardarrada. Wuu idin waaninayaa, inaad ku waano qaadataan oo xusuusataan.",
+      "ff": "Tabitii Alla yamirii nuunɗal, e moƴƴingol, e moƴƴagol e joomiraaɓe ɓadondiral. homo haɗa gaay e pan-kare, e ko añinii, e bewre. homo waajoo on, mbeleejo'o, on mbaajitoray.",
+      "yo": "Dájúdájú Allāhu ń pàṣẹ ṣíṣe déédé, ṣíṣe rere àti fífún ẹbí (ní n̄ǹkan). Ó sì ń kọ ìwà ìbàjẹ́, ohun burúkú àti rúkèrúdò. Ó ń ṣe wáàsí fún yín nítorí kí ẹ lè lo ìrántí."
     }
   },
   {
@@ -1834,7 +2238,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Sizdə olan nemətlər tükənəcək, Allah yanında olan nemətlər isə daim qalacaqdır. Səbirli olanlara etdikləri yaxşı əməllərə görə mükafatlarını verəcəyik.",
       "uz": "Сиздаги нарса фонийдир. Аллоҳнинг ҳузуридаги эса боқийдир. Сабр қилганларни, албатта, қилган амалларининг энг яхшиси билан мукофотлаймиз.",
       "kk": "Сендердің жандарыңдағы дүниелік түгейді де Алланың қасындағы қалады. Әрине сабыр еткендердің сыйлығын, істеген істерінен де жақсырақ береміз.",
-      "ky": "Силердин алдыңардагы нерселер (канчалык көп болсо да) түгөнөт. Аллахтын алдындагы нерселер түбөлүктүү! Биз сабыр кылгандардын сооп-сыйлыгын жасаган ишинен жакшыраак (көбүрөөк) кылып беребиз."
+      "ky": "Силердин алдыңардагы нерселер (канчалык көп болсо да) түгөнөт. Аллахтын алдындагы нерселер түбөлүктүү! Биз сабыр кылгандардын сооп-сыйлыгын жасаган ишинен жакшыраак (көбүрөөк) кылып беребиз.",
+      "sw": "Mlivyo navyo vitakwisha, na vilivyo kwa Mwenyezi Mungu ndivyo vitakavyobakia. Na kwa yakini Sisi tutawapa wale waliosubiri ujira wao kwa bora zaidi ya yale waliyokuwa wakiyatenda.",
+      "ha": "Abin da yake a wurinku yanã ƙãrẽwa, kuma abin da yake a wurin Allah ne mai wanzuwã. Kuma lalle ne, Munã sãka wa waɗanda suka yi haƙuri da lãdarsu da mafi kyãwun abin da suka kasance sunã aikatãwa.",
+      "am": "እናንተ ዘንድ ያለው ሁሉ ያልቃል፡፡ አላህ ዘንድ ያለው ግን (ዘለዓለም) ቀሪ ነው፡፡ እነዚያንም የታገሱትን ይሠሩት በነበሩት በመልካሙ ምንዳቸውን እንመነዳቸዋለን፡፡",
+      "om": "Wanti isin biraa ni dhuma, Wanti Rabbiin biraa immoo hafaadha. Isaan obsaniif mindaa isaanii irra gaarii waan isaan dalagaa turaniitiin isaan mindeessina.",
+      "so": "Waxa aad haysataan way dhammaan, waxase Alle agtiis ah baa baaqi ahaanaya. Waxaana ku abaal marin kuwa samra ajarkooda u qalma waxa ugu wanaagsan ay falayeen.",
+      "ff": "Ko marɗon kon re'ay (gasat), ko woni ka Alla ko ko keddotooɗum. ma min mbarjor ɓeen muññiiɓe njoɓdi maɓɓe ndiin ko ɓuri moƴƴude e ko ɓe ngollatnoo kon.",
+      "yo": "Ohun tó ń bẹ lọ́dọ̀ yín máa tán. Ohun tó ń bẹ lọ́dọ̀ Allāhu sì máa wà títí láéláé. Dájúdájú A sì máa san àwọn tó ṣe sùúrù ní ẹ̀san rere wọn tó dára ju ohun tí wọ́n ń ṣe níṣẹ́."
     }
   },
   {
@@ -1864,7 +2275,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, Аллоҳ тақво қилганлар ва муҳсин бўлганлар билан биргадир.",
       "kk": "Шынында Алла, тақуалармен сондай-ақ жақсылық істеушілермен бірге.",
       "ky": "Албетте, Аллах такыбалар жана жакшылык кылуучулар менен!",
-      "tg": "Бе тардид, Аллоҳ таоло бо касоне аст, ки парҳезкорӣ карданд ва касоне, ки накукоранд"
+      "tg": "Бе тардид, Аллоҳ таоло бо касоне аст, ки парҳезкорӣ карданд ва касоне, ки накукоранд",
+      "sw": "Hakika Mwenyezi Mungu yu pamoja na wenye kumcha, na wale watendao mazuri.",
+      "ha": "Lalle Allah Yanã tãre da waɗanda suka yi taƙawa da waɗanda suke sũ mãsu kyautatãwa ne.",
+      "am": "አላህ ከእነዚያ ከሚፈሩትና ከእነዚያም እነሱ መልካም ሠሪዎች ከኾኑት ጋር ነውና፡፡",
+      "om": "Dhugumatti, Rabbiin warra Isa sodaataniifi warra isaan tolchitoota tahan wajjin jira.",
+      "so": "Hubaal Alle wuxuu la jiraa kuwa iska jira (xumaha, dhowra Amarradiisa) ee ah sama falayaasha.",
+      "ff": "Pellet, Alla no won´di e ɓeen hulɓe [Mo] e ɓeen moƴƴinooɓe.",
+      "yo": "Dájúdájú Allāhu wà pẹ̀lú àwọn tó bẹ̀rù (Rẹ̀) àti àwọn tó ń ṣe rere."
     }
   },
   {
@@ -1895,7 +2313,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳга бошқа бир илоҳни тенглаштириб, мазамматга учраб, маҳрум бўлиб қолма, тағин.",
       "kk": "Алламен бірге басқа тәңір жасама ! Онда қорланған түрде отырып қаласың.",
       "ky": "Сен (эч качан) Аллахка дагы бир «кудайды» кошпогун! Анткенде, жек көрүндү болуп, (сооптордон) куржалак олтуруп каласың.",
-      "tg": "[Эй инсон, ҳаргиз ҳеҷ] Маъбуди дигареро бо Аллоҳ таоло [шарик] қарор надеҳ, ки накуҳида ва беёвар хоҳӣ монд"
+      "tg": "[Эй инсон, ҳаргиз ҳеҷ] Маъбуди дигареро бо Аллоҳ таоло [шарик] қарор надеҳ, ки накуҳида ва беёвар хоҳӣ монд",
+      "sw": "Usimfanye mungu mwengine pamoja na Mwenyezi Mungu, ukaja ukawa wa kulaumiwa uliyetupika.",
+      "ha": "Kada ka sanya wani abin bautawa na daban tãre da Allah har ka zauna kana abin zargi, yarɓaɓɓe.",
+      "am": "ከአላህ ጋር ሌላን አምላክ አታድርግ የተወቀስክ ረዳት የሌለህ ትኾናለህና፤",
+      "om": "Rabbii wajjin gabbaramaa biraa hin taasisin; (yoo waliin gabbarte) balaaleffatamaa, salphataa taatee teessa.",
+      "so": "Ha yeelin la jirka Alle ilaah kale, si aadan u fadhiisan (cadaab dhexdi) adigoo dulleysan deyro ah.",
+      "ff": "Wota a waɗan Alla deweteeɗo goɗɗo; njooɗoyoɗaa ko a ñiŋaaɗo noppaaɗo.",
+      "yo": "Má ṣe mú ọlọ́hun mìíràn mọ́ Allāhu nítorí kí o má baà jókòó (sínú Iná) ní ẹni àbùkù, ẹni ẹ̀kọ̀ (tí wọ́n máa dá ìṣòro rẹ̀ dá)."
     }
   },
   {
@@ -1924,7 +2349,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, Парвардигорингиз Ўзи истаган одамга ризқни кенг қилиб беради ёки танг қилади. Албатта, У бандаларидан Хабардор ва уларни Кўргувчи Зотдир.",
       "kk": "Шынында Раббың қалаған кісісіне несібесін кеңітіп, тарылтады. Күдіксіз Ол құлдарынан толық хабар алушы, көруші.",
       "ky": "Чынында, сенин Раббиң каалаган пендесине ырыскыны кенен берет, каалаганына ченеп берет. Ал пенделеринин (абалынан) Кабардар, Көрүүчү.",
-      "tg": "Бе гумон, Парвардигорат [неъмат ва] рӯзиро бар ҳар кӣ бихоҳад, густурда медорад ва ё танг мегирад. Бе тардид, Ӯ ҳамвора ба [аҳволи] бандагонаш огоҳ ва биност"
+      "tg": "Бе гумон, Парвардигорат [неъмат ва] рӯзиро бар ҳар кӣ бихоҳад, густурда медорад ва ё танг мегирад. Бе тардид, Ӯ ҳамвора ба [аҳволи] бандагонаш огоҳ ва биност",
+      "sw": "Hakika Mola wako Mlezi humkunjulia riziki amtakaye, na humpimia amtakaye. Hakika Yeye kwa waja wake ni Mwenye kuwajua na kuwaona vyema.",
+      "ha": "Lalle ne Ubangijinka Yanã shimfiɗa arzĩki ga wanda Yake so, kuma Yanã ƙuƙuntãwa. Lalle Shi, Yã kasance Mai sani ga bãyinSa, Mai gani.",
+      "am": "ጌታህ ሲሳይን ለሚሻው ሰው ያሰፋል፤ ያጠባልም፡፡ እርሱ በባሮቹ ኹኔታ ውስጠ ዐዋቂ ተመልካች ነውና፡፡",
+      "om": "Dhugumatti Gooftaan kee hiree nama fedheef ni bal’isa; (nama fedhe irratti) ni dhiphisas. Dhugumatti, Inni gabroota Isaa beekaa, argaa ta’eera.",
+      "so": "Hubaal, Rabbigaa wuxuu u fidiyaa risiqa kuu doono, oo ku cidhiidhiyaa (kuu doono). Hubaal waa Mid addoomahiisa mar walba Xog Ogaal u ah oo Arka.",
+      "ff": "Pellet Joomi maa, no yaacnana arsike, on mo O muuyi. O ɓittina. Pellet Kaŋko O wonii kumpitiiɗo, ji’oowo jeyaaɓe makko.",
+      "yo": "Dájúdájú Olúwa rẹ l’Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú Ó ń jẹ́ Onímọ̀-ìkọ̀kọ̀, Olùríran nípa àwọn ẹrúsìn Rẹ̀."
     }
   },
   {
@@ -1955,7 +2387,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Парвардигорингиз денгизда кемани юритиб қўйган Зотдир. Токи (тирикчилик ўтказишда) Унинг фазлидан умидвор бўлинглар. Албатта, У сизларга Меҳрибондир.",
       "kk": "Раббыларың сондай Алла; өзінің кеңшілігінен несібе іздеулерің үшін теңізде кеме жүргізеді. Өйткені, Ол, сендерге өте мейірімді.",
       "ky": "(О, инсандар) Раббиңер, Өз пазилетинен (ырыскы) издешиңер үчүн силердин пайдаңарга (албууттанган) деңиздин үстүндө кеме жүргүзүп койду. Чынында, Ал силерге Ырайымдуу!",
-      "tg": "[Эй мардум] Парвардигори шумо касест, ки киштиро дар дарё бароятон ба ҳаракат дармеоварад, то аз фазлаш баҳраманд гардед. Бе тардид, Ӯ ҳамвора нисбат ба шумо меҳрубон аст"
+      "tg": "[Эй мардум] Парвардигори шумо касест, ки киштиро дар дарё бароятон ба ҳаракат дармеоварад, то аз фазлаш баҳраманд гардед. Бе тардид, Ӯ ҳамвора нисбат ба шумо меҳрубон аст",
+      "sw": "Mola wenu Mlezi ndiye anayewaendeshea merikebu katika bahari ili mtafute katika fadhila zake. Hakika Yeye ni Mwingi wa kukurehemuni.",
+      "ha": "Ubangijinku ne Yake gudãnar da jirgi a cikin tẽku, dõmin ku nema daga falalarSa. Lalle ne Shĩ, Yã kasance a gare ku Mai jin ƙai.",
+      "am": "ጌታችሁ ያ ከችሮታው ትፈልጉ ዘንድ መርከቦችን በባሕር ለይ ለእናንተ የሚነዳላችሁ ነው፡፡ እነሆ እርሱ ለናንተ አዛኝ ነውና፡፡",
+      "om": "Gooftaan keessan Isa doonii galaana keessa isiniif deemsisuudha. akka tola Isaa irraa barbaaddattaniif, Dhugumatti, Inni isiniif rahmata godhaa ta’eera.",
+      "so": "Rabbigiin (Alle) waa Kan idiinku socodsiiya doonyaha badda si aad u raadsataan Deeqdiisa. Hubaal Waa uu idiin Naxariis Badan yahay.",
+      "ff": "Ko Joomi mon woni sogganatɗo on laaɗe ɗe e maayo, fii yo on ɗaɓɓu immorde e ɓural makko , pellet, Kaŋko ko O jurmotooɗo on.",
+      "yo": "Olúwa yín ni Ẹni tó ń mú ọkọ̀ ojú-omi rìn fún yín nítorí kí ẹ lè wá nínú oore àjùlọ Rẹ̀. Dájúdájú Ó ń jẹ́ Aláàánú fún yín."
     }
   },
   {
@@ -1986,7 +2425,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Қайси бирлари яхшироқ амал қилишларини синаб кўриш учун Биз ер юзидаги нарсаларни унга зийнат-безак қилиб бердик.",
       "kk": "Біз адам баласының қайсысы жақсы ғамал істейді деп сынау үшін жер үстіндегі нәрселерді жердің көркі қылдық.",
       "ky": "Биз алардын кимиси жакшыраак амал кылаар экен деп сынаш үчүн жер бетиндеги нерселерди жерге зыйнат-көрк кылдык.",
-      "tg": "Дар ҳақиқат, Мо он чиро, ки рӯйи замин аст, зеваре барои он қарор додаем, то ононро биёзмоем, ки кадомашон накукортаранд"
+      "tg": "Дар ҳақиқат, Мо он чиро, ки рӯйи замин аст, зеваре барои он қарор додаем, то ононро биёзмоем, ки кадомашон накукортаранд",
+      "sw": "Kwa hakika tumevifanya vilivyoko juu ya ardhi kuwa ni pambo lake ili tuwafanyie mtihani, ni nani kati yao ndio wenye vitendo vizuri zaidi.",
+      "am": "እኛ ማንኛቸው ሥራው ያማረ መኾኑን ልንፈትናቸው በምድር ላይ ያለን ሁሉ ለእርሷ ጌጥ አደረግን፤",
+      "om": "Dhugumatti, Nuti waan dachii irra jiru (hunda) isheef miidhagina taasifne, isaan irraa eenyu akka irra tolchee hojjatu mul’isuuf.",
+      "so": "Waxaan ka yeellay waxa dhulka korkiisa ah qurux lagu qurxiyey, si aanu u imtixaanno midkood ugu camal fiican.",
+      "ff": "Minen min mbaɗii ko woni ko ka hoore leydi cuɗaari mayri, fii yo min  mjarribo ɓe ko hommbo e maɓɓe ɓurata moƴƴin'de golle.",
+      "yo": "Dájúdájú Àwa ṣe ohun tí ń bẹ lórí ilẹ̀ ní ọ̀ṣọ́ fún ilẹ̀ náà nítorí kí Á lè dán wọn wò (pé) èwo nínú wọn ló máa dára jùlọ níbi iṣẹ́ ṣíṣe (nínú ẹ̀sìn)."
     }
   },
   {
@@ -2017,7 +2462,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Иймон келтирган ва яхши ишлар қилган зотларга келсак, албатта, Биз чиройли амаллар қилган кишиларнинг савобини зое қилмасмиз.",
       "kk": "Иман келтіріп, дұрыс іс істегендердің және жақсы ғамал істеген кісінің еңбегін жоймаймыз.",
       "ky": "Ал эми, ыйман келтирип салих амалдарды аткарган момундардын – жакшы амал кылгандардын сообун текке кетирбейбиз.",
-      "tg": "Касоне, ки имон оварданд ва корҳои шоиста анҷом додаанд [ба яқин, бидонанд, ки] Мо подоши касеро, ки кори накӯ карда бошад, ҳаргиз табоҳ намекунем"
+      "tg": "Касоне, ки имон оварданд ва корҳои шоиста анҷом додаанд [ба яқин, бидонанд, ки] Мо подоши касеро, ки кори накӯ карда бошад, ҳаргиз табоҳ намекунем",
+      "sw": "Hakika wale walioamini na wakatenda mema, hakika Sisi hatupotezi ujira wa anayetenda mazuri.",
+      "ha": "Lalle ne waɗanda suka yi ĩmãni kuma suka aikata ayyukan ƙwarai lalle ne Mũ bã Mu tõzartar da lãdar wanda ya kyautata aiki.",
+      "am": "እነዚያ ያመኑና መልካም ሥራዎችንም የሠሩ እኛ ሥራን ያሳመረን ሰው ምንዳ አናጠፋም፡፡",
+      "om": "Warreen amananii, gaggaarii hojjatan, (galata guddaa argatu) Nuti mindaa nama dalagaa tolchee hin balleessinu.",
+      "so": "Hubaal, kuwa (Xaqa) rumeeyey oo fala samaha, Annagu ma dayacno abaalgudka ciddii wanaajisa camalka.",
+      "ff": "Pellet, ɓen gooŋɗinɓe ɓe ngolli moƴƴi ɗin, Minen Min njeebataa njoɓdi kala moƴƴinɗo golle.",
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, dájúdájú Àwa kò níí fi ẹ̀san ẹni tí ó bá ṣe iṣẹ́ rere ráre."
     }
   },
   {
@@ -2047,7 +2499,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, Биз ерга ва унинг устидаги кимсаларга меросхўр бўламиз ва Бизгагина қайтурлар.",
       "kk": "Расында біз жерге де ондағыларға да мұрагер боламыз. Және олар біз жаққа қайтарылады.",
       "ky": "Жерди жана анда болгондун баарын Өзүбүз мураска алабыз жана бардыгы Бизге кайтышат.",
-      "tg": "Яқинан, Мо замин ва ҳар киро бар он аст, ба ирс мебарем ва [ҳама] ба сӯйи Мо бозгардонида шаванд"
+      "tg": "Яқинан, Мо замин ва ҳар киро бар он аст, ба ирс мебарем ва [ҳама] ба сӯйи Мо бозгардонида шаванд",
+      "sw": "Hakika Sisi ndio tutairithi ardhi na wale walio juu yake. Na kwetu watarejeshwa.",
+      "am": "እኛ ምድርን በእርሷም ላይ ያለውን ሁሉ እኛ እንወርሳለን፡፡ ወደኛም ይመለሳሉ፡፡",
+      "om": "Nuti Numatu dachiifi waan ishee irra jiru dhaala; garuma keenya deebifamus.",
+      "so": "Waa Annaga (Allaah) kuwa dhaxli arlada iyo waxa korkeeda joogaba.  Xaggaygaana laydiin soo celin.",
+      "ff": "Minen min ndonat lesdi ndi e ɓen wonɓe e dow mayri, ko ka amen ɓe nduttetee.",
+      "yo": "Dájúdájú Àwa l’A máa jogún ilẹ̀ àti àwọn tó ń bẹ lórí rẹ̀. Ọ̀dọ̀ Wa sì ni wọn yóò dá wọn padà sí."
     }
   },
   {
@@ -2078,7 +2536,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ўша инсон Биз уни олдин ўзи ҳеч нарса бўлмаган пайтида яратганимизни эсламайдими?!",
       "kk": "Ал адам баласы, өзін алғаш жаратқанымызда, дәнеңе емес екенін ойламай ма?",
       "ky": "(Ошол) инсан ойлобойбу, Биз аны мындан мурун эч нерсе эмес (жок) болгон кезде жараткан элек!",
-      "tg": "Оё инсон ба ёд намеоварад, ки мо пеш аз ин ӯро офаридем, дар ҳоле ки ҳеҷ набуд?"
+      "tg": "Оё инсон ба ёд намеоварад, ки мо пеш аз ин ӯро офаридем, дар ҳоле ки ҳеҷ набуд?",
+      "sw": "Je, hakumbuki mwanadamu ya kwamba hakika tulimuumba kabla, na wala hakuwa chochote?",
+      "ha": "Shin, kuma mutum bã zai tuna ba cẽwa lalle ne Mun halitta shi a gabãni, alhãli kuwa bai kasance kõme ba?",
+      "am": "ሰው ከአሁን በፊት ምንም ነገር ያልነበረ ሲኾን እኛ የፈጠርነው መኾኑን አያስታውስምን?",
+      "om": "Sila namni hin yaadatuu akka Nuti kanaan dura isa uumne, ka waa argamaa hintahin?",
+      "so": "Miyuusan Aadmigu xusuusnayn inaan abuurnay kal hore isagoon waxba ahayn?",
+      "ff": "Enee, neɗɗaŋke on annditaani Menen Men Tagiino mo ko adii, hari o wonaali hay e hu'unde.",
+      "yo": "Ṣé ènìyàn kò rántí pé dájúdájú Àwa ni A ṣẹ̀dá rẹ̀ tẹ́lẹ̀tẹ́lẹ̀ nígbà tí kò tí ì jẹ́ n̄ǹkan kan?"
     }
   },
   {
@@ -2109,7 +2574,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ердаги барча кимсалар Раҳмонга бўйсунган ҳолларида келурлар.",
       "kk": "Көктер мен жердегі әркім Аллаға ғана құл болып келеді.",
       "ky": "Асмандардагынын жана Жердегинин баары Чексиз Ырайымдууга кул-пенде болуп, келишти.",
-      "tg": "Дар осмонҳо ва замин ҳеҷ касе нест, магар он ки [дар рӯзи қиёмат хоксор ва] бандавор назди Аллоҳи Раҳмон меояд"
+      "tg": "Дар осмонҳо ва замин ҳеҷ касе нест, магар он ки [дар рӯзи қиёмат хоксор ва] бандавор назди Аллоҳи Раҳмон меояд",
+      "sw": "Hakuna yeyote aliyemo mbinguni na ardhini isipokuwa atamjia Arrahmani (Mwingi wa rehema) kuwa ni mja wake.",
+      "ha": "Dukkan wanda yake a cikin sammai da ƙasa bai zama ba fãce mai jẽ wa Mai rahama ne yanã bãwã.",
+      "am": "በሰማያትና በምድር ያለው ሁሉ (በትንሣኤ ቀን) ለአልራሕማን ባሪያ ኾነው የሚመጡ እንጂ ሌላ አይደሉም፡፡",
+      "om": "Wanti samiileefi dachii keessa jiran hundi gabra (Isaa) qofa ta’anii gara Rahmaan dhufanu malee hin hafan.",
+      "so": "Wax kastoo ku sugan samooyinka iyo arlada wuxuu u imaan (Allaah) Raxmaanka isagoo addoon ah.",
+      "ff": "Alaa ko woni e kammuuli e  leydi si wanaa o aray e jurmotooɗo hombo woni jeyaaɗo.",
+      "yo": "Kò sí ẹnì kan nínú àwọn sánmọ̀ àti ilẹ̀ àyàfi kí ó wá bá Àjọkẹ́-ayé ní ipò ẹrúsìn."
     }
   },
   {
@@ -2139,7 +2611,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ердаги, улар орасидаги ва тупроқ остидаги нарсалар Уникидир.",
       "kk": "Көктердегі, жердегі әрі екі арасындағы нәрселермен топырақтың астындағы нәрсе Оған тән.",
       "ky": "Асмандардагы, Жердеги нерселердин бардыгы жана Жер астындагы нерселердин баары жалгыз Ага гана таандык мүлк болуп саналат!",
-      "tg": "Он чи дар осмонҳо ва замин ва он чи миёни онҳост ва он чи зери хок [пинҳон] аст, [ҳамагӣ] аз они Ӯст"
+      "tg": "Он чи дар осмонҳо ва замин ва он чи миёни онҳост ва он чи зери хок [пинҳон] аст, [ҳамагӣ] аз они Ӯст",
+      "sw": "Ni vyake vyote vilivyo katika mbingu na vilivyo katika ardhi, na vilivyo baina yake, na vilivyo chini ya ardhi.",
+      "ha": "Abin da yake a cikin sammai nãsa ne, da abin da yake a cikin ƙasa da abin da yake a tsakãninsu da abin da ke ƙarƙashin turɓãya.",
+      "am": "በሰማያት ያለው፣ በምድርም ያለው፣ በመካከላቸውም ያለው፣ ከዐፈር በታችም ያለው ሁሉ የርሱ ብቻ ነው፡፡",
+      "om": "Wanti samiilee, dachiifi gidduu isaan lamaanii jiruufi wanti biyyee jala jiru hundi kan Isaati.",
+      "so": "Isagaa leh waxa ku sugan samooyinka iyo waxa ku sugan arlada iyo waxa u dhexeeya iyo waxa ka hooseeyaba rayska.",
+      "ff": "No woodani mo o ko woni ko e kammuuji ɗin e ko woni kon e leydi ndi e ko wini kon hakkunde majji kannji ɗiɗi e ko woni ko e les leydi.",
+      "yo": "TiRẹ̀ ni ohunkóhun tó wà nínú àwọn sánmọ̀, ohunkóhun tó wà nínú ilẹ̀ àti ohunkóhun tó wà láààrin méjèèjì àti ohunkóhun tó wà lábẹ́ ilẹ̀."
     }
   },
   {
@@ -2170,7 +2649,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ. Ундан ўзга илоҳ йўқдир. Гўзал номлар Уникидир.",
       "kk": "Ол Алла. Одан басқа ешбір тәңір жоқ. Ең көркем аттар Оған тән.",
       "ky": "Аллах, эч бир сыйынууга татыктуу кудай жок, бир Анын Өзү бар. Анын керемет ысымдары бар!",
-      "tg": "Аллоҳ таоло аст, ки ҳеҷ маъбуде [бар ҳақ] ҷуз Ӯ нест [ва] накутарин номҳо аз они Ӯст"
+      "tg": "Аллоҳ таоло аст, ки ҳеҷ маъбуде [бар ҳақ] ҷуз Ӯ нест [ва] накутарин номҳо аз они Ӯст",
+      "sw": "Mwenyezi Mungu! Hakuna mungu yeyote isipokuwa Yeye. Yeye ana majina mazuri zaidi.",
+      "ha": "Allah bãbu abin bautãwa fãce Shi. Yanã da sunãye mafiya kyau.",
+      "am": "አላህ ከእርሱ ሌላ አምላክ የለም፡፡ ለእርሱ መልካሞች የኾኑ ስሞች አልሉት፡፡",
+      "om": "Rabbiin dhugaan gabbaramaan isa malee hin jiru. Maqoonni babbareedoon isaaf tahe.",
+      "so": "Allaah! Ma jiro ilaah (xaq ah) aan Isaga aheyn, Wuxuu leeyahay Magacyada Wanaagga iyo Quruxda Badan.",
+      "ff": "Alla deweteeɗo alaa si wonaa Kaŋko, no woodani mo Inɗe moƴƴe ɗe.",
+      "yo": "Allāhu, kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. TiRẹ̀ ni àwọn orúkọ tó dára jùlọ."
     }
   },
   {
@@ -2200,7 +2686,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Сизларни ундан яратдик, унга қайтарамиз ва яна бир бор ундан чиқариб оламиз.",
       "kk": "Одан (топырақтан) сендерді жараттық. Оған қайтарамыз да екінші рет содан шығарамыз.",
       "ky": "Биз силерди ошол жерден жаратканбыз жана ошого кайтарабыз. Жана (Кыяматта) экинчи ирет дагы ошондон чыгарып алабыз.",
-      "tg": "Шуморо аз он [хок] офаридем ва ба он бозмегардонем ва бори дигар [дар қиёмат] аз он берун меоварем"
+      "tg": "Шуморо аз он [хок] офаридем ва ба он бозмегардонем ва бори дигар [дар қиёмат] аз он берун меоварем",
+      "sw": "Tumewaumba kutokana nayo (ardhi), na humo tutawarudisha, na tutawatoa kutoka humo mara nyengine.",
+      "am": "ከእርሷ (ከምድር) ፈጠርናችሁ፡፡ በእርሷም ውስጥ እንመልሳችኋለን፡፡ ከእርሷም በሌላ ጊዜ እናወጣችኋለን፡፡",
+      "om": "Ishee (dachii) irraa isin uumne; ishee keessatti isin deebifna; yeroo biraas ishee irraa isin baafna.",
+      "so": "Xaggeedaan (arlada) idinka abuurnay, gudaheeda baan idinku celin, xaggeedaana la idinka soo saari mar kale (geeri kaddib).",
+      "ff": "Ko immorde e mayri Min Tagi on, ko e ndeer mayri Min nduttata on, ko immorde e mayri kadi Min njaltinoyta on laawol goɗgol",
+      "yo": "Láti ara erùpẹ̀ ni A ti da yín. Inú rẹ̀ sì ni A óò da yín padà sí. Láti inú rẹ̀ sì ni A óò ti mu yín jáde padà nígbà mìíràn.”"
     }
   },
   {
@@ -2230,7 +2722,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ердаги барча жонзот Уникидир. Унинг ҳузуридагилар ибодатидан такаббурлик қилмаслар ва малол олмаслар.",
       "kk": "Көктер мен жердегілер Алланікі. Оның қасындағылар, Оған құлшылық қылудан дандайсымайды да шаршамайды.",
       "ky": "Асмандар менен Жердеги нерселердин баары Аллахтын мүлкү. Анын алдындагылар (периштелер) Ага ибадат-кулчулук кылуудан текеберленишпейт жана чарчашпайт.",
-      "tg": "Ҳар ки [ва ҳар чи] дар осмонҳо ва замин аст аз они Ӯст ва онон, ки назди Ӯ ҳастанд [фариштагон] аз ибодаташ саркашӣ намекунанд ва хаста намешаванд"
+      "tg": "Ҳар ки [ва ҳар чи] дар осмонҳо ва замин аст аз они Ӯст ва онон, ки назди Ӯ ҳастанд [фариштагон] аз ибодаташ саркашӣ намекунанд ва хаста намешаванд",
+      "sw": "Na ni vyake Yeye tu vilivyomo mbinguni na katika ardhi. Na wale walioko kwake hawafanyi kiburi wakaacha kumuabudu, wala hawachoki.",
+      "ha": "Kuma shĩ ne da mallakar wanda yake a cikin sammai da ƙasa. Kuma waɗanda suke wurin Sa (watau malã'iku), bã su yin girman kai ga ibãdar Sa. kuma bã su gajiya.",
+      "am": "በሰማያትና በምድር ያለው ሁሉም የእርሱ ነው፡፡ እርሱ ዘንድ ያሉትም (መላእክት) እርሱን ከመገዛት አይኮሩም፡፡ አይሰለቹምም፡፡",
+      "om": "Wantoonni samiileefi dachii keessa jiran hundi kan Isaati. Isaan Isa (Allaah) bira jiranis (maleykonnis) Isa gabbaruu irraa hin boonan; hin hifatanis.",
+      "so": "Alle baa leh wax kasta oo ku sugan samooyinka iyo arlada; kuwa (Alle) agtiisa ahna ee u dhow (malaa’igta) iskama wey- neeyaan cibaadadiisa, kamana daalaan.",
+      "ff": "Ko Kaŋko woodani ko woni ko ka kammuuji e ka leydi ɓen wonɓe ka Makko kadi ɓe mawnittaako ga rewugol Mo, ɓe hasrintaaka kadi.",
+      "yo": "TiRẹ̀ ni àwọn tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Àti pé àwọn tó ń bẹ lọ́dọ̀ Rẹ̀, wọn kì í ṣègbéraga níbi ìjọ́sìn Rẹ̀. Kò sì rẹ̀ wọ́n."
     }
   },
   {
@@ -2257,7 +2756,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Əgər göylərdə və yerdə Allahdan başqa məbudlar olsaydı, onların hər ikisi fəsada uğrayardı. Ərşin sahibi olan Allah pakdır və (müşriklərin) Ona aid etdikləri sifətlərdən uzaqdır!",
       "uz": "Агар уларда Аллоҳдан ўзга худолар бўлганида бузилиб кетган бўлардилар. Аршнинг Парвардигори Аллоҳ улар васф қилган нарсадан Покдир.",
       "kk": "Егер жер-көкте Алладан басқа да тәңірлер болса еді, әлбетте екеуі де бұзылып, кетер еді. Ғаршының Раббы Алла, олардың жасанды сипаттарынан пәк.",
-      "ky": "Эгер Асман менен Жерде Аллахтан башка кудайлар болгондо, экөө тең ойрон болмок. (Улуу, Бийик) Арштын Раббиси болгон Аллах мушриктер сыпаттаган нерселерден Аруу-Таза!"
+      "ky": "Эгер Асман менен Жерде Аллахтан башка кудайлар болгондо, экөө тең ойрон болмок. (Улуу, Бийик) Арштын Раббиси болгон Аллах мушриктер сыпаттаган нерселерден Аруу-Таза!",
+      "ha": "Dã waɗansu abũbuwan bautawa sun kasance a cikinsu (sama da ƙasa) fãce Allah, haƙĩƙa dã su biyun sun ɓãci. Sabõda haka tsarki ya tabbata ga Allah Ubangijin Al'arshi daga abin da suke siffantãwa.",
+      "am": "በሁለቱ (በሰማያትና በምድር) ውስጥ ከአላህ ሌላ አማልክት በነበሩ ኖሮ በተበላሹ ነበር፡፡ የዐርሹ ጌታ አላህም ከሚሉት ሁሉ ጠራ፡፡",
+      "om": "Odoo isaan lamaan (samiifi dachii) keessa Rabbiin malee gabbaramtoonni biraa jiraatanii lamaan isaaniituu ni badu ture, Rabbiin Gooftaa Arshii ta’e waan kaafiroonni (Isaan) jedhan irraa qulqullaa’e!",
+      "so": "Hadday jiri lahaayeen dhexdooda (cirarka iyo dhulka) ilaahyo aan ahayn Alle, way fasaadi lahaayeen. Wuu ka hufan yahay Alle Rabbiga Carshiga Weyn leh oo ka Sarreeyaa waxay ku tilmaami.",
+      "ff": "Sinndo laatino e majji [kammuuli ɗi e leydi ndi] deweteeɗi ko wonaa Alla ɗi bonayno. Senayee wonanii Alla Jom Arsi kin ga koɓe cifotoo.",
+      "yo": "Tí ó bá jẹ́ pé àwọn ọlọ́hun kan wà nínú sánmọ̀ àti ilẹ̀ lẹ́yìn Allāhu, sánmọ̀ àti ilẹ̀ ìbá ti bàjẹ́. Mímọ́ ni fún Allāhu, Olúwa Ìtẹ́-ọlá, tayọ ohun tí wọ́n ń fi ròyìn (Rẹ̀)."
     }
   },
   {
@@ -2278,7 +2783,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Məgər kafirlər göylərlə yer bir olduğu zaman Bizim onları bir-birindən araladığımızı, hər bir canlını sudan yaratdığımızı görmürlərmi? Yenədəmi inanmırlar?",
       "uz": "Куфр келтирган кимсалар осмонлару ер қапишган бўлиб, кейин уларни ажратганимизни ва ҳамма жонли нарсани сувдан (ҳосил) қилганимизни билмасларми? Иймон келтирмайдиларми?",
       "kk": "Қарсы болғандар, негізінде көктер менен жер тиіскен еді. Екеуін ажыратқанымызды, әр жанды нәрсені судан жаратқанымызды көрмей ме? Сондай-ақ сенбей ме?",
-      "ky": "«Каапырлар билишпейби, асмандар менен жер (мурда) бири-бирине жабышып турган болчу. Кийин Биз алардын ортосун бөлүп койдук. Жана Биз ар бир тирүү нерсени суудан жараттык. Ыйман келтиришпейби?!»"
+      "ky": "«Каапырлар билишпейби, асмандар менен жер (мурда) бири-бирине жабышып турган болчу. Кийин Биз алардын ортосун бөлүп койдук. Жана Биз ар бир тирүү нерсени суудан жараттык. Ыйман келтиришпейби?!»",
+      "sw": "Je, hao waliokufuru hawakuona kwamba mbingu na ardhi zilikuwa zimeambatana, kisha Sisi tukazibandua? Na tukafanya kwa maji kila kilicho hai? Basi je, hawaamini?",
+      "am": "እነዚያም የካዱት ሰማያትና ምድር የተጣበቁ የነበሩና የለያየናቸው መኾናችንን አያውቁምን? ሕያው የኾነንም ነገር ሁሉ ከውሃ ፈጠርን፡፡ አያምኑምን ?",
+      "om": "Sila isaan kafaran akka samiifi dachiin walitti maxxantuu turanii, ergasii addaan isaan baafne hin beekanuu? Bishaan irraa lubbu qabeeyyii hunda ni uumne, Sila hin amananuu?",
+      "ff": "Enee,  ɓen yedduɓe yiaani won'dema kammuuji ɗi e leydi ndi ɗi laatinoke kippondirɗi, Min ngudditi ɗi Min mbaɗi immorde e ndiyam ɗam kala hu'unde wuuru nde. Kaa ɓe ngonɗintaa?"
     }
   },
   {
@@ -2307,7 +2816,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ҳар бир жон ўлим (шароби)ни татиб кўргувчидир. Сизларни яхшилик билан ҳам, ёмонлик билан ҳам синаймиз. Бизгагина қайтарилурсизлар.",
       "kk": "Әркім өлімді татады. Сендерді сынап; жаман-жақсы күйге саламыз. Сондай-ақ бізге қайтарыласыңдар.",
       "ky": "Ар бир жан өлүмдү(н даамын) татуучу. (Ошого чейин) Биз силерди (кээде) жакшылык, (кээде) жамандык менен сынайбыз. Жана (өмүрүңөр бүткөндө) Өзүбүзгө кайтарыласыңар.",
-      "tg": "Ҳар касе чашандаи [таъми] марг аст ва [эй мардум] шуморо бо бадӣ ва некӣ меозмоем ва [саранҷом] ба сӯйи Мо бозгарданда мешавед"
+      "tg": "Ҳар касе чашандаи [таъми] марг аст ва [эй мардум] шуморо бо бадӣ ва некӣ меозмоем ва [саранҷом] ба сӯйи Мо бозгарданда мешавед",
+      "sw": "Kila nafsi itaonja mauti; na tunawajaribu kwa mtihani wa maovu na heri. Na kwetu Sisi mtarejeshwa.",
+      "ha": "Kõwane rai mai ɗanɗanar mutuwa ne. Kuma Munã jarraba ku da sharri da alhẽri dõmin fitina. Kuma zuwa gare Mu ake mayar da ku.",
+      "am": "ነፍስ ሁሉ ሞትን ቀማሽ ናት፡፡ ለመፈተንም በክፉም በበጎም እንሞክራችኋለን፡፡ ወደኛም ትመለሳላችሁ፡፡",
+      "om": "Lubbuun hundi du’a dhandhamtuudha. Isin qormaatuuf hamtuufi gaariin isin mokkorra, Garuma keenyatti deebifamtu.",
+      "so": "Naf walbaa waa tii dhadhamisa geeri, waxaanu idinku imtixaani shar iyo khayrba kala saar darteed, Xaggayagaana la idiin soo celin.",
+      "ff": "Kala woŋkii meedat maayɗe nde, Min njarribora on bone on e moƴƴere nde njarrabagol, ko ka amen kadi nduttotoɗon.",
+      "yo": "Ẹ̀mí kọ̀ọ̀kan ló máa tọ́ ikú wò. A sì máa fi aburú àti rere ṣàdánwò fún yín. Ọ̀dọ̀ Wa sì ni wọn yóò da yín padà sí."
     }
   },
   {
@@ -2336,7 +2852,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Allah iman gətirib saleh əməllər edənləri (ağacları və qəsrləri) altından çaylar axan cənnətlərə daxil edəcək. Şübhəsiz ki, Allah istədiyini edər.",
       "uz": "Албатта, Аллоҳ иймон келтирган ва яхши амалларни қилган зотларни остидан анҳорлар оқиб ўтадиган жаннатларга киритади. Албатта, Аллоҳ Ўзи хоҳлаган ишни қилади.",
       "kk": "Күдіксіз Алла, иман келтіріп, түзу іс істегендерді, астарынан өзендер ағатын бақшаларға кіргізеді. Шынында Алла қалағанын істейді.",
-      "ky": "Аллах Өзүнө (ыклас менен) ыйман келтирип, жакшы амалдарды жасаган ыймандууларды албетте, түбүнөн дарыялар аккан бейиш бактарына киргизет. Чынында, Аллах каалаган нерсесин жасайт."
+      "ky": "Аллах Өзүнө (ыклас менен) ыйман келтирип, жакшы амалдарды жасаган ыймандууларды албетте, түбүнөн дарыялар аккан бейиш бактарына киргизет. Чынында, Аллах каалаган нерсесин жасайт.",
+      "sw": "Hakika Mwenyezi Mungu atawaingiza wale walioamini na wakatenda mema katika Bustani zipitazo mito kwa chini yake. Hakika Mwenyezi Mungu hutenda atakayo.",
+      "am": "አላህ እነዚያን ያመኑትንና መልካም ሥራዎችን የሠሩትን በሥሮቻቸው ወንዞች የሚፈሱባቸውን ገነቶች ያገባቸዋል፡፡ አላህ የሚሻውን ነገር በእርግጥ ይሠራል፡፡",
+      "om": "Rabbiin isaan amananii, gaggaarii dalagan Jannatoowwan laggeen ishee jala yaatu isaan seensisa, Dhugumatti Rabbiin waan fedhu hojjata.",
+      "so": "Hubaal, Alle wuxuu gelin kuwa (Xaqa) rumeeyey oo samaha fala Jannooyin (beero) ay hoostoodu webiyo qul-qulaan. Hubaal Alle wuxuu Falaa wuxuu Doono.",
+      "ff": "Pellet, Alla homoo naatna ɓen gooŋɗinɓe ɓe ngolli moƴƴi ɗin Aljannaaji no ila sengo ley majji caatlii ɗi, pellet, Alla homo waɗa ko o faandii ko.",
+      "yo": "Dájúdájú Allāhu yóò mú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere wọ inú Ọgbà Ìdẹ̀ra tí àwọn odò ń ṣàn ní ìsàlẹ̀ rẹ̀. Dájúdájú Allāhu ń ṣe ohun tí Ó bá fẹ́."
     }
   },
   {
@@ -2367,7 +2889,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ иймон келтирган зотларни, албатта, мудофаа қилади. Аниқки, Аллоҳ ҳар бир хоин нонкўрни севмайди.",
       "kk": "Күдіксіз Алла, иман келтіргендерді қорғайды. Әрине Алла, бүкіл қиянатшыл, қасарысқандарды жақсы көрмейді.",
       "ky": "Аллах ыймандуу адамдарды коргойт. Албетте, Аллах ар бир кыянатчы, шүгүр кылбаган пенделерди сүйбөйт.",
-      "tg": "Аллоҳ таоло аз касоне, ки имон овардаанд, ҳатман, [дар баробари душманонашон] дифоъ мекунад. Бе тардид, Аллоҳ таоло ҳеҷ хиёнаткори носипосеро дӯст намедорад"
+      "tg": "Аллоҳ таоло аз касоне, ки имон овардаанд, ҳатман, [дар баробари душманонашон] дифоъ мекунад. Бе тардид, Аллоҳ таоло ҳеҷ хиёнаткори носипосеро дӯст намедорад",
+      "sw": "Hakika Mwenyezi Mungu huwakinga walioamini. Hakika Mwenyezi Mungu hampendi kila haini, mwingi wa kukufuru.",
+      "am": "አላህ ከእነዚያ ካመኑት ላይ ይከላከልላቸዋል፡፡ አላህ ከዳተኛን ውለታቢስን ሁሉ አይወድም፡፡",
+      "om": "Rabbiin isaan amanan irraa ni ittisa, nama akkaan gantuu, kafaraa ta'e hunda Rabbiin hin jaallatu.",
+      "so": "Xaqiiq Alle wuu difaacaa addoomahiisa rumeysan. Xaqiiq, Alle ma jecla mid kastoo khiyaano badan, abaal dhac badan.",
+      "ff": "Pellet, Alla O solnanay(duñanat) ɓeen gooŋɗinɓe, pellet, Alla o yiɗaa kala kodoowo keewɗo jeddi.",
+      "yo": "Dájúdájú Allāhu ń ti aburú kúrò fún àwọn tó gbàgbọ́ ní òdodo. Dájúdájú Allāhu kò nífẹ̀ẹ́ gbogbo àwọn oníjàǹbá, aláìgbàgbọ́."
     }
   },
   {
@@ -2397,7 +2925,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Самолардаги нарсалар ҳам, заминдаги нарсалар ҳам ёлғиз Уникидир. Албатта, Аллоҳ Беҳожат ва мақтовга лойиқ Зотдир.",
       "kk": "Көктердегі әрі жердегі нәрселер Алланікі. Шынында Алла, өте бай, аса мақтаулы.",
       "ky": "Асмандардагы жана Жердегилердин бардыгы Анын мүлкү. Аллах бир Өзү гана Беймуктаж, (жана ысым-сыпаттары менен) Макталган.",
-      "tg": "Он чи дар осмонҳо ва замин аст, аз они Ӯст ва бе тардид, Аллоҳ таоло бениёзи сутуда аст"
+      "tg": "Он чи дар осмонҳо ва замин аст, аз они Ӯст ва бе тардид, Аллоҳ таоло бениёзи сутуда аст",
+      "sw": "Ni vyake vilivyomo mbinguni na vilivyo katika ardhi. Na hakika Mwenyezi Mungu ni Mwenye kujitosha, Mwenye kusifiwa.",
+      "ha": "Abin da ke a cikin sammai, da abin da ke a cikin ƙasa, Nasa ne, kuma lalle ne Allah, haƙĩƙa, Shi ne wadatacce, Gõdadde.",
+      "am": "በሰማያት ውስጥ ያለውና በምድር ውስጥ ያለው ሁሉ የርሱ ብቻ ነው፡፡ አላህም እርሱ ተብቃቂው ምስጉኑ ነው፡፡",
+      "om": "Wantoonni samiilee keessa jiraniifi wantoonni dachii keessa jiran hundi kan Isaati, Rabbiin Isatu dureessa, faarfamaadha.",
+      "so": "Wuxuu leeyahay waxa ku sugan samooyinka iyo waxa ku sugan arlada. Hubaal, Alle waa Hodonka (ka deeqtoon wax waliba) la ammaanoo Mahadsan.",
+      "ff": "Ko Kaŋko woodani ko woni kon ka kammuuji e ka leydi. Pellet, Alla ko Kaŋko woni Galo jettiniiɗo on.",
+      "yo": "TiRẹ̀ ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ohunkóhun tó wà nínú ilẹ̀. Dájúdájú Allāhu, Òun mà ni Ọlọ́rọ̀, Ẹlẹ́yìn."
     }
   },
   {
@@ -2425,7 +2960,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Allah mələklərdən də elçilər seçir, insanlardan da. Həqiqətən, Allah Eşidəndir, Görəndir!",
       "uz": "Аллоҳ фаришталардан элчиларни саралаб олади, инсонлардан ҳам. Аллоҳ Эшитгувчи, Кўргувчи Зотдир.",
       "kk": "Алла, періштелерден де адамдардан да елшілер ғана белгіледі. Шәксіз Алла, әр нәрсені аса естуші, тым көруші.",
-      "ky": "Аллах периштелерден жана адамдардан элчилерди тандап алат. Аллах – Угуучу, Көрүүчү."
+      "ky": "Аллах периштелерден жана адамдардан элчилерди тандап алат. Аллах – Угуучу, Көрүүчү.",
+      "sw": "Mwenyezi Mungu huteua Wajumbe miongoni mwa Malaika na miongoni mwa watu. Hakika Mwenyezi Mungu ni Mwenye kusikia, Mwenye kuona.",
+      "am": "አላህ ከመላእክት ውስጥ መልክተኞችን ይመርጣል፡፡ ከሰዎችም (እንደዚሁ)፤ አላህ ሰሚ ተመልካች ነው፡፡",
+      "om": "Rabbiin maleykota irraa ergamoota filata; namoota irraas (ni filata), Rabbiin dhaga’aa, argaadha.",
+      "so": "Alle wuxuu ka dhex doortaa Rusul malaa’igta iyo dadkaba. Hubaal, Alle waa wax kasta Maqle, wax kasta Arka.",
+      "ff": "Alla no suɓoo immorde e Maleykaaji\nɗi Nulaaɓe e yimɓe ɓen kadi. Pellet, Alla ko O Nanoowo ji'oowo."
     }
   },
   {
@@ -2454,7 +2994,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй иймон келтирган зотлар, рукуъ қилинглар, сажда қилинглар, Парвардигорингизга сиғиниб, яхшилик қилинглар. Шояд, нажот топсангизлар.",
       "kk": "Әй иман келтіргендер! рүкүғ, сәжде қылып, Раббыларыңа ғибадат қылыңдар. Және хайыр қылыңдар. Әрине құтыласыңдар.",
       "ky": "Оо, ыйман келтирген адамдар! Өзүңөрдүн Раббиңерге рукуу, сажда жана ибадат кылгыла. Жана жакшылык, кайрымдуулук иштерди жасагыла! (Ошондо) ийгиликке (бейишке) жетээрсиңер!",
-      "tg": "Эй касоне, ки имон овардаед, рукуъ кунед ва саҷда гузоред ва Парвардигоратонро бипарастед ва кори нек анҷом диҳед, бошад, ки растагор шавед"
+      "tg": "Эй касоне, ки имон овардаед, рукуъ кунед ва саҷда гузоред ва Парвардигоратонро бипарастед ва кори нек анҷом диҳед, бошад, ки растагор шавед",
+      "sw": "Enyi mlioamini! Rukuuni na sujuduni, na muabuduni Mola wenu Mlezi, na tendeni mema, ili mfanikiwe.",
+      "ha": "Yã kũ waɗanda suka yi ĩmãni! Ku yi rukũ'i, kuma ku yi sujada, kuma ku bauta wa Ubangijinku, kuma ku aikata alhẽri, tsammãninku, ku sami babban rabo.",
+      "am": "እናንተ ያመናችሁ ሰዎች ሆይ! (በስግደታችሁ) አጎንብሱ፣ በግንባራችሁም ተደፉ፣ ጌታችሁንም ተገዙ፣ በጎንም ነገር ሥሩ፣ ልትድኑ ይከጀልላችኋልና፡፡",
+      "so": "Kuwa (Xaqa) rumeeyow! Rukuuca oo sujuuda oo caabuda Rabbigiin (idinkoon waxba la wadaajin cibaadada) falana khayr aad liibaantaane.",
+      "ff": "Eey mon yo ɓen gooŋɗinɓe, ndukƴee cujjon ndewon Joomi mo'on, ngollon ko moƴƴi kon mbelejo'o onon on maloyte.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ dáwọ́tẹ orúnkún (lórí ìrun), ẹ forí kanlẹ̀, ẹ jọ́sìn fún Olúwa yín, kí ẹ sì ṣe rere nítorí kí ẹ lè jèrè."
     }
   },
   {
@@ -2484,7 +3030,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ кеча ва кундузни айлантириб турур. Албатта, бунда ақлли инсонлар учун ибрат бордир.",
       "kk": "Алла; күндізбен, түнді ауыстырады. Рас бұнда, қырағылар үшін әрине ғибрат бар.",
       "ky": "Аллах түн менен күндүздү алмаштырып турат. Албетте, мында акылдуулар үчүн (Аллахтын кудуретин тааныткан) сабак бар.",
-      "tg": "Аллоҳ таоло шабу рӯзро мегардонад [ва паёпай меоварад]. Яқинан, дар ин [гардиш] ибрате барои аҳли басират аст"
+      "tg": "Аллоҳ таоло шабу рӯзро мегардонад [ва паёпай меоварад]. Яқинан, дар ин [гардиш] ибрате барои аҳли басират аст",
+      "sw": "Mwenyezi Mungu hubadilisha usiku na mchana. Hakika katika hayo yapo mazingatio kwa wenye kuona.",
+      "ha": "Allah Yanã jũyar da dare da yini. Lalle ne a cikin wannan akwai abin kula ga ma'abũta gannai.",
+      "am": "አላህ ሌሊትንና ቀንን ያገላብጣል፡፡ በዚህም ለባለ ውስጥ ዓይኖች በእርግጥ ማስረጃ አልለበት፡፡",
+      "om": "Rabbiin halkaniifi guyyaa gara gaggalcha, Dhugumatti, kana keessa namoota hubannoo qabaniif gorsatu jira.",
+      "so": "Alle Wuxuu gedgeddiyaa oo is dhaafiyaa habeenka iyo maalinta. Arrinkani waxaa xaqiiq ugu sugan cibro kuwa aragtida dheer.",
+      "ff": "Alla homo waylita jemma on e ñalawma on, pellet, na wonii e ɗum tasakuyee wonan'de joomiraaɓe jiiɗe ɓen.",
+      "yo": "Allāhu ń yí òru àti ọ̀sán padà (ìkíní kejì n wá ní tẹ̀léǹtẹ̀lé pẹ̀lú àlékún àti àdínkù). Dájúdájú àríwòye wà nínú ìyẹn fún àwọn tó ní ojú ìríran."
     }
   },
   {
@@ -2514,7 +3067,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Дарҳақиқат, Биз очиқлаб берадиган оятларни нозил қилдик. Аллоҳ Ўзи хоҳлаган кимсани тўғри йўлга ҳидоят қилур.",
       "kk": "Расында ашық баян етуші аяттарды түсірдік. Сондай-ақ Алла қалағанын тура жолға салады.",
       "ky": "Биз (Куранда чындыкка багыттоочу) анык аяттарды түшүрдүк. Аллах каалаган пендесин туура жолго баштайт.",
-      "tg": "Ба ростӣ, ки [Мо] оёти равшангаре нозил кардем ва Аллоҳ таоло ҳар киро бихоҳад, ба роҳи рост ҳидоят мекунад"
+      "tg": "Ба ростӣ, ки [Мо] оёти равшангаре нозил кардем ва Аллоҳ таоло ҳар киро бихоҳад, ба роҳи рост ҳидоят мекунад",
+      "sw": "Kwa yakini tumeteremsha Ishara zinazobainisha. Na Mwenyezi Mungu humwongoa amtakaye kwenye Njia iliyonyooka.",
+      "ha": "Lalle ne haƙĩƙa Mun saukar da ãyõyi, mãsu bayyanãwa. Kuma Allah Yanã shiryar da wanda Yake so zuwa ga hanya madaidaiciya.",
+      "am": "አብራሪን አንቀጾች በእርግጥ አወረድን፡፡ አላህም የሚሻውን ሰው ወደ ቀጥተኛ መንገድ ይመራዋል፡፡",
+      "om": "Nuti dhugumatti keeyyattoota ifa ta’an buufnee jirra. Rabbiin nama fedhe gara karaa qajeelaa qajeelcha.",
+      "so": "Waxaan dhab ahaan soo dejinnay Aayado cad cad. Alle wuxuu ku hanuuniyaa cidduu doono Jid Toosan (Islaamka).",
+      "ff": "Gooŋɗii Min njippinii Aayeeje ɓannguɗe, Alla no feewna on mo O muuyii fa'ade e Laawol Pocciingol ngol.",
+      "yo": "Dájúdájú A ti sọ àwọn āyah tó ń yanjú ọ̀rọ̀ kalẹ̀. Allāhu sì ń tọ́ ẹnikẹ́ni tí Ó bá fẹ́ sí ọ̀nà tààrà (’Islām)."
     }
   },
   {
@@ -2540,7 +3100,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ ва Расулига улар орасида ҳакамлик қилишлари учун чақирилганларида мўминларнинг айтган гапи фақат: «Қулоқ солдик ва итоат этдик», дейиш бўлди. Ана ўшалар нажот топгувчилардир.",
       "kk": "Шын мәнінде мүміндер, араларына үкім беруге шақырылғанда, олардың сөздері: \"Естідік, бой ұсындық\" деу болады. Міне бұлар құтылушылар.",
       "ky": "Ал эми, араларында өкүм кылуу үчүн Аллах жана пайгамбарына чакырылган кездеги ыймандуулардын сөзү: «Уктук жана моюн сундук» деп айтуу (гана болушу кажет). Дал ошолор гана жеңишке (бейишке) жетүүчүлөр!",
-      "tg": "Сухани муъминон, ҳангоме ки ба сӯи Аллоҳ таоло ва паёмбараш фарохонда мешаванд, то миёнашон доварӣ кунад, фақат ин аст, ки мегӯянд: «Шунидем ва итоат кардем» ва инонанд, ки растагоранд"
+      "tg": "Сухани муъминон, ҳангоме ки ба сӯи Аллоҳ таоло ва паёмбараш фарохонда мешаванд, то миёнашон доварӣ кунад, фақат ин аст, ки мегӯянд: «Шунидем ва итоат кардем» ва инонанд, ки растагоранд",
+      "sw": "Haiwi kauli ya Waumini wanapoitwa kwa Mwenyezi Mungu na Mtume wake ili ahukumu baina yao, ila ni kusema: \"Tumesikia, na tumetii!\" Na hao ndio wenye kufanikiwa.",
+      "ha": "Maganar mũminai, idan aka kira su zuwa ga Allah da Manzon Sa dõmin Ya yi hukunci a tsakãninsu takan kasance kawai su ce \"Mun ji, kuma mun yi ɗã'ã, Kuma waɗannan sũ ne mãsu cin nasara.\"",
+      "am": "የምእምናን ቃል የነበረው ወደ አላህና ወደ መልክተኛው በመካከላቸው ሊፈርድ በተጠሩ ጊዜ ሰማን፤ ታዘዝንም ማለት ብቻ ነው፡፡ እነዚህም እነሱ የፈለጉትን የሚያገኙ ናቸው፡፡",
+      "om": "Jechi Mu’uminootaa yeroo akka gidduu isaaniitti murteessuuf gara Rabbiifi ergamaa isaatti waamaman “dhageenye; ajajamnes” jechuu qofa, Isaan sun milkaa’oon isaanuma.",
+      "so": "Qowlka mu’miniinta, marka loogu yeedho Alle iyo Rasuulkiisa si uu u kala garsooro dhexdooda, waa uun inay yidhaahdaan: “Maqallay oo yeelnay. kuwaasina waa kuwa ah liibaanayaasha.",
+      "ff": "Anndu ko woni konngol gooɗinɓe ɓen si ɓe noddaama faade ka Alla e Nulaaɗo makko on fii yo o ñaawu hakkunde maɓɓe, ko nde ɓe mbi'ata: \"Min nanii men ɗoftike.\" Ɓen ɗon ko kamɓe woni malaaɓe ɓen."
     }
   },
   {
@@ -2570,7 +3136,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Самода буржларни ўрнатиб қўйган ва унда нур таратувчи қуёш ва ойни пайдо қилган Зот Баракотлидир.",
       "kk": ") Сондай мол игілік иесі Алла, аспандагы жұлдыздардың орнын жаратып, онда бір жарық (күн) және сәуле беруші айды жаратты.",
       "ky": "Асмандагы (түркүн) жылдыздарды жараткан Аллах Улук-Берекеттүү Зат болду. Ал асманга чырак (Күн) менен нурлуу Айды дагы жаратты.",
-      "tg": "Пурбаракат [ва бузургвор] аст, он ки дар осмон манзилгоҳҳое [барои ситорагон] қарор дод ва дар [миёни] онҳо хуршед [-и дурахшон] ва моҳи тобоне падид овард"
+      "tg": "Пурбаракат [ва бузургвор] аст, он ки дар осмон манзилгоҳҳое [барои ситорагон] қарор дод ва дар [миёни] онҳо хуршед [-и дурахшон] ва моҳи тобоне падид овард",
+      "sw": "Ni Mwenye baraka nyingi yule aliyezijalia nyota mbinguni, na akajalia humo taa na mwezi unaong'ara.",
+      "am": "ያ በሰማይ ቡሩጆችን ያደረገና በእርሷም አንጸባራቂን (ፀሐይ) አብሪ ጨረቃንም ያደረገ ጌታ ክብሩ በጣም ላቀ፡፡",
+      "om": "Inni Samiilee keessatti buruuja taasisee ishee keessattis (biiftuu) ifaafi ji’a ibsaa taasise khayriin Isaa baay’ate.",
+      "so": "Waxaa khayr iyo barako badan Kan 'Alle' ee u yeelay samada xiddigo waaweyn,    \n yeelayna dhexdeeda nal 'qorrax' iyo dayax ifiya.",
+      "ff": "Mawnii oon baɗuɗo ka kammu burjuuji(buurti) o waɗi e ndeer majji pitilol e leelewal jalbungal.",
+      "yo": "Ìbùkún ni fún Ẹni tí Ó ṣe àwọn ibùsọ̀ ìràwọ̀ sínú sánmọ̀. Ó tún ṣe òòrùn àti òṣùpá ní ìmọ́lẹ̀ sínú rẹ̀."
     }
   },
   {
@@ -2601,7 +3173,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "У Эшитгувчидир. Билгувчидир.",
       "kk": "Рас Ол Алла, әр нәрсені естуші, білуші.",
       "ky": "Ал чынында (бардыгын) Угуучу, Билүүчү.",
-      "tg": "Бе тардид, Ӯ ҳамон шунавои доност"
+      "tg": "Бе тардид, Ӯ ҳамон шунавои доност",
+      "sw": "Hakika Yeye ndiye Mwenye kusikia, Mwenye kujua zaidi.",
+      "am": "እነሆ እርሱ ሰሚው ዐዋቂው ነውና፡፡",
+      "om": "Dhugumatti, Inni Isatu argaa, beekaadha.",
+      "so": "Hubaal (Alle) waa wax kasta Maqlaha, wax kasta Ogsoon.",
+      "ff": "Pellet, ko Kaŋko woni Nanoowo gannduɗo On.",
+      "yo": "Dájúdájú Òun mà ni Olùgbọ́, Onímọ̀."
     }
   },
   {
@@ -2624,7 +3202,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ps": "آيا هغوى نه دي ليدلي چې موږ شپه د دې لپاره جوړه كړې چې آرام پكې وكړي او ورځ مو روښانه كړې ده، يقيناً په دې كې هرومرو څه نښانې دي د هغو خلكو لپاره چې ايمان راوړي.",
       "az": "Məgər onlar gecəni istirahət etmələri üçün yaratdığımızı, gündüzü isə işıqlı etdiyimizi görmürlərmi? Şübhəsiz ki, bunda iman gətirən bir qövm üçün dəlillər vardır.",
       "uz": "Ором олишлари учун кечани, кўришлари учун эса кундузни қилиб берганимизни кўрмадиларми?! Албатта, бу ишда иймон келтирадиган қавм учун ибратлар бордир.",
-      "kk": "Олар, ішінде тынықсын деп, түнді және көрілетін күндізді жаратқанымызды көрмей ме? Сенетін ел үшін мұнда өнеге бар."
+      "kk": "Олар, ішінде тынықсын деп, түнді және көрілетін күндізді жаратқанымызды көрмей ме? Сенетін ел үшін мұнда өнеге бар.",
+      "sw": "Je, hawaoni kwamba sisi tumeufanya usiku ili watulie, na mchana wa kuonea. Hakika katika hayo, zipo Ishara kwa watu wanaoamini.",
+      "ha": "Shin, ba su gani ba, cẽwa, lalle Mũ, Mun sanya dare dõmin su natsu a cikinsa, kuma da yini mai sanya gani? Lalle a cikin wancan akwai ãyõyi! Dõmin mutãne waɗanda suka yi ĩmãni.",
+      "am": "እኛ ሌሊትን በእርሱ ውስጥ እንዲያርፉበት ቀንንም የሚያሳይ እንዳደረግን አያዩምን? ለሚያምኑ ሕዝቦች በዚህ ውስጥ ተዓምራቶች አሉበት፡፡",
+      "om": "Sila isaan hinlaallee Akka nuti halkan yeroo isa keessa boqataniifi guyyaa immoo kan keessa arganii (hojjatan) isaaniif goone. Dhugumatti, kana keessa namoota amananiif mallattooleetu jira.",
+      "so": "Mawaysan arkayn inaan uga yeelnay habeenka inay ku xasilaan, Maalintana iftiin? Hubaal, arrinkani waxaa ugu sugan calaamooyin ciddii rumeyn (Xaqa).",
+      "ff": "Enee, hara ɓe yiaani, Minen Min mbaɗii jemma on fii yo ɓe deeƴu e maako, e ñalawma on nji'irɗo? Pellet, wonii e ɗum Aayeeje wonan'de yimɓe gooŋɗinooɓe ɓen.",
+      "yo": "Ṣé wọn kò wòye pé dájúdájú Àwa l’A dá òru nítorí kí wọ́n lè sinmi nínú rẹ̀, (A sì dá) ọ̀sán (nítorí kí wọ́n lè) ríran? Dájúdájú àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo."
     }
   },
   {
@@ -2653,7 +3238,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ким яхшилик қилса, унга ундан ҳам яхшироғи бўлур ва улар ўша куннинг даҳшатидан омондадирлар.",
       "kk": "Кім бір жақсылық келтірсе, оған одан жақсы сыйлық бар. Әрі олар қиямет күнінің қорқынышынан аман болады.",
       "ky": "Ким (тигил дүйнөгө) жакшылык (сооп иш) алып келсе, ага анысынан жакшыраак (сыйлык) берилет жана алар ошол (кыямат) күндүн коркунучунан аман болушат.",
-      "tg": "Ҳар ки [дар рӯзӣ қиёмат] некӣ биёварад, [подоше] беҳтар аз он хоҳад дошт ва аз ваҳшати он рӯз дар амонанд"
+      "tg": "Ҳар ки [дар рӯзӣ қиёмат] некӣ биёварад, [подоше] беҳтар аз он хоҳад дошт ва аз ваҳшати он рӯз дар амонанд",
+      "sw": "Mwenye kuja na uzuri, atapata bora kuliko huo. Nao watasalimika kutokana na mahangaiko ya Siku hiyo.",
+      "am": "በመልካም ሥራ የመጣ ሰው ለእርሱ ከእርስዋ የበለጠ ምንዳ አልለው፡፡ እነርሱም በዚያ ቀን ከድንጋጤ ጸጥተኞች ናቸው፡፡",
+      "om": "Nama gaariin dhufe (dalage) mindaa ishee caalutu isaaf jira; isaan guyyaa san rifannaa irraa nagaa bahoodha.",
+      "ff": "Mo ardii e moƴƴere nden haray no woodani mo ko ɓuri nde moƴƴude, hara kamɓe ko ɓe hooliiɓe immorde e ɗenƴere nden Ñande.",
+      "yo": "Ẹnikẹ́ni tí ó bá dé pẹ̀lú iṣẹ́ rere, tirẹ̀ ni rere tó lóore ju èyí tó ṣe. Àwọn sì ni olùfàyàbalẹ̀ nínú ìjáyà ọjọ́ yẹn."
     }
   },
   {
@@ -2680,7 +3270,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ўша охират диёри. Уни ер юзида такаббурлик ва бузғунчилик қилмайдиганлар учун атаб қўйганмиз. Оқибат тақводорларникидир.",
       "kk": "Міне ахирет жұрты: Оны, жер жүзінде өзін-өзі көтеріп, бұліншілік ізденбегендерге нәсіп етеміз. Негізінде соңгы табыс тақуалар үшін.",
       "ky": "Биз тиги жактагы акырет конушун жер бетинде бузгунчулук жана текеберленүүнү каалабаган (ыймандуу) адамдар үчүн (насип) кылабыз. Акыбет такыба кишилер үчүн!",
-      "tg": "Ин сарои охиратро [фақат] барои касоне қарор медиҳем, ки хоҳони гарданкашӣ ва фасод дар замин нестанд ва саранҷоми нек аз они парҳезкорон аст"
+      "tg": "Ин сарои охиратро [фақат] барои касоне қарор медиҳем, ки хоҳони гарданкашӣ ва фасод дар замин нестанд ва саранҷоми нек аз они парҳезкорон аст",
+      "sw": "Hayo ndiyo makazi ya Akhera, tumewafanyia wale wasiotaka kujiinua juu katika dunia wala uharibifu. Na mwisho mwema ni wa wacha Mungu.",
+      "ha": "Wancan gidan Lãhira Munã sanya shi ga waɗanda suke bã su nufin ɗaukaka a cikin rãyuwar dũniya kuma bã su son ɓarna. Kuma ãkiba ga mãsu taƙawa take.",
+      "am": "ይህች የመጨረሻይቱ አገር ለእነዚያ በምድር ውስጥ ኩራትንና ማመፅን ለማይፈልጉት እናደርጋታለን፡፡ ምስጉኒቱም መጨረሻ ለጥንቁቆቹ ናት፡፡",
+      "om": "Ganda Aakhiraa san warra dachii keessatti ol aantummaafi badii [raawwachuu] hin feeneef ishee goona, Booddeen (gaariin) warra Rabbiin sodaataniifi.",
+      "so": "Taasi ah Daarta Aakhiro (Jannada) waxaanu dhaxalsiin kuwa aan ku dooneyn sarreyn dhulka, aanna ku falin fasahaad. Cidhibta wanaagsanna waxaa leh kuwa iska jira'xumaha ee dhowra amarrada Alle\".",
+      "ff": "Ɗen galle laakara, Min mbaɗanii ɗe ɓen ɓe yiɗaa townitaare ka leydi, wonaa kadi bonnugol. Battane moƴƴe ɗen, ko fii gooŋɗuɓe ɓen.",
+      "yo": "Ilé Ìkẹ́yìn yẹn, A máa fi fún àwọn tí kò fẹ́ máa ṣe ìgbéraga àti ìbàjẹ́ lórí ilẹ̀. Ìgbẹ̀yìn rere sì wà fún àwọn olùbẹ̀rù (Allāhu)."
     }
   },
   {
@@ -2710,7 +3307,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Одамлар: «Иймон келтирдик», дейишлари билан тек қўйиламиз ва синовга учрамаймиз, деб ўйладиларми?",
       "kk": "Адамдар: \"Сендік\" деумен сыналмай қойып қойылатындықтарын ойлай ма?",
       "ky": "Адамдар «ыйман келтирдик» деп айтса эле, (ар түрдүү машакаттар менен) сыналбай калабыз деп ойлошобу?",
-      "tg": "Оё мардум пиндоштаанд, ҳамин ки [ба забон] бигӯянд: «Имон овардем», ононро [ба ҳоли худ] вомегузоранд ва озмуда намешаванд?"
+      "tg": "Оё мардум пиндоштаанд, ҳамин ки [ба забон] бигӯянд: «Имон овардем», ононро [ба ҳоли худ] вомегузоранд ва озмуда намешаванд?",
+      "sw": "Je, watu wanadhani kwamba wataachwa kwa kuwa wanasema, \"Tumeamini.\" Nao wasijaribiwe?",
+      "ha": "Ashe, mutãne sun yi zaton a bar su su ce: \"Mun yi ĩmãni,\" alhãli kuwa bã zã a Jarrabe su ba?\"",
+      "am": "ሰዎቹ አምነናል በማለታቸው ብቻ እነሱ ሳይፈተኑ የሚተው መኾናቸውን ጠረጠሩን?",
+      "om": "Sila namoonni “amanne” jechuudhaan odoo hin mokkoramin dhiifamuu yaaduu?",
+      "so": "Ma waxay dadku moodaan in loogaga tegayo inay yidhaahdaan: “Waan rumeynay (Xaqa) iyagoo aan la imtixaameyn?",
+      "ff": "E yimɓe ɓen cikku ɓe ngaccirte nii, fii ɓe wi'ii: \"Min ngooŋɗinii!\" Hara ɓe pitninaaka?",
+      "yo": "Ǹjẹ́ àwọn ènìyàn lérò pé A óò fi wọ́n sílẹ̀ kí wọ́n máa sọ pé: “A gbàgbọ́”, tí A ò sì níí dán wọn wò?"
     }
   },
   {
@@ -2737,7 +3341,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ким Аллоҳга рўбарў бўлишдан умидвор бўлса, албатта, Аллоҳнинг (белгилаган) вақти келгувчидир. У Эшитгувчи ва Билгувчидир.",
       "kk": "Кім Аллаға жолығуды үміттенсе, әрине Алланың белгілі мезгілі келеді. Ол, аса естуші, толық білуші.",
       "ky": "Ал эми, ким (кыяматта) Аллахка жолугуудан үмүт кылса, Аллахтын (кыяматка) белгилеген убактысы (сөзсүз) келүүчү. Ал Угуучу, Билүүчү.",
-      "tg": "Ҳар ки ба дидори Аллоҳ таоло умед дорад, [бидонад, ки] ваъдаи Аллоҳ таоло, ҳатман, хоҳад омад ва ӯ шунавову доност"
+      "tg": "Ҳар ки ба дидори Аллоҳ таоло умед дорад, [бидонад, ки] ваъдаи Аллоҳ таоло, ҳатман, хоҳад омад ва ӯ шунавову доност",
+      "sw": "Mwenye kutaraji kukutana na Mwenyezi Mungu, basi hakika miadi ya Mwenyezi Mungu itafika bila ya shaka. Naye ni Mwenye kusikia, Mwenye kujua zaidi.",
+      "ha": "Wanda ya kasance yanã fãtan gamuwa da Alah to lalle ajalin Allah mai zuwa ne, kuma (Allah) Shĩ ne Mai ji, Masani.",
+      "am": "የአላህን መገናኘት ተስፋ የሚያደርግ ሰው (ይዘጋጅ)፡፡ የአላህ ቀጠሮ በእርግጥ መጪ ነውና፡፡ እርሱም ሰሚው ዐዋቂው ነው፡፡",
+      "om": "Namni qunnamtii Allaah kajeele (haa qophaawuu), dhugumatti beellamni Rabbii dhufaadha. Inni dhagayaa, beekaadhas.",
+      "so": "Qofkii rajeyn la kulanka Alle, hubaal ajasha uu Alle (qoray) way imaan (ee ha isu diyaariyo). Alle waa wax kasta Maqlaha, wax kasta Ogsoonaha ah.",
+      "ff": "Kala tawɗo homo njortii kawroygol e Alla, ko pellet, lajal Alla ngal, ko hewtaygal. Ko Kaŋko woni Nanoowo, nganduɗo on.",
+      "yo": "Ẹnikẹ́ni tí ó bá ń retí ìpàdé Allāhu, dájúdájú àkókò Allāhu kúkú ń bọ̀. Òun sì ni Olùgbọ́, Onímọ̀."
     }
   },
   {
@@ -2766,7 +3377,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳнинг дастлаб қандай йўқдан бор қилганини ва кейин яна қайта яратишини кўрмадиларми? Албатта, бу иш Аллоҳга осондир.",
       "kk": "Олар көрмеді ме? Алла жаратуды қалай бастайды, сосын оны қайтарады. Расында Бұл Аллаға оңай.",
       "ky": "Алар (инсандар) Аллах жаратылышты алгач ирет кандай жаратканына карап көрүшпөйбү? Анан (алардын бардыгын) кайра жаратат. Чынында, бул Аллах үчүн жеңил.",
-      "tg": "Оё надиданд, ки Аллоҳ таоло чи гуна офаринишро оғоз мекунад, сипас онро [пас аз маргаш] бозмегардонад? Ҳатман, ин кор барои Аллоҳ таоло осон аст"
+      "tg": "Оё надиданд, ки Аллоҳ таоло чи гуна офаринишро оғоз мекунад, сипас онро [пас аз маргаш] бозмегардонад? Ҳатман, ин кор барои Аллоҳ таоло осон аст",
+      "sw": "Je, wao hawaoni jinsi Mwenyezi Mungu anavyoanzisha uumbaji, na kisha akaurudisha tena. Hakika hayo kwa Mwenyezi Mungu ni mepesi.",
+      "am": "አላህ መፍጠርን እንዴት እንደሚጀመር ከዚያም እንዴት እንደሚመልሰው አይመለከቱምን? ይህ በአላህ ላይ ቀላል ነው፡፡",
+      "om": "Sila isaan akka Rabbiin uumuu eegalee ergasii isa deebisu hin ilaalanuu? Sun Allaah irratti laafaadha.",
+      "so": "Miyeyna u fiirsan sida Alle u billaaba abuuridda (uunka), haddana u soo celin? Hubaal arrinkaasi Alle wuu u fudud yahay.",
+      "ff": "E ɓee yiaani no Alla fuɗɗorta tagoore ngum, refti o ndttat ngu? Pellet, ɗum wonii ko newanii Alla.",
+      "yo": "Tàbí wọn kò wòye sí bí Allāhu ti ṣe bẹ̀rẹ̀ ẹ̀dá ni? Lẹ́yìn náà, O máa dá a padà (sí ọ̀dọ̀ Rẹ̀). Dájúdájú ìyẹn rọrùn fún Allāhu."
     }
   },
   {
@@ -2788,7 +3405,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Allahdan başqasını özlərinə dost tutanların məsəli özünə ev qurmuş hörümçəyin məsəlinə bənzəyir. Evlərin ən zəifi isə, əlbəttə ki, hörümçəyin evidir. Kaş ki, biləydilər!",
       "uz": "Аллоҳни қўйиб, ўзгаларни дўст тутганлар худди ўзига уй қуриб олган ўргимчакка ўхшайдилар. Энг нимжон уй ўргимчак уясидир. Шуни билсалар эди.",
       "kk": "Алладан өзгені ие етіп алғандар; ұя жасап алған өрмекшінің мысалы сияқты: Шын мәнінде ұйлердің ең осалы өрмекшінің ұясы. Егер олар білетін болса.",
-      "ky": "Аллахтан башка («кудайларды») дос-башчы туткан адамдардын мисалы (өзүнө ичке желелерден) үй куруп алган жөргөмүшкө окшойт. Алар (мушриктер) эгер билсе, үйлөрдүн эң алсызы жөргөмүштүн үйү."
+      "ky": "Аллахтан башка («кудайларды») дос-башчы туткан адамдардын мисалы (өзүнө ичке желелерден) үй куруп алган жөргөмүшкө окшойт. Алар (мушриктер) эгер билсе, үйлөрдүн эң алсызы жөргөмүштүн үйү.",
+      "sw": "Mfano wa wale waliowafanya walinzi badala ya Mwenyezi Mungu, ni mfano wa buibui alivyojitandia nyumba. Na hakika nyumba dhaifu mno kuliko zote ni jumba la buibui, laiti kuwa wanajua.",
+      "am": "የእነዚያ ከአላህ ሌላ ረዳቶችን (ጣዖታትን) የያዙ ሰዎች ምሳሌ ቤትን እንደ ሠራች ሸረሪት ብጤ ነው፡፡ ከቤቶችም ሁሉ በጣም ደካማው የሸረሪት ቤት ነው፡፡ ቢያውቁ ኖሮ (አማልክት አድርገው አይግገዟቸውም ነበር)፡፡",
+      "om": "Fakkeenyi isaan Rabbii gaditti jaalalleewwan godhatanii (gabbaranii) akka birbirooftuu (saaphaphuu) mana ijaarratteeti. Dhugumatti irra laafaan manaa mana birbirooftuuti odoo kan beekan ta’anii.",
+      "so": "Tusaalaha kuwa sameysta awliyo (ay caabudaan) Alle sokadi waa sida tusaalaha caadho taasoo yeelatay guri, waxaana ugu liita guryaha, guriga caadhada; hadday og yihiin.",
+      "ff": "Misal ɓen jogitiiɓe ga Alla deweteeɗi, ko wano marijaawowal(njomblo) saccungal suudu. Ko ɓuri lo'ode non e cuuɗi ɗin, ko suudu marijaawo. Sinno ɓe annduno!",
+      "yo": "Àpèjúwe àwọn tó mú àwọn (òrìṣà) ní alátìlẹ́yìn lẹ́yìn Allāhu, ó dà bí àpèjúwe aláǹtàakùn tí ó kọ́ ilé kan. Dájúdájú ilé tí ó yẹpẹrẹ jùlọ ni ilé aláǹtàakùn, tí wọ́n bá mọ̀."
     }
   },
   {
@@ -2817,7 +3440,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ осмонлару ерни ҳақ ила яратди. Албатта, бу ишда мўминлар учун бир белги бор.",
       "kk": "Алла көктер мен жерді хақиқат бойынша жаратты. Расында бұнда иман келтіргендер үшін бір дәлел бар.",
       "ky": "Аллах асмандарды жана Жерди акыйкат менен жаратты. Чынында, бул нерседе ыймандуу адамдар үчүн (Биздин кудуретибизге) белги бар.",
-      "tg": "Аллоҳ таоло осмонҳо ва заминро ба ҳақ офарид. Бе тардид, дар ин [офариниш] барои муъминон нишонае [аз қудрати илоҳӣ] аст"
+      "tg": "Аллоҳ таоло осмонҳо ва заминро ба ҳақ офарид. Бе тардид, дар ин [офариниш] барои муъминон нишонае [аз қудрати илоҳӣ] аст",
+      "sw": "Mwenyezi Mungu ameumba mbingu na ardhi kwa Haki. Kwa hakika katika hayo ipo Ishara kwa Waumini.",
+      "ha": "Allah Ya halitta sammai da ƙasa da gaskiya. Lalle cikin wancan akwai ãyã ga mũminai.",
+      "am": "«አላህ ሰማያትንና ምድርን እውነተኛ ሆኖ ፈጠረ፡፡» በዚህ ውስጥ ለምእምናን ተዓምር አለበት፡፡",
+      "om": "Rabbiin samiifi dachii dhugaan uume. sana keessa mu’uminootaaf mallattootu jira.",
+      "so": "Alle wuxuu u abuuray samooyinka iyo arlada Xaq. Hubaal, arrinkani waxaa ugu sugan calaamo mu'miniinta.",
+      "ff": "Alla tagirii kammuuli ɗin e leydi ndin, e hoore goonga. Pellet, wonii ɗum, Ma'ande, wonan'de gooŋɗinɓe ɓen.",
+      "yo": "Allāhu ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ pẹ̀lú òdodo. Dájúdájú àmì kan wà nínú ìyẹn fún àwọn onígbàgbọ́ òdodo."
     }
   },
   {
@@ -2845,7 +3475,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй иймон келтирган бандаларим, албатта, Менинг ерим кенгдир. Бас, Менгагина ибодат қилинглар.",
       "kk": "Әй иман келтірген құлдарым! Әрине жерім кең. Сондықтан Маған ғана ғибадат қылыңдар.",
       "ky": "Оо, ыймандуу пенделерим! Менин жерим кенен. Менин Өзүмө гана ибадат кылгыла!",
-      "tg": "Эй бандагони ман, ки имон овардаед, бе гумон, замини Ман густарда аст [пас, барои раҳоӣ аз фишори мушрикон ҳиҷрат кунед] ва танҳо Маро парастед»"
+      "tg": "Эй бандагони ман, ки имон овардаед, бе гумон, замини Ман густарда аст [пас, барои раҳоӣ аз фишори мушрикон ҳиҷрат кунед] ва танҳо Маро парастед»",
+      "sw": "Enyi waja wangu mlioamini! Kwa hakika ardhi yangu ina wasaa. Basi niabuduni Mimi peke yangu.",
+      "am": "እናንተ ያመናችሁ ባሮቼ ሆይ! ምድሬ በእርግጥ ሰፊ ናት፤ (ብትቸገሩ ተሰደዱ)፡፡ እኔንም ብቻ ተገዙኝ፡፡",
+      "om": "“Yaa gabroota kiyya warra amantan! Dachiin tiyya bal’oodhaa, Anuma qofa gabbaraa.”",
+      "so": "Addoomahayga (Xaqa) rumeeyow! dhulkaygu wuu ballaaran yahaye, ee Anigoo (Keliya) i caabuda.",
+      "ff": "Eey mon jiyaaɓe Am gooɗinɓe! Nganndee leydi Am ndin ko yaajundi. Ko Min ngoni ko ndewoton!",
+      "yo": "Ẹ̀yin ẹrúsìn Mi, tí ẹ gbàgbọ́ ní òdodo, dájúdájú ilẹ̀ Mi gbòòrò. Nítorí náà, Èmi nìkan ni kí ẹ jọ́sìn fún."
     }
   },
   {
@@ -2874,7 +3510,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ҳар бир жон ўлимни тотгувчидир. Кейин яна Бизга қайтарилурсизлар.",
       "kk": "Әрбір жан иесі өлімді татады. Сосын Біз жаққа қайтарылады.",
       "ky": "Ар бир жан өлүмдү татуучу. (Өлүмдөн) кийин Бизге гана кайтарыласыңар.",
-      "tg": "Ҳар касе чашандаи [таъми] марг аст; он гоҳ ба сӯи Мо бозгардонда мешавед"
+      "tg": "Ҳар касе чашандаи [таъми] марг аст; он гоҳ ба сӯи Мо бозгардонда мешавед",
+      "sw": "Kila nafsi itaonja mauti. Kisha mtarudishwa kwetu.",
+      "ha": "Kõwane rai mai ɗanɗanar mutuwa ne, sa'an nan zuwa gare Mu ake mayar da ku.",
+      "am": "ነፍስ ሁሉ ሞትን ቀማሽ ናት፡፡ ከዚያም ወደኛ ትመለሳላችሁ፡፡",
+      "om": "Lubbuun hunduu du’a dhandhamtuudha. eegasii gara keenyatti deebifamtu.",
+      "so": "Naf walbaa waa tii dhadhamisa geeri. Xaggayagaana la idiin soo celin.",
+      "ff": "Kala woŋkii meeɗay maayde. refti ko ka Amen ndutteteɗon.",
+      "yo": "Gbogbo ẹ̀mí l’ó máa tọ́ ikú wò. Lẹ́yìn náà, ọ̀dọ̀ Wa ni wọn yóò da yín padà sí."
     }
   },
   {
@@ -2905,7 +3548,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ ризқни Ўзи хоҳлаган бандасига кенг қилиб, хоҳлаган бандасига танг қилиб беради. Албатта, Аллоҳ ҳамма нарсани Билгувчидир.",
       "kk": "Алла құлдарынан кімді қаласа, несібесін кеңітеді де тарылтады. Күдіксіз Алла әр нәрсені толық біледі.",
       "ky": "Аллах пенделеринин арасынан каалаганына кенен, каалаганына ченеп ырыскы берет. Аллах – ар нерсени Билүүчү.",
-      "tg": "Аллоҳ таоло [неъмату] рӯзиро бар ҳар ки бихоҳад густурда медорад ва [ё] танг мегирад. Бе тардид, Аллоҳ таоло ба ҳар чизе доност"
+      "tg": "Аллоҳ таоло [неъмату] рӯзиро бар ҳар ки бихоҳад густурда медорад ва [ё] танг мегирад. Бе тардид, Аллоҳ таоло ба ҳар чизе доност",
+      "sw": "Mwenyezi Mungu humkunjulia, na humkunjia riziki amtakaye katika waja wake. Kwa hakika Mwenyezi Mungu anajua zaidi kila kitu.",
+      "ha": "Alah ne ke shimfiɗa arziki ga wanda Yake so daga cikin bãyinsa kuma Yanã ƙuntãtãwa ga (wanda, Yake so). Lalle Allah, Masani ne ga dukan kõme.",
+      "am": "አላህ ከባሮቹ ለሚሻው ሲሳይን ያሰፋል፡፡ ለእርሱም ያጠብባል፡፡ አላህ በነገሩ ሁሉ ዐዋቂ ነውና፡፡",
+      "om": "Rabbiin gabroota Isaa irraa nama fedheef hiree ni bal’isa. (Nama fedhe immoo) isatti dhiphisa. Dhugumatti, Rabbiin waan hunda beekaadha.",
+      "so": "Alle wuxuu u waasiciyaa risiqa kuu doono ee ka mid ah addoomahiisa, oo ku cidhiidhiyaa (kuu doono). Hubaal, Alle wax walba wuu Ogsoon yahay.",
+      "ff": "Alla no yaacnana arsike on mo o muuyi e jiyaaɓe makko ɓen, Homo ɓittana mo. Pellet, Alla ko gannduɗo kala hu'unde.",
+      "yo": "Allāhu l’Ó ń tẹ́ ọrọ̀ sílẹ̀ fún ẹni tí Ó bá fẹ́ nínú àwọn ẹrúsìn Rẹ̀. Ó sì ń díwọ̀n rẹ̀ fún ẹlòmíìràn. Dájúdájú Allāhu ni Onímọ̀ nípa gbogbo n̄ǹkan."
     }
   },
   {
@@ -2934,7 +3584,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ йўқдан бор қилади, кейин уни яна қайтадан яратади. Кейин Унга қайтарилурсизлар.",
       "kk": "Алла (Т.) баста жаратады да сосын қайтаратын да өзі. Және Ол жаққа қайтарыласыңдар.",
       "ky": "Аллах жан-жартылышты биринчи ирет жоктон бар кылган. Кийин аларды (дүйнөдө жашатып, өлтүргөн соң) кайрадан экинчи ирет жаратат. Кийин Анын Өзүнө кайтарыласыңар.",
-      "tg": "Аллоҳ таоло офаринишро оғоз мекунад, сипас онро [пас аз маргаш] бозмегардонад, он гоҳ [дар қиёмат ҳамагӣ] ба сӯяш бозгардонда мешавед"
+      "tg": "Аллоҳ таоло офаринишро оғоз мекунад, сипас онро [пас аз маргаш] бозмегардонад, он гоҳ [дар қиёмат ҳамагӣ] ба сӯяш бозгардонда мешавед",
+      "sw": "Mwenyezi Mungu huanzisha uumbaji, tena akaurudisha mara ya pili, na kisha mtarejeshwa kwake.",
+      "ha": "Allah ne ke fãra yin halitta, sa'an nan Ya sãke ta sa'an nan zuwa gare Shi ake mayar da ku.",
+      "am": "አላህ መፍጠርን ይጀምራል፡፡ ከዚያም ይመልሰዋል፤ ከዚያም ወደርሱ ትመለሳላችሁ፡፡",
+      "om": "Rabbiin uuminsa ni jalqaba, Eegasii isa ni deebisa. Sana booda gara Isaa deebifamtu.",
+      "so": "Alle baa billaabay uunka, haddana dib u soo nooleyn (dhimasho kaddib), Xaggiisaana la idiin soo celin.",
+      "ff": "Ko Alla fuɗɗi tagoore nde; refti o rutta nde; refti ko ka makko rutteteɗon.",
+      "yo": "Allāhu ń pilẹ̀ ẹ̀dá dídá. Lẹ́yìn náà, O máa dá a padà (sípò alààyè). Lẹ́yìn náà, ọ̀dọ̀ Rẹ̀ ni wọn yóò da yín padà sí."
     }
   },
   {
@@ -2965,7 +3622,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ердаги бор нарсалар Аллоҳникидир. Албатта, Аллоҳнинг Ўзигина Беҳожат ва ҳамду санога лойиқ Зотдир.",
       "kk": "Көктер мен жерде болған нәрселер Алланікі. Рас Алла бай, мақтауға лайық.",
       "ky": "Асмандар жана жерде болгон нерсенин бардыгы Аллахтын мүлкү. Чынында, Аллахтын бир Өзү гана Беймуктаж, мактоого (ибадатка) татыктуу.",
-      "tg": "Он чи дар осмонҳо ва замин аст, аз они Аллоҳ таоло аст. Бе тардид, Аллоҳ таоло бениёзу сутуда аст"
+      "tg": "Он чи дар осмонҳо ва замин аст, аз они Аллоҳ таоло аст. Бе тардид, Аллоҳ таоло бениёзу сутуда аст",
+      "sw": "Ni vya Mwenyezi Mungu vyote vilivyomo mbinguni na katika ardhi. Hakika Mwenyezi Mungu ndiye Mkwasi, Mwenye kusifiwa.",
+      "ha": "Abin da yake a cikin sammai da ƙasa duka na Allah kawai ne. Lalle, Allah Shĩ ne Mawadãci, Gõdadde.",
+      "am": "በሰማያትና በምድር ያለው ሁሉ የአላህ ነው፡፡ አላህ እርሱ ተብቃቂ ምስጉን ነው፡፡",
+      "om": "Wantoonni samiileefi dachii keessa jiran (hundi) kan Allaahti. Rabbiin Isatu dureessa, faarfamaadha.",
+      "so": "Alle baa iska leh waxa ku sugan samooyinka iyo arlada. Hubaal, Alle waa Hodan Deeqtoon, Ammaanan.",
+      "ff": "Ko Alla woodani kala ko woni kammuuji e ka leydi. Pellet, Alla, ko Kaŋko woni Galo, jettiniiɗo.",
+      "yo": "Ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Dájúdájú Allāhu, Òun ni Ọlọ́rọ̀, Ẹlẹ́yìn."
     }
   },
   {
@@ -2992,7 +3656,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Бизнинг оятларимизга улар зикр қилинганда сажда қилиб ерга йиқиладиган ҳамда мутакаббирлик қилмасдан Парвардигорларига ҳамду тасбеҳ айтадиган зотларгина иймон келтирадилар.",
       "kk": "(Сәжде аяты бар.) Шын мәнінде аяттарымызға, өздеріне үгіт берілген кезде, сәждеге жығылып; Раббыларын мақтап, пәктейді. Сондай-ақ тәкаппарланбай иман келтіреді.",
       "ky": "Чынында, Биздин аяттарыбызга, аларды эскертилгенде сажда кылган абалда жыгылган жана текеберленбей Раббисин аруулап мактоолорду айткан адамдар ыйман келтиришет.",
-      "tg": "Фақат касоне ба оёти Мо имон меоваранд, ки чун ба онҳо панд дода шавад, ба саҷда меафтанд ва Парвардигорашонро ба покӣ меситоянд ва такаббур намекунанд"
+      "tg": "Фақат касоне ба оёти Мо имон меоваранд, ки чун ба онҳо панд дода шавад, ба саҷда меафтанд ва Парвардигорашонро ба покӣ меситоянд ва такаббур намекунанд",
+      "sw": "Hakika wanaoziamini Aya zetu ni hao tu ambao wakikumbushwa hizo, basi wao huanguka kusujudu, na humsabihi Mola wao Mlezi kwa kumhimidi, nao hawajivuni.",
+      "ha": "Waɗanda ke ĩmãni da ãyõyin Mu kawai, sũ ne waɗanda idan aka karanta musu ãyõyinMu sai su fãɗi sunã mãsu sujada kuma su yi tasbĩhi game da gõde wa Ubangijinsu, alhãli kuwa su bã su yin girman kai.",
+      "om": "hangi Keeyyattoota keenyatti amanu warra yeroo isheedhaan gorfaman sujuuda bu’anii, Rabbii isaanii galatomfataa faarsani. isaan hinboonanu.",
+      "ff": "Nganndee ko gooŋɗinta Aayeeje Amen ɗen, ko ɓen tawɓe si ɓe mbaajoraama ɗe, ɓe cuuyiray sujjugol, ɓe subbuhinora jettugol Joomi maɓɓe, kamɓe ɓe townitotaako."
     }
   },
   {
@@ -3023,7 +3691,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Бирон нарсани ошкор қилсангизлар ҳам, яширсангизлар ҳам, бас, Аллоҳ барча нарсани Билгувчи бўлган Зотдир.",
       "kk": "Бір нәрсені әшкерелесеңдер де жасырсаңдар да әрине Алла (Т.) әр нәрсені толық біледі.",
       "ky": "Эгер силер бир нерсени жашырсаңар же ашкере кылсаңар да, Аллах бардык нерсени билип турат.",
-      "tg": "Агар чизеро ошкор кунед ё пинҳон доред, [бидонед, ки] бетардид, Аллоҳ таоло ба ҳар чизе огоҳ аст"
+      "tg": "Агар чизеро ошкор кунед ё пинҳон доред, [бидонед, ки] бетардид, Аллоҳ таоло ба ҳар чизе огоҳ аст",
+      "sw": "Mkidhihirisha chochote kile, au mkikificha, basi hakika Mwenyezi Mungu ni Mwenye kujua kila kitu.",
+      "ha": "Idan kun bayyana wani abu, kõ kuma kuka ɓõye shi, to, lalle Allah Ya kasance Masani ga kõme.",
+      "am": "ማንኛውንም ነገር ብትገልጹ ወይም ብትደብቁት (በርሱ ይመነዳችኋል)፡፡ አላህ ነገሩን ሁሉ ዐዋቂ ነውና፡፡",
+      "om": "Waan tokko yoo mul'iftan, yookiin yoo isa dhoksitan (irratti galata galfamtan) Rabbiin waan hunda beekaa ta’eera.",
+      "so": "Haddaad muujisaan wax ama qarisaan, hubaal Alle wax walba wuu Og yahay.",
+      "ff": "Si on peññinii hu'unde, maa on cuuɗii nde, pellet, Alla laatike gannduɗo kala hu'unde.",
+      "yo": "Tí ẹ bá ṣàfi hàn kiní kan tàbí ẹ fi pamọ́, dájúdájú Allāhu ń jẹ́ Onímọ̀ nípa gbogbo n̄ǹkan."
     }
   },
   {
@@ -3050,7 +3725,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Дарҳақиқат, Аллоҳ ҳам, Унинг фаришталари ҳам Пайғамбарга салавот айтадилар. Эй мўминлар, сизлар ҳам у зотга салавот ва саломлар айтинглар!",
       "kk": "Расында Алла, Пайғамбарға рахмет етеді. Және періштелер салауат айтады. Әй Мүміндер! Оған салауат және ықыласпен сәлем келтіріңдер.",
       "ky": "Албетте Аллах жана Анын периштелери пайгамбарга салават-салам айтышат. Оо, ыйман келтиргендер силер да ага көптөн-көп салават-саламдарды айткыла!",
-      "tg": "Ба ростӣ, Аллоҳ таоло ва фариштагонаш бар Паёмбар дуруд мефиристанд; [пас] эй касоне, ки имон овардаед [шумо низ] бар ӯ дуруд фиристед ва ба шоистагӣ салом гӯед"
+      "tg": "Ба ростӣ, Аллоҳ таоло ва фариштагонаш бар Паёмбар дуруд мефиристанд; [пас] эй касоне, ки имон овардаед [шумо низ] бар ӯ дуруд фиристед ва ба шоистагӣ салом гӯед",
+      "sw": "Hakika Mwenyezi Mungu na Malaika wake wanamswalia Nabii. Enyi mlioamini, mswalieni na mumsalimu kwa salamu.",
+      "am": "አላህና መላእክቱ በነቢዩ ላይ የአክብሮት እዝነትን ያወርዳሉ፡፡ እናንተ ያመናችሁ ሆይ! በእርሱ ላይ የአክብሮት እዝነትን አውርዱ፡፡ የማክበርንም ሰላምታ ሰላም በሉ፡፡",
+      "om": "Rabbiifi maleykonni Isaas nabiyyii irratti rahmata buusu. Yaa warra amantan! (isinis) rahmata isa irratti buusaa; nageenyas buusinsa buusaa.",
+      "ff": "Pellet, Alla e Malaa'ikaaɓe makko ɓen, heɓe du'anaade annabiijo on; ko onon yo ɓen gooŋɗinɓe, njuulee e makko, toranoɗon [mo] kisal."
     }
   },
   {
@@ -3081,7 +3760,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй иймон келтирганлар, Аллоҳдан қўрқинглар ва тўғри сўзни сўзланглар.",
       "kk": "Әй Мүміндер! Алладан қорқыңдар да дұрыс сөз сөйлеңдер.",
       "ky": "Оо, ыйман келтиргендер! Аллахтан корккула жана чындык-акыйкат гана сөздөрдү сүйлөгүлө!",
-      "tg": "Эй касоне, ки имон овардаед, аз Аллоҳ таоло парво кунед ва сухани рост ва дуруст бигӯед"
+      "tg": "Эй касоне, ки имон овардаед, аз Аллоҳ таоло парво кунед ва сухани рост ва дуруст бигӯед",
+      "sw": "Enyi mlioamini, mcheni Mwenyezi Mungu na semeni maneno ya sawasawa.",
+      "ha": "Yã kũ waɗanda suka yi ĩmãni! Ku bi Allah da taƙawa kuma ku faɗi magana madaidaiciya.",
+      "am": "እናንተ ያመናችሁ ሆይ! አላህን ፍሩ፡፡ ትክክለኛንም ንግግር ተናገሩ፡፡",
+      "om": "Yaa warra amantan! Rabbiin sodaadhaa; jecha sirrii dubbadhaa.",
+      "so": "Kuwa (Xaqa) rumeeyow! Alle ka cabsada (oo dhowra amarradiisa) kuna hadla hadal toosan (oo run ah).",
+      "ff": "Eey mon yo ɓen gooŋɗinɓe! Kulee Alla, wowlon konngol peewungol.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu. Kí ẹ sì sọ ọ̀rọ̀ déédé."
     }
   },
   {
@@ -3109,7 +3795,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "У ерга кирадиган нарсаларни ҳам, ундан чиқадиган нарсаларни ҳам, осмондан тушадиган нарсаларни ҳам, унга кўтариладиган нарсаларни ҳам билади. У Меҳрибон ва Мағфиратли Зотдир.",
       "kk": "Ол, жерге кіргенді, одан шықанды әрі көкге шыққанды, одан түскенді біледі. Ол, тым мейірімді, аса жарылқаушы.",
       "ky": "Ал жерге кирген, жерден чыккан, асмандан түшкөн жана асманга көтөрүлө турган (бардык) нерселерди билет. Ал – Ырайымдуу, Кечиримдүү!",
-      "tg": "Ҳар чи дар замин фурӯ меравад ва ҳар чи аз он бармеояд ва он чи аз осмон фуруд меояд ва он чи ба сӯйи он боло меравад [ҳамаро Аллоҳ таоло] медонад ва Ӯ меҳрубони омурзанда аст"
+      "tg": "Ҳар чи дар замин фурӯ меравад ва ҳар чи аз он бармеояд ва он чи аз осмон фуруд меояд ва он чи ба сӯйи он боло меравад [ҳамаро Аллоҳ таоло] медонад ва Ӯ меҳрубони омурзанда аст",
+      "sw": "Anajua yanayoingia katika ardhi na yanayotoka humo, na yanayoteremka kutoka mbinguni, na yanayopanda huko. Na Yeye ni Mwenye kurehemu, Mwenye kusamehe.",
+      "ha": "Yã san abin da yake shiga a cikin ƙasã da abin da yake fita daga gare ta, da abin da yake sauka daga sama da abin da yake hawa a cikinta, kuma Shĩ ne Mai jin ƙai, Mai gãfara.",
+      "am": "በምድር ውስጥ የሚገባውን ሁሉ ከእርሷም የሚወጣውን ከሰማይም የሚወርደውን በእርሷም ውስጥ የሚያርገውን ሁሉ ያውቃል፡፡ እርሱም አዛኙ መሓሪው ነው፡፡",
+      "om": "Inni waan dachii keessa seenu, waan ishee irraa bahu, waan samii irraa bu’uufi waan ishee keessa ol ba’us ni beeka. Inni mararfataa, araaramaadha.",
+      "so": "Wuxuu Ogyahay waxa gala arlada iyo waxa ka soo baxa iyo waxa ka soo dega samada iyo waxa kor ugu baxa. Waana Naxariis Badanaha, Denbi Dhaafka Badan.",
+      "ff": "Homo anndi ko naatata ka leydi, e ko yaltata e mayri, ko jippotoo iwra ka kammu e ko ƴawata e maggu. Ko Kaŋko woni jurmotooɗo otoo, jaafoto.",
+      "yo": "Ó mọ ohunkóhun tó ń wọnú ilẹ̀ àti ohunkóhun tó ń jáde látinú rẹ̀. (Ó mọ) ohunkóhun tó ń sọ̀kalẹ̀ látinú sánmọ̀ àti ohunkóhun tó ń gùnkè lọ sínú rẹ̀. Òun sì ni Àṣàkẹ́-ọ̀run, Aláforíjìn."
     }
   },
   {
@@ -3133,7 +3826,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ инсонларга қайси бир раҳматни очиб қўйса, уни бирон ушлаб қолгувчи бўлмас. Нимани ушлаб қолса, ундан кейин уни бирон бўшатиб юборгувчи бўлмас. У Азиз ва Ҳаким Зотдир.",
       "kk": "Алла (Т.) ның адам баласына берген мәрхаметін тосушы жоқ. Алланың тосқан нәрсесін артынан жіберуші жоқ. Ол аса үстем, тым хикмет иесі.",
       "ky": "Аллах адамдарга ачып койгон ырайымды эч ким кармап кала албайт. (Ошондой эле) Аллах кармап калган нерсени, Андан кийин эч ким жибере албайт. Ал Кудуреттүү, Даанышман.",
-      "tg": "Ҳар [бахшоиш ва] раҳмате, ки Аллоҳ таоло барои мардумон бикушояд, ҳеҷ боздорандае барояш нест ва ҳар чиро бозгирад, фиристандае пас аз Ӯ вуҷуд надорад; ва Ӯ шикастнопазиру ҳаким аст"
+      "tg": "Ҳар [бахшоиш ва] раҳмате, ки Аллоҳ таоло барои мардумон бикушояд, ҳеҷ боздорандае барояш нест ва ҳар чиро бозгирад, фиристандае пас аз Ӯ вуҷуд надорад; ва Ӯ шикастнопазиру ҳаким аст",
+      "sw": "Rehema ambayo Mwenyezi Mungu anawafungulia watu, hapana wa kuizuia. Na anayoizuia, hapana wa kuiachilia isipokuwa Yeye. Naye ndiye Mwenye nguvu, Mwenye hekima.",
+      "ha": "Abin da Allah Ya buɗa wa mutãne daga rahama, to, bãbu mai riƙewa a gare shi, kuma abin da Ya riƙe, to, bãbu mai saki a gare shi, wanin Sa, kuma Shĩ ne Mabuwãyi, Mai hikima.",
+      "am": "አላህ ለሰዎች ከችሮታ የሚከፍታት ለእርሷ ምንም አጋጅ የላትም፡፡ የሚያግደውም ከእርሱ በኋላ ለእርሱ ምንም ለቃቂ የለውም፡፡ እርሱም አሸነፊው ጥበበኛው ነው፡፡",
+      "om": "Rahmata irraa wanta Rabbiin namaaf bane wanti ishee dhorgu tokkoyyuu hin jiru. Wanta Inni dhorge Isa boodaan wanti ishee gadi dhiisu (ergu) hin jiru. Inni injifataa, ogeessa.",
+      "so": "Wax kastoo Alle u furo dadka oo Naxariis ah, ma jiro wax celin kara, wuxuu celiyana ma jiro wax soo diri kara Isaga kadambow. Waana Adkaadaha, Xakiimka ah.",
+      "ff": "Kala yurmeende nde Alla udditani yimɓe ɓen, jogitotooɗo nde alaa; kala kadi ko o jogitii, gaccitoowo ɗum alaa ɓaawo (jogitagol) makko. Ko Kaŋko woni pooluɗo, ñeeñɗo."
     }
   },
   {
@@ -3161,7 +3860,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Ey insanlar! Həqiqətən, Allahın vədi haqdır. Dünya həyatı sizi aldatmasın, tovlayan (şeytan) da sizi yoldan çıxartmasın.",
       "uz": "Эй инсонлар, дарҳақиқат, Аллоҳнинг ваъдаси ҳақдир. Дунё ҳаёти сизларни ҳаргиз алдаб қўймасин. Алдагувчи (шайтон) сизларни Аллоҳ ҳақида алдаб қўймасин.",
       "kk": "Әй адам баласы! Сөз жоқ, Алланың уәдесі хақ. Ендеше дүние тіршілігі сендерді әсте алдамасын. Сондай-ақ аса алдағыш та сендерді Алла туралы алдамасын.",
-      "ky": "Оо, адамдар Аллахтын убадасы акыйкат. Силерди дүйнө(нүн кооз-жылтырак) жашоосу азгырып койбосун! Дагы силерди жалганчы (шайтан) Аллахтан азгырбасын!"
+      "ky": "Оо, адамдар Аллахтын убадасы акыйкат. Силерди дүйнө(нүн кооз-жылтырак) жашоосу азгырып койбосун! Дагы силерди жалганчы (шайтан) Аллахтан азгырбасын!",
+      "sw": "Enyi watu! Hakika ahadi ya Mwenyezi Mungu ni ya kweli. Basi kamwe yasikudanganyeni maisha ya dunia, wala kamwe yule mdanganyifu asikudanganyeni juu ya Mwenyezi Mungu.",
+      "ha": "Yã kũ mutãne! Lalle wa'adin Allah gaskiya ne, sabõda haka kada rãyuwar dũniya ta rũɗar da ku, kuma kada marũɗi ya rũɗe ku game da Allah.",
+      "am": "እናንተ ሰዎች ሆይ! የአላህ ቀጠሮ እውነት ነው፡፡ የቅርቢቱም ሕይወት አታታላችሁ፡፡ አታላዩም (ሰይጣን) በአላህ (መታገስ) አያታላችሁ፡፡",
+      "om": "Yaa namootaa! Dhugumatti, waadaan Allaah dhugaadha. Kanaafu jireenyi addunyaa akka isin hin gowwoomsine. Gowwoomsaan (Sheyxaanni) (obsa) Rabbiitiin akka isin hin gowwoomsine.",
+      "so": "Dadow! Hubaal Ballanka Alle waa Xaq. Ee yeysan idin hodin noloshan soke ee adduunka, yuusanna kan hodista badan (shaydaanka) idinka hodin arrinka Alle.",
+      "ff": "Eey mon yo yimɓe! Ngandee pellet fodoore Alla nden ko goonga. Wota nguurndam aduna hodu on, wota (seytaane) kodoowo on hod on e fii Alla.",
+      "yo": "Ẹ̀yin ènìyàn, dájúdájú àdéhùn Allāhu ni òdodo. Ẹ má ṣe jẹ́ kí ìṣẹ̀mí ayé tàn yín jẹ. Kí ẹ sì má ṣe jẹ́ kí (aṣ-ṣaetọ̄n) ẹlẹ́tàn tàn yín jẹ."
     }
   },
   {
@@ -3191,7 +3897,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Дарҳақиқат, шайтон сизларга душмандир. Бас, уни душман тутинглар. Албатта, у сизларни дўзахийларга айлантириш учун ўзининг гуруҳига чорлайди.",
       "kk": "Шәксіз сендерге шайтан дұшпан. Сондықтан сендер де оны дұшпан тұтыңдар. Шын мәнінде шайтан өз тобын тозақтықтардан болуға шақырады.",
       "ky": "Шайтан силерге (түбөлүк) душман! Аны (дайым) душман туткула! Чынында ал өзү(нө ээрчиген) жамаатты тозок элдеринен болууга чакырат.",
-      "tg": "Бе тардид, шайтон душмани шумост; пас, шумо низ ӯро душман [-и худ] гиред. Ҷуз ин нест, ки ӯ пайравонашро [ба куфр] мехонад, то аз аҳли оташ бошанд"
+      "tg": "Бе тардид, шайтон душмани шумост; пас, шумо низ ӯро душман [-и худ] гиред. Ҷуз ин нест, ки ӯ пайравонашро [ба куфр] мехонад, то аз аҳли оташ бошанд",
+      "sw": "Hakika Shetani ni adui yenu, basi mfanyeni kuwa ni adui. Kwani yeye analiita kundi lake liwe katika watu wa Moto wenye mwako mkali.",
+      "ha": "Lalle Shaiɗan maƙiyi ne a gare ku, sai ku riƙe shi maƙiyi. Yanã kiran ƙungiyarsa kawai ne, dõmin su kasance 'yan sa'ir.",
+      "am": "ሰይጣን ለናንተ ጠላት ነው፡፡ ስለዚህ ጠላት አድርጋችሁ ያዙት፡፡ ተከታዮቹን የሚጠራው ከእሳት ጓዶች እንዲኾኑ ብቻ ነው፡፡",
+      "om": "Sheyxaanni isiniif diinaa, isinis diina isa godhaa. Gareewwan isaas akka warra ibidda boba’aa (seenu) ta’aniif isaan waama.",
+      "so": "Xaqiiq, shaydaanku wuxuu idiin yahay cadow, ee idinkuna ka yeesha cadow. Wuxuu uun ugu yeedhaa Xisbigiisa inay ka mid noqdaan asxaabta Naarta hureysa.",
+      "ff": "Pellet, seytaane ko gaño wonani on. Haray njogitoree mo gaño. Nganndee ko o noddirta fedde makko nden, ko no ɓe jeydiree e yimɓe dulɓoowe ngen.",
+      "yo": "Dájúdájú aṣ-ṣaetọ̄n ni ọ̀tá fún yín. Nítorí náà, ẹ mú un ní ọ̀tá. Ó kàn ń pe àwọn ìjọ rẹ̀ nítorí kí wọ́n lè jẹ́ èrò inú Iná tó ń jó."
     }
   },
   {
@@ -3221,7 +3934,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй инсонлар, сизлар Аллоҳга муҳтожсизлар. Аллоҳ эса Беҳожат, мақтовга лойиқ Зотдир.",
       "kk": "Әй адам баласы! Аллаға мұхтажсыңдар. Алла (Т.) Ол, әр нәрседен мұңсыз, өте мақтаулы.",
       "ky": "Оо, адамдар! Силер Аллахка (ар дайым) муктажсыңар! Жана Аллах Өзү гана Беймуктаж, мактоого татыктуу!",
-      "tg": "Эй мардум, [ҳамаи] шумо ба Аллоҳ таоло ниёзмандед ва [танҳо] Аллоҳ таоло аст, ки бениёзи сутуда аст"
+      "tg": "Эй мардум, [ҳамаи] шумо ба Аллоҳ таоло ниёзмандед ва [танҳо] Аллоҳ таоло аст, ки бениёзи сутуда аст",
+      "sw": "Enyi watu, nyinyi ndio wenye haja kwa Mwenyezi Mungu, na Mwenyezi Mungu ndiye Mwenye kujitosha, Msifiwa.",
+      "ha": "Yã kũ mutãne! Kũ ne mãsu bukãta zuwa ga Allah, kuma Allah, Shĩ ne Mawadãci, Gõdadde.",
+      "am": "እናንተ ሰዎች ሆይ! እናንተ (ሁል ጊዜ) ወደ አላህ ከጃዮች ናችሁ፡፡ አላህም እርሱ ተብቃቂው ምስጉኑ ነው፡፡",
+      "om": "Yaa namootaa! Isin gara Allaahtti haajamoodha; Allaahn Isumatu dureessa, faarfamaadha.",
+      "so": "Dadow! Idinka weeye kuwa u baahan Alle. Alle waa Hodanka, Ammaanan.",
+      "ff": "Eey mon yo yimɓe, ko onon ngoni hatonjimɓe e Alla ɓen, Alla kan, ko Kaŋko woni Galo jettiniiɗo On.",
+      "yo": "Ẹ̀yin ènìyàn, ẹ̀yin ni aláìní (tí ẹ ní bùkátà) sí Allāhu. Allāhu, Òun ni Ọlọ́rọ̀, Ẹlẹ́yìn."
     }
   },
   {
@@ -3251,7 +3971,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Истаса, сизларни кетказиб, янги халқни олиб келади.",
       "kk": "Қаласа сендерді жоқ етеді де жаңа ел акеле алады.",
       "ky": "Ал эгер кааласа силерди (жер бетинен) кетирип, башка жаңы (Өзүнө моюн суна турган) элдерди келтире алат!",
-      "tg": "Ӯ агар бихоҳад, шуморо [аз миён] мебарад ва офаринише ҷадид [ба ҷойи шумо падид] меоварад"
+      "tg": "Ӯ агар бихоҳад, шуморо [аз миён] мебарад ва офаринише ҷадид [ба ҷойи шумо падид] меоварад",
+      "sw": "Akitaka, atawaondoa na alete viumbe vipya.",
+      "ha": "Idan Ya so, zai tafi da ku, kuma Ya zo da wata halitta sãbuwa.",
+      "am": "ቢሻ ያስወግዳችኋል፡፡ አዲስንም ፍጡር ያመጣል፡፡",
+      "om": "Yoo fedhe isin (dachii irraa) deemsiseeti uumama haaraa fida.",
+      "so": "Hadduu doono, wuu idin tegsiin, oo keeni uun cusub.",
+      "ff": "Si O yiɗii, o naɓa on, o adda tagu hesu.",
+      "yo": "Tí Ó bá fẹ́, Ó máa mu yín kúrò lórí ilẹ̀. Ó sì máa mú ẹ̀dá titun wá."
     }
   },
   {
@@ -3268,7 +3995,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Məgər Allahın göydən yağmur endirdiyini və onunla müxtəlif rəngli meyvələr yetişdirdiyimizi görmürsənmi?! Dağlarda da müxtəlif rəngli – ağ, qırmızı və tünd qara cığırlar əmələ gətirdik.",
       "uz": "Кўрмадингизмики, Аллоҳ осмондан ёмғир ёғдирди. Бас, у билан турли хил рангдаги меваларни чиқардик. Яна тоғлардан турли хил рангдаги оқ, қизил ва қоп-қоралари ҳам бор.",
       "kk": "Шын Алланың көктен жаңбыр жаудырғанын көрмейсің бе? Сонда онымен түрлі-түсті жемістер шығардық. Сондай-ақ таулардан да ақ, қызыл әрі қап-қара түрлі-түсті жолақтарды көрмейсің бе?",
-      "ky": "Көрбөйсүңбү, Аллах асмандан суу түшүрдү. Анан Биз аны менен (түсү, даамы) ар түрдүү мөмөлөрдү чыгардык. Тоолордун да ак-ала, кызыл-ала жана чым каралар(ын чыгардык)."
+      "ky": "Көрбөйсүңбү, Аллах асмандан суу түшүрдү. Анан Биз аны менен (түсү, даамы) ар түрдүү мөмөлөрдү чыгардык. Тоолордун да ак-ала, кызыл-ала жана чым каралар(ын чыгардык).",
+      "am": "አላህ ከሰማይ ውሃን ማውረዱን አላየህምን? በእርሱም ዓይነቶቻቸው የተለያዩ ፍሬዎችን አወጣን፡፡ ከጋራዎችም መልኮቻቸው የተለያዩ ነጮች፣ ቀዮችም፣ በጣም ጥቁሮችም የኾኑ መንገዶች አልሉ፡፡",
+      "ff": "E a yiaani won'de Alla jippinirii ndiyam ka kammu? Min puɗiniri ɗam dimɗe ceertuɗe noone. Hino ka pelle, ɗate daneeje e boɗeeje ceertyuɗe noone, e pete ɓaleeje."
     }
   },
   {
@@ -3298,7 +4027,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Дарҳақиқат, Аллоҳ осмонлару ернинг ғайбини Билгувчидир. Дарҳақиқат, У диллардаги сирларни ҳам Билгувчидир.",
       "kk": "Әрине Алла (Т.) көктер мен жердің көмесін біледі. Шәксіз Ол, көңілдердегіні де біледі.",
       "ky": "Чынында Аллах асмандар жана жердеги кайыптарды Билүүчү. Ал көкүрөктөрдөгү (жашыруун) сырларды да Билүүчү.",
-      "tg": "Бе тардид, Аллоҳ таоло донои ниҳони осмонҳо ва замин аст [ва] Ӯст, ки ба рози дилҳо доност"
+      "tg": "Бе тардид, Аллоҳ таоло донои ниҳони осмонҳо ва замин аст [ва] Ӯст, ки ба рози дилҳо доност",
+      "sw": "Kwa hakika Mwenyezi Mungu ni Mjuzi wa siri za mbinguni na ardhi. Hakika Yeye ni Mjuzi wa yaliomo vifuani.",
+      "ha": "Lalle Allah ne Masanin gaibin sammai da ƙasã. Lalle Shĩ ne Masani ga abin da yake ainihin zukata.",
+      "am": "አላህ የሰማያትንና የምድርን ምስጢር በእርግጥ ዐዋቂ ነው፡፡ እርሱ በልቦች ውስጥ ያለን ሁሉ ዐዋቂ ነውና፡፡",
+      "om": "Dhugumatti, Rabbiin beekaa fagoo samiifi dachiiti. Inni beekaa wantoota qoma keessa jiraniiti.",
+      "so": "Hubaal, Alle waa Ogsoonaha waxa ku qarsoon aan muuqan cirarka iyo dhulka gudahooda. Hubaal waa Isaga Ogsoonaha waxa ku jira laabaha (dadka).",
+      "ff": "Pellet, Alla ko gannduɗo wirniiɗi kammuuji ɗin e leydi ndin. Ko O gannduɗo ko suuɗii e ɓerɗe.",
+      "yo": "Dájúdájú Allāhu ni Onímọ̀-ìkọ̀kọ̀ àwọn sánmọ̀ àti ilẹ̀. Dájúdájú Òun ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
     }
   },
   {
@@ -3322,7 +4058,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Həqiqətən, ölüləri dirildən, onların (dünyada) etdiklərini və buraxdıqları izləri (axar sədəqə kimi saleh əməlləri) yazan Bizik. Biz hər şeyi açıq-aydın Kitabda (Lövhi-məhfuzda) qeydə almışıq.",
       "uz": "Дарҳақиқат, Биз ўликларни тирилтирурмиз ва улар тақдим этган ишларни ҳамда изларини ёзиб қўюрмиз. Ҳамма нарсани Аниқ Китобда ҳисоблаб қўйганмиз.",
       "ky": "Албетте Биз өлүктөрдү (кайрадан) тирилтебиз жана мурда жасаган иштерин, (өзүнөн калган) издерин жазып койобуз. Жана Биз бардык нерсени Анык Китепте (алдын ала) эсептеп койгонбуз.",
-      "tg": "Яқинан, Моем, ки мурдагонро зинда мекунем ва он чиро, ки аз пеш фиристодаанд ва осори [боқимонда аз] эшонро менависем; ва ҳама чизро дар Китоби равшан [Лавҳ-ул-маҳфуз] ба шумор овардаем"
+      "tg": "Яқинан, Моем, ки мурдагонро зинда мекунем ва он чиро, ки аз пеш фиристодаанд ва осори [боқимонда аз] эшонро менависем; ва ҳама чизро дар Китоби равшан [Лавҳ-ул-маҳфуз] ба шумор овардаем",
+      "sw": "Hakika Sisi tunawafufua wafu na tunayaandika wanayoyatanguliza, na wanayoyaacha nyuma. Na kila kitu tumekihifadhi katika daftari la asili lenye kubainisha.",
+      "ha": "Lalle Mũ, Mũ ne ke rãyar da matattu kuma Mu rubũta abin da suka gabãtar, da gurãbunsu, kuma kõwane abu Mun ƙididdige shi, a cikin babban Littãfi Mabayyani.",
+      "am": "እኛ ሙታንን እኛ በእርግጥ ሕያው እናደርጋለን፡፡ ያስቀደሙትንም ሥራ ፈለጎቻቸውንም እንጽፋለን፡፡ ነገሩንም ሁሉ ገላጭ መሪ በኾነ መጽሐፍ ውስጥ አጠቃለልነው፡፡",
+      "om": "Nuti numatu du’aa jiraachifna. Waan isaan hojjatanii dabarsaniifi hambaalee isaanii ni barreessina. Waan hundayyuu kitaaba ifa bahaa keessatti galmeessinee jirra.",
+      "ff": "Ko Minen ngoni wuurnitooɓe maayɓe ɓen, Min mbinnda ko ɓe ngardini e batteeji maɓɓe. Kala hu'unde, Miɗen mofti nde e deftere ɓanngunde.",
+      "yo": "Dájúdájú Àwa l’À ń sọ àwọn òkú di alàyè. A sì ń ṣe àkọsílẹ̀ ohun tí wọ́n tì síwájú àti orípa (iṣẹ́ ọwọ́) wọn. Gbogbo n̄ǹkan ni A ṣe àkọsílẹ̀ rẹ̀ sínú tírà kan tó yanjú."
     }
   },
   {
@@ -3352,7 +4094,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "На қуёшнинг ойга етиб олиши ва на кечанинг кундуздан ўзиб кетиши мумкин бўлади. Барчалари фалакда сузиб юрадилар.",
       "kk": "Күннің айға жетуі мүмкін емес. Және түнде күндізден ілгерлемейді. Әрбірі көкте жүзеді.",
       "ky": "Күн (өз айлануусунда) Айга жетиши мүмкүн эмес, түн дагы күндүздөн озуп кете албайт. Бардыгы асманда сүзүп жүрүшөт.",
-      "tg": "На хуршедро сазовор аст, ки [дар сайри худ] ба моҳ бирасад в на шаб бар рӯз пешӣ мегирад; ва ҳар як аз [ситораву сайёра] дар мадоре шиноваранд"
+      "tg": "На хуршедро сазовор аст, ки [дар сайри худ] ба моҳ бирасад в на шаб бар рӯз пешӣ мегирад; ва ҳар як аз [ситораву сайёра] дар мадоре шиноваранд",
+      "sw": "Haliwi jua kuufikia mwezi, wala usiku kuupita mchana. Na vyote vinaogelea katika njia zao.",
+      "ha": "Rãnã bã ya kamãta a gare ta, ta riski watã. Kuma dare bã ya kamãta a gare shi ya zama mai tsẽre wa yini, kuma dukansua cikin sarari guda suke yin iyo.",
+      "am": "ፀሐይ ጨረቃን ልትደርስበት አይገባትም፡፡ ሌሊትም ቀንን (ያለ ጊዜው) ቀዳሚ አይኾንም፡፡ ሁሉም በመዞሪያቸው ውስጥ ይዋኛሉ፡፡",
+      "om": "Aduun baatii dhaqqabuun isheef hin ta’u; halkanis guyyaa hin dursu, Hunduu sarara keessa (daaku).",
+      "so": "Looma oggola qorraxda inay haleesho dayaxa, habeenkuna ma ka hor maro maalinta. Dhammaan waxay ku dabaashaan mareeg (garangar) dhexdi.",
+      "ff": "Wonaa na'ange ngen woni ko haanini hewtitagol lewru ndun, wonaa jemma on woni ko aditotoo ñalaema on; kala majji non, ko e laawol mum woni dokde.",
+      "yo": "Kò yẹ fún òòrùn láti lo àsìkò òṣùpá. Kò sì yẹ fún alẹ́ láti lo àsìkò ọ̀sán. Ìkọ̀ọ̀kan wà ní òpópónà róbótó tó ń tọ̀."
     }
   },
   {
@@ -3382,7 +4131,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ерни яратган Зот уларнинг ўхшашини ярата олмайдими? Орий! У Яратгувчи, Билгувчи Зотдир.",
       "kk": "Сондай көктер мен жерді жаратқан Алла, олар сияқтыны жаратуға күші жетпей ме? Әлбетте күші жетеді. Ол, әр нәрсені жаратушы, толық білуші.",
       "ky": "Асмандарды жана Жерди жарата алган Зат алардын окшошун (экинчи ирет) жаратууга кудуреттүү эмеспи? Жок! Кудуреттүү! Ал эң мыкты жаратуучу жана эң илимдүү.",
-      "tg": "Оё касе, ки осмонҳо ва заминро офаридааст, наметавонад ҳаммонанди инҳоро [пас аз маргашон дубора] биофаринад? Оре [метавонад] ва Ӯ Офаринандаи доност"
+      "tg": "Оё касе, ки осмонҳо ва заминро офаридааст, наметавонад ҳаммонанди инҳоро [пас аз маргашон дубора] биофаринад? Оре [метавонад] ва Ӯ Офаринандаи доност",
+      "sw": "Kwani aliyeziumba mbingu na ardhi hawezi kuwaumba mfano wao? Kwani! Naye ndiye Muumbaji Mkuu, Mjuzi mno.",
+      "ha": "\"Shin, kuma Wanda Ya halitta sammai da ƙasã bai zama Mai ĩkon yi ba ga Ya halitta kwatankwacinsu? Na'am, zai iya! Kuma Shĩ Mai yawan halittãwa ne, Mai ilmi.\"",
+      "am": "ያ ሰማያትንና ምድርን የፈጠረ ብጤያቸውን በመፍጠር ላይ ቻይ አይደለምን? ነው እንጅ እርሱም በብዙ ፈጣሪው ዐዋቂው ነው፡፡",
+      "om": "Sila Inni samiileefi dachii uume fakkaataa isaanii uumuu irratti danda’aa mitii? Eeyyeen (danda’aa dha!) Inni akkaan uumaadha, akkaan beekaadha.",
+      "ff": "Kere takɗo kammuuji ɗin e leydi ndin wonaani kaɗtanɗo tagugol yeru maɓɓe? Ɗuum ko pellet! Ko Kaŋko woni Ɗuuɗuɗo tageefo, gannduɗo.",
+      "yo": "Ǹjẹ́ Ẹni tí Ó ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ kò ní agbára láti dá irú wọn (mìíràn) bí? Bẹ́ẹ̀ ni (Ó ní agbára). Òun sì ni Ẹlẹ́dàá, Onímọ̀."
     }
   },
   {
@@ -3413,7 +4168,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Бир нарсани ирода қилган пайтида Унинг иши унга «Бўл», дейишдир. Бас, у бўлади.",
       "kk": "Шын мәнінде Ол, бір істің болуын қаласа, Оның бұйырығы оған \"бол\" деу, сонда ол бола қалады.",
       "ky": "Эгер бир нерсени (жаратууну) кааласа, Анын иши «Бол!» деп айтуудан гана турат. Анан ал нерсе болуп калат.",
-      "tg": "Фармони Ӯ чун чизеро ирода кунад, танҳо ин аст, ки ба он мегӯяд: «Мавҷуд шав»; пас, [бедиранг] мавҷуд мешавад"
+      "tg": "Фармони Ӯ чун чизеро ирода кунад, танҳо ин аст, ки ба он мегӯяд: «Мавҷуд шав»; пас, [бедиранг] мавҷуд мешавад",
+      "sw": "Hakika amri yake anapotaka kitu ni kukiambia tu: Kuwa! Na kikawa.",
+      "ha": "UmurninSa idan Yã yi nufin wani abu sai Ya ce masa kawai, \"Ka kasance,\" sai yana kasancewa (kamar yadda Yake nufi).",
+      "am": "ነገሩም አንዳችን በሻ ጊዜ ኹን ማለት ነው፡፡ ወዲያው ይኾናልም፡፡",
+      "om": "Ajajni Isaa, yoo waan tokko fedhe “tahi” isaan jechuma qofa; yoosuu taha.",
+      "so": "Amarkiisu markuu doono wax uun, waa inuu keliya ku yidhaahdo: Ahaw, waana yahay.",
+      "ff": "Ganndon fiyaaku makko on, si o faandanike hu'unde, ko o wi'anat nde tan: \"Laato\", nde laatoo.",
+      "yo": "Àṣẹ Rẹ̀ nígbà tí Ó bá gbèrò kiní kan ni pé, Ó máa sọ fún un pé “Jẹ́ bẹ́ẹ̀.” Ó sì máa jẹ́ bẹ́ẹ̀."
     }
   },
   {
@@ -3444,7 +4206,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Қудрат эгаси бўлмиш Парвардигорингиз улар васф этаётган сифатлардан Покдир.",
       "kk": "Қастерлі Раббың олардың сипаттағандарынан пәк.",
       "ky": "Кудуреттүүлүк Ээси болгон Раббиң алардын (кемчилдиктүү) сыпаттоолорунан Таза!",
-      "tg": "Пок ва муназзаҳ аст Парвардигорат - Парвардигори иззат ва қудрат-аз он чи [мушрикон ба дурӯғ] васф мекунанд"
+      "tg": "Пок ва муназзаҳ аст Парвардигорат - Парвардигори иззат ва қудрат-аз он чи [мушрикон ба дурӯғ] васф мекунанд",
+      "sw": "Ametakasika Mola wako Mlezi Mwenye utukufu mbali na yale wanayomzulia.",
+      "ha": "Tsarki ya tabbata ga Ubangijinka, Ubangijin rinjãye, daga barin abin da suke siffantãwa.",
+      "am": "የማሸነፍ ጌታ የሆነው ጌታህ ከሚሉት ሁሉ ጠራ፡፡",
+      "om": "Goftaan kee, Gooftaan injifannaa, waan isaan jedhaniin irraa qulqullaa’e.",
+      "so": "Xurmo oo dhan waxaa iska leh oo (xumaan ka) hufan Rabbigaa (Allaah), Rabbiga Sharafta leh, ka sarreeya waxay (gaaladu) ku tilmaamaan (sida inuu leeyahay wiil, gabdho, xaas, iwm).",
+      "ff": "Senaare woodanii Joomi maa, Jeyɗo teddungal, e  ko ɓe cifotoo !",
+      "yo": "Mímọ́ ni fún Olúwa rẹ, Olúwa (tó ni) agbára, tayọ ohun tí wọ́n ń fi ròyìn (Rẹ̀)."
     }
   },
   {
@@ -3472,7 +4241,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Билмайдилармики, Аллоҳ Ўзи истаган одамга ризқни кенг ёки тор қилиб беради. Бу ишда иймон келтирадиган қавм учун белгилар бордир.",
       "kk": "Олар білмей ме? Расында Алла (Т.) кімді қаласа, оның несібесін кеңітеді де тарайтады. Сөз жоқ, осыларда сенген ел үшін өнегелер бар.",
       "ky": "Алар билишпейби, Аллах каалаган пендесине ырыскыны кенен берет, каалаганына ченеп берет. Албетте бул нерседе ыймандуу адамдарга далилдер бар.",
-      "tg": "Оё мушрикон намедонанд, ки Аллоҳ таоло [неъмат ва] рӯзиро бар ҳар касе, ки бихоҳад, густурда медорад ва ё танг мегирад? Бе гумон, дар ин амр барои муъминон нишонаҳое [аз тадбири илоҳӣ] аст"
+      "tg": "Оё мушрикон намедонанд, ки Аллоҳ таоло [неъмат ва] рӯзиро бар ҳар касе, ки бихоҳад, густурда медорад ва ё танг мегирад? Бе гумон, дар ин амр барои муъминон нишонаҳое [аз тадбири илоҳӣ] аст",
+      "sw": "Kwani wao hawajui kwamba Mwenyezi Mungu humkunjulia riziki amtakaye na kumkunjia? Hakika katika haya bila ya shaka zipo Ishara kwa watu wanaoamini.",
+      "ha": "Ashe kuma ba su sani ba cẽwa Allah, na shimfiɗa arziƙi ga wanda Yake so, kuma Yanã ƙuƙuntawa? Lalle a cikin wancan akwai ãyõyi ga mutãne waɗanda ke yin ĩmãni.",
+      "am": "አላህ ሲሳዩን ለሚሻው ሰው የሚያሰፋ የሚያጠብም መኾኑን አያውቁምን? በዚህ ውስጥ ለሚያምኑት ሕዝቦች ግሣጼዎች አሉበት፡፡",
+      "om": "Sila akka Rabbiin nama fedheef kenna bal’isee, (kan fedhetti immoo) dhiphisu hin beekanuu? Dhugumatti, kana keessa ummata amananiif mallattooleetu jira.",
+      "so": "Miyeyna ogeyn inuu Alle u fidiyo risiqa cidduu doono, oo ku cidhiidhiyo (cidduu doono). Arrinkani waxaa ugu sugan calaamooyin ciddii rumeyn.",
+      "ff": "E ɓe nganndaa won'de Allah no yaññana arsike on mo o muuyani, O ɓillina [mo o muuyani]? Pellet, Ma'andeeji ngonii e ɗum, wona nde yimɓe gooŋɗinooɓe.",
+      "yo": "Ṣé wọn kò mọ̀ pé dájúdájú Allāhu l’Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú àwọn àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo."
     }
   },
   {
@@ -3503,7 +4279,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ ҳамма нарсанинг Яратувчисидир. У барча нарсага Вакилдир.",
       "kk": "Алла (Т.) әр нәрсеге кепіл.",
       "ky": "Аллах – бардык нерселердин Жаратуучусу! Ал – бардык нерсенин Коргоочу-Сактоочусу!",
-      "tg": "Аллоҳ таоло офаридгори ҳар чизест ва Ӯ бар ҳама чиз [нигаҳбону] корсоз аст"
+      "tg": "Аллоҳ таоло офаридгори ҳар чизест ва Ӯ бар ҳама чиз [нигаҳбону] корсоз аст",
+      "sw": "Mwenyezi Mungu ndiye Muumba wa kila kitu, na Yeye ndiye Mlinzi juu ya kila kitu.",
+      "ha": "Allah ne Mai halitta dukan kõme, kuma Shĩ ne Wakĩli a kan kõme.",
+      "am": "አላህ የነገሩ ሁሉ ፈጣሪ ነው፡፡ እርሱም በነገሩ ሁሉ ላይ አስተናባሪ ነው፡፡",
+      "om": "Rabbiin uumaa waan hundaati. Inni waan hunda irrattis tiksaadha.",
+      "so": "Alle waa abuuraha wax walba, wax walbana Isagaa talada u haya oo maamula.",
+      "ff": "Ko Allah woni Takɗo kala hu'unde, ko Kaŋko kadi woni pawtiiɗo kala hu'unde.",
+      "yo": "Allāhu ni Ẹlẹ́dàá gbogbo n̄ǹkan. Òun sì ni Olùṣọ́ lórí gbogbo n̄ǹkan."
     }
   },
   {
@@ -3531,7 +4314,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ернинг калитлари Уникидир. Аллоҳнинг оятларига куфр келтирганлар, ана ўшалар зиён кўргувчилардир.",
       "kk": "Көктер мен жердің кілттері Оның иелігінде. Алланың аяттарына қарсы келгендер, міне солар; зиянға ұшыраушылар.",
       "ky": "Асмандар менен жердин ачкычтары Ага таандык! Аллахтын аяттарына каапыр болгон адамдар гана анык зыян тартуучулар!",
-      "tg": "Калиди ганҷинаҳои осмонҳо ва замин аз они Ӯст ва касоне, ки ба оёти илоҳӣ кофир шуданд, қатъан, зиёнкоранд"
+      "tg": "Калиди ганҷинаҳои осмонҳо ва замин аз они Ӯст ва касоне, ки ба оёти илоҳӣ кофир шуданд, қатъан, зиёнкоранд",
+      "sw": "Yeye anazo funguo za mbingu na ardhi. Na wale waliozikataa Ishara za Mwenyezi Mungu, hao ndio wenye kuhasiri.",
+      "ha": "Shĩ ke da mabũɗan sammai da ƙasã. Kuma waɗanda suka kãfirta da ãyõyin Allah, waɗannan sũ nemãsu hasãra.",
+      "am": "የሰማያትና የምድር (ድልብ) መክፈቻዎች የእርሱ ብቻ ናቸው፡፡ እነዚያም በአላህ አንቀጾች የካዱት እነዚያ እነሱ ከሳሪዎቹ ናቸው፡፡",
+      "om": "Furtuuwwan samiileefii dachii kan Isaati. Isaan keeyyattoota Rabbiitti kafaran, isaan sun hoonga’oon isaanuma.",
+      "so": "Isagaa iska leh khaznadaha samooyinka iyo arlada. Kuwana ku gaalooba Aayadaha Alle, kuwaa weeye kuwa khasaaray.",
+      "ff": "Ko Kaŋko sottirɗe kammuuji ɗin e leydi ndin woodani. Yedduɓe aayeeje Allah ɓeen non, ko ɓen ngoni hayruɓe(pertuɓe) ɓen.",
+      "yo": "TiRẹ̀ ni àwọn kọ́kọ́rọ́ ilé-ọ̀rọ̀ àwọn sánmọ̀ àti ilẹ̀. Àwọn tó ṣàì gbàgbọ́ nínú àwọn āyah Allāhu, àwọn wọ̀nyẹn, àwọn ni ẹni òfò."
     }
   },
   {
@@ -3561,7 +4351,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Кўзларнинг хиёнатини ҳам, қалблар яширган нарсаларни ҳам билади.",
       "kk": "Алла көздердің қиянатын және көкіректердегі құпияны біледі.",
       "ky": "(Аллах) көздөрдүн (арам нерсеге) жашыруун назар салышын да, жүрөктөр жашырган сырларды да билип турат.",
-      "tg": "[Аллоҳ таоло] Ҳаракоти бади чашмҳо ва он чиро, ки дар дилҳои афрод нуҳуфта аст, [ба хубӣ] медонад"
+      "tg": "[Аллоҳ таоло] Ҳаракоти бади чашмҳо ва он чиро, ки дар дилҳои афрод нуҳуфта аст, [ба хубӣ] медонад",
+      "sw": "(Mwenyezi Mungu) anajua hiyana ya macho na yale ambayo vifua vinayaficha.",
+      "ha": "(Allah) Ya san yaudarar idãnu da abin da ƙirãza ke ɓõyẽwa.",
+      "am": "(አላህ) የዓይኖችን ክዳት ልቦችም የሚደብቁትን ሁሉ ያውቃል፡፡",
+      "om": "(Rabbiin) gantuu ijootaa ni beeka. waan qomoowwan dhoksitus.",
+      "so": "(Alle) Wuu Og yahay khiyaanada isha loo dabo iyo waxay laabuhu qarsadaanba.",
+      "ff": "Homo anndi njamfa gite, e ko ɓerɗe ɗeen cuuɗi."
     }
   },
   {
@@ -3592,7 +4388,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй қавмим, бу дунё ҳаёти бир ўткинчи лаззат, холос. Охират эса барқарорлик диёридир.",
       "kk": "\"Әй елім! Шын мәнінде бұл дүние тіршілігі, уақытша пайдалану. Сөзсіз ахирет, ол; тұрақты жұрт.\"",
       "ky": "Оо, коомум! Чынында бул дүйнө жашоосу (убактылуу гана) пайдалануу! Чыныгы (түбөлүк жашоочу) орун – бул Акырет!",
-      "tg": "Эй қавми ман, ин зиндагии дунё баҳрае [андак ва зудгузар] аст ва охират сарои ҷовидон аст"
+      "tg": "Эй қавми ман, ин зиндагии дунё баҳрае [андак ва зудгузар] аст ва охират сарои ҷовидон аст",
+      "sw": "Enyi watu wangu! Hakika haya maisha ya dunia ni starehe ipitayo tu, na hakika Akhera ndiyo nyumba ya daima.",
+      "ha": "\"Kuma ya mutãnẽna! Wannan rãyuwa ta dũniya dan jin dãɗi ne kawai, kuma lalle Lãhira ita ce gidan tabbata.\"",
+      "am": "«ወገኖቼ ሆይ! ይህቺ ቅርቢቱ ሕይወት (ጥቂት) መጣቀሚያ ብቻ ናት፡፡ መጨረሻይቱም ዓለም እርሷ መርጊያ አገር ናት፡፡»",
+      "om": "Yaa ummata kiyya! Jiruun addunyaa tun qananii (yerooti). Aakhiraan isheetu ganda qubannaati.",
+      "so": "Tolkayow! Noloshan Adduunka waa uun raaxo (yar oo tageysa), Aakhiradaana ah Daarta negaadiga.",
+      "ff": "Eey mon yo yimɓe am, nganndee ɗam nguurndam aduna, ko ndakamme-hun tun, ko La'akara on woni, galle ñiiɓal ɗen.",
+      "yo": "Ẹ̀yin ènìyàn mi, ìgbádùn lásán ni ìṣẹ̀mí ilé ayé yìí. Dájúdájú ọ̀run sì ni ilé gbére."
     }
   },
   {
@@ -3619,7 +4422,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Шак-шубҳасиз, осмонлару ерни яратиш инсонларни яратишдан кўра каттароқдир. Лекин одамларнинг кўплари билмайдилар.",
       "kk": "Әлбетте көктер мен жерді жарату, адамдарды жаратудан зор. Бірақ адамдардың көбі түсінбейді.",
       "ky": "Аныгында, асмандар менен жерди жаратуу инсаниятты жаратуудан чоң нерсе. Бирок, көпчүлүк адамдар (муну) билбей жатышат.",
-      "tg": "Мусалламан, офариниши осмонҳо ва замин бузургтар аз офариниши инсонҳост [пас, барпо кардани қиёмат барои Аллоҳ таоло душвор нест], вале бештари мардум намедонанд"
+      "tg": "Мусалламан, офариниши осмонҳо ва замин бузургтар аз офариниши инсонҳост [пас, барпо кардани қиёмат барои Аллоҳ таоло душвор нест], вале бештари мардум намедонанд",
+      "sw": "Bila ya shaka kuumba mbingu na ardhi ni kukubwa zaidi kuliko kuwaumba watu. Lakini watu wengi hawajui.",
+      "ha": "Lalle halittar sammai da ƙasã, ita ce mafi girma daga halittar mutãne, kuma amma mafi yawan mutãne ba su sani ba.",
+      "am": "ሰማያትንና ምድርን መፍጠር ሰዎችን ከመፍጠር ይልቅ ታላቅ ነው፡፡ ግን አብዛኛዎቹ ሰዎች አያውቁም፡፡",
+      "om": "Samiifi dachii uumuutu namaa uumuu irra guddaadha. Garuu irra hedduun namootaa hin beekanu.",
+      "so": "Abuuridda samooyinka iyo arlada baa xaqiiq ka weyn abuuridda dadka, laakiinse dadka badankiisu ma oga.",
+      "ff": "Pellet, ko takde kammuuji ɗin e leydi ndin, ɓuri mawnude e dii tageendi yimɓe ɓeen. Kono ko ɓuri ɗuuɗude e yimɓe ɓen, ɓe nganndaa.",
+      "yo": "Dájúdájú ìṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ tóbi ju ìṣẹ̀dá àwọn ènìyàn; ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ àwọn ènìyàn ni kò mọ̀."
     }
   },
   {
@@ -3650,7 +4460,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Соат аниқ келгувчидир. Унга шубҳа йўқ. Лекин кўп одамлар ишонмайдилар.",
       "kk": "Расында қиямет сағаты келеді. Онда шәк жоқ. Бірақ адамдардың көбі сенбейді.",
       "ky": "Чынында саат (Кыямат) анык келүүчү. Анда эч күмөн жок. Бирок, көп адамдар ыйман келтирбей жатышат.",
-      "tg": "Ҳеҷ тардиде дар ин нест, ки рӯзи қиёмат фаро мерасад, вале бештари мардум имон намеоваранд"
+      "tg": "Ҳеҷ тардиде дар ин нест, ки рӯзи қиёмат фаро мерасад, вале бештари мардум имон намеоваранд",
+      "sw": "Hakika Saa (ya Kiyama) itafika, nayo haina shaka. Lakini watu wengi hawaamini.",
+      "ha": "Lalle Sa'a, haƙĩƙa mai zuwa ce, bãbu shakka a gare ta, kuma amma mafi yawan mutãne bã su yin ĩmãni.",
+      "am": "ሰዓቲቱ በእርግጥ መጪ ናት፡፡ በእርሷ ጥርጥር የለም፡፡ ግን አብዛኞቹ ሰዎች አያምኑም፡፡",
+      "om": "Qiyaamaan dhuftuudha; ishee keessa mamiin hin jiru. Garuu irra hedduun namootaa hin amananu.",
+      "so": "Hubaal Saacadda (Qiyaame) waa imaanaysaa, shaki kuma jiro, dadka badankiisuse ma ay rumaysna.",
+      "ff": "Pellet, Darnga, ko ko arata, sikke alaa e mu'um. Kono ko ɓuri ɗuuɗude e yimɓe ɓeen, ɓe ngoŋɗinaa.",
+      "yo": "Dájúdájú Àkókò náà ń bọ̀, kò sì sí iyèméjì nínú rẹ̀. Ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ àwọn ènìyàn ni kò gbàgbọ́."
     }
   },
   {
@@ -3680,7 +4497,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ўша Аллоҳ Парвардигорингиздир. Ҳамма нарсанинг Яратувчисидир. Ундан ўзга илоҳ йўқдир. Бас, қаён бурилиб кетмоқдасизлар?!",
       "kk": "Міне осы Алла Раббыларың. Әр нәрсені жаратушы; Одан басқа ешбір тәңір жоқ. Қайтып адастырыласыңдар?",
       "ky": "Ушул Аллах – силердин Раббиңер! Ал бардык нерселердин (жалгыз) Жаратуучусу! Эч бир кудай жок, жалгыз Өзү гана бар! Дагы кайда бара жатасыңар?!",
-      "tg": "Ин аст Аллоҳ таоло Парвардигори шумо, [ки] офаринандаи ҳар мавҷуде [аст]. Ҳеҷ маъбуде [ба ҳақ] ҷуз Ӯ нест, пас, чи гуна [аз парастиши Ӯ] мунҳариф мешавед?"
+      "tg": "Ин аст Аллоҳ таоло Парвардигори шумо, [ки] офаринандаи ҳар мавҷуде [аст]. Ҳеҷ маъбуде [ба ҳақ] ҷуз Ӯ нест, пас, чи гуна [аз парастиши Ӯ] мунҳариф мешавед?",
+      "sw": "Huyo ndiye Mwenyezi Mungu Mola wenu Mlezi, Muumba wa kila kitu. Hapana mungu ila Yeye; basi mnageuzwa wapi?",
+      "ha": "Wancan shine Allah Ubangijinku, Mahaliccin dukan kõme, bãbu abin bautãwa fãce Shi. To, yãya ake karkatar da ku?",
+      "am": "ይሃችሁ ጌታችሁ አላህ ነው፤ የነገሩ ሁሉ ፈጣሪ ነው፤ ከርሱ ሌላ አምላክ የለም፤ ታዲያ (ከእምነት) ወዴት ትመለሳላችሁ፡፡",
+      "om": "(Inni kana isiniif godhe) kun Allaah, Gooftaa keessani; Uumoo waan hundaati. Isa malee haqaan gabbaramaan hin jiru. Akkamitti irraa gara galfamtan?",
+      "so": "Kaasi waa Allaah, Rabbigiin, Abuuraha wax walba, Ma jiro ilaah (Xaq ah) aan Isaga ahayn. ee xaggee baa la idiinka iilay?",
+      "ff": "Ko oon mooɗon Allah Joomi mon, woni Takɗo kala huunde. Reweteeɗo alaa, si wanaa Kaŋko. Ko honno pirlitortaɗon (e ɗuum?)",
+      "yo": "Ìyẹn ni Allāhu, Olúwa yín, Ẹlẹ́dàá gbogbo n̄ǹkan. Kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Nítorí náà, báwo ni wọ́n ṣe ń ṣẹ yín lórí kúrò níbi òdodo?"
     }
   },
   {
@@ -3711,7 +4535,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Дарҳақиқат, иймон келтириб, яхши ишларни қилганлар учун битмас-туганмас ажр-мукофот бордир.",
       "kk": "Расында иман келтіріп, ізгі істегендер, олар үшін таусылмайтын сыйлық бар.",
       "ky": "Чынында, (Акыретке) ыйман келтирип, салих амалдарды жасаган кишилер үчүн түгөнгүс сыйлыктар бар!»",
-      "tg": "[Вале] Муъминони некукор подоше бепоён доранд"
+      "tg": "[Вале] Муъминони некукор подоше бепоён доранд",
+      "sw": "Hakika wale walioamini na wakatenda mema, watakuwa na ujira usio na ukomo.",
+      "ha": "Lalle wɗdanda suka yi ĩmãni, Kuma suka aikata ayyukan ƙwarai, sunã da wani sakamako wanda bai yankẽwa.",
+      "am": "እነዚያ ያመኑትና በጎ ሥራዎችን የሠሩት ለእነርሱ የማይቆረጥ ምንዳ አልላቸው፡፡",
+      "om": "Isaan amananii, toltuuwwan hojjatan isaaniif mindaa adda hin cinnetu jira.",
+      "so": "Hubaal, kuwa (Xaqa) rumeysan oo samaha fala. Waxay leeyihiin abaal gud aan go’eynin (Janno).",
+      "ff": "Pellet, ɓeen gooŋɗiinɓe ɓe ngolli moƴƴi ɗin, hino woodani ɓe njoɓdi ndi taƴondirtaa.",
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, ẹ̀san tí kò níí pẹ̀dín tí kò níí dáwọ́ dúró ń bẹ fún wọn."
     }
   },
   {
@@ -3739,7 +4570,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ким бирон яхши иш қилса, ўзи учундир. Ким ёмонлик қилса ҳам ўзигадир. Парвардигорингиз бандаларга зулм қилгувчи эмас.",
       "kk": "Кім ізгі іс істесе, сонда өзі үшін. Ал кім жамандық істесе де өзіне тән. Раббың құлдарына зұлымдық істеуші емес.",
       "ky": "Ким жакшы иш жасаса өзүнө пайда. Ким күнөө иш жасаса өзүнө зыян! Сенин Раббиң пенделерге зулум кылуучу эмес.",
-      "tg": "Ҳар ки ба шоистагӣ амал кунад, ба суди худи ӯст ва ҳар ки бадӣ кунад, ба зиёни хеш бад кардааст ва Парвардигори ту ҳаргиз ба бандагон ситам намекунад"
+      "tg": "Ҳар ки ба шоистагӣ амал кунад, ба суди худи ӯст ва ҳар ки бадӣ кунад, ба зиёни хеш бад кардааст ва Парвардигори ту ҳаргиз ба бандагон ситам намекунад",
+      "sw": "Anayetenda mema, basi anajitendea mwenyewe nafsi yake. Na mwenye kutenda uovu, basi ni juu ya nafsi yake vile vile; wala Mola wako Mlezi si mwenye kuwadhulumu waja.",
+      "ha": "Wanda ya aikata aiki na ƙwarai to sabõda kansa ne, kuma wanda ya mũnanã, to, yanã akansa. Kuma Ubangiwinka, bã Mai zãlunci ga bãyin Sa ne ba.",
+      "am": "መልካም የሠራ ሰው ለነፍሱ ነው፡፡ ያጠፋም ሰው በእርሷ ላይ ነው፡፡ ጌታህም ለባሮቹ በዳይ አይደለም፡፡",
+      "om": "Namni toltuu hojjate lubbuu isaatiifi. Namni hammaates isimarratti. Gooftaan kee gabroota miidhaa hintaane.",
+      "so": "Qofkii sama fala naftiisay (dan) u tahay, kii xumaan falana isagay u daran tahay, Rabbigaa ma aha mid dulmiya addoomaha.",
+      "ff": "Kala golluɗo ko moƴƴi, ko fii hoore-makko; kala kadi bonnuɗo, yantat e makko. Joomi maa ciforaani won'de, tooñoowo jiyaaɓe ɓen.",
+      "yo": "Ẹnikẹ́ni tí ó bá ṣe iṣẹ́ rere, ó ṣe é fún ẹ̀mí ara rẹ̀. Ẹnikẹ́ni tí ó bá sì ṣe aburú, ó ṣe é fún ẹ̀mí ara rẹ̀. Olúwa rẹ kò sì níí ṣe àbòsí sí àwọn ẹrúsìn."
     }
   },
   {
@@ -3766,7 +4604,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ернинг калитлари Уникидир. Ўзи хоҳлаган одамга ризқни кенг қилиб беради ва танг қилиб беради. Албатта, У ҳамма нарсани Билгувчи Зотдир.",
       "kk": "Көктер мен жердің (қазыналарының) кілті Оған тән. Кімді қаласа, несібесін кеңітеді де шамалайды. Өйткені Ол, әр нәрсені толық білуші.",
       "ky": "Асмандардын жана жер (казынасынын) ачкычтары бир Өзүнүн колунда. Каалаган пендесине ырыскыны кенен берет, каалаганына ченеп берет. Ал бардык нерсени Билүүчү!",
-      "tg": "Калиди [ганҷинаи] осмонҳо ва замин дар ихтиёри Ӯст. [Неъмату] Рӯзиро бар ҳар кас, ки бихоҳад, густурда медорад ва ё танг мегирад. Ба ростӣ, ки Ӯ бар ҳар чизе доност"
+      "tg": "Калиди [ганҷинаи] осмонҳо ва замин дар ихтиёри Ӯст. [Неъмату] Рӯзиро бар ҳар кас, ки бихоҳад, густурда медорад ва ё танг мегирад. Ба ростӣ, ки Ӯ бар ҳар чизе доност",
+      "sw": "Yeye ndiye Mwenye funguo za mbingu na ardhi. Humkunjulia riziki amtakaye na humpimia amtakaye. Hakika Yeye ni Mjuzi zaidi wa kila kitu.",
+      "ha": "Shĩ ne da mabuɗan sammai da ƙasa Yanã shimfiɗa arziki ga wanda ya so kuma Yanã hukuntãwa. Lalle ne, Shĩ Masani ne ga dukan kõme.",
+      "am": "የሰማያትና የምድር (ድልቦች) መከፈቻዎች የእርሱ ናቸው፡፡ ሲሳይን ለሚሻው ሰው ያሰፋል፤ ያጠባልም፡፡ እርሱ ነገሩን ሁሉ ዐዋቂ ነውና፡፡",
+      "om": "Furtuuleen samiileefi dachii isaaf taate. Nama fedheef hiree bal’isa; (kan fedhe immoo itti) dhiphisa. Inni waan hunda beekaadha.",
+      "so": "(Alle) baa iska leh khaznadaha samooyinka iyo arlada, wuxuu u waasiciyaa risiqa qofkuu doono oo ku cidhiidhiyaa (qofkuu doono), wax walbana (Alle) wuu Og yahay.",
+      "ff": "Ko Kaŋko heerori soktirɗe kammuuji ɗiin e leydi ndin. Homo weertana arsike on mo o muuyani, O ɓiɗtinana (mo O muuyani). Pellet, ko O gannduɗo kala hu'unde.",
+      "yo": "TiRẹ̀ ni àwọn kọ́kọ́rọ́ ilé ọ̀rọ̀ àwọn sánmọ̀ àti ilẹ̀. Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú Òun ni Onímọ̀ nípa gbogbo n̄ǹkan."
     }
   },
   {
@@ -3793,7 +4638,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ шундай Зотки, ҳақ китобни ва мезонни нозил қилди. Сиз қаердан биласиз, Қиёмат яқин бўлса, ажаб эмас.",
       "kk": "Ол сондай Алла, Кітапты және өлшеуді шындықпен түсірді. Қайдан білесің? Қиямет жақын шығар.",
       "ky": "Аллах Китепти жана Адилеттикти акыйкаттык менен түшүргөн. (Оо, Мухаммад!) Сен кайдан билесиң, Кыямат жакын болсо ажеп эмес.",
-      "tg": "Аллоҳ таоло аст, ки Қуръон ва миқёси адолатро ба ҳақ нозил кардааст ва ту чи медонӣ? Шояд қиёмат наздик бошад"
+      "tg": "Аллоҳ таоло аст, ки Қуръон ва миқёси адолатро ба ҳақ нозил кардааст ва ту чи медонӣ? Шояд қиёмат наздик бошад",
+      "sw": "Mwenyezi Mungu ndiye aliyeteremsha Kitabu kwa Haki na Mizani. Na ni nini kitakachokujulisha ya kwamba pengine Saa ya Kiyama ipo karibu?",
+      "ha": "Allah ne Wanda Ya saukar da Littãfi da gaskiya, da sikeli. Kuma me ya sanar da kai (cẽwa anã) tsammãnin Sa'ar kusa take?",
+      "am": "አላህ ያ መጽሐፉን በእውነት ያወረደ ነው፡፡ ሚዛንንም (እንደዚሁ)፡፡ ሰዓቲቱ ምንአልባት ቅርብ መኾንዋን ምን ያሳውቅሃል?",
+      "om": "Rabbiin Isa kitaabaafi madaala haqaan buuseedha. Qiyaaman dhihoo ta’uun ni kajeelamaa maaltu si beeksise?!",
+      "so": "Alle waa Kan ku soo dejiyey Kitaabka (Qur’aanka) Xaq iyo Miisaanka (caddaaladda). Maxaa ku ogeysiin waa intaasoo Saacadda 'Qiyaame' Dhowdahay?",
+      "ff": "Ko Allah woni jippiniri deftere nden goonga, e manndakke ɗen. E ko anndin maa? Hino gasa hara darnga ngal ko ko ɓadii?"
     }
   },
   {
@@ -3823,7 +4674,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, Биз уни арабча Қуръон қилдик. Шоядки, ақл юритсангизлар.",
       "kk": "Расында түсінулерің үшін оны Арапша Құран қылдық.",
       "ky": "Силер (анын маанисин) акыл калчашыңар үчүн Биз аны арабча Куран кылдык.",
-      "tg": "Мо онро Қуръоне ба забони арабӣ падид овардем, бошад, ки хирадварзӣ кунед"
+      "tg": "Мо онро Қуръоне ба забони арабӣ падид овардем, бошад, ки хирадварзӣ кунед",
+      "sw": "Hakika Sisi tumeifanya Qur-ani kwa Kiarabu ili mfahamu.",
+      "ha": "Lalle Mũ, Mun sanya shi abin karãtu na Lãrabci, tsammãninku, kunã hankalta.",
+      "am": "እኛ ታውቁ ዘንድ ዐረብኛ ቁርኣን አደረግነው፡፡",
+      "om": "Nuti Qur’aana Arabiffaa isa taasifne Akka isin hubattaniif.",
+      "so": "Hubaal Annagaa (Alle ah) ka yeellay Qur’aan af Carabi ah, si aad u fahantaan.",
+      "ff": "Min maɗii nde janngeteende [e ɗemngal] aarabu, mbelajo'o, on kaqqilay.",
+      "yo": "Dájúdájú Àwa se é ní al-Ƙur’ān (n̄ǹkan kíké) ní èdè Lárúbáwá nítorí kí ẹ lè ṣe làákàyè."
     }
   },
   {
@@ -3854,7 +4712,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ернинг Парвардигори, Аршнинг Парвардигори улар тавсифлаётган нуқсонлардан покдир!",
       "kk": "Көктер мен жердің Раббы әрі ғаршынын Раббы, олардың сипаттаған нәрселерінен пәк.",
       "ky": "(Бирок) Асмандар менен жердин жана (улук) Арштын Раббиси силердин («баласы бар» деп) сыпаттооңордон Таза!»",
-      "tg": "[Маъбуди яктое, ки] Парвардигори осмонҳо ва замин ва Арш аст, аз тавсифи [ҷоҳилонаи] онон муназзаҳ аст"
+      "tg": "[Маъбуди яктое, ки] Парвардигори осмонҳо ва замин ва Арш аст, аз тавсифи [ҷоҳилонаи] онон муназзаҳ аст",
+      "sw": "Ametakasika Mola Mlezi wa mbingu na ardhi, Mola Mlezi wa A'rshi, na hayo wanayomsifia.",
+      "ha": "Tsarkin Ubangijin sammai da ƙasa, Ubangijin Al'arshi, ya tabbata daga abin da suke sifantãwa.",
+      "am": "የሰማያትና የምድር ጌታ የዙፋኑ ጌታ ከሚሉት ነገር ሁሉ ጠራ፡፡",
+      "om": "Rabbiin samiileefi dachii, Gooftaan arshii waan isaan ittiin (Isa) wassafan (ibsan) irraa qulqullaa’eera.",
+      "so": "Waxaa xurmo oo dhan iska leh (Allaah) Rabbiga samooyinka iyo arlada, Rabbiga Carshiga, oo ka hufan waxay ku tilmaamaan.",
+      "ff": "Senaare woodanii Jeyɗo kammuuji ɗin e leydi ndin, Jeyɗo Arsi kin; laaɓuɗo e kon ko ɓe cifrotta mo.",
+      "yo": "Mímọ́ ni fún Olúwa àwọn sánmọ̀ àti ilẹ̀, Olúwa Ìtẹ́-ọlá tayọ irọ́ tí wọ́n ń pa (mọ́ Ọn)."
     }
   },
   {
@@ -3885,7 +4750,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ундан ўзга илоҳ йўқ. Жон беради, жон олади. Сизларнинг Парвардигорингиз. Олдинги ота-боболарингизнинг Парвардигори.",
       "kk": "Одан басқа ешбір тәңір жоқ. Тірілтеді, өлтіреді. Сендердің де Раббыларың, бұрынғы аталарыңның да Раббы.",
       "ky": "Эч бир кудай жок, жалгыз Өзү бар! Ал тирилтет жана өлтүрөт. Силердин жана абалкы ата-бабаңардын Раббиси!",
-      "tg": "Ҳеҷ маъбуде [ба ҳақ] ҷуз Ӯ нест, зиндагӣ мебахшад ва мемиронад. Парвардигори шумо ва ниёгони шумост"
+      "tg": "Ҳеҷ маъбуде [ба ҳақ] ҷуз Ӯ нест, зиндагӣ мебахшад ва мемиронад. Парвардигори шумо ва ниёгони шумост",
+      "sw": "Hakuna mungu ila Yeye; anahuisha na anafisha- Mola Mlezi wenu na Mola Mlezi wa baba zenu wa mwanzo.",
+      "ha": "Babu abin bautãwa fãce Shi. Yana rãyarwa Kuma Yana kashẽwa. (Shi ne) Ubangijinku, kuma Ubangijin ubanninku na farko.",
+      "am": "ከእርሱ ሌላ አምላክ የለም፡፡ ሕያው ያደርጋል፡፡ ይገድላልም፡፡ ጌታችሁ የመጀመሪያዎቹ አባቶቻችሁም ጌታ ነው፡፡",
+      "om": "Isa malee dhugaan gabbaramaan hin jiru. Ni jiraachisa; ni ajjeessas. (Inni) Gooftaa keessaniifi Gooftaa abbootii keessan kanneen duraati.",
+      "so": "Ma jiro ilaah (Xaq lagu caabudo) aan Isaga aheyn, Waa isaga Kan bixiya nolol, oo sababa dhimasho, waa Rabbigiin iyo Rabbiga aabbayaashiinnii hore.",
+      "ff": "Deweteeɗo goo alaa, si wanaa Kaŋko. Homo wuurna, Himo wara. Jeyɗo on Jeyi baabiraaɓe mon aramɓe ɓeen.",
+      "yo": "Kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Olúwa yín àti Olúwa àwọn bàbá yín, àwọn ẹni àkọ́kọ́."
     }
   },
   {
@@ -3916,7 +4788,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ерда мўминлар учун белгилар бордир.",
       "kk": "Күдіксіз көктерде де жерде де белгілер бар.",
       "ky": "Чынында, асмандарда жана жерде момун адамдар үчүн (Аллахтын Кудурет-Даанышмандыгына) белгилер бар.",
-      "tg": "Ба ростӣ, ки дар осмонҳо ва замин нишонаҳое [аз қудрати илоҳӣ] барои муъминон [падидор] аст"
+      "tg": "Ба ростӣ, ки дар осмонҳо ва замин нишонаҳое [аз қудрати илоҳӣ] барои муъминон [падидор] аст",
+      "sw": "Hakika katika mbingu na ardhi ziko Ishara kwa Waumini.",
+      "am": "በሰማያትና በምድር ውስጥ ለምእምናን ሁሉ (ለችሎታው) እርገጠኛ ምልክቶች አልሉ፡፡",
+      "om": "Samiileefi dachii keessa Dhugumatti mu’uminootaaf mallattooleetu jira.",
+      "so": "Xaqiiq, waxaa samooyinka iyo arlada ugu sugan calaamooyin mu’miniinta.",
+      "ff": "Pellet, hino e tagugol kammuuji ɗiin e leydi ndin, Ma'andeeji wonan'de gooŋɗinɓe ɓeen.",
+      "yo": "Dájúdájú nínú àwọn sánmọ̀ àti ilẹ̀ àwọn àmì wà (nínú wọn) fún àwọn onígbàgbọ́ òdodo."
     }
   },
   {
@@ -3945,7 +4823,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Gəmilərin Allahın əmri ilə dənizdə üzməsi və sizin də Onun lütfündən (orada ruzi) axtarmanız üçün dənizi xidmətinizə verən Allahdır. Bəlkə, şükür edəsiniz.",
       "uz": "Аллоҳ шундай Зотки, Унинг амри ила кемалар юриши ва У Зотнинг фазлидан умидвор бўлишингиз учун сизларга денгизни бўйсундириб берди. Шоядки, шукр қилсангизлар.",
       "kk": "Ол сондай Алла, теңізді еріктеріңе берді. Оның бұйрығымен теңізде кемелерді жүргізіп, Оның кеңшілігінен несібе іздейсіңдер. Әрине шүкірлік етерсіңдер.",
-      "tg": "Аллоҳ таоло аст, ки дарёҳоро дар хидмати шумо гумошт, то киштиҳо ба фармонаш дар он равон шаванд ва [шумо битавонед] аз фазли Ӯ [рӯзи] биҷӯед, бошад, ки сипос гузоред"
+      "tg": "Аллоҳ таоло аст, ки дарёҳоро дар хидмати шумо гумошт, то киштиҳо ба фармонаш дар он равон шаванд ва [шумо битавонед] аз фазли Ӯ [рӯзи] биҷӯед, бошад, ки сипос гузоред",
+      "sw": "Mwenyezi Mungu ndiye aliyeifanya bahari ikutumikieni, ili humo zipite merikebu kwa amri yake, na ili mtafute fadhila yake, na ili mpate kushukuru.",
+      "ha": "Allah ne wanda Ya hõre muku tẽku dõmin jirgi ya gudãna a cikinta da umurninSa, kuma dõmin ku nẽma daga falalar Sa, kuma tsammãninku zã ku gõde.",
+      "am": "አላህ ያ ባሕርን በውስጡ ታንኳዎች በፈቃዱ እንዲንሻለሉበት ከችሮታውም እንድትፈልጉበት እንድታመሰግኑትም ለእናነተ የገራላችሁ ነው፡፡",
+      "om": "Rabbiin Isa galaana isiniif laaffise sani akka dooniwwan ajaja Isaatiin isa keessa deemtu, akka tola Isaa irraa barbaaddattaniif, akka Isa galateeffattaniif.",
+      "so": "Alle waa Kan idiin sakhiray badda, si ay ugu socdaan Doonyuhu dhexdeeda Amarkiisa, iyo si aad u raadsataan Deeqdiisa, iyo inaad ku mahdisaan.",
+      "ff": "Ko Alla oon woni ko eeltanta mon maaya ngam laaɗe ndoga e hengo e dow yamiroore makko, ngam ɗaɓɓon e ɓural makko e yaama joo njetton.",
+      "yo": "Allāhu ni Ẹni tí Ó rọ agbami odò fún yín nítorí kí àwọn ọkọ̀ ojú-omi lè rìn nínú rẹ̀ pẹ̀lú àṣẹ Rẹ̀ àti nítorí kí ẹ tún lè wá nínú oore Rẹ̀ àti nítorí kí ẹ lè dúpẹ́ (fún Un)."
     }
   },
   {
@@ -3973,7 +4858,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ким бир яхшилик қилса, бас, ўзи учун. Ким ёмонлик қилса, у ҳам ўзига. Кейин Парвардигорингизга қайтариласизлар.",
       "kk": "Әлде кім ізгі іс істесе, сонда өзі үшін. Ал кім жамандық істесе, о да өзіне. Сосын Раббыларыңа қайтарыласыңдар.",
       "ky": "Ким жакшы иш жасаса, өзүнө пайда. Ким күнөө иш жасаса, өзүнө зыян. Кийин (баарыңар) Раббиңерге кайтарыласыңар.",
-      "tg": "Ҳар ки кори шоистае анҷом диҳад, ба суди худ ва ҳар ки кори баде кунад, ба зиёни худ кардааст. Он гоҳ [барои муҳосиба ва ҷазо] ба пешгоҳи Парвардигоратон бозгардонида мешавед"
+      "tg": "Ҳар ки кори шоистае анҷом диҳад, ба суди худ ва ҳар ки кори баде кунад, ба зиёни худ кардааст. Он гоҳ [барои муҳосиба ва ҷазо] ба пешгоҳи Парвардигоратон бозгардонида мешавед",
+      "sw": "Mwenye kutenda mema basi ni kwa ajili ya nafsi yake, na mwenye kutenda uovu ni juu yake mwenyewe. Kisha mtarudishwa kwa Mola wenu Mlezi.",
+      "ha": "Wanda ya aikata aikin ƙwarai, to, dõmin kansã, kuma wanda ya mũnana aki, to, a kansa. Sa'an nan zuwa ga Ubangijinku ake mayar da ku.",
+      "am": "መልካምን የሠራ ሰው ለነፍሱ ነው፡፡ ያከፋም ሰው በእርሷ ላይ ነው፡፡ ከዚያም ወደ ጌታችሁ ትመለሳላችሁ።",
+      "om": "Namni toltuu hojjate lubbuma isaatiifi. Namni badii dalages isheedhuma irratti. Ergasii gara Gooftaa keessanii deebifamtu.",
+      "so": "Qofkii sama fala naftiisay dan u tahay, kiina xumaan fala waa dushiisa. Waxaana dib la idiinku soo celin  xagga Rabbigiin.",
+      "ff": "Kalo golluɗo ko moƴƴi,ko fii hoore-makko; kala kadi bonnuɗo, yantat e makko refti ko ka Joomi maa woni ruttorde mon.",
+      "yo": "Ẹníkẹ́ni tí ó bá ṣe iṣẹ́ rere, fún ẹ̀mí ara rẹ̀ ni. Ẹnikẹ́ni tí ó bá sì ṣe iṣẹ́ aburú, fún ẹ̀mí ara rẹ̀ ni. Lẹ́yìn náà, ọ̀dọ̀ Olúwa yín ni wọn yóò da yín padà sí."
     }
   },
   {
@@ -4004,7 +4896,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Бу одамлар учун кўнгил кўзлари ҳамда аниқ ишонадиган қавм учун ҳидоят ва раҳматдир.",
       "kk": "Бұл Құран адамдар үшін көрнеу дәлелдер және нақ сенген елге жетекші әрі рахмет.",
       "ky": "Бул (Куран) адамдар үчүн акылчырак, туура жол жана анык ишенген элдер үчүн ырайым!",
-      "tg": "Ин [Қуръон] мояи басирати мардум аст ва ҳидояту раҳматест барои аҳли яқин"
+      "tg": "Ин [Қуръон] мояи басирати мардум аст ва ҳидояту раҳматест барои аҳли яқин",
+      "sw": "Hizi ni dalili zilizo wazi kwa watu wote, na ni uongofu na rehema kwa watu wenye yakini.",
+      "ha": "wannan (Alkur'ãni) hukunce-hukuncen natsuwa ne ga mutãne, da shiryuwa, da rahama, ga mutãne waɗanda ke da yaƙĩni.",
+      "am": "ይሀ (ቁርኣን) ለሰዎች (የልብ) ብርሃኖች ነው፡፡ ለሚያረጋግጡም ሕዝቦች መሪና እዝነት ነው፡፡",
+      "om": "(Qur’aanni) kun namootaaf beekumsa ifa ba’aadha. Warra dhugoomsaniif qajeelfamaafi rahmata.",
+      "so": "Kuwakani waa u tusmooyin cad dadka, iyo hanuun iyo naxariis ciddii wax yaqiinsan.",
+      "ff": "O quraana kombo gite e peewal e yurmeende wonan'de yananaaɓe ɓe.",
+      "yo": "Èyí ni ìmọ̀ àmọ̀dájú àti ẹ̀rí fún àwọn ènìyàn. Ìmọ̀nà àti ìkẹ́ ni fún ìjọ tó ní àmọ̀dájú."
     }
   },
   {
@@ -4031,7 +4930,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ерни ҳамда улар ўртасидаги нарсаларни фақат ҳақ ва белгиланган муддат ила яратдик. Кофирлар бўлса, ўзлари огоҳлантирилган нарсадан юз ўгирувчилардир.",
       "kk": "Көктер мен жерді ері екі арасындағыларды шындық бойынша, бір мерзім белгілеп қана жараттық. Ал сондай қарсы болғандар, ескертілген нәрседен жалтаруда.",
       "ky": "Биз асмандарды, жерди жана ал экөөсүнүн арасындагы нерселерди акыйкат менен жана белгилүү мөөнөткө гана жараттык. Каапырлар эскертилген нерседен жүз үйрүп кетишти.",
-      "tg": "Осмонҳо ва замин ва он чиро, ки байни онҳост, ба ҳақ [ва ҳадафманд] ва барои муддати муайяне офаридаем, ва [-ле] кофирон аз он чи ба эшон ҳушдор шуда, рӯйгардонанд"
+      "tg": "Осмонҳо ва замин ва он чиро, ки байни онҳост, ба ҳақ [ва ҳадафманд] ва барои муддати муайяне офаридаем, ва [-ле] кофирон аз он чи ба эшон ҳушдор шуда, рӯйгардонанд",
+      "sw": "Hatukuziumba mbingu na ardhi wala yaliyo baina yake ila kwa haki na kwa muda maalumu. Na wale waliokufuru wanayapuuza yale wanayoonywa.",
+      "ha": "Ba Mu halitta sammai da ƙasa ba, da abin da ke tsakãninsu, fãce da gaskiya da wani ajali ambatacce, kuma waɗanda suka kãfirta, mãsu bijirẽwa ne daga abin da aka yi musu gargaɗi (da shi).",
+      "am": "ሰማያትንና ምድርን በመካከላቸው ያለውንም ሁሉ በምርና የተወሰነ ጊዜንም በመለካት እንጅ (ለቀልድ) አልፈጠርናቸውም፡፡ እነዚያ የካዱትም ከተስፈራሩት ነገር (ትተው) ዘዋሪዎች ናቸው፡፡",
+      "om": "Samii, dachiifi waan isaan lamaan gidduu jiranis dhugaafi yeroo beekamaa ta’eef malee hin uumne. Isaan kafaran waan ittiin sodaachifaman irraa garagaloodha.",
+      "so": "Uma aanu abuurin samooyinka iyo arlada iyo waxa u dhexeeya waxaan aheyn Xaq iyo Muddo magacaaban. Kuwase gaalooba dhinac bay uga jeestaan waxa looga digo (oo cadaab ah).",
+      "ff": "Min tagiraali kammuuji ɗin e leydi ndin e  ko woni hakkunde majji, si wonaa e goonga e lajala happaangal [fii mum]. Yedduɓe ɓen ko ɗuurniiɓe e ko ɓe ndentiniraa kon.",
+      "yo": "A kò ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀, àti ohunkóhun tó wà láààrin méjèèjì bí kò ṣe pẹ̀lú òdodo àti fún gbèdéke àkókò kan. Àwọn tó ṣàì gbàgbọ́ yó sì máa gbúnrí kúrò níbi ohun tí A fi ṣèkìlọ̀ fún wọn."
     }
   },
   {
@@ -4053,7 +4959,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ерни яратган ва уларни яратишга ожизлик қилмаган Аллоҳ ўликларни тирилтиришга Қодир эканини кўрмадиларми? Ҳа, худди шундай. Албатта, У Зот ҳамма нарсага Қодирдир.",
       "kk": "Олар көрмей ме? Шәксіз Ол сондай Алла, көктер мен жерді жаратты. Сондай-ақ оларды жаратқанда болдырмаған Алланың өліктерді тірілтуге шамасы келеді. Әрине Оның әр нәрсеге күші толық жетуші.",
       "ky": "Алар ойлоп көрүшпөйбү, асмандарды жана жерди жараткан жана ошолорду жаратууга алсыздык кылбаган Аллах, өлүк денелерге жан киргизүүгө кудуреттүү эмеспи?! Ооба! Ал - бардык нерсеге кудуреттүү!",
-      "tg": "Оё мушрикон надидаанд [ва намедонанд], Аллоҳ таоло, ки осмонҳо ва заминро офарид ва аз офариниши онҳо дармонда нашуд, қодир аст, ки мурдагонро низ зинда кунад? Оре, Ӯ бар ҳар коре тавоност"
+      "tg": "Оё мушрикон надидаанд [ва намедонанд], Аллоҳ таоло, ки осмонҳо ва заминро офарид ва аз офариниши онҳо дармонда нашуд, қодир аст, ки мурдагонро низ зинда кунад? Оре, Ӯ бар ҳар коре тавоност",
+      "sw": "Je, hawaoni ya kwamba Mwenyezi Mungu, aliyeziumba mbingu na ardhi, na hakuchoka kwa kuziumba, kuwa ni Muweza wa kuwafufua wafu? Kwani? Hakika Yeye ni Muweza mno wa kila kitu.",
+      "ha": "Shin, kuma ba su gani ba cẽwa: \"Lalle Allah, Wanda Yã halitta sammai da ƙasa kuma bai kãsa ga halittarsu ba, Mai ĩkon yi ne a kan rãyar da matattu?\" Na'am, lalle Shi, Mai ĩkon yi ne a kan kõme.",
+      "am": "ያ ሰማያትንና ምድርን የፈጠረ እነርሱንም በመፍጠሩ ያልደከመው አላህ ሙታንን ሕያው በማድረግ ላይ ቻይ መኾኑን አላስተዋሉምን? (በማስነሳት) ቻይ ነው፡፡ እርሱ በነገሩ ሁሉ ላይ ቻይ ነውና፡፡",
+      "om": "Sila Rabbiin, Isa samiileefi dachii uumee, isaan uumuu keessatti dadhabbiin itti hin dhaga’amin, du’aa kaasuu irratti danda’aa akka ta’e hin arginee? Eeyyeen; Inni waan hunda irratti danda’aadha.",
+      "so": "Miyeyna ogayn in Alle ee abuuray samooyinka iyo arlada, oo aan ku daalin abuuristooda uu awoodo inuu nooleeyo meytida? Haayoo, hubaal waa Kan wax walba Kara.",
+      "ff": "E ɓee nji'aani won'de ko Allah tagi kammuuji ɗiin e leydi ndin, O ronkiraani tagugol ɗi, won'de ko O kattanɗo wuurnitugol maayɓe ɓen? Ko non woniri. Pellet, ko O kaɗtanɗo kala hu'unde."
     }
   },
   {
@@ -4082,7 +4994,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй иймон келтирганлар, Агар Аллоҳни қўлласангиз, У ҳам сизларни қўллайди ва қадамларингизни собит қилади.",
       "kk": "Әй мүміндер! Егер Аллаға (дініне) жәрдем етсеңдер, Ол сендерге жәрдем етіп, табандарыңды бекітеді.",
       "ky": "Оо, ыйман келтирген адамдар! Эгер Аллахка (Анын динине) жардам берсеңер, Аллах дагы силерге жардам берет жана кадамыңарды бекем кылат.",
-      "tg": "Эй касоне, ки имон овардаед, агар [дину Паёмбари] Аллоҳро ёрӣ кунед, ӯ низ шуморо ёрӣ мекунад ва гомҳоятонро [собиту] устувор медорад"
+      "tg": "Эй касоне, ки имон овардаед, агар [дину Паёмбари] Аллоҳро ёрӣ кунед, ӯ низ шуморо ёрӣ мекунад ва гомҳоятонро [собиту] устувор медорад",
+      "sw": "Enyi mlioamini! Mkimnusuru Mwenyezi Mungu, naye atakunusuruni na ataiimarisha miguu yenu.",
+      "am": "እናንተ ያመናችሁ ሆይ! አላህን (ሃይማኖቱን) ብትረዱ፤ ይረዳችኋል፡፡ ጫማዎቻችሁንም ያደላድላል፡፡",
+      "om": "Yaa warra amantan! Yoo (diin) Rabbii tumsitan, Inni isinii tumsa. Faannaan keessanis gadi dhaaba.",
+      "so": "Kuwa (Xaqa) rumeeyow! Haddaad u gargaartaan (diinta) Alle, Wuu idiin gargaari oo idiin sugi cagahiinna.",
+      "ff": "Eey mon yo gooŋɗiinɓe, si on ngonii wallooɓe fii Allah, O wallat on, O tabintina teppe mon ɗen.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, tí ẹ bá ran (ẹ̀sìn) Allāhu lọ́wọ́, (Allāhu) máa ràn ẹ̀yin náà lọ́wọ́. Ó sì máa mú ẹsẹ̀ yín dúró ṣinṣin (nínú ẹ̀sìn)."
     }
   },
   {
@@ -4112,7 +5030,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй иймон келтирганлар, Аллоҳга итоат этинглар, Пайғамбарга итоат этинглар ва амалларингизни ҳабата қилиб юборманглар.",
       "kk": "Әй иман келтіргендер! Аллаға бой ұсыныңдар әрі Пайғамбарға бағыныңдар. Сондай-ақ ғамалдарыңды бұзбаңдар.",
       "ky": "Оо, ыйман келтирген адамдар! Аллахка моюн сунгула жана пайгамбарга моюн сунгула! Жана (Аллахтын аяттарына каршы чыгуу менен) ишиңерди жараксыз кылып албагыла!",
-      "tg": "Эй муъминон, ба Аллоҳ таоло ва паёмбар итоат кунед ва [бо куфру риё] аъмоли [шоистаи] хешро табоҳ накунед"
+      "tg": "Эй муъминон, ба Аллоҳ таоло ва паёмбар итоат кунед ва [бо куфру риё] аъмоли [шоистаи] хешро табоҳ накунед",
+      "sw": "Enyi mlioamini! Mtiini Mwenyezi Mungu, na mtiini Mtume, wala msiviharibu vitendo vyenu.",
+      "am": "እናንተ ያመናችሁ ሆይ! አላህን ተገዙ፡፡ መልክተኛውንም ታዘዙ፡፡ ሥራዎቻችሁንም አታበላሹ፡፡",
+      "om": "Yaa warra amantan! Rabbiif ajajamaa; ergamaa (Isaatifis) ajajamaa; dalagaawwan keessan hin balleessinaa.",
+      "so": "Kuwa (Xaqa) rumeeyow! Adeeca Allaah oo adeeca Rasuulka, hana burinnina acmaashiinna.",
+      "ff": "Eey mon yo gooŋɗinɓe! ɗoftee Allah, ɗoftoɗon Nulaaɗo on, wata on mbonnu golle mon ɗeen.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ tẹ̀lé (ọ̀rọ̀) Allāhu, ẹ tẹ̀lé (ọ̀rọ̀) Òjíṣẹ́ náà, kí ẹ sì má ṣe ba àwọn iṣẹ́ yín jẹ́."
     }
   },
   {
@@ -4140,7 +5064,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Dünya həyatı sadəcə oyun və əyləncədən ibarətdir. Əgər iman gətirib (Allahdan) qorxsanız, O sizə mükafatlarınızı verər və sizdən mal-dövlətinizi istəməz.",
       "uz": "Дунё ҳаёти ўйин-кулгидан бошқа нарса эмас. Агар иймон келтириб, тақво қилсангизлар, ажрларингизни беради ва сизлардан мол-давлатларингизни сўрамайди.",
       "kk": "Дүние тіршілігі бір ойын, ермек қана. Егер иман келтіріп, сақсынсаңдар, Алла сыйлықтарыңды береді. Сендердің малдарықды сұрамайды. (17-С. 29-А.)",
-      "ky": "Чынында дүйнө жашоосу оюн жана тамаша. Эгерде силер ыймандуу жана такыбалуу болсоңор Аллах силерге сооп-сыйлыгыңарды (толук) берет жана мал-мүлкүңөрдү(н бардыгын Аллах жолуна чыгарууну) сурабайт."
+      "ky": "Чынында дүйнө жашоосу оюн жана тамаша. Эгерде силер ыймандуу жана такыбалуу болсоңор Аллах силерге сооп-сыйлыгыңарды (толук) берет жана мал-мүлкүңөрдү(н бардыгын Аллах жолуна чыгарууну) сурабайт.",
+      "sw": "Hakika uhai wa duniani ni mchezo na pumbao. Na mkiamini na mkamcha Mungu, Mwenyezi Mungu atakupeni ujira wenu, wala hatakutakeni mali zenu.",
+      "am": "ቅርቢቱ ሕይወት ጫወታና ዛዛታ ብቻ ናት፡፡ ብታምኑም ብትጠነቀቁም ምንዳዎቻችሁን ይሰጣችኋል፡፡ ገንዘቦቻችሁንም (ሁሉ) አይጠይቃችሁም፡፡",
+      "om": "Jireenyi addunyaa taphaafi dagduudha, Yoo amantanii Rabbiin sodaattan mindaalee keessan isiniif kenna; qabeenya keessan isin hin gaafatu.",
+      "so": "Nolosha adduunkan waa uun ciyaar iyo madaddaalo, haddaad (Xaqa) rumeysaan, oo aad iska dhowrtaan (xumaha), Wuxuu idin siin abaalgudkiinna, idinmana weydiisanayo maalkiinna.",
+      "ff": "Ganndee nguurndam aduna ko fijindaaru e mbeleeɗe tan; hara le si on ngooŋɗiii, on kulii [Allah], O yeɗay on njoɓdi mon ndiin, o lamndotaako on jawle mon ɗeen.",
+      "yo": "Eré àti ìranù ni ìṣẹ̀mí ayé. (Àmọ́) tí ẹ bá gbàgbọ́ (nínú Allāhu), tí ẹ sì bẹ̀rù (Rẹ̀), Ó máa fún yín ní àwọn ẹ̀san yín. Kò sì níí bèèrè àwọn dúkìá yín (pé kí ẹ fi gbogbo rẹ̀ yọ Zakāh)."
     }
   },
   {
@@ -4167,7 +5097,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "У шундай Зотки, Расулини ҳидоят ва ҳақ дин билан уни барча динлардан ғолиб қилиш учун юборди. Гувоҳ бўлишга Аллоҳ кифоядир.",
       "kk": "Ол сондай Алла, дінін бүкіл діндерден үстем қылу үшін Пайғамбарын туралық әрі хақ дінмен жіберді. Куәлік тұрғысынан Алла жетіп асады.",
       "ky": "«Ал Өз пайгамбарын туура жол жана Акыйкат Дин менен, аны бардык диндерден жогору кылуу үчүн жиберди. Аллах жетиштүү Күбө!»",
-      "tg": "Ӯст, ки паёмбарашро бо [китоби] ҳидоят ва оини ҳақ фиристод, то [ҳаққонияти бартарии] онро бар ҳамаи адён ошкор гардонад; ва Аллоҳ таоло ба унвони гувоҳ кофӣ аст"
+      "tg": "Ӯст, ки паёмбарашро бо [китоби] ҳидоят ва оини ҳақ фиристод, то [ҳаққонияти бартарии] онро бар ҳамаи адён ошкор гардонад; ва Аллоҳ таоло ба унвони гувоҳ кофӣ аст",
+      "sw": "Yeye ndiye aliyemtuma Mtume wake kwa uwongofu na Dini ya Haki, ili aipe ushindi juu ya dini zote. Na Mwenyezi Mungu anatosha kuwa Shahidi.",
+      "ha": "Shĩ ne wanda Ya aiki Manzon Sa da shiriya da addinin gaskiya dõmin Ya rinjãyar da shi a kan addinai dukansu. Kuma Allah Ya isa Ya zama Mai shaida.",
+      "am": "እርሱ ያ መልክተኛውን በመሪ መጽሐፍና በእውነተኛ ሃይማኖት በሃይማኖት ሁሉ ላይ ሊያልቀው የላከ ነው፡፡ መስካሪም በአላህ በቃ፡፡",
+      "om": "Inni Isa ergamaa Isaa erge qajeelloofi amantii dhugaatiin. amantii hunda irratti ol isa taasisuuf. Ragaaf Rabbiin ga’aadha.",
+      "so": "Alle waa Kan la soo diray Rasuulkiisa Hanuun iyo Diin Xaq ah si uu uga sare mariyo diimaha kaloo dhan. Alle ku filan Marag uu ahaado.",
+      "ff": "Ko Kaŋko woni Nulirɗo Nulaaɗo makko on peewal e diina goonga, fii yo o fawaka ka e hoore kala diina. Allah yonii seedee.",
+      "yo": "(Allāhu) Òun ni Ẹni tí Ó fi ìmọ̀nà àti ẹ̀sìn òdodo (’Islām) rán Òjíṣẹ́ Rẹ̀ nítorí kí Ó lè fi borí gbogbo ẹ̀sìn (mìíràn) pátápátá. Allāhu sì tó ní Ẹlẹ́rìí."
     }
   },
   {
@@ -4189,7 +5126,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Ey iman gətirənlər! Əgər bir fasiq sizə bir xəbər gətirsə, (onu) araşdırın. Yoxsa bilmədən bir qövmə pislik edər, sonra da etdiyinizə peşman olarsınız.",
       "uz": "Эй иймон келтирганлар, сизларга бир фосиқ хабар олиб келса, аниқлаштиринглар. Токи бир қавмга билмасдан мусибат етказиб қўйиб, кейин қилган ишингизга пушаймон бўлиб юрманглар.",
       "kk": "Әй мүміндер! Бұзық біреу хабар келтірсе, оны анықтаңдар. Әйтпесе білмей бір елге кесірлерің тиіп, істегендеріңе өкінесіңдер.",
-      "tg": "Эй муъминон, агар шахси мунҳарифе хабаре бароятон оварад, таҳқиқ кунед, то мабодо надониста ба гурӯҳе [бегуноҳ] осеб бирасонед ва аз кардаи худ пушаймон шавед"
+      "tg": "Эй муъминон, агар шахси мунҳарифе хабаре бароятон оварад, таҳқиқ кунед, то мабодо надониста ба гурӯҳе [бегуноҳ] осеб бирасонед ва аз кардаи худ пушаймон шавед",
+      "sw": "Enyi mlioamini! Akikujieni mpotovu na habari yoyote, ichunguzeni, msije mkawasibu watu kwa kutojua, na mkawa tena wenye kujuta kwa mliyoyatenda.",
+      "am": "እላንተ ያመናችሁ ሆይ! ነገረኛ ወሬን ቢያመጣላችሁ በስህተት ላይ ኾናችሁ ሕዝቦችን እንዳትጎዱና በሠራችሁት ነገር ላይ ተጸጸቾች እንዳትኾኑ አረጋግጡ፡፡",
+      "om": "Yaa warra amantan! Yoo jallaan oduun isinitti dhufe dubbii adda baafadhaa, akka wallaalumaan namoota miitanii, ergasii waan hojjattan irratti hin gaabbineef.",
+      "so": "Kuwa (Xaqa) rumeeyow! Hadduu mid caasi ah idiinla yimaado war, iska hubiya, si aydaan wax ugu yeelin dad ogaansho la’aan, markaasna aad ka shallaydaan waxaad fasheen.",
+      "ff": "Eey mon yo ɓen gooŋɗinɓe ! Si faasiqiijo ardanii on e kumpital, tefee fii wota on keɓor e yimɓe sabu majjeede, ngonton nimsuɓe e kon ko mbaɗɗɗon."
     }
   },
   {
@@ -4220,7 +5162,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Мўминлар шак-шубҳасиз ака-укалардир. Бас, ака-укангизнинг ўртасини ислоҳ қилиб қўйинглар. Аллоҳдан қўрқинглар. Шоядки, раҳм қилинсангизлар.",
       "kk": "Шын мәнінде мүміндер туыс қой. Сондықтан екі туыстарыңның арасын жарастырыңдар. Және Алладан қорқыңдар. Мүмкін игілікке бөленерсіңдер.",
       "ky": "Чынында, (бардык) момундар – бир туугандар! Бир тууганыңардын арасын оңдогула! Жана Аллахтан корккула! Ажеп эмес, ырайымына арзысаңар!",
-      "tg": "Албатта, муъминон бародари якдигаранд; пас, миёни бародарон оштӣ барқарор кунед ва аз Аллоҳ таоло парво кунед; бошад, ки мавриди раҳмат қарор гиред"
+      "tg": "Албатта, муъминон бародари якдигаранд; пас, миёни бародарон оштӣ барқарор кунед ва аз Аллоҳ таоло парво кунед; бошад, ки мавриди раҳмат қарор гиред",
+      "sw": "Hakika Waumini ni ndugu, basi patanisheni baina ya ndugu zenu, na mcheni Mwenyezi Mungu ili mrehemewe.",
+      "ha": "Mũminai 'yan'uwan jũna kawai ne, sabõda haka ku yi sulhu a tsakãnin 'yan'uwanku biyu, kuma ku bi Allah da taƙawa tsammãninku, a yi muku rahama.",
+      "am": "ምእመናኖች ወንድማመቾች ናቸው፡፡ በሁለት ወንድሞቻችሁም መካከል አስታርቁ፡፡ ይታዘንላችሁም ዘንድ አላህን ፍሩ፡፡",
+      "om": "Mu’uminoonni obboleeyyani; gidduu obboleeyyan keessanii tolchaa. Rabbiin sodaadhaa Akka mararfatamtanuuf jecha.",
+      "ff": "Nganndee gooŋɗinɓe ɓen ko jeyduɓe. Haray moƴƴinee hakkunde jeydal mon ngal, kulon Allah, mbelajo'o on njurminte.",
+      "yo": "Ọmọ ìyá (ẹ̀sìn) ni àwọn onígbàgbọ́ òdodo. Nítorí náà, ẹ ṣàtúnṣe láààrin àwọn ọmọ ìyá yín méjèèjì. Kí ẹ sì bẹ̀rù Allāhu nítorí kí A lè kẹ yín."
     }
   },
   {
@@ -4251,7 +5199,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, Аллоҳ осмонлару ернинг ғайбини билади. Аллоҳ қилаётган ишларингизни Кўргувчидир.",
       "kk": "Расында Алла, көктер мен жердегі құпияны біледі. Сондай-ақ істегендеріңді толық көруші.",
       "ky": "Чынында Аллах асмандардагы жана Жердеги кайыптарды билет. Аллах силер жасаган иштерди Көрүүчү.",
-      "tg": "Бе тардид, Аллоҳ таоло асрори осмонҳо ва заминро медонад ва ба он чи мекунед, биност"
+      "tg": "Бе тардид, Аллоҳ таоло асрори осмонҳо ва заминро медонад ва ба он чи мекунед, биност",
+      "sw": "Hakika Mwenyezi Mungu anajua siri za mbingu na ardhi. Na Mwenyezi Mungu anayaona mno myatendayo.",
+      "ha": "\"Lalle Allah yanã sanin gaibin sammai da ¡asa, kuma Allah Mai gani ne ga abin da kuke aikatãwa.\"",
+      "am": "አላህ የሰማያትንና የምድርን ሩቅ ምሰጢር ያውቃል፤ አላህም የምትሰሩትን ሁሉ ተመልካች ነው፡፡",
+      "om": "Rabbiin fagoo samiileefi dachii keessaa ni beeka. Rabbiin waan isin dalagdan (hunda) argaadha.”",
+      "so": "Hubaal Alle baa ogsoon waxa aan muuqan ee ah samooyinka iyo arlada. Alle wuu Arkaa waxaad fashaan.",
+      "ff": "Pellet, Allah no anndi wirniiɗi kammuuji ɗiin e leydi ndin. Allah ko deenɗo ko ngolloton kon.",
+      "yo": "Dájúdájú Allāhu mọ ìkọ̀kọ̀ àwọn sánmọ̀ àti ilẹ̀. Àti pé Allāhu ni Olùríran nípa ohun tí ẹ̀ ń ṣe níṣẹ́."
     }
   },
   {
@@ -4281,7 +5236,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Тепаларидаги самога, уни қандай бино қилганимизга, безаб қўйганимизга, тешиклари йўқ эканига назар солмайдиларми?",
       "kk": "Олар үстеріндегі аспанға қарамай ма? Оны қалай жасап, безедік. Оның ешбір сызаты жоқ.",
       "ky": "Алар үстүндөгү асманга (акыл көзү менен) карашпайбы?! Биз аны (түркүгү жок) куруп, (жылдыздар менен) кооздоп койдук. Анын жарака-тешиги да жок.",
-      "tg": "Оё кофирон осмонро бар фарозашон наменигаранд, ки чи гуна онро барафроштем ва [ба зевари ситорагон] оростем ва орӣ аз [ҳар гуна] нуқсу халал аст?"
+      "tg": "Оё кофирон осмонро бар фарозашон наменигаранд, ки чи гуна онро барафроштем ва [ба зевари ситорагон] оростем ва орӣ аз [ҳар гуна] нуқсу халал аст?",
+      "sw": "Je, hawaangalii mbingu zilizo juu yao! Vipi tulivyozijenga, na tukazipamba. Wala hazina nyufa.",
+      "ha": "Shin, to, ba su yi dubi ba zuwa ga samã a bisa gare su, yadda Muka gĩna ta, kuma Muka ƙawãce ta, kuma bã ta da waɗansu tsãgogi?",
+      "am": "ወደ ሰማይም ከበላያቸው ስትኾን ለእርሷ ምንም ቀዳዳዎች የሌሏት ኾና እንዴት እንደ ገነባናትና (በከዋክብት) እንዳጌጥናት አልተመለከቱምን?",
+      "om": "Sila gara samii gubbaa isaanii jirtuu hin ilaallee? akkamitti akka ishee ijaarreefi ishee miidhagsine, uraan homaatuu isiif hintaane.",
+      "so": "Miyeyna fiirin samada korkooda ah, sidaan u dhisnay oo u qurxinnay, ma laha wax duleello ah?",
+      "ff": "E ɓee ndaaraani kammu ngun dow maɓɓe, ko honno Min mahiri ngun Min cuɗini ngu ; hara perɗi alanaa ngu?",
+      "yo": "Ṣé wọn kò wo sánmọ̀ òkè wọn bí A ti ṣe mọ ọ́n pa àti (bí) A ti ṣe ṣe é ní ọ̀ṣọ́, tí kò sì sí àlàfo sísán kan lára rẹ̀?"
     }
   },
   {
@@ -4311,7 +5273,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Бирон сўз айтса, ўша заҳоти унинг ҳузурида бир ҳозиру нозир кузатувчи бўлади.",
       "kk": "Аузынан бір сөз шығарса-ақ болды, алдында аңдушы дайын.",
       "ky": "Кандай гана сөз сүйлөбөсүн, анын алдында күзөтчү (периште) турат.",
-      "tg": "Ҳар сухане, ки бар забон меоварад, дар канораш [фариштаи] муроқибе омодааст"
+      "tg": "Ҳар сухане, ки бар забон меоварад, дар канораш [фариштаи] муроқибе омодааст",
+      "sw": "Hatamki neno ila karibu yake yupo mwangalizi tayari.",
+      "ha": "Bã ya lafazi da wata magana fãce a lĩƙe da shi akwai mai tsaro halartacce.",
+      "am": "ከቃል ምንም አይናገርም በአጠገቡ ተጠባባቂና ዝግጁ የኾኑ (መላእክት) ያሉበት ቢኾን እንጅ፡፡",
+      "om": "Jecha tokkoyyuu hin dubbatu Tiksaan itti dhihaataan isa bira jiraatu malee .",
+      "so": "Ma jiro eray (aadmiga) ka soo baxa, oo uusan ag joogin ilaaliye (malag) u diyaar ah (inuu qoro).",
+      "ff": "O wowlataa konngol, si wonaa hino takko makko binndoowo tawaaɗo.",
+      "yo": "(Ẹnì kan) kò sì níí sọ ọ̀rọ̀ kan àyàfi kí ẹ̀ṣọ́ kan ti wà níkàlẹ̀ pẹ̀lú rẹ̀ (fún àkọsílẹ̀ rẹ̀)."
     }
   },
   {
@@ -4340,7 +5309,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Дарҳақиқат, Биз ҳар бир нарсани бир ўлчов билан яратдик.",
       "kk": "Шын мәнінде әр нәрсені бір өлшеумен жараттық.",
       "ky": "Биз бардык нерсени тагдыр-өлчөм менен жаратканбыз.",
-      "tg": "Бе тардид, Мо ҳар чизеро ба андоза офаридаем"
+      "tg": "Бе тардид, Мо ҳар чизеро ба андоза офаридаем",
+      "sw": "Kwa hakika Sisi tumekiumba kila kitu kwa kipimo.",
+      "ha": "Lalle Mũ, kõwane irin abu Mun halitta shi a kan tsãri.",
+      "am": "እኛ ሁሉን ነገር በልክ ፈጠርነው፡፡",
+      "om": "Nuti waan hunda likki likkiin isa uumne.",
+      "so": "Waxaan ku abuurnay wax kasta Qaddar.",
+      "ff": "Minen Min tagir hu'unde kala e eɓɓoore,",
+      "yo": "Dájúdájú A ṣẹ̀dá gbogbo n̄ǹkan pẹ̀lú kádàrá."
     }
   },
   {
@@ -4371,7 +5347,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Яхшиликнинг мукофоти фақат яхшиликдир.",
       "kk": "Жақсылықтың сыйлығы жақсылық қана.",
       "ky": "Жакшылыктын жообу (ушундай) жакшылыктан башка эмес.",
-      "tg": "Оё подоши некӣ ҷуз некӣ ҳаст?"
+      "tg": "Оё подоши некӣ ҷуз некӣ ҳаст?",
+      "sw": "Ati yaweza kuwa malipo ya ihsani ila ihsani?",
+      "ha": "Shin, kyautatãwa nã da wani sakamako? (Ã'aha) fãce kyautatãwa.",
+      "am": "የበጎ ሥራ ዋጋ በጎ እንጅ ሌላ ነውን?",
+      "om": "Sila mindaan toltuu toltuu malee ni tahee?",
+      "so": "Wanaag abaalkiisu ma waxaan ahayn baa wanaag?",
+      "ff": "Hara njoɓdi moƴƴere no woodi, si wonaa moƴƴere?",
+      "yo": "Ǹjẹ́ ẹ̀san mìíràn wà fún ṣíṣe rere bí kò ṣe (ẹ̀san) rere."
     }
   },
   {
@@ -4402,7 +5385,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Буюклик ва карам соҳиби Парвардигорингизнинг номи баракотли бўлди.",
       "kk": "(Мұхаммед Ғ.С.) Аса ардақты, жомарт Раббыңның аты өте жоғары.",
       "ky": "Улуулуктун жана урматтуулуктун Ээси – Раббиңдин ысымы таберик!",
-      "tg": "Номи Парвардигори бошукӯҳу арҷмандат бобаракату фархунда аст"
+      "tg": "Номи Парвардигори бошукӯҳу арҷмандат бобаракату фархунда аст",
+      "sw": "Limetukuka jina la Mola wako Mlezi Mwenye utukufu na ukarimu.",
+      "ha": "Sũnan Ubangjinka, Mai girman Jalãla da Karimci, ya tsarkaka.",
+      "am": "የግርማና የመክበር ባለቤት የኾነው ጌታህ ስም ተባረከ፡፡",
+      "om": "Maqaan Gooftaa keetii guddate, abbaa guddinnaafi ulfinaa (kan tahe).",
+      "so": "Waxaa barakadiisu badnaatay Magaca Rabbigaa, Weynaha, Sharafta Badan.",
+      "ff": "Barkinii innde Jooma nden, Jom mawngu e teddungal !",
+      "yo": "Ìbùkún ni fún orúkọ Olúwa rẹ, Atóbi, Alápọ̀n-ọ́nlé."
     }
   },
   {
@@ -4433,7 +5423,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, у улуғ Қуръондир.",
       "kk": "Шын мәнінде ол ардақты Құран.",
       "ky": "Ал – Улук Куран!",
-      "tg": "Ки ин [гуфтор] Қуръоне гаронқадр аст"
+      "tg": "Ки ин [гуфтор] Қуръоне гаронқадр аст",
+      "sw": "Hakika hii bila ya shaka ni Qur-ani Tukufu.",
+      "ha": "Lalle shi (wannan littãfi), haƙĩƙa, abin karantãwa ne mai daraja.",
+      "am": "እርሱ የከበረ ቁርኣን ነው፡፡",
+      "om": "Inni Qur’aana kabajamaadha.",
+      "so": "Hubaal kani waa Qur'aan Sharaf Badan.",
+      "ff": "Pellet nee ko alqur'aanaare konde teddunde,",
+      "yo": "Dájúdájú (al-Ƙur’ān) ni n̄ǹkan kíké alápọ̀n-ọ́nlé."
     }
   },
   {
@@ -4464,7 +5461,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ернинг мулки Уникидир. Жон беради ва жон олади. Ва У ҳар нарсага қодирдир.",
       "kk": "Көктер мен жердің иелігі Аллаға тән. Тірілтеді, өлтіреді. Ол, әр нәрсеге күші толық жетуші.",
       "ky": "Асмандар менен жердин мүлкү Ага таандык. Ал тирилтет жана өлтүрөт. Ал – ар кандай нерсеге Кудуреттүү.",
-      "tg": "Фармонравоии осмонҳо ва замин аз они Ӯст; ҳаёт мебахшад ва марг медиҳад; ва бар ҳар коре тавоност"
+      "tg": "Фармонравоии осмонҳо ва замин аз они Ӯст; ҳаёт мебахшад ва марг медиҳад; ва бар ҳар коре тавоност",
+      "sw": "Yeye ndiye Mwenye ufalme wa mbingu na ardhi. Anahuisha na anafisha. Na Yeye ni Mwenye uwezo mno wa kila kitu.",
+      "ha": "Shĩ ne da mulkin sammai da ƙasa: Yanã rãyarwa kuma Yanã kashẽwa, kuma Shĩ Mai ikon yi ne a kan kõme.",
+      "am": "የሰማያትና የምድር ንግሥና የእርሱ ብቻ ነው፡፡ ሕያው ያደርጋል፤ ይገድላልም፡፡ እርሱም በነገሩ ሁሉ ላይ ቻይ ነው፡፡",
+      "om": "Mootummaan samiileefi dachii kan Isaati. Inni ni jiraachisa; ni ajjeesas. Inni waan hunda irratti danda’aadha.",
+      "so": "Isagaa (Alle) leh Boqortooyada samooyinka iyo arlada, wax nooleeya oo dhinsiiya; Isagaana wax walba Kara.",
+      "ff": "Ko Kaŋko heeranii laamu kammuuji ɗiin e lesdi ndin. Himo wuurna Himo wara, Kanŋko O kattanɗo kala hu'unde.",
+      "yo": "TiRẹ̀ ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Òun ni Alágbára lórí gbogbo n̄ǹkan."
     }
   },
   {
@@ -4495,7 +5499,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ернинг мулки Уникидир. Барча ишлар Аллоҳга қайтарилур.",
       "kk": "Көктер мен жердің иелігі Оған тән. Әрі барлық істер Оған қайтады.",
       "ky": "Асмандар менен жер мүлкү Ага таандык. Бардык иштер Аллахка кайтат.",
-      "tg": "Фармонравоии осмонҳо ва замин аз они Ӯст; ва ҳамаи умур танҳо ба Ӯ бозгардонда мешавад"
+      "tg": "Фармонравоии осмонҳо ва замин аз они Ӯст; ва ҳамаи умур танҳо ба Ӯ бозгардонда мешавад",
+      "sw": "Ufalme wa mbingu na ardhi ni wake. Na mambo yote yanarejeshwa kwa Mwenyezi Mungu.",
+      "ha": "Shĩ ne da mulkin sammai da ƙasa, kuma zuwa gare Shĩ (Allah) kawai ake mayar da al'amura.",
+      "am": "የሰማያትና የምድር ንግሥና የእርሱ ብቻ ነው፡፡ ነገሮችም (ሁሉ) ወደ አላህ ብቻ ይመለሳሉ፡፡",
+      "om": "Mootummaan samiileefi dachii kan Isaati. Dhimmoonni gara Rabbiitti deebifamti.",
+      "so": "Isagaa (Alle) leh Boqortooyada samooyinka iyo arlada. Xagga Alle baa loo celiyaa umuuraha oo dhan.",
+      "ff": "Ko Kaŋko heeranii laamu kammuuji ɗin e leydi ndin. Ko ka Allah fiyakuuji ɗin nduttirtee.",
+      "yo": "TiRẹ̀ ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ọ̀dọ̀ Allāhu sì ni wọ́n máa ṣẹ́rí àwọn ọ̀rọ̀ ẹ̀dá padà sí."
     }
   },
   {
@@ -4525,7 +5536,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Кечани кундуз ичига киритади. Кундузни кеча ичига киритади. У диллардаги нарсаларни ҳам Билгувчидир.",
       "kk": "Түнді күндізге ауыстырады, күндізді түнге ауыстырады. Сондай-ақ Ол көңілдегілерді толық біледі.",
       "ky": "Жана Ал түндү күндүздүн ичине, күндүздү түндүн ичине киргизет. Ал көөдөндөрдөгү сырларды Билүүчү.",
-      "tg": "[Бо тағйири тадриҷии фаслҳо] шабро дар рӯз мекашонад ва рӯзро дар шаб; ва Ӯ ба рози дилҳо доност"
+      "tg": "[Бо тағйири тадриҷии фаслҳо] шабро дар рӯз мекашонад ва рӯзро дар шаб; ва Ӯ ба рози дилҳо доност",
+      "sw": "Anaingiza usiku katika mchana, na anaingiza mchana katika usiku. Na Yeye ni Mwenye kuyajua mno yaliyomo vifuani.",
+      "ha": "Yanã shigar da dare a cikin yini, kuma Yanã shigar da yini a cikin dare, kuma Shi Masani ne ga abin da yake a cikin ƙirãza.",
+      "am": "ሌሊትን በቀን ውስጥ ያስገባል፡፡ ቀንንም በሌሊት ውስጥ ያስገባል፡፡ እርሱም በልቦች ውስጥ የተደበቁትን ዐዋቂ ነወ፡፡",
+      "om": "Halkan guyyaa keessa galcha; guyyaas halkan keessa galcha. Inni beekaa waan qomoota keessa jiruuti.",
+      "so": "Wuxuu Habeenka dhex gashaa maalinta, maalintana dhex gashaa habeenka (macnaha kala badiyaa), wuuna Ogsoon yahay waxa ku jira laabaha (dadka).",
+      "ff": "Himo naadia jemma on e ndeer ñalawma on, o naadira ñalama on kadi e ndeer jemma on. Kaŋko ko O gannduɗo ko woni e ndeer ɓerɗe.",
+      "yo": "Ó ń ti òru bọ inú ọ̀sán. Ó sì ń ti ọ̀sán bọ inú òru. Òun sì ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
     }
   },
   {
@@ -4552,7 +5570,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "У шундай Зотки, сизларни зулматлардан нурга олиб чиқиш учун бандасига ёрқин оятларни нозил қилади. Аллоҳ сизларга Меҳрибон ва Шафқатли Зотдир.",
       "kk": "Ол сондай Алла, сендерді қараңғылықтардан жарыққа шығару үшін құлына (Мұхаммед Ғ.С.ға) ап-ашық аяттар түсірді. Сөзсіз Алла, сендерге тым жұмсақ, ерекше мейірімді.",
       "ky": "Ал силерди караңгылыктардан Нурга чыгаруу үчүн пендесине (Мухаммадга) анык аяттарды түшүрдү. Аллах силерге өтө Ырайымдуу, Мээримдүү.",
-      "tg": "Ӯст, ки оёти равшангаре бар бандааш нозил мекунад, то шуморо аз торикиҳо [-и куфру ширк] ба сӯйи нур [-и имон] раҳсипор гардонад, [зеро] Аллоҳ таоло нисбат ба шумо дилсӯзу меҳрубон аст"
+      "tg": "Ӯст, ки оёти равшангаре бар бандааш нозил мекунад, то шуморо аз торикиҳо [-и куфру ширк] ба сӯйи нур [-и имон] раҳсипор гардонад, [зеро] Аллоҳ таоло нисбат ба шумо дилсӯзу меҳрубон аст",
+      "sw": "Yeye ndiye anayemteremshia mja wake Aya zinazobainisha wazi ili akutoeni gizani hadi kwenye nuru. Na hakika Mwenyezi Mungu kwenu ni Mpole mno, Mwingi wa kurehemu.",
+      "ha": "Shĩ ne wanda ke sassaukar da ãyõyi bayyanannu ga Bãwan Sa, dõmin Ya fitar da ku daga duffai zuwa ga haske, kuma lalle Allah haƙĩƙa Mai tausayi ne gare ku, Mai jin ƙai.",
+      "am": "እርሱ ከጨለማዎች ወደ ብርሃን ሊያወጣችሁ ያ ግልጾች የኾኑን አንቀጾች በበሪያው ላይ የሚያወርድ ነው፡፡ አላህም ለእናንተ በእርግጥ ርኅሩህ አዛኝ ነው፡፡",
+      "om": "Inni Isa gabricha Isaa irratti keeyyattoota ifa ba’aa ta’an buuseedha, dukkanoowwan irraa gara ifaatti isin baasuuf jecha. Allaah’n isin mararfataa, rahmata godhaadha.",
+      "so": "Waa Alle Kan ku soo dejiya Aayado cad addoonkiisa (Nabi Muxammad) si uu idiinkaga saaro mugdiyada xagga Nuurka. Hubaal Alle waa idiin Turid iyo Naxariis Badan yahay.",
+      "ff": "Ko Kaŋko jippinta e jeyaaɗo makko on aayeeje ɓannguɗe, fii no o njaltinira on e niɓe fa'ade e ndaygu. Pellet, Allah ko jurmotooɗo  on, jaafotooɗo.",
+      "yo": "Òun ni Ẹni tó ń sọ àwọn āyah tó yanjú kalẹ̀ fún ẹrúsìn Rẹ̀ nítorí kí ó lè mu yín kúrò nínú àwọn òkùnkùn wá sínú ìmọ́lẹ̀. Dájúdájú Allāhu ni Aláàánú, Àṣàkẹ́-ọ̀run fún yín."
     }
   },
   {
@@ -4578,7 +5603,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Дарҳақиқат, садақа қилгувчи эркаклар ва садақа қилгувчи аёллар ҳамда Аллоҳга қарзи ҳасана берганлар учун (савоблари) бир неча баробар қилиб берилур. Улар учун улуғ ажр бордир.",
       "kk": "Шүбәсыз садақа беруші ерлермен садақа беруші әйелдер, сондай-ақ Аллаға көркем борыш бергендер, (тиісті орынға мал сарып қылғандар,) оларға неше есе арттырады әрі олар үшін көркем сыйлық бар.",
       "ky": "Албетте, садака кылган эркектер менен садака кылган аялдарга жана Аллахга жакшына карыз бергендерге (Аллах) ашыгы менен кайтарат. Жана аларга улуу сыйлык (бейиш) бар.",
-      "tg": "Бе гумон, мардону заноне, ки инфоқ мекунанд ва ба Аллоҳ таоло қарзе наку медиҳанд, савобашон дучандон мегардад ва [дар охират] подоше фохир [-у нек] хоҳанд дошт"
+      "tg": "Бе гумон, мардону заноне, ки инфоқ мекунанд ва ба Аллоҳ таоло қарзе наку медиҳанд, савобашон дучандон мегардад ва [дар охират] подоше фохир [-у нек] хоҳанд дошт",
+      "sw": "Kwa hakika wanaume wanaotoa sadaka, na wanawake wanaotoa sadaka, na wakamkopesha Mwenyezi Mungu mkopo mwema, watazidishiwa maradufu na watapata malipo ya ukarimu.",
+      "ha": "Lalle mãsu gaskatãwa maza da mãsu gaskatãwa mãtã, kuma suka ranta wa Allah rance mai kyau, anã riɓanya musu, kuma suna da wani sakamako na karimci.",
+      "am": "የመጸወቱ ወንዶችና፣ የመጸወቱ ሴቶች፣ ለአላህም መልካምን ብድር ያበደሩ ለእነርሱ መልካም ምንዳ አልላቸው፡፡",
+      "om": "Dhiiroliin sadaqaa kennatan, dubartoonni sadaqaa kennatte, kanneen liqaa gaarii Rabbiif liqeessan, (mindaan isaanii) dachaa isaaniif taasifamaa. galanni gaariin isaaniif tahe.",
+      "so": "Ragga iyo haweenka wax sadaqaysta ee amaahiya Alle amaah wanaagsan, waa loo labo-laabi (ajarka) waxayna xaqiiq leeyihiin Abaal gud Wanaagsan (Janno).",
+      "ff": "Pellet, sakkotooɓe (jawɗe mum ɓeen) ka worɓe e ka rewɓe ɓe ñami Allah ñamaande labaande, ɓe sowanoyte (mbarjaari) hara no woodani ɓe njoɓdi mawndi.",
+      "yo": "Dájúdájú àwọn olùtọrẹ lọ́kùnrin àti àwọn olùtọrẹ lóbìnrin, tí wọ́n tún yá Allāhu ní dúkìá tó dára, (Allāhu) yóò ṣàdìpèlé rẹ̀ fún wọn. Ẹ̀san alápọ̀n-ọ́nlé sì wà fún wọn."
     }
   },
   {
@@ -4608,7 +5640,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ: «Мен ва Менинг элчиларим ғалаба қиламиз», деб битиб қўйган. Албатта, Аллоҳ Қувватли ва Ғолибдир.",
       "kk": "Алла (Т.): \"Әлбетте Мен және елшілерім жеңіске иеміз\" деп, жазған. Шүбәсыз Алла; тым күшті, аса үстем.",
       "ky": "Аллах (Өзүнүн тагдыр китебинде) «Мен жана Менин пайгамбарларым – жеңүүчүлөрбүз» деп жазып койгон. Аллах баарынан Күчтүү, баарынан Кудуреттүү.",
-      "tg": "Аллоҳ таоло муқаррар доштааст, ки «яқинан, ману расулонам пирӯз мешавем». Бе гумон, Аллоҳ таоло неруманди шикастнопазир аст."
+      "tg": "Аллоҳ таоло муқаррар доштааст, ки «яқинан, ману расулонам пирӯз мешавем». Бе гумон, Аллоҳ таоло неруманди шикастнопазир аст.",
+      "sw": "Mwenyezi Mungu ameandika: Hapana shaka Mimi na Mtume wangu tutashinda. Hakika Mwenyezi Mungu ni Mwenye nguvu, Mwenye kushinda.",
+      "ha": "Allah Ya rubũta cẽwa,\" Lalle zan rinjãya, Nĩ da Manzanni Na.\" Lalle Allah Mai ƙarfi ne, Mabuwãyi.",
+      "am": "አላህ፡- «እኔ በእርግጥ አሸንፋለሁ፣ መልክተኞቼም (ያሸንፋሉ)» ሲል፤ ጽፏል፡፡ አላህ ብርቱ አሸናፊ ነውና፡፡",
+      "om": "Rabbiin Barreesse \"dhugumatti, Anaafi Ergamtoonni Kiyya ni mo'anna\" (jechuun). Rabbiin Jabaa, Injifataadha.",
+      "so": "Alle wuxuu qoray - hubaal waan adkaan, aniga iyo Rusushaydaba. Hubaal, Alle waa Xoog Badane, Adkaade ah.",
+      "ff": "Alla ñaawi ma ni fool miin e nelaaɓe am, pellet Alla ko cemmbuɗo tedduɗo.",
+      "yo": "Allāhu kọ ọ́ pé: “Dájúdájú Mo máa borí; Èmi àti àwọn Òjíṣẹ́ Mi.” Dájúdájú Allāhu ni Alágbára, Olùborí."
     }
   },
   {
@@ -4634,7 +5673,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй иймон келтирган зотлар, Аллоҳдан қўрқинглар. Ҳар бир жон эрта учун нима тайёрлаб қўйганига қарасин. Аллоҳдан қўрқинглар. Албатта, Аллоҳ қилаётган ишларингиздан Хабардордир.",
       "kk": "Әй мүміндер! Алладан қорқыңдар. Әркім ертең үшін не жібергеніне қарасын. Және Алладан қорқыңцар. Шәксіз Алла, не істегендеріңді толық біледі.",
       "ky": "Оо, ыйман келтирген пенделер! Аллахтан корккула! Ар бир жан эртеңки (Кыямат) күн үчүн эмне алып келерине карасын! Аллахтан корккула! Аллах эмне иш жасап жатканыңардан Кабардар.",
-      "tg": "Эй касоне, ки имон овардаед, аз Аллоҳ таоло парво кунед ва ҳар кас бояд бингарад, ки барои фардо чи пеш фиристодааст ва аз Аллоҳ таоло битарсед. Бе гумон, Аллоҳ таоло ба он чи анҷом медиҳед, огоҳ аст"
+      "tg": "Эй касоне, ки имон овардаед, аз Аллоҳ таоло парво кунед ва ҳар кас бояд бингарад, ки барои фардо чи пеш фиристодааст ва аз Аллоҳ таоло битарсед. Бе гумон, Аллоҳ таоло ба он чи анҷом медиҳед, огоҳ аст",
+      "sw": "Enyi mlioamini! Mcheni Mwenyezi Mungu, na kila nafsi iangalie inayoyatanguliza kwa ajili ya Kesho. Na mcheni Mwenyezi Mungu. Hakika Mwenyezi Mungu anazo habari ya mnayoyatenda.",
+      "am": "እናንተ ያመናችሁ ሆይ! አላህን ፍሩ፡፡ ማንኛይቱም ነፍስ ለነገ ያስቀደመችውን ትመልከት፡፡ አላህንም ፍሩ፡፡ አላህ በምትሠሩት ሁሉ ውስጠ ዐዋቂ ነው፡፡",
+      "om": "Yaa warra amantan! Rabbiin sodaadhaa. Lubbuun tamuu waan boruuf durfatte haa laaltu. Rabbiin sodaadhaa Rabbiin waan isin hojjattan hunda keessa beekaadha.",
+      "so": "Kuwa (Xaqa) rumeeyow! Dhowra (amarrada) Alle, naf walbana ha eegto waxay u hormarsatay berritoole (Qiyaamaha), kana dhowrsada xumaha. Hubaal Alle waa u xog ogaal waxaad fashaan.",
+      "ff": "Eehey mon gooŋɗinɓe ndeente Alla, yo fittaandu ndaar kondu ardinani jannga kule alla pellet alla ko kumpatiiɗo ko ngolloton ko.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu. Kí ẹ̀mí kan sì wòye sí ohun tí ó tì ṣíwájú fún ọ̀la (àlùkìyáámọ̀). Ẹ bẹ̀rù Allāhu. Dájúdájú Allāhu ni Alámọ̀tán nípa ohun tí ẹ̀ ń ṣe níṣẹ́."
     }
   },
   {
@@ -4665,7 +5710,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Дўзах эгалари билан жаннат эгалари баробар бўлмас. Жаннат эгалари зафар қучган зотлардир.",
       "kk": "Тозақтықтар мен ұжмақтықтар тең емес. Ұжмақтықтар; олар, қолы жеткендер.",
       "ky": "Тозок элдери менен бейиш элдери тең эмес. Бейиш ээлери – алар жеңүүчүлөр!",
-      "tg": "Ҳаргиз аҳли ҷаҳаннам ва аҳли биҳишт яксон нестанд. Аҳли биҳишт растагоранд"
+      "tg": "Ҳаргиз аҳли ҷаҳаннам ва аҳли биҳишт яксон нестанд. Аҳли биҳишт растагоранд",
+      "sw": "Hawawi sawa watu wa Motoni na watu wa Bustani ya mbinguni. Watu wa Bustani ya mbinguni ndio wenye kufuzu.",
+      "ha": "Yan Wutã da 'yan Aljanna bã su daidaita. 'Yan Aljanna, sũ ne mãsu babban rabo.",
+      "am": "የእሳት ጓዶችና የገነት ጓዶች አይተካከሉም፡፡ የገነት ጓዶች እነርሱ ምኞታቸውን አግኚዎች ናቸው፡፡",
+      "om": "Warri ibiddaafi warri Jannataa wal hin qixxaatan. Warri Jannataa isaanumatu milkaa'oodha.",
+      "so": "Ma sinna Ehlu-Naarka iyo Ehlu- Jannaha. Ehlu-Jannaha iyaga weeye kuwa ah liibaanayaasha.",
+      "ff": "Yimɓe yiite e yimɓe aljanna potaanih, ko yimɓe aljanna ngoni foolɓe.",
+      "yo": "Àwọn èrò inú Iná àti àwọn èrò inú Ọgbà Ìdẹ̀ra kò dọ́gba. Àwọn èrò inú Ọgbà Ìdẹ̀ra, àwọn ni olùjèrè."
     }
   },
   {
@@ -4688,7 +5740,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "(Ey Peyğəmbər!) Əgər Biz bu Quranı dağa nazil etsəydik, sən onu Allahın qorxusundan parça-parça olduğunu görərdin. Biz bu misalları insanlar düşünsünlər deyə çəkirik.",
       "uz": "Агар бу Қуръонни бир тоққа туширганимизда унинг Аллоҳдан қўрққанидан эгилиб, ёрилиб кетганини кўрар эдингиз. Бу мисолларни инсонлар учун зарб этурмиз. Шоядки, улар фикр юритсалар.",
       "kk": "(Мүхаимед Ғ.С.) егер осы Құранды бір тауға түсірсек еді, Алладан қорыққандығынан үрейленіп, быт-шыт болғаның көрер едің. Бұл мысалдарды адам баласы түсінсін деп, келтіреміз.",
-      "tg": "Агар ин Қуръонро бар кӯҳе нозил мекардем, яқинан, онро аз тарси Аллоҳ таоло фурутан ва аз ҳам пошида медидӣ; ва ин масалҳоро барои мардум мезанем, бошад, ки бияндешанд."
+      "tg": "Агар ин Қуръонро бар кӯҳе нозил мекардем, яқинан, онро аз тарси Аллоҳ таоло фурутан ва аз ҳам пошида медидӣ; ва ин масалҳоро барои мардум мезанем, бошад, ки бияндешанд.",
+      "sw": "Lau kuwa tumeiteremsha hii Qur-ani juu ya mlima, basi bila ya shaka ungeliuona ukinyenyekea, ukipasuka kwa kumhofu Mwenyezi Mungu. Na hiyo mifano tunawapigia watu ili wafikiri.",
+      "am": "ይህንን ቁርኣን በተራራ ላይ ባወረድነው ኖሮ ከአላህ ፍራቻ (የተነሳ) ተዋራጅ ተሰንጣቂ ኾኖ ባየሀው ነበር። ይህችንም ምሳሌ ይገመግሙ ዘንድ ለሰዎች እንገልጻለን",
+      "om": "Odoo Qur'aana kana gaara irratti buufnee, silaa isa nigarta sodaataa dhodhoohaa sodaa Rabbiirraa. Fakkeenyota tana namootaaf taasifna akka isaan xiinxalaniif.",
+      "ff": "Si min tellinna o alquraana e dow hooseere ma a yiinde honde luli honde fetta ngam hulde Alla ɗi tinndi emin piyaniɗi yimɓe ko ngam ɓe miijo."
     }
   },
   {
@@ -4719,7 +5775,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй иймон келтирган зотлар, нима учун қилмаган ишингизни гапирасизлар?!",
       "kk": "Әй мүміндер! Істемейтін істеріңді неге айтасыңдар.",
       "ky": "Оо, момундар! Эмне үчүн жасабаган ишиңерди сүйлөйсүңөр?!",
-      "tg": "Эй касоне, ки имон овардаед, чаро чизеро мегӯед, ки [ба он] амал намекунед?"
+      "tg": "Эй касоне, ки имон овардаед, чаро чизеро мегӯед, ки [ба он] амал намекунед?",
+      "sw": "Enyi mlioamini! Kwa nini mnasema msiyoyatenda?",
+      "ha": "Ya kũ waɗanda suka yi ĩmani! Don me kuke faɗin abin dã ba ku aikatãwa?",
+      "am": "እላንተ ያመናችሁ ሆይ! የማትሠሩትን ነገር ለምን ትናገራላችሁ?",
+      "om": "Yaa warra amantan! Maaliif waan hin hojjanne jettu?",
+      "so": "Kuwa (Xaqa) rumeeyow! Maxaad u leedihiin (oo ugu baaqdaan dadka) wax aydaan falin?",
+      "ff": "Eehey mon gooŋɗinɓe ko waɗi hoɗon kaala ko on mbaɗata.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, nítorí kí ni ẹ ṣe ń sọ ohun tí ẹ ò níí ṣe níṣẹ́?"
     }
   },
   {
@@ -4750,7 +5813,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Қилмаган ишингизни гапиришингиз Аллоҳнинг наздида ўта ёқимсиз бўлди.",
       "kk": "Істемейтін істеріңді сөйлеулерің Алланың қасында зор ашуға себеп болады.",
       "ky": "Жасабаган ишиңерди сүйлөө Аллахтын алдында эң чоң күнөө!",
-      "tg": "Назди Аллоҳ таоло сахт нописанд [ва муҷиби хашм] аст, ки чизеро бигӯед, ки [ба он] амал намекунед."
+      "tg": "Назди Аллоҳ таоло сахт нописанд [ва муҷиби хашм] аст, ки чизеро бигӯед, ки [ба он] амал намекунед.",
+      "sw": "Yanachukiza vikubwa mno kwa Mwenyezi Mungu kuwa mnasema msiyoyatenda.",
+      "ha": "Ya girma ga zama abin ƙyãma awurin Allah, ku faɗi abin da bã ku aikatãwa.",
+      "am": "የማትሠሩን ነገር መናገራችሁ አላህ ዘንድ መጠላቱ ተለቀ፡፡",
+      "om": "Waan hin hojjanne haasa'uun keessan jibbaansi isaa Rabbiin biratti guddate.",
+      "so": "Waa wax uu Alle neceb yahay inaad ku hadashaan (oo amartaan dadka) wax aydaan falin.",
+      "ff": "Mawni tikkere ka Alla nde kaalaton ko on ngollata.",
+      "yo": "Ó jẹ́ ohun ìbínú tó tóbi ní ọ̀dọ̀ Allāhu pé kí ẹ sọ ohun tí ẹ ò níí ṣe."
     }
   },
   {
@@ -4780,7 +5850,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Эй иймон келтирган зотлар, молларингиз ҳам, болаларингиз ҳам сизларни Аллоҳни эслашдан чалғитиб қўймасин. Ким шу ишни қилса, бас, ана ўшалар зарар кўргувчилардир.",
       "kk": "Әй мүміндер! Сендерді малдарың, балаларың Алланы еске алудан тоспасын. Әлде кім бұны істесе, міне солар, зиян тартушылар.",
       "ky": "Оо, ыйман келтиргендер! Мал-дүйнөңөр менен бала-чакаңар силерди Аллахты эскерүүдөн (ибадаттардан) алаксытып койбосун! Ким ушундай кылса, алар – зыян тарткандар!",
-      "tg": "Эй касоне, ки имон овардаед, амволу фарзандонатон шуморо аз ёди Аллоҳ таоло ғофил накунад; ва ҳар кас, ки чунин кунад, онон зиёнкоранд"
+      "tg": "Эй касоне, ки имон овардаед, амволу фарзандонатон шуморо аз ёди Аллоҳ таоло ғофил накунад; ва ҳар кас, ки чунин кунад, онон зиёнкоранд",
+      "sw": "Enyi mlioamini! Zisikusahaulisheni mali zenu, wala watoto wenu, kumkumbuka Mwenyezi Mungu. Na wenye kufanya hayo, basi hao ndio waliohasiri.",
+      "ha": "Ya ku waɗanda suka yi ĩmãni! Kada dũkiyõyinku da ɗiyanku su shagaltar da ku daga ambaton Allah. Kuma wanda ya yi haka, to, waɗannan sũ ne mãsu hasãra.",
+      "am": "እናንተ ያመናችሁ ሆይ! ገንዘቦቻችሁና ልጆቻችሁ አላህን ከማስታወስ አያታሉዋችሁ፡፡ ይህንንም የሚሠሩ ሰዎች እነዚያ እነርሱ ከሳሪዎች ናቸው፡፡",
+      "om": "Yaa warra amantan! Qabeenyaaleen keessaniifi ilmaan keessan zikrii Rabbii irraa isin hin dagin, Namni kana dalage isaan isaanumatu hoonga'oota.",
+      "so": "Kuwa (Xaqa) rumeeyow! Yeysan maalkiinnu iyo awlaaddiinnu idinka shuqlin Xusidda Alle (salaadda). Qofkii falaa sidaas, kuwaa weeye kuwa khasaaray.",
+      "ff": "Eehey mon gooŋɗinɓe woto sokli mon jawɗeele mon e ɓiɓɓe mon gaa e innude Alla kala baɗɗo ɗuum ko ɓeen ngoni pertuɓe ɓe.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ má ṣe jẹ́ kí àwọn dúkìá yín àti àwọn ọmọ yín kó àìrójú ba yín níbi ìrántí Allāhu. Ẹnikẹ́ni tí ó bá kó sínú (àìrójú) yẹn, àwọn wọ̀nyẹn gan-an ni ẹni òfò."
     }
   },
   {
@@ -4808,7 +5885,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "У сизларни яратган Зотдир. Бас, сизлардан кимдир кофир, яна сизлардан кимдир мўмин. Аллоҳ қилаётган ишларингизни Кўргувчидир.",
       "kk": "Ол сондай сендерді жаратқан Алла. Сонда кейбіреулерің қарсы келесіңдер де кейбіреулерің иман келтіресіңдер. Алла істеген істеріңді толық көруші.",
       "ky": "(Оо, инсандар!) Ал силерди жараткан. Силердин араңарда каапыр да бар, ыймандуу да бар. Аллах бардык ишиңерди Көрүүчү!",
-      "tg": "Ӯст, ки шуморо офарид; пас, [гурӯҳе] аз шумо кофиранд ва [гурӯҳе] аз шумо муъмин ҳастанд; ва Аллоҳ таоло аз он чи мекунед, огоҳ аст"
+      "tg": "Ӯст, ки шуморо офарид; пас, [гурӯҳе] аз шумо кофиранд ва [гурӯҳе] аз шумо муъмин ҳастанд; ва Аллоҳ таоло аз он чи мекунед, огоҳ аст",
+      "sw": "Yeye ndiye aliyekuumbeni. Miongoni mwenu yupo aliye kafiri, na yupo aliye Muumini. Na Mwenyezi Mungu anayaona mno mnayoyatenda.",
+      "ha": "Shĩ ne wanda Ya halitta ku. Sa'an nan daga gare ku akwai kãfiri kuma daga gare ku akwai mũmini. Kuma Allah Mai gani ne ga abin da kuke aikatãwa.",
+      "am": "እርሱ ያ የፈጠራችሁ ነው፡፡ ከእናንተም ከሓዲ አልለ፡፡ ከእናንተም አማኝ አልለ፡፡ አላህም በምትሠሩት ሁሉ ተመልካች ነው፡፡",
+      "om": "Inni Isa isin uume Isin irraa Kaafirris ni jira; isin irraa Mu'uminnis ni jira. Rabbiin waan isin dalagdan argaadha.",
+      "so": "Alle waa Kan idin abuuray, markaas qaarkiin noqdeen gaalo, qaarkiinna m’uminiin. Alle wuu Arkaa waxaad fashaan.",
+      "ff": "Ko Kaŋko tagi on ina e mon ke'efeera ina e mon gooŋɗinɗo Alla na yi'a ko ngolloton ko.",
+      "yo": "Òun ni Ẹni tí Ó ṣẹ̀dá yín. Aláìgbàgbọ́ wà nínú yín. Onígbàgbọ́ òdodo sì wà nínú yín. Allāhu sì ni Olùríran nípa ohun tí ẹ̀ ń ṣe níṣẹ́."
     }
   },
   {
@@ -4837,7 +5921,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Осмонлару ердаги нарсаларни билади. Яширганингизни ҳам, ошкор этганингизни ҳам билади. Аллоҳ қалблардаги нарсаларни ҳам Билгувчидир.",
       "kk": "Ол, көктер мен жерде болған нәрселерді біледі. Сондай-ақ жасырғандарыңды да әшкерелегендеріңді де біледі. Әрі көкіректегілерді толық біледі.",
       "ky": "Ал асмандардагы жана жердеги бардык нерсени билет жана силердин сырыңарды да сыртыңарды да билет. Аллах жүрөктөрдө катылган нерселерди да Билүүчү!",
-      "tg": "Он чиро, ки дар осмонҳо ва замин аст медонад ва он чиро пинҳон медоред ва он чиро ки ошкор мекунед, [низ] медонад; ва Аллоҳ таоло аз он чи дар синаҳост, огоҳ аст"
+      "tg": "Он чиро, ки дар осмонҳо ва замин аст медонад ва он чиро пинҳон медоред ва он чиро ки ошкор мекунед, [низ] медонад; ва Аллоҳ таоло аз он чи дар синаҳост, огоҳ аст",
+      "sw": "Anajua vilivyo katika mbingu na ardhi, na anajua mnayoyaficha na mnayoyaweka hadharani. Na Mwenyezi Mungu ni Mjuzi wa yaliyomo vifuani.",
+      "ha": "Yanã sanin abin da ke a cikin sammai da ƙassai. Kuma Yanã sanin abin da kuke bõyẽwa da abin da kuke bayyanãwa. Kuma Allah Masani ne ga abin da ke cikin ƙirãza.",
+      "am": "በሰማያትና በምድር ውስጥ ያለውን ሁሉ ያውቃል፡፡ የምትደብቁትንም የምትገልጡትንም ያውቃል፡፡ አላህም በልቦች ውስጥ ያለውን ሁሉ ዐዋቂ ነው፡፡",
+      "om": "Wantoota samiileefi dachii keessa jiru hunda ni beeka; akkasumas waan isin dhoksitaniifi waan isin ifa gootan ni beeka. Rabbiin waan qomoowwan keessaa beekaadha.",
+      "so": "Wuxuu Og yahay waxa ku sugan samooyinka iyo arlada, Wuxuuna Og yahay waxaad qarisaan iyo waxaad muujisaanba. Alle waa ogaha waxa ku jira laabaha (dadka).",
+      "ff": "Hombo anndi ko woni e kammuuji e leydi hombo anndi ko mbirnaton e ko ɓannginton Alla na anndi ko woni e ɓerɗe.",
+      "yo": "Ó mọ ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Ó sì mọ ohun tí ẹ̀ ń fi pamọ́ àti ohun tí ẹ̀ ń ṣàfi hàn rẹ̀. Allāhu sì ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
     }
   },
   {
@@ -4862,7 +5953,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Бирон мусибат Аллоҳнинг изнисиз етмас. Ким Аллоҳга иймон келтирса, унинг қалбини ҳидоят қилиб қўяди. Аллоҳ ҳар бир нарсани Билгувчидир.",
       "kk": "Алладан бұйрықсыз ешбір қайгы-қасірет болмайды. Ал және кім Аллаға иман келтірсе, оның жүрегін түзейді. Алла барлық нәрсені толық білуші.",
       "ky": "(Пенделерге) жеткен ар бир балээ Аллахтын гана уруксаты менен болот. Ким Аллахка ыйман келтирсе, анын жүрөгүн туура жолго багыттап койот. Аллах бардыгын Билүүчү!",
-      "tg": "Ҳеҷ мусибате [ба инсон] намерасад, магар ба ҳукм [-у фармони] Аллоҳ таоло; ва ҳар кас ба Аллоҳ таоло имон оварад, [Аллоҳ таоло] қалбашро ҳидоят мекунад; ва Аллоҳ таоло ба ҳама чиз доност."
+      "tg": "Ҳеҷ мусибате [ба инсон] намерасад, магар ба ҳукм [-у фармони] Аллоҳ таоло; ва ҳар кас ба Аллоҳ таоло имон оварад, [Аллоҳ таоло] қалбашро ҳидоят мекунад; ва Аллоҳ таоло ба ҳама чиз доност.",
+      "sw": "Haufiki msiba wowote ila kwa idhini ya Mwenyezi Mungu. Na mwenye kumuamini Mwenyezi Mungu, huuongoa moyo wake. Na Mwenyezi Mungu anajua zaidi kila kitu.",
+      "ha": "Wata masĩfa bã zã ta sãmu ba fãce da iznin Allah. Kuma wanda ya yi ĩmãni da Allah, Allah zai shiryar da zuciyarsa. Kuma Allah, ga dukan kõme, Masani ne.",
+      "am": "ከመከራም (ማንንም) አይነካም በአላህ ፈቃድ ቢኾን እንጅ፤ በአላህም የሚያምን ሰው ልቡን (ለትዕግስት) ይመራዋል፤ አላህም ነገሩን ሁሉ ዐዋቂ ነው፡፡",
+      "om": "Hamtuu irraa wanti tokkollee eeyyama Rabbiitiin malee nama hin tuqu. Nama Rabbitti amane qalbii isaa ni qajeelcha. Rabbiin waan hunda beekaadha.",
+      "so": "Ma jirto wax masiibo ah oo dhaca ilaa waxay ku dhacdaa Idanka Alle. Qofkii rumeeya Alle, wuxuu hanuuniyaa qalbigiisa (oo xasila). Alle wax walba wuu Og yahay.",
+      "ff": "Musiiba heɓata hay gooto si wona e sakkitoore Alla, kala gooŋɗinɗo Alla O feewna ɓernde makko, Alla na anndi kala hu'unde."
     }
   },
   {
@@ -4893,7 +5990,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Аллоҳ. Ундан ўзга илоҳ йўқ. Бас, мўминлар Аллоҳгагина таваккул қилсинлар.",
       "kk": "Алла бар. Одан басқа ешбір тәңір жоқ. Сондықтан мүміндер, Аллаға тәуекел етсін.",
       "ky": "(Ал –) Аллах! Бир Өзүнөн башка сыйынууга татыктуу кудай жок! Ыймандуулар Аллахка гана тобокел кылышсын!",
-      "tg": "Аллоҳ таоло аст, ки ҳеҷ маъбуде [ба ҳақ] ҷуз Ӯ нест; пас муъминон бояд бар Аллоҳ таоло таваккал кунанд."
+      "tg": "Аллоҳ таоло аст, ки ҳеҷ маъбуде [ба ҳақ] ҷуз Ӯ нест; пас муъминон бояд бар Аллоҳ таоло таваккал кунанд.",
+      "sw": "Mwenyezi Mungu, hapana mungu isipokuwa Yeye. Na juu ya Mwenyezi Mungu, basi na wategemee Waumini.",
+      "ha": "Allah bãbu wani abin bauta wa fãce Shi. Kuma ga Allah, sai mũminai su dõgara.",
+      "am": "አላህ ከርሱ በቀር አምላክ የለም፤ በአላህም ላይ አማኞቹ ይመኩ፡፡",
+      "om": "Rabbiin, dhugaan gabbaramaan isa malee hin jiru. Mu'uminoonnis Rabbi irratti qofa haa hirkatanu.",
+      "so": "Allaah! Ma jiro Ilaah (Xaq lagu caabudo) aan Isaga ahayn, Allaah (oo keliya) ha talo saarteen mu’miiniintu.",
+      "ff": "Allaahu alah deweteeɗo e goongo si wona Kaŋko, ko e dow makko goonɗinɓe mbakkilato.",
+      "yo": "Allāhu, kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Allāhu sì ni kí àwọn onígbàgbọ́ òdodo gbáralé."
     }
   },
   {
@@ -4923,7 +6027,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Мол-давлатларингиз ва бола-чақаларингиз бир синов, холос. Аллоҳнинг ҳузурида эса буюк мукофот бор.",
       "kk": "Шын мәнінде малдарың, балаларың бір сынақ. Үлкен сыйлық Алланың қасындағы. (9-С. 23-А)",
       "ky": "Чынында, мал-дүйнөңөр менен бала-чакаңар силерге сыноо. Аллахтын алдында улуу сооптор бар.",
-      "tg": "Ҷуз ин нест, ки амволу фарзандонатон василаи омурзиши [шумо] ҳастанд; ва Аллоҳ таоло аст, ки подоши бузург назди Ӯст."
+      "tg": "Ҷуз ин нест, ки амволу фарзандонатон василаи омурзиши [шумо] ҳастанд; ва Аллоҳ таоло аст, ки подоши бузург назди Ӯст.",
+      "sw": "Hakika mali yenu na watoto wenu ni jaribio. Na kwa Mwenyezi Mungu upo ujira mkubwa.",
+      "am": "ገንዘቦቻችሁና ልጆቻችሁ ለናንተ መፈተኛ ብቻ ናቸው፤ አላህም እርሱ ዘንድ ታላቅ ምንዳ አልለ፡፡",
+      "om": "Qabeenyaaleen keessaniifi ilmaan keessan mokkoroodha. Rabbiin Isa bira mindaa guddaatu jira.",
+      "ff": "Ngandee pellet, jawɗe mon ɗeen e ɓiɗɓe mon ɓeen ko fitina ina ka Alla njoɓdi mawndi.",
+      "yo": "Ìfòòró ni àwọn dúkìá yín àti àwọn ọmọ yín. Allāhu sì ni ẹ̀san ńlá wà ní ọ̀dọ̀ Rẹ̀."
     }
   },
   {
@@ -4954,7 +6063,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ғайбу шаҳодатни Билгувчи, Азиз, Ҳаким.",
       "kk": "Көместі де көрнеуді де білуші. Үстем, хикмет иесі.",
       "ky": "(Аллах) кайыпты да, ашкерени да Билүүчү, Кудуреттүү, Даанышман!",
-      "tg": "[Ӯ] Донои ниҳону ошкор [ва] бузургу баландмартаба аст"
+      "tg": "[Ӯ] Донои ниҳону ошкор [ва] бузургу баландмартаба аст",
+      "sw": "Mwenye kujua siri na dhahiri, Mwenye nguvu, Mwenye hekima.",
+      "ha": "Shĩ ne Masanin fake da bayyane, Mabuwayi, Mai hikima.",
+      "am": "ሩቁን ምስጢር ግልጹንም ሁሉ ዐዋቂው አሸናፊው ጥበበኛው ነው፡፡",
+      "om": "(Rabbiin) beekaa fagoofi dhihoo injifataa, ogeessa.",
+      "so": "Waa Ogsoonaha waxaan muuqan iyo waxa muuqda, Adkaadaha, Xakiimka ah.",
+      "ff": "Gannduɗo mbirniiɗi e feeñuɗi, mawɗo, ñeeñɗo.",
+      "yo": "Onímọ̀-ìkọ̀kọ̀ àti gban̄gba, Alágbára, Ọlọ́gbọ́n."
     }
   },
   {
@@ -4984,7 +6100,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Парвардигорларидан ғойибона қўрқадиганлар учун мағфират ва улкан савоб бордир.",
       "kk": "Дүрысында сондай Раббыларынан көрмей-ақ қорыққандар, олар үшін жарылқау әрі зор сыйлық бар.",
       "ky": "Кайыптагы Раббисинен корккон адамдарга (Аллах таала тарабынан) кечирим жана чоң сыйлык (бейиш) бар.",
-      "tg": "Бе гумон, касоне, ки дар ниҳон аз Парвардигорашон метарсанд, онон омурзишу подоши бузурге доранд"
+      "tg": "Бе гумон, касоне, ки дар ниҳон аз Парвардигорашон метарсанд, онон омурзишу подоши бузурге доранд",
+      "sw": "Hakika wale wanaomwogopa Mola wao Mlezi kwa ghaibu, watapata maghfira na ujira mkubwa.",
+      "ha": "Lalle waɗanda ke tsõron Ubangjinsu, a ɓoye, suna da wata gãfara da wani sakamako mai girma.",
+      "am": "እነዚያ ጌታቸውን በሩቁ የሚፈሩ ለእነርሱ ምሕረትና ታላቅ ምንዳ አልላቸው፡፡",
+      "om": "Warra Gooftaa isaanii fagootti sodaataniif araaramaafi mindaa guddaatu isaaniif jira.",
+      "so": "Hubaal, kuwa ka baqa Rabbigood sir (iyo saaqba) waxay leeyihiin Denbi Dhaaf iyo Ajar Weyn (Janno).",
+      "ff": "Pellet, hulooɓe Joomi mum ɓeen ka wirnii, hino woodani ɓen haforaneede e njoɓdi mawndi.",
+      "yo": "Dájúdájú àwọn tó ń páyà Olúwa wọn ní ìkọ̀kọ̀, àforíjìn àti ẹ̀san tó tóbi ń bẹ fún wọn."
     }
   },
   {
@@ -5011,7 +6134,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "Məgər onlar üstlərində dəstə-dəstə qanad çalaraq uçan quşları görmürlərmi? Onları (havada) ancaq Rəhman (olan Allah) saxlayır. Şübhəsiz ki, O, hər şeyi görəndir.",
       "uz": "Устларидаги қанот ёйган ва йиққан ҳолдаги қушларни кўрмадиларми?! Уларни ёлғиз Раҳмонгина ушлаб турар! Албатта, У барча нарсани Кўргувчидир.",
       "kk": "Үстеріндегі қанаттарын жайып, қомдап ұшқан құсты көрмей ме? Оларды Алла ғана тоқтатады. Сөзсіз Ол, әр нәрсені толық көруші.",
-      "ky": "Алар төбөсүндөгү канатын (бир) жайып (бир) жыйнап турган кушка карашпайбы?! Аны (ободо ырайымдуу) Рахман гана кармап турат! Ал - ар бир нерсени Көрүүчү!"
+      "ky": "Алар төбөсүндөгү канатын (бир) жайып (бир) жыйнап турган кушка карашпайбы?! Аны (ободо ырайымдуу) Рахман гана кармап турат! Ал - ар бир нерсени Көрүүчү!",
+      "sw": "Kwani hawawaoni ndege walioko juu yao namna wanavyozikunjua mbawa zao, na kuzikunja? Hawashikilii ila Mwingi wa rehema. Hakika Yeye ni Mwenye kuona mno kila kitu.",
+      "ha": "Bã zã su yi dũbi ba zuwa ga tsuntsãye a kansu, mãsu sanwã, kuma suna fiffikãwa, bãbu mai riƙe da su sai (Allah), Mairahama? Lalle shi Mai gani ne ga dukan kõme.",
+      "am": "ወደ አእዋፍ ከበላያቸው ክንፎቻቸውን ዘርግተው ተንሳፋፊዎች የሚሰበሰቡም ሲኾኑ አላዩምን? ከአልረሕማን በቀር (ባየር ላይ) የሚይዛቸው የለም፡፡ እርሱ በነገሩ ሁሉ ተመልካች ነው፡፡",
+      "om": "Sila gara simbirroota gubbaa isaaniitti koola (qoochoo) isaanii babal'isanii walitti dachaasanii hin ilaalanuu? Rahmaaniin malee homtuu isaan hin qabu. Inni waan hunda argaadha.",
+      "so": "Miyeyna arag shimbiraha korkooda ah ee fidinaya (baalashooda) oo isku soo laabaya? Ma jiraan wax haya iyaga aan aheyn Raxmaanka. Hubaal, wax walba wuu Arkaa.",
+      "ff": "E ɓee nji'aani colli ɗiin dow maɓɓe, hiɗi fonta gabitannji ɗi ñobba? [Won'de] jogitaaki ɗin si wonaa Joom hinaraŋke on. Pellet, ko o deenɗo kala hu'unde.",
+      "yo": "Ṣé wọn kò rí àwọn ẹyẹ tí ó wà ní òkè wọn, tí (wọ́n) ń na ìyẹ́ apá (wọn), tí wọ́n sì ń pa á mọ́ra? Kiní kan kò mú wọn dúró (sínú òfurufú) àfi Àjọkẹ́-ayé. Dájúdájú Òun sì ni Olùríran nípa gbogbo n̄ǹkan."
     }
   },
   {
@@ -5042,7 +6172,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, тақводорлар учун Парвардигорлари ҳузурида ноз-неъмат боғлари бордир.",
       "kk": "Күдіксіз тақуалар үшін; Раббыларының қасында Нағым жаннаттары бар.",
       "ky": "Албетте, такыба кишилер үчүн Раббисинин алдында эң мыкты бейиштер бар.",
-      "tg": "Ба ростӣ, барои парҳезкорон назди Парвардигорашон боғҳои пурнеъмат аст"
+      "tg": "Ба ростӣ, барои парҳезкорон назди Парвардигорашон боғҳои пурнеъмат аст",
+      "sw": "Hakika wacha Mungu watakuwa na Bustani za neema kwa Mola wao Mlezi.",
+      "ha": "Lalle ne mãsu taƙawa nã da a wurin Ubangijinsu, gidãjen Aljanna na ni'ima.",
+      "am": "ለጥንቁቆቹ በጌታቸው ዘንድ መጠቀሚያ ገነቶች አሏቸው፡፡",
+      "om": "Dhugumatti, warra Rabbiin sodaataniif Gooftaa isaanii bira Jannata qananiitu jira.",
+      "so": "Hubaal kuwa Alle ka cabsada (oo ka dhowrsada xumaha) waxay leeyihiin Rabbigood agtiisa Jannooyin barwaaqo ah.",
+      "ff": "Pellet, hino woodani gooŋɗuɓe ɓeen ka Joomi maɓɓe, Aljannaaji ne'ema.",
+      "yo": "Dájúdájú àwọn Ọgbà Ìdẹ̀ra wà fún àwọn olùbẹ̀rù Allāhu lọ́dọ̀ Olúwa wọn."
     }
   },
   {
@@ -5071,7 +6208,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Дарҳақиқат, булар бир эслатмадир. Ким истаса, Парвардигори сари йўл олгай.",
       "kk": "Расында бұл бір насихат. Ал енді кім қаласа, Раббының жолын ұстайды.",
       "ky": "Албетте, бул(айтылганд)ар эскертүү гана. Ким кааласа Раббисине (алып баруучу туура) жолду (тандап) алат.",
-      "tg": "Бе гумон, ин [оёт] панд [-у ҳушдоре] аст, то ҳар ки бихоҳад, ба сӯи Парвардигори худ роҳе дар пеш гирад"
+      "tg": "Бе гумон, ин [оёт] панд [-у ҳушдоре] аст, то ҳар ки бихоҳад, ба сӯи Парвардигори худ роҳе дар пеш гирад",
+      "sw": "Kwa hakika hili ni kumbusho. Mwenye kutaka atashika Njia ya kwendea kwa Mola wake Mlezi.",
+      "ha": "Lalle ne, wannan wata tunãtarwa ce, sai dai wanda ya so, ya kãma hanyar ƙwarai zuwa ga Ubangijinsa.",
+      "am": "ይህቺ መገሠጫ ናት፡፡ (መዳንን) የሻም ሰው ወደ ጌታው መንገድን ይይዛል፡፡",
+      "om": "Isheen tun gorsa. Nama fedhe gara Gooftaa isaatti karaa godhata.",
+      "so": "Hubaal tani wa waano, ee qofkii doonaa ha u samaysto xagga Rabbigi jid.",
+      "ff": "Ko oon woni waaju goongo kala paalaaɗo daɗde nanngira joomiiko ruttorde.",
+      "yo": "Dájúdájú èyí ni ìrántí. Nítorí náà, ẹni tí ó bá fẹ́ kí ó mú ojú ọ̀nà kan tọ̀ dé ọ̀dọ̀ Olúwa rẹ̀."
     }
   },
   {
@@ -5102,7 +6246,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Шундай Зот ўликларни тирилтиришга Қодир эмасми?!",
       "kk": "Бұларды жасаған Алланың, өліктерді қайта тірілтуге югші жетпей ме?",
       "ky": "Эми, ушул (Аллах) өлүктөрдү (экинчи ирет) тирилтүүгө кудуреттүү эмеспи?!",
-      "tg": "Оё [чунин Офаридгоре] қодир нест, ки мурдагонро [дубора] зинда кунад?"
+      "tg": "Оё [чунин Офаридгоре] қодир нест, ки мурдагонро [дубора] зинда кунад?",
+      "sw": "Je, huyo hakuwa ni Muweza wa kufufua wafu?",
+      "am": "ይህ (ጌታ) ሙታንን ሕያው በማድረግ ላይ ቻይ አይደለምን?",
+      "om": "Sila (Rabbiin akkas godhe) sun du'aa jiraachisuu irratti danda'aa mitii?",
+      "ff": "Mbele oon hattanaani wuurtin'de maayɓe.",
+      "yo": "Ǹjẹ́ Ẹni tí Ó ṣe ìyẹn kò níí ní agbára láti jí àwọn òkú dìde bí?"
     }
   },
   {
@@ -5129,7 +6278,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Дарҳақиқат, Биз унга йўл кўрсатдик. Ё шукр қилувчи ва ё куфр келтирувчи бўлсин.",
       "kk": "Расында оған тура жол көрсеттік. Мейлі шүкірлік қылсын, мейлі қарсы келсін.",
       "ky": "(Кийин) Биз ага (жакшы менен жаман) жолду тааныттык. (Эми ал) же шүгүр (ибадат) кылуучу болот, же каапыр (болот).",
-      "tg": "Ҳамоно Мо роҳро ба ӯ нишон додем, хоҳ сипосгузор бошад ё носипос"
+      "tg": "Ҳамоно Мо роҳро ба ӯ нишон додем, хоҳ сипосгузор бошад ё носипос",
+      "sw": "Hakika Sisi tumembainishia Njia. Ama ni mwenye kushukuru, au mwenye kukufuru.",
+      "ha": "Lalle ne, Mũ, Mun shiryar da shi ga hanyar ƙwarai, ko ya zama mai gõdiya, kuma ko ya zama mai kãfirci.",
+      "am": "እኛ ወይ አመስጋኝ ወይም ከሓዲ ሲኾን መንገዱን መራነው፤ (ገለጽንለት)፡፡",
+      "om": "Nuti haala (inni) galateeffataa yookiin mormaa ta'een karaa isa qajeelchine.",
+      "so": "Waxaanu xaqiiq tusnay jidka ama waa mid mahad naqa ama mid abaal dhac badan (gaal ah).",
+      "ff": "Miin peewnii mbo e laawol o yetta wollo o yedda.",
+      "yo": "Dájúdájú A fi ọ̀nà mọ̀ ọ́n; Ó lè jẹ́ olùdúpẹ́, ó sì lè jẹ́ aláìmoore."
     }
   },
   {
@@ -5160,7 +6316,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ерни (сизлар учун) бешик қилиб қўймадикми?",
       "kk": "Жерді бір төсеніш қылмадық па?",
       "ky": "Биз силерге жерди жайылган (төшөк сыяктуу) кылып койбодукпу?!",
-      "tg": "Оё заминро бистаре [барои осоиши шумо] қарор надодем?"
+      "tg": "Оё заминро бистаре [барои осоиши шумо] қарор надодем?",
+      "sw": "Kwani hatukuifanya ardhi kama tandiko?",
+      "ha": "Ashe, ba Mu sanya ƙasa shimfiɗa ba?",
+      "am": "ምድርን ምንጣፍ አላደረግንምን?",
+      "om": "Sila Nuti dachii firaasha hin goonee?",
+      "so": "Miyaanaan ka yeelin dhulka gogol?",
+      "ff": "Mbela min mbaɗaani lesdi ndaɗɗudi heblaandi.",
+      "yo": "Ǹjẹ́ Àwa kò ṣe ilẹ̀ ní ìtẹ́ bí,"
     }
   },
   {
@@ -5189,7 +6352,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "az": "İman gətirib saleh əməllər edənlər üçün (ağacları və qəsrləri) altından çaylar axan cənnətlər vardır. Bu, böyük uğurdur.",
       "uz": "Албатта, иймон келтирган ва яхши амаллар қилган зотлар учун остидан дарёлар оқиб турадиган жаннатлар бордир. Мана шу катта бахтдир.",
       "kk": "Негізінен иман келтіріп,ізгі іс істегендер,оларға астарынан өзендер ағатын бейіштер бар. Осы,зор мұратқа жетушілік.",
-      "tg": "Ҳамоно барои касоне, ки имон оварданд ва корҳои шоиста карданд, боғҳое [аз биҳишт] аст, ки ҷӯйборҳо зери [дарахтони] он ҷорӣ аст; ва ин аст комёбии бузург"
+      "tg": "Ҳамоно барои касоне, ки имон оварданд ва корҳои шоиста карданд, боғҳое [аз биҳишт] аст, ки ҷӯйборҳо зери [дарахтони] он ҷорӣ аст; ва ин аст комёбии бузург",
+      "sw": "Hakika walioamini na wakatenda mema watapata Bustani za mbinguni zenye mito ipitayo kati yake. Huko ndiko kufuzu kukubwa.",
+      "ha": "Lalle ne waɗanda suka yi ĩmãni, kuma suka aikata ayyukan ƙwarai, sunã da gidãjen Aljanna, ƙoramu na gudãna daga ƙarƙashin gidãjen. Wancan abu fa shi ne rabo babba.",
+      "am": "እነዚያ ያመኑና መልካም ሥራዎችንም የሠሩ ለእነርሱ ከሥሮቻቸው ወንዞች የሚፈሱባቸው ገነቶች አሏቸው፡፡ ይህ ታላቅ ማግኘት ነው፡፡",
+      "om": "Isaan amananii gaggaarii hojjatan, isaaniif ashaakiltiiwwan laggeen jala ishee yaatutu jira. Sun milkii guddaadha.",
+      "so": "Kuwa (Xaqa) rumeeyey oo samaha fala, waxay leeyihiin beero hoostoodu ay webiyo qulqulaan. Kaasi baa ah Liibaanta Weyn.",
+      "ff": "Ɓeen gooŋɗinɓe ngoolli golle lobbe woodaniiɓe Aljannaaji na ila ley mum caatli ko ɗuum woni malal manngal.",
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, tiwọn ni àwọn Ọgbà Ìdẹ̀ra kan, tí àwọn odò ń ṣàn ní ìsàlẹ̀ rẹ̀. Ìyẹn sì ni èrèǹjẹ ńlá."
     }
   },
   {
@@ -5220,7 +6390,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, Унинг Ўзи бошлайди ва қайтаради.",
       "kk": "Өйткені Ол,бастапта жаратып,әрі қайта тірілтеді.",
       "ky": "Бир Өзү гана жоктон бар кылат жана (Кыяматта жашоону) кайра жаратат.",
-      "tg": "Дар ҳақиқат, Ӯст, ки [офаринишро] оғоз мекунад ва дубора [баъд аз марг] бозмегардонад"
+      "tg": "Дар ҳақиқат, Ӯст, ки [офаринишро] оғоз мекунад ва дубора [баъд аз марг] бозмегардонад",
+      "sw": "Yeye ndiye anayeanzisha na ndiye anayerejesha tena.",
+      "ha": "Lalle ne Shĩ, Shi ne Mai ƙãga halitta, kuma Ya mayar da ita (bãyan mutuwa).",
+      "am": "እነሆ እርሱ መፍጠርን ይጀምራል፤ ይመልሳልም፡፡",
+      "om": "Inni Isumatu [uumama] jalqaba; (du'a boodas) ni deebisa.",
+      "so": "Xaqiiq (Alle) Isagaa uumay (uunka) dibna u soo nooleyn (dhimasho kaddib).",
+      "ff": "Ko Kaŋko tigi fuɗɗata tagoore o rutta nde.",
+      "yo": "Dájúdájú Òun ni Ó pìlẹ̀ (ẹ̀dá), Ó sì máa dá (ẹ̀dá) padà (fún àjíǹde)."
     }
   },
   {
@@ -5249,7 +6426,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ҳар бир жоннинг устида ёд олгувчи бордир.",
       "kk": "Әркімнің үстінде бір бақылаушы бар. (11С.56А.)",
       "ky": "Бардык адам(дар)дын үстүндө сактоочу периште бар.",
-      "tg": "Ҳеҷ кас нест магар он ки бар ӯ нигаҳбоне [аз фариштагон гумошта шуда] аст"
+      "tg": "Ҳеҷ кас нест магар он ки бар ӯ нигаҳбоне [аз фариштагон гумошта шуда] аст",
+      "sw": "Hapana nafsi ila inaye mwangalizi.",
+      "ha": "Bãbu wani rai fãce a kansa akwai wani mai tsaro.",
+      "am": "ነፍስ ሁሉ በእርሷ ላይ ጠባቂ ያለባት እንጅ ሌላ አይደለችም፡፡",
+      "om": "Lubbuun hundi tiksaan ishee irra jiraatu malee hin hafu.",
+      "so": "Ma jirto naf aanu kor joogin ilaaliye (malag).",
+      "ff": "Alaa fittaandu si wona ina e dow mayru deenoowo.",
+      "yo": "Kò sí ẹ̀mí kan àfi kí ẹ̀ṣọ́ kan wà fún un (nínú àwọn mọlāika)."
     }
   },
   {
@@ -5279,7 +6463,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Шак-шубҳасиз, Парвардигорингиз кузатиб тургувчидир.",
       "kk": "Негізінде Раббың әлбетте бақылаушы.",
       "ky": "Чынында, Раббиң көзөмөлдөп туруучу.",
-      "tg": "Яқинан Парвардигори ту дар камингоҳ аст"
+      "tg": "Яқинан Парвардигори ту дар камингоҳ аст",
+      "sw": "Hakika Mola wako Mlezi yupo kwenye mavizio anawavizia.",
+      "ha": "Lalle ne, Ubangijinka Yana nan a mafaka.",
+      "am": "ጌታህ በመጠባበቂያ ላይ ነውና፡፡",
+      "om": "Gooftaan kee keellatti tahaadha.",
+      "so": "Xaqiiq, Rabbigaa baa u jeeda (addoomahiisa) oo gaar ka haya.",
+      "ff": "Koom ma na tommbiiɓe.",
+      "yo": "Dájúdájú Olúwa rẹ wà ní ibùṣọ́ (iṣẹ́ ẹ̀dá)."
     }
   },
   {
@@ -5309,7 +6500,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Биз унга икки кўзни.",
       "kk": "Оған екі көз жаратпадық па?",
       "ky": "Биз ага эки көз бербедикпи?",
-      "tg": "Оё барои ӯ ду чашм қарор надодем?"
+      "tg": "Оё барои ӯ ду чашм қарор надодем?",
+      "sw": "Kwani hatukumpa macho mawili?",
+      "ha": "Shin, ba Mu sanya masa idãnu biyu ba?",
+      "am": "ለእርሱ ሁለት ዓይኖችን አላደረግንለትምን?",
+      "om": "Sila Nuti ija lama isaaf hin taasifnee?",
+      "so": "Miyaannaan u yeelin labo indhood?.",
+      "ff": "Mbele min in mbaɗanaani mbo gite ɗiɗe.",
+      "yo": "Ṣé A kò ṣe ojú méjì fún un?"
     }
   },
   {
@@ -5339,7 +6537,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, сизларнинг ҳаракатларингиз хилма-хилдир.",
       "kk": "Негізінен кәсіптерің түрлі-түрлі.",
       "ky": "Албетте, (о, инсандар) силердин аракетиңер ар кандай.",
-      "tg": "Ки, яқинан, саъй [-ю талош]-и шумо мухталиф [ва неку бад] аст"
+      "tg": "Ки, яқинан, саъй [-ю талош]-и шумо мухталиф [ва неку бад] аст",
+      "sw": "Hakika juhudi zenu bila ya shaka ni mbali mbali.",
+      "ha": "Lãlle ne ayyukanku, dabam-dabam suke.",
+      "am": "ሥራችሁ በእርግጥ የተለያየ ነው፡፡",
+      "om": "Dhugumatti, dalagaan keessan adda adda (wal dhaba).",
+      "so": "Xaqiiq, camalkiinnu (dadow) waa kala duwan yahay.",
+      "ff": "Pellet golle mon heɗe ceerti.",
+      "yo": "Dájúdájú ọ̀tọ̀ọ̀tọ̀ ni iṣẹ́ yín."
     }
   },
   {
@@ -5370,7 +6575,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Бас, албатта, бир қийинчилик билан бир осонлик бордир.",
       "kk": "Негізінде ауырлықпен бірге бір жеңілдік бар.",
       "ky": "Албетте, кыйынчылык менен бирге жеңилдик бар.",
-      "tg": "Пас, мусалламан, бо [ҳар] душворӣ осонӣ аст"
+      "tg": "Пас, мусалламан, бо [ҳар] душворӣ осонӣ аст",
+      "sw": "Basi kwa hakika pamoja na uzito upo wepesi.",
+      "ha": "To, lalle ne tãre da tsananin nan akwai wani sauƙi.",
+      "am": "ከችግርም ጋር ምቾት አልለ፡፡",
+      "om": "Rakkinaa wajjin laafinatu jira.",
+      "so": "Xaqiiq, dhibka waxaa la socda faraj.",
+      "ff": "Pellet kala saɗteende na won'di e newaare.",
+      "yo": "Nítorí náà, dájúdájú ìdẹ̀kùn wà lẹ́yìn ìnira."
     }
   },
   {
@@ -5400,7 +6612,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, бир қийинчилик билан бир осонлик бордир.",
       "kk": "Шын мәнінде қиыншылықпен бірге бір оңайлық бар.",
       "ky": "Албетте, кыйынчылык менен бирге жеңилдик бар.",
-      "tg": "[Оре] Мусалламан, бо [ҳар] душворӣ осонӣ аст"
+      "tg": "[Оре] Мусалламан, бо [ҳар] душворӣ осонӣ аст",
+      "sw": "Hakika pamoja na uzito upo wepesi.",
+      "ha": "Lalle ne tãre da tsananin nan akwai wani sauƙi.",
+      "am": "ከችግር ጋር በእርግጥ ምቾት አልለ፡፡",
+      "om": "Dhugumatti, rakkina wajjin laafinatu jira.",
+      "so": "Xaqiiq, waxaa dhibka la socda faraj.",
+      "ff": "Pellet saɗteende kala na won'di e yaajeende.",
+      "yo": "Dájúdájú ìdẹ̀kùn wà lẹ́yìn ìnira sẹ́."
     }
   },
   {
@@ -5431,7 +6650,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Ахир Аллоҳ ҳукм қилгувчиларнинг энг адолатлиси эмасми?!",
       "kk": "Алла,үкім етушілердің ең жоғарғысы емес пе?",
       "ky": "Аллах эң даанышман өкүмдар эмеспи?",
-      "tg": "Оё Аллоҳ таоло беҳтарин довар [ва ҳокими мутлақ] нест?"
+      "tg": "Оё Аллоҳ таоло беҳтарин довар [ва ҳокими мутлақ] нест?",
+      "sw": "Kwani Mwenyezi Mungu si muadilifu zaidi kuliko wote wanaohukumu?",
+      "am": "አላህ ከፈራጆች ሁሉ ይበልጥ ፈራጅ አይደለምን? (ነው)፡፡",
+      "om": "Sila Rabbiin irra murteessaa murteessitootaa hin taanee?",
+      "ff": "Mbele Alla wona ɓurɗo nuunɗude e ñaawooɓe ɓe.",
+      "yo": "Ṣé Allāhu kọ́ ni Ẹni t’Ó mọ ẹ̀jọ́ dá jùlọ nínú àwọn adájọ́ ni?"
     }
   },
   {
@@ -5461,7 +6685,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, қайтиб бориш Парвардигорингизгадир.",
       "kk": "Шын мәнінде қайту Раббың жақ.",
       "ky": "Аныгында, кайтып баруу Раббиңе гана.",
-      "tg": "Яқинан, бозгашт [-и ҳама] ба сӯйи Парвардигори туст"
+      "tg": "Яқинан, бозгашт [-и ҳама] ба сӯйи Парвардигори туст",
+      "sw": "Hakika kwa Mola wako Mlezi ndio marejeo.",
+      "ha": "Lalle ne zuwa ga Ubangijinka makoma take.",
+      "am": "መመለሻው ወደ ጌታህ ብቻ ነው፡፡",
+      "om": "Deebiin garuma Gooftaa keetiiti.",
+      "so": "Hubaal! Waa xagga Rabbigaa noqodku.",
+      "ff": "Pellet ko e jooma woni ruttorde nde.",
+      "yo": "Dájúdájú ọ̀dọ̀ Olúwa rẹ ni àbọ̀ ẹ̀dá."
     }
   },
   {
@@ -5490,7 +6721,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Қадр кечаси минг ойдан яхшироқдир.",
       "kk": "Қадыр түні мың айдан хайырлы.",
       "ky": "Кадыр түнү миң айдан да жакшы.",
-      "tg": "Шаби қадр беҳтар аз ҳазор моҳ аст"
+      "tg": "Шаби қадр беҳтар аз ҳазор моҳ аст",
+      "sw": "Laylatul Qadri ni bora kuliko miezi elfu.",
+      "ha": "Lailatul ¡adari mafi alheri ne daga wasu watanni dubu.",
+      "am": "መወሰኛይቱ ሌሊት ከሺሕ ወር በላጭ ናት፡፡",
+      "om": "Halkan sadarkaa qabdu ji'a kumarra caalti.",
+      "ff": "Leylatu  qadri oon ɓuri ujunere lewru moƴƴude.",
+      "yo": "Òru Abiyì lóore ju ẹgbẹ̀rún oṣù."
     }
   },
   {
@@ -5521,7 +6758,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "uz": "Албатта, иймон келтирган ва яхши амаллар қилган зотлар — ана ўшалар яралмиш жонзотларнинг энг яхшисидирлар.",
       "kk": "Күдіксіз сондай иман келтіріп,түзу іс істегендер; міне солар,жаратылғандардың жақсысы.",
       "ky": "Ал эми ыйман келтирип, салих амалдарды жасаган адамдар... алар – жаратылгандардын эң жакшысы.",
-      "tg": "Ҳамоно касоне, ки имон оварданд ва корҳои шоиста анҷом доданд, онон беҳтарини офаридагон ҳастанд"
+      "tg": "Ҳамоно касоне, ки имон оварданд ва корҳои шоиста анҷом доданд, онон беҳтарини офаридагон ҳастанд",
+      "sw": "Hakika walioamini na wakatenda mema, hao ndio bora wa viumbe.",
+      "ha": "Lalle ne waɗanda suka yi ĩmani, kuma suka aikata ayyukan ƙwarai, waɗannan su ne mafifita alherin halitta.",
+      "am": "እነዚያ ያመኑትና መልካሞችንም የሠሩት፣ እነዚያ እነርሱ ከፍጥረት ሁሉ በላጭ ናቸው፡፡",
+      "om": "Isaan amananiifi gaggaarii hojjatan, isaan sun isaanumatu irra caalaa uumamaati.",
+      "so": "Xaqiiq, kuwa (Xaqa) rumeeyey oo samaha fala, kuwaasi waa kuwa ugu khayr badan uumanka.",
+      "ff": "Pellet ɓeen gooŋɗinɓe ɓe ngolli ko ɓuri moƴƴude ko ɓeen ngoni ɓurbe moƴƴude e winndere he.",
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo (ìyẹn, àwọn mùsùlùmí), tí wọ́n sì ṣe àwọn iṣẹ́ rere, àwọn wọ̀nyẹn, àwọn ni ẹ̀dá tó dára jùlọ."
     }
   }
 ];

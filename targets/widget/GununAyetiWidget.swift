@@ -25,7 +25,7 @@ enum GununAyetiSabitleri {
 /// Yuk yokken (uygulama hic acilmadi) ve galeride gereken metinler. Ingilizce karsiliklar
 /// JS sozlugunden (`sozluk/en/gununAyeti.ts > baslik, etiket`).
 ///
-/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil
+/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo; cevrilmemis dil
 /// Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`). `ornek*` alanlari galeri onizlemesindeki
 /// 94:6'dir: meal o dilin QuranEnc mealinden BIREBIR (kesilmeden) ve kunyesiyle yazilir
 /// (`docs/ajan/coklu-dil.md > Nass kurali`; dilde meal yoksa `ornekMeal` bos → yalniz Arapca).
@@ -385,11 +385,110 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.2"
     )
 
+    // sw
+    static let sw = GununAyetiYerelMetinleri(
+        galeriAdi: "Aya ya siku",
+        galeriAciklama: "Aya na tafsiri yake inayobadilika kila siku wakati wa Alfajiri.",
+        etiket: "AYA YA SIKU",
+        uygulamayiAcin: "Fungua programu ili kuona aya ya siku",
+        ornekSigmiyor: "Aya ya leo haitoshei ukubwa huu. Gusa uisome.",
+        ornekAcin: "Fungua",
+        ornekArapcaKaynagi: "Kiarabu: Tanzil",
+        ornekMeal: "Hakika pamoja na uzito upo wepesi.",
+        ornekKisaKunye: "Qur’ani 94:6",
+        ornekMealKaynagi: "Rowad Translation Center, QuranEnc 1.0.5"
+    )
+
+    // ha — meal 94:6 `gununAyetiHavuzu.ts` (hausa_gummi, birebir), künye `GUNUN_AYETI_KAYNAKLARI.mealler.ha`
+    static let ha = GununAyetiYerelMetinleri(
+        galeriAdi: "Ayar yau",
+        galeriAciklama: "Aya da fassararta da ke canjawa kowace rana a Asuba.",
+        etiket: "AYAR YAU",
+        uygulamayiAcin: "Buɗe manhaja don ganin ayar yau",
+        ornekSigmiyor: "Ayar yau ba ta dace da wannan girma ba. Ku taɓa don karanta ta.",
+        ornekAcin: "Buɗe",
+        ornekArapcaKaynagi: "Larabci: Tanzil",
+        ornekMeal: "Lalle ne tãre da tsananin nan akwai wani sauƙi.",
+        ornekKisaKunye: "Alƙurʼani 94:6",
+        ornekMealKaynagi: "Abu Bakr Jumi, QuranEnc 1.2.2"
+    )
+
+    // am — Amharca (beta); örnek meal gununAyetiHavuzu.ts 94:6 `am` (amharic_sadiq) BİREBİR
+    static let am = GununAyetiYerelMetinleri(
+        galeriAdi: "የዕለቱ አንቀጽ",
+        galeriAciklama: "በየቀኑ በፈጅር የሚቀየር አንቀጽ እና ትርጉሙ።",
+        etiket: "የዕለቱ አንቀጽ",
+        uygulamayiAcin: "የዕለቱን አንቀጽ ለማየት መተግበሪያውን ይክፈቱ",
+        ornekSigmiyor: "የዛሬው አንቀጽ በዚህ መጠን አይበቃም። ለማንበብ ይንኩ።",
+        ornekAcin: "ክፈት",
+        ornekArapcaKaynagi: "ዓረብኛ፦ Tanzil",
+        ornekMeal: "ከችግር ጋር በእርግጥ ምቾት አልለ፡፡",
+        ornekKisaKunye: "ቁርኣን 94:6",
+        ornekMealKaynagi: "Muhammad Sadiq፣ QuranEnc 1.1.2"
+    )
+
+    // om — örnek meal `gununAyetiHavuzu.ts` 94:6 `om` birebir; künye `mealler.om`
+    static let om = GununAyetiYerelMetinleri(
+        galeriAdi: "Aayata guyyaa",
+        galeriAciklama: "Aayataafi hiikkaa isaa guyyaa guyyaan Subhiitti jijjiiramu.",
+        etiket: "AAYATA GUYYAA",
+        uygulamayiAcin: "Aayata guyyaa arguuf appicha banaa",
+        ornekSigmiyor: "Aayanni har'aa hanga kanaaf hin gahu. Dubbisuuf tuqaa.",
+        ornekAcin: "Banaa",
+        ornekArapcaKaynagi: "Arabaa: Tanzil",
+        ornekMeal: "Dhugumatti, rakkina wajjin laafinatu jira.",
+        ornekKisaKunye: "Qur'aana 94:6",
+        ornekMealKaynagi: "Gali Ababor, QuranEnc 1.0.3"
+    )
+
+    // so
+    static let so = GununAyetiYerelMetinleri(
+        galeriAdi: "Aayadda maanta",
+        galeriAciklama: "Aayad iyo tarjumaaddeeda oo isbeddesha maalin kasta waqtiga Subax.",
+        etiket: "AAYADDA MAANTA",
+        uygulamayiAcin: "Fur barnaamijka si aad u aragto aayadda maanta",
+        ornekSigmiyor: "Aayadda maanta kuma filna cabbirkan. Taabo si aad u akhrido.",
+        ornekAcin: "Fur",
+        ornekArapcaKaynagi: "Carabiga: Tanzil",
+        ornekMeal: "Xaqiiq, waxaa dhibka la socda faraj.",
+        ornekKisaKunye: "Qur'aan 94:6",
+        ornekMealKaynagi: "Abdullah Hasan Yaqoub, QuranEnc 1.0.26"
+    )
+
+    // ff
+    static let ff = GununAyetiYerelMetinleri(
+        galeriAdi: "Aaya ñalawma",
+        galeriAciklama: "Aaya e firo mum, waylotooɗo ñalawma kala e subaka.",
+        etiket: "AAYA ÑALAWMA",
+        uygulamayiAcin: "Udditee jaaɓngal ngal ngam yiyde aaya ñalawma",
+        ornekSigmiyor: "Aaya hannde haanaani e ɓetol ngol. Dobee ngam janngude ɗum.",
+        ornekAcin: "Udditee",
+        ornekArapcaKaynagi: "Aarabeere: Tanzil",
+        ornekMeal: "Pellet saɗteende kala na won'di e yaajeende.",
+        ornekKisaKunye: "Alqur’aana 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.2"
+    )
+
+    // yo
+    static let yo = GununAyetiYerelMetinleri(
+        galeriAdi: "Āyah ti òní",
+        galeriAciklama: "Āyah kan àti ìtumọ̀ rẹ̀ tí ń yí padà lójoojúmọ́ ní Subh.",
+        etiket: "ĀYAH TI ÒNÍ",
+        uygulamayiAcin: "Ẹ ṣí ìṣàfilọ́lẹ̀ láti rí āyah ti òní",
+        ornekSigmiyor: "Āyah ti òní kò bá ìwọ̀n yìí mu. Ẹ tẹ̀ ẹ́ láti kà á.",
+        ornekAcin: "Ṣí i",
+        ornekArapcaKaynagi: "Lárúbáwá: Tanzil",
+        ornekMeal: "Dájúdájú ìdẹ̀kùn wà lẹ́yìn ìnira sẹ́.",
+        ornekKisaKunye: "Al-Ƙur’ān 94:6",
+        ornekMealKaynagi: "Abu Rahimah Mikael, QuranEnc 1.0.9"
+    )
+
     static let tablo: [String: GununAyetiYerelMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
         "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
+        "sw": sw, "ha": ha, "am": am, "om": om, "so": so, "ff": ff, "yo": yo,
     ]
 
     static var simdiki: GununAyetiYerelMetinleri {
@@ -541,7 +640,8 @@ private struct MealMetni: View {
         // Meal ve kunye secilen rakamla (Arapcada "arab" → Dogu Arap); Arapca ayet (Tanzil)
         // birebir kalir.
         Text(WidgetMetin.rakam(meal))
-            .font(.system(stil, design: .serif))
+            // Ge'ez (Amharca) meal sistem tasariminda (serif tasarimda Ge'ez yok).
+            .font(.system(stil, design: GununAyetiKarari.mealSerifMi(meal) ? .serif : .default))
             .foregroundStyle(.primary)
             .fixedSize(horizontal: false, vertical: true)
     }
@@ -580,7 +680,7 @@ private struct SigmiyorKarti: View {
         VStack(alignment: .leading, spacing: 6) {
             AyetEtiketi(metin: metin.etiket)
             Text(WidgetMetin.rakam(kayit.kisaKunye))
-                .font(.system(.headline, design: .serif))
+                .font(.system(.headline, design: GununAyetiKarari.mealSerifMi(kayit.kisaKunye) ? .serif : .default))
                 .lineLimit(2)
                 .minimumScaleFactor(0.7)
             Text(metin.sigmiyor)

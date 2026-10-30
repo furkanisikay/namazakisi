@@ -656,13 +656,189 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Вақти ҷориро ҳамчун хондашуда қайд мекунад."
     )
 
-    /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil `// ÇEVİRİ: <kod>`
+    // sw
+    static let sw = WidgetMetinleri(
+        galeriAdi: "Wakati wa Swala",
+        galeriAciklama: "Wakati wa Swala wa sasa, muda uliobaki hadi uishe na nyakati za Swala za leo.",
+        veriEski: "Fungua programu ili kusasisha nyakati za Swala",
+        konumYok: "Fungua programu ili kuweka mahali pako",
+        kilindiSiradaki: "{ad} imeswaliwa · {sonraki} {saat}",
+        adCikis: "{ad} · unaisha {saat}",
+        siradakiAdSaat: "Inayofuata {ad} {saat}",
+        vaktiCikisErisim: "Wakati wa {ad}, unaisha {saat}",
+        siradakiErisim: "Inayofuata {ad}, {saat}",
+        cikisSaat: "Unaisha {saat}",
+        bitisSaat: "Unaisha {saat}",
+        kilindiBaslik: "{ad} imeswaliwa",
+        siradaki: "Inayofuata",
+        siradakiAd: "Inayofuata {ad}",
+        kildimErisim: "Nimeswali {ad}",
+        gunSatiriKilindi: ", imeswaliwa",
+        bitti: "Umeisha",
+        vakitCikti: "Wakati wa Swala umeisha",
+        kabulAlt: "{ad} imeswaliwa",
+        kontrolAdi: "Nimeswali",
+        kontrolAciklama: "Huweka alama Swala ya sasa imeswaliwa."
+    )
+
+    // ha — Hausa (beta): JS `sozluk/ha` (Kıldım "Na yi salla", Kılındı "An yi salla")
+    static let ha = WidgetMetinleri(
+        galeriAdi: "Lokacin salla",
+        galeriAciklama: "Lokacin sallar yanzu, lokacin da ya rage kafin ya fita da lokutan sallar yau.",
+        veriEski: "Buɗe manhaja don sabunta lokutan salla",
+        konumYok: "Buɗe manhaja don saita wurinku",
+        kilindiSiradaki: "An yi {ad} · {sonraki} {saat}",
+        adCikis: "{ad} · za ta fita {saat}",
+        siradakiAdSaat: "Na gaba {ad} {saat}",
+        vaktiCikisErisim: "Lokacin {ad}, zai fita {saat}",
+        siradakiErisim: "Na gaba {ad}, {saat}",
+        cikisSaat: "Za ta fita {saat}",
+        bitisSaat: "Za ta ƙare {saat}",
+        kilindiBaslik: "An yi sallar {ad}",
+        siradaki: "Na gaba",
+        siradakiAd: "Na gaba {ad}",
+        kildimErisim: "Na yi sallar {ad}",
+        gunSatiriKilindi: ", an yi",
+        bitti: "Ya ƙare",
+        vakitCikti: "Lokacin salla ya fita",
+        kabulAlt: "An yi sallar {ad}",
+        kontrolAdi: "Na yi salla",
+        kontrolAciklama: "Yana yin alamar an yi sallar yanzu."
+    )
+
+    // am — Amharca (beta); terimler src/core/dil/sozluk/am
+    static let am = WidgetMetinleri(
+        galeriAdi: "የሶላት ሰዓት",
+        galeriAciklama: "የአሁኑ የሶላት ሰዓት፣ እስኪያልቅ የቀረው ጊዜ እና የዛሬ የሶላት ሰዓቶች።",
+        veriEski: "የሶላት ሰዓቶችን ለማዘመን መተግበሪያውን ይክፈቱ",
+        konumYok: "አካባቢዎን ለማዘጋጀት መተግበሪያውን ይክፈቱ",
+        kilindiSiradaki: "{ad} ተሰግዷል · {sonraki} {saat}",
+        adCikis: "{ad} · ያበቃል {saat}",
+        siradakiAdSaat: "ቀጣይ {ad} {saat}",
+        vaktiCikisErisim: "የ{ad} ሰዓት፣ በ{saat} ያበቃል",
+        siradakiErisim: "ቀጣይ {ad}፣ {saat}",
+        cikisSaat: "ያበቃል {saat}",
+        bitisSaat: "ያበቃል {saat}",
+        kilindiBaslik: "{ad} ተሰግዷል",
+        siradaki: "ቀጣይ",
+        siradakiAd: "ቀጣይ {ad}",
+        kildimErisim: "{ad}ን ሰገድኩ",
+        gunSatiriKilindi: "፣ ተሰግዷል",
+        bitti: "አብቅቷል",
+        vakitCikti: "የሶላቱ ሰዓት አብቅቷል",
+        kabulAlt: "{ad} ተሰግዷል",
+        kontrolAdi: "ሰገድኩ",
+        kontrolAciklama: "የአሁኑን ሶላት እንደተሰገደ ምልክት ያደርጋል።"
+    )
+
+    // om
+    static let om = WidgetMetinleri(
+        galeriAdi: "Yeroo salaataa",
+        galeriAciklama: "Yeroo salaataa ammaa, yeroo hanga xumuramutti hafeefi yeroo salaataa har'aa.",
+        veriEski: "Yeroo salaataa haaromsuuf appicha banaa",
+        konumYok: "Bakka keessan qindeessuuf appicha banaa",
+        kilindiSiradaki: "{ad} salaatameera · {sonraki} {saat}",
+        adCikis: "{ad} · {saat}tti xumurama",
+        siradakiAdSaat: "Itti aanu {ad} {saat}",
+        vaktiCikisErisim: "Yeroo {ad}, {saat}tti xumurama",
+        siradakiErisim: "Itti aanu {ad}, {saat}",
+        cikisSaat: "{saat}tti xumurama",
+        bitisSaat: "{saat}tti xumurama",
+        kilindiBaslik: "{ad} salaatameera",
+        siradaki: "Itti aanu",
+        siradakiAd: "Itti aanu {ad}",
+        kildimErisim: "{ad}: Ani salaateera",
+        gunSatiriKilindi: ", salaatameera",
+        bitti: "Xumurame",
+        vakitCikti: "Yeroon salaataa xumurameera",
+        kabulAlt: "{ad} salaatameera",
+        kontrolAdi: "Ani salaateera",
+        kontrolAciklama: "Salaata ammaa akka salaatameetti mallattessa."
+    )
+
+    // so
+    static let so = WidgetMetinleri(
+        galeriAdi: "Waqtiga salaadda",
+        galeriAciklama: "Waqtiga salaadda hadda, waqtiga u haray dhammaadkiisa iyo waqtiyada salaadda maanta.",
+        veriEski: "Fur barnaamijka si loo cusboonaysiiyo waqtiyada salaadda",
+        konumYok: "Fur barnaamijka si aad u dejiso goobtaada",
+        kilindiSiradaki: "{ad} la tukaday · {sonraki} {saat}",
+        adCikis: "{ad} · dhammaad {saat}",
+        siradakiAdSaat: "Xiga {ad} {saat}",
+        vaktiCikisErisim: "Waqtiga {ad}, wuxuu dhammaanayaa {saat}",
+        siradakiErisim: "Xiga {ad}, {saat}",
+        cikisSaat: "Dhammaad {saat}",
+        bitisSaat: "Dhammaad {saat}",
+        kilindiBaslik: "{ad} la tukaday",
+        siradaki: "Xiga",
+        siradakiAd: "Xiga {ad}",
+        kildimErisim: "Waan tukaday {ad}",
+        gunSatiriKilindi: ", la tukaday",
+        bitti: "Dhammaaday",
+        vakitCikti: "Waqtiga salaaddu wuu dhammaaday",
+        kabulAlt: "{ad} la tukaday",
+        kontrolAdi: "Waan tukaday",
+        kontrolAciklama: "Wuxuu u calaamadeeyaa salaadda hadda la tukaday."
+    )
+
+    // ff
+    static let ff = WidgetMetinleri(
+        galeriAdi: "Waqutu juulde",
+        galeriAciklama: "Waqutu juulde jooni, saa’i heddiiɗo haa nde gasa e saa’iiji juulɗe hannde.",
+        veriEski: "Udditee jaaɓngal ngal ngam hesɗitinde saa’iiji juulɗe",
+        konumYok: "Udditee jaaɓngal ngal ngam teeltude nokkuure mon",
+        kilindiSiradaki: "{ad} juulaama · {sonraki} {saat}",
+        adCikis: "{ad} · gasay {saat}",
+        siradakiAdSaat: "Garoore {ad} {saat}",
+        vaktiCikisErisim: "Waqutu {ad}, gasay {saat}",
+        siradakiErisim: "Garoore {ad}, {saat}",
+        cikisSaat: "Gasay {saat}",
+        bitisSaat: "Gasay {saat}",
+        kilindiBaslik: "{ad} juulaama",
+        siradaki: "Garoore",
+        siradakiAd: "Garoore {ad}",
+        kildimErisim: "Mi juulii {ad}",
+        gunSatiriKilindi: ", juulaama",
+        bitti: "Gasii",
+        vakitCikti: "Waqutu juulde gasii",
+        kabulAlt: "{ad} juulaama",
+        kontrolAdi: "Mi juulii",
+        kontrolAciklama: "Hino maandina juulde jooni ndee ko juulaama."
+    )
+
+    // yo
+    static let yo = WidgetMetinleri(
+        galeriAdi: "Àkókò ìrun",
+        galeriAciklama: "Àkókò ìrun lọ́wọ́lọ́wọ́, àkókò tó kù kí ó tó parí àti àwọn àkókò ìrun òní.",
+        veriEski: "Ẹ ṣí ìṣàfilọ́lẹ̀ láti ṣe àfikún àwọn àkókò ìrun",
+        konumYok: "Ẹ ṣí ìṣàfilọ́lẹ̀ láti ṣètò ibùdó yín",
+        kilindiSiradaki: "{ad}: ti kírun · {sonraki} {saat}",
+        adCikis: "{ad} · yóò parí {saat}",
+        siradakiAdSaat: "Èyí tó kàn {ad} {saat}",
+        vaktiCikisErisim: "Àkókò {ad}, yóò parí {saat}",
+        siradakiErisim: "Èyí tó kàn {ad}, {saat}",
+        cikisSaat: "Yóò parí {saat}",
+        bitisSaat: "Yóò parí {saat}",
+        kilindiBaslik: "{ad}: ti kírun",
+        siradaki: "Tó kàn",
+        siradakiAd: "Èyí tó kàn {ad}",
+        kildimErisim: "Mo ti kí {ad}",
+        gunSatiriKilindi: ", ti kírun",
+        bitti: "Ó ti parí",
+        vakitCikti: "Àkókò ìrun ti kọjá",
+        kabulAlt: "{ad}: ti kírun",
+        kontrolAdi: "Mo ti kírun",
+        kontrolAciklama: "Ó ń sàmì sí ìrun lọ́wọ́lọ́wọ́ pé a ti kí i."
+    )
+
+    /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo; cevrilmemis dil `// ÇEVİRİ: <kod>`
     /// ile baslayan Ingilizce kopya).
     static let tablo: [String: WidgetMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
         "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
+        "sw": sw, "ha": ha, "am": am, "om": om, "so": so, "ff": ff, "yo": yo,
     ]
 
     static func dil(_ kod: String?) -> WidgetMetinleri {

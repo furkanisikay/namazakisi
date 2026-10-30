@@ -37,7 +37,7 @@ const arapca: Kural = (n) => {
   if (s100 >= 11 && s100 <= 99) return 'many';
   return 'other';
 };
-/** Farsça, Hintçe ve Bengalce: 0 ve 1 tekil. */
+/** Farsça, Hintçe, Bengalce, Amharca ve Fula: 0 ve 1 tekil (Fulada 1,5 de tekil; burada yalnız tam sayı). */
 const sifirBir: Kural = (n) => (n === 0 || n === 1 ? 'one' : 'other');
 
 const KURALLAR: Record<string, Kural> = {
@@ -50,6 +50,10 @@ const KURALLAR: Record<string, Kural> = {
   kk: birDiger,
   ky: birDiger,
   tg: birDiger,
+  sw: birDiger,
+  ha: birDiger,
+  om: birDiger,
+  so: birDiger,
   sq: birDiger,
   nl: birDiger,
   ps: birDiger,
@@ -57,6 +61,7 @@ const KURALLAR: Record<string, Kural> = {
   ug: birDiger,
   id: hepDiger,
   ms: hepDiger,
+  yo: hepDiger,
   fr: fransizca,
   ru: rusca,
   bs: bosnakca,
@@ -64,6 +69,8 @@ const KURALLAR: Record<string, Kural> = {
   fa: sifirBir,
   bn: sifirBir,
   hi: sifirBir,
+  am: sifirBir,
+  ff: sifirBir,
   es: ispanyolca,
 };
 

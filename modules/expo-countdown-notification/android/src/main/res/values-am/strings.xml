@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">የቀጥታ ቆጠራዎች</string>
+    <string name="countdown_kanal_canli_aciklama">በNow Bar እና በሁኔታ አሞሌው ውስጥ ያሉ ቆጠራዎች</string>
+    <string name="countdown_kanal_genel_ad">የቆጠራ ማሳወቂያዎች</string>
+    <string name="countdown_kanal_genel_aciklama">ለቆጠራ ማሳወቂያዎች የሚሆን ቻናል</string>
+
+    <string name="countdown_eylem_kildim">ሰገድኩ</string>
+    <string name="countdown_eylem_durdur">አቁም</string>
+
+    <string name="countdown_yedek_vakit">ፍጠን፣ የሶላቱ ሰዓት ሊያልቅ ነው።</string>
+    <string name="countdown_yedek_iftar">ጊዜው እያለቀ ነው።</string>
+    <string name="countdown_yedek_sahur">አሁንም መብላትና መጠጣት ይችላሉ፤ ጾሙ በቅርቡ ይጀምራል።</string>
+    <string name="countdown_yedek_seri">የዛሬ ሶላቶች አልተጠናቀቁም፤ ተከታታይነትዎን አያጡ።</string>
+
+    <string name="countdown_onek_vakit">ሰዓቱ እስኪያልቅ</string>
+    <string name="countdown_onek_vakit_dar">ሰዓቱ እያለቀ ነው</string>
+    <string name="countdown_onek_iftar">ኢፍጣር እስኪደርስ</string>
+    <string name="countdown_onek_iftar_dar">እስከ ኢፍጣር</string>
+    <string name="countdown_onek_sahur">ሱሑር እስኪያልቅ</string>
+    <string name="countdown_onek_sahur_dar">ሱሑር እያለቀ ነው</string>
+    <string name="countdown_onek_seri">ተከታታይነትዎን ለማዳን</string>
+    <string name="countdown_onek_seri_dar">ተከታታይነት እያለቀ ነው</string>
+</resources>

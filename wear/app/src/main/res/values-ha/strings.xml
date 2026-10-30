@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hausa. Terimler: src/core/dil/sozluk/ha (kesme ʼ U+02BC). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ha</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Salla ta gaba</string>
+    <string name="tile_aciklama">Salla ta gaba da lokacinta</string>
+    <string name="komplikasyon_adi">Lokacin da ya rage</string>
+    <string name="cikis_saati_komplikasyon_adi">Lokacin fitar salla</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Salla ta gaba</string>
+    <string name="bugun_tile_adi">Yau</string>
+    <string name="bugun_tile_aciklama">Salloli biyar na yau; ku yi alamar waɗanda kuka yi da taɓawa biyu</string>
+    <string name="ilerleme_komplikasyon_adi">Ci gaban yau</string>
+    <string name="dagilim_komplikasyon_adi">Taƙaitaccen yau</string>
+    <string name="kerahat_komplikasyon_adi">Lokacin makaruhi</string>
+    <string name="son_dakikalar_kanal_adi">Mintunan ƙarshe</string>
+    <string name="son_dakikalar_kanal_aciklama">Ƙidaya a fuskar agogo a mintunan ƙarshe na sallar da ba ku yi ba</string>
+    <string name="tesbihat_adi">Tasbihi</string>
+    <string name="tesbihat_kanal_adi">Tasbihi</string>
+    <string name="tesbihat_kanal_aciklama">Alama ta shiru a fuskar agogo don komawa tasbihin da ba a gama ba</string>
+    <string name="kible_adi">Alƙibla</string>
+    <string name="kible_komplikasyon_adi">Alƙibla</string>
+    <string name="camideyim_kanal_adi">A masallaci</string>
+    <string name="camideyim_kanal_aciklama">Alama ta shiru a fuskar agogo idan wayarku ta ba da rahoton kuna masallaci</string>
+    <string name="uyandirma_kanal_adi">Tashi a shiru</string>
+    <string name="uyandirma_kanal_aciklama">Yana tashe ku da girgiza kaɗai, don Asuba da Tahajjudi</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Na yi salla</string>
+    <string name="kilindi_isareti">✓ An yi salla</string>
+    <string name="kapat">Rufe</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Ku buɗe Namaz Akışı a wayarku don ganin lokutan salla.</string>
+    <string name="yuk_eskidi">Bayanan lokutan salla sun tsufa. Ku buɗe Namaz Akışı a wayarku don sabunta su.</string>
+    <string name="guncelleme_gerekli">Ku sabunta Namaz Akışı a agogonku.</string>
+    <string name="bildirim_izni">Don samun tunatarwa ko da wayarku ba ta tare da ku, ku ba da izinin sanarwar Namaz Akışı a saitunan agogo.</string>
+    <string name="cami_soru">Kuna masallaci?</string>
+    <string name="cami_evet">Ee</string>
+    <string name="cami_evet_aciklama">Ee, ina masallaci. Yana kunna Yanayin salla</string>
+    <string name="cami_hayir">Aʼa</string>
+    <string name="cami_hayir_aciklama">Aʼa, ba na masallaci</string>
+    <string name="camidesiniz">Kuna masallaci</string>
+    <string name="cami_degil">Wannan ba masallaci ba ne</string>
+    <string name="cami_degil_aciklama">Wannan ba masallaci ba ne. Ba za a sake ƙidaya wannan wuri a matsayin masallaci ba</string>
+    <string name="tesbihat_ac">Buɗe ƙidayar tasbihi</string>
+    <string name="kible_ac">Buɗe kamfas na Alƙibla</string>
+    <string name="ses_dene">Gwada sauti</string>
+    <string name="ses_dene_aciklama">Gwada karatu da murya na agogo</string>
+    <string name="telefonda_acin">Buɗe a waya</string>
+    <string name="telefonda_ekran_ac">Buɗe %1$s a wayarku</string>
+    <string name="ekran_kaza">Littafin ramuwa</string>
+    <string name="ekran_camideyim">A masallaci</string>
+    <string name="ekran_ayarlar">Saituna</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">an yi, ana daidaitawa</string>
+    <string name="durum_kilindi">an yi</string>
+    <string name="durum_girmedi">lokaci bai yi ba</string>
+    <string name="durum_simdiki">lokacin sallar yanzu, ku taɓa don yin alama</string>
+    <string name="durum_simdiki_kalan">lokacin sallar yanzu, %1$s, ku taɓa don yin alama</string>
+    <string name="durum_kilinmadi">ba a yi ba, ku taɓa don yin alama</string>
+    <string name="isaretleyin">Yi alama an yi</string>
+    <string name="esitleniyor">ana daidaitawa</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Tabbatar Na yi salla</string>
+    <string name="vazgecin">Soke</string>
+    <string name="vazgec">Soke</string>
+    <string name="kerahat_vaktindesiniz">Yanzu lokacin makaruhi ne.</string>
+    <string name="kilindi_dua">An yi salla. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Yanayin salla a kunne, zai ƙare %1$s. Ku taɓa don kashe shi</string>
+    <string name="namaz_modu_ac_aciklama">Kunna Yanayin salla a wayarku</string>
+    <string name="namaz_modu_kapatin">Kashe Yanayin salla</string>
+    <string name="namaz_modu_acin">Kunna Yanayin salla</string>
+    <string name="namaz_modu_acik_bitis">A kunne, zai ƙare %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Ana gano hanya…</string>
+    <string name="kible_yuk_yok">Ku buɗe Namaz Akışı a wayarku don gano Alƙibla.</string>
+    <string name="kible_konum_yok">Ku kunna wuri a wayarku don gano Alƙibla. Idan Namaz Akışı ba ta sabunta ba, ku sabunta ta.</string>
+    <string name="kible_sensor_yok">Wannan agogo ba shi da naʼurar kamfas. Kuna iya ganin hanyar Alƙibla a wayarku.</string>
+    <string name="kible_kuzeyden">Alƙibla %1$d° (daga arewa)</string>
+    <string name="kible_derece">Alƙibla %1$d°</string>
+    <string name="kible_telefonda_ac">Buɗe Alƙibla a wayarku</string>
+    <string name="kible_erisim">%1$s. Alƙibla tana %2$d° daga arewa, %3$s</string>
+    <string name="kible_hizali">Kuna fuskantar Alƙibla</string>
+    <string name="kible_kalibrasyon">Don daidaitawa, ku zagaya hannunku a sama kamar lamba 8</string>
+    <string name="kible_egim">Ku riƙe agogonku daidai da ƙasa</string>
+    <string name="kible_titresim_acik">Jagorar girgiza a kunne. Ku taɓa don kashe ta</string>
+    <string name="kible_titresim_kapali">Jagorar girgiza a kashe. Ku taɓa don kunna ta</string>
+    <string name="kible_harf_kuzey">A</string>
+    <string name="kible_harf_dogu">G</string>
+    <string name="kible_harf_guney">K</string>
+    <string name="kible_harf_bati">Y</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">An kammala tasbihi. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Jimilla %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Ƙirga</string>
+    <string name="tesbihat_bastan_baslayin">Fara daga farko</string>
+    <string name="tesbihat_bastan_soru">A fara daga farko?</string>
+    <string name="tesbihat_sifirlanir">Ana sake saita ƙirgar.</string>
+    <string name="tesbihat_geri_al">Mayar</string>
+    <string name="tesbihat_geri_al_aciklama">Mayar da ƙirga ta ƙarshe</string>
+    <string name="tesbihat_yeniden">Sake farawa</string>
+    <string name="tesbihat_yeniden_aciklama">Sake fara tasbihi</string>
+    <string name="tesbihat_suruyor">Tasbihi yana gudana: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Na yi salla. Yana rufe tashin</string>
+    <string name="uyandirma_kapat_aciklama">Rufe tashin</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Buɗe Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Ku taɓa don lokutan salla</string>
+    <string name="tile_telefonda_acin">Buɗe manhaja a wayarku</string>
+    <string name="tile_sonra">cikin %1$s</string>
+    <string name="tile_siradaki_aciklama">Salla ta gaba %1$s, za ta yi da ƙarfe %2$s. Buɗe manhaja</string>
+    <string name="tile_giris">za ta yi %1$s</string>
+    <string name="tile_cikis">za ta fita %1$s</string>
+    <string name="bugun_bos_satir1">Buɗe manhaja</string>
+    <string name="bugun_bos_satir2">a wayarku</string>
+    <string name="bugun_acma_aciklamasi">Yau an yi salloli %1$d/%2$d. Buɗe manhaja</string>
+    <string name="bugun_sayi">Yau %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Makaruhi · sake taɓawa don tabbatarwa</string>
+    <string name="bugun_onay_tekrar">Sake taɓawa don tabbatarwa</string>
+    <string name="bugun_tamam">Sallolin yau sun cika</string>
+    <string name="bugun_kilinmadi">Ba a yi %1$s ba</string>
+    <string name="bugun_siradaki">Na gaba: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Sake taɓawa</string>
+    <string name="bugun_kilindi">An yi %1$s</string>
+    <string name="bugun_kilindi_esitleniyor">An yi %1$s, ana daidaitawa</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Ana jiran lokutan salla; ku buɗe Namaz Akışı a wayarku</string>
+    <string name="komplikasyon_bekleniyor">Ana jiran lokuta</string>
+    <string name="komplikasyon_vakit">Salla</string>
+    <string name="komplikasyon_cikis">Fita</string>
+    <string name="komplikasyon_sirada">Gaba</string>
+    <string name="gun_durumu_aciklama">Yau an yi salloli %2$d cikin %1$d</string>
+    <string name="gun_durumu_kilinmamis">%1$s; ba a yi ba: %2$s</string>
+    <string name="komplikasyon_namaz">Salloli</string>
+    <string name="komplikasyon_kerahat">Makaruhi</string>
+    <string name="kerahat_icinde_aciklama">Lokacin makaruhi ne, zai ƙare %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Lokacin makaruhi na gaba %1$s</string>
+    <string name="kible_komplikasyon">Alƙibla tana %1$d° daga arewa. Buɗe kamfas</string>
+    <string name="kible_komplikasyon_konumlu">Alƙibla tana %1$d° daga arewa, %2$s. Buɗe kamfas</string>
+    <string name="kible_komplikasyon_konum_yok">Ku kunna wuri a wayarku don gano Alƙibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Tunatarwa ta gaggawa · Da girgiza</string>
+    <string name="muhafiz_kanal_acil">Tunatarwa ta gaggawa</string>
+    <string name="muhafiz_kanal_titresimli">Tunatarwar salla · Da girgiza</string>
+    <string name="muhafiz_kanal">Tunatarwar salla</string>
+    <string name="muhafiz_kanal_aciklama">Tunatarwar salla da ake nunawa a agogonku ko da wayarku ba ta tare da ku</string>
+    <string name="son_dakikalar_cikis">Fita: %1$s</string>
+    <string name="son_dakikalar_bitis">Ƙarewa: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Lokacin da ya rage kafin %1$s ta fita</string>
+    <string name="son_dakikalar_kalan_erisim">Lokacin da ya rage don %1$s</string>
+    <string name="cami_namaz_modu_bitis">Yanayin salla · zai ƙare %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">An buɗe a wayarku</string>
+    <string name="telefona_ulasilamadi">Ba a iya kaiwa ga wayarku ba</string>
+</resources>

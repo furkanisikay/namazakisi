@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kiswahili. Terms: src/core/dil/sozluk/sw (vakit.ts header). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">sw</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Swala inayofuata</string>
+    <string name="tile_aciklama">Swala inayofuata na wakati wake</string>
+    <string name="komplikasyon_adi">Muda uliobaki</string>
+    <string name="cikis_saati_komplikasyon_adi">Wakati wa Swala kuisha</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Swala inayofuata</string>
+    <string name="bugun_tile_adi">Leo</string>
+    <string name="bugun_tile_aciklama">Swala tano za leo; weka alama ulizoswali kwa kugusa mara mbili</string>
+    <string name="ilerleme_komplikasyon_adi">Maendeleo ya siku</string>
+    <string name="dagilim_komplikasyon_adi">Muhtasari wa siku</string>
+    <string name="kerahat_komplikasyon_adi">Wakati wa makruhu</string>
+    <string name="son_dakikalar_kanal_adi">Dakika za mwisho</string>
+    <string name="son_dakikalar_kanal_aciklama">Muda uliobaki kwenye uso wa saa katika dakika za mwisho za Swala ambayo hujaiswali</string>
+    <string name="tesbihat_adi">Tasbihi</string>
+    <string name="tesbihat_kanal_adi">Tasbihi</string>
+    <string name="tesbihat_kanal_aciklama">Ikoni tulivu kwenye uso wa saa ya kurudi kwenye tasbihi ambayo haijakamilika</string>
+    <string name="kible_adi">Kibla</string>
+    <string name="kible_komplikasyon_adi">Kibla</string>
+    <string name="camideyim_kanal_adi">Niko msikitini</string>
+    <string name="camideyim_kanal_aciklama">Ikoni tulivu kwenye uso wa saa simu yako inaporipoti kuwa uko msikitini</string>
+    <string name="uyandirma_kanal_adi">Kuamsha kimya</string>
+    <string name="uyandirma_kanal_aciklama">Hukuamsha kwa mtetemo tu, kwa Alfajiri na Tahajjud</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Nimeswali</string>
+    <string name="kilindi_isareti">✓ Imeswaliwa</string>
+    <string name="kapat">Funga</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Fungua Namaz Akışı kwenye simu yako ili kuona nyakati za Swala.</string>
+    <string name="yuk_eskidi">Data ya nyakati za Swala imepitwa na wakati. Fungua Namaz Akışı kwenye simu yako ili kuisasisha.</string>
+    <string name="guncelleme_gerekli">Sasisha Namaz Akışı kwenye saa yako.</string>
+    <string name="bildirim_izni">Ili kupata vikumbusho hata simu yako ikiwa haipo nawe, ruhusu arifa za Namaz Akışı katika mipangilio ya saa.</string>
+    <string name="cami_soru">Uko msikitini?</string>
+    <string name="cami_evet">Ndiyo</string>
+    <string name="cami_evet_aciklama">Ndiyo, niko msikitini. Huwasha Hali ya Swala</string>
+    <string name="cami_hayir">Hapana</string>
+    <string name="cami_hayir_aciklama">Hapana, siko msikitini</string>
+    <string name="camidesiniz">Uko msikitini</string>
+    <string name="cami_degil">Huu si msikiti</string>
+    <string name="cami_degil_aciklama">Huu si msikiti. Mahali hapa hapatahesabiwa tena kuwa msikiti</string>
+    <string name="tesbihat_ac">Fungua kihesabu cha tasbihi</string>
+    <string name="kible_ac">Fungua dira ya Kibla</string>
+    <string name="ses_dene">Jaribu sauti</string>
+    <string name="ses_dene_aciklama">Jaribu kusoma kwa sauti kwa saa</string>
+    <string name="telefonda_acin">Fungua kwenye simu</string>
+    <string name="telefonda_ekran_ac">Fungua %1$s kwenye simu yako</string>
+    <string name="ekran_kaza">Daftari la Qadha</string>
+    <string name="ekran_camideyim">Niko msikitini</string>
+    <string name="ekran_ayarlar">Mipangilio</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">imeswaliwa, inasawazisha</string>
+    <string name="durum_kilindi">imeswaliwa</string>
+    <string name="durum_girmedi">bado haujaingia</string>
+    <string name="durum_simdiki">wakati wa Swala wa sasa, gusa ili kuweka alama</string>
+    <string name="durum_simdiki_kalan">wakati wa Swala wa sasa, %1$s, gusa ili kuweka alama</string>
+    <string name="durum_kilinmadi">haikuswaliwa, gusa ili kuweka alama</string>
+    <string name="isaretleyin">Weka alama imeswaliwa</string>
+    <string name="esitleniyor">inasawazisha</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">Thibitisha Nimeswali</string>
+    <string name="vazgecin">Ghairi</string>
+    <string name="vazgec">Ghairi</string>
+    <string name="kerahat_vaktindesiniz">Sasa ni wakati wa makruhu.</string>
+    <string name="kilindi_dua">Imeswaliwa. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Hali ya Swala imewashwa, inaisha %1$s. Gusa ili kuizima</string>
+    <string name="namaz_modu_ac_aciklama">Washa Hali ya Swala kwenye simu yako</string>
+    <string name="namaz_modu_kapatin">Zima Hali ya Swala</string>
+    <string name="namaz_modu_acin">Washa Hali ya Swala</string>
+    <string name="namaz_modu_acik_bitis">Imewashwa, inaisha %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Inatafuta mwelekeo…</string>
+    <string name="kible_yuk_yok">Fungua Namaz Akışı kwenye simu yako ili kupata Kibla.</string>
+    <string name="kible_konum_yok">Washa mahali kwenye simu yako ili kupata Kibla. Ikiwa Namaz Akışı haijasasishwa, isasishe.</string>
+    <string name="kible_sensor_yok">Saa hii haina kihisi cha dira. Unaweza kuona mwelekeo wa Kibla kwenye simu yako.</string>
+    <string name="kible_kuzeyden">Kibla %1$d° (kutoka kaskazini)</string>
+    <string name="kible_derece">Kibla %1$d°</string>
+    <string name="kible_telefonda_ac">Fungua Kibla kwenye simu yako</string>
+    <string name="kible_erisim">%1$s. Kibla iko %2$d° kutoka kaskazini, %3$s</string>
+    <string name="kible_hizali">Umeelekea Kibla</string>
+    <string name="kible_kalibrasyon">Ili kurekebisha, sogeza kifundo chako hewani kwa umbo la 8</string>
+    <string name="kible_egim">Shika saa yako sambamba na ardhi</string>
+    <string name="kible_titresim_acik">Mwongozo wa mtetemo umewashwa. Gusa ili kuuzima</string>
+    <string name="kible_titresim_kapali">Mwongozo wa mtetemo umezimwa. Gusa ili kuuwasha</string>
+    <string name="kible_harf_kuzey">Ks</string>
+    <string name="kible_harf_dogu">Ms</string>
+    <string name="kible_harf_guney">Ku</string>
+    <string name="kible_harf_bati">Mg</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Tasbihi imekamilika. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Jumla %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Hesabu</string>
+    <string name="tesbihat_bastan_baslayin">Anza upya</string>
+    <string name="tesbihat_bastan_soru">Kuanza upya?</string>
+    <string name="tesbihat_sifirlanir">Hesabu inawekwa upya.</string>
+    <string name="tesbihat_geri_al">Tendua</string>
+    <string name="tesbihat_geri_al_aciklama">Tendua hesabu ya mwisho</string>
+    <string name="tesbihat_yeniden">Anza tena</string>
+    <string name="tesbihat_yeniden_aciklama">Anza tasbihi tena</string>
+    <string name="tesbihat_suruyor">Tasbihi inaendelea: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Nimeswali. Huzima kengele ya kuamsha</string>
+    <string name="uyandirma_kapat_aciklama">Zima kengele ya kuamsha</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Fungua Namaz Akışı</string>
+    <string name="tile_vakitler_icin">Gusa kwa nyakati za Swala</string>
+    <string name="tile_telefonda_acin">Fungua programu kwenye simu yako</string>
+    <string name="tile_sonra">baada ya %1$s</string>
+    <string name="tile_siradaki_aciklama">Swala inayofuata %1$s, inaingia saa %2$s. Fungua programu</string>
+    <string name="tile_giris">inaingia %1$s</string>
+    <string name="tile_cikis">inaisha %1$s</string>
+    <string name="bugun_bos_satir1">Fungua programu</string>
+    <string name="bugun_bos_satir2">kwenye simu yako</string>
+    <string name="bugun_acma_aciklamasi">Leo Swala %1$d/%2$d zimeswaliwa. Fungua programu</string>
+    <string name="bugun_sayi">Leo %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Wakati wa makruhu · gusa tena kuthibitisha</string>
+    <string name="bugun_onay_tekrar">Gusa tena kuthibitisha</string>
+    <string name="bugun_tamam">Swala za leo zimekamilika</string>
+    <string name="bugun_kilinmadi">%1$s haikuswaliwa</string>
+    <string name="bugun_siradaki">Inayofuata: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Gusa tena</string>
+    <string name="bugun_kilindi">%1$s imeswaliwa</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s imeswaliwa, inasawazisha</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Inasubiri nyakati za Swala; fungua Namaz Akışı kwenye simu yako</string>
+    <string name="komplikasyon_bekleniyor">Inasubiri nyakati</string>
+    <string name="komplikasyon_vakit">Swala</string>
+    <string name="komplikasyon_cikis">Inaisha</string>
+    <string name="komplikasyon_sirada">Ijayo</string>
+    <string name="gun_durumu_aciklama">Leo Swala %2$d kati ya %1$d zimeswaliwa</string>
+    <string name="gun_durumu_kilinmamis">%1$s; hazijaswaliwa: %2$s</string>
+    <string name="komplikasyon_namaz">Swala</string>
+    <string name="komplikasyon_kerahat">Makruhu</string>
+    <string name="kerahat_icinde_aciklama">Ni wakati wa makruhu, unaisha %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Wakati wa makruhu unaofuata %1$s</string>
+    <string name="kible_komplikasyon">Kibla iko %1$d° kutoka kaskazini. Fungua dira</string>
+    <string name="kible_komplikasyon_konumlu">Kibla iko %1$d° kutoka kaskazini, %2$s. Fungua dira</string>
+    <string name="kible_komplikasyon_konum_yok">Washa mahali kwenye simu yako ili kupata Kibla</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Kikumbusho cha haraka · Mtetemo</string>
+    <string name="muhafiz_kanal_acil">Kikumbusho cha haraka</string>
+    <string name="muhafiz_kanal_titresimli">Kikumbusho cha Swala · Mtetemo</string>
+    <string name="muhafiz_kanal">Kikumbusho cha Swala</string>
+    <string name="muhafiz_kanal_aciklama">Vikumbusho vya Swala vinavyoonyeshwa kwenye saa yako hata simu yako ikiwa haipo nawe</string>
+    <string name="son_dakikalar_cikis">Inaisha: %1$s</string>
+    <string name="son_dakikalar_bitis">Inaisha: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">Muda uliobaki hadi %1$s iishe</string>
+    <string name="son_dakikalar_kalan_erisim">Muda uliobaki kwa %1$s</string>
+    <string name="cami_namaz_modu_bitis">Hali ya Swala · inaisha %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Imefunguliwa kwenye simu yako</string>
+    <string name="telefona_ulasilamadi">Simu yako haifikiki</string>
+</resources>

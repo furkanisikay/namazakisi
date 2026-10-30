@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Weka msimbo wa QR ulio kwenye skrini ya TV ndani ya fremu</string>
+    <string name="tvesleme_qr_vazgec">Ghairi</string>
+    <string name="tvesleme_qr_vazgec_erisim">Ghairi kuchanganua</string>
+    <string name="tvesleme_qr_yabanci">Msimbo huu wa QR si wa Namaz Akışı TV. Changanua msimbo ulio kwenye TV.</string>
+    <string name="tvesleme_qr_okundu">Msimbo umechanganuliwa</string>
+</resources>

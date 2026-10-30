@@ -390,18 +390,7 @@ fun SigdirilanMetin(
         // Ölçülen metin çizilen metindir: rakamlar yerel ayarın rakamıyla (ar-SA'da ٠-٩).
         val yazi = yerelRakam(metin)
         val boy = remember(yazi, genislik, enFazla, agirlik) {
-            var b = enFazla.value
-            while (b > enAz.value &&
-                olcer.measure(
-                    yazi,
-                    stil.merge(TextStyle(fontSize = b.sp, fontWeight = agirlik)),
-                    maxLines = 1,
-                    softWrap = false,
-                ).size.width > genislik
-            ) {
-                b -= 0.5f
-            }
-            b.sp
+            sigdirilanBoy(olcer, yazi, genislik, enFazla, stil, agirlik, enAz)
         }
         Text(
             yazi,
@@ -415,4 +404,34 @@ fun SigdirilanMetin(
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
         )
     }
+}
+
+/**
+ * [SigdirilanMetin]'in küçültme kuralı (tek kaynak): [genislik] piksele sığana dek [enFazla]'dan
+ * [enAz]'a 0,5 sp adımla. Düğme etiketi gibi İÇ ÖLÇÜM (intrinsic) isteyen yuvalarda
+ * [SigdirilanMetin] KULLANILMAZ — BoxWithConstraints bir SubcomposeLayout'tur ve Wear M3
+ * Button/CompactButton etiketini `IntrinsicSize` ile ölçer → IllegalStateException; genişlik
+ * yuvanın DIŞINDA alınır, boy burada hesaplanıp düz `Text`'e verilir (`TesbihatEkrani`).
+ */
+fun sigdirilanBoy(
+    olcer: androidx.compose.ui.text.TextMeasurer,
+    yazi: String,
+    genislik: Int,
+    enFazla: androidx.compose.ui.unit.TextUnit,
+    stil: TextStyle,
+    agirlik: FontWeight,
+    enAz: androidx.compose.ui.unit.TextUnit = (enFazla.value * 0.6f).sp,
+): androidx.compose.ui.unit.TextUnit {
+    var b = enFazla.value
+    while (b > enAz.value &&
+        olcer.measure(
+            yazi,
+            stil.merge(TextStyle(fontSize = b.sp, fontWeight = agirlik)),
+            maxLines = 1,
+            softWrap = false,
+        ).size.width > genislik
+    ) {
+        b -= 0.5f
+    }
+    return b.sp
 }

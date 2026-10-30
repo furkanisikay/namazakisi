@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Nokkuure mon hino huutoree ngam hiisude saa’iiji juulɗe no feewi ngam nokku ɗo ngonuɗon. Nokkuure mon heddoto e kaɓirgal mon.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Nokkuure mon hino huutoree ngam hiisude saa’iiji juulɗe no feewi ngam nokku ɗo ngonuɗon e, so E juulirde huɓɓinaa, ngam huɓɓinde Mode juulde so on naatii e juulirde. Nokkuure mon heddoto e kaɓirgal mon.",
+  "NSLocationAlwaysUsageDescription": "Nokkuure mon hino huutoree ngam hesɗitinde saa’iiji juulɗe e hoore mum so on waylii saare e, so E juulirde huɓɓinaa, ngam huɓɓinde Mode juulde so on naatii e juulirde. Nokkuure mon heddoto e kaɓirgal mon.",
+  "NSCameraUsageDescription": "Kamera mon hino huutoree ngam hollude baŋŋe qibla dow jiytol kamera e janngude kod jokkondirgol telewisiyon mon. Nate ɗen mooftaaka, ɗe njaltataa kaɓirgal mon abada.",
+  "NSCalendarsUsageDescription": "Naatgol e kalandar hino huutoree ngam ɓeydude saa’iiji juulɗe e kalandar mon e, so on huɓɓinii ɗum, ngam ƴeewde so golle e kalandar mon hino hawri e waqutu juulde. Keɓe kalandar mon heddoto e kaɓirgal mon.",
+  "NSCalendarsFullAccessUsageDescription": "Naatgol e kalandar hino huutoree ngam ɓeydude saa’iiji juulɗe e kalandar mon e, so on huɓɓinii ɗum, ngam ƴeewde so golle e kalandar mon hino hawri e waqutu juulde. Keɓe kalandar mon heddoto e kaɓirgal mon.",
+  "NSLocalNetworkUsageDescription": "Jaaɓngal ngal hino jokkondira e telewisiyon e laylaytol nokku mon ngam neldude saa’iiji juulɗe mon e juulɗe ɗe on maandini. Keɓe ɗen ko sirlinaaɗe, hino yaha hakkunde kaɓirɗe ɗiɗi ɗin tan.",
+  "NSAlarmKitUsageDescription": "Taaɓe siftinoore ɗe on suɓi “Alarm goonga” hino teeltee wa alarmuuji, ngam on nana ɗe hay so talifon mon hino e deƴƴere walla Focus huɓɓinaa.",
+  "\"Vakti kıldım\"": "Mi juulii",
+  "\"Kıble\"": "Qibla"
+}

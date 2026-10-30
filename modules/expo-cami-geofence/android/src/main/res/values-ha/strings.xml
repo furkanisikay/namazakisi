@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A masallaci / Yanayin salla — Hausa (JS src/core/dil/sozluk/ha). -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">A masallaci</string>
+    <string name="camigeofence_kanal_durum_aciklama">Sanarwa ta shiru idan aka gano kuna masallaci</string>
+    <string name="camigeofence_kanal_soru_ad">Bayan barin masallaci</string>
+    <string name="camigeofence_kanal_soru_aciklama">Tambaya don ku yi alamar sallarku bayan kun bar masallaci</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Yanayin salla a kunne yake. Tunatarwa za ta zo a shiru.</string>
+    <string name="camigeofence_govde_mod">Yanayin salla a kunne yake.</string>
+    <string name="camigeofence_govde_sessiz">Tunatarwa za ta zo a shiru.</string>
+    <string name="camigeofence_govde_normal">Tunatarwa za ta zo kamar yadda aka saba.</string>
+    <string name="camigeofence_eylem_modu_kapat">Kashe yanayi</string>
+    <string name="camigeofence_eylem_cami_degil">Ba masallaci ba</string>
+
+    <string name="camigeofence_soru_baslik">Kuna masallaci?</string>
+    <string name="camigeofence_soru_govde">Kuna kusa da %1$s. Ba mu tabbata ba, don haka muke tambayar ku.</string>
+    <string name="camigeofence_varsayilan_ad">Masallaci</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Kunna Yanayin salla</string>
+    <string name="camigeofence_eylem_evet_camideyim">Ee, ina masallaci</string>
+    <string name="camigeofence_eylem_hayir">Aʼa</string>
+
+    <string name="camigeofence_kildiniz_mi">Kun yi sallar %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Kuna iya yin alama da taɓawa ɗaya.</string>
+    <string name="camigeofence_eylem_kildim">Na yi salla</string>
+    <string name="camigeofence_namaz_imsak">Asuba</string>
+    <string name="camigeofence_namaz_ogle">Azahar</string>
+    <string name="camigeofence_namaz_ikindi">Laʼasar</string>
+    <string name="camigeofence_namaz_aksam">Magariba</string>
+    <string name="camigeofence_namaz_yatsi">Isha</string>
+    <string name="camigeofence_namaz_cuma">Jumuʼa</string>
+
+    <string name="camigeofence_mod_kural_adi">Salla</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı tana kunna shi lokacin huɗubar Jumuʼa, a masallaci ko idan lokacin salla ya yi</string>
+</resources>

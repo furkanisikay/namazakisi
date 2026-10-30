@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Afaan Oromoo). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Ani salaateera</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Haala yeroo salaataa</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Taatee yeroo salaataa</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Qindaa\'inni kun appii hojii ofumaa irraa dabalama</string>
+  <string name="otomasyon_bilgi_tarayici">Barbaaddonni eeyyama dhaabbataa argachuu hin danda\'an. Tarree pilaagiinii appii akka Tasker, MacroDroid ykn Automate irraa dabalaa.</string>
+  <string name="otomasyon_bilgi_eklenti">Tarree pilaagiinii appii akka Tasker, MacroDroid ykn Automate keessaa \"Namaz Akışı\" filachuun dabalaa.</string>
+  <string name="otomasyon_engelli_baslik">%1$s dhorkameera</string>
+  <string name="otomasyon_engelli_mesaj">Duraan appiin kun salaata keessan akka hin mallatteessine dhorkitaniittu. Namaz Akışı keessatti Qindaa\'ina &gt; \"Appiiwwan Ani salaateera mallatteessan\" jalatti hayyamuu dandeessu.</string>
+  <string name="otomasyon_izin_baslik">%1$s wajjin fayyadamtuu?</string>
+  <string name="otomasyon_izin_kosul">%1$s yeroo yeroon salaataa gahu, yeroo xumuramaa jiruufi yeroo masjiida keessa jirtan beekee hojiiwwan ofumaa keessan hojjechiisuu danda\'a. Murtee keessan Namaz Akışı keessatti Qindaa\'ina &gt; \"Appiiwwan Ani salaateera mallatteessan\" jalatti jijjiiruu dandeessu.</string>
+  <string name="otomasyon_izin_kildim">%1$s hojii ofumaa isin qopheessitaniin salaata ammaa akka salaatameetti mallatteessuu danda\'a. Murtee keessan Namaz Akışı keessatti Qindaa\'ina &gt; \"Appiiwwan Ani salaateera mallatteessan\" jalatti jijjiiruu dandeessu.</string>
+  <string name="otomasyon_izin_ver">Hayyamaa</string>
+  <string name="otomasyon_engelle">Dhorkaa</string>
+  <string name="otomasyon_vazgec">Dhiisaa</string>
+  <string name="otomasyon_tamam">Tole</string>
+  <string name="otomasyon_tur_baslik">Yoom haa hojjetu?</string>
+  <string name="otomasyon_ileri">Itti aanu</string>
+  <string name="otomasyon_vakit_baslik">Salaata kam?</string>
+  <string name="otomasyon_herhangi_vakit">Yeroo salaataa kamiyyuu</string>
+  <string name="otomasyon_kaydet">Olkaa\'aa</string>
+  <string name="otomasyon_kosul_icinde">Yeroo yeroon salaataa jiru</string>
+  <string name="otomasyon_kosul_cikiyor">Yeroo yeroon salaataa xumuramaa jiru (daqiiqaan %1$d hafe, Eegduun Salaataa banaa)</string>
+  <string name="otomasyon_kosul_camide">Yeroo masjiida keessa jirtan</string>
+  <string name="otomasyon_olay_girdi">Yeroo yeroon salaataa gahu</string>
+  <string name="otomasyon_olay_cikiyor">Yeroo yeroon salaataa xumuramaa jiru (daqiiqaan %1$d hafe, Eegduun Salaataa banaa)</string>
+  <string name="otomasyon_olay_camide">Yeroo masjiida keessa akka jirtan beekamu</string>
+</resources>

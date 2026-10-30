@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Muda uliobaki wa moja kwa moja</string>
+    <string name="countdown_kanal_canli_aciklama">Muda uliobaki kwenye Now Bar na upau wa hali</string>
+    <string name="countdown_kanal_genel_ad">Arifa za muda uliobaki</string>
+    <string name="countdown_kanal_genel_aciklama">Chaneli ya arifa za muda uliobaki</string>
+
+    <string name="countdown_eylem_kildim">Nimeswali</string>
+    <string name="countdown_eylem_durdur">Simamisha</string>
+
+    <string name="countdown_yedek_vakit">Harakisha, wakati wa Swala unakaribia kuisha.</string>
+    <string name="countdown_yedek_iftar">Muda unakwisha.</string>
+    <string name="countdown_yedek_sahur">Bado unaweza kula na kunywa; swaumu inaanza karibuni.</string>
+    <string name="countdown_yedek_seri">Swala za leo hazijakamilika; usipoteze mfululizo wako.</string>
+
+    <string name="countdown_onek_vakit">Hadi wakati uishe</string>
+    <string name="countdown_onek_vakit_dar">Wakati unaisha</string>
+    <string name="countdown_onek_iftar">Hadi futari</string>
+    <string name="countdown_onek_iftar_dar">Hadi futari</string>
+    <string name="countdown_onek_sahur">Hadi daku iishe</string>
+    <string name="countdown_onek_sahur_dar">Daku inaisha</string>
+    <string name="countdown_onek_seri">Kuokoa mfululizo wako</string>
+    <string name="countdown_onek_seri_dar">Mfululizo unaisha</string>
+</resources>

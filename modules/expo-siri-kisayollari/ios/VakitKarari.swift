@@ -69,8 +69,8 @@ public enum SiriKildimKarari: Equatable {
 /// yeni ornek + `tablo` eslemesi + `desteklenenler`'e kod (`docs/ajan/coklu-dil.md`).
 public enum ArayuzDili {
     public static let varsayilan = "tr"
-    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg).
-    public static let desteklenenler: [String] = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg"]
+    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo).
+    public static let desteklenenler: [String] = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo"]
 
     /// "en", "en-US", "de_DE" → kok kod; bilinmeyen ya da bos kod → "tr". Eski Endonezce
     /// kodu "in" (Java/Android mirasi) "id" sayilir; iOS'ta Endonezce zaten "id"dir.
@@ -160,18 +160,18 @@ public enum RakamSistemi {
 
 /// CLDR cogul kategorisi ("zero", "one", "two", "few", "many", "other") — JS
 /// `src/core/dil/cogul.ts` ikizi (tamsayi icin); Urduca, Felemenkce, Arnavutca, Pestuca, Sorani,
-/// Uygurca ve Orta Asya dilleri (ur, nl, sq, ps, ckb, ug, az, uz, kk, ky, tg) `default` dalindadir (one/other).
+/// Uygurca ve Orta Asya dilleri (ur, nl, sq, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, om, so) `default` dalindadir (one/other).
 /// Cogul metin tablolari kategori → kalip tasir; dilde olmayan kategori "other"a duser.
 public enum CogulKurali {
     public static func kategori(_ dil: String, _ n: Int) -> String {
         let i = abs(n)
         switch ArayuzDili.coz(dil) {
-        case "id", "ms": return "other"
+        case "id", "ms", "yo": return "other"
         case "es":
             // `cogul.ts > ispanyolca`: yalniz 1 tekil (0 cogul); 1.000.000 katlari "many".
             if i == 1 { return "one" }
             return (i != 0 && i % 1_000_000 == 0) ? "many" : "other"
-        case "hi", "bn", "fa":
+        case "hi", "bn", "fa", "am", "ff":
             // `cogul.ts > sifirBir`: 0 ve 1 tekil.
             return (i == 0 || i == 1) ? "one" : "other"
         case "fr":
@@ -276,7 +276,7 @@ public struct VakitAdlari: Equatable {
 /// Yer tutucular `{ad}`, `{saat}`, `{giris}`, `{dua}` — `bicim` doldurur.
 ///
 /// Duzen (ceviri ajanlari icin): dil basina bir `static let`, sira tr, en, id, de, fr, bs,
-/// ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dilin ornegi Ingilizcenin birebir kopyasidir ve `// ÇEVİRİ: <kod>`
+/// ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo; cevrilmemis dilin ornegi Ingilizcenin birebir kopyasidir ve `// ÇEVİRİ: <kod>`
 /// satiriyla baslar; Ozbekce ornegi Latin, Kazakca Kiril yazilir (`docs/ajan/coklu-dil.md > Alfabe`).
 /// Nobetci: `test/main.swift` (her dil Turkceyle ayni yer tutucular).
 public struct VakitMetinleri: Equatable {
@@ -965,12 +965,202 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Барномаро кушоед"
     )
 
+    // sw
+    public static let sw = VakitMetinleri(
+        dil: "sw",
+        adlar: ["sabah": "Alfajiri", "ogle": "Adhuhuri", "ikindi": "Alasiri", "aksam": "Magharibi", "yatsi": "Isha"],
+        gunes: "Macheo",
+        konumYok: "Fungua programu na uweke mahali pako ili nyakati za Swala zikokotolewe.",
+        veriEski: "Nyakati za Swala zimepitwa na wakati. Fungua programu mara moja ili kuzisasisha.",
+        girisBugun: "saa {saat}",
+        girisYarin: "kesho saa {saat}",
+        suAnVakti: "Sasa ni wakati wa {ad}.",
+        suAnVaktiCikis: "Sasa ni wakati wa {ad}; unaisha saa {saat}.",
+        siradakiNamaz: "Swala inayofuata ni {ad} {giris}.",
+        isaretlendi: "{ad} imewekwa alama imeswaliwa. {dua}.",
+        zatenKilindi: "{ad} tayari imewekwa alama imeswaliwa.",
+        vakitYok: "Hakuna Swala ya kuweka alama sasa hivi.",
+        vakitYokSiradaki: "Hakuna Swala ya kuweka alama sasa hivi. Inayofuata ni {ad} {giris}.",
+        onay: "Kuweka alama {ad} imeswaliwa?",
+        vakitDegisti: "Wakati wa Swala umebadilika, kwa hivyo hakuna kilichowekwa alama. Jaribu tena.",
+        kabulDuasi: "Mwenyezi Mungu aikubali",
+        kildim: "Nimeswali",
+        kilindi: "Imeswaliwa",
+        kontrolKildim: "{ad} · Nimeswali",
+        kontrolKilindi: "{ad} imeswaliwa",
+        kontrolVakitYok: "Hakuna Swala ya kuweka alama",
+        uygulamayiAcin: "Fungua programu"
+    )
+
+    // ha — Hausa (beta): JS `sozluk/ha` (Kıldım "Na yi salla", Kılındı "An yi salla", hitap 2. çoğul "ku")
+    public static let ha = VakitMetinleri(
+        dil: "ha",
+        adlar: ["sabah": "Asuba", "ogle": "Azahar", "ikindi": "Laʼasar", "aksam": "Magariba", "yatsi": "Isha"],
+        gunes: "Fitowar Rana",
+        konumYok: "Ku buɗe manhajar ku saita wurinku don a iya lissafa lokutan salla.",
+        veriEski: "Lokutan salla sun tsufa. Ku buɗe manhajar sau ɗaya don sabunta su.",
+        girisBugun: "da ƙarfe {saat}",
+        girisYarin: "gobe da ƙarfe {saat}",
+        suAnVakti: "Yanzu lokacin {ad} ne.",
+        suAnVaktiCikis: "Yanzu lokacin {ad} ne; zai fita da ƙarfe {saat}.",
+        siradakiNamaz: "Salla ta gaba ita ce {ad}, {giris}.",
+        isaretlendi: "An yi alamar an yi sallar {ad}. {dua}.",
+        zatenKilindi: "An riga an yi alamar an yi sallar {ad}.",
+        vakitYok: "Babu sallar da za a yi wa alama yanzu.",
+        vakitYokSiradaki: "Babu sallar da za a yi wa alama yanzu. Na gaba shi ne {ad}, {giris}.",
+        onay: "A yi alamar an yi sallar {ad}?",
+        vakitDegisti: "Lokacin salla ya canja, don haka ba a yi alamar komai ba. Sake gwadawa.",
+        kabulDuasi: "Allah ya karɓa",
+        kildim: "Na yi salla",
+        kilindi: "An yi salla",
+        kontrolKildim: "{ad} · Na yi salla",
+        kontrolKilindi: "An yi sallar {ad}",
+        kontrolVakitYok: "Babu sallar da za a yi wa alama",
+        uygulamayiAcin: "Buɗe manhaja"
+    )
+
+    // am — Amharca (beta); terimler src/core/dil/sozluk/am
+    public static let am = VakitMetinleri(
+        dil: "am",
+        adlar: ["sabah": "ፈጅር", "ogle": "ዙህር", "ikindi": "አስር", "aksam": "መግሪብ", "yatsi": "ኢሻ"],
+        gunes: "ፀሐይ መውጣት",
+        konumYok: "የሶላት ሰዓቶች እንዲሰሉ መተግበሪያውን ይክፈቱና አካባቢዎን ያዘጋጁ።",
+        veriEski: "የሶላት ሰዓቶቹ ጊዜያቸው ያለፈባቸው ናቸው። ለማዘመን መተግበሪያውን አንድ ጊዜ ይክፈቱ።",
+        girisBugun: "በ{saat}",
+        girisYarin: "ነገ በ{saat}",
+        suAnVakti: "አሁን የ{ad} ሰዓት ነው።",
+        suAnVaktiCikis: "አሁን የ{ad} ሰዓት ነው፤ በ{saat} ያበቃል።",
+        siradakiNamaz: "ቀጣዩ ሶላት {ad} ነው፣ {giris}።",
+        isaretlendi: "{ad} እንደተሰገደ ምልክት ተደርጓል። {dua}።",
+        zatenKilindi: "{ad} አስቀድሞ እንደተሰገደ ምልክት ተደርጓል።",
+        vakitYok: "አሁን ምልክት የሚደረግበት ሶላት የለም።",
+        vakitYokSiradaki: "አሁን ምልክት የሚደረግበት ሶላት የለም። ቀጣዩ {ad} ነው፣ {giris}።",
+        onay: "{ad} እንደተሰገደ ምልክት ይደረግ?",
+        vakitDegisti: "የሶላቱ ሰዓት ስለተቀየረ ምንም ምልክት አልተደረገም። እንደገና ይሞክሩ።",
+        kabulDuasi: "አላህ ይቀበለው",
+        kildim: "ሰገድኩ",
+        kilindi: "ተሰግዷል",
+        kontrolKildim: "{ad} · ሰገድኩ",
+        kontrolKilindi: "{ad} ተሰግዷል",
+        kontrolVakitYok: "ምልክት የሚደረግበት ሶላት የለም",
+        uygulamayiAcin: "መተግበሪያውን ክፈት"
+    )
+
+    // om
+    public static let om = VakitMetinleri(
+        dil: "om",
+        adlar: ["sabah": "Subhii", "ogle": "Zuhrii", "ikindi": "Asrii", "aksam": "Maghriba", "yatsi": "Ishaa'ii"],
+        gunes: "Baha aduu",
+        konumYok: "Yeroon salaataa akka herregamuuf appicha banaatii bakka keessan qindeessaa.",
+        veriEski: "Yeroon salaataa moofaa dha. Haaromsuuf appicha si'a tokko banaa.",
+        girisBugun: "sa'aatii {saat}tti",
+        girisYarin: "boru sa'aatii {saat}tti",
+        suAnVakti: "Amma yeroo {ad} ti.",
+        suAnVaktiCikis: "Amma yeroo {ad} ti; {saat}tti xumurama.",
+        siradakiNamaz: "Salaanni itti aanu {ad}, {giris}.",
+        isaretlendi: "{ad} akka salaatameetti mallattaa'eera. {dua}.",
+        zatenKilindi: "{ad} duraan akka salaatameetti mallattaa'eera.",
+        vakitYok: "Amma salaanni mallattaa'u hin jiru.",
+        vakitYokSiradaki: "Amma salaanni mallattaa'u hin jiru. Kan itti aanu {ad}, {giris}.",
+        onay: "{ad} akka salaatameetti mallatteessituu?",
+        vakitDegisti: "Yeroon salaataa waan jijjiirameef wanti tokkollee hin mallattoofne. Irra deebi'aa yaalaa.",
+        kabulDuasi: "Rabbiin haa qeebalu",
+        kildim: "Ani salaateera",
+        kilindi: "Salaatameera",
+        kontrolKildim: "{ad} · Ani salaateera",
+        kontrolKilindi: "{ad} salaatameera",
+        kontrolVakitYok: "Salaanni mallattaa'u hin jiru",
+        uygulamayiAcin: "Appicha banaa"
+    )
+
+    // so
+    public static let so = VakitMetinleri(
+        dil: "so",
+        adlar: ["sabah": "Subax", "ogle": "Duhur", "ikindi": "Casar", "aksam": "Maghrib", "yatsi": "Cishe"],
+        gunes: "Qorrax soo bax",
+        konumYok: "Fur barnaamijka oo deji goobtaada si waqtiyada salaadda loo xisaabiyo.",
+        veriEski: "Waqtiyada salaaddu waa duug. Hal mar fur barnaamijka si loo cusboonaysiiyo.",
+        girisBugun: "saacadda {saat}",
+        girisYarin: "berri saacadda {saat}",
+        suAnVakti: "Hadda waa waqtiga {ad}.",
+        suAnVaktiCikis: "Hadda waa waqtiga {ad}; wuxuu dhammaanayaa {saat}.",
+        siradakiNamaz: "Salaadda xigta waa {ad} {giris}.",
+        isaretlendi: "{ad} waxaa lagu calaamadeeyay la tukaday. {dua}.",
+        zatenKilindi: "{ad} horay ayaa loogu calaamadeeyay la tukaday.",
+        vakitYok: "Hadda ma jirto salaad la calaamadeeyo.",
+        vakitYokSiradaki: "Hadda ma jirto salaad la calaamadeeyo. Tan xigta waa {ad} {giris}.",
+        onay: "Ma u calaamadaynaysaa {ad} la tukaday?",
+        vakitDegisti: "Waqtiga salaaddu wuu isbeddelay, sidaas darteed waxba lama calaamadeyn. Isku day mar kale.",
+        kabulDuasi: "Alle ha aqbalo",
+        kildim: "Waan tukaday",
+        kilindi: "La tukaday",
+        kontrolKildim: "{ad} · Waan tukaday",
+        kontrolKilindi: "{ad} la tukaday",
+        kontrolVakitYok: "Salaad la calaamadeeyo ma jirto",
+        uygulamayiAcin: "Fur barnaamijka"
+    )
+
+    // ff
+    public static let ff = VakitMetinleri(
+        dil: "ff",
+        adlar: ["sabah": "Subaka", "ogle": "Fanaa", "ikindi": "Alansaraa", "aksam": "Futuroo", "yatsi": "Geeƴe"],
+        gunes: "Puɗal naange",
+        konumYok: "Udditee jaaɓngal ngal, teeltee nokkuure mon ngam saa’iiji juulɗe hiiseede.",
+        veriEski: "Saa’iiji juulɗe ɓooyii. Udditee jaaɓngal ngal laawol go’o ngam hesɗitinde ɗi.",
+        girisBugun: "e {saat}",
+        girisYarin: "janngo e {saat}",
+        suAnVakti: "Jooni ko waqutu {ad}.",
+        suAnVaktiCikis: "Jooni ko waqutu {ad}; gasay e {saat}.",
+        siradakiNamaz: "Juulde garoore ndee ko {ad} {giris}.",
+        isaretlendi: "{ad} maandinaama ko juulaama. {dua}.",
+        zatenKilindi: "{ad} maandinaama ko juulaama tawo.",
+        vakitYok: "Alaa juulde maandinteende jooni.",
+        vakitYokSiradaki: "Alaa juulde maandinteende jooni. Garoore ndee ko {ad} {giris}.",
+        onay: "Maandinee {ad} ko juulaama?",
+        vakitDegisti: "Waqutu juulde waylii, ɗum noon hay huunde maandinaaka. Etee kadi.",
+        kabulDuasi: "Yo Alla jaɓu",
+        kildim: "Mi juulii",
+        kilindi: "Juulaama",
+        kontrolKildim: "{ad} · Mi juulii",
+        kontrolKilindi: "{ad} juulaama",
+        kontrolVakitYok: "Alaa juulde maandinteende",
+        uygulamayiAcin: "Udditee jaaɓngal ngal"
+    )
+
+    // yo
+    public static let yo = VakitMetinleri(
+        dil: "yo",
+        adlar: ["sabah": "Subh", "ogle": "Ṭḥuhr", "ikindi": "‘Asr", "aksam": "Mọgrib", "yatsi": "‘Iṣā’"],
+        gunes: "Yíyọ òòrùn",
+        konumYok: "Ẹ ṣí ìṣàfilọ́lẹ̀, kí ẹ sì ṣètò ibùdó yín kí a lè ṣírò àwọn àkókò ìrun.",
+        veriEski: "Àwọn àkókò ìrun ti pẹ́. Ẹ ṣí ìṣàfilọ́lẹ̀ lẹ́ẹ̀kan láti ṣe àfikún wọn.",
+        girisBugun: "ní {saat}",
+        girisYarin: "ní ọ̀la ní {saat}",
+        suAnVakti: "Àkókò {ad} ni báyìí.",
+        suAnVaktiCikis: "Àkókò {ad} ni báyìí; yóò parí ní {saat}.",
+        siradakiNamaz: "Ìrun tó kàn ni {ad} {giris}.",
+        isaretlendi: "A ti sàmì sí {ad} pé ẹ ti kí i. {dua}.",
+        zatenKilindi: "A ti sàmì sí {ad} tẹ́lẹ̀ pé ẹ ti kí i.",
+        vakitYok: "Kò sí ìrun tí a lè sàmì sí báyìí.",
+        vakitYokSiradaki: "Kò sí ìrun tí a lè sàmì sí báyìí. Èyí tó kàn ni {ad} {giris}.",
+        onay: "Ṣé kí a sàmì sí {ad} pé ẹ ti kí i?",
+        vakitDegisti: "Àkókò ìrun ti yí padà, nítorí náà a kò sàmì sí nǹkankan. Ẹ gbìyànjú lẹ́ẹ̀kan sí i.",
+        kabulDuasi: "Kí Allāhu gbà á",
+        kildim: "Mo ti kírun",
+        kilindi: "Ti kírun",
+        kontrolKildim: "{ad} · Mo ti kírun",
+        kontrolKilindi: "{ad}: ti kírun",
+        kontrolVakitYok: "Kò sí ìrun láti sàmì sí",
+        uygulamayiAcin: "Ṣí ìṣàfilọ́lẹ̀"
+    )
+
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).
     public static let tablo: [String: VakitMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
         "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
+        "sw": sw, "ha": ha, "am": am, "om": om, "so": so, "ff": ff, "yo": yo,
     ]
 
     /// Dil koduna gore metinler ("en-US" → Ingilizce; bilinmeyen → Turkce). Kullanicinin

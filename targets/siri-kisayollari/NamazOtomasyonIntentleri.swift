@@ -99,7 +99,7 @@ enum OtomasyonMetni {
 }
 
 /// Otomasyon cevaplarinin dil tablosu. Duzen: dil basina bir `static let`, sira tr, en, id,
-/// de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
+/// de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
 /// `kalanDakika` CLDR kategorisi ("one", "few", "many", "other"; `CogulKurali`) → kalip;
 /// eksik kategori "other"a duser. Yer tutucular `{ad}`, `{n}`.
 struct OtomasyonMetinleri {
@@ -297,11 +297,61 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Не, ҳанӯз қайд нашудааст."
     )
 
+    // sw — Svahili (beta): JS `sozluk/sw`; CLDR sw one/other (ad sayıdan önce, one = other)
+    static let sw = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} inaingia baada ya dakika {n}.", "other": "{ad} inaingia baada ya dakika {n}."],
+        evetKilindi: "Ndiyo, imewekwa alama imeswaliwa.",
+        hayirKilinmadi: "Hapana, bado haijawekwa alama."
+    )
+
+    // ha — Hausa (beta): JS `sozluk/ha`; CLDR ha one/other, sayı addan sonra, ad çekilmez (one = other)
+    static let ha = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} za ta yi cikin minti {n}.", "other": "{ad} za ta yi cikin minti {n}."],
+        evetKilindi: "Ee, an yi mata alama an yi ta.",
+        hayirKilinmadi: "Aʼa, ba a yi mata alama ba tukuna."
+    )
+
+    // am — Amharca (beta); one = 0 ve 1, sayıdan sonra ad tekil
+    static let am = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} ከ{n} ደቂቃ በኋላ ይገባል።", "other": "{ad} ከ{n} ደቂቃ በኋላ ይገባል።"],
+        evetKilindi: "አዎ፣ እንደተሰገደ ምልክት ተደርጓል።",
+        hayirKilinmadi: "አይ፣ ገና ምልክት አልተደረገበትም።"
+    )
+
+    // om — JS `sozluk/om`; CLDR om one/other, rakamla yazılınca ad tekil (one = other)
+    static let om = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} daqiiqaa {n} booda jalqaba.", "other": "{ad} daqiiqaa {n} booda jalqaba."],
+        evetKilindi: "Eeyyee, akka salaatameetti mallattaa'eera.",
+        hayirKilinmadi: "Lakki, ammallee hin mallattoofne."
+    )
+
+    // so
+    static let so = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} wuxuu bilaabmayaa {n} daqiiqo kadib.", "other": "{ad} wuxuu bilaabmayaa {n} daqiiqo kadib."],
+        evetKilindi: "Haa, waxaa lagu calaamadeeyay la tukaday.",
+        hayirKilinmadi: "Maya, weli lama calaamadeyn."
+    )
+
+    // ff
+    static let ff = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} fuɗɗoto caggal {n} hojom.", "other": "{ad} fuɗɗoto caggal {n} hojomaaji."],
+        evetKilindi: "Awa, maandinaama ko juulaama.",
+        hayirKilinmadi: "Aa’a, maandinaaka tawo."
+    )
+
+    // yo
+    static let yo = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} yóò bẹ̀rẹ̀ lẹ́yìn ìṣẹ́jú {n}.", "other": "{ad} yóò bẹ̀rẹ̀ lẹ́yìn ìṣẹ́jú {n}."],
+        evetKilindi: "Bẹ́ẹ̀ ni, a ti sàmì sí i pé ẹ ti kí i.",
+        hayirKilinmadi: "Bẹ́ẹ̀ kọ́, a kò tíì sàmì sí i."
+    )
+
     static let tablo: [String: OtomasyonMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
         "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
+        "sw": sw, "ha": ha, "am": am, "om": om, "so": so, "ff": ff, "yo": yo,
     ]
 
     static func dil(_ kod: String) -> OtomasyonMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

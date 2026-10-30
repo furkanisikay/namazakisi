@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Waɗee kod QR yaynirde telewisiyon ngon e nder kaare ngoo</string>
+    <string name="tvesleme_qr_vazgec">Haaytee</string>
+    <string name="tvesleme_qr_vazgec_erisim">Haaytee janngugol</string>
+    <string name="tvesleme_qr_yabanci">Kod QR ngoo wonaa Namaz Akışı TV. Janngee kod telewisiyon ngon.</string>
+    <string name="tvesleme_qr_okundu">Kod janngaama</string>
+</resources>

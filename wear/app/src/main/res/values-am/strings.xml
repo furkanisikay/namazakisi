@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Amharca. Terimler: src/core/dil/sozluk/am (vakit.ts başı). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">am</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">ቀጣይ ሶላት</string>
+    <string name="tile_aciklama">ቀጣዩ ሶላት እና ሰዓቱ</string>
+    <string name="komplikasyon_adi">የቀረው ጊዜ</string>
+    <string name="cikis_saati_komplikasyon_adi">የሶላት ማብቂያ ሰዓት</string>
+    <string name="siradaki_namaz_komplikasyon_adi">ቀጣይ ሶላት</string>
+    <string name="bugun_tile_adi">ዛሬ</string>
+    <string name="bugun_tile_aciklama">የዛሬ አምስት ሶላቶች፤ የሰገዷቸውን በሁለት ንክኪ ምልክት ያድርጉ</string>
+    <string name="ilerleme_komplikasyon_adi">ዕለታዊ እድገት</string>
+    <string name="dagilim_komplikasyon_adi">የቀኑ አጠቃላይ እይታ</string>
+    <string name="kerahat_komplikasyon_adi">ሶላት ክልክል የሆነበት ወቅት</string>
+    <string name="son_dakikalar_kanal_adi">የመጨረሻ ደቂቃዎች</string>
+    <string name="son_dakikalar_kanal_aciklama">ያልሰገዱት ሶላት የመጨረሻ ደቂቃዎች ውስጥ በሰዓቱ ገጽ ላይ ቆጠራ</string>
+    <string name="tesbihat_adi">ተስቢሕ</string>
+    <string name="tesbihat_kanal_adi">ተስቢሕ</string>
+    <string name="tesbihat_kanal_aciklama">ወዳልተጠናቀቀ ተስቢሕ ለመመለስ በሰዓቱ ገጽ ላይ ጸጥ ያለ ምልክት</string>
+    <string name="kible_adi">ቂብላ</string>
+    <string name="kible_komplikasyon_adi">ቂብላ</string>
+    <string name="camideyim_kanal_adi">መስጂድ ውስጥ ነኝ</string>
+    <string name="camideyim_kanal_aciklama">ስልክዎ መስጂድ ውስጥ እንዳሉ ሲያሳውቅ በሰዓቱ ገጽ ላይ ጸጥ ያለ ምልክት</string>
+    <string name="uyandirma_kanal_adi">ጸጥ ያለ መቀስቀሻ</string>
+    <string name="uyandirma_kanal_aciklama">ለፈጅር እና ለተሀጁድ በንዝረት ብቻ ይቀሰቅስዎታል</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">ሰገድኩ</string>
+    <string name="kilindi_isareti">✓ ተሰግዷል</string>
+    <string name="kapat">አሰናብት</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">የሶላት ሰዓቶችን ለማየት በስልክዎ ላይ Namaz Akışıን ይክፈቱ።</string>
+    <string name="yuk_eskidi">የሶላት ሰዓት መረጃው ጊዜው ያለፈበት ነው። ለማደስ በስልክዎ ላይ Namaz Akışıን ይክፈቱ።</string>
+    <string name="guncelleme_gerekli">በሰዓትዎ ላይ Namaz Akışıን ያዘምኑ።</string>
+    <string name="bildirim_izni">ስልክዎ ከእርስዎ ጋር ባይሆንም አስታዋሾችን ለማግኘት በሰዓቱ ቅንብሮች ውስጥ የNamaz Akışı ማሳወቂያዎችን ይፍቀዱ።</string>
+    <string name="cami_soru">መስጂድ ውስጥ ነዎት?</string>
+    <string name="cami_evet">አዎ</string>
+    <string name="cami_evet_aciklama">አዎ፣ መስጂድ ውስጥ ነኝ። የሶላት ሁነታን ያበራል</string>
+    <string name="cami_hayir">አይ</string>
+    <string name="cami_hayir_aciklama">አይ፣ መስጂድ ውስጥ አይደለሁም</string>
+    <string name="camidesiniz">መስጂድ ውስጥ ነዎት</string>
+    <string name="cami_degil">ይህ መስጂድ አይደለም</string>
+    <string name="cami_degil_aciklama">ይህ መስጂድ አይደለም። ይህ ቦታ ዳግም እንደ መስጂድ አይቆጠርም</string>
+    <string name="tesbihat_ac">የተስቢሕ መቁጠሪያን ክፈት</string>
+    <string name="kible_ac">የቂብላ ኮምፓስን ክፈት</string>
+    <string name="ses_dene">ድምፁን ሞክር</string>
+    <string name="ses_dene_aciklama">የሰዓቱን ጮክ ብሎ ማንበብ ሞክር</string>
+    <string name="telefonda_acin">በስልክ ላይ ክፈት</string>
+    <string name="telefonda_ekran_ac">%1$sን በስልክዎ ላይ ክፈት</string>
+    <string name="ekran_kaza">የቀዷእ መዝገብ</string>
+    <string name="ekran_camideyim">መስጂድ ውስጥ ነኝ</string>
+    <string name="ekran_ayarlar">ቅንብሮች</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">ተሰግዷል፣ በማመሳሰል ላይ</string>
+    <string name="durum_kilindi">ተሰግዷል</string>
+    <string name="durum_girmedi">ገና አልገባም</string>
+    <string name="durum_simdiki">የአሁኑ የሶላት ሰዓት፣ ምልክት ለማድረግ ይንኩ</string>
+    <string name="durum_simdiki_kalan">የአሁኑ የሶላት ሰዓት፣ %1$s፣ ምልክት ለማድረግ ይንኩ</string>
+    <string name="durum_kilinmadi">አልተሰገደም፣ ምልክት ለማድረግ ይንኩ</string>
+    <string name="isaretleyin">እንደተሰገደ ምልክት አድርግ</string>
+    <string name="esitleniyor">በማመሳሰል ላይ</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">“ሰገድኩ”ን አረጋግጥ</string>
+    <string name="vazgecin">ሰርዝ</string>
+    <string name="vazgec">ሰርዝ</string>
+    <string name="kerahat_vaktindesiniz">አሁን ሶላት ክልክል የሆነበት ወቅት ነው።</string>
+    <string name="kilindi_dua">ተሰግዷል። %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">የሶላት ሁነታ በርቷል፣ በ%1$s ያበቃል። ለማጥፋት ይንኩ</string>
+    <string name="namaz_modu_ac_aciklama">በስልክዎ ላይ የሶላት ሁነታን አብራ</string>
+    <string name="namaz_modu_kapatin">የሶላት ሁነታን አጥፋ</string>
+    <string name="namaz_modu_acin">የሶላት ሁነታን አብራ</string>
+    <string name="namaz_modu_acik_bitis">በርቷል፣ በ%1$s ያበቃል</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">አቅጣጫውን በማግኘት ላይ…</string>
+    <string name="kible_yuk_yok">ቂብላን ለማግኘት በስልክዎ ላይ Namaz Akışıን ይክፈቱ።</string>
+    <string name="kible_konum_yok">ቂብላን ለማግኘት በስልክዎ ላይ አካባቢን ያብሩ። Namaz Akışı ካልተዘመነ ያዘምኑት።</string>
+    <string name="kible_sensor_yok">ይህ ሰዓት የኮምፓስ ዳሳሽ የለውም። የቂብላን አቅጣጫ በስልክዎ ላይ ማየት ይችላሉ።</string>
+    <string name="kible_kuzeyden">ቂብላ %1$d° (ከሰሜን)</string>
+    <string name="kible_derece">ቂብላ %1$d°</string>
+    <string name="kible_telefonda_ac">ቂብላን በስልክዎ ላይ ክፈት</string>
+    <string name="kible_erisim">%1$s። ቂብላ ከሰሜን %2$d° ነው፣ %3$s</string>
+    <string name="kible_hizali">ወደ ቂብላ ዞረዋል</string>
+    <string name="kible_kalibrasyon">ለማስተካከል የእጅ አንጓዎን በአየር ላይ በ8 ቅርጽ ያንቀሳቅሱ</string>
+    <string name="kible_egim">ሰዓትዎን ከመሬት ጋር ትይዩ አድርገው ይያዙ</string>
+    <string name="kible_titresim_acik">የንዝረት መመሪያ በርቷል። ለማጥፋት ይንኩ</string>
+    <string name="kible_titresim_kapali">የንዝረት መመሪያ ጠፍቷል። ለማብራት ይንኩ</string>
+    <string name="kible_harf_kuzey">ሰ</string>
+    <string name="kible_harf_dogu">ም</string>
+    <string name="kible_harf_guney">ደ</string>
+    <string name="kible_harf_bati">ምዕ</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">ተስቢሑ ተጠናቋል። %1$s። %2$d / %3$d። %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s፣ %2$d / %3$d። ጠቅላላ %4$d / %5$d</string>
+    <string name="tesbihat_sayin">ቁጠር</string>
+    <string name="tesbihat_bastan_baslayin">ከመጀመሪያ ጀምር</string>
+    <string name="tesbihat_bastan_soru">ከመጀመሪያ ይጀመር?</string>
+    <string name="tesbihat_sifirlanir">ቆጠራው ዳግም ይጀመራል።</string>
+    <string name="tesbihat_geri_al">ቀልብስ</string>
+    <string name="tesbihat_geri_al_aciklama">የመጨረሻውን ቆጠራ ቀልብስ</string>
+    <string name="tesbihat_yeniden">እንደገና ጀምር</string>
+    <string name="tesbihat_yeniden_aciklama">ተስቢሑን እንደገና ጀምር</string>
+    <string name="tesbihat_suruyor">ተስቢሕ በሂደት ላይ፦ %1$s፣ %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">ሰገድኩ። መቀስቀሻውን ያሰናብታል</string>
+    <string name="uyandirma_kapat_aciklama">መቀስቀሻውን አሰናብት</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışıን ክፈት</string>
+    <string name="tile_vakitler_icin">ለሶላት ሰዓቶች ይንኩ</string>
+    <string name="tile_telefonda_acin">መተግበሪያውን በስልክዎ ላይ ክፈት</string>
+    <string name="tile_sonra">ከ%1$s በኋላ</string>
+    <string name="tile_siradaki_aciklama">ቀጣይ ሶላት %1$s፣ በ%2$s ይገባል። መተግበሪያውን ክፈት</string>
+    <string name="tile_giris">ይገባል %1$s</string>
+    <string name="tile_cikis">ያበቃል %1$s</string>
+    <string name="bugun_bos_satir1">መተግበሪያውን</string>
+    <string name="bugun_bos_satir2">በስልክዎ ላይ ይክፈቱ</string>
+    <string name="bugun_acma_aciklamasi">ዛሬ %1$d/%2$d ሶላቶች ተሰግደዋል። መተግበሪያውን ክፈት</string>
+    <string name="bugun_sayi">ዛሬ %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">ሶላት ክልክል የሆነበት ወቅት · ለማረጋገጥ እንደገና ይንኩ</string>
+    <string name="bugun_onay_tekrar">ለማረጋገጥ እንደገና ይንኩ</string>
+    <string name="bugun_tamam">የዛሬ ሶላቶች ተጠናቀዋል</string>
+    <string name="bugun_kilinmadi">%1$s አልተሰገደም</string>
+    <string name="bugun_siradaki">ቀጣይ፦ %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">እንደገና ይንኩ</string>
+    <string name="bugun_kilindi">%1$s ተሰግዷል</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s ተሰግዷል፣ በማመሳሰል ላይ</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">የሶላት ሰዓቶችን በመጠበቅ ላይ፤ በስልክዎ ላይ Namaz Akışıን ይክፈቱ</string>
+    <string name="komplikasyon_bekleniyor">ሰዓቶችን በመጠበቅ ላይ</string>
+    <string name="komplikasyon_vakit">ሶላት</string>
+    <string name="komplikasyon_cikis">ያበቃል</string>
+    <string name="komplikasyon_sirada">ቀጣይ</string>
+    <string name="gun_durumu_aciklama">ዛሬ ከ%1$d ሶላቶች %2$d ተሰግደዋል</string>
+    <string name="gun_durumu_kilinmamis">%1$s፤ ያልተሰገዱ፦ %2$s</string>
+    <string name="komplikasyon_namaz">ሶላቶች</string>
+    <string name="komplikasyon_kerahat">ክልከላ</string>
+    <string name="kerahat_icinde_aciklama">ሶላት ክልክል የሆነበት ወቅት ነው፣ በ%1$s ያበቃል</string>
+    <string name="kerahat_siradaki_aciklama">ቀጣዩ ሶላት ክልክል የሆነበት ወቅት %1$s</string>
+    <string name="kible_komplikasyon">ቂብላ ከሰሜን %1$d° ነው። ኮምፓሱን ክፈት</string>
+    <string name="kible_komplikasyon_konumlu">ቂብላ ከሰሜን %1$d° ነው፣ %2$s። ኮምፓሱን ክፈት</string>
+    <string name="kible_komplikasyon_konum_yok">ቂብላን ለማግኘት በስልክዎ ላይ አካባቢን ያብሩ</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">አስቸኳይ አስታዋሽ · በንዝረት</string>
+    <string name="muhafiz_kanal_acil">አስቸኳይ አስታዋሽ</string>
+    <string name="muhafiz_kanal_titresimli">የሶላት አስታዋሽ · በንዝረት</string>
+    <string name="muhafiz_kanal">የሶላት አስታዋሽ</string>
+    <string name="muhafiz_kanal_aciklama">ስልክዎ ከእርስዎ ጋር ባይሆንም በሰዓትዎ ላይ የሚታዩ የሶላት አስታዋሾች</string>
+    <string name="son_dakikalar_cikis">ያበቃል፦ %1$s</string>
+    <string name="son_dakikalar_bitis">ያበቃል፦ %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">%1$s እስኪያልቅ የቀረው ጊዜ</string>
+    <string name="son_dakikalar_kalan_erisim">ለ%1$s የቀረው ጊዜ</string>
+    <string name="cami_namaz_modu_bitis">የሶላት ሁነታ · በ%1$s ያበቃል</string>
+    <string name="cami_erisim">%1$s፦ %2$s። %3$s</string>
+    <string name="telefonda_acildi">በስልክዎ ላይ ተከፍቷል</string>
+    <string name="telefona_ulasilamadi">ስልክዎ ሊደረስበት አልቻለም</string>
+</resources>

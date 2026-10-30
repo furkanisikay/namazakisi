@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Masjiida keessa</string>
+    <string name="camigeofence_kanal_durum_aciklama">Yeroo masjiida keessa akka jirtan beekamu beeksisa callisaa</string>
+    <string name="camigeofence_kanal_soru_ad">Erga masjiidaa baatanii booda</string>
+    <string name="camigeofence_kanal_soru_aciklama">Erga masjiidaa baatanii booda salaata keessan akka mallatteessitaniif gaaffii</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Haalli salaataa banaa dha. Yaadachiisni callisaan dhufa.</string>
+    <string name="camigeofence_govde_mod">Haalli salaataa banaa dha.</string>
+    <string name="camigeofence_govde_sessiz">Yaadachiisni callisaan dhufa.</string>
+    <string name="camigeofence_govde_normal">Yaadachiisni akkuma yeroo hundaa dhufa.</string>
+    <string name="camigeofence_eylem_modu_kapat">Haala cufaa</string>
+    <string name="camigeofence_eylem_cami_degil">Masjiida miti</string>
+
+    <string name="camigeofence_soru_baslik">Masjiida keessa jirtuu?</string>
+    <string name="camigeofence_soru_govde">%1$s bira jirtu. Mirkanaa\'aa waan hin taaneef isin gaafanna.</string>
+    <string name="camigeofence_varsayilan_ad">Masjiida</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Haala salaataa banaa</string>
+    <string name="camigeofence_eylem_evet_camideyim">Eeyyee, masjiida keessa jira</string>
+    <string name="camigeofence_eylem_hayir">Lakki</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s salaattaniittuu?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Tuqaa tokkoon mallatteessuu dandeessu.</string>
+    <string name="camigeofence_eylem_kildim">Ani salaateera</string>
+    <string name="camigeofence_namaz_imsak">Subhii</string>
+    <string name="camigeofence_namaz_ogle">Zuhrii</string>
+    <string name="camigeofence_namaz_ikindi">Asrii</string>
+    <string name="camigeofence_namaz_aksam">Maghriba</string>
+    <string name="camigeofence_namaz_yatsi">Ishaa\'ii</string>
+    <string name="camigeofence_namaz_cuma">Jimaata</string>
+
+    <string name="camigeofence_mod_kural_adi">Salaata</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı yeroo khutbaa Jimaataa, masjiida keessatti ykn yeroo yeroon salaataa gahu bana</string>
+</resources>

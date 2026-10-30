@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Yoruba). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Mo ti kírun</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Ipò àkókò ìrun</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Ìṣẹ̀lẹ̀ àkókò ìrun</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">A ń fi ètò yìí kún un láti inú ìṣàfilọ́lẹ̀ ìṣe aládàáṣe</string>
+  <string name="otomasyon_bilgi_tarayici">Aṣàwákiri kò lè gba àṣẹ títí lọ. Ẹ fi kún un láti inú àkójọ plugin ìṣàfilọ́lẹ̀ bí Tasker, MacroDroid tàbí Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Ẹ fi kún un nípa yíyan “Namaz Akışı” láti inú àkójọ plugin ìṣàfilọ́lẹ̀ bí Tasker, MacroDroid tàbí Automate.</string>
+  <string name="otomasyon_engelli_baslik">A ti dí %1$s</string>
+  <string name="otomasyon_engelli_mesaj">Ẹ ti dí ìṣàfilọ́lẹ̀ yìí lọ́wọ́ láti sàmì sí àwọn ìrun yín tẹ́lẹ̀. Ẹ lè gbà á láàyè nínú Namaz Akışı lábẹ́ Ètò &gt; “Àwọn ìṣàfilọ́lẹ̀ tí ó lè sàmì sí ìrun”.</string>
+  <string name="otomasyon_izin_baslik">Ṣé kí a lò ó pẹ̀lú %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s lè mọ̀ nígbà tí àkókò ìrun bá wọlé, nígbà tí ó ń parí àti nígbà tí ẹ bá wà ní mọ́sálásí, kí ó sì ṣiṣẹ́ àwọn ìṣe aládàáṣe yín. Ẹ lè yí ìpinnu yín padà nínú Namaz Akışı lábẹ́ Ètò &gt; “Àwọn ìṣàfilọ́lẹ̀ tí ó lè sàmì sí ìrun”.</string>
+  <string name="otomasyon_izin_kildim">%1$s lè sàmì sí ìrun lọ́wọ́lọ́wọ́ pé a ti kí i pẹ̀lú ìṣe aládàáṣe tí ẹ ṣètò. Ẹ lè yí ìpinnu yín padà nínú Namaz Akışı lábẹ́ Ètò &gt; “Àwọn ìṣàfilọ́lẹ̀ tí ó lè sàmì sí ìrun”.</string>
+  <string name="otomasyon_izin_ver">Gbà láàyè</string>
+  <string name="otomasyon_engelle">Dí i</string>
+  <string name="otomasyon_vazgec">Fagilé</string>
+  <string name="otomasyon_tamam">Ó dáa</string>
+  <string name="otomasyon_tur_baslik">Ìgbà wo ni kí ó ṣiṣẹ́?</string>
+  <string name="otomasyon_ileri">Èyí tó kàn</string>
+  <string name="otomasyon_vakit_baslik">Ìrun wo?</string>
+  <string name="otomasyon_herhangi_vakit">Àkókò ìrun èyíkéyìí</string>
+  <string name="otomasyon_kaydet">Fi pamọ́</string>
+  <string name="otomasyon_kosul_icinde">Nígbà tí ó jẹ́ àkókò ìrun</string>
+  <string name="otomasyon_kosul_cikiyor">Nígbà tí àkókò ìrun ń parí (ìṣj %1$d ló kù, Olùṣọ́ Ìrun wà ní títàn)</string>
+  <string name="otomasyon_kosul_camide">Nígbà tí ẹ wà ní mọ́sálásí</string>
+  <string name="otomasyon_olay_girdi">Nígbà tí àkókò ìrun bá wọlé</string>
+  <string name="otomasyon_olay_cikiyor">Nígbà tí àkókò ìrun ń parí (ìṣj %1$d ló kù, Olùṣọ́ Ìrun wà ní títàn)</string>
+  <string name="otomasyon_olay_camide">Nígbà tí a bá rí i pé ẹ wà ní mọ́sálásí</string>
+</resources>

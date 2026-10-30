@@ -58,7 +58,7 @@ struct TvMetin {
 }
 
 /// `TvMetin` dil tablosu. Yer tutucular `{il}`, `{ad}`, `{sure}`, `{tur}`, `{bitis}`,
-/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg;
+/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo;
 /// cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
 struct TvArayuzMetinleri {
     let sehrinizSecin: String
@@ -439,11 +439,117 @@ struct TvArayuzMetinleri {
         siradakiEk: ", вақти навбатӣ"
     )
 
+    // sw
+    static let sw = TvArayuzMetinleri(
+        sehrinizSecin: "Chagua mji wako",
+        ilMerkezi: "Nyakati za Swala zinakokotolewa kwa katikati ya mkoa. Unaweza kubadilisha chaguo lako baadaye.",
+        ilSecErisim: "{il}, chagua",
+        kalan: "Muda uliobaki hadi {ad}",
+        kalanErisim: "Muda uliobaki hadi {ad}: {sure}",
+        konumuDegistirin: "Badilisha mahali",
+        kerahatSuruyor: "Wakati wa makruhu: {tur}, unaisha {bitis}. {aciklama}",
+        siradakiKerahat: "Wakati wa makruhu unaofuata: {tur} {bas}–{bit}",
+        cumaBilgisi: "Leo ni Ijumaa. Swala ya Ijumaa inaswaliwa wakati wa Adhuhuri (inaingia {giris}).",
+        suAnkiEk: ", Swala ya sasa",
+        siradakiEk: ", Swala inayofuata"
+    )
+
+    // ha — Hausa (beta): JS `sozluk/ha`
+    static let ha = TvArayuzMetinleri(
+        sehrinizSecin: "Ku zaɓi birninku",
+        ilMerkezi: "Ana lissafa lokutan salla na tsakiyar lardi. Kuna iya canja zaɓinku daga baya.",
+        ilSecErisim: "{il}, zaɓa",
+        kalan: "Lokacin da ya rage zuwa {ad}",
+        kalanErisim: "Lokacin da ya rage zuwa {ad}: {sure}",
+        konumuDegistirin: "Canja wuri",
+        kerahatSuruyor: "Lokacin makaruhi: {tur}, zai ƙare {bitis}. {aciklama}",
+        siradakiKerahat: "Lokacin makaruhi na gaba: {tur} {bas}–{bit}",
+        cumaBilgisi: "Yau ranar Jummaʼa ce. Ana yin Jumuʼa a lokacin Azahar (za ta yi {giris}).",
+        suAnkiEk: ", sallar yanzu",
+        siradakiEk: ", salla ta gaba"
+    )
+
+    // am — Amharca (beta)
+    static let am = TvArayuzMetinleri(
+        sehrinizSecin: "ከተማዎን ይምረጡ",
+        ilMerkezi: "የሶላት ሰዓቶች ለክፍለ ሀገሩ መሃል ይሰላሉ። ምርጫዎን በኋላ መቀየር ይችላሉ።",
+        ilSecErisim: "{il}፣ ምረጥ",
+        kalan: "{ad} እስኪገባ የቀረው ጊዜ",
+        kalanErisim: "{ad} እስኪገባ የቀረው ጊዜ፦ {sure}",
+        konumuDegistirin: "አካባቢን ቀይር",
+        kerahatSuruyor: "ሶላት ክልክል የሆነበት ወቅት፦ {tur}፣ በ{bitis} ያበቃል። {aciklama}",
+        siradakiKerahat: "ቀጣዩ ሶላት ክልክል የሆነበት ወቅት፦ {tur} {bas}–{bit}",
+        cumaBilgisi: "ዛሬ ዓርብ ነው። ጁሙዓ የሚሰገደው በዙህር ሰዓት ነው (የሚገባው {giris})።",
+        suAnkiEk: "፣ የአሁኑ ሶላት",
+        siradakiEk: "፣ ቀጣዩ ሶላት"
+    )
+
+    // om
+    static let om = TvArayuzMetinleri(
+        sehrinizSecin: "Magaalaa keessan filadhaa",
+        ilMerkezi: "Yeroon salaataa giddugala kutaa bulchiinsaatiif herregama. Filannoo keessan booda jijjiiruu dandeessu.",
+        ilSecErisim: "{il}, filadhaa",
+        kalan: "Hanga {ad}tti yeroo hafe",
+        kalanErisim: "Hanga {ad}tti yeroo hafe: {sure}",
+        konumuDegistirin: "Bakka jijjiiraa",
+        kerahatSuruyor: "Yeroo jibbamaa: {tur}, {bitis}tti xumurama. {aciklama}",
+        siradakiKerahat: "Yeroo jibbamaa itti aanu: {tur} {bas}–{bit}",
+        cumaBilgisi: "Har'a Jimaata. Salaanni Jimaataa yeroo Zuhriitti salaatama ({giris} jalqaba).",
+        suAnkiEk: ", salaata ammaa",
+        siradakiEk: ", salaata itti aanu"
+    )
+
+    // so
+    static let so = TvArayuzMetinleri(
+        sehrinizSecin: "Dooro magaaladaada",
+        ilMerkezi: "Waqtiyada salaadda waxaa loo xisaabiyaa xarunta gobolka. Doorashadaada waad beddeli kartaa mar dambe.",
+        ilSecErisim: "{il}, dooro",
+        kalan: "Waqtiga u haray {ad}",
+        kalanErisim: "Waqtiga u haray {ad}: {sure}",
+        konumuDegistirin: "Beddel goobta",
+        kerahatSuruyor: "Waqti makruuh ah: {tur}, wuxuu dhammaanayaa {bitis}. {aciklama}",
+        siradakiKerahat: "Waqtiga makruuhka xiga: {tur} {bas}–{bit}",
+        cumaBilgisi: "Maanta waa Jimce. Salaadda Jimce waxaa la tukadaa waqtiga Duhur (wuxuu bilaabmayaa {giris}).",
+        suAnkiEk: ", salaadda hadda",
+        siradakiEk: ", salaadda xigta"
+    )
+
+    // ff
+    static let ff = TvArayuzMetinleri(
+        sehrinizSecin: "Suɓee saare mon",
+        ilMerkezi: "Saa’iiji juulɗe hino hiisiree hakkunde diiwaan ngoo. Hiɗon mbaawi waylude suɓaade mon caggal.",
+        ilSecErisim: "{il}, suɓee",
+        kalan: "Saa’i heddiiɗo haa {ad}",
+        kalanErisim: "Saa’i heddiiɗo haa {ad}: {sure}",
+        konumuDegistirin: "Waylee nokkuure",
+        kerahatSuruyor: "Waqutu makruuhu: {tur}, gasay {bitis}. {aciklama}",
+        siradakiKerahat: "Waqutu makruuhu garoowo: {tur} {bas}–{bit}",
+        cumaBilgisi: "Hannde ko aljuma. Juma hino juulee e waqutu fanaa (fuɗɗoto {giris}).",
+        suAnkiEk: ", juulde jooni",
+        siradakiEk: ", juulde garoore"
+    )
+
+    // yo
+    static let yo = TvArayuzMetinleri(
+        sehrinizSecin: "Ẹ yan ìlú yín",
+        ilMerkezi: "A ń ṣírò àwọn àkókò ìrun fún àárín ìpínlẹ̀. Ẹ lè yí àṣàyàn yín padà lẹ́yìn náà.",
+        ilSecErisim: "{il}, yàn án",
+        kalan: "Àkókò tó kù sí {ad}",
+        kalanErisim: "Àkókò tó kù sí {ad}: {sure}",
+        konumuDegistirin: "Yí ibùdó padà",
+        kerahatSuruyor: "Àkókò makrūh: {tur}, yóò parí {bitis}. {aciklama}",
+        siradakiKerahat: "Àkókò makrūh tó kàn: {tur} {bas}–{bit}",
+        cumaBilgisi: "Òní ni Ọjọ́ Ẹtì. A máa ń kí Jum‘ah ní àkókò Ṭḥuhr (yóò bẹ̀rẹ̀ {giris}).",
+        suAnkiEk: ", ìrun lọ́wọ́lọ́wọ́",
+        siradakiEk: ", ìrun tó kàn"
+    )
+
     static let tablo: [String: TvArayuzMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
         "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
+        "sw": sw, "ha": ha, "am": am, "om": om, "so": so, "ff": ff, "yo": yo,
     ]
 
     static func dil(_ kod: String) -> TvArayuzMetinleri { tablo[TvDili.coz(kod)] ?? tr }

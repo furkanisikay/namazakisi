@@ -18,8 +18,8 @@ object MetinDili {
     const val TR = "tr"
     const val EN = "en"
 
-    /** Sıra tablo düzeniyle aynı (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg). */
-    val DESTEKLENENLER = listOf(TR, EN, "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg")
+    /** Sıra tablo düzeniyle aynı (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo). */
+    val DESTEKLENENLER = listOf(TR, EN, "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo")
 
     /**
      * "en", "en-US", "de_DE" → kök kod; desteklenmeyen ya da boş → "tr". Java/Android eski
@@ -56,6 +56,13 @@ object MetinDili {
         "kk" -> CEKIRDEK_KK
         "ky" -> CEKIRDEK_KY
         "tg" -> CEKIRDEK_TG
+        "sw" -> CEKIRDEK_SW
+        "ha" -> CEKIRDEK_HA
+        "am" -> CEKIRDEK_AM
+        "om" -> CEKIRDEK_OM
+        "so" -> CEKIRDEK_SO
+        "ff" -> CEKIRDEK_FF
+        "yo" -> CEKIRDEK_YO
         else -> CEKIRDEK_TR
     }
 

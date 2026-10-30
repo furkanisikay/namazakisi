@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Somali. Terms: src/core/dil/sozluk/so (vakit.ts header comment). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">so</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Looxa waqtiyada salaadda</string>
+    <string name="ayarlar">Dejinta</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s ayaa u haray %1$s</string>
+    <string name="pano_vaktine">Ilaa %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s %2$s kadib</string>
+    <string name="pano_kerahat_vakti">Waqti makruuh ah</string>
+    <string name="pano_bitis">wuxuu dhammaanayaa %1$s</string>
+    <string name="pano_kerahat_erisim">Waqti makruuh ah, %1$s, wuxuu dhammaanayaa %2$s. %3$s</string>
+    <string name="pano_cumaya">Jimce %1$s kadib</string>
+    <string name="pano_cikis_geldi">waa waqtigii la bixi lahaa</string>
+    <string name="pano_cikis">ka bax %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Waa waqtigii loo bixi lahaa Jimce</string>
+    <string name="pano_cuma_cikis_erisim">U bax Jimce %1$s</string>
+    <string name="pano_bugun_cuma">Maanta waa Jimce</string>
+    <string name="pano_ogle">Duhur %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Maanta waa Jimce. Salaadda Jimce waa waqtiga Duhur, %1$s</string>
+    <string name="pano_ayarlar_erisim">Dejinta: ku dar taleefan, goobta, taleefannada ku xiran</string>
+    <string name="pano_simdiki_vakit">waqtiga salaadda hadda</string>
+    <string name="pano_siradaki_vakit">waqtiga salaadda xigta</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Ku dar taleefankaaga", "Geli koodhka", "Magaalada anigu ayaa dooranaya", "Ku dar". -->
+    <string name="kodla_girin">Geli koodhka</string>
+    <string name="ili_kendim_secin">Magaalada anigu ayaa dooranaya</string>
+    <string name="yeniden_deneyin">Isku day mar kale</string>
+    <string name="telefon_varsayilan">Taleefan</string>
+    <string name="esleme_ekleniyor">%1$s waa la darayaa</string>
+    <string name="esleme_gonderiyor">Taleefankaagu wuxuu dirayaa goobtiisa iyo xaaladdiisa…</string>
+    <string name="esleme_tamamlanamadi">Isku xirka lama dhammaystiri karin</string>
+    <string name="esleme_saklanamadi">Telefishankani si ammaan ah uma kaydin karo furaha xiriirka. Waxaad goobtaada ku geli kartaa koodh ama dooran kartaa magaaladaada.</string>
+    <string name="telefonunuzu_ekleyin">Ku dar taleefankaaga</string>
+    <string name="esleme_alt">Waqtiyada salaadda ee goobtaada; salaadaha aad tukatay sidoo kale way muuqdaan.</string>
+    <string name="esleme_adim1">Ka fur Namaz Akışı taleefankaaga</string>
+    <string name="esleme_adim2">Dejinta › Qalabkayga › Ku dar telefishan</string>
+    <string name="esleme_adim3">U jeedi kamaradda taleefankaaga koodhka</string>
+    <string name="esleme_ayni_wifi">Taleefankaaga iyo telefishanku waa inay ku jiraan isla shabakadda Wi-Fi.</string>
+    <string name="esleme_onay_soru">Ma ku daraysaa taleefankan?</string>
+    <string name="esleme_onay_aciklama">Taleefanka lagu daray wuxuu u diri karaa telefishankan goobtiisa iyo salaadaha uu calaamadeeyo.</string>
+    <string name="ekleyin">Ku dar</string>
+    <string name="hayir">Maya</string>
+    <string name="esleme_eklendi">%1$s waa lagu daray</string>
+    <string name="konumunuz_geldi">Goobtaadu way timid</string>
+    <string name="konuma_gore_hesaplanacak">Waqtiyada salaadda waxaa loo xisaabin doonaa goobtan.</string>
+    <string name="qr_konum_alindi">Goobta waa la helay</string>
+    <string name="qr_kodu">Koodhka isku xirka ee lagu akhrinayo taleefankaaga</string>
+    <string name="ag_yok">Telefishanku kuma xirna shabakad</string>
+    <string name="ag_yok_aciklama">Waad sii wadi kartaa adigoo gelinaya koodhka 7-da god ee taleefankaaga ama dooranaya magaaladaada.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Geli koodhka taleefankaaga</string>
+    <string name="kod_yol">Taleefankaaga: Dejinta › Qalabkayga › Ku dar telefishan</string>
+    <string name="kod_hatali">Koodhku ma waafaqin. Hubi 7-da god ee taleefankaaga; god khaldan ku sax “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Haddii kontaroolkaagu leeyahay furayaal lambar, waxaad sidoo kale ku qori kartaa.</string>
+    <string name="kod_bos_hane">god bannaan</string>
+    <string name="kod_sil">Tirtir</string>
+    <string name="kod_sil_aciklama">Tirtir godka ugu dambeeya</string>
+    <string name="kod_geri">Dib u noqo</string>
+    <string name="vazgecin">Ka noqo</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Dooro magaaladaada</string>
+    <string name="il_merkezine_gore">Waqtiyada salaadda waxaa loo xisaabiyaa bartamaha magaalada.</string>
+    <string name="il_secili">%1$s, la doortay</string>
+    <string name="dream_il_yok">Si aad u aragto looxa waqtiyada salaadda, fur barnaamijka Namaz Akışı oo dooro magaaladaada.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Goobta: %1$s</string>
+    <string name="ayar_konum_yok">Goob lama dooran</string>
+    <string name="ayar_telefon_ekleyin">Ku dar taleefan</string>
+    <string name="ayar_konumu_kodla">Ku geli goobta koodh</string>
+    <string name="ayar_bagli_telefonlar">Taleefannada ku xiran telefishankan</string>
+    <string name="ayar_telefon_yok">Weli taleefan lama darin. Isticmaal “%1$s” ee bidixda oo akhri koodhka soo baxa.</string>
+    <string name="kaldirin">Ka saar</string>
+    <string name="ayar_ne_gonderir">Maxay taleefannadu diraan?</string>
+    <string name="ayar_madde_konum">Goobta: waqtiyada salaaddu way raacaan</string>
+    <string name="ayar_madde_namazlar">Salaadaha la calaamadeeyay, kuwa doorta</string>
+    <string name="ayar_madde_sifreli">Sir ah, oo kaliya shabakadda gurigaaga</string>
+    <string name="son_haber_yok">Weli macluumaad ma jiro</string>
+    <string name="son_haber_az_once">Hadda</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d daq ka hor</item>
+        <item quantity="other">%1$d daq ka hor</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d s ka hor</item>
+        <item quantity="other">%1$d s ka hor</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d maalin ka hor</item>
+        <item quantity="other">%1$d maalmood ka hor</item>
+    </plurals>
+    <string name="kaldir_soru">Ma ka saaraysaa %1$s?</string>
+    <string name="kaldir_aciklama">Taleefankani mar dambe uma diri karo macluumaad telefishanka. Si aad mar kale ugu darto, waxaad u baahan tahay inaad mar kale akhrido koodhka QR.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Goobta taleefankaaga</string>
+</resources>

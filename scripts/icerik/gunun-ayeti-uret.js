@@ -53,6 +53,15 @@ const MEALLER = {
   kk: 'kazakh_altai',
   ky: 'kyrgyz_hakimov',
   tg: 'tajik_arifi',
+  // Afrika (dalga 8). sw: `swahili_rwwad` (barawani her ayete "[153]" ekler); om: `oromo_ababor`
+  // (rwwad havuzu 159'a düşüyor); ff: `fulani_rwwad` = Pular (Gine, Fuuta Jallon), Latin.
+  sw: 'swahili_rwwad',
+  ha: 'hausa_gummi',
+  am: 'amharic_sadiq',
+  om: 'oromo_ababor',
+  so: 'somali_yacob',
+  ff: 'fulani_rwwad',
+  yo: 'yoruba_mikail',
 };
 
 /**
@@ -165,7 +174,14 @@ const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
  * sondaki "(153)" numarasını taşır; numara çeviri değil işarettir, silinir (künye ayeti zaten
  * yazar). Yalnız bu kümede: başka dilde numaralı meal eskisi gibi alınmaz.
  */
-const AYET_NUMARASI_SILINEN = new Set(['es', 'ug']);
+/**
+ * NFC'ye birleştirilen diller: QuranEnc Yorubayı ayrışık (NFD: harf + birleşen ton/alt nokta) verir;
+ * NFC kanonik eşdeğerdir, metin değişmez, yalnız uzunluk ölçümü ve arama tutarlı olur. Bütün dillere
+ * uygulanmaz: Bengalcede NFC "য়" gibi bileşim dışı harfleri AYIRIR (veri değişir).
+ * `ayet-mealleri-uret.js > NFC_DILLER` ile AYNI.
+ */
+const NFC_DILLER = new Set(['yo']);
+const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so']);
 const BASTAKI_AYET_NO = /^\s*\p{Nd}+\s*[.)]\s*/u;
 const SONDAKI_AYET_NO = /\s*\(\p{Nd}+\)(\s*[.।]?)\s*$/u;
 function notNumarasiz(dil, metin) {
@@ -350,8 +366,9 @@ async function main() {
         await indir(`https://quranenc.com/api/v1/translation/sura/${anahtar}/${sure}`, onbellek, `${anahtar}_${sure}.json`),
       );
       for (const r of result) {
-        mealler[dil][ref(Number(r.sura), Number(r.aya))] = notNumarasiz(dil, r.translation);
-        mealler.ham[dil][ref(Number(r.sura), Number(r.aya))] = r.translation;
+        const metin = NFC_DILLER.has(dil) ? r.translation.normalize('NFC') : r.translation;
+        mealler[dil][ref(Number(r.sura), Number(r.aya))] = notNumarasiz(dil, metin);
+        mealler.ham[dil][ref(Number(r.sura), Number(r.aya))] = metin;
       }
     }
   }

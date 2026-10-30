@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">መስጂድ ውስጥ ነኝ</string>
+    <string name="camigeofence_kanal_durum_aciklama">መስጂድ ውስጥ እንዳሉ ሲታወቅ ጸጥ ያለ ማሳወቂያ</string>
+    <string name="camigeofence_kanal_soru_ad">ከመስጂድ ከወጡ በኋላ</string>
+    <string name="camigeofence_kanal_soru_aciklama">ከመስጂድ ከወጡ በኋላ ሶላትዎን ምልክት እንዲያደርጉ የሚቀርብ ጥያቄ</string>
+
+    <string name="camigeofence_govde_mod_sessiz">የሶላት ሁነታ በርቷል። አስታዋሾች በጸጥታ ይደርሳሉ።</string>
+    <string name="camigeofence_govde_mod">የሶላት ሁነታ በርቷል።</string>
+    <string name="camigeofence_govde_sessiz">አስታዋሾች በጸጥታ ይደርሳሉ።</string>
+    <string name="camigeofence_govde_normal">አስታዋሾች እንደተለመደው ይደርሳሉ።</string>
+    <string name="camigeofence_eylem_modu_kapat">ሁነታውን አጥፋ</string>
+    <string name="camigeofence_eylem_cami_degil">መስጂድ አይደለም</string>
+
+    <string name="camigeofence_soru_baslik">መስጂድ ውስጥ ነዎት?</string>
+    <string name="camigeofence_soru_govde">በ%1$s አቅራቢያ ነዎት። እርግጠኛ ስላልሆንን እንጠይቅዎታለን።</string>
+    <string name="camigeofence_varsayilan_ad">መስጂድ</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">የሶላት ሁነታን አብራ</string>
+    <string name="camigeofence_eylem_evet_camideyim">አዎ፣ መስጂድ ውስጥ ነኝ</string>
+    <string name="camigeofence_eylem_hayir">አይ</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$sን ሰግደዋል?</string>
+    <string name="camigeofence_kildiniz_mi_govde">በአንድ ንክኪ ምልክት ማድረግ ይችላሉ።</string>
+    <string name="camigeofence_eylem_kildim">ሰገድኩ</string>
+    <string name="camigeofence_namaz_imsak">ፈጅር</string>
+    <string name="camigeofence_namaz_ogle">ዙህር</string>
+    <string name="camigeofence_namaz_ikindi">አስር</string>
+    <string name="camigeofence_namaz_aksam">መግሪብ</string>
+    <string name="camigeofence_namaz_yatsi">ኢሻ</string>
+    <string name="camigeofence_namaz_cuma">ጁሙዓ</string>
+
+    <string name="camigeofence_mod_kural_adi">ሶላት</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı በጁሙዓ ኹጥባ ጊዜ፣ መስጂድ ውስጥ ሲሆኑ ወይም የሶላት ሰዓት ሲገባ ያበራዋል</string>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Somalice). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Waan tukaday</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Xaaladda waqtiga salaadda</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Dhacdada waqtiga salaadda</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Dejintan waxaa lagu daraa barnaamij otomaatig ah</string>
+  <string name="otomasyon_bilgi_tarayici">Daaqadaha internetku ma heli karaan oggolaansho joogto ah. Ka dar liiska plugin-yada barnaamij sida Tasker, MacroDroid ama Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Ku dar adigoo ka dooranaya \"Namaz Akışı\" liiska plugin-yada barnaamij sida Tasker, MacroDroid ama Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s waa la xiray</string>
+  <string name="otomasyon_engelli_mesaj">Horay ayaad uga xirtay barnaamijkan inuu calaamadeeyo salaadahaaga. Waxaad ku oggolaan kartaa Namaz Akışı hoostiisa Dejinta &gt; \"Barnaamijyada calaamadeeya Waan tukaday\".</string>
+  <string name="otomasyon_izin_baslik">Ma la isticmaashaa %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s wuxuu ogaan karaa marka waqti salaadeed galo, marka uu dhammaanayo iyo marka aad masjid joogto, wuxuuna shaqeysiin karaa otomaatigyadaada. Go\'aankaaga waxaad ka beddeli kartaa Namaz Akışı hoostiisa Dejinta &gt; \"Barnaamijyada calaamadeeya Waan tukaday\".</string>
+  <string name="otomasyon_izin_kildim">%1$s wuxuu u calaamadeyn karaa salaadda hadda la tukaday otomaatigga aad dejisay. Go\'aankaaga waxaad ka beddeli kartaa Namaz Akışı hoostiisa Dejinta &gt; \"Barnaamijyada calaamadeeya Waan tukaday\".</string>
+  <string name="otomasyon_izin_ver">Oggolow</string>
+  <string name="otomasyon_engelle">Xir</string>
+  <string name="otomasyon_vazgec">Ka noqo</string>
+  <string name="otomasyon_tamam">Hagaag</string>
+  <string name="otomasyon_tur_baslik">Goorma ayuu shaqeeyaa?</string>
+  <string name="otomasyon_ileri">Xiga</string>
+  <string name="otomasyon_vakit_baslik">Salaaddee?</string>
+  <string name="otomasyon_herhangi_vakit">Waqti kasta oo salaadeed</string>
+  <string name="otomasyon_kaydet">Kaydi</string>
+  <string name="otomasyon_kosul_icinde">Inta uu yahay waqti salaadeed</string>
+  <string name="otomasyon_kosul_cikiyor">Inta waqti salaadeed dhammaanayo (%1$d daqiiqo ayaa haray, Ilaaliyaha Salaaddu waa shidan yahay)</string>
+  <string name="otomasyon_kosul_camide">Inta aad masjid joogto</string>
+  <string name="otomasyon_olay_girdi">Marka waqti salaadeed galo</string>
+  <string name="otomasyon_olay_cikiyor">Marka waqti salaadeed dhammaanayo (%1$d daqiiqo ayaa haray, Ilaaliyaha Salaaddu waa shidan yahay)</string>
+  <string name="otomasyon_olay_camide">Marka la ogaado inaad masjid joogto</string>
+</resources>

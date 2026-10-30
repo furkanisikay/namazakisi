@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Afaan Oromoo kaynaklar (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/om. -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Salaata ammaa, yeroo inni xumuramuufi \"Ani salaateera\" tuqaa tokkoon</string>
+  <string name="widget_genis_aciklama">Salaata shanan har\'aa, lakkoofsa duubaafi \"Ani salaateera\" tuqaa tokkoon</string>
+  <string name="widget_kapak_adi">Yeroo salaataa fuula uwwisaa</string>
+  <string name="widget_kapak_aciklama">Yeroo salaataa har\'aafi lakkoofsa duubaa fuula uwwisaa Galaxy Z Flip-iif</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Durii</string>
+  <string name="widget_klasik_aciklama">Mul\'ata magariisa durii: hanga salaata itti aanuutti yeroo hafe</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Durii bal\'aa</string>
+  <string name="widget_klasik_genis_aciklama">Mul\'ata magariisa durii: lakkoofsa duubaafi yeroo salaataa har\'aa</string>
+  <string name="widget_ayet_adi">Aayata guyyaa</string>
+  <string name="widget_ayet_aciklama">Aayataafi hiikkaa isaa, guyyaa guyyaan Subhiitti haaromfamu</string>
+  <string name="widget_ayar_zemin_palet">Halluu appichaa (ifaa)</string>
+  <string name="widget_ayar_ayet_icerik">Hanga iskuweerii irratti agarsiisi</string>
+  <string name="widget_ayar_ayet_icerik_meal">Hiikkaa</string>
+  <string name="widget_ayar_ayet_icerik_hat">Barreeffama Arabaa (kaaligiraafii)</string>
+  <string name="kutu_kildim_etiket">Ani salaateera</string>
+  <string name="kisayol_kildim_kisa">Ani salaateera</string>
+  <string name="kisayol_kildim_uzun">Salaata ammaa salaateera</string>
+  <string name="kisayol_kible_kisa">Qiblaa</string>
+  <string name="kisayol_kible_uzun">Kallattii qiblaa agarsiisi</string>
+  <string name="kisayol_kaza_kisa">Galmee qadaa</string>
+  <string name="kisayol_kaza_uzun">Galmee qadaa bani</string>
+  <string name="kildim_onay_baslik">%1$s akka salaatameetti mallatteessituu?</string>
+  <string name="kildim_onay_mesaj">Gaaffii kana appii kamtu akka erge hin beekamu. Yoo salaattan mirkaneessaa.</string>
+  <string name="kildim_onay_evet">Ani salaateera</string>
+  <string name="kildim_onay_vazgec">Dhiisaa</string>
+  <string name="kildim_guven_baslik">%1$s salaata keessan akka salaatameetti akka mallatteessu hayyamtuu?</string>
+  <string name="kildim_guven_mesaj">Salaata amma mallattaa\'u: %1$s. Murtee keessan booda Qindaa\'ina &gt; Appiiwwan \"Ani salaateera\" mallatteessan keessatti jijjiiruu dandeessu.</string>
+  <string name="kildim_guven_tarayici_mesaj">Salaata amma mallattaa\'u: %1$s. Gaaffiin kun barbaadduu irraa dhufe; fuulli marsariitii kamiyyuu geessituu kana banuu waan danda\'uuf, eeyyamni dhaabbataan kennamuu hin danda\'u.</string>
+  <string name="kildim_guven_her_zaman">Yeroo hunda hayyami</string>
+  <string name="kildim_guven_bu_sefer">Ammaaf qofa</string>
+  <string name="kildim_guven_engelle">Dhorki</string>
+  <string name="kildim_guven_engellendi">%1$s kana booda salaata keessan mallatteessuu hin danda\'u. Kana Qindaa\'ina keessatti jijjiiruu dandeessu.</string>
+  <string name="widget_ayar_baslik">Wiijetii qindeessaa</string>
+  <string name="widget_ayar_zemin">Duuba</string>
+  <string name="widget_ayar_zemin_material">Halluu suuraa duubaa</string>
+  <string name="widget_ayar_zemin_sistem">Haala sirnaa</string>
+  <string name="widget_ayar_zemin_acik">Ifaa</string>
+  <string name="widget_ayar_zemin_koyu">Dukkanaa</string>
+  <string name="widget_ayar_zemin_seffaf">Ifa-dabarsaa</string>
+  <string name="widget_ayar_opaklik">Ifa-dhowwummaa duubaa</string>
+  <string name="widget_ayar_gosterim">Barreeffama guddaan agarsiisi</string>
+  <string name="widget_ayar_gosterim_kalan">Yeroo hafe</string>
+  <string name="widget_ayar_gosterim_bitis">Yeroo xumuraa</string>
+  <string name="widget_ayar_gosterim_not">Yeroon xumuraa hanga hundaan ni mul\'ata.</string>
+  <string name="widget_ayar_sonraki">Salaata itti aanu agarsiisi</string>
+  <string name="widget_ayar_vazgec">Dhiisaa</string>
+  <string name="widget_ayar_kaydet">Olkaa\'aa</string>
+  <string name="kildim_onay_kanal_adi">Mirkaneessa \"Ani salaateera\"</string>
+  <string name="kildim_onay_kanal_aciklama">Mirkaneessa callisaa yeroo beeksisa keessatti \"Ani salaateera\" tuqxan sekondii muraasaaf mul\'atu</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">%1$s xumurama</string>
+  <string name="widget_giris">%1$s jalqaba</string>
+  <string name="widget_namaz_vakti">Yeroo salaataa</string>
+  <string name="widget_uygulamayi_acin">Appicha banaa</string>
+  <string name="widget_siradaki">Itti aanu: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Amma salaanni mallattaa\'u hin jiru</string>
+  <string name="widget_dugme_kildim">Ani salaateera</string>
+  <string name="widget_dugme_isaretleniyor">Mallattaa\'aa jira</string>
+  <string name="widget_dugme_kilindi">Salaatameera</string>
+  <string name="widget_dugme_vakit_girmedi">Yeroon hin geenye</string>
+  <string name="widget_klasik_uygulamayi_acin">appicha banaa</string>
+  <string name="widget_klasik_erisim_veri_yok">Yeroo salaataa arguuf appicha banaa</string>
+  <string name="widget_klasik_erisim_siradaki">Salaata itti aanu: %1$s, %2$s jalqaba</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Hanga Zuhriitti</string>
+  <string name="widget_onizleme_klasik_genis">Hanga Maghribaatti</string>
+  <string name="widget_onizleme_imsak">Subhii</string>
+  <string name="widget_onizleme_gunes">Baha aduu</string>
+  <string name="widget_onizleme_ogle">Zuhrii</string>
+  <string name="widget_onizleme_ikindi">Asrii</string>
+  <string name="widget_onizleme_aksam">Maghriba</string>
+  <string name="widget_onizleme_yatsi">Ishaa\'ii</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s akka salaatameetti mallattaa\'eera. Rabbiin haa qeebalu.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s duraan akka salaatameetti mallattaa\'eera.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Amma salaanni mallattaa\'u hin jiru. Kan itti aanu %1$s, sa\'aatii %2$s jalqaba.</string>
+  <string name="kildim_sonuc_vakit_yok">Amma salaanni mallattaa\'u hin jiru.</string>
+  <string name="kildim_sonuc_veri_yok">Odeeffannoon yeroo salaataa hin jiru. Appicha si\'a tokko banaa.</string>
+  <string name="kildim_sonuc_vakit_degisti">Yeroon salaataa waan jijjiirameef wanti tokkollee hin mallattoofne. Irra deebi\'aa yaalaa.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Appii karaa agarsiisu banuu hin dandeenye.</string>
+  <string name="arac_adsiz_cami">Masjiida</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Odeeffannoo yeroo salaataa dubbisuu hin dandeenye.</string>
+  <string name="asistan_isaretleme_yapilamadi">Salaata mallatteessuu hin dandeenye.</string>
+  <string name="asistan_aciklama">Yeroo salaataa gaafachuu, salaata ammaa akka salaatameetti mallatteessuufi fuula qiblaa banuu dandeessu.</string>
+</resources>

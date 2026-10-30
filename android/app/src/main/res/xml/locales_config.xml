@@ -29,4 +29,11 @@
   <locale android:name="kk"/>
   <locale android:name="ky"/>
   <locale android:name="tg"/>
+  <locale android:name="sw"/>
+  <locale android:name="ha"/>
+  <locale android:name="am"/>
+  <locale android:name="om"/>
+  <locale android:name="so"/>
+  <locale android:name="ff"/>
+  <locale android:name="yo"/>
 </locale-config>

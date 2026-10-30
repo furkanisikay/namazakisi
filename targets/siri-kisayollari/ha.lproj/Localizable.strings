@@ -1,0 +1,57 @@
+// ha — Hausa (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ. Terimler: src/core/dil/sozluk/ha.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Salla ta gaba";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Yana faɗin salla ta gaba da lokacin da za ta yi.";
+"Şu anki vakti kıldım" = "Na yi sallar yanzu";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Yana yin alamar an yi sallar yanzu. Ana ƙara bayanin idan kuka buɗe manhajar.";
+"Onay iste" = "Nemi tabbatarwa";
+"Kıbleyi aç" = "Buɗe Alƙibla";
+"Uygulamayı Kıble pusulasıyla açar." = "Yana buɗe manhajar da kamfas na Alƙibla.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Na yi salla";
+"Kıble" = "Alƙibla";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Sunan salla ta gaba";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Yana ba da sunan salla ta gaba. Kuna iya amfani da shi a matsayin sharaɗi a Shortcuts.";
+"Sıradaki vakte kalan dakika" = "Mintuna zuwa salla ta gaba";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Yana ba da mintuna nawa suka rage kafin salla ta gaba ta yi. Yana dawo da -1 idan babu bayani.";
+"Şu anki vakit kılındı mı?" = "An yi alamar an yi sallar yanzu?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Yana ba da ee idan an yi alamar an yi sallar yanzu. Yana ba da aʼa idan babu sallar da za a yi wa alama.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Shirun salla";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Yana dawo da gaskiya a mintunan farko bayan lokacin salla ya yi. Ana amfani da shi a Shortcuts don kunna Focus.";
+"Süre (dakika)" = "Tsawon lokaci (mintuna)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Minti ${dakika} bayan lokacin salla ya yi";
+"Namaz sessizliğinin bitişi" = "Ƙarshen shirun salla";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Yana ba da lokacin da shiru zai ƙare. Yana ba da lokacin yanzu idan babu shiru a yanzu.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Ƙarshen minti ${dakika} bayan lokacin salla ya yi";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Tunatarwar salla";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Lokacin da wannan Focus ke kunne, tunatarwar salla tana zuwa ba tare da haskaka allo ko yin sauti ba.";
+"Hatırlatmaları sessiz ver" = "Kawo tunatarwa a shiru";
+"Hatırlatmalar sessiz gelir" = "Tunatarwa tana zuwa a shiru";
+"Hatırlatmalar her zamanki gibi" = "Tunatarwa kamar yadda aka saba";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Yana yin alamar an yi sallar da ke widget.";
+"Tarih" = "Kwanan wata";
+"Vakit" = "Salla";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Tsayar da ƙararrawar salla";
+"Namazı kıldım" = "Na yi salla";
+"Alarm" = "Ƙararrawa";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Hoton ayar yau";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Yana ba da ayar yau a matsayin hoto mai girman allonku. Kuna iya amfani da shi tare da matakin Set Wallpaper a Shortcuts.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Ku buɗe manhajar sau ɗaya don shirya ayar yau.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Ba a iya shirya hoton ba. Ku sake gwadawa nan ba da jimawa ba.";

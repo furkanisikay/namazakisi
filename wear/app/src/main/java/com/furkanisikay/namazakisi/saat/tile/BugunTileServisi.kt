@@ -23,6 +23,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.KalanSure
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
+import com.furkanisikay.namazakisi.saat.cekirdek.rakamlariYerellestir
 import com.furkanisikay.namazakisi.saat.hatirlatma.KildimAlicisi
 import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
 import com.furkanisikay.namazakisi.saat.ui.TesbihatAktivite
@@ -245,11 +246,7 @@ class BugunTileServisi : TileService() {
             if (BugunTileKarari.tesbihatKisayoluGoster(onay != null, kalanVar)) {
                 tesbihatKisayolu()
             } else {
-                TileOrtak.metin(
-                    ipucu(yuk, ozet, an, onay, aktif, dil), 11f,
-                    if (onay != null) SaatPaleti.KERAHAT else SaatPaleti.METIN2,
-                    sifir = sifir,
-                )
+                ipucuSatiri(ipucu(yuk, ozet, an, onay, aktif, dil), if (onay != null) SaatPaleti.KERAHAT else SaatPaleti.METIN2)
             }
         )
         val kutu = LayoutElementBuilders.Box.Builder()
@@ -258,6 +255,23 @@ class BugunTileServisi : TileService() {
         if (aktif != null) kutu.addContent(aktifDolgu(sayilan, aktif, an))
         return kutu.addContent(sutun.build()).build()
     }
+
+    /**
+     * İpucu dairenin alt kirişine sığacak genişlikte, gerekirse iki satır: genişliksiz tek
+     * satır uzun dilde ("Inayofuata: Magharibi 18:10") halkanın üstüne taşıyordu (2026-10-30).
+     */
+    private fun ipucuSatiri(yazi: String, renk: Long): LayoutElementBuilders.LayoutElement =
+        LayoutElementBuilders.Box.Builder()
+            .setWidth(dp(resources.configuration.screenWidthDp * IPUCU_GENISLIK_ORANI))
+            .addContent(
+                LayoutElementBuilders.Text.Builder()
+                    .setText(rakamlariYerellestir(yazi, sifir))
+                    .setMaxLines(2)
+                    .setMultilineAlignment(LayoutElementBuilders.TEXT_ALIGN_CENTER)
+                    .setFontStyle(TileOrtak.yaziStili(11f, renk, false))
+                    .build()
+            )
+            .build()
 
     private fun ipucu(
         yuk: Yuk,
@@ -497,5 +511,11 @@ class BugunTileServisi : TileService() {
         private const val DILIM_ARASI = 4f
         private const val DILIM = (360f - GunDurumu.FARZ_SAYISI * DILIM_ARASI) / GunDurumu.FARZ_SAYISI
         private const val YAY_KALINLIK_DP = 5f
+
+        /**
+         * İpucu kutusunun ekran genişliğine oranı: satır dairenin alt kirişinde durur (192 dp
+         * ekranda ≈ 138 dp), halka ve yay payı düşülmüş.
+         */
+        private const val IPUCU_GENISLIK_ORANI = 0.72f
     }
 }

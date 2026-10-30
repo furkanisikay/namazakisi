@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">Koodii QR fuula TV irra jiru saanduqa keessa galchaa</string>
+    <string name="tvesleme_qr_vazgec">Dhiisaa</string>
+    <string name="tvesleme_qr_vazgec_erisim">Sakatta\'uu dhiisaa</string>
+    <string name="tvesleme_qr_yabanci">Koodiin QR kun kan Namaz Akışı TV miti. Koodii TV irra jiru sakatta\'aa.</string>
+    <string name="tvesleme_qr_okundu">Koodiin sakatta\'ameera</string>
+</resources>

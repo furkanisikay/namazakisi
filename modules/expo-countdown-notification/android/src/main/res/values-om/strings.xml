@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="countdown_kanal_canli_ad">Lakkoofsa duubaa kallattii</string>
+    <string name="countdown_kanal_canli_aciklama">Lakkoofsa duubaa Now Bar fi sarara haalaa keessatti</string>
+    <string name="countdown_kanal_genel_ad">Beeksisa lakkoofsa duubaa</string>
+    <string name="countdown_kanal_genel_aciklama">Chaanaalii beeksisa lakkoofsa duubaa</string>
+
+    <string name="countdown_eylem_kildim">Ani salaateera</string>
+    <string name="countdown_eylem_durdur">Dhaabaa</string>
+
+    <string name="countdown_yedek_vakit">Ariifadhu, yeroon salaataa xumuramuuf jira.</string>
+    <string name="countdown_yedek_iftar">Yeroon dhumaa jira.</string>
+    <string name="countdown_yedek_sahur">Ammallee nyaachuufi dhuguu dandeessu; soomanni dhiyootti jalqaba.</string>
+    <string name="countdown_yedek_seri">Salaanni har\'aa hin guutamne; walitti fufiinsa keessan hin dhabinaa.</string>
+
+    <string name="countdown_onek_vakit">Hanga yeroon xumuramutti</string>
+    <string name="countdown_onek_vakit_dar">Yeroon xumuramaa jira</string>
+    <string name="countdown_onek_iftar">Hanga afursaatti</string>
+    <string name="countdown_onek_iftar_dar">Hanga afursaatti</string>
+    <string name="countdown_onek_sahur">Hanga suhuurri xumuramutti</string>
+    <string name="countdown_onek_sahur_dar">Suhuurri xumuramaa jira</string>
+    <string name="countdown_onek_seri">Walitti fufiinsa keessan eeguuf</string>
+    <string name="countdown_onek_seri_dar">Walitti fufiinsi dhumaa jira</string>
+</resources>

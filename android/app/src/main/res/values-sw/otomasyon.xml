@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Kiswahili). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Nimeswali</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Hali ya wakati wa Swala</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Tukio la wakati wa Swala</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Mpangilio huu unaongezwa kutoka kwenye programu ya otomatiki</string>
+  <string name="otomasyon_bilgi_tarayici">Vivinjari haviwezi kupata ruhusa ya kudumu. Iongeze kutoka kwenye orodha ya programu-jalizi ya programu kama Tasker, MacroDroid au Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Iongeze kwa kuchagua \"Namaz Akışı\" kutoka kwenye orodha ya programu-jalizi ya programu kama Tasker, MacroDroid au Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s imezuiwa</string>
+  <string name="otomasyon_engelli_mesaj">Uliizuia programu hii kuweka alama Swala zako hapo awali. Unaweza kuiruhusu katika Namaz Akışı chini ya Mipangilio &gt; \"Programu zinazoweka alama Nimeswali\".</string>
+  <string name="otomasyon_izin_baslik">Kutumia na %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s inaweza kujua wakati wa Swala unapoingia, unapokaribia kuisha na unapokuwa msikitini, na kuendesha otomatiki zako. Unaweza kubadilisha uamuzi wako katika Namaz Akışı chini ya Mipangilio &gt; \"Programu zinazoweka alama Nimeswali\".</string>
+  <string name="otomasyon_izin_kildim">%1$s inaweza kuweka alama Swala ya sasa imeswaliwa kwa otomatiki uliyoweka. Unaweza kubadilisha uamuzi wako katika Namaz Akışı chini ya Mipangilio &gt; \"Programu zinazoweka alama Nimeswali\".</string>
+  <string name="otomasyon_izin_ver">Ruhusu</string>
+  <string name="otomasyon_engelle">Zuia</string>
+  <string name="otomasyon_vazgec">Ghairi</string>
+  <string name="otomasyon_tamam">Sawa</string>
+  <string name="otomasyon_tur_baslik">Iendeshwe lini?</string>
+  <string name="otomasyon_ileri">Mbele</string>
+  <string name="otomasyon_vakit_baslik">Swala ipi?</string>
+  <string name="otomasyon_herhangi_vakit">Wakati wowote wa Swala</string>
+  <string name="otomasyon_kaydet">Hifadhi</string>
+  <string name="otomasyon_kosul_icinde">Ikiwa ni wakati wa Swala</string>
+  <string name="otomasyon_kosul_cikiyor">Wakati wa Swala unapokaribia kuisha (dakika %1$d zimebaki, Mlinzi wa Swala amewashwa)</string>
+  <string name="otomasyon_kosul_camide">Ukiwa msikitini</string>
+  <string name="otomasyon_olay_girdi">Wakati wa Swala unapoingia</string>
+  <string name="otomasyon_olay_cikiyor">Wakati wa Swala unapokaribia kuisha (dakika %1$d zimebaki, Mlinzi wa Swala amewashwa)</string>
+  <string name="otomasyon_olay_camide">Unapotambuliwa uko msikitini</string>
+</resources>

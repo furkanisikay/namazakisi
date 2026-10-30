@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Goobtaada waxaa loo isticmaalaa in si sax ah loogu xisaabiyo waqtiyada salaadda meesha aad joogto. Goobtaadu waxay ku haraysaa qalabkaaga.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Goobtaada waxaa loo isticmaalaa in si sax ah loogu xisaabiyo waqtiyada salaadda meesha aad joogto iyo, haddii “Masjidka ayaan joogaa” uu shidan yahay, in la shido qaabka Salaadda marka aad masjid gasho. Goobtaadu waxay ku haraysaa qalabkaaga.",
+  "NSLocationAlwaysUsageDescription": "Goobtaada waxaa loo isticmaalaa in si toos ah loo cusboonaysiiyo waqtiyada salaadda marka aad magaalo beddesho iyo, haddii “Masjidka ayaan joogaa” uu shidan yahay, in la shido qaabka Salaadda marka aad masjid gasho. Goobtaadu waxay ku haraysaa qalabkaaga.",
+  "NSCameraUsageDescription": "Kamaraddaada waxaa loo isticmaalaa in jihada Qiblada lagu muujiyo muuqaalka kamaradda iyo in la akhriyo koodhka isku xirka ee telefishankaaga. Sawirrada lama kaydiyo mana ka baxaan qalabkaaga.",
+  "NSCalendarsUsageDescription": "Gelitaanka jadwalka waxaa loo isticmaalaa in waqtiyada salaadda lagu daro jadwalkaaga iyo, haddii aad shiddo, in la hubiyo in dhacdooyinka jadwalkaagu ku beegmaan waqti salaadeed. Xogta jadwalkaagu waxay ku haraysaa qalabkaaga.",
+  "NSCalendarsFullAccessUsageDescription": "Gelitaanka jadwalka waxaa loo isticmaalaa in waqtiyada salaadda lagu daro jadwalkaaga iyo, haddii aad shiddo, in la hubiyo in dhacdooyinka jadwalkaagu ku beegmaan waqti salaadeed. Xogta jadwalkaagu waxay ku haraysaa qalabkaaga.",
+  "NSLocalNetworkUsageDescription": "Barnaamijku wuxuu ku xirmaa telefishanka shabakaddaada gudaha si uu ugu diro waqtiyada salaaddaada iyo salaadaha aad calaamadeysay. Xogta waa sir oo waxay socotaa oo kaliya labada qalab dhexdooda.",
+  "NSAlarmKitUsageDescription": "Tallaabooyinka xusuusinta ee aad u dooratay “Alaarm dhab ah” waxaa loo dejiyaa alaarm ahaan, si aad u maqasho xitaa marka taleefankaagu aamusan yahay ama Focus shidan yahay.",
+  "\"Vakti kıldım\"": "Waan tukaday",
+  "\"Kıble\"": "Qibla"
+}

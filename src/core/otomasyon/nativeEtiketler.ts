@@ -155,6 +155,48 @@ export const NATIVE_ETIKETLER: { tr: NativeEtiket } & Partial<Record<DilKodu, Na
     kosul: 'Namaz Akışı: Ҳолати вақти намоз', // dil-haric: marka adı (native etiket)
     eylem: 'Namaz Akışı: Хондам', // dil-haric: marka adı (native etiket)
   },
+  sw: {
+    kisayol: 'Nimeswali Swala ya sasa',
+    olay: 'Namaz Akışı: Tukio la wakati wa Swala', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Hali ya wakati wa Swala', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Nimeswali', // dil-haric: marka adı (native etiket)
+  },
+  ha: {
+    kisayol: 'Na yi sallar yanzu',
+    olay: 'Namaz Akışı: Abin lokacin salla', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Halin lokacin salla', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Na yi salla', // dil-haric: marka adı (native etiket)
+  },
+  am: {
+    kisayol: 'የአሁኑን ሶላት ሰገድኩ',
+    olay: 'Namaz Akışı፦ የሶላት ሰዓት ክስተት', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı፦ የሶላት ሰዓት ሁኔታ', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı፦ ሰገድኩ', // dil-haric: marka adı (native etiket)
+  },
+  om: {
+    kisayol: 'Salaata ammaa salaateera',
+    olay: 'Namaz Akışı: Taatee yeroo salaataa', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Haala yeroo salaataa', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Ani salaateera', // dil-haric: marka adı (native etiket)
+  },
+  so: {
+    kisayol: 'Waan tukaday salaadda hadda', // dil-haric: Somalice native etiket (values-so)
+    olay: 'Namaz Akışı: Dhacdada waqtiga salaadda', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Xaaladda waqtiga salaadda', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Waan tukaday', // dil-haric: marka adı (native etiket)
+  },
+  ff: {
+    kisayol: 'Mi juulii juulde jooni ndee',
+    olay: 'Namaz Akışı: Huunde waqutu juulde', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Ngonka waqutu juulde', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Mi juulii', // dil-haric: marka adı (native etiket)
+  },
+  yo: {
+    kisayol: 'Mo ti kí ìrun lọ́wọ́lọ́wọ́',
+    olay: 'Namaz Akışı: Ìṣẹ̀lẹ̀ àkókò ìrun', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Ipò àkókò ìrun', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Mo ti kírun', // dil-haric: marka adı (native etiket)
+  },
 };
 
 /** Cihaz yerel ayarından ('ckb_IQ', 'in_ID', 'fa-IR') etiket kümesi; tabloda yoksa Türkçe. */

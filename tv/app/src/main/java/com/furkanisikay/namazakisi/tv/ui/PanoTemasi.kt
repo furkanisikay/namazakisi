@@ -2,7 +2,11 @@ package com.furkanisikay.namazakisi.tv.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.unit.em
 import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.Typography
 import androidx.tv.material3.darkColorScheme
 
 /**
@@ -28,9 +32,46 @@ object Renkler {
     val hata = Color(0xFFEF5350)
 }
 
+/**
+ * Yazı ölçeği: tv-material'in bütün stilleri sabit `sp` satır yüksekliği taşır (`bodyLarge`
+ * 16/24 sp) ve `Text`'e yalnız `fontSize` verilince bu satır yüksekliği KALIR → 32 sp başlık
+ * iki satıra kırılınca satırlar 24 sp arayla üst üste biniyordu (Ge'ez, Yoruba ton işaretleri;
+ * 2026-10-30). Satır yüksekliği yazı boyuna göre (`em`) ve `Mode.Minimum`: yazı tipinin kendi
+ * satır boyu daha büyükse o kullanılır. Tek satırlık metin değişmez (`Trim.Both`).
+ */
+private fun TextStyle.satirGuvenli() = copy(
+    lineHeight = 1.3.em,
+    lineHeightStyle = LineHeightStyle(
+        alignment = LineHeightStyle.Alignment.Proportional,
+        trim = LineHeightStyle.Trim.Both,
+        mode = LineHeightStyle.Mode.Minimum,
+    ),
+)
+
+private val YAZI = Typography().let { t ->
+    Typography(
+        displayLarge = t.displayLarge.satirGuvenli(),
+        displayMedium = t.displayMedium.satirGuvenli(),
+        displaySmall = t.displaySmall.satirGuvenli(),
+        headlineLarge = t.headlineLarge.satirGuvenli(),
+        headlineMedium = t.headlineMedium.satirGuvenli(),
+        headlineSmall = t.headlineSmall.satirGuvenli(),
+        titleLarge = t.titleLarge.satirGuvenli(),
+        titleMedium = t.titleMedium.satirGuvenli(),
+        titleSmall = t.titleSmall.satirGuvenli(),
+        bodyLarge = t.bodyLarge.satirGuvenli(),
+        bodyMedium = t.bodyMedium.satirGuvenli(),
+        bodySmall = t.bodySmall.satirGuvenli(),
+        labelLarge = t.labelLarge.satirGuvenli(),
+        labelMedium = t.labelMedium.satirGuvenli(),
+        labelSmall = t.labelSmall.satirGuvenli(),
+    )
+}
+
 @Composable
 fun PanoTemasi(icerik: @Composable () -> Unit) {
     MaterialTheme(
+        typography = YAZI,
         colorScheme = darkColorScheme(
             primary = Renkler.birincil,
             onPrimary = Renkler.arkaplan,

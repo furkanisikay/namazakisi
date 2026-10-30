@@ -23,7 +23,14 @@
       "uz": "./locales/uz.json",
       "kk": "./locales/kk.json",
       "ky": "./locales/ky.json",
-      "tg": "./locales/tg.json"
+      "tg": "./locales/tg.json",
+      "sw": "./locales/sw.json",
+      "ha": "./locales/ha.json",
+      "am": "./locales/am.json",
+      "om": "./locales/om.json",
+      "so": "./locales/so.json",
+      "ff": "./locales/ff.json",
+      "yo": "./locales/yo.json"
     },
     "name": "Namaz Akışı",
     "slug": "namazakisi",
@@ -93,7 +100,7 @@
     },
     "plugins": [
       "./plugins/withPlayStoreDependency",
-      ["./plugins/withSiriKisayollari", { "diller": ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg"] }],
+      ["./plugins/withSiriKisayollari", { "diller": ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo"] }],
       "./plugins/withMuhafizAlarmKit",
       [
         "./plugins/withNamazWidget",

@@ -4,6 +4,11 @@ appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _acilis.yaml
 - tapOn: "(Kıble|Qibla)"
+# Yükleme metni durağandır, waitForAnimationToEnd beklemez (03-kible ile aynı neden).
+- extendedWaitUntil:
+    notVisible: "(Konumunuz alınıyor…|Getting your location…)"
+    timeout: 20000
+    optional: true
 - waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: ozk/32-kible

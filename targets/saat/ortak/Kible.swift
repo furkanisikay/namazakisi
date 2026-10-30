@@ -125,7 +125,7 @@ public enum Kible {
 
 /// Kible metinleri — dil basina bir ornek (Wear `SaatDili` kible alanlari ve JS
 /// `sozluk/<dil>/kible.ts > yon` ikizi). Yer tutucular `{derece}`, `{km}`. Duzen: sira tr, en,
-/// id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
+/// id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
 public struct KibleMetinleri: Equatable {
     public let arkada: String
     public let saga: String
@@ -480,11 +480,110 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: "\u{00A0}"
     )
 
+    // sw
+    public static let sw = KibleMetinleri(
+        arkada: "Nyuma yako",
+        saga: "Kulia {derece}°",
+        sola: "Kushoto {derece}°",
+        hizali: "Umeelekea Kibla",
+        arkadaErisim: "Kibla iko nyuma yako",
+        sagdaErisim: "Kibla iko nyuzi {derece} upande wako wa kulia",
+        soldaErisim: "Kibla iko nyuzi {derece} upande wako wa kushoto",
+        kabede: "Uko kwenye Al-Kaaba",
+        mesafe: "km {km}",
+        binlikAyirici: ","
+    )
+
+    // ha — Hausa (beta): JS `sozluk/ha/kible.ts`
+    public static let ha = KibleMetinleri(
+        arkada: "A bayanku",
+        saga: "Dama {derece}°",
+        sola: "Hagu {derece}°",
+        hizali: "Kuna fuskantar Alƙibla",
+        arkadaErisim: "Alƙibla tana bayanku",
+        sagdaErisim: "Alƙibla tana dama da ku da digiri {derece}",
+        soldaErisim: "Alƙibla tana hagu da ku da digiri {derece}",
+        kabede: "Kuna a Kaʼaba",
+        mesafe: "km {km}",
+        binlikAyirici: ","
+    )
+
+    // am — Amharca (beta); CLDR am binlik ayırıcı ","
+    public static let am = KibleMetinleri(
+        arkada: "ከኋላዎ",
+        saga: "ቀኝ {derece}°",
+        sola: "ግራ {derece}°",
+        hizali: "ወደ ቂብላ ዞረዋል",
+        arkadaErisim: "ቂብላ ከኋላዎ ነው",
+        sagdaErisim: "ቂብላ ከቀኝዎ {derece} ዲግሪ ነው",
+        soldaErisim: "ቂብላ ከግራዎ {derece} ዲግሪ ነው",
+        kabede: "ካዕባ ላይ ነዎት",
+        mesafe: "{km} ኪ.ሜ",
+        binlikAyirici: ","
+    )
+
+    // om
+    public static let om = KibleMetinleri(
+        arkada: "Duuba keessan",
+        saga: "Mirga {derece}°",
+        sola: "Bitaa {derece}°",
+        hizali: "Gara qiblaatti garagaltaniittu",
+        arkadaErisim: "Qiblaan duuba keessan jira",
+        sagdaErisim: "Qiblaan gara mirga keessanii digirii {derece} irra jira",
+        soldaErisim: "Qiblaan gara bitaa keessanii digirii {derece} irra jira",
+        kabede: "Ka'abaa bira jirtu",
+        mesafe: "km {km}",
+        binlikAyirici: ","
+    )
+
+    // so
+    public static let so = KibleMetinleri(
+        arkada: "Gadaashaada",
+        saga: "Midig {derece}°",
+        sola: "Bidix {derece}°",
+        hizali: "Waxaad u jeeddaa Qiblada",
+        arkadaErisim: "Qibladu waa gadaashaada",
+        sagdaErisim: "Qibladu waa {derece} darajo dhanka midigtaada",
+        soldaErisim: "Qibladu waa {derece} darajo dhanka bidixdaada",
+        kabede: "Waxaad joogtaa Kacbada",
+        mesafe: "{km} km",
+        binlikAyirici: ","
+    )
+
+    // ff
+    public static let ff = KibleMetinleri(
+        arkada: "Caggal mon",
+        saga: "Ñaamo {derece}°",
+        sola: "Nano {derece}°",
+        hizali: "Hiɗon ndaari qibla",
+        arkadaErisim: "Qibla hino caggal mon",
+        sagdaErisim: "Qibla hino {derece} darajaaji e ñaamo mon",
+        soldaErisim: "Qibla hino {derece} darajaaji e nano mon",
+        kabede: "Hiɗon e Kaaba",
+        mesafe: "{km} km",
+        binlikAyirici: "\u{00A0}"
+    )
+
+    // yo
+    public static let yo = KibleMetinleri(
+        arkada: "Lẹ́yìn yín",
+        saga: "Ọ̀tún {derece}°",
+        sola: "Òsì {derece}°",
+        hizali: "Ẹ dojú kọ Ƙiblah",
+        arkadaErisim: "Ƙiblah wà lẹ́yìn yín",
+        sagdaErisim: "Ƙiblah wà ní ìwọ̀n {derece} sí ọ̀tún yín",
+        soldaErisim: "Ƙiblah wà ní ìwọ̀n {derece} sí òsì yín",
+        kabede: "Ẹ wà ní Ka‘bah",
+        mesafe: "km {km}",
+        binlikAyirici: ","
+    )
+
     public static let tablo: [String: KibleMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
         "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
+        "sw": sw, "ha": ha, "am": am, "om": om, "so": so, "ff": ff, "yo": yo,
     ]
 
     public static func dil(_ kod: String?) -> KibleMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

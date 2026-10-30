@@ -11,8 +11,8 @@ import Foundation
 /// BIREBIR ayni.
 public enum TvDili {
     public static let varsayilan = "tr"
-    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg).
-    public static let desteklenenler = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg"]
+    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo).
+    public static let desteklenenler = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo"]
 
     /// "en", "en-US", "de_DE" → kok kod; desteklenmeyen → "tr". Eski Endonezce kodu "in" → "id".
     public static func coz(_ kod: String?) -> String {
@@ -35,7 +35,7 @@ public enum TvDili {
 
 /// Pano cekirdek metinleri — dil basina bir ornek (Android TV `TvDili.kt` nesneleri ikizi).
 /// Anahtarlar `TvVakit` / `TvKerahat.Tur` ham degerleridir. Yer tutucular `{gun}`, `{ay}`,
-/// `{yil}`, `{gunAdi}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil Ingilizce
+/// `{yil}`, `{gunAdi}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo; cevrilmemis dil Ingilizce
 /// kopya (`// ÇEVİRİ: <kod>`). Nobetci: `targets/tv/test/main.swift` §4c.
 public struct TvPanoMetinleri: Equatable {
     public let vakitAdlari: [String: String]
@@ -413,11 +413,117 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
+    // sw
+    public static let sw = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Alfajiri", "gunes": "Macheo", "ogle": "Adhuhuri", "ikindi": "Alasiri", "aksam": "Magharibi", "yatsi": "Isha"],
+        cuma: "Ijumaa",
+        aylar: ["Januari", "Februari", "Machi", "Aprili", "Mei", "Juni", "Julai", "Agosti", "Septemba", "Oktoba", "Novemba", "Desemba"],
+        gunler: ["Jumatatu", "Jumanne", "Jumatano", "Alhamisi", "Ijumaa", "Jumamosi", "Jumapili"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Macheo", "istiva": "Jua la utosi", "gurub": "Machweo"],
+        kerahatAciklamalari: [
+            "suruk": "Kuswali ni makruhu hadi jua lipande vizuri.",
+            "istiva": "Kuswali ni makruhu jua likiwa katikati ya mbingu.",
+            "gurub": "Kuswali ni makruhu jua likiwa linazama.",
+        ]
+    )
+
+    // ha — Hausa (beta); JS `sozluk/ha` (vakit, tarih, anaEkran.kerahat), Android TV `TvDiliHa` ikizi
+    public static let ha = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Asuba", "gunes": "Fitowar Rana", "ogle": "Azahar", "ikindi": "Laʼasar", "aksam": "Magariba", "yatsi": "Isha"],
+        cuma: "Jumuʼa",
+        aylar: ["Janairu", "Faburairu", "Maris", "Afirilu", "Mayu", "Yuni", "Yuli", "Agusta", "Satumba", "Oktoba", "Nuwamba", "Disamba"],
+        gunler: ["Litinin", "Talata", "Laraba", "Alhamis", "Jummaʼa", "Asabar", "Lahadi"],
+        tarih: "{gunAdi}, {gun} {ay}, {yil}",
+        kerahatAdlari: ["suruk": "Fitowar rana", "istiva": "Tsakiyar rana", "gurub": "Faɗuwar rana"],
+        kerahatAciklamalari: [
+            "suruk": "Yin salla makaruhi ne har sai rana ta ɗaga sosai.",
+            "istiva": "Yin salla makaruhi ne lokacin da rana take tsakiyar sama.",
+            "gurub": "Yin salla makaruhi ne lokacin da rana take faɗuwa.",
+        ]
+    )
+
+    // am — Amharca (beta); ay/gün adları CLDR `am`
+    public static let am = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "ፈጅር", "gunes": "ፀሐይ መውጣት", "ogle": "ዙህር", "ikindi": "አስር", "aksam": "መግሪብ", "yatsi": "ኢሻ"],
+        cuma: "ጁሙዓ",
+        aylar: ["ጃንዋሪ", "ፌብሩዋሪ", "ማርች", "ኤፕሪል", "ሜይ", "ጁን", "ጁላይ", "ኦገስት", "ሴፕቴምበር", "ኦክቶበር", "ኖቬምበር", "ዲሴምበር"],
+        gunler: ["ሰኞ", "ማክሰኞ", "ረቡዕ", "ሐሙስ", "ዓርብ", "ቅዳሜ", "እሑድ"],
+        tarih: "{gunAdi}፣ {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "ፀሐይ መውጣት", "istiva": "እኩለ ቀን", "gurub": "ፀሐይ መጥለቅ"],
+        kerahatAciklamalari: [
+            "suruk": "ፀሐይ በደንብ እስክትወጣ ድረስ መስገድ ክልክል ነው።",
+            "istiva": "ፀሐይ በሰማዩ መሃል ላይ ሳለች መስገድ ክልክል ነው።",
+            "gurub": "ፀሐይ እየጠለቀች ሳለ መስገድ ክልክል ነው።",
+        ]
+    )
+
+    // om
+    public static let om = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Subhii", "gunes": "Baha aduu", "ogle": "Zuhrii", "ikindi": "Asrii", "aksam": "Maghriba", "yatsi": "Ishaa'ii"],
+        cuma: "Jimaata",
+        aylar: ["Amajjii", "Guraandhala", "Bitootessa", "Eebila", "Caamsaa", "Waxabajjii", "Adoolessa", "Hagayya", "Fulbaana", "Onkoloolessa", "Sadaasa", "Muddee"],
+        gunler: ["Wiixata", "Kibxata", "Roobii", "Kamisa", "Jimaata", "Sanbata", "Dilbata"],
+        tarih: "{gunAdi}, {ay} {gun}, {yil}",
+        kerahatAdlari: ["suruk": "Baha aduu", "istiva": "Aduu gubbaa gidduu", "gurub": "Lixa aduu"],
+        kerahatAciklamalari: [
+            "suruk": "Hanga aduun sirriitti baatutti salaatuun jibbamaa dha.",
+            "istiva": "Yeroo aduun gubbaa gidduu irra jirtu salaatuun jibbamaa dha.",
+            "gurub": "Yeroo aduun lixaa jirtu salaatuun jibbamaa dha.",
+        ]
+    )
+
+    // so
+    public static let so = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Subax", "gunes": "Qorrax soo bax", "ogle": "Duhur", "ikindi": "Casar", "aksam": "Maghrib", "yatsi": "Cishe"],
+        cuma: "Jimce",
+        aylar: ["Jannaayo", "Febraayo", "Maarso", "Abriil", "Maayo", "Juun", "Luulyo", "Ogosto", "Sebteembar", "Oktoobar", "Noofeembar", "Diseembar"],
+        gunler: ["Isniin", "Talaado", "Arbaco", "Khamiis", "Jimce", "Sabti", "Axad"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Qorrax soo bax", "istiva": "Bartamaha samada", "gurub": "Qorrax dhac"],
+        kerahatAciklamalari: [
+            "suruk": "Tukashadu waa makruuh ilaa qorraxdu si fiican u soo baxdo.",
+            "istiva": "Tukashadu waa makruuh inta qorraxdu joogto bartamaha samada.",
+            "gurub": "Tukashadu waa makruuh inta qorraxdu dhacayso.",
+        ]
+    )
+
+    // ff
+    public static let ff = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Subaka", "gunes": "Puɗal naange", "ogle": "Fanaa", "ikindi": "Alansaraa", "aksam": "Futuroo", "yatsi": "Geeƴe"],
+        cuma: "Juma",
+        aylar: ["sanwiye", "feeburuyee", "maarasi", "awril", "mee", "juwen", "suwiye", "ut", "settaambur", "ottoombur", "nofambar", "deesaambur"],
+        gunler: ["Altine", "Talaata", "Alarba", "Alkamisa", "Aljuma", "Asewe", "Alati"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Puɗal naange", "istiva": "Hakkunde ñalawma", "gurub": "Mutal naange"],
+        kerahatAciklamalari: [
+            "suruk": "Juulude ko makruuhu haa naange toowa no feewi.",
+            "istiva": "Juulude ko makruuhu tuma naange hino hakkunde asamaan.",
+            "gurub": "Juulude ko makruuhu tuma naange hino mutta.",
+        ]
+    )
+
+    // yo
+    public static let yo = TvPanoMetinleri(
+        vakitAdlari: ["imsak": "Subh", "gunes": "Yíyọ òòrùn", "ogle": "Ṭḥuhr", "ikindi": "‘Asr", "aksam": "Mọgrib", "yatsi": "‘Iṣā’"],
+        cuma: "Jum‘ah",
+        aylar: ["Oṣù Ṣẹ́rẹ́", "Oṣù Èrèlè", "Oṣù Ẹrẹ̀nà", "Oṣù Ìgbé", "Oṣù Ẹ̀bibi", "Oṣù Òkúdu", "Oṣù Agẹmọ", "Oṣù Ògún", "Oṣù Owewe", "Oṣù Ọ̀wàrà", "Oṣù Bélú", "Oṣù Ọ̀pẹ̀"],
+        gunler: ["Ọjọ́ Ajé", "Ọjọ́ Ìsẹ́gun", "Ọjọ́rú", "Ọjọ́bọ", "Ọjọ́ Ẹtì", "Ọjọ́ Àbámẹ́ta", "Ọjọ́ Àìkú"],
+        tarih: "{gunAdi}, {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Yíyọ òòrùn", "istiva": "Òòrùn ní àárín", "gurub": "Wíwọ̀ òòrùn"],
+        kerahatAciklamalari: [
+            "suruk": "Kíkí ìrun jẹ́ makrūh títí òòrùn yóò fi yọ dáadáa.",
+            "istiva": "Kíkí ìrun jẹ́ makrūh nígbà tí òòrùn bá wà ní àárín gbùngbùn ojú ọ̀run.",
+            "gurub": "Kíkí ìrun jẹ́ makrūh nígbà tí òòrùn bá ń wọ̀.",
+        ]
+    )
+
     public static let tablo: [String: TvPanoMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
         "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
+        "sw": sw, "ha": ha, "am": am, "om": om, "so": so, "ff": ff, "yo": yo,
     ]
 
     public static func dil(_ kod: String?) -> TvPanoMetinleri { tablo[TvDili.coz(kod)] ?? tr }

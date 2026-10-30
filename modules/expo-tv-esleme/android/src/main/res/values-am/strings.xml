@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tvesleme_qr_ipucu">በቴሌቪዥኑ ገጽ ላይ ያለውን የQR ኮድ በክፈፉ ውስጥ ያስገቡ</string>
+    <string name="tvesleme_qr_vazgec">ሰርዝ</string>
+    <string name="tvesleme_qr_vazgec_erisim">መቃኘቱን ሰርዝ</string>
+    <string name="tvesleme_qr_yabanci">ይህ የQR ኮድ የNamaz Akışı TV አይደለም። በቴሌቪዥኑ ላይ ያለውን ኮድ ይቃኙ።</string>
+    <string name="tvesleme_qr_okundu">ኮዱ ተቃኝቷል</string>
+</resources>

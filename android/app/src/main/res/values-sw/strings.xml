@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kiswahili (W5). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/sw (vakit.ts başı). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Swala ya sasa, inapoisha, na Nimeswali kwa kugusa mara moja</string>
+  <string name="widget_genis_aciklama">Swala tano za leo, muda uliobaki, na Nimeswali kwa kugusa mara moja</string>
+  <string name="widget_kapak_adi">Nyakati za Swala kwenye skrini ya jalada</string>
+  <string name="widget_kapak_aciklama">Nyakati za Swala za leo na muda uliobaki kwa skrini ya jalada ya Galaxy Z Flip</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Kawaida</string>
+  <string name="widget_klasik_aciklama">Mwonekano wa kijani wa kawaida: muda uliobaki hadi Swala inayofuata</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Kawaida pana</string>
+  <string name="widget_klasik_genis_aciklama">Mwonekano wa kijani wa kawaida: muda uliobaki na nyakati za Swala za leo</string>
+  <string name="widget_ayet_adi">Aya ya siku</string>
+  <string name="widget_ayet_aciklama">Aya na tafsiri yake, inayobadilika kila siku wakati wa Alfajiri</string>
+  <string name="widget_ayar_zemin_palet">Rangi ya programu (toni nyepesi)</string>
+  <string name="widget_ayar_ayet_icerik">Kwa ukubwa wa mraba, onyesha</string>
+  <string name="widget_ayar_ayet_icerik_meal">Tafsiri</string>
+  <string name="widget_ayar_ayet_icerik_hat">Maandishi ya Kiarabu (hati)</string>
+  <string name="kutu_kildim_etiket">Nimeswali</string>
+  <string name="kisayol_kildim_kisa">Nimeswali</string>
+  <string name="kisayol_kildim_uzun">Nimeswali Swala ya sasa</string>
+  <string name="kisayol_kible_kisa">Kibla</string>
+  <string name="kisayol_kible_uzun">Onyesha mwelekeo wa Kibla</string>
+  <string name="kisayol_kaza_kisa">Daftari la Qadha</string>
+  <string name="kisayol_kaza_uzun">Fungua Daftari la Qadha</string>
+  <string name="kildim_onay_baslik">Kuweka alama %1$s imeswaliwa?</string>
+  <string name="kildim_onay_mesaj">Haijulikani ni programu ipi iliyotuma ombi hili. Thibitisha ikiwa umeswali.</string>
+  <string name="kildim_onay_evet">Nimeswali</string>
+  <string name="kildim_onay_vazgec">Ghairi</string>
+  <string name="kildim_guven_baslik">Kuruhusu %1$s iweke alama Swala zako kuwa zimeswaliwa?</string>
+  <string name="kildim_guven_mesaj">Swala itakayowekwa alama sasa: %1$s. Unaweza kubadilisha uamuzi wako baadaye katika Mipangilio &gt; Programu zinazoweka alama Nimeswali.</string>
+  <string name="kildim_guven_tarayici_mesaj">Swala itakayowekwa alama sasa: %1$s. Ombi hili limetoka kwenye kivinjari; kwa kuwa ukurasa wowote wa wavuti unaweza kufungua kiungo hiki, ruhusa ya kudumu haiwezi kutolewa.</string>
+  <string name="kildim_guven_her_zaman">Ruhusu kila wakati</string>
+  <string name="kildim_guven_bu_sefer">Mara hii tu</string>
+  <string name="kildim_guven_engelle">Zuia</string>
+  <string name="kildim_guven_engellendi">%1$s haiwezi tena kuweka alama Swala zako. Unaweza kubadilisha hili katika Mipangilio.</string>
+  <string name="widget_ayar_baslik">Badilisha wijeti</string>
+  <string name="widget_ayar_zemin">Mandharinyuma</string>
+  <string name="widget_ayar_zemin_material">Rangi za mandhari</string>
+  <string name="widget_ayar_zemin_sistem">Mandhari ya mfumo</string>
+  <string name="widget_ayar_zemin_acik">Meupe</string>
+  <string name="widget_ayar_zemin_koyu">Meusi</string>
+  <string name="widget_ayar_zemin_seffaf">Angavu</string>
+  <string name="widget_ayar_opaklik">Uangavu wa mandharinyuma</string>
+  <string name="widget_ayar_gosterim">Onyesha kwa maandishi makubwa</string>
+  <string name="widget_ayar_gosterim_kalan">Muda uliobaki</string>
+  <string name="widget_ayar_gosterim_bitis">Wakati wa kuisha</string>
+  <string name="widget_ayar_gosterim_not">Wakati wa kuisha unaonyeshwa kwa kila ukubwa.</string>
+  <string name="widget_ayar_sonraki">Onyesha Swala inayofuata</string>
+  <string name="widget_ayar_vazgec">Ghairi</string>
+  <string name="widget_ayar_kaydet">Hifadhi</string>
+  <string name="kildim_onay_kanal_adi">Uthibitisho wa Nimeswali</string>
+  <string name="kildim_onay_kanal_aciklama">Uthibitisho tulivu unaoonyeshwa kwa sekunde chache unapogusa \"Nimeswali\" kwenye arifa</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Unaisha %1$s</string>
+  <string name="widget_giris">Unaingia %1$s</string>
+  <string name="widget_namaz_vakti">Wakati wa Swala</string>
+  <string name="widget_uygulamayi_acin">Fungua programu</string>
+  <string name="widget_siradaki">Inayofuata: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Hakuna Swala ya kuweka alama sasa hivi</string>
+  <string name="widget_dugme_kildim">Nimeswali</string>
+  <string name="widget_dugme_isaretleniyor">Inaweka alama</string>
+  <string name="widget_dugme_kilindi">Imeswaliwa</string>
+  <string name="widget_dugme_vakit_girmedi">Bado haujaingia</string>
+  <string name="widget_klasik_uygulamayi_acin">fungua programu</string>
+  <string name="widget_klasik_erisim_veri_yok">Fungua programu ili kuona nyakati za Swala</string>
+  <string name="widget_klasik_erisim_siradaki">Swala inayofuata: %1$s, inaingia saa %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Hadi Adhuhuri</string>
+  <string name="widget_onizleme_klasik_genis">Hadi Magharibi</string>
+  <string name="widget_onizleme_imsak">Alfajiri</string>
+  <string name="widget_onizleme_gunes">Macheo</string>
+  <string name="widget_onizleme_ogle">Adhuhuri</string>
+  <string name="widget_onizleme_ikindi">Alasiri</string>
+  <string name="widget_onizleme_aksam">Magharibi</string>
+  <string name="widget_onizleme_yatsi">Isha</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s imewekwa alama imeswaliwa. Mwenyezi Mungu aikubali.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s tayari imewekwa alama imeswaliwa.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Hakuna Swala ya kuweka alama sasa hivi. Inayofuata ni %1$s, inaingia saa %2$s.</string>
+  <string name="kildim_sonuc_vakit_yok">Hakuna Swala ya kuweka alama sasa hivi.</string>
+  <string name="kildim_sonuc_veri_yok">Hakuna data ya nyakati za Swala. Fungua programu mara moja.</string>
+  <string name="kildim_sonuc_vakit_degisti">Wakati wa Swala umebadilika, kwa hivyo hakuna kilichowekwa alama. Jaribu tena.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Programu ya urambazaji haikuweza kufunguka.</string>
+  <string name="arac_adsiz_cami">Msikiti</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Data ya nyakati za Swala haikuweza kusomwa.</string>
+  <string name="asistan_isaretleme_yapilamadi">Swala haikuweza kuwekwa alama.</string>
+  <string name="asistan_aciklama">Unaweza kuuliza nyakati za Swala, kuweka alama Swala ya sasa imeswaliwa na kufungua skrini ya Kibla.</string>
+</resources>

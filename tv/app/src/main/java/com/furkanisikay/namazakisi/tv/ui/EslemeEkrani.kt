@@ -184,7 +184,7 @@ fun EslemeEkrani(
                 ) { il ->
                     if (il == null) SolMetin(asama, cihazAdi) else GeldiMetni(il, cihazAdi)
                 }
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(20.dp))
                 if (gelen == null && asama == Asama.QR) {
                     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         EslemeDugmesi(
@@ -199,11 +199,20 @@ fun EslemeEkrani(
                 }
             }
 
-            Box(Modifier.width(320.dp), contentAlignment = Alignment.Center) {
+            Column(Modifier.width(320.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 when (val d = durum) {
                     is QrDurumu.Bekliyor -> QrKarti(d.metin, katlanma.value, igne.value, halka.value, gelen != null)
                     QrDurumu.AgYok -> AgYokKarti()
                     null -> Unit
+                }
+                // Okutma koşulu kodun yanında: sol sütun dolsa da kesilmez.
+                if (durum is QrDurumu.Bekliyor && gelen == null && asama == Asama.QR) {
+                    Spacer(Modifier.height(20.dp))
+                    Text(
+                        stringResource(R.string.esleme_ayni_wifi),
+                        color = Renkler.metinIkincil, fontSize = 22.sp, lineHeight = 30.sp,
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
         }
@@ -258,8 +267,8 @@ private fun SolMetin(asama: Asama, cihazAdi: String?) {
                 Adim(1, stringResource(R.string.esleme_adim1))
                 Adim(2, stringResource(R.string.esleme_adim2))
                 Adim(3, stringResource(R.string.esleme_adim3))
-                Spacer(Modifier.height(18.dp))
-                Text(stringResource(R.string.esleme_ayni_wifi), color = Renkler.metinIkincil, fontSize = 24.sp)
+                // Wi-Fi notu QR'ın ALTINDA (sağ sütun): esnek metin bloğunun sonunda uzun dilde
+                // (Oromo, Somalice, Svahili, Hausa, Yoruba) kesilip hiç görünmüyordu.
             }
         }
     }
@@ -304,7 +313,9 @@ private fun OnayDiyalogu(cihazAdi: String, onEvet: () -> Unit, onHayir: () -> Un
 
 @Composable
 private fun Adim(sira: Int, metin: String) {
-    Row(Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+    // Sıkı ölçü (dikey 4 dp, 24/32 sp): esnek metin bloğu uzun dilde (Somalice: 3 satır alt
+    // başlık + iki satırlık iki adım + iki satırlık düğme) 3. adımı yarıdan kesiyordu (2026-10-30).
+    Row(Modifier.padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         Box(
             Modifier.size(48.dp).background(Renkler.kart, CircleShape),
             contentAlignment = Alignment.Center,
@@ -312,7 +323,7 @@ private fun Adim(sira: Int, metin: String) {
             Text("$sira", color = Renkler.birincil, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         }
         Spacer(Modifier.width(16.dp))
-        Text(metin, color = Renkler.metin, fontSize = 26.sp, lineHeight = 34.sp)
+        Text(metin, color = Renkler.metin, fontSize = 24.sp, lineHeight = 32.sp)
     }
 }
 

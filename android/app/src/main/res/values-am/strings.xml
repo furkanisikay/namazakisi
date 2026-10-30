@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Amharca kaynaklar. Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/am (vakit.ts başı). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">የአሁኑ ሶላት፣ መቼ እንደሚያልቅ እና “ሰገድኩ” በአንድ ንክኪ</string>
+  <string name="widget_genis_aciklama">የዛሬ አምስት ሶላቶች፣ ቆጠራ እና “ሰገድኩ” በአንድ ንክኪ</string>
+  <string name="widget_kapak_adi">የሽፋን ገጽ የሶላት ሰዓቶች</string>
+  <string name="widget_kapak_aciklama">ለGalaxy Z Flip የሽፋን ገጽ የዛሬ የሶላት ሰዓቶች እና ቆጠራ</string>
+  <string name="widget_klasik_adi">Namaz Akışı — ክላሲክ</string>
+  <string name="widget_klasik_aciklama">ክላሲክ አረንጓዴ ገጽታ፦ ቀጣዩ ሶላት እስኪገባ የቀረው ጊዜ</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — ሰፊ ክላሲክ</string>
+  <string name="widget_klasik_genis_aciklama">ክላሲክ አረንጓዴ ገጽታ፦ ቆጠራ እና የዛሬ የሶላት ሰዓቶች</string>
+  <string name="widget_ayet_adi">የዕለቱ አንቀጽ</string>
+  <string name="widget_ayet_aciklama">አንቀጽ እና ትርጉሙ፣ በየቀኑ በፈጅር ይታደሳል</string>
+  <string name="widget_ayar_zemin_palet">የመተግበሪያ ቀለም (ፈዛዛ)</string>
+  <string name="widget_ayar_ayet_icerik">በካሬ መጠን የሚታየው</string>
+  <string name="widget_ayar_ayet_icerik_meal">ትርጉም</string>
+  <string name="widget_ayar_ayet_icerik_hat">የዓረብኛ ጽሑፍ (ካሊግራፊ)</string>
+  <string name="kutu_kildim_etiket">ሰገድኩ</string>
+  <string name="kisayol_kildim_kisa">ሰገድኩ</string>
+  <string name="kisayol_kildim_uzun">የአሁኑን ሶላት ሰገድኩ</string>
+  <string name="kisayol_kible_kisa">ቂብላ</string>
+  <string name="kisayol_kible_uzun">የቂብላን አቅጣጫ አሳይ</string>
+  <string name="kisayol_kaza_kisa">የቀዷእ መዝገብ</string>
+  <string name="kisayol_kaza_uzun">የቀዷእ መዝገብን ክፈት</string>
+  <string name="kildim_onay_baslik">%1$s እንደተሰገደ ምልክት ይደረግ?</string>
+  <string name="kildim_onay_mesaj">ይህን ጥያቄ የትኛው መተግበሪያ እንደላከው ግልጽ አይደለም። ከሰገዱ ያረጋግጡ።</string>
+  <string name="kildim_onay_evet">ሰገድኩ</string>
+  <string name="kildim_onay_vazgec">ሰርዝ</string>
+  <string name="kildim_guven_baslik">%1$s ሶላቶችዎን እንደተሰገዱ ምልክት እንዲያደርግ ይፈቀድ?</string>
+  <string name="kildim_guven_mesaj">አሁን ምልክት የሚደረግበት ሶላት፦ %1$s። ውሳኔዎን በኋላ በቅንብሮች &gt; “ሰገድኩ”ን ምልክት ማድረግ የሚችሉ መተግበሪያዎች ውስጥ መቀየር ይችላሉ።</string>
+  <string name="kildim_guven_tarayici_mesaj">አሁን ምልክት የሚደረግበት ሶላት፦ %1$s። ይህ ጥያቄ ከአሳሽ የመጣ ነው፤ ማንኛውም ድረ-ገጽ ይህን ማገናኛ ሊከፍት ስለሚችል ቋሚ ፈቃድ ሊሰጥ አይችልም።</string>
+  <string name="kildim_guven_her_zaman">ሁልጊዜ ፍቀድ</string>
+  <string name="kildim_guven_bu_sefer">ለዚህ ጊዜ ብቻ</string>
+  <string name="kildim_guven_engelle">አግድ</string>
+  <string name="kildim_guven_engellendi">%1$s ከአሁን በኋላ ሶላቶችዎን ምልክት ማድረግ አይችልም። ይህን በቅንብሮች ውስጥ መቀየር ይችላሉ።</string>
+  <string name="widget_ayar_baslik">ዊጀቱን አብጅ</string>
+  <string name="widget_ayar_zemin">ዳራ</string>
+  <string name="widget_ayar_zemin_material">የግድግዳ ምስል ቀለሞች</string>
+  <string name="widget_ayar_zemin_sistem">የሥርዓት ገጽታ</string>
+  <string name="widget_ayar_zemin_acik">ብሩህ</string>
+  <string name="widget_ayar_zemin_koyu">ጨለማ</string>
+  <string name="widget_ayar_zemin_seffaf">ግልጽ</string>
+  <string name="widget_ayar_opaklik">የዳራ ግልጽነት</string>
+  <string name="widget_ayar_gosterim">በትልቅ ጽሑፍ አሳይ</string>
+  <string name="widget_ayar_gosterim_kalan">የቀረው ጊዜ</string>
+  <string name="widget_ayar_gosterim_bitis">የማብቂያ ሰዓት</string>
+  <string name="widget_ayar_gosterim_not">የማብቂያ ሰዓቱ በሁሉም መጠን ይታያል።</string>
+  <string name="widget_ayar_sonraki">ቀጣዩን ሶላት አሳይ</string>
+  <string name="widget_ayar_vazgec">ሰርዝ</string>
+  <string name="widget_ayar_kaydet">አስቀምጥ</string>
+  <string name="kildim_onay_kanal_adi">የ“ሰገድኩ” ማረጋገጫ</string>
+  <string name="kildim_onay_kanal_aciklama">በማሳወቂያ ውስጥ “ሰገድኩ”ን ሲነኩ ለጥቂት ሰከንዶች የሚታይ ጸጥ ያለ ማረጋገጫ</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">ያበቃል %1$s</string>
+  <string name="widget_giris">ይገባል %1$s</string>
+  <string name="widget_namaz_vakti">የሶላት ሰዓት</string>
+  <string name="widget_uygulamayi_acin">መተግበሪያውን ክፈት</string>
+  <string name="widget_siradaki">ቀጣይ፦ %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">አሁን ምልክት የሚደረግበት ሶላት የለም</string>
+  <string name="widget_dugme_kildim">ሰገድኩ</string>
+  <string name="widget_dugme_isaretleniyor">ምልክት በማድረግ ላይ</string>
+  <string name="widget_dugme_kilindi">ተሰግዷል</string>
+  <string name="widget_dugme_vakit_girmedi">ገና አልገባም</string>
+  <string name="widget_klasik_uygulamayi_acin">መተግበሪያውን ክፈት</string>
+  <string name="widget_klasik_erisim_veri_yok">የሶላት ሰዓቶችን ለማየት መተግበሪያውን ይክፈቱ</string>
+  <string name="widget_klasik_erisim_siradaki">ቀጣይ ሶላት፦ %1$s፣ በ%2$s ይገባል</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">ዙህር እስኪገባ</string>
+  <string name="widget_onizleme_klasik_genis">መግሪብ እስኪገባ</string>
+  <string name="widget_onizleme_imsak">ፈጅር</string>
+  <string name="widget_onizleme_gunes">ፀሐይ መውጣት</string>
+  <string name="widget_onizleme_ogle">ዙህር</string>
+  <string name="widget_onizleme_ikindi">አስር</string>
+  <string name="widget_onizleme_aksam">መግሪብ</string>
+  <string name="widget_onizleme_yatsi">ኢሻ</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s እንደተሰገደ ምልክት ተደርጓል። አላህ ይቀበለው።</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s አስቀድሞ እንደተሰገደ ምልክት ተደርጓል።</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">አሁን ምልክት የሚደረግበት ሶላት የለም። ቀጣዩ %1$s ነው፣ በ%2$s ይገባል።</string>
+  <string name="kildim_sonuc_vakit_yok">አሁን ምልክት የሚደረግበት ሶላት የለም።</string>
+  <string name="kildim_sonuc_veri_yok">የሶላት ሰዓት መረጃ የለም። መተግበሪያውን አንድ ጊዜ ይክፈቱ።</string>
+  <string name="kildim_sonuc_vakit_degisti">የሶላቱ ሰዓት ስለተቀየረ ምንም ምልክት አልተደረገም። እንደገና ይሞክሩ።</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">የአሰሳ መተግበሪያውን መክፈት አልተቻለም።</string>
+  <string name="arac_adsiz_cami">መስጂድ</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">የሶላት ሰዓት መረጃን ማንበብ አልተቻለም።</string>
+  <string name="asistan_isaretleme_yapilamadi">ሶላቱን ምልክት ማድረግ አልተቻለም።</string>
+  <string name="asistan_aciklama">የሶላት ሰዓቶችን መጠየቅ፣ የአሁኑን ሶላት እንደተሰገደ ምልክት ማድረግ እና የቂብላ ገጹን መክፈት ይችላሉ።</string>
+</resources>

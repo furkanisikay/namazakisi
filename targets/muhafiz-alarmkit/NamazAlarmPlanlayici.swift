@@ -97,7 +97,7 @@ enum NamazAlarmCekirdegi {
         return durdurEtiketleri[ArayuzDili.coz(dil)] ?? "Durdur"
     }
 
-    /// Dil tablosu (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil Ingilizce kopya).
+    /// Dil tablosu (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo; cevrilmemis dil Ingilizce kopya).
     static let durdurEtiketleri: [String: String] = [
         "tr": "Durdur",
         "en": "Stop",
@@ -144,6 +144,20 @@ enum NamazAlarmCekirdegi {
         "ky": "Токтотуу",
         // tg
         "tg": "Қатъ кардан",
+        // sw
+        "sw": "Simamisha",
+        // ha
+        "ha": "Tsayar",
+        // am
+        "am": "አቁም",
+        // om
+        "om": "Dhaabi",
+        // so
+        "so": "Jooji",
+        // ff
+        "ff": "Dartinee",
+        // yo
+        "yo": "Dá a dúró",
     ]
 
     static func durum() -> String {

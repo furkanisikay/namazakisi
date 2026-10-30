@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Afaan Oromoo. Terimler: src/core/dil/sozluk/om. -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">om</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Gabatee yeroo salaataa</string>
+    <string name="ayarlar">Qindaa\'ina</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">Hanga %1$stti %2$s hafe</string>
+    <string name="pano_vaktine">Hanga %1$stti</string>
+    <string name="pano_vaktine_kalan">%1$s %2$s booda</string>
+    <string name="pano_kerahat_vakti">Yeroo jibbamaa</string>
+    <string name="pano_bitis">%1$s xumurama</string>
+    <string name="pano_kerahat_erisim">Yeroo jibbamaa, %1$s, %2$s xumurama. %3$s</string>
+    <string name="pano_cumaya">Jimaata %1$s booda</string>
+    <string name="pano_cikis_geldi">yeroo ka\'uu</string>
+    <string name="pano_cikis">%1$s ka\'aa</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Gara Jimaataatti ka\'uuf yeroon gaheera</string>
+    <string name="pano_cuma_cikis_erisim">Gara Jimaataatti %1$s ka\'aa</string>
+    <string name="pano_bugun_cuma">Har\'a Jimaata</string>
+    <string name="pano_ogle">Zuhrii %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Har\'a Jimaata. Salaanni Jimaataa yeroo Zuhriitti, %1$s</string>
+    <string name="pano_ayarlar_erisim">Qindaa\'ina: bilbila dabaluu, bakka, bilbilota walqabatan</string>
+    <string name="pano_simdiki_vakit">yeroo salaataa ammaa</string>
+    <string name="pano_siradaki_vakit">yeroo salaataa itti aanu</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Bilbila keessan dabalaa", "Koodii galchi", "Magaalaa ofii koon nan filadha", "Dabalaa". -->
+    <string name="kodla_girin">Koodii galchi</string>
+    <string name="ili_kendim_secin">Magaalaa ofii koon nan filadha</string>
+    <string name="yeniden_deneyin">Irra deebi\'aa yaalaa</string>
+    <string name="telefon_varsayilan">Bilbila</string>
+    <string name="esleme_ekleniyor">%1$s dabalamaa jira</string>
+    <string name="esleme_gonderiyor">Bilbilli keessan bakkaafi haala isaa ergaa jira…</string>
+    <string name="esleme_tamamlanamadi">Walqabsiisuun xumuramuu hin dandeenye</string>
+    <string name="esleme_saklanamadi">TV-n kun furtuu walqunnamtii nageenyaan kuusuu hin danda\'u. Bakka keessan koodiin galchuu ykn magaalaa keessan filachuu dandeessu.</string>
+    <string name="telefonunuzu_ekleyin">Bilbila keessan dabalaa</string>
+    <string name="esleme_alt">Yeroo salaataa bakka keessaniif; salaanni isin salaattanis ni mul\'ata.</string>
+    <string name="esleme_adim1">Bilbila keessan irratti Namaz Akışı banaa</string>
+    <string name="esleme_adim2">Qindaa\'ina › Meeshaalee koo › TV dabalaa</string>
+    <string name="esleme_adim3">Kaameraa bilbila keessanii gara koodichaatti qajeelchaa</string>
+    <string name="esleme_ayni_wifi">Bilbilliifi TV-n keessan neetworkii Wi-Fi tokko irra ta\'uu qabu.</string>
+    <string name="esleme_onay_soru">Bilbila kana dabaltuu?</string>
+    <string name="esleme_onay_aciklama">Bilbilli dabalame bakka isaafi salaata inni mallatteessu TV kanatti erguu danda\'a.</string>
+    <string name="ekleyin">Dabalaa</string>
+    <string name="hayir">Lakki</string>
+    <string name="esleme_eklendi">%1$s dabalameera</string>
+    <string name="konumunuz_geldi">Bakki keessan gaheera</string>
+    <string name="konuma_gore_hesaplanacak">Yeroon salaataa bakka kanaaf herregama.</string>
+    <string name="qr_konum_alindi">Bakki fudhatameera</string>
+    <string name="qr_kodu">Koodii walqabsiisaa bilbila keessaniin sakatta\'amu</string>
+    <string name="ag_yok">TV-n neetworkii wajjin hin walqabanne</string>
+    <string name="ag_yok_aciklama">Koodii lakkoofsa 7 bilbila keessan irraa galchuun ykn magaalaa keessan filachuun itti fufuu dandeessu.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Koodii bilbila keessan irraa galchaa</string>
+    <string name="kod_yol">Bilbila keessan irratti: Qindaa\'ina › Meeshaalee koo › TV dabalaa</string>
+    <string name="kod_hatali">Koodiin wal hin simne. Lakkoofsota 7 bilbila keessan irra jiran ilaalaa; lakkoofsa dogoggoraa “%1$s”n sirreessaa.</string>
+    <string name="kod_rakamli_kumanda">Yoo rimootiin keessan furtuu lakkoofsaa qabaate, isaanin barreessuus dandeessu.</string>
+    <string name="kod_bos_hane">lakkoofsa duwwaa</string>
+    <string name="kod_sil">Haqaa</string>
+    <string name="kod_sil_aciklama">Lakkoofsa dhumaa haqaa</string>
+    <string name="kod_geri">Duubatti</string>
+    <string name="vazgecin">Dhiisaa</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Magaalaa keessan filadhaa</string>
+    <string name="il_merkezine_gore">Yeroon salaataa giddugala magaalaatiif herregama.</string>
+    <string name="il_secili">%1$s, filatameera</string>
+    <string name="dream_il_yok">Gabatee yeroo salaataa arguuf, appii Namaz Akışı banaatii magaalaa keessan filadhaa.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Bakka: %1$s</string>
+    <string name="ayar_konum_yok">Bakki hin filatamne</string>
+    <string name="ayar_telefon_ekleyin">Bilbila dabalaa</string>
+    <string name="ayar_konumu_kodla">Bakka koodiin galchaa</string>
+    <string name="ayar_bagli_telefonlar">Bilbilota TV kana wajjin walqabatan</string>
+    <string name="ayar_telefon_yok">Ammallee bilbilli hin dabalamne. Gama bitaatti “%1$s” fayyadamaatii koodii mul\'atu sakatta\'aa.</string>
+    <string name="kaldirin">Haqaa</string>
+    <string name="ayar_ne_gonderir">Bilbilonni maal ergu?</string>
+    <string name="ayar_madde_konum">Bakka: yeroon salaataa isa hordofa</string>
+    <string name="ayar_madde_namazlar">Salaata mallattaa\'e, warra filataniif</string>
+    <string name="ayar_madde_sifreli">Iccitiin eegame, neetworkii mana keessanii qofa irratti</string>
+    <string name="son_haber_yok">Ammallee odeeffannoon hin jiru</string>
+    <string name="son_haber_az_once">Amma</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">daq %1$d dura</item>
+        <item quantity="other">daq %1$d dura</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">sa\'a %1$d dura</item>
+        <item quantity="other">sa\'a %1$d dura</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">guyyaa %1$d dura</item>
+        <item quantity="other">guyyaa %1$d dura</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s haqxuu?</string>
+    <string name="kaldir_aciklama">Bilbilli kun kana booda TV-tti odeeffannoo erguu hin danda\'u. Irra deebi\'uun dabaluuf, koodii QR irra deebitanii sakatta\'uu qabdu.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Bakka bilbila keessanii</string>
+</resources>

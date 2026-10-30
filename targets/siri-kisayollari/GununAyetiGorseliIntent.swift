@@ -108,7 +108,8 @@ private struct DuvarGorunumu: View {
                     .tracking(g * 0.004)
                     .foregroundStyle(Self.yesil)
                 Text(kayit.meal ?? kayit.kisaKunye)
-                    .font(.system(size: g * 0.062, weight: .regular, design: .serif))
+                    // Ge'ez (Amharca) meal sistem tasariminda (serif tasarimda Ge'ez yok).
+                    .font(.system(size: g * 0.062, weight: .regular, design: GununAyetiKarari.mealSerifMi(kayit.meal ?? kayit.kisaKunye) ? .serif : .default))
                     .lineSpacing(g * 0.012)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.white)

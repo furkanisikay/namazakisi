@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pular. Terimler: src/core/dil/sozluk/ff (vakit.ts başlık yorumu). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">ff</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Tabal saa’iiji juulɗe</string>
+    <string name="ayarlar">Teelte</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%2$s heddii haa %1$s</string>
+    <string name="pano_vaktine">Haa %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s caggal %2$s</string>
+    <string name="pano_kerahat_vakti">Waqutu makruuhu</string>
+    <string name="pano_bitis">gasay %1$s</string>
+    <string name="pano_kerahat_erisim">Waqutu makruuhu, %1$s, gasay %2$s. %3$s</string>
+    <string name="pano_cumaya">Juma caggal %1$s</string>
+    <string name="pano_cikis_geldi">ko waqutu yaltugol</string>
+    <string name="pano_cikis">yaltee e %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Ko waqutu yaltugol ngam Juma</string>
+    <string name="pano_cuma_cikis_erisim">Yaltee ngam Juma e %1$s</string>
+    <string name="pano_bugun_cuma">Hannde ko Juma</string>
+    <string name="pano_ogle">Fanaa %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Hannde ko Juma. Juulde Juma ndee ko e waqutu fanaa, %1$s</string>
+    <string name="pano_ayarlar_erisim">Teelte: ɓeydude talifon, nokkuure, talifonji jokkondiraaɗi</string>
+    <string name="pano_simdiki_vakit">waqutu juulde jooni</string>
+    <string name="pano_siradaki_vakit">waqutu juulde garoowo</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Ɓeydee talifon mon", "Naatnee kod", "Mi suɓay saare am e hoore am", "Ɓeydee". -->
+    <string name="kodla_girin">Naatnee kod</string>
+    <string name="ili_kendim_secin">Mi suɓay saare am e hoore am</string>
+    <string name="yeniden_deneyin">Etee kadi</string>
+    <string name="telefon_varsayilan">Talifon</string>
+    <string name="esleme_ekleniyor">%1$s hino ɓeydee</string>
+    <string name="esleme_gonderiyor">Talifon mon hino nelda nokkuure mum e ngonka mum…</string>
+    <string name="esleme_tamamlanamadi">Jokkondirgol ngol timmaani</string>
+    <string name="esleme_saklanamadi">Telewisiyon ngon waawaa mooftude coktirgal jokkondiral ngal e kisal. Hiɗon mbaawi naatnude nokkuure mon e kod walla suɓude saare mon.</string>
+    <string name="telefonunuzu_ekleyin">Ɓeydee talifon mon</string>
+    <string name="esleme_alt">Saa’iiji juulɗe nokkuure mon; juulɗe ɗe on juulii hino ɓanngoo kadi.</string>
+    <string name="esleme_adim1">Udditee Namaz Akışı e talifon mon</string>
+    <string name="esleme_adim2">Teelte › Kaɓirɗe am › Ɓeydee telewisiyon</string>
+    <string name="esleme_adim3">Ndaarnee kamera talifon mon e kod ngoo</string>
+    <string name="esleme_ayni_wifi">Talifon mon e telewisiyon ngon hino haani wonde e laylaytol Wi-Fi gootol.</string>
+    <string name="esleme_onay_soru">Ɓeydee talifon ngon?</string>
+    <string name="esleme_onay_aciklama">Talifon ɓeydaaɗo oo hino waawi neldude nokkuure mum e juulɗe ɗe maandini e telewisiyon ngon.</string>
+    <string name="ekleyin">Ɓeydee</string>
+    <string name="hayir">Aa’a</string>
+    <string name="esleme_eklendi">%1$s ɓeydaama</string>
+    <string name="konumunuz_geldi">Nokkuure mon hewtii</string>
+    <string name="konuma_gore_hesaplanacak">Saa’iiji juulɗe hino hiisiree nokkuure ndee.</string>
+    <string name="qr_konum_alindi">Nokkuure heɓaama</string>
+    <string name="qr_kodu">Kod jokkondirgol janngeteengo e talifon mon</string>
+    <string name="ag_yok">Telewisiyon ngon jokkondiraaki e laylaytol</string>
+    <string name="ag_yok_aciklama">Hiɗon mbaawi jokkude e naatnude kod tongooji 7 iwrude e talifon mon walla suɓude saare mon.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Naatnee kod iwrude e talifon mon</string>
+    <string name="kod_yol">E talifon mon: Teelte › Kaɓirɗe am › Ɓeydee telewisiyon</string>
+    <string name="kod_hatali">Kod ngo fotaani. Ndaaree tongooji 7 e talifon mon; feewnee tongoode juumnde e “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">So telekomaand mon hino jogii butoŋji limooje, hiɗon mbaawi winndude e majji kadi.</string>
+    <string name="kod_bos_hane">tongoode mehiinde</string>
+    <string name="kod_sil">Momtee</string>
+    <string name="kod_sil_aciklama">Momtee tongoode sakkitoore</string>
+    <string name="kod_geri">Rutto</string>
+    <string name="vazgecin">Haaytee</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Suɓee saare mon</string>
+    <string name="il_merkezine_gore">Saa’iiji juulɗe hino hiisiree hakkunde saare ndee.</string>
+    <string name="il_secili">%1$s, suɓaama</string>
+    <string name="dream_il_yok">Ngam yiyde tabal saa’iiji juulɗe, udditee jaaɓngal Namaz Akışı, suɓon saare mon.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Nokkuure: %1$s</string>
+    <string name="ayar_konum_yok">Alaa nokkuure suɓaande</string>
+    <string name="ayar_telefon_ekleyin">Ɓeydee talifon</string>
+    <string name="ayar_konumu_kodla">Naatnee nokkuure e kod</string>
+    <string name="ayar_bagli_telefonlar">Talifonji jokkondiraaɗi e telewisiyon ngon</string>
+    <string name="ayar_telefon_yok">Alaa talifon ɓeydaaɗo haa jooni. Huutoree “%1$s” e nano, janngon kod ɓanngoowo ngo.</string>
+    <string name="kaldirin">Ittee</string>
+    <string name="ayar_ne_gonderir">Ko honɗun talifonji nelda?</string>
+    <string name="ayar_madde_konum">Nokkuure: saa’iiji juulɗe hino rewi mayre</string>
+    <string name="ayar_madde_namazlar">Juulɗe maandinaaɗe, ngam ɓeen suɓuɓe</string>
+    <string name="ayar_madde_sifreli">Sirlinaaɗo, e laylaytol galle mon tan</string>
+    <string name="son_haber_yok">Alaa humpito haa jooni</string>
+    <string name="son_haber_az_once">Jooni jooni</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d hj ɓennii</item>
+        <item quantity="other">%1$d hj ɓennii</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d sa ɓennii</item>
+        <item quantity="other">%1$d sa ɓennii</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d ñalawma ɓennii</item>
+        <item quantity="other">%1$d ñalɗe ɓennii</item>
+    </plurals>
+    <string name="kaldir_soru">Ittee %1$s?</string>
+    <string name="kaldir_aciklama">Ndee talifon waawataa neldude humpito e telewisiyon kadi. Ngam ɓeydude ngon kadi, hiɗon haani janngude kod QR ngo kadi.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Nokkuure talifon mon</string>
+</resources>

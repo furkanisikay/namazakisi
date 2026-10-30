@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Bakki keessan yeroo salaataa bakka jirtaniif sirriitti herreguuf fayyada. Bakki keessan meeshaa keessan irra hafa.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Bakki keessan yeroo salaataa bakka jirtaniif sirriitti herreguuf, akkasumas yoo Masjiida keessa jira banaa ta'e, yeroo masjiida seentan Haala salaataa banuuf fayyada. Bakki keessan meeshaa keessan irra hafa.",
+  "NSLocationAlwaysUsageDescription": "Bakki keessan yeroo magaalaa jijjiirtan yeroo salaataa ofumaan haaromsuuf, akkasumas yoo Masjiida keessa jira banaa ta'e, yeroo masjiida seentan Haala salaataa banuuf fayyada. Bakki keessan meeshaa keessan irra hafa.",
+  "NSCameraUsageDescription": "Kaameraan keessan kallattii qiblaa mul'ata kaameraa irratti agarsiisuufi koodii walqabsiisaa TV keessan irra jiru sakatta'uuf fayyada. Suuraan hin olkaa'amu, meeshaa keessan irraas gonkumaa hin ba'u.",
+  "NSCalendarsUsageDescription": "Kaalaandara argachuun yeroo salaataa kaalaandara keessanitti dabaluuf, akkasumas yoo bantan, taateewwan kaalaandara keessanii yeroo salaataa wajjin wal qabachuu isaanii ilaaluuf fayyada. Odeeffannoon kaalaandara keessanii meeshaa keessan irra hafa.",
+  "NSCalendarsFullAccessUsageDescription": "Kaalaandara argachuun yeroo salaataa kaalaandara keessanitti dabaluuf, akkasumas yoo bantan, taateewwan kaalaandara keessanii yeroo salaataa wajjin wal qabachuu isaanii ilaaluuf fayyada. Odeeffannoon kaalaandara keessanii meeshaa keessan irra hafa.",
+  "NSLocalNetworkUsageDescription": "Appichi yeroo salaataa keessaniifi salaata isin mallatteessitan erguuf TV neetworkii naannoo keessan irra jiru wajjin walqabata. Odeeffannoon iccitiin eegamee meeshaalee lamaan gidduu qofa deema.",
+  "NSAlarmKitUsageDescription": "Tarkaanfiiwwan yaadachiisaa “Alaarmii dhugaa” filattan akka alaarmiitti kaa'amu, kanaaf yeroo bilbilli keessan callisaa irra jiru ykn Focus-iin banaa ta'es ni dhageessu.",
+  "\"Vakti kıldım\"": "Ani salaateera",
+  "\"Kıble\"": "Qiblaa"
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (Kiswahili). "Nimeswali" bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Kengele ya Swala</string>
+  <string name="alarm_kildim">Nimeswali</string>
+  <string name="alarm_kapat">Zima</string>
+  <string name="alarm_kanal_aciklamasi">Kengele halisi inayolia katika hatua za vikumbusho unazochagua</string>
+</resources>

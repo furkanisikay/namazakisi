@@ -247,7 +247,15 @@ const AylikIcerik: React.FC<{ istatistik: AylikIstatistik; renkler: Renkler; m: 
             accessible
             accessibilityLabel={bicim(m.yuzdeErisim, { ad: namazAdiGoster(namazAdi), n: yuzde })}
           >
-            <Text style={{ width: 64, fontSize: 14, fontWeight: '600', color: renkler.metin }}>{namazAdiGoster(namazAdi)}</Text>
+            {/* Tek satır, sığmazsa küçülür: dar sütunda uzun ad ("Alansaraa", "Magharibi") sözcük ortasından bölünüyordu. */}
+            <Text
+              style={{ width: 64, fontSize: 14, fontWeight: '600', color: renkler.metin }}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.7}
+            >
+              {namazAdiGoster(namazAdi)}
+            </Text>
             <View style={{ flex: 1, height: 8, borderRadius: 4, marginHorizontal: 12, overflow: 'hidden', backgroundColor: renkler.sinir }}>
               <Animated.View style={{ height: '100%', borderRadius: 4, width: `${yuzde}%`, backgroundColor: renkler.birincil, transformOrigin: 'left', transform: [{ scaleX: buyume }] }} />
             </View>
