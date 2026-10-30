@@ -318,11 +318,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: om
+    // om — JS `sozluk/om`; CLDR om one/other, rakamla yazılınca ad tekil (one = other)
     static let om = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} daqiiqaa {n} booda jalqaba.", "other": "{ad} daqiiqaa {n} booda jalqaba."],
+        evetKilindi: "Eeyyee, akka salaatameetti mallattaa'eera.",
+        hayirKilinmadi: "Lakki, ammallee hin mallattoofne."
     )
 
     // ÇEVİRİ: so

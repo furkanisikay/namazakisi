@@ -1,11 +1,10 @@
-// ÇEVİRİ: om — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Lakkoofsota',
+  aciklama: "Lakkoofsota yeroo, guyyaafi baay'inaaf fayyadaman filadhaa.",
+  otomatik: 'Akka biyyaatti',
+  otomatikAciklama: "Lakkoofsota biyya bakka keessanii keessatti baratamoo ta'an fayyadama.",
+  dogu: 'Lakkoofsota Arabaa Bahaa',
+  bati: 'Lakkoofsota Lixaa',
 };

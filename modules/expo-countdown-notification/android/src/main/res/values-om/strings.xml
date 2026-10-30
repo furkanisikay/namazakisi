@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: om — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="countdown_kanal_canli_ad">Live countdowns</string>
-    <string name="countdown_kanal_canli_aciklama">Countdowns in the Now Bar and the status bar</string>
-    <string name="countdown_kanal_genel_ad">Countdown notifications</string>
-    <string name="countdown_kanal_genel_aciklama">Channel for countdown notifications</string>
+    <string name="countdown_kanal_canli_ad">Lakkoofsa duubaa kallattii</string>
+    <string name="countdown_kanal_canli_aciklama">Lakkoofsa duubaa Now Bar fi sarara haalaa keessatti</string>
+    <string name="countdown_kanal_genel_ad">Beeksisa lakkoofsa duubaa</string>
+    <string name="countdown_kanal_genel_aciklama">Chaanaalii beeksisa lakkoofsa duubaa</string>
 
-    <string name="countdown_eylem_kildim">I\'ve prayed</string>
-    <string name="countdown_eylem_durdur">Stop</string>
+    <string name="countdown_eylem_kildim">Ani salaateera</string>
+    <string name="countdown_eylem_durdur">Dhaabaa</string>
 
-    <string name="countdown_yedek_vakit">Hurry, the prayer time is about to end.</string>
-    <string name="countdown_yedek_iftar">Time is running out.</string>
-    <string name="countdown_yedek_sahur">You can still eat and drink; the fast begins soon!</string>
-    <string name="countdown_yedek_seri">Today\'s prayers aren\'t complete; don\'t lose your streak.</string>
+    <string name="countdown_yedek_vakit">Ariifadhu, yeroon salaataa xumuramuuf jira.</string>
+    <string name="countdown_yedek_iftar">Yeroon dhumaa jira.</string>
+    <string name="countdown_yedek_sahur">Ammallee nyaachuufi dhuguu dandeessu; soomanni dhiyootti jalqaba.</string>
+    <string name="countdown_yedek_seri">Salaanni har\'aa hin guutamne; walitti fufiinsa keessan hin dhabinaa.</string>
 
-    <string name="countdown_onek_vakit">Until the time ends</string>
-    <string name="countdown_onek_vakit_dar">Time is ending</string>
-    <string name="countdown_onek_iftar">Until iftar</string>
-    <string name="countdown_onek_iftar_dar">Until iftar</string>
-    <string name="countdown_onek_sahur">Until suhoor ends</string>
-    <string name="countdown_onek_sahur_dar">Suhoor is ending</string>
-    <string name="countdown_onek_seri">To save your streak</string>
-    <string name="countdown_onek_seri_dar">Streak is ending</string>
+    <string name="countdown_onek_vakit">Hanga yeroon xumuramutti</string>
+    <string name="countdown_onek_vakit_dar">Yeroon xumuramaa jira</string>
+    <string name="countdown_onek_iftar">Hanga afursaatti</string>
+    <string name="countdown_onek_iftar_dar">Hanga afursaatti</string>
+    <string name="countdown_onek_sahur">Hanga suhuurri xumuramutti</string>
+    <string name="countdown_onek_sahur_dar">Suhuurri xumuramaa jira</string>
+    <string name="countdown_onek_seri">Walitti fufiinsa keessan eeguuf</string>
+    <string name="countdown_onek_seri_dar">Walitti fufiinsi dhumaa jira</string>
 </resources>

@@ -1,15 +1,14 @@
-// ÇEVİRİ: om — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Itti fufaa',
+  vazgecin: 'Dhiisaa',
+  kapatin: 'Cufaa',
+  ayarlariAcin: "Qindaa'ina banaa",
+  simdilikGecin: 'Amma darbaa',
+  tekrarDeneyin: "Irra deebi'aa yaalaa",
+  evet: 'Eeyyee',
+  hayir: 'Lakki',
+  ayrintilariAcar: "Bal'ina bana",
   marka: 'Namaz Akışı',
 };

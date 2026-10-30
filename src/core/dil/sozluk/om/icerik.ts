@@ -1,15 +1,15 @@
-// ÇEVİRİ: om — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Kendi sözlerimiz (ayet/hadis çevirisi değil); ibadete çağrı tekil emir. */
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: "Qur'aana {ref} · {yayimci}, QuranEnc {surum}",
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: "Salaanni hirriba caala. Gara milkaa'inaatti kottu.",
+    araVer: 'Hojii addunyaa irraa yeroo gabaabaaf boqodhu, fuula Gooftaa keetii dura dhaabadhu.',
+    yorgunluk: 'Dadhabbii guyyaa of irraa buusuufi nagaa argachuuf Asriin si eeggata.',
+    sukur: 'Maghribni galata guyyaati. Fuula Gooftaa keetii dura dhaabachuuf ariifadhu.',
+    aksamKisa: 'Yeroon Maghribaa gabaabaadha; gaheera, osoo hin tursiin salaati.',
+    geceKaranligi: "Dukkana halkanii keessatti Gooftaa kee wajjin kophaa ta'i. Ishaa'iin qoricha lubbuuti.",
+    davet: "Guyyaa jaalala Rabbiitiin xumuruuf gara Ishaa'ii afeeramteetta.",
   },
 };

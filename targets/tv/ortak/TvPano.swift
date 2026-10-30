@@ -458,18 +458,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: om
+    // om
     public static let om = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "Subhii", "gunes": "Baha aduu", "ogle": "Zuhrii", "ikindi": "Asrii", "aksam": "Maghriba", "yatsi": "Ishaa'ii"],
+        cuma: "Jimaata",
+        aylar: ["Amajjii", "Guraandhala", "Bitootessa", "Eebila", "Caamsaa", "Waxabajjii", "Adoolessa", "Hagayya", "Fulbaana", "Onkoloolessa", "Sadaasa", "Muddee"],
+        gunler: ["Wiixata", "Kibxata", "Roobii", "Kamisa", "Jimaata", "Sanbata", "Dilbata"],
+        tarih: "{gunAdi}, {ay} {gun}, {yil}",
+        kerahatAdlari: ["suruk": "Baha aduu", "istiva": "Aduu gubbaa gidduu", "gurub": "Lixa aduu"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Hanga aduun sirriitti baatutti salaatuun jibbamaa dha.",
+            "istiva": "Yeroo aduun gubbaa gidduu irra jirtu salaatuun jibbamaa dha.",
+            "gurub": "Yeroo aduun lixaa jirtu salaatuun jibbamaa dha.",
         ]
     )
 

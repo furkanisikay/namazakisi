@@ -93,8 +93,8 @@ object CanliGuncellemeKurallari {
         "ha" to ("h" to "min"),
         // ÇEVİRİ: am
         "am" to ("h" to "min"),
-        // ÇEVİRİ: om
-        "om" to ("h" to "min"),
+        // om
+        "om" to ("sa'a" to "daq"),
         // ÇEVİRİ: so
         "so" to ("h" to "min"),
         // ÇEVİRİ: ff

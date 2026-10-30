@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: om — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Tasker / MacroDroid / Automate eklentisi (İngilizce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Afaan Oromoo). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
 <resources>
-  <string name="otomasyon_eylem_etiket">Namaz Akışı: I\'ve prayed</string>
-  <string name="otomasyon_kosul_etiket">Namaz Akışı: Prayer time status</string>
-  <string name="otomasyon_olay_etiket">Namaz Akışı: Prayer time event</string>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Ani salaateera</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Haala yeroo salaataa</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Taatee yeroo salaataa</string>
 
   <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
-  <string name="otomasyon_bilgi_baslik">This setting is added from an automation app</string>
-  <string name="otomasyon_bilgi_tarayici">Browsers can\'t get permanent permission. Add it from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_bilgi_eklenti">Add it by choosing \"Namaz Akışı\" from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_engelli_baslik">%1$s is blocked</string>
-  <string name="otomasyon_engelli_mesaj">You blocked this app from marking your prayers before. You can allow it in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_baslik">Use with %1$s?</string>
-  <string name="otomasyon_izin_kosul">%1$s can learn when a prayer time begins, when it\'s ending and when you\'re at a mosque, and run your automations. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_kildim">%1$s can mark the current prayer as prayed with the automation you set up. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_ver">Allow</string>
-  <string name="otomasyon_engelle">Block</string>
-  <string name="otomasyon_vazgec">Cancel</string>
-  <string name="otomasyon_tamam">OK</string>
-  <string name="otomasyon_tur_baslik">When should it run?</string>
-  <string name="otomasyon_ileri">Next</string>
-  <string name="otomasyon_vakit_baslik">Which prayer?</string>
-  <string name="otomasyon_herhangi_vakit">Any prayer time</string>
-  <string name="otomasyon_kaydet">Save</string>
-  <string name="otomasyon_kosul_icinde">While it\'s a prayer time</string>
-  <string name="otomasyon_kosul_cikiyor">While a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_kosul_camide">While at a mosque</string>
-  <string name="otomasyon_olay_girdi">When a prayer time begins</string>
-  <string name="otomasyon_olay_cikiyor">When a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_olay_camide">When you\'re detected at a mosque</string>
+  <string name="otomasyon_bilgi_baslik">Qindaa\'inni kun appii hojii ofumaa irraa dabalama</string>
+  <string name="otomasyon_bilgi_tarayici">Barbaaddonni eeyyama dhaabbataa argachuu hin danda\'an. Tarree pilaagiinii appii akka Tasker, MacroDroid ykn Automate irraa dabalaa.</string>
+  <string name="otomasyon_bilgi_eklenti">Tarree pilaagiinii appii akka Tasker, MacroDroid ykn Automate keessaa \"Namaz Akışı\" filachuun dabalaa.</string>
+  <string name="otomasyon_engelli_baslik">%1$s dhorkameera</string>
+  <string name="otomasyon_engelli_mesaj">Duraan appiin kun salaata keessan akka hin mallatteessine dhorkitaniittu. Namaz Akışı keessatti Qindaa\'ina &gt; \"Appiiwwan Ani salaateera mallatteessan\" jalatti hayyamuu dandeessu.</string>
+  <string name="otomasyon_izin_baslik">%1$s wajjin fayyadamtuu?</string>
+  <string name="otomasyon_izin_kosul">%1$s yeroo yeroon salaataa gahu, yeroo xumuramaa jiruufi yeroo masjiida keessa jirtan beekee hojiiwwan ofumaa keessan hojjechiisuu danda\'a. Murtee keessan Namaz Akışı keessatti Qindaa\'ina &gt; \"Appiiwwan Ani salaateera mallatteessan\" jalatti jijjiiruu dandeessu.</string>
+  <string name="otomasyon_izin_kildim">%1$s hojii ofumaa isin qopheessitaniin salaata ammaa akka salaatameetti mallatteessuu danda\'a. Murtee keessan Namaz Akışı keessatti Qindaa\'ina &gt; \"Appiiwwan Ani salaateera mallatteessan\" jalatti jijjiiruu dandeessu.</string>
+  <string name="otomasyon_izin_ver">Hayyamaa</string>
+  <string name="otomasyon_engelle">Dhorkaa</string>
+  <string name="otomasyon_vazgec">Dhiisaa</string>
+  <string name="otomasyon_tamam">Tole</string>
+  <string name="otomasyon_tur_baslik">Yoom haa hojjetu?</string>
+  <string name="otomasyon_ileri">Itti aanu</string>
+  <string name="otomasyon_vakit_baslik">Salaata kam?</string>
+  <string name="otomasyon_herhangi_vakit">Yeroo salaataa kamiyyuu</string>
+  <string name="otomasyon_kaydet">Olkaa\'aa</string>
+  <string name="otomasyon_kosul_icinde">Yeroo yeroon salaataa jiru</string>
+  <string name="otomasyon_kosul_cikiyor">Yeroo yeroon salaataa xumuramaa jiru (daqiiqaan %1$d hafe, Eegduun Salaataa banaa)</string>
+  <string name="otomasyon_kosul_camide">Yeroo masjiida keessa jirtan</string>
+  <string name="otomasyon_olay_girdi">Yeroo yeroon salaataa gahu</string>
+  <string name="otomasyon_olay_cikiyor">Yeroo yeroon salaataa xumuramaa jiru (daqiiqaan %1$d hafe, Eegduun Salaataa banaa)</string>
+  <string name="otomasyon_olay_camide">Yeroo masjiida keessa akka jirtan beekamu</string>
 </resources>

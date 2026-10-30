@@ -1,21 +1,25 @@
-// ÇEVİRİ: om — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
-/** İngilizcede vakit adları özel addır; cümle içinde de büyük harfle başlar. */
+/**
+ * Oromo (Qubee). Vakit adları özel addır, cümle içinde de büyük harfle başlar (baha aduu hariç).
+ * Kaynak: QuranEnc `oromo_ababor` (24:58, 50:39), byenah.com. "Ani salaateera" / "Salaatameera"
+ * dilbilgisiyle türetildi (1. tekil geçmiş 3. tekil eril ile aynı yazıldığı için zamir açık) —
+ * yerli okuyucu gözden geçirmeli.
+ */
 export const vakit: Sozluk['vakit'] = {
-  adlar: { imsak: 'Fajr', gunes: 'Sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  buyuk: { imsak: 'FAJR', gunes: 'SUNRISE', ogle: 'DHUHR', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
-  kucuk: { imsak: 'Fajr', gunes: 'sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  imsakVakti: 'Fajr',
-  cuma: "Jumu'ah",
-  cumaKucuk: "Jumu'ah",
-  gunesDogusu: 'Sunrise',
-  gunesDogusuKucuk: 'sunrise',
-  durum: { kilindi: 'Prayed', vaktiGeldi: 'Time to pray', girmedi: 'Not yet time', gecti: 'Not prayed' },
-  durumKucuk: { kilindi: 'prayed', vaktiGeldi: 'time to pray', girmedi: 'not yet time', gecti: 'not prayed' },
-  eylem: { kildim: "I've prayed", kilindi: 'Prayed' },
-  kerahatVakti: 'Makruh time',
-  isaretle: 'Mark as prayed',
-  geriAlEtiketi: '{durum}, tap to undo',
-  geriAlindi: 'Unmarked',
+  adlar: { imsak: 'Subhii', gunes: 'Baha aduu', ogle: 'Zuhrii', ikindi: 'Asrii', aksam: 'Maghriba', yatsi: "Ishaa'ii" },
+  buyuk: { imsak: 'SUBHII', gunes: 'BAHA ADUU', ogle: 'ZUHRII', ikindi: 'ASRII', aksam: 'MAGHRIBA', yatsi: "ISHAA'II" },
+  kucuk: { imsak: 'Subhii', gunes: 'baha aduu', ogle: 'Zuhrii', ikindi: 'Asrii', aksam: 'Maghriba', yatsi: "Ishaa'ii" },
+  imsakVakti: 'Subhii',
+  cuma: 'Jimaata',
+  cumaKucuk: 'Jimaata',
+  gunesDogusu: 'Baha aduu',
+  gunesDogusuKucuk: 'baha aduu',
+  durum: { kilindi: 'Salaatameera', vaktiGeldi: 'Yeroon gaheera', girmedi: 'Yeroon hin geenye', gecti: 'Hin salaatamne' },
+  durumKucuk: { kilindi: 'salaatameera', vaktiGeldi: 'yeroon gaheera', girmedi: 'yeroon hin geenye', gecti: 'hin salaatamne' },
+  eylem: { kildim: 'Ani salaateera', kilindi: 'Salaatameera' },
+  kerahatVakti: 'Yeroo jibbamaa',
+  isaretle: 'Akka salaatameetti mallatteessaa',
+  geriAlEtiketi: '{durum}, deebisuuf tuqaa',
+  geriAlindi: 'Mallattoon haqameera',
 };
