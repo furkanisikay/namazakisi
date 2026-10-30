@@ -499,19 +499,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: so
+    // so
     static let so = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Dooro magaaladaada",
+        ilMerkezi: "Waqtiyada salaadda waxaa loo xisaabiyaa xarunta gobolka. Doorashadaada waad beddeli kartaa mar dambe.",
+        ilSecErisim: "{il}, dooro",
+        kalan: "Waqtiga u haray {ad}",
+        kalanErisim: "Waqtiga u haray {ad}: {sure}",
+        konumuDegistirin: "Beddel goobta",
+        kerahatSuruyor: "Waqti makruuh ah: {tur}, wuxuu dhammaanayaa {bitis}. {aciklama}",
+        siradakiKerahat: "Waqtiga makruuhka xiga: {tur} {bas}–{bit}",
+        cumaBilgisi: "Maanta waa Jimce. Salaadda Jimce waxaa la tukadaa waqtiga Duhur (wuxuu bilaabmayaa {giris}).",
+        suAnkiEk: ", salaadda hadda",
+        siradakiEk: ", salaadda xigta"
     )
 
     // ÇEVİRİ: ff

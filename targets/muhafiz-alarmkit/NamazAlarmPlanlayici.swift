@@ -152,8 +152,8 @@ enum NamazAlarmCekirdegi {
         "am": "Stop",
         // ÇEVİRİ: om
         "om": "Stop",
-        // ÇEVİRİ: so
-        "so": "Stop",
+        // so
+        "so": "Jooji",
         // ÇEVİRİ: ff
         "ff": "Stop",
         // ÇEVİRİ: yo

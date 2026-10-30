@@ -325,11 +325,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: so
+    // so
     static let so = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} wuxuu bilaabmayaa {n} daqiiqo kadib.", "other": "{ad} wuxuu bilaabmayaa {n} daqiiqo kadib."],
+        evetKilindi: "Haa, waxaa lagu calaamadeeyay la tukaday.",
+        hayirKilinmadi: "Maya, weli lama calaamadeyn."
     )
 
     // ÇEVİRİ: ff

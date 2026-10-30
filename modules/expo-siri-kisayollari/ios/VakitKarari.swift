@@ -1073,31 +1073,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: so
+    // so
     public static let so = VakitMetinleri(
         dil: "so",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Subax", "ogle": "Duhur", "ikindi": "Casar", "aksam": "Maghrib", "yatsi": "Cishe"],
+        gunes: "Qorrax soo bax",
+        konumYok: "Fur barnaamijka oo deji goobtaada si waqtiyada salaadda loo xisaabiyo.",
+        veriEski: "Waqtiyada salaaddu waa duug. Hal mar fur barnaamijka si loo cusboonaysiiyo.",
+        girisBugun: "saacadda {saat}",
+        girisYarin: "berri saacadda {saat}",
+        suAnVakti: "Hadda waa waqtiga {ad}.",
+        suAnVaktiCikis: "Hadda waa waqtiga {ad}; wuxuu dhammaanayaa {saat}.",
+        siradakiNamaz: "Salaadda xigta waa {ad} {giris}.",
+        isaretlendi: "{ad} waxaa lagu calaamadeeyay la tukaday. {dua}.",
+        zatenKilindi: "{ad} horay ayaa loogu calaamadeeyay la tukaday.",
+        vakitYok: "Hadda ma jirto salaad la calaamadeeyo.",
+        vakitYokSiradaki: "Hadda ma jirto salaad la calaamadeeyo. Tan xigta waa {ad} {giris}.",
+        onay: "Ma u calaamadaynaysaa {ad} la tukaday?",
+        vakitDegisti: "Waqtiga salaaddu wuu isbeddelay, sidaas darteed waxba lama calaamadeyn. Isku day mar kale.",
+        kabulDuasi: "Alle ha aqbalo",
+        kildim: "Waan tukaday",
+        kilindi: "La tukaday",
+        kontrolKildim: "{ad} · Waan tukaday",
+        kontrolKilindi: "{ad} la tukaday",
+        kontrolVakitYok: "Salaad la calaamadeeyo ma jirto",
+        uygulamayiAcin: "Fur barnaamijka"
     )
 
     // ÇEVİRİ: ff

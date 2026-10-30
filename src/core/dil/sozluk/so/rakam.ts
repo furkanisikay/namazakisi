@@ -1,11 +1,10 @@
-// ÇEVİRİ: so — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Tirooyinka',
+  aciklama: 'Dooro tirooyinka loo isticmaalo waqtiyada, taariikhaha iyo lambarrada.',
+  otomatik: 'Iyadoo loo eegayo dalka',
+  otomatikAciklama: 'Waxaa la isticmaalayaa tirooyinka caadiga ka ah dalka goobtaadu ku taal.',
+  dogu: 'Tirooyinka Carabiga bari',
+  bati: 'Tirooyinka galbeedka',
 };
