@@ -45,7 +45,7 @@ Ne zaman okunur: günün ayeti havuzuna/üreticisine, ayet widget'ına (Android,
 | om | `oromo_ababor` 1.0.3 (`oromo_rwwad` havuzu 159'a düşürüyordu) | 181 |
 | so | `somali_yacob` 1.0.26 | 165 (ayet numarası silinir) |
 | ff | `fulani_rwwad` 1.0.2 (Pular, Gine; Latin) | 186 |
-| yo | `yoruba_mikail` 1.0.9 | 135 (12 dipnotlu, 41 uzun kayıt elenir) |
+| yo | `yoruba_mikail` 1.0.9 (NFD gelir → NFC'ye birleştirilir, `NFC_DILLER`) | 165 (12 dipnotlu, 10 uzun kayıt elenir) |
 | ar | — (yalnız Kur'an metni, sahip kararı) | 186 |
 - **Sürüm her zaman `translations/updates?key=<anahtar>` ucundan okunur.** Liste API'si 87 çeviriyi (ru, ms dahil) göstermez; uç belgelenmemiştir → üretici biçim değişiminde ya da liste sürümüyle çelişkide hata verir, listede olmayanın başlığı `LISTEDE_OLMAYAN_BASLIKLAR`'dadır (sitedeki kart). Tanzil mealleri KULLANILMAZ: "yalnız ticari olmayan kullanım" şartı ve sürüm numarası yok.
 - **Havuzu Türkçe + İngilizce belirler; diğer dilin meali kayda yalnız ≤200 harf ve dipnot işaretsizse girer, o dilin havuzu meali olan kayıtlardır** (`gununAyeti.ts > dilHavuzu`). Gerekçe: bütün dillerde kesişim havuzu 186'dan 89'a indiriyordu (Malayca Basmeih meali parantez içi tefsirle uzun, medyan 188 harf). Dil havuzu 100'ün altına inmez (nöbetçi).

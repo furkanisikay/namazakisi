@@ -174,6 +174,13 @@ const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
  * sondaki "(153)" numarasını taşır; numara çeviri değil işarettir, silinir (künye ayeti zaten
  * yazar). Yalnız bu kümede: başka dilde numaralı meal eskisi gibi alınmaz.
  */
+/**
+ * NFC'ye birleştirilen diller: QuranEnc Yorubayı ayrışık (NFD: harf + birleşen ton/alt nokta) verir;
+ * NFC kanonik eşdeğerdir, metin değişmez, yalnız uzunluk ölçümü ve arama tutarlı olur. Bütün dillere
+ * uygulanmaz: Bengalcede NFC "য়" gibi bileşim dışı harfleri AYIRIR (veri değişir).
+ * `ayet-mealleri-uret.js > NFC_DILLER` ile AYNI.
+ */
+const NFC_DILLER = new Set(['yo']);
 const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so']);
 const BASTAKI_AYET_NO = /^\s*\p{Nd}+\s*[.)]\s*/u;
 const SONDAKI_AYET_NO = /\s*\(\p{Nd}+\)(\s*[.।]?)\s*$/u;
@@ -359,8 +366,9 @@ async function main() {
         await indir(`https://quranenc.com/api/v1/translation/sura/${anahtar}/${sure}`, onbellek, `${anahtar}_${sure}.json`),
       );
       for (const r of result) {
-        mealler[dil][ref(Number(r.sura), Number(r.aya))] = notNumarasiz(dil, r.translation);
-        mealler.ham[dil][ref(Number(r.sura), Number(r.aya))] = r.translation;
+        const metin = NFC_DILLER.has(dil) ? r.translation.normalize('NFC') : r.translation;
+        mealler[dil][ref(Number(r.sura), Number(r.aya))] = notNumarasiz(dil, metin);
+        mealler.ham[dil][ref(Number(r.sura), Number(r.aya))] = metin;
       }
     }
   }

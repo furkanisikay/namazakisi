@@ -71,6 +71,8 @@ const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky']);
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
 /** Gömülü numara kalıpları (`gunun-ayeti-uret.js > DIPNOT`, `BASTA_NUMARA`, `SONDA_NUMARA` ile aynı). */
 /** Ayet numarası silinen diller (`gunun-ayeti-uret.js > AYET_NUMARASI_SILINEN` ile AYNI). */
+/** NFC'ye birleştirilen diller (`gunun-ayeti-uret.js > NFC_DILLER` ile AYNI; gerekçe orada). */
+const NFC_DILLER = new Set(['yo']);
 const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so']);
 const NUMARALI = [
   /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u,
@@ -124,6 +126,7 @@ async function main() {
     for (const [sure, ayet] of AYETLER) {
       const { result } = await json(`https://quranenc.com/api/v1/translation/aya/${anahtar}/${sure}/${ayet}`);
       // Urducada ve Bengalcede yalnız "[1]" / "[১]" türü not numarası silinir (gunun-ayeti-uret.js).
+      if (NFC_DILLER.has(dil)) result.translation = result.translation.normalize('NFC');
       if (NOT_NUMARASI_SILINEN.has(dil)) result.translation = result.translation.replace(NOT_NUMARASI, '').trim();
       if (AYET_NUMARASI_SILINEN.has(dil)) {
         result.translation = result.translation

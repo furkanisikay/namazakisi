@@ -264,7 +264,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila ati hinbeektuu Rabbiin mootummaan samiileefii dachii tan isaa tahuu? Isiniifis Rabbiin ala jaalalleefi gargaaraan hin jiru.",
       "so": "Miyaadan ogeyn in Alle leeyahay Boqortooyada (runta ah ee) samooyinka iyo arlada, oo aydaan lahayn Alle ka sokow sokeeye iyo gargaare midna.",
       "ff": "Mbela a anndaa wonde ko Alla jeyi laamu asamaanji e lesdi on ngalaa keedanoowo mon wolla ballo sonaa Alla.",
-      "yo": "Ṣé ìwọ kò mọ̀ pé dájúdájú ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀? Kò sì sí aláàbò àti alárànṣe kan fún yín lẹ́yìn Allāhu."
+      "yo": "Ṣé ìwọ kò mọ̀ pé dájúdájú ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀? Kò sì sí aláàbò àti alárànṣe kan fún yín lẹ́yìn Allāhu."
     }
   },
   {
@@ -300,7 +300,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Obsaafi salaataan gargaarsa barbaadaa. Dhugumatti, Rabbiin warra obsan waliin jira.",
       "so": "Kuwa (Xaqa) rumeeyoow! Kaalmaysta samirka iyo salaadda. Hubaal! Alle wuxuu la jiraa kuwa samirka badan.",
       "ff": "Heey mon gomɗimɓe (goongɗinɓe), wallitoree muññaare (muñal) e juulde. Pellet, Allah Hino Wonndi he muññiiɓe ɓen.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo,ẹ fi sùúrù àti ìrun kíkí tọrọ oore (lọ́dọ̀ Allāhu). Dájúdájú Allāhu ń bẹ pẹ̀lú àwọn onísùúrù."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo,ẹ fi sùúrù àti ìrun kíkí tọrọ oore (lọ́dọ̀ Allāhu). Dájúdájú Allāhu ń bẹ pẹ̀lú àwọn onísùúrù."
     }
   },
   {
@@ -334,7 +334,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እናንተ ሰዎች ሆይ! በምድር ካለው ነገር የተፈቀደ ጣፋጭ ሲኾን ብሉ፡፡ የሰይጣንን እርምጃዎች አትከታተሉ፡፡ እርሱ ለእናንተ ግልጽ ጠላት ነውና፡፡",
       "om": "isinYaa namootaa! Waan dachii keessa jiru irraa halaala gaarii ta’e nyaadhaa,Tarkaanfiilee sheyxaanaa hin hordofinaa, Dhugumatti, inni isiniif diina ifa bahaadha.",
       "ff": "Heey mo yimɓe! Ñaamee yoga he ko woni ka leydi koo, dagii ko laaɓi, wata on jokku juri=taaɓe (taaɓe) seytaane ɗin : Pellet, ko o gaño mo'on feeñuɗo.",
-      "yo": "Ẹ̀yin ènìyàn, ẹ jẹ nínú ohun tí ń bẹ nínú ilẹ̀ (tó jẹ́) ẹ̀tọ́ (àti n̄ǹkan) dáadáa. Ẹ má sì ṣe tẹ̀lé àwọn ojú-ẹsẹ̀ aṣ-Ṣaetọ̄n. Dájúdájú òun ni ọ̀tá pọ́nńbélé fún yín."
+      "yo": "Ẹ̀yin ènìyàn, ẹ jẹ nínú ohun tí ń bẹ nínú ilẹ̀ (tó jẹ́) ẹ̀tọ́ (àti n̄ǹkan) dáadáa. Ẹ má sì ṣe tẹ̀lé àwọn ojú-ẹsẹ̀ aṣ-Ṣaetọ̄n. Dájúdájú òun ni ọ̀tá pọ́nńbélé fún yín."
     }
   },
   {
@@ -370,7 +370,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እናንተ ያመናችሁ ሆይ! ከነዚያ ከሰጠናችሁ ጣፋጮች ብሉ፡፡ ለአላህም እርሱን ብቻ የምትገዙ እንደኾናችሁ አመስግኑ፡፡",
       "om": "Yaa warra amantan! Gaggaarii waan nuti isiniif kenninee irraa nyaadhaa, Rabbiif galata galchaa yoo kan Isa (qofa) gabbartan taatan.",
       "ff": "Heey mon gomɗimɓe! Ñamee immorde he laaɓuɗi ɗi men Arsiki on, jaarnon Allah si on wonii ko kanko rewoton.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ jẹ nínú àwọn n̄ǹkan dáadáa tí A pèsè fún yín, kí ẹ sì dúpẹ́ fún Allāhu tí ó bá jẹ́ pé Òun nìkan ṣoṣo ni ẹ̀ ń jọ́sìn fún."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ jẹ nínú àwọn n̄ǹkan dáadáa tí A pèsè fún yín, kí ẹ sì dúpẹ́ fún Allāhu tí ó bá jẹ́ pé Òun nìkan ṣoṣo ni ẹ̀ ń jọ́sìn fún."
     }
   },
   {
@@ -404,7 +404,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isin yaa warra amantan! Islaamummaa keessa guutuu guutuutti seenaa; tarkaanfilee shayxaanaa hin hordofinaa. Dhugumatti, inni (shayxaanni) isiniif diina ifa bahaadha.",
       "so": "Kuwa (Xaqa) rumeeyoow! U soo gala Islaamka si dhan waaxid iyo wadarba, hana raacina tallaabooyinka Shaydaanka. Hubaal, wuxuu idiin yahay cadow cad.",
       "ff": "Heey mon gomɗimɓe, naatee he kisal  denndanngal, wata on jokku juri (taaɓe) seytaane ɗin (ɗee). On ko gaño mooɗon ɓaŋnguɗo.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ kó s’ínú ẹ̀sìn ’Islām pátápátá. Ẹ̀yin kò sì gbọdọ̀ tẹ̀lé ojú-ẹsẹ̀ aṣ-Ṣaetọ̄n. Dájúdájú òun ni ọ̀tá pọ́nńbélé fún yín."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ kó s’ínú ẹ̀sìn ’Islām pátápátá. Ẹ̀yin kò sì gbọdọ̀ tẹ̀lé ojú-ẹsẹ̀ aṣ-Ṣaetọ̄n. Dájúdájú òun ni ọ̀tá pọ́nńbélé fún yín."
     }
   },
   {
@@ -439,7 +439,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Jecha gaariifi dhiifamatu sadaqaa rakkisuun isa hordofu irra caala. Rabbiin dureessa, obsaadha.",
       "so": "Hadal san iyo saamaxaad baa ka roon sadaqo ay raacdo waxyeello. Alle waa Deeqtoone, Dulqaad Badan.",
       "ff": "Konngol lobbol ɓuri moƴƴude e sadaka dewnateeɗo lorla, Alla ko galo yondaniiɗo muñoowo.",
-      "yo": "Ọ̀rọ̀ rere àti àforíjìn lóore ju sàráà tí ìpalára tẹ̀lé. Allāhu sì ni Ọlọ́rọ̀, Aláfaradà."
+      "yo": "Ọ̀rọ̀ rere àti àforíjìn lóore ju sàráà tí ìpalára tẹ̀lé. Allāhu sì ni Ọlọ́rọ̀, Aláfaradà."
     }
   },
   {
@@ -467,7 +467,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sw": "Shetani anawatia hofu ya ufakiri, na anawaamrisha machafu. Na Mwenyezi Mungu anawaahidi msamaha kutoka kwake na fadhila. Na Mwenyezi Mungu ni Mwenye wasaa, Mwenye kujua.",
       "am": "ሰይጣን (እንዳትለግሱ) ድኽነትን ያስፈራራችኋል፡፡ በመጥፎም ያዛችኋል፡፡ አላህ ከርሱ የኾነን ምሕረትና ችሮታን ይቀጥራችኋል፡፡ አላህም ችሮታው ሰፊ ዐዋቂ ነው፡፡",
       "om": "Shayxaanni hiyyummaan isin sodaachisa, hamtutti isin ajaja, Rabbiin araaramaafi tola Isa biraa ta’e waadaa isiniif seena. Rabbiin (kenni isaa) bal’aa, beekaadha.",
-      "ff": "Seytaane na fodana on baasal o yamira on pankare, Alla noon na fodana on yaafuya ummaade e makko e ɓural Alla ko jaajɗo ko o ganndo."
+      "ff": "Seytaane na fodana on baasal o yamira on pankare, Alla noon na fodana on yaafuya ummaade e makko e ɓural Alla ko jaajɗo ko o ganndo.",
+      "yo": "Aṣ-Ṣaetọ̄n ń fi òṣì dẹ́rù bà yín, ó sì ń pa yín ní àṣẹ ìbàjẹ́ ṣíṣe. Allāhu sì ń ṣe àdéhùn àforíjìn àti oore àjùlọ láti ọ̀dọ̀ Rẹ̀ fún yín. Allāhu ní Oníbúọlá, Onímọ̀."
     }
   },
   {
@@ -495,7 +496,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sw": "Hakika, wale walioamini na wakatenda mema na wakashika Swala na wakatoa Zaka, wao watapata ujira wao kwa Mola wao Mlezi. Wala haitakuwa hofu juu yao, wala hawatahuzunika.",
       "am": "እነዚያ ያመኑ፡፡ መልካም ሥራዎችንም የሠሩ፡፡ ሶላትንም ያስተካከሉ፡፡ ዘካንም የሰጡ ለነርሱ በጌታቸው ዘንድ ምንዳቸው አላቸው፡፡ በእነርሱም ላይ ፍርሃት የለባቸውም እነርሱም አያዝኑም፡፡",
       "so": "Hubaal kuwa (Xaqa) rumeeyey oo samaha fala oo ooga salaadda oo bixiya Zakada, waxay ka heli abaalgudkooda Rabbigood agti. Cabsi ma ahaaneyso korkooda, mana murugoonayaan.",
-      "ff": "ɓeen goongɗinɓe ngolli ko moƴƴi ɓe darni juulde ɓe tottiri askal woodaniiɓe njobdi mumen ummaade ko joomi mumen kulol alanaaɓe ɓe ngonaa sunatooɓe."
+      "ff": "ɓeen goongɗinɓe ngolli ko moƴƴi ɓe darni juulde ɓe tottiri askal woodaniiɓe njobdi mumen ummaade ko joomi mumen kulol alanaaɓe ɓe ngonaa sunatooɓe.",
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n ṣe àwọn iṣẹ́ rere, tí wọ́n kírun, tí wọ́n sì yọ Zakāh, ẹ̀san wọn ń bẹ fún wọn ní ọ̀dọ̀ Olúwa wọn. Kò sí ìpáyà fún wọn. Wọn kò sì níí banújẹ́."
     }
   },
   {
@@ -533,7 +535,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin dhugumatti homtuu isa jalaa hindhokatu, dachii keessattiifii samii keessattis.",
       "so": "Hubaal, Alle waxba kama qarsoona ku sugan arlada ama samada.",
       "ff": "Pellet, Alla, huunde suuɗotaako mo ka leydi wanaa ka kammu.",
-      "yo": "Dájúdájú Allāhu, kò sí kiní kan tó pamọ́ fún Un nínú ilẹ̀ àti nínú sánmọ̀."
+      "yo": "Dájúdájú Allāhu, kò sí kiní kan tó pamọ́ fún Un nínú ilẹ̀ àti nínú sánmọ̀."
     }
   },
   {
@@ -571,7 +573,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Isa gadaamessaawwan keessatti akka fedhetti isintolchu.Haqaan gabbaramaan isa malee hin jiru. [Inni] injifataa, ogeessa.",
       "so": "Waa Kan idiinku sawira (qaab siiya) ilma galeennada siduu doono. Ma jiro ilaah (xaq lagu caabudo) aan Isaga ahayn, waa Adkaadaha, Xakiimka ah.",
       "ff": "Ko kaŋko woni mba'dinoowo on ka renngaaji  no o muuyiri. Reweteeɗo woo alaa si wanaa kaŋko, fooluɗo, ñeeñuɗo.",
-      "yo": "Òun ni Ẹni tí Ó ń yàwòrán yín sínú àpòlùkẹ́ bí Ó ṣe fẹ́. Kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun, Alágbára Ọlọ́gbọ́n."
+      "yo": "Òun ni Ẹni tí Ó ń yàwòrán yín sínú àpòlùkẹ́ bí Ó ṣe fẹ́. Kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun, Alágbára Ọlọ́gbọ́n."
     }
   },
   {
@@ -641,7 +643,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Dhugaa sodaa isaa Rabbiin sodaadhaa; Muslimoota taatan malee hin du’inaa.",
       "so": "Kuwa (Xaqa) rumeeyow! Ka cabsada Alle ka cabsashada xaqa ah uu mudan yahay (oo u dhowra si dhan Amarradiisa), hana dhimannina idinkoo aan aheyn Muslimiin (kuwo u hoggaansan Alle).",
       "ff": "Hey mon gomɗimɓe, kuliree Alla no O Haaniri hulireede, wata on maayu dey, si wanaa hara ko on jebbiliiɓe.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu bí ó ṣe tọ́ láti bẹ̀rù Rẹ̀. Ẹ̀yin kò sì gbọdọ̀ kú àyàfi kí ẹ wà ní ipò mùsùlùmí."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu bí ó ṣe tọ́ láti bẹ̀rù Rẹ̀. Ẹ̀yin kò sì gbọdọ̀ kú àyàfi kí ẹ wà ní ipò mùsùlùmí."
     }
   },
   {
@@ -679,7 +681,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wantoonni samiifi wantoonni dachii keessa jiran (hundi) kan Rabbiiti. Wantoonni hunduu gara Rabbiitti deebifamu.",
       "so": "Alle baana leh waxa ku sugan samooyinka iyo waxa ku sugan arlada. xagga Allayna umuurahoo dhan u noqdaan.",
       "ff": "Ko Alla Woodani kala ko woni deer kammuuji e leydi, ko faade ka Alla woni ruttorde fiyakuuji ɗin.",
-      "yo": "Ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ohunkóhun tó wà nínú ilẹ̀. Ọ̀dọ̀ Allāhu sì ni wọ́n máa ṣẹ́rí àwọn ọ̀rọ̀ ẹ̀dá padà sí."
+      "yo": "Ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ohunkóhun tó wà nínú ilẹ̀. Ọ̀dọ̀ Allāhu sì ni wọ́n máa ṣẹ́rí àwọn ọ̀rọ̀ ẹ̀dá padà sí."
     }
   },
   {
@@ -717,7 +719,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Kun namootaaf ibsa; qajeelfamaafi warra (Rabbiin) sodaataniif gorsa.",
       "so": "Kanu (Qur’aanku) waa hadal u cad dadka, waana u hanuun iyo waano kuwa Alle ka cabsada (ee iska jira xumaha).",
       "ff": "Ɗum ɗoo, ko Ɓanngannduyee wonannde yimɓe ɓen, e peewal e waaju wonannde gooŋɗuɓe ɓen.",
-      "yo": "Èyí ni àlàyé fún àwọn ènìyàn. Ìmọ̀nà àti wáàsí sì ni fún àwọn olùbẹ̀rù (Allāhu)."
+      "yo": "Èyí ni àlàyé fún àwọn ènìyàn. Ìmọ̀nà àti wáàsí sì ni fún àwọn olùbẹ̀rù (Allāhu)."
     }
   },
   {
@@ -749,7 +751,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ ቢረዳችሁ ለእናንተ አሸናፊ የለም፡፡ ቢያዋርዳችሁም ያ ከርሱ (ማዋረድ) በኋላ የሚረዳችሁ ማነው በአላህም ላይ ብቻ ምእምናን ይመኩ፡፡",
       "om": "Yoo Rabbiin isin gargaare, injifataan isiniif hin jiru. Yoo Inni isin xiqqeesse immoo, inni booda isaatii isin gargaaru sun eenyu? Mu’uminoonni Rabbuma irratti haa hirkatanu.",
       "so": "Hadduu Alle idiin gargaari, markaa ma jiraan wax idinka adkaan kara; hadduu idinka goostona, waa kuma kan idiin gargaari Isaga ka dambow? Alle uun ha isku halleeyeen mu’miniintu oo ha tala saarteen.",
-      "ff": "Si Alla Wallii on pooloowo on alaa., si O Hoynii on ko hommbo wallata on ɓaawo Makko? Ko e Alla woni ko goŋɗimɓe ɓen haani fawaade."
+      "ff": "Si Alla Wallii on pooloowo on alaa., si O Hoynii on ko hommbo wallata on ɓaawo Makko? Ko e Alla woni ko goŋɗimɓe ɓen haani fawaade.",
+      "yo": "Tí Allāhu bá ṣe àrànṣe fún yín, kò sí ẹni tí ó máa borí yín. Tí Ó bá sì yẹpẹrẹ yín, ta sì ni ẹni tí ó máa ṣe àrànṣe fún yín lẹ́yìn Rẹ̀? Allāhu ni kí àwọn onígbàgbọ́ òdodo gbáralé."
     }
   },
   {
@@ -784,7 +787,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin (waan eeyyamamaafi dhorgamaa ta’an) isiniif ibsuu barbaada, karaalee warra isin dura turanii isin qajeelchuufi tawbaa keessan qeebaluu (barbaada). Rabbiin beekaa, ogeessasi.",
       "so": "Alle Wuxuu rabaa inuu idiin caddeeyo oo idinku hanuuniyo jidadka kuwii idin ka horreeyay, oo uu idinka tawbad aqbalo. Alle waa wax walba Ogsoone, Xakiim ah.",
       "ff": "Allaahu O o faala Ɓann laɓɓinanade on O Feewna  on e laabi ɓeya adinooɓe on, O Jaɓana on tuubuubuyee. Alla ko gannduɗo, Ñeeñɗo.",
-      "yo": "Allāhu fẹ́ ṣàlàyé (òfin) fún yín, Ó fẹ́ tọ yín sí ọ̀nà àwọn tó ṣíwájú yín, Ó sì fẹ́ gba ìronúpìwàdà yín. Allāhu sì ni Onímọ̀, Ọlọ́gbọ́n."
+      "yo": "Allāhu fẹ́ ṣàlàyé (òfin) fún yín, Ó fẹ́ tọ yín sí ọ̀nà àwọn tó ṣíwájú yín, Ó sì fẹ́ gba ìronúpìwàdà yín. Allāhu sì ni Onímọ̀, Ọlọ́gbọ́n."
     }
   },
   {
@@ -819,7 +822,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin tawbaa keessan qeebaluu fedha. Warri fedha lubbuu isaanii hordofan immoo isin jallina guddaa jallachuu fedhu.",
       "so": "Alle Wuxuu rabaa inuu idinka tawbad aqbalo, kuwase raaca shahwadooda, waxay rabaan inaad weecataan weecasho weyn.",
       "ff": "Alla no Faala de O Jaɓanta on tuubuubuyee, ɓeen jokkuɓe beleeɗe faalaa de ooñorton ooñannde mawnde.",
-      "yo": "Àti pé Allāhu fẹ́ gba ìronúpìwàdà yín. Àwọn tó sì ń tẹ̀lé ìfẹ́-adùn ara sì ń fẹ́ kí ẹ yẹ̀ kúrò (nínú ẹ̀sìn) ní yíyẹ̀ tó tóbi pátápátá."
+      "yo": "Àti pé Allāhu fẹ́ gba ìronúpìwàdà yín. Àwọn tó sì ń tẹ̀lé ìfẹ́-adùn ara sì ń fẹ́ kí ẹ yẹ̀ kúrò (nínú ẹ̀sìn) ní yíyẹ̀ tó tóbi pátápátá."
     }
   },
   {
@@ -856,7 +859,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yoo badii gugurdoo irraa dhoowwamtantanirraa fagaattan, badiilee (xixiqqaa) keessan isin irraa haqna, seensa kabajaa isin seensifna.",
       "so": "Haddaad ka fogaataan denbiyada waaweyn ee la idinka reebay, waxaan idin dhaafi denbiyadiinna (yar yar), waxaana idin gelin meel gelitaan sharaf leh (Janno).",
       "ff": "Si on woɗɗitike [bakkaatu] mawɗi ɗi haɗaɗon ɗin e mun, Mein poppanat on bonɗi mon ɗin, Min Naatnira on e  naatirgal teddungal.",
-      "yo": "Tí ẹ bá jìnnà sí àwọn ẹ̀ṣẹ̀ ńlá ńlá tí A kọ̀ fún yín, A máa pa àwọn ìwà àìdáa yín rẹ́ fún yín, A sì máa mu yín wọ àyè alápọ̀n-ọ́nlé."
+      "yo": "Tí ẹ bá jìnnà sí àwọn ẹ̀ṣẹ̀ ńlá ńlá tí A kọ̀ fún yín, A máa pa àwọn ìwà àìdáa yín rẹ́ fún yín, A sì máa mu yín wọ àyè alápọ̀n-ọ́nlé."
     }
   },
   {
@@ -892,7 +895,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti Rabbiin hanga madaala atomii tokkoo hin miidhu, Yoo isheen dalagaa gaarii taate dachaa ishee taasisa; mindaa guddaa Isa biraa ta’es (dabalaan) ni kenna.",
       "so": "Hubaal, Alle ma dulmiyo 'dadka' wax saxar le’egba ha ahaatee, hadday wanaag falaanna, wuu labo laabaa, wuxuuna ka bixiyaa Xaggiisa Ajar Weyn.",
       "ff": "Pellet, Alla Tooñataa hay fotde gabbel- jarra si wonii ko moƴƴere, O Soway nde, O Okka immorde ka Mokko njoɓdi mawndi.",
-      "yo": "Dájúdájú Allāhu kò níí ṣàbòsí òdíwọ̀n ọmọ iná-igún. Tí ó bá jẹ iṣẹ́ rere, Ó máa ṣàdìpèlé (ẹ̀san) rẹ̀. Ó sì máa fún (olùṣe rere) ní ẹ̀san ńlá láti ọ̀dọ̀ Rẹ̀."
+      "yo": "Dájúdájú Allāhu kò níí ṣàbòsí òdíwọ̀n ọmọ iná-igún. Tí ó bá jẹ iṣẹ́ rere, Ó máa ṣàdìpèlé (ẹ̀san) rẹ̀. Ó sì máa fún (olùṣe rere) ní ẹ̀san ńlá láti ọ̀dọ̀ Rẹ̀."
     }
   },
   {
@@ -923,7 +926,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ ከእርሱ በስተቀር አምላክ የለም፡፡ ወደ ትንሣኤ ቀን በርሱ ጥርጥር የሌለበት ሲኾን በእርግጥ ይሰበስባችኋል፡፡ በንግግርም ከአላህ ይበልጥ እውነተኛ ማነው",
       "om": "Rabbiin dhugaan gabbaramaan isa malee hin jiru. Dhugumatti, Guyyaa Qiyaamaa keessa walitti isin qaba; isa keessa mamiin hin jiru. Eenyutu Rabbiin caalaa haasa’a dhugaa dubbata?",
       "so": "Allaah! Ma jiro Ilaah (xaq lagu caabudo) aan Isaga ahayn. Wuxuu idiin soo kulmin Maalinta Qiyaamaha, shaki kuma jiro. Yaa ka run sheeg badan Alle oo hadla.",
-      "ff": "Alla, deweteeɗo alaa si wonaa Kaŋko, ma o Mooɓi on ñande Darngal, sikke alaa e mayre. Alaa  ɓurɗo gooŋuɗude Alla yeewtere ?"
+      "ff": "Alla, deweteeɗo alaa si wonaa Kaŋko, ma o Mooɓi on ñande Darngal, sikke alaa e mayre. Alaa  ɓurɗo gooŋuɗude Alla yeewtere ?",
+      "yo": "Allāhu, kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Dájúdájú Ó máa ko yín jọ ní Ọjọ́ Àjíǹde, kò sí iyèméjì nínú rẹ̀. Ta ló sọ̀dodo ọ̀rọ̀ ju Allāhu?"
     }
   },
   {
@@ -958,7 +962,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Namni mindaa addunyaa kan fedhu ta'e, mindaan addunyaafi Aakhiraa Rabbiin bira qofa jira. Rabbiin dhaga’aa, argaa ta’eera.",
       "so": "Qofkii raba abaalka adduunyadan, Alle baa haya abaalka adduunyadan iyo Aakhiradaba. Alle waa wax kasta Maqle, wax kasta Arka.",
       "ff": "Kala laatiiɗo o yiɗi koa njoɓdi aduna,  ko  Alla  jogi njoɓdi aduna e laakara woni. Alla seeraani ko nanoowo , Yi'oowo.",
-      "yo": "Ẹnikẹ́ni tí ó bá ń fẹ́ ẹ̀san nílé ayé, ṣebí lọ́dọ̀ Allāhu ní ẹ̀san ti ayé àti ti ọ̀run wà. Allāhu sì ń jẹ́ Olùgbọ́, Olùríran."
+      "yo": "Ẹnikẹ́ni tí ó bá ń fẹ́ ẹ̀san nílé ayé, ṣebí lọ́dọ̀ Allāhu ní ẹ̀san ti ayé àti ti ọ̀run wà. Allāhu sì ń jẹ́ Olùgbọ́, Olùríran."
     }
   },
   {
@@ -1027,7 +1031,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin isaan amananii gaggaarii hojjatan, isaaniif araaramaafi mindaa guddaatu jira (jechuun) waadaa seeneera.",
       "so": "Alle wuxuu u ballan qaaday kuwa rumeeyey oo samaha fala inay leeyihiin denbi dhaaf iyo Ajar weyn (Janno).",
       "ff": "Alla Fodiini ɓeen gooɗinɓe ɓe ngolli golle moƴƴe, no woodani yaafuyo e njoɓdi mawnndi.",
-      "yo": "Allāhu ṣe àdéhùn fún àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣiṣẹ́ rere (pé) àforíjìn àti ẹ̀san ńlá ń bẹ fún wọn."
+      "yo": "Allāhu ṣe àdéhùn fún àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣiṣẹ́ rere (pé) àforíjìn àti ẹ̀san ńlá ń bẹ fún wọn."
     }
   },
   {
@@ -1097,7 +1101,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "የሰማያትና የምድር ንግሥና የሱ (የአላህ) ብቻ መኾኑን አላወቅክምን የሚሻውን ሰው ይቀጣል፡፡ ለሚሻውም ሰው ይምራል፡፡ አላህም በነገሩ ሁሉ ላይ ቻይ ነው፡፡",
       "om": "Sila ati Rabbiin mootummaan samiileefi dachii kan Isaa ta’uu hin beeknee! Nama fedhe ni adaba; nama fedheef ni araarama. Rabbiin waan hunda irratti danda’aadha.",
       "so": "Miyaadan ogeyn in Alle leeyahay Boqortooyada (runta ah ee) samooyinka iyo arlada. Wuxuu cadaabi qofkuu doono oo u denbi dhaafi qofkuu doono. Alle wax walba wuu Karaa.",
-      "ff": "E a anndaa won de no woodani Alla Laamu kammuuli ɗin e leydi ndin, Homo Lepta on mo O muuyi, o yaafo on mo O muuyi. Alla ko kattanɗo kala huunde."
+      "ff": "E a anndaa won de no woodani Alla Laamu kammuuli ɗin e leydi ndin, Homo Lepta on mo O muuyi, o yaafo on mo O muuyi. Alla ko kattanɗo kala huunde.",
+      "yo": "Ṣé o ò mọ̀ pé dájúdájú ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀? Ó máa jẹ ẹni tí Ó bá fẹ́ níyà. Ó sì máa forí jin ẹni tí Ó bá fẹ́. Allāhu sì ni Alágbára lórí gbogbo n̄ǹkan."
     }
   },
   {
@@ -1126,7 +1131,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እናንተ ያመናችሁ ሆይ! አላህ ለናንተ የፈቀደላችሁን ጣፋጮች እርም አታድርጉ፡፡ ወሰንንም አትለፉ፡፡ አላህ ወሰን አላፊዎችን አይወድምና፡፡",
       "om": "Yaa warra amantan! gaggaarii waan Rabbiin isiniif hayyamee haraama hin taasisinaa. Daangaa hin dabrinaa; Dhugumatti, Rabbiin warra daangaa dabranu hin jaalatu.",
       "so": "Kuwa (Xaqa) rumeeyow! Ha xarrimina Waxyaalaha wanaagsan uu Alle idiin banneeyey, hana xad gudbina. Hubaal, Alle ma jecla kuwa xadgudba.",
-      "ff": "Eehey mon yo gooŋɗinɓe, wota on karrmin laaɓuɗi ɗi Alla dakginani on, wata on njatu. Pe keerol, Alla Yiɗaa yawtooɓe ɓn.keeri Alla"
+      "ff": "Eehey mon yo gooŋɗinɓe, wota on karrmin laaɓuɗi ɗi Alla dakginani on, wata on njatu. Pe keerol, Alla Yiɗaa yawtooɓe ɓn.keeri Alla",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ má ṣe sọ àwọn n̄ǹkan dáadáa tí Allāhu ṣe ní ẹ̀tọ́ fún yín di èèwọ̀. Ẹ sì má ṣe tayọ ẹnu-ààlà. Dájúdájú Allāhu kò fẹ́ràn àwọn olùtayọ ẹnu-ààlà."
     }
   },
   {
@@ -1196,7 +1202,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Beekaa! Dhugumatti Rabbiin (abbaa) adabbii cimaati. Dhugumatti Rabbiin araaramaa, rahmata godhaadha.",
       "so": "Ogaada in Alle Ciqaabkiisu Daran yahay, iyo in Alle Denbi Dhaaf iyo Naxariis Badan yahay.",
       "ff": "Nganndee won de pellet, Alla ko caɗtuɗo lepte, e won de pellet, Alla ko kaforoowo, jurmotooɗo.",
-      "yo": "Ẹ mọ̀ pé dájúdájú Allāhu le níbi ìyà. Àti pé dájúdájú Allāhu ni Aláforíjìn, Àṣàkẹ́-ọ̀run."
+      "yo": "Ẹ mọ̀ pé dájúdájú Allāhu le níbi ìyà. Àti pé dájúdájú Allāhu ni Aláforíjìn, Àṣàkẹ́-ọ̀run."
     }
   },
   {
@@ -1233,7 +1239,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Mootummaan samii, dachiifi wantoota isaan keessaa kan Rabbiiti. Inni waan hunda irratti danda’aadha.",
       "so": "Alle baa iska leh (Mulkiga, Maamulka iyo) Boqortooyada (runta ah ee) samooyinka iyo arlada iyo waxa gudahooda ah. Alle wax kasta (uu doono) wuu Karaa.",
       "ff": "Ko Alla woodani laamu kammuuli ɗin, e leydi ndin e ko woni nder majji. Kanko ko O kattanɗo kala huunde.",
-      "yo": "Ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀ àti ohunkóhun tó wà nínú wọn. Òun sì ni Alágbára lórí gbogbo n̄ǹkan."
+      "yo": "Ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀ àti ohunkóhun tó wà nínú wọn. Òun sì ni Alágbára lórí gbogbo n̄ǹkan."
     }
   },
   {
@@ -1269,7 +1275,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ይህ ጌታችሁ አላህ ነው፡፡ ከእርሱ በቀር (በእውነት የምመለክ) አምላክ የለም፡፡ ነገርን ሁሉ ፈጣሪ ነው፡፡ ስለዚህ ተገዙት፡፡ እርሱም በነገሩ ሁሉ ላይ ተጠባባቂ ነው፡፡",
       "om": "(Kan akkana hojjate) kun Rabbii keessani, Isa malee dhugaan gabbaramaan hin jiru, (Inni) uumaa waan hundaatii, Isa (qofa) gabbaraa, Inni waan hunda tiksaadha.",
       "so": "Kaasi waa Allaah, Rabbigiin, Ma jiro Ilaah (xaq lagu caabudo) aan Isaga ahayn. Abuuraha wax kasta, ee caabuda Keligii,  Isagaa wax kasta u wakiil ah (ilaaliya).",
-      "ff": "Oon mon ko Alla, Joomi mon! deweteeɗo alaa (e goonga) si wanaa Kaŋko, Takɗo kala huunde. ndewee Mo. Kaŋko e dow kala huunde ko O fawtiiɗo.(deenɗo)."
+      "ff": "Oon mon ko Alla, Joomi mon! deweteeɗo alaa (e goonga) si wanaa Kaŋko, Takɗo kala huunde. ndewee Mo. Kaŋko e dow kala huunde ko O fawtiiɗo.(deenɗo).",
+      "yo": "Ìyẹn ni Allāhu, Olúwa yín; kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun, Ẹlẹ́dàá gbogbo n̄ǹkan. Nítorí náà, ẹ jọ́sìn fún Un. Òun sì ni Olùṣọ́ lórí gbogbo n̄ǹkan."
     }
   },
   {
@@ -1307,7 +1314,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Gooftaan kee Isumatu nama karaa Isaa irraa jallatu irra beeka; warra qajeelanis Isumatu beeka.",
       "so": "Hubaal Rabbigaa baa Og midka ka luma Jidkiisa, Isagaana Og cidda hanuunsan.",
       "ff": "Pellet, ko Joomi maa ɓuri Anndude on majjuɗo laawol makko ngol, ko Kaŋko kadi ɓuri Anndude feewuɓe ɓeen.",
-      "yo": "Dájúdájú Olúwa rẹ, Òun l’Ó nímọ̀ jùlọ nípa ẹni tó ṣìnà kúrò lójú ọ̀nà (ẹ̀sìn) Rẹ̀. Àti pé, Òun l’Ó nímọ̀ jùlọ nípa àwọn olùmọ̀nà."
+      "yo": "Dájúdájú Olúwa rẹ, Òun l’Ó nímọ̀ jùlọ nípa ẹni tó ṣìnà kúrò lójú ọ̀nà (ẹ̀sìn) Rẹ̀. Àti pé, Òun l’Ó nímọ̀ jùlọ nípa àwọn olùmọ̀nà."
     }
   },
   {
@@ -1378,7 +1385,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isaan Rabbiin sodaatan yeroo naanna'aan shayxaana irraa ta’e isaan tuqe, (Rabbiin) yaadatu, Achumaan isaan argoodha..",
       "so": "Xaqiiq kuwa ka cabsada Alle, markay taabato meerto Shaydaan, way ku baraarugaan oo kolkiiba (xaqa) arkaan.",
       "ff": "Pellet, ɓeen hulɓɓe(Alla), si sowonsinoore heɓii ɓe immorde e sytaane, ɓe ngannditay [Alla] : jaka yoo kamɓe ko ɓe yi'ooɓe.",
-      "yo": "Dájúdájú àwọn tó bẹ̀rù (Allāhu), nígbà tí ròyíròyí kan bá ṣẹlẹ̀ sí wọn láti ọ̀dọ̀ aṣ-Ṣaetọ̄n, tí wọ́n bá rántí (Allāhu), nígbà náà ojú wọn yó sì ríran (rí òdodo)."
+      "yo": "Dájúdájú àwọn tó bẹ̀rù (Allāhu), nígbà tí ròyíròyí kan bá ṣẹlẹ̀ sí wọn láti ọ̀dọ̀ aṣ-Ṣaetọ̄n, tí wọ́n bá rántí (Allāhu), nígbà náà ojú wọn yó sì ríran (rí òdodo)."
     }
   },
   {
@@ -1410,7 +1417,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sw": "Hakika wale walio kwa Mola wako Mlezi hawajivuni wakaacha kumuabudu, na wanamtakasa, na wanamsujudia Yeye.",
       "ha": "Lalle ne, waɗanda ke wurin Ubangijinka bã su yin girman kai ga bauta Masa, kuma sunã tsarake shi da tasbĩhi, kuma a gare shi suke yin sujada.",
       "ff": "Pellet, ɓeen [maleykaaji] won ɓe ka Joomi maa, ɓe townitantaako dewgol Mo, hiɓe subbunhinanoo Mo, ko Kaŋko woni ko ɓe cujjanta.",
-      "yo": "Dájúdájú àwọn tó ń bẹ lọ́dọ̀ Olúwa rẹ, wọn kì í jọra wọn lójú láti jọ́sìn fún Un. Wọ́n ń ṣàfọ̀mọ́ fún Un. Wọ́n sì ń forí kanlẹ̀ fún Un."
+      "yo": "Dájúdájú àwọn tó ń bẹ lọ́dọ̀ Olúwa rẹ, wọn kì í jọra wọn lójú láti jọ́sìn fún Un. Wọ́n ń ṣàfọ̀mọ́ fún Un. Wọ́n sì ń forí kanlẹ̀ fún Un."
     }
   },
   {
@@ -1446,7 +1453,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Rabbiin mootummaan samiileefi dachii kan Isaati. Ni jiraachisa; ni ajjeesas. Rabbiin alatti tiksaafi tumsaan tokkollee isiniif hin jiru.",
       "so": "Alle baa iska leh (Mulkiga, Maamulka iyo) Boqortooyada (runta ah ee) samooyinka iyo aralda, Isagaa wax nooleeya oo dhinsiiya. Ma lihidin Alle ka sokow sokeeye iyo gargaare midna.",
       "ff": "Pellet, Ko Alla woodani laamu kammuuli ɗin e leydi ndin. Himo wuurna, himo wara. Alanaa on gah Alla giɗo, wanaa balloowo",
-      "yo": "Dájúdájú Allāhu ló ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Kò sì sí aláàbò àti alárànṣe kan fún yín lẹ́yìn Allāhu."
+      "yo": "Dájúdájú Allāhu ló ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Kò sì sí aláàbò àti alárànṣe kan fún yín lẹ́yìn Allāhu."
     }
   },
   {
@@ -1484,7 +1491,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Rabbiin sodaadhaa; warra dhugaa wajjiiniis ta’aa.",
       "so": "Kuwa (Xaqa) rumeeyow! Alle ka cabsada, oo ahaada la jirka kuwa runlowyada ah.",
       "ff": "Eeymon gooŋɗiiɓe, kulee Alla laatodon e gooŋɗuɓe ɓeen.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu, kí ẹ sì wà pẹ̀lú àwọn olódodo."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu, kí ẹ sì wà pẹ̀lú àwọn olódodo."
     }
   },
   {
@@ -1513,7 +1520,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ከጎሳችሁ የሆነ ችግራችሁ በእርሱ ላይ ጽኑ የሆነ፣ በእናንተ (እምነት) ላይ የሚጓጓ፣ በምእምናን (ላይ) ርኅሩኅ አዛኝ የኾነ መልክተኛ በእርግጥ መጣላችሁ፡፡",
       "om": "Dhugumatti, iisinitti dhufe ergamaan isin irraa ta’e, kan rakkinni keessan isa irratti jabaatu, kan isiniif (akka amantanuuf) bololu, mu’uminootaaf immoo mararfataa, rahmata godhaa ta’e.",
       "so": "Waxaa dhab ahaan idiin yimid Rasuul idinka mid ah 'waa Nabi Muxammad s.c.w', oo ay ku adag tahay waxa idin dhiba, idiin roon oo dadaal badan, mu’miniinta u turid iyo naxariis badan.",
-      "ff": "Mi  wooɗndi nulaaɗo arii  e mooɗon, jeyaaɗo emon hino saɗta e makko ko tampoton, deerɗuɗo e mooɗon, newaniiɗo hinnotooɗo(yurmotoodo) gooŋɗinɓe ɓeen."
+      "ff": "Mi  wooɗndi nulaaɗo arii  e mooɗon, jeyaaɗo emon hino saɗta e makko ko tampoton, deerɗuɗo e mooɗon, newaniiɗo hinnotooɗo(yurmotoodo) gooŋɗinɓe ɓeen.",
+      "yo": "Dájúdájú Òjíṣẹ́ kan ti wá ba yín láti ààrin yín. Ohun tí ó máa kó wàhálà ba yín lágbára lára rẹ̀. Ó ń ṣe àkólékàn (oore) fún yín; aláàánú àti oníkẹ̀ẹ́ ni fún àwọn oní gbàgbọ́ òdodo."
     }
   },
   {
@@ -1549,7 +1557,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, bakka wal bu’uu halkaniifi guyyaa keessa, waan Rabbiin samiileefi dachii keessatti uume keessaas namoota (Rabbiin) sodaataniif mallattooleetu jira",
       "so": "Xaqiiq is beddelka habeenka iyo maalinta iyo waxa Alle ku abuuray cirarka iyo dhulka, waxaa ugu sugan calaamooyin ciddii Alle ka cabsan (oo iska jiri xumaha).",
       "ff": "Hino e luutindirgol jemma e ñalama ngol, e kon ko Alla tagi ka kammuuli e ka leydi, maandeeji wonan´de yimɓe gooŋɗuɓe.",
-      "yo": "Dájúdájú àwọn àmì wà nínú ìtẹ̀léǹtẹ̀lé òru àti ọ̀sán àti ohun tí Allāhu dá sínú àwọn sánmọ̀ àti ilẹ̀; (àmì wà nínú wọn) fún ìjọ tó ń bẹ̀rù (Allāhu)."
+      "yo": "Dájúdájú àwọn àmì wà nínú ìtẹ̀léǹtẹ̀lé òru àti ọ̀sán àti ohun tí Allāhu dá sínú àwọn sánmọ̀ àti ilẹ̀; (àmì wà nínú wọn) fún ìjọ tó ń bẹ̀rù (Allāhu)."
     }
   },
   {
@@ -1586,7 +1594,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin namoota homaa hin miidhu, Garuu namoonni ofiif lubbuulee isaanii miidhu.",
       "so": "Hubaal Alle kama dulmiyo dadka waxba;dadkuse iyagaa nafahooda dulmiya.",
       "ff": "Pellet Alla tooñirta yimɓe ɓeen huunde, ko woni, ko yimɓe ɓe tooñata ko'e muen.",
-      "yo": "Dájúdájú Allāhu kò níí fí kiní kan ṣàbòsí sí ènìyàn. Ṣùgbọ́n ènìyàn ló ń ṣàbòsí sí ẹ̀mí ara wọn."
+      "yo": "Dájúdájú Allāhu kò níí fí kiní kan ṣàbòsí sí ènìyàn. Ṣùgbọ́n ènìyàn ló ń ṣàbòsí sí ẹ̀mí ara wọn."
     }
   },
   {
@@ -1624,7 +1632,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhagayaa! Dhugumatti, wanti samiileefi dachii keessa jiru kan Rabbiiti. Dhagayaa! Dhugumatti, waadaan Rabbii dhugaadha. Garuu irra baay’een isaanii hin beekan.",
       "so": "Ogaada, hubaal, waxaa iska leh Alle waxa ku sugan samooyinka iyo arlada. Ogaada, hubaal, Ballanka Alle waa xaq. Badankooduse ma ogsoona.",
       "ff": "Ngandee ko Alla woodani ko woni ka kammuuli e ka leydi. Ngandee pellet, fodoore Alla nde ko goonga. Kono ko ɓuri ɗuuɗude e yimɓe he  ɓe nganndaa.",
-      "yo": "Gbọ́, dájúdájú ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Gbọ́! Dájúdájú àdéhùn Allāhu ni òdodo, ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ wọn kò nímọ̀."
+      "yo": "Gbọ́, dájúdájú ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Gbọ́! Dájúdájú àdéhùn Allāhu ni òdodo, ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ wọn kò nímọ̀."
     }
   },
   {
@@ -1661,7 +1669,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni ni jiraachisa; ni ajjeesas; gara Isaatitti deebifamtu.",
       "so": "Isagaa wax nooleeya, oo  dhinsiiya, Xaggiisaana dib la idiinku soo celin.",
       "ff": "Kaŋko Hombo wuurna hombo wara; ko faade ka makko nduttoteɗon.",
-      "yo": "Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Ọ̀dọ̀ Rẹ̀ sì ni wọn yóò da yín padà sí."
+      "yo": "Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Ọ̀dọ̀ Rẹ̀ sì ni wọn yóò da yín padà sí."
     }
   },
   {
@@ -1696,7 +1704,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa namootaa! Dhugumatti, gorsi Gooftaa keessan irraa taate isinitti dhufte, qorichi waan qomoowwan keessaas, qajeelfamaafi rahmanni mu’uminootaas.",
       "so": "Dadow! Waxaa idiinka yimid waano wanaagsan xagga Rabbigiin iyo reysasho lagaga bogsado waxa ku jira laabaha (oo cudurro ah) oo u ah hanuuun iyo naxariis  mu’miniinta.",
       "ff": "Eehey mon yimɓe, gooŋɗii waaju arii e mon immorde e Joomi mon, e lekki fii (ñabbuuji) ko woni e ɓerɗe, e peewal, e yurmeende wonannan´de gooŋɗinɓe ɓe.",
-      "yo": "Èyin ènìyàn, ìṣítí kan láti ọ̀dọ̀ Olúwa yín ti dé ba yín. Ìwòsàn ni fún n̄ǹkan tó wà nínú àwọn igbá-àyà ẹ̀dá. Ìmọ̀nà àti ìkẹ́ ni fún àwọn onígbàgbọ́ òdodo."
+      "yo": "Èyin ènìyàn, ìṣítí kan láti ọ̀dọ̀ Olúwa yín ti dé ba yín. Ìwòsàn ni fún n̄ǹkan tó wà nínú àwọn igbá-àyà ẹ̀dá. Ìmọ̀nà àti ìkẹ́ ni fún àwọn onígbàgbọ́ òdodo."
     }
   },
   {
@@ -1733,7 +1741,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እነዚያ ያመኑትና በጎ ሥራዎችን የሠሩት ወደ ጌታቸውም የተዋረዱት እነዚያ የገነት ሰዎች ናቸው፡፡ እነሱ በውስጧ ዘላለም ዘውታሪዎች ናቸው፡፡",
       "om": "Isaan amananii gaggaarii hojjatanii, Rabbii isaaniitiif gadi jedhan isaan sun warra jannataati. Isaan ishee keessatti hafoodha.",
       "so": "Hubaal, kuwa (Xaqa) rumeeyey oo samaha fala oo u khushuuca Rabbigood - waa kuwaa ehlu Jannadu iyagoo ku dhex waari weligood.",
-      "ff": "Ɓeen gooŋɗinɓe, ɓe ngolli golle moƴƴe, ɓe njankinanii Joomi maɓɓe, ko ɓe ngoni yimɓe Aljanna ɓen, kamɓe ko ɓe duumotooɓe toon."
+      "ff": "Ɓeen gooŋɗinɓe, ɓe ngolli golle moƴƴe, ɓe njankinanii Joomi maɓɓe, ko ɓe ngoni yimɓe Aljanna ɓen, kamɓe ko ɓe duumotooɓe toon.",
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n ṣe àwọn iṣẹ́ rere, tí wọ́n sì dúnní mọ́ ìronúpìwàdà sọ́dọ̀ Olúwa wọn, àwọn wọ̀nyẹn ni èrò inú Ọgbà Ìdẹ̀ra. Olùṣegbére ni wọ́n nínú rẹ̀."
     }
   },
   {
@@ -1765,7 +1774,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "«እኔ በጌታዬና በጌታችሁ በአላህ ላይ ተጠጋሁ፡፡ በምድር ላይ ምንም ተንቀሳቃሽ የለችም እርሱ አናትዋን የያዛት ብትሆን እንጂ፡፡ ጌታዬ (ቃሉም ሥራውም) በቀጥተኛው መንገድ ላይ ነው» (አላቸው)፡፡",
       "om": "Ani Rabbii Gooftaa kiyyaafi Gooftaa keessan ta’e irratti irkadheera. lubbu qabaan tokkos Inni sammuu isaa qabu malee hintaane. Gooftaan kiyya karaa qajeelaa irra jira.",
       "so": "Anigu waxaan xaqiiq tala saartay Allaah, Rabbigay iyo Rabbigiinba, ma jiro (noole) jooga (dhulka) oo uusan heyn foodda. Hubaal, Rabbigay wuxuu ku sugan yahay Jid Toosan (umuurahiisa oo dhan).",
-      "ff": "Min mi fawike e Alla, Joomi am e Joomi mon. Alaa e ruugayngel si wanaa ko O nannguɗo jubuuru maggel. Pellet, Joomi am no e laawol poocciingol."
+      "ff": "Min mi fawike e Alla, Joomi am e Joomi mon. Alaa e ruugayngel si wanaa ko O nannguɗo jubuuru maggel. Pellet, Joomi am no e laawol poocciingol.",
+      "yo": "Dájúdájú èmi gbáralé Allāhu, Olúwa mi àti Olúwa yín. Kò sí ẹ̀dá abẹ̀mí kan àfi kí (ó jẹ́ pé) Òun l’Ó máa fi àásó orí rẹ̀ mú un. Dájúdájú Olúwa mi wà lórí ọ̀nà tààrà."
     }
   },
   {
@@ -1801,7 +1811,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isin irraa namni jechaan (sagalee) gadi qabeefi ol fuudhes waluma qixa. namni halkan dhokateefi guyyaa ifatti ba’es (waluma qixa).",
       "so": "Waa isugu mid (Alle) kiinna idinka mid ah ee hadalkiisa qarsada iyo kan kor ugu dhawaaqa, iyo kan isku qariya habeenka iyo (kan) socda dharaar cad.",
       "ff": "Hino fota [ka makko ganndugol] oon cuuɗuɗo konngol e mooɗon, e on peññinɗo ngol, on cuuɗiratɗo jemma, e on jaltiniroowo ñalawma.",
-      "yo": "Bákan náà ni (lọ́dọ̀ Allāhu), ẹni tí ó fi ọ̀rọ̀ pamọ́ sínú nínú yín àti ẹni tí ó sọ ọ́ síta pẹ̀lú ẹni tí ó fi òru bojú àti ẹni tí ó ń rìn kiri ní ọ̀sán."
+      "yo": "Bákan náà ni (lọ́dọ̀ Allāhu), ẹni tí ó fi ọ̀rọ̀ pamọ́ sínú nínú yín àti ẹni tí ó sọ ọ́ síta pẹ̀lú ẹni tí ó fi òru bojú àti ẹni tí ó ń rìn kiri ní ọ̀sán."
     }
   },
   {
@@ -1828,7 +1838,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sw": "Mwenyezi Mungu humkunjulia riziki amtakaye, na humkunjia kwa kipimo. Na waliufurahia uhai wa dunia. Na uhai wa dunia kwa kulinganisha na Akhera si kitu isipokuwa ni starehe ndogo.",
       "am": "አላህ ለሚሻው ሰው ሲሳይን ያሰፋል፤ ያጠባልም፡፡ (ከሓዲዎች) በቅርቢቱም ሕይወት ተደሰቱ፡፡ የቅርቢቱም ሕይወት በመጨረሻይቱ አንጻር (ትንሽ) መጠቀሚያ እንጂ ምንም አይደለችም፡፡",
       "om": "Rabbiin nama fedheef hiree bal’isa; (nama fedhe) itti dhiphisa. Isaan jireenya addunyaa kanaatti gammadani. Jireenyi addunyaa jireenya Aakhiraa biratti qananii yeroo gabaabaa malee hin taane.",
-      "ff": "Alla no yaññana arsike on mo o muuyi, Himo ɓittina. heɓe mbeltora nguurndam aduna, nguurndam aduna non wonaani ka laakara, si wanaa dakamme-hoy."
+      "ff": "Alla no yaññana arsike on mo o muuyi, Himo ɓittina. heɓe mbeltora nguurndam aduna, nguurndam aduna non wonaani ka laakara, si wanaa dakamme-hoy.",
+      "yo": "Allāhu ń tẹ́ arísìkí sílẹ̀ rẹgẹdẹ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹni tí Ó bá fẹ́). Wọ́n sì dunnú sí ìṣẹ̀mí ilé ayé! Kí sì ni ìṣẹ̀mí ayé ní ẹ̀gbẹ́ ti ọ̀run bí kò ṣe ìgbádùn bín-íntín."
     }
   },
   {
@@ -1857,7 +1868,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ መልካምን ቃል ሥርዋ (በምድር ውስጥ) የተደላደለች ቅርንጫፍዋም ወደ ሰማይ (የረዘመች) እንደሆነች መልካም ዛፍ አድርጎ ምሳሌን እንዴት እንደገለጸ አላየኽምን?",
       "om": "Sila akkamitti akka Rabbiin fakkeenya godhe hin arginee? jechi gaariin akka muka gaarii hundeen ishee gadi dhaabbataa ta’ee, dameen ishee samii keessatti ta’eetti.",
       "ff": "E a yi'aani ko honno Alla piyiri misal konngol laaɓungol, ko wano leggal welngal, binndeere maggal ko tabituɗi, caalɗi maggal no ka weeyo?",
-      "yo": "Ṣé o kò wòye sí bí Allāhu ṣe ṣàkàwé ọ̀rọ̀ dáadáa pẹ̀lú igi dáadáa, tí gbòǹgbò rẹ̀ fi ìdí múlẹ̀ ṣinṣin, tí ẹ̀ka rẹ̀ sì wà nínú sánmọ̀,"
+      "yo": "Ṣé o kò wòye sí bí Allāhu ṣe ṣàkàwé ọ̀rọ̀ dáadáa pẹ̀lú igi dáadáa, tí gbòǹgbò rẹ̀ fi ìdí múlẹ̀ ṣinṣin, tí ẹ̀ka rẹ̀ sì wà nínú sánmọ̀,"
     }
   },
   {
@@ -1923,7 +1934,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እኛ ቁርኣንን እኛው አወረድነው፡፡ እኛም ለእርሱ ጠባቂዎቹ ነን፡፡",
       "om": "Nuti Zikrii (Qur'aana) Numatu buuse, Numatu isaaf tiksoodha.",
       "ff": "Minen min njippinii deftere nden, minen kadi ko min reenooɓe nde.",
-      "yo": "Dájúdájú Àwa l’A sọ Tírà Ìrántí kalẹ̀ (ìyẹn al-Ƙur’ān). Dájúdájú Àwa sì ni Olùṣọ́ rẹ̀."
+      "yo": "Dájúdájú Àwa l’A sọ Tírà Ìrántí kalẹ̀ (ìyẹn al-Ƙur’ān). Dájúdájú Àwa sì ni Olùṣọ́ rẹ̀."
     }
   },
   {
@@ -1961,7 +1972,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin kee isatu akkaan uumaa, beekaadha",
       "so": "Hubaal Rabbigaa waa Abuuraha wax kasta ee jira, wax waliba Ogsoonaha ah.",
       "ff": "Tabitii ko Joomi maa woni Takɗo, gannduɗo.",
-      "yo": "Dájúdájú Olúwa rẹ ni Ẹlẹ́dàá, Onímọ̀."
+      "yo": "Dájúdájú Olúwa rẹ ni Ẹlẹ́dàá, Onímọ̀."
     }
   },
   {
@@ -1999,7 +2010,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Samiifi dachii dhugaadhaan uumeera, Inni waan isaan (Isatti) qindeessan irraa ol ta’eera.",
       "so": "(Alle) wuxuu u abuuray samooyinka iyo arlada Xaq. Waa ka Sarreeyaa oo ka Kor yahay waxay la wadaajiyaan (cibaadada).",
       "ff": "O tagiri kammuuli ɗiin e leydi ndin goonga. o toowii e ko ɓe sirkoobe cirkata ko.",
-      "yo": "Ó ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ pẹ̀lú òdodo. Ó ga tayọ n̄ǹkan tí wọ́n ń fi ṣẹbọ sí I."
+      "yo": "Ó ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ pẹ̀lú òdodo. Ó ga tayọ n̄ǹkan tí wọ́n ń fi ṣẹbọ sí I."
     }
   },
   {
@@ -2036,7 +2047,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Isa samii irraa bishaan buuse. Isiniif isa irraa dhugaatiitu jira. Isa irraas muka isin ishee keessatti (beyladoota) tikfattantu (marga).",
       "so": "Waa Isaga Kan idiinka soo dejiya biyo (roob) daruuraha, waxaad ka heshaan cabbitaan, biyahaasoo (soo saara sidoo kale) geedaha aad daaqsataan (xoolaha).",
       "ff": "Ko Kaŋko woni jippinirɗo ndiyam ka kammu, hino woodani on e majjam njaram, leɗɗe no (yalta) e majjam, ko e majjam kadi oornoton.",
-      "yo": "Òun ni Ẹni tó ń sọ omi kalẹ̀ (fún yín) láti sánmọ̀. Mímu wà fún yín nínú rẹ̀. Igi ewéko tún ń wù jáde láti inú rẹ̀, tí ẹ fi ń bọ́ àwọn ẹran-ọ̀sìn."
+      "yo": "Òun ni Ẹni tó ń sọ omi kalẹ̀ (fún yín) láti sánmọ̀. Mímu wà fún yín nínú rẹ̀. Igi ewéko tún ń wù jáde láti inú rẹ̀, tí ẹ fi ń bọ́ àwọn ẹran-ọ̀sìn."
     }
   },
   {
@@ -2067,7 +2078,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "በእርሱ ለእናንተ አዝመራን፣ (የዘይት) ወይራንም፣ ዘምባባዎችንም (ተምርን)፣ ወይኖችንም፣ ከፍሬዎችም ሁሉ ያበቅልላችኋል፡፡ በዚህ ውስጥ ለሚያስተነትኑ ሕዝቦች በእርግጥ ተዓምርአልለ፡፡",
       "om": "Isaan sanyii midhaanii, Zeytuuna, mukkeen Timiraa, Inaboowwaniifi fuduraalee hunda irraa isiniif magarsa. Dhugumatti, kana keessa ummata xiinxalaniif mallattootu jira.",
       "so": "Wuxuu idiinku soo bixiyaa sarac, zaytuun, geedaha timirta, canabyo iyo nooc walba oo midhaha ah. Arrinkani waxaa xaqiiq ugu sugan calaamo ciddii fikiri.",
-      "ff": "Homo fuɗnirana on ɗam aawruuji, nebbanteeje, e tamarooje, e inabuuje, e kala dimɗe.ɓesnoje wonii e ɗuum, tasakuyee wonan´de yimɓe miijitotooɓe."
+      "ff": "Homo fuɗnirana on ɗam aawruuji, nebbanteeje, e tamarooje, e inabuuje, e kala dimɗe.ɓesnoje wonii e ɗuum, tasakuyee wonan´de yimɓe miijitotooɓe.",
+      "yo": "(Allāhu) tún ń fi (omi yìí) hu àwọn irúgbìn, igi òróró zaetūn, igi dàbínù, igi àjàrà àti gbogbo àwọn èso (yòókù) jáde fún yín. Dájúdájú àmì wà nínú ìyẹn fún ìjọ tó ní àròjinlẹ̀."
     }
   },
   {
@@ -2104,7 +2116,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti gabbaramaan keessan gabbaramaa tokkicha. Isaan Aakhiraatti hin amanne, onneewwan isaanii (tokkichummaa Rabbii) mormituudha; isaan boontota.",
       "so": "Ilaahiinnu waa Ilaah Mid Keliya ah (Allaah). Kuwase aan rumeysneyn Aakhirada, quluubtoodu way diidaan (Towxiidka), wayna isla weyn yihiin.",
       "ff": "deweteeɗo mon on ko deweteeɗo gooto. ɓeen ɓe ngooŋɗinaa laakara, ɓerɗe maɓɓe ɗen ko jedduɗe, ɓen ko townitiiɓe.",
-      "yo": "Ọlọ́hun yín tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo, Ọlọ́hun Ọ̀kan ṣoṣo ni. Àmọ́ àwọn tí kò ní ìgbàgbọ́ nínú Ọjọ́ Ìkẹ́yìn ni ọkàn wọn takò ó, tí wọ́n sì ń ṣègbéraga."
+      "yo": "Ọlọ́hun yín tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo, Ọlọ́hun Ọ̀kan ṣoṣo ni. Àmọ́ àwọn tí kò ní ìgbàgbọ́ nínú Ọjọ́ Ìkẹ́yìn ni ọkàn wọn takò ó, tí wọ́n sì ń ṣègbéraga."
     }
   },
   {
@@ -2168,7 +2180,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sw": "Je, hawawaoni ndege walivyotiishwa katika anga la mbingu? Hakuna mwenye kuwashikilia isipokuwa Mwenyezi Mungu. Hakika katika haya zipo ishara kwa kaumu wanaoamini.",
       "am": "ወደ በራሪዎች በሰማይ አየር ውስጥ (ለመብረር) የተገሩ ሲኾኑ (ከመውደቅ) አላህ እንጂ ሌላ የማይዛቸው ኾነው አይመለከቱምን በዚህ ውስጥ ለሚያምኑ ሕዝቦች በእርግጥ ተዓምራቶች አሉ፡፡",
       "so": "Miyeyna arkayn shimbiraha loo sakhiray (oo ku duulaya) hawada samada? Cidina ma qaban karto aan ahayn Allaah. hubaal, arrinkani waxaa ugu sugan calaamooyin ciddii rumayn.",
-      "ff": "E ɓe nji'aani colli ɗiin ko ɗi eltaaɗi ka weeyo kammu (won´de) jogitaaki ɗi si wanaa Alla? Wonii e ɗuum, maandeeji wonan´de yimɓe gooŋɗinooɓe ɓen."
+      "ff": "E ɓe nji'aani colli ɗiin ko ɗi eltaaɗi ka weeyo kammu (won´de) jogitaaki ɗi si wanaa Alla? Wonii e ɗuum, maandeeji wonan´de yimɓe gooŋɗinooɓe ɓen.",
+      "yo": "Ṣé wọn kò wòye sí àwọn ẹyẹ tí A rọ̀ (fún fífò) nínú òfurufú (lábẹ́) sánmọ̀? Kò sí ẹni tó ń mú wọn dúró (sínú òfurufú) bí kò ṣe Allāhu. Dájúdájú àwọn àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo."
     }
   },
   {
@@ -2197,7 +2210,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ በማስተካከል፣ በማሳመርም፣ ለዝምድና ባለቤት በመስጠትም ያዛል፡፡ ከአስከፊም (ከማመንዘር)፣ ከሚጠላም ነገር ሁሉ፣ ከመበደልም ይከለክላል፡፡ ትገነዘቡ ዘንድ ይገስጻችኋል፡፡",
       "om": "Dhugumatti, Rabbiin haqatti, toltuu hojjachuufi firootaaf (gargaarsa) kennuutti ajaja. Wantoota fokkatoo, waan jibbamaadhaafi miidhaa irraas ni dhorga. Akka gorfamtaniif jechas isin gorsa.",
       "so": "Hubaal Alle wuxuu amraa caddaaladda, axsaan falka iyo siinta qaraabada, wuxuuna reebaa xumaanta, munkarka iyo gardarrada. Wuu idin waaninayaa, inaad ku waano qaadataan oo xusuusataan.",
-      "ff": "Tabitii Alla yamirii nuunɗal, e moƴƴingol, e moƴƴagol e joomiraaɓe ɓadondiral. homo haɗa gaay e pan-kare, e ko añinii, e bewre. homo waajoo on, mbeleejo'o, on mbaajitoray."
+      "ff": "Tabitii Alla yamirii nuunɗal, e moƴƴingol, e moƴƴagol e joomiraaɓe ɓadondiral. homo haɗa gaay e pan-kare, e ko añinii, e bewre. homo waajoo on, mbeleejo'o, on mbaajitoray.",
+      "yo": "Dájúdájú Allāhu ń pàṣẹ ṣíṣe déédé, ṣíṣe rere àti fífún ẹbí (ní n̄ǹkan). Ó sì ń kọ ìwà ìbàjẹ́, ohun burúkú àti rúkèrúdò. Ó ń ṣe wáàsí fún yín nítorí kí ẹ lè lo ìrántí."
     }
   },
   {
@@ -2230,7 +2244,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እናንተ ዘንድ ያለው ሁሉ ያልቃል፡፡ አላህ ዘንድ ያለው ግን (ዘለዓለም) ቀሪ ነው፡፡ እነዚያንም የታገሱትን ይሠሩት በነበሩት በመልካሙ ምንዳቸውን እንመነዳቸዋለን፡፡",
       "om": "Wanti isin biraa ni dhuma, Wanti Rabbiin biraa immoo hafaadha. Isaan obsaniif mindaa isaanii irra gaarii waan isaan dalagaa turaniitiin isaan mindeessina.",
       "so": "Waxa aad haysataan way dhammaan, waxase Alle agtiis ah baa baaqi ahaanaya. Waxaana ku abaal marin kuwa samra ajarkooda u qalma waxa ugu wanaagsan ay falayeen.",
-      "ff": "Ko marɗon kon re'ay (gasat), ko woni ka Alla ko ko keddotooɗum. ma min mbarjor ɓeen muññiiɓe njoɓdi maɓɓe ndiin ko ɓuri moƴƴude e ko ɓe ngollatnoo kon."
+      "ff": "Ko marɗon kon re'ay (gasat), ko woni ka Alla ko ko keddotooɗum. ma min mbarjor ɓeen muññiiɓe njoɓdi maɓɓe ndiin ko ɓuri moƴƴude e ko ɓe ngollatnoo kon.",
+      "yo": "Ohun tó ń bẹ lọ́dọ̀ yín máa tán. Ohun tó ń bẹ lọ́dọ̀ Allāhu sì máa wà títí láéláé. Dájúdájú A sì máa san àwọn tó ṣe sùúrù ní ẹ̀san rere wọn tó dára ju ohun tí wọ́n ń ṣe níṣẹ́."
     }
   },
   {
@@ -2267,7 +2282,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Rabbiin warra Isa sodaataniifi warra isaan tolchitoota tahan wajjin jira.",
       "so": "Hubaal Alle wuxuu la jiraa kuwa iska jira (xumaha, dhowra Amarradiisa) ee ah sama falayaasha.",
       "ff": "Pellet, Alla no won´di e ɓeen hulɓe [Mo] e ɓeen moƴƴinooɓe.",
-      "yo": "Dájúdájú Allāhu wà pẹ̀lú àwọn tó bẹ̀rù (Rẹ̀) àti àwọn tó ń ṣe rere."
+      "yo": "Dájúdájú Allāhu wà pẹ̀lú àwọn tó bẹ̀rù (Rẹ̀) àti àwọn tó ń ṣe rere."
     }
   },
   {
@@ -2305,7 +2320,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbii wajjin gabbaramaa biraa hin taasisin; (yoo waliin gabbarte) balaaleffatamaa, salphataa taatee teessa.",
       "so": "Ha yeelin la jirka Alle ilaah kale, si aadan u fadhiisan (cadaab dhexdi) adigoo dulleysan deyro ah.",
       "ff": "Wota a waɗan Alla deweteeɗo goɗɗo; njooɗoyoɗaa ko a ñiŋaaɗo noppaaɗo.",
-      "yo": "Má ṣe mú ọlọ́hun mìíràn mọ́ Allāhu nítorí kí o má baà jókòó (sínú Iná) ní ẹni àbùkù, ẹni ẹ̀kọ̀ (tí wọ́n máa dá ìṣòro rẹ̀ dá)."
+      "yo": "Má ṣe mú ọlọ́hun mìíràn mọ́ Allāhu nítorí kí o má baà jókòó (sínú Iná) ní ẹni àbùkù, ẹni ẹ̀kọ̀ (tí wọ́n máa dá ìṣòro rẹ̀ dá)."
     }
   },
   {
@@ -2341,7 +2356,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti Gooftaan kee hiree nama fedheef ni bal’isa; (nama fedhe irratti) ni dhiphisas. Dhugumatti, Inni gabroota Isaa beekaa, argaa ta’eera.",
       "so": "Hubaal, Rabbigaa wuxuu u fidiyaa risiqa kuu doono, oo ku cidhiidhiyaa (kuu doono). Hubaal waa Mid addoomahiisa mar walba Xog Ogaal u ah oo Arka.",
       "ff": "Pellet Joomi maa, no yaacnana arsike, on mo O muuyi. O ɓittina. Pellet Kaŋko O wonii kumpitiiɗo, ji’oowo jeyaaɓe makko.",
-      "yo": "Dájúdájú Olúwa rẹ l’Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú Ó ń jẹ́ Onímọ̀-ìkọ̀kọ̀, Olùríran nípa àwọn ẹrúsìn Rẹ̀."
+      "yo": "Dájúdájú Olúwa rẹ l’Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú Ó ń jẹ́ Onímọ̀-ìkọ̀kọ̀, Olùríran nípa àwọn ẹrúsìn Rẹ̀."
     }
   },
   {
@@ -2379,7 +2394,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Gooftaan keessan Isa doonii galaana keessa isiniif deemsisuudha. akka tola Isaa irraa barbaaddattaniif, Dhugumatti, Inni isiniif rahmata godhaa ta’eera.",
       "so": "Rabbigiin (Alle) waa Kan idiinku socodsiiya doonyaha badda si aad u raadsataan Deeqdiisa. Hubaal Waa uu idiin Naxariis Badan yahay.",
       "ff": "Ko Joomi mon woni sogganatɗo on laaɗe ɗe e maayo, fii yo on ɗaɓɓu immorde e ɓural makko , pellet, Kaŋko ko O jurmotooɗo on.",
-      "yo": "Olúwa yín ni Ẹni tó ń mú ọkọ̀ ojú-omi rìn fún yín nítorí kí ẹ lè wá nínú oore àjùlọ Rẹ̀. Dájúdájú Ó ń jẹ́ Aláàánú fún yín."
+      "yo": "Olúwa yín ni Ẹni tó ń mú ọkọ̀ ojú-omi rìn fún yín nítorí kí ẹ lè wá nínú oore àjùlọ Rẹ̀. Dájúdájú Ó ń jẹ́ Aláàánú fún yín."
     }
   },
   {
@@ -2416,7 +2431,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Nuti waan dachii irra jiru (hunda) isheef miidhagina taasifne, isaan irraa eenyu akka irra tolchee hojjatu mul’isuuf.",
       "so": "Waxaan ka yeellay waxa dhulka korkiisa ah qurux lagu qurxiyey, si aanu u imtixaanno midkood ugu camal fiican.",
       "ff": "Minen min mbaɗii ko woni ko ka hoore leydi cuɗaari mayri, fii yo min  mjarribo ɓe ko hommbo e maɓɓe ɓurata moƴƴin'de golle.",
-      "yo": "Dájúdájú Àwa ṣe ohun tí ń bẹ lórí ilẹ̀ ní ọ̀ṣọ́ fún ilẹ̀ náà nítorí kí Á lè dán wọn wò (pé) èwo nínú wọn ló máa dára jùlọ níbi iṣẹ́ ṣíṣe (nínú ẹ̀sìn)."
+      "yo": "Dájúdájú Àwa ṣe ohun tí ń bẹ lórí ilẹ̀ ní ọ̀ṣọ́ fún ilẹ̀ náà nítorí kí Á lè dán wọn wò (pé) èwo nínú wọn ló máa dára jùlọ níbi iṣẹ́ ṣíṣe (nínú ẹ̀sìn)."
     }
   },
   {
@@ -2454,7 +2469,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Warreen amananii, gaggaarii hojjatan, (galata guddaa argatu) Nuti mindaa nama dalagaa tolchee hin balleessinu.",
       "so": "Hubaal, kuwa (Xaqa) rumeeyey oo fala samaha, Annagu ma dayacno abaalgudka ciddii wanaajisa camalka.",
       "ff": "Pellet, ɓen gooŋɗinɓe ɓe ngolli moƴƴi ɗin, Minen Min njeebataa njoɓdi kala moƴƴinɗo golle.",
-      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, dájúdájú Àwa kò níí fi ẹ̀san ẹni tí ó bá ṣe iṣẹ́ rere ráre."
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, dájúdájú Àwa kò níí fi ẹ̀san ẹni tí ó bá ṣe iṣẹ́ rere ráre."
     }
   },
   {
@@ -2490,7 +2505,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Nuti Numatu dachiifi waan ishee irra jiru dhaala; garuma keenya deebifamus.",
       "so": "Waa Annaga (Allaah) kuwa dhaxli arlada iyo waxa korkeeda joogaba.  Xaggaygaana laydiin soo celin.",
       "ff": "Minen min ndonat lesdi ndi e ɓen wonɓe e dow mayri, ko ka amen ɓe nduttetee.",
-      "yo": "Dájúdájú Àwa l’A máa jogún ilẹ̀ àti àwọn tó ń bẹ lórí rẹ̀. Ọ̀dọ̀ Wa sì ni wọn yóò dá wọn padà sí."
+      "yo": "Dájúdájú Àwa l’A máa jogún ilẹ̀ àti àwọn tó ń bẹ lórí rẹ̀. Ọ̀dọ̀ Wa sì ni wọn yóò dá wọn padà sí."
     }
   },
   {
@@ -2528,7 +2543,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila namni hin yaadatuu akka Nuti kanaan dura isa uumne, ka waa argamaa hintahin?",
       "so": "Miyuusan Aadmigu xusuusnayn inaan abuurnay kal hore isagoon waxba ahayn?",
       "ff": "Enee, neɗɗaŋke on annditaani Menen Men Tagiino mo ko adii, hari o wonaali hay e hu'unde.",
-      "yo": "Ṣé ènìyàn kò rántí pé dájúdájú Àwa ni A ṣẹ̀dá rẹ̀ tẹ́lẹ̀tẹ́lẹ̀ nígbà tí kò tí ì jẹ́ n̄ǹkan kan?"
+      "yo": "Ṣé ènìyàn kò rántí pé dájúdájú Àwa ni A ṣẹ̀dá rẹ̀ tẹ́lẹ̀tẹ́lẹ̀ nígbà tí kò tí ì jẹ́ n̄ǹkan kan?"
     }
   },
   {
@@ -2566,7 +2581,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wanti samiileefi dachii keessa jiran hundi gabra (Isaa) qofa ta’anii gara Rahmaan dhufanu malee hin hafan.",
       "so": "Wax kastoo ku sugan samooyinka iyo arlada wuxuu u imaan (Allaah) Raxmaanka isagoo addoon ah.",
       "ff": "Alaa ko woni e kammuuli e  leydi si wanaa o aray e jurmotooɗo hombo woni jeyaaɗo.",
-      "yo": "Kò sí ẹnì kan nínú àwọn sánmọ̀ àti ilẹ̀ àyàfi kí ó wá bá Àjọkẹ́-ayé ní ipò ẹrúsìn."
+      "yo": "Kò sí ẹnì kan nínú àwọn sánmọ̀ àti ilẹ̀ àyàfi kí ó wá bá Àjọkẹ́-ayé ní ipò ẹrúsìn."
     }
   },
   {
@@ -2603,7 +2618,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wanti samiilee, dachiifi gidduu isaan lamaanii jiruufi wanti biyyee jala jiru hundi kan Isaati.",
       "so": "Isagaa leh waxa ku sugan samooyinka iyo waxa ku sugan arlada iyo waxa u dhexeeya iyo waxa ka hooseeyaba rayska.",
       "ff": "No woodani mo o ko woni ko e kammuuji ɗin e ko woni kon e leydi ndi e ko wini kon hakkunde majji kannji ɗiɗi e ko woni ko e les leydi.",
-      "yo": "TiRẹ̀ ni ohunkóhun tó wà nínú àwọn sánmọ̀, ohunkóhun tó wà nínú ilẹ̀ àti ohunkóhun tó wà láààrin méjèèjì àti ohunkóhun tó wà lábẹ́ ilẹ̀."
+      "yo": "TiRẹ̀ ni ohunkóhun tó wà nínú àwọn sánmọ̀, ohunkóhun tó wà nínú ilẹ̀ àti ohunkóhun tó wà láààrin méjèèjì àti ohunkóhun tó wà lábẹ́ ilẹ̀."
     }
   },
   {
@@ -2641,7 +2656,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin dhugaan gabbaramaan isa malee hin jiru. Maqoonni babbareedoon isaaf tahe.",
       "so": "Allaah! Ma jiro ilaah (xaq ah) aan Isaga aheyn, Wuxuu leeyahay Magacyada Wanaagga iyo Quruxda Badan.",
       "ff": "Alla deweteeɗo alaa si wonaa Kaŋko, no woodani mo Inɗe moƴƴe ɗe.",
-      "yo": "Allāhu, kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. TiRẹ̀ ni àwọn orúkọ tó dára jùlọ."
+      "yo": "Allāhu, kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. TiRẹ̀ ni àwọn orúkọ tó dára jùlọ."
     }
   },
   {
@@ -2677,7 +2692,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Ishee (dachii) irraa isin uumne; ishee keessatti isin deebifna; yeroo biraas ishee irraa isin baafna.",
       "so": "Xaggeedaan (arlada) idinka abuurnay, gudaheeda baan idinku celin, xaggeedaana la idinka soo saari mar kale (geeri kaddib).",
       "ff": "Ko immorde e mayri Min Tagi on, ko e ndeer mayri Min nduttata on, ko immorde e mayri kadi Min njaltinoyta on laawol goɗgol",
-      "yo": "Láti ara erùpẹ̀ ni A ti da yín. Inú rẹ̀ sì ni A óò da yín padà sí. Láti inú rẹ̀ sì ni A óò ti mu yín jáde padà nígbà mìíràn.”"
+      "yo": "Láti ara erùpẹ̀ ni A ti da yín. Inú rẹ̀ sì ni A óò da yín padà sí. Láti inú rẹ̀ sì ni A óò ti mu yín jáde padà nígbà mìíràn.”"
     }
   },
   {
@@ -2714,7 +2729,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wantoonni samiileefi dachii keessa jiran hundi kan Isaati. Isaan Isa (Allaah) bira jiranis (maleykonnis) Isa gabbaruu irraa hin boonan; hin hifatanis.",
       "so": "Alle baa leh wax kasta oo ku sugan samooyinka iyo arlada; kuwa (Alle) agtiisa ahna ee u dhow (malaa’igta) iskama wey- neeyaan cibaadadiisa, kamana daalaan.",
       "ff": "Ko Kaŋko woodani ko woni ko ka kammuuji e ka leydi ɓen wonɓe ka Makko kadi ɓe mawnittaako ga rewugol Mo, ɓe hasrintaaka kadi.",
-      "yo": "TiRẹ̀ ni àwọn tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Àti pé àwọn tó ń bẹ lọ́dọ̀ Rẹ̀, wọn kì í ṣègbéraga níbi ìjọ́sìn Rẹ̀. Kò sì rẹ̀ wọ́n."
+      "yo": "TiRẹ̀ ni àwọn tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Àti pé àwọn tó ń bẹ lọ́dọ̀ Rẹ̀, wọn kì í ṣègbéraga níbi ìjọ́sìn Rẹ̀. Kò sì rẹ̀ wọ́n."
     }
   },
   {
@@ -2747,7 +2762,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Odoo isaan lamaan (samiifi dachii) keessa Rabbiin malee gabbaramtoonni biraa jiraatanii lamaan isaaniituu ni badu ture, Rabbiin Gooftaa Arshii ta’e waan kaafiroonni (Isaan) jedhan irraa qulqullaa’e!",
       "so": "Hadday jiri lahaayeen dhexdooda (cirarka iyo dhulka) ilaahyo aan ahayn Alle, way fasaadi lahaayeen. Wuu ka hufan yahay Alle Rabbiga Carshiga Weyn leh oo ka Sarreeyaa waxay ku tilmaami.",
       "ff": "Sinndo laatino e majji [kammuuli ɗi e leydi ndi] deweteeɗi ko wonaa Alla ɗi bonayno. Senayee wonanii Alla Jom Arsi kin ga koɓe cifotoo.",
-      "yo": "Tí ó bá jẹ́ pé àwọn ọlọ́hun kan wà nínú sánmọ̀ àti ilẹ̀ lẹ́yìn Allāhu, sánmọ̀ àti ilẹ̀ ìbá ti bàjẹ́. Mímọ́ ni fún Allāhu, Olúwa Ìtẹ́-ọlá, tayọ ohun tí wọ́n ń fi ròyìn (Rẹ̀)."
+      "yo": "Tí ó bá jẹ́ pé àwọn ọlọ́hun kan wà nínú sánmọ̀ àti ilẹ̀ lẹ́yìn Allāhu, sánmọ̀ àti ilẹ̀ ìbá ti bàjẹ́. Mímọ́ ni fún Allāhu, Olúwa Ìtẹ́-ọlá, tayọ ohun tí wọ́n ń fi ròyìn (Rẹ̀)."
     }
   },
   {
@@ -2808,7 +2823,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Lubbuun hundi du’a dhandhamtuudha. Isin qormaatuuf hamtuufi gaariin isin mokkorra, Garuma keenyatti deebifamtu.",
       "so": "Naf walbaa waa tii dhadhamisa geeri, waxaanu idinku imtixaani shar iyo khayrba kala saar darteed, Xaggayagaana la idiin soo celin.",
       "ff": "Kala woŋkii meedat maayɗe nde, Min njarribora on bone on e moƴƴere nde njarrabagol, ko ka amen kadi nduttotoɗon.",
-      "yo": "Ẹ̀mí kọ̀ọ̀kan ló máa tọ́ ikú wò. A sì máa fi aburú àti rere ṣàdánwò fún yín. Ọ̀dọ̀ Wa sì ni wọn yóò da yín padà sí."
+      "yo": "Ẹ̀mí kọ̀ọ̀kan ló máa tọ́ ikú wò. A sì máa fi aburú àti rere ṣàdánwò fún yín. Ọ̀dọ̀ Wa sì ni wọn yóò da yín padà sí."
     }
   },
   {
@@ -2842,7 +2857,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ እነዚያን ያመኑትንና መልካም ሥራዎችን የሠሩትን በሥሮቻቸው ወንዞች የሚፈሱባቸውን ገነቶች ያገባቸዋል፡፡ አላህ የሚሻውን ነገር በእርግጥ ይሠራል፡፡",
       "om": "Rabbiin isaan amananii, gaggaarii dalagan Jannatoowwan laggeen ishee jala yaatu isaan seensisa, Dhugumatti Rabbiin waan fedhu hojjata.",
       "so": "Hubaal, Alle wuxuu gelin kuwa (Xaqa) rumeeyey oo samaha fala Jannooyin (beero) ay hoostoodu webiyo qul-qulaan. Hubaal Alle wuxuu Falaa wuxuu Doono.",
-      "ff": "Pellet, Alla homoo naatna ɓen gooŋɗinɓe ɓe ngolli moƴƴi ɗin Aljannaaji no ila sengo ley majji caatlii ɗi, pellet, Alla homo waɗa ko o faandii ko."
+      "ff": "Pellet, Alla homoo naatna ɓen gooŋɗinɓe ɓe ngolli moƴƴi ɗin Aljannaaji no ila sengo ley majji caatlii ɗi, pellet, Alla homo waɗa ko o faandii ko.",
+      "yo": "Dájúdájú Allāhu yóò mú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere wọ inú Ọgbà Ìdẹ̀ra tí àwọn odò ń ṣàn ní ìsàlẹ̀ rẹ̀. Dájúdájú Allāhu ń ṣe ohun tí Ó bá fẹ́."
     }
   },
   {
@@ -2879,7 +2895,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin isaan amanan irraa ni ittisa, nama akkaan gantuu, kafaraa ta'e hunda Rabbiin hin jaallatu.",
       "so": "Xaqiiq Alle wuu difaacaa addoomahiisa rumeysan. Xaqiiq, Alle ma jecla mid kastoo khiyaano badan, abaal dhac badan.",
       "ff": "Pellet, Alla O solnanay(duñanat) ɓeen gooŋɗinɓe, pellet, Alla o yiɗaa kala kodoowo keewɗo jeddi.",
-      "yo": "Dájúdájú Allāhu ń ti aburú kúrò fún àwọn tó gbàgbọ́ ní òdodo. Dájúdájú Allāhu kò nífẹ̀ẹ́ gbogbo àwọn oníjàǹbá, aláìgbàgbọ́."
+      "yo": "Dájúdájú Allāhu ń ti aburú kúrò fún àwọn tó gbàgbọ́ ní òdodo. Dájúdájú Allāhu kò nífẹ̀ẹ́ gbogbo àwọn oníjàǹbá, aláìgbàgbọ́."
     }
   },
   {
@@ -2916,7 +2932,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wantoonni samiilee keessa jiraniifi wantoonni dachii keessa jiran hundi kan Isaati, Rabbiin Isatu dureessa, faarfamaadha.",
       "so": "Wuxuu leeyahay waxa ku sugan samooyinka iyo waxa ku sugan arlada. Hubaal, Alle waa Hodonka (ka deeqtoon wax waliba) la ammaanoo Mahadsan.",
       "ff": "Ko Kaŋko woodani ko woni kon ka kammuuji e ka leydi. Pellet, Alla ko Kaŋko woni Galo jettiniiɗo on.",
-      "yo": "TiRẹ̀ ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ohunkóhun tó wà nínú ilẹ̀. Dájúdájú Allāhu, Òun mà ni Ọlọ́rọ̀, Ẹlẹ́yìn."
+      "yo": "TiRẹ̀ ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ohunkóhun tó wà nínú ilẹ̀. Dájúdájú Allāhu, Òun mà ni Ọlọ́rọ̀, Ẹlẹ́yìn."
     }
   },
   {
@@ -2984,7 +3000,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እናንተ ያመናችሁ ሰዎች ሆይ! (በስግደታችሁ) አጎንብሱ፣ በግንባራችሁም ተደፉ፣ ጌታችሁንም ተገዙ፣ በጎንም ነገር ሥሩ፣ ልትድኑ ይከጀልላችኋልና፡፡",
       "so": "Kuwa (Xaqa) rumeeyow! Rukuuca oo sujuuda oo caabuda Rabbigiin (idinkoon waxba la wadaajin cibaadada) falana khayr aad liibaantaane.",
       "ff": "Eey mon yo ɓen gooŋɗinɓe, ndukƴee cujjon ndewon Joomi mo'on, ngollon ko moƴƴi kon mbelejo'o onon on maloyte.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ dáwọ́tẹ orúnkún (lórí ìrun), ẹ forí kanlẹ̀, ẹ jọ́sìn fún Olúwa yín, kí ẹ sì ṣe rere nítorí kí ẹ lè jèrè."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ dáwọ́tẹ orúnkún (lórí ìrun), ẹ forí kanlẹ̀, ẹ jọ́sìn fún Olúwa yín, kí ẹ sì ṣe rere nítorí kí ẹ lè jèrè."
     }
   },
   {
@@ -3021,7 +3037,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin halkaniifi guyyaa gara gaggalcha, Dhugumatti, kana keessa namoota hubannoo qabaniif gorsatu jira.",
       "so": "Alle Wuxuu gedgeddiyaa oo is dhaafiyaa habeenka iyo maalinta. Arrinkani waxaa xaqiiq ugu sugan cibro kuwa aragtida dheer.",
       "ff": "Alla homo waylita jemma on e ñalawma on, pellet, na wonii e ɗum tasakuyee wonan'de joomiraaɓe jiiɗe ɓen.",
-      "yo": "Allāhu ń yí òru àti ọ̀sán padà (ìkíní kejì n wá ní tẹ̀léǹtẹ̀lé pẹ̀lú àlékún àti àdínkù). Dájúdájú àríwòye wà nínú ìyẹn fún àwọn tó ní ojú ìríran."
+      "yo": "Allāhu ń yí òru àti ọ̀sán padà (ìkíní kejì n wá ní tẹ̀léǹtẹ̀lé pẹ̀lú àlékún àti àdínkù). Dájúdájú àríwòye wà nínú ìyẹn fún àwọn tó ní ojú ìríran."
     }
   },
   {
@@ -3058,7 +3074,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Nuti dhugumatti keeyyattoota ifa ta’an buufnee jirra. Rabbiin nama fedhe gara karaa qajeelaa qajeelcha.",
       "so": "Waxaan dhab ahaan soo dejinnay Aayado cad cad. Alle wuxuu ku hanuuniyaa cidduu doono Jid Toosan (Islaamka).",
       "ff": "Gooŋɗii Min njippinii Aayeeje ɓannguɗe, Alla no feewna on mo O muuyii fa'ade e Laawol Pocciingol ngol.",
-      "yo": "Dájúdájú A ti sọ àwọn āyah tó ń yanjú ọ̀rọ̀ kalẹ̀. Allāhu sì ń tọ́ ẹnikẹ́ni tí Ó bá fẹ́ sí ọ̀nà tààrà (’Islām)."
+      "yo": "Dájúdájú A ti sọ àwọn āyah tó ń yanjú ọ̀rọ̀ kalẹ̀. Allāhu sì ń tọ́ ẹnikẹ́ni tí Ó bá fẹ́ sí ọ̀nà tààrà (’Islām)."
     }
   },
   {
@@ -3126,7 +3142,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Samiilee keessatti buruuja taasisee ishee keessattis (biiftuu) ifaafi ji’a ibsaa taasise khayriin Isaa baay’ate.",
       "so": "Waxaa khayr iyo barako badan Kan 'Alle' ee u yeelay samada xiddigo waaweyn,    \n yeelayna dhexdeeda nal 'qorrax' iyo dayax ifiya.",
       "ff": "Mawnii oon baɗuɗo ka kammu burjuuji(buurti) o waɗi e ndeer majji pitilol e leelewal jalbungal.",
-      "yo": "Ìbùkún ni fún Ẹni tí Ó ṣe àwọn ibùsọ̀ ìràwọ̀ sínú sánmọ̀. Ó tún ṣe òòrùn àti òṣùpá ní ìmọ́lẹ̀ sínú rẹ̀."
+      "yo": "Ìbùkún ni fún Ẹni tí Ó ṣe àwọn ibùsọ̀ ìràwọ̀ sínú sánmọ̀. Ó tún ṣe òòrùn àti òṣùpá ní ìmọ́lẹ̀ sínú rẹ̀."
     }
   },
   {
@@ -3163,7 +3179,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Inni Isatu argaa, beekaadha.",
       "so": "Hubaal (Alle) waa wax kasta Maqlaha, wax kasta Ogsoon.",
       "ff": "Pellet, ko Kaŋko woni Nanoowo gannduɗo On.",
-      "yo": "Dájúdájú Òun mà ni Olùgbọ́, Onímọ̀."
+      "yo": "Dájúdájú Òun mà ni Olùgbọ́, Onímọ̀."
     }
   },
   {
@@ -3192,7 +3208,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እኛ ሌሊትን በእርሱ ውስጥ እንዲያርፉበት ቀንንም የሚያሳይ እንዳደረግን አያዩምን? ለሚያምኑ ሕዝቦች በዚህ ውስጥ ተዓምራቶች አሉበት፡፡",
       "om": "Sila isaan hinlaallee Akka nuti halkan yeroo isa keessa boqataniifi guyyaa immoo kan keessa arganii (hojjatan) isaaniif goone. Dhugumatti, kana keessa namoota amananiif mallattooleetu jira.",
       "so": "Mawaysan arkayn inaan uga yeelnay habeenka inay ku xasilaan, Maalintana iftiin? Hubaal, arrinkani waxaa ugu sugan calaamooyin ciddii rumeyn (Xaqa).",
-      "ff": "Enee, hara ɓe yiaani, Minen Min mbaɗii jemma on fii yo ɓe deeƴu e maako, e ñalawma on nji'irɗo? Pellet, wonii e ɗum Aayeeje wonan'de yimɓe gooŋɗinooɓe ɓen."
+      "ff": "Enee, hara ɓe yiaani, Minen Min mbaɗii jemma on fii yo ɓe deeƴu e maako, e ñalawma on nji'irɗo? Pellet, wonii e ɗum Aayeeje wonan'de yimɓe gooŋɗinooɓe ɓen.",
+      "yo": "Ṣé wọn kò wòye pé dájúdájú Àwa l’A dá òru nítorí kí wọ́n lè sinmi nínú rẹ̀, (A sì dá) ọ̀sán (nítorí kí wọ́n lè) ríran? Dájúdájú àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo."
     }
   },
   {
@@ -3226,7 +3243,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "በመልካም ሥራ የመጣ ሰው ለእርሱ ከእርስዋ የበለጠ ምንዳ አልለው፡፡ እነርሱም በዚያ ቀን ከድንጋጤ ጸጥተኞች ናቸው፡፡",
       "om": "Nama gaariin dhufe (dalage) mindaa ishee caalutu isaaf jira; isaan guyyaa san rifannaa irraa nagaa bahoodha.",
       "ff": "Mo ardii e moƴƴere nden haray no woodani mo ko ɓuri nde moƴƴude, hara kamɓe ko ɓe hooliiɓe immorde e ɗenƴere nden Ñande.",
-      "yo": "Ẹnikẹ́ni tí ó bá dé pẹ̀lú iṣẹ́ rere, tirẹ̀ ni rere tó lóore ju èyí tó ṣe. Àwọn sì ni olùfàyàbalẹ̀ nínú ìjáyà ọjọ́ yẹn."
+      "yo": "Ẹnikẹ́ni tí ó bá dé pẹ̀lú iṣẹ́ rere, tirẹ̀ ni rere tó lóore ju èyí tó ṣe. Àwọn sì ni olùfàyàbalẹ̀ nínú ìjáyà ọjọ́ yẹn."
     }
   },
   {
@@ -3260,7 +3277,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Ganda Aakhiraa san warra dachii keessatti ol aantummaafi badii [raawwachuu] hin feeneef ishee goona, Booddeen (gaariin) warra Rabbiin sodaataniifi.",
       "so": "Taasi ah Daarta Aakhiro (Jannada) waxaanu dhaxalsiin kuwa aan ku dooneyn sarreyn dhulka, aanna ku falin fasahaad. Cidhibta wanaagsanna waxaa leh kuwa iska jira'xumaha ee dhowra amarrada Alle\".",
       "ff": "Ɗen galle laakara, Min mbaɗanii ɗe ɓen ɓe yiɗaa townitaare ka leydi, wonaa kadi bonnugol. Battane moƴƴe ɗen, ko fii gooŋɗuɓe ɓen.",
-      "yo": "Ilé Ìkẹ́yìn yẹn, A máa fi fún àwọn tí kò fẹ́ máa ṣe ìgbéraga àti ìbàjẹ́ lórí ilẹ̀. Ìgbẹ̀yìn rere sì wà fún àwọn olùbẹ̀rù (Allāhu)."
+      "yo": "Ilé Ìkẹ́yìn yẹn, A máa fi fún àwọn tí kò fẹ́ máa ṣe ìgbéraga àti ìbàjẹ́ lórí ilẹ̀. Ìgbẹ̀yìn rere sì wà fún àwọn olùbẹ̀rù (Allāhu)."
     }
   },
   {
@@ -3297,7 +3314,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila namoonni “amanne” jechuudhaan odoo hin mokkoramin dhiifamuu yaaduu?",
       "so": "Ma waxay dadku moodaan in loogaga tegayo inay yidhaahdaan: “Waan rumeynay (Xaqa) iyagoo aan la imtixaameyn?",
       "ff": "E yimɓe ɓen cikku ɓe ngaccirte nii, fii ɓe wi'ii: \"Min ngooŋɗinii!\" Hara ɓe pitninaaka?",
-      "yo": "Ǹjẹ́ àwọn ènìyàn lérò pé A óò fi wọ́n sílẹ̀ kí wọ́n máa sọ pé: “A gbàgbọ́”, tí A ò sì níí dán wọn wò?"
+      "yo": "Ǹjẹ́ àwọn ènìyàn lérò pé A óò fi wọ́n sílẹ̀ kí wọ́n máa sọ pé: “A gbàgbọ́”, tí A ò sì níí dán wọn wò?"
     }
   },
   {
@@ -3331,7 +3348,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Namni qunnamtii Allaah kajeele (haa qophaawuu), dhugumatti beellamni Rabbii dhufaadha. Inni dhagayaa, beekaadhas.",
       "so": "Qofkii rajeyn la kulanka Alle, hubaal ajasha uu Alle (qoray) way imaan (ee ha isu diyaariyo). Alle waa wax kasta Maqlaha, wax kasta Ogsoonaha ah.",
       "ff": "Kala tawɗo homo njortii kawroygol e Alla, ko pellet, lajal Alla ngal, ko hewtaygal. Ko Kaŋko woni Nanoowo, nganduɗo on.",
-      "yo": "Ẹnikẹ́ni tí ó bá ń retí ìpàdé Allāhu, dájúdájú àkókò Allāhu kúkú ń bọ̀. Òun sì ni Olùgbọ́, Onímọ̀."
+      "yo": "Ẹnikẹ́ni tí ó bá ń retí ìpàdé Allāhu, dájúdájú àkókò Allāhu kúkú ń bọ̀. Òun sì ni Olùgbọ́, Onímọ̀."
     }
   },
   {
@@ -3366,7 +3383,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila isaan akka Rabbiin uumuu eegalee ergasii isa deebisu hin ilaalanuu? Sun Allaah irratti laafaadha.",
       "so": "Miyeyna u fiirsan sida Alle u billaaba abuuridda (uunka), haddana u soo celin? Hubaal arrinkaasi Alle wuu u fudud yahay.",
       "ff": "E ɓee yiaani no Alla fuɗɗorta tagoore ngum, refti o ndttat ngu? Pellet, ɗum wonii ko newanii Alla.",
-      "yo": "Tàbí wọn kò wòye sí bí Allāhu ti ṣe bẹ̀rẹ̀ ẹ̀dá ni? Lẹ́yìn náà, O máa dá a padà (sí ọ̀dọ̀ Rẹ̀). Dájúdájú ìyẹn rọrùn fún Allāhu."
+      "yo": "Tàbí wọn kò wòye sí bí Allāhu ti ṣe bẹ̀rẹ̀ ẹ̀dá ni? Lẹ́yìn náà, O máa dá a padà (sí ọ̀dọ̀ Rẹ̀). Dájúdájú ìyẹn rọrùn fún Allāhu."
     }
   },
   {
@@ -3393,7 +3410,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "የእነዚያ ከአላህ ሌላ ረዳቶችን (ጣዖታትን) የያዙ ሰዎች ምሳሌ ቤትን እንደ ሠራች ሸረሪት ብጤ ነው፡፡ ከቤቶችም ሁሉ በጣም ደካማው የሸረሪት ቤት ነው፡፡ ቢያውቁ ኖሮ (አማልክት አድርገው አይግገዟቸውም ነበር)፡፡",
       "om": "Fakkeenyi isaan Rabbii gaditti jaalalleewwan godhatanii (gabbaranii) akka birbirooftuu (saaphaphuu) mana ijaarratteeti. Dhugumatti irra laafaan manaa mana birbirooftuuti odoo kan beekan ta’anii.",
       "so": "Tusaalaha kuwa sameysta awliyo (ay caabudaan) Alle sokadi waa sida tusaalaha caadho taasoo yeelatay guri, waxaana ugu liita guryaha, guriga caadhada; hadday og yihiin.",
-      "ff": "Misal ɓen jogitiiɓe ga Alla deweteeɗi, ko wano marijaawowal(njomblo) saccungal suudu. Ko ɓuri lo'ode non e cuuɗi ɗin, ko suudu marijaawo. Sinno ɓe annduno!"
+      "ff": "Misal ɓen jogitiiɓe ga Alla deweteeɗi, ko wano marijaawowal(njomblo) saccungal suudu. Ko ɓuri lo'ode non e cuuɗi ɗin, ko suudu marijaawo. Sinno ɓe annduno!",
+      "yo": "Àpèjúwe àwọn tó mú àwọn (òrìṣà) ní alátìlẹ́yìn lẹ́yìn Allāhu, ó dà bí àpèjúwe aláǹtàakùn tí ó kọ́ ilé kan. Dájúdájú ilé tí ó yẹpẹrẹ jùlọ ni ilé aláǹtàakùn, tí wọ́n bá mọ̀."
     }
   },
   {
@@ -3429,7 +3447,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin samiifi dachii dhugaan uume. sana keessa mu’uminootaaf mallattootu jira.",
       "so": "Alle wuxuu u abuuray samooyinka iyo arlada Xaq. Hubaal, arrinkani waxaa ugu sugan calaamo mu'miniinta.",
       "ff": "Alla tagirii kammuuli ɗin e leydi ndin, e hoore goonga. Pellet, wonii ɗum, Ma'ande, wonan'de gooŋɗinɓe ɓen.",
-      "yo": "Allāhu ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ pẹ̀lú òdodo. Dájúdájú àmì kan wà nínú ìyẹn fún àwọn onígbàgbọ́ òdodo."
+      "yo": "Allāhu ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ pẹ̀lú òdodo. Dájúdájú àmì kan wà nínú ìyẹn fún àwọn onígbàgbọ́ òdodo."
     }
   },
   {
@@ -3463,7 +3481,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "“Yaa gabroota kiyya warra amantan! Dachiin tiyya bal’oodhaa, Anuma qofa gabbaraa.”",
       "so": "Addoomahayga (Xaqa) rumeeyow! dhulkaygu wuu ballaaran yahaye, ee Anigoo (Keliya) i caabuda.",
       "ff": "Eey mon jiyaaɓe Am gooɗinɓe! Nganndee leydi Am ndin ko yaajundi. Ko Min ngoni ko ndewoton!",
-      "yo": "Ẹ̀yin ẹrúsìn Mi, tí ẹ gbàgbọ́ ní òdodo, dájúdájú ilẹ̀ Mi gbòòrò. Nítorí náà, Èmi nìkan ni kí ẹ jọ́sìn fún."
+      "yo": "Ẹ̀yin ẹrúsìn Mi, tí ẹ gbàgbọ́ ní òdodo, dájúdájú ilẹ̀ Mi gbòòrò. Nítorí náà, Èmi nìkan ni kí ẹ jọ́sìn fún."
     }
   },
   {
@@ -3499,7 +3517,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Lubbuun hunduu du’a dhandhamtuudha. eegasii gara keenyatti deebifamtu.",
       "so": "Naf walbaa waa tii dhadhamisa geeri. Xaggayagaana la idiin soo celin.",
       "ff": "Kala woŋkii meeɗay maayde. refti ko ka Amen ndutteteɗon.",
-      "yo": "Gbogbo ẹ̀mí l’ó máa tọ́ ikú wò. Lẹ́yìn náà, ọ̀dọ̀ Wa ni wọn yóò da yín padà sí."
+      "yo": "Gbogbo ẹ̀mí l’ó máa tọ́ ikú wò. Lẹ́yìn náà, ọ̀dọ̀ Wa ni wọn yóò da yín padà sí."
     }
   },
   {
@@ -3537,7 +3555,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin gabroota Isaa irraa nama fedheef hiree ni bal’isa. (Nama fedhe immoo) isatti dhiphisa. Dhugumatti, Rabbiin waan hunda beekaadha.",
       "so": "Alle wuxuu u waasiciyaa risiqa kuu doono ee ka mid ah addoomahiisa, oo ku cidhiidhiyaa (kuu doono). Hubaal, Alle wax walba wuu Ogsoon yahay.",
       "ff": "Alla no yaacnana arsike on mo o muuyi e jiyaaɓe makko ɓen, Homo ɓittana mo. Pellet, Alla ko gannduɗo kala hu'unde.",
-      "yo": "Allāhu l’Ó ń tẹ́ ọrọ̀ sílẹ̀ fún ẹni tí Ó bá fẹ́ nínú àwọn ẹrúsìn Rẹ̀. Ó sì ń díwọ̀n rẹ̀ fún ẹlòmíìràn. Dájúdájú Allāhu ni Onímọ̀ nípa gbogbo n̄ǹkan."
+      "yo": "Allāhu l’Ó ń tẹ́ ọrọ̀ sílẹ̀ fún ẹni tí Ó bá fẹ́ nínú àwọn ẹrúsìn Rẹ̀. Ó sì ń díwọ̀n rẹ̀ fún ẹlòmíìràn. Dájúdájú Allāhu ni Onímọ̀ nípa gbogbo n̄ǹkan."
     }
   },
   {
@@ -3573,7 +3591,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin uuminsa ni jalqaba, Eegasii isa ni deebisa. Sana booda gara Isaa deebifamtu.",
       "so": "Alle baa billaabay uunka, haddana dib u soo nooleyn (dhimasho kaddib), Xaggiisaana la idiin soo celin.",
       "ff": "Ko Alla fuɗɗi tagoore nde; refti o rutta nde; refti ko ka makko rutteteɗon.",
-      "yo": "Allāhu ń pilẹ̀ ẹ̀dá dídá. Lẹ́yìn náà, O máa dá a padà (sípò alààyè). Lẹ́yìn náà, ọ̀dọ̀ Rẹ̀ ni wọn yóò da yín padà sí."
+      "yo": "Allāhu ń pilẹ̀ ẹ̀dá dídá. Lẹ́yìn náà, O máa dá a padà (sípò alààyè). Lẹ́yìn náà, ọ̀dọ̀ Rẹ̀ ni wọn yóò da yín padà sí."
     }
   },
   {
@@ -3611,7 +3629,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wantoonni samiileefi dachii keessa jiran (hundi) kan Allaahti. Rabbiin Isatu dureessa, faarfamaadha.",
       "so": "Alle baa iska leh waxa ku sugan samooyinka iyo arlada. Hubaal, Alle waa Hodan Deeqtoon, Ammaanan.",
       "ff": "Ko Alla woodani kala ko woni kammuuji e ka leydi. Pellet, Alla, ko Kaŋko woni Galo, jettiniiɗo.",
-      "yo": "Ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Dájúdájú Allāhu, Òun ni Ọlọ́rọ̀, Ẹlẹ́yìn."
+      "yo": "Ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Dájúdájú Allāhu, Òun ni Ọlọ́rọ̀, Ẹlẹ́yìn."
     }
   },
   {
@@ -3680,7 +3698,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Waan tokko yoo mul'iftan, yookiin yoo isa dhoksitan (irratti galata galfamtan) Rabbiin waan hunda beekaa ta’eera.",
       "so": "Haddaad muujisaan wax ama qarisaan, hubaal Alle wax walba wuu Og yahay.",
       "ff": "Si on peññinii hu'unde, maa on cuuɗii nde, pellet, Alla laatike gannduɗo kala hu'unde.",
-      "yo": "Tí ẹ bá ṣàfi hàn kiní kan tàbí ẹ fi pamọ́, dájúdájú Allāhu ń jẹ́ Onímọ̀ nípa gbogbo n̄ǹkan."
+      "yo": "Tí ẹ bá ṣàfi hàn kiní kan tàbí ẹ fi pamọ́, dájúdájú Allāhu ń jẹ́ Onímọ̀ nípa gbogbo n̄ǹkan."
     }
   },
   {
@@ -3749,7 +3767,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Rabbiin sodaadhaa; jecha sirrii dubbadhaa.",
       "so": "Kuwa (Xaqa) rumeeyow! Alle ka cabsada (oo dhowra amarradiisa) kuna hadla hadal toosan (oo run ah).",
       "ff": "Eey mon yo ɓen gooŋɗinɓe! Kulee Alla, wowlon konngol peewungol.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu. Kí ẹ sì sọ ọ̀rọ̀ déédé."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu. Kí ẹ sì sọ ọ̀rọ̀ déédé."
     }
   },
   {
@@ -3783,7 +3801,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "በምድር ውስጥ የሚገባውን ሁሉ ከእርሷም የሚወጣውን ከሰማይም የሚወርደውን በእርሷም ውስጥ የሚያርገውን ሁሉ ያውቃል፡፡ እርሱም አዛኙ መሓሪው ነው፡፡",
       "om": "Inni waan dachii keessa seenu, waan ishee irraa bahu, waan samii irraa bu’uufi waan ishee keessa ol ba’us ni beeka. Inni mararfataa, araaramaadha.",
       "so": "Wuxuu Ogyahay waxa gala arlada iyo waxa ka soo baxa iyo waxa ka soo dega samada iyo waxa kor ugu baxa. Waana Naxariis Badanaha, Denbi Dhaafka Badan.",
-      "ff": "Homo anndi ko naatata ka leydi, e ko yaltata e mayri, ko jippotoo iwra ka kammu e ko ƴawata e maggu. Ko Kaŋko woni jurmotooɗo otoo, jaafoto."
+      "ff": "Homo anndi ko naatata ka leydi, e ko yaltata e mayri, ko jippotoo iwra ka kammu e ko ƴawata e maggu. Ko Kaŋko woni jurmotooɗo otoo, jaafoto.",
+      "yo": "Ó mọ ohunkóhun tó ń wọnú ilẹ̀ àti ohunkóhun tó ń jáde látinú rẹ̀. (Ó mọ) ohunkóhun tó ń sọ̀kalẹ̀ látinú sánmọ̀ àti ohunkóhun tó ń gùnkè lọ sínú rẹ̀. Òun sì ni Àṣàkẹ́-ọ̀run, Aláforíjìn."
     }
   },
   {
@@ -3848,7 +3867,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa namootaa! Dhugumatti, waadaan Allaah dhugaadha. Kanaafu jireenyi addunyaa akka isin hin gowwoomsine. Gowwoomsaan (Sheyxaanni) (obsa) Rabbiitiin akka isin hin gowwoomsine.",
       "so": "Dadow! Hubaal Ballanka Alle waa Xaq. Ee yeysan idin hodin noloshan soke ee adduunka, yuusanna kan hodista badan (shaydaanka) idinka hodin arrinka Alle.",
       "ff": "Eey mon yo yimɓe! Ngandee pellet fodoore Alla nden ko goonga. Wota nguurndam aduna hodu on, wota (seytaane) kodoowo on hod on e fii Alla.",
-      "yo": "Ẹ̀yin ènìyàn, dájúdájú àdéhùn Allāhu ni òdodo. Ẹ má ṣe jẹ́ kí ìṣẹ̀mí ayé tàn yín jẹ. Kí ẹ sì má ṣe jẹ́ kí (aṣ-ṣaetọ̄n) ẹlẹ́tàn tàn yín jẹ."
+      "yo": "Ẹ̀yin ènìyàn, dájúdájú àdéhùn Allāhu ni òdodo. Ẹ má ṣe jẹ́ kí ìṣẹ̀mí ayé tàn yín jẹ. Kí ẹ sì má ṣe jẹ́ kí (aṣ-ṣaetọ̄n) ẹlẹ́tàn tàn yín jẹ."
     }
   },
   {
@@ -3885,7 +3904,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sheyxaanni isiniif diinaa, isinis diina isa godhaa. Gareewwan isaas akka warra ibidda boba’aa (seenu) ta’aniif isaan waama.",
       "so": "Xaqiiq, shaydaanku wuxuu idiin yahay cadow, ee idinkuna ka yeesha cadow. Wuxuu uun ugu yeedhaa Xisbigiisa inay ka mid noqdaan asxaabta Naarta hureysa.",
       "ff": "Pellet, seytaane ko gaño wonani on. Haray njogitoree mo gaño. Nganndee ko o noddirta fedde makko nden, ko no ɓe jeydiree e yimɓe dulɓoowe ngen.",
-      "yo": "Dájúdájú aṣ-ṣaetọ̄n ni ọ̀tá fún yín. Nítorí náà, ẹ mú un ní ọ̀tá. Ó kàn ń pe àwọn ìjọ rẹ̀ nítorí kí wọ́n lè jẹ́ èrò inú Iná tó ń jó."
+      "yo": "Dájúdájú aṣ-ṣaetọ̄n ni ọ̀tá fún yín. Nítorí náà, ẹ mú un ní ọ̀tá. Ó kàn ń pe àwọn ìjọ rẹ̀ nítorí kí wọ́n lè jẹ́ èrò inú Iná tó ń jó."
     }
   },
   {
@@ -3922,7 +3941,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa namootaa! Isin gara Allaahtti haajamoodha; Allaahn Isumatu dureessa, faarfamaadha.",
       "so": "Dadow! Idinka weeye kuwa u baahan Alle. Alle waa Hodanka, Ammaanan.",
       "ff": "Eey mon yo yimɓe, ko onon ngoni hatonjimɓe e Alla ɓen, Alla kan, ko Kaŋko woni Galo jettiniiɗo On.",
-      "yo": "Ẹ̀yin ènìyàn, ẹ̀yin ni aláìní (tí ẹ ní bùkátà) sí Allāhu. Allāhu, Òun ni Ọlọ́rọ̀, Ẹlẹ́yìn."
+      "yo": "Ẹ̀yin ènìyàn, ẹ̀yin ni aláìní (tí ẹ ní bùkátà) sí Allāhu. Allāhu, Òun ni Ọlọ́rọ̀, Ẹlẹ́yìn."
     }
   },
   {
@@ -3959,7 +3978,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yoo fedhe isin (dachii irraa) deemsiseeti uumama haaraa fida.",
       "so": "Hadduu doono, wuu idin tegsiin, oo keeni uun cusub.",
       "ff": "Si O yiɗii, o naɓa on, o adda tagu hesu.",
-      "yo": "Tí Ó bá fẹ́, Ó máa mu yín kúrò lórí ilẹ̀. Ó sì máa mú ẹ̀dá titun wá."
+      "yo": "Tí Ó bá fẹ́, Ó máa mu yín kúrò lórí ilẹ̀. Ó sì máa mú ẹ̀dá titun wá."
     }
   },
   {
@@ -4015,7 +4034,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Rabbiin beekaa fagoo samiifi dachiiti. Inni beekaa wantoota qoma keessa jiraniiti.",
       "so": "Hubaal, Alle waa Ogsoonaha waxa ku qarsoon aan muuqan cirarka iyo dhulka gudahooda. Hubaal waa Isaga Ogsoonaha waxa ku jira laabaha (dadka).",
       "ff": "Pellet, Alla ko gannduɗo wirniiɗi kammuuji ɗin e leydi ndin. Ko O gannduɗo ko suuɗii e ɓerɗe.",
-      "yo": "Dájúdájú Allāhu ni Onímọ̀-ìkọ̀kọ̀ àwọn sánmọ̀ àti ilẹ̀. Dájúdájú Òun ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
+      "yo": "Dájúdájú Allāhu ni Onímọ̀-ìkọ̀kọ̀ àwọn sánmọ̀ àti ilẹ̀. Dájúdájú Òun ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
     }
   },
   {
@@ -4045,7 +4064,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እኛ ሙታንን እኛ በእርግጥ ሕያው እናደርጋለን፡፡ ያስቀደሙትንም ሥራ ፈለጎቻቸውንም እንጽፋለን፡፡ ነገሩንም ሁሉ ገላጭ መሪ በኾነ መጽሐፍ ውስጥ አጠቃለልነው፡፡",
       "om": "Nuti numatu du’aa jiraachifna. Waan isaan hojjatanii dabarsaniifi hambaalee isaanii ni barreessina. Waan hundayyuu kitaaba ifa bahaa keessatti galmeessinee jirra.",
       "ff": "Ko Minen ngoni wuurnitooɓe maayɓe ɓen, Min mbinnda ko ɓe ngardini e batteeji maɓɓe. Kala hu'unde, Miɗen mofti nde e deftere ɓanngunde.",
-      "yo": "Dájúdájú Àwa l’À ń sọ àwọn òkú di alàyè. A sì ń ṣe àkọsílẹ̀ ohun tí wọ́n tì síwájú àti orípa (iṣẹ́ ọwọ́) wọn. Gbogbo n̄ǹkan ni A ṣe àkọsílẹ̀ rẹ̀ sínú tírà kan tó yanjú."
+      "yo": "Dájúdájú Àwa l’À ń sọ àwọn òkú di alàyè. A sì ń ṣe àkọsílẹ̀ ohun tí wọ́n tì síwájú àti orípa (iṣẹ́ ọwọ́) wọn. Gbogbo n̄ǹkan ni A ṣe àkọsílẹ̀ rẹ̀ sínú tírà kan tó yanjú."
     }
   },
   {
@@ -4082,7 +4101,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Aduun baatii dhaqqabuun isheef hin ta’u; halkanis guyyaa hin dursu, Hunduu sarara keessa (daaku).",
       "so": "Looma oggola qorraxda inay haleesho dayaxa, habeenkuna ma ka hor maro maalinta. Dhammaan waxay ku dabaashaan mareeg (garangar) dhexdi.",
       "ff": "Wonaa na'ange ngen woni ko haanini hewtitagol lewru ndun, wonaa jemma on woni ko aditotoo ñalaema on; kala majji non, ko e laawol mum woni dokde.",
-      "yo": "Kò yẹ fún òòrùn láti lo àsìkò òṣùpá. Kò sì yẹ fún alẹ́ láti lo àsìkò ọ̀sán. Ìkọ̀ọ̀kan wà ní òpópónà róbótó tó ń tọ̀."
+      "yo": "Kò yẹ fún òòrùn láti lo àsìkò òṣùpá. Kò sì yẹ fún alẹ́ láti lo àsìkò ọ̀sán. Ìkọ̀ọ̀kan wà ní òpópónà róbótó tó ń tọ̀."
     }
   },
   {
@@ -4118,7 +4137,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ያ ሰማያትንና ምድርን የፈጠረ ብጤያቸውን በመፍጠር ላይ ቻይ አይደለምን? ነው እንጅ እርሱም በብዙ ፈጣሪው ዐዋቂው ነው፡፡",
       "om": "Sila Inni samiileefi dachii uume fakkaataa isaanii uumuu irratti danda’aa mitii? Eeyyeen (danda’aa dha!) Inni akkaan uumaadha, akkaan beekaadha.",
       "ff": "Kere takɗo kammuuji ɗin e leydi ndin wonaani kaɗtanɗo tagugol yeru maɓɓe? Ɗuum ko pellet! Ko Kaŋko woni Ɗuuɗuɗo tageefo, gannduɗo.",
-      "yo": "Ǹjẹ́ Ẹni tí Ó ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ kò ní agbára láti dá irú wọn (mìíràn) bí? Bẹ́ẹ̀ ni (Ó ní agbára). Òun sì ni Ẹlẹ́dàá, Onímọ̀."
+      "yo": "Ǹjẹ́ Ẹni tí Ó ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ kò ní agbára láti dá irú wọn (mìíràn) bí? Bẹ́ẹ̀ ni (Ó ní agbára). Òun sì ni Ẹlẹ́dàá, Onímọ̀."
     }
   },
   {
@@ -4156,7 +4175,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Ajajni Isaa, yoo waan tokko fedhe “tahi” isaan jechuma qofa; yoosuu taha.",
       "so": "Amarkiisu markuu doono wax uun, waa inuu keliya ku yidhaahdo: Ahaw, waana yahay.",
       "ff": "Ganndon fiyaaku makko on, si o faandanike hu'unde, ko o wi'anat nde tan: \"Laato\", nde laatoo.",
-      "yo": "Àṣẹ Rẹ̀ nígbà tí Ó bá gbèrò kiní kan ni pé, Ó máa sọ fún un pé “Jẹ́ bẹ́ẹ̀.” Ó sì máa jẹ́ bẹ́ẹ̀."
+      "yo": "Àṣẹ Rẹ̀ nígbà tí Ó bá gbèrò kiní kan ni pé, Ó máa sọ fún un pé “Jẹ́ bẹ́ẹ̀.” Ó sì máa jẹ́ bẹ́ẹ̀."
     }
   },
   {
@@ -4194,7 +4213,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Goftaan kee, Gooftaan injifannaa, waan isaan jedhaniin irraa qulqullaa’e.",
       "so": "Xurmo oo dhan waxaa iska leh oo (xumaan ka) hufan Rabbigaa (Allaah), Rabbiga Sharafta leh, ka sarreeya waxay (gaaladu) ku tilmaamaan (sida inuu leeyahay wiil, gabdho, xaas, iwm).",
       "ff": "Senaare woodanii Joomi maa, Jeyɗo teddungal, e  ko ɓe cifotoo !",
-      "yo": "Mímọ́ ni fún Olúwa rẹ, Olúwa (tó ni) agbára, tayọ ohun tí wọ́n ń fi ròyìn (Rẹ̀)."
+      "yo": "Mímọ́ ni fún Olúwa rẹ, Olúwa (tó ni) agbára, tayọ ohun tí wọ́n ń fi ròyìn (Rẹ̀)."
     }
   },
   {
@@ -4228,7 +4247,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ ሲሳዩን ለሚሻው ሰው የሚያሰፋ የሚያጠብም መኾኑን አያውቁምን? በዚህ ውስጥ ለሚያምኑት ሕዝቦች ግሣጼዎች አሉበት፡፡",
       "om": "Sila akka Rabbiin nama fedheef kenna bal’isee, (kan fedhetti immoo) dhiphisu hin beekanuu? Dhugumatti, kana keessa ummata amananiif mallattooleetu jira.",
       "so": "Miyeyna ogeyn inuu Alle u fidiyo risiqa cidduu doono, oo ku cidhiidhiyo (cidduu doono). Arrinkani waxaa ugu sugan calaamooyin ciddii rumeyn.",
-      "ff": "E ɓe nganndaa won'de Allah no yaññana arsike on mo o muuyani, O ɓillina [mo o muuyani]? Pellet, Ma'andeeji ngonii e ɗum, wona nde yimɓe gooŋɗinooɓe."
+      "ff": "E ɓe nganndaa won'de Allah no yaññana arsike on mo o muuyani, O ɓillina [mo o muuyani]? Pellet, Ma'andeeji ngonii e ɗum, wona nde yimɓe gooŋɗinooɓe.",
+      "yo": "Ṣé wọn kò mọ̀ pé dájúdájú Allāhu l’Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú àwọn àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo."
     }
   },
   {
@@ -4266,7 +4286,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin uumaa waan hundaati. Inni waan hunda irrattis tiksaadha.",
       "so": "Alle waa abuuraha wax walba, wax walbana Isagaa talada u haya oo maamula.",
       "ff": "Ko Allah woni Takɗo kala hu'unde, ko Kaŋko kadi woni pawtiiɗo kala hu'unde.",
-      "yo": "Allāhu ni Ẹlẹ́dàá gbogbo n̄ǹkan. Òun sì ni Olùṣọ́ lórí gbogbo n̄ǹkan."
+      "yo": "Allāhu ni Ẹlẹ́dàá gbogbo n̄ǹkan. Òun sì ni Olùṣọ́ lórí gbogbo n̄ǹkan."
     }
   },
   {
@@ -4301,7 +4321,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Furtuuwwan samiileefii dachii kan Isaati. Isaan keeyyattoota Rabbiitti kafaran, isaan sun hoonga’oon isaanuma.",
       "so": "Isagaa iska leh khaznadaha samooyinka iyo arlada. Kuwana ku gaalooba Aayadaha Alle, kuwaa weeye kuwa khasaaray.",
       "ff": "Ko Kaŋko sottirɗe kammuuji ɗin e leydi ndin woodani. Yedduɓe aayeeje Allah ɓeen non, ko ɓen ngoni hayruɓe(pertuɓe) ɓen.",
-      "yo": "TiRẹ̀ ni àwọn kọ́kọ́rọ́ ilé-ọ̀rọ̀ àwọn sánmọ̀ àti ilẹ̀. Àwọn tó ṣàì gbàgbọ́ nínú àwọn āyah Allāhu, àwọn wọ̀nyẹn, àwọn ni ẹni òfò."
+      "yo": "TiRẹ̀ ni àwọn kọ́kọ́rọ́ ilé-ọ̀rọ̀ àwọn sánmọ̀ àti ilẹ̀. Àwọn tó ṣàì gbàgbọ́ nínú àwọn āyah Allāhu, àwọn wọ̀nyẹn, àwọn ni ẹni òfò."
     }
   },
   {
@@ -4375,7 +4395,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa ummata kiyya! Jiruun addunyaa tun qananii (yerooti). Aakhiraan isheetu ganda qubannaati.",
       "so": "Tolkayow! Noloshan Adduunka waa uun raaxo (yar oo tageysa), Aakhiradaana ah Daarta negaadiga.",
       "ff": "Eey mon yo yimɓe am, nganndee ɗam nguurndam aduna, ko ndakamme-hun tun, ko La'akara on woni, galle ñiiɓal ɗen.",
-      "yo": "Ẹ̀yin ènìyàn mi, ìgbádùn lásán ni ìṣẹ̀mí ilé ayé yìí. Dájúdájú ọ̀run sì ni ilé gbére."
+      "yo": "Ẹ̀yin ènìyàn mi, ìgbádùn lásán ni ìṣẹ̀mí ilé ayé yìí. Dájúdájú ọ̀run sì ni ilé gbére."
     }
   },
   {
@@ -4409,7 +4429,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Samiifi dachii uumuutu namaa uumuu irra guddaadha. Garuu irra hedduun namootaa hin beekanu.",
       "so": "Abuuridda samooyinka iyo arlada baa xaqiiq ka weyn abuuridda dadka, laakiinse dadka badankiisu ma oga.",
       "ff": "Pellet, ko takde kammuuji ɗin e leydi ndin, ɓuri mawnude e dii tageendi yimɓe ɓeen. Kono ko ɓuri ɗuuɗude e yimɓe ɓen, ɓe nganndaa.",
-      "yo": "Dájúdájú ìṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ tóbi ju ìṣẹ̀dá àwọn ènìyàn; ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ àwọn ènìyàn ni kò mọ̀."
+      "yo": "Dájúdájú ìṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ tóbi ju ìṣẹ̀dá àwọn ènìyàn; ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ àwọn ènìyàn ni kò mọ̀."
     }
   },
   {
@@ -4447,7 +4467,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Qiyaamaan dhuftuudha; ishee keessa mamiin hin jiru. Garuu irra hedduun namootaa hin amananu.",
       "so": "Hubaal Saacadda (Qiyaame) waa imaanaysaa, shaki kuma jiro, dadka badankiisuse ma ay rumaysna.",
       "ff": "Pellet, Darnga, ko ko arata, sikke alaa e mu'um. Kono ko ɓuri ɗuuɗude e yimɓe ɓeen, ɓe ngoŋɗinaa.",
-      "yo": "Dájúdájú Àkókò náà ń bọ̀, kò sì sí iyèméjì nínú rẹ̀. Ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ àwọn ènìyàn ni kò gbàgbọ́."
+      "yo": "Dájúdájú Àkókò náà ń bọ̀, kò sì sí iyèméjì nínú rẹ̀. Ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ àwọn ènìyàn ni kò gbàgbọ́."
     }
   },
   {
@@ -4483,7 +4503,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ይሃችሁ ጌታችሁ አላህ ነው፤ የነገሩ ሁሉ ፈጣሪ ነው፤ ከርሱ ሌላ አምላክ የለም፤ ታዲያ (ከእምነት) ወዴት ትመለሳላችሁ፡፡",
       "om": "(Inni kana isiniif godhe) kun Allaah, Gooftaa keessani; Uumoo waan hundaati. Isa malee haqaan gabbaramaan hin jiru. Akkamitti irraa gara galfamtan?",
       "so": "Kaasi waa Allaah, Rabbigiin, Abuuraha wax walba, Ma jiro ilaah (Xaq ah) aan Isaga ahayn. ee xaggee baa la idiinka iilay?",
-      "ff": "Ko oon mooɗon Allah Joomi mon, woni Takɗo kala huunde. Reweteeɗo alaa, si wanaa Kaŋko. Ko honno pirlitortaɗon (e ɗuum?)"
+      "ff": "Ko oon mooɗon Allah Joomi mon, woni Takɗo kala huunde. Reweteeɗo alaa, si wanaa Kaŋko. Ko honno pirlitortaɗon (e ɗuum?)",
+      "yo": "Ìyẹn ni Allāhu, Olúwa yín, Ẹlẹ́dàá gbogbo n̄ǹkan. Kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Nítorí náà, báwo ni wọ́n ṣe ń ṣẹ yín lórí kúrò níbi òdodo?"
     }
   },
   {
@@ -4521,7 +4542,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isaan amananii, toltuuwwan hojjatan isaaniif mindaa adda hin cinnetu jira.",
       "so": "Hubaal, kuwa (Xaqa) rumeysan oo samaha fala. Waxay leeyihiin abaal gud aan go’eynin (Janno).",
       "ff": "Pellet, ɓeen gooŋɗiinɓe ɓe ngolli moƴƴi ɗin, hino woodani ɓe njoɓdi ndi taƴondirtaa.",
-      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, ẹ̀san tí kò níí pẹ̀dín tí kò níí dáwọ́ dúró ń bẹ fún wọn."
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, ẹ̀san tí kò níí pẹ̀dín tí kò níí dáwọ́ dúró ń bẹ fún wọn."
     }
   },
   {
@@ -4556,7 +4577,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Namni toltuu hojjate lubbuu isaatiifi. Namni hammaates isimarratti. Gooftaan kee gabroota miidhaa hintaane.",
       "so": "Qofkii sama fala naftiisay (dan) u tahay, kii xumaan falana isagay u daran tahay, Rabbigaa ma aha mid dulmiya addoomaha.",
       "ff": "Kala golluɗo ko moƴƴi, ko fii hoore-makko; kala kadi bonnuɗo, yantat e makko. Joomi maa ciforaani won'de, tooñoowo jiyaaɓe ɓen.",
-      "yo": "Ẹnikẹ́ni tí ó bá ṣe iṣẹ́ rere, ó ṣe é fún ẹ̀mí ara rẹ̀. Ẹnikẹ́ni tí ó bá sì ṣe aburú, ó ṣe é fún ẹ̀mí ara rẹ̀. Olúwa rẹ kò sì níí ṣe àbòsí sí àwọn ẹrúsìn."
+      "yo": "Ẹnikẹ́ni tí ó bá ṣe iṣẹ́ rere, ó ṣe é fún ẹ̀mí ara rẹ̀. Ẹnikẹ́ni tí ó bá sì ṣe aburú, ó ṣe é fún ẹ̀mí ara rẹ̀. Olúwa rẹ kò sì níí ṣe àbòsí sí àwọn ẹrúsìn."
     }
   },
   {
@@ -4589,7 +4610,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "የሰማያትና የምድር (ድልቦች) መከፈቻዎች የእርሱ ናቸው፡፡ ሲሳይን ለሚሻው ሰው ያሰፋል፤ ያጠባልም፡፡ እርሱ ነገሩን ሁሉ ዐዋቂ ነውና፡፡",
       "om": "Furtuuleen samiileefi dachii isaaf taate. Nama fedheef hiree bal’isa; (kan fedhe immoo itti) dhiphisa. Inni waan hunda beekaadha.",
       "so": "(Alle) baa iska leh khaznadaha samooyinka iyo arlada, wuxuu u waasiciyaa risiqa qofkuu doono oo ku cidhiidhiyaa (qofkuu doono), wax walbana (Alle) wuu Og yahay.",
-      "ff": "Ko Kaŋko heerori soktirɗe kammuuji ɗiin e leydi ndin. Homo weertana arsike on mo o muuyani, O ɓiɗtinana (mo O muuyani). Pellet, ko O gannduɗo kala hu'unde."
+      "ff": "Ko Kaŋko heerori soktirɗe kammuuji ɗiin e leydi ndin. Homo weertana arsike on mo o muuyani, O ɓiɗtinana (mo O muuyani). Pellet, ko O gannduɗo kala hu'unde.",
+      "yo": "TiRẹ̀ ni àwọn kọ́kọ́rọ́ ilé ọ̀rọ̀ àwọn sánmọ̀ àti ilẹ̀. Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú Òun ni Onímọ̀ nípa gbogbo n̄ǹkan."
     }
   },
   {
@@ -4659,7 +4681,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Nuti Qur’aana Arabiffaa isa taasifne Akka isin hubattaniif.",
       "so": "Hubaal Annagaa (Alle ah) ka yeellay Qur’aan af Carabi ah, si aad u fahantaan.",
       "ff": "Min maɗii nde janngeteende [e ɗemngal] aarabu, mbelajo'o, on kaqqilay.",
-      "yo": "Dájúdájú Àwa se é ní al-Ƙur’ān (n̄ǹkan kíké) ní èdè Lárúbáwá nítorí kí ẹ lè ṣe làákàyè."
+      "yo": "Dájúdájú Àwa se é ní al-Ƙur’ān (n̄ǹkan kíké) ní èdè Lárúbáwá nítorí kí ẹ lè ṣe làákàyè."
     }
   },
   {
@@ -4697,7 +4719,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin samiileefi dachii, Gooftaan arshii waan isaan ittiin (Isa) wassafan (ibsan) irraa qulqullaa’eera.",
       "so": "Waxaa xurmo oo dhan iska leh (Allaah) Rabbiga samooyinka iyo arlada, Rabbiga Carshiga, oo ka hufan waxay ku tilmaamaan.",
       "ff": "Senaare woodanii Jeyɗo kammuuji ɗin e leydi ndin, Jeyɗo Arsi kin; laaɓuɗo e kon ko ɓe cifrotta mo.",
-      "yo": "Mímọ́ ni fún Olúwa àwọn sánmọ̀ àti ilẹ̀, Olúwa Ìtẹ́-ọlá tayọ irọ́ tí wọ́n ń pa (mọ́ Ọn)."
+      "yo": "Mímọ́ ni fún Olúwa àwọn sánmọ̀ àti ilẹ̀, Olúwa Ìtẹ́-ọlá tayọ irọ́ tí wọ́n ń pa (mọ́ Ọn)."
     }
   },
   {
@@ -4735,7 +4757,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isa malee dhugaan gabbaramaan hin jiru. Ni jiraachisa; ni ajjeessas. (Inni) Gooftaa keessaniifi Gooftaa abbootii keessan kanneen duraati.",
       "so": "Ma jiro ilaah (Xaq lagu caabudo) aan Isaga aheyn, Waa isaga Kan bixiya nolol, oo sababa dhimasho, waa Rabbigiin iyo Rabbiga aabbayaashiinnii hore.",
       "ff": "Deweteeɗo goo alaa, si wanaa Kaŋko. Homo wuurna, Himo wara. Jeyɗo on Jeyi baabiraaɓe mon aramɓe ɓeen.",
-      "yo": "Kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Olúwa yín àti Olúwa àwọn bàbá yín, àwọn ẹni àkọ́kọ́."
+      "yo": "Kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Olúwa yín àti Olúwa àwọn bàbá yín, àwọn ẹni àkọ́kọ́."
     }
   },
   {
@@ -4772,7 +4794,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Samiileefi dachii keessa Dhugumatti mu’uminootaaf mallattooleetu jira.",
       "so": "Xaqiiq, waxaa samooyinka iyo arlada ugu sugan calaamooyin mu’miniinta.",
       "ff": "Pellet, hino e tagugol kammuuji ɗiin e leydi ndin, Ma'andeeji wonan'de gooŋɗinɓe ɓeen.",
-      "yo": "Dájúdájú nínú àwọn sánmọ̀ àti ilẹ̀ àwọn àmì wà (nínú wọn) fún àwọn onígbàgbọ́ òdodo."
+      "yo": "Dájúdájú nínú àwọn sánmọ̀ àti ilẹ̀ àwọn àmì wà (nínú wọn) fún àwọn onígbàgbọ́ òdodo."
     }
   },
   {
@@ -4807,7 +4829,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ ያ ባሕርን በውስጡ ታንኳዎች በፈቃዱ እንዲንሻለሉበት ከችሮታውም እንድትፈልጉበት እንድታመሰግኑትም ለእናነተ የገራላችሁ ነው፡፡",
       "om": "Rabbiin Isa galaana isiniif laaffise sani akka dooniwwan ajaja Isaatiin isa keessa deemtu, akka tola Isaa irraa barbaaddattaniif, akka Isa galateeffattaniif.",
       "so": "Alle waa Kan idiin sakhiray badda, si ay ugu socdaan Doonyuhu dhexdeeda Amarkiisa, iyo si aad u raadsataan Deeqdiisa, iyo inaad ku mahdisaan.",
-      "ff": "Ko Alla oon woni ko eeltanta mon maaya ngam laaɗe ndoga e hengo e dow yamiroore makko, ngam ɗaɓɓon e ɓural makko e yaama joo njetton."
+      "ff": "Ko Alla oon woni ko eeltanta mon maaya ngam laaɗe ndoga e hengo e dow yamiroore makko, ngam ɗaɓɓon e ɓural makko e yaama joo njetton.",
+      "yo": "Allāhu ni Ẹni tí Ó rọ agbami odò fún yín nítorí kí àwọn ọkọ̀ ojú-omi lè rìn nínú rẹ̀ pẹ̀lú àṣẹ Rẹ̀ àti nítorí kí ẹ tún lè wá nínú oore Rẹ̀ àti nítorí kí ẹ lè dúpẹ́ (fún Un)."
     }
   },
   {
@@ -4842,7 +4865,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Namni toltuu hojjate lubbuma isaatiifi. Namni badii dalages isheedhuma irratti. Ergasii gara Gooftaa keessanii deebifamtu.",
       "so": "Qofkii sama fala naftiisay dan u tahay, kiina xumaan fala waa dushiisa. Waxaana dib la idiinku soo celin  xagga Rabbigiin.",
       "ff": "Kalo golluɗo ko moƴƴi,ko fii hoore-makko; kala kadi bonnuɗo, yantat e makko refti ko ka Joomi maa woni ruttorde mon.",
-      "yo": "Ẹníkẹ́ni tí ó bá ṣe iṣẹ́ rere, fún ẹ̀mí ara rẹ̀ ni. Ẹnikẹ́ni tí ó bá sì ṣe iṣẹ́ aburú, fún ẹ̀mí ara rẹ̀ ni. Lẹ́yìn náà, ọ̀dọ̀ Olúwa yín ni wọn yóò da yín padà sí."
+      "yo": "Ẹníkẹ́ni tí ó bá ṣe iṣẹ́ rere, fún ẹ̀mí ara rẹ̀ ni. Ẹnikẹ́ni tí ó bá sì ṣe iṣẹ́ aburú, fún ẹ̀mí ara rẹ̀ ni. Lẹ́yìn náà, ọ̀dọ̀ Olúwa yín ni wọn yóò da yín padà sí."
     }
   },
   {
@@ -4880,7 +4903,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "(Qur’aanni) kun namootaaf beekumsa ifa ba’aadha. Warra dhugoomsaniif qajeelfamaafi rahmata.",
       "so": "Kuwakani waa u tusmooyin cad dadka, iyo hanuun iyo naxariis ciddii wax yaqiinsan.",
       "ff": "O quraana kombo gite e peewal e yurmeende wonan'de yananaaɓe ɓe.",
-      "yo": "Èyí ni ìmọ̀ àmọ̀dájú àti ẹ̀rí fún àwọn ènìyàn. Ìmọ̀nà àti ìkẹ́ ni fún ìjọ tó ní àmọ̀dájú."
+      "yo": "Èyí ni ìmọ̀ àmọ̀dájú àti ẹ̀rí fún àwọn ènìyàn. Ìmọ̀nà àti ìkẹ́ ni fún ìjọ tó ní àmọ̀dájú."
     }
   },
   {
@@ -4913,7 +4936,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ሰማያትንና ምድርን በመካከላቸው ያለውንም ሁሉ በምርና የተወሰነ ጊዜንም በመለካት እንጅ (ለቀልድ) አልፈጠርናቸውም፡፡ እነዚያ የካዱትም ከተስፈራሩት ነገር (ትተው) ዘዋሪዎች ናቸው፡፡",
       "om": "Samii, dachiifi waan isaan lamaan gidduu jiranis dhugaafi yeroo beekamaa ta’eef malee hin uumne. Isaan kafaran waan ittiin sodaachifaman irraa garagaloodha.",
       "so": "Uma aanu abuurin samooyinka iyo arlada iyo waxa u dhexeeya waxaan aheyn Xaq iyo Muddo magacaaban. Kuwase gaalooba dhinac bay uga jeestaan waxa looga digo (oo cadaab ah).",
-      "ff": "Min tagiraali kammuuji ɗin e leydi ndin e  ko woni hakkunde majji, si wonaa e goonga e lajala happaangal [fii mum]. Yedduɓe ɓen ko ɗuurniiɓe e ko ɓe ndentiniraa kon."
+      "ff": "Min tagiraali kammuuji ɗin e leydi ndin e  ko woni hakkunde majji, si wonaa e goonga e lajala happaangal [fii mum]. Yedduɓe ɓen ko ɗuurniiɓe e ko ɓe ndentiniraa kon.",
+      "yo": "A kò ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀, àti ohunkóhun tó wà láààrin méjèèjì bí kò ṣe pẹ̀lú òdodo àti fún gbèdéke àkókò kan. Àwọn tó ṣàì gbàgbọ́ yó sì máa gbúnrí kúrò níbi ohun tí A fi ṣèkìlọ̀ fún wọn."
     }
   },
   {
@@ -4976,7 +5000,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Yoo (diin) Rabbii tumsitan, Inni isinii tumsa. Faannaan keessanis gadi dhaaba.",
       "so": "Kuwa (Xaqa) rumeeyow! Haddaad u gargaartaan (diinta) Alle, Wuu idiin gargaari oo idiin sugi cagahiinna.",
       "ff": "Eey mon yo gooŋɗiinɓe, si on ngonii wallooɓe fii Allah, O wallat on, O tabintina teppe mon ɗen.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, tí ẹ bá ran (ẹ̀sìn) Allāhu lọ́wọ́, (Allāhu) máa ràn ẹ̀yin náà lọ́wọ́. Ó sì máa mú ẹsẹ̀ yín dúró ṣinṣin (nínú ẹ̀sìn)."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, tí ẹ bá ran (ẹ̀sìn) Allāhu lọ́wọ́, (Allāhu) máa ràn ẹ̀yin náà lọ́wọ́. Ó sì máa mú ẹsẹ̀ yín dúró ṣinṣin (nínú ẹ̀sìn)."
     }
   },
   {
@@ -5012,7 +5036,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Rabbiif ajajamaa; ergamaa (Isaatifis) ajajamaa; dalagaawwan keessan hin balleessinaa.",
       "so": "Kuwa (Xaqa) rumeeyow! Adeeca Allaah oo adeeca Rasuulka, hana burinnina acmaashiinna.",
       "ff": "Eey mon yo gooŋɗinɓe! ɗoftee Allah, ɗoftoɗon Nulaaɗo on, wata on mbonnu golle mon ɗeen.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ tẹ̀lé (ọ̀rọ̀) Allāhu, ẹ tẹ̀lé (ọ̀rọ̀) Òjíṣẹ́ náà, kí ẹ sì má ṣe ba àwọn iṣẹ́ yín jẹ́."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ tẹ̀lé (ọ̀rọ̀) Allāhu, ẹ tẹ̀lé (ọ̀rọ̀) Òjíṣẹ́ náà, kí ẹ sì má ṣe ba àwọn iṣẹ́ yín jẹ́."
     }
   },
   {
@@ -5045,7 +5069,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ቅርቢቱ ሕይወት ጫወታና ዛዛታ ብቻ ናት፡፡ ብታምኑም ብትጠነቀቁም ምንዳዎቻችሁን ይሰጣችኋል፡፡ ገንዘቦቻችሁንም (ሁሉ) አይጠይቃችሁም፡፡",
       "om": "Jireenyi addunyaa taphaafi dagduudha, Yoo amantanii Rabbiin sodaattan mindaalee keessan isiniif kenna; qabeenya keessan isin hin gaafatu.",
       "so": "Nolosha adduunkan waa uun ciyaar iyo madaddaalo, haddaad (Xaqa) rumeysaan, oo aad iska dhowrtaan (xumaha), Wuxuu idin siin abaalgudkiinna, idinmana weydiisanayo maalkiinna.",
-      "ff": "Ganndee nguurndam aduna ko fijindaaru e mbeleeɗe tan; hara le si on ngooŋɗiii, on kulii [Allah], O yeɗay on njoɓdi mon ndiin, o lamndotaako on jawle mon ɗeen."
+      "ff": "Ganndee nguurndam aduna ko fijindaaru e mbeleeɗe tan; hara le si on ngooŋɗiii, on kulii [Allah], O yeɗay on njoɓdi mon ndiin, o lamndotaako on jawle mon ɗeen.",
+      "yo": "Eré àti ìranù ni ìṣẹ̀mí ayé. (Àmọ́) tí ẹ bá gbàgbọ́ (nínú Allāhu), tí ẹ sì bẹ̀rù (Rẹ̀), Ó máa fún yín ní àwọn ẹ̀san yín. Kò sì níí bèèrè àwọn dúkìá yín (pé kí ẹ fi gbogbo rẹ̀ yọ Zakāh)."
     }
   },
   {
@@ -5079,7 +5104,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Isa ergamaa Isaa erge qajeelloofi amantii dhugaatiin. amantii hunda irratti ol isa taasisuuf. Ragaaf Rabbiin ga’aadha.",
       "so": "Alle waa Kan la soo diray Rasuulkiisa Hanuun iyo Diin Xaq ah si uu uga sare mariyo diimaha kaloo dhan. Alle ku filan Marag uu ahaado.",
       "ff": "Ko Kaŋko woni Nulirɗo Nulaaɗo makko on peewal e diina goonga, fii yo o fawaka ka e hoore kala diina. Allah yonii seedee.",
-      "yo": "(Allāhu) Òun ni Ẹni tí Ó fi ìmọ̀nà àti ẹ̀sìn òdodo (’Islām) rán Òjíṣẹ́ Rẹ̀ nítorí kí Ó lè fi borí gbogbo ẹ̀sìn (mìíràn) pátápátá. Allāhu sì tó ní Ẹlẹ́rìí."
+      "yo": "(Allāhu) Òun ni Ẹni tí Ó fi ìmọ̀nà àti ẹ̀sìn òdodo (’Islām) rán Òjíṣẹ́ Rẹ̀ nítorí kí Ó lè fi borí gbogbo ẹ̀sìn (mìíràn) pátápátá. Allāhu sì tó ní Ẹlẹ́rìí."
     }
   },
   {
@@ -5143,7 +5168,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ምእመናኖች ወንድማመቾች ናቸው፡፡ በሁለት ወንድሞቻችሁም መካከል አስታርቁ፡፡ ይታዘንላችሁም ዘንድ አላህን ፍሩ፡፡",
       "om": "Mu’uminoonni obboleeyyani; gidduu obboleeyyan keessanii tolchaa. Rabbiin sodaadhaa Akka mararfatamtanuuf jecha.",
       "ff": "Nganndee gooŋɗinɓe ɓen ko jeyduɓe. Haray moƴƴinee hakkunde jeydal mon ngal, kulon Allah, mbelajo'o on njurminte.",
-      "yo": "Ọmọ ìyá (ẹ̀sìn) ni àwọn onígbàgbọ́ òdodo. Nítorí náà, ẹ ṣàtúnṣe láààrin àwọn ọmọ ìyá yín méjèèjì. Kí ẹ sì bẹ̀rù Allāhu nítorí kí A lè kẹ yín."
+      "yo": "Ọmọ ìyá (ẹ̀sìn) ni àwọn onígbàgbọ́ òdodo. Nítorí náà, ẹ ṣàtúnṣe láààrin àwọn ọmọ ìyá yín méjèèjì. Kí ẹ sì bẹ̀rù Allāhu nítorí kí A lè kẹ yín."
     }
   },
   {
@@ -5181,7 +5206,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin fagoo samiileefi dachii keessaa ni beeka. Rabbiin waan isin dalagdan (hunda) argaadha.”",
       "so": "Hubaal Alle baa ogsoon waxa aan muuqan ee ah samooyinka iyo arlada. Alle wuu Arkaa waxaad fashaan.",
       "ff": "Pellet, Allah no anndi wirniiɗi kammuuji ɗiin e leydi ndin. Allah ko deenɗo ko ngolloton kon.",
-      "yo": "Dájúdájú Allāhu mọ ìkọ̀kọ̀ àwọn sánmọ̀ àti ilẹ̀. Àti pé Allāhu ni Olùríran nípa ohun tí ẹ̀ ń ṣe níṣẹ́."
+      "yo": "Dájúdájú Allāhu mọ ìkọ̀kọ̀ àwọn sánmọ̀ àti ilẹ̀. Àti pé Allāhu ni Olùríran nípa ohun tí ẹ̀ ń ṣe níṣẹ́."
     }
   },
   {
@@ -5218,7 +5243,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila gara samii gubbaa isaanii jirtuu hin ilaallee? akkamitti akka ishee ijaarreefi ishee miidhagsine, uraan homaatuu isiif hintaane.",
       "so": "Miyeyna fiirin samada korkooda ah, sidaan u dhisnay oo u qurxinnay, ma laha wax duleello ah?",
       "ff": "E ɓee ndaaraani kammu ngun dow maɓɓe, ko honno Min mahiri ngun Min cuɗini ngu ; hara perɗi alanaa ngu?",
-      "yo": "Ṣé wọn kò wo sánmọ̀ òkè wọn bí A ti ṣe mọ ọ́n pa àti (bí) A ti ṣe ṣe é ní ọ̀ṣọ́, tí kò sì sí àlàfo sísán kan lára rẹ̀?"
+      "yo": "Ṣé wọn kò wo sánmọ̀ òkè wọn bí A ti ṣe mọ ọ́n pa àti (bí) A ti ṣe ṣe é ní ọ̀ṣọ́, tí kò sì sí àlàfo sísán kan lára rẹ̀?"
     }
   },
   {
@@ -5255,7 +5280,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Jecha tokkoyyuu hin dubbatu Tiksaan itti dhihaataan isa bira jiraatu malee .",
       "so": "Ma jiro eray (aadmiga) ka soo baxa, oo uusan ag joogin ilaaliye (malag) u diyaar ah (inuu qoro).",
       "ff": "O wowlataa konngol, si wonaa hino takko makko binndoowo tawaaɗo.",
-      "yo": "(Ẹnì kan) kò sì níí sọ ọ̀rọ̀ kan àyàfi kí ẹ̀ṣọ́ kan ti wà níkàlẹ̀ pẹ̀lú rẹ̀ (fún àkọsílẹ̀ rẹ̀)."
+      "yo": "(Ẹnì kan) kò sì níí sọ ọ̀rọ̀ kan àyàfi kí ẹ̀ṣọ́ kan ti wà níkàlẹ̀ pẹ̀lú rẹ̀ (fún àkọsílẹ̀ rẹ̀)."
     }
   },
   {
@@ -5291,7 +5316,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Nuti waan hunda likki likkiin isa uumne.",
       "so": "Waxaan ku abuurnay wax kasta Qaddar.",
       "ff": "Minen Min tagir hu'unde kala e eɓɓoore,",
-      "yo": "Dájúdájú A ṣẹ̀dá gbogbo n̄ǹkan pẹ̀lú kádàrá."
+      "yo": "Dájúdájú A ṣẹ̀dá gbogbo n̄ǹkan pẹ̀lú kádàrá."
     }
   },
   {
@@ -5329,7 +5354,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila mindaan toltuu toltuu malee ni tahee?",
       "so": "Wanaag abaalkiisu ma waxaan ahayn baa wanaag?",
       "ff": "Hara njoɓdi moƴƴere no woodi, si wonaa moƴƴere?",
-      "yo": "Ǹjẹ́ ẹ̀san mìíràn wà fún ṣíṣe rere bí kò ṣe (ẹ̀san) rere."
+      "yo": "Ǹjẹ́ ẹ̀san mìíràn wà fún ṣíṣe rere bí kò ṣe (ẹ̀san) rere."
     }
   },
   {
@@ -5367,7 +5392,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Maqaan Gooftaa keetii guddate, abbaa guddinnaafi ulfinaa (kan tahe).",
       "so": "Waxaa barakadiisu badnaatay Magaca Rabbigaa, Weynaha, Sharafta Badan.",
       "ff": "Barkinii innde Jooma nden, Jom mawngu e teddungal !",
-      "yo": "Ìbùkún ni fún orúkọ Olúwa rẹ, Atóbi, Alápọ̀n-ọ́nlé."
+      "yo": "Ìbùkún ni fún orúkọ Olúwa rẹ, Atóbi, Alápọ̀n-ọ́nlé."
     }
   },
   {
@@ -5405,7 +5430,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Qur’aana kabajamaadha.",
       "so": "Hubaal kani waa Qur'aan Sharaf Badan.",
       "ff": "Pellet nee ko alqur'aanaare konde teddunde,",
-      "yo": "Dájúdájú (al-Ƙur’ān) ni n̄ǹkan kíké alápọ̀n-ọ́nlé."
+      "yo": "Dájúdájú (al-Ƙur’ān) ni n̄ǹkan kíké alápọ̀n-ọ́nlé."
     }
   },
   {
@@ -5443,7 +5468,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Mootummaan samiileefi dachii kan Isaati. Inni ni jiraachisa; ni ajjeesas. Inni waan hunda irratti danda’aadha.",
       "so": "Isagaa (Alle) leh Boqortooyada samooyinka iyo arlada, wax nooleeya oo dhinsiiya; Isagaana wax walba Kara.",
       "ff": "Ko Kaŋko heeranii laamu kammuuji ɗiin e lesdi ndin. Himo wuurna Himo wara, Kanŋko O kattanɗo kala hu'unde.",
-      "yo": "TiRẹ̀ ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Òun ni Alágbára lórí gbogbo n̄ǹkan."
+      "yo": "TiRẹ̀ ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Òun ni Alágbára lórí gbogbo n̄ǹkan."
     }
   },
   {
@@ -5481,7 +5506,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Mootummaan samiileefi dachii kan Isaati. Dhimmoonni gara Rabbiitti deebifamti.",
       "so": "Isagaa (Alle) leh Boqortooyada samooyinka iyo arlada. Xagga Alle baa loo celiyaa umuuraha oo dhan.",
       "ff": "Ko Kaŋko heeranii laamu kammuuji ɗin e leydi ndin. Ko ka Allah fiyakuuji ɗin nduttirtee.",
-      "yo": "TiRẹ̀ ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ọ̀dọ̀ Allāhu sì ni wọ́n máa ṣẹ́rí àwọn ọ̀rọ̀ ẹ̀dá padà sí."
+      "yo": "TiRẹ̀ ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ọ̀dọ̀ Allāhu sì ni wọ́n máa ṣẹ́rí àwọn ọ̀rọ̀ ẹ̀dá padà sí."
     }
   },
   {
@@ -5518,7 +5543,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Halkan guyyaa keessa galcha; guyyaas halkan keessa galcha. Inni beekaa waan qomoota keessa jiruuti.",
       "so": "Wuxuu Habeenka dhex gashaa maalinta, maalintana dhex gashaa habeenka (macnaha kala badiyaa), wuuna Ogsoon yahay waxa ku jira laabaha (dadka).",
       "ff": "Himo naadia jemma on e ndeer ñalawma on, o naadira ñalama on kadi e ndeer jemma on. Kaŋko ko O gannduɗo ko woni e ndeer ɓerɗe.",
-      "yo": "Ó ń ti òru bọ inú ọ̀sán. Ó sì ń ti ọ̀sán bọ inú òru. Òun sì ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
+      "yo": "Ó ń ti òru bọ inú ọ̀sán. Ó sì ń ti ọ̀sán bọ inú òru. Òun sì ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
     }
   },
   {
@@ -5551,7 +5576,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እርሱ ከጨለማዎች ወደ ብርሃን ሊያወጣችሁ ያ ግልጾች የኾኑን አንቀጾች በበሪያው ላይ የሚያወርድ ነው፡፡ አላህም ለእናንተ በእርግጥ ርኅሩህ አዛኝ ነው፡፡",
       "om": "Inni Isa gabricha Isaa irratti keeyyattoota ifa ba’aa ta’an buuseedha, dukkanoowwan irraa gara ifaatti isin baasuuf jecha. Allaah’n isin mararfataa, rahmata godhaadha.",
       "so": "Waa Alle Kan ku soo dejiya Aayado cad addoonkiisa (Nabi Muxammad) si uu idiinkaga saaro mugdiyada xagga Nuurka. Hubaal Alle waa idiin Turid iyo Naxariis Badan yahay.",
-      "ff": "Ko Kaŋko jippinta e jeyaaɗo makko on aayeeje ɓannguɗe, fii no o njaltinira on e niɓe fa'ade e ndaygu. Pellet, Allah ko jurmotooɗo  on, jaafotooɗo."
+      "ff": "Ko Kaŋko jippinta e jeyaaɗo makko on aayeeje ɓannguɗe, fii no o njaltinira on e niɓe fa'ade e ndaygu. Pellet, Allah ko jurmotooɗo  on, jaafotooɗo.",
+      "yo": "Òun ni Ẹni tó ń sọ àwọn āyah tó yanjú kalẹ̀ fún ẹrúsìn Rẹ̀ nítorí kí ó lè mu yín kúrò nínú àwọn òkùnkùn wá sínú ìmọ́lẹ̀. Dájúdájú Allāhu ni Aláàánú, Àṣàkẹ́-ọ̀run fún yín."
     }
   },
   {
@@ -5583,7 +5609,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "የመጸወቱ ወንዶችና፣ የመጸወቱ ሴቶች፣ ለአላህም መልካምን ብድር ያበደሩ ለእነርሱ መልካም ምንዳ አልላቸው፡፡",
       "om": "Dhiiroliin sadaqaa kennatan, dubartoonni sadaqaa kennatte, kanneen liqaa gaarii Rabbiif liqeessan, (mindaan isaanii) dachaa isaaniif taasifamaa. galanni gaariin isaaniif tahe.",
       "so": "Ragga iyo haweenka wax sadaqaysta ee amaahiya Alle amaah wanaagsan, waa loo labo-laabi (ajarka) waxayna xaqiiq leeyihiin Abaal gud Wanaagsan (Janno).",
-      "ff": "Pellet, sakkotooɓe (jawɗe mum ɓeen) ka worɓe e ka rewɓe ɓe ñami Allah ñamaande labaande, ɓe sowanoyte (mbarjaari) hara no woodani ɓe njoɓdi mawndi."
+      "ff": "Pellet, sakkotooɓe (jawɗe mum ɓeen) ka worɓe e ka rewɓe ɓe ñami Allah ñamaande labaande, ɓe sowanoyte (mbarjaari) hara no woodani ɓe njoɓdi mawndi.",
+      "yo": "Dájúdájú àwọn olùtọrẹ lọ́kùnrin àti àwọn olùtọrẹ lóbìnrin, tí wọ́n tún yá Allāhu ní dúkìá tó dára, (Allāhu) yóò ṣàdìpèlé rẹ̀ fún wọn. Ẹ̀san alápọ̀n-ọ́nlé sì wà fún wọn."
     }
   },
   {
@@ -5620,7 +5647,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin Barreesse \"dhugumatti, Anaafi Ergamtoonni Kiyya ni mo'anna\" (jechuun). Rabbiin Jabaa, Injifataadha.",
       "so": "Alle wuxuu qoray - hubaal waan adkaan, aniga iyo Rusushaydaba. Hubaal, Alle waa Xoog Badane, Adkaade ah.",
       "ff": "Alla ñaawi ma ni fool miin e nelaaɓe am, pellet Alla ko cemmbuɗo tedduɗo.",
-      "yo": "Allāhu kọ ọ́ pé: “Dájúdájú Mo máa borí; Èmi àti àwọn Òjíṣẹ́ Mi.” Dájúdájú Allāhu ni Alágbára, Olùborí."
+      "yo": "Allāhu kọ ọ́ pé: “Dájúdájú Mo máa borí; Èmi àti àwọn Òjíṣẹ́ Mi.” Dájúdájú Allāhu ni Alágbára, Olùborí."
     }
   },
   {
@@ -5651,7 +5678,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እናንተ ያመናችሁ ሆይ! አላህን ፍሩ፡፡ ማንኛይቱም ነፍስ ለነገ ያስቀደመችውን ትመልከት፡፡ አላህንም ፍሩ፡፡ አላህ በምትሠሩት ሁሉ ውስጠ ዐዋቂ ነው፡፡",
       "om": "Yaa warra amantan! Rabbiin sodaadhaa. Lubbuun tamuu waan boruuf durfatte haa laaltu. Rabbiin sodaadhaa Rabbiin waan isin hojjattan hunda keessa beekaadha.",
       "so": "Kuwa (Xaqa) rumeeyow! Dhowra (amarrada) Alle, naf walbana ha eegto waxay u hormarsatay berritoole (Qiyaamaha), kana dhowrsada xumaha. Hubaal Alle waa u xog ogaal waxaad fashaan.",
-      "ff": "Eehey mon gooŋɗinɓe ndeente Alla, yo fittaandu ndaar kondu ardinani jannga kule alla pellet alla ko kumpatiiɗo ko ngolloton ko."
+      "ff": "Eehey mon gooŋɗinɓe ndeente Alla, yo fittaandu ndaar kondu ardinani jannga kule alla pellet alla ko kumpatiiɗo ko ngolloton ko.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu. Kí ẹ̀mí kan sì wòye sí ohun tí ó tì ṣíwájú fún ọ̀la (àlùkìyáámọ̀). Ẹ bẹ̀rù Allāhu. Dájúdájú Allāhu ni Alámọ̀tán nípa ohun tí ẹ̀ ń ṣe níṣẹ́."
     }
   },
   {
@@ -5689,7 +5717,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Warri ibiddaafi warri Jannataa wal hin qixxaatan. Warri Jannataa isaanumatu milkaa'oodha.",
       "so": "Ma sinna Ehlu-Naarka iyo Ehlu- Jannaha. Ehlu-Jannaha iyaga weeye kuwa ah liibaanayaasha.",
       "ff": "Yimɓe yiite e yimɓe aljanna potaanih, ko yimɓe aljanna ngoni foolɓe.",
-      "yo": "Àwọn èrò inú Iná àti àwọn èrò inú Ọgbà Ìdẹ̀ra kò dọ́gba. Àwọn èrò inú Ọgbà Ìdẹ̀ra, àwọn ni olùjèrè."
+      "yo": "Àwọn èrò inú Iná àti àwọn èrò inú Ọgbà Ìdẹ̀ra kò dọ́gba. Àwọn èrò inú Ọgbà Ìdẹ̀ra, àwọn ni olùjèrè."
     }
   },
   {
@@ -5754,7 +5782,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Maaliif waan hin hojjanne jettu?",
       "so": "Kuwa (Xaqa) rumeeyow! Maxaad u leedihiin (oo ugu baaqdaan dadka) wax aydaan falin?",
       "ff": "Eehey mon gooŋɗinɓe ko waɗi hoɗon kaala ko on mbaɗata.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, nítorí kí ni ẹ ṣe ń sọ ohun tí ẹ ò níí ṣe níṣẹ́?"
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, nítorí kí ni ẹ ṣe ń sọ ohun tí ẹ ò níí ṣe níṣẹ́?"
     }
   },
   {
@@ -5792,7 +5820,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Waan hin hojjanne haasa'uun keessan jibbaansi isaa Rabbiin biratti guddate.",
       "so": "Waa wax uu Alle neceb yahay inaad ku hadashaan (oo amartaan dadka) wax aydaan falin.",
       "ff": "Mawni tikkere ka Alla nde kaalaton ko on ngollata.",
-      "yo": "Ó jẹ́ ohun ìbínú tó tóbi ní ọ̀dọ̀ Allāhu pé kí ẹ sọ ohun tí ẹ ò níí ṣe."
+      "yo": "Ó jẹ́ ohun ìbínú tó tóbi ní ọ̀dọ̀ Allāhu pé kí ẹ sọ ohun tí ẹ ò níí ṣe."
     }
   },
   {
@@ -5828,7 +5856,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እናንተ ያመናችሁ ሆይ! ገንዘቦቻችሁና ልጆቻችሁ አላህን ከማስታወስ አያታሉዋችሁ፡፡ ይህንንም የሚሠሩ ሰዎች እነዚያ እነርሱ ከሳሪዎች ናቸው፡፡",
       "om": "Yaa warra amantan! Qabeenyaaleen keessaniifi ilmaan keessan zikrii Rabbii irraa isin hin dagin, Namni kana dalage isaan isaanumatu hoonga'oota.",
       "so": "Kuwa (Xaqa) rumeeyow! Yeysan maalkiinnu iyo awlaaddiinnu idinka shuqlin Xusidda Alle (salaadda). Qofkii falaa sidaas, kuwaa weeye kuwa khasaaray.",
-      "ff": "Eehey mon gooŋɗinɓe woto sokli mon jawɗeele mon e ɓiɓɓe mon gaa e innude Alla kala baɗɗo ɗuum ko ɓeen ngoni pertuɓe ɓe."
+      "ff": "Eehey mon gooŋɗinɓe woto sokli mon jawɗeele mon e ɓiɓɓe mon gaa e innude Alla kala baɗɗo ɗuum ko ɓeen ngoni pertuɓe ɓe.",
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ má ṣe jẹ́ kí àwọn dúkìá yín àti àwọn ọmọ yín kó àìrójú ba yín níbi ìrántí Allāhu. Ẹnikẹ́ni tí ó bá kó sínú (àìrójú) yẹn, àwọn wọ̀nyẹn gan-an ni ẹni òfò."
     }
   },
   {
@@ -5863,7 +5892,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Isa isin uume Isin irraa Kaafirris ni jira; isin irraa Mu'uminnis ni jira. Rabbiin waan isin dalagdan argaadha.",
       "so": "Alle waa Kan idin abuuray, markaas qaarkiin noqdeen gaalo, qaarkiinna m’uminiin. Alle wuu Arkaa waxaad fashaan.",
       "ff": "Ko Kaŋko tagi on ina e mon ke'efeera ina e mon gooŋɗinɗo Alla na yi'a ko ngolloton ko.",
-      "yo": "Òun ni Ẹni tí Ó ṣẹ̀dá yín. Aláìgbàgbọ́ wà nínú yín. Onígbàgbọ́ òdodo sì wà nínú yín. Allāhu sì ni Olùríran nípa ohun tí ẹ̀ ń ṣe níṣẹ́."
+      "yo": "Òun ni Ẹni tí Ó ṣẹ̀dá yín. Aláìgbàgbọ́ wà nínú yín. Onígbàgbọ́ òdodo sì wà nínú yín. Allāhu sì ni Olùríran nípa ohun tí ẹ̀ ń ṣe níṣẹ́."
     }
   },
   {
@@ -5899,7 +5928,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wantoota samiileefi dachii keessa jiru hunda ni beeka; akkasumas waan isin dhoksitaniifi waan isin ifa gootan ni beeka. Rabbiin waan qomoowwan keessaa beekaadha.",
       "so": "Wuxuu Og yahay waxa ku sugan samooyinka iyo arlada, Wuxuuna Og yahay waxaad qarisaan iyo waxaad muujisaanba. Alle waa ogaha waxa ku jira laabaha (dadka).",
       "ff": "Hombo anndi ko woni e kammuuji e leydi hombo anndi ko mbirnaton e ko ɓannginton Alla na anndi ko woni e ɓerɗe.",
-      "yo": "Ó mọ ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Ó sì mọ ohun tí ẹ̀ ń fi pamọ́ àti ohun tí ẹ̀ ń ṣàfi hàn rẹ̀. Allāhu sì ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
+      "yo": "Ó mọ ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Ó sì mọ ohun tí ẹ̀ ń fi pamọ́ àti ohun tí ẹ̀ ń ṣàfi hàn rẹ̀. Allāhu sì ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
     }
   },
   {
@@ -5968,7 +5997,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin, dhugaan gabbaramaan isa malee hin jiru. Mu'uminoonnis Rabbi irratti qofa haa hirkatanu.",
       "so": "Allaah! Ma jiro Ilaah (Xaq lagu caabudo) aan Isaga ahayn, Allaah (oo keliya) ha talo saarteen mu’miiniintu.",
       "ff": "Allaahu alah deweteeɗo e goongo si wona Kaŋko, ko e dow makko goonɗinɓe mbakkilato.",
-      "yo": "Allāhu, kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Allāhu sì ni kí àwọn onígbàgbọ́ òdodo gbáralé."
+      "yo": "Allāhu, kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Allāhu sì ni kí àwọn onígbàgbọ́ òdodo gbáralé."
     }
   },
   {
@@ -6003,7 +6032,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ገንዘቦቻችሁና ልጆቻችሁ ለናንተ መፈተኛ ብቻ ናቸው፤ አላህም እርሱ ዘንድ ታላቅ ምንዳ አልለ፡፡",
       "om": "Qabeenyaaleen keessaniifi ilmaan keessan mokkoroodha. Rabbiin Isa bira mindaa guddaatu jira.",
       "ff": "Ngandee pellet, jawɗe mon ɗeen e ɓiɗɓe mon ɓeen ko fitina ina ka Alla njoɓdi mawndi.",
-      "yo": "Ìfòòró ni àwọn dúkìá yín àti àwọn ọmọ yín. Allāhu sì ni ẹ̀san ńlá wà ní ọ̀dọ̀ Rẹ̀."
+      "yo": "Ìfòòró ni àwọn dúkìá yín àti àwọn ọmọ yín. Allāhu sì ni ẹ̀san ńlá wà ní ọ̀dọ̀ Rẹ̀."
     }
   },
   {
@@ -6041,7 +6070,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "(Rabbiin) beekaa fagoofi dhihoo injifataa, ogeessa.",
       "so": "Waa Ogsoonaha waxaan muuqan iyo waxa muuqda, Adkaadaha, Xakiimka ah.",
       "ff": "Gannduɗo mbirniiɗi e feeñuɗi, mawɗo, ñeeñɗo.",
-      "yo": "Onímọ̀-ìkọ̀kọ̀ àti gban̄gba, Alágbára, Ọlọ́gbọ́n."
+      "yo": "Onímọ̀-ìkọ̀kọ̀ àti gban̄gba, Alágbára, Ọlọ́gbọ́n."
     }
   },
   {
@@ -6078,7 +6107,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Warra Gooftaa isaanii fagootti sodaataniif araaramaafi mindaa guddaatu isaaniif jira.",
       "so": "Hubaal, kuwa ka baqa Rabbigood sir (iyo saaqba) waxay leeyihiin Denbi Dhaaf iyo Ajar Weyn (Janno).",
       "ff": "Pellet, hulooɓe Joomi mum ɓeen ka wirnii, hino woodani ɓen haforaneede e njoɓdi mawndi.",
-      "yo": "Dájúdájú àwọn tó ń páyà Olúwa wọn ní ìkọ̀kọ̀, àforíjìn àti ẹ̀san tó tóbi ń bẹ fún wọn."
+      "yo": "Dájúdájú àwọn tó ń páyà Olúwa wọn ní ìkọ̀kọ̀, àforíjìn àti ẹ̀san tó tóbi ń bẹ fún wọn."
     }
   },
   {
@@ -6111,7 +6140,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ወደ አእዋፍ ከበላያቸው ክንፎቻቸውን ዘርግተው ተንሳፋፊዎች የሚሰበሰቡም ሲኾኑ አላዩምን? ከአልረሕማን በቀር (ባየር ላይ) የሚይዛቸው የለም፡፡ እርሱ በነገሩ ሁሉ ተመልካች ነው፡፡",
       "om": "Sila gara simbirroota gubbaa isaaniitti koola (qoochoo) isaanii babal'isanii walitti dachaasanii hin ilaalanuu? Rahmaaniin malee homtuu isaan hin qabu. Inni waan hunda argaadha.",
       "so": "Miyeyna arag shimbiraha korkooda ah ee fidinaya (baalashooda) oo isku soo laabaya? Ma jiraan wax haya iyaga aan aheyn Raxmaanka. Hubaal, wax walba wuu Arkaa.",
-      "ff": "E ɓee nji'aani colli ɗiin dow maɓɓe, hiɗi fonta gabitannji ɗi ñobba? [Won'de] jogitaaki ɗin si wonaa Joom hinaraŋke on. Pellet, ko o deenɗo kala hu'unde."
+      "ff": "E ɓee nji'aani colli ɗiin dow maɓɓe, hiɗi fonta gabitannji ɗi ñobba? [Won'de] jogitaaki ɗin si wonaa Joom hinaraŋke on. Pellet, ko o deenɗo kala hu'unde.",
+      "yo": "Ṣé wọn kò rí àwọn ẹyẹ tí ó wà ní òkè wọn, tí (wọ́n) ń na ìyẹ́ apá (wọn), tí wọ́n sì ń pa á mọ́ra? Kiní kan kò mú wọn dúró (sínú òfurufú) àfi Àjọkẹ́-ayé. Dájúdájú Òun sì ni Olùríran nípa gbogbo n̄ǹkan."
     }
   },
   {
@@ -6149,7 +6179,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, warra Rabbiin sodaataniif Gooftaa isaanii bira Jannata qananiitu jira.",
       "so": "Hubaal kuwa Alle ka cabsada (oo ka dhowrsada xumaha) waxay leeyihiin Rabbigood agtiisa Jannooyin barwaaqo ah.",
       "ff": "Pellet, hino woodani gooŋɗuɓe ɓeen ka Joomi maɓɓe, Aljannaaji ne'ema.",
-      "yo": "Dájúdájú àwọn Ọgbà Ìdẹ̀ra wà fún àwọn olùbẹ̀rù Allāhu lọ́dọ̀ Olúwa wọn."
+      "yo": "Dájúdájú àwọn Ọgbà Ìdẹ̀ra wà fún àwọn olùbẹ̀rù Allāhu lọ́dọ̀ Olúwa wọn."
     }
   },
   {
@@ -6185,7 +6215,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isheen tun gorsa. Nama fedhe gara Gooftaa isaatti karaa godhata.",
       "so": "Hubaal tani wa waano, ee qofkii doonaa ha u samaysto xagga Rabbigi jid.",
       "ff": "Ko oon woni waaju goongo kala paalaaɗo daɗde nanngira joomiiko ruttorde.",
-      "yo": "Dájúdájú èyí ni ìrántí. Nítorí náà, ẹni tí ó bá fẹ́ kí ó mú ojú ọ̀nà kan tọ̀ dé ọ̀dọ̀ Olúwa rẹ̀."
+      "yo": "Dájúdájú èyí ni ìrántí. Nítorí náà, ẹni tí ó bá fẹ́ kí ó mú ojú ọ̀nà kan tọ̀ dé ọ̀dọ̀ Olúwa rẹ̀."
     }
   },
   {
@@ -6221,7 +6251,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ይህ (ጌታ) ሙታንን ሕያው በማድረግ ላይ ቻይ አይደለምን?",
       "om": "Sila (Rabbiin akkas godhe) sun du'aa jiraachisuu irratti danda'aa mitii?",
       "ff": "Mbele oon hattanaani wuurtin'de maayɓe.",
-      "yo": "Ǹjẹ́ Ẹni tí Ó ṣe ìyẹn kò níí ní agbára láti jí àwọn òkú dìde bí?"
+      "yo": "Ǹjẹ́ Ẹni tí Ó ṣe ìyẹn kò níí ní agbára láti jí àwọn òkú dìde bí?"
     }
   },
   {
@@ -6255,7 +6285,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Nuti haala (inni) galateeffataa yookiin mormaa ta'een karaa isa qajeelchine.",
       "so": "Waxaanu xaqiiq tusnay jidka ama waa mid mahad naqa ama mid abaal dhac badan (gaal ah).",
       "ff": "Miin peewnii mbo e laawol o yetta wollo o yedda.",
-      "yo": "Dájúdájú A fi ọ̀nà mọ̀ ọ́n; Ó lè jẹ́ olùdúpẹ́, ó sì lè jẹ́ aláìmoore."
+      "yo": "Dájúdájú A fi ọ̀nà mọ̀ ọ́n; Ó lè jẹ́ olùdúpẹ́, ó sì lè jẹ́ aláìmoore."
     }
   },
   {
@@ -6293,7 +6323,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila Nuti dachii firaasha hin goonee?",
       "so": "Miyaanaan ka yeelin dhulka gogol?",
       "ff": "Mbela min mbaɗaani lesdi ndaɗɗudi heblaandi.",
-      "yo": "Ǹjẹ́ Àwa kò ṣe ilẹ̀ ní ìtẹ́ bí,"
+      "yo": "Ǹjẹ́ Àwa kò ṣe ilẹ̀ ní ìtẹ́ bí,"
     }
   },
   {
@@ -6329,7 +6359,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isaan amananii gaggaarii hojjatan, isaaniif ashaakiltiiwwan laggeen jala ishee yaatutu jira. Sun milkii guddaadha.",
       "so": "Kuwa (Xaqa) rumeeyey oo samaha fala, waxay leeyihiin beero hoostoodu ay webiyo qulqulaan. Kaasi baa ah Liibaanta Weyn.",
       "ff": "Ɓeen gooŋɗinɓe ngoolli golle lobbe woodaniiɓe Aljannaaji na ila ley mum caatli ko ɗuum woni malal manngal.",
-      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, tiwọn ni àwọn Ọgbà Ìdẹ̀ra kan, tí àwọn odò ń ṣàn ní ìsàlẹ̀ rẹ̀. Ìyẹn sì ni èrèǹjẹ ńlá."
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, tiwọn ni àwọn Ọgbà Ìdẹ̀ra kan, tí àwọn odò ń ṣàn ní ìsàlẹ̀ rẹ̀. Ìyẹn sì ni èrèǹjẹ ńlá."
     }
   },
   {
@@ -6367,7 +6397,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Isumatu [uumama] jalqaba; (du'a boodas) ni deebisa.",
       "so": "Xaqiiq (Alle) Isagaa uumay (uunka) dibna u soo nooleyn (dhimasho kaddib).",
       "ff": "Ko Kaŋko tigi fuɗɗata tagoore o rutta nde.",
-      "yo": "Dájúdájú Òun ni Ó pìlẹ̀ (ẹ̀dá), Ó sì máa dá (ẹ̀dá) padà (fún àjíǹde)."
+      "yo": "Dájúdájú Òun ni Ó pìlẹ̀ (ẹ̀dá), Ó sì máa dá (ẹ̀dá) padà (fún àjíǹde)."
     }
   },
   {
@@ -6403,7 +6433,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Lubbuun hundi tiksaan ishee irra jiraatu malee hin hafu.",
       "so": "Ma jirto naf aanu kor joogin ilaaliye (malag).",
       "ff": "Alaa fittaandu si wona ina e dow mayru deenoowo.",
-      "yo": "Kò sí ẹ̀mí kan àfi kí ẹ̀ṣọ́ kan wà fún un (nínú àwọn mọlāika)."
+      "yo": "Kò sí ẹ̀mí kan àfi kí ẹ̀ṣọ́ kan wà fún un (nínú àwọn mọlāika)."
     }
   },
   {
@@ -6440,7 +6470,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Gooftaan kee keellatti tahaadha.",
       "so": "Xaqiiq, Rabbigaa baa u jeeda (addoomahiisa) oo gaar ka haya.",
       "ff": "Koom ma na tommbiiɓe.",
-      "yo": "Dájúdájú Olúwa rẹ wà ní ibùṣọ́ (iṣẹ́ ẹ̀dá)."
+      "yo": "Dájúdájú Olúwa rẹ wà ní ibùṣọ́ (iṣẹ́ ẹ̀dá)."
     }
   },
   {
@@ -6477,7 +6507,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila Nuti ija lama isaaf hin taasifnee?",
       "so": "Miyaannaan u yeelin labo indhood?.",
       "ff": "Mbele min in mbaɗanaani mbo gite ɗiɗe.",
-      "yo": "Ṣé A kò ṣe ojú méjì fún un?"
+      "yo": "Ṣé A kò ṣe ojú méjì fún un?"
     }
   },
   {
@@ -6514,7 +6544,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, dalagaan keessan adda adda (wal dhaba).",
       "so": "Xaqiiq, camalkiinnu (dadow) waa kala duwan yahay.",
       "ff": "Pellet golle mon heɗe ceerti.",
-      "yo": "Dájúdájú ọ̀tọ̀ọ̀tọ̀ ni iṣẹ́ yín."
+      "yo": "Dájúdájú ọ̀tọ̀ọ̀tọ̀ ni iṣẹ́ yín."
     }
   },
   {
@@ -6552,7 +6582,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rakkinaa wajjin laafinatu jira.",
       "so": "Xaqiiq, dhibka waxaa la socda faraj.",
       "ff": "Pellet kala saɗteende na won'di e newaare.",
-      "yo": "Nítorí náà, dájúdájú ìdẹ̀kùn wà lẹ́yìn ìnira."
+      "yo": "Nítorí náà, dájúdájú ìdẹ̀kùn wà lẹ́yìn ìnira."
     }
   },
   {
@@ -6589,7 +6619,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, rakkina wajjin laafinatu jira.",
       "so": "Xaqiiq, waxaa dhibka la socda faraj.",
       "ff": "Pellet saɗteende kala na won'di e yaajeende.",
-      "yo": "Dájúdájú ìdẹ̀kùn wà lẹ́yìn ìnira sẹ́."
+      "yo": "Dájúdájú ìdẹ̀kùn wà lẹ́yìn ìnira sẹ́."
     }
   },
   {
@@ -6625,7 +6655,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ ከፈራጆች ሁሉ ይበልጥ ፈራጅ አይደለምን? (ነው)፡፡",
       "om": "Sila Rabbiin irra murteessaa murteessitootaa hin taanee?",
       "ff": "Mbele Alla wona ɓurɗo nuunɗude e ñaawooɓe ɓe.",
-      "yo": "Ṣé Allāhu kọ́ ni Ẹni t’Ó mọ ẹ̀jọ́ dá jùlọ nínú àwọn adájọ́ ni?"
+      "yo": "Ṣé Allāhu kọ́ ni Ẹni t’Ó mọ ẹ̀jọ́ dá jùlọ nínú àwọn adájọ́ ni?"
     }
   },
   {
@@ -6662,7 +6692,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Deebiin garuma Gooftaa keetiiti.",
       "so": "Hubaal! Waa xagga Rabbigaa noqodku.",
       "ff": "Pellet ko e jooma woni ruttorde nde.",
-      "yo": "Dájúdájú ọ̀dọ̀ Olúwa rẹ ni àbọ̀ ẹ̀dá."
+      "yo": "Dájúdájú ọ̀dọ̀ Olúwa rẹ ni àbọ̀ ẹ̀dá."
     }
   },
   {
@@ -6697,7 +6727,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "መወሰኛይቱ ሌሊት ከሺሕ ወር በላጭ ናት፡፡",
       "om": "Halkan sadarkaa qabdu ji'a kumarra caalti.",
       "ff": "Leylatu  qadri oon ɓuri ujunere lewru moƴƴude.",
-      "yo": "Òru Abiyì lóore ju ẹgbẹ̀rún oṣù."
+      "yo": "Òru Abiyì lóore ju ẹgbẹ̀rún oṣù."
     }
   },
   {
@@ -6735,7 +6765,7 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isaan amananiifi gaggaarii hojjatan, isaan sun isaanumatu irra caalaa uumamaati.",
       "so": "Xaqiiq, kuwa (Xaqa) rumeeyey oo samaha fala, kuwaasi waa kuwa ugu khayr badan uumanka.",
       "ff": "Pellet ɓeen gooŋɗinɓe ɓe ngolli ko ɓuri moƴƴude ko ɓeen ngoni ɓurbe moƴƴude e winndere he.",
-      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo (ìyẹn, àwọn mùsùlùmí), tí wọ́n sì ṣe àwọn iṣẹ́ rere, àwọn wọ̀nyẹn, àwọn ni ẹ̀dá tó dára jùlọ."
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo (ìyẹn, àwọn mùsùlùmí), tí wọ́n sì ṣe àwọn iṣẹ́ rere, àwọn wọ̀nyẹn, àwọn ni ẹ̀dá tó dára jùlọ."
     }
   }
 ];

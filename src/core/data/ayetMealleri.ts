@@ -366,10 +366,10 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
     "surum": "1.0.9",
     "baslik": "Yoruba Translation - Abu Rahimah Mikael",
     "ayetler": {
-      "2:153": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo,ẹ fi sùúrù àti ìrun kíkí tọrọ oore (lọ́dọ̀ Allāhu). Dájúdájú Allāhu ń bẹ pẹ̀lú àwọn onísùúrù.",
-      "2:238": "Ẹ ṣọ́ àwọn ìrun (wákàtí márààrún) àti (ní pàápàá jùlọ) ìrun ààrin. Kí ẹ sì dúró kírun fún Allāhu ní olùbẹ̀rù Rẹ̀ (láì sì níí sọ̀rọ̀ tó jẹmọ́ tayé lórí ìrun).",
-      "4:103": "Nígbà tí ẹ bá parí ìrun, kí ẹ ṣe (gbólóhùn) ìrántí Allāhu ní ìdúró, ìjókòó àti ìdùbúlẹ̀ yín. Nígbà tí ẹ bá sì fọkàn balẹ̀, kí ẹ kírun (ní pípé). Dájúdájú ìrun kíkí jẹ́ ọ̀ran-anyàn tí A fi àkókò sí fún àwọn onígbàgbọ́ òdodo.",
-      "62:9": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, nígbà tí wọ́n bá pe ìrun ní ọjọ́ Jum‘ah, ẹ yára lọ síbi ìrántí Allāhu, kí ẹ sì pa kátà-kárà tì. Ìyẹn lóore jùlọ fún yín tí ẹ bá mọ̀."
+      "2:153": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo,ẹ fi sùúrù àti ìrun kíkí tọrọ oore (lọ́dọ̀ Allāhu). Dájúdájú Allāhu ń bẹ pẹ̀lú àwọn onísùúrù.",
+      "2:238": "Ẹ ṣọ́ àwọn ìrun (wákàtí márààrún) àti (ní pàápàá jùlọ) ìrun ààrin. Kí ẹ sì dúró kírun fún Allāhu ní olùbẹ̀rù Rẹ̀ (láì sì níí sọ̀rọ̀ tó jẹmọ́ tayé lórí ìrun).",
+      "4:103": "Nígbà tí ẹ bá parí ìrun, kí ẹ ṣe (gbólóhùn) ìrántí Allāhu ní ìdúró, ìjókòó àti ìdùbúlẹ̀ yín. Nígbà tí ẹ bá sì fọkàn balẹ̀, kí ẹ kírun (ní pípé). Dájúdájú ìrun kíkí jẹ́ ọ̀ran-anyàn tí A fi àkókò sí fún àwọn onígbàgbọ́ òdodo.",
+      "62:9": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, nígbà tí wọ́n bá pe ìrun ní ọjọ́ Jum‘ah, ẹ yára lọ síbi ìrántí Allāhu, kí ẹ sì pa kátà-kárà tì. Ìyẹn lóore jùlọ fún yín tí ẹ bá mọ̀."
     }
   }
 };
