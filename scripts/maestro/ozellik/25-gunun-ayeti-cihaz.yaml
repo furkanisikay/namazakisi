@@ -30,9 +30,9 @@ appId: com.furkanisikay.namazakisi
 - takeScreenshot: ozk/63-gunun-ayeti-widget-ekle
 # Launcher3 AddItemActivity: "Add to home screen" / "Ana ekrana ekle" (büyük harfle de çizilebilir).
 # Düğmenin kimliği yok; başlatıcının çevirisi olan sağdan sola dillerde metin o dildedir
-# (Launcher3'te çevirisi olmayan dil İngilizceye düşer).
+# (Launcher3'te çevirisi olmayan dil İngilizceye düşer; Svahili ve Amharca çevrili, Ge'ez ገፅ/ገጽ yazımı esnek).
 - tapOn:
-    text: "(?i)(add to home screen|ana ekrana ekle|افزودن به صفحه اصلی|إضافة إلى الشاشة الرئيسية|ہوم اسکرین میں شامل کریں|Əsas ekrana əlavə edin|Bosh ekranga chiqarish|Негізгі экранға қосу|Башкы экранга кошуу)"
+    text: "(?i)(add to home screen|ana ekrana ekle|افزودن به صفحه اصلی|إضافة إلى الشاشة الرئيسية|ہوم اسکرین میں شامل کریں|Əsas ekrana əlavə edin|Bosh ekranga chiqarish|Негізгі экранға қосу|Башкы экранга кошуу|Weka kwenye skrini ya kwanza|ወደ መነሻ ማያ .* አክል)"
 - waitForAnimationToEnd:
     timeout: 4000
 # Duvar kâğıdı: anahtar → onay → "Açın"; uygulama native'de hemen yazar.
