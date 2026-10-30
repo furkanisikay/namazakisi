@@ -37,11 +37,11 @@ export const hesap: Sozluk['hesap'] = {
   oneri: {
     bulunduguYer: 'Bakka keessan · {yer}',
     bulunduguUlke: 'Biyya keessan',
-    soru: "Yeroo salaataa akka sagantaa masjiidota naannoo, mala {profil}tiin haa herreginuu? Yeroon har'aa akkas jijjiirama:",
+    soru: "Yeroo salaataa akka sagantaa masjiidota naannoo, mala {profil} fayyadamnee haa herreginuu? Yeroon har'aa akkas jijjiirama:",
     vakit: 'Salaata',
     genelUyari: "{guven}: biyya kanaaf sagantaa yeroo seeraa mirkanaa'e hin arganne.",
-    gecin: 'Gara {ad}tti jijjiiraa',
-    devam: '{ad}n itti fufaa',
+    gecin: 'Gara {ad} jijjiiraa',
+    devam: '{ad} wajjin itti fufaa',
     ikiTakvimSoru: "Asitti sagantaan yeroo lama fayyadamu. Yeroo salaataaf isa kam haa fayyadamnu? Har'a akkas wal bira qabamu:",
     alternatifNotu: {
       mwl: 'Sagantaa MWL keessatti, Maghribni lixa aduutti waamama, Asriin immoo yeroo gaaddisni waan tokkoo dheerina isaa qixxeessu jalqaba.',

@@ -25,7 +25,7 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     coklu: cogul({ other: 'Ó ń bẹ̀rẹ̀ ní ìṣẹ́jú {dk} kí ó tó parí, ìkìlọ̀ {n}. {ses}' }),
   },
   sesliBilgi: {
-    alarm: 'Kíkà sókè ń ṣiṣẹ́ bí aago ìdágìrì: ẹ ó gbọ́ ọ ní ipò ìdákẹ́jẹ́ẹ́ àti ní Do Not Disturb pẹ̀lú.',
+    alarm: 'Kíkà sókè ń ṣiṣẹ́ bí aago ìdágìrì: ẹ ó gbọ́ ọ ní ipò ìdákẹ́jẹ́ẹ́ àti ní “Má ṣe yọ mí lẹ́nu” pẹ̀lú.',
     bildirim: 'Kíkà sókè ń dún pẹ̀lú ohùn ìfitónilétí; ẹ kò ní gbọ́ ọ nígbà tí fóònù bá wà ní ìdákẹ́jẹ́ẹ́.',
   },
   kisa: {
@@ -167,8 +167,8 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     esikBirim: { giris: 'ìṣj lẹ́yìn', cikis: 'ìṣj ṣáájú' },
   },
   adim: {
-    acilNotDndYok: 'Ìfitónilétí náà ń wà lókè ojú ìbòjú; ó ń dákẹ́ nígbà tí Do Not Disturb bá wà ní títàn.',
-    acilNotDnd: 'Ìfitónilétí náà ń wà lókè ojú ìbòjú; ó lè la Do Not Disturb kọjá.',
+    acilNotDndYok: 'Ìfitónilétí náà ń wà lókè ojú ìbòjú; ó ń dákẹ́ nígbà tí “Má ṣe yọ mí lẹ́nu” bá wà ní títàn.',
+    acilNotDnd: 'Ìfitónilétí náà ń wà lókè ojú ìbòjú; ó lè la “Má ṣe yọ mí lẹ́nu” kọjá.',
     sesSeciciBaslik: 'Ohùn ìfitónilétí',
     altBaslikVakit: '{ad}, {adim}',
     kapat: 'Pa á dé',
@@ -271,9 +271,9 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
     iosEkranYok: 'Kò sí ojú-ìbòjú aago ìdágìrì tí yóò ṣí; ìránnilétí ń dé gẹ́gẹ́ bí ìfitónilétí, ẹ sì lè tẹ̀ ẹ́ láti ṣí ìṣàfilọ́lẹ̀.',
     androidIlk: 'Aago ìdágìrì fóònù yín ń dún fún ìránnilétí àkọ́kọ́ ìgbésẹ̀ yìí, títí ẹ ó fi pa á, fún ìṣẹ́jú {dk} ní púpọ̀ jùlọ.',
     androidIzinsiz:
-      'Ó ń ṣiṣẹ́ bí aago ìdágìrì: ẹ lè gbọ́ ọ kódà nígbà tí fóònù yín bá wà ní ìdákẹ́jẹ́ẹ́ tàbí ní Do Not Disturb. Ẹ tún nílò láti fúnni ní àṣẹ kí ó lè ṣí ní ojú-ìbòjú kíkún lórí ojú-ìbòjú títì.',
+      'Ó ń ṣiṣẹ́ bí aago ìdágìrì: ẹ lè gbọ́ ọ kódà nígbà tí fóònù yín bá wà ní ìdákẹ́jẹ́ẹ́ tàbí ní “Má ṣe yọ mí lẹ́nu”. Ẹ tún nílò láti fúnni ní àṣẹ kí ó lè ṣí ní ojú-ìbòjú kíkún lórí ojú-ìbòjú títì.',
     android:
-      'Ó ń ṣiṣẹ́ bí aago ìdágìrì: ẹ lè gbọ́ ọ kódà nígbà tí fóònù yín bá wà ní ìdákẹ́jẹ́ẹ́ tàbí ní Do Not Disturb, ó sì ń ṣí ní ojú-ìbòjú kíkún lórí ojú-ìbòjú títì.',
+      'Ó ń ṣiṣẹ́ bí aago ìdágìrì: ẹ lè gbọ́ ọ kódà nígbà tí fóònù yín bá wà ní ìdákẹ́jẹ́ẹ́ tàbí ní “Má ṣe yọ mí lẹ́nu”, ó sì ń ṣí ní ojú-ìbòjú kíkún lórí ojú-ìbòjú títì.',
     camide: 'Ní mọ́sálásí, aago ìdágìrì kì í dún; ìránnilétí ń dé gẹ́gẹ́ bí ìfitónilétí aláìláriwo.',
     altBaslik: 'Ó ń dún bí ìṣàfilọ́lẹ̀ aago ìdágìrì fóònù yín',
     altBaslikBilinmiyor: 'Aago ìdágìrì tàbí ohùn ìfitónilétí gígùn, gẹ́gẹ́ bí iPhone yín',
@@ -285,14 +285,14 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
   },
   notlar: {
     calismayacak: 'Ìgbésẹ̀ yìí kò ní ṣiṣẹ́ lónìí — {ad} gùn ní {sure} lónìí',
-    girisDndDelmez: 'Àwọn ìgbésẹ̀ tí ń ṣiṣẹ́ ní kété tí àkókò ìrun bá wọlé kì í la Do Not Disturb kọjá',
-    cikisDndDelmez: 'Ìgbésẹ̀ yìí wà ní ìta ìṣẹ́jú {dk} tó kẹ́yìn àkókò ìrun, nítorí náà kì í la Do Not Disturb kọjá',
+    girisDndDelmez: 'Àwọn ìgbésẹ̀ tí ń ṣiṣẹ́ ní kété tí àkókò ìrun bá wọlé kì í la “Má ṣe yọ mí lẹ́nu” kọjá',
+    cikisDndDelmez: 'Ìgbésẹ̀ yìí wà ní ìta ìṣẹ́jú {dk} tó kẹ́yìn àkókò ìrun, nítorí náà kì í la “Má ṣe yọ mí lẹ́nu” kọjá',
     iosSesli: 'Lórí iPhone, kíkà sókè ń dún gẹ́gẹ́ bí ohùn ìfitónilétí; ó ń dákẹ́ ní ipò ìdákẹ́jẹ́ẹ́',
     iosIlkAlarm: 'Lórí iPhone, ìránnilétí àkọ́kọ́ ń dún gẹ́gẹ́ bí aago ìdágìrì; àwọn àtúnsọ ń dákẹ́ ní ipò ìdákẹ́jẹ́ẹ́',
     iosSessiz: 'Lórí iPhone, ìgbésẹ̀ yìí ń dákẹ́ ní ipò ìdákẹ́jẹ́ẹ́; ó ń dé gẹ́gẹ́ bí ìfitónilétí',
     seyrek: 'Kí ìkìlọ̀ má baà pọ̀ jù, ó ń rán yín létí ní ìṣẹ́jú {dk} kọ̀ọ̀kan',
-    acilGiris: 'Àwọn ìgbésẹ̀ tí ń ṣiṣẹ́ ní kété tí àkókò ìrun bá wọlé kò lè jẹ́ “Kánjúkánjú”; ìgbésẹ̀ yìí ń ṣiṣẹ́ gẹ́gẹ́ bí “Líle”, kì í sì í la Do Not Disturb kọjá',
-    acilCikis: 'Ìgbésẹ̀ yìí wà ní ìta ìṣẹ́jú {dk} tó kẹ́yìn àkókò ìrun, nítorí náà ó ń ṣiṣẹ́ gẹ́gẹ́ bí “Líle”; kì í la Do Not Disturb kọjá',
+    acilGiris: 'Àwọn ìgbésẹ̀ tí ń ṣiṣẹ́ ní kété tí àkókò ìrun bá wọlé kò lè jẹ́ “Kánjúkánjú”; ìgbésẹ̀ yìí ń ṣiṣẹ́ gẹ́gẹ́ bí “Líle”, kì í sì í la “Má ṣe yọ mí lẹ́nu” kọjá',
+    acilCikis: 'Ìgbésẹ̀ yìí wà ní ìta ìṣẹ́jú {dk} tó kẹ́yìn àkókò ìrun, nítorí náà ó ń ṣiṣẹ́ gẹ́gẹ́ bí “Líle”; kì í la “Má ṣe yọ mí lẹ́nu” kọjá',
   },
   alarmEylem: {
     tamEkranIzni: { metin: 'Gbà láàyè', etiket: 'Gba ojú-ìbòjú kíkún láàyè' },

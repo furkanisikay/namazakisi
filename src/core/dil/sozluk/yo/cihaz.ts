@@ -23,7 +23,7 @@ export const cihaz: Sozluk['cihaz'] = {
     tamAlarm: 'Àṣẹ aago ìdágìrì gangan wà ní pípa; àwọn ìránnilétí lè pẹ́.',
     tamEkran: 'Àṣẹ láti ṣí ní ojú-ìbòjú kíkún lórí ojú-ìbòjú títì wà ní pípa.',
     pil: 'Ìdènà bátírì lè mú kí àwọn ìránnilétí pẹ́.',
-    dnd: 'A pa ìfitónilétí yìí lẹ́nu mọ́ nígbà tí Do Not Disturb bá wà ní títàn.',
+    dnd: 'A pa ìfitónilétí yìí lẹ́nu mọ́ nígbà tí “Má ṣe yọ mí lẹ́nu” bá wà ní títàn.',
     turkceTts: 'A kò rí àpò ohùn Yorùbá; a lè má gbọ́ kíkà sókè.',
     turkceTtsIos: 'A kò rí àpò ohùn Yorùbá; a lè má gbọ́ kíkà sókè. Ẹ gba ohùn sílẹ̀ nínú ètò Accessibility.',
     alarmSesi: 'Ohùn aago ìdágìrì yín wà ní pípa; a kò ní gbọ́ ìjíǹde.',

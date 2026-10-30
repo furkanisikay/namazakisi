@@ -2,7 +2,7 @@ import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 export const hatirlatma: Sozluk['hatirlatma'] = {
-  duzeyAdlari: { kapali: 'Imezimwa', hafif: 'Chepesi', normal: 'Kawaida', yogun: 'Mara kwa mara' },
+  duzeyAdlari: { kapali: 'Imezimwa', hafif: 'Chepesi', normal: 'Kawaida', yogun: 'Nyingi' },
   fark: {
     dahaAz: 'tahadhari chache',
     dahaCok: 'tahadhari zaidi',

@@ -82,7 +82,7 @@ export const kurulum: Sozluk['kurulum'] = {
     baslayin: 'Jalqabaa',
     konumBulunuyor: 'Bakki barbaadamaa jira',
     vazgecSehrimiSecerim: 'Dhiisi, magaalaa koo nan filadha',
-    ileDevam: '{ad}n itti fufaa',
+    ileDevam: '{ad} wajjin itti fufaa',
     sehirSecin: 'Magaalaa filadhaa',
     konumumuBulun: 'Bakka koo barbaadi',
     konumumuKullanin: 'Bakka koo fayyadami',

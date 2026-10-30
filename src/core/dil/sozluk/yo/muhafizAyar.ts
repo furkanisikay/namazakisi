@@ -55,7 +55,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
   sesliOnay: {
     soyler: 'Lórí àwọn ìgbésẹ̀ tí ẹ ṣètò nìkan, ó ń sọ àkókò tí ó kù tàbí tí ó ti kọjá sókè.',
     iosSessiz: 'Lórí iPhone, ó ń dún gẹ́gẹ́ bí ohùn ìfitónilétí; ó ń dákẹ́ nígbà tí bọ́tìnnì ring/silent bá wà ní silent.',
-    alarmGibi: 'Ó ń ṣiṣẹ́ bí aago ìdágìrì: ẹ ó gbọ́ ọ kódà nígbà tí fóònù yín bá wà ní ìdákẹ́jẹ́ẹ́ tàbí ní Do Not Disturb.',
+    alarmGibi: 'Ó ń ṣiṣẹ́ bí aago ìdágìrì: ẹ ó gbọ́ ọ kódà nígbà tí fóònù yín bá wà ní ìdákẹ́jẹ́ẹ́ tàbí ní “Má ṣe yọ mí lẹ́nu”.',
     bildirimDe: 'A tún ń fi ìfitónilétí ránṣẹ́; tí ohùn náà bá bọ́ lọ́wọ́ yín, yóò wà lójú ìbòjú.',
     baslik: 'Ṣé kí a tan kíkà sókè?',
     altBaslik: 'Ìpele {duzey} ní kíkà sókè nínú',
