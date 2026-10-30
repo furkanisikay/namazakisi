@@ -1046,31 +1046,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "መተግበሪያውን ክፈት"
     )
 
-    // ÇEVİRİ: om
+    // om
     public static let om = VakitMetinleri(
         dil: "om",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Subhii", "ogle": "Zuhrii", "ikindi": "Asrii", "aksam": "Maghriba", "yatsi": "Ishaa'ii"],
+        gunes: "Baha aduu",
+        konumYok: "Yeroon salaataa akka herregamuuf appicha banaatii bakka keessan qindeessaa.",
+        veriEski: "Yeroon salaataa moofaa dha. Haaromsuuf appicha si'a tokko banaa.",
+        girisBugun: "sa'aatii {saat}tti",
+        girisYarin: "boru sa'aatii {saat}tti",
+        suAnVakti: "Amma yeroo {ad} ti.",
+        suAnVaktiCikis: "Amma yeroo {ad} ti; {saat}tti xumurama.",
+        siradakiNamaz: "Salaanni itti aanu {ad}, {giris}.",
+        isaretlendi: "{ad} akka salaatameetti mallattaa'eera. {dua}.",
+        zatenKilindi: "{ad} duraan akka salaatameetti mallattaa'eera.",
+        vakitYok: "Amma salaanni mallattaa'u hin jiru.",
+        vakitYokSiradaki: "Amma salaanni mallattaa'u hin jiru. Kan itti aanu {ad}, {giris}.",
+        onay: "{ad} akka salaatameetti mallatteessituu?",
+        vakitDegisti: "Yeroon salaataa waan jijjiirameef wanti tokkollee hin mallattoofne. Irra deebi'aa yaalaa.",
+        kabulDuasi: "Rabbiin haa qeebalu",
+        kildim: "Ani salaateera",
+        kilindi: "Salaatameera",
+        kontrolKildim: "{ad} · Ani salaateera",
+        kontrolKilindi: "{ad} salaatameera",
+        kontrolVakitYok: "Salaanni mallattaa'u hin jiru",
+        uygulamayiAcin: "Appicha banaa"
     )
 
     // so

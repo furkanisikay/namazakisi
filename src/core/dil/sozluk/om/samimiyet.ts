@@ -1,35 +1,36 @@
-// ÇEVİRİ: om — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Oromo konuşan Müslümanların kalıpları (çeviri değil). "qeebaluu" (kabul etmek) kökü QuranEnc
+ * `oromo_ababor` 2:127 ("nurraa qeebali") ve 5:27 ("Rabbiin kan qeebalu"), "Gooftaa" (Rab)
+ * 17:79'dan; "haa …" dilek kipi dilbilgisiyle kuruldu, kalıp olarak kaynakta görülmedi —
+ * yerli okuyucu gözden geçirmeli. Kandil ve hicrî yılbaşı selamı yalnız Türkiye geleneğinde
+ * söylenir (`selam.ts`); buradaki karşılıklar tip bütünlüğü içindir.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Rabbiin isiniif haa eebbisu.',
+  kabulDualari: ['Rabbiin haa qeebalu', 'Rabbiin isin irraa haa qeebalu', 'Rabbiin haa qeebalu', 'Gooftaan keenya haa qeebalu'],
+  kabulDuasi: 'Rabbiin haa qeebalu',
+  ekSabah: 'Ganama gaarii',
+  ekYatsi: 'Halkan gaarii',
+  tamGunAna: 'Rabbiin haa qeebalu',
+  tamGunAlt: "Har'a salaata shanan hunda guuttaniittu.",
+  kazaKabul: "Qadaan {vakit} tokko galmee keessan irraa hir'ifameera. {dua}.",
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: "Halkan Ragaa'ibii eebbifamaa haa ta'u",
+    mirac: "Israa'ii fi Mi'iraajii eebbifamaa haa ta'u",
+    berat: "Halkan Baraa'aa eebbifamaa haa ta'u",
+    mevlid: "Mawliidiin eebbifamaa haa ta'u",
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'Suhuura eebbifamaa',
+    bayram: "Iidni keessan eebbifamaa haa ta'u",
+    iftar: 'Afursaa eebbifamaa',
+    kadir: "Laylatul Qadrii eebbifamaa haa ta'u",
+    arefe: 'Halkan Arafaa eebbifamaa',
+    hicriYilbasi: "Waggaan haaraan Hijraa eebbifamaa haa ta'u",
+    cuma: 'Jimaata eebbifamaa',
+    ramazan: "Ramadaanni eebbifamaa haa ta'u",
+    sabah: 'Ganama gaarii',
   },
 };

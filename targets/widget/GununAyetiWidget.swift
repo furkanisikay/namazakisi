@@ -427,18 +427,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Muhammad Sadiq፣ QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: om
+    // om — örnek meal `gununAyetiHavuzu.ts` 94:6 `om` birebir; künye `mealler.om`
     static let om = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Aayata guyyaa",
+        galeriAciklama: "Aayataafi hiikkaa isaa guyyaa guyyaan Subhiitti jijjiiramu.",
+        etiket: "AAYATA GUYYAA",
+        uygulamayiAcin: "Aayata guyyaa arguuf appicha banaa",
+        ornekSigmiyor: "Aayanni har'aa hanga kanaaf hin gahu. Dubbisuuf tuqaa.",
+        ornekAcin: "Banaa",
+        ornekArapcaKaynagi: "Arabaa: Tanzil",
+        ornekMeal: "Dhugumatti, rakkina wajjin laafinatu jira.",
+        ornekKisaKunye: "Qur'aana 94:6",
+        ornekMealKaynagi: "Gali Ababor, QuranEnc 1.0.3"
     )
 
     // so

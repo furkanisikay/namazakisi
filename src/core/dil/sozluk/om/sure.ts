@@ -1,10 +1,10 @@
-// ÇEVİRİ: om — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Rakamla yazıldığında ad tekil kalır ("5 daqiiqaa"); sıra `dakikaUyumu` için sayı önce. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: "sa'a", dk: 'daq', sn: 'sek' },
+  saat: cogul({ one: "{n} sa'aatii", other: "{n} sa'aatii" }),
+  dakika: cogul({ one: '{n} daqiiqaa', other: '{n} daqiiqaa' }),
+  saniye: cogul({ one: '{n} sekondii', other: '{n} sekondii' }),
 };

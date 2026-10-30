@@ -254,12 +254,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} ሰከንድ", "other": "{n} ሰከንድ"]
     )
 
-    // ÇEVİRİ: om
+    // om — JS `sozluk/om/sure.ts` birebir (rakamla yazılınca ad tekil, one = other)
     public static let om = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "sa'a", birimDk: "daq", birimSn: "sek",
+        saat: ["one": "{n} sa'aatii", "other": "{n} sa'aatii"],
+        dakika: ["one": "{n} daqiiqaa", "other": "{n} daqiiqaa"],
+        saniye: ["one": "{n} sekondii", "other": "{n} sekondii"]
     )
 
     // so
