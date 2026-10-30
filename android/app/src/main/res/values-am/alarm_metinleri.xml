@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: am — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- Gerçek alarm (Amharca). "ሰገድኩ" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">የሶላት ማንቂያ</string>
+  <string name="alarm_kildim">ሰገድኩ</string>
+  <string name="alarm_kapat">አጥፋ</string>
+  <string name="alarm_kanal_aciklamasi">በመረጧቸው የአስታዋሽ ደረጃዎች የሚደውል እውነተኛ ማንቂያ</string>
 </resources>

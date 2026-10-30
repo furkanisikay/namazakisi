@@ -1019,31 +1019,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: am
+    // am — Amharca (beta); terimler src/core/dil/sozluk/am
     public static let am = VakitMetinleri(
         dil: "am",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ፈጅር", "ogle": "ዙህር", "ikindi": "አስር", "aksam": "መግሪብ", "yatsi": "ኢሻ"],
+        gunes: "ፀሐይ መውጣት",
+        konumYok: "የሶላት ሰዓቶች እንዲሰሉ መተግበሪያውን ይክፈቱና አካባቢዎን ያዘጋጁ።",
+        veriEski: "የሶላት ሰዓቶቹ ጊዜያቸው ያለፈባቸው ናቸው። ለማዘመን መተግበሪያውን አንድ ጊዜ ይክፈቱ።",
+        girisBugun: "በ{saat}",
+        girisYarin: "ነገ በ{saat}",
+        suAnVakti: "አሁን የ{ad} ሰዓት ነው።",
+        suAnVaktiCikis: "አሁን የ{ad} ሰዓት ነው፤ በ{saat} ያበቃል።",
+        siradakiNamaz: "ቀጣዩ ሶላት {ad} ነው፣ {giris}።",
+        isaretlendi: "{ad} እንደተሰገደ ምልክት ተደርጓል። {dua}።",
+        zatenKilindi: "{ad} አስቀድሞ እንደተሰገደ ምልክት ተደርጓል።",
+        vakitYok: "አሁን ምልክት የሚደረግበት ሶላት የለም።",
+        vakitYokSiradaki: "አሁን ምልክት የሚደረግበት ሶላት የለም። ቀጣዩ {ad} ነው፣ {giris}።",
+        onay: "{ad} እንደተሰገደ ምልክት ይደረግ?",
+        vakitDegisti: "የሶላቱ ሰዓት ስለተቀየረ ምንም ምልክት አልተደረገም። እንደገና ይሞክሩ።",
+        kabulDuasi: "አላህ ይቀበለው",
+        kildim: "ሰገድኩ",
+        kilindi: "ተሰግዷል",
+        kontrolKildim: "{ad} · ሰገድኩ",
+        kontrolKilindi: "{ad} ተሰግዷል",
+        kontrolVakitYok: "ምልክት የሚደረግበት ሶላት የለም",
+        uygulamayiAcin: "መተግበሪያውን ክፈት"
     )
 
     // ÇEVİRİ: om

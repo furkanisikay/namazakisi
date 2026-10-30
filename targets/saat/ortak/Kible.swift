@@ -508,17 +508,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: am
+    // am — Amharca (beta); CLDR am binlik ayırıcı ","
     public static let am = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "ከኋላዎ",
+        saga: "ቀኝ {derece}°",
+        sola: "ግራ {derece}°",
+        hizali: "ወደ ቂብላ ዞረዋል",
+        arkadaErisim: "ቂብላ ከኋላዎ ነው",
+        sagdaErisim: "ቂብላ ከቀኝዎ {derece} ዲግሪ ነው",
+        soldaErisim: "ቂብላ ከግራዎ {derece} ዲግሪ ነው",
+        kabede: "ካዕባ ላይ ነዎት",
+        mesafe: "{km} ኪ.ሜ",
         binlikAyirici: ","
     )
 

@@ -1,61 +1,60 @@
-// ÇEVİRİ: am — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı: tekil eril emir (QE 17:78 "ሶላትን … ስገድ"; Microsoft kılavuzu tekil eril
+ * kalıbı kadına da gider). "Secdeye kapan" YAZILMAZ → "ለሶላት ቁም" (namaza dur). Ge'ez'de büyük
+ * harf yok: İngilizcedeki BÜYÜK vurgu yerine kısa emir. Başlıkta süre "ደቂ" (CLDR kısa birim).
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} ደቂ አልፏል · የሶላት ሰዓት ነው ⏰',
+    giris2: '{ad} · {dk} ደቂ አልፏል · ሶላትህን አታዘግይ ⚠️',
+    giris3: '{ad} · {dk} ደቂ አልፏል · ሶላትህ ይጠብቅሃል 🔥',
+    giris4: '{ad} · {dk} ደቂ አልፏል · ለሶላት ቁም 🚨',
+    erken3: '{ad} · {dk} ደቂ ቀርቷል · ሶላትህ ይጠብቅሃል 🔥',
+    erken4: '{ad} · {dk} ደቂ ቀርቷል · ለሶላት ቁም 🚨',
+    cikis1: '{ad} · {dk} ደቂ ቀርቷል ⏰',
+    cikis2: '{ad} · {dk} ደቂ · ጊዜው እያጠረ ነው ⚠️',
+    cikis3: '{ad} · {dk} ደቂ · ጊዜው እያመለጠ ነው 🔥',
+    cikis4: '{ad} · {dk} ደቂ · ሰዓቱ እያለቀ ነው 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['የሶላት ሰዓት ነው፤ እድሉ እያለህ ስገድ።', 'ጊዜው ከጎንህ እያለ ስገድ፤ ለበኋላ አትተወው።'],
+    s2: ['ባዘገየኸው ቁጥር እየከበደ ይሄዳል፤ ሶላትህን እስከ መጨረሻ አትተወው።', 'ጊዜው እየሄደ ነው፤ አሁን ስገድ።'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'ባዘገየህ ቁጥር ሰዓቱ ሊያመልጥህ ይቀርባል፤ አሁን ስገድ።',
+      '“በኋላ እሰግዳለሁ” አትበል፤ አሁን መስገድ ትችላለህ።',
+      'ከጥቂት ደቂቃዎች በኋላ “ምነው” ከማለት አሁን ተነሳ።',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['ሶላትህን ከዚህ በላይ አታዘግይ፤ አሁን ለሶላት ቁም።', 'የያዝከውን አስቀምጥና ለሶላት ቁም።'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'ጊዜው ማጠር ጀምሯል፤ እድሉ እያለህ ስገድ።',
+    s2: 'ሶላትህን እስከ መጨረሻ አትተወው፤ አሁን ለመስገድ ጥሩ ጊዜ ነው።',
+    s3: 'ጊዜው ሊያልቅ ነው፤ አሁንም መስገድ ትችላለህ።',
+    s4: 'ከሰገድክ “ሰገድኩ”ን ንካ፤ ካልሰገድክ አሁን ለሶላት ቁም።',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'ሶላትህን አታዘግይ። አሁን ለሶላት ቁም። ({dk} ደቂቃ አልፏል)',
+    giris2: 'ጊዜው እየሄደ ነው፤ ሶላትህን እስከ መጨረሻ አትተወው። ({dk} ደቂቃ አልፏል)',
+    giris1: cogul({ one: 'የሶላት ሰዓት ከገባ {n} ደቂቃ ሆኗል።', other: 'የሶላት ሰዓት ከገባ {n} ደቂቃ ሆኗል።' }),
+    erken4: 'ሶላትህን አታዘግይ፤ አሁን ለሶላት ቁም። ({dk} ደቂቃ ቀርቷል)',
+    cikis4: 'ሰዓቱ እያለቀ ነው። አሁን ለሶላት ቁም። ({dk} ደቂቃ ቀርቷል)',
+    cikis2: 'ጊዜው እያጠረ ነው፤ ሶላትህን እስከ መጨረሻ አትተወው። ({dk} ደቂቃ ቀርቷል)',
+    cikis1: cogul({ one: 'የሶላት ሰዓቱ እስኪያልቅ {n} ደቂቃ ቀርቷል።', other: 'የሶላት ሰዓቱ እስኪያልቅ {n} ደቂቃ ቀርቷል።' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · ከመተኛትህ በፊት ስገድ ⏰',
+    govde: 'የጸጥታ ሰዓቶች በ{dk} ደቂቃ ውስጥ ይጀምራሉ፤ ከመተኛትህ በፊት ኢሻን ስገድ።',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'ጊዜው ማጠር ጀምሯል፤ እድሉ እያለህ ስገድ።',
+    sonaBirakma: 'ሶላትህን እስከ መጨረሻ አትተወው፤ አሁን ለመስገድ ጥሩ ጊዜ ነው።',
+    fisilti: '“በኋላ እሰግዳለሁ” አትበል፤ ጊዜው ሊያልቅ ነው፣ አሁን መስገድ ትችላለህ።',
+    omur: 'ጊዜው እያለፈ ነው፤ ይህን ሶላት በሰዓቱ ለመስገድ አሁንም እድል አለህ።',
+    keske: 'ከጥቂት ደቂቃዎች በኋላ “ምነው” ከማለት አሁን ተነሳ።',
+    namazaDur: 'ከሰገድክ “ሰገድኩ”ን ንካ፤ ካልሰገድክ አሁን ለሶላት ቁም።',
+    sonDakika: 'የመጨረሻዎቹ ደቂቃዎች። የያዝከውን አስቀምጥና ለሶላት ቁም።',
   },
 };

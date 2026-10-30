@@ -413,18 +413,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: am
+    // am — Amharca (beta); örnek meal gununAyetiHavuzu.ts 94:6 `am` (amharic_sadiq) BİREBİR
     static let am = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "የዕለቱ አንቀጽ",
+        galeriAciklama: "በየቀኑ በፈጅር የሚቀየር አንቀጽ እና ትርጉሙ።",
+        etiket: "የዕለቱ አንቀጽ",
+        uygulamayiAcin: "የዕለቱን አንቀጽ ለማየት መተግበሪያውን ይክፈቱ",
+        ornekSigmiyor: "የዛሬው አንቀጽ በዚህ መጠን አይበቃም። ለማንበብ ይንኩ።",
+        ornekAcin: "ክፈት",
+        ornekArapcaKaynagi: "ዓረብኛ፦ Tanzil",
+        ornekMeal: "ከችግር ጋር በእርግጥ ምቾት አልለ፡፡",
+        ornekKisaKunye: "ቁርኣን 94:6",
+        ornekMealKaynagi: "Muhammad Sadiq፣ QuranEnc 1.1.2"
     )
 
     // ÇEVİRİ: om

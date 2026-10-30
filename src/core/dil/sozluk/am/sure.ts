@@ -1,10 +1,13 @@
-// ÇEVİRİ: am — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/**
+ * Kısa birimler CLDR `am` (ሰዓ/ደቂ/ሰከ). Uzun biçimde sayıdan sonra ad tekil kalır ("10 ደቂቃ ቀርቷል"):
+ * Amharcada doğal olan budur ve `dakikaUyumu` sesli okuma şablonundaki tekil fiil uyumunu bozmaz.
+ */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: 'ሰዓ', dk: 'ደቂ', sn: 'ሰከ' },
+  saat: cogul({ one: '{n} ሰዓት', other: '{n} ሰዓት' }),
+  dakika: cogul({ one: '{n} ደቂቃ', other: '{n} ደቂቃ' }),
+  saniye: cogul({ one: '{n} ሰከንድ', other: '{n} ሰከንድ' }),
 };

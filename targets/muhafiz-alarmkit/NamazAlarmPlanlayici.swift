@@ -148,8 +148,8 @@ enum NamazAlarmCekirdegi {
         "sw": "Stop",
         // ÇEVİRİ: ha
         "ha": "Stop",
-        // ÇEVİRİ: am
-        "am": "Stop",
+        // am
+        "am": "አቁም",
         // ÇEVİRİ: om
         "om": "Stop",
         // ÇEVİRİ: so

@@ -1,35 +1,35 @@
-// ÇEVİRİ: am — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Amharca konuşan Müslümanların kalıpları (çeviri değil). Dua fiili ተቀበለ ("ከእኛ ተቀበል", QE 2:127);
+ * çekimli kalıplar (አላህ ይቀበለው, ጌታችን ይቀበለን) TÜRETİLDİ, yerli okuyucuyla doğrulanmadı.
+ * Kandil ve hicrî yılbaşı selamı yalnız Türkiye geleneğinde söylenir; buradaki karşılıklar tip
+ * bütünlüğü içindir.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'የተባረከ ይሁን።',
+  kabulDualari: ['አላህ ይቀበለው', 'ተቀባይነት ያግኝ', 'አላህ ይቀበለው', 'ጌታችን ይቀበለን'],
+  kabulDuasi: 'አላህ ይቀበለው',
+  ekSabah: 'የተባረከ ጠዋት ይሁንልዎ',
+  ekYatsi: 'የተባረከ ምሽት ይሁንልዎ',
+  tamGunAna: 'አላህ ይቀበለው',
+  tamGunAlt: 'ዛሬ አምስቱንም ሶላቶች አጠናቀዋል።',
+  kazaKabul: 'አንድ የ{vakit} ቀዷእ ከመዝገብዎ ተቀንሷል። {dua}።',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'የተባረከ የረጋኢብ ሌሊት',
+    mirac: 'የተባረከ ኢስራእ እና ሚዕራጅ',
+    berat: 'የተባረከ የበራኣ ሌሊት',
+    mevlid: 'የተባረከ መውሊድ',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'የተባረከ ሱሑር',
+    bayram: 'ዒድ ሙባረክ',
+    iftar: 'የተባረከ ኢፍጣር',
+    kadir: 'የተባረከ ለይለቱል ቀድር',
+    arefe: 'የተባረከ የዒድ ዋዜማ',
+    hicriYilbasi: 'የተባረከ የሂጅራ አዲስ ዓመት',
+    cuma: 'ጁሙዓ ሙባረክ',
+    ramazan: 'ረመዳን ሙባረክ',
+    sabah: 'የተባረከ ጠዋት ይሁንልዎ',
   },
 };
