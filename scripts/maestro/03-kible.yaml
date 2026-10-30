@@ -18,6 +18,12 @@ appId: com.furkanisikay.namazakisi
           id: "kutlama-devam"
 # Kıble kendi sekmesinde (Dalga 4).
 - tapOn: "(Kıble|Qibla)"
+# "Konumunuz alınıyor…" durağan metindir: waitForAnimationToEnd onu beklemez, kare yükleme
+# durumunda kalıyordu (ff/om/yo 2026-10-30). Yön cümlesi gelene dek bekle; gelmezse kare yine alınır.
+- extendedWaitUntil:
+    notVisible: "(Konumunuz alınıyor…|Getting your location…)"
+    timeout: 20000
+    optional: true
 - waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: kareler/05-kible
