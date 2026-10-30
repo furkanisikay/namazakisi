@@ -102,7 +102,18 @@ fun VakitSatiri(
             modifier = Modifier.width(46.dp).clearAndSetSemantics { },
         )
         Column(Modifier.weight(1f).clearAndSetSemantics { }) {
-            Text(ad, style = MaterialTheme.typography.titleSmall, color = yazi, maxLines = 1)
+            // Ad KESİLMEZ, sütuna sığana dek küçülür: kare saatte "La'asar" "La'asa"ya, "Adhuhuri"
+            // "Adhuh"a üç noktasız kesiliyordu (Hausa, Svahili; 2026-10-30).
+            val adStili = MaterialTheme.typography.titleSmall
+            SigdirilanMetin(
+                ad,
+                enFazla = adStili.fontSize,
+                renk = yazi,
+                modifier = Modifier.fillMaxWidth(),
+                agirlik = adStili.fontWeight ?: FontWeight.Medium,
+                ortala = false,
+                stil = adStili,
+            )
             val alt = when {
                 satir.esitleniyor -> esitleniyor
                 // "kaldı" eki kare ekranda "2 sa 41 dk"yı "2 sa 41"e kesiyordu; süre tek başına okunur.

@@ -33,6 +33,7 @@ import androidx.wear.compose.material3.AlertDialogDefaults
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.CompactButton
+import androidx.wear.compose.material3.LocalTextStyle
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
@@ -329,11 +330,15 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
             colors = ButtonDefaults.buttonColors(containerColor = yesil, contentColor = ust),
             modifier = Modifier.semantics { contentDescription = yenidenAciklama },
             label = {
-                Text(
+                // Etiket kesilmez, sığmazsa küçülür (Oromo "Irra deebi'aa jalqabaa" kare
+                // ekranda "Irra deebi'aa jal…" oluyordu; 2026-10-30).
+                val stil = LocalTextStyle.current
+                SigdirilanMetin(
                     stringResource(R.string.tesbihat_yeniden),
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                    enFazla = stil.fontSize,
+                    renk = ust,
+                    agirlik = FontWeight.Bold,
+                    stil = stil,
                 )
             },
         )
