@@ -454,19 +454,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", Swala inayofuata"
     )
 
-    // ÇEVİRİ: ha
+    // ha — Hausa (beta): JS `sozluk/ha`
     static let ha = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Ku zaɓi birninku",
+        ilMerkezi: "Ana lissafa lokutan salla na tsakiyar lardi. Kuna iya canja zaɓinku daga baya.",
+        ilSecErisim: "{il}, zaɓa",
+        kalan: "Lokacin da ya rage zuwa {ad}",
+        kalanErisim: "Lokacin da ya rage zuwa {ad}: {sure}",
+        konumuDegistirin: "Canja wuri",
+        kerahatSuruyor: "Lokacin makaruhi: {tur}, zai ƙare {bitis}. {aciklama}",
+        siradakiKerahat: "Lokacin makaruhi na gaba: {tur} {bas}–{bit}",
+        cumaBilgisi: "Yau ranar Jummaʼa ce. Ana yin Jumuʼa a lokacin Azahar (za ta yi {giris}).",
+        suAnkiEk: ", sallar yanzu",
+        siradakiEk: ", salla ta gaba"
     )
 
     // ÇEVİRİ: am

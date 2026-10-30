@@ -428,18 +428,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: ha
+    // ha — Hausa (beta); JS `sozluk/ha` (vakit, tarih, anaEkran.kerahat), Android TV `TvDiliHa` ikizi
     public static let ha = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "Asuba", "gunes": "Fitowar Rana", "ogle": "Azahar", "ikindi": "Laʼasar", "aksam": "Magariba", "yatsi": "Isha"],
+        cuma: "Jumuʼa",
+        aylar: ["Janairu", "Faburairu", "Maris", "Afirilu", "Mayu", "Yuni", "Yuli", "Agusta", "Satumba", "Oktoba", "Nuwamba", "Disamba"],
+        gunler: ["Litinin", "Talata", "Laraba", "Alhamis", "Jummaʼa", "Asabar", "Lahadi"],
+        tarih: "{gunAdi}, {gun} {ay}, {yil}",
+        kerahatAdlari: ["suruk": "Fitowar rana", "istiva": "Tsakiyar rana", "gurub": "Faɗuwar rana"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Yin salla makaruhi ne har sai rana ta ɗaga sosai.",
+            "istiva": "Yin salla makaruhi ne lokacin da rana take tsakiyar sama.",
+            "gurub": "Yin salla makaruhi ne lokacin da rana take faɗuwa.",
         ]
     )
 

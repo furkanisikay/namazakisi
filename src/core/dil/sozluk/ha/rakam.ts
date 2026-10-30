@@ -1,11 +1,10 @@
-// ÇEVİRİ: ha — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Lambobi',
+  aciklama: 'Ku zaɓi lambobin da za a yi amfani da su wajen lokaci, kwanan wata da ƙididdiga.',
+  otomatik: 'Bisa ga ƙasa',
+  otomatikAciklama: 'Yana amfani da lambobin da suka saba a ƙasar wurinku.',
+  dogu: 'Lambobin Larabci na Gabas',
+  bati: 'Lambobin Yamma',
 };

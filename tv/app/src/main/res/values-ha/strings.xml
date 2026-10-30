@@ -1,99 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ha — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- English. Terms: docs/ajan/coklu-dil.md glossary + src/core/dil/sozluk/en. -->
+<!-- Hausa. Terimler: src/core/dil/sozluk/ha (kesme ʼ U+02BC). -->
 <resources>
     <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
     <string name="dil_kodu">ha</string>
     <string name="app_name">Namaz Akışı</string>
-    <string name="ekran_koruyucu_adi">Prayer times board</string>
-    <string name="ayarlar">Settings</string>
+    <string name="ekran_koruyucu_adi">Allon lokutan salla</string>
+    <string name="ayarlar">Saituna</string>
     <!-- Pano (ui/PanoEkrani) -->
-    <string name="pano_kalan_erisim">%2$s left until %1$s</string>
-    <string name="pano_vaktine">Until %1$s</string>
-    <string name="pano_vaktine_kalan">%1$s in %2$s</string>
-    <string name="pano_kerahat_vakti">Makruh time</string>
-    <string name="pano_bitis">ends %1$s</string>
-    <string name="pano_kerahat_erisim">Makruh time, %1$s, ends %2$s. %3$s</string>
-    <string name="pano_cumaya">Jumu\'ah in %1$s</string>
-    <string name="pano_cikis_geldi">time to leave</string>
-    <string name="pano_cikis">leave at %1$s</string>
-    <string name="pano_cuma_cikis_geldi_erisim">It\'s time to leave for Jumu\'ah</string>
-    <string name="pano_cuma_cikis_erisim">Leave for Jumu\'ah at %1$s</string>
-    <string name="pano_bugun_cuma">Today is Jumu\'ah</string>
-    <string name="pano_ogle">Dhuhr %1$s</string>
-    <string name="pano_bugun_cuma_erisim">Today is Jumu\'ah. The Jumu\'ah prayer is at Dhuhr time, %1$s</string>
-    <string name="pano_ayarlar_erisim">Settings: add a phone, location, connected phones</string>
-    <string name="pano_simdiki_vakit">current prayer time</string>
-    <string name="pano_siradaki_vakit">next prayer time</string>
-    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Add your phone", "Enter code", "I'll choose the city myself", "Add". -->
-    <string name="kodla_girin">Enter code</string>
-    <string name="ili_kendim_secin">I\'ll choose the city myself</string>
-    <string name="yeniden_deneyin">Try again</string>
-    <string name="telefon_varsayilan">Phone</string>
-    <string name="esleme_ekleniyor">Adding %1$s</string>
-    <string name="esleme_gonderiyor">Your phone is sending its location and status…</string>
-    <string name="esleme_tamamlanamadi">Pairing couldn\'t be completed</string>
-    <string name="esleme_saklanamadi">This TV can\'t store the connection key securely. You can enter your location with a code or choose your city.</string>
-    <string name="telefonunuzu_ekleyin">Add your phone</string>
-    <string name="esleme_alt">Prayer times for your location; the prayers you\'ve prayed appear too.</string>
-    <string name="esleme_adim1">Open Namaz Akışı on your phone</string>
-    <string name="esleme_adim2">Settings › My devices › Add a TV</string>
-    <string name="esleme_adim3">Point your phone\'s camera at the code</string>
-    <string name="esleme_ayni_wifi">Your phone and TV must be on the same Wi-Fi network.</string>
-    <string name="esleme_onay_soru">Add this phone?</string>
-    <string name="esleme_onay_aciklama">The added phone can send its location and the prayers it marks to this TV.</string>
-    <string name="ekleyin">Add</string>
-    <string name="hayir">No</string>
-    <string name="esleme_eklendi">%1$s added</string>
-    <string name="konumunuz_geldi">Your location arrived</string>
-    <string name="konuma_gore_hesaplanacak">Prayer times will be calculated for this location.</string>
-    <string name="qr_konum_alindi">Location received</string>
-    <string name="qr_kodu">Pairing code to scan with your phone</string>
-    <string name="ag_yok">The TV isn\'t connected to a network</string>
-    <string name="ag_yok_aciklama">You can continue by entering the 7-digit code from your phone or choosing your city.</string>
+    <string name="pano_kalan_erisim">Saura %2$s zuwa %1$s</string>
+    <string name="pano_vaktine">Zuwa %1$s</string>
+    <string name="pano_vaktine_kalan">%1$s cikin %2$s</string>
+    <string name="pano_kerahat_vakti">Lokacin makaruhi</string>
+    <string name="pano_bitis">zai ƙare %1$s</string>
+    <string name="pano_kerahat_erisim">Lokacin makaruhi, %1$s, zai ƙare %2$s. %3$s</string>
+    <string name="pano_cumaya">Jumuʼa cikin %1$s</string>
+    <string name="pano_cikis_geldi">lokacin fita ya yi</string>
+    <string name="pano_cikis">a fita da ƙarfe %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Lokacin fita zuwa Jumuʼa ya yi</string>
+    <string name="pano_cuma_cikis_erisim">A fita zuwa Jumuʼa da ƙarfe %1$s</string>
+    <string name="pano_bugun_cuma">Yau ranar Jumuʼa ce</string>
+    <string name="pano_ogle">Azahar %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Yau ranar Jumuʼa ce. Sallar Jumuʼa tana a lokacin Azahar, %1$s</string>
+    <string name="pano_ayarlar_erisim">Saituna: ƙara waya, wuri, wayoyin da aka haɗa</string>
+    <string name="pano_simdiki_vakit">lokacin sallar yanzu</string>
+    <string name="pano_siradaki_vakit">lokacin salla ta gaba</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Ƙara wayarku", "Shigar da lamba", "Zan zaɓi birnin da kaina", "Ƙara". -->
+    <string name="kodla_girin">Shigar da lamba</string>
+    <string name="ili_kendim_secin">Zan zaɓi birnin da kaina</string>
+    <string name="yeniden_deneyin">Sake gwadawa</string>
+    <string name="telefon_varsayilan">Waya</string>
+    <string name="esleme_ekleniyor">Ana ƙara %1$s</string>
+    <string name="esleme_gonderiyor">Wayarku tana aika wurinta da halinta…</string>
+    <string name="esleme_tamamlanamadi">Ba a iya kammala haɗawa ba</string>
+    <string name="esleme_saklanamadi">Wannan talabijin ba za ta iya adana maɓallin haɗi cikin tsaro ba. Kuna iya shigar da wurinku da lamba ko ku zaɓi birninku.</string>
+    <string name="telefonunuzu_ekleyin">Ƙara wayarku</string>
+    <string name="esleme_alt">Lokutan salla na wurinku; sallolin da kuka yi ma suna bayyana.</string>
+    <string name="esleme_adim1">Ku buɗe Namaz Akışı a wayarku</string>
+    <string name="esleme_adim2">Saituna › Naʼurorina › Ƙara talabijin</string>
+    <string name="esleme_adim3">Ku nuna kyamarar wayarku ga lambar</string>
+    <string name="esleme_ayni_wifi">Dole ne wayarku da talabijin su kasance a hanyar sadarwar Wi-Fi ɗaya.</string>
+    <string name="esleme_onay_soru">A ƙara wannan waya?</string>
+    <string name="esleme_onay_aciklama">Wayar da aka ƙara na iya aika wurinta da sallolin da ta yi wa alama zuwa wannan talabijin.</string>
+    <string name="ekleyin">Ƙara</string>
+    <string name="hayir">Aʼa</string>
+    <string name="esleme_eklendi">An ƙara %1$s</string>
+    <string name="konumunuz_geldi">Wurinku ya iso</string>
+    <string name="konuma_gore_hesaplanacak">Za a lissafa lokutan salla na wannan wuri.</string>
+    <string name="qr_konum_alindi">An karɓi wuri</string>
+    <string name="qr_kodu">Lambar haɗawa da za a karanta da wayarku</string>
+    <string name="ag_yok">Talabijin ba ta haɗu da hanyar sadarwa ba</string>
+    <string name="ag_yok_aciklama">Kuna iya ci gaba ta shigar da lambar lambobi 7 daga wayarku ko ku zaɓi birninku.</string>
     <!-- Kodla konum (ui/KodGirisEkrani) -->
-    <string name="kod_baslik">Enter the code from your phone</string>
-    <string name="kod_yol">On your phone: Settings › My devices › Add a TV</string>
-    <string name="kod_hatali">The code didn\'t match. Check the 7 digits on your phone; fix a wrong digit with “%1$s”.</string>
-    <string name="kod_rakamli_kumanda">If your remote has number keys, you can also type with them.</string>
-    <string name="kod_bos_hane">empty digit</string>
-    <string name="kod_sil">Delete</string>
-    <string name="kod_sil_aciklama">Delete the last digit</string>
-    <string name="kod_geri">Back</string>
-    <string name="vazgecin">Cancel</string>
+    <string name="kod_baslik">Shigar da lambar daga wayarku</string>
+    <string name="kod_yol">A wayarku: Saituna › Naʼurorina › Ƙara talabijin</string>
+    <string name="kod_hatali">Lambar ba ta dace ba. Ku duba lambobi 7 da ke wayarku; ku gyara lambar da ba daidai ba da “%1$s”.</string>
+    <string name="kod_rakamli_kumanda">Idan rimot ɗinku yana da maɓallan lambobi, kuna iya rubutawa da su ma.</string>
+    <string name="kod_bos_hane">lamba maras komai</string>
+    <string name="kod_sil">Share</string>
+    <string name="kod_sil_aciklama">Share lamba ta ƙarshe</string>
+    <string name="kod_geri">Baya</string>
+    <string name="vazgecin">Soke</string>
     <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
-    <string name="il_secin">Choose your city</string>
-    <string name="il_merkezine_gore">Prayer times are calculated for the city center.</string>
-    <string name="il_secili">%1$s, selected</string>
-    <string name="dream_il_yok">To see the prayer times board, open the Namaz Akışı app and choose your city.</string>
+    <string name="il_secin">Ku zaɓi birninku</string>
+    <string name="il_merkezine_gore">Ana lissafa lokutan salla na tsakiyar birni.</string>
+    <string name="il_secili">%1$s, an zaɓa</string>
+    <string name="dream_il_yok">Don ganin allon lokutan salla, ku buɗe manhajar Namaz Akışı ku zaɓi birninku.</string>
     <!-- TV ayarları (ui/TvAyarlarEkrani) -->
-    <string name="ayar_konum">Location: %1$s</string>
-    <string name="ayar_konum_yok">No location chosen</string>
-    <string name="ayar_telefon_ekleyin">Add a phone</string>
-    <string name="ayar_konumu_kodla">Enter location with a code</string>
-    <string name="ayar_bagli_telefonlar">Phones connected to this TV</string>
-    <string name="ayar_telefon_yok">No phone added yet. Use “%1$s” on the left and scan the code that appears.</string>
-    <string name="kaldirin">Remove</string>
-    <string name="ayar_ne_gonderir">What do phones send?</string>
-    <string name="ayar_madde_konum">Location: prayer times follow it</string>
-    <string name="ayar_madde_namazlar">Prayers marked, for those who choose</string>
-    <string name="ayar_madde_sifreli">Encrypted, only on your home network</string>
-    <string name="son_haber_yok">No information yet</string>
-    <string name="son_haber_az_once">Just now</string>
+    <string name="ayar_konum">Wuri: %1$s</string>
+    <string name="ayar_konum_yok">Ba a zaɓi wuri ba</string>
+    <string name="ayar_telefon_ekleyin">Ƙara waya</string>
+    <string name="ayar_konumu_kodla">Shigar da wuri da lamba</string>
+    <string name="ayar_bagli_telefonlar">Wayoyin da aka haɗa da wannan talabijin</string>
+    <string name="ayar_telefon_yok">Ba a ƙara waya ba tukuna. Ku yi amfani da “%1$s” a hagu ku karanta lambar da za ta bayyana.</string>
+    <string name="kaldirin">Cire</string>
+    <string name="ayar_ne_gonderir">Me wayoyi ke aikawa?</string>
+    <string name="ayar_madde_konum">Wuri: lokutan salla suna bin sa</string>
+    <string name="ayar_madde_namazlar">Sallolin da aka yi wa alama, ga waɗanda suka zaɓa</string>
+    <string name="ayar_madde_sifreli">A ɓoye, a hanyar sadarwar gidanku kaɗai</string>
+    <string name="son_haber_yok">Babu bayani tukuna</string>
+    <string name="son_haber_az_once">Yanzu-yanzu</string>
     <plurals name="son_haber_dk">
-        <item quantity="one">%1$d min ago</item>
-        <item quantity="other">%1$d min ago</item>
+        <item quantity="one">minti %1$d da suka wuce</item>
+        <item quantity="other">minti %1$d da suka wuce</item>
     </plurals>
     <plurals name="son_haber_saat">
-        <item quantity="one">%1$d h ago</item>
-        <item quantity="other">%1$d h ago</item>
+        <item quantity="one">awa %1$d da ta wuce</item>
+        <item quantity="other">awa %1$d da suka wuce</item>
     </plurals>
     <plurals name="son_haber_gun">
-        <item quantity="one">%1$d day ago</item>
-        <item quantity="other">%1$d days ago</item>
+        <item quantity="one">kwana %1$d da ya wuce</item>
+        <item quantity="other">kwana %1$d da suka wuce</item>
     </plurals>
-    <string name="kaldir_soru">Remove %1$s?</string>
-    <string name="kaldir_aciklama">This phone will no longer be able to send information to the TV. To add it again, you need to scan the QR code again.</string>
+    <string name="kaldir_soru">A cire %1$s?</string>
+    <string name="kaldir_aciklama">Wannan waya ba za ta iya aika bayani zuwa talabijin ba kuma. Don sake ƙara ta, kuna buƙatar sake karanta lambar QR.</string>
     <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
-    <string name="telefondaki_konum">Your phone\'s location</string>
+    <string name="telefondaki_konum">Wurin wayarku</string>
 </resources>

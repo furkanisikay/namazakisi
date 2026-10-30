@@ -992,31 +992,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Fungua programu"
     )
 
-    // ÇEVİRİ: ha
+    // ha — Hausa (beta): JS `sozluk/ha` (Kıldım "Na yi salla", Kılındı "An yi salla", hitap 2. çoğul "ku")
     public static let ha = VakitMetinleri(
         dil: "ha",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Asuba", "ogle": "Azahar", "ikindi": "Laʼasar", "aksam": "Magariba", "yatsi": "Isha"],
+        gunes: "Fitowar Rana",
+        konumYok: "Ku buɗe manhajar ku saita wurinku don a iya lissafa lokutan salla.",
+        veriEski: "Lokutan salla sun tsufa. Ku buɗe manhajar sau ɗaya don sabunta su.",
+        girisBugun: "da ƙarfe {saat}",
+        girisYarin: "gobe da ƙarfe {saat}",
+        suAnVakti: "Yanzu lokacin {ad} ne.",
+        suAnVaktiCikis: "Yanzu lokacin {ad} ne; zai fita da ƙarfe {saat}.",
+        siradakiNamaz: "Salla ta gaba ita ce {ad}, {giris}.",
+        isaretlendi: "An yi alamar an yi sallar {ad}. {dua}.",
+        zatenKilindi: "An riga an yi alamar an yi sallar {ad}.",
+        vakitYok: "Babu sallar da za a yi wa alama yanzu.",
+        vakitYokSiradaki: "Babu sallar da za a yi wa alama yanzu. Na gaba shi ne {ad}, {giris}.",
+        onay: "A yi alamar an yi sallar {ad}?",
+        vakitDegisti: "Lokacin salla ya canja, don haka ba a yi alamar komai ba. Sake gwadawa.",
+        kabulDuasi: "Allah ya karɓa",
+        kildim: "Na yi salla",
+        kilindi: "An yi salla",
+        kontrolKildim: "{ad} · Na yi salla",
+        kontrolKilindi: "An yi sallar {ad}",
+        kontrolVakitYok: "Babu sallar da za a yi wa alama",
+        uygulamayiAcin: "Buɗe manhaja"
     )
 
     // ÇEVİRİ: am

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ha — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- Gerçek alarm (Hausa). "Na yi salla" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">Ƙararrawar salla</string>
+  <string name="alarm_kildim">Na yi salla</string>
+  <string name="alarm_kapat">Kashe</string>
+  <string name="alarm_kanal_aciklamasi">Ainihin ƙararrawa da ke ƙara a matakan tunatarwa da kuka zaɓa</string>
 </resources>

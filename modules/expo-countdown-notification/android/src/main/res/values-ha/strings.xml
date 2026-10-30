@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ha — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- Ƙidaya kai tsaye — Hausa (JS src/core/dil/sozluk/ha). -->
 <resources>
-    <string name="countdown_kanal_canli_ad">Live countdowns</string>
-    <string name="countdown_kanal_canli_aciklama">Countdowns in the Now Bar and the status bar</string>
-    <string name="countdown_kanal_genel_ad">Countdown notifications</string>
-    <string name="countdown_kanal_genel_aciklama">Channel for countdown notifications</string>
+    <string name="countdown_kanal_canli_ad">Ƙidaya kai tsaye</string>
+    <string name="countdown_kanal_canli_aciklama">Ƙidaya a Now Bar da sandar matsayi</string>
+    <string name="countdown_kanal_genel_ad">Sanarwar ƙidaya</string>
+    <string name="countdown_kanal_genel_aciklama">Tashar sanarwar ƙidaya</string>
 
-    <string name="countdown_eylem_kildim">I\'ve prayed</string>
-    <string name="countdown_eylem_durdur">Stop</string>
+    <string name="countdown_eylem_kildim">Na yi salla</string>
+    <string name="countdown_eylem_durdur">Tsayar</string>
 
-    <string name="countdown_yedek_vakit">Hurry, the prayer time is about to end.</string>
-    <string name="countdown_yedek_iftar">Time is running out.</string>
-    <string name="countdown_yedek_sahur">You can still eat and drink; the fast begins soon!</string>
-    <string name="countdown_yedek_seri">Today\'s prayers aren\'t complete; don\'t lose your streak.</string>
+    <string name="countdown_yedek_vakit">Ka gaggauta, lokacin salla yana gab da fita.</string>
+    <string name="countdown_yedek_iftar">Lokaci yana ƙurewa.</string>
+    <string name="countdown_yedek_sahur">Kuna iya ci da sha har yanzu; azumi zai fara nan ba da jimawa ba.</string>
+    <string name="countdown_yedek_seri">Sallolin yau ba su cika ba; kada ka rasa jerinka.</string>
 
-    <string name="countdown_onek_vakit">Until the time ends</string>
-    <string name="countdown_onek_vakit_dar">Time is ending</string>
-    <string name="countdown_onek_iftar">Until iftar</string>
-    <string name="countdown_onek_iftar_dar">Until iftar</string>
-    <string name="countdown_onek_sahur">Until suhoor ends</string>
-    <string name="countdown_onek_sahur_dar">Suhoor is ending</string>
-    <string name="countdown_onek_seri">To save your streak</string>
-    <string name="countdown_onek_seri_dar">Streak is ending</string>
+    <string name="countdown_onek_vakit">Kafin lokaci ya fita</string>
+    <string name="countdown_onek_vakit_dar">Lokaci yana fita</string>
+    <string name="countdown_onek_iftar">Zuwa buɗa baki</string>
+    <string name="countdown_onek_iftar_dar">Zuwa buɗa baki</string>
+    <string name="countdown_onek_sahur">Kafin sahur ya ƙare</string>
+    <string name="countdown_onek_sahur_dar">Sahur yana ƙarewa</string>
+    <string name="countdown_onek_seri">Don kiyaye jerinka</string>
+    <string name="countdown_onek_seri_dar">Jeri yana ƙarewa</string>
 </resources>

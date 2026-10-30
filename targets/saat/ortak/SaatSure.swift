@@ -238,12 +238,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "sekunde {n}", "other": "sekunde {n}"]
     )
 
-    // ÇEVİRİ: ha
+    // ha — Hausa (beta): JS `sozluk/ha/sure.ts` birebir (kısa birim awa/min/daƙ; sayı addan sonra, ad çekilmez, one = other)
     public static let ha = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "awa", birimDk: "min", birimSn: "daƙ",
+        saat: ["one": "awa {n}", "other": "awa {n}"],
+        dakika: ["one": "minti {n}", "other": "minti {n}"],
+        saniye: ["one": "daƙiƙa {n}", "other": "daƙiƙa {n}"]
     )
 
     // ÇEVİRİ: am
