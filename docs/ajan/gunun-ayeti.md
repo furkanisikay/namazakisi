@@ -37,7 +37,7 @@ Ne zaman okunur: günün ayeti havuzuna/üreticisine, ayet widget'ına (Android,
 | az | `azeri_musayev` 1.0.4 (Latin) | 185 (2026-10-29) |
 | uz | `uzbek_rwwad` 1.0.4 (KİRİL; Latin alfabede çalışma anında çevrilir, `core/dil/yazi.ts`) | 186 |
 | kk | `kazakh_altai` 1.0.0 (KİRİL; liste API'sinde yok → başlık `LISTEDE_OLMAYAN_BASLIKLAR`, sürüm `updates` ucundan) | 183 |
-| ky | `kyrgyz_hakimov` 1.0.2 (Kiril; `[1]` dipnot işaretli 28 havuz kaydı elenir — not numarası silinmez, sahibe sorulmadı) | 149 |
+| ky | `kyrgyz_hakimov` 1.0.2 (Kiril) | 176 (not numarası silinir) |
 | tg | `tajik_arifi` 1.0.2 (Kiril; köşeli ayraçlı tefsir eki "[Парвардигоро]" metnin parçası) | 167 |
 | ar | — (yalnız Kur'an metni, sahip kararı) | 186 |
 - **Sürüm her zaman `translations/updates?key=<anahtar>` ucundan okunur.** Liste API'si 87 çeviriyi (ru, ms dahil) göstermez; uç belgelenmemiştir → üretici biçim değişiminde ya da liste sürümüyle çelişkide hata verir, listede olmayanın başlığı `LISTEDE_OLMAYAN_BASLIKLAR`'dadır (sitedeki kart). Tanzil mealleri KULLANILMAZ: "yalnız ticari olmayan kullanım" şartı ve sürüm numarası yok.
