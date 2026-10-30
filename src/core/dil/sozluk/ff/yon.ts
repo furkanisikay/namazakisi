@@ -1,10 +1,9 @@
-// ÇEVİRİ: ff — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Ɗowgol binndi ngol wayloto',
+  aciklama: 'Ɗemngal ngal suɓu-ɗon ngal no winndiree e ɗowgol goɗɗol. Jaaɓngal ngal hino haani fuɗɗitaade ngam yaynirɗe ɗe waylaade.',
+  simdiBaslat: 'Fuɗɗitee jooni',
+  sonra: 'Caggal ɗuum',
+  bekliyor: 'Ɗowgol binndi ngol wayloto so jaaɓngal ngal fuɗɗitiima.',
 };

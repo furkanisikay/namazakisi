@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ff — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="camigeofence_kanal_durum_ad">At the mosque</string>
-    <string name="camigeofence_kanal_durum_aciklama">A quiet notice when you\'re detected at a mosque</string>
-    <string name="camigeofence_kanal_soru_ad">After leaving the mosque</string>
-    <string name="camigeofence_kanal_soru_aciklama">A question so you can mark your prayer after you leave the mosque</string>
+    <string name="camigeofence_kanal_durum_ad">E juulirde</string>
+    <string name="camigeofence_kanal_durum_aciklama">Tintinal deƴƴungal so on njiytaama e juulirde</string>
+    <string name="camigeofence_kanal_soru_ad">Caggal yaltude juulirde</string>
+    <string name="camigeofence_kanal_soru_aciklama">Naamnal ngam on maandina juulde mon caggal yaltude juulirde</string>
 
-    <string name="camigeofence_govde_mod_sessiz">Prayer mode is on. Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_mod">Prayer mode is on.</string>
-    <string name="camigeofence_govde_sessiz">Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_normal">Reminders will arrive as usual.</string>
-    <string name="camigeofence_eylem_modu_kapat">Turn off mode</string>
-    <string name="camigeofence_eylem_cami_degil">Not a mosque</string>
+    <string name="camigeofence_govde_mod_sessiz">Mode juulde huɓɓinaama. Siftinooje hino ara e deƴƴere.</string>
+    <string name="camigeofence_govde_mod">Mode juulde huɓɓinaama.</string>
+    <string name="camigeofence_govde_sessiz">Siftinooje hino ara e deƴƴere.</string>
+    <string name="camigeofence_govde_normal">Siftinooje hino ara no woowiraa.</string>
+    <string name="camigeofence_eylem_modu_kapat">Ñifee mode</string>
+    <string name="camigeofence_eylem_cami_degil">Wonaa juulirde</string>
 
-    <string name="camigeofence_soru_baslik">Are you at the mosque?</string>
-    <string name="camigeofence_soru_govde">You\'re near %1$s. We\'re not sure, so we\'re asking you.</string>
-    <string name="camigeofence_varsayilan_ad">Mosque</string>
-    <string name="camigeofence_eylem_namaz_modunu_ac">Turn on Prayer mode</string>
-    <string name="camigeofence_eylem_evet_camideyim">Yes, I\'m at the mosque</string>
-    <string name="camigeofence_eylem_hayir">No</string>
+    <string name="camigeofence_soru_baslik">Hiɗon e juulirde?</string>
+    <string name="camigeofence_soru_govde">Hiɗon ɓadii %1$s. Min tiiɗnaaki, ɗum noon min naamnii on.</string>
+    <string name="camigeofence_varsayilan_ad">Juulirde</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Huɓɓinee Mode juulde</string>
+    <string name="camigeofence_eylem_evet_camideyim">Awa, mi e juulirde</string>
+    <string name="camigeofence_eylem_hayir">Aa’a</string>
 
-    <string name="camigeofence_kildiniz_mi">Have you prayed %1$s?</string>
-    <string name="camigeofence_kildiniz_mi_govde">You can mark it with a single tap.</string>
-    <string name="camigeofence_eylem_kildim">I\'ve prayed</string>
-    <string name="camigeofence_namaz_imsak">Fajr</string>
-    <string name="camigeofence_namaz_ogle">Dhuhr</string>
-    <string name="camigeofence_namaz_ikindi">Asr</string>
-    <string name="camigeofence_namaz_aksam">Maghrib</string>
-    <string name="camigeofence_namaz_yatsi">Isha</string>
-    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+    <string name="camigeofence_kildiniz_mi">On juulii %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Hiɗon mbaawi maandinde ɗum e dobol gootol.</string>
+    <string name="camigeofence_eylem_kildim">Mi juulii</string>
+    <string name="camigeofence_namaz_imsak">Subaka</string>
+    <string name="camigeofence_namaz_ogle">Fanaa</string>
+    <string name="camigeofence_namaz_ikindi">Alansaraa</string>
+    <string name="camigeofence_namaz_aksam">Futuroo</string>
+    <string name="camigeofence_namaz_yatsi">Geeƴe</string>
+    <string name="camigeofence_namaz_cuma">Juma</string>
 
-    <string name="camigeofence_mod_kural_adi">Prayer</string>
-    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı turns it on during the Jumu\'ah sermon, at the mosque or when a prayer time begins</string>
+    <string name="camigeofence_mod_kural_adi">Juulde</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı hino huɓɓina ɗum e hutba Juma, e juulirde walla so waqutu juulde heewii</string>
 </resources>

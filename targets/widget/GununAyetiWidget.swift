@@ -455,18 +455,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Abdullah Hasan Yaqoub, QuranEnc 1.0.26"
     )
 
-    // ÇEVİRİ: ff
+    // ff
     static let ff = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Aaya ñalawma",
+        galeriAciklama: "Aaya e firo mum, waylotooɗo ñalawma kala e subaka.",
+        etiket: "AAYA ÑALAWMA",
+        uygulamayiAcin: "Udditee jaaɓngal ngal ngam yiyde aaya ñalawma",
+        ornekSigmiyor: "Aaya hannde haanaani e ɓetol ngol. Dobee ngam janngude ɗum.",
+        ornekAcin: "Udditee",
+        ornekArapcaKaynagi: "Aarabeere: Tanzil",
+        ornekMeal: "Pellet saɗteende kala na won'di e yaajeende.",
+        ornekKisaKunye: "Alqur’aana 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.2"
     )
 
     // yo

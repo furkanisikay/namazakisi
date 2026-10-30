@@ -97,8 +97,8 @@ object CanliGuncellemeKurallari {
         "om" to ("sa'a" to "daq"),
         // so
         "so" to ("s" to "daq"),
-        // ÇEVİRİ: ff
-        "ff" to ("h" to "min"),
+        // ff
+        "ff" to ("sa" to "hj"),
         // yo
         "yo" to ("wkt" to "ìṣj"),
     )

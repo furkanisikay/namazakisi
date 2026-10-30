@@ -1,11 +1,10 @@
-// ÇEVİRİ: ff — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Limooje',
+  aciklama: 'Suɓee limooje huutorteeɗe ngam saa’iiji, ñalɗe e limooje.',
+  otomatik: 'Rewrude e leydi',
+  otomatikAciklama: 'Huutortoo limooje ɓurɗe huutoreede e leydi nokkuure mon.',
+  dogu: 'Limooje Aarabeere Fuɗnaange',
+  bati: 'Limooje Hirnaange',
 };

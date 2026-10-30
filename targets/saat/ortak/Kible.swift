@@ -550,18 +550,18 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: ff
+    // ff
     public static let ff = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Caggal mon",
+        saga: "Ñaamo {derece}°",
+        sola: "Nano {derece}°",
+        hizali: "Hiɗon ndaari qibla",
+        arkadaErisim: "Qibla hino caggal mon",
+        sagdaErisim: "Qibla hino {derece} darajaaji e ñaamo mon",
+        soldaErisim: "Qibla hino {derece} darajaaji e nano mon",
+        kabede: "Hiɗon e Kaaba",
         mesafe: "{km} km",
-        binlikAyirici: ","
+        binlikAyirici: "\u{00A0}"
     )
 
     // yo

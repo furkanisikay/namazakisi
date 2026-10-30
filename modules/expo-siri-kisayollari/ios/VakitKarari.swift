@@ -1100,31 +1100,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Fur barnaamijka"
     )
 
-    // ÇEVİRİ: ff
+    // ff
     public static let ff = VakitMetinleri(
         dil: "ff",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Subaka", "ogle": "Fanaa", "ikindi": "Alansaraa", "aksam": "Futuroo", "yatsi": "Geeƴe"],
+        gunes: "Puɗal naange",
+        konumYok: "Udditee jaaɓngal ngal, teeltee nokkuure mon ngam saa’iiji juulɗe hiiseede.",
+        veriEski: "Saa’iiji juulɗe ɓooyii. Udditee jaaɓngal ngal laawol go’o ngam hesɗitinde ɗi.",
+        girisBugun: "e {saat}",
+        girisYarin: "janngo e {saat}",
+        suAnVakti: "Jooni ko waqutu {ad}.",
+        suAnVaktiCikis: "Jooni ko waqutu {ad}; gasay e {saat}.",
+        siradakiNamaz: "Juulde garoore ndee ko {ad} {giris}.",
+        isaretlendi: "{ad} maandinaama ko juulaama. {dua}.",
+        zatenKilindi: "{ad} maandinaama ko juulaama tawo.",
+        vakitYok: "Alaa juulde maandinteende jooni.",
+        vakitYokSiradaki: "Alaa juulde maandinteende jooni. Garoore ndee ko {ad} {giris}.",
+        onay: "Maandinee {ad} ko juulaama?",
+        vakitDegisti: "Waqutu juulde waylii, ɗum noon hay huunde maandinaaka. Etee kadi.",
+        kabulDuasi: "Yo Alla jaɓu",
+        kildim: "Mi juulii",
+        kilindi: "Juulaama",
+        kontrolKildim: "{ad} · Mi juulii",
+        kontrolKilindi: "{ad} juulaama",
+        kontrolVakitYok: "Alaa juulde maandinteende",
+        uygulamayiAcin: "Udditee jaaɓngal ngal"
     )
 
     // yo

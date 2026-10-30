@@ -332,11 +332,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Maya, weli lama calaamadeyn."
     )
 
-    // ÇEVİRİ: ff
+    // ff
     static let ff = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} fuɗɗoto caggal {n} hojom.", "other": "{ad} fuɗɗoto caggal {n} hojomaaji."],
+        evetKilindi: "Awa, maandinaama ko juulaama.",
+        hayirKilinmadi: "Aa’a, maandinaaka tawo."
     )
 
     // yo

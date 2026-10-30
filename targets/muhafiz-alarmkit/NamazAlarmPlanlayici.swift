@@ -154,8 +154,8 @@ enum NamazAlarmCekirdegi {
         "om": "Dhaabi",
         // so
         "so": "Jooji",
-        // ÇEVİRİ: ff
-        "ff": "Stop",
+        // ff
+        "ff": "Dartinee",
         // yo
         "yo": "Dá a dúró",
     ]

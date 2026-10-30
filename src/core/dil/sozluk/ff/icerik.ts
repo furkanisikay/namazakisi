@@ -1,15 +1,14 @@
-// ÇEVİRİ: ff — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Alqur’aana {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Juulde ɓuri ɗaanaade. Ar e malal.',
+    araVer: 'Accu golle aduna seeɗa, ñiiɓu yeeso Joomi maa.',
+    yorgunluk: 'Alansaraa hino sabbi maa, ngam ittaade tampere ñalawma e heɓude deeƴre.',
+    sukur: 'Futuroo ko yettugol ñalawma. Yaawnu ñiiɓaade yeeso Joomi maa.',
+    aksamKisa: 'Waqutu futuroo hino raɓɓiɗi; o heewii, juulu ko yaawi.',
+    geceKaranligi: 'E nder niwre jemma, wondu e Joomi maa. Geeƴe ko safaara ngam ɓernde.',
+    davet: 'Hiɗa noddaa e geeƴe, ngam timminde ñalawma e ɗaɓɓude weltaare Alla.',
   },
 };

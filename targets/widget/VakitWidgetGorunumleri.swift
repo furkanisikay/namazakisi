@@ -781,29 +781,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Wuxuu u calaamadeeyaa salaadda hadda la tukaday."
     )
 
-    // ÇEVİRİ: ff
+    // ff
     static let ff = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Waqutu juulde",
+        galeriAciklama: "Waqutu juulde jooni, saa’i heddiiɗo haa nde gasa e saa’iiji juulɗe hannde.",
+        veriEski: "Udditee jaaɓngal ngal ngam hesɗitinde saa’iiji juulɗe",
+        konumYok: "Udditee jaaɓngal ngal ngam teeltude nokkuure mon",
+        kilindiSiradaki: "{ad} juulaama · {sonraki} {saat}",
+        adCikis: "{ad} · gasay {saat}",
+        siradakiAdSaat: "Garoore {ad} {saat}",
+        vaktiCikisErisim: "Waqutu {ad}, gasay {saat}",
+        siradakiErisim: "Garoore {ad}, {saat}",
+        cikisSaat: "Gasay {saat}",
+        bitisSaat: "Gasay {saat}",
+        kilindiBaslik: "{ad} juulaama",
+        siradaki: "Garoore",
+        siradakiAd: "Garoore {ad}",
+        kildimErisim: "Mi juulii {ad}",
+        gunSatiriKilindi: ", juulaama",
+        bitti: "Gasii",
+        vakitCikti: "Waqutu juulde gasii",
+        kabulAlt: "{ad} juulaama",
+        kontrolAdi: "Mi juulii",
+        kontrolAciklama: "Hino maandina juulde jooni ndee ko juulaama."
     )
 
     // yo
