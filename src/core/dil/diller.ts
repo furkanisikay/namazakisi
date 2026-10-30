@@ -45,13 +45,13 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'ky', yerelAd: 'Кыргызча', yon: 'ltr', ttsDili: 'ky-KG', beta: true, secilebilir: true },
   { kod: 'tg', yerelAd: 'Тоҷикӣ', yon: 'ltr', ttsDili: 'tg-TJ', beta: true, secilebilir: true },
   // Afrika (dalga 8). Fula = Pular (Gine, Fuuta Jallon; QuranEnc `fulani_rwwad` "Firo e Pular-Fulfulde"), Latin; Adlam yok.
-  { kod: 'sw', yerelAd: 'Kiswahili', yon: 'ltr', ttsDili: 'sw-TZ', beta: true, secilebilir: false },
-  { kod: 'ha', yerelAd: 'Hausa', yon: 'ltr', ttsDili: 'ha-NG', beta: true, secilebilir: false },
-  { kod: 'am', yerelAd: 'አማርኛ', yon: 'ltr', ttsDili: 'am-ET', beta: true, secilebilir: false },
-  { kod: 'om', yerelAd: 'Afaan Oromoo', yon: 'ltr', ttsDili: 'om-ET', beta: true, secilebilir: false },
-  { kod: 'so', yerelAd: 'Soomaali', yon: 'ltr', ttsDili: 'so-SO', beta: true, secilebilir: false },
-  { kod: 'ff', yerelAd: 'Pular', yon: 'ltr', ttsDili: 'ff-GN', beta: true, secilebilir: false },
-  { kod: 'yo', yerelAd: 'Èdè Yorùbá', yon: 'ltr', ttsDili: 'yo-NG', beta: true, secilebilir: false },
+  { kod: 'sw', yerelAd: 'Kiswahili', yon: 'ltr', ttsDili: 'sw-TZ', beta: true, secilebilir: true },
+  { kod: 'ha', yerelAd: 'Hausa', yon: 'ltr', ttsDili: 'ha-NG', beta: true, secilebilir: true },
+  { kod: 'am', yerelAd: 'አማርኛ', yon: 'ltr', ttsDili: 'am-ET', beta: true, secilebilir: true },
+  { kod: 'om', yerelAd: 'Afaan Oromoo', yon: 'ltr', ttsDili: 'om-ET', beta: true, secilebilir: true },
+  { kod: 'so', yerelAd: 'Soomaali', yon: 'ltr', ttsDili: 'so-SO', beta: true, secilebilir: true },
+  { kod: 'ff', yerelAd: 'Pular', yon: 'ltr', ttsDili: 'ff-GN', beta: true, secilebilir: true },
+  { kod: 'yo', yerelAd: 'Èdè Yorùbá', yon: 'ltr', ttsDili: 'yo-NG', beta: true, secilebilir: true },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';
