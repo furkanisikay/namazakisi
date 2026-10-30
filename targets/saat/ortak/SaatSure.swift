@@ -22,7 +22,7 @@ public struct SaatSureParcasi: Equatable {
 /// Sure metinleri — dil basina bir ornek (JS `sozluk/<dil>/sure.ts` ikizi: `kisa` birimleri ve
 /// `saat/dakika/saniye` cogullari). Cogul kaliplari CLDR kategorisi ("one", "few", "many",
 /// "other"; `CogulKurali`) → kalip, yer tutucu `{n}`; eksik kategori "other"a duser.
-/// Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil Ingilizce kopya
+/// Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil Ingilizce kopya
 /// (`// ÇEVİRİ: <kod>`).
 public struct SaatSureMetinleri: Equatable {
     public let birimSa: String
@@ -190,10 +190,51 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} سېكۇنت", "other": "{n} سېكۇنت"]
     )
 
+    // az — Azerice (beta); JS `sozluk/az/sure.ts` (sayıdan sonra isim tekil)
+    public static let az = SaatSureMetinleri(
+        birimSa: "saat", birimDk: "dəq", birimSn: "san",
+        saat: ["one": "{n} saat", "other": "{n} saat"],
+        dakika: ["one": "{n} dəqiqə", "other": "{n} dəqiqə"],
+        saniye: ["one": "{n} saniyə", "other": "{n} saniyə"]
+    )
+
+    // uz — Özbekçe (beta, LATİN); JS `sozluk/uz/sure.ts` (sayıdan sonra çoğul eki yok)
+    public static let uz = SaatSureMetinleri(
+        birimSa: "soat", birimDk: "daq", birimSn: "s",
+        saat: ["one": "{n} soat", "other": "{n} soat"],
+        dakika: ["one": "{n} daqiqa", "other": "{n} daqiqa"],
+        saniye: ["one": "{n} soniya", "other": "{n} soniya"]
+    )
+
+    // kk — Kazakca (beta, Kiril); JS `sozluk/kk/sure.ts`. Sayidan sonra isim cogul eki almaz.
+    public static let kk = SaatSureMetinleri(
+        birimSa: "сағ", birimDk: "мин", birimSn: "с",
+        saat: ["one": "{n} сағат", "other": "{n} сағат"],
+        dakika: ["one": "{n} минут", "other": "{n} минут"],
+        saniye: ["one": "{n} секунд", "other": "{n} секунд"]
+    )
+
+    // ky
+    public static let ky = SaatSureMetinleri(
+        birimSa: "ст", birimDk: "мүн", birimSn: "сек",
+        saat: ["one": "{n} саат", "other": "{n} саат"],
+        dakika: ["one": "{n} мүнөт", "other": "{n} мүнөт"],
+        saniye: ["one": "{n} секунд", "other": "{n} секунд"]
+    )
+
+    // tg — Tacikçe (beta): JS `sozluk/tg/sure.ts` birebir (kısa birim соат/дақ/сон; sayıdan sonra ad tekil, one = other)
+    public static let tg = SaatSureMetinleri(
+        birimSa: "соат", birimDk: "дақ", birimSn: "сон",
+        saat: ["one": "{n} соат", "other": "{n} соат"],
+        dakika: ["one": "{n} дақиқа", "other": "{n} дақиқа"],
+        saniye: ["one": "{n} сония", "other": "{n} сония"]
+    )
+
     public static let tablo: [String: SaatSureMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
+        "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
     ]
 
     public static func dil(_ kod: String?) -> SaatSureMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

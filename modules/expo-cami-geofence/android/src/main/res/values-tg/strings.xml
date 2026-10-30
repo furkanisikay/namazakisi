@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tg — Tacikçe (beta). Terimler JS src/core/dil/sozluk/tg (cami.*, «Реҷаи намоз», «Хондам»). -->
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Дар масҷид</string>
+    <string name="camigeofence_kanal_durum_aciklama">Огоҳии бесадо, вақте ки ҳузури Шумо дар масҷид муайян мешавад</string>
+    <string name="camigeofence_kanal_soru_ad">Пас аз баромадан аз масҷид</string>
+    <string name="camigeofence_kanal_soru_aciklama">Савол, то пас аз баромадан аз масҷид намози худро қайд кунед</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Реҷаи намоз фаъол аст. Ёдовариҳо бесадо меоянд.</string>
+    <string name="camigeofence_govde_mod">Реҷаи намоз фаъол аст.</string>
+    <string name="camigeofence_govde_sessiz">Ёдовариҳо бесадо меоянд.</string>
+    <string name="camigeofence_govde_normal">Ёдовариҳо мисли пештара меоянд.</string>
+    <string name="camigeofence_eylem_modu_kapat">Хомӯш кардани реҷа</string>
+    <string name="camigeofence_eylem_cami_degil">Масҷид нест</string>
+
+    <string name="camigeofence_soru_baslik">Шумо дар масҷидед?</string>
+    <string name="camigeofence_soru_govde">Шумо дар наздикии %1$s ҳастед. Азбаски боварӣ надорем, аз Шумо мепурсем.</string>
+    <string name="camigeofence_varsayilan_ad">Масҷид</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Реҷаи намозро фаъол кунед</string>
+    <string name="camigeofence_eylem_evet_camideyim">Ҳа, ман дар масҷид ҳастам</string>
+    <string name="camigeofence_eylem_hayir">Не</string>
+
+    <string name="camigeofence_kildiniz_mi">Намози %1$sро хондед?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Бо як ламс қайд карда метавонед.</string>
+    <string name="camigeofence_eylem_kildim">Хондам</string>
+    <string name="camigeofence_namaz_imsak">бомдод</string>
+    <string name="camigeofence_namaz_ogle">пешин</string>
+    <string name="camigeofence_namaz_ikindi">аср</string>
+    <string name="camigeofence_namaz_aksam">шом</string>
+    <string name="camigeofence_namaz_yatsi">хуфтан</string>
+    <string name="camigeofence_namaz_cuma">ҷумъа</string>
+
+    <string name="camigeofence_mod_kural_adi">Намоз</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı онро ҳангоми хутбаи ҷумъа, дар масҷид ё ҳангоми расидани вақт фаъол мекунад</string>
+</resources>

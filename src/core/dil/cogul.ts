@@ -48,6 +48,8 @@ const KURALLAR: Record<string, Kural> = {
   az: birDiger,
   uz: birDiger,
   kk: birDiger,
+  ky: birDiger,
+  tg: birDiger,
   sq: birDiger,
   nl: birDiger,
   ps: birDiger,

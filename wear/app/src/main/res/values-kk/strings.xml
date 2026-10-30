@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- kk -->
+<!-- Kazakça (beta, Kiril). Terimler: src/core/dil/sozluk/kk (hitap "Сіз"; "Kıldım" = «Оқыдым», "Kılındı" = «Оқылды»). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/SaatDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">kk</string>
+    <string name="app_name">Namaz Akışı</string>
+    <!-- Tile, komplikasyon, kanal adları -->
+    <string name="tile_adi">Келесі намаз</string>
+    <string name="tile_aciklama">Келесі намаз және оның уақыты</string>
+    <string name="komplikasyon_adi">Қалған уақыт</string>
+    <string name="cikis_saati_komplikasyon_adi">Намаз уақытының шығуы</string>
+    <string name="siradaki_namaz_komplikasyon_adi">Келесі намаз</string>
+    <string name="bugun_tile_adi">Бүгін</string>
+    <string name="bugun_tile_aciklama">Бүгінгі бес уақыт; оқығандарыңызды екі түртумен белгілеңіз</string>
+    <string name="ilerleme_komplikasyon_adi">Күндік барыс</string>
+    <string name="dagilim_komplikasyon_adi">Күнге шолу</string>
+    <string name="kerahat_komplikasyon_adi">Мәкрүһ уақыт</string>
+    <string name="son_dakikalar_kanal_adi">Соңғы минуттар</string>
+    <string name="son_dakikalar_kanal_aciklama">Оқылмаған намаздың соңғы минуттарында сағат бетіндегі кері санақ</string>
+    <string name="tesbihat_adi">Тәспих</string>
+    <string name="tesbihat_kanal_adi">Тәспих</string>
+    <string name="tesbihat_kanal_aciklama">Аяқталмаған тәспихқа оралу үшін сағат бетіндегі үнсіз белгі</string>
+    <string name="kible_adi">Құбыла</string>
+    <string name="kible_komplikasyon_adi">Құбыла</string>
+    <string name="camideyim_kanal_adi">Мешіттемін</string>
+    <string name="camideyim_kanal_aciklama">Телефоныңыз мешітте екеніңізді хабарлағанда сағат бетіндегі үнсіз белгі</string>
+    <string name="uyandirma_kanal_adi">Үнсіз ояту</string>
+    <string name="uyandirma_kanal_aciklama">Таң және тәһажжуд үшін тек дірілмен оятады</string>
+    <!-- Ortak eylemler -->
+    <string name="kildim">Оқыдым</string>
+    <string name="kilindi_isareti">✓ Оқылды</string>
+    <string name="kapat">Жабу</string>
+    <!-- Ana ekran (ui/AnaEkran) -->
+    <string name="yuk_yok">Намаз уақыттарын көру үшін телефоныңызда Namaz Akışı қолданбасын ашыңыз.</string>
+    <string name="yuk_eskidi">Намаз уақыты деректері ескірген. Жаңарту үшін телефоныңызда Namaz Akışı қолданбасын ашыңыз.</string>
+    <string name="guncelleme_gerekli">Сағатыңыздағы Namaz Akışı қолданбасын жаңартыңыз.</string>
+    <string name="bildirim_izni">Телефоныңыз жаныңызда болмаса да еске салғыштар алу үшін сағат баптауларынан Namaz Akışı хабарландыруларына рұқсат беріңіз.</string>
+    <string name="cami_soru">Мешіттесіз бе?</string>
+    <string name="cami_evet">Иә</string>
+    <string name="cami_evet_aciklama">Иә, мешіттемін. Намаз режимін қосады</string>
+    <string name="cami_hayir">Жоқ</string>
+    <string name="cami_hayir_aciklama">Жоқ, мешітте емеспін</string>
+    <string name="camidesiniz">Мешіттесіз</string>
+    <string name="cami_degil">Бұл мешіт емес</string>
+    <string name="cami_degil_aciklama">Бұл мешіт емес. Бұл орын енді мешіт деп саналмайды</string>
+    <string name="tesbihat_ac">Тәспих санағышын ашу</string>
+    <string name="kible_ac">Құбыла компасын ашу</string>
+    <string name="ses_dene">Дыбысты тексеру</string>
+    <string name="ses_dene_aciklama">Сағаттың дауыстап оқуын тексеру</string>
+    <string name="telefonda_acin">Телефонда ашу</string>
+    <string name="telefonda_ekran_ac">%1$s бөлімін телефонда ашу</string>
+    <string name="ekran_kaza">Қаза дәптері</string>
+    <string name="ekran_camideyim">Мешіттемін</string>
+    <string name="ekran_ayarlar">Баптаулар</string>
+    <!-- Vakit listesi (ui/VakitListesi) -->
+    <string name="durum_esitleniyor">оқылды, синхрондалуда</string>
+    <string name="durum_kilindi">оқылды</string>
+    <string name="durum_girmedi">әлі кірмеді</string>
+    <string name="durum_simdiki">қазіргі уақыт, белгілеу үшін түртіңіз</string>
+    <string name="durum_simdiki_kalan">қазіргі уақыт, %1$s, белгілеу үшін түртіңіз</string>
+    <string name="durum_kilinmadi">оқылмады, белгілеу үшін түртіңіз</string>
+    <string name="isaretleyin">Оқылды деп белгілеу</string>
+    <string name="esitleniyor">синхрондалуда</string>
+    <!-- Kıldım onayı (ui/KildimOnayi) -->
+    <string name="kildim_onayi">«Оқыдым» деп растау</string>
+    <string name="vazgecin">Бас тарту</string>
+    <string name="vazgec">Бас тарту</string>
+    <string name="kerahat_vaktindesiniz">Қазір мәкрүһ уақыт.</string>
+    <string name="kilindi_dua">Оқылды. %1$s</string>
+    <!-- Namaz modu (ui/CamiSatirlari) -->
+    <string name="namaz_modu_acik_aciklama">Намаз режимі қосулы, аяқталуы %1$s. Өшіру үшін түртіңіз</string>
+    <string name="namaz_modu_ac_aciklama">Телефоныңызда Намаз режимін қосу</string>
+    <string name="namaz_modu_kapatin">Намаз режимін өшіру</string>
+    <string name="namaz_modu_acin">Намаз режимін қосу</string>
+    <string name="namaz_modu_acik_bitis">Қосулы, аяқталуы %1$s</string>
+    <!-- Kıble (ui/KibleEkrani). kible_sensor_yok kare hattı sözleşmesidir ("sensörü bulunmuyor"): Türkçesi değişmez. -->
+    <string name="kible_olculuyor">Бағыт анықталуда…</string>
+    <string name="kible_yuk_yok">Құбыланы табу үшін телефоныңызда Namaz Akışı қолданбасын ашыңыз.</string>
+    <string name="kible_konum_yok">Құбыланы табу үшін телефоныңызда орын қызметін қосыңыз. Namaz Akışı жаңартылмаған болса, оны жаңартыңыз.</string>
+    <string name="kible_sensor_yok">Бұл сағатта компас датчигі жоқ. Құбыла бағытын телефоныңыздан көре аласыз.</string>
+    <string name="kible_kuzeyden">Құбыла %1$d° (солтүстіктен)</string>
+    <string name="kible_derece">Құбыла %1$d°</string>
+    <string name="kible_telefonda_ac">Құбыланы телефонда ашу</string>
+    <string name="kible_erisim">%1$s. Құбыла солтүстіктен %2$d°, %3$s</string>
+    <string name="kible_hizali">Сіз құбыла бағытындасыз</string>
+    <string name="kible_kalibrasyon">Калибрлеу үшін білегіңізді ауада 8 санын салғандай қозғаңыз</string>
+    <string name="kible_egim">Сағатыңызды жерге параллель ұстаңыз</string>
+    <string name="kible_titresim_acik">Дірілмен бағыттау қосулы. Өшіру үшін түртіңіз</string>
+    <string name="kible_titresim_kapali">Дірілмен бағыттау өшірулі. Қосу үшін түртіңіз</string>
+    <string name="kible_harf_kuzey">С</string>
+    <string name="kible_harf_dogu">Ш</string>
+    <string name="kible_harf_guney">О</string>
+    <string name="kible_harf_bati">Б</string>
+    <!-- Tesbihat (ui/TesbihatEkrani). Zikir adları, tehlil ve kaynak çeviri değil, dilin yaygın okunuşu: SaatDili tablosundan (Tesbihat.Faz.ad(dil)). -->
+    <string name="tesbihat_tamam_erisim">Тәспих аяқталды. %1$s. %2$d / %3$d. %4$s</string>
+    <string name="tesbihat_sayim_erisim">%1$s, %2$d / %3$d. Барлығы %4$d / %5$d</string>
+    <string name="tesbihat_sayin">Санау</string>
+    <string name="tesbihat_bastan_baslayin">Басынан бастау</string>
+    <string name="tesbihat_bastan_soru">Басынан бастау керек пе?</string>
+    <string name="tesbihat_sifirlanir">Санақ нөлденеді.</string>
+    <string name="tesbihat_geri_al">Кері қайтару</string>
+    <string name="tesbihat_geri_al_aciklama">Соңғы санақты кері қайтару</string>
+    <string name="tesbihat_yeniden">Қайта бастау</string>
+    <string name="tesbihat_yeniden_aciklama">Тәспихты қайта бастау</string>
+    <string name="tesbihat_suruyor">Тәспих жалғасуда: %1$s, %2$d / %3$d</string>
+    <!-- Sessiz uyandırma (ui/UyandirmaAktivite, hatirlatma/Uyandirma). Erteleme YOK: yalnız Kıldım / Kapat. -->
+    <string name="uyandirma_kildim_aciklama">Оқыдым. Оятуды жабады</string>
+    <string name="uyandirma_kapat_aciklama">Оятуды жабу</string>
+    <!-- Tile'lar (tile/*). tile_sonra yer tutucunun önü/arkası dinamik sürenin ekidir. -->
+    <string name="uygulamayi_acin">Namaz Akışı ашу</string>
+    <string name="tile_vakitler_icin">Намаз уақыттары үшін түртіңіз</string>
+    <string name="tile_telefonda_acin">Қолданбаны телефонда ашыңыз</string>
+    <string name="tile_sonra">%1$s кейін</string>
+    <string name="tile_siradaki_aciklama">Келесі намаз %1$s, кіруі %2$s. Қолданбаны ашу</string>
+    <string name="tile_giris">кіруі %1$s</string>
+    <string name="tile_cikis">шығуы %1$s</string>
+    <string name="bugun_bos_satir1">Қолданбаны</string>
+    <string name="bugun_bos_satir2">телефонда ашыңыз</string>
+    <string name="bugun_acma_aciklamasi">Бүгін %1$d/%2$d намаз оқылды. Қолданбаны ашу</string>
+    <string name="bugun_sayi">Бүгін %1$d/%2$d</string>
+    <string name="bugun_kerahat_tekrar">Мәкрүһ уақыт · растау үшін қайта түртіңіз</string>
+    <string name="bugun_onay_tekrar">Растау үшін қайта түртіңіз</string>
+    <string name="bugun_tamam">Бүгінгі намаздар толық</string>
+    <string name="bugun_kilinmadi">%1$s оқылмады</string>
+    <string name="bugun_siradaki">Келесі: %1$s %2$s</string>
+    <string name="bugun_tekrar_dokunun">Қайта түртіңіз</string>
+    <string name="bugun_kilindi">%1$s оқылды</string>
+    <string name="bugun_kilindi_esitleniyor">%1$s оқылды, синхрондалуда</string>
+    <!-- Komplikasyonlar (komplikasyon/*). SHORT_TEXT başlıkları kısa (~7 karakter). -->
+    <string name="komplikasyon_bekleniyor_aciklama">Намаз уақыттары күтілуде; телефоныңызда Namaz Akışı ашыңыз</string>
+    <string name="komplikasyon_bekleniyor">Уақыт күтілуде</string>
+    <string name="komplikasyon_vakit">Намаз</string>
+    <string name="komplikasyon_cikis">Шығуы</string>
+    <string name="komplikasyon_sirada">Келесі</string>
+    <string name="gun_durumu_aciklama">Бүгін %1$d намаздың %2$d оқылды</string>
+    <string name="gun_durumu_kilinmamis">%1$s; оқылмағаны: %2$s</string>
+    <string name="komplikasyon_namaz">Намаздар</string>
+    <string name="komplikasyon_kerahat">Мәкрүһ</string>
+    <string name="kerahat_icinde_aciklama">Мәкрүһ уақыт, аяқталуы %1$s</string>
+    <string name="kerahat_siradaki_aciklama">Келесі мәкрүһ уақыт %1$s</string>
+    <string name="kible_komplikasyon">Құбыла солтүстіктен %1$d°. Компасты ашу</string>
+    <string name="kible_komplikasyon_konumlu">Құбыла солтүстіктен %1$d°, %2$s. Компасты ашу</string>
+    <string name="kible_komplikasyon_konum_yok">Құбыланы табу үшін телефоныңызда орын қызметін қосыңыз</string>
+    <!-- Bildirim kanalları (hatirlatma/*). Kanal KİMLİKLERİ çevrilmez; yalnız görünen ad. -->
+    <string name="muhafiz_kanal_acil_titresimli">Шұғыл еске салғыш · Дірілмен</string>
+    <string name="muhafiz_kanal_acil">Шұғыл еске салғыш</string>
+    <string name="muhafiz_kanal_titresimli">Намаз еске салғышы · Дірілмен</string>
+    <string name="muhafiz_kanal">Намаз еске салғышы</string>
+    <string name="muhafiz_kanal_aciklama">Телефоныңыз жаныңызда болмаса да сағатыңызда көрінетін намаз еске салғыштары</string>
+    <string name="son_dakikalar_cikis">Шығуы: %1$s</string>
+    <string name="son_dakikalar_bitis">Аяқталуы: %1$s</string>
+    <string name="son_dakikalar_cikis_erisim">%1$s уақытының шығуына қалған уақыт</string>
+    <string name="son_dakikalar_kalan_erisim">%1$s үшін қалған уақыт</string>
+    <string name="cami_namaz_modu_bitis">Намаз режимі · аяқталуы %1$s</string>
+    <string name="cami_erisim">%1$s: %2$s. %3$s</string>
+    <string name="telefonda_acildi">Телефонда ашылды</string>
+    <string name="telefona_ulasilamadi">Телефонға қосылу мүмкін емес</string>
+</resources>

@@ -99,7 +99,7 @@ enum OtomasyonMetni {
 }
 
 /// Otomasyon cevaplarinin dil tablosu. Duzen: dil basina bir `static let`, sira tr, en, id,
-/// de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
+/// de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
 /// `kalanDakika` CLDR kategorisi ("one", "few", "many", "other"; `CogulKurali`) → kalip;
 /// eksik kategori "other"a duser. Yer tutucular `{ad}`, `{n}`.
 struct OtomasyonMetinleri {
@@ -262,10 +262,46 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "ياق، تېخى بەلگىلەنمىگەن."
     )
 
+    // az — Azerice (beta); CLDR one/other, sayıdan sonra isim tekil
+    static let az = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} vaxtına {n} dəqiqə qalıb.", "other": "{ad} vaxtına {n} dəqiqə qalıb."],
+        evetKilindi: "Bəli, qılındı kimi qeyd olunub.",
+        hayirKilinmadi: "Xeyr, hələ qeyd olunmayıb."
+    )
+
+    // uz — Özbekçe (beta, LATİN); JS `sozluk/uz` (sayıdan sonra çoğul eki yok)
+    static let uz = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} kirishiga {n} daqiqa qoldi.", "other": "{ad} kirishiga {n} daqiqa qoldi."],
+        evetKilindi: "Ha, oʻqildi deb belgilangan.",
+        hayirKilinmadi: "Yoʻq, hali belgilanmagan."
+    )
+
+    // kk — Kazakca (beta, Kiril); sayidan sonra isim cogul eki almaz
+    static let kk = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} уақытына {n} минут қалды.", "other": "{ad} уақытына {n} минут қалды."],
+        evetKilindi: "Иә, оқылды деп белгіленген.",
+        hayirKilinmadi: "Жоқ, әлі белгіленбеген."
+    )
+
+    // ky
+    static let ky = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} убактысына {n} мүнөт калды.", "other": "{ad} убактысына {n} мүнөт калды."],
+        evetKilindi: "Ооба, ал окулду деп белгиленген.",
+        hayirKilinmadi: "Жок, ал азырынча белгилене элек."
+    )
+
+    // tg — Tacikçe (beta): JS `sozluk/tg`; CLDR tg one/other, sayıdan sonra ad tekil (one = other)
+    static let tg = OtomasyonMetinleri(
+        kalanDakika: ["one": "То вақти {ad} {n} дақиқа монд.", "other": "То вақти {ad} {n} дақиқа монд."],
+        evetKilindi: "Ҳа, ҳамчун хондашуда қайд шудааст.",
+        hayirKilinmadi: "Не, ҳанӯз қайд нашудааст."
+    )
+
     static let tablo: [String: OtomasyonMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
+        "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
     ]
 
     static func dil(_ kod: String) -> OtomasyonMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

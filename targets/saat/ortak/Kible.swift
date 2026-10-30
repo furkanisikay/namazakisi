@@ -125,7 +125,7 @@ public enum Kible {
 
 /// Kible metinleri — dil basina bir ornek (Wear `SaatDili` kible alanlari ve JS
 /// `sozluk/<dil>/kible.ts > yon` ikizi). Yer tutucular `{derece}`, `{km}`. Duzen: sira tr, en,
-/// id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
+/// id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
 public struct KibleMetinleri: Equatable {
     public let arkada: String
     public let saga: String
@@ -410,10 +410,81 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
+    // az — Azerice (beta); JS `sozluk/az/kible.ts`; CLDR az binlik ayırıcı "."
+    public static let az = KibleMetinleri(
+        arkada: "Arxanızda",
+        saga: "Sağa {derece}°",
+        sola: "Sola {derece}°",
+        hizali: "Qiblə istiqamətindəsiniz",
+        arkadaErisim: "Qiblə arxanızdadır",
+        sagdaErisim: "Qiblə {derece} dərəcə sağınızdadır",
+        soldaErisim: "Qiblə {derece} dərəcə solunuzdadır",
+        kabede: "Kəbədəsiniz",
+        mesafe: "{km} km",
+        binlikAyirici: "."
+    )
+
+    // uz — Özbekçe (beta, LATİN); JS `sozluk/uz/kible.ts` (binlik ayırıcı CLDR uz: bölünmez boşluk)
+    public static let uz = KibleMetinleri(
+        arkada: "Orqangizda",
+        saga: "Oʻngga {derece}°",
+        sola: "Chapga {derece}°",
+        hizali: "Siz qiblaga qarab turibsiz",
+        arkadaErisim: "Qibla orqangizda",
+        sagdaErisim: "Qibla oʻng tomoningizda, {derece} daraja",
+        soldaErisim: "Qibla chap tomoningizda, {derece} daraja",
+        kabede: "Kaʼbadasiz",
+        mesafe: "{km} km",
+        binlikAyirici: "\u{00A0}"
+    )
+
+    // kk — Kazakça (beta, Kiril); JS `sozluk/kk/kible.ts`. Binlik ayırıcı CLDR kk: bölünmez boşluk.
+    public static let kk = KibleMetinleri(
+        arkada: "Артыңызда",
+        saga: "Оңға {derece}°",
+        sola: "Солға {derece}°",
+        hizali: "Сіз құбыла бағытындасыз",
+        arkadaErisim: "Құбыла артыңызда",
+        sagdaErisim: "Құбыла оң жағыңызда, {derece} градус",
+        soldaErisim: "Құбыла сол жағыңызда, {derece} градус",
+        kabede: "Сіз Қағбадасыз",
+        mesafe: "{km} км",
+        binlikAyirici: "\u{00A0}"
+    )
+
+    // ky
+    public static let ky = KibleMetinleri(
+        arkada: "Артыңызда",
+        saga: "Оңго {derece}°",
+        sola: "Солго {derece}°",
+        hizali: "Сиз кыбылага карап турасыз",
+        arkadaErisim: "Кыбыла артыңызда",
+        sagdaErisim: "Кыбыла сизден {derece} градус оң тарапта",
+        soldaErisim: "Кыбыла сизден {derece} градус сол тарапта",
+        kabede: "Сиз Каабанын жанындасыз",
+        mesafe: "{km} км",
+        binlikAyirici: "\u{00A0}"
+    )
+
+    // tg — Tacikçe (beta): JS `sozluk/tg/kible.ts` (binlik ayırıcı JS `aktifDil > BINLIK.tg` ile aynı, bölünmez boşluk)
+    public static let tg = KibleMetinleri(
+        arkada: "Дар пас",
+        saga: "Рост {derece}°",
+        sola: "Чап {derece}°",
+        hizali: "Шумо рӯ ба қибла ҳастед",
+        arkadaErisim: "Қибла дар паси Шумост",
+        sagdaErisim: "Қибла {derece} дараҷа аз тарафи рости Шумост",
+        soldaErisim: "Қибла {derece} дараҷа аз тарафи чапи Шумост",
+        kabede: "Шумо дар назди Каъба ҳастед",
+        mesafe: "{km} км",
+        binlikAyirici: "\u{00A0}"
+    )
+
     public static let tablo: [String: KibleMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
+        "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
     ]
 
     public static func dil(_ kod: String?) -> KibleMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

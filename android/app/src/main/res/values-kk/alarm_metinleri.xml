@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- kk -->
+<!-- Gerçek alarm (Kazakça, Kiril). «Оқыдым» bildirimdeki düğmeyle aynı ad. -->
+<resources>
+  <string name="alarm_baslik">Намаз оятқышы</string>
+  <string name="alarm_kildim">Оқыдым</string>
+  <string name="alarm_kapat">Өшіру</string>
+  <string name="alarm_kanal_aciklamasi">Сіз таңдаған еске салу қадамдарында шырылдайтын нақты оятқыш</string>
+</resources>

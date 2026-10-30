@@ -576,7 +576,7 @@ func yerTutucuImzasi(_ deger: Any) -> [String: String] {
     return sonuc
 }
 
-esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug"], "dil: tablo sirasi")
+esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg"], "dil: tablo sirasi")
 esitMi(ArayuzDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")
 esitMi(ArayuzDili.coz("de-DE"), "de", "dil: de-DE → de")
 esitMi(ArayuzDili.coz("ms_MY"), "ms", "dil: ms_MY → ms")
@@ -606,7 +606,7 @@ esitMi([0, 1, 2].map { CogulKurali.kategori("bn", $0) }, ["one", "one", "other"]
 esitMi([0, 1, 2].map { CogulKurali.kategori("nl", $0) }, ["other", "one", "other"], "cogul: nl")
 esitMi([0, 1, 2].map { CogulKurali.kategori("sq", $0) }, ["other", "one", "other"], "cogul: sq")
 esitMi([0, 1, 2].map { CogulKurali.kategori("fa", $0) }, ["one", "one", "other"], "cogul: fa")
-for dil in ["ps", "ckb", "ug"] {
+for dil in ["ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg"] {
     esitMi([0, 1, 2].map { CogulKurali.kategori(dil, $0) }, ["other", "one", "other"], "cogul: \(dil)")
 }
 esitMi(CogulKurali.sec(["one": "{n} minute", "other": "{n} minutes"], "ru", 5), "5 minutes", "cogul: eksik kategori other'a duser")
@@ -672,7 +672,7 @@ esitMi(RakamSistemi.etkin(dil: "bn-BD", kayitli: " beng "), "beng", "rakam: bn-B
 esitMi(RakamSistemi.etkin(dil: "bn", kayitli: nil), "latn", "rakam: bn + kayit yok → Bati")
 esitMi(RakamSistemi.etkin(dil: "bn", kayitli: "arab"), "latn", "rakam: bn + arab → Bati")
 esitMi(RakamSistemi.doguMu(dil: "bn", kayitli: "beng"), false, "rakam: bn Dogu Arap degil")
-for dil in ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "", "xx"] {
+for dil in ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "", "xx"] {
     esitMi(RakamSistemi.etkin(dil: dil, kayitli: "arab"), "latn", "rakam: \(dil) arab kaydini yok sayar")
     esitMi(RakamSistemi.etkin(dil: dil, kayitli: "beng"), "latn", "rakam: \(dil) beng kaydini yok sayar")
     esitMi(RakamSistemi.etkin(dil: dil, kayitli: "arabext"), "latn", "rakam: \(dil) arabext kaydini yok sayar")

@@ -124,6 +124,37 @@ export const NATIVE_ETIKETLER: { tr: NativeEtiket } & Partial<Record<DilKodu, Na
     kosul: 'Namaz Akışı: ناماز ۋاقتى ھالىتى', // dil-haric: marka adı (native etiket)
     eylem: 'Namaz Akışı: ناماز ئوقۇدۇم', // dil-haric: marka adı (native etiket)
   },
+  az: {
+    kisayol: 'Hazırkı vaxtı qıldım', // dil-haric: Azerice native etiket (values-az)
+    olay: 'Namaz Akışı: Vaxt hadisəsi', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Vaxt vəziyyəti', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Qıldım', // dil-haric: marka adı (native etiket)
+  },
+  // uz — values-uz LATİN (Android kaynakları Latin; docs/ajan/coklu-dil.md > Alfabe)
+  uz: {
+    kisayol: 'Joriy namozni oʻqidim',
+    olay: 'Namaz Akışı: Namoz vaqti hodisasi', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Namoz vaqti holati', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Oʻqidim', // dil-haric: marka adı (native etiket)
+  },
+  kk: {
+    kisayol: 'Қазіргі намазды оқыдым',
+    olay: 'Namaz Akışı: Намаз уақыты оқиғасы', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Намаз уақытының күйі', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Оқыдым', // dil-haric: marka adı (native etiket)
+  },
+  ky: {
+    kisayol: 'Азыркы намазды окудум',
+    olay: 'Namaz Akışı: Намаз убактысынын окуясы', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Намаз убактысынын абалы', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Окудум', // dil-haric: marka adı (native etiket)
+  },
+  tg: {
+    kisayol: 'Намози ҷориро хондам',
+    olay: 'Namaz Akışı: Ҳодисаи вақти намоз', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Ҳолати вақти намоз', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: Хондам', // dil-haric: marka adı (native etiket)
+  },
 };
 
 /** Cihaz yerel ayarından ('ckb_IQ', 'in_ID', 'fa-IR') etiket kümesi; tabloda yoksa Türkçe. */

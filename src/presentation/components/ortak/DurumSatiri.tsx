@@ -149,7 +149,12 @@ export const DurumSatiri: React.FC<DurumSatiriProps> = ({ durum, onEylem, onSonr
                     accessibilityState={{ disabled: mesgul, busy: mesgul }}
                     style={{
                         marginLeft: 10,
+                        // Uzun eylem adı ("Azərbaycan dilində səsi endirin") satırı yutup metni
+                        // sözcük sözcük kırdırmasın: düğme en çok yarı genişlik, ad kendi içinde sarar.
+                        maxWidth: '50%',
+                        flexShrink: 1,
                         minHeight: 44,
+                        paddingVertical: 6,
                         paddingHorizontal: 14,
                         borderRadius: 16,
                         justifyContent: 'center',
@@ -157,7 +162,7 @@ export const DurumSatiri: React.FC<DurumSatiriProps> = ({ durum, onEylem, onSonr
                         opacity: mesgul ? 0.6 : 1,
                     }}
                 >
-                    <Text style={{ fontSize: 14, fontWeight: '700', color: renkler.birincilMetin }}>{etiket}</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '700', textAlign: 'center', color: renkler.birincilMetin }}>{etiket}</Text>
                 </TouchableOpacity>
             ) : null}
             {aciklamaliIzin ? <KonumIzniAkisi gorunur={aciklamaAcik} onKapat={() => setAciklamaAcik(false)} onSonra={onSonra} /> : null}

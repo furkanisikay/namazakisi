@@ -1,0 +1,12 @@
+{
+  "NSLocationWhenInUseUsageDescription": "Joylashuvingiz turgan joyingiz uchun namoz vaqtlarini aniq hisoblashda ishlatiladi. Joylashuvingiz qurilmangizda qoladi.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Joylashuvingiz turgan joyingiz uchun namoz vaqtlarini aniq hisoblashda va Masjiddaman yoniq boʻlsa, masjidga kirganingizda Namoz rejimini yoqishda ishlatiladi. Joylashuvingiz qurilmangizda qoladi.",
+  "NSLocationAlwaysUsageDescription": "Joylashuvingiz shahar oʻzgarganda namoz vaqtlarini avtomatik yangilashda va Masjiddaman yoniq boʻlsa, masjidga kirganingizda Namoz rejimini yoqishda ishlatiladi. Joylashuvingiz qurilmangizda qoladi.",
+  "NSCameraUsageDescription": "Kamerangiz qibla yoʻnalishini kamera tasviri ustida koʻrsatish va televizoringizdagi juftlash kodini skanerlash uchun ishlatiladi. Tasvirlar saqlanmaydi va qurilmangizdan chiqmaydi.",
+  "NSCalendarsUsageDescription": "Taqvimga kirish namoz vaqtlarini taqvimingizga qoʻshish va, agar yoqsangiz, taqvimingizdagi tadbirlar namoz vaqtiga toʻgʻri kelishini tekshirish uchun ishlatiladi. Taqvim maʼlumotlaringiz qurilmangizda qoladi.",
+  "NSCalendarsFullAccessUsageDescription": "Taqvimga kirish namoz vaqtlarini taqvimingizga qoʻshish va, agar yoqsangiz, taqvimingizdagi tadbirlar namoz vaqtiga toʻgʻri kelishini tekshirish uchun ishlatiladi. Taqvim maʼlumotlaringiz qurilmangizda qoladi.",
+  "NSLocalNetworkUsageDescription": "Ilova namoz vaqtlaringiz va belgilagan namozlaringizni yuborish uchun mahalliy tarmogʻingizdagi televizorga ulanadi. Maʼlumotlar shifrlangan va faqat ikki qurilma orasida yuradi.",
+  "NSAlarmKitUsageDescription": "«Haqiqiy signal»ni tanlagan eslatma qadamlaringiz signal sifatida oʻrnatiladi, shuning uchun telefoningiz ovozsiz yoki Fokus yoniq boʻlsa ham ularni eshitasiz.",
+  "\"Vakti kıldım\"": "Oʻqidim",
+  "\"Kıble\"": "Qibla"
+}

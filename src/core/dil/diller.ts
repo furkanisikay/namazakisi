@@ -5,7 +5,7 @@
  * (widget, bildirim kanalı, saat) üretilmeden dil açılırsa ekranlar yarım çevrili görünür.
  * Gözden geçirilmemiş çeviri `beta: true` taşır (seçicide rozet).
  */
-export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug';
+export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg';
 
 export interface DilTanimi {
   kod: DilKodu;
@@ -38,6 +38,12 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'ps', yerelAd: 'پښتو', yon: 'rtl', ttsDili: 'ps-AF', beta: true, secilebilir: true },
   { kod: 'ckb', yerelAd: 'کوردی', yon: 'rtl', ttsDili: 'ckb-IQ', beta: true, secilebilir: true },
   { kod: 'ug', yerelAd: 'ئۇيغۇرچە', yon: 'rtl', ttsDili: 'ug-CN', beta: true, secilebilir: true },
+  { kod: 'az', yerelAd: 'Azərbaycanca', yon: 'ltr', ttsDili: 'az-AZ', beta: true, secilebilir: true },
+  // Özbekçe adı Latin (dil varsayılanı); Kazakça Kiril. Sözlük kaynağı ikisinde de Kiril (`core/dil/yazi.ts`).
+  { kod: 'uz', yerelAd: 'Oʻzbekcha', yon: 'ltr', ttsDili: 'uz-UZ', beta: true, secilebilir: true },
+  { kod: 'kk', yerelAd: 'Қазақша', yon: 'ltr', ttsDili: 'kk-KZ', beta: true, secilebilir: true },
+  { kod: 'ky', yerelAd: 'Кыргызча', yon: 'ltr', ttsDili: 'ky-KG', beta: true, secilebilir: true },
+  { kod: 'tg', yerelAd: 'Тоҷикӣ', yon: 'ltr', ttsDili: 'tg-TJ', beta: true, secilebilir: true },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';

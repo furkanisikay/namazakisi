@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tg — Tasker / MacroDroid / Automate eklentisi (Tacikçe, beta). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Хондам</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Ҳолати вақти намоз</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Ҳодисаи вақти намоз</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "Шумо". -->
+  <string name="otomasyon_bilgi_baslik">Ин танзим аз барномаи автоматикунонӣ илова карда мешавад</string>
+  <string name="otomasyon_bilgi_tarayici">Ба браузерҳо иҷозати доимӣ дода намешавад. Онро аз рӯйхати плагинҳои барномае, монанди Tasker, MacroDroid ё Automate, илова кунед.</string>
+  <string name="otomasyon_bilgi_eklenti">Онро бо интихоби «Namaz Akışı» аз рӯйхати плагинҳои барномае, монанди Tasker, MacroDroid ё Automate, илова кунед.</string>
+  <string name="otomasyon_engelli_baslik">%1$s манъ шудааст</string>
+  <string name="otomasyon_engelli_mesaj">Шумо пештар ба ин барнома қайд кардани намозҳоятонро манъ карда будед. Метавонед дар Namaz Akışı, дар Танзимот &gt; «Барномаҳое, ки «Хондам»-ро қайд карда метавонанд» иҷозат диҳед.</string>
+  <string name="otomasyon_izin_baslik">Бо %1$s истифода шавад?</string>
+  <string name="otomasyon_izin_kosul">%1$s метавонад донад, ки вақти намоз кай мерасад, кай ба охир мерасад ва кай Шумо дар масҷид ҳастед, ва автоматикунониҳои Шуморо иҷро кунад. Қарори худро дар Namaz Akışı, дар Танзимот &gt; «Барномаҳое, ки «Хондам»-ро қайд карда метавонанд» иваз карда метавонед.</string>
+  <string name="otomasyon_izin_kildim">%1$s метавонад бо автоматикунонии сохтаатон вақти ҷориро ҳамчун хондашуда қайд кунад. Қарори худро дар Namaz Akışı, дар Танзимот &gt; «Барномаҳое, ки «Хондам»-ро қайд карда метавонанд» иваз карда метавонед.</string>
+  <string name="otomasyon_izin_ver">Иҷозат диҳед</string>
+  <string name="otomasyon_engelle">Манъ кунед</string>
+  <string name="otomasyon_vazgec">Бекор кардан</string>
+  <string name="otomasyon_tamam">Хуб</string>
+  <string name="otomasyon_tur_baslik">Кай иҷро шавад?</string>
+  <string name="otomasyon_ileri">Минбаъд</string>
+  <string name="otomasyon_vakit_baslik">Кадом вақт?</string>
+  <string name="otomasyon_herhangi_vakit">Ҳар вақти намоз</string>
+  <string name="otomasyon_kaydet">Нигоҳ доштан</string>
+  <string name="otomasyon_kosul_icinde">Дар давоми вақти намоз</string>
+  <string name="otomasyon_kosul_cikiyor">Ҳангоме ки вақти намоз ба охир мерасад (%1$d дақ монд, Нигаҳбони намоз фаъол)</string>
+  <string name="otomasyon_kosul_camide">Дар масҷид</string>
+  <string name="otomasyon_olay_girdi">Вақте ки вақти намоз расад</string>
+  <string name="otomasyon_olay_cikiyor">Вақте ки вақти намоз ба охир мерасад (%1$d дақ монд, Нигаҳбони намоз фаъол)</string>
+  <string name="otomasyon_olay_camide">Вақте ки ҳузури Шумо дар масҷид муайян шавад</string>
+</resources>

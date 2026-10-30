@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- uz -->
+<!-- Özbekçe kaynaklar (beta, LATİN; Kiril JS sözlüğünden kirildenLatine). Anahtar kümesi values/strings.xml ile BİREBİR aynı (translatable="false" olanlar hariç). Terimler: JS src/core/dil/sozluk/uz (Bomdod, Quyosh, Peshin, Asr, Shom, Xufton; «Oʻqidim» / «Oʻqildi», hitap "Siz"). -->
+<resources>
+  <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Joriy namoz, uning tugash vaqti va bir bosishda «Oʻqidim»</string>
+  <string name="widget_genis_aciklama">Bugungi besh vaqt namoz, teskari sanoq va bir bosishda «Oʻqidim»</string>
+  <string name="widget_kapak_adi">Tashqi ekran uchun namoz vaqtlari</string>
+  <string name="widget_kapak_aciklama">Galaxy Z Flip tashqi ekrani uchun bugungi namoz vaqtlari va teskari sanoq</string>
+  <string name="widget_klasik_adi">Namaz Akışı — Klassik</string>
+  <string name="widget_klasik_aciklama">Klassik yashil koʻrinish: keyingi namozgacha qolgan vaqt</string>
+  <string name="widget_klasik_genis_adi">Namaz Akışı — Klassik keng</string>
+  <string name="widget_klasik_genis_aciklama">Klassik yashil koʻrinish: teskari sanoq va bugungi namoz vaqtlari</string>
+  <string name="widget_ayet_adi">Kun oyati</string>
+  <string name="widget_ayet_aciklama">Har kuni bomdodda yangilanadigan oyat va uning tarjimasi</string>
+  <string name="widget_ayar_zemin_palet">Ilova rangi (och tus)</string>
+  <string name="widget_ayar_ayet_icerik">Kvadrat oʻlchamda koʻrsatish</string>
+  <string name="widget_ayar_ayet_icerik_meal">Tarjima</string>
+  <string name="widget_ayar_ayet_icerik_hat">Arabcha matn (xattotlik)</string>
+  <string name="kutu_kildim_etiket">Oʻqidim</string>
+  <string name="kisayol_kildim_kisa">Oʻqidim</string>
+  <string name="kisayol_kildim_uzun">Joriy namozni oʻqidim</string>
+  <string name="kisayol_kible_kisa">Qibla</string>
+  <string name="kisayol_kible_uzun">Qibla yoʻnalishini koʻrsatish</string>
+  <string name="kisayol_kaza_kisa">Qazo daftari</string>
+  <string name="kisayol_kaza_uzun">Qazo daftarini ochish</string>
+  <string name="kildim_onay_baslik">%1$s namozi oʻqildi deb belgilansinmi?</string>
+  <string name="kildim_onay_mesaj">Bu soʻrovni qaysi ilova yuborgani aniq emas. Agar oʻqigan boʻlsangiz, tasdiqlang.</string>
+  <string name="kildim_onay_evet">Oʻqidim</string>
+  <string name="kildim_onay_vazgec">Bekor qilish</string>
+  <string name="kildim_guven_baslik">%1$s namozlaringizni oʻqildi deb belgilashiga ruxsat berasizmi?</string>
+  <string name="kildim_guven_mesaj">Hozir belgilanadigan namoz: %1$s. Qaroringizni keyinroq Sozlamalar &gt; «Oʻqidim» belgilay oladigan ilovalar boʻlimida oʻzgartirishingiz mumkin.</string>
+  <string name="kildim_guven_tarayici_mesaj">Hozir belgilanadigan namoz: %1$s. Bu soʻrov brauzerdan keldi; bu havolani istalgan veb-sahifa ocha olgani uchun doimiy ruxsat berilmaydi.</string>
+  <string name="kildim_guven_her_zaman">Doim ruxsat berish</string>
+  <string name="kildim_guven_bu_sefer">Faqat shu safar</string>
+  <string name="kildim_guven_engelle">Bloklash</string>
+  <string name="kildim_guven_engellendi">%1$s endi namozlaringizni belgilay olmaydi. Buni Sozlamalarda oʻzgartirishingiz mumkin.</string>
+  <string name="widget_ayar_baslik">Vidjetni sozlash</string>
+  <string name="widget_ayar_zemin">Orqa fon</string>
+  <string name="widget_ayar_zemin_material">Fon rasmi ranglari</string>
+  <string name="widget_ayar_zemin_sistem">Tizim mavzusi</string>
+  <string name="widget_ayar_zemin_acik">Yorugʻ</string>
+  <string name="widget_ayar_zemin_koyu">Qorongʻi</string>
+  <string name="widget_ayar_zemin_seffaf">Shaffof</string>
+  <string name="widget_ayar_opaklik">Orqa fon shaffofligi</string>
+  <string name="widget_ayar_gosterim">Katta yozuvda koʻrsatish</string>
+  <string name="widget_ayar_gosterim_kalan">Qolgan vaqt</string>
+  <string name="widget_ayar_gosterim_bitis">Tugash vaqti</string>
+  <string name="widget_ayar_gosterim_not">Tugash vaqti har bir oʻlchamda koʻrsatiladi.</string>
+  <string name="widget_ayar_sonraki">Keyingi namozni koʻrsatish</string>
+  <string name="widget_ayar_vazgec">Bekor qilish</string>
+  <string name="widget_ayar_kaydet">Saqlash</string>
+  <string name="kildim_onay_kanal_adi">«Oʻqidim» tasdigʻi</string>
+  <string name="kildim_onay_kanal_aciklama">Bildirishnomada «Oʻqidim»ni bosganingizda bir necha soniya koʻrinadigan jimgina tasdiq</string>
+
+  <!-- Widget çizimi (WidgetGuncelleyici) — metin KODDA verilir, düzen XML'inde değil (W5). -->
+  <string name="widget_cikis">Tugashi %1$s</string>
+  <string name="widget_giris">Kirishi %1$s</string>
+  <string name="widget_namaz_vakti">Namoz vaqti</string>
+  <string name="widget_uygulamayi_acin">Ilovani oching</string>
+  <string name="widget_siradaki">Keyingisi: %1$s · %2$s</string>
+  <string name="widget_kilinacak_vakit_yok">Hozir belgilanadigan namoz yoʻq</string>
+  <string name="widget_dugme_kildim">Oʻqidim</string>
+  <string name="widget_dugme_isaretleniyor">Belgilanmoqda</string>
+  <string name="widget_dugme_kilindi">Oʻqildi</string>
+  <string name="widget_dugme_vakit_girmedi">Vaqti kirmadi</string>
+  <string name="widget_klasik_uygulamayi_acin">ilovani oching</string>
+  <string name="widget_klasik_erisim_veri_yok">Namoz vaqtlarini koʻrish uchun ilovani oching</string>
+  <string name="widget_klasik_erisim_siradaki">Keyingi namoz: %1$s, kirishi %2$s</string>
+  <!-- Klasik widget SEÇİCİ ÖNİZLEMESİ (previewLayout; başlatıcı cihaz dilinde çözer). Çizimde kullanılmaz. -->
+  <string name="widget_onizleme_klasik_kucuk">Peshingacha</string>
+  <string name="widget_onizleme_klasik_genis">Shomgacha</string>
+  <string name="widget_onizleme_imsak">Bomdod</string>
+  <string name="widget_onizleme_gunes">Quyosh</string>
+  <string name="widget_onizleme_ogle">Peshin</string>
+  <string name="widget_onizleme_ikindi">Asr</string>
+  <string name="widget_onizleme_aksam">Shom</string>
+  <string name="widget_onizleme_yatsi">Xufton</string>
+  <!-- Widget / kutu / kısayol / otomasyon / asistan "Kıldım" sonucu (KildimIslemleri.sonucMetni) — JS genel.kildim.sonuc ikizi. -->
+  <string name="kildim_sonuc_isaretlendi">%1$s oʻqildi deb belgilandi. Alloh qabul qilsin.</string>
+  <string name="kildim_sonuc_zaten_kilindi">%1$s allaqachon oʻqildi deb belgilangan.</string>
+  <string name="kildim_sonuc_vakit_yok_siradaki">Hozir belgilanadigan namoz yoʻq. Keyingisi %1$s, soat %2$s da boshlanadi.</string>
+  <string name="kildim_sonuc_vakit_yok">Hozir belgilanadigan namoz yoʻq.</string>
+  <string name="kildim_sonuc_veri_yok">Namoz vaqti maʼlumoti yoʻq. Ilovani bir marta oching.</string>
+  <string name="kildim_sonuc_vakit_degisti">Namoz vaqti oʻzgardi, shuning uchun hech narsa belgilanmadi. Qayta urinib koʻring.</string>
+  <!-- Android Auto (arac/YakinCamilerEkrani) -->
+  <string name="arac_navigasyon_acilamadi">Navigatsiya ilovasini ochib boʻlmadi.</string>
+  <string name="arac_adsiz_cami">Masjid</string>
+  <!-- Asistan (AppFunctions) hata metinleri ve sistem ayarlarında görünen açıklama (res/xml/asistan_uygulama_bilgisi.xml) -->
+  <string name="asistan_vakit_okunamadi">Namoz vaqti maʼlumotini oʻqib boʻlmadi.</string>
+  <string name="asistan_isaretleme_yapilamadi">Namozni belgilab boʻlmadi.</string>
+  <string name="asistan_aciklama">Namoz vaqtlarini soʻrashingiz, joriy namozni oʻqildi deb belgilashingiz va Qibla ekranini ochishingiz mumkin.</string>
+</resources>

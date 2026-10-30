@@ -58,7 +58,7 @@ struct TvMetin {
 }
 
 /// `TvMetin` dil tablosu. Yer tutucular `{il}`, `{ad}`, `{sure}`, `{tur}`, `{bitis}`,
-/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug;
+/// `{aciklama}`, `{bas}`, `{bit}`, `{giris}`. Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg;
 /// cevrilmemis dil Ingilizce kopya (`// ÇEVİRİ: <kod>`).
 struct TvArayuzMetinleri {
     let sehrinizSecin: String
@@ -364,10 +364,86 @@ struct TvArayuzMetinleri {
         siradakiEk: "، كېيىنكى ۋاقىت"
     )
 
+    // az — Azerice (beta); JS `sozluk/az` (hitap "siz")
+    static let az = TvArayuzMetinleri(
+        sehrinizSecin: "Şəhərinizi seçin",
+        ilMerkezi: "Namaz vaxtları vilayət mərkəzinə görə hesablanır. Seçiminizi sonra dəyişə bilərsiniz.",
+        ilSecErisim: "{il}, seçin",
+        kalan: "{ad} vaxtına qalan",
+        kalanErisim: "{ad} vaxtına qalan müddət {sure}",
+        konumuDegistirin: "Məkanı dəyişin",
+        kerahatSuruyor: "Məkruh vaxt: {tur}, bitmə {bitis}. {aciklama}",
+        siradakiKerahat: "Növbəti məkruh vaxt: {tur} {bas}–{bit}",
+        cumaBilgisi: "Bu gün cümədir. Cümə namazı zöhr vaxtında qılınır (giriş {giris}).",
+        suAnkiEk: ", hazırkı vaxt",
+        siradakiEk: ", növbəti vaxt"
+    )
+
+    // uz — Özbekçe (beta, LATİN): JS `sozluk/uz` (hitap "Siz", Kiril kaynak → kirildenLatine)
+    static let uz = TvArayuzMetinleri(
+        sehrinizSecin: "Shahringizni tanlang",
+        ilMerkezi: "Namoz vaqtlari viloyat markazi uchun hisoblanadi. Tanlovingizni keyinroq oʻzgartirishingiz mumkin.",
+        ilSecErisim: "{il}, tanlash",
+        kalan: "{ad} vaqtigacha qolgan vaqt",
+        kalanErisim: "{ad} vaqtigacha qolgan vaqt: {sure}",
+        konumuDegistirin: "Joylashuvni oʻzgartirish",
+        kerahatSuruyor: "Makruh vaqt: {tur}, tugashi {bitis}. {aciklama}",
+        siradakiKerahat: "Keyingi makruh vaqt: {tur} {bas}–{bit}",
+        cumaBilgisi: "Bugun juma. Juma namozi peshin vaqtida oʻqiladi (kirishi {giris}).",
+        suAnkiEk: ", joriy namoz",
+        siradakiEk: ", keyingi namoz"
+    )
+
+    // kk — Kazakça (beta, Kiril): JS `sozluk/kk` (konum, anaEkran.kerahat, vakit)
+    static let kk = TvArayuzMetinleri(
+        sehrinizSecin: "Қалаңызды таңдаңыз",
+        ilMerkezi: "Намаз уақыттары қала орталығына қарай есептеледі. Таңдауыңызды кейін өзгерте аласыз.",
+        ilSecErisim: "{il}, таңдау",
+        kalan: "{ad} уақытына қалды",
+        kalanErisim: "{ad} уақытына {sure} қалды",
+        konumuDegistirin: "Орынды өзгерту",
+        kerahatSuruyor: "Мәкрүһ уақыт: {tur}, аяқталуы {bitis}. {aciklama}",
+        siradakiKerahat: "Келесі мәкрүһ уақыт: {tur} {bas}–{bit}",
+        cumaBilgisi: "Бүгін жұма. Жұма намазы бесін уақытында оқылады (кіруі {giris}).",
+        suAnkiEk: ", қазіргі намаз уақыты",
+        siradakiEk: ", келесі намаз уақыты"
+    )
+
+    // ky
+    static let ky = TvArayuzMetinleri(
+        sehrinizSecin: "Шаарыңызды тандаңыз",
+        ilMerkezi: "Намаз убактылары облустун борбору үчүн эсептелет. Тандооңузду кийин өзгөртө аласыз.",
+        ilSecErisim: "{il}, тандоо",
+        kalan: "{ad} убактысына калган убакыт",
+        kalanErisim: "{ad} убактысына калган убакыт: {sure}",
+        konumuDegistirin: "Жайгашкан жерди өзгөртүү",
+        kerahatSuruyor: "Макрух убакыт: {tur}, {bitis} бүтөт. {aciklama}",
+        siradakiKerahat: "Кийинки макрух убакыт: {tur} {bas}–{bit}",
+        cumaBilgisi: "Бүгүн жума. Жума намазы бешим убактысында окулат (саат {giris} кирет).",
+        suAnkiEk: ", азыркы намаз",
+        siradakiEk: ", кийинки намаз"
+    )
+
+    // tg — Tacikçe (beta); JS `sozluk/tg` (konum.il, genel.evEkrani, anaEkran.kerahat), hitap "Шумо"
+    static let tg = TvArayuzMetinleri(
+        sehrinizSecin: "Шаҳратонро интихоб кунед",
+        ilMerkezi: "Вақтҳо барои маркази вилоят ҳисоб карда мешаванд. Интихоби худро баъдтар иваз карда метавонед.",
+        ilSecErisim: "{il}, интихоб кунед",
+        kalan: "То вақти {ad}",
+        kalanErisim: "То вақти {ad}: {sure}",
+        konumuDegistirin: "Маконро иваз кунед",
+        kerahatSuruyor: "Вақти макрӯҳ: {tur}, анҷом {bitis}. {aciklama}",
+        siradakiKerahat: "Вақти макрӯҳи навбатӣ: {tur} {bas}–{bit}",
+        cumaBilgisi: "Имрӯз ҷумъа аст. Намози ҷумъа дар вақти пешин хонда мешавад (оғоз {giris}).",
+        suAnkiEk: ", вақти ҷорӣ",
+        siradakiEk: ", вақти навбатӣ"
+    )
+
     static let tablo: [String: TvArayuzMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
+        "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
     ]
 
     static func dil(_ kod: String) -> TvArayuzMetinleri { tablo[TvDili.coz(kod)] ?? tr }

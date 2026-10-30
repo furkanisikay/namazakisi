@@ -7,7 +7,7 @@
  * birebir ve KESİLMEDEN (`ayetMealleri.ts`, üretici `scripts/icerik/ayet-mealleri-uret.js`);
  * künyede yayımcı ve sürüm yazar. Meali olmayan ayet o dilde gösterilmez (tahmin YOK).
  */
-import { aktifDil, bicim, sozluk } from '../dil/aktifDil';
+import { aktifDil, bicim, sozluk, yaziyaCevir } from '../dil/aktifDil';
 import type { DilKodu } from '../dil/diller';
 import { AYET_MEALLERI } from '../data/ayetMealleri';
 
@@ -34,8 +34,9 @@ export function ayetMeali(ref: string, dil: DilKodu = aktifDil()): { metin: stri
   const kaynak = AYET_MEALLERI[dil];
   const metin = kaynak?.ayetler[ref];
   if (!kaynak || !metin) return null;
+  // Kiril meal (uz, kk) dilin gösterilen yazısına çevrilir (`core/dil/yazi`).
   return {
-    metin,
-    kaynak: bicim(sozluk(dil).icerik.ayetKunyesi, { ref, yayimci: yayimci(kaynak.baslik), surum: kaynak.surum }),
+    metin: yaziyaCevir(metin, dil),
+    kaynak: bicim(sozluk(dil).icerik.ayetKunyesi, { ref, yayimci: yaziyaCevir(yayimci(kaynak.baslik), dil), surum: kaynak.surum }),
   };
 }

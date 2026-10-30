@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- uz — Özbekçe (beta, LATİN). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Televizor ekranidagi QR kodni ramka ichiga joylashtiring</string>
+    <string name="tvesleme_qr_vazgec">Bekor qilish</string>
+    <string name="tvesleme_qr_vazgec_erisim">Skanerlashni bekor qilish</string>
+    <string name="tvesleme_qr_yabanci">Bu QR kod Namaz Akışı TV ilovasiga tegishli emas. Televizordagi kodni skanerlang.</string>
+    <string name="tvesleme_qr_okundu">Kod skanerlandi</string>
+</resources>

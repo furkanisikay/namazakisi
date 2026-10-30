@@ -6,6 +6,9 @@
  * License v3) derleme anında alınır. Ülke kümesi = assets/konum/dunya.bin'deki ülkeler + TR.
  *
  * Kullanım: node scripts/konum/ulke-adlari-uret.js tr en ar …   (uygulamanın dilleri)
+ *
+ * Özbekçe KİRİL üretilir (`uz-Cyrl`; düz `uz` CLDR'de Latin verir): uz/kk sözlük kaynağı Kirildir,
+ * Latin biçim çalışma anında `core/dil/yazi.ts > kirildenLatine` ile üretilir (`ulkeAdi`).
  */
 'use strict';
 const fs = require('fs');
@@ -25,9 +28,11 @@ for (const satir of veri.split('\n')) {
   if (/^[A-Z]{2}$/.test(kod)) ulkeler.add(kod);
 }
 const sirali = [...ulkeler].sort();
+/** Kaynak yazısı CLDR varsayılanından farklı diller. */
+const ICU_YEREL = { uz: 'uz-Cyrl' };
 const tablo = {};
 for (const dil of diller) {
-  const dn = new Intl.DisplayNames([dil], { type: 'region', fallback: 'none' });
+  const dn = new Intl.DisplayNames([ICU_YEREL[dil] ?? dil], { type: 'region', fallback: 'none' });
   tablo[dil] = {};
   for (const kod of sirali) {
     const ad = dn.of(kod);

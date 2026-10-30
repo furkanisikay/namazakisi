@@ -12,7 +12,8 @@ package com.furkanisikay.namazakisi.tv.cekirdek
  * `vakit.cuma`, `sure.kisa`, `tarih`, `samimiyet`) ve `docs/ajan/coklu-dil.md` terim
  * sözlüğünden; serbest çeviri yok. `uppercase()`/`lowercase()` ya da ek üretimi YOK.
  * Yeni dil = yeni `values-xx` dizini + burada yeni nesne + [tvDili] / [TV_DILLERI] eşlemesi.
- * Düzen: dil başına bir nesne, sıra tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; çevrilmemiş dilin nesnesi
+ * Düzen: dil başına bir nesne, sıra tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg
+ * (Özbekçe Latin, Kazakça Kiril yazılır: `docs/ajan/coklu-dil.md > Alfabe`); çevrilmemiş dilin nesnesi
  * İngilizcenin birebir kopyasıdır ve `// ÇEVİRİ: <kod>` satırıyla başlar. Endonezce kaynak
  * dizini `values-in`'dir (`dil_kodu` yine "id"). Nöbetçi: `TvDiliTest`.
  */
@@ -65,14 +66,20 @@ fun tvDili(dil: String): TvDili = when (dil) {
     "ps" -> TvDiliPs
     "ckb" -> TvDiliCkb
     "ug" -> TvDiliUg
+    "az" -> TvDiliAz
+    "uz" -> TvDiliUz
+    "kk" -> TvDiliKk
+    "ky" -> TvDiliKy
+    "tg" -> TvDiliTg
     else -> TvDiliTr
 }
 
-/** Tablosu olan diller, düzen sırasıyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug). */
+/** Tablosu olan diller, düzen sırasıyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg). */
 val TV_DILLERI: List<TvDili> = listOf(
     TvDiliTr, TvDiliEn, TvDiliId, TvDiliDe, TvDiliFr, TvDiliBs, TvDiliRu, TvDiliMs, TvDiliAr, TvDiliUr,
     TvDiliEs, TvDiliNl, TvDiliSq, TvDiliHi, TvDiliBn,
     TvDiliFa, TvDiliPs, TvDiliCkb, TvDiliUg,
+    TvDiliAz, TvDiliUz, TvDiliKk, TvDiliKy, TvDiliTg,
 )
 
 object TvDiliTr : TvDili {
@@ -996,4 +1003,238 @@ object TvDiliUg : TvDili {
     override val cumaSelami = "جۈمە مۇبارەك بولسۇن"
     override val sahuraKalan = "سەھەرلىككە قالغان ۋاقىت"
     override val iftaraKalan = "ئىپتارغا قالغان ۋاقىت"
+}
+
+// az — Azərbaycan dili (beta): JS `sozluk/az` (vakit, tarih, sure.kisa, samimiyet, anaEkran.kerahat); rakam Batı.
+// CLDR az: one/other; saydan sonra isim tək qalır. Ay və gün adları CLDR kimi kiçik hərflə ("29 oktyabr 2026, cümə axşamı").
+object TvDiliAz : TvDili {
+    override val kod = "az"
+    override fun vakitAdi(vakit: Vakit) = when (vakit) {
+        Vakit.IMSAK -> "Sübh"
+        Vakit.GUNES -> "Günəş"
+        Vakit.OGLE -> "Zöhr"
+        Vakit.IKINDI -> "Əsr"
+        Vakit.AKSAM -> "Məğrib"
+        Vakit.YATSI -> "İşa"
+    }
+    override val cuma = "Cümə"
+    override val aylar = listOf(
+        "yanvar", "fevral", "mart", "aprel", "may", "iyun",
+        "iyul", "avqust", "sentyabr", "oktyabr", "noyabr", "dekabr",
+    )
+    override val gunler = listOf("bazar ertəsi", "çərşənbə axşamı", "çərşənbə", "cümə axşamı", "cümə", "şənbə", "bazar")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gun $ay $yil, $gunAdi"
+
+    override val birimSa = "saat"
+    override val birimDk = "dəq"
+    override val birimSn = "san"
+    override fun saatSesli(n: Int) = "$n saat"
+    override fun dakikaSesli(n: Int) = "$n dəqiqə"
+    override val birDakikadanAz = "1 dəqiqədən az"
+
+    override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "Günəşin çıxması"
+        Kerahat.Tur.ISTIVA -> "İstiva"
+        Kerahat.Tur.GURUB -> "Günəşin batması"
+    }
+
+    override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "Günəş yaxşıca qalxana qədər namaz qılmaq məkruhdur."
+        Kerahat.Tur.ISTIVA -> "Günəş zenitdə olanda namaz qılmaq məkruhdur."
+        Kerahat.Tur.GURUB -> "Günəş batarkən namaz qılmaq məkruhdur."
+    }
+
+    override fun bant(ad: String, dk: Long) = "$ad vaxtı daralır · $dk dəq"
+    override val kabulDuasi = "Allah qəbul etsin"
+    override val iftarSelami = "İftarınız xeyirli olsun"
+    override val cumaSelami = "Cüməniz mübarək olsun"
+    override val sahuraKalan = "Sahura qalan"
+    override val iftaraKalan = "İftara qalan"
+}
+
+// uz — Özbekçe (beta, LATİN): JS `sozluk/uz` (vakit, tarih, sure.kisa, samimiyet, anaEkran.kerahat); Kiril kaynak → kirildenLatine.
+// CLDR uz: one/other; sayıdan sonra isim çoğul eki almaz. Ay adları tarih içinde küçük harf.
+object TvDiliUz : TvDili {
+    override val kod = "uz"
+    override fun vakitAdi(vakit: Vakit) = when (vakit) {
+        Vakit.IMSAK -> "Bomdod"
+        Vakit.GUNES -> "Quyosh"
+        Vakit.OGLE -> "Peshin"
+        Vakit.IKINDI -> "Asr"
+        Vakit.AKSAM -> "Shom"
+        Vakit.YATSI -> "Xufton"
+    }
+    override val cuma = "Juma"
+    override val aylar = listOf(
+        "yanvar", "fevral", "mart", "aprel", "may", "iyun",
+        "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr",
+    )
+    override val gunler = listOf("Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $yil yil $gun $ay"
+
+    override val birimSa = "soat"
+    override val birimDk = "daq"
+    override val birimSn = "s"
+    override fun saatSesli(n: Int) = "$n soat"
+    override fun dakikaSesli(n: Int) = "$n daqiqa"
+    override val birDakikadanAz = "1 daqiqadan kam"
+
+    override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "Quyosh chiqishi"
+        Kerahat.Tur.ISTIVA -> "Istivo"
+        Kerahat.Tur.GURUB -> "Quyosh botishi"
+    }
+
+    override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "Quyosh yaxshi koʻtarilguncha namoz oʻqish makruh."
+        Kerahat.Tur.ISTIVA -> "Quyosh osmon oʻrtasida turganda namoz oʻqish makruh."
+        Kerahat.Tur.GURUB -> "Quyosh botayotganda namoz oʻqish makruh."
+    }
+
+    override fun bant(ad: String, dk: Long) = "$ad vaqti torayyapti · $dk daq"
+    override val kabulDuasi = "Alloh qabul qilsin"
+    override val iftarSelami = "Iftoringiz muborak boʻlsin"
+    override val cumaSelami = "Juma muborak"
+    override val sahuraKalan = "Saharlik tugashigacha"
+    override val iftaraKalan = "Iftorgacha qolgan vaqt"
+}
+
+// kk — Kazakça (beta, Kiril): JS `sozluk/kk` (vakit adları QMDB, `sure.kisa` сағ/мин/с, `tarih`, `samimiyet`).
+// CLDR kk: one/other; sayıdan sonra isim çoğul eki almaz. Tarih CLDR uzun biçimi: "2026 ж. 18 қазан, сенбі".
+object TvDiliKk : TvDili {
+    override val kod = "kk"
+    override fun vakitAdi(vakit: Vakit) = when (vakit) {
+        Vakit.IMSAK -> "Таң"
+        Vakit.GUNES -> "Күн"
+        Vakit.OGLE -> "Бесін"
+        Vakit.IKINDI -> "Екінті"
+        Vakit.AKSAM -> "Ақшам"
+        Vakit.YATSI -> "Құптан"
+    }
+    override val cuma = "Жұма"
+    override val aylar = listOf(
+        "қаңтар", "ақпан", "наурыз", "сәуір", "мамыр", "маусым",
+        "шілде", "тамыз", "қыркүйек", "қазан", "қараша", "желтоқсан",
+    )
+    override val gunler = listOf("дүйсенбі", "сейсенбі", "сәрсенбі", "бейсенбі", "жұма", "сенбі", "жексенбі")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$yil ж. $gun $ay, $gunAdi"
+
+    override val birimSa = "сағ"
+    override val birimDk = "мин"
+    override val birimSn = "с"
+    override fun saatSesli(n: Int) = "$n сағат"
+    override fun dakikaSesli(n: Int) = "$n минут"
+    override val birDakikadanAz = "1 минуттан аз"
+
+    override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "Күн шығуы"
+        Kerahat.Tur.ISTIVA -> "Истиуа"
+        Kerahat.Tur.GURUB -> "Күн батуы"
+    }
+
+    override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "Күн әбден көтерілгенше намаз оқу мәкрүһ."
+        Kerahat.Tur.ISTIVA -> "Күн дәл төбеде тұрғанда намаз оқу мәкрүһ."
+        Kerahat.Tur.GURUB -> "Күн батып бара жатқанда намаз оқу мәкрүһ."
+    }
+
+    override fun bant(ad: String, dk: Long) = "$ad уақыты тарылуда · $dk мин"
+    override val kabulDuasi = "Алла қабыл етсін"
+    override val iftarSelami = "Ауызашарыңыз қабыл болсын"
+    override val cumaSelami = "Жұмаңыз мүбәрак болсын"
+    override val sahuraKalan = "Сәресіге қалды"
+    override val iftaraKalan = "Ауызашарға қалды"
+}
+
+// ky
+object TvDiliKy : TvDili {
+    override val kod = "ky"
+    override fun vakitAdi(vakit: Vakit) = when (vakit) {
+        Vakit.IMSAK -> "Багымдат"
+        Vakit.GUNES -> "Күн чыгыш"
+        Vakit.OGLE -> "Бешим"
+        Vakit.IKINDI -> "Аср"
+        Vakit.AKSAM -> "Шам"
+        Vakit.YATSI -> "Куптан"
+    }
+    override val cuma = "Жума"
+    override val aylar = listOf(
+        "январь", "февраль", "март", "апрель", "май", "июнь",
+        "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь",
+    )
+    override val gunler = listOf("Дүйшөмбү", "Шейшемби", "Шаршемби", "Бейшемби", "Жума", "Ишемби", "Жекшемби")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $yil-ж., $gun-$ay"
+
+    override val birimSa = "ст"
+    override val birimDk = "мүн"
+    override val birimSn = "сек"
+    override fun saatSesli(n: Int) = "$n саат"
+    override fun dakikaSesli(n: Int) = "$n мүнөт"
+    override val birDakikadanAz = "1 мүнөттөн аз"
+
+    override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "Күн чыгыш"
+        Kerahat.Tur.ISTIVA -> "Зенит"
+        Kerahat.Tur.GURUB -> "Күн батыш"
+    }
+
+    override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "Күн жакшылап көтөрүлгөнчө намаз окуу макрух."
+        Kerahat.Tur.ISTIVA -> "Күн зенитте турганда намаз окуу макрух."
+        Kerahat.Tur.GURUB -> "Күн батып жатканда намаз окуу макрух."
+    }
+
+    override fun bant(ad: String, dk: Long) = "$ad убактысы тарып баратат · $dk мүн"
+    override val kabulDuasi = "Алла кабыл кылсын"
+    override val iftarSelami = "Ооз ачарыңыз кабыл болсун"
+    override val cumaSelami = "Жумаңыз кабыл болсун"
+    override val sahuraKalan = "Саарлыкка калган убакыт"
+    override val iftaraKalan = "Ооз ачарга калган убакыт"
+}
+
+// tg — Tacikçe (beta): JS `sozluk/tg` (vakit, tarih, sure.kisa, samimiyet, anaEkran.kerahat); rakam Batı.
+// CLDR tg: one/other; sayıdan sonra ad tekildir → iki biçim aynı. Ay adı tarih içinde küçük harf (CLDR tg, ь'siz).
+object TvDiliTg : TvDili {
+    override val kod = "tg"
+    override fun vakitAdi(vakit: Vakit) = when (vakit) {
+        Vakit.IMSAK -> "Бомдод"
+        Vakit.GUNES -> "Тулӯъ"
+        Vakit.OGLE -> "Пешин"
+        Vakit.IKINDI -> "Аср"
+        Vakit.AKSAM -> "Шом"
+        Vakit.YATSI -> "Хуфтан"
+    }
+    override val cuma = "Ҷумъа"
+    override val aylar = listOf(
+        "январ", "феврал", "март", "апрел", "май", "июн",
+        "июл", "август", "сентябр", "октябр", "ноябр", "декабр",
+    )
+    override val gunler = listOf("Душанбе", "Сешанбе", "Чоршанбе", "Панҷшанбе", "Ҷумъа", "Шанбе", "Якшанбе")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $gun $ay $yil"
+
+    override val birimSa = "соат"
+    override val birimDk = "дақ"
+    override val birimSn = "сон"
+    override fun saatSesli(n: Int) = "$n соат"
+    override fun dakikaSesli(n: Int) = "$n дақиқа"
+    override val birDakikadanAz = "камтар аз 1 дақиқа"
+
+    override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "Тулӯи офтоб"
+        Kerahat.Tur.ISTIVA -> "Истиво"
+        Kerahat.Tur.GURUB -> "Ғуруби офтоб"
+    }
+
+    override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
+        Kerahat.Tur.SURUK -> "То хуб баланд шудани офтоб намоз хондан макрӯҳ аст."
+        Kerahat.Tur.ISTIVA -> "Вақте ки офтоб дар авҷи осмон аст, намоз хондан макрӯҳ аст."
+        Kerahat.Tur.GURUB -> "Ҳангоми ғуруби офтоб намоз хондан макрӯҳ аст."
+    }
+
+    override fun bant(ad: String, dk: Long) = "Вақти $ad танг мешавад · $dk дақ"
+    override val kabulDuasi = "Худо қабул кунад"
+    override val iftarSelami = "Ифтори пурбаракат"
+    override val cumaSelami = "Ҷумъа муборак"
+    override val sahuraKalan = "Вақти боқимонда барои саҳарӣ"
+    override val iftaraKalan = "Вақти боқимонда то ифтор"
 }

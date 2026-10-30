@@ -293,7 +293,8 @@ const AndroidDuvarKagidi: React.FC = () => {
 
 const IosKisayolRehberi: React.FC = () => {
   const renkler = useRenkler();
-  const m = useMetin().gununAyeti;
+  const sozlukler = useMetin();
+  const m = sozlukler.gununAyeti;
   const dil = useAktifDil();
   const koordinat = useAppSelector((state) => state.konum.koordinatlar);
   const gorselRef = useRef<View>(null);
@@ -304,7 +305,9 @@ const IosKisayolRehberi: React.FC = () => {
   const ayet = useMemo(() => {
     const gun = aktifNamazGunu(new Date(), koordinatImsakKaynagi(lat === 0 && lng === 0 ? null : { lat, lng }));
     return gununAyetiGorunumu(gununAyetiKaydi(isoGun(gun), dil), dil);
-  }, [lat, lng, dil]);
+    // `sozlukler`: alfabe (Latin/Kiril) değişince meal yeniden çevrilir; dil aynı kalır, sözlük referansı değişir.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lat, lng, dil, sozlukler]);
 
   const kaydet = async () => {
     setKaydediliyor(true);

@@ -69,8 +69,8 @@ public enum SiriKildimKarari: Equatable {
 /// yeni ornek + `tablo` eslemesi + `desteklenenler`'e kod (`docs/ajan/coklu-dil.md`).
 public enum ArayuzDili {
     public static let varsayilan = "tr"
-    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug).
-    public static let desteklenenler: [String] = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug"]
+    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg).
+    public static let desteklenenler: [String] = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg"]
 
     /// "en", "en-US", "de_DE" → kok kod; bilinmeyen ya da bos kod → "tr". Eski Endonezce
     /// kodu "in" (Java/Android mirasi) "id" sayilir; iOS'ta Endonezce zaten "id"dir.
@@ -159,8 +159,8 @@ public enum RakamSistemi {
 }
 
 /// CLDR cogul kategorisi ("zero", "one", "two", "few", "many", "other") — JS
-/// `src/core/dil/cogul.ts` ikizi (tamsayi icin); Urduca, Felemenkce, Arnavutca, Pestuca, Sorani ve
-/// Uygurca (ur, nl, sq, ps, ckb, ug) `default` dalindadir (one/other).
+/// `src/core/dil/cogul.ts` ikizi (tamsayi icin); Urduca, Felemenkce, Arnavutca, Pestuca, Sorani,
+/// Uygurca ve Orta Asya dilleri (ur, nl, sq, ps, ckb, ug, az, uz, kk, ky, tg) `default` dalindadir (one/other).
 /// Cogul metin tablolari kategori → kalip tasir; dilde olmayan kategori "other"a duser.
 public enum CogulKurali {
     public static func kategori(_ dil: String, _ n: Int) -> String {
@@ -276,8 +276,9 @@ public struct VakitAdlari: Equatable {
 /// Yer tutucular `{ad}`, `{saat}`, `{giris}`, `{dua}` — `bicim` doldurur.
 ///
 /// Duzen (ceviri ajanlari icin): dil basina bir `static let`, sira tr, en, id, de, fr, bs,
-/// ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dilin ornegi Ingilizcenin birebir kopyasidir ve `// ÇEVİRİ: <kod>`
-/// satiriyla baslar. Nobetci: `test/main.swift` (her dil Turkceyle ayni yer tutucular).
+/// ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dilin ornegi Ingilizcenin birebir kopyasidir ve `// ÇEVİRİ: <kod>`
+/// satiriyla baslar; Ozbekce ornegi Latin, Kazakca Kiril yazilir (`docs/ajan/coklu-dil.md > Alfabe`).
+/// Nobetci: `test/main.swift` (her dil Turkceyle ayni yer tutucular).
 public struct VakitMetinleri: Equatable {
     public let dil: String
     /// Kilinabilir vakitlerin widget kodu → gorunen ad (`sabah`...`yatsi`). Kullanicinin
@@ -829,11 +830,147 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "ئەپنى ئېچىڭ"
     )
 
+    // az — Azerice (beta); terimler src/core/dil/sozluk/az ("Qıldım" / "Qılındı", hitap "siz")
+    public static let az = VakitMetinleri(
+        dil: "az",
+        adlar: ["sabah": "Sübh", "ogle": "Zöhr", "ikindi": "Əsr", "aksam": "Məğrib", "yatsi": "İşa"],
+        gunes: "Günəş",
+        konumYok: "Vaxtları hesablaya bilmək üçün tətbiqi açıb məkanınızı tənzimləyin.",
+        veriEski: "Vaxt məlumatı köhnəlib. Yeniləmək üçün tətbiqi bir dəfə açın.",
+        girisBugun: "saat {saat}",
+        girisYarin: "sabah saat {saat}",
+        suAnVakti: "İndi {ad} vaxtıdır.",
+        suAnVaktiCikis: "İndi {ad} vaxtıdır, çıxışı saat {saat}.",
+        siradakiNamaz: "Növbəti namaz {ad}, {giris}.",
+        isaretlendi: "{ad} namazınız qılındı kimi qeyd olundu. {dua}.",
+        zatenKilindi: "{ad} namazı artıq qılındı kimi qeyd olunub.",
+        vakitYok: "Hazırda qılınacaq vaxt yoxdur.",
+        vakitYokSiradaki: "Hazırda qılınacaq vaxt yoxdur. Növbəti {ad}, {giris}.",
+        onay: "{ad} namazı qılındı kimi qeyd olunsun?",
+        vakitDegisti: "Vaxt dəyişdi, qeyd edilmədi. Yenidən cəhd edin.",
+        kabulDuasi: "Allah qəbul etsin",
+        kildim: "Qıldım",
+        kilindi: "Qılındı",
+        kontrolKildim: "{ad} · Qıldım",
+        kontrolKilindi: "{ad} qılındı",
+        kontrolVakitYok: "Qılınacaq vaxt yoxdur",
+        uygulamayiAcin: "Tətbiqi açın"
+    )
+
+    // uz — Ozbekce (beta, LATIN); terimler src/core/dil/sozluk/uz (Kiril kaynak → kirildenLatine; "Oʻqidim" / "Oʻqildi", hitap "Siz")
+    public static let uz = VakitMetinleri(
+        dil: "uz",
+        adlar: ["sabah": "Bomdod", "ogle": "Peshin", "ikindi": "Asr", "aksam": "Shom", "yatsi": "Xufton"],
+        gunes: "Quyosh",
+        konumYok: "Namoz vaqtlarini hisoblash uchun ilovani ochib, joylashuvingizni belgilang.",
+        veriEski: "Namoz vaqtlari eskirgan. Yangilash uchun ilovani bir marta oching.",
+        girisBugun: "soat {saat} da",
+        girisYarin: "ertaga soat {saat} da",
+        suAnVakti: "Hozir {ad} vaqti.",
+        suAnVaktiCikis: "Hozir {ad} vaqti; soat {saat} da tugaydi.",
+        siradakiNamaz: "Keyingi namoz {ad}, {giris}.",
+        isaretlendi: "{ad} namozi oʻqildi deb belgilandi. {dua}.",
+        zatenKilindi: "{ad} namozi allaqachon oʻqildi deb belgilangan.",
+        vakitYok: "Hozir belgilanadigan namoz yoʻq.",
+        vakitYokSiradaki: "Hozir belgilanadigan namoz yoʻq. Keyingisi {ad}, {giris}.",
+        onay: "{ad} namozi oʻqildi deb belgilansinmi?",
+        vakitDegisti: "Namoz vaqti oʻzgardi, shuning uchun hech narsa belgilanmadi. Qayta urinib koʻring.",
+        kabulDuasi: "Alloh qabul qilsin",
+        kildim: "Oʻqidim",
+        kilindi: "Oʻqildi",
+        kontrolKildim: "{ad} · Oʻqidim",
+        kontrolKilindi: "{ad} oʻqildi",
+        kontrolVakitYok: "Belgilanadigan namoz yoʻq",
+        uygulamayiAcin: "Ilovani oching"
+    )
+
+    // kk — Kazakça (beta, Kiril): JS `sozluk/kk` (vakit adları QMDB; "Kıldım" = «Оқыдым», "Kılındı" = «Оқылды»).
+    public static let kk = VakitMetinleri(
+        dil: "kk",
+        adlar: ["sabah": "Таң", "ogle": "Бесін", "ikindi": "Екінті", "aksam": "Ақшам", "yatsi": "Құптан"],
+        gunes: "Күн",
+        konumYok: "Намаз уақыттарын есептеу үшін қолданбаны ашып, орналасқан жеріңізді баптаңыз.",
+        veriEski: "Намаз уақыттары ескірген. Жаңарту үшін қолданбаны бір рет ашыңыз.",
+        girisBugun: "сағат {saat}",
+        girisYarin: "ертең сағат {saat}",
+        suAnVakti: "Қазір {ad} уақыты.",
+        suAnVaktiCikis: "Қазір {ad} уақыты, шығуы сағат {saat}.",
+        siradakiNamaz: "Келесі намаз — {ad}, {giris}.",
+        isaretlendi: "{ad} намазыңыз оқылды деп белгіленді. {dua}.",
+        zatenKilindi: "{ad} намазы оқылды деп бұрын белгіленген.",
+        vakitYok: "Қазір оқылатын намаз уақыты жоқ.",
+        vakitYokSiradaki: "Қазір оқылатын намаз уақыты жоқ. Келесісі — {ad}, {giris}.",
+        onay: "{ad} намазы оқылды деп белгіленсін бе?",
+        vakitDegisti: "Намаз уақыты өзгерді, белгі қойылмады. Қайталап көріңіз.",
+        kabulDuasi: "Алла қабыл етсін",
+        kildim: "Оқыдым",
+        kilindi: "Оқылды",
+        kontrolKildim: "{ad} · Оқыдым",
+        kontrolKilindi: "{ad} оқылды",
+        kontrolVakitYok: "Белгіленетін намаз жоқ",
+        uygulamayiAcin: "Қолданбаны ашыңыз"
+    )
+
+    // ky
+    public static let ky = VakitMetinleri(
+        dil: "ky",
+        adlar: ["sabah": "Багымдат", "ogle": "Бешим", "ikindi": "Аср", "aksam": "Шам", "yatsi": "Куптан"],
+        gunes: "Күн чыгыш",
+        konumYok: "Намаз убактылары эсептелиши үчүн колдонмону ачып, жайгашкан жериңизди коюңуз.",
+        veriEski: "Намаз убактылары эскирген. Аларды жаңыртуу үчүн колдонмону бир жолу ачыңыз.",
+        girisBugun: "саат {saat}",
+        girisYarin: "эртең саат {saat}",
+        suAnVakti: "Азыр {ad} убактысы.",
+        suAnVaktiCikis: "Азыр {ad} убактысы; ал саат {saat} бүтөт.",
+        siradakiNamaz: "Кийинки намаз — {ad}, {giris}.",
+        isaretlendi: "{ad} окулду деп белгиленди. {dua}.",
+        zatenKilindi: "{ad} мурунтан эле окулду деп белгиленген.",
+        vakitYok: "Азыр белгилей турган намаз жок.",
+        vakitYokSiradaki: "Азыр белгилей турган намаз жок. Кийинкиси {ad}, {giris}.",
+        onay: "{ad} окулду деп белгиленсинби?",
+        vakitDegisti: "Намаз убактысы өзгөргөндүктөн эч нерсе белгиленген жок. Кайра аракет кылыңыз.",
+        kabulDuasi: "Алла кабыл кылсын",
+        kildim: "Окудум",
+        kilindi: "Окулду",
+        kontrolKildim: "{ad} · Окудум",
+        kontrolKilindi: "{ad} окулду",
+        kontrolVakitYok: "Белгилей турган намаз жок",
+        uygulamayiAcin: "Колдонмону ачыңыз"
+    )
+
+    // tg — Tacikçe (beta): JS `sozluk/tg` (Kıldım "Хондам", Kılındı "Хонда шуд", hitap "Шумо")
+    public static let tg = VakitMetinleri(
+        dil: "tg",
+        adlar: ["sabah": "Бомдод", "ogle": "Пешин", "ikindi": "Аср", "aksam": "Шом", "yatsi": "Хуфтан"],
+        gunes: "Тулӯъ",
+        konumYok: "Барои ҳисоб кардани вақтҳо барномаро кушода, макони худро танзим кунед.",
+        veriEski: "Вақтҳои намоз кӯҳна шудаанд. Барои навсозӣ барномаро як бор кушоед.",
+        girisBugun: "соати {saat}",
+        girisYarin: "фардо соати {saat}",
+        suAnVakti: "Ҳозир вақти {ad} аст.",
+        suAnVaktiCikis: "Ҳозир вақти {ad} аст; соати {saat} ба охир мерасад.",
+        siradakiNamaz: "Намози навбатӣ {ad}, {giris}.",
+        isaretlendi: "Намози {ad} ҳамчун хондашуда қайд шуд. {dua}.",
+        zatenKilindi: "Намози {ad} аллакай ҳамчун хондашуда қайд шудааст.",
+        vakitYok: "Ҳоло вақте барои қайд нест.",
+        vakitYokSiradaki: "Ҳоло вақте барои қайд нест. Навбатӣ {ad}, {giris}.",
+        onay: "Намози {ad} ҳамчун хондашуда қайд шавад?",
+        vakitDegisti: "Вақт иваз шуд, қайд анҷом нашуд. Боз кӯшиш кунед.",
+        kabulDuasi: "Худо қабул кунад",
+        kildim: "Хондам",
+        kilindi: "Хонда шуд",
+        kontrolKildim: "{ad} · Хондам",
+        kontrolKilindi: "{ad} хонда шуд",
+        kontrolVakitYok: "Вақте барои қайд нест",
+        uygulamayiAcin: "Барномаро кушоед"
+    )
+
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).
     public static let tablo: [String: VakitMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
+        "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
     ]
 
     /// Dil koduna gore metinler ("en-US" → Ingilizce; bilinmeyen → Turkce). Kullanicinin

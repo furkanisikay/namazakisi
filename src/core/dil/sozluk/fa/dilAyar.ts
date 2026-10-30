@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'زبان · Language',
   aciklama: 'زبان برنامه را انتخاب کنید. اعلان‌ها و خواندن با صدا هم به همین زبان خواهد بود.',
   grup: 'زبان برنامه',
-  dilAdlari: { tr: 'ترکی استانبولی', en: 'انگلیسی', id: 'اندونزیایی', de: 'آلمانی', fr: 'فرانسوی', bs: 'بوسنیایی', ru: 'روسی', ms: 'مالایی', ar: 'عربی', ur: 'اردو', es: 'اسپانیایی', nl: 'هلندی', sq: 'آلبانیایی', hi: 'هندی', bn: 'بنگالی', fa: 'فارسی', ps: 'پشتو', ckb: 'کردی مرکزی', ug: 'اویغوری' },
+  dilAdlari: { tr: 'ترکی استانبولی', en: 'انگلیسی', id: 'اندونزیایی', de: 'آلمانی', fr: 'فرانسوی', bs: 'بوسنیایی', ru: 'روسی', ms: 'مالایی', ar: 'عربی', ur: 'اردو', es: 'اسپانیایی', nl: 'هلندی', sq: 'آلبانیایی', hi: 'هندی', bn: 'بنگالی', fa: 'فارسی', ps: 'پشتو', ckb: 'کردی مرکزی', ug: 'اویغوری', az: 'ترکی آذربایجانی', uz: 'ازبکی', kk: 'قزاقی', ky: 'قرقیزی', tg: 'تاجیکی' },
   cihazDili: 'زبان دستگاه',
   cihazDiliKullaniliyor: 'اکنون {ad}',
   cihazDiliDesteklenmiyor: 'زبان دستگاه شما هنوز در دسترس نیست؛ ترکی استانبولی به کار می‌رود.',
@@ -33,6 +33,14 @@ export const dilAyar: Sozluk['dilAyar'] = {
     otomatikAciklama: 'نام‌های رایج در کشور محل شما به کار می‌رود.',
     // Farsçada `temel` = sözlüğün İran Farsçası adları (Arapça ad değil); `afgan` = Darî takımı (`vakitTakimlari.ts`).
     takimlar: { temel: 'نام‌های رایج در ایران', diyanetDe: 'دیانت (آلمانی)', turkce: 'نام‌های ترکی', magrip: 'املای مغربی', cezayir: 'املای الجزایری', afgan: 'نام‌های رایج در افغانستان' },
+  },
+  yazi: {
+    baslik: 'الفبا',
+    aciklama: 'انتخاب کنید متن‌ها با کدام الفبا نوشته شوند.',
+    otomatik: 'بر اساس کشور',
+    otomatikAciklama: 'الفبای رایج در کشور محل شما به کار می‌رود.',
+    latin: 'الفبای لاتین',
+    kiril: 'الفبای سیریلیک',
   },
   kaydedilemedi: 'زبان ذخیره نشد. دوباره امتحان کنید.',
   sihirbazBaglantisi: 'زبان · Language',

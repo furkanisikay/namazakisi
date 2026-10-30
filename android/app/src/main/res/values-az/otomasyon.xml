@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (Azerice). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Qıldım</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Vaxt vəziyyəti</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Vaxt hadisəsi</string>
+
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
+  <string name="otomasyon_bilgi_baslik">Bu parametr avtomatlaşdırma tətbiqindən əlavə olunur</string>
+  <string name="otomasyon_bilgi_tarayici">Brauzerlərə daimi icazə verilmir. Tasker, MacroDroid və ya Automate kimi tətbiqin plagin siyahısından əlavə edin.</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid və ya Automate kimi tətbiqin plagin siyahısından \"Namaz Akışı\" seçərək əlavə edin.</string>
+  <string name="otomasyon_engelli_baslik">%1$s əngəllənib</string>
+  <string name="otomasyon_engelli_mesaj">Bu tətbiqin namazlarınızı qeyd etməsini əvvəlcə əngəlləmisiniz. Namaz Akışı tətbiqində Parametrlər &gt; \"Qıldım qeyd edə bilən tətbiqlər\" səhifəsindən icazə verə bilərsiniz.</string>
+  <string name="otomasyon_izin_baslik">%1$s ilə istifadə olunsun?</string>
+  <string name="otomasyon_izin_kosul">%1$s vaxt daxil oldu, vaxt çıxır və məsciddəsiniz hadisələrini öyrənib avtomatlaşdırmalarınızı işə sala bilər. Qərarınızı Namaz Akışı tətbiqində Parametrlər &gt; \"Qıldım qeyd edə bilən tətbiqlər\" səhifəsindən dəyişə bilərsiniz.</string>
+  <string name="otomasyon_izin_kildim">%1$s qurduğunuz avtomatlaşdırma ilə hazırkı vaxtı qılındı kimi qeyd edə bilər. Qərarınızı Namaz Akışı tətbiqində Parametrlər &gt; \"Qıldım qeyd edə bilən tətbiqlər\" səhifəsindən dəyişə bilərsiniz.</string>
+  <string name="otomasyon_izin_ver">İcazə ver</string>
+  <string name="otomasyon_engelle">Əngəllə</string>
+  <string name="otomasyon_vazgec">Ləğv et</string>
+  <string name="otomasyon_tamam">Oldu</string>
+  <string name="otomasyon_tur_baslik">Hansı halda işləsin?</string>
+  <string name="otomasyon_ileri">İrəli</string>
+  <string name="otomasyon_vakit_baslik">Hansı vaxt?</string>
+  <string name="otomasyon_herhangi_vakit">İstənilən vaxt</string>
+  <string name="otomasyon_kaydet">Yadda saxla</string>
+  <string name="otomasyon_kosul_icinde">Vaxt ərzində</string>
+  <string name="otomasyon_kosul_cikiyor">Vaxt çıxarkən (%1$d dəq qalmış, qoruyucu açıq olanda)</string>
+  <string name="otomasyon_kosul_camide">Məsciddə olanda</string>
+  <string name="otomasyon_olay_girdi">Vaxt daxil olduqda</string>
+  <string name="otomasyon_olay_cikiyor">Vaxt çıxır (%1$d dəq qalmış, qoruyucu açıq olanda)</string>
+  <string name="otomasyon_olay_camide">Məsciddə olduğunuz aşkarlandıqda</string>
+</resources>

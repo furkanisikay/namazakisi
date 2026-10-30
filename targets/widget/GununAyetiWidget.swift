@@ -25,7 +25,7 @@ enum GununAyetiSabitleri {
 /// Yuk yokken (uygulama hic acilmadi) ve galeride gereken metinler. Ingilizce karsiliklar
 /// JS sozlugunden (`sozluk/en/gununAyeti.ts > baslik, etiket`).
 ///
-/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug; cevrilmemis dil
+/// Duzen: dil basina bir `static let`, sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg; cevrilmemis dil
 /// Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`). `ornek*` alanlari galeri onizlemesindeki
 /// 94:6'dir: meal o dilin QuranEnc mealinden BIREBIR (kesilmeden) ve kunyesiyle yazilir
 /// (`docs/ajan/coklu-dil.md > Nass kurali`; dilde meal yoksa `ornekMeal` bos → yalniz Arapca).
@@ -315,10 +315,81 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Muhammad Saleh، QuranEnc 1.0.2"
     )
 
+    // az — Azerice (beta); JS `sozluk/az/gununAyeti.ts`, meal 94:6 `gununAyetiHavuzu.ts` (azeri_musayev)
+    static let az = GununAyetiYerelMetinleri(
+        galeriAdi: "Günün ayəsi",
+        galeriAciklama: "Hər gün sübhdə dəyişən bir ayə və onun tərcüməsi.",
+        etiket: "GÜNÜN AYƏSİ",
+        uygulamayiAcin: "Günün ayəsini görmək üçün tətbiqi açın",
+        ornekSigmiyor: "Bu günün ayəsi bu ölçüyə sığmır. Oxumaq üçün toxunun.",
+        ornekAcin: "Açın",
+        ornekArapcaKaynagi: "Ərəbcə: Tanzil",
+        ornekMeal: "Əlbəttə ki, çətinliklə bərabər bir asanlıq vardır.",
+        ornekKisaKunye: "Quran 94:6",
+        ornekMealKaynagi: "Ali Khan Musayev, QuranEnc 1.0.4"
+    )
+
+    // uz — Özbekçe (beta, LATİN); meal `gununAyetiHavuzu.ts` 94:6 (uzbek_rwwad, Kiril) kirildenLatine ile — JS `yaziyaCevir` ikizi
+    static let uz = GununAyetiYerelMetinleri(
+        galeriAdi: "Kun oyati",
+        galeriAciklama: "Har kuni bomdodda almashadigan oyat va uning tarjimasi.",
+        etiket: "KUN OYATI",
+        uygulamayiAcin: "Kun oyatini koʻrish uchun ilovani oching",
+        ornekSigmiyor: "Bugungi oyat bu oʻlchamga sigʻmaydi. Oʻqish uchun bosing.",
+        ornekAcin: "Ochish",
+        ornekArapcaKaynagi: "Arabcha: Tanzil",
+        ornekMeal: "Albatta, bir qiyinchilik bilan bir osonlik bordir.",
+        ornekKisaKunye: "Qurʼon 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.4"
+    )
+
+    // kk — Kazakça (beta, Kiril): meal `gununAyetiHavuzu.ts` 94:6 birebir (kazakh_altai), künye `mealler.kk`
+    static let kk = GununAyetiYerelMetinleri(
+        galeriAdi: "Күннің аяты",
+        galeriAciklama: "Күн сайын таң уақытында ауысатын аят және оның аудармасы.",
+        etiket: "КҮННІҢ АЯТЫ",
+        uygulamayiAcin: "Күннің аятын көру үшін қолданбаны ашыңыз",
+        ornekSigmiyor: "Бүгінгі аят бұл өлшемге сыймайды. Оқу үшін түртіңіз.",
+        ornekAcin: "Ашу",
+        ornekArapcaKaynagi: "Арабша: Tanzil",
+        ornekMeal: "Шын мәнінде қиыншылықпен бірге бір оңайлық бар.",
+        ornekKisaKunye: "Құран 94:6",
+        ornekMealKaynagi: "Khalifa Altai, QuranEnc 1.0.0"
+    )
+
+    // ky
+    static let ky = GununAyetiYerelMetinleri(
+        galeriAdi: "Күндүн аяты",
+        galeriAciklama: "Күн сайын багымдатта алмашып турган аят жана анын котормосу.",
+        etiket: "КҮНДҮН АЯТЫ",
+        uygulamayiAcin: "Күндүн аятын көрүү үчүн колдонмону ачыңыз",
+        ornekSigmiyor: "Бүгүнкү аят бул өлчөмгө батпайт. Окуу үчүн басыңыз.",
+        ornekAcin: "Ачуу",
+        ornekArapcaKaynagi: "Арабча: Tanzil",
+        ornekMeal: "Албетте, кыйынчылык менен бирге жеңилдик бар.",
+        ornekKisaKunye: "Куран 94:6",
+        ornekMealKaynagi: "Shamsuddin Hakimov, QuranEnc 1.0.2"
+    )
+
+    // tg — meal 94:6 `gununAyetiHavuzu.ts` (tajik_arifi), künye `GUNUN_AYETI_KAYNAKLARI.mealler.tg`
+    static let tg = GununAyetiYerelMetinleri(
+        galeriAdi: "Ояти рӯз",
+        galeriAciklama: "Оят бо тарҷумааш, ки ҳар рӯз ҳангоми бомдод иваз мешавад.",
+        etiket: "ОЯТИ РӮЗ",
+        uygulamayiAcin: "Барои дидани ояти рӯз барномаро кушоед",
+        ornekSigmiyor: "Ояти имрӯз ба ин андоза намеғунҷад. Барои хондан пахш кунед.",
+        ornekAcin: "Кушодан",
+        ornekArapcaKaynagi: "Арабӣ: Tanzil",
+        ornekMeal: "[Оре] Мусалламан, бо [ҳар] душворӣ осонӣ аст",
+        ornekKisaKunye: "Қуръон 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.2"
+    )
+
     static let tablo: [String: GununAyetiYerelMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
         "fa": fa, "ps": ps, "ckb": ckb, "ug": ug,
+        "az": az, "uz": uz, "kk": kk, "ky": ky, "tg": tg,
     ]
 
     static var simdiki: GununAyetiYerelMetinleri {

@@ -3,7 +3,8 @@
  *
  * Notlar sessiz sapma bırakmaz: beta çeviri, dilin vakit hesabını değiştirmediği ve Türkçe
  * dışında hadis gösterilmediği (`core/icerik/nassDili.ts`) açıkça söylenir. Birden çok yerleşik
- * vakit adlandırması olan dilde (Almanca, Fransızca) vakit adı takımı da buradan seçilir.
+ * vakit adlandırması olan dilde (Almanca, Fransızca) vakit adı takımı, iki alfabeli dilde (Özbekçe,
+ * Kazakça) alfabe de buradan seçilir.
  * Yazı yönü yeniden başlatma beklerken (kullanıcı "Sonra" dedi ya da açılışta düzeltilemedi)
  * kalıcı bilgi satırı + "Şimdi yeniden başlatın" düğmesi görünür (sessiz sapma yok).
  */
@@ -16,6 +17,7 @@ import { useRenkler } from '../../core/theme';
 import { useAktifDil, useMetin } from '../hooks/useMetin';
 import { DilSecici } from '../components/dil/DilSecici';
 import { RakamSecimi } from '../components/dil/RakamSecimi';
+import { YaziSecimi } from '../components/dil/YaziSecimi';
 import { NotSatiri } from '../components/ortak/NotSatiri';
 import { SecenekListesi, type Secenek } from '../components/ortak/SecenekListesi';
 import { useAppDispatch } from '../store/hooks';
@@ -159,6 +161,7 @@ export const DilAyarlariSayfasi: React.FC = () => {
         <YonBekliyorSatiri />
         <DilSecici secimVar={secimVar} cihazYerelAyari={cihazYerelAyari()} onDegisti={degisti} testID="dil-secici" />
         <VakitAdlariSecimi kod={kod} />
+        <YaziSecimi kod={kod} />
         <RakamSecimi kod={kod} />
         <View style={{ marginTop: 20, gap: 6 }}>
           {beta ? <NotSatiri metin={m.notlar.beta} /> : null}

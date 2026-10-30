@@ -610,7 +610,7 @@ do {
         }
         return sonuc
     }
-    let kodlar = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug"]
+    let kodlar = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg"]
     esitMi(Set(SaatMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatMetinleri her dil")
     esitMi(Set(SaatSureMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatSureMetinleri her dil")
     esitMi(Set(KibleMetinleri.tablo.keys), Set(kodlar), "saat tablolari: KibleMetinleri her dil")

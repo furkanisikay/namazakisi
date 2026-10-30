@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- uz -->
+<!-- Özbekçe (beta, LATİN; Kiril JS sözlüğünden kirildenLatine). Terimler: JS src/core/dil/sozluk/uz + `TvDiliUz` (hitap "Siz"). -->
+<resources>
+    <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
+    <string name="dil_kodu">uz</string>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="ekran_koruyucu_adi">Namoz vaqtlari taxtasi</string>
+    <string name="ayarlar">Sozlamalar</string>
+    <!-- Pano (ui/PanoEkrani) -->
+    <string name="pano_kalan_erisim">%1$s vaqtigacha %2$s qoldi</string>
+    <string name="pano_vaktine">%1$s vaqtigacha</string>
+    <string name="pano_vaktine_kalan">%1$s vaqtigacha %2$s</string>
+    <string name="pano_kerahat_vakti">Makruh vaqt</string>
+    <string name="pano_bitis">tugashi %1$s</string>
+    <string name="pano_kerahat_erisim">Makruh vaqt, %1$s, tugashi %2$s. %3$s</string>
+    <string name="pano_cumaya">Jumagacha %1$s</string>
+    <string name="pano_cikis_geldi">yoʻlga chiqish vaqti</string>
+    <string name="pano_cikis">yoʻlga chiqish %1$s</string>
+    <string name="pano_cuma_cikis_geldi_erisim">Jumaga yoʻlga chiqish vaqti keldi</string>
+    <string name="pano_cuma_cikis_erisim">Jumaga soat %1$s da yoʻlga chiqing</string>
+    <string name="pano_bugun_cuma">Bugun juma</string>
+    <string name="pano_ogle">Peshin %1$s</string>
+    <string name="pano_bugun_cuma_erisim">Bugun juma. Juma namozi peshin vaqtida, %1$s</string>
+    <string name="pano_ayarlar_erisim">Sozlamalar: telefon qoʻshish, joylashuv, ulangan telefonlar</string>
+    <string name="pano_simdiki_vakit">joriy namoz vaqti</string>
+    <string name="pano_siradaki_vakit">keyingi namoz vaqti</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: «Telefoningizni qoʻshing», «Kodni kiritish», «Shaharni oʻzim tanlayman», «Qoʻshish». -->
+    <string name="kodla_girin">Kodni kiritish</string>
+    <string name="ili_kendim_secin">Shaharni oʻzim tanlayman</string>
+    <string name="yeniden_deneyin">Qayta urinish</string>
+    <string name="telefon_varsayilan">Telefon</string>
+    <string name="esleme_ekleniyor">%1$s qoʻshilmoqda</string>
+    <string name="esleme_gonderiyor">Telefoningiz joylashuvi va holatini yubormoqda…</string>
+    <string name="esleme_tamamlanamadi">Juftlashni yakunlab boʻlmadi</string>
+    <string name="esleme_saklanamadi">Bu televizor ulanish kalitini xavfsiz saqlay olmaydi. Joylashuvingizni kod bilan kiritishingiz yoki shahringizni tanlashingiz mumkin.</string>
+    <string name="telefonunuzu_ekleyin">Telefoningizni qoʻshing</string>
+    <string name="esleme_alt">Joylashuvingiz uchun namoz vaqtlari; oʻqigan namozlaringiz ham koʻrinadi.</string>
+    <string name="esleme_adim1">Telefoningizda Namaz Akışı ilovasini oching</string>
+    <string name="esleme_adim2">Sozlamalar › Qurilmalarim › Televizor qoʻshish</string>
+    <string name="esleme_adim3">Telefoningiz kamerasini kodga qarating</string>
+    <string name="esleme_ayni_wifi">Telefoningiz va televizoringiz bir xil Wi-Fi tarmogʻida boʻlishi kerak.</string>
+    <string name="esleme_onay_soru">Bu telefon qoʻshilsinmi?</string>
+    <string name="esleme_onay_aciklama">Qoʻshilgan telefon oʻz joylashuvi va belgilagan namozlarini shu televizorga yubora oladi.</string>
+    <string name="ekleyin">Qoʻshish</string>
+    <string name="hayir">Yoʻq</string>
+    <string name="esleme_eklendi">%1$s qoʻshildi</string>
+    <string name="konumunuz_geldi">Joylashuvingiz keldi</string>
+    <string name="konuma_gore_hesaplanacak">Namoz vaqtlari shu joylashuv uchun hisoblanadi.</string>
+    <string name="qr_konum_alindi">Joylashuv olindi</string>
+    <string name="qr_kodu">Telefoningiz bilan skanerlanadigan juftlash kodi</string>
+    <string name="ag_yok">Televizor tarmoqqa ulanmagan</string>
+    <string name="ag_yok_aciklama">Telefoningizdagi 7 xonali kodni kiritib yoki shahringizni tanlab davom etishingiz mumkin.</string>
+    <!-- Kodla konum (ui/KodGirisEkrani) -->
+    <string name="kod_baslik">Telefoningizdagi kodni kiriting</string>
+    <string name="kod_yol">Telefoningizda: Sozlamalar › Qurilmalarim › Televizor qoʻshish</string>
+    <string name="kod_hatali">Kod mos kelmadi. Telefoningizdagi 7 ta raqamni tekshiring; notoʻgʻri raqamni «%1$s» bilan tuzating.</string>
+    <string name="kod_rakamli_kumanda">Pultingizda raqam tugmalari boʻlsa, ular bilan ham yozishingiz mumkin.</string>
+    <string name="kod_bos_hane">boʻsh xona</string>
+    <string name="kod_sil">Oʻchirish</string>
+    <string name="kod_sil_aciklama">Oxirgi raqamni oʻchirish</string>
+    <string name="kod_geri">Orqaga</string>
+    <string name="vazgecin">Bekor qilish</string>
+    <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
+    <string name="il_secin">Shahringizni tanlang</string>
+    <string name="il_merkezine_gore">Namoz vaqtlari shahar markazi uchun hisoblanadi.</string>
+    <string name="il_secili">%1$s, tanlangan</string>
+    <string name="dream_il_yok">Namoz vaqtlari taxtasini koʻrish uchun Namaz Akışı ilovasini ochib, shahringizni tanlang.</string>
+    <!-- TV ayarları (ui/TvAyarlarEkrani) -->
+    <string name="ayar_konum">Joylashuv: %1$s</string>
+    <string name="ayar_konum_yok">Joylashuv tanlanmagan</string>
+    <string name="ayar_telefon_ekleyin">Telefon qoʻshish</string>
+    <string name="ayar_konumu_kodla">Joylashuvni kod bilan kiritish</string>
+    <string name="ayar_bagli_telefonlar">Shu televizorga ulangan telefonlar</string>
+    <string name="ayar_telefon_yok">Hali telefon qoʻshilmagan. Chapdagi «%1$s» bandidan foydalaning va paydo boʻlgan kodni skanerlang.</string>
+    <string name="kaldirin">Olib tashlash</string>
+    <string name="ayar_ne_gonderir">Telefonlar nima yuboradi?</string>
+    <string name="ayar_madde_konum">Joylashuv: namoz vaqtlari unga koʻra hisoblanadi</string>
+    <string name="ayar_madde_namazlar">Belgilangan namozlar, buni tanlaganlar uchun</string>
+    <string name="ayar_madde_sifreli">Shifrlangan, faqat uy tarmogʻingizda</string>
+    <string name="son_haber_yok">Hali maʼlumot yoʻq</string>
+    <string name="son_haber_az_once">Hozirgina</string>
+    <plurals name="son_haber_dk">
+        <item quantity="one">%1$d daq oldin</item>
+        <item quantity="other">%1$d daq oldin</item>
+    </plurals>
+    <plurals name="son_haber_saat">
+        <item quantity="one">%1$d soat oldin</item>
+        <item quantity="other">%1$d soat oldin</item>
+    </plurals>
+    <plurals name="son_haber_gun">
+        <item quantity="one">%1$d kun oldin</item>
+        <item quantity="other">%1$d kun oldin</item>
+    </plurals>
+    <string name="kaldir_soru">%1$s olib tashlansinmi?</string>
+    <string name="kaldir_aciklama">Bu telefon endi televizorga maʼlumot yubora olmaydi. Qayta qoʻshish uchun QR kodni yana skanerlashingiz kerak.</string>
+    <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
+    <string name="telefondaki_konum">Telefoningizdagi joylashuv</string>
+</resources>

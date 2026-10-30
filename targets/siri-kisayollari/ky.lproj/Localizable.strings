@@ -1,0 +1,58 @@
+// ky — Kırgızca (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
+// W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
+// dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
+// plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
+// Kirgizca terimler: src/core/dil/sozluk/ky.
+
+// NamazIntentleri.swift
+"Sıradaki namaz" = "Кийинки намаз";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Кийинки намазды жана анын кирүү убактысын айтат.";
+"Şu anki vakti kıldım" = "Азыркы намазды окудум";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Азыркы намазды окулду деп белгилейт. Жазуу колдонмону ачканыңызда кошулат.";
+"Onay iste" = "Ырастоо суроо";
+"Kıbleyi aç" = "Кыбыланы ачуу";
+"Uygulamayı Kıble pusulasıyla açar." = "Колдонмону кыбыла компасы менен ачат.";
+
+// NamazKisayollari.swift (shortTitle)
+"Vakti kıldım" = "Окудум";
+"Kıble" = "Кыбыла";
+
+// NamazOtomasyonIntentleri.swift
+"Sıradaki vaktin adı" = "Кийинки намаздын аты";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Кийинки намаздын атын берет. Аны Командаларда шарт катары колдоно аласыз.";
+"Sıradaki vakte kalan dakika" = "Кийинки намазга калган мүнөттөр";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Кийинки намаз убактысы киргенге чейин канча мүнөт калганын берет. Маалымат жок болсо, -1 кайтарат.";
+"Şu anki vakit kılındı mı?" = "Азыркы намаз окулду деп белгилендиби?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Азыркы намаз окулду деп белгиленген болсо, ооба берет. Белгилей турган намаз жок болсо, жок берет.";
+
+// NamazSessizlikIntentleri.swift
+"Namaz sessizliği" = "Намаз тынчтыгы";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Намаз убактысы киргенден кийинки алгачкы мүнөттөрдө болсоңуз, туура кайтарат. Командаларда Фокусту күйгүзүү үчүн колдонулат.";
+"Süre (dakika)" = "Узактыгы (мүнөт)";
+"Vakit girdikten sonraki ${dakika} dakika" = "Намаз убактысы киргенден кийинки ${dakika} мүнөт";
+"Namaz sessizliğinin bitişi" = "Намаз тынчтыгынын аягы";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Тынчтык бүтө турган убакытты берет. Азыр тынчтык жок болсо, азыркы убакытты берет.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Намаз убактысы киргенден кийинки ${dakika} мүнөттүн аягы";
+
+// NamazOdakFiltresi.swift
+"Namaz hatırlatmaları" = "Намаз эскертмелери";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Бул Фокус күйүк турганда намаз эскертмелери экранды жандырбай жана үн чыгарбай келет.";
+"Hatırlatmaları sessiz ver" = "Эскертмелерди үнсүз жеткирүү";
+"Hatırlatmalar sessiz gelir" = "Эскертмелер үнсүз келет";
+"Hatırlatmalar her zamanki gibi" = "Эскертмелер кадимкидей";
+
+// targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
+"Widget'taki vakti kılındı olarak işaretler." = "Виджеттеги намазды окулду деп белгилейт.";
+"Tarih" = "Дата";
+"Vakit" = "Намаз";
+
+// targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
+"Namaz alarmını durdur" = "Намаз ойготкучун токтотуу";
+"Namazı kıldım" = "Окудум";
+"Alarm" = "Ойготкуч";
+
+// GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
+"Günün ayeti görseli" = "Күндүн аятынын сүрөтү";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Бүгүнкү аятты экраныңыздын өлчөмүндөгү сүрөт катары берет. Аны Командаларда тушкагаз коюу кадамы менен колдоно аласыз.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Күндүн аятын даярдоо үчүн колдонмону бир жолу ачыңыз.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Сүрөт даярдалган жок. Бир аздан кийин кайра аракет кылыңыз.";

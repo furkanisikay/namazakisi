@@ -67,6 +67,11 @@ on:
           - ps
           - ckb
           - ug
+          - az
+          - uz
+          - kk
+          - ky
+          - tg
       tur:
         description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | ipad (iPad 13" mağaza kareleri) | tv (Apple TV) | saat (Apple Watch) | asc (kare yok, App Store Connect işlemi)'
         type: choice

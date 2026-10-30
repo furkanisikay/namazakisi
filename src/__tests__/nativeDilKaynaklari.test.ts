@@ -40,6 +40,11 @@ const COGUL: Record<string, string[]> = {
   ps: ['one', 'other'],
   ckb: ['one', 'other'],
   ug: ['one', 'other'],
+  az: ['one', 'other'],
+  uz: ['one', 'other'],
+  kk: ['one', 'other'],
+  ky: ['one', 'other'],
+  tg: ['one', 'other'],
 };
 
 function resDizinleri(): string[] {

@@ -46,6 +46,13 @@ const MEALLER = {
   ps: 'pashto_rwwad',
   ckb: 'kurdish_bamoki',
   ug: 'uyghur_saleh',
+  // Orta Asya (dalga 7). Özbekçe ve Kazakça mealler KİRİLDİR: Latin alfabe seçilince çalışma anında
+  // çevrilir (`core/dil/yazi.ts > kirildenLatine`), veri Kiril kalır.
+  az: 'azeri_musayev',
+  uz: 'uzbek_rwwad',
+  kk: 'kazakh_altai',
+  ky: 'kyrgyz_hakimov',
+  tg: 'tajik_arifi',
 };
 
 /**
@@ -58,6 +65,8 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   bengali_zakaria: 'Bengali Translation - Abu Bakr Zakaria',
   // QuranEnc Kürtçeyi "ku" diliyle listeler; uygulamanın kodu Soranî "ckb" → dil listesinde bulunmaz.
   kurdish_bamoki: 'Kurdish Translation - Muhammad Salih Bamoki',
+  // QuranEnc Kazakçayı liste API'sinde vermez (`translations/list/kk` boş); sitedeki kartın başlığı.
+  kazakh_altai: 'Kazakh Translation - Khalifa Altai',
 };
 
 const TANZIL_URL = 'https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt-2&agree=true';
@@ -142,12 +151,12 @@ const ref = (sure, ayet) => `${sure}:${ayet}`;
  */
 /** Kural 1 ve 2 tek meal için: sığar ve dipnot işareti / baştaki ayet numarası taşımaz. */
 /**
- * Not numarası silinen diller (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27): mealde
+ * Not numarası silinen diller (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30): mealde
  * ayetlerin çoğu "[1]" / "[১]" (Bengalce rakam) gibi dipnot numarası taşır; dipnot gösterilmediği
  * için yalnız numara silinir, meal sözcükleri birebir kalır. Diğer dillerde numaralı meal alınmaz
  * (`mealUygun`). `ayet-mealleri-uret.js` aynı kümeyi ve deseni kullanır.
  */
-const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn']);
+const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky']);
 /** Dipnot numarası, herhangi bir yazının rakamıyla ("[12]", "[১২]", "[१२]"); `\p{Nd}` + `u`. */
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;

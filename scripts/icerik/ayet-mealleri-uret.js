@@ -33,6 +33,13 @@ const MEALLER = {
   ps: 'pashto_rwwad',
   ckb: 'kurdish_bamoki',
   ug: 'uyghur_saleh',
+  // Orta Asya (dalga 7). Özbekçe ve Kazakça mealler KİRİLDİR: Latin alfabe seçilince çalışma anında
+  // çevrilir (`core/dil/yazi.ts > kirildenLatine`), veri Kiril kalır.
+  az: 'azeri_musayev',
+  uz: 'uzbek_rwwad',
+  kk: 'kazakh_altai',
+  ky: 'kyrgyz_hakimov',
+  tg: 'tajik_arifi',
 };
 
 /** Liste API'sinde görünmeyen çevirilerin QuranEnc başlığı (sitedeki kartta yazdığı gibi). */
@@ -42,13 +49,15 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   bengali_zakaria: 'Bengali Translation - Abu Bakr Zakaria',
   // QuranEnc Kürtçeyi "ku" diliyle listeler; uygulamanın kodu Soranî "ckb" → dil listesinde bulunmaz.
   kurdish_bamoki: 'Kurdish Translation - Muhammad Salih Bamoki',
+  // QuranEnc Kazakçayı liste API'sinde vermez (`translations/list/kk` boş); sitedeki kartın başlığı.
+  kazakh_altai: 'Kazakh Translation - Khalifa Altai',
 };
 
 /**
  * Not numarası silinen diller ve desen — `gunun-ayeti-uret.js > NOT_NUMARASI_SILINEN` ile AYNI
- * (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Bengalce rakam "[১]").
+ * (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Bengalce rakam "[১]").
  */
-const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn']);
+const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky']);
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
 /** Gömülü numara kalıpları (`gunun-ayeti-uret.js > DIPNOT`, `BASTA_NUMARA`, `SONDA_NUMARA` ile aynı). */

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camigeofence_kanal_durum_ad">Мечитте</string>
+    <string name="camigeofence_kanal_durum_aciklama">Мечитте экениңиз аныкталганда келүүчү тынч билдирүү</string>
+    <string name="camigeofence_kanal_soru_ad">Мечиттен чыккандан кийин</string>
+    <string name="camigeofence_kanal_soru_aciklama">Мечиттен чыккандан кийин намазыңызды белгилешиңиз үчүн суроо</string>
+
+    <string name="camigeofence_govde_mod_sessiz">Намаз режими күйүк. Эскертмелер үнсүз келет.</string>
+    <string name="camigeofence_govde_mod">Намаз режими күйүк.</string>
+    <string name="camigeofence_govde_sessiz">Эскертмелер үнсүз келет.</string>
+    <string name="camigeofence_govde_normal">Эскертмелер кадимкидей келет.</string>
+    <string name="camigeofence_eylem_modu_kapat">Режимди өчүрүү</string>
+    <string name="camigeofence_eylem_cami_degil">Мечит эмес</string>
+
+    <string name="camigeofence_soru_baslik">Мечиттесизби?</string>
+    <string name="camigeofence_soru_govde">Сиз жакын жердесиз: %1$s. Так эмеспиз, ошондуктан сизден сурап жатабыз.</string>
+    <string name="camigeofence_varsayilan_ad">Мечит</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Намаз режимин күйгүзүү</string>
+    <string name="camigeofence_eylem_evet_camideyim">Ооба, мечиттемин</string>
+    <string name="camigeofence_eylem_hayir">Жок</string>
+
+    <string name="camigeofence_kildiniz_mi">%1$s намазын окудуңузбу?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Аны бир басуу менен белгилей аласыз.</string>
+    <string name="camigeofence_eylem_kildim">Окудум</string>
+    <string name="camigeofence_namaz_imsak">Багымдат</string>
+    <string name="camigeofence_namaz_ogle">Бешим</string>
+    <string name="camigeofence_namaz_ikindi">Аср</string>
+    <string name="camigeofence_namaz_aksam">Шам</string>
+    <string name="camigeofence_namaz_yatsi">Куптан</string>
+    <string name="camigeofence_namaz_cuma">Жума</string>
+
+    <string name="camigeofence_mod_kural_adi">Намаз</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı аны жума кутбасында, мечитте же намаз убактысы киргенде күйгүзөт</string>
+</resources>

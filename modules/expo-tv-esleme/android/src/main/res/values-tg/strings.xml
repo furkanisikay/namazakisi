@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tg — Tacikçe (beta). Terimler JS src/core/dil/sozluk/tg (cihaz.tv: «рамзи QR», «скан кунед»). -->
+<resources>
+    <string name="tvesleme_qr_ipucu">Рамзи QR-и экрани телевизорро дар дохили чорчӯба ҷойгир кунед</string>
+    <string name="tvesleme_qr_vazgec">Бекор кардан</string>
+    <string name="tvesleme_qr_vazgec_erisim">Бекор кардани скан</string>
+    <string name="tvesleme_qr_yabanci">Ин рамзи QR ба Namaz Akışı TV тааллуқ надорад. Рамзи телевизорро скан кунед.</string>
+    <string name="tvesleme_qr_okundu">Рамз скан шуд</string>
+</resources>
