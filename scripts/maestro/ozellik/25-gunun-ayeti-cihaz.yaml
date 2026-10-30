@@ -40,11 +40,8 @@ appId: com.furkanisikay.namazakisi
     id: "gunun-ayeti-duvar-anahtar"
 - tapOn:
     text: "(Açın|Turn on)"
-- extendedWaitUntil:
-    visible:
-      id: "gunun-ayeti-onizle"
-    timeout: 15000
 # Önizleme duvar kâğıdıyla aynı sıralı kuyruktan geçer: görününce duvar kâğıdı da yazılmıştır.
+# Görünür bekleme KAYDIRARAK: uzun metinli dilde (Fula) düğme ekranın altında kalır.
 - scrollUntilVisible:
     element:
       id: "gunun-ayeti-onizle"
