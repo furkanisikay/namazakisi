@@ -1,10 +1,9 @@
-// ÇEVİRİ: so — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Jihada qoraalka way isbeddeli doontaa',
+  aciklama: 'Luqadda aad dooratay jiho kale ayaa loo qoraa. Barnaamijku waa inuu dib u bilaabmaa si shaashaduhu ugu wareegaan.',
+  simdiBaslat: 'Hadda dib u bilow',
+  sonra: 'Mar dambe',
+  bekliyor: 'Jihada qoraalka waxay isbeddeli doontaa marka barnaamijku dib u bilaabmo.',
 };

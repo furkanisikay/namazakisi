@@ -1,61 +1,61 @@
-// ÇEVİRİ: so — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * Codsiga cibaadada ee Soomaaliga: amar toos ah oo gaaban, "fadlan" ma jiro. "Oog salaadda" waa
+ * QuranEnc `somali_yacob` 17:78; "tuko" waa falka tukasho (la soo saaray). Sujuud laguma amro
+ * (mamnuucidda "secdeye kapan" ee Turkiga). Cinwaanka, cutubka daqiiqadu waa "daq":
+ * "Maghrib · 655daq" wuxuu ku jiraa 16-ka xaraf ee ugu horreeya.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk}daq dhaafay · waa waqtigii salaadda ⏰',
+    giris2: '{ad} · {dk}daq dhaafay · salaaddaada dib ha u dhigin ⚠️',
+    giris3: '{ad} · {dk}daq dhaafay · salaaddaadu way ku sugaysaa 🔥',
+    giris4: '{ad} · {dk}daq dhaafay · OOG SALAADDA 🚨',
+    erken3: '{ad} · {dk}daq haray · salaaddaadu way ku sugaysaa 🔥',
+    erken4: '{ad} · {dk}daq haray · OOG SALAADDA 🚨',
+    cikis1: '{ad} · {dk}daq haray ⏰',
+    cikis2: '{ad} · {dk}daq · waqtigu wuu yaraanayaa ⚠️',
+    cikis3: '{ad} · {dk}daq · waqtigu wuu kaa baxayaa 🔥',
+    cikis4: '{ad} · {dk}daq · WAQTIGU WUU DHAMMAANAYAA 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Waa waqtigii salaadda; tuko inta fursaddu jirto.', 'Tuko inta waqtigu kuu furan yahay; mar dambe ha u dhigin.'],
+    s2: ['Inta aad dib u dhigto, way sii culaysaa; salaaddaada ha u dhigin dhammaadka.', 'Waqtigu wuu socdaa — hadda tuko.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Inta aad dib u dhigto, waxaad u dhowaanaysaa inay kaa dhaafto; hadda tuko.',
+      'Ha oran "mar dambe ayaan tukan doonaa"; hadda waad tukan kartaa.',
+      'Hadda kac intaadan dhowr daqiiqo kadib oran "haddii aan…".',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Salaaddaada dib dambe ha u dhigin — hadda oog salaadda.', 'Dhig waxa aad samaynayso oo oog salaadda.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Waqtigu wuu bilaabay inuu yaraado; tuko inta fursaddu jirto.',
+    s2: 'Salaaddaada ha u dhigin dhammaadka; hadda waa waqti wanaagsan oo aad tukato.',
+    s3: 'Waqtigu wuu dhammaad ku dhow yahay; hadda weli waad tukan kartaa.',
+    s4: 'Haddii aad tukatay, taabo "Waan tukaday"; haddii kale, hadda oog salaadda.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'SALAADDAADA DIB HA U DHIGIN. Hadda oog salaadda. ({dk} daqiiqo ayaa dhaafay)',
+    giris2: 'Waqtigu wuu socdaa; salaaddaada ha u dhigin dhammaadka. ({dk} daqiiqo ayaa dhaafay)',
+    giris1: cogul({ one: '{n} daqiiqo ayaa ka soo wareegtay markii waqtiga salaaddu galay.', other: '{n} daqiiqo ayaa ka soo wareegtay markii waqtiga salaaddu galay.' }),
+    erken4: 'Salaaddaada dib ha u dhigin; hadda oog salaadda. ({dk} daqiiqo ayaa haray)',
+    cikis4: 'WAQTIGU WUU DHAMMAANAYAA. Hadda oog salaadda. ({dk} daqiiqo ayaa haray)',
+    cikis2: 'Waqtigu wuu yaraanayaa; salaaddaada ha u dhigin dhammaadka. ({dk} daqiiqo ayaa haray)',
+    cikis1: cogul({ one: '{n} daqiiqo ayaa u hartay dhammaadka waqtiga salaadda.', other: '{n} daqiiqo ayaa u hartay dhammaadka waqtiga salaadda.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · tuko intaadan seexan ⏰',
+    govde: 'Saacadaha aamusnaantu waxay bilaabanayaan {dk} daqiiqo kadib; tuko Cishe intaadan seexan.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Waqtigu wuu bilaabay inuu yaraado; tuko inta fursaddu jirto.',
+    sonaBirakma: 'Salaaddaada ha u dhigin dhammaadka; hadda waa waqti wanaagsan oo aad tukato.',
+    fisilti: 'Ha oran "mar dambe ayaan tukan doonaa"; waqtigu wuu dhammaad ku dhow yahay, hadda waad tukan kartaa.',
+    omur: 'Waqtigu wuu dhaafayaa; weli fursad ayaad u haysataa inaad salaaddan waqtigeeda ku tukato.',
+    keske: 'Hadda kac intaadan dhowr daqiiqo kadib oran "haddii aan…".',
+    namazaDur: 'Haddii aad tukatay, taabo "Waan tukaday"; haddii kale, hadda oog salaadda.',
+    sonDakika: 'Daqiiqadaha ugu dambeeya. Dhig waxa aad samaynayso oo oog salaadda.',
   },
 };

@@ -756,29 +756,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: so
+    // so
     static let so = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Waqtiga salaadda",
+        galeriAciklama: "Waqtiga salaadda hadda, waqtiga u haray dhammaadkiisa iyo waqtiyada salaadda maanta.",
+        veriEski: "Fur barnaamijka si loo cusboonaysiiyo waqtiyada salaadda",
+        konumYok: "Fur barnaamijka si aad u dejiso goobtaada",
+        kilindiSiradaki: "{ad} la tukaday · {sonraki} {saat}",
+        adCikis: "{ad} · dhammaad {saat}",
+        siradakiAdSaat: "Xiga {ad} {saat}",
+        vaktiCikisErisim: "Waqtiga {ad}, wuxuu dhammaanayaa {saat}",
+        siradakiErisim: "Xiga {ad}, {saat}",
+        cikisSaat: "Dhammaad {saat}",
+        bitisSaat: "Dhammaad {saat}",
+        kilindiBaslik: "{ad} la tukaday",
+        siradaki: "Xiga",
+        siradakiAd: "Xiga {ad}",
+        kildimErisim: "Waan tukaday {ad}",
+        gunSatiriKilindi: ", la tukaday",
+        bitti: "Dhammaaday",
+        vakitCikti: "Waqtiga salaaddu wuu dhammaaday",
+        kabulAlt: "{ad} la tukaday",
+        kontrolAdi: "Waan tukaday",
+        kontrolAciklama: "Wuxuu u calaamadeeyaa salaadda hadda la tukaday."
     )
 
     // ÇEVİRİ: ff
