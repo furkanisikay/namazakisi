@@ -87,8 +87,8 @@ object CanliGuncellemeKurallari {
         "ky" to ("ст" to "мүн"),
         // tg
         "tg" to ("соат" to "дақ"),
-        // ÇEVİRİ: sw
-        "sw" to ("h" to "min"),
+        // sw
+        "sw" to ("saa" to "dk"),
         // ÇEVİRİ: ha
         "ha" to ("h" to "min"),
         // ÇEVİRİ: am

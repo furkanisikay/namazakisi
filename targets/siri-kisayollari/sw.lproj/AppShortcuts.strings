@@ -1,18 +1,17 @@
-/* ÇEVİRİ: sw */
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
-// App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+// App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR. Kiswahili (beta).
 
 // NamazKisayollari.swift
-"${applicationName} sıradaki namaz ne zaman" = "When is the next prayer in ${applicationName}";
-"${applicationName} sıradaki namaz" = "${applicationName} next prayer";
-"${applicationName} ile sıradaki namazı söyle" = "Tell me the next prayer with ${applicationName}";
-"${applicationName} namaz vakti" = "${applicationName} prayer time";
-"${applicationName} şu anki vakti kıldım" = "I've prayed the current prayer in ${applicationName}";
-"${applicationName} namazımı kıldım" = "I've prayed in ${applicationName}";
-"${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
-"${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
-"${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
-"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
-"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";
+"${applicationName} sıradaki namaz ne zaman" = "Swala inayofuata ni lini katika ${applicationName}";
+"${applicationName} sıradaki namaz" = "${applicationName} Swala inayofuata";
+"${applicationName} ile sıradaki namazı söyle" = "Niambie Swala inayofuata kwa ${applicationName}";
+"${applicationName} namaz vakti" = "${applicationName} wakati wa Swala";
+"${applicationName} şu anki vakti kıldım" = "Nimeswali Swala ya sasa katika ${applicationName}";
+"${applicationName} namazımı kıldım" = "Nimeswali katika ${applicationName}";
+"${applicationName} ile vakti kıldım olarak işaretle" = "Weka alama Swala ya sasa imeswaliwa katika ${applicationName}";
+"${applicationName} kıbleyi aç" = "Fungua Kibla katika ${applicationName}";
+"${applicationName} ile kıbleyi göster" = "Onyesha Kibla kwa ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} picha ya aya ya siku";
+"${applicationName} ile günün ayeti görselini hazırla" = "Tayarisha picha ya aya ya siku kwa ${applicationName}";

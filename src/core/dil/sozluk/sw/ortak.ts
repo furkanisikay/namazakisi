@@ -1,15 +1,14 @@
-// ÇEVİRİ: sw — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Endelea',
+  vazgecin: 'Ghairi',
+  kapatin: 'Funga',
+  ayarlariAcin: 'Fungua mipangilio',
+  simdilikGecin: 'Ruka kwa sasa',
+  tekrarDeneyin: 'Jaribu tena',
+  evet: 'Ndiyo',
+  hayir: 'Hapana',
+  ayrintilariAcar: 'Hufungua maelezo',
   marka: 'Namaz Akışı',
 };

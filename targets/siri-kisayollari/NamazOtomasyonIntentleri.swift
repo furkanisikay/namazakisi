@@ -297,11 +297,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Не, ҳанӯз қайд нашудааст."
     )
 
-    // ÇEVİRİ: sw
+    // sw — Svahili (beta): JS `sozluk/sw`; CLDR sw one/other (ad sayıdan önce, one = other)
     static let sw = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} inaingia baada ya dakika {n}.", "other": "{ad} inaingia baada ya dakika {n}."],
+        evetKilindi: "Ndiyo, imewekwa alama imeswaliwa.",
+        hayirKilinmadi: "Hapana, bado haijawekwa alama."
     )
 
     // ÇEVİRİ: ha

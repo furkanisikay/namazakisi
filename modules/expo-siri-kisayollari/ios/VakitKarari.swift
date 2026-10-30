@@ -965,31 +965,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Барномаро кушоед"
     )
 
-    // ÇEVİRİ: sw
+    // sw
     public static let sw = VakitMetinleri(
         dil: "sw",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Alfajiri", "ogle": "Adhuhuri", "ikindi": "Alasiri", "aksam": "Magharibi", "yatsi": "Isha"],
+        gunes: "Macheo",
+        konumYok: "Fungua programu na uweke mahali pako ili nyakati za Swala zikokotolewe.",
+        veriEski: "Nyakati za Swala zimepitwa na wakati. Fungua programu mara moja ili kuzisasisha.",
+        girisBugun: "saa {saat}",
+        girisYarin: "kesho saa {saat}",
+        suAnVakti: "Sasa ni wakati wa {ad}.",
+        suAnVaktiCikis: "Sasa ni wakati wa {ad}; unaisha saa {saat}.",
+        siradakiNamaz: "Swala inayofuata ni {ad} {giris}.",
+        isaretlendi: "{ad} imewekwa alama imeswaliwa. {dua}.",
+        zatenKilindi: "{ad} tayari imewekwa alama imeswaliwa.",
+        vakitYok: "Hakuna Swala ya kuweka alama sasa hivi.",
+        vakitYokSiradaki: "Hakuna Swala ya kuweka alama sasa hivi. Inayofuata ni {ad} {giris}.",
+        onay: "Kuweka alama {ad} imeswaliwa?",
+        vakitDegisti: "Wakati wa Swala umebadilika, kwa hivyo hakuna kilichowekwa alama. Jaribu tena.",
+        kabulDuasi: "Mwenyezi Mungu aikubali",
+        kildim: "Nimeswali",
+        kilindi: "Imeswaliwa",
+        kontrolKildim: "{ad} · Nimeswali",
+        kontrolKilindi: "{ad} imeswaliwa",
+        kontrolVakitYok: "Hakuna Swala ya kuweka alama",
+        uygulamayiAcin: "Fungua programu"
     )
 
     // ÇEVİRİ: ha

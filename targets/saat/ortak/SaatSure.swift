@@ -230,12 +230,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "{n} сония", "other": "{n} сония"]
     )
 
-    // ÇEVİRİ: sw
+    // sw — Svahili (beta): JS `sozluk/sw/sure.ts` birebir (kısa birim saa/dk/s; ad sayıdan önce, one = other)
     public static let sw = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "saa", birimDk: "dk", birimSn: "s",
+        saat: ["one": "saa {n}", "other": "saa {n}"],
+        dakika: ["one": "dakika {n}", "other": "dakika {n}"],
+        saniye: ["one": "sekunde {n}", "other": "sekunde {n}"]
     )
 
     // ÇEVİRİ: ha

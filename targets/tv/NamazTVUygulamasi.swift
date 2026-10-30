@@ -439,19 +439,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", вақти навбатӣ"
     )
 
-    // ÇEVİRİ: sw
+    // sw
     static let sw = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Chagua mji wako",
+        ilMerkezi: "Nyakati za Swala zinakokotolewa kwa katikati ya mkoa. Unaweza kubadilisha chaguo lako baadaye.",
+        ilSecErisim: "{il}, chagua",
+        kalan: "Muda uliobaki hadi {ad}",
+        kalanErisim: "Muda uliobaki hadi {ad}: {sure}",
+        konumuDegistirin: "Badilisha mahali",
+        kerahatSuruyor: "Wakati wa makruhu: {tur}, unaisha {bitis}. {aciklama}",
+        siradakiKerahat: "Wakati wa makruhu unaofuata: {tur} {bas}–{bit}",
+        cumaBilgisi: "Leo ni Ijumaa. Swala ya Ijumaa inaswaliwa wakati wa Adhuhuri (inaingia {giris}).",
+        suAnkiEk: ", Swala ya sasa",
+        siradakiEk: ", Swala inayofuata"
     )
 
     // ÇEVİRİ: ha

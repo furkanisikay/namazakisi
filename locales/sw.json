@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "Mahali ulipo panatumika kukokotoa nyakati za Swala kwa usahihi kwa ajili ya mahali ulipo. Mahali ulipo panabaki kwenye kifaa chako.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Mahali ulipo panatumika kukokotoa nyakati za Swala kwa usahihi kwa ajili ya mahali ulipo na, ikiwa Niko msikitini imewashwa, kuwasha Hali ya Swala unapoingia msikitini. Mahali ulipo panabaki kwenye kifaa chako.",
+  "NSLocationAlwaysUsageDescription": "Mahali ulipo panatumika kusasisha nyakati za Swala kiotomatiki unapobadilisha mji na, ikiwa Niko msikitini imewashwa, kuwasha Hali ya Swala unapoingia msikitini. Mahali ulipo panabaki kwenye kifaa chako.",
+  "NSCameraUsageDescription": "Kamera yako inatumika kuonyesha mwelekeo wa Kibla juu ya mwonekano wa kamera na kuchanganua msimbo wa kuunganisha ulio kwenye TV yako. Picha hazihifadhiwi na hazitoki kwenye kifaa chako.",
+  "NSCalendarsUsageDescription": "Ufikiaji wa kalenda unatumika kuongeza nyakati za Swala kwenye kalenda yako na, ukiuwasha, kukagua kama matukio katika kalenda yako yanagongana na wakati wa Swala. Data ya kalenda yako inabaki kwenye kifaa chako.",
+  "NSCalendarsFullAccessUsageDescription": "Ufikiaji wa kalenda unatumika kuongeza nyakati za Swala kwenye kalenda yako na, ukiuwasha, kukagua kama matukio katika kalenda yako yanagongana na wakati wa Swala. Data ya kalenda yako inabaki kwenye kifaa chako.",
+  "NSLocalNetworkUsageDescription": "Programu inaunganisha na TV iliyo kwenye mtandao wako wa ndani ili kuituma nyakati zako za Swala na Swala ulizoziwekea alama. Data imesimbwa na inasafiri kati ya vifaa hivyo viwili tu.",
+  "NSAlarmKitUsageDescription": "Hatua za vikumbusho unazochagulia “Kengele halisi” zinawekwa kama kengele, ili uzisikie hata simu yako ikiwa kwenye kimya au Focus ikiwa imewashwa.",
+  "\"Vakti kıldım\"": "Nimeswali",
+  "\"Kıble\"": "Kibla"
 }

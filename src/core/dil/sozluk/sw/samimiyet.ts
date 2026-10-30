@@ -1,35 +1,36 @@
-// ÇEVİRİ: sw — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Kalıplar ya Waislamu wanaozungumza Kiswahili (si tafsiri). Kitenzi "kukubali" na dua "Ewe Mola
+ * Mlezi wetu! Tukubalie" ni vya tafsiri ya QuranEnc Rowwad (2:127); "Mwenyezi Mungu" ni jina la
+ * tafsiri hiyo hiyo. Salamu za kandili na mwaka mpya wa Hijria husemwa katika desturi ya Uturuki tu
+ * (`selam.ts > GELENEK_SELAMI_DILLERI`); maneno yaliyo hapa ni kwa ukamilifu wa aina. Hayajakaguliwa
+ * na msomaji mzawa.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Iwe na baraka.',
+  kabulDualari: ['Mwenyezi Mungu aikubali', 'Mola wetu, tukubalie', 'Mwenyezi Mungu aikubali', 'Mwenyezi Mungu atukubalie'],
+  kabulDuasi: 'Mwenyezi Mungu aikubali',
+  ekSabah: 'Asubuhi njema yenye baraka',
+  ekYatsi: 'Usiku mwema wenye baraka',
+  tamGunAna: 'Mwenyezi Mungu aikubali',
+  tamGunAlt: 'Leo umeswali Swala zote tano.',
+  kazaKabul: 'Qadha moja ya {vakit} imepunguzwa kwenye daftari lako. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Usiku wa Raghaib wenye baraka',
+    mirac: 'Israa na Miraji yenye baraka',
+    berat: 'Usiku wa Baraa wenye baraka',
+    mevlid: 'Maulidi yenye baraka',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
+    sahur: 'Daku yenye baraka',
     bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    iftar: 'Futari yenye baraka',
+    kadir: 'Laylatul Qadr yenye baraka',
+    arefe: 'Siku ya Arafa yenye baraka',
+    hicriYilbasi: 'Mwaka mpya wa Hijria wenye baraka',
+    cuma: 'Ijumaa Mubarak',
+    ramazan: 'Ramadhani Mubarak',
+    sabah: 'Asubuhi njema yenye baraka',
   },
 };

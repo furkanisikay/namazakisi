@@ -1,10 +1,9 @@
-// ÇEVİRİ: sw — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'wakati umeingia',
+  vakitGirdiBasligi: 'Wakati wa {ad} umeingia',
+  herhangiVakit: 'Wakati wowote wa Swala unapoingia',
+  yalnizVakit: 'Wakati wa {ad} unapoingia tu',
+  camide: 'Unapotambuliwa uko msikitini (Niko msikitini ikiwa imewashwa)',
 };

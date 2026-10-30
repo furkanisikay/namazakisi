@@ -1,61 +1,61 @@
-// ÇEVİRİ: sw — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * Wito wa ibada kwa Kiswahili: amri fupi ya umoja, bila "tafadhali". Amri ni "Simamisha Swala"
+ * (17:78); "swali" peke yake HAITUMIKI (maana yake "soru"), kitenzi huandikwa "uswali"/"kuswali".
+ * "Kusujudu" haitumiki (ikizi ya marufuku ya "secdeye kapan"). Kichwani kipimo ni "dk":
+ * "Magharibi · 10dk" kinaingia katika herufi 16 za kwanza.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk}dk zimepita · ni wakati wa Swala ⏰',
+    giris2: '{ad} · {dk}dk zimepita · usichelewe kuswali ⚠️',
+    giris3: '{ad} · {dk}dk zimepita · Swala yako inakusubiri 🔥',
+    giris4: '{ad} · {dk}dk zimepita · SIMAMISHA SWALA 🚨',
+    erken3: '{ad} · {dk}dk zimebaki · Swala yako inakusubiri 🔥',
+    erken4: '{ad} · {dk}dk zimebaki · SIMAMISHA SWALA 🚨',
+    cikis1: '{ad} · {dk}dk zimebaki ⏰',
+    cikis2: '{ad} · {dk}dk · muda unapungua ⚠️',
+    cikis3: '{ad} · {dk}dk · muda unakwisha 🔥',
+    cikis4: '{ad} · {dk}dk · WAKATI UNAISHA 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Ni wakati wa Swala; simamisha Swala ukiwa bado una nafasi.', 'Simamisha Swala wakati bado uko upande wako; usiiache baadaye.'],
+    s2: ['Kadiri unavyoiahirisha, ndivyo inavyozidi kuwa nzito; usiiache Swala yako hadi mwisho.', 'Muda unasonga — simamisha Swala sasa.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Kadiri unavyochelewa, ndivyo unavyokaribia kuikosa; simamisha Swala sasa.',
+      'Usiseme "nitaswali baadaye"; unaweza kuswali sasa.',
+      'Inuka sasa kuliko kusema "laiti" baada ya dakika chache.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Usiichelewesha Swala yako tena — simamisha Swala sasa.', 'Weka chini unachofanya na usimamishe Swala.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Muda unaanza kupungua; simamisha Swala ukiwa bado una nafasi.',
+    s2: 'Usiiache Swala yako hadi mwisho; sasa ni wakati mzuri wa kuswali.',
+    s3: 'Muda karibu umekwisha; bado unaweza kuswali sasa.',
+    s4: 'Kama umeswali, gusa "Nimeswali"; kama bado, simamisha Swala sasa.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'USICHELEWESHE SWALA YAKO. Simamisha Swala sasa. (dakika {dk} zimepita)',
+    giris2: 'Muda unasonga; usiiache Swala yako hadi mwisho. (dakika {dk} zimepita)',
+    giris1: cogul({ one: 'Imepita dakika {n} tangu wakati wa Swala uingie.', other: 'Zimepita dakika {n} tangu wakati wa Swala uingie.' }),
+    erken4: 'Usiichelewesha Swala yako; simamisha Swala sasa. (dakika {dk} zimebaki)',
+    cikis4: 'WAKATI UNAISHA. Simamisha Swala sasa. (dakika {dk} zimebaki)',
+    cikis2: 'Muda unapungua; usiiache Swala yako hadi mwisho. (dakika {dk} zimebaki)',
+    cikis1: cogul({ one: 'Imebaki dakika {n} hadi wakati wa Swala uishe.', other: 'Zimebaki dakika {n} hadi wakati wa Swala uishe.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · uswali kabla ya kulala ⏰',
+    govde: 'Saa za utulivu zinaanza baada ya dakika {dk}; simamisha Swala ya Isha kabla ya kwenda kulala.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Muda unaanza kupungua; simamisha Swala ukiwa bado una nafasi.',
+    sonaBirakma: 'Usiiache Swala yako hadi mwisho; sasa ni wakati mzuri wa kuswali.',
+    fisilti: 'Usiseme "nitaswali baadaye"; muda karibu umekwisha, unaweza kuswali sasa.',
+    omur: 'Muda unapita; bado una nafasi ya kuiswali Swala hii kwa wakati wake.',
+    keske: 'Inuka sasa kuliko kusema "laiti" baada ya dakika chache.',
+    namazaDur: 'Kama umeswali, gusa "Nimeswali"; kama bado, simamisha Swala sasa.',
+    sonDakika: 'Dakika za mwisho. Weka chini unachofanya na usimamishe Swala.',
   },
 };

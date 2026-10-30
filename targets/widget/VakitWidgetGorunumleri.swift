@@ -656,29 +656,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Вақти ҷориро ҳамчун хондашуда қайд мекунад."
     )
 
-    // ÇEVİRİ: sw
+    // sw
     static let sw = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Wakati wa Swala",
+        galeriAciklama: "Wakati wa Swala wa sasa, muda uliobaki hadi uishe na nyakati za Swala za leo.",
+        veriEski: "Fungua programu ili kusasisha nyakati za Swala",
+        konumYok: "Fungua programu ili kuweka mahali pako",
+        kilindiSiradaki: "{ad} imeswaliwa · {sonraki} {saat}",
+        adCikis: "{ad} · unaisha {saat}",
+        siradakiAdSaat: "Inayofuata {ad} {saat}",
+        vaktiCikisErisim: "Wakati wa {ad}, unaisha {saat}",
+        siradakiErisim: "Inayofuata {ad}, {saat}",
+        cikisSaat: "Unaisha {saat}",
+        bitisSaat: "Unaisha {saat}",
+        kilindiBaslik: "{ad} imeswaliwa",
+        siradaki: "Inayofuata",
+        siradakiAd: "Inayofuata {ad}",
+        kildimErisim: "Nimeswali {ad}",
+        gunSatiriKilindi: ", imeswaliwa",
+        bitti: "Umeisha",
+        vakitCikti: "Wakati wa Swala umeisha",
+        kabulAlt: "{ad} imeswaliwa",
+        kontrolAdi: "Nimeswali",
+        kontrolAciklama: "Huweka alama Swala ya sasa imeswaliwa."
     )
 
     // ÇEVİRİ: ha

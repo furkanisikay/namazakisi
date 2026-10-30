@@ -1,10 +1,9 @@
-// ÇEVİRİ: sw — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Mwelekeo wa maandishi utabadilika',
+  aciklama: 'Lugha uliyochagua huandikwa kwa mwelekeo tofauti. Programu inahitaji kuanzishwa upya ili skrini zibadilike.',
+  simdiBaslat: 'Anzisha upya sasa',
+  sonra: 'Baadaye',
+  bekliyor: 'Mwelekeo wa maandishi utabadilika programu itakapoanzishwa upya.',
 };
