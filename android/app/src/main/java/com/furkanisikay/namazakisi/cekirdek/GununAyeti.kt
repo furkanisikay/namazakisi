@@ -86,6 +86,14 @@ object GununAyetiKurallari {
     const val SURUM = 1
 
     /**
+     * Meal Noto Serif'le mi çizilir? Ge'ez (Etiyopya) yazısı Noto Serif'te YOK → Amharca meal
+     * sistem yazı tipiyle çizilir (serif Latin noktalama + sistemden düşen Ge'ez harfi karışmasın).
+     * Hausa/Fula kancalı harfleri (ɓ ɗ ƙ ƴ) ve Yoruba ton işaretleri Noto Serif'te var (cmap denetlendi).
+     * Swift ikizi `GununAyetiKarari.mealSerifMi`. Cihazda DOĞRULANMADI.
+     */
+    fun mealSerifMi(meal: String): Boolean = meal.none { it.code in 0x1200..0x139F || it.code in 0x2D80..0x2DDF || it.code in 0xAB00..0xAB2F }
+
+    /**
      * Yükü çözer. Bozuk/eksik yük `null` (widget "uygulamayı açın" der, çökmez). Zorunlu alanı
      * eksik plan kaydı atlanır; hiç geçerli kayıt kalmazsa `null`.
      */

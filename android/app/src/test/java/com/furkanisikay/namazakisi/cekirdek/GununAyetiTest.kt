@@ -19,6 +19,19 @@ class GununAyetiTest {
         requireNotNull(javaClass.classLoader?.getResource("gunun-ayeti-ornek.json")) { "ornek dosya yok" }.readText()
     private val yuk: GununAyetiYuku = requireNotNull(GununAyetiKurallari.coz(ham))
 
+    // --- Meal yazı tipi ------------------------------------------------------------------
+
+    @Test
+    fun geezMealSistemYazitipineDuser() {
+        // Noto Serif'te Ge'ez yok (Amharca, amharic_sadiq 2:153).
+        assertFalse(GununAyetiKurallari.mealSerifMi("እናንተ ያመናችሁ ሆይ! በመታገስና በሶላት ተረዱ፡፡"))
+        // Latin genişletilmiş harfler ve birleşik ton işaretleri Noto Serif'te var.
+        assertTrue(GununAyetiKurallari.mealSerifMi("Gerçekten güçlükle beraber bir kolaylık vardır."))
+        assertTrue(GununAyetiKurallari.mealSerifMi("Yã ku waɗanda suka yi ĩmãni! Ku ci ku sha daga mãsu dãɗin abin da Muka azurta ku."))
+        assertTrue(GununAyetiKurallari.mealSerifMi("Heey mon gomɗimɓe (goongɗinɓe), wallitoree muññaare (muñal) e juulde."))
+        assertTrue(GununAyetiKurallari.mealSerifMi("Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ fi sùúrù àti ìrun kíkí tọrọ oore (lọ́dọ̀ Allāhu)."))
+    }
+
     // --- Yük çözümü -------------------------------------------------------------------
 
     @Test

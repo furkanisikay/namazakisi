@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Langue · Dil',
   aciklama: 'Choisissez la langue de l’application. Les notifications et la lecture à voix haute l’utilisent aussi.',
   grup: 'Langue de l’application',
-  dilAdlari: { tr: 'Turc', en: 'Anglais', id: 'Indonésien', de: 'Allemand', fr: 'Français', bs: 'Bosnien', ru: 'Russe', ms: 'Malais', ar: 'Arabe', ur: 'Ourdou', es: 'Espagnol', nl: 'Néerlandais', sq: 'Albanais', hi: 'Hindi', bn: 'Bengali', fa: 'Persan', ps: 'Pachto', ckb: 'Sorani', ug: 'Ouïghour', az: 'Azerbaïdjanais', uz: 'Ouzbek', kk: 'Kazakh', ky: 'Kirghize', tg: 'Tadjik' },
+  dilAdlari: { tr: 'Turc', en: 'Anglais', id: 'Indonésien', de: 'Allemand', fr: 'Français', bs: 'Bosnien', ru: 'Russe', ms: 'Malais', ar: 'Arabe', ur: 'Ourdou', es: 'Espagnol', nl: 'Néerlandais', sq: 'Albanais', hi: 'Hindi', bn: 'Bengali', fa: 'Persan', ps: 'Pachto', ckb: 'Sorani', ug: 'Ouïghour', az: 'Azerbaïdjanais', uz: 'Ouzbek', kk: 'Kazakh', ky: 'Kirghize', tg: 'Tadjik', sw: 'Swahili', ha: 'Haoussa', am: 'Amharique', om: 'Oromo', so: 'Somali', ff: 'Peul', yo: 'Yoruba' },
   cihazDili: 'Langue de l’appareil',
   cihazDiliKullaniliyor: 'Actuellement {ad}',
   cihazDiliDesteklenmiyor: 'La langue de votre appareil n’est pas encore disponible ; le turc est utilisé.',

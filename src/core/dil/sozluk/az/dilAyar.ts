@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Dil · Language',
   aciklama: 'Tətbiqin dilini seçin. Bildirişlər və səsli oxuma da bu dildə olacaq.',
   grup: 'Tətbiqin dili',
-  dilAdlari: { tr: 'Türk dili', en: 'İngilis dili', id: 'İndoneziya dili', de: 'Alman dili', fr: 'Fransız dili', bs: 'Bosniya dili', ru: 'Rus dili', ms: 'Malay dili', ar: 'Ərəb dili', ur: 'Urdu dili', es: 'İspan dili', nl: 'Holland dili', sq: 'Alban dili', hi: 'Hind dili', bn: 'Benqal dili', fa: 'Fars dili', ps: 'Puştu dili', ckb: 'Mərkəzi kürdcə', ug: 'Uyğur dili', az: 'Azərbaycan dili', uz: 'Özbək dili', kk: 'Qazax dili', ky: 'Qırğız dili', tg: 'Tacik dili' },
+  dilAdlari: { tr: 'Türk dili', en: 'İngilis dili', id: 'İndoneziya dili', de: 'Alman dili', fr: 'Fransız dili', bs: 'Bosniya dili', ru: 'Rus dili', ms: 'Malay dili', ar: 'Ərəb dili', ur: 'Urdu dili', es: 'İspan dili', nl: 'Holland dili', sq: 'Alban dili', hi: 'Hind dili', bn: 'Benqal dili', fa: 'Fars dili', ps: 'Puştu dili', ckb: 'Mərkəzi kürdcə', ug: 'Uyğur dili', az: 'Azərbaycan dili', uz: 'Özbək dili', kk: 'Qazax dili', ky: 'Qırğız dili', tg: 'Tacik dili', sw: 'Suahili', ha: 'Hausa', am: 'Amhar', om: 'Oromo', so: 'Somali', ff: 'Fula', yo: 'Yoruba' },
   cihazDili: 'Cihazın dili',
   cihazDiliKullaniliyor: 'Hazırda {ad}',
   cihazDiliDesteklenmiyor: 'Cihazınızın dili hələ mövcud deyil; türk dili istifadə olunur.',

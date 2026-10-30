@@ -40,6 +40,15 @@ const MEALLER = {
   kk: 'kazakh_altai',
   ky: 'kyrgyz_hakimov',
   tg: 'tajik_arifi',
+  // Afrika (dalga 8). sw: `swahili_rwwad` (barawani her ayete "[153]" ekler); om: `oromo_ababor`
+  // (rwwad havuzu 159'a düşüyor); ff: `fulani_rwwad` = Pular (Gine, Fuuta Jallon), Latin.
+  sw: 'swahili_rwwad',
+  ha: 'hausa_gummi',
+  am: 'amharic_sadiq',
+  om: 'oromo_ababor',
+  so: 'somali_yacob',
+  ff: 'fulani_rwwad',
+  yo: 'yoruba_mikail',
 };
 
 /** Liste API'sinde görünmeyen çevirilerin QuranEnc başlığı (sitedeki kartta yazdığı gibi). */
@@ -62,7 +71,7 @@ const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky']);
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
 /** Gömülü numara kalıpları (`gunun-ayeti-uret.js > DIPNOT`, `BASTA_NUMARA`, `SONDA_NUMARA` ile aynı). */
 /** Ayet numarası silinen diller (`gunun-ayeti-uret.js > AYET_NUMARASI_SILINEN` ile AYNI). */
-const AYET_NUMARASI_SILINEN = new Set(['es', 'ug']);
+const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so']);
 const NUMARALI = [
   /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u,
   /^\s*\p{Nd}+\s*[.)]\s/u,

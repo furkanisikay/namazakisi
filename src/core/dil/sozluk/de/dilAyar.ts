@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Sprache · Language',
   aciklama: 'Wählen Sie die Sprache der App. Auch Benachrichtigungen und das Vorlesen verwenden diese Sprache.',
   grup: 'App-Sprache',
-  dilAdlari: { tr: 'Türkisch', en: 'Englisch', id: 'Indonesisch', de: 'Deutsch', fr: 'Französisch', bs: 'Bosnisch', ru: 'Russisch', ms: 'Malaiisch', ar: 'Arabisch', ur: 'Urdu', es: 'Spanisch', nl: 'Niederländisch', sq: 'Albanisch', hi: 'Hindi', bn: 'Bengalisch', fa: 'Persisch', ps: 'Paschtu', ckb: 'Zentralkurdisch', ug: 'Uigurisch', az: 'Aserbaidschanisch', uz: 'Usbekisch', kk: 'Kasachisch', ky: 'Kirgisisch', tg: 'Tadschikisch' },
+  dilAdlari: { tr: 'Türkisch', en: 'Englisch', id: 'Indonesisch', de: 'Deutsch', fr: 'Französisch', bs: 'Bosnisch', ru: 'Russisch', ms: 'Malaiisch', ar: 'Arabisch', ur: 'Urdu', es: 'Spanisch', nl: 'Niederländisch', sq: 'Albanisch', hi: 'Hindi', bn: 'Bengalisch', fa: 'Persisch', ps: 'Paschtu', ckb: 'Zentralkurdisch', ug: 'Uigurisch', az: 'Aserbaidschanisch', uz: 'Usbekisch', kk: 'Kasachisch', ky: 'Kirgisisch', tg: 'Tadschikisch', sw: 'Suaheli', ha: 'Haussa', am: 'Amharisch', om: 'Oromo', so: 'Somali', ff: 'Ful', yo: 'Yoruba' },
   cihazDili: 'Gerätesprache',
   cihazDiliKullaniliyor: 'Derzeit {ad}',
   cihazDiliDesteklenmiyor: 'Die Sprache Ihres Geräts ist noch nicht verfügbar; Türkisch wird verwendet.',

@@ -59,9 +59,9 @@ class CanliGuncellemeKurallariTest {
 
     @Test
     fun kisaBirimler_herArayuzDilindeVar() {
-        // Native dil tablosu düzeni (docs/ajan/coklu-dil.md): yirmi dört dil, boş birim yok.
+        // Native dil tablosu düzeni (docs/ajan/coklu-dil.md): otuz bir dil, boş birim yok.
         val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn",
-            "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg")
+            "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo")
         assertEquals(diller, k.KISA_BIRIMLER.keys.toList())
         for (d in diller) {
             val (sa, dk) = k.KISA_BIRIMLER.getValue(d)

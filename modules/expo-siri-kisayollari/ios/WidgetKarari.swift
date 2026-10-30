@@ -250,6 +250,15 @@ public enum GununAyetiKarari {
             + gelecek.map { GununAyetiGirdisi(ms: $0.baslangicMs, kayit: $0) }
     }
 
+    /// Meal serif yazi tipiyle mi cizilir? Ge'ez (Etiyopya) yazisinda (Amharca) serif tasarim
+    /// (New York) yok → sistem tasarimi; aksi halde Latin noktalama serif, harfler sistem
+    /// yedeginden karisik cizilirdi. Kotlin ikizi `GununAyetiKurallari.mealSerifMi`.
+    public static func mealSerifMi(_ meal: String) -> Bool {
+        return !meal.unicodeScalars.contains {
+            (0x1200...0x139F).contains($0.value) || (0x2D80...0x2DDF).contains($0.value) || (0xAB00...0xAB2F).contains($0.value)
+        }
+    }
+
     /// Kunye satiri: "kisaKunye · mealKaynagi" (+ Arapca cizildiyse " · Arapça: Tanzil").
     /// Meal kaynagi gosterildigi her yuzeyde ZORUNLU (QuranEnc kosulu).
     public static func kunyeSatiri(_ kayit: GununAyetiKaydi, metin: GununAyetiMetinleri, arapcaVar: Bool) -> String {

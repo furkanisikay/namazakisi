@@ -125,7 +125,7 @@ class TesbihatTest {
     /** Okunuşlar dile göre (sahip kararı 2026-10-25): çeviri değil, o dilin yaygın yazımı. */
     @Test
     fun okunuslarDileGore() {
-        for (kod in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg")) {
+        for (kod in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo")) {
             for (f in Faz.entries) assertTrue("$kod $f", f.ad(kod).isNotBlank())
             assertTrue(kod, Tesbihat.tehlilMetni(kod).isNotBlank())
             assertTrue(kod, Tesbihat.kaynak(kod).isNotBlank())
