@@ -1,10 +1,10 @@
-// ÇEVİRİ: ff — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Sayı önce yazılır ("5 hojomaaji"; dakikaUyumu sayıya göre çeker). hojom: dakika (sözlük), saa’i: saat. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: 'sa', dk: 'hj', sn: 'mj' },
+  saat: cogul({ one: '{n} saa’i', other: '{n} saa’iiji' }),
+  dakika: cogul({ one: '{n} hojom', other: '{n} hojomaaji' }),
+  saniye: cogul({ one: '{n} majaango', other: '{n} majaaɗe' }),
 };

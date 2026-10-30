@@ -1,35 +1,36 @@
-// ÇEVİRİ: ff — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Pular dua kalıpları (çeviri değil): "Yo Alla …" dilek yapısı sözlükte kaynaklı ("Yo Alla danndu
+ * en", "Yo Alla reene ayna"); "kabul etmek" jaɓugol (QuranEnc 2:127 "jaɓan min"), "bereket vermek"
+ * barkingol ("(Dieu) bénir"). Birleşik "Yo Alla jaɓu" kalıbı hiçbir kaynakta görülmedi — yerli
+ * okuyucu doğrulamalı. Kandil ve hicrî yılbaşı selamı yalnız Türkiye geleneğinde söylenir
+ * (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki karşılıklar tip bütünlüğü içindir. Övgü yok.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Yo Alla barkin ɗun.',
+  kabulDualari: ['Yo Alla jaɓu', 'Yo Alla jaɓan en', 'Yo Alla jaɓu', 'Yo Joomiraaɗo jaɓu'],
+  kabulDuasi: 'Yo Alla jaɓu',
+  ekSabah: 'Yo Alla barkin bimmbi mon',
+  ekYatsi: 'Yo Alla barkin jemma mon',
+  tamGunAna: 'Yo Alla jaɓu',
+  tamGunAlt: 'Hannde on juulii juulɗe njoy ɗen fow.',
+  kazaKabul: 'Qadaa {vakit} go’o ittaama e deftere mon. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Yo Alla barkin jemma Ragaa’ib',
+    mirac: 'Yo Alla barkin Israa’ e Mi’raaji',
+    berat: 'Yo Alla barkin jemma Baraa’a',
+    mevlid: 'Yo Alla barkin Mawluud',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'Yo Alla barkin suhuur mon',
+    bayram: 'Yo Alla barkin juldeere nde',
+    iftar: 'Yo Alla barkin huntaari mon',
+    kadir: 'Yo Alla barkin Laylatul Qadri',
+    arefe: 'Yo Alla barkin ñalawma Arafa',
+    hicriYilbasi: 'Yo Alla barkin hitaande hesere Islaam',
+    cuma: 'Yo Alla barkin Juma',
+    ramazan: 'Yo Alla barkin Suumayee',
+    sabah: 'Yo Alla barkin bimmbi mon',
   },
 };

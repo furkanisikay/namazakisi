@@ -1,58 +1,58 @@
-/* ÇEVİRİ: ff */
+// ff — Pular (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
-// Ingilizce terimler: src/core/dil/sozluk/en + docs/ajan/coklu-dil.md terim sozlugu.
+// Pular terimler: src/core/dil/sozluk/ff (vakit.ts basliktaki yorum).
 
 // NamazIntentleri.swift
-"Sıradaki namaz" = "Next prayer";
-"Sıradaki namaz vaktini ve giriş saatini söyler." = "Tells you the next prayer and the time it begins.";
-"Şu anki vakti kıldım" = "I've prayed the current prayer";
-"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Marks the current prayer as prayed. The record is added when you open the app.";
-"Onay iste" = "Ask for confirmation";
-"Kıbleyi aç" = "Open Qibla";
-"Uygulamayı Kıble pusulasıyla açar." = "Opens the app with the Qibla compass.";
+"Sıradaki namaz" = "Juulde garoore";
+"Sıradaki namaz vaktini ve giriş saatini söyler." = "Hino wi’a juulde garoore e saa’i nde fuɗɗotoo.";
+"Şu anki vakti kıldım" = "Mi juulii juulde jooni ndee";
+"İçinde bulunulan vakti kılındı olarak işaretler. Kayıt, uygulama açıldığında takviminize işlenir." = "Hino maandina juulde jooni ndee ko juulaama. Winndannde ndee hino ɓeydee so on udditii jaaɓngal ngal.";
+"Onay iste" = "Ƴamee gooŋɗingol";
+"Kıbleyi aç" = "Udditee qibla";
+"Uygulamayı Kıble pusulasıyla açar." = "Hino uddita jaaɓngal ngal e busol qibla.";
 
 // NamazKisayollari.swift (shortTitle)
-"Vakti kıldım" = "I've prayed";
+"Vakti kıldım" = "Mi juulii";
 "Kıble" = "Qibla";
 
 // NamazOtomasyonIntentleri.swift
-"Sıradaki vaktin adı" = "Next prayer name";
-"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Gives the name of the next prayer. You can use it as a condition in Shortcuts.";
-"Sıradaki vakte kalan dakika" = "Minutes until next prayer";
-"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Gives how many minutes are left until the next prayer begins. Returns -1 if there's no information.";
-"Şu anki vakit kılındı mı?" = "Is the current prayer marked as prayed?";
-"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Gives yes if the current prayer is marked as prayed. Gives no if there's no prayer to mark.";
+"Sıradaki vaktin adı" = "Innde juulde garoore";
+"Sıradaki namaz vaktinin adını verir. Kısayollarda koşul olarak kullanabilirsiniz." = "Hino rokka innde juulde garoore. Hiɗon mbaawi huutorde ndee wa sarɗi e Shortcuts.";
+"Sıradaki vakte kalan dakika" = "Hojomaaji haa juulde garoore";
+"Sıradaki namaz vaktinin girmesine kaç dakika kaldığını verir. Bilgi yoksa -1 döner." = "Hino rokka hojomaaji jelu heddii haa juulde garoore heewa. So alaa humpito, hino rutta -1.";
+"Şu anki vakit kılındı mı?" = "Juulde jooni ndee juulaama?";
+"İçinde bulunulan vakit kılındı olarak işaretliyse evet verir. Kılınacak vakit yoksa hayır verir." = "Hino rokka awa so juulde jooni ndee maandinaama ko juulaama. Hino rokka aa’a so alaa juulde maandinteende.";
 
 // NamazSessizlikIntentleri.swift
-"Namaz sessizliği" = "Prayer silence";
-"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Returns true during the first minutes after a prayer time begins. Used in Shortcuts to turn on a Focus.";
-"Süre (dakika)" = "Duration (minutes)";
-"Vakit girdikten sonraki ${dakika} dakika" = "The ${dakika} minutes after a prayer time begins";
-"Namaz sessizliğinin bitişi" = "End of prayer silence";
-"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Gives the time the silence ends. Gives the current time if there's no silence now.";
-"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "End of the ${dakika} minutes after a prayer time begins";
+"Namaz sessizliği" = "Deƴƴere juulde";
+"Bir namaz vakti girdikten sonraki ilk dakikalardaysanız doğru döner. Kısayollar'da Odak'ı açmak için kullanılır." = "Hino rutta goonga e hojomaaji arani caggal waqutu juulde heewde. Hino huutoree e Shortcuts ngam huɓɓinde Focus.";
+"Süre (dakika)" = "Njuuteendi (hojomaaji)";
+"Vakit girdikten sonraki ${dakika} dakika" = "${dakika} hojomaaji caggal waqutu juulde heewde";
+"Namaz sessizliğinin bitişi" = "Gasgol deƴƴere juulde";
+"Sessizliğin biteceği saati verir. Şu an sessizlik yoksa şimdiki zamanı verir." = "Hino rokka saa’i deƴƴere ndee gasata. So alaa deƴƴere jooni, hino rokka saa’i jooni.";
+"Vakit girdikten sonraki ${dakika} dakikanın sonu" = "Gasgol ${dakika} hojomaaji caggal waqutu juulde heewde";
 
 // NamazOdakFiltresi.swift
-"Namaz hatırlatmaları" = "Prayer reminders";
-"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "While this Focus is on, prayer reminders arrive without sound and without lighting up the screen.";
-"Hatırlatmaları sessiz ver" = "Deliver reminders quietly";
-"Hatırlatmalar sessiz gelir" = "Reminders arrive quietly";
-"Hatırlatmalar her zamanki gibi" = "Reminders as usual";
+"Namaz hatırlatmaları" = "Siftinooje juulde";
+"Bu Odak açıkken namaz hatırlatmalarının ekranı yakmadan ve ses çıkarmadan gelmesini sağlar." = "Tuma ngoo Focus huɓɓinaa, siftinooje juulde hino ara tawa alaa sowto, tawa yaynirde ndee jalbaaki.";
+"Hatırlatmaları sessiz ver" = "Rokku siftinooje e deƴƴere";
+"Hatırlatmalar sessiz gelir" = "Siftinooje hino ara e deƴƴere";
+"Hatırlatmalar her zamanki gibi" = "Siftinooje no woowiraa";
 
 // targets/widget/ortak/KildimDugmesiIntent.swift (ana hedefte de derlenir)
-"Widget'taki vakti kılındı olarak işaretler." = "Marks the prayer shown in the widget as prayed.";
-"Tarih" = "Date";
-"Vakit" = "Prayer";
+"Widget'taki vakti kılındı olarak işaretler." = "Hino maandina juulde ɓanngoonde e widget ko juulaama.";
+"Tarih" = "Ñalnde";
+"Vakit" = "Juulde";
 
 // targets/muhafiz-alarmkit/NamazAlarmNiyetleri.swift (gizli dugme intent'leri)
-"Namaz alarmını durdur" = "Stop prayer alarm";
-"Namazı kıldım" = "I've prayed";
+"Namaz alarmını durdur" = "Dartin alarm juulde";
+"Namazı kıldım" = "Mi juulii";
 "Alarm" = "Alarm";
 
 // GununAyetiGorseliIntent.swift (+ NamazKisayollari.swift shortTitle)
-"Günün ayeti görseli" = "Verse of the day image";
-"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Gives today's verse as an image the size of your screen. You can use it with the Set Wallpaper step in Shortcuts.";
-"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Open the app once to prepare the verse of the day.";
-"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "The image couldn't be prepared. Try again in a moment.";
+"Günün ayeti görseli" = "Natal aaya ñalawma";
+"Bugünün ayetini ekranınızın boyutunda bir görsel olarak verir. Kısayollar'da Duvar Kâğıdını Ayarla adımıyla kullanabilirsiniz." = "Hino rokka aaya hannde wa natal e ɓetol yaynirde mon. Hiɗon mbaawi huutorde ngal e taaɓe Set Wallpaper e Shortcuts.";
+"Günün ayetini hazırlamak için uygulamayı bir kez açın." = "Udditee jaaɓngal ngal laawol go’o ngam moƴƴinde aaya ñalawma.";
+"Görsel hazırlanamadı. Biraz sonra yeniden deneyin." = "Natal ngal moƴƴinaaka. Etee kadi seeɗa caggal.";
