@@ -443,18 +443,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: am
+    // am — Amharca (beta); ay/gün adları CLDR `am`
     public static let am = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "ፈጅር", "gunes": "ፀሐይ መውጣት", "ogle": "ዙህር", "ikindi": "አስር", "aksam": "መግሪብ", "yatsi": "ኢሻ"],
+        cuma: "ጁሙዓ",
+        aylar: ["ጃንዋሪ", "ፌብሩዋሪ", "ማርች", "ኤፕሪል", "ሜይ", "ጁን", "ጁላይ", "ኦገስት", "ሴፕቴምበር", "ኦክቶበር", "ኖቬምበር", "ዲሴምበር"],
+        gunler: ["ሰኞ", "ማክሰኞ", "ረቡዕ", "ሐሙስ", "ዓርብ", "ቅዳሜ", "እሑድ"],
+        tarih: "{gunAdi}፣ {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "ፀሐይ መውጣት", "istiva": "እኩለ ቀን", "gurub": "ፀሐይ መጥለቅ"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "ፀሐይ በደንብ እስክትወጣ ድረስ መስገድ ክልክል ነው።",
+            "istiva": "ፀሐይ በሰማዩ መሃል ላይ ሳለች መስገድ ክልክል ነው።",
+            "gurub": "ፀሐይ እየጠለቀች ሳለ መስገድ ክልክል ነው።",
         ]
     )
 

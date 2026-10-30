@@ -311,11 +311,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Aʼa, ba a yi mata alama ba tukuna."
     )
 
-    // ÇEVİRİ: am
+    // am — Amharca (beta); one = 0 ve 1, sayıdan sonra ad tekil
     static let am = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} ከ{n} ደቂቃ በኋላ ይገባል።", "other": "{ad} ከ{n} ደቂቃ በኋላ ይገባል።"],
+        evetKilindi: "አዎ፣ እንደተሰገደ ምልክት ተደርጓል።",
+        hayirKilinmadi: "አይ፣ ገና ምልክት አልተደረገበትም።"
     )
 
     // ÇEVİRİ: om

@@ -469,19 +469,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", salla ta gaba"
     )
 
-    // ÇEVİRİ: am
+    // am — Amharca (beta)
     static let am = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "ከተማዎን ይምረጡ",
+        ilMerkezi: "የሶላት ሰዓቶች ለክፍለ ሀገሩ መሃል ይሰላሉ። ምርጫዎን በኋላ መቀየር ይችላሉ።",
+        ilSecErisim: "{il}፣ ምረጥ",
+        kalan: "{ad} እስኪገባ የቀረው ጊዜ",
+        kalanErisim: "{ad} እስኪገባ የቀረው ጊዜ፦ {sure}",
+        konumuDegistirin: "አካባቢን ቀይር",
+        kerahatSuruyor: "ሶላት ክልክል የሆነበት ወቅት፦ {tur}፣ በ{bitis} ያበቃል። {aciklama}",
+        siradakiKerahat: "ቀጣዩ ሶላት ክልክል የሆነበት ወቅት፦ {tur} {bas}–{bit}",
+        cumaBilgisi: "ዛሬ ዓርብ ነው። ጁሙዓ የሚሰገደው በዙህር ሰዓት ነው (የሚገባው {giris})።",
+        suAnkiEk: "፣ የአሁኑ ሶላት",
+        siradakiEk: "፣ ቀጣዩ ሶላት"
     )
 
     // ÇEVİRİ: om

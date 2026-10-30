@@ -706,29 +706,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Yana yin alamar an yi sallar yanzu."
     )
 
-    // ÇEVİRİ: am
+    // am — Amharca (beta); terimler src/core/dil/sozluk/am
     static let am = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "የሶላት ሰዓት",
+        galeriAciklama: "የአሁኑ የሶላት ሰዓት፣ እስኪያልቅ የቀረው ጊዜ እና የዛሬ የሶላት ሰዓቶች።",
+        veriEski: "የሶላት ሰዓቶችን ለማዘመን መተግበሪያውን ይክፈቱ",
+        konumYok: "አካባቢዎን ለማዘጋጀት መተግበሪያውን ይክፈቱ",
+        kilindiSiradaki: "{ad} ተሰግዷል · {sonraki} {saat}",
+        adCikis: "{ad} · ያበቃል {saat}",
+        siradakiAdSaat: "ቀጣይ {ad} {saat}",
+        vaktiCikisErisim: "የ{ad} ሰዓት፣ በ{saat} ያበቃል",
+        siradakiErisim: "ቀጣይ {ad}፣ {saat}",
+        cikisSaat: "ያበቃል {saat}",
+        bitisSaat: "ያበቃል {saat}",
+        kilindiBaslik: "{ad} ተሰግዷል",
+        siradaki: "ቀጣይ",
+        siradakiAd: "ቀጣይ {ad}",
+        kildimErisim: "{ad}ን ሰገድኩ",
+        gunSatiriKilindi: "፣ ተሰግዷል",
+        bitti: "አብቅቷል",
+        vakitCikti: "የሶላቱ ሰዓት አብቅቷል",
+        kabulAlt: "{ad} ተሰግዷል",
+        kontrolAdi: "ሰገድኩ",
+        kontrolAciklama: "የአሁኑን ሶላት እንደተሰገደ ምልክት ያደርጋል።"
     )
 
     // ÇEVİRİ: om

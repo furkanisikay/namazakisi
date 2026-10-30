@@ -1,15 +1,15 @@
-// ÇEVİRİ: am — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Hitap (Microsoft Amharca kılavuzu): düğme/menü tekil eril emir; açıklama ve mesaj kibar እርስዎ + 3. çoğul. */
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'ቀጥል',
+  vazgecin: 'ሰርዝ',
+  kapatin: 'ዝጋ',
+  ayarlariAcin: 'ቅንብሮችን ክፈት',
+  simdilikGecin: 'ለአሁን እለፍ',
+  tekrarDeneyin: 'እንደገና ሞክር',
+  evet: 'አዎ',
+  hayir: 'አይ',
+  ayrintilariAcar: 'ዝርዝሩን ይከፍታል',
   marka: 'Namaz Akışı',
 };

@@ -246,12 +246,12 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "daƙiƙa {n}", "other": "daƙiƙa {n}"]
     )
 
-    // ÇEVİRİ: am
+    // am — Amharca (beta); sayıdan sonra ad tekil kalır (JS sure.ts), one = 0 ve 1
     public static let am = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        birimSa: "ሰዓ", birimDk: "ደቂ", birimSn: "ሰከ",
+        saat: ["one": "{n} ሰዓት", "other": "{n} ሰዓት"],
+        dakika: ["one": "{n} ደቂቃ", "other": "{n} ደቂቃ"],
+        saniye: ["one": "{n} ሰከንድ", "other": "{n} ሰከንድ"]
     )
 
     // ÇEVİRİ: om
