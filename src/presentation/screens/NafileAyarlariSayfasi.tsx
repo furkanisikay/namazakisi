@@ -294,6 +294,8 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                     {TEHECCUD_PENCERELERI.map((h) => {
                         const secili = ayarlar.teheccud.pencere === h.pencere;
                         const an = ham ? (h.pencere === 'yatsi' ? ham.baslangic : ham.faziletli) : null;
+                        // Çip etiketi tek satır, sığmazsa küçülür: uzun dilde ("Kashi na uku na
+                        // ƙarshe · 02:04") metin çipin kenarlarına dayanıyordu.
                         const etiket = an ? `${h.etiket} · ${saatMetni(an)}` : h.etiket;
                         return (
                             <TouchableOpacity
@@ -318,7 +320,13 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                                     style={{ marginRight: 6 }}
                                     solid
                                 />
-                                <Text className="text-xs font-semibold" style={{ color: secili ? renkler.birincil : renkler.metin }}>
+                                <Text
+                                    className="text-xs font-semibold"
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    minimumFontScale={0.85}
+                                    style={{ color: secili ? renkler.birincil : renkler.metin, flexShrink: 1, textAlign: 'center' }}
+                                >
                                     {etiket}
                                 </Text>
                             </TouchableOpacity>

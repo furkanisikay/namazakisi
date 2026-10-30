@@ -728,7 +728,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             },
             ha: {
                 baslik: 'Ayar yau a allon gidanku',
-                aciklama: 'Ku ƙara aya da fassararta da ke canjawa kowace rana a Asuba a Home Screen da Lock Screen ɗinku a matsayin widget.',
+                aciklama: 'Ku ƙara aya da fassararta da ke canjawa kowace rana a Asuba a allon gida da allon kulle na wayarku a matsayin widget.',
                 detayAciklama: 'Widget da shafin "Ayar yau" a manhajar suna nuna aya ɗaya. Rubutun Larabci daga Tanzil Project yake, fassarori kuma daga QuranEnc, ba tare da canji ba.',
                 ctaEtiketi: 'Buɗe ayar yau',
                 detaylar: [
@@ -783,7 +783,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             },
             yo: {
                 baslik: 'Āyah ti òní lórí ojú-ìbòjú ilé yín',
-                aciklama: 'Ẹ fi āyah kan àti ìtumọ̀ rẹ̀ tí ń yí padà lójoojúmọ́ ní Subh kún Home Screen àti Lock Screen yín gẹ́gẹ́ bí wíjẹ́ẹ̀tì.',
+                aciklama: 'Ẹ fi āyah kan àti ìtumọ̀ rẹ̀ tí ń yí padà lójoojúmọ́ ní Subh kún ojú-ìbòjú ilé àti ojú-ìbòjú títìpa yín gẹ́gẹ́ bí wíjẹ́ẹ̀tì.',
                 detayAciklama: 'Wíjẹ́ẹ̀tì àti ojú-ìwé "Āyah ti òní" nínú ìṣàfilọ́lẹ̀ ń fi āyah kan náà hàn. Ọ̀rọ̀ Lárúbáwá wá láti Tanzil Project, àwọn ìtumọ̀ sì wá láti QuranEnc, láìyí wọn padà.',
                 ctaEtiketi: 'Ṣí āyah ti òní',
                 detaylar: [

@@ -321,7 +321,7 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
   },
   vakitDuzey: {
     secenekEtiketi: '{ad}: {duzey}',
-    ozel: 'Na musamman',
+    ozel: 'Musamman',
     ozelEtiketi: '{ad}: saiti na musamman',
     ozelDuzenle: '{ad}: saiti na musamman, gyara matakai',
     yatsiDustu: 'Yau Isha tana farawa bayan lokacin shiru ya fara; babu tunatarwar Isha da za ta zo.',

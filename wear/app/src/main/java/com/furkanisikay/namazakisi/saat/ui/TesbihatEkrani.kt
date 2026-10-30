@@ -5,6 +5,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -47,6 +48,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.StrokeJoin
@@ -325,23 +328,38 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
         )
         Spacer(Modifier.height(2.dp))
         val yenidenAciklama = stringResource(R.string.tesbihat_yeniden_aciklama)
-        CompactButton(
-            onClick = onYenidenBasla,
-            colors = ButtonDefaults.buttonColors(containerColor = yesil, contentColor = ust),
-            modifier = Modifier.semantics { contentDescription = yenidenAciklama },
-            label = {
-                // Etiket kesilmez, sığmazsa küçülür (Oromo "Irra deebi'aa jalqabaa" kare
-                // ekranda "Irra deebi'aa jal…" oluyordu; 2026-10-30).
-                val stil = LocalTextStyle.current
-                SigdirilanMetin(
-                    stringResource(R.string.tesbihat_yeniden),
-                    enFazla = stil.fontSize,
-                    renk = ust,
-                    agirlik = FontWeight.Bold,
-                    stil = stil,
-                )
-            },
-        )
+        // Etiket kesilmez, sığmazsa küçülür (Oromo "Irra deebi'aa jalqabaa" kare ekranda
+        // "Irra deebi'aa jal…" oluyordu). Genişlik düğmenin DIŞINDA ölçülür: CompactButton
+        // etiketi iç ölçümle (IntrinsicSize) ölçer ve etikete konan BoxWithConstraints
+        // (SigdirilanMetin) bu ekranı açılışta çökertiyordu (2026-10-30, saat kare hattı).
+        BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            val etiketGenisligi = constraints.maxWidth -
+                with(LocalDensity.current) { DUGME_YATAY_PAYI.roundToPx() }
+            CompactButton(
+                onClick = onYenidenBasla,
+                colors = ButtonDefaults.buttonColors(containerColor = yesil, contentColor = ust),
+                modifier = Modifier.semantics { contentDescription = yenidenAciklama },
+                label = {
+                    val stil = LocalTextStyle.current
+                    val yazi = stringResource(R.string.tesbihat_yeniden)
+                    val olcer = rememberTextMeasurer()
+                    val boy = remember(yazi, etiketGenisligi, stil) {
+                        sigdirilanBoy(olcer, yazi, etiketGenisligi, stil.fontSize, stil, FontWeight.Bold)
+                    }
+                    Text(
+                        yazi,
+                        style = stil,
+                        fontSize = boy,
+                        fontWeight = FontWeight.Bold,
+                        color = ust,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                },
+            )
+        }
     }
 }
 
@@ -356,6 +374,9 @@ private const val ZIKIR_ADI_ORANI = 0.82f
 /** Kare saatte halka kenara yakın çizilir: tepedeki kiriş ≈ ekranın %34-40.ı (kare koşusunda ölçüldü; 0,58 hâlâ yaya değiyordu). */
 private const val ZIKIR_ADI_KARE_ORANI = 0.48f
 private const val BITIS_TIK_MS = 300
+
+/** CompactButton'ın etiket dışı yatay payı (iki yan iç boşluk; kitaplık ~12 dp/yan, güvenli tarafta). */
+private val DUGME_YATAY_PAYI = 32.dp
 private const val BITIS_HALKA_MS = 520
 
 /** Üç yayın her biri 300°'lik çerçevede (ana ekran yayıyla aynı; tepe sistem saatine). */

@@ -131,7 +131,7 @@ fun TvAyarlarEkrani(
                 // İkincil bilgi: kalan yüksekliğe TAMAMI sığarsa çizilir, sığmazsa hiç çizilmez
                 // (yarım kesik madde bozuk görünüyordu). Önce başlık ve telefonlar ölçülür.
                 SigarsaCiz(Modifier.weight(1f, fill = false)) {
-                    Column(Modifier.padding(top = 20.dp)) { GonderilenlerKarti() }
+                    Column(Modifier.padding(top = 12.dp)) { GonderilenlerKarti() }
                 }
             }
         }
@@ -145,14 +145,22 @@ fun TvAyarlarEkrani(
     }
 }
 
-/** Telefonlar bu TV'ye ne gönderir: üç kısa madde (güven: veri evden çıkmaz). */
+/**
+ * Telefonlar bu TV'ye ne gönderir: üç kısa madde (güven: veri evden çıkmaz).
+ *
+ * Ölçü uzun dile göre (2026-10-30 kare ölçümü, 1080p = 2 px/dp): 22 sp'de ~10,5 dp/harf ve
+ * 388 dp metin genişliğinde Somalice/Svahili maddeler (38–45 harf) ikişer satır oluyor, kart
+ * üyeler ekranında kalan ~222 dp'ye sığmıyordu (ff/ha ~15 dp, so/sw ~60 dp eksik) ve
+ * [SigarsaCiz] onu hiç çizmiyordu. 20 sp (~9,6 dp/harf) + 22 dp yan boşlukla metin ~403 dp
+ * (≈42 harf): so/ff tek satır, sw/ha birer madde iki satır; 5 satırlık kart ≈ 217 dp.
+ */
 @Composable
 private fun GonderilenlerKarti() {
     Column(
-        Modifier.fillMaxWidth().border(1.dp, Renkler.sinir, RoundedCornerShape(28.dp)).padding(horizontal = 28.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        Modifier.fillMaxWidth().border(1.dp, Renkler.sinir, RoundedCornerShape(28.dp)).padding(horizontal = 22.dp, vertical = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Text(stringResource(R.string.ayar_ne_gonderir), color = Renkler.metin, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+        Text(stringResource(R.string.ayar_ne_gonderir), color = Renkler.metin, fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
         Madde(stringResource(R.string.ayar_madde_konum))
         Madde(stringResource(R.string.ayar_madde_namazlar))
         Madde(stringResource(R.string.ayar_madde_sifreli))
@@ -162,9 +170,9 @@ private fun GonderilenlerKarti() {
 @Composable
 private fun Madde(metin: String) {
     Row(verticalAlignment = Alignment.Top) {
-        Box(Modifier.padding(top = 11.dp).size(10.dp).background(Renkler.birincil, CircleShape))
-        Spacer(Modifier.width(16.dp))
-        Text(metin, color = Renkler.metinIkincil, fontSize = 22.sp, lineHeight = 30.sp)
+        Box(Modifier.padding(top = 8.dp).size(10.dp).background(Renkler.birincil, CircleShape))
+        Spacer(Modifier.width(14.dp))
+        Text(metin, color = Renkler.metinIkincil, fontSize = 20.sp, lineHeight = 26.sp)
     }
 }
 

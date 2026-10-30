@@ -89,6 +89,18 @@ dump_al() {
 # kalkmadi, ilk kaydirmadan hemen sonra uygulama gorundu). Bu yuzden her denemede
 # zararsiz bir "durtme" gonderilir: listenin basina dogru kisa kaydirma (liste zaten
 # en ustteyse etkisiz). Sabit `sleep` YETMEZ.
+# Durtme YALNIZ uygulama ondeyken: uygulama coktuyse kadranda asagi kaydirma hizli ayarlar
+# panelini acar ve hat o paneli kare diye kaydediyordu (09-tesbihat-tamam, 2026-10-30: 14 karenin
+# hepsi hizli ayarlar). On pencere uygulamanin degilse durulur ve cokme kaydi yazilir.
+uygulama_onde() {
+  adb shell dumpsys window 2>/dev/null | grep -E 'mCurrentFocus|mFocusedApp' | grep -q "$PAKET"
+}
+
+cokme_kaydi() {
+  echo "--- cokme kaydi (logcat crash tamponu, son satirlar) ---"
+  adb logcat -d -b crash 2>/dev/null | tail -40 || true
+}
+
 hazir_bekle() {
   local desen="$1"
   for i in $(seq 1 15); do
@@ -97,6 +109,11 @@ hazir_bekle() {
     if node scripts/saat/ui-merkez.js /tmp/saat-ui.xml "$desen" >/dev/null; then
       echo "hazir ($desen): ${i}. deneme"
       return 0
+    fi
+    if ! uygulama_onde; then
+      echo "UYARI: '$desen' beklenirken uygulama onde degil (coktu ya da kapandi)"
+      cokme_kaydi
+      return 1
     fi
     adb shell input swipe $((G / 2)) $((Y / 3)) $((G / 2)) $((Y / 2)) 400
   done
@@ -187,8 +204,13 @@ printf "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>\n<map>\n    <in
 adb push /tmp/saat_tesbihat.xml /data/local/tmp/saat_tesbihat.xml
 adb shell run-as "$PAKET" cp /data/local/tmp/saat_tesbihat.xml shared_prefs/saat_tesbihat.xml
 adb shell am start -W -n "$PAKET/$SINIF.ui.TesbihatAktivite"
-hazir_bekle 'Tamamlandı|tamamlandı|146|١٤٦|۱۴۶|১৪৬' || sleep 5
-kare 09-tesbihat-tamam 2 || true
+# Kare YALNIZ bitis ekrani gorulunce alinir: gorulmezse (cokme, baska pencere) eksik kalir,
+# yanlis kare magaza/denetim setine girmez. Kunye her dilde "146" tasir (Muslim, Mesacid 146).
+if hazir_bekle 'Tamamlandı|tamamlandı|146|١٤٦|۱۴۶|১৪৬'; then
+  kare 09-tesbihat-tamam 2 || true
+else
+  echo "UYARI: 09-tesbihat-tamam cekilmedi (bitis ekrani gorunmedi)"
+fi
 
 # --- 08: kible pusulasi ---
 # Konum tohum yukunden gelir (`konum`, 1 ondalik). Emulator sensorleri konsoldan
