@@ -112,7 +112,7 @@ function sablonKarsiliklari(secenek) {
           .join(''),
       );
       // Önek eşleşmesinde hedefin yer tutucudan önceki baş literali de ("Mode reprise" ← "Recovery mode").
-      const bas = hedefParcalar[0].replace(/[\s:.\u00a0\u202f]+$/, '');
+      const bas = hedefParcalar[0].replace(/[\s:፦.\u00a0\u202f]+$/, '');
       if (k === 1 && parcalar.length > 1 && bas) sonuc.push(kacir(bas));
       break;
     }
@@ -173,8 +173,9 @@ for (const dosya of dosyalar(path.join(KOK, 'scripts', 'maestro'))) {
         ? satir
         : satir
             .replace(/\(([^()]*\|[^()]*)\)/g, (_, g) => `(${grubuGenislet(g)})`)
-            // Fransız yazımı iki noktadan önce bölünmez boşluk koyar ("Série\u00a0: 25 jours").
-            .replace(/\): /g, ')[\u00a0\u202f]?: '),
+            // Fransız yazımı iki noktadan önce bölünmez boşluk koyar ("Série\u00a0: 25 jours");
+            // Amharca iki nokta yerine Etiyopya önsöz iki noktası yazar ("ተከታታይነት፦ 5 ቀናት").
+            .replace(/\): /g, ')[\u00a0\u202f]?[:፦] '),
     )
     .join('\n');
   if (yeni !== eski) {
