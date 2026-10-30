@@ -1,10 +1,10 @@
-// ÇEVİRİ: yo — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Yorubada çoğul yalnız `other` (CLDR). */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  kisa: { sa: 'wkt', dk: 'ìṣj', sn: 'ìṣ-àá' },
+  saat: cogul({ other: 'wákàtí {n}' }),
+  dakika: cogul({ other: 'ìṣẹ́jú {n}' }),
+  saniye: cogul({ other: 'ìṣẹ́jú-àáyá {n}' }),
 };

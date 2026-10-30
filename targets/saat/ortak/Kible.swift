@@ -564,17 +564,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: yo
+    // yo
     public static let yo = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "Lẹ́yìn yín",
+        saga: "Ọ̀tún {derece}°",
+        sola: "Òsì {derece}°",
+        hizali: "Ẹ dojú kọ Ƙiblah",
+        arkadaErisim: "Ƙiblah wà lẹ́yìn yín",
+        sagdaErisim: "Ƙiblah wà ní ìwọ̀n {derece} sí ọ̀tún yín",
+        soldaErisim: "Ƙiblah wà ní ìwọ̀n {derece} sí òsì yín",
+        kabede: "Ẹ wà ní Ka‘bah",
+        mesafe: "km {km}",
         binlikAyirici: ","
     )
 

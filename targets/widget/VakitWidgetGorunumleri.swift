@@ -806,29 +806,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: yo
+    // yo
     static let yo = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Àkókò ìrun",
+        galeriAciklama: "Àkókò ìrun lọ́wọ́lọ́wọ́, àkókò tó kù kí ó tó parí àti àwọn àkókò ìrun òní.",
+        veriEski: "Ẹ ṣí ìṣàfilọ́lẹ̀ láti ṣe àfikún àwọn àkókò ìrun",
+        konumYok: "Ẹ ṣí ìṣàfilọ́lẹ̀ láti ṣètò ibùdó yín",
+        kilindiSiradaki: "{ad}: ti kírun · {sonraki} {saat}",
+        adCikis: "{ad} · yóò parí {saat}",
+        siradakiAdSaat: "Èyí tó kàn {ad} {saat}",
+        vaktiCikisErisim: "Àkókò {ad}, yóò parí {saat}",
+        siradakiErisim: "Èyí tó kàn {ad}, {saat}",
+        cikisSaat: "Yóò parí {saat}",
+        bitisSaat: "Yóò parí {saat}",
+        kilindiBaslik: "{ad}: ti kírun",
+        siradaki: "Tó kàn",
+        siradakiAd: "Èyí tó kàn {ad}",
+        kildimErisim: "Mo ti kí {ad}",
+        gunSatiriKilindi: ", ti kírun",
+        bitti: "Ó ti parí",
+        vakitCikti: "Àkókò ìrun ti kọjá",
+        kabulAlt: "{ad}: ti kírun",
+        kontrolAdi: "Mo ti kírun",
+        kontrolAciklama: "Ó ń sàmì sí ìrun lọ́wọ́lọ́wọ́ pé a ti kí i."
     )
 
     /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo; cevrilmemis dil `// ÇEVİRİ: <kod>`

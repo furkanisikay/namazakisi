@@ -1,15 +1,14 @@
-// ÇEVİRİ: yo — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Tẹ̀síwájú',
+  vazgecin: 'Fagilé',
+  kapatin: 'Pa á dé',
+  ayarlariAcin: 'Ṣí ètò',
+  simdilikGecin: 'Fò ó fún báyìí',
+  tekrarDeneyin: 'Gbìyànjú lẹ́ẹ̀kan sí i',
+  evet: 'Bẹ́ẹ̀ ni',
+  hayir: 'Bẹ́ẹ̀ kọ́',
+  ayrintilariAcar: 'Ó ń ṣí àlàyé',
   marka: 'Namaz Akışı',
 };

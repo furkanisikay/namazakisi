@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: yo — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="camigeofence_kanal_durum_ad">At the mosque</string>
-    <string name="camigeofence_kanal_durum_aciklama">A quiet notice when you\'re detected at a mosque</string>
-    <string name="camigeofence_kanal_soru_ad">After leaving the mosque</string>
-    <string name="camigeofence_kanal_soru_aciklama">A question so you can mark your prayer after you leave the mosque</string>
+    <string name="camigeofence_kanal_durum_ad">Ní mọ́sálásí</string>
+    <string name="camigeofence_kanal_durum_aciklama">Ìkéde aláìláriwo nígbà tí a bá rí i pé ẹ wà ní mọ́sálásí</string>
+    <string name="camigeofence_kanal_soru_ad">Lẹ́yìn tí ẹ bá kúrò ní mọ́sálásí</string>
+    <string name="camigeofence_kanal_soru_aciklama">Ìbéèrè kí ẹ lè sàmì sí ìrun yín lẹ́yìn tí ẹ bá kúrò ní mọ́sálásí</string>
 
-    <string name="camigeofence_govde_mod_sessiz">Prayer mode is on. Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_mod">Prayer mode is on.</string>
-    <string name="camigeofence_govde_sessiz">Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_normal">Reminders will arrive as usual.</string>
-    <string name="camigeofence_eylem_modu_kapat">Turn off mode</string>
-    <string name="camigeofence_eylem_cami_degil">Not a mosque</string>
+    <string name="camigeofence_govde_mod_sessiz">Ipò ìrun wà ní títàn. Àwọn ìránnilétí yóò dé ní ìdákẹ́jẹ́ẹ́.</string>
+    <string name="camigeofence_govde_mod">Ipò ìrun wà ní títàn.</string>
+    <string name="camigeofence_govde_sessiz">Àwọn ìránnilétí yóò dé ní ìdákẹ́jẹ́ẹ́.</string>
+    <string name="camigeofence_govde_normal">Àwọn ìránnilétí yóò dé bí ó ti máa ń rí.</string>
+    <string name="camigeofence_eylem_modu_kapat">Pa ipò náà</string>
+    <string name="camigeofence_eylem_cami_degil">Kì í ṣe mọ́sálásí</string>
 
-    <string name="camigeofence_soru_baslik">Are you at the mosque?</string>
-    <string name="camigeofence_soru_govde">You\'re near %1$s. We\'re not sure, so we\'re asking you.</string>
-    <string name="camigeofence_varsayilan_ad">Mosque</string>
-    <string name="camigeofence_eylem_namaz_modunu_ac">Turn on Prayer mode</string>
-    <string name="camigeofence_eylem_evet_camideyim">Yes, I\'m at the mosque</string>
-    <string name="camigeofence_eylem_hayir">No</string>
+    <string name="camigeofence_soru_baslik">Ṣé ẹ wà ní mọ́sálásí?</string>
+    <string name="camigeofence_soru_govde">Ẹ wà nítòsí %1$s. Kò dá wa lójú, nítorí náà a ń bi yín léèrè.</string>
+    <string name="camigeofence_varsayilan_ad">Mọ́sálásí</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Tan Ipò ìrun</string>
+    <string name="camigeofence_eylem_evet_camideyim">Bẹ́ẹ̀ ni, mo wà ní mọ́sálásí</string>
+    <string name="camigeofence_eylem_hayir">Bẹ́ẹ̀ kọ́</string>
 
-    <string name="camigeofence_kildiniz_mi">Have you prayed %1$s?</string>
-    <string name="camigeofence_kildiniz_mi_govde">You can mark it with a single tap.</string>
-    <string name="camigeofence_eylem_kildim">I\'ve prayed</string>
-    <string name="camigeofence_namaz_imsak">Fajr</string>
-    <string name="camigeofence_namaz_ogle">Dhuhr</string>
-    <string name="camigeofence_namaz_ikindi">Asr</string>
-    <string name="camigeofence_namaz_aksam">Maghrib</string>
-    <string name="camigeofence_namaz_yatsi">Isha</string>
-    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+    <string name="camigeofence_kildiniz_mi">Ṣé ẹ ti kí %1$s?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Ẹ lè sàmì sí i pẹ̀lú ìtẹ̀ kan ṣoṣo.</string>
+    <string name="camigeofence_eylem_kildim">Mo ti kírun</string>
+    <string name="camigeofence_namaz_imsak">Subh</string>
+    <string name="camigeofence_namaz_ogle">Ṭḥuhr</string>
+    <string name="camigeofence_namaz_ikindi">‘Asr</string>
+    <string name="camigeofence_namaz_aksam">Mọgrib</string>
+    <string name="camigeofence_namaz_yatsi">‘Iṣā’</string>
+    <string name="camigeofence_namaz_cuma">Jum‘ah</string>
 
-    <string name="camigeofence_mod_kural_adi">Prayer</string>
-    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı turns it on during the Jumu\'ah sermon, at the mosque or when a prayer time begins</string>
+    <string name="camigeofence_mod_kural_adi">Ìrun</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı ń tàn án nígbà khuṭbah Jum‘ah, ní mọ́sálásí tàbí nígbà tí àkókò ìrun bá wọlé</string>
 </resources>
