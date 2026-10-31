@@ -1,61 +1,59 @@
-// ÇEVİRİ: zh — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * 礼拜召唤：不用代词，简短直接的祈使句（"起身礼拜"、"去礼拜"），不用感叹号。
+ * 不写"叩头/叩拜"（与土耳其语"secdeye kapan"禁令相同）。标题开头即为礼拜名与时长（手环约16字符）。
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · 已过{dk}分钟 · 礼拜时间到了 ⏰',
+    giris2: '{ad} · 已过{dk}分钟 · 不要拖延礼拜 ⚠️',
+    giris3: '{ad} · 已过{dk}分钟 · 礼拜在等候 🔥',
+    giris4: '{ad} · 已过{dk}分钟 · 立即起身礼拜 🚨',
+    erken3: '{ad} · 剩{dk}分钟 · 礼拜在等候 🔥',
+    erken4: '{ad} · 剩{dk}分钟 · 立即起身礼拜 🚨',
+    cikis1: '{ad} · 剩{dk}分钟 ⏰',
+    cikis2: '{ad} · {dk}分钟 · 时间紧迫 ⚠️',
+    cikis3: '{ad} · {dk}分钟 · 时间正在流逝 🔥',
+    cikis4: '{ad} · {dk}分钟 · 时间即将结束 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['礼拜时间到了；趁有机会去礼拜。', '趁时间充裕去礼拜，不要留到以后。'],
+    s2: ['越拖越难；不要把礼拜留到最后。', '时间在流逝——现在就去礼拜。'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      '越是拖延，越接近错过；立即去礼拜。',
+      '不要说“以后再礼”；现在就可以礼拜。',
+      '与其几分钟后说“要是早点就好了”，不如现在起身。',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['不要再拖延礼拜——立即起身礼拜。', '放下手中的事，起身礼拜。'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: '时间开始紧迫；趁有机会去礼拜。',
+    s2: '不要把礼拜留到最后；现在正是礼拜的好时机。',
+    s3: '时间快到了；现在仍可礼拜。',
+    s4: '如已礼拜，点按“我礼了”；如未礼拜，立即起身礼拜。',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: '不要拖延礼拜。立即起身礼拜。（已过{dk}分钟）',
+    giris2: '时间在流逝，不要把礼拜留到最后。（已过{dk}分钟）',
+    giris1: cogul({ other: '礼拜时间已开始{n}分钟。' }),
+    erken4: '不要拖延礼拜，立即起身礼拜。（剩{dk}分钟）',
+    cikis4: '时间即将结束。立即起身礼拜。（剩{dk}分钟）',
+    cikis2: '时间紧迫，不要把礼拜留到最后。（剩{dk}分钟）',
+    cikis1: cogul({ other: '距礼拜时间结束还有{n}分钟。' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · 睡前去礼拜 ⏰',
+    govde: '{dk}分钟后进入安静时段；睡前礼宵礼。',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: '时间开始紧迫；趁有机会去礼拜。',
+    sonaBirakma: '不要把礼拜留到最后；现在正是礼拜的好时机。',
+    fisilti: '不要说“以后再礼”；时间快到了，现在仍可礼拜。',
+    omur: '时间在流逝；仍有机会按时完成这番礼拜。',
+    keske: '与其几分钟后说“要是早点就好了”，不如现在起身。',
+    namazaDur: '如已礼拜，点按“我礼了”；如未礼拜，立即起身礼拜。',
+    sonDakika: '最后几分钟。放下手中的事，起身礼拜。',
   },
 };

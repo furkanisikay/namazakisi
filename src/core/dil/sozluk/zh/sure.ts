@@ -1,12 +1,12 @@
-// ÇEVİRİ: zh — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** 数字与单位之间不加空格（"5分钟"、"1小时5分钟"）。 */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: '小时', dk: '分钟', sn: '秒' },
   birimli: '{n}{birim}',
   parcali: '{once}{sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ other: '{n}小时' }),
+  dakika: cogul({ other: '{n}分钟' }),
+  saniye: cogul({ other: '{n}秒' }),
 };
