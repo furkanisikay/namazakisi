@@ -59,6 +59,7 @@ it('cihaz yerel ayarı çözülür; Endonezce eski kodla, bilinmeyen dil Türkç
   expect(nativeEtiketleri('in_ID')).toBe(NATIVE_ETIKETLER.id);
   expect(nativeEtiketleri('ckb-IQ')).toBe(NATIVE_ETIKETLER.ckb);
   expect(nativeEtiketleri('de-DE')).toBe(NATIVE_ETIKETLER.de);
+  expect(nativeEtiketleri('zh_CN_#Hans')).toBe(NATIVE_ETIKETLER.zh);
   expect(nativeEtiketleri('ja_JP')).toBe(NATIVE_ETIKETLER.tr);
   expect(nativeEtiketleri(null)).toBe(NATIVE_ETIKETLER.tr);
 });

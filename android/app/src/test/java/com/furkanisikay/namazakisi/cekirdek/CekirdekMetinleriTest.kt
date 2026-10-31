@@ -11,7 +11,7 @@ import org.junit.Test
  * eşlemesi ve Endonezce "in" takma adı. Türkçe çıktı fikstür testlerinde kilitlidir.
  */
 class CekirdekMetinleriTest {
-    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo")
+    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi")
     private val yerTutucu = Regex("""\{\w+\}""")
 
     private fun alanlar(m: CekirdekMetinleri): Map<String, String> =
@@ -40,6 +40,15 @@ class CekirdekMetinleriTest {
         assertEquals("id", MetinDili.coz("in"))
         assertEquals("id", MetinDili.coz("in_ID"))
         assertSame(CEKIRDEK_ID, MetinDili.metinler("in-ID"))
+    }
+
+    @Test
+    fun cinceYerelAyarlariBasitlestirilmisBloga() {
+        // Uygulama yalnız Basitleştirilmiş Çince taşır: zh_CN, zh-Hans-CN, zh_TW_#Hant → "zh".
+        for (yerel in listOf("zh", "zh_CN", "zh-CN", "zh-Hans-CN", "zh_TW_#Hant", "zh-HK")) {
+            assertEquals(yerel, "zh", MetinDili.coz(yerel))
+        }
+        assertSame(CEKIRDEK_ZH, MetinDili.metinler("zh-Hans-CN"))
     }
 
     @Test

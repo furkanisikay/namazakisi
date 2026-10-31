@@ -2,7 +2,7 @@
 # Emulatoru kare hattinin diline alir ve paket servisi kararli hale gelene kadar bekler.
 # Kare hatlari `adb wait-for-device`'tan hemen sonra, APK kurmadan once cagirir.
 #
-# Dil: TOHUM_DIL (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo) → cihaz dili; bilinmeyen kod tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
+# Dil: TOHUM_DIL (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi) → cihaz dili; bilinmeyen kod tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
 # cihaz Turkce olmali). `-change-locale` emulator secenegi KULLANILMAZ: acilistan hemen sonra
 # framework'u yeniden baslatir ve emulator-runner'in kendi kilit acma adimi (`input keyevent 82`)
 # "Broken pipe" ile duser — o adim kapatilamaz. Burada dil, acilis tamamlandiktan sonra root ile
@@ -19,9 +19,11 @@ case "${TOHUM_DIL:-tr}" in
   es) HEDEF="es-ES" ;; nl) HEDEF="nl-NL" ;; sq) HEDEF="sq-AL" ;; hi) HEDEF="hi-IN" ;; bn) HEDEF="bn-BD" ;;
   fa) HEDEF="fa-IR" ;; ps) HEDEF="ps-AF" ;; ckb) HEDEF="ckb-IQ" ;; ug) HEDEF="ug-CN" ;;
   az) HEDEF="az-AZ" ;; uz) HEDEF="uz-UZ" ;; kk) HEDEF="kk-KZ" ;; ky) HEDEF="ky-KG" ;; tg) HEDEF="tg-TJ" ;;
-  # sw/ha/am/om/so/ff/yo seçicide kapalıdır: tohumun dil kaydını (`dil_ayari.kod`) kare hattı işareti (`@namaz_akisi/kare_turu`) açar.
   # Fula = Pular (Gine): ff-GN.
   sw) HEDEF="sw-TZ" ;; ha) HEDEF="ha-NG" ;; am) HEDEF="am-ET" ;; om) HEDEF="om-ET" ;; so) HEDEF="so-SO" ;; ff) HEDEF="ff-GN" ;; yo) HEDEF="yo-NG" ;;
+  # zh/ta/ml/th/ko/vi seçicide kapalıdır: tohumun dil kaydını (`dil_ayari.kod`) kare hattı işareti (`@namaz_akisi/kare_turu`) açar.
+  # Çince yalnız Basitleştirilmiş: sistem dili zh-Hans-CN (zh-TW betik uyuşmazlığıyla values-zh'yi seçmeyebilir).
+  zh) HEDEF="zh-Hans-CN" ;; ta) HEDEF="ta-IN" ;; ml) HEDEF="ml-IN" ;; th) HEDEF="th-TH" ;; ko) HEDEF="ko-KR" ;; vi) HEDEF="vi-VN" ;;
   *) HEDEF="tr-TR" ;;
 esac
 

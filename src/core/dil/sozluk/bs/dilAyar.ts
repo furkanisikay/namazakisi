@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Jezik · Language',
   aciklama: 'Odaberite jezik aplikacije. Obavještenja i čitanje naglas također će biti na tom jeziku.',
   grup: 'Jezik aplikacije',
-  dilAdlari: { tr: 'Turski', en: 'Engleski', id: 'Indonezijski', de: 'Njemački', fr: 'Francuski', bs: 'Bosanski', ru: 'Ruski', ms: 'Malajski', ar: 'Arapski', ur: 'Urdu', es: 'Španski', nl: 'Nizozemski', sq: 'Albanski', hi: 'Hindi', bn: 'Bengalski', fa: 'Perzijski', ps: 'Paštu', ckb: 'Centralnokurdski', ug: 'Ujgurski', az: 'Azerbejdžanski', uz: 'Uzbečki', kk: 'Kazaški', ky: 'Kirgiški', tg: 'Tadžički', sw: 'Svahili', ha: 'Hausa', am: 'Amharski', om: 'Oromo', so: 'Somalski', ff: 'Fulah', yo: 'Jorubanski' },
+  dilAdlari: { tr: 'Turski', en: 'Engleski', id: 'Indonezijski', de: 'Njemački', fr: 'Francuski', bs: 'Bosanski', ru: 'Ruski', ms: 'Malajski', ar: 'Arapski', ur: 'Urdu', es: 'Španski', nl: 'Nizozemski', sq: 'Albanski', hi: 'Hindi', bn: 'Bengalski', fa: 'Perzijski', ps: 'Paštu', ckb: 'Centralnokurdski', ug: 'Ujgurski', az: 'Azerbejdžanski', uz: 'Uzbečki', kk: 'Kazaški', ky: 'Kirgiški', tg: 'Tadžički', sw: 'Svahili', ha: 'Hausa', am: 'Amharski', om: 'Oromo', so: 'Somalski', ff: 'Fulah', yo: 'Jorubanski', zh: 'Kineski (pojednostavljeni)', ta: 'Tamilski', ml: 'Malajalam', th: 'Tajlandski', ko: 'Korejski', vi: 'Vijetnamski' },
   cihazDili: 'Jezik uređaja',
   cihazDiliKullaniliyor: 'Trenutno: {ad}',
   cihazDiliDesteklenmiyor: 'Jezik Vašeg uređaja još nije dostupan; koristi se turski.',

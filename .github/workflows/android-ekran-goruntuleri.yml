@@ -73,6 +73,12 @@ on:
           - so
           - ff
           - yo
+          - zh
+          - ta
+          - ml
+          - th
+          - ko
+          - vi
       tur:
         description: 'Hangi kareler: magaza (Play kareleri) | ozellik (yeni ekranlar turu) | ikisi | tablet (yalnız tablet özellik turu) | katlanabilir (Pixel Fold: açık + masaüstü postürü) | saat (Wear OS) | tv (Android TV) | cihazlar (saat + tv)'
         type: choice

@@ -24,7 +24,7 @@ export interface GununAyetiKaydi {
   mealler: { readonly tr: string; readonly en: string } & Readonly<Partial<Record<MealDili, string>>>;
 }
 
-export type MealDili = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo';
+export type MealDili = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi';
 
 export interface MealKunyesi {
   anahtar: string;
@@ -192,6 +192,36 @@ export const GUNUN_AYETI_KAYNAKLARI: {
       "anahtar": "yoruba_mikail",
       "surum": "1.0.9",
       "baslik": "Abu Rahimah Mikael"
+    },
+    "zh": {
+      "anahtar": "chinese_suliman",
+      "surum": "1.0.8",
+      "baslik": "Muhammad Suleiman"
+    },
+    "ta": {
+      "anahtar": "tamil_omar",
+      "surum": "1.0.4",
+      "baslik": "Omar Sharif"
+    },
+    "ml": {
+      "anahtar": "malayalam_kunhi",
+      "surum": "1.0.3",
+      "baslik": "Abdul Hamid Haidar and Kunhi Muhammad"
+    },
+    "th": {
+      "anahtar": "thai_rwwad",
+      "surum": "1.0.1",
+      "baslik": "Rowwad Translation Center"
+    },
+    "ko": {
+      "anahtar": "korean_rwwad",
+      "surum": "1.0.11",
+      "baslik": "Rowwad Translation Center"
+    },
+    "vi": {
+      "anahtar": "vietnamese_rwwad",
+      "surum": "1.0.9",
+      "baslik": "Rowwad Translation Center"
     }
   }
 };
@@ -228,7 +258,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አንተን ብቻ እንግገዛለን፤ አንተንም ብቻ እርዳታን እንለምናለን፡፡",
       "om": "Si qofa gabbarra; Si qofatti gargaarsifannas.",
       "so": "Adigoo Keliya baynu (Allow) ku caabudi, oo Adigoo Keliya baynu ku weydiisan kaalmo.",
-      "ff": "Ko Aan tan min ndewata te ko Aan tan min mballintoo."
+      "ff": "Ko Aan tan min ndewata te ko Aan tan min mballintoo.",
+      "zh": "我们只崇拜你，我们只求你佑助，",
+      "ta": "(அல்லாஹ்வே!) உன்னையே வணங்குகிறோம். இன்னும் உன்னிடமே உதவி தேடுகிறோம்.",
+      "th": "เฉพาะพระองค์เท่านั้น ที่พวกข้าพระองค์เคารพอิบาดะฮ์ และเฉพาะพระองค์เท่านั้น ที่พวกข้าพระองค์ขอความช่วยเหลือ",
+      "ko": "저희는 당신만을 경배하며 당신께만 도움을 요청합니다.",
+      "vi": "Duy chỉ Ngài bầy tôi thờ phượng và duy chỉ Ngài bầy tôi cầu xin phù hộ và trợ giúp."
     }
   },
   {
@@ -264,7 +299,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila ati hinbeektuu Rabbiin mootummaan samiileefii dachii tan isaa tahuu? Isiniifis Rabbiin ala jaalalleefi gargaaraan hin jiru.",
       "so": "Miyaadan ogeyn in Alle leeyahay Boqortooyada (runta ah ee) samooyinka iyo arlada, oo aydaan lahayn Alle ka sokow sokeeye iyo gargaare midna.",
       "ff": "Mbela a anndaa wonde ko Alla jeyi laamu asamaanji e lesdi on ngalaa keedanoowo mon wolla ballo sonaa Alla.",
-      "yo": "Ṣé ìwọ kò mọ̀ pé dájúdájú ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀? Kò sì sí aláàbò àti alárànṣe kan fún yín lẹ́yìn Allāhu."
+      "yo": "Ṣé ìwọ kò mọ̀ pé dájúdájú ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀? Kò sì sí aláàbò àti alárànṣe kan fún yín lẹ́yìn Allāhu.",
+      "zh": "难道你不知道安拉有天地的国权吗？除安拉之外，你们既没有任何保护者，又没有任何援助者。",
+      "ta": "(நபியே!) நிச்சயமாக அல்லாஹ், அவனுக்கே வானங்கள் இன்னும் பூமியின் ஆட்சி உரியது என்பதை நீர் அறியவில்லையா? இன்னும், அல்லாஹ்வை அன்றி உங்களுக்கு பொறுப்பாளருமில்லை; உதவியாளருமில்லை.",
+      "ml": "നിനക്കറിഞ്ഞു കൂടേ അല്ലാഹുവിന്നു തന്നെയാണ് ആകാശഭൂമികളുടെ ആധിപത്യമെന്നും, നിങ്ങള്‍ക്ക് അല്ലാഹുവെ കൂടാതെ ഒരു രക്ഷകനും സഹായിയും ഇല്ലെന്നും?",
+      "th": "เจ้าไม่รู้ดอกหรือว่า แท้จริงอำนาจแห่งชั้นฟ้าทั้งหลายและแผ่นดินนั้น เป็นกรรมสิทธิ์ของอัลลอฮ์? และไม่มีผู้ใดสำหรับพวกเจ้านอกจากอัลลอฮ์เท่านั้นที่สามารถปกป้องและให้ความช่วยเหลือ",
+      "ko": "실로 하늘과 땅의 주권은 하나님 그분께 있음을 그대(무함마드)가 알고 있지 않았던가? 하나님이 아니고선 그대들에게 그 어떤 가호자나 조력자도 없노라.",
+      "vi": "Lẽ nào Ngươi không biết vương quyền cai trị các tầng trời và trái đất đều thuộc về Allah hay sao? Và ngoài Allah, các ngươi sẽ không có bất cứ vị bảo hộ cũng như vị giúp đỡ nào."
     }
   },
   {
@@ -300,7 +341,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Obsaafi salaataan gargaarsa barbaadaa. Dhugumatti, Rabbiin warra obsan waliin jira.",
       "so": "Kuwa (Xaqa) rumeeyoow! Kaalmaysta samirka iyo salaadda. Hubaal! Alle wuxuu la jiraa kuwa samirka badan.",
       "ff": "Heey mon gomɗimɓe (goongɗinɓe), wallitoree muññaare (muñal) e juulde. Pellet, Allah Hino Wonndi he muññiiɓe ɓen.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo,ẹ fi sùúrù àti ìrun kíkí tọrọ oore (lọ́dọ̀ Allāhu). Dájúdájú Allāhu ń bẹ pẹ̀lú àwọn onísùúrù."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo,ẹ fi sùúrù àti ìrun kíkí tọrọ oore (lọ́dọ̀ Allāhu). Dájúdájú Allāhu ń bẹ pẹ̀lú àwọn onísùúrù.",
+      "zh": "归信的人们啊！你们当借坚忍和拜功，而求佑助。安拉确是与坚忍者同在的。",
+      "ta": "நம்பிக்கையாளர்களே! பொறுமை இன்னும் தொழுகையின் மூலம் உதவி கோருங்கள். நிச்சயமாக அல்லாஹ் பொறுமையாளர்களுடன் இருக்கிறான்.",
+      "ml": "സത്യവിശ്വാസികളെ, നിങ്ങള്‍ സഹനവും നമസ്കാരവും മുഖേന (അല്ലാഹുവിനോട്‌) സഹായം തേടുക. തീര്‍ച്ചയായും ക്ഷമിക്കുന്നവരോടൊപ്പമാകുന്നു അല്ലാഹു.",
+      "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงขอการช่วยเหลือด้วยความอดทนและการละหมาด แท้จริงอัลลอฮ์ทรงอยู่ร่วมกับบรรดาผู้อดทน",
+      "ko": "믿는 자들이여! 인내심과 예배로써 (하나님께) 도움을 요청하라. 실로 하나님께서는 인내하는 자들과 함께 하시노라.",
+      "vi": "Hỡi những người có đức tin, các ngươi hãy cầu xin sự giúp đỡ (của Allah) bằng lòng kiên nhẫn và lễ nguyện Salah. Quả thật, Allah luôn bên cạnh những người kiên nhẫn."
     }
   },
   {
@@ -334,7 +381,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እናንተ ሰዎች ሆይ! በምድር ካለው ነገር የተፈቀደ ጣፋጭ ሲኾን ብሉ፡፡ የሰይጣንን እርምጃዎች አትከታተሉ፡፡ እርሱ ለእናንተ ግልጽ ጠላት ነውና፡፡",
       "om": "isinYaa namootaa! Waan dachii keessa jiru irraa halaala gaarii ta’e nyaadhaa,Tarkaanfiilee sheyxaanaa hin hordofinaa, Dhugumatti, inni isiniif diina ifa bahaadha.",
       "ff": "Heey mo yimɓe! Ñaamee yoga he ko woni ka leydi koo, dagii ko laaɓi, wata on jokku juri=taaɓe (taaɓe) seytaane ɗin : Pellet, ko o gaño mo'on feeñuɗo.",
-      "yo": "Ẹ̀yin ènìyàn, ẹ jẹ nínú ohun tí ń bẹ nínú ilẹ̀ (tó jẹ́) ẹ̀tọ́ (àti n̄ǹkan) dáadáa. Ẹ má sì ṣe tẹ̀lé àwọn ojú-ẹsẹ̀ aṣ-Ṣaetọ̄n. Dájúdájú òun ni ọ̀tá pọ́nńbélé fún yín."
+      "yo": "Ẹ̀yin ènìyàn, ẹ jẹ nínú ohun tí ń bẹ nínú ilẹ̀ (tó jẹ́) ẹ̀tọ́ (àti n̄ǹkan) dáadáa. Ẹ má sì ṣe tẹ̀lé àwọn ojú-ẹsẹ̀ aṣ-Ṣaetọ̄n. Dájúdájú òun ni ọ̀tá pọ́nńbélé fún yín.",
+      "zh": "众人啊！你们可以吃大地上所有合法而且佳美的食物，你们不要随从恶魔的步伐，他确是你们的明敌。",
+      "ml": "മനുഷ്യരേ, ഭൂമിയിലുള്ളതില്‍ നിന്ന് അനുവദനീയവും, വിശിഷ്ടവുമായത് നിങ്ങള്‍ ഭക്ഷിച്ച് കൊള്ളുക. പിശാചിന്‍റെ കാലടികളെ നിങ്ങള്‍ പിന്തുടരാതിരിക്കുകയും ചെയ്യുക. അവന്‍ നിങ്ങളുടെ പ്രത്യക്ഷശത്രു തന്നെയാകുന്നു.",
+      "th": "โอ้มนุษย์เอ๋ย จงกินสิ่งที่อยู่ในแผ่นดินที่ศาสนาอนุมัติและที่ดีมีประโยชน์ และอย่าปฏิบัติตามแนวทางของชัยฏอน เพราะแท้จริงมันเป็นศัตรูที่ชัดเจนสำหรับพวกเจ้า",
+      "ko": "사람들이여! 대지에 있는 것들 중에서 허락된 좋은 것을 먹되 사탄의 발자국을 따르지 말라. 실로 그는 그대들의 분명한 적이라.",
+      "vi": "Hỡi loài người, các ngươi hãy ăn những gì được phép và tốt lành trên trái đất, và các ngươi chớ đi theo lối mòn của Shaytan bởi hắn đích thực là kẻ thù công khai của các ngươi."
     }
   },
   {
@@ -370,7 +422,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እናንተ ያመናችሁ ሆይ! ከነዚያ ከሰጠናችሁ ጣፋጮች ብሉ፡፡ ለአላህም እርሱን ብቻ የምትገዙ እንደኾናችሁ አመስግኑ፡፡",
       "om": "Yaa warra amantan! Gaggaarii waan nuti isiniif kenninee irraa nyaadhaa, Rabbiif galata galchaa yoo kan Isa (qofa) gabbartan taatan.",
       "ff": "Heey mon gomɗimɓe! Ñamee immorde he laaɓuɗi ɗi men Arsiki on, jaarnon Allah si on wonii ko kanko rewoton.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ jẹ nínú àwọn n̄ǹkan dáadáa tí A pèsè fún yín, kí ẹ sì dúpẹ́ fún Allāhu tí ó bá jẹ́ pé Òun nìkan ṣoṣo ni ẹ̀ ń jọ́sìn fún."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ jẹ nínú àwọn n̄ǹkan dáadáa tí A pèsè fún yín, kí ẹ sì dúpẹ́ fún Allāhu tí ó bá jẹ́ pé Òun nìkan ṣoṣo ni ẹ̀ ń jọ́sìn fún.",
+      "zh": "归信的人们啊！你们可以吃我所供给你们的佳美的食物，你们当感谢安拉，如果你们只崇拜他。",
+      "ta": "நம்பிக்கையாளர்களே! நாம் உங்களுக்கு வழங்கிய நல்லவற்றில் இருந்து உண்ணுங்கள்! இன்னும், அல்லாஹ்விற்கு நன்றி செலுத்துங்கள், அவனையே (நீங்கள்) வணங்குபவர்களாக இருந்தால்.",
+      "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ക്ക് നാം നല്‍കിയ വസ്തുക്കളില്‍ നിന്ന് വിശിഷ്ടമായത് ഭക്ഷിച്ചു കൊള്ളുക. അല്ലാഹുവോട് നിങ്ങള്‍ നന്ദികാണിക്കുകയും ചെയ്യുക; അവനെ മാത്രമാണ് നിങ്ങള്‍ ആരാധിക്കുന്നതെങ്കില്‍.",
+      "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงบริโภคสิ่งดี ๆ (ฮาลาล) ที่เราได้จัดเป็นปัจจัยยังชีพแก่พวกเจ้า และจงขอบคุณอัลลอฮ์เถิด หากพวกเจ้าเพียงแต่อัลลอฮ์เท่านั้นที่พวกเจ้าเคารพสักการะโดยแท้จริง",
+      "ko": "믿는 자들이여! 그대들이 하나님만을 경배하는 자들이라면 내가 그대들에게 베푼 좋은 양식을 먹고 그분께 감사하라.",
+      "vi": "Hỡi những người có đức tin, các ngươi hãy ăn những thực phẩm tốt sạch mà TA đã ban bố cho các ngươi; và các ngươi hãy tri ân Allah nếu các ngươi chỉ thờ phượng riêng Ngài."
     }
   },
   {
@@ -404,7 +462,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isin yaa warra amantan! Islaamummaa keessa guutuu guutuutti seenaa; tarkaanfilee shayxaanaa hin hordofinaa. Dhugumatti, inni (shayxaanni) isiniif diina ifa bahaadha.",
       "so": "Kuwa (Xaqa) rumeeyoow! U soo gala Islaamka si dhan waaxid iyo wadarba, hana raacina tallaabooyinka Shaydaanka. Hubaal, wuxuu idiin yahay cadow cad.",
       "ff": "Heey mon gomɗimɓe, naatee he kisal  denndanngal, wata on jokku juri (taaɓe) seytaane ɗin (ɗee). On ko gaño mooɗon ɓaŋnguɗo.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ kó s’ínú ẹ̀sìn ’Islām pátápátá. Ẹ̀yin kò sì gbọdọ̀ tẹ̀lé ojú-ẹsẹ̀ aṣ-Ṣaetọ̄n. Dájúdájú òun ni ọ̀tá pọ́nńbélé fún yín."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ kó s’ínú ẹ̀sìn ’Islām pátápátá. Ẹ̀yin kò sì gbọdọ̀ tẹ̀lé ojú-ẹsẹ̀ aṣ-Ṣaetọ̄n. Dájúdájú òun ni ọ̀tá pọ́nńbélé fún yín.",
+      "zh": "归信的人们啊！你们当全体入在和平教中，你们不要跟随恶魔的步伐，他确是你们的明敌。",
+      "ta": "நம்பிக்கையாளர்களே! நீங்கள் இஸ்லாமில் முழுமையாக நுழையுங்கள். இன்னும், ஷைத்தானின் அடிச்சுவடுகளை (-அவன் உங்களை அழைக்கும் அவனது பாதைகளை)ப் பின்பற்றாதீர்கள். நிச்சயமாக அவன் உங்களுக்கு தெளிவான எதிரியாவான்.",
+      "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงเข้าสู่อิสลามโดยสมบูรณ์เถิด และจงอย่าประพฤติตามรอยของชัยฏอน แท้จริงมันคือศัตรูที่เด่นชัดของพวกเจ้า",
+      "ko": "믿는 자들이여! 이슬람 안으로 완전히 들어가라. 그리고 사탄의 발자국을 따르지 말라. 실로 그는 그대들의 분명한 적이라.",
+      "vi": "Hỡi những người có đức tin, các ngươi hãy gia nhập hoàn toàn vào Islam và chớ đừng theo những vết chân của Shaytan, bởi quả thật hắn là kẻ thù công khai của các ngươi."
     }
   },
   {
@@ -439,7 +502,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Jecha gaariifi dhiifamatu sadaqaa rakkisuun isa hordofu irra caala. Rabbiin dureessa, obsaadha.",
       "so": "Hadal san iyo saamaxaad baa ka roon sadaqo ay raacdo waxyeello. Alle waa Deeqtoone, Dulqaad Badan.",
       "ff": "Konngol lobbol ɓuri moƴƴude e sadaka dewnateeɗo lorla, Alla ko galo yondaniiɗo muñoowo.",
-      "yo": "Ọ̀rọ̀ rere àti àforíjìn lóore ju sàráà tí ìpalára tẹ̀lé. Allāhu sì ni Ọlọ́rọ̀, Aláfaradà."
+      "yo": "Ọ̀rọ̀ rere àti àforíjìn lóore ju sàráà tí ìpalára tẹ̀lé. Allāhu sì ni Ọlọ́rọ̀, Aláfaradà.",
+      "zh": "与其在施舍之后，损害受施的人，不如一句善言和谅解，并赦宥他的烦扰。安拉是自足的，是至容的。",
+      "ml": "കൊടുത്തതിനെത്തുടര്‍ന്ന് ശല്യമുണ്ടാക്കുന്ന ദാനധര്‍മ്മത്തെക്കാള്‍ ഉത്തമമായിട്ടുള്ളത് നല്ല വാക്കും വിട്ടുവീഴ്ചയുമാകുന്നു. അല്ലാഹു പരാശ്രയം ആവശ്യമില്ലാത്തവനും സഹനശീലനുമാകുന്നു.",
+      "th": "คำพูดที่ดี และการให้อภัยนั้น ย่อมดีกว่าการบริจาคทานที่ตามด้วยการก่อความเดือดร้อน และอัลลอฮ์นั้นเป็นผู้ทรงมั่งมี ผู้ทรงขันติเสมอ",
+      "ko": "친절한 말과 용서는 해 끼침이 뒤따르는 자선보다 더 좋으니라. 하나님께서는 스스로 풍족하신 분이며 가장 관대히 용인하시는 분이라.",
+      "vi": "Lời nói tử tế và lòng bao dung tốt hơn việc bố thí có kèm theo (lời lẽ hay hành động) làm tổn thương (danh dự của người được bố thí và trợ giúp). Quả thật, Allah là Đấng Giàu Có, Chịu Đựng."
     }
   },
   {
@@ -468,7 +536,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ሰይጣን (እንዳትለግሱ) ድኽነትን ያስፈራራችኋል፡፡ በመጥፎም ያዛችኋል፡፡ አላህ ከርሱ የኾነን ምሕረትና ችሮታን ይቀጥራችኋል፡፡ አላህም ችሮታው ሰፊ ዐዋቂ ነው፡፡",
       "om": "Shayxaanni hiyyummaan isin sodaachisa, hamtutti isin ajaja, Rabbiin araaramaafi tola Isa biraa ta’e waadaa isiniif seena. Rabbiin (kenni isaa) bal’aa, beekaadha.",
       "ff": "Seytaane na fodana on baasal o yamira on pankare, Alla noon na fodana on yaafuya ummaade e makko e ɓural Alla ko jaajɗo ko o ganndo.",
-      "yo": "Aṣ-Ṣaetọ̄n ń fi òṣì dẹ́rù bà yín, ó sì ń pa yín ní àṣẹ ìbàjẹ́ ṣíṣe. Allāhu sì ń ṣe àdéhùn àforíjìn àti oore àjùlọ láti ọ̀dọ̀ Rẹ̀ fún yín. Allāhu ní Oníbúọlá, Onímọ̀."
+      "yo": "Aṣ-Ṣaetọ̄n ń fi òṣì dẹ́rù bà yín, ó sì ń pa yín ní àṣẹ ìbàjẹ́ ṣíṣe. Allāhu sì ń ṣe àdéhùn àforíjìn àti oore àjùlọ láti ọ̀dọ̀ Rẹ̀ fún yín. Allāhu ní Oníbúọlá, Onímọ̀.",
+      "zh": "恶魔以贫乏恐吓你们，以丑事命令你们；安拉却应许你们发自他的赦宥和恩惠。安拉是宽大的，是全知的。",
+      "ko": "사탄은 그대들에게 가난을 다짐하고 그대들에게 추악한 행위를 명령하노라. 그러나 하나님께서는 그대들에게 그분의 용서와 은혜를 다짐하시노라. 하나님께서는 (은혜가) 드넓으신 분이며 알고 계시는 분이라."
     }
   },
   {
@@ -497,7 +567,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እነዚያ ያመኑ፡፡ መልካም ሥራዎችንም የሠሩ፡፡ ሶላትንም ያስተካከሉ፡፡ ዘካንም የሰጡ ለነርሱ በጌታቸው ዘንድ ምንዳቸው አላቸው፡፡ በእነርሱም ላይ ፍርሃት የለባቸውም እነርሱም አያዝኑም፡፡",
       "so": "Hubaal kuwa (Xaqa) rumeeyey oo samaha fala oo ooga salaadda oo bixiya Zakada, waxay ka heli abaalgudkooda Rabbigood agti. Cabsi ma ahaaneyso korkooda, mana murugoonayaan.",
       "ff": "ɓeen goongɗinɓe ngolli ko moƴƴi ɓe darni juulde ɓe tottiri askal woodaniiɓe njobdi mumen ummaade ko joomi mumen kulol alanaaɓe ɓe ngonaa sunatooɓe.",
-      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n ṣe àwọn iṣẹ́ rere, tí wọ́n kírun, tí wọ́n sì yọ Zakāh, ẹ̀san wọn ń bẹ fún wọn ní ọ̀dọ̀ Olúwa wọn. Kò sí ìpáyà fún wọn. Wọn kò sì níí banújẹ́."
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n ṣe àwọn iṣẹ́ rere, tí wọ́n kírun, tí wọ́n sì yọ Zakāh, ẹ̀san wọn ń bẹ fún wọn ní ọ̀dọ̀ Olúwa wọn. Kò sí ìpáyà fún wọn. Wọn kò sì níí banújẹ́.",
+      "zh": "的确那些归信而且行善，并谨守拜功，完纳天课的人，将在他们的养主那里享受报酬，他们将来没有恐惧，他们也不会忧愁。",
+      "th": "แท้จริงบรรดาผู้ที่ศรัทธา และกระทำความดี ดำรงไว้ซึ่งการละหมาด และจ่ายซะกาต พวกเขาจะได้รับการตอบแทน ณ ที่พระผู้อภิบาลของพวกเขา และไม่มีความกลัวใด ๆ สำหรับพวกเขา และพวกเขาก็จะไม่เสียใจ",
+      "ko": "실로 (하나님과 사도를) 믿고 선행을 실천하며 성실히 예배를 드리고 의무 희사금(자카)을 내는 자들, 그들에게는 그들 주님으로부터 그들의 보상이 있을 것이며 그들에게 두려움이란 없을 것이며 그들은 슬퍼하지도 않을 것이라.",
+      "vi": "Quả thật, những người có đức tin và hành thiện, chu đáo duy trì lễ nguyện Salah và xuất Zakah thì họ sẽ nhận được ân phước của họ ở nơi Thượng Đế của họ, họ sẽ không lo sợ cũng sẽ không buồn phiền."
     }
   },
   {
@@ -535,7 +609,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin dhugumatti homtuu isa jalaa hindhokatu, dachii keessattiifii samii keessattis.",
       "so": "Hubaal, Alle waxba kama qarsoona ku sugan arlada ama samada.",
       "ff": "Pellet, Alla, huunde suuɗotaako mo ka leydi wanaa ka kammu.",
-      "yo": "Dájúdájú Allāhu, kò sí kiní kan tó pamọ́ fún Un nínú ilẹ̀ àti nínú sánmọ̀."
+      "yo": "Dájúdájú Allāhu, kò sí kiní kan tó pamọ́ fún Un nínú ilẹ̀ àti nínú sánmọ̀.",
+      "zh": "的确安拉是天地间任何物都不能瞒过他的。",
+      "ta": "நிச்சயமாக அல்லாஹ் - அவனைவிட்டு எந்த ஒரு பொருளும் மறைந்துவிட முடியாது. அது பூமியில் இருந்தாலும் சரி, வானத்திலிருந்தாலும் சரி.",
+      "ml": "ഭൂമിയിലോ ആകാശത്തോ ഉള്ള യാതൊരു കാര്യവും അല്ലാഹുവിന്ന് അവ്യക്തമായിപ്പോകുകയില്ല; തീര്‍ച്ച.",
+      "th": "แท้จริงสำหรับอัลลอฮ์นั้น ไม่มีสิ่งใดที่จะซ่อนเร้นจากพระองค์ได้ ทั้งในแผ่นดิน และในชั้นฟ้า",
+      "ko": "실로 하나님께는 대지나 하늘의 그 무엇도 숨겨지지 않노라.",
+      "vi": "Quả thật không có bất cứ thứ gì ở trên trái đất cũng như ở trên trời có thể ẩn khuất khỏi Allah."
     }
   },
   {
@@ -573,7 +653,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Isa gadaamessaawwan keessatti akka fedhetti isintolchu.Haqaan gabbaramaan isa malee hin jiru. [Inni] injifataa, ogeessa.",
       "so": "Waa Kan idiinku sawira (qaab siiya) ilma galeennada siduu doono. Ma jiro ilaah (xaq lagu caabudo) aan Isaga ahayn, waa Adkaadaha, Xakiimka ah.",
       "ff": "Ko kaŋko woni mba'dinoowo on ka renngaaji  no o muuyiri. Reweteeɗo woo alaa si wanaa kaŋko, fooluɗo, ñeeñuɗo.",
-      "yo": "Òun ni Ẹni tí Ó ń yàwòrán yín sínú àpòlùkẹ́ bí Ó ṣe fẹ́. Kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun, Alágbára Ọlọ́gbọ́n."
+      "yo": "Òun ni Ẹni tí Ó ń yàwòrán yín sínú àpòlùkẹ́ bí Ó ṣe fẹ́. Kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun, Alágbára Ọlọ́gbọ́n.",
+      "zh": "你们在子宫里的时候，他随意地以形状赋予你们。除他外绝无应受崇拜的。是万能的，是至睿的。",
+      "ta": "அவன் கர்ப்பப்பைகளில் தான் நாடியவாறு உங்களை உருவமைக்கிறான்; மிகைத்தவனும் மகா ஞானவானுமாகிய அவனைத் தவிர (உண்மையில் வணங்கத்தகுதியான) இறைவன் அறவே இல்லை.",
+      "ml": "ഗര്‍ഭാശയങ്ങളില്‍ താന്‍ ഉദ്ദേശിക്കുന്ന വിധത്തില്‍ നിങ്ങളെ രൂപപ്പെടുത്തുന്നത് അവനത്രെ. അവനല്ലാതെ ആരാധനക്കർഹനായി ആരുമില്ല. അവന്‍ പ്രതാപിയും യുക്തിമാനുമത്രെ.",
+      "th": "พระองค์คือผู้ทรงทำให้พวกเจ้าเป็นรูปร่างในครรภ์ (มารดาของพวกเจ้า) ตามที่พระองค์ทรงประสงค์ ไม่มีพระเจ้าอื่นใดที่สมควรได้รับการเคารพสักการะนอกจากพระองค์เท่านั้น ผู้ทรงเดชานุภาพ ผู้ทรงปรีชาญาณยิ่ง",
+      "ko": "원하시는 방식으로 자궁 속의 그대들을 형상화하시는 분이 그분이시니, 가장 존엄하시고 가장 현명하신 그분 이외에는 경배받을 존재가 없노라.",
+      "vi": "Ngài là Đấng đã tạo hình hài cho các ngươi trong các dạ con (của các bà mẹ) như thế nào tùy theo ý muốn của Ngài. Không có Thượng Đế (đích thực) nào khác ngoài Ngài, Đấng Toàn Năng, Đấng Sáng Suốt."
     }
   },
   {
@@ -605,7 +691,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sw": "Hakika, Nyumba ya kwanza waliyowekewa watu kwa ibada ni ile iliyo Bakka, iliyobarikiwa na yenye uongofu kwa walimwengu.",
       "am": "ለሰዎች (የአላህ ማምለኪያ) መጀመሪያ የተኖረው ቤት ብሩክና ለዓለማት ሁሉ መመሪያ ሲኾን ያ በበካህ (በመካ) ያለው ነው፡፡",
       "om": "Dhugumatti manni jalqaba ilma namaatiif kaayame isa Bakkaan (Makkaan) jiruudha. haala barakeeffamaafi qajeelfama aalama hundaaf ta’een.",
-      "ff": "Pellet, aranndu e Suudu waɗanaandu yimɓe ɓen, ko ndun wondu Bakkata; barkinaandu e peewal wonan de Winndere nden."
+      "ff": "Pellet, aranndu e Suudu waɗanaandu yimɓe ɓen, ko ndun wondu Bakkata; barkinaandu e peewal wonan de Winndere nden.",
+      "zh": "为世人而创设的最古的清真寺，确是在麦加的那所吉祥的〔天房〕，世人的向导。",
+      "ta": "நிச்சயமாக மக்களுக்கு அமைக்கப்பட்ட முதல் இல்லம், (மக்கா என்றழைக்கப்படும்) ‘பக்கா’வில் உள்ளதாகும். அது பாக்கியமிக்கதும் (அதிகமான நன்மைகளை உடையதும்) அகிலத்தார்களுக்கு நேர்வழிகாட்டியாகவும் இருக்கிறது.",
+      "th": "แท้จริงแล้ว บ้านหลังแรกที่ถูกตั้งขึ้นสำหรับมนุษย์ (เพื่อการอิบาดะฮ์) นั้น แน่นอนคือบ้านที่มักกะฮ์อันจำเริญ และเป็นทางนำแก่ผู้คนทั้งหลาย",
+      "ko": "진실로 인류를 위해 놓여진 최초의 집은 메카(박카)에 있는 것으로서 축복이 가득하며 모든 이들을 위한 진리의 길잡이라.",
+      "vi": "Quả thật, ngôi đền đầu tiên được xây dựng cho nhân loại (để thờ phượng Allah) là Ngôi Đền tại Bakkah (Makkah) hồng phúc và là sự chỉ đạo cho toàn vũ trụ và vạn vật."
     }
   },
   {
@@ -643,7 +734,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Dhugaa sodaa isaa Rabbiin sodaadhaa; Muslimoota taatan malee hin du’inaa.",
       "so": "Kuwa (Xaqa) rumeeyow! Ka cabsada Alle ka cabsashada xaqa ah uu mudan yahay (oo u dhowra si dhan Amarradiisa), hana dhimannina idinkoo aan aheyn Muslimiin (kuwo u hoggaansan Alle).",
       "ff": "Hey mon gomɗimɓe, kuliree Alla no O Haaniri hulireede, wata on maayu dey, si wanaa hara ko on jebbiliiɓe.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu bí ó ṣe tọ́ láti bẹ̀rù Rẹ̀. Ẹ̀yin kò sì gbọdọ̀ kú àyàfi kí ẹ wà ní ipò mùsùlùmí."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu bí ó ṣe tọ́ láti bẹ̀rù Rẹ̀. Ẹ̀yin kò sì gbọdọ̀ kú àyàfi kí ẹ wà ní ipò mùsùlùmí.",
+      "zh": "归信的人们啊！你们当真实地敬畏安拉，你们绝不能去死，除非你们成为穆斯林。",
+      "ta": "நம்பிக்கையாளர்களே! அல்லாஹ்வை - அவனை அஞ்சவேண்டிய உண்மையான முறையில் - அஞ்சுங்கள். இன்னும், நீங்கள் முஸ்லிம்களாக இருந்தே தவிர இறந்து விடாதீர்கள்.",
+      "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ അല്ലാഹുവെ സൂക്ഷിക്കേണ്ട മുറപ്രകാരം സൂക്ഷിക്കുക. നിങ്ങള്‍ മുസ്ലിംകളായിക്കൊണ്ടല്ലാതെ മരിക്കാനിടയാകരുത്‌.",
+      "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงยำเกรงต่ออัลลอฮ์ด้วยการยำเกรงต่อพระองค์อย่างแท้จริงเถิด และพวกเจ้าจงอย่าได้ตายเว้นแต่ในฐานะมุสลิมเท่านั้น",
+      "ko": "믿는 자들이여! 그대들은 진정으로 하나님을 경외하라. 그리고 반드시 무슬림으로서 죽음을 맞이하라.",
+      "vi": "Hỡi những người có đức tin, các ngươi hãy kính sợ Allah bằng lòng kính sợ thực sự; và các ngươi hãy đừng chết ngoại trừ các ngươi đã là những người Muslim (thần phục Allah)."
     }
   },
   {
@@ -681,7 +778,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wantoonni samiifi wantoonni dachii keessa jiran (hundi) kan Rabbiiti. Wantoonni hunduu gara Rabbiitti deebifamu.",
       "so": "Alle baana leh waxa ku sugan samooyinka iyo waxa ku sugan arlada. xagga Allayna umuurahoo dhan u noqdaan.",
       "ff": "Ko Alla Woodani kala ko woni deer kammuuji e leydi, ko faade ka Alla woni ruttorde fiyakuuji ɗin.",
-      "yo": "Ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ohunkóhun tó wà nínú ilẹ̀. Ọ̀dọ̀ Allāhu sì ni wọ́n máa ṣẹ́rí àwọn ọ̀rọ̀ ẹ̀dá padà sí."
+      "yo": "Ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ohunkóhun tó wà nínú ilẹ̀. Ọ̀dọ̀ Allāhu sì ni wọ́n máa ṣẹ́rí àwọn ọ̀rọ̀ ẹ̀dá padà sí.",
+      "zh": "天地万物都是安拉的，万事只归安拉。",
+      "ta": "இன்னும், வானங்களிலுள்ளவையும் பூமியிலுள்ளவையும் அல்லாஹ்விற்கே உரியன! இன்னும், அல்லாஹ்வின் பக்கமே காரியங்கள் அனைத்தும் திருப்பப்படும்.",
+      "ml": "അല്ലാഹുവിന്‍റെതാകുന്നു ആകാശങ്ങളിലുള്ളതും ഭൂമിയിലുള്ളതും. അല്ലാഹുവിങ്കലേക്കാകുന്നു കാര്യങ്ങള്‍ മടക്കപ്പെടുന്നത്‌.",
+      "th": "และทุกสิ่งที่อยู่ในชั้นฟ้าทั้งหลายและทุกสิ่งที่อยู่ในแผ่นดินเป็นกรรมสิทธิ์ของอัลลอฮ์ และยังอัลลอฮ์เท่านั้นที่กิจการทั้งหลายจะกลับไป",
+      "ko": "하늘에 있는 것과 대지에 있는 것이 하나님의 소유라. 모든 일은 하나님께로 돌아가게 될 것이라.",
+      "vi": "Vạn vật trong các tầng trời và vạn vật trong trái đất đều thuộc về Allah; và tất cả mọi sự việc đều sẽ được đưa về trình Allah."
     }
   },
   {
@@ -719,7 +822,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Kun namootaaf ibsa; qajeelfamaafi warra (Rabbiin) sodaataniif gorsa.",
       "so": "Kanu (Qur’aanku) waa hadal u cad dadka, waana u hanuun iyo waano kuwa Alle ka cabsada (ee iska jira xumaha).",
       "ff": "Ɗum ɗoo, ko Ɓanngannduyee wonannde yimɓe ɓen, e peewal e waaju wonannde gooŋɗuɓe ɓen.",
-      "yo": "Èyí ni àlàyé fún àwọn ènìyàn. Ìmọ̀nà àti wáàsí sì ni fún àwọn olùbẹ̀rù (Allāhu)."
+      "yo": "Èyí ni àlàyé fún àwọn ènìyàn. Ìmọ̀nà àti wáàsí sì ni fún àwọn olùbẹ̀rù (Allāhu).",
+      "zh": "这是对于世人的一种宣示，也是对于敬畏者的一种向导和教训。",
+      "ta": "(குர்ஆனாகிய) இது (உலக) மக்கள் அனைவருக்கும் ஒரு தெளிவுரையும் நேர்வழிகாட்டியுமாகும். இன்னும், (குறிப்பாக) அல்லாஹ்வை அஞ்சுபவர்களுக்கு (இது) (பலனளிக்கும்) நல்லுபதேசம் ஆகும்.",
+      "ml": "ഇത് മനുഷ്യര്‍ക്കായുള്ള ഒരു വിളംബരവും, ധര്‍മ്മനിഷ്ഠപാലിക്കുന്നവര്‍ക്ക് മാര്‍ഗദര്‍ശനവും, സാരോപദേശവുമാകുന്നു.",
+      "th": "นี่ (อัลกุรอาน) เป็นข้อชี้แจงแก่มนุษย์ทั้งหลาย เป็นทางนำ และเป็นข้อตักเตือนสำหรับผู้ยำเกรงทั้งหลาย",
+      "ko": "이것은 인간을 위한 명백한 진술이며 하나님을 경외하는 자들을 위한 인도이자 교훈이라.",
+      "vi": "(Qur’an) này đây là một sự trình bày rõ ràng cho nhân loại, Nó đồng thời là nguồn chỉ đạo và là lời răn dạy dành cho những người ngoan đạo."
     }
   },
   {
@@ -752,7 +861,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yoo Rabbiin isin gargaare, injifataan isiniif hin jiru. Yoo Inni isin xiqqeesse immoo, inni booda isaatii isin gargaaru sun eenyu? Mu’uminoonni Rabbuma irratti haa hirkatanu.",
       "so": "Hadduu Alle idiin gargaari, markaa ma jiraan wax idinka adkaan kara; hadduu idinka goostona, waa kuma kan idiin gargaari Isaga ka dambow? Alle uun ha isku halleeyeen mu’miniintu oo ha tala saarteen.",
       "ff": "Si Alla Wallii on pooloowo on alaa., si O Hoynii on ko hommbo wallata on ɓaawo Makko? Ko e Alla woni ko goŋɗimɓe ɓen haani fawaade.",
-      "yo": "Tí Allāhu bá ṣe àrànṣe fún yín, kò sí ẹni tí ó máa borí yín. Tí Ó bá sì yẹpẹrẹ yín, ta sì ni ẹni tí ó máa ṣe àrànṣe fún yín lẹ́yìn Rẹ̀? Allāhu ni kí àwọn onígbàgbọ́ òdodo gbáralé."
+      "yo": "Tí Allāhu bá ṣe àrànṣe fún yín, kò sí ẹni tí ó máa borí yín. Tí Ó bá sì yẹpẹrẹ yín, ta sì ni ẹni tí ó máa ṣe àrànṣe fún yín lẹ́yìn Rẹ̀? Allāhu ni kí àwọn onígbàgbọ́ òdodo gbáralé.",
+      "zh": "如果安拉援助你们，那么，绝没有人能战胜你们。如果他弃绝你们，那么，在他〔弃绝你们〕之后，谁能援助你们呢？叫信士们只信托安拉！",
+      "th": "หากอัลลอฮ์ทรงช่วยเหลือพวกเจ้า ก็ไม่มีผู้ใดชนะพวกเจ้าได้ และหากพระองค์ทรงทอดทิ้งพวกเจ้า ดังนั้น ผู้ใดเล่าจะช่วยเหลือพวกเจ้าได้อีก หลังจากพระองค์? และต่ออัลลอฮ์เท่านั้น บรรดาผู้ศรัทธาก็จงมอบหมายเถิด",
+      "ko": "하나님께서 그대들을 도와주신다면 그대들을 제압할 자 아무도 없노라. 그러나 그분께서 그대들을 버려두신다면 그분 이외에 그대들을 도와줄 자 누구인가. 믿는 자들은 오직 하나님께만 의탁하도록 하라."
     }
   },
   {
@@ -787,7 +899,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin (waan eeyyamamaafi dhorgamaa ta’an) isiniif ibsuu barbaada, karaalee warra isin dura turanii isin qajeelchuufi tawbaa keessan qeebaluu (barbaada). Rabbiin beekaa, ogeessasi.",
       "so": "Alle Wuxuu rabaa inuu idiin caddeeyo oo idinku hanuuniyo jidadka kuwii idin ka horreeyay, oo uu idinka tawbad aqbalo. Alle waa wax walba Ogsoone, Xakiim ah.",
       "ff": "Allaahu O o faala Ɓann laɓɓinanade on O Feewna  on e laabi ɓeya adinooɓe on, O Jaɓana on tuubuubuyee. Alla ko gannduɗo, Ñeeñɗo.",
-      "yo": "Allāhu fẹ́ ṣàlàyé (òfin) fún yín, Ó fẹ́ tọ yín sí ọ̀nà àwọn tó ṣíwájú yín, Ó sì fẹ́ gba ìronúpìwàdà yín. Allāhu sì ni Onímọ̀, Ọlọ́gbọ́n."
+      "yo": "Allāhu fẹ́ ṣàlàyé (òfin) fún yín, Ó fẹ́ tọ yín sí ọ̀nà àwọn tó ṣíwájú yín, Ó sì fẹ́ gba ìronúpìwàdà yín. Allāhu sì ni Onímọ̀, Ọlọ́gbọ́n.",
+      "zh": "安拉欲为你们阐明礼义，并指示你们先民的法程，且赦宥你们。安拉是全知的，是至睿的。",
+      "th": "อัลลอฮ์ทรงปรารถนาที่จะแจกแจง (บทบัญญัติของพระองค์) แก่พวกเจ้า และชี้นำพวกเจ้าสู่วิถีทางของบรรดาผู้ที่มาก่อนพวกเจ้า และจะทรงอภัยโทษให้แก่พวกเจ้า และอัลลอฮ์ทรงเป็นผู้ทรงรอบรู้ ผู้ทรงมีปรีชาญาณ",
+      "ko": "하나님께서 원하시니 그대들을 위해 분명히 설명하시고 그대들 이전에 있었던 자들의 전통으로 그대들을 인도하시며 그대들의 뉘우침을 받아 주시노라. 하나님께서는 지식을 가지신 지혜로운 분이시라."
     }
   },
   {
@@ -822,7 +937,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin tawbaa keessan qeebaluu fedha. Warri fedha lubbuu isaanii hordofan immoo isin jallina guddaa jallachuu fedhu.",
       "so": "Alle Wuxuu rabaa inuu idinka tawbad aqbalo, kuwase raaca shahwadooda, waxay rabaan inaad weecataan weecasho weyn.",
       "ff": "Alla no Faala de O Jaɓanta on tuubuubuyee, ɓeen jokkuɓe beleeɗe faalaa de ooñorton ooñannde mawnde.",
-      "yo": "Àti pé Allāhu fẹ́ gba ìronúpìwàdà yín. Àwọn tó sì ń tẹ̀lé ìfẹ́-adùn ara sì ń fẹ́ kí ẹ yẹ̀ kúrò (nínú ẹ̀sìn) ní yíyẹ̀ tó tóbi pátápátá."
+      "yo": "Àti pé Allāhu fẹ́ gba ìronúpìwàdà yín. Àwọn tó sì ń tẹ̀lé ìfẹ́-adùn ara sì ń fẹ́ kí ẹ yẹ̀ kúrò (nínú ẹ̀sìn) ní yíyẹ̀ tó tóbi pátápátá.",
+      "zh": "安拉欲赦宥你们，而顺从私欲者，却欲你们违背真理。",
+      "ml": "അല്ലാഹു നിങ്ങളുടെ പശ്ചാത്താപം സ്വീകരിക്കാന്‍ ഉദ്ദേശിക്കുന്നു. എന്നാല്‍ തന്നിഷ്ടങ്ങളെ പിന്‍പറ്റി ജീവിക്കുന്നവര്‍ ഉദ്ദേശിക്കുന്നത് നിങ്ങള്‍ (നേര്‍വഴിയില്‍ നിന്ന്‌) വന്‍തോതില്‍ തെറ്റിപ്പോകണമെന്നാണ്‌",
+      "th": "และอัลลอฮ์ทรงปรารถนา (ชำระพวกเจ้าให้สะอาดจากบาปด้วยการ) ยอมรับการกลับตัวกลับใจของพวกเจ้า ในขณะที่คน (ชั่ว) ที่ฝักใฝ่ในตัณหาต้องการทำให้พวกเจ้าหันเหออกไป (จากความจริง) ให้ไกลที่สุด",
+      "ko": "하나님께서는 그대들의 뉘우침을 받아 주길 원하시나, 욕망을 좇는 자들은 그대들이 심히 엇나가길 원하노라.",
+      "vi": "Allah thực sự muốn tha thứ cho các ngươi nhưng những kẻ theo đuổi dục vọng thì muốn kéo các ngươi sa ngã quá mức."
     }
   },
   {
@@ -859,7 +979,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yoo badii gugurdoo irraa dhoowwamtantanirraa fagaattan, badiilee (xixiqqaa) keessan isin irraa haqna, seensa kabajaa isin seensifna.",
       "so": "Haddaad ka fogaataan denbiyada waaweyn ee la idinka reebay, waxaan idin dhaafi denbiyadiinna (yar yar), waxaana idin gelin meel gelitaan sharaf leh (Janno).",
       "ff": "Si on woɗɗitike [bakkaatu] mawɗi ɗi haɗaɗon ɗin e mun, Mein poppanat on bonɗi mon ɗin, Min Naatnira on e  naatirgal teddungal.",
-      "yo": "Tí ẹ bá jìnnà sí àwọn ẹ̀ṣẹ̀ ńlá ńlá tí A kọ̀ fún yín, A máa pa àwọn ìwà àìdáa yín rẹ́ fún yín, A sì máa mu yín wọ àyè alápọ̀n-ọ́nlé."
+      "yo": "Tí ẹ bá jìnnà sí àwọn ẹ̀ṣẹ̀ ńlá ńlá tí A kọ̀ fún yín, A máa pa àwọn ìwà àìdáa yín rẹ́ fún yín, A sì máa mu yín wọ àyè alápọ̀n-ọ́nlé.",
+      "zh": "如果你们远离你们所受禁的一切大罪，我就赦宥你们的一切罪过，并使你们得入一个尊贵的境地。",
+      "ta": "உங்களுக்கு தடுக்கப்பட்ட பாவங்களில் பெரும்பாவங்களை விட்டு நீங்கள் விலகினால், உங்களை விட்டும் உங்கள் சிறு பாவங்களை நாம் போக்கிவிடுவோம். இன்னும், உங்களை கண்ணியமான இடத்தில் பிரவேசிக்க வைப்போம்.",
+      "th": "หากพวกเจ้าออกห่างจากบรรดาบาปใหญ่ที่พวกเจ้าถูกห้ามไว้ไม่ให้กระทำแล้ว เราจะลบล้างเหล่าความผิดของพวกเจ้าอย่างแน่นอน (บรรดาบาปเล็กๆ ของพวกเจ้า) และเราจะยอมรับพวกเจ้าสู่สถานที่อันมีเกียรติยิ่ง (สวรรค์)",
+      "ko": "만약 그대들이 그대들에게 금지된 커다란 죄를 피한다면 그분께서는 그대들의 악행을 용서해 주실 것이며 그대들을 실로 명예로운 장소(천국)로 들게 하실 것이라.",
+      "vi": "Nếu các ngươi tránh được những đại tội đã nghiêm cấm thì TA sẽ xí xóa cho các ngươi những tội lỗi khác và sẽ thu nhận các ngươi vào một nơi cư ngụ vô cùng vinh dự (Thiên Đàng)."
     }
   },
   {
@@ -895,7 +1020,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti Rabbiin hanga madaala atomii tokkoo hin miidhu, Yoo isheen dalagaa gaarii taate dachaa ishee taasisa; mindaa guddaa Isa biraa ta’es (dabalaan) ni kenna.",
       "so": "Hubaal, Alle ma dulmiyo 'dadka' wax saxar le’egba ha ahaatee, hadday wanaag falaanna, wuu labo laabaa, wuxuuna ka bixiyaa Xaggiisa Ajar Weyn.",
       "ff": "Pellet, Alla Tooñataa hay fotde gabbel- jarra si wonii ko moƴƴere, O Soway nde, O Okka immorde ka Mokko njoɓdi mawndi.",
-      "yo": "Dájúdájú Allāhu kò níí ṣàbòsí òdíwọ̀n ọmọ iná-igún. Tí ó bá jẹ iṣẹ́ rere, Ó máa ṣàdìpèlé (ẹ̀san) rẹ̀. Ó sì máa fún (olùṣe rere) ní ẹ̀san ńlá láti ọ̀dọ̀ Rẹ̀."
+      "yo": "Dájúdájú Allāhu kò níí ṣàbòsí òdíwọ̀n ọmọ iná-igún. Tí ó bá jẹ iṣẹ́ rere, Ó máa ṣàdìpèlé (ẹ̀san) rẹ̀. Ó sì máa fún (olùṣe rere) ní ẹ̀san ńlá láti ọ̀dọ̀ Rẹ̀.",
+      "zh": "安拉必不亏枉人一丝毫。如果人有一丝毫善功，他要加倍地酬劳他，并且以他那里的重大的报酬赏赐他。",
+      "ta": "நிச்சயமாக அல்லாஹ் (எவருக்கும்) ஓர் அணுவளவும் அநியாயம் செய்ய மாட்டான். இன்னும், (அவர்கள் செய்தது) நன்மையாக இருந்தால் அதை பன்மடங்காக்குவான். இன்னும், தன்னிடமிருந்து மகத்தான கூலியையும் கொடுப்பான்.",
+      "ml": "തീര്‍ച്ചയായും അല്ലാഹു ഒരു അണുവോളം അനീതി കാണിക്കുകയില്ല. വല്ല നന്‍മയുമാണുള്ളതെങ്കില്‍ അതവന്‍ ഇരട്ടിച്ച് കൊടുക്കുകയും, അവന്‍റെ പക്കല്‍ നിന്നുള്ള വമ്പിച്ച പ്രതിഫലം നല്‍കുകയും ചെയ്യുന്നതാണ്‌.",
+      "ko": "실로 하나님께서는 티끌의 무게라도 부당히 다루지 않으시노라. 만약 그것이 선행이라면 그분께서는 그것을 불려주실 것이며 그분으로부터 비롯된 위대한 보상을 주실 것이라."
     }
   },
   {
@@ -927,7 +1056,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin dhugaan gabbaramaan isa malee hin jiru. Dhugumatti, Guyyaa Qiyaamaa keessa walitti isin qaba; isa keessa mamiin hin jiru. Eenyutu Rabbiin caalaa haasa’a dhugaa dubbata?",
       "so": "Allaah! Ma jiro Ilaah (xaq lagu caabudo) aan Isaga ahayn. Wuxuu idiin soo kulmin Maalinta Qiyaamaha, shaki kuma jiro. Yaa ka run sheeg badan Alle oo hadla.",
       "ff": "Alla, deweteeɗo alaa si wonaa Kaŋko, ma o Mooɓi on ñande Darngal, sikke alaa e mayre. Alaa  ɓurɗo gooŋuɗude Alla yeewtere ?",
-      "yo": "Allāhu, kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Dájúdájú Ó máa ko yín jọ ní Ọjọ́ Àjíǹde, kò sí iyèméjì nínú rẹ̀. Ta ló sọ̀dodo ọ̀rọ̀ ju Allāhu?"
+      "yo": "Allāhu, kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Dájúdájú Ó máa ko yín jọ ní Ọjọ́ Àjíǹde, kò sí iyèméjì nínú rẹ̀. Ta ló sọ̀dodo ọ̀rọ̀ ju Allāhu?",
+      "zh": "安拉——除他外，绝无应受崇拜的——在毫无疑义的复活日必集合你们。言词方面，谁比安拉更诚实呢？",
+      "ta": "அல்லாஹ் அவனைத் தவிர (உண்மையில் வணங்கத்தகுதியான) இறைவன் அறவே இல்லை. அவன் நிச்சயமாக உங்களை மறுமை நாளில் ஒன்று சேர்ப்பான். அதில் அறவே சந்தேகம் இல்லை. பேச்சால் அல்லாஹ்வைவிட மிக உண்மையானவன் யார்?",
+      "ko": "하나님, 그분 이외에는 경배받을 존재가 없노라. 진실로 그분께서는 의혹의 여지가 없는 부활의 날로 그대들을 모으실 것이라. 하나님보다 더 진실된 말씀을 하는 자 누구인가?"
     }
   },
   {
@@ -962,7 +1094,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Namni mindaa addunyaa kan fedhu ta'e, mindaan addunyaafi Aakhiraa Rabbiin bira qofa jira. Rabbiin dhaga’aa, argaa ta’eera.",
       "so": "Qofkii raba abaalka adduunyadan, Alle baa haya abaalka adduunyadan iyo Aakhiradaba. Alle waa wax kasta Maqle, wax kasta Arka.",
       "ff": "Kala laatiiɗo o yiɗi koa njoɓdi aduna,  ko  Alla  jogi njoɓdi aduna e laakara woni. Alla seeraani ko nanoowo , Yi'oowo.",
-      "yo": "Ẹnikẹ́ni tí ó bá ń fẹ́ ẹ̀san nílé ayé, ṣebí lọ́dọ̀ Allāhu ní ẹ̀san ti ayé àti ti ọ̀run wà. Allāhu sì ń jẹ́ Olùgbọ́, Olùríran."
+      "yo": "Ẹnikẹ́ni tí ó bá ń fẹ́ ẹ̀san nílé ayé, ṣebí lọ́dọ̀ Allāhu ní ẹ̀san ti ayé àti ti ọ̀run wà. Allāhu sì ń jẹ́ Olùgbọ́, Olùríran.",
+      "zh": "谁欲享今世的报酬，安拉那里有今世和后世的报酬。安拉是全聪的，是全明的。",
+      "th": "ผู้ใดที่ปรารถนาสิ่งตอบแทนในโลกนี้ ดังนั้น ณ อัลลอฮ์แล้ว มีทั้งสิ่งตอบแทนในโลกนี้และปรโลก และอัลลอฮ์นั้น เป็นผู้ทรงได้ยิน ผู้ทรงเห็น",
+      "ko": "현세의 보상을 원하는 자가 있다면 하나님께는 현세와 내세의 보상이 있노라. 하나님께서는 들으시고 보시는 분이도다.",
+      "vi": "Người nào mong muốn phần thưởng của đời sống trần gian thì (hãy biết rằng) ở nơi Allah có phần thưởng của đời sống trần gian và cả Đời Sau. Quả thật, Allah hằng nghe, hằng thấy."
     }
   },
   {
@@ -993,7 +1129,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ ከንግግር በክፉው መጮህን ከተበደለ ሰው (ጩኸት) በቀር አይወድም፡፡ አላህ ሰሚ ዐዋቂ ነው፡፡",
       "om": "Yoo nama miidhame ta’e malee Rabbiin jecha irraa hamaa ifa baasuu hin jaalatu. Rabbiinis dhagayaa, beekaa ta'eera.",
       "so": "Alle ma jecla ku dhawaaqa hadalka kiisa xun, mid maahee uu yidhaahdo qof la dulmiyey (oo dacwoonaya). Alle waa wax kasta Maqle, wax kasta Ogsoon.",
-      "ff": "Alla Yiɗaa ko feeñi ko e bone immorde e koŋngol, si wanaa on tooñaaɗo. Alla seeraani ko nanoow ko gannduɗo."
+      "ff": "Alla Yiɗaa ko feeñi ko e bone immorde e koŋngol, si wanaa on tooñaaɗo. Alla seeraani ko nanoow ko gannduɗo.",
+      "zh": "安拉不喜爱扬人之非的行为，除非他是被人亏枉的。安拉是全聪的，是全知的。",
+      "th": "อัลลอฮ์ไม่ทรงชอบคำพูดที่หยาบคายที่พูดอย่างเปิดเผย เว้นแต่โดยผู้ที่ถูกอธรรม และอัลลอฮ์นั้นเป็นผู้ทรงได้ยิน ผู้ทรงรอบรู้เสมอ",
+      "ko": "하나님께서는 나쁜 말을 드러냄을 사랑하지 않으시나 부당히 대우받은 자는 예외라. 하나님께서는 들으시고 아시는 분이도다.",
+      "vi": "Allah không yêu thích việc la lối giữa công chúng với những lời xấu xa ngoại trừ ai đó bị đối xử bất công (thì được phép giải trình để lấy lại công bằng). Quả thật, Allah hằng nghe, hằng biết."
     }
   },
   {
@@ -1031,7 +1171,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin isaan amananii gaggaarii hojjatan, isaaniif araaramaafi mindaa guddaatu jira (jechuun) waadaa seeneera.",
       "so": "Alle wuxuu u ballan qaaday kuwa rumeeyey oo samaha fala inay leeyihiin denbi dhaaf iyo Ajar weyn (Janno).",
       "ff": "Alla Fodiini ɓeen gooɗinɓe ɓe ngolli golle moƴƴe, no woodani yaafuyo e njoɓdi mawnndi.",
-      "yo": "Allāhu ṣe àdéhùn fún àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣiṣẹ́ rere (pé) àforíjìn àti ẹ̀san ńlá ń bẹ fún wọn."
+      "yo": "Allāhu ṣe àdéhùn fún àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣiṣẹ́ rere (pé) àforíjìn àti ẹ̀san ńlá ń bẹ fún wọn.",
+      "zh": "归信而且行善的人，安拉应许他们得享赦宥和重大的报酬。",
+      "ta": "நம்பிக்கை கொண்டு நற்செயல்களைச் செய்தவர்களுக்கு அல்லாஹ் (மகத்தான வெற்றியை) வாக்களித்தான். அவர்களுக்கு மன்னிப்பும் மகத்தான கூலியும் உண்டு.",
+      "ml": "വിശ്വസിക്കുകയും, സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും ചെയ്തവരോട് അല്ലാഹു വാഗ്ദാനം ചെയ്തിരിക്കുന്നു; അവര്‍ക്ക് പാപമോചനവും മഹത്തായ പ്രതിഫലവും ഉണ്ടെന്ന്‌.",
+      "th": "และอัลลอฮ์ได้ทรงสัญญาแก่บรรดาผู้ที่ศรัทธา และประกอบคุณงามความดีทั้งหลายว่า สำหรับพวกเขานั้น คือ การอภัยโทษ และการตอบแทนอันยิ่งใหญ่",
+      "ko": "(하나님과 사도를) 믿고 선행을 실천하는 자들에게 하나님께서 약속하시니 그들에게는 용서와 위대한 보상이 있을 것이라.",
+      "vi": "Allah đã hứa với những người có đức tin và hành thiện rằng họ sẽ được tha thứ và được ban thưởng phần thưởng vĩ đại (Thiên Đàng)."
     }
   },
   {
@@ -1065,7 +1211,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እናንተ ያመናችሁ ሆይ! አላህን ፍሩ፡፡ ወደርሱም መቃረቢያን (መልካም ሥራን) ፈልጉ፡፡ ትድኑ ዘንድም በእርሱ መንገድ ታገሉ፡፡",
       "om": "Yaa warra amantan! Rabbiin sodaadhaa. Waan gara Isaatti dhihaattaniin barbaadaa.karaa Isaa keessattis qabsaa’aa. Akka milkooftaniif jecha.",
       "so": "Kuwa (Xaqa) rumeeyow! Alle ka cabsada, oo u doonta xaggiisa dhowaansho, una jihaada Jidkiisa Aad liibaantaane.",
-      "ff": "Eeheymon yo gooŋɗimɓe, kulee Alla, ɗaɓɓiron e Makko jokkorgal, tiiɗnoɗon e Laawol Makko, mbelajo'o, on maloyte."
+      "ff": "Eeheymon yo gooŋɗimɓe, kulee Alla, ɗaɓɓiron e Makko jokkorgal, tiiɗnoɗon e Laawol Makko, mbelajo'o, on maloyte.",
+      "zh": "归信的人们啊！你们当敬畏安拉，当寻求亲近他的媒介，当为他的道路而奋斗，以便你们成功。",
+      "ta": "நம்பிக்கையாளர்களே! நீங்கள் வெற்றியடைவதற்காக அல்லாஹ்வை அஞ்சுங்கள்! இன்னும் அவனளவில் (உங்களை) நெருக்கமாக்கி வைக்கும் நன்மையைத் தேடுங்கள்! இன்னும், அவனுடைய பாதையில் போரிடுங்கள்!",
+      "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงยำเกรงต่ออัลลอฮ์เถิด และแสวงหาหนทางแห่งการใกล้ชิดต่อพระองค์ และจงต่อสู้ในหนทางของพระองค์ เพื่อว่าพวกเจ้าจะได้รับความสำเร็จ",
+      "ko": "믿는 자들이여! 하나님을 경외하고 그분께로 (가까이 다가갈) 수단을 도모하며 그분의 길에서 분투하라, 그대들이 성공하게 될 것이라."
     }
   },
   {
@@ -1102,7 +1252,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila ati Rabbiin mootummaan samiileefi dachii kan Isaa ta’uu hin beeknee! Nama fedhe ni adaba; nama fedheef ni araarama. Rabbiin waan hunda irratti danda’aadha.",
       "so": "Miyaadan ogeyn in Alle leeyahay Boqortooyada (runta ah ee) samooyinka iyo arlada. Wuxuu cadaabi qofkuu doono oo u denbi dhaafi qofkuu doono. Alle wax walba wuu Karaa.",
       "ff": "E a anndaa won de no woodani Alla Laamu kammuuli ɗin e leydi ndin, Homo Lepta on mo O muuyi, o yaafo on mo O muuyi. Alla ko kattanɗo kala huunde.",
-      "yo": "Ṣé o ò mọ̀ pé dájúdájú ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀? Ó máa jẹ ẹni tí Ó bá fẹ́ níyà. Ó sì máa forí jin ẹni tí Ó bá fẹ́. Allāhu sì ni Alágbára lórí gbogbo n̄ǹkan."
+      "yo": "Ṣé o ò mọ̀ pé dájúdájú ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀? Ó máa jẹ ẹni tí Ó bá fẹ́ níyà. Ó sì máa forí jin ẹni tí Ó bá fẹ́. Allāhu sì ni Alágbára lórí gbogbo n̄ǹkan.",
+      "zh": "难道你不知道吗？安拉有天地的国权，他要惩罚谁，就惩罚谁；要赦宥谁，就赦宥谁。安拉对于万事是全能的。",
+      "ko": "실로 하늘과 땅의 주권은 하나님 그분께 있음을 그대가 알고 있지 않았던가? 그분께서는 원하시는 자를 벌하시며 원하시는 자를 용서하시노라. 하나님께서는 모든 것이 가능한 분이시라."
     }
   },
   {
@@ -1132,7 +1284,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! gaggaarii waan Rabbiin isiniif hayyamee haraama hin taasisinaa. Daangaa hin dabrinaa; Dhugumatti, Rabbiin warra daangaa dabranu hin jaalatu.",
       "so": "Kuwa (Xaqa) rumeeyow! Ha xarrimina Waxyaalaha wanaagsan uu Alle idiin banneeyey, hana xad gudbina. Hubaal, Alle ma jecla kuwa xadgudba.",
       "ff": "Eehey mon yo gooŋɗinɓe, wota on karrmin laaɓuɗi ɗi Alla dakginani on, wata on njatu. Pe keerol, Alla Yiɗaa yawtooɓe ɓn.keeri Alla",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ má ṣe sọ àwọn n̄ǹkan dáadáa tí Allāhu ṣe ní ẹ̀tọ́ fún yín di èèwọ̀. Ẹ sì má ṣe tayọ ẹnu-ààlà. Dájúdájú Allāhu kò fẹ́ràn àwọn olùtayọ ẹnu-ààlà."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ má ṣe sọ àwọn n̄ǹkan dáadáa tí Allāhu ṣe ní ẹ̀tọ́ fún yín di èèwọ̀. Ẹ sì má ṣe tayọ ẹnu-ààlà. Dájúdájú Allāhu kò fẹ́ràn àwọn olùtayọ ẹnu-ààlà.",
+      "zh": "归信的人们啊！安拉已准许你们享受的佳美食物，你们不要把它当作禁物，你们不要过分。安拉的确不喜爱过分的人。",
+      "ta": "நம்பிக்கையாளர்களே! அல்லாஹ் உங்களுக்கு ஆகுமாக்கிய நல்ல பொருட்களை ஆகாதவையாக (ஹராமாக) ஆக்காதீர்கள். இன்னும், எல்லை மீறாதீர்கள். நிச்சயமாக அல்லாஹ், எல்லை மீறுபவர்களை விரும்ப மாட்டான்.",
+      "ml": "സത്യവിശ്വാസികളേ, അല്ലാഹു നിങ്ങള്‍ക്കനുവദിച്ചുതന്ന വിശിഷ്ടവസ്തുക്കളെ നിങ്ങള്‍ നിഷിദ്ധമാക്കരുത്‌. നിങ്ങള്‍ പരിധി ലംഘിക്കുകയും ചെയ്യരുത്‌. പരിധി ലംഘിക്കുന്നവരെ അല്ലാഹു ഒട്ടും ഇഷ്ടപ്പെടുകയില്ല.",
+      "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย พวกเจ้าอย่าได้ทำให้สิ่งที่อัลลอฮ์ทรงอนุมัติแก่พวกเจ้า กลายเป็นสิ่งที่ต้องห้าม และจงอย่าละเมิด (ขอบเขตที่กำหนดไว้) แท้จริงอัลลอฮ์ไม่ทรงชอบบรรดาผู้ที่ละเมิด",
+      "ko": "믿는 자들이여! 하나님께서 그대들을 위해 허락하신 좋고 깨끗한 것을 금하지 말며 경계를 넘어서지 말라. 실로 하나님께서는 경계를 넘어서는 자들을 사랑하지 않으시노라."
     }
   },
   {
@@ -1165,7 +1322,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ሰይጣን የሚፈልገው በሚያሰክር መጠጥና በቁማር በመካከላችሁ ጠብንና ጥላቻን ሊጥል አላህን ከማውሳትና ከስግደትም ሊያግዳችሁ ብቻ ነው፡፡ ታዲያ እናንተ (ከእነዚህ) ተከልካዮች ናችሁን (ተከልከሉ)፡፡",
       "om": "Wanti sheyxaanni fedhu gidduu keessanitti diinummaafi wal jibbaa dhugaatii macheessaniifi qumaaraan buusuudha. Rabbiin yaadachuufi salaata irraa isin dhorguudha. Sila isin hin dhorgamtanuu?",
       "so": "Shaydaan wuxuu rabaa inuu idinku dhex dhigo colaad iyo isnac khamrada iyo qamaarka, oo idinka jeediyo xusidda Alle iyo salaadda, ee ma ka joogeysaan?",
-      "ff": "Nganndee ko seytaane faalaa, ko nde o liɓata ngañgu e konnaagu(tikere)hakkunde mo'on ka siwram e ka karte, o faddoo on ga e jaŋtagol Alla e juulde nden. Hara onon ko on haɗitotooɓe ?(woppooɓe)?"
+      "ff": "Nganndee ko seytaane faalaa, ko nde o liɓata ngañgu e konnaagu(tikere)hakkunde mo'on ka siwram e ka karte, o faddoo on ga e jaŋtagol Alla e juulde nden. Hara onon ko on haɗitotooɓe ?(woppooɓe)?",
+      "zh": "恶魔惟愿你们因酒和赌博而互相仇恨，并且阻止你们记念安拉，和谨守拜功。你们将戒除〔酒和赌博〕吗？",
+      "th": "แท้จริงชัยฏอนตั้งใจที่จะสร้างการเป็นศัตรูกันและความเกลียดชังระหว่างพวกเจ้า ผ่านทางสิ่งมึนเมา และการพนัน และขัดขวางไม่ให้พวกเจ้ารำลึกถึงอัลลอฮ์และการละหมาด แล้วพวกเจ้าจะไม่ยุติหรือ?",
+      "ko": "사탄이 진정코 바라는 것은 술과 도박으로 그대들 사이에 적의와 증오를 심고 그대들이 하나님을 기억함과 예배를 방해하는 것이라. 그러니 그대들은 그만두지 않겠는가?"
     }
   },
   {
@@ -1202,7 +1362,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Beekaa! Dhugumatti Rabbiin (abbaa) adabbii cimaati. Dhugumatti Rabbiin araaramaa, rahmata godhaadha.",
       "so": "Ogaada in Alle Ciqaabkiisu Daran yahay, iyo in Alle Denbi Dhaaf iyo Naxariis Badan yahay.",
       "ff": "Nganndee won de pellet, Alla ko caɗtuɗo lepte, e won de pellet, Alla ko kaforoowo, jurmotooɗo.",
-      "yo": "Ẹ mọ̀ pé dájúdájú Allāhu le níbi ìyà. Àti pé dájúdájú Allāhu ni Aláforíjìn, Àṣàkẹ́-ọ̀run."
+      "yo": "Ẹ mọ̀ pé dájúdájú Allāhu le níbi ìyà. Àti pé dájúdájú Allāhu ni Aláforíjìn, Àṣàkẹ́-ọ̀run.",
+      "zh": "你们应当知道安拉的刑罚是严厉的，安拉是至赦的，是至慈的。",
+      "ta": "நிச்சயமாக அல்லாஹ் (குற்றவாளிகளை) தண்டிப்பதில் கடுமையானவன் என்பதையும்; நிச்சயமாக அல்லாஹ் மகா மன்னிப்பாளன், பெரும் கருணையாளன் என்பதையும் அறிந்து கொள்ளுங்கள்.",
+      "ml": "അല്ലാഹു കഠിനമായി ശിക്ഷിക്കുന്നവനാണെന്നും, അല്ലാഹു ഏറെ പൊറുക്കുന്നവനും കരുണാനിധിയുമാണെന്നും നിങ്ങള്‍ മനസ്സിലാക്കുക.",
+      "th": "พวกเจ้าพึงรู้เถิดว่า แท้จริงอัลลอฮ์เป็นผู้รุนแรงในการลงโทษ และแท้จริงอัลลอฮ์เป็นผู้ทรงอภัยโทษ ผู้ทรงเมตตาเสมอ",
+      "ko": "그대들은 하나님께서 응징함에 엄하신 분이며 하나님께서는 너그러이 용서하시는 자애로우신 분임을 알라."
     }
   },
   {
@@ -1239,7 +1404,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Mootummaan samii, dachiifi wantoota isaan keessaa kan Rabbiiti. Inni waan hunda irratti danda’aadha.",
       "so": "Alle baa iska leh (Mulkiga, Maamulka iyo) Boqortooyada (runta ah ee) samooyinka iyo arlada iyo waxa gudahooda ah. Alle wax kasta (uu doono) wuu Karaa.",
       "ff": "Ko Alla woodani laamu kammuuli ɗin, e leydi ndin e ko woni nder majji. Kanko ko O kattanɗo kala huunde.",
-      "yo": "Ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀ àti ohunkóhun tó wà nínú wọn. Òun sì ni Alágbára lórí gbogbo n̄ǹkan."
+      "yo": "Ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀ àti ohunkóhun tó wà nínú wọn. Òun sì ni Alágbára lórí gbogbo n̄ǹkan.",
+      "zh": "天地万物的国权只是安拉的，他对于万事是全能的。",
+      "ta": "வானங்கள், பூமி, இன்னும் அவற்றில் உள்ளவற்றின் ஆட்சி அல்லாஹ்விற்குரியதே! அவன் எல்லாவற்றின் மீதும் பேராற்றலுடையவன் ஆவான்.",
+      "ml": "ആകാശങ്ങളുടെയും ഭൂമിയുടെയും അവയിലുള്ളതിന്‍റെയും ആധിപത്യം അല്ലാഹുവിന്നത്രെ. അവന്‍ ഏത് കാര്യത്തിനും കഴിവുള്ളവനാകുന്നു.",
+      "th": "อำนาจแห่งชั้นฟ้าทั้งหลายและแผ่นดินเป็นกรรมสิทธิ์ของอัลลอฮ์ และสิ่งที่อยู่ในนั้น และพระองค์ทรงเป็นผู้ทรงอำนาจเหนือทุกสิ่ง",
+      "ko": "​하늘과 땅과 그것들 안에 존재하는 것의 주권은 하나님께 있노라. 그리고 그분께서는 모든 것이 가능한 분이시라.",
+      "vi": "Quyền thống trị và chế ngự các tầng trời và trái đất và vạn vật trong trời đất đều thuộc về một mình Allah. Và Ngài là Đấng Toàn Năng trên tất cả mọi thứ."
     }
   },
   {
@@ -1276,7 +1447,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "(Kan akkana hojjate) kun Rabbii keessani, Isa malee dhugaan gabbaramaan hin jiru, (Inni) uumaa waan hundaatii, Isa (qofa) gabbaraa, Inni waan hunda tiksaadha.",
       "so": "Kaasi waa Allaah, Rabbigiin, Ma jiro Ilaah (xaq lagu caabudo) aan Isaga ahayn. Abuuraha wax kasta, ee caabuda Keligii,  Isagaa wax kasta u wakiil ah (ilaaliya).",
       "ff": "Oon mon ko Alla, Joomi mon! deweteeɗo alaa (e goonga) si wanaa Kaŋko, Takɗo kala huunde. ndewee Mo. Kaŋko e dow kala huunde ko O fawtiiɗo.(deenɗo).",
-      "yo": "Ìyẹn ni Allāhu, Olúwa yín; kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun, Ẹlẹ́dàá gbogbo n̄ǹkan. Nítorí náà, ẹ jọ́sìn fún Un. Òun sì ni Olùṣọ́ lórí gbogbo n̄ǹkan."
+      "yo": "Ìyẹn ni Allāhu, Olúwa yín; kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun, Ẹlẹ́dàá gbogbo n̄ǹkan. Nítorí náà, ẹ jọ́sìn fún Un. Òun sì ni Olùṣọ́ lórí gbogbo n̄ǹkan.",
+      "zh": "这是安拉，你们的养主，除他外，绝无应受崇拜的。他是万物的创造者，故你们当崇拜他。他是万物的监护者。",
+      "ko": "그러한 분이 그대들의 주님이신 하나님이며, 그분 이외에는 경배받을 존재가 없노라. 그분께서는 모든 것을 창조하신 분이니 그대들은 그분을 경배하라. 그분께서는 모든 일에 관한 의탁의 대상이시라."
     }
   },
   {
@@ -1314,7 +1487,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Gooftaan kee Isumatu nama karaa Isaa irraa jallatu irra beeka; warra qajeelanis Isumatu beeka.",
       "so": "Hubaal Rabbigaa baa Og midka ka luma Jidkiisa, Isagaana Og cidda hanuunsan.",
       "ff": "Pellet, ko Joomi maa ɓuri Anndude on majjuɗo laawol makko ngol, ko Kaŋko kadi ɓuri Anndude feewuɓe ɓeen.",
-      "yo": "Dájúdájú Olúwa rẹ, Òun l’Ó nímọ̀ jùlọ nípa ẹni tó ṣìnà kúrò lójú ọ̀nà (ẹ̀sìn) Rẹ̀. Àti pé, Òun l’Ó nímọ̀ jùlọ nípa àwọn olùmọ̀nà."
+      "yo": "Dájúdájú Olúwa rẹ, Òun l’Ó nímọ̀ jùlọ nípa ẹni tó ṣìnà kúrò lójú ọ̀nà (ẹ̀sìn) Rẹ̀. Àti pé, Òun l’Ó nímọ̀ jùlọ nípa àwọn olùmọ̀nà.",
+      "zh": "你的养主的确知道谁是叛离他的正道的，他的确知道谁是遵循正道的。",
+      "ta": "(நபியே!) நிச்சயமாக உம் இறைவன், அவனுடைய பாதையிலிருந்து வழிகெடுபவரை மிக அறிந்தவன். இன்னும், அவன் நேர்வழி பெற்றவர்களையும் மிக அறிந்தவன்.",
+      "ml": "തന്‍റെ മാര്‍ഗത്തില്‍ നിന്ന് തെറ്റിപ്പോകുന്നവന്‍ ആരാണെന്ന് തീര്‍ച്ചയായും നിന്‍റെ രക്ഷിതാവിന് അറിയാം. നേര്‍വഴി പ്രാപിച്ചവരെപ്പറ്റി നല്ലവണ്ണം അറിയുന്നവനും അവന്‍ തന്നെയാണ്‌.",
+      "th": "แท้จริงพระผู้อภิบาลของเจ้านั้น คือผู้ที่ทรงรู้ยิ่งต่อผู้ที่กำลังหลงไปจากทางของพระองค์ และพระองค์ทรงรู้ยิ่งต่อบรรดาผู้ที่ได้รับการชี้นำ",
+      "ko": "실로 그대의 주님 그분께서는 누가 그분의 길을 벗어나 방황하고 있는지 가장 잘 알고 계신 분이며, 그분께서는 올바른 길을 걷는 자들이 누구인지 가장 잘 알고 계신 분이라.",
+      "vi": "Quả thật, Thượng Đế của Ngươi (hỡi Thiên Sứ) biết rõ ai là kẻ lạc khỏi con đường của Ngài và Ngài biết rõ ai là người được hướng dẫn đúng đường."
     }
   },
   {
@@ -1348,7 +1527,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ከጌታችሁ ወደ እናንተ የተወረደውን ተከተሉ፡፡ ከአላህም ሌላ ረዳቶችን አትከተሉ፡፡ ጥቂትን ብቻ ትገሰጻላችሁ፡፡",
       "om": "Waan Gooftaa keessan irraa gara keessanitti buufame hordofaa, Jaalalleewwan (biraa) isaa gaditti hin hordofinaa, Xiqqoo qofa gorfamtu",
       "so": "Raaca 'Qur’aanka' la idiinka soo dejiyey xagga Rabbigiin, hana raacina sokadii awliyo (aad la barbar caabuddaan Alle oo u yeedhataan).Yaraa intaad waantowdaan.",
-      "ff": "Njokkee ko Jippinaa e mon kon immorde ka Joomi mon, wota on njokku gah ɗuum, weldiiɓe, famɗii ko mbaactortoɗon."
+      "ff": "Njokkee ko Jippinaa e mon kon immorde ka Joomi mon, wota on njokku gah ɗuum, weldiiɓe, famɗii ko mbaactortoɗon.",
+      "zh": "你们当遵循从你们的养主降示的经典，你们不要舍安拉而顺从许多保佑者。你们很少觉悟。",
+      "th": "(จงกล่าวแก่พวกเขาเถิด โอ้ มุฮัมหมัด ว่า) “จงปฏิบัติตามสิ่งที่ถูกประทานลงมาแก่พวกเจ้าจากพระผู้อภิบาลของพวกเจ้า และอย่าปฏิบัติตามผู้นำอื่นจากอัลลอฮ์ (แต่น่าเสียดาย) ที่น้อยคนที่จะรับเป็นบทเรียน”",
+      "ko": "그대들 주님으로부터 그대들에게 내려진 것을 따르되, 그분 이외의 것을 가호자로 경배하지 말라. 그대들의 깨우침이 참으로 적도다."
     }
   },
   {
@@ -1385,7 +1567,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isaan Rabbiin sodaatan yeroo naanna'aan shayxaana irraa ta’e isaan tuqe, (Rabbiin) yaadatu, Achumaan isaan argoodha..",
       "so": "Xaqiiq kuwa ka cabsada Alle, markay taabato meerto Shaydaan, way ku baraarugaan oo kolkiiba (xaqa) arkaan.",
       "ff": "Pellet, ɓeen hulɓɓe(Alla), si sowonsinoore heɓii ɓe immorde e sytaane, ɓe ngannditay [Alla] : jaka yoo kamɓe ko ɓe yi'ooɓe.",
-      "yo": "Dájúdájú àwọn tó bẹ̀rù (Allāhu), nígbà tí ròyíròyí kan bá ṣẹlẹ̀ sí wọn láti ọ̀dọ̀ aṣ-Ṣaetọ̄n, tí wọ́n bá rántí (Allāhu), nígbà náà ojú wọn yó sì ríran (rí òdodo)."
+      "yo": "Dájúdájú àwọn tó bẹ̀rù (Allāhu), nígbà tí ròyíròyí kan bá ṣẹlẹ̀ sí wọn láti ọ̀dọ̀ aṣ-Ṣaetọ̄n, tí wọ́n bá rántí (Allāhu), nígbà náà ojú wọn yó sì ríran (rí òdodo).",
+      "zh": "敬畏者遭遇恶魔蛊惑的时候，能恍然大悟，立刻看见真理。",
+      "ml": "തീര്‍ച്ചയായും സൂക്ഷ്മത പാലിക്കുന്നവരെ പിശാചില്‍ നിന്നുള്ള വല്ല ദുര്‍ബോധനവും ബാധിച്ചാല്‍ അവര്‍ക്ക് (അല്ലാഹുവെപ്പറ്റി) ഓര്‍മവരുന്നതാണ്‌. അപ്പോഴതാ അവര്‍ ഉള്‍കാഴ്ചയുള്ളവരാകുന്നു.",
+      "th": "แท้จริงบรรดาผู้ที่ยำเกรงนั้น เมื่อมีเสียงกระซิบอันชั่วร้ายจากชัยฏอนมายังพวกเขา พวกเขาก็จะรำลึก (ถึงคำสอนของอัลลอฮ์) ทันใดนั้นพวกเขาก็จะมองเห็น (ทางอันเที่ยงตรง)",
+      "ko": "실로 (하나님을) 경외하는 자들은 사탄으로부터의 충동이 자신들을 스칠 때 (하나님을) 떠올리니, 보라, 실로 그들은 통찰하는 자들이라.",
+      "vi": "Quả thât, những người ngoan đạo (sợ Allah) khi có nhóm Shaytan nào đó đến quấy nhiễu, họ liền nhớ (đến Allah) thì họ sẽ thấy (ánh sáng chỉ đạo trở lại)."
     }
   },
   {
@@ -1417,7 +1604,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sw": "Hakika wale walio kwa Mola wako Mlezi hawajivuni wakaacha kumuabudu, na wanamtakasa, na wanamsujudia Yeye.",
       "ha": "Lalle ne, waɗanda ke wurin Ubangijinka bã su yin girman kai ga bauta Masa, kuma sunã tsarake shi da tasbĩhi, kuma a gare shi suke yin sujada.",
       "ff": "Pellet, ɓeen [maleykaaji] won ɓe ka Joomi maa, ɓe townitantaako dewgol Mo, hiɓe subbunhinanoo Mo, ko Kaŋko woni ko ɓe cujjanta.",
-      "yo": "Dájúdájú àwọn tó ń bẹ lọ́dọ̀ Olúwa rẹ, wọn kì í jọra wọn lójú láti jọ́sìn fún Un. Wọ́n ń ṣàfọ̀mọ́ fún Un. Wọ́n sì ń forí kanlẹ̀ fún Un."
+      "yo": "Dájúdájú àwọn tó ń bẹ lọ́dọ̀ Olúwa rẹ, wọn kì í jọra wọn lójú láti jọ́sìn fún Un. Wọ́n ń ṣàfọ̀mọ́ fún Un. Wọ́n sì ń forí kanlẹ̀ fún Un.",
+      "zh": "在你的养主那里的〔众天使〕，不是不屑于崇拜他的，他们赞颂他超绝一切，他们只为他而叩头。۩",
+      "ta": "நிச்சயமாக உம் இறைவனிடம் உள்ள (வான)வர்கள் அவனை வணங்குவதை விட்டு பெருமையடிப்பதில்லை; இன்னும், அவர்கள் அவனை துதிக்கிறார்கள்; இன்னும், அவனுக்கே சிரம் பணிகிறார்கள்.",
+      "th": "แท้จริงบรรดาผู้ที่อยู่ ณ พระผู้อภิบาลของเจ้านั้น พวกเขาจะไม่หยิ่งต่อการเคารพสักการะพระองค์ และกล่าวคำให้ความบริสุทธิ์แก่พระองค์ (ตัสบีห์) และแด่พระองค์เท่านั้น พวกเขาจะก้มกราบ",
+      "ko": "그대의 주님께 가까운 곳에 있는 자들(천사들)은 그분을 경배함에 거만해 하지 않고 그분을 찬양하며 그분께 부복하노라.",
+      "vi": "Quả thật (các Thiên Thần) ở nơi Thượng Đế của Ngươi (hỡi Thiên Sứ) không hề tự cao tự đại trước việc thờ phượng Ngài; Họ luôn tán dương và quỳ lạy Ngài."
     }
   },
   {
@@ -1453,7 +1645,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Rabbiin mootummaan samiileefi dachii kan Isaati. Ni jiraachisa; ni ajjeesas. Rabbiin alatti tiksaafi tumsaan tokkollee isiniif hin jiru.",
       "so": "Alle baa iska leh (Mulkiga, Maamulka iyo) Boqortooyada (runta ah ee) samooyinka iyo aralda, Isagaa wax nooleeya oo dhinsiiya. Ma lihidin Alle ka sokow sokeeye iyo gargaare midna.",
       "ff": "Pellet, Ko Alla woodani laamu kammuuli ɗin e leydi ndin. Himo wuurna, himo wara. Alanaa on gah Alla giɗo, wanaa balloowo",
-      "yo": "Dájúdájú Allāhu ló ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Kò sì sí aláàbò àti alárànṣe kan fún yín lẹ́yìn Allāhu."
+      "yo": "Dájúdájú Allāhu ló ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Kò sì sí aláàbò àti alárànṣe kan fún yín lẹ́yìn Allāhu.",
+      "zh": "安拉确有天地间的统治权，他能使死者生，能使生者死，除安拉外，你们绝无任何保护者，也无任何援助者。",
+      "ml": "തീര്‍ച്ചയായും അല്ലാഹുവിന്നുള്ളതാകുന്നു ആകാശങ്ങളുടെയും ഭൂമിയുടെയും ആധിപത്യം. അവന്‍ ജീവിപ്പിക്കുകയും മരിപ്പിക്കുകയും ചെയ്യുന്നു. അല്ലാഹുവിന് പുറമെ നിങ്ങള്‍ക്ക് യാതൊരു രക്ഷാധികാരിയും സഹായിയുമില്ല.",
+      "th": "แท้จริงอัลลอฮ์คือ ผู้ซึ่งอำนาจแห่งบรรดาชั้นฟ้าและแผ่นดินนั้นเป็นกรรมสิทธิ์ของพระองค์ พระองค์ทรงให้เป็น ทรงให้ตาย และนอกจากอัลลอฮ์แล้ว พวกเจ้าก็จะไม่มีผู้คุ้มครองและผู้ช่วยเหลือ",
+      "ko": "실로 (일곱) 하늘과 땅의 주권은 하나님 그분께 있으며, 그분은 생명을 불어넣으시고 죽음을 부여하시노라. 하나님이 아니고선 그대들에게 그 어떤 가호자나 조력자도 없노라.",
+      "vi": "Quả thật, quyền thống trị các tầng trời và trái đất đều thuộc về một mình Allah, Ngài làm cho sống và làm cho chết. Và các ngươi không có bất kỳ vị bảo hộ hay vị cứu tinh nào ngoài Allah."
     }
   },
   {
@@ -1491,7 +1688,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Rabbiin sodaadhaa; warra dhugaa wajjiiniis ta’aa.",
       "so": "Kuwa (Xaqa) rumeeyow! Alle ka cabsada, oo ahaada la jirka kuwa runlowyada ah.",
       "ff": "Eeymon gooŋɗiiɓe, kulee Alla laatodon e gooŋɗuɓe ɓeen.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu, kí ẹ sì wà pẹ̀lú àwọn olódodo."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu, kí ẹ sì wà pẹ̀lú àwọn olódodo.",
+      "zh": "归信的人们啊！你们要敬畏安拉，要和诚实的人在一起。",
+      "ta": "நம்பிக்கையாளர்களே! அல்லாஹ்வை அஞ்சுங்கள்; இன்னும், உண்மையாளர்களுடன் இருங்கள்.",
+      "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ അല്ലാഹുവെ സൂക്ഷിക്കുകയും, സത്യവാന്‍മാരുടെ കൂട്ടത്തില്‍ ആയിരിക്കുകയും ചെയ്യുക.",
+      "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงยำเกรงอัลลอฮ์เถิด และจงอยู่ร่วมกับบรรดาผู้ที่มีความสัตย์จริงเถิด",
+      "ko": "믿는 자들이여! 하나님을 경외하고 정직한 자들과 함께하라.",
+      "vi": "Hỡi những người có đức tin, hãy kính sợ Allah và hãy ở cùng với những người chân thật."
     }
   },
   {
@@ -1521,7 +1724,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, iisinitti dhufe ergamaan isin irraa ta’e, kan rakkinni keessan isa irratti jabaatu, kan isiniif (akka amantanuuf) bololu, mu’uminootaaf immoo mararfataa, rahmata godhaa ta’e.",
       "so": "Waxaa dhab ahaan idiin yimid Rasuul idinka mid ah 'waa Nabi Muxammad s.c.w', oo ay ku adag tahay waxa idin dhiba, idiin roon oo dadaal badan, mu’miniinta u turid iyo naxariis badan.",
       "ff": "Mi  wooɗndi nulaaɗo arii  e mooɗon, jeyaaɗo emon hino saɗta e makko ko tampoton, deerɗuɗo e mooɗon, newaniiɗo hinnotooɗo(yurmotoodo) gooŋɗinɓe ɓeen.",
-      "yo": "Dájúdájú Òjíṣẹ́ kan ti wá ba yín láti ààrin yín. Ohun tí ó máa kó wàhálà ba yín lágbára lára rẹ̀. Ó ń ṣe àkólékàn (oore) fún yín; aláàánú àti oníkẹ̀ẹ́ ni fún àwọn oní gbàgbọ́ òdodo."
+      "yo": "Dájúdájú Òjíṣẹ́ kan ti wá ba yín láti ààrin yín. Ohun tí ó máa kó wàhálà ba yín lágbára lára rẹ̀. Ó ń ṣe àkólékàn (oore) fún yín; aláàánú àti oníkẹ̀ẹ́ ni fún àwọn oní gbàgbọ́ òdodo.",
+      "zh": "你们本族中的使者确已来临你们，他不忍心见你们受痛苦，他渴望你们得正道，他慈爱信士们。",
+      "ko": "그대들에게 그대들 출신의 사도가 도래하였으니 (그는) 그대들이 고생함을 안쓰러워 하고, 그대들을 보살피며, 믿는 자들에게 인자하고 자애로우니라."
     }
   },
   {
@@ -1557,7 +1762,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, bakka wal bu’uu halkaniifi guyyaa keessa, waan Rabbiin samiileefi dachii keessatti uume keessaas namoota (Rabbiin) sodaataniif mallattooleetu jira",
       "so": "Xaqiiq is beddelka habeenka iyo maalinta iyo waxa Alle ku abuuray cirarka iyo dhulka, waxaa ugu sugan calaamooyin ciddii Alle ka cabsan (oo iska jiri xumaha).",
       "ff": "Hino e luutindirgol jemma e ñalama ngol, e kon ko Alla tagi ka kammuuli e ka leydi, maandeeji wonan´de yimɓe gooŋɗuɓe.",
-      "yo": "Dájúdájú àwọn àmì wà nínú ìtẹ̀léǹtẹ̀lé òru àti ọ̀sán àti ohun tí Allāhu dá sínú àwọn sánmọ̀ àti ilẹ̀; (àmì wà nínú wọn) fún ìjọ tó ń bẹ̀rù (Allāhu)."
+      "yo": "Dájúdájú àwọn àmì wà nínú ìtẹ̀léǹtẹ̀lé òru àti ọ̀sán àti ohun tí Allāhu dá sínú àwọn sánmọ̀ àti ilẹ̀; (àmì wà nínú wọn) fún ìjọ tó ń bẹ̀rù (Allāhu).",
+      "zh": "昼夜的轮流，以及安拉在天地间所造的森罗万象，在敬畏的民众看来，此中确有许多迹象。",
+      "ta": "நிச்சயமாக இரவு பகல் (ஒன்றன் பின் ஒன்றாக தொடர்ச்சியாக) மாறி மாறி வருவதிலும், வானங்கள்; இன்னும், பூமியில் அல்லாஹ் படைத்திருப்பவற்றிலும் அல்லாஹ்வை அஞ்சுகின்ற மக்களுக்கு உறுதியாக (பல) அத்தாட்சிகள் உள்ளன.",
+      "ml": "തീര്‍ച്ചയായും രാപകലുകള്‍ വ്യത്യാസപ്പെടുന്നതിലും, ആകാശങ്ങളിലും ഭൂമിയിലും അല്ലാഹു സൃഷ്ടിച്ചിട്ടുള്ളവയിലും സൂക്ഷ്മത പാലിക്കുന്ന ആളുകള്‍ക്ക് പല തെളിവുകളുമുണ്ട്‌.",
+      "th": "แท้จริงการสับเปลี่ยนของกลางคืนและกลางวัน และที่อัลลอฮ์ทรงสร้างในชั้นฟ้าทั้งหลายและแผ่นดินนั้น แน่นอน เป็นสัญญาณแก่กลุ่มชนที่มีความยำเกรง",
+      "ko": "진실로, 밤과 낮의 교체와 하나님께서 (일곱) 하늘과 땅 안에 창조한 것들에는 하나님을 경외하는 자들을 위한 징표들이 있노라."
     }
   },
   {
@@ -1594,7 +1804,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin namoota homaa hin miidhu, Garuu namoonni ofiif lubbuulee isaanii miidhu.",
       "so": "Hubaal Alle kama dulmiyo dadka waxba;dadkuse iyagaa nafahooda dulmiya.",
       "ff": "Pellet Alla tooñirta yimɓe ɓeen huunde, ko woni, ko yimɓe ɓe tooñata ko'e muen.",
-      "yo": "Dájúdájú Allāhu kò níí fí kiní kan ṣàbòsí sí ènìyàn. Ṣùgbọ́n ènìyàn ló ń ṣàbòsí sí ẹ̀mí ara wọn."
+      "yo": "Dájúdájú Allāhu kò níí fí kiní kan ṣàbòsí sí ènìyàn. Ṣùgbọ́n ènìyàn ló ń ṣàbòsí sí ẹ̀mí ara wọn.",
+      "zh": "安拉的确毫不亏待人们，但人们却亏待自己。",
+      "ta": "நிச்சயமாக அல்லாஹ் மனிதர்களுக்கு ஒரு சிறிதும் அநீதியிழைக்க மாட்டான். எனினும், மனிதர்கள் தங்களுக்குத் தாமே அநீதியிழைக்கிறார்கள்.",
+      "ml": "തീര്‍ച്ചയായും അല്ലാഹു മനുഷ്യരോട് ഒട്ടും അനീതി കാണിക്കുന്നില്ല. എന്നാൽ മനുഷ്യര്‍ അവരവരോട് തന്നെ അനീതി കാണിക്കുന്നു.",
+      "th": "แท้จริง อัลลอฮ์นั้นจะไม่ทรงอธรรมแก่ปวงมนุษย์แต่อย่างใด แต่ทว่าปวงมนุษย์ต่างหากที่อธรรมต่อตัวของพวกเขาเอง",
+      "ko": "실로 하나님께서는 결코 인간을 부당히 다루지 않으시노라. 그러나 인간이야말로 자기 자신을 부당히 다루는 것이라.",
+      "vi": "Thật vậy, Allah đã không bất công với con người về bất cứ điều gì, nhưng chính con người lại bất công với bản thân mình."
     }
   },
   {
@@ -1632,7 +1848,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhagayaa! Dhugumatti, wanti samiileefi dachii keessa jiru kan Rabbiiti. Dhagayaa! Dhugumatti, waadaan Rabbii dhugaadha. Garuu irra baay’een isaanii hin beekan.",
       "so": "Ogaada, hubaal, waxaa iska leh Alle waxa ku sugan samooyinka iyo arlada. Ogaada, hubaal, Ballanka Alle waa xaq. Badankooduse ma ogsoona.",
       "ff": "Ngandee ko Alla woodani ko woni ka kammuuli e ka leydi. Ngandee pellet, fodoore Alla nde ko goonga. Kono ko ɓuri ɗuuɗude e yimɓe he  ɓe nganndaa.",
-      "yo": "Gbọ́, dájúdájú ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Gbọ́! Dájúdájú àdéhùn Allāhu ni òdodo, ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ wọn kò nímọ̀."
+      "yo": "Gbọ́, dájúdájú ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Gbọ́! Dájúdájú àdéhùn Allāhu ni òdodo, ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ wọn kò nímọ̀.",
+      "zh": "真的，天地万物确是安拉的。真的，安拉的诺言，确是真实的；但他们大半不知道。",
+      "th": "พึงรู้เถิด แท้จริงทุกสิ่งในชั้นฟ้าทั้งหลายและแผ่นดินเป็นสิทธิของอัลลอฮ์ พึงรู้เถิด แท้จริงสัญญาของพระเจ้านั้นเป็นจริงเสมอ แต่ส่วนใหญ่พวกเขาไม่รู้",
+      "ko": "보라, 실로 (일곱) 하늘과 땅에 있는 것이 하나님의 소유라. 보라, 실로 하나님의 약속은 진실이나 그들 대부분은 알지 못 하노라.",
+      "vi": "Lẽ nào mọi thứ trong các tầng trời và trái đất không thuộc về một mình Allah?! Lẽ nào lời hứa của Allah không phải là sự thật?! Tuy nhiên, hầu hết (những kẻ vô đức tin) không biết mà thôi."
     }
   },
   {
@@ -1669,7 +1889,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni ni jiraachisa; ni ajjeesas; gara Isaatitti deebifamtu.",
       "so": "Isagaa wax nooleeya, oo  dhinsiiya, Xaggiisaana dib la idiinku soo celin.",
       "ff": "Kaŋko Hombo wuurna hombo wara; ko faade ka makko nduttoteɗon.",
-      "yo": "Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Ọ̀dọ̀ Rẹ̀ sì ni wọn yóò da yín padà sí."
+      "yo": "Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Ọ̀dọ̀ Rẹ̀ sì ni wọn yóò da yín padà sí.",
+      "zh": "他能使死者生，能使生者死。你们只被召归于他。",
+      "ta": "அவன்தான் உயிர்ப்பிக்கிறான்; இன்னும், மரணிக்கச் செய்கிறான்; இன்னும், அவனிடமே நீங்கள் திரும்பக் கொண்டு வரப்படுவீர்கள்.",
+      "ml": "അവന്‍ ജീവിപ്പിക്കുകയും മരിപ്പിക്കുകയും ചെയ്യുന്നു. അവങ്കലേക്ക് തന്നെ നിങ്ങള്‍ മടക്കപ്പെടുകയും ചെയ്യുന്നു.",
+      "th": "พระองค์ทรงให้เป็นและทรงให้ตาย และยังพระองค์เท่านั้นพวกเจ้าจะถูกนำกลับไป",
+      "ko": "그분께서는 생명을 불어넣으시고 죽음을 부여하시며, 그대들은 실로 그분께로 돌아가게 될 것이라.",
+      "vi": "Ngài làm cho sống và làm cho chết và các ngươi sẽ được đưa về trình diện Ngài trở lại (để Ngài xét xử và thưởng phạt)."
     }
   },
   {
@@ -1704,7 +1930,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa namootaa! Dhugumatti, gorsi Gooftaa keessan irraa taate isinitti dhufte, qorichi waan qomoowwan keessaas, qajeelfamaafi rahmanni mu’uminootaas.",
       "so": "Dadow! Waxaa idiinka yimid waano wanaagsan xagga Rabbigiin iyo reysasho lagaga bogsado waxa ku jira laabaha (oo cudurro ah) oo u ah hanuuun iyo naxariis  mu’miniinta.",
       "ff": "Eehey mon yimɓe, gooŋɗii waaju arii e mon immorde e Joomi mon, e lekki fii (ñabbuuji) ko woni e ɓerɗe, e peewal, e yurmeende wonannan´de gooŋɗinɓe ɓe.",
-      "yo": "Èyin ènìyàn, ìṣítí kan láti ọ̀dọ̀ Olúwa yín ti dé ba yín. Ìwòsàn ni fún n̄ǹkan tó wà nínú àwọn igbá-àyà ẹ̀dá. Ìmọ̀nà àti ìkẹ́ ni fún àwọn onígbàgbọ́ òdodo."
+      "yo": "Èyin ènìyàn, ìṣítí kan láti ọ̀dọ̀ Olúwa yín ti dé ba yín. Ìwòsàn ni fún n̄ǹkan tó wà nínú àwọn igbá-àyà ẹ̀dá. Ìmọ̀nà àti ìkẹ́ ni fún àwọn onígbàgbọ́ òdodo.",
+      "zh": "人们啊！确已降临你们的，是从你们的养主发出的教诲，是治心病的良药，是对信士们的引导和慈恩。",
+      "th": "โอ้มนุษย์เอ๋ย แท้จริงได้มีมายังพวกเจ้าแล้วซึ่งข้อตักเตือน (อัลกุรอาน) จากพระผู้อภิบาลของพวกเจ้า และเป็นที่บำบัดสำหรับสิ่งที่มีอยู่ในทรวงอก และเป็นทางนำ และเป็นความเมตตาสำหรับบรรดาผู้ศรัทธา",
+      "ko": "사람들이여! 그대들에게 그대들 주님으로부터의 가르침과, 가슴 속에 있는 것에 대한 치유와, 인도와, 믿는 자들을 위한 자비가 도래하였노라."
     }
   },
   {
@@ -1742,7 +1971,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isaan amananii gaggaarii hojjatanii, Rabbii isaaniitiif gadi jedhan isaan sun warra jannataati. Isaan ishee keessatti hafoodha.",
       "so": "Hubaal, kuwa (Xaqa) rumeeyey oo samaha fala oo u khushuuca Rabbigood - waa kuwaa ehlu Jannadu iyagoo ku dhex waari weligood.",
       "ff": "Ɓeen gooŋɗinɓe, ɓe ngolli golle moƴƴe, ɓe njankinanii Joomi maɓɓe, ko ɓe ngoni yimɓe Aljanna ɓen, kamɓe ko ɓe duumotooɓe toon.",
-      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n ṣe àwọn iṣẹ́ rere, tí wọ́n sì dúnní mọ́ ìronúpìwàdà sọ́dọ̀ Olúwa wọn, àwọn wọ̀nyẹn ni èrò inú Ọgbà Ìdẹ̀ra. Olùṣegbére ni wọ́n nínú rẹ̀."
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n ṣe àwọn iṣẹ́ rere, tí wọ́n sì dúnní mọ́ ìronúpìwàdà sọ́dọ̀ Olúwa wọn, àwọn wọ̀nyẹn ni èrò inú Ọgbà Ìdẹ̀ra. Olùṣegbére ni wọ́n nínú rẹ̀.",
+      "zh": "归信而且行善，并对他们的养主表示谦逊的人，他们确是乐园的居民，将永居其中。",
+      "ta": "நிச்சயமாக எவர்கள் நம்பிக்கைகொண்டு, நற்செயல்களைச் செய்து, தங்கள் இறைவனின் பக்கம் மிக்க பயத்துடனும் பணிவுடனும் திரும்பினார்களோ அவர்கள்தான் சொர்க்கவாசிகள், அவர்கள் அதில் நிரந்தரமாக தங்கி இருப்பார்கள்.",
+      "ml": "തീര്‍ച്ചയായും വിശ്വസിക്കുകയും സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും, തങ്ങളുടെ രക്ഷിതാവിങ്കലേക്ക് വിനയപൂര്‍വ്വം മടങ്ങുകയും ചെയ്തവരാരോ അവരാകുന്നു സ്വര്‍ഗാവകാശികള്‍. അവരതില്‍ നിത്യവാസികളായിരിക്കും.",
+      "th": "แท้จริงบรรดาผู้ศรัทธาและประกอบการดี และสำรวมตนต่อพระผู้อภิบาลของพวกเขา ชนเหล่านั้นคือชาวสวรรค์ ซึ่งพวกเขาจะอยู่ในนั้นตลอดกาล",
+      "ko": "실로 (하나님과 사도를) 믿고 선행을 실천하며 자신의 주님께 겸허한 자들, 저들은 천국의 거주자들이니 실로 그들은 그 안에서 머물 것이라.",
+      "vi": "Quả thật, những người có đức tin, hành thiện, và hạ mình khiêm tốn trước Thượng Đế của họ sẽ là những người bạn của Thiên Đàng, họ sẽ sống trong đó mãi mãi."
     }
   },
   {
@@ -1775,7 +2010,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Ani Rabbii Gooftaa kiyyaafi Gooftaa keessan ta’e irratti irkadheera. lubbu qabaan tokkos Inni sammuu isaa qabu malee hintaane. Gooftaan kiyya karaa qajeelaa irra jira.",
       "so": "Anigu waxaan xaqiiq tala saartay Allaah, Rabbigay iyo Rabbigiinba, ma jiro (noole) jooga (dhulka) oo uusan heyn foodda. Hubaal, Rabbigay wuxuu ku sugan yahay Jid Toosan (umuurahiisa oo dhan).",
       "ff": "Min mi fawike e Alla, Joomi am e Joomi mon. Alaa e ruugayngel si wanaa ko O nannguɗo jubuuru maggel. Pellet, Joomi am no e laawol poocciingol.",
-      "yo": "Dájúdájú èmi gbáralé Allāhu, Olúwa mi àti Olúwa yín. Kò sí ẹ̀dá abẹ̀mí kan àfi kí (ó jẹ́ pé) Òun l’Ó máa fi àásó orí rẹ̀ mú un. Dájúdájú Olúwa mi wà lórí ọ̀nà tààrà."
+      "yo": "Dájúdájú èmi gbáralé Allāhu, Olúwa mi àti Olúwa yín. Kò sí ẹ̀dá abẹ̀mí kan àfi kí (ó jẹ́ pé) Òun l’Ó máa fi àásó orí rẹ̀ mú un. Dájúdájú Olúwa mi wà lórí ọ̀nà tààrà.",
+      "zh": "我的确信托安拉——我的养主和你们的养主，没有一种动物不归他管辖。我的养主确是在正路上的。",
+      "th": "แท้จริงฉันมอบหมายต่ออัลลอฮ์ (ผู้ซึ่งเป็น) พระผู้อภิบาลของฉันและพระผู้อภิบาลของพวกเจ้า ไม่มีสัตว์ใดเว้นแต่พระองค์ทรงยึดไว้ที่หน้าผากมัน แท้จริงพระผู้อภิบาลของฉันอยู่บนทางที่เที่ยงตรง",
+      "ko": "실로 나는 나의 주님이시자 그대들의 주님이신 하나님께 의탁하였노라. 생명체 중에 그분께서 앞머리 채를 잡고 계시지 않는 것은 없노라. 실로 나의 주님께서는 올곧은 길 위에 계시노라"
     }
   },
   {
@@ -1811,7 +2049,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isin irraa namni jechaan (sagalee) gadi qabeefi ol fuudhes waluma qixa. namni halkan dhokateefi guyyaa ifatti ba’es (waluma qixa).",
       "so": "Waa isugu mid (Alle) kiinna idinka mid ah ee hadalkiisa qarsada iyo kan kor ugu dhawaaqa, iyo kan isku qariya habeenka iyo (kan) socda dharaar cad.",
       "ff": "Hino fota [ka makko ganndugol] oon cuuɗuɗo konngol e mooɗon, e on peññinɗo ngol, on cuuɗiratɗo jemma, e on jaltiniroowo ñalawma.",
-      "yo": "Bákan náà ni (lọ́dọ̀ Allāhu), ẹni tí ó fi ọ̀rọ̀ pamọ́ sínú nínú yín àti ẹni tí ó sọ ọ́ síta pẹ̀lú ẹni tí ó fi òru bojú àti ẹni tí ó ń rìn kiri ní ọ̀sán."
+      "yo": "Bákan náà ni (lọ́dọ̀ Allāhu), ẹni tí ó fi ọ̀rọ̀ pamọ́ sínú nínú yín àti ẹni tí ó sọ ọ́ síta pẹ̀lú ẹni tí ó fi òru bojú àti ẹni tí ó ń rìn kiri ní ọ̀sán.",
+      "zh": "你们中窃窃私语的，高谈阔论的，隐藏在黑夜的，出现在白昼的，〔在他〕看来都是一样的。",
+      "th": "(เป็นเรื่องที่) เท่าเทียมกัน (สำหรับอัลลอฮ์) ผู้ใดในหมู่เจ้าได้เก็บคำพูดเป็นความลับและผู้ที่กล่าวมันโดยเปิดเผย และผู้ที่ซ่อนการกระทำในเวลากลางคืน และผู้ที่เดินไปอย่างเปิดเผยในเวลากลางวัน",
+      "ko": "그대들 중 말을 감추는 자나 그것을 드러내는 자, 그리고 한밤에 숨는 자와 대낮에 활보하는 자는 (하나님께 있어) 동일하노라.",
+      "vi": "Dù ai đó trong các ngươi nói khẽ hoặc lớn tiếng, dù ẩn mình trong bóng đêm hay vênh váo đứng giữa ban ngày, tất cả (đối với Allah) đều như nhau."
     }
   },
   {
@@ -1839,7 +2081,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ ለሚሻው ሰው ሲሳይን ያሰፋል፤ ያጠባልም፡፡ (ከሓዲዎች) በቅርቢቱም ሕይወት ተደሰቱ፡፡ የቅርቢቱም ሕይወት በመጨረሻይቱ አንጻር (ትንሽ) መጠቀሚያ እንጂ ምንም አይደለችም፡፡",
       "om": "Rabbiin nama fedheef hiree bal’isa; (nama fedhe) itti dhiphisa. Isaan jireenya addunyaa kanaatti gammadani. Jireenyi addunyaa jireenya Aakhiraa biratti qananii yeroo gabaabaa malee hin taane.",
       "ff": "Alla no yaññana arsike on mo o muuyi, Himo ɓittina. heɓe mbeltora nguurndam aduna, nguurndam aduna non wonaani ka laakara, si wanaa dakamme-hoy.",
-      "yo": "Allāhu ń tẹ́ arísìkí sílẹ̀ rẹgẹdẹ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹni tí Ó bá fẹ́). Wọ́n sì dunnú sí ìṣẹ̀mí ilé ayé! Kí sì ni ìṣẹ̀mí ayé ní ẹ̀gbẹ́ ti ọ̀run bí kò ṣe ìgbádùn bín-íntín."
+      "yo": "Allāhu ń tẹ́ arísìkí sílẹ̀ rẹgẹdẹ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹni tí Ó bá fẹ́). Wọ́n sì dunnú sí ìṣẹ̀mí ilé ayé! Kí sì ni ìṣẹ̀mí ayé ní ẹ̀gbẹ́ ti ọ̀run bí kò ṣe ìgbádùn bín-íntín.",
+      "zh": "安拉使他所意欲者享受宽裕的给养或窘迫的给养。他们因今世的生活而欢喜，然而今世的生活比起后世的生活来，只是一种〔暂时〕的享受。",
+      "ko": "하나님께서는 원하시는 자에게 양식을 늘리시고 줄이시노라. 그들은 현세의 삶에 기뻐하나, 현세의 삶이란 내세에 비할 때 그저 일순간의 편의일뿐이라."
     }
   },
   {
@@ -1868,7 +2112,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ መልካምን ቃል ሥርዋ (በምድር ውስጥ) የተደላደለች ቅርንጫፍዋም ወደ ሰማይ (የረዘመች) እንደሆነች መልካም ዛፍ አድርጎ ምሳሌን እንዴት እንደገለጸ አላየኽምን?",
       "om": "Sila akkamitti akka Rabbiin fakkeenya godhe hin arginee? jechi gaariin akka muka gaarii hundeen ishee gadi dhaabbataa ta’ee, dameen ishee samii keessatti ta’eetti.",
       "ff": "E a yi'aani ko honno Alla piyiri misal konngol laaɓungol, ko wano leggal welngal, binndeere maggal ko tabituɗi, caalɗi maggal no ka weeyo?",
-      "yo": "Ṣé o kò wòye sí bí Allāhu ṣe ṣàkàwé ọ̀rọ̀ dáadáa pẹ̀lú igi dáadáa, tí gbòǹgbò rẹ̀ fi ìdí múlẹ̀ ṣinṣin, tí ẹ̀ka rẹ̀ sì wà nínú sánmọ̀,"
+      "yo": "Ṣé o kò wòye sí bí Allāhu ṣe ṣàkàwé ọ̀rọ̀ dáadáa pẹ̀lú igi dáadáa, tí gbòǹgbò rẹ̀ fi ìdí múlẹ̀ ṣinṣin, tí ẹ̀ka rẹ̀ sì wà nínú sánmọ̀,",
+      "zh": "难道你不知道安拉有过这样一个比喻吗？一句良言，好比一棵优良的树，其根柢是深固的，其枝条高耸入云，",
+      "th": "เจ้าไม่เห็นหรอกหรือว่า อัลลอฮ์ทรงยกอุทาหรณ์ไว้ว่า อุปมาคำพูดที่ดีประหนึ่งต้นไม้ที่ดี รากของมันฝังแน่นลึกมั่นคง และกิ่งก้านของมันชูขึ้นไปในท้องฟ้า",
+      "vi": "Ngươi (Thiên sứ Muhammad) không thấy Allah đã đưa ra hình ảnh thí dụ về lời nói tốt lành (Tawhid) sao? Nó giống như một loại cây tốt, rễ của nó cố định vững chắc và cành của nó vươn lên trời."
     }
   },
   {
@@ -1902,7 +2149,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ይህ (ቁርኣን) ለሰዎች ገላጭ ነው፡፡ (ሊመከሩበት)፣ በእርሱም ሊስፈራሩበት፣ እርሱም አንድ አምላክ ብቻ መኾኑን ሊያውቁበት፣ የአእምሮ ባለቤቶችም ሊገሰፁበት (የተወረደ) ነው፡፡",
       "om": "(Qur’aanni) kun ergaa gayaa ilma namaati, akka ittiin akeekkachiifamanuuf, Inni (Rabbiin) gabbaramaa haqaa tokkicha ta’uu akka beekaniifi warri sammuu qaban akka ittiin gorfamaniif.",
       "so": "Kani (Qur’aanku) ugu filan gaarsiin cad dadka, iyo in loogu digo, iyo inay ogaadaan in Macbuudka Xaqa ahi Ilaah Keliya uun yahay ee Mid ah (Allaah), iyo inay ku waano qaataan (arrinkaa) waxgaradku.",
-      "ff": "Ndee (Alqur'aanaare) ko yottinoore yimɓe ɓeen fii yo ɓe waajitornde, e yooɓe nganndu kadi, won´de Kaŋko ko o deweteeɗo Gooto, e fii yo joomiraaɓe haqqillaaji ɓren waajitor."
+      "ff": "Ndee (Alqur'aanaare) ko yottinoore yimɓe ɓeen fii yo ɓe waajitornde, e yooɓe nganndu kadi, won´de Kaŋko ko o deweteeɗo Gooto, e fii yo joomiraaɓe haqqillaaji ɓren waajitor.",
+      "zh": "这是对世人的通告，以便他们因此而受警告，以便他们知道他只是独一的应受崇拜者，以便有理智的人记取教诲。",
+      "th": "นี่คือการประกาศแก่ปวงมนุษย์ เพื่อพวกเขาจะถูกเตือนด้วยมัน และเพื่อพวกเขาจะได้รู้ว่า แท้จริงพระองค์คือพระเจ้าผู้ทรงเอกะ และเพื่อบรรดาผู้มีสติปัญญาจะได้รำลึก"
     }
   },
   {
@@ -1934,7 +2183,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እኛ ቁርኣንን እኛው አወረድነው፡፡ እኛም ለእርሱ ጠባቂዎቹ ነን፡፡",
       "om": "Nuti Zikrii (Qur'aana) Numatu buuse, Numatu isaaf tiksoodha.",
       "ff": "Minen min njippinii deftere nden, minen kadi ko min reenooɓe nde.",
-      "yo": "Dájúdájú Àwa l’A sọ Tírà Ìrántí kalẹ̀ (ìyẹn al-Ƙur’ān). Dájúdájú Àwa sì ni Olùṣọ́ rẹ̀."
+      "yo": "Dájúdájú Àwa l’A sọ Tírà Ìrántí kalẹ̀ (ìyẹn al-Ƙur’ān). Dájúdájú Àwa sì ni Olùṣọ́ rẹ̀.",
+      "zh": "我确已降示教诲，我确是教诲的保护者。",
+      "ta": "நிச்சயமாக நாம்தான் இந்த அறிவுரையை (உம்மீது) இறக்கினோம். இன்னும், நிச்சயமாக நாம் அதை பாதுகாப்பவர்கள் ஆவோம்.",
+      "th": "แท้จริงเราเป็นผู้ประทานข้อตักเตือน (อัลกุรอาน) ลงมา และแท้จริงเราเป็นผู้รักษามันอย่างแน่นอน",
+      "vi": "Thật vậy, chính TA đã ban Thông Điệp Nhắc Nhở (Qur’an) xuống và chính TA sẽ bảo quản Nó."
     }
   },
   {
@@ -1972,7 +2225,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin kee isatu akkaan uumaa, beekaadha",
       "so": "Hubaal Rabbigaa waa Abuuraha wax kasta ee jira, wax waliba Ogsoonaha ah.",
       "ff": "Tabitii ko Joomi maa woni Takɗo, gannduɗo.",
-      "yo": "Dájúdájú Olúwa rẹ ni Ẹlẹ́dàá, Onímọ̀."
+      "yo": "Dájúdájú Olúwa rẹ ni Ẹlẹ́dàá, Onímọ̀.",
+      "zh": "你的养主确是创造万物的，确是全知的。",
+      "ta": "நிச்சயமாக உம் இறைவன்தான் மகா படைப்பாளன், நன்கறிந்தவன்.",
+      "ml": "തീര്‍ച്ചയായും നിന്‍റെ രക്ഷിതാവ് എല്ലാം സൃഷ്ടിക്കുന്നവനും എല്ലാം അറിയുന്നവനുമാകുന്നു.",
+      "th": "แท้จริงพระผู้อภิบาลของเจ้า (โอ้ มุฮัมหมัด) เป็นผู้ทรงสร้าง ผู้ทรงรอบรู้",
+      "vi": "Quả thật, Thượng Đế của Ngươi là Đấng Tạo Hoá, Đấng Toàn Tri."
     }
   },
   {
@@ -2010,7 +2268,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Samiifi dachii dhugaadhaan uumeera, Inni waan isaan (Isatti) qindeessan irraa ol ta’eera.",
       "so": "(Alle) wuxuu u abuuray samooyinka iyo arlada Xaq. Waa ka Sarreeyaa oo ka Kor yahay waxay la wadaajiyaan (cibaadada).",
       "ff": "O tagiri kammuuli ɗiin e leydi ndin goonga. o toowii e ko ɓe sirkoobe cirkata ko.",
-      "yo": "Ó ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ pẹ̀lú òdodo. Ó ga tayọ n̄ǹkan tí wọ́n ń fi ṣẹbọ sí I."
+      "yo": "Ó ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ pẹ̀lú òdodo. Ó ga tayọ n̄ǹkan tí wọ́n ń fi ṣẹbọ sí I.",
+      "zh": "他凭真理创造了天地，他超乎他们所用以配他的。",
+      "ta": "அவன் வானங்களையும் பூமியையும் உண்மையான நோக்கத்திற்கே படைத்தான். அவர்கள் இணைவைப்பதை விட்டும் அவன் முற்றிலும் உயர்ந்தவன்.",
+      "ml": "ആകാശങ്ങളും ഭൂമിയും അവന്‍ യുക്തിപൂര്‍വ്വം സൃഷ്ടിച്ചിരിക്കുന്നു. അവര്‍ പങ്കുചേര്‍ക്കുന്നതിൽ നിന്നെല്ലാം അവന്‍ ഉന്നതനായിരിക്കുന്നു.",
+      "th": "พระองค์ทรงสร้างชั้นฟ้าทั้งหลายและแผ่นดินโดยสัจจริง พระองค์ทรงสูงส่งเหนือที่พวกเขาตั้งภาคี",
+      "vi": "Ngài đã tạo ra trời đất vì chân lý. Ngài Tối Cao vượt bên trên những gì họ tổ hợp (với Ngài)."
     }
   },
   {
@@ -2047,7 +2310,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Isa samii irraa bishaan buuse. Isiniif isa irraa dhugaatiitu jira. Isa irraas muka isin ishee keessatti (beyladoota) tikfattantu (marga).",
       "so": "Waa Isaga Kan idiinka soo dejiya biyo (roob) daruuraha, waxaad ka heshaan cabbitaan, biyahaasoo (soo saara sidoo kale) geedaha aad daaqsataan (xoolaha).",
       "ff": "Ko Kaŋko woni jippinirɗo ndiyam ka kammu, hino woodani on e majjam njaram, leɗɗe no (yalta) e majjam, ko e majjam kadi oornoton.",
-      "yo": "Òun ni Ẹni tó ń sọ omi kalẹ̀ (fún yín) láti sánmọ̀. Mímu wà fún yín nínú rẹ̀. Igi ewéko tún ń wù jáde láti inú rẹ̀, tí ẹ fi ń bọ́ àwọn ẹran-ọ̀sìn."
+      "yo": "Òun ni Ẹni tó ń sọ omi kalẹ̀ (fún yín) láti sánmọ̀. Mímu wà fún yín nínú rẹ̀. Igi ewéko tún ń wù jáde láti inú rẹ̀, tí ẹ fi ń bọ́ àwọn ẹran-ọ̀sìn.",
+      "zh": "他从天上降下雨水，你们可以用做饮料，你们赖以放牧的树木因之而生长。",
+      "ml": "അവനാണ് ആകാശത്ത് നിന്ന് വെള്ളം ചൊരിഞ്ഞുതന്നത്‌. അതില്‍ നിന്നാണ് നിങ്ങളുടെ കുടിനീര്‌. അതില്‍ നിന്നുതന്നെയാണ് നിങ്ങള്‍ക്ക് (കാലികളെ) മേക്കുവാനുള്ള ചെടികളുമുണ്ടാകുന്നത്‌.",
+      "th": "พระองค์คือ ผู้ทรงหลั่งน้ำลงมาจากฟากฟ้า ส่วนหนึ่งเป็นเครื่องดื่มสำหรับพวกเจ้าและอีกส่วนหนึ่ง (ทำให้) พฤกษชาติ (เจริญเติบโต) เพื่อพวกเจ้าใช้เลี้ยงสัตว์",
+      "vi": "Chính Ngài là Ðấng đã ban nước mưa từ trên trời xuống để các ngươi uống, tưới tiêu cây trồng và chăn nuôi gia súc."
     }
   },
   {
@@ -2079,7 +2346,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isaan sanyii midhaanii, Zeytuuna, mukkeen Timiraa, Inaboowwaniifi fuduraalee hunda irraa isiniif magarsa. Dhugumatti, kana keessa ummata xiinxalaniif mallattootu jira.",
       "so": "Wuxuu idiinku soo bixiyaa sarac, zaytuun, geedaha timirta, canabyo iyo nooc walba oo midhaha ah. Arrinkani waxaa xaqiiq ugu sugan calaamo ciddii fikiri.",
       "ff": "Homo fuɗnirana on ɗam aawruuji, nebbanteeje, e tamarooje, e inabuuje, e kala dimɗe.ɓesnoje wonii e ɗuum, tasakuyee wonan´de yimɓe miijitotooɓe.",
-      "yo": "(Allāhu) tún ń fi (omi yìí) hu àwọn irúgbìn, igi òróró zaetūn, igi dàbínù, igi àjàrà àti gbogbo àwọn èso (yòókù) jáde fún yín. Dájúdájú àmì wà nínú ìyẹn fún ìjọ tó ní àròjinlẹ̀."
+      "yo": "(Allāhu) tún ń fi (omi yìí) hu àwọn irúgbìn, igi òróró zaetūn, igi dàbínù, igi àjàrà àti gbogbo àwọn èso (yòókù) jáde fún yín. Dájúdájú àmì wà nínú ìyẹn fún ìjọ tó ní àròjinlẹ̀.",
+      "zh": "他为你们而生产庄稼、油橄榄、椰枣、葡萄和各种果实。对于能思维的民众，此中确有一种迹象。",
+      "th": "ด้วยมัน (น้ำนั้น) พระองค์ทรงให้พืชผลและผลมะกอก และอินทผลัม และองุ่น และจากผลไม้อีกหลายชนิดได้งอกออกมา แท้จริงในการนั้น แน่นอน ย่อมเป็นสัญญาณสำหรับกลุ่มชนที่ตรึกตรอง",
+      "vi": "Cũng nguồn nước mưa đó, Ngài làm mọc ra các loại cây trồng, ô liu, chà là, nho và tất cả loại trái cây. Quả thật, trong sự việc đó là một dấu hiệu dành cho nhóm người biết suy ngẫm."
     }
   },
   {
@@ -2116,7 +2386,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti gabbaramaan keessan gabbaramaa tokkicha. Isaan Aakhiraatti hin amanne, onneewwan isaanii (tokkichummaa Rabbii) mormituudha; isaan boontota.",
       "so": "Ilaahiinnu waa Ilaah Mid Keliya ah (Allaah). Kuwase aan rumeysneyn Aakhirada, quluubtoodu way diidaan (Towxiidka), wayna isla weyn yihiin.",
       "ff": "deweteeɗo mon on ko deweteeɗo gooto. ɓeen ɓe ngooŋɗinaa laakara, ɓerɗe maɓɓe ɗen ko jedduɗe, ɓen ko townitiiɓe.",
-      "yo": "Ọlọ́hun yín tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo, Ọlọ́hun Ọ̀kan ṣoṣo ni. Àmọ́ àwọn tí kò ní ìgbàgbọ́ nínú Ọjọ́ Ìkẹ́yìn ni ọkàn wọn takò ó, tí wọ́n sì ń ṣègbéraga."
+      "yo": "Ọlọ́hun yín tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo, Ọlọ́hun Ọ̀kan ṣoṣo ni. Àmọ́ àwọn tí kò ní ìgbàgbọ́ nínú Ọjọ́ Ìkẹ́yìn ni ọkàn wọn takò ó, tí wọ́n sì ń ṣègbéraga.",
+      "zh": "你们所应当崇拜的是唯一的受崇拜者。不信后世的人，他们的心是否认的，他们是自大的。",
+      "ml": "നിങ്ങളുടെ ആരാധ്യൻ ഏക ആരാധ്യനത്രെ. എന്നാല്‍ പരലോകത്തില്‍ വിശ്വസിക്കാത്തവരാകട്ടെ, അവരുടെ ഹൃദയങ്ങള്‍ നിഷേധസ്വഭാവമുള്ളവയത്രെ. അവര്‍ അഹങ്കാരികളുമാകുന്നു.",
+      "th": "พระเจ้าของพวกเจ้านั้นคือพระเจ้าองค์เดียว ดังนั้น บรรดาผู้ไม่ศรัทธาต่อวันปรโลก หัวใจของพวกเขาปฏิเสธไม่รับรู้ และพวกเขาหยิ่งผยอง",
+      "vi": "Thượng Đế của các ngươi (hỡi loài người) là một Đấng duy nhất. Tuy nhiên, trái tim của những kẻ không tin vào Đời Sau đang ngập tràn trong việc khước từ Lẽ thật, và chúng là những kẻ kiêu ngạo."
     }
   },
   {
@@ -2150,7 +2424,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ወደዚያ ከማንኛውም ነገር አላህ ወደ ፈጠረው ጥላዎቹ እነርሱ የተዋረዱ ሲኾኑ ለአላህ ሰጋጆች ኾነው ከቀኝና ከግራዎች ወደሚዛወሩት አላዩምን?",
       "om": "Sila wantoota irraa gara waan Rabbiin uumee hin ilaalanii? kan gaaddisoonni isaa gara mirgaafi bitaawwanitti dabu xiqqaatoo ta’anii Rabbiif sujuudan.",
       "so": "Miyeyna u fiirsan wax kastoo uu Alle abuuray, (sida) hoosaskoodu ugu iishaan midig iyo bidix, oo ugu sujuudaan Alle iyagoo u khushuucsan.",
-      "ff": "E ɓee njii'aani ko Alla tagi kon e huunde nde ɗowɗe mun yiiltondirta ñaamo e nano, sujjangol Alla, hara ko ɗi jankiniiɗi."
+      "ff": "E ɓee njii'aani ko Alla tagi kon e huunde nde ɗowɗe mun yiiltondirta ñaamo e nano, sujjangol Alla, hara ko ɗi jankiniiɗi.",
+      "zh": "难道他们没有观察安拉所创造的万物吗？各物的阴影，偏向左边和右边，为安拉而叩头，同时他们是卑贱的。",
+      "th": "และพวกเขามิได้มองไปยังสิ่งที่อัลลอฮ์ทรงสร้างบ้างหรอกหรือว่า เงาของมันจะทอดไปทางขวาและทางซ้าย เพื่อสุญูดต่ออัลลอฮ์โดยที่พวกมันนอบน้อม",
+      "vi": "Lẽ nào (những kẻ vô đức tin) không quan sát những gì Allah đã tạo ra? Bóng của chúng đổ sang phải và sang trái, chúng phủ phục hoàn toàn phục tùng Allah."
     }
   },
   {
@@ -2181,7 +2458,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ወደ በራሪዎች በሰማይ አየር ውስጥ (ለመብረር) የተገሩ ሲኾኑ (ከመውደቅ) አላህ እንጂ ሌላ የማይዛቸው ኾነው አይመለከቱምን በዚህ ውስጥ ለሚያምኑ ሕዝቦች በእርግጥ ተዓምራቶች አሉ፡፡",
       "so": "Miyeyna arkayn shimbiraha loo sakhiray (oo ku duulaya) hawada samada? Cidina ma qaban karto aan ahayn Allaah. hubaal, arrinkani waxaa ugu sugan calaamooyin ciddii rumayn.",
       "ff": "E ɓe nji'aani colli ɗiin ko ɗi eltaaɗi ka weeyo kammu (won´de) jogitaaki ɗi si wanaa Alla? Wonii e ɗuum, maandeeji wonan´de yimɓe gooŋɗinooɓe ɓen.",
-      "yo": "Ṣé wọn kò wòye sí àwọn ẹyẹ tí A rọ̀ (fún fífò) nínú òfurufú (lábẹ́) sánmọ̀? Kò sí ẹni tó ń mú wọn dúró (sínú òfurufú) bí kò ṣe Allāhu. Dájúdájú àwọn àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo."
+      "yo": "Ṣé wọn kò wòye sí àwọn ẹyẹ tí A rọ̀ (fún fífò) nínú òfurufú (lábẹ́) sánmọ̀? Kò sí ẹni tó ń mú wọn dúró (sínú òfurufú) bí kò ṣe Allāhu. Dájúdájú àwọn àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo.",
+      "zh": "难道他们没有看见在空中被制服的群鸟吗？只有安拉维持他们。对于归信的民众，此中确有许多迹象。",
+      "th": "พวกเขาไม่เห็นนกที่มีผู้ควบคุมมันอยู่ในชั้นบรรยากาศของท้องฟ้าดอกหรือ? ไม่มีผู้ใดสามารถรั้งพวกมันไว้ได้นอกจากอัลลอฮ์ แท้จริงในการนั้นย่อมเป็นสัญญาณสำหรับกลุ่มชนที่ศรัทธา"
     }
   },
   {
@@ -2211,7 +2490,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Rabbiin haqatti, toltuu hojjachuufi firootaaf (gargaarsa) kennuutti ajaja. Wantoota fokkatoo, waan jibbamaadhaafi miidhaa irraas ni dhorga. Akka gorfamtaniif jechas isin gorsa.",
       "so": "Hubaal Alle wuxuu amraa caddaaladda, axsaan falka iyo siinta qaraabada, wuxuuna reebaa xumaanta, munkarka iyo gardarrada. Wuu idin waaninayaa, inaad ku waano qaadataan oo xusuusataan.",
       "ff": "Tabitii Alla yamirii nuunɗal, e moƴƴingol, e moƴƴagol e joomiraaɓe ɓadondiral. homo haɗa gaay e pan-kare, e ko añinii, e bewre. homo waajoo on, mbeleejo'o, on mbaajitoray.",
-      "yo": "Dájúdájú Allāhu ń pàṣẹ ṣíṣe déédé, ṣíṣe rere àti fífún ẹbí (ní n̄ǹkan). Ó sì ń kọ ìwà ìbàjẹ́, ohun burúkú àti rúkèrúdò. Ó ń ṣe wáàsí fún yín nítorí kí ẹ lè lo ìrántí."
+      "yo": "Dájúdájú Allāhu ń pàṣẹ ṣíṣe déédé, ṣíṣe rere àti fífún ẹbí (ní n̄ǹkan). Ó sì ń kọ ìwà ìbàjẹ́, ohun burúkú àti rúkèrúdò. Ó ń ṣe wáàsí fún yín nítorí kí ẹ lè lo ìrántí.",
+      "zh": "安拉的确命人公平、行善、施济亲戚，并禁人淫乱、作恶事、霸道；他劝戒你们，以便你们记取教诲。",
+      "th": "แท้จริงอัลลอฮ์ทรงใช้ให้รักษาความยุติธรรมและทำการดี และการบริจาคแก่ญาติใกล้ชิด และทรงห้ามปรามการอนาจารและการชั่วช้า และการอธรรม พระองค์ทรงตักเตือนพวกเจ้าเพื่อพวกเจ้าจักได้รำลึก"
     }
   },
   {
@@ -2245,7 +2526,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wanti isin biraa ni dhuma, Wanti Rabbiin biraa immoo hafaadha. Isaan obsaniif mindaa isaanii irra gaarii waan isaan dalagaa turaniitiin isaan mindeessina.",
       "so": "Waxa aad haysataan way dhammaan, waxase Alle agtiis ah baa baaqi ahaanaya. Waxaana ku abaal marin kuwa samra ajarkooda u qalma waxa ugu wanaagsan ay falayeen.",
       "ff": "Ko marɗon kon re'ay (gasat), ko woni ka Alla ko ko keddotooɗum. ma min mbarjor ɓeen muññiiɓe njoɓdi maɓɓe ndiin ko ɓuri moƴƴude e ko ɓe ngollatnoo kon.",
-      "yo": "Ohun tó ń bẹ lọ́dọ̀ yín máa tán. Ohun tó ń bẹ lọ́dọ̀ Allāhu sì máa wà títí láéláé. Dájúdájú A sì máa san àwọn tó ṣe sùúrù ní ẹ̀san rere wọn tó dára ju ohun tí wọ́n ń ṣe níṣẹ́."
+      "yo": "Ohun tó ń bẹ lọ́dọ̀ yín máa tán. Ohun tó ń bẹ lọ́dọ̀ Allāhu sì máa wà títí láéláé. Dájúdájú A sì máa san àwọn tó ṣe sùúrù ní ẹ̀san rere wọn tó dára ju ohun tí wọ́n ń ṣe níṣẹ́.",
+      "zh": "你们所有的是要耗尽的，在安拉那里的是无穷的。我誓必要以坚忍者所行的最大善功报酬他们。",
+      "th": "ทุกสิ่งที่พวกเจ้ามีย่อมหมดสิ้นไป แต่สิ่งที่อัลลอฮ์มีนั้นจะคงอยู่ชั่วนิรันดร์ และแน่นอน เราจะตอบแทนบรรดาผู้อดทนด้วยรางวัลที่ดียิ่งกว่าสิ่งที่พวกเขาได้กระทำไว้",
+      "vi": "Những gì ở nơi các ngươi đều sẽ tiêu tan nhưng những gì ở nơi Allah đều sẽ còn mãi. Và TA (Allah) chắc chắn sẽ trao cho những người hết lòng kiên nhẫn một phần thưởng tốt hơn những gì họ đã từng làm."
     }
   },
   {
@@ -2282,7 +2566,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Rabbiin warra Isa sodaataniifi warra isaan tolchitoota tahan wajjin jira.",
       "so": "Hubaal Alle wuxuu la jiraa kuwa iska jira (xumaha, dhowra Amarradiisa) ee ah sama falayaasha.",
       "ff": "Pellet, Alla no won´di e ɓeen hulɓe [Mo] e ɓeen moƴƴinooɓe.",
-      "yo": "Dájúdájú Allāhu wà pẹ̀lú àwọn tó bẹ̀rù (Rẹ̀) àti àwọn tó ń ṣe rere."
+      "yo": "Dájúdájú Allāhu wà pẹ̀lú àwọn tó bẹ̀rù (Rẹ̀) àti àwọn tó ń ṣe rere.",
+      "zh": "安拉确是同敬畏者和行善者在一起的。",
+      "ta": "நிச்சயமாக அல்லாஹ் இறையச்சமுள்ளவர்களுடனும், நல்லறம் புரிபவர்களுடனும் இருக்கிறான்.",
+      "ml": "തീര്‍ച്ചയായും അല്ലാഹു സൂക്ഷ്മത പാലിച്ചവരോടൊപ്പമാകുന്നു. സദ്‌വൃത്തരായിട്ടുള്ളവരോടൊപ്പവും.",
+      "th": "แท้จริงอัลลอฮ์ทรงอยู่ร่วมกับบรรดาผู้ยำเกรงพระองค์ และบรรดาผู้กระทำความดี",
+      "vi": "Quả thật, Allah luôn bên cạnh những người kính sợ Ngài và những người làm tốt."
     }
   },
   {
@@ -2320,7 +2609,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbii wajjin gabbaramaa biraa hin taasisin; (yoo waliin gabbarte) balaaleffatamaa, salphataa taatee teessa.",
       "so": "Ha yeelin la jirka Alle ilaah kale, si aadan u fadhiisan (cadaab dhexdi) adigoo dulleysan deyro ah.",
       "ff": "Wota a waɗan Alla deweteeɗo goɗɗo; njooɗoyoɗaa ko a ñiŋaaɗo noppaaɗo.",
-      "yo": "Má ṣe mú ọlọ́hun mìíràn mọ́ Allāhu nítorí kí o má baà jókòó (sínú Iná) ní ẹni àbùkù, ẹni ẹ̀kọ̀ (tí wọ́n máa dá ìṣòro rẹ̀ dá)."
+      "yo": "Má ṣe mú ọlọ́hun mìíràn mọ́ Allāhu nítorí kí o má baà jókòó (sínú Iná) ní ẹni àbùkù, ẹni ẹ̀kọ̀ (tí wọ́n máa dá ìṣòro rẹ̀ dá).",
+      "zh": "你不要使任何物与安拉同受崇拜，以免你变成受责备、遭遗弃的。",
+      "ta": "(நபியே!) அல்லாஹ்வுடன் வணங்கப்படுகின்ற வேறு ஓர் இறைவனை ஆக்காதீர். (அவ்வாறு செய்தால்) இகழப்பட்டவராக, கைவிடப்பட்டவராக, முடங்கிவிடுவீர்.",
+      "ml": "അല്ലാഹുവോടൊപ്പം മറ്റൊരു ആരാധ്യനെയും നീ സ്ഥാപിക്കരുത്‌. എങ്കില്‍ അപമാനിതനും കയ്യൊഴിക്കപ്പെട്ടവനുമായി നീ ഇരിക്കേണ്ടി വരും.",
+      "th": "เจ้าอย่าได้เอาพระเจ้าอื่นใดมาคู่เคียงกับอัลลอฮ์ เพราะจะทำให้เจ้าตกอยู่ในสภาพที่น่าตำหนิและถูกเมินเฉย",
+      "vi": "Ngươi (hỡi người bề tôi) chớ dựng lên cùng với Allah một thần linh nào khác, kẻo ngươi sẽ phải ngồi (trong Hỏa Ngục) một cách hèn hạ đáng khinh."
     }
   },
   {
@@ -2356,7 +2650,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti Gooftaan kee hiree nama fedheef ni bal’isa; (nama fedhe irratti) ni dhiphisas. Dhugumatti, Inni gabroota Isaa beekaa, argaa ta’eera.",
       "so": "Hubaal, Rabbigaa wuxuu u fidiyaa risiqa kuu doono, oo ku cidhiidhiyaa (kuu doono). Hubaal waa Mid addoomahiisa mar walba Xog Ogaal u ah oo Arka.",
       "ff": "Pellet Joomi maa, no yaacnana arsike, on mo O muuyi. O ɓittina. Pellet Kaŋko O wonii kumpitiiɗo, ji’oowo jeyaaɓe makko.",
-      "yo": "Dájúdájú Olúwa rẹ l’Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú Ó ń jẹ́ Onímọ̀-ìkọ̀kọ̀, Olùríran nípa àwọn ẹrúsìn Rẹ̀."
+      "yo": "Dájúdájú Olúwa rẹ l’Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú Ó ń jẹ́ Onímọ̀-ìkọ̀kọ̀, Olùríran nípa àwọn ẹrúsìn Rẹ̀.",
+      "zh": "你的养主必为他所意欲者而使给养富裕，必为他所意欲者而使给养窘迫。对于他的众仆，他〔安拉〕确是彻知的，确是明察的。",
+      "th": "แท้จริง พระผู้อภิบาลของเจ้าทรงไพศาลในการให้ปัจจัยยังชีพแก่ผู้ที่พระองค์ทรงประสงค์ และทรงให้คับแคบ (แก่ผู้ที่พระองค์ทรงประสงค์) แท้จริงพระองค์เป็นผู้ทรงรอบรู้ ผู้ทรงเห็นปวงบ่าวของพระองค์",
+      "vi": "Quả thật, Thượng Đế của Ngươi muốn nới rộng hay thu hẹp bổng lộc cho ai tùy ý Ngài, bởi Ngài luôn thông toàn về đám bầy tôi của Ngài."
     }
   },
   {
@@ -2394,7 +2691,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Gooftaan keessan Isa doonii galaana keessa isiniif deemsisuudha. akka tola Isaa irraa barbaaddattaniif, Dhugumatti, Inni isiniif rahmata godhaa ta’eera.",
       "so": "Rabbigiin (Alle) waa Kan idiinku socodsiiya doonyaha badda si aad u raadsataan Deeqdiisa. Hubaal Waa uu idiin Naxariis Badan yahay.",
       "ff": "Ko Joomi mon woni sogganatɗo on laaɗe ɗe e maayo, fii yo on ɗaɓɓu immorde e ɓural makko , pellet, Kaŋko ko O jurmotooɗo on.",
-      "yo": "Olúwa yín ni Ẹni tó ń mú ọkọ̀ ojú-omi rìn fún yín nítorí kí ẹ lè wá nínú oore àjùlọ Rẹ̀. Dájúdájú Ó ń jẹ́ Aláàánú fún yín."
+      "yo": "Olúwa yín ni Ẹni tó ń mú ọkọ̀ ojú-omi rìn fún yín nítorí kí ẹ lè wá nínú oore àjùlọ Rẹ̀. Dájúdájú Ó ń jẹ́ Aláàánú fún yín.",
+      "zh": "你们的养主为你们而使船只在海上航行，以便你们寻求他的恩惠。他对你们确是至慈的。",
+      "th": "พระผู้อภิบาลของพวกเจ้าคือผู้ทรงให้เรือแล่นในท้องทะเล เพื่อพวกเจ้าจะได้แสวงหาความโปรดปรานของพระองค์ แท้จริงพระองค์เป็นผู้ทรงเมตตาแก่พวกเจ้าเสมอ",
+      "vi": "Thượng Đế của các ngươi (con người) là Đấng đã chế ngự cho các ngươi tàu thuyền lênh đênh trên biển để các ngươi tìm kiếm bổng lộc của Ngài, quả thật Ngài đối với các ngươi rất nhân từ."
     }
   },
   {
@@ -2431,7 +2731,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Nuti waan dachii irra jiru (hunda) isheef miidhagina taasifne, isaan irraa eenyu akka irra tolchee hojjatu mul’isuuf.",
       "so": "Waxaan ka yeellay waxa dhulka korkiisa ah qurux lagu qurxiyey, si aanu u imtixaanno midkood ugu camal fiican.",
       "ff": "Minen min mbaɗii ko woni ko ka hoore leydi cuɗaari mayri, fii yo min  mjarribo ɓe ko hommbo e maɓɓe ɓurata moƴƴin'de golle.",
-      "yo": "Dájúdájú Àwa ṣe ohun tí ń bẹ lórí ilẹ̀ ní ọ̀ṣọ́ fún ilẹ̀ náà nítorí kí Á lè dán wọn wò (pé) èwo nínú wọn ló máa dára jùlọ níbi iṣẹ́ ṣíṣe (nínú ẹ̀sìn)."
+      "yo": "Dájúdájú Àwa ṣe ohun tí ń bẹ lórí ilẹ̀ ní ọ̀ṣọ́ fún ilẹ̀ náà nítorí kí Á lè dán wọn wò (pé) èwo nínú wọn ló máa dára jùlọ níbi iṣẹ́ ṣíṣe (nínú ẹ̀sìn).",
+      "zh": "我确已使大地上的一切事物成为大地的装饰品，以便我考验世人，看谁的工作是最优美的。",
+      "ta": "நிச்சயமாக நாம், பூமியின் மேலுள்ளதை அதற்கு அலங்காரமாக ஆக்கினோம், அவர்களில் யார் செயலால் மிக அழகியவர் என்று அவர்களை நாம் சோதிப்பதற்காக.",
+      "th": "แท้จริง เราได้ทำให้สิ่งที่อยู่ในแผ่นดินเป็นเครื่องประดับสำหรับมัน เพื่อเราจะได้ทดสอบพวกเขาว่า ผู้ใดในหมู่พวกเขาจะมีการกระทำที่ดีที่สุด",
+      "vi": "Quả thật, TA (Allah) đã tạo ra những gì trên trái đất là để tô điểm, trang hoàng mục đích thử thách họ xem ai trong số họ là người làm tốt nhất."
     }
   },
   {
@@ -2469,7 +2773,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Warreen amananii, gaggaarii hojjatan, (galata guddaa argatu) Nuti mindaa nama dalagaa tolchee hin balleessinu.",
       "so": "Hubaal, kuwa (Xaqa) rumeeyey oo fala samaha, Annagu ma dayacno abaalgudka ciddii wanaajisa camalka.",
       "ff": "Pellet, ɓen gooŋɗinɓe ɓe ngolli moƴƴi ɗin, Minen Min njeebataa njoɓdi kala moƴƴinɗo golle.",
-      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, dájúdájú Àwa kò níí fi ẹ̀san ẹni tí ó bá ṣe iṣẹ́ rere ráre."
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, dájúdájú Àwa kò níí fi ẹ̀san ẹni tí ó bá ṣe iṣẹ́ rere ráre.",
+      "zh": "归信而行善者，我必不使他们的善行徒劳无酬，",
+      "ta": "நிச்சயமாக எவர்கள் நம்பிக்கை கொண்டு, நன்மைகளை செய்தார்களோ, - (இவ்வாறு) மிக அழகிய செயலை செய்தவர்களின் கூலியை நிச்சயமாக நாம் வீணாக்க மாட்டோம்.",
+      "ml": "തീര്‍ച്ചയായും വിശ്വസിക്കുകയും സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും ചെയ്തവരാരോ അത്തരം സല്‍പ്രവര്‍ത്തനം നടത്തുന്ന യാതൊരാളുടെയും പ്രതിഫലം നാം തീര്‍ച്ചയായും പാഴാക്കുന്നതല്ല.",
+      "th": "แท้จริงบรรดาผู้ศรัทธาและประกอบคุณงามความดีทั้งหลายนั้น แท้จริงเราจะไม่ทำให้ผลตอบแทนของผู้กระทำความดีสูญหายอย่างแน่นอน",
+      "vi": "Riêng những người có đức tin và hành thiện, chắc chắn TA (Allah) sẽ không làm mất đi công lao của những ai làm tốt."
     }
   },
   {
@@ -2505,7 +2814,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Nuti Numatu dachiifi waan ishee irra jiru dhaala; garuma keenya deebifamus.",
       "so": "Waa Annaga (Allaah) kuwa dhaxli arlada iyo waxa korkeeda joogaba.  Xaggaygaana laydiin soo celin.",
       "ff": "Minen min ndonat lesdi ndi e ɓen wonɓe e dow mayri, ko ka amen ɓe nduttetee.",
-      "yo": "Dájúdájú Àwa l’A máa jogún ilẹ̀ àti àwọn tó ń bẹ lórí rẹ̀. Ọ̀dọ̀ Wa sì ni wọn yóò dá wọn padà sí."
+      "yo": "Dájúdájú Àwa l’A máa jogún ilẹ̀ àti àwọn tó ń bẹ lórí rẹ̀. Ọ̀dọ̀ Wa sì ni wọn yóò dá wọn padà sí.",
+      "zh": "我必定继承大地和大地上所有的一切，他们将归于我。",
+      "ta": "நிச்சயமாக நாம்தான் பூமிக்கும் அதில் இருப்பவர்களுக்கும் உரிமையாளர்களாக ஆகுவோம். நம்மிடமே அவர்கள் திரும்பக் கொண்டு வரப்படுவார்கள்.",
+      "ml": "തീര്‍ച്ചയായും നാം തന്നെയാണ് ഭൂമിയുടെയും അതിലുള്ളവയുടെയും അനന്തരാവകാശിയാകുന്നത്‌. നമ്മുടെ അടുക്കലേക്ക് തന്നെയായിരിക്കും അവര്‍ മടക്കപ്പെടുന്നത്‌.",
+      "th": "แท้จริง เราเป็นผู้ครอบครองมรดกแผ่นดินและที่อยู่บนแผ่นดิน และพวกเขาจะถูกนำกลับมายังเรา",
+      "vi": "Quả thật TA (Allah) sẽ thừa hưởng trái đất và những ai sống trên đó và họ sẽ được đưa trở về trình diện TA."
     }
   },
   {
@@ -2543,7 +2857,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila namni hin yaadatuu akka Nuti kanaan dura isa uumne, ka waa argamaa hintahin?",
       "so": "Miyuusan Aadmigu xusuusnayn inaan abuurnay kal hore isagoon waxba ahayn?",
       "ff": "Enee, neɗɗaŋke on annditaani Menen Men Tagiino mo ko adii, hari o wonaali hay e hu'unde.",
-      "yo": "Ṣé ènìyàn kò rántí pé dájúdájú Àwa ni A ṣẹ̀dá rẹ̀ tẹ́lẹ̀tẹ́lẹ̀ nígbà tí kò tí ì jẹ́ n̄ǹkan kan?"
+      "yo": "Ṣé ènìyàn kò rántí pé dájúdájú Àwa ni A ṣẹ̀dá rẹ̀ tẹ́lẹ̀tẹ́lẹ̀ nígbà tí kò tí ì jẹ́ n̄ǹkan kan?",
+      "zh": "人忘记了吗？他以前不是实有的，而我创造了他。",
+      "ta": "“இதற்கு முன்னர் நிச்சயமாக நாம் அவனைப் படைத்ததையும் (நாம் அவனைப் படைப்பதற்கு முன்பு) அவன் எந்த ஒரு பொருளாகவும் இருக்கவில்லை” என்பதையும் அந்த மனிதன் சிந்திக்க வேண்டாமா!",
+      "ml": "മനുഷ്യന്‍ ഓര്‍മിക്കുന്നില്ലേ; അവന്‍ ഒന്നുമല്ലാതിരുന്ന ഒരു ഘട്ടത്തില്‍ നാമാണ് ആദ്യം അവനെ പടച്ചുണ്ടാക്കിയതെന്ന്‌?",
+      "th": "มนุษย์ไม่คิดบ้างหรือว่า แท้จริงเราได้บังเกิดเขามาแต่กาลก่อน โดยที่เขามิได้เป็นสิ่งใดมาก่อนเลย",
+      "vi": "Chẳng lẽ con người không nhớ rằng chính TA đã tạo hóa ra y trước đây trong lúc y không là gì cả đó sao?"
     }
   },
   {
@@ -2581,7 +2900,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wanti samiileefi dachii keessa jiran hundi gabra (Isaa) qofa ta’anii gara Rahmaan dhufanu malee hin hafan.",
       "so": "Wax kastoo ku sugan samooyinka iyo arlada wuxuu u imaan (Allaah) Raxmaanka isagoo addoon ah.",
       "ff": "Alaa ko woni e kammuuli e  leydi si wanaa o aray e jurmotooɗo hombo woni jeyaaɗo.",
-      "yo": "Kò sí ẹnì kan nínú àwọn sánmọ̀ àti ilẹ̀ àyàfi kí ó wá bá Àjọkẹ́-ayé ní ipò ẹrúsìn."
+      "yo": "Kò sí ẹnì kan nínú àwọn sánmọ̀ àti ilẹ̀ àyàfi kí ó wá bá Àjọkẹ́-ayé ní ipò ẹrúsìn.",
+      "zh": "凡在天地间的，将来没有一个不像奴仆一样归依至仁主的。",
+      "ta": "வானங்கள்; இன்னும், பூமியில் உள்ள ஒவ்வொருவரும் ரஹ்மானிடம் (பணிந்த) அடிமையாக வருவாரே தவிர (குழந்தையாகவோ அவனுக்கு நிகரானவராகவோ) இல்லை.",
+      "ml": "ആകാശങ്ങളിലും ഭൂമിയിലുമുള്ള ഏതൊരാളും ഒരു ദാസനെന്ന നിലയില്‍ പരമകാരുണികന്‍റെ അടുത്ത് വരുന്നവന്‍ മാത്രമായിരിക്കും.",
+      "th": "ไม่มีผู้ใดในชั้นฟ้าทั้งหลายและแผ่นดิน เว้นแต่เขาจะมายังพระผู้ทรงเมตตายิ่งในฐานะบ่าวเท่านั้น",
+      "vi": "Bởi quả thật tất cả những ai trong các tầng trời và trái đất đều đến trình diện Đấng Độ Lượng như một người bề tôi."
     }
   },
   {
@@ -2618,7 +2942,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wanti samiilee, dachiifi gidduu isaan lamaanii jiruufi wanti biyyee jala jiru hundi kan Isaati.",
       "so": "Isagaa leh waxa ku sugan samooyinka iyo waxa ku sugan arlada iyo waxa u dhexeeya iyo waxa ka hooseeyaba rayska.",
       "ff": "No woodani mo o ko woni ko e kammuuji ɗin e ko woni kon e leydi ndi e ko wini kon hakkunde majji kannji ɗiɗi e ko woni ko e les leydi.",
-      "yo": "TiRẹ̀ ni ohunkóhun tó wà nínú àwọn sánmọ̀, ohunkóhun tó wà nínú ilẹ̀ àti ohunkóhun tó wà láààrin méjèèjì àti ohunkóhun tó wà lábẹ́ ilẹ̀."
+      "yo": "TiRẹ̀ ni ohunkóhun tó wà nínú àwọn sánmọ̀, ohunkóhun tó wà nínú ilẹ̀ àti ohunkóhun tó wà láààrin méjèèjì àti ohunkóhun tó wà lábẹ́ ilẹ̀.",
+      "zh": "凡在天上地下的，在天地之间的，在地底下的，都是他的。",
+      "ta": "வானங்களில் உள்ளவையும் பூமியில் உள்ளவையும் அவை இரண்டிற்குமிடையில் உள்ளவையும் ஈரமான மண்ணுக்குக் கீழ் உள்ளவையும் அவனுக்கே உரியன.",
+      "ml": "അവന്നുള്ളതാകുന്നു ആകാശങ്ങളിലുള്ളതും ഭൂമിയിലുള്ളതും, അവയ്ക്കിടയിലുള്ളതും, മണ്ണിനടിയിലുള്ളതുമെല്ലാം.",
+      "th": "เป็นกรรมสิทธิ์ของพระองค์ นั่นคือสิ่งที่อยู่ในเหล่าชั้นฟ้าทั้งหลายและสิ่งที่อยู่ในแผ่นดิน และสิ่งที่อยู่ในระหว่างทั้งสอง และสิ่งที่อยู่ใต้พื้นดิน",
+      "vi": "Đấng mà mọi vật trong các tầng trời và mọi vật trên trái đất cũng như vạn vật nằm giữa chúng và những gì nằm sâu dưới lòng đất đều là của Ngài."
     }
   },
   {
@@ -2656,7 +2985,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin dhugaan gabbaramaan isa malee hin jiru. Maqoonni babbareedoon isaaf tahe.",
       "so": "Allaah! Ma jiro ilaah (xaq ah) aan Isaga aheyn, Wuxuu leeyahay Magacyada Wanaagga iyo Quruxda Badan.",
       "ff": "Alla deweteeɗo alaa si wonaa Kaŋko, no woodani mo Inɗe moƴƴe ɗe.",
-      "yo": "Allāhu, kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. TiRẹ̀ ni àwọn orúkọ tó dára jùlọ."
+      "yo": "Allāhu, kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. TiRẹ̀ ni àwọn orúkọ tó dára jùlọ.",
+      "zh": "除安拉外，绝无应受崇拜者，他有许多最美的名号。",
+      "ta": "அல்லாஹ் - அவனைத் தவிர (உண்மையில் வணங்கத்தகுதியான) இறைவன் அறவே இல்லை. அவனுக்கு மிக அழகிய பெயர்கள் உள்ளன.",
+      "ml": "അല്ലാഹു - അവനല്ലാതെ ആരാധനക്കർഹനായി മറ്റാരുമില്ല. അവന്‍റെതാകുന്നു ഏറ്റവും ഉല്‍കൃഷ്ടമായ നാമങ്ങള്‍.",
+      "th": "อัลลอฮ์ ไม่มีพระเจ้าอื่นใดที่เที่ยงแท้นอกจากพระองค์ สำหรับพระองค์นั้นทรงพระนามอันสุนทรทั้งหลาย",
+      "vi": "Allah là Đấng mà Không có Thượng Đế đích thực nào khác ngoài Ngài. Ngài mang những tên gọi tốt đẹp nhất."
     }
   },
   {
@@ -2692,7 +3026,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Ishee (dachii) irraa isin uumne; ishee keessatti isin deebifna; yeroo biraas ishee irraa isin baafna.",
       "so": "Xaggeedaan (arlada) idinka abuurnay, gudaheeda baan idinku celin, xaggeedaana la idinka soo saari mar kale (geeri kaddib).",
       "ff": "Ko immorde e mayri Min Tagi on, ko e ndeer mayri Min nduttata on, ko immorde e mayri kadi Min njaltinoyta on laawol goɗgol",
-      "yo": "Láti ara erùpẹ̀ ni A ti da yín. Inú rẹ̀ sì ni A óò da yín padà sí. Láti inú rẹ̀ sì ni A óò ti mu yín jáde padà nígbà mìíràn.”"
+      "yo": "Láti ara erùpẹ̀ ni A ti da yín. Inú rẹ̀ sì ni A óò da yín padà sí. Láti inú rẹ̀ sì ni A óò ti mu yín jáde padà nígbà mìíràn.”",
+      "zh": "我从大地创造你们，我使你们复返于大地，我再一次使你们从大地复活。",
+      "ta": "அதிலிருந்துதான் உங்களைப் படைத்தோம். இன்னும், அதில்தான் உங்களை திரும்பக் கொண்டுவருவோம். இன்னும், அதிலிருந்துதான் மற்றொரு முறை உங்களை வெளியேற்றுவோம்.",
+      "ml": "അതില്‍ (ഭൂമിയില്‍) നിന്നാണ് നിങ്ങളെ നാം സൃഷ്ടിച്ചത്‌. അതിലേക്ക് തന്നെ നിങ്ങളെ നാം മടക്കുന്നു. അതില്‍ നിന്ന് തന്നെ നിങ്ങളെ മറ്റൊരു പ്രാവശ്യം നാം പുറത്തുകൊണ്ടുവരികയും ചെയ്യും.",
+      "th": "จากแผ่นดินเราได้บังเกิดพวกเจ้า และ ณ แผ่นดินนั้นเราจะให้พวกเจ้ากลับคืนไป และจากแผ่นดินนั้น เราจะให้พวกเจ้าออกมาอีกครั้งหนึ่ง",
+      "vi": "Từ đất bụi TA đã tạo hóa các ngươi, TA sẽ hoàn các ngươi trở lại thành đất bụi và cũng từ đất bụi TA sẽ đưa các ngươi trở ra một lần nữa."
     }
   },
   {
@@ -2729,7 +3068,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wantoonni samiileefi dachii keessa jiran hundi kan Isaati. Isaan Isa (Allaah) bira jiranis (maleykonnis) Isa gabbaruu irraa hin boonan; hin hifatanis.",
       "so": "Alle baa leh wax kasta oo ku sugan samooyinka iyo arlada; kuwa (Alle) agtiisa ahna ee u dhow (malaa’igta) iskama wey- neeyaan cibaadadiisa, kamana daalaan.",
       "ff": "Ko Kaŋko woodani ko woni ko ka kammuuji e ka leydi ɓen wonɓe ka Makko kadi ɓe mawnittaako ga rewugol Mo, ɓe hasrintaaka kadi.",
-      "yo": "TiRẹ̀ ni àwọn tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Àti pé àwọn tó ń bẹ lọ́dọ̀ Rẹ̀, wọn kì í ṣègbéraga níbi ìjọ́sìn Rẹ̀. Kò sì rẹ̀ wọ́n."
+      "yo": "TiRẹ̀ ni àwọn tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Àti pé àwọn tó ń bẹ lọ́dọ̀ Rẹ̀, wọn kì í ṣègbéraga níbi ìjọ́sìn Rẹ̀. Kò sì rẹ̀ wọ́n.",
+      "zh": "凡在天地间的，都是他的；凡在他那里的，都虔诚地崇拜他，既不傲慢，又不疲倦。",
+      "ta": "வானங்களிலும் பூமியிலும் உள்ளவர்கள் அவனுக்கே உரிமையானவர்கள். இன்னும், அவனிடம் இருக்கின்ற (வான)வர்கள் அவனை வணங்குவதற்கு வீம்புபிடிக்க மாட்டார்கள். இன்னும் (அதில்) சோர்வடைய மாட்டார்கள்.",
+      "ml": "അവന്റേതാകുന്നു ആകാശങ്ങളിലും, ഭൂമിയിയും ഉള്ളവരെല്ലാം. അവന്‍റെ അടുക്കലുള്ളവര്‍ (മലക്കുകള്‍) അവനെ ആരാധിക്കുന്നത് വിട്ട് അഹങ്കരിക്കുകയില്ല. അവര്‍ക്ക് മടുപ്പു തോന്നുകയുമില്ല.",
+      "th": "และเป็นกรรมสิทธิ์ของพระองค์ ผู้ที่อยู่ในชั้นฟ้าทั้งหลายและแผ่นดิน และผู้ที่อยู่ ณ ที่พระองค์ (มลาอิกะฮ์) พวกเขาจะไม่ลำพองตนในการเคารพภักดีพระองค์ และพวกเขาจะไม่เหนื่อยหน่าย",
+      "vi": "Bất cứ ai trong các tầng trời và trái đất đều thuộc về Ngài (Allah). Và bất cứ ai ở nơi Ngài (các Thiên Thần) đều không ngạo mạn và không biết mệt mỏi trong việc thờ phượng Ngài."
     }
   },
   {
@@ -2762,7 +3106,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Odoo isaan lamaan (samiifi dachii) keessa Rabbiin malee gabbaramtoonni biraa jiraatanii lamaan isaaniituu ni badu ture, Rabbiin Gooftaa Arshii ta’e waan kaafiroonni (Isaan) jedhan irraa qulqullaa’e!",
       "so": "Hadday jiri lahaayeen dhexdooda (cirarka iyo dhulka) ilaahyo aan ahayn Alle, way fasaadi lahaayeen. Wuu ka hufan yahay Alle Rabbiga Carshiga Weyn leh oo ka Sarreeyaa waxay ku tilmaami.",
       "ff": "Sinndo laatino e majji [kammuuli ɗi e leydi ndi] deweteeɗi ko wonaa Alla ɗi bonayno. Senayee wonanii Alla Jom Arsi kin ga koɓe cifotoo.",
-      "yo": "Tí ó bá jẹ́ pé àwọn ọlọ́hun kan wà nínú sánmọ̀ àti ilẹ̀ lẹ́yìn Allāhu, sánmọ̀ àti ilẹ̀ ìbá ti bàjẹ́. Mímọ́ ni fún Allāhu, Olúwa Ìtẹ́-ọlá, tayọ ohun tí wọ́n ń fi ròyìn (Rẹ̀)."
+      "yo": "Tí ó bá jẹ́ pé àwọn ọlọ́hun kan wà nínú sánmọ̀ àti ilẹ̀ lẹ́yìn Allāhu, sánmọ̀ àti ilẹ̀ ìbá ti bàjẹ́. Mímọ́ ni fún Allāhu, Olúwa Ìtẹ́-ọlá, tayọ ohun tí wọ́n ń fi ròyìn (Rẹ̀).",
+      "zh": "除安拉外，假若天地间还有许多神明，那么，天地必定破坏了。赞颂安拉——宝座的主宰——是超乎他们的描述的。",
+      "ta": "(வானம், பூமி) அவை இரண்டிலும் அல்லாஹ்வைத் தவிர (வேறு) கடவுள்கள் இருந்திருந்தால் அவை இரண்டும் சீரழிந்திருக்கும். ஆக, (இணைவைக்கும்) அவர்கள் வர்ணிப்பதை விட்டும் அர்ஷுடைய அதிபதியான அல்லாஹ் மகாத்தூயவன்.",
+      "th": "หากในชั้นฟ้าและแผ่นดินมีพระเจ้าหลายองค์ อื่นจากอัลลอฮ์แล้ว จะเกิดความเสียหายอย่างแน่นอน มหาบริสุทธิ์แด่อัลลอฮ์ พระผู้อภิบาลแห่งบัลลังก์ ทรงบริสุทธิ์จากสิ่งที่พวกเขาเสกสรรปั้นแต่งขึ้น"
     }
   },
   {
@@ -2787,7 +3134,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sw": "Je, hao waliokufuru hawakuona kwamba mbingu na ardhi zilikuwa zimeambatana, kisha Sisi tukazibandua? Na tukafanya kwa maji kila kilicho hai? Basi je, hawaamini?",
       "am": "እነዚያም የካዱት ሰማያትና ምድር የተጣበቁ የነበሩና የለያየናቸው መኾናችንን አያውቁምን? ሕያው የኾነንም ነገር ሁሉ ከውሃ ፈጠርን፡፡ አያምኑምን ?",
       "om": "Sila isaan kafaran akka samiifi dachiin walitti maxxantuu turanii, ergasii addaan isaan baafne hin beekanuu? Bishaan irraa lubbu qabeeyyii hunda ni uumne, Sila hin amananuu?",
-      "ff": "Enee,  ɓen yedduɓe yiaani won'dema kammuuji ɗi e leydi ndi ɗi laatinoke kippondirɗi, Min ngudditi ɗi Min mbaɗi immorde e ndiyam ɗam kala hu'unde wuuru nde. Kaa ɓe ngonɗintaa?"
+      "ff": "Enee,  ɓen yedduɓe yiaani won'dema kammuuji ɗi e leydi ndi ɗi laatinoke kippondirɗi, Min ngudditi ɗi Min mbaɗi immorde e ndiyam ɗam kala hu'unde wuuru nde. Kaa ɓe ngonɗintaa?",
+      "zh": "不归信者难道不知道吗？天地原是闭塞的，而我开天辟地，我用水创造一切生物。难道他们不信吗？",
+      "vi": "Lẽ nào những kẻ vô đức tin không nhận thấy rằng các tầng trời và trái đất quyện lại với nhau trước khi TA chẻ chúng ra làm đôi hay sao? Và TA đã tạo mọi sinh vật từ nước, lẽ nào chúng không tin ư?"
     }
   },
   {
@@ -2823,7 +3172,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Lubbuun hundi du’a dhandhamtuudha. Isin qormaatuuf hamtuufi gaariin isin mokkorra, Garuma keenyatti deebifamtu.",
       "so": "Naf walbaa waa tii dhadhamisa geeri, waxaanu idinku imtixaani shar iyo khayrba kala saar darteed, Xaggayagaana la idiin soo celin.",
       "ff": "Kala woŋkii meedat maayɗe nde, Min njarribora on bone on e moƴƴere nde njarrabagol, ko ka amen kadi nduttotoɗon.",
-      "yo": "Ẹ̀mí kọ̀ọ̀kan ló máa tọ́ ikú wò. A sì máa fi aburú àti rere ṣàdánwò fún yín. Ọ̀dọ̀ Wa sì ni wọn yóò da yín padà sí."
+      "yo": "Ẹ̀mí kọ̀ọ̀kan ló máa tọ́ ikú wò. A sì máa fi aburú àti rere ṣàdánwò fún yín. Ọ̀dọ̀ Wa sì ni wọn yóò da yín padà sí.",
+      "zh": "凡有血气者，都要尝死的滋味。我以祸福考验你们，你们只被召归我。",
+      "ta": "ஒவ்வோர் ஆன்மாவும் மரணத்தை சுவைக்கக் கூடியதாகும். துன்பத்தினாலும் இன்பத்தினாலும் உங்களை நாம் நன்கு சோதிப்போம். இன்னும், நம்மிடமே நீங்கள் திரும்பக் கொண்டு வரப்படுவீர்கள்.",
+      "th": "ทุกชีวิตเป็นผู้ลิ้มรสแห่งความตาย และเราจะทดสอบพวกเจ้าด้วยความชั่วและความดีเพื่อเป็นบททดสอบ และยังเราเท่านั้นพวกเจ้าจะถูกนำกลับ",
+      "vi": "Mỗi một linh hồn đều phải nếm cái chết; TA thử thách các ngươi với điều xấu và điều tốt. Và các ngươi đều sẽ được đưa trở về trình diện TA."
     }
   },
   {
@@ -2858,7 +3211,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin isaan amananii, gaggaarii dalagan Jannatoowwan laggeen ishee jala yaatu isaan seensisa, Dhugumatti Rabbiin waan fedhu hojjata.",
       "so": "Hubaal, Alle wuxuu gelin kuwa (Xaqa) rumeeyey oo samaha fala Jannooyin (beero) ay hoostoodu webiyo qul-qulaan. Hubaal Alle wuxuu Falaa wuxuu Doono.",
       "ff": "Pellet, Alla homoo naatna ɓen gooŋɗinɓe ɓe ngolli moƴƴi ɗin Aljannaaji no ila sengo ley majji caatlii ɗi, pellet, Alla homo waɗa ko o faandii ko.",
-      "yo": "Dájúdájú Allāhu yóò mú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere wọ inú Ọgbà Ìdẹ̀ra tí àwọn odò ń ṣàn ní ìsàlẹ̀ rẹ̀. Dájúdájú Allāhu ń ṣe ohun tí Ó bá fẹ́."
+      "yo": "Dájúdájú Allāhu yóò mú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere wọ inú Ọgbà Ìdẹ̀ra tí àwọn odò ń ṣàn ní ìsàlẹ̀ rẹ̀. Dájúdájú Allāhu ń ṣe ohun tí Ó bá fẹ́.",
+      "zh": "安拉必定要使归信而且行善者进入那下临诸河的乐园。安拉确是为所欲为的。",
+      "ta": "நிச்சயமாக நம்பிக்கை கொண்டு நன்மைகள் செய்தவர்களை அல்லாஹ் சொர்க்கங்களில் பிரவேசிக்க வைப்பான். அவற்றின் கீழ் நதிகள் ஓடும். நிச்சயமாக அல்லாஹ், தான் நாடுவதை செய்கிறான்.",
+      "th": "แท้จริงอัลลอฮ์ทรงให้บรรดาผู้ที่ศรัทธาและประกอบคุณงามความดี เข้าสรวงสวรรค์ ซึ่งมีแม่น้ำลำธารหลายสายไหลผ่านจากเบื้องล่างของมัน แท้จริงอัลลอฮ์ทรงกระทำสิ่งที่พระองค์ทรงประสงค์"
     }
   },
   {
@@ -2895,7 +3251,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin isaan amanan irraa ni ittisa, nama akkaan gantuu, kafaraa ta'e hunda Rabbiin hin jaallatu.",
       "so": "Xaqiiq Alle wuu difaacaa addoomahiisa rumeysan. Xaqiiq, Alle ma jecla mid kastoo khiyaano badan, abaal dhac badan.",
       "ff": "Pellet, Alla O solnanay(duñanat) ɓeen gooŋɗinɓe, pellet, Alla o yiɗaa kala kodoowo keewɗo jeddi.",
-      "yo": "Dájúdájú Allāhu ń ti aburú kúrò fún àwọn tó gbàgbọ́ ní òdodo. Dájúdájú Allāhu kò nífẹ̀ẹ́ gbogbo àwọn oníjàǹbá, aláìgbàgbọ́."
+      "yo": "Dájúdájú Allāhu ń ti aburú kúrò fún àwọn tó gbàgbọ́ ní òdodo. Dájúdájú Allāhu kò nífẹ̀ẹ́ gbogbo àwọn oníjàǹbá, aláìgbàgbọ́.",
+      "zh": "安拉必定要保护归信者，安拉确是不喜爱每个忘恩负义的叛逆者的。",
+      "ta": "நிச்சயமாக அல்லாஹ், நம்பிக்கை கொண்டவர்களை (பாதுகாத்து, அவர்களை) விட்டும் (நிராகரிப்பாளர்களை) தடுத்து விடுவான். நிச்சயமாக அல்லாஹ் எல்லா மோசடிக்காரர்களையும் நன்றி கெட்டவர்களையும் நேசிக்க மாட்டான்.",
+      "ml": "തീര്‍ച്ചയായും സത്യവിശ്വാസികള്‍ക്കുവേണ്ടി അല്ലാഹു പ്രതിരോധം ഏര്‍പെടുത്തുന്നതാണ്‌. നന്ദികെട്ട വഞ്ചകരെയൊന്നും അല്ലാഹു ഇഷ്ടപ്പെടുകയില്ല; തീര്‍ച്ച",
+      "th": "แท้จริงอัลลอฮ์ทรงปกป้องบรรดาผู้ศรัทธาให้พ้นจากศัตรู แท้จริงอัลลอฮ์ไม่ทรงโปรดทุกคนที่ทรยศเนรคุณ",
+      "vi": "Chắc chắn Allah sẽ bảo vệ những người có đức tin; và chắc chắn Allah sẽ không yêu thương những kẻ tráo trở vong ân."
     }
   },
   {
@@ -2932,7 +3293,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wantoonni samiilee keessa jiraniifi wantoonni dachii keessa jiran hundi kan Isaati, Rabbiin Isatu dureessa, faarfamaadha.",
       "so": "Wuxuu leeyahay waxa ku sugan samooyinka iyo waxa ku sugan arlada. Hubaal, Alle waa Hodonka (ka deeqtoon wax waliba) la ammaanoo Mahadsan.",
       "ff": "Ko Kaŋko woodani ko woni kon ka kammuuji e ka leydi. Pellet, Alla ko Kaŋko woni Galo jettiniiɗo on.",
-      "yo": "TiRẹ̀ ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ohunkóhun tó wà nínú ilẹ̀. Dájúdájú Allāhu, Òun mà ni Ọlọ́rọ̀, Ẹlẹ́yìn."
+      "yo": "TiRẹ̀ ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ohunkóhun tó wà nínú ilẹ̀. Dájúdájú Allāhu, Òun mà ni Ọlọ́rọ̀, Ẹlẹ́yìn.",
+      "zh": "天地万物都是他的，安拉确是无求的，确是可颂的。",
+      "ta": "வானங்களில் உள்ளவையும் பூமியில் உள்ளவையும் அவனுக்கே சொந்தமானவை. இன்னும், நிச்சயமாக அல்லாஹ்தான் மகா செல்வந்தன் (-நிறைவானவன், எத்தேவையுமற்றவன்), பெரும் புகழுக்குரியவன் ஆவான்.",
+      "ml": "അവന്റേതാകുന്നു ആകാശങ്ങളിലുള്ളതും ഭൂമിയിലുള്ളതും. തീര്‍ച്ചയായും അല്ലാഹു പരാശ്രയമുക്തനും സ്തുത്യര്‍ഹനും തന്നെയാകുന്നു.",
+      "th": "สิ่งที่อยู่ในชั้นฟ้าทั้งหลายและสิ่งที่อยู่ในแผ่นดินเป็นของพระองค์ และแท้จริงอัลลอฮ์นั้นคือผู้ทรงมั่งมีอย่างเหลือหลาย ผู้ทรงเป็นที่สรรเสริญ",
+      "vi": "Mọi vật trong các tầng trời và mọi vật trong trái đất đều thuộc về Allah. Quả thật, Allah là Đấng Giàu Có, Đấng Đáng Được Ca Ngợi."
     }
   },
   {
@@ -2965,7 +3331,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ ከመላእክት ውስጥ መልክተኞችን ይመርጣል፡፡ ከሰዎችም (እንደዚሁ)፤ አላህ ሰሚ ተመልካች ነው፡፡",
       "om": "Rabbiin maleykota irraa ergamoota filata; namoota irraas (ni filata), Rabbiin dhaga’aa, argaadha.",
       "so": "Alle wuxuu ka dhex doortaa Rusul malaa’igta iyo dadkaba. Hubaal, Alle waa wax kasta Maqle, wax kasta Arka.",
-      "ff": "Alla no suɓoo immorde e Maleykaaji\nɗi Nulaaɓe e yimɓe ɓen kadi. Pellet, Alla ko O Nanoowo ji'oowo."
+      "ff": "Alla no suɓoo immorde e Maleykaaji\nɗi Nulaaɓe e yimɓe ɓen kadi. Pellet, Alla ko O Nanoowo ji'oowo.",
+      "zh": "安拉从众天使和人类中拣选若干使者，安拉确是全聪的，确是全明的。",
+      "ta": "அல்லாஹ் வானவர்களிலிருந்தும் மனிதர்களிலிருந்தும் தூதர்களை தேர்வு செய்கிறான். நிச்சயமாக அல்லாஹ் நன்கு செவியுறுபவன், உற்று நோக்குபவன் ஆவான்.",
+      "th": "อัลลอฮ์ทรงคัดเลือกบรรดาฑูตจากหมู่มลาอิกะฮ์และจากหมู่มนุษย์ แท้จริงอัลลอฮ์เป็นผู้ทรงได้ยิน ผู้ทรงเห็น",
+      "vi": "Allah tuyển chọn các vị Sứ Giả trong giới Thiên Thần và trong nhân loại. Quả thật, Allah là Đấng Hằng Nghe, Đấng Hằng Thấy."
     }
   },
   {
@@ -3000,7 +3370,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እናንተ ያመናችሁ ሰዎች ሆይ! (በስግደታችሁ) አጎንብሱ፣ በግንባራችሁም ተደፉ፣ ጌታችሁንም ተገዙ፣ በጎንም ነገር ሥሩ፣ ልትድኑ ይከጀልላችኋልና፡፡",
       "so": "Kuwa (Xaqa) rumeeyow! Rukuuca oo sujuuda oo caabuda Rabbigiin (idinkoon waxba la wadaajin cibaadada) falana khayr aad liibaantaane.",
       "ff": "Eey mon yo ɓen gooŋɗinɓe, ndukƴee cujjon ndewon Joomi mo'on, ngollon ko moƴƴi kon mbelejo'o onon on maloyte.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ dáwọ́tẹ orúnkún (lórí ìrun), ẹ forí kanlẹ̀, ẹ jọ́sìn fún Olúwa yín, kí ẹ sì ṣe rere nítorí kí ẹ lè jèrè."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ dáwọ́tẹ orúnkún (lórí ìrun), ẹ forí kanlẹ̀, ẹ jọ́sìn fún Olúwa yín, kí ẹ sì ṣe rere nítorí kí ẹ lè jèrè.",
+      "zh": "归信的人们啊！你们应当鞠躬，应当叩头，应当崇拜你们的养主，应当力行善功，以便你们成功。۩",
+      "ta": "நம்பிக்கையாளர்களே! (தொழுகையில்) குனியுங்கள்! இன்னும், சிரம்பணியுங்கள்! இன்னும், உங்கள் இறைவனை வணங்குங்கள்! இன்னும், நன்மை செய்யுங்கள்! நீங்கள் (அவற்றின் மூலம்) வெற்றி அடைவதற்காக.",
+      "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ കുമ്പിടുകയും, സാഷ്ടാംഗം ചെയ്യുകയും, നിങ്ങളുടെ രക്ഷിതാവിനെ ആരാധിക്കുകയും, നന്‍മ പ്രവര്‍ത്തിക്കുകയും ചെയ്യുക. നിങ്ങള്‍ വിജയം പ്രാപിച്ചേക്കാം.",
+      "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย! พวกเจ้าจงก้ม (รูกั๊วะ) จงกราบ (สุญูด) และจงเคารพภักดีต่อพระผู้อภิบาลของพวกเจ้าเถิด และจงประกอบการดี แน่นอนพวกเจ้าจะได้ความสำเร็จ",
+      "vi": "Hỡi những người có đức tin! Các ngươi hãy cúi mình, hãy quỳ lạy và hãy thờ phượng Thượng Đế của các ngươi, và các ngươi hãy hành thiện, mong rằng các ngươi sẽ thành công."
     }
   },
   {
@@ -3037,7 +3412,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin halkaniifi guyyaa gara gaggalcha, Dhugumatti, kana keessa namoota hubannoo qabaniif gorsatu jira.",
       "so": "Alle Wuxuu gedgeddiyaa oo is dhaafiyaa habeenka iyo maalinta. Arrinkani waxaa xaqiiq ugu sugan cibro kuwa aragtida dheer.",
       "ff": "Alla homo waylita jemma on e ñalawma on, pellet, na wonii e ɗum tasakuyee wonan'de joomiraaɓe jiiɗe ɓen.",
-      "yo": "Allāhu ń yí òru àti ọ̀sán padà (ìkíní kejì n wá ní tẹ̀léǹtẹ̀lé pẹ̀lú àlékún àti àdínkù). Dájúdájú àríwòye wà nínú ìyẹn fún àwọn tó ní ojú ìríran."
+      "yo": "Allāhu ń yí òru àti ọ̀sán padà (ìkíní kejì n wá ní tẹ̀léǹtẹ̀lé pẹ̀lú àlékún àti àdínkù). Dájúdájú àríwòye wà nínú ìyẹn fún àwọn tó ní ojú ìríran.",
+      "zh": "安拉使昼夜更迭，对于有视力者，此中确有一种鉴戒。",
+      "ta": "அல்லாஹ் இரவையும் பகலையும் (ஒன்றன் பின் ஒன்றை) மாற்றுகிறான். அறிவுடையவர்களுக்கு நிச்சயமாக இதில் படிப்பினை இருக்கிறது.",
+      "ml": "അല്ലാഹു രാവും പകലും മാറ്റി മറിച്ചു കൊണ്ടിരിക്കുന്നു. തീര്‍ച്ചയായും അതില്‍ കണ്ണുള്ളവര്‍ക്ക് ഒരു ചിന്താവിഷയമുണ്ട്‌.",
+      "th": "อัลลอฮฺทรงผลัดเปลี่ยนกลางคืนและกลางวัน แท้จริงในลักษณะเช่นนั้น แน่นอนมันเป็นบทเรียนสำหรับปวงผู้มีสายตา(พิจารณา)",
+      "vi": "Allah lật trở đêm ngày, quả thật trong sự việc đó là bài học cho những người biết quan sát và thấu hiểu."
     }
   },
   {
@@ -3074,7 +3454,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Nuti dhugumatti keeyyattoota ifa ta’an buufnee jirra. Rabbiin nama fedhe gara karaa qajeelaa qajeelcha.",
       "so": "Waxaan dhab ahaan soo dejinnay Aayado cad cad. Alle wuxuu ku hanuuniyaa cidduu doono Jid Toosan (Islaamka).",
       "ff": "Gooŋɗii Min njippinii Aayeeje ɓannguɗe, Alla no feewna on mo O muuyii fa'ade e Laawol Pocciingol ngol.",
-      "yo": "Dájúdájú A ti sọ àwọn āyah tó ń yanjú ọ̀rọ̀ kalẹ̀. Allāhu sì ń tọ́ ẹnikẹ́ni tí Ó bá fẹ́ sí ọ̀nà tààrà (’Islām)."
+      "yo": "Dájúdájú A ti sọ àwọn āyah tó ń yanjú ọ̀rọ̀ kalẹ̀. Allāhu sì ń tọ́ ẹnikẹ́ni tí Ó bá fẹ́ sí ọ̀nà tààrà (’Islām).",
+      "zh": "我确已降示许多明白的迹象，安拉指导他所意欲者走向正路。",
+      "ta": "திட்டவட்டமாக நாம் தெளிவான வசனங்களை இறக்கியுள்ளோம். அல்லாஹ், தான் நாடியவருக்கு நேரான பாதையின் பக்கம் நேர்வழி காட்டுகிறான்.",
+      "ml": "(യാഥാര്‍ത്ഥ്യം) വ്യക്തമാക്കുന്ന ദൃഷ്ടാന്തങ്ങള്‍ നാം അവതരിപ്പിച്ചിരിക്കുന്നു. അല്ലാഹു താന്‍ ഉദ്ദേശിക്കുന്നവരെ നേരായ പാതയിലേക്ക് നയിക്കുന്നു.",
+      "th": "โดยแน่นอน เราได้ประทานลงมาซึ่งโองการทั้งหลายอันชัดแจ้ง และอัลลอฮ์ทรงนำทางแก่ผู้ที่พระองค์ทรงประสงค์ไปยังทางที่เที่ยงตรง",
+      "vi": "Quả thật, TA (Allah) đã ban xuống những lời mặc khải rất rõ ràng, và Allah hướng dẫn ai Ngài muốn đến với con đường ngay thẳng."
     }
   },
   {
@@ -3106,7 +3491,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "የምእምናን ቃል የነበረው ወደ አላህና ወደ መልክተኛው በመካከላቸው ሊፈርድ በተጠሩ ጊዜ ሰማን፤ ታዘዝንም ማለት ብቻ ነው፡፡ እነዚህም እነሱ የፈለጉትን የሚያገኙ ናቸው፡፡",
       "om": "Jechi Mu’uminootaa yeroo akka gidduu isaaniitti murteessuuf gara Rabbiifi ergamaa isaatti waamaman “dhageenye; ajajamnes” jechuu qofa, Isaan sun milkaa’oon isaanuma.",
       "so": "Qowlka mu’miniinta, marka loogu yeedho Alle iyo Rasuulkiisa si uu u kala garsooro dhexdooda, waa uun inay yidhaahdaan: “Maqallay oo yeelnay. kuwaasina waa kuwa ah liibaanayaasha.",
-      "ff": "Anndu ko woni konngol gooɗinɓe ɓen si ɓe noddaama faade ka Alla e Nulaaɗo makko on fii yo o ñaawu hakkunde maɓɓe, ko nde ɓe mbi'ata: \"Min nanii men ɗoftike.\" Ɓen ɗon ko kamɓe woni malaaɓe ɓen."
+      "ff": "Anndu ko woni konngol gooɗinɓe ɓen si ɓe noddaama faade ka Alla e Nulaaɗo makko on fii yo o ñaawu hakkunde maɓɓe, ko nde ɓe mbi'ata: \"Min nanii men ɗoftike.\" Ɓen ɗon ko kamɓe woni malaaɓe ɓen.",
+      "zh": "当信士们被召归于安拉及其使者以便他替他们判决的时候，他们只应当说：“我们已听从了。”这等人确是成功的。"
     }
   },
   {
@@ -3142,7 +3528,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Samiilee keessatti buruuja taasisee ishee keessattis (biiftuu) ifaafi ji’a ibsaa taasise khayriin Isaa baay’ate.",
       "so": "Waxaa khayr iyo barako badan Kan 'Alle' ee u yeelay samada xiddigo waaweyn,    \n yeelayna dhexdeeda nal 'qorrax' iyo dayax ifiya.",
       "ff": "Mawnii oon baɗuɗo ka kammu burjuuji(buurti) o waɗi e ndeer majji pitilol e leelewal jalbungal.",
-      "yo": "Ìbùkún ni fún Ẹni tí Ó ṣe àwọn ibùsọ̀ ìràwọ̀ sínú sánmọ̀. Ó tún ṣe òòrùn àti òṣùpá ní ìmọ́lẹ̀ sínú rẹ̀."
+      "yo": "Ìbùkún ni fún Ẹni tí Ó ṣe àwọn ibùsọ̀ ìràwọ̀ sínú sánmọ̀. Ó tún ṣe òòrùn àti òṣùpá ní ìmọ́lẹ̀ sínú rẹ̀.",
+      "zh": "圣洁哉安拉！他把许多宫造在天上，又造明灯和灿烂的月亮。",
+      "ta": "வானங்களில் பெரும் கோட்டைகளை அமைத்தவன் மிகுந்த பாக்கியவான், மிகவும் உயர்ந்தவன், மிக்க மகத்துவமானவன் ஆவான். இன்னும், அவன்தான் அதில் சூரியனையும் ஒளிவீசும் சந்திரனையும் அமைத்தான்.",
+      "ml": "ആകാശത്ത് നക്ഷത്രമണ്ഡലങ്ങള്‍ ഉണ്ടാക്കിയവന്‍ അനുഗ്രഹപൂര്‍ണ്ണനാകുന്നു. അവിടെ അവന്‍ ഒരു വിളക്കും (സൂര്യന്‍) വെളിച്ചം നല്‍കുന്ന ചന്ദ്രനും ഉണ്ടാക്കിയിരിക്കുന്നു.",
+      "th": "ความจำเริญยิ่งแด่พระผู้ทรงทำให้ชั้นฟ้ามีหมู่ดาว และพระองค์ทรงตั้งตะเกียง (ดวงอาทิตย์ส่องแสงออกมา) และดวงจันทร์อันมีแสงนวลไว้ในนั้น",
+      "vi": "Hồng phúc thay Đấng đã tạo ra các chùm sao trên trời và tạo ra trong đó mặt trời chiếu sáng và mặt trăng mang ánh hào quang."
     }
   },
   {
@@ -3179,7 +3570,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Inni Isatu argaa, beekaadha.",
       "so": "Hubaal (Alle) waa wax kasta Maqlaha, wax kasta Ogsoon.",
       "ff": "Pellet, ko Kaŋko woni Nanoowo gannduɗo On.",
-      "yo": "Dájúdájú Òun mà ni Olùgbọ́, Onímọ̀."
+      "yo": "Dájúdájú Òun mà ni Olùgbọ́, Onímọ̀.",
+      "zh": "他确是全聪的，确是全知的。",
+      "ml": "തീര്‍ച്ചയായും അവന്‍ എല്ലാം കേള്‍ക്കുന്നവനും അറിയുന്നവനുമത്രെ.",
+      "th": "แท้จริงพระองค์คือผู้ทรงได้ยิน ผู้ทรงรอบรู้เสมอ",
+      "vi": "Bởi Ngài đích thực là Đấng Hằng Nghe, Toàn Tri."
     }
   },
   {
@@ -3209,7 +3604,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila isaan hinlaallee Akka nuti halkan yeroo isa keessa boqataniifi guyyaa immoo kan keessa arganii (hojjatan) isaaniif goone. Dhugumatti, kana keessa namoota amananiif mallattooleetu jira.",
       "so": "Mawaysan arkayn inaan uga yeelnay habeenka inay ku xasilaan, Maalintana iftiin? Hubaal, arrinkani waxaa ugu sugan calaamooyin ciddii rumeyn (Xaqa).",
       "ff": "Enee, hara ɓe yiaani, Minen Min mbaɗii jemma on fii yo ɓe deeƴu e maako, e ñalawma on nji'irɗo? Pellet, wonii e ɗum Aayeeje wonan'de yimɓe gooŋɗinooɓe ɓen.",
-      "yo": "Ṣé wọn kò wòye pé dájúdájú Àwa l’A dá òru nítorí kí wọ́n lè sinmi nínú rẹ̀, (A sì dá) ọ̀sán (nítorí kí wọ́n lè) ríran? Dájúdájú àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo."
+      "yo": "Ṣé wọn kò wòye pé dájúdájú Àwa l’A dá òru nítorí kí wọ́n lè sinmi nínú rẹ̀, (A sì dá) ọ̀sán (nítorí kí wọ́n lè) ríran? Dájúdájú àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo.",
+      "zh": "难道他们不知道吗？我以黑夜做他们的安息时间，以白昼做他们观看的时间，对于归信的民众其中确有许多迹象。",
+      "ml": "രാത്രിയെ നാം അവര്‍ക്ക് സമാധാനമടയാനുള്ളതാക്കുകയും, പകലിനെ പ്രകാശമുള്ളതാക്കുകയും ചെയ്തിരിക്കുന്നു എന്നവര്‍ കണ്ടില്ലേ? വിശ്വസിക്കുന്ന ജനങ്ങള്‍ക്കു തീര്‍ച്ചയായും അതില്‍ ദൃഷ്ടാന്തങ്ങളുണ്ട്‌.",
+      "th": "พวกเขาไม่คิดหรือว่า เราได้ทรงกำหนดกลางคืนเพื่อให้พวกเขาจะได้พักผ่อนในเวลานั้น และได้ทรงทำให้กลางวันสว่างไสว? แท้จริงในการนั้น แน่นอนย่อมเป็นสัญญาณแก่หมู่ชนที่ศรัทธา",
+      "vi": "Lẽ nào họ đã không nhìn thấy việc TA đã làm ra ban đêm cho họ nghỉ ngơi và ban ngày để họ quan sát (được mọi vật)? Quả thật, trong sự việc đó là những dấu hiệu cho đám người có đức tin."
     }
   },
   {
@@ -3243,7 +3642,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "በመልካም ሥራ የመጣ ሰው ለእርሱ ከእርስዋ የበለጠ ምንዳ አልለው፡፡ እነርሱም በዚያ ቀን ከድንጋጤ ጸጥተኞች ናቸው፡፡",
       "om": "Nama gaariin dhufe (dalage) mindaa ishee caalutu isaaf jira; isaan guyyaa san rifannaa irraa nagaa bahoodha.",
       "ff": "Mo ardii e moƴƴere nden haray no woodani mo ko ɓuri nde moƴƴude, hara kamɓe ko ɓe hooliiɓe immorde e ɗenƴere nden Ñande.",
-      "yo": "Ẹnikẹ́ni tí ó bá dé pẹ̀lú iṣẹ́ rere, tirẹ̀ ni rere tó lóore ju èyí tó ṣe. Àwọn sì ni olùfàyàbalẹ̀ nínú ìjáyà ọjọ́ yẹn."
+      "yo": "Ẹnikẹ́ni tí ó bá dé pẹ̀lú iṣẹ́ rere, tirẹ̀ ni rere tó lóore ju èyí tó ṣe. Àwọn sì ni olùfàyàbalẹ̀ nínú ìjáyà ọjọ́ yẹn.",
+      "zh": "行善的人将获得更佳的报酬，在那日，他们将免于恐惧。",
+      "ta": "(லாஇலாஹ இல்லல்லாஹ் என்ற) நன்மையை யார் கொண்டு வருவாரோ அவருக்கு அதன் காரணமாக (சொர்க்கமாகிய) சிறந்தது (கூலியாக) உண்டு. இன்னும், அவர்கள் அந்நாளில் திடுக்கத்திலிருந்து பாதுகாப்புப் பெறுவார்கள்.",
+      "ml": "ആര്‍ നന്മയും കൊണ്ട് വന്നോ അവന് (അന്ന്‌) അതിനെക്കാള്‍ ഉത്തമമായത് ഉണ്ടായിരിക്കും. അന്ന് ഭയവിഹ്വലതയില്‍ നിന്ന് അവര്‍ സുരക്ഷിതരായിരിക്കുകയും ചെയ്യും.",
+      "th": "ผู้ใดมาพร้อมกับความดี (ที่เขาได้กระทำมา) เขาจะได้รับรางวัลที่ดีกว่าและพวกเขาจะได้รับความปลอดภัยจากเหตุการณ์ที่เลวร้ายในวันนั้น",
+      "vi": "Ai mang theo điều tốt thì sẽ được ban thưởng điều tốt hơn và sẽ được an toàn khỏi cảnh kinh hoàng của Ngày hôm đó."
     }
   },
   {
@@ -3277,7 +3681,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Ganda Aakhiraa san warra dachii keessatti ol aantummaafi badii [raawwachuu] hin feeneef ishee goona, Booddeen (gaariin) warra Rabbiin sodaataniifi.",
       "so": "Taasi ah Daarta Aakhiro (Jannada) waxaanu dhaxalsiin kuwa aan ku dooneyn sarreyn dhulka, aanna ku falin fasahaad. Cidhibta wanaagsanna waxaa leh kuwa iska jira'xumaha ee dhowra amarrada Alle\".",
       "ff": "Ɗen galle laakara, Min mbaɗanii ɗe ɓen ɓe yiɗaa townitaare ka leydi, wonaa kadi bonnugol. Battane moƴƴe ɗen, ko fii gooŋɗuɓe ɓen.",
-      "yo": "Ilé Ìkẹ́yìn yẹn, A máa fi fún àwọn tí kò fẹ́ máa ṣe ìgbéraga àti ìbàjẹ́ lórí ilẹ̀. Ìgbẹ̀yìn rere sì wà fún àwọn olùbẹ̀rù (Allāhu)."
+      "yo": "Ilé Ìkẹ́yìn yẹn, A máa fi fún àwọn tí kò fẹ́ máa ṣe ìgbéraga àti ìbàjẹ́ lórí ilẹ̀. Ìgbẹ̀yìn rere sì wà fún àwọn olùbẹ̀rù (Allāhu).",
+      "zh": "这是后世的住宅，我要用来报答那不愿傲慢也不愿堕落的人。善果只归敬畏的人。",
+      "ml": "ഭൂമിയില്‍ ഔന്നത്യമോ കുഴപ്പമോ ആഗ്രഹിക്കാത്തവര്‍ക്കാകുന്നു ആ പാരത്രിക ഭവനം നാം ഏര്‍പെടുത്തികൊടുക്കുന്നത്‌. അന്ത്യഫലം സൂക്ഷ്മത പാലിക്കുന്നവര്‍ക്ക് അനുകൂലമായിരിക്കും.",
+      "th": "นั่นคือที่พำนักแห่งปรโลก เราได้เตรียมมันไว้สำหรับบรรดาผู้ที่ไม่ปรารถนาหยิ่งผยองในแผ่นดินและไม่ก่อการเสียหาย และบั้นปลายที่ดีนั้นย่อมเป็นของบรรดาผู้ยำเกรง"
     }
   },
   {
@@ -3314,7 +3721,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila namoonni “amanne” jechuudhaan odoo hin mokkoramin dhiifamuu yaaduu?",
       "so": "Ma waxay dadku moodaan in loogaga tegayo inay yidhaahdaan: “Waan rumeynay (Xaqa) iyagoo aan la imtixaameyn?",
       "ff": "E yimɓe ɓen cikku ɓe ngaccirte nii, fii ɓe wi'ii: \"Min ngooŋɗinii!\" Hara ɓe pitninaaka?",
-      "yo": "Ǹjẹ́ àwọn ènìyàn lérò pé A óò fi wọ́n sílẹ̀ kí wọ́n máa sọ pé: “A gbàgbọ́”, tí A ò sì níí dán wọn wò?"
+      "yo": "Ǹjẹ́ àwọn ènìyàn lérò pé A óò fi wọ́n sílẹ̀ kí wọ́n máa sọ pé: “A gbàgbọ́”, tí A ò sì níí dán wọn wò?",
+      "zh": "众人以为他们随便说说“我们已归信了”而不受考验吗？",
+      "ta": "“நாங்கள் நம்பிக்கை கொண்டோம் என்று அவர்கள் கூறுவதால் அவர்கள் சோதிக்கப்படாமல் விடப்படுவார்கள்?” என்று மக்கள் நினைத்துக் கொண்டனரா?",
+      "th": "มนุษย์คิดหรือว่า พวกเขาจะถูกละเลย ด้วยแค่เพียงคำกล่าวของพวกเขาที่ว่า \"เราศรัทธาแล้ว\" แล้วพวกเขาก็จะไม่ถูกทดสอบใดๆ กระนั้นหรือ?!\"",
+      "vi": "Có phải nhân loại tưởng rằng họ sẽ được yên thân khi nói “Chúng tôi đã có đức tin” mà không bị thử thách ư?"
     }
   },
   {
@@ -3348,7 +3759,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Namni qunnamtii Allaah kajeele (haa qophaawuu), dhugumatti beellamni Rabbii dhufaadha. Inni dhagayaa, beekaadhas.",
       "so": "Qofkii rajeyn la kulanka Alle, hubaal ajasha uu Alle (qoray) way imaan (ee ha isu diyaariyo). Alle waa wax kasta Maqlaha, wax kasta Ogsoonaha ah.",
       "ff": "Kala tawɗo homo njortii kawroygol e Alla, ko pellet, lajal Alla ngal, ko hewtaygal. Ko Kaŋko woni Nanoowo, nganduɗo on.",
-      "yo": "Ẹnikẹ́ni tí ó bá ń retí ìpàdé Allāhu, dájúdájú àkókò Allāhu kúkú ń bọ̀. Òun sì ni Olùgbọ́, Onímọ̀."
+      "yo": "Ẹnikẹ́ni tí ó bá ń retí ìpàdé Allāhu, dájúdájú àkókò Allāhu kúkú ń bọ̀. Òun sì ni Olùgbọ́, Onímọ̀.",
+      "zh": "凡希望会见安拉者，谁都应当知道安拉的限期是必定降临的，他是全聪的，是全知的。",
+      "ta": "யார் அல்லாஹ்வின் சந்திப்பை விரும்பியவராக இருப்பாரோ நிச்சயமாக, அல்லாஹ்வின் (அந்த) தவணை வரக்கூடியதுதான் (என்பதை அவர் அறிந்து கொள்ளட்டும்). அவன்தான் நன்கு செவியுறுபவன், நன்கறிந்தவன் ஆவான்.",
+      "ml": "വല്ലവനും അല്ലാഹുവുമായി കണ്ടുമുട്ടണമെന്ന് ആഗ്രഹിക്കുന്നുവെങ്കില്‍ തീര്‍ച്ചയായും അല്ലാഹു നിശ്ചയിച്ച അവധി വരിക തന്നെ ചെയ്യും. അവന്‍ എല്ലാം കേള്‍ക്കുന്നവനും അറിയുന്നവനുമത്രെ.",
+      "th": "ผู้ใดหวังที่จะพบอัลลอฮ์ ดังนั้นแท้จริงกำหนดของอัลลอฮ์ย่อมมาถึงแน่นอน และพระองค์เป็นผู้ทรงได้ยิน ผู้ทรงรอบรู้",
+      "vi": "Người nào mong trở về gặp lại Allah thì quả thật thời hạn (ấn định cho việc gặp gỡ đó) của Allah chắc chắn sẽ đến. Quả thật, Ngài là Đấng Hằng Nghe, Hằng Biết."
     }
   },
   {
@@ -3383,7 +3799,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila isaan akka Rabbiin uumuu eegalee ergasii isa deebisu hin ilaalanuu? Sun Allaah irratti laafaadha.",
       "so": "Miyeyna u fiirsan sida Alle u billaaba abuuridda (uunka), haddana u soo celin? Hubaal arrinkaasi Alle wuu u fudud yahay.",
       "ff": "E ɓee yiaani no Alla fuɗɗorta tagoore ngum, refti o ndttat ngu? Pellet, ɗum wonii ko newanii Alla.",
-      "yo": "Tàbí wọn kò wòye sí bí Allāhu ti ṣe bẹ̀rẹ̀ ẹ̀dá ni? Lẹ́yìn náà, O máa dá a padà (sí ọ̀dọ̀ Rẹ̀). Dájúdájú ìyẹn rọrùn fún Allāhu."
+      "yo": "Tàbí wọn kò wòye sí bí Allāhu ti ṣe bẹ̀rẹ̀ ẹ̀dá ni? Lẹ́yìn náà, O máa dá a padà (sí ọ̀dọ̀ Rẹ̀). Dájúdájú ìyẹn rọrùn fún Allāhu.",
+      "zh": "难道他们没有看见安拉怎样创造众生，然后使他们复活吗？这对于安拉是容易的。",
+      "ml": "അല്ലാഹു എങ്ങനെ സൃഷ്ടി ആരംഭിക്കുകയും, പിന്നെ അത് ആവര്‍ത്തിക്കുകയും ചെയ്യുന്നു എന്ന് അവര്‍ ചിന്തിച്ചുനോക്കിയില്ലേ? തീര്‍ച്ചയായും അത് അല്ലാഹുവെ സംബന്ധിച്ചിടത്തോളം എളുപ്പമുള്ളതത്രെ.",
+      "th": "และพวกเขามิเห็นหรอกหรือว่า อัลลอฮ์ทรงเริ่มแรกของการบังเกิดอย่างไร แล้วจะทรงให้เขากลับฟื้นคืนชีพขึ้นมาอีกครั้งอย่างไร แท้จริงนั่นเป็นการง่ายสำหรับอัลลอฮ์",
+      "vi": "Lẽ nào (những kẻ phủ nhận này) đã không nhận xét thấy việc Allah khởi tạo rồi phục sinh như thế nào ư? Quả thật, điều đó đối với Allah vô cùng đơn giản."
     }
   },
   {
@@ -3411,7 +3831,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Fakkeenyi isaan Rabbii gaditti jaalalleewwan godhatanii (gabbaranii) akka birbirooftuu (saaphaphuu) mana ijaarratteeti. Dhugumatti irra laafaan manaa mana birbirooftuuti odoo kan beekan ta’anii.",
       "so": "Tusaalaha kuwa sameysta awliyo (ay caabudaan) Alle sokadi waa sida tusaalaha caadho taasoo yeelatay guri, waxaana ugu liita guryaha, guriga caadhada; hadday og yihiin.",
       "ff": "Misal ɓen jogitiiɓe ga Alla deweteeɗi, ko wano marijaawowal(njomblo) saccungal suudu. Ko ɓuri lo'ode non e cuuɗi ɗin, ko suudu marijaawo. Sinno ɓe annduno!",
-      "yo": "Àpèjúwe àwọn tó mú àwọn (òrìṣà) ní alátìlẹ́yìn lẹ́yìn Allāhu, ó dà bí àpèjúwe aláǹtàakùn tí ó kọ́ ilé kan. Dájúdájú ilé tí ó yẹpẹrẹ jùlọ ni ilé aláǹtàakùn, tí wọ́n bá mọ̀."
+      "yo": "Àpèjúwe àwọn tó mú àwọn (òrìṣà) ní alátìlẹ́yìn lẹ́yìn Allāhu, ó dà bí àpèjúwe aláǹtàakùn tí ó kọ́ ilé kan. Dájúdájú ilé tí ó yẹpẹrẹ jùlọ ni ilé aláǹtàakùn, tí wọ́n bá mọ̀.",
+      "zh": "有些人，舍安拉而别求监护者，他们譬如蜘蛛造屋，最脆弱的房屋，确是蜘蛛的房屋。但愿他们知道。",
+      "th": "อุปมาบรรดาผู้ที่เอาสิ่งอื่นจากอัลลอฮ์เป็นผู้คุ้มครอง อุปไมยดั่งแมงมุมที่ยึดกับใยของมันเป็นบ้าน และแท้จริงรังที่บอบบางที่สุดคือรังของแมงมุม หากพวกเขารู้"
     }
   },
   {
@@ -3447,7 +3869,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin samiifi dachii dhugaan uume. sana keessa mu’uminootaaf mallattootu jira.",
       "so": "Alle wuxuu u abuuray samooyinka iyo arlada Xaq. Hubaal, arrinkani waxaa ugu sugan calaamo mu'miniinta.",
       "ff": "Alla tagirii kammuuli ɗin e leydi ndin, e hoore goonga. Pellet, wonii ɗum, Ma'ande, wonan'de gooŋɗinɓe ɓen.",
-      "yo": "Allāhu ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ pẹ̀lú òdodo. Dájúdájú àmì kan wà nínú ìyẹn fún àwọn onígbàgbọ́ òdodo."
+      "yo": "Allāhu ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ pẹ̀lú òdodo. Dájúdájú àmì kan wà nínú ìyẹn fún àwọn onígbàgbọ́ òdodo.",
+      "zh": "安拉本真理而创造天地，对于归信的人，此中确有一种迹象。",
+      "ta": "அல்லாஹ், வானங்களையும் பூமியையும் உண்மையான காரணத்திற்காகவே படைத்திருக்கிறான். நம்பிக்கையாளர்களுக்கு நிச்சயமாக இதில் ஓர் அத்தாட்சி இருக்கிறது.",
+      "ml": "ആകാശങ്ങളും ഭൂമിയും മുറപ്രകാരം അല്ലാഹു സൃഷ്ടിച്ചിരിക്കുന്നു. തീര്‍ച്ചയായും അതില്‍ സത്യവിശ്വാസികള്‍ക്ക് ദൃഷ്ടാന്തമുണ്ട്‌.",
+      "th": "อัลลอฮ์ทรงสร้างชั้นฟ้าทั้งหลายและแผ่นดินด้วยความจริง แท้จริงในการนี้ แน่นอนย่อมเป็นสัญญาณแก่บรรดาผู้ศรัทธา",
+      "vi": "Allah đã tạo hóa các tầng trời và trái đất là vì chân lý. Quả thật, trong (sự tạo hóa) đó là một minh chứng (rõ ràng về Allah) cho những ai có đức tin."
     }
   },
   {
@@ -3481,7 +3908,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "“Yaa gabroota kiyya warra amantan! Dachiin tiyya bal’oodhaa, Anuma qofa gabbaraa.”",
       "so": "Addoomahayga (Xaqa) rumeeyow! dhulkaygu wuu ballaaran yahaye, ee Anigoo (Keliya) i caabuda.",
       "ff": "Eey mon jiyaaɓe Am gooɗinɓe! Nganndee leydi Am ndin ko yaajundi. Ko Min ngoni ko ndewoton!",
-      "yo": "Ẹ̀yin ẹrúsìn Mi, tí ẹ gbàgbọ́ ní òdodo, dájúdájú ilẹ̀ Mi gbòòrò. Nítorí náà, Èmi nìkan ni kí ẹ jọ́sìn fún."
+      "yo": "Ẹ̀yin ẹrúsìn Mi, tí ẹ gbàgbọ́ ní òdodo, dájúdájú ilẹ̀ Mi gbòòrò. Nítorí náà, Èmi nìkan ni kí ẹ jọ́sìn fún.",
+      "zh": "我的归信的仆人们啊！我的大地确是宽大的，你们应当只崇拜我。",
+      "ta": "நம்பிக்கை கொண்ட என் அடியார்களே! நிச்சயமாக எனது பூமி விசாலமானது. ஆகவே, என்னையே (கலப்பற்ற முறையில்) நீங்கள் வணங்குங்கள்!",
+      "ml": "വിശ്വസിച്ചവരായ എന്‍റെ ദാസന്‍മാരേ, തീര്‍ച്ചയായും എന്‍റെ ഭൂമി വിശാലമാകുന്നു. അതിനാല്‍ എന്നെ മാത്രം നിങ്ങള്‍ ആരാധിക്കുവിന്‍.",
+      "th": "โอ้ปวงบ่วงผู้ศรัทธาของข้าทั้งหลาย! แท้จริงแผ่นดินของฉันนั้นกว้างใหญ่ไพศาล (เพื่อให้พวกเจ้าได้เคารพสักการะอย่างอิสระ) ดังนั้น (ไม่ว่าพวกเจ้าจะอยู่ ณ แห่งหนใด) พวกเจ้าจงเคารพสักการะต่อข้า",
+      "vi": "Hỡi các bầy tôi có đức tin của TA, quả thật đất đai của TA rộng thênh thang, cho nên, các ngươi hãy thờ phượng chỉ một mình TA thôi!"
     }
   },
   {
@@ -3517,7 +3949,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Lubbuun hunduu du’a dhandhamtuudha. eegasii gara keenyatti deebifamtu.",
       "so": "Naf walbaa waa tii dhadhamisa geeri. Xaggayagaana la idiin soo celin.",
       "ff": "Kala woŋkii meeɗay maayde. refti ko ka Amen ndutteteɗon.",
-      "yo": "Gbogbo ẹ̀mí l’ó máa tọ́ ikú wò. Lẹ́yìn náà, ọ̀dọ̀ Wa ni wọn yóò da yín padà sí."
+      "yo": "Gbogbo ẹ̀mí l’ó máa tọ́ ikú wò. Lẹ́yìn náà, ọ̀dọ̀ Wa ni wọn yóò da yín padà sí.",
+      "zh": "每一个有气息的，都要尝死的滋味，然后，你们将被召归于我。",
+      "ta": "எல்லா ஆன்மாவும் மரணத்தை சுவைக்கக் கூடியதே! பிறகு, நம்மிடமே நீங்கள் திரும்பக் கொண்டு வரப்படுவீர்கள்.",
+      "ml": "ഏതൊരാളും മരണത്തെ ആസ്വദിക്കുന്നതാണ്‌. പിന്നീട് നമ്മുടെ അടുക്കലേക്കു തന്നെ നിങ്ങള്‍ മടക്കപ്പെടുകയും ചെയ്യും.",
+      "th": "ทุกๆ ชีวิตเป็นผู้ลิ้มรสความตาย หลังจากนั้นแล้วพวกเจ้าจะถูกนำกลับมายังเรา",
+      "vi": "Tất cả mỗi cơ thể đều phải nếm cái chết. Rồi các ngươi sẽ được đưa trở về trình diện TA."
     }
   },
   {
@@ -3555,7 +3992,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin gabroota Isaa irraa nama fedheef hiree ni bal’isa. (Nama fedhe immoo) isatti dhiphisa. Dhugumatti, Rabbiin waan hunda beekaadha.",
       "so": "Alle wuxuu u waasiciyaa risiqa kuu doono ee ka mid ah addoomahiisa, oo ku cidhiidhiyaa (kuu doono). Hubaal, Alle wax walba wuu Ogsoon yahay.",
       "ff": "Alla no yaacnana arsike on mo o muuyi e jiyaaɓe makko ɓen, Homo ɓittana mo. Pellet, Alla ko gannduɗo kala hu'unde.",
-      "yo": "Allāhu l’Ó ń tẹ́ ọrọ̀ sílẹ̀ fún ẹni tí Ó bá fẹ́ nínú àwọn ẹrúsìn Rẹ̀. Ó sì ń díwọ̀n rẹ̀ fún ẹlòmíìràn. Dájúdájú Allāhu ni Onímọ̀ nípa gbogbo n̄ǹkan."
+      "yo": "Allāhu l’Ó ń tẹ́ ọrọ̀ sílẹ̀ fún ẹni tí Ó bá fẹ́ nínú àwọn ẹrúsìn Rẹ̀. Ó sì ń díwọ̀n rẹ̀ fún ẹlòmíìràn. Dájúdájú Allāhu ni Onímọ̀ nípa gbogbo n̄ǹkan.",
+      "zh": "安拉要使哪个仆人的给养宽裕，就使他宽裕，〔要使哪个仆人的给养窘迫，〕就使他窘迫，安拉确是全知万事的。",
+      "ta": "அல்லாஹ், தனது அடியார்களில் தான் நாடியவருக்கு வாழ்வாதாரத்தை விசாலமாக்குகிறான். இன்னும், (தான் நாடுகிற) அவருக்கு (அதை) சுருக்கி விடுகிறான். நிச்சயமாக அல்லாஹ் எல்லாவற்றையும் நன்கறிந்தவன் ஆவான்.",
+      "th": "อัลลอฮ์ทรงให้เครื่องยังชีพกว้างขวางแก่ผู้ที่พระองค์ทรงประสงค์จากปวงบ่าวของพระองค์และทรงให้คับแคบแก่เขา แท้จริงอัลลอฮ์เป็นผู้ทรงรอบรู้ทุกสิ่ง",
+      "vi": "Allah ban bổng lộc nhiều hay ít cho bất cứ ai Ngài muốn trong số bầy tôi của Ngài, quả thật, Allah là Đấng hằng biết hết mọi việc."
     }
   },
   {
@@ -3591,7 +4032,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin uuminsa ni jalqaba, Eegasii isa ni deebisa. Sana booda gara Isaa deebifamtu.",
       "so": "Alle baa billaabay uunka, haddana dib u soo nooleyn (dhimasho kaddib), Xaggiisaana la idiin soo celin.",
       "ff": "Ko Alla fuɗɗi tagoore nde; refti o rutta nde; refti ko ka makko rutteteɗon.",
-      "yo": "Allāhu ń pilẹ̀ ẹ̀dá dídá. Lẹ́yìn náà, O máa dá a padà (sípò alààyè). Lẹ́yìn náà, ọ̀dọ̀ Rẹ̀ ni wọn yóò da yín padà sí."
+      "yo": "Allāhu ń pilẹ̀ ẹ̀dá dídá. Lẹ́yìn náà, O máa dá a padà (sípò alààyè). Lẹ́yìn náà, ọ̀dọ̀ Rẹ̀ ni wọn yóò da yín padà sí.",
+      "zh": "安拉创造众生，然后再造他们，然后，你们被召归于他。",
+      "ta": "அல்லாஹ்தான் படைப்புகளை ஆரம்பமாக படைக்கிறான். பிறகு, (அவை இறந்த பின்னர்) அவற்றை மீண்டும் உருவாக்குகிறான். பிறகு, அவனிடமே, நீங்கள் திரும்பக் கொண்டு வரப்படுவீர்கள்.",
+      "ml": "അല്ലാഹു സൃഷ്ടി ആരംഭിക്കുകയും പിന്നീട് അത് ആവര്‍ത്തിക്കുകയും ചെയ്യുന്നു. പിന്നീട് അവങ്കലേക്ക് നിങ്ങള്‍ മടക്കപ്പെടുകയും ചെയ്യുന്നു.",
+      "th": "อัลลอฮ์ทรงเริ่มการบังเกิด (มนุษย์) หลังจากนั้นแล้วทรงให้มันกลับมาเกิดอีก แล้วพวกเจ้าจะถูกนำกลับไปยังพระองค์",
+      "vi": "Allah là Đấng bắt đầu sự tạo hóa, rồi Ngài sẽ tái tạo nó trở lại, và rồi đây các ngươi sẽ được đưa trở về trình diện Ngài."
     }
   },
   {
@@ -3629,7 +4075,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wantoonni samiileefi dachii keessa jiran (hundi) kan Allaahti. Rabbiin Isatu dureessa, faarfamaadha.",
       "so": "Alle baa iska leh waxa ku sugan samooyinka iyo arlada. Hubaal, Alle waa Hodan Deeqtoon, Ammaanan.",
       "ff": "Ko Alla woodani kala ko woni kammuuji e ka leydi. Pellet, Alla, ko Kaŋko woni Galo, jettiniiɗo.",
-      "yo": "Ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Dájúdájú Allāhu, Òun ni Ọlọ́rọ̀, Ẹlẹ́yìn."
+      "yo": "Ti Allāhu ni ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Dájúdájú Allāhu, Òun ni Ọlọ́rọ̀, Ẹlẹ́yìn.",
+      "zh": "天地万物只是安拉的，安拉确是无求的，确是可颂的。",
+      "ta": "வானங்களில் உள்ளவையும் பூமியில் உள்ளவையும் அல்லாஹ்விற்கே சொந்தமானவை. நிச்சயமாக அல்லாஹ்தான் முற்றிலும் நிறைவானவன் (-தேவையற்றவன்), மிகுந்த புகழாளன்.",
+      "ml": "അല്ലാഹുവിന്‍റെതാകുന്നു ആകാശങ്ങളിലും ഭൂമിയിലുമുള്ളത്‌. തീര്‍ച്ചയായും അല്ലാഹു പരാശ്രയമുക്തനും, സ്തുത്യര്‍ഹനുമാകുന്നു.",
+      "th": "สิ่งที่อยู่ในชั้นฟ้าทั้งหลายและแผ่นดินเป็นสิทธิของอัลลอฮ์ แท้จริงอัลลอฮ์นั้นคือ ผู้ทรงมั่งมี ผู้ทรงควรแก่การสรรเสริญยิ่ง",
+      "vi": "Mọi vật trong các tầng trời và trái đất đều thuộc về Allah. Quả thật, Allah là Đấng Giàu Có, Đấng Đáng Được Ca Tụng."
     }
   },
   {
@@ -3660,7 +4111,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sw": "Hakika wanaoziamini Aya zetu ni hao tu ambao wakikumbushwa hizo, basi wao huanguka kusujudu, na humsabihi Mola wao Mlezi kwa kumhimidi, nao hawajivuni.",
       "ha": "Waɗanda ke ĩmãni da ãyõyin Mu kawai, sũ ne waɗanda idan aka karanta musu ãyõyinMu sai su fãɗi sunã mãsu sujada kuma su yi tasbĩhi game da gõde wa Ubangijinsu, alhãli kuwa su bã su yin girman kai.",
       "om": "hangi Keeyyattoota keenyatti amanu warra yeroo isheedhaan gorfaman sujuuda bu’anii, Rabbii isaanii galatomfataa faarsani. isaan hinboonanu.",
-      "ff": "Nganndee ko gooŋɗinta Aayeeje Amen ɗen, ko ɓen tawɓe si ɓe mbaajoraama ɗe, ɓe cuuyiray sujjugol, ɓe subbuhinora jettugol Joomi maɓɓe, kamɓe ɓe townitotaako."
+      "ff": "Nganndee ko gooŋɗinta Aayeeje Amen ɗen, ko ɓen tawɓe si ɓe mbaajoraama ɗe, ɓe cuuyiray sujjugol, ɓe subbuhinora jettugol Joomi maɓɓe, kamɓe ɓe townitotaako.",
+      "zh": "信仰我的迹象的，只有那等人：别人以我的迹象劝戒他们的时候，他们便俯伏叩头并以赞美他们的养主称颂清净，他们不敢妄自尊大，۩",
+      "th": "แท้จริงบรรดาผู้ศรัทธาต่อโองการทั้งหลายของเราเท่านั้น ที่เมื่อพวกเขาถูกเตือนให้รำลึกถึงโองการเหล่านั้น พวกเขา (ก็จะ) ก้มลงสุญูด และสดุดีสรรเสริญแด่พระผู้อภิบาลของพวกเขา โดยที่พวกเขาไม่หยิ่งผยอง",
+      "vi": "Người thực sự có đức tin nơi các lời mặc khải của TA chính là những người mà khi họ được nhắc về chúng thì họ liền quỳ lạy tán dương ca ngợi Thượng Đế của họ và họ sẽ không cao ngạo."
     }
   },
   {
@@ -3698,7 +4152,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Waan tokko yoo mul'iftan, yookiin yoo isa dhoksitan (irratti galata galfamtan) Rabbiin waan hunda beekaa ta’eera.",
       "so": "Haddaad muujisaan wax ama qarisaan, hubaal Alle wax walba wuu Og yahay.",
       "ff": "Si on peññinii hu'unde, maa on cuuɗii nde, pellet, Alla laatike gannduɗo kala hu'unde.",
-      "yo": "Tí ẹ bá ṣàfi hàn kiní kan tàbí ẹ fi pamọ́, dájúdájú Allāhu ń jẹ́ Onímọ̀ nípa gbogbo n̄ǹkan."
+      "yo": "Tí ẹ bá ṣàfi hàn kiní kan tàbí ẹ fi pamọ́, dájúdájú Allāhu ń jẹ́ Onímọ̀ nípa gbogbo n̄ǹkan.",
+      "zh": "如果你们要表白什么，或隐匿什么，〔安拉总是知道的，〕因为安拉确是全知万物的。",
+      "ta": "நீங்கள் ஒரு விஷயத்தை வெளிப்படுத்தினால்; அல்லது, அதை மறைத்தால் நிச்சயமாக அல்லாஹ் எல்லா விஷயங்களையும் நன்கறிந்தவனாக இருக்கிறான்.",
+      "ml": "നിങ്ങള്‍ എന്തെങ്കിലും വെളിപ്പെടുത്തുകയാണെങ്കിലും അത് മറച്ചു വെക്കുകയാണെങ്കിലും തീര്‍ച്ചയായും അല്ലാഹു ഏത് കാര്യത്തെപ്പറ്റിയും അറിവുള്ളവനാകുന്നു.",
+      "th": "หากพวกเจ้าเปิดเผยสิ่งใดหรือปิดบังมัน แท้จริงอัลลอฮ์นั้นทรงรอบรู้ทุกสิ่งเสมอ",
+      "vi": "Cho dù các ngươi bộc lộ hay giấu kín bất cứ điều gì (thì các ngươi hãy biết rằng) Allah chắc chắn biết hết mọi điều."
     }
   },
   {
@@ -3729,7 +4188,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sw": "Hakika Mwenyezi Mungu na Malaika wake wanamswalia Nabii. Enyi mlioamini, mswalieni na mumsalimu kwa salamu.",
       "am": "አላህና መላእክቱ በነቢዩ ላይ የአክብሮት እዝነትን ያወርዳሉ፡፡ እናንተ ያመናችሁ ሆይ! በእርሱ ላይ የአክብሮት እዝነትን አውርዱ፡፡ የማክበርንም ሰላምታ ሰላም በሉ፡፡",
       "om": "Rabbiifi maleykonni Isaas nabiyyii irratti rahmata buusu. Yaa warra amantan! (isinis) rahmata isa irratti buusaa; nageenyas buusinsa buusaa.",
-      "ff": "Pellet, Alla e Malaa'ikaaɓe makko ɓen, heɓe du'anaade annabiijo on; ko onon yo ɓen gooŋɗinɓe, njuulee e makko, toranoɗon [mo] kisal."
+      "ff": "Pellet, Alla e Malaa'ikaaɓe makko ɓen, heɓe du'anaade annabiijo on; ko onon yo ɓen gooŋɗinɓe, njuulee e makko, toranoɗon [mo] kisal.",
+      "zh": "安拉的确赞扬先知，他的天使们的确为他祝福。信士们啊！你们应当为他祝福，应当祝他平安！",
+      "ta": "நிச்சயமாக அல்லாஹ்வும் அவனது மலக்குகளும் நபியை வாழ்த்துகிறார்கள். நம்பிக்கையாளர்களே! நீங்களும் அவரை வாழ்த்துங்கள்! இன்னும் ஸலாம் கூறுங்கள்!",
+      "th": "แท้จริงอัลลอฮ์และมลาอิกะฮ์ของพระองค์ทรงประทานพรแก่นบี โอ้ บรรดาผู้ศรัทธาเอ๋ย พวกเจ้าจงประทานพรให้เขาและกล่าวทักทายเขาด้วยความเคารพ",
+      "vi": "Quả thật, Allah và các Thiên Thần của Ngài đều Salawat cho Nabi (Muhammad). Hỡi những người có đức tin, các ngươi hãy Salawat cho Y thật nhiều."
     }
   },
   {
@@ -3767,7 +4230,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Rabbiin sodaadhaa; jecha sirrii dubbadhaa.",
       "so": "Kuwa (Xaqa) rumeeyow! Alle ka cabsada (oo dhowra amarradiisa) kuna hadla hadal toosan (oo run ah).",
       "ff": "Eey mon yo ɓen gooŋɗinɓe! Kulee Alla, wowlon konngol peewungol.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu. Kí ẹ sì sọ ọ̀rọ̀ déédé."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu. Kí ẹ sì sọ ọ̀rọ̀ déédé.",
+      "zh": "信士们啊！你们应当敬畏安拉，应当说正话。",
+      "ta": "நம்பிக்கையாளர்களே! அல்லாஹ்வை அஞ்சுங்கள். இன்னும், நேர்மையான பேச்சைப் பேசுங்கள்.",
+      "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ അല്ലാഹുവെ സൂക്ഷിക്കുകയും, ശരിയായ വാക്ക് പറയുകയും ചെയ്യുക.",
+      "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย จงยำเกรงอัลลอฮ์ และจงกล่าวถ้อยคำที่เที่ยงธรรมเถิด",
+      "vi": "Hỡi những người có đức tin! Các ngươi hãy kính sợ Allah và hãy nói lời chân thật."
     }
   },
   {
@@ -3802,7 +4270,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni waan dachii keessa seenu, waan ishee irraa bahu, waan samii irraa bu’uufi waan ishee keessa ol ba’us ni beeka. Inni mararfataa, araaramaadha.",
       "so": "Wuxuu Ogyahay waxa gala arlada iyo waxa ka soo baxa iyo waxa ka soo dega samada iyo waxa kor ugu baxa. Waana Naxariis Badanaha, Denbi Dhaafka Badan.",
       "ff": "Homo anndi ko naatata ka leydi, e ko yaltata e mayri, ko jippotoo iwra ka kammu e ko ƴawata e maggu. Ko Kaŋko woni jurmotooɗo otoo, jaafoto.",
-      "yo": "Ó mọ ohunkóhun tó ń wọnú ilẹ̀ àti ohunkóhun tó ń jáde látinú rẹ̀. (Ó mọ) ohunkóhun tó ń sọ̀kalẹ̀ látinú sánmọ̀ àti ohunkóhun tó ń gùnkè lọ sínú rẹ̀. Òun sì ni Àṣàkẹ́-ọ̀run, Aláforíjìn."
+      "yo": "Ó mọ ohunkóhun tó ń wọnú ilẹ̀ àti ohunkóhun tó ń jáde látinú rẹ̀. (Ó mọ) ohunkóhun tó ń sọ̀kalẹ̀ látinú sánmọ̀ àti ohunkóhun tó ń gùnkè lọ sínú rẹ̀. Òun sì ni Àṣàkẹ́-ọ̀run, Aláforíjìn.",
+      "zh": "他知道潜入地下的，从地下发出的，从天上降下的，升到天上的。他是至慈的，是至赦的。",
+      "ta": "பூமியில் நுழைவதையும் அதிலிருந்து வெளியேறுவதையும் வானத்திலிருந்து இறங்குவதையும் அதில் ஏறுவதையும் அவன் நன்கறிவான். அவன்தான் மகா கருணையாளன், மகா மன்னிப்பாளன்.",
+      "ml": "ഭൂമിയില്‍ പ്രവേശിക്കുന്നതും, അതില്‍ നിന്ന് പുറത്തു പോകുന്നതും, ആകാശത്ത് നിന്ന് ഇറങ്ങുന്നതും അതില്‍ കയറുന്നതുമായതെല്ലാം അവന്‍ അറിയുന്നു. അവന്‍ കരുണ ചൊരിയുന്നവനും ഏറെ പൊറുക്കുന്നവനുമത്രെ.",
+      "th": "พระองค์ทรงรอบรู้ถึงสิ่งที่เข้าไปในแผ่นดินและสิ่งที่ออกมาจากมัน และสิ่งที่ลงมาจากฟากฟ้าและสิ่งที่ขึ้นไปบนนั้น และพระองค์เป็นผู้ทรงปราณี ผู้ทรงอภัยโทษเสมอ",
+      "vi": "Những gì chui vào lòng đất, những gì nhô lên khỏi mặt đất, những gì rơi xuống từ trên trời và những gì bay lên trời, Ngài đều biết rõ về chúng. Và Ngài là Đấng Hằng Khoan Dung, Hằng Tha Thứ."
     }
   },
   {
@@ -3832,7 +4305,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ ለሰዎች ከችሮታ የሚከፍታት ለእርሷ ምንም አጋጅ የላትም፡፡ የሚያግደውም ከእርሱ በኋላ ለእርሱ ምንም ለቃቂ የለውም፡፡ እርሱም አሸነፊው ጥበበኛው ነው፡፡",
       "om": "Rahmata irraa wanta Rabbiin namaaf bane wanti ishee dhorgu tokkoyyuu hin jiru. Wanta Inni dhorge Isa boodaan wanti ishee gadi dhiisu (ergu) hin jiru. Inni injifataa, ogeessa.",
       "so": "Wax kastoo Alle u furo dadka oo Naxariis ah, ma jiro wax celin kara, wuxuu celiyana ma jiro wax soo diri kara Isaga kadambow. Waana Adkaadaha, Xakiimka ah.",
-      "ff": "Kala yurmeende nde Alla udditani yimɓe ɓen, jogitotooɗo nde alaa; kala kadi ko o jogitii, gaccitoowo ɗum alaa ɓaawo (jogitagol) makko. Ko Kaŋko woni pooluɗo, ñeeñɗo."
+      "ff": "Kala yurmeende nde Alla udditani yimɓe ɓen, jogitotooɗo nde alaa; kala kadi ko o jogitii, gaccitoowo ɗum alaa ɓaawo (jogitagol) makko. Ko Kaŋko woni pooluɗo, ñeeñɗo.",
+      "zh": "凡安拉为人们赏赐的任何恩惠，绝无人能阻拦；凡他扣留的，在他之后绝无人能开释。他确是万能的，确是至睿的。",
+      "th": "อันใดจากความเมตตาที่อัลลอฮ์ทรงเปิดแก่มนุษย์ชาติ ก็ไม่มีผู้ใดหยุดยั้งมันได้ และอันใดที่พระองค์ทรงยั้งไว้ ก็ไม่มีผู้ใดที่จะปล่อยมันได้ หลังจากการยั้งนั้น และพระองค์เป็นผู้ทรงอำนาจ ผู้ทรงปรีชาญาณ"
     }
   },
   {
@@ -3867,7 +4342,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa namootaa! Dhugumatti, waadaan Allaah dhugaadha. Kanaafu jireenyi addunyaa akka isin hin gowwoomsine. Gowwoomsaan (Sheyxaanni) (obsa) Rabbiitiin akka isin hin gowwoomsine.",
       "so": "Dadow! Hubaal Ballanka Alle waa Xaq. Ee yeysan idin hodin noloshan soke ee adduunka, yuusanna kan hodista badan (shaydaanka) idinka hodin arrinka Alle.",
       "ff": "Eey mon yo yimɓe! Ngandee pellet fodoore Alla nden ko goonga. Wota nguurndam aduna hodu on, wota (seytaane) kodoowo on hod on e fii Alla.",
-      "yo": "Ẹ̀yin ènìyàn, dájúdájú àdéhùn Allāhu ni òdodo. Ẹ má ṣe jẹ́ kí ìṣẹ̀mí ayé tàn yín jẹ. Kí ẹ sì má ṣe jẹ́ kí (aṣ-ṣaetọ̄n) ẹlẹ́tàn tàn yín jẹ."
+      "yo": "Ẹ̀yin ènìyàn, dájúdájú àdéhùn Allāhu ni òdodo. Ẹ má ṣe jẹ́ kí ìṣẹ̀mí ayé tàn yín jẹ. Kí ẹ sì má ṣe jẹ́ kí (aṣ-ṣaetọ̄n) ẹlẹ́tàn tàn yín jẹ.",
+      "zh": "人们啊！安拉的应许，确是真实的，所以绝不要让今世的生活欺骗你们，绝不要让猾贼以安拉的优容欺骗你们。",
+      "ta": "மக்களே! நிச்சயமாக அல்லாஹ்வின் வாக்கு உண்மையானதே! ஆகவே, உலக வாழ்க்கை உங்களை மயக்கிவிட வேண்டாம். (ஷைத்தானாகிய) ஏமாற்றக் கூடியவனும் அல்லாஹ்வின் விஷயத்தில் உங்களை மயக்கிவிட வேண்டாம்.",
+      "ml": "മനുഷ്യരേ, തീര്‍ച്ചയായും അല്ലാഹുവിന്‍റെ വാഗ്ദാനം സത്യമാകുന്നു. ഐഹികജീവിതം നിങ്ങളെ വഞ്ചിച്ചുകളയാതിരിക്കട്ടെ. പരമവഞ്ചകനായ പിശാചും അല്ലാഹുവിന്‍റെ കാര്യത്തില്‍ നിങ്ങളെ വഞ്ചിക്കാതിരിക്കട്ടെ.",
+      "th": "โอ้มนุษย์เอ๋ย! แท้จริงสัญญาของอัลลอฮ์นั้นเป็นจริงเสมอ ดังนั้น อย่าให้การดำรงชีวิตอยู่ในโลกนี้ล่อลวงพวกเจ้า และอย่าให้การหลอกล่อ (ชัยฏอน) มาล่อลวงพวกเจ้าเกี่ยวกับอัลลอฮ์เป็นอันขาด"
     }
   },
   {
@@ -3904,7 +4383,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sheyxaanni isiniif diinaa, isinis diina isa godhaa. Gareewwan isaas akka warra ibidda boba’aa (seenu) ta’aniif isaan waama.",
       "so": "Xaqiiq, shaydaanku wuxuu idiin yahay cadow, ee idinkuna ka yeesha cadow. Wuxuu uun ugu yeedhaa Xisbigiisa inay ka mid noqdaan asxaabta Naarta hureysa.",
       "ff": "Pellet, seytaane ko gaño wonani on. Haray njogitoree mo gaño. Nganndee ko o noddirta fedde makko nden, ko no ɓe jeydiree e yimɓe dulɓoowe ngen.",
-      "yo": "Dájúdájú aṣ-ṣaetọ̄n ni ọ̀tá fún yín. Nítorí náà, ẹ mú un ní ọ̀tá. Ó kàn ń pe àwọn ìjọ rẹ̀ nítorí kí wọ́n lè jẹ́ èrò inú Iná tó ń jó."
+      "yo": "Dájúdájú aṣ-ṣaetọ̄n ni ọ̀tá fún yín. Nítorí náà, ẹ mú un ní ọ̀tá. Ó kàn ń pe àwọn ìjọ rẹ̀ nítorí kí wọ́n lè jẹ́ èrò inú Iná tó ń jó.",
+      "zh": "恶魔确是你们的仇敌，所以你们应当认他为仇敌。他只号召他的党羽，以便他们做烈火的居民。",
+      "ta": "நிச்சயமாக ஷைத்தான் உங்களுக்கு எதிரி ஆவான். ஆகவே, அவனை எதிரியாகவே எடுத்துக்கொள்ளுங்கள்! அவன் தனது கூட்டத்தார்களை அழைப்பதெல்லாம் அவர்கள் கொழுந்துவிட்டெரியும் நரகவாசிகளாக ஆகுவதற்காகத்தான்.",
+      "ml": "തീര്‍ച്ചയായും പിശാച് നിങ്ങളുടെ ശത്രുവാകുന്നു. അതിനാല്‍ അവനെ നിങ്ങള്‍ ശത്രുവായിത്തന്നെ ഗണിക്കുക. അവന്‍ തന്‍റെ പക്ഷക്കാരെ ക്ഷണിക്കുന്നത് അവര്‍ നരകാവകാശികളുടെ കൂട്ടത്തിലായിരിക്കുവാന്‍ വേണ്ടി മാത്രമാണ്‌.",
+      "th": "แท้จริง ชัยฏอนนั้นสำหรับพวกเจ้าแล้วเป็นศัตรูกัน ดังนั้นจงถือมันเป็นศัตรู แท้จริงมันเรียกร้องพลพรรคของมัน เพื่อพวกมันจะได้เป็นสหายแห่งไฟนรก"
     }
   },
   {
@@ -3941,7 +4424,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa namootaa! Isin gara Allaahtti haajamoodha; Allaahn Isumatu dureessa, faarfamaadha.",
       "so": "Dadow! Idinka weeye kuwa u baahan Alle. Alle waa Hodanka, Ammaanan.",
       "ff": "Eey mon yo yimɓe, ko onon ngoni hatonjimɓe e Alla ɓen, Alla kan, ko Kaŋko woni Galo jettiniiɗo On.",
-      "yo": "Ẹ̀yin ènìyàn, ẹ̀yin ni aláìní (tí ẹ ní bùkátà) sí Allāhu. Allāhu, Òun ni Ọlọ́rọ̀, Ẹlẹ́yìn."
+      "yo": "Ẹ̀yin ènìyàn, ẹ̀yin ni aláìní (tí ẹ ní bùkátà) sí Allāhu. Allāhu, Òun ni Ọlọ́rọ̀, Ẹlẹ́yìn.",
+      "zh": "人们啊！你们才是需求安拉的，安拉确是无求的，确是可颂的。",
+      "ta": "மக்களே! நீங்கள்தான் அல்லாஹ்வின் பக்கம் தேவையுள்ளவர்கள். அல்லாஹ் - அவன்தான் முற்றிலும் நிறைவானவன், புகழுக்குரியவன் ஆவான்.",
+      "ml": "മനുഷ്യരേ, നിങ്ങള്‍ അല്ലാഹുവിന്‍റെ ആശ്രിതന്‍മാരാകുന്നു. അല്ലാഹുവാകട്ടെ സ്വയം പര്യാപ്തനും സ്തുത്യര്‍ഹനുമാകുന്നു.",
+      "th": "โอ้มนุษย์เอ๋ย! พวกเจ้าเป็นผู้ขัดสนต้องพึ่งอัลลอฮ์ แต่อัลลอฮ์นั้น พระองค์ทรงมั่งมีอย่างล้นเหลือ ผู้ทรงได้รับการสรรเสริญ",
+      "vi": "Hỡi nhân loại, các ngươi toàn là những kẻ nghèo hèn luôn cần đến Allah còn Allah là Đấng Giàu Có, đáng được ca tụng."
     }
   },
   {
@@ -3978,7 +4466,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yoo fedhe isin (dachii irraa) deemsiseeti uumama haaraa fida.",
       "so": "Hadduu doono, wuu idin tegsiin, oo keeni uun cusub.",
       "ff": "Si O yiɗii, o naɓa on, o adda tagu hesu.",
-      "yo": "Tí Ó bá fẹ́, Ó máa mu yín kúrò lórí ilẹ̀. Ó sì máa mú ẹ̀dá titun wá."
+      "yo": "Tí Ó bá fẹ́, Ó máa mu yín kúrò lórí ilẹ̀. Ó sì máa mú ẹ̀dá titun wá.",
+      "zh": "如果他意欲，他将毁灭你们，而创造新的众生。",
+      "ta": "அவன் நாடினால் உங்களை அழித்து விடுவான். இன்னும், (வேறு) ஒரு புதிய படைப்பை அவன் கொண்டு வருவான்.",
+      "ml": "അവന്‍ ഉദ്ദേശിക്കുന്ന പക്ഷം നിങ്ങളെ അവന്‍ നീക്കം ചെയ്യുകയും, പുതിയൊരു സൃഷ്ടിയെ അവന്‍ കൊണ്ടുവരുകയും ചെയ്യുന്നതാണ്‌.",
+      "th": "หากพระองค์ทรงประสงค์ พระองค์ก็จะทรงให้พวกเจ้าสูญสิ้นไป และจะทรงนำมาซึ่งกลุ่มชนรุ่นใหม่ (สักการะพระองค์และไม่ตั้งภาคีต่อพระองค์)",
+      "vi": "Nếu muốn, Ngài sẽ tiêu diệt tất cả các ngươi và tạo ra một loại tạo vật mới (thay thế các ngươi)."
     }
   },
   {
@@ -3997,7 +4490,8 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "kk": "Шын Алланың көктен жаңбыр жаудырғанын көрмейсің бе? Сонда онымен түрлі-түсті жемістер шығардық. Сондай-ақ таулардан да ақ, қызыл әрі қап-қара түрлі-түсті жолақтарды көрмейсің бе?",
       "ky": "Көрбөйсүңбү, Аллах асмандан суу түшүрдү. Анан Биз аны менен (түсү, даамы) ар түрдүү мөмөлөрдү чыгардык. Тоолордун да ак-ала, кызыл-ала жана чым каралар(ын чыгардык).",
       "am": "አላህ ከሰማይ ውሃን ማውረዱን አላየህምን? በእርሱም ዓይነቶቻቸው የተለያዩ ፍሬዎችን አወጣን፡፡ ከጋራዎችም መልኮቻቸው የተለያዩ ነጮች፣ ቀዮችም፣ በጣም ጥቁሮችም የኾኑ መንገዶች አልሉ፡፡",
-      "ff": "E a yiaani won'de Alla jippinirii ndiyam ka kammu? Min puɗiniri ɗam dimɗe ceertuɗe noone. Hino ka pelle, ɗate daneeje e boɗeeje ceertyuɗe noone, e pete ɓaleeje."
+      "ff": "E a yiaani won'de Alla jippinirii ndiyam ka kammu? Min puɗiniri ɗam dimɗe ceertuɗe noone. Hino ka pelle, ɗate daneeje e boɗeeje ceertyuɗe noone, e pete ɓaleeje.",
+      "zh": "难道你还不知道吗？安拉从天上降下雨水，然后借雨水而生产各种果实。山上有白的、红的、各色的条纹，和漆黑的岩石。"
     }
   },
   {
@@ -4034,7 +4528,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, Rabbiin beekaa fagoo samiifi dachiiti. Inni beekaa wantoota qoma keessa jiraniiti.",
       "so": "Hubaal, Alle waa Ogsoonaha waxa ku qarsoon aan muuqan cirarka iyo dhulka gudahooda. Hubaal waa Isaga Ogsoonaha waxa ku jira laabaha (dadka).",
       "ff": "Pellet, Alla ko gannduɗo wirniiɗi kammuuji ɗin e leydi ndin. Ko O gannduɗo ko suuɗii e ɓerɗe.",
-      "yo": "Dájúdájú Allāhu ni Onímọ̀-ìkọ̀kọ̀ àwọn sánmọ̀ àti ilẹ̀. Dájúdájú Òun ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
+      "yo": "Dájúdájú Allāhu ni Onímọ̀-ìkọ̀kọ̀ àwọn sánmọ̀ àti ilẹ̀. Dájúdájú Òun ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá.",
+      "zh": "安拉确是全知天地的幽玄的，他确是全知心事的。",
+      "ta": "நிச்சயமாக அல்லாஹ் வானங்கள் மற்றும் பூமியில் உள்ள மறைவானவற்றை நன்கறிந்தவன் ஆவான். நிச்சயமாக அவன் நெஞ்சங்களில் உள்ளவற்றை நன்கறிந்தவன் ஆவான்.",
+      "ml": "തീര്‍ച്ചയായും അല്ലാഹു ആകാശങ്ങളിലെയും ഭൂമിയിലെയും അദൃശ്യകാര്യങ്ങള്‍ അറിയുന്നവനാകുന്നു. തീര്‍ച്ചയായും അവന്‍ ഹൃദയങ്ങളിലുള്ളത് അറിയുന്നവനാകുന്നു.",
+      "th": "แท้จริง อัลลอฮ์นั้นทรงรอบรู้ในสิ่งเร้นลับแห่งชั้นฟ้าทั้งหลายและแผ่นดิน แท้จริงพระองค์เป็นผู้ทรงรอบรู้สิ่งที่อยู่ในทรวงอก",
+      "vi": "Quả thật, Allah là Đấng biết mọi điều vô hình của các tầng trời và trái đất. Quả thật, Ngài biết những gì được giấu kín trong lòng (con người)."
     }
   },
   {
@@ -4064,7 +4563,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እኛ ሙታንን እኛ በእርግጥ ሕያው እናደርጋለን፡፡ ያስቀደሙትንም ሥራ ፈለጎቻቸውንም እንጽፋለን፡፡ ነገሩንም ሁሉ ገላጭ መሪ በኾነ መጽሐፍ ውስጥ አጠቃለልነው፡፡",
       "om": "Nuti numatu du’aa jiraachifna. Waan isaan hojjatanii dabarsaniifi hambaalee isaanii ni barreessina. Waan hundayyuu kitaaba ifa bahaa keessatti galmeessinee jirra.",
       "ff": "Ko Minen ngoni wuurnitooɓe maayɓe ɓen, Min mbinnda ko ɓe ngardini e batteeji maɓɓe. Kala hu'unde, Miɗen mofti nde e deftere ɓanngunde.",
-      "yo": "Dájúdájú Àwa l’À ń sọ àwọn òkú di alàyè. A sì ń ṣe àkọsílẹ̀ ohun tí wọ́n tì síwájú àti orípa (iṣẹ́ ọwọ́) wọn. Gbogbo n̄ǹkan ni A ṣe àkọsílẹ̀ rẹ̀ sínú tírà kan tó yanjú."
+      "yo": "Dájúdájú Àwa l’À ń sọ àwọn òkú di alàyè. A sì ń ṣe àkọsílẹ̀ ohun tí wọ́n tì síwájú àti orípa (iṣẹ́ ọwọ́) wọn. Gbogbo n̄ǹkan ni A ṣe àkọsílẹ̀ rẹ̀ sínú tírà kan tó yanjú.",
+      "zh": "我必定要使死人复活，我必定要记录他们所作的善恶，和他们的事迹，我将一切事物，详明地记录在一册明白的范本中。",
+      "th": "แท้จริงเราเป็นผู้ให้คนตายกลับมีชีวิตขึ้น และเราบันทึกสิ่งที่พวกเขาได้ประกอบไว้แต่ก่อน และร่องรอยของพวกเขาและทุกสิ่งนั้น เราได้รวบรวมไว้อย่างครบถ้วนในบันทึกอันชัดแจ้ง",
+      "ko": "진실로 나는 죽은 자들을 살리며 그들이 내놓은 것과 그들의 행적을 기록하노라. 나는 실로 모든 것을 분명한 성서에 기재하였노라."
     }
   },
   {
@@ -4101,7 +4603,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Aduun baatii dhaqqabuun isheef hin ta’u; halkanis guyyaa hin dursu, Hunduu sarara keessa (daaku).",
       "so": "Looma oggola qorraxda inay haleesho dayaxa, habeenkuna ma ka hor maro maalinta. Dhammaan waxay ku dabaashaan mareeg (garangar) dhexdi.",
       "ff": "Wonaa na'ange ngen woni ko haanini hewtitagol lewru ndun, wonaa jemma on woni ko aditotoo ñalaema on; kala majji non, ko e laawol mum woni dokde.",
-      "yo": "Kò yẹ fún òòrùn láti lo àsìkò òṣùpá. Kò sì yẹ fún alẹ́ láti lo àsìkò ọ̀sán. Ìkọ̀ọ̀kan wà ní òpópónà róbótó tó ń tọ̀."
+      "yo": "Kò yẹ fún òòrùn láti lo àsìkò òṣùpá. Kò sì yẹ fún alẹ́ láti lo àsìkò ọ̀sán. Ìkọ̀ọ̀kan wà ní òpópónà róbótó tó ń tọ̀.",
+      "zh": "太阳不得追及月亮，黑夜也不得超越白昼，各在一个轨道上浮游着。",
+      "ml": "സൂര്യന് ചന്ദ്രനെ പ്രാപിക്കാനൊക്കുകയില്ല. രാവ് പകലിനെ മറികടക്കുന്നതുമല്ല. ഓരോന്നും ഓരോ (നിശ്ചിത) ഭ്രമണപഥത്തില്‍ നീന്തികൊണ്ടിരിക്കുന്നു.",
+      "th": "ดวงอาทิตย์ไม่อาจไล่ทันดวงจันทร์ได้ และกลางคืนก็ไม่อาจแซงหน้ากลางวันได้ และทั้งหมดต่างโคจรอยู่ในวงโคจรของตนเอง",
+      "ko": "태양이 달을 따라잡는 것은 그것(태양)에 적합하지 않으며, 밤은 낮을 앞서가지 않노라. 모두는 궤도 안에서 순항하노라.",
+      "vi": "Mặt trời không đuổi kịp mặt trăng và ban đêm không qua mặt ban ngày; tất cả đều bơi trong quỹ đạo (đã được ấn định)."
     }
   },
   {
@@ -4137,7 +4644,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ያ ሰማያትንና ምድርን የፈጠረ ብጤያቸውን በመፍጠር ላይ ቻይ አይደለምን? ነው እንጅ እርሱም በብዙ ፈጣሪው ዐዋቂው ነው፡፡",
       "om": "Sila Inni samiileefi dachii uume fakkaataa isaanii uumuu irratti danda’aa mitii? Eeyyeen (danda’aa dha!) Inni akkaan uumaadha, akkaan beekaadha.",
       "ff": "Kere takɗo kammuuji ɗin e leydi ndin wonaani kaɗtanɗo tagugol yeru maɓɓe? Ɗuum ko pellet! Ko Kaŋko woni Ɗuuɗuɗo tageefo, gannduɗo.",
-      "yo": "Ǹjẹ́ Ẹni tí Ó ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ kò ní agbára láti dá irú wọn (mìíràn) bí? Bẹ́ẹ̀ ni (Ó ní agbára). Òun sì ni Ẹlẹ́dàá, Onímọ̀."
+      "yo": "Ǹjẹ́ Ẹni tí Ó ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ kò ní agbára láti dá irú wọn (mìíràn) bí? Bẹ́ẹ̀ ni (Ó ní agbára). Òun sì ni Ẹlẹ́dàá, Onímọ̀.",
+      "zh": "难道能造天地的，不能造像他们那样的人吗？不然！他确是善造的，确是全知的。",
+      "ta": "இன்னும், வானங்களையும் பூமியையும் படைத்தவன் இவர்களைப் போன்றவர்களை படைப்பதற்கு ஆற்றலுடையவனாக இல்லையா? ஏன் இல்லை! அவன்தான் மகா படைப்பாளன், நன்கறிந்தவன் ஆவான்.",
+      "ml": "ആകാശങ്ങളും ഭൂമിയും സൃഷ്ടിച്ചവന്‍ അവരെപ്പോലുള്ളവരെ സൃഷ്ടിക്കാന്‍ കഴിവുള്ളവനല്ലേ? അതെ, അവനത്രെ സര്‍വ്വവും സൃഷ്ടിക്കുന്നവനും എല്ലാം അറിയുന്നവനും.",
+      "th": "พระองค์ผู้ได้ทรงสร้างชั้นฟ้าทั้งหลายและแผ่นดินนี้ จะไม่ทรงสามารถที่จะสร้างเช่นเดียวกับพวกเขากระนั้นหรือ แน่นอน และพระองค์เป็นผู้ทรงสร้างที่ยิ่งใหญ่ ผู้ทรงรอบรู้",
+      "ko": "(일곱) 하늘과 땅을 창조하신 분이야말로 그들과 유사한 것을 창조할 수 있는 분이 아니시던가? 그러하노라. 그분께서는 위대한 창조자이며 모든 것을 알고 계신 분이라.",
+      "vi": "Lẽ nào Đấng đã tạo hóa ra các tầng trời và trái đất lại không có khả năng tạo hóa ra cái giống như họ ư? Không đâu, Ngài là Đấng Tạo Hóa Toàn Tri."
     }
   },
   {
@@ -4175,7 +4688,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Ajajni Isaa, yoo waan tokko fedhe “tahi” isaan jechuma qofa; yoosuu taha.",
       "so": "Amarkiisu markuu doono wax uun, waa inuu keliya ku yidhaahdo: Ahaw, waana yahay.",
       "ff": "Ganndon fiyaaku makko on, si o faandanike hu'unde, ko o wi'anat nde tan: \"Laato\", nde laatoo.",
-      "yo": "Àṣẹ Rẹ̀ nígbà tí Ó bá gbèrò kiní kan ni pé, Ó máa sọ fún un pé “Jẹ́ bẹ́ẹ̀.” Ó sì máa jẹ́ bẹ́ẹ̀."
+      "yo": "Àṣẹ Rẹ̀ nígbà tí Ó bá gbèrò kiní kan ni pé, Ó máa sọ fún un pé “Jẹ́ bẹ́ẹ̀.” Ó sì máa jẹ́ bẹ́ẹ̀.",
+      "zh": "当他欲造化任何事物的时候，他的事情只是说声：“有”，它就有了。",
+      "ta": "அவன் எதையும் நாடினால் அவனது கட்டளை எல்லாம், ‘ஆகு’ என்று அதற்கு அவன் கூறுவதுதான். உடனே அது ஆகிவிடும்.",
+      "ml": "താന്‍ ഒരു കാര്യം ഉദ്ദേശിച്ചാല്‍ അതിനോട് ഉണ്ടാകൂ എന്ന് പറയുക മാത്രമാകുന്നു അവന്‍റെ കാര്യം. അപ്പോഴതാ അതുണ്ടാകുന്നു.",
+      "th": "แท้จริงกิจการของพระองค์ เมื่อพระองค์ประสงค์สิ่งใด พระองค์เพียงตรัสแก่สิ่งนั้นว่า \"จงเป็น\" แล้วมันก็จะเป็นขึ้นมา",
+      "ko": "그분께서 무엇인가를 원하실 때 그분의 명령은 단지 그것에 \"있어라\"라고 말씀하실 뿐이며, 이에 그것이 있게 되노라.",
+      "vi": "Quả thật, khi Ngài muốn điều gì, Ngài chỉ cần phán “Hãy thành!” thì tức khắc nó sẽ thành (giống như ý của Ngài)."
     }
   },
   {
@@ -4213,7 +4732,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Goftaan kee, Gooftaan injifannaa, waan isaan jedhaniin irraa qulqullaa’e.",
       "so": "Xurmo oo dhan waxaa iska leh oo (xumaan ka) hufan Rabbigaa (Allaah), Rabbiga Sharafta leh, ka sarreeya waxay (gaaladu) ku tilmaamaan (sida inuu leeyahay wiil, gabdho, xaas, iwm).",
       "ff": "Senaare woodanii Joomi maa, Jeyɗo teddungal, e  ko ɓe cifotoo !",
-      "yo": "Mímọ́ ni fún Olúwa rẹ, Olúwa (tó ni) agbára, tayọ ohun tí wọ́n ń fi ròyìn (Rẹ̀)."
+      "yo": "Mímọ́ ni fún Olúwa rẹ, Olúwa (tó ni) agbára, tayọ ohun tí wọ́n ń fi ròyìn (Rẹ̀).",
+      "zh": "超绝哉你的养主——尊荣的主宰！他是超乎他们所描述的。",
+      "ta": "கண்ணியத்தின் அதிபதியான உமது இறைவன் அவர்கள் வர்ணிப்பதை விட்டும் மிக பரிசுத்தமானவன்.",
+      "ml": "പ്രതാപത്തിന്‍റെ നാഥനായ നിന്‍റെ രക്ഷിതാവ് അവര്‍ ചമച്ചു പറയുന്നതില്‍ നിന്നെല്ലാം എത്ര പരിശുദ്ധന്‍!",
+      "th": "มหาบริสุทธิ์ยิ่งแด่พระผู้อภิบาลของเจ้า พระเจ้าผู้ทรงเกียรติ เหนือสิ่งที่พวกเขาได้กล่าวอ้างไว้",
+      "ko": "그들이 (그분을 함부로) 묘사하나 존엄의 주님이신 그대의 주님께서는 완벽하신 분이라!",
+      "vi": "Quang Vinh và tối cao thay Thượng Đế của Ngươi! Thượng Đế của Quyền Lực! Ngài siêu việt vượt xa những điều mà họ đã mô tả (về Ngài)."
     }
   },
   {
@@ -4248,7 +4773,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila akka Rabbiin nama fedheef kenna bal’isee, (kan fedhetti immoo) dhiphisu hin beekanuu? Dhugumatti, kana keessa ummata amananiif mallattooleetu jira.",
       "so": "Miyeyna ogeyn inuu Alle u fidiyo risiqa cidduu doono, oo ku cidhiidhiyo (cidduu doono). Arrinkani waxaa ugu sugan calaamooyin ciddii rumeyn.",
       "ff": "E ɓe nganndaa won'de Allah no yaññana arsike on mo o muuyani, O ɓillina [mo o muuyani]? Pellet, Ma'andeeji ngonii e ɗum, wona nde yimɓe gooŋɗinooɓe.",
-      "yo": "Ṣé wọn kò mọ̀ pé dájúdájú Allāhu l’Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú àwọn àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo."
+      "yo": "Ṣé wọn kò mọ̀ pé dájúdájú Allāhu l’Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú àwọn àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo.",
+      "zh": "难道他们还不知道吗？安拉欲使谁的给养宽裕，就使他宽裕；〔欲使谁的给养窘迫，〕就使他窘迫。对于归信的民众，此中确有许多迹象。",
+      "th": "พวกเขาไม่รู้ดอกหรือว่า อัลลอฮ์ทรงแผ่ปัจจัยยังชีพแก่ผู้ที่พระองค์ทรงประสงค์ และทรงให้คับแคบ แท้จริงในการนั้นย่อมเป็นสัญญาณมากมายสำหรับหมู่ชนผู้ศรัทธา",
+      "ko": "그들은 하나님께서 원하시는 자에게 양식을 늘리시고 줄이심을 알지 못한단 말인가? 진실로 그 안에는 믿는 자들을 위한 징표들이 있노라.",
+      "vi": "Lẽ nào họ không biết việc Allah muốn nới rộng hay thu hẹp bổng lộc của Ngài đối với ai là tùy ý Ngài hay sao? Quả thật, trong đó là các dấu hiệu cho đám người có đức tin."
     }
   },
   {
@@ -4286,7 +4815,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin uumaa waan hundaati. Inni waan hunda irrattis tiksaadha.",
       "so": "Alle waa abuuraha wax walba, wax walbana Isagaa talada u haya oo maamula.",
       "ff": "Ko Allah woni Takɗo kala hu'unde, ko Kaŋko kadi woni pawtiiɗo kala hu'unde.",
-      "yo": "Allāhu ni Ẹlẹ́dàá gbogbo n̄ǹkan. Òun sì ni Olùṣọ́ lórí gbogbo n̄ǹkan."
+      "yo": "Allāhu ni Ẹlẹ́dàá gbogbo n̄ǹkan. Òun sì ni Olùṣọ́ lórí gbogbo n̄ǹkan.",
+      "zh": "安拉是创造万物的，也是监护万物的。",
+      "ta": "அல்லாஹ்தான் எல்லாவற்றுக்கும் படைப்பாளன் ஆவான். அவன்தான் எல்லாவற்றையும் (கண்காணித்து) பாதுகாப்பவன் ஆவான்.",
+      "ml": "അല്ലാഹു എല്ലാ വസ്തുക്കളുടെയും സ്രഷ്ടാവാകുന്നു. അവന്‍ എല്ലാ വസ്തുക്കളുടെ മേലും കൈകാര്യകര്‍ത്താവുമാകുന്നു.",
+      "th": "อัลลอฮ์ คือผู้ทรงสร้างทุกสิ่ง และพระองค์เป็นผู้ทรงดูแลและผู้ทรงพิทักษ์ทุกสิ่ง",
+      "ko": "하나님께서는 모든 것의 창조자이시며 그분께서는 모든 일에 관한 의탁의 대상이시라.",
+      "vi": "Allah là Đấng Tạo Hóa tất cả vạn vật và Ngài trông coi và quản lý mọi vật."
     }
   },
   {
@@ -4321,7 +4856,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Furtuuwwan samiileefii dachii kan Isaati. Isaan keeyyattoota Rabbiitti kafaran, isaan sun hoonga’oon isaanuma.",
       "so": "Isagaa iska leh khaznadaha samooyinka iyo arlada. Kuwana ku gaalooba Aayadaha Alle, kuwaa weeye kuwa khasaaray.",
       "ff": "Ko Kaŋko sottirɗe kammuuji ɗin e leydi ndin woodani. Yedduɓe aayeeje Allah ɓeen non, ko ɓen ngoni hayruɓe(pertuɓe) ɓen.",
-      "yo": "TiRẹ̀ ni àwọn kọ́kọ́rọ́ ilé-ọ̀rọ̀ àwọn sánmọ̀ àti ilẹ̀. Àwọn tó ṣàì gbàgbọ́ nínú àwọn āyah Allāhu, àwọn wọ̀nyẹn, àwọn ni ẹni òfò."
+      "yo": "TiRẹ̀ ni àwọn kọ́kọ́rọ́ ilé-ọ̀rọ̀ àwọn sánmọ̀ àti ilẹ̀. Àwọn tó ṣàì gbàgbọ́ nínú àwọn āyah Allāhu, àwọn wọ̀nyẹn, àwọn ni ẹni òfò.",
+      "zh": "天地的钥匙，只是他的，不信安拉的迹象者，此等人，他们才是亏折的。",
+      "ta": "அவனுக்கே வானங்கள், இன்னும் பூமியி(லுள்ள பொக்கிஷங்களி)ன் சாவிகள் உரியன. எவர்கள் அல்லாஹ்வின் அத்தாட்சிகளை நிராகரித்தார்களோ அவர்கள்தான் உண்மையான நஷ்டவாளிகள் ஆவார்கள்.",
+      "ml": "ആകാശങ്ങളുടെയും ഭൂമിയുടെയും താക്കോലുകള്‍ അവന്‍റെ അധീനത്തിലാകുന്നു. അല്ലാഹുവിന്‍റെ ദൃഷ്ടാന്തങ്ങളെ നിഷേധിച്ചവരാരോ അവര്‍ തന്നെയാകുന്നു നഷ്ടക്കാര്‍.",
+      "th": "ปวงลูกกุญแจแห่งชั้นฟ้าทั้งหลายและแผ่นดินเป็นสิทธิของพระองค์ และบรรดาผู้ปฏิเสธสัญญาณทั้งหลายของอัลลอฮ์ ชนเหล่านั้น พวกเขาเป็นผู้ขาดทุน",
+      "ko": "실로 그분께는 (일곱) 하늘과 땅의 열쇠가 있노라. 하나님의 징표를 불신한 자들, 저들은 실로 손실자들이라.",
+      "vi": "Mọi chìa khóa (kho tàng) của các tầng trời và trái đất đều thuộc về Ngài; và những ai phủ nhận các Lời Mặc Khải của Allah thì đó là những kẻ thua thiệt."
     }
   },
   {
@@ -4357,7 +4898,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "(አላህ) የዓይኖችን ክዳት ልቦችም የሚደብቁትን ሁሉ ያውቃል፡፡",
       "om": "(Rabbiin) gantuu ijootaa ni beeka. waan qomoowwan dhoksitus.",
       "so": "(Alle) Wuu Og yahay khiyaanada isha loo dabo iyo waxay laabuhu qarsadaanba.",
-      "ff": "Homo anndi njamfa gite, e ko ɓerɗe ɗeen cuuɗi."
+      "ff": "Homo anndi njamfa gite, e ko ɓerɗe ɗeen cuuɗi.",
+      "zh": "他知道偷眼和心事。",
+      "ta": "கண்களின் மோசடிகளையும் நெஞ்சங்கள் மறைப்பதையும் அவன் நன்கறிவான்.",
+      "ml": "കണ്ണുകളുടെ കള്ളനോട്ടവും, ഹൃദയങ്ങള്‍ മറച്ച് വെക്കുന്നതും അവന്‍ (അല്ലാഹു) അറിയുന്നു.",
+      "th": "พระองค์ทรงรอบรู้การทรยศของดวงตา และสิ่งที่ทรวงอกปกปิดอยู่",
+      "ko": "그분께서는 곁눈의 흘금거림과 마음이 숨기는 것도 알고 계시노라.",
+      "vi": "Ngài (Allah) biết rõ điều gian trá nơi cặp mắt của họ cũng như những gì được giấu kín trong lòng họ."
     }
   },
   {
@@ -4395,7 +4942,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa ummata kiyya! Jiruun addunyaa tun qananii (yerooti). Aakhiraan isheetu ganda qubannaati.",
       "so": "Tolkayow! Noloshan Adduunka waa uun raaxo (yar oo tageysa), Aakhiradaana ah Daarta negaadiga.",
       "ff": "Eey mon yo yimɓe am, nganndee ɗam nguurndam aduna, ko ndakamme-hun tun, ko La'akara on woni, galle ñiiɓal ɗen.",
-      "yo": "Ẹ̀yin ènìyàn mi, ìgbádùn lásán ni ìṣẹ̀mí ilé ayé yìí. Dájúdájú ọ̀run sì ni ilé gbére."
+      "yo": "Ẹ̀yin ènìyàn mi, ìgbádùn lásán ni ìṣẹ̀mí ilé ayé yìí. Dájúdájú ọ̀run sì ni ilé gbére.",
+      "zh": "我的宗族啊！今世的生活，只是一种享受，后世才是安宅。",
+      "ta": "“என் மக்களே! இந்த உலக வாழ்க்கை எல்லாம் அற்ப இன்பம்தான். நிச்சயமாக மறுமைதான் நிரந்தரமான இல்லமாகும்.”",
+      "ml": "എന്‍റെ ജനങ്ങളേ, ഈ ഐഹികജീവിതം ഒരു താല്‍ക്കാലിക വിഭവം മാത്രമാണ്‌. തീര്‍ച്ചയായും പരലോകം തന്നെയാണ് സ്ഥിരവാസത്തിനുള്ള ഭവനം.",
+      "th": "โอ้หมู่ชนของฉันเอ๋ย แท้จริงชีวิตแห่งโลกดุนยานี้ เป็นเพียงแค่ความเพลิดเพลินเท่านั้น และแท้จริงปรโลกนั้นมันเป็นที่อยู่อันมั่นคง",
+      "ko": "나의 사람들이여. 이 현세에서의 삶은 그저 유희일 뿐입니다. 그리고 실로 내세, 그것이야말로 영원의 거주지입니다",
+      "vi": "“Thưa quí ngài! Quả thật, đời sống trần tục này chỉ là một sự hưởng thụ (tạm bợ và ngắn ngủi), Đời Sau mới thực sự là cõi trường tồn và vĩnh cửu.”"
     }
   },
   {
@@ -4429,7 +4982,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Samiifi dachii uumuutu namaa uumuu irra guddaadha. Garuu irra hedduun namootaa hin beekanu.",
       "so": "Abuuridda samooyinka iyo arlada baa xaqiiq ka weyn abuuridda dadka, laakiinse dadka badankiisu ma oga.",
       "ff": "Pellet, ko takde kammuuji ɗin e leydi ndin, ɓuri mawnude e dii tageendi yimɓe ɓeen. Kono ko ɓuri ɗuuɗude e yimɓe ɓen, ɓe nganndaa.",
-      "yo": "Dájúdájú ìṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ tóbi ju ìṣẹ̀dá àwọn ènìyàn; ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ àwọn ènìyàn ni kò mọ̀."
+      "yo": "Dájúdájú ìṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀ tóbi ju ìṣẹ̀dá àwọn ènìyàn; ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ àwọn ènìyàn ni kò mọ̀.",
+      "zh": "创造天地，是比再造人类更难的，但世人大半不知道。",
+      "ml": "തീര്‍ച്ചയായും ആകാശങ്ങളും ഭൂമിയും സൃഷ്ടിക്കുക എന്നതാണ് മനുഷ്യരെ സൃഷ്ടിക്കുന്നതിനെക്കാള്‍ വലിയ കാര്യം. പക്ഷെ, മനുഷ്യരിൽ അധികപേരും മനസ്സിലാക്കുന്നില്ല.",
+      "th": "แน่นอน การสร้างชั้นฟ้าทั้งหลายและแผ่นดินนั้นใหญ่ยิ่งกว่า การสร้างมนุษย์ แต่ว่าส่วนมากของมนุษย์ไม่รู้",
+      "ko": "단연코 (일곱) 하늘과 땅의 창조가 인간의 창조보다 더 위대하나 대부분의 인간은 알지 못하노라.",
+      "vi": "Việc tạo hóa các tầng trời và trái đất thực sự vĩ đại hơn việc tạo hóa loài người, nhưng đa số nhân loại không biết."
     }
   },
   {
@@ -4467,7 +5025,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Qiyaamaan dhuftuudha; ishee keessa mamiin hin jiru. Garuu irra hedduun namootaa hin amananu.",
       "so": "Hubaal Saacadda (Qiyaame) waa imaanaysaa, shaki kuma jiro, dadka badankiisuse ma ay rumaysna.",
       "ff": "Pellet, Darnga, ko ko arata, sikke alaa e mu'um. Kono ko ɓuri ɗuuɗude e yimɓe ɓeen, ɓe ngoŋɗinaa.",
-      "yo": "Dájúdájú Àkókò náà ń bọ̀, kò sì sí iyèméjì nínú rẹ̀. Ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ àwọn ènìyàn ni kò gbàgbọ́."
+      "yo": "Dájúdájú Àkókò náà ń bọ̀, kò sì sí iyèméjì nínú rẹ̀. Ṣùgbọ́n ọ̀pọ̀lọ́pọ̀ àwọn ènìyàn ni kò gbàgbọ́.",
+      "zh": "复活时必定来临，这是毫无疑义的；但众人大半不信。",
+      "ta": "நிச்சயமாக மறுமை வந்தே தீரும். அதில் எவ்வித சந்தேகமும் இல்லை. என்றாலும் மனிதர்களில் அதிகமானவர்கள் (அதை) நம்பிக்கை கொள்ளமாட்டார்கள்.",
+      "ml": "ആ അന്ത്യസമയം വരാനുള്ളത് തന്നെയാണ്‌. അതില്‍ സംശയമേ ഇല്ല. പക്ഷെ മനുഷ്യരില്‍ അധികപേരും വിശ്വസിക്കുന്നില്ല.",
+      "th": "แท้จริง วันอวสานนั้นจะมีมาอย่างแน่นอน ไม่มีข้อสงสัยอันใดในนั้น แต่ว่าส่วนมากของมนุษย์ไม่เชื่อ",
+      "ko": "실로 의혹의 여지가 없는 종말의 시간은 기필코 도래할 것이라. 그러나 대다수의 인간은 믿지 않더라.",
+      "vi": "Giờ Tận Thế chắc chắn sẽ đến, không có gì phải hoài nghi về điều đó, nhưng đa số nhân loại không có đức tin."
     }
   },
   {
@@ -4504,7 +5068,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "(Inni kana isiniif godhe) kun Allaah, Gooftaa keessani; Uumoo waan hundaati. Isa malee haqaan gabbaramaan hin jiru. Akkamitti irraa gara galfamtan?",
       "so": "Kaasi waa Allaah, Rabbigiin, Abuuraha wax walba, Ma jiro ilaah (Xaq ah) aan Isaga ahayn. ee xaggee baa la idiinka iilay?",
       "ff": "Ko oon mooɗon Allah Joomi mon, woni Takɗo kala huunde. Reweteeɗo alaa, si wanaa Kaŋko. Ko honno pirlitortaɗon (e ɗuum?)",
-      "yo": "Ìyẹn ni Allāhu, Olúwa yín, Ẹlẹ́dàá gbogbo n̄ǹkan. Kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Nítorí náà, báwo ni wọ́n ṣe ń ṣẹ yín lórí kúrò níbi òdodo?"
+      "yo": "Ìyẹn ni Allāhu, Olúwa yín, Ẹlẹ́dàá gbogbo n̄ǹkan. Kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Nítorí náà, báwo ni wọ́n ṣe ń ṣẹ yín lórí kúrò níbi òdodo?",
+      "zh": "那是安拉，是你们的养主，是万物的创造者，除他外，绝无应受崇拜的。你们怎么如此悖谬呢？",
+      "th": "นั่นคืออัลลอฮ์ พระผู้อภิบาลของพวกเจ้าผู้ทรงสร้างทุกสิ่ง ไม่มีพระเจ้าอื่นใดนอกจากพระองค์ แล้วพวกเจ้าถูกหันเห (จากการเคารพสักการะพระองค์สู่การเคารพสักการะสิ่งอื่น) ได้อย่างไร?",
+      "ko": "그러한 분이 그대들의 주님인 하나님이시라. 그분 이외에는 경배받을 존재가 없으며 그분께서는 모든 것을 창조하신 분이라. 그런데도 그대들은 어떻게 돌아선단 말인가?",
+      "vi": "Đó là Allah, Thượng Đế của các ngươi. Ngài là Đấng Tạo Hóa vạn vật, không có Thượng Đế đích thực nào ngoài Ngài. Vậy tại sao các ngươi lánh xa (không thờ phượng) Ngài?"
     }
   },
   {
@@ -4542,7 +5110,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isaan amananii, toltuuwwan hojjatan isaaniif mindaa adda hin cinnetu jira.",
       "so": "Hubaal, kuwa (Xaqa) rumeysan oo samaha fala. Waxay leeyihiin abaal gud aan go’eynin (Janno).",
       "ff": "Pellet, ɓeen gooŋɗiinɓe ɓe ngolli moƴƴi ɗin, hino woodani ɓe njoɓdi ndi taƴondirtaa.",
-      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, ẹ̀san tí kò níí pẹ̀dín tí kò níí dáwọ́ dúró ń bẹ fún wọn."
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, ẹ̀san tí kò níí pẹ̀dín tí kò níí dáwọ́ dúró ń bẹ fún wọn.",
+      "zh": "归信而且行善者必受不断的报酬。",
+      "ta": "நிச்சயமாக எவர்கள் நம்பிக்கை கொண்டு நன்மைகளை செய்தார்களோ - அவர்களுக்கு முடிவுறாத வெகுமதிகள் உண்டு.",
+      "ml": "തീര്‍ച്ചയായും വിശ്വസിക്കുകയും സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും ചെയ്തവരാരോ അവര്‍ക്കാണ് മുറിഞ്ഞുപോവാത്ത പ്രതിഫലമുള്ളത്‌.",
+      "th": "แท้จริงบรรดาผู้ศรัทธาและประกอบความดีทั้งหลายนั้น พวกเขาจะได้รับการตอบแทนอย่างไม่สิ้นสุด",
+      "ko": "실로 (하나님과 사도를) 믿고 선행을 실천하는 자들, 그들에게는 끊이지 않는 보상이 있노라.",
+      "vi": "Quả thật, những người có đức tin và hành thiện chắc chắn sẽ được ban thưởng một phần thưởng vô tận (Thiên Đàng)."
     }
   },
   {
@@ -4577,7 +5151,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Namni toltuu hojjate lubbuu isaatiifi. Namni hammaates isimarratti. Gooftaan kee gabroota miidhaa hintaane.",
       "so": "Qofkii sama fala naftiisay (dan) u tahay, kii xumaan falana isagay u daran tahay, Rabbigaa ma aha mid dulmiya addoomaha.",
       "ff": "Kala golluɗo ko moƴƴi, ko fii hoore-makko; kala kadi bonnuɗo, yantat e makko. Joomi maa ciforaani won'de, tooñoowo jiyaaɓe ɓen.",
-      "yo": "Ẹnikẹ́ni tí ó bá ṣe iṣẹ́ rere, ó ṣe é fún ẹ̀mí ara rẹ̀. Ẹnikẹ́ni tí ó bá sì ṣe aburú, ó ṣe é fún ẹ̀mí ara rẹ̀. Olúwa rẹ kò sì níí ṣe àbòsí sí àwọn ẹrúsìn."
+      "yo": "Ẹnikẹ́ni tí ó bá ṣe iṣẹ́ rere, ó ṣe é fún ẹ̀mí ara rẹ̀. Ẹnikẹ́ni tí ó bá sì ṣe aburú, ó ṣe é fún ẹ̀mí ara rẹ̀. Olúwa rẹ kò sì níí ṣe àbòsí sí àwọn ẹrúsìn.",
+      "zh": "行善者自受其益，作恶者自受其害。你的养主绝不会亏枉众仆的。",
+      "ta": "யார் நல்லதை செய்வாரோ அது அவருக்குத்தான் நன்மையாகும். இன்னும், யார் கெட்டதை செய்வாரோ அது அவருக்குத்தான் கேடாகும். உமது இறைவன் அடியார்களுக்கு சிறிதும் அநியாயம் செய்பவனாக இல்லை.",
+      "ml": "വല്ലവനും നല്ലത് പ്രവര്‍ത്തിച്ചാല്‍ അതിന്‍റെ ഗുണം അവന് തന്നെയാകുന്നു. വല്ലവനും തിന്‍മ ചെയ്താല്‍ അതിന്‍റെ ദോഷവും അവന് തന്നെ. നിന്‍റെ രക്ഷിതാവ് (തന്‍റെ) അടിമകളോട് അനീതി കാണിക്കുന്നവനേ അല്ല.",
+      "th": "ผู้ใดประกอบความดีก็จะได้แก่ตัวของเขา และผู้ใดประกอบความชั่วก็จะได้แก่ตัวของเขาเอง และพระผูัอภิบาลของเจ้านั้นมิทรงอธรรมต่อปวงบ่าวของพระองค์",
+      "ko": "선을 행하는 자는 자기 자신을 위한 것이며, 악행을 저지르는 자는 그를 해치는 것이라. 그대의 주님께서는 결코 종복들을 부당히 대우하시는 분이 아니라."
     }
   },
   {
@@ -4611,7 +5190,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Furtuuleen samiileefi dachii isaaf taate. Nama fedheef hiree bal’isa; (kan fedhe immoo itti) dhiphisa. Inni waan hunda beekaadha.",
       "so": "(Alle) baa iska leh khaznadaha samooyinka iyo arlada, wuxuu u waasiciyaa risiqa qofkuu doono oo ku cidhiidhiyaa (qofkuu doono), wax walbana (Alle) wuu Og yahay.",
       "ff": "Ko Kaŋko heerori soktirɗe kammuuji ɗiin e leydi ndin. Homo weertana arsike on mo o muuyani, O ɓiɗtinana (mo O muuyani). Pellet, ko O gannduɗo kala hu'unde.",
-      "yo": "TiRẹ̀ ni àwọn kọ́kọ́rọ́ ilé ọ̀rọ̀ àwọn sánmọ̀ àti ilẹ̀. Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú Òun ni Onímọ̀ nípa gbogbo n̄ǹkan."
+      "yo": "TiRẹ̀ ni àwọn kọ́kọ́rọ́ ilé ọ̀rọ̀ àwọn sánmọ̀ àti ilẹ̀. Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú Òun ni Onímọ̀ nípa gbogbo n̄ǹkan.",
+      "zh": "天地的宝藏，只是他的；他欲使谁的给养宽裕，就使他宽裕；〔欲使谁的给养窘迫，〕就使他窘迫；他是全知万物的。",
+      "ko": "그분께는 (일곱) 하늘과 땅의 열쇠가 있노라. 그분께서는 원하시는 자에게 양식을 늘리시고 줄이시노라. 실로 그분께서는 모든 것을 알고 계신 분이라.",
+      "vi": "Mọi chìa khóa (kho tài nguyên) của các tầng trời và trái đất đều là của Ngài. Ngài muốn nới rộng hoặc thu hẹp bổng lộc cho ai là tùy ý Ngài. Quả thật, Ngài là Đấng Hằng Biết tất cả mọi thứ."
     }
   },
   {
@@ -4644,7 +5226,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ ያ መጽሐፉን በእውነት ያወረደ ነው፡፡ ሚዛንንም (እንደዚሁ)፡፡ ሰዓቲቱ ምንአልባት ቅርብ መኾንዋን ምን ያሳውቅሃል?",
       "om": "Rabbiin Isa kitaabaafi madaala haqaan buuseedha. Qiyaaman dhihoo ta’uun ni kajeelamaa maaltu si beeksise?!",
       "so": "Alle waa Kan ku soo dejiyey Kitaabka (Qur’aanka) Xaq iyo Miisaanka (caddaaladda). Maxaa ku ogeysiin waa intaasoo Saacadda 'Qiyaame' Dhowdahay?",
-      "ff": "Ko Allah woni jippiniri deftere nden goonga, e manndakke ɗen. E ko anndin maa? Hino gasa hara darnga ngal ko ko ɓadii?"
+      "ff": "Ko Allah woni jippiniri deftere nden goonga, e manndakke ɗen. E ko anndin maa? Hino gasa hara darnga ngal ko ko ɓadii?",
+      "zh": "安拉降示包含真理的经典，并降示公平。你怎么能知道呢？复活时或许是临近的。",
+      "th": "อัลลอฮ์คือผู้ประทานคัมภีร์นี้ (อัลกุรอาน) ลงมาด้วยความจริงและดุลยภาพ และอะไรเล่าจะทำให้เจ้ารู้ได้ว่า บางทีวันอวสานอยู่ใกล้ๆ นี่เอง",
+      "ko": "진리로 가득한 성서와 공정을 내리신 분이 하나님이시라. 무엇이 그대에게 알려줄 것인가? 종말의 시간은 가까울지도 모를 일이라.",
+      "vi": "Allah là Đấng đã ban Kinh (Qur’an) xuống bằng sự thật (không có gì phải hoài nghi) và (Ngài đã ban xuống) nền công lý. Và điều gì khiến cho Ngươi nhận biết có lẽ Giờ Tận Thế sắp gần kề?"
     }
   },
   {
@@ -4681,7 +5267,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Nuti Qur’aana Arabiffaa isa taasifne Akka isin hubattaniif.",
       "so": "Hubaal Annagaa (Alle ah) ka yeellay Qur’aan af Carabi ah, si aad u fahantaan.",
       "ff": "Min maɗii nde janngeteende [e ɗemngal] aarabu, mbelajo'o, on kaqqilay.",
-      "yo": "Dájúdájú Àwa se é ní al-Ƙur’ān (n̄ǹkan kíké) ní èdè Lárúbáwá nítorí kí ẹ lè ṣe làákàyè."
+      "yo": "Dájúdájú Àwa se é ní al-Ƙur’ān (n̄ǹkan kíké) ní èdè Lárúbáwá nítorí kí ẹ lè ṣe làákàyè.",
+      "zh": "我确已以此为阿拉伯文的《古兰经》，以便你们了解。",
+      "ta": "நிச்சயமாக நாம் இதை அரபிமொழியில் ஓதப்படுகிற குர்ஆனாக ஆக்கினோம், நீங்கள் சிந்தித்து புரிய வேண்டும் என்பதற்காக.",
+      "ml": "തീര്‍ച്ചയായും നാം ഇതിനെ അറബി ഭാഷയിലുള്ള ഒരു ഖുര്‍ആന്‍ ആക്കിയിരിക്കുന്നത് നിങ്ങള്‍ ചിന്തിച്ചു മനസ്സിലാക്കുവാന്‍ വേണ്ടിയാകുന്നു.",
+      "th": "แท้จริงเราได้ทำให้อัลกุรอานเป็นภาษาอาหรับ เพื่อพวกเจ้าจะได้ใช้ปัญญาไตร่ตรอง",
+      "ko": "실로 나는 그것을 아랍어로 된 꾸란으로 두었으니 그대들이 이해하기 위함이라.",
+      "vi": "Quả thật, TA đã làm cho Nó thành một quyển Kinh để xướng đọc bằng tiếng Ả-rập, mong rằng các ngươi có thể hiểu."
     }
   },
   {
@@ -4719,7 +5311,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin samiileefi dachii, Gooftaan arshii waan isaan ittiin (Isa) wassafan (ibsan) irraa qulqullaa’eera.",
       "so": "Waxaa xurmo oo dhan iska leh (Allaah) Rabbiga samooyinka iyo arlada, Rabbiga Carshiga, oo ka hufan waxay ku tilmaamaan.",
       "ff": "Senaare woodanii Jeyɗo kammuuji ɗin e leydi ndin, Jeyɗo Arsi kin; laaɓuɗo e kon ko ɓe cifrotta mo.",
-      "yo": "Mímọ́ ni fún Olúwa àwọn sánmọ̀ àti ilẹ̀, Olúwa Ìtẹ́-ọlá tayọ irọ́ tí wọ́n ń pa (mọ́ Ọn)."
+      "yo": "Mímọ́ ni fún Olúwa àwọn sánmọ̀ àti ilẹ̀, Olúwa Ìtẹ́-ọlá tayọ irọ́ tí wọ́n ń pa (mọ́ Ọn).",
+      "zh": "赞颂天地的主宰，宝座的主宰，他是超乎他们所描述的！",
+      "ta": "வானங்கள் இன்னும் பூமியின் அதிபதி, அர்ஷுடைய அதிபதி(யாகிய அவன்) அவர்கள் வர்ணிக்கின்ற (இந்த பொய்யான) வர்ணிப்புகளை விட்டும் மிகப் பரிசுத்தமானவன்.",
+      "ml": "എന്നാല്‍ ആകാശങ്ങളുടെയും ഭൂമിയുടെയും രക്ഷിതാവ്‌, സിംഹാസനത്തിന്‍റെ നാഥന്‍ അവര്‍ പറഞ്ഞുണ്ടാക്കുന്നതില്‍ നിന്ന് എത്രയോ പരിശുദ്ധനത്രെ.",
+      "th": "มหาบริสุทธิ์แด่พระผู้อภิบาลแห่งชั้นฟ้าทั้งหลายและแผ่นดิน พระผู้อภิบาลแห่งบัลลังก์ จากสิ่งที่พวกเขากล่าวอ้าง",
+      "ko": "그들이 (그분을 함부로) 묘사하나, (일곱) 하늘과 땅의 주님, 권좌의 주님께서는 완벽하신 분이라!",
+      "vi": "Quang vinh và trong sạch thay Thượng Đế của các tầng trời và trái đất, Thượng Đế của chiếc Ngai Vương, Ngài vượt hẳn những gì chúng đã qui cho Ngài."
     }
   },
   {
@@ -4757,7 +5355,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isa malee dhugaan gabbaramaan hin jiru. Ni jiraachisa; ni ajjeessas. (Inni) Gooftaa keessaniifi Gooftaa abbootii keessan kanneen duraati.",
       "so": "Ma jiro ilaah (Xaq lagu caabudo) aan Isaga aheyn, Waa isaga Kan bixiya nolol, oo sababa dhimasho, waa Rabbigiin iyo Rabbiga aabbayaashiinnii hore.",
       "ff": "Deweteeɗo goo alaa, si wanaa Kaŋko. Homo wuurna, Himo wara. Jeyɗo on Jeyi baabiraaɓe mon aramɓe ɓeen.",
-      "yo": "Kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Olúwa yín àti Olúwa àwọn bàbá yín, àwọn ẹni àkọ́kọ́."
+      "yo": "Kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Olúwa yín àti Olúwa àwọn bàbá yín, àwọn ẹni àkọ́kọ́.",
+      "zh": "除他外，绝无应受崇拜的。他能使死者生，能使生者死，他是你们的养主，也是你们祖先的养主。",
+      "ta": "அவனைத் தவிர (உண்மையில் வணங்கத்தகுதியான) இறைவன் அறவே இல்லை. அவன் உயிர்ப்பிக்கிறான்; மரணிக்க வைக்கிறான்; அவன்தான் உங்கள் இறைவனும் முன்னோர்களான உங்கள் மூதாதைகளின் இறைவனும் ஆவான்.",
+      "ml": "അവനല്ലാതെ ആരാധനക്കർഹനായി മറ്റാരുമില്ല. അവന്‍ ജീവിപ്പിക്കുകയും മരിപ്പിക്കുകയും ചെയ്യുന്നു. നിങ്ങളുടെ രക്ഷിതാവും നിങ്ങളുടെ പൂര്‍വ്വപിതാക്കളുടെ രക്ഷിതാവും ആയിട്ടുള്ളവന്‍.",
+      "th": "ไม่มีพระเจ้าอื่นใด (ที่ควรแก่การกราบไหว้โดยเที่ยงแท้) นอกจากพระองค์ ผู้ทรงให้เป็นและผู้ทรงให้ตาย พระผู้อภิบาลของพวกเจ้าและพระผู้อภิบาลของบรรพบุรุษของพวกเจ้าในสมัยก่อนๆ",
+      "ko": "그분 이외에는 경배받을 존재가 없으며, 그분께서는 생명을 불어넣으시고 죽음을 부여하시노라. (그분께서는) 그대들의 주님이시자 그대들의 옛 조상들의 주님이시라.",
+      "vi": "Không có Thượng Đế đích thực nào ngoài Ngài. (Ngài là) Đấng làm cho sống và làm cho chết. (Ngài là) Thượng Đế của các ngươi và là Thượng Đế của ông bà tổ tiên các ngươi."
     }
   },
   {
@@ -4794,7 +5398,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Samiileefi dachii keessa Dhugumatti mu’uminootaaf mallattooleetu jira.",
       "so": "Xaqiiq, waxaa samooyinka iyo arlada ugu sugan calaamooyin mu’miniinta.",
       "ff": "Pellet, hino e tagugol kammuuji ɗiin e leydi ndin, Ma'andeeji wonan'de gooŋɗinɓe ɓeen.",
-      "yo": "Dájúdájú nínú àwọn sánmọ̀ àti ilẹ̀ àwọn àmì wà (nínú wọn) fún àwọn onígbàgbọ́ òdodo."
+      "yo": "Dájúdájú nínú àwọn sánmọ̀ àti ilẹ̀ àwọn àmì wà (nínú wọn) fún àwọn onígbàgbọ́ òdodo.",
+      "zh": "天上地上，在归信者看来确有许多迹象。",
+      "ta": "நிச்சயமாக வானங்கள், இன்னும் பூமியில் பல அத்தாட்சிகள் நம்பிக்கையாளர்களுக்கு இருக்கின்றன.",
+      "ml": "തീര്‍ച്ചയായും ആകാശങ്ങളിലും ഭൂമിയിലും വിശ്വാസികള്‍ക്ക് പല ദൃഷ്ടാന്തങ്ങളുമുണ്ട്‌.",
+      "th": "แท้จริงในชั้นฟ้าทั้งหลายและแผ่นดินนั้น แน่นอนย่อมมีสัญญาณหลากหลายสำหรับบรรดาผู้ศรัทธา",
+      "ko": "진실로 (일곱) 하늘과 땅에는 믿는 자들을 위한 징표들이 있노라.",
+      "vi": "Quả thật, trong các tầng trời và trái đất là các dấu hiệu (về quyền năng và tính duy nhất của Allah) cho những người có đức tin."
     }
   },
   {
@@ -4830,7 +5440,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin Isa galaana isiniif laaffise sani akka dooniwwan ajaja Isaatiin isa keessa deemtu, akka tola Isaa irraa barbaaddattaniif, akka Isa galateeffattaniif.",
       "so": "Alle waa Kan idiin sakhiray badda, si ay ugu socdaan Doonyuhu dhexdeeda Amarkiisa, iyo si aad u raadsataan Deeqdiisa, iyo inaad ku mahdisaan.",
       "ff": "Ko Alla oon woni ko eeltanta mon maaya ngam laaɗe ndoga e hengo e dow yamiroore makko, ngam ɗaɓɓon e ɓural makko e yaama joo njetton.",
-      "yo": "Allāhu ni Ẹni tí Ó rọ agbami odò fún yín nítorí kí àwọn ọkọ̀ ojú-omi lè rìn nínú rẹ̀ pẹ̀lú àṣẹ Rẹ̀ àti nítorí kí ẹ tún lè wá nínú oore Rẹ̀ àti nítorí kí ẹ lè dúpẹ́ (fún Un)."
+      "yo": "Allāhu ni Ẹni tí Ó rọ agbami odò fún yín nítorí kí àwọn ọkọ̀ ojú-omi lè rìn nínú rẹ̀ pẹ̀lú àṣẹ Rẹ̀ àti nítorí kí ẹ tún lè wá nínú oore Rẹ̀ àti nítorí kí ẹ lè dúpẹ́ (fún Un).",
+      "zh": "安拉为你们而制服海洋，以便船舶奉他的命令而航行，以便你们寻求他的恩惠，以便你们感谢。",
+      "th": "อัลลอฮ์คือผู้ทรงทำให้ทะเลเป็นประโยชน์สำหรับพวกเจ้า เพื่อให้เรือเดินสมุทรแล่นไปตามน่านน้ำโดยพระบัญชาของพระองค์ และเพื่อพวกเจ้าจะได้แสวงหาความโปรดปรานของพระองค์ และเพื่อพวกเจ้าจะได้ขอบคุณ",
+      "ko": "그대들을 위해 바다를 유용케 하신 분이 하나님이시라. 그리하여 선박이 그분의 명령에 따라 그곳에서 항해하고 그대들이 그분의 은혜의 일부를 추구하니, 그대들이 감사하게 될 것이라.",
+      "vi": "Allah là Đấng đã chế ngự biển cả cho các ngươi để các con tàu có thể chạy trên đó theo lệnh của Ngài và để các ngươi tìm kiếm hồng phúc của Ngài, mong rằng các ngươi biết tri ân (Ngài)."
     }
   },
   {
@@ -4865,7 +5479,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Namni toltuu hojjate lubbuma isaatiifi. Namni badii dalages isheedhuma irratti. Ergasii gara Gooftaa keessanii deebifamtu.",
       "so": "Qofkii sama fala naftiisay dan u tahay, kiina xumaan fala waa dushiisa. Waxaana dib la idiinku soo celin  xagga Rabbigiin.",
       "ff": "Kalo golluɗo ko moƴƴi,ko fii hoore-makko; kala kadi bonnuɗo, yantat e makko refti ko ka Joomi maa woni ruttorde mon.",
-      "yo": "Ẹníkẹ́ni tí ó bá ṣe iṣẹ́ rere, fún ẹ̀mí ara rẹ̀ ni. Ẹnikẹ́ni tí ó bá sì ṣe iṣẹ́ aburú, fún ẹ̀mí ara rẹ̀ ni. Lẹ́yìn náà, ọ̀dọ̀ Olúwa yín ni wọn yóò da yín padà sí."
+      "yo": "Ẹníkẹ́ni tí ó bá ṣe iṣẹ́ rere, fún ẹ̀mí ara rẹ̀ ni. Ẹnikẹ́ni tí ó bá sì ṣe iṣẹ́ aburú, fún ẹ̀mí ara rẹ̀ ni. Lẹ́yìn náà, ọ̀dọ̀ Olúwa yín ni wọn yóò da yín padà sí.",
+      "zh": "行善者自受其益，作恶者自受其害。然后，你们要被召归于你们的养主。",
+      "ta": "யார் ஒரு நன்மையை செய்வாரோ அது அவருக்குத்தான் நல்லது. இன்னும், எவர் தீமை செய்வாரோ அது அவருக்குத்தான் கேடாகும். பிறகு, நீங்கள் (யாராக இருந்தாலும்) உங்கள் இறைவனிடம் திரும்பக் கொண்டு வரப்படுவீர்கள்.",
+      "th": "ผู้ใดทำความดีก็เพื่อตัวเขาเอง และผู้ใดทำความชั่ว ความชั่วของเขาจะมาถึงตัวเขาเอง แล้วพวกเจ้าจะถูกนำกลับคืนสู่พระเจ้าของเจ้า",
+      "ko": "선행을 실천하는 자는 그 자신을 위하는 것이며, 악행을 저지르는 자는 그를 해치는 것이라. 그 후 그대들은 실로 그대들의 주님께로 돌아가게 될 것이라.",
+      "vi": "Ai làm điều thiện thì được lợi cho bản thân mình còn ai làm điều xấu thì sẽ gặp quả báo. Rồi đây, các ngươi sẽ được đưa trở về trình diện Thượng Đế của các ngươi."
     }
   },
   {
@@ -4903,7 +5522,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "(Qur’aanni) kun namootaaf beekumsa ifa ba’aadha. Warra dhugoomsaniif qajeelfamaafi rahmata.",
       "so": "Kuwakani waa u tusmooyin cad dadka, iyo hanuun iyo naxariis ciddii wax yaqiinsan.",
       "ff": "O quraana kombo gite e peewal e yurmeende wonan'de yananaaɓe ɓe.",
-      "yo": "Èyí ni ìmọ̀ àmọ̀dájú àti ẹ̀rí fún àwọn ènìyàn. Ìmọ̀nà àti ìkẹ́ ni fún ìjọ tó ní àmọ̀dájú."
+      "yo": "Èyí ni ìmọ̀ àmọ̀dájú àti ẹ̀rí fún àwọn ènìyàn. Ìmọ̀nà àti ìkẹ́ ni fún ìjọ tó ní àmọ̀dájú.",
+      "zh": "这是给世人的明证，也是对坚信的民众的引导和恩惠。",
+      "ta": "இ(ந்த வேதமான)து மக்களுக்கு தெளிவான ஆதாரங்களாகவும் நேர்வழியாகவும் (அல்லாஹ்வை) உறுதியாக நம்பிக்கை கொள்கிற மக்களுக்கு கருணையாகவும் இருக்கிறது.",
+      "ml": "ഇത് മനുഷ്യരുടെ കണ്ണ് തുറപ്പിക്കുന്ന തെളിവുകളും ദൃഢമായി വിശ്വസിക്കുന്ന ജനങ്ങള്‍ക്ക് മാര്‍ഗദര്‍ശനവും കാരുണ്യവുമാകുന്നു.",
+      "th": "อัลกุรอานนี้เป็นการประจักษ์แจ้งสำหรับมนุษยชาติ และทางนำและความเมตตาแก่หมู่ชนที่มีความเชื่อมั่น",
+      "ko": "이것(꾸란)은 사람들을 위한 확실한 증거이며, 굳건히 믿는 사람들을 위한 인도이자 자비라.",
+      "vi": "(Qur’an) này là sự khai sáng cho nhân loại, là nguồn chỉ đạo và là hồng ân cho đám người vững chắc (trong đức tin)."
     }
   },
   {
@@ -4937,7 +5562,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Samii, dachiifi waan isaan lamaan gidduu jiranis dhugaafi yeroo beekamaa ta’eef malee hin uumne. Isaan kafaran waan ittiin sodaachifaman irraa garagaloodha.",
       "so": "Uma aanu abuurin samooyinka iyo arlada iyo waxa u dhexeeya waxaan aheyn Xaq iyo Muddo magacaaban. Kuwase gaalooba dhinac bay uga jeestaan waxa looga digo (oo cadaab ah).",
       "ff": "Min tagiraali kammuuji ɗin e leydi ndin e  ko woni hakkunde majji, si wonaa e goonga e lajala happaangal [fii mum]. Yedduɓe ɓen ko ɗuurniiɓe e ko ɓe ndentiniraa kon.",
-      "yo": "A kò ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀, àti ohunkóhun tó wà láààrin méjèèjì bí kò ṣe pẹ̀lú òdodo àti fún gbèdéke àkókò kan. Àwọn tó ṣàì gbàgbọ́ yó sì máa gbúnrí kúrò níbi ohun tí A fi ṣèkìlọ̀ fún wọn."
+      "yo": "A kò ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀, àti ohunkóhun tó wà láààrin méjèèjì bí kò ṣe pẹ̀lú òdodo àti fún gbèdéke àkókò kan. Àwọn tó ṣàì gbàgbọ́ yó sì máa gbúnrí kúrò níbi ohun tí A fi ṣèkìlọ̀ fún wọn.",
+      "zh": "我只本真理而创造天地万物，〔我只使它们存在〕至一定期。不归信的人们不顾他们曾受警告的〔刑罚〕，",
+      "th": "เรามิได้สร้างชั้นฟ้าทั้งหลาย และแผ่นดิน และสิ่งที่อยู่ระหว่างทั้งสองเพื่ออื่นใด เว้นแต่ด้วยความจริง และวาระที่ถูกกำหนดไว้ แต่บรรดาผู้ปฏิเสธศรัทธาเป็นผู้ผินหลังให้จากสิ่งที่พวกเขาถูกตักเตือน",
+      "ko": "나는 오직 진리로써 (일곱) 하늘과 땅과 그 사이에 존재하는 것을 창조하였으며 지정된 기한을 두었노라. 그러나 불신하는 자들은 경고 받은 것에 등을 돌리고 있노라."
     }
   },
   {
@@ -4965,7 +5593,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ያ ሰማያትንና ምድርን የፈጠረ እነርሱንም በመፍጠሩ ያልደከመው አላህ ሙታንን ሕያው በማድረግ ላይ ቻይ መኾኑን አላስተዋሉምን? (በማስነሳት) ቻይ ነው፡፡ እርሱ በነገሩ ሁሉ ላይ ቻይ ነውና፡፡",
       "om": "Sila Rabbiin, Isa samiileefi dachii uumee, isaan uumuu keessatti dadhabbiin itti hin dhaga’amin, du’aa kaasuu irratti danda’aa akka ta’e hin arginee? Eeyyeen; Inni waan hunda irratti danda’aadha.",
       "so": "Miyeyna ogayn in Alle ee abuuray samooyinka iyo arlada, oo aan ku daalin abuuristooda uu awoodo inuu nooleeyo meytida? Haayoo, hubaal waa Kan wax walba Kara.",
-      "ff": "E ɓee nji'aani won'de ko Allah tagi kammuuji ɗiin e leydi ndin, O ronkiraani tagugol ɗi, won'de ko O kattanɗo wuurnitugol maayɓe ɓen? Ko non woniri. Pellet, ko O kaɗtanɗo kala hu'unde."
+      "ff": "E ɓee nji'aani won'de ko Allah tagi kammuuji ɗiin e leydi ndin, O ronkiraani tagugol ɗi, won'de ko O kattanɗo wuurnitugol maayɓe ɓen? Ko non woniri. Pellet, ko O kaɗtanɗo kala hu'unde.",
+      "zh": "创造天地而不感觉疲乏的安拉，是能使死者复活的。难道他们不知道吗？是的，他对于万事是全能的。",
+      "ko": "(일곱) 하늘과 땅을 창조하시고 그것들의 창조에도 무력해지지 않으신 하나님께서 죽은 자들을 살리실 능력을 가지신 분임을 그들은 알지 못한단 말인가? 그렇지 않노라. 실로 그분께서는 모든 것이 가능한 분이시라."
     }
   },
   {
@@ -5000,7 +5630,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Yoo (diin) Rabbii tumsitan, Inni isinii tumsa. Faannaan keessanis gadi dhaaba.",
       "so": "Kuwa (Xaqa) rumeeyow! Haddaad u gargaartaan (diinta) Alle, Wuu idiin gargaari oo idiin sugi cagahiinna.",
       "ff": "Eey mon yo gooŋɗiinɓe, si on ngonii wallooɓe fii Allah, O wallat on, O tabintina teppe mon ɗen.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, tí ẹ bá ran (ẹ̀sìn) Allāhu lọ́wọ́, (Allāhu) máa ràn ẹ̀yin náà lọ́wọ́. Ó sì máa mú ẹsẹ̀ yín dúró ṣinṣin (nínú ẹ̀sìn)."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, tí ẹ bá ran (ẹ̀sìn) Allāhu lọ́wọ́, (Allāhu) máa ràn ẹ̀yin náà lọ́wọ́. Ó sì máa mú ẹsẹ̀ yín dúró ṣinṣin (nínú ẹ̀sìn).",
+      "zh": "归信的人们啊！如果你们相助安拉，他就相助你们，并使你们的脚步稳固。",
+      "ta": "நம்பிக்கையாளர்களே! நீங்கள் அல்லாஹ்விற்கு உதவினால் அவன் உங்களுக்கு உதவுவான். இன்னும், உங்கள் பாதங்களை அவன் உறுதிப்படுத்துவான்.",
+      "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย หากพวกเจ้าช่วยเหลือ (ศาสนาของ) อัลลอฮ์ พระองค์ก็จะทรงช่วยเหลือพวกเจ้า (เพื่อให้บรรลุชัยชนะ) และจะทรงทำให้เท้าของพวกเจ้ามั่นคง",
+      "ko": "(하나님을) 믿는 자들이여! 그대들이 하나님을 돕는다면 그분께서 그대들을 도우실 것이며 그대들을 발을 굳건히 해주실 것이라.",
+      "vi": "Hỡi những người có đức tin! Nếu các ngươi ủng hộ (con đường chính nghĩa của) Allah thì Ngài sẽ trợ giúp các ngươi và Ngài sẽ làm vững chắc bước chân của các ngươi."
     }
   },
   {
@@ -5036,7 +5671,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Rabbiif ajajamaa; ergamaa (Isaatifis) ajajamaa; dalagaawwan keessan hin balleessinaa.",
       "so": "Kuwa (Xaqa) rumeeyow! Adeeca Allaah oo adeeca Rasuulka, hana burinnina acmaashiinna.",
       "ff": "Eey mon yo gooŋɗinɓe! ɗoftee Allah, ɗoftoɗon Nulaaɗo on, wata on mbonnu golle mon ɗeen.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ tẹ̀lé (ọ̀rọ̀) Allāhu, ẹ tẹ̀lé (ọ̀rọ̀) Òjíṣẹ́ náà, kí ẹ sì má ṣe ba àwọn iṣẹ́ yín jẹ́."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ tẹ̀lé (ọ̀rọ̀) Allāhu, ẹ tẹ̀lé (ọ̀rọ̀) Òjíṣẹ́ náà, kí ẹ sì má ṣe ba àwọn iṣẹ́ yín jẹ́.",
+      "zh": "归信的人们啊！你们应当服从安拉，应当服从使者，你们不要使你们的善功无效。",
+      "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ അല്ലാഹുവെ അനുസരിക്കുക. റസൂലിനെയും നിങ്ങള്‍ അനുസരിക്കുക. നിങ്ങളുടെ കര്‍മ്മങ്ങളെ നിങ്ങള്‍ നിഷ്ഫലമാക്കിക്കളയാതിരിക്കുകയും ചെയ്യുക.",
+      "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย จงเชื่อฟังอัลลอฮ์ และจงเชื่อฟังเราะซูลคนนี้เถิด และอย่าทำให้การงานของพวกเจ้าไร้ประโยชน์",
+      "ko": "믿는 자들이여! 하나님을 따르고 사도를 따르며, 그대들의 행위를 쓸모없게 만들지 말라.",
+      "vi": "Hỡi những người có đức tin! Các ngươi hãy tuân lệnh Allah và tuân lệnh Sứ Giả (của Ngài); và các ngươi chớ làm mất giá trị việc làm của các ngươi (bởi sự vô đức tin và Riya’ – phô trương)."
     }
   },
   {
@@ -5070,7 +5710,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Jireenyi addunyaa taphaafi dagduudha, Yoo amantanii Rabbiin sodaattan mindaalee keessan isiniif kenna; qabeenya keessan isin hin gaafatu.",
       "so": "Nolosha adduunkan waa uun ciyaar iyo madaddaalo, haddaad (Xaqa) rumeysaan, oo aad iska dhowrtaan (xumaha), Wuxuu idin siin abaalgudkiinna, idinmana weydiisanayo maalkiinna.",
       "ff": "Ganndee nguurndam aduna ko fijindaaru e mbeleeɗe tan; hara le si on ngooŋɗiii, on kulii [Allah], O yeɗay on njoɓdi mon ndiin, o lamndotaako on jawle mon ɗeen.",
-      "yo": "Eré àti ìranù ni ìṣẹ̀mí ayé. (Àmọ́) tí ẹ bá gbàgbọ́ (nínú Allāhu), tí ẹ sì bẹ̀rù (Rẹ̀), Ó máa fún yín ní àwọn ẹ̀san yín. Kò sì níí bèèrè àwọn dúkìá yín (pé kí ẹ fi gbogbo rẹ̀ yọ Zakāh)."
+      "yo": "Eré àti ìranù ni ìṣẹ̀mí ayé. (Àmọ́) tí ẹ bá gbàgbọ́ (nínú Allāhu), tí ẹ sì bẹ̀rù (Rẹ̀), Ó máa fún yín ní àwọn ẹ̀san yín. Kò sì níí bèèrè àwọn dúkìá yín (pé kí ẹ fi gbogbo rẹ̀ yọ Zakāh).",
+      "zh": "今世的生活，只是游戏和娱乐。如果你们归信，并且敬畏他，他要将你们的报酬赏赐你们。他不索取你们的财产。",
+      "th": "การมีชีวิตอยู่ในโลกนี้ เป็นแค่เพียงการละเล่นและการสนุกสนานรื่นเริงเท่านั้น และหากพวกเจ้าศรัทธาและยำเกรง พระองค์จะทรงประทานรางวัลของพวกเจ้าให้แก่พวกเจ้าและพระองค์จะไม่ทรงขอทรัพย์สินของพวกเจ้า",
+      "ko": "현세의 삶이란 그저 놀음과 오락일 뿐이라. 만일 그대들이 (하나님을) 믿고 경외한다면 그분께서는 그대들에게 그대들의 보상을 주실 것이며, 그대들에게 그대들의 (전) 재산을 요구하지 않으실 것이라."
     }
   },
   {
@@ -5104,7 +5747,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Isa ergamaa Isaa erge qajeelloofi amantii dhugaatiin. amantii hunda irratti ol isa taasisuuf. Ragaaf Rabbiin ga’aadha.",
       "so": "Alle waa Kan la soo diray Rasuulkiisa Hanuun iyo Diin Xaq ah si uu uga sare mariyo diimaha kaloo dhan. Alle ku filan Marag uu ahaado.",
       "ff": "Ko Kaŋko woni Nulirɗo Nulaaɗo makko on peewal e diina goonga, fii yo o fawaka ka e hoore kala diina. Allah yonii seedee.",
-      "yo": "(Allāhu) Òun ni Ẹni tí Ó fi ìmọ̀nà àti ẹ̀sìn òdodo (’Islām) rán Òjíṣẹ́ Rẹ̀ nítorí kí Ó lè fi borí gbogbo ẹ̀sìn (mìíràn) pátápátá. Allāhu sì tó ní Ẹlẹ́rìí."
+      "yo": "(Allāhu) Òun ni Ẹni tí Ó fi ìmọ̀nà àti ẹ̀sìn òdodo (’Islām) rán Òjíṣẹ́ Rẹ̀ nítorí kí Ó lè fi borí gbogbo ẹ̀sìn (mìíràn) pátápátá. Allāhu sì tó ní Ẹlẹ́rìí.",
+      "zh": "他因正道和真教而派遣他的使者，以便他使真教胜过一切宗教。安拉足为见证者。",
+      "ta": "அவன்தான் தனது தூதரை நேர்வழி இன்னும் உண்மையான மார்க்கத்தைக் கொண்டு அனுப்பினான், எல்லா மார்க்கங்களை விட அ(ந்த உண்மையான மார்க்கத்)தை மேலோங்க வைப்பதற்காக. இன்னும் சாட்சியாளனாக அல்லாஹ்வே போதுமானவன்.",
+      "ml": "സന്മാര്‍ഗവും സത്യമതവുമായി തന്‍റെ റസൂലിനെ നിയോഗിച്ചത് അവനാകുന്നു. അതിനെ എല്ലാ മതത്തിനും മീതെ തെളിയിച്ചുകാണിക്കാന്‍ വേണ്ടി. സാക്ഷിയായിട്ട് അല്ലാഹു തന്നെ മതി.",
+      "th": "พระองค์คือผู้ทรงส่งเราะซูลของพระองค์พร้อมด้วยทางนำและศาสนาแห่งสัจธรรม เพื่อพระองค์จะทรงให้มันรุ่งเรืองเหนือศาสนาทั้งหลาย และเพียงพอแล้วที่อัลลอฮ์ทรงเป็นพยาน",
+      "ko": "인도와 진리의 종교와 함께 당신의 사도를 보내시어 그 모든 종교 위에 그것(이슬람)이 드러나도록 하시는 분이 그분이시라. 증언자는 하나님만으로 충분하노라.",
+      "vi": "Ngài là Đấng đã phái Sứ Giả của Ngài (Thiên Sứ Muhammad) mang nguồn chỉ đạo và tôn giáo chân lý đến để Ngài làm cho nó vượt trội tất cả mọi tôn giáo; và một mình Allah đã đủ làm chứng (cho điều này)."
     }
   },
   {
@@ -5131,7 +5780,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "እላንተ ያመናችሁ ሆይ! ነገረኛ ወሬን ቢያመጣላችሁ በስህተት ላይ ኾናችሁ ሕዝቦችን እንዳትጎዱና በሠራችሁት ነገር ላይ ተጸጸቾች እንዳትኾኑ አረጋግጡ፡፡",
       "om": "Yaa warra amantan! Yoo jallaan oduun isinitti dhufe dubbii adda baafadhaa, akka wallaalumaan namoota miitanii, ergasii waan hojjattan irratti hin gaabbineef.",
       "so": "Kuwa (Xaqa) rumeeyow! Hadduu mid caasi ah idiinla yimaado war, iska hubiya, si aydaan wax ugu yeelin dad ogaansho la’aan, markaasna aad ka shallaydaan waxaad fasheen.",
-      "ff": "Eey mon yo ɓen gooŋɗinɓe ! Si faasiqiijo ardanii on e kumpital, tefee fii wota on keɓor e yimɓe sabu majjeede, ngonton nimsuɓe e kon ko mbaɗɗɗon."
+      "ff": "Eey mon yo ɓen gooŋɗinɓe ! Si faasiqiijo ardanii on e kumpital, tefee fii wota on keɓor e yimɓe sabu majjeede, ngonton nimsuɓe e kon ko mbaɗɗɗon.",
+      "zh": "归信的人们啊！如果一个恶人报告你们一个消息，你们应当弄清楚，以免你们无知地伤害他人，到头来悔恨自己的行为。",
+      "th": "โอ้ศรัทธาชนทั้งหลาย หากคนชั่วนำข่าวใดๆ มาแจ้งแก่พวกเจ้า พวกเจ้าก็จงสอบสวนให้แน่ชัด หาไม่แล้วพวกเจ้าจะก่อเคราะห์กรรมแก่พวกหนึ่งโดยไม่รู้ตัว แล้วพวกเจ้าจะกลายเป็นผู้เสียใจในสิ่งที่พวกเจ้าได้กระทำไป",
+      "ko": "믿는 자들이여! 일탈을 일삼는 자가 그대들에게 어떤 소식을 가지고 왔다면 확실히 확인하라. 이는, 그대들이 사람들을 무지로써 해를 끼친 후 그대들이 저지른 일에 대해 후회하는 자가 되지 않기 위해서라."
     }
   },
   {
@@ -5168,7 +5820,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ምእመናኖች ወንድማመቾች ናቸው፡፡ በሁለት ወንድሞቻችሁም መካከል አስታርቁ፡፡ ይታዘንላችሁም ዘንድ አላህን ፍሩ፡፡",
       "om": "Mu’uminoonni obboleeyyani; gidduu obboleeyyan keessanii tolchaa. Rabbiin sodaadhaa Akka mararfatamtanuuf jecha.",
       "ff": "Nganndee gooŋɗinɓe ɓen ko jeyduɓe. Haray moƴƴinee hakkunde jeydal mon ngal, kulon Allah, mbelajo'o on njurminte.",
-      "yo": "Ọmọ ìyá (ẹ̀sìn) ni àwọn onígbàgbọ́ òdodo. Nítorí náà, ẹ ṣàtúnṣe láààrin àwọn ọmọ ìyá yín méjèèjì. Kí ẹ sì bẹ̀rù Allāhu nítorí kí A lè kẹ yín."
+      "yo": "Ọmọ ìyá (ẹ̀sìn) ni àwọn onígbàgbọ́ òdodo. Nítorí náà, ẹ ṣàtúnṣe láààrin àwọn ọmọ ìyá yín méjèèjì. Kí ẹ sì bẹ̀rù Allāhu nítorí kí A lè kẹ yín.",
+      "zh": "信士们皆为教胞，故你们应当排解教胞间的纷争，你们应当敬畏安拉，以便你们蒙主的怜恤。",
+      "ta": "நம்பிக்கையாளர்கள் எல்லாம் சகோதரர்கள் ஆவர். ஆகவே, உங்கள் இரு சகோதரர்களுக்கு மத்தியில் சமாதானம் செய்யுங்கள். இன்னும், நீங்கள் கருணை காட்டப்படுவதற்காக அல்லாஹ்வை அஞ்சுங்கள்.",
+      "th": "แท้จริงบรรดาผู้ศรัทธานั้นเป็นพี่น้องกัน ดังนั้นพวกเจ้าจงไกล่เกลี่ยประนีประนอมกันระหว่างพี่น้องทั้งสองฝ่ายของพวกเจ้า และจงยำเกรงอัลลอฮ์เถิด เพื่อว่าพวกเจ้าจะได้รับความเมตตา",
+      "ko": "믿는 자들은 다름 아닌 형제들이니 그대들은 그대들의 두 형제 사이를 중재하라. 그리고 하나님을 경외하라, 그대들이 자비를 받게 될 것이라.",
+      "vi": "Quả thật chỉ những người có đức tin mới là anh em của nhau. Vì vậy, các ngươi hãy giải hòa giữa hai người anh em của mình. Các ngươi hãy sợ Allah mong rằng các ngươi được thương xót."
     }
   },
   {
@@ -5206,7 +5863,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin fagoo samiileefi dachii keessaa ni beeka. Rabbiin waan isin dalagdan (hunda) argaadha.”",
       "so": "Hubaal Alle baa ogsoon waxa aan muuqan ee ah samooyinka iyo arlada. Alle wuu Arkaa waxaad fashaan.",
       "ff": "Pellet, Allah no anndi wirniiɗi kammuuji ɗiin e leydi ndin. Allah ko deenɗo ko ngolloton kon.",
-      "yo": "Dájúdájú Allāhu mọ ìkọ̀kọ̀ àwọn sánmọ̀ àti ilẹ̀. Àti pé Allāhu ni Olùríran nípa ohun tí ẹ̀ ń ṣe níṣẹ́."
+      "yo": "Dájúdájú Allāhu mọ ìkọ̀kọ̀ àwọn sánmọ̀ àti ilẹ̀. Àti pé Allāhu ni Olùríran nípa ohun tí ẹ̀ ń ṣe níṣẹ́.",
+      "zh": "安拉确是知道天地的幽玄的，安拉是明察你们的行为的。",
+      "ta": "நிச்சயமாக அல்லாஹ் வானங்கள், இன்னும் பூமியின் மறைவான விஷயங்களை நன்கறிவான். இன்னும், நீங்கள் செய்பவற்றை அல்லாஹ் உற்று நோக்குபவன் ஆவான்.",
+      "ml": "തീര്‍ച്ചയായും അല്ലാഹു ആകാശങ്ങളിലെയും ഭൂമിയിലെയും അദൃശ്യകാര്യം അറിയുന്നു. നിങ്ങള്‍ പ്രവര്‍ത്തിക്കുന്നത് കണ്ടറിയുന്നവനുമാകുന്നു അല്ലാഹു.",
+      "th": "แท้จริงอัลลอฮ์ทรงรอบรู้สิ่งเร้นลับในชั้นฟ้าทั้งหลายและแผ่นดิน \n และอัลลอฮ์ทรงเห็นสิ่งที่พวกเจ้ากระทำ",
+      "ko": "실로 하나님께서는 하늘과 땅의 보이지 않는 것을 알고 계시며 하나님께서는 그대들이 행하는 것을 보고 계시는 분이라.",
+      "vi": "Quả thật, Allah biết điều vô hình của các tầng trời và trái đất. Và Allah nhìn thấy tất cả những gì các ngươi làm."
     }
   },
   {
@@ -5243,7 +5906,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila gara samii gubbaa isaanii jirtuu hin ilaallee? akkamitti akka ishee ijaarreefi ishee miidhagsine, uraan homaatuu isiif hintaane.",
       "so": "Miyeyna fiirin samada korkooda ah, sidaan u dhisnay oo u qurxinnay, ma laha wax duleello ah?",
       "ff": "E ɓee ndaaraani kammu ngun dow maɓɓe, ko honno Min mahiri ngun Min cuɗini ngu ; hara perɗi alanaa ngu?",
-      "yo": "Ṣé wọn kò wo sánmọ̀ òkè wọn bí A ti ṣe mọ ọ́n pa àti (bí) A ti ṣe ṣe é ní ọ̀ṣọ́, tí kò sì sí àlàfo sísán kan lára rẹ̀?"
+      "yo": "Ṣé wọn kò wo sánmọ̀ òkè wọn bí A ti ṣe mọ ọ́n pa àti (bí) A ti ṣe ṣe é ní ọ̀ṣọ́, tí kò sì sí àlàfo sísán kan lára rẹ̀?",
+      "zh": "难道他们没有仰观天体吗？我是怎样建造它，点缀它，使它没有缺陷的？",
+      "ta": "அவர்கள் தங்களுக்கு மேல் உள்ள வானத்தை, “நாம் அதை எப்படி படைத்தோம்? இன்னும், அதை எப்படி அலங்கரித்தோம்? அதில் பிளவுகள் (-கீறல்கள், வெடிப்புகள்) இல்லை என்பதை (அவர்கள்) பார்க்கவில்லையா?”",
+      "th": "พวกเขามิได้มองไปยังฟากฟ้าเหนือพวกเขาดอกหรือ ว่าเราได้สร้างมันและประดับมันไว้อย่างไร และมันไม่มีรอยหรือช่องโหว่เลย",
+      "ko": "그들은 자신들 위에 있는 하늘을 보지 않는가? 내가 어떻게 그것(하늘)을 짓고 미려하게 치장하였던가? 그것에는 그 어떤 갈라짐도 없도다.",
+      "vi": "Sao họ không nhìn lên bầu trời phía trên họ xem TA đã dựng và trang hoàng nó như thế nào và (làm thế nào) nó không có rạn nứt?"
     }
   },
   {
@@ -5280,7 +5948,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Jecha tokkoyyuu hin dubbatu Tiksaan itti dhihaataan isa bira jiraatu malee .",
       "so": "Ma jiro eray (aadmiga) ka soo baxa, oo uusan ag joogin ilaaliye (malag) u diyaar ah (inuu qoro).",
       "ff": "O wowlataa konngol, si wonaa hino takko makko binndoowo tawaaɗo.",
-      "yo": "(Ẹnì kan) kò sì níí sọ ọ̀rọ̀ kan àyàfi kí ẹ̀ṣọ́ kan ti wà níkàlẹ̀ pẹ̀lú rẹ̀ (fún àkọsílẹ̀ rẹ̀)."
+      "yo": "(Ẹnì kan) kò sì níí sọ ọ̀rọ̀ kan àyàfi kí ẹ̀ṣọ́ kan ti wà níkàlẹ̀ pẹ̀lú rẹ̀ (fún àkọsílẹ̀ rẹ̀).",
+      "zh": "他每说一句话，他面前都有天使当场监察。",
+      "ta": "பேச்சில் எதையும் அவன் பேச மாட்டான், கண்காணிப்பாளர், பிரசன்னமாகி இருப்பவர் (ஆகிய இரு வானவர்கள்) அவனிடம் இருந்தே தவிர.",
+      "ml": "അവന്‍ ഏതൊരു വാക്ക് ഉച്ചരിക്കുമ്പോഴും അവന്‍റെ അടുത്ത് തയ്യാറായി നില്‍ക്കുന്ന നിരീക്ഷകന്‍ ഉണ്ടാവാതിരിക്കുകയില്ല.",
+      "th": "ไม่มีคำพูดคำใดที่เขากล่าวออกมา เว้นแต่ใกล้ๆ เขานั้นมี (มะลัก) ผู้เฝ้าติดตาม ผู้เตรียมพร้อม (ที่จะบันทึก)",
+      "ko": "그(인간)가 어떠한 말을 말하든 그에게는 준비된 감시자가 있노라.",
+      "vi": "Bất cứ lời nào (con người) thốt ra cũng đều có (một Thiên Thần) quan sát theo dõi sẵn sàng (ghi lại)."
     }
   },
   {
@@ -5316,7 +5990,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Nuti waan hunda likki likkiin isa uumne.",
       "so": "Waxaan ku abuurnay wax kasta Qaddar.",
       "ff": "Minen Min tagir hu'unde kala e eɓɓoore,",
-      "yo": "Dájúdájú A ṣẹ̀dá gbogbo n̄ǹkan pẹ̀lú kádàrá."
+      "yo": "Dájúdájú A ṣẹ̀dá gbogbo n̄ǹkan pẹ̀lú kádàrá.",
+      "zh": "我确已依定量而创造万物，",
+      "ta": "நிச்சயமாக நாம் எல்லாவற்றையும் (விதியின் தாய் புத்தகத்தில் நிர்ணயிக்கப்பட்ட) ஓர் அளவில் படைத்தோம்.",
+      "ml": "തീര്‍ച്ചയായും ഏതു വസ്തുവെയും നാം സൃഷ്ടിച്ചിട്ടുള്ളത് ഒരു വ്യവസ്ഥപ്രകാരമാകുന്നു.",
+      "th": "แท้จริงทุกๆ สิ่งนั้น เราสร้างมันตามการกำหนด (ที่ถูกบันทึกไว้ล่วงหน้าแล้ว)",
+      "ko": "실로 나는 모든 것을 운명으로 창조하였노라.",
+      "vi": "Quả thật, tất cả mọi thứ TA tạo ra đều có tiền định."
     }
   },
   {
@@ -5354,7 +6034,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila mindaan toltuu toltuu malee ni tahee?",
       "so": "Wanaag abaalkiisu ma waxaan ahayn baa wanaag?",
       "ff": "Hara njoɓdi moƴƴere no woodi, si wonaa moƴƴere?",
-      "yo": "Ǹjẹ́ ẹ̀san mìíràn wà fún ṣíṣe rere bí kò ṣe (ẹ̀san) rere."
+      "yo": "Ǹjẹ́ ẹ̀san mìíràn wà fún ṣíṣe rere bí kò ṣe (ẹ̀san) rere.",
+      "zh": "行善者，只受善报。",
+      "ta": "(உலகில் அல்லாஹ்வை பயந்தவர் செய்த) நல்லதுக்குக் கூலி (மறுமையில் அல்லாஹ் அவருக்கு கொடுக்கின்ற சொர்க்கம் என்ற) நல்லதைத் தவிர வேறு உண்டா?",
+      "th": "การตอบแทนความดีจะมีอันใดเล่า นอกจากความดี",
+      "ko": "최선에 대한 보상은 오직 최선일 뿐이라.",
+      "vi": "Chẳng phải phần thưởng tốt là chỉ dành cho cái tốt đó sao?!"
     }
   },
   {
@@ -5392,7 +6077,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Maqaan Gooftaa keetii guddate, abbaa guddinnaafi ulfinaa (kan tahe).",
       "so": "Waxaa barakadiisu badnaatay Magaca Rabbigaa, Weynaha, Sharafta Badan.",
       "ff": "Barkinii innde Jooma nden, Jom mawngu e teddungal !",
-      "yo": "Ìbùkún ni fún orúkọ Olúwa rẹ, Atóbi, Alápọ̀n-ọ́nlé."
+      "yo": "Ìbùkún ni fún orúkọ Olúwa rẹ, Atóbi, Alápọ̀n-ọ́nlé.",
+      "zh": "多福哉，你具尊严和大德的养主的名号！",
+      "ta": "கம்பீரத்திற்கும் கண்ணியத்திற்கும் (கொடைகளுக்கும் அருள்களுக்கும்) உரியவனாகிய உமது இறைவனின் பெயர் மிகுந்த பாக்கியமானதும், மிகவும் உயர்ந்ததும், மிக்க மகத்துவமானதும் ஆகும்.",
+      "ml": "മഹത്വവും ഔദാര്യവും ഉള്ളവനായ നിന്‍റെ രക്ഷിതാവിന്‍റെ നാമം ഉല്‍കൃഷ്ടമായിരിക്കുന്നു.",
+      "th": "ความจำเริญแห่งพระนามของพระผู้อภิบาลของเจ้าผู้ทรงเป็นเจ้าแห่งความยิ่งใหญ่และทรงเกียรติ",
+      "ko": "장엄함과 베푸심을 지닌 그대 주님의 이름에는 축복이 가득하노라.",
+      "vi": "Hồng phúc thay Đại Danh của Thượng Đế của Ngươi (Thiên Sứ Muhammad), Đấng Quyền Năng Tối Thượng và Danh Dự."
     }
   },
   {
@@ -5430,7 +6121,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Qur’aana kabajamaadha.",
       "so": "Hubaal kani waa Qur'aan Sharaf Badan.",
       "ff": "Pellet nee ko alqur'aanaare konde teddunde,",
-      "yo": "Dájúdájú (al-Ƙur’ān) ni n̄ǹkan kíké alápọ̀n-ọ́nlé."
+      "yo": "Dájúdájú (al-Ƙur’ān) ni n̄ǹkan kíké alápọ̀n-ọ́nlé.",
+      "zh": "这确是宝贵的《古兰经》，",
+      "ta": "நிச்சயமாக இது கண்ணியமான குர்ஆனாகும்,",
+      "ml": "തീര്‍ച്ചയായും ഇത് ആദരണീയമായ ഒരു ഖുര്‍ആന്‍ തന്നെയാകുന്നു.",
+      "th": "ว่าแท้จริงนี่คือ กุรอานอันทรงเกียรติ",
+      "ko": "진실로 그것은 명예로운 꾸란으로서",
+      "vi": "Quả thật, (những Lời được đọc cho các ngươi nghe – hỡi nhân loại) là Kinh Qur’an cao quý."
     }
   },
   {
@@ -5468,7 +6165,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Mootummaan samiileefi dachii kan Isaati. Inni ni jiraachisa; ni ajjeesas. Inni waan hunda irratti danda’aadha.",
       "so": "Isagaa (Alle) leh Boqortooyada samooyinka iyo arlada, wax nooleeya oo dhinsiiya; Isagaana wax walba Kara.",
       "ff": "Ko Kaŋko heeranii laamu kammuuji ɗiin e lesdi ndin. Himo wuurna Himo wara, Kanŋko O kattanɗo kala hu'unde.",
-      "yo": "TiRẹ̀ ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Òun ni Alágbára lórí gbogbo n̄ǹkan."
+      "yo": "TiRẹ̀ ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ó ń sọ ẹ̀dá di alààyè. Ó sì ń sọ ẹ̀dá di òkú. Òun ni Alágbára lórí gbogbo n̄ǹkan.",
+      "zh": "天地的国权，归他所有；他能使人生，能使人死；他对于万事，是全能的。",
+      "ta": "வானங்கள் இன்னும் பூமியின் ஆட்சி அவனுக்கே உரியது. அவன் உயிர்கொடுக்கிறான்; மரணிக்க வைக்கிறான். இன்னும், அவன் எல்லாவற்றின் மீதும் பேராற்றலுடையவன் ஆவான்.",
+      "ml": "അവന്നാകുന്നു ആകാശങ്ങളുടെയും ഭൂമിയുടെയും ആധിപത്യം. അവന്‍ ജീവിപ്പിക്കുകയും മരിപ്പിക്കുകയും ചെയ്യുന്നു. അവന്‍ സര്‍വ്വകാര്യത്തിനും കഴിവുള്ളവനുമാണ്‌.",
+      "th": "อํานาจแห่งชั้นฟ้าทั้งหลายและแผ่นดินนั้นเป็นสิทธิ์ของพระองค์ ทรงให้เป็นและทรงให้ตาย และพระองค์คือพระผู้ทรงอำนาจเหนือทุกสิ่ง",
+      "ko": "하늘과 땅의 주권은 그분께 있으며, 그분은 생명을 불어넣으시고 죽음을 부여하시노라. 그분께서는 모든 것이 가능한 분이시라.",
+      "vi": "Quyền thống trị trời đất thuộc về một mình Ngài. Ngài làm cho sống và làm cho chết, và Ngài toàn năng trên tất cả mọi thứ."
     }
   },
   {
@@ -5506,7 +6209,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Mootummaan samiileefi dachii kan Isaati. Dhimmoonni gara Rabbiitti deebifamti.",
       "so": "Isagaa (Alle) leh Boqortooyada samooyinka iyo arlada. Xagga Alle baa loo celiyaa umuuraha oo dhan.",
       "ff": "Ko Kaŋko heeranii laamu kammuuji ɗin e leydi ndin. Ko ka Allah fiyakuuji ɗin nduttirtee.",
-      "yo": "TiRẹ̀ ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ọ̀dọ̀ Allāhu sì ni wọ́n máa ṣẹ́rí àwọn ọ̀rọ̀ ẹ̀dá padà sí."
+      "yo": "TiRẹ̀ ni ìjọba àwọn sánmọ̀ àti ilẹ̀. Ọ̀dọ̀ Allāhu sì ni wọ́n máa ṣẹ́rí àwọn ọ̀rọ̀ ẹ̀dá padà sí.",
+      "zh": "天地的国权，归他所有，万事只归于安拉。",
+      "ta": "வானங்கள், இன்னும் பூமியின் ஆட்சி அவனுக்கே உரியது. அல்லாஹ்வின் பக்கமே எல்லாக் காரியங்களும் திருப்பப்படுகின்றன.",
+      "ml": "അവന്നാണ് ആകാശങ്ങളുടെയും ഭൂമിയുടെയും ആധിപത്യം. അല്ലാഹുവിങ്കലേക്ക് തന്നെ കാര്യങ്ങള്‍ മടക്കപ്പെടുകയും ചെയ്യുന്നു.",
+      "th": "อํานาจแห่งชั้นฟ้าทั้งหลายและแผ่นดินนั้นเป็นสิทธิ์ของพระองค์ และการงานทั้งหลายนั้นจะกลับไปยังอัลลอฮ์พระองค์เดียวเท่านั้น",
+      "ko": "하늘과 땅의 주권은 그분께 있노라. 그리고 모든 일은 하나님께로 돌아가게 될 것이라.",
+      "vi": "Quyền thống trị trời đất thuộc về một mình Ngài, tất cả mọi sự việc đều được trình về cho Ngài (định đoạt)."
     }
   },
   {
@@ -5543,7 +6252,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Halkan guyyaa keessa galcha; guyyaas halkan keessa galcha. Inni beekaa waan qomoota keessa jiruuti.",
       "so": "Wuxuu Habeenka dhex gashaa maalinta, maalintana dhex gashaa habeenka (macnaha kala badiyaa), wuuna Ogsoon yahay waxa ku jira laabaha (dadka).",
       "ff": "Himo naadia jemma on e ndeer ñalawma on, o naadira ñalama on kadi e ndeer jemma on. Kaŋko ko O gannduɗo ko woni e ndeer ɓerɗe.",
-      "yo": "Ó ń ti òru bọ inú ọ̀sán. Ó sì ń ti ọ̀sán bọ inú òru. Òun sì ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
+      "yo": "Ó ń ti òru bọ inú ọ̀sán. Ó sì ń ti ọ̀sán bọ inú òru. Òun sì ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá.",
+      "zh": "他使黑夜侵入白昼，使白昼侵入黑夜。他是全知心事的。",
+      "ta": "அவன் பகலில் இரவை நுழைக்கிறான். இரவில் பகலை நுழைக்கிறான். இன்னும், நெஞ்சங்களில் உள்ளவற்றை அவன் நன்கறிந்தவன் ஆவான்.",
+      "ml": "അവന്‍ രാത്രിയെ പകലില്‍ പ്രവേശിപ്പിക്കുന്നു. അവന്‍ പകലിനെ രാത്രിയില്‍ പ്രവേശിപ്പിക്കുകയും ചെയ്യുന്നു. അവന്‍ ഹൃദയങ്ങളിലുള്ളവയെപ്പറ്റി അറിയുന്നവനുമാകുന്നു.",
+      "th": "พระองค์ทรงให้กลางคืนคาบเกี่ยวเข้าไปในกลางวัน และทรงให้กลางวันคาบเกี่ยวเข้าไปในกลางคืน และพระองค์เป็นผู้ทรงรอบรู้สิ่งที่อยู่ในทรวงอก",
+      "ko": "그분께서는 밤을 낮으로 들어가게 하시고 낮을 밤으로 들어가게 하시며, 그분께서는 심중에 있는 것도 알고 계시는 분이라.",
+      "vi": "Ngài nhập ban đêm vào ban ngày và nhập ban ngày vào ban đêm, và Ngài biết rõ mọi điều nằm trong lòng (đám bề tôi của Ngài)."
     }
   },
   {
@@ -5577,7 +6292,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Isa gabricha Isaa irratti keeyyattoota ifa ba’aa ta’an buuseedha, dukkanoowwan irraa gara ifaatti isin baasuuf jecha. Allaah’n isin mararfataa, rahmata godhaadha.",
       "so": "Waa Alle Kan ku soo dejiya Aayado cad addoonkiisa (Nabi Muxammad) si uu idiinkaga saaro mugdiyada xagga Nuurka. Hubaal Alle waa idiin Turid iyo Naxariis Badan yahay.",
       "ff": "Ko Kaŋko jippinta e jeyaaɗo makko on aayeeje ɓannguɗe, fii no o njaltinira on e niɓe fa'ade e ndaygu. Pellet, Allah ko jurmotooɗo  on, jaafotooɗo.",
-      "yo": "Òun ni Ẹni tó ń sọ àwọn āyah tó yanjú kalẹ̀ fún ẹrúsìn Rẹ̀ nítorí kí ó lè mu yín kúrò nínú àwọn òkùnkùn wá sínú ìmọ́lẹ̀. Dájúdájú Allāhu ni Aláàánú, Àṣàkẹ́-ọ̀run fún yín."
+      "yo": "Òun ni Ẹni tó ń sọ àwọn āyah tó yanjú kalẹ̀ fún ẹrúsìn Rẹ̀ nítorí kí ó lè mu yín kúrò nínú àwọn òkùnkùn wá sínú ìmọ́lẹ̀. Dájúdájú Allāhu ni Aláàánú, Àṣàkẹ́-ọ̀run fún yín.",
+      "zh": "他降示他的仆人许多明证，以便他使你们从重重黑暗走入光明。安拉对于你们，确是仁爱的，确是至慈的。",
+      "ko": "그대들을 암흑에서 광명으로 꺼내기 위해 당신의 종복에게 분명한 징표를 내리시는 분이 그분이시라. 진실로 하나님께서는 그대들에게 인자하시고 자애로우신 분이라.",
+      "vi": "Ngài là Đấng đã ban xuống cho Người Bề Tôi (Muhammad) của Ngài các Lời Mặc Khải rõ ràng để Ngài đưa các ngươi ra ánh sáng từ nơi tăm tối. Quả thật, Allah tử tế và nhân từ đối với các ngươi."
     }
   },
   {
@@ -5610,7 +6328,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhiiroliin sadaqaa kennatan, dubartoonni sadaqaa kennatte, kanneen liqaa gaarii Rabbiif liqeessan, (mindaan isaanii) dachaa isaaniif taasifamaa. galanni gaariin isaaniif tahe.",
       "so": "Ragga iyo haweenka wax sadaqaysta ee amaahiya Alle amaah wanaagsan, waa loo labo-laabi (ajarka) waxayna xaqiiq leeyihiin Abaal gud Wanaagsan (Janno).",
       "ff": "Pellet, sakkotooɓe (jawɗe mum ɓeen) ka worɓe e ka rewɓe ɓe ñami Allah ñamaande labaande, ɓe sowanoyte (mbarjaari) hara no woodani ɓe njoɓdi mawndi.",
-      "yo": "Dájúdájú àwọn olùtọrẹ lọ́kùnrin àti àwọn olùtọrẹ lóbìnrin, tí wọ́n tún yá Allāhu ní dúkìá tó dára, (Allāhu) yóò ṣàdìpèlé rẹ̀ fún wọn. Ẹ̀san alápọ̀n-ọ́nlé sì wà fún wọn."
+      "yo": "Dájúdájú àwọn olùtọrẹ lọ́kùnrin àti àwọn olùtọrẹ lóbìnrin, tí wọ́n tún yá Allāhu ní dúkìá tó dára, (Allāhu) yóò ṣàdìpèlé rẹ̀ fún wọn. Ẹ̀san alápọ̀n-ọ́nlé sì wà fún wọn.",
+      "zh": "施财的男女，和以善债借给安拉的男女，他必定加倍偿还他们，他们将受优厚的报酬。",
+      "ml": "തീര്‍ച്ചയായും ധര്‍മ്മിഷ്ഠരായ പുരുഷന്‍മാരും സ്ത്രീകളും അല്ലാഹുവിന് നല്ല കടം കൊടുത്തവരും ആരോ അവര്‍ക്കത് ഇരട്ടിയായി നല്‍കപ്പെടുന്നതാണ്‌. അവര്‍ക്കത്രെ മാന്യമായ പ്രതിഫലമുള്ളത്‌.",
+      "th": "แท้จริงบรรดาผู้บริจาคชายและบรรดาผู้บริจาคหญิง และพวกเขาได้ให้อัลลอฮ์ยืม (บริจาคในหนทางของอัลลอฮ์) ด้วยการยืมที่ดี พระองค์จะทรงเพิ่มเป็นทวีคูณแก่พวกเขา และสำหรับพวกเขาจะได้รับการตอบแทนอันมีเกียรติ",
+      "ko": "자선을 베푸는 남성들과 자신을 베푸는 여성들과 하나님을 위해 돌려받지 않을 빚을 내주는 자들, 그들을 위해 그것(보상)은 불어날 것이며 그들에게는 풍성한 보상이 있을 것이라.",
+      "vi": "Quả thật, những người làm từ thiện nam cũng như nữ, họ đã cho Allah mượn một món nợ tốt, món nợ (tốt) đó sẽ được nhân lên cho họ và họ sẽ có được một phần thưởng cao quý, vinh dự."
     }
   },
   {
@@ -5647,7 +6370,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin Barreesse \"dhugumatti, Anaafi Ergamtoonni Kiyya ni mo'anna\" (jechuun). Rabbiin Jabaa, Injifataadha.",
       "so": "Alle wuxuu qoray - hubaal waan adkaan, aniga iyo Rusushaydaba. Hubaal, Alle waa Xoog Badane, Adkaade ah.",
       "ff": "Alla ñaawi ma ni fool miin e nelaaɓe am, pellet Alla ko cemmbuɗo tedduɗo.",
-      "yo": "Allāhu kọ ọ́ pé: “Dájúdájú Mo máa borí; Èmi àti àwọn Òjíṣẹ́ Mi.” Dájúdájú Allāhu ni Alágbára, Olùborí."
+      "yo": "Allāhu kọ ọ́ pé: “Dájúdájú Mo máa borí; Èmi àti àwọn Òjíṣẹ́ Mi.” Dájúdájú Allāhu ni Alágbára, Olùborí.",
+      "zh": "安拉已经制定：我和我的众使者，必定胜利。安拉确是至刚的，确是万能的。",
+      "ta": "“நிச்சயமாக நானும் எனது தூதர்களும்தான் வெல்வோம்” என்று அல்லாஹ் விதித்துவிட்டான். நிச்சயமாக அல்லாஹ் மிக வலிமை உள்ளவன், மிகைத்தவன் ஆவான்.",
+      "ml": "തീര്‍ച്ചയായും ഞാനും എന്‍റെ ദൂതന്‍മാരും തന്നെയാണ് വിജയം നേടുക എന്ന് അല്ലാഹു രേഖപ്പെടുത്തിയിരിക്കുന്നു. തീര്‍ച്ചയായും അല്ലാഹു ശക്തനും പ്രതാപിയുമാകുന്നു.",
+      "th": "อัลลอฮ์ทรงกำหนดไว้ว่า แน่นอนข้าและเราะซูลของข้าจะมีชัยชนะเหนือกว่า แท้จริงอัลลอฮ์นั้นเป็นผู้ทรงพลัง ผู้ทรงอำนาจ",
+      "ko": "하나님께서 운명지으시길 “진실로 나와 나의 사도들은 정녕코 (적들을) 제압할 것이라”. 실로 하나님께서는 강하시고 존엄하신 분이라.",
+      "vi": "Allah đã định: “TA và Sứ Giả của TA chắc chắn phải thắng”. Quả thật Allah là Đấng Toàn Lực, Đấng Quyền Năng."
     }
   },
   {
@@ -5679,7 +6408,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Rabbiin sodaadhaa. Lubbuun tamuu waan boruuf durfatte haa laaltu. Rabbiin sodaadhaa Rabbiin waan isin hojjattan hunda keessa beekaadha.",
       "so": "Kuwa (Xaqa) rumeeyow! Dhowra (amarrada) Alle, naf walbana ha eegto waxay u hormarsatay berritoole (Qiyaamaha), kana dhowrsada xumaha. Hubaal Alle waa u xog ogaal waxaad fashaan.",
       "ff": "Eehey mon gooŋɗinɓe ndeente Alla, yo fittaandu ndaar kondu ardinani jannga kule alla pellet alla ko kumpatiiɗo ko ngolloton ko.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu. Kí ẹ̀mí kan sì wòye sí ohun tí ó tì ṣíwájú fún ọ̀la (àlùkìyáámọ̀). Ẹ bẹ̀rù Allāhu. Dájúdájú Allāhu ni Alámọ̀tán nípa ohun tí ẹ̀ ń ṣe níṣẹ́."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu. Kí ẹ̀mí kan sì wòye sí ohun tí ó tì ṣíwájú fún ọ̀la (àlùkìyáámọ̀). Ẹ bẹ̀rù Allāhu. Dájúdájú Allāhu ni Alámọ̀tán nípa ohun tí ẹ̀ ń ṣe níṣẹ́.",
+      "zh": "归信的人们啊！你们应当敬畏安拉，各人应当想一想自己为明日而预备了什么，你们应当敬畏安拉，安拉确是彻知你们的行为的。",
+      "ko": "믿는 자들이여! 하나님을 두려워하고 자신이 내일(심판의 날) 무엇을 내놓을 것인지 보도록 하라. 그대들은 하나님을 경외하라. 실로 하나님께서는 그대들이 행하는 일에 밝으신 분이라."
     }
   },
   {
@@ -5717,7 +6448,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Warri ibiddaafi warri Jannataa wal hin qixxaatan. Warri Jannataa isaanumatu milkaa'oodha.",
       "so": "Ma sinna Ehlu-Naarka iyo Ehlu- Jannaha. Ehlu-Jannaha iyaga weeye kuwa ah liibaanayaasha.",
       "ff": "Yimɓe yiite e yimɓe aljanna potaanih, ko yimɓe aljanna ngoni foolɓe.",
-      "yo": "Àwọn èrò inú Iná àti àwọn èrò inú Ọgbà Ìdẹ̀ra kò dọ́gba. Àwọn èrò inú Ọgbà Ìdẹ̀ra, àwọn ni olùjèrè."
+      "yo": "Àwọn èrò inú Iná àti àwọn èrò inú Ọgbà Ìdẹ̀ra kò dọ́gba. Àwọn èrò inú Ọgbà Ìdẹ̀ra, àwọn ni olùjèrè.",
+      "zh": "火狱的居民与乐园的居民不是平等的。乐园的居民，他们确是成功的。",
+      "ta": "நரக வாசிகளும் சொர்க்க வாசிகளும் சமமாக மாட்டார்கள். சொர்க்க வாசிகள்தான் வெற்றியாளர்கள் ஆவார்கள்.",
+      "ml": "നരകാവകാശികളും സ്വര്‍ഗാവകാശികളും സമമാകുകയില്ല. സ്വര്‍ഗാവകാശികള്‍ തന്നെയാകുന്നു വിജയം നേടിയവര്‍.",
+      "th": "บรรดาชาวนรกกับบรรดาชาวสวนสวรรค์นั้นไม่เหมือนกันดอก บรรดาชาวสวนสวรรค์พวกเขาเป็นผู้ได้รับความสำเร็จ",
+      "ko": "불지옥의 거주지와 천국의 거주자는 동일하지 않노라. 천국의 거주자들이야말로 성공한 자들이라.",
+      "vi": "Những người bạn của Hỏa Ngục không ngang bằng với những người bạn của Thiên Đàng. Những người bạn của Thiên Đàng là những người thắng lợi và thành đạt."
     }
   },
   {
@@ -5744,7 +6481,9 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "sw": "Lau kuwa tumeiteremsha hii Qur-ani juu ya mlima, basi bila ya shaka ungeliuona ukinyenyekea, ukipasuka kwa kumhofu Mwenyezi Mungu. Na hiyo mifano tunawapigia watu ili wafikiri.",
       "am": "ይህንን ቁርኣን በተራራ ላይ ባወረድነው ኖሮ ከአላህ ፍራቻ (የተነሳ) ተዋራጅ ተሰንጣቂ ኾኖ ባየሀው ነበር። ይህችንም ምሳሌ ይገመግሙ ዘንድ ለሰዎች እንገልጻለን",
       "om": "Odoo Qur'aana kana gaara irratti buufnee, silaa isa nigarta sodaataa dhodhoohaa sodaa Rabbiirraa. Fakkeenyota tana namootaaf taasifna akka isaan xiinxalaniif.",
-      "ff": "Si min tellinna o alquraana e dow hooseere ma a yiinde honde luli honde fetta ngam hulde Alla ɗi tinndi emin piyaniɗi yimɓe ko ngam ɓe miijo."
+      "ff": "Si min tellinna o alquraana e dow hooseere ma a yiinde honde luli honde fetta ngam hulde Alla ɗi tinndi emin piyaniɗi yimɓe ko ngam ɓe miijo.",
+      "zh": "假若我把这部《古兰经》降示一座山，你必定看见那座山因畏惧安拉而成为柔和的，崩溃的。这些譬喻，是我为众人而设的，以便他们省悟。",
+      "ko": "만약 내가 이 꾸란을 산 위에 내렸다면 그대는 그것(산)이 하나님에 대한 두려움으로 인해 곤두박질치고 산산히 쪼개짐을 보았을 것이라. 이 예는 내가 인간들을 위해 드는 것으로 그들이 숙고하기 위함이라."
     }
   },
   {
@@ -5782,7 +6521,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Maaliif waan hin hojjanne jettu?",
       "so": "Kuwa (Xaqa) rumeeyow! Maxaad u leedihiin (oo ugu baaqdaan dadka) wax aydaan falin?",
       "ff": "Eehey mon gooŋɗinɓe ko waɗi hoɗon kaala ko on mbaɗata.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, nítorí kí ni ẹ ṣe ń sọ ohun tí ẹ ò níí ṣe níṣẹ́?"
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, nítorí kí ni ẹ ṣe ń sọ ohun tí ẹ ò níí ṣe níṣẹ́?",
+      "zh": "归信的人们啊！你们为什么说你们所不做的事呢？",
+      "ta": "நம்பிக்கையாளர்களே! நீங்கள் செய்யாதவற்றை (செய்ததாக) ஏன் கூறுகிறீர்கள்?",
+      "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ ചെയ്യാത്തതെന്തിന് നിങ്ങള്‍ പറയുന്നു?",
+      "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย ทำไมพวกเจ้าจึงกล้าพูดในสิ่งที่พวกเจ้าไม่ปฏิบัติ",
+      "ko": "믿는 자들이여! 왜 그대들은 행하지 않는 일을 말하는가?",
+      "vi": "Hỡi những người có đức tin! Tại sao các ngươi nói những điều các ngươi không làm?"
     }
   },
   {
@@ -5820,7 +6565,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Waan hin hojjanne haasa'uun keessan jibbaansi isaa Rabbiin biratti guddate.",
       "so": "Waa wax uu Alle neceb yahay inaad ku hadashaan (oo amartaan dadka) wax aydaan falin.",
       "ff": "Mawni tikkere ka Alla nde kaalaton ko on ngollata.",
-      "yo": "Ó jẹ́ ohun ìbínú tó tóbi ní ọ̀dọ̀ Allāhu pé kí ẹ sọ ohun tí ẹ ò níí ṣe."
+      "yo": "Ó jẹ́ ohun ìbínú tó tóbi ní ọ̀dọ̀ Allāhu pé kí ẹ sọ ohun tí ẹ ò níí ṣe.",
+      "zh": "你们说你们所不做的，这在安拉看来，是很可恨的。",
+      "ta": "நீங்கள் செய்யாதவற்றை நீங்கள் (செய்ததாகக்) கூறுவது அல்லாஹ்விடம் பெரும் கோபத்திற்குரியதாக இருக்கிறது.",
+      "ml": "നിങ്ങള്‍ ചെയ്യാത്തത് നിങ്ങള്‍ പറയുക എന്നുള്ളത് അല്ലാഹുവിങ്കല്‍ വലിയ ക്രോധത്തിന് കാരണമായിരിക്കുന്നു.",
+      "th": "เป็นที่น่าเกลียดยิ่งที่อัลลอฮ์ การที่พวกเจ้าพูดในสิ่งที่พวกเจ้าไม่ปฏิบัติ",
+      "ko": "그대들이 행하지 않는 일을 말함은 하나님께 있어 매우 혐오스러운 것이라.",
+      "vi": "Điều đáng ghét nhất đối với Allah là việc các ngươi nói những điều các ngươi không làm."
     }
   },
   {
@@ -5857,7 +6608,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Yaa warra amantan! Qabeenyaaleen keessaniifi ilmaan keessan zikrii Rabbii irraa isin hin dagin, Namni kana dalage isaan isaanumatu hoonga'oota.",
       "so": "Kuwa (Xaqa) rumeeyow! Yeysan maalkiinnu iyo awlaaddiinnu idinka shuqlin Xusidda Alle (salaadda). Qofkii falaa sidaas, kuwaa weeye kuwa khasaaray.",
       "ff": "Eehey mon gooŋɗinɓe woto sokli mon jawɗeele mon e ɓiɓɓe mon gaa e innude Alla kala baɗɗo ɗuum ko ɓeen ngoni pertuɓe ɓe.",
-      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ má ṣe jẹ́ kí àwọn dúkìá yín àti àwọn ọmọ yín kó àìrójú ba yín níbi ìrántí Allāhu. Ẹnikẹ́ni tí ó bá kó sínú (àìrójú) yẹn, àwọn wọ̀nyẹn gan-an ni ẹni òfò."
+      "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ má ṣe jẹ́ kí àwọn dúkìá yín àti àwọn ọmọ yín kó àìrójú ba yín níbi ìrántí Allāhu. Ẹnikẹ́ni tí ó bá kó sínú (àìrójú) yẹn, àwọn wọ̀nyẹn gan-an ni ẹni òfò.",
+      "zh": "归信的人们啊！你们的财产和子女，不要使你们忽略记念安拉。谁那样做，这等人，他们是亏折的。",
+      "ta": "நம்பிக்கையாளர்களே! உங்கள் செல்வங்களும் உங்கள் பிள்ளைகளும் உங்களை அல்லாஹ்வின் நினைவை விட்டும் திருப்பி (உலகக் காரியங்களில் ஈடுபடுத்தி) விடவேண்டாம். ஆக, அத்தகையவர்கள்தான் நஷ்டவாளிகள்.",
+      "ml": "സത്യവിശ്വാസികളേ, നിങ്ങളുടെ സ്വത്തുക്കളും സന്താനങ്ങളും അല്ലാഹുവെപ്പറ്റിയുള്ള സ്മരണയില്‍ നിന്ന് നിങ്ങളുടെ ശ്രദ്ധ തിരിച്ചു വിടാതിരിക്കട്ടെ. ആര്‍ അങ്ങനെ ചെയ്യുന്നുവോ അവര്‍ തന്നെയാണ് നഷ്ടക്കാര്‍.",
+      "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย อย่าให้ทรัพย์สินของพวกเจ้าและลูกหลานของพวกเจ้าหันเหพวกเจ้าจากการรำลึกถึงอัลลอฮ์ และผู้ใดกระทำเช่นนั้น ชนเหล่านั้นคือพวกที่ขาดทุน",
+      "ko": "믿는 자들이여! 그대들의 재산과 그대들의 자식들이 하나님을 떠올림에 방해가 되지 않도록 하라. 그렇게 하는 자, 저들은 실로 손실자들이라.",
+      "vi": "Hỡi những người có đức tin! Các ngươi chớ để cho tài sản và con cái của các ngươi làm cho các ngươi xao lãng việc tưởng nhớ Allah. Những ai làm thế thì đó là những kẻ thua thiệt."
     }
   },
   {
@@ -5892,7 +6649,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Isa isin uume Isin irraa Kaafirris ni jira; isin irraa Mu'uminnis ni jira. Rabbiin waan isin dalagdan argaadha.",
       "so": "Alle waa Kan idin abuuray, markaas qaarkiin noqdeen gaalo, qaarkiinna m’uminiin. Alle wuu Arkaa waxaad fashaan.",
       "ff": "Ko Kaŋko tagi on ina e mon ke'efeera ina e mon gooŋɗinɗo Alla na yi'a ko ngolloton ko.",
-      "yo": "Òun ni Ẹni tí Ó ṣẹ̀dá yín. Aláìgbàgbọ́ wà nínú yín. Onígbàgbọ́ òdodo sì wà nínú yín. Allāhu sì ni Olùríran nípa ohun tí ẹ̀ ń ṣe níṣẹ́."
+      "yo": "Òun ni Ẹni tí Ó ṣẹ̀dá yín. Aláìgbàgbọ́ wà nínú yín. Onígbàgbọ́ òdodo sì wà nínú yín. Allāhu sì ni Olùríran nípa ohun tí ẹ̀ ń ṣe níṣẹ́.",
+      "zh": "他曾创造你们，但你们中有不归信的，有归信的。安拉是鉴察你们的行为的。",
+      "ta": "அவன்தான் உங்களைப் படைத்தான். ஆக, உங்களில் நிராகரிப்பாளரும் இருக்கிறார். உங்களில் நம்பிக்கையாளரும் இருக்கிறார். அல்லாஹ் நீங்கள் செய்பவற்றை உற்று நோக்குபவன் ஆவான்.",
+      "ml": "അവനാണ് നിങ്ങളെ സൃഷ്ടിച്ചവന്‍. എന്നിട്ട് നിങ്ങളുടെ കൂട്ടത്തില്‍ സത്യനിഷേധിയുണ്ട്‌. നിങ്ങളുടെ കൂട്ടത്തില്‍ വിശ്വാസിയുമുണ്ട്‌. അല്ലാഹു നിങ്ങള്‍ പ്രവര്‍ത്തിക്കുന്നതിനെ പറ്റി കണ്ടറിയുന്നവനാകുന്നു.",
+      "th": "พระองค์คือผู้ทรงสร้างพวกเจ้า ดังนั้นในหมู่พวกเจ้ามีผู้ปฏิเสธศรัทธา และในหมู่พวกเจ้ามีผู้ศรัทธา และอัลลอฮ์ทรงรู้เห็นในสิ่งที่พวกเจ้ากระทำ",
+      "ko": "그대들을 창조하신 분이 그분이시니 그대들 중에는 불신자가 있고 그대들 중에는 믿는 자가 있더라. 하나님께서는 그대들이 행하는 것을 보고 계시는 분이라.",
+      "vi": "Chính Ngài là Đấng đã tạo hóa các ngươi (hỡi nhân loại) nhưng trong các ngươi có người không tin và có người tin tưởng vào điều đó. Và Allah thấy rõ những gì các ngươi làm."
     }
   },
   {
@@ -5928,7 +6691,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Wantoota samiileefi dachii keessa jiru hunda ni beeka; akkasumas waan isin dhoksitaniifi waan isin ifa gootan ni beeka. Rabbiin waan qomoowwan keessaa beekaadha.",
       "so": "Wuxuu Og yahay waxa ku sugan samooyinka iyo arlada, Wuxuuna Og yahay waxaad qarisaan iyo waxaad muujisaanba. Alle waa ogaha waxa ku jira laabaha (dadka).",
       "ff": "Hombo anndi ko woni e kammuuji e leydi hombo anndi ko mbirnaton e ko ɓannginton Alla na anndi ko woni e ɓerɗe.",
-      "yo": "Ó mọ ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Ó sì mọ ohun tí ẹ̀ ń fi pamọ́ àti ohun tí ẹ̀ ń ṣàfi hàn rẹ̀. Allāhu sì ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá."
+      "yo": "Ó mọ ohunkóhun tó wà nínú àwọn sánmọ̀ àti ilẹ̀. Ó sì mọ ohun tí ẹ̀ ń fi pamọ́ àti ohun tí ẹ̀ ń ṣàfi hàn rẹ̀. Allāhu sì ni Onímọ̀ nípa ohun tó wà nínú igbá-àyà ẹ̀dá.",
+      "zh": "他知道天地万物，他知道你们所隐匿的和你们所表现的，安拉是全知心事的。",
+      "ta": "வானங்கள், இன்னும் பூமியில் உள்ளவற்றை அவன் நன்கறிவான். இன்னும், நீங்கள் மறைப்பதையும் நீங்கள் வெளிப்படுத்துவதையும் அவன் நன்கறிவான். (மனிதர்களின்) நெஞ்சங்களில் உள்ளவற்றை அல்லாஹ் நன்கறிந்தவன் ஆவான்.",
+      "ml": "ആകാശങ്ങളിലുള്ളതും ഭൂമിയിലുള്ളതും അവന്‍ അറിയുന്നു. നിങ്ങള്‍ രഹസ്യമാക്കുന്നതും പരസ്യമാക്കുന്നതും അവന്‍ അറിയുന്നു. അല്ലാഹു ഹൃദയങ്ങളിലുള്ളത് അറിയുന്നവനാകുന്നു.",
+      "th": "พระองค์ทรงรอบรู้สิ่งที่อยู่ในชั้นฟ้าทั้งหลายและแผ่นดิน และทรงรอบรู้สิ่งที่พวกเจ้าปกปิดและสิ่งที่พวกเจ้าเปิดเผย และอัลลอฮ์ทรงรอบรู้สิ่งที่อยู่ในทรวงอก",
+      "ko": "그분께서는 하늘과 땅에 있는 것을 알고 계시며 그대들이 비밀로 하는 것과 그대들이 내보이는 것을 알고 계시노라. 그리고 하나님께서는 심중에 있는 것도 알고 계시는 분이라.",
+      "vi": "Ngài biết rõ những gì trong trời đất và biết những gì các ngươi che giấu cũng như những gì các ngươi bộc lộ. Quả thật, Allah biết rõ những gì trong lòng (của mọi người)."
     }
   },
   {
@@ -5959,7 +6728,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ከመከራም (ማንንም) አይነካም በአላህ ፈቃድ ቢኾን እንጅ፤ በአላህም የሚያምን ሰው ልቡን (ለትዕግስት) ይመራዋል፤ አላህም ነገሩን ሁሉ ዐዋቂ ነው፡፡",
       "om": "Hamtuu irraa wanti tokkollee eeyyama Rabbiitiin malee nama hin tuqu. Nama Rabbitti amane qalbii isaa ni qajeelcha. Rabbiin waan hunda beekaadha.",
       "so": "Ma jirto wax masiibo ah oo dhaca ilaa waxay ku dhacdaa Idanka Alle. Qofkii rumeeya Alle, wuxuu hanuuniyaa qalbigiisa (oo xasila). Alle wax walba wuu Og yahay.",
-      "ff": "Musiiba heɓata hay gooto si wona e sakkitoore Alla, kala gooŋɗinɗo Alla O feewna ɓernde makko, Alla na anndi kala hu'unde."
+      "ff": "Musiiba heɓata hay gooto si wona e sakkitoore Alla, kala gooŋɗinɗo Alla O feewna ɓernde makko, Alla na anndi kala hu'unde.",
+      "zh": "凡灾难的发生，无一不是依安拉的判决的。谁信安拉，他将引导谁的心，安拉是全知万物的。",
+      "ta": "எந்த சோதனையும் (யாருக்கும்) ஏற்படாது, அல்லாஹ்வின் அனுமதி இல்லாமல். யார் அல்லாஹ்வை நம்பிக்கை கொள்வாரோ அவரின் உள்ளத்திற்கு அல்லாஹ் நேர்வழி காட்டுவான். அல்லாஹ் எல்லாவற்றையும் நன்கறிந்தவன் ஆவான்.",
+      "th": "ไม่มีทุกข์ภัยอันใดเกิดขึ้น เว้นแต่ด้วยอนุมัติของอัลลอฮ์ และผู้ใดศรัทธาต่ออัลลอฮ์ พระองค์จะทรงเปิดหัวใจของเขา (สู่แนวทางที่ถูกต้อง) และอัลลอฮ์เป็นผู้ทรงรอบรู้ทุกสิ่งอย่าง",
+      "ko": "그 어떤 시련도 하나님의 허락 없이는 일어나지 않노라. 하나님을 믿는 자가 있다면 그분께서는 그의 마음을 인도하실 것이라. 하나님께서는 모든 것을 알고 계신 분이라.",
+      "vi": "Không một tai họa nào xảy ra mà không do phép của Allah. Ai có đức tin nơi Allah, Ngài sẽ hướng dẫn trái tim của y. Quả thật, Allah là Đấng biết tất cả mọi thứ."
     }
   },
   {
@@ -5997,7 +6771,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rabbiin, dhugaan gabbaramaan isa malee hin jiru. Mu'uminoonnis Rabbi irratti qofa haa hirkatanu.",
       "so": "Allaah! Ma jiro Ilaah (Xaq lagu caabudo) aan Isaga ahayn, Allaah (oo keliya) ha talo saarteen mu’miiniintu.",
       "ff": "Allaahu alah deweteeɗo e goongo si wona Kaŋko, ko e dow makko goonɗinɓe mbakkilato.",
-      "yo": "Allāhu, kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Allāhu sì ni kí àwọn onígbàgbọ́ òdodo gbáralé."
+      "yo": "Allāhu, kò sí ọlọ́hun kan tí ẹ gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Allāhu sì ni kí àwọn onígbàgbọ́ òdodo gbáralé.",
+      "zh": "安拉，除他外，绝无应受崇拜的，教信士们只信托安拉。",
+      "ta": "அல்லாஹ் - அவனைத் தவிர (உண்மையில் வணங்கத்தகுதியான) இறைவன் அறவே இல்லை. (ஈமான் கொண்ட) நம்பிக்கையாளர்கள் அல்லாஹ்வின் மீதே நம்பிக்கை வைக்கவும்.",
+      "ml": "അല്ലാഹു- അവനല്ലാതെ ആരാധനക്കർഹനായി മറ്റാരുമില്ല. അല്ലാഹുവിന്‍റെ മേലായിരിക്കട്ടെ സത്യവിശ്വാസികള്‍ ഭരമേല്‍പിക്കുന്നത്‌.",
+      "th": "อัลลอฮ์ ไม่มีพระเจ้าอื่นใดที่เที่ยงแท้นอกจากพระองค์ ดังนั้นบรรดาผู้ศรัทธาทั้งหลายจงมอบหมายไว้วางใจต่ออัลลอฮ์เถิด",
+      "ko": "하나님 그분 이외에는 경배받을 존재가 없노라. 믿는 자들은 오직 하나님께만 의탁하도록 하라.",
+      "vi": "Allah là Thượng Đế duy nhất, không có Thượng Đế đích thực nào khác ngoài Ngài. Vì vậy, những người có đức tin hãy phó thác cho Allah."
     }
   },
   {
@@ -6032,7 +6812,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ገንዘቦቻችሁና ልጆቻችሁ ለናንተ መፈተኛ ብቻ ናቸው፤ አላህም እርሱ ዘንድ ታላቅ ምንዳ አልለ፡፡",
       "om": "Qabeenyaaleen keessaniifi ilmaan keessan mokkoroodha. Rabbiin Isa bira mindaa guddaatu jira.",
       "ff": "Ngandee pellet, jawɗe mon ɗeen e ɓiɗɓe mon ɓeen ko fitina ina ka Alla njoɓdi mawndi.",
-      "yo": "Ìfòòró ni àwọn dúkìá yín àti àwọn ọmọ yín. Allāhu sì ni ẹ̀san ńlá wà ní ọ̀dọ̀ Rẹ̀."
+      "yo": "Ìfòòró ni àwọn dúkìá yín àti àwọn ọmọ yín. Allāhu sì ni ẹ̀san ńlá wà ní ọ̀dọ̀ Rẹ̀.",
+      "zh": "你们的财产和子嗣，只是一种考验，安拉那里有重大的报酬。",
+      "ta": "உங்கள் செல்வங்கள் இன்னும் உங்கள் பிள்ளைகள் எல்லாம் (உங்களுக்கு) சோதனைதான். அல்லாஹ், - அவனிடம்தான் (உங்களுக்கு சொர்க்கம் எனும்) மகத்தான வெகுமதி இருக்கிறது.",
+      "ml": "നിങ്ങളുടെ സ്വത്തുക്കളും നിങ്ങളുടെ സന്താനങ്ങളും ഒരു പരീക്ഷണം മാത്രമാകുന്നു. അല്ലാഹുവിങ്കലാകുന്നു മഹത്തായ പ്രതിഫലമുള്ളത്‌.",
+      "th": "แท้จริงทรัพย์สมบัติของพวกเจ้า และลูกหลานของพวกเจ้านั้นเป็นบททดสอบ และอัลลอฮ์นั้น ณ ที่พระองค์มีการตอบแทนอันยิ่งใหญ่",
+      "ko": "그대들의 재산과 자식들은 시험일 뿐이라. 위대한 보상은 하나님 그분께 있노라.",
+      "vi": "Thật ra, tài sản và con cái của các ngươi chỉ là một sự thử thách (mà Allah muốn thử thách các ngươi). Và (các ngươi hãy biết rằng) ở nơi Allah có một phần thưởng vô cùng vĩ đại."
     }
   },
   {
@@ -6070,7 +6856,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "(Rabbiin) beekaa fagoofi dhihoo injifataa, ogeessa.",
       "so": "Waa Ogsoonaha waxaan muuqan iyo waxa muuqda, Adkaadaha, Xakiimka ah.",
       "ff": "Gannduɗo mbirniiɗi e feeñuɗi, mawɗo, ñeeñɗo.",
-      "yo": "Onímọ̀-ìkọ̀kọ̀ àti gban̄gba, Alágbára, Ọlọ́gbọ́n."
+      "yo": "Onímọ̀-ìkọ̀kọ̀ àti gban̄gba, Alágbára, Ọlọ́gbọ́n.",
+      "zh": "〔他〕是全知幽明的、是万能的、是至睿的。",
+      "ta": "(அவன்) மறைவானவற்றையும் வெளிப்படையானவற்றையும் நன்கறிந்தவன், மிகைத்தவன், மகா ஞானவான் ஆவான்.",
+      "ml": "അദൃശ്യവും ദൃശ്യവും അറിയുന്നവനും പ്രതാപിയും യുക്തിമാനുമാകുന്നു അവന്‍.",
+      "th": "ผู้ทรงรอบรู้สิ่งเร้นลับและสิ่งเปิดเผย ผู้ทรงเกรียงไกร ผู้ทรงปรีชาญาณ",
+      "ko": "보이지 않는 것과 보이는 것을 알고 계시는 분이시며, 가장 존엄하시고 가장 현명하신 분이시라.",
+      "vi": "Ngài là Đấng biết điều vô hình và hữu hình, Đấng Chí Tôn, Đấng Thông Thái."
     }
   },
   {
@@ -6107,7 +6899,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Warra Gooftaa isaanii fagootti sodaataniif araaramaafi mindaa guddaatu isaaniif jira.",
       "so": "Hubaal, kuwa ka baqa Rabbigood sir (iyo saaqba) waxay leeyihiin Denbi Dhaaf iyo Ajar Weyn (Janno).",
       "ff": "Pellet, hulooɓe Joomi mum ɓeen ka wirnii, hino woodani ɓen haforaneede e njoɓdi mawndi.",
-      "yo": "Dájúdájú àwọn tó ń páyà Olúwa wọn ní ìkọ̀kọ̀, àforíjìn àti ẹ̀san tó tóbi ń bẹ fún wọn."
+      "yo": "Dájúdájú àwọn tó ń páyà Olúwa wọn ní ìkọ̀kọ̀, àforíjìn àti ẹ̀san tó tóbi ń bẹ fún wọn.",
+      "zh": "在秘密中畏惧他们的养主的人们，将蒙赦宥和重大的报酬。",
+      "ta": "நிச்சயமாக எவர்கள் மறைவில் தங்கள் இறைவனை பயப்படுவார்களோ அவர்களுக்கு மன்னிப்பும் பெரிய கூலியும் உண்டு.",
+      "ml": "തീര്‍ച്ചയായും തങ്ങളുടെ രക്ഷിതാവിനെ അദൃശ്യനിലയില്‍ ഭയപ്പെടുന്നവരാരോ അവര്‍ക്ക് പാപമോചനവും വലിയ പ്രതിഫലവുമുണ്ട്‌.",
+      "th": "แท้จริงบรรดาผู้ยำเกรงต่อพระผู้อภิบาลของพวกเขาแม้โดยลับ สำหรับพวกเขาจะได้รับการอภัยโทษ และการตอบแทนอันใหญ่หลวง",
+      "ko": "실로 보이지 않음에도 자신의 주님을 두려워하는 자들, 그들에게는 용서와 커다란 보상이 있을 것이라. 요약주해",
+      "vi": "Quả thật, những người kính sợ Thượng Đế của họ dù không nhìn thấy Ngài vẫn sẽ được tha thứ và sẽ có được một phần thưởng to lớn."
     }
   },
   {
@@ -6141,7 +6939,10 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila gara simbirroota gubbaa isaaniitti koola (qoochoo) isaanii babal'isanii walitti dachaasanii hin ilaalanuu? Rahmaaniin malee homtuu isaan hin qabu. Inni waan hunda argaadha.",
       "so": "Miyeyna arag shimbiraha korkooda ah ee fidinaya (baalashooda) oo isku soo laabaya? Ma jiraan wax haya iyaga aan aheyn Raxmaanka. Hubaal, wax walba wuu Arkaa.",
       "ff": "E ɓee nji'aani colli ɗiin dow maɓɓe, hiɗi fonta gabitannji ɗi ñobba? [Won'de] jogitaaki ɗin si wonaa Joom hinaraŋke on. Pellet, ko o deenɗo kala hu'unde.",
-      "yo": "Ṣé wọn kò rí àwọn ẹyẹ tí ó wà ní òkè wọn, tí (wọ́n) ń na ìyẹ́ apá (wọn), tí wọ́n sì ń pa á mọ́ra? Kiní kan kò mú wọn dúró (sínú òfurufú) àfi Àjọkẹ́-ayé. Dájúdájú Òun sì ni Olùríran nípa gbogbo n̄ǹkan."
+      "yo": "Ṣé wọn kò rí àwọn ẹyẹ tí ó wà ní òkè wọn, tí (wọ́n) ń na ìyẹ́ apá (wọn), tí wọ́n sì ń pa á mọ́ra? Kiní kan kò mú wọn dúró (sínú òfurufú) àfi Àjọkẹ́-ayé. Dájúdájú Òun sì ni Olùríran nípa gbogbo n̄ǹkan.",
+      "zh": "难道他们没有看见在他们的上面展翅和敛翼的众鸟吗？只有至仁主维持它们，他确是明察万物的。",
+      "th": "พวกเขามิได้มองไปดูนกที่ (บิน) อยู่เบื้องบนพวกเขาดอกหรือ มันกางปีกและหุบปีก (ของมัน) ไม่มีผู้ใดจะไปจับดึงมันไว้ได้ นอกจากพระผู้ทรงกรุณาปรานี แท้จริงพระองค์ทรงมองเห็นทุกสิ่งอย่าง",
+      "ko": "그들은 그들 위에서 날개를 펼치고 접는 새를 보지 않았던가? 오직 가장 자비로우신 분만이 그것(새)을 붙잡아 주시노라. 실로 그분께서는 모든 것을 보시는 분이라."
     }
   },
   {
@@ -6179,7 +6980,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, warra Rabbiin sodaataniif Gooftaa isaanii bira Jannata qananiitu jira.",
       "so": "Hubaal kuwa Alle ka cabsada (oo ka dhowrsada xumaha) waxay leeyihiin Rabbigood agtiisa Jannooyin barwaaqo ah.",
       "ff": "Pellet, hino woodani gooŋɗuɓe ɓeen ka Joomi maɓɓe, Aljannaaji ne'ema.",
-      "yo": "Dájúdájú àwọn Ọgbà Ìdẹ̀ra wà fún àwọn olùbẹ̀rù Allāhu lọ́dọ̀ Olúwa wọn."
+      "yo": "Dájúdájú àwọn Ọgbà Ìdẹ̀ra wà fún àwọn olùbẹ̀rù Allāhu lọ́dọ̀ Olúwa wọn.",
+      "zh": "敬畏的人们，在他们的养主那里，必将享受恩泽的乐园。",
+      "ta": "நிச்சயமாக இறையச்சம் உள்ளவர்களுக்கு தங்கள் இறைவனிடம் இன்பம் நிறைந்த “நயீம்” சொர்க்கங்கள் உள்ளன.",
+      "ml": "തീര്‍ച്ചയായും സൂക്ഷ്മത പാലിക്കുന്നവര്‍ക്ക് അവരുടെ രക്ഷിതാവിങ്കല്‍ അനുഗ്രഹങ്ങളുടെ സ്വര്‍ഗത്തോപ്പുകളുണ്ട്‌.",
+      "th": "แท้จริง สำหรับบรรดาผู้ยำเกรง ณ ที่พระผู้อภิบาลของพวกเขานั้นคือสวนสวรรค์หลากหลายแห่งบรมสุข",
+      "ko": "실로 하나님을 경외하는 자들은 그들 주님께 가까운 곳에서 기쁨의 천국을 가질 것이라.",
+      "vi": "Quả thật, những người ngoan đạo sẽ hưởng Thiên Đàng Hạnh Phúc nơi Thượng Đế của họ."
     }
   },
   {
@@ -6215,7 +7022,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isheen tun gorsa. Nama fedhe gara Gooftaa isaatti karaa godhata.",
       "so": "Hubaal tani wa waano, ee qofkii doonaa ha u samaysto xagga Rabbigi jid.",
       "ff": "Ko oon woni waaju goongo kala paalaaɗo daɗde nanngira joomiiko ruttorde.",
-      "yo": "Dájúdájú èyí ni ìrántí. Nítorí náà, ẹni tí ó bá fẹ́ kí ó mú ojú ọ̀nà kan tọ̀ dé ọ̀dọ̀ Olúwa rẹ̀."
+      "yo": "Dájúdájú èyí ni ìrántí. Nítorí náà, ẹni tí ó bá fẹ́ kí ó mú ojú ọ̀nà kan tọ̀ dé ọ̀dọ̀ Olúwa rẹ̀.",
+      "zh": "这确是一种教训。谁愿意〔觉悟〕，谁可以选择一条通达他的养主的道路。",
+      "ml": "തീര്‍ച്ചയായും ഇതൊരു ഉല്‍ബോധനമാകുന്നു. അതിനാല്‍ വല്ലവനും ഉദ്ദേശിക്കുന്ന പക്ഷം അവന്‍ തന്‍റെ രക്ഷിതാവിങ്കലേക്ക് ഒരു മാര്‍ഗം സ്വീകരിച്ചു കൊള്ളട്ടെ.",
+      "th": "แท้จริงนี่คือข้อเตือนสติ ดังนั้นผู้ใดประสงค์ก็พึงยึดถือเป็นแนวทางไปสู่พระผู้อภิบาลของเขาเถิด",
+      "ko": "실로 이것은 떠올림이라. 그러니 원하는 자는 그의 주님께로 향하는 길을 잡으라.",
+      "vi": "Quả thật, đây là một sự nhắc nhở, vì vậy, ai muốn thì hãy chọn lấy một con đường trở về với Thượng Đế của mình."
     }
   },
   {
@@ -6251,7 +7063,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "ይህ (ጌታ) ሙታንን ሕያው በማድረግ ላይ ቻይ አይደለምን?",
       "om": "Sila (Rabbiin akkas godhe) sun du'aa jiraachisuu irratti danda'aa mitii?",
       "ff": "Mbele oon hattanaani wuurtin'de maayɓe.",
-      "yo": "Ǹjẹ́ Ẹni tí Ó ṣe ìyẹn kò níí ní agbára láti jí àwọn òkú dìde bí?"
+      "yo": "Ǹjẹ́ Ẹni tí Ó ṣe ìyẹn kò níí ní agbára láti jí àwọn òkú dìde bí?",
+      "zh": "难道那样的造化者不能使死人复活吗？",
+      "ta": "இ(த்தகைய பேராற்றல் உள்ள இறை)வன் இறந்தவர்களை உயிர்ப்பிப்பதற்கு ஆற்றலுடையவனாக இல்லையா?",
+      "ml": "അങ്ങനെയുള്ളവന്‍ മരിച്ചവരെ ജീവിപ്പിക്കാന്‍ കഴിവുള്ളവനല്ലെ?",
+      "th": "ดังนั้น พระองค์จะไม่สามารถที่จะให้คนตายมีชีวิตขึ้นมาอีกกระนั้นหรือ?",
+      "ko": "그러한 분이야말로 죽은 자들을 살리실 수 있는 분이 아니던가?",
+      "vi": "Lẽ nào Đấng (đã tạo ra con người như thế) đó không có khả năng làm sống lại người chết ư?"
     }
   },
   {
@@ -6285,7 +7103,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Nuti haala (inni) galateeffataa yookiin mormaa ta'een karaa isa qajeelchine.",
       "so": "Waxaanu xaqiiq tusnay jidka ama waa mid mahad naqa ama mid abaal dhac badan (gaal ah).",
       "ff": "Miin peewnii mbo e laawol o yetta wollo o yedda.",
-      "yo": "Dájúdájú A fi ọ̀nà mọ̀ ọ́n; Ó lè jẹ́ olùdúpẹ́, ó sì lè jẹ́ aláìmoore."
+      "yo": "Dájúdájú A fi ọ̀nà mọ̀ ọ́n; Ó lè jẹ́ olùdúpẹ́, ó sì lè jẹ́ aláìmoore.",
+      "zh": "我确已指引他正道，他或是感谢，或是辜负。",
+      "ta": "நிச்சயமாக நாம் அவனுக்கு (நேரான) பாதையை வழிகாட்டினோம், ஒன்று, அவன் நன்றி உள்ளவனாக இருப்பதற்கு; அல்லது, நன்றி கெட்டவனாக இருப்பதற்கு.",
+      "ml": "തീര്‍ച്ചയായും നാം അവന്ന് വഴി കാണിച്ചുകൊടുത്തിരിക്കുന്നു. എന്നിട്ട് ഒന്നുകില്‍ അവന്‍ നന്ദിയുള്ളവനാകുന്നു. അല്ലെങ്കില്‍ നന്ദികെട്ടവനാകുന്നു.",
+      "th": "แท้จริงเราได้นำทางให้แก่เขาแล้ว บางทีเขาก็เป็นผู้กตัญญู และบางทีเขาก็เป็นผู้เนรคุณ",
+      "ko": "실로 나는 그에게 길을 가리켜 주었으니 (그는) 감사하는 자거나 불신하는 자라.",
+      "vi": "Quả thật, TA đã hướng dẫn y con đường (rõ ràng, TA cho y toàn quyền lựa chọn), hoặc là y biết ơn hoặc là y vô ơn."
     }
   },
   {
@@ -6323,7 +7147,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila Nuti dachii firaasha hin goonee?",
       "so": "Miyaanaan ka yeelin dhulka gogol?",
       "ff": "Mbela min mbaɗaani lesdi ndaɗɗudi heblaandi.",
-      "yo": "Ǹjẹ́ Àwa kò ṣe ilẹ̀ ní ìtẹ́ bí,"
+      "yo": "Ǹjẹ́ Àwa kò ṣe ilẹ̀ ní ìtẹ́ bí,",
+      "zh": "难道我没有使大地如摇篮，",
+      "ta": "பூமியை விரிப்பாக நாம் ஆக்கவில்லையா?",
+      "ml": "ഭൂമിയെ നാം ഒരു വിരിപ്പാക്കിയില്ലേ?",
+      "th": "เรามิได้ทำให้แผ่นดินเป็นพื้นราบดอกหรือ?",
+      "ko": "내가 대지를 침상으로 두지 않았던가?",
+      "vi": "Chẳng phải TA đã làm cho mặt đất trải rộng (như một tấm thảm)?"
     }
   },
   {
@@ -6359,7 +7189,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isaan amananii gaggaarii hojjatan, isaaniif ashaakiltiiwwan laggeen jala ishee yaatutu jira. Sun milkii guddaadha.",
       "so": "Kuwa (Xaqa) rumeeyey oo samaha fala, waxay leeyihiin beero hoostoodu ay webiyo qulqulaan. Kaasi baa ah Liibaanta Weyn.",
       "ff": "Ɓeen gooŋɗinɓe ngoolli golle lobbe woodaniiɓe Aljannaaji na ila ley mum caatli ko ɗuum woni malal manngal.",
-      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, tiwọn ni àwọn Ọgbà Ìdẹ̀ra kan, tí àwọn odò ń ṣàn ní ìsàlẹ̀ rẹ̀. Ìyẹn sì ni èrèǹjẹ ńlá."
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere, tiwọn ni àwọn Ọgbà Ìdẹ̀ra kan, tí àwọn odò ń ṣàn ní ìsàlẹ̀ rẹ̀. Ìyẹn sì ni èrèǹjẹ ńlá.",
+      "zh": "归信而且行善的人们，必入下临诸河的乐园，那确是伟大的成功。",
+      "ta": "நிச்சயமாக, எவர்கள் நம்பிக்கை கொண்டு, நற்செயல்களை செய்தார்களோ அவர்களுக்கு சொர்க்கங்கள் உண்டு. அவற்றின் கீழிருந்து நதிகள் ஓடும். அதுதான் பெரும் வெற்றியாகும்.",
+      "ml": "വിശ്വസിക്കുകയും സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും ചെയ്തവരാരോ അവര്‍ക്ക് താഴ്ഭാഗത്തുകൂടി അരുവികള്‍ ഒഴുകുന്ന സ്വര്‍ഗത്തോപ്പുകളുണ്ട്‌; തീര്‍ച്ച. അതത്രെ വലിയ വിജയം.",
+      "th": "แท้จริงบรรดาผู้ศรัทธาและประกอบความดีทั้งหลาย พวกเขาจะได้รับสวนสวรรค์หลากหลาย ณ เบื้องล่างของมันมีลำน้ำหลายสายไหลผ่าน นั่นคือชัยชนะอันใหญ่หลวง",
+      "ko": "(하나님과 사도를) 믿고 선행을 실천하는 자들은 아래로부터 강이 흐르는 천국이 그들의 것이라. 이것이야말로 커다란 성공이라.",
+      "vi": "Quả thật, những người có đức tin và hành thiện sẽ được ban thưởng các Ngôi Vườn Thiên Đàng bên dưới có các dòng sông chảy. Đó là một thành tựu vĩ đại."
     }
   },
   {
@@ -6397,7 +7233,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Inni Isumatu [uumama] jalqaba; (du'a boodas) ni deebisa.",
       "so": "Xaqiiq (Alle) Isagaa uumay (uunka) dibna u soo nooleyn (dhimasho kaddib).",
       "ff": "Ko Kaŋko tigi fuɗɗata tagoore o rutta nde.",
-      "yo": "Dájúdájú Òun ni Ó pìlẹ̀ (ẹ̀dá), Ó sì máa dá (ẹ̀dá) padà (fún àjíǹde)."
+      "yo": "Dájúdájú Òun ni Ó pìlẹ̀ (ẹ̀dá), Ó sì máa dá (ẹ̀dá) padà (fún àjíǹde).",
+      "zh": "他确能创造，且能再造，",
+      "ta": "நிச்சயமாக அவன்தான் (படைப்பை புதிதாக) உற்பத்தி செய்கிறான். இன்னும், (அவை இறந்த பின்னர் அவற்றை) மீட்கிறான் (-மீண்டும் உருவாக்குவான்).",
+      "ml": "തീര്‍ച്ചയായും അവന്‍ തന്നെയാണ് ആദ്യമായി ഉണ്ടാക്കുന്നതും ആവര്‍ത്തിച്ച് ഉണ്ടാക്കുന്നതും.",
+      "th": "แท้จริงพระองค์คือผู้ทรงให้บังเกิดครั้งแรก และทรงให้กลับฟื้นคืนชีพขึ้นอีก",
+      "ko": "진실로 그분께서는 개시하시고 반복하시노라.",
+      "vi": "Thật vậy, chính Ngài là Đấng khởi nguồn (sự tạo hóa) và Ngài là Đấng sẽ lặp lại (nó)."
     }
   },
   {
@@ -6433,7 +7275,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Lubbuun hundi tiksaan ishee irra jiraatu malee hin hafu.",
       "so": "Ma jirto naf aanu kor joogin ilaaliye (malag).",
       "ff": "Alaa fittaandu si wona ina e dow mayru deenoowo.",
-      "yo": "Kò sí ẹ̀mí kan àfi kí ẹ̀ṣọ́ kan wà fún un (nínú àwọn mọlāika)."
+      "yo": "Kò sí ẹ̀mí kan àfi kí ẹ̀ṣọ́ kan wà fún un (nínú àwọn mọlāika).",
+      "zh": "每个人，都有一个保护者。",
+      "ta": "ஒவ்வோர் ஆன்மாவும் இல்லை, அதன் மீது (அதன் செயலை கண்காணிக்கிற) ஒரு காவலர் இருந்தே தவிர.",
+      "ml": "തന്‍റെ കാര്യത്തില്‍ ഒരു മേല്‍നോട്ടക്കാരനുണ്ടായിക്കൊണ്ടല്ലാതെ യാതൊരാളുമില്ല.",
+      "th": "ไม่มีชีวิตใด (อยู่โดยลำพัง) เว้นแต่มีผู้เฝ้ารักษามัน",
+      "ko": "모든 이에게는 예외 없이 그를 감시하는 자가 있노라.",
+      "vi": "Mỗi linh hồn thực sự đều có vị (Thiên Thần) trông coi."
     }
   },
   {
@@ -6470,7 +7318,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Gooftaan kee keellatti tahaadha.",
       "so": "Xaqiiq, Rabbigaa baa u jeeda (addoomahiisa) oo gaar ka haya.",
       "ff": "Koom ma na tommbiiɓe.",
-      "yo": "Dájúdájú Olúwa rẹ wà ní ibùṣọ́ (iṣẹ́ ẹ̀dá)."
+      "yo": "Dájúdájú Olúwa rẹ wà ní ibùṣọ́ (iṣẹ́ ẹ̀dá).",
+      "zh": "你的养主，确是监视的。",
+      "ta": "நிச்சயமாக உம் இறைவன் எதிர்பார்க்குமிடத்தில் இருக்கிறான்.",
+      "th": "แท้จริงพระผู้อภิบาลของเจ้านั้นทรงเฝ้าดูอย่างแน่นอน",
+      "ko": "진실로 그대의 주님께서는 감시대에 계시노라.",
+      "vi": "Quả thật, Thượng Đế của Ngươi (Thiên Sứ Muhammad) luôn theo dõi và quan sát."
     }
   },
   {
@@ -6507,7 +7360,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila Nuti ija lama isaaf hin taasifnee?",
       "so": "Miyaannaan u yeelin labo indhood?.",
       "ff": "Mbele min in mbaɗanaani mbo gite ɗiɗe.",
-      "yo": "Ṣé A kò ṣe ojú méjì fún un?"
+      "yo": "Ṣé A kò ṣe ojú méjì fún un?",
+      "zh": "难道我没有为他创造两只眼睛、",
+      "ta": "இரு கண்களை அவனுக்கு நாம் ஆக்கவில்லையா?",
+      "ml": "അവന് നാം രണ്ട് കണ്ണുകള്‍ ഉണ്ടാക്കി കൊടുത്തിട്ടില്ലേ?",
+      "th": "เรามิได้ทำดวงตาทั้งสองข้างให้แก่เขาดอกหรือ?",
+      "ko": "내가 그를 위해 두 눈과",
+      "vi": "Chẳng phải TA (Allah) đã không tạo cho y đôi mắt (để nhìn ngắm và quan sát)?"
     }
   },
   {
@@ -6544,7 +7403,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, dalagaan keessan adda adda (wal dhaba).",
       "so": "Xaqiiq, camalkiinnu (dadow) waa kala duwan yahay.",
       "ff": "Pellet golle mon heɗe ceerti.",
-      "yo": "Dájúdájú ọ̀tọ̀ọ̀tọ̀ ni iṣẹ́ yín."
+      "yo": "Dájúdájú ọ̀tọ̀ọ̀tọ̀ ni iṣẹ́ yín.",
+      "zh": "你们的行为，确是不同的。",
+      "ta": "(மனிதர்களே!) நிச்சயமாக உங்கள் முயற்சி (-உழைப்பு) பலதரப்பட்டதாக இருக்கிறது.",
+      "ml": "തീര്‍ച്ചയായും നിങ്ങളുടെ പരിശ്രമം വിഭിന്ന രൂപത്തിലുള്ളതാകുന്നു.",
+      "th": "แท้จริงการงานของพวกเจ้านั้นย่อมแตกต่างกันอย่างแน่นอน",
+      "ko": "진실로 그대들의 노력은 제각각이라.",
+      "vi": "Quả thật, nỗ lực của các ngươi rất đa dạng."
     }
   },
   {
@@ -6582,7 +7447,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Rakkinaa wajjin laafinatu jira.",
       "so": "Xaqiiq, dhibka waxaa la socda faraj.",
       "ff": "Pellet kala saɗteende na won'di e newaare.",
-      "yo": "Nítorí náà, dájúdájú ìdẹ̀kùn wà lẹ́yìn ìnira."
+      "yo": "Nítorí náà, dájúdájú ìdẹ̀kùn wà lẹ́yìn ìnira.",
+      "zh": "与艰难相伴的，确是容易，",
+      "ta": "ஆக, நிச்சயமாக சிரமத்துடன் இலகு இருக்கிறது.",
+      "ml": "എന്നാല്‍ തീര്‍ച്ചയായും ഞെരുക്കത്തിന്‍റെ കൂടെ ഒരു എളുപ്പമുണ്ടായിരിക്കും.",
+      "th": "ฉะนั้นแท้จริงหลังจากหนึ่งความยากลำบากก็จะมีความง่ายหลายอย่าง",
+      "ko": "그러니 실로 어려움과 함께 쉬움이 있노라.",
+      "vi": "Quả thật, đi cùng với khó khăn là sự dễ dàng."
     }
   },
   {
@@ -6619,7 +7490,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Dhugumatti, rakkina wajjin laafinatu jira.",
       "so": "Xaqiiq, waxaa dhibka la socda faraj.",
       "ff": "Pellet saɗteende kala na won'di e yaajeende.",
-      "yo": "Dájúdájú ìdẹ̀kùn wà lẹ́yìn ìnira sẹ́."
+      "yo": "Dájúdájú ìdẹ̀kùn wà lẹ́yìn ìnira sẹ́.",
+      "zh": "与艰难相伴的，确是容易，",
+      "ta": "நிச்சயமாக சிரமத்துடன் இலகு இருக்கிறது.",
+      "th": "แท้จริงหลังจากหนึ่งความยากลำบากก็จะมีความง่ายหลายอย่าง",
+      "ko": "실로 어려움과 함께 쉬움이 있노라.",
+      "vi": "Quả thật, đi cùng với khó khăn là sự dễ dàng."
     }
   },
   {
@@ -6655,7 +7531,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "አላህ ከፈራጆች ሁሉ ይበልጥ ፈራጅ አይደለምን? (ነው)፡፡",
       "om": "Sila Rabbiin irra murteessaa murteessitootaa hin taanee?",
       "ff": "Mbele Alla wona ɓurɗo nuunɗude e ñaawooɓe ɓe.",
-      "yo": "Ṣé Allāhu kọ́ ni Ẹni t’Ó mọ ẹ̀jọ́ dá jùlọ nínú àwọn adájọ́ ni?"
+      "yo": "Ṣé Allāhu kọ́ ni Ẹni t’Ó mọ ẹ̀jọ́ dá jùlọ nínú àwọn adájọ́ ni?",
+      "zh": "难道安拉不是最公正的判决者吗？",
+      "ta": "தீர்ப்பளிப்பவர்களில் மிக மேலான தீர்ப்பளிப்பவனாக அல்லாஹ் இல்லையா?",
+      "ml": "അല്ലാഹു വിധികര്‍ത്താക്കളില്‍ വെച്ചു ഏറ്റവും വലിയ വിധികര്‍ത്താവല്ലയോ?",
+      "th": "มิใช่อัลลอฮ์ดอกหรือ เป็นผู้ตัดสินที่ดีเยี่ยมในหมู่ผู้ตัดสินทั้งหลาย",
+      "ko": "하나님이야말로 가장 지혜로우신 판결자가 아니던가?",
+      "vi": "Không phải Allah là Đấng phân định công bằng nhất đó sao?"
     }
   },
   {
@@ -6692,7 +7574,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Deebiin garuma Gooftaa keetiiti.",
       "so": "Hubaal! Waa xagga Rabbigaa noqodku.",
       "ff": "Pellet ko e jooma woni ruttorde nde.",
-      "yo": "Dájúdájú ọ̀dọ̀ Olúwa rẹ ni àbọ̀ ẹ̀dá."
+      "yo": "Dájúdájú ọ̀dọ̀ Olúwa rẹ ni àbọ̀ ẹ̀dá.",
+      "zh": "万物必定只归于你的养主。",
+      "ta": "நிச்சயமாக மீட்சி உம் இறைவன் பக்கம்தான் இருக்கிறது.",
+      "ml": "തീര്‍ച്ചയായും നിന്‍റെ രക്ഷിതാവിലേക്കാണ് മടക്കം.",
+      "th": "แท้จริงยังพระผู้อภิบาลของเจ้าเท่านั้นคือการกลับไป",
+      "ko": "실로 그대의 주님께로 돌아감이라.",
+      "vi": "Chắc chắn y sẽ quay về với Thượng Đế của y."
     }
   },
   {
@@ -6727,7 +7615,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "am": "መወሰኛይቱ ሌሊት ከሺሕ ወር በላጭ ናት፡፡",
       "om": "Halkan sadarkaa qabdu ji'a kumarra caalti.",
       "ff": "Leylatu  qadri oon ɓuri ujunere lewru moƴƴude.",
-      "yo": "Òru Abiyì lóore ju ẹgbẹ̀rún oṣù."
+      "yo": "Òru Abiyì lóore ju ẹgbẹ̀rún oṣù.",
+      "zh": "那高贵的夜间，胜过一千个月，",
+      "ta": "‘கத்ர்’ இரவு ஆயிரம் மாதங்களைவிடச் சிறந்தது.",
+      "ml": "നിര്‍ണയത്തിന്‍റെ രാത്രി ആയിരം മാസത്തെക്കാള്‍ ഉത്തമമാകുന്നു.",
+      "th": "คืนอัลก็อดร์นั้นดียิ่งกว่าหนึ่งพันเดือน",
+      "ko": "운명의 밤은 천개월보다 더 좋으니라.",
+      "vi": "Đêm Định Mệnh tốt hơn cả một ngàn tháng."
     }
   },
   {
@@ -6765,7 +7659,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Isaan amananiifi gaggaarii hojjatan, isaan sun isaanumatu irra caalaa uumamaati.",
       "so": "Xaqiiq, kuwa (Xaqa) rumeeyey oo samaha fala, kuwaasi waa kuwa ugu khayr badan uumanka.",
       "ff": "Pellet ɓeen gooŋɗinɓe ɓe ngolli ko ɓuri moƴƴude ko ɓeen ngoni ɓurbe moƴƴude e winndere he.",
-      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo (ìyẹn, àwọn mùsùlùmí), tí wọ́n sì ṣe àwọn iṣẹ́ rere, àwọn wọ̀nyẹn, àwọn ni ẹ̀dá tó dára jùlọ."
+      "yo": "Dájúdájú àwọn tó gbàgbọ́ ní òdodo (ìyẹn, àwọn mùsùlùmí), tí wọ́n sì ṣe àwọn iṣẹ́ rere, àwọn wọ̀nyẹn, àwọn ni ẹ̀dá tó dára jùlọ.",
+      "zh": "归信而行善的人，这等人，他们是最善的人，",
+      "ta": "நிச்சயமாக எவர்கள் நம்பிக்கைக் கொண்டு, நற்செயல்களை செய்தார்களோ அவர்கள்தான் படைப்புகளில் மிகச் சிறந்தோர் ஆவார்கள்.",
+      "ml": "തീര്‍ച്ചയായും വിശ്വസിക്കുകയും സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും ചെയ്തവരാരോ അവര്‍ തന്നെയാകുന്നു സൃഷ്ടികളില്‍ ഉത്തമര്‍.",
+      "th": "แท้จริง บรรดาผู้ศรัทธาและประกอบการดีทั้งหลาย ชนเหล่านั้น พวกเขาเป็นมนุษย์ที่ดียิ่ง",
+      "ko": "실로 (하나님과 사도를) 믿고 선행을 실천하는 자들, 이들이야말로 가장 훌륭한 피조물이라.",
+      "vi": "Riêng những người có đức tin và hành thiện, họ thực sự là những sinh vật tốt đẹp nhất."
     }
   }
 ];

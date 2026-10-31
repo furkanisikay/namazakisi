@@ -1,5 +1,7 @@
 # Dependencies
 node_modules/
+# Ajan çalışma ağaçları node_modules'u sembolik bağla paylaşır; bağ dizin kalıbına uymaz.
+/node_modules
 
 # Expo
 .expo/

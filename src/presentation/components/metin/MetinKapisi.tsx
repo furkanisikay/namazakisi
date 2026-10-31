@@ -60,8 +60,8 @@ export const NASTALIK_EN_KUCUK_OLCEK = 0.85;
 const VARSAYILAN_PUNTO = 14;
 /** Üst işaretli yazıda sabit satır yüksekliğinin alt sınırı (× fontSize). */
 export const UST_ISARETLI_SATIR_ORANI = 1.5;
-/** Ünlü işareti üst çizginin üstüne çıkan yazıyla yazılan diller. */
-const UST_ISARETLI_DILLER: ReadonlySet<DilKodu> = new Set<DilKodu>(['hi', 'bn']);
+/** Ünlü işareti üst çizginin üstüne çıkan yazıyla yazılan diller (Devanagari, Bengal; Tamil, Malayalam, Tay: üst ünlü ve ton işaretleri). */
+const UST_ISARETLI_DILLER: ReadonlySet<DilKodu> = new Set<DilKodu>(['hi', 'bn', 'ta', 'ml', 'th']);
 
 /** Kapı gereken diller: yerel rakamlı diller (Arapça, Bengalce, Farsça, Peştuca, Soranî; `core/dil/rakam`), Urduca (yazı tipi), üst işaretli yazılar. */
 export const kapiGerekli = (dil: DilKodu): boolean =>

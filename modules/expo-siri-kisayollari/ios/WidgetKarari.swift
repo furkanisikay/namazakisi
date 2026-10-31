@@ -250,13 +250,21 @@ public enum GununAyetiKarari {
             + gelecek.map { GununAyetiGirdisi(ms: $0.baslangicMs, kayit: $0) }
     }
 
-    /// Meal serif yazi tipiyle mi cizilir? Ge'ez (Etiyopya) yazisinda (Amharca) serif tasarim
-    /// (New York) yok → sistem tasarimi; aksi halde Latin noktalama serif, harfler sistem
-    /// yedeginden karisik cizilirdi. Kotlin ikizi `GununAyetiKurallari.mealSerifMi`.
+    /// Serif tasarimda (New York; Android'de Noto Serif) OLMAYAN yazilar: Tamil, Malayalam, Tay,
+    /// Hangil, Ge'ez, Han (CJK) ve CJK/tam genislik noktalama. Kotlin ikizi
+    /// `GununAyetiKurallari.SERIFSIZ_ARALIKLAR` (ayni araliklar, ayni sira).
+    public static let serifsizAraliklar: [ClosedRange<UInt32>] = [
+        0x0B80...0x0BFF, 0x0D00...0x0D7F, 0x0E00...0x0E7F, 0x1100...0x11FF, 0x1200...0x139F,
+        0x2D80...0x2DDF, 0x3000...0x303F, 0x3130...0x318F, 0x3400...0x4DBF, 0x4E00...0x9FFF,
+        0xA960...0xA97F, 0xAB00...0xAB2F, 0xAC00...0xD7FF, 0xF900...0xFAFF, 0xFF00...0xFFEF,
+    ]
+
+    /// Meal serif yazi tipiyle mi cizilir? Ge'ez (Amharca), Tamil, Malayalam, Tay, Korece ve Cince
+    /// yazilarinda serif tasarim yok → sistem tasarimi; aksi halde Latin noktalama serif, harfler
+    /// sistem yedeginden karisik cizilirdi. Vietnamca (Latin + yigilmis ses isareti) serif kalir.
+    /// Kotlin ikizi `GununAyetiKurallari.mealSerifMi`.
     public static func mealSerifMi(_ meal: String) -> Bool {
-        return !meal.unicodeScalars.contains {
-            (0x1200...0x139F).contains($0.value) || (0x2D80...0x2DDF).contains($0.value) || (0xAB00...0xAB2F).contains($0.value)
-        }
+        return !meal.unicodeScalars.contains { s in serifsizAraliklar.contains { $0.contains(s.value) } }
     }
 
     /// Kunye satiri: "kisaKunye · mealKaynagi" (+ Arapca cizildiyse " · Arapça: Tanzil").

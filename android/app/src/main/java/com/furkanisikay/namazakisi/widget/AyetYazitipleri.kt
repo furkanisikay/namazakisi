@@ -9,7 +9,7 @@ import com.furkanisikay.namazakisi.cekirdek.GununAyetiKurallari
  * Pakete gömülü fontlar (`assets/fonts/`, OFL 1.1 — lisans metinleri yanında):
  * - Amiri Quran: Arapça satır (widget'ta RESİM olarak çizilir; RemoteViews pakete gömülü
  *   font kullanamaz) ve duvar kâğıdı.
- * - Noto Serif: duvar kâğıdındaki meal; Noto Serif'in kapsamadığı Ge'ez (Amharca) meal sistem
+ * - Noto Serif: duvar kâğıdındaki meal; Noto Serif'in kapsamadığı yazılardaki (Ge'ez, Tamil, Malayalam, Tay, Hangıl, Han) meal sistem
  *   yazı tipiyle (`GununAyetiKurallari.mealSerifMi`).
  * KFGQPC Uthmanic HAFS özel lisanslıdır, PAKETLENMEZ (`docs/ajan/gunun-ayeti.md`).
  * Yükleme başarısızsa sistem fontuna düşülür (çizim durmaz).

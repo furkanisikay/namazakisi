@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Lugha · Language',
   aciklama: 'Chagua lugha ya programu. Arifa na usomaji kwa sauti huitumia pia.',
   grup: 'Lugha ya programu',
-  dilAdlari: { tr: 'Kituruki', en: 'Kiingereza', id: 'Kiindonesia', de: 'Kijerumani', fr: 'Kifaransa', bs: 'Kibosnia', ru: 'Kirusi', ms: 'Kimalei', ar: 'Kiarabu', ur: 'Kiurdu', es: 'Kihispania', nl: 'Kiholanzi', sq: 'Kialbania', hi: 'Kihindi', bn: 'Kibengali', fa: 'Kiajemi', ps: 'Kipashto', ckb: 'Kikurdi cha Sorani', ug: 'Kiuyghur', az: 'Kiazerbaijani', uz: 'Kiuzbeki', kk: 'Kikazakh', ky: 'Kikyrgyz', tg: 'Kitajiki', sw: 'Kiswahili', ha: 'Kihausa', am: 'Kiamhari', om: 'Kioromo', so: 'Kisomali', ff: 'Kifulani', yo: 'Kiyoruba' },
+  dilAdlari: { tr: 'Kituruki', en: 'Kiingereza', id: 'Kiindonesia', de: 'Kijerumani', fr: 'Kifaransa', bs: 'Kibosnia', ru: 'Kirusi', ms: 'Kimalei', ar: 'Kiarabu', ur: 'Kiurdu', es: 'Kihispania', nl: 'Kiholanzi', sq: 'Kialbania', hi: 'Kihindi', bn: 'Kibengali', fa: 'Kiajemi', ps: 'Kipashto', ckb: 'Kikurdi cha Sorani', ug: 'Kiuyghur', az: 'Kiazerbaijani', uz: 'Kiuzbeki', kk: 'Kikazakh', ky: 'Kikyrgyz', tg: 'Kitajiki', sw: 'Kiswahili', ha: 'Kihausa', am: 'Kiamhari', om: 'Kioromo', so: 'Kisomali', ff: 'Kifulani', yo: 'Kiyoruba', zh: 'Kichina (Kilichorahisishwa)', ta: 'Kitamili', ml: 'Kimalayalamu', th: 'Kithai', ko: 'Kikorea', vi: 'Kivietinamu' },
   cihazDili: 'Lugha ya kifaa',
   cihazDiliKullaniliyor: 'Kwa sasa {ad}',
   cihazDiliDesteklenmiyor: 'Lugha ya kifaa chako bado haipatikani; Kituruki kinatumika.',

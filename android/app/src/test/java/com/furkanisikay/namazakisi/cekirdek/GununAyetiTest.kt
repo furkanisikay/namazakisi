@@ -32,6 +32,20 @@ class GununAyetiTest {
         assertTrue(GununAyetiKurallari.mealSerifMi("Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ fi sùúrù àti ìrun kíkí tọrọ oore (lọ́dọ̀ Allāhu)."))
     }
 
+    @Test
+    fun asyaYazilariSistemYazitipineDuserVietnamcaSerifKalir() {
+        // 2:153 — chinese_suliman, tamil_omar, malayalam_kunhi, thai_rwwad, korean_rwwad (Noto Serif'te yok).
+        assertFalse(GununAyetiKurallari.mealSerifMi("归信的人们啊！你们当借坚忍和拜功，而求佑助。"))
+        assertFalse(GununAyetiKurallari.mealSerifMi("நம்பிக்கையாளர்களே! பொறுமை இன்னும் தொழுகையின் மூலம் உதவி கோருங்கள்."))
+        assertFalse(GununAyetiKurallari.mealSerifMi("സത്യവിശ്വാസികളെ, നിങ്ങള്‍ സഹനവും നമസ്കാരവും മുഖേന സഹായം തേടുക."))
+        assertFalse(GununAyetiKurallari.mealSerifMi("โอ้บรรดาผู้ศรัทธาทั้งหลาย จงขอการช่วยเหลือด้วยความอดทนและการละหมาด"))
+        assertFalse(GununAyetiKurallari.mealSerifMi("믿는 자들이여! 인내심과 예배로써 (하나님께) 도움을 요청하라."))
+        // Yalnız CJK noktalaması bile serifsiz sayılır (Latin noktalamayla karışmasın).
+        assertFalse(GununAyetiKurallari.mealSerifMi("Allah，"))
+        // vietnamese_rwwad: Latin + yığılmış ses işaretleri (U+1EA0–1EF9) Noto Serif'te var.
+        assertTrue(GununAyetiKurallari.mealSerifMi("Hỡi những người có đức tin, các ngươi hãy cầu xin sự giúp đỡ (của Allah) bằng lòng kiên nhẫn và lễ nguyện Salah."))
+    }
+
     // --- Yük çözümü -------------------------------------------------------------------
 
     @Test

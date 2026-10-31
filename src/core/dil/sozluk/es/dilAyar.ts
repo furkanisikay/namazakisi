@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Idioma · Language',
   aciklama: 'Elija el idioma de la aplicación. Las notificaciones y la lectura en voz alta también lo usan.',
   grup: 'Idioma de la aplicación',
-  dilAdlari: { tr: 'Turco', en: 'Inglés', id: 'Indonesio', de: 'Alemán', fr: 'Francés', bs: 'Bosnio', ru: 'Ruso', ms: 'Malayo', ar: 'Árabe', ur: 'Urdu', es: 'Español', nl: 'Neerlandés', sq: 'Albanés', hi: 'Hindi', bn: 'Bengalí', fa: 'Persa', ps: 'Pastún', ckb: 'Kurdo sorani', ug: 'Uigur', az: 'Azerbaiyano', uz: 'Uzbeko', kk: 'Kazajo', ky: 'Kirguís', tg: 'Tayiko', sw: 'Suajili', ha: 'Hausa', am: 'Amárico', om: 'Oromo', so: 'Somalí', ff: 'Fula', yo: 'Yoruba' },
+  dilAdlari: { tr: 'Turco', en: 'Inglés', id: 'Indonesio', de: 'Alemán', fr: 'Francés', bs: 'Bosnio', ru: 'Ruso', ms: 'Malayo', ar: 'Árabe', ur: 'Urdu', es: 'Español', nl: 'Neerlandés', sq: 'Albanés', hi: 'Hindi', bn: 'Bengalí', fa: 'Persa', ps: 'Pastún', ckb: 'Kurdo sorani', ug: 'Uigur', az: 'Azerbaiyano', uz: 'Uzbeko', kk: 'Kazajo', ky: 'Kirguís', tg: 'Tayiko', sw: 'Suajili', ha: 'Hausa', am: 'Amárico', om: 'Oromo', so: 'Somalí', ff: 'Fula', yo: 'Yoruba', zh: 'Chino simplificado', ta: 'Tamil', ml: 'Malayálam', th: 'Tailandés', ko: 'Coreano', vi: 'Vietnamita' },
   cihazDili: 'Idioma del dispositivo',
   cihazDiliKullaniliyor: 'Ahora {ad}',
   cihazDiliDesteklenmiyor: 'El idioma de su dispositivo aún no está disponible; se usa el turco.',

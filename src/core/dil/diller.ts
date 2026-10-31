@@ -5,7 +5,7 @@
  * (widget, bildirim kanalı, saat) üretilmeden dil açılırsa ekranlar yarım çevrili görünür.
  * Gözden geçirilmemiş çeviri `beta: true` taşır (seçicide rozet).
  */
-export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo';
+export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi';
 
 export interface DilTanimi {
   kod: DilKodu;
@@ -52,6 +52,14 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'so', yerelAd: 'Soomaali', yon: 'ltr', ttsDili: 'so-SO', beta: true, secilebilir: true },
   { kod: 'ff', yerelAd: 'Pular', yon: 'ltr', ttsDili: 'ff-GN', beta: true, secilebilir: true },
   { kod: 'yo', yerelAd: 'Èdè Yorùbá', yon: 'ltr', ttsDili: 'yo-NG', beta: true, secilebilir: true },
+  // Doğu ve Güney Asya (dalga 9); altısı da soldan sağa, Batı rakamlı (Tamil ve Tay rakamı kullanılmaz).
+  // Çince yalnız Basitleştirilmiş (`zh`; iOS `zh-Hans.lproj`, `iosYerelAdi`); Geleneksel Çince bilinçli yok.
+  { kod: 'zh', yerelAd: '简体中文', yon: 'ltr', ttsDili: 'zh-CN', beta: true, secilebilir: false },
+  { kod: 'ta', yerelAd: 'தமிழ்', yon: 'ltr', ttsDili: 'ta-IN', beta: true, secilebilir: false },
+  { kod: 'ml', yerelAd: 'മലയാളം', yon: 'ltr', ttsDili: 'ml-IN', beta: true, secilebilir: false },
+  { kod: 'th', yerelAd: 'ไทย', yon: 'ltr', ttsDili: 'th-TH', beta: true, secilebilir: false },
+  { kod: 'ko', yerelAd: '한국어', yon: 'ltr', ttsDili: 'ko-KR', beta: true, secilebilir: false },
+  { kod: 'vi', yerelAd: 'Tiếng Việt', yon: 'ltr', ttsDili: 'vi-VN', beta: true, secilebilir: false },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';
@@ -64,14 +72,28 @@ export function dilKoduMu(x: unknown): x is DilKodu {
 }
 
 /**
- * Cihaz yerel ayarından ("en_US", "en-GB", "tr-TR") seçilebilir dili bulur; yoksa null.
+ * Yerel ayar kimliğinin ("en_US", "tr-TR", "zh-Hans-CN", "zh_TW") desteklenen dil kodu; yoksa null.
+ * Seçilebilirliğe BAKMAZ. Çincenin bütün yerel ayarları (Android `zh_CN`/`zh_TW_#Hant`, iOS
+ * `zh-Hans-CN`/`zh-Hant-HK`) `zh`'dir: uygulama yalnız Basitleştirilmiş Çince taşır.
  * Büyük/küçük harf dönüşümü yapılmaz (yerel kimlikler zaten küçük harfle başlar).
  */
-export function cihazDilindenSec(yerel: string | null | undefined): DilKodu | null {
+export function yerelAyarDili(yerel: string | null | undefined): DilKodu | null {
   if (!yerel) return null;
   // Java `Locale` Endonezceyi eski ISO kodu "in" ile verir (Android `in_ID`).
   const ham = yerel.split(/[-_]/)[0];
   const kod = ham === 'in' ? 'id' : ham;
-  const d = DILLER.find((x) => x.kod === kod && x.secilebilir);
-  return d ? d.kod : null;
+  return dilKoduMu(kod) ? kod : null;
 }
+
+/** Cihaz yerel ayarından seçilebilir dili bulur; yoksa null (`yerelAyarDili` + `secilebilir`). */
+export function cihazDilindenSec(yerel: string | null | undefined): DilKodu | null {
+  const kod = yerelAyarDili(yerel);
+  return kod && DILLER.some((x) => x.kod === kod && x.secilebilir) ? kod : null;
+}
+
+/**
+ * Dilin iOS yerelleştirme adı: `targets/siri-kisayollari/<ad>.lproj`, `app.json > locales`
+ * anahtarı (Expo onu `<ad>.lproj` klasörü yapar) ve Siri eklentisinin `diller` listesi.
+ * Basitleştirilmiş Çince iOS'ta `zh-Hans`tır (Apple'ın Basitleştirilmiş Çince klasörü; çıplak `zh` eşleşmeyebilir).
+ */
+export const iosYerelAdi = (kod: DilKodu): string => (kod === 'zh' ? 'zh-Hans' : kod);

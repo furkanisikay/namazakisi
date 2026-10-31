@@ -157,7 +157,7 @@ esitMi(TvDili.coz(nil), "tr", "dil yok Turkce")
 
 // MARK: - 4c) Native dil tablolari (W4) — on dokuz dil, Turkce tablo eski sabitlerle ayni
 
-esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo"], "dil: tablo sirasi")
+esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi"], "dil: tablo sirasi")
 esitMi(TvDili.coz("ar-SA"), "ar", "dil: ar-SA → ar")
 esitMi(TvDili.coz("de-DE"), "de", "dil: de-DE → de")
 esitMi(TvDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")

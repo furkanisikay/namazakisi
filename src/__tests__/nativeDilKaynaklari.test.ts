@@ -12,7 +12,7 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { DILLER as TANIMLI_DILLER } from '../core/dil/diller';
+import { DILLER as TANIMLI_DILLER, iosYerelAdi } from '../core/dil/diller';
 
 const KOK = path.join(__dirname, '..', '..');
 const DILLER = TANIMLI_DILLER.map((d) => d.kod).filter((k) => k !== 'tr');
@@ -52,6 +52,12 @@ const COGUL: Record<string, string[]> = {
   so: ['one', 'other'],
   ff: ['one', 'other'],
   yo: ['other'],
+  zh: ['other'],
+  ta: ['one', 'other'],
+  ml: ['one', 'other'],
+  th: ['other'],
+  ko: ['other'],
+  vi: ['other'],
 };
 
 function resDizinleri(): string[] {
@@ -131,7 +137,7 @@ describe('iOS Siri/Kısayollar .lproj', () => {
   it.each(DILLER)('%s.lproj Türkçeyle aynı anahtarları ve yer tutucuları taşır', (dil) => {
     for (const dosya of dosyalar) {
       const a = stringsOku(path.join(tr, dosya));
-      const b = stringsOku(path.join(kaynak, `${dil}.lproj`, dosya));
+      const b = stringsOku(path.join(kaynak, `${iosYerelAdi(dil)}.lproj`, dosya));
       expect(a.size).toBeGreaterThan(0);
       expect([...b.keys()].sort()).toEqual([...a.keys()].sort());
       const farkli = [...a].filter(([k, v]) => yerTutucular(b.get(k) ?? '').join() !== yerTutucular(v).join()).map(([k]) => k);

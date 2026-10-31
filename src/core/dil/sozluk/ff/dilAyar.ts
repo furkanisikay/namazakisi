@@ -1,12 +1,12 @@
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
-/** `dilAdlari`: CLDR ff adları; CLDR'de olmayanlar (bs, sq, ps, ckb, ug, az, uz, kk, ky, tg, sw, om) "-eere" kalıbıyla türetildi. */
+/** `dilAdlari`: CLDR ff adları; CLDR'de olmayanlar (bs, sq, ps, ckb, ug, az, uz, kk, ky, tg, sw, om, ml) "-eere" kalıbıyla türetildi; zh Basitleştirilmiş adı yok → CLDR `zh` ("Sinuwaare"). */
 export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Ɗemngal · Dil',
   aciklama: 'Suɓee ɗemngal jaaɓngal ngal. Tintine e janngugol e hito huutortoo ngal kadi.',
   grup: 'Ɗemngal jaaɓngal',
-  dilAdlari: { tr: 'Turkeere', en: 'Engeleere', id: 'Endonesiire', de: 'Docceere', fr: 'Farayseere', bs: 'Bosniyeere', ru: 'Riis', ms: 'Malayeere', ar: 'Aarabeere', ur: 'Urdu', es: 'Español', nl: 'Dacceere', sq: 'Albaniyeere', hi: 'Hinndi', bn: 'Bengali', fa: 'Perseere', ps: 'Pastooere', ckb: 'Kurdeere Hakkundeere', ug: 'Uyguureere', az: 'Ajerbayjaneere', uz: 'Usbekeere', kk: 'Kasakeere', ky: 'Kirgiseere', tg: 'Tajikeere', sw: 'Swahiliyeere', ha: 'Hawsaŋkoore', am: 'Amarik', om: 'Oromoore', so: 'Somalii', ff: 'Pular', yo: 'Yorrubaa' },
+  dilAdlari: { tr: 'Turkeere', en: 'Engeleere', id: 'Endonesiire', de: 'Docceere', fr: 'Farayseere', bs: 'Bosniyeere', ru: 'Riis', ms: 'Malayeere', ar: 'Aarabeere', ur: 'Urdu', es: 'Español', nl: 'Dacceere', sq: 'Albaniyeere', hi: 'Hinndi', bn: 'Bengali', fa: 'Perseere', ps: 'Pastooere', ckb: 'Kurdeere Hakkundeere', ug: 'Uyguureere', az: 'Ajerbayjaneere', uz: 'Usbekeere', kk: 'Kasakeere', ky: 'Kirgiseere', tg: 'Tajikeere', sw: 'Swahiliyeere', ha: 'Hawsaŋkoore', am: 'Amarik', om: 'Oromoore', so: 'Somalii', ff: 'Pular', yo: 'Yorrubaa', zh: 'Sinuwaare', ta: 'Tamil', ml: 'Malayalameere', th: 'Taay', ko: 'Koreere', vi: 'Wiyetnameere' },
   cihazDili: 'Ɗemngal kaɓirgal',
   cihazDiliKullaniliyor: 'Jooni {ad}',
   cihazDiliDesteklenmiyor: 'Ɗemngal kaɓirgal mon heɓaaka haa jooni; Turkeere ko huutortee.',

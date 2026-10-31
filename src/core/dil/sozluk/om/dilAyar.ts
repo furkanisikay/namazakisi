@@ -1,12 +1,12 @@
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
-/** `dilAdlari`: CLDR `om` adları; CLDR'de olmayanlar (ps, ckb, ug, kk, ky, tg, so, ff, yo) "Afaan …" kalıbıyla yazıldı. */
+/** `dilAdlari`: CLDR `om` adları; CLDR'de olmayanlar (ps, ckb, ug, kk, ky, tg, so, ff, yo) "Afaan …" kalıbıyla yazıldı; zh CLDR'de İngilizce ("Chinese Salphifame") → "Afaan Chaayinaa Salphifame". */
 export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Afaan · Dil',
   aciklama: "Afaan appichaa filadhaa. Beeksisniifi sagaleen dubbisuunis isa fayyadamu.",
   grup: 'Afaan appichaa',
-  dilAdlari: { tr: 'Afaan Turkii', en: 'Afaan Ingilizii', id: 'Afaan Indoneziya', de: 'Afaan Jarmanii', fr: 'Afaan Faransaayii', bs: 'Afaan Bosniyaa', ru: 'Afaan Rushiyaa', ms: 'Malaayiffaa', ar: 'Arabiffaa', ur: 'Afaan Urdu', es: 'Afaan Ispeen', nl: 'Afaan Dachii', sq: 'Afaan Albaniyaa', hi: 'Afaan Hindii', bn: 'Afaan Baangladeshi', fa: 'Afaan Persia', ps: 'Afaan Pashtoo', ckb: 'Kurdii Giddugaleessaa', ug: 'Afaan Uyghurii', az: 'Afaan Azerbaijani', uz: 'Afaan Uzbek', kk: 'Afaan Qazaakii', ky: 'Afaan Kirgiizii', tg: 'Afaan Taajikii', sw: 'Suwahilii', ha: 'Hawusaa', am: 'Afaan Amaaraa', om: 'Oromoo', so: 'Afaan Somaalii', ff: 'Afaan Pular', yo: 'Afaan Yoorubaa' },
+  dilAdlari: { tr: 'Afaan Turkii', en: 'Afaan Ingilizii', id: 'Afaan Indoneziya', de: 'Afaan Jarmanii', fr: 'Afaan Faransaayii', bs: 'Afaan Bosniyaa', ru: 'Afaan Rushiyaa', ms: 'Malaayiffaa', ar: 'Arabiffaa', ur: 'Afaan Urdu', es: 'Afaan Ispeen', nl: 'Afaan Dachii', sq: 'Afaan Albaniyaa', hi: 'Afaan Hindii', bn: 'Afaan Baangladeshi', fa: 'Afaan Persia', ps: 'Afaan Pashtoo', ckb: 'Kurdii Giddugaleessaa', ug: 'Afaan Uyghurii', az: 'Afaan Azerbaijani', uz: 'Afaan Uzbek', kk: 'Afaan Qazaakii', ky: 'Afaan Kirgiizii', tg: 'Afaan Taajikii', sw: 'Suwahilii', ha: 'Hawusaa', am: 'Afaan Amaaraa', om: 'Oromoo', so: 'Afaan Somaalii', ff: 'Afaan Pular', yo: 'Afaan Yoorubaa', zh: 'Afaan Chaayinaa Salphifame', ta: 'Afaan Tamilii', ml: 'Malayaalamiffaa', th: 'Afaan Tayii', ko: 'Afaan Korea', vi: 'Afaan Veetinam' },
   cihazDili: 'Afaan meeshaa',
   cihazDiliKullaniliyor: 'Amma {ad}',
   cihazDiliDesteklenmiyor: 'Afaan meeshaa keessanii ammaaf hin jiru; Afaan Turkii fayyadamama.',

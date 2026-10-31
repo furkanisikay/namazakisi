@@ -86,12 +86,35 @@ object GununAyetiKurallari {
     const val SURUM = 1
 
     /**
-     * Meal Noto Serif'le mi çizilir? Ge'ez (Etiyopya) yazısı Noto Serif'te YOK → Amharca meal
-     * sistem yazı tipiyle çizilir (serif Latin noktalama + sistemden düşen Ge'ez harfi karışmasın).
-     * Hausa/Fula kancalı harfleri (ɓ ɗ ƙ ƴ) ve Yoruba ton işaretleri Noto Serif'te var (cmap denetlendi).
+     * Noto Serif'in KAPSAMADIĞI yazılar (fc-query cmap, 2026-10-30): bunlardan bir harf taşıyan meal
+     * sistem yazı tipiyle çizilir (serif Latin noktalama + sistemden düşen harf karışmasın). Kural
+     * yazıya göredir, dile göre değil. Swift ikizi `GununAyetiKarari.serifsizAraliklar`.
+     */
+    private val SERIFSIZ_ARALIKLAR: List<IntRange> = listOf(
+        0x0B80..0x0BFF, // Tamil
+        0x0D00..0x0D7F, // Malayalam
+        0x0E00..0x0E7F, // Tay
+        0x1100..0x11FF, // Hangıl Jamo
+        0x1200..0x139F, // Ge'ez (+ ek)
+        0x2D80..0x2DDF, // Ge'ez genişletilmiş
+        0x3000..0x303F, // CJK noktalama (、。《》〔〕)
+        0x3130..0x318F, // Hangıl uyumluluk Jamo
+        0x3400..0x4DBF, // CJK birleşik ideogram A
+        0x4E00..0x9FFF, // CJK birleşik ideogram
+        0xA960..0xA97F, // Hangıl Jamo genişletilmiş A
+        0xAB00..0xAB2F, // Ge'ez genişletilmiş A
+        0xAC00..0xD7FF, // Hangıl hece + Jamo genişletilmiş B
+        0xF900..0xFAFF, // CJK uyumluluk ideogramı
+        0xFF00..0xFFEF, // tam genişlik biçimler (，！？：)
+    )
+
+    /**
+     * Meal Noto Serif'le mi çizilir? Ge'ez (Amharca), Tamil, Malayalam, Tay, Hangıl (Korece) ve Han
+     * (Çince) Noto Serif'te YOK → sistem yazı tipi. Hausa/Fula kancalı harfleri (ɓ ɗ ƙ ƴ), Yoruba ton
+     * işaretleri ve Vietnamca yığılmış ses işaretleri (U+1EA0–1EF9) Noto Serif'te var (cmap denetlendi).
      * Swift ikizi `GununAyetiKarari.mealSerifMi`. Cihazda DOĞRULANMADI.
      */
-    fun mealSerifMi(meal: String): Boolean = meal.none { it.code in 0x1200..0x139F || it.code in 0x2D80..0x2DDF || it.code in 0xAB00..0xAB2F }
+    fun mealSerifMi(meal: String): Boolean = meal.none { c -> SERIFSIZ_ARALIKLAR.any { c.code in it } }
 
     /**
      * Yükü çözer. Bozuk/eksik yük `null` (widget "uygulamayı açın" der, çökmez). Zorunlu alanı

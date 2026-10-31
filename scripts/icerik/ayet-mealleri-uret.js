@@ -49,6 +49,16 @@ const MEALLER = {
   so: 'somali_yacob',
   ff: 'fulani_rwwad',
   yo: 'yoruba_mikail',
+  // Doğu ve Güney Asya (dalga 9). zh: `chinese_suliman` (metni `chinese_makin` = Ma Jian ile neredeyse
+  // aynı, noktalaması düzeltilmiş güncel baskı; havuz ikisinde de 186); ta: `tamil_omar` (`tamil_baqavi` her ayete "153." ekler, havuz 121);
+  // ko: `korean_rwwad` (çeviri TAMAMLANMAMIŞ: 63 havuz ayeti boş → elenir; `korean_hamid` sözcük içi
+  // boşluk ve imla hatası taşır: "하나 님", "너회").
+  zh: 'chinese_suliman',
+  ta: 'tamil_omar',
+  ml: 'malayalam_kunhi',
+  th: 'thai_rwwad',
+  ko: 'korean_rwwad',
+  vi: 'vietnamese_rwwad',
 };
 
 /** Liste API'sinde görünmeyen çevirilerin QuranEnc başlığı (sitedeki kartta yazdığı gibi). */
@@ -60,6 +70,8 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   kurdish_bamoki: 'Kurdish Translation - Muhammad Salih Bamoki',
   // QuranEnc Kazakçayı liste API'sinde vermez (`translations/list/kk` boş); sitedeki kartın başlığı.
   kazakh_altai: 'Kazakh Translation - Khalifa Altai',
+  // QuranEnc Koreceyi liste API'sinde vermez (`translations/list/ko` boş); sitedeki kartın başlığı.
+  korean_rwwad: 'Korean Translation - Rowwad Translation Center',
 };
 
 /**
@@ -136,6 +148,11 @@ async function main() {
       }
       // Baştaki/sondaki boşluk metin değildir (kurdish_bamoki "\n" ile biter).
       result.translation = result.translation.trim();
+      // Tamamlanmamış çeviri (korean_rwwad) bazı ayetleri boş verir: o ayet o dilde gösterilmez.
+      if (!result.translation) {
+        console.log(`  atlandı ${dil} ${sure}:${ayet} (boş meal)`);
+        continue;
+      }
       // Dipnot işaretli ya da başında ayet numarası olan meal metin değiştirilemeyeceği için
       // ALINMAZ: o ayet o dilde gösterilmez (`nassDili.ayetMeali` null döner).
       if (NUMARALI.some((d) => d.test(result.translation))) {

@@ -6,7 +6,7 @@ export const dilAyar = {
   baslik: 'Dil · Language',
   aciklama: 'Uygulamanın dilini seçin. Bildirimler ve sesli okuma da bu dilde olur.',
   grup: 'Uygulama dili',
-  dilAdlari: { tr: 'Türkçe', en: 'İngilizce', id: 'Endonezce', de: 'Almanca', fr: 'Fransızca', bs: 'Boşnakça', ru: 'Rusça', ms: 'Malayca', ar: 'Arapça', ur: 'Urduca', es: 'İspanyolca', nl: 'Felemenkçe', sq: 'Arnavutça', hi: 'Hintçe', bn: 'Bengalce', fa: 'Farsça', ps: 'Peştuca', ckb: 'Orta Kürtçe', ug: 'Uygurca', az: 'Azerbaycan dili', uz: 'Özbekçe', kk: 'Kazakça', ky: 'Kırgızca', tg: 'Tacikçe', sw: 'Svahili dili', ha: 'Hausa dili', am: 'Amharca', om: 'Oromo dili', so: 'Somalice', ff: 'Fula dili', yo: 'Yorubaca' },
+  dilAdlari: { tr: 'Türkçe', en: 'İngilizce', id: 'Endonezce', de: 'Almanca', fr: 'Fransızca', bs: 'Boşnakça', ru: 'Rusça', ms: 'Malayca', ar: 'Arapça', ur: 'Urduca', es: 'İspanyolca', nl: 'Felemenkçe', sq: 'Arnavutça', hi: 'Hintçe', bn: 'Bengalce', fa: 'Farsça', ps: 'Peştuca', ckb: 'Orta Kürtçe', ug: 'Uygurca', az: 'Azerbaycan dili', uz: 'Özbekçe', kk: 'Kazakça', ky: 'Kırgızca', tg: 'Tacikçe', sw: 'Svahili dili', ha: 'Hausa dili', am: 'Amharca', om: 'Oromo dili', so: 'Somalice', ff: 'Fula dili', yo: 'Yorubaca', zh: 'Basitleştirilmiş Çince', ta: 'Tamilce', ml: 'Malayalam dili', th: 'Tayca', ko: 'Korece', vi: 'Vietnamca' },
   cihazDili: 'Cihazın dili',
   cihazDiliKullaniliyor: 'Şu an {ad}',
   cihazDiliDesteklenmiyor: 'Cihazınızın dili henüz yok; Türkçe kullanılıyor.',

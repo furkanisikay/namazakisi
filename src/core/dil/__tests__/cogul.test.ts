@@ -47,3 +47,8 @@ it('Afrika dalgası: sw/ha/om/so one/other (0 çoğul), am/ff 0 tekil, yo yalnı
   for (const dil of ['am', 'ff']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['one', 'one', 'other']);
   expect([0, 1, 2].map((n) => cogulKategorisi('yo', n))).toEqual(['other', 'other', 'other']);
 });
+
+it('Asya dalgası: zh/th/ko/vi yalnız other, ta/ml one/other (0 çoğul)', () => {
+  for (const dil of ['zh', 'th', 'ko', 'vi']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'other', 'other']);
+  for (const dil of ['ta', 'ml']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'one', 'other']);
+});

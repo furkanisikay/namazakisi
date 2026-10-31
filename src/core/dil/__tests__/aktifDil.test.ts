@@ -1,5 +1,5 @@
 import { aktifDil, aktifDiliKur, aktifDilSifirla, bicim, metin, sayili, sozluk } from '../aktifDil';
-import { cihazDilindenSec, DILLER } from '../diller';
+import { cihazDilindenSec, DILLER, iosYerelAdi, yerelAyarDili } from '../diller';
 import { cogul, type CogulMetin } from '../tipler';
 import { tr } from '../sozluk/tr';
 
@@ -31,6 +31,19 @@ it('cihaz dili yalnız SEÇİLEBİLİR dilse kullanılır (yarım dil kendiliği
   const id = DILLER.find((d) => d.kod === 'id')!;
   expect(cihazDilindenSec('in_ID')).toBe(id.secilebilir ? 'id' : null);
   expect(cihazDilindenSec(null)).toBeNull();
+  // Çincenin bütün cihaz dilleri (Android `zh_CN`, `zh_TW_#Hant`; iOS `zh-Hans-CN`, `zh-Hant-HK`) Basitleştirilmiş `zh`'dir.
+  const zh = DILLER.find((d) => d.kod === 'zh')!;
+  for (const yerel of ['zh-Hans-CN', 'zh-CN', 'zh_CN', 'zh-TW', 'zh_TW_#Hant', 'zh-Hant-HK', 'zh-HK', 'zh-Hans', 'zh']) {
+    expect(yerelAyarDili(yerel)).toBe('zh');
+    expect(cihazDilindenSec(yerel)).toBe(zh.secilebilir ? 'zh' : null);
+  }
+  expect(yerelAyarDili('ja-JP')).toBeNull();
+  expect(yerelAyarDili('in_ID')).toBe('id');
+});
+
+it('iOS yerelleştirme adı: Basitleştirilmiş Çince zh-Hans, diğer diller kendi kodu', () => {
+  expect(iosYerelAdi('zh')).toBe('zh-Hans');
+  for (const d of DILLER.filter((x) => x.kod !== 'zh')) expect(iosYerelAdi(d.kod)).toBe(d.kod);
 });
 
 /** Sözlük ağacındaki her metin: boş değil, yer tutucuları Türkçeyle aynı, çoğullar dilin kategorilerini taşır. */

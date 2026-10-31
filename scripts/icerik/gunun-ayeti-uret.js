@@ -62,6 +62,16 @@ const MEALLER = {
   so: 'somali_yacob',
   ff: 'fulani_rwwad',
   yo: 'yoruba_mikail',
+  // Doğu ve Güney Asya (dalga 9). zh: `chinese_suliman` (metni `chinese_makin` = Ma Jian ile neredeyse
+  // aynı, noktalaması düzeltilmiş güncel baskı; havuz ikisinde de 186); ta: `tamil_omar` (`tamil_baqavi` her ayete "153." ekler, havuz 121);
+  // ko: `korean_rwwad` (çeviri TAMAMLANMAMIŞ: 63 havuz ayeti boş → elenir; `korean_hamid` sözcük içi
+  // boşluk ve imla hatası taşır: "하나 님", "너회").
+  zh: 'chinese_suliman',
+  ta: 'tamil_omar',
+  ml: 'malayalam_kunhi',
+  th: 'thai_rwwad',
+  ko: 'korean_rwwad',
+  vi: 'vietnamese_rwwad',
 };
 
 /**
@@ -76,6 +86,8 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   kurdish_bamoki: 'Kurdish Translation - Muhammad Salih Bamoki',
   // QuranEnc Kazakçayı liste API'sinde vermez (`translations/list/kk` boş); sitedeki kartın başlığı.
   kazakh_altai: 'Kazakh Translation - Khalifa Altai',
+  // QuranEnc Koreceyi liste API'sinde vermez (`translations/list/ko` boş); sitedeki kartın başlığı.
+  korean_rwwad: 'Korean Translation - Rowwad Translation Center',
 };
 
 const TANZIL_URL = 'https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt-2&agree=true';
@@ -204,6 +216,8 @@ const ARA_NUMARA = /\([\p{Cf}\sـ\-–]*\p{Nd}[\p{Nd}\p{Cf}\sـ\-–]*\)/u;
 /** Bir mealin elenme gerekçeleri (boş = uygun). */
 function mealGerekce(metin) {
   const g = [];
+  // Tamamlanmamış çeviri (korean_rwwad) bazı ayetleri boş dize verir: meal yok sayılır.
+  if (!metin.trim()) g.push('bos');
   if (metin.length > AZAMI_UZUNLUK) g.push('uzunluk');
   if (DIPNOT.test(metin)) g.push('dipnot');
   if (BASTA_NUMARA.test(metin)) g.push('basta-numara');

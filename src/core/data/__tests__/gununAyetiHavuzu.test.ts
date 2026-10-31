@@ -40,6 +40,11 @@ describe('günün ayeti havuzu', () => {
     expect(dipnotlu).toEqual([]);
   });
 
+  it('boş meal yok (tamamlanmamış çeviri, korean_rwwad, bazı ayetleri boş verir; üretici eler)', () => {
+    const bos = GUNUN_AYETI_HAVUZU.flatMap((k) => mealler(k).filter(([, m]) => !m.trim()).map(([d]) => `${k.ref}:${d}`));
+    expect(bos).toEqual([]);
+  });
+
   it('mealin başında ve sonunda boşluk yok (kurdish_bamoki her ayeti satır sonuyla bitirir; üretici kırpar)', () => {
     const bosluklu = GUNUN_AYETI_HAVUZU.flatMap((k) => mealler(k).filter(([, m]) => m !== m.trim()).map(([d]) => `${k.ref}:${d}`));
     expect(bosluklu).toEqual([]);

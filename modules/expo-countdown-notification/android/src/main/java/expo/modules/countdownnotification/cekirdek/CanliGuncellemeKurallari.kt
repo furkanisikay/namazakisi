@@ -39,7 +39,7 @@ object CanliGuncellemeKurallari {
     /**
      * Kısa süre birimleri, arayüz diline göre (JS `sozluk/<dil>/sure.ts > kisa`).
      * Bilinmeyen dil Türkçeye düşer. Yeni dil: buraya bir satır + JS sözlüğü. Sıra tr, en,
-     * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
+     * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
      */
     internal val KISA_BIRIMLER: Map<String, Pair<String, String>> = mapOf(
         "tr" to ("sa" to "dk"),
@@ -101,6 +101,18 @@ object CanliGuncellemeKurallari {
         "ff" to ("sa" to "hj"),
         // yo
         "yo" to ("wkt" to "ìṣj"),
+        // ÇEVİRİ: zh
+        "zh" to ("h" to "min"),
+        // ÇEVİRİ: ta
+        "ta" to ("h" to "min"),
+        // ÇEVİRİ: ml
+        "ml" to ("h" to "min"),
+        // ÇEVİRİ: th
+        "th" to ("h" to "min"),
+        // ÇEVİRİ: ko
+        "ko" to ("h" to "min"),
+        // ÇEVİRİ: vi
+        "vi" to ("h" to "min"),
     )
 
     /**

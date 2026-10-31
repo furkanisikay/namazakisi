@@ -49,3 +49,4 @@ Ne zaman okunur: `.github/workflows` düzenlerken, PR birleştirirken/release be
 ## Jules / ajan ortamı
 - **Jules proje ayarlarında: setup script `npm ci`, test komutu `npm run verify`.** Aksi halde kendini doğrulamaz, bozuk PR açar. Görevde yeni bağımlılık eklerse o görevde `npm install` ile lockfile'ı yeniden üretmeli (npm@10 kuralı).
 - **Node 20** (`package.json > engines.node >= 20.19.4`, CI pin'i). `postinstall: patch-package` atlanmamalı. PR hedef dalı `master`. Jules `git push` kullanıyorsa panelde `CI=true` (`.githooks/pre-push` verify'ı atlar). Prod anahtarı koyma.
+- **Ajan çalışma ağacında `node_modules` sembolik bağla paylaşılıyorsa bağ commit'e girmemeli:** `.gitignore`'daki `/node_modules` bunu tutar (dizin kalıbı `node_modules/` bağa uymaz). Girerse ana dizine birleştirince gerçek `node_modules` kendine işaret eden bağa dönüşür ve `npm run verify` çıktısız 216 koduyla düşer → bağı `git rm --cached node_modules` ile çıkar, `npx -y npm@10 ci`.

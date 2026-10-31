@@ -6,7 +6,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Harshe · Dil',
   aciklama: 'Ku zaɓi harshen manhaja. Sanarwa da karatu da murya ma suna amfani da shi.',
   grup: 'Harshen manhaja',
-  dilAdlari: { tr: 'Harshen Turkiyya', en: 'Turanci', id: 'Harshen Indunusiya', de: 'Jamusanci', fr: 'Faransanci', bs: 'Bosniyanci', ru: 'Rashanci', ms: 'Harshen Malay', ar: 'Larabci', ur: 'Urdanci', es: 'Sifaniyanci', nl: 'Holanci', sq: 'Albaniyanci', hi: 'Harshen Hindi', bn: 'Bengali', fa: 'Farisanci', ps: 'Pashtanci', ckb: 'Kurdawa ta Tsakiya', ug: 'Ugiranci', az: 'Azerbaijanci', uz: 'Uzbek', kk: 'Kazakh', ky: 'Kirgizanci', tg: 'Tajik', sw: 'Harshen Suwahili', ha: 'Hausa', am: 'Amharik', om: 'Oromo', so: 'Somalianci', ff: 'Fula', yo: 'Yarbanci' },
+  dilAdlari: { tr: 'Harshen Turkiyya', en: 'Turanci', id: 'Harshen Indunusiya', de: 'Jamusanci', fr: 'Faransanci', bs: 'Bosniyanci', ru: 'Rashanci', ms: 'Harshen Malay', ar: 'Larabci', ur: 'Urdanci', es: 'Sifaniyanci', nl: 'Holanci', sq: 'Albaniyanci', hi: 'Harshen Hindi', bn: 'Bengali', fa: 'Farisanci', ps: 'Pashtanci', ckb: 'Kurdawa ta Tsakiya', ug: 'Ugiranci', az: 'Azerbaijanci', uz: 'Uzbek', kk: 'Kazakh', ky: 'Kirgizanci', tg: 'Tajik', sw: 'Harshen Suwahili', ha: 'Hausa', am: 'Amharik', om: 'Oromo', so: 'Somalianci', ff: 'Fula', yo: 'Yarbanci', zh: 'Sauƙaƙaƙƙen Sinanci', ta: 'Tamil', ml: 'Malayalamci', th: 'Thai', ko: 'Harshen Koriya', vi: 'Harshen Biyetinam' },
   cihazDili: 'Harshen naʼura',
   cihazDiliKullaniliyor: 'A yanzu {ad}',
   cihazDiliDesteklenmiyor: 'Harshen naʼurarku ba ya samuwa tukuna; ana amfani da Harshen Turkiyya.',

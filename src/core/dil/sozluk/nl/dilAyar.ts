@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Taal · Language',
   aciklama: 'Kies de taal van de app. Meldingen en voorlezen gebruiken deze taal ook.',
   grup: 'Taal van de app',
-  dilAdlari: { tr: 'Turks', en: 'Engels', id: 'Indonesisch', de: 'Duits', fr: 'Frans', bs: 'Bosnisch', ru: 'Russisch', ms: 'Maleis', ar: 'Arabisch', ur: 'Urdu', es: 'Spaans', nl: 'Nederlands', sq: 'Albanees', hi: 'Hindi', bn: 'Bengaals', fa: 'Perzisch', ps: 'Pasjtoe', ckb: 'Soranî', ug: 'Oeigoers', az: 'Azerbeidzjaans', uz: 'Oezbeeks', kk: 'Kazachs', ky: 'Kirgizisch', tg: 'Tadzjieks', sw: 'Swahili', ha: 'Hausa', am: 'Amhaars', om: 'Afaan Oromo', so: 'Somalisch', ff: 'Fulah', yo: 'Yoruba' },
+  dilAdlari: { tr: 'Turks', en: 'Engels', id: 'Indonesisch', de: 'Duits', fr: 'Frans', bs: 'Bosnisch', ru: 'Russisch', ms: 'Maleis', ar: 'Arabisch', ur: 'Urdu', es: 'Spaans', nl: 'Nederlands', sq: 'Albanees', hi: 'Hindi', bn: 'Bengaals', fa: 'Perzisch', ps: 'Pasjtoe', ckb: 'Soranî', ug: 'Oeigoers', az: 'Azerbeidzjaans', uz: 'Oezbeeks', kk: 'Kazachs', ky: 'Kirgizisch', tg: 'Tadzjieks', sw: 'Swahili', ha: 'Hausa', am: 'Amhaars', om: 'Afaan Oromo', so: 'Somalisch', ff: 'Fulah', yo: 'Yoruba', zh: 'Chinees (vereenvoudigd)', ta: 'Tamil', ml: 'Malayalam', th: 'Thai', ko: 'Koreaans', vi: 'Vietnamees' },
   cihazDili: 'Taal van het apparaat',
   cihazDiliKullaniliyor: 'Nu {ad}',
   cihazDiliDesteklenmiyor: 'De taal van uw apparaat is nog niet beschikbaar; Turks wordt gebruikt.',
