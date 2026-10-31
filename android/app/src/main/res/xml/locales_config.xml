@@ -36,4 +36,10 @@
   <locale android:name="so"/>
   <locale android:name="ff"/>
   <locale android:name="yo"/>
+  <locale android:name="zh-Hans"/>
+  <locale android:name="ta"/>
+  <locale android:name="ml"/>
+  <locale android:name="th"/>
+  <locale android:name="ko"/>
+  <locale android:name="vi"/>
 </locale-config>

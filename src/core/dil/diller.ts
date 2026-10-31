@@ -54,12 +54,12 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'yo', yerelAd: 'Èdè Yorùbá', yon: 'ltr', ttsDili: 'yo-NG', beta: true, secilebilir: true },
   // Doğu ve Güney Asya (dalga 9); altısı da soldan sağa, Batı rakamlı (Tamil ve Tay rakamı kullanılmaz).
   // Çince yalnız Basitleştirilmiş (`zh`; iOS `zh-Hans.lproj`, `iosYerelAdi`); Geleneksel Çince bilinçli yok.
-  { kod: 'zh', yerelAd: '简体中文', yon: 'ltr', ttsDili: 'zh-CN', beta: true, secilebilir: false },
-  { kod: 'ta', yerelAd: 'தமிழ்', yon: 'ltr', ttsDili: 'ta-IN', beta: true, secilebilir: false },
-  { kod: 'ml', yerelAd: 'മലയാളം', yon: 'ltr', ttsDili: 'ml-IN', beta: true, secilebilir: false },
-  { kod: 'th', yerelAd: 'ไทย', yon: 'ltr', ttsDili: 'th-TH', beta: true, secilebilir: false },
-  { kod: 'ko', yerelAd: '한국어', yon: 'ltr', ttsDili: 'ko-KR', beta: true, secilebilir: false },
-  { kod: 'vi', yerelAd: 'Tiếng Việt', yon: 'ltr', ttsDili: 'vi-VN', beta: true, secilebilir: false },
+  { kod: 'zh', yerelAd: '简体中文', yon: 'ltr', ttsDili: 'zh-CN', beta: true, secilebilir: true },
+  { kod: 'ta', yerelAd: 'தமிழ்', yon: 'ltr', ttsDili: 'ta-IN', beta: true, secilebilir: true },
+  { kod: 'ml', yerelAd: 'മലയാളം', yon: 'ltr', ttsDili: 'ml-IN', beta: true, secilebilir: true },
+  { kod: 'th', yerelAd: 'ไทย', yon: 'ltr', ttsDili: 'th-TH', beta: true, secilebilir: true },
+  { kod: 'ko', yerelAd: '한국어', yon: 'ltr', ttsDili: 'ko-KR', beta: true, secilebilir: true },
+  { kod: 'vi', yerelAd: 'Tiếng Việt', yon: 'ltr', ttsDili: 'vi-VN', beta: true, secilebilir: true },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';
