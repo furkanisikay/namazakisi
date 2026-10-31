@@ -87,6 +87,17 @@ describe('ozellik turu tohumu', () => {
         expect((await LocalSadeGorunumServisi.getAyarlar()).aktif).toBe(varyant === 'sade');
     });
 
+    it('ses varyanti: sabah sesinin adi kare dilinde (her dilde ayri ad; bilinmeyen dil Turkce)', () => {
+        const { SABAH_SESI_ADLARI, sabahSesiAdi } = require('../../../../scripts/ozellik-tohum-verisi');
+        const { DILLER } = require('../../dil/diller');
+        expect(Object.keys(SABAH_SESI_ADLARI).sort()).toEqual(DILLER.map((d: { kod: string }) => d.kod).sort());
+        for (const d of DILLER as { kod: string }[]) {
+            if (d.kod !== 'tr') expect([d.kod, SABAH_SESI_ADLARI[d.kod]]).not.toEqual([d.kod, SABAH_SESI_ADLARI.tr]);
+        }
+        expect(sabahSesiAdi('ko')).toBe('새벽 아잔');
+        expect(sabahSesiAdi('xx')).toBe('Sabah ezanı');
+    });
+
     it('ses varyanti: vakit bildirimi acik + sabah sesi uygulamanin okuma yolundan DEGISMEDEN gecer', async () => {
         const { LocalVakitBildirimServisi } = require('../../../data/local/LocalVakitBildirimServisi');
         const depo = ozellikTohumVerisi({ varyant: 'ses' });

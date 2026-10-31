@@ -33,6 +33,57 @@ const { tohumVerisi, gun } = require('./magaza-tohum-verisi');
 
 const VARYANTLAR = ['ozellik', 'sade', 'butce', 'ses', 'esitleme', 'kildim', 'dunya', 'jakim', 'baku'];
 
+/**
+ * `ses` varyantinda sabaha secilmis sesin adi. Bu UYGULAMA METNI DEGIL: kullanicinin sectigi
+ * dosyanin/sesin adidir (uygulama `sesAdi`'ni oldugu gibi gosterir). Kare turu Turkce disi dilde
+ * de inandirici olsun diye kare dili (`TOHUM_DIL`) adina gore secilir; adlar her dilin sozlugundeki
+ * sabah vakti adi (`vakit.adlar.imsak`) ve ezan sozcugunden (`hatirlatma.sesSecim.dosyaIpucu`) turetildi.
+ */
+const SABAH_SESI_ADLARI = {
+    tr: 'Sabah ezanı',
+    en: 'Fajr adhan',
+    id: 'Azan Subuh',
+    de: 'Fajr-Adhan',
+    fr: 'Adhan du Fajr',
+    bs: 'Sabahski ezan',
+    ru: 'Азан Фаджр',
+    ms: 'Azan Subuh',
+    ar: 'أذان الفجر',
+    ur: 'فجر کی اذان',
+    es: 'Adhan del Fajr',
+    nl: 'Fajr-adhan',
+    sq: 'Ezani i sabahut',
+    hi: 'फ़ज्र की अज़ान',
+    bn: 'ফজরের আযান',
+    fa: 'اذان صبح',
+    ps: 'د سهار اذان',
+    ckb: 'بانگی بەیانی',
+    ug: 'بامدات ئەزانى',
+    az: 'Sübh azanı',
+    uz: 'Бомдод азони',
+    kk: 'Таң азаны',
+    ky: 'Багымдат азаны',
+    tg: 'Азони бомдод',
+    sw: 'Adhana ya Alfajiri',
+    ha: 'Kiran sallar Asuba',
+    am: 'የፈጅር አዛን',
+    om: 'Azaana Subhii',
+    so: 'Aadaanka Subax',
+    ff: 'Ewnaango Subaka',
+    yo: 'Ìpè ìrun Subh',
+    zh: '晨礼宣礼',
+    ta: 'ஃபஜ்ர் பாங்கு',
+    ml: 'സുബ്‌ഹ് ബാങ്ക്',
+    th: 'อะซานซุบฮ์',
+    ko: '새벽 아잔',
+    vi: 'Azan Fajr',
+};
+
+/** Kare dilindeki sabah sesi adi (bilinmeyen dil → Turkce). */
+function sabahSesiAdi(dil = process.env.TOHUM_DIL || 'tr') {
+    return SABAH_SESI_ADLARI[dil] || SABAH_SESI_ADLARI.tr;
+}
+
 /** `dunya*` varyantlarinin konumu: Kuala Lumpur, elle secilmis dunya sehri. */
 const DUNYA_KONUMU = {
     konumModu: 'manuel',
@@ -199,7 +250,7 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         // gecer ve `vakit_bildirim_<hash8>` kanali kurulur (hat `dumpsys` ile doker).
         depo.vakit_bildirim_ayarlari = JSON.stringify({ imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true });
         depo['@namaz_akisi/vakit_bildirim_sesleri'] = JSON.stringify({
-            imsak: { bildirimSesi: 'content://settings/system/alarm_alert', sesAdi: 'Sabah ezanı' },
+            imsak: { bildirimSesi: 'content://settings/system/alarm_alert', sesAdi: sabahSesiAdi() },
             // OLU URI (kayitli "kendi dosyamiz" ama MediaStore satiri yok): olu-URI
             // dogrulamasinin kaniti — dokumde bunun `vakit_bildirim_<hash8>` kanali
             // CIKMAMALI (ogle taban kanala duser). Kayit: `sesIceAktarimTercihXml`.
@@ -341,6 +392,8 @@ module.exports = {
     camideyimTercihXml,
     sesIceAktarimTercihXml,
     OLU_SES_URI,
+    SABAH_SESI_ADLARI,
+    sabahSesiAdi,
 };
 
 // Hat betigi: `node scripts/ozellik-tohum-verisi.js --ses-xml > /tmp/namazakisi_ses_ice_aktarim.xml`
