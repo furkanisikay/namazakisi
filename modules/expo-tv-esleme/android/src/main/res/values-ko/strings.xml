@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ko — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">TV 화면의 QR 코드를 틀 안에 맞추세요</string>
+    <string name="tvesleme_qr_vazgec">취소</string>
+    <string name="tvesleme_qr_vazgec_erisim">스캔 취소</string>
+    <string name="tvesleme_qr_yabanci">이 QR 코드는 Namaz Akışı TV의 코드가 아닙니다. TV의 코드를 스캔하세요.</string>
+    <string name="tvesleme_qr_okundu">코드를 스캔했습니다</string>
 </resources>

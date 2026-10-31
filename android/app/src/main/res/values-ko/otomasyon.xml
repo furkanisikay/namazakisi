@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ko — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Tasker / MacroDroid / Automate eklentisi (İngilizce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Korece). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
 <resources>
-  <string name="otomasyon_eylem_etiket">Namaz Akışı: I\'ve prayed</string>
-  <string name="otomasyon_kosul_etiket">Namaz Akışı: Prayer time status</string>
-  <string name="otomasyon_olay_etiket">Namaz Akışı: Prayer time event</string>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: 예배 드렸어요</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: 예배 시간 상태</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: 예배 시간 이벤트</string>
 
   <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
-  <string name="otomasyon_bilgi_baslik">This setting is added from an automation app</string>
-  <string name="otomasyon_bilgi_tarayici">Browsers can\'t get permanent permission. Add it from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_bilgi_eklenti">Add it by choosing \"Namaz Akışı\" from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_engelli_baslik">%1$s is blocked</string>
-  <string name="otomasyon_engelli_mesaj">You blocked this app from marking your prayers before. You can allow it in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_baslik">Use with %1$s?</string>
-  <string name="otomasyon_izin_kosul">%1$s can learn when a prayer time begins, when it\'s ending and when you\'re at a mosque, and run your automations. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_kildim">%1$s can mark the current prayer as prayed with the automation you set up. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_ver">Allow</string>
-  <string name="otomasyon_engelle">Block</string>
-  <string name="otomasyon_vazgec">Cancel</string>
-  <string name="otomasyon_tamam">OK</string>
-  <string name="otomasyon_tur_baslik">When should it run?</string>
-  <string name="otomasyon_ileri">Next</string>
-  <string name="otomasyon_vakit_baslik">Which prayer?</string>
-  <string name="otomasyon_herhangi_vakit">Any prayer time</string>
-  <string name="otomasyon_kaydet">Save</string>
-  <string name="otomasyon_kosul_icinde">While it\'s a prayer time</string>
-  <string name="otomasyon_kosul_cikiyor">While a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_kosul_camide">While at a mosque</string>
-  <string name="otomasyon_olay_girdi">When a prayer time begins</string>
-  <string name="otomasyon_olay_cikiyor">When a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_olay_camide">When you\'re detected at a mosque</string>
+  <string name="otomasyon_bilgi_baslik">이 설정은 자동화 앱에서 추가합니다</string>
+  <string name="otomasyon_bilgi_tarayici">브라우저는 계속 허용을 받을 수 없습니다. Tasker, MacroDroid, Automate 같은 앱의 플러그인 목록에서 추가하세요.</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid, Automate 같은 앱의 플러그인 목록에서 \"Namaz Akışı\"를 선택해 추가하세요.</string>
+  <string name="otomasyon_engelli_baslik">%1$s 앱이 차단되어 있습니다</string>
+  <string name="otomasyon_engelli_mesaj">이전에 이 앱이 예배를 표시하지 못하도록 차단했습니다. Namaz Akışı의 설정 &gt; \"예배 드렸어요를 표시하는 앱\"에서 허용할 수 있습니다.</string>
+  <string name="otomasyon_izin_baslik">%1$s 앱과 함께 사용할까요?</string>
+  <string name="otomasyon_izin_kosul">%1$s 앱이 예배 시간이 시작될 때, 끝나 갈 때, 성원에 있을 때를 알고 자동화를 실행할 수 있습니다. Namaz Akışı의 설정 &gt; \"예배 드렸어요를 표시하는 앱\"에서 결정을 바꿀 수 있습니다.</string>
+  <string name="otomasyon_izin_kildim">%1$s 앱이 설정한 자동화로 현재 예배를 완료로 표시할 수 있습니다. Namaz Akışı의 설정 &gt; \"예배 드렸어요를 표시하는 앱\"에서 결정을 바꿀 수 있습니다.</string>
+  <string name="otomasyon_izin_ver">허용</string>
+  <string name="otomasyon_engelle">차단</string>
+  <string name="otomasyon_vazgec">취소</string>
+  <string name="otomasyon_tamam">확인</string>
+  <string name="otomasyon_tur_baslik">언제 실행할까요?</string>
+  <string name="otomasyon_ileri">다음</string>
+  <string name="otomasyon_vakit_baslik">어느 예배인가요?</string>
+  <string name="otomasyon_herhangi_vakit">모든 예배 시간</string>
+  <string name="otomasyon_kaydet">저장</string>
+  <string name="otomasyon_kosul_icinde">예배 시간 중일 때</string>
+  <string name="otomasyon_kosul_cikiyor">예배 시간이 끝나 갈 때(%1$d분 남음, 예배 지킴이 켜짐)</string>
+  <string name="otomasyon_kosul_camide">성원에 있을 때</string>
+  <string name="otomasyon_olay_girdi">예배 시간이 시작될 때</string>
+  <string name="otomasyon_olay_cikiyor">예배 시간이 끝나 갈 때(%1$d분 남음, 예배 지킴이 켜짐)</string>
+  <string name="otomasyon_olay_camide">성원에 있는 것이 감지될 때</string>
 </resources>

@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "현재 위치의 예배 시간을 정확하게 계산하는 데 위치를 사용합니다. 위치는 기기에만 남습니다.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "현재 위치의 예배 시간을 정확하게 계산하고, 성원에 있어요가 켜져 있으면 성원에 들어갈 때 예배 모드를 켜는 데 위치를 사용합니다. 위치는 기기에만 남습니다.",
+  "NSLocationAlwaysUsageDescription": "도시를 옮기면 예배 시간을 자동으로 업데이트하고, 성원에 있어요가 켜져 있으면 성원에 들어갈 때 예배 모드를 켜는 데 위치를 사용합니다. 위치는 기기에만 남습니다.",
+  "NSCameraUsageDescription": "카메라 화면 위에 예배 방향을 보여 주고 TV의 페어링 코드를 스캔하는 데 카메라를 사용합니다. 이미지는 저장하지 않으며 기기 밖으로 나가지 않습니다.",
+  "NSCalendarsUsageDescription": "예배 시간을 캘린더에 추가하고, 켜 두면 캘린더의 일정이 예배 시간과 겹치는지 확인하는 데 캘린더 접근을 사용합니다. 캘린더 데이터는 기기에만 남습니다.",
+  "NSCalendarsFullAccessUsageDescription": "예배 시간을 캘린더에 추가하고, 켜 두면 캘린더의 일정이 예배 시간과 겹치는지 확인하는 데 캘린더 접근을 사용합니다. 캘린더 데이터는 기기에만 남습니다.",
+  "NSLocalNetworkUsageDescription": "예배 시간과 표시한 예배를 보내기 위해 로컬 네트워크의 TV에 연결합니다. 데이터는 암호화되어 두 기기 사이에서만 오갑니다.",
+  "NSAlarmKitUsageDescription": "“실제 알람”을 선택한 알림 단계는 알람으로 설정되어, 휴대전화가 무음이거나 집중 모드가 켜져 있어도 들립니다.",
+  "\"Vakti kıldım\"": "예배 드렸어요",
+  "\"Kıble\"": "예배 방향"
 }

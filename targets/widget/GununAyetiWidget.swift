@@ -540,18 +540,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.1"
     )
 
-    // ÇEVİRİ: ko
+    // ko
     static let ko = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "오늘의 구절",
+        galeriAciklama: "매일 새벽 예배 시간에 바뀌는 구절과 번역.",
+        etiket: "오늘의 구절",
+        uygulamayiAcin: "오늘의 구절을 보려면 앱을 여세요",
+        ornekSigmiyor: "오늘의 구절이 이 크기에 맞지 않습니다. 탭하여 읽으세요.",
+        ornekAcin: "열기",
+        ornekArapcaKaynagi: "아랍어: Tanzil",
+        ornekMeal: "실로 어려움과 함께 쉬움이 있노라.",
+        ornekKisaKunye: "꾸란 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.11"
     )
 
     // vi — meal `gununAyetiHavuzu.ts` 94:6 (vietnamese_rwwad) birebir, künye GUNUN_AYETI_KAYNAKLARI.mealler.vi

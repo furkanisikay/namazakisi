@@ -1262,31 +1262,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "เปิดแอป"
     )
 
-    // ÇEVİRİ: ko
+    // ko
     public static let ko = VakitMetinleri(
         dil: "ko",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "새벽", "ogle": "정오", "ikindi": "오후", "aksam": "저녁", "yatsi": "밤"],
+        gunes: "일출",
+        konumYok: "예배 시간을 계산할 수 있도록 앱을 열고 위치를 설정하세요.",
+        veriEski: "예배 시간이 오래되었습니다. 업데이트하려면 앱을 한 번 여세요.",
+        girisBugun: "{saat}에",
+        girisYarin: "내일 {saat}에",
+        suAnVakti: "지금은 {ad} 예배 시간입니다.",
+        suAnVaktiCikis: "지금은 {ad} 예배 시간이며, {saat}에 끝납니다.",
+        siradakiNamaz: "다음 예배는 {ad} 예배이며, {giris} 시작합니다.",
+        isaretlendi: "{ad} 예배를 완료로 표시했습니다. {dua}.",
+        zatenKilindi: "{ad} 예배는 이미 완료로 표시되어 있습니다.",
+        vakitYok: "지금 표시할 예배가 없습니다.",
+        vakitYokSiradaki: "지금 표시할 예배가 없습니다. 다음은 {ad} 예배이며, {giris} 시작합니다.",
+        onay: "{ad} 예배를 완료로 표시할까요?",
+        vakitDegisti: "예배 시간이 바뀌어 아무것도 표시하지 않았습니다. 다시 시도하세요.",
+        kabulDuasi: "하나님께서 받아주시길",
+        kildim: "예배 드렸어요",
+        kilindi: "예배 완료",
+        kontrolKildim: "{ad} · 예배 드렸어요",
+        kontrolKilindi: "{ad} 예배 완료",
+        kontrolVakitYok: "표시할 예배 없음",
+        uygulamayiAcin: "앱 열기"
     )
 
     // vi

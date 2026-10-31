@@ -374,11 +374,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "ไม่ ยังไม่ได้ทำเครื่องหมาย"
     )
 
-    // ÇEVİRİ: ko
+    // ko (CLDR yalnız other)
     static let ko = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["other": "{ad} 예배가 {n}분 뒤에 시작합니다."],
+        evetKilindi: "예, 완료로 표시되어 있습니다.",
+        hayirKilinmadi: "아니요, 아직 표시되지 않았습니다."
     )
 
     // vi (CLDR yalnız other; "one" anahtarı aynı kalıpla dolu)

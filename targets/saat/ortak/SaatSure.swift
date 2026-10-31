@@ -328,12 +328,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: ko
+    // ko (sayı–birim bitişik: "5분"; parçalar boşluklu: "1시간 5분"; CLDR yalnız other)
     public static let ko = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "시간", birimDk: "분", birimSn: "초",
+        saat: ["other": "{n}시간"],
+        dakika: ["other": "{n}분"],
+        saniye: ["other": "{n}초"],
         birimAyirici: "", parcaAyirici: " "
     )
 

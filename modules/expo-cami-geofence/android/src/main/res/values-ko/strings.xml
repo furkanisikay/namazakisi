@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ko — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="camigeofence_kanal_durum_ad">At the mosque</string>
-    <string name="camigeofence_kanal_durum_aciklama">A quiet notice when you\'re detected at a mosque</string>
-    <string name="camigeofence_kanal_soru_ad">After leaving the mosque</string>
-    <string name="camigeofence_kanal_soru_aciklama">A question so you can mark your prayer after you leave the mosque</string>
+    <string name="camigeofence_kanal_durum_ad">성원에 있어요</string>
+    <string name="camigeofence_kanal_durum_aciklama">성원에 있는 것이 감지되면 보내는 조용한 안내</string>
+    <string name="camigeofence_kanal_soru_ad">성원을 나온 뒤</string>
+    <string name="camigeofence_kanal_soru_aciklama">성원을 나온 뒤 예배를 표시할 수 있도록 묻는 질문</string>
 
-    <string name="camigeofence_govde_mod_sessiz">Prayer mode is on. Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_mod">Prayer mode is on.</string>
-    <string name="camigeofence_govde_sessiz">Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_normal">Reminders will arrive as usual.</string>
-    <string name="camigeofence_eylem_modu_kapat">Turn off mode</string>
-    <string name="camigeofence_eylem_cami_degil">Not a mosque</string>
+    <string name="camigeofence_govde_mod_sessiz">예배 모드가 켜져 있습니다. 알림은 조용히 옵니다.</string>
+    <string name="camigeofence_govde_mod">예배 모드가 켜져 있습니다.</string>
+    <string name="camigeofence_govde_sessiz">알림은 조용히 옵니다.</string>
+    <string name="camigeofence_govde_normal">알림은 평소대로 옵니다.</string>
+    <string name="camigeofence_eylem_modu_kapat">모드 끄기</string>
+    <string name="camigeofence_eylem_cami_degil">성원 아님</string>
 
-    <string name="camigeofence_soru_baslik">Are you at the mosque?</string>
-    <string name="camigeofence_soru_govde">You\'re near %1$s. We\'re not sure, so we\'re asking you.</string>
-    <string name="camigeofence_varsayilan_ad">Mosque</string>
-    <string name="camigeofence_eylem_namaz_modunu_ac">Turn on Prayer mode</string>
-    <string name="camigeofence_eylem_evet_camideyim">Yes, I\'m at the mosque</string>
-    <string name="camigeofence_eylem_hayir">No</string>
+    <string name="camigeofence_soru_baslik">성원에 있나요?</string>
+    <string name="camigeofence_soru_govde">%1$s 근처에 있습니다. 확실하지 않아 여쭤봅니다.</string>
+    <string name="camigeofence_varsayilan_ad">성원</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">예배 모드 켜기</string>
+    <string name="camigeofence_eylem_evet_camideyim">예, 성원에 있습니다</string>
+    <string name="camigeofence_eylem_hayir">아니요</string>
 
-    <string name="camigeofence_kildiniz_mi">Have you prayed %1$s?</string>
-    <string name="camigeofence_kildiniz_mi_govde">You can mark it with a single tap.</string>
-    <string name="camigeofence_eylem_kildim">I\'ve prayed</string>
-    <string name="camigeofence_namaz_imsak">Fajr</string>
-    <string name="camigeofence_namaz_ogle">Dhuhr</string>
-    <string name="camigeofence_namaz_ikindi">Asr</string>
-    <string name="camigeofence_namaz_aksam">Maghrib</string>
-    <string name="camigeofence_namaz_yatsi">Isha</string>
-    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+    <string name="camigeofence_kildiniz_mi">%1$s: 예배를 드렸나요?</string>
+    <string name="camigeofence_kildiniz_mi_govde">한 번의 탭으로 표시할 수 있습니다.</string>
+    <string name="camigeofence_eylem_kildim">예배 드렸어요</string>
+    <string name="camigeofence_namaz_imsak">새벽</string>
+    <string name="camigeofence_namaz_ogle">정오</string>
+    <string name="camigeofence_namaz_ikindi">오후</string>
+    <string name="camigeofence_namaz_aksam">저녁</string>
+    <string name="camigeofence_namaz_yatsi">밤</string>
+    <string name="camigeofence_namaz_cuma">금요예배</string>
 
-    <string name="camigeofence_mod_kural_adi">Prayer</string>
-    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı turns it on during the Jumu\'ah sermon, at the mosque or when a prayer time begins</string>
+    <string name="camigeofence_mod_kural_adi">예배</string>
+    <string name="camigeofence_mod_tetik_aciklama">금요예배 설교 중, 성원에 있을 때, 예배 시간이 시작될 때 Namaz Akışı가 켭니다</string>
 </resources>

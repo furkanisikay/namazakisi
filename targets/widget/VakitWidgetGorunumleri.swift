@@ -931,29 +931,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "ทำเครื่องหมายว่าละหมาดเวลาปัจจุบันแล้ว"
     )
 
-    // ÇEVİRİ: ko
+    // ko
     static let ko = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "예배 시간",
+        galeriAciklama: "현재 예배 시간, 종료까지 남은 시간, 오늘의 예배 시간.",
+        veriEski: "예배 시간을 업데이트하려면 앱을 여세요",
+        konumYok: "위치를 설정하려면 앱을 여세요",
+        kilindiSiradaki: "{ad} 예배 완료 · {sonraki} {saat}",
+        adCikis: "{ad} · {saat} 종료",
+        siradakiAdSaat: "다음 {ad} {saat}",
+        vaktiCikisErisim: "{ad} 예배 시간, {saat} 종료",
+        siradakiErisim: "다음 {ad}, {saat}",
+        cikisSaat: "{saat} 종료",
+        bitisSaat: "{saat} 종료",
+        kilindiBaslik: "{ad} 예배 완료",
+        siradaki: "다음",
+        siradakiAd: "다음 {ad}",
+        kildimErisim: "{ad} 예배 드렸어요",
+        gunSatiriKilindi: ", 예배 완료",
+        bitti: "종료됨",
+        vakitCikti: "예배 시간이 끝났습니다",
+        kabulAlt: "{ad} 예배 완료",
+        kontrolAdi: "예배 드렸어요",
+        kontrolAciklama: "현재 예배를 완료로 표시합니다."
     )
 
     // vi

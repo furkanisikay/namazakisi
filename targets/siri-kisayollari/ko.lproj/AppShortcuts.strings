@@ -1,18 +1,19 @@
-/* ÇEVİRİ: ko */
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
 // App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+// Korece: kullanicinin Siri'ye soyledigi komut (gunluk "~줘" kipi); uygulama adindan sonra
+// yalniz sese bagli olmayan ek ("에서").
 
 // NamazKisayollari.swift
-"${applicationName} sıradaki namaz ne zaman" = "When is the next prayer in ${applicationName}";
-"${applicationName} sıradaki namaz" = "${applicationName} next prayer";
-"${applicationName} ile sıradaki namazı söyle" = "Tell me the next prayer with ${applicationName}";
-"${applicationName} namaz vakti" = "${applicationName} prayer time";
-"${applicationName} şu anki vakti kıldım" = "I've prayed the current prayer in ${applicationName}";
-"${applicationName} namazımı kıldım" = "I've prayed in ${applicationName}";
-"${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
-"${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
-"${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
-"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
-"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";
+"${applicationName} sıradaki namaz ne zaman" = "${applicationName}에서 다음 예배는 언제야";
+"${applicationName} sıradaki namaz" = "${applicationName} 다음 예배";
+"${applicationName} ile sıradaki namazı söyle" = "${applicationName}에서 다음 예배 알려 줘";
+"${applicationName} namaz vakti" = "${applicationName} 예배 시간";
+"${applicationName} şu anki vakti kıldım" = "${applicationName}에서 지금 예배 드렸어요";
+"${applicationName} namazımı kıldım" = "${applicationName} 예배 드렸어요";
+"${applicationName} ile vakti kıldım olarak işaretle" = "${applicationName}에서 현재 예배를 완료로 표시해 줘";
+"${applicationName} kıbleyi aç" = "${applicationName}에서 예배 방향 열어 줘";
+"${applicationName} ile kıbleyi göster" = "${applicationName}에서 예배 방향 보여 줘";
+"${applicationName} günün ayeti görseli" = "${applicationName} 오늘의 구절 이미지";
+"${applicationName} ile günün ayeti görselini hazırla" = "${applicationName}에서 오늘의 구절 이미지 만들어 줘";
