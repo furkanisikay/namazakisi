@@ -158,8 +158,8 @@ enum NamazAlarmCekirdegi {
         "ff": "Dartinee",
         // yo
         "yo": "Dá a dúró",
-        // ÇEVİRİ: zh
-        "zh": "Stop",
+        // zh
+        "zh": "停止",
         // ÇEVİRİ: ta
         "ta": "Stop",
         // ÇEVİRİ: ml

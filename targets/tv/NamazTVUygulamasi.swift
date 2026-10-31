@@ -544,19 +544,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", ìrun tó kàn"
     )
 
-    // ÇEVİRİ: zh
+    // zh
     static let zh = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "选择您的城市",
+        ilMerkezi: "礼拜时间按省会中心计算。以后可以更改您的选择。",
+        ilSecErisim: "{il}，选择",
+        kalan: "距{ad}还有",
+        kalanErisim: "距{ad}还有: {sure}",
+        konumuDegistirin: "更改位置",
+        kerahatSuruyor: "禁止礼拜的时间: {tur}，{bitis}结束。{aciklama}",
+        siradakiKerahat: "下一个禁止礼拜的时间: {tur} {bas}–{bit}",
+        cumaBilgisi: "今天是主麻日。主麻在晌礼时间礼（{giris}开始）。",
+        suAnkiEk: "，当前礼拜",
+        siradakiEk: "，下一番礼拜"
     )
 
     // ÇEVİRİ: ta

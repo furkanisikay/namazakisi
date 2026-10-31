@@ -1,18 +1,17 @@
-/* ÇEVİRİ: zh */
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
 // App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
 
 // NamazKisayollari.swift
-"${applicationName} sıradaki namaz ne zaman" = "When is the next prayer in ${applicationName}";
-"${applicationName} sıradaki namaz" = "${applicationName} next prayer";
-"${applicationName} ile sıradaki namazı söyle" = "Tell me the next prayer with ${applicationName}";
-"${applicationName} namaz vakti" = "${applicationName} prayer time";
-"${applicationName} şu anki vakti kıldım" = "I've prayed the current prayer in ${applicationName}";
-"${applicationName} namazımı kıldım" = "I've prayed in ${applicationName}";
-"${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
-"${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
-"${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
-"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
-"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";
+"${applicationName} sıradaki namaz ne zaman" = "${applicationName}下一番礼拜是什么时候";
+"${applicationName} sıradaki namaz" = "${applicationName}下一番礼拜";
+"${applicationName} ile sıradaki namazı söyle" = "用${applicationName}告诉我下一番礼拜";
+"${applicationName} namaz vakti" = "${applicationName}礼拜时间";
+"${applicationName} şu anki vakti kıldım" = "在${applicationName}中我礼了当前的礼拜";
+"${applicationName} namazımı kıldım" = "在${applicationName}中我礼了";
+"${applicationName} ile vakti kıldım olarak işaretle" = "在${applicationName}中将当前礼拜标记为已礼拜";
+"${applicationName} kıbleyi aç" = "在${applicationName}中打开朝向";
+"${applicationName} ile kıbleyi göster" = "用${applicationName}显示礼拜朝向";
+"${applicationName} günün ayeti görseli" = "${applicationName}每日经文图片";
+"${applicationName} ile günün ayeti görselini hazırla" = "用${applicationName}制作每日经文图片";

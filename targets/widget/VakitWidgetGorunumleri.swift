@@ -831,29 +831,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Ó ń sàmì sí ìrun lọ́wọ́lọ́wọ́ pé a ti kí i."
     )
 
-    // ÇEVİRİ: zh
+    // zh
     static let zh = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "礼拜时间",
+        galeriAciklama: "当前礼拜时间、距其结束的剩余时间以及今天的礼拜时间。",
+        veriEski: "打开应用以更新礼拜时间",
+        konumYok: "打开应用以设置您的位置",
+        kilindiSiradaki: "{ad}已礼拜 · {sonraki} {saat}",
+        adCikis: "{ad} · {saat}结束",
+        siradakiAdSaat: "下一个 {ad} {saat}",
+        vaktiCikisErisim: "{ad}时间，{saat}结束",
+        siradakiErisim: "下一个{ad}，{saat}",
+        cikisSaat: "{saat}结束",
+        bitisSaat: "{saat}结束",
+        kilindiBaslik: "{ad}已礼拜",
+        siradaki: "下一个",
+        siradakiAd: "下一个 {ad}",
+        kildimErisim: "我礼了{ad}",
+        gunSatiriKilindi: "，已礼拜",
+        bitti: "已结束",
+        vakitCikti: "礼拜时间已结束",
+        kabulAlt: "{ad}已礼拜",
+        kontrolAdi: "我礼了",
+        kontrolAciklama: "将当前礼拜标记为已礼拜。"
     )
 
     // ÇEVİRİ: ta

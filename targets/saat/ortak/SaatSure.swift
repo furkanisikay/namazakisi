@@ -291,13 +291,13 @@ public struct SaatSureMetinleri: Equatable {
         saniye: ["one": "ìṣẹ́jú-àáyá {n}", "other": "ìṣẹ́jú-àáyá {n}"]
     )
 
-    // ÇEVİRİ: zh
+    // zh
     // Bosluksuz yazilir ("5分钟", "1小时5分钟"; JS `sure.birimli` / `sure.parcali`).
     public static let zh = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "小时", birimDk: "分钟", birimSn: "秒",
+        saat: ["other": "{n}小时"],
+        dakika: ["other": "{n}分钟"],
+        saniye: ["other": "{n}秒"],
         birimAyirici: "", parcaAyirici: ""
     )
 

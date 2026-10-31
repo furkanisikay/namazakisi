@@ -483,18 +483,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Abu Rahimah Mikael, QuranEnc 1.0.9"
     )
 
-    // ÇEVİRİ: zh
+    // zh
     static let zh = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "每日经文",
+        galeriAciklama: "一节经文及其译文，每天晨礼时更换。",
+        etiket: "每日经文",
+        uygulamayiAcin: "打开应用以查看每日经文",
+        ornekSigmiyor: "今天的经文放不下此尺寸。点按即可阅读。",
+        ornekAcin: "打开",
+        ornekArapcaKaynagi: "阿拉伯语: Tanzil",
+        ornekMeal: "与艰难相伴的，确是容易，",
+        ornekKisaKunye: "古兰经 94:6",
+        ornekMealKaynagi: "Muhammad Suleiman，QuranEnc 1.0.8"
     )
 
     // ÇEVİRİ: ta

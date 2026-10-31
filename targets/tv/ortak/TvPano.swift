@@ -518,18 +518,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: zh
+    // zh
     public static let zh = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "晨礼", "gunes": "日出", "ogle": "晌礼", "ikindi": "晡礼", "aksam": "昏礼", "yatsi": "宵礼"],
+        cuma: "主麻",
+        aylar: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+        gunler: ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+        tarih: "{yil}年{ay}{gun}日 {gunAdi}",
+        kerahatAdlari: ["suruk": "日出", "istiva": "正午", "gurub": "日落"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "太阳完全升起之前，礼拜属可憎（Makruh）。",
+            "istiva": "太阳正当中天时，礼拜属可憎（Makruh）。",
+            "gurub": "太阳落下时，礼拜属可憎（Makruh）。",
         ]
     )
 

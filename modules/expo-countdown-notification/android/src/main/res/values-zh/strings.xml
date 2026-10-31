@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: zh — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="countdown_kanal_canli_ad">Live countdowns</string>
-    <string name="countdown_kanal_canli_aciklama">Countdowns in the Now Bar and the status bar</string>
-    <string name="countdown_kanal_genel_ad">Countdown notifications</string>
-    <string name="countdown_kanal_genel_aciklama">Channel for countdown notifications</string>
+    <string name="countdown_kanal_canli_ad">实时倒计时</string>
+    <string name="countdown_kanal_canli_aciklama">Now Bar 和状态栏中的倒计时</string>
+    <string name="countdown_kanal_genel_ad">倒计时通知</string>
+    <string name="countdown_kanal_genel_aciklama">倒计时通知的渠道</string>
 
-    <string name="countdown_eylem_kildim">I\'ve prayed</string>
-    <string name="countdown_eylem_durdur">Stop</string>
+    <string name="countdown_eylem_kildim">我礼了</string>
+    <string name="countdown_eylem_durdur">停止</string>
 
-    <string name="countdown_yedek_vakit">Hurry, the prayer time is about to end.</string>
-    <string name="countdown_yedek_iftar">Time is running out.</string>
-    <string name="countdown_yedek_sahur">You can still eat and drink; the fast begins soon!</string>
-    <string name="countdown_yedek_seri">Today\'s prayers aren\'t complete; don\'t lose your streak.</string>
+    <string name="countdown_yedek_vakit">抓紧，礼拜时间即将结束。</string>
+    <string name="countdown_yedek_iftar">时间快到了。</string>
+    <string name="countdown_yedek_sahur">仍可饮食；即将开始封斋。</string>
+    <string name="countdown_yedek_seri">今天的礼拜尚未完成；别让连续记录中断。</string>
 
-    <string name="countdown_onek_vakit">Until the time ends</string>
-    <string name="countdown_onek_vakit_dar">Time is ending</string>
-    <string name="countdown_onek_iftar">Until iftar</string>
-    <string name="countdown_onek_iftar_dar">Until iftar</string>
-    <string name="countdown_onek_sahur">Until suhoor ends</string>
-    <string name="countdown_onek_sahur_dar">Suhoor is ending</string>
-    <string name="countdown_onek_seri">To save your streak</string>
-    <string name="countdown_onek_seri_dar">Streak is ending</string>
+    <string name="countdown_onek_vakit">距时间结束</string>
+    <string name="countdown_onek_vakit_dar">时间将尽</string>
+    <string name="countdown_onek_iftar">距开斋</string>
+    <string name="countdown_onek_iftar_dar">距开斋</string>
+    <string name="countdown_onek_sahur">距封斋结束</string>
+    <string name="countdown_onek_sahur_dar">封斋将尽</string>
+    <string name="countdown_onek_seri">保住连续记录</string>
+    <string name="countdown_onek_seri_dar">连续记录将尽</string>
 </resources>

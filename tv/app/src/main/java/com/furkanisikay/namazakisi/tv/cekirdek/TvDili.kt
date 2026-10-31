@@ -1591,54 +1591,55 @@ object TvDiliYo : TvDili {
     override val iftaraKalan = "Àkókò tó kù sí ìsinu"
 }
 
-// ÇEVİRİ: zh
+// zh
 // CLDR zh: yalnız other (JS `cogul.ts > hepDiger`); sayıdan sonra isim çekimlenmez.
+// Şablonlarda `${ad}` yazılır: Han harfi Kotlin'de tanımlayıcıya yapışır.
 object TvDiliZh : TvDili {
     override val kod = "zh"
     override fun vakitAdi(vakit: Vakit) = when (vakit) {
-        Vakit.IMSAK -> "Fajr"
-        Vakit.GUNES -> "Sunrise"
-        Vakit.OGLE -> "Dhuhr"
-        Vakit.IKINDI -> "Asr"
-        Vakit.AKSAM -> "Maghrib"
-        Vakit.YATSI -> "Isha"
+        Vakit.IMSAK -> "晨礼"
+        Vakit.GUNES -> "日出"
+        Vakit.OGLE -> "晌礼"
+        Vakit.IKINDI -> "晡礼"
+        Vakit.AKSAM -> "昏礼"
+        Vakit.YATSI -> "宵礼"
     }
-    override val cuma = "Jumu'ah"
+    override val cuma = "主麻"
     override val aylar = listOf(
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December",
+        "1月", "2月", "3月", "4月", "5月", "6月",
+        "7月", "8月", "9月", "10月", "11月", "12月",
     )
-    override val gunler = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $gun $ay $yil"
+    override val gunler = listOf("星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "${yil}年${ay}${gun}日 ${gunAdi}"
 
-    override val birimSa = "h"
-    override val birimDk = "min"
-    override val birimSn = "s"
+    override val birimSa = "小时"
+    override val birimDk = "分钟"
+    override val birimSn = "秒"
     // Boşluksuz yazılır ("5分钟", "1小时5分钟"; JS `sure.birimli` / `sure.parcali`).
     override val birimAyirici = ""
     override val parcaAyirici = ""
-    override fun saatSesli(n: Int) = "$n hours"
-    override fun dakikaSesli(n: Int) = "$n minutes"
-    override val birDakikadanAz = "less than 1 minute"
+    override fun saatSesli(n: Int) = "${n}小时"
+    override fun dakikaSesli(n: Int) = "${n}分钟"
+    override val birDakikadanAz = "不到1分钟"
 
     override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Sunrise"
-        Kerahat.Tur.ISTIVA -> "Zenith"
-        Kerahat.Tur.GURUB -> "Sunset"
+        Kerahat.Tur.SURUK -> "日出"
+        Kerahat.Tur.ISTIVA -> "正午"
+        Kerahat.Tur.GURUB -> "日落"
     }
 
     override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Praying is makruh until the sun has risen well."
-        Kerahat.Tur.ISTIVA -> "Praying is makruh while the sun is at its zenith."
-        Kerahat.Tur.GURUB -> "Praying is makruh while the sun is setting."
+        Kerahat.Tur.SURUK -> "太阳完全升起之前，礼拜属可憎（Makruh）。"
+        Kerahat.Tur.ISTIVA -> "太阳正当中天时，礼拜属可憎（Makruh）。"
+        Kerahat.Tur.GURUB -> "太阳落下时，礼拜属可憎（Makruh）。"
     }
 
-    override fun bant(ad: String, dk: Long) = "Time for $ad is running short · $dk min"
-    override val kabulDuasi = "May Allah accept it"
-    override val iftarSelami = "Blessed iftar"
-    override val cumaSelami = "Jumu'ah Mubarak"
-    override val sahuraKalan = "Time left for suhoor"
-    override val iftaraKalan = "Time left until iftar"
+    override fun bant(ad: String, dk: Long) = "${ad}时间紧迫 · ${dk}分钟"
+    override val kabulDuasi = "愿真主准承"
+    override val iftarSelami = "开斋吉庆"
+    override val cumaSelami = "主麻吉庆"
+    override val sahuraKalan = "封斋剩余时间"
+    override val iftaraKalan = "距开斋还有"
 }
 
 // ÇEVİRİ: ta

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: zh — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- Gerçek alarm (Basitleştirilmiş Çince). "我礼了" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">礼拜闹钟</string>
+  <string name="alarm_kildim">我礼了</string>
+  <string name="alarm_kapat">关闭</string>
+  <string name="alarm_kanal_aciklamasi">在您选择的提醒步骤响铃的真实闹钟</string>
 </resources>

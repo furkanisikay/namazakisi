@@ -1154,31 +1154,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Ṣí ìṣàfilọ́lẹ̀"
     )
 
-    // ÇEVİRİ: zh
+    // zh
     public static let zh = VakitMetinleri(
         dil: "zh",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "晨礼", "ogle": "晌礼", "ikindi": "晡礼", "aksam": "昏礼", "yatsi": "宵礼"],
+        gunes: "日出",
+        konumYok: "打开应用并设置您的位置，以便计算礼拜时间。",
+        veriEski: "礼拜时间已过期。打开一次应用进行更新。",
+        girisBugun: "于{saat}开始",
+        girisYarin: "于明天{saat}开始",
+        suAnVakti: "现在是{ad}时间。",
+        suAnVaktiCikis: "现在是{ad}时间；于{saat}结束。",
+        siradakiNamaz: "下一番礼拜是{ad}，{giris}。",
+        isaretlendi: "{ad}已标记为已礼拜。{dua}。",
+        zatenKilindi: "{ad}已经标记为已礼拜。",
+        vakitYok: "现在没有可标记的礼拜。",
+        vakitYokSiradaki: "现在没有可标记的礼拜。下一个是{ad}，{giris}。",
+        onay: "将{ad}标记为已礼拜吗？",
+        vakitDegisti: "礼拜时间已变化，因此没有标记任何内容。再试一次。",
+        kabulDuasi: "愿真主准承",
+        kildim: "我礼了",
+        kilindi: "已礼拜",
+        kontrolKildim: "{ad} · 我礼了",
+        kontrolKilindi: "{ad}已礼拜",
+        kontrolVakitYok: "没有可标记的礼拜",
+        uygulamayiAcin: "打开应用"
     )
 
     // ÇEVİRİ: ta

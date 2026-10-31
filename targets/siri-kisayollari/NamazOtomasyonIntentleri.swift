@@ -346,11 +346,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Bẹ́ẹ̀ kọ́, a kò tíì sàmì sí i."
     )
 
-    // ÇEVİRİ: zh
+    // zh
     static let zh = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["other": "{ad}将在{n}分钟后开始。"],
+        evetKilindi: "是，已标记为已礼拜。",
+        hayirKilinmadi: "否，尚未标记。"
     )
 
     // ÇEVİRİ: ta

@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: zh — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Tasker / MacroDroid / Automate eklentisi (İngilizce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Basitleştirilmiş Çince). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
 <resources>
-  <string name="otomasyon_eylem_etiket">Namaz Akışı: I\'ve prayed</string>
-  <string name="otomasyon_kosul_etiket">Namaz Akışı: Prayer time status</string>
-  <string name="otomasyon_olay_etiket">Namaz Akışı: Prayer time event</string>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: 我礼了</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: 礼拜时间状态</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: 礼拜时间事件</string>
 
-  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
-  <string name="otomasyon_bilgi_baslik">This setting is added from an automation app</string>
-  <string name="otomasyon_bilgi_tarayici">Browsers can\'t get permanent permission. Add it from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_bilgi_eklenti">Add it by choosing \"Namaz Akışı\" from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_engelli_baslik">%1$s is blocked</string>
-  <string name="otomasyon_engelli_mesaj">You blocked this app from marking your prayers before. You can allow it in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_baslik">Use with %1$s?</string>
-  <string name="otomasyon_izin_kosul">%1$s can learn when a prayer time begins, when it\'s ending and when you\'re at a mosque, and run your automations. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_kildim">%1$s can mark the current prayer as prayed with the automation you set up. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_ver">Allow</string>
-  <string name="otomasyon_engelle">Block</string>
-  <string name="otomasyon_vazgec">Cancel</string>
-  <string name="otomasyon_tamam">OK</string>
-  <string name="otomasyon_tur_baslik">When should it run?</string>
-  <string name="otomasyon_ileri">Next</string>
-  <string name="otomasyon_vakit_baslik">Which prayer?</string>
-  <string name="otomasyon_herhangi_vakit">Any prayer time</string>
-  <string name="otomasyon_kaydet">Save</string>
-  <string name="otomasyon_kosul_icinde">While it\'s a prayer time</string>
-  <string name="otomasyon_kosul_cikiyor">While a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_kosul_camide">While at a mosque</string>
-  <string name="otomasyon_olay_girdi">When a prayer time begins</string>
-  <string name="otomasyon_olay_cikiyor">When a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_olay_camide">When you\'re detected at a mosque</string>
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz" (您). -->
+  <string name="otomasyon_bilgi_baslik">此设置需从自动化应用中添加</string>
+  <string name="otomasyon_bilgi_tarayici">浏览器无法获得永久权限。从 Tasker、MacroDroid 或 Automate 等应用的插件列表中添加。</string>
+  <string name="otomasyon_bilgi_eklenti">从 Tasker、MacroDroid 或 Automate 等应用的插件列表中选择“Namaz Akışı”来添加。</string>
+  <string name="otomasyon_engelli_baslik">%1$s 已被阻止</string>
+  <string name="otomasyon_engelli_mesaj">您之前阻止了此应用标记您的礼拜。可以在 Namaz Akışı 的 设置 &gt; “可标记“我礼了”的应用” 中允许。</string>
+  <string name="otomasyon_izin_baslik">与 %1$s 一起使用吗？</string>
+  <string name="otomasyon_izin_kosul">%1$s 可以知道礼拜时间何时开始、何时即将结束以及您何时在清真寺，并运行您的自动化。可以在 Namaz Akışı 的 设置 &gt; “可标记“我礼了”的应用” 中更改您的决定。</string>
+  <string name="otomasyon_izin_kildim">%1$s 可以通过您设置的自动化将当前礼拜标记为已礼拜。可以在 Namaz Akışı 的 设置 &gt; “可标记“我礼了”的应用” 中更改您的决定。</string>
+  <string name="otomasyon_izin_ver">允许</string>
+  <string name="otomasyon_engelle">阻止</string>
+  <string name="otomasyon_vazgec">取消</string>
+  <string name="otomasyon_tamam">好</string>
+  <string name="otomasyon_tur_baslik">应在何时运行？</string>
+  <string name="otomasyon_ileri">下一步</string>
+  <string name="otomasyon_vakit_baslik">哪番礼拜？</string>
+  <string name="otomasyon_herhangi_vakit">任一礼拜时间</string>
+  <string name="otomasyon_kaydet">保存</string>
+  <string name="otomasyon_kosul_icinde">处于礼拜时间内时</string>
+  <string name="otomasyon_kosul_cikiyor">礼拜时间即将结束时（剩%1$d分钟，礼拜守护开启）</string>
+  <string name="otomasyon_kosul_camide">在清真寺时</string>
+  <string name="otomasyon_olay_girdi">礼拜时间开始时</string>
+  <string name="otomasyon_olay_cikiyor">礼拜时间即将结束时（剩%1$d分钟，礼拜守护开启）</string>
+  <string name="otomasyon_olay_camide">检测到您在清真寺时</string>
 </resources>
