@@ -499,7 +499,9 @@ private fun VakitListesi(durum: PanoDurumu, simdi: Long, bolge: ZoneId, azalt: B
                     autoSize = TextAutoSize.StepBased(minFontSize = 20.sp, maxFontSize = 32.sp),
                     modifier = Modifier.weight(1f),
                 )
-                Spacer(Modifier.width(16.dp))
+                // Ad ile saat arası en az 28 dp: kalın uzun ad ("Mặt trời mọc") sütunu doldurunca
+                // 16 dp'de saate bitişik görünüyordu; ad autoSize ile bu payı bırakarak küçülür.
+                Spacer(Modifier.width(28.dp))
                 // "şimdi" çipi BİLİNÇLİ YOK: dar sütunda "Akşam"ı "Akşa…"ya kesiyordu (kare
                 // turunda görüldü); dolu yeşil zemin + soldaki geri sayım anlamı zaten taşıyor.
                 Text(

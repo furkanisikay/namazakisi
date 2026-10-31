@@ -29,6 +29,12 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.foundation.layout.widthIn
+import com.furkanisikay.namazakisi.saat.cekirdek.Sigdirma
 import androidx.wear.compose.material3.AlertDialog
 import androidx.wear.compose.material3.AlertDialogDefaults
 import androidx.wear.compose.material3.AppScaffold
@@ -194,6 +200,7 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
             vurus.animateTo(1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium))
         }
     }
+    val halkaIci = rememberHalkaIci()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -212,16 +219,21 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
                 overflow = TextOverflow.Ellipsis,
             )
         } else {
-            // Zikir adı sütunun TEPESİNDE durur; orada dairenin kirişi sütundan dardır →
-            // ad sütunun %82'sine sığdırılır ("Sübhânallah" kare ekranda halkaya değiyordu,
-            // "Elhamdülillâh" daha uzun). Sığmazsa küçülür, kesilmez.
+            // Zikir adı sütunun TEPESİNDE durur; orada dairenin kirişi sütundan dardır. Genişlik
+            // adın EKRANDAKİ dikey konumundan hesaplanır (halkanın o yükseklikteki kirişi): göz
+            // kararı oranlar (%82 / %48) Latin glif boyuna göreydi, Tamilce/Malayalamca ad yuvarlakta
+            // yaya değiyor, karede "சுப்ஹானல்…" diye kesiliyordu. Konum bilinene dek (ilk kare)
+            // eski oran. Sığmazsa küçülür, kesilmez.
+            val adAraligi = remember { mutableStateOf<Pair<Float, Float>?>(null) }
+            val adSiniri = adAraligi.value?.let { (ust, alt) -> halkaIci(ust, alt) }
             SigdirilanMetin(
                 durum.faz.ad(dil),
                 enFazla = sinirliBoyut(0.072f),
                 renk = renk(SaatPaleti.METIN),
-                modifier = Modifier.fillMaxWidth(
-                    if (LocalConfiguration.current.isScreenRound) ZIKIR_ADI_ORANI else ZIKIR_ADI_KARE_ORANI,
-                ),
+                modifier = (
+                    if (adSiniri != null) Modifier.widthIn(max = adSiniri).fillMaxWidth()
+                    else Modifier.fillMaxWidth(if (LocalConfiguration.current.isScreenRound) ZIKIR_ADI_ORANI else ZIKIR_ADI_KARE_ORANI)
+                    ).dikeyAraligiIzle(adAraligi),
             )
             Text(
                 yerelRakam(durum.fazSayisi.toString()),
@@ -245,15 +257,70 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
         )
         Spacer(Modifier.height(4.dp))
         val geriAlAciklama = stringResource(R.string.tesbihat_geri_al_aciklama)
-        CompactButton(
-            onClick = onGeriAl,
-            enabled = durum.toplam > 0,
-            colors = ButtonDefaults.filledTonalButtonColors(),
-            modifier = Modifier.semantics { contentDescription = geriAlAciklama },
-            label = { Text(stringResource(R.string.tesbihat_geri_al), maxLines = 1, overflow = TextOverflow.Ellipsis) },
-        )
+        // Etiket kesilmez, sığmazsa küçülür (Malayalamca "പഴയപടിയാ…" kesiliyordu); genişlik
+        // sütun ile halkanın düğme hizasındaki kirişinin darıdır (kare saatte düğme alt yaya
+        // değiyordu). Genişlik düğmenin DIŞINDA ölçülür (`TamamIcerigi` notu: etikete
+        // BoxWithConstraints konursa CompactButton iç ölçümde çöker).
+        val dugmeAraligi = remember { mutableStateOf<Pair<Float, Float>?>(null) }
+        val yogunluk = LocalDensity.current
+        BoxWithConstraints(Modifier.fillMaxWidth().dikeyAraligiIzle(dugmeAraligi), contentAlignment = Alignment.Center) {
+            val kiris = dugmeAraligi.value?.let { (ust, alt) ->
+                // Görünen hap 32 dp, dokunma kutusu 48 dp: kiriş hapın kenarında alınır.
+                val orta = (ust + alt) / 2f
+                val yari = with(yogunluk) { (DUGME_GORUNEN_BOY / 2).toPx() }
+                // Alt sınır: konum ölçümü beklenmedikse (düğme halkanın dışında) etiket yok olmasın.
+                with(yogunluk) { halkaIci(orta - yari, orta + yari).roundToPx() }.coerceAtLeast(constraints.maxWidth / 2)
+            }
+            val etiketGenisligi = minOf(constraints.maxWidth, kiris ?: constraints.maxWidth) -
+                with(yogunluk) { DUGME_YATAY_PAYI.roundToPx() }
+            CompactButton(
+                onClick = onGeriAl,
+                enabled = durum.toplam > 0,
+                colors = ButtonDefaults.filledTonalButtonColors(),
+                modifier = Modifier.semantics { contentDescription = geriAlAciklama },
+                label = {
+                    val stil = LocalTextStyle.current
+                    val yazi = stringResource(R.string.tesbihat_geri_al)
+                    val olcer = rememberTextMeasurer()
+                    val boy = remember(yazi, etiketGenisligi, stil) {
+                        sigdirilanBoy(olcer, yazi, etiketGenisligi, stil.fontSize, stil, stil.fontWeight ?: FontWeight.Medium)
+                    }
+                    Text(yazi, style = stil, fontSize = boy, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis)
+                },
+            )
+        }
     }
 }
+
+/**
+ * Tesbihat halkasının İÇİNDE, pencerede dikey [ust]..[alt] px aralığını kaplayan satırın
+ * halkaya değmeden alabileceği genişlik (dp). Halka kare saatte de dairedir.
+ */
+@Composable
+private fun rememberHalkaIci(): (Float, Float) -> Dp {
+    val konf = LocalConfiguration.current
+    val y = LocalDensity.current
+    return remember(konf.screenWidthDp, konf.screenHeightDp, y) {
+        val en = konf.screenWidthDp * y.density
+        val boy = konf.screenHeightDp * y.density
+        val r = with(y) { Sigdirma.halkaIcYaricapi(min(en, boy), HALKA_KALINLIGI.toPx(), HALKA_KENAR_PAYI.toPx()) }
+        val pay = with(y) { HALKA_METIN_PAYI.toPx() }
+        val hesap: (Float, Float) -> Dp = { ust, alt -> with(y) { Sigdirma.guvenliGenislik(r, boy / 2f, ust, alt, pay).toDp() } }
+        hesap
+    }
+}
+
+/**
+ * Öğenin penceredeki dikey aralığını (üst, alt px) [durum]'a yazar; 2 px'ten küçük oynama
+ * yazılmaz (genişlik → boy → konum geri beslemesi salınmasın).
+ */
+private fun Modifier.dikeyAraligiIzle(durum: androidx.compose.runtime.MutableState<Pair<Float, Float>?>): Modifier =
+    onGloballyPositioned { c ->
+        val ust = c.positionInWindow().y
+        val alt = ust + c.size.height
+        val o = durum.value
+        if (o == null || kotlin.math.abs(o.first - ust) > 2f || kotlin.math.abs(o.second - alt) > 2f) durum.value = ust to alt
+    }
 
 /**
  * Bitiş ekranı: ortada onay işareti çizilir (300 ms) ve dışına bir halka bir kez yayılıp
@@ -309,14 +376,20 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
         }
         Spacer(Modifier.height(2.dp))
         // Tesbihat bitince dua (sahip isteği: "Tamamlandı" yerine "Allah kabul etsin"). Dua
-        // KESİLMEZ, sığmazsa küçülür (Almanca "Möge Allah es annehmen" "…" ile kesiliyordu).
+        // KESİLMEZ, sığmazsa küçülür (Almanca "Möge Allah es annehmen" "…" ile kesiliyordu);
+        // okunmaz boya inmeden önce İKİ satıra sarılır (Tamilce "அல்லாஹ் ஏற்றுக்கொள்வா…"
+        // tek satırda 0,6× tabanda bile kesiliyordu).
         val dil = stringResource(R.string.dil_kodu)
+        val duaBoyu = sinirliBoyut(0.075f)
         SigdirilanMetin(
             AnaEkranKarari.kabulDuasi(dil),
-            enFazla = sinirliBoyut(0.075f),
+            enFazla = duaBoyu,
             renk = renk(SaatPaleti.METIN),
             agirlik = FontWeight.SemiBold,
             modifier = Modifier.fillMaxWidth(),
+            enCokSatir = 2,
+            tekSatirTabani = (duaBoyu.value * 0.85f).sp,
+            enAz = (duaBoyu.value * 0.7f).sp,
         )
         // Künye dile göre ("Riwayat Muslim, Masajid 146" Türkçeden uzun): kesilmez, küçülür.
         SigdirilanMetin(
@@ -368,15 +441,28 @@ private const val VURUS_OLCEGI = 1.12f
 /** Halka ekran kare olsa da dairedir → kare ekranda da dairenin iç karesi (≈ %71) güvenli. */
 private const val HALKA_ICI_KARE_ORANI = 0.70f
 
-/** Zikir adının güvenli sütundaki payı (sütunun tepesinde daire daralır). */
+/**
+ * Zikir adının sütundaki payı YALNIZ İLK KARE YEDEĞİDİR (adın ekrandaki konumu ölçülene dek);
+ * asıl genişlik halkanın kirişinden hesaplanır (`rememberHalkaIci`).
+ */
 private const val ZIKIR_ADI_ORANI = 0.82f
 
-/** Kare saatte halka kenara yakın çizilir: tepedeki kiriş ≈ ekranın %34-40.ı (kare koşusunda ölçüldü; 0,58 hâlâ yaya değiyordu). */
+/** Kare saat için ilk kare yedeği (bkz. [ZIKIR_ADI_ORANI]). */
 private const val ZIKIR_ADI_KARE_ORANI = 0.48f
 private const val BITIS_TIK_MS = 300
 
 /** CompactButton'ın etiket dışı yatay payı (iki yan iç boşluk; kitaplık ~12 dp/yan, güvenli tarafta). */
 private val DUGME_YATAY_PAYI = 32.dp
+
+/** CompactButton'ın görünen hap yüksekliği (dokunma kutusu 48 dp). */
+private val DUGME_GORUNEN_BOY = 32.dp
+
+/** Tesbihat halkası: çizgi kalınlığı ve ekran kenarından payı (çizim + metin genişliği hesabı). */
+private val HALKA_KALINLIGI = 6.dp
+private val HALKA_KENAR_PAYI = 5.dp
+
+/** Halkanın iç kenarı ile metin arasında her yanda bırakılan boşluk. */
+private val HALKA_METIN_PAYI = 4.dp
 private const val BITIS_HALKA_MS = 520
 
 /** Üç yayın her biri 300°'lik çerçevede (ana ekran yayıyla aynı; tepe sistem saatine). */
@@ -429,8 +515,9 @@ private fun TesbihatHalkasi(durum: Tesbihat.Durum) {
     val iz = renk(SaatPaleti.IZ)
     val dolu = renk(SaatPaleti.EYLEM)
     Canvas(Modifier.fillMaxSize().clearAndSetSemantics { }) {
-        val k = 6.dp.toPx()
-        val pay = 5.dp.toPx() + k * 2.2f
+        // Geometri `Sigdirma.halkaIcYaricapi` ile AYNI (metin genişliği bu halkaya göre hesaplanır).
+        val k = HALKA_KALINLIGI.toPx()
+        val pay = HALKA_KENAR_PAYI.toPx() + k * 2.2f
         val cap = min(size.width, size.height) - pay * 2
         if (cap <= 0f) return@Canvas
         val solUst = Offset((size.width - cap) / 2, (size.height - cap) / 2)

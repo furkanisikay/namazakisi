@@ -57,6 +57,8 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import com.furkanisikay.namazakisi.tv.cekirdek.Sigdirma
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Border
@@ -181,7 +183,10 @@ fun KodGirisEkrani(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+            // Başlık bloğu esner (yazı küçülür); kutular ve alttaki yardım/hata metni önce ölçülür
+            // ve TAM çizilir: uzun dilde hata metninin 3. satırı ekranın altında yarım kalıyordu.
             AnimatedContent(
+                modifier = Modifier.weight(1f, fill = false),
                 targetState = gelen,
                 transitionSpec = {
                     (fadeIn(tween(320, delayMillis = 140)) + slideInVertically(tween(320, delayMillis = 140)) { it / 6 })
@@ -189,22 +194,24 @@ fun KodGirisEkrani(
                 },
                 label = "kodBaslik",
             ) { il ->
-                Column {
-                    if (il == null) {
-                        Text(stringResource(R.string.kod_baslik), color = Renkler.metin, fontSize = 36.sp, lineHeight = 44.sp, fontWeight = FontWeight.SemiBold)
-                        Spacer(Modifier.height(10.dp))
-                        Text(
-                            stringResource(R.string.kod_yol),
-                            color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
-                        )
-                    } else {
-                        Text(stringResource(R.string.konumunuz_geldi), color = Renkler.metinIkincil, fontSize = 30.sp)
-                        Spacer(Modifier.height(8.dp))
-                        Text(il.ad, color = Renkler.metin, fontSize = 60.sp, fontWeight = FontWeight.SemiBold)
+                YaziyiSigdir {
+                    Column {
+                        if (il == null) {
+                            Text(stringResource(R.string.kod_baslik), color = Renkler.metin, fontSize = 36.sp, lineHeight = 44.sp, fontWeight = FontWeight.SemiBold)
+                            Spacer(Modifier.height(10.dp))
+                            Text(
+                                stringResource(R.string.kod_yol),
+                                color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
+                            )
+                        } else {
+                            Text(stringResource(R.string.konumunuz_geldi), color = Renkler.metinIkincil, fontSize = 30.sp)
+                            Spacer(Modifier.height(8.dp))
+                            Text(il.ad, color = Renkler.metin, fontSize = 60.sp, fontWeight = FontWeight.SemiBold)
+                        }
                     }
                 }
             }
-            Spacer(Modifier.height(40.dp))
+            Spacer(Modifier.height(32.dp))
 
             // Kutular → katlanınca iğne.
             Box(Modifier.fillMaxWidth().height(150.dp), contentAlignment = Alignment.Center) {
@@ -293,6 +300,20 @@ private fun TusTakimi(
     onVazgec: () -> Unit,
 ) {
     val satirlar = listOf("123", "456", "789")
+    val silEtiketi = stringResource(R.string.kod_sil)
+    val geriEtiketi = stringResource(R.string.kod_geri)
+    // "Sil" ve "Geri" ORTAK boyda: her tuş kendi başına küçülünce uzun dilde ("பின்செல்")
+    // biri ötekinden belirgin küçük kalıyordu. İkisinin de sığdığı en büyük boy, ikisine birden.
+    val olcer = rememberTextMeasurer()
+    val etiketGenisligi = with(LocalDensity.current) { (TUS_EN - 2 * TUS_ETIKET_PAYI).dp.roundToPx() }
+    val kucukBoy = remember(silEtiketi, geriEtiketi, etiketGenisligi) {
+        Sigdirma.enBuyukSiganBoy(KUCUK_TUS_BOYU, KUCUK_TUS_EN_AZ) { b ->
+            listOf(silEtiketi, geriEtiketi).all {
+                olcer.measure(it, TextStyle(fontSize = b.sp, fontWeight = FontWeight.SemiBold), maxLines = 1, softWrap = false)
+                    .size.width <= etiketGenisligi
+            }
+        }
+    }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         for ((si, satir) in satirlar.withIndex()) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -302,26 +323,33 @@ private fun TusTakimi(
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Tus(stringResource(R.string.kod_sil), stringResource(R.string.kod_sil_aciklama), onSil, Modifier, kucuk = true, etkin = silinebilir)
+            Tus(silEtiketi, stringResource(R.string.kod_sil_aciklama), onSil, Modifier, boy = kucukBoy, etkin = silinebilir)
             Tus("0", "0", { onRakam('0') }, Modifier)
-            Tus(stringResource(R.string.kod_geri), stringResource(R.string.vazgecin), onVazgec, Modifier, kucuk = true)
+            Tus(geriEtiketi, stringResource(R.string.vazgecin), onVazgec, Modifier, boy = kucukBoy)
         }
     }
 }
 
+private const val TUS_EN = 88
+private const val TUS_ETIKET_PAYI = 6
+private const val RAKAM_TUS_BOYU = 34f
+private const val KUCUK_TUS_BOYU = 24f
+private const val KUCUK_TUS_EN_AZ = 14f
+
+/** [boy]: etiketin sp boyu; rakam tuşları [RAKAM_TUS_BOYU], Sil/Geri ortak hesaplanmış boy. */
 @Composable
 private fun Tus(
     etiket: String,
     erisim: String,
     onClick: () -> Unit,
     modifier: Modifier,
-    kucuk: Boolean = false,
+    boy: Float = RAKAM_TUS_BOYU,
     etkin: Boolean = true,
 ) {
     Surface(
         onClick = onClick,
         enabled = etkin,
-        modifier = modifier.size(88.dp, 72.dp).semantics { contentDescription = erisim },
+        modifier = modifier.size(TUS_EN.dp, 72.dp).semantics { contentDescription = erisim },
         shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(16.dp)),
         colors = ClickableSurfaceDefaults.colors(
             containerColor = Renkler.kart,
@@ -335,15 +363,17 @@ private fun Tus(
         scale = ClickableSurfaceDefaults.scale(focusedScale = 1.08f),
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            // Uzun dilde ("Löschen", "Удалить") etiket tek satırda kalır, yazı küçülür.
+            // Uzun dilde ("Löschen", "Удалить") etiket tek satırda kalır, yazı küçülür. Sil/Geri
+            // boyu zaten ikisine sığan ortak boydur; autoSize yalnız en küçük boyda da
+            // sığmayan (aşırı uzun) etiketin son güvencesi.
             val renk = LocalContentColor.current
             BasicText(
                 etiket,
-                style = TextStyle(fontSize = if (kucuk) 24.sp else 34.sp, fontWeight = FontWeight.SemiBold),
+                style = TextStyle(fontSize = boy.sp, fontWeight = FontWeight.SemiBold),
                 color = { renk },
                 maxLines = 1,
-                autoSize = TextAutoSize.StepBased(minFontSize = 14.sp, maxFontSize = if (kucuk) 24.sp else 34.sp),
-                modifier = Modifier.padding(horizontal = 6.dp),
+                autoSize = TextAutoSize.StepBased(minFontSize = minOf(KUCUK_TUS_EN_AZ, boy).sp, maxFontSize = boy.sp),
+                modifier = Modifier.padding(horizontal = TUS_ETIKET_PAYI.dp),
             )
         }
     }

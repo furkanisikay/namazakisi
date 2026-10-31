@@ -3,6 +3,7 @@ package com.furkanisikay.namazakisi.tv.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.em
 import androidx.tv.material3.MaterialTheme
@@ -38,8 +39,18 @@ object Renkler {
  * iki satıra kırılınca satırlar 24 sp arayla üst üste biniyordu (Ge'ez, Yoruba ton işaretleri;
  * 2026-10-30). Satır yüksekliği yazı boyuna göre (`em`) ve `Mode.Minimum`: yazı tipinin kendi
  * satır boyu daha büyükse o kullanılır. Tek satırlık metin değişmez (`Trim.Both`).
+ *
+ * Satır kırılması ifade birimiyle (`WordBreak.Phrase`, platformda `lineBreakWordStyle=phrase`,
+ * API 33+; altında yok sayılır): Korecede satır hece ortasından ("네트/워크", "있/습니다")
+ * kırılıyordu (2026-10-31 kare denetimi). Boşluklu Latin metinde etkisi yoktur. Tayca
+ * ("เครือ/ข่าย") ICU sözlük kırılmasıdır, phrase onu kapsamaz.
  */
 private fun TextStyle.satirGuvenli() = copy(
+    lineBreak = LineBreak(
+        strategy = LineBreak.Strategy.Simple,
+        strictness = LineBreak.Strictness.Normal,
+        wordBreak = LineBreak.WordBreak.Phrase,
+    ),
     lineHeight = 1.3.em,
     lineHeightStyle = LineHeightStyle(
         alignment = LineHeightStyle.Alignment.Proportional,

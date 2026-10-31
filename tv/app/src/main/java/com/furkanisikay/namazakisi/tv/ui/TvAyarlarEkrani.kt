@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -32,7 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -72,13 +76,29 @@ fun TvAyarlarEkrani(
         // (Amharca, Yoruba) başlık ve bilgi kartı satır kırdıkça kart ekranın altından kesiliyordu.
         Row(Modifier.fillMaxSize().padding(horizontal = 56.dp, vertical = 32.dp), horizontalArrangement = Arrangement.spacedBy(40.dp)) {
             Column(Modifier.weight(1f)) {
-                Text(stringResource(R.string.ayarlar), color = Renkler.metin, fontSize = 48.sp, fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    if (konumAdi != null) stringResource(R.string.ayar_konum, konumAdi) else stringResource(R.string.ayar_konum_yok),
-                    color = Renkler.metinIkincil, fontSize = 26.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                )
-                Spacer(Modifier.height(40.dp))
+                // Başlık bloğu esner, düğmeler önce ölçülür (tam boy): uzun dilde üç düğme iki-üç
+                // satıra çıkınca sonuncusu ekranın altından kesiliyordu (Tamilce, Malayalamca).
+                YaziyiSigdir(Modifier.weight(1f, fill = false)) {
+                    Column {
+                        // Tek sözcüklük başlık TEK satır, sığmazsa küçülür: dar sütunda sözcüğün
+                        // ortasından kırılıyordu ("அமைப்புக / ள்", "ക്രമീകരണ / ങ്ങൾ").
+                        BasicText(
+                            stringResource(R.string.ayarlar),
+                            style = TextStyle(fontSize = 48.sp, fontWeight = FontWeight.SemiBold),
+                            color = { Renkler.metin },
+                            maxLines = 1,
+                            autoSize = TextAutoSize.StepBased(minFontSize = 26.sp, maxFontSize = 48.sp, stepSize = 2.sp),
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        // Konum iki satıra kadar ("Kadıköy, İstanbul" Tamilce önekle kesiliyordu).
+                        Text(
+                            if (konumAdi != null) stringResource(R.string.ayar_konum, konumAdi) else stringResource(R.string.ayar_konum_yok),
+                            color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 34.sp,
+                            maxLines = 2, overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+                Spacer(Modifier.height(32.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(18.dp)) {
                     EslemeDugmesi(
                         stringResource(R.string.ayar_telefon_ekleyin),
@@ -220,19 +240,24 @@ private fun KaldirOnayi(ad: String, onEvet: () -> Unit, onHayir: () -> Unit) {
         } catch (_: IllegalStateException) {
         }
     }
-    Box(Modifier.fillMaxSize().background(Renkler.arkaplan.copy(alpha = 0.96f)), contentAlignment = Alignment.Center) {
-        Column(Modifier.width(760.dp).background(Renkler.kart, RoundedCornerShape(36.dp)).padding(horizontal = 56.dp, vertical = 48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(stringResource(R.string.kaldir_soru, ad), color = Renkler.metin, fontSize = 40.sp, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(12.dp))
-            Text(
-                stringResource(R.string.kaldir_aciklama),
-                color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
-            )
-            Spacer(Modifier.height(40.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(28.dp)) {
-                EslemeDugmesi(stringResource(R.string.vazgecin), onHayir, Modifier.focusRequester(odak), buyuk = true)
-                EslemeDugmesi(stringResource(R.string.kaldirin), onEvet, buyuk = true)
+    PencereKarti {
+        YaziyiSigdir(Modifier.weight(1f, fill = false), enKucukOlcek = 0.6f) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    stringResource(R.string.kaldir_soru, ad),
+                    color = Renkler.metin, fontSize = 40.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    stringResource(R.string.kaldir_aciklama),
+                    color = Renkler.metinIkincil, fontSize = 26.sp, lineHeight = 36.sp,
+                )
             }
+        }
+        Spacer(Modifier.height(36.dp))
+        PencereDugmeleri {
+            EslemeDugmesi(stringResource(R.string.vazgecin), onHayir, Modifier.focusRequester(odak), buyuk = true)
+            EslemeDugmesi(stringResource(R.string.kaldirin), onEvet, buyuk = true)
         }
     }
 }

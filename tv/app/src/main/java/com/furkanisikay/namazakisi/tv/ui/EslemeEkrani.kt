@@ -18,6 +18,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -182,11 +184,21 @@ fun EslemeEkrani(
                     },
                     label = "baslik",
                 ) { il ->
-                    if (il == null) SolMetin(asama, cihazAdi) else GeldiMetni(il, cihazAdi)
+                    // Uzun dilde blok yarıdan kesilmez, yazı küçülür (Tamilce alt başlığın 2.
+                    // satırı düğmelerin altında yarım kalıyor, adımlar hiç görünmüyordu).
+                    YaziyiSigdir {
+                        if (il == null) SolMetin(asama, cihazAdi) else GeldiMetni(il, cihazAdi)
+                    }
                 }
                 Spacer(Modifier.height(20.dp))
                 if (gelen == null && asama == Asama.QR) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    // FlowRow: sığmayan düğme ALT SATIRA iner. Row'da ikinci düğme yalnız artan
+                    // genişliği alıyor, uzun etiket ("Şehri kendim seçeyim", Tamilce/Malayalamca)
+                    // hece hece dikey kırılıp sütunu dolduruyordu.
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
                         EslemeDugmesi(
                             stringResource(R.string.kodla_girin),
                             onKodla,
@@ -285,30 +297,62 @@ private fun OnayDiyalogu(cihazAdi: String, onEvet: () -> Unit, onHayir: () -> Un
         } catch (_: IllegalStateException) {
         }
     }
-    Box(Modifier.fillMaxSize().background(Renkler.arkaplan.copy(alpha = 0.96f)), contentAlignment = Alignment.Center) {
-        Column(
-            Modifier.width(780.dp).background(Renkler.kart, RoundedCornerShape(36.dp)).padding(horizontal = 56.dp, vertical = 48.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Box(Modifier.size(104.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
-                TelefonSimgesi(Renkler.birincil, Modifier.size(56.dp))
-            }
-            Spacer(Modifier.height(20.dp))
-            Text(stringResource(R.string.esleme_onay_soru), color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(16.dp))
-            Text(cihazAdi, color = Renkler.birincil, fontSize = 36.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
-            Spacer(Modifier.height(16.dp))
-            Text(
-                stringResource(R.string.esleme_onay_aciklama),
-                color = Renkler.metinIkincil, fontSize = 26.sp, textAlign = TextAlign.Center, lineHeight = 36.sp,
-            )
-            Spacer(Modifier.height(40.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(28.dp)) {
-                EslemeDugmesi(stringResource(R.string.ekleyin), onEvet, Modifier.focusRequester(odak), birincil = true, buyuk = true)
-                EslemeDugmesi(stringResource(R.string.hayir), onHayir, buyuk = true)
+    PencereKarti {
+        // Metin bloğu esner, düğmeler ASLA: pencere ekrandan uzun olunca Column son çocuğu
+        // 0 yükseklikle ölçüyordu → Tamilce/Malayalamcada düğmeler metinsiz boş çubuktu.
+        YaziyiSigdir(Modifier.weight(1f, fill = false), enKucukOlcek = 0.6f) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(Modifier.size(88.dp).background(Renkler.birincil.copy(alpha = 0.16f), CircleShape), contentAlignment = Alignment.Center) {
+                    TelefonSimgesi(Renkler.birincil, Modifier.size(48.dp))
+                }
+                Spacer(Modifier.height(18.dp))
+                Text(
+                    stringResource(R.string.esleme_onay_soru),
+                    color = Renkler.metin, fontSize = 44.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(14.dp))
+                Text(cihazAdi, color = Renkler.birincil, fontSize = 36.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
+                Spacer(Modifier.height(14.dp))
+                Text(
+                    stringResource(R.string.esleme_onay_aciklama),
+                    color = Renkler.metinIkincil, fontSize = 26.sp, textAlign = TextAlign.Center, lineHeight = 36.sp,
+                )
             }
         }
+        Spacer(Modifier.height(32.dp))
+        PencereDugmeleri {
+            EslemeDugmesi(stringResource(R.string.ekleyin), onEvet, Modifier.focusRequester(odak), birincil = true, buyuk = true)
+            EslemeDugmesi(stringResource(R.string.hayir), onHayir, buyuk = true)
+        }
     }
+}
+
+/**
+ * Kumanda onay penceresinin kartı: ekranın güvenli alanıyla sınırlı (dikey 24 dp pay), içerik
+ * ortada. İçine bir [YaziyiSigdir] metin bloğu (`weight(1f, fill = false)`) + [PencereDugmeleri]
+ * konur: uzun dilde metin küçülür, düğmeler tam boy kalır.
+ */
+@Composable
+fun PencereKarti(icerik: @Composable ColumnScope.() -> Unit) {
+    Box(
+        Modifier.fillMaxSize().background(Renkler.arkaplan.copy(alpha = 0.96f)).padding(vertical = 24.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            Modifier.width(860.dp).background(Renkler.kart, RoundedCornerShape(36.dp)).padding(horizontal = 56.dp, vertical = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            content = icerik,
+        )
+    }
+}
+
+/** Pencerenin düğme sırası: sığmayan düğme alt satıra iner (dar kalıp etiketi kırılmaz). */
+@Composable
+fun PencereDugmeleri(icerik: @Composable () -> Unit) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(28.dp, Alignment.CenterHorizontally),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) { icerik() }
 }
 
 @Composable

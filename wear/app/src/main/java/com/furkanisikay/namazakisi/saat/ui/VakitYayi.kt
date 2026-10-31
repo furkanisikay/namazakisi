@@ -55,6 +55,7 @@ import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.GunDurumu
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
+import com.furkanisikay.namazakisi.saat.cekirdek.Sigdirma
 import com.furkanisikay.namazakisi.saat.cekirdek.rakamlariYerellestir
 import kotlin.math.cos
 import kotlin.math.min
@@ -260,26 +261,54 @@ fun SureGosterimi(
     val rakamBoyu = sabitBoyut(if (sayac.haneSayisi(saniyeGoster) >= 4) 0.165f else 0.20f)
     val birimBoyu = sabitBoyut(0.072f)
     val sifir = sifirRakami()
-    Row(verticalAlignment = Alignment.Bottom) {
-        sayac.gorunur(saniyeGoster).forEachIndexed { i, p ->
-            // Boşluksuz dilde (Çince) parça ve birim arası görsel boşluk çizilmez.
-            if (i > 0 && sayac.parcaBosluklu) Spacer(Modifier.width(5.dp))
-            Text(
-                rakamlariYerellestir(p.sayi, sifir),
-                style = rakamStili,
-                fontSize = if (p.saniye) sabitBoyut(0.09f) else rakamBoyu,
-                fontWeight = if (p.saniye) FontWeight.Medium else rakamAgirligi,
-                color = if (p.saniye) saniyeRengi else rakamRengi,
-                maxLines = 1,
-            )
-            Text(
-                p.birim,
-                fontSize = birimBoyu,
-                fontWeight = birimAgirligi,
-                color = if (p.saniye) saniyeRengi else birimRengi,
-                maxLines = 1,
-                modifier = Modifier.padding(start = if (sayac.birimBosluklu) 2.dp else 0.dp, bottom = if (p.saniye) 3.dp else 6.dp),
-            )
+    // Satır sütuna sığmazsa BÜTÜNÜYLE küçülür: kare saatte "4 மணி 31 நிமி" sütunu aşınca son
+    // birim kırpılıp "நி" kalıyordu (sözlükteki birim "நிமி"; kesme yerleşimdendi).
+    GenisligeSigdir {
+        Row(verticalAlignment = Alignment.Bottom) {
+            sayac.gorunur(saniyeGoster).forEachIndexed { i, p ->
+                // Boşluksuz dilde (Çince) parça ve birim arası görsel boşluk çizilmez.
+                if (i > 0 && sayac.parcaBosluklu) Spacer(Modifier.width(5.dp))
+                Text(
+                    rakamlariYerellestir(p.sayi, sifir),
+                    style = rakamStili,
+                    fontSize = if (p.saniye) sabitBoyut(0.09f) else rakamBoyu,
+                    fontWeight = if (p.saniye) FontWeight.Medium else rakamAgirligi,
+                    color = if (p.saniye) saniyeRengi else rakamRengi,
+                    maxLines = 1,
+                )
+                Text(
+                    p.birim,
+                    fontSize = birimBoyu,
+                    fontWeight = birimAgirligi,
+                    color = if (p.saniye) saniyeRengi else birimRengi,
+                    maxLines = 1,
+                    modifier = Modifier.padding(start = if (sayac.birimBosluklu) 2.dp else 0.dp, bottom = if (p.saniye) 3.dp else 6.dp),
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Tek çocuğunu genişliği sınırsız ölçer; verilen genişliği aşarsa BÜTÜNÜYLE (yazı, boşluk,
+ * birim aynı oranda) [Sigdirma.genislikOlcegi] ile küçültür. Sığan içerikte hiçbir şey
+ * değişmez. Sayaç satırı gibi parçalı tek satır içindir: Row'un son çocuğu artan genişlikle
+ * kırpılmasın. `Layout` olduğu için iç ölçüm (intrinsic) isteyen yuvada da güvenlidir
+ * (BoxWithConstraints'in aksine).
+ */
+@Composable
+fun GenisligeSigdir(modifier: Modifier = Modifier, icerik: @Composable () -> Unit) {
+    androidx.compose.ui.layout.Layout(icerik, modifier) { olculenler, kisit ->
+        val p = olculenler.first().measure(kisit.copy(minWidth = 0, maxWidth = androidx.compose.ui.unit.Constraints.Infinity))
+        val olcek = if (kisit.hasBoundedWidth) Sigdirma.genislikOlcegi(p.width, kisit.maxWidth) else 1f
+        val en = (p.width * olcek).toInt().coerceIn(kisit.minWidth, kisit.maxWidth)
+        val boy = (p.height * olcek).toInt().coerceIn(kisit.minHeight, kisit.maxHeight)
+        layout(en, boy) {
+            p.placeWithLayer(0, 0) {
+                scaleX = olcek
+                scaleY = olcek
+                transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0f, 0f)
+            }
         }
     }
 }
@@ -381,6 +410,12 @@ fun SigdirilanMetin(
     agirlik: FontWeight = FontWeight.Medium,
     ortala: Boolean = true,
     stil: TextStyle = TextStyle.Default,
+    /**
+     * > 1 ise metin tek satırda [tekSatirTabani]'nın altına küçülmek yerine bu kadar satıra
+     * sarılır (sözcük ortasından kırılmadan). Kesilmemesi gereken uzun metin (dua) için.
+     */
+    enCokSatir: Int = 1,
+    tekSatirTabani: androidx.compose.ui.unit.TextUnit = enAz,
 ) {
     androidx.compose.foundation.layout.BoxWithConstraints(
         modifier,
@@ -390,20 +425,51 @@ fun SigdirilanMetin(
         val genislik = constraints.maxWidth
         // Ölçülen metin çizilen metindir: rakamlar yerel ayarın rakamıyla (ar-SA'da ٠-٩).
         val yazi = yerelRakam(metin)
-        val boy = remember(yazi, genislik, enFazla, agirlik) {
-            sigdirilanBoy(olcer, yazi, genislik, enFazla, stil, agirlik, enAz)
+        val karar = remember(yazi, genislik, enFazla, agirlik, enCokSatir) {
+            sigdirilanKarar(olcer, yazi, genislik, enFazla, stil, agirlik, enAz, enCokSatir, tekSatirTabani)
         }
         Text(
             yazi,
             style = stil,
-            fontSize = boy,
+            fontSize = karar.boy.sp,
             fontWeight = agirlik,
             color = renk,
             textAlign = if (ortala) TextAlign.Center else TextAlign.Start,
-            maxLines = 1,
-            softWrap = false,
+            maxLines = karar.satir,
+            softWrap = karar.satir > 1,
             overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
         )
+    }
+}
+
+/**
+ * [SigdirilanMetin]'in kararı (kural [Sigdirma.karar]): çok satırda "sığar" = yükseklik/genişlik
+ * taşması yok VE en uzun sözcük tek satıra sığıyor (sözcük ortasından kırılma yok).
+ */
+fun sigdirilanKarar(
+    olcer: androidx.compose.ui.text.TextMeasurer,
+    yazi: String,
+    genislik: Int,
+    enFazla: androidx.compose.ui.unit.TextUnit,
+    stil: TextStyle,
+    agirlik: FontWeight,
+    enAz: androidx.compose.ui.unit.TextUnit = (enFazla.value * 0.6f).sp,
+    enCokSatir: Int = 1,
+    tekSatirTabani: androidx.compose.ui.unit.TextUnit = enAz,
+): Sigdirma.Karar {
+    val sozcukler = yazi.split(' ').filter { it.isNotEmpty() }
+    return Sigdirma.karar(enFazla.value, enAz.value, enCokSatir, tekSatirTabani.value) { b, satir ->
+        val s = stil.merge(TextStyle(fontSize = b.sp, fontWeight = agirlik))
+        if (satir == 1) {
+            olcer.measure(yazi, s, maxLines = 1, softWrap = false).size.width <= genislik
+        } else {
+            val sonuc = olcer.measure(
+                yazi, s, maxLines = satir, softWrap = true,
+                constraints = androidx.compose.ui.unit.Constraints(maxWidth = genislik),
+            )
+            !sonuc.hasVisualOverflow &&
+                sozcukler.all { olcer.measure(it, s, maxLines = 1, softWrap = false).size.width <= genislik }
+        }
     }
 }
 
@@ -422,17 +488,5 @@ fun sigdirilanBoy(
     stil: TextStyle,
     agirlik: FontWeight,
     enAz: androidx.compose.ui.unit.TextUnit = (enFazla.value * 0.6f).sp,
-): androidx.compose.ui.unit.TextUnit {
-    var b = enFazla.value
-    while (b > enAz.value &&
-        olcer.measure(
-            yazi,
-            stil.merge(TextStyle(fontSize = b.sp, fontWeight = agirlik)),
-            maxLines = 1,
-            softWrap = false,
-        ).size.width > genislik
-    ) {
-        b -= 0.5f
-    }
-    return b.sp
-}
+): androidx.compose.ui.unit.TextUnit =
+    sigdirilanKarar(olcer, yazi, genislik, enFazla, stil, agirlik, enAz).boy.sp
