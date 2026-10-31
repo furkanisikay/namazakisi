@@ -1,35 +1,36 @@
-// ÇEVİRİ: it — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * İtalyanca konuşan Müslümanların kalıpları (çeviri değil): "Che Allah l’accetti" (meal 2:127
+ * "accettala da parte nostra" kökü; türetildi), Arapça "Taqabbal Allah" (İtalya'daki topluluklarda
+ * aynen söylenir), "Che il nostro Signore l’accetti". Övgü ve "!" yok. "Eid Mubarak", "Ramadan
+ * Mubarak", "Jumu’ah Mubarak" Arapça kalıptır, aynen yazılır. Kandil ve hicrî yılbaşı selamı
+ * ülke başına gösterilir (`selam.ts`); karşılıklar o durum içindir.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Che sia di buon auspicio.',
+  kabulDualari: ['Che Allah l’accetti', 'Taqabbal Allah', 'Che Allah l’accetti', 'Che il nostro Signore l’accetti'],
+  kabulDuasi: 'Che Allah l’accetti',
+  ekSabah: 'Una mattinata benedetta',
+  ekYatsi: 'Una notte benedetta',
+  tamGunAna: 'Che Allah l’accetti',
+  tamGunAlt: 'Oggi ha compiuto tutte e cinque le preghiere.',
+  kazaKabul: 'Un recupero di {vakit} è stato tolto dal suo registro. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Benedetta notte di Raghaib',
+    mirac: 'Benedetta notte dell’Isra e del Mi’raj',
+    berat: 'Benedetta notte di Bara’ah',
+    mevlid: 'Benedetto Mawlid',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
+    sahur: 'Suhur benedetto',
     bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
+    iftar: 'Iftar benedetto',
+    kadir: 'Benedetta Laylat al-Qadr',
+    arefe: 'Benedetta vigilia dell’Eid',
+    hicriYilbasi: 'Benedetto anno nuovo dell’Egira',
+    cuma: 'Jumu’ah Mubarak',
     ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sabah: 'Una mattinata benedetta',
   },
 };

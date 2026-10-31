@@ -1,41 +1,44 @@
-// ÇEVİRİ: it — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/**
+ * Nafile adları Arapça özel ad olarak kalır (Duha, Awwabin, Tahajjud; teheccüdün İtalyanca
+ * betimi HadeethEnc "veglia notturna"). Bildirim ibadete çağrıdır: Lei + kısa emir ("Si alzi").
+ */
 export const nafile: Sozluk['nafile'] = {
   adlar: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
   kucuk: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
   aciklamalar: {
     kusluk:
-      'Starts about 45 minutes after sunrise and lasts until 10 minutes before Dhuhr. Ishraq is its earliest time; the most virtuous is after the first quarter of the day has passed.',
-    evvabin: 'Prayed after Maghrib, until Isha time.',
-    teheccud: 'Prayed after sleeping and waking following Isha, until Fajr time. Its most virtuous time is the last third of the night.',
+      'Inizia circa 45 minuti dopo il sorgere del sole e dura fino a 10 minuti prima dello Zuhr. L’Ishraq è il suo primo momento; il più meritorio è dopo il primo quarto del giorno.',
+    evvabin: 'Si compie dopo il Maghrib, fino all’orario dell’Isha.',
+    teheccud: 'Si compie dopo l’Isha, dormendo e poi alzandosi, fino all’orario del Fajr. Il momento più meritorio è l’ultimo terzo della notte.',
   },
-  bilgiBugun: '{aciklama}\n\nToday: {bas} – {son}',
-  enFaziletli: ' · most virtuous after {saat}',
-  sonUcteBir: ' · last third {saat}',
-  durumAktif: 'Time has begun · ends {saat}',
-  durumNafile: 'Nafl · {bas}–{son}',
+  bilgiBugun: '{aciklama}\n\nOggi: {bas} – {son}',
+  enFaziletli: ' · più meritorio dopo le {saat}',
+  sonUcteBir: ' · ultimo terzo {saat}',
+  durumAktif: 'È iniziato · fino alle {saat}',
+  durumNafile: 'Supererogatoria · {bas}–{son}',
   bildirim: {
-    kuslukBaslik: 'Duha time',
-    kuslukSuruyor: 'Duha time is on; you can pray until {son}.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats; it lasts until {son}.',
+    kuslukBaslik: 'Tempo del Duha',
+    kuslukSuruyor: 'Il tempo del Duha è in corso; può pregare fino alle {son}.',
+    kuslukGirdi: 'È iniziato il tempo del Duha. Un buon momento per due unità di preghiera; dura fino alle {son}.',
     kuslukBitiyor: cogul({
-      one: '{n} minute left in Duha time. A good moment for two rakats; it lasts until {son}.',
-      many: '{n} minutes left in Duha time. A good moment for two rakats; it lasts until {son}.',
-      other: '{n} minutes left in Duha time. A good moment for two rakats; it lasts until {son}.',
+      one: 'Manca {n} minuto alla fine del Duha. Un buon momento per due unità di preghiera; dura fino alle {son}.',
+      many: 'Mancano {n} di minuti alla fine del Duha. Un buon momento per due unità di preghiera; dura fino alle {son}.',
+      other: 'Mancano {n} minuti alla fine del Duha. Un buon momento per due unità di preghiera; dura fino alle {son}.',
     }),
     evvabinBaslik: 'Awwabin',
-    evvabinSuruyor: 'There is still time for Awwabin. Isha begins at {son}.',
-    evvabinGirdi: 'After Maghrib, a good moment for Awwabin. Isha begins at {son}.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin. Isha begins at {son}.', many: '{n} minutes left for Awwabin. Isha begins at {son}.', other: '{n} minutes left for Awwabin. Isha begins at {son}.' }),
-    teheccudBaslik: 'Tahajjud time',
-    uyandirSonUcte: 'Get up; the last third of the night has begun. Fajr begins at {son}.',
-    uyandirKalan: cogul({ one: 'Get up; {n} minute left until Fajr. Fajr begins at {son}.', many: 'Get up; {n} minutes left until Fajr. Fajr begins at {son}.', other: 'Get up; {n} minutes left until Fajr. Fajr begins at {son}.' }),
-    sonUcteBaslik: 'The last third of the night',
-    sonUcteGovde: 'The most blessed hours for Tahajjud. Fajr begins at {son}.',
-    teheccudKalan: cogul({ one: '{n} minute left until Fajr. A good time for Tahajjud.', many: '{n} minutes left until Fajr. A good time for Tahajjud.', other: '{n} minutes left until Fajr. A good time for Tahajjud.' }),
+    evvabinSuruyor: 'C’è ancora tempo per l’Awwabin. L’Isha inizia alle {son}.',
+    evvabinGirdi: 'Dopo il Maghrib, un buon momento per l’Awwabin. L’Isha inizia alle {son}.',
+    evvabinKalan: cogul({ one: 'Manca {n} minuto per l’Awwabin. L’Isha inizia alle {son}.', many: 'Mancano {n} di minuti per l’Awwabin. L’Isha inizia alle {son}.', other: 'Mancano {n} minuti per l’Awwabin. L’Isha inizia alle {son}.' }),
+    teheccudBaslik: 'Tempo del Tahajjud',
+    uyandirSonUcte: 'Si alzi; è iniziato l’ultimo terzo della notte. Il Fajr inizia alle {son}.',
+    uyandirKalan: cogul({ one: 'Si alzi; manca {n} minuto al Fajr. Il Fajr inizia alle {son}.', many: 'Si alzi; mancano {n} di minuti al Fajr. Il Fajr inizia alle {son}.', other: 'Si alzi; mancano {n} minuti al Fajr. Il Fajr inizia alle {son}.' }),
+    sonUcteBaslik: 'L’ultimo terzo della notte',
+    sonUcteGovde: 'Le ore più benedette per il Tahajjud. Il Fajr inizia alle {son}.',
+    teheccudKalan: cogul({ one: 'Manca {n} minuto al Fajr. Un buon momento per il Tahajjud.', many: 'Mancano {n} di minuti al Fajr. Un buon momento per il Tahajjud.', other: 'Mancano {n} minuti al Fajr. Un buon momento per il Tahajjud.' }),
   },
-  uyandirmaKanali: 'Tahajjud wake-up',
-  uyandirmaKanaliAciklama: 'Wakes you for the night prayer; rings even in silent mode',
+  uyandirmaKanali: 'Sveglia per il Tahajjud',
+  uyandirmaKanaliAciklama: 'La sveglia per la preghiera notturna; suona anche in modalità silenziosa',
 };
