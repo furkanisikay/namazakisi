@@ -5,7 +5,7 @@
  * (widget, bildirim kanalı, saat) üretilmeden dil açılırsa ekranlar yarım çevrili görünür.
  * Gözden geçirilmemiş çeviri `beta: true` taşır (seçicide rozet).
  */
-export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi';
+export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi' | 'pt' | 'it' | 'sv' | 'uk' | 'ro' | 'hr' | 'sr' | 'el';
 
 export interface DilTanimi {
   kod: DilKodu;
@@ -60,6 +60,17 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'th', yerelAd: 'ไทย', yon: 'ltr', ttsDili: 'th-TH', beta: true, secilebilir: true },
   { kod: 'ko', yerelAd: '한국어', yon: 'ltr', ttsDili: 'ko-KR', beta: true, secilebilir: true },
   { kod: 'vi', yerelAd: 'Tiếng Việt', yon: 'ltr', ttsDili: 'vi-VN', beta: true, secilebilir: true },
+  // Avrupa (dalga 10); sekizi de soldan sağa, Batı rakamlı. Portekizce Avrupa/Afrika normu (pt-PT;
+  // Mozambik, Gine-Bissau): kod `pt`, Android `values-pt` ve iOS `pt.lproj` bütün pt-* cihazları kapsar.
+  // Sırpça yalnız KİRİL (`sr`; Latin seçenek yok, Latin okuyan Sancak kullanıcısı için Boşnakça var).
+  { kod: 'pt', yerelAd: 'Português', yon: 'ltr', ttsDili: 'pt-PT', beta: true, secilebilir: false },
+  { kod: 'it', yerelAd: 'Italiano', yon: 'ltr', ttsDili: 'it-IT', beta: true, secilebilir: false },
+  { kod: 'sv', yerelAd: 'Svenska', yon: 'ltr', ttsDili: 'sv-SE', beta: true, secilebilir: false },
+  { kod: 'uk', yerelAd: 'Українська', yon: 'ltr', ttsDili: 'uk-UA', beta: true, secilebilir: false },
+  { kod: 'ro', yerelAd: 'Română', yon: 'ltr', ttsDili: 'ro-RO', beta: true, secilebilir: false },
+  { kod: 'hr', yerelAd: 'Hrvatski', yon: 'ltr', ttsDili: 'hr-HR', beta: true, secilebilir: false },
+  { kod: 'sr', yerelAd: 'Српски', yon: 'ltr', ttsDili: 'sr-RS', beta: true, secilebilir: false },
+  { kod: 'el', yerelAd: 'Ελληνικά', yon: 'ltr', ttsDili: 'el-GR', beta: true, secilebilir: false },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';
@@ -74,7 +85,9 @@ export function dilKoduMu(x: unknown): x is DilKodu {
 /**
  * Yerel ayar kimliğinin ("en_US", "tr-TR", "zh-Hans-CN", "zh_TW") desteklenen dil kodu; yoksa null.
  * Seçilebilirliğe BAKMAZ. Çincenin bütün yerel ayarları (Android `zh_CN`/`zh_TW_#Hant`, iOS
- * `zh-Hans-CN`/`zh-Hant-HK`) `zh`'dir: uygulama yalnız Basitleştirilmiş Çince taşır.
+ * `zh-Hans-CN`/`zh-Hant-HK`) `zh`'dir: uygulama yalnız Basitleştirilmiş Çince taşır. Aynı kural:
+ * bütün Portekizce yerel ayarları (pt-BR, pt-PT, pt-MZ, pt-AO) `pt` (Avrupa normu), Latin Sırpça
+ * cihaz (`sr-Latn-RS`, Android `sr_RS_#Latn`) `sr` (Kiril arayüz).
  * Büyük/küçük harf dönüşümü yapılmaz (yerel kimlikler zaten küçük harfle başlar).
  */
 export function yerelAyarDili(yerel: string | null | undefined): DilKodu | null {

@@ -6,7 +6,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Ɗemngal · Language',
   aciklama: 'Suɓee ɗemngal jaaɓngal ngal. Tintine e janngugol e hito huutortoo ngal kadi.',
   grup: 'Ɗemngal jaaɓngal',
-  dilAdlari: { tr: 'Turkeere', en: 'Engeleere', id: 'Endonesiire', de: 'Docceere', fr: 'Farayseere', bs: 'Bosniyeere', ru: 'Riis', ms: 'Malayeere', ar: 'Aarabeere', ur: 'Urdu', es: 'Español', nl: 'Dacceere', sq: 'Albaniyeere', hi: 'Hinndi', bn: 'Bengali', fa: 'Perseere', ps: 'Pastooere', ckb: 'Kurdeere Hakkundeere', ug: 'Uyguureere', az: 'Ajerbayjaneere', uz: 'Usbekeere', kk: 'Kasakeere', ky: 'Kirgiseere', tg: 'Tajikeere', sw: 'Swahiliyeere', ha: 'Hawsaŋkoore', am: 'Amarik', om: 'Oromoore', so: 'Somalii', ff: 'Pular', yo: 'Yorrubaa', zh: 'Sinuwaare', ta: 'Tamil', ml: 'Malayalameere', th: 'Taay', ko: 'Koreere', vi: 'Wiyetnameere' },
+  dilAdlari: { tr: 'Turkeere', en: 'Engeleere', id: 'Endonesiire', de: 'Docceere', fr: 'Farayseere', bs: 'Bosniyeere', ru: 'Riis', ms: 'Malayeere', ar: 'Aarabeere', ur: 'Urdu', es: 'Español', nl: 'Dacceere', sq: 'Albaniyeere', hi: 'Hinndi', bn: 'Bengali', fa: 'Perseere', ps: 'Pastooere', ckb: 'Kurdeere Hakkundeere', ug: 'Uyguureere', az: 'Ajerbayjaneere', uz: 'Usbekeere', kk: 'Kasakeere', ky: 'Kirgiseere', tg: 'Tajikeere', sw: 'Swahiliyeere', ha: 'Hawsaŋkoore', am: 'Amarik', om: 'Oromoore', so: 'Somalii', ff: 'Pular', yo: 'Yorrubaa', zh: 'Sinuwaare', ta: 'Tamil', ml: 'Malayalameere', th: 'Taay', ko: 'Koreere', vi: 'Wiyetnameere', pt: 'Purtugeere', it: 'Italiyeere', sv: 'Sweedeere', uk: 'Ukereneere', ro: 'Romaneere', hr: 'Croatian', sr: 'Serbian', el: 'Gerke' },
   cihazDili: 'Ɗemngal kaɓirgal',
   cihazDiliKullaniliyor: 'Jooni {ad}',
   cihazDiliDesteklenmiyor: 'Ɗemngal kaɓirgal mon heɓaaka haa jooni; Turkeere ko huutortee.',

@@ -72,6 +72,17 @@ const MEALLER = {
   th: 'thai_rwwad',
   ko: 'korean_rwwad',
   vi: 'vietnamese_rwwad',
+  // Avrupa (dalga 10); her dilde QuranEnc'te tek çeviri var (`*_mokhtasar` tefsirdir, meal değil).
+  // pt: `portuguese_nasr` Brezilya Portekizcesidir (arayüz Avrupa normu; meal metni değiştirilmez);
+  // sr: `serbian_rwwad` KİRİL (arayüzle aynı yazı).
+  pt: 'portuguese_nasr',
+  it: 'italian_rwwad',
+  sv: 'swedish_rwwad',
+  uk: 'ukrainian_yakubovych',
+  ro: 'romanian_project',
+  hr: 'croatian_rwwad',
+  sr: 'serbian_rwwad',
+  el: 'greek_rwwad',
 };
 
 /**
@@ -88,6 +99,10 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   kazakh_altai: 'Kazakh Translation - Khalifa Altai',
   // QuranEnc Koreceyi liste API'sinde vermez (`translations/list/ko` boş); sitedeki kartın başlığı.
   korean_rwwad: 'Korean Translation - Rowwad Translation Center',
+  // İtalyanca, Ukraynaca ve Yunanca liste API'sinde yok (`translations/list/<dil>` boş); sitedeki kartın başlığı.
+  italian_rwwad: 'Italian Translation - Rowwad Translation Center',
+  ukrainian_yakubovych: 'Ukrainian Translation - Mikhailo Yakubovych',
+  greek_rwwad: 'Greek Translation - Rowwad Translation Center',
 };
 
 const TANZIL_URL = 'https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt-2&agree=true';

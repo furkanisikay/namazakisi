@@ -50,9 +50,17 @@ import { ml } from './sozluk/ml';
 import { th } from './sozluk/th';
 import { ko } from './sozluk/ko';
 import { vi } from './sozluk/vi';
+import { pt } from './sozluk/pt';
+import { it } from './sozluk/it';
+import { sv } from './sozluk/sv';
+import { uk } from './sozluk/uk';
+import { ro } from './sozluk/ro';
+import { hr } from './sozluk/hr';
+import { sr } from './sozluk/sr';
+import { el } from './sozluk/el';
 import { tr, type Sozluk } from './sozluk/tr';
 
-const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi };
+const SOZLUKLER: Readonly<Record<DilKodu, Sozluk>> = { tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el };
 
 let aktif: DilKodu = VARSAYILAN_DIL;
 /** Etkin dilin vakit adı takımı (`null` = sözlüğün kendi adları). Dil değişince sıfırlanır. */
@@ -236,10 +244,12 @@ export function sayili(
 // Fransızca binlik ayırıcı dar bölünmez boşluk (U+202F), Rusça, Arnavutça ve Orta Asya dilleri (uz, kk, ky, tg) ve Fula (ff) bölünmez boşluk (U+00A0) — CLDR; Afrika dalgasının geri kalanı (sw, ha, am, om, so, yo) İngilizce biçimi.
 // Hintçe, Bengalce, Tamilce ve Malayalamcada CLDR Hint gruplaması (1,23,456) yerine üçlü gruplama bilinçli (tek kural).
 // Asya dalgası (CLDR): zh, ta, ml, th, ko "12,345.6"; Vietnamca "12.345,6".
+// Avrupa dalgası (CLDR): pt (pt-PT), sv, uk bölünmez boşluk (U+00A0) + virgül; it, ro, hr, sr, el "12.345,6".
+// CLDR pt-PT/it/es dört haneli sayıyı gruplamaz ("1234,5"); burada her sayı gruplanır (tek kural, es gibi).
 // Farsça, Peştuca ve Soranîde rakam çizimde yerelleşir, ayırıcı Latin kalır (Arapça gibi): ٬ ٫ biçimine en
 // yakın ',' '.' — Peştucanın Batı rakamlı CLDR biçimi ('.' ',') bilinçli izlenmez (varsayılanı Fars rakamı).
-const BINLIK: Readonly<Record<DilKodu, string>> = { tr: '.', en: ',', id: '.', de: '.', fr: '\u202f', bs: '.', ru: '\u00a0', ms: ',', ar: ',', ur: ',', es: '.', nl: '.', sq: '\u00a0', hi: ',', bn: ',', fa: ',', ps: ',', ckb: ',', ug: ',', az: '.', uz: '\u00a0', kk: '\u00a0', ky: '\u00a0', tg: '\u00a0', sw: ',', ha: ',', am: ',', om: ',', so: ',', ff: '\u00a0', yo: ',', zh: ',', ta: ',', ml: ',', th: ',', ko: ',', vi: '.' };
-const ONDALIK: Readonly<Record<DilKodu, string>> = { tr: ',', en: '.', id: ',', de: ',', fr: ',', bs: ',', ru: ',', ms: '.', ar: '.', ur: '.', es: ',', nl: ',', sq: ',', hi: '.', bn: '.', fa: '.', ps: '.', ckb: '.', ug: '.', az: ',', uz: ',', kk: ',', ky: ',', tg: ',', sw: '.', ha: '.', am: '.', om: '.', so: '.', ff: ',', yo: '.', zh: '.', ta: '.', ml: '.', th: '.', ko: '.', vi: ',' };
+const BINLIK: Readonly<Record<DilKodu, string>> = { tr: '.', en: ',', id: '.', de: '.', fr: '\u202f', bs: '.', ru: '\u00a0', ms: ',', ar: ',', ur: ',', es: '.', nl: '.', sq: '\u00a0', hi: ',', bn: ',', fa: ',', ps: ',', ckb: ',', ug: ',', az: '.', uz: '\u00a0', kk: '\u00a0', ky: '\u00a0', tg: '\u00a0', sw: ',', ha: ',', am: ',', om: ',', so: ',', ff: '\u00a0', yo: ',', zh: ',', ta: ',', ml: ',', th: ',', ko: ',', vi: '.', pt: '\u00a0', it: '.', sv: '\u00a0', uk: '\u00a0', ro: '.', hr: '.', sr: '.', el: '.' };
+const ONDALIK: Readonly<Record<DilKodu, string>> = { tr: ',', en: '.', id: ',', de: ',', fr: ',', bs: ',', ru: ',', ms: '.', ar: '.', ur: '.', es: ',', nl: ',', sq: ',', hi: '.', bn: '.', fa: '.', ps: '.', ckb: '.', ug: '.', az: ',', uz: ',', kk: ',', ky: ',', tg: ',', sw: '.', ha: '.', am: '.', om: '.', so: '.', ff: ',', yo: '.', zh: '.', ta: '.', ml: '.', th: '.', ko: '.', vi: ',', pt: ',', it: ',', sv: ',', uk: ',', ro: ',', hr: ',', sr: ',', el: ',' };
 
 /**
  * Sayıyı etkin dilin ayırıcılarıyla yazar ("12.450" / "12,450"). `Intl`'e bağlı değil

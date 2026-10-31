@@ -11,7 +11,7 @@ import org.junit.Test
  * eşlemesi ve Endonezce "in" takma adı. Türkçe çıktı fikstür testlerinde kilitlidir.
  */
 class CekirdekMetinleriTest {
-    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi")
+    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el")
     private val yerTutucu = Regex("""\{\w+\}""")
 
     private fun alanlar(m: CekirdekMetinleri): Map<String, String> =
@@ -49,6 +49,18 @@ class CekirdekMetinleriTest {
             assertEquals(yerel, "zh", MetinDili.coz(yerel))
         }
         assertSame(CEKIRDEK_ZH, MetinDili.metinler("zh-Hans-CN"))
+    }
+
+    @Test
+    fun portekizceVeSirpcaYerelAyarlari() {
+        // Portekizce Avrupa normu: Brezilya dahil bütün pt-* → "pt"; Latin Sırpça cihaz → Kiril "sr".
+        for (yerel in listOf("pt", "pt_BR", "pt-BR", "pt_PT", "pt-MZ", "pt_AO")) {
+            assertEquals(yerel, "pt", MetinDili.coz(yerel))
+        }
+        for (yerel in listOf("sr", "sr_RS", "sr_RS_#Latn", "sr-Latn-RS", "sr-Cyrl-RS")) {
+            assertEquals(yerel, "sr", MetinDili.coz(yerel))
+        }
+        assertSame(CEKIRDEK_PT, MetinDili.metinler("pt_BR"))
     }
 
     @Test

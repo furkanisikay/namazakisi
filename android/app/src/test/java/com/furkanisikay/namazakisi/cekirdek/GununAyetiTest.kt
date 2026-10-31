@@ -46,6 +46,16 @@ class GununAyetiTest {
         assertTrue(GununAyetiKurallari.mealSerifMi("Hỡi những người có đức tin, các ngươi hãy cầu xin sự giúp đỡ (của Allah) bằng lòng kiên nhẫn và lễ nguyện Salah."))
     }
 
+    @Test
+    fun yunancaVeKirilSerifKalir() {
+        // 94:6 greek_rwwad, ukrainian_yakubovych, serbian_rwwad (Kiril) ve 2:153 romanian_project (çengelli ş ţ):
+        // Yunanca ve Kiril harfleri Noto Serif'te var (fc-query cmap, 2026-10-31).
+        assertTrue(GununAyetiKurallari.mealSerifMi("Πράγματι, μαζί με κάθε δυσκολία έρχεται ανακούφιση."))
+        assertTrue(GununAyetiKurallari.mealSerifMi("Воістину, після труднощів настає полегшення!"))
+        assertTrue(GununAyetiKurallari.mealSerifMi("заиста, са муком је олакшање!"))
+        assertTrue(GununAyetiKurallari.mealSerifMi("O, voi, cei care credeţi! Căutaţi ajutor întru răbdare şi Rugăciune."))
+    }
+
     // --- Yük çözümü -------------------------------------------------------------------
 
     @Test

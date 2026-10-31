@@ -24,7 +24,7 @@ export interface GununAyetiKaydi {
   mealler: { readonly tr: string; readonly en: string } & Readonly<Partial<Record<MealDili, string>>>;
 }
 
-export type MealDili = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi';
+export type MealDili = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi' | 'pt' | 'it' | 'sv' | 'uk' | 'ro' | 'hr' | 'sr' | 'el';
 
 export interface MealKunyesi {
   anahtar: string;
@@ -222,6 +222,46 @@ export const GUNUN_AYETI_KAYNAKLARI: {
       "anahtar": "vietnamese_rwwad",
       "surum": "1.0.9",
       "baslik": "Rowwad Translation Center"
+    },
+    "pt": {
+      "anahtar": "portuguese_nasr",
+      "surum": "1.4.1",
+      "baslik": "Helmi Nasr"
+    },
+    "it": {
+      "anahtar": "italian_rwwad",
+      "surum": "1.0.2",
+      "baslik": "Rowwad Translation Center"
+    },
+    "sv": {
+      "anahtar": "swedish_rwwad",
+      "surum": "1.0.2",
+      "baslik": "Rowad Translation"
+    },
+    "uk": {
+      "anahtar": "ukrainian_yakubovych",
+      "surum": "1.0.2",
+      "baslik": "Mikhailo Yakubovych"
+    },
+    "ro": {
+      "anahtar": "romanian_project",
+      "surum": "1.0.4",
+      "baslik": "Islam4ro.com"
+    },
+    "hr": {
+      "anahtar": "croatian_rwwad",
+      "surum": "1.0.1",
+      "baslik": "Rowwad Translation Center"
+    },
+    "sr": {
+      "anahtar": "serbian_rwwad",
+      "surum": "1.0.4",
+      "baslik": "Rowwad Translation Center"
+    },
+    "el": {
+      "anahtar": "greek_rwwad",
+      "surum": "1.0.2",
+      "baslik": "Rowwad Translation Center"
     }
   }
 };
@@ -263,7 +303,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "(அல்லாஹ்வே!) உன்னையே வணங்குகிறோம். இன்னும் உன்னிடமே உதவி தேடுகிறோம்.",
       "th": "เฉพาะพระองค์เท่านั้น ที่พวกข้าพระองค์เคารพอิบาดะฮ์ และเฉพาะพระองค์เท่านั้น ที่พวกข้าพระองค์ขอความช่วยเหลือ",
       "ko": "저희는 당신만을 경배하며 당신께만 도움을 요청합니다.",
-      "vi": "Duy chỉ Ngài bầy tôi thờ phượng và duy chỉ Ngài bầy tôi cầu xin phù hộ và trợ giúp."
+      "vi": "Duy chỉ Ngài bầy tôi thờ phượng và duy chỉ Ngài bầy tôi cầu xin phù hộ và trợ giúp.",
+      "pt": "Só a Ti adoramos e só de Ti imploramos ajuda",
+      "it": "”Te adoriamo e a Te imploriamo aiuto!",
+      "sv": "Endast dig dyrkar vi och endast dig ber vi om hjälp.",
+      "uk": "Лише Тобі ми поклоняємося і лише в Тебе просимо допомоги,",
+      "ro": "Numai pe Tine Te adorăm, numai la Tine cerem ajutor,",
+      "hr": "Samo Tebe obožavamo i samo od Tebe pomoć tražimo!",
+      "sr": "Само Тебе обожавамо и само од Тебе помоћ тражимо.",
+      "el": "Εσένα μόνο λατρεύουμε και από Εσένα μόνο ζητάμε βοήθεια και υποστήριξη."
     }
   },
   {
@@ -305,7 +353,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "നിനക്കറിഞ്ഞു കൂടേ അല്ലാഹുവിന്നു തന്നെയാണ് ആകാശഭൂമികളുടെ ആധിപത്യമെന്നും, നിങ്ങള്‍ക്ക് അല്ലാഹുവെ കൂടാതെ ഒരു രക്ഷകനും സഹായിയും ഇല്ലെന്നും?",
       "th": "เจ้าไม่รู้ดอกหรือว่า แท้จริงอำนาจแห่งชั้นฟ้าทั้งหลายและแผ่นดินนั้น เป็นกรรมสิทธิ์ของอัลลอฮ์? และไม่มีผู้ใดสำหรับพวกเจ้านอกจากอัลลอฮ์เท่านั้นที่สามารถปกป้องและให้ความช่วยเหลือ",
       "ko": "실로 하늘과 땅의 주권은 하나님 그분께 있음을 그대(무함마드)가 알고 있지 않았던가? 하나님이 아니고선 그대들에게 그 어떤 가호자나 조력자도 없노라.",
-      "vi": "Lẽ nào Ngươi không biết vương quyền cai trị các tầng trời và trái đất đều thuộc về Allah hay sao? Và ngoài Allah, các ngươi sẽ không có bất cứ vị bảo hộ cũng như vị giúp đỡ nào."
+      "vi": "Lẽ nào Ngươi không biết vương quyền cai trị các tầng trời và trái đất đều thuộc về Allah hay sao? Và ngoài Allah, các ngươi sẽ không có bất cứ vị bảo hộ cũng như vị giúp đỡ nào.",
+      "pt": "Não sabes que de Allah é a soberania dos céus e da terra, e vós não tendes, além de Allah, nem protetor nem socorredor?",
+      "it": "Non sai che in verità ad Allāh appartengono i cieli e la terra, e che non avete, all’infuori di Allāh, alleato o sostenitore?",
+      "sv": "Vet du inte att Gud äger herraväldet över himlarna och jorden? Och ni har ingen som kan hjälpa er eller skydda er förutom Gud.",
+      "uk": "Невже ти не знаєш, що Аллагу належить влада над небесами та землею, і що немає у вас, окрім Аллага, ні Захисника, ні Помічника?",
+      "ro": "Nu ai ştiut că a lui Allah este Împărăţia Cerurilor şi a Pământului şi că nu aveţi, alt ocrotitor şi sprijinitor în afară de Allah?",
+      "hr": "Zar ti ne znaš da Allahu pripada vlast i na nebesima i na Zemlji i da, osim Allaha, ni zaštitnika ni pomagača nemate?!",
+      "sr": "Зар ти не знаш да небеско и земаљско царство припада Аллаху и да, осим Аллаха, ни заштитника ни помагача немате?!",
+      "el": "Δεν έμαθες ότι στον Αλλάχ ανήκει η κυριαρχία των ουρανών και της γης; Και πράγματι, δεν έχετε πέραν του Αλλάχ, κανέναν κηδεμόνα ούτε υποστηρικτή."
     }
   },
   {
@@ -348,7 +404,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "സത്യവിശ്വാസികളെ, നിങ്ങള്‍ സഹനവും നമസ്കാരവും മുഖേന (അല്ലാഹുവിനോട്‌) സഹായം തേടുക. തീര്‍ച്ചയായും ക്ഷമിക്കുന്നവരോടൊപ്പമാകുന്നു അല്ലാഹു.",
       "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงขอการช่วยเหลือด้วยความอดทนและการละหมาด แท้จริงอัลลอฮ์ทรงอยู่ร่วมกับบรรดาผู้อดทน",
       "ko": "믿는 자들이여! 인내심과 예배로써 (하나님께) 도움을 요청하라. 실로 하나님께서는 인내하는 자들과 함께 하시노라.",
-      "vi": "Hỡi những người có đức tin, các ngươi hãy cầu xin sự giúp đỡ (của Allah) bằng lòng kiên nhẫn và lễ nguyện Salah. Quả thật, Allah luôn bên cạnh những người kiên nhẫn."
+      "vi": "Hỡi những người có đức tin, các ngươi hãy cầu xin sự giúp đỡ (của Allah) bằng lòng kiên nhẫn và lễ nguyện Salah. Quả thật, Allah luôn bên cạnh những người kiên nhẫn.",
+      "pt": "Ó vós que credes! Implorai ajuda com a paciência e a oração. Por certo, Allah é com os perseverantes.",
+      "it": "O credenti, sostenetevi con la pazienza e la preghiera: in verità Allāh è con i pazienti.",
+      "sv": "Troende! Sök hjälp i tålamod och bön. Gud är säkerligen med de tålmodiga.",
+      "uk": "О ви, які увірували! Шукайте допомоги у терпінні та молитві. Воістину, Аллаг — разом із терплячими!",
+      "ro": "O, voi, cei care credeţi! Căutaţi ajutor întru răbdare şi Rugăciune. Cu adevărat Allah este cu cei răbdători!",
+      "hr": "O vi koji vjerujete, tražite sebi pomoći u strpljivosti i molitvi! Allah je, doista, uz strpljive.",
+      "sr": "О ви који верујете, тражите себи помоћ у стрпљивости и молитви! Аллах је, заиста, уз стрпљиве."
     }
   },
   {
@@ -388,7 +451,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "മനുഷ്യരേ, ഭൂമിയിലുള്ളതില്‍ നിന്ന് അനുവദനീയവും, വിശിഷ്ടവുമായത് നിങ്ങള്‍ ഭക്ഷിച്ച് കൊള്ളുക. പിശാചിന്‍റെ കാലടികളെ നിങ്ങള്‍ പിന്തുടരാതിരിക്കുകയും ചെയ്യുക. അവന്‍ നിങ്ങളുടെ പ്രത്യക്ഷശത്രു തന്നെയാകുന്നു.",
       "th": "โอ้มนุษย์เอ๋ย จงกินสิ่งที่อยู่ในแผ่นดินที่ศาสนาอนุมัติและที่ดีมีประโยชน์ และอย่าปฏิบัติตามแนวทางของชัยฏอน เพราะแท้จริงมันเป็นศัตรูที่ชัดเจนสำหรับพวกเจ้า",
       "ko": "사람들이여! 대지에 있는 것들 중에서 허락된 좋은 것을 먹되 사탄의 발자국을 따르지 말라. 실로 그는 그대들의 분명한 적이라.",
-      "vi": "Hỡi loài người, các ngươi hãy ăn những gì được phép và tốt lành trên trái đất, và các ngươi chớ đi theo lối mòn của Shaytan bởi hắn đích thực là kẻ thù công khai của các ngươi."
+      "vi": "Hỡi loài người, các ngươi hãy ăn những gì được phép và tốt lành trên trái đất, và các ngươi chớ đi theo lối mòn của Shaytan bởi hắn đích thực là kẻ thù công khai của các ngươi.",
+      "pt": "Ó humanos! Comei do que há na terra, sendo lícito e benigno; e não sigais os passos de Satã. Por certo, ele vos é inimigo declarado.",
+      "it": "O uomini, mangiate tutte le cose buone e lecite in terra, e non seguite le orme del demonio: in verità Lui è il vostro evidente nemico!",
+      "sv": "Människor! Ät det som finns på jorden av det som är tillåtet och bra, och följ inte i Satans spår. Han är utan tvekan er uppenbara fiende.",
+      "uk": "О люди! Їжте те дозволене й добре, що є на землі, та не йдіть слідами шайтана; воістину, він — справжній ворог для вас!",
+      "ro": "O, oameni, mâncaţi din ceea ce se află pe Pământ şi este îngăduit şi bun şi nu urmaţi paşii lui Şeitan. Cu adevărat el vă este duşman mărturisit.",
+      "hr": "O ljudi, jedite od onoga što ima na Zemlji, što je dozvoljeno i lijepo, i ne slijedite sotonine stope! On vam je, zaista, neprijatelj očevidni.",
+      "sr": "О људи, једите од онога што има на Земљи, што је дозвољено и лепо, и не следите ђавоље стопе! Он вам је, заиста, непријатељ очевидни.",
+      "el": "Ω, άνθρωποι, φάτε από ό,τι υπάρχει στη γη (που είναι) επιτρεπτό και καλό (δεν είναι ακάθαρτο), και μην ακολουθείτε τα βήματα του Σατανά. Στ’ αλήθεια, αυτός είναι για σας ένας προφανής εχθρός."
     }
   },
   {
@@ -430,7 +501,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ക്ക് നാം നല്‍കിയ വസ്തുക്കളില്‍ നിന്ന് വിശിഷ്ടമായത് ഭക്ഷിച്ചു കൊള്ളുക. അല്ലാഹുവോട് നിങ്ങള്‍ നന്ദികാണിക്കുകയും ചെയ്യുക; അവനെ മാത്രമാണ് നിങ്ങള്‍ ആരാധിക്കുന്നതെങ്കില്‍.",
       "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงบริโภคสิ่งดี ๆ (ฮาลาล) ที่เราได้จัดเป็นปัจจัยยังชีพแก่พวกเจ้า และจงขอบคุณอัลลอฮ์เถิด หากพวกเจ้าเพียงแต่อัลลอฮ์เท่านั้นที่พวกเจ้าเคารพสักการะโดยแท้จริง",
       "ko": "믿는 자들이여! 그대들이 하나님만을 경배하는 자들이라면 내가 그대들에게 베푼 좋은 양식을 먹고 그분께 감사하라.",
-      "vi": "Hỡi những người có đức tin, các ngươi hãy ăn những thực phẩm tốt sạch mà TA đã ban bố cho các ngươi; và các ngươi hãy tri ân Allah nếu các ngươi chỉ thờ phượng riêng Ngài."
+      "vi": "Hỡi những người có đức tin, các ngươi hãy ăn những thực phẩm tốt sạch mà TA đã ban bố cho các ngươi; và các ngươi hãy tri ân Allah nếu các ngươi chỉ thờ phượng riêng Ngài.",
+      "pt": "Ó vós que credes! Comei das cousas benignas que vos damos por sustento, e agradecei a Allah, se só a Ele adorais.",
+      "it": "O credenti, mangiate il buono di ciò che vi abbiamo donato, e siate grati ad Allāh, se siete Suoi adoratori.",
+      "sv": "Troende! Ät av de goda ting vi har försörjt er med och tacka Gud, om det endast är honom ni dyrkar.",
+      "uk": "О ви, які увірували! Їжте ті блага, якими наділили Ми вас, і дякуйте Аллагу, якщо поклоняєтесь ви Йому!",
+      "ro": "O, voi cei care credeţi! Mâncaţi din bunătăţile pe care Noi vi le-am dăruit şi fiți recunoscători lui Allah dacă numai pe El voi Îl adoraţi!",
+      "hr": "O vi koji vjerujete, jedite dobra kojim smo vas opskrbili i Allahu zahvaljujte, ako, doista, samo Njega obožavate.",
+      "sr": "О ви који верујете, једите добра којим смо вас опскрбили и захваљујте Аллаху, ако, заиста, само Њега обожавате.",
+      "el": "Ω, εσείς που πιστεύετε! Φάτε από τα καλά αγαθά που σας παρέχουμε, και να είστε ευγνώμονες στον Αλλάχ, αν, πράγματι, Αυτόν λατρεύετε (χωρίς να Του αποδίδετε εταίρους στη λατρεία)."
     }
   },
   {
@@ -469,7 +548,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நம்பிக்கையாளர்களே! நீங்கள் இஸ்லாமில் முழுமையாக நுழையுங்கள். இன்னும், ஷைத்தானின் அடிச்சுவடுகளை (-அவன் உங்களை அழைக்கும் அவனது பாதைகளை)ப் பின்பற்றாதீர்கள். நிச்சயமாக அவன் உங்களுக்கு தெளிவான எதிரியாவான்.",
       "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงเข้าสู่อิสลามโดยสมบูรณ์เถิด และจงอย่าประพฤติตามรอยของชัยฏอน แท้จริงมันคือศัตรูที่เด่นชัดของพวกเจ้า",
       "ko": "믿는 자들이여! 이슬람 안으로 완전히 들어가라. 그리고 사탄의 발자국을 따르지 말라. 실로 그는 그대들의 분명한 적이라.",
-      "vi": "Hỡi những người có đức tin, các ngươi hãy gia nhập hoàn toàn vào Islam và chớ đừng theo những vết chân của Shaytan, bởi quả thật hắn là kẻ thù công khai của các ngươi."
+      "vi": "Hỡi những người có đức tin, các ngươi hãy gia nhập hoàn toàn vào Islam và chớ đừng theo những vết chân của Shaytan, bởi quả thật hắn là kẻ thù công khai của các ngươi.",
+      "sv": "Troende! Träd in i islam till fullo och följ inte Satans spår; han är utan tvekan er uppenbara fiende.",
+      "ro": "O, voi, cei care credeţi! Intraţi în Islam pe deplin şi nu urmaţi paşii lui Şeitan. Cu adevărat el vă este duşman învederat!",
+      "hr": "O vi koji vjerujete, uđite u islam potpuno i ne idite stopama đavoljim; on vam je, doista, neprijatelj otvoreni!",
+      "sr": "О ви који верујете, уђите у Ислам потпуно и не идите стопама ђавољим; он вам је, заиста, непријатељ отворени!",
+      "el": "Ω, εσείς που πιστεύετε! Εισέλθετε στο Ισλάμ πλήρως (τηρώντας όλους τους νόμους του). Και μην ακολουθείτε τα βήματα του Σατανά. Στ’ αλήθεια, αυτός είναι για εσάς ένας προφανής εχθρός."
     }
   },
   {
@@ -509,7 +593,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "കൊടുത്തതിനെത്തുടര്‍ന്ന് ശല്യമുണ്ടാക്കുന്ന ദാനധര്‍മ്മത്തെക്കാള്‍ ഉത്തമമായിട്ടുള്ളത് നല്ല വാക്കും വിട്ടുവീഴ്ചയുമാകുന്നു. അല്ലാഹു പരാശ്രയം ആവശ്യമില്ലാത്തവനും സഹനശീലനുമാകുന്നു.",
       "th": "คำพูดที่ดี และการให้อภัยนั้น ย่อมดีกว่าการบริจาคทานที่ตามด้วยการก่อความเดือดร้อน และอัลลอฮ์นั้นเป็นผู้ทรงมั่งมี ผู้ทรงขันติเสมอ",
       "ko": "친절한 말과 용서는 해 끼침이 뒤따르는 자선보다 더 좋으니라. 하나님께서는 스스로 풍족하신 분이며 가장 관대히 용인하시는 분이라.",
-      "vi": "Lời nói tử tế và lòng bao dung tốt hơn việc bố thí có kèm theo (lời lẽ hay hành động) làm tổn thương (danh dự của người được bố thí và trợ giúp). Quả thật, Allah là Đấng Giàu Có, Chịu Đựng."
+      "vi": "Lời nói tử tế và lòng bao dung tốt hơn việc bố thí có kèm theo (lời lẽ hay hành động) làm tổn thương (danh dự của người được bố thí và trợ giúp). Quả thật, Allah là Đấng Giàu Có, Chịu Đựng.",
+      "pt": "Dito conveniente e perdão são melhores que esmola seguida de moléstia. E Allah é Bastante a Si mesmo, Clemente.",
+      "it": "Una parola gentile e un perdono sono meglio di un’elemosina seguita da un’offesa, e Allāh è l’Autosufficiente, il Benevolo.",
+      "sv": "Ett vänligt ord och överseende är bättre än välgörenhet följt av sårande ord. Gud är oberoende, fördragsam.",
+      "uk": "Добре слово і прощення кращі за милостиню, яка супроводжується образою. Аллаг — Багатий, Жалісливий!",
+      "ro": "O vorbă cuviincioasă şi de iertare este mai bună decât o milostenie după care urmează necăjirea. Iar Allah este Ghani [Înstărit Îndeajuns], Halim [Blând].",
+      "hr": "Lijepa riječ i oprost vredniji su od milostinje popraćene vrijeđanjem. A Allah je neovisan i Onaj Koji ne žuri s kaznom.",
+      "sr": "Лепа реч и опрост вреднији су од милостиње попраћене вређањем. А Аллах није ни о коме завистан и благ је."
     }
   },
   {
@@ -541,7 +632,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "Seytaane na fodana on baasal o yamira on pankare, Alla noon na fodana on yaafuya ummaade e makko e ɓural Alla ko jaajɗo ko o ganndo.",
       "yo": "Aṣ-Ṣaetọ̄n ń fi òṣì dẹ́rù bà yín, ó sì ń pa yín ní àṣẹ ìbàjẹ́ ṣíṣe. Allāhu sì ń ṣe àdéhùn àforíjìn àti oore àjùlọ láti ọ̀dọ̀ Rẹ̀ fún yín. Allāhu ní Oníbúọlá, Onímọ̀.",
       "zh": "恶魔以贫乏恐吓你们，以丑事命令你们；安拉却应许你们发自他的赦宥和恩惠。安拉是宽大的，是全知的。",
-      "ko": "사탄은 그대들에게 가난을 다짐하고 그대들에게 추악한 행위를 명령하노라. 그러나 하나님께서는 그대들에게 그분의 용서와 은혜를 다짐하시노라. 하나님께서는 (은혜가) 드넓으신 분이며 알고 계시는 분이라."
+      "ko": "사탄은 그대들에게 가난을 다짐하고 그대들에게 추악한 행위를 명령하노라. 그러나 하나님께서는 그대들에게 그분의 용서와 은혜를 다짐하시노라. 하나님께서는 (은혜가) 드넓으신 분이며 알고 계시는 분이라.",
+      "it": "Satana vi promette la miseria e vi ordina la nefandezza, e Allāh vi promette il perdono e la Sua grazia. E Allāh è Immenso, Sapiente.",
+      "sv": "Satan skrämmer er med fattigdom och uppmanar er att göra skamlösa handlingar, medan Gud lovar er förlåtelse och överflöd; Guds [godhet] och kunskap omfattar allt.",
+      "uk": "Шайтан лякає вас бідністю й закликає вас до розпусти, а Аллаг обіцяє вам прощення та ласку Свою. Аллаг — Всеосяжний, Всезнаючий!",
+      "ro": "Şeitan vă ameninţă cu sărăcia şi vă porunceşte lucruri urâte, în timp ce Allah vă promite Iertare şi Mărinimie. Și Allah este Uasi [Cel cu Har Nemărginit], Alim [Atoateștiutor].",
+      "hr": "Sotona vas plaši siromaštvom i navodi vas na zlo, a Allah vam obećava oprost i dobro. Allah je neizmjerno darežljiv i Onaj Koji sve zna.",
+      "sr": "Ђаво вас плаши сиромаштвом и наводи вас на зло, а Аллах вам обећава опрост и награду. Аллах је неизмерно дарежљив и све зна."
     }
   },
   {
@@ -574,7 +671,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "的确那些归信而且行善，并谨守拜功，完纳天课的人，将在他们的养主那里享受报酬，他们将来没有恐惧，他们也不会忧愁。",
       "th": "แท้จริงบรรดาผู้ที่ศรัทธา และกระทำความดี ดำรงไว้ซึ่งการละหมาด และจ่ายซะกาต พวกเขาจะได้รับการตอบแทน ณ ที่พระผู้อภิบาลของพวกเขา และไม่มีความกลัวใด ๆ สำหรับพวกเขา และพวกเขาก็จะไม่เสียใจ",
       "ko": "실로 (하나님과 사도를) 믿고 선행을 실천하며 성실히 예배를 드리고 의무 희사금(자카)을 내는 자들, 그들에게는 그들 주님으로부터 그들의 보상이 있을 것이며 그들에게 두려움이란 없을 것이며 그들은 슬퍼하지도 않을 것이라.",
-      "vi": "Quả thật, những người có đức tin và hành thiện, chu đáo duy trì lễ nguyện Salah và xuất Zakah thì họ sẽ nhận được ân phước của họ ở nơi Thượng Đế của họ, họ sẽ không lo sợ cũng sẽ không buồn phiền."
+      "vi": "Quả thật, những người có đức tin và hành thiện, chu đáo duy trì lễ nguyện Salah và xuất Zakah thì họ sẽ nhận được ân phước của họ ở nơi Thượng Đế của họ, họ sẽ không lo sợ cũng sẽ không buồn phiền.",
+      "sv": "De som tror och handlar rättfärdigt och som förrättar bönen och ger den obligatoriska allmosan kommer att få belöning av sin Herre. De kommer varken att känna rädsla eller tyngas av sorg.",
+      "uk": "Воістину, ті, які увірували, творили добрі справи, звершували молитву і давали закят, матимуть винагороду у Господа їхнього. Немає страху їм, і не будуть засмучені вони!",
+      "ro": "Cu adevărat cei care cred şi fac fapte bune, îndeplinesc Rugăciunea şi oferă Zakat-ul, vor avea răsplata lor de la Domnul lor şi nu se vor teme şi nici nu vor fi necăjiți.",
+      "hr": "Doista će oni koji vjeruju, i dobra djela čine, i molitvu obavljaju, i zekat daju, imati nagradu u Gospodara svoga. Za njih nema straha i oni ne treba da se žaloste!",
+      "sr": "Заиста ће они који верују, и добра дела чине, и молитву обављају, и обавезну милостињу дају, имати награду код свога Господара. За њих нема страха и они не треба да тугују!"
     }
   },
   {
@@ -618,7 +720,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "ഭൂമിയിലോ ആകാശത്തോ ഉള്ള യാതൊരു കാര്യവും അല്ലാഹുവിന്ന് അവ്യക്തമായിപ്പോകുകയില്ല; തീര്‍ച്ച.",
       "th": "แท้จริงสำหรับอัลลอฮ์นั้น ไม่มีสิ่งใดที่จะซ่อนเร้นจากพระองค์ได้ ทั้งในแผ่นดิน และในชั้นฟ้า",
       "ko": "실로 하나님께는 대지나 하늘의 그 무엇도 숨겨지지 않노라.",
-      "vi": "Quả thật không có bất cứ thứ gì ở trên trái đất cũng như ở trên trời có thể ẩn khuất khỏi Allah."
+      "vi": "Quả thật không có bất cứ thứ gì ở trên trái đất cũng như ở trên trời có thể ẩn khuất khỏi Allah.",
+      "pt": "Por certo, de Allah nada se esconde, na terra nem no céu.",
+      "it": "In verità ad Allāh non si nasconde nulla in terra né in cielo.",
+      "sv": "För Gud är ingenting dolt, vare sig på jorden eller i himlen.",
+      "uk": "Воістину, від Аллага не приховається жодна річ — ні на землі, ні на небі!",
+      "ro": "Cu adevărat, lui Allah nu-I este nimic ascuns, nici de pe Pământ, nici în Cer.",
+      "hr": "Allahu, doista, ništa nije skriveno, ni na Zemlji, ni na nebu.",
+      "sr": "Аллаху, заиста, ништа није скривено, ни на Земљи, ни на небу.",
+      "el": "Πράγματι, δεν υπάρχει τίποτα στη γη, ούτε στον ουρανό που να είναι κρυφό από τον Αλλάχ."
     }
   },
   {
@@ -662,7 +772,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "ഗര്‍ഭാശയങ്ങളില്‍ താന്‍ ഉദ്ദേശിക്കുന്ന വിധത്തില്‍ നിങ്ങളെ രൂപപ്പെടുത്തുന്നത് അവനത്രെ. അവനല്ലാതെ ആരാധനക്കർഹനായി ആരുമില്ല. അവന്‍ പ്രതാപിയും യുക്തിമാനുമത്രെ.",
       "th": "พระองค์คือผู้ทรงทำให้พวกเจ้าเป็นรูปร่างในครรภ์ (มารดาของพวกเจ้า) ตามที่พระองค์ทรงประสงค์ ไม่มีพระเจ้าอื่นใดที่สมควรได้รับการเคารพสักการะนอกจากพระองค์เท่านั้น ผู้ทรงเดชานุภาพ ผู้ทรงปรีชาญาณยิ่ง",
       "ko": "원하시는 방식으로 자궁 속의 그대들을 형상화하시는 분이 그분이시니, 가장 존엄하시고 가장 현명하신 그분 이외에는 경배받을 존재가 없노라.",
-      "vi": "Ngài là Đấng đã tạo hình hài cho các ngươi trong các dạ con (của các bà mẹ) như thế nào tùy theo ý muốn của Ngài. Không có Thượng Đế (đích thực) nào khác ngoài Ngài, Đấng Toàn Năng, Đấng Sáng Suốt."
+      "vi": "Ngài là Đấng đã tạo hình hài cho các ngươi trong các dạ con (của các bà mẹ) như thế nào tùy theo ý muốn của Ngài. Không có Thượng Đế (đích thực) nào khác ngoài Ngài, Đấng Toàn Năng, Đấng Sáng Suốt.",
+      "pt": "Ele é Quem vos configura, nas matrizes, como quer. Não existe deus senão Ele, O Todo-Poderoso, O Sábio.",
+      "it": "Lui è Colui che vi forma negli uteri come vuole. Non c’è divinità all’infuori di Lui, il Potente, il Saggio.",
+      "sv": "Det är han som formar er i livmodern såsom han vill. Ingen är värd dyrkan utom han, den Allsmäktige, den Vise.",
+      "uk": "Він — Той, Хто ще в зародку дарує вам образ ваш, такий, який побажає. Немає бога, крім Нього, а Він — Великий, Мудрий!",
+      "ro": "El este Cel care vă formează în utere așa cum Voiește El. Nu există altă divinitate în afară de El, Al-Aziz [Atotputernicul], Al-Hakim [Înțeleptul].",
+      "hr": "On je Onaj Koji vas oblikuje u maternicama kako On hoće; nema drugog boga osim Njega, Silnog i Mudrog.",
+      "sr": "Он је Онај Који вас обликује у материцама како Он хоће; нема другог бога осим Њега, Силног и Мудрог."
     }
   },
   {
@@ -699,7 +816,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக மக்களுக்கு அமைக்கப்பட்ட முதல் இல்லம், (மக்கா என்றழைக்கப்படும்) ‘பக்கா’வில் உள்ளதாகும். அது பாக்கியமிக்கதும் (அதிகமான நன்மைகளை உடையதும்) அகிலத்தார்களுக்கு நேர்வழிகாட்டியாகவும் இருக்கிறது.",
       "th": "แท้จริงแล้ว บ้านหลังแรกที่ถูกตั้งขึ้นสำหรับมนุษย์ (เพื่อการอิบาดะฮ์) นั้น แน่นอนคือบ้านที่มักกะฮ์อันจำเริญ และเป็นทางนำแก่ผู้คนทั้งหลาย",
       "ko": "진실로 인류를 위해 놓여진 최초의 집은 메카(박카)에 있는 것으로서 축복이 가득하며 모든 이들을 위한 진리의 길잡이라.",
-      "vi": "Quả thật, ngôi đền đầu tiên được xây dựng cho nhân loại (để thờ phượng Allah) là Ngôi Đền tại Bakkah (Makkah) hồng phúc và là sự chỉ đạo cho toàn vũ trụ và vạn vật."
+      "vi": "Quả thật, ngôi đền đầu tiên được xây dựng cho nhân loại (để thờ phượng Allah) là Ngôi Đền tại Bakkah (Makkah) hồng phúc và là sự chỉ đạo cho toàn vũ trụ và vạn vật.",
+      "sv": "Den första helgedomen som upprättades för människorna är den i Bakkah – en välsignelse och vägledning för hela mänskligheten.",
+      "ro": "Cu adevărat, Cea dintâi Casă [pentru adorarea lui Allah] ridicată pentru oameni este aceea din Bakka [Mecca], cea binecuvântată și călăuzire pentru toate lumile.",
+      "sr": "Прва богомоља подигнута за људе јесте она у Бекки, благословљена је и путоказ световима.",
+      "el": "Πράγματι, ο πρώτος Οίκος (λατρείας του Αλλάχ) που κτίστηκε για τους ανθρώπους ήταν ο Ιερός Οίκος στην Μπάκκα (δηλ. Μάκκα ή Μέκκα), ευλογημένος και ως καθοδήγηση για όλον τον κόσμο."
     }
   },
   {
@@ -743,7 +864,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ അല്ലാഹുവെ സൂക്ഷിക്കേണ്ട മുറപ്രകാരം സൂക്ഷിക്കുക. നിങ്ങള്‍ മുസ്ലിംകളായിക്കൊണ്ടല്ലാതെ മരിക്കാനിടയാകരുത്‌.",
       "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงยำเกรงต่ออัลลอฮ์ด้วยการยำเกรงต่อพระองค์อย่างแท้จริงเถิด และพวกเจ้าจงอย่าได้ตายเว้นแต่ในฐานะมุสลิมเท่านั้น",
       "ko": "믿는 자들이여! 그대들은 진정으로 하나님을 경외하라. 그리고 반드시 무슬림으로서 죽음을 맞이하라.",
-      "vi": "Hỡi những người có đức tin, các ngươi hãy kính sợ Allah bằng lòng kính sợ thực sự; và các ngươi hãy đừng chết ngoại trừ các ngươi đã là những người Muslim (thần phục Allah)."
+      "vi": "Hỡi những người có đức tin, các ngươi hãy kính sợ Allah bằng lòng kính sợ thực sự; và các ngươi hãy đừng chết ngoại trừ các ngươi đã là những người Muslim (thần phục Allah).",
+      "pt": "Ó vós que credes! Temei a Allah como se deve temê-LO, e não morrais senão enquanto muçulmanos.",
+      "it": "O credenti, temete Allāh come Gli è dovuto e non morite se non da musulmani!",
+      "sv": "Troende! Frukta Gud så som han förtjänar att fruktas, och dö inte annat än som muslimer.",
+      "ro": "O, voi cei care credeți! Fiți cu frică de Allah, așa cum se cuvine să fie frica de El și nu muriți decât ca musulmani!",
+      "hr": "O vi koji vjerujete, bojte se Allaha istinskom bogobojaznošću i nipošto ne umirite osim kao muslimani!",
+      "sr": "О ви који верујете, бојте се Аллаха истинском богобојазношћу и нипошто не умирите осим као муслимани!",
+      "el": "Ω, εσείς που πιστεύετε, να φυλαχθείτε από την τιμωρία του Αλλάχ (μέσω της υπακοής των εντολών Του) όπως Του πρέπει, και μην πεθάνετε παρά μόνο ως Μουσουλμάνοι."
     }
   },
   {
@@ -787,7 +915,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അല്ലാഹുവിന്‍റെതാകുന്നു ആകാശങ്ങളിലുള്ളതും ഭൂമിയിലുള്ളതും. അല്ലാഹുവിങ്കലേക്കാകുന്നു കാര്യങ്ങള്‍ മടക്കപ്പെടുന്നത്‌.",
       "th": "และทุกสิ่งที่อยู่ในชั้นฟ้าทั้งหลายและทุกสิ่งที่อยู่ในแผ่นดินเป็นกรรมสิทธิ์ของอัลลอฮ์ และยังอัลลอฮ์เท่านั้นที่กิจการทั้งหลายจะกลับไป",
       "ko": "하늘에 있는 것과 대지에 있는 것이 하나님의 소유라. 모든 일은 하나님께로 돌아가게 될 것이라.",
-      "vi": "Vạn vật trong các tầng trời và vạn vật trong trái đất đều thuộc về Allah; và tất cả mọi sự việc đều sẽ được đưa về trình Allah."
+      "vi": "Vạn vật trong các tầng trời và vạn vật trong trái đất đều thuộc về Allah; và tất cả mọi sự việc đều sẽ được đưa về trình Allah.",
+      "pt": "E de Allah é o que há nos céus e o que há na terra, e a Allah são retornadas as determinações.",
+      "it": "E appartiene ad Allāh ciò che è nei cieli e ciò che è in terra, e ad Allāh tornano in verità tutte le cose.",
+      "sv": "Till Gud hör allt i himlarna och allt på jorden. Till Gud förs allting åter.",
+      "uk": "Аллагу належить все, що на небесах, і все, що на землі. І до Аллага повертаються усі справи!",
+      "ro": "Ale lui Allah sunt cele din Ceruri și de pe Pământ și la Allah se întorc toate lucrurile.",
+      "hr": "Allahu pripada sve što je na nebesima i što je na Zemlji, i Allahu se sve vraća.",
+      "sr": "Аллаху припада све што је на небесима и што је на Земљи, и Аллаху се све враћа.",
+      "el": "Στον Αλλάχ ανήκει ό,τι υπάρχει στους ουρανούς και στη γη, και στον Αλλάχ θα επιστρέψουν όλες οι υποθέσεις."
     }
   },
   {
@@ -831,7 +967,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "ഇത് മനുഷ്യര്‍ക്കായുള്ള ഒരു വിളംബരവും, ധര്‍മ്മനിഷ്ഠപാലിക്കുന്നവര്‍ക്ക് മാര്‍ഗദര്‍ശനവും, സാരോപദേശവുമാകുന്നു.",
       "th": "นี่ (อัลกุรอาน) เป็นข้อชี้แจงแก่มนุษย์ทั้งหลาย เป็นทางนำ และเป็นข้อตักเตือนสำหรับผู้ยำเกรงทั้งหลาย",
       "ko": "이것은 인간을 위한 명백한 진술이며 하나님을 경외하는 자들을 위한 인도이자 교훈이라.",
-      "vi": "(Qur’an) này đây là một sự trình bày rõ ràng cho nhân loại, Nó đồng thời là nguồn chỉ đạo và là lời răn dạy dành cho những người ngoan đạo."
+      "vi": "(Qur’an) này đây là một sự trình bày rõ ràng cho nhân loại, Nó đồng thời là nguồn chỉ đạo và là lời răn dạy dành cho những người ngoan đạo.",
+      "it": "Questo è un avvertimento per la gente e guida e consiglio per i timorati:",
+      "sv": "Detta är ett klargörande för människorna, samt en vägledning och en förmaning för de gudfruktiga.",
+      "uk": "Це — пояснення для людей, прямий шлях та повчання для богобоязливих!",
+      "ro": "Aceasta [Coranul] este deslușire pentru oameni, călăuzire și îndemn pentru cei cu frică de Allah.",
+      "hr": "To je objašnjenje ljudima, i uputa i pouka za one koji se Allaha boje.",
+      "sr": "То је објашњење људима, и упута и поука за оне који се боје Аллаха.",
+      "el": "Αυτό (το Κορ'άν) είναι μια ξεκάθαρη δήλωση για την ανθρωπότητα, και καθοδήγηση και νουθεσία για τους ευσεβείς (που φυλάσσονται από την τιμωρία του Αλλάχ μέσω της υπακοής των εντολών Tου)."
     }
   },
   {
@@ -867,7 +1010,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Tí Allāhu bá ṣe àrànṣe fún yín, kò sí ẹni tí ó máa borí yín. Tí Ó bá sì yẹpẹrẹ yín, ta sì ni ẹni tí ó máa ṣe àrànṣe fún yín lẹ́yìn Rẹ̀? Allāhu ni kí àwọn onígbàgbọ́ òdodo gbáralé.",
       "zh": "如果安拉援助你们，那么，绝没有人能战胜你们。如果他弃绝你们，那么，在他〔弃绝你们〕之后，谁能援助你们呢？叫信士们只信托安拉！",
       "th": "หากอัลลอฮ์ทรงช่วยเหลือพวกเจ้า ก็ไม่มีผู้ใดชนะพวกเจ้าได้ และหากพระองค์ทรงทอดทิ้งพวกเจ้า ดังนั้น ผู้ใดเล่าจะช่วยเหลือพวกเจ้าได้อีก หลังจากพระองค์? และต่ออัลลอฮ์เท่านั้น บรรดาผู้ศรัทธาก็จงมอบหมายเถิด",
-      "ko": "하나님께서 그대들을 도와주신다면 그대들을 제압할 자 아무도 없노라. 그러나 그분께서 그대들을 버려두신다면 그분 이외에 그대들을 도와줄 자 누구인가. 믿는 자들은 오직 하나님께만 의탁하도록 하라."
+      "ko": "하나님께서 그대들을 도와주신다면 그대들을 제압할 자 아무도 없노라. 그러나 그분께서 그대들을 버려두신다면 그분 이외에 그대들을 도와줄 자 누구인가. 믿는 자들은 오직 하나님께만 의탁하도록 하라.",
+      "pt": "Se Allah vos socorre, não tereis sobre vós vencedor algum. E se Ele vos desampara, quem após Ele vos socorrerá? E que em Allah, então, confiem os crentes!",
+      "it": "Se vi sostiene Allāh, non ci sarà nessuno che possa vincervi! Ma se vi abbandonasse, chi vi sosterrebbe dopo di Lui? E ad Allāh si affidino i credenti!",
+      "sv": "Om Gud hjälper er kan ingen besegra er. Men om han överger er, vem kan då hjälpa er i hans ställe? Till Gud ska de troende sätta sin tillit.",
+      "uk": "Якщо Аллаг дарує вам допомогу, то ніхто не переможе вас! А якщо Він позбавить вас неї, то хто ж тоді допоможе вам замість Нього? Нехай на Нього покладають сподівання віруючі!",
+      "ro": "Dacă Allah vă va ajuta, nimeni nu vă va putea învinge, dar dacă El vă va părăsi, cine este acela care ar putea să vă ajute după El? În Allah trebuie să se încreadă dreptcredincioșii!",
+      "hr": "Ako vas Allah pomogne, nitko vas pobijediti neće; a ako vas napusti, pa tko je taj koji vam, osim Njega, može pomoći?! Pa, na Allaha neka se zato oslanjaju vjernici!",
+      "sr": "Ако вас Аллах помогне, нико вас победити не може; а ако вас напусти, па ко је тај који, осим Њега, може да вам помогне?! Зато, на Аллаха нека се ослањају верници!"
     }
   },
   {
@@ -905,7 +1055,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Allāhu fẹ́ ṣàlàyé (òfin) fún yín, Ó fẹ́ tọ yín sí ọ̀nà àwọn tó ṣíwájú yín, Ó sì fẹ́ gba ìronúpìwàdà yín. Allāhu sì ni Onímọ̀, Ọlọ́gbọ́n.",
       "zh": "安拉欲为你们阐明礼义，并指示你们先民的法程，且赦宥你们。安拉是全知的，是至睿的。",
       "th": "อัลลอฮ์ทรงปรารถนาที่จะแจกแจง (บทบัญญัติของพระองค์) แก่พวกเจ้า และชี้นำพวกเจ้าสู่วิถีทางของบรรดาผู้ที่มาก่อนพวกเจ้า และจะทรงอภัยโทษให้แก่พวกเจ้า และอัลลอฮ์ทรงเป็นผู้ทรงรอบรู้ ผู้ทรงมีปรีชาญาณ",
-      "ko": "하나님께서 원하시니 그대들을 위해 분명히 설명하시고 그대들 이전에 있었던 자들의 전통으로 그대들을 인도하시며 그대들의 뉘우침을 받아 주시노라. 하나님께서는 지식을 가지신 지혜로운 분이시라."
+      "ko": "하나님께서 원하시니 그대들을 위해 분명히 설명하시고 그대들 이전에 있었던 자들의 전통으로 그대들을 인도하시며 그대들의 뉘우침을 받아 주시노라. 하나님께서는 지식을 가지신 지혜로운 분이시라.",
+      "pt": "Allah deseja tornar evidente, para vós, o que não sabeis, e guiar-vos aos procedimentos dos que foram antes de vós, e voltar-se para vós. E Allah é Onisciente, Sábio.",
+      "it": "Allāh vuole chiarirvi e guidarvi sui sentieri di quelli che vi hanno preceduti, e perdonarvi i peccati, e Allāh è in verità Sapiente, Saggio.",
+      "sv": "Gud vill klargöra för er och vägleda er till de levnadssätt som följdes av dem före er, och leda er till omvändelse. Gud är allvetande, vis.",
+      "uk": "Аллаг прагне дати роз’яснення вам, скерувати вас до законів тих людей, які жили перед вами та прийняти ваше каяття. Аллаг — Всезнаючий, Мудрий!",
+      "hr": "Allah vam želi objasniti i uputiti vas putevima kojima su išli oni prije vas i oprostiti vam. Allah je Onaj Koji sve zna i mudar je.",
+      "sr": "Аллах жели да вам објасни и упути вас путевима којима су ишли они пре вас, и да вам опрости. Аллах све зна и мудар је."
     }
   },
   {
@@ -945,7 +1101,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അല്ലാഹു നിങ്ങളുടെ പശ്ചാത്താപം സ്വീകരിക്കാന്‍ ഉദ്ദേശിക്കുന്നു. എന്നാല്‍ തന്നിഷ്ടങ്ങളെ പിന്‍പറ്റി ജീവിക്കുന്നവര്‍ ഉദ്ദേശിക്കുന്നത് നിങ്ങള്‍ (നേര്‍വഴിയില്‍ നിന്ന്‌) വന്‍തോതില്‍ തെറ്റിപ്പോകണമെന്നാണ്‌",
       "th": "และอัลลอฮ์ทรงปรารถนา (ชำระพวกเจ้าให้สะอาดจากบาปด้วยการ) ยอมรับการกลับตัวกลับใจของพวกเจ้า ในขณะที่คน (ชั่ว) ที่ฝักใฝ่ในตัณหาต้องการทำให้พวกเจ้าหันเหออกไป (จากความจริง) ให้ไกลที่สุด",
       "ko": "하나님께서는 그대들의 뉘우침을 받아 주길 원하시나, 욕망을 좇는 자들은 그대들이 심히 엇나가길 원하노라.",
-      "vi": "Allah thực sự muốn tha thứ cho các ngươi nhưng những kẻ theo đuổi dục vọng thì muốn kéo các ngươi sa ngã quá mức."
+      "vi": "Allah thực sự muốn tha thứ cho các ngươi nhưng những kẻ theo đuổi dục vọng thì muốn kéo các ngươi sa ngã quá mức.",
+      "it": "E Allāh vuole perdonarvi, ma quelli che seguono i piaceri vogliono che voi facciate una grande deviazione.",
+      "sv": "Gud vill ta emot er ånger, men de som följer sina begär vill att ni ska avvika kraftigt.",
+      "uk": "Аллаг прагне прийняти каяття ваше! А ті, які йдуть за своїми пристрастями, прагнуть відвернути вас якнайдалі.",
+      "ro": "Și Allah Voiește să vă accepte căința, dar cei care își urmează poftele lor, doresc ca voi să vă abateți cât mai mult [de la El].",
+      "hr": "Allah vam želi oprostiti, a oni koji se za strastima svojim povode žele da daleko skrenete.",
+      "sr": "Аллах жели да вам опрости, а они који се за страстима својим поводе желе да далеко скренете.",
+      "el": "Ο Αλλάχ θέλει να δεχτεί τη μεταμέλειά σας (ω, πιστοί), ενώ εκείνοι που ακολουθούν τους πόθους (τους), επιθυμούν να παρεκκλίνετε πολύ (από τον ίσιο δρόμο)."
     }
   },
   {
@@ -987,7 +1150,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "உங்களுக்கு தடுக்கப்பட்ட பாவங்களில் பெரும்பாவங்களை விட்டு நீங்கள் விலகினால், உங்களை விட்டும் உங்கள் சிறு பாவங்களை நாம் போக்கிவிடுவோம். இன்னும், உங்களை கண்ணியமான இடத்தில் பிரவேசிக்க வைப்போம்.",
       "th": "หากพวกเจ้าออกห่างจากบรรดาบาปใหญ่ที่พวกเจ้าถูกห้ามไว้ไม่ให้กระทำแล้ว เราจะลบล้างเหล่าความผิดของพวกเจ้าอย่างแน่นอน (บรรดาบาปเล็กๆ ของพวกเจ้า) และเราจะยอมรับพวกเจ้าสู่สถานที่อันมีเกียรติยิ่ง (สวรรค์)",
       "ko": "만약 그대들이 그대들에게 금지된 커다란 죄를 피한다면 그분께서는 그대들의 악행을 용서해 주실 것이며 그대들을 실로 명예로운 장소(천국)로 들게 하실 것이라.",
-      "vi": "Nếu các ngươi tránh được những đại tội đã nghiêm cấm thì TA sẽ xí xóa cho các ngươi những tội lỗi khác và sẽ thu nhận các ngươi vào một nơi cư ngụ vô cùng vinh dự (Thiên Đàng)."
+      "vi": "Nếu các ngươi tránh được những đại tội đã nghiêm cấm thì TA sẽ xí xóa cho các ngươi những tội lỗi khác và sẽ thu nhận các ngươi vào một nơi cư ngụ vô cùng vinh dự (Thiên Đàng).",
+      "pt": "Se evitais os grandes pecados, de que sois coibidos, remir-vos-emos as más obras e far-vos-emos entrar em entrada nobre.",
+      "it": "Se eviterete i peccati capitali che vi sono proibiti, vi assolveremo dai vostri peccati, e vi ricompenseremo con il meglio del Paradiso.",
+      "sv": "Om ni undviker de stora synder som ni förbjudits ska vi utplåna era mindre synder och låta er stiga in i en hedrad plats.",
+      "uk": "І якщо ви будете уникати важких гріхів, які заборонені вам, то Ми простимо вам злі вчинки ваші та введемо вас через вхід пошани!",
+      "ro": "Dacă vă veți feri de păcatele mari, care vă sunt interzise, vă vom ierta pentru păcatele mici și vă vom lăsa să intrați într-un loc nobil [în Paradis].",
+      "hr": "Ako se budete klonili velikih grijeha koji su vam zabranjeni, Mi ćemo pokriti vaša loša djela i u divno mjesto vas uvesti.",
+      "sr": "Ако се будете клонили великих греха који су вам забрањени, Ми ћемо да покријемо ваша лоша дела и у дивно место ћемо да вас уведемо.",
+      "el": "Εάν αποφεύγετε τις μεγάλες αμαρτίες που σας απαγορεύονται, θα εξιλεώσουμε για σας τις (μικρές) αμαρτίες, και θα σας εισάγουμε σε μια ευγενή είσοδο (του Παραδείσου)."
     }
   },
   {
@@ -1027,7 +1198,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "安拉必不亏枉人一丝毫。如果人有一丝毫善功，他要加倍地酬劳他，并且以他那里的重大的报酬赏赐他。",
       "ta": "நிச்சயமாக அல்லாஹ் (எவருக்கும்) ஓர் அணுவளவும் அநியாயம் செய்ய மாட்டான். இன்னும், (அவர்கள் செய்தது) நன்மையாக இருந்தால் அதை பன்மடங்காக்குவான். இன்னும், தன்னிடமிருந்து மகத்தான கூலியையும் கொடுப்பான்.",
       "ml": "തീര്‍ച്ചയായും അല്ലാഹു ഒരു അണുവോളം അനീതി കാണിക്കുകയില്ല. വല്ല നന്‍മയുമാണുള്ളതെങ്കില്‍ അതവന്‍ ഇരട്ടിച്ച് കൊടുക്കുകയും, അവന്‍റെ പക്കല്‍ നിന്നുള്ള വമ്പിച്ച പ്രതിഫലം നല്‍കുകയും ചെയ്യുന്നതാണ്‌.",
-      "ko": "실로 하나님께서는 티끌의 무게라도 부당히 다루지 않으시노라. 만약 그것이 선행이라면 그분께서는 그것을 불려주실 것이며 그분으로부터 비롯된 위대한 보상을 주실 것이라."
+      "ko": "실로 하나님께서는 티끌의 무게라도 부당히 다루지 않으시노라. 만약 그것이 선행이라면 그분께서는 그것을 불려주실 것이며 그분으로부터 비롯된 위대한 보상을 주실 것이라.",
+      "pt": "Por certo, Allah não faz injustiça nem mesmo do peso de um átomo. E se este é uma boa ação, multiplicá-la-á, e concederá, de Sua parte, magnífico prêmio.",
+      "it": "In verità Allāh non fa torto, neanche del peso di un atomo, e se è un’opera buona, la moltiplica, e concede, da parte Sua, un grande premio.",
+      "sv": "Gud gör ingen orätt ens motsvarande ett stoftkorns vikt. Och om det är en god handling, mångfaldigar han den och ger, ur sin godhet, en stor belöning.",
+      "uk": "Воістину, Аллаг нікого не скривдить навіть на вагу порошинки. А якщо вчинок буде добрим, то Він подвоїть його і дарує від Себе велику винагороду!",
+      "ro": "Cu adevărat, Allah nu este nedrept [față de nimeni], nici cât greutatea unui atom; dacă este o faptă bună, El o înmulțește și dă din partea Sa răsplată mare.",
+      "hr": "Zaista Allah ni trunku nepravde ne čini, pa ako to bude dobro djelo, On će ga umnogostručiti i od Sebe nagradu veliku dati.",
+      "sr": "Заиста Аллах ни трунку неправде не чини, па ако то буде добро дело, Он ће да га умногостручи и подариће велику награду од Себе.",
+      "el": "Πράγματι, ο Αλλάχ δεν αδικεί κανέναν, ούτε στο βάρος ενός ατόμου (μορίου). Και αν είναι μια καλή πράξη, θα την πολλαπλασιάσει και ο Ίδιος θα δώσει μια μεγάλη ανταμοιβή."
     }
   },
   {
@@ -1063,7 +1242,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Allāhu, kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun. Dájúdájú Ó máa ko yín jọ ní Ọjọ́ Àjíǹde, kò sí iyèméjì nínú rẹ̀. Ta ló sọ̀dodo ọ̀rọ̀ ju Allāhu?",
       "zh": "安拉——除他外，绝无应受崇拜的——在毫无疑义的复活日必集合你们。言词方面，谁比安拉更诚实呢？",
       "ta": "அல்லாஹ் அவனைத் தவிர (உண்மையில் வணங்கத்தகுதியான) இறைவன் அறவே இல்லை. அவன் நிச்சயமாக உங்களை மறுமை நாளில் ஒன்று சேர்ப்பான். அதில் அறவே சந்தேகம் இல்லை. பேச்சால் அல்லாஹ்வைவிட மிக உண்மையானவன் யார்?",
-      "ko": "하나님, 그분 이외에는 경배받을 존재가 없노라. 진실로 그분께서는 의혹의 여지가 없는 부활의 날로 그대들을 모으실 것이라. 하나님보다 더 진실된 말씀을 하는 자 누구인가?"
+      "ko": "하나님, 그분 이외에는 경배받을 존재가 없노라. 진실로 그분께서는 의혹의 여지가 없는 부활의 날로 그대들을 모으실 것이라. 하나님보다 더 진실된 말씀을 하는 자 누구인가?",
+      "pt": "Allah, não existe deus senão Ele! Em verdade, Ele vos juntará no indubitável Dia da Ressurreição. E quem mais verídico que Allah em dizê-lo?",
+      "it": "Allāh, non c’è nessuna divinità all’infuori di Lui! Vi riunirà senza dubbio nel Giorno della Resurrezione! Chi è più veritiero di Allāh?",
+      "sv": "Gud – ingen är värd dyrkan utom han! Han ska sannerligen samla er alla på uppståndelsens dag, om vilken det inte råder något tvivel. Och vems ord är sannare än Guds?",
+      "uk": "Аллаг! Немає бога, крім Нього! Ми неодмінно зберемо вас у День Воскресіння, у якому немає сумніву! А хто ж правдивіший за Аллага словом?",
+      "ro": "Allah! Nu există altă divinitate în afară de El! El vă va aduna cu siguranță în Ziua Învierii, asupra căreia nu este nicio îndoială. Și cine este mai adevărat decât Allah în ceea ce El Spune?",
+      "hr": "Allah, osim Koga drugoga boga nema, sigurno će vas sakupiti na Sudnjem danu, u što nema nimalo sumnje, a čiji je govor istinitiji od Allahovog?!",
+      "sr": "Аллах, осим Кога другог истинског бога нема, сигурно ће да вас сакупи на Судњем дану, у што нема нимало сумње, а чији је говор истинитији од Аллаховог?!"
     }
   },
   {
@@ -1103,7 +1289,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "谁欲享今世的报酬，安拉那里有今世和后世的报酬。安拉是全聪的，是全明的。",
       "th": "ผู้ใดที่ปรารถนาสิ่งตอบแทนในโลกนี้ ดังนั้น ณ อัลลอฮ์แล้ว มีทั้งสิ่งตอบแทนในโลกนี้และปรโลก และอัลลอฮ์นั้น เป็นผู้ทรงได้ยิน ผู้ทรงเห็น",
       "ko": "현세의 보상을 원하는 자가 있다면 하나님께는 현세와 내세의 보상이 있노라. 하나님께서는 들으시고 보시는 분이도다.",
-      "vi": "Người nào mong muốn phần thưởng của đời sống trần gian thì (hãy biết rằng) ở nơi Allah có phần thưởng của đời sống trần gian và cả Đời Sau. Quả thật, Allah hằng nghe, hằng thấy."
+      "vi": "Người nào mong muốn phần thưởng của đời sống trần gian thì (hãy biết rằng) ở nơi Allah có phần thưởng của đời sống trần gian và cả Đời Sau. Quả thật, Allah hằng nghe, hằng thấy.",
+      "pt": "Quem deseja a retribuição da vida terrena, saiba que junto de Allah, está a retribuição da vida terrena e da Derradeira Vida. E Allah é Oniouvinte, Onividente.",
+      "it": "Per chi desidera il premio terreno, sappia che Allāh possiede sia il premio terreno che quello dell’Aldilà, e Allāh è in verità l’Ascoltatore, l’Osservatore.",
+      "sv": "Den som söker vinst i detta jordeliv, [ska veta att] hos Gud finns både jordelivets och det kommande livets vinst. Gud hör allt, ser allt.",
+      "uk": "І якщо хто прагне винагороди земного життя, то у Аллага — винагорода земного життя і життя наступного. Аллаг — Всечуючий, Всевидячий!",
+      "ro": "Cel care dorește răsplata acestei lumi, atunci la Allah se află răsplata și pentru această lume și pentru Lumea de Apoi. Și Allah este Sami' [Cel care Aude Totul] și Basir [Cel care Vede Totul].",
+      "hr": "Onaj koji želi nagradu na ovome svijetu, pa u Allaha je nagrada i ovoga i onoga svijeta; Allah je Onaj Koji sve čuje i Onaj Koji sve vidi.",
+      "sr": "Онај који жели награду на овом свету, па код Аллаха је награда и овога и онога света; Аллах је Свечујући и Свевидећи."
     }
   },
   {
@@ -1139,7 +1332,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "安拉不喜爱扬人之非的行为，除非他是被人亏枉的。安拉是全聪的，是全知的。",
       "th": "อัลลอฮ์ไม่ทรงชอบคำพูดที่หยาบคายที่พูดอย่างเปิดเผย เว้นแต่โดยผู้ที่ถูกอธรรม และอัลลอฮ์นั้นเป็นผู้ทรงได้ยิน ผู้ทรงรอบรู้เสมอ",
       "ko": "하나님께서는 나쁜 말을 드러냄을 사랑하지 않으시나 부당히 대우받은 자는 예외라. 하나님께서는 들으시고 아시는 분이도다.",
-      "vi": "Allah không yêu thích việc la lối giữa công chúng với những lời xấu xa ngoại trừ ai đó bị đối xử bất công (thì được phép giải trình để lấy lại công bằng). Quả thật, Allah hằng nghe, hằng biết."
+      "vi": "Allah không yêu thích việc la lối giữa công chúng với những lời xấu xa ngoại trừ ai đó bị đối xử bất công (thì được phép giải trình để lấy lại công bằng). Quả thật, Allah hằng nghe, hằng biết.",
+      "pt": "Allah não ama a declaração de maledicência, exceto a de quem sofre injustiça. E Allah é Oniouvinte, Onisciente.",
+      "it": "Allāh non ama che venga pronunciato il male nel linguaggio, tranne da colui che ha subito un torto: Allāh è Ascoltatore, Sapiente.",
+      "sv": "Gud tycker inte om att kränkande ord yttras öppet, men [detta tillåts] den som har blivit orättvist behandlad. Gud hör allt, vet allt.",
+      "uk": "Аллаг не любить привселюдного лихослів’я, хіба як вчинили несправедливо із кимось. Аллаг — Всечуючий, Всезнаючий!",
+      "ro": "Lui Allah nu-I place rostirea de vorbe urâte în auzul lumii, doar dacă cineva este nedreptățit. Iar Allah este Sami' [Cel care Aude Totul], 'Alim [Atoateștiutor].",
+      "hr": "Allah ne voli da se o zlu glasno govori, to može samo onaj kome je nepravda učinjena. A Allah je Onaj Koji sve čuje i Onaj Koji sve zna.",
+      "sr": "Аллах не воли да се о злу гласно говори, то може само онај коме је учињена неправда. А Аллах је Свечујући и Свезнајући."
     }
   },
   {
@@ -1183,7 +1383,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "വിശ്വസിക്കുകയും, സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും ചെയ്തവരോട് അല്ലാഹു വാഗ്ദാനം ചെയ്തിരിക്കുന്നു; അവര്‍ക്ക് പാപമോചനവും മഹത്തായ പ്രതിഫലവും ഉണ്ടെന്ന്‌.",
       "th": "และอัลลอฮ์ได้ทรงสัญญาแก่บรรดาผู้ที่ศรัทธา และประกอบคุณงามความดีทั้งหลายว่า สำหรับพวกเขานั้น คือ การอภัยโทษ และการตอบแทนอันยิ่งใหญ่",
       "ko": "(하나님과 사도를) 믿고 선행을 실천하는 자들에게 하나님께서 약속하시니 그들에게는 용서와 위대한 보상이 있을 것이라.",
-      "vi": "Allah đã hứa với những người có đức tin và hành thiện rằng họ sẽ được tha thứ và được ban thưởng phần thưởng vĩ đại (Thiên Đàng)."
+      "vi": "Allah đã hứa với những người có đức tin và hành thiện rằng họ sẽ được tha thứ và được ban thưởng phần thưởng vĩ đại (Thiên Đàng).",
+      "pt": "Allah promete aos que crêem e fazem as boas obras que terão perdão e magnífico prêmio.",
+      "it": "Allāh ha promesso a quelli che hanno creduto e hanno fatto il bene che avranno perdono e una grande ricompensa.",
+      "sv": "Gud har lovat de som tror och handlar rättfärdigt förlåtelse och en stor belöning.",
+      "uk": "Обіцяв Аллаг тим, які увірували і творили добрі справи, прощення і велику винагороду!",
+      "ro": "Allah le-a promis celor care cred și împlinesc fapte bune, iertare și răsplată nemăsurată.",
+      "hr": "Allah je onima koji vjeruju i dobra djela čine obećao oprost i nagradu veliku;",
+      "sr": "Аллах је онима који верују и добра дела чине обећао опрост и награду велику;",
+      "el": "Ο Αλλάχ έχει υποσχεθεί σ' εκείνους που πιστεύουν και κάνουν καλές πράξεις, ότι θα έχουν συγχώρεση και μεγάλη ανταμοιβή."
     }
   },
   {
@@ -1222,7 +1430,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "归信的人们啊！你们当敬畏安拉，当寻求亲近他的媒介，当为他的道路而奋斗，以便你们成功。",
       "ta": "நம்பிக்கையாளர்களே! நீங்கள் வெற்றியடைவதற்காக அல்லாஹ்வை அஞ்சுங்கள்! இன்னும் அவனளவில் (உங்களை) நெருக்கமாக்கி வைக்கும் நன்மையைத் தேடுங்கள்! இன்னும், அவனுடைய பாதையில் போரிடுங்கள்!",
       "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงยำเกรงต่ออัลลอฮ์เถิด และแสวงหาหนทางแห่งการใกล้ชิดต่อพระองค์ และจงต่อสู้ในหนทางของพระองค์ เพื่อว่าพวกเจ้าจะได้รับความสำเร็จ",
-      "ko": "믿는 자들이여! 하나님을 경외하고 그분께로 (가까이 다가갈) 수단을 도모하며 그분의 길에서 분투하라, 그대들이 성공하게 될 것이라."
+      "ko": "믿는 자들이여! 하나님을 경외하고 그분께로 (가까이 다가갈) 수단을 도모하며 그분의 길에서 분투하라, 그대들이 성공하게 될 것이라.",
+      "pt": "Ó vós que credes! Temei a Allah e buscai os meios de chegar a Ele; e lutai em Seu caminho, na esperança de serdes bem aventurados.",
+      "it": "O credenti, temete Allāh e impegnatevi a trovare il sentiero che conduce a Lui, e combattete per la Sua causa, così avrete successo!",
+      "sv": "Troende! Frukta Gud och sök vägar att komma honom nära, och kämpa för hans sak så att det ska gå er väl.",
+      "uk": "О ви, які увірували! Бійтеся Аллага, й шукайте шляхи наближення до Нього, й боріться на шляху Його! Можливо, матимете ви успіх!",
+      "ro": "O, voi cei care credeți, fiți cu frică de Allah, căutați mijloacele pentru a vă apropia de El și luptați pe calea Lui. Poate că voi o să izbândiți!",
+      "hr": "O vi koji vjerujete, Allaha se bojte i tražite ono što će vas Njemu približiti, i na putu Njegovu se borite da biste uspjeli.",
+      "sr": "О ви који верујете, Аллаха се бојте и тражите оно што ће да вас приближи Њему, и на Његовом путу се борите да бисте успели."
     }
   },
   {
@@ -1261,7 +1476,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "E a anndaa won de no woodani Alla Laamu kammuuli ɗin e leydi ndin, Homo Lepta on mo O muuyi, o yaafo on mo O muuyi. Alla ko kattanɗo kala huunde.",
       "yo": "Ṣé o ò mọ̀ pé dájúdájú ti Allāhu ni ìjọba àwọn sánmọ̀ àti ilẹ̀? Ó máa jẹ ẹni tí Ó bá fẹ́ níyà. Ó sì máa forí jin ẹni tí Ó bá fẹ́. Allāhu sì ni Alágbára lórí gbogbo n̄ǹkan.",
       "zh": "难道你不知道吗？安拉有天地的国权，他要惩罚谁，就惩罚谁；要赦宥谁，就赦宥谁。安拉对于万事是全能的。",
-      "ko": "실로 하늘과 땅의 주권은 하나님 그분께 있음을 그대가 알고 있지 않았던가? 그분께서는 원하시는 자를 벌하시며 원하시는 자를 용서하시노라. 하나님께서는 모든 것이 가능한 분이시라."
+      "ko": "실로 하늘과 땅의 주권은 하나님 그분께 있음을 그대가 알고 있지 않았던가? 그분께서는 원하시는 자를 벌하시며 원하시는 자를 용서하시노라. 하나님께서는 모든 것이 가능한 분이시라.",
+      "pt": "Não sabes que de Allah é a Soberania dos céus e da terra? Ele castiga a quem quer e perdoa a quem quer. E Allah sobre todas as cousas, é Onipotente.",
+      "it": "Non sai che in verità Allāh detiene il Regno dei cieli e della terra? Punisce chi vuole e perdona chi vuole, e Allāh è Onnipotente.",
+      "sv": "Vet du inte att Gud äger herraväldet över himlarna och jorden? Han straffar den han vill och förlåter den han vill. Gud har makt över allt.",
+      "uk": "Чи ти не знаєш, що Аллагу належить влада на небесах і на землі? Карає Він, кого побажає, і прощає, кого побажає, адже Аллаг спроможний на кожну річ!",
+      "ro": "Nu știi tu că a lui Allah este Împărăția Cerurilor și a Pământului? El pedepsește pe cine Voiește El și iartă pe cine Voiește El, căci Allah este cu Putere peste toate.",
+      "hr": "Ti sigurno znaš da samo Allah ima vlast na nebesima i na Zemlji. On patnji podvrgava onoga koga hoće, a prašta onome kome hoće. Allah nad svime ima moć.",
+      "sr": "Ти сигурно знаш да само Аллах има власт на небесима и на Земљи. Он патњи подвргава онога кога хоће, а прашта ономе коме хоће. Аллах над свиме има моћ.",
+      "el": "Δεν έμαθες (ω, Προφήτη) ότι στον Αλλάχ ανήκει ολόκληρη η κυριαρχία των ουρανών και της Γης; Τιμωρεί όποιον θέλει και συγχωρεί όποιον θέλει, και ο Αλλάχ είναι στα πάντα Ικανός."
     }
   },
   {
@@ -1297,7 +1520,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நம்பிக்கையாளர்களே! அல்லாஹ் உங்களுக்கு ஆகுமாக்கிய நல்ல பொருட்களை ஆகாதவையாக (ஹராமாக) ஆக்காதீர்கள். இன்னும், எல்லை மீறாதீர்கள். நிச்சயமாக அல்லாஹ், எல்லை மீறுபவர்களை விரும்ப மாட்டான்.",
       "ml": "സത്യവിശ്വാസികളേ, അല്ലാഹു നിങ്ങള്‍ക്കനുവദിച്ചുതന്ന വിശിഷ്ടവസ്തുക്കളെ നിങ്ങള്‍ നിഷിദ്ധമാക്കരുത്‌. നിങ്ങള്‍ പരിധി ലംഘിക്കുകയും ചെയ്യരുത്‌. പരിധി ലംഘിക്കുന്നവരെ അല്ലാഹു ഒട്ടും ഇഷ്ടപ്പെടുകയില്ല.",
       "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย พวกเจ้าอย่าได้ทำให้สิ่งที่อัลลอฮ์ทรงอนุมัติแก่พวกเจ้า กลายเป็นสิ่งที่ต้องห้าม และจงอย่าละเมิด (ขอบเขตที่กำหนดไว้) แท้จริงอัลลอฮ์ไม่ทรงชอบบรรดาผู้ที่ละเมิด",
-      "ko": "믿는 자들이여! 하나님께서 그대들을 위해 허락하신 좋고 깨끗한 것을 금하지 말며 경계를 넘어서지 말라. 실로 하나님께서는 경계를 넘어서는 자들을 사랑하지 않으시노라."
+      "ko": "믿는 자들이여! 하나님께서 그대들을 위해 허락하신 좋고 깨끗한 것을 금하지 말며 경계를 넘어서지 말라. 실로 하나님께서는 경계를 넘어서는 자들을 사랑하지 않으시노라.",
+      "it": "O credenti, non proibite le delizie che Allāh vi ha permesso e non siate trasgressori: in verità Allāh non ama i trasgressori.",
+      "sv": "Troende! Förbjud inte de goda ting som Gud har gjort tillåtna för er, och överträd inte gränserna! Gud tycker inte om de som överträder.",
+      "uk": "О ви, які увірували! Не забороняйте благ, які Аллаг дозволив вам, і не порушуйте меж! Воістину, Аллаг не любить порушників!",
+      "ro": "O, voi cei care credeți, nu opriți Bunătățile pe care Allah vi le-a îngăduit și nu încălcați [Poruncile], căci Allah nu-i iubește pe cei ce încalcă [Poruncile].",
+      "hr": "O vi koji vjerujete, ne zabranjujte sebi ono što je lijepo, što je Allah dozvolio, samo ne prelazite granicu! Zaista Allah ne voli one koji granicu prelaze.",
+      "sr": "О ви који верујете, не забрањујте себи оно што је лепо, што је Аллах дозволио, и не прелазите Аллахове границе! Заиста Аллах не воли оне који прелазе Његове границе.",
+      "el": "Ω, εσείς που πιστεύετε! Μην απαγορεύετε τα καλά πράγματα που ο Αλλάχ σάς έχει επιτρέψει και μην παραβιάζετε (τα όρια που τέθηκαν από τον Αλλάχ), πράγματι, ο Αλλάχ δεν αγαπά τους παραβάτες."
     }
   },
   {
@@ -1333,7 +1563,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "Nganndee ko seytaane faalaa, ko nde o liɓata ngañgu e konnaagu(tikere)hakkunde mo'on ka siwram e ka karte, o faddoo on ga e jaŋtagol Alla e juulde nden. Hara onon ko on haɗitotooɓe ?(woppooɓe)?",
       "zh": "恶魔惟愿你们因酒和赌博而互相仇恨，并且阻止你们记念安拉，和谨守拜功。你们将戒除〔酒和赌博〕吗？",
       "th": "แท้จริงชัยฏอนตั้งใจที่จะสร้างการเป็นศัตรูกันและความเกลียดชังระหว่างพวกเจ้า ผ่านทางสิ่งมึนเมา และการพนัน และขัดขวางไม่ให้พวกเจ้ารำลึกถึงอัลลอฮ์และการละหมาด แล้วพวกเจ้าจะไม่ยุติหรือ?",
-      "ko": "사탄이 진정코 바라는 것은 술과 도박으로 그대들 사이에 적의와 증오를 심고 그대들이 하나님을 기억함과 예배를 방해하는 것이라. 그러니 그대들은 그만두지 않겠는가?"
+      "ko": "사탄이 진정코 바라는 것은 술과 도박으로 그대들 사이에 적의와 증오를 심고 그대들이 하나님을 기억함과 예배를 방해하는 것이라. 그러니 그대들은 그만두지 않겠는가?",
+      "pt": "Satã deseja, apenas, semear a inimizade e a aversão, entre vós, por meio do vinho e do jogo de azar, e afastar-vos da lembrança de Allah e da oração. Então, abster-vos-eis disso?",
+      "it": "In verità Satana vuole mettere tra di voi, col vino e con l’azzardo, l’inimicizia e l’odio, e impedirvi l’invocazione di Allāh e le preghiere: avete l’intenzione di astenervi?",
+      "sv": "Satan vill genom berusningsmedel och hasardspel skapa fiendskap och hat mellan er och hindra er från att minnas Gud och från bönen. Ska ni då inte upphöra?",
+      "hr": "Sotona želi pomoću opojnih pića i kocke unijeti među vas neprijateljstvo i mržnju i od sjećanja na Allaha i obavljanja molitve odvratiti vas. Pa, hoćete li se okaniti?",
+      "sr": "Сотона жели помоћу опојних пића и коцке да међу вама унесе непријатељство и мржњу и да вас одврати од сећања на Аллаха и обављања молитве. Па, хоћете ли да се оканите?"
     }
   },
   {
@@ -1375,7 +1610,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக அல்லாஹ் (குற்றவாளிகளை) தண்டிப்பதில் கடுமையானவன் என்பதையும்; நிச்சயமாக அல்லாஹ் மகா மன்னிப்பாளன், பெரும் கருணையாளன் என்பதையும் அறிந்து கொள்ளுங்கள்.",
       "ml": "അല്ലാഹു കഠിനമായി ശിക്ഷിക്കുന്നവനാണെന്നും, അല്ലാഹു ഏറെ പൊറുക്കുന്നവനും കരുണാനിധിയുമാണെന്നും നിങ്ങള്‍ മനസ്സിലാക്കുക.",
       "th": "พวกเจ้าพึงรู้เถิดว่า แท้จริงอัลลอฮ์เป็นผู้รุนแรงในการลงโทษ และแท้จริงอัลลอฮ์เป็นผู้ทรงอภัยโทษ ผู้ทรงเมตตาเสมอ",
-      "ko": "그대들은 하나님께서 응징함에 엄하신 분이며 하나님께서는 너그러이 용서하시는 자애로우신 분임을 알라."
+      "ko": "그대들은 하나님께서 응징함에 엄하신 분이며 하나님께서는 너그러이 용서하시는 자애로우신 분임을 알라.",
+      "pt": "Sabei que Allah é Veemente na punição e que Allah é Perdoador, Misericordiador.",
+      "it": "In verità sappiate che Allāh è molto severo nel punire, e Allāh è in verità Perdonatore, Misericordioso.",
+      "sv": "Ni ska veta att Gud är sträng i sitt straff, men också att Gud är ständigt förlåtande och barmhärtig.",
+      "uk": "Знайте, що Аллаг суворий у покаранні, і що Аллаг — Прощаючий, Милосердний!",
+      "ro": "Să știți că Allah este aspru în pedeapsă, dar că Allah este și Ghafur [Iertător], Rahim [Îndurător]!",
+      "hr": "Znajte da Allah strogo kažnjava, ali i da je Onaj Koji oprašta grijehe i milostiv je.",
+      "sr": "Знајте да Аллах строго кажњава, али и да опрашта грехе и милостив је."
     }
   },
   {
@@ -1418,7 +1660,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "ആകാശങ്ങളുടെയും ഭൂമിയുടെയും അവയിലുള്ളതിന്‍റെയും ആധിപത്യം അല്ലാഹുവിന്നത്രെ. അവന്‍ ഏത് കാര്യത്തിനും കഴിവുള്ളവനാകുന്നു.",
       "th": "อำนาจแห่งชั้นฟ้าทั้งหลายและแผ่นดินเป็นกรรมสิทธิ์ของอัลลอฮ์ และสิ่งที่อยู่ในนั้น และพระองค์ทรงเป็นผู้ทรงอำนาจเหนือทุกสิ่ง",
       "ko": "​하늘과 땅과 그것들 안에 존재하는 것의 주권은 하나님께 있노라. 그리고 그분께서는 모든 것이 가능한 분이시라.",
-      "vi": "Quyền thống trị và chế ngự các tầng trời và trái đất và vạn vật trong trời đất đều thuộc về một mình Allah. Và Ngài là Đấng Toàn Năng trên tất cả mọi thứ."
+      "vi": "Quyền thống trị và chế ngự các tầng trời và trái đất và vạn vật trong trời đất đều thuộc về một mình Allah. Và Ngài là Đấng Toàn Năng trên tất cả mọi thứ.",
+      "pt": "E de Allah é a soberania dos céus e da terra e tudo que há entre eles. E Allah, sobre todas as cousas, é Onipotente.",
+      "it": "Appartiene ad Allāh il Regno dei cieli e della terra e ciò che esiste in essi, e Lui è Onnipotente!",
+      "sv": "Till Gud hör herraväldet över himlarna och jorden och allt som finns däri, och han har makt över allt.",
+      "uk": "Аллагу належить влада над небесами, землею й тим, що на них. Він спроможний на кожну річ!",
+      "ro": "A lui Allah este Împărăția Cerurilor și a Pământului, precum și toate care se află în ele, căci El este cu Putere peste toate!",
+      "hr": "Allahova je vlast na nebesima i na Zemlji i nad onim što je na njima; On nad svime ima moć.",
+      "sr": "Аллахова је власт на небесима и на Земљи и над оним што је на њима; Он над свиме има моћ.",
+      "el": "Στον Αλλάχ ανήκει όλη η κυριαρχία των ουρανών και της Γης και όλων όσων βρίσκονται μέσα τους. Πράγματι, Αυτός είναι για τα πάντα Ικανός."
     }
   },
   {
@@ -1457,7 +1707,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "Oon mon ko Alla, Joomi mon! deweteeɗo alaa (e goonga) si wanaa Kaŋko, Takɗo kala huunde. ndewee Mo. Kaŋko e dow kala huunde ko O fawtiiɗo.(deenɗo).",
       "yo": "Ìyẹn ni Allāhu, Olúwa yín; kò sí ọlọ́hun kan tí a gbọ́dọ̀ jọ́sìn fún ní ọ̀nà òdodo àyàfi Òun, Ẹlẹ́dàá gbogbo n̄ǹkan. Nítorí náà, ẹ jọ́sìn fún Un. Òun sì ni Olùṣọ́ lórí gbogbo n̄ǹkan.",
       "zh": "这是安拉，你们的养主，除他外，绝无应受崇拜的。他是万物的创造者，故你们当崇拜他。他是万物的监护者。",
-      "ko": "그러한 분이 그대들의 주님이신 하나님이며, 그분 이외에는 경배받을 존재가 없노라. 그분께서는 모든 것을 창조하신 분이니 그대들은 그분을 경배하라. 그분께서는 모든 일에 관한 의탁의 대상이시라."
+      "ko": "그러한 분이 그대들의 주님이신 하나님이며, 그분 이외에는 경배받을 존재가 없노라. 그분께서는 모든 것을 창조하신 분이니 그대들은 그분을 경배하라. 그분께서는 모든 일에 관한 의탁의 대상이시라.",
+      "pt": "Esse é Allah, vosso Senhor. Não existe deus senão Ele, Criador de todas as cousas: então, adorai-O. E Ele, sobre todas as cousas, é Patrono.",
+      "it": "Quello è Allāh, vostro Dio! Non c’è nessuna divinità all’infuori di Lui! Creatore di ogni cosa! Adoratelo! Lui è il Protettore di ogni cosa!",
+      "sv": "Detta är Gud, er Herre – ingen är värd dyrkan utom han, Skaparen av allt, så dyrka honom! Han vakar över allting.",
+      "uk": "Такий Аллаг, ваш Господь; немає бога, крім Нього, Творця кожної речі; тож поклоняйтеся Йому! Він — Опікун кожної речі!",
+      "ro": "Acesta este Allah, Domnul vostru! Nu există altă divinitate în afară de El, Cel care le-a făcut pe toate! Așadar, adorați-L pe El! Și El este peste toate Ocrotitor!",
+      "hr": "To vam je Allah, Gospodar vaš, nema drugog boga osim Njega, Stvoritelja svega; zato Njega obožavajte; On nad svime bdi.",
+      "sr": "То вам је Аллах, ваш Господар, нема другог бога осим Њега, Створитељ свега; зато Њега обожавајте; Он над свиме бди."
     }
   },
   {
@@ -1501,7 +1758,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തന്‍റെ മാര്‍ഗത്തില്‍ നിന്ന് തെറ്റിപ്പോകുന്നവന്‍ ആരാണെന്ന് തീര്‍ച്ചയായും നിന്‍റെ രക്ഷിതാവിന് അറിയാം. നേര്‍വഴി പ്രാപിച്ചവരെപ്പറ്റി നല്ലവണ്ണം അറിയുന്നവനും അവന്‍ തന്നെയാണ്‌.",
       "th": "แท้จริงพระผู้อภิบาลของเจ้านั้น คือผู้ที่ทรงรู้ยิ่งต่อผู้ที่กำลังหลงไปจากทางของพระองค์ และพระองค์ทรงรู้ยิ่งต่อบรรดาผู้ที่ได้รับการชี้นำ",
       "ko": "실로 그대의 주님 그분께서는 누가 그분의 길을 벗어나 방황하고 있는지 가장 잘 알고 계신 분이며, 그분께서는 올바른 길을 걷는 자들이 누구인지 가장 잘 알고 계신 분이라.",
-      "vi": "Quả thật, Thượng Đế của Ngươi (hỡi Thiên Sứ) biết rõ ai là kẻ lạc khỏi con đường của Ngài và Ngài biết rõ ai là người được hướng dẫn đúng đường."
+      "vi": "Quả thật, Thượng Đế của Ngươi (hỡi Thiên Sứ) biết rõ ai là kẻ lạc khỏi con đường của Ngài và Ngài biết rõ ai là người được hướng dẫn đúng đường.",
+      "pt": "Por certo, teu Senhor é bem Sabedor de quem se descaminha de Seu caminho. E Ele é bem Sabedor dos guiados.",
+      "it": "In verità il tuo Dio conosce meglio chi devia dal Suo sentiero e conosce meglio i ben guidati.",
+      "sv": "Din Herre vet mycket väl vilka som avviker från hans väg, och han vet mycket väl vilka som är vägledda.",
+      "uk": "Воістину, Господь твій краще знає тих, хто збився з Його шляху. Він краще знає тих, які йдуть прямим шляхом!",
+      "ro": "Cu adevărat, Domnul tău îi Știe cel mai bine pe cei care se abat de la Calea Lui și El este Cel care-i Știe cel mai bine și pe cei care urmează Calea cea Dreaptă.",
+      "hr": "Zaista Gospodar tvoj najbolje zna one koji su skrenuli s Njegova puta i On najbolje zna one koji su na Pravom putu.",
+      "sr": "Заиста Господар твој најбоље зна оне који су скренули са Његовог пута и Он најбоље зна оне који су на Правом путу.",
+      "el": "Πράγματι, ο Κύριός σου γνωρίζει καλύτερα ποιος παραστρατεί από το δρόμο Του, και γνωρίζει καλύτερα τους καθοδηγημένους."
     }
   },
   {
@@ -1538,7 +1803,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "Njokkee ko Jippinaa e mon kon immorde ka Joomi mon, wota on njokku gah ɗuum, weldiiɓe, famɗii ko mbaactortoɗon.",
       "zh": "你们当遵循从你们的养主降示的经典，你们不要舍安拉而顺从许多保佑者。你们很少觉悟。",
       "th": "(จงกล่าวแก่พวกเขาเถิด โอ้ มุฮัมหมัด ว่า) “จงปฏิบัติตามสิ่งที่ถูกประทานลงมาแก่พวกเจ้าจากพระผู้อภิบาลของพวกเจ้า และอย่าปฏิบัติตามผู้นำอื่นจากอัลลอฮ์ (แต่น่าเสียดาย) ที่น้อยคนที่จะรับเป็นบทเรียน”",
-      "ko": "그대들 주님으로부터 그대들에게 내려진 것을 따르되, 그분 이외의 것을 가호자로 경배하지 말라. 그대들의 깨우침이 참으로 적도다."
+      "ko": "그대들 주님으로부터 그대들에게 내려진 것을 따르되, 그분 이외의 것을 가호자로 경배하지 말라. 그대들의 깨우침이 참으로 적도다.",
+      "pt": "Segui o que é descido para vós, de vosso Senhor, e não sigais, em vez dEle, outros protetores. Quão pouco meditais.",
+      "it": "Seguite ciò che vi è stato fatto scendere dal vostro Dio e non seguite protettori all’infuori di Lui. Oh, quanto poco ve ne ricordate!",
+      "sv": "Följ det som uppenbarats för er från er Herre, och rätta er inte efter andra vid sidan av honom. Så lite ni låter er förmanas!",
+      "uk": "Тож ідіть за тим, що зіслано вам від Господа вашого, і не йдіть за іншими покровителями замість Нього! Як же мало ви про це пам’ятаєте!",
+      "ro": "Urmați [o, oameni,] ceea ce vi s-a trimis de la Domnul vostru și nu urmați alți aliați în afară de El! Dar voi numai puțin vă aduceți aminte.",
+      "hr": "Slijedite ono što vam se od Gospodara vašeg objavljuje i pored Njega ne slijedite druge kao zaštitnike! A kako se vi malo prisjećate i pouku primate?!",
+      "sr": "Следите оно што вам се од вашег Господара објављује и поред Њега не узимајте друге као заштитнике! А како ви мало поуку примате?",
+      "el": "Ακολουθήστε (ω, άνθρωποι) αυτό που σας έχει σταλεί από τον Κύριό σας και μην ακολουθείτε εκτός Αυτού κηδεμόνες (που θα σας παραπλανήσουν). Λίγο είναι αυτό που το λαμβάνετε υπόψη!"
     }
   },
   {
@@ -1580,7 +1853,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും സൂക്ഷ്മത പാലിക്കുന്നവരെ പിശാചില്‍ നിന്നുള്ള വല്ല ദുര്‍ബോധനവും ബാധിച്ചാല്‍ അവര്‍ക്ക് (അല്ലാഹുവെപ്പറ്റി) ഓര്‍മവരുന്നതാണ്‌. അപ്പോഴതാ അവര്‍ ഉള്‍കാഴ്ചയുള്ളവരാകുന്നു.",
       "th": "แท้จริงบรรดาผู้ที่ยำเกรงนั้น เมื่อมีเสียงกระซิบอันชั่วร้ายจากชัยฏอนมายังพวกเขา พวกเขาก็จะรำลึก (ถึงคำสอนของอัลลอฮ์) ทันใดนั้นพวกเขาก็จะมองเห็น (ทางอันเที่ยงตรง)",
       "ko": "실로 (하나님을) 경외하는 자들은 사탄으로부터의 충동이 자신들을 스칠 때 (하나님을) 떠올리니, 보라, 실로 그들은 통찰하는 자들이라.",
-      "vi": "Quả thât, những người ngoan đạo (sợ Allah) khi có nhóm Shaytan nào đó đến quấy nhiễu, họ liền nhớ (đến Allah) thì họ sẽ thấy (ánh sáng chỉ đạo trở lại)."
+      "vi": "Quả thât, những người ngoan đạo (sợ Allah) khi có nhóm Shaytan nào đó đến quấy nhiễu, họ liền nhớ (đến Allah) thì họ sẽ thấy (ánh sáng chỉ đạo trở lại).",
+      "pt": "Por certo, os que são piedosos, quando uma sugestão de Satã os toca, lembram-se dos preceitos divinos, e ei-los clarividentes.",
+      "it": "In verità i timorati, se vanno incontro a una tentazione di Satana, ricordano, ed eccoli illuminati.",
+      "sv": "När de gudfruktiga berörs av en ingivelse från Satan besinnar de sig, och genast ser de klart.",
+      "uk": "Воістину, коли богобоязливих торкається спокуса шайтана, вони згадують Аллага й починають розрізняти!",
+      "ro": "Cu adevărat, cei care au frică de Allah – atunci când îi atinge ceva rău de la Șeitan, își aduc aminte [de Allah] și iată cum ei văd [primejdia].",
+      "hr": "Doista, oni koji se Allaha boje, čim ih dodirne sablazan sotonska, sjete se, i postanu razboriti,",
+      "sr": "Заиста, они који се боје Аллаха, чим их додирне ђаволска саблазан, сете се, и постану разборити,"
     }
   },
   {
@@ -1617,7 +1897,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக உம் இறைவனிடம் உள்ள (வான)வர்கள் அவனை வணங்குவதை விட்டு பெருமையடிப்பதில்லை; இன்னும், அவர்கள் அவனை துதிக்கிறார்கள்; இன்னும், அவனுக்கே சிரம் பணிகிறார்கள்.",
       "th": "แท้จริงบรรดาผู้ที่อยู่ ณ พระผู้อภิบาลของเจ้านั้น พวกเขาจะไม่หยิ่งต่อการเคารพสักการะพระองค์ และกล่าวคำให้ความบริสุทธิ์แก่พระองค์ (ตัสบีห์) และแด่พระองค์เท่านั้น พวกเขาจะก้มกราบ",
       "ko": "그대의 주님께 가까운 곳에 있는 자들(천사들)은 그분을 경배함에 거만해 하지 않고 그분을 찬양하며 그분께 부복하노라.",
-      "vi": "Quả thật (các Thiên Thần) ở nơi Thượng Đế của Ngươi (hỡi Thiên Sứ) không hề tự cao tự đại trước việc thờ phượng Ngài; Họ luôn tán dương và quỳ lạy Ngài."
+      "vi": "Quả thật (các Thiên Thần) ở nơi Thượng Đế của Ngươi (hỡi Thiên Sứ) không hề tự cao tự đại trước việc thờ phượng Ngài; Họ luôn tán dương và quỳ lạy Ngài.",
+      "it": "In verità quelli che sono dal tuo Dio non sono altezzosi verso la Sua adorazione e Lo lodano e a Lui si prostrano. ﴿وَلَهُ يَسْجُدُونَ﴾",
+      "sv": "De som är hos din Herre är inte för stolta för att dyrka honom. De upphöjer honom och faller ned inför honom.",
+      "uk": "Воістину, ті, які біля Господа свого, не гордують поклонінням Йому, славлять Його й низько вклоняються Йому!",
+      "ro": "Cu adevărat cei ce sunt aproape de Domnul tău [Îngerii] nu se socotesc prea mari pentru a-L adora pe El, ci ei Îl Preamăresc și se prosternează dinaintea Lui.",
+      "hr": "Oni koji su kod Gospodara tvoga, doista ne zaziru da Ga obožavaju; samo Njega hvale i samo Njemu ničice padaju.",
+      "sr": "Они који су код твога Господара заиста не зазиру да Га обожавају; само Њега хвале и само се Њему клањају."
     }
   },
   {
@@ -1659,7 +1945,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും അല്ലാഹുവിന്നുള്ളതാകുന്നു ആകാശങ്ങളുടെയും ഭൂമിയുടെയും ആധിപത്യം. അവന്‍ ജീവിപ്പിക്കുകയും മരിപ്പിക്കുകയും ചെയ്യുന്നു. അല്ലാഹുവിന് പുറമെ നിങ്ങള്‍ക്ക് യാതൊരു രക്ഷാധികാരിയും സഹായിയുമില്ല.",
       "th": "แท้จริงอัลลอฮ์คือ ผู้ซึ่งอำนาจแห่งบรรดาชั้นฟ้าและแผ่นดินนั้นเป็นกรรมสิทธิ์ของพระองค์ พระองค์ทรงให้เป็น ทรงให้ตาย และนอกจากอัลลอฮ์แล้ว พวกเจ้าก็จะไม่มีผู้คุ้มครองและผู้ช่วยเหลือ",
       "ko": "실로 (일곱) 하늘과 땅의 주권은 하나님 그분께 있으며, 그분은 생명을 불어넣으시고 죽음을 부여하시노라. 하나님이 아니고선 그대들에게 그 어떤 가호자나 조력자도 없노라.",
-      "vi": "Quả thật, quyền thống trị các tầng trời và trái đất đều thuộc về một mình Allah, Ngài làm cho sống và làm cho chết. Và các ngươi không có bất kỳ vị bảo hộ hay vị cứu tinh nào ngoài Allah."
+      "vi": "Quả thật, quyền thống trị các tầng trời và trái đất đều thuộc về một mình Allah, Ngài làm cho sống và làm cho chết. Và các ngươi không có bất kỳ vị bảo hộ hay vị cứu tinh nào ngoài Allah.",
+      "pt": "Por certo, de Allah é a Soberania dos céus e da terra. Ele dá a vida e dá a morte. E não tendes além de Allah, nem protetor nem socorredor.",
+      "it": "In verità appartiene ad Allāh il Regno dei cieli e della terra. Lui dona la vita e fa morire, e non avete altro Protettore né Sostenitore all’infuori di Allāh.",
+      "sv": "Gud äger herraväldet över himlarna och jorden. Han ger liv och han tar liv. Och ni har ingen som kan hjälpa er eller skydda er förutom Gud.",
+      "uk": "Воістину, Аллагу належить влада над небесами й землею. Він дарує життя й смерть. Немає у вас, окрім Аллага, ні захисника, ні помічника!",
+      "ro": "Cu adevărat a lui Allah este Împărăția Cerurilor și a Pământului. El dă viață și El dă moarte. Și voi nu aveți în afara lui Allah aliat și apărător.",
+      "hr": "Zaista je Allahova vlast na nebesima i na Zemlji, On život i smrt daje, i vi osim Allaha nemate ni zaštitnika ni pomagača.",
+      "sr": "Заиста је Аллахова власт на небесима и на Земљи, Он живот и смрт даје, и ви осим Аллаха немате ни заштитника ни помагача.",
+      "el": "Πράγματι, στον Αλλάχ ανήκει η Κυριαρχία των ουρανών και της Γης, Αυτός είναι που δίνει τη ζωή και την αφαιρεί, και πράγματι, δεν έχετε πέραν του Αλλάχ, κανέναν κηδεμόνα, ούτε κανέναν υποστηρικτή."
     }
   },
   {
@@ -1703,7 +1997,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ അല്ലാഹുവെ സൂക്ഷിക്കുകയും, സത്യവാന്‍മാരുടെ കൂട്ടത്തില്‍ ആയിരിക്കുകയും ചെയ്യുക.",
       "th": "โอ้บรรดาผู้ศรัทธาทั้งหลาย จงยำเกรงอัลลอฮ์เถิด และจงอยู่ร่วมกับบรรดาผู้ที่มีความสัตย์จริงเถิด",
       "ko": "믿는 자들이여! 하나님을 경외하고 정직한 자들과 함께하라.",
-      "vi": "Hỡi những người có đức tin, hãy kính sợ Allah và hãy ở cùng với những người chân thật."
+      "vi": "Hỡi những người có đức tin, hãy kính sợ Allah và hãy ở cùng với những người chân thật.",
+      "pt": "Ó vós que credes! Temei a Allah e permanecei com os verídicos.",
+      "it": "O credenti, temete Allāh e siate tra i veritieri!",
+      "sv": "Troende! Frukta Gud och var med de sanningsenliga.",
+      "uk": "О ви, які увірували! Бійтесь Аллага й будьте разом із правдивими!",
+      "ro": "O, voi cei care credeți! Temeți-vă de Allah și fiți cu cei iubitori de adevăr!",
+      "hr": "O vi koji vjerujete, bojte se Allaha i budite s onima koji su iskreni!",
+      "sr": "О ви који верујете, бојте се Аллаха и будите са онима који су искрени!",
+      "el": "Ω, εσείς που πιστεύετε! Φυλαχθείτε από την τιμωρία του Αλλάχ (τηρώντας τις εντολές Του) και να είστε μαζί με τους ειλικρινείς."
     }
   },
   {
@@ -1736,7 +2038,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "Mi  wooɗndi nulaaɗo arii  e mooɗon, jeyaaɗo emon hino saɗta e makko ko tampoton, deerɗuɗo e mooɗon, newaniiɗo hinnotooɗo(yurmotoodo) gooŋɗinɓe ɓeen.",
       "yo": "Dájúdájú Òjíṣẹ́ kan ti wá ba yín láti ààrin yín. Ohun tí ó máa kó wàhálà ba yín lágbára lára rẹ̀. Ó ń ṣe àkólékàn (oore) fún yín; aláàánú àti oníkẹ̀ẹ́ ni fún àwọn oní gbàgbọ́ òdodo.",
       "zh": "你们本族中的使者确已来临你们，他不忍心见你们受痛苦，他渴望你们得正道，他慈爱信士们。",
-      "ko": "그대들에게 그대들 출신의 사도가 도래하였으니 (그는) 그대들이 고생함을 안쓰러워 하고, 그대들을 보살피며, 믿는 자들에게 인자하고 자애로우니라."
+      "ko": "그대들에게 그대들 출신의 사도가 도래하였으니 (그는) 그대들이 고생함을 안쓰러워 하고, 그대들을 보살피며, 믿는 자들에게 인자하고 자애로우니라.",
+      "pt": "Com efeito, um Mensageiro vindo de vós chegou-vos; é-lhe penoso o que vos embaraça; é zeloso de guiar-vos, é compassivo e misericordiador para com os crentes.",
+      "it": "Vi è arrivato un Messaggero tra voi, che è afflitto dalla vostra sofferenza, molto attento a voi, benevolo e pietoso con i credenti.",
+      "sv": "Ett sändebud ur era egna led har nu kommit till er. Det som plågar er tynger honom och han är högst mån om ert bästa. Mot de troende är han förbarmande och barmhärtig.",
+      "uk": "Прийшов до вас Посланець із вас самих. Тяжко йому те, що ви страждаєте, і він піклується про вас — співчутливий та милосердний до віруючих.",
+      "ro": "V-a venit vouă un Trimis dintre voi, căruia îi sunt grele necazurile ce vă lovesc, care este plin de grijă pentru voi, iar cu dreptcredincioșii el este milostiv și îndurător.",
+      "hr": "Došao vam je Poslanik, jedan od vas, teško mu je što ćete na muke udariti, jedva čeka da Pravim putem pođete, a prema vjernicima je milosrdan i milostiv.",
+      "sr": "Дошао вам је Посланик, један од вас, тешко му је што ћете искушења да имате, једва чека да пођете правим путем, а према верницима је благ и милостив."
     }
   },
   {
@@ -1777,7 +2086,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக இரவு பகல் (ஒன்றன் பின் ஒன்றாக தொடர்ச்சியாக) மாறி மாறி வருவதிலும், வானங்கள்; இன்னும், பூமியில் அல்லாஹ் படைத்திருப்பவற்றிலும் அல்லாஹ்வை அஞ்சுகின்ற மக்களுக்கு உறுதியாக (பல) அத்தாட்சிகள் உள்ளன.",
       "ml": "തീര്‍ച്ചയായും രാപകലുകള്‍ വ്യത്യാസപ്പെടുന്നതിലും, ആകാശങ്ങളിലും ഭൂമിയിലും അല്ലാഹു സൃഷ്ടിച്ചിട്ടുള്ളവയിലും സൂക്ഷ്മത പാലിക്കുന്ന ആളുകള്‍ക്ക് പല തെളിവുകളുമുണ്ട്‌.",
       "th": "แท้จริงการสับเปลี่ยนของกลางคืนและกลางวัน และที่อัลลอฮ์ทรงสร้างในชั้นฟ้าทั้งหลายและแผ่นดินนั้น แน่นอน เป็นสัญญาณแก่กลุ่มชนที่มีความยำเกรง",
-      "ko": "진실로, 밤과 낮의 교체와 하나님께서 (일곱) 하늘과 땅 안에 창조한 것들에는 하나님을 경외하는 자들을 위한 징표들이 있노라."
+      "ko": "진실로, 밤과 낮의 교체와 하나님께서 (일곱) 하늘과 땅 안에 창조한 것들에는 하나님을 경외하는 자들을 위한 징표들이 있노라.",
+      "pt": "Por certo, na alternância da noite e do dia, e no que Allah criou nos céus e na terra, há sinais para um povo que teme a Allah.",
+      "it": "In verità nella differenza tra notte e giorno, e in quello che Allāh ha creato nel cielo e nella terra, ci sono dei Segni per il popolo timorato.",
+      "sv": "I växlingen mellan natt och dag, och i allt som Gud har skapat i himlarna och på jorden, finns sannerligen tecken för gudfruktiga människor.",
+      "uk": "Воістину, в зміні дня і ночі, в тому, що Аллаг створив на небесах і на землі — знамення для людей богобоязливих!",
+      "ro": "Cu adevărat, în succedarea nopții și zilei și în cele pe care Allah le-a făcut în Ceruri și pe Pământ sunt semne pentru oamenii care au frică [de Allah].",
+      "hr": "U smjeni noći i dana i u onom što je Allah na nebesima i na Zemlji stvorio, zaista, postoje znakovi za ljude koji se Allahove kazne čuvaju.",
+      "sr": "У смени ноћи и дана и у оном што је Аллах створио на небесима и на Земљи заиста постоје докази за људе који се Бога боје."
     }
   },
   {
@@ -1820,7 +2136,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും അല്ലാഹു മനുഷ്യരോട് ഒട്ടും അനീതി കാണിക്കുന്നില്ല. എന്നാൽ മനുഷ്യര്‍ അവരവരോട് തന്നെ അനീതി കാണിക്കുന്നു.",
       "th": "แท้จริง อัลลอฮ์นั้นจะไม่ทรงอธรรมแก่ปวงมนุษย์แต่อย่างใด แต่ทว่าปวงมนุษย์ต่างหากที่อธรรมต่อตัวของพวกเขาเอง",
       "ko": "실로 하나님께서는 결코 인간을 부당히 다루지 않으시노라. 그러나 인간이야말로 자기 자신을 부당히 다루는 것이라.",
-      "vi": "Thật vậy, Allah đã không bất công với con người về bất cứ điều gì, nhưng chính con người lại bất công với bản thân mình."
+      "vi": "Thật vậy, Allah đã không bất công với con người về bất cứ điều gì, nhưng chính con người lại bất công với bản thân mình.",
+      "pt": "Por certo, Allah não faz injustiça alguma com os homens, mas os homens fazem injustiça com si mesmos.",
+      "it": "In verità Allāh non fa nessun torto alla gente – ma la gente fa torto a se stessa.",
+      "sv": "Gud gör inte människorna den minsta orätt, det är människorna som gör sig själva orätt.",
+      "uk": "Воістину, Аллаг не чинить несправедливості щодо людей, але це люди самі несправедливі до себе!",
+      "ro": "Cu adevărat, Allah nu-i nedreptățește pe oameni întru nimic, ci oamenii sunt cei nedrepți față de ei înșiși.",
+      "hr": "Allah, zaista, nikakvu nepravdu ne čini ljudima, ljudi je sami sebi čine.",
+      "sr": "Аллах, заиста, никакву неправду не чини људима, људи је чине сами себи."
     }
   },
   {
@@ -1862,7 +2185,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "真的，天地万物确是安拉的。真的，安拉的诺言，确是真实的；但他们大半不知道。",
       "th": "พึงรู้เถิด แท้จริงทุกสิ่งในชั้นฟ้าทั้งหลายและแผ่นดินเป็นสิทธิของอัลลอฮ์ พึงรู้เถิด แท้จริงสัญญาของพระเจ้านั้นเป็นจริงเสมอ แต่ส่วนใหญ่พวกเขาไม่รู้",
       "ko": "보라, 실로 (일곱) 하늘과 땅에 있는 것이 하나님의 소유라. 보라, 실로 하나님의 약속은 진실이나 그들 대부분은 알지 못 하노라.",
-      "vi": "Lẽ nào mọi thứ trong các tầng trời và trái đất không thuộc về một mình Allah?! Lẽ nào lời hứa của Allah không phải là sự thật?! Tuy nhiên, hầu hết (những kẻ vô đức tin) không biết mà thôi."
+      "vi": "Lẽ nào mọi thứ trong các tầng trời và trái đất không thuộc về một mình Allah?! Lẽ nào lời hứa của Allah không phải là sự thật?! Tuy nhiên, hầu hết (những kẻ vô đức tin) không biết mà thôi.",
+      "pt": "Ora, por certo, de Allah é o que há nos céus e na terra. Ora, por certo, a promessa de Allah é verdadeira, mas a maioria deles não sabe.",
+      "it": "In verità non è ad Allāh che appartiene tutto ciò che è in cielo e in terra? In verità non è la promessa di Allāh verità? Ma la maggioranza di loro non lo sa.",
+      "sv": "Allt i himlarna och på jorden tillhör Gud. Hans löfte är sant, men de flesta vet inte det.",
+      "uk": "Так! Воістину, це Аллагу належить те, що на небесах і на землі. Так! Воістину, обіцянка Аллага правдива. Але більшість із них не знає!",
+      "ro": "Cu adevărat, ale lui Allah sunt cele din Ceruri și de pe Pământ. Cu adevărat, făgăduința lui Allah este adevărată, dar cei mai mulți dintre ei nu știu.",
+      "hr": "Zasigurno, Allahovo je sve što je na nebesima i na Zemlji! Zasigurno, Allahovo obećanje je istinito, ali većina njih ne zna.",
+      "sr": "Зар једино Аллаху не припада све што је на небесима и на Земљи? Аллахово обећање је, заиста, истина, али већина људи не зна.",
+      "el": "Πράγματι, στον Αλλάχ ανήκουν ό,τι υπάρχει στους ουρανούς και στη Γη. Πράγματι, η υπόσχεση του Αλλάχ (για το μαρτύριο των άπιστων) είναι αληθινή, αλλά οι περισσότεροι απ' αυτούς δε γνωρίζουν."
     }
   },
   {
@@ -1905,7 +2236,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അവന്‍ ജീവിപ്പിക്കുകയും മരിപ്പിക്കുകയും ചെയ്യുന്നു. അവങ്കലേക്ക് തന്നെ നിങ്ങള്‍ മടക്കപ്പെടുകയും ചെയ്യുന്നു.",
       "th": "พระองค์ทรงให้เป็นและทรงให้ตาย และยังพระองค์เท่านั้นพวกเจ้าจะถูกนำกลับไป",
       "ko": "그분께서는 생명을 불어넣으시고 죽음을 부여하시며, 그대들은 실로 그분께로 돌아가게 될 것이라.",
-      "vi": "Ngài làm cho sống và làm cho chết và các ngươi sẽ được đưa về trình diện Ngài trở lại (để Ngài xét xử và thưởng phạt)."
+      "vi": "Ngài làm cho sống và làm cho chết và các ngươi sẽ được đưa về trình diện Ngài trở lại (để Ngài xét xử và thưởng phạt).",
+      "pt": "Ele dá a vida e dá a morte, e a Ele sereis retornados.",
+      "it": "È Lui che fa vivere e fa morire, e sarete fatti tornare a Lui.",
+      "sv": "Han ger liv och tar liv, och till honom ska ni återvända.",
+      "uk": "Він дарує життя й смерть і до Нього ви повернетеся!",
+      "ro": "El este Cel care dă viață și Cel care dă moarte și la El vă veți întoarce.",
+      "hr": "On život i smrt daje i Njemu ćete se vratiti.",
+      "sr": "Он живот и смрт даје и Њему ћете да се вратите.",
+      "el": "Είναι Αυτός που δίνει ζωή και την αφαιρεί, και σ' Αυτόν θα επιστρέψετε όλοι."
     }
   },
   {
@@ -1943,7 +2282,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Èyin ènìyàn, ìṣítí kan láti ọ̀dọ̀ Olúwa yín ti dé ba yín. Ìwòsàn ni fún n̄ǹkan tó wà nínú àwọn igbá-àyà ẹ̀dá. Ìmọ̀nà àti ìkẹ́ ni fún àwọn onígbàgbọ́ òdodo.",
       "zh": "人们啊！确已降临你们的，是从你们的养主发出的教诲，是治心病的良药，是对信士们的引导和慈恩。",
       "th": "โอ้มนุษย์เอ๋ย แท้จริงได้มีมายังพวกเจ้าแล้วซึ่งข้อตักเตือน (อัลกุรอาน) จากพระผู้อภิบาลของพวกเจ้า และเป็นที่บำบัดสำหรับสิ่งที่มีอยู่ในทรวงอก และเป็นทางนำ และเป็นความเมตตาสำหรับบรรดาผู้ศรัทธา",
-      "ko": "사람들이여! 그대들에게 그대들 주님으로부터의 가르침과, 가슴 속에 있는 것에 대한 치유와, 인도와, 믿는 자들을 위한 자비가 도래하였노라."
+      "ko": "사람들이여! 그대들에게 그대들 주님으로부터의 가르침과, 가슴 속에 있는 것에 대한 치유와, 인도와, 믿는 자들을 위한 자비가 도래하였노라.",
+      "pt": "Ó humanos! Com efeito, uma exortação de vosso Senhor chegou-vos e cura para o que há nos peitos e orientação e misericórdia para os crentes.",
+      "it": "O gente, vi è arrivato un monito dal vostro Dio, una guarigione per quello che c’è nei petti, e guida e misericordia per i credenti.",
+      "sv": "Människor! En förmaning har kommit till er från er Herre, och bot för det som finns i hjärtat, samt vägledning och nåd för de troende.",
+      "uk": "О люди! До вас прийшло повчання від Господа вашого, зцілення того, що в серцях, прямий шлях і милість для віруючих!",
+      "ro": "O, oameni! V-a venit vouă îndemn de la Domnul vostru și tămăduire pentru ceea ce este în piepturi, călăuzire și îndurare pentru dreptcredincioși!",
+      "hr": "O ljudi, već vam je stigla Opomena od Gospodara vašega, i lijek za vaša srca, i uputa i milost vjernicima.",
+      "sr": "О људи, већ вам је стигао Кур'ан као опомена од вашег Господара, он је лек за ваша срца, и упута и милост верницима."
     }
   },
   {
@@ -1987,7 +2333,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും വിശ്വസിക്കുകയും സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും, തങ്ങളുടെ രക്ഷിതാവിങ്കലേക്ക് വിനയപൂര്‍വ്വം മടങ്ങുകയും ചെയ്തവരാരോ അവരാകുന്നു സ്വര്‍ഗാവകാശികള്‍. അവരതില്‍ നിത്യവാസികളായിരിക്കും.",
       "th": "แท้จริงบรรดาผู้ศรัทธาและประกอบการดี และสำรวมตนต่อพระผู้อภิบาลของพวกเขา ชนเหล่านั้นคือชาวสวรรค์ ซึ่งพวกเขาจะอยู่ในนั้นตลอดกาล",
       "ko": "실로 (하나님과 사도를) 믿고 선행을 실천하며 자신의 주님께 겸허한 자들, 저들은 천국의 거주자들이니 실로 그들은 그 안에서 머물 것이라.",
-      "vi": "Quả thật, những người có đức tin, hành thiện, và hạ mình khiêm tốn trước Thượng Đế của họ sẽ là những người bạn của Thiên Đàng, họ sẽ sống trong đó mãi mãi."
+      "vi": "Quả thật, những người có đức tin, hành thiện, và hạ mình khiêm tốn trước Thượng Đế của họ sẽ là những người bạn của Thiên Đàng, họ sẽ sống trong đó mãi mãi.",
+      "pt": "Por certo, os crentes e os que fazem as boas obras e se humildam a seu Senhor, esses são os companheiros do Paraíso. Nele, serão eternos.",
+      "it": "In verità quelli che hanno creduto e hanno fatto il bene e si sono sottomessi al loro Dio, quella è gente del Paradiso, in cui resteranno in eterno.",
+      "sv": "De som tror och handlar rättfärdigt och ödmjukar sig inför sin Herre ska höra till paradisets folk, och i det ska de förbli.",
+      "uk": "Воістину, ті, які увірували, робили добрі справи й були покірні перед Господом своїм, вони — жителі раю! Будуть вони там довіку!",
+      "ro": "Cu adevărat, cei care cred și săvârșesc fapte bune și sunt umili înaintea Domnului lor, aceia sunt oaspeții Raiului și în el vor sălășlui veșnic.",
+      "hr": "A oni koji budu vjerovali, Allahu pokorni i dobra djela činili, oni će stanovnici Raja biti; u njemu će vječno boraviti.",
+      "sr": "Заиста, они који верују и раде добра дела и који су пред својим Господаром скрушени - то су становници Раја, у њему ће вечно да бораве.",
+      "el": "Πράγματι, εκείνοι που πιστεύουν, κάνουν καλές πράξεις και υποτάσσονται στη Βούληση του Κυρίου τους, θα είναι οι κάτοικοι του Παραδείσου, όπου θα μείνουν εκεί μέσα για πάντα."
     }
   },
   {
@@ -2024,7 +2378,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Dájúdájú èmi gbáralé Allāhu, Olúwa mi àti Olúwa yín. Kò sí ẹ̀dá abẹ̀mí kan àfi kí (ó jẹ́ pé) Òun l’Ó máa fi àásó orí rẹ̀ mú un. Dájúdájú Olúwa mi wà lórí ọ̀nà tààrà.",
       "zh": "我的确信托安拉——我的养主和你们的养主，没有一种动物不归他管辖。我的养主确是在正路上的。",
       "th": "แท้จริงฉันมอบหมายต่ออัลลอฮ์ (ผู้ซึ่งเป็น) พระผู้อภิบาลของฉันและพระผู้อภิบาลของพวกเจ้า ไม่มีสัตว์ใดเว้นแต่พระองค์ทรงยึดไว้ที่หน้าผากมัน แท้จริงพระผู้อภิบาลของฉันอยู่บนทางที่เที่ยงตรง",
-      "ko": "실로 나는 나의 주님이시자 그대들의 주님이신 하나님께 의탁하였노라. 생명체 중에 그분께서 앞머리 채를 잡고 계시지 않는 것은 없노라. 실로 나의 주님께서는 올곧은 길 위에 계시노라"
+      "ko": "실로 나는 나의 주님이시자 그대들의 주님이신 하나님께 의탁하였노라. 생명체 중에 그분께서 앞머리 채를 잡고 계시지 않는 것은 없노라. 실로 나의 주님께서는 올곧은 길 위에 계시노라",
+      "pt": "\"Por certo, confio em Allah, meu Senhor e vosso Senhor. Não há ser animal algum, sem que Ele lhe apanhe o topete. Por certo, meu Senhor está na senda reta.\"",
+      "it": "In verità io mi sono affidato ad Allāh, mio e vostro Dio! Non c’è creatura su cui Lui non abbia autorità: in verità il mio Dio è su una retta via!",
+      "sv": "Jag sätter all min lit till Gud, min Herre och er Herre. Det finns inte en varelse som han inte har full makt över. Min Herre är i sanning på en rak väg.",
+      "hr": "ja se uzdam u Allaha, u moga i vašeg Gospodara! Sve živo samo je Njemu podčinjeno; Gospodar moj je, zaista, na putu pravome.\"",
+      "sr": "ја се уздам у Аллаха, Он је мој и ваш Господар! Све живо је потчињено само Њему; заиста је мој Господар истинит и праведан."
     }
   },
   {
@@ -2065,7 +2424,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "你们中窃窃私语的，高谈阔论的，隐藏在黑夜的，出现在白昼的，〔在他〕看来都是一样的。",
       "th": "(เป็นเรื่องที่) เท่าเทียมกัน (สำหรับอัลลอฮ์) ผู้ใดในหมู่เจ้าได้เก็บคำพูดเป็นความลับและผู้ที่กล่าวมันโดยเปิดเผย และผู้ที่ซ่อนการกระทำในเวลากลางคืน และผู้ที่เดินไปอย่างเปิดเผยในเวลากลางวัน",
       "ko": "그대들 중 말을 감추는 자나 그것을 드러내는 자, 그리고 한밤에 숨는 자와 대낮에 활보하는 자는 (하나님께 있어) 동일하노라.",
-      "vi": "Dù ai đó trong các ngươi nói khẽ hoặc lớn tiếng, dù ẩn mình trong bóng đêm hay vênh váo đứng giữa ban ngày, tất cả (đối với Allah) đều như nhau."
+      "vi": "Dù ai đó trong các ngươi nói khẽ hoặc lớn tiếng, dù ẩn mình trong bóng đêm hay vênh váo đứng giữa ban ngày, tất cả (đối với Allah) đều như nhau.",
+      "pt": "É-Lhe igual quem de vós guarda segredo do dito e quem o declara, e quem está escondido de noite, e é caminhante de dia.",
+      "it": "Tra di voi è pari chi ha parlato in segreto e chi apertamente, o chi si è nascosto di notte e chi andava in giro di giorno:",
+      "sv": "För honom gör det ingen skillnad om någon talar tyst eller öppet, eller om någon gömmer sig i nattens mörker eller visar sig i dagens ljus.",
+      "ro": "Pentru El sunt egali acela dintre voi care ține ascuns cuvântul său și acela care îl rostește cu glas tare, acela care stă ascuns în timpul nopții și acela care se arată în ziua mare.",
+      "hr": "Za Njega je jednak onaj od vas koji tiho govori i onaj koji to glasno čini, onaj koji se noću skriva i onaj koji po danu hodi.",
+      "sr": "За Њега је једнак онај од вас који тихо говори и онај који то гласно чини, онај који се ноћу скрива и онај који по дану хода.",
+      "el": "Είναι το ίδιο (ενώπιόν Του και στη γνώση Του), όποιος από σας μιλάει κρυφά και όποιος μιλάει φωναχτά, και όποιος κρύβεται τη νύχτα και όποιος φαίνεται την ημέρα."
     }
   },
   {
@@ -2096,7 +2462,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "Alla no yaññana arsike on mo o muuyi, Himo ɓittina. heɓe mbeltora nguurndam aduna, nguurndam aduna non wonaani ka laakara, si wanaa dakamme-hoy.",
       "yo": "Allāhu ń tẹ́ arísìkí sílẹ̀ rẹgẹdẹ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹni tí Ó bá fẹ́). Wọ́n sì dunnú sí ìṣẹ̀mí ilé ayé! Kí sì ni ìṣẹ̀mí ayé ní ẹ̀gbẹ́ ti ọ̀run bí kò ṣe ìgbádùn bín-íntín.",
       "zh": "安拉使他所意欲者享受宽裕的给养或窘迫的给养。他们因今世的生活而欢喜，然而今世的生活比起后世的生活来，只是一种〔暂时〕的享受。",
-      "ko": "하나님께서는 원하시는 자에게 양식을 늘리시고 줄이시노라. 그들은 현세의 삶에 기뻐하나, 현세의 삶이란 내세에 비할 때 그저 일순간의 편의일뿐이라."
+      "ko": "하나님께서는 원하시는 자에게 양식을 늘리시고 줄이시노라. 그들은 현세의 삶에 기뻐하나, 현세의 삶이란 내세에 비할 때 그저 일순간의 편의일뿐이라.",
+      "it": "Allāh concede i beni con generosità a chi vuole, e toglie a chi vuole. E loro gioiscono della vita terrena, e la vita terrena non è, rispetto a quella dell’Aldilà, nient’altro che un breve godimento.",
+      "uk": "Аллаг збільшує наділ, кому побажає, й зменшує, кому побажає. Вони радіють земному життю, але життя земне в порівнянні з життям наступним — лише тимчасова насолода!",
+      "hr": "Kome hoće, Allah daje opskrbu u obilju, i uskraćuje. Oni se raduju životu na ovom svijetu, a život na ovom svijetu prema onome samo je prolazno uživanje.",
+      "sr": "Коме жели, Аллах даје опскрбу у изобиљу, и ускраћује. Они се радују животу на овом свету, а живот на овом свету према Будућем свету само је пролазно уживање."
     }
   },
   {
@@ -2129,7 +2499,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Ṣé o kò wòye sí bí Allāhu ṣe ṣàkàwé ọ̀rọ̀ dáadáa pẹ̀lú igi dáadáa, tí gbòǹgbò rẹ̀ fi ìdí múlẹ̀ ṣinṣin, tí ẹ̀ka rẹ̀ sì wà nínú sánmọ̀,",
       "zh": "难道你不知道安拉有过这样一个比喻吗？一句良言，好比一棵优良的树，其根柢是深固的，其枝条高耸入云，",
       "th": "เจ้าไม่เห็นหรอกหรือว่า อัลลอฮ์ทรงยกอุทาหรณ์ไว้ว่า อุปมาคำพูดที่ดีประหนึ่งต้นไม้ที่ดี รากของมันฝังแน่นลึกมั่นคง และกิ่งก้านของมันชูขึ้นไปในท้องฟ้า",
-      "vi": "Ngươi (Thiên sứ Muhammad) không thấy Allah đã đưa ra hình ảnh thí dụ về lời nói tốt lành (Tawhid) sao? Nó giống như một loại cây tốt, rễ của nó cố định vững chắc và cành của nó vươn lên trời."
+      "vi": "Ngươi (Thiên sứ Muhammad) không thấy Allah đã đưa ra hình ảnh thí dụ về lời nói tốt lành (Tawhid) sao? Nó giống như một loại cây tốt, rễ của nó cố định vững chắc và cành của nó vươn lên trời.",
+      "pt": "Não viste como Allah propõe um exemplo? Uma palavra benigna é como uma árvore benigna, cuja raiz é firme e cujos ramos se alçam ao céu;",
+      "it": "Non vedi come Allāh ha fatto una similitudine, paragonando una buona parola a una buona pianta il cui tronco è solido in terra e i suoi rami sono su nel cielo?",
+      "sv": "Har du inte reflekterat över den liknelse som Gud framställer om det goda ordet? Det är som ett friskt träd vars rötter är fast förankrade och vars grenar sträcker sig upp mot skyn.",
+      "uk": "Невже ти не бачиш, як Аллаг наводить притчі? Добре слово схоже на добре дерево, корінь якого міцний, а гілки сягають неба.",
+      "ro": "Nu vezi ce pildă a dat Allah pentru cuvântul bun? El este ca un pom bun, cu rădăcina neclintită și cu ramuri [ce se înalță] în Cer.",
+      "hr": "Zar ne vidiš kako Allah navodi primjer – lijepa je riječ kao lijepo drvo: korijen mu je čvrsto u zemlji, a grane prema nebu.",
+      "sr": "Зар не видиш како Аллах наводи пример - лепа је реч као лепо дрво: корен му је чврсто у земљи а гране према небу."
     }
   },
   {
@@ -2165,7 +2542,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "so": "Kani (Qur’aanku) ugu filan gaarsiin cad dadka, iyo in loogu digo, iyo inay ogaadaan in Macbuudka Xaqa ahi Ilaah Keliya uun yahay ee Mid ah (Allaah), iyo inay ku waano qaataan (arrinkaa) waxgaradku.",
       "ff": "Ndee (Alqur'aanaare) ko yottinoore yimɓe ɓeen fii yo ɓe waajitornde, e yooɓe nganndu kadi, won´de Kaŋko ko o deweteeɗo Gooto, e fii yo joomiraaɓe haqqillaaji ɓren waajitor.",
       "zh": "这是对世人的通告，以便他们因此而受警告，以便他们知道他只是独一的应受崇拜者，以便有理智的人记取教诲。",
-      "th": "นี่คือการประกาศแก่ปวงมนุษย์ เพื่อพวกเขาจะถูกเตือนด้วยมัน และเพื่อพวกเขาจะได้รู้ว่า แท้จริงพระองค์คือพระเจ้าผู้ทรงเอกะ และเพื่อบรรดาผู้มีสติปัญญาจะได้รำลึก"
+      "th": "นี่คือการประกาศแก่ปวงมนุษย์ เพื่อพวกเขาจะถูกเตือนด้วยมัน และเพื่อพวกเขาจะได้รู้ว่า แท้จริงพระองค์คือพระเจ้าผู้ทรงเอกะ และเพื่อบรรดาผู้มีสติปัญญาจะได้รำลึก",
+      "pt": "Esta é uma Mensagem para os homens, para que se guiem e, com ela, sejam admoestados, e para que saibam que Ele é Deus Único e, também, para que os dotados de discernimento meditem.",
+      "it": "Questo è un monito alla gente, per avvertirli, perché sappiano che il loro Dio è in verità un Dio Unico, e perché ricordino quelli che hanno intelletto!",
+      "sv": "Denna [Koran] är ett budskap till alla människor, för att de ska ta till sig dess varningar och inse att han är en enda Gud, och så att de förståndiga ska låta sig förmanas.",
+      "uk": "Це — послання до людей, щоб їх застерігали ним, і щоб знали вони, що Він — Єдиний Бог. І нехай замисляться обдаровані розумом!",
+      "ro": "Acesta [Coranul] este o vestire pentru oameni, pentru ca să fie preveniți prin ea și pentru ca să știe că El este un Dumnezeu Unic și să ia aminte cei înzestrați cu judecată.",
+      "hr": "Ovo je obznana ljudima, i da njome budu opomenuti, i da znaju da je samo On Jedan Bog, i da prime pouku oni koji razum imaju!",
+      "sr": "Овај Кур'ан је обзнана људима, и да њиме буду опоменути, и да знају да је само Он Један Бог, и да приме поуку они који имају разум!"
     }
   },
   {
@@ -2201,7 +2585,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "我确已降示教诲，我确是教诲的保护者。",
       "ta": "நிச்சயமாக நாம்தான் இந்த அறிவுரையை (உம்மீது) இறக்கினோம். இன்னும், நிச்சயமாக நாம் அதை பாதுகாப்பவர்கள் ஆவோம்.",
       "th": "แท้จริงเราเป็นผู้ประทานข้อตักเตือน (อัลกุรอาน) ลงมา และแท้จริงเราเป็นผู้รักษามันอย่างแน่นอน",
-      "vi": "Thật vậy, chính TA đã ban Thông Điệp Nhắc Nhở (Qur’an) xuống và chính TA sẽ bảo quản Nó."
+      "vi": "Thật vậy, chính TA đã ban Thông Điệp Nhắc Nhở (Qur’an) xuống và chính TA sẽ bảo quản Nó.",
+      "pt": "Por certo, Nós fizemos descer o Alcorão e por certo, dele somos Custódios.",
+      "it": "E in verità siamo Noi che abbiamo fatto scendere il Monito e in verità ne siamo Noi i Custodi!",
+      "sv": "Det är vi som har uppenbarat denna förmaning, och vi ska sannerligen bevara den.",
+      "uk": "Воістину, Ми зіслали Нагадування і, воістину, Ми бережемо його!",
+      "ro": "Cu adevărat, Noi am pogorât Mesajul [Coranul] și cu adevărat Noi îi vom fi păzitori!",
+      "hr": "Mi, uistinu, Kuran objavljujemo i zaista ćemo Mi nad njim bdjeti!",
+      "sr": "Ми, уистину, Кур'ан објављујемо и заиста ћемо Ми да га сачувамо.",
+      "el": "Πράγματι, Εμείς είμαστε που στείλαμε την Υπενθύμιση (το Κορ’άν) και Εμείς είμαστε που θα την προστατέψουμε (από το να αλλοιωθεί ή να χαθεί)."
     }
   },
   {
@@ -2244,7 +2636,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக உம் இறைவன்தான் மகா படைப்பாளன், நன்கறிந்தவன்.",
       "ml": "തീര്‍ച്ചയായും നിന്‍റെ രക്ഷിതാവ് എല്ലാം സൃഷ്ടിക്കുന്നവനും എല്ലാം അറിയുന്നവനുമാകുന്നു.",
       "th": "แท้จริงพระผู้อภิบาลของเจ้า (โอ้ มุฮัมหมัด) เป็นผู้ทรงสร้าง ผู้ทรงรอบรู้",
-      "vi": "Quả thật, Thượng Đế của Ngươi là Đấng Tạo Hoá, Đấng Toàn Tri."
+      "vi": "Quả thật, Thượng Đế của Ngươi là Đấng Tạo Hoá, Đấng Toàn Tri.",
+      "pt": "Por certo, teu Senhor é O Criador, O Onisciente.",
+      "it": "E in verità l’Ora è in arrivo, quindi perdona con gentilezza. In verità il tuo Dio è il Creatore, il Sapiente.",
+      "sv": "Din Herre är sannerligen den storslagne Skaparen, den Allvetande.",
+      "uk": "Воістину, твій Господь — Творець, Знаючий!",
+      "ro": "Cu adevărat, Domnul tău este Al-Khallaq [Creatorul] [și] al-'Alim [Atoateștiutorul].",
+      "hr": "Gospodar tvoj sve stvara i On je Sveznajući.",
+      "sr": "твој Господар је, заиста, Створитељ свега, Свезнајући.",
+      "el": "Πράγματι, ο Κύριός σου (ω, Μωχάμμαντ) είναι ο Αλ-Χαλλάκ (Δημιουργός των πάντων), ο Αλ-‘Αλείμ (Παντογνώστης)."
     }
   },
   {
@@ -2287,7 +2687,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "அவன் வானங்களையும் பூமியையும் உண்மையான நோக்கத்திற்கே படைத்தான். அவர்கள் இணைவைப்பதை விட்டும் அவன் முற்றிலும் உயர்ந்தவன்.",
       "ml": "ആകാശങ്ങളും ഭൂമിയും അവന്‍ യുക്തിപൂര്‍വ്വം സൃഷ്ടിച്ചിരിക്കുന്നു. അവര്‍ പങ്കുചേര്‍ക്കുന്നതിൽ നിന്നെല്ലാം അവന്‍ ഉന്നതനായിരിക്കുന്നു.",
       "th": "พระองค์ทรงสร้างชั้นฟ้าทั้งหลายและแผ่นดินโดยสัจจริง พระองค์ทรงสูงส่งเหนือที่พวกเขาตั้งภาคี",
-      "vi": "Ngài đã tạo ra trời đất vì chân lý. Ngài Tối Cao vượt bên trên những gì họ tổ hợp (với Ngài)."
+      "vi": "Ngài đã tạo ra trời đất vì chân lý. Ngài Tối Cao vượt bên trên những gì họ tổ hợp (với Ngài).",
+      "pt": "Ele criou os céus e a terra, com a verdade. Sublimado seja Ele acima do que idolatram!",
+      "it": "Creò i cieli e la terra con la Verità. Lui è molto al di sopra di ciò che Gli paragonano!",
+      "sv": "Han har skapat himlarna och jorden med ett visst syfte. Upphöjd är han, över vad de sätter vid hans sida!",
+      "uk": "Він створив небеса й землю в істині. Вищий Він за те, що Йому додають як рівних!",
+      "ro": "El a creat Cerurile și Pământul cu adevăr. El este deasupra a ceea ce Îi asociază Lui.",
+      "hr": "On je s Istinom nebesa i Zemlju stvorio, neka je On vrlo visoko iznad onoga što Mu pridružuju.",
+      "sr": "Он је мудро небеса и Земљу створио; нека је Он врло високо изнад оних које поред Њега обожавају!",
+      "el": "Δημιούργησε τους ουρανούς και τη Γη με την αλήθεια (και ως ένδειξη της Δύναμής Του και όχι άσκοπα). Είναι πολύ Ανώτερος από ό,τι Του αποδίδουν (από ψεύτικους θεούς στη λατρεία)!"
     }
   },
   {
@@ -2328,7 +2736,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "他从天上降下雨水，你们可以用做饮料，你们赖以放牧的树木因之而生长。",
       "ml": "അവനാണ് ആകാശത്ത് നിന്ന് വെള്ളം ചൊരിഞ്ഞുതന്നത്‌. അതില്‍ നിന്നാണ് നിങ്ങളുടെ കുടിനീര്‌. അതില്‍ നിന്നുതന്നെയാണ് നിങ്ങള്‍ക്ക് (കാലികളെ) മേക്കുവാനുള്ള ചെടികളുമുണ്ടാകുന്നത്‌.",
       "th": "พระองค์คือ ผู้ทรงหลั่งน้ำลงมาจากฟากฟ้า ส่วนหนึ่งเป็นเครื่องดื่มสำหรับพวกเจ้าและอีกส่วนหนึ่ง (ทำให้) พฤกษชาติ (เจริญเติบโต) เพื่อพวกเจ้าใช้เลี้ยงสัตว์",
-      "vi": "Chính Ngài là Ðấng đã ban nước mưa từ trên trời xuống để các ngươi uống, tưới tiêu cây trồng và chăn nuôi gia súc."
+      "vi": "Chính Ngài là Ðấng đã ban nước mưa từ trên trời xuống để các ngươi uống, tưới tiêu cây trồng và chăn nuôi gia súc.",
+      "pt": "Ele é Quem vos faz descer do céu água. Dela bebeis e dela brota vegetação, em que fazeis pascer vossos rebanhos.",
+      "it": "Lui è Colui che ha fatto cadere dal cielo l’acqua; voi ne ricavate da bere e ne cresce l’erba per i pascoli.",
+      "sv": "Det är han som låter regnet falla från himlen; av detta kan ni dricka, och av detta gror växterna där er boskap betar.",
+      "uk": "Він — Той, Хто проливає з неба воду. Вона — напій для вас, завдяки їй ростуть дерева, серед яких ви пасете худобу.",
+      "ro": "El este Cel care trimite apă din Cer pentru voi. Din ea este de băut pentru voi și din ea cresc tufișurile, unde voi vă pașteți cirezile.",
+      "hr": "On spušta s neba vodu koju pijete i kojom se natapa raslinje kojim stoku napasate.",
+      "sr": "Он је Тај Који са неба спушта воду коју пијете и она помаже да изникне биље којим стоку напасате.",
+      "el": "Είναι Αυτός που στέλνει νερό (βροχή) από τον ουρανό, από το οποίο πίνετε, και από το οποίο μεγαλώνουν δέντρα (και φυτά) ανάμεσα στα οποία βοσκείτε (τα βοοειδή σας)."
     }
   },
   {
@@ -2363,7 +2779,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "(Allāhu) tún ń fi (omi yìí) hu àwọn irúgbìn, igi òróró zaetūn, igi dàbínù, igi àjàrà àti gbogbo àwọn èso (yòókù) jáde fún yín. Dájúdájú àmì wà nínú ìyẹn fún ìjọ tó ní àròjinlẹ̀.",
       "zh": "他为你们而生产庄稼、油橄榄、椰枣、葡萄和各种果实。对于能思维的民众，此中确有一种迹象。",
       "th": "ด้วยมัน (น้ำนั้น) พระองค์ทรงให้พืชผลและผลมะกอก และอินทผลัม และองุ่น และจากผลไม้อีกหลายชนิดได้งอกออกมา แท้จริงในการนั้น แน่นอน ย่อมเป็นสัญญาณสำหรับกลุ่มชนที่ตรึกตรอง",
-      "vi": "Cũng nguồn nước mưa đó, Ngài làm mọc ra các loại cây trồng, ô liu, chà là, nho và tất cả loại trái cây. Quả thật, trong sự việc đó là một dấu hiệu dành cho nhóm người biết suy ngẫm."
+      "vi": "Cũng nguồn nước mưa đó, Ngài làm mọc ra các loại cây trồng, ô liu, chà là, nho và tất cả loại trái cây. Quả thật, trong sự việc đó là một dấu hiệu dành cho nhóm người biết suy ngẫm.",
+      "pt": "Com ela, Ele vos faz germinar as searas e as oliveiras e as tamareiras e as videiras e toda espécie de frutos. Por certo, há nisso um sinal para um povo que reflete.",
+      "it": "Con quella vi fa crescere le piantagioni, gli ulivi, le palme, le viti e ogni specie di frutti; in verità in quello c’è un Segno per la gente che riflette.",
+      "sv": "[Genom vattnet] låter han säd, oliver, dadelpalmer, druvor och alla sorters frukter spira för er. I allt detta finns tydliga tecken för de som tänker efter.",
+      "uk": "Він вирощує для вас жито, оливи, фінікові пальми, виноград та всі інші плоди. Воістину, в цьому знамення для людей мислячих!",
+      "ro": "Din ea El face să crească pentru voi semănăturile, măslinii, curmalii, vița de vie și tot felul de roade. Cu adevărat, în aceasta este dovadă pentru un neam [de oameni] care chibzuiesc.",
+      "hr": "On čini da vam pomoću nje raste žito, i masline, i palme, i grožđe, i svakovrsni plodovi – to je, zaista, dokaz za ljude koji razmišljaju.",
+      "sr": "Он вам даје да помоћу ње изникне жито, и маслине, и палме, и грожђе, и разноврсни плодови - у томе је, заиста, доказ за људе који размишљају.",
+      "el": "Φυτρώνει για σας μ' αυτό (το νερό) καλλιέργειες, ελιές, χουρμαδιές, αμπέλια και από όλους τους καρπούς. Πράγματι, υπάρχει Σημάδι σ' αυτό για τους ανθρώπους που συλλογίζονται."
     }
   },
   {
@@ -2404,7 +2828,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "你们所应当崇拜的是唯一的受崇拜者。不信后世的人，他们的心是否认的，他们是自大的。",
       "ml": "നിങ്ങളുടെ ആരാധ്യൻ ഏക ആരാധ്യനത്രെ. എന്നാല്‍ പരലോകത്തില്‍ വിശ്വസിക്കാത്തവരാകട്ടെ, അവരുടെ ഹൃദയങ്ങള്‍ നിഷേധസ്വഭാവമുള്ളവയത്രെ. അവര്‍ അഹങ്കാരികളുമാകുന്നു.",
       "th": "พระเจ้าของพวกเจ้านั้นคือพระเจ้าองค์เดียว ดังนั้น บรรดาผู้ไม่ศรัทธาต่อวันปรโลก หัวใจของพวกเขาปฏิเสธไม่รับรู้ และพวกเขาหยิ่งผยอง",
-      "vi": "Thượng Đế của các ngươi (hỡi loài người) là một Đấng duy nhất. Tuy nhiên, trái tim của những kẻ không tin vào Đời Sau đang ngập tràn trong việc khước từ Lẽ thật, và chúng là những kẻ kiêu ngạo."
+      "vi": "Thượng Đế của các ngươi (hỡi loài người) là một Đấng duy nhất. Tuy nhiên, trái tim của những kẻ không tin vào Đời Sau đang ngập tràn trong việc khước từ Lẽ thật, và chúng là những kẻ kiêu ngạo.",
+      "pt": "Vosso Deus é Deus Único. Então, os que não crêem na Derradeira Vida, seus corações são negadores da unicidade de Deus, e eles são soberbos.",
+      "it": "Il vostro Dio è un Dio Unico! Coloro che non credono nell’Aldilà hanno dei cuori perfidi e sono superbi.",
+      "sv": "Er Gud är en enda Gud, men de som inte tror på det kommande livet har förnekat detta i sina hjärtan, [förblindade] av sitt högmod.",
+      "uk": "Ваш Бог — Бог єдиний. Серця тих, які не вірують у наступне життя, сповнені заперечень, а самі вони — зарозумілі гордії!",
+      "ro": "Domnul vostru este un Domn Unic. Iar inimile celor care nu cred în Viața de Apoi tăgăduiesc [Unicitatea lui Allah] și ei sunt trufași.",
+      "hr": "Vaš Bog je – jedan Bog! Srca onih koji u onaj svijet ne vjeruju, poriču, oni se ohološću razmeću.",
+      "sr": "Ваш Бог је – један Бог! Срца оних који у Будући свет не верују поричу, они се охолошћу размећу."
     }
   },
   {
@@ -2441,7 +2872,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "E ɓee njii'aani ko Alla tagi kon e huunde nde ɗowɗe mun yiiltondirta ñaamo e nano, sujjangol Alla, hara ko ɗi jankiniiɗi.",
       "zh": "难道他们没有观察安拉所创造的万物吗？各物的阴影，偏向左边和右边，为安拉而叩头，同时他们是卑贱的。",
       "th": "และพวกเขามิได้มองไปยังสิ่งที่อัลลอฮ์ทรงสร้างบ้างหรอกหรือว่า เงาของมันจะทอดไปทางขวาและทางซ้าย เพื่อสุญูดต่ออัลลอฮ์โดยที่พวกมันนอบน้อม",
-      "vi": "Lẽ nào (những kẻ vô đức tin) không quan sát những gì Allah đã tạo ra? Bóng của chúng đổ sang phải và sang trái, chúng phủ phục hoàn toàn phục tùng Allah."
+      "vi": "Lẽ nào (những kẻ vô đức tin) không quan sát những gì Allah đã tạo ra? Bóng của chúng đổ sang phải và sang trái, chúng phủ phục hoàn toàn phục tùng Allah.",
+      "pt": "E não viram eles que a sombra de todas as cousas que Allah criou se lhes alonga, à direita e à esquerda, prosternando-se diante de Allah, humildemente?",
+      "it": "O non hanno visto proprio nulla di ciò che Allāh ha creato, le cui ombre si stendono ora a destra, ora a sinistra, prosternandosi umili davanti ad Allāh .",
+      "sv": "Ser de inte alla de ting som Gud har skapat, och hur deras skuggor rör sig till höger och vänster, och böjer sig i underkastelse till Gud?",
+      "uk": "Невже вони не спостерігали за речами, які створив Аллаг? Їхні тіні схиляються направо й наліво, смиренно вклоняються перед Аллагом.",
+      "ro": "Oare n-au văzut ei că toate lucrurile pe care le-a creat Allah - având umbră ce se întinde la dreapta și la stânga - se prosternează în fața lui Allah cu supunere?",
+      "hr": "Zar oni ne vide da sve ono što je Allah stvorio sad desno, sad lijevo, pruža sjene svoje Allahu se klanjajući i da je sve to pokorno?",
+      "sr": "Зар они не виде да све оно што је Аллах створио сад десно, сад лево, пружа своје сенке клањајући се Аллаху и да је све то покорно?",
+      "el": "Δε βλέπουν ότι ό,τι δημιούργησε ο Αλλάχ (από δημιουργήματα που έχουν σκιά), των οποίων οι σκιές κλίνουν δεξιά και αριστερά (προσκυνώντας) σε Σιτζούντ στάση ενώπιον του Αλλάχ με κάθε ταπείνωση;"
     }
   },
   {
@@ -2475,7 +2914,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "E ɓe nji'aani colli ɗiin ko ɗi eltaaɗi ka weeyo kammu (won´de) jogitaaki ɗi si wanaa Alla? Wonii e ɗuum, maandeeji wonan´de yimɓe gooŋɗinooɓe ɓen.",
       "yo": "Ṣé wọn kò wòye sí àwọn ẹyẹ tí A rọ̀ (fún fífò) nínú òfurufú (lábẹ́) sánmọ̀? Kò sí ẹni tó ń mú wọn dúró (sínú òfurufú) bí kò ṣe Allāhu. Dájúdájú àwọn àmì wà nínú ìyẹn fún ìjọ onígbàgbọ́ òdodo.",
       "zh": "难道他们没有看见在空中被制服的群鸟吗？只有安拉维持他们。对于归信的民众，此中确有许多迹象。",
-      "th": "พวกเขาไม่เห็นนกที่มีผู้ควบคุมมันอยู่ในชั้นบรรยากาศของท้องฟ้าดอกหรือ? ไม่มีผู้ใดสามารถรั้งพวกมันไว้ได้นอกจากอัลลอฮ์ แท้จริงในการนั้นย่อมเป็นสัญญาณสำหรับกลุ่มชนที่ศรัทธา"
+      "th": "พวกเขาไม่เห็นนกที่มีผู้ควบคุมมันอยู่ในชั้นบรรยากาศของท้องฟ้าดอกหรือ? ไม่มีผู้ใดสามารถรั้งพวกมันไว้ได้นอกจากอัลลอฮ์ แท้จริงในการนั้นย่อมเป็นสัญญาณสำหรับกลุ่มชนที่ศรัทธา",
+      "it": "Non vedono gli uccelli che, sottomessi nell’immensità del cielo, non li sostiene se non Allāh? In ciò ci sono in verità dei Segni per i popoli credenti.",
+      "sv": "Ser de inte fåglarna som hålls svävande i luften? Ingen annan än Gud håller dem uppe. I detta finns klara tecken för människor som tror.",
+      "uk": "Чи ви не бачили птахів, які покірно [літають] у небі? Їх утримує тільки Аллаг! Воістину, в цьому знамення для віруючих людей!",
+      "ro": "Oare nu văd ei păsările supuse din văzduhul Cerului, pe care nimeni nu le ține decât numai Allah? Întru aceasta sunt cu adevărat semne pentru un popor [de oameni] care cred.",
+      "hr": "Zar oni ne vide kako ptice u prostranstvu nebeskom bez muke lete, njih samo Allah drži. To su, zaista, dokazi ljudima koji budu vjerovali.",
+      "sr": "Зар они не виде птице како без муке лете у пространству небеском?! Њих само Аллах држи. Ту су, заиста, докази људима који верују."
     }
   },
   {
@@ -2507,7 +2952,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "Tabitii Alla yamirii nuunɗal, e moƴƴingol, e moƴƴagol e joomiraaɓe ɓadondiral. homo haɗa gaay e pan-kare, e ko añinii, e bewre. homo waajoo on, mbeleejo'o, on mbaajitoray.",
       "yo": "Dájúdájú Allāhu ń pàṣẹ ṣíṣe déédé, ṣíṣe rere àti fífún ẹbí (ní n̄ǹkan). Ó sì ń kọ ìwà ìbàjẹ́, ohun burúkú àti rúkèrúdò. Ó ń ṣe wáàsí fún yín nítorí kí ẹ lè lo ìrántí.",
       "zh": "安拉的确命人公平、行善、施济亲戚，并禁人淫乱、作恶事、霸道；他劝戒你们，以便你们记取教诲。",
-      "th": "แท้จริงอัลลอฮ์ทรงใช้ให้รักษาความยุติธรรมและทำการดี และการบริจาคแก่ญาติใกล้ชิด และทรงห้ามปรามการอนาจารและการชั่วช้า และการอธรรม พระองค์ทรงตักเตือนพวกเจ้าเพื่อพวกเจ้าจักได้รำลึก"
+      "th": "แท้จริงอัลลอฮ์ทรงใช้ให้รักษาความยุติธรรมและทำการดี และการบริจาคแก่ญาติใกล้ชิด และทรงห้ามปรามการอนาจารและการชั่วช้า และการอธรรม พระองค์ทรงตักเตือนพวกเจ้าเพื่อพวกเจ้าจักได้รำลึก",
+      "pt": "Por certo, Allah ordena a justiça e a benevolência e a liberalidade para com os parentes, e coíbe a obscenidade e o reprovável e a transgressão. Ele vos exorta, para meditardes.",
+      "it": "In verità Allh ordina la giustizia e la carità, e di fare del bene ai consanguinei, e dissuade dalla nefandezza, dall’atto riprovevole e dalla trasgressione. Lui vi avverte, così che ricordiate.",
+      "sv": "Gud påbjuder rättvisa och godhet samt generositet mot närstående, och han förbjuder skamlösa handlingar, ondska och förtryck. Han förmanar er så att ni ska tänka efter och ta till er.",
+      "uk": "Воістину, Аллаг закликає до справедливості, добрих справ і підтримки родичів. Він забороняє мерзотне, відразне й нечестиве. І Він повчає вас — можливо, будете пам’ятати ви!",
+      "ro": "Cu adevărat, Allah poruncește dreptatea, împlinirea faptei bune și dărnicia față de rude și El oprește de la desfrâu, fapta urâtă și nelegiuire. El vă îndeamnă pentru ca voi să vă aduceți aminte.",
+      "hr": "Allah zahtijeva da se svačije pravo poštuje, dobro čini, i da se bližnjima udjeljuje, a razvrat i sve što je odvratno i nasilje zabranjuje – da pouku primite, On vas savjetuje.",
+      "sr": "Аллах, заиста, наређује правду, доброчинство и помагање ближњих, а разврат, све што је одвратно и насиље забрањује; Он вас саветује како бисте узели поуку."
     }
   },
   {
@@ -2544,7 +2996,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Ohun tó ń bẹ lọ́dọ̀ yín máa tán. Ohun tó ń bẹ lọ́dọ̀ Allāhu sì máa wà títí láéláé. Dájúdájú A sì máa san àwọn tó ṣe sùúrù ní ẹ̀san rere wọn tó dára ju ohun tí wọ́n ń ṣe níṣẹ́.",
       "zh": "你们所有的是要耗尽的，在安拉那里的是无穷的。我誓必要以坚忍者所行的最大善功报酬他们。",
       "th": "ทุกสิ่งที่พวกเจ้ามีย่อมหมดสิ้นไป แต่สิ่งที่อัลลอฮ์มีนั้นจะคงอยู่ชั่วนิรันดร์ และแน่นอน เราจะตอบแทนบรรดาผู้อดทนด้วยรางวัลที่ดียิ่งกว่าสิ่งที่พวกเขาได้กระทำไว้",
-      "vi": "Những gì ở nơi các ngươi đều sẽ tiêu tan nhưng những gì ở nơi Allah đều sẽ còn mãi. Và TA (Allah) chắc chắn sẽ trao cho những người hết lòng kiên nhẫn một phần thưởng tốt hơn những gì họ đã từng làm."
+      "vi": "Những gì ở nơi các ngươi đều sẽ tiêu tan nhưng những gì ở nơi Allah đều sẽ còn mãi. Và TA (Allah) chắc chắn sẽ trao cho những người hết lòng kiên nhẫn một phần thưởng tốt hơn những gì họ đã từng làm.",
+      "pt": "O que há junto de vós se exaure, mas o que há junto de Allah é permanente. E, em verdade, recompensaremos os que pacientaram com prêmio melhor que aquilo que faziam.",
+      "it": "Ciò che voi avete finisce, ma ciò che è da Allāh è eterno, e ripagheremo certo i pazienti con un premio molto migliore di ciò che facevano.",
+      "sv": "Det ni äger kommer att försvinna, men det som finns hos Gud består. Vi ska sannerligen belöna de tålmodiga efter deras bästa handlingar.",
+      "uk": "Те, що у вас, зникне, а те, що в Аллага, залишиться назавжди. Ми неодмінно винагородимо тих, які були терплячі, за найкраще з того, що вони робили!",
+      "ro": "Ceea ce aveți voi se termină, pe când ceea ce se află la Allah va rămâne mereu. Iar Noi îi vom răsplăti pe cei care sunt statornici după [faptele] cele mai bune pe care le-au săvârșit.",
+      "hr": "Ono što je u vas – prolazno je, a ono što je u Allaha – vječno je. One koji su trpjeli Mi ćemo, sigurno, nagraditi mnogostrukom nagradom za ono što su činili.",
+      "sr": "Оно што је код вас - пролазно је, а оно што је код Аллаха - вечно је. Ми ћемо, сигурно, оне који су били стрпљиви наградити многоструком наградом за оно што су чинили."
     }
   },
   {
@@ -2586,7 +3045,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக அல்லாஹ் இறையச்சமுள்ளவர்களுடனும், நல்லறம் புரிபவர்களுடனும் இருக்கிறான்.",
       "ml": "തീര്‍ച്ചയായും അല്ലാഹു സൂക്ഷ്മത പാലിച്ചവരോടൊപ്പമാകുന്നു. സദ്‌വൃത്തരായിട്ടുള്ളവരോടൊപ്പവും.",
       "th": "แท้จริงอัลลอฮ์ทรงอยู่ร่วมกับบรรดาผู้ยำเกรงพระองค์ และบรรดาผู้กระทำความดี",
-      "vi": "Quả thật, Allah luôn bên cạnh những người kính sợ Ngài và những người làm tốt."
+      "vi": "Quả thật, Allah luôn bên cạnh những người kính sợ Ngài và những người làm tốt.",
+      "pt": "Por certo, Allah é com os que são piedosos e com os que são benfeitores.",
+      "it": "In verità Allāh è con quelli che sono stati devoti e con quelli che sono pii.",
+      "sv": "Gud är sannerligen med de som fruktar honom och som gör gott.",
+      "uk": "Воістину, Аллаг із тими, які богобоязливі, з тими, які роблять добро!",
+      "ro": "Cu adevărat, Allah este cu aceia care sunt cu frică [de El] și cu aceia care sunt făcători de bine.",
+      "hr": "Allah je zaista na strani onih koji se Njega boje i koji dobra djela čine.",
+      "sr": "Аллах је заиста на страни оних који се Њега боје и греха клоне и који добра дела чине.",
+      "el": "Πράγματι, ο Αλλάχ (με την υποστήριξή Του) είναι μαζί μ' αυτούς που φυλάσσονται από την τιμωρία Του (τηρώντας τις εντολές Του) και μ' αυτούς που πράττουν το καλό."
     }
   },
   {
@@ -2629,7 +3096,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "(நபியே!) அல்லாஹ்வுடன் வணங்கப்படுகின்ற வேறு ஓர் இறைவனை ஆக்காதீர். (அவ்வாறு செய்தால்) இகழப்பட்டவராக, கைவிடப்பட்டவராக, முடங்கிவிடுவீர்.",
       "ml": "അല്ലാഹുവോടൊപ്പം മറ്റൊരു ആരാധ്യനെയും നീ സ്ഥാപിക്കരുത്‌. എങ്കില്‍ അപമാനിതനും കയ്യൊഴിക്കപ്പെട്ടവനുമായി നീ ഇരിക്കേണ്ടി വരും.",
       "th": "เจ้าอย่าได้เอาพระเจ้าอื่นใดมาคู่เคียงกับอัลลอฮ์ เพราะจะทำให้เจ้าตกอยู่ในสภาพที่น่าตำหนิและถูกเมินเฉย",
-      "vi": "Ngươi (hỡi người bề tôi) chớ dựng lên cùng với Allah một thần linh nào khác, kẻo ngươi sẽ phải ngồi (trong Hỏa Ngục) một cách hèn hạ đáng khinh."
+      "vi": "Ngươi (hỡi người bề tôi) chớ dựng lên cùng với Allah một thần linh nào khác, kẻo ngươi sẽ phải ngồi (trong Hỏa Ngục) một cách hèn hạ đáng khinh.",
+      "it": "Non associare ad Allāh un’altra divinità, perché sarai umiliato e abbandonato.",
+      "sv": "Dyrka inte någon vid sidan av Gud, för då kommer du att bli klandrad och övergiven.",
+      "uk": "Не поклоняйся крім Аллага іншому богу, а то залишишся приниженим і безсилим!",
+      "ro": "Nu pune lângă Allah un alt zeu, ca să nu șezi rușinat și alungat.",
+      "hr": "Ne stavljaj uz Allaha nekog drugog boga da ne bi osudu zaslužio i bez podrške ostao.",
+      "sr": "Не узимај уз Аллаха неког другог бога, па да будеш понижен и без помоћи!",
+      "el": "Μη θέσεις κανέναν άλλο θεό μαζί με τον Αλλάχ, διαφορετικά θα καθίσεις κατηγορούμενος (και περιφρονημένος) και εγκαταλειμμένος (χωρίς καμία υποστήριξη στη Φωτιά)."
     }
   },
   {
@@ -2668,7 +3142,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Dájúdájú Olúwa rẹ l’Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú Ó ń jẹ́ Onímọ̀-ìkọ̀kọ̀, Olùríran nípa àwọn ẹrúsìn Rẹ̀.",
       "zh": "你的养主必为他所意欲者而使给养富裕，必为他所意欲者而使给养窘迫。对于他的众仆，他〔安拉〕确是彻知的，确是明察的。",
       "th": "แท้จริง พระผู้อภิบาลของเจ้าทรงไพศาลในการให้ปัจจัยยังชีพแก่ผู้ที่พระองค์ทรงประสงค์ และทรงให้คับแคบ (แก่ผู้ที่พระองค์ทรงประสงค์) แท้จริงพระองค์เป็นผู้ทรงรอบรู้ ผู้ทรงเห็นปวงบ่าวของพระองค์",
-      "vi": "Quả thật, Thượng Đế của Ngươi muốn nới rộng hay thu hẹp bổng lộc cho ai tùy ý Ngài, bởi Ngài luôn thông toàn về đám bầy tôi của Ngài."
+      "vi": "Quả thật, Thượng Đế của Ngươi muốn nới rộng hay thu hẹp bổng lộc cho ai tùy ý Ngài, bởi Ngài luôn thông toàn về đám bầy tôi của Ngài.",
+      "pt": "Por certo, teu Senhor prodigaliza o sustento, para quem quer, e restringe-o. Por certo, Ele, de Seus servos, é Conhecedor, Onividente.",
+      "it": "In verità il tuo Dio dona a chi vuole la ricchezza, e a chi vuole la toglie: in verità per i Suoi servi, Lui è il Conoscitore, l’Osservatore.",
+      "sv": "Din Herre ger riklig försörjning till vem han vill och begränsar den för andra. Han är väl medveten och har full insikt om sina tjänare.",
+      "uk": "Аллаг збільшує наділ, кому побажає, та зменшує, кому побажає. Воістину, Він — Всевидячий і Всезнаючий над рабами Своїми!",
+      "ro": "Cu adevărat, Domnul tău dă cele de trebuință cu prisosință cui Voiește El sau le dă cu măsură. El este Khabir [Bine Știutor] al robilor Săi, Basir [Atoatevăzător].",
+      "hr": "Gospodar tvoj pruža obilnu opskrbu onom kome hoće, a i ograničava je, jer zna i vidi robove Svoje.",
+      "sr": "Твој Господар, заиста, пружа обилну опскрбу ономе коме хоће, а и ограничава је. Он, уистину, у потпуности зна и види Своје слуге."
     }
   },
   {
@@ -2709,7 +3190,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Olúwa yín ni Ẹni tó ń mú ọkọ̀ ojú-omi rìn fún yín nítorí kí ẹ lè wá nínú oore àjùlọ Rẹ̀. Dájúdájú Ó ń jẹ́ Aláàánú fún yín.",
       "zh": "你们的养主为你们而使船只在海上航行，以便你们寻求他的恩惠。他对你们确是至慈的。",
       "th": "พระผู้อภิบาลของพวกเจ้าคือผู้ทรงให้เรือแล่นในท้องทะเล เพื่อพวกเจ้าจะได้แสวงหาความโปรดปรานของพระองค์ แท้จริงพระองค์เป็นผู้ทรงเมตตาแก่พวกเจ้าเสมอ",
-      "vi": "Thượng Đế của các ngươi (con người) là Đấng đã chế ngự cho các ngươi tàu thuyền lênh đênh trên biển để các ngươi tìm kiếm bổng lộc của Ngài, quả thật Ngài đối với các ngươi rất nhân từ."
+      "vi": "Thượng Đế của các ngươi (con người) là Đấng đã chế ngự cho các ngươi tàu thuyền lênh đênh trên biển để các ngươi tìm kiếm bổng lộc của Ngài, quả thật Ngài đối với các ngươi rất nhân từ.",
+      "pt": "Vosso Senhor é Quem vos impulsa o barco, no mar, para buscardes algo de Seu favor. Por certo, Ele, para convosco, é Misericordiador.",
+      "it": "Il vostro Dio è Colui che fa correre per voi le navi nel mare perché cerchiate la Sua provvidenza. In verità Lui è Misericordioso con voi.",
+      "sv": "Det är er Herre som låter skeppen färdas över havet för att ni ska kunna söka hans försörjning. Han är sannerligen barmhärtig mot er.",
+      "uk": "Господь твій — Той, Хто веде для вас морем судна, щоб шукали ви милості Його. Воістину, Він Милосердний до вас!",
+      "ro": "Domnul vostru este Cel care vă mână corăbiile pe mare, pentru ca voi să căutați ceva din Harul Lui. Cu adevărat, El este Rahim [Îndurător] cu voi.",
+      "hr": "Gospodar vaš, vas radi, pokreće lađe po moru da biste tražili Njegove blagodati, jer je On prema vama milostiv.",
+      "sr": "Господар ваш је Тај Који због вас покреће лађе по мору да бисте трагали за Његовим обиљем. Он је, заиста, према вама милостив."
     }
   },
   {
@@ -2751,7 +3239,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "我确已使大地上的一切事物成为大地的装饰品，以便我考验世人，看谁的工作是最优美的。",
       "ta": "நிச்சயமாக நாம், பூமியின் மேலுள்ளதை அதற்கு அலங்காரமாக ஆக்கினோம், அவர்களில் யார் செயலால் மிக அழகியவர் என்று அவர்களை நாம் சோதிப்பதற்காக.",
       "th": "แท้จริง เราได้ทำให้สิ่งที่อยู่ในแผ่นดินเป็นเครื่องประดับสำหรับมัน เพื่อเราจะได้ทดสอบพวกเขาว่า ผู้ใดในหมู่พวกเขาจะมีการกระทำที่ดีที่สุด",
-      "vi": "Quả thật, TA (Allah) đã tạo ra những gì trên trái đất là để tô điểm, trang hoàng mục đích thử thách họ xem ai trong số họ là người làm tốt nhất."
+      "vi": "Quả thật, TA (Allah) đã tạo ra những gì trên trái đất là để tô điểm, trang hoàng mục đích thử thách họ xem ai trong số họ là người làm tốt nhất.",
+      "it": "In verità abbiamo realizzato ciò che è sulla terra come abbellimento per metterli alla prova e per vedere chi agisce meglio.",
+      "sv": "Vi har smyckat jorden med vackra ting för att pröva [människorna], och låta deras handlingar visa vilka som är de främsta bland dem;",
+      "uk": "Воістину, Ми зробили прикрасою все, що на землі, щоб перевірити людей — чиї вчинки кращі?",
+      "ro": "Noi am făcut ceea ce se află pe pământ podoabă pentru el, pentru a-i încerca [pe oameni și a ști] care dintre ei săvârșesc cele mai bune fapte.",
+      "hr": "Sve što je na Zemlji Mi smo kao ukras njoj stvorili da iskušamo ljude tko će od njih bolje postupati,",
+      "sr": "Све што је на Земљи Ми смо створили као украс да би искушали људе чија ће дела да буду боља.",
+      "el": "Έχουμε κάνει ό,τι υπάρχει πάνω στη γη ως στολίδια γι' αυτήν, για να τους δοκιμάσουμε (τους ανθρώπους) ποιος απ' αυτούς θα πράττει καλύτερα (και περισσότερες καλές πράξεις)."
     }
   },
   {
@@ -2794,7 +3289,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக எவர்கள் நம்பிக்கை கொண்டு, நன்மைகளை செய்தார்களோ, - (இவ்வாறு) மிக அழகிய செயலை செய்தவர்களின் கூலியை நிச்சயமாக நாம் வீணாக்க மாட்டோம்.",
       "ml": "തീര്‍ച്ചയായും വിശ്വസിക്കുകയും സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും ചെയ്തവരാരോ അത്തരം സല്‍പ്രവര്‍ത്തനം നടത്തുന്ന യാതൊരാളുടെയും പ്രതിഫലം നാം തീര്‍ച്ചയായും പാഴാക്കുന്നതല്ല.",
       "th": "แท้จริงบรรดาผู้ศรัทธาและประกอบคุณงามความดีทั้งหลายนั้น แท้จริงเราจะไม่ทำให้ผลตอบแทนของผู้กระทำความดีสูญหายอย่างแน่นอน",
-      "vi": "Riêng những người có đức tin và hành thiện, chắc chắn TA (Allah) sẽ không làm mất đi công lao của những ai làm tốt."
+      "vi": "Riêng những người có đức tin và hành thiện, chắc chắn TA (Allah) sẽ không làm mất đi công lao của những ai làm tốt.",
+      "pt": "Quanto aos que crêem e fazem as boas obras, por certo, não faremos perder o prêmio de quem bem-faz, em obras.",
+      "it": "In verità quelli che hanno creduto e hanno fatto il bene, in verità sappiano che Noi non manchiamo mai di ricompensare i benefattori.",
+      "sv": "Men de som tror och handlar rättfärdigt [ska belönas rikligt]. Ja, vi låter aldrig de som gör gott gå miste om sin belöning.",
+      "uk": "А щодо тих, які увірували й робили добро, то Ми не залишимо без винагороди праведні вчинки.",
+      "ro": "Cu adevărat, cei care cred și împlinesc fapte bune, [să știe că] Noi nu lăsăm să se piardă răsplata celui care săvârșește fapte bune.",
+      "hr": "One koji budu vjerovali i dobra djela činili – a Mi, doista, ne uništavamo nagradu onome koji je dobra djela činio –",
+      "sr": "Оне који буду веровали и добра дела чинили – Ми заиста нећемо допустити да пропадне награда оном који је добра дела чинио,",
+      "el": "Πράγματι, εκείνοι που πιστεύουν και πράττουν ενάρετες πράξεις (θα λάβουν την ανταμοιβή τους), πράγματι, Εμείς δεν αφήνουμε την ανταμοιβή εκείνων που πράττουν το καλό, να χαθεί."
     }
   },
   {
@@ -2836,7 +3339,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக நாம்தான் பூமிக்கும் அதில் இருப்பவர்களுக்கும் உரிமையாளர்களாக ஆகுவோம். நம்மிடமே அவர்கள் திரும்பக் கொண்டு வரப்படுவார்கள்.",
       "ml": "തീര്‍ച്ചയായും നാം തന്നെയാണ് ഭൂമിയുടെയും അതിലുള്ളവയുടെയും അനന്തരാവകാശിയാകുന്നത്‌. നമ്മുടെ അടുക്കലേക്ക് തന്നെയായിരിക്കും അവര്‍ മടക്കപ്പെടുന്നത്‌.",
       "th": "แท้จริง เราเป็นผู้ครอบครองมรดกแผ่นดินและที่อยู่บนแผ่นดิน และพวกเขาจะถูกนำกลับมายังเรา",
-      "vi": "Quả thật TA (Allah) sẽ thừa hưởng trái đất và những ai sống trên đó và họ sẽ được đưa trở về trình diện TA."
+      "vi": "Quả thật TA (Allah) sẽ thừa hưởng trái đất và những ai sống trên đó và họ sẽ được đưa trở về trình diện TA.",
+      "pt": "Por certo, somos Nós Que herdaremos a terra e quem sobre ela existe. E a Nós eles serão retornados.",
+      "it": "In verità Noi erediteremo la terra e quelli che ci abitano, e torneranno a Noi.",
+      "sv": "Vi ska förbli när jorden och dess invånare [har förgått], och det är till oss de ska föras åter.",
+      "uk": "Воістину, Ми успадкуємо землю й тих, хто на ній, і вони повернуться до Нас!",
+      "ro": "Cu adevărat, Noi suntem cei care moștenim Pământul și pe toți cei care sunt pe el și la Noi se vor întoarce ei.",
+      "hr": "Mi ćemo Zemlju i one koji žive na njoj naslijediti i Nama će se oni vratiti.",
+      "sr": "Ми ћемо Земљу и оне који живе на њој да наследимо и Нама ће они да се врате.",
+      "el": "Πράγματι, Εμείς είμαστε που θα κληρονομήσουμε τη Γη και όσους βρίσκονται πάνω της (δηλ. Εμείς που θα μείνουμε ενώ όλοι θα έχουν πεθάνει), και σε Μας θα επιστραφούν."
     }
   },
   {
@@ -2879,7 +3390,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "“இதற்கு முன்னர் நிச்சயமாக நாம் அவனைப் படைத்ததையும் (நாம் அவனைப் படைப்பதற்கு முன்பு) அவன் எந்த ஒரு பொருளாகவும் இருக்கவில்லை” என்பதையும் அந்த மனிதன் சிந்திக்க வேண்டாமா!",
       "ml": "മനുഷ്യന്‍ ഓര്‍മിക്കുന്നില്ലേ; അവന്‍ ഒന്നുമല്ലാതിരുന്ന ഒരു ഘട്ടത്തില്‍ നാമാണ് ആദ്യം അവനെ പടച്ചുണ്ടാക്കിയതെന്ന്‌?",
       "th": "มนุษย์ไม่คิดบ้างหรือว่า แท้จริงเราได้บังเกิดเขามาแต่กาลก่อน โดยที่เขามิได้เป็นสิ่งใดมาก่อนเลย",
-      "vi": "Chẳng lẽ con người không nhớ rằng chính TA đã tạo hóa ra y trước đây trong lúc y không là gì cả đó sao?"
+      "vi": "Chẳng lẽ con người không nhớ rằng chính TA đã tạo hóa ra y trước đây trong lúc y không là gì cả đó sao?",
+      "pt": "E o ser humano não se lembra de que o criamos antes, enquanto nada era?",
+      "it": "Ma l’uomo non ricorda che Noi lo abbiamo creato in precedenza quando non era nulla?",
+      "sv": "Betänker hon inte att vi redan har skapat henne ur intet?",
+      "uk": "Хіба людина не пам’ятає, як колись Ми створили її, хоч вона була раніше нічим?",
+      "ro": "Dar oare nu-și aduce omul aminte că Noi l-am creat mai înainte, după ce el nu fusese nimic?",
+      "hr": "A zar se čovjek ne sjeća da smo ga još prije stvorili, a da nije bio ništa?",
+      "sr": "А зар се човек не сећа да смо га још пре створили, а да није био ништа?",
+      "el": "Δε θυμάται ο άνθρωπος (δηλ. ο άπιστος που διαψεύδει την ανάσταση) ότι Εμείς τον δημιουργήσαμε πριν όταν δεν ήταν τίποτα;"
     }
   },
   {
@@ -2922,7 +3441,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "வானங்கள்; இன்னும், பூமியில் உள்ள ஒவ்வொருவரும் ரஹ்மானிடம் (பணிந்த) அடிமையாக வருவாரே தவிர (குழந்தையாகவோ அவனுக்கு நிகரானவராகவோ) இல்லை.",
       "ml": "ആകാശങ്ങളിലും ഭൂമിയിലുമുള്ള ഏതൊരാളും ഒരു ദാസനെന്ന നിലയില്‍ പരമകാരുണികന്‍റെ അടുത്ത് വരുന്നവന്‍ മാത്രമായിരിക്കും.",
       "th": "ไม่มีผู้ใดในชั้นฟ้าทั้งหลายและแผ่นดิน เว้นแต่เขาจะมายังพระผู้ทรงเมตตายิ่งในฐานะบ่าวเท่านั้น",
-      "vi": "Bởi quả thật tất cả những ai trong các tầng trời và trái đất đều đến trình diện Đấng Độ Lượng như một người bề tôi."
+      "vi": "Bởi quả thật tất cả những ai trong các tầng trời và trái đất đều đến trình diện Đấng Độ Lượng như một người bề tôi.",
+      "pt": "Todo ser que está nos céus e na terra chegará aO Misericordioso apenas como servo.",
+      "it": "tutto quello che c’è in cielo e in terra verrà al Compassionevole come suo servo.",
+      "sv": "Var och en i himlarna och på jorden ska komma till den Nåderike i underkastelse.",
+      "uk": "Воістину, кожен із тих, хто на небесах і на землі, постане перед Аллагом лише як раб.",
+      "ro": "Toți cei care se află în Ceruri și pe Pământ vor veni la Cel Milostiv ca robi,",
+      "hr": "Svi će, i oni na nebesima i oni na Zemlji, kao robovi u Milostivog tražiti utočište!",
+      "sr": "Па, сви ће они, и они на небесима и они на Земљи, да дођу Свемилосном као слуге.",
+      "el": "Πράγματι, όλοι όσοι βρίσκονται στους ουρανούς και στη γη, δε θα έλθουν στον Αρ-Ραχμάν (Παντελεήμονα) παρά μόνο ως δούλοι (κατά την Έσχατη Ημέρα)."
     }
   },
   {
@@ -2964,7 +3491,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "வானங்களில் உள்ளவையும் பூமியில் உள்ளவையும் அவை இரண்டிற்குமிடையில் உள்ளவையும் ஈரமான மண்ணுக்குக் கீழ் உள்ளவையும் அவனுக்கே உரியன.",
       "ml": "അവന്നുള്ളതാകുന്നു ആകാശങ്ങളിലുള്ളതും ഭൂമിയിലുള്ളതും, അവയ്ക്കിടയിലുള്ളതും, മണ്ണിനടിയിലുള്ളതുമെല്ലാം.",
       "th": "เป็นกรรมสิทธิ์ของพระองค์ นั่นคือสิ่งที่อยู่ในเหล่าชั้นฟ้าทั้งหลายและสิ่งที่อยู่ในแผ่นดิน และสิ่งที่อยู่ในระหว่างทั้งสอง และสิ่งที่อยู่ใต้พื้นดิน",
-      "vi": "Đấng mà mọi vật trong các tầng trời và mọi vật trên trái đất cũng như vạn vật nằm giữa chúng và những gì nằm sâu dưới lòng đất đều là của Ngài."
+      "vi": "Đấng mà mọi vật trong các tầng trời và mọi vật trên trái đất cũng như vạn vật nằm giữa chúng và những gì nằm sâu dưới lòng đất đều là của Ngài.",
+      "pt": "DEle é o que há nos céus e o que há na terra e o que há entre ambos e o que há sob o solo.",
+      "it": "A Lui appartiene ciò che è nei cieli e in terra, e ciò che c’è in mezzo e ciò che è sotto il suolo.",
+      "sv": "Honom tillhör allt i himlarna och på jorden; allt däremellan och allt under jordytan.",
+      "uk": "Йому належить те, що на небесах і на землі, й те, що між ними, а також те, що під землею.",
+      "ro": "Ale Lui sunt cele din Ceruri și cele de pe Pământ, precum și cele care se află între cele două și sub țărână.",
+      "hr": "Njegovo je što je na nebesima i na Zemlji i što je između njih i što je pod zemljom!",
+      "sr": "Њему припада све што је на небесима и на Земљи и све што је између њих и све што је под земљом.",
+      "el": "Σ' Αυτόν ανήκουν ό,τι βρίσκεται στους ουρανούς, στη γη, ό,τι βρίσκεται ανάμεσά τους, και ό,τι βρίσκεται κάτω από το χώμα."
     }
   },
   {
@@ -3007,7 +3542,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "அல்லாஹ் - அவனைத் தவிர (உண்மையில் வணங்கத்தகுதியான) இறைவன் அறவே இல்லை. அவனுக்கு மிக அழகிய பெயர்கள் உள்ளன.",
       "ml": "അല്ലാഹു - അവനല്ലാതെ ആരാധനക്കർഹനായി മറ്റാരുമില്ല. അവന്‍റെതാകുന്നു ഏറ്റവും ഉല്‍കൃഷ്ടമായ നാമങ്ങള്‍.",
       "th": "อัลลอฮ์ ไม่มีพระเจ้าอื่นใดที่เที่ยงแท้นอกจากพระองค์ สำหรับพระองค์นั้นทรงพระนามอันสุนทรทั้งหลาย",
-      "vi": "Allah là Đấng mà Không có Thượng Đế đích thực nào khác ngoài Ngài. Ngài mang những tên gọi tốt đẹp nhất."
+      "vi": "Allah là Đấng mà Không có Thượng Đế đích thực nào khác ngoài Ngài. Ngài mang những tên gọi tốt đẹp nhất.",
+      "pt": "Allah, não existe deus senão Ele. DEle são os mais belos nomes.",
+      "it": "Allāh, non c’è divinità all’infuori di Lui; a Lui appartengono gli attributi più alti.",
+      "sv": "Gud – ingen är värd dyrkan utom han! Honom tillhör de vackraste och mest fullkomliga namnen.",
+      "uk": "Аллаг! Немає бога, крім Нього, Йому належать найпрекрасніші імена!",
+      "ro": "Allah! Nu există altă divinitate în afară de El! Ale Lui sunt Numele cele mai frumoase.",
+      "hr": "Allah, drugog boga osim Njega nema, najljepša imena ima!",
+      "sr": "Аллах, истинског бога осим Њега нема, најлепша имена има.",
+      "el": "Αλλάχ! Δεν υπάρχει άλλος θεός που αξίζει να λατρεύεται παρά μόνον Αυτός. Σ' Αυτόν ανήκουν τα Ομορφότερα Ονόματα."
     }
   },
   {
@@ -3049,7 +3592,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "அதிலிருந்துதான் உங்களைப் படைத்தோம். இன்னும், அதில்தான் உங்களை திரும்பக் கொண்டுவருவோம். இன்னும், அதிலிருந்துதான் மற்றொரு முறை உங்களை வெளியேற்றுவோம்.",
       "ml": "അതില്‍ (ഭൂമിയില്‍) നിന്നാണ് നിങ്ങളെ നാം സൃഷ്ടിച്ചത്‌. അതിലേക്ക് തന്നെ നിങ്ങളെ നാം മടക്കുന്നു. അതില്‍ നിന്ന് തന്നെ നിങ്ങളെ മറ്റൊരു പ്രാവശ്യം നാം പുറത്തുകൊണ്ടുവരികയും ചെയ്യും.",
       "th": "จากแผ่นดินเราได้บังเกิดพวกเจ้า และ ณ แผ่นดินนั้นเราจะให้พวกเจ้ากลับคืนไป และจากแผ่นดินนั้น เราจะให้พวกเจ้าออกมาอีกครั้งหนึ่ง",
-      "vi": "Từ đất bụi TA đã tạo hóa các ngươi, TA sẽ hoàn các ngươi trở lại thành đất bụi và cũng từ đất bụi TA sẽ đưa các ngươi trở ra một lần nữa."
+      "vi": "Từ đất bụi TA đã tạo hóa các ngươi, TA sẽ hoàn các ngươi trở lại thành đất bụi và cũng từ đất bụi TA sẽ đưa các ngươi trở ra một lần nữa.",
+      "it": "Da quella vi abbiamo creati e in quella vi faremo tornare e da quella vi faremo uscire di nuovo».",
+      "sv": "Av denna [jord] har vi skapat er, och till den ska vi låta er återvända, och från den ska vi åter låta er uppstå.",
+      "uk": "Ми створили вас із землі й у землю вас повернемо. А потім іще раз виведемо вас звідти!",
+      "ro": "Din el [Pământ] v-am creat, în el Noi vă vom întoarce și din el vă vom scoate încă o dată”.",
+      "hr": "Od zemlje vas stvaramo i u nju vas vraćamo i iz nje ćemo vas po drugi put izvesti.",
+      "sr": "Од земље вас стварамо и у њу вас враћамо и из ње ћемо да вас проживимо.",
+      "el": "Απ' αυτή (τη γη) σας δημιουργήσαμε, σ' αυτή θα σας επιστρέψουμε (όταν πεθάνετε), και απ' αυτή για δεύτερη φορά θα σας βγάλουμε (από τους τάφους σας για την ανάσταση)."
     }
   },
   {
@@ -3091,7 +3641,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "வானங்களிலும் பூமியிலும் உள்ளவர்கள் அவனுக்கே உரிமையானவர்கள். இன்னும், அவனிடம் இருக்கின்ற (வான)வர்கள் அவனை வணங்குவதற்கு வீம்புபிடிக்க மாட்டார்கள். இன்னும் (அதில்) சோர்வடைய மாட்டார்கள்.",
       "ml": "അവന്റേതാകുന്നു ആകാശങ്ങളിലും, ഭൂമിയിയും ഉള്ളവരെല്ലാം. അവന്‍റെ അടുക്കലുള്ളവര്‍ (മലക്കുകള്‍) അവനെ ആരാധിക്കുന്നത് വിട്ട് അഹങ്കരിക്കുകയില്ല. അവര്‍ക്ക് മടുപ്പു തോന്നുകയുമില്ല.",
       "th": "และเป็นกรรมสิทธิ์ของพระองค์ ผู้ที่อยู่ในชั้นฟ้าทั้งหลายและแผ่นดิน และผู้ที่อยู่ ณ ที่พระองค์ (มลาอิกะฮ์) พวกเขาจะไม่ลำพองตนในการเคารพภักดีพระองค์ และพวกเขาจะไม่เหนื่อยหน่าย",
-      "vi": "Bất cứ ai trong các tầng trời và trái đất đều thuộc về Ngài (Allah). Và bất cứ ai ở nơi Ngài (các Thiên Thần) đều không ngạo mạn và không biết mệt mỏi trong việc thờ phượng Ngài."
+      "vi": "Bất cứ ai trong các tầng trời và trái đất đều thuộc về Ngài (Allah). Và bất cứ ai ở nơi Ngài (các Thiên Thần) đều không ngạo mạn và không biết mệt mỏi trong việc thờ phượng Ngài.",
+      "pt": "E dEle é quem está nos céus e na terra. E os que estão junto dEle não se ensoberbecem, diante de Sua adoração, nem esmorecem.",
+      "it": "E a Lui appartengono quelli che sono nei cieli e in terra, e quelli che sono presso di Lui (gli angeli) non disdegnano di adorarLo e non se ne stancano;",
+      "sv": "Allt i himlarna och på jorden tillhör honom och de som är honom nära visar inte minsta högfärd inför att dyrka honom, och de utmattas inte av det.",
+      "uk": "Йому належать усі, хто на небесах і на землі! А ті, хто поряд із Ним, не гордують поклонінням Йому й не втомлюються!",
+      "ro": "Ai Lui sunt cei din Ceruri și de pe Pământ. Iar cei care sunt lângă El [Îngerii] nu se socotesc prea mari pentru a-L adora și nici nu obosesc.",
+      "hr": "Njegovo je ono što je na nebesima i na Zemlji! A oni koji su kod Njega ne zaziru da Ga obožavaju i ne zamaraju se.",
+      "sr": "Његово је оно што је на небесима и на Земљи! А они који су код Њега не зазиру да Га обожавају, нити им то досади,"
     }
   },
   {
@@ -3127,7 +3684,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Tí ó bá jẹ́ pé àwọn ọlọ́hun kan wà nínú sánmọ̀ àti ilẹ̀ lẹ́yìn Allāhu, sánmọ̀ àti ilẹ̀ ìbá ti bàjẹ́. Mímọ́ ni fún Allāhu, Olúwa Ìtẹ́-ọlá, tayọ ohun tí wọ́n ń fi ròyìn (Rẹ̀).",
       "zh": "除安拉外，假若天地间还有许多神明，那么，天地必定破坏了。赞颂安拉——宝座的主宰——是超乎他们的描述的。",
       "ta": "(வானம், பூமி) அவை இரண்டிலும் அல்லாஹ்வைத் தவிர (வேறு) கடவுள்கள் இருந்திருந்தால் அவை இரண்டும் சீரழிந்திருக்கும். ஆக, (இணைவைக்கும்) அவர்கள் வர்ணிப்பதை விட்டும் அர்ஷுடைய அதிபதியான அல்லாஹ் மகாத்தூயவன்.",
-      "th": "หากในชั้นฟ้าและแผ่นดินมีพระเจ้าหลายองค์ อื่นจากอัลลอฮ์แล้ว จะเกิดความเสียหายอย่างแน่นอน มหาบริสุทธิ์แด่อัลลอฮ์ พระผู้อภิบาลแห่งบัลลังก์ ทรงบริสุทธิ์จากสิ่งที่พวกเขาเสกสรรปั้นแต่งขึ้น"
+      "th": "หากในชั้นฟ้าและแผ่นดินมีพระเจ้าหลายองค์ อื่นจากอัลลอฮ์แล้ว จะเกิดความเสียหายอย่างแน่นอน มหาบริสุทธิ์แด่อัลลอฮ์ พระผู้อภิบาลแห่งบัลลังก์ ทรงบริสุทธิ์จากสิ่งที่พวกเขาเสกสรรปั้นแต่งขึ้น",
+      "it": "Se vi fossero altre divinità all’infuori di Allāh, andrebbero in rovina (il cielo e la terra). Lodato sia Allāh, Dio del Trono, Lui è al di sopra di ciò che insinuano!",
+      "sv": "Om det hade funnits gudar, andra än Gud [i himlen och på jorden], skulle deras ordning ha brutit samman. Upphöjd är Gud, tronens Herre, över vad de tillskriver honom!",
+      "uk": "Якби були інші боги, крім Аллага, то [небеса і земля] зруйнувалися б. Аллаг, Господь трону, пречистий від того, що Йому приписують!",
+      "ro": "Dacă s-ar afla în ele [în Ceruri și Pământ] alți dumnezei în afară de Allah, amândouă ar fi stricate. Mărire lui Allah, Stăpânul Tronului, Care este mai Presus decât ceea ce spun ei.",
+      "hr": "Da Zemljom i nebesima upravljaju drugi bogovi, a ne Allah, poremetili bi se. Pa neka je uzvišen Allah, Gospodar Arša, od onog što Mu pripisuju!",
+      "sr": "Да на Земљи и небесима уистину постоје божанства поред Аллаха, пореметила би се. Па нека је слављен и узвишен Аллах, Господар Престола, од оног како Га описују!"
     }
   },
   {
@@ -3155,7 +3718,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Sila isaan kafaran akka samiifi dachiin walitti maxxantuu turanii, ergasii addaan isaan baafne hin beekanuu? Bishaan irraa lubbu qabeeyyii hunda ni uumne, Sila hin amananuu?",
       "ff": "Enee,  ɓen yedduɓe yiaani won'dema kammuuji ɗi e leydi ndi ɗi laatinoke kippondirɗi, Min ngudditi ɗi Min mbaɗi immorde e ndiyam ɗam kala hu'unde wuuru nde. Kaa ɓe ngonɗintaa?",
       "zh": "不归信者难道不知道吗？天地原是闭塞的，而我开天辟地，我用水创造一切生物。难道他们不信吗？",
-      "vi": "Lẽ nào những kẻ vô đức tin không nhận thấy rằng các tầng trời và trái đất quyện lại với nhau trước khi TA chẻ chúng ra làm đôi hay sao? Và TA đã tạo mọi sinh vật từ nước, lẽ nào chúng không tin ư?"
+      "vi": "Lẽ nào những kẻ vô đức tin không nhận thấy rằng các tầng trời và trái đất quyện lại với nhau trước khi TA chẻ chúng ra làm đôi hay sao? Và TA đã tạo mọi sinh vật từ nước, lẽ nào chúng không tin ư?",
+      "it": "Ma non vedono i miscredenti che in verità i cieli e la terra erano una sola entità, poi li abbiamo separati? E che abbiamo creato dall’acqua ogni essere vivente? Non ci credono?",
+      "sv": "Såg inte de otrogna hur himlarna och jorden var slutna [i torka och ofruktbarhet] tills vi öppnade dem [genom regn och grönska]? Och genom vattnet frambringar vi allt levande. Varför tror de då inte?",
+      "uk": "Невже не бачать невіруючі, що небеса й земля були єдиним цілим, а Ми роз’єднали їх, і що Ми створили все живе з води? Невже вони не увірують?",
+      "ro": "Oare nu văd cei care nu cred că Cerurile și Pământul au fost împreună și că Noi le-am despărțit și din apă am făcut tot ce este lucru viu? Și oare tot nu cred ei?",
+      "hr": "Zar ne znaju nevjernici da su nebesa i Zemlja bili jedna cjelina, pa smo ih Mi raskomadali, i da Mi od vode sve živo stvaramo? I zar neće vjerovati?",
+      "sr": "Зар не знају неверници да су небеса и Земља били једна целина, па смо их Ми раздвојили, и да Ми од воде све живо стварамо?! И зар неће да верују?!"
     }
   },
   {
@@ -3195,7 +3764,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "凡有血气者，都要尝死的滋味。我以祸福考验你们，你们只被召归我。",
       "ta": "ஒவ்வோர் ஆன்மாவும் மரணத்தை சுவைக்கக் கூடியதாகும். துன்பத்தினாலும் இன்பத்தினாலும் உங்களை நாம் நன்கு சோதிப்போம். இன்னும், நம்மிடமே நீங்கள் திரும்பக் கொண்டு வரப்படுவீர்கள்.",
       "th": "ทุกชีวิตเป็นผู้ลิ้มรสแห่งความตาย และเราจะทดสอบพวกเจ้าด้วยความชั่วและความดีเพื่อเป็นบททดสอบ และยังเราเท่านั้นพวกเจ้าจะถูกนำกลับ",
-      "vi": "Mỗi một linh hồn đều phải nếm cái chết; TA thử thách các ngươi với điều xấu và điều tốt. Và các ngươi đều sẽ được đưa trở về trình diện TA."
+      "vi": "Mỗi một linh hồn đều phải nếm cái chết; TA thử thách các ngươi với điều xấu và điều tốt. Và các ngươi đều sẽ được đưa trở về trình diện TA.",
+      "pt": "Cada alma experimentará a morte. E por-vos-emos à prova, com o mal e com o bem, à guisa de tentação. E a Nós sereis retornados.",
+      "it": "Ogni anima è destinata ad assaporare la morte, e Noi vi mettiamo alla prova col male e col bene, e a Noi sarete fatti tornare.",
+      "sv": "Varje själ ska uppleva dödens verklighet. Vi prövar er med motgång och medgång, och till oss ska ni alla vända åter.",
+      "uk": "Кожна душа зазнає смерті. Ми випробовуємо вас злом і добром як спокусою, і до Нас ви повернетесь!",
+      "ro": "Fiecare suflet va gusta moartea. Noi vă încercăm cu răul și cu binele, în chip de ispită, și la Noi vă veți întoarce.",
+      "hr": "Svako živo biće smrt će okusiti! Mi vas stavljamo na kušnju i u zlu i u dobru i Nama ćete se vratiti.",
+      "sr": "Свако живо биће смрт ће да окуси! Ми вас стављамо на искушење и у добру и у злу, и Нама ћете да се вратите.",
+      "el": "Κάθε ψυχή θα γευτεί το θάνατο. Σας δοκιμάζουμε με το κακό και με το καλό, ως δοκιμασία. Και σε Μας (την Ημέρα της Κρίσεως) θα επιστρέψετε."
     }
   },
   {
@@ -3234,7 +3811,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Dájúdájú Allāhu yóò mú àwọn tó gbàgbọ́ ní òdodo, tí wọ́n sì ṣe àwọn iṣẹ́ rere wọ inú Ọgbà Ìdẹ̀ra tí àwọn odò ń ṣàn ní ìsàlẹ̀ rẹ̀. Dájúdájú Allāhu ń ṣe ohun tí Ó bá fẹ́.",
       "zh": "安拉必定要使归信而且行善者进入那下临诸河的乐园。安拉确是为所欲为的。",
       "ta": "நிச்சயமாக நம்பிக்கை கொண்டு நன்மைகள் செய்தவர்களை அல்லாஹ் சொர்க்கங்களில் பிரவேசிக்க வைப்பான். அவற்றின் கீழ் நதிகள் ஓடும். நிச்சயமாக அல்லாஹ், தான் நாடுவதை செய்கிறான்.",
-      "th": "แท้จริงอัลลอฮ์ทรงให้บรรดาผู้ที่ศรัทธาและประกอบคุณงามความดี เข้าสรวงสวรรค์ ซึ่งมีแม่น้ำลำธารหลายสายไหลผ่านจากเบื้องล่างของมัน แท้จริงอัลลอฮ์ทรงกระทำสิ่งที่พระองค์ทรงประสงค์"
+      "th": "แท้จริงอัลลอฮ์ทรงให้บรรดาผู้ที่ศรัทธาและประกอบคุณงามความดี เข้าสรวงสวรรค์ ซึ่งมีแม่น้ำลำธารหลายสายไหลผ่านจากเบื้องล่างของมัน แท้จริงอัลลอฮ์ทรงกระทำสิ่งที่พระองค์ทรงประสงค์",
+      "pt": "Por certo, Allah, aos que crêem e fazem as boas obras, fará entrar em Jardins, abaixo dos quais correm os rios. Por certo, Allah faz o que deseja.",
+      "it": "Allāh fa entrare, in verità, quelli che hanno creduto e hanno fatto il bene in Paradisi sotto cui scorrono fiumi: in verità Allāh fa ciò che vuole.",
+      "sv": "De som tror och handlar rättfärdigt ska Gud föra in i trädgårdar genom vilka floder rinner. Gud gör sannerligen vad han vill.",
+      "uk": "Воістину, тих, які увірували й робили добрі справи, Аллаг введе до садів, де течуть ріки. Воістину, Аллаг чинить, як побажає!",
+      "ro": "Cu adevărat, Allah îi primește pe aceia care cred și săvârșesc fapte bune să intre în Grădini pe sub care curg râuri. Cu adevărat, Allah face ceea ce Voiește.",
+      "hr": "Allah će one koji vjeruju i čine dobra djela, zaista, uvesti u rajske vrtove kroz koje rijeke teku; Allah radi ono što hoće!",
+      "sr": "Аллах ће оне који верују и раде добра дела, заиста, да уведе у баште Раја, кроз које теку реке. Аллах ради оно што хоће!"
     }
   },
   {
@@ -3277,7 +3861,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக அல்லாஹ், நம்பிக்கை கொண்டவர்களை (பாதுகாத்து, அவர்களை) விட்டும் (நிராகரிப்பாளர்களை) தடுத்து விடுவான். நிச்சயமாக அல்லாஹ் எல்லா மோசடிக்காரர்களையும் நன்றி கெட்டவர்களையும் நேசிக்க மாட்டான்.",
       "ml": "തീര്‍ച്ചയായും സത്യവിശ്വാസികള്‍ക്കുവേണ്ടി അല്ലാഹു പ്രതിരോധം ഏര്‍പെടുത്തുന്നതാണ്‌. നന്ദികെട്ട വഞ്ചകരെയൊന്നും അല്ലാഹു ഇഷ്ടപ്പെടുകയില്ല; തീര്‍ച്ച",
       "th": "แท้จริงอัลลอฮ์ทรงปกป้องบรรดาผู้ศรัทธาให้พ้นจากศัตรู แท้จริงอัลลอฮ์ไม่ทรงโปรดทุกคนที่ทรยศเนรคุณ",
-      "vi": "Chắc chắn Allah sẽ bảo vệ những người có đức tin; và chắc chắn Allah sẽ không yêu thương những kẻ tráo trở vong ân."
+      "vi": "Chắc chắn Allah sẽ bảo vệ những người có đức tin; và chắc chắn Allah sẽ không yêu thương những kẻ tráo trở vong ân.",
+      "pt": "Por certo, Allah defende os que crêem. Por certo, Allah não ama a nenhum traidor, ingrato.",
+      "it": "Allāh in verità difende quelli che hanno creduto. Allāh non ama, in verità, nessun traditore miscredente.",
+      "sv": "Gud försvarar de troende och han föraktar de som är förrädiska och otacksamma.",
+      "uk": "Воістину, Аллаг захищає тих, хто увірував. Воістину, Аллаг не любить різних невдячних зрадників!",
+      "ro": "Cu adevărat, Allah îi apără pe cei care cred. Allah nu-i iubește pe cei haini și necredincioși.",
+      "hr": "Allah, doista, štiti vjernike, Allah sigurno ne voli nijednog izdajnika, nezahvalnika.",
+      "sr": "Аллах, заиста, штити вернике, Аллах сигурно не воли ниједног издајника, незахвалника.",
+      "el": "Πράγματι, ο Αλλάχ υπερασπίζεται τους πιστούς. Πράγματι, ο Αλλάχ δεν αγαπά κανέναν προδότη και αχάριστο."
     }
   },
   {
@@ -3319,7 +3911,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "வானங்களில் உள்ளவையும் பூமியில் உள்ளவையும் அவனுக்கே சொந்தமானவை. இன்னும், நிச்சயமாக அல்லாஹ்தான் மகா செல்வந்தன் (-நிறைவானவன், எத்தேவையுமற்றவன்), பெரும் புகழுக்குரியவன் ஆவான்.",
       "ml": "അവന്റേതാകുന്നു ആകാശങ്ങളിലുള്ളതും ഭൂമിയിലുള്ളതും. തീര്‍ച്ചയായും അല്ലാഹു പരാശ്രയമുക്തനും സ്തുത്യര്‍ഹനും തന്നെയാകുന്നു.",
       "th": "สิ่งที่อยู่ในชั้นฟ้าทั้งหลายและสิ่งที่อยู่ในแผ่นดินเป็นของพระองค์ และแท้จริงอัลลอฮ์นั้นคือผู้ทรงมั่งมีอย่างเหลือหลาย ผู้ทรงเป็นที่สรรเสริญ",
-      "vi": "Mọi vật trong các tầng trời và mọi vật trong trái đất đều thuộc về Allah. Quả thật, Allah là Đấng Giàu Có, Đấng Đáng Được Ca Ngợi."
+      "vi": "Mọi vật trong các tầng trời và mọi vật trong trái đất đều thuộc về Allah. Quả thật, Allah là Đấng Giàu Có, Đấng Đáng Được Ca Ngợi.",
+      "pt": "DEle é o que há nos céus e o que há na terra. E, por certo, Allah é O Bastante a Si Mesmo, O Louvável.",
+      "it": "A Lui appartiene ciò che è nei cieli e ciò che è in terra, e in verità Allāh è l’Autosufficiente, il Lodevole.",
+      "sv": "Till honom hör allt i himlarna och på jorden. Gud är sannerligen den Oberoende, den Lovprisade.",
+      "uk": "Йому належить те, що на небесах, і те, що на землі! Воістину, Аллаг — Багатий, Хвалимий!",
+      "ro": "Ale Lui sunt cele din Ceruri și cele de pe Pământ. Cu adevărat, Allah este Al-Ghaniyy [Cel De ajuns pentru Sine] [și] Al-Hamid [Cel Vrednic de Laudă].",
+      "hr": "Njegovo je ono što je na nebesima i ono što je na Zemlji! Allah, doista, nije ni o kome ovisan, i On je Hvaljeni.",
+      "sr": "Његово је оно што је на небесима и оно што је на Земљи! Аллах, заиста, није ни о коме овисан, и Он је једини хвале достојан!",
+      "el": "Σ' Αυτόν ανήκει ό,τι υπάρχει στους ουρανούς και ό,τι υπάρχει στη γη. Πράγματι, ο Αλλάχ είναι ο Αλ-Γανέι (Πλούσιος, Ελεύθερος από κάθε ανάγκη), ο Αλ-Χαμείντ (Άξιος κάθε επαίνου)."
     }
   },
   {
@@ -3357,7 +3957,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "安拉从众天使和人类中拣选若干使者，安拉确是全聪的，确是全明的。",
       "ta": "அல்லாஹ் வானவர்களிலிருந்தும் மனிதர்களிலிருந்தும் தூதர்களை தேர்வு செய்கிறான். நிச்சயமாக அல்லாஹ் நன்கு செவியுறுபவன், உற்று நோக்குபவன் ஆவான்.",
       "th": "อัลลอฮ์ทรงคัดเลือกบรรดาฑูตจากหมู่มลาอิกะฮ์และจากหมู่มนุษย์ แท้จริงอัลลอฮ์เป็นผู้ทรงได้ยิน ผู้ทรงเห็น",
-      "vi": "Allah tuyển chọn các vị Sứ Giả trong giới Thiên Thần và trong nhân loại. Quả thật, Allah là Đấng Hằng Nghe, Đấng Hằng Thấy."
+      "vi": "Allah tuyển chọn các vị Sứ Giả trong giới Thiên Thần và trong nhân loại. Quả thật, Allah là Đấng Hằng Nghe, Đấng Hằng Thấy.",
+      "pt": "Allah escolhe Mensageiros, entre os anjos e os homens. Por certo, Allah é Oniouvinte, Onividente.",
+      "it": "Allāh presceglie Messaggeri tra gli angeli e tra gli uomini: in verità Allāh è Ascoltatore, Osservatore.",
+      "sv": "Gud utser sändebud från både änglar och människor. Gud hör allt, ser allt.",
+      "uk": "Аллаг обрав посланців і серед ангелів, і серед людей. Воістину, Аллаг — Всечуючий, Всевидячий!",
+      "ro": "Allah alege Trimiși dintre Îngeri și dintre oameni. Allah este Sami' [Cel care Aude Totul] [și] Basir [Cel care Vede Totul].",
+      "hr": "Allah odabire poslanike među anđelima i ljudima. – Allah sve čuje i sve vidi.",
+      "sr": "Аллах одабира изасланике међу анђелима и људима - Аллах, заиста, све чује и све види.",
+      "el": "Ο Αλλάχ επιλέγει Αγγελιαφόρους από τους Αγγέλους και από τους ανθρώπους. Πράγματι, ο Αλλάχ είναι Σαμεί‘ (Αυτός που ακούει τα πάντα) και Μπασείρ (Αυτός που βλέπει τα πάντα)."
     }
   },
   {
@@ -3397,7 +4005,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நம்பிக்கையாளர்களே! (தொழுகையில்) குனியுங்கள்! இன்னும், சிரம்பணியுங்கள்! இன்னும், உங்கள் இறைவனை வணங்குங்கள்! இன்னும், நன்மை செய்யுங்கள்! நீங்கள் (அவற்றின் மூலம்) வெற்றி அடைவதற்காக.",
       "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ കുമ്പിടുകയും, സാഷ്ടാംഗം ചെയ്യുകയും, നിങ്ങളുടെ രക്ഷിതാവിനെ ആരാധിക്കുകയും, നന്‍മ പ്രവര്‍ത്തിക്കുകയും ചെയ്യുക. നിങ്ങള്‍ വിജയം പ്രാപിച്ചേക്കാം.",
       "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย! พวกเจ้าจงก้ม (รูกั๊วะ) จงกราบ (สุญูด) และจงเคารพภักดีต่อพระผู้อภิบาลของพวกเจ้าเถิด และจงประกอบการดี แน่นอนพวกเจ้าจะได้ความสำเร็จ",
-      "vi": "Hỡi những người có đức tin! Các ngươi hãy cúi mình, hãy quỳ lạy và hãy thờ phượng Thượng Đế của các ngươi, và các ngươi hãy hành thiện, mong rằng các ngươi sẽ thành công."
+      "vi": "Hỡi những người có đức tin! Các ngươi hãy cúi mình, hãy quỳ lạy và hãy thờ phượng Thượng Đế của các ngươi, và các ngươi hãy hành thiện, mong rằng các ngươi sẽ thành công.",
+      "pt": "Ó vós que credes! Curvai-vos e prosternai-vos e adorai a vosso Senhor, e fazei o bem, na esperança de serdes bem-aventurados.",
+      "sv": "Troende! Buga er och fall ned [i bön], och dyrka er Herre och gör gott så att det må gå er väl.",
+      "uk": "О ви, які увірували! Кланяйтесь, упадіть ниць, поклоняйтеся Господу вашому й робіть добро! Можливо, ви матимете успіх!",
+      "ro": "O, voi cei care credeți! Faceți plecăciuni, prosternați-vă și adorați-L pe Domnul vostru și faceți bine! Poate că voi veți izbândi!",
+      "hr": "O vjernici, pred Allahom se sagibajte i čelima po tlu padajte, Gospodara svog obožavajte i dobra djela činite da biste postigli ono što želite.",
+      "sr": "О верници, клањајте се и ничице падајте и свога Господара обожавајте, и радите добра дела да бисте постигли оно што желите.",
+      "el": "Ω, εσείς που πιστεύετε! Υποκλιθείτε και πέστε σε Σιτζούντ στάση (με το μέτωπο στο έδαφος, ενώπιον του Αλλάχ), και λατρέψτε τον Κύριό σας (και μόνο) και κάντε το καλό, ίσως και πετύχετε."
     }
   },
   {
@@ -3439,7 +4054,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "அல்லாஹ் இரவையும் பகலையும் (ஒன்றன் பின் ஒன்றை) மாற்றுகிறான். அறிவுடையவர்களுக்கு நிச்சயமாக இதில் படிப்பினை இருக்கிறது.",
       "ml": "അല്ലാഹു രാവും പകലും മാറ്റി മറിച്ചു കൊണ്ടിരിക്കുന്നു. തീര്‍ച്ചയായും അതില്‍ കണ്ണുള്ളവര്‍ക്ക് ഒരു ചിന്താവിഷയമുണ്ട്‌.",
       "th": "อัลลอฮฺทรงผลัดเปลี่ยนกลางคืนและกลางวัน แท้จริงในลักษณะเช่นนั้น แน่นอนมันเป็นบทเรียนสำหรับปวงผู้มีสายตา(พิจารณา)",
-      "vi": "Allah lật trở đêm ngày, quả thật trong sự việc đó là bài học cho những người biết quan sát và thấu hiểu."
+      "vi": "Allah lật trở đêm ngày, quả thật trong sự việc đó là bài học cho những người biết quan sát và thấu hiểu.",
+      "it": "Allāh alterna la notte e il giorno: in ciò c’è, in verità, un esempio per quelli dotati di vista ﴾illuminati﴿.",
+      "sv": "Gud låter dag natt och dag avlösa varandra. I detta ligger visst en lärdom för de klarsynta.",
+      "uk": "Аллаг змінює ніч та день. Воістину, в цьому повчальний приклад для тих, хто має зір!",
+      "ro": "Allah face să se schimbe noaptea și ziua. Cu adevărat, întru aceasta este o pildă pentru cei care văd.",
+      "hr": "On čini da noć i dan naizmjenice nastupaju i u tome je, doista, pouka za one koji pameti imaju.",
+      "sr": "Он чини да ноћ и дан наступају наизменично и у томе је, заиста, поука за оне који памет имају.",
+      "el": "Ο Αλλάχ κάνει τη νύχτα και την ημέρα να διαδέχονται η μία την άλλη. Πράγματι, σ' αυτό υπάρχει μία νουθεσία (και ένα Σημάδι) γι' εκείνους που έχουν μάτια."
     }
   },
   {
@@ -3481,7 +4103,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "திட்டவட்டமாக நாம் தெளிவான வசனங்களை இறக்கியுள்ளோம். அல்லாஹ், தான் நாடியவருக்கு நேரான பாதையின் பக்கம் நேர்வழி காட்டுகிறான்.",
       "ml": "(യാഥാര്‍ത്ഥ്യം) വ്യക്തമാക്കുന്ന ദൃഷ്ടാന്തങ്ങള്‍ നാം അവതരിപ്പിച്ചിരിക്കുന്നു. അല്ലാഹു താന്‍ ഉദ്ദേശിക്കുന്നവരെ നേരായ പാതയിലേക്ക് നയിക്കുന്നു.",
       "th": "โดยแน่นอน เราได้ประทานลงมาซึ่งโองการทั้งหลายอันชัดแจ้ง และอัลลอฮ์ทรงนำทางแก่ผู้ที่พระองค์ทรงประสงค์ไปยังทางที่เที่ยงตรง",
-      "vi": "Quả thật, TA (Allah) đã ban xuống những lời mặc khải rất rõ ràng, và Allah hướng dẫn ai Ngài muốn đến với con đường ngay thẳng."
+      "vi": "Quả thật, TA (Allah) đã ban xuống những lời mặc khải rất rõ ràng, và Allah hướng dẫn ai Ngài muốn đến với con đường ngay thẳng.",
+      "pt": "Com efeito, fizemos descer evidentes versículos. E Allah guia a quem quer a uma senda reta.",
+      "it": "Abbiamo fatto discendere dei Versi chiarificatori, e Allāh guida chi vuole alla retta via.",
+      "sv": "Vi har förvisso uppenbarat klargörande budskap, och Gud leder den han vill till en rak väg.",
+      "uk": "Ми зіслали ясні знамення, а Аллаг веде прямим шляхом, кого побажає!",
+      "ro": "Noi am pogorât Versete deslușite și Allah călăuzește pe cine Voiește El pe o cale dreaptă.",
+      "hr": "Mi objavljujemo ajete jasne. A Allah ukazuje na Pravi put onom kome On hoće.",
+      "sr": "Ми смо објавили јасне речи и доказе; а Аллах упућује на Прави пут онога кога Он хоће.",
+      "el": "Πράγματι, έχουμε στείλει ξεκάθαρα Εδάφια (και Σημάδια) που διασαφηνίζουν (τον δρόμο της αλήθειας), και ο Αλλάχ καθοδηγεί όποιους θέλει στον ίσιο δρόμο."
     }
   },
   {
@@ -3514,7 +4144,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Jechi Mu’uminootaa yeroo akka gidduu isaaniitti murteessuuf gara Rabbiifi ergamaa isaatti waamaman “dhageenye; ajajamnes” jechuu qofa, Isaan sun milkaa’oon isaanuma.",
       "so": "Qowlka mu’miniinta, marka loogu yeedho Alle iyo Rasuulkiisa si uu u kala garsooro dhexdooda, waa uun inay yidhaahdaan: “Maqallay oo yeelnay. kuwaasina waa kuwa ah liibaanayaasha.",
       "ff": "Anndu ko woni konngol gooɗinɓe ɓen si ɓe noddaama faade ka Alla e Nulaaɗo makko on fii yo o ñaawu hakkunde maɓɓe, ko nde ɓe mbi'ata: \"Min nanii men ɗoftike.\" Ɓen ɗon ko kamɓe woni malaaɓe ɓen.",
-      "zh": "当信士们被召归于安拉及其使者以便他替他们判决的时候，他们只应当说：“我们已听从了。”这等人确是成功的。"
+      "zh": "当信士们被召归于安拉及其使者以便他替他们判决的时候，他们只应当说：“我们已听从了。”这等人确是成功的。",
+      "pt": "O dito dos crentes, quando convocados a Allah e a Seu Mensageiro, para que este julgue, entre eles é, apenas, dizerem: \"Ouvimos e obedecemos.\" E esses são os bem-aventurados.",
+      "it": "In verità, la risposta dei credenti, se vengono invitati da Allāh e dal Suo Messaggero a giudicare tra di loro, è: “Abbiamo ascoltato e abbiamo obbedito!” E quelli sono i trionfatori.",
+      "sv": "De troendes enda svar, när de kallas till Gud och hans sändebud för att han ska döma mellan dem, är: ”Vi hör och vi lyder.” Dessa kommer det att gå väl.",
+      "uk": "Слова віруючих, коли їх кличуть до Аллага та Його Посланця, такі: «Слухаємо та коримось!» Саме вони й матимуть успіх!",
+      "hr": "Kad se vjernici Allahu i Poslaniku Njegovu pozovu da im presudi, samo reknu: “Slušamo i pokoravamo se!” Oni će uspjeti.",
+      "sr": "Кад се верници Аллаху и Посланику Његовом позову да им пресуди, само кажу: „Слушамо и покоравамо се!“ То су они који су успели."
     }
   },
   {
@@ -3556,7 +4192,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "வானங்களில் பெரும் கோட்டைகளை அமைத்தவன் மிகுந்த பாக்கியவான், மிகவும் உயர்ந்தவன், மிக்க மகத்துவமானவன் ஆவான். இன்னும், அவன்தான் அதில் சூரியனையும் ஒளிவீசும் சந்திரனையும் அமைத்தான்.",
       "ml": "ആകാശത്ത് നക്ഷത്രമണ്ഡലങ്ങള്‍ ഉണ്ടാക്കിയവന്‍ അനുഗ്രഹപൂര്‍ണ്ണനാകുന്നു. അവിടെ അവന്‍ ഒരു വിളക്കും (സൂര്യന്‍) വെളിച്ചം നല്‍കുന്ന ചന്ദ്രനും ഉണ്ടാക്കിയിരിക്കുന്നു.",
       "th": "ความจำเริญยิ่งแด่พระผู้ทรงทำให้ชั้นฟ้ามีหมู่ดาว และพระองค์ทรงตั้งตะเกียง (ดวงอาทิตย์ส่องแสงออกมา) และดวงจันทร์อันมีแสงนวลไว้ในนั้น",
-      "vi": "Hồng phúc thay Đấng đã tạo ra các chùm sao trên trời và tạo ra trong đó mặt trời chiếu sáng và mặt trăng mang ánh hào quang."
+      "vi": "Hồng phúc thay Đấng đã tạo ra các chùm sao trên trời và tạo ra trong đó mặt trời chiếu sáng và mặt trăng mang ánh hào quang.",
+      "sv": "Upphöjd är han från vilken all välsignelse kommer – han som har prytt himlavalvet med stjärnbilder och däri satt en strålande [sol] och en lysande måne.",
+      "uk": "Благословенний Той, Хто поставив у небі сузір’я, створив там світило й сяючий місяць!",
+      "ro": "Binecuvântat este Cel ce a pus Stelele mărețe în Cer și a făcut în el o candelă arzătoare [Soarele] și o Lună luminoasă!",
+      "hr": "Neka je uzvišen Onaj Koji je na nebu sazviježđa stvorio i na njemu dao svjetiljku i Mjesec koji sija.",
+      "sr": "Нека је Узвишен Онај Који је на небу створио сазвежђа и на њему дао Светиљку и Месец који сија.",
+      "el": "Ύψιστος είναι Αυτός που τοποθέτησε στον ουρανό μεγάλα αστέρια (και αστερισμούς), και τοποθέτησε σ' αυτόν έναν λαμπτήρα (τον ήλιο που είναι πηγή φωτός και θερμότητας) και ένα φωτεινό φεγγάρι."
     }
   },
   {
@@ -3598,7 +4240,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "他确是全聪的，确是全知的。",
       "ml": "തീര്‍ച്ചയായും അവന്‍ എല്ലാം കേള്‍ക്കുന്നവനും അറിയുന്നവനുമത്രെ.",
       "th": "แท้จริงพระองค์คือผู้ทรงได้ยิน ผู้ทรงรอบรู้เสมอ",
-      "vi": "Bởi Ngài đích thực là Đấng Hằng Nghe, Toàn Tri."
+      "vi": "Bởi Ngài đích thực là Đấng Hằng Nghe, Toàn Tri.",
+      "pt": "Por certo, Ele é O Oniouvinte, O Onisciente.",
+      "it": "in verità Lui è l’Ascoltatore, il Sapiente.",
+      "sv": "Han hör allt, vet allt.",
+      "uk": "Воістину, Він — Всечуючий і Всезнаючий!",
+      "ro": "Cu adevărat, El este As-Sami' [Cel care Aude Totul] [și] Al-'Alim [Atoateștiutor].",
+      "hr": "jer On, doista, sve čuje i sve zna.",
+      "sr": "јер Он, заиста, све чује и све зна.",
+      "el": "Πράγματι, Αυτός είναι ο Ασ-Σαμεί‘ (Αυτός που ακούει τα πάντα), ο Αλ-‘Αλείμ (ο Παντογνώστης)."
     }
   },
   {
@@ -3632,7 +4282,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "难道他们不知道吗？我以黑夜做他们的安息时间，以白昼做他们观看的时间，对于归信的民众其中确有许多迹象。",
       "ml": "രാത്രിയെ നാം അവര്‍ക്ക് സമാധാനമടയാനുള്ളതാക്കുകയും, പകലിനെ പ്രകാശമുള്ളതാക്കുകയും ചെയ്തിരിക്കുന്നു എന്നവര്‍ കണ്ടില്ലേ? വിശ്വസിക്കുന്ന ജനങ്ങള്‍ക്കു തീര്‍ച്ചയായും അതില്‍ ദൃഷ്ടാന്തങ്ങളുണ്ട്‌.",
       "th": "พวกเขาไม่คิดหรือว่า เราได้ทรงกำหนดกลางคืนเพื่อให้พวกเขาจะได้พักผ่อนในเวลานั้น และได้ทรงทำให้กลางวันสว่างไสว? แท้จริงในการนั้น แน่นอนย่อมเป็นสัญญาณแก่หมู่ชนที่ศรัทธา",
-      "vi": "Lẽ nào họ đã không nhìn thấy việc TA đã làm ra ban đêm cho họ nghỉ ngơi và ban ngày để họ quan sát (được mọi vật)? Quả thật, trong sự việc đó là những dấu hiệu cho đám người có đức tin."
+      "vi": "Lẽ nào họ đã không nhìn thấy việc TA đã làm ra ban đêm cho họ nghỉ ngơi và ban ngày để họ quan sát (được mọi vật)? Quả thật, trong sự việc đó là những dấu hiệu cho đám người có đức tin.",
+      "it": "Non vedono che in verità stabilimmo la notte per riposare e il giorno per agire? In ciò ci sono, in verità, dei Segni per i popoli credenti.",
+      "sv": "Har de inte sett att vi har gett dem natten för vila och gjort dagen alldeles ljus? I detta finns verkligen tecken för människor som tror.",
+      "uk": "Хіба вони не бачили, що Ми зробили ніч для вашого відпочинку, а день — часом світла? Воістину, в цьому — знамення для віруючих людей!",
+      "ro": "Oare nu au văzut ei că Noi am făcut noaptea pentru ca să se odihnească în timpul ei și ziua pentru ca ei să vadă? Iar întru aceasta sunt semne pentru un popor de oameni care cred.",
+      "hr": "Zar nisu vidjeli da smo učinili noć da u njoj otpočinu, a dan vidnim? To su, zaista, dokazi za narod koji vjeruje.",
+      "sr": "Зар не виде да смо учинили ноћ да у њој имају спокоја, а дан видним за рад?! То су, заиста, докази за народ који верује.",
+      "el": "Δε βλέπουν ότι κάναμε τη νύχτα για να ξεκουραστούν κατά τη διάρκειά της, και κάναμε την ημέρα φωτεινή; Πράγματι, σ' αυτό υπάρχουν Σημάδια γι' εκείνους που πιστεύουν."
     }
   },
   {
@@ -3672,7 +4329,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "(லாஇலாஹ இல்லல்லாஹ் என்ற) நன்மையை யார் கொண்டு வருவாரோ அவருக்கு அதன் காரணமாக (சொர்க்கமாகிய) சிறந்தது (கூலியாக) உண்டு. இன்னும், அவர்கள் அந்நாளில் திடுக்கத்திலிருந்து பாதுகாப்புப் பெறுவார்கள்.",
       "ml": "ആര്‍ നന്മയും കൊണ്ട് വന്നോ അവന് (അന്ന്‌) അതിനെക്കാള്‍ ഉത്തമമായത് ഉണ്ടായിരിക്കും. അന്ന് ഭയവിഹ്വലതയില്‍ നിന്ന് അവര്‍ സുരക്ഷിതരായിരിക്കുകയും ചെയ്യും.",
       "th": "ผู้ใดมาพร้อมกับความดี (ที่เขาได้กระทำมา) เขาจะได้รับรางวัลที่ดีกว่าและพวกเขาจะได้รับความปลอดภัยจากเหตุการณ์ที่เลวร้ายในวันนั้น",
-      "vi": "Ai mang theo điều tốt thì sẽ được ban thưởng điều tốt hơn và sẽ được an toàn khỏi cảnh kinh hoàng của Ngày hôm đó."
+      "vi": "Ai mang theo điều tốt thì sẽ được ban thưởng điều tốt hơn và sẽ được an toàn khỏi cảnh kinh hoàng của Ngày hôm đó.",
+      "pt": "Quem chega com a boa ação terá algo melhor que esta. E estarão em segurança contra o terror desse dia.",
+      "it": "Chi presenterà un bene riceverà un bene migliore e quel giorno sarà al sicuro dal terrore.",
+      "sv": "Då ska de som kommer med goda handlingar få [en belöning som] överträffar den, och de ska vara helt trygga från den dagens fasor.",
+      "uk": "І хто прийде з добрим вчинком, той матиме краще за нього. Того Дня вони будуть убезпеченні від жаху!",
+      "ro": "Cei care vin [la judecată] cu o faptă bună, vor avea ceva și mai bun decât ea și ei se vor afla la adăpost de spaima acelei Zile.",
+      "hr": "Tko učini dobro djelo, dobit će veliku nagradu za njega i bit će straha na Sudnjem danu pošteđen.",
+      "sr": "Они који учине добро дело, имаће бољу награду за то, и биће поштеђени страха на Судњем дану,"
     }
   },
   {
@@ -3709,7 +4373,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Ilé Ìkẹ́yìn yẹn, A máa fi fún àwọn tí kò fẹ́ máa ṣe ìgbéraga àti ìbàjẹ́ lórí ilẹ̀. Ìgbẹ̀yìn rere sì wà fún àwọn olùbẹ̀rù (Allāhu).",
       "zh": "这是后世的住宅，我要用来报答那不愿傲慢也不愿堕落的人。善果只归敬畏的人。",
       "ml": "ഭൂമിയില്‍ ഔന്നത്യമോ കുഴപ്പമോ ആഗ്രഹിക്കാത്തവര്‍ക്കാകുന്നു ആ പാരത്രിക ഭവനം നാം ഏര്‍പെടുത്തികൊടുക്കുന്നത്‌. അന്ത്യഫലം സൂക്ഷ്മത പാലിക്കുന്നവര്‍ക്ക് അനുകൂലമായിരിക്കും.",
-      "th": "นั่นคือที่พำนักแห่งปรโลก เราได้เตรียมมันไว้สำหรับบรรดาผู้ที่ไม่ปรารถนาหยิ่งผยองในแผ่นดินและไม่ก่อการเสียหาย และบั้นปลายที่ดีนั้นย่อมเป็นของบรรดาผู้ยำเกรง"
+      "th": "นั่นคือที่พำนักแห่งปรโลก เราได้เตรียมมันไว้สำหรับบรรดาผู้ที่ไม่ปรารถนาหยิ่งผยองในแผ่นดินและไม่ก่อการเสียหาย และบั้นปลายที่ดีนั้นย่อมเป็นของบรรดาผู้ยำเกรง",
+      "pt": "Essa Derradeira Morada, fá-la-emos para os que não desejam soberba, na terra, nem semear nela a corrupção. E o final feliz será para os piedosos.",
+      "it": "Quella casa dell’Aldilà la riserviamo a quelli che non desiderano fama in terra né corruzione. E il buon esito è riservato ai devoti.",
+      "sv": "Det kommande livet ska vi skänka de som inte visar högmod på jorden och inte orsakar fördärv på den. Det goda slutet är för de gudfruktiga.",
+      "uk": "Останню обитель Ми приготували для тих, хто не бажає вивищуватися на землі й поширювати безчестя. А найкращий вихід — для богобоязливих!",
+      "ro": "Această Casă de Veci [Paradisul] o facem Noi pentru aceia care nu voiesc fală pe Pământ, nici stricăciune. Iar sfârșitul [bun] este al acelora care au frică.",
+      "hr": "Taj drugi svijet dat ćemo onima koji se ne žele na Zemlji oholiti i nered činiti, a one koji se Allaha boje čeka sretan kraj.",
+      "sr": "Тај Будући свет даћемо онима који не желе на Земљи да се охоле и неред да чине, а богобојазне чека срећан крај."
     }
   },
   {
@@ -3750,7 +4421,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "众人以为他们随便说说“我们已归信了”而不受考验吗？",
       "ta": "“நாங்கள் நம்பிக்கை கொண்டோம் என்று அவர்கள் கூறுவதால் அவர்கள் சோதிக்கப்படாமல் விடப்படுவார்கள்?” என்று மக்கள் நினைத்துக் கொண்டனரா?",
       "th": "มนุษย์คิดหรือว่า พวกเขาจะถูกละเลย ด้วยแค่เพียงคำกล่าวของพวกเขาที่ว่า \"เราศรัทธาแล้ว\" แล้วพวกเขาก็จะไม่ถูกทดสอบใดๆ กระนั้นหรือ?!\"",
-      "vi": "Có phải nhân loại tưởng rằng họ sẽ được yên thân khi nói “Chúng tôi đã có đức tin” mà không bị thử thách ư?"
+      "vi": "Có phải nhân loại tưởng rằng họ sẽ được yên thân khi nói “Chúng tôi đã có đức tin” mà không bị thử thách ư?",
+      "pt": "Os homens supõem que, por dizerem: \"Cremos\", serão deixados, enquanto não provados?",
+      "it": "Pensavano le genti che si lasciasse loro dire: «Abbiamo creduto!», senza essere messi alla prova?",
+      "sv": "Tror människor att de ska besparas prövningar bara för att de säger: ”Vi tror”?",
+      "uk": "Невже люди думають, що їх залишать у спокої та не будуть випробовувати лише тому, що вони скажуть: «Ми увірували»?",
+      "ro": "Oare oamenii cred că vor fi lăsați [în pace], dacă vor spune „Noi credem!”, și că ei nu vor fi încercați?",
+      "hr": "Misle li ljudi da će biti ostavljeni na miru ako kažu: “Mi vjerujemo!” i da u iskušenje neće biti dovedeni?",
+      "sr": "Зар мисле људи да ће да буду препуштени сами себи ако кажу: “Ми верујемо!” И да неће да буду искушавани?!",
+      "el": "Νομίζουν οι άνθρωποι ότι με το να λένε: «Πιστεύουμε», θα αφεθούν και δε θα δοκιμάζονται (με τις εντολές και τις απαγορεύσεις και τις κακουχίες);"
     }
   },
   {
@@ -3789,7 +4468,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "யார் அல்லாஹ்வின் சந்திப்பை விரும்பியவராக இருப்பாரோ நிச்சயமாக, அல்லாஹ்வின் (அந்த) தவணை வரக்கூடியதுதான் (என்பதை அவர் அறிந்து கொள்ளட்டும்). அவன்தான் நன்கு செவியுறுபவன், நன்கறிந்தவன் ஆவான்.",
       "ml": "വല്ലവനും അല്ലാഹുവുമായി കണ്ടുമുട്ടണമെന്ന് ആഗ്രഹിക്കുന്നുവെങ്കില്‍ തീര്‍ച്ചയായും അല്ലാഹു നിശ്ചയിച്ച അവധി വരിക തന്നെ ചെയ്യും. അവന്‍ എല്ലാം കേള്‍ക്കുന്നവനും അറിയുന്നവനുമത്രെ.",
       "th": "ผู้ใดหวังที่จะพบอัลลอฮ์ ดังนั้นแท้จริงกำหนดของอัลลอฮ์ย่อมมาถึงแน่นอน และพระองค์เป็นผู้ทรงได้ยิน ผู้ทรงรอบรู้",
-      "vi": "Người nào mong trở về gặp lại Allah thì quả thật thời hạn (ấn định cho việc gặp gỡ đó) của Allah chắc chắn sẽ đến. Quả thật, Ngài là Đấng Hằng Nghe, Hằng Biết."
+      "vi": "Người nào mong trở về gặp lại Allah thì quả thật thời hạn (ấn định cho việc gặp gỡ đó) của Allah chắc chắn sẽ đến. Quả thật, Ngài là Đấng Hằng Nghe, Hằng Biết.",
+      "pt": "Quem espera o deparar de Allah, por certo, o termo de Allah chegará. E Ele é O Oniouvinte, O Onisciente.",
+      "it": "Chi aspetta d’incontrare Allāh, (sappia che) in verità il termine fissato da Allāh è imminente. E Lui è l’Ascoltatore, il Sapiente.",
+      "sv": "Den som längtar efter mötet med Gud [ska veta] att den stund han fastställt är nära. Han hör allt, vet allt.",
+      "uk": "А якщо хтось сподівається на зустріч із Аллагом, то призначений Аллагом строк неодмінно настане. Він — Всечуючий, Всезнаючий!",
+      "ro": "Cei care nădăjduiesc în răsplata bună la întâlnirea cu Allah [să știe că] termenul lui Allah va veni. El este As-Sami' [Cel care Aude Totul] [și este] Al-'Alim [Atoateștiutor].",
+      "hr": "A tko se nada susretu s Allahom, pa od Allaha određeno vrijeme će doći, a On je Svečujući i Sveznajući!",
+      "sr": "Онај ко се нада сусрету с Аллахом – па доћи ће, сигурно, Дан обећани. А Он све чује и све зна!"
     }
   },
   {
@@ -3829,7 +4515,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "难道他们没有看见安拉怎样创造众生，然后使他们复活吗？这对于安拉是容易的。",
       "ml": "അല്ലാഹു എങ്ങനെ സൃഷ്ടി ആരംഭിക്കുകയും, പിന്നെ അത് ആവര്‍ത്തിക്കുകയും ചെയ്യുന്നു എന്ന് അവര്‍ ചിന്തിച്ചുനോക്കിയില്ലേ? തീര്‍ച്ചയായും അത് അല്ലാഹുവെ സംബന്ധിച്ചിടത്തോളം എളുപ്പമുള്ളതത്രെ.",
       "th": "และพวกเขามิเห็นหรอกหรือว่า อัลลอฮ์ทรงเริ่มแรกของการบังเกิดอย่างไร แล้วจะทรงให้เขากลับฟื้นคืนชีพขึ้นมาอีกครั้งอย่างไร แท้จริงนั่นเป็นการง่ายสำหรับอัลลอฮ์",
-      "vi": "Lẽ nào (những kẻ phủ nhận này) đã không nhận xét thấy việc Allah khởi tạo rồi phục sinh như thế nào ư? Quả thật, điều đó đối với Allah vô cùng đơn giản."
+      "vi": "Lẽ nào (những kẻ phủ nhận này) đã không nhận xét thấy việc Allah khởi tạo rồi phục sinh như thế nào ư? Quả thật, điều đó đối với Allah vô cùng đơn giản.",
+      "it": "Ma non vedono come Allāh origina il creato, poi lo replica? In verità quella è una cosa facile per Allāh.",
+      "sv": "Ser de inte hur Gud inleder skapelsen och sedan upprepar den? Detta är lätt för Gud.",
+      "uk": "Невже вони не бачать, як Аллаг створює творіння вперше, а потім творить знову? Воістину, це легко для Аллага!",
+      "ro": "Oare nu au văzut ei cum începe Allah creația prima oară și cum o va face pe ea apoi din nou? Cu adevărat acesta este [un lucru] ușor pentru Allah.",
+      "hr": "Zar oni ne vide kako Allah započinje stvaranje?! On će to opet učiniti; Allahu je to, zaista, lako.",
+      "sr": "Зар ови не виде како Аллах све из ничег ствара? Он ће то опет да учини; Аллаху је то, заиста, лако."
     }
   },
   {
@@ -3859,7 +4551,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "Misal ɓen jogitiiɓe ga Alla deweteeɗi, ko wano marijaawowal(njomblo) saccungal suudu. Ko ɓuri lo'ode non e cuuɗi ɗin, ko suudu marijaawo. Sinno ɓe annduno!",
       "yo": "Àpèjúwe àwọn tó mú àwọn (òrìṣà) ní alátìlẹ́yìn lẹ́yìn Allāhu, ó dà bí àpèjúwe aláǹtàakùn tí ó kọ́ ilé kan. Dájúdájú ilé tí ó yẹpẹrẹ jùlọ ni ilé aláǹtàakùn, tí wọ́n bá mọ̀.",
       "zh": "有些人，舍安拉而别求监护者，他们譬如蜘蛛造屋，最脆弱的房屋，确是蜘蛛的房屋。但愿他们知道。",
-      "th": "อุปมาบรรดาผู้ที่เอาสิ่งอื่นจากอัลลอฮ์เป็นผู้คุ้มครอง อุปไมยดั่งแมงมุมที่ยึดกับใยของมันเป็นบ้าน และแท้จริงรังที่บอบบางที่สุดคือรังของแมงมุม หากพวกเขารู้"
+      "th": "อุปมาบรรดาผู้ที่เอาสิ่งอื่นจากอัลลอฮ์เป็นผู้คุ้มครอง อุปไมยดั่งแมงมุมที่ยึดกับใยของมันเป็นบ้าน และแท้จริงรังที่บอบบางที่สุดคือรังของแมงมุม หากพวกเขารู้",
+      "pt": "O exemplo dos que tomam protetores em vez de Allah, é como o da aranha, que construiu uma casa para proteger-se. E, por certo, a mais frágil das casas é a casa da aranha. Se soubessem!",
+      "it": "L’esempio di quelli che hanno preso protettori all’infuori di Allāh è come l’esempio del nido che il ragno fa per sé: in verità quella del ragno è la dimora più fragile, se sapessero.",
+      "sv": "De som tar sig beskyddare i stället för Gud liknar spindeln som byggde sig ett hus – men inget hus är bräckligare än spindelns. Om de bara kunde begripa det!",
+      "ro": "Exemplul celor care au luat ocrotitori în locul lui Allah este precum exemplul păianjenului care și-a făcut o casă; dar cea mai slabă casă este casa păianjenului, dacă ei măcar ar fi știut!",
+      "hr": "Oni koji, mimo Allaha, zaštitnike uzimaju slični su pauku koji sebi isplete kuću – a najslabija je kuća, uistinu, paukova kuća, neka znaju!",
+      "sr": "Они који, мимо Аллаха, узимају заштитнике слични су пауку који себи исплете кућу, а најслабија кућа, засигурно, је паукова кућа, кад би само знали."
     }
   },
   {
@@ -3900,7 +4598,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "அல்லாஹ், வானங்களையும் பூமியையும் உண்மையான காரணத்திற்காகவே படைத்திருக்கிறான். நம்பிக்கையாளர்களுக்கு நிச்சயமாக இதில் ஓர் அத்தாட்சி இருக்கிறது.",
       "ml": "ആകാശങ്ങളും ഭൂമിയും മുറപ്രകാരം അല്ലാഹു സൃഷ്ടിച്ചിരിക്കുന്നു. തീര്‍ച്ചയായും അതില്‍ സത്യവിശ്വാസികള്‍ക്ക് ദൃഷ്ടാന്തമുണ്ട്‌.",
       "th": "อัลลอฮ์ทรงสร้างชั้นฟ้าทั้งหลายและแผ่นดินด้วยความจริง แท้จริงในการนี้ แน่นอนย่อมเป็นสัญญาณแก่บรรดาผู้ศรัทธา",
-      "vi": "Allah đã tạo hóa các tầng trời và trái đất là vì chân lý. Quả thật, trong (sự tạo hóa) đó là một minh chứng (rõ ràng về Allah) cho những ai có đức tin."
+      "vi": "Allah đã tạo hóa các tầng trời và trái đất là vì chân lý. Quả thật, trong (sự tạo hóa) đó là một minh chứng (rõ ràng về Allah) cho những ai có đức tin.",
+      "pt": "Allah criou os céus e a terra, com a verdade. Por certo, há nisso um sinal para os crentes.",
+      "it": "Allāh ha creato i cieli e la terra con la Verità: in verità in ciò c’è un Segno per i credenti.",
+      "sv": "Gud skapade himlarna och jorden med ett visst syfte. I detta finns förvisso ett tecken för de som tror.",
+      "uk": "Аллаг створив небеса й землю в істині. Воістину, в цьому — знамення для віруючих!",
+      "ro": "Allah a creat Cerurile și Pământul cu [chibzuință] adevărată. Și, cu adevărat, în aceasta este un semn pentru cei credincioși.",
+      "hr": "Allah je nebesa i Zemlju s razlogom stvorio; to je, doista, pouka onima koji vjeruju.",
+      "sr": "Бог је небеса и Земљу с разлогом створио; то је, заиста, поука онима који верују.",
+      "el": "Ο Αλλάχ δημιούργησε τους ουρανούς και τη γη με την αλήθεια (και όχι άσκοπα ή μάταια). Πράγματι, υπάρχει σ' αυτό Σημάδι για τους πιστούς."
     }
   },
   {
@@ -3940,7 +4646,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நம்பிக்கை கொண்ட என் அடியார்களே! நிச்சயமாக எனது பூமி விசாலமானது. ஆகவே, என்னையே (கலப்பற்ற முறையில்) நீங்கள் வணங்குங்கள்!",
       "ml": "വിശ്വസിച്ചവരായ എന്‍റെ ദാസന്‍മാരേ, തീര്‍ച്ചയായും എന്‍റെ ഭൂമി വിശാലമാകുന്നു. അതിനാല്‍ എന്നെ മാത്രം നിങ്ങള്‍ ആരാധിക്കുവിന്‍.",
       "th": "โอ้ปวงบ่วงผู้ศรัทธาของข้าทั้งหลาย! แท้จริงแผ่นดินของฉันนั้นกว้างใหญ่ไพศาล (เพื่อให้พวกเจ้าได้เคารพสักการะอย่างอิสระ) ดังนั้น (ไม่ว่าพวกเจ้าจะอยู่ ณ แห่งหนใด) พวกเจ้าจงเคารพสักการะต่อข้า",
-      "vi": "Hỡi các bầy tôi có đức tin của TA, quả thật đất đai của TA rộng thênh thang, cho nên, các ngươi hãy thờ phượng chỉ một mình TA thôi!"
+      "vi": "Hỡi các bầy tôi có đức tin của TA, quả thật đất đai của TA rộng thênh thang, cho nên, các ngươi hãy thờ phượng chỉ một mình TA thôi!",
+      "it": "O servi Miei, credenti, in verità la Mia terra è vasta: adorateMi!",
+      "sv": "Mina troende tjänare! Min jord är rymlig; [utvandra till en plats där] ni kan dyrka mig [och endast mig].",
+      "uk": "О Мої віруючі раби! Воістину, земля Моя широка! Тож поклоняйтеся Мені!",
+      "ro": "O, robi ai Mei care ați crezut! Pământul Meu este atât de întins! Adorați-Mă pe Mine!",
+      "hr": "O robovi Moji koji vjerujete, Moja je Zemlja prostrana, zato samo Mene obožavajte!",
+      "sr": "О слуге Моје које верујете, Моја је Земља пространа, зато само Мене обожавајте!",
+      "el": "Ω, δούλοι Μου που πιστεύετε! Πράγματι, η γη Μου είναι πλατιά (για να μεταναστέψετε αν αντιμετωπίζετε διωγμούς λόγω της πίστης σας), έτσι, λατρεύετε μόνο Εμένα!"
     }
   },
   {
@@ -3981,7 +4694,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "எல்லா ஆன்மாவும் மரணத்தை சுவைக்கக் கூடியதே! பிறகு, நம்மிடமே நீங்கள் திரும்பக் கொண்டு வரப்படுவீர்கள்.",
       "ml": "ഏതൊരാളും മരണത്തെ ആസ്വദിക്കുന്നതാണ്‌. പിന്നീട് നമ്മുടെ അടുക്കലേക്കു തന്നെ നിങ്ങള്‍ മടക്കപ്പെടുകയും ചെയ്യും.",
       "th": "ทุกๆ ชีวิตเป็นผู้ลิ้มรสความตาย หลังจากนั้นแล้วพวกเจ้าจะถูกนำกลับมายังเรา",
-      "vi": "Tất cả mỗi cơ thể đều phải nếm cái chết. Rồi các ngươi sẽ được đưa trở về trình diện TA."
+      "vi": "Tất cả mỗi cơ thể đều phải nếm cái chết. Rồi các ngươi sẽ được đưa trở về trình diện TA.",
+      "pt": "Cada alma experimentará a morte. Em seguida, a Nós sereis retornados.",
+      "it": "Ogni anima deve assaggiare la morte, poi a Noi tornerete.",
+      "sv": "Varje själ ska uppleva dödens ögonblick, och därefter ska ni föras åter till oss.",
+      "uk": "Кожна душа зазнає смерті, а потім ви повернетесь до Нас!",
+      "ro": "Fiecare suflet va gusta moartea. Apoi veți fi voi aduși înapoi la Noi.",
+      "hr": "Svako će živo biće smrt okusiti, i Nama ćete se poslije vratiti.",
+      "sr": "Свака душа смрт ће да осети, а онда ћете Нама да будете враћени.",
+      "el": "Κάθε ψυχή θα γευτεί τον θάνατο, έπειτα προς Εμάς θα επιστρέψετε όλοι."
     }
   },
   {
@@ -4023,7 +4744,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "安拉要使哪个仆人的给养宽裕，就使他宽裕，〔要使哪个仆人的给养窘迫，〕就使他窘迫，安拉确是全知万事的。",
       "ta": "அல்லாஹ், தனது அடியார்களில் தான் நாடியவருக்கு வாழ்வாதாரத்தை விசாலமாக்குகிறான். இன்னும், (தான் நாடுகிற) அவருக்கு (அதை) சுருக்கி விடுகிறான். நிச்சயமாக அல்லாஹ் எல்லாவற்றையும் நன்கறிந்தவன் ஆவான்.",
       "th": "อัลลอฮ์ทรงให้เครื่องยังชีพกว้างขวางแก่ผู้ที่พระองค์ทรงประสงค์จากปวงบ่าวของพระองค์และทรงให้คับแคบแก่เขา แท้จริงอัลลอฮ์เป็นผู้ทรงรอบรู้ทุกสิ่ง",
-      "vi": "Allah ban bổng lộc nhiều hay ít cho bất cứ ai Ngài muốn trong số bầy tôi của Ngài, quả thật, Allah là Đấng hằng biết hết mọi việc."
+      "vi": "Allah ban bổng lộc nhiều hay ít cho bất cứ ai Ngài muốn trong số bầy tôi của Ngài, quả thật, Allah là Đấng hằng biết hết mọi việc.",
+      "pt": "Allah prodigaliza o sustento a quem quer de Seus servos, e restringe-lho. Por certo, Allah, de todas as cousas, é Onisciente.",
+      "it": "Allāh concede generosamente il sostentamento a chi vuole tra i Suoi servi, e lo trattiene: in verità Allāh è Onnisciente.",
+      "sv": "Gud ger riklig försörjning till vem han vill och begränsar den för andra. Gud har full vetskap om allt.",
+      "uk": "Аллаг збільшує та зменшує винагороду тим із рабів Своїх, кому побажає! Воістину, Аллаг про кожну річ Знаючий!",
+      "ro": "Allah dă din belșug cele spre viețuire cui Voiește El dintre robii Săi sau le împuținează lor. Allah este Atoateștiutor.",
+      "hr": "Allah u izobilju daje hranu onom kome hoće od robova Svojih, a nekom i uskraćuje. – Allah, zaista, zna sve.",
+      "sr": "Аллах у изобиљу даје опскрбу ономе коме хоће од Својих слуга, а и ускраћује коме хоће: Аллах, заиста, све зна.",
+      "el": "Ο Αλλάχ παρέχει άφθονα αγαθά σε όποιους θέλει από τους δούλους Του, ή τα περιορίζει γι' αυτούς (που θέλει, σύμφωνα με τη Σοφία Του). Πράγματι, ο Αλλάχ είναι για τα πάντα Παντογνώστης."
     }
   },
   {
@@ -4064,7 +4793,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "அல்லாஹ்தான் படைப்புகளை ஆரம்பமாக படைக்கிறான். பிறகு, (அவை இறந்த பின்னர்) அவற்றை மீண்டும் உருவாக்குகிறான். பிறகு, அவனிடமே, நீங்கள் திரும்பக் கொண்டு வரப்படுவீர்கள்.",
       "ml": "അല്ലാഹു സൃഷ്ടി ആരംഭിക്കുകയും പിന്നീട് അത് ആവര്‍ത്തിക്കുകയും ചെയ്യുന്നു. പിന്നീട് അവങ്കലേക്ക് നിങ്ങള്‍ മടക്കപ്പെടുകയും ചെയ്യുന്നു.",
       "th": "อัลลอฮ์ทรงเริ่มการบังเกิด (มนุษย์) หลังจากนั้นแล้วทรงให้มันกลับมาเกิดอีก แล้วพวกเจ้าจะถูกนำกลับไปยังพระองค์",
-      "vi": "Allah là Đấng bắt đầu sự tạo hóa, rồi Ngài sẽ tái tạo nó trở lại, và rồi đây các ngươi sẽ được đưa trở về trình diện Ngài."
+      "vi": "Allah là Đấng bắt đầu sự tạo hóa, rồi Ngài sẽ tái tạo nó trở lại, và rồi đây các ngươi sẽ được đưa trở về trình diện Ngài.",
+      "pt": "Allah inicia a criação; em seguida, repete-a; depois, a Ele sereis retornados.",
+      "it": "Allāh dà inizio al creato, poi lo ricrea: poi a Lui tornerete.",
+      "sv": "Gud är den som inleder skapelsen och han ska sedan upprepa den. Därefter ska ni föras åter till honom.",
+      "uk": "Аллаг починає творіння, потім повторює його, а потім до Нього ви повернетесь!",
+      "ro": "Allah creează făptura, apoi o face din nou, apoi la El veți fi aduși înapoi.",
+      "hr": "Allah je počeo stvaranje, zatim ga ponavlja i na kraju Njemu ćete se vratiti.",
+      "sr": "Аллах започиње стварање; ствара из ничега, затим ће то поново да учини, а онда ћете Њему да будете враћени."
     }
   },
   {
@@ -4107,7 +4843,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "வானங்களில் உள்ளவையும் பூமியில் உள்ளவையும் அல்லாஹ்விற்கே சொந்தமானவை. நிச்சயமாக அல்லாஹ்தான் முற்றிலும் நிறைவானவன் (-தேவையற்றவன்), மிகுந்த புகழாளன்.",
       "ml": "അല്ലാഹുവിന്‍റെതാകുന്നു ആകാശങ്ങളിലും ഭൂമിയിലുമുള്ളത്‌. തീര്‍ച്ചയായും അല്ലാഹു പരാശ്രയമുക്തനും, സ്തുത്യര്‍ഹനുമാകുന്നു.",
       "th": "สิ่งที่อยู่ในชั้นฟ้าทั้งหลายและแผ่นดินเป็นสิทธิของอัลลอฮ์ แท้จริงอัลลอฮ์นั้นคือ ผู้ทรงมั่งมี ผู้ทรงควรแก่การสรรเสริญยิ่ง",
-      "vi": "Mọi vật trong các tầng trời và trái đất đều thuộc về Allah. Quả thật, Allah là Đấng Giàu Có, Đấng Đáng Được Ca Tụng."
+      "vi": "Mọi vật trong các tầng trời và trái đất đều thuộc về Allah. Quả thật, Allah là Đấng Giàu Có, Đấng Đáng Được Ca Tụng.",
+      "pt": "De Allah é o que há nos céus e na terra. Por certo, Allah é O Bastante a Si mesmo, O Louvável.",
+      "it": "Ad Allāh appartiene ciò che è nei cieli e in terra: in verità Allāh è Colui che basta a se stesso, il Lodevole.",
+      "sv": "Allt i himlarna och på jorden tillhör Gud. Gud är förvisso den Oberoende, den Lovprisade.",
+      "uk": "Аллагу належить те, що в небесах, і те, що на землі. Воістину, Аллаг не потребує нічого — Багатий і Хвалимий Він!",
+      "ro": "Ale lui Allah sunt cele din Ceruri și de pe Pământ. Cu adevărat, Allah este Al-Ghaniyy [Deajuns pentru Sine] [și] Al-Hamid [Vrednic de Laudă]!",
+      "hr": "Allahovo je sve na nebesima i na Zemlji! Allah je, uistinu, neovisan i hvale dostojan.",
+      "sr": "Аллахово је све на небесима и на Земљи! Аллах је, уистину, независан и хвале достојан.",
+      "el": "Στον Αλλάχ ανήκει ό,τι υπάρχει στους ουρανούς και στη γη. Πράγματι, ο Αλλάχ είναι ο Αλ-Γανέι (Πλούσιος, Ελεύθερος από κάθε ανάγκη), ο Αλ-Χαμείντ (Άξιος κάθε επαίνου)."
     }
   },
   {
@@ -4141,7 +4885,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "Nganndee ko gooŋɗinta Aayeeje Amen ɗen, ko ɓen tawɓe si ɓe mbaajoraama ɗe, ɓe cuuyiray sujjugol, ɓe subbuhinora jettugol Joomi maɓɓe, kamɓe ɓe townitotaako.",
       "zh": "信仰我的迹象的，只有那等人：别人以我的迹象劝戒他们的时候，他们便俯伏叩头并以赞美他们的养主称颂清净，他们不敢妄自尊大，۩",
       "th": "แท้จริงบรรดาผู้ศรัทธาต่อโองการทั้งหลายของเราเท่านั้น ที่เมื่อพวกเขาถูกเตือนให้รำลึกถึงโองการเหล่านั้น พวกเขา (ก็จะ) ก้มลงสุญูด และสดุดีสรรเสริญแด่พระผู้อภิบาลของพวกเขา โดยที่พวกเขาไม่หยิ่งผยอง",
-      "vi": "Người thực sự có đức tin nơi các lời mặc khải của TA chính là những người mà khi họ được nhắc về chúng thì họ liền quỳ lạy tán dương ca ngợi Thượng Đế của họ và họ sẽ không cao ngạo."
+      "vi": "Người thực sự có đức tin nơi các lời mặc khải của TA chính là những người mà khi họ được nhắc về chúng thì họ liền quỳ lạy tán dương ca ngợi Thượng Đế của họ và họ sẽ không cao ngạo.",
+      "pt": "Apenas, crêem em Nossos versículos os que, ao lhes serem estes lembrados, caem em prosternação e glorificam com louvor, a seu Senhor, e não se ensoberbecem.",
+      "it": "In verità credono nei Nostri Segni quelli che, quando gli vengono rammentati, cadono prosternati cadono prosternati ﴿خَرُّوا سُجَّدًا﴾, e fanno le lodi del loro Dio, e non si insuperbiscono. ۩",
+      "sv": "De som verkligen tror på våra budskap är de som, när de påminns om dem, faller ned i tillbedjan och som upphöjer sin Herre och prisar hans lov utan att visa högmod.",
+      "uk": "Віруючі в Наші знамення — тільки ті, які, коли їм про них згадують, падають ниць, прославляють хвалою свого Господа й не вивищуються!",
+      "ro": "Ci numai aceia cred în Versetele Noastre, care, atunci când ele le sunt pomenite, cad, prosternându-se, și aduc Laudă și Slavă Domnului lor, fără ca ei să fie semeți,",
+      "hr": "U Naše riječi vjeruju samo oni koji, kad se njima opomenu, licem na tlo padaju i koji Gospodara svog veličaju i hvale i koji se ne ohole.",
+      "sr": "У Наше речи верују само они који, кад њима буду опоменути, падају лицем на тло, и који свога Господара величају и хвале и који се не охоле."
     }
   },
   {
@@ -4184,7 +4935,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நீங்கள் ஒரு விஷயத்தை வெளிப்படுத்தினால்; அல்லது, அதை மறைத்தால் நிச்சயமாக அல்லாஹ் எல்லா விஷயங்களையும் நன்கறிந்தவனாக இருக்கிறான்.",
       "ml": "നിങ്ങള്‍ എന്തെങ്കിലും വെളിപ്പെടുത്തുകയാണെങ്കിലും അത് മറച്ചു വെക്കുകയാണെങ്കിലും തീര്‍ച്ചയായും അല്ലാഹു ഏത് കാര്യത്തെപ്പറ്റിയും അറിവുള്ളവനാകുന്നു.",
       "th": "หากพวกเจ้าเปิดเผยสิ่งใดหรือปิดบังมัน แท้จริงอัลลอฮ์นั้นทรงรอบรู้ทุกสิ่งเสมอ",
-      "vi": "Cho dù các ngươi bộc lộ hay giấu kín bất cứ điều gì (thì các ngươi hãy biết rằng) Allah chắc chắn biết hết mọi điều."
+      "vi": "Cho dù các ngươi bộc lộ hay giấu kín bất cứ điều gì (thì các ngươi hãy biết rằng) Allah chắc chắn biết hết mọi điều.",
+      "pt": "Se mostrais uma cousa, ou a escondeis, por certo, Allah, de todas as cousas, é Onisciente.",
+      "it": "Sia che mostriate qualcosa o che la nascondiate, in verità Allāh è Onnisciente.",
+      "sv": "Vare sig ni gör något öppet eller döljer det har Gud full vetskap om allt.",
+      "uk": "Покажете ви щось або приховаєте — Аллаг знає про кожну річ!",
+      "ro": "Dacă voi scoateți la iveală un lucru ori îl țineți ascuns, Allah este ‘Alim al tuturor lucrurilor [Atoateștiutor].",
+      "hr": "Iznosili vi o tome što u javnost ili to u sebi krili – pa, Allah sve zna.",
+      "sr": "Износили ви ваша дела у јавност или их у себи крили, па, Аллах све добро зна.",
+      "el": "Είτε φανερώνετε κάτι, είτε το κρύβετε, πράγματι, ο Αλλάχ είναι για τα πάντα, Παντογνώστης."
     }
   },
   {
@@ -4220,7 +4979,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "安拉的确赞扬先知，他的天使们的确为他祝福。信士们啊！你们应当为他祝福，应当祝他平安！",
       "ta": "நிச்சயமாக அல்லாஹ்வும் அவனது மலக்குகளும் நபியை வாழ்த்துகிறார்கள். நம்பிக்கையாளர்களே! நீங்களும் அவரை வாழ்த்துங்கள்! இன்னும் ஸலாம் கூறுங்கள்!",
       "th": "แท้จริงอัลลอฮ์และมลาอิกะฮ์ของพระองค์ทรงประทานพรแก่นบี โอ้ บรรดาผู้ศรัทธาเอ๋ย พวกเจ้าจงประทานพรให้เขาและกล่าวทักทายเขาด้วยความเคารพ",
-      "vi": "Quả thật, Allah và các Thiên Thần của Ngài đều Salawat cho Nabi (Muhammad). Hỡi những người có đức tin, các ngươi hãy Salawat cho Y thật nhiều."
+      "vi": "Quả thật, Allah và các Thiên Thần của Ngài đều Salawat cho Nabi (Muhammad). Hỡi những người có đức tin, các ngươi hãy Salawat cho Y thật nhiều.",
+      "it": "In verità Allāh e i Suoi angeli benedicono il Profeta: o credenti, beneditelo e salutatelo con un buon saluto.",
+      "sv": "Gud och hans änglar prisar profeten. Troende! Be att han prisas och sänd honom fredshälsningar.",
+      "uk": "Воістину, Аллаг і Його ангели благословляють Пророка! О ви, які увірували! Благословляйте Пророка й вітайте його миром!",
+      "ro": "Allah trimite binecuvântări asupra Profetului și Îngerii se roagă [la Allah] pentru el. O, voi cei care credeți, rugați-vă pentru el și salutați-l pe el cu tot respectul.",
+      "hr": "Zaista, Allah i anđeli Njegovi blagosiljaju Vjerovjesnika. O vi koji vjerujete, blagosiljajte ga i vi i njemu selam šaljite!",
+      "sr": "Заиста Аллах и Његови анђели благосиљају Веровесника. О ви који верујете, благосиљајте га и ви и шаљите му поздрав срдачни!"
     }
   },
   {
@@ -4263,7 +5028,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நம்பிக்கையாளர்களே! அல்லாஹ்வை அஞ்சுங்கள். இன்னும், நேர்மையான பேச்சைப் பேசுங்கள்.",
       "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ അല്ലാഹുവെ സൂക്ഷിക്കുകയും, ശരിയായ വാക്ക് പറയുകയും ചെയ്യുക.",
       "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย จงยำเกรงอัลลอฮ์ และจงกล่าวถ้อยคำที่เที่ยงธรรมเถิด",
-      "vi": "Hỡi những người có đức tin! Các ngươi hãy kính sợ Allah và hãy nói lời chân thật."
+      "vi": "Hỡi những người có đức tin! Các ngươi hãy kính sợ Allah và hãy nói lời chân thật.",
+      "pt": "Ó vós que credes! Temei a Allah e dizei, sempre, dito adequado.",
+      "it": "O credenti, temete Allāh e pronunciate parole utili:",
+      "sv": "Troende! Frukta Gud och tala alltid sanning.",
+      "uk": "О ви, які увірували! Бійтесь Аллага та говоріть розсудливе слово.",
+      "ro": "O, voi cei care credeți! Fiți cu frică de Allah și spuneți vorbe adevărate,",
+      "hr": "O vjernici, bojte se Allaha i govorite samo istinu,",
+      "sr": "О ви који верујете, бојте се Аллаха и говорите само истину,",
+      "el": "Ω, εσείς που πιστεύετε! Φυλαχθείτε από την τιμωρία του Αλλάχ (τηρώντας τις εντολές Του) και πείτε ορθά λόγια,"
     }
   },
   {
@@ -4303,7 +5076,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "பூமியில் நுழைவதையும் அதிலிருந்து வெளியேறுவதையும் வானத்திலிருந்து இறங்குவதையும் அதில் ஏறுவதையும் அவன் நன்கறிவான். அவன்தான் மகா கருணையாளன், மகா மன்னிப்பாளன்.",
       "ml": "ഭൂമിയില്‍ പ്രവേശിക്കുന്നതും, അതില്‍ നിന്ന് പുറത്തു പോകുന്നതും, ആകാശത്ത് നിന്ന് ഇറങ്ങുന്നതും അതില്‍ കയറുന്നതുമായതെല്ലാം അവന്‍ അറിയുന്നു. അവന്‍ കരുണ ചൊരിയുന്നവനും ഏറെ പൊറുക്കുന്നവനുമത്രെ.",
       "th": "พระองค์ทรงรอบรู้ถึงสิ่งที่เข้าไปในแผ่นดินและสิ่งที่ออกมาจากมัน และสิ่งที่ลงมาจากฟากฟ้าและสิ่งที่ขึ้นไปบนนั้น และพระองค์เป็นผู้ทรงปราณี ผู้ทรงอภัยโทษเสมอ",
-      "vi": "Những gì chui vào lòng đất, những gì nhô lên khỏi mặt đất, những gì rơi xuống từ trên trời và những gì bay lên trời, Ngài đều biết rõ về chúng. Và Ngài là Đấng Hằng Khoan Dung, Hằng Tha Thứ."
+      "vi": "Những gì chui vào lòng đất, những gì nhô lên khỏi mặt đất, những gì rơi xuống từ trên trời và những gì bay lên trời, Ngài đều biết rõ về chúng. Và Ngài là Đấng Hằng Khoan Dung, Hằng Tha Thứ.",
+      "it": "conosce ciò che penetra nel suolo e ciò che ne esce e ciò che scende dal cielo e ciò che sale al cielo, e Lui è il Misericordioso, il Perdonatore.",
+      "sv": "Han vet vad som sjunker ner i jorden och vad som kommer upp ur den, och vad som kommer ned från himlen och vad som stiger upp till den. Han är den Barmhärtige, den ständigt Förlåtande.",
+      "uk": "Він знає те, що входить у землю, й те, що виходить із неї, що сходить із неба і що туди підноситься. А Він — Милосердний, Прощаючий!",
+      "ro": "El știe ce intră în Pământ și ce iese din el, ce coboară din Cer și ce se suie la el. Și El este Ar-Rahim [Îndurător], Al-Ghafur [Iertător].",
+      "hr": "On zna što u zemlju ulazi, a što iz nje izlazi, i što se s neba spušta, a što se na njega uspinje; On je samilostan i On prašta grijehe.",
+      "sr": "Он зна шта у земљу улази, а шта из ње излази, и шта се с неба спушта, а шта се на њега успиње; Он је самилостан и Он прашта грехе."
     }
   },
   {
@@ -4335,7 +5114,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "so": "Wax kastoo Alle u furo dadka oo Naxariis ah, ma jiro wax celin kara, wuxuu celiyana ma jiro wax soo diri kara Isaga kadambow. Waana Adkaadaha, Xakiimka ah.",
       "ff": "Kala yurmeende nde Alla udditani yimɓe ɓen, jogitotooɗo nde alaa; kala kadi ko o jogitii, gaccitoowo ɗum alaa ɓaawo (jogitagol) makko. Ko Kaŋko woni pooluɗo, ñeeñɗo.",
       "zh": "凡安拉为人们赏赐的任何恩惠，绝无人能阻拦；凡他扣留的，在他之后绝无人能开释。他确是万能的，确是至睿的。",
-      "th": "อันใดจากความเมตตาที่อัลลอฮ์ทรงเปิดแก่มนุษย์ชาติ ก็ไม่มีผู้ใดหยุดยั้งมันได้ และอันใดที่พระองค์ทรงยั้งไว้ ก็ไม่มีผู้ใดที่จะปล่อยมันได้ หลังจากการยั้งนั้น และพระองค์เป็นผู้ทรงอำนาจ ผู้ทรงปรีชาญาณ"
+      "th": "อันใดจากความเมตตาที่อัลลอฮ์ทรงเปิดแก่มนุษย์ชาติ ก็ไม่มีผู้ใดหยุดยั้งมันได้ และอันใดที่พระองค์ทรงยั้งไว้ ก็ไม่มีผู้ใดที่จะปล่อยมันได้ หลังจากการยั้งนั้น และพระองค์เป็นผู้ทรงอำนาจ ผู้ทรงปรีชาญาณ",
+      "pt": "O que Allah franqueia aos homens, em misericórdia, ninguém pode retê-lo. E o que Ele retém, ninguém, depois dEle, pode enviá-lo. E Ele é O Todo-Poderoso, O Sábio.",
+      "it": "Le Grazie che Allāh dona agli uomini non possono essere trattenute da nessuno. E se lui gliene priva, nessun altro può donarle dopo di Lui. Ed è Lui il Potente, il Saggio.",
+      "sv": "Ingen kan hålla tillbaka den nåd Gud skänker människorna, och det han väljer att hålla tillbaka kan ingen annan skänka. Han är den Allsmäktige, den Vise.",
+      "uk": "Ніхто не стримає милості, яку Аллаг відкриває людям. А те, що стримає Він сам, уже не зішле ніхто. А Він — Всемогутній, Мудрий!",
+      "hr": "Milost koju Allah podari ljudima nitko ne može uskratiti, a ono što On uskrati nitko ne može, poslije Njega, dati; On je silan i mudar.",
+      "sr": "Милост коју Аллах подари људима - нико не може да ускрати, а оно што Он ускрати - нико не може, после Њега, да подари; Он је Силни и Мудри."
     }
   },
   {
@@ -4374,7 +5159,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "人们啊！安拉的应许，确是真实的，所以绝不要让今世的生活欺骗你们，绝不要让猾贼以安拉的优容欺骗你们。",
       "ta": "மக்களே! நிச்சயமாக அல்லாஹ்வின் வாக்கு உண்மையானதே! ஆகவே, உலக வாழ்க்கை உங்களை மயக்கிவிட வேண்டாம். (ஷைத்தானாகிய) ஏமாற்றக் கூடியவனும் அல்லாஹ்வின் விஷயத்தில் உங்களை மயக்கிவிட வேண்டாம்.",
       "ml": "മനുഷ്യരേ, തീര്‍ച്ചയായും അല്ലാഹുവിന്‍റെ വാഗ്ദാനം സത്യമാകുന്നു. ഐഹികജീവിതം നിങ്ങളെ വഞ്ചിച്ചുകളയാതിരിക്കട്ടെ. പരമവഞ്ചകനായ പിശാചും അല്ലാഹുവിന്‍റെ കാര്യത്തില്‍ നിങ്ങളെ വഞ്ചിക്കാതിരിക്കട്ടെ.",
-      "th": "โอ้มนุษย์เอ๋ย! แท้จริงสัญญาของอัลลอฮ์นั้นเป็นจริงเสมอ ดังนั้น อย่าให้การดำรงชีวิตอยู่ในโลกนี้ล่อลวงพวกเจ้า และอย่าให้การหลอกล่อ (ชัยฏอน) มาล่อลวงพวกเจ้าเกี่ยวกับอัลลอฮ์เป็นอันขาด"
+      "th": "โอ้มนุษย์เอ๋ย! แท้จริงสัญญาของอัลลอฮ์นั้นเป็นจริงเสมอ ดังนั้น อย่าให้การดำรงชีวิตอยู่ในโลกนี้ล่อลวงพวกเจ้า และอย่าให้การหลอกล่อ (ชัยฏอน) มาล่อลวงพวกเจ้าเกี่ยวกับอัลลอฮ์เป็นอันขาด",
+      "it": "O uomini, in verità la promessa di Allāh è vera: non vi illuda la vita terrena e non vi inganni, nei confronti di Allāh, l’Ingannatore.",
+      "sv": "Människor! Guds löfte är verkligen sant, så låt er inte luras av det jordiska livet, och låt inte den store bedragaren lura er [med tomma löften] om Gud.",
+      "uk": "О люди! Воістину, обіцянка Аллага правдива! Нехай не спокушає вас земне життя, і нехай спокусник не спокушає вас проти Аллага!",
+      "ro": "O, oameni! Făgăduința lui Allah este Adevăr! Așadar, să nu vă înșele pe voi viața lumească și să nu vă amăgească pe voi, în privința lui Allah, [diavolul] cel amăgitor !",
+      "hr": "O ljudi, Allahova prijetnja je zaista istina, pa neka vas nikako život na ovom svijetu ne zaslijepi i neka vas sotona u Allaha ne pokoleba.",
+      "sr": "О људи, Аллахова претња је заиста истина, па нека вас никако живот на овом свету не заслепи и нека вас Сотона у веровање у Аллаха не поколеба."
     }
   },
   {
@@ -4415,7 +5206,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "恶魔确是你们的仇敌，所以你们应当认他为仇敌。他只号召他的党羽，以便他们做烈火的居民。",
       "ta": "நிச்சயமாக ஷைத்தான் உங்களுக்கு எதிரி ஆவான். ஆகவே, அவனை எதிரியாகவே எடுத்துக்கொள்ளுங்கள்! அவன் தனது கூட்டத்தார்களை அழைப்பதெல்லாம் அவர்கள் கொழுந்துவிட்டெரியும் நரகவாசிகளாக ஆகுவதற்காகத்தான்.",
       "ml": "തീര്‍ച്ചയായും പിശാച് നിങ്ങളുടെ ശത്രുവാകുന്നു. അതിനാല്‍ അവനെ നിങ്ങള്‍ ശത്രുവായിത്തന്നെ ഗണിക്കുക. അവന്‍ തന്‍റെ പക്ഷക്കാരെ ക്ഷണിക്കുന്നത് അവര്‍ നരകാവകാശികളുടെ കൂട്ടത്തിലായിരിക്കുവാന്‍ വേണ്ടി മാത്രമാണ്‌.",
-      "th": "แท้จริง ชัยฏอนนั้นสำหรับพวกเจ้าแล้วเป็นศัตรูกัน ดังนั้นจงถือมันเป็นศัตรู แท้จริงมันเรียกร้องพลพรรคของมัน เพื่อพวกมันจะได้เป็นสหายแห่งไฟนรก"
+      "th": "แท้จริง ชัยฏอนนั้นสำหรับพวกเจ้าแล้วเป็นศัตรูกัน ดังนั้นจงถือมันเป็นศัตรู แท้จริงมันเรียกร้องพลพรรคของมัน เพื่อพวกมันจะได้เป็นสหายแห่งไฟนรก",
+      "pt": "Por certo, Satã vos é inimigo; então, tomai-o por inimigo. Ele, apenas, convoca os de seu partido, para que sejam dos companheiros do Fogo ardente.",
+      "it": "In verità Satana è vostro nemico, consideratelo tale; in verità lui invita i seguaci ad essere tra la gente della Fiamma.",
+      "sv": "Satan är er svurne fiende; behandla honom därför som en fiende! Han kallar endast sitt följe för att de ska höra till den flammande eldens folk.",
+      "uk": "Воістину, шайтан — ваш ворог, тож ставтеся до нього як до ворога. Він закликає своїх прихильників до того, щоб вони стали мешканцями пекла!",
+      "ro": "Cu adevărat, Șeitan este pentru voi un dușman. Țineți-l, așadar, ca pe un dușman! El nu face decât să-i cheme pe susținătorii săi ca să fie oaspeți ai flăcărilor.",
+      "hr": "Sotona je, uistinu, vaš neprijatelj, pa ga takvim i smatrajte! On poziva pristaše svoje da budu stanovnici u Vatri.",
+      "sr": "Сотона је, уистину, ваш непријатељ, па га таквим и сматрајте! Он позива своје присталице да буду становници у Ватри.",
+      "el": "Πράγματι, ο Σατανάς είναι ένας εχθρός για σας, οπότε πάρτε τον ως εχθρό. Στ' αλήθεια, καλεί τους οπαδούς του να είναι ανάμεσα στους κατοίκους της Φλεγόμενης Φωτιάς."
     }
   },
   {
@@ -4457,7 +5256,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "மக்களே! நீங்கள்தான் அல்லாஹ்வின் பக்கம் தேவையுள்ளவர்கள். அல்லாஹ் - அவன்தான் முற்றிலும் நிறைவானவன், புகழுக்குரியவன் ஆவான்.",
       "ml": "മനുഷ്യരേ, നിങ്ങള്‍ അല്ലാഹുവിന്‍റെ ആശ്രിതന്‍മാരാകുന്നു. അല്ലാഹുവാകട്ടെ സ്വയം പര്യാപ്തനും സ്തുത്യര്‍ഹനുമാകുന്നു.",
       "th": "โอ้มนุษย์เอ๋ย! พวกเจ้าเป็นผู้ขัดสนต้องพึ่งอัลลอฮ์ แต่อัลลอฮ์นั้น พระองค์ทรงมั่งมีอย่างล้นเหลือ ผู้ทรงได้รับการสรรเสริญ",
-      "vi": "Hỡi nhân loại, các ngươi toàn là những kẻ nghèo hèn luôn cần đến Allah còn Allah là Đấng Giàu Có, đáng được ca tụng."
+      "vi": "Hỡi nhân loại, các ngươi toàn là những kẻ nghèo hèn luôn cần đến Allah còn Allah là Đấng Giàu Có, đáng được ca tụng.",
+      "pt": "Ó humanos! Vós sois pobres diante de Allah, e Allah é O Bastante a Si mesmo, O Louvável.",
+      "it": "O uomini, siete voi i bisognosi di Allāh, e Allāh, Lui è l’Autosufficiente, il Lodevole.",
+      "sv": "Människor! Det är ni som ständigt behöver Gud, medan han är den Oberoende, den Lovprisade.",
+      "uk": "О люди! Ви потребуєте Аллага, а Він — Багатий, Хвалимий!",
+      "ro": "O, oameni! Voi sunteți sărmani [ aveți nevoie] de Allah, iar Allah este Ghaniyy [Cel Deajuns pentru Sine] [și] Hamid [Cel Vrednic de Laudă].",
+      "hr": "O ljudi, vi ste siromasi, vi trebate Allaha, a Allah je nezavisan i hvale dostojan.",
+      "sr": "О људи, ви сте сиромаси, ви требате Аллаха, а Аллах је независан и хвале достојан.",
+      "el": "Ω, άνθρωποι! Εσείς είστε που έχετε ανάγκη τον Αλλάχ, ενώ ο Αλλάχ είναι o Αλ-Γανέι (Πλούσιος, Ελεύθερος από κάθε ανάγκη), ο Αλ-Χαμείντ (Άξιος κάθε επαίνου)."
     }
   },
   {
@@ -4499,7 +5306,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "அவன் நாடினால் உங்களை அழித்து விடுவான். இன்னும், (வேறு) ஒரு புதிய படைப்பை அவன் கொண்டு வருவான்.",
       "ml": "അവന്‍ ഉദ്ദേശിക്കുന്ന പക്ഷം നിങ്ങളെ അവന്‍ നീക്കം ചെയ്യുകയും, പുതിയൊരു സൃഷ്ടിയെ അവന്‍ കൊണ്ടുവരുകയും ചെയ്യുന്നതാണ്‌.",
       "th": "หากพระองค์ทรงประสงค์ พระองค์ก็จะทรงให้พวกเจ้าสูญสิ้นไป และจะทรงนำมาซึ่งกลุ่มชนรุ่นใหม่ (สักการะพระองค์และไม่ตั้งภาคีต่อพระองค์)",
-      "vi": "Nếu muốn, Ngài sẽ tiêu diệt tất cả các ngươi và tạo ra một loại tạo vật mới (thay thế các ngươi)."
+      "vi": "Nếu muốn, Ngài sẽ tiêu diệt tất cả các ngươi và tạo ra một loại tạo vật mới (thay thế các ngươi).",
+      "pt": "Se Ele quisesse, far-vos-ia ir e faria chegar novas criaturas.",
+      "it": "Se volesse, vi annienterebbe e vi sostituirebbe con nuove creature,",
+      "sv": "Om han önskar kan han utplåna er och låta en ny skapelse träda fram.",
+      "uk": "Якщо Він побажає, то знищить вас і приведе нове творіння,",
+      "ro": "Dacă El ar voi, v-ar face să pieriți și ar aduce o creație nouă,",
+      "hr": "Ako On hoće, uklonit će vas i nova stvorenja dovesti.",
+      "sr": "Ако хоће, уклониће вас и довешће нова створења,",
+      "el": "Αν θέλει, μπορεί να σας εξαφανίσει και να φέρει μία άλλη νέα δημιουργία,"
     }
   },
   {
@@ -4519,7 +5334,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ky": "Көрбөйсүңбү, Аллах асмандан суу түшүрдү. Анан Биз аны менен (түсү, даамы) ар түрдүү мөмөлөрдү чыгардык. Тоолордун да ак-ала, кызыл-ала жана чым каралар(ын чыгардык).",
       "am": "አላህ ከሰማይ ውሃን ማውረዱን አላየህምን? በእርሱም ዓይነቶቻቸው የተለያዩ ፍሬዎችን አወጣን፡፡ ከጋራዎችም መልኮቻቸው የተለያዩ ነጮች፣ ቀዮችም፣ በጣም ጥቁሮችም የኾኑ መንገዶች አልሉ፡፡",
       "ff": "E a yiaani won'de Alla jippinirii ndiyam ka kammu? Min puɗiniri ɗam dimɗe ceertuɗe noone. Hino ka pelle, ɗate daneeje e boɗeeje ceertyuɗe noone, e pete ɓaleeje.",
-      "zh": "难道你还不知道吗？安拉从天上降下雨水，然后借雨水而生产各种果实。山上有白的、红的、各色的条纹，和漆黑的岩石。"
+      "zh": "难道你还不知道吗？安拉从天上降下雨水，然后借雨水而生产各种果实。山上有白的、红的、各色的条纹，和漆黑的岩石。",
+      "sv": "Har du inte sett hur Gud låter regnet falla från skyn? Med det frambringar vi sedan frukter i olika färger, och genom bergen löper stråk i skiftande nyanser av vitt, rött och djupaste svart.",
+      "uk": "Невже ти не бачиш, що Аллаг проливає з неба воду, якою Ми пророщуємо плоди різного кольору. Мають різний колір і гірські стежки: білий, червоний, а також чорний, наче як у ворони.",
+      "hr": "Zar ne znaš da Allah s neba spušta vodu i da Mi pomoću nje stvaramo plodove različitih vrsta? A postoje brda bijelih i crvenih staza, različitih boja, i sasvim crnih.",
+      "sr": "Зар не знаш да Аллах спушта воду са неба и да Ми помоћу ње стварамо плодове различитих врста; а постоје брда белих и црвених стаза, различитих боја и сасвим црних;"
     }
   },
   {
@@ -4561,7 +5380,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக அல்லாஹ் வானங்கள் மற்றும் பூமியில் உள்ள மறைவானவற்றை நன்கறிந்தவன் ஆவான். நிச்சயமாக அவன் நெஞ்சங்களில் உள்ளவற்றை நன்கறிந்தவன் ஆவான்.",
       "ml": "തീര്‍ച്ചയായും അല്ലാഹു ആകാശങ്ങളിലെയും ഭൂമിയിലെയും അദൃശ്യകാര്യങ്ങള്‍ അറിയുന്നവനാകുന്നു. തീര്‍ച്ചയായും അവന്‍ ഹൃദയങ്ങളിലുള്ളത് അറിയുന്നവനാകുന്നു.",
       "th": "แท้จริง อัลลอฮ์นั้นทรงรอบรู้ในสิ่งเร้นลับแห่งชั้นฟ้าทั้งหลายและแผ่นดิน แท้จริงพระองค์เป็นผู้ทรงรอบรู้สิ่งที่อยู่ในทรวงอก",
-      "vi": "Quả thật, Allah là Đấng biết mọi điều vô hình của các tầng trời và trái đất. Quả thật, Ngài biết những gì được giấu kín trong lòng (con người)."
+      "vi": "Quả thật, Allah là Đấng biết mọi điều vô hình của các tầng trời và trái đất. Quả thật, Ngài biết những gì được giấu kín trong lòng (con người).",
+      "pt": "Por certo, Allah é Sabedor do Invisível dos céus e da terra. Por certo, do íntimo dos peitos, Ele é Onisciente.",
+      "it": "In verità Allāh conosce l’Ignoto dei cieli e della terra: in verità Lui è Conoscitore di ciò che nascondono i petti.",
+      "sv": "Gud har full kunskap om det fördolda i himlarna och på jorden; han vet vad som döljs i människans inre.",
+      "uk": "Воістину, Аллаг знає потаємне небес і землі. Воістину, Він знає про те, що в серцях!",
+      "ro": "Cu adevărat, Allah este Știutorul celor necunoscute din Ceruri și de pe Pământ. El este Știutorul celor ascunse înlăuntrul piepturilor.",
+      "hr": "Allah sigurno zna tajne nebesa i Zemlje, On dobro zna sve što grudi kriju.",
+      "sr": "Аллах сигурно зна тајне небеса и Земље; Он добро зна све што крију груди.",
+      "el": "Πράγματι, ο Αλλάχ είναι ο Παντογνώστης των αοράτων, των ουρανών και της γης. Πράγματι, είναι ο Παντογνώστης όσων υπάρχουν στις καρδιές!"
     }
   },
   {
@@ -4594,7 +5421,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Dájúdájú Àwa l’À ń sọ àwọn òkú di alàyè. A sì ń ṣe àkọsílẹ̀ ohun tí wọ́n tì síwájú àti orípa (iṣẹ́ ọwọ́) wọn. Gbogbo n̄ǹkan ni A ṣe àkọsílẹ̀ rẹ̀ sínú tírà kan tó yanjú.",
       "zh": "我必定要使死人复活，我必定要记录他们所作的善恶，和他们的事迹，我将一切事物，详明地记录在一册明白的范本中。",
       "th": "แท้จริงเราเป็นผู้ให้คนตายกลับมีชีวิตขึ้น และเราบันทึกสิ่งที่พวกเขาได้ประกอบไว้แต่ก่อน และร่องรอยของพวกเขาและทุกสิ่งนั้น เราได้รวบรวมไว้อย่างครบถ้วนในบันทึกอันชัดแจ้ง",
-      "ko": "진실로 나는 죽은 자들을 살리며 그들이 내놓은 것과 그들의 행적을 기록하노라. 나는 실로 모든 것을 분명한 성서에 기재하였노라."
+      "ko": "진실로 나는 죽은 자들을 살리며 그들이 내놓은 것과 그들의 행적을 기록하노라. 나는 실로 모든 것을 분명한 성서에 기재하였노라.",
+      "it": "In verità siamo Noi che risuscitiamo i morti e scriviamo ciò che hanno fatto, e le conseguenze delle loro azioni, e tutto abbiamo conservato in una chiara Matrice.",
+      "sv": "Det är vi som återger livet till de döda och som nedtecknar allt de gjort och de avtryck de lämnar efter sig. Ja, allt har vi fört in i en klar bok.",
+      "ro": "Cu adevărat, doar Noi îi înviem pe cei morți și scriem ceea ce au făcut ei mai înainte, ca și ceea ce au lăsat în urmele lor, și toate lucrurile le-am enumerat într-o carte limpede.",
+      "hr": "Mi, zaista, mrtve oživljavamo i Mi bilježimo ono što su uradili i tragove koje iza sebe ostave; sve smo Mi to u Knjizi jasnoj pobrojali.",
+      "sr": "Ми ћемо, заиста, мртве оживети и Ми смо записали оно што су урадили и дела која су иза себе оставили – све смо Ми то у Књизи јасно побројали."
     }
   },
   {
@@ -4636,7 +5468,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "സൂര്യന് ചന്ദ്രനെ പ്രാപിക്കാനൊക്കുകയില്ല. രാവ് പകലിനെ മറികടക്കുന്നതുമല്ല. ഓരോന്നും ഓരോ (നിശ്ചിത) ഭ്രമണപഥത്തില്‍ നീന്തികൊണ്ടിരിക്കുന്നു.",
       "th": "ดวงอาทิตย์ไม่อาจไล่ทันดวงจันทร์ได้ และกลางคืนก็ไม่อาจแซงหน้ากลางวันได้ และทั้งหมดต่างโคจรอยู่ในวงโคจรของตนเอง",
       "ko": "태양이 달을 따라잡는 것은 그것(태양)에 적합하지 않으며, 밤은 낮을 앞서가지 않노라. 모두는 궤도 안에서 순항하노라.",
-      "vi": "Mặt trời không đuổi kịp mặt trăng và ban đêm không qua mặt ban ngày; tất cả đều bơi trong quỹ đạo (đã được ấn định)."
+      "vi": "Mặt trời không đuổi kịp mặt trăng và ban đêm không qua mặt ban ngày; tất cả đều bơi trong quỹ đạo (đã được ấn định).",
+      "pt": "Não é concebível ao sol atingir a lua, nem à noite antecipar-se ao dia. E cada qual voga, em uma órbita.",
+      "it": "Il sole non deve raggiungere la luna, e la notte non deve precedere il giorno, e tutti navigano nella propria orbita.",
+      "sv": "Solen kan inte hinna ifatt månen och inte heller kan natten hinna före dagen – var och en färdas i sin egen omloppsbana.",
+      "uk": "Сонце не повинно наздоганяти місяць, а ніч не повинна випереджати день. Усі вони плинуть небосхилом.",
+      "ro": "Nici Soarele nu se cuvine să ajungă Luna, nici noaptea nu poate să o ia înaintea zilei și toate plutesc pe orbite [proprii].",
+      "hr": "Niti Sunce može dostići Mjesec niti noć može prestići dan, svi oni u svemiru plove.",
+      "sr": "Нити Сунце може Месец да достигне, нити ноћ дан да претекне, сви они у свемиру плове."
     }
   },
   {
@@ -4678,7 +5517,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "ആകാശങ്ങളും ഭൂമിയും സൃഷ്ടിച്ചവന്‍ അവരെപ്പോലുള്ളവരെ സൃഷ്ടിക്കാന്‍ കഴിവുള്ളവനല്ലേ? അതെ, അവനത്രെ സര്‍വ്വവും സൃഷ്ടിക്കുന്നവനും എല്ലാം അറിയുന്നവനും.",
       "th": "พระองค์ผู้ได้ทรงสร้างชั้นฟ้าทั้งหลายและแผ่นดินนี้ จะไม่ทรงสามารถที่จะสร้างเช่นเดียวกับพวกเขากระนั้นหรือ แน่นอน และพระองค์เป็นผู้ทรงสร้างที่ยิ่งใหญ่ ผู้ทรงรอบรู้",
       "ko": "(일곱) 하늘과 땅을 창조하신 분이야말로 그들과 유사한 것을 창조할 수 있는 분이 아니시던가? 그러하노라. 그분께서는 위대한 창조자이며 모든 것을 알고 계신 분이라.",
-      "vi": "Lẽ nào Đấng đã tạo hóa ra các tầng trời và trái đất lại không có khả năng tạo hóa ra cái giống như họ ư? Không đâu, Ngài là Đấng Tạo Hóa Toàn Tri."
+      "vi": "Lẽ nào Đấng đã tạo hóa ra các tầng trời và trái đất lại không có khả năng tạo hóa ra cái giống như họ ư? Không đâu, Ngài là Đấng Tạo Hóa Toàn Tri.",
+      "pt": "E Aquele Que criou os céus e a terra não é Poderoso para criar seus iguais? Sim! E Ele é O Criador, O Onisciente.",
+      "it": "Non è forse Colui che ha creato i cieli e la terra capace di creare esseri simili? Certo! Lui è il Creatore, il Sapiente.",
+      "sv": "Skulle inte han som har skapat himlarna och jorden [i all deras storslagenhet], också vara fullt kapabel att skapa dem [på nytt]? Jo, visst kan han! Han är den storslagne Skaparen, den Allvetande.",
+      "uk": "Невже Той, Хто створив небеса й землю, не зможе створити подібного до них? Та ж ні! Він — Творець, Знаючий!",
+      "ro": "Oare Acela care a creat Cerurile și Pământul nu are putința să creeze asemenea lor? Ba da! Și El este Al-Khallaq [Creatorul] Al-’Alim [Atoateștiutor]!",
+      "hr": "Zar Onaj Koji je stvorio nebesa i Zemlju nije kadar stvoriti njima slične? Jest, On sve stvara i On je Sveznajući.",
+      "sr": "Зар Онај Који је створио небеса и Земљу није способан да створи њима сличне? Јесте, Он је Створитељ, Свезнајући."
     }
   },
   {
@@ -4722,7 +5568,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "താന്‍ ഒരു കാര്യം ഉദ്ദേശിച്ചാല്‍ അതിനോട് ഉണ്ടാകൂ എന്ന് പറയുക മാത്രമാകുന്നു അവന്‍റെ കാര്യം. അപ്പോഴതാ അതുണ്ടാകുന്നു.",
       "th": "แท้จริงกิจการของพระองค์ เมื่อพระองค์ประสงค์สิ่งใด พระองค์เพียงตรัสแก่สิ่งนั้นว่า \"จงเป็น\" แล้วมันก็จะเป็นขึ้นมา",
       "ko": "그분께서 무엇인가를 원하실 때 그분의 명령은 단지 그것에 \"있어라\"라고 말씀하실 뿐이며, 이에 그것이 있게 되노라.",
-      "vi": "Quả thật, khi Ngài muốn điều gì, Ngài chỉ cần phán “Hãy thành!” thì tức khắc nó sẽ thành (giống như ý của Ngài)."
+      "vi": "Quả thật, khi Ngài muốn điều gì, Ngài chỉ cần phán “Hãy thành!” thì tức khắc nó sẽ thành (giống như ý của Ngài).",
+      "pt": "Sua ordem, quando deseja alguma cousa, é, apenas, dizer-lhe: \"Sê\", então, é.",
+      "it": "In verità il Suo ordine, se desidera qualcosa, non è altro che dire: «Sii!», e quella è.",
+      "sv": "När han vill att något ska bli till säger han bara: ”Var!” – och det är.",
+      "uk": "Коли Він воліє чогось, то тільки говорить: «Будь!» — і воно є!",
+      "ro": "Și dacă Voiește El un lucru, Porunca Lui este numai să zică „Fii” și el este.",
+      "hr": "Kad nešto hoće, On samo za to rekne: “Budi!” i ono bude.",
+      "sr": "А Његова наредба, када нешто хоће, јесте да само за то каже: „Буди!“ - И оно буде.",
+      "el": "Πράγματι, η Εντολή Του όταν θέλει κάτι να υπάρχει, είναι ότι απλά λέει γι' αυτό (που θέλει): «Γενηθήτω», και έτσι γίνεται!"
     }
   },
   {
@@ -4766,7 +5620,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "പ്രതാപത്തിന്‍റെ നാഥനായ നിന്‍റെ രക്ഷിതാവ് അവര്‍ ചമച്ചു പറയുന്നതില്‍ നിന്നെല്ലാം എത്ര പരിശുദ്ധന്‍!",
       "th": "มหาบริสุทธิ์ยิ่งแด่พระผู้อภิบาลของเจ้า พระเจ้าผู้ทรงเกียรติ เหนือสิ่งที่พวกเขาได้กล่าวอ้างไว้",
       "ko": "그들이 (그분을 함부로) 묘사하나 존엄의 주님이신 그대의 주님께서는 완벽하신 분이라!",
-      "vi": "Quang Vinh và tối cao thay Thượng Đế của Ngươi! Thượng Đế của Quyền Lực! Ngài siêu việt vượt xa những điều mà họ đã mô tả (về Ngài)."
+      "vi": "Quang Vinh và tối cao thay Thượng Đế của Ngươi! Thượng Đế của Quyền Lực! Ngài siêu việt vượt xa những điều mà họ đã mô tả (về Ngài).",
+      "pt": "Glorificado seja teu Senhor, O Senhor do Poder, acima do que alegam!",
+      "it": "Gloria al tuo Dio, Dio della Potenza, contro ciò che dicono.",
+      "sv": "Upphöjd är din Herre, maktens ägare, över vad de tillskriver honom.",
+      "uk": "Аллаг, Господь могутності, пречистий від того, що Йому приписують!",
+      "ro": "Slavă Domnului tău, Stăpânul Puterii! El este mai Presus de ceea ce spun ei!",
+      "hr": "Uzvišen je Gospodar tvoj, Gospodar dostojanstva, u odnosu na ono kako ga opisuju!",
+      "sr": "Величанствен је Господар твој, Достојанствени, и далеко од оног како Га представљају они!",
+      "el": "Δόξα στον Κύριό σου, τον Κύριο της Δύναμης, είναι πολύ Ανώτερος από ό,τι Του αποδίδουν (από ατέλειες)."
     }
   },
   {
@@ -4805,7 +5667,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "难道他们还不知道吗？安拉欲使谁的给养宽裕，就使他宽裕；〔欲使谁的给养窘迫，〕就使他窘迫。对于归信的民众，此中确有许多迹象。",
       "th": "พวกเขาไม่รู้ดอกหรือว่า อัลลอฮ์ทรงแผ่ปัจจัยยังชีพแก่ผู้ที่พระองค์ทรงประสงค์ และทรงให้คับแคบ แท้จริงในการนั้นย่อมเป็นสัญญาณมากมายสำหรับหมู่ชนผู้ศรัทธา",
       "ko": "그들은 하나님께서 원하시는 자에게 양식을 늘리시고 줄이심을 알지 못한단 말인가? 진실로 그 안에는 믿는 자들을 위한 징표들이 있노라.",
-      "vi": "Lẽ nào họ không biết việc Allah muốn nới rộng hay thu hẹp bổng lộc của Ngài đối với ai là tùy ý Ngài hay sao? Quả thật, trong đó là các dấu hiệu cho đám người có đức tin."
+      "vi": "Lẽ nào họ không biết việc Allah muốn nới rộng hay thu hẹp bổng lộc của Ngài đối với ai là tùy ý Ngài hay sao? Quả thật, trong đó là các dấu hiệu cho đám người có đức tin.",
+      "pt": "E não sabem eles que Allah prodigaliza o sustento a quem quer, e restringe-o? Por certo, há nisso sinais para um povo que crê.",
+      "it": "Come? Non sanno in verità che Allāh concede il bene a chi vuole e lo toglie? In verità in ciò ci sono Segni per il popolo credente.",
+      "sv": "Vet de inte att Gud ger riklig försörjning till vem han vill och begränsar den för andra? Detta är sannerligen en djup lärdom för människor som tror.",
+      "uk": "Невже вони не знають, що Аллаг збільшує та зменшує наділ, кому побажає? Воістину, в цьому — знамення для людей, які вірують!",
+      "ro": "Oare ei nu știu că Allah îl înzestrează cu prisosință pe acela care Voiește El sau îl înzestrează cu măsură? Cu adevărat, în aceasta sunt semne pentru un popor [de oameni] care cred.",
+      "hr": "Kako ne znaju da Allah daje obilje onom kome hoće, i da ga uskraćuje – to su, zaista, pouke narodu koji vjeruje.",
+      "sr": "Зар они не знају да Аллах даје опскрбу у изобиљу ономе коме хоће, и да ускраћује; то су, заиста, поуке народу који верује."
     }
   },
   {
@@ -4849,7 +5718,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അല്ലാഹു എല്ലാ വസ്തുക്കളുടെയും സ്രഷ്ടാവാകുന്നു. അവന്‍ എല്ലാ വസ്തുക്കളുടെ മേലും കൈകാര്യകര്‍ത്താവുമാകുന്നു.",
       "th": "อัลลอฮ์ คือผู้ทรงสร้างทุกสิ่ง และพระองค์เป็นผู้ทรงดูแลและผู้ทรงพิทักษ์ทุกสิ่ง",
       "ko": "하나님께서는 모든 것의 창조자이시며 그분께서는 모든 일에 관한 의탁의 대상이시라.",
-      "vi": "Allah là Đấng Tạo Hóa tất cả vạn vật và Ngài trông coi và quản lý mọi vật."
+      "vi": "Allah là Đấng Tạo Hóa tất cả vạn vật và Ngài trông coi và quản lý mọi vật.",
+      "pt": "Allah é O Criador de todas as cousas. E Ele, sobre todas as cousas, é Patrono.",
+      "it": "Allāh è il Creatore d’ogni cosa e di ogni cosa è il Protettore.",
+      "sv": "Gud är alltings Skapare och han har allt under full kontroll.",
+      "uk": "Аллаг — Творець кожної речі! Він — Опікун кожної речі!",
+      "ro": "Allah este Creatorul tuturor lucrurilor și El este peste toate Chezaș!",
+      "hr": "Allah je Stvoritelj svega i On upravlja svim.",
+      "sr": "Аллах је Створитељ свега и Он управља свим,",
+      "el": "Ο Αλλάχ είναι ο Δημιουργός των πάντων. Και Αυτός είναι ο Διαχειριστής των πάντων."
     }
   },
   {
@@ -4890,7 +5767,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "ആകാശങ്ങളുടെയും ഭൂമിയുടെയും താക്കോലുകള്‍ അവന്‍റെ അധീനത്തിലാകുന്നു. അല്ലാഹുവിന്‍റെ ദൃഷ്ടാന്തങ്ങളെ നിഷേധിച്ചവരാരോ അവര്‍ തന്നെയാകുന്നു നഷ്ടക്കാര്‍.",
       "th": "ปวงลูกกุญแจแห่งชั้นฟ้าทั้งหลายและแผ่นดินเป็นสิทธิของพระองค์ และบรรดาผู้ปฏิเสธสัญญาณทั้งหลายของอัลลอฮ์ ชนเหล่านั้น พวกเขาเป็นผู้ขาดทุน",
       "ko": "실로 그분께는 (일곱) 하늘과 땅의 열쇠가 있노라. 하나님의 징표를 불신한 자들, 저들은 실로 손실자들이라.",
-      "vi": "Mọi chìa khóa (kho tàng) của các tầng trời và trái đất đều thuộc về Ngài; và những ai phủ nhận các Lời Mặc Khải của Allah thì đó là những kẻ thua thiệt."
+      "vi": "Mọi chìa khóa (kho tàng) của các tầng trời và trái đất đều thuộc về Ngài; và những ai phủ nhận các Lời Mặc Khải của Allah thì đó là những kẻ thua thiệt.",
+      "pt": "DEle são as chaves dos céus e da terra. E os que renegam os sinais de Allah, esses são os perdedores.",
+      "it": "Lui ha il controllo dei cieli e della terra, e quelli che negano i Segni di Allāh sono i perdenti.",
+      "sv": "Han äger nycklarna till himlarnas och jordens [skatter]. De som vägrar tro på Guds budskap är de verkliga förlorarna.",
+      "uk": "Йому належать ключі небес і землі. А ті, які не вірують у знамення Аллага, втратять усе!",
+      "ro": "El are cheile Cerurilor și ale Pământului, iar aceia care nu cred în Versetele lui Allah, aceia vor fi cei care pierd.",
+      "hr": "U Njega su ključevi nebesa i Zemlje! A oni koji u Allahove dokaze ne vjeruju, oni će biti izgubljeni!",
+      "sr": "код Њега су кључеви небеса и Земље! А они који у Аллахове доказе и знакове не верују - они ће заиста да буду губитници!"
     }
   },
   {
@@ -4932,7 +5816,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "കണ്ണുകളുടെ കള്ളനോട്ടവും, ഹൃദയങ്ങള്‍ മറച്ച് വെക്കുന്നതും അവന്‍ (അല്ലാഹു) അറിയുന്നു.",
       "th": "พระองค์ทรงรอบรู้การทรยศของดวงตา และสิ่งที่ทรวงอกปกปิดอยู่",
       "ko": "그분께서는 곁눈의 흘금거림과 마음이 숨기는 것도 알고 계시노라.",
-      "vi": "Ngài (Allah) biết rõ điều gian trá nơi cặp mắt của họ cũng như những gì được giấu kín trong lòng họ."
+      "vi": "Ngài (Allah) biết rõ điều gian trá nơi cặp mắt của họ cũng như những gì được giấu kín trong lòng họ.",
+      "pt": "Allah sabe da traição dos olhos e do que os peitos escondem.",
+      "it": "Lui conosce l’inganno degli occhi e ciò che nascondono i petti.",
+      "sv": "Han känner till vad människan tittar på i hemlighet och vad som döljer sig i hjärtat.",
+      "uk": "Він знає і зрадницький погляд, і те, що приховане в серцях!",
+      "ro": "El [Allah] cunoaște hainia din ochi și ceea ce ascund piepturile.",
+      "hr": "On zna poglede koji kriomice u ono što je zabranjeno gledaju, a i ono što grudi kriju.",
+      "sr": "Он зна погледе који криомице у оно што је забрањено гледају, а и оно што груди крију;",
+      "el": "(Ο Αλλάχ) ξέρει ό,τι (βλέπουν τα μάτια από) κρυφά βλέμματα, και ό,τι κρύβουν οι καρδιές."
     }
   },
   {
@@ -4976,7 +5868,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "എന്‍റെ ജനങ്ങളേ, ഈ ഐഹികജീവിതം ഒരു താല്‍ക്കാലിക വിഭവം മാത്രമാണ്‌. തീര്‍ച്ചയായും പരലോകം തന്നെയാണ് സ്ഥിരവാസത്തിനുള്ള ഭവനം.",
       "th": "โอ้หมู่ชนของฉันเอ๋ย แท้จริงชีวิตแห่งโลกดุนยานี้ เป็นเพียงแค่ความเพลิดเพลินเท่านั้น และแท้จริงปรโลกนั้นมันเป็นที่อยู่อันมั่นคง",
       "ko": "나의 사람들이여. 이 현세에서의 삶은 그저 유희일 뿐입니다. 그리고 실로 내세, 그것이야말로 영원의 거주지입니다",
-      "vi": "“Thưa quí ngài! Quả thật, đời sống trần tục này chỉ là một sự hưởng thụ (tạm bợ và ngắn ngủi), Đời Sau mới thực sự là cõi trường tồn và vĩnh cửu.”"
+      "vi": "“Thưa quí ngài! Quả thật, đời sống trần tục này chỉ là một sự hưởng thụ (tạm bợ và ngắn ngủi), Đời Sau mới thực sự là cõi trường tồn và vĩnh cửu.”",
+      "pt": "\"Ó meu povo! Esta vida é, apenas, gozo. E, por certo, a Derradeira Vida é a Morada da permanência eterna.\"",
+      "it": "O popolo mio! In verità questa vita terrena non è altro che un’illusione, mentre l’Aldilà è il luogo della vita eterna.",
+      "sv": "Mitt folk! Livet här är bara en kortvarig glädje medan det kommande livets hemvist varar för evigt.",
+      "uk": "О народе мій! Воістину, земне життя — тимчасова насолода, а життя наступне — вічний притулок!",
+      "ro": "O, popor al meu! Această viață lumească nu este decât o plăcere trecătoare, în vreme ce Viața de Apoi este Casa odihnei.",
+      "hr": "O narode moj, život na ovom svijetu samo je prolazno uživanje, a onaj je svijet, zaista, Kuća vječna.",
+      "sr": "О народе мој, живот на овом свету само је пролазно уживање, а Будући свет је, заиста, Кућа вечна.",
+      "el": "Ω, λαέ μου! Πράγματι, αυτή η εγκόσμια ζωή είναι μόνο μία (φευγαλέα) απόλαυση, ενώ η Μέλλουσα Ζωή είναι η μόνιμη κατοικία!"
     }
   },
   {
@@ -5015,7 +5915,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും ആകാശങ്ങളും ഭൂമിയും സൃഷ്ടിക്കുക എന്നതാണ് മനുഷ്യരെ സൃഷ്ടിക്കുന്നതിനെക്കാള്‍ വലിയ കാര്യം. പക്ഷെ, മനുഷ്യരിൽ അധികപേരും മനസ്സിലാക്കുന്നില്ല.",
       "th": "แน่นอน การสร้างชั้นฟ้าทั้งหลายและแผ่นดินนั้นใหญ่ยิ่งกว่า การสร้างมนุษย์ แต่ว่าส่วนมากของมนุษย์ไม่รู้",
       "ko": "단연코 (일곱) 하늘과 땅의 창조가 인간의 창조보다 더 위대하나 대부분의 인간은 알지 못하노라.",
-      "vi": "Việc tạo hóa các tầng trời và trái đất thực sự vĩ đại hơn việc tạo hóa loài người, nhưng đa số nhân loại không biết."
+      "vi": "Việc tạo hóa các tầng trời và trái đất thực sự vĩ đại hơn việc tạo hóa loài người, nhưng đa số nhân loại không biết.",
+      "pt": "Em verdade, a criação dos céus e da terra é maior que a criação dos humanos, mas a maioria dos homens não sabe.",
+      "it": "La creazione dei cieli e della terra è più grandiosa di quella degli uomini, ma gran parte di loro non sa.",
+      "sv": "Att skapa himmel och jord är långt mer storslaget än att skapa människan, men de flesta människor vet inte detta.",
+      "uk": "Воістину, створення небес і землі є чимось більшим, ніж створення людей, але більшість людей не розуміє!",
+      "ro": "Crearea Cerurilor și a Pământului este mai măreață decât crearea oamenilor, dar cei mai mulți oameni nu știu.",
+      "hr": "Stvaranje nebesa i Zemlje sigurno je veće nego stvaranje roda ljudskog, ali većina ljudi ne zna.",
+      "sr": "Стварање небеса и Земље сигурно је веће него стварање људског рода, али већина људи не зна."
     }
   },
   {
@@ -5059,7 +5966,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "ആ അന്ത്യസമയം വരാനുള്ളത് തന്നെയാണ്‌. അതില്‍ സംശയമേ ഇല്ല. പക്ഷെ മനുഷ്യരില്‍ അധികപേരും വിശ്വസിക്കുന്നില്ല.",
       "th": "แท้จริง วันอวสานนั้นจะมีมาอย่างแน่นอน ไม่มีข้อสงสัยอันใดในนั้น แต่ว่าส่วนมากของมนุษย์ไม่เชื่อ",
       "ko": "실로 의혹의 여지가 없는 종말의 시간은 기필코 도래할 것이라. 그러나 대다수의 인간은 믿지 않더라.",
-      "vi": "Giờ Tận Thế chắc chắn sẽ đến, không có gì phải hoài nghi về điều đó, nhưng đa số nhân loại không có đức tin."
+      "vi": "Giờ Tận Thế chắc chắn sẽ đến, không có gì phải hoài nghi về điều đó, nhưng đa số nhân loại không có đức tin.",
+      "pt": "Por certo, a Hora está prestes a chegar, indubitavelmente, mas a maioria dos homens não crê.",
+      "it": "In verità l’Ora arriverà, senza dubbio, ma la maggior parte degli uomini non ci crede.",
+      "sv": "Den yttersta stundens ankomst är oundviklig men de flesta människor vägrar att tro.",
+      "uk": "Воістину, Час настане, і в цьому немає сумніву! Але ж більшість людей не вірує!",
+      "ro": "Ceasul va veni, fără îndoială, însă cei mai mulți oameni nu cred.",
+      "hr": "Doći će Čas oživljenja, u to nema nimalo sumnje, ali većina ljudi neće da vjeruje.",
+      "sr": "Доћи ће Судњи час, у то нема сумње, али већина људи не верује.",
+      "el": "Πράγματι, η Ώρα έρχεται, δεν υπάρχει καμία αμφιβολία γι' αυτήν, αλλά οι περισσότεροι άνθρωποι δεν πιστεύουν."
     }
   },
   {
@@ -5100,7 +6015,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "那是安拉，是你们的养主，是万物的创造者，除他外，绝无应受崇拜的。你们怎么如此悖谬呢？",
       "th": "นั่นคืออัลลอฮ์ พระผู้อภิบาลของพวกเจ้าผู้ทรงสร้างทุกสิ่ง ไม่มีพระเจ้าอื่นใดนอกจากพระองค์ แล้วพวกเจ้าถูกหันเห (จากการเคารพสักการะพระองค์สู่การเคารพสักการะสิ่งอื่น) ได้อย่างไร?",
       "ko": "그러한 분이 그대들의 주님인 하나님이시라. 그분 이외에는 경배받을 존재가 없으며 그분께서는 모든 것을 창조하신 분이라. 그런데도 그대들은 어떻게 돌아선단 말인가?",
-      "vi": "Đó là Allah, Thượng Đế của các ngươi. Ngài là Đấng Tạo Hóa vạn vật, không có Thượng Đế đích thực nào ngoài Ngài. Vậy tại sao các ngươi lánh xa (không thờ phượng) Ngài?"
+      "vi": "Đó là Allah, Thượng Đế của các ngươi. Ngài là Đấng Tạo Hóa vạn vật, không có Thượng Đế đích thực nào ngoài Ngài. Vậy tại sao các ngươi lánh xa (không thờ phượng) Ngài?",
+      "pt": "Esse é Allah, vosso Senhor, Criador de todas as cousas. Não existe deus senão Ele. Então, como dEle vos distanciais?",
+      "it": "Quello è Allāh, il vostro Dio, Creatore di ogni cosa. Non c’è divinità all’infuori di Lui: perché ve Ne allontanate?",
+      "sv": "Detta är Gud, er Herre, Skaparen av allt – ingen är värd dyrkan utom han! Så hur kan ni vända er bort?",
+      "uk": "Такий Аллаг, ваш Господь, Творець кожної речі. Немає бога, крім Нього! Як ви заблукали!",
+      "ro": "Acesta este Allah, Domnul vostru, Creatorul tuturor lucrurilor. Nu există altă divinitate afară de El. Cum se poate să vă întoarceți [de la El]?",
+      "hr": "To vam je, eto, Allah, Gospodar vaš, Stvoritelj svega, drugog boga osim Njega nema, pa kuda se onda odmećete?",
+      "sr": "То вам је, ето, Аллах, ваш Господар, Створитељ свега, другог истинског бога осим Њега нема, па куда се онда одмећете?!"
     }
   },
   {
@@ -5144,7 +6066,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും വിശ്വസിക്കുകയും സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും ചെയ്തവരാരോ അവര്‍ക്കാണ് മുറിഞ്ഞുപോവാത്ത പ്രതിഫലമുള്ളത്‌.",
       "th": "แท้จริงบรรดาผู้ศรัทธาและประกอบความดีทั้งหลายนั้น พวกเขาจะได้รับการตอบแทนอย่างไม่สิ้นสุด",
       "ko": "실로 (하나님과 사도를) 믿고 선행을 실천하는 자들, 그들에게는 끊이지 않는 보상이 있노라.",
-      "vi": "Quả thật, những người có đức tin và hành thiện chắc chắn sẽ được ban thưởng một phần thưởng vô tận (Thiên Đàng)."
+      "vi": "Quả thật, những người có đức tin và hành thiện chắc chắn sẽ được ban thưởng một phần thưởng vô tận (Thiên Đàng).",
+      "pt": "Por certo, os que crêem e fazem boas obras terão prêmio incessante.",
+      "it": "In verità quelli che hanno creduto e hanno fanno il bene, hanno una ricompensa senza fine.",
+      "sv": "Men för de som tror och handlar rättfärdigt väntar en belöning utan ände.",
+      "uk": "Воістину, тих, які увірували й робили добро, чекає невичерпна винагорода!",
+      "ro": "Cu adevărat, cei care cred și împlinesc fapte bune, vor avea parte de o răsplată neîntreruptă",
+      "hr": "One koji vjeruju i dobra djela čine zbilja čeka nagrada neprekidna.”",
+      "sr": "Онима који верују и раде добра дела, заиста припада непрекидна награда.",
+      "el": "Πράγματι, αυτοί που πιστεύουν και πράττουν ενάρετες πράξεις, θα έχουν αδιάλειπτη αμοιβή."
     }
   },
   {
@@ -5184,7 +6114,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "யார் நல்லதை செய்வாரோ அது அவருக்குத்தான் நன்மையாகும். இன்னும், யார் கெட்டதை செய்வாரோ அது அவருக்குத்தான் கேடாகும். உமது இறைவன் அடியார்களுக்கு சிறிதும் அநியாயம் செய்பவனாக இல்லை.",
       "ml": "വല്ലവനും നല്ലത് പ്രവര്‍ത്തിച്ചാല്‍ അതിന്‍റെ ഗുണം അവന് തന്നെയാകുന്നു. വല്ലവനും തിന്‍മ ചെയ്താല്‍ അതിന്‍റെ ദോഷവും അവന് തന്നെ. നിന്‍റെ രക്ഷിതാവ് (തന്‍റെ) അടിമകളോട് അനീതി കാണിക്കുന്നവനേ അല്ല.",
       "th": "ผู้ใดประกอบความดีก็จะได้แก่ตัวของเขา และผู้ใดประกอบความชั่วก็จะได้แก่ตัวของเขาเอง และพระผูัอภิบาลของเจ้านั้นมิทรงอธรรมต่อปวงบ่าวของพระองค์",
-      "ko": "선을 행하는 자는 자기 자신을 위한 것이며, 악행을 저지르는 자는 그를 해치는 것이라. 그대의 주님께서는 결코 종복들을 부당히 대우하시는 분이 아니라."
+      "ko": "선을 행하는 자는 자기 자신을 위한 것이며, 악행을 저지르는 자는 그를 해치는 것이라. 그대의 주님께서는 결코 종복들을 부당히 대우하시는 분이 아니라.",
+      "pt": "Quem faz o bem o faz em benefício de si mesmo. E quem faz o mal o faz em prejuízo de si mesmo. E teu Senhor não é injusto com os servos.",
+      "it": "Chi ha fatto del bene lo fa a suo vantaggio, e chi ha fatto del male, cadrà in esso, e il tuo Dio non è ingiusto con i Suoi servi.",
+      "sv": "Den som handlar rättfärdigt gör det för sitt eget bästa, och den som handlar illa skadar sig själv. Din Herre är aldrig orättvis mot sina tjänare.",
+      "uk": "Хто робить добро, робить це для себе самого, а хто робить зло, робить це проти себе самого. А Господь твій не чинить із рабами несправедливо!",
+      "ro": "Cel care săvârșește o faptă bună [o face] pentru sine însuși, iar cel care face rău o face împotriva sa. Domnul tău nu este nedrept cu robii Săi.",
+      "hr": "Tko čini dobro, u svoju korist čini, a tko radi zlo, na svoju štetu radi. – A Gospodar tvoj nije nepravedan prema robovima Svojim.",
+      "sr": "Ко чини добро, чини у своју корист, а ко ради зло, ради на своју штету. А твој Господар није неправедан према Својим слугама.",
+      "el": "Όποιος κάνει ενάρετες πράξεις, θα είναι προς το όφελός του, ενώ όποιος διαπράττει το κακό, θα είναι εις βάρος του. Πράγματι, ο Κύριός σου (ω, Προφήτη) δεν αδικεί ποτέ τους δούλους Του."
     }
   },
   {
@@ -5221,7 +6159,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "TiRẹ̀ ni àwọn kọ́kọ́rọ́ ilé ọ̀rọ̀ àwọn sánmọ̀ àti ilẹ̀. Ó ń tẹ́ arísìkí sílẹ̀ fún ẹni tí Ó bá fẹ́. Ó sì ń díwọ̀n rẹ̀ (fún ẹlòmíìràn). Dájúdájú Òun ni Onímọ̀ nípa gbogbo n̄ǹkan.",
       "zh": "天地的宝藏，只是他的；他欲使谁的给养宽裕，就使他宽裕；〔欲使谁的给养窘迫，〕就使他窘迫；他是全知万物的。",
       "ko": "그분께는 (일곱) 하늘과 땅의 열쇠가 있노라. 그분께서는 원하시는 자에게 양식을 늘리시고 줄이시노라. 실로 그분께서는 모든 것을 알고 계신 분이라.",
-      "vi": "Mọi chìa khóa (kho tài nguyên) của các tầng trời và trái đất đều là của Ngài. Ngài muốn nới rộng hoặc thu hẹp bổng lộc cho ai là tùy ý Ngài. Quả thật, Ngài là Đấng Hằng Biết tất cả mọi thứ."
+      "vi": "Mọi chìa khóa (kho tài nguyên) của các tầng trời và trái đất đều là của Ngài. Ngài muốn nới rộng hoặc thu hẹp bổng lộc cho ai là tùy ý Ngài. Quả thật, Ngài là Đấng Hằng Biết tất cả mọi thứ.",
+      "pt": "DEle são as chaves dos céus e da terra. Ele prodigaliza o sustento a quem quer, e restringe-o. Por certo, Ele, de todas as cousas, é Onisciente.",
+      "it": "A Lui appartengono le chiavi dei cieli e della terra; dona e toglie i beni a chi vuole. In verità Lui è Onnisciente.",
+      "sv": "Hos honom finns nycklarna till himlarnas och jordens [skatter]. Han ger riklig försörjning till vem han vill och begränsar den för andra. Han har full vetskap om allt.",
+      "uk": "Йому належать ключі небес і землі; Він збільшує та зменшує наділ, кому побажає. Воістину, Він про кожну річ Знаючий!",
+      "ro": "Ale Lui sunt cheile [comorilor] Cerurilor și ale Pământului; El Dăruiește cu prisosință cele spre viețuire, cui Voiește El, sau le Dăruiește cu măsură, [cui Voiește El]; El este ‘Alim [Atoateștiutor].",
+      "hr": "U Njega su ključevi nebesa i Zemlje, On daje opskrbu u izobilju kome hoće, a i uskraćuje; On, uistinu, zna sve.",
+      "sr": "Код Њега су кључеви небеса и Земље, Он даје опскрбу у изобиљу коме хоће, а и ускраћује; Он, уистину, зна све.",
+      "el": "Σε Αυτόν ανήκουν τα κλειδιά των θησαυρών των ουρανών και της γης. Παρέχει αγαθά με αφθονία σε όποιους θέλει ή τα περιορίζει. Πράγματι, Αυτός είναι για τα πάντα, Παντογνώστης."
     }
   },
   {
@@ -5258,7 +6204,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "安拉降示包含真理的经典，并降示公平。你怎么能知道呢？复活时或许是临近的。",
       "th": "อัลลอฮ์คือผู้ประทานคัมภีร์นี้ (อัลกุรอาน) ลงมาด้วยความจริงและดุลยภาพ และอะไรเล่าจะทำให้เจ้ารู้ได้ว่า บางทีวันอวสานอยู่ใกล้ๆ นี่เอง",
       "ko": "진리로 가득한 성서와 공정을 내리신 분이 하나님이시라. 무엇이 그대에게 알려줄 것인가? 종말의 시간은 가까울지도 모를 일이라.",
-      "vi": "Allah là Đấng đã ban Kinh (Qur’an) xuống bằng sự thật (không có gì phải hoài nghi) và (Ngài đã ban xuống) nền công lý. Và điều gì khiến cho Ngươi nhận biết có lẽ Giờ Tận Thế sắp gần kề?"
+      "vi": "Allah là Đấng đã ban Kinh (Qur’an) xuống bằng sự thật (không có gì phải hoài nghi) và (Ngài đã ban xuống) nền công lý. Và điều gì khiến cho Ngươi nhận biết có lẽ Giờ Tận Thế sắp gần kề?",
+      "it": "Allāh, Colui che ha fatto discendere il Libro con la Verità e la Giustizia – e cosa ne sai tu? Forse l’Ora è vicina.",
+      "sv": "Det är Gud som har sänt ned skriften med sanningen och [rättvisans] måttstock. Och vad ska få dig att inse att den yttersta stunden är nära?",
+      "uk": "Аллаг — Той, Хто зіслав Писання в істині та міру. Звідки тобі знати, можливо, Час уже близько!",
+      "ro": "Allah este Cel care a trimis Cartea cu Adevărul și cu Balanța [dreptatea]. Și de unde să știi? Poate că Ceasul este aproape.",
+      "hr": "Allah je Onaj Koji je Knjigu s Istinom i Mjerilo objavio! A što ti znaš – možda je Čas sudnji blizu!",
+      "sr": "Аллах је Онај Који је Књигу са истином и правдом објавио! А шта ти знаш - можда је Судњи час близу!",
+      "el": "Είναι ο Αλλάχ που έστειλε το Βιβλίο με την αλήθεια και τη δικαιοσύνη. Πώς να ξέρεις (ω, Προφήτη), ίσως η Ώρα είναι κοντά!"
     }
   },
   {
@@ -5301,7 +6254,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും നാം ഇതിനെ അറബി ഭാഷയിലുള്ള ഒരു ഖുര്‍ആന്‍ ആക്കിയിരിക്കുന്നത് നിങ്ങള്‍ ചിന്തിച്ചു മനസ്സിലാക്കുവാന്‍ വേണ്ടിയാകുന്നു.",
       "th": "แท้จริงเราได้ทำให้อัลกุรอานเป็นภาษาอาหรับ เพื่อพวกเจ้าจะได้ใช้ปัญญาไตร่ตรอง",
       "ko": "실로 나는 그것을 아랍어로 된 꾸란으로 두었으니 그대들이 이해하기 위함이라.",
-      "vi": "Quả thật, TA đã làm cho Nó thành một quyển Kinh để xướng đọc bằng tiếng Ả-rập, mong rằng các ngươi có thể hiểu."
+      "vi": "Quả thật, TA đã làm cho Nó thành một quyển Kinh để xướng đọc bằng tiếng Ả-rập, mong rằng các ngươi có thể hiểu.",
+      "pt": "Por certo, Nós o fizemos um Alcorão árabe, para razoardes.",
+      "it": "In verità lo abbiamo creato come Corano arabo affinché ragioniate,",
+      "sv": "Vi har låtit denna Koran vara på arabiska så att ni må förstå den.",
+      "uk": "Ми зробили його арабським Кораном, щоб ви могли розуміти,",
+      "ro": "Cu adevărat, Noi l-am făcut un Coran arab, pentru ca voi să pricepeți.",
+      "hr": "Mi je objavljujemo kao Kuran na arapskom jeziku da biste razumjeli,",
+      "sr": "Ми је објављујемо као Кур'ан на арапском језику, да бисте разумели,",
+      "el": "Ότι πράγματι το έχουμε στείλει, το Κορ’άν στα αραβικά, ίσως να συλλογιστείτε [επειδή η αραβική γλώσσα είναι η πιο εύγλωττη, σαφέστερη και ευρύτερη γλώσσα]."
     }
   },
   {
@@ -5345,7 +6306,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "എന്നാല്‍ ആകാശങ്ങളുടെയും ഭൂമിയുടെയും രക്ഷിതാവ്‌, സിംഹാസനത്തിന്‍റെ നാഥന്‍ അവര്‍ പറഞ്ഞുണ്ടാക്കുന്നതില്‍ നിന്ന് എത്രയോ പരിശുദ്ധനത്രെ.",
       "th": "มหาบริสุทธิ์แด่พระผู้อภิบาลแห่งชั้นฟ้าทั้งหลายและแผ่นดิน พระผู้อภิบาลแห่งบัลลังก์ จากสิ่งที่พวกเขากล่าวอ้าง",
       "ko": "그들이 (그분을 함부로) 묘사하나, (일곱) 하늘과 땅의 주님, 권좌의 주님께서는 완벽하신 분이라!",
-      "vi": "Quang vinh và trong sạch thay Thượng Đế của các tầng trời và trái đất, Thượng Đế của chiếc Ngai Vương, Ngài vượt hẳn những gì chúng đã qui cho Ngài."
+      "vi": "Quang vinh và trong sạch thay Thượng Đế của các tầng trời và trái đất, Thượng Đế của chiếc Ngai Vương, Ngài vượt hẳn những gì chúng đã qui cho Ngài.",
+      "pt": "Glorificado seja O Senhor dos céus e da terra, O Senhor do Trono, acima do que eles alegam!",
+      "it": "Sia lodato il Dio dei cieli e della terra; il Dio del Trono è molto superiore a come lo descrivono!",
+      "sv": "Upphöjd är Herren över himlarna och jorden – tronens Herre – över vad de tillskriver honom!",
+      "uk": "Але Господь небес і землі, Господь трону, пречистий від того, що Йому приписують!",
+      "ro": "Mărire Stăpânului Cerurilor și Pământului, Stăpânul Tronului! El este mai Presus de ceea ce ei vorbesc [despre El]!",
+      "hr": "Neka je slavljen i uzvišen Gospodar nebesa i Zemlje, i Gospodar Arša, od onoga kako Ga oni opisuju!",
+      "sr": "Нека је Слављен и Узвишен Господар небеса и Земље, и Господар Престола, од онога како Га они описују!",
+      "el": "Δόξα στον Κύριο των ουρανών και της γης, τον Κύριο του Θρόνου, είναι πολύ Ανώτερος από ό,τι Του αποδίδουν (ψευδώς από ατέλειες)."
     }
   },
   {
@@ -5389,7 +6358,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അവനല്ലാതെ ആരാധനക്കർഹനായി മറ്റാരുമില്ല. അവന്‍ ജീവിപ്പിക്കുകയും മരിപ്പിക്കുകയും ചെയ്യുന്നു. നിങ്ങളുടെ രക്ഷിതാവും നിങ്ങളുടെ പൂര്‍വ്വപിതാക്കളുടെ രക്ഷിതാവും ആയിട്ടുള്ളവന്‍.",
       "th": "ไม่มีพระเจ้าอื่นใด (ที่ควรแก่การกราบไหว้โดยเที่ยงแท้) นอกจากพระองค์ ผู้ทรงให้เป็นและผู้ทรงให้ตาย พระผู้อภิบาลของพวกเจ้าและพระผู้อภิบาลของบรรพบุรุษของพวกเจ้าในสมัยก่อนๆ",
       "ko": "그분 이외에는 경배받을 존재가 없으며, 그분께서는 생명을 불어넣으시고 죽음을 부여하시노라. (그분께서는) 그대들의 주님이시자 그대들의 옛 조상들의 주님이시라.",
-      "vi": "Không có Thượng Đế đích thực nào ngoài Ngài. (Ngài là) Đấng làm cho sống và làm cho chết. (Ngài là) Thượng Đế của các ngươi và là Thượng Đế của ông bà tổ tiên các ngươi."
+      "vi": "Không có Thượng Đế đích thực nào ngoài Ngài. (Ngài là) Đấng làm cho sống và làm cho chết. (Ngài là) Thượng Đế của các ngươi và là Thượng Đế của ông bà tổ tiên các ngươi.",
+      "pt": "Não existe deus senão Ele. Ele dá a vida e dá a morte. Ele é Vosso Senhor e O Senhor de vossos pais antepassados.",
+      "it": "non c’è divinità all’infuori di Lui; fa nascere e morire; Dio vostro e Dio dei vostri padri precedenti.",
+      "sv": "Ingen är värd dyrkan utom han som ger liv och tar liv. Han är er och era förfäders Herre.",
+      "uk": "Немає бога, крім Нього! Він дарує життя і смерть; ваш Господь та Господь ваших пращурів!",
+      "ro": "Nu există altă divinitate afară de El; El dă viață și dă moarte și El este Stăpânul vostru și Stăpânul părinților voștri cei dintâi.",
+      "hr": "drugog boga osim Njega nema; On život i smrt daje – Gospodar vaš i Gospodar vaših predaka davnih!",
+      "sr": "другог истинског бога осим Њега нема; Он даје живот и смрт - ваш Господар и Господар ваших давних предака!",
+      "el": "Δεν υπάρχει άλλος θεός που αξίζει να λατρεύεται παρά μόνον Αυτός. Είναι Αυτός που δίνει τη ζωή και την αφαιρεί, και είναι ο Κύριός σας και ο Κύριος των προγόνων σας."
     }
   },
   {
@@ -5433,7 +6410,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും ആകാശങ്ങളിലും ഭൂമിയിലും വിശ്വാസികള്‍ക്ക് പല ദൃഷ്ടാന്തങ്ങളുമുണ്ട്‌.",
       "th": "แท้จริงในชั้นฟ้าทั้งหลายและแผ่นดินนั้น แน่นอนย่อมมีสัญญาณหลากหลายสำหรับบรรดาผู้ศรัทธา",
       "ko": "진실로 (일곱) 하늘과 땅에는 믿는 자들을 위한 징표들이 있노라.",
-      "vi": "Quả thật, trong các tầng trời và trái đất là các dấu hiệu (về quyền năng và tính duy nhất của Allah) cho những người có đức tin."
+      "vi": "Quả thật, trong các tầng trời và trái đất là các dấu hiệu (về quyền năng và tính duy nhất của Allah) cho những người có đức tin.",
+      "pt": "Por certo, nos céus e na terra, há sinais para os crentes.",
+      "it": "In verità nei cieli e nella terra ci sono Segni per i credenti.",
+      "sv": "I himlarna och på jorden finns sannerligen tecken för de som tror.",
+      "uk": "Воістину, на небесах і на землі — знамення для віруючих!",
+      "ro": "Cu adevărat, în Ceruri și pe Pământ sunt semne pentru cei care cred.",
+      "hr": "Na nebesima i na Zemlji, zaista, postoje znakovi za vjernike.",
+      "sr": "На небесима и на Земљи, заиста, постоје знаци за вернике.",
+      "el": "Πράγματι, υπάρχουν στους ουρανούς και στη γη, Σημάδια για τους πιστούς (που συλλογίζονται τα Σημάδια του Αλλάχ)."
     }
   },
   {
@@ -5473,7 +6458,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "zh": "安拉为你们而制服海洋，以便船舶奉他的命令而航行，以便你们寻求他的恩惠，以便你们感谢。",
       "th": "อัลลอฮ์คือผู้ทรงทำให้ทะเลเป็นประโยชน์สำหรับพวกเจ้า เพื่อให้เรือเดินสมุทรแล่นไปตามน่านน้ำโดยพระบัญชาของพระองค์ และเพื่อพวกเจ้าจะได้แสวงหาความโปรดปรานของพระองค์ และเพื่อพวกเจ้าจะได้ขอบคุณ",
       "ko": "그대들을 위해 바다를 유용케 하신 분이 하나님이시라. 그리하여 선박이 그분의 명령에 따라 그곳에서 항해하고 그대들이 그분의 은혜의 일부를 추구하니, 그대들이 감사하게 될 것이라.",
-      "vi": "Allah là Đấng đã chế ngự biển cả cho các ngươi để các con tàu có thể chạy trên đó theo lệnh của Ngài và để các ngươi tìm kiếm hồng phúc của Ngài, mong rằng các ngươi biết tri ân (Ngài)."
+      "vi": "Allah là Đấng đã chế ngự biển cả cho các ngươi để các con tàu có thể chạy trên đó theo lệnh của Ngài và để các ngươi tìm kiếm hồng phúc của Ngài, mong rằng các ngươi biết tri ân (Ngài).",
+      "pt": "Allah é Quem vos submete o mar, para, nele correr o barco, por Sua ordem, e para nele, buscardes algo de Seu favor e para serdes agradecidos.",
+      "it": "Allāh vi ha asservito il mare perché vi corrano le navi, per Suo ordine, e perché cerchiate la Sua grazia e possiate ringraziare.",
+      "sv": "Gud är den som ställt havet i er tjänst, för att skeppen ska kunna segla på det enligt hans vilja, och för att ni ska kunna söka hans försörjning och för att ni ska visa tacksamhet.",
+      "uk": "Аллаг — Той, Хто підкорив для вас море, щоб кораблі пливли там за наказом Його, і щоб ви шукали Його ласки; можливо, ви будете дякувати!",
+      "ro": "Allah este Cel care v-a supus vouă marea, ca să plutească vasele pe ea, la Porunca Sa, și pentru ca voi să umblați în căutarea Harului Său. Poate că voi veți fi mulțumitori!",
+      "hr": "Allah je Onaj Koji vam je podčinio more da bi lađe, odredbom Njegovom, po njemu plovile, da biste mogli tražiti blagodati Njegove i da biste bili zahvalni.",
+      "sr": "Аллах вам је потчинио море да би лађе, Његовом одредбом, по њему пловиле, да бисте могли да тражите Његове благодати и да бисте били захвални.",
+      "el": "Είναι ο Αλλάχ που υπέταξε για σας τη θάλασσα, για να πλέουν σ' αυτή τα πλοία με την εντολή Του, και για να αναζητήσετε (αγαθά) από τη γενναιοδωρία Του, και ίσως να είστε ευγνώμονες."
     }
   },
   {
@@ -5513,7 +6506,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "யார் ஒரு நன்மையை செய்வாரோ அது அவருக்குத்தான் நல்லது. இன்னும், எவர் தீமை செய்வாரோ அது அவருக்குத்தான் கேடாகும். பிறகு, நீங்கள் (யாராக இருந்தாலும்) உங்கள் இறைவனிடம் திரும்பக் கொண்டு வரப்படுவீர்கள்.",
       "th": "ผู้ใดทำความดีก็เพื่อตัวเขาเอง และผู้ใดทำความชั่ว ความชั่วของเขาจะมาถึงตัวเขาเอง แล้วพวกเจ้าจะถูกนำกลับคืนสู่พระเจ้าของเจ้า",
       "ko": "선행을 실천하는 자는 그 자신을 위하는 것이며, 악행을 저지르는 자는 그를 해치는 것이라. 그 후 그대들은 실로 그대들의 주님께로 돌아가게 될 것이라.",
-      "vi": "Ai làm điều thiện thì được lợi cho bản thân mình còn ai làm điều xấu thì sẽ gặp quả báo. Rồi đây, các ngươi sẽ được đưa trở về trình diện Thượng Đế của các ngươi."
+      "vi": "Ai làm điều thiện thì được lợi cho bản thân mình còn ai làm điều xấu thì sẽ gặp quả báo. Rồi đây, các ngươi sẽ được đưa trở về trình diện Thượng Đế của các ngươi.",
+      "pt": "Quem faz o bem o faz em benefício de si mesmo. E quem faz o mal o faz em prejuízo de si mesmo. Em seguida, a vosso Senhor, sereis retornados.",
+      "it": "Chi ha fatto del bene, lo ha fatto a proprio vantaggio, e chi ha fatto del male, si aspetti il male; poi sarete fatti tornare al vostro Dio.",
+      "sv": "Den som handlar rättfärdigt, gör det för sitt eget bästa, och den som gör ont, skadar sig själv. Till sist ska ni alla föras tillbaka till er Herre.",
+      "uk": "Хто робить добро, робить це задля самого себе. А хто чинить зло, той чинить його проти самого себе. А потім усі ви повернетесь до свого Господа!",
+      "ro": "Cel care face o faptă bună o face pentru el, iar cel care săvârșește răul [o face] împotriva lui. Apoi, la Domnul vostru veți fi aduși.",
+      "hr": "Onaj koji čini dobro – sebi ga čini, a onaj koji čini zlo – protiv sebe radi; a na kraju ćete se Gospodaru svome vratiti.",
+      "sr": "Онај који ради добро - ради га себи, а онај који ради зло - против себе ради; а на крају ћете се сви вратити своме Господару.",
+      "el": "Όποιος κάνει ενάρετες πράξεις, θα είναι προς το όφελός του, και όποιος διαπράττει το κακό, θα είναι εις βάρος του. Έπειτα προς τον Κύριό σας θα επιστρέψετε."
     }
   },
   {
@@ -5557,7 +6558,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "ഇത് മനുഷ്യരുടെ കണ്ണ് തുറപ്പിക്കുന്ന തെളിവുകളും ദൃഢമായി വിശ്വസിക്കുന്ന ജനങ്ങള്‍ക്ക് മാര്‍ഗദര്‍ശനവും കാരുണ്യവുമാകുന്നു.",
       "th": "อัลกุรอานนี้เป็นการประจักษ์แจ้งสำหรับมนุษยชาติ และทางนำและความเมตตาแก่หมู่ชนที่มีความเชื่อมั่น",
       "ko": "이것(꾸란)은 사람들을 위한 확실한 증거이며, 굳건히 믿는 사람들을 위한 인도이자 자비라.",
-      "vi": "(Qur’an) này là sự khai sáng cho nhân loại, là nguồn chỉ đạo và là hồng ân cho đám người vững chắc (trong đức tin)."
+      "vi": "(Qur’an) này là sự khai sáng cho nhân loại, là nguồn chỉ đạo và là hồng ân cho đám người vững chắc (trong đức tin).",
+      "it": "Questa è Illuminazione per la gente e Guida e misericordia per gente che crede fermamente.",
+      "sv": "Denna [uppenbarelse] är ögonöppnande bevis för mänskligheten och vägledning och nåd för de med övertygelse.",
+      "uk": "Це — видимі знамення для людей, прямий шлях та милість для впевнених!",
+      "ro": "Acesta [Coranul] conține dovezi limpezi pentru oameni, ocârmuire și îndurare pentru un popor de oameni care cred cu tărie.",
+      "hr": "Ovaj Kuran putokaz je ljudima, i uputa i milost onima koji čvrsto vjeruju.",
+      "sr": "Овај Кур'ан путоказ је људима, и упута и милост онима који чврсто верују.",
+      "el": "Αυτό (το Κορ’άν) είναι μία ξεκάθαρη απόδειξη για τους ανθρώπους (για να δουν την αλήθεια), και μία καθοδήγηση και ένα έλεος, για τους ανθρώπους που πιστεύουν με βεβαιότητα."
     }
   },
   {
@@ -5594,7 +6602,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "A kò ṣẹ̀dá àwọn sánmọ̀ àti ilẹ̀, àti ohunkóhun tó wà láààrin méjèèjì bí kò ṣe pẹ̀lú òdodo àti fún gbèdéke àkókò kan. Àwọn tó ṣàì gbàgbọ́ yó sì máa gbúnrí kúrò níbi ohun tí A fi ṣèkìlọ̀ fún wọn.",
       "zh": "我只本真理而创造天地万物，〔我只使它们存在〕至一定期。不归信的人们不顾他们曾受警告的〔刑罚〕，",
       "th": "เรามิได้สร้างชั้นฟ้าทั้งหลาย และแผ่นดิน และสิ่งที่อยู่ระหว่างทั้งสองเพื่ออื่นใด เว้นแต่ด้วยความจริง และวาระที่ถูกกำหนดไว้ แต่บรรดาผู้ปฏิเสธศรัทธาเป็นผู้ผินหลังให้จากสิ่งที่พวกเขาถูกตักเตือน",
-      "ko": "나는 오직 진리로써 (일곱) 하늘과 땅과 그 사이에 존재하는 것을 창조하였으며 지정된 기한을 두었노라. 그러나 불신하는 자들은 경고 받은 것에 등을 돌리고 있노라."
+      "ko": "나는 오직 진리로써 (일곱) 하늘과 땅과 그 사이에 존재하는 것을 창조하였으며 지정된 기한을 두었노라. 그러나 불신하는 자들은 경고 받은 것에 등을 돌리고 있노라.",
+      "it": "Non abbiamo creato i cieli e la terra e ciò che c’è in mezzo se non con la verità e per un termine prestabilito, ma i miscredenti negano ciò di cui sono avvertiti.",
+      "sv": "Vi har förvisso skapat himlarna och jorden och allt däremellan för ett alldeles visst syfte och en given tidsgräns. Ändå vänder de otrogna sig bort från det de varnats för.",
+      "uk": "Ми створили небеса та землю лише в істині та на визначений термін. Але ті, які не вірують, відвертаються від того, чим їх застерігають.",
+      "ro": "Noi nu am creat Cerurile și Pământul și cele care se află între ele decât întru adevăr și [pentru] un termen hotărât. Însă cei care nu cred se întorc de la cele despre care au fost preveniți.",
+      "hr": "Mi smo nebesa i Zemlju, i ono što je između njih, samo s Istinom stvorili i do roka određenog, ali oni koji ne vjeruju okreću se od onoga čime upozoravani budu.",
+      "sr": "Ми смо небеса и Земљу и оно што је између њих мудро створили и до рока одређеног, али неверници окрећу главе од оног чиме им се прети."
     }
   },
   {
@@ -5624,7 +6638,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "so": "Miyeyna ogayn in Alle ee abuuray samooyinka iyo arlada, oo aan ku daalin abuuristooda uu awoodo inuu nooleeyo meytida? Haayoo, hubaal waa Kan wax walba Kara.",
       "ff": "E ɓee nji'aani won'de ko Allah tagi kammuuji ɗiin e leydi ndin, O ronkiraani tagugol ɗi, won'de ko O kattanɗo wuurnitugol maayɓe ɓen? Ko non woniri. Pellet, ko O kaɗtanɗo kala hu'unde.",
       "zh": "创造天地而不感觉疲乏的安拉，是能使死者复活的。难道他们不知道吗？是的，他对于万事是全能的。",
-      "ko": "(일곱) 하늘과 땅을 창조하시고 그것들의 창조에도 무력해지지 않으신 하나님께서 죽은 자들을 살리실 능력을 가지신 분임을 그들은 알지 못한단 말인가? 그렇지 않노라. 실로 그분께서는 모든 것이 가능한 분이시라."
+      "ko": "(일곱) 하늘과 땅을 창조하시고 그것들의 창조에도 무력해지지 않으신 하나님께서 죽은 자들을 살리실 능력을 가지신 분임을 그들은 알지 못한단 말인가? 그렇지 않노라. 실로 그분께서는 모든 것이 가능한 분이시라.",
+      "pt": "E não viram eles que Allah, Que criou os céus e a terra, e não Se extenuou com sua criação, é Poderoso para dar a vida aos mortos? Sim! Por certo, Ele, sobre todas as cousas, é Onipotente.",
+      "it": "Non vedono in verità che Allāh – Colui che ha creato i cieli e la terra, e che non si affaticò per la Sua creazione – è capace di far rivivere i morti? Ma in verità Lui è l’Onnipotente.",
+      "sv": "Förstår de inte att Gud, som utan ansträngning skapade himlarna och jorden, också är kapabel att återuppväcka de döda? Jo, han har förvisso makt över allt!",
+      "uk": "Невже вони не бачать, що Аллаг — Той, Хто створив небеса й не втомився від їхнього створення — спроможний воскресити мертвих? Так, Він спроможний на кожну річ!",
+      "ro": "Oare nu văd ei că Allah care a creat Cerurile și Pământul și nu a fost ostenit la facerea lor este în stare să-i aducă la viață pe morți? Ba da, cu adevărat, El este cu Putere peste toate.",
+      "hr": "Zar ne znaju da je Allah – Koji je nebesa i Zemlju stvorio i Koji se nije nimalo umorio dok ih je stvarao – moćan oživiti mrtve? Jest, On sve može.",
+      "sr": "Зар не знају да је Аллах - Који је створио небеса и Земљу и Који се није, стварајући их, уморио – способан да оживи мртве?! Јесте, уистину Он све може."
     }
   },
   {
@@ -5665,7 +6686,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நம்பிக்கையாளர்களே! நீங்கள் அல்லாஹ்விற்கு உதவினால் அவன் உங்களுக்கு உதவுவான். இன்னும், உங்கள் பாதங்களை அவன் உறுதிப்படுத்துவான்.",
       "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย หากพวกเจ้าช่วยเหลือ (ศาสนาของ) อัลลอฮ์ พระองค์ก็จะทรงช่วยเหลือพวกเจ้า (เพื่อให้บรรลุชัยชนะ) และจะทรงทำให้เท้าของพวกเจ้ามั่นคง",
       "ko": "(하나님을) 믿는 자들이여! 그대들이 하나님을 돕는다면 그분께서 그대들을 도우실 것이며 그대들을 발을 굳건히 해주실 것이라.",
-      "vi": "Hỡi những người có đức tin! Nếu các ngươi ủng hộ (con đường chính nghĩa của) Allah thì Ngài sẽ trợ giúp các ngươi và Ngài sẽ làm vững chắc bước chân của các ngươi."
+      "vi": "Hỡi những người có đức tin! Nếu các ngươi ủng hộ (con đường chính nghĩa của) Allah thì Ngài sẽ trợ giúp các ngươi và Ngài sẽ làm vững chắc bước chân của các ngươi.",
+      "it": "O credenti! Se sostenete Allāh, Lui vi sosterrà e renderà salda la vostra posizione.",
+      "sv": "Troende! Om ni står upp för Gud hjälper han er och håller er stadiga.",
+      "uk": "О ви, які увірували! Якщо ви допоможете Аллагу, то Він допоможе вам та ствердить ваш поступ!",
+      "ro": "O, voi cei care credeți! Dacă voi veți sprijinii cauza lui Allah, vă va sprijini și El pe voi și va întări picioarele voastre [pe calea Sa].",
+      "hr": "O vjernici, ako Allaha pomognete, i On će vama pomoći i korake vaše učvrstiti.",
+      "sr": "О верници, ако Аллаха помогнете, и Он ће вас да помогне и ваше кораке да учврсти.",
+      "el": "Ω, εσείς που πιστεύετε! Αν υποστηρίξετε τη θρησκεία (και τον Αγγελιαφόρο) του Αλλάχ, (ο Αλλάχ) θα σας υποστηρίξει και θα σταθεροποιήσει (και θα δυναμώσει) τα πόδια σας (κατά τη μάχη)."
     }
   },
   {
@@ -5707,7 +6735,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ അല്ലാഹുവെ അനുസരിക്കുക. റസൂലിനെയും നിങ്ങള്‍ അനുസരിക്കുക. നിങ്ങളുടെ കര്‍മ്മങ്ങളെ നിങ്ങള്‍ നിഷ്ഫലമാക്കിക്കളയാതിരിക്കുകയും ചെയ്യുക.",
       "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย จงเชื่อฟังอัลลอฮ์ และจงเชื่อฟังเราะซูลคนนี้เถิด และอย่าทำให้การงานของพวกเจ้าไร้ประโยชน์",
       "ko": "믿는 자들이여! 하나님을 따르고 사도를 따르며, 그대들의 행위를 쓸모없게 만들지 말라.",
-      "vi": "Hỡi những người có đức tin! Các ngươi hãy tuân lệnh Allah và tuân lệnh Sứ Giả (của Ngài); và các ngươi chớ làm mất giá trị việc làm của các ngươi (bởi sự vô đức tin và Riya’ – phô trương)."
+      "vi": "Hỡi những người có đức tin! Các ngươi hãy tuân lệnh Allah và tuân lệnh Sứ Giả (của Ngài); và các ngươi chớ làm mất giá trị việc làm của các ngươi (bởi sự vô đức tin và Riya’ – phô trương).",
+      "pt": "Ó vós que credes! Obedecei a Allah e obedecei ao Mensageiro, e não derrogueis vossas obras.",
+      "it": "O credenti! Obbedite ad Allh e obbedite al Suo Messaggero, e non rendete vane le vostre azioni!",
+      "sv": "Troende! Lyd Gud och lyd sändebudet, och låt inte era goda handlingar gå förlorade.",
+      "uk": "О ви, які увірували! Коріться Аллагу, коріться Посланцю та не марнуйте своїх вчинків.",
+      "ro": "O, voi cei care credeți! Fiți cu ascultare față de Allah și fiți cu ascultare față de Trimis și nu faceți ca faptele voastre să fie în deșert!",
+      "hr": "O vjernici, pokoravajte se Allahu i pokoravajte se Poslaniku, i ne ništite djela svoja!",
+      "sr": "О ви који верујете, покоравајте се Аллаху и покоравајте се Посланику, и не поништавајте своја дела!",
+      "el": "Ω, εσείς που πιστεύετε! Υπακούστε τον Αλλάχ και υπακούστε τον Αγγελιαφόρο και μην κάνετε τις πράξεις σας να γίνουν μάταιες (με την ανυπακοή)."
     }
   },
   {
@@ -5745,7 +6781,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Eré àti ìranù ni ìṣẹ̀mí ayé. (Àmọ́) tí ẹ bá gbàgbọ́ (nínú Allāhu), tí ẹ sì bẹ̀rù (Rẹ̀), Ó máa fún yín ní àwọn ẹ̀san yín. Kò sì níí bèèrè àwọn dúkìá yín (pé kí ẹ fi gbogbo rẹ̀ yọ Zakāh).",
       "zh": "今世的生活，只是游戏和娱乐。如果你们归信，并且敬畏他，他要将你们的报酬赏赐你们。他不索取你们的财产。",
       "th": "การมีชีวิตอยู่ในโลกนี้ เป็นแค่เพียงการละเล่นและการสนุกสนานรื่นเริงเท่านั้น และหากพวกเจ้าศรัทธาและยำเกรง พระองค์จะทรงประทานรางวัลของพวกเจ้าให้แก่พวกเจ้าและพระองค์จะไม่ทรงขอทรัพย์สินของพวกเจ้า",
-      "ko": "현세의 삶이란 그저 놀음과 오락일 뿐이라. 만일 그대들이 (하나님을) 믿고 경외한다면 그분께서는 그대들에게 그대들의 보상을 주실 것이며, 그대들에게 그대들의 (전) 재산을 요구하지 않으실 것이라."
+      "ko": "현세의 삶이란 그저 놀음과 오락일 뿐이라. 만일 그대들이 (하나님을) 믿고 경외한다면 그분께서는 그대들에게 그대들의 보상을 주실 것이며, 그대들에게 그대들의 (전) 재산을 요구하지 않으실 것이라.",
+      "pt": "A vida terrena é, apenas, diversão e entretenimento. E, se credes e sois piedosos, Ele vos concederá vossos prêmios, e não vos pedirá vossas riquezas;",
+      "it": "In verità la vita terrena è gioco e divertimento; e se credete e siete devoti, vi darà le vostre ricompense e non vi chiederà le vostre ricchezze;",
+      "sv": "Det jordiska livet är inget annat än lek och tidsfördriv. Men om ni håller fast vid tron och visar gudsfruktan ska han belöna er till fullo, och han begär inte [att ni skänker alla] era tillgångar.",
+      "uk": "Воістину, земне життя — лише гра та забава. Якщо ви увіруєте й будете богобоязливими, Він дарує вам винагороду й не проситиме вашого майна!",
+      "ro": "[Această] viața pământească este numai joacă și glumă. Și de veți crede voi și de veți fi cu frică [de Allah], vă va dărui El răsplata voastră și nu vă va cere bunurile voastre.",
+      "hr": "Život na ovom svijetu je samo igra i zabava! A ako budete vjerovali i grijehe izbjegavali, On će vas nagraditi i imanja vaša od vas neće tražiti.",
+      "sr": "Овосветски живот је људима само игра и забава! А ако будете веровали и били богобојазни, Он ће вас наградити и неће од вас тражити ваш иметак."
     }
   },
   {
@@ -5785,7 +6828,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "സന്മാര്‍ഗവും സത്യമതവുമായി തന്‍റെ റസൂലിനെ നിയോഗിച്ചത് അവനാകുന്നു. അതിനെ എല്ലാ മതത്തിനും മീതെ തെളിയിച്ചുകാണിക്കാന്‍ വേണ്ടി. സാക്ഷിയായിട്ട് അല്ലാഹു തന്നെ മതി.",
       "th": "พระองค์คือผู้ทรงส่งเราะซูลของพระองค์พร้อมด้วยทางนำและศาสนาแห่งสัจธรรม เพื่อพระองค์จะทรงให้มันรุ่งเรืองเหนือศาสนาทั้งหลาย และเพียงพอแล้วที่อัลลอฮ์ทรงเป็นพยาน",
       "ko": "인도와 진리의 종교와 함께 당신의 사도를 보내시어 그 모든 종교 위에 그것(이슬람)이 드러나도록 하시는 분이 그분이시라. 증언자는 하나님만으로 충분하노라.",
-      "vi": "Ngài là Đấng đã phái Sứ Giả của Ngài (Thiên Sứ Muhammad) mang nguồn chỉ đạo và tôn giáo chân lý đến để Ngài làm cho nó vượt trội tất cả mọi tôn giáo; và một mình Allah đã đủ làm chứng (cho điều này)."
+      "vi": "Ngài là Đấng đã phái Sứ Giả của Ngài (Thiên Sứ Muhammad) mang nguồn chỉ đạo và tôn giáo chân lý đến để Ngài làm cho nó vượt trội tất cả mọi tôn giáo; và một mình Allah đã đủ làm chứng (cho điều này).",
+      "pt": "Ele é Quem enviou Seu Mensageiro com a Orientação e a religião da verdade, para fazê-la prevalecer sobre todas as religiões. E basta Allah por Testemunha.",
+      "it": "È stato Lui ad inviare il Suo Messaggero con la Retta via e la Religione della verità, per farla prevalere su ogni altra. Ed è sufficiente Allāh come Testimone.",
+      "sv": "Det är han som har sänt sitt sändebud med vägledning och den sanna tron för att göra den överlägsen all annan tro. Och det räcker att Gud vittnar om det.",
+      "uk": "Він — Той, Хто відіслав Свого Посланця із прямим шляхом та істинною релігією, щоб піднести її над усіма іншими релігіями. Достатньо Аллага як Свідка!",
+      "ro": "El este Cel care l-a trimis pe Trimisul Său cu îndreptare și cu religia Adevărului pentru ca să o facă să triumfe asupra întregii religii. Și Allah este de ajuns ca Martor.",
+      "hr": "On je poslao Poslanika Svog s Uputom i vjerom istinitom da bi je uzdigao iznad svih vjera. A Allah je dovoljan Svjedok!",
+      "sr": "Он је послао Свога Посланика са упутом и истинитом вером да би је уздигао изнад свих вера. А Аллах је довољан Сведок!",
+      "el": "Είναι Αυτός που έστειλε τον Αγγελιαφόρο Του με την καθοδήγηση και τη θρησκεία της αλήθειας, για να την κάνει να επικρατήσει πάνω από όλες τις άλλες θρησκείες, και επαρκεί ο Αλλάχ ως Μάρτυρας."
     }
   },
   {
@@ -5815,7 +6866,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "Eey mon yo ɓen gooŋɗinɓe ! Si faasiqiijo ardanii on e kumpital, tefee fii wota on keɓor e yimɓe sabu majjeede, ngonton nimsuɓe e kon ko mbaɗɗɗon.",
       "zh": "归信的人们啊！如果一个恶人报告你们一个消息，你们应当弄清楚，以免你们无知地伤害他人，到头来悔恨自己的行为。",
       "th": "โอ้ศรัทธาชนทั้งหลาย หากคนชั่วนำข่าวใดๆ มาแจ้งแก่พวกเจ้า พวกเจ้าก็จงสอบสวนให้แน่ชัด หาไม่แล้วพวกเจ้าจะก่อเคราะห์กรรมแก่พวกหนึ่งโดยไม่รู้ตัว แล้วพวกเจ้าจะกลายเป็นผู้เสียใจในสิ่งที่พวกเจ้าได้กระทำไป",
-      "ko": "믿는 자들이여! 일탈을 일삼는 자가 그대들에게 어떤 소식을 가지고 왔다면 확실히 확인하라. 이는, 그대들이 사람들을 무지로써 해를 끼친 후 그대들이 저지른 일에 대해 후회하는 자가 되지 않기 위해서라."
+      "ko": "믿는 자들이여! 일탈을 일삼는 자가 그대들에게 어떤 소식을 가지고 왔다면 확실히 확인하라. 이는, 그대들이 사람들을 무지로써 해를 끼친 후 그대들이 저지른 일에 대해 후회하는 자가 되지 않기 위해서라.",
+      "it": "O Credenti, se vi arriva un malvagio con delle notizie, accertatevene, per evitare di fare danno agli altri, senza rendervene conto, e che dobbiate poi pentirvi della vostra azione.",
+      "sv": "Troende! Om en orättfärdig person kommer till er med en nyhet, se då till att verifiera den så att ni inte i okunskap skadar andra och sedan får ångra det ni gjort.",
+      "uk": "О ви, які увірували! Якщо до вас із якоюсь звісткою прийде нечестивець, то спробуйте все прояснити. Адже через своє незнання ви можете зашкодити людям, про що згодом будете жалкувати!",
+      "hr": "O vjernici, ako vam nekakav nepošten čovjek donese kakvu vijest, dobro je provjerite, da u neznanju nekom zlo ne učinite, pa da se zbog onog što ste učinili pokajete.",
+      "sr": "О ви који верујете, ако вам какав грешник донесе какву вест, добро је проверите, да у незнању некоме зло не учините, па да се због оног што сте учинили покајете."
     }
   },
   {
@@ -5857,7 +6913,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நம்பிக்கையாளர்கள் எல்லாம் சகோதரர்கள் ஆவர். ஆகவே, உங்கள் இரு சகோதரர்களுக்கு மத்தியில் சமாதானம் செய்யுங்கள். இன்னும், நீங்கள் கருணை காட்டப்படுவதற்காக அல்லாஹ்வை அஞ்சுங்கள்.",
       "th": "แท้จริงบรรดาผู้ศรัทธานั้นเป็นพี่น้องกัน ดังนั้นพวกเจ้าจงไกล่เกลี่ยประนีประนอมกันระหว่างพี่น้องทั้งสองฝ่ายของพวกเจ้า และจงยำเกรงอัลลอฮ์เถิด เพื่อว่าพวกเจ้าจะได้รับความเมตตา",
       "ko": "믿는 자들은 다름 아닌 형제들이니 그대들은 그대들의 두 형제 사이를 중재하라. 그리고 하나님을 경외하라, 그대들이 자비를 받게 될 것이라.",
-      "vi": "Quả thật chỉ những người có đức tin mới là anh em của nhau. Vì vậy, các ngươi hãy giải hòa giữa hai người anh em của mình. Các ngươi hãy sợ Allah mong rằng các ngươi được thương xót."
+      "vi": "Quả thật chỉ những người có đức tin mới là anh em của nhau. Vì vậy, các ngươi hãy giải hòa giữa hai người anh em của mình. Các ngươi hãy sợ Allah mong rằng các ngươi được thương xót.",
+      "it": "In verità i credenti sono fratelli: mettete pace tra i vostri fratelli e temete Allāh, affinché abbiate la Sua misericordia.",
+      "sv": "De troende är bröder; så se till att skapa försoning mellan två bröder [i konflikt], och frukta Gud så att ni kan få hans barmhärtighet.",
+      "uk": "Воістину, віруючі — браття. Тож встановлюйте мир між братами вашими й бійтесь Аллага — можливо, помилують вас!",
+      "ro": "Dreptcredincioșii sunt frați. Deci împăcați-i pe cei doi frați ai voștri și fiți cu frică de Allah! Poate că veți afla Îndurare!",
+      "hr": "Vjernici su samo braća, zato pomirite vaša dva brata i bojte se Allaha da bi vam se milost ukazala.",
+      "sr": "Верници су само браћа, зато помирите своја два брата и бојте се Аллаха да би вам се указала милост.",
+      "el": "Πράγματι, οι πιστοί είναι αδέλφια. Έτσι, συμφιλιώστε τους αδελφούς σας μεταξύ τους, και φυλαχθείτε από την τιμωρία του Αλλάχ (τηρώντας τις εντολές Του), ίσως και να ελεηθείτε."
     }
   },
   {
@@ -5901,7 +6964,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും അല്ലാഹു ആകാശങ്ങളിലെയും ഭൂമിയിലെയും അദൃശ്യകാര്യം അറിയുന്നു. നിങ്ങള്‍ പ്രവര്‍ത്തിക്കുന്നത് കണ്ടറിയുന്നവനുമാകുന്നു അല്ലാഹു.",
       "th": "แท้จริงอัลลอฮ์ทรงรอบรู้สิ่งเร้นลับในชั้นฟ้าทั้งหลายและแผ่นดิน \n และอัลลอฮ์ทรงเห็นสิ่งที่พวกเจ้ากระทำ",
       "ko": "실로 하나님께서는 하늘과 땅의 보이지 않는 것을 알고 계시며 하나님께서는 그대들이 행하는 것을 보고 계시는 분이라.",
-      "vi": "Quả thật, Allah biết điều vô hình của các tầng trời và trái đất. Và Allah nhìn thấy tất cả những gì các ngươi làm."
+      "vi": "Quả thật, Allah biết điều vô hình của các tầng trời và trái đất. Và Allah nhìn thấy tất cả những gì các ngươi làm.",
+      "pt": "Por certo, Allah sabe o Invisível dos céus e da terra. E Allah, do que fazeis, é Onividente.",
+      "it": "In verità appartiene ad Allāh l’Ignoto dei cieli e della terra, e Allāh è Osservatore di ciò che fate.",
+      "sv": "Gud har kunskap om allt det fördolda i himlarna och på jorden och han har full insyn i allt ni gör.",
+      "uk": "Воістину, Аллаг знає потаємне небес і землі. І Аллаг бачить те, що ви робите!",
+      "ro": "Cu adevărat, Allah știe Necunoscutul din Ceruri și de pre Pământ și Allah Vede bine ceea ce faceți voi.",
+      "hr": "Allah, sigurno, zna tajne nebesa i Zemlje i Allah dobro vidi ono što radite.”",
+      "sr": "Аллах сигурно зна тајне небеса и Земље и Аллах добро види оно што радите.",
+      "el": "Πράγματι, ο Αλλάχ γνωρίζει όλα τα αόρατα των ουρανών και της γης, και ο Αλλάχ βλέπει όλα όσα κάνετε."
     }
   },
   {
@@ -5943,7 +7014,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "அவர்கள் தங்களுக்கு மேல் உள்ள வானத்தை, “நாம் அதை எப்படி படைத்தோம்? இன்னும், அதை எப்படி அலங்கரித்தோம்? அதில் பிளவுகள் (-கீறல்கள், வெடிப்புகள்) இல்லை என்பதை (அவர்கள்) பார்க்கவில்லையா?”",
       "th": "พวกเขามิได้มองไปยังฟากฟ้าเหนือพวกเขาดอกหรือ ว่าเราได้สร้างมันและประดับมันไว้อย่างไร และมันไม่มีรอยหรือช่องโหว่เลย",
       "ko": "그들은 자신들 위에 있는 하늘을 보지 않는가? 내가 어떻게 그것(하늘)을 짓고 미려하게 치장하였던가? 그것에는 그 어떤 갈라짐도 없도다.",
-      "vi": "Sao họ không nhìn lên bầu trời phía trên họ xem TA đã dựng và trang hoàng nó như thế nào và (làm thế nào) nó không có rạn nứt?"
+      "vi": "Sao họ không nhìn lên bầu trời phía trên họ xem TA đã dựng và trang hoàng nó như thế nào và (làm thế nào) nó không có rạn nứt?",
+      "pt": "Então, não olharam eles para o céu, acima deles, como o edificamos e o aformoseamos, e como não há fresta alguma nele?",
+      "it": "Non vedono forse il cielo su di loro, come l’abbiamo costruito, e come l’abbiamo abbellito e come è privo di difetti?",
+      "sv": "Har de aldrig betraktat himlen ovanför dem och sett hur vi har uppfört och prytt den, utan minsta spricka?",
+      "uk": "Чи не дивилися вони на небо, що над ними, яким чином звели Ми його та прикрасили, і що немає в ньому тріщин?",
+      "ro": "Oare nu se uită ei spre Cerul de deasupra lor cum l-am înălțat Noi și l-am înfrumusețat și cum nu are el niciun fel de crăpături?",
+      "hr": "A zašto ne pogledaju nebo iznad sebe – kako smo ga sazdali i ukrasili i kako u njemu nema nereda!?",
+      "sr": "А зашто не погледају небо изнад себе? Како смо га саздали и украсили и како у њему нема нереда.",
+      "el": "Δεν κοιτάζουν προς τον ουρανό πάνω τους, πώς τον χτίσαμε και τον στολίσαμε (με αστέρια), και ότι δεν έχει ρωγμές;"
     }
   },
   {
@@ -5986,7 +7065,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അവന്‍ ഏതൊരു വാക്ക് ഉച്ചരിക്കുമ്പോഴും അവന്‍റെ അടുത്ത് തയ്യാറായി നില്‍ക്കുന്ന നിരീക്ഷകന്‍ ഉണ്ടാവാതിരിക്കുകയില്ല.",
       "th": "ไม่มีคำพูดคำใดที่เขากล่าวออกมา เว้นแต่ใกล้ๆ เขานั้นมี (มะลัก) ผู้เฝ้าติดตาม ผู้เตรียมพร้อม (ที่จะบันทึก)",
       "ko": "그(인간)가 어떠한 말을 말하든 그에게는 준비된 감시자가 있노라.",
-      "vi": "Bất cứ lời nào (con người) thốt ra cũng đều có (một Thiên Thần) quan sát theo dõi sẵn sàng (ghi lại)."
+      "vi": "Bất cứ lời nào (con người) thốt ra cũng đều có (một Thiên Thần) quan sát theo dõi sẵn sàng (ghi lại).",
+      "pt": "Ele não profere dito algum sem que haja, junto dele, um observante presente.",
+      "it": "lui non pronuncerà parola senza avere accanto a sé un pronto osservatore.",
+      "sv": "Inte ett ord yttrar människan utan att en [ängel] som vakar över henne är redo [att nedteckna] det.",
+      "uk": "Не вимовить ані слова людина, щоб наглядач не був готовий записати його.",
+      "ro": "Și el [omul] nu va rosti niciun cuvânt, fără să aibă lângă el un supraveghetor pregătit [să scrie].",
+      "hr": "on ne izusti ni jednu riječ, a da pored njega nije prisutan onaj koji bdije.",
+      "sr": "Он не изусти ниједну реч, а да поред њега није онај који надзире.",
+      "el": "Δεν προφέρει (ο άνθρωπος) καμία λέξη, παρά να υπάρχει ένας (Άγγελος) παρατηρητής σ' αυτόν, που είναι παρόν (για να την καταγράψει)."
     }
   },
   {
@@ -6028,7 +7115,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും ഏതു വസ്തുവെയും നാം സൃഷ്ടിച്ചിട്ടുള്ളത് ഒരു വ്യവസ്ഥപ്രകാരമാകുന്നു.",
       "th": "แท้จริงทุกๆ สิ่งนั้น เราสร้างมันตามการกำหนด (ที่ถูกบันทึกไว้ล่วงหน้าแล้ว)",
       "ko": "실로 나는 모든 것을 운명으로 창조하였노라.",
-      "vi": "Quả thật, tất cả mọi thứ TA tạo ra đều có tiền định."
+      "vi": "Quả thật, tất cả mọi thứ TA tạo ra đều có tiền định.",
+      "pt": "Por certo, Nós criamos cada cousa, na justa medida.",
+      "it": "In verità Noi abbiamo creato ogni cosa con criterio,",
+      "sv": "Vi har skapat allting efter ett förutbestämt mått.",
+      "uk": "Воістину, Ми створили кожну річ згідно із передвизначенням.",
+      "ro": "Și Noi am creat toate lucrurile bine întocmite",
+      "hr": "Mi, doista, sve s određenjem stvaramo",
+      "sr": "Ми заиста све стварамо са одређењем,",
+      "el": "Πράγματι, δημιουργήσαμε τα πάντα σύμφωνα με το Θείο Πεπρωμένο (σύμφωνα με τη γνώση και τη θέλησή Μας, και σύμφωνα με ό,τι γράψαμε στο Αλ-Λάουχ Αλ-Μαχφούδ -το Διατηρημένο Πίνακα-)."
     }
   },
   {
@@ -6071,7 +7166,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "(உலகில் அல்லாஹ்வை பயந்தவர் செய்த) நல்லதுக்குக் கூலி (மறுமையில் அல்லாஹ் அவருக்கு கொடுக்கின்ற சொர்க்கம் என்ற) நல்லதைத் தவிர வேறு உண்டா?",
       "th": "การตอบแทนความดีจะมีอันใดเล่า นอกจากความดี",
       "ko": "최선에 대한 보상은 오직 최선일 뿐이라.",
-      "vi": "Chẳng phải phần thưởng tốt là chỉ dành cho cái tốt đó sao?!"
+      "vi": "Chẳng phải phần thưởng tốt là chỉ dành cho cái tốt đó sao?!",
+      "pt": "Há outra recompensa da benevolência senão benevolência?",
+      "it": "La ricompensa del bene non è solo il bene?",
+      "sv": "Skulle belöningen för goda gärningar vara något annat än att få gott tillbaka?",
+      "uk": "Чи віддячують за добро, крім як добром?",
+      "ro": "Oare să fie răsplata binelui alta decât tot binele?",
+      "hr": "Zar za dobro učinjeno djelo nagrada može biti nešto drugo do dobro?!",
+      "sr": "Зар за добро учињено дело награда може да буде нешто друго осим добро?!",
+      "el": "Θα είναι η ανταμοιβή για το καλό (και τις καλές πράξεις) κάτι άλλο παρά μόνο το καλό (δηλ. ο Παράδεισος);"
     }
   },
   {
@@ -6115,7 +7218,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "മഹത്വവും ഔദാര്യവും ഉള്ളവനായ നിന്‍റെ രക്ഷിതാവിന്‍റെ നാമം ഉല്‍കൃഷ്ടമായിരിക്കുന്നു.",
       "th": "ความจำเริญแห่งพระนามของพระผู้อภิบาลของเจ้าผู้ทรงเป็นเจ้าแห่งความยิ่งใหญ่และทรงเกียรติ",
       "ko": "장엄함과 베푸심을 지닌 그대 주님의 이름에는 축복이 가득하노라.",
-      "vi": "Hồng phúc thay Đại Danh của Thượng Đế của Ngươi (Thiên Sứ Muhammad), Đấng Quyền Năng Tối Thượng và Danh Dự."
+      "vi": "Hồng phúc thay Đại Danh của Thượng Đế của Ngươi (Thiên Sứ Muhammad), Đấng Quyền Năng Tối Thượng và Danh Dự.",
+      "pt": "Bendito seja o Nome de teu Senhor, Possuidor de majestade e honorabilidade!",
+      "it": "Glorificato sia il nome del tuo Dio, Sua è la Gloria e la Generosità.",
+      "sv": "Upphöjt är din Herres namn, från vilken all välsignelse kommer – han som besitter allt majestät och all ära.",
+      "uk": "Хай же буде благословенне ім’я Господа твого, Славного та Найщедрішого!",
+      "ro": "Binecuvântat fie Numele Domnului tău Dhu al-jalal ua-l-'ikram [Cel Plin de Slavă și de Cinste]!",
+      "hr": "Neka je uzvišeno ime Gospodara tvoga, Veličanstvenog i Plemenitog!",
+      "sr": "Благословљено је име твога Господара, Величанственог и Племенитог!",
+      "el": "Ύψιστο είναι το Όνομα του Κυρίου σου, ο Οποίος είναι ο Κάτοχος της Δόξας (και του Μεγαλείου) και της γενναιοδωρίας."
     }
   },
   {
@@ -6159,7 +7270,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും ഇത് ആദരണീയമായ ഒരു ഖുര്‍ആന്‍ തന്നെയാകുന്നു.",
       "th": "ว่าแท้จริงนี่คือ กุรอานอันทรงเกียรติ",
       "ko": "진실로 그것은 명예로운 꾸란으로서",
-      "vi": "Quả thật, (những Lời được đọc cho các ngươi nghe – hỡi nhân loại) là Kinh Qur’an cao quý."
+      "vi": "Quả thật, (những Lời được đọc cho các ngươi nghe – hỡi nhân loại) là Kinh Qur’an cao quý.",
+      "pt": "Por certo, este é um Alcorão nobre,",
+      "it": "In verità è il Generoso Corano,",
+      "sv": "att detta förvisso är en ädel Koran,",
+      "uk": "Воістину, це — Преславний Коран,",
+      "ro": "Că acesta este un Coran Nobil,",
+      "hr": "On je, zaista, Kuran plemeniti",
+      "sr": "Он је, заиста, Кур'ан племенити",
+      "el": "Ότι αυτό είναι πράγματι ένα Ευγενές Κορ’άν!"
     }
   },
   {
@@ -6203,7 +7322,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അവന്നാകുന്നു ആകാശങ്ങളുടെയും ഭൂമിയുടെയും ആധിപത്യം. അവന്‍ ജീവിപ്പിക്കുകയും മരിപ്പിക്കുകയും ചെയ്യുന്നു. അവന്‍ സര്‍വ്വകാര്യത്തിനും കഴിവുള്ളവനുമാണ്‌.",
       "th": "อํานาจแห่งชั้นฟ้าทั้งหลายและแผ่นดินนั้นเป็นสิทธิ์ของพระองค์ ทรงให้เป็นและทรงให้ตาย และพระองค์คือพระผู้ทรงอำนาจเหนือทุกสิ่ง",
       "ko": "하늘과 땅의 주권은 그분께 있으며, 그분은 생명을 불어넣으시고 죽음을 부여하시노라. 그분께서는 모든 것이 가능한 분이시라.",
-      "vi": "Quyền thống trị trời đất thuộc về một mình Ngài. Ngài làm cho sống và làm cho chết, và Ngài toàn năng trên tất cả mọi thứ."
+      "vi": "Quyền thống trị trời đất thuộc về một mình Ngài. Ngài làm cho sống và làm cho chết, và Ngài toàn năng trên tất cả mọi thứ.",
+      "pt": "DEle é a soberania dos céus e da terra. Ele dá a vida e dá a morte. E Ele, sobre todas as cousas, é Onipotente.",
+      "it": "A Lui appartiene il Regno dei cieli e della terra. Fa vivere e morire ed è Onnipotente.",
+      "sv": "Hans är herraväldet över himlarna och jorden; han ger liv och han tar liv. Ja, han har makt över allt.",
+      "uk": "Йому належить влада над небесами й землею, Він дарує життя та смерть, і Він спроможний на кожну річ!",
+      "ro": "A Lui este Împărăția Cerurilor și a Pământului. El dă viață și dă moartea și El este cu Putere peste toate.",
+      "hr": "Njegova je vlast na nebesima i na Zemlji; On život i smrt daje, i On nad svime ima moć.",
+      "sr": "Његова је власт на небесима и на Земљи; Он даје живот и смрт, и Он над свиме има моћ.",
+      "el": "Σε Αυτόν ανήκει η κυριαρχία των ουρανών και της γης. Δίνει ζωή (σε όποιους θέλει), και αφαιρεί τη ζωή (από όποιους θέλει), και Αυτός είναι για τα πάντα, Ικανός."
     }
   },
   {
@@ -6247,7 +7374,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അവന്നാണ് ആകാശങ്ങളുടെയും ഭൂമിയുടെയും ആധിപത്യം. അല്ലാഹുവിങ്കലേക്ക് തന്നെ കാര്യങ്ങള്‍ മടക്കപ്പെടുകയും ചെയ്യുന്നു.",
       "th": "อํานาจแห่งชั้นฟ้าทั้งหลายและแผ่นดินนั้นเป็นสิทธิ์ของพระองค์ และการงานทั้งหลายนั้นจะกลับไปยังอัลลอฮ์พระองค์เดียวเท่านั้น",
       "ko": "하늘과 땅의 주권은 그분께 있노라. 그리고 모든 일은 하나님께로 돌아가게 될 것이라.",
-      "vi": "Quyền thống trị trời đất thuộc về một mình Ngài, tất cả mọi sự việc đều được trình về cho Ngài (định đoạt)."
+      "vi": "Quyền thống trị trời đất thuộc về một mình Ngài, tất cả mọi sự việc đều được trình về cho Ngài (định đoạt).",
+      "pt": "E dEle é a soberania dos céus e da terra. E a Allah são retornadas as determinações.",
+      "it": "A Lui appartiene il regno dei cieli e della terra, e ad Allāh torna ogni cosa.",
+      "sv": "Hans är herraväldet över himlarna och jorden, och till Gud återförs alla angelägenheter.",
+      "uk": "Йому належить влада над небесами й землею, і до Аллага повертаються усі справи.",
+      "ro": "A Lui este Împărăția Cerurilor și a Pământului și la Allah se întorc [toate] lucrurile.",
+      "hr": "Njegova je vlast na nebesima i na Zemlji, i Allahu će se sve vratiti!",
+      "sr": "Његова је власт на небесима и на Земљи, и Аллаху ће се све вратити!",
+      "el": "Σε Αυτόν ανήκει η κυριαρχία των ουρανών και της γης, και στον Αλλάχ θα επιστρέψουν όλες οι υποθέσεις."
     }
   },
   {
@@ -6290,7 +7425,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അവന്‍ രാത്രിയെ പകലില്‍ പ്രവേശിപ്പിക്കുന്നു. അവന്‍ പകലിനെ രാത്രിയില്‍ പ്രവേശിപ്പിക്കുകയും ചെയ്യുന്നു. അവന്‍ ഹൃദയങ്ങളിലുള്ളവയെപ്പറ്റി അറിയുന്നവനുമാകുന്നു.",
       "th": "พระองค์ทรงให้กลางคืนคาบเกี่ยวเข้าไปในกลางวัน และทรงให้กลางวันคาบเกี่ยวเข้าไปในกลางคืน และพระองค์เป็นผู้ทรงรอบรู้สิ่งที่อยู่ในทรวงอก",
       "ko": "그분께서는 밤을 낮으로 들어가게 하시고 낮을 밤으로 들어가게 하시며, 그분께서는 심중에 있는 것도 알고 계시는 분이라.",
-      "vi": "Ngài nhập ban đêm vào ban ngày và nhập ban ngày vào ban đêm, và Ngài biết rõ mọi điều nằm trong lòng (đám bề tôi của Ngài)."
+      "vi": "Ngài nhập ban đêm vào ban ngày và nhập ban ngày vào ban đêm, và Ngài biết rõ mọi điều nằm trong lòng (đám bề tôi của Ngài).",
+      "pt": "Ele insere a noite no dia e insere o dia na noite. E Ele, do íntimo dos peitos, é Onisciente.",
+      "it": "Fa penetrare la notte nel giorno e fa penetrare il giorno nella notte e Lui è Conoscitore di ciò che è nei petti.",
+      "sv": "Han låter natten svepa in i dagen och dagen svepa in i natten, och han vet vad som döljs i människans inre.",
+      "uk": "Він збільшує ніч за рахунок дня, а день за рахунок ночі, і Він знає те, що приховане в серцях.",
+      "ro": "El face ca noaptea să intre în zi și ca ziua să intre în noapte și El este Știutorul celor dinlăuntrul piepturilor.",
+      "hr": "On uvodi noć u dan i dan u noć, i On zna što se u grudima skriva.",
+      "sr": "Он уводи ноћ у дан и дан у ноћ, и Он зна шта се скрива у грудима."
     }
   },
   {
@@ -6327,7 +7469,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Òun ni Ẹni tó ń sọ àwọn āyah tó yanjú kalẹ̀ fún ẹrúsìn Rẹ̀ nítorí kí ó lè mu yín kúrò nínú àwọn òkùnkùn wá sínú ìmọ́lẹ̀. Dájúdájú Allāhu ni Aláàánú, Àṣàkẹ́-ọ̀run fún yín.",
       "zh": "他降示他的仆人许多明证，以便他使你们从重重黑暗走入光明。安拉对于你们，确是仁爱的，确是至慈的。",
       "ko": "그대들을 암흑에서 광명으로 꺼내기 위해 당신의 종복에게 분명한 징표를 내리시는 분이 그분이시라. 진실로 하나님께서는 그대들에게 인자하시고 자애로우신 분이라.",
-      "vi": "Ngài là Đấng đã ban xuống cho Người Bề Tôi (Muhammad) của Ngài các Lời Mặc Khải rõ ràng để Ngài đưa các ngươi ra ánh sáng từ nơi tăm tối. Quả thật, Allah tử tế và nhân từ đối với các ngươi."
+      "vi": "Ngài là Đấng đã ban xuống cho Người Bề Tôi (Muhammad) của Ngài các Lời Mặc Khải rõ ràng để Ngài đưa các ngươi ra ánh sáng từ nơi tăm tối. Quả thật, Allah tử tế và nhân từ đối với các ngươi.",
+      "pt": "Ele é Quem faz descer sobre Seu servo evidentes versículos, para fazer-vos sair das trevas para a luz. E, por certo, Allah, para convosco, é Compassivo, Misericordiador.",
+      "it": "Lui è Colui che fa discendere sul Suo Servo chiarissime Evidenze, per farvi uscire dall’oscurità alla luce: in verità Allāh è Benevolo e Misericordioso con voi.",
+      "sv": "Det är han som uppenbarar klara verser till sin tjänare för att föra er ut ur mörkren till ljuset. Gud är verkligen förbarmande och barmhärtig mot er.",
+      "uk": "Він — Той, Хто зіслав рабу своєму знамення ясні, щоб вивести вас із темряви до світла, і, воістину, Аллаг — Співчутливий та Милосердний!",
+      "ro": "El este Cel care pogoară asupra robului Său [profetul Mohammed] semne limpezi, pentru ca să vă scoată pe voi din întunecimi la lumină. Și Allah este Ra'uf [Iertător], Rahim [Îndurător] cu voi.",
+      "hr": "On robu Svome objavljuje jasne ajete da bi vas iz tmina na svjetlo izveo – a Allah je, uistinu, prema vama milosrdan i milostiv.",
+      "sr": "Он слуги Свом објављује јасне речи и доказе, да би вас из тмина на светло извео - а Аллах је, уистину, према вама благ и милостив.",
+      "el": "Είναι Αυτός που στέλνει ξεκάθαρα Εδάφια στον δούλο Του (τον Μωχάμμαντ) για να σας βγάλει από τα σκοτάδια στο φως. Πράγματι, ο Αλλάχ είναι για σας Πολυεπιεικής και Πολυεύσπλαχνος."
     }
   },
   {
@@ -6365,7 +7515,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും ധര്‍മ്മിഷ്ഠരായ പുരുഷന്‍മാരും സ്ത്രീകളും അല്ലാഹുവിന് നല്ല കടം കൊടുത്തവരും ആരോ അവര്‍ക്കത് ഇരട്ടിയായി നല്‍കപ്പെടുന്നതാണ്‌. അവര്‍ക്കത്രെ മാന്യമായ പ്രതിഫലമുള്ളത്‌.",
       "th": "แท้จริงบรรดาผู้บริจาคชายและบรรดาผู้บริจาคหญิง และพวกเขาได้ให้อัลลอฮ์ยืม (บริจาคในหนทางของอัลลอฮ์) ด้วยการยืมที่ดี พระองค์จะทรงเพิ่มเป็นทวีคูณแก่พวกเขา และสำหรับพวกเขาจะได้รับการตอบแทนอันมีเกียรติ",
       "ko": "자선을 베푸는 남성들과 자신을 베푸는 여성들과 하나님을 위해 돌려받지 않을 빚을 내주는 자들, 그들을 위해 그것(보상)은 불어날 것이며 그들에게는 풍성한 보상이 있을 것이라.",
-      "vi": "Quả thật, những người làm từ thiện nam cũng như nữ, họ đã cho Allah mượn một món nợ tốt, món nợ (tốt) đó sẽ được nhân lên cho họ và họ sẽ có được một phần thưởng cao quý, vinh dự."
+      "vi": "Quả thật, những người làm từ thiện nam cũng như nữ, họ đã cho Allah mượn một món nợ tốt, món nợ (tốt) đó sẽ được nhân lên cho họ và họ sẽ có được một phần thưởng cao quý, vinh dự.",
+      "pt": "Por certo, aos esmoleres e às esmoleres, e aos que emprestam bom empréstimo a Allah, ser-lhes-á multiplicada a retribuição, e terão generoso prêmio.",
+      "it": "In verità a quelli e a quelle che hanno elargito l’elemosina e hanno fatto un prestito generoso ad Allāh, Lui lo moltiplicherà e concederà loro una generosa ricompensa.",
+      "sv": "De män och kvinnor som skänker allmosor och ger Gud ett gott lån ska få det mångfaldigt åter och därtill en frikostig belöning.",
+      "uk": "Воістину, тим чоловікам і жінкам, які дають милостиню і які позичили Аллагу позику добру — подвоїться вона їм, і матимуть вони винагороду щедру!",
+      "ro": "Cu adevărat, cei care au făcut milostenie și acelea care au făcut milostenie i-au dat lui Allah un împrumut minunat, care li se va întoarce lor înmulțit, și vor avea ei parte de răsplată generoasă.",
+      "hr": "Onima koji milostinju i zekat budu udjeljivali i onima koje je budu udjeljivale, i koji drage volje Allahu zajam budu davali – mnogostruko će se vratiti i njih čeka nagrada divna.",
+      "sr": "Онима који милостињу буду удељивали и онима које је буду удељивале, и који драге воље Аллаху зајам буду давали - многоструко ће да им се врати и њих чека дивна награда."
     }
   },
   {
@@ -6408,7 +7565,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും ഞാനും എന്‍റെ ദൂതന്‍മാരും തന്നെയാണ് വിജയം നേടുക എന്ന് അല്ലാഹു രേഖപ്പെടുത്തിയിരിക്കുന്നു. തീര്‍ച്ചയായും അല്ലാഹു ശക്തനും പ്രതാപിയുമാകുന്നു.",
       "th": "อัลลอฮ์ทรงกำหนดไว้ว่า แน่นอนข้าและเราะซูลของข้าจะมีชัยชนะเหนือกว่า แท้จริงอัลลอฮ์นั้นเป็นผู้ทรงพลัง ผู้ทรงอำนาจ",
       "ko": "하나님께서 운명지으시길 “진실로 나와 나의 사도들은 정녕코 (적들을) 제압할 것이라”. 실로 하나님께서는 강하시고 존엄하신 분이라.",
-      "vi": "Allah đã định: “TA và Sứ Giả của TA chắc chắn phải thắng”. Quả thật Allah là Đấng Toàn Lực, Đấng Quyền Năng."
+      "vi": "Allah đã định: “TA và Sứ Giả của TA chắc chắn phải thắng”. Quả thật Allah là Đấng Toàn Lực, Đấng Quyền Năng.",
+      "it": "Allāh ha stabilito: “Vincerò Io e i miei Messaggeri!” In verità Allāh è Forte, Potente.",
+      "sv": "Gud har fastslagit: \"Jag ska sannerligen segra – jag och mina sändebud!\" Gud är stark, mäktig.",
+      "uk": "Аллаг написав: «Неодмінно перемогу отримаю Я та Мої посланці!»",
+      "ro": "Allah a Hotărât: „Cu adevărat, Eu voi Birui negreșit; Eu și Trimișii Mei!” Allah este cu adevărat Qauiyy [Tare] [și] 'Aziz [Puternic].",
+      "hr": "Allah je zapisao: \"Ja i poslanici Moji sigurno ćemo pobijediti!\" Allah je, zaista, moćan i silan.",
+      "sr": "Аллах је записао: “Ја и посланици Моји сигурно ћемо да победимо!” Аллах је, заиста, моћан и силан.",
+      "el": "Ο Αλλάχ έγραψε (στο Αλ-Λάουχ Αλ-Μαχφούδ): «Στ’ αλήθεια, θα νικήσω Εγώ και οι Αγγελιαφόροι Μου.» Πράγματι, ο Αλλάχ είναι Καουέι (Πανίσχυρος) και ‘Αζείζ (Παντοδύναμος, Ανίκητος)."
     }
   },
   {
@@ -6443,7 +7607,12 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ff": "Eehey mon gooŋɗinɓe ndeente Alla, yo fittaandu ndaar kondu ardinani jannga kule alla pellet alla ko kumpatiiɗo ko ngolloton ko.",
       "yo": "Ẹ̀yin tí ẹ gbàgbọ́ ní òdodo, ẹ bẹ̀rù Allāhu. Kí ẹ̀mí kan sì wòye sí ohun tí ó tì ṣíwájú fún ọ̀la (àlùkìyáámọ̀). Ẹ bẹ̀rù Allāhu. Dájúdájú Allāhu ni Alámọ̀tán nípa ohun tí ẹ̀ ń ṣe níṣẹ́.",
       "zh": "归信的人们啊！你们应当敬畏安拉，各人应当想一想自己为明日而预备了什么，你们应当敬畏安拉，安拉确是彻知你们的行为的。",
-      "ko": "믿는 자들이여! 하나님을 두려워하고 자신이 내일(심판의 날) 무엇을 내놓을 것인지 보도록 하라. 그대들은 하나님을 경외하라. 실로 하나님께서는 그대들이 행하는 일에 밝으신 분이라."
+      "ko": "믿는 자들이여! 하나님을 두려워하고 자신이 내일(심판의 날) 무엇을 내놓을 것인지 보도록 하라. 그대들은 하나님을 경외하라. 실로 하나님께서는 그대들이 행하는 일에 밝으신 분이라.",
+      "it": "O credenti! Temete Allāh, e che ogni anima stia attenta a ciò che ha preparato per domani. E temete Allāh: in verità Allāh è Conoscitore di ciò che fate.",
+      "sv": "Troende! Frukta Gud och låt var och en av er tänka igenom vad han har förberett inför morgondagen. Ja, frukta Gud! Gud är väl medveten om allt ni gör.",
+      "uk": "О ви, які увірували! Бійтеся Аллага, та нехай поміркує кожен про те, що приготував він собі на завтра. Бійтесь Аллага, бо Аллаг знає про те, що ви чините!",
+      "hr": "O vi koji vjerujete, Allaha se bojte, i neka svaki čovjek gleda što je za sutra pripremio, i Allaha se bojte. Allah, zaista, u potpunosti zna ono što radite.",
+      "sr": "О ви који верујете, бојте се Аллаха, и нека сваки човек гледа шта је припремио за сутра, и бојте се Аллаха. Аллах, заиста; у потпуности зна оно шта радите."
     }
   },
   {
@@ -6487,7 +7656,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "നരകാവകാശികളും സ്വര്‍ഗാവകാശികളും സമമാകുകയില്ല. സ്വര്‍ഗാവകാശികള്‍ തന്നെയാകുന്നു വിജയം നേടിയവര്‍.",
       "th": "บรรดาชาวนรกกับบรรดาชาวสวนสวรรค์นั้นไม่เหมือนกันดอก บรรดาชาวสวนสวรรค์พวกเขาเป็นผู้ได้รับความสำเร็จ",
       "ko": "불지옥의 거주지와 천국의 거주자는 동일하지 않노라. 천국의 거주자들이야말로 성공한 자들이라.",
-      "vi": "Những người bạn của Hỏa Ngục không ngang bằng với những người bạn của Thiên Đàng. Những người bạn của Thiên Đàng là những người thắng lợi và thành đạt."
+      "vi": "Những người bạn của Hỏa Ngục không ngang bằng với những người bạn của Thiên Đàng. Những người bạn của Thiên Đàng là những người thắng lợi và thành đạt.",
+      "pt": "Não se igualam os companheiros do Fogo e os companheiros do Paraíso. Os companheiros do Paraíso são os triunfadores.",
+      "it": "La gente dell’Inferno non è pari alla gente del Paradiso: la gente del Paradiso è quella vittoriosa.",
+      "sv": "Eldens folk och paradisets folk är inte lika. Paradisets folk – de är de sanna vinnarna.",
+      "uk": "Не рівні мешканці пекла та мешканці раю, бо ж саме мешканці раю матимуть успіх.",
+      "ro": "Oaspeții Focului nu sunt egali cu oaspeții Raiului! Oaspeții Raiului sunt cei care izbândesc.",
+      "hr": "Nisu jednaki stanovnici Pakla i stanovnici Raja; stanovnici Raja baš su uspješni.",
+      "sr": "Нису једнаки становници Пакла и становници Раја; становници Раја су успели.",
+      "el": "Δεν είναι ισάξιοι οι κάτοικοι του Πυρός με τους κατοίκους του Παραδείσου. Πράγματι, οι κάτοικοι του Παραδείσου είναι οι κερδισμένοι."
     }
   },
   {
@@ -6516,7 +7693,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "om": "Odoo Qur'aana kana gaara irratti buufnee, silaa isa nigarta sodaataa dhodhoohaa sodaa Rabbiirraa. Fakkeenyota tana namootaaf taasifna akka isaan xiinxalaniif.",
       "ff": "Si min tellinna o alquraana e dow hooseere ma a yiinde honde luli honde fetta ngam hulde Alla ɗi tinndi emin piyaniɗi yimɓe ko ngam ɓe miijo.",
       "zh": "假若我把这部《古兰经》降示一座山，你必定看见那座山因畏惧安拉而成为柔和的，崩溃的。这些譬喻，是我为众人而设的，以便他们省悟。",
-      "ko": "만약 내가 이 꾸란을 산 위에 내렸다면 그대는 그것(산)이 하나님에 대한 두려움으로 인해 곤두박질치고 산산히 쪼개짐을 보았을 것이라. 이 예는 내가 인간들을 위해 드는 것으로 그들이 숙고하기 위함이라."
+      "ko": "만약 내가 이 꾸란을 산 위에 내렸다면 그대는 그것(산)이 하나님에 대한 두려움으로 인해 곤두박질치고 산산히 쪼개짐을 보았을 것이라. 이 예는 내가 인간들을 위해 드는 것으로 그들이 숙고하기 위함이라.",
+      "pt": "Se houvéssemos feito descer este Alcorão sobre uma montanha, vê-la-ias humilde, rachada, por receio de Allah. E estes exemplos, propomo-los, para os homens, a fim de refletirem.",
+      "it": "Se avessimo fatto discendere questo Corano su un monte, l’avresti visto umile, frantumato per timore di Allāh. E quelli sono esempi che portiamo agli uomini, perché riflettano.",
+      "sv": "Om vi hade sänt ned denna Koran över ett berg skulle du se det skälva och rämna av vördnad för Gud. Sådana liknelser framlägger vi för människorna, så att de må reflektera.",
+      "uk": "Якби Ми зіслали цей Коран горі, то ти побачив би її покірно розколотою від страху перед Аллагом. Це — притчі, які Ми наводимо людям, можливо, поміркують вони!",
+      "ro": "Dacă am fi trimis Noi acest Coran unui munte, l-ai fi văzut tu umilindu-se smerit și despicându-se de frica lui Allah. Și aceste exemple le dăm Noi oamenilor pentru ca ei să cugete.",
+      "hr": "Da ovaj Kuran kakvom brdu objavimo, ti bi vidio kako je strahopoštovanja puno i kako bi se od straha pred Allahom raspalo. Takve primjere navodimo ljudima da bi razmislili.",
+      "sr": "Када би овај Кур'ан објавили некој планини, ти би видео како је пуна страхопоштовања и како би се распала од страха пред Аллахом. Такве примере наводимо људима да би размислили."
     }
   },
   {
@@ -6560,7 +7744,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "സത്യവിശ്വാസികളേ, നിങ്ങള്‍ ചെയ്യാത്തതെന്തിന് നിങ്ങള്‍ പറയുന്നു?",
       "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย ทำไมพวกเจ้าจึงกล้าพูดในสิ่งที่พวกเจ้าไม่ปฏิบัติ",
       "ko": "믿는 자들이여! 왜 그대들은 행하지 않는 일을 말하는가?",
-      "vi": "Hỡi những người có đức tin! Tại sao các ngươi nói những điều các ngươi không làm?"
+      "vi": "Hỡi những người có đức tin! Tại sao các ngươi nói những điều các ngươi không làm?",
+      "it": "O credenti, perché dite ciò che non fate?",
+      "sv": "Troende! Varför talar ni om handlingar som ni sedan inte utför?",
+      "uk": "О ви, які увірували! Чому говорите те, чого не робите?",
+      "ro": "O, voi cei care credeți! De ce spuneți voi ceea ce nu faceți?",
+      "hr": "O vi koji vjerujete, zašto govorite ono što ne činite?!",
+      "sr": "О ви који верујете, зашто говорите оно што не радите?!",
+      "el": "Ω, εσείς που πιστεύετε! Γιατί λέτε αυτά που δεν κάνετε; (όπως το να μην εκπληρώσει κάποιος την υπόσχεσή του ή να νουθετήσει τους άλλους για μια καλή πράξη, ενώ ο ίδιος δεν την κάνει)."
     }
   },
   {
@@ -6604,7 +7795,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "നിങ്ങള്‍ ചെയ്യാത്തത് നിങ്ങള്‍ പറയുക എന്നുള്ളത് അല്ലാഹുവിങ്കല്‍ വലിയ ക്രോധത്തിന് കാരണമായിരിക്കുന്നു.",
       "th": "เป็นที่น่าเกลียดยิ่งที่อัลลอฮ์ การที่พวกเจ้าพูดในสิ่งที่พวกเจ้าไม่ปฏิบัติ",
       "ko": "그대들이 행하지 않는 일을 말함은 하나님께 있어 매우 혐오스러운 것이라.",
-      "vi": "Điều đáng ghét nhất đối với Allah là việc các ngươi nói những điều các ngươi không làm."
+      "vi": "Điều đáng ghét nhất đối với Allah là việc các ngươi nói những điều các ngươi không làm.",
+      "pt": "Grave é, em sendo abominação perante Allah, que digais o que não fazeis!",
+      "it": "È detestabile per Allāh che diciate ciò che non fate.",
+      "sv": "Det är djupt förhatligt inför Gud att ni talar utan att handla därefter.",
+      "uk": "Велика ненависть у Аллага тоді, коли ви говорите, а не робите!",
+      "ro": "Este [o pricină de] mare mânie pentru Allah să spuneți ceea ce nu faceți!",
+      "hr": "Kako samo Allah prezire da govorite ono što ne činite!",
+      "sr": "Како само Аллах презире да говорите оно што не радите!",
+      "el": "Είναι πολύ μισητό για τον Αλλάχ, να λέτε αυτά που δεν κάνετε."
     }
   },
   {
@@ -6647,7 +7846,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "സത്യവിശ്വാസികളേ, നിങ്ങളുടെ സ്വത്തുക്കളും സന്താനങ്ങളും അല്ലാഹുവെപ്പറ്റിയുള്ള സ്മരണയില്‍ നിന്ന് നിങ്ങളുടെ ശ്രദ്ധ തിരിച്ചു വിടാതിരിക്കട്ടെ. ആര്‍ അങ്ങനെ ചെയ്യുന്നുവോ അവര്‍ തന്നെയാണ് നഷ്ടക്കാര്‍.",
       "th": "โอ้บรรดาผู้ศรัทธาเอ๋ย อย่าให้ทรัพย์สินของพวกเจ้าและลูกหลานของพวกเจ้าหันเหพวกเจ้าจากการรำลึกถึงอัลลอฮ์ และผู้ใดกระทำเช่นนั้น ชนเหล่านั้นคือพวกที่ขาดทุน",
       "ko": "믿는 자들이여! 그대들의 재산과 그대들의 자식들이 하나님을 떠올림에 방해가 되지 않도록 하라. 그렇게 하는 자, 저들은 실로 손실자들이라.",
-      "vi": "Hỡi những người có đức tin! Các ngươi chớ để cho tài sản và con cái của các ngươi làm cho các ngươi xao lãng việc tưởng nhớ Allah. Những ai làm thế thì đó là những kẻ thua thiệt."
+      "vi": "Hỡi những người có đức tin! Các ngươi chớ để cho tài sản và con cái của các ngươi làm cho các ngươi xao lãng việc tưởng nhớ Allah. Những ai làm thế thì đó là những kẻ thua thiệt.",
+      "it": "O credenti, non permettete che i vostri beni e i vostri figli vi distraggano dall’invocare Allāh. E coloro che lo fanno, saranno i perdenti.",
+      "sv": "Troende! Låt inte era egendomar och barn distrahera er från Guds åminnelse. De som gör detta är de sanna förlorarna.",
+      "uk": "О ви, які увірували! Нехай не відвертає вас майно ваше та діти ваші від згадування імені Аллага, бо ж ті, які роблять так, зазнають збитків!",
+      "ro": "O, voi cei care credeți! Să nu vă abată averile voastre și copiii voștri de la Pomenirea lui Allah! Cei care fac aceasta, aceia vor fi pierduți!",
+      "hr": "O vi koji vjerujete, neka vas imanja vaša i djeca vaša ne zabave od spominjanja Allaha. A oni koji to učine, pravi su gubitnici.",
+      "sr": "О ви који верујете, нека вас ваша имања и ваша деца не забаве од спомињања Аллаха. А они који то учине, прави су губитници.",
+      "el": "Ω, εσείς που πιστεύετε! Μην σας αποσπούν τα πλούτη σας και τα παιδιά σας από τη μνημόνευση του Αλλάχ (την προσευχή και τις πράξεις λατρείας). Και όποιος το κάνει, τότε εκείνοι θα είναι οι χαμένοι."
     }
   },
   {
@@ -6688,7 +7894,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അവനാണ് നിങ്ങളെ സൃഷ്ടിച്ചവന്‍. എന്നിട്ട് നിങ്ങളുടെ കൂട്ടത്തില്‍ സത്യനിഷേധിയുണ്ട്‌. നിങ്ങളുടെ കൂട്ടത്തില്‍ വിശ്വാസിയുമുണ്ട്‌. അല്ലാഹു നിങ്ങള്‍ പ്രവര്‍ത്തിക്കുന്നതിനെ പറ്റി കണ്ടറിയുന്നവനാകുന്നു.",
       "th": "พระองค์คือผู้ทรงสร้างพวกเจ้า ดังนั้นในหมู่พวกเจ้ามีผู้ปฏิเสธศรัทธา และในหมู่พวกเจ้ามีผู้ศรัทธา และอัลลอฮ์ทรงรู้เห็นในสิ่งที่พวกเจ้ากระทำ",
       "ko": "그대들을 창조하신 분이 그분이시니 그대들 중에는 불신자가 있고 그대들 중에는 믿는 자가 있더라. 하나님께서는 그대들이 행하는 것을 보고 계시는 분이라.",
-      "vi": "Chính Ngài là Đấng đã tạo hóa các ngươi (hỡi nhân loại) nhưng trong các ngươi có người không tin và có người tin tưởng vào điều đó. Và Allah thấy rõ những gì các ngươi làm."
+      "vi": "Chính Ngài là Đấng đã tạo hóa các ngươi (hỡi nhân loại) nhưng trong các ngươi có người không tin và có người tin tưởng vào điều đó. Và Allah thấy rõ những gì các ngươi làm.",
+      "pt": "Ele é Quem vos criou; e, dentre vós, há renegadores da Fé, e, dentre vós há crentes. E Allah, do que fazeis, é Onividente.",
+      "it": "Lui è Colui che vi ha creato. Tra voi c’è il miscredente e c’è il credente, e Allāh è Osservatore di ciò che fate.",
+      "sv": "Det är han som har skapat er; vissa av er är otrogna och andra är troende. Gud har full insikt i allt ni gör.",
+      "uk": "Він — Той, Хто створив вас. Є серед вас невіруючі, і є серед вас віруючі. І Аллаг бачить те, що ви робите!",
+      "ro": "El este Cel care v-a creat. Și printre voi se află unii care nu cred și printre voi se află unii care cred, însă Allah Vede bine ceea ce faceți.",
+      "hr": "On je Onaj Koji vas stvara, pa ima među vama i nevjernika, a ima među vama i vjernika. Sve što vi radite Allah dobro vidi.",
+      "sr": "Он вас је створио, па има међу вама и неверника, а има међу вама и верника. Све што ви радите Аллах добро види.",
+      "el": "Αυτός είναι που σας έπλασε, και από σας υπάρχουν άπιστοι και από σας υπάρχουν πιστοί. Κι ο Αλλάχ βλέπει όσα κάνετε."
     }
   },
   {
@@ -6730,7 +7944,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "ആകാശങ്ങളിലുള്ളതും ഭൂമിയിലുള്ളതും അവന്‍ അറിയുന്നു. നിങ്ങള്‍ രഹസ്യമാക്കുന്നതും പരസ്യമാക്കുന്നതും അവന്‍ അറിയുന്നു. അല്ലാഹു ഹൃദയങ്ങളിലുള്ളത് അറിയുന്നവനാകുന്നു.",
       "th": "พระองค์ทรงรอบรู้สิ่งที่อยู่ในชั้นฟ้าทั้งหลายและแผ่นดิน และทรงรอบรู้สิ่งที่พวกเจ้าปกปิดและสิ่งที่พวกเจ้าเปิดเผย และอัลลอฮ์ทรงรอบรู้สิ่งที่อยู่ในทรวงอก",
       "ko": "그분께서는 하늘과 땅에 있는 것을 알고 계시며 그대들이 비밀로 하는 것과 그대들이 내보이는 것을 알고 계시노라. 그리고 하나님께서는 심중에 있는 것도 알고 계시는 분이라.",
-      "vi": "Ngài biết rõ những gì trong trời đất và biết những gì các ngươi che giấu cũng như những gì các ngươi bộc lộ. Quả thật, Allah biết rõ những gì trong lòng (của mọi người)."
+      "vi": "Ngài biết rõ những gì trong trời đất và biết những gì các ngươi che giấu cũng như những gì các ngươi bộc lộ. Quả thật, Allah biết rõ những gì trong lòng (của mọi người).",
+      "pt": "Ele sabe o que há nos céus e na terra. E sabe o de que guardais segredo e o que manifestais. E Allah, do íntimo dos peitos, é Onisciente.",
+      "it": "Conosce ciò che è in cielo e in terra, e conosce ciò che nascondete e ciò che mostrate. E Allāh è Conoscitore di ciò che è nei petti.",
+      "sv": "Han vet vad som finns i himlarna och på jorden, och han vet vad ni gömmer i era inre och vad ni visar utåt. Ja, Gud vet vad som döljs i människans inre.",
+      "uk": "Він знає те, що на небесах і на землі; Він знає те, що ви приховуєте, й те, що відкриваєте. І Аллаг знає те, що в серцях!",
+      "hr": "On zna što na nebesima i na Zemlji postoji i zna što krijete i što pokazujete! Allah dobro zna što grudi kriju.",
+      "sr": "Он зна шта постоји на небесима и на Земљи и зна шта кријете и шта показујете! Аллах добро зна шта груди крију.",
+      "el": "Γνωρίζει τι βρίσκεται στους ουρανούς και στη γη, και γνωρίζει τι συγκαλύπτετε και τι φανερώνετε. Κι ο Αλλάχ είναι Παντογνώστης για ό,τι βρίσκεται στα στήθη (των ανθρώπων)."
     }
   },
   {
@@ -6766,7 +7987,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "எந்த சோதனையும் (யாருக்கும்) ஏற்படாது, அல்லாஹ்வின் அனுமதி இல்லாமல். யார் அல்லாஹ்வை நம்பிக்கை கொள்வாரோ அவரின் உள்ளத்திற்கு அல்லாஹ் நேர்வழி காட்டுவான். அல்லாஹ் எல்லாவற்றையும் நன்கறிந்தவன் ஆவான்.",
       "th": "ไม่มีทุกข์ภัยอันใดเกิดขึ้น เว้นแต่ด้วยอนุมัติของอัลลอฮ์ และผู้ใดศรัทธาต่ออัลลอฮ์ พระองค์จะทรงเปิดหัวใจของเขา (สู่แนวทางที่ถูกต้อง) และอัลลอฮ์เป็นผู้ทรงรอบรู้ทุกสิ่งอย่าง",
       "ko": "그 어떤 시련도 하나님의 허락 없이는 일어나지 않노라. 하나님을 믿는 자가 있다면 그분께서는 그의 마음을 인도하실 것이라. 하나님께서는 모든 것을 알고 계신 분이라.",
-      "vi": "Không một tai họa nào xảy ra mà không do phép của Allah. Ai có đức tin nơi Allah, Ngài sẽ hướng dẫn trái tim của y. Quả thật, Allah là Đấng biết tất cả mọi thứ."
+      "vi": "Không một tai họa nào xảy ra mà không do phép của Allah. Ai có đức tin nơi Allah, Ngài sẽ hướng dẫn trái tim của y. Quả thật, Allah là Đấng biết tất cả mọi thứ.",
+      "pt": "Nenhuma desgraça ocorre sem que seja com a permissão de Allah. E quem crê em Allah, Ele lhe guiará o coração. E Allah, de todas as cousas, é Onisciente.",
+      "it": "Non capita disgrazia, se non col volere di Allāh. E Allāh guida il cuore di chi crede in Lui. E Allāh è Onnisciente.",
+      "sv": "Ingen olycka drabbar er annat än i enlighet med Guds beslut. Den som tror på Gud – ja, dennes hjärta vägleder han. Gud har full vetskap om allt.",
+      "uk": "Лихо не вражає без дозволу Аллага. І для серця того, хто увірував у Аллага, Він вкаже прямий шлях. Аллаг — про кожну річ Знаючий!",
+      "ro": "Nicio nenorocire nu-l lovește pe om decât numai cu Îngăduința lui Allah. Iar aceluia care crede în Allah, El îi va călăuzi inima. Allah este Atoateștiutor.",
+      "hr": "Nikakva nevolja ne pogađa osim s Allahovom dozvolom! A tko u Allaha vjeruje, On će uputiti njegovo srce, a Allah sve dobro zna.",
+      "sr": "Никаква невоља не погађа осим са Аллаховом дозволом! А ко у Аллаха верује, Он ће да упутити његово срце, а Аллах све добро зна."
     }
   },
   {
@@ -6810,7 +8038,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അല്ലാഹു- അവനല്ലാതെ ആരാധനക്കർഹനായി മറ്റാരുമില്ല. അല്ലാഹുവിന്‍റെ മേലായിരിക്കട്ടെ സത്യവിശ്വാസികള്‍ ഭരമേല്‍പിക്കുന്നത്‌.",
       "th": "อัลลอฮ์ ไม่มีพระเจ้าอื่นใดที่เที่ยงแท้นอกจากพระองค์ ดังนั้นบรรดาผู้ศรัทธาทั้งหลายจงมอบหมายไว้วางใจต่ออัลลอฮ์เถิด",
       "ko": "하나님 그분 이외에는 경배받을 존재가 없노라. 믿는 자들은 오직 하나님께만 의탁하도록 하라.",
-      "vi": "Allah là Thượng Đế duy nhất, không có Thượng Đế đích thực nào khác ngoài Ngài. Vì vậy, những người có đức tin hãy phó thác cho Allah."
+      "vi": "Allah là Thượng Đế duy nhất, không có Thượng Đế đích thực nào khác ngoài Ngài. Vì vậy, những người có đức tin hãy phó thác cho Allah.",
+      "pt": "Allah, não existe deus senão Ele. E que os crentes, então, confiem em Allah.",
+      "it": "Allāh, non c’è divinità all’infuori di Lui, e ad Allāh si affidi ogni credente.",
+      "sv": "Gud – ingen är värd dyrkan utom han! Låt därför de troende sätta all sin lit till Gud.",
+      "uk": "Аллаг! Немає бога, крім Нього, і нехай на Аллага покладають сподівання віруючі!",
+      "ro": "Allah! Nu există altă divinitate demnă de a fi adorată afară de El! Și în Allah [trebuie] să se încreadă dreptcredincioșii!",
+      "hr": "Samo je Allah Bog, i neka se vjernici samo u Allaha pouzdaju!",
+      "sr": "Аллах - нема другог бога осим Њега. А верници нека се само у Аллаха поуздају!",
+      "el": "Αλλάχ! Δεν υπάρχει άλλος θεός που αξίζει να λατρεύεται παρά μόνον Αυτός. Και στον Αλλάχ ας εναποθέτουν οι πιστοί την εμπιστοσύνη τους (γι’ όλες τις υποθέσεις τους)."
     }
   },
   {
@@ -6852,7 +8088,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "നിങ്ങളുടെ സ്വത്തുക്കളും നിങ്ങളുടെ സന്താനങ്ങളും ഒരു പരീക്ഷണം മാത്രമാകുന്നു. അല്ലാഹുവിങ്കലാകുന്നു മഹത്തായ പ്രതിഫലമുള്ളത്‌.",
       "th": "แท้จริงทรัพย์สมบัติของพวกเจ้า และลูกหลานของพวกเจ้านั้นเป็นบททดสอบ และอัลลอฮ์นั้น ณ ที่พระองค์มีการตอบแทนอันยิ่งใหญ่",
       "ko": "그대들의 재산과 자식들은 시험일 뿐이라. 위대한 보상은 하나님 그분께 있노라.",
-      "vi": "Thật ra, tài sản và con cái của các ngươi chỉ là một sự thử thách (mà Allah muốn thử thách các ngươi). Và (các ngươi hãy biết rằng) ở nơi Allah có một phần thưởng vô cùng vĩ đại."
+      "vi": "Thật ra, tài sản và con cái của các ngươi chỉ là một sự thử thách (mà Allah muốn thử thách các ngươi). Và (các ngươi hãy biết rằng) ở nơi Allah có một phần thưởng vô cùng vĩ đại.",
+      "pt": "Vossas riquezas e vossos filhos não são que provação. E, junto de Allah, haverá magnífico prêmio.",
+      "it": "In verità i vostri beni e i vostri figli sono una tentazione. E presso Allāh c’è una grande ricompensa.",
+      "sv": "Era ägodelar och era barn är blott en prövning, men hos Gud väntar en väldig belöning.",
+      "uk": "Ваші діти та ваше майно — лише спокуса. А в Аллага — велика винагорода!",
+      "ro": "Averile voastre și copiii voștri sunt numai o ispită și la Allah se află o mare răsplată [Paradisul].",
+      "hr": "Imanja vaša i djeca vaša samo su iskušenje, a u Allaha je nagrada velika.",
+      "sr": "Ваша имања и ваша деца само су искушење, а код Аллаха је велика награда.",
+      "el": "Στ’ αλήθεια, ο πλούτος σας και τα παιδιά σας είναι μόνο μια δοκιμασία για σας (που μπορεί να σας κάνει να αφήσετε την υπακοή προς τον Αλλάχ). Και ο Αλλάχ έχει σπουδαία αμοιβή (τον Παράδεισο)."
     }
   },
   {
@@ -6896,7 +8140,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അദൃശ്യവും ദൃശ്യവും അറിയുന്നവനും പ്രതാപിയും യുക്തിമാനുമാകുന്നു അവന്‍.",
       "th": "ผู้ทรงรอบรู้สิ่งเร้นลับและสิ่งเปิดเผย ผู้ทรงเกรียงไกร ผู้ทรงปรีชาญาณ",
       "ko": "보이지 않는 것과 보이는 것을 알고 계시는 분이시며, 가장 존엄하시고 가장 현명하신 분이시라.",
-      "vi": "Ngài là Đấng biết điều vô hình và hữu hình, Đấng Chí Tôn, Đấng Thông Thái."
+      "vi": "Ngài là Đấng biết điều vô hình và hữu hình, Đấng Chí Tôn, Đấng Thông Thái.",
+      "pt": "O Sabedor do invisível e do visível, O Todo-Poderoso, O Sábio.",
+      "it": "Conoscitore dell’Ignoto e dell’Evidente, il Potente, il Saggio.",
+      "sv": "Han känner väl till det som är fördolt och det som är synligt; han är den Allsmäktige, den Vise.",
+      "uk": "Знаючий потаємне й відкрите, Великий, Мудрий!",
+      "ro": "El este Știutorul celor nevăzute și al celor văzute, Al-’Aziz [Cel Puternic] [și] Al-Hakim [Înțelept].",
+      "hr": "Poznavatelj onoga što je čulima nedokučivo i onoga što je pojavno, Silni i Mudri.",
+      "sr": "Познавалац онога што је недокучиво чулима и онога што је појавно, Силни и Мудри.",
+      "el": "(Ο Αλλάχ είναι) ο Παντογνώστης των αοράτων και των ορατών, ο Αλ-‘Αζείζ (Παντοδύναμος, Ανίκητος), ο Αλ-Χακείμ (Πάνσοφος)."
     }
   },
   {
@@ -6939,7 +8191,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും തങ്ങളുടെ രക്ഷിതാവിനെ അദൃശ്യനിലയില്‍ ഭയപ്പെടുന്നവരാരോ അവര്‍ക്ക് പാപമോചനവും വലിയ പ്രതിഫലവുമുണ്ട്‌.",
       "th": "แท้จริงบรรดาผู้ยำเกรงต่อพระผู้อภิบาลของพวกเขาแม้โดยลับ สำหรับพวกเขาจะได้รับการอภัยโทษ และการตอบแทนอันใหญ่หลวง",
       "ko": "실로 보이지 않음에도 자신의 주님을 두려워하는 자들, 그들에게는 용서와 커다란 보상이 있을 것이라. 요약주해",
-      "vi": "Quả thật, những người kính sợ Thượng Đế của họ dù không nhìn thấy Ngài vẫn sẽ được tha thứ và sẽ có được một phần thưởng to lớn."
+      "vi": "Quả thật, những người kính sợ Thượng Đế của họ dù không nhìn thấy Ngài vẫn sẽ được tha thứ và sẽ có được một phần thưởng to lớn.",
+      "pt": "Por certo, os que receiam a seu Senhor, ainda que Invisível, terão perdão e grande prêmio.",
+      "it": "In verità quelli che temono il loro Dio nell’Ignoto hanno perdono e grande premio.",
+      "sv": "För de som fruktar sin Herre även när ingen [annan människa] ser dem väntar förlåtelse och en storslagen belöning.",
+      "ro": "Cei care se tem de Domnul lor, fără să-L vadă pe El, vor avea parte de iertare și de mare răsplată.",
+      "hr": "Onima koji se Gospodara svoga boje i kad ih nitko ne vidi – pripada oprost i nagrada velika!",
+      "sr": "Онима који се свога Господара боје и кад их нико не види - припада опрост и награда велика!"
     }
   },
   {
@@ -6976,7 +8234,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "yo": "Ṣé wọn kò rí àwọn ẹyẹ tí ó wà ní òkè wọn, tí (wọ́n) ń na ìyẹ́ apá (wọn), tí wọ́n sì ń pa á mọ́ra? Kiní kan kò mú wọn dúró (sínú òfurufú) àfi Àjọkẹ́-ayé. Dájúdájú Òun sì ni Olùríran nípa gbogbo n̄ǹkan.",
       "zh": "难道他们没有看见在他们的上面展翅和敛翼的众鸟吗？只有至仁主维持它们，他确是明察万物的。",
       "th": "พวกเขามิได้มองไปดูนกที่ (บิน) อยู่เบื้องบนพวกเขาดอกหรือ มันกางปีกและหุบปีก (ของมัน) ไม่มีผู้ใดจะไปจับดึงมันไว้ได้ นอกจากพระผู้ทรงกรุณาปรานี แท้จริงพระองค์ทรงมองเห็นทุกสิ่งอย่าง",
-      "ko": "그들은 그들 위에서 날개를 펼치고 접는 새를 보지 않았던가? 오직 가장 자비로우신 분만이 그것(새)을 붙잡아 주시노라. 실로 그분께서는 모든 것을 보시는 분이라."
+      "ko": "그들은 그들 위에서 날개를 펼치고 접는 새를 보지 않았던가? 오직 가장 자비로우신 분만이 그것(새)을 붙잡아 주시노라. 실로 그분께서는 모든 것을 보시는 분이라.",
+      "pt": "E não viram eles os pássaros, acima deles, pairando no ar, e adejando? Não os sustém senão O Misericordioso. Por certo, Ele, de todas as cousas, é Onividente.",
+      "it": "Non hanno forse visto sopra di loro gli uccelli stendere e ripiegare le ali? Non li sorregge se non il Misericordioso: in verità Lui è Osservatore di ogni cosa.",
+      "sv": "Har de inte sett fåglarna ovanför sig, hur de breder ut sina vingar och drar in dem? Ingen annan än den Nåderike håller dem uppe; han har förvisso full insikt i allting.",
+      "uk": "Невже вони не бачили птахів, які розгортають та складають крила? Лише Милостивий утримує їх! Воістину, Він бачить кожну річ!",
+      "ro": "Oare nu văd ei păsările de deasupra lor întinzând și strângând aripile lor? Nu le poate ține pe ele decât Ar-Rahman [Cel Milostiv]! El este Cel care le Vede pe toate.",
+      "hr": "Zar oni ne vide ptice iznad sebe kako raširenih krila lete, a i skupljaju ih? Samo ih Svemilosni drži; On, zaista, sve dobro vidi.",
+      "sr": "Зар они не виде птице изнад себе како лете раширених крила, а и скупљају их? Само их Свемилосни држи; Он, заиста, све добро види."
     }
   },
   {
@@ -7020,7 +8285,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും സൂക്ഷ്മത പാലിക്കുന്നവര്‍ക്ക് അവരുടെ രക്ഷിതാവിങ്കല്‍ അനുഗ്രഹങ്ങളുടെ സ്വര്‍ഗത്തോപ്പുകളുണ്ട്‌.",
       "th": "แท้จริง สำหรับบรรดาผู้ยำเกรง ณ ที่พระผู้อภิบาลของพวกเขานั้นคือสวนสวรรค์หลากหลายแห่งบรมสุข",
       "ko": "실로 하나님을 경외하는 자들은 그들 주님께 가까운 곳에서 기쁨의 천국을 가질 것이라.",
-      "vi": "Quả thật, những người ngoan đạo sẽ hưởng Thiên Đàng Hạnh Phúc nơi Thượng Đế của họ."
+      "vi": "Quả thật, những người ngoan đạo sẽ hưởng Thiên Đàng Hạnh Phúc nơi Thượng Đế của họ.",
+      "pt": "Por certo, haverá para os piedosos, junto de seu Senhor, os Jardins da Delícia.",
+      "it": "In verità per i devoti ci sono Paradisi di delizie dal loro Dio.",
+      "sv": "För de gudfruktiga väntar lycksalighetens trädgårdar hos deras Herre.",
+      "uk": "Воістину, богобоязливих у їхнього Господа очікують сади насолоди!",
+      "ro": "Însă cei evlavioși au la Domnul lor Grădinile plăcerii.",
+      "hr": "Za one koji se budu bojali Allaha bit će, zaista, vrtovi uživanja u Gospodara njihova,",
+      "sr": "За оне који се буду бојали Аллаха биће, заиста, баште уживања код њиховог Господара,",
+      "el": "Στ’ αλήθεια, γι' αυτούς που φυλάσσονται από την τιμωρία του Αλλάχ (εκτελώντας τις εντολές Του) υπάρχουν οι κήποι της ευδαιμονίας (ο Παράδεισος) με τον Κύριό τους."
     }
   },
   {
@@ -7061,7 +8334,13 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും ഇതൊരു ഉല്‍ബോധനമാകുന്നു. അതിനാല്‍ വല്ലവനും ഉദ്ദേശിക്കുന്ന പക്ഷം അവന്‍ തന്‍റെ രക്ഷിതാവിങ്കലേക്ക് ഒരു മാര്‍ഗം സ്വീകരിച്ചു കൊള്ളട്ടെ.",
       "th": "แท้จริงนี่คือข้อเตือนสติ ดังนั้นผู้ใดประสงค์ก็พึงยึดถือเป็นแนวทางไปสู่พระผู้อภิบาลของเขาเถิด",
       "ko": "실로 이것은 떠올림이라. 그러니 원하는 자는 그의 주님께로 향하는 길을 잡으라.",
-      "vi": "Quả thật, đây là một sự nhắc nhở, vì vậy, ai muốn thì hãy chọn lấy một con đường trở về với Thượng Đế của mình."
+      "vi": "Quả thật, đây là một sự nhắc nhở, vì vậy, ai muốn thì hãy chọn lấy một con đường trở về với Thượng Đế của mình.",
+      "it": "In verità questo è un avvertimento: chi vuole segua la strada verso il suo Dio.",
+      "sv": "Detta är en varning; den som vill kan ta vägen som leder till sin Herre.",
+      "uk": "Воістину, це — нагадування! І хто побажає, той стане на шлях до Господа свого!",
+      "ro": "Aceasta este o îndemnare și cine voiește va urma drumul către Domnul său.",
+      "hr": "Ovo je, doista, pouka; i tko hoće, put ka Gospodaru svome prihvatit će!",
+      "sr": "Ово је, заиста, поука; и ко хоће, пут ка своме Господару прихватиће!"
     }
   },
   {
@@ -7104,7 +8383,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അങ്ങനെയുള്ളവന്‍ മരിച്ചവരെ ജീവിപ്പിക്കാന്‍ കഴിവുള്ളവനല്ലെ?",
       "th": "ดังนั้น พระองค์จะไม่สามารถที่จะให้คนตายมีชีวิตขึ้นมาอีกกระนั้นหรือ?",
       "ko": "그러한 분이야말로 죽은 자들을 살리실 수 있는 분이 아니던가?",
-      "vi": "Lẽ nào Đấng (đã tạo ra con người như thế) đó không có khả năng làm sống lại người chết ư?"
+      "vi": "Lẽ nào Đấng (đã tạo ra con người như thế) đó không có khả năng làm sống lại người chết ư?",
+      "pt": "Esse não é Poderoso para dar a vida aos mortos?",
+      "it": "Non è forse Lui capace di ridare la vita ai morti?",
+      "sv": "Skulle då inte denne [som gjort detta] vara kapabel att återuppväcka de döda?",
+      "uk": "То невже Він не спроможний оживити померлих?",
+      "ro": "Și oare Acesta [Allah] nu are Putere să-i învie pe cei morți?",
+      "hr": "i zar Taj nije kadar mrtve oživjeti?!",
+      "sr": "и зар Тај није способан мртве да оживи?!",
+      "el": "Δεν είναι λοιπόν Αυτός (ο Αλλάχ, που κάνει όλα αυτά) Ικανός να δώσει ζωή στους νεκρούς; (Βέβαια! Είναι για τα πάντα Ικανός)."
     }
   },
   {
@@ -7144,7 +8431,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും നാം അവന്ന് വഴി കാണിച്ചുകൊടുത്തിരിക്കുന്നു. എന്നിട്ട് ഒന്നുകില്‍ അവന്‍ നന്ദിയുള്ളവനാകുന്നു. അല്ലെങ്കില്‍ നന്ദികെട്ടവനാകുന്നു.",
       "th": "แท้จริงเราได้นำทางให้แก่เขาแล้ว บางทีเขาก็เป็นผู้กตัญญู และบางทีเขาก็เป็นผู้เนรคุณ",
       "ko": "실로 나는 그에게 길을 가리켜 주었으니 (그는) 감사하는 자거나 불신하는 자라.",
-      "vi": "Quả thật, TA đã hướng dẫn y con đường (rõ ràng, TA cho y toàn quyền lựa chọn), hoặc là y biết ơn hoặc là y vô ơn."
+      "vi": "Quả thật, TA đã hướng dẫn y con đường (rõ ràng, TA cho y toàn quyền lựa chọn), hoặc là y biết ơn hoặc là y vô ơn.",
+      "pt": "Por certo, guiamo-lo ao caminho, fosse grato, fosse ingrato.",
+      "it": "In verità gli indicammo la via, sia che fosse grato o ingrato.",
+      "sv": "Vi har visat henne den rätta vägen, [och sedan är det upp till henne] att vara tacksam [genom att tro] eller otacksam [genom otro].",
+      "uk": "Воістину, Ми повели її шляхом, буде вона вдячною чи невдячною.",
+      "ro": "Cu adevărat, Noi l-am călăuzit pe drum, fie că el va fi mulțumitor, fie că el va fi nemulțumitor.",
+      "hr": "Mi mu na Pravi put ukazujemo, pa ili je zahvalan ili nezahvalan.",
+      "sr": "Ми му на Прави пут указујемо, па или је захвалан или незахвалан."
     }
   },
   {
@@ -7188,7 +8482,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "ഭൂമിയെ നാം ഒരു വിരിപ്പാക്കിയില്ലേ?",
       "th": "เรามิได้ทำให้แผ่นดินเป็นพื้นราบดอกหรือ?",
       "ko": "내가 대지를 침상으로 두지 않았던가?",
-      "vi": "Chẳng phải TA đã làm cho mặt đất trải rộng (như một tấm thảm)?"
+      "vi": "Chẳng phải TA đã làm cho mặt đất trải rộng (như một tấm thảm)?",
+      "pt": "Não fizemos da terra leito?",
+      "it": "Non facemmo forse della terra una dimora,",
+      "sv": "Har vi inte gjort jorden till en plats att leva på,",
+      "uk": "Хіба не зробили Ми землю — ложем,",
+      "ro": "Oare nu am făcut Noi Pământul un pat?",
+      "hr": "Zar Zemlju posteljom nismo učinili,",
+      "sr": "Зар Земљу колевком нисмо учинили,",
+      "el": "Μα δεν κάναμε τη Γη έτοιμη (σαν ένα κρεβάτι) για να την κατοικήσετε;"
     }
   },
   {
@@ -7230,7 +8532,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "വിശ്വസിക്കുകയും സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും ചെയ്തവരാരോ അവര്‍ക്ക് താഴ്ഭാഗത്തുകൂടി അരുവികള്‍ ഒഴുകുന്ന സ്വര്‍ഗത്തോപ്പുകളുണ്ട്‌; തീര്‍ച്ച. അതത്രെ വലിയ വിജയം.",
       "th": "แท้จริงบรรดาผู้ศรัทธาและประกอบความดีทั้งหลาย พวกเขาจะได้รับสวนสวรรค์หลากหลาย ณ เบื้องล่างของมันมีลำน้ำหลายสายไหลผ่าน นั่นคือชัยชนะอันใหญ่หลวง",
       "ko": "(하나님과 사도를) 믿고 선행을 실천하는 자들은 아래로부터 강이 흐르는 천국이 그들의 것이라. 이것이야말로 커다란 성공이라.",
-      "vi": "Quả thật, những người có đức tin và hành thiện sẽ được ban thưởng các Ngôi Vườn Thiên Đàng bên dưới có các dòng sông chảy. Đó là một thành tựu vĩ đại."
+      "vi": "Quả thật, những người có đức tin và hành thiện sẽ được ban thưởng các Ngôi Vườn Thiên Đàng bên dưới có các dòng sông chảy. Đó là một thành tựu vĩ đại.",
+      "pt": "Por certo, os que crêem e fazem as boas obras terão Jardins, abaixo dos quais correm os rios. Esse é o grande triunfo.",
+      "it": "In verità quelli che hanno creduto e hanno fatto il bene avranno Paradisi sotto cui scorrono fiumi: quello sarà il grande successo.",
+      "sv": "Men de som tror och handlar rättfärdigt ska få trädgårdar, genom vilka floder rinner – detta är den stora segern!",
+      "uk": "Воістину, тим, які увірували та чинили добрі справи, їм сади, де течуть ріки. Це — успіх великий!",
+      "ro": "Însă aceia care cred și împlinesc fapte bune, vor avea parte de Grădini pe sub care curg râuri și aceasta este izbânda cea mare.",
+      "hr": "Zaista onima koji su vjerovali i radili dobra djela pripadaju rajski vrtovi kroz koje rijeke teku, a to je uspjeh veliki.",
+      "sr": "Заиста онима који су веровали и радили добра дела припадају рајске баште кроз које теку реке, а то је велики успех."
     }
   },
   {
@@ -7274,7 +8583,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും അവന്‍ തന്നെയാണ് ആദ്യമായി ഉണ്ടാക്കുന്നതും ആവര്‍ത്തിച്ച് ഉണ്ടാക്കുന്നതും.",
       "th": "แท้จริงพระองค์คือผู้ทรงให้บังเกิดครั้งแรก และทรงให้กลับฟื้นคืนชีพขึ้นอีก",
       "ko": "진실로 그분께서는 개시하시고 반복하시노라.",
-      "vi": "Thật vậy, chính Ngài là Đấng khởi nguồn (sự tạo hóa) và Ngài là Đấng sẽ lặp lại (nó)."
+      "vi": "Thật vậy, chính Ngài là Đấng khởi nguồn (sự tạo hóa) và Ngài là Đấng sẽ lặp lại (nó).",
+      "pt": "Por certo, Ele inicia a criação e a repete.",
+      "it": "In verità Lui crea e resuscita",
+      "sv": "Han är den som påbörjar [skapelsen] och återupprättar den.",
+      "uk": "Воістину, Він починає та повторює.",
+      "ro": "El este Cel care face prima oară [creația] și El este Cel care o face din nou.",
+      "hr": "On ni iz čega stvara, i ponovo će to učiniti;",
+      "sr": "Он, заиста, ни из чега ствара, и поново ће то да учини;",
+      "el": "Αυτός είναι που αρχίζει (τη δημιουργία) και την επαναλαμβάνει."
     }
   },
   {
@@ -7316,7 +8633,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തന്‍റെ കാര്യത്തില്‍ ഒരു മേല്‍നോട്ടക്കാരനുണ്ടായിക്കൊണ്ടല്ലാതെ യാതൊരാളുമില്ല.",
       "th": "ไม่มีชีวิตใด (อยู่โดยลำพัง) เว้นแต่มีผู้เฝ้ารักษามัน",
       "ko": "모든 이에게는 예외 없이 그를 감시하는 자가 있노라.",
-      "vi": "Mỗi linh hồn thực sự đều có vị (Thiên Thần) trông coi."
+      "vi": "Mỗi linh hồn thực sự đều có vị (Thiên Thần) trông coi.",
+      "pt": "Por certo, sobre cada alma há um anjo custódio!",
+      "it": "Ogni anima è sovrastata da un osservatore:",
+      "sv": "Varje själ har sannerligen en väktare över sig [som bevarar hans gärningar].",
+      "uk": "І немає душі, поряд з якою не було би сторожа!",
+      "ro": "Nu este suflet care să nu aibă asupra sa un păzitor,",
+      "hr": "Nema čovjeka nad kojim netko ne bdije.",
+      "sr": "Нема човека а да над њим није анђео чувар.",
+      "el": "Ότι δεν υπάρχει ψυχή που να μην έχει πάνω της (έναν άγγελο) παρατηρητή (που καταγράφει τις καλές και τις κακές πράξεις της)."
     }
   },
   {
@@ -7358,7 +8683,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக உம் இறைவன் எதிர்பார்க்குமிடத்தில் இருக்கிறான்.",
       "th": "แท้จริงพระผู้อภิบาลของเจ้านั้นทรงเฝ้าดูอย่างแน่นอน",
       "ko": "진실로 그대의 주님께서는 감시대에 계시노라.",
-      "vi": "Quả thật, Thượng Đế của Ngươi (Thiên Sứ Muhammad) luôn theo dõi và quan sát."
+      "vi": "Quả thật, Thượng Đế của Ngươi (Thiên Sứ Muhammad) luôn theo dõi và quan sát.",
+      "pt": "Por certo, teu Senhor está sempre à espreita.",
+      "it": "In verità il tuo Dio è sempre vigile.",
+      "sv": "Sannerligen, din Herre står ständigt på vakt.",
+      "uk": "Воістину, Господь твій — на варті!",
+      "ro": "Cu adevărat, Domnul tău vă Observă!",
+      "hr": "a Gospodar tvoj je, zaista, u zasjedi.",
+      "sr": "а твој Господар, заиста, све надгледа.",
+      "el": "Πράγματι, ο Κύριός σου παρακολουθεί (τις πράξεις όλων των ανθρώπων, και ανταμείβει των πιστούς και τιμωρεί τους άπιστους και τους αμαρτωλούς)."
     }
   },
   {
@@ -7401,7 +8734,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അവന് നാം രണ്ട് കണ്ണുകള്‍ ഉണ്ടാക്കി കൊടുത്തിട്ടില്ലേ?",
       "th": "เรามิได้ทำดวงตาทั้งสองข้างให้แก่เขาดอกหรือ?",
       "ko": "내가 그를 위해 두 눈과",
-      "vi": "Chẳng phải TA (Allah) đã không tạo cho y đôi mắt (để nhìn ngắm và quan sát)?"
+      "vi": "Chẳng phải TA (Allah) đã không tạo cho y đôi mắt (để nhìn ngắm và quan sát)?",
+      "it": "Non lo abbiamo forse dotato di due occhi,",
+      "sv": "Har vi inte gett henne två ögon,",
+      "uk": "Хіба не створили Ми її володарем двох очей,",
+      "ro": "Oare nu i-am dat lui doi ochi",
+      "hr": "Zar mu nismo dali oka dva,",
+      "sr": "Зар му нисмо дали два ока",
+      "el": "Μα δεν του δώσαμε δύο μάτια,"
     }
   },
   {
@@ -7444,7 +8784,14 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും നിങ്ങളുടെ പരിശ്രമം വിഭിന്ന രൂപത്തിലുള്ളതാകുന്നു.",
       "th": "แท้จริงการงานของพวกเจ้านั้นย่อมแตกต่างกันอย่างแน่นอน",
       "ko": "진실로 그대들의 노력은 제각각이라.",
-      "vi": "Quả thật, nỗ lực của các ngươi rất đa dạng."
+      "vi": "Quả thật, nỗ lực của các ngươi rất đa dạng.",
+      "it": "in verità diverse sono le vostre opere!",
+      "sv": "era strävanden är sannerligen vitt skilda.",
+      "uk": "Воістину, ваші бажання різні!",
+      "ro": "Cu adevărat, eforturile voastre sunt diferite [scopurile voastre sunt diferite]!",
+      "hr": "vaš trud je, zaista, različit.",
+      "sr": "ваш труд је, заиста, различит.",
+      "el": "Ότι πράγματι, οι πράξεις σας διαφέρουν (κάποιοι από σας πράττουν καλές πράξεις για να λάβουν την αμοιβή του Αλλάχ, ενώ άλλοι διαπράττουν το κακό, που είναι ένας λόγος για να εισέλθουν στη Φωτιά)."
     }
   },
   {
@@ -7488,7 +8835,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "എന്നാല്‍ തീര്‍ച്ചയായും ഞെരുക്കത്തിന്‍റെ കൂടെ ഒരു എളുപ്പമുണ്ടായിരിക്കും.",
       "th": "ฉะนั้นแท้จริงหลังจากหนึ่งความยากลำบากก็จะมีความง่ายหลายอย่าง",
       "ko": "그러니 실로 어려움과 함께 쉬움이 있노라.",
-      "vi": "Quả thật, đi cùng với khó khăn là sự dễ dàng."
+      "vi": "Quả thật, đi cùng với khó khăn là sự dễ dàng.",
+      "pt": "Então, por certo, com a dificuldade, há facilidade!",
+      "it": "In verità, segue all’avversità il sollievo!",
+      "sv": "Sannerligen, i varje svårighet finns lättnad.",
+      "uk": "Бо ж, воістину, після труднощів настає полегшення!",
+      "ro": "Cu adevărat, alături de greu vine și ușorul.",
+      "hr": "Pa, zaista, s mukom je olakšanje,",
+      "sr": "Па, заиста, са муком је олакшање,",
+      "el": "Πράγματι, μαζί με κάθε δυσκολία έρχεται ανακούφιση (γι’ αυτό μην αφήνεις τη βλάβη που λαμβάνεις από τους άπιστους να σε σταματήσει από το κάλεσμα προς τον Αλλάχ και τη θρησκεία Του)."
     }
   },
   {
@@ -7530,7 +8885,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ta": "நிச்சயமாக சிரமத்துடன் இலகு இருக்கிறது.",
       "th": "แท้จริงหลังจากหนึ่งความยากลำบากก็จะมีความง่ายหลายอย่าง",
       "ko": "실로 어려움과 함께 쉬움이 있노라.",
-      "vi": "Quả thật, đi cùng với khó khăn là sự dễ dàng."
+      "vi": "Quả thật, đi cùng với khó khăn là sự dễ dàng.",
+      "pt": "Por certo, com a dificuldade, há facilidade!",
+      "it": "In verità, segue all’avversità il sollievo!",
+      "sv": "Ja, i varje svårighet finns lättnad.",
+      "uk": "Воістину, після труднощів настає полегшення!",
+      "ro": "Cu adevărat, alături de greu vine și ușorul!",
+      "hr": "zaista, s mukom je olakšanje!",
+      "sr": "заиста, са муком је олакшање!",
+      "el": "Πράγματι, μαζί με κάθε δυσκολία έρχεται ανακούφιση."
     }
   },
   {
@@ -7573,7 +8936,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "അല്ലാഹു വിധികര്‍ത്താക്കളില്‍ വെച്ചു ഏറ്റവും വലിയ വിധികര്‍ത്താവല്ലയോ?",
       "th": "มิใช่อัลลอฮ์ดอกหรือ เป็นผู้ตัดสินที่ดีเยี่ยมในหมู่ผู้ตัดสินทั้งหลาย",
       "ko": "하나님이야말로 가장 지혜로우신 판결자가 아니던가?",
-      "vi": "Không phải Allah là Đấng phân định công bằng nhất đó sao?"
+      "vi": "Không phải Allah là Đấng phân định công bằng nhất đó sao?",
+      "pt": "Não é Allah O mais Sábio dos juízes?",
+      "it": "Non è forse Allāh il migliore dei Giudici?",
+      "sv": "Är inte Gud den visaste av domare?",
+      "uk": "Хіба Аллаг — не Наймудріший Суддя?",
+      "ro": "Oare nu este Allah Cel mai Înțelept dintre judecători?",
+      "hr": "Zar Allah nije sudac najpravedniji?!",
+      "sr": "Зар Аллах није судија најправеднији?!",
+      "el": "Μα δεν είναι ο Αλλάχ ο Δικαιότερος (και ο Σοφότερος) των κριτών (ορίζοντας την Ημέρα της Κρίσεως για να ανταμείψει τους καλούς και να τιμωρήσει τους κακούς); (Βεβαίως, Είναι)."
     }
   },
   {
@@ -7616,7 +8987,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും നിന്‍റെ രക്ഷിതാവിലേക്കാണ് മടക്കം.",
       "th": "แท้จริงยังพระผู้อภิบาลของเจ้าเท่านั้นคือการกลับไป",
       "ko": "실로 그대의 주님께로 돌아감이라.",
-      "vi": "Chắc chắn y sẽ quay về với Thượng Đế của y."
+      "vi": "Chắc chắn y sẽ quay về với Thượng Đế của y.",
+      "pt": "Por certo, a teu Senhor será o retorno.",
+      "it": "In verità al tuo Dio è il ritorno.",
+      "sv": "Men återfärden är förvisso till din Herre.",
+      "uk": "Воістину, до Господа твого повернення!",
+      "ro": "Însă, cu adevărat, la Domnul tău se află întoarcerea!",
+      "hr": "a Gospodaru tvome će se, doista, svi vratiti!",
+      "sr": "а твоме Господару ће сви, заиста, да се врате!",
+      "el": "Στ’ αλήθεια, στον Κύριό σου θα είναι η επιστροφή (όλων των ανθρώπων)."
     }
   },
   {
@@ -7657,7 +9036,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "നിര്‍ണയത്തിന്‍റെ രാത്രി ആയിരം മാസത്തെക്കാള്‍ ഉത്തമമാകുന്നു.",
       "th": "คืนอัลก็อดร์นั้นดียิ่งกว่าหนึ่งพันเดือน",
       "ko": "운명의 밤은 천개월보다 더 좋으니라.",
-      "vi": "Đêm Định Mệnh tốt hơn cả một ngàn tháng."
+      "vi": "Đêm Định Mệnh tốt hơn cả một ngàn tháng.",
+      "pt": "A noite de al-Qadr é melhor que mil meses.",
+      "it": "La notte del Prestigio è migliore di mille mesi.",
+      "sv": "Förutbestämmelsens natt är bättre än tusen månader.",
+      "uk": "Ніч Величності краща за тисячу місяців!",
+      "ro": "Noaptea al-Qadr este mai bună decât o mie de luni!",
+      "hr": "Noć Kadr bolja je od tisuću mjeseci;",
+      "sr": "Ноћ одредбе боља је од хиљаду месеци;",
+      "el": "Η Νύχτα του Αλ-Κάντρ είναι καλύτερη από χίλιους μήνες (δηλ. η λατρεία προς τον Αλλάχ εκείνη τη νύχτα είναι καλύτερη από χίλιους μήνες λατρείας προς Αυτόν, δηλαδή 83 χρόνια και 4 μήνες)."
     }
   },
   {
@@ -7701,7 +9088,15 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = [
       "ml": "തീര്‍ച്ചയായും വിശ്വസിക്കുകയും സല്‍കര്‍മ്മങ്ങള്‍ പ്രവര്‍ത്തിക്കുകയും ചെയ്തവരാരോ അവര്‍ തന്നെയാകുന്നു സൃഷ്ടികളില്‍ ഉത്തമര്‍.",
       "th": "แท้จริง บรรดาผู้ศรัทธาและประกอบการดีทั้งหลาย ชนเหล่านั้น พวกเขาเป็นมนุษย์ที่ดียิ่ง",
       "ko": "실로 (하나님과 사도를) 믿고 선행을 실천하는 자들, 이들이야말로 가장 훌륭한 피조물이라.",
-      "vi": "Riêng những người có đức tin và hành thiện, họ thực sự là những sinh vật tốt đẹp nhất."
+      "vi": "Riêng những người có đức tin và hành thiện, họ thực sự là những sinh vật tốt đẹp nhất.",
+      "pt": "Por certo, os que crêem e fazem as boas obras, esses são os melhores de toda criação.",
+      "it": "In verità quelli che hanno creduto e hanno fatto il bene, quelli sono, invece, il meglio del Creato;",
+      "sv": "Men de som tror och handlar rättfärdigt; de är de bästa av alla skapelser.",
+      "uk": "Воістину, ті, які увірували й творили добрі справи, вони — найкращі з творінь.",
+      "ro": "Cu adevărat, cei care cred și împlinesc fapte bune, sunt cei mai buni dintre toate făpturile.",
+      "hr": "A oni koji vjeruju i čine dobra djela – oni su, zbilja, najbolja stvorenja.",
+      "sr": "А они који верују и чине добра дела - они су, заиста, најбоља створења.",
+      "el": "Πράγματι, αυτοί που πιστεύουν και κάνουν ενάρετες πράξεις, είναι οι καλύτεροι των πλασμάτων."
     }
   }
 ];

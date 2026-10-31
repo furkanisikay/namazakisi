@@ -11,7 +11,7 @@ import org.junit.Test
  * parametreleri kullanır (işaretçi değerlerle çağrılır).
  */
 class TvDilTablolariTest {
-    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi")
+    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el")
     private val isaretciler = listOf("<AD>", "<AY>", "<GUN>", "987", "2468")
 
     private fun metinler(d: TvDili): Map<String, String> = linkedMapOf(
@@ -60,5 +60,26 @@ class TvDilTablolariTest {
         assertEquals("11 دقيقة", TvDiliAr.dakikaSesli(11))
         assertEquals("1 گھنٹہ", TvDiliUr.saatSesli(1))
         assertEquals("3 گھنٹے", TvDiliUr.saatSesli(3))
+    }
+
+    @Test
+    fun avrupaDalgasiCogulKategorileri() {
+        val sayilar = listOf(0, 1, 2, 5, 11, 19, 20, 21, 101, 120)
+        // CLDR ro (JS `cogul.ts > rumence`): 1 tekil; 0 ve …01–…19 (1 hariç) few; gerisi other.
+        assertEquals(
+            listOf("few", "one", "few", "few", "few", "few", "other", "other", "few", "other"),
+            sayilar.map { TvDiliRo.cogulKategorisi(it) },
+        )
+        // uk = rusca (gerisi many); hr, sr = bosnakca (gerisi other).
+        assertEquals(
+            listOf("many", "one", "few", "many", "many", "many", "many", "one", "one", "many"),
+            sayilar.map { TvDiliUk.cogulKategorisi(it) },
+        )
+        for (kategori in listOf(TvDiliHr::cogulKategorisi, TvDiliSr::cogulKategorisi)) {
+            assertEquals(
+                listOf("other", "one", "few", "other", "other", "other", "other", "one", "one", "other"),
+                sayilar.map { kategori(it) },
+            )
+        }
     }
 }

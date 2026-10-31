@@ -2,7 +2,7 @@
 # Emulatoru kare hattinin diline alir ve paket servisi kararli hale gelene kadar bekler.
 # Kare hatlari `adb wait-for-device`'tan hemen sonra, APK kurmadan once cagirir.
 #
-# Dil: TOHUM_DIL (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi) → cihaz dili; bilinmeyen kod tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
+# Dil: TOHUM_DIL (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el) → cihaz dili; bilinmeyen kod tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
 # cihaz Turkce olmali). `-change-locale` emulator secenegi KULLANILMAZ: acilistan hemen sonra
 # framework'u yeniden baslatir ve emulator-runner'in kendi kilit acma adimi (`input keyevent 82`)
 # "Broken pipe" ile duser — o adim kapatilamaz. Burada dil, acilis tamamlandiktan sonra root ile
@@ -24,6 +24,9 @@ case "${TOHUM_DIL:-tr}" in
   # zh/ta/ml/th/ko/vi seçicide kapalıdır: tohumun dil kaydını (`dil_ayari.kod`) kare hattı işareti (`@namaz_akisi/kare_turu`) açar.
   # Çince yalnız Basitleştirilmiş: sistem dili zh-Hans-CN (zh-TW betik uyuşmazlığıyla values-zh'yi seçmeyebilir).
   zh) HEDEF="zh-Hans-CN" ;; ta) HEDEF="ta-IN" ;; ml) HEDEF="ml-IN" ;; th) HEDEF="th-TH" ;; ko) HEDEF="ko-KR" ;; vi) HEDEF="vi-VN" ;;
+  # pt/it/sv/uk/ro/hr/sr/el seçicide kapalıdır (kare hattı işareti açar). Portekizce Avrupa normu (pt-PT);
+  # Sırpça KİRİL: betik açık yazılır (sr-Latn cihaz values-sr'yi seçmez, Türkçe values/'e düşer).
+  pt) HEDEF="pt-PT" ;; it) HEDEF="it-IT" ;; sv) HEDEF="sv-SE" ;; uk) HEDEF="uk-UA" ;; ro) HEDEF="ro-RO" ;; hr) HEDEF="hr-HR" ;; sr) HEDEF="sr-Cyrl-RS" ;; el) HEDEF="el-GR" ;;
   *) HEDEF="tr-TR" ;;
 esac
 

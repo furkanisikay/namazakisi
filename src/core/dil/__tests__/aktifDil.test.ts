@@ -39,11 +39,27 @@ it('cihaz dili yalnız SEÇİLEBİLİR dilse kullanılır (yarım dil kendiliği
   }
   expect(yerelAyarDili('ja-JP')).toBeNull();
   expect(yerelAyarDili('in_ID')).toBe('id');
+  // Portekizcenin bütün cihaz dilleri (Brezilya dahil) Avrupa normlu `pt`'dir; İngilizceye düşmez.
+  const pt = DILLER.find((d) => d.kod === 'pt')!;
+  for (const yerel of ['pt-BR', 'pt_BR', 'pt-PT', 'pt_PT', 'pt-MZ', 'pt-AO', 'pt-GW', 'pt']) {
+    expect(yerelAyarDili(yerel)).toBe('pt');
+    expect(cihazDilindenSec(yerel)).toBe(pt.secilebilir ? 'pt' : null);
+  }
+  // Latin Sırpça cihaz (iOS `sr-Latn-RS`, Android `sr_RS_#Latn`) Kiril `sr` arayüzünü alır (Latin seçenek yok).
+  const sr = DILLER.find((d) => d.kod === 'sr')!;
+  for (const yerel of ['sr-Latn-RS', 'sr_RS_#Latn', 'sr-Cyrl-RS', 'sr_RS', 'sr-ME', 'sr']) {
+    expect(yerelAyarDili(yerel)).toBe('sr');
+    expect(cihazDilindenSec(yerel)).toBe(sr.secilebilir ? 'sr' : null);
+  }
 });
 
 it('iOS yerelleştirme adı: Basitleştirilmiş Çince zh-Hans, diğer diller kendi kodu', () => {
   expect(iosYerelAdi('zh')).toBe('zh-Hans');
   for (const d of DILLER.filter((x) => x.kod !== 'zh')) expect(iosYerelAdi(d.kod)).toBe(d.kod);
+  // Portekizce `pt.lproj`: Apple yalnız bölge varyantından genel dile düşer (pt-BR/pt-PT/pt-MZ → pt);
+  // `pt-PT.lproj`un pt-BR cihazında seçildiği belgelenmemiştir (QA1828). Sırpça `sr.lproj` (Kiril).
+  expect(iosYerelAdi('pt')).toBe('pt');
+  expect(iosYerelAdi('sr')).toBe('sr');
 });
 
 /** Sözlük ağacındaki her metin: boş değil, yer tutucuları Türkçeyle aynı, çoğullar dilin kategorilerini taşır. */

@@ -11,9 +11,12 @@ const SAYILAR = [
   1001, 1011, 1021, 1100, 10000, 100000, 1000000, 2000000, 1000001,
 ];
 
+/** Uygulama kodunun ICU yerel ayarı: Portekizce Avrupa normudur (çıplak `pt` ICU'da Brezilya, 0 tekil). */
+const ICU_YERELI: Record<string, string> = { pt: 'pt-PT' };
+
 describe.each(COGUL_DILLERI)('%s çoğul kuralı', (dil) => {
   it('ICU ile aynı', () => {
-    const icu = new Intl.PluralRules(dil);
+    const icu = new Intl.PluralRules(ICU_YERELI[dil] ?? dil);
     const sapma = SAYILAR.filter((n) => cogulKategorisi(dil, n) !== icu.select(n));
     expect(sapma).toEqual([]);
   });
@@ -51,4 +54,15 @@ it('Afrika dalgası: sw/ha/om/so one/other (0 çoğul), am/ff 0 tekil, yo yalnı
 it('Asya dalgası: zh/th/ko/vi yalnız other, ta/ml one/other (0 çoğul)', () => {
   for (const dil of ['zh', 'th', 'ko', 'vi']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'other', 'other']);
   for (const dil of ['ta', 'ml']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'one', 'other']);
+});
+
+it('Avrupa dalgası: pt (pt-PT)/it one/many/other, sv/el one/other, uk Rusça, hr/sr Boşnakça, ro yeni kural', () => {
+  for (const dil of ['pt', 'it']) expect([0, 1, 2, 1000000].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'one', 'other', 'many']);
+  for (const dil of ['sv', 'el']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'one', 'other']);
+  expect([1, 2, 5, 11, 21].map((n) => cogulKategorisi('uk', n))).toEqual(['one', 'few', 'many', 'many', 'one']);
+  for (const dil of ['hr', 'sr']) expect([1, 2, 5, 11, 21].map((n) => cogulKategorisi(dil, n))).toEqual(['one', 'few', 'other', 'other', 'one']);
+  // Rumence: 0 ve …01–…19 (1 hariç) few; 20, 100, 120, 1.000.000 other.
+  expect([0, 1, 2, 19, 20, 100, 101, 119, 120, 1000000].map((n) => cogulKategorisi('ro', n))).toEqual([
+    'few', 'one', 'few', 'few', 'other', 'other', 'few', 'few', 'other', 'other',
+  ]);
 });

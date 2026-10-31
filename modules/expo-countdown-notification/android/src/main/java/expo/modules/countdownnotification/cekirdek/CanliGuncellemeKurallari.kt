@@ -46,7 +46,7 @@ object CanliGuncellemeKurallari {
     /**
      * Kısa süre birimleri, arayüz diline göre (JS `sozluk/<dil>/sure.ts > kisa`).
      * Bilinmeyen dil Türkçeye düşer. Yeni dil: buraya bir satır + JS sözlüğü. Sıra tr, en,
-     * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
+     * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
      */
     internal val KISA_BIRIMLER: Map<String, KisaBirimler> = mapOf(
         "tr" to KisaBirimler("sa", "dk"),
@@ -120,6 +120,22 @@ object CanliGuncellemeKurallari {
         "ko" to KisaBirimler("시간", "분", birimAyirici = "", parcaAyirici = " "),
         // vi
         "vi" to KisaBirimler("giờ", "phút", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: pt
+        "pt" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: it
+        "it" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: sv
+        "sv" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: uk
+        "uk" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: ro
+        "ro" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: hr
+        "hr" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: sr
+        "sr" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: el
+        "el" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
     )
 
     /**

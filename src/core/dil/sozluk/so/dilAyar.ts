@@ -5,7 +5,7 @@ export const dilAyar: Sozluk['dilAyar'] = {
   baslik: 'Luqadda · Language',
   aciklama: 'Dooro luqadda barnaamijka. Ogeysiisyada iyo akhrinta codka ahi sidoo kale way isticmaalaan.',
   grup: 'Luqadda barnaamijka',
-  dilAdlari: { tr: 'Turki', en: 'Ingiriisi', id: 'Indunusiyaan', de: 'Jarmal', fr: 'Faransiis', bs: 'Bosniyaan', ru: 'Ruush', ms: 'Malaay', ar: 'Carabi', ur: 'Urduu', es: 'Isbaanish', nl: 'Holandays', sq: 'Albeeniyaan', hi: 'Hindi', bn: 'Bangaali', fa: 'Faarisi', ps: 'Bashtuu', ckb: 'Kurdiga Dhexe', ug: 'Uighur', az: 'Asarbayjan', uz: 'Usbakis', kk: 'Kasaaq', ky: 'Kirgiis', tg: 'Taajik', sw: 'Sawaaxili', ha: 'Hawsa', am: 'Axmaar', om: 'Oromo', so: 'Soomaali', ff: 'Fuulah', yo: 'Yoruuba', zh: 'Shiinaha Rasmiga ah', ta: 'Tamiil', ml: 'Malayalam', th: 'Taaylandays', ko: 'Kuuriyaan', vi: 'Fiitnaamays' },
+  dilAdlari: { tr: 'Turki', en: 'Ingiriisi', id: 'Indunusiyaan', de: 'Jarmal', fr: 'Faransiis', bs: 'Bosniyaan', ru: 'Ruush', ms: 'Malaay', ar: 'Carabi', ur: 'Urduu', es: 'Isbaanish', nl: 'Holandays', sq: 'Albeeniyaan', hi: 'Hindi', bn: 'Bangaali', fa: 'Faarisi', ps: 'Bashtuu', ckb: 'Kurdiga Dhexe', ug: 'Uighur', az: 'Asarbayjan', uz: 'Usbakis', kk: 'Kasaaq', ky: 'Kirgiis', tg: 'Taajik', sw: 'Sawaaxili', ha: 'Hawsa', am: 'Axmaar', om: 'Oromo', so: 'Soomaali', ff: 'Fuulah', yo: 'Yoruuba', zh: 'Shiinaha Rasmiga ah', ta: 'Tamiil', ml: 'Malayalam', th: 'Taaylandays', ko: 'Kuuriyaan', vi: 'Fiitnaamays', pt: 'Boortaqiis', it: 'Talyaani', sv: 'Iswiidhish', uk: 'Yukreeniyaan', ro: 'Romanka', hr: 'Koro’eeshiyaan', sr: 'Seerbiyaan', el: 'Giriik' },
   cihazDili: 'Luqadda qalabka',
   cihazDiliKullaniliyor: 'Hadda {ad}',
   cihazDiliDesteklenmiyor: 'Luqadda qalabkaagu weli lama heli karo; Turkiga ayaa la isticmaalayaa.',

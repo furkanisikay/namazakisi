@@ -449,5 +449,105 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
       "29:45": "Ngươi (hỡi Thiên Sứ Muhammad) hãy xướng đọc những điều đã được mặc khải cho Ngươi trong Kinh Sách (Qur’an) và Ngươi hãy chu đáo dâng lễ nguyện Salah. Quả thật, lễ nguyện Salah sẽ ngăn cản mọi điều ô uế và tội lỗi. Và việc tưởng nhớ Allah là điều lớn lao nhất, và Allah biết rõ mọi điều các ngươi làm.",
       "62:9": "Hỡi những người có đức tin! Khi được mời gọi đến lễ nguyện Salah Jumu’ah (vào ngày thứ sáu) thì các ngươi hãy nhanh chân tiến đến với việc tụng niệm Allah và hãy tạm gác lại việc mua bán. Điều đó tốt cho các ngươi nếu các ngươi biết."
     }
+  },
+  "pt": {
+    "anahtar": "portuguese_nasr",
+    "surum": "1.4.1",
+    "baslik": "Portuguese Translation - Helmi Nasr",
+    "ayetler": {
+      "2:153": "Ó vós que credes! Implorai ajuda com a paciência e a oração. Por certo, Allah é com os perseverantes.",
+      "2:238": "Custodiai as orações e em particular a oração mediana, e levantai-vos sendo devotos a Allah.",
+      "4:103": "E, quando houverdes encerrado a oração, lembrai-vos de Allah, estando de pé ou assentados ou deitados. E, quando estiverdes em segurança, cumpri a oração. Por certo, a oração, para os crentes, é prescrição com tempos marcados.",
+      "29:45": "Recita, Muhammad, o que te foi revelado do Livro e cumpre a oração. Por certo, a oração coíbe a obscenidade e o reprovável. E, certamente, a lembrança de Allah é maior que isso. E Allah sabe o que engenhais."
+    }
+  },
+  "it": {
+    "anahtar": "italian_rwwad",
+    "surum": "1.0.2",
+    "baslik": "Italian Translation - Rowwad Translation Center",
+    "ayetler": {
+      "2:153": "O credenti, sostenetevi con la pazienza e la preghiera: in verità Allāh è con i pazienti.",
+      "2:238": "Compiete assiduamente le preghiere, e particolarmente la mediana, e tendete umilmente ad Allāh.",
+      "4:103": "Quando finite di pregare, lodate Allāh in piedi, seduti e sui fianchi! Se vi sentite abbastanza sicuri, praticate la preghiera con devozione: in verità la preghiera, per i credenti, è stata sempre un obbligo in momenti stabiliti.",
+      "11:114": "E praticate la preghiera con devozione mattina e sera, e parte della notte. In verità le opere buone cancellano quelle cattive. Quello è un monito per i devoti.",
+      "29:45": "Recita ciò che ti viene ispirato dal Libro e pratica la preghiera con devozione: in verità la preghiera distoglie dalla nefandezza e dagli atti riprovevoli. E invocare Allāh è l’atto più meritevole, e Allāh sa bene ciò che fate.",
+      "62:9": "O credenti! Se viene la chiamata alla preghiera, il giorno del Venerdì, accorrete a pregare Allāh e sospendete gli affari: ciò è meglio per voi, se sapeste!"
+    }
+  },
+  "sv": {
+    "anahtar": "swedish_rwwad",
+    "surum": "1.0.2",
+    "baslik": "Swedish Translation - Rowad Translation",
+    "ayetler": {
+      "2:153": "Troende! Sök hjälp i tålamod och bön. Gud är säkerligen med de tålmodiga.",
+      "2:238": "Slå vakt om bönerna, och särskilt den mittersta, och stå inför Gud i ödmjuk lydnad.",
+      "4:103": "När ni har fullbordat bönen, prisa då Gud stående, sittande och liggande. Och när ni åter är trygga, förrätta då bönen fullt ut. Bönen är en föreskriven plikt för de troende, bunden till bestämda tider.",
+      "11:114": "Förrätta bönen vid dagens början och vid dess slut, och under delar av natten. Goda gärningar utplånar de onda. Detta är en påminnelse för de som låter sig påminnas.",
+      "29:45": "Recitera skriften som har uppenbarats för dig och förrätta bönen. Bönen avhåller från skamlöshet och synder, och att minnas Gud är förvisso det allra största. Gud har full vetskap om era handlingar.",
+      "62:9": "Troende! När det kallas till bön på fredagen, skynda då till Guds åminnelse och lägg handeln åt sidan. Detta är bättre för er, om ni bara visste."
+    }
+  },
+  "uk": {
+    "anahtar": "ukrainian_yakubovych",
+    "surum": "1.0.2",
+    "baslik": "Ukrainian Translation - Mikhailo Yakubovych",
+    "ayetler": {
+      "2:153": "О ви, які увірували! Шукайте допомоги у терпінні та молитві. Воістину, Аллаг — разом із терплячими!",
+      "2:238": "Звершуйте молитви належно і, особливо, середню молитву. Стійте ж перед Аллагом смиренними!",
+      "4:103": "Коли ви звершите молитву, то згадуйте Аллага — стоячи, сидячи та лежачи. І коли ви опинитеся у безпеці, то звершуйте повну молитву. Воістину, молитва встановлена для віруючих у визначений час.",
+      "62:9": "О ви, які увірували! Коли закликають вас на молитву в п’ятницю, то зверніться до згадування Аллага і полиште справи торгівельні. Це краще для вас, якщо ви розумієте!"
+    }
+  },
+  "ro": {
+    "anahtar": "romanian_project",
+    "surum": "1.0.4",
+    "baslik": "Romanian Translation - Islam4ro.com",
+    "ayetler": {
+      "2:153": "O, voi, cei care credeţi! Căutaţi ajutor întru răbdare şi Rugăciune. Cu adevărat Allah este cu cei răbdători!",
+      "2:238": "Efectuați Rugăciunile [obligatorii] cu sârguință, [în special] Rugăciunea de la mijloc [Asr]! Şi staţi în picioare dinaintea lui Allah, cu supunere!",
+      "4:103": "Dacă ați împlinit Rugăciunea [As-Salat], pomeniți Numele lui Allah, stând în picioare, așezați sau întinși pe o parte. Dar când sunteți în pace, atunci împliniți Rugăciunea [As-Salat] [în întregime]. Cu adevărat, Rugăciunea [As-Salat] a fost stabilită pentru dreptcredincioși la timpuri hotărâte.",
+      "11:114": "Și împlinește Rugăciunea [As-Salat] la cele două capete ale zilei și la anumite ceasuri din noapte. Cu adevărat, faptele bune le alungă pe cele rele. Aceasta este o reamintire pentru cei care își reamintesc [cugetă și I se supun lui Allah].",
+      "29:45": "Recită [o, Mohammed,] ceea ce ți s-a revelat din Carte și împlinește Rugăciunea [As-Salat]! Într-adevăr Rugăciunea [As-Salat] împiedică de la ceea ce este rușinos și de la ceea ce este oprit. Și Pomenirea lui Allah este și mai mare, iar Allah Știe ce faceți voi!",
+      "62:9": "O, voi cei care credeți! Când se cheamă la Rugăciune [As-Salat], în ziua de Vineri, grăbiți-vă la Pomenirea lui Allah și lăsați negoțul! Aceasta este mai bine pentru voi, dacă [voiți să] știți."
+    }
+  },
+  "hr": {
+    "anahtar": "croatian_rwwad",
+    "surum": "1.0.1",
+    "baslik": "Croatian Translation - Rowwad Translation Center",
+    "ayetler": {
+      "2:153": "O vi koji vjerujete, tražite sebi pomoći u strpljivosti i molitvi! Allah je, doista, uz strpljive.",
+      "2:238": "Čuvajte molitve, naročito molitvu u sredini dana, i pred Allahom ponizno stojte!",
+      "4:103": "A kada molitvu završite, Allaha spominjite, i stojeći, i sjedeći, i ležeći na bokovima. A kada budete sigurni, klanjajte u potpunosti; molitva je, uistinu, propisana vjernicima u određenim vremenskim razmacima.",
+      "11:114": "I klanjaj početkom i krajem dana, i u prvim časovima noći! Dobra djela zaista poništavaju hrđava. To je opomena za one koji se opomene prisjećaju.",
+      "29:45": "Kazuj Knjigu koja ti se objavljuje i obavljaj molitvu – molitva, zaista, odvraća od razvrata i od svega što je ružno, a sigurno je spominjanje Allaha veće! – A Allah zna šta radite.",
+      "62:9": "O vi koji vjerujete, kad u petak na molitvu budete pozvani, požurite na spominjanje Allaha i kupoprodaju ostavite, to vam je bolje, ako znate!"
+    }
+  },
+  "sr": {
+    "anahtar": "serbian_rwwad",
+    "surum": "1.0.4",
+    "baslik": "Serbian Translation - Rowwad Translation Center",
+    "ayetler": {
+      "2:153": "О ви који верујете, тражите себи помоћ у стрпљивости и молитви! Аллах је, заиста, уз стрпљиве.",
+      "2:238": "Чувајте молитве, нарочито молитву у средини дана, и пред Аллахом понизно стојте!",
+      "4:103": "А када молитву завршите, Аллаха спомињите, и стојећи, и седећи, и лежећи на боковима. А када будете сигурни, молитву обављајте у потпуности; молитва је, уистину, обавезна верницима у одређеним временским периодима.",
+      "11:114": "И обављај молитву почетком и крајем дана, и у првим часовима ноћи! Добра дела заиста поништавају рђава. То је опомена за оне којима опомена користи.",
+      "29:45": "Казуј Књигу која ти се објављује и обављај молитву - молитва, заиста, одвраћа од разврата и од свега што је ружно; а слављење Бога је сигурно веће! Бог зна шта радите.",
+      "62:9": "О ви који верујете, кад у петак на молитву будете позвани, пожурите на слављење Аллаха, и оставите се трговине, то вам је боље, ако знате!"
+    }
+  },
+  "el": {
+    "anahtar": "greek_rwwad",
+    "surum": "1.0.2",
+    "baslik": "Greek Translation - Rowwad Translation Center",
+    "ayetler": {
+      "2:153": "Ω, εσείς που πιστεύετε! Να αναζητάτε τη βοήθεια (του Αλλάχ) μέσω της υπομονής και της προσευχής (που σας φέρνει πιο κοντά στον Αλλάχ). Στ’ αλήθεια, ο Αλλάχ είναι με τους υπομονετικούς (υποστηρίζοντας και βοηθώντας τους).",
+      "2:238": "Τηρείτε αυστηρά τις (πέντε υποχρεωτικές καθημερινές) προσευχές, και (ειδικά) τη μεσαία προσευχή (Αλ-‘Ασρ). Και σταθείτε (στις προσευχές σας) ενώπιον του Αλλάχ υπάκουοι και ταπεινοί.",
+      "4:103": "Όταν τελειώσετε την προσευχή, εξυμνείστε τον Αλλάχ (σ' όλες σας τις καταστάσεις), είτε είστε όρθιοι, είτε καθισμένοι, είτε ξαπλωμένοι πλάγια. Αλλά όταν είστε πάλι ασφαλείς, να τελείτε τις προσευχές (ολοκληρωμένες στις καθορισμένες ώρες τους και με τον ολοκληρωμένο τρόπο). Πράγματι, η προσευχή επιβάλλεται στους πιστούς σε καθορισμένες ώρες.",
+      "11:114": "Και τέλεσε την προσευχή στις δύο άκρες της ημέρας (στην αρχή και στο τέλος της) και σε ορισμένες ώρες της νύχτας. Πράγματι, οι καλές πράξεις σβήνουν τις κακές. Αυτή είναι μία υπενθύμιση (και νουθεσία) για όσους θα τη λάβουν υπόψη.",
+      "29:45": "Απάγγειλε (ω, Μωχάμμαντ) ό,τι στάλθηκε σε σένα από το Βιβλίο (το Κορ’άν), και τέλεσε την προσευχή. Πράγματι, η προσευχή απαγορεύει κάθε αισχρή πράξη και κάθε απαγορευμένη πράξη (και απομακρύνει τον άνθρωπο απ' αυτές). Και η εξύμνηση προς τον Αλλάχ είναι σπουδαιότερη (από οτιδήποτε άλλο), και ο Αλλάχ γνωρίζει ό,τι κάνετε.",
+      "62:9": "Ω, εσείς που πιστεύετε! Όταν γίνεται η κλήση (Αδάν) για την προσευχή της Παρασκευής (Αλ-Τζούμου‘α), σπεύστε για τη μνημόνευση του Αλλάχ (δηλ. για να ακούσετε το κήρυγμα και να τελέσετε την προσευχή). Και αφήστε τις συναλλαγές. Αυτό είναι καλύτερο για σας, αν το γνωρίζετε!"
+    }
   }
 };

@@ -37,6 +37,11 @@ const arapca: Kural = (n) => {
   if (s100 >= 11 && s100 <= 99) return 'many';
   return 'other';
 };
+/**
+ * Rumence (tam sayıda): yalnız 1 tekil; 0 ve son iki hanesi 1–19 olan (1 hariç: 2–19, 101–119…)
+ * `few`; gerisi (20, 100, 120, 1.000.000…) `other`. CLDR: few = v != 0 or n = 0 or n != 1 and n % 100 = 1..19.
+ */
+const rumence: Kural = (n) => (n === 1 ? 'one' : n === 0 || (n % 100 >= 1 && n % 100 <= 19) ? 'few' : 'other');
 /** Farsça, Hintçe, Bengalce, Amharca ve Fula: 0 ve 1 tekil (Fulada 1,5 de tekil; burada yalnız tam sayı). */
 const sifirBir: Kural = (n) => (n === 0 || n === 1 ? 'one' : 'other');
 
@@ -61,6 +66,8 @@ const KURALLAR: Record<string, Kural> = {
   ps: birDiger,
   ckb: birDiger,
   ug: birDiger,
+  sv: birDiger,
+  el: birDiger,
   id: hepDiger,
   ms: hepDiger,
   yo: hepDiger,
@@ -70,7 +77,11 @@ const KURALLAR: Record<string, Kural> = {
   vi: hepDiger,
   fr: fransizca,
   ru: rusca,
+  uk: rusca,
   bs: bosnakca,
+  hr: bosnakca,
+  sr: bosnakca,
+  ro: rumence,
   ar: arapca,
   fa: sifirBir,
   bn: sifirBir,
@@ -78,6 +89,10 @@ const KURALLAR: Record<string, Kural> = {
   am: sifirBir,
   ff: sifirBir,
   es: ispanyolca,
+  // Portekizce Avrupa normu: pt-PT kuralı (yalnız 1 tekil). CLDR `pt` (Brezilya) 0'ı da tekil sayar
+  // (one = i = 0..1); uygulama tek kural taşır. Nöbetçi ICU karşılaştırmasını `pt-PT` ile yapar.
+  pt: ispanyolca,
+  it: ispanyolca,
 };
 
 /** Desteklenen dil kodları (nöbetçi testin taradığı liste). */

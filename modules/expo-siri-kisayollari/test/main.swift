@@ -422,6 +422,9 @@ esitMi(ArayuzDili.coz(""), "tr", "dil: bos Turkce")
 esitMi(ArayuzDili.coz("en"), "en", "dil: en")
 esitMi(ArayuzDili.coz("en-US"), "en", "dil: en-US → en")
 esitMi(ArayuzDili.coz("en_GB"), "en", "dil: en_GB → en")
+// Portekizce Avrupa normu: Brezilya dahil butun pt-* → pt; Latin Sirpca cihaz → Kiril sr.
+for yerel in ["pt-BR", "pt_PT", "pt-MZ", "pt-AO"] { esitMi(ArayuzDili.coz(yerel), "pt", "dil: \(yerel) → pt") }
+for yerel in ["sr-Latn-RS", "sr_RS", "sr-Cyrl-RS"] { esitMi(ArayuzDili.coz(yerel), "sr", "dil: \(yerel) → sr") }
 esitMi(ArayuzDili.coz("xx"), "tr", "dil: desteklenmeyen → Turkce")
 esitMi(VakitKarari.gorunenAd("ogle"), "Öğle", "varsayilan dil Turkce")
 esitMi(VakitKarari.gorunenAd("sabah", dil: "en"), "Fajr", "en: sabah → Fajr")
@@ -587,7 +590,7 @@ func yerTutucuImzasi(_ deger: Any) -> [String: String] {
     return sonuc
 }
 
-esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi"], "dil: tablo sirasi")
+esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el"], "dil: tablo sirasi")
 esitMi(ArayuzDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")
 esitMi(ArayuzDili.coz("de-DE"), "de", "dil: de-DE → de")
 esitMi(ArayuzDili.coz("ms_MY"), "ms", "dil: ms_MY → ms")
@@ -631,6 +634,19 @@ esitMi([0, 1, 2].map { CogulKurali.kategori("yo", $0) }, ["other", "other", "oth
 for dil in ["zh", "th", "ko", "vi"] {
     esitMi([0, 1, 2].map { CogulKurali.kategori(dil, $0) }, ["other", "other", "other"], "cogul: \(dil)")
 }
+// Avrupa dalgasi: pt (pt-PT kurali) ve it = es; sv/el one/other; uk = ru; hr/sr = bs; ro yeni kural.
+for dil in ["pt", "it"] {
+    esitMi([0, 1, 2, 1_000_000].map { CogulKurali.kategori(dil, $0) }, ["other", "one", "other", "many"], "cogul: \(dil)")
+}
+for dil in ["sv", "el"] {
+    esitMi([0, 1, 2].map { CogulKurali.kategori(dil, $0) }, ["other", "one", "other"], "cogul: \(dil)")
+}
+esitMi([1, 2, 5, 11, 21].map { CogulKurali.kategori("uk", $0) }, ["one", "few", "many", "many", "one"], "cogul: uk")
+for dil in ["hr", "sr"] {
+    esitMi([1, 2, 5, 11, 21].map { CogulKurali.kategori(dil, $0) }, ["one", "few", "other", "other", "one"], "cogul: \(dil)")
+}
+esitMi([0, 1, 2, 19, 20, 100, 101, 119, 120, 1_000_000].map { CogulKurali.kategori("ro", $0) },
+       ["few", "one", "few", "few", "other", "other", "few", "few", "other", "other"], "cogul: ro")
 esitMi(CogulKurali.sec(["one": "{n} minute", "other": "{n} minutes"], "ru", 5), "5 minutes", "cogul: eksik kategori other'a duser")
 
 // MARK: - 12) Vakit adi takimi (kullanicinin sectigi adlar) — var / yok / bozuk / kismi
@@ -694,7 +710,7 @@ esitMi(RakamSistemi.etkin(dil: "bn-BD", kayitli: " beng "), "beng", "rakam: bn-B
 esitMi(RakamSistemi.etkin(dil: "bn", kayitli: nil), "latn", "rakam: bn + kayit yok → Bati")
 esitMi(RakamSistemi.etkin(dil: "bn", kayitli: "arab"), "latn", "rakam: bn + arab → Bati")
 esitMi(RakamSistemi.doguMu(dil: "bn", kayitli: "beng"), false, "rakam: bn Dogu Arap degil")
-for dil in ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "", "xx"] {
+for dil in ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "", "xx"] {
     esitMi(RakamSistemi.etkin(dil: dil, kayitli: "arab"), "latn", "rakam: \(dil) arab kaydini yok sayar")
     esitMi(RakamSistemi.etkin(dil: dil, kayitli: "beng"), "latn", "rakam: \(dil) beng kaydini yok sayar")
     esitMi(RakamSistemi.etkin(dil: dil, kayitli: "arabext"), "latn", "rakam: \(dil) arabext kaydini yok sayar")
