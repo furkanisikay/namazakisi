@@ -37,9 +37,11 @@ appId: com.furkanisikay.namazakisi
     timeout: 3000
 - takeScreenshot: ozk/56-ulke-listesi
 - tapOn: "(Ülke ya da şehir arayın|Search for a country or city)"
-# Klavye hazirlikta kapali (latin-klavye): Korece klavye "Kuala"yi Hangul'e ceviriyordu.
-# hideKeyboard YOK: Android'de kosulsuz geri tusudur, klavye yokken sayfayi kapatir.
+# Varsayilan klavye hazirlikta kapali (latin-klavye): Korece klavye "Kuala"yi Hangul'e ceviriyordu.
+# Yerine sistemin sesli yazma paneli acilir; hideKeyboard (kosulsuz geri tusu) onu kapatir.
+# Panel acikken sonuca dokunmak yalniz paneli kapatiyordu (58 secimsiz kaldi).
 - inputText: "Kuala"
+- hideKeyboard
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/57-sehir-arama
