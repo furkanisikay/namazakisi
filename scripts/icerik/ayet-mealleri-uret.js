@@ -76,9 +76,9 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
 
 /**
  * Not numarası silinen diller ve desen — `gunun-ayeti-uret.js > NOT_NUMARASI_SILINEN` ile AYNI
- * (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Bengalce rakam "[১]").
+ * (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Bengalce rakam "[১]").
  */
-const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky']);
+const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha']);
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
 /** Gömülü numara kalıpları (`gunun-ayeti-uret.js > DIPNOT`, `BASTA_NUMARA`, `SONDA_NUMARA` ile aynı). */
@@ -91,6 +91,7 @@ const NUMARALI = [
   /^\s*\p{Nd}+\s*[.)]\s/u,
   /\(\p{Nd}+\)\s*[.।]?\s*$/u,
   /\([\p{Cf}\sـ\-–]*\p{Nd}[\p{Nd}\p{Cf}\sـ\-–]*\)/u, // `ARA_NUMARA`: "(24)،", "(ـ18)", "(8ـ10)"
+  /[\u00a6\ufffd]/u, // `BOZUK_KARAKTER`: hausa_gummi "¦aki" (Ɗ bozulmuş)
 ];
 
 /** QuranEnc 403 döner: her istekte tarayıcı benzeri User-Agent ŞART. */
