@@ -67,28 +67,49 @@ function malayalamChilluBirlestir(metin: string): string {
 }
 
 /**
- * YALNIZ Latin birleşik aksan işaretleri (U+0300–036F): Vietnamca ses işaretleri, şapka,
- * kanca (ơ ư), alt nokta. `\p{M}` BİLİNÇLİ kullanılmaz: Arap harekesi, Devanagari/Bengal/
+ * YALNIZ birleşik aksan işaretleri bloğu (U+0300–036F): Vietnamca ses işaretleri, şapka,
+ * kanca (ơ ư), alt nokta, Rumence virgül/çengel (ș ş), Yunan tonos/diyalitika (ά ϊ) ve Kiril
+ * kısa işareti (й ї). `\p{M}` BİLİNÇLİ kullanılmaz: Arap harekesi, Devanagari/Bengal/
  * Tamil/Malayalam ünlü işaretleri ve Tay işaretleri de `M`'dir; silinirse o dillerin araması
- * anlamsız eşleşir. Bu aralık dışındaki yazılar bayt bayt aynı kalır.
+ * anlamsız eşleşir. Bu aralık dışındaki işaretler bayt bayt aynı kalır.
  */
 const LATIN_ISARET = /[\u0300-\u036f]/g;
 const TEK_LATIN_ISARET = /^[\u0300-\u036f]$/;
 
-/** Bir harfi küçültür: Türkçe harita, sonra ASCII büyük→küçük (kod noktası farkı 32). */
+/**
+ * Kiril ve Yunan büyük harfin küçüğü, sabit Unicode bloklarından (Hermes'te `toLowerCase`
+ * ICU'ya bağlı değil ama Türkçe "I" tuzağı yüzünden yasak; bu bloklarda eşleme kod noktası
+ * farkıyla kesindir). Vurgulu Yunan büyük harfleri buraya NFD'de vurgusu atılmış gelir.
+ */
+function kirilYunanKucuk(kod: number): number {
+  if (kod >= 0x0410 && kod <= 0x042f) return kod + 0x20; // А-Я
+  if (kod >= 0x0400 && kod <= 0x040f) return kod + 0x50; // Ѐ-Џ (Є І Ї Ђ Ј Љ Њ Ћ Џ)
+  if ((kod >= 0x0460 && kod <= 0x0481) || (kod >= 0x048a && kod <= 0x04bf) || (kod >= 0x04d0 && kod <= 0x052f)) {
+    return kod % 2 === 0 ? kod + 1 : kod; // çift = büyük (Ґ Қ Ң Ү Ұ Ҳ Ә Ө…)
+  }
+  if (kod >= 0x04c1 && kod <= 0x04ce) return kod % 2 === 1 ? kod + 1 : kod;
+  if (kod === 0x04c0) return 0x04cf; // Ӏ
+  if (kod >= 0x0391 && kod <= 0x03a9 && kod !== 0x03a2) return kod + 0x20; // Α-Ω
+  if (kod === 0x03c2) return 0x03c3; // son harf sigması ς → σ
+  return kod;
+}
+
+/** Bir harfi küçültür: Türkçe harita, ASCII büyük→küçük (kod noktası farkı 32), Kiril ve Yunan. */
 function harfKatla(karakter: string): string {
   const turkceKarsilik = TURKCE_HARF_HARITASI[karakter];
   if (turkceKarsilik !== undefined) return turkceKarsilik;
   const kod = karakter.codePointAt(0)!;
-  // ASCII 'A'-'Z' (65-90) → 'a'-'z' (97-122); diğer her şey olduğu gibi kalır.
-  return kod >= 65 && kod <= 90 ? String.fromCodePoint(kod + 32) : karakter;
+  // ASCII 'A'-'Z' (65-90) → 'a'-'z' (97-122).
+  if (kod >= 65 && kod <= 90) return String.fromCodePoint(kod + 32);
+  const kucuk = kirilYunanKucuk(kod);
+  return kucuk === kod ? karakter : String.fromCodePoint(kucuk);
 }
 
 /**
  * Metni arama karşılaştırması için katlar: Türkçe harfler sabit haritayla,
- * Latin aksanlı harfler aksansız tabanına (NFD + U+0300–036F silme; "chuông" →
- * "chuong", "Đổi" → "doi"), kalan ASCII harfler basit büyük→küçük dönüşümüyle,
- * harf olmayan karakterler DEĞİŞMEDEN geçer.
+ * aksanlı harfler aksansız tabanına (NFD + U+0300–036F silme; "chuông" → "chuong",
+ * "Đổi" → "doi", "Φάτζρ" → "φατζρ"), ASCII, Kiril ve Yunan büyük harfler küçüğüne
+ * (Yunan son harf sigması σ'ya), harf olmayan karakterler DEĞİŞMEDEN geçer.
  */
 export function aramaIcinKatla(metin: string): string {
   let sonuc = '';

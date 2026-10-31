@@ -65,7 +65,27 @@ describe('aramaIcinKatla', () => {
   it('Türkçe katlama değişmez; Latin dışı yazıların işaretlerine dokunulmaz', () => {
     expect(aramaIcinKatla('İstanbul')).toBe('istanbul');
     expect(aramaIcinKatla('İ'.normalize('NFD'))).toBe('i');
-    const latinDisi = ['نَمَاز', 'नमाज़ का समय', 'নামাজ', 'தொழுகை', 'നമസ്കാരം', 'ละหมาด', '기도 시간', '礼拜时间', 'Намаз'];
+    const latinDisi = ['نَمَاز', 'नमाज़ का समय', 'নামাজ', 'தொழுகை', 'നമസ്കാരം', 'ละหมาด', '기도 시간', '礼拜时间', 'намаз'];
     for (const s of latinDisi) expect(aramaIcinKatla(s)).toBe(s);
+  });
+
+  // NÖBETÇİ: Kiril ve Yunan aramada büyük/küçük harf duyarsız (toLowerCase YASAK, sabit eşleme).
+  it('Kiril büyük harfler küçüğüne katlanır (Rusça, Ukraynaca, Sırpça, Kazakça)', () => {
+    expect(aramaIcinKatla('Намаз')).toBe(aramaIcinKatla('намаз'));
+    expect(aramaIcinKatla('МОЛИТВА')).toBe('молитва');
+    expect(aramaIcinKatla('ЄҐЇІ')).toBe(aramaIcinKatla('єґїі'));
+    expect(aramaIcinKatla('ЂЈЉЊЋЏ')).toBe('ђјљњћџ');
+    expect(aramaIcinKatla('ҚҢҮҰӘӨҺ')).toBe('қңүұәөһ');
+  });
+
+  it('Yunan büyük harf, tonos ve son harf sigması katlanır', () => {
+    expect(aramaIcinKatla('ΠΡΟΣΕΥΧΗ')).toBe(aramaIcinKatla('προσευχή'));
+    expect(aramaIcinKatla('Ρυθμίσεις')).toBe('ρυθμισεισ');
+    expect(aramaIcinKatla('ρυθμισεις')).toBe(aramaIcinKatla('Ρυθμίσεις'));
+    expect(aramaIcinKatla('Ά')).toBe('α');
+  });
+
+  it('Rumence virgüllü ve sedilli ş ţ aynı aranır', () => {
+    expect(aramaIcinKatla('Rugăciune ș ț')).toBe(aramaIcinKatla('rugaciune ş ţ'));
   });
 });
