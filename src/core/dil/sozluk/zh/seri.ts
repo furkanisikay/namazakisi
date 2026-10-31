@@ -21,7 +21,7 @@ export const seri: Sozluk['seri'] = {
   },
 
   /** 经典等级名称，按含义译出。 */
-  seviyeler: ['初学者', '求知者', '行道者', '追随者', '明悟者', '守护者', '完美者'],
+  seviyeler: ['初学者', '求知者', '行道者', '追随者', '明悟者', '哈菲兹', '完美者'],
 
   rozetler: {
     ilk_adim: { ad: '第一步', aciklama: '您完成了第一周。', kosul: '连续记录7天' },
