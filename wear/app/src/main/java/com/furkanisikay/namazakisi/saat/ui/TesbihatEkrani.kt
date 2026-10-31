@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.foundation.layout.widthIn
@@ -201,6 +202,8 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
         }
     }
     val halkaIci = rememberHalkaIci()
+    // Ekranda bir kez sıkışınca sıkışık kalır (faz değişiminde açılıp kapanıp titremesin).
+    var sikistir by remember { mutableStateOf(false) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -223,26 +226,35 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
             // adın EKRANDAKİ dikey konumundan hesaplanır (halkanın o yükseklikteki kirişi): göz
             // kararı oranlar (%82 / %48) Latin glif boyuna göreydi, Tamilce/Malayalamca ad yuvarlakta
             // yaya değiyor, karede "சுப்ஹானல்…" diye kesiliyordu. Konum bilinene dek (ilk kare)
-            // eski oran. Sığmazsa küçülür, kesilmez.
+            // eski oran. Sığmazsa küçülür, kesilmez. En küçük boyda da sığmazsa (kare saat, 384 px:
+            // tepedeki kiriş ~125 px, Tamilce ad ~160 px) blok SIKIŞTIRILIR: rakamın boş üst/alt
+            // payı kırpılır, ortalanmış sütunda ad ~13 px aşağı, kirişin geniş yerine iner ve
+            // taban 0,6×'ten 0,5×'e iner. Sığan dilde (tr, en) hiç tetiklenmez: görünüm aynı.
             val adAraligi = remember { mutableStateOf<Pair<Float, Float>?>(null) }
             val adSiniri = adAraligi.value?.let { (ust, alt) -> halkaIci(ust, alt) }
+            val adBoyu = sinirliBoyut(0.072f)
             SigdirilanMetin(
                 durum.faz.ad(dil),
-                enFazla = sinirliBoyut(0.072f),
+                enFazla = adBoyu,
                 renk = renk(SaatPaleti.METIN),
                 modifier = (
                     if (adSiniri != null) Modifier.widthIn(max = adSiniri).fillMaxWidth()
                     else Modifier.fillMaxWidth(if (LocalConfiguration.current.isScreenRound) ZIKIR_ADI_ORANI else ZIKIR_ADI_KARE_ORANI)
                     ).dikeyAraligiIzle(adAraligi),
+                enAz = (adBoyu.value * if (sikistir) ZIKIR_ADI_SIKI_TABAN else ZIKIR_ADI_TABAN).sp,
+                // Konum ölçülmeden (ilk karede yedek oran) karar verilmez.
+                onSigmadi = if (adSiniri != null) ({ sikistir = true }) else null,
             )
+            val rakamBoyu = sabitBoyut(0.24f)
+            val rakamBoyuPx = with(LocalDensity.current) { rakamBoyu.toPx() }
             Text(
                 yerelRakam(durum.fazSayisi.toString()),
                 style = RAKAM,
-                fontSize = sabitBoyut(0.24f),
+                fontSize = rakamBoyu,
                 fontWeight = FontWeight.SemiBold,
                 color = renk(SaatPaleti.METIN),
                 maxLines = 1,
-                modifier = Modifier.graphicsLayer {
+                modifier = (if (sikistir) Modifier.dikeyPayiKirp(rakamBoyuPx) else Modifier).graphicsLayer {
                     scaleX = vurus.value
                     scaleY = vurus.value
                 },
@@ -308,6 +320,17 @@ private fun rememberHalkaIci(): (Float, Float) -> Dp {
         val hesap: (Float, Float) -> Dp = { ust, alt -> with(y) { Sigdirma.guvenliGenislik(r, boy / 2f, ust, alt, pay).toDp() } }
         hesap
     }
+}
+
+/**
+ * Büyük rakam satırının yazı tipi kaynaklı boş üst/alt payını yerleşimden çıkarır
+ * ([Sigdirma.rakamKirpmasi]); rakam aynı yerde çizilir, yalnız kapladığı yükseklik azalır.
+ */
+private fun Modifier.dikeyPayiKirp(rakamBoyuPx: Float): Modifier = layout { olculecek, kisit ->
+    val p = olculecek.measure(kisit.copy(minHeight = 0))
+    val (ust, alt) = Sigdirma.rakamKirpmasi(rakamBoyuPx)
+    val boy = (p.height - ust - alt).coerceAtLeast(0)
+    layout(p.width, boy) { p.placeRelative(0, -ust) }
 }
 
 /**
@@ -449,6 +472,10 @@ private const val ZIKIR_ADI_ORANI = 0.82f
 
 /** Kare saat için ilk kare yedeği (bkz. [ZIKIR_ADI_ORANI]). */
 private const val ZIKIR_ADI_KARE_ORANI = 0.48f
+
+/** Zikir adının küçülme tabanı (en büyük boyun katı); sıkışık blokta bir adım daha iner. */
+private const val ZIKIR_ADI_TABAN = 0.6f
+private const val ZIKIR_ADI_SIKI_TABAN = 0.5f
 private const val BITIS_TIK_MS = 300
 
 /** CompactButton'ın etiket dışı yatay payı (iki yan iç boşluk; kitaplık ~12 dp/yan, güvenli tarafta). */

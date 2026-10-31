@@ -58,6 +58,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import com.furkanisikay.namazakisi.tv.cekirdek.Sigdirma
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -304,16 +307,30 @@ private fun TusTakimi(
     val geriEtiketi = stringResource(R.string.kod_geri)
     // "Sil" ve "Geri" ORTAK boyda: her tuş kendi başına küçülünce uzun dilde ("பின்செல்")
     // biri ötekinden belirgin küçük kalıyordu. İkisinin de sığdığı en büyük boy, ikisine birden.
+    // Tabanda da tek satıra sığmayan etiket (çok sözcüklüyse) iki satıra sarılır; tek sözcüklük
+    // uzun etiket en son üç noktayla kesilir, hiçbir zaman sessizce kırpılmaz (Malayalamca Sil
+    // "ഇല്ലാതാ" diye yarım görünüyordu).
     val olcer = rememberTextMeasurer()
-    val etiketGenisligi = with(LocalDensity.current) { (TUS_EN - 2 * TUS_ETIKET_PAYI).dp.roundToPx() }
-    val kucukBoy = remember(silEtiketi, geriEtiketi, etiketGenisligi) {
-        Sigdirma.enBuyukSiganBoy(KUCUK_TUS_BOYU, KUCUK_TUS_EN_AZ) { b ->
-            listOf(silEtiketi, geriEtiketi).all {
-                olcer.measure(it, TextStyle(fontSize = b.sp, fontWeight = FontWeight.SemiBold), maxLines = 1, softWrap = false)
-                    .size.width <= etiketGenisligi
+    val yogunluk = LocalDensity.current
+    val etiketGenisligi = with(yogunluk) { (TUS_EN - 2 * TUS_ETIKET_PAYI).dp.roundToPx() }
+    val etiketYuksekligi = with(yogunluk) { (TUS_BOY - 2 * TUS_ETIKET_PAYI).dp.roundToPx() }
+    val kucuk = remember(silEtiketi, geriEtiketi, etiketGenisligi, etiketYuksekligi) {
+        Sigdirma.enBuyukSiganKarar(KUCUK_TUS_BOYU, KUCUK_TUS_EN_AZ, enCokSatir = 2) { b, satir ->
+            val stil = TextStyle(fontSize = b.sp, fontWeight = FontWeight.SemiBold)
+            listOf(silEtiketi, geriEtiketi).all { etiket ->
+                if (satir == 1) {
+                    olcer.measure(etiket, stil, maxLines = 1, softWrap = false).size.width <= etiketGenisligi
+                } else {
+                    val sonuc = olcer.measure(etiket, stil, maxLines = satir, constraints = Constraints(maxWidth = etiketGenisligi))
+                    !sonuc.hasVisualOverflow && sonuc.size.height <= etiketYuksekligi &&
+                        etiket.split(' ').filter { it.isNotEmpty() }.all {
+                            olcer.measure(it, stil, maxLines = 1, softWrap = false).size.width <= etiketGenisligi
+                        }
+                }
             }
         }
     }
+    val kucukBoy = kucuk.boy
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         for ((si, satir) in satirlar.withIndex()) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -323,20 +340,26 @@ private fun TusTakimi(
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Tus(silEtiketi, stringResource(R.string.kod_sil_aciklama), onSil, Modifier, boy = kucukBoy, etkin = silinebilir)
+            Tus(silEtiketi, stringResource(R.string.kod_sil_aciklama), onSil, Modifier, boy = kucukBoy, satir = kucuk.satir, etkin = silinebilir)
             Tus("0", "0", { onRakam('0') }, Modifier)
-            Tus(geriEtiketi, stringResource(R.string.vazgecin), onVazgec, Modifier, boy = kucukBoy)
+            Tus(geriEtiketi, stringResource(R.string.vazgecin), onVazgec, Modifier, boy = kucukBoy, satir = kucuk.satir)
         }
     }
 }
 
 private const val TUS_EN = 88
+private const val TUS_BOY = 72
 private const val TUS_ETIKET_PAYI = 6
 private const val RAKAM_TUS_BOYU = 34f
 private const val KUCUK_TUS_BOYU = 24f
-private const val KUCUK_TUS_EN_AZ = 14f
 
-/** [boy]: etiketin sp boyu; rakam tuşları [RAKAM_TUS_BOYU], Sil/Geri ortak hesaplanmış boy. */
+/** Yalnız tabanda da sığmayan uzun etikete iner (tr/en "Sil"/"Delete" bu boyun çok üstünde). */
+private const val KUCUK_TUS_EN_AZ = 13f
+
+/**
+ * [boy]: etiketin sp boyu; rakam tuşları [RAKAM_TUS_BOYU], Sil/Geri ortak hesaplanmış boy.
+ * [satir]: en çok satır (ortak karar; kısa etiket yine tek satırda kalır).
+ */
 @Composable
 private fun Tus(
     etiket: String,
@@ -344,12 +367,13 @@ private fun Tus(
     onClick: () -> Unit,
     modifier: Modifier,
     boy: Float = RAKAM_TUS_BOYU,
+    satir: Int = 1,
     etkin: Boolean = true,
 ) {
     Surface(
         onClick = onClick,
         enabled = etkin,
-        modifier = modifier.size(TUS_EN.dp, 72.dp).semantics { contentDescription = erisim },
+        modifier = modifier.size(TUS_EN.dp, TUS_BOY.dp).semantics { contentDescription = erisim },
         shape = ClickableSurfaceDefaults.shape(RoundedCornerShape(16.dp)),
         colors = ClickableSurfaceDefaults.colors(
             containerColor = Renkler.kart,
@@ -369,9 +393,13 @@ private fun Tus(
             val renk = LocalContentColor.current
             BasicText(
                 etiket,
-                style = TextStyle(fontSize = boy.sp, fontWeight = FontWeight.SemiBold),
+                style = TextStyle(fontSize = boy.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center),
                 color = { renk },
-                maxLines = 1,
+                // Tek satırda softWrap KAPALI: açıkken sığmayan sözcük kırılıp yalnız ilk satırı
+                // üç noktasız görünüyordu ("ഇല്ലാതാ"). Son çare üç nokta, sessiz kırpma değil.
+                maxLines = satir,
+                softWrap = satir > 1,
+                overflow = TextOverflow.Ellipsis,
                 autoSize = TextAutoSize.StepBased(minFontSize = minOf(KUCUK_TUS_EN_AZ, boy).sp, maxFontSize = boy.sp),
                 modifier = Modifier.padding(horizontal = TUS_ETIKET_PAYI.dp),
             )

@@ -416,6 +416,11 @@ fun SigdirilanMetin(
      */
     enCokSatir: Int = 1,
     tekSatirTabani: androidx.compose.ui.unit.TextUnit = enAz,
+    /**
+     * Metin en küçük boyda da sığmadığında (üç noktayla kesilecekken) bir kez çağrılır: çağıran
+     * yerleşimi değiştirip metne yer açabilir (`TesbihatEkrani`: zikir adı aşağı iner).
+     */
+    onSigmadi: (() -> Unit)? = null,
 ) {
     androidx.compose.foundation.layout.BoxWithConstraints(
         modifier,
@@ -425,8 +430,11 @@ fun SigdirilanMetin(
         val genislik = constraints.maxWidth
         // Ölçülen metin çizilen metindir: rakamlar yerel ayarın rakamıyla (ar-SA'da ٠-٩).
         val yazi = yerelRakam(metin)
-        val karar = remember(yazi, genislik, enFazla, agirlik, enCokSatir) {
+        val karar = remember(yazi, genislik, enFazla, agirlik, enCokSatir, enAz, tekSatirTabani) {
             sigdirilanKarar(olcer, yazi, genislik, enFazla, stil, agirlik, enAz, enCokSatir, tekSatirTabani)
+        }
+        LaunchedEffect(karar.sigdi, onSigmadi != null) {
+            if (!karar.sigdi) onSigmadi?.invoke()
         }
         Text(
             yazi,

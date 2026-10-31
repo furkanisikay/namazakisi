@@ -3,6 +3,7 @@ package com.furkanisikay.namazakisi.saat.cekirdek
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 /**
@@ -10,14 +11,18 @@ import kotlin.math.sqrt
  * `ui/VakitYayi.kt`, `ui/TesbihatEkrani.kt`). SAF, JVM testli.
  */
 object Sigdirma {
-    /** Metnin sığdırma kararı: yazı boyu (sp) ve satır sayısı. */
-    data class Karar(val boy: Float, val satir: Int)
+    /**
+     * Metnin sığdırma kararı: yazı boyu (sp) ve satır sayısı. [sigdi] false = hiçbir deneme
+     * sığmadı, metin üç noktayla kesilecek (yerleşimi değiştirmek için işaret: `TesbihatEkrani`).
+     */
+    data class Karar(val boy: Float, val satir: Int, val sigdi: Boolean = true)
 
     /**
      * Önce TEK satır [enFazla]'dan [tekSatirTabani]'na [adim] adımla; sığmazsa 2..[enCokSatir]
      * satırda [enFazla]'dan [enAz]'a. [sigar] (boy, satır) o yerleşimin taşmadan sığıp
      * sığmadığını söyler (ölçüm tarafı; sözcük ortasından kırılmayı da "sığmaz" saymalı).
-     * Hiçbiri sığmazsa en küçük boy + en çok satır (kalan taşma üç noktayla kesilir).
+     * Hiçbiri sığmazsa en küçük boy + en çok satır, `sigdi = false` (kalan taşma üç noktayla
+     * kesilir).
      *
      * Neden: tek satırda 0,6× tabana inip yine "…" basan dua ("அல்லாஹ் ஏற்றுக்கொள்வா…")
      * KESİLMEMELİ; iki satıra okunur boyda sarılmak, tek satırda okunmaz küçülmekten iyidir.
@@ -32,20 +37,42 @@ object Sigdirma {
     ): Karar {
         require(adim > 0f && enAz <= enFazla && enCokSatir >= 1)
         val tekTaban = if (enCokSatir == 1) enAz else max(enAz, min(tekSatirTabani, enFazla))
-        var b = enFazla
-        while (b >= tekTaban - 1e-4f) {
+        for (b in boylar(enFazla, tekTaban, adim)) {
             if (sigar(b, 1)) return Karar(b, 1)
-            b -= adim
         }
         for (satir in 2..enCokSatir) {
-            b = enFazla
-            while (b >= enAz - 1e-4f) {
+            for (b in boylar(enFazla, enAz, adim)) {
                 if (sigar(b, satir)) return Karar(b, satir)
-                b -= adim
             }
         }
-        return Karar(if (enCokSatir == 1) tekTaban else enAz, enCokSatir)
+        return Karar(if (enCokSatir == 1) tekTaban else enAz, enCokSatir, sigdi = false)
     }
+
+    /**
+     * [ust]'ten [adim] adımla inen boylar; taban adım ızgarasına düşmüyorsa EN SON tabanın
+     * kendisi de denenir (yoksa tabanda sığan metin "sığmadı" sayılırdı).
+     */
+    private fun boylar(ust: Float, taban: Float, adim: Float): Sequence<Float> = sequence {
+        var b = ust
+        while (b >= taban - 1e-4f) {
+            yield(b)
+            b -= adim
+        }
+        if (b + adim > taban + 1e-4f) yield(taban)
+    }
+
+    /**
+     * Büyük rakam satırının (tesbihat sayacı) yazı tipindeki boş üst ve alt payından kırpılacak
+     * px: rakamın üstünde ~0,22 em (çıkıntı payı), altında ~0,24 em (iniş payı) boşluk vardır.
+     * Kırpınca sütun kısalır ve ortalanmış blokta tepedeki zikir adı aşağı, halkanın geniş
+     * kirişine iner (kare saatte Tamilce/Malayalamca ad en küçük boyda da sığmıyordu). Kırpma
+     * payın altında kalır: rakam ile ad arasında boşluk korunur, vuruş büyümesi (1,12×) çakışmaz.
+     */
+    fun rakamKirpmasi(rakamBoyuPx: Float): Pair<Int, Int> =
+        (rakamBoyuPx * RAKAM_UST_KIRPMA).roundToInt() to (rakamBoyuPx * RAKAM_ALT_KIRPMA).roundToInt()
+
+    const val RAKAM_UST_KIRPMA = 0.10f
+    const val RAKAM_ALT_KIRPMA = 0.18f
 
     /**
      * Ortalanmış halkanın İÇ kenarı (px): `vakitYayiCiz` ve tesbihat halkası aynı geometriyi

@@ -56,7 +56,7 @@
     <string name="kod_hatali">കോഡ് ചേരുന്നില്ല. ഫോണിലെ 7 അക്കങ്ങൾ പരിശോധിക്കുക; തെറ്റായ അക്കം “%1$s” ഉപയോഗിച്ച് തിരുത്തുക.</string>
     <string name="kod_rakamli_kumanda">റിമോട്ടിൽ അക്ക ബട്ടണുകളുണ്ടെങ്കിൽ അവ ഉപയോഗിച്ചും ടൈപ്പ് ചെയ്യാം.</string>
     <string name="kod_bos_hane">ഒഴിഞ്ഞ അക്കം</string>
-    <string name="kod_sil">ഇല്ലാതാക്കുക</string>
+    <string name="kod_sil">മായ്‌ക്കുക</string>
     <string name="kod_sil_aciklama">അവസാന അക്കം ഇല്ലാതാക്കുക</string>
     <string name="kod_geri">തിരികെ</string>
     <string name="vazgecin">റദ്ദാക്കുക</string>

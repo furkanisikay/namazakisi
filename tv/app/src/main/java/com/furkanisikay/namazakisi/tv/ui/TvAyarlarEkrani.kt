@@ -136,11 +136,13 @@ fun TvAyarlarEkrani(
                                     Text(u.ad, color = Renkler.metin, fontSize = 30.sp, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 }
                                 Spacer(Modifier.height(8.dp))
-                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                // Durum etiketi öncelikli: düğmeyle yan yana sığmazsa düğme alta iner
+                                // (Malayalamca uzun "Kaldırın" düğmesinin yanında "Az önce" "ഇ…" oluyordu).
+                                YanYanaYaDaAltAlta(satirArasi = 10.dp) {
                                     Text(
                                         sonHaberMetni(u.sonHaberMs, simdi).yerelRakam(),
                                         color = Renkler.metinIkincil, fontSize = 24.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier.weight(1f).padding(start = 76.dp, end = 12.dp),
+                                        modifier = Modifier.padding(start = 76.dp, end = 12.dp),
                                     )
                                     EslemeDugmesi(stringResource(R.string.kaldirin), { kaldirilacak = u })
                                 }

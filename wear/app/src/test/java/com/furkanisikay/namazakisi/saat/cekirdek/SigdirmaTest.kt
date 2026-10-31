@@ -1,6 +1,7 @@
 package com.furkanisikay.namazakisi.saat.cekirdek
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -50,12 +51,53 @@ class SigdirmaTest {
     fun tekSatirKipiEskiDavranis() {
         val k = Sigdirma.karar(14f, 8.4f, sigar = { b, _ -> b <= 10f })
         assertEquals(Sigdirma.Karar(10f, 1), k)
-        assertEquals(Sigdirma.Karar(8.4f, 1), Sigdirma.karar(14f, 8.4f, sigar = { _, _ -> false }))
+        assertEquals(Sigdirma.Karar(8.4f, 1, sigdi = false), Sigdirma.karar(14f, 8.4f, sigar = { _, _ -> false }))
     }
 
     @Test
     fun hicbiriSigmazsaEnKucukVeEnCokSatir() {
-        assertEquals(Sigdirma.Karar(9.8f, 2), Sigdirma.karar(14f, 9.8f, enCokSatir = 2, tekSatirTabani = 11.9f) { _, _ -> false })
+        assertEquals(
+            Sigdirma.Karar(9.8f, 2, sigdi = false),
+            Sigdirma.karar(14f, 9.8f, enCokSatir = 2, tekSatirTabani = 11.9f) { _, _ -> false },
+        )
+    }
+
+    /** "Sığmadı" işareti yalnız hiçbir deneme sığmadığında: tabanda tam sığan metin sığmış sayılır. */
+    @Test
+    fun sigdiIsaretiYalnizHicbiriSigmazsa() {
+        assertTrue(Sigdirma.karar(14f, 8.4f, sigar = { b, _ -> b <= 8.4f }).sigdi)
+        assertFalse(Sigdirma.karar(14f, 8.4f, sigar = { _, _ -> false }).sigdi)
+    }
+
+    /**
+     * Kare saat (384 px, 2 px/dp; tesbihat halkası 6 dp, kenar 5 dp → iç yarıçap 149,6 px):
+     * zikir adının üst kenarı ~60 px'te, kirişten kalan genişlik ~125 px — Tamilce
+     * "சுப்ஹானல்லாஹ்" 0,6× tabanda (16,6 px) ~159 px, kesiliyordu. Rakam (0,24 × 192 dp =
+     * 92 px) üst/alt payı kırpılınca ortalanmış blok kısalır, ad yarısı kadar aşağı iner ve
+     * aynı boyda sığar.
+     */
+    @Test
+    fun kareSaatteRakamKirpmasiAdiKiriseSigdirir() {
+        val r = Sigdirma.halkaIcYaricapi(384f, kalinlik = 12f, kenarPay = 10f)
+        assertEquals(149.6f, r, 0.01f)
+        val pay = 8f
+        val adBoyu = 21f
+        val once = Sigdirma.guvenliGenislik(r, merkezY = 192f, ust = 60f, alt = 60f + adBoyu, pay = pay)
+        val (ust, alt) = Sigdirma.rakamKirpmasi(92f)
+        val inis = (ust + alt) / 2f
+        val sonra = Sigdirma.guvenliGenislik(r, 192f, 60f + inis, 60f + inis + adBoyu, pay)
+        assertTrue("önce $once < 159", once < 159f)
+        assertTrue("sonra $sonra ≥ 159", sonra >= 159f)
+    }
+
+    /** Kırpma rakamın boş payının altında kalır (rakam ~0,71 em; üstte ~0,22, altta ~0,24 em boşluk). */
+    @Test
+    fun rakamKirpmasiBosPayiAsmaz() {
+        val (ust, alt) = Sigdirma.rakamKirpmasi(100f)
+        assertEquals(10, ust)
+        assertEquals(18, alt)
+        assertTrue(ust < 22 && alt < 24)
+        assertEquals(0 to 0, Sigdirma.rakamKirpmasi(0f))
     }
 
     @Test

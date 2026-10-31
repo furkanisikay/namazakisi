@@ -30,4 +30,41 @@ object Sigdirma {
         }
         return enKucuk
     }
+
+    /** Bir etiket grubunun ortak yazı boyu (sp) ve en çok satır sayısı. */
+    data class Karar(val boy: Float, val satir: Int)
+
+    /**
+     * [enBuyukSiganBoy]'un satırlı hâli: önce TEK satırda [enBuyuk]'ten [enKucuk]'e; hiçbiri
+     * sığmazsa 2..[enCokSatir] satırda yeniden büyükten küçüğe. [sigarMi] (boy, satır) taşma
+     * olmadan sığıyor mu (ölçüm tarafı sözcük ortasından kırılmayı "sığmaz" saymalı). Hiçbiri
+     * sığmazsa en küçük boy + en çok satır (kalan taşma üç noktayla kesilir, sessiz kırpma yok).
+     *
+     * Neden: kod ekranında Sil tuşu Malayalamcada "ഇല്ലാതാ" diye üç noktasız kırpılıyordu
+     * (tek satır + varsayılan kırpma ilk satırı gösteriyordu).
+     */
+    fun enBuyukSiganKarar(
+        enBuyuk: Float,
+        enKucuk: Float,
+        enCokSatir: Int = 1,
+        adim: Float = 1f,
+        sigarMi: (boy: Float, satir: Int) -> Boolean,
+    ): Karar {
+        require(adim > 0f && enKucuk <= enBuyuk && enCokSatir >= 1)
+        for (satir in 1..enCokSatir) {
+            var b = enBuyuk
+            while (b >= enKucuk - 1e-4f) {
+                if (sigarMi(b, satir)) return Karar(b, satir)
+                b -= adim
+            }
+        }
+        return Karar(enKucuk, enCokSatir)
+    }
+
+    /**
+     * Satırdaki etiket ile düğme yan yana sığar mı (px, etiketin DOĞAL tek satır genişliği).
+     * Sığmazsa düğme etiketin altına iner: etiket önceliklidir (üyeler kartında "Az önce"
+     * Malayalamcada düğmenin yanında "ഇ…" diye tek harfe iniyordu).
+     */
+    fun yanYanaSigar(etiket: Int, dugme: Int, genislik: Int): Boolean = etiket + dugme <= genislik
 }
