@@ -360,11 +360,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: ml
+    // ml — Malayalamca (beta): JS `sozluk/ml`
     static let ml = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} {n} മിനിറ്റിനുള്ളിൽ തുടങ്ങും.", "other": "{ad} {n} മിനിറ്റിനുള്ളിൽ തുടങ്ങും."],
+        evetKilindi: "അതെ, നമസ്കരിച്ചതായി അടയാളപ്പെടുത്തിയിട്ടുണ്ട്.",
+        hayirKilinmadi: "ഇല്ല, ഇതുവരെ അടയാളപ്പെടുത്തിയിട്ടില്ല."
     )
 
     // th (CLDR yalnız other; "one" anahtarı aynı kalıp)

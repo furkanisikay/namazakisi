@@ -1,18 +1,18 @@
-/* ÇEVİRİ: ml */
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
 // App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
+// Malayalamca (beta): terimler src/core/dil/sozluk/ml.
 
 // NamazKisayollari.swift
-"${applicationName} sıradaki namaz ne zaman" = "When is the next prayer in ${applicationName}";
-"${applicationName} sıradaki namaz" = "${applicationName} next prayer";
-"${applicationName} ile sıradaki namazı söyle" = "Tell me the next prayer with ${applicationName}";
-"${applicationName} namaz vakti" = "${applicationName} prayer time";
-"${applicationName} şu anki vakti kıldım" = "I've prayed the current prayer in ${applicationName}";
-"${applicationName} namazımı kıldım" = "I've prayed in ${applicationName}";
-"${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
-"${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
-"${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
-"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
-"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";
+"${applicationName} sıradaki namaz ne zaman" = "${applicationName}-ൽ അടുത്ത നമസ്കാരം എപ്പോഴാണ്";
+"${applicationName} sıradaki namaz" = "${applicationName} അടുത്ത നമസ്കാരം";
+"${applicationName} ile sıradaki namazı söyle" = "${applicationName} ഉപയോഗിച്ച് അടുത്ത നമസ്കാരം പറയുക";
+"${applicationName} namaz vakti" = "${applicationName} നമസ്കാര സമയം";
+"${applicationName} şu anki vakti kıldım" = "${applicationName}-ൽ ഇപ്പോഴത്തെ നമസ്കാരം നിർവഹിച്ചു";
+"${applicationName} namazımı kıldım" = "${applicationName}-ൽ ഞാൻ നമസ്കരിച്ചു";
+"${applicationName} ile vakti kıldım olarak işaretle" = "${applicationName}-ൽ ഇപ്പോഴത്തെ നമസ്കാരം നമസ്കരിച്ചതായി അടയാളപ്പെടുത്തുക";
+"${applicationName} kıbleyi aç" = "${applicationName}-ൽ ഖിബ്‌ല തുറക്കുക";
+"${applicationName} ile kıbleyi göster" = "${applicationName} ഉപയോഗിച്ച് ഖിബ്‌ല കാണിക്കുക";
+"${applicationName} günün ayeti görseli" = "${applicationName} ഇന്നത്തെ ആയത്തിന്റെ ചിത്രം";
+"${applicationName} ile günün ayeti görselini hazırla" = "${applicationName} ഉപയോഗിച്ച് ഇന്നത്തെ ആയത്തിന്റെ ചിത്രം തയ്യാറാക്കുക";

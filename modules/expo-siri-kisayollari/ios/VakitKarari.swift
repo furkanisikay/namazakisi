@@ -1208,31 +1208,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: ml
+    // ml — Malayalamca (beta): JS `sozluk/ml`; Kıldım "ഞാൻ നമസ്കരിച്ചു", Kılındı "നമസ്കരിച്ചു"
     public static let ml = VakitMetinleri(
         dil: "ml",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "സുബ്‌ഹ്", "ogle": "ളുഹർ", "ikindi": "അസ്ർ", "aksam": "മഗ്‌രിബ്", "yatsi": "ഇശാ"],
+        gunes: "സൂര്യോദയം",
+        konumYok: "നമസ്കാര സമയങ്ങൾ കണക്കാക്കാൻ ആപ്പ് തുറന്ന് ലൊക്കേഷൻ സജ്ജമാക്കുക.",
+        veriEski: "നമസ്കാര സമയങ്ങൾ പഴയതാണ്. പുതുക്കാൻ ഒരിക്കൽ ആപ്പ് തുറക്കുക.",
+        girisBugun: "{saat}-ന്",
+        girisYarin: "നാളെ {saat}-ന്",
+        suAnVakti: "ഇപ്പോൾ {ad} സമയമാണ്.",
+        suAnVaktiCikis: "ഇപ്പോൾ {ad} സമയമാണ്; {saat}-ന് തീരും.",
+        siradakiNamaz: "അടുത്ത നമസ്കാരം {ad}, {giris}.",
+        isaretlendi: "{ad} നമസ്കരിച്ചതായി അടയാളപ്പെടുത്തി. {dua}.",
+        zatenKilindi: "{ad} ഇതിനകം നമസ്കരിച്ചതായി അടയാളപ്പെടുത്തിയിട്ടുണ്ട്.",
+        vakitYok: "ഇപ്പോൾ അടയാളപ്പെടുത്താൻ നമസ്കാരമില്ല.",
+        vakitYokSiradaki: "ഇപ്പോൾ അടയാളപ്പെടുത്താൻ നമസ്കാരമില്ല. അടുത്തത് {ad}, {giris}.",
+        onay: "{ad} നമസ്കരിച്ചതായി അടയാളപ്പെടുത്തണോ?",
+        vakitDegisti: "നമസ്കാര സമയം മാറിയതിനാൽ ഒന്നും അടയാളപ്പെടുത്തിയില്ല. വീണ്ടും ശ്രമിക്കുക.",
+        kabulDuasi: "അല്ലാഹു സ്വീകരിക്കട്ടെ",
+        kildim: "ഞാൻ നമസ്കരിച്ചു",
+        kilindi: "നമസ്കരിച്ചു",
+        kontrolKildim: "{ad} · ഞാൻ നമസ്കരിച്ചു",
+        kontrolKilindi: "{ad} നമസ്കരിച്ചു",
+        kontrolVakitYok: "അടയാളപ്പെടുത്താൻ നമസ്കാരമില്ല",
+        uygulamayiAcin: "ആപ്പ് തുറക്കുക"
     )
 
     // th

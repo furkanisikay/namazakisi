@@ -511,18 +511,19 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: ml
+    // ml — Malayalamca (beta): JS `sozluk/ml/gununAyeti.ts`. `gununAyetiHavuzu.ts`'te 94:6 için Malayalamca
+    // (malayalam_kunhi) meal YOK → `ornekMeal` ve `ornekMealKaynagi` boş (uydurma çeviri yok), yalnız Arapça.
     static let ml = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "ഇന്നത്തെ ആയത്ത്",
+        galeriAciklama: "എല്ലാ ദിവസവും സുബ്‌ഹിന് മാറുന്ന ഒരു ആയത്തും അതിന്റെ പരിഭാഷയും.",
+        etiket: "ഇന്നത്തെ ആയത്ത്",
+        uygulamayiAcin: "ഇന്നത്തെ ആയത്ത് കാണാൻ ആപ്പ് തുറക്കുക",
+        ornekSigmiyor: "ഇന്നത്തെ ആയത്ത് ഈ വലുപ്പത്തിൽ ഒതുങ്ങുന്നില്ല. വായിക്കാൻ ടാപ്പ് ചെയ്യുക.",
+        ornekAcin: "തുറക്കുക",
+        ornekArapcaKaynagi: "അറബി: Tanzil",
+        ornekMeal: "",
+        ornekKisaKunye: "ഖുർആൻ 94:6",
+        ornekMealKaynagi: ""
     )
 
     // th

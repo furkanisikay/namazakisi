@@ -310,12 +310,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: ml
+    // ml — JS `sozluk/ml/sure` (sayıdan sonra isim çekimlenmez, boşluklu)
     public static let ml = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "മ", birimDk: "മി", birimSn: "സെ",
+        saat: ["one": "{n} മണിക്കൂർ", "other": "{n} മണിക്കൂർ"],
+        dakika: ["one": "{n} മിനിറ്റ്", "other": "{n} മിനിറ്റ്"],
+        saniye: ["one": "{n} സെക്കൻഡ്", "other": "{n} സെക്കൻഡ്"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

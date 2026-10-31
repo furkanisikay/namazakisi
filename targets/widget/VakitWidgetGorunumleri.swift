@@ -881,29 +881,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: ml
+    // ml — Malayalamca (beta): JS `sozluk/ml`; Kılındı "നമസ്കരിച്ചു", Kıldım "ഞാൻ നമസ്കരിച്ചു"
     static let ml = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "നമസ്കാര സമയം",
+        galeriAciklama: "ഇപ്പോഴത്തെ നമസ്കാര സമയം, അത് തീരാൻ ബാക്കിയുള്ള സമയം, ഇന്നത്തെ നമസ്കാര സമയങ്ങൾ.",
+        veriEski: "നമസ്കാര സമയങ്ങൾ പുതുക്കാൻ ആപ്പ് തുറക്കുക",
+        konumYok: "ലൊക്കേഷൻ സജ്ജമാക്കാൻ ആപ്പ് തുറക്കുക",
+        kilindiSiradaki: "{ad} നമസ്കരിച്ചു · {sonraki} {saat}",
+        adCikis: "{ad} · {saat}-ന് തീരും",
+        siradakiAdSaat: "അടുത്തത് {ad} {saat}",
+        vaktiCikisErisim: "{ad} സമയം, {saat}-ന് തീരും",
+        siradakiErisim: "അടുത്തത് {ad}, {saat}",
+        cikisSaat: "{saat}-ന് തീരും",
+        bitisSaat: "{saat}-ന് തീരും",
+        kilindiBaslik: "{ad} നമസ്കരിച്ചു",
+        siradaki: "അടുത്തത്",
+        siradakiAd: "അടുത്തത് {ad}",
+        kildimErisim: "{ad}: ഞാൻ നമസ്കരിച്ചു",
+        gunSatiriKilindi: ", നമസ്കരിച്ചു",
+        bitti: "തീർന്നു",
+        vakitCikti: "നമസ്കാര സമയം കഴിഞ്ഞു",
+        kabulAlt: "{ad} നമസ്കരിച്ചു",
+        kontrolAdi: "ഞാൻ നമസ്കരിച്ചു",
+        kontrolAciklama: "ഇപ്പോഴത്തെ നമസ്കാരം നമസ്കരിച്ചതായി അടയാളപ്പെടുത്തുന്നു."
     )
 
     // th

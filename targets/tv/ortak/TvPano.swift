@@ -548,18 +548,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: ml
+    // ml — Malayalamca (beta): JS `sozluk/ml` (vakit, tarih, anaEkran.kerahat); tarih CLDR sırası
     public static let ml = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "സുബ്‌ഹ്", "gunes": "സൂര്യോദയം", "ogle": "ളുഹർ", "ikindi": "അസ്ർ", "aksam": "മഗ്‌രിബ്", "yatsi": "ഇശാ"],
+        cuma: "ജുമുഅ",
+        aylar: ["ജനുവരി", "ഫെബ്രുവരി", "മാർച്ച്", "ഏപ്രിൽ", "മേയ്", "ജൂൺ", "ജൂലൈ", "ഓഗസ്റ്റ്", "സെപ്റ്റംബർ", "ഒക്‌ടോബർ", "നവംബർ", "ഡിസംബർ"],
+        gunler: ["തിങ്കളാഴ്‌ച", "ചൊവ്വാഴ്‌ച", "ബുധനാഴ്‌ച", "വ്യാഴാഴ്‌ച", "വെള്ളിയാഴ്‌ച", "ശനിയാഴ്‌ച", "ഞായറാഴ്‌ച"],
+        tarih: "{yil}, {ay} {gun}, {gunAdi}",
+        kerahatAdlari: ["suruk": "സൂര്യോദയം", "istiva": "നട്ടുച്ച", "gurub": "സൂര്യാസ്തമയം"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "സൂര്യൻ നന്നായി ഉദിക്കുന്നതുവരെ നമസ്കരിക്കുന്നത് കറാഹത്താണ്.",
+            "istiva": "സൂര്യൻ നട്ടുച്ചയിലായിരിക്കുമ്പോൾ നമസ്കരിക്കുന്നത് കറാഹത്താണ്.",
+            "gurub": "സൂര്യൻ അസ്തമിക്കുമ്പോൾ നമസ്കരിക്കുന്നത് കറാഹത്താണ്.",
         ]
     )
 

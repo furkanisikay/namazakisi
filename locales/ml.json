@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "നിങ്ങൾ ഉള്ള സ്ഥലത്തെ നമസ്കാര സമയങ്ങൾ കൃത്യമായി കണക്കാക്കാൻ നിങ്ങളുടെ ലൊക്കേഷൻ ഉപയോഗിക്കുന്നു. ലൊക്കേഷൻ നിങ്ങളുടെ ഉപകരണത്തിൽ തന്നെ നിലനിൽക്കും.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "നിങ്ങൾ ഉള്ള സ്ഥലത്തെ നമസ്കാര സമയങ്ങൾ കൃത്യമായി കണക്കാക്കാനും, “പള്ളിയിലാണ്” ഓണാണെങ്കിൽ പള്ളിയിൽ കയറുമ്പോൾ നമസ്കാര മോഡ് ഓണാക്കാനും നിങ്ങളുടെ ലൊക്കേഷൻ ഉപയോഗിക്കുന്നു. ലൊക്കേഷൻ നിങ്ങളുടെ ഉപകരണത്തിൽ തന്നെ നിലനിൽക്കും.",
+  "NSLocationAlwaysUsageDescription": "നഗരം മാറുമ്പോൾ നമസ്കാര സമയങ്ങൾ സ്വയം പുതുക്കാനും, “പള്ളിയിലാണ്” ഓണാണെങ്കിൽ പള്ളിയിൽ കയറുമ്പോൾ നമസ്കാര മോഡ് ഓണാക്കാനും നിങ്ങളുടെ ലൊക്കേഷൻ ഉപയോഗിക്കുന്നു. ലൊക്കേഷൻ നിങ്ങളുടെ ഉപകരണത്തിൽ തന്നെ നിലനിൽക്കും.",
+  "NSCameraUsageDescription": "ക്യാമറ കാഴ്ചയ്ക്ക് മുകളിൽ ഖിബ്‌ലയുടെ ദിശ കാണിക്കാനും ടിവിയിലെ ജോടിയാക്കൽ കോഡ് സ്കാൻ ചെയ്യാനും ക്യാമറ ഉപയോഗിക്കുന്നു. ദൃശ്യങ്ങൾ സംരക്ഷിക്കുന്നില്ല, ഉപകരണത്തിന് പുറത്തുപോകുന്നുമില്ല.",
+  "NSCalendarsUsageDescription": "നമസ്കാര സമയങ്ങൾ കലണ്ടറിൽ ചേർക്കാനും, നിങ്ങൾ ഓണാക്കിയാൽ കലണ്ടറിലെ പരിപാടികൾ നമസ്കാര സമയവുമായി കൂട്ടിമുട്ടുന്നുണ്ടോ എന്ന് പരിശോധിക്കാനും കലണ്ടർ ഉപയോഗിക്കുന്നു. കലണ്ടർ വിവരങ്ങൾ നിങ്ങളുടെ ഉപകരണത്തിൽ തന്നെ നിലനിൽക്കും.",
+  "NSCalendarsFullAccessUsageDescription": "നമസ്കാര സമയങ്ങൾ കലണ്ടറിൽ ചേർക്കാനും, നിങ്ങൾ ഓണാക്കിയാൽ കലണ്ടറിലെ പരിപാടികൾ നമസ്കാര സമയവുമായി കൂട്ടിമുട്ടുന്നുണ്ടോ എന്ന് പരിശോധിക്കാനും കലണ്ടർ ഉപയോഗിക്കുന്നു. കലണ്ടർ വിവരങ്ങൾ നിങ്ങളുടെ ഉപകരണത്തിൽ തന്നെ നിലനിൽക്കും.",
+  "NSLocalNetworkUsageDescription": "നിങ്ങളുടെ നമസ്കാര സമയങ്ങളും അടയാളപ്പെടുത്തിയ നമസ്കാരങ്ങളും അയയ്ക്കാൻ ആപ്പ് പ്രാദേശിക നെറ്റ്‌വർക്കിലെ ടിവിയുമായി ബന്ധിപ്പിക്കുന്നു. വിവരങ്ങൾ എൻക്രിപ്റ്റ് ചെയ്ത് രണ്ട് ഉപകരണങ്ങൾക്കിടയിൽ മാത്രം കൈമാറുന്നു.",
+  "NSAlarmKitUsageDescription": "നിങ്ങൾ “യഥാർത്ഥ അലാറം” തിരഞ്ഞെടുക്കുന്ന ഓർമ്മപ്പെടുത്തൽ ഘട്ടങ്ങൾ അലാറങ്ങളായി സജ്ജമാക്കുന്നു, അതിനാൽ ഫോൺ സൈലന്റിലോ ഫോക്കസ് ഓണായോ ആയിരിക്കുമ്പോഴും കേൾക്കാം.",
+  "\"Vakti kıldım\"": "നമസ്കരിച്ചു",
+  "\"Kıble\"": "ഖിബ്‌ല"
 }

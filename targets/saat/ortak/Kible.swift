@@ -606,17 +606,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: ml
+    // ml — JS `sozluk/ml/kible`
     public static let ml = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "പിന്നിൽ",
+        saga: "വലത്ത് {derece}°",
+        sola: "ഇടത്ത് {derece}°",
+        hizali: "നിങ്ങൾ ഖിബ്‌ലയ്ക്ക് നേരെയാണ്",
+        arkadaErisim: "ഖിബ്‌ല നിങ്ങളുടെ പിന്നിലാണ്",
+        sagdaErisim: "ഖിബ്‌ല നിങ്ങളുടെ വലത്തോട്ട് {derece} ഡിഗ്രി",
+        soldaErisim: "ഖിബ്‌ല നിങ്ങളുടെ ഇടത്തോട്ട് {derece} ഡിഗ്രി",
+        kabede: "നിങ്ങൾ കഅ്ബയിലാണ്",
+        mesafe: "{km} കി.മീ.",
         binlikAyirici: ","
     )
 

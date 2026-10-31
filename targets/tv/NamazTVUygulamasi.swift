@@ -574,19 +574,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: ml
+    // ml — Malayalamca (beta): JS `sozluk/ml`
     static let ml = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "നിങ്ങളുടെ നഗരം തിരഞ്ഞെടുക്കുക",
+        ilMerkezi: "പ്രവിശ്യാ കേന്ദ്രത്തിനായി നമസ്കാര സമയങ്ങൾ കണക്കാക്കുന്നു. തിരഞ്ഞെടുപ്പ് പിന്നീട് മാറ്റാം.",
+        ilSecErisim: "{il}, തിരഞ്ഞെടുക്കുക",
+        kalan: "{ad}-ന് ബാക്കിയുള്ള സമയം",
+        kalanErisim: "{ad}-ന് ബാക്കിയുള്ള സമയം: {sure}",
+        konumuDegistirin: "ലൊക്കേഷൻ മാറ്റുക",
+        kerahatSuruyor: "കറാഹത്ത് സമയം: {tur}, {bitis}-ന് തീരും. {aciklama}",
+        siradakiKerahat: "അടുത്ത കറാഹത്ത് സമയം: {tur} {bas}–{bit}",
+        cumaBilgisi: "ഇന്ന് വെള്ളിയാഴ്ചയാണ്. ജുമുഅ ളുഹർ സമയത്താണ് നിർവഹിക്കുന്നത് ({giris}-ന് തുടങ്ങും).",
+        suAnkiEk: ", ഇപ്പോഴത്തെ നമസ്കാരം",
+        siradakiEk: ", അടുത്ത നമസ്കാരം"
     )
 
     // th
