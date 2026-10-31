@@ -99,7 +99,7 @@ class SaatDilTablolariTest {
     fun sayiBirimBoslugu_dildenGelir() {
         // JS `sure.birimli` / `sure.parcali` ikizi: boşluklu dillerde çıktı eski sabit boşluklu
         // biçimle birebir; boşluksuz dil (Çince) bitişik yazar.
-        for (k in kodlar.filter { it != "zh" }) {
+        for (k in kodlar.filter { it != "zh" && it != "ko" }) {
             val d = saatDili(k)
             assertEquals(k, " " to " ", d.birimAyirici to d.parcaAyirici)
             assertEquals(k, "1 ${d.birimSa} 12 ${d.birimDk}", VakitHesabi.kalanMetni(72 * 60_000L, k))
@@ -113,5 +113,13 @@ class SaatDilTablolariTest {
         assertEquals(zh.saatSesli(1) + zh.dakikaSesli(5), VakitHesabi.kalanSesliMetni(65 * 60_000L, "zh"))
         val sayac = AnaEkranKarari.sayac(3_725_000L, "zh")
         assertTrue(!sayac.birimBosluklu && !sayac.parcaBosluklu)
+        // Korece yalnız sayı–birim bitişik, parçalar boşluklu ("5분", "1시간 5분").
+        val ko = saatDili("ko")
+        assertEquals("" to " ", ko.birimAyirici to ko.parcaAyirici)
+        assertEquals("1${ko.birimSa} 12${ko.birimDk}", VakitHesabi.kalanMetni(72 * 60_000L, "ko"))
+        assertEquals("12${ko.birimDk}", VakitHesabi.kalanMetni(12 * 60_000L, "ko"))
+        assertEquals(ko.saatSesli(1) + " " + ko.dakikaSesli(5), VakitHesabi.kalanSesliMetni(65 * 60_000L, "ko"))
+        val koSayac = AnaEkranKarari.sayac(3_725_000L, "ko")
+        assertTrue(!koSayac.birimBosluklu && koSayac.parcaBosluklu)
     }
 }

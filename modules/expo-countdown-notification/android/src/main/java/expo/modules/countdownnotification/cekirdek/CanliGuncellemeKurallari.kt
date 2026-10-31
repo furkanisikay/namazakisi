@@ -116,8 +116,8 @@ object CanliGuncellemeKurallari {
         "ml" to KisaBirimler("മ", "മി", birimAyirici = " ", parcaAyirici = " "),
         // th
         "th" to KisaBirimler("ชม.", "นาที", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: ko
-        "ko" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ko (sayı–birim bitişik: "5분"; parçalar boşluklu: "1시간 5분")
+        "ko" to KisaBirimler("시간", "분", birimAyirici = "", parcaAyirici = " "),
         // vi
         "vi" to KisaBirimler("giờ", "phút", birimAyirici = " ", parcaAyirici = " "),
     )

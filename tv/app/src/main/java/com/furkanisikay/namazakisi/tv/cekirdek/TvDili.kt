@@ -1813,7 +1813,7 @@ object TvDiliKo : TvDili {
     override val birimSa = "h"
     override val birimDk = "min"
     override val birimSn = "s"
-    override val birimAyirici = " "
+    override val birimAyirici = ""
     override val parcaAyirici = " "
     override fun saatSesli(n: Int) = "$n hours"
     override fun dakikaSesli(n: Int) = "$n minutes"

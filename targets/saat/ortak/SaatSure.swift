@@ -334,7 +334,7 @@ public struct SaatSureMetinleri: Equatable {
         saat: ["one": "{n} hour", "other": "{n} hours"],
         dakika: ["one": "{n} minute", "other": "{n} minutes"],
         saniye: ["one": "{n} second", "other": "{n} seconds"],
-        birimAyirici: " ", parcaAyirici: " "
+        birimAyirici: "", parcaAyirici: " "
     )
 
     // vi (CLDR yalnız other; "one" anahtarı ms gibi aynı kalıpla dolu)

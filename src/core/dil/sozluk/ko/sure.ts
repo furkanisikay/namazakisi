@@ -1,12 +1,12 @@
-// ÇEVİRİ: ko — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Korecede sayı ile birim bitişik ("5분"), ardışık süre parçaları boşluklu ("1시간 5분"). */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
-  birimli: '{n} {birim}',
+  kisa: { sa: '시간', dk: '분', sn: '초' },
+  birimli: '{n}{birim}',
   parcali: '{once} {sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ other: '{n}시간' }),
+  dakika: cogul({ other: '{n}분' }),
+  saniye: cogul({ other: '{n}초' }),
 };

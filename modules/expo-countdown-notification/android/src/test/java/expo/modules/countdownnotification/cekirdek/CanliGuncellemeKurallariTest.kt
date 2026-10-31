@@ -67,7 +67,7 @@ class CanliGuncellemeKurallariTest {
             val (sa, dk) = k.KISA_BIRIMLER.getValue(d)
             assertTrue(d, sa.isNotBlank() && dk.isNotBlank())
             // Boşluklu dillerin çıktısı eski sabit boşluklu biçimle birebir (JS `sure.test.ts` ikizi).
-            if (d != "zh") assertEquals(d, "1 $sa 5 $dk", k.kisaMetin(65 * 60_000L, d))
+            if (d != "zh" && d != "ko") assertEquals(d, "1 $sa 5 $dk", k.kisaMetin(65 * 60_000L, d))
         }
     }
 
@@ -79,8 +79,13 @@ class CanliGuncellemeKurallariTest {
         assertEquals("12${zh.dk}", k.kisaMetin(12 * 60_000L, "zh"))
         assertEquals("1${zh.sa}", k.kisaMetin(60 * 60_000L, "zh"))
         assertEquals("1${zh.sa}5${zh.dk}", k.kisaMetin(65 * 60_000L, "zh"))
+        // Korece yalnız sayı–birim bitişik, parçalar boşluklu ("5분", "1시간 5분").
+        val ko = k.KISA_BIRIMLER.getValue("ko")
+        assertEquals("" to " ", ko.birimAyirici to ko.parcaAyirici)
+        assertEquals("12${ko.dk}", k.kisaMetin(12 * 60_000L, "ko"))
+        assertEquals("1${ko.sa} 5${ko.dk}", k.kisaMetin(65 * 60_000L, "ko"))
         // Diğer diller tek boşluk taşır.
-        for ((d, b) in k.KISA_BIRIMLER) if (d != "zh") assertEquals(d, " " to " ", b.birimAyirici to b.parcaAyirici)
+        for ((d, b) in k.KISA_BIRIMLER) if (d != "zh" && d != "ko") assertEquals(d, " " to " ", b.birimAyirici to b.parcaAyirici)
     }
 
     @Test

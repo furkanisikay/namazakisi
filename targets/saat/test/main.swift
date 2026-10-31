@@ -576,7 +576,12 @@ do {
     esitMi([zhSure.birimAyirici, zhSure.parcaAyirici], ["", ""], "zh ayiraclar bos")
     esitMi(SaatSure.sesli(kalanMs: (3600 + 60) * 1000, dil: "zh"),
            CogulKurali.sec(zhSure.saat, "zh", 1) + CogulKurali.sec(zhSure.dakika, "zh", 1), "zh sesli bitisik")
-    for (d, m) in SaatSureMetinleri.tablo where d != "zh" {
+    // Korece yalniz sayi-birim bitisik ("5분"), parcalar bosluklu ("1시간 5분").
+    let koSure = SaatSureMetinleri.ko
+    esitMi([koSure.birimAyirici, koSure.parcaAyirici], ["", " "], "ko birim bitisik, parca bosluklu")
+    esitMi(SaatSure.sesli(kalanMs: (3600 + 60) * 1000, dil: "ko"),
+           CogulKurali.sec(koSure.saat, "ko", 1) + " " + CogulKurali.sec(koSure.dakika, "ko", 1), "ko sesli bosluklu")
+    for (d, m) in SaatSureMetinleri.tablo where d != "zh" && d != "ko" {
         esitMi([m.birimAyirici, m.parcaAyirici], [" ", " "], "\(d) ayiraclar tek bosluk")
     }
     esitMi(Samimiyet.kabulDuasi("en"), "May Allah accept it", "en kabul duasi")

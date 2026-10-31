@@ -1,61 +1,60 @@
-// ÇEVİRİ: ko — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Korecede: zamirsiz, kısa ‑세요 emri ("예배를 드리세요"); 그대 (meal hitabı)
+ * ve "!" yok. "Secdeye kapan" karşılığı YAZILMAZ → "예배하러 일어서세요" (namaza dur). Başlıkta
+ * süre "{dk}분" (bitişik); Hangılda büyük harf yok, son düzey vurgusu emojiyle kalır.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk}분 지남 · 예배 시간입니다 ⏰',
+    giris2: '{ad} · {dk}분 지남 · 예배를 미루지 마세요 ⚠️',
+    giris3: '{ad} · {dk}분 지남 · 예배가 기다립니다 🔥',
+    giris4: '{ad} · {dk}분 지남 · 지금 예배를 드리세요 🚨',
+    erken3: '{ad} · {dk}분 남음 · 예배가 기다립니다 🔥',
+    erken4: '{ad} · {dk}분 남음 · 지금 예배를 드리세요 🚨',
+    cikis1: '{ad} · {dk}분 남음 ⏰',
+    cikis2: '{ad} · {dk}분 · 시간이 줄어듭니다 ⚠️',
+    cikis3: '{ad} · {dk}분 · 시간이 빠져나갑니다 🔥',
+    cikis4: '{ad} · {dk}분 · 예배 시간이 끝나 갑니다 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['예배 시간입니다. 기회가 있을 때 예배를 드리세요.', '시간이 있을 때 예배를 드리세요. 나중으로 미루지 마세요.'],
+    s2: ['미룰수록 더 무거워집니다. 예배를 마지막으로 남기지 마세요.', '시간이 흐르고 있습니다. 지금 예배를 드리세요.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      '미룰수록 놓치기 쉬워집니다. 지금 예배를 드리세요.',
+      '"나중에 드리자"고 하지 마세요. 지금 드릴 수 있습니다.',
+      '몇 분 뒤 "그때 할걸" 하기 전에 지금 일어서세요.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['예배를 더 미루지 마세요. 지금 예배하러 일어서세요.', '하던 일을 내려놓고 예배하러 일어서세요.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: '시간이 줄어들기 시작합니다. 기회가 있을 때 예배를 드리세요.',
+    s2: '예배를 마지막으로 남기지 마세요. 지금이 예배드리기 좋은 때입니다.',
+    s3: '시간이 거의 다 되었습니다. 아직 지금 예배를 드릴 수 있습니다.',
+    s4: '예배를 드렸다면 "예배 드렸어요"를 누르세요. 아직이라면 지금 예배하러 일어서세요.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: '예배를 미루지 마세요. 지금 예배하러 일어서세요. ({dk}분 지남)',
+    giris2: '시간이 흐르고 있습니다. 예배를 마지막으로 남기지 마세요. ({dk}분 지남)',
+    giris1: cogul({ other: '예배 시간이 시작된 지 {n}분이 지났습니다.' }),
+    erken4: '예배를 미루지 마세요. 지금 예배하러 일어서세요. ({dk}분 남음)',
+    cikis4: '예배 시간이 끝나 갑니다. 지금 예배하러 일어서세요. ({dk}분 남음)',
+    cikis2: '시간이 줄어들고 있습니다. 예배를 마지막으로 남기지 마세요. ({dk}분 남음)',
+    cikis1: cogul({ other: '예배 시간이 끝나기까지 {n}분 남았습니다.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · 잠들기 전에 예배를 드리세요 ⏰',
+    govde: '{dk}분 뒤 방해 금지 시간이 시작됩니다. 잠자리에 들기 전에 밤 예배를 드리세요.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: '시간이 줄어들기 시작합니다. 기회가 있을 때 예배를 드리세요.',
+    sonaBirakma: '예배를 마지막으로 남기지 마세요. 지금이 예배드리기 좋은 때입니다.',
+    fisilti: '"나중에 드리자"고 하지 마세요. 시간이 거의 다 되었으니 지금 드릴 수 있습니다.',
+    omur: '시간이 지나가고 있습니다. 아직 이 예배를 제때 드릴 기회가 있습니다.',
+    keske: '몇 분 뒤 "그때 할걸" 하기 전에 지금 일어서세요.',
+    namazaDur: '예배를 드렸다면 "예배 드렸어요"를 누르세요. 아직이라면 지금 예배하러 일어서세요.',
+    sonDakika: '마지막 몇 분입니다. 하던 일을 내려놓고 예배하러 일어서세요.',
   },
 };

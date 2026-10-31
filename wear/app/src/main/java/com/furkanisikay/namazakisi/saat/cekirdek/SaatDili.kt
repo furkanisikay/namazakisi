@@ -3581,7 +3581,7 @@ object SaatDiliKo : SaatDili {
     override val birimSa = "h"
     override val birimDk = "min"
     override val birimSn = "s"
-    override val birimAyirici = " "
+    override val birimAyirici = ""
     override val parcaAyirici = " "
     override val birDakikadanAzKisa = "<1 min"
     override fun saatSesli(n: Long) = "$n hours"
