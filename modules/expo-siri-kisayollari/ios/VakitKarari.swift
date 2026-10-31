@@ -1235,31 +1235,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: th
+    // th
     public static let th = VakitMetinleri(
         dil: "th",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ซุบฮ์", "ogle": "ดุฮ์ริ", "ikindi": "อัสร์", "aksam": "มักริบ", "yatsi": "อีซา"],
+        gunes: "ซูรูก",
+        konumYok: "โปรดเปิดแอปและตั้งตำแหน่งของคุณเพื่อให้คำนวณเวลาละหมาดได้",
+        veriEski: "เวลาละหมาดเก่าแล้ว โปรดเปิดแอปหนึ่งครั้งเพื่ออัปเดต",
+        girisBugun: "เวลา {saat}",
+        girisYarin: "พรุ่งนี้เวลา {saat}",
+        suAnVakti: "ขณะนี้เป็นเวลา{ad}",
+        suAnVaktiCikis: "ขณะนี้เป็นเวลา{ad} จะหมดเวลา {saat}",
+        siradakiNamaz: "เวลาละหมาดถัดไปคือ{ad} {giris}",
+        isaretlendi: "ทำเครื่องหมายว่าละหมาด{ad}แล้ว {dua}",
+        zatenKilindi: "{ad}ถูกทำเครื่องหมายว่าละหมาดแล้ว",
+        vakitYok: "ขณะนี้ไม่มีเวลาละหมาดที่จะทำเครื่องหมาย",
+        vakitYokSiradaki: "ขณะนี้ไม่มีเวลาละหมาดที่จะทำเครื่องหมาย ถัดไปคือ{ad} {giris}",
+        onay: "ทำเครื่องหมายว่าละหมาด{ad}แล้วหรือไม่",
+        vakitDegisti: "เวลาละหมาดเปลี่ยนไปแล้ว จึงไม่ได้ทำเครื่องหมาย โปรดลองอีกครั้ง",
+        kabulDuasi: "ขออัลลอฮ์ทรงตอบรับ",
+        kildim: "ละหมาดแล้ว",
+        kilindi: "ละหมาดแล้ว",
+        kontrolKildim: "{ad} · ละหมาดแล้ว",
+        kontrolKilindi: "ละหมาด{ad}แล้ว",
+        kontrolVakitYok: "ไม่มีเวลาละหมาดที่จะทำเครื่องหมาย",
+        uygulamayiAcin: "เปิดแอป"
     )
 
     // ÇEVİRİ: ko

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: th — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- Tayca. -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">จัดคิวอาร์โค้ดบนหน้าจอทีวีให้อยู่ในกรอบ</string>
+    <string name="tvesleme_qr_vazgec">ยกเลิก</string>
+    <string name="tvesleme_qr_vazgec_erisim">ยกเลิกการสแกน</string>
+    <string name="tvesleme_qr_yabanci">คิวอาร์โค้ดนี้ไม่ใช่ของ Namaz Akışı TV โปรดสแกนรหัสบนทีวี</string>
+    <string name="tvesleme_qr_okundu">สแกนรหัสแล้ว</string>
 </resources>

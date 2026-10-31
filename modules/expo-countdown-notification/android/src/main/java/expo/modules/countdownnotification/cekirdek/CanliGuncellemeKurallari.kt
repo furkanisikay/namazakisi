@@ -114,8 +114,8 @@ object CanliGuncellemeKurallari {
         "ta" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: ml
         "ml" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: th
-        "th" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // th
+        "th" to KisaBirimler("ชม.", "นาที", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: ko
         "ko" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: vi

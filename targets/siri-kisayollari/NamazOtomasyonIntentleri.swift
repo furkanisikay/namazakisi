@@ -367,11 +367,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: th
+    // th (CLDR yalnız other; "one" anahtarı aynı kalıp)
     static let th = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad}จะเข้าเวลาในอีก {n} นาที", "other": "{ad}จะเข้าเวลาในอีก {n} นาที"],
+        evetKilindi: "ใช่ ทำเครื่องหมายว่าละหมาดแล้ว",
+        hayirKilinmadi: "ไม่ ยังไม่ได้ทำเครื่องหมาย"
     )
 
     // ÇEVİRİ: ko

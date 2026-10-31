@@ -164,8 +164,8 @@ enum NamazAlarmCekirdegi {
         "ta": "Stop",
         // ÇEVİRİ: ml
         "ml": "Stop",
-        // ÇEVİRİ: th
-        "th": "Stop",
+        // th
+        "th": "หยุด",
         // ÇEVİRİ: ko
         "ko": "Stop",
         // ÇEVİRİ: vi

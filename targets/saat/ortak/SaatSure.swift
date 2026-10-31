@@ -319,12 +319,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: th
+    // th (CLDR yalnız other; "one" anahtarı aynı kalıp)
     public static let th = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "ชม.", birimDk: "นาที", birimSn: "วิ",
+        saat: ["one": "{n} ชั่วโมง", "other": "{n} ชั่วโมง"],
+        dakika: ["one": "{n} นาที", "other": "{n} นาที"],
+        saniye: ["one": "{n} วินาที", "other": "{n} วินาที"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

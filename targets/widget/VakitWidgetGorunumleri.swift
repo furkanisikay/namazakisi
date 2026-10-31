@@ -906,29 +906,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: th
+    // th
     static let th = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "เวลาละหมาด",
+        galeriAciklama: "เวลาละหมาดปัจจุบัน เวลาที่เหลือก่อนหมดเวลา และเวลาละหมาดของวันนี้",
+        veriEski: "เปิดแอปเพื่ออัปเดตเวลาละหมาด",
+        konumYok: "เปิดแอปเพื่อตั้งตำแหน่งของคุณ",
+        kilindiSiradaki: "ละหมาด{ad}แล้ว · {sonraki} {saat}",
+        adCikis: "{ad} · หมด {saat}",
+        siradakiAdSaat: "ถัดไป {ad} {saat}",
+        vaktiCikisErisim: "เวลา{ad} หมดเวลา {saat}",
+        siradakiErisim: "ถัดไป {ad} {saat}",
+        cikisSaat: "หมด {saat}",
+        bitisSaat: "หมด {saat}",
+        kilindiBaslik: "ละหมาด{ad}แล้ว",
+        siradaki: "ถัดไป",
+        siradakiAd: "ถัดไป {ad}",
+        kildimErisim: "ฉันละหมาด{ad}แล้ว",
+        gunSatiriKilindi: " ละหมาดแล้ว",
+        bitti: "สิ้นสุดแล้ว",
+        vakitCikti: "หมดเวลาละหมาดแล้ว",
+        kabulAlt: "ละหมาด{ad}แล้ว",
+        kontrolAdi: "ละหมาดแล้ว",
+        kontrolAciklama: "ทำเครื่องหมายว่าละหมาดเวลาปัจจุบันแล้ว"
     )
 
     // ÇEVİRİ: ko

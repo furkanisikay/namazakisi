@@ -620,17 +620,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: th
+    // th
     public static let th = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "ด้านหลัง",
+        saga: "ขวา {derece}°",
+        sola: "ซ้าย {derece}°",
+        hizali: "คุณหันไปทางกิบลัตแล้ว",
+        arkadaErisim: "กิบลัตอยู่ด้านหลัง",
+        sagdaErisim: "กิบลัตอยู่ทางขวา {derece} องศา",
+        soldaErisim: "กิบลัตอยู่ทางซ้าย {derece} องศา",
+        kabede: "คุณอยู่ที่กะอ์บะฮ์",
+        mesafe: "{km} กม.",
         binlikAyirici: ","
     )
 
