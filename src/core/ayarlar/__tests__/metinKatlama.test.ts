@@ -50,6 +50,18 @@ describe('aramaIcinKatla', () => {
     expect(aramaIcinKatla('Thông báo').includes(aramaIcinKatla('thong bao'))).toBe(true);
   });
 
+  // NÖBETÇİ: meal eski ZWJ'li chillu, arayüz atomik chillu yazar; ikisi aynı aranmalı.
+  it('Malayalamca eski chillu atomik chillu ile, ZWJ/ZWNJ yok sayılarak eşleşir', () => {
+    expect(aramaIcinKatla('ഖുര്‍ആന്‍')).toBe(aramaIcinKatla('ഖുർആൻ'));
+    expect(aramaIcinKatla('ഖിബ്‌ല')).toBe(aramaIcinKatla('ഖിബ്ല'));
+  });
+
+  it('tipografik kesme işaretleri düz kesme işaretiyle eşleşir', () => {
+    expect(aramaIcinKatla('‘Asr')).toBe("'asr");
+    expect(aramaIcinKatla('Qur’an')).toBe("qur'an");
+    expect(aramaIcinKatla('ʼya')).toBe("'ya");
+  });
+
   it('Türkçe katlama değişmez; Latin dışı yazıların işaretlerine dokunulmaz', () => {
     expect(aramaIcinKatla('İstanbul')).toBe('istanbul');
     expect(aramaIcinKatla('İ'.normalize('NFD'))).toBe('i');

@@ -39,8 +39,32 @@ const TURKCE_HARF_HARITASI: Record<string, string> = {
   c: 'c',
 };
 
-/** Ayrışmayan (NFD'de işaret çıkmayan) çizgili d: Vietnamca/Boşnakça "đ" aksansız "d" yazılır. */
-const EK_HARF_HARITASI: Record<string, string> = { Đ: 'd', đ: 'd' };
+/**
+ * Ayrışmayan (NFD'de işaret çıkmayan) çizgili d: Vietnamca/Boşnakça "đ" aksansız "d" yazılır.
+ * Tipografik kesme işaretleri (’ ‘ ʼ) düz `'` sayılır: Vietnamca "‘Asr", "Qur’an"; Hausa ʼy.
+ */
+const EK_HARF_HARITASI: Record<string, string> = { Đ: 'd', đ: 'd', '’': "'", '‘': "'", ʼ: "'" };
+
+/**
+ * Malayalamca eski chillu yazımı (ünsüz + virama + ZWJ, ör. "ര്‍") atomik chillu harfine
+ * (U+0D7A–U+0D7F) indirgenir; kalan ZWJ/ZWNJ aramada yok sayılır. Meal eski, arayüz yeni
+ * yazımı kullanır: yoksa "ഖുര്‍ആന്‍" ile "ഖുർആൻ" eşleşmez.
+ */
+const ESKI_CHILLU: [RegExp, string][] = [
+  [/ണ്‍/g, 'ൺ'],
+  [/ന്‍/g, 'ൻ'],
+  [/ര്‍/g, 'ർ'],
+  [/ല്‍/g, 'ൽ'],
+  [/ള്‍/g, 'ൾ'],
+  [/ക്‍/g, 'ൿ'],
+];
+const BIRLESTIRME_DENETIMI = /[‌‍]/g;
+
+function malayalamChilluBirlestir(metin: string): string {
+  let sonuc = metin;
+  for (const [eski, yeni] of ESKI_CHILLU) sonuc = sonuc.replace(eski, yeni);
+  return sonuc.replace(BIRLESTIRME_DENETIMI, '');
+}
 
 /**
  * YALNIZ Latin birleşik aksan işaretleri (U+0300–036F): Vietnamca ses işaretleri, şapka,
@@ -48,8 +72,8 @@ const EK_HARF_HARITASI: Record<string, string> = { Đ: 'd', đ: 'd' };
  * Tamil/Malayalam ünlü işaretleri ve Tay işaretleri de `M`'dir; silinirse o dillerin araması
  * anlamsız eşleşir. Bu aralık dışındaki yazılar bayt bayt aynı kalır.
  */
-const LATIN_ISARET = /[̀-ͯ]/g;
-const TEK_LATIN_ISARET = /^[̀-ͯ]$/;
+const LATIN_ISARET = /[\u0300-\u036f]/g;
+const TEK_LATIN_ISARET = /^[\u0300-\u036f]$/;
 
 /** Bir harfi küçültür: Türkçe harita, sonra ASCII büyük→küçük (kod noktası farkı 32). */
 function harfKatla(karakter: string): string {
@@ -68,7 +92,7 @@ function harfKatla(karakter: string): string {
  */
 export function aramaIcinKatla(metin: string): string {
   let sonuc = '';
-  for (const karakter of metin) {
+  for (const karakter of malayalamChilluBirlestir(metin)) {
     if (TURKCE_HARF_HARITASI[karakter] !== undefined) {
       sonuc += TURKCE_HARF_HARITASI[karakter];
       continue;

@@ -51,7 +51,7 @@ const BUYUK_HARF: Record<string, string> = {
     đ: 'Đ', // dil-haric: harf eşlemesi (görünen metin değil)
 };
 /** Latin birleşik aksan işaretleri (U+0300–036F): NFD gelen ilk harfin işaretleri. */
-const BIRLESIK_ISARET = /[̀-ͯ]/;
+const BIRLESIK_ISARET = /[\u0300-\u036f]/;
 
 export const ilkHarfiBuyut = (m: string): string => {
     if (!m) return m;
