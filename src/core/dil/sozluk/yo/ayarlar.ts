@@ -29,7 +29,7 @@ export const ayarlar: Sozluk['ayarlar'] = {
     'sayfa-ramazan': { baslik: 'Rọmọdọ̄n', kelimeler: 'rọmọdọ̄n, ramadan, ìsinu, sààrì, ààwẹ̀' },
     'sayfa-nafile': { baslik: 'Ìrun àṣegbọrẹ', kelimeler: 'àṣegbọrẹ, nafila, ḍuḥā, ishrāq, awwābīn, tahajjud, ìrun òru' },
     'sayfa-gorunum': { baslik: 'Ìrísí', kelimeler: 'àwọ̀, ìrísí, ipò òkùnkùn' },
-    'sayfa-dil': { baslik: 'Èdè · Dil', kelimeler: 'èdè, tọọkisi, gẹ̀ẹ́sì, yorùbá, èdè ẹ̀rọ, ìtumọ̀' },
+    'sayfa-dil': { baslik: 'Èdè · Language', kelimeler: 'èdè, tọọkisi, gẹ̀ẹ́sì, yorùbá, èdè ẹ̀rọ, ìtumọ̀' },
     'sayfa-saat-widget': { baslik: 'Aago ọwọ́ àti wíjẹ́ẹ̀tì', kelimeler: 'aago ọwọ́, wear, wíjẹ́ẹ̀tì, now bar, ìkàsẹ̀yìn láàyè, live activity, ẹ̀gbà ọwọ́, ìṣe aládàáṣe, tasker, routine' },
     'sayfa-gunun-ayeti': { baslik: 'Āyah ti òní', kelimeler: 'āyah, āyah ti òní, ìtumọ̀, al-ƙur’ān, pín, tanzil' },
     'sayfa-gunun-ayeti-ayar': { baslik: 'Wíjẹ́ẹ̀tì àti àwòrán ìbòjú', kelimeler: 'wíjẹ́ẹ̀tì, àwòrán ìbòjú, ojú-ìbòjú títì, ojú-ìbòjú ilé, wíjẹ́ẹ̀tì āyah, shortcuts' },

@@ -29,7 +29,7 @@ export const ayarlar: Sozluk['ayarlar'] = {
     'sayfa-ramazan': { baslik: '라마단', kelimeler: '라마단, 이프타르, 수후르, 단식, 금식' },
     'sayfa-nafile': { baslik: '임의예배', kelimeler: '임의예배, 순나, 자발적 예배, 두하, 이슈라끄, 아우와빈, 타하주드, 한밤중 예배' },
     'sayfa-gorunum': { baslik: '보기', kelimeler: '테마, 색상, 보기, 다크 모드' },
-    'sayfa-dil': { baslik: '언어 · Dil', kelimeler: '언어, 튀르키예어, 영어, 한국어, 기기 언어, 번역' },
+    'sayfa-dil': { baslik: '언어 · Language', kelimeler: '언어, 튀르키예어, 영어, 한국어, 기기 언어, 번역' },
     'sayfa-saat-widget': { baslik: '시계와 위젯', kelimeler: '시계, 워치, wear, 위젯, now bar, 실시간 카운트다운, 실시간 현황, 손목, 자동화, tasker, 루틴' },
     'sayfa-gunun-ayeti': { baslik: '오늘의 구절', kelimeler: '구절, 아야, 오늘의 구절, 번역, 꾸란, 공유, tanzil' },
     'sayfa-gunun-ayeti-ayar': { baslik: '위젯과 배경화면', kelimeler: '위젯, 배경화면, 잠금 화면, 홈 화면, 구절 위젯, 단축어' },

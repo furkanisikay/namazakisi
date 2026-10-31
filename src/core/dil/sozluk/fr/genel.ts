@@ -146,7 +146,7 @@ export const genel: Sozluk['genel'] = {
     Camilerim: 'Mes mosquées',
     KonumAyarlari: 'Position',
     GorunumAyarlari: 'Apparence',
-    DilAyarlari: 'Langue · Dil',
+    DilAyarlari: 'Langue · Language',
     BildirimAyarlari: 'Rappels',
     SeriHedefAyarlari: 'Objectif de série',
     MuhafizAyarlari: 'Avant la fin de l’heure',

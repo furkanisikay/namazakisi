@@ -29,7 +29,7 @@ export const ayarlar: Sozluk['ayarlar'] = {
     'sayfa-ramazan': { baslik: 'Ramadan', kelimeler: 'ramadan, iftar, souhour, sahur, jeûne' },
     'sayfa-nafile': { baslik: 'Prières surérogatoires', kelimeler: 'surérogatoire, nafila, nafl, duha, ishraq, awwabin, tahajjud, prière de nuit' },
     'sayfa-gorunum': { baslik: 'Apparence', kelimeler: 'thème, couleur, apparence, mode sombre' },
-    'sayfa-dil': { baslik: 'Langue · Dil', kelimeler: 'langue, language, français, anglais, turc, langue de l’appareil, traduction' },
+    'sayfa-dil': { baslik: 'Langue · Language', kelimeler: 'langue, language, français, anglais, turc, langue de l’appareil, traduction' },
     'sayfa-saat-widget': { baslik: 'Montre et widgets', kelimeler: 'montre, wear, widget, now bar, compte à rebours en direct, activité en direct, bracelet, automatisation, tasker, routine' },
     'sayfa-gunun-ayeti': { baslik: 'Verset du jour', kelimeler: 'verset, verset du jour, traduction, coran, partager, tanzil' },
     'sayfa-gunun-ayeti-ayar': { baslik: 'Widget et fond d’écran', kelimeler: 'widget, fond d’écran, écran de verrouillage, écran d’accueil, widget verset, raccourcis' },

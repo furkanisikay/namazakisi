@@ -30,7 +30,7 @@ export const ayarlar: Sozluk['ayarlar'] = {
     'sayfa-ramazan': { baslik: 'Suumayee', kelimeler: 'suumayee, ramadan, huntaari, suhuur, koorka' },
     'sayfa-nafile': { baslik: 'Juulɗe sunna', kelimeler: 'sunna, nafila, duhaa, ishraaq, awwaabiin, tahajjudi, juulde jemma' },
     'sayfa-gorunum': { baslik: 'Jiytol', kelimeler: 'jiytol, nooro, mode niwre' },
-    'sayfa-dil': { baslik: 'Ɗemngal · Dil', kelimeler: 'ɗemngal, pular, turkeere, engeleere, ɗemngal kaɓirgal, firo' },
+    'sayfa-dil': { baslik: 'Ɗemngal · Language', kelimeler: 'ɗemngal, pular, turkeere, engeleere, ɗemngal kaɓirgal, firo' },
     'sayfa-saat-widget': { baslik: 'Montoro e widget', kelimeler: 'montoro, wear, widget, now bar, saa’i heddiiɗo, live activity, ceŋol, golle hoore-mum, tasker, routine' },
     'sayfa-gunun-ayeti': { baslik: 'Aaya ñalawma', kelimeler: 'aaya, aaya ñalawma, firo, alqur’aana, lollingol, tanzil' },
     'sayfa-gunun-ayeti-ayar': { baslik: 'Widget e natal yaynirde', kelimeler: 'widget, natal yaynirde, yaynirde uddaande, yaynirde arannde, widget aaya, shortcuts' },

@@ -146,7 +146,7 @@ export const genel: Sozluk['genel'] = {
     Camilerim: 'مزگەوتەکانم',
     KonumAyarlari: 'شوێن',
     GorunumAyarlari: 'ڕووکار',
-    DilAyarlari: 'زمان · Dil',
+    DilAyarlari: 'زمان · Language',
     BildirimAyarlari: 'بیرخستنەوەکان',
     SeriHedefAyarlari: 'ئامانجی زنجیرە',
     MuhafizAyarlari: 'پێش دەرچوونی کات',

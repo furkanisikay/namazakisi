@@ -12,4 +12,6 @@ export const tarih = {
   haftaHarfleri: ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz'],
   /** Uzun tarih: "18 Ocak 2026". */
   uzun: '{gun} {ay} {yil}',
+  /** Ana ekran tarih kartının alt satırı: "Cumartesi, 2026" (Korece "2026년 토요일"). */
+  gunAdiYil: '{gunAdi}, {yil}',
 } as const;

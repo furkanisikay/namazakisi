@@ -13,4 +13,5 @@ export const tarih: Sozluk['tarih'] = {
   aylarKisa: ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
   haftaHarfleri: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
   uzun: '{gun} {ay} {yil} г.',
+  gunAdiYil: '{gunAdi}, {yil}',
 };

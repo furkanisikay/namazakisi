@@ -30,7 +30,7 @@ export const ayarlar: Sozluk['ayarlar'] = {
     'sayfa-ramazan': { baslik: 'ڕەمەزان', kelimeler: 'ڕەمەزان, بەربانگ, پارشێو, ڕۆژوو' },
     'sayfa-nafile': { baslik: 'نوێژە نافیلەکان', kelimeler: 'نافیلە, سوننەت, چێشتەنگاو, ئیشراق, ئەوابین, تەھەجود, شەونوێژ' },
     'sayfa-gorunum': { baslik: 'ڕووکار', kelimeler: 'تێم, ڕەنگ, ڕووکار, دۆخی تاریک' },
-    'sayfa-dil': { baslik: 'زمان · Dil', kelimeler: 'زمان, تورکی, ئینگلیزی, کوردی, زمانی ئامێر, وەرگێڕان' },
+    'sayfa-dil': { baslik: 'زمان · Language', kelimeler: 'زمان, تورکی, ئینگلیزی, کوردی, زمانی ئامێر, وەرگێڕان' },
     'sayfa-saat-widget': { baslik: 'کاتژمێر و ویجێتەکان', kelimeler: 'کاتژمێر, wear, ویجێت, now bar, ژماردنی زیندوو, چالاکیی زیندوو, بازن, ئۆتۆماتیک, tasker, ڕووتین' },
     'sayfa-gunun-ayeti': { baslik: 'ئایەتی ڕۆژ', kelimeler: 'ئایەت, ئایەتی ڕۆژ, وەرگێڕان, قورئان, ھاوبەشکردن, tanzil' },
     'sayfa-gunun-ayeti-ayar': { baslik: 'ویجێت و وێنەی پاشبنەما', kelimeler: 'ویجێت, وێنەی پاشبنەما, شاشەی قوفڵ, شاشەی سەرەکی, ویجێتی ئایەت, shortcuts' },

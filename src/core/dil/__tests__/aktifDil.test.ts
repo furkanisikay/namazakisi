@@ -57,6 +57,15 @@ describe.each(DILLER.map((d) => d.kod))('%s sözlüğü', (kod) => {
   const kaynak = new Map(yapraklar(tr));
   const hedef = yapraklar(sozluk(kod));
 
+  it('dil satırı iki dilli: yerel ad + " · Language" (İngilizcede "Language · Dil")', () => {
+    const s = sozluk(kod);
+    const satirlar = [s.genel.ekranlar.DilAyarlari, s.dilAyar.baslik, s.dilAyar.sihirbazBaglantisi, s.ayarlar.arama['sayfa-dil'].baslik];
+    for (const satir of satirlar) {
+      if (kod === 'en') expect(satir).toBe('Language · Dil');
+      else expect(satir).toMatch(/^\S.* · Language$/);
+    }
+  });
+
   it('anahtar kümesi Türkçeyle aynı', () => {
     expect(hedef.map(([y]) => y).sort()).toEqual([...kaynak.keys()].sort());
   });

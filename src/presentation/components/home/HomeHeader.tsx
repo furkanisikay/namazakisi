@@ -119,8 +119,9 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
                             {aktifGunMu ? m.aktifGun : (bugunMu ? m.bugun : m.seciliTarih)}
                         </Text>
                     )}
-                    <Text className="text-sm font-bold" style={{ color: renkler.metin }}>
-                        {gunAdi}, {yil}
+                    {/* Sıra ve ayraç dile göre sözlükten ("Cumartesi, 2026" · "2026년 토요일"). */}
+                    <Text testID="baslik-gun-yil" className="text-sm font-bold" style={{ color: renkler.metin }}>
+                        {bicim(metinler.tarih.gunAdiYil, { gunAdi, yil })}
                     </Text>
                 </View>
             </TouchableOpacity>

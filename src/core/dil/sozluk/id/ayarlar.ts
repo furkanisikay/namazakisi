@@ -30,7 +30,7 @@ export const ayarlar: Sozluk['ayarlar'] = {
     'sayfa-ramazan': { baslik: 'Ramadan', kelimeler: 'ramadan, berbuka, iftar, sahur, puasa' },
     'sayfa-nafile': { baslik: 'Salat sunah', kelimeler: 'sunah, sunnah, nafilah, dhuha, duha, isyraq, awwabin, tahajud, tahajjud, salat malam' },
     'sayfa-gorunum': { baslik: 'Tampilan', kelimeler: 'tema, warna, tampilan, mode gelap' },
-    'sayfa-dil': { baslik: 'Bahasa · Dil', kelimeler: 'bahasa, language, dil, inggris, english, indonesia, turki, bahasa perangkat' },
+    'sayfa-dil': { baslik: 'Bahasa · Language', kelimeler: 'bahasa, language, dil, inggris, english, indonesia, turki, bahasa perangkat' },
     'sayfa-saat-widget': { baslik: 'Jam tangan dan widget', kelimeler: 'jam tangan, wear, widget, now bar, hitung mundur langsung, aktivitas langsung, gelang, otomatisasi, tasker, rutinitas' },
     'sayfa-gunun-ayeti': { baslik: 'Ayat hari ini', kelimeler: "ayat, ayat hari ini, terjemahan, al-qur'an, quran, bagikan, tanzil" },
     'sayfa-gunun-ayeti-ayar': { baslik: 'Widget dan wallpaper', kelimeler: 'widget, wallpaper, latar, layar kunci, layar utama, widget ayat, pintasan' },

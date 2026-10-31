@@ -146,7 +146,7 @@ export const genel: Sozluk['genel'] = {
     Camilerim: 'Àwọn mọ́sálásí mi',
     KonumAyarlari: 'Ibùdó',
     GorunumAyarlari: 'Ìrísí',
-    DilAyarlari: 'Èdè · Dil',
+    DilAyarlari: 'Èdè · Language',
     BildirimAyarlari: 'Ìránnilétí',
     SeriHedefAyarlari: 'Àfojúsùn ìtẹ̀léra',
     MuhafizAyarlari: 'Kí àkókò tó parí',

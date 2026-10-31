@@ -146,7 +146,7 @@ export const genel: Sozluk['genel'] = {
     Camilerim: 'Masallatana',
     KonumAyarlari: 'Wuri',
     GorunumAyarlari: 'Kamanni',
-    DilAyarlari: 'Harshe · Dil',
+    DilAyarlari: 'Harshe · Language',
     BildirimAyarlari: 'Tunatarwa',
     SeriHedefAyarlari: 'Burin jeri',
     MuhafizAyarlari: 'Kafin lokaci ya fita',

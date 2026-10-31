@@ -2,7 +2,7 @@ import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 export const dilAyar: Sozluk['dilAyar'] = {
-  baslik: 'Èdè · Dil',
+  baslik: 'Èdè · Language',
   aciklama: 'Ẹ yan èdè ìṣàfilọ́lẹ̀. Àwọn ìfitónilétí àti kíkà sókè náà ń lò ó.',
   grup: 'Èdè ìṣàfilọ́lẹ̀',
   dilAdlari: { tr: 'Èdè Tọọkisi', en: 'Èdè Gẹ̀ẹ́sì', id: 'Èdè Indonéṣíà', de: 'Èdè Jámánì', fr: 'Èdè Faransé', bs: 'Èdè Bosnia', ru: 'Èdè Rọ́ṣíà', ms: 'Èdè Malaya', ar: 'Èdè Lárúbáwá', ur: 'Èdè Udu', es: 'Èdè Sípáníìṣì', nl: 'Èdè Dọ́ọ̀ṣì', sq: 'Èdè Albania', hi: 'Èdè Híńdì', bn: 'Èdè Bengali', fa: 'Èdè Pasia', ps: 'Páshítò', ckb: 'Ààrin Gbùngbùn Kurdish', ug: 'Yúgọ̀', az: 'Èdè Asabaijani', uz: 'Èdè Uzbek', kk: 'Kaṣakì', ky: 'Kírígíìsì', tg: 'Èdè Tàjíìkì', sw: 'Èdè Swahili', ha: 'Èdè Hausa', am: 'Èdè Amariki', om: 'Òròmọ́', so: 'Èdè ara Somalia', ff: 'Èdè Fúlàní', yo: 'Èdè Yorùbá', zh: 'Ẹdè Ṣáínà Onírọ̀rùn', ta: 'Èdè Tamili', ml: 'Málàyálámù', th: 'Èdè Tai', ko: 'Èdè Kòríà', vi: 'Èdè Jetinamu' },
@@ -41,6 +41,6 @@ export const dilAyar: Sozluk['dilAyar'] = {
     kiril: 'Álífábẹ́ẹ̀tì Sìrílíìkì',
   },
   kaydedilemedi: 'A kò lè fi èdè náà pamọ́. Ẹ gbìyànjú lẹ́ẹ̀kan sí i.',
-  sihirbazBaglantisi: 'Èdè · Dil',
+  sihirbazBaglantisi: 'Èdè · Language',
   sihirbazBaglantisiAciklama: 'Yí èdè ìṣàfilọ́lẹ̀ padà',
 };

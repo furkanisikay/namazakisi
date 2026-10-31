@@ -3,7 +3,7 @@ import type { Sozluk } from '../tr';
 
 /** Dil adları CLDR ckb'den; ünsüz "h" ھ ile (vakit.ts imla notu), Bengalce dil adı "بەنگالی" (CLDR ülke sıfatı değil). */
 export const dilAyar: Sozluk['dilAyar'] = {
-  baslik: 'زمان · Dil',
+  baslik: 'زمان · Language',
   aciklama: 'زمانی ئەپەکە ھەڵبژێرن. ئاگادارکردنەوەکان و خوێندنەوەی دەنگیش ئەم زمانە بەکاردەھێنن.',
   grup: 'زمانی ئەپ',
   dilAdlari: { tr: 'تورکی', en: 'ئینگلیزی', id: 'ئیندۆنیزی', de: 'ئەڵمانی', fr: 'فەرەنسی', bs: 'بۆسنی', ru: 'ڕووسی', ms: 'مالیزی', ar: 'عەرەبی', ur: 'ئۆردوو', es: 'ئیسپانی', nl: 'ھۆڵەندی', sq: 'ئەڵبانی', hi: 'ھیندی', bn: 'بەنگالی', fa: 'فارسی', ps: 'پەشتوو', ckb: 'کوردی', ug: 'ئۆیخۆری', az: 'ئازەربایجانی', uz: 'ئوزبەکی', kk: 'کازاخی', ky: 'کرگیزی', tg: 'تاجیکی', sw: 'سواھیلی', ha: 'ھائووسا', am: 'ئەمھەری', om: 'ئۆرۆمۆ', so: 'سۆمالی', ff: 'فوولایی', yo: 'یۆرووبا', zh: 'چینی (چینیی ئاسانکراو)', ta: 'تامیلی', ml: 'مالایالام', th: 'تایلەندی', ko: 'کۆری', vi: 'ڤیەتنامی' },
@@ -43,6 +43,6 @@ export const dilAyar: Sozluk['dilAyar'] = {
     kiril: 'ئەلفوبێی سیریلی',
   },
   kaydedilemedi: 'زمانەکە پاشەکەوت نەکرا. دووبارە ھەوڵ بدەنەوە.',
-  sihirbazBaglantisi: 'زمان · Dil',
+  sihirbazBaglantisi: 'زمان · Language',
   sihirbazBaglantisiAciklama: 'گۆڕینی زمانی ئەپ',
 };

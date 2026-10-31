@@ -9,4 +9,5 @@ export const tarih: Sozluk['tarih'] = {
   aylarKisa: ['ጃን', 'ፌብ', 'ማርች', 'ኤፕሪ', 'ሜይ', 'ጁን', 'ጁላይ', 'ኦገስ', 'ሴፕቴ', 'ኦክቶ', 'ኖቬም', 'ዲሴም'],
   haftaHarfleri: ['ሰ', 'ማ', 'ረ', 'ሐ', 'ዓ', 'ቅ', 'እ'],
   uzun: '{gun} {ay} {yil}',
+  gunAdiYil: '{gunAdi}፣ {yil}',
 };

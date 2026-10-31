@@ -2,7 +2,7 @@ import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 export const dilAyar: Sozluk['dilAyar'] = {
-  baslik: 'Bahasa · Dil',
+  baslik: 'Bahasa · Language',
   aciklama: 'Pilih bahasa aplikasi. Notifikasi dan pembacaan suara juga menggunakan bahasa ini.',
   grup: 'Bahasa aplikasi',
   dilAdlari: {
@@ -77,6 +77,6 @@ export const dilAyar: Sozluk['dilAyar'] = {
     kiril: 'Aksara Kiril',
   },
   kaydedilemedi: 'Bahasa tidak dapat disimpan. Coba lagi.',
-  sihirbazBaglantisi: 'Bahasa · Dil',
+  sihirbazBaglantisi: 'Bahasa · Language',
   sihirbazBaglantisiAciklama: 'Ubah bahasa aplikasi',
 };

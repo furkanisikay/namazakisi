@@ -10,4 +10,5 @@ export const tarih: Sozluk['tarih'] = {
   /** Pazartesi başlar; çarşamba geleneksel olarak "X" (martes "M" ile karışmasın). */
   haftaHarfleri: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
   uzun: '{gun} de {ay} de {yil}',
+  gunAdiYil: '{gunAdi}, {yil}',
 };

@@ -3,6 +3,7 @@ import { act } from 'react-test-renderer';
 import renderer from 'react-test-renderer';
 import { HomeHeader } from '../HomeHeader';
 import { SERI_RENKLERI } from '../../../../core/constants/UygulamaSabitleri';
+import { aktifDiliKur, aktifDilSifirla } from '../../../../core/dil/aktifDil';
 
 jest.mock('@expo/vector-icons', () => ({ FontAwesome5: 'FontAwesome5' }));
 // Kaynak alt yol import'u kullanır (denetim D-20) → kök mock'u alt yola da yansıt.
@@ -246,5 +247,31 @@ describe('HomeHeader — Erişilebilirlik ve metin', () => {
     const json = JSON.stringify(tree!.toJSON());
     expect(json).toContain('Seçili Tarih');
     expect(json).not.toContain('Aktif Gün');
+  });
+});
+
+describe('HomeHeader — gün adı ve yıl satırı', () => {
+  afterEach(() => act(() => aktifDilSifirla()));
+
+  const satir = (tree: renderer.ReactTestRenderer) =>
+    tree.root.find((node) => node.props?.testID === 'baslik-gun-yil' && typeof node.type === 'string').props.children;
+
+  it('Türkçede "Cumartesi, 2026"', () => {
+    let tree: renderer.ReactTestRenderer;
+    act(() => {
+      tree = renderer.create(<HomeHeader {...temelProps} />);
+    });
+    expect(satir(tree!)).toBe('Cumartesi, 2026');
+  });
+
+  it('sıra ve ayraç sözlükten: Korecede yıl önce, virgülsüz ("2026년 …")', () => {
+    act(() => {
+      aktifDiliKur('ko');
+    });
+    let tree: renderer.ReactTestRenderer;
+    act(() => {
+      tree = renderer.create(<HomeHeader {...temelProps} />);
+    });
+    expect(satir(tree!)).toBe('2026년 Cumartesi');
   });
 });

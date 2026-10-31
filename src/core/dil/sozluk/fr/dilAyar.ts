@@ -2,7 +2,7 @@ import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 export const dilAyar: Sozluk['dilAyar'] = {
-  baslik: 'Langue · Dil',
+  baslik: 'Langue · Language',
   aciklama: 'Choisissez la langue de l’application. Les notifications et la lecture à voix haute l’utilisent aussi.',
   grup: 'Langue de l’application',
   dilAdlari: { tr: 'Turc', en: 'Anglais', id: 'Indonésien', de: 'Allemand', fr: 'Français', bs: 'Bosnien', ru: 'Russe', ms: 'Malais', ar: 'Arabe', ur: 'Ourdou', es: 'Espagnol', nl: 'Néerlandais', sq: 'Albanais', hi: 'Hindi', bn: 'Bengali', fa: 'Persan', ps: 'Pachto', ckb: 'Sorani', ug: 'Ouïghour', az: 'Azerbaïdjanais', uz: 'Ouzbek', kk: 'Kazakh', ky: 'Kirghize', tg: 'Tadjik', sw: 'Swahili', ha: 'Haoussa', am: 'Amharique', om: 'Oromo', so: 'Somali', ff: 'Peul', yo: 'Yoruba', zh: 'Chinois simplifié', ta: 'Tamoul', ml: 'Malayalam', th: 'Thaï', ko: 'Coréen', vi: 'Vietnamien' },
@@ -43,6 +43,6 @@ export const dilAyar: Sozluk['dilAyar'] = {
     kiril: 'Alphabet cyrillique',
   },
   kaydedilemedi: 'Impossible d’enregistrer la langue. Réessayez.',
-  sihirbazBaglantisi: 'Langue · Dil',
+  sihirbazBaglantisi: 'Langue · Language',
   sihirbazBaglantisiAciklama: 'Changer la langue de l’application',
 };

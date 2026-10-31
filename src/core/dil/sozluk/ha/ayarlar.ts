@@ -29,7 +29,7 @@ export const ayarlar: Sozluk['ayarlar'] = {
     'sayfa-ramazan': { baslik: 'Ramadan', kelimeler: 'ramadan, buɗa baki, sahur, azumi' },
     'sayfa-nafile': { baslik: 'Sallolin nafila', kelimeler: 'nafila, walaha, ishraƙ, awwabin, tahajjudi, sallar dare' },
     'sayfa-gorunum': { baslik: 'Kamanni', kelimeler: 'jigo, launi, kamanni, yanayin duhu' },
-    'sayfa-dil': { baslik: 'Harshe · Dil', kelimeler: 'harshe, turkiyya, turanci, hausa, harshen naʼura, fassara' },
+    'sayfa-dil': { baslik: 'Harshe · Language', kelimeler: 'harshe, turkiyya, turanci, hausa, harshen naʼura, fassara' },
     'sayfa-saat-widget': { baslik: 'Agogo da widgets', kelimeler: 'agogo, wear, widget, now bar, ƙidaya kai tsaye, live activity, munduwa, ayyukan atomatik, tasker, routine' },
     'sayfa-gunun-ayeti': { baslik: 'Ayar yau', kelimeler: 'aya, ayar yau, fassara, alƙurʼani, raba, tanzil' },
     'sayfa-gunun-ayeti-ayar': { baslik: 'Widget da fuskar bango', kelimeler: 'widget, fuskar bango, allon kulle, allon gida, widget na aya, shortcuts' },

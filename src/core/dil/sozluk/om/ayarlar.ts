@@ -29,7 +29,7 @@ export const ayarlar: Sozluk['ayarlar'] = {
     'sayfa-ramazan': { baslik: 'Ramadaana', kelimeler: 'ramadaana, afursaa, suhuura, soomana' },
     'sayfa-nafile': { baslik: 'Salaata dabalataa', kelimeler: 'dabalataa, naafilaa, fedhii, duhaa, ishraaq, awwaabiin, tahajjud, salaata halkanii' },
     'sayfa-gorunum': { baslik: "Mul'ata", kelimeler: "haala mul'ataa, halluu, mul'ata, haala dukkanaa" },
-    'sayfa-dil': { baslik: 'Afaan · Dil', kelimeler: 'afaan, afaan turkii, afaan ingilizii, afaan meeshaa, hiikkaa, oromoo' },
+    'sayfa-dil': { baslik: 'Afaan · Language', kelimeler: 'afaan, afaan turkii, afaan ingilizii, afaan meeshaa, hiikkaa, oromoo' },
     'sayfa-saat-widget': { baslik: "Sa'aatiifi wiijetii", kelimeler: "sa'aatii, wear, wiijetii, now bar, lakkoofsa duubaa kallattii, live activity, kaardii harkaa, hojii ofumaa, tasker, rutiinii" },
     'sayfa-gunun-ayeti': { baslik: 'Aayata guyyaa', kelimeler: "aayata, aayata guyyaa, hiikkaa, qur'aana, qooddachuu, tanzil" },
     'sayfa-gunun-ayeti-ayar': { baslik: 'Wiijetiifi suuraa duubaa', kelimeler: 'wiijetii, suuraa duubaa, fuula cufaa, fuula jalqabaa, wiijetii aayataa, shortcuts' },

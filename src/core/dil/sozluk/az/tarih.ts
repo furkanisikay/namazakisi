@@ -10,4 +10,5 @@ export const tarih: Sozluk['tarih'] = {
   /** Bazar ertəsi başlayır. */
   haftaHarfleri: ['Be', 'Ça', 'Çə', 'Ca', 'Cü', 'Şə', 'Ba'],
   uzun: '{gun} {ay} {yil}',
+  gunAdiYil: '{gunAdi}, {yil}',
 };

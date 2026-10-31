@@ -9,4 +9,5 @@ export const tarih: Sozluk['tarih'] = {
   haftaHarfleri: ['월', '화', '수', '목', '금', '토', '일'],
   /** "2026년 10월 30일" (ay adı "10월" kendi birimini taşır). */
   uzun: '{yil}년 {ay} {gun}일',
+  gunAdiYil: '{yil}년 {gunAdi}',
 };

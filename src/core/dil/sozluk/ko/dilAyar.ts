@@ -2,7 +2,7 @@ import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 export const dilAyar: Sozluk['dilAyar'] = {
-  baslik: '언어 · Dil',
+  baslik: '언어 · Language',
   aciklama: '앱 언어를 선택하세요. 알림과 소리 내어 읽기에도 사용됩니다.',
   grup: '앱 언어',
   dilAdlari: { tr: '튀르키예어', en: '영어', id: '인도네시아어', de: '독일어', fr: '프랑스어', bs: '보스니아어', ru: '러시아어', ms: '말레이어', ar: '아랍어', ur: '우르두어', es: '스페인어', nl: '네덜란드어', sq: '알바니아어', hi: '힌디어', bn: '벵골어', fa: '페르시아어', ps: '파슈토어', ckb: '소라니 쿠르드어', ug: '위구르어', az: '아제르바이잔어', uz: '우즈베크어', kk: '카자흐어', ky: '키르기스어', tg: '타지크어', sw: '스와힐리어', ha: '하우사어', am: '암하라어', om: '오로모어', so: '소말리아어', ff: '풀라어', yo: '요루바어', zh: '중국어(간체)', ta: '타밀어', ml: '말라얄람어', th: '태국어', ko: '한국어', vi: '베트남어' },
@@ -41,6 +41,6 @@ export const dilAyar: Sozluk['dilAyar'] = {
     kiril: '키릴 문자',
   },
   kaydedilemedi: '언어를 저장할 수 없습니다. 다시 시도하세요.',
-  sihirbazBaglantisi: '언어 · Dil',
+  sihirbazBaglantisi: '언어 · Language',
   sihirbazBaglantisiAciklama: '앱 언어 바꾸기',
 };

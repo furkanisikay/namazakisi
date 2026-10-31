@@ -147,7 +147,7 @@ export const genel: Sozluk['genel'] = {
     Camilerim: 'Juulirɗe am',
     KonumAyarlari: 'Nokkuure',
     GorunumAyarlari: 'Jiytol',
-    DilAyarlari: 'Ɗemngal · Dil',
+    DilAyarlari: 'Ɗemngal · Language',
     BildirimAyarlari: 'Siftinooje',
     SeriHedefAyarlari: 'Faandaare jokkondiral',
     MuhafizAyarlari: 'Adii waqutu gasde',

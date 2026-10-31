@@ -146,7 +146,7 @@ export const genel: Sozluk['genel'] = {
     Camilerim: '내 성원',
     KonumAyarlari: '위치',
     GorunumAyarlari: '보기',
-    DilAyarlari: '언어 · Dil',
+    DilAyarlari: '언어 · Language',
     BildirimAyarlari: '예배 알림',
     SeriHedefAyarlari: '연속 기록 목표',
     MuhafizAyarlari: '시간 종료 전',
