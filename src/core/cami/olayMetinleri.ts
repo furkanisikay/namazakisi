@@ -31,13 +31,38 @@ const parca = (tablo: Readonly<Record<string, string>>, k: unknown): string | un
 /**
  * Cümle başını büyütür — `toUpperCase`/`toLocaleUpperCase` YOK (AGENTS.md: 'i' → 'I'
  * tuzağı; Hermes'te Intl'e güvenilmez). Sabit harita; noktalı `i` yalnız Türkçede `İ` olur.
+ * Vietnamca: 12 ünlünün yalın ve beş ses işaretli biçimi + đ, NFC anahtarla.
  */
 const BUYUK_HARF: Record<string, string> = {
     a: 'A', b: 'B', c: 'C', ç: 'Ç', d: 'D', e: 'E', f: 'F', g: 'G', ğ: 'Ğ', h: 'H', ı: 'I', i: 'İ', j: 'J', k: 'K', // dil-haric: harf eşlemesi (görünen metin değil)
-    l: 'L', m: 'M', n: 'N', o: 'O', ö: 'Ö', p: 'P', r: 'R', s: 'S', ş: 'Ş', t: 'T', u: 'U', ü: 'Ü', v: 'V', y: 'Y', z: 'Z', // dil-haric: harf eşlemesi (görünen metin değil)
+    l: 'L', m: 'M', n: 'N', o: 'O', ö: 'Ö', p: 'P', q: 'Q', r: 'R', s: 'S', ş: 'Ş', t: 'T', u: 'U', ü: 'Ü', v: 'V', w: 'W', x: 'X', y: 'Y', z: 'Z', // dil-haric: harf eşlemesi (görünen metin değil)
+    à: 'À', á: 'Á', ả: 'Ả', ã: 'Ã', ạ: 'Ạ', // dil-haric: harf eşlemesi (görünen metin değil)
+    ă: 'Ă', ằ: 'Ằ', ắ: 'Ắ', ẳ: 'Ẳ', ẵ: 'Ẵ', ặ: 'Ặ', // dil-haric: harf eşlemesi (görünen metin değil)
+    â: 'Â', ầ: 'Ầ', ấ: 'Ấ', ẩ: 'Ẩ', ẫ: 'Ẫ', ậ: 'Ậ', // dil-haric: harf eşlemesi (görünen metin değil)
+    è: 'È', é: 'É', ẻ: 'Ẻ', ẽ: 'Ẽ', ẹ: 'Ẹ', // dil-haric: harf eşlemesi (görünen metin değil)
+    ê: 'Ê', ề: 'Ề', ế: 'Ế', ể: 'Ể', ễ: 'Ễ', ệ: 'Ệ', // dil-haric: harf eşlemesi (görünen metin değil)
+    ì: 'Ì', í: 'Í', ỉ: 'Ỉ', ĩ: 'Ĩ', ị: 'Ị', // dil-haric: harf eşlemesi (görünen metin değil)
+    ò: 'Ò', ó: 'Ó', ỏ: 'Ỏ', õ: 'Õ', ọ: 'Ọ', // dil-haric: harf eşlemesi (görünen metin değil)
+    ô: 'Ô', ồ: 'Ồ', ố: 'Ố', ổ: 'Ổ', ỗ: 'Ỗ', ộ: 'Ộ', // dil-haric: harf eşlemesi (görünen metin değil)
+    ơ: 'Ơ', ờ: 'Ờ', ớ: 'Ớ', ở: 'Ở', ỡ: 'Ỡ', ợ: 'Ợ', // dil-haric: harf eşlemesi (görünen metin değil)
+    ù: 'Ù', ú: 'Ú', ủ: 'Ủ', ũ: 'Ũ', ụ: 'Ụ', // dil-haric: harf eşlemesi (görünen metin değil)
+    ư: 'Ư', ừ: 'Ừ', ứ: 'Ứ', ử: 'Ử', ữ: 'Ữ', ự: 'Ự', // dil-haric: harf eşlemesi (görünen metin değil)
+    ỳ: 'Ỳ', ý: 'Ý', ỷ: 'Ỷ', ỹ: 'Ỹ', ỵ: 'Ỵ', // dil-haric: harf eşlemesi (görünen metin değil)
+    đ: 'Đ', // dil-haric: harf eşlemesi (görünen metin değil)
 };
+/** Latin birleşik aksan işaretleri (U+0300–036F): NFD gelen ilk harfin işaretleri. */
+const BIRLESIK_ISARET = /[̀-ͯ]/;
+
 export const ilkHarfiBuyut = (m: string): string => {
     if (!m) return m;
+    // İlk harf NFD gelmiş olabilir ("a" + U+0302 + U+0300): harf ve işaretleri tek NFC harfe
+    // birleştirilip aranır; metnin geri kalanına dokunulmaz.
+    let son = 1;
+    while (son < m.length && BIRLESIK_ISARET.test(m.charAt(son))) son++;
+    if (son > 1) {
+        const buyukKume = BUYUK_HARF[m.slice(0, son).normalize('NFC')];
+        if (buyukKume !== undefined) return buyukKume + m.slice(son);
+    }
     const ilk = m.charAt(0);
     const buyuk = ilk === 'i' && aktifDil() !== 'tr' ? 'I' : BUYUK_HARF[ilk];
     return (buyuk ?? ilk) + m.slice(1);

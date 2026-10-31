@@ -148,6 +148,24 @@ describe('Faz 2 ayarları ve güven olayları', () => {
         expect(ilkHarfiBuyut('ışık')).toBe('Işık');
         expect(ilkHarfiBuyut('')).toBe('');
     });
+
+    // NÖBETÇİ: Vietnamca đ, ư, ơ ve ses işaretli harfle başlayan cümle de büyür.
+    it('cümle başı büyütme Vietnamca (NFC ve NFD girdi)', () => {
+        expect(ilkHarfiBuyut('đến gần nhà thờ')).toBe('Đến gần nhà thờ');
+        expect(ilkHarfiBuyut('ước tính')).toBe('Ước tính');
+        expect(ilkHarfiBuyut('ở trong')).toBe('Ở trong');
+        expect(ilkHarfiBuyut('ầm ĩ')).toBe('Ầm ĩ');
+        expect(ilkHarfiBuyut('ếch')).toBe('Ếch');
+        expect(ilkHarfiBuyut('xin chào')).toBe('Xin chào');
+        expect(ilkHarfiBuyut('quá gần')).toBe('Quá gần');
+        // NFD: "a" + U+0302 + U+0300 → tek "Ầ"; geri kalan metin aynen.
+        const nfd = 'ầm ĩ'.normalize('NFD');
+        expect(ilkHarfiBuyut(nfd)).toBe('Ầ' + nfd.slice(3));
+        // Sözlükteki her küçük harf NFC ve tek karakter: Node'un dil bağımsız büyütmesiyle aynı.
+        for (const h of 'àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ') {
+            expect([h, ilkHarfiBuyut(h)]).toEqual([h, h.toUpperCase()]);
+        }
+    });
 });
 
 describe('Camideyim metinleri — İngilizce', () => {

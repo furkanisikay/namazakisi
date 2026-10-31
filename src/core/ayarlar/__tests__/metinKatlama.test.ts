@@ -38,4 +38,22 @@ describe('aramaIcinKatla', () => {
   it('sayı ve noktalama olduğu gibi kalır', () => {
     expect(aramaIcinKatla('Vakit: 12345!')).toBe('vakit: 12345!');
   });
+
+  // NÖBETÇİ: Vietnamca kullanıcı çoğu zaman aksansız yazar ("chuong" → "Chuông").
+  it('Vietnamca ses işaretleri ve đ katlanır (NFC ve NFD girdi)', () => {
+    expect(aramaIcinKatla('Chuông')).toBe('chuong');
+    expect(aramaIcinKatla('Đổi giờ')).toBe('doi gio');
+    expect(aramaIcinKatla('Tiếng Việt')).toBe('tieng viet');
+    expect(aramaIcinKatla('Ưu tiên nhắc nhở')).toBe('uu tien nhac nho');
+    expect(aramaIcinKatla('ẤẦẨẪẬ ơƠ ưƯ')).toBe('aaaaa oo uu');
+    expect(aramaIcinKatla('Chuông'.normalize('NFD'))).toBe('chuong');
+    expect(aramaIcinKatla('Thông báo').includes(aramaIcinKatla('thong bao'))).toBe(true);
+  });
+
+  it('Türkçe katlama değişmez; Latin dışı yazıların işaretlerine dokunulmaz', () => {
+    expect(aramaIcinKatla('İstanbul')).toBe('istanbul');
+    expect(aramaIcinKatla('İ'.normalize('NFD'))).toBe('i');
+    const latinDisi = ['نَمَاز', 'नमाज़ का समय', 'নামাজ', 'தொழுகை', 'നമസ്കാരം', 'ละหมาด', '기도 시간', '礼拜时间', 'Намаз'];
+    for (const s of latinDisi) expect(aramaIcinKatla(s)).toBe(s);
+  });
 });
