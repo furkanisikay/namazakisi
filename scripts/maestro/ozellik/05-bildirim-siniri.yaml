@@ -12,11 +12,14 @@ appId: com.furkanisikay.namazakisi
       HEDEF: "(Hatırlatmalar|Reminders)\\..*"
 - tapOn:
     text: "(Hatırlatmalar|Reminders)\\..*"
-# Defter diskten okunup hesaplanana kadar kart cizilmez.
-- extendedWaitUntil:
-    visible:
+# Defter diskten okunup hesaplanana kadar kart cizilmez. Kart hazir ayar listesinin altinda;
+# uzun metinli dillerde (Tamilce, Malayalamca) ekran disina itilir → kaydirarak bekle.
+- scrollUntilVisible:
+    element:
       id: "bildirim-butce-karti"
+    direction: DOWN
     timeout: 20000
+    centerElement: true
 - takeScreenshot: ozk/11-muhafiz-butce-karti
 - tapOn:
     id: "bildirim-butce-karti"
