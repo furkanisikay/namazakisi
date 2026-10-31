@@ -160,12 +160,12 @@ const ref = (sure, ayet) => `${sure}:${ayet}`;
  */
 /** Kural 1 ve 2 tek meal için: sığar ve dipnot işareti / baştaki ayet numarası taşımaz. */
 /**
- * Not numarası silinen diller (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30): mealde
+ * Not numarası silinen diller (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31): mealde
  * ayetlerin çoğu "[1]" / "[১]" (Bengalce rakam) gibi dipnot numarası taşır; dipnot gösterilmediği
  * için yalnız numara silinir, meal sözcükleri birebir kalır. Diğer dillerde numaralı meal alınmaz
  * (`mealUygun`). `ayet-mealleri-uret.js` aynı kümeyi ve deseni kullanır.
  */
-const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky']);
+const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha']);
 /** Dipnot numarası, herhangi bir yazının rakamıyla ("[12]", "[১২]", "[१२]"); `\p{Nd}` + `u`. */
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
@@ -201,11 +201,18 @@ const SONDA_NUMARA = /\(\p{Nd}+\)\s*[.।]?\s*$/u; // "… (153)", "… (१५�
 /** Silinemeyen ayet numarası, metnin herhangi bir yerinde: "(24)،", "(ـ18).", "(8ـ10)" (uyghur_saleh). */
 const ARA_NUMARA = /\([\p{Cf}\sـ\-–]*\p{Nd}[\p{Nd}\p{Cf}\sـ\-–]*\)/u;
 
+/**
+ * Kaynakta bozulmuş harf: hausa_gummi 35 ayette "Ɗ" yerine "¦" (U+00A6) taşır ("¦aki"). Metin
+ * değiştirilemeyeceği için kayıt ALINMAZ; U+FFFD de aynı türden kodlama bozulmasıdır.
+ */
+const BOZUK_KARAKTER = /[\u00a6\ufffd]/u;
+
 /** Bir mealin elenme gerekçeleri (boş = uygun). */
 function mealGerekce(metin) {
   const g = [];
   if (metin.length > AZAMI_UZUNLUK) g.push('uzunluk');
   if (DIPNOT.test(metin)) g.push('dipnot');
+  if (BOZUK_KARAKTER.test(metin)) g.push('bozuk-karakter');
   if (BASTA_NUMARA.test(metin)) g.push('basta-numara');
   if (SONDA_NUMARA.test(metin)) g.push('sonda-numara');
   else if (ARA_NUMARA.test(metin)) g.push('ara-numara');

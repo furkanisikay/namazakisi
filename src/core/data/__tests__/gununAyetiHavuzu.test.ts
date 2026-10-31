@@ -40,6 +40,11 @@ describe('günün ayeti havuzu', () => {
     expect(dipnotlu).toEqual([]);
   });
 
+  it('mealde kaynakta bozulmuş harf yok (hausa_gummi "¦aki": Ɗ yerine U+00A6)', () => {
+    const bozuk = GUNUN_AYETI_HAVUZU.flatMap((k) => mealler(k).filter(([, m]) => /[\u00a6\ufffd]/u.test(m)).map(([d]) => `${k.ref}:${d}`));
+    expect(bozuk).toEqual([]);
+  });
+
   it('mealin başında ve sonunda boşluk yok (kurdish_bamoki her ayeti satır sonuyla bitirir; üretici kırpar)', () => {
     const bosluklu = GUNUN_AYETI_HAVUZU.flatMap((k) => mealler(k).filter(([, m]) => m !== m.trim()).map(([d]) => `${k.ref}:${d}`));
     expect(bosluklu).toEqual([]);

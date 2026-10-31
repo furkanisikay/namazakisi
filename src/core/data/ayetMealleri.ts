@@ -307,8 +307,12 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
     "surum": "1.2.2",
     "baslik": "Hausa Translation - Abu Bakr Jumi",
     "ayetler": {
+      "2:153": "Ya ku waɗan dasuka yi ĩmãni! Ku nẽmi taimako da haƙuri game da salla. Lalle ne, Allah na tãre da mãsu haƙuri.",
+      "2:238": "Ku tsare lõkatai a kan sallõli da salla mafificiya. Kuma ku tsayu kuna mãsu ƙanƙan da kai ga Allah.",
       "4:103": "Sa'an nan idan kun ƙãre salla, to ku ambaci Allah tsaye da zaune da a kan sãsanninku. Sa'an nan idan kun natsu, to, ku tsayar da Salla. Lalle ne salla tã kasance a kan mũminai, farilla mai ƙayyadaddun lõkuta.",
-      "29:45": "Ka karanta abin da ake yin wahayi zuwa gare ka daga Littãfi, kuma ka tsayar da salla. Lalle salla tanã hanãwa daga alfãsha da abni ƙyãma, kuma lalle ambaton Allah yafi girma, kuma Allah Yanã sane da abin da kuke aikatãwa."
+      "11:114": "Kuma ka tsai da salla a gẽfe guda biyu na yini da wani yanki daga dare. Lalle ne ayyukan ƙwarai sunã kõre mũnãnan ayyuka. Wancan ne tunãtarwa ga mãsu tunãwa.",
+      "29:45": "Ka karanta abin da ake yin wahayi zuwa gare ka daga Littãfi, kuma ka tsayar da salla. Lalle salla tanã hanãwa daga alfãsha da abni ƙyãma, kuma lalle ambaton Allah yafi girma, kuma Allah Yanã sane da abin da kuke aikatãwa.",
+      "62:9": "Yã kũ waɗanda suka yi ĩmãni! Idan anyi kirã zuwã ga salla a rãnar Jumu'a, sai ku yi aiki zuwa ga ambaton Allah, kuma ku bar ciniki. Wancan ɗinku ne mafi alhẽri a gare ku idan kun kasance kunã sani."
     }
   },
   "am": {
