@@ -1,11 +1,10 @@
-// ÇEVİRİ: ta — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'எண்கள்',
+  aciklama: 'நேரம், தேதி மற்றும் எண்கள் எந்த எண் வடிவில் எழுதப்பட வேண்டும் என்பதைத் தேர்ந்தெடுக்கவும்.',
+  otomatik: 'நாட்டின்படி',
+  otomatikAciklama: 'உங்கள் இருப்பிடம் உள்ள நாட்டில் வழக்கமான எண்கள் பயன்படுத்தப்படும்.',
+  dogu: 'கிழக்கு அரபு எண்கள்',
+  bati: 'மேற்கத்திய எண்கள்',
 };

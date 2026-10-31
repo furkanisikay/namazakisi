@@ -1,10 +1,9 @@
-// ÇEVİRİ: ta — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'நேரம் தொடங்கியது',
+  vakitGirdiBasligi: '{ad} நேரம் தொடங்கியது',
+  herhangiVakit: 'ஏதேனும் தொழுகை நேரம் தொடங்கும்போது',
+  yalnizVakit: '{ad} நேரம் தொடங்கும்போது மட்டும்',
+  camide: 'நீங்கள் பள்ளிவாசலில் இருப்பது கண்டறியப்படும்போது (பள்ளிவாசலில் இயக்கத்தில் இருக்கும்போது)',
 };
