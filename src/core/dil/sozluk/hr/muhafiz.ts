@@ -1,61 +1,67 @@
-// ÇEVİRİ: hr — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı: "vi" (küçük harf) + kısa çoğul emir; "!" yok (Boşnakça emsali). Secde karşılığı
+ * YAZILMAZ → "ustanite na namaz". Başlıkta vakit adı ve süre önce gelir (bileklik ~16 karakter).
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} min od početka · vrijeme je za namaz ⏰',
+    giris2: '{ad} · {dk} min od početka · ne odgađajte namaz ⚠️',
+    giris3: '{ad} · {dk} min od početka · namaz vas čeka 🔥',
+    giris4: '{ad} · {dk} min od početka · USTANITE NA NAMAZ 🚨',
+    erken3: '{ad} · još {dk} min · namaz vas čeka 🔥',
+    erken4: '{ad} · još {dk} min · USTANITE NA NAMAZ 🚨',
+    cikis1: '{ad} · još {dk} min ⏰',
+    cikis2: '{ad} · {dk} min · vrijeme je na izmaku ⚠️',
+    cikis3: '{ad} · {dk} min · vrijeme izmiče 🔥',
+    cikis4: '{ad} · {dk} min · VRIJEME ISTJEČE 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Vrijeme je za namaz; klanjajte dok imate priliku.', 'Klanjajte dok je vrijeme na vašoj strani; ne ostavljajte za kasnije.'],
+    s2: ['Što više odgađate, to je teže; ne ostavljajte namaz za kraj.', 'Vrijeme odmiče — klanjajte sada.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Što dulje odgađate, to ste bliže propuštanju; klanjajte sada.',
+      'Ne govorite „klanjat ću poslije“; sada možete klanjati.',
+      'Ustanite sada, umjesto da za nekoliko minuta kažete „da sam barem“.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Ne odgađajte više namaz — ustanite na namaz sada.', 'Ostavite ono što radite i ustanite na namaz.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Vrijeme se počinje sužavati; klanjajte dok imate priliku.',
+    s2: 'Ne ostavljajte namaz za kraj; sada je dobro vrijeme za namaz.',
+    s3: 'Vrijeme je gotovo isteklo; još uvijek možete klanjati.',
+    s4: 'Ako ste klanjali, dodirnite „Klanjano“; ako niste, ustanite na namaz sada.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", few: "It's been {n} minutes since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', few: '{n} minutes left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'NE ODGAĐAJTE NAMAZ. Ustanite na namaz sada. (prošlo {dk} min)',
+    giris2: 'Vrijeme odmiče; ne ostavljajte namaz za kraj. (prošlo {dk} min)',
+    giris1: cogul({
+      one: 'Od početka vremena namaza prošla je {n} minuta.',
+      few: 'Od početka vremena namaza prošle su {n} minute.',
+      other: 'Od početka vremena namaza prošlo je {n} minuta.',
+    }),
+    erken4: 'Ne odgađajte namaz; ustanite na namaz sada. (još {dk} min)',
+    cikis4: 'VRIJEME ISTJEČE. Ustanite na namaz sada. (još {dk} min)',
+    cikis2: 'Vrijeme je na izmaku; ne ostavljajte namaz za kraj. (još {dk} min)',
+    cikis1: cogul({
+      one: 'Do isteka vremena namaza preostala je {n} minuta.',
+      few: 'Do isteka vremena namaza preostale su {n} minute.',
+      other: 'Do isteka vremena namaza preostalo je {n} minuta.',
+    }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · klanjajte prije spavanja ⏰',
+    govde: 'Noćna tišina počinje za {dk} min; klanjajte jaciju prije nego što legnete.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Vrijeme se počinje sužavati; klanjajte dok imate priliku.',
+    sonaBirakma: 'Ne ostavljajte namaz za kraj; sada je dobro vrijeme za namaz.',
+    fisilti: 'Ne govorite „klanjat ću poslije“; vrijeme je gotovo isteklo, sada možete klanjati.',
+    omur: 'Vrijeme prolazi; još imate priliku klanjati ovaj namaz na vrijeme.',
+    keske: 'Ustanite sada, umjesto da za nekoliko minuta kažete „da sam barem“.',
+    namazaDur: 'Ako ste klanjali, dodirnite „Klanjano“; ako niste, ustanite na namaz sada.',
+    sonDakika: 'Posljednje minute. Ostavite ono što radite i ustanite na namaz.',
   },
 };

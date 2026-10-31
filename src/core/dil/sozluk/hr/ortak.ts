@@ -1,15 +1,15 @@
-// ÇEVİRİ: hr — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Hitap: "vi" küçük harf, çoğunlukla zamirsiz çoğul emir (Microsoft hr kılavuzu). */
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Nastavite',
+  vazgecin: 'Odustanite',
+  kapatin: 'Zatvorite',
+  ayarlariAcin: 'Otvorite postavke',
+  simdilikGecin: 'Preskočite zasad',
+  tekrarDeneyin: 'Pokušajte ponovno',
+  evet: 'Da',
+  hayir: 'Ne',
+  ayrintilariAcar: 'Otvara pojedinosti',
   marka: 'Namaz Akışı',
 };
