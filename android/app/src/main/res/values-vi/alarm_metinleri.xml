@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: vi — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- Gerçek alarm (Vietnamca). "Tôi đã hành lễ" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">Báo thức Salah</string>
+  <string name="alarm_kildim">Tôi đã hành lễ</string>
+  <string name="alarm_kapat">Tắt</string>
+  <string name="alarm_kanal_aciklamasi">Báo thức thật đổ chuông ở các bước nhắc bạn chọn</string>
 </resources>

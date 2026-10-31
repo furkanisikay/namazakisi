@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: vi — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="camigeofence_kanal_durum_ad">At the mosque</string>
-    <string name="camigeofence_kanal_durum_aciklama">A quiet notice when you\'re detected at a mosque</string>
-    <string name="camigeofence_kanal_soru_ad">After leaving the mosque</string>
-    <string name="camigeofence_kanal_soru_aciklama">A question so you can mark your prayer after you leave the mosque</string>
+    <string name="camigeofence_kanal_durum_ad">Tại Masjid</string>
+    <string name="camigeofence_kanal_durum_aciklama">Thông báo nhẹ khi phát hiện bạn ở Masjid</string>
+    <string name="camigeofence_kanal_soru_ad">Sau khi rời Masjid</string>
+    <string name="camigeofence_kanal_soru_aciklama">Câu hỏi để bạn đánh dấu Salah sau khi rời Masjid</string>
 
-    <string name="camigeofence_govde_mod_sessiz">Prayer mode is on. Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_mod">Prayer mode is on.</string>
-    <string name="camigeofence_govde_sessiz">Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_normal">Reminders will arrive as usual.</string>
-    <string name="camigeofence_eylem_modu_kapat">Turn off mode</string>
-    <string name="camigeofence_eylem_cami_degil">Not a mosque</string>
+    <string name="camigeofence_govde_mod_sessiz">Chế độ Salah đang bật. Lời nhắc sẽ đến trong im lặng.</string>
+    <string name="camigeofence_govde_mod">Chế độ Salah đang bật.</string>
+    <string name="camigeofence_govde_sessiz">Lời nhắc sẽ đến trong im lặng.</string>
+    <string name="camigeofence_govde_normal">Lời nhắc sẽ đến như bình thường.</string>
+    <string name="camigeofence_eylem_modu_kapat">Tắt chế độ</string>
+    <string name="camigeofence_eylem_cami_degil">Không phải Masjid</string>
 
-    <string name="camigeofence_soru_baslik">Are you at the mosque?</string>
-    <string name="camigeofence_soru_govde">You\'re near %1$s. We\'re not sure, so we\'re asking you.</string>
-    <string name="camigeofence_varsayilan_ad">Mosque</string>
-    <string name="camigeofence_eylem_namaz_modunu_ac">Turn on Prayer mode</string>
-    <string name="camigeofence_eylem_evet_camideyim">Yes, I\'m at the mosque</string>
-    <string name="camigeofence_eylem_hayir">No</string>
+    <string name="camigeofence_soru_baslik">Bạn đang ở Masjid?</string>
+    <string name="camigeofence_soru_govde">Bạn đang ở gần %1$s. Chúng tôi chưa chắc nên hỏi bạn.</string>
+    <string name="camigeofence_varsayilan_ad">Masjid</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Bật Chế độ Salah</string>
+    <string name="camigeofence_eylem_evet_camideyim">Có, tôi đang ở Masjid</string>
+    <string name="camigeofence_eylem_hayir">Không</string>
 
-    <string name="camigeofence_kildiniz_mi">Have you prayed %1$s?</string>
-    <string name="camigeofence_kildiniz_mi_govde">You can mark it with a single tap.</string>
-    <string name="camigeofence_eylem_kildim">I\'ve prayed</string>
+    <string name="camigeofence_kildiniz_mi">Bạn đã hành lễ %1$s chưa?</string>
+    <string name="camigeofence_kildiniz_mi_govde">Bạn có thể đánh dấu chỉ với một lần chạm.</string>
+    <string name="camigeofence_eylem_kildim">Tôi đã hành lễ</string>
     <string name="camigeofence_namaz_imsak">Fajr</string>
-    <string name="camigeofence_namaz_ogle">Dhuhr</string>
-    <string name="camigeofence_namaz_ikindi">Asr</string>
+    <string name="camigeofence_namaz_ogle">Zhuhr</string>
+    <string name="camigeofence_namaz_ikindi">‘Asr</string>
     <string name="camigeofence_namaz_aksam">Maghrib</string>
-    <string name="camigeofence_namaz_yatsi">Isha</string>
-    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+    <string name="camigeofence_namaz_yatsi">‘Isha’</string>
+    <string name="camigeofence_namaz_cuma">Jumu’ah</string>
 
-    <string name="camigeofence_mod_kural_adi">Prayer</string>
-    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı turns it on during the Jumu\'ah sermon, at the mosque or when a prayer time begins</string>
+    <string name="camigeofence_mod_kural_adi">Salah</string>
+    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı bật chế độ này trong bài khutbah Jumu’ah, tại Masjid hoặc khi vào giờ Salah</string>
 </resources>

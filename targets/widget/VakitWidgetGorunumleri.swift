@@ -956,29 +956,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: vi
+    // vi
     static let vi = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Giờ Salah",
+        galeriAciklama: "Giờ Salah hiện tại, thời gian còn lại đến khi kết thúc và giờ Salah hôm nay.",
+        veriEski: "Mở ứng dụng để cập nhật giờ Salah",
+        konumYok: "Mở ứng dụng để đặt vị trí",
+        kilindiSiradaki: "{ad} đã hành lễ · {sonraki} {saat}",
+        adCikis: "{ad} · kết thúc {saat}",
+        siradakiAdSaat: "Tiếp theo {ad} {saat}",
+        vaktiCikisErisim: "Giờ {ad}, kết thúc {saat}",
+        siradakiErisim: "Tiếp theo {ad}, {saat}",
+        cikisSaat: "Kết thúc {saat}",
+        bitisSaat: "Kết thúc {saat}",
+        kilindiBaslik: "{ad} đã hành lễ",
+        siradaki: "Tiếp theo",
+        siradakiAd: "Tiếp theo {ad}",
+        kildimErisim: "Tôi đã hành lễ {ad}",
+        gunSatiriKilindi: ", đã hành lễ",
+        bitti: "Đã hết",
+        vakitCikti: "Đã hết giờ Salah",
+        kabulAlt: "{ad} đã hành lễ",
+        kontrolAdi: "Tôi đã hành lễ",
+        kontrolAciklama: "Đánh dấu Salah hiện tại là đã hành lễ."
     )
 
     /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi; cevrilmemis dil `// ÇEVİRİ: <kod>`

@@ -648,18 +648,18 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: vi
+    // vi (CLDR vi binlik ayırıcı ".")
     public static let vi = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Phía sau",
+        saga: "Phải {derece}°",
+        sola: "Trái {derece}°",
+        hizali: "Bạn đang hướng về Qiblah",
+        arkadaErisim: "Qiblah ở phía sau bạn",
+        sagdaErisim: "Qiblah lệch {derece} độ về bên phải",
+        soldaErisim: "Qiblah lệch {derece} độ về bên trái",
+        kabede: "Bạn đang ở Ka‘bah",
         mesafe: "{km} km",
-        binlikAyirici: ","
+        binlikAyirici: "."
     )
 
     public static let tablo: [String: KibleMetinleri] = [

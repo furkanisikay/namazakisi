@@ -337,12 +337,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: vi
+    // vi (CLDR yalnız other; "one" anahtarı ms gibi aynı kalıpla dolu)
     public static let vi = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "giờ", birimDk: "phút", birimSn: "giây",
+        saat: ["one": "{n} giờ", "other": "{n} giờ"],
+        dakika: ["one": "{n} phút", "other": "{n} phút"],
+        saniye: ["one": "{n} giây", "other": "{n} giây"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

@@ -1289,31 +1289,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: vi
+    // vi
     public static let vi = VakitMetinleri(
         dil: "vi",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Fajr", "ogle": "Zhuhr", "ikindi": "‘Asr", "aksam": "Maghrib", "yatsi": "‘Isha’"],
+        gunes: "Mặt trời mọc",
+        konumYok: "Hãy mở ứng dụng và đặt vị trí để tính giờ Salah.",
+        veriEski: "Giờ Salah đã cũ. Hãy mở ứng dụng một lần để cập nhật.",
+        girisBugun: "lúc {saat}",
+        girisYarin: "ngày mai lúc {saat}",
+        suAnVakti: "Bây giờ là giờ {ad}.",
+        suAnVaktiCikis: "Bây giờ là giờ {ad}; kết thúc lúc {saat}.",
+        siradakiNamaz: "Giờ Salah tiếp theo là {ad} {giris}.",
+        isaretlendi: "Đã đánh dấu {ad} là đã hành lễ. {dua}.",
+        zatenKilindi: "{ad} đã được đánh dấu là đã hành lễ.",
+        vakitYok: "Hiện không có Salah nào để đánh dấu.",
+        vakitYokSiradaki: "Hiện không có Salah nào để đánh dấu. Tiếp theo là {ad} {giris}.",
+        onay: "Đánh dấu {ad} là đã hành lễ?",
+        vakitDegisti: "Giờ Salah đã thay đổi nên chưa có gì được đánh dấu. Hãy thử lại.",
+        kabulDuasi: "Cầu xin Allah chấp nhận",
+        kildim: "Tôi đã hành lễ",
+        kilindi: "Đã hành lễ",
+        kontrolKildim: "{ad} · Tôi đã hành lễ",
+        kontrolKilindi: "{ad} đã hành lễ",
+        kontrolVakitYok: "Không có Salah để đánh dấu",
+        uygulamayiAcin: "Mở ứng dụng"
     )
 
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).

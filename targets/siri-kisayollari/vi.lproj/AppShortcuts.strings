@@ -1,18 +1,18 @@
-/* ÇEVİRİ: vi */
+// vi — Vietnamca (beta); anahtar = koddaki Türkçe metin, DEĞİŞMEZ, yalnız değerler çevrilir.
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
 // App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
 
 // NamazKisayollari.swift
-"${applicationName} sıradaki namaz ne zaman" = "When is the next prayer in ${applicationName}";
-"${applicationName} sıradaki namaz" = "${applicationName} next prayer";
-"${applicationName} ile sıradaki namazı söyle" = "Tell me the next prayer with ${applicationName}";
-"${applicationName} namaz vakti" = "${applicationName} prayer time";
-"${applicationName} şu anki vakti kıldım" = "I've prayed the current prayer in ${applicationName}";
-"${applicationName} namazımı kıldım" = "I've prayed in ${applicationName}";
-"${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
-"${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
-"${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
-"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
-"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";
+"${applicationName} sıradaki namaz ne zaman" = "Giờ Salah tiếp theo là lúc nào trong ${applicationName}";
+"${applicationName} sıradaki namaz" = "${applicationName} giờ Salah tiếp theo";
+"${applicationName} ile sıradaki namazı söyle" = "Cho tôi biết giờ Salah tiếp theo bằng ${applicationName}";
+"${applicationName} namaz vakti" = "${applicationName} giờ Salah";
+"${applicationName} şu anki vakti kıldım" = "Tôi đã hành lễ Salah hiện tại trong ${applicationName}";
+"${applicationName} namazımı kıldım" = "Tôi đã hành lễ trong ${applicationName}";
+"${applicationName} ile vakti kıldım olarak işaretle" = "Đánh dấu Salah hiện tại là đã hành lễ trong ${applicationName}";
+"${applicationName} kıbleyi aç" = "Mở Qiblah trong ${applicationName}";
+"${applicationName} ile kıbleyi göster" = "Hiển thị Qiblah bằng ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} ảnh câu Kinh hôm nay";
+"${applicationName} ile günün ayeti görselini hazırla" = "Tạo ảnh câu Kinh hôm nay bằng ${applicationName}";

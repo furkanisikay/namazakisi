@@ -554,18 +554,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: vi
+    // vi — meal `gununAyetiHavuzu.ts` 94:6 (vietnamese_rwwad) birebir, künye GUNUN_AYETI_KAYNAKLARI.mealler.vi
     static let vi = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Câu Kinh hôm nay",
+        galeriAciklama: "Một câu Kinh kèm bản dịch, thay đổi mỗi ngày vào giờ Fajr.",
+        etiket: "CÂU KINH HÔM NAY",
+        uygulamayiAcin: "Mở ứng dụng để xem câu Kinh hôm nay",
+        ornekSigmiyor: "Câu Kinh hôm nay không vừa kích thước này. Chạm để đọc.",
+        ornekAcin: "Mở",
+        ornekArapcaKaynagi: "Tiếng Ả Rập: Tanzil",
+        ornekMeal: "Quả thật, đi cùng với khó khăn là sự dễ dàng.",
+        ornekKisaKunye: "Qur’an 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.9"
     )
 
     static let tablo: [String: GununAyetiYerelMetinleri] = [

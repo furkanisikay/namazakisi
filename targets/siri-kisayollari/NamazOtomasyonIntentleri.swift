@@ -381,11 +381,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: vi
+    // vi (CLDR yalnız other; "one" anahtarı aynı kalıpla dolu)
     static let vi = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} bắt đầu sau {n} phút.", "other": "{ad} bắt đầu sau {n} phút."],
+        evetKilindi: "Có, đã được đánh dấu là đã hành lễ.",
+        hayirKilinmadi: "Không, chưa được đánh dấu."
     )
 
     static let tablo: [String: OtomasyonMetinleri] = [

@@ -118,8 +118,8 @@ object CanliGuncellemeKurallari {
         "th" to KisaBirimler("ชม.", "นาที", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: ko
         "ko" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: vi
-        "vi" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // vi
+        "vi" to KisaBirimler("giờ", "phút", birimAyirici = " ", parcaAyirici = " "),
     )
 
     /**
