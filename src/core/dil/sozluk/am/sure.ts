@@ -7,6 +7,8 @@ import type { Sozluk } from '../tr';
  */
 export const sure: Sozluk['sure'] = {
   kisa: { sa: 'ሰዓ', dk: 'ደቂ', sn: 'ሰከ' },
+  birimli: '{n} {birim}',
+  parcali: '{once} {sonra}',
   saat: cogul({ one: '{n} ሰዓት', other: '{n} ሰዓት' }),
   dakika: cogul({ one: '{n} ደቂቃ', other: '{n} ደቂቃ' }),
   saniye: cogul({ one: '{n} ሰከንድ', other: '{n} ሰከንድ' }),

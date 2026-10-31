@@ -402,7 +402,9 @@ struct BirimliSure: View {
         let saniyeli = !sonuk && hedefMs - SaatDeposu.simdiMs() < 3_600_000
         TimelineView(saniyeli ? .periodic(from: Date(), by: 1) : .periodic(from: Date(), by: 60)) { baglam in
             let kalan = hedefMs - SaatDeposu.simdiMs(baglam.date)
-            HStack(alignment: .firstTextBaseline, spacing: 2) {
+            // Bosluksuz dilde (Cince) sayi-birim ve parca arasi gorsel bosluk cizilmez.
+            let bosluk = SaatSureMetinleri.dil(dil)
+            HStack(alignment: .firstTextBaseline, spacing: bosluk.birimAyirici.isEmpty ? 0 : 2) {
                 ForEach(Array(SaatSure.parcalar(kalanMs: kalan, saniyesiz: sonuk, dil: dil).enumerated()), id: \.offset) { i, p in
                     Text(p.sayi)
                         .font(.system(size: cap * 0.2, weight: .semibold, design: .rounded))
@@ -410,7 +412,7 @@ struct BirimliSure: View {
                     Text(p.birim)
                         .font(.system(size: cap * 0.085, weight: .medium, design: .rounded))
                         .foregroundStyle(.secondary)
-                        .padding(.trailing, i == 0 ? 4 : 0)
+                        .padding(.trailing, i == 0 && !bosluk.parcaAyirici.isEmpty ? 4 : 0)
                 }
             }
             .lineLimit(1)

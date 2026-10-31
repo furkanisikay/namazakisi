@@ -37,7 +37,8 @@ object TileOrtak {
      */
     fun kalanKalibi(dil: String, kalip: String = YER_TUTUCU): String {
         val d = saatDili(dil)
-        return kalip.replace(YER_TUTUCU, "23 ${d.birimSa} 59 ${d.birimDk}")
+        val b = d.birimAyirici
+        return kalip.replace(YER_TUTUCU, "23${b}${d.birimSa}${d.parcaAyirici}59${b}${d.birimDk}")
     }
 
     /**
@@ -75,11 +76,13 @@ object TileOrtak {
         val dk = kalanDakika(hedefMs)
         val sa = dk.div(60)
         val kalanDk = dk.rem(60)
+        // Sayı–birim ve parça arası boşluk dilden (Çince boşluksuz: "1小时58分钟").
+        val b = d.birimAyirici
         val saatli = DynamicString.onCondition(kalanDk.eq(0))
-            .use(sa.format().concat(yerel(" ${d.birimSa}")))
-            .elseUse(sa.format().concat(yerel(" ${d.birimSa} ")).concat(kalanDk.format()).concat(yerel(" ${d.birimDk}")))
+            .use(sa.format().concat(yerel("${b}${d.birimSa}")))
+            .elseUse(sa.format().concat(yerel("${b}${d.birimSa}${d.parcaAyirici}")).concat(kalanDk.format()).concat(yerel("${b}${d.birimDk}")))
         val dakikali = DynamicString.onCondition(dk.gt(0))
-            .use(dk.format().concat(yerel(" ${d.birimDk}")))
+            .use(dk.format().concat(yerel("${b}${d.birimDk}")))
             .elseUse(yerel(d.birDakikadanAzKisa))
         val metin = yerel(onEk).concat(DynamicString.onCondition(sa.gt(0)).use(saatli).elseUse(dakikali)).concat(yerel(sonEk))
         return TypeBuilders.StringProp.Builder(rakamlariYerellestir(statikYedek, sifir)).setDynamicValue(metin).build()

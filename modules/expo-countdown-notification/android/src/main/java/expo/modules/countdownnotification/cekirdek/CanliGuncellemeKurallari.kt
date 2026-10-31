@@ -37,82 +37,89 @@ object CanliGuncellemeKurallari {
         if (kalanMs <= 0L) 0L else (kalanMs + DAKIKA_MS - 1) / DAKIKA_MS
 
     /**
+     * Bir dilin kısa süre birimleri ve boşlukları. [birimAyirici] sayı ile birim arası
+     * (JS `sure.birimli` kalıbının `{n}` ile `{birim}` arası), [parcaAyirici] "1 sa" ile "5 dk"
+     * arası (JS `sure.parcali`); boşluksuz yazan dil (Çince "1小时5分钟") ikisine de "" verir.
+     */
+    data class KisaBirimler(val sa: String, val dk: String, val birimAyirici: String = " ", val parcaAyirici: String = " ")
+
+    /**
      * Kısa süre birimleri, arayüz diline göre (JS `sozluk/<dil>/sure.ts > kisa`).
      * Bilinmeyen dil Türkçeye düşer. Yeni dil: buraya bir satır + JS sözlüğü. Sıra tr, en,
      * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
      */
-    internal val KISA_BIRIMLER: Map<String, Pair<String, String>> = mapOf(
-        "tr" to ("sa" to "dk"),
-        "en" to ("h" to "min"),
+    internal val KISA_BIRIMLER: Map<String, KisaBirimler> = mapOf(
+        "tr" to KisaBirimler("sa", "dk"),
+        "en" to KisaBirimler("h", "min"),
         // id
-        "id" to ("j" to "mnt"),
-        "de" to ("Std." to "Min."),
+        "id" to KisaBirimler("j", "mnt"),
+        "de" to KisaBirimler("Std.", "Min."),
         // fr
-        "fr" to ("h" to "min"),
+        "fr" to KisaBirimler("h", "min"),
         // bs
-        "bs" to ("h" to "min"),
+        "bs" to KisaBirimler("h", "min"),
         // ru
-        "ru" to ("ч" to "мин"),
+        "ru" to KisaBirimler("ч", "мин"),
         // ms
-        "ms" to ("j" to "min"),
+        "ms" to KisaBirimler("j", "min"),
         // ar
-        "ar" to ("س" to "د"),
+        "ar" to KisaBirimler("س", "د"),
         // ur
-        "ur" to ("گھنٹے" to "منٹ"),
+        "ur" to KisaBirimler("گھنٹے", "منٹ"),
         // es
-        "es" to ("h" to "min"),
+        "es" to KisaBirimler("h", "min"),
         // nl
-        "nl" to ("u" to "min"),
+        "nl" to KisaBirimler("u", "min"),
         // sq
-        "sq" to ("orë" to "min"),
+        "sq" to KisaBirimler("orë", "min"),
         // hi
-        "hi" to ("घंटे" to "मिनट"),
+        "hi" to KisaBirimler("घंटे", "मिनट"),
         // bn
-        "bn" to ("ঘ" to "মি"),
+        "bn" to KisaBirimler("ঘ", "মি"),
         // fa
-        "fa" to ("ساعت" to "دقیقه"),
+        "fa" to KisaBirimler("ساعت", "دقیقه"),
         // ps
-        "ps" to ("ساعت" to "دقیقې"),
+        "ps" to KisaBirimler("ساعت", "دقیقې"),
         // ckb
-        "ckb" to ("کاتژمێر" to "خولەک"),
+        "ckb" to KisaBirimler("کاتژمێر", "خولەک"),
         // ug
-        "ug" to ("سائەت" to "مىنۇت"),
+        "ug" to KisaBirimler("سائەت", "مىنۇت"),
         // az
-        "az" to ("saat" to "dəq"),
+        "az" to KisaBirimler("saat", "dəq"),
         // uz (Latin)
-        "uz" to ("soat" to "daq"),
+        "uz" to KisaBirimler("soat", "daq"),
         // kk
-        "kk" to ("сағ" to "мин"),
+        "kk" to KisaBirimler("сағ", "мин"),
         // ky
-        "ky" to ("ст" to "мүн"),
+        "ky" to KisaBirimler("ст", "мүн"),
         // tg
-        "tg" to ("соат" to "дақ"),
+        "tg" to KisaBirimler("соат", "дақ"),
         // sw
-        "sw" to ("saa" to "dk"),
+        "sw" to KisaBirimler("saa", "dk"),
         // ha
-        "ha" to ("awa" to "min"),
+        "ha" to KisaBirimler("awa", "min"),
         // am
-        "am" to ("ሰዓ" to "ደቂ"),
+        "am" to KisaBirimler("ሰዓ", "ደቂ"),
         // om
-        "om" to ("sa'a" to "daq"),
+        "om" to KisaBirimler("sa'a", "daq"),
         // so
-        "so" to ("s" to "daq"),
+        "so" to KisaBirimler("s", "daq"),
         // ff
-        "ff" to ("sa" to "hj"),
+        "ff" to KisaBirimler("sa", "hj"),
         // yo
-        "yo" to ("wkt" to "ìṣj"),
-        // ÇEVİRİ: zh
-        "zh" to ("h" to "min"),
+        "yo" to KisaBirimler("wkt", "ìṣj"),
+        // ÇEVİRİ: zh (boşluksuz yazılır: "5分钟", "1小时5分钟")
+        "zh" to KisaBirimler("h", "min", birimAyirici = "", parcaAyirici = ""),
         // ÇEVİRİ: ta
-        "ta" to ("h" to "min"),
+        "ta" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: ml
-        "ml" to ("h" to "min"),
+        "ml" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: th
-        "th" to ("h" to "min"),
+        "th" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: ko
-        "ko" to ("h" to "min"),
+        "ko" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: vi
-        "vi" to ("h" to "min"),
+        "vi" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
     )
 
     /**
@@ -122,12 +129,14 @@ object CanliGuncellemeKurallari {
      * Türkçe — ortak fikstür Türkçe biçimi sınar.
      */
     fun kisaMetin(kalanMs: Long, dil: String = "tr"): String {
-        val (saBirim, dkBirim) = KISA_BIRIMLER[dil] ?: KISA_BIRIMLER.getValue("tr")
+        val b = KISA_BIRIMLER[dil] ?: KISA_BIRIMLER.getValue("tr")
         val dk = kalanDakika(kalanMs)
-        if (dk < 60) return "$dk $dkBirim"
+        // `${}` zorunlu: Han/Hangıl harfi şablonda tanımlayıcıya yapışır.
+        if (dk < 60) return "${dk}${b.birimAyirici}${b.dk}"
         val sa = dk / 60
         val artan = dk % 60
-        return if (artan == 0L) "$sa $saBirim" else "$sa $saBirim $artan $dkBirim"
+        val saatli = "${sa}${b.birimAyirici}${b.sa}"
+        return if (artan == 0L) saatli else "${saatli}${b.parcaAyirici}${artan}${b.birimAyirici}${b.dk}"
     }
 
     /**

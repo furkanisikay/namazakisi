@@ -59,7 +59,7 @@ function DakikaAdimlayici({
   const renkler = useRenkler();
   const s = useMetin();
   const m = s.hesap.sayfa;
-  const metin = `${deger > 0 ? '+' : ''}${deger} ${s.sure.kisa.dk}`;
+  const metin = bicim(s.sure.birimli, { n: `${deger > 0 ? '+' : ''}${deger}`, birim: s.sure.kisa.dk });
   const dugme = (yon: -1 | 1) => {
     const kapali = yon < 0 ? deger <= -OFSET_SINIRI : deger >= OFSET_SINIRI;
     return (

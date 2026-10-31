@@ -66,8 +66,21 @@ class CanliGuncellemeKurallariTest {
         for (d in diller) {
             val (sa, dk) = k.KISA_BIRIMLER.getValue(d)
             assertTrue(d, sa.isNotBlank() && dk.isNotBlank())
-            assertEquals("1 $sa 5 $dk", k.kisaMetin(65 * 60_000L, d))
+            // Boşluklu dillerin çıktısı eski sabit boşluklu biçimle birebir (JS `sure.test.ts` ikizi).
+            if (d != "zh") assertEquals(d, "1 $sa 5 $dk", k.kisaMetin(65 * 60_000L, d))
         }
+    }
+
+    @Test
+    fun kisaMetin_bosluksuzDilBirimiBitisikYazar() {
+        // Çince boşluksuz (JS `sozluk/zh/sure.ts > birimli` '{n}{birim}', `parcali` '{once}{sonra}').
+        val zh = k.KISA_BIRIMLER.getValue("zh")
+        assertEquals("" to "", zh.birimAyirici to zh.parcaAyirici)
+        assertEquals("12${zh.dk}", k.kisaMetin(12 * 60_000L, "zh"))
+        assertEquals("1${zh.sa}", k.kisaMetin(60 * 60_000L, "zh"))
+        assertEquals("1${zh.sa}5${zh.dk}", k.kisaMetin(65 * 60_000L, "zh"))
+        // Diğer diller tek boşluk taşır.
+        for ((d, b) in k.KISA_BIRIMLER) if (d != "zh") assertEquals(d, " " to " ", b.birimAyirici to b.parcaAyirici)
     }
 
     @Test

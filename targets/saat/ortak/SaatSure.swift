@@ -31,6 +31,11 @@ public struct SaatSureMetinleri: Equatable {
     public let saat: [String: String]
     public let dakika: [String: String]
     public let saniye: [String: String]
+    /// Sayi ile kisa birim arasi ("5 dk"); bosluksuz yazan dil (Cince "5分钟") "" verir.
+    /// JS `sure.birimli` kalibinin `{n}` ile `{birim}` arasi (nobetci `nativeSureAyiraclari.test.ts`).
+    public var birimAyirici: String = " "
+    /// Ardisik sure parcalari arasi ("1 sa 5 dk", "1 saat 5 dakika"); JS `sure.parcali`.
+    public var parcaAyirici: String = " "
 
     public static let tr = SaatSureMetinleri(
         birimSa: "sa", birimDk: "dk", birimSn: "sn",
@@ -287,11 +292,13 @@ public struct SaatSureMetinleri: Equatable {
     )
 
     // ÇEVİRİ: zh
+    // Bosluksuz yazilir ("5分钟", "1小时5分钟"; JS `sure.birimli` / `sure.parcali`).
     public static let zh = SaatSureMetinleri(
         birimSa: "h", birimDk: "min", birimSn: "s",
         saat: ["one": "{n} hour", "other": "{n} hours"],
         dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: "", parcaAyirici: ""
     )
 
     // ÇEVİRİ: ta
@@ -299,7 +306,8 @@ public struct SaatSureMetinleri: Equatable {
         birimSa: "h", birimDk: "min", birimSn: "s",
         saat: ["one": "{n} hour", "other": "{n} hours"],
         dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
     )
 
     // ÇEVİRİ: ml
@@ -307,7 +315,8 @@ public struct SaatSureMetinleri: Equatable {
         birimSa: "h", birimDk: "min", birimSn: "s",
         saat: ["one": "{n} hour", "other": "{n} hours"],
         dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
     )
 
     // ÇEVİRİ: th
@@ -315,7 +324,8 @@ public struct SaatSureMetinleri: Equatable {
         birimSa: "h", birimDk: "min", birimSn: "s",
         saat: ["one": "{n} hour", "other": "{n} hours"],
         dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
     )
 
     // ÇEVİRİ: ko
@@ -323,7 +333,8 @@ public struct SaatSureMetinleri: Equatable {
         birimSa: "h", birimDk: "min", birimSn: "s",
         saat: ["one": "{n} hour", "other": "{n} hours"],
         dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
     )
 
     // ÇEVİRİ: vi
@@ -331,7 +342,8 @@ public struct SaatSureMetinleri: Equatable {
         birimSa: "h", birimDk: "min", birimSn: "s",
         saat: ["one": "{n} hour", "other": "{n} hours"],
         dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"]
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
     )
 
     public static let tablo: [String: SaatSureMetinleri] = [
@@ -389,6 +401,6 @@ public enum SaatSure {
                 }
                 return CogulKurali.sec(kaliplar, dil, Int(n))
             }
-            .joined(separator: " ")
+            .joined(separator: m.parcaAyirici)
     }
 }

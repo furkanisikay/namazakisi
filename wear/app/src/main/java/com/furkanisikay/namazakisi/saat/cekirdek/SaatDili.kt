@@ -31,6 +31,15 @@ interface SaatDili {
     val birimDk: String
     val birimSn: String
 
+    /**
+     * Sayı ile kısa birim arası ("5 dk"); boşluksuz yazan dil (Çince "5分钟") "" verir.
+     * JS `sure.birimli` kalıbının `{n}` ile `{birim}` arası (nöbetçi `nativeSureAyiraclari.test.ts`).
+     */
+    val birimAyirici: String get() = " "
+
+    /** Ardışık süre parçaları arası ("1 sa 5 dk", "1 saat 5 dakika"); JS `sure.parcali`. */
+    val parcaAyirici: String get() = " "
+
     /** Kısa süre: bir dakikanın altı ("1 dk'dan az"). */
     val birDakikadanAzKisa: String
     fun saatSesli(n: Long): String
@@ -38,7 +47,7 @@ interface SaatDili {
     val birDakikadanAzSesli: String
 
     /** Uzun biçimdeki parçaların arası ("1 saat 58 dakika"). */
-    fun sesliBirlesik(saat: String, dakika: String): String = "$saat $dakika"
+    fun sesliBirlesik(saat: String, dakika: String): String = "${saat}${parcaAyirici}${dakika}"
 
     // --- Kalan süre komplikasyonu (KalanSure) ---
     fun cikisaUzun(ad: String): String
@@ -3189,6 +3198,9 @@ object SaatDiliZh : SaatDili {
     override val birimSa = "h"
     override val birimDk = "min"
     override val birimSn = "s"
+    // Boşluksuz yazılır ("5分钟", "1小时5分钟"; JS `sure.birimli` / `sure.parcali`).
+    override val birimAyirici = ""
+    override val parcaAyirici = ""
     override val birDakikadanAzKisa = "<1 min"
     override fun saatSesli(n: Long) = "$n hours"
     override fun dakikaSesli(n: Long) = "$n minutes"
@@ -3281,6 +3293,8 @@ object SaatDiliTa : SaatDili {
     override val birimSa = "h"
     override val birimDk = "min"
     override val birimSn = "s"
+    override val birimAyirici = " "
+    override val parcaAyirici = " "
     override val birDakikadanAzKisa = "<1 min"
     override fun saatSesli(n: Long) = if (n == 1L) "1 hour" else "$n hours"
     override fun dakikaSesli(n: Long) = if (n == 1L) "1 minute" else "$n minutes"
@@ -3373,6 +3387,8 @@ object SaatDiliMl : SaatDili {
     override val birimSa = "h"
     override val birimDk = "min"
     override val birimSn = "s"
+    override val birimAyirici = " "
+    override val parcaAyirici = " "
     override val birDakikadanAzKisa = "<1 min"
     override fun saatSesli(n: Long) = if (n == 1L) "1 hour" else "$n hours"
     override fun dakikaSesli(n: Long) = if (n == 1L) "1 minute" else "$n minutes"
@@ -3466,6 +3482,8 @@ object SaatDiliTh : SaatDili {
     override val birimSa = "h"
     override val birimDk = "min"
     override val birimSn = "s"
+    override val birimAyirici = " "
+    override val parcaAyirici = " "
     override val birDakikadanAzKisa = "<1 min"
     override fun saatSesli(n: Long) = "$n hours"
     override fun dakikaSesli(n: Long) = "$n minutes"
@@ -3559,6 +3577,8 @@ object SaatDiliKo : SaatDili {
     override val birimSa = "h"
     override val birimDk = "min"
     override val birimSn = "s"
+    override val birimAyirici = " "
+    override val parcaAyirici = " "
     override val birDakikadanAzKisa = "<1 min"
     override fun saatSesli(n: Long) = "$n hours"
     override fun dakikaSesli(n: Long) = "$n minutes"
@@ -3652,6 +3672,8 @@ object SaatDiliVi : SaatDili {
     override val birimSa = "h"
     override val birimDk = "min"
     override val birimSn = "s"
+    override val birimAyirici = " "
+    override val parcaAyirici = " "
     override val birDakikadanAzKisa = "<1 min"
     override fun saatSesli(n: Long) = "$n hours"
     override fun dakikaSesli(n: Long) = "$n minutes"

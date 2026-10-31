@@ -571,6 +571,14 @@ do {
     esitMi(SaatSure.sesli(kalanMs: (9 * 60 + 5) * 1000, dil: "en"), "9 minutes 5 seconds", "en sesli")
     esitMi(SaatSure.sesli(kalanMs: (3600 + 60) * 1000, dil: "en"), "1 hour 1 minute", "en sesli tekil")
     esitMi(SaatSure.sesli(kalanMs: 42_000), "42 saniye", "tr sesli dakikanin alti")
+    // Bosluksuz dil (zh; JS `sure.parcali` '{once}{sonra}'): sesli parcalar bitisik, diger diller tek bosluk.
+    let zhSure = SaatSureMetinleri.zh
+    esitMi([zhSure.birimAyirici, zhSure.parcaAyirici], ["", ""], "zh ayiraclar bos")
+    esitMi(SaatSure.sesli(kalanMs: (3600 + 60) * 1000, dil: "zh"),
+           CogulKurali.sec(zhSure.saat, "zh", 1) + CogulKurali.sec(zhSure.dakika, "zh", 1), "zh sesli bitisik")
+    for (d, m) in SaatSureMetinleri.tablo where d != "zh" {
+        esitMi([m.birimAyirici, m.parcaAyirici], [" ", " "], "\(d) ayiraclar tek bosluk")
+    }
     esitMi(Samimiyet.kabulDuasi("en"), "May Allah accept it", "en kabul duasi")
     esitMi(Samimiyet.kabulDuasi, "Allah kabul etsin", "tr kabul duasi sabit")
     // Iki dilde ayni yer tutucular.
@@ -600,7 +608,8 @@ do {
             return bulunan.sorted().joined() + (s.isEmpty ? "<BOS>" : "")
         }
         for c in Mirror(reflecting: deger).children {
-            guard let ad = c.label, ad != "dil" else { continue }
+            // Bosluk ayiraclari metin degil: bosluksuz dilde (zh) bilerek bostur.
+            guard let ad = c.label, ad != "dil", ad != "birimAyirici", ad != "parcaAyirici" else { continue }
             if let s = c.value as? String { sonuc[ad] = kume(s) }
             if let h = c.value as? [String: String] {
                 // Cogul kaliplari dilin kategorileriyle degisebilir: "other" zorunlu, hepsi ayni yer tutucu.

@@ -202,10 +202,12 @@ object VakitHesabi {
         if (dk < 1) return d.birDakikadanAzKisa
         val sa = dk / 60
         val kalanDk = dk % 60
+        // Boşluklar dilden (`birimAyirici`/`parcaAyirici`; Çince "1小时12分钟").
+        val b = d.birimAyirici
         return when {
-            sa == 0L -> "$kalanDk ${d.birimDk}"
-            kalanDk == 0L -> "$sa ${d.birimSa}"
-            else -> "$sa ${d.birimSa} $kalanDk ${d.birimDk}"
+            sa == 0L -> "${kalanDk}${b}${d.birimDk}"
+            kalanDk == 0L -> "${sa}${b}${d.birimSa}"
+            else -> "${sa}${b}${d.birimSa}${d.parcaAyirici}${kalanDk}${b}${d.birimDk}"
         }
     }
 

@@ -262,7 +262,8 @@ fun SureGosterimi(
     val sifir = sifirRakami()
     Row(verticalAlignment = Alignment.Bottom) {
         sayac.gorunur(saniyeGoster).forEachIndexed { i, p ->
-            if (i > 0) Spacer(Modifier.width(5.dp))
+            // Boşluksuz dilde (Çince) parça ve birim arası görsel boşluk çizilmez.
+            if (i > 0 && sayac.parcaBosluklu) Spacer(Modifier.width(5.dp))
             Text(
                 rakamlariYerellestir(p.sayi, sifir),
                 style = rakamStili,
@@ -277,7 +278,7 @@ fun SureGosterimi(
                 fontWeight = birimAgirligi,
                 color = if (p.saniye) saniyeRengi else birimRengi,
                 maxLines = 1,
-                modifier = Modifier.padding(start = 2.dp, bottom = if (p.saniye) 3.dp else 6.dp),
+                modifier = Modifier.padding(start = if (sayac.birimBosluklu) 2.dp else 0.dp, bottom = if (p.saniye) 3.dp else 6.dp),
             )
         }
     }

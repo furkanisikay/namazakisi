@@ -94,4 +94,24 @@ class SaatDilTablolariTest {
         assertEquals("1 گھنٹہ", SaatDiliUr.saatSesli(1))
         assertEquals("3 گھنٹے", SaatDiliUr.saatSesli(3))
     }
+
+    @Test
+    fun sayiBirimBoslugu_dildenGelir() {
+        // JS `sure.birimli` / `sure.parcali` ikizi: boşluklu dillerde çıktı eski sabit boşluklu
+        // biçimle birebir; boşluksuz dil (Çince) bitişik yazar.
+        for (k in kodlar.filter { it != "zh" }) {
+            val d = saatDili(k)
+            assertEquals(k, " " to " ", d.birimAyirici to d.parcaAyirici)
+            assertEquals(k, "1 ${d.birimSa} 12 ${d.birimDk}", VakitHesabi.kalanMetni(72 * 60_000L, k))
+            assertEquals(k, "12 ${d.birimDk}", VakitHesabi.kalanMetni(12 * 60_000L, k))
+            assertTrue(k, AnaEkranKarari.sayac(3_725_000L, k).let { it.birimBosluklu && it.parcaBosluklu })
+        }
+        val zh = saatDili("zh")
+        assertEquals("" to "", zh.birimAyirici to zh.parcaAyirici)
+        assertEquals("1${zh.birimSa}12${zh.birimDk}", VakitHesabi.kalanMetni(72 * 60_000L, "zh"))
+        assertEquals("2${zh.birimSa}", VakitHesabi.kalanMetni(120 * 60_000L, "zh"))
+        assertEquals(zh.saatSesli(1) + zh.dakikaSesli(5), VakitHesabi.kalanSesliMetni(65 * 60_000L, "zh"))
+        val sayac = AnaEkranKarari.sayac(3_725_000L, "zh")
+        assertTrue(!sayac.birimBosluklu && !sayac.parcaBosluklu)
+    }
 }

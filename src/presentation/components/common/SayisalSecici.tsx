@@ -5,6 +5,7 @@ import { useRenkler } from '../../../core/theme';
 import { AYARLANABILIR_EYLEMLER, useSayisalAdim } from '../../hooks/useSayisalAdim';
 import { useMetin } from '../../hooks/useMetin';
 import { bicim } from '../../../core/dil/aktifDil';
+import { birimAyiraci } from '../../../core/dil/sure';
 
 /**
  * Numerik artir/azalt (kare buton) bileseni.
@@ -46,6 +47,8 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
   const s = useMetin();
   const m = s.genel.ortak;
   const birim = birimProp ?? s.sure.kisa.dk;
+  // Sayı–birim boşluğu dilin kararı (sözlük `sure.birimli`): Çincede boşluk çizilmez.
+  const birimArasi = birimAyiraci();
   const azaltEtiketi = aciklama ? bicim(m.azaltAciklamali, { ad: aciklama }) : m.azalt;
   const artirEtiketi = aciklama ? bicim(m.artirAciklamali, { ad: aciklama }) : m.artir;
   const { gorunenDeger, azaltDugmesi, artirDugmesi, erisilebilirlikEylemi } = useSayisalAdim({
@@ -78,11 +81,11 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         accessible
         accessibilityRole="adjustable"
         accessibilityLabel={aciklama ?? m.deger}
-        accessibilityValue={{ min, max, now: gorunenDeger, text: `${gorunenDeger} ${birim}`.trim() }}
+        accessibilityValue={{ min, max, now: gorunenDeger, text: bicim(s.sure.birimli, { n: gorunenDeger, birim }).trim() }}
         accessibilityActions={AYARLANABILIR_EYLEMLER}
         onAccessibilityAction={erisilebilirlikEylemi}
       >
-        <Text className="text-base font-bold mr-1" style={{ color: renkler.metin }}>{gorunenDeger}</Text>
+        <Text className={birimArasi ? 'text-base font-bold mr-1' : 'text-base font-bold'} style={{ color: renkler.metin }}>{gorunenDeger}</Text>
         <Text className="text-xs" style={{ color: renkler.metinIkincil }}>{birim}</Text>
       </View>
       <TouchableOpacity

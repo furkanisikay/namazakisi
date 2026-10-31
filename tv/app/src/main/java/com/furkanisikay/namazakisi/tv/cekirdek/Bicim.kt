@@ -54,8 +54,11 @@ object Bicim {
     }
 
     /** Tek satır birimli süre ("5 sa 2 dk", "18 dk 05 sn", "42 sn") — ikincil satırlar için. */
-    fun kalanKisa(kalanMs: Long, dil: String = "tr"): String =
-        kalanParcalari(kalanMs, dil).joinToString(" ") { "${it.sayi} ${it.birim}" }
+    fun kalanKisa(kalanMs: Long, dil: String = "tr"): String {
+        // Boşluklar dilden (`birimAyirici`/`parcaAyirici`; Çince "5小时2分钟").
+        val d = tvDili(dil)
+        return kalanParcalari(kalanMs, dil).joinToString(d.parcaAyirici) { "${it.sayi}${d.birimAyirici}${it.birim}" }
+    }
 
     /** Ekran okuyucu metni, DAKİKA çözünürlüklü: "1 saat 16 dakika", "18 dakika", "1 dakikadan az". */
     fun kalanSesli(kalanMs: Long, dil: String = "tr"): String {
@@ -64,7 +67,7 @@ object Bicim {
         val sa = toplamDk / 60
         val dk = toplamDk % 60
         return when {
-            sa > 0 && dk > 0 -> "${d.saatSesli(sa)} ${d.dakikaSesli(dk)}"
+            sa > 0 && dk > 0 -> "${d.saatSesli(sa)}${d.parcaAyirici}${d.dakikaSesli(dk)}"
             sa > 0 -> d.saatSesli(sa)
             dk > 0 -> d.dakikaSesli(dk)
             else -> d.birDakikadanAz

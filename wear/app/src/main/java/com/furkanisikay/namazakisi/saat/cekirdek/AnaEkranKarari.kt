@@ -18,7 +18,13 @@ object AnaEkranKarari {
      * hem 1 saat 16 dakika hem 1 dakika 16 saniye okunabiliyordu (ve tile/liste "1 sa 16 dk"
      * yazıyordu — iki yüzey aynı şeyi iki biçimde söylüyordu).
      */
-    data class Sayac(val parcalar: List<Parca>) {
+    data class Sayac(
+        val parcalar: List<Parca>,
+        /** Sayı ile birim arasında görsel boşluk var mı (dilin `birimAyirici`'si; Çincede yok). */
+        val birimBosluklu: Boolean = true,
+        /** Parçalar arasında görsel boşluk var mı (dilin `parcaAyirici`'si; Çincede yok). */
+        val parcaBosluklu: Boolean = true,
+    ) {
         /** Ambient / ekran görüntüsü kipinde saniye parçası düşer. */
         fun gorunur(saniyeGoster: Boolean): List<Parca> = if (saniyeGoster) parcalar else parcalar.filterNot { it.saniye }
 
@@ -74,11 +80,8 @@ object AnaEkranKarari {
         val dk = (toplamSn % 3600) / 60
         val sn = toplamSn % 60
         val saniye = Parca(sn.toString().padStart(2, '0'), d.birimSn, saniye = true)
-        return if (sa > 0) {
-            Sayac(listOf(Parca("$sa", d.birimSa), Parca("$dk", d.birimDk)))
-        } else {
-            Sayac(listOf(Parca("$dk", d.birimDk), saniye))
-        }
+        val parcalar = if (sa > 0) listOf(Parca("$sa", d.birimSa), Parca("$dk", d.birimDk)) else listOf(Parca("$dk", d.birimDk), saniye)
+        return Sayac(parcalar, birimBosluklu = d.birimAyirici.isNotEmpty(), parcaBosluklu = d.parcaAyirici.isNotEmpty())
     }
 
     fun altYazi(mod: KalanSure.Mod, dil: String = "tr"): String = saatDili(dil).altYazi(mod)

@@ -1,11 +1,13 @@
 /**
  * Birimli iri süre ("1 sa 9 dk", "9 dk 05 sn"): rakam iri, birim küçük ve ikincil.
  * TEK `Text` + iç içe `Text` → `adjustsFontSizeToFit` bütün satıra işler, ekran okuyucu
- * tek düğüm okur (`accessibilityLabel` saat/dakika adlarıyla).
+ * tek düğüm okur (`accessibilityLabel` saat/dakika adlarıyla). Sayı–birim ve parça arası
+ * boşluk sözlükten (`birimAyiraci`/`parcaAyiraci`): Çincede boşluk çizilmez ("1小时5分钟").
  */
 import * as React from 'react';
 import { Text, type StyleProp, type TextStyle } from 'react-native';
 
+import { birimAyiraci, parcaAyiraci } from '../../../core/dil/sure';
 import { kalanSureParcalari, kalanSureSesli } from '../../../core/utils/kalanSureParcalari';
 import { useMetin } from '../../hooks/useMetin';
 
@@ -38,6 +40,8 @@ const BirimliSureBileseni: React.FC<BirimliSureProps> = ({
   // Birimler etkin dilde: dil değişince `sure` beklemeden yeniden çizilsin (memo bileşen).
   useMetin();
   const parcalar = kalanSureParcalari(sure);
+  const birimArasi = birimAyiraci();
+  const parcaArasi = parcaAyiraci();
   const birimStili = { fontSize: Math.round(rakamBoyu * birimOrani), color: birimRengi, fontWeight: '600' as const };
   return (
     <Text
@@ -50,9 +54,9 @@ const BirimliSureBileseni: React.FC<BirimliSureProps> = ({
     >
       {parcalar.map((p, i) => (
         <React.Fragment key={`${p.birim}-${i}`}>
-          {i > 0 ? ' ' : ''}
+          {i > 0 ? parcaArasi : ''}
           {p.sayi}
-          {p.birim ? <Text style={birimStili}>{` ${p.birim}`}</Text> : null}
+          {p.birim ? <Text style={birimStili}>{`${birimArasi}${p.birim}`}</Text> : null}
         </React.Fragment>
       ))}
     </Text>

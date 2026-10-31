@@ -10,6 +10,7 @@
  * SAF: girdi AnaSayfa'nın ürettiği "SS:DD:ss" dizesidir; bozuksa olduğu gibi tek parça döner.
  */
 import { metin, sayili } from '../dil/aktifDil';
+import { parcali } from '../dil/sure';
 
 export interface SureParcasi {
   sayi: string;
@@ -35,11 +36,12 @@ export function kalanSureParcalari(ssddss: string): SureParcasi[] {
   return kodluParcalar(ssddss).map((p) => ({ sayi: p.sayi, birim: p.kod ? kisa[p.kod] : '' }));
 }
 
-/** Ekran okuyucu metni: "1 saat 9 dakika", "9 dakika 5 saniye", "42 saniye". */
+/**
+ * Ekran okuyucu metni: "1 saat 9 dakika", "9 dakika 5 saniye", "42 saniye". Parçalar
+ * sözlüğün `sure.parcali` kalıbıyla birleşir (Çincede boşluksuz).
+ */
 export function kalanSureSesli(ssddss: string): string {
   const s = metin().sure;
   const uzun = { sa: s.saat, dk: s.dakika, sn: s.saniye };
-  return kodluParcalar(ssddss)
-    .map((p) => (p.kod ? sayili(uzun[p.kod], Number(p.sayi)) : p.sayi))
-    .join(' ');
+  return parcali(kodluParcalar(ssddss).map((p) => (p.kod ? sayili(uzun[p.kod], Number(p.sayi)) : p.sayi)));
 }

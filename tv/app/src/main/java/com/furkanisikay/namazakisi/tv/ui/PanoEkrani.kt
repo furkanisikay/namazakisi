@@ -72,6 +72,7 @@ import com.furkanisikay.namazakisi.tv.cekirdek.PanoDurumu
 import com.furkanisikay.namazakisi.tv.cekirdek.PanoHesabi
 import com.furkanisikay.namazakisi.tv.cekirdek.Vakit
 import com.furkanisikay.namazakisi.tv.cekirdek.VakitHesabi
+import com.furkanisikay.namazakisi.tv.cekirdek.tvDili
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.ZoneId
@@ -283,9 +284,11 @@ private fun KalanBlogu(durum: PanoDurumu, simdi: Long, azalt: Boolean) {
                 TekSatirEtiket(stringResource(R.string.pano_vaktine, durum.gorunenAd(v, dil)))
             }
         }
+        // Boşluksuz dilde (Çince) parça ve birim arası görsel boşluk çizilmez.
+        val bosluk = tvDili(dil)
         Row(verticalAlignment = Alignment.Bottom) {
             Bicim.kalanParcalari(durum.kalanMs, dil).forEachIndexed { i, p ->
-                if (i > 0) Spacer(Modifier.width(18.dp))
+                if (i > 0 && bosluk.parcaAyirici.isNotEmpty()) Spacer(Modifier.width(18.dp))
                 Text(
                     p.sayi.yerelRakam(),
                     style = RAKAM,
@@ -298,7 +301,7 @@ private fun KalanBlogu(durum: PanoDurumu, simdi: Long, azalt: Boolean) {
                     p.birim,
                     color = Renkler.metinIkincil,
                     fontSize = 32.sp,
-                    modifier = Modifier.padding(start = 6.dp, bottom = 12.dp),
+                    modifier = Modifier.padding(start = if (bosluk.birimAyirici.isNotEmpty()) 6.dp else 0.dp, bottom = 12.dp),
                 )
             }
         }
@@ -553,11 +556,12 @@ private fun RamazanBlogu(sayac: EvDurumu.Sayac, tur: EvDurumu.SayacTuru, durum: 
             // "Lokacin da ya rage zuwa buɗa baki" (Hausa) iki satıra kırılıp sütunu taşırıyordu.
             TekSatirEtiket(sayac.baslik)
         }
+        val bosluk = tvDili(dil)
         Row(verticalAlignment = Alignment.Bottom) {
             Bicim.kalanParcalari(kalan, dil).forEachIndexed { i, p ->
-                if (i > 0) Spacer(Modifier.width(18.dp))
+                if (i > 0 && bosluk.parcaAyirici.isNotEmpty()) Spacer(Modifier.width(18.dp))
                 Text(p.sayi.yerelRakam(), style = RAKAM, color = Renkler.metin, fontSize = 76.sp, fontWeight = FontWeight.SemiBold, lineHeight = 80.sp)
-                Text(p.birim, color = Renkler.metinIkincil, fontSize = 32.sp, modifier = Modifier.padding(start = 6.dp, bottom = 12.dp))
+                Text(p.birim, color = Renkler.metinIkincil, fontSize = 32.sp, modifier = Modifier.padding(start = if (bosluk.birimAyirici.isNotEmpty()) 6.dp else 0.dp, bottom = 12.dp))
             }
         }
         // Sıradaki vakit sayacın hedefiyse (sahur = imsak, iftar = akşam) alt satır aynı bilgiyi
