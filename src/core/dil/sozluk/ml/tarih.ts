@@ -1,12 +1,12 @@
-// ÇEVİRİ: ml — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** CLDR `ml` biçimleri (ICU); uzun tarih yıl önce: "2026, ഒക്‌ടോബർ 30". */
 export const tarih: Sozluk['tarih'] = {
-  gunler: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  gunlerKisa: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  aylar: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarYalin: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarKisa: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  haftaHarfleri: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-  uzun: '{gun} {ay} {yil}',
+  gunler: ['ഞായറാഴ്‌ച', 'തിങ്കളാഴ്‌ച', 'ചൊവ്വാഴ്‌ച', 'ബുധനാഴ്‌ച', 'വ്യാഴാഴ്‌ച', 'വെള്ളിയാഴ്‌ച', 'ശനിയാഴ്‌ച'],
+  gunlerKisa: ['ഞായർ', 'തിങ്കൾ', 'ചൊവ്വ', 'ബുധൻ', 'വ്യാഴം', 'വെള്ളി', 'ശനി'],
+  aylar: ['ജനുവരി', 'ഫെബ്രുവരി', 'മാർച്ച്', 'ഏപ്രിൽ', 'മേയ്', 'ജൂൺ', 'ജൂലൈ', 'ഓഗസ്റ്റ്', 'സെപ്റ്റംബർ', 'ഒക്‌ടോബർ', 'നവംബർ', 'ഡിസംബർ'],
+  aylarYalin: ['ജനുവരി', 'ഫെബ്രുവരി', 'മാർച്ച്', 'ഏപ്രിൽ', 'മേയ്', 'ജൂൺ', 'ജൂലൈ', 'ഓഗസ്റ്റ്', 'സെപ്റ്റംബർ', 'ഒക്‌ടോബർ', 'നവംബർ', 'ഡിസംബർ'],
+  aylarKisa: ['ജനു', 'ഫെബ്രു', 'മാർ', 'ഏപ്രി', 'മേയ്', 'ജൂൺ', 'ജൂലൈ', 'ഓഗ', 'സെപ്റ്റം', 'ഒക്ടോ', 'നവം', 'ഡിസം'],
+  haftaHarfleri: ['തി', 'ചൊ', 'ബു', 'വ്യാ', 'വെ', 'ശ', 'ഞാ'],
+  uzun: '{yil}, {ay} {gun}',
 };

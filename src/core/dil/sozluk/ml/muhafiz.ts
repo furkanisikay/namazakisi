@@ -1,61 +1,60 @@
-// ÇEVİRİ: ml — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Malayalamcada: kısa ‑ുക emri, mealdeki നീ yok, ദയവായി yok. "Secdeye
+ * kapan" YAZILMAZ → "നമസ്കാരത്തിന് നിൽക്കുക" (namaza dur). Malayalamda büyük harf yok; acil
+ * başlık sözcükle vurgulanır. Başlıkta süre birimi "മി": "മഗ്‌രിബ് · 655 മി" ilk 16 karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} മി ആയി · നമസ്കാര സമയമായി ⏰',
+    giris2: '{ad} · {dk} മി ആയി · നമസ്കാരം വൈകിപ്പിക്കരുത് ⚠️',
+    giris3: '{ad} · {dk} മി ആയി · നമസ്കാരം കാത്തിരിക്കുന്നു 🔥',
+    giris4: '{ad} · {dk} മി ആയി · ഉടൻ നമസ്കാരത്തിന് നിൽക്കുക 🚨',
+    erken3: '{ad} · {dk} മി ബാക്കി · നമസ്കാരം കാത്തിരിക്കുന്നു 🔥',
+    erken4: '{ad} · {dk} മി ബാക്കി · ഉടൻ നമസ്കാരത്തിന് നിൽക്കുക 🚨',
+    cikis1: '{ad} · {dk} മി ബാക്കി ⏰',
+    cikis2: '{ad} · {dk} മി · സമയം കുറയുന്നു ⚠️',
+    cikis3: '{ad} · {dk} മി · സമയം കൈവിടുന്നു 🔥',
+    cikis4: '{ad} · {dk} മി · സമയം തീരുന്നു 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['നമസ്കാര സമയമായി; അവസരമുള്ളപ്പോൾ നമസ്കരിക്കുക.', 'സമയം അനുകൂലമായിരിക്കെ നമസ്കരിക്കുക; പിന്നത്തേക്ക് മാറ്റിവെക്കരുത്.'],
+    s2: ['മാറ്റിവെക്കും തോറും ഭാരം കൂടും; നമസ്കാരം അവസാനത്തേക്ക് നീട്ടരുത്.', 'സമയം നീങ്ങുന്നു — ഇപ്പോൾ നമസ്കരിക്കുക.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'വൈകിപ്പിക്കും തോറും നഷ്ടപ്പെടാൻ അടുക്കും; ഇപ്പോൾ നമസ്കരിക്കുക.',
+      '"പിന്നെ നമസ്കരിക്കാം" എന്ന് പറയരുത്; ഇപ്പോൾ നമസ്കരിക്കാം.',
+      'കുറച്ചു കഴിഞ്ഞ് "അയ്യോ" എന്ന് പറയുന്നതിന് പകരം ഇപ്പോൾ എഴുന്നേൽക്കുക.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['നമസ്കാരം ഇനിയും വൈകിപ്പിക്കരുത് — ഉടൻ നമസ്കാരത്തിന് നിൽക്കുക.', 'കയ്യിലുള്ളത് മാറ്റിവെച്ച് നമസ്കാരത്തിന് നിൽക്കുക.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'സമയം കുറഞ്ഞുതുടങ്ങി; അവസരമുള്ളപ്പോൾ നമസ്കരിക്കുക.',
+    s2: 'നമസ്കാരം അവസാനത്തേക്ക് നീട്ടരുത്; ഇപ്പോൾ നമസ്കരിക്കാൻ നല്ല സമയമാണ്.',
+    s3: 'സമയം തീരാറായി; ഇപ്പോഴും നമസ്കരിക്കാം.',
+    s4: 'നമസ്കരിച്ചെങ്കിൽ "ഞാൻ നമസ്കരിച്ചു" അമർത്തുക; ഇല്ലെങ്കിൽ ഉടൻ നമസ്കാരത്തിന് നിൽക്കുക.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'നമസ്കാരം വൈകിപ്പിക്കരുത്! ഉടൻ നമസ്കാരത്തിന് നിൽക്കുക! ({dk} മിനിറ്റ് കഴിഞ്ഞു)',
+    giris2: 'സമയം നീങ്ങുന്നു; നമസ്കാരം അവസാനത്തേക്ക് നീട്ടരുത്. ({dk} മിനിറ്റ് കഴിഞ്ഞു)',
+    giris1: cogul({ one: 'നമസ്കാര സമയം തുടങ്ങിയിട്ട് {n} മിനിറ്റ് ആയി.', other: 'നമസ്കാര സമയം തുടങ്ങിയിട്ട് {n} മിനിറ്റ് ആയി.' }),
+    erken4: 'നമസ്കാരം വൈകിപ്പിക്കരുത്; ഉടൻ നമസ്കാരത്തിന് നിൽക്കുക! ({dk} മിനിറ്റ് ബാക്കി)',
+    cikis4: 'സമയം തീരുന്നു! ഉടൻ നമസ്കാരത്തിന് നിൽക്കുക! ({dk} മിനിറ്റ് ബാക്കി)',
+    cikis2: 'സമയം കുറയുന്നു; നമസ്കാരം അവസാനത്തേക്ക് നീട്ടരുത്. ({dk} മിനിറ്റ് ബാക്കി)',
+    cikis1: cogul({ one: 'നമസ്കാര സമയം തീരാൻ {n} മിനിറ്റ് ബാക്കി.', other: 'നമസ്കാര സമയം തീരാൻ {n} മിനിറ്റ് ബാക്കി.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · ഉറങ്ങും മുമ്പ് നമസ്കരിക്കുക ⏰',
+    govde: 'നിശ്ശബ്ദ സമയം {dk} മിനിറ്റിനുള്ളിൽ തുടങ്ങും; ഉറങ്ങും മുമ്പ് ഇശാ നമസ്കരിക്കുക.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'സമയം കുറഞ്ഞുതുടങ്ങി; അവസരമുള്ളപ്പോൾ നമസ്കരിക്കുക.',
+    sonaBirakma: 'നമസ്കാരം അവസാനത്തേക്ക് നീട്ടരുത്; ഇപ്പോൾ നമസ്കരിക്കാൻ നല്ല സമയമാണ്.',
+    fisilti: '"പിന്നെ നമസ്കരിക്കാം" എന്ന് പറയരുത്; സമയം തീരാറായി, ഇപ്പോൾ നമസ്കരിക്കാം.',
+    omur: 'സമയം കടന്നുപോകുന്നു; ഈ നമസ്കാരം സമയത്ത് നിർവഹിക്കാൻ ഇനിയും അവസരമുണ്ട്.',
+    keske: 'കുറച്ചു കഴിഞ്ഞ് "അയ്യോ" എന്ന് പറയുന്നതിന് പകരം ഇപ്പോൾ എഴുന്നേൽക്കുക.',
+    namazaDur: 'നമസ്കരിച്ചെങ്കിൽ "ഞാൻ നമസ്കരിച്ചു" അമർത്തുക; ഇല്ലെങ്കിൽ ഉടൻ നമസ്കാരത്തിന് നിൽക്കുക.',
+    sonDakika: 'അവസാന മിനിറ്റുകൾ. കയ്യിലുള്ളത് മാറ്റിവെച്ച് നമസ്കാരത്തിന് നിൽക്കുക.',
   },
 };
