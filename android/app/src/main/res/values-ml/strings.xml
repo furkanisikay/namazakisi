@@ -28,7 +28,7 @@
   <string name="kildim_onay_evet">ഞാൻ നമസ്കരിച്ചു</string>
   <string name="kildim_onay_vazgec">റദ്ദാക്കുക</string>
   <string name="kildim_guven_baslik">നിങ്ങളുടെ നമസ്കാരങ്ങൾ നമസ്കരിച്ചതായി അടയാളപ്പെടുത്താൻ %1$s-നെ അനുവദിക്കണോ?</string>
-  <string name="kildim_guven_mesaj">ഇപ്പോൾ അടയാളപ്പെടുത്തുന്ന നമസ്കാരം: %1$s. ക്രമീകരണങ്ങൾ &gt; \"ഞാൻ നമസ്കരിച്ചു\" അടയാളപ്പെടുത്തുന്ന ആപ്പുകൾ എന്നതിൽ തീരുമാനം പിന്നീട് മാറ്റാം.</string>
+  <string name="kildim_guven_mesaj">ഇപ്പോൾ അടയാളപ്പെടുത്തുന്ന നമസ്കാരം: %1$s. ക്രമീകരണം &gt; \"ഞാൻ നമസ്കരിച്ചു\" അടയാളപ്പെടുത്തുന്ന ആപ്പുകൾ എന്നതിൽ തീരുമാനം പിന്നീട് മാറ്റാം.</string>
   <string name="kildim_guven_tarayici_mesaj">ഇപ്പോൾ അടയാളപ്പെടുത്തുന്ന നമസ്കാരം: %1$s. ഈ അഭ്യർത്ഥന ഒരു ബ്രൗസറിൽ നിന്നാണ്; ഏത് വെബ് പേജിനും ഈ ലിങ്ക് തുറക്കാനാകുമെന്നതിനാൽ സ്ഥിരമായ അനുമതി നൽകാനാവില്ല.</string>
   <string name="kildim_guven_her_zaman">എപ്പോഴും അനുവദിക്കുക</string>
   <string name="kildim_guven_bu_sefer">ഈ തവണ മാത്രം</string>

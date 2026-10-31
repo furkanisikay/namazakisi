@@ -5,7 +5,7 @@
     <string name="dil_kodu">ml</string>
     <string name="app_name">Namaz Akışı</string>
     <string name="ekran_koruyucu_adi">നമസ്കാര സമയ ബോർഡ്</string>
-    <string name="ayarlar">ക്രമീകരണങ്ങൾ</string>
+    <string name="ayarlar">ക്രമീകരണം</string>
     <!-- Pano (ui/PanoEkrani) -->
     <string name="pano_kalan_erisim">%1$s-ന് %2$s ബാക്കി</string>
     <string name="pano_vaktine">%1$s വരെ</string>
@@ -21,12 +21,12 @@
     <string name="pano_bugun_cuma">ഇന്ന് ജുമുഅയാണ്</string>
     <string name="pano_ogle">ളുഹർ %1$s</string>
     <string name="pano_bugun_cuma_erisim">ഇന്ന് ജുമുഅയാണ്. ജുമുഅ നമസ്കാരം ളുഹർ സമയത്ത്, %1$s</string>
-    <string name="pano_ayarlar_erisim">ക്രമീകരണങ്ങൾ: ഫോൺ ചേർക്കുക, ലൊക്കേഷൻ, ബന്ധിപ്പിച്ച ഫോണുകൾ</string>
+    <string name="pano_ayarlar_erisim">ക്രമീകരണം: ഫോൺ ചേർക്കുക, ലൊക്കേഷൻ, ബന്ധിപ്പിച്ച ഫോണുകൾ</string>
     <string name="pano_simdiki_vakit">ഇപ്പോഴത്തെ നമസ്കാര സമയം</string>
     <string name="pano_siradaki_vakit">അടുത്ത നമസ്കാര സമയം</string>
-    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "നിങ്ങളുടെ ഫോൺ ചേർക്കുക", "കോഡ് നൽകുക", "ഞാൻ നഗരം തിരഞ്ഞെടുക്കാം", "ചേർക്കുക". -->
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "നിങ്ങളുടെ ഫോൺ ചേർക്കുക", "കോഡ് നൽകുക", "നഗരം തിരഞ്ഞെടുക്കുക", "ചേർക്കുക". -->
     <string name="kodla_girin">കോഡ് നൽകുക</string>
-    <string name="ili_kendim_secin">ഞാൻ നഗരം തിരഞ്ഞെടുക്കാം</string>
+    <string name="ili_kendim_secin">നഗരം തിരഞ്ഞെടുക്കുക</string>
     <string name="yeniden_deneyin">വീണ്ടും ശ്രമിക്കുക</string>
     <string name="telefon_varsayilan">ഫോൺ</string>
     <string name="esleme_ekleniyor">%1$s ചേർക്കുന്നു</string>
@@ -36,7 +36,7 @@
     <string name="telefonunuzu_ekleyin">നിങ്ങളുടെ ഫോൺ ചേർക്കുക</string>
     <string name="esleme_alt">നിങ്ങളുടെ ലൊക്കേഷനിലെ നമസ്കാര സമയങ്ങൾ; നിങ്ങൾ നമസ്കരിച്ചവയും കാണാം.</string>
     <string name="esleme_adim1">ഫോണിൽ Namaz Akışı തുറക്കുക</string>
-    <string name="esleme_adim2">ക്രമീകരണങ്ങൾ › എന്റെ ഉപകരണങ്ങൾ › ഒരു ടിവി ചേർക്കുക</string>
+    <string name="esleme_adim2">ക്രമീകരണം › എന്റെ ഉപകരണങ്ങൾ › ഒരു ടിവി ചേർക്കുക</string>
     <string name="esleme_adim3">ഫോണിന്റെ ക്യാമറ കോഡിന് നേരെ പിടിക്കുക</string>
     <string name="esleme_ayni_wifi">ഫോണും ടിവിയും ഒരേ Wi-Fi നെറ്റ്‌വർക്കിലായിരിക്കണം.</string>
     <string name="esleme_onay_soru">ഈ ഫോൺ ചേർക്കണോ?</string>
@@ -52,7 +52,7 @@
     <string name="ag_yok_aciklama">ഫോണിലെ 7 അക്ക കോഡ് നൽകിയോ നഗരം തിരഞ്ഞെടുത്തോ തുടരാം.</string>
     <!-- Kodla konum (ui/KodGirisEkrani) -->
     <string name="kod_baslik">ഫോണിലെ കോഡ് നൽകുക</string>
-    <string name="kod_yol">ഫോണിൽ: ക്രമീകരണങ്ങൾ › എന്റെ ഉപകരണങ്ങൾ › ഒരു ടിവി ചേർക്കുക</string>
+    <string name="kod_yol">ഫോണിൽ: ക്രമീകരണം › എന്റെ ഉപകരണങ്ങൾ › ഒരു ടിവി ചേർക്കുക</string>
     <string name="kod_hatali">കോഡ് ചേരുന്നില്ല. ഫോണിലെ 7 അക്കങ്ങൾ പരിശോധിക്കുക; തെറ്റായ അക്കം “%1$s” ഉപയോഗിച്ച് തിരുത്തുക.</string>
     <string name="kod_rakamli_kumanda">റിമോട്ടിൽ അക്ക ബട്ടണുകളുണ്ടെങ്കിൽ അവ ഉപയോഗിച്ചും ടൈപ്പ് ചെയ്യാം.</string>
     <string name="kod_bos_hane">ഒഴിഞ്ഞ അക്കം</string>

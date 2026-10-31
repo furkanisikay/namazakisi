@@ -5,7 +5,7 @@
     <string name="dil_kodu">ta</string>
     <string name="app_name">Namaz Akışı</string>
     <string name="ekran_koruyucu_adi">தொழுகை நேரப் பலகை</string>
-    <string name="ayarlar">அமைப்புகள்</string>
+    <string name="ayarlar">அமைப்பு</string>
     <!-- Pano (ui/PanoEkrani) -->
     <string name="pano_kalan_erisim">%1$s வரை %2$s மீதம்</string>
     <string name="pano_vaktine">%1$s வரை</string>
@@ -21,12 +21,12 @@
     <string name="pano_bugun_cuma">இன்று ஜுமுஆ</string>
     <string name="pano_ogle">லுஹர் %1$s</string>
     <string name="pano_bugun_cuma_erisim">இன்று ஜுமுஆ. ஜுமுஆ தொழுகை லுஹர் நேரத்தில், %1$s</string>
-    <string name="pano_ayarlar_erisim">அமைப்புகள்: ஃபோனைச் சேர்க்க, இருப்பிடம், இணைக்கப்பட்ட ஃபோன்கள்</string>
+    <string name="pano_ayarlar_erisim">அமைப்பு: ஃபோனைச் சேர்க்க, இருப்பிடம், இணைக்கப்பட்ட ஃபோன்கள்</string>
     <string name="pano_simdiki_vakit">தற்போதைய தொழுகை நேரம்</string>
     <string name="pano_siradaki_vakit">அடுத்த தொழுகை நேரம்</string>
-    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "ஃபோனைச் சேர்க்க", "குறியீட்டை உள்ளிடுக", "நகரத்தை நானே தேர்ந்தெடுக்கிறேன்", "சேர்க்க". -->
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "ஃபோனைச் சேர்க்க", "குறியீட்டை உள்ளிடுக", "நகரத்தைத் தேர்ந்தெடுக்க", "சேர்க்க". -->
     <string name="kodla_girin">குறியீட்டை உள்ளிடுக</string>
-    <string name="ili_kendim_secin">நகரத்தை நானே தேர்ந்தெடுக்கிறேன்</string>
+    <string name="ili_kendim_secin">நகரத்தைத் தேர்ந்தெடுக்க</string>
     <string name="yeniden_deneyin">மீண்டும் முயல்க</string>
     <string name="telefon_varsayilan">ஃபோன்</string>
     <string name="esleme_ekleniyor">%1$s சேர்க்கப்படுகிறது</string>

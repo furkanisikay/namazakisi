@@ -39,7 +39,7 @@ export const hatirlatma: Sozluk['hatirlatma'] = {
   },
   secici: {
     eskiAciklama: 'உங்கள் முந்தைய அமைப்பு',
-    eskiGuncelle: 'புதிய பரிந்துரையைப் பயன்படுத்துக',
+    eskiGuncelle: 'பரிந்துரையைப் பயன்படுத்துக',
     eskiKullaniliyor: 'உங்கள் முந்தைய {duzey} அமைப்பு பயன்பாட்டில் உள்ளது.',
     eskiGuncelleEtiket: '{eylem}: தற்போதைய {duzey} நிலை',
     eskiGuncelleEtiketFark: '{eylem}: தற்போதைய {duzey} நிலை, {fark}',

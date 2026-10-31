@@ -171,9 +171,9 @@ export const genel: Sozluk['genel'] = {
     EsitlemeAyarlari: 'சாதன ஒத்திசைவு',
     TaniGeriBildirim: 'கண்டறிதல், கருத்து',
     NowBarIos: 'நேரலைச் செயல்பாடுகள்',
-    NowBarAndroid: 'நேரலைக் கவுண்ட்டவுன்கள்',
+    NowBarAndroid: 'நேரலைக் கவுண்ட்டவுன்',
   },
-  sekmeler: { bugun: 'இன்று', kible: 'கிப்லா', kaza: 'களா', kazaDefteri: 'களா பதிவேடு', ilerleme: 'முன்னேற்றம்', ayarlar: 'அமைப்புகள்' },
+  sekmeler: { bugun: 'இன்று', kible: 'கிப்லா', kaza: 'களா', kazaDefteri: 'களா பதிவேடு', ilerleme: 'முன்னேற்றம்', ayarlar: 'அமைப்பு' },
   ortak: {
     geri: 'பின்செல்',
     artir: 'அதிகரிக்க',

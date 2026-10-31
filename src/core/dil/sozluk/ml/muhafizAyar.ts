@@ -124,7 +124,7 @@ export const muhafizAyar: Sozluk['muhafizAyar'] = {
     adimEtiketi: '{n}-ാം ഘട്ടം: {metin}',
     rutinTetikBaslik: 'നമസ്കാര സമയം ആകുമ്പോൾ എന്തെങ്കിലും ചെയ്യുക',
     rutinTetikAdimlar: [
-      'ഫോണിൽ ക്രമീകരണങ്ങൾ > Modes and Routines > Routines തുറന്ന് ഒരു പുതിയ റൂട്ടീൻ ചേർക്കുക.',
+      'ഫോണിൽ ക്രമീകരണം > Modes and Routines > Routines തുറന്ന് ഒരു പുതിയ റൂട്ടീൻ ചേർക്കുക.',
       '"If" ഭാഗത്ത് "Notification received" എന്ന വ്യവസ്ഥ തിരഞ്ഞെടുക്കുക.',
       'ആപ്പായി Namaz Akışı തിരഞ്ഞെടുത്ത് താഴെയുള്ള കീവേഡുകളിൽ ഒന്ന് കൃത്യമായി ടൈപ്പ് ചെയ്യുക.',
       '"Then" ഭാഗത്ത് നിങ്ങൾക്കാവശ്യമുള്ള പ്രവർത്തനം ചേർക്കുക (ഉദാ. ശബ്ദ മോഡ് വൈബ്രേറ്റിലേക്ക് മാറ്റുക).',
