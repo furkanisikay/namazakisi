@@ -1,61 +1,60 @@
-// ÇEVİRİ: vi — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı: kısa, doğrudan emir "Hãy …", zamir yok ya da "bạn"; mealdeki "Ngươi" ve
+ * "Vui lòng" YOK. "Secdeye kapan" karşılığı yazılmaz → "hành lễ Salah" (namaza dur). Başlıkta
+ * süre "{dk} phút" (bileklikte ilk 16 karakter: "Zhuhr · 30 phút").
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · đã {dk} phút · đến giờ Salah ⏰',
+    giris2: '{ad} · đã {dk} phút · đừng trì hoãn Salah ⚠️',
+    giris3: '{ad} · đã {dk} phút · Salah đang chờ bạn 🔥',
+    giris4: '{ad} · đã {dk} phút · HÃY HÀNH LỄ SALAH 🚨',
+    erken3: '{ad} · còn {dk} phút · Salah đang chờ bạn 🔥',
+    erken4: '{ad} · còn {dk} phút · HÃY HÀNH LỄ SALAH 🚨',
+    cikis1: '{ad} · còn {dk} phút ⏰',
+    cikis2: '{ad} · {dk} phút · thời gian đang ngắn lại ⚠️',
+    cikis3: '{ad} · {dk} phút · thời gian sắp trôi qua 🔥',
+    cikis4: '{ad} · {dk} phút · SẮP HẾT GIỜ 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Đã đến giờ Salah; hãy hành lễ khi còn có cơ hội.', 'Hãy hành lễ khi thời gian còn rộng; đừng để đến sau.'],
+    s2: ['Càng trì hoãn càng nặng nề; đừng để Salah đến phút cuối.', 'Thời gian đang trôi — hãy hành lễ ngay.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Càng trì hoãn, bạn càng gần với việc lỡ giờ; hãy hành lễ ngay.',
+      'Đừng nói “để lát nữa”; bạn có thể hành lễ ngay bây giờ.',
+      'Hãy đứng dậy ngay, đừng để vài phút nữa phải nói “giá như”.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Đừng trì hoãn Salah thêm nữa — hãy hành lễ ngay.', 'Hãy gác lại việc đang làm và hành lễ Salah.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Thời gian bắt đầu ngắn lại; hãy hành lễ khi còn có cơ hội.',
+    s2: 'Đừng để Salah đến phút cuối; bây giờ là lúc tốt để hành lễ.',
+    s3: 'Sắp hết giờ; bạn vẫn có thể hành lễ ngay bây giờ.',
+    s4: 'Nếu đã hành lễ, hãy chạm “Tôi đã hành lễ”; nếu chưa, hãy hành lễ ngay.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'ĐỪNG TRÌ HOÃN SALAH. Hãy hành lễ ngay. (đã qua {dk} phút)',
+    giris2: 'Thời gian đang trôi; đừng để Salah đến phút cuối. (đã qua {dk} phút)',
+    giris1: cogul({ other: 'Đã {n} phút kể từ khi vào giờ Salah.' }),
+    erken4: 'Đừng trì hoãn Salah; hãy hành lễ ngay. (còn {dk} phút)',
+    cikis4: 'SẮP HẾT GIỜ. Hãy hành lễ ngay. (còn {dk} phút)',
+    cikis2: 'Thời gian đang ngắn lại; đừng để Salah đến phút cuối. (còn {dk} phút)',
+    cikis1: cogul({ other: 'Còn {n} phút nữa là hết giờ Salah.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · hãy hành lễ trước khi ngủ ⏰',
+    govde: 'Giờ yên tĩnh bắt đầu sau {dk} phút; hãy hành lễ ‘Isha’ trước khi đi ngủ.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Thời gian bắt đầu ngắn lại; hãy hành lễ khi còn có cơ hội.',
+    sonaBirakma: 'Đừng để Salah đến phút cuối; bây giờ là lúc tốt để hành lễ.',
+    fisilti: 'Đừng nói “để lát nữa”; sắp hết giờ, bạn có thể hành lễ ngay bây giờ.',
+    omur: 'Thời gian đang trôi; bạn vẫn còn cơ hội hành lễ Salah này đúng giờ.',
+    keske: 'Hãy đứng dậy ngay, đừng để vài phút nữa phải nói “giá như”.',
+    namazaDur: 'Nếu đã hành lễ, hãy chạm “Tôi đã hành lễ”; nếu chưa, hãy hành lễ ngay.',
+    sonDakika: 'Những phút cuối cùng. Hãy gác lại việc đang làm và hành lễ Salah.',
   },
 };

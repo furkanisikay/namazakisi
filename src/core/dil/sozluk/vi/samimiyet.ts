@@ -1,35 +1,36 @@
-// ÇEVİRİ: vi — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Vietnamca konuşan Müslümanların kalıpları (çeviri değil): fiil kökü "chấp nhận" QuranEnc
+ * `vietnamese_rwwad` 2:127 ("xin Ngài chấp nhận việc làm này của bầy tôi") ve 5:27; Çam cemaatinin
+ * Arapça litürjisinden "Taqabbal Allahu minna wa minkum"; bayram ve cuma için Arapça "Mubarak"
+ * kalıpları. Kandil ve hicrî yılbaşı selamı Vietnam'da söylenmez (`selam.ts > KANDIL_ULKELERI`);
+ * buradaki karşılıklar tip bütünlüğü içindir. Yerli okuyucuyla DOĞRULANMADI.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Cầu xin Allah ban phúc lành.',
+  kabulDualari: ['Cầu xin Allah chấp nhận', 'Taqabbal Allahu minna wa minkum', 'Cầu xin Allah chấp nhận', 'Cầu xin Thượng Đế chấp nhận việc làm của chúng ta'],
+  kabulDuasi: 'Cầu xin Allah chấp nhận',
+  ekSabah: 'Chúc buổi sáng an lành',
+  ekYatsi: 'Chúc buổi tối an lành',
+  tamGunAna: 'Cầu xin Allah chấp nhận',
+  tamGunAlt: 'Hôm nay bạn đã hành lễ đủ năm lần Salah.',
+  kazaKabul: 'Đã trừ một lần Salah bù {vakit} khỏi sổ của bạn. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Đêm Raghaib phúc lành',
+    mirac: 'Isra’ và Mi‘raj phúc lành',
+    berat: 'Đêm Bara’ah phúc lành',
+    mevlid: 'Mawlid phúc lành',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
+    sahur: 'Bữa Suhur an lành',
     bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
+    iftar: 'Bữa Iftar an lành',
+    kadir: 'Đêm Laylatul Qadr phúc lành',
+    arefe: 'Đêm trước Eid phúc lành',
+    hicriYilbasi: 'Năm mới Hijri phúc lành',
+    cuma: 'Jumu’ah Mubarak',
     ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sabah: 'Chúc buổi sáng an lành',
   },
 };

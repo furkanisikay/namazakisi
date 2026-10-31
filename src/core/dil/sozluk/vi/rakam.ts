@@ -1,11 +1,10 @@
-// ÇEVİRİ: vi — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Chữ số',
+  aciklama: 'Chọn kiểu chữ số dùng cho giờ, ngày và các con số.',
+  otomatik: 'Theo quốc gia',
+  otomatikAciklama: 'Dùng kiểu chữ số phổ biến ở quốc gia nơi bạn đang ở.',
+  dogu: 'Chữ số Ả Rập phương Đông',
+  bati: 'Chữ số phương Tây',
 };

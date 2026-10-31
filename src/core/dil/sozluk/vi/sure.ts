@@ -1,12 +1,12 @@
-// ÇEVİRİ: vi — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Vietnamcada çoğul çekim yok (CLDR yalnız `other`); birimler zaten kısa sözcüklerdir. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: 'giờ', dk: 'phút', sn: 'giây' },
   birimli: '{n} {birim}',
   parcali: '{once} {sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ other: '{n} giờ' }),
+  dakika: cogul({ other: '{n} phút' }),
+  saniye: cogul({ other: '{n} giây' }),
 };
