@@ -200,6 +200,13 @@ hazirlik_uygula() {
       # Kilit ekrani karesi icin tus kilidi (kaydirma) acik olmali; emulator imajinda kapali olabilir.
       adb shell locksettings set-disabled false >/dev/null 2>&1 || true
       ;;
+    latin-klavye)
+      # Maestro inputText/pasteText tus olayi gonderir; cihaz dilinin klavyesi (Korece) Latin
+      # harfleri kendi yazisina cevirir ("Kuala" → "ㅏㅕ밈"). Klavye kapatilir, tuslar dogrudan alana gider.
+      ESKI_KLAVYE=$(adb shell settings get secure default_input_method | tr -d '\r')
+      adb shell ime disable "$ESKI_KLAVYE" >/dev/null 2>&1 || true
+      echo "klavye kapatildi: $ESKI_KLAVYE"
+      ;;
     *) echo "UYARI: bilinmeyen hazirlik $1" ;;
   esac
 }
@@ -238,6 +245,10 @@ hazirlik_bitir() {
     dunya-baku)
       adb shell cmd alarm set-timezone Europe/Istanbul >/dev/null 2>&1 \
         || adb shell service call alarm 3 s16 Europe/Istanbul >/dev/null 2>&1 || true
+      ;;
+    latin-klavye)
+      adb shell ime enable "$ESKI_KLAVYE" >/dev/null 2>&1 || true
+      adb shell ime set "$ESKI_KLAVYE" >/dev/null 2>&1 || true
       ;;
     gunun-ayeti-cihaz)
       # Kilit ekrani: ekrani kapatip ac, tus kilidi gorunurken cek, sonra kilidi kaldir.
