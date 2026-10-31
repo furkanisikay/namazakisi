@@ -203,9 +203,12 @@ hazirlik_uygula() {
     latin-klavye)
       # Maestro inputText/pasteText tus olayi gonderir; cihaz dilinin klavyesi (Korece) Latin
       # harfleri kendi yazisina cevirir ("Kuala" → "ㅏㅕ밈"). Klavye kapatilir, tuslar dogrudan alana gider.
+      # Etkin girislerin HEPSI kapanir: yalniz varsayilan kapaninca sistem Google sesli yazmaya gecip
+      # 57 numarali karenin altini kapatiyordu.
       ESKI_KLAVYE=$(adb shell settings get secure default_input_method | tr -d '\r')
-      adb shell ime disable "$ESKI_KLAVYE" >/dev/null 2>&1 || true
-      echo "klavye kapatildi: $ESKI_KLAVYE"
+      ESKI_GIRISLER=$(adb shell ime list -s | tr -d '\r')
+      for g in $ESKI_GIRISLER; do adb shell ime disable "$g" >/dev/null 2>&1 || true; done
+      echo "girisler kapatildi: $(echo $ESKI_GIRISLER)"
       ;;
     *) echo "UYARI: bilinmeyen hazirlik $1" ;;
   esac
@@ -247,7 +250,7 @@ hazirlik_bitir() {
         || adb shell service call alarm 3 s16 Europe/Istanbul >/dev/null 2>&1 || true
       ;;
     latin-klavye)
-      adb shell ime enable "$ESKI_KLAVYE" >/dev/null 2>&1 || true
+      for g in $ESKI_GIRISLER; do adb shell ime enable "$g" >/dev/null 2>&1 || true; done
       adb shell ime set "$ESKI_KLAVYE" >/dev/null 2>&1 || true
       ;;
     gunun-ayeti-cihaz)
