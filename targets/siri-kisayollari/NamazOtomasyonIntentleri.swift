@@ -395,11 +395,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: it (one/many/other)
+    // it (one/many/other; many = milyonlar, "{n} di minuti")
     static let it = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "many": "{ad} begins in {n} minutes.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} inizia tra {n} minuto.", "many": "{ad} inizia tra {n} di minuti.", "other": "{ad} inizia tra {n} minuti."],
+        evetKilindi: "Sì, è segnata come compiuta.",
+        hayirKilinmadi: "No, non è ancora segnata."
     )
 
     // sv (one/other)

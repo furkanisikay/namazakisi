@@ -1006,29 +1006,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: it
+    // it
     static let it = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Orario di preghiera",
+        galeriAciklama: "L’orario attuale, il tempo rimasto alla fine e gli orari di oggi.",
+        veriEski: "Apra l’app per aggiornare gli orari",
+        konumYok: "Apra l’app per impostare la posizione",
+        kilindiSiradaki: "{ad} compiuto · {sonraki} {saat}",
+        adCikis: "{ad} · fine {saat}",
+        siradakiAdSaat: "Prossimo {ad} {saat}",
+        vaktiCikisErisim: "Tempo di {ad}, fino alle {saat}",
+        siradakiErisim: "Prossimo {ad}, {saat}",
+        cikisSaat: "Fine {saat}",
+        bitisSaat: "Fine {saat}",
+        kilindiBaslik: "{ad} compiuto",
+        siradaki: "Prossimo",
+        siradakiAd: "Prossimo {ad}",
+        kildimErisim: "Ho compiuto {ad}",
+        gunSatiriKilindi: ", compiuta",
+        bitti: "Finito",
+        vakitCikti: "L’orario è finito",
+        kabulAlt: "{ad} compiuto",
+        kontrolAdi: "Ho pregato",
+        kontrolAciklama: "Segna come compiuta la preghiera attuale."
     )
 
     // sv

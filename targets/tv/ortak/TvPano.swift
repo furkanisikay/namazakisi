@@ -623,18 +623,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: it
+    // it — gün adı tarih satırının başında (büyük harf), ay adı küçük: "Sabato 31 ottobre 2026"
     public static let it = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Sorgere del sole", "ogle": "Zuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        cuma: "Jumu’ah",
+        aylar: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"],
+        gunler: ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"],
+        tarih: "{gunAdi} {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Sorgere del sole", "istiva": "Zenit", "gurub": "Tramonto"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Pregare è makruh finché il sole non è ben alto.",
+            "istiva": "Pregare è makruh mentre il sole è allo zenit.",
+            "gurub": "Pregare è makruh mentre il sole tramonta.",
         ]
     )
 

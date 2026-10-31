@@ -122,7 +122,7 @@ object CanliGuncellemeKurallari {
         "vi" to KisaBirimler("giờ", "phút", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: pt
         "pt" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: it
+        // it
         "it" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // sv
         "sv" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),

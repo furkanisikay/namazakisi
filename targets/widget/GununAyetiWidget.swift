@@ -582,18 +582,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: it
+    // it — meal 94:6 `gununAyetiHavuzu.ts` (italian_rwwad, Rowwad Translation Center) birebir
     static let it = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Versetto del giorno",
+        galeriAciklama: "Un versetto e la sua traduzione, che cambiano ogni giorno al Fajr.",
+        etiket: "VERSETTO DEL GIORNO",
+        uygulamayiAcin: "Apra l’app per vedere il versetto del giorno",
+        ornekSigmiyor: "Il versetto di oggi non entra in questa dimensione. Tocchi per leggerlo.",
+        ornekAcin: "Aprire",
+        ornekArapcaKaynagi: "Arabo: Tanzil",
+        ornekMeal: "In verità, segue all’avversità il sollievo!",
+        ornekKisaKunye: "Corano 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.2"
     )
 
     // sv

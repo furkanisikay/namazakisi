@@ -676,16 +676,16 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: "\u{00A0}"
     )
 
-    // ÇEVİRİ: it (CLDR it binlik ayırıcı ".")
+    // it (CLDR it binlik ayırıcı "."): JS `sozluk/it/kible.ts > yon`
     public static let it = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
+        arkada: "Alle sue spalle",
+        saga: "Destra {derece}°",
+        sola: "Sinistra {derece}°",
+        hizali: "È in direzione della qibla",
+        arkadaErisim: "La qibla è alle sue spalle",
+        sagdaErisim: "La qibla è a {derece} gradi alla sua destra",
+        soldaErisim: "La qibla è a {derece} gradi alla sua sinistra",
+        kabede: "È alla Kaaba",
         mesafe: "{km} km",
         binlikAyirici: "."
     )

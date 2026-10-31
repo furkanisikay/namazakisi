@@ -1348,31 +1348,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: it
+    // it
     public static let it = VakitMetinleri(
         dil: "it",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Fajr", "ogle": "Zuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Sorgere del sole",
+        konumYok: "Apra l’app e imposti la posizione per poter calcolare gli orari di preghiera.",
+        veriEski: "Gli orari di preghiera non sono aggiornati. Apra l’app una volta per aggiornarli.",
+        girisBugun: "alle {saat}",
+        girisYarin: "domani alle {saat}",
+        suAnVakti: "Ora è il tempo di {ad}.",
+        suAnVaktiCikis: "Ora è il tempo di {ad}; finisce alle {saat}.",
+        siradakiNamaz: "La prossima preghiera è {ad} {giris}.",
+        isaretlendi: "{ad} è segnato come compiuto. {dua}.",
+        zatenKilindi: "{ad} è già segnato come compiuto.",
+        vakitYok: "Al momento non c’è una preghiera da segnare.",
+        vakitYokSiradaki: "Al momento non c’è una preghiera da segnare. La prossima è {ad} {giris}.",
+        onay: "Segnare {ad} come compiuto?",
+        vakitDegisti: "L’orario di preghiera è cambiato, quindi non è stato segnato nulla. Riprovi.",
+        kabulDuasi: "Che Allah l’accetti",
+        kildim: "Ho pregato",
+        kilindi: "Compiuta",
+        kontrolKildim: "{ad} · Ho pregato",
+        kontrolKilindi: "{ad} compiuto",
+        kontrolVakitYok: "Nessuna preghiera da segnare",
+        uygulamayiAcin: "Aprire l’app"
     )
 
     // sv
