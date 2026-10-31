@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { localTarihAraligindakiNamazlariGetir } from '../../../data/local/LocalNamazServisi';
 import { Logger } from '../../../core/utils/Logger';
 import { useSeriAyi, kibarHataMetni } from '../useSeriAyi';
+import { aktifDiliKur, aktifDilSifirla } from '../../../core/dil/aktifDil';
 import { NamazVaktiHesaplayiciServisi } from '../../../domain/services/NamazVaktiHesaplayiciServisi';
 
 jest.mock('../../store/hooks', () => ({ useAppSelector: jest.fn(), useAppDispatch: jest.fn() }));
@@ -98,6 +99,17 @@ describe('useSeriAyi', () => {
     // promise sonraki testin ortasında çözülüp "not wrapped in act(...)"
     // gürültüsü üretir (AGENTS.md: asenkron hook'lu sayfa testi tuzağı).
     await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+  });
+
+  it('NÖBETÇİ: ay–yıl sırası dilden gelir (Korece yıl önce)', async () => {
+    aktifDiliKur('ko');
+    try {
+      const { result } = renderHook(() => useSeriAyi());
+      await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+      expect(result.current.ayAdi).toMatch(/^\d{4}년 /);
+    } finally {
+      aktifDilSifirla();
+    }
   });
 
   it('okuma başarısız (basarili:false) olduğunda sonsuz spinner YOK — hata dolar, yukleniyor false olur', async () => {

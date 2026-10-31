@@ -40,7 +40,7 @@ import { useHesapSurumu } from './useHesapSurumu';
 import { seriVerileriniYukle } from '../store/seriSlice';
 import { localTarihAraligindakiNamazlariGetir } from '../../data/local/LocalNamazServisi';
 import { Logger } from '../../core/utils/Logger';
-import { metin } from '../../core/dil/aktifDil';
+import { bicim, metin } from '../../core/dil/aktifDil';
 import { ISOTarihiDateNesnesiNeCevir, ayAdiniAl } from '../../core/utils/TarihYardimcisi';
 import { namazGunuHesapla } from '../../domain/services/SeriHesaplayiciServisi';
 import { aylikIzgaraOlustur, izgaraAraligi, IzgaraGunu } from '../../core/seri/aylikIzgara';
@@ -204,7 +204,8 @@ export function useSeriAyi(): SeriAyiSonucu {
 
   const zincirler = useMemo(() => zincirBaglari(izgara, ayarlar.tamGunEsigi), [izgara, ayarlar.tamGunEsigi]);
 
-  const ayAdi = `${ayAdiniAl(ay)} ${yil}`;
+  // Ay–yıl sırası dile aittir (Korece "2026년 10월", Çince "2026年10月").
+  const ayAdi = bicim(metin().ilerleme.kilma.ayYil, { ay: ayAdiniAl(ay), yil });
 
   const yenidenDene = useCallback(() => setYenidenDeneSayaci((n) => n + 1), []);
 
