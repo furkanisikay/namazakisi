@@ -1,12 +1,12 @@
-// ÇEVİRİ: th — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** Tayca: sayı ile birim arası ve iki süre parçası arası boşluklu ("1 ชม. 5 นาที"); çoğul yok (yalnız other). */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: 'ชม.', dk: 'นาที', sn: 'วิ' },
   birimli: '{n} {birim}',
   parcali: '{once} {sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ other: '{n} ชั่วโมง' }),
+  dakika: cogul({ other: '{n} นาที' }),
+  saniye: cogul({ other: '{n} วินาที' }),
 };

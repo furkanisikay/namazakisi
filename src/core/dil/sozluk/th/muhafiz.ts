@@ -1,61 +1,60 @@
-// ÇEVİRİ: th — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Taycada: kısa, doğrudan emir (จง…, ไปละหมาด), mealin เจ้า zamiri yok,
+ * ครับ/ค่ะ yok. "Secdeye kapan" karşılığı YAZILMAZ → "ไปละหมาด" / "จงดำรงการละหมาด" (17:78).
+ * Başlıkta dakika vakit adının hemen ardından gelir ("มักริบ · 15 นาที…"): bileklikte ilk 16 karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} นาทีแล้ว · ถึงเวลาละหมาด ⏰',
+    giris2: '{ad} · {dk} นาทีแล้ว · อย่าผัดผ่อนการละหมาด ⚠️',
+    giris3: '{ad} · {dk} นาทีแล้ว · ละหมาดรอคุณอยู่ 🔥',
+    giris4: '{ad} · {dk} นาทีแล้ว · ไปละหมาดเดี๋ยวนี้ 🚨',
+    erken3: '{ad} · เหลือ {dk} นาที · ละหมาดรอคุณอยู่ 🔥',
+    erken4: '{ad} · เหลือ {dk} นาที · ไปละหมาดเดี๋ยวนี้ 🚨',
+    cikis1: '{ad} · เหลือ {dk} นาที ⏰',
+    cikis2: '{ad} · {dk} นาที · เวลาเริ่มกระชั้น ⚠️',
+    cikis3: '{ad} · {dk} นาที · เวลากำลังจะผ่านไป 🔥',
+    cikis4: '{ad} · {dk} นาที · เวลากำลังจะหมด 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['ถึงเวลาละหมาดแล้ว จงละหมาดขณะที่ยังมีโอกาส', 'จงละหมาดขณะที่เวลายังเอื้ออำนวย อย่าเก็บไว้ทีหลัง'],
+    s2: ['ยิ่งผัดผ่อนก็ยิ่งหนักใจ อย่าปล่อยการละหมาดไว้จนนาทีสุดท้าย', 'เวลากำลังผ่านไป จงละหมาดตอนนี้'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'ยิ่งล่าช้าก็ยิ่งใกล้จะพลาด จงละหมาดตอนนี้',
+      'อย่าพูดว่า "เดี๋ยวค่อยละหมาด" ตอนนี้ก็ละหมาดได้',
+      'ลุกขึ้นตอนนี้ ดีกว่าต้องพูดว่า "รู้อย่างนี้" ในอีกไม่กี่นาที',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['อย่าผัดผ่อนการละหมาดอีกต่อไป ไปละหมาดเดี๋ยวนี้', 'วางสิ่งที่ทำอยู่ลงแล้วไปละหมาด'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'เวลาเริ่มกระชั้น จงละหมาดขณะที่ยังมีโอกาส',
+    s2: 'อย่าปล่อยการละหมาดไว้จนนาทีสุดท้าย ตอนนี้เป็นเวลาที่ดีสำหรับละหมาด',
+    s3: 'เวลาใกล้จะหมดแล้ว ตอนนี้ยังละหมาดทัน',
+    s4: 'หากละหมาดแล้ว ให้แตะ "ละหมาดแล้ว" หากยัง จงไปละหมาดเดี๋ยวนี้',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'อย่าผัดผ่อนการละหมาด ไปละหมาดเดี๋ยวนี้ (ผ่านไป {dk} นาที)',
+    giris2: 'เวลากำลังผ่านไป อย่าปล่อยการละหมาดไว้จนนาทีสุดท้าย (ผ่านไป {dk} นาที)',
+    giris1: cogul({ other: 'เข้าเวลาละหมาดมาแล้ว {n} นาที' }),
+    erken4: 'อย่าผัดผ่อนการละหมาด ไปละหมาดเดี๋ยวนี้ (เหลือ {dk} นาที)',
+    cikis4: 'เวลากำลังจะหมด ไปละหมาดเดี๋ยวนี้ (เหลือ {dk} นาที)',
+    cikis2: 'เวลาเริ่มกระชั้น อย่าปล่อยการละหมาดไว้จนนาทีสุดท้าย (เหลือ {dk} นาที)',
+    cikis1: cogul({ other: 'อีก {n} นาทีจะหมดเวลาละหมาด' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · ละหมาดก่อนนอน ⏰',
+    govde: 'ช่วงเวลาเงียบจะเริ่มในอีก {dk} นาที จงละหมาดอีซาก่อนเข้านอน',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'เวลาเริ่มกระชั้น จงละหมาดขณะที่ยังมีโอกาส',
+    sonaBirakma: 'อย่าปล่อยการละหมาดไว้จนนาทีสุดท้าย ตอนนี้เป็นเวลาที่ดีสำหรับละหมาด',
+    fisilti: 'อย่าพูดว่า "เดี๋ยวค่อยละหมาด" เวลาใกล้จะหมดแล้ว ตอนนี้ยังละหมาดทัน',
+    omur: 'เวลากำลังผ่านไป คุณยังมีโอกาสละหมาดเวลานี้ให้ทันเวลา',
+    keske: 'ลุกขึ้นตอนนี้ ดีกว่าต้องพูดว่า "รู้อย่างนี้" ในอีกไม่กี่นาที',
+    namazaDur: 'หากละหมาดแล้ว ให้แตะ "ละหมาดแล้ว" หากยัง จงไปละหมาดเดี๋ยวนี้',
+    sonDakika: 'นาทีสุดท้ายแล้ว วางสิ่งที่ทำอยู่ลงแล้วไปละหมาด',
   },
 };
