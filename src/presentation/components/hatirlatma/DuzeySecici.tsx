@@ -196,26 +196,34 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
                         duzey: DUZEY_ADLARI[secili as HatirlatmaDuzeyi],
                         fark: fark ?? '',
                     })}
+                    // Uzun dilde ("பரிந்துரையைப் பயன்படுத்துக" + "+ சத்தமாகப் படித்தல்") satır
+                    // ekrandan taşıyordu: fark çipi sığmazsa ALT satıra iner (flexWrap), eylem
+                    // metni ikonuyla birlikte kendi içinde sarılır; kısa dilde tek satır, görünüm aynı.
                     style={{
                         alignSelf: 'flex-start',
                         flexDirection: 'row',
+                        flexWrap: 'wrap',
                         alignItems: 'center',
+                        rowGap: 4,
                         minHeight: 44,
                         marginTop: 8,
                         marginLeft: 26,
                         paddingHorizontal: 14,
+                        paddingVertical: 6,
                         borderRadius: 14,
                         borderWidth: 1,
                         borderColor: renkler.birincil,
                         backgroundColor: renkler.kartArkaplan,
                     }}
                 >
-                    <FontAwesome5 name="sync-alt" size={12} color={renkler.birincil} style={{ marginRight: 8 }} />
-                    <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.birincil }}>{ms.eskiGuncelle}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 1, marginRight: fark ? 8 : 0 }}>
+                        <FontAwesome5 name="sync-alt" size={12} color={renkler.birincil} style={{ marginRight: 8 }} />
+                        <Text style={{ flexShrink: 1, fontSize: 14, fontWeight: '600', color: renkler.birincil }}>{ms.eskiGuncelle}</Text>
+                    </View>
                     {fark ? (
                         <View
                             testID="duzey-guncelle-fark"
-                            style={{ marginLeft: 8, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10, backgroundColor: `${renkler.birincil}20` }}
+                            style={{ flexShrink: 1, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 10, backgroundColor: `${renkler.birincil}20` }}
                         >
                             <Text style={{ fontSize: 12, fontWeight: '600', color: renkler.metin }}>{fark}</Text>
                         </View>
