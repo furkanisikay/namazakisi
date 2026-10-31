@@ -856,29 +856,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "将当前礼拜标记为已礼拜。"
     )
 
-    // ÇEVİRİ: ta
+    // ta
     static let ta = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "தொழுகை நேரம்",
+        galeriAciklama: "தற்போதைய தொழுகை நேரம், அது முடிய மீதமுள்ள நேரம், இன்றைய தொழுகை நேரங்கள்.",
+        veriEski: "தொழுகை நேரங்களைப் புதுப்பிக்க ஆப்ஸைத் திறக்கவும்",
+        konumYok: "இருப்பிடத்தை அமைக்க ஆப்ஸைத் திறக்கவும்",
+        kilindiSiradaki: "{ad} தொழுதாகிவிட்டது · {sonraki} {saat}",
+        adCikis: "{ad} · முடிவு {saat}",
+        siradakiAdSaat: "அடுத்தது {ad} {saat}",
+        vaktiCikisErisim: "{ad} நேரம், முடிவு {saat}",
+        siradakiErisim: "அடுத்தது {ad}, {saat}",
+        cikisSaat: "முடிவு {saat}",
+        bitisSaat: "முடிவு {saat}",
+        kilindiBaslik: "{ad} தொழுதாகிவிட்டது",
+        siradaki: "அடுத்தது",
+        siradakiAd: "அடுத்தது {ad}",
+        kildimErisim: "{ad} தொழுதேன்",
+        gunSatiriKilindi: ", தொழுதாகிவிட்டது",
+        bitti: "முடிந்தது",
+        vakitCikti: "தொழுகை நேரம் முடிந்தது",
+        kabulAlt: "{ad} தொழுதாகிவிட்டது",
+        kontrolAdi: "தொழுதேன்",
+        kontrolAciklama: "தற்போதைய தொழுகையைத் தொழுததாகக் குறிக்கும்."
     )
 
     // ml — Malayalamca (beta): JS `sozluk/ml`; Kılındı "നമസ്കരിച്ചു", Kıldım "ഞാൻ നമസ്കരിച്ചു"

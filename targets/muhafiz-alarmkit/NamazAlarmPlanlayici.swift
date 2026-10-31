@@ -160,8 +160,8 @@ enum NamazAlarmCekirdegi {
         "yo": "Dá a dúró",
         // zh
         "zh": "停止",
-        // ÇEVİRİ: ta
-        "ta": "Stop",
+        // ta
+        "ta": "நிறுத்து",
         // ml
         "ml": "നിർത്തുക",
         // th

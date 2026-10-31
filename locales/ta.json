@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "நீங்கள் இருக்கும் இடத்திற்கான தொழுகை நேரங்களைச் சரியாகக் கணக்கிட உங்கள் இருப்பிடம் பயன்படுத்தப்படுகிறது. உங்கள் இருப்பிடம் உங்கள் சாதனத்திலேயே இருக்கும்.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "நீங்கள் இருக்கும் இடத்திற்கான தொழுகை நேரங்களைச் சரியாகக் கணக்கிடவும், “பள்ளிவாசலில்” இயக்கத்தில் இருந்தால் பள்ளிவாசலில் நுழையும்போது தொழுகைப் பயன்முறையை இயக்கவும் உங்கள் இருப்பிடம் பயன்படுத்தப்படுகிறது. உங்கள் இருப்பிடம் உங்கள் சாதனத்திலேயே இருக்கும்.",
+  "NSLocationAlwaysUsageDescription": "நகரம் மாறும்போது தொழுகை நேரங்களைத் தானாகப் புதுப்பிக்கவும், “பள்ளிவாசலில்” இயக்கத்தில் இருந்தால் பள்ளிவாசலில் நுழையும்போது தொழுகைப் பயன்முறையை இயக்கவும் உங்கள் இருப்பிடம் பயன்படுத்தப்படுகிறது. உங்கள் இருப்பிடம் உங்கள் சாதனத்திலேயே இருக்கும்.",
+  "NSCameraUsageDescription": "கேமரா காட்சியின் மேல் கிப்லா திசையைக் காட்டவும், உங்கள் டிவியில் உள்ள இணைப்புக் குறியீட்டை ஸ்கேன் செய்யவும் கேமரா பயன்படுத்தப்படுகிறது. படங்கள் சேமிக்கப்படாது, உங்கள் சாதனத்தை விட்டு வெளியேறாது.",
+  "NSCalendarsUsageDescription": "தொழுகை நேரங்களை உங்கள் நாள்காட்டியில் சேர்க்கவும், நீங்கள் இயக்கினால் நாள்காட்டி நிகழ்வுகள் தொழுகை நேரத்துடன் மோதுகின்றனவா எனச் சரிபார்க்கவும் நாள்காட்டி அணுகல் பயன்படுத்தப்படுகிறது. உங்கள் நாள்காட்டித் தரவு உங்கள் சாதனத்திலேயே இருக்கும்.",
+  "NSCalendarsFullAccessUsageDescription": "தொழுகை நேரங்களை உங்கள் நாள்காட்டியில் சேர்க்கவும், நீங்கள் இயக்கினால் நாள்காட்டி நிகழ்வுகள் தொழுகை நேரத்துடன் மோதுகின்றனவா எனச் சரிபார்க்கவும் நாள்காட்டி அணுகல் பயன்படுத்தப்படுகிறது. உங்கள் நாள்காட்டித் தரவு உங்கள் சாதனத்திலேயே இருக்கும்.",
+  "NSLocalNetworkUsageDescription": "உங்கள் தொழுகை நேரங்களையும் நீங்கள் குறித்த தொழுகைகளையும் அனுப்ப, ஆப்ஸ் உங்கள் உள்ளூர் நெட்வொர்க்கில் உள்ள டிவியுடன் இணைகிறது. தரவு மறையாக்கப்பட்டு இரண்டு சாதனங்களுக்கு இடையே மட்டுமே செல்லும்.",
+  "NSAlarmKitUsageDescription": "“உண்மையான அலாரம்” எனத் தேர்ந்தெடுக்கும் நினைவூட்டல் படிகள் அலாரங்களாக அமைக்கப்படுகின்றன; உங்கள் ஃபோன் சைலண்டில் இருந்தாலும் Focus இயக்கத்தில் இருந்தாலும் அவை கேட்கும்.",
+  "\"Vakti kıldım\"": "தொழுதேன்",
+  "\"Kıble\"": "கிப்லா"
 }

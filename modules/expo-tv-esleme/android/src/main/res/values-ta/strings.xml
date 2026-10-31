@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ta — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">டிவி திரையில் உள்ள QR குறியீட்டைச் சட்டத்திற்குள் பொருத்தவும்</string>
+    <string name="tvesleme_qr_vazgec">ரத்துசெய்க</string>
+    <string name="tvesleme_qr_vazgec_erisim">ஸ்கேன் செய்வதை ரத்துசெய்க</string>
+    <string name="tvesleme_qr_yabanci">இந்த QR குறியீடு Namaz Akışı TV-க்கு உரியதல்ல. டிவியில் உள்ள குறியீட்டை ஸ்கேன் செய்யவும்.</string>
+    <string name="tvesleme_qr_okundu">குறியீடு ஸ்கேன் செய்யப்பட்டது</string>
 </resources>

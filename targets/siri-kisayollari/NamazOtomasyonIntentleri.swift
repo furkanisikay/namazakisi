@@ -353,11 +353,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "否，尚未标记。"
     )
 
-    // ÇEVİRİ: ta
+    // ta
     static let ta = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} தொடங்க {n} நிமிடம் உள்ளது.", "other": "{ad} தொடங்க {n} நிமிடங்கள் உள்ளன."],
+        evetKilindi: "ஆம், தொழுததாகக் குறிக்கப்பட்டுள்ளது.",
+        hayirKilinmadi: "இல்லை, இன்னும் குறிக்கப்படவில்லை."
     )
 
     // ml — Malayalamca (beta): JS `sozluk/ml`

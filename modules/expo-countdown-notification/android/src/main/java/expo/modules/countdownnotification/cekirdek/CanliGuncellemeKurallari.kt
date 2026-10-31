@@ -110,8 +110,8 @@ object CanliGuncellemeKurallari {
         "yo" to KisaBirimler("wkt", "ìṣj"),
         // zh (boşluksuz yazılır: "5分钟", "1小时5分钟")
         "zh" to KisaBirimler("小时", "分钟", birimAyirici = "", parcaAyirici = ""),
-        // ÇEVİRİ: ta
-        "ta" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ta
+        "ta" to KisaBirimler("மணி", "நிமி", birimAyirici = " ", parcaAyirici = " "),
         // ml
         "ml" to KisaBirimler("മ", "മി", birimAyirici = " ", parcaAyirici = " "),
         // th

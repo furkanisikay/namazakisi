@@ -301,12 +301,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: "", parcaAyirici: ""
     )
 
-    // ÇEVİRİ: ta
+    // ta
     public static let ta = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "மணி", birimDk: "நிமி", birimSn: "வி",
+        saat: ["one": "{n} மணிநேரம்", "other": "{n} மணிநேரம்"],
+        dakika: ["one": "{n} நிமிடம்", "other": "{n} நிமிடங்கள்"],
+        saniye: ["one": "{n} வினாடி", "other": "{n} வினாடிகள்"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

@@ -533,18 +533,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: ta
+    // ta
     public static let ta = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "ஃபஜ்ர்", "gunes": "சூரிய உதயம்", "ogle": "லுஹர்", "ikindi": "அஸர்", "aksam": "மஃரிப்", "yatsi": "இஷா"],
+        cuma: "ஜுமுஆ",
+        aylar: ["ஜனவரி", "பிப்ரவரி", "மார்ச்", "ஏப்ரல்", "மே", "ஜூன்", "ஜூலை", "ஆகஸ்ட்", "செப்டம்பர்", "அக்டோபர்", "நவம்பர்", "டிசம்பர்"],
+        gunler: ["திங்கள்", "செவ்வாய்", "புதன்", "வியாழன்", "வெள்ளி", "சனி", "ஞாயிறு"],
+        tarih: "{gunAdi}, {gun} {ay}, {yil}",
+        kerahatAdlari: ["suruk": "சூரிய உதயம்", "istiva": "உச்சி நேரம்", "gurub": "சூரியன் மறைவு"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "சூரியன் நன்கு உயரும் வரை தொழுவது மக்ரூஹ் ஆகும்.",
+            "istiva": "சூரியன் உச்சியில் இருக்கும்போது தொழுவது மக்ரூஹ் ஆகும்.",
+            "gurub": "சூரியன் மறையும்போது தொழுவது மக்ரூஹ் ஆகும்.",
         ]
     )
 

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ta — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- Gerçek alarm (Tamilce). "தொழுதேன்" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">தொழுகை அலாரம்</string>
+  <string name="alarm_kildim">தொழுதேன்</string>
+  <string name="alarm_kapat">நிறுத்துக</string>
+  <string name="alarm_kanal_aciklamasi">நீங்கள் தேர்ந்தெடுக்கும் நினைவூட்டல் படிகளில் ஒலிக்கும் உண்மையான அலாரம்</string>
 </resources>

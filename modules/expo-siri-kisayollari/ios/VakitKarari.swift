@@ -1181,31 +1181,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "打开应用"
     )
 
-    // ÇEVİRİ: ta
+    // ta
     public static let ta = VakitMetinleri(
         dil: "ta",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ஃபஜ்ர்", "ogle": "லுஹர்", "ikindi": "அஸர்", "aksam": "மஃரிப்", "yatsi": "இஷா"],
+        gunes: "சூரிய உதயம்",
+        konumYok: "தொழுகை நேரங்களைக் கணக்கிட, ஆப்ஸைத் திறந்து உங்கள் இருப்பிடத்தை அமைக்கவும்.",
+        veriEski: "தொழுகை நேரங்கள் பழையவை. புதுப்பிக்க ஆப்ஸை ஒருமுறை திறக்கவும்.",
+        girisBugun: "{saat} மணிக்கு",
+        girisYarin: "நாளை {saat} மணிக்கு",
+        suAnVakti: "இப்போது {ad} நேரம்.",
+        suAnVaktiCikis: "இப்போது {ad} நேரம்; {saat} மணிக்கு முடியும்.",
+        siradakiNamaz: "அடுத்த தொழுகை {ad}, {giris}.",
+        isaretlendi: "{ad} தொழுததாகக் குறிக்கப்பட்டது. {dua}.",
+        zatenKilindi: "{ad} ஏற்கனவே தொழுததாகக் குறிக்கப்பட்டுள்ளது.",
+        vakitYok: "இப்போது குறிக்கத் தொழுகை இல்லை.",
+        vakitYokSiradaki: "இப்போது குறிக்கத் தொழுகை இல்லை. அடுத்தது {ad}, {giris}.",
+        onay: "{ad} தொழுததாகக் குறிக்கவா?",
+        vakitDegisti: "தொழுகை நேரம் மாறியதால் எதுவும் குறிக்கப்படவில்லை. மீண்டும் முயலவும்.",
+        kabulDuasi: "அல்லாஹ் ஏற்றுக்கொள்வானாக",
+        kildim: "தொழுதேன்",
+        kilindi: "தொழுதாகிவிட்டது",
+        kontrolKildim: "{ad} · தொழுதேன்",
+        kontrolKilindi: "{ad} தொழுதாகிவிட்டது",
+        kontrolVakitYok: "குறிக்கத் தொழுகை இல்லை",
+        uygulamayiAcin: "ஆப்ஸைத் திறக்க"
     )
 
     // ml — Malayalamca (beta): JS `sozluk/ml`; Kıldım "ഞാൻ നമസ്കരിച്ചു", Kılındı "നമസ്കരിച്ചു"

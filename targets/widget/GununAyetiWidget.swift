@@ -497,18 +497,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Muhammad Suleiman，QuranEnc 1.0.8"
     )
 
-    // ÇEVİRİ: ta
+    // ta (örnek meal gununAyetiHavuzu.ts 94:6 tamil_omar birebir; künye mealler.ta)
     static let ta = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "இன்றைய வசனம்",
+        galeriAciklama: "தினமும் ஃபஜ்ர் நேரத்தில் மாறும் ஒரு வசனமும் அதன் மொழிபெயர்ப்பும்.",
+        etiket: "இன்றைய வசனம்",
+        uygulamayiAcin: "இன்றைய வசனத்தைப் பார்க்க ஆப்ஸைத் திறக்கவும்",
+        ornekSigmiyor: "இன்றைய வசனம் இந்த அளவில் பொருந்தவில்லை. படிக்கத் தட்டவும்.",
+        ornekAcin: "திறக்க",
+        ornekArapcaKaynagi: "அரபு: Tanzil",
+        ornekMeal: "நிச்சயமாக சிரமத்துடன் இலகு இருக்கிறது.",
+        ornekKisaKunye: "குர்ஆன் 94:6",
+        ornekMealKaynagi: "Omar Sharif, QuranEnc 1.0.4"
     )
 
     // ml — Malayalamca (beta): JS `sozluk/ml/gununAyeti.ts`. `gununAyetiHavuzu.ts`'te 94:6 için Malayalamca
