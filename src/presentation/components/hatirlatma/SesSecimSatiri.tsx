@@ -177,17 +177,24 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                         color={kompakt ? renkler.birincil : renkler.metinIkincil}
                         style={{ marginRight: 8, width: 16, textAlign: 'center' }}
                     />
-                    <Text
-                        className={kompakt ? 'text-sm' : 'text-xs font-medium'}
-                        style={{ color: kompakt ? renkler.metin : renkler.metinIkincil }}
+                    {/* Etiket ve ipucu esneyen satırda: sığarsa yan yana, sığmazsa ipucu alta
+                        geçer (eskiden etiket tüm genişliği alıyor, ipucu sıfır genişliğe iniyordu). */}
+                    <View
+                        testID={e.testID ? `${e.testID}-metinler` : undefined}
+                        style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: 8, flexShrink: 1 }}
                     >
-                        {e.etiket}
-                    </Text>
-                    {kompakt && e.ipucu ? (
-                        <Text className="text-xs ml-2" style={{ color: renkler.metinIkincil, flexShrink: 1 }}>
-                            {e.ipucu}
+                        <Text
+                            className={kompakt ? 'text-sm' : 'text-xs font-medium'}
+                            style={{ color: kompakt ? renkler.metin : renkler.metinIkincil, flexShrink: 1 }}
+                        >
+                            {e.etiket}
                         </Text>
-                    ) : null}
+                        {kompakt && e.ipucu ? (
+                            <Text className="text-xs" style={{ color: renkler.metinIkincil, flexShrink: 1 }}>
+                                {e.ipucu}
+                            </Text>
+                        ) : null}
+                    </View>
                 </TouchableOpacity>
             ))}
         </View>
@@ -218,8 +225,9 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                             style={{ width: 18, textAlign: 'center', marginRight: 8 }}
                             solid
                         />
+                        {/* İki satır: "bulunamadı · telefonun sesi" gibi uzun durum metni kesilmesin. */}
                         <Animated.Text
-                            numberOfLines={1}
+                            numberOfLines={2}
                             className="text-sm flex-1"
                             style={{
                                 color: renkler.metinIkincil,

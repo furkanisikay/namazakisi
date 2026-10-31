@@ -10,6 +10,7 @@
  * native'e doğru kaydı yazar; Namaz modu erişimi yoksa rehber çıkar.
  */
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import * as Location from 'expo-location';
 import { useAppSelector } from '../../store/hooks';
@@ -107,6 +108,19 @@ const ayrintilariAc = async (e: ReturnType<typeof render>) => {
     await waitFor(() => expect(e.getByTestId('sessiz-ayrintilar')).toBeTruthy());
     fireEvent.press(e.getByTestId('sessiz-ayrintilar'));
 };
+
+describe('NamazdaSessizSayfasi — yerleşim', () => {
+    it('"Ayrıntılar" başlığı küçülmez; özet kalan genişliği alır ve tek satırda kısalır', async () => {
+        const e = render(<NamazdaSessizSayfasi />);
+        await waitFor(() => expect(e.getByTestId('sessiz-ayrintilar-ozet')).toBeTruthy());
+        const ozet = e.getByTestId('sessiz-ayrintilar-ozet');
+        expect(ozet.props.numberOfLines).toBe(1);
+        expect(StyleSheet.flatten(ozet.props.style)).toMatchObject({ flex: 1 });
+        const baslik = e.getByText('Ayrıntılar');
+        expect(StyleSheet.flatten(baslik.props.style).flexShrink).toBe(0);
+        await bosalt();
+    });
+});
 
 describe('NamazdaSessizSayfasi — Camiye girince', () => {
     it('köprü yoksa (iOS) açıklayıcı boş durum, ayar yok', async () => {

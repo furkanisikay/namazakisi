@@ -145,12 +145,17 @@ export const CihazEkleSayfasi: React.FC = () => {
                             key={sekme}
                             testID={`cihaz-ekle-${sekme}`}
                             className="flex-1 items-center justify-center rounded-2xl"
-                            style={{ minHeight: 48, backgroundColor: secili ? renkler.birincil : 'transparent' }}
+                            // İç boşluk: uzun dilde iki satıra kırılan etiket kenara yapışmasın.
+                            style={{ minHeight: 48, paddingHorizontal: 12, paddingVertical: 8, backgroundColor: secili ? renkler.birincil : 'transparent' }}
                             onPress={() => setMod(sekme)}
                             accessibilityRole="tab"
                             accessibilityState={{ selected: secili }}
                         >
-                            <Text className="text-sm font-bold" style={{ color: secili ? renkler.birincilMetin : renkler.metin }}>
+                            <Text
+                                testID={`cihaz-ekle-${sekme}-metin`}
+                                className="text-sm font-bold text-center"
+                                style={{ color: secili ? renkler.birincilMetin : renkler.metin }}
+                            >
                                 {sekme === 'goster' ? m.kodGoster : m.kodOkut}
                             </Text>
                         </TouchableOpacity>
@@ -209,14 +214,14 @@ export const CihazEkleSayfasi: React.FC = () => {
                     </Text>
                     <TouchableOpacity
                         testID="cihaz-ekle-okut-dugme"
-                        className="flex-row items-center justify-center rounded-2xl px-5"
+                        className="flex-row items-center justify-center rounded-2xl px-5 py-2"
                         style={{ minHeight: 52, backgroundColor: renkler.birincil }}
                         onPress={() => void okut()}
                         accessibilityRole="button"
                         accessibilityLabel={m.kodOkut}
                     >
                         <FontAwesome5 name="qrcode" size={16} color={renkler.birincilMetin} style={{ marginRight: 10 }} />
-                        <Text className="text-base font-bold" style={{ color: renkler.birincilMetin }}>
+                        <Text className="text-base font-bold text-center" style={{ color: renkler.birincilMetin, flexShrink: 1 }}>
                             {m.kodOkut}
                         </Text>
                     </TouchableOpacity>

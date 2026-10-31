@@ -284,10 +284,11 @@ export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ basl
                             stil="gomulu"
                         />
 
-                        {/* Alt not tek kısa satır (görsel inceleme 2026-10: üç satırlık açıklama). */}
-                        <View className="flex-row items-center mt-4 gap-2">
-                            <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} />
-                            <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }} numberOfLines={1}>
+                        {/* Alt not kısa (görsel inceleme 2026-10: üç satırlık açıklama); uzun dillerde
+                            tek satıra sığmayıp kesildiği için en çok iki satır. */}
+                        <View className="flex-row items-start mt-4 gap-2">
+                            <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
+                            <Text testID="cuma-kilinca-notu" className="text-xs flex-1" style={{ color: renkler.metinIkincil }} numberOfLines={2}>
                                 {mc.kilinca}
                             </Text>
                         </View>

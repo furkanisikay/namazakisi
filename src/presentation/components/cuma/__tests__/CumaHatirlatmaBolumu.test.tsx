@@ -97,6 +97,11 @@ describe('CumaHatirlatmaBolumu', () => {
         expect(d.adimlar.map((a: { esikDk: number }) => a.esikDk)).toEqual([60]);
     });
 
+    it('alt not uzun dilde kesilmesin diye iki satıra kadar sarılır', () => {
+        const ekran = kur(ACIK);
+        expect(ekran.getByTestId('cuma-kilinca-notu').props.numberOfLines).toBe(2);
+    });
+
     it('açıkken ortak kart: YÖN GEREKÇESİ ekranda, akış önizlemesi ve adım ekleme var', () => {
         const ekran = kur(ACIK);
         expect(ekran.getByTestId('yon-sabit-gerekcesi')).toBeTruthy();

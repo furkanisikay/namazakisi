@@ -605,8 +605,17 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                     accessibilityLabel={t.ayrintilar}
                     style={{ flexDirection: 'row', alignItems: 'center', minHeight: 48, marginTop: 20 }}
                 >
-                    <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: renkler.metin }}>{t.ayrintilar}</Text>
-                    <Text style={{ fontSize: 14, color: renkler.metinIkincil, marginRight: 8 }}>{t.ayrintilarOzet}</Text>
+                    {/* Başlık küçülmez (uzun dilde hece hece kırılıyordu); kalan genişliği özet alır. */}
+                    <Text style={{ flexShrink: 0, fontSize: 15, fontWeight: '600', color: renkler.metin, marginRight: 12 }}>
+                        {t.ayrintilar}
+                    </Text>
+                    <Text
+                        testID="sessiz-ayrintilar-ozet"
+                        numberOfLines={1}
+                        style={{ flex: 1, textAlign: 'right', fontSize: 14, color: renkler.metinIkincil, marginRight: 8 }}
+                    >
+                        {t.ayrintilarOzet}
+                    </Text>
                     <FontAwesome5 name={ayrinti ? 'chevron-up' : 'chevron-down'} size={13} color={renkler.metinIkincil} />
                 </TouchableOpacity>
 

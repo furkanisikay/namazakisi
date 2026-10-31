@@ -168,7 +168,17 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
                 ]}
             >
                 <FontAwesome5 name="pray" size={IKON} color={isaretleMetin} />
-                <Text style={[styles.yazi, { color: isaretleMetin }]}>{m.isaretle}</Text>
+                {/* Düğme sabit yükseklikli (56 dp): uzun dilde en çok iki satır ve sığana kadar
+                    küçülür; flexShrink genişliği sınırlar (yoksa ortalanan metin ikonu dışarı iter). */}
+                <Text
+                    testID={testID ? `${testID}-metin` : undefined}
+                    style={[styles.yazi, styles.esnekYazi, { color: isaretleMetin }]}
+                    numberOfLines={2}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.6}
+                >
+                    {m.isaretle}
+                </Text>
             </Animated.View>
 
             {/* Kılınmış içerik: ✓ yayla oturur (halka bir kez), "Kılındı" aşağıdan gelir. */}
@@ -204,7 +214,7 @@ export const KildimDugmesi: React.FC<KildimDugmesiProps> = React.memo(function K
                         <FontAwesome5 name="check-circle" size={IKON} color={kilindiMetin} solid />
                     </Animated.View>
                 </View>
-                <Text style={[styles.yazi, { color: kilindiMetin }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
+                <Text style={[styles.yazi, styles.esnekYazi, { color: kilindiMetin }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
                     {kilindiMetni}
                 </Text>
             </Animated.View>
@@ -225,6 +235,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         gap: 12,
+        paddingHorizontal: 16,
     },
     ikonKutusu: { width: IKON + 4, height: IKON + 4, alignItems: 'center', justifyContent: 'center' },
     halka: {
@@ -235,6 +246,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
     },
     yazi: { fontSize: 18, fontWeight: '700' },
+    esnekYazi: { flexShrink: 1, textAlign: 'center' },
 });
 
 /** Test/kanıt için: ileri sahne kaç ms sürer (yay hariç tahmini). */

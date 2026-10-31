@@ -251,11 +251,17 @@ export const TelevizyonSayfasi: React.FC = () => {
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'center',
+                            paddingHorizontal: 16,
+                            paddingVertical: 8,
                             opacity: gonderiliyor ? 0.6 : 1,
                         }}
                     >
                         <FontAwesome5 name="qrcode" size={18} color="#FFFFFF" />
-                        <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '700', marginLeft: 10 }}>
+                        {/* flexShrink: uzun metin düğmenin içinde sarılır; yoksa ortalanan satır ikonu dışarı iter. */}
+                        <Text
+                            testID="tv-kodu-okut-metin"
+                            style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '700', marginLeft: 10, flexShrink: 1, textAlign: 'center' }}
+                        >
                             {durum === 'tamam' ? m.baskaTv : m.okutun}
                         </Text>
                     </TouchableOpacity>

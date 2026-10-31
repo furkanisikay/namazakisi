@@ -3,6 +3,7 @@
  * okutma (okunan kodda bu cihazda onay, sonra eşleşme + ilk eşitleme). Servisler mock'lanır.
  */
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { CihazEkleSayfasi } from '../CihazEkleSayfasi';
 import { useRenkler } from '../../../core/theme';
@@ -86,6 +87,13 @@ it('telefonda varsayılan: kod okutulur, önce bu cihazda onay, sonra kendi adre
     await waitFor(() => expect(getByTestId('cihaz-ekle-durum').props.children).toMatch(/Salon tableti eklendi/));
     expect(mockEsles.mock.calls[0][1]).toMatchObject({ kendi: { kimlik: 'aaaaaaaaaaaaaaaa', adres: '192.168.1.60', port: 47600, tur: 'telefon' } });
     expect(mockServis.esitle).toHaveBeenCalled();
+});
+
+it('segment etiketleri ortalı ve iç boşluklu; okut düğmesinin metni esner (uzun dilde iki satır)', () => {
+    mockTur = 'telefon';
+    const { getByTestId } = render(<CihazEkleSayfasi />);
+    expect(getByTestId('cihaz-ekle-okut-metin').props.className).toContain('text-center');
+    expect(StyleSheet.flatten(getByTestId('cihaz-ekle-okut').props.style)).toMatchObject({ paddingHorizontal: 12 });
 });
 
 it('TV kodu okutulursa yön gösterir', async () => {

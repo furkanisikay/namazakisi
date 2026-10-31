@@ -3,7 +3,7 @@
  * eski TV uyarısı, ağsız kod. Platform Android'e çekilir (jest varsayılanı iOS).
  */
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { TelevizyonSayfasi } from '../TelevizyonSayfasi';
 import { useRenkler } from '../../../core/theme';
@@ -69,6 +69,12 @@ describe('TelevizyonSayfasi (v2)', () => {
     it('ağsız yedek kodu gösterir', () => {
         const { getByTestId } = render(<TelevizyonSayfasi />);
         expect(getByTestId('tv-konum-kodu').props.children).toBe('167 6907');
+    });
+
+    it('okut düğmesinde uzun metin esner ve ortalanır (iki satıra kırılınca ikon dışarı taşmaz)', () => {
+        const { getByTestId } = render(<TelevizyonSayfasi />);
+        expect(StyleSheet.flatten(getByTestId('tv-kodu-okut-metin').props.style)).toMatchObject({ flexShrink: 1, textAlign: 'center' });
+        expect(StyleSheet.flatten(getByTestId('tv-kodu-okut').props.style).paddingHorizontal).toBeGreaterThan(0);
     });
 
     it('QR okununca önce BU telefonda TV adıyla onay ister; onaydan sonra eşleşir ve ilk eşitlemeyi yollar', async () => {

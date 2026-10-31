@@ -38,7 +38,7 @@ export function SecenekCipleri<T extends string>({ secenekler, secili, onSec, gr
                     <TouchableOpacity
                         key={s.deger}
                         testID={testIDOnEki ? `${testIDOnEki}-${s.deger}` : undefined}
-                        className="flex-1 flex-row items-center justify-center rounded-2xl px-2"
+                        className="flex-1 flex-row items-center justify-center rounded-2xl px-2 py-1.5"
                         style={{
                             minHeight: 44,
                             borderWidth: sec ? 2 : 1,
@@ -56,8 +56,10 @@ export function SecenekCipleri<T extends string>({ secenekler, secili, onSec, gr
                         <Text
                             className="text-xs font-semibold text-center"
                             // Seçililik çerçeve + ikonla okunur; metin daima tema metni (yeşil küçük metin kontrastı düşük).
-                            style={{ color: renkler.metin, fontWeight: sec ? '700' : '600' }}
-                            numberOfLines={2}
+                            // flexShrink: uzun etiket çipin içinde sarılır; yoksa metin tam genişlikte
+                            // ölçülüp ortalanır ve ikon çipin dışına itilir (ta/ml kare turu).
+                            style={{ color: renkler.metin, fontWeight: sec ? '700' : '600', flexShrink: 1 }}
+                            numberOfLines={3}
                         >
                             {s.etiket}
                         </Text>

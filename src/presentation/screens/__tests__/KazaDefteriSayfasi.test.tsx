@@ -146,6 +146,15 @@ describe('KazaDefteriSayfasi (ana sayfa)', () => {
     });
   });
 
+  it('vakit satırında kalan sayısı soldaki alanda esner ("+" düğmesinin altına binmez)', async () => {
+    const store = storeKur();
+    await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 116 }));
+    const { getByTestId } = await ciz(anaSayfa(), store);
+    const kalan = getByTestId('kaza-kalan-Sabah');
+    expect(kalan.props.numberOfLines).toBe(2);
+    expect(kalan.parent?.parent?.props.style).toMatchObject({ flex: 1 });
+  });
+
   it('vakit satırında tek eylem adı "Kıldım"; uzun basış sayı sorar, onay da "Kıldım"', async () => {
     const store = storeKur();
     await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 3 }));

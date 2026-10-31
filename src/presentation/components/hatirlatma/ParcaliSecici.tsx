@@ -64,10 +64,14 @@ export function ParcaliSecici<T extends string>({ secenekler, secili, onSec, boy
                                 solid
                             />
                         )}
+                        {/* Eşit genişlikli parçada uzun etiket (ta "தனிப்பயன்", vi "Thường xuyên")
+                            kesilmesin: tek satırda küçülür; flexShrink genişliği parçaya sınırlar. */}
                         <Text
                             className={buyuk ? 'text-sm font-semibold' : 'text-xs font-semibold'}
                             numberOfLines={1}
-                            style={{ color: seciliMi ? '#FFFFFF' : renkler.metin }}
+                            adjustsFontSizeToFit
+                            minimumFontScale={0.7}
+                            style={{ color: seciliMi ? '#FFFFFF' : renkler.metin, flexShrink: 1 }}
                         >
                             {s.etiket}
                         </Text>

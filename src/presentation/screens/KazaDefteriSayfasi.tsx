@@ -601,11 +601,16 @@ export const KazaDefteriSayfasi: React.FC = () => {
                   color={renkler.birincil}
                 />
               </View>
-              <View>
+              {/* flex: 1 → ad ve kalan sayısı soldaki alana sığar, sağdaki düğmelerin altına binmez. */}
+              <View style={{ flex: 1 }}>
                 <Text style={[styles.namazAdi, { color: renkler.metin }]}>
                   {KAZA_ADLARI[namaz.namazAdi]}
                 </Text>
-                <Text style={[styles.namazKalanMetin, { color: renkler.metinIkincil }]}>
+                <Text
+                  testID={`kaza-kalan-${namaz.namazAdi}`}
+                  numberOfLines={2}
+                  style={[styles.namazKalanMetin, { color: renkler.metinIkincil }]}
+                >
                   {namaz.kalanBorc > 0 ? sayili(m.kaldi, namaz.kalanBorc) : m.borcYok}
                 </Text>
               </View>
@@ -1249,6 +1254,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     flex: 1,
+    marginRight: 8,
   },
   namazIkonKonteyner: {
     width: 36,

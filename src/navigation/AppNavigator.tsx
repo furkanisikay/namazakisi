@@ -14,6 +14,11 @@ import { Dimensions, Platform, Text, StyleSheet, View, useWindowDimensions } fro
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { KenarGezinme } from '../presentation/components/gezinme/KenarGezinme';
+import {
+  SEKME_ETIKETI_STILI,
+  sigdirilanBaslikSecenegi,
+  sigdirilanSekmeTanimlari,
+} from '../presentation/components/gezinme/SigdirilanEtiketler';
 import { gezinmeTuruSec } from '../core/utils/ekranSinifi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -256,6 +261,8 @@ const AyarlarStack: React.FC = () => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
+        // Android: uzun dilde başlık kesilmez, tek satırda küçülür (`title` kalır: geri düğmesi/a11y).
+        ...sigdirilanBaslikSecenegi(),
         // iOS: bos `headerBackTitle` YOK SAYILIR ve geri dugmesine onceki ekranin
         // basligi yazilir — Ayarlar kokunun basligi olmadigi icin ROTA ADI
         // ("AyarlarAna") gorunuyordu. Yalniz ok gosterilir.
@@ -294,6 +301,7 @@ const KazaStack: React.FC = () => {
         headerStyle: { backgroundColor: renkler.birincil },
         headerTintColor: '#FFFFFF',
         headerTitleStyle: { fontWeight: 'bold' },
+        ...sigdirilanBaslikSecenegi(),
         headerBackButtonDisplayMode: 'minimal',
         headerShown: !anaAyrinti,
       }}
@@ -346,7 +354,12 @@ const MainTabs: React.FC = () => {
   const gezinme = gezinmeTuruSec(pencere.width);
   const kenarCubugu = useCallback(
     (props: BottomTabBarProps) =>
-      gezinme === 'alt' ? <BottomTabBar {...props} /> : <KenarGezinme {...props} tur={gezinme} />,
+      gezinme === 'alt' ? (
+        // Uzun dilde etiket kesilmesin: alt çubuğa küçülebilen etiketli kopya (seçenekler dize kalır).
+        <BottomTabBar {...props} descriptors={sigdirilanSekmeTanimlari(props.descriptors, props.state.routes)} />
+      ) : (
+        <KenarGezinme {...props} tur={gezinme} />
+      ),
     [gezinme]
   );
 
@@ -405,11 +418,7 @@ const MainTabs: React.FC = () => {
         },
         tabBarActiveTintColor: renkler.birincil,
         tabBarInactiveTintColor: renkler.metinIkincil,
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '600',
-          marginTop: 2,
-        },
+        tabBarLabelStyle: SEKME_ETIKETI_STILI,
         // react-freeze Suspense mekanizmasinin NavigationStateContext'i kaybetmesini engeller
         freezeOnBlur: false,
       }}
