@@ -458,7 +458,9 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
       "2:153": "Ó vós que credes! Implorai ajuda com a paciência e a oração. Por certo, Allah é com os perseverantes.",
       "2:238": "Custodiai as orações e em particular a oração mediana, e levantai-vos sendo devotos a Allah.",
       "4:103": "E, quando houverdes encerrado a oração, lembrai-vos de Allah, estando de pé ou assentados ou deitados. E, quando estiverdes em segurança, cumpri a oração. Por certo, a oração, para os crentes, é prescrição com tempos marcados.",
-      "29:45": "Recita, Muhammad, o que te foi revelado do Livro e cumpre a oração. Por certo, a oração coíbe a obscenidade e o reprovável. E, certamente, a lembrança de Allah é maior que isso. E Allah sabe o que engenhais."
+      "11:114": "E cumpre a oração, nos dois extremos do dia e nas primícias da noite. Por certo, as boas obras fazem ir as más obras. Isso é lembrança para os que se lembram de Allah.",
+      "29:45": "Recita, Muhammad, o que te foi revelado do Livro e cumpre a oração. Por certo, a oração coíbe a obscenidade e o reprovável. E, certamente, a lembrança de Allah é maior que isso. E Allah sabe o que engenhais.",
+      "62:9": "Ó vós que credes! Quando se chama à oração da Sexta-feira, ide, depressa, para a lembrança de Allah, e deixai a venda. Isto vos é melhor. Se soubésseis!"
     }
   },
   "it": {
@@ -495,6 +497,8 @@ export const AYET_MEALLERI: Readonly<Record<string, MealKaynagi>> = {
       "2:153": "О ви, які увірували! Шукайте допомоги у терпінні та молитві. Воістину, Аллаг — разом із терплячими!",
       "2:238": "Звершуйте молитви належно і, особливо, середню молитву. Стійте ж перед Аллагом смиренними!",
       "4:103": "Коли ви звершите молитву, то згадуйте Аллага — стоячи, сидячи та лежачи. І коли ви опинитеся у безпеці, то звершуйте повну молитву. Воістину, молитва встановлена для віруючих у визначений час.",
+      "11:114": "Звершуй молитву на початку й наприкінці дня, а ще в деякі години ночі. Воістину, добрі вчинки видаляють погані. Таке нагадування для тих, хто згадує!",
+      "29:45": "Читай те, що було відкрито тобі з Писання, та звершуй молитву. Воістину, молитва стримує від розпусти й неприйнятного! Але згадка Аллага — важливіша, і Він знає те, що ви робите!",
       "62:9": "О ви, які увірували! Коли закликають вас на молитву в п’ятницю, то зверніться до згадування Аллага і полиште справи торгівельні. Це краще для вас, якщо ви розумієте!"
     }
   },

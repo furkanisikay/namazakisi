@@ -91,9 +91,9 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
 
 /**
  * Not numarası silinen diller ve desen — `gunun-ayeti-uret.js > NOT_NUMARASI_SILINEN` ile AYNI
- * (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Bengalce rakam "[১]").
+ * (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Portekizce ve Ukraynaca 2026-11-01; Bengalce rakam "[১]").
  */
-const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha']);
+const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha', 'pt', 'uk']);
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
 /** Gömülü numara kalıpları (`gunun-ayeti-uret.js > DIPNOT`, `BASTA_NUMARA`, `SONDA_NUMARA` ile aynı). */

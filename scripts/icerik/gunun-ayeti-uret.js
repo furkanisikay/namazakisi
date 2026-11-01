@@ -187,12 +187,12 @@ const ref = (sure, ayet) => `${sure}:${ayet}`;
  */
 /** Kural 1 ve 2 tek meal için: sığar ve dipnot işareti / baştaki ayet numarası taşımaz. */
 /**
- * Not numarası silinen diller (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31): mealde
+ * Not numarası silinen diller (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Portekizce ve Ukraynaca 2026-11-01): mealde
  * ayetlerin çoğu "[1]" / "[১]" (Bengalce rakam) gibi dipnot numarası taşır; dipnot gösterilmediği
  * için yalnız numara silinir, meal sözcükleri birebir kalır. Diğer dillerde numaralı meal alınmaz
  * (`mealUygun`). `ayet-mealleri-uret.js` aynı kümeyi ve deseni kullanır.
  */
-const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha']);
+const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha', 'pt', 'uk']);
 /** Dipnot numarası, herhangi bir yazının rakamıyla ("[12]", "[১২]", "[१२]"); `\p{Nd}` + `u`. */
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
