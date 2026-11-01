@@ -1456,31 +1456,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Deschideți aplicația"
     )
 
-    // ÇEVİRİ: hr
+    // hr
     public static let hr = VakitMetinleri(
         dil: "hr",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Sabah", "ogle": "Podne", "ikindi": "Ikindija", "aksam": "Akšam", "yatsi": "Jacija"],
+        gunes: "Izlazak Sunca",
+        konumYok: "Otvorite aplikaciju i postavite lokaciju kako bi se mogla izračunati vremena namaza.",
+        veriEski: "Vremena namaza su zastarjela. Jednom otvorite aplikaciju da ih ažurirate.",
+        girisBugun: "u {saat}",
+        girisYarin: "sutra u {saat}",
+        suAnVakti: "Sada je vrijeme namaza: {ad}.",
+        suAnVaktiCikis: "Sada je vrijeme namaza: {ad}; istječe u {saat}.",
+        siradakiNamaz: "Sljedeći namaz je {ad}, {giris}.",
+        isaretlendi: "Označeno kao klanjano: {ad}. {dua}.",
+        zatenKilindi: "Već je označeno kao klanjano: {ad}.",
+        vakitYok: "Trenutačno nema namaza za označavanje.",
+        vakitYokSiradaki: "Trenutačno nema namaza za označavanje. Sljedeći je {ad}, {giris}.",
+        onay: "Označiti kao klanjano: {ad}?",
+        vakitDegisti: "Vrijeme namaza promijenilo se, pa ništa nije označeno. Pokušajte ponovno.",
+        kabulDuasi: "Allah kabul ejlesun",
+        kildim: "Klanjano",
+        kilindi: "Klanjano",
+        kontrolKildim: "{ad} · Klanjano",
+        kontrolKilindi: "{ad} klanjano",
+        kontrolVakitYok: "Nema namaza za označavanje",
+        uygulamayiAcin: "Otvorite aplikaciju"
     )
 
     // sr

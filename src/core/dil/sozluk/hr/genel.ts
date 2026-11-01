@@ -26,7 +26,7 @@ export const genel: Sozluk['genel'] = {
   kildim: {
     izinSorusu: 'Dopustiti aplikaciji {uygulama} da vaše namaze označava kao klanjane?',
     izinAciklamasi:
-      'Namaz koji će se sada označiti: {vakit}. Odluku kasnije možete promijeniti u Postavke > Automatizacije > Aplikacije koje mogu označiti „Klanjano“.',
+      'Namaz koji će se sada označiti: {vakit}. Odluku kasnije možete promijeniti u Postavke > Automatizacije > Aplikacije koje označavaju „Klanjano“.',
     tarayiciAciklamasi:
       'Namaz koji će se sada označiti: {vakit}. Ovaj zahtjev došao je iz preglednika; budući da bilo koja web-stranica može otvoriti ovu poveznicu, trajno dopuštenje nije moguće dati.',
     engellendi: '{uygulama} više ne može označavati vaše namaze. To možete promijeniti u Postavkama.',

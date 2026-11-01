@@ -41,7 +41,7 @@ export const saat: Sozluk['saat'] = {
     bilektenIos: [
       'Kad iPhone nije uz vas, podsjetnici se oglašavaju na satu; ne oglašavaju se na oba.',
       'Namaze koje ste klanjali označavate sa zapešća; vaš ih iPhone bilježi.',
-      'Tesbih brojite digitalnom krunom, a kiblu pronalazite na satu.',
+      'Tesbih brojite krunom Digital Crown, a kiblu pronalazite na satu.',
     ],
     anonsBaslik: 'Gdje bi se trebalo čitati naglas?',
     anonsNotu:

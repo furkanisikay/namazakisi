@@ -130,7 +130,7 @@ object CanliGuncellemeKurallari {
         "uk" to KisaBirimler("год", "хв", birimAyirici = " ", parcaAyirici = " "),
         // ro (CLDR ro: "h", "min" — JS sure.kisa ile aynı)
         "ro" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: hr
+        // hr (CLDR hr kısa birimler aynı: "h", "min")
         "hr" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // sr
         "sr" to KisaBirimler("ч", "мин", birimAyirici = " ", parcaAyirici = " "),

@@ -1106,29 +1106,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marchează rugăciunea curentă ca efectuată."
     )
 
-    // ÇEVİRİ: hr
+    // hr
     static let hr = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Vrijeme namaza",
+        galeriAciklama: "Trenutačno vrijeme namaza, preostalo vrijeme do njegova isteka i današnja vremena namaza.",
+        veriEski: "Otvorite aplikaciju da ažurirate vremena namaza",
+        konumYok: "Otvorite aplikaciju da postavite lokaciju",
+        kilindiSiradaki: "{ad}: klanjano · {sonraki} {saat}",
+        adCikis: "{ad} · istječe {saat}",
+        siradakiAdSaat: "Sljedeći {ad} {saat}",
+        vaktiCikisErisim: "{ad}, istječe u {saat}",
+        siradakiErisim: "Sljedeći: {ad}, {saat}",
+        cikisSaat: "Istječe {saat}",
+        bitisSaat: "Završava {saat}",
+        kilindiBaslik: "{ad}: klanjano",
+        siradaki: "Sljedeći",
+        siradakiAd: "Sljedeći: {ad}",
+        kildimErisim: "Klanjano: {ad}",
+        gunSatiriKilindi: ", klanjano",
+        bitti: "Završeno",
+        vakitCikti: "Vrijeme namaza je isteklo",
+        kabulAlt: "{ad}: klanjano",
+        kontrolAdi: "Klanjano",
+        kontrolAciklama: "Označava trenutačni namaz kao klanjan."
     )
 
     // sr
