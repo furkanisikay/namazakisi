@@ -1,63 +1,86 @@
-// ÇEVİRİ: uk — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
-/** İbadete çağrı kaydı: doğrudan, kısa; "prostrate" yok. Sıra Türkçe şablonlarla BİREBİR eşleşir. */
+/**
+ * İbadete çağrı kaydı: saygılı çoğul emir, kısa; "secde" yok. Dakika tek biçimle yazılır
+ * ("{süre} хвилин"); `dakikaUyumu` sayıya göre çeker (2 хвилини, 1 хвилина). Sıra Türkçe
+ * şablonlarla BİREBİR eşleşir.
+ */
 export const anons: Sozluk['anons'] = {
-  yon: { cikisaDogru: 'left', girisindenItibaren: 'passed' },
-  cip: { vakit: 'Prayer name', sure: 'Minutes', yon: 'left / passed', cuma: "Jumu'ah", yatsi: 'Isha' },
+  yon: { cikisaDogru: 'лишилося', girisindenItibaren: 'минуло' },
+  cip: { vakit: 'Назва молитви', sure: 'Хвилини', yon: 'лишилося / минуло', cuma: 'Джума', yatsi: 'Іша' },
   sablon: {
     muhafizCikis: [
-      '{vakit} time is ending, {süre} minutes left.',
-      "Don't miss {vakit}, {süre} minutes left.",
-      'Time is running short, {süre} minutes until {vakit} ends.',
+      'Час молитви {vakit} закінчується, лишилося {süre} хвилин.',
+      'Не пропустіть {vakit}, лишилося {süre} хвилин.',
+      'Час спливає: до кінця молитви {vakit} {süre} хвилин.',
     ],
     muhafizGiris: [
-      '{vakit} time has begun, {süre} minutes have passed.',
-      "Don't delay {vakit}, {süre} minutes have passed.",
-      'Time is moving on, stand for {vakit}, it has been {süre} minutes.',
+      'Настав час молитви {vakit}, минуло {süre} хвилин.',
+      'Не відкладайте {vakit}, минуло вже {süre} хвилин.',
+      'Час іде, станьте до молитви {vakit}, минуло {süre} хвилин.',
     ],
     nafile: [
-      '{vakit} time, {süre} minutes {yön}. A good moment for two rakats.',
-      '{vakit} time is on. A good chance to pray two rakats.',
-      '{süre} minutes {yön} for {vakit}.',
+      'Час молитви {vakit}, {yön} {süre} хвилин. Добра нагода для двох ракаатів.',
+      'Час молитви {vakit} триває. Добра нагода здійснити два ракаати.',
+      'Молитва {vakit}: {yön} {süre} хвилин.',
     ],
     cuma: [
-      "{süre} minutes left until Jumu'ah. Get ready and head to the mosque.",
-      "Jumu'ah is approaching, {süre} minutes left.",
-      "Catch the khutbah, {süre} minutes left until Jumu'ah.",
+      'До молитви Джума лишилося {süre} хвилин. Збирайтеся і йдіть до мечеті.',
+      'Наближається молитва Джума, лишилося {süre} хвилин.',
+      'Встигніть на хутбу, до молитви Джума лишилося {süre} хвилин.',
     ],
     camiyeGit: [
-      '{süre} minutes left until {vakit}. Head to the mosque.',
-      'Time to go to the mosque, {süre} minutes until {vakit}.',
-      'Head to the mosque for {vakit}.',
+      'До молитви {vakit} лишилося {süre} хвилин. Йдіть до мечеті.',
+      'Час іти до мечеті, до молитви {vakit} {süre} хвилин.',
+      'Йдіть до мечеті на молитву {vakit}.',
     ],
-    yatis: ['Pray Isha before you go to bed.', 'Isha time is still on, stand for prayer before you sleep.', "Don't sleep before you pray Isha."],
+    yatis: ['Звершіть молитву Іша перед сном.', 'Час Іша ще триває, станьте до молитви перед сном.', 'Не лягайте спати, не звершивши Іша.'],
     takvim: [
-      'An event in your calendar falls during {vakit} time.',
-      "{vakit} time clashes with an event; don't forget to pray first.",
-      "In {süre} minutes {vakit} time clashes with your event; don't forget your prayer.",
+      'Подія у вашому календарі припадає на час молитви {vakit}.',
+      'Час молитви {vakit} збігається з подією; спершу звершіть молитву.',
+      'Через {süre} хвилин час молитви {vakit} збігається з вашою подією; не забудьте про молитву.',
     ],
   },
   otomatik: {
-    cuma: "{sure} until Dhuhr for Jumu'ah. Get ready and head to the mosque.",
-    camiyeGiris: '{sure} until {vakit}.',
-    camiyeHazirlan: 'Get ready and head to the mosque.',
-    camiyeYola: 'Head to the mosque.',
-    takvimGiris: 'An event in your calendar falls during {vakit} time.',
-    takvimOnce: "Don't forget to pray before the event.",
-    takvimKaplar: "Don't forget to take a break and pray.",
-    yatsi: 'Pray Isha before you go to bed.',
-    muhasebeTek: '{vakit} looks unmarked today.',
-    muhasebeCoklu: cogul({ one: '{n} prayer looks unmarked today.', few: '{n} prayers look unmarked today.', many: '{n} prayers look unmarked today.', other: '{n} prayers look unmarked today.' }),
-    geceCapasi: 'Quiet hours start in {süre} minutes. Pray {vakit} before you go to bed.',
-    kuslukSuruyor: 'Duha time is on.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats.',
-    kuslukBitiyor: cogul({ one: '{n} minute left in Duha time.', few: '{n} minutes left in Duha time.', many: '{n} minutes left in Duha time.', other: '{n} minutes left in Duha time.' }),
-    evvabinSuruyor: 'There is still time for Awwabin.',
-    evvabinGirdi: 'Awwabin time. A good moment for two rakats.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin.', few: '{n} minutes left for Awwabin.', many: '{n} minutes left for Awwabin.', other: '{n} minutes left for Awwabin.' }),
-    teheccudSonUcte: 'Tahajjud time. The last third of the night has begun.',
-    teheccudKalan: cogul({ one: 'Tahajjud time. {n} minute left until Fajr.', few: 'Tahajjud time. {n} minutes left until Fajr.', many: 'Tahajjud time. {n} minutes left until Fajr.', other: 'Tahajjud time. {n} minutes left until Fajr.' }),
+    cuma: 'До Зугру в день Джума {sure}. Збирайтеся і йдіть до мечеті.',
+    camiyeGiris: 'До молитви {vakit} {sure}.',
+    camiyeHazirlan: 'Збирайтеся і йдіть до мечеті.',
+    camiyeYola: 'Йдіть до мечеті.',
+    takvimGiris: 'Подія у вашому календарі припадає на час молитви {vakit}.',
+    takvimOnce: 'Не забудьте звершити молитву перед подією.',
+    takvimKaplar: 'Не забудьте зробити перерву і звершити молитву.',
+    yatsi: 'Звершіть молитву Іша перед сном.',
+    muhasebeTek: 'Сьогодні {vakit}, схоже, не позначено.',
+    muhasebeCoklu: cogul({
+      one: 'Сьогодні {n} молитва, схоже, не позначена.',
+      few: 'Сьогодні {n} молитви, схоже, не позначені.',
+      many: 'Сьогодні {n} молитов, схоже, не позначені.',
+      other: 'Сьогодні {n} молитви, схоже, не позначені.',
+    }),
+    geceCapasi: 'Тихі години почнуться через {süre} хвилин. Звершіть молитву {vakit} перед сном.',
+    kuslukSuruyor: 'Триває час Духа.',
+    kuslukGirdi: 'Настав час Духа. Добра нагода для двох ракаатів.',
+    kuslukBitiyor: cogul({
+      one: 'До кінця часу Духа лишилася {n} хвилина.',
+      few: 'До кінця часу Духа лишилося {n} хвилини.',
+      many: 'До кінця часу Духа лишилося {n} хвилин.',
+      other: 'До кінця часу Духа лишилося {n} хвилини.',
+    }),
+    evvabinSuruyor: 'Для Аввабін ще є час.',
+    evvabinGirdi: 'Час Аввабін. Добра нагода для двох ракаатів.',
+    evvabinKalan: cogul({
+      one: 'Для Аввабін лишилася {n} хвилина.',
+      few: 'Для Аввабін лишилося {n} хвилини.',
+      many: 'Для Аввабін лишилося {n} хвилин.',
+      other: 'Для Аввабін лишилося {n} хвилини.',
+    }),
+    teheccudSonUcte: 'Час Тагаджуд. Настала остання третина ночі.',
+    teheccudKalan: cogul({
+      one: 'Час Тагаджуд. До Фаджру лишилася {n} хвилина.',
+      few: 'Час Тагаджуд. До Фаджру лишилося {n} хвилини.',
+      many: 'Час Тагаджуд. До Фаджру лишилося {n} хвилин.',
+      other: 'Час Тагаджуд. До Фаджру лишилося {n} хвилини.',
+    }),
   },
 };

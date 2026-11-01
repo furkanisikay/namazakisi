@@ -1402,31 +1402,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: uk
+    // uk
     public static let uk = VakitMetinleri(
         dil: "uk",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Фаджр", "ogle": "Зугр", "ikindi": "Аср", "aksam": "Магріб", "yatsi": "Іша"],
+        gunes: "Схід сонця",
+        konumYok: "Відкрийте застосунок і задайте місцезнаходження, щоб обчислити час молитов.",
+        veriEski: "Час молитов застарів. Відкрийте застосунок один раз, щоб оновити його.",
+        girisBugun: "о {saat}",
+        girisYarin: "завтра о {saat}",
+        suAnVakti: "Зараз час молитви {ad}.",
+        suAnVaktiCikis: "Зараз час молитви {ad}; він закінчується о {saat}.",
+        siradakiNamaz: "Наступна молитва — {ad} {giris}.",
+        isaretlendi: "Молитву {ad} позначено як здійснену. {dua}.",
+        zatenKilindi: "Молитву {ad} уже позначено як здійснену.",
+        vakitYok: "Зараз немає молитви для позначення.",
+        vakitYokSiradaki: "Зараз немає молитви для позначення. Наступна — {ad} {giris}.",
+        onay: "Позначити молитву {ad} як здійснену?",
+        vakitDegisti: "Час молитви змінився, тому нічого не позначено. Спробуйте ще раз.",
+        kabulDuasi: "Нехай Аллаг прийме",
+        kildim: "Молитву здійснено",
+        kilindi: "Здійснено",
+        kontrolKildim: "{ad} · Молитву здійснено",
+        kontrolKilindi: "Молитву {ad} здійснено",
+        kontrolVakitYok: "Немає молитви для позначення",
+        uygulamayiAcin: "Відкрийте застосунок"
     )
 
     // ÇEVİRİ: ro

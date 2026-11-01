@@ -1056,29 +1056,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: uk
+    // uk
     static let uk = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Час молитви",
+        galeriAciklama: "Поточна молитва, скільки лишилося до кінця її часу і сьогоднішній час молитов.",
+        veriEski: "Відкрийте застосунок, щоб оновити час молитов",
+        konumYok: "Відкрийте застосунок, щоб задати місцезнаходження",
+        kilindiSiradaki: "{ad} здійснено · {sonraki} {saat}",
+        adCikis: "{ad} · до {saat}",
+        siradakiAdSaat: "Далі: {ad} {saat}",
+        vaktiCikisErisim: "Час молитви {ad}, кінець о {saat}",
+        siradakiErisim: "Наступна молитва — {ad}, {saat}",
+        cikisSaat: "Кінець {saat}",
+        bitisSaat: "Кінець {saat}",
+        kilindiBaslik: "{ad} здійснено",
+        siradaki: "Наступна",
+        siradakiAd: "Далі: {ad}",
+        kildimErisim: "Молитву {ad} здійснено",
+        gunSatiriKilindi: ", здійснено",
+        bitti: "Завершено",
+        vakitCikti: "Час молитви минув",
+        kabulAlt: "Молитву {ad} здійснено",
+        kontrolAdi: "Молитву здійснено",
+        kontrolAciklama: "Позначає поточну молитву як здійснену."
     )
 
     // ÇEVİRİ: ro

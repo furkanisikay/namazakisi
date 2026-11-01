@@ -409,11 +409,16 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: uk (one/few/many/other)
+    // uk (one/few/many/other)
     static let uk = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "few": "{ad} begins in {n} minutes.", "many": "{ad} begins in {n} minutes.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: [
+            "one": "Час молитви {ad} настане через {n} хвилину.",
+            "few": "Час молитви {ad} настане через {n} хвилини.",
+            "many": "Час молитви {ad} настане через {n} хвилин.",
+            "other": "Час молитви {ad} настане через {n} хвилини.",
+        ],
+        evetKilindi: "Так, її позначено як здійснену.",
+        hayirKilinmadi: "Ні, її ще не позначено."
     )
 
     // ÇEVİRİ: ro (one/few/other)

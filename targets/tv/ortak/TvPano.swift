@@ -653,18 +653,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: uk (`aylar` tarih içi biçimdir: uk, hr, el ilgi hâli; ro, sr CLDR yalın)
+    // uk (`aylar` tarih içi biçimdir: uk, hr, el ilgi hâli; ro, sr CLDR yalın)
     public static let uk = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "Фаджр", "gunes": "Схід сонця", "ogle": "Зугр", "ikindi": "Аср", "aksam": "Магріб", "yatsi": "Іша"],
+        cuma: "Джума",
+        aylar: ["січня", "лютого", "березня", "квітня", "травня", "червня", "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"],
+        gunler: ["Понеділок", "Вівторок", "Середа", "Четвер", "П’ятниця", "Субота", "Неділя"],
+        tarih: "{gunAdi}, {gun} {ay} {yil} р.",
+        kerahatAdlari: ["suruk": "Схід сонця", "istiva": "Зеніт", "gurub": "Захід сонця"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Здійснювати молитву небажано, доки сонце добре не зійде.",
+            "istiva": "Здійснювати молитву небажано, поки сонце в зеніті.",
+            "gurub": "Здійснювати молитву небажано, поки сонце заходить.",
         ]
     )
 

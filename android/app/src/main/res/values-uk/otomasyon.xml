@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: uk — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Tasker / MacroDroid / Automate eklentisi (İngilizce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Ukraynaca). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
 <resources>
-  <string name="otomasyon_eylem_etiket">Namaz Akışı: I\'ve prayed</string>
-  <string name="otomasyon_kosul_etiket">Namaz Akışı: Prayer time status</string>
-  <string name="otomasyon_olay_etiket">Namaz Akışı: Prayer time event</string>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Молитву здійснено</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Стан часу молитви</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Подія часу молитви</string>
 
-  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
-  <string name="otomasyon_bilgi_baslik">This setting is added from an automation app</string>
-  <string name="otomasyon_bilgi_tarayici">Browsers can\'t get permanent permission. Add it from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_bilgi_eklenti">Add it by choosing \"Namaz Akışı\" from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_engelli_baslik">%1$s is blocked</string>
-  <string name="otomasyon_engelli_mesaj">You blocked this app from marking your prayers before. You can allow it in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_baslik">Use with %1$s?</string>
-  <string name="otomasyon_izin_kosul">%1$s can learn when a prayer time begins, when it\'s ending and when you\'re at a mosque, and run your automations. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_kildim">%1$s can mark the current prayer as prayed with the automation you set up. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_ver">Allow</string>
-  <string name="otomasyon_engelle">Block</string>
-  <string name="otomasyon_vazgec">Cancel</string>
-  <string name="otomasyon_tamam">OK</string>
-  <string name="otomasyon_tur_baslik">When should it run?</string>
-  <string name="otomasyon_ileri">Next</string>
-  <string name="otomasyon_vakit_baslik">Which prayer?</string>
-  <string name="otomasyon_herhangi_vakit">Any prayer time</string>
-  <string name="otomasyon_kaydet">Save</string>
-  <string name="otomasyon_kosul_icinde">While it\'s a prayer time</string>
-  <string name="otomasyon_kosul_cikiyor">While a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_kosul_camide">While at a mosque</string>
-  <string name="otomasyon_olay_girdi">When a prayer time begins</string>
-  <string name="otomasyon_olay_cikiyor">When a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_olay_camide">When you\'re detected at a mosque</string>
+  <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "ви". -->
+  <string name="otomasyon_bilgi_baslik">Це налаштування додається із застосунку автоматизації</string>
+  <string name="otomasyon_bilgi_tarayici">Браузери не можуть отримати постійний дозвіл. Додайте його зі списку плагінів застосунку на кшталт Tasker, MacroDroid чи Automate.</string>
+  <string name="otomasyon_bilgi_eklenti">Додайте його, вибравши «Namaz Akışı» у списку плагінів застосунку на кшталт Tasker, MacroDroid чи Automate.</string>
+  <string name="otomasyon_engelli_baslik">%1$s заблоковано</string>
+  <string name="otomasyon_engelli_mesaj">Раніше ви заборонили цьому застосунку позначати ваші молитви. Дозволити можна в Namaz Akışı в розділі Налаштування &gt; «Застосунки, що позначають „Молитву здійснено“».</string>
+  <string name="otomasyon_izin_baslik">Використовувати з %1$s?</string>
+  <string name="otomasyon_izin_kosul">%1$s зможе дізнаватися, коли настає час молитви, коли він закінчується і коли ви в мечеті, та запускати ваші автоматизації. Змінити рішення можна в Namaz Akışı в розділі Налаштування &gt; «Застосунки, що позначають „Молитву здійснено“».</string>
+  <string name="otomasyon_izin_kildim">%1$s зможе позначати поточну молитву як здійснену за налаштованою вами автоматизацією. Змінити рішення можна в Namaz Akışı в розділі Налаштування &gt; «Застосунки, що позначають „Молитву здійснено“».</string>
+  <string name="otomasyon_izin_ver">Дозволити</string>
+  <string name="otomasyon_engelle">Заблокувати</string>
+  <string name="otomasyon_vazgec">Скасувати</string>
+  <string name="otomasyon_tamam">Готово</string>
+  <string name="otomasyon_tur_baslik">Коли запускати?</string>
+  <string name="otomasyon_ileri">Далі</string>
+  <string name="otomasyon_vakit_baslik">Яка молитва?</string>
+  <string name="otomasyon_herhangi_vakit">Будь-який час молитви</string>
+  <string name="otomasyon_kaydet">Зберегти</string>
+  <string name="otomasyon_kosul_icinde">Поки триває час молитви</string>
+  <string name="otomasyon_kosul_cikiyor">Поки час молитви закінчується (лишилося %1$d хв, Вартовий молитви ввімкнено)</string>
+  <string name="otomasyon_kosul_camide">Поки ви в мечеті</string>
+  <string name="otomasyon_olay_girdi">Коли настає час молитви</string>
+  <string name="otomasyon_olay_cikiyor">Коли час молитви закінчується (лишилося %1$d хв, Вартовий молитви ввімкнено)</string>
+  <string name="otomasyon_olay_camide">Коли визначено, що ви в мечеті</string>
 </resources>
