@@ -1,14 +1,18 @@
-// ÇEVİRİ: sr — İngilizce iskelet, çevrilince bu satır silinir
-// `aylar` tarih içi biçim: CLDR yalın yazar ("31. октобар 2026."), günlük yazımda ilgi hâli ("31. октобра") de yaygın — çevirmen seçer; `aylarYalin` takvim başlığı ("октобар 2026"); tarih sonda nokta taşır.
 import type { Sozluk } from '../tr';
 
+/**
+ * Sırpça (Kiril, ekavyen): gün ve ay adları küçük harf. Uzun tarih CLDR'ye uyar, tarih içinde
+ * ay adı YALIN ("31. октобар 2026.", sahip kararı; işletim sistemiyle tutarlı); `aylarYalin`
+ * takvim başlığıdır ve CLDR bağımsız biçimi gibi küçük harflidir ("октобар 2026."; `ayAdiniAl`
+ * cümle içi tarihte de kullanılır: "до 31. октобар"). Tarih sonda nokta taşır.
+ */
 export const tarih: Sozluk['tarih'] = {
-  gunler: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  gunlerKisa: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  aylar: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarYalin: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarKisa: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  haftaHarfleri: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-  uzun: '{gun} {ay} {yil}',
+  gunler: ['недеља', 'понедељак', 'уторак', 'среда', 'четвртак', 'петак', 'субота'],
+  gunlerKisa: ['нед', 'пон', 'уто', 'сре', 'чет', 'пет', 'суб'],
+  aylar: ['јануар', 'фебруар', 'март', 'април', 'мај', 'јун', 'јул', 'август', 'септембар', 'октобар', 'новембар', 'децембар'],
+  aylarYalin: ['јануар', 'фебруар', 'март', 'април', 'мај', 'јун', 'јул', 'август', 'септембар', 'октобар', 'новембар', 'децембар'],
+  aylarKisa: ['јан', 'феб', 'мар', 'апр', 'мај', 'јун', 'јул', 'авг', 'сеп', 'окт', 'нов', 'дец'],
+  haftaHarfleri: ['По', 'Ут', 'Ср', 'Че', 'Пе', 'Су', 'Не'],
+  uzun: '{gun}. {ay} {yil}.',
   gunAdiYil: '{gunAdi}, {yil}',
 };

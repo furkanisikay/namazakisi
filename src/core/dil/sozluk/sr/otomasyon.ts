@@ -1,10 +1,10 @@
-// ÇEVİRİ: sr — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Bildirim başlığı ve rutin anahtar kelimesi; `vakitGirdiEki` başlığın içinde geçmelidir. */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'наступило је време',
+  vakitGirdiBasligi: '{ad}: наступило је време',
+  herhangiVakit: 'Када наступи било које време намаза',
+  yalnizVakit: 'Само када наступи време: {ad}',
+  camide: 'Када се открије да сте у џамији (док је „У џамији” укључено)',
 };

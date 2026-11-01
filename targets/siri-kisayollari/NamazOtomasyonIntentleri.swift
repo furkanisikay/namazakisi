@@ -435,11 +435,15 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: sr (one/few/other)
+    // sr (one/few/other)
     static let sr = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "few": "{ad} begins in {n} minutes.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: [
+            "one": "{ad}: време наступа за {n} минут.",
+            "few": "{ad}: време наступа за {n} минута.",
+            "other": "{ad}: време наступа за {n} минута.",
+        ],
+        evetKilindi: "Да, означено је као клањано.",
+        hayirKilinmadi: "Не, још није означено."
     )
 
     // el (one/other)
