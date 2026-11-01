@@ -1,35 +1,37 @@
-// ÇEVİRİ: ro — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Rumence konuşan Müslümanların kalıpları (çeviri değil). "Doamne, primește de la noi" QuranEnc
+ * `romanian_project` 2:127'deki duadır (Rabbenâ tekabbel minnâ; köşeli ek ve "!" düşürüldü, virgüllü ș).
+ * "Allah să primească" (Allah kabul etsin) fiil kökü kaynaklı (5:27 "Allah primește"), kalıp türetildi;
+ * "Să fie primită" (kabul olsun) türetildi — yerli okuyucuyla DOĞRULANMADI. "Să fie într-un ceas bun"
+ * Rumencenin yerleşik hayır dileğidir. Övgü ve "!" yok. Kandil ve hicrî yılbaşı selamı ülke başına
+ * gösterilir (`selam.ts`); Romanya Müslümanları bayram/kandil adlarını Türkçe kökenli kullanır (Bayram, Berat).
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Să fie într-un ceas bun.',
+  kabulDualari: ['Allah să primească', 'Doamne, primește de la noi', 'Allah să primească', 'Să fie primită'],
+  kabulDuasi: 'Allah să primească',
+  ekSabah: 'Dimineață binecuvântată',
+  ekYatsi: 'Noapte binecuvântată',
+  tamGunAna: 'Allah să primească',
+  tamGunAlt: 'Astăzi ați efectuat toate cele cinci rugăciuni.',
+  kazaKabul: 'O rugăciune {vakit} de recuperat a fost scăzută din registru. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Noapte de Regaib binecuvântată',
+    mirac: 'Noapte de Miraj binecuvântată',
+    berat: 'Noapte de Berat binecuvântată',
+    mevlid: 'Mevlid binecuvântat',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'Suhur binecuvântat',
+    bayram: 'Bayram binecuvântat',
+    iftar: 'Iftar binecuvântat',
+    kadir: 'Noaptea al-Qadr binecuvântată',
+    arefe: 'Ajun de Bayram binecuvântat',
+    hicriYilbasi: 'An Nou Hegirian binecuvântat',
+    cuma: 'Vineri binecuvântată',
+    ramazan: 'Ramadan binecuvântat',
+    sabah: 'Dimineață binecuvântată',
   },
 };

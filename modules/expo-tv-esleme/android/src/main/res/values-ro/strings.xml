@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ro — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="tvesleme_qr_ipucu">Fit the QR code on the TV screen inside the frame</string>
-    <string name="tvesleme_qr_vazgec">Cancel</string>
-    <string name="tvesleme_qr_vazgec_erisim">Cancel scanning</string>
-    <string name="tvesleme_qr_yabanci">This QR code doesn\'t belong to Namaz Akışı TV. Scan the code on the TV.</string>
-    <string name="tvesleme_qr_okundu">Code scanned</string>
+    <string name="tvesleme_qr_ipucu">Încadrați codul QR de pe ecranul televizorului</string>
+    <string name="tvesleme_qr_vazgec">Anulați</string>
+    <string name="tvesleme_qr_vazgec_erisim">Anulați scanarea</string>
+    <string name="tvesleme_qr_yabanci">Acest cod QR nu aparține Namaz Akışı TV. Scanați codul de pe televizor.</string>
+    <string name="tvesleme_qr_okundu">Cod scanat</string>
 </resources>

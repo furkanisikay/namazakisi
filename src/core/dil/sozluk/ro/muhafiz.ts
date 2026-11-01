@@ -1,61 +1,70 @@
-// ÇEVİRİ: ro — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Rumencede: 2. çoğul kibar emir (yönetim metniyle aynı), kısa ve doğrudan;
+ * "vă rugăm", "dumneavoastră" ve "!" yok. Çağrı "Efectuați rugăciunea" (QuranEnc `romanian_project`
+ * 2:43 "Efectuați Rugăciunea", arayüzde küçük r); "namaza dur" = "ridicați-vă la rugăciune"
+ * (secde YAZILMAZ). Kullanıcıya dönük sıfat/ortaç yazılmaz (kibar biçimde cinsiyet ve sayı taşır).
+ * Başlık önden okunur: vakit adı + süre ilk 16 karakterde ("Maghrib · 655 min").
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} min trecute · a sosit timpul ⏰',
+    giris2: '{ad} · {dk} min trecute · nu amânați rugăciunea ⚠️',
+    giris3: '{ad} · {dk} min trecute · rugăciunea vă așteaptă 🔥',
+    giris4: '{ad} · {dk} min trecute · EFECTUAȚI RUGĂCIUNEA 🚨',
+    erken3: '{ad} · {dk} min rămase · rugăciunea vă așteaptă 🔥',
+    erken4: '{ad} · {dk} min rămase · EFECTUAȚI RUGĂCIUNEA 🚨',
+    cikis1: '{ad} · {dk} min rămase ⏰',
+    cikis2: '{ad} · {dk} min · timpul se scurtează ⚠️',
+    cikis3: '{ad} · {dk} min · timpul se scurge 🔥',
+    cikis4: '{ad} · {dk} min · TIMPUL SE ÎNCHEIE 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['A sosit timpul rugăciunii; rugați-vă cât aveți ocazia.', 'Rugați-vă cât timpul vă este favorabil; nu lăsați pe mai târziu.'],
+    s2: ['Cu cât amânați, cu atât devine mai greu; nu lăsați rugăciunea la final.', 'Timpul înaintează — rugați-vă acum.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Cu cât întârziați, cu atât vă apropiați de pierderea ei; rugați-vă acum.',
+      'Nu spuneți „mă rog mai târziu”; vă puteți ruga acum.',
+      'Ridicați-vă acum, ca să nu regretați peste câteva minute.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Nu mai amânați rugăciunea — ridicați-vă acum la rugăciune.', 'Lăsați ce faceți și ridicați-vă la rugăciune.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Timpul începe să se scurteze; rugați-vă cât aveți ocazia.',
+    s2: 'Nu lăsați rugăciunea la final; acum este un moment potrivit.',
+    s3: 'Timpul aproape s-a încheiat; încă vă puteți ruga acum.',
+    s4: 'Dacă v-ați rugat, apăsați „M-am rugat”; dacă nu, ridicați-vă acum la rugăciune.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", few: "It's been {n} minutes since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', few: '{n} minutes left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'NU AMÂNAȚI RUGĂCIUNEA. Ridicați-vă acum la rugăciune. (au trecut {dk} min)',
+    giris2: 'Timpul înaintează; nu lăsați rugăciunea la final. (au trecut {dk} min)',
+    giris1: cogul({
+      one: 'A trecut {n} minut de la începutul timpului rugăciunii.',
+      few: 'Au trecut {n} minute de la începutul timpului rugăciunii.',
+      other: 'Au trecut {n} de minute de la începutul timpului rugăciunii.',
+    }),
+    erken4: 'Nu amânați rugăciunea; ridicați-vă acum la rugăciune. (mai sunt {dk} min)',
+    cikis4: 'TIMPUL SE ÎNCHEIE. Ridicați-vă acum la rugăciune. (mai sunt {dk} min)',
+    cikis2: 'Timpul se scurtează; nu lăsați rugăciunea la final. (mai sunt {dk} min)',
+    cikis1: cogul({
+      one: 'Mai este {n} minut până la sfârșitul timpului rugăciunii.',
+      few: 'Mai sunt {n} minute până la sfârșitul timpului rugăciunii.',
+      other: 'Mai sunt {n} de minute până la sfârșitul timpului rugăciunii.',
+    }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · rugați-vă înainte de somn ⏰',
+    govde: 'Orele de liniște încep în {dk} min; efectuați rugăciunea Ișa înainte de culcare.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Timpul începe să se scurteze; rugați-vă cât aveți ocazia.',
+    sonaBirakma: 'Nu lăsați rugăciunea la final; acum este un moment potrivit.',
+    fisilti: 'Nu spuneți „mă rog mai târziu”; timpul aproape s-a încheiat, vă puteți ruga acum.',
+    omur: 'Timpul trece; încă aveți ocazia să efectuați această rugăciune la timp.',
+    keske: 'Ridicați-vă acum, ca să nu regretați peste câteva minute.',
+    namazaDur: 'Dacă v-ați rugat, apăsați „M-am rugat”; dacă nu, ridicați-vă acum la rugăciune.',
+    sonDakika: 'Ultimele minute. Lăsați ce faceți și ridicați-vă la rugăciune.',
   },
 };

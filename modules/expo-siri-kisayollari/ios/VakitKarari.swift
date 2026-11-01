@@ -1429,31 +1429,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Відкрийте застосунок"
     )
 
-    // ÇEVİRİ: ro
+    // ro
     public static let ro = VakitMetinleri(
         dil: "ro",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Ișa"],
+        gunes: "Răsărit",
+        konumYok: "Deschideți aplicația și setați locația, ca să se poată calcula orele de rugăciune.",
+        veriEski: "Orele de rugăciune nu sunt actuale. Deschideți aplicația o dată ca să le actualizați.",
+        girisBugun: "la {saat}",
+        girisYarin: "mâine la {saat}",
+        suAnVakti: "Acum este timpul pentru {ad}.",
+        suAnVaktiCikis: "Acum este timpul pentru {ad}; se încheie la {saat}.",
+        siradakiNamaz: "Rugăciunea următoare este {ad}, {giris}.",
+        isaretlendi: "{ad} a fost marcată ca efectuată. {dua}.",
+        zatenKilindi: "{ad} este deja marcată ca efectuată.",
+        vakitYok: "Nu există acum nicio rugăciune de marcat.",
+        vakitYokSiradaki: "Nu există acum nicio rugăciune de marcat. Urmează {ad}, {giris}.",
+        onay: "Marcați {ad} ca efectuată?",
+        vakitDegisti: "Timpul rugăciunii s-a schimbat, așa că nu s-a marcat nimic. Încercați din nou.",
+        kabulDuasi: "Allah să primească",
+        kildim: "M-am rugat",
+        kilindi: "Efectuată",
+        kontrolKildim: "{ad} · M-am rugat",
+        kontrolKilindi: "{ad} efectuată",
+        kontrolVakitYok: "Nicio rugăciune de marcat",
+        uygulamayiAcin: "Deschideți aplicația"
     )
 
     // ÇEVİRİ: hr

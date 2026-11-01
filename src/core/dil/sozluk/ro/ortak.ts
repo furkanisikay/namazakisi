@@ -1,15 +1,14 @@
-// ÇEVİRİ: ro — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Continuați',
+  vazgecin: 'Anulați',
+  kapatin: 'Închideți',
+  ayarlariAcin: 'Deschideți setările',
+  simdilikGecin: 'Omiteți deocamdată',
+  tekrarDeneyin: 'Încercați din nou',
+  evet: 'Da',
+  hayir: 'Nu',
+  ayrintilariAcar: 'Deschide detaliile',
   marka: 'Namaz Akışı',
 };

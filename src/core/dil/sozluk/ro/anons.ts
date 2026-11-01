@@ -1,63 +1,85 @@
-// ÇEVİRİ: ro — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
-/** İbadete çağrı kaydı: doğrudan, kısa; "prostrate" yok. Sıra Türkçe şablonlarla BİREBİR eşleşir. */
+/**
+ * İbadete çağrı kaydı: 2. çoğul kibar emir, kısa; secde yok. Sıra Türkçe şablonlarla BİREBİR eşleşir.
+ * Dakika tek biçimle ("{süre} minute") yazılır; `dakikaUyumu` sayıya göre çeker ("1 minut", "25 de minute").
+ */
 export const anons: Sozluk['anons'] = {
-  yon: { cikisaDogru: 'left', girisindenItibaren: 'passed' },
-  cip: { vakit: 'Prayer name', sure: 'Minutes', yon: 'left / passed', cuma: "Jumu'ah", yatsi: 'Isha' },
+  yon: { cikisaDogru: 'rămase', girisindenItibaren: 'trecute' },
+  cip: { vakit: 'Numele rugăciunii', sure: 'Minute', yon: 'rămase / trecute', cuma: 'Jumu’ah', yatsi: 'Ișa' },
   sablon: {
     muhafizCikis: [
-      '{vakit} time is ending, {süre} minutes left.',
-      "Don't miss {vakit}, {süre} minutes left.",
-      'Time is running short, {süre} minutes until {vakit} ends.',
+      'Timpul de {vakit} se încheie, mai sunt {süre} minute.',
+      'Nu pierdeți {vakit}, mai sunt {süre} minute.',
+      'Timpul se scurtează, mai sunt {süre} minute până se încheie {vakit}.',
     ],
     muhafizGiris: [
-      '{vakit} time has begun, {süre} minutes have passed.',
-      "Don't delay {vakit}, {süre} minutes have passed.",
-      'Time is moving on, stand for {vakit}, it has been {süre} minutes.',
+      'A început timpul de {vakit}, au trecut {süre} minute.',
+      'Nu amânați {vakit}, au trecut {süre} minute.',
+      'Timpul înaintează, ridicați-vă la {vakit}, au trecut {süre} minute.',
     ],
     nafile: [
-      '{vakit} time, {süre} minutes {yön}. A good moment for two rakats.',
-      '{vakit} time is on. A good chance to pray two rakats.',
-      '{süre} minutes {yön} for {vakit}.',
+      'Timpul de {vakit}, {süre} minute {yön}. Un moment bun pentru două rak’ah.',
+      'Timpul de {vakit} continuă. O ocazie bună pentru două rak’ah.',
+      '{süre} minute {yön} pentru {vakit}.',
     ],
     cuma: [
-      "{süre} minutes left until Jumu'ah. Get ready and head to the mosque.",
-      "Jumu'ah is approaching, {süre} minutes left.",
-      "Catch the khutbah, {süre} minutes left until Jumu'ah.",
+      'Mai sunt {süre} minute până la Jumu’ah. Pregătiți-vă și mergeți la moschee.',
+      'Se apropie Jumu’ah, mai sunt {süre} minute.',
+      'Prindeți predica, mai sunt {süre} minute până la Jumu’ah.',
     ],
     camiyeGit: [
-      '{süre} minutes left until {vakit}. Head to the mosque.',
-      'Time to go to the mosque, {süre} minutes until {vakit}.',
-      'Head to the mosque for {vakit}.',
+      'Mai sunt {süre} minute până la {vakit}. Mergeți la moschee.',
+      'Este timpul să mergeți la moschee, mai sunt {süre} minute până la {vakit}.',
+      'Mergeți la moschee pentru {vakit}.',
     ],
-    yatis: ['Pray Isha before you go to bed.', 'Isha time is still on, stand for prayer before you sleep.', "Don't sleep before you pray Isha."],
+    yatis: [
+      'Efectuați rugăciunea Ișa înainte de culcare.',
+      'Timpul de Ișa continuă, ridicați-vă la rugăciune înainte să adormiți.',
+      'Nu vă culcați înainte de a efectua rugăciunea Ișa.',
+    ],
     takvim: [
-      'An event in your calendar falls during {vakit} time.',
-      "{vakit} time clashes with an event; don't forget to pray first.",
-      "In {süre} minutes {vakit} time clashes with your event; don't forget your prayer.",
+      'Un eveniment din calendar cade în timpul de {vakit}.',
+      'Timpul de {vakit} se suprapune cu un eveniment; nu uitați să vă rugați mai întâi.',
+      'Peste {süre} minute, timpul de {vakit} se suprapune cu evenimentul; nu uitați de rugăciune.',
     ],
   },
   otomatik: {
-    cuma: "{sure} until Dhuhr for Jumu'ah. Get ready and head to the mosque.",
-    camiyeGiris: '{sure} until {vakit}.',
-    camiyeHazirlan: 'Get ready and head to the mosque.',
-    camiyeYola: 'Head to the mosque.',
-    takvimGiris: 'An event in your calendar falls during {vakit} time.',
-    takvimOnce: "Don't forget to pray before the event.",
-    takvimKaplar: "Don't forget to take a break and pray.",
-    yatsi: 'Pray Isha before you go to bed.',
-    muhasebeTek: '{vakit} looks unmarked today.',
-    muhasebeCoklu: cogul({ one: '{n} prayer looks unmarked today.', few: '{n} prayers look unmarked today.', other: '{n} prayers look unmarked today.' }),
-    geceCapasi: 'Quiet hours start in {süre} minutes. Pray {vakit} before you go to bed.',
-    kuslukSuruyor: 'Duha time is on.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats.',
-    kuslukBitiyor: cogul({ one: '{n} minute left in Duha time.', few: '{n} minutes left in Duha time.', other: '{n} minutes left in Duha time.' }),
-    evvabinSuruyor: 'There is still time for Awwabin.',
-    evvabinGirdi: 'Awwabin time. A good moment for two rakats.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin.', few: '{n} minutes left for Awwabin.', other: '{n} minutes left for Awwabin.' }),
-    teheccudSonUcte: 'Tahajjud time. The last third of the night has begun.',
-    teheccudKalan: cogul({ one: 'Tahajjud time. {n} minute left until Fajr.', few: 'Tahajjud time. {n} minutes left until Fajr.', other: 'Tahajjud time. {n} minutes left until Fajr.' }),
+    cuma: 'Mai sunt {sure} până la Dhuhr pentru Jumu’ah. Pregătiți-vă și mergeți la moschee.',
+    camiyeGiris: 'Mai sunt {sure} până la {vakit}.',
+    camiyeHazirlan: 'Pregătiți-vă și mergeți la moschee.',
+    camiyeYola: 'Mergeți la moschee.',
+    takvimGiris: 'Un eveniment din calendar cade în timpul de {vakit}.',
+    takvimOnce: 'Nu uitați să vă rugați înainte de eveniment.',
+    takvimKaplar: 'Nu uitați să faceți o pauză și să vă rugați.',
+    yatsi: 'Efectuați rugăciunea Ișa înainte de culcare.',
+    muhasebeTek: '{vakit} pare nemarcată astăzi.',
+    muhasebeCoklu: cogul({
+      one: '{n} rugăciune pare nemarcată astăzi.',
+      few: '{n} rugăciuni par nemarcate astăzi.',
+      other: '{n} de rugăciuni par nemarcate astăzi.',
+    }),
+    geceCapasi: 'Orele de liniște încep peste {süre} minute. Efectuați {vakit} înainte de culcare.',
+    kuslukSuruyor: 'Timpul de Duha continuă.',
+    kuslukGirdi: 'A început timpul de Duha. Un moment bun pentru două rak’ah.',
+    kuslukBitiyor: cogul({
+      one: 'Mai este {n} minut din timpul de Duha.',
+      few: 'Mai sunt {n} minute din timpul de Duha.',
+      other: 'Mai sunt {n} de minute din timpul de Duha.',
+    }),
+    evvabinSuruyor: 'Mai este timp pentru Awwabin.',
+    evvabinGirdi: 'Timpul de Awwabin. Un moment bun pentru două rak’ah.',
+    evvabinKalan: cogul({
+      one: 'Mai este {n} minut pentru Awwabin.',
+      few: 'Mai sunt {n} minute pentru Awwabin.',
+      other: 'Mai sunt {n} de minute pentru Awwabin.',
+    }),
+    teheccudSonUcte: 'Timpul de Tahajjud. A început ultima treime a nopții.',
+    teheccudKalan: cogul({
+      one: 'Timpul de Tahajjud. Mai este {n} minut până la Fajr.',
+      few: 'Timpul de Tahajjud. Mai sunt {n} minute până la Fajr.',
+      other: 'Timpul de Tahajjud. Mai sunt {n} de minute până la Fajr.',
+    }),
   },
 };

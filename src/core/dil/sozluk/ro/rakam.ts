@@ -1,11 +1,10 @@
-// ÇEVİRİ: ro — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'Cifre',
+  aciklama: 'Alegeți cifrele folosite pentru ore, date și numere.',
+  otomatik: 'După țară',
+  otomatikAciklama: 'Folosește cifrele obișnuite în țara în care vă aflați.',
+  dogu: 'Cifre arabe orientale',
+  bati: 'Cifre occidentale',
 };

@@ -128,7 +128,7 @@ object CanliGuncellemeKurallari {
         "sv" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // uk
         "uk" to KisaBirimler("год", "хв", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: ro
+        // ro (CLDR ro: "h", "min" — JS sure.kisa ile aynı)
         "ro" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: hr
         "hr" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),

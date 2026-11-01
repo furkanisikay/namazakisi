@@ -421,11 +421,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Ні, її ще не позначено."
     )
 
-    // ÇEVİRİ: ro (one/few/other)
+    // ro (one/few/other; other "de" ile)
     static let ro = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "few": "{ad} begins in {n} minutes.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} începe peste {n} minut.", "few": "{ad} începe peste {n} minute.", "other": "{ad} începe peste {n} de minute."],
+        evetKilindi: "Da, este marcată ca efectuată.",
+        hayirKilinmadi: "Nu, încă nu este marcată."
     )
 
     // ÇEVİRİ: hr (one/few/other)

@@ -624,18 +624,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Mikhailo Yakubovych, QuranEnc 1.0.2"
     )
 
-    // ÇEVİRİ: ro
+    // ro (meal `gununAyetiHavuzu.ts` 94:6 BİREBİR, romanian_project; virgüllü ș)
     static let ro = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Versetul zilei",
+        galeriAciklama: "Un verset și traducerea lui, care se schimbă în fiecare zi la Fajr.",
+        etiket: "VERSETUL ZILEI",
+        uygulamayiAcin: "Deschideți aplicația ca să vedeți versetul zilei",
+        ornekSigmiyor: "Versetul de azi nu încape în această dimensiune. Atingeți pentru a-l citi.",
+        ornekAcin: "Deschideți",
+        ornekArapcaKaynagi: "Araba: Tanzil",
+        ornekMeal: "Cu adevărat, alături de greu vine și ușorul!",
+        ornekKisaKunye: "Coran 94:6",
+        ornekMealKaynagi: "Islam4ro.com, QuranEnc 1.0.4"
     )
 
     // ÇEVİRİ: hr

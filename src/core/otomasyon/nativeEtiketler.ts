@@ -258,12 +258,11 @@ export const NATIVE_ETIKETLER: { tr: NativeEtiket } & Partial<Record<DilKodu, Na
     kosul: 'Namaz Akışı: Стан часу молитви', // dil-haric: marka adı (native etiket)
     eylem: 'Namaz Akışı: Молитву здійснено', // dil-haric: marka adı (native etiket)
   },
-  // ÇEVİRİ: ro — İngilizce iskelet (values-ro kopyası)
   ro: {
-    kisayol: "I've prayed the current prayer",
-    olay: 'Namaz Akışı: Prayer time event', // dil-haric: marka adı (native etiket)
-    kosul: 'Namaz Akışı: Prayer time status', // dil-haric: marka adı (native etiket)
-    eylem: "Namaz Akışı: I've prayed", // dil-haric: marka adı (native etiket)
+    kisayol: 'Am efectuat rugăciunea curentă',
+    olay: 'Namaz Akışı: Eveniment al timpului de rugăciune', // dil-haric: marka adı (native etiket)
+    kosul: 'Namaz Akışı: Starea timpului de rugăciune', // dil-haric: marka adı (native etiket)
+    eylem: 'Namaz Akışı: M-am rugat', // dil-haric: marka adı (native etiket)
   },
   // ÇEVİRİ: hr — İngilizce iskelet (values-hr kopyası)
   hr: {

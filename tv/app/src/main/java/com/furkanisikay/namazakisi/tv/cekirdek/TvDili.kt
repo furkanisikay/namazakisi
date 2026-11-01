@@ -2120,26 +2120,27 @@ object TvDiliUk : TvDili {
     override val iftaraKalan = "До іфтару"
 }
 
-// ÇEVİRİ: ro
-// CLDR ro: one = 1; few = 0 ve …01–…19 (1 hariç); other (JS `cogul.ts > rumence`); ș ț virgüllü.
-// `aylar` yalnız tarihte kullanılır → tarih içi biçim (uk, hr, el ilgi hâli; ro yalın; sr CLDR yalın).
+// ro
+// CLDR ro: one = 1; few = 0 ve …01–…19 (1 hariç); other "de" ile (JS `cogul.ts > rumence`); ș ț virgüllü.
+// `aylar` yalnız tarihte kullanılır → tarih içi biçim (ro'da yalın, küçük harf: "sâmbătă, 31 octombrie 2026").
+// Rumence harfler (ă â î ș ț) tanımlayıcıya yapışır: şablonlarda `${}` zorunlu.
 object TvDiliRo : TvDili {
     override val kod = "ro"
     override fun vakitAdi(vakit: Vakit) = when (vakit) {
         Vakit.IMSAK -> "Fajr"
-        Vakit.GUNES -> "Sunrise"
+        Vakit.GUNES -> "Răsărit"
         Vakit.OGLE -> "Dhuhr"
         Vakit.IKINDI -> "Asr"
         Vakit.AKSAM -> "Maghrib"
-        Vakit.YATSI -> "Isha"
+        Vakit.YATSI -> "Ișa"
     }
-    override val cuma = "Jumu'ah"
+    override val cuma = "Jumu’ah"
     override val aylar = listOf(
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December",
+        "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
+        "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie",
     )
-    override val gunler = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $gun $ay $yil"
+    override val gunler = listOf("luni", "marți", "miercuri", "joi", "vineri", "sâmbătă", "duminică")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "${gunAdi}, ${gun} ${ay} ${yil}"
 
     override val birimSa = "h"
     override val birimDk = "min"
@@ -2157,35 +2158,35 @@ object TvDiliRo : TvDili {
     }
 
     override fun saatSesli(n: Int) = when (cogulKategorisi(n)) {
-        "one" -> "$n hour"
-        "few" -> "$n hours"
-        else -> "$n hours"
+        "one" -> "${n} oră"
+        "few" -> "${n} ore"
+        else -> "${n} de ore"
     }
     override fun dakikaSesli(n: Int) = when (cogulKategorisi(n)) {
-        "one" -> "$n minute"
-        "few" -> "$n minutes"
-        else -> "$n minutes"
+        "one" -> "${n} minut"
+        "few" -> "${n} minute"
+        else -> "${n} de minute"
     }
-    override val birDakikadanAz = "less than 1 minute"
+    override val birDakikadanAz = "mai puțin de un minut"
 
     override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Sunrise"
-        Kerahat.Tur.ISTIVA -> "Zenith"
-        Kerahat.Tur.GURUB -> "Sunset"
+        Kerahat.Tur.SURUK -> "Răsărit"
+        Kerahat.Tur.ISTIVA -> "Zenit"
+        Kerahat.Tur.GURUB -> "Apus"
     }
 
     override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Praying is makruh until the sun has risen well."
-        Kerahat.Tur.ISTIVA -> "Praying is makruh while the sun is at its zenith."
-        Kerahat.Tur.GURUB -> "Praying is makruh while the sun is setting."
+        Kerahat.Tur.SURUK -> "Rugăciunea este makruh până când soarele s-a ridicat bine."
+        Kerahat.Tur.ISTIVA -> "Rugăciunea este makruh cât soarele este la zenit."
+        Kerahat.Tur.GURUB -> "Rugăciunea este makruh cât soarele apune."
     }
 
-    override fun bant(ad: String, dk: Long) = "Time for $ad is running short · $dk min"
-    override val kabulDuasi = "May Allah accept it"
-    override val iftarSelami = "Blessed iftar"
-    override val cumaSelami = "Jumu'ah Mubarak"
-    override val sahuraKalan = "Time left for suhoor"
-    override val iftaraKalan = "Time left until iftar"
+    override fun bant(ad: String, dk: Long) = "Timpul pentru ${ad} se scurtează · ${dk} min"
+    override val kabulDuasi = "Allah să primească"
+    override val iftarSelami = "Iftar binecuvântat"
+    override val cumaSelami = "Vineri binecuvântată"
+    override val sahuraKalan = "Timp rămas pentru suhur"
+    override val iftaraKalan = "Timp rămas până la iftar"
 }
 
 // ÇEVİRİ: hr

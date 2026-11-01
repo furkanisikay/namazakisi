@@ -668,18 +668,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: ro (`aylar` tarih içi biçimdir: uk, hr, el ilgi hâli; ro, sr CLDR yalın)
+    // ro (`aylar` tarih içi biçimdir; Rumencede yalın ve küçük harf: "sâmbătă, 31 octombrie 2026")
     public static let ro = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        vakitAdlari: ["imsak": "Fajr", "gunes": "Răsărit", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Ișa"],
+        cuma: "Jumu’ah",
+        aylar: ["ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"],
+        gunler: ["luni", "marți", "miercuri", "joi", "vineri", "sâmbătă", "duminică"],
         tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAdlari: ["suruk": "Răsărit", "istiva": "Zenit", "gurub": "Apus"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Rugăciunea este makruh până când soarele s-a ridicat bine.",
+            "istiva": "Rugăciunea este makruh cât soarele este la zenit.",
+            "gurub": "Rugăciunea este makruh cât soarele apune.",
         ]
     )
 

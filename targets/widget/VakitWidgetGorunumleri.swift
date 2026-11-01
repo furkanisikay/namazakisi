@@ -1081,29 +1081,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Позначає поточну молитву як здійснену."
     )
 
-    // ÇEVİRİ: ro
+    // ro
     static let ro = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Timpul rugăciunii",
+        galeriAciklama: "Rugăciunea curentă, timpul rămas până se încheie și orele de rugăciune de azi.",
+        veriEski: "Deschideți aplicația ca să actualizați orele de rugăciune",
+        konumYok: "Deschideți aplicația ca să setați locația",
+        kilindiSiradaki: "{ad} efectuată · {sonraki} {saat}",
+        adCikis: "{ad} · până la {saat}",
+        siradakiAdSaat: "Urmează {ad} {saat}",
+        vaktiCikisErisim: "Timpul pentru {ad}, se încheie {saat}",
+        siradakiErisim: "Urmează {ad}, {saat}",
+        cikisSaat: "Final {saat}",
+        bitisSaat: "Final {saat}",
+        kilindiBaslik: "{ad} efectuată",
+        siradaki: "Urmează",
+        siradakiAd: "Urmează {ad}",
+        kildimErisim: "Am efectuat {ad}",
+        gunSatiriKilindi: ", efectuată",
+        bitti: "Încheiat",
+        vakitCikti: "Timpul rugăciunii s-a încheiat",
+        kabulAlt: "{ad} efectuată",
+        kontrolAdi: "M-am rugat",
+        kontrolAciklama: "Marchează rugăciunea curentă ca efectuată."
     )
 
     // ÇEVİRİ: hr
