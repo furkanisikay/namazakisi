@@ -157,7 +157,7 @@ Her dilin vakit ve terim kararları kendi `sozluk/<dil>/vakit.ts` başındaki yo
 - **Çizelgedeki sabah satırı (`vakit.imsakVakti`) Türkçe dışında "Imsak" DEĞİL, fecir adıdır** (Fajr, Subuh, Фаджр, Zora): Kemenag, JAKIM ve Mawaqit çizelgelerinde Imsak fecirden ~10 dk önceki ihtiyat saatidir, uygulamanın imsak saati ise fecrin girişidir. "Imsak" yalnız Diyanet geleneğindeki takımlarda kalır (Türkçe, Diyanet DE).
 - **Boşnakça:** namaz "Sabah" (`adlar.imsak`), çizelge satırı "Zora" (vaktija.ba).
 - **Soranî imlası:** ünsüz h her yerde ھ (U+06BE; CLDR "ھەینی", ckb Vikipedi ve widget'ta yan yana duran QuranEnc `kurdish_bamoki` meali böyle), ünlü e ە (U+06D5); ه/ي/ك (U+0647/064A/0643) sözlükte ve native tablolarda OLMAZ. İlçe "شارۆچکە" (Irak'taki "قەزا" kaza namazıyla karışır).
-- **Rusça/Boşnakça ay adı:** `tarih.aylar` tarih içi biçimdir (Rusça ilgi hâli "октября"); tek başına ay (takvim başlığı) `tarih.aylarYalin` (`ayAdiniAl`).
+- **Rusça/Boşnakça ay adı:** `tarih.aylar` tarih içi biçimdir (Rusça ilgi hâli "октября"); tek başına ay (takvim başlığı) `tarih.aylarYalin` (`ayAdiniAl`). Gün + ay kalıbında `ayAdiniAl` KULLANMA, `metin().tarih.aylar[ay]` al (yaşanmış: kaza günü "14 Октябрь"; nöbetçi `kazaMetinleri.test.ts`).
 - **Sesli okumada "{süre} <dakika>":** şablon ve kullanıcı metni dakikayı tek biçimle yazar; doldurulduktan sonra `dakikaUyumu` sayıya göre çeker (2 минуты, 5 минут, "1 minute"). Nöbetçi: `dakikaUyumu.test.ts`.
 - **Fransızca:** vakit adının önüne "de" yazılmaz (elizyon: "de Asr" yanlış); ad özne ya da iki noktadan sonra durur. `many` biçimi "{n} de …".
 

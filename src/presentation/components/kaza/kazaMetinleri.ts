@@ -7,7 +7,7 @@
  * çip zemini); metin daima tema metnidir.
  */
 
-import { ayAdiniAl, ISOTarihiDateNesnesiNeCevir, tarihiISOFormatinaCevir, gunEkle } from '../../../core/utils/TarihYardimcisi';
+import { ISOTarihiDateNesnesiNeCevir, tarihiISOFormatinaCevir, gunEkle } from '../../../core/utils/TarihYardimcisi';
 import { kazaVaktiGoster, type KazaVakti } from '../../../core/kaza/kazaHareketi';
 import type { GecmisSatiri, GecmisTuru, TemizlikKaynagi } from '../../../core/kaza/kazaDefteriHesabi';
 import { bicim, canli, metin, sayili, sayiYaz } from '../../../core/dil/aktifDil';
@@ -95,10 +95,13 @@ export function suzgeceUyarMi(satir: GecmisSatiri, s: GecmisSuzgeci): boolean {
   return satir.tur === s;
 }
 
-/** '2026-10-14' → '14 Ekim' / '14 October'. */
+/**
+ * '2026-10-14' → '14 Ekim' / '14 October' / '14 октября'. Ay adı tarih içi biçimden (`tarih.aylar`,
+ * ilgi hâli); `ayAdiniAl` yalın hâli verir, gün + ay kalıbında "14 Октябрь" yazardı.
+ */
 export function gunMetni(iso: string): string {
   const t = ISOTarihiDateNesnesiNeCevir(iso);
-  return Number.isFinite(t.getTime()) ? bicim(metin().kaza.gunAy, { gun: t.getDate(), ay: ayAdiniAl(t.getMonth()) }) : iso;
+  return Number.isFinite(t.getTime()) ? bicim(metin().kaza.gunAy, { gun: t.getDate(), ay: metin().tarih.aylar[t.getMonth()] }) : iso;
 }
 
 /** ISO zaman → yerel 'HH:mm'. */
