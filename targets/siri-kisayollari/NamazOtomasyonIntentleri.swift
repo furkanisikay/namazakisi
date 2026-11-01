@@ -388,11 +388,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Không, chưa được đánh dấu."
     )
 
-    // ÇEVİRİ: pt (one/many/other)
+    // pt (one/many/other)
     static let pt = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "many": "{ad} begins in {n} minutes.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} começa dentro de {n} minuto.", "many": "{ad} começa dentro de {n} de minutos.", "other": "{ad} começa dentro de {n} minutos."],
+        evetKilindi: "Sim, está marcada como rezada.",
+        hayirKilinmadi: "Não, ainda não está marcada."
     )
 
     // it (one/many/other; many = milyonlar, "{n} di minuti")

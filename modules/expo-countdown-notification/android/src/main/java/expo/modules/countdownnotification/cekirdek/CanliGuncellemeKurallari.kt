@@ -120,7 +120,7 @@ object CanliGuncellemeKurallari {
         "ko" to KisaBirimler("시간", "분", birimAyirici = "", parcaAyirici = " "),
         // vi
         "vi" to KisaBirimler("giờ", "phút", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: pt
+        // pt (CLDR pt-PT kısa birimler "h", "min")
         "pt" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // it
         "it" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),

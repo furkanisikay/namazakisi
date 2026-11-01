@@ -170,8 +170,8 @@ enum NamazAlarmCekirdegi {
         "ko": "끄기",
         // vi
         "vi": "Tắt",
-        // ÇEVİRİ: pt
-        "pt": "Stop",
+        // pt
+        "pt": "Parar",
         // it
         "it": "Fermare",
         // sv

@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "A sua localização é usada para calcular com precisão os horários das orações para onde está. A sua localização fica no seu dispositivo.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "A sua localização é usada para calcular com precisão os horários das orações para onde está e, se Na mesquita estiver ativado, para ativar o Modo oração quando entra numa mesquita. A sua localização fica no seu dispositivo.",
+  "NSLocationAlwaysUsageDescription": "A sua localização é usada para atualizar automaticamente os horários das orações quando muda de cidade e, se Na mesquita estiver ativado, para ativar o Modo oração quando entra numa mesquita. A sua localização fica no seu dispositivo.",
+  "NSCameraUsageDescription": "A câmara é usada para mostrar a direção da Quibla sobre a imagem da câmara e para ler o código de emparelhamento da TV. As imagens não são guardadas e nunca saem do seu dispositivo.",
+  "NSCalendarsUsageDescription": "O acesso ao calendário é usado para adicionar os horários das orações ao calendário e, se o ativar, para verificar se os eventos do calendário coincidem com a hora de uma oração. Os dados do calendário ficam no seu dispositivo.",
+  "NSCalendarsFullAccessUsageDescription": "O acesso ao calendário é usado para adicionar os horários das orações ao calendário e, se o ativar, para verificar se os eventos do calendário coincidem com a hora de uma oração. Os dados do calendário ficam no seu dispositivo.",
+  "NSLocalNetworkUsageDescription": "A aplicação liga-se à TV na sua rede local para lhe enviar os horários das orações e as orações que marcou. Os dados são encriptados e só circulam entre os dois dispositivos.",
+  "NSAlarmKitUsageDescription": "Os passos de lembrete em que escolher «Alarme verdadeiro» são definidos como alarmes, para os ouvir mesmo com o telemóvel em silêncio ou com um Foco ativado.",
+  "\"Vakti kıldım\"": "Rezei",
+  "\"Kıble\"": "Quibla"
 }

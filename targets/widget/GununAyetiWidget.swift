@@ -568,18 +568,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.9"
     )
 
-    // ÇEVİRİ: pt
+    // pt (meal portuguese_nasr birebir, Brezilya normu; değiştirilmez)
     static let pt = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Versículo do dia",
+        galeriAciklama: "Um versículo e a sua tradução, que mudam todos os dias no Fajr.",
+        etiket: "VERSÍCULO DO DIA",
+        uygulamayiAcin: "Abra a aplicação para ver o versículo do dia",
+        ornekSigmiyor: "O versículo de hoje não cabe neste tamanho. Toque para o ler.",
+        ornekAcin: "Abrir",
+        ornekArapcaKaynagi: "Árabe: Tanzil",
+        ornekMeal: "Por certo, com a dificuldade, há facilidade!",
+        ornekKisaKunye: "Alcorão 94:6",
+        ornekMealKaynagi: "Helmi Nasr, QuranEnc 1.4.1"
     )
 
     // it — meal 94:6 `gununAyetiHavuzu.ts` (italian_rwwad, Rowwad Translation Center) birebir

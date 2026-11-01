@@ -981,29 +981,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Đánh dấu Salah hiện tại là đã hành lễ."
     )
 
-    // ÇEVİRİ: pt
+    // pt
     static let pt = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Hora da oração",
+        galeriAciklama: "A hora da oração atual, o tempo até ao fim e os horários de hoje.",
+        veriEski: "Abra a aplicação para atualizar os horários",
+        konumYok: "Abra a aplicação para definir a localização",
+        kilindiSiradaki: "{ad} rezada · {sonraki} {saat}",
+        adCikis: "{ad} · termina {saat}",
+        siradakiAdSaat: "A seguir {ad} {saat}",
+        vaktiCikisErisim: "Hora de {ad}, termina {saat}",
+        siradakiErisim: "A seguir {ad}, {saat}",
+        cikisSaat: "Termina {saat}",
+        bitisSaat: "Termina {saat}",
+        kilindiBaslik: "{ad} rezada",
+        siradaki: "A seguir",
+        siradakiAd: "A seguir {ad}",
+        kildimErisim: "Rezei a oração de {ad}",
+        gunSatiriKilindi: ", rezada",
+        bitti: "Terminou",
+        vakitCikti: "A hora da oração terminou",
+        kabulAlt: "{ad} rezada",
+        kontrolAdi: "Rezei",
+        kontrolAciklama: "Marca a oração atual como rezada."
     )
 
     // it
