@@ -42,4 +42,12 @@
   <locale android:name="th"/>
   <locale android:name="ko"/>
   <locale android:name="vi"/>
+  <locale android:name="pt"/>
+  <locale android:name="it"/>
+  <locale android:name="sv"/>
+  <locale android:name="uk"/>
+  <locale android:name="ro"/>
+  <locale android:name="hr"/>
+  <locale android:name="sr"/>
+  <locale android:name="el"/>
 </locale-config>

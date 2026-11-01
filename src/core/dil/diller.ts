@@ -63,14 +63,14 @@ export const DILLER: readonly DilTanimi[] = [
   // Avrupa (dalga 10); sekizi de soldan sağa, Batı rakamlı. Portekizce Avrupa/Afrika normu (pt-PT;
   // Mozambik, Gine-Bissau): kod `pt`, Android `values-pt` ve iOS `pt.lproj` bütün pt-* cihazları kapsar.
   // Sırpça yalnız KİRİL (`sr`; Latin seçenek yok, Latin okuyan Sancak kullanıcısı için Boşnakça var).
-  { kod: 'pt', yerelAd: 'Português', yon: 'ltr', ttsDili: 'pt-PT', beta: true, secilebilir: false },
-  { kod: 'it', yerelAd: 'Italiano', yon: 'ltr', ttsDili: 'it-IT', beta: true, secilebilir: false },
-  { kod: 'sv', yerelAd: 'Svenska', yon: 'ltr', ttsDili: 'sv-SE', beta: true, secilebilir: false },
-  { kod: 'uk', yerelAd: 'Українська', yon: 'ltr', ttsDili: 'uk-UA', beta: true, secilebilir: false },
-  { kod: 'ro', yerelAd: 'Română', yon: 'ltr', ttsDili: 'ro-RO', beta: true, secilebilir: false },
-  { kod: 'hr', yerelAd: 'Hrvatski', yon: 'ltr', ttsDili: 'hr-HR', beta: true, secilebilir: false },
-  { kod: 'sr', yerelAd: 'Српски', yon: 'ltr', ttsDili: 'sr-RS', beta: true, secilebilir: false },
-  { kod: 'el', yerelAd: 'Ελληνικά', yon: 'ltr', ttsDili: 'el-GR', beta: true, secilebilir: false },
+  { kod: 'pt', yerelAd: 'Português', yon: 'ltr', ttsDili: 'pt-PT', beta: true, secilebilir: true },
+  { kod: 'it', yerelAd: 'Italiano', yon: 'ltr', ttsDili: 'it-IT', beta: true, secilebilir: true },
+  { kod: 'sv', yerelAd: 'Svenska', yon: 'ltr', ttsDili: 'sv-SE', beta: true, secilebilir: true },
+  { kod: 'uk', yerelAd: 'Українська', yon: 'ltr', ttsDili: 'uk-UA', beta: true, secilebilir: true },
+  { kod: 'ro', yerelAd: 'Română', yon: 'ltr', ttsDili: 'ro-RO', beta: true, secilebilir: true },
+  { kod: 'hr', yerelAd: 'Hrvatski', yon: 'ltr', ttsDili: 'hr-HR', beta: true, secilebilir: true },
+  { kod: 'sr', yerelAd: 'Српски', yon: 'ltr', ttsDili: 'sr-RS', beta: true, secilebilir: true },
+  { kod: 'el', yerelAd: 'Ελληνικά', yon: 'ltr', ttsDili: 'el-GR', beta: true, secilebilir: true },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';
