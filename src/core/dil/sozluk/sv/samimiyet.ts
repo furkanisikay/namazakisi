@@ -1,35 +1,38 @@
-// ÇEVİRİ: sv — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * İsveççe konuşan Müslümanların kalıpları (çeviri değil): Stockholms moské "Vi ber Allah att
+ * acceptera från alla" (Arapça "نسأل الله أن يتقبل منا") → kısa dua kalıbı "Må Allah acceptera det"
+ * (baskın, iki yuva; kısaltma türetildi); "Taqabbal Allah" Arapça kalıbın İsveççe metinlerde de
+ * kullanılan yazımı; "Eid/Ramadan/Jumu'ah mubarak" Arapça selamın Latin yazımı (İngilizce emsali;
+ * İsveççe kaynakta DOĞRULANMADI).
+ * Kandil selamı İsveç'te yalnız Türk diasporası geleneğidir (`selam.ts > KANDIL_ULKELERI` SE'yi
+ * içermez); tip bütünlüğü için yazıldı.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Må det vara välsignat.',
+  kabulDualari: ['Må Allah acceptera det', 'Taqabbal Allah', 'Må Allah acceptera det', 'Må vår Herre acceptera det'],
+  kabulDuasi: 'Må Allah acceptera det',
+  ekSabah: 'En välsignad morgon',
+  ekYatsi: 'En välsignad natt',
+  tamGunAna: 'Må Allah acceptera det',
+  tamGunAlt: 'Du har förrättat alla fem bönerna i dag.',
+  kazaKabul: 'En qada-bön ({vakit}) har strukits från din qada-logg. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'En välsignad Raghaib-natt',
+    mirac: "En välsignad natt för Isra och Mi'raj",
+    berat: "En välsignad Bara'ah-natt",
+    mevlid: 'En välsignad Mawlid',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'En välsignad suhur',
+    bayram: 'Eid mubarak',
+    iftar: 'En välsignad iftar',
+    kadir: 'En välsignad Laylat al-Qadr',
+    arefe: 'En välsignad eid-afton',
+    hicriYilbasi: 'Ett välsignat islamiskt nyår',
+    cuma: "Jumu'ah mubarak",
+    ramazan: 'Ramadan mubarak',
+    sabah: 'En välsignad morgon',
   },
 };

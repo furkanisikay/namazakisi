@@ -364,12 +364,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: sv (one/other)
+    // sv (one/other)
     public static let sv = SaatSureMetinleri(
         birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        saat: ["one": "{n} timme", "other": "{n} timmar"],
+        dakika: ["one": "{n} minut", "other": "{n} minuter"],
+        saniye: ["one": "{n} sekund", "other": "{n} sekunder"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

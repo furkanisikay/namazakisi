@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
+  "NSLocationWhenInUseUsageDescription": "Din plats används för att beräkna bönetiderna exakt för platsen där du är. Din plats stannar på din enhet.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Din plats används för att beräkna bönetiderna exakt för platsen där du är och, om I moskén är på, för att slå på Böneläge när du går in i en moské. Din plats stannar på din enhet.",
+  "NSLocationAlwaysUsageDescription": "Din plats används för att uppdatera bönetiderna automatiskt när du byter stad och, om I moskén är på, för att slå på Böneläge när du går in i en moské. Din plats stannar på din enhet.",
+  "NSCameraUsageDescription": "Kameran används för att visa böneriktningen (Qibla) över kamerabilden och för att skanna parkopplingskoden på din tv. Bilderna sparas inte och lämnar aldrig din enhet.",
+  "NSCalendarsUsageDescription": "Kalenderåtkomst används för att lägga till bönetider i din kalender och, om du slår på det, för att kontrollera om händelser i kalendern krockar med en bönetid. Dina kalenderdata stannar på din enhet.",
+  "NSCalendarsFullAccessUsageDescription": "Kalenderåtkomst används för att lägga till bönetider i din kalender och, om du slår på det, för att kontrollera om händelser i kalendern krockar med en bönetid. Dina kalenderdata stannar på din enhet.",
+  "NSLocalNetworkUsageDescription": "Appen ansluter till tv:n i ditt lokala nätverk för att skicka dina bönetider och bönerna du har markerat. Data krypteras och skickas bara mellan de två enheterna.",
+  "NSAlarmKitUsageDescription": "Påminnelsesteg där du väljer ”Riktigt alarm” ställs in som alarm, så att du hör dem även när telefonen är ljudlös eller ett fokus är på.",
+  "\"Vakti kıldım\"": "Jag har bett",
   "\"Kıble\"": "Qibla"
 }

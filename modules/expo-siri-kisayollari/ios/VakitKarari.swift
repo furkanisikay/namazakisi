@@ -1375,31 +1375,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: sv
+    // sv
     public static let sv = VakitMetinleri(
         dil: "sv",
         adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        gunes: "Soluppgång",
+        konumYok: "Öppna appen och ange din plats så att bönetiderna kan beräknas.",
+        veriEski: "Bönetiderna är inaktuella. Öppna appen en gång för att uppdatera dem.",
+        girisBugun: "klockan {saat}",
+        girisYarin: "i morgon klockan {saat}",
+        suAnVakti: "Det är tid för {ad} nu.",
+        suAnVaktiCikis: "Det är tid för {ad} nu; den slutar {saat}.",
+        siradakiNamaz: "Nästa bön är {ad} {giris}.",
+        isaretlendi: "{ad} är markerad som förrättad. {dua}.",
+        zatenKilindi: "{ad} är redan markerad som förrättad.",
+        vakitYok: "Det finns ingen bön att markera just nu.",
+        vakitYokSiradaki: "Det finns ingen bön att markera just nu. Nästa är {ad} {giris}.",
+        onay: "Markera {ad} som förrättad?",
+        vakitDegisti: "Bönetiden ändrades, så inget markerades. Försök igen.",
+        kabulDuasi: "Må Allah acceptera det",
+        kildim: "Jag har bett",
+        kilindi: "Förrättad",
+        kontrolKildim: "{ad} · Jag har bett",
+        kontrolKilindi: "{ad} förrättad",
+        kontrolVakitYok: "Ingen bön att markera",
+        uygulamayiAcin: "Öppna appen"
     )
 
     // uk

@@ -174,8 +174,8 @@ enum NamazAlarmCekirdegi {
         "pt": "Stop",
         // ÇEVİRİ: it
         "it": "Stop",
-        // ÇEVİRİ: sv
-        "sv": "Stop",
+        // sv
+        "sv": "Stoppa",
         // uk
         "uk": "Зупинити",
         // ÇEVİRİ: ro

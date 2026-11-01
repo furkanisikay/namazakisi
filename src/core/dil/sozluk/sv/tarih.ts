@@ -1,13 +1,17 @@
-// ÇEVİRİ: sv — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/**
+ * İsveççede gün ve ay adları küçük harfle yazılır (CLDR sv: "31 oktober 2026", "lördag 31 oktober");
+ * ay adının hâli yok (`aylar` = `aylarYalin`), takvim başlığında tek başına büyük harfle başlar.
+ */
 export const tarih: Sozluk['tarih'] = {
-  gunler: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  gunlerKisa: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  aylar: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarYalin: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarKisa: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  haftaHarfleri: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+  gunler: ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'],
+  gunlerKisa: ['sön', 'mån', 'tis', 'ons', 'tors', 'fre', 'lör'],
+  aylar: ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'],
+  aylarYalin: ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'],
+  aylarKisa: ['jan.', 'feb.', 'mars', 'apr.', 'maj', 'juni', 'juli', 'aug.', 'sep.', 'okt.', 'nov.', 'dec.'],
+  /** Pazartesi başlar (CLDR dar biçim tek harf ve iki T'li olduğu için iki harf). */
+  haftaHarfleri: ['må', 'ti', 'on', 'to', 'fr', 'lö', 'sö'],
   uzun: '{gun} {ay} {yil}',
-  gunAdiYil: '{gunAdi}, {yil}',
+  gunAdiYil: '{gunAdi} {yil}',
 };

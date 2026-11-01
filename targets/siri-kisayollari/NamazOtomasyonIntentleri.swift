@@ -402,11 +402,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: sv (one/other)
+    // sv (one/other)
     static let sv = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} börjar om {n} minut.", "other": "{ad} börjar om {n} minuter."],
+        evetKilindi: "Ja, den är markerad som förrättad.",
+        hayirKilinmadi: "Nej, den är inte markerad än."
     )
 
     // uk (one/few/many/other)

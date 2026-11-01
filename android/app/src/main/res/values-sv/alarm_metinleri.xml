@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: sv — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- Gerçek alarm (İsveççe). "Jag har bett" bildirimdeki düğmeyle aynı ad. -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">Bönealarm</string>
+  <string name="alarm_kildim">Jag har bett</string>
+  <string name="alarm_kapat">Stäng av</string>
+  <string name="alarm_kanal_aciklamasi">Ett riktigt alarm som ringer vid de påminnelsesteg du väljer</string>
 </resources>
