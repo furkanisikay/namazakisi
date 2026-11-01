@@ -1510,31 +1510,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: el
+    // el
     public static let el = VakitMetinleri(
         dil: "el",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Φατζρ", "ogle": "Δουχρ", "ikindi": "‘Ασρ", "aksam": "Μάγριμπ", "yatsi": "‘Ισά’"],
+        gunes: "Ανατολή ηλίου",
+        konumYok: "Ανοίξτε την εφαρμογή και ορίστε την τοποθεσία σας, για να υπολογιστούν οι ώρες προσευχής.",
+        veriEski: "Οι ώρες προσευχής δεν είναι ενημερωμένες. Ανοίξτε την εφαρμογή μία φορά για ενημέρωση.",
+        girisBugun: "στις {saat}",
+        girisYarin: "αύριο στις {saat}",
+        suAnVakti: "Είναι ώρα για {ad}.",
+        suAnVaktiCikis: "Είναι ώρα για {ad}· λήγει στις {saat}.",
+        siradakiNamaz: "Η επόμενη προσευχή είναι η {ad} {giris}.",
+        isaretlendi: "Η προσευχή {ad} σημειώθηκε ως τελεσμένη. {dua}.",
+        zatenKilindi: "Η προσευχή {ad} έχει ήδη σημειωθεί ως τελεσμένη.",
+        vakitYok: "Δεν υπάρχει προσευχή για σήμανση αυτή τη στιγμή.",
+        vakitYokSiradaki: "Δεν υπάρχει προσευχή για σήμανση αυτή τη στιγμή. Ακολουθεί: {ad} {giris}.",
+        onay: "Σήμανση της προσευχής {ad} ως τελεσμένης;",
+        vakitDegisti: "Η ώρα προσευχής άλλαξε, οπότε δεν σημειώθηκε τίποτα. Δοκιμάστε ξανά.",
+        kabulDuasi: "Ας τη δεχτεί ο Αλλάχ",
+        kildim: "Προσευχήθηκα",
+        kilindi: "Τελέστηκε",
+        kontrolKildim: "{ad} · Προσευχήθηκα",
+        kontrolKilindi: "{ad}: τελέστηκε",
+        kontrolVakitYok: "Καμία προσευχή για σήμανση",
+        uygulamayiAcin: "Άνοιγμα εφαρμογής"
     )
 
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).

@@ -1,15 +1,14 @@
-// ÇEVİRİ: el — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Κοράνιο {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Η προσευχή είναι καλύτερη από τον ύπνο. Ελάτε στην επιτυχία.',
+    araVer: 'Κάντε ένα μικρό διάλειμμα από τις εγκόσμιες ασχολίες και σταθείτε μπροστά στον Κύριό σας.',
+    yorgunluk: 'Η ‘Ασρ σας περιμένει, για να αφήσετε πίσω την κούραση της ημέρας και να βρείτε γαλήνη.',
+    sukur: 'Η Μάγριμπ είναι η ευχαριστία της ημέρας. Σπεύσατε να σταθείτε μπροστά στον Κύριό σας.',
+    aksamKisa: 'Η ώρα της Μάγριμπ είναι σύντομη· άρχισε, τελέστε την χωρίς καθυστέρηση.',
+    geceKaranligi: 'Στο σκοτάδι της νύχτας, μείνετε μόνοι με τον Κύριό σας. Η ‘Ισά’ είναι γιατρειά για την ψυχή.',
+    davet: 'Καλείστε στην ‘Ισά’, για να κλείσετε την ημέρα ζητώντας την ευαρέσκεια του Αλλάχ.',
   },
 };

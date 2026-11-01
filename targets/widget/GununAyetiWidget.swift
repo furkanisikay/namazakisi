@@ -666,18 +666,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: el
+    // el
     static let el = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Εδάφιο της ημέρας",
+        galeriAciklama: "Ένα εδάφιο με τη μετάφρασή του, που αλλάζει κάθε μέρα στη Φατζρ.",
+        etiket: "ΕΔΑΦΙΟ ΤΗΣ ΗΜΕΡΑΣ",
+        uygulamayiAcin: "Ανοίξτε την εφαρμογή για να δείτε το εδάφιο της ημέρας",
+        ornekSigmiyor: "Το σημερινό εδάφιο δεν χωράει σε αυτό το μέγεθος. Πατήστε για να το διαβάσετε.",
+        ornekAcin: "Άνοιγμα",
+        ornekArapcaKaynagi: "Αραβικά: Tanzil",
+        ornekMeal: "Πράγματι, μαζί με κάθε δυσκολία έρχεται ανακούφιση.",
+        ornekKisaKunye: "Κοράνιο 94:6",
+        ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.2"
     )
 
     static let tablo: [String: GununAyetiYerelMetinleri] = [

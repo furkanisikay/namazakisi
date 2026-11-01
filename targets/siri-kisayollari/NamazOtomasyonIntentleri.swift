@@ -442,11 +442,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: el (one/other)
+    // el (one/other)
     static let el = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "Η {ad} αρχίζει σε {n} λεπτό.", "other": "Η {ad} αρχίζει σε {n} λεπτά."],
+        evetKilindi: "Ναι, έχει σημειωθεί ως τελεσμένη.",
+        hayirKilinmadi: "Όχι, δεν έχει σημειωθεί ακόμη."
     )
 
     static let tablo: [String: OtomasyonMetinleri] = [

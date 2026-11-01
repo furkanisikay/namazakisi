@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: el — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- Yunanca. camigeofence_namaz_* çekimli nesne biçimidir: "Τελέσατε %1$s;" → "Τελέσατε την προσευχή Δουχρ;". -->
 <resources>
-    <string name="camigeofence_kanal_durum_ad">At the mosque</string>
-    <string name="camigeofence_kanal_durum_aciklama">A quiet notice when you\'re detected at a mosque</string>
-    <string name="camigeofence_kanal_soru_ad">After leaving the mosque</string>
-    <string name="camigeofence_kanal_soru_aciklama">A question so you can mark your prayer after you leave the mosque</string>
+    <string name="camigeofence_kanal_durum_ad">Στο τζαμί</string>
+    <string name="camigeofence_kanal_durum_aciklama">Μια διακριτική ειδοποίηση όταν εντοπίζεται ότι βρίσκεστε σε τζαμί</string>
+    <string name="camigeofence_kanal_soru_ad">Μετά την έξοδο από το τζαμί</string>
+    <string name="camigeofence_kanal_soru_aciklama">Μια ερώτηση για να σημειώσετε την προσευχή σας αφού βγείτε από το τζαμί</string>
 
-    <string name="camigeofence_govde_mod_sessiz">Prayer mode is on. Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_mod">Prayer mode is on.</string>
-    <string name="camigeofence_govde_sessiz">Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_normal">Reminders will arrive as usual.</string>
-    <string name="camigeofence_eylem_modu_kapat">Turn off mode</string>
-    <string name="camigeofence_eylem_cami_degil">Not a mosque</string>
+    <string name="camigeofence_govde_mod_sessiz">Η Λειτουργία προσευχής είναι ενεργή. Οι υπενθυμίσεις θα έρχονται αθόρυβα.</string>
+    <string name="camigeofence_govde_mod">Η Λειτουργία προσευχής είναι ενεργή.</string>
+    <string name="camigeofence_govde_sessiz">Οι υπενθυμίσεις θα έρχονται αθόρυβα.</string>
+    <string name="camigeofence_govde_normal">Οι υπενθυμίσεις θα έρχονται κανονικά.</string>
+    <string name="camigeofence_eylem_modu_kapat">Απενεργοποίηση</string>
+    <string name="camigeofence_eylem_cami_degil">Δεν είναι τζαμί</string>
 
-    <string name="camigeofence_soru_baslik">Are you at the mosque?</string>
-    <string name="camigeofence_soru_govde">You\'re near %1$s. We\'re not sure, so we\'re asking you.</string>
-    <string name="camigeofence_varsayilan_ad">Mosque</string>
-    <string name="camigeofence_eylem_namaz_modunu_ac">Turn on Prayer mode</string>
-    <string name="camigeofence_eylem_evet_camideyim">Yes, I\'m at the mosque</string>
-    <string name="camigeofence_eylem_hayir">No</string>
+    <string name="camigeofence_soru_baslik">Είστε στο τζαμί;</string>
+    <string name="camigeofence_soru_govde">Βρίσκεστε κοντά σε: %1$s. Δεν είμαστε βέβαιοι, γι’ αυτό σας ρωτάμε.</string>
+    <string name="camigeofence_varsayilan_ad">Τζαμί</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">Λειτουργία προσευχής</string>
+    <string name="camigeofence_eylem_evet_camideyim">Ναι, είμαι στο τζαμί</string>
+    <string name="camigeofence_eylem_hayir">Όχι</string>
 
-    <string name="camigeofence_kildiniz_mi">Have you prayed %1$s?</string>
-    <string name="camigeofence_kildiniz_mi_govde">You can mark it with a single tap.</string>
-    <string name="camigeofence_eylem_kildim">I\'ve prayed</string>
-    <string name="camigeofence_namaz_imsak">Fajr</string>
-    <string name="camigeofence_namaz_ogle">Dhuhr</string>
-    <string name="camigeofence_namaz_ikindi">Asr</string>
-    <string name="camigeofence_namaz_aksam">Maghrib</string>
-    <string name="camigeofence_namaz_yatsi">Isha</string>
-    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+    <string name="camigeofence_kildiniz_mi">Τελέσατε %1$s;</string>
+    <string name="camigeofence_kildiniz_mi_govde">Μπορείτε να τη σημειώσετε με ένα πάτημα.</string>
+    <string name="camigeofence_eylem_kildim">Προσευχήθηκα</string>
+    <string name="camigeofence_namaz_imsak">την προσευχή Φατζρ</string>
+    <string name="camigeofence_namaz_ogle">την προσευχή Δουχρ</string>
+    <string name="camigeofence_namaz_ikindi">την προσευχή ‘Ασρ</string>
+    <string name="camigeofence_namaz_aksam">την προσευχή Μάγριμπ</string>
+    <string name="camigeofence_namaz_yatsi">την προσευχή ‘Ισά’</string>
+    <string name="camigeofence_namaz_cuma">την προσευχή της Παρασκευής</string>
 
-    <string name="camigeofence_mod_kural_adi">Prayer</string>
-    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı turns it on during the Jumu\'ah sermon, at the mosque or when a prayer time begins</string>
+    <string name="camigeofence_mod_kural_adi">Προσευχή</string>
+    <string name="camigeofence_mod_tetik_aciklama">Το Namaz Akışı την ενεργοποιεί κατά το κήρυγμα της Παρασκευής, στο τζαμί ή όταν αρχίζει μια ώρα προσευχής</string>
 </resources>

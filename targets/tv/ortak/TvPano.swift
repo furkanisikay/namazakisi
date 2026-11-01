@@ -713,18 +713,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: el (`aylar` tarih içi biçimdir: uk, hr, el ilgi hâli; ro, sr CLDR yalın)
+    // el (`aylar` tarih içi biçimdir: uk, hr, el ilgi hâli; ro, sr CLDR yalın)
     public static let el = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "Φατζρ", "gunes": "Ανατολή ηλίου", "ogle": "Δουχρ", "ikindi": "‘Ασρ", "aksam": "Μάγριμπ", "yatsi": "‘Ισά’"],
+        cuma: "Τζούμου‘α",
+        aylar: ["Ιανουαρίου", "Φεβρουαρίου", "Μαρτίου", "Απριλίου", "Μαΐου", "Ιουνίου", "Ιουλίου", "Αυγούστου", "Σεπτεμβρίου", "Οκτωβρίου", "Νοεμβρίου", "Δεκεμβρίου"],
+        gunler: ["Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο", "Κυριακή"],
+        tarih: "{gunAdi} {gun} {ay} {yil}",
+        kerahatAdlari: ["suruk": "Ανατολή", "istiva": "Ζενίθ", "gurub": "Δύση"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Η προσευχή είναι αποδοκιμαστέα μέχρι να ανέβει καλά ο ήλιος.",
+            "istiva": "Η προσευχή είναι αποδοκιμαστέα όσο ο ήλιος βρίσκεται στο ζενίθ.",
+            "gurub": "Η προσευχή είναι αποδοκιμαστέα όσο δύει ο ήλιος.",
         ]
     )
 

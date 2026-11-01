@@ -1,61 +1,61 @@
-// ÇEVİRİ: el — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Yunancada: 2. çoğul kibar emir, zamirsiz, kısa ("Τελέστε την προσευχή",
+ * "Σηκωθείτε για προσευχή"); övgü ve "!" yok. "Secdeye kapan" karşılığı YAZILMAZ (kişi namaza
+ * durur). Başlıkta süre "{dk} λ." (CLDR kısa birim, sayıdan sonra boşluk): "Μάγριμπ · 655 λ."
+ * ilk 16 karaktere sığar; giriş aşaması "πέρασαν", çıkış aşaması "απομένουν" (Rusça kalıbı).
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} λ. πέρασαν · ώρα για προσευχή ⏰',
+    giris2: '{ad} · {dk} λ. πέρασαν · μην την αναβάλλετε ⚠️',
+    giris3: '{ad} · {dk} λ. πέρασαν · η προσευχή σας περιμένει 🔥',
+    giris4: '{ad} · {dk} λ. πέρασαν · ΣΗΚΩΘΕΙΤΕ ΓΙΑ ΠΡΟΣΕΥΧΗ 🚨',
+    erken3: '{ad} · {dk} λ. απομένουν · η προσευχή σας περιμένει 🔥',
+    erken4: '{ad} · {dk} λ. απομένουν · ΣΗΚΩΘΕΙΤΕ ΓΙΑ ΠΡΟΣΕΥΧΗ 🚨',
+    cikis1: '{ad} · {dk} λ. απομένουν ⏰',
+    cikis2: '{ad} · {dk} λ. · ο χρόνος στενεύει ⚠️',
+    cikis3: '{ad} · {dk} λ. · ο χρόνος φεύγει 🔥',
+    cikis4: '{ad} · {dk} λ. · Η ΩΡΑ ΛΗΓΕΙ 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Είναι ώρα προσευχής· τελέστε την όσο έχετε την ευκαιρία.', 'Τελέστε την όσο ο χρόνος είναι με το μέρος σας· μην την αφήνετε για αργότερα.'],
+    s2: ['Όσο την αναβάλλετε, τόσο βαραίνει· μην αφήνετε την προσευχή για το τέλος.', 'Ο χρόνος προχωρά — τελέστε την προσευχή τώρα.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Όσο καθυστερείτε, τόσο πλησιάζετε στο να τη χάσετε· τελέστε την τώρα.',
+      'Μη λέτε «θα προσευχηθώ αργότερα»· μπορείτε να προσευχηθείτε τώρα.',
+      'Σηκωθείτε τώρα, αντί να λέτε «μακάρι» σε λίγα λεπτά.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Μην αναβάλλετε άλλο την προσευχή — σηκωθείτε για προσευχή τώρα.', 'Αφήστε ό,τι κάνετε και σηκωθείτε για προσευχή.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Ο χρόνος αρχίζει να στενεύει· τελέστε την προσευχή όσο έχετε την ευκαιρία.',
+    s2: 'Μην αφήνετε την προσευχή για το τέλος· τώρα είναι καλή στιγμή.',
+    s3: 'Η ώρα σχεδόν τελείωσε· μπορείτε ακόμη να προσευχηθείτε τώρα.',
+    s4: 'Αν προσευχηθήκατε, πατήστε «Προσευχήθηκα»· αν όχι, σηκωθείτε για προσευχή τώρα.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'ΜΗΝ ΑΝΑΒΑΛΛΕΤΕ ΤΗΝ ΠΡΟΣΕΥΧΗ. Σηκωθείτε για προσευχή τώρα. (πέρασαν {dk} λεπτά)',
+    giris2: 'Ο χρόνος προχωρά· μην αφήνετε την προσευχή για το τέλος. (πέρασαν {dk} λεπτά)',
+    giris1: cogul({ one: 'Πέρασε {n} λεπτό από την έναρξη της ώρας προσευχής.', other: 'Πέρασαν {n} λεπτά από την έναρξη της ώρας προσευχής.' }),
+    erken4: 'Μην αναβάλλετε την προσευχή· σηκωθείτε για προσευχή τώρα. (απομένουν {dk} λεπτά)',
+    cikis4: 'Η ΩΡΑ ΛΗΓΕΙ. Σηκωθείτε για προσευχή τώρα. (απομένουν {dk} λεπτά)',
+    cikis2: 'Ο χρόνος στενεύει· μην αφήνετε την προσευχή για το τέλος. (απομένουν {dk} λεπτά)',
+    cikis1: cogul({ one: 'Απομένει {n} λεπτό μέχρι να λήξει η ώρα προσευχής.', other: 'Απομένουν {n} λεπτά μέχρι να λήξει η ώρα προσευχής.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · προσευχηθείτε πριν κοιμηθείτε ⏰',
+    govde: 'Οι ώρες ησυχίας αρχίζουν σε {dk} λεπτά· τελέστε την ‘Ισά’ πριν πάτε για ύπνο.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Ο χρόνος αρχίζει να στενεύει· τελέστε την προσευχή όσο έχετε την ευκαιρία.',
+    sonaBirakma: 'Μην αφήνετε την προσευχή για το τέλος· τώρα είναι καλή στιγμή.',
+    fisilti: 'Μη λέτε «θα προσευχηθώ αργότερα»· η ώρα σχεδόν τελείωσε, μπορείτε να προσευχηθείτε τώρα.',
+    omur: 'Ο χρόνος περνά· έχετε ακόμη την ευκαιρία να τελέσετε αυτή την προσευχή στην ώρα της.',
+    keske: 'Σηκωθείτε τώρα, αντί να λέτε «μακάρι» σε λίγα λεπτά.',
+    namazaDur: 'Αν προσευχηθήκατε, πατήστε «Προσευχήθηκα»· αν όχι, σηκωθείτε για προσευχή τώρα.',
+    sonDakika: 'Τα τελευταία λεπτά. Αφήστε ό,τι κάνετε και σηκωθείτε για προσευχή.',
   },
 };

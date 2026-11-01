@@ -2326,52 +2326,53 @@ object TvDiliSr : TvDili {
     override val iftaraKalan = "Time left until iftar"
 }
 
-// ÇEVİRİ: el
+// el
 // CLDR el: one/other (JS `cogul.ts > birDiger`); büyük harfte vurgu (tonos) düşer, soru işareti ";".
 // `aylar` yalnız tarihte kullanılır → tarih içi biçim (uk, hr, el ilgi hâli; ro yalın; sr CLDR yalın).
+// Yunan harfleri Kotlin'de tanımlayıcı karakteridir: şablonda hep `${ad}` yazılır.
 object TvDiliEl : TvDili {
     override val kod = "el"
     override fun vakitAdi(vakit: Vakit) = when (vakit) {
-        Vakit.IMSAK -> "Fajr"
-        Vakit.GUNES -> "Sunrise"
-        Vakit.OGLE -> "Dhuhr"
-        Vakit.IKINDI -> "Asr"
-        Vakit.AKSAM -> "Maghrib"
-        Vakit.YATSI -> "Isha"
+        Vakit.IMSAK -> "Φατζρ"
+        Vakit.GUNES -> "Ανατολή ηλίου"
+        Vakit.OGLE -> "Δουχρ"
+        Vakit.IKINDI -> "‘Ασρ"
+        Vakit.AKSAM -> "Μάγριμπ"
+        Vakit.YATSI -> "‘Ισά’"
     }
-    override val cuma = "Jumu'ah"
+    override val cuma = "Τζούμου‘α"
     override val aylar = listOf(
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December",
+        "Ιανουαρίου", "Φεβρουαρίου", "Μαρτίου", "Απριλίου", "Μαΐου", "Ιουνίου",
+        "Ιουλίου", "Αυγούστου", "Σεπτεμβρίου", "Οκτωβρίου", "Νοεμβρίου", "Δεκεμβρίου",
     )
-    override val gunler = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $gun $ay $yil"
+    override val gunler = listOf("Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο", "Κυριακή")
+    override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "${gunAdi} ${gun} ${ay} ${yil}"
 
-    override val birimSa = "h"
-    override val birimDk = "min"
-    override val birimSn = "s"
+    override val birimSa = "ώ."
+    override val birimDk = "λ."
+    override val birimSn = "δευτ."
     override val birimAyirici = " "
     override val parcaAyirici = " "
-    override fun saatSesli(n: Int) = if (n == 1) "1 hour" else "$n hours"
-    override fun dakikaSesli(n: Int) = if (n == 1) "1 minute" else "$n minutes"
-    override val birDakikadanAz = "less than 1 minute"
+    override fun saatSesli(n: Int) = if (n == 1) "1 ώρα" else "${n} ώρες"
+    override fun dakikaSesli(n: Int) = if (n == 1) "1 λεπτό" else "${n} λεπτά"
+    override val birDakikadanAz = "λιγότερο από 1 λεπτό"
 
     override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Sunrise"
-        Kerahat.Tur.ISTIVA -> "Zenith"
-        Kerahat.Tur.GURUB -> "Sunset"
+        Kerahat.Tur.SURUK -> "Ανατολή"
+        Kerahat.Tur.ISTIVA -> "Ζενίθ"
+        Kerahat.Tur.GURUB -> "Δύση"
     }
 
     override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Praying is makruh until the sun has risen well."
-        Kerahat.Tur.ISTIVA -> "Praying is makruh while the sun is at its zenith."
-        Kerahat.Tur.GURUB -> "Praying is makruh while the sun is setting."
+        Kerahat.Tur.SURUK -> "Η προσευχή είναι αποδοκιμαστέα μέχρι να ανέβει καλά ο ήλιος."
+        Kerahat.Tur.ISTIVA -> "Η προσευχή είναι αποδοκιμαστέα όσο ο ήλιος βρίσκεται στο ζενίθ."
+        Kerahat.Tur.GURUB -> "Η προσευχή είναι αποδοκιμαστέα όσο δύει ο ήλιος."
     }
 
-    override fun bant(ad: String, dk: Long) = "Time for $ad is running short · $dk min"
-    override val kabulDuasi = "May Allah accept it"
-    override val iftarSelami = "Blessed iftar"
-    override val cumaSelami = "Jumu'ah Mubarak"
-    override val sahuraKalan = "Time left for suhoor"
-    override val iftaraKalan = "Time left until iftar"
+    override fun bant(ad: String, dk: Long) = "Ο χρόνος για την ${ad} στενεύει · ${dk} λ."
+    override val kabulDuasi = "Ας τη δεχτεί ο Αλλάχ"
+    override val iftarSelami = "Ευλογημένο ιφτάρ"
+    override val cumaSelami = "Ευλογημένη Παρασκευή"
+    override val sahuraKalan = "Χρόνος που απομένει για το σαχούρ"
+    override val iftaraKalan = "Χρόνος έως το ιφτάρ"
 }

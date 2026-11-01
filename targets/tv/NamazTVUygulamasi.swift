@@ -739,19 +739,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: el
+    // el
     static let el = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Επιλέξτε την πόλη σας",
+        ilMerkezi: "Οι ώρες προσευχής υπολογίζονται για το κέντρο της επαρχίας. Μπορείτε να αλλάξετε την επιλογή σας αργότερα.",
+        ilSecErisim: "{il}, επιλογή",
+        kalan: "Χρόνος έως {ad}",
+        kalanErisim: "Χρόνος έως {ad}: {sure}",
+        konumuDegistirin: "Αλλαγή τοποθεσίας",
+        kerahatSuruyor: "Αποδοκιμαστέα ώρα: {tur}, λήγει {bitis}. {aciklama}",
+        siradakiKerahat: "Επόμενη αποδοκιμαστέα ώρα: {tur} {bas}–{bit}",
+        cumaBilgisi: "Σήμερα είναι Παρασκευή. Η προσευχή της Παρασκευής τελείται την ώρα της Δουχρ (αρχίζει {giris}).",
+        suAnkiEk: ", τρέχουσα προσευχή",
+        siradakiEk: ", επόμενη προσευχή"
     )
 
     static let tablo: [String: TvArayuzMetinleri] = [

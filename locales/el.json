@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "Η τοποθεσία σας χρησιμοποιείται για τον ακριβή υπολογισμό των ωρών προσευχής για το σημείο όπου βρίσκεστε. Η τοποθεσία σας μένει στη συσκευή σας.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Η τοποθεσία σας χρησιμοποιείται για τον ακριβή υπολογισμό των ωρών προσευχής για το σημείο όπου βρίσκεστε και, αν είναι ενεργό το «Στο τζαμί», για την ενεργοποίηση της Λειτουργίας προσευχής όταν μπαίνετε σε τζαμί. Η τοποθεσία σας μένει στη συσκευή σας.",
+  "NSLocationAlwaysUsageDescription": "Η τοποθεσία σας χρησιμοποιείται για την αυτόματη ενημέρωση των ωρών προσευχής όταν αλλάζετε πόλη και, αν είναι ενεργό το «Στο τζαμί», για την ενεργοποίηση της Λειτουργίας προσευχής όταν μπαίνετε σε τζαμί. Η τοποθεσία σας μένει στη συσκευή σας.",
+  "NSCameraUsageDescription": "Η κάμερα χρησιμοποιείται για την εμφάνιση της κατεύθυνσης της Κίμπλα πάνω στην εικόνα της κάμερας και για τη σάρωση του κωδικού σύζευξης στην τηλεόρασή σας. Οι εικόνες δεν αποθηκεύονται και δεν φεύγουν ποτέ από τη συσκευή σας.",
+  "NSCalendarsUsageDescription": "Η πρόσβαση στο ημερολόγιο χρησιμοποιείται για την προσθήκη των ωρών προσευχής στο ημερολόγιό σας και, αν το ενεργοποιήσετε, για τον έλεγχο αν συμβάντα του ημερολογίου συμπίπτουν με ώρα προσευχής. Τα δεδομένα του ημερολογίου σας μένουν στη συσκευή σας.",
+  "NSCalendarsFullAccessUsageDescription": "Η πρόσβαση στο ημερολόγιο χρησιμοποιείται για την προσθήκη των ωρών προσευχής στο ημερολόγιό σας και, αν το ενεργοποιήσετε, για τον έλεγχο αν συμβάντα του ημερολογίου συμπίπτουν με ώρα προσευχής. Τα δεδομένα του ημερολογίου σας μένουν στη συσκευή σας.",
+  "NSLocalNetworkUsageDescription": "Η εφαρμογή συνδέεται με την τηλεόραση στο τοπικό σας δίκτυο για να της στείλει τις ώρες προσευχής και τις προσευχές που σημειώσατε. Τα δεδομένα είναι κρυπτογραφημένα και μεταφέρονται μόνο μεταξύ των δύο συσκευών.",
+  "NSAlarmKitUsageDescription": "Τα βήματα υπενθύμισης όπου επιλέγετε «Πραγματικό ξυπνητήρι» ορίζονται ως ξυπνητήρια, ώστε να τα ακούτε ακόμη και όταν το τηλέφωνο είναι στο αθόρυβο ή είναι ενεργή μια Εστίαση.",
+  "\"Vakti kıldım\"": "Προσευχήθηκα",
+  "\"Kıble\"": "Κίμπλα"
 }

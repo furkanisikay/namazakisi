@@ -1,40 +1,43 @@
-// ÇEVİRİ: el — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/**
+ * Nafile "προαιρετική προσευχή"; adlar harf çevirisi (Ντούχα, Αουάμπιν, Ταχατζούντ) — Yunanca
+ * kaynakta ad bulunamadı (meal 17:79 yalnız betimler), DOĞRULANMADI.
+ */
 export const nafile: Sozluk['nafile'] = {
-  adlar: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
-  kucuk: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
+  adlar: { kusluk: 'Ντούχα', evvabin: 'Αουάμπιν', teheccud: 'Ταχατζούντ' },
+  kucuk: { kusluk: 'Ντούχα', evvabin: 'Αουάμπιν', teheccud: 'Ταχατζούντ' },
   aciklamalar: {
     kusluk:
-      'Starts about 45 minutes after sunrise and lasts until 10 minutes before Dhuhr. Ishraq is its earliest time; the most virtuous is after the first quarter of the day has passed.',
-    evvabin: 'Prayed after Maghrib, until Isha time.',
-    teheccud: 'Prayed after sleeping and waking following Isha, until Fajr time. Its most virtuous time is the last third of the night.',
+      'Αρχίζει περίπου 45 λεπτά μετά την ανατολή του ηλίου και διαρκεί έως 10 λεπτά πριν από τη Δουχρ. Η Ισράκ είναι η νωρίτερη ώρα της· η πιο ενάρετη είναι μετά το πρώτο τέταρτο της ημέρας.',
+    evvabin: 'Τελείται μετά τη Μάγριμπ, έως την ώρα της ‘Ισά’.',
+    teheccud: 'Τελείται μετά την ‘Ισά’, αφού κοιμηθεί κανείς και ξυπνήσει, έως την ώρα της Φατζρ. Η πιο ενάρετη ώρα της είναι το τελευταίο τρίτο της νύχτας.',
   },
-  bilgiBugun: '{aciklama}\n\nToday: {bas} – {son}',
-  enFaziletli: ' · most virtuous after {saat}',
-  sonUcteBir: ' · last third {saat}',
-  durumAktif: 'Time has begun · ends {saat}',
-  durumNafile: 'Nafl · {bas}–{son}',
+  bilgiBugun: '{aciklama}\n\nΣήμερα: {bas} – {son}',
+  enFaziletli: ' · πιο ενάρετη μετά τις {saat}',
+  sonUcteBir: ' · τελευταίο τρίτο {saat}',
+  durumAktif: 'Η ώρα άρχισε · λήγει {saat}',
+  durumNafile: 'Προαιρετική · {bas}–{son}',
   bildirim: {
-    kuslukBaslik: 'Duha time',
-    kuslukSuruyor: 'Duha time is on; you can pray until {son}.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats; it lasts until {son}.',
+    kuslukBaslik: 'Ώρα Ντούχα',
+    kuslukSuruyor: 'Η ώρα της Ντούχα συνεχίζεται· μπορείτε να προσευχηθείτε έως τις {son}.',
+    kuslukGirdi: 'Άρχισε η ώρα της Ντούχα. Καλή στιγμή για δύο ρακάτ· διαρκεί έως τις {son}.',
     kuslukBitiyor: cogul({
-      one: '{n} minute left in Duha time. A good moment for two rakats; it lasts until {son}.',
-      other: '{n} minutes left in Duha time. A good moment for two rakats; it lasts until {son}.',
+      one: 'Απομένει {n} λεπτό από την ώρα της Ντούχα. Καλή στιγμή για δύο ρακάτ· διαρκεί έως τις {son}.',
+      other: 'Απομένουν {n} λεπτά από την ώρα της Ντούχα. Καλή στιγμή για δύο ρακάτ· διαρκεί έως τις {son}.',
     }),
-    evvabinBaslik: 'Awwabin',
-    evvabinSuruyor: 'There is still time for Awwabin. Isha begins at {son}.',
-    evvabinGirdi: 'After Maghrib, a good moment for Awwabin. Isha begins at {son}.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin. Isha begins at {son}.', other: '{n} minutes left for Awwabin. Isha begins at {son}.' }),
-    teheccudBaslik: 'Tahajjud time',
-    uyandirSonUcte: 'Get up; the last third of the night has begun. Fajr begins at {son}.',
-    uyandirKalan: cogul({ one: 'Get up; {n} minute left until Fajr. Fajr begins at {son}.', other: 'Get up; {n} minutes left until Fajr. Fajr begins at {son}.' }),
-    sonUcteBaslik: 'The last third of the night',
-    sonUcteGovde: 'The most blessed hours for Tahajjud. Fajr begins at {son}.',
-    teheccudKalan: cogul({ one: '{n} minute left until Fajr. A good time for Tahajjud.', other: '{n} minutes left until Fajr. A good time for Tahajjud.' }),
+    evvabinBaslik: 'Αουάμπιν',
+    evvabinSuruyor: 'Υπάρχει ακόμη χρόνος για την Αουάμπιν. Η ‘Ισά’ αρχίζει στις {son}.',
+    evvabinGirdi: 'Μετά τη Μάγριμπ, καλή στιγμή για την Αουάμπιν. Η ‘Ισά’ αρχίζει στις {son}.',
+    evvabinKalan: cogul({ one: 'Απομένει {n} λεπτό για την Αουάμπιν. Η ‘Ισά’ αρχίζει στις {son}.', other: 'Απομένουν {n} λεπτά για την Αουάμπιν. Η ‘Ισά’ αρχίζει στις {son}.' }),
+    teheccudBaslik: 'Ώρα Ταχατζούντ',
+    uyandirSonUcte: 'Σηκωθείτε· άρχισε το τελευταίο τρίτο της νύχτας. Η Φατζρ αρχίζει στις {son}.',
+    uyandirKalan: cogul({ one: 'Σηκωθείτε· απομένει {n} λεπτό έως τη Φατζρ. Η Φατζρ αρχίζει στις {son}.', other: 'Σηκωθείτε· απομένουν {n} λεπτά έως τη Φατζρ. Η Φατζρ αρχίζει στις {son}.' }),
+    sonUcteBaslik: 'Το τελευταίο τρίτο της νύχτας',
+    sonUcteGovde: 'Οι πιο ευλογημένες ώρες για την Ταχατζούντ. Η Φατζρ αρχίζει στις {son}.',
+    teheccudKalan: cogul({ one: 'Απομένει {n} λεπτό έως τη Φατζρ. Καλή ώρα για την Ταχατζούντ.', other: 'Απομένουν {n} λεπτά έως τη Φατζρ. Καλή ώρα για την Ταχατζούντ.' }),
   },
-  uyandirmaKanali: 'Tahajjud wake-up',
-  uyandirmaKanaliAciklama: 'Wakes you for the night prayer; rings even in silent mode',
+  uyandirmaKanali: 'Αφύπνιση για Ταχατζούντ',
+  uyandirmaKanaliAciklama: 'Σας ξυπνά για τη νυχτερινή προσευχή· χτυπά ακόμη και στο αθόρυβο',
 };

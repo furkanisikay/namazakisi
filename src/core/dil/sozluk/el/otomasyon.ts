@@ -1,10 +1,10 @@
-// ÇEVİRİ: el — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Otomasyon anahtar kelimesi: başlık eki içerir (rutin "ήρθε η ώρα" metnini arar). */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'ήρθε η ώρα',
+  vakitGirdiBasligi: '{ad}: ήρθε η ώρα',
+  herhangiVakit: 'Όταν αρχίζει οποιαδήποτε ώρα προσευχής',
+  yalnizVakit: 'Μόνο όταν αρχίζει η ώρα της {ad}',
+  camide: 'Όταν εντοπίζεται ότι βρίσκεστε σε τζαμί (με ενεργό το «Στο τζαμί»)',
 };

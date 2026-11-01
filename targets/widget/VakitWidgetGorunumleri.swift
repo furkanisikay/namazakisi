@@ -1156,29 +1156,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: el
+    // el
     static let el = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Ώρα προσευχής",
+        galeriAciklama: "Η τρέχουσα ώρα προσευχής, ο χρόνος έως τη λήξη της και οι σημερινές ώρες προσευχής.",
+        veriEski: "Ανοίξτε την εφαρμογή για ενημέρωση των ωρών προσευχής",
+        konumYok: "Ανοίξτε την εφαρμογή για να ορίσετε την τοποθεσία σας",
+        kilindiSiradaki: "{ad}: τελέστηκε · {sonraki} {saat}",
+        adCikis: "{ad} · λήγει {saat}",
+        siradakiAdSaat: "Επόμενη {ad} {saat}",
+        vaktiCikisErisim: "Ώρα {ad}, λήγει {saat}",
+        siradakiErisim: "Επόμενη {ad}, {saat}",
+        cikisSaat: "Λήγει {saat}",
+        bitisSaat: "Λήγει {saat}",
+        kilindiBaslik: "{ad}: τελέστηκε",
+        siradaki: "Επόμενη",
+        siradakiAd: "Επόμενη {ad}",
+        kildimErisim: "Προσευχήθηκα την {ad}",
+        gunSatiriKilindi: ", τελέστηκε",
+        bitti: "Έληξε",
+        vakitCikti: "Η ώρα προσευχής έληξε",
+        kabulAlt: "{ad}: τελέστηκε",
+        kontrolAdi: "Προσευχήθηκα",
+        kontrolAciklama: "Σημειώνει την τρέχουσα προσευχή ως τελεσμένη."
     )
 
     /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el; cevrilmemis dil `// ÇEVİRİ: <kod>`

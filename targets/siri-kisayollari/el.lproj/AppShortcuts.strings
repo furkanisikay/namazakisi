@@ -1,18 +1,18 @@
-/* ÇEVİRİ: el */
+/* el */
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
 // App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
 
 // NamazKisayollari.swift
-"${applicationName} sıradaki namaz ne zaman" = "When is the next prayer in ${applicationName}";
-"${applicationName} sıradaki namaz" = "${applicationName} next prayer";
-"${applicationName} ile sıradaki namazı söyle" = "Tell me the next prayer with ${applicationName}";
-"${applicationName} namaz vakti" = "${applicationName} prayer time";
-"${applicationName} şu anki vakti kıldım" = "I've prayed the current prayer in ${applicationName}";
-"${applicationName} namazımı kıldım" = "I've prayed in ${applicationName}";
-"${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
-"${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
-"${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
-"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
-"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";
+"${applicationName} sıradaki namaz ne zaman" = "Πότε είναι η επόμενη προσευχή στο ${applicationName}";
+"${applicationName} sıradaki namaz" = "${applicationName} επόμενη προσευχή";
+"${applicationName} ile sıradaki namazı söyle" = "Πες μου την επόμενη προσευχή με το ${applicationName}";
+"${applicationName} namaz vakti" = "${applicationName} ώρα προσευχής";
+"${applicationName} şu anki vakti kıldım" = "Τέλεσα την τρέχουσα προσευχή στο ${applicationName}";
+"${applicationName} namazımı kıldım" = "Προσευχήθηκα στο ${applicationName}";
+"${applicationName} ile vakti kıldım olarak işaretle" = "Σημείωσε την τρέχουσα προσευχή ως τελεσμένη στο ${applicationName}";
+"${applicationName} kıbleyi aç" = "Άνοιξε την Κίμπλα στο ${applicationName}";
+"${applicationName} ile kıbleyi göster" = "Δείξε την Κίμπλα με το ${applicationName}";
+"${applicationName} günün ayeti görseli" = "${applicationName} εικόνα εδαφίου της ημέρας";
+"${applicationName} ile günün ayeti görselini hazırla" = "Ετοίμασε την εικόνα του εδαφίου της ημέρας με το ${applicationName}";

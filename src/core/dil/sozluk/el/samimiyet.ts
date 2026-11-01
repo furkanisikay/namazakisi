@@ -1,35 +1,36 @@
-// ÇEVİRİ: el — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Yunanca konuşan Müslümanların kalıpları (çeviri değil). Yunanca İslami kurum metni çok az
+ * (Batı Trakya toplulukları Türkçe yayın yapar); dua kalıpları QuranEnc `greek_rwwad` mealindeki
+ * "δέχομαι" kökünden (2:127 "Κύριέ μας, δέξου από μας"; 5:27 "Ο Αλλάχ δέχεται…") TÜRETİLDİ, yerli
+ * okuyucuyla DOĞRULANMADI. Bayram ve Ramazan için Yunancada yerleşik "Μπαϊράμι", "Ραμαζάνι"
+ * (meal 2:185 "Ραμαντάν (Ραμαζανιού)"); Kadir gecesi meal 97:1 "Νύχτα του Αλ-Κάντρ". Övgü ve "!" yok.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Ας είναι ευλογημένο.',
+  kabulDualari: ['Ας τη δεχτεί ο Αλλάχ', 'Ας γίνει δεκτή', 'Ας τη δεχτεί ο Αλλάχ', 'Ας τη δεχτεί ο Κύριός μας'],
+  kabulDuasi: 'Ας τη δεχτεί ο Αλλάχ',
+  ekSabah: 'Ευλογημένο πρωινό',
+  ekYatsi: 'Ευλογημένη νύχτα',
+  tamGunAna: 'Ας τις δεχτεί ο Αλλάχ',
+  tamGunAlt: 'Σήμερα τελέσατε και τις πέντε προσευχές.',
+  kazaKabul: 'Μία αναπλήρωση {vakit} αφαιρέθηκε από το αρχείο σας. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Ευλογημένη νύχτα Ραγάιμπ',
+    mirac: 'Ευλογημένη νύχτα Ισρά και Μιράτζ',
+    berat: 'Ευλογημένη νύχτα Μπαράα',
+    mevlid: 'Ευλογημένο Μεβλίντ',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'Ευλογημένο σαχούρ',
+    bayram: 'Καλό Μπαϊράμι',
+    iftar: 'Ευλογημένο ιφτάρ',
+    kadir: 'Ευλογημένη Νύχτα του Αλ-Κάντρ',
+    arefe: 'Ευλογημένη παραμονή του Μπαϊραμιού',
+    hicriYilbasi: 'Ευλογημένο νέο έτος Εγίρας',
+    cuma: 'Ευλογημένη Παρασκευή',
+    ramazan: 'Καλό Ραμαζάνι',
+    sabah: 'Ευλογημένο πρωινό',
   },
 };
