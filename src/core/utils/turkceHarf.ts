@@ -37,8 +37,31 @@ export function turkceKucukHarf(metin: string): string {
  */
 export function dilBuyukHarf(metin: string, dil: string): string {
     if (dil === 'tr') return turkceBuyukHarf(metin);
+    if (dil === 'el') return yunancaBuyukHarf(metin);
     if (!metin) return metin;
     let sonuc = '';
     for (const harf of metin) sonuc += harf.toUpperCase();
     return sonuc;
+}
+
+const YUNAN_TONOS = /[\u0301\u0342]/g;
+/** Vurgulu ünlü + ι/υ: büyük harfte vurgu düşünce ikili okunmasın diye ι/υ çift nokta alır ("τσάι" → "ΤΣΑΪ"). */
+const YUNAN_AYRIK_IKILI = /([αεουηΑΕΟΥΗ])\u0301([ιυΙΥ])(?!\u0308)/g;
+
+/**
+ * Yunanca BÜYÜK HARF: tümü büyük yazımda vurgu (tonos) yazılmaz ("Υπενθυμίσεις" →
+ * "ΥΠΕΝΘΥΜΙΣΕΙΣ"), çift nokta (diyalitika) kalır; vurgusu ikiliyi bölen ünlüden sonra gelen
+ * ι/υ çift nokta alır. Tek başına "ή" (veya) vurgusunu korur ("Ή"). Ayrıştırma NFD ile, dil-bağımsız.
+ */
+function yunancaBuyukHarf(metin: string): string {
+    if (!metin) return metin;
+    let sonuc = '';
+    for (const harf of metin) sonuc += harf.toUpperCase();
+    return sonuc
+        .normalize('NFD')
+        .replace(/(^|[^\p{L}\p{M}])\u0397\u0301(?![\p{L}\p{M}])/gu, '$1\uE000')
+        .replace(YUNAN_AYRIK_IKILI, '$1$2\u0308')
+        .replace(YUNAN_TONOS, '')
+        .replace(/\uE000/g, '\u0389')
+        .normalize('NFC');
 }

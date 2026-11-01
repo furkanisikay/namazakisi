@@ -57,7 +57,8 @@ export function gokErisimEtiketi(
 
   const m = metin().seri.gok;
   return bicim(m.erisim, {
-    ay: ayAdi,
+    // Hırvatça/Sırpça ay başlığı noktayla biter ("Studeni 2026."); kalıbın noktası ikilenmesin.
+    ay: ayAdi.replace(/\.$/, ''),
     hedef: sayili(m.hedefTutuldu, hedefTutulan),
     bes: sayili(m.besVakit, besVakitTamamlanan),
     donmus: sayili(m.dondurulmus, dondurulmus),

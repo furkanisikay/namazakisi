@@ -189,7 +189,7 @@ export const cami: Sozluk['cami'] = {
     lejantKume: 'Krug s brojem: nekoliko džamija',
     lejantUyanma: 'Područje buđenja',
     konumunuzaGidin: 'Idite na svoju lokaciju',
-    atif: '© OpenStreetMap contributors · OpenFreeMap',
+    atif: '© suradnici OpenStreetMapa · OpenFreeMap',
   },
   yer: {
     sizinYeriniz: 'vaše mjesto',
@@ -276,7 +276,7 @@ export const cami: Sozluk['cami'] = {
     yakindakiCamiler: 'Obližnje džamije',
     yeriEkleyin: 'Dodajte svoje trenutačno mjesto',
     camiBulunamadi: 'U vašoj blizini nije pronađena nijedna džamija. Provjerite lokaciju u postavkama lokacije.',
-    atif: 'Podaci o džamijama: © OpenStreetMap contributors (ODbL)',
+    atif: 'Podaci o džamijama: © suradnici OpenStreetMapa (ODbL)',
     cumaHutbesiAciklama: 'Od početka podne-namaza u petak do {dk} min nakon toga',
     herVakitBaslik: 'Kad nastupi vrijeme svakog namaza',
     herVakitAciklama: 'Tijekom {dk} min · svih pet namaza',

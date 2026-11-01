@@ -213,7 +213,7 @@ export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            className="flex-[1.4] flex-row items-center justify-center py-3.5 rounded-2xl"
+                            className="flex-[1.4] flex-row items-center justify-center py-3.5 px-3 rounded-2xl"
                             style={{ minHeight: 44, backgroundColor: renkler.birincil }}
                             onPress={onOnayla}
                             activeOpacity={0.85}
@@ -221,7 +221,12 @@ export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({
                             accessibilityLabel={ma.onayla}
                         >
                             <FontAwesome5 name="check" size={13} color="#FFF" style={{ marginRight: 8 }} />
-                            <Text className="text-sm font-bold" style={{ color: '#FFF' }}>
+                            {/* Uzun dilde (Yunanca) metin ikonu itip kesilmez; iki satıra sarılır. */}
+                            <Text
+                                className="text-sm font-bold text-center"
+                                style={{ color: '#FFF', flexShrink: 1 }}
+                                numberOfLines={2}
+                            >
                                 {ma.onayla}
                             </Text>
                         </TouchableOpacity>

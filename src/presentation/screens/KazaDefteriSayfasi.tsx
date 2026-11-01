@@ -457,7 +457,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
           ]}
         >
           <View style={styles.toplamKartUst}>
-            <View>
+            <View style={styles.toplamKartSol}>
               <Text style={[styles.toplamEtiket, { color: renkler.metinIkincil }]}>
                 {m.toplamKalan}
               </Text>
@@ -1087,6 +1087,11 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: '800',
     letterSpacing: -1,
+  },
+  // Uzun dilde (Yunanca) sol etiket sağdaki "Tamamlanan"a binmez; alt satıra sarılır.
+  toplamKartSol: {
+    flex: 1,
+    marginRight: 12,
   },
   toplamKartSag: {
     alignItems: 'flex-end',
