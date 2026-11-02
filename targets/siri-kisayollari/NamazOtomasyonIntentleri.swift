@@ -467,11 +467,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: tt (other)
+    // tt (other)
     static let tt = OtomasyonMetinleri(
-        kalanDakika: ["other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["other": "{ad} вакыты {n} минуттан керә."],
+        evetKilindi: "Әйе, укылды дип билгеләнгән.",
+        hayirKilinmadi: "Юк, әле билгеләнмәгән."
     )
 
     // ÇEVİRİ: sd (one/other)

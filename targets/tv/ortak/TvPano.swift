@@ -759,18 +759,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: tt
+    // tt — CLDR tt uzun tarih "2 ноябрь, 2026 ел, дүшәмбе"; ay ve gün adı küçük, ay çekimsiz.
     public static let tt = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "Иртәнге", "gunes": "Кояш", "ogle": "Өйлә", "ikindi": "Икенде", "aksam": "Ахшам", "yatsi": "Ястү"],
+        cuma: "Җомга",
+        aylar: ["гыйнвар", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"],
+        gunler: ["дүшәмбе", "сишәмбе", "чәршәмбе", "пәнҗешәмбе", "җомга", "шимбә", "якшәмбе"],
+        tarih: "{gun} {ay}, {yil} ел, {gunAdi}",
+        kerahatAdlari: ["suruk": "Кояш чыгу", "istiva": "Истива", "gurub": "Кояш бату"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Кояш тулысынча күтәрелгәнче намаз уку мәкруһ.",
+            "istiva": "Кояш нәкъ түбәдә торганда намаз уку мәкруһ.",
+            "gurub": "Кояш батып барганда намаз уку мәкруһ.",
         ]
     )
 

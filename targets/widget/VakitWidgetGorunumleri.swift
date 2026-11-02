@@ -1231,29 +1231,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: tt
+    // tt
     static let tt = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Намаз вакыты",
+        galeriAciklama: "Хәзерге намаз вакыты, ул чыкканчы калган вакыт һәм бүгенге намаз вакытлары.",
+        veriEski: "Намаз вакытларын яңарту өчен кушымтаны ачыгыз",
+        konumYok: "Урнашу урыныгызны көйләү өчен кушымтаны ачыгыз",
+        kilindiSiradaki: "{ad} укылды · {sonraki} {saat}",
+        adCikis: "{ad} · чыгуы {saat}",
+        siradakiAdSaat: "Чираттагы {ad} {saat}",
+        vaktiCikisErisim: "{ad} вакыты, чыгуы {saat}",
+        siradakiErisim: "Чираттагы {ad}, {saat}",
+        cikisSaat: "Чыгуы {saat}",
+        bitisSaat: "Бетүе {saat}",
+        kilindiBaslik: "{ad} укылды",
+        siradaki: "Киләсе",
+        siradakiAd: "Чираттагы {ad}",
+        kildimErisim: "{ad} намазын укыдым",
+        gunSatiriKilindi: ", укылды",
+        bitti: "Бетте",
+        vakitCikti: "Намаз вакыты чыкты",
+        kabulAlt: "{ad} укылды",
+        kontrolAdi: "Укыдым",
+        kontrolAciklama: "Хәзерге намазны укылды дип билгели."
     )
 
     // ÇEVİRİ: sd

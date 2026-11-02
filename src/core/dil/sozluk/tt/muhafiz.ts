@@ -1,61 +1,59 @@
-// ÇEVİRİ: tt — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı: "син" + kısa emir. "Secdeye kapan" YAZILMAZ → "намазга бас" (namaza dur).
+ * Başlık önden okunur: vakit adı + süre ilk 16 karakterde ("Ястү · 45 мин"). "!" yok (Microsoft tt).
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} мин узды · вакыт керде ⏰',
+    giris2: '{ad} · {dk} мин узды · намазыңны кичектермә ⚠️',
+    giris3: '{ad} · {dk} мин узды · намазың сине көтә 🔥',
+    giris4: '{ad} · {dk} мин узды · НАМАЗГА БАС 🚨',
+    erken3: '{ad} · {dk} мин калды · намазың сине көтә 🔥',
+    erken4: '{ad} · {dk} мин калды · НАМАЗГА БАС 🚨',
+    cikis1: '{ad} · {dk} мин калды ⏰',
+    cikis2: '{ad} · {dk} мин · вакыт тарая ⚠️',
+    cikis3: '{ad} · {dk} мин · вакыт узып бара 🔥',
+    cikis4: '{ad} · {dk} мин · ВАКЫТ ЧЫГЫП БАРА 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Намаз вакыты керде; мөмкинлек барда укы.', 'Вакыт синең файдага эшләгәндә укы, соңга калдырма.'],
+    s2: ['Соңга калдырган саен авырая бара; намазны ахырга калдырма.', 'Вакыт узып бара — намазыңны хәзер укы.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Намазны кичектергән саен аны вакытында укымый калуга якынаясың; хәзер үк укы.',
+      '«Соңрак укырмын» димә; хәзер укый аласың.',
+      'Берничә минуттан «и, үкенеч» дигәнче, хәзер үк тор.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Намазны моннан артык кичектермә — хәзер үк намазга бас.', 'Кулыңдагы эшне куеп, намазга бас.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Вакыт тарая башлады, мөмкинлек барда укы.',
+    s2: 'Намазны ахырга калдырма; хәзер уку өчен вакыт уңай.',
+    s3: 'Вакыт бетеп килә; хәзер укый аласың.',
+    s4: 'Укыган булсаң, «Укыдым» төймәсенә бас; укымаган булсаң, хәзер үк намазга бас.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'НАМАЗНЫ КИЧЕКТЕРМӘ. Хәзер үк намазга бас. ({dk} мин узды)',
+    giris2: 'Вакыт узып бара, намазны ахырга калдырма. ({dk} мин узды)',
+    giris1: cogul({ one: 'Намаз вакыты кергәнгә {n} минут булды.', other: 'Намаз вакыты кергәнгә {n} минут булды.' }),
+    erken4: 'Намазны кичектермә, хәзер үк намазга бас. ({dk} мин калды)',
+    cikis4: 'ВАКЫТ ЧЫГЫП БАРА. Хәзер үк намазга бас. ({dk} мин калды)',
+    cikis2: 'Вакыт тарая, намазны ахырга калдырма. ({dk} мин калды)',
+    cikis1: cogul({ one: 'Намаз вакыты беткәнгә {n} минут калды.', other: 'Намаз вакыты беткәнгә {n} минут калды.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · йоклар алдыннан укы ⏰',
+    govde: 'Төнге тынычлыкка {dk} мин бар; ятар алдыннан ястүеңне укы.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Вакыт тарая башлады, мөмкинлек барда укы.',
+    sonaBirakma: 'Намазны ахырга калдырма; хәзер уку өчен вакыт уңай.',
+    fisilti: '«Соңрак укырмын» димә; вакыт бетеп килә, хәзер укый аласың.',
+    omur: 'Вакыт узып бара; бу намазны вакытында укырга әле мөмкинлегең бар.',
+    keske: 'Берничә минуттан «и, үкенеч» дигәнче, хәзер үк тор.',
+    namazaDur: 'Укыган булсаң, «Укыдым» төймәсенә бас; укымаган булсаң, хәзер үк намазга бас.',
+    sonDakika: 'Соңгы минутлар. Кулыңдагы эшне куеп, намазга бас.',
   },
 };

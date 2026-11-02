@@ -1,35 +1,37 @@
-// ÇEVİRİ: tt — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Tatarca söyleyen Müslümanların yerleşik kalıpları (çeviri değil): namazdan sonra "Кабул булсын"
+ * (IslamHouse tt "Догаң кабул булсын…"), "Аллаһ кабул кылсын" (ana oturum kararı, kısa kalıp
+ * türetildi), "Аллаһы Тәгалә кабул кылсын" ("Аллаһы Тәгалә" dumrt kullanımı); selamlarda "…
+ * мөбарәк булсын", "Хәерле иртә/төн". Kandil ve bayram adları ДУМ РТ 2027 takvimi (Рәгаиб, Мигъраҗ,
+ * Бәраәт, Кадер кичәсе, Ураза/Корбан гаете, Гарәфә көне, Мәүлид) — yerli okuyucuyla DOĞRULANMADI.
+ * Övgü ve "!" yok.
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Хәерле булсын.',
+  kabulDualari: ['Аллаһ кабул кылсын', 'Кабул булсын', 'Аллаһ кабул кылсын', 'Аллаһы Тәгалә кабул кылсын'],
+  kabulDuasi: 'Аллаһ кабул кылсын',
+  ekSabah: 'Хәерле иртә',
+  ekYatsi: 'Хәерле төн',
+  tamGunAna: 'Аллаһ кабул кылсын',
+  tamGunAlt: 'Бүген биш вакыт намазны тулысынча укыдыгыз.',
+  kazaKabul: 'Дәфтәрегездән бер {vakit} казасы төшереп калдырылды. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Рәгаиб кичәсе мөбарәк булсын',
+    mirac: 'Мигъраҗ кичәсе мөбарәк булсын',
+    berat: 'Бәраәт кичәсе мөбарәк булсын',
+    mevlid: 'Мәүлид мөбарәк булсын',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'Сәхәрегез кабул булсын',
+    bayram: 'Гаетегез мөбарәк булсын',
+    iftar: 'Авыз ачуыгыз кабул булсын',
+    kadir: 'Кадер кичәсе мөбарәк булсын',
+    arefe: 'Гарәфә көне мөбарәк булсын',
+    hicriYilbasi: 'Һиҗри яңа ел мөбарәк булсын',
+    cuma: 'Җомгагыз мөбарәк булсын',
+    ramazan: 'Рамазан ае мөбарәк булсын',
+    sabah: 'Хәерле иртә',
   },
 };

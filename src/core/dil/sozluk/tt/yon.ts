@@ -1,10 +1,9 @@
-// ÇEVİRİ: tt — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Язу юнәлеше үзгәрә',
+  aciklama: 'Сайлаган телегез башка юнәлештә языла. Экраннар яңа юнәлешкә күчсен өчен кушымтаны яңадан җибәрергә кирәк.',
+  simdiBaslat: 'Хәзер яңадан җибәрү',
+  sonra: 'Соңрак',
+  bekliyor: 'Язу юнәлеше кушымта яңадан җибәрелгәч үзгәрәчәк.',
 };

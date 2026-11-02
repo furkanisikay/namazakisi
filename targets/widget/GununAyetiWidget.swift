@@ -708,18 +708,19 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: tt
+    // tt — Tatarca (beta): QuranEnc'te Tatarca meal YOK (sahip kararı: mealsiz dil) → `ornekMeal` ve
+    // `ornekMealKaynagi` boş (uydurma çeviri yok), yalnız Arapça metin + künye.
     static let tt = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Көннең аяте",
+        galeriAciklama: "Көн саен иртәнге вакытта алышына торган аять.",
+        etiket: "КӨННЕҢ АЯТЕ",
+        uygulamayiAcin: "Көннең аятен күрү өчен кушымтаны ачыгыз",
+        ornekSigmiyor: "Бүгенге аять бу зурлыкка сыймый. Уку өчен басыгыз.",
+        ornekAcin: "Ачу",
+        ornekArapcaKaynagi: "Гарәпчә: Tanzil",
+        ornekMeal: "",
+        ornekKisaKunye: "Коръән 94:6",
+        ornekMealKaynagi: ""
     )
 
     // ÇEVİRİ: sd

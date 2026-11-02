@@ -1,14 +1,14 @@
-// ÇEVİRİ: tt — İngilizce iskelet, çevrilince bu satır silinir
 // CLDR tt tarih "2 ноябрь, 2026 ел"; `aylarYalin` takvim başlığı ("Ноябрь 2026").
 import type { Sozluk } from '../tr';
 
+/** CLDR tt: tarih içinde ay ve gün adı küçük harf, ay adı çekimsiz; tek başına (başlıkta) büyük harf. */
 export const tarih: Sozluk['tarih'] = {
-  gunler: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  gunlerKisa: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  aylar: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarYalin: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarKisa: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  haftaHarfleri: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-  uzun: '{gun} {ay} {yil}',
+  gunler: ['Якшәмбе', 'Дүшәмбе', 'Сишәмбе', 'Чәршәмбе', 'Пәнҗешәмбе', 'Җомга', 'Шимбә'],
+  gunlerKisa: ['Якш', 'Дүш', 'Сиш', 'Чәр', 'Пәнҗ', 'Җом', 'Шим'],
+  aylar: ['гыйнвар', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'],
+  aylarYalin: ['Гыйнвар', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+  aylarKisa: ['Гыйн', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+  haftaHarfleri: ['Дү', 'Си', 'Чә', 'Пә', 'Җо', 'Ши', 'Як'],
+  uzun: '{gun} {ay}, {yil} ел',
   gunAdiYil: '{gunAdi}, {yil}',
 };

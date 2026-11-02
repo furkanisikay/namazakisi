@@ -1,40 +1,44 @@
-// ÇEVİRİ: tt — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/**
+ * Нәфел намазлар (dumrt "Нәфел – өстәмә намазлар"): Духа (kuşluk), Әүвәбин, Тәһәҗҗүд (dumrt
+ * "Тәһәҗҗүд намазы"). Bildirim ibadete çağrıdır ("син"); açıklamalar küçük "сез". Духа ve Әүвәбин
+ * yazımı kurum kaynağında DOĞRULANMADI.
+ */
 export const nafile: Sozluk['nafile'] = {
-  adlar: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
-  kucuk: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
+  adlar: { kusluk: 'Духа', evvabin: 'Әүвәбин', teheccud: 'Тәһәҗҗүд' },
+  kucuk: { kusluk: 'духа', evvabin: 'әүвәбин', teheccud: 'тәһәҗҗүд' },
   aciklamalar: {
     kusluk:
-      'Starts about 45 minutes after sunrise and lasts until 10 minutes before Dhuhr. Ishraq is its earliest time; the most virtuous is after the first quarter of the day has passed.',
-    evvabin: 'Prayed after Maghrib, until Isha time.',
-    teheccud: 'Prayed after sleeping and waking following Isha, until Fajr time. Its most virtuous time is the last third of the night.',
+      'Кояш чыкканнан якынча 45 минуттан соң башлана һәм өйлә вакытына 10 минут калганчы дәвам итә. Ишрак — духаның беренче вакыты; иң фазыйләтлесе көннең беренче дүрттән бере узгач.',
+    evvabin: 'Ахшам намазыннан соң, ястү вакытына кадәр укыла.',
+    teheccud: 'Ястүдән соң йоклап торгач, иртәнге вакытка кадәр укыла. Иң фазыйләтле вакыты — төннең соңгы өчтән бере.',
   },
-  bilgiBugun: '{aciklama}\n\nToday: {bas} – {son}',
-  enFaziletli: ' · most virtuous after {saat}',
-  sonUcteBir: ' · last third {saat}',
-  durumAktif: 'Time has begun · ends {saat}',
-  durumNafile: 'Nafl · {bas}–{son}',
+  bilgiBugun: '{aciklama}\n\nБүген: {bas} – {son}',
+  enFaziletli: ' · иң фазыйләтле вакыт башы {saat}',
+  sonUcteBir: ' · соңгы өчтән бер {saat}',
+  durumAktif: 'Вакыты керде · бетүе {saat}',
+  durumNafile: 'Нәфел · {bas}–{son}',
   bildirim: {
-    kuslukBaslik: 'Duha time',
-    kuslukSuruyor: 'Duha time is on; you can pray until {son}.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats; it lasts until {son}.',
+    kuslukBaslik: 'Духа вакыты',
+    kuslukSuruyor: 'Духа вакыты дәвам итә; укый аласың, бетүе — {son}.',
+    kuslukGirdi: 'Духа вакыты керде. Ике рәкәгать өчен яхшы мизгел; бетүе — {son}.',
     kuslukBitiyor: cogul({
-      one: '{n} minute left in Duha time. A good moment for two rakats; it lasts until {son}.',
-      other: '{n} minutes left in Duha time. A good moment for two rakats; it lasts until {son}.',
+      one: 'Духа вакыты беткәнгә {n} минут бар. Ике рәкәгать өчен яхшы мизгел; бетүе — {son}.',
+      other: 'Духа вакыты беткәнгә {n} минут бар. Ике рәкәгать өчен яхшы мизгел; бетүе — {son}.',
     }),
-    evvabinBaslik: 'Awwabin',
-    evvabinSuruyor: 'There is still time for Awwabin. Isha begins at {son}.',
-    evvabinGirdi: 'After Maghrib, a good moment for Awwabin. Isha begins at {son}.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin. Isha begins at {son}.', other: '{n} minutes left for Awwabin. Isha begins at {son}.' }),
-    teheccudBaslik: 'Tahajjud time',
-    uyandirSonUcte: 'Get up; the last third of the night has begun. Fajr begins at {son}.',
-    uyandirKalan: cogul({ one: 'Get up; {n} minute left until Fajr. Fajr begins at {son}.', other: 'Get up; {n} minutes left until Fajr. Fajr begins at {son}.' }),
-    sonUcteBaslik: 'The last third of the night',
-    sonUcteGovde: 'The most blessed hours for Tahajjud. Fajr begins at {son}.',
-    teheccudKalan: cogul({ one: '{n} minute left until Fajr. A good time for Tahajjud.', other: '{n} minutes left until Fajr. A good time for Tahajjud.' }),
+    evvabinBaslik: 'Әүвәбин',
+    evvabinSuruyor: 'Әүвәбин өчен вакыт дәвам итә. Ястү вакыты {son}.',
+    evvabinGirdi: 'Ахшам намазыннан соң әүвәбин өчен яхшы мизгел. Ястү вакыты {son}.',
+    evvabinKalan: cogul({ one: 'Әүвәбингә {n} минут бар. Ястү вакыты {son}.', other: 'Әүвәбингә {n} минут бар. Ястү вакыты {son}.' }),
+    teheccudBaslik: 'Тәһәҗҗүд вакыты',
+    uyandirSonUcte: 'Тор; төннең соңгы өчтән бере керде. Иртәнге вакыт {son}.',
+    uyandirKalan: cogul({ one: 'Тор; иртәнгегә {n} минут калды. Иртәнге вакыт {son}.', other: 'Тор; иртәнгегә {n} минут калды. Иртәнге вакыт {son}.' }),
+    sonUcteBaslik: 'Төннең соңгы өчтән бере',
+    sonUcteGovde: 'Тәһәҗҗүд өчен иң бәрәкәтле сәгатьләр. Иртәнге вакыт {son}.',
+    teheccudKalan: cogul({ one: 'Иртәнгегә {n} минут калды. Тәһәҗҗүд өчен яхшы вакыт.', other: 'Иртәнгегә {n} минут калды. Тәһәҗҗүд өчен яхшы вакыт.' }),
   },
-  uyandirmaKanali: 'Tahajjud wake-up',
-  uyandirmaKanaliAciklama: 'Wakes you for the night prayer; rings even in silent mode',
+  uyandirmaKanali: 'Тәһәҗҗүдкә уяту',
+  uyandirmaKanaliAciklama: 'Төнге намазга уята; тавышсыз режимда да шалтырый',
 };

@@ -140,8 +140,8 @@ object CanliGuncellemeKurallari {
         "ku" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: tk
         "tk" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: tt
-        "tt" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // tt
+        "tt" to KisaBirimler("сәг", "мин", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: sd
         "sd" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // pl

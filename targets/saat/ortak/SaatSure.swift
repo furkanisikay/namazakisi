@@ -436,12 +436,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: tt (other)
+    // tt (other) — sayıdan sonra isim çoğul eki almaz.
     public static let tt = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["other": "{n} hours"],
-        dakika: ["other": "{n} minutes"],
-        saniye: ["other": "{n} seconds"],
+        birimSa: "сәг", birimDk: "мин", birimSn: "сек",
+        saat: ["other": "{n} сәгать"],
+        dakika: ["other": "{n} минут"],
+        saniye: ["other": "{n} секунд"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

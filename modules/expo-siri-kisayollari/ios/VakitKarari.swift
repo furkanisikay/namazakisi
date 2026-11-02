@@ -1602,31 +1602,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: tt
+    // tt — Tatarca (beta, Kiril): JS `sozluk/tt` (vakit adları ДУМ РТ; "Kıldım" = «Укыдым», "Kılındı" = «Укылды»).
     public static let tt = VakitMetinleri(
         dil: "tt",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Иртәнге", "ogle": "Өйлә", "ikindi": "Икенде", "aksam": "Ахшам", "yatsi": "Ястү"],
+        gunes: "Кояш",
+        konumYok: "Намаз вакытларын исәпләү өчен кушымтаны ачып, урнашу урыныгызны көйләгез.",
+        veriEski: "Намаз вакытлары искергән. Яңарту өчен кушымтаны бер тапкыр ачыгыз.",
+        girisBugun: "сәгать {saat}",
+        girisYarin: "иртәгә сәгать {saat}",
+        suAnVakti: "Хәзер {ad} вакыты.",
+        suAnVaktiCikis: "Хәзер {ad} вакыты, чыгуы сәгать {saat}.",
+        siradakiNamaz: "Чираттагы намаз — {ad}, {giris}.",
+        isaretlendi: "{ad} намазыгыз укылды дип билгеләнде. {dua}.",
+        zatenKilindi: "{ad} намазы укылды дип элек билгеләнгән.",
+        vakitYok: "Хәзер билгеләнә торган намаз юк.",
+        vakitYokSiradaki: "Хәзер билгеләнә торган намаз юк. Чираттагысы — {ad}, {giris}.",
+        onay: "{ad} намазы укылды дип билгеләнсенме?",
+        vakitDegisti: "Намаз вакыты үзгәрде, билге куелмады. Кабатлап карагыз.",
+        kabulDuasi: "Аллаһ кабул кылсын",
+        kildim: "Укыдым",
+        kilindi: "Укылды",
+        kontrolKildim: "{ad} · Укыдым",
+        kontrolKilindi: "{ad} укылды",
+        kontrolVakitYok: "Билгеләнә торган намаз юк",
+        uygulamayiAcin: "Кушымтаны ачыгыз"
     )
 
     // ÇEVİRİ: sd

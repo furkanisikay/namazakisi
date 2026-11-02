@@ -802,17 +802,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: "\u{00A0}"
     )
 
-    // ÇEVİRİ: tt (CLDR tt binlik ayırıcı bölünmez boşluk)
+    // tt (CLDR tt binlik ayırıcı bölünmez boşluk)
     public static let tt = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "Артыгызда",
+        saga: "Уңга {derece}°",
+        sola: "Сулга {derece}°",
+        hizali: "Сез кыйбла юнәлешендә",
+        arkadaErisim: "Кыйбла артыгызда",
+        sagdaErisim: "Кыйбла уң ягыгызда, {derece} градус",
+        soldaErisim: "Кыйбла сул ягыгызда, {derece} градус",
+        kabede: "Сез Кәгъбә янында",
+        mesafe: "{km} км",
         binlikAyirici: "\u{00A0}"
     )
 
