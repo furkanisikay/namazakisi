@@ -1,61 +1,60 @@
-// ÇEVİRİ: bg — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Bulgarcada: saygılı 2. çoğul kısa emir (meal 2:43 "Извършвайте намаза",
+ * "Застанете за намаз"), "моля" ve "!" yok. Secde karşılığı ("паднете ничком") YAZILMAZ.
+ * Başlıkta süre birimi "мин" (CLDR narrow).
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · минаха {dk} мин · време е за намаз ⏰',
+    giris2: '{ad} · минаха {dk} мин · не отлагайте намаза ⚠️',
+    giris3: '{ad} · минаха {dk} мин · намазът ви чака 🔥',
+    giris4: '{ad} · минаха {dk} мин · ЗАСТАНЕТЕ ЗА НАМАЗ 🚨',
+    erken3: '{ad} · остават {dk} мин · намазът ви чака 🔥',
+    erken4: '{ad} · остават {dk} мин · ЗАСТАНЕТЕ ЗА НАМАЗ 🚨',
+    cikis1: '{ad} · остават {dk} мин ⏰',
+    cikis2: '{ad} · {dk} мин · времето намалява ⚠️',
+    cikis3: '{ad} · {dk} мин · времето изтича 🔥',
+    cikis4: '{ad} · {dk} мин · ВРЕМЕТО СВЪРШВА 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Време е за намаз; изпълнете го, докато имате възможност.', 'Изпълнете намаза, докато времето е на ваша страна; не го оставяйте за после.'],
+    s2: ['Колкото повече отлагате, толкова по-трудно става; не оставяйте намаза за последния момент.', 'Времето тече — изпълнете намаза сега.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Колкото повече отлагате, толкова по-близо сте до пропускането му; изпълнете намаза сега.',
+      'Не казвайте „ще го изпълня по-късно“; можете да го изпълните сега.',
+      'Станете сега, вместо след няколко минути да казвате „ех, ако бях…“.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Не отлагайте повече намаза — застанете за намаз сега.', 'Оставете това, което правите, и застанете за намаз.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Времето започва да намалява; изпълнете намаза, докато имате възможност.',
+    s2: 'Не оставяйте намаза за последния момент; сега е подходящо време.',
+    s3: 'Времето почти изтече; още можете да изпълните намаза сега.',
+    s4: 'Ако сте изпълнили намаза, докоснете „Изпълних“; ако не, застанете за намаз сега.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'НЕ ОТЛАГАЙТЕ НАМАЗА. Застанете за намаз сега. (минаха {dk} мин)',
+    giris2: 'Времето тече; не оставяйте намаза за последния момент. (минаха {dk} мин)',
+    giris1: cogul({ one: 'Измина {n} минута, откакто настъпи времето за намаз.', other: 'Изминаха {n} минути, откакто настъпи времето за намаз.' }),
+    erken4: 'Не отлагайте намаза; застанете за намаз сега. (остават {dk} мин)',
+    cikis4: 'ВРЕМЕТО СВЪРШВА. Застанете за намаз сега. (остават {dk} мин)',
+    cikis2: 'Времето намалява; не оставяйте намаза за последния момент. (остават {dk} мин)',
+    cikis1: cogul({ one: 'До края на времето за намаз остава {n} минута.', other: 'До края на времето за намаз остават {n} минути.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · намаз преди сън ⏰',
+    govde: 'Тихите часове започват след {dk} мин; изпълнете Нощ, преди да си легнете.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Времето започва да намалява; изпълнете намаза, докато имате възможност.',
+    sonaBirakma: 'Не оставяйте намаза за последния момент; сега е подходящо време.',
+    fisilti: 'Не казвайте „ще го изпълня по-късно“; времето почти изтече, можете да го изпълните сега.',
+    omur: 'Времето минава; още имате възможност да изпълните този намаз навреме.',
+    keske: 'Станете сега, вместо след няколко минути да казвате „ех, ако бях…“.',
+    namazaDur: 'Ако сте изпълнили намаза, докоснете „Изпълних“; ако не, застанете за намаз сега.',
+    sonDakika: 'Последни минути. Оставете това, което правите, и застанете за намаз.',
   },
 };

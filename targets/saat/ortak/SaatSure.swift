@@ -481,12 +481,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: bg (one/other)
+    // bg (one/other)
     public static let bg = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "ч", birimDk: "мин", birimSn: "с",
+        saat: ["one": "{n} час", "other": "{n} часа"],
+        dakika: ["one": "{n} минута", "other": "{n} минути"],
+        saniye: ["one": "{n} секунда", "other": "{n} секунди"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

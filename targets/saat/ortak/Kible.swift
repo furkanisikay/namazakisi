@@ -872,17 +872,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: bg (CLDR bg binlik ayırıcı bölünmez boşluk)
+    // bg (CLDR bg binlik ayırıcı bölünmez boşluk)
     public static let bg = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "Зад вас",
+        saga: "Вдясно {derece}°",
+        sola: "Вляво {derece}°",
+        hizali: "Обърнати сте към киблята",
+        arkadaErisim: "Киблята е зад вас",
+        sagdaErisim: "Киблята е на {derece} градуса вдясно от вас",
+        soldaErisim: "Киблята е на {derece} градуса вляво от вас",
+        kabede: "Вие сте при Кабата",
+        mesafe: "{km} км",
         binlikAyirici: "\u{00A0}"
     )
 

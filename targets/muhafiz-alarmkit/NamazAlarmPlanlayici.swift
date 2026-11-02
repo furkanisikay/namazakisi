@@ -200,8 +200,8 @@ enum NamazAlarmCekirdegi {
         "ja": "停止",
         // gu
         "gu": "બંધ કરો",
-        // ÇEVİRİ: bg
-        "bg": "Stop",
+        // bg
+        "bg": "Спрете",
         // mk
         "mk": "Запрете",
     ]

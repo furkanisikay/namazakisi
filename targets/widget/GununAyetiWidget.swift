@@ -779,18 +779,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rabella Al-Omari, QuranEnc 1.1.3"
     )
 
-    // ÇEVİRİ: bg
+    // bg
     static let bg = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Аят на деня",
+        galeriAciklama: "Аят и неговият превод, които се сменят всеки ден при Зора.",
+        etiket: "АЯТ НА ДЕНЯ",
+        uygulamayiAcin: "Отворете приложението, за да видите аята на деня",
+        ornekSigmiyor: "Днешният аят не се побира в този размер. Докоснете, за да го прочетете.",
+        ornekAcin: "Отворете",
+        ornekArapcaKaynagi: "Арабски: Tanzil",
+        ornekMeal: "Да, наистина, след всяка трудност настъпва облекчение.",
+        ornekKisaKunye: "Коран 94:6",
+        ornekMealKaynagi: "Bulgarian Translation, QuranEnc 1.0.0"
     )
 
     // mk

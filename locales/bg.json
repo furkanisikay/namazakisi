@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "Местоположението ви се използва, за да се изчисляват точно времената за намаз за мястото, където сте. Местоположението остава на устройството ви.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "Местоположението ви се използва, за да се изчисляват точно времената за намаз за мястото, където сте, и ако „В джамията съм“ е включено, за да се включва режим „Намаз“, когато влезете в джамия. Местоположението остава на устройството ви.",
+  "NSLocationAlwaysUsageDescription": "Местоположението ви се използва, за да се обновяват автоматично времената за намаз, когато смените града, и ако „В джамията съм“ е включено, за да се включва режим „Намаз“, когато влезете в джамия. Местоположението остава на устройството ви.",
+  "NSCameraUsageDescription": "Камерата се използва, за да се показва посоката на киблята върху изображението от камерата и да се сканира кодът за сдвояване на телевизора. Изображенията не се запазват и не напускат устройството ви.",
+  "NSCalendarsUsageDescription": "Достъпът до календара се използва, за да се добавят времената за намаз в календара ви и, ако го включите, да се проверява дали събития в календара се застъпват с време за намаз. Данните от календара остават на устройството ви.",
+  "NSCalendarsFullAccessUsageDescription": "Достъпът до календара се използва, за да се добавят времената за намаз в календара ви и, ако го включите, да се проверява дали събития в календара се застъпват с време за намаз. Данните от календара остават на устройството ви.",
+  "NSLocalNetworkUsageDescription": "Приложението се свързва с телевизора в локалната ви мрежа, за да му изпраща времената за намаз и отбелязаните от вас намази. Данните са криптирани и се предават само между двете устройства.",
+  "NSAlarmKitUsageDescription": "Стъпките на напомняне, за които сте избрали „Истинска аларма“, се задават като аларми, така че да ги чувате дори когато телефонът е в тих режим или е включен Фокус.",
+  "\"Vakti kıldım\"": "Изпълних",
+  "\"Kıble\"": "Кибля"
 }

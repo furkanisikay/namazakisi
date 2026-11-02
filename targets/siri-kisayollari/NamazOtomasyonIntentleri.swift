@@ -502,11 +502,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "ના, હજુ નોંધાઈ નથી."
     )
 
-    // ÇEVİRİ: bg (one/other)
+    // bg (one/other)
     static let bg = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} започва след {n} минута.", "other": "{ad} започва след {n} минути."],
+        evetKilindi: "Да, отбелязан е като изпълнен.",
+        hayirKilinmadi: "Не, още не е отбелязан."
     )
 
     // mk (one/other)

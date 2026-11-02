@@ -1,14 +1,13 @@
-// ÇEVİRİ: bg — İngilizce iskelet, çevrilince bu satır silinir
 // `aylar` tarih içi biçim, `aylarYalin` takvim başlığı; Bulgarcada ay adı çekimsiz ve küçük harfli (CLDR "2 ноември 2026 г.", başlık "ноември 2026 г.").
 import type { Sozluk } from '../tr';
 
 export const tarih: Sozluk['tarih'] = {
-  gunler: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  gunlerKisa: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  aylar: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarYalin: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarKisa: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  haftaHarfleri: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-  uzun: '{gun} {ay} {yil}',
-  gunAdiYil: '{gunAdi}, {yil}',
+  gunler: ['неделя', 'понеделник', 'вторник', 'сряда', 'четвъртък', 'петък', 'събота'],
+  gunlerKisa: ['нд', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
+  aylar: ['януари', 'февруари', 'март', 'април', 'май', 'юни', 'юли', 'август', 'септември', 'октомври', 'ноември', 'декември'],
+  aylarYalin: ['януари', 'февруари', 'март', 'април', 'май', 'юни', 'юли', 'август', 'септември', 'октомври', 'ноември', 'декември'],
+  aylarKisa: ['яну', 'фев', 'март', 'апр', 'май', 'юни', 'юли', 'авг', 'сеп', 'окт', 'ное', 'дек'],
+  haftaHarfleri: ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'нд'],
+  uzun: '{gun} {ay} {yil} г.',
+  gunAdiYil: '{gunAdi}, {yil} г.',
 };

@@ -150,8 +150,8 @@ object CanliGuncellemeKurallari {
         "ja" to KisaBirimler("時間", "分", birimAyirici = "", parcaAyirici = ""),
         // gu
         "gu" to KisaBirimler("ક", "મિ", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: bg
-        "bg" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // bg (CLDR bg: "ч", "мин" — JS sure.kisa ile aynı)
+        "bg" to KisaBirimler("ч", "мин", birimAyirici = " ", parcaAyirici = " "),
         // mk
         "mk" to KisaBirimler("ч", "мин", birimAyirici = " ", parcaAyirici = " "),
     )

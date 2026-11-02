@@ -1356,29 +1356,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "હાલની નમાઝ પઢી લીધી તરીકે નોંધે છે."
     )
 
-    // ÇEVİRİ: bg
+    // bg
     static let bg = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Време за намаз",
+        galeriAciklama: "Текущото време за намаз, оставащото време до края му и днешните времена за намаз.",
+        veriEski: "Отворете приложението, за да обновите времената за намаз",
+        konumYok: "Отворете приложението, за да зададете местоположението си",
+        kilindiSiradaki: "{ad} е изпълнен · {sonraki} {saat}",
+        adCikis: "{ad} · до {saat}",
+        siradakiAdSaat: "Следва {ad} {saat}",
+        vaktiCikisErisim: "Време за {ad}, до {saat}",
+        siradakiErisim: "Следва {ad}, {saat}",
+        cikisSaat: "До {saat}",
+        bitisSaat: "До {saat}",
+        kilindiBaslik: "{ad} е изпълнен",
+        siradaki: "Следва",
+        siradakiAd: "Следва {ad}",
+        kildimErisim: "Изпълних {ad}",
+        gunSatiriKilindi: ", изпълнен",
+        bitti: "Свърши",
+        vakitCikti: "Времето за намаз изтече",
+        kabulAlt: "{ad} е изпълнен",
+        kontrolAdi: "Изпълних",
+        kontrolAciklama: "Отбелязва текущия намаз като изпълнен."
     )
 
     // mk

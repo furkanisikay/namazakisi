@@ -1,15 +1,14 @@
-// ÇEVİRİ: bg — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Продължете',
+  vazgecin: 'Отказ',
+  kapatin: 'Затворете',
+  ayarlariAcin: 'Отворете настройките',
+  simdilikGecin: 'Пропуснете засега',
+  tekrarDeneyin: 'Опитайте отново',
+  evet: 'Да',
+  hayir: 'Не',
+  ayrintilariAcar: 'Отваря подробностите',
   marka: 'Namaz Akışı',
 };
