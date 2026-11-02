@@ -1,15 +1,14 @@
-// ÇEVİRİ: sd — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'جاري رکو',
+  vazgecin: 'منسوخ ڪريو',
+  kapatin: 'بند ڪريو',
+  ayarlariAcin: 'سيٽنگون کوليو',
+  simdilikGecin: 'هاڻي ڇڏي ڏيو',
+  tekrarDeneyin: 'ٻيهر ڪوشش ڪريو',
+  evet: 'ها',
+  hayir: 'نه',
+  ayrintilariAcar: 'تفصيل کولي ٿو',
   marka: 'Namaz Akışı',
 };

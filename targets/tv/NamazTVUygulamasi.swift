@@ -799,19 +799,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", чираттагы намаз"
     )
 
-    // ÇEVİRİ: sd
+    // sd
     static let sd = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "پنهنجو شهر چونڊيو",
+        ilMerkezi: "نماز جا وقت صوبي جي مرڪز لاءِ ڳڻيا وڃن ٿا. پنهنجي چونڊ پوءِ بدلائي سگهو ٿا.",
+        ilSecErisim: "{il}، چونڊيو",
+        kalan: "{ad} تائين باقي وقت",
+        kalanErisim: "{ad} تائين باقي وقت: {sure}",
+        konumuDegistirin: "جڳهه بدلايو",
+        kerahatSuruyor: "مڪروه وقت: {tur}، پڄاڻي {bitis}. {aciklama}",
+        siradakiKerahat: "ايندڙ مڪروه وقت: {tur} {bas}–{bit}",
+        cumaBilgisi: "اڄ جمعو آهي. جمعي جي نماز ظهر جي وقت پڙهي ويندي آهي (شروع {giris}).",
+        suAnkiEk: "، موجوده نماز",
+        siradakiEk: "، ايندڙ نماز"
     )
 
     // pl

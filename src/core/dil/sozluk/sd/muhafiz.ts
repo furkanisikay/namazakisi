@@ -1,61 +1,59 @@
-// ÇEVİRİ: sd — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı: "اوهان" + saygı emri (Urduca "آپ" emsali), kısa ve doğrudan; "!" yok.
+ * Namaza durmak = "نماز لاءِ بيهو" (secde karşılığı YAZILMAZ). Başlıkta süre "{dk} منٽ".
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} منٽ گذريا · نماز جو وقت ⏰',
+    giris2: '{ad} · {dk} منٽ گذريا · نماز ۾ دير نه ڪريو ⚠️',
+    giris3: '{ad} · {dk} منٽ گذريا · نماز اوهان جي انتظار ۾ 🔥',
+    giris4: '{ad} · {dk} منٽ گذريا · نماز لاءِ بيهو 🚨',
+    erken3: '{ad} · {dk} منٽ باقي · نماز اوهان جي انتظار ۾ 🔥',
+    erken4: '{ad} · {dk} منٽ باقي · نماز لاءِ بيهو 🚨',
+    cikis1: '{ad} · {dk} منٽ باقي ⏰',
+    cikis2: '{ad} · {dk} منٽ · وقت گهٽجي رهيو آهي ⚠️',
+    cikis3: '{ad} · {dk} منٽ · وقت هٿن مان نڪري رهيو آهي 🔥',
+    cikis4: '{ad} · {dk} منٽ · وقت ختم ٿي رهيو آهي 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['نماز جو وقت ٿي ويو؛ موقعو آهي ته نماز پڙهو.', 'وقت اوهان جي هٿ ۾ آهي ته نماز پڙهو؛ پوءِ تي نه ڇڏيو.'],
+    s2: ['جيترو ٽاريندا، اوترو ڳرو ٿيندو؛ نماز کي آخر تائين نه ڇڏيو.', 'وقت گذري رهيو آهي، هاڻي نماز پڙهو.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'جيتري دير ڪندا، اوترو نماز وڃائڻ جي ويجهو ٿيندا؛ هاڻي نماز پڙهو.',
+      '“پوءِ پڙهي وٺبي” نه چئو؛ هاڻي نماز پڙهي سگهو ٿا.',
+      'ڪجهه منٽن بعد “ڪاش” چوڻ بدران هاڻي اٿو.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['نماز ۾ وڌيڪ دير نه ڪريو، هاڻي نماز لاءِ بيهو.', 'جيڪو ڪم ڪري رهيا آهيو اهو ڇڏيو ۽ نماز لاءِ بيهو.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'وقت گهٽجڻ لڳو آهي؛ موقعو آهي ته نماز پڙهو.',
+    s2: 'نماز کي آخر تائين نه ڇڏيو؛ هاڻي نماز پڙهڻ جو سٺو وقت آهي.',
+    s3: 'وقت پورو ٿيڻ وارو آهي؛ اڃا به هاڻي نماز پڙهي سگهو ٿا.',
+    s4: 'جيڪڏهن نماز پڙهي ورتي آهي ته “نماز پڙهي ورتي” تي ٽيپ ڪريو؛ نه ته هاڻي نماز لاءِ بيهو.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'نماز ۾ دير نه ڪريو. هاڻي نماز لاءِ بيهو. ({dk} منٽ گذريا)',
+    giris2: 'وقت گذري رهيو آهي؛ نماز کي آخر تائين نه ڇڏيو. ({dk} منٽ گذريا)',
+    giris1: cogul({ one: 'نماز جو وقت ٿئي {n} منٽ گذريو آهي.', other: 'نماز جو وقت ٿئي {n} منٽ گذريا آهن.' }),
+    erken4: 'نماز ۾ دير نه ڪريو؛ هاڻي نماز لاءِ بيهو. ({dk} منٽ باقي)',
+    cikis4: 'وقت ختم ٿي رهيو آهي. هاڻي نماز لاءِ بيهو. ({dk} منٽ باقي)',
+    cikis2: 'وقت گهٽجي رهيو آهي؛ نماز کي آخر تائين نه ڇڏيو. ({dk} منٽ باقي)',
+    cikis1: cogul({ one: 'نماز جو وقت ختم ٿيڻ ۾ {n} منٽ باقي آهي.', other: 'نماز جو وقت ختم ٿيڻ ۾ {n} منٽ باقي آهن.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · سمهڻ کان اڳ نماز پڙهو ⏰',
+    govde: 'خاموش ڪلاڪ {dk} منٽن ۾ شروع ٿيندا؛ سمهڻ کان اڳ عشاء جي نماز پڙهو.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'وقت گهٽجڻ لڳو آهي؛ موقعو آهي ته نماز پڙهو.',
+    sonaBirakma: 'نماز کي آخر تائين نه ڇڏيو؛ هاڻي نماز پڙهڻ جو سٺو وقت آهي.',
+    fisilti: '“پوءِ پڙهي وٺبي” نه چئو؛ وقت پورو ٿيڻ وارو آهي، هاڻي نماز پڙهي سگهو ٿا.',
+    omur: 'وقت گذري رهيو آهي؛ اڃا هي نماز وقت تي پڙهڻ جو موقعو آهي.',
+    keske: 'ڪجهه منٽن بعد “ڪاش” چوڻ بدران هاڻي اٿو.',
+    namazaDur: 'جيڪڏهن نماز پڙهي ورتي آهي ته “نماز پڙهي ورتي” تي ٽيپ ڪريو؛ نه ته هاڻي نماز لاءِ بيهو.',
+    sonDakika: 'آخري منٽ. جيڪو ڪم ڪري رهيا آهيو اهو ڇڏيو ۽ نماز لاءِ بيهو.',
   },
 };

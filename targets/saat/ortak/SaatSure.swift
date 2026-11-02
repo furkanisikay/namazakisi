@@ -445,12 +445,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: sd (one/other)
+    // sd (one/other; Sindhçede süre birimi kısaltılmaz, iki kategori aynı biçim)
     public static let sd = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "ڪلاڪ", birimDk: "منٽ", birimSn: "سيڪنڊ",
+        saat: ["one": "{n} ڪلاڪ", "other": "{n} ڪلاڪ"],
+        dakika: ["one": "{n} منٽ", "other": "{n} منٽ"],
+        saniye: ["one": "{n} سيڪنڊ", "other": "{n} سيڪنڊ"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

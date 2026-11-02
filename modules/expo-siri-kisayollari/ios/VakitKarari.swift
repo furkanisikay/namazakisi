@@ -1629,31 +1629,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Кушымтаны ачыгыз"
     )
 
-    // ÇEVİRİ: sd
+    // sd — Sindhçe (beta); terimler src/core/dil/sozluk/sd (Kıldım "نماز پڙهي ورتي", Kılındı "پڙهي وئي")
     public static let sd = VakitMetinleri(
         dil: "sd",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "فجر", "ogle": "ظهر", "ikindi": "عصر", "aksam": "مغرب", "yatsi": "عشاء"],
+        gunes: "سج اڀرڻ",
+        konumYok: "نماز جا وقت ڳڻڻ لاءِ ايپ کوليو ۽ پنهنجي جڳهه مقرر ڪريو.",
+        veriEski: "نماز جا وقت پراڻا ٿي ويا آهن. اپڊيٽ ڪرڻ لاءِ ايپ هڪ ڀيرو کوليو.",
+        girisBugun: "{saat} تي",
+        girisYarin: "سڀاڻي {saat} تي",
+        suAnVakti: "هاڻي {ad} جو وقت آهي.",
+        suAnVaktiCikis: "هاڻي {ad} جو وقت آهي؛ اهو {saat} تي ختم ٿيندو.",
+        siradakiNamaz: "ايندڙ نماز {ad} آهي، {giris}.",
+        isaretlendi: "{ad} تي پڙهي وئي جو نشان لڳي ويو. {dua}.",
+        zatenKilindi: "{ad} تي اڳ ئي پڙهي وئي جو نشان لڳل آهي.",
+        vakitYok: "هن وقت نشان لڳائڻ لاءِ ڪا نماز ناهي.",
+        vakitYokSiradaki: "هن وقت نشان لڳائڻ لاءِ ڪا نماز ناهي. ايندڙ {ad} آهي، {giris}.",
+        onay: "{ad} تي پڙهي وئي جو نشان لڳايو؟",
+        vakitDegisti: "نماز جو وقت بدلجي ويو، ان ڪري ڪو نشان نه لڳو. ٻيهر ڪوشش ڪريو.",
+        kabulDuasi: "الله قبول ڪري",
+        kildim: "نماز پڙهي ورتي",
+        kilindi: "پڙهي وئي",
+        kontrolKildim: "{ad} · پڙهي ورتي",
+        kontrolKilindi: "{ad} پڙهي وئي",
+        kontrolVakitYok: "نشان لاءِ ڪا نماز ناهي",
+        uygulamayiAcin: "ايپ کوليو"
     )
 
     // pl

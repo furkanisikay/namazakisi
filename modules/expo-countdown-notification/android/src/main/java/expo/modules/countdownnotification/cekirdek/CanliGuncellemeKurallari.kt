@@ -142,8 +142,8 @@ object CanliGuncellemeKurallari {
         "tk" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // tt
         "tt" to KisaBirimler("сәг", "мин", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: sd
-        "sd" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // sd
+        "sd" to KisaBirimler("ڪلاڪ", "منٽ", birimAyirici = " ", parcaAyirici = " "),
         // pl
         "pl" to KisaBirimler("godz.", "min", birimAyirici = " ", parcaAyirici = " "),
         // ja

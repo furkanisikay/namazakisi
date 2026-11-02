@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "اوهان جي جڳهه ان لاءِ استعمال ٿئي ٿي ته جيئن اوهان جتي آهيو اتي جا نماز جا وقت درست ڳڻيا وڃن. اوهان جي جڳهه اوهان جي ڊوائيس تي ئي رهي ٿي.",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "اوهان جي جڳهه ان لاءِ استعمال ٿئي ٿي ته جيئن اوهان جتي آهيو اتي جا نماز جا وقت درست ڳڻيا وڃن ۽، جيڪڏهن مسجد ۾ آهيان چالو هجي، ته مسجد ۾ داخل ٿيڻ تي نماز موڊ چالو ٿئي. اوهان جي جڳهه اوهان جي ڊوائيس تي ئي رهي ٿي.",
+  "NSLocationAlwaysUsageDescription": "اوهان جي جڳهه ان لاءِ استعمال ٿئي ٿي ته شهر بدلجڻ تي نماز جا وقت پاڻمرادو اپڊيٽ ٿين ۽، جيڪڏهن مسجد ۾ آهيان چالو هجي، ته مسجد ۾ داخل ٿيڻ تي نماز موڊ چالو ٿئي. اوهان جي جڳهه اوهان جي ڊوائيس تي ئي رهي ٿي.",
+  "NSCameraUsageDescription": "ڪئميرا ان لاءِ استعمال ٿئي ٿو ته ڪئميرا جي ڏيک تي قبلي جو رخ ڏيکاريو وڃي ۽ ٽي وي تي ڳنڍڻ جو ڪوڊ اسڪين ڪيو وڃي. تصويرون محفوظ نٿيون ٿين ۽ اوهان جي ڊوائيس کان ٻاهر نٿيون وڃن.",
+  "NSCalendarsUsageDescription": "ڪئلينڊر تائين رسائي ان لاءِ استعمال ٿئي ٿي ته نماز جا وقت اوهان جي ڪئلينڊر ۾ شامل ڪيا وڃن ۽، جيڪڏهن چالو ڪريو، ته ڏٺو وڃي ته ڪئلينڊر جا پروگرام ڪنهن نماز جي وقت سان ٽڪرائجن ٿا يا نه. اوهان جي ڪئلينڊر جي ڊيٽا اوهان جي ڊوائيس تي رهي ٿي.",
+  "NSCalendarsFullAccessUsageDescription": "ڪئلينڊر تائين رسائي ان لاءِ استعمال ٿئي ٿي ته نماز جا وقت اوهان جي ڪئلينڊر ۾ شامل ڪيا وڃن ۽، جيڪڏهن چالو ڪريو، ته ڏٺو وڃي ته ڪئلينڊر جا پروگرام ڪنهن نماز جي وقت سان ٽڪرائجن ٿا يا نه. اوهان جي ڪئلينڊر جي ڊيٽا اوهان جي ڊوائيس تي رهي ٿي.",
+  "NSLocalNetworkUsageDescription": "ايپ اوهان جي مقامي نيٽ ورڪ تي ٽي وي سان ڳنڍجي ٿي ته جيئن نماز جا وقت ۽ نشان لڳايل نمازون ان ڏانهن موڪليون وڃن. ڊيٽا انڪرپٽ ٿيل هوندي آهي ۽ صرف انهن ٻن ڊوائيسن جي وچ ۾ وڃي ٿي.",
+  "NSAlarmKitUsageDescription": "ياددهانيءَ جا جن قدمن ۾ اوهان “اصل الارم” چونڊيو، اهي الارم طور سيٽ ٿين ٿا، ته جيئن فون خاموش هجي يا ڪو Focus چالو هجي تڏهن به ٻڌي سگهو.",
+  "\"Vakti kıldım\"": "نماز پڙهي ورتي",
+  "\"Kıble\"": "قبلو"
 }

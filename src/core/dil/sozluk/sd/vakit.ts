@@ -1,22 +1,27 @@
-// ÇEVİRİ: sd — İngilizce iskelet, çevrilince bu satır silinir
 // Sindhçe Arap harfli (Pakistan normu), SAĞDAN SOLA; büyük/küçük harf yok (`buyuk` = `adlar`). Rakam çizimde Doğu Arap (`arab`), sözlükte Batı rakamı.
 import type { Sozluk } from '../tr';
 
-/** İngilizcede vakit adları özel addır; cümle içinde de büyük harfle başlar. */
+/**
+ * Sindhçe vakit adları (sd.wikipedia "نماز": "فجر، ظهر، عصر، مغرب ۽ عشاء"; güneş doğuşu
+ * "سج اڀرڻ", sd.wikipedia "فجر"). Cuma جمعو (CLDR gün adı). İmla Sindhçe: ڪ (U+06AA), ي (U+064A),
+ * ه (U+0647); Urduca kef (U+06A9 yalnız Sindhçe "kh" harfidir), ye ve he biçimleri değil. Kıldım = "نماز پڙهي ورتي" (geçişli geçmiş nesneye uyar,
+ * konuşana göre cinsiyetsiz) · Kılındı = "پڙهي وئي" · kaza قضا نماز · nafile نفل · kerahat
+ * مڪروه وقت · kıble قبلو · seri تسلسل · Namaz Muhafızı نماز محافظ · teheccüd تهجد.
+ */
 export const vakit: Sozluk['vakit'] = {
-  adlar: { imsak: 'Fajr', gunes: 'Sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  buyuk: { imsak: 'FAJR', gunes: 'SUNRISE', ogle: 'DHUHR', ikindi: 'ASR', aksam: 'MAGHRIB', yatsi: 'ISHA' },
-  kucuk: { imsak: 'Fajr', gunes: 'sunrise', ogle: 'Dhuhr', ikindi: 'Asr', aksam: 'Maghrib', yatsi: 'Isha' },
-  imsakVakti: 'Fajr',
-  cuma: "Jumu'ah",
-  cumaKucuk: "Jumu'ah",
-  gunesDogusu: 'Sunrise',
-  gunesDogusuKucuk: 'sunrise',
-  durum: { kilindi: 'Prayed', vaktiGeldi: 'Time to pray', girmedi: 'Not yet time', gecti: 'Not prayed' },
-  durumKucuk: { kilindi: 'prayed', vaktiGeldi: 'time to pray', girmedi: 'not yet time', gecti: 'not prayed' },
-  eylem: { kildim: "I've prayed", kilindi: 'Prayed' },
-  kerahatVakti: 'Makruh time',
-  isaretle: 'Mark as prayed',
-  geriAlEtiketi: '{durum}, tap to undo',
-  geriAlindi: 'Unmarked',
+  adlar: { imsak: 'فجر', gunes: 'سج اڀرڻ', ogle: 'ظهر', ikindi: 'عصر', aksam: 'مغرب', yatsi: 'عشاء' },
+  buyuk: { imsak: 'فجر', gunes: 'سج اڀرڻ', ogle: 'ظهر', ikindi: 'عصر', aksam: 'مغرب', yatsi: 'عشاء' },
+  kucuk: { imsak: 'فجر', gunes: 'سج اڀرڻ', ogle: 'ظهر', ikindi: 'عصر', aksam: 'مغرب', yatsi: 'عشاء' },
+  imsakVakti: 'فجر',
+  cuma: 'جمعو',
+  cumaKucuk: 'جمعو',
+  gunesDogusu: 'سج اڀرڻ',
+  gunesDogusuKucuk: 'سج اڀرڻ',
+  durum: { kilindi: 'پڙهي وئي', vaktiGeldi: 'وقت ٿي ويو', girmedi: 'اڃا وقت نه ٿيو', gecti: 'نه پڙهي وئي' },
+  durumKucuk: { kilindi: 'پڙهي وئي', vaktiGeldi: 'وقت ٿي ويو', girmedi: 'اڃا وقت نه ٿيو', gecti: 'نه پڙهي وئي' },
+  eylem: { kildim: 'نماز پڙهي ورتي', kilindi: 'پڙهي وئي' },
+  kerahatVakti: 'مڪروه وقت',
+  isaretle: 'پڙهي وئي جو نشان لڳايو',
+  geriAlEtiketi: '{durum}، واپس وٺڻ لاءِ ٽيپ ڪريو',
+  geriAlindi: 'نشان هٽايو ويو',
 };

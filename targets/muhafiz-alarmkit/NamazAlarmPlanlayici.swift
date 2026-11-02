@@ -192,8 +192,8 @@ enum NamazAlarmCekirdegi {
         "tk": "Stop",
         // tt
         "tt": "Туктату",
-        // ÇEVİRİ: sd
-        "sd": "Stop",
+        // sd
+        "sd": "روڪيو",
         // pl
         "pl": "Zatrzymaj",
         // ja

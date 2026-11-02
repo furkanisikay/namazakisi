@@ -723,18 +723,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: ""
     )
 
-    // ÇEVİRİ: sd
+    // sd (meal yok, sahip kararı 2026-11-02: yalnız Arapça metin + künye; Arapça emsali)
     static let sd = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "ڏينهن جي آيت",
+        galeriAciklama: "قرآن جي هڪ آيت، هر روز فجر تي نئين.",
+        etiket: "ڏينهن جي آيت",
+        uygulamayiAcin: "ڏينهن جي آيت ڏسڻ لاءِ ايپ کوليو",
+        ornekSigmiyor: "اڄ جي آيت هن ماپ ۾ نٿي سمائجي. پڙهڻ لاءِ ٽيپ ڪريو.",
+        ornekAcin: "کوليو",
+        ornekArapcaKaynagi: "عربي: Tanzil",
+        ornekMeal: "",
+        ornekKisaKunye: "قرآن 94:6",
+        ornekMealKaynagi: ""
     )
 
     // pl (mealsiz: yalnız Arapça metin ve künye)

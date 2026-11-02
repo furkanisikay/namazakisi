@@ -1256,29 +1256,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Хәзерге намазны укылды дип билгели."
     )
 
-    // ÇEVİRİ: sd
+    // sd
     static let sd = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "نماز جو وقت",
+        galeriAciklama: "موجوده نماز جو وقت، ان جي پڄاڻيءَ تائين باقي وقت ۽ اڄ جا نماز جا وقت.",
+        veriEski: "نماز جا وقت اپڊيٽ ڪرڻ لاءِ ايپ کوليو",
+        konumYok: "پنهنجي جڳهه مقرر ڪرڻ لاءِ ايپ کوليو",
+        kilindiSiradaki: "{ad} پڙهي وئي · {sonraki} {saat}",
+        adCikis: "{ad} · پڄاڻي {saat}",
+        siradakiAdSaat: "ايندڙ {ad} {saat}",
+        vaktiCikisErisim: "{ad} جو وقت، پڄاڻي {saat}",
+        siradakiErisim: "ايندڙ {ad}، {saat}",
+        cikisSaat: "پڄاڻي {saat}",
+        bitisSaat: "پڄاڻي {saat}",
+        kilindiBaslik: "{ad} پڙهي وئي",
+        siradaki: "ايندڙ",
+        siradakiAd: "ايندڙ {ad}",
+        kildimErisim: "{ad} پڙهي ورتي",
+        gunSatiriKilindi: "، پڙهي وئي",
+        bitti: "پورو ٿيو",
+        vakitCikti: "نماز جو وقت ختم ٿي ويو",
+        kabulAlt: "{ad} پڙهي وئي",
+        kontrolAdi: "نماز پڙهي ورتي",
+        kontrolAciklama: "موجوده نماز تي پڙهي وئي جو نشان لڳائي ٿو."
     )
 
     // pl

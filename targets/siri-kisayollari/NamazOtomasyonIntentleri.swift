@@ -474,11 +474,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Юк, әле билгеләнмәгән."
     )
 
-    // ÇEVİRİ: sd (one/other)
+    // sd (one/other)
     static let sd = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} جو وقت {n} منٽ ۾ شروع ٿيندو.", "other": "{ad} جو وقت {n} منٽن ۾ شروع ٿيندو."],
+        evetKilindi: "ها، ان تي پڙهي وئي جو نشان لڳل آهي.",
+        hayirKilinmadi: "نه، اڃا نشان نه لڳو آهي."
     )
 
     // pl (one/few/many/other)

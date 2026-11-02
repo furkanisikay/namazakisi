@@ -816,17 +816,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: "\u{00A0}"
     )
 
-    // ÇEVİRİ: sd (CLDR sd binlik ayırıcı ","; Arapça gibi, rakam çizimde yerelleşir)
+    // sd (CLDR sd binlik ayırıcı ","; Arapça gibi, rakam çizimde yerelleşir)
     public static let sd = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "پٺيان",
+        saga: "ساڄي {derece}°",
+        sola: "کاٻي {derece}°",
+        hizali: "اوهان جو منهن قبلي ڏانهن آهي",
+        arkadaErisim: "قبلو اوهان جي پٺيان آهي",
+        sagdaErisim: "قبلو اوهان جي ساڄي پاسي {derece} درجن تي آهي",
+        soldaErisim: "قبلو اوهان جي کاٻي پاسي {derece} درجن تي آهي",
+        kabede: "اوهان ڪعبي وٽ آهيو",
+        mesafe: "{km} ڪلوميٽر",
         binlikAyirici: ","
     )
 
