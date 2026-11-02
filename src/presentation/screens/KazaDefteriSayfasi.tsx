@@ -62,6 +62,7 @@ import { rakamlariNormallestir } from '../../core/dil/rakam';
 import { useMetin } from '../hooks/useMetin';
 import { useFeedback } from '../../core/feedback';
 import type { KazaStackParamList } from '../../navigation/kazaEkranlari';
+import { EN_KUCUK_OLCEK } from '../components/gezinme/SigdirilanEtiketler';
 
 // ==================== TİPLER ====================
 
@@ -387,7 +388,9 @@ export const KazaDefteriSayfasi: React.FC = () => {
       <View style={[styles.baslik, { backgroundColor: renkler.birincil }]}>
         <View style={styles.baslikIcerik}>
           <FontAwesome5 name="book" size={20} color="#fff" />
-          <Text style={styles.baslikMetin}>{m.baslik}</Text>
+          <Text style={styles.baslikMetin} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={EN_KUCUK_OLCEK}>
+            {m.baslik}
+          </Text>
         </View>
         <View style={styles.baslikSagButonlar}>
           <TouchableOpacity
@@ -1024,12 +1027,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
+  // Uzun dilde (Makedonca) başlık sağdaki düğmeleri ekran dışına itmez: kalan genişliğe sığar, küçülür.
   baslikIcerik: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    marginRight: 12,
   },
   baslikMetin: {
+    flexShrink: 1,
     fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
