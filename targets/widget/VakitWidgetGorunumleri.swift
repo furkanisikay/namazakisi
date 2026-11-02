@@ -1331,29 +1331,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "現在の礼拝を礼拝済みにします。"
     )
 
-    // ÇEVİRİ: gu
+    // gu — Gucaratça (beta): JS `sozluk/gu`; Kıldım "નમાઝ પઢી લીધી", Kılındı "પઢી લીધી"
     static let gu = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "નમાઝનો સમય",
+        galeriAciklama: "હાલની નમાઝનો સમય, તે પૂરો થવામાં બાકી સમય અને આજના નમાઝના સમય.",
+        veriEski: "નમાઝના સમય અપડેટ કરવા ઍપ ખોલો",
+        konumYok: "તમારું લોકેશન ગોઠવવા ઍપ ખોલો",
+        kilindiSiradaki: "{ad} પઢી લીધી · {sonraki} {saat}",
+        adCikis: "{ad} · અંત {saat}",
+        siradakiAdSaat: "આગામી {ad} {saat}",
+        vaktiCikisErisim: "{ad}નો સમય, અંત {saat}",
+        siradakiErisim: "આગામી {ad}, {saat}",
+        cikisSaat: "અંત {saat}",
+        bitisSaat: "અંત {saat}",
+        kilindiBaslik: "{ad} પઢી લીધી",
+        siradaki: "આગામી",
+        siradakiAd: "આગામી {ad}",
+        kildimErisim: "{ad} પઢી લીધી તરીકે નોંધો",
+        gunSatiriKilindi: ", પઢી લીધી",
+        bitti: "પૂરું",
+        vakitCikti: "નમાઝનો સમય પૂરો થયો",
+        kabulAlt: "{ad} પઢી લીધી",
+        kontrolAdi: "નમાઝ પઢી લીધી",
+        kontrolAciklama: "હાલની નમાઝ પઢી લીધી તરીકે નોંધે છે."
     )
 
     // ÇEVİRİ: bg

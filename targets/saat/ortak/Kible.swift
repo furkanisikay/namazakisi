@@ -858,17 +858,17 @@ public struct KibleMetinleri: Equatable {
         binlikAyirici: ","
     )
 
-    // ÇEVİRİ: gu (CLDR gu binlik ayırıcı ",")
+    // gu — Gucaratça (beta): JS `sozluk/gu/kible.ts > yon`, mesafe `cami.kmIcinde` ("કિમી"); CLDR gu binlik ayırıcı ","
     public static let gu = KibleMetinleri(
-        arkada: "Behind you",
-        saga: "Right {derece}°",
-        sola: "Left {derece}°",
-        hizali: "You are facing the Qibla",
-        arkadaErisim: "The Qibla is behind you",
-        sagdaErisim: "The Qibla is {derece} degrees to your right",
-        soldaErisim: "The Qibla is {derece} degrees to your left",
-        kabede: "You're at the Kaaba",
-        mesafe: "{km} km",
+        arkada: "પાછળ",
+        saga: "જમણે {derece}°",
+        sola: "ડાબે {derece}°",
+        hizali: "તમે કિબ્લા તરફ છો",
+        arkadaErisim: "કિબ્લા તમારી પાછળ છે",
+        sagdaErisim: "કિબ્લા તમારી જમણી બાજુ {derece} અંશ પર છે",
+        soldaErisim: "કિબ્લા તમારી ડાબી બાજુ {derece} અંશ પર છે",
+        kabede: "તમે કાબા પાસે છો",
+        mesafe: "{km} કિમી",
         binlikAyirici: ","
     )
 

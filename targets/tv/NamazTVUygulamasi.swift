@@ -844,19 +844,19 @@ struct TvArayuzMetinleri {
         siradakiEk: "、次の礼拝"
     )
 
-    // ÇEVİRİ: gu
+    // gu — Gucaratça (beta): JS `sozluk/gu`
     static let gu = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "તમારું શહેર પસંદ કરો",
+        ilMerkezi: "નમાઝના સમય પ્રાંતના મુખ્ય શહેર માટે ગણાય છે. તમે તમારી પસંદગી પછીથી બદલી શકો છો.",
+        ilSecErisim: "{il}, પસંદ કરો",
+        kalan: "{ad} સુધી બાકી સમય",
+        kalanErisim: "{ad} સુધી બાકી સમય: {sure}",
+        konumuDegistirin: "લોકેશન બદલો",
+        kerahatSuruyor: "મકરૂહ સમય: {tur}, અંત {bitis}. {aciklama}",
+        siradakiKerahat: "આગામી મકરૂહ સમય: {tur} {bas}–{bit}",
+        cumaBilgisi: "આજે શુક્રવાર છે. જુમ્મા ઝોહરના સમયે પઢાય છે (શરૂ {giris}).",
+        suAnkiEk: ", હાલની નમાઝ",
+        siradakiEk: ", આગામી નમાઝ"
     )
 
     // ÇEVİRİ: bg

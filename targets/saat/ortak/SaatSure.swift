@@ -472,12 +472,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: "", parcaAyirici: ""
     )
 
-    // ÇEVİRİ: gu (one/other)
+    // gu — JS `sozluk/gu/sure.ts` birebir (kısa birim CLDR narrow; one = 0 ve 1, one = other)
     public static let gu = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "ક", birimDk: "મિ", birimSn: "સે",
+        saat: ["one": "{n} કલાક", "other": "{n} કલાક"],
+        dakika: ["one": "{n} મિનિટ", "other": "{n} મિનિટ"],
+        saniye: ["one": "{n} સેકંડ", "other": "{n} સેકંડ"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

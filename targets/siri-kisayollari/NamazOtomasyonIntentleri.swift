@@ -495,11 +495,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "いいえ、まだ記録されていません。"
     )
 
-    // ÇEVİRİ: gu (one/other)
+    // gu (one = 0 ve 1, one = other)
     static let gu = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} {n} મિનિટમાં શરૂ થશે.", "other": "{ad} {n} મિનિટમાં શરૂ થશે."],
+        evetKilindi: "હા, પઢી લીધી તરીકે નોંધાયેલી છે.",
+        hayirKilinmadi: "ના, હજુ નોંધાઈ નથી."
     )
 
     // ÇEVİRİ: bg (one/other)

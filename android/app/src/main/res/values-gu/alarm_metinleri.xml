@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: gu — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Gerçek alarm (İngilizce). "I've prayed" bildirimdeki düğmeyle aynı ad. -->
+<!-- gu — Gucaratça (beta). -->
+<!-- Gerçek alarm (Gucaratça). "નમાઝ પઢી લીધી" bildirimdeki düğmeyle aynı ad (JS bildirim.eylem.kildim kısa biçimi "પઢી લીધી"). -->
 <resources>
-  <string name="alarm_baslik">Prayer alarm</string>
-  <string name="alarm_kildim">I\'ve prayed</string>
-  <string name="alarm_kapat">Turn off</string>
-  <string name="alarm_kanal_aciklamasi">A real alarm that rings at the reminder steps you choose</string>
+  <string name="alarm_baslik">નમાઝ અલાર્મ</string>
+  <string name="alarm_kildim">પઢી લીધી</string>
+  <string name="alarm_kapat">બંધ કરો</string>
+  <string name="alarm_kanal_aciklamasi">તમે પસંદ કરેલાં રિમાઇન્ડરનાં પગલાં પર વાગતું સાચું અલાર્મ</string>
 </resources>

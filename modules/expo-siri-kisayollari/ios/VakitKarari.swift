@@ -1710,31 +1710,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "アプリを開く"
     )
 
-    // ÇEVİRİ: gu
+    // gu — Gucaratça (beta): JS `sozluk/gu`; Kıldım "નમાઝ પઢી લીધી", Kılındı "પઢી લીધી"
     public static let gu = VakitMetinleri(
         dil: "gu",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ફજર", "ogle": "ઝોહર", "ikindi": "અસર", "aksam": "મગરિબ", "yatsi": "ઈશા"],
+        gunes: "સૂર્યોદય",
+        konumYok: "નમાઝના સમય ગણી શકાય તે માટે ઍપ ખોલીને તમારું લોકેશન ગોઠવો.",
+        veriEski: "નમાઝના સમય જૂના છે. અપડેટ કરવા ઍપ એક વાર ખોલો.",
+        girisBugun: "{saat} વાગ્યે",
+        girisYarin: "આવતીકાલે {saat} વાગ્યે",
+        suAnVakti: "અત્યારે {ad}નો સમય છે.",
+        suAnVaktiCikis: "અત્યારે {ad}નો સમય છે; તે {saat} વાગ્યે પૂરો થાય છે.",
+        siradakiNamaz: "હવે પછીની નમાઝ {ad} છે, {giris}.",
+        isaretlendi: "{ad} પઢી લીધી તરીકે નોંધાઈ. {dua}.",
+        zatenKilindi: "{ad} પહેલેથી પઢી લીધી તરીકે નોંધાયેલી છે.",
+        vakitYok: "અત્યારે નોંધવા જેવી કોઈ નમાઝ નથી.",
+        vakitYokSiradaki: "અત્યારે નોંધવા જેવી કોઈ નમાઝ નથી. હવે પછી {ad} છે, {giris}.",
+        onay: "{ad} પઢી લીધી તરીકે નોંધવી છે?",
+        vakitDegisti: "નમાઝનો સમય બદલાયો, તેથી કંઈ નોંધાયું નથી. ફરી પ્રયાસ કરો.",
+        kabulDuasi: "અલ્લાહ કબૂલ કરે",
+        kildim: "નમાઝ પઢી લીધી",
+        kilindi: "પઢી લીધી",
+        kontrolKildim: "{ad} · નમાઝ પઢી લીધી",
+        kontrolKilindi: "{ad} પઢી લીધી",
+        kontrolVakitYok: "નોંધવા કોઈ નમાઝ નથી",
+        uygulamayiAcin: "ઍપ ખોલો"
     )
 
     // ÇEVİRİ: bg

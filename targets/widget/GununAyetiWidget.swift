@@ -764,18 +764,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Saeed Sato、QuranEnc 1.0.13"
     )
 
-    // ÇEVİRİ: gu
+    // gu — Gucaratça (beta); JS `sozluk/gu/gununAyeti.ts`, meal 94:6 `gununAyetiHavuzu.ts` (gujarati_omari, BİREBİR), künye `mealler.gu`
     static let gu = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "આજની આયત",
+        galeriAciklama: "એક આયત અને તેનો અનુવાદ, જે દરરોજ ફજરના સમયે બદલાય છે.",
+        etiket: "આજની આયત",
+        uygulamayiAcin: "આજની આયત જોવા ઍપ ખોલો",
+        ornekSigmiyor: "આજની આયત આ કદમાં સમાતી નથી. વાંચવા ટૅપ કરો.",
+        ornekAcin: "ખોલો",
+        ornekArapcaKaynagi: "અરબી: Tanzil",
+        ornekMeal: "ખરેખર દરેક તંગીની સાથે સરળતા છે.",
+        ornekKisaKunye: "કુરઆન 94:6",
+        ornekMealKaynagi: "Rabella Al-Omari, QuranEnc 1.1.3"
     )
 
     // ÇEVİRİ: bg

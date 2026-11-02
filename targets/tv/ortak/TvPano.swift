@@ -819,18 +819,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: gu
+    // gu — Gucaratça (beta): JS `sozluk/gu` (vakit, tarih, anaEkran.kerahat); tarih CLDR "સોમવાર, 2 નવેમ્બર, 2026"
     public static let gu = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "ફજર", "gunes": "સૂર્યોદય", "ogle": "ઝોહર", "ikindi": "અસર", "aksam": "મગરિબ", "yatsi": "ઈશા"],
+        cuma: "જુમ્મા",
+        aylar: ["જાન્યુઆરી", "ફેબ્રુઆરી", "માર્ચ", "એપ્રિલ", "મે", "જૂન", "જુલાઈ", "ઑગસ્ટ", "સપ્ટેમ્બર", "ઑક્ટોબર", "નવેમ્બર", "ડિસેમ્બર"],
+        gunler: ["સોમવાર", "મંગળવાર", "બુધવાર", "ગુરુવાર", "શુક્રવાર", "શનિવાર", "રવિવાર"],
+        tarih: "{gunAdi}, {gun} {ay}, {yil}",
+        kerahatAdlari: ["suruk": "સૂર્યોદય", "istiva": "મધ્યાહ્ન", "gurub": "સૂર્યાસ્ત"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "સૂરજ બરાબર ઊંચો ચડે ત્યાં સુધી નમાઝ પઢવી મકરૂહ છે.",
+            "istiva": "સૂરજ બરાબર માથા પર હોય ત્યારે નમાઝ પઢવી મકરૂહ છે.",
+            "gurub": "સૂરજ આથમતો હોય ત્યારે નમાઝ પઢવી મકરૂહ છે.",
         ]
     )
 

@@ -1,11 +1,10 @@
-// ÇEVİRİ: gu — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const rakam: Sozluk['rakam'] = {
-  baslik: 'Numerals',
-  aciklama: 'Choose which numerals are used for times, dates and numbers.',
-  otomatik: 'By country',
-  otomatikAciklama: 'Uses the numerals common in the country of your location.',
-  dogu: 'Eastern Arabic numerals',
-  bati: 'Western numerals',
+  baslik: 'અંકો',
+  aciklama: 'સમય, તારીખ અને સંખ્યાઓ માટે કયા અંકો વપરાય તે પસંદ કરો.',
+  otomatik: 'દેશ મુજબ',
+  otomatikAciklama: 'તમારા લોકેશનના દેશમાં પ્રચલિત અંકો વપરાય છે.',
+  dogu: 'પૂર્વી અરબી અંકો',
+  bati: 'પશ્ચિમી અંકો',
 };

@@ -148,8 +148,8 @@ object CanliGuncellemeKurallari {
         "pl" to KisaBirimler("godz.", "min", birimAyirici = " ", parcaAyirici = " "),
         // ja
         "ja" to KisaBirimler("時間", "分", birimAyirici = "", parcaAyirici = ""),
-        // ÇEVİRİ: gu
-        "gu" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // gu
+        "gu" to KisaBirimler("ક", "મિ", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: bg
         "bg" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: mk
