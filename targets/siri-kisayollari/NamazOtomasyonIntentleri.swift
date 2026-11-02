@@ -509,11 +509,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: mk (one/other)
+    // mk (one/other)
     static let mk = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad}: времето настапува за {n} минута.", "other": "{ad}: времето настапува за {n} минути."],
+        evetKilindi: "Да, означено е како клањано.",
+        hayirKilinmadi: "Не, сѐ уште не е означено."
     )
 
     static let tablo: [String: OtomasyonMetinleri] = [

@@ -1,40 +1,53 @@
-// ÇEVİRİ: mk — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/**
+ * Nafile "нафила" (meal 17:79 dipnotu, HadeethEnc "ги клањал нафилите"). Kuşluk "духа" (sr/bs
+ * emsali, mk kaynakta DOĞRULANMADI); teheccüd adı mk kaynakta yok → HadeethEnc mk 11259'un
+ * betimleyici "ноќен намаз"ı; evvâbîn "евабин" (Boşnakça "evvabin" emsali, DOĞRULANMADI).
+ */
 export const nafile: Sozluk['nafile'] = {
-  adlar: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
-  kucuk: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
+  adlar: { kusluk: 'Духа', evvabin: 'Евабин', teheccud: 'Ноќен намаз' },
+  kucuk: { kusluk: 'духа', evvabin: 'евабин', teheccud: 'ноќен намаз' },
   aciklamalar: {
     kusluk:
-      'Starts about 45 minutes after sunrise and lasts until 10 minutes before Dhuhr. Ishraq is its earliest time; the most virtuous is after the first quarter of the day has passed.',
-    evvabin: 'Prayed after Maghrib, until Isha time.',
-    teheccud: 'Prayed after sleeping and waking following Isha, until Fajr time. Its most virtuous time is the last third of the night.',
+      'Почнува околу 45 минути по изгрејсонце и трае до 10 минути пред пладне-намазот. Ишрак е неговото најрано време; највредно е кога ќе помине првата четвртина од денот.',
+    evvabin: 'Се клања по акшам-намазот, до настапувањето на јацијата.',
+    teheccud: 'Се клања по јацијата, откако ќе се заспие и ќе се стане, сѐ до сабах. Највредно време е последната третина од ноќта.',
   },
-  bilgiBugun: '{aciklama}\n\nToday: {bas} – {son}',
-  enFaziletli: ' · most virtuous after {saat}',
-  sonUcteBir: ' · last third {saat}',
-  durumAktif: 'Time has begun · ends {saat}',
-  durumNafile: 'Nafl · {bas}–{son}',
+  bilgiBugun: '{aciklama}\n\nДенес: {bas} – {son}',
+  enFaziletli: ' · највредно по {saat}',
+  sonUcteBir: ' · последна третина {saat}',
+  durumAktif: 'Времето настапи · до {saat}',
+  durumNafile: 'Нафила · {bas}–{son}',
   bildirim: {
-    kuslukBaslik: 'Duha time',
-    kuslukSuruyor: 'Duha time is on; you can pray until {son}.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats; it lasts until {son}.',
+    kuslukBaslik: 'Време за духа',
+    kuslukSuruyor: 'Времето за духа трае; можете да клањате до {son}.',
+    kuslukGirdi: 'Настапи времето за духа. Убав миг за два реката; трае до {son}.',
     kuslukBitiyor: cogul({
-      one: '{n} minute left in Duha time. A good moment for two rakats; it lasts until {son}.',
-      other: '{n} minutes left in Duha time. A good moment for two rakats; it lasts until {son}.',
+      one: 'До крајот на времето за духа остана {n} минута. Убав миг за два реката; трае до {son}.',
+      other: 'До крајот на времето за духа останаа {n} минути. Убав миг за два реката; трае до {son}.',
     }),
-    evvabinBaslik: 'Awwabin',
-    evvabinSuruyor: 'There is still time for Awwabin. Isha begins at {son}.',
-    evvabinGirdi: 'After Maghrib, a good moment for Awwabin. Isha begins at {son}.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin. Isha begins at {son}.', other: '{n} minutes left for Awwabin. Isha begins at {son}.' }),
-    teheccudBaslik: 'Tahajjud time',
-    uyandirSonUcte: 'Get up; the last third of the night has begun. Fajr begins at {son}.',
-    uyandirKalan: cogul({ one: 'Get up; {n} minute left until Fajr. Fajr begins at {son}.', other: 'Get up; {n} minutes left until Fajr. Fajr begins at {son}.' }),
-    sonUcteBaslik: 'The last third of the night',
-    sonUcteGovde: 'The most blessed hours for Tahajjud. Fajr begins at {son}.',
-    teheccudKalan: cogul({ one: '{n} minute left until Fajr. A good time for Tahajjud.', other: '{n} minutes left until Fajr. A good time for Tahajjud.' }),
+    evvabinBaslik: 'Евабин',
+    evvabinSuruyor: 'Сѐ уште има време за евабин. Јација настапува во {son}.',
+    evvabinGirdi: 'По акшам-намазот, убав миг за евабин. Јација настапува во {son}.',
+    evvabinKalan: cogul({
+      one: 'За евабин остана {n} минута. Јација настапува во {son}.',
+      other: 'За евабин останаа {n} минути. Јација настапува во {son}.',
+    }),
+    teheccudBaslik: 'Време за ноќен намаз',
+    uyandirSonUcte: 'Станете; настапи последната третина од ноќта. Сабах настапува во {son}.',
+    uyandirKalan: cogul({
+      one: 'Станете; до сабах остана {n} минута. Сабах настапува во {son}.',
+      other: 'Станете; до сабах останаа {n} минути. Сабах настапува во {son}.',
+    }),
+    sonUcteBaslik: 'Последна третина од ноќта',
+    sonUcteGovde: 'Најберикетните часови за ноќен намаз. Сабах настапува во {son}.',
+    teheccudKalan: cogul({
+      one: 'До сабах остана {n} минута. Убаво време за ноќен намаз.',
+      other: 'До сабах останаа {n} минути. Убаво време за ноќен намаз.',
+    }),
   },
-  uyandirmaKanali: 'Tahajjud wake-up',
-  uyandirmaKanaliAciklama: 'Wakes you for the night prayer; rings even in silent mode',
+  uyandirmaKanali: 'Будење за ноќен намаз',
+  uyandirmaKanaliAciklama: 'Ве буди за ноќен намаз; ѕвони и во тивок режим',
 };

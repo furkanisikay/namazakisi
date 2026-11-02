@@ -1381,29 +1381,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: mk
+    // mk
     static let mk = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Време за намаз",
+        galeriAciklama: "Тековниот намаз, преостанатото време до истекот на неговото време и денешните времиња.",
+        veriEski: "Отворете ја апликацијата за да ги ажурирате времињата",
+        konumYok: "Отворете ја апликацијата за да ја поставите вашата локација",
+        kilindiSiradaki: "{ad}: клањано · {sonraki} {saat}",
+        adCikis: "{ad} · истекува {saat}",
+        siradakiAdSaat: "Следен: {ad} {saat}",
+        vaktiCikisErisim: "{ad}, истекува во {saat}",
+        siradakiErisim: "Следен: {ad}, {saat}",
+        cikisSaat: "Истекува {saat}",
+        bitisSaat: "Крај {saat}",
+        kilindiBaslik: "{ad}: клањано",
+        siradaki: "Следен",
+        siradakiAd: "Следен: {ad}",
+        kildimErisim: "Клањав: {ad}",
+        gunSatiriKilindi: ", клањано",
+        bitti: "Завршено",
+        vakitCikti: "Времето за намаз истече",
+        kabulAlt: "{ad}: клањано",
+        kontrolAdi: "Клањав",
+        kontrolAciklama: "Го означува тековниот намаз како клањан."
     )
 
     /// Dil kodu → tablo (sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk; cevrilmemis dil `// ÇEVİRİ: <kod>`

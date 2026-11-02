@@ -1,15 +1,14 @@
-// ÇEVİRİ: mk — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const icerik: Sozluk['icerik'] = {
-  ayetKunyesi: 'Quran {ref} · {yayimci}, QuranEnc {surum}',
+  ayetKunyesi: 'Куран {ref} · {yayimci}, QuranEnc {surum}',
   vakitGirdi: {
-    uykudan: 'Prayer is better than sleep. Come to success.',
-    araVer: 'Take a short break from worldly work and stand before your Lord.',
-    yorgunluk: 'Asr is waiting for you, to shake off the day and find peace.',
-    sukur: "Maghrib is the day's thanks. Hasten to stand before your Lord.",
-    aksamKisa: 'Maghrib time is short; it has begun, pray without delay.',
-    geceKaranligi: 'In the dark of the night, be alone with your Lord. Isha is a cure for the soul.',
-    davet: "You are invited to Isha, to end the day seeking Allah's pleasure.",
+    uykudan: 'Намазот е подобар од сонот. Побрзајте кон спасот.',
+    araVer: 'Направете кратка пауза од световните работи и застанете пред својот Господар.',
+    yorgunluk: 'Икиндија-намазот ве чека за да го отфрлите заморот од денот и да најдете спокој.',
+    sukur: 'Акшам-намазот е благодарност за денот. Побрзајте да застанете пред својот Господар.',
+    aksamKisa: 'Времето за акшам е кратко; настапи, клањајте без одложување.',
+    geceKaranligi: 'Во ноќната темнина останете насамо со својот Господар. Јација-намазот е лек за душата.',
+    davet: 'Поканети сте на јација-намаз, за да го завршите денот барајќи Аллахово задоволство.',
   },
 };

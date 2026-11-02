@@ -874,19 +874,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: mk
+    // mk
     static let mk = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Изберете го вашиот град",
+        ilMerkezi: "Времињата се пресметуваат за средиштето на покраината. Изборот можете да го промените подоцна.",
+        ilSecErisim: "{il}, изберете",
+        kalan: "До намазот: {ad}",
+        kalanErisim: "{ad}: уште {sure}",
+        konumuDegistirin: "Променете ја локацијата",
+        kerahatSuruyor: "Мекрух време: {tur}, истекува во {bitis}. {aciklama}",
+        siradakiKerahat: "Следно мекрух време: {tur} {bas}–{bit}",
+        cumaBilgisi: "Денес е петок. Џума-намазот се клања во времето на пладне-намазот (настапува во {giris}).",
+        suAnkiEk: ", тековен намаз",
+        siradakiEk: ", следен намаз"
     )
 
     static let tablo: [String: TvArayuzMetinleri] = [

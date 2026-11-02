@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: mk — İngilizce iskelet, çevrilince bu satır silinir -->
+<!-- mk — Makedonca, Kiril (beta). -->
 <resources>
-    <string name="countdown_kanal_canli_ad">Live countdowns</string>
-    <string name="countdown_kanal_canli_aciklama">Countdowns in the Now Bar and the status bar</string>
-    <string name="countdown_kanal_genel_ad">Countdown notifications</string>
-    <string name="countdown_kanal_genel_aciklama">Channel for countdown notifications</string>
+    <string name="countdown_kanal_canli_ad">Одбројувања во живо</string>
+    <string name="countdown_kanal_canli_aciklama">Одбројувања во лентата Now Bar и во лентата за статус</string>
+    <string name="countdown_kanal_genel_ad">Известувања со одбројување</string>
+    <string name="countdown_kanal_genel_aciklama">Канал за известувања со одбројување</string>
 
-    <string name="countdown_eylem_kildim">I\'ve prayed</string>
-    <string name="countdown_eylem_durdur">Stop</string>
+    <string name="countdown_eylem_kildim">Клањав</string>
+    <string name="countdown_eylem_durdur">Запрете</string>
 
-    <string name="countdown_yedek_vakit">Hurry, the prayer time is about to end.</string>
-    <string name="countdown_yedek_iftar">Time is running out.</string>
-    <string name="countdown_yedek_sahur">You can still eat and drink; the fast begins soon!</string>
-    <string name="countdown_yedek_seri">Today\'s prayers aren\'t complete; don\'t lose your streak.</string>
+    <string name="countdown_yedek_vakit">Побрзајте, времето за намаз само што не истекло.</string>
+    <string name="countdown_yedek_iftar">Времето истекува.</string>
+    <string name="countdown_yedek_sahur">Сѐ уште можете да јадете и пиете; постот наскоро почнува.</string>
+    <string name="countdown_yedek_seri">Денешните намази не се целосни; не ја губете вашата низа.</string>
 
-    <string name="countdown_onek_vakit">Until the time ends</string>
-    <string name="countdown_onek_vakit_dar">Time is ending</string>
-    <string name="countdown_onek_iftar">Until iftar</string>
-    <string name="countdown_onek_iftar_dar">Until iftar</string>
-    <string name="countdown_onek_sahur">Until suhoor ends</string>
-    <string name="countdown_onek_sahur_dar">Suhoor is ending</string>
-    <string name="countdown_onek_seri">To save your streak</string>
-    <string name="countdown_onek_seri_dar">Streak is ending</string>
+    <string name="countdown_onek_vakit">До истекот на времето</string>
+    <string name="countdown_onek_vakit_dar">Времето истекува</string>
+    <string name="countdown_onek_iftar">До ифтар</string>
+    <string name="countdown_onek_iftar_dar">До ифтар</string>
+    <string name="countdown_onek_sahur">До крајот на сехурот</string>
+    <string name="countdown_onek_sahur_dar">Сехурот завршува</string>
+    <string name="countdown_onek_seri">За да ја зачувате низата</string>
+    <string name="countdown_onek_seri_dar">Низата завршува</string>
 </resources>

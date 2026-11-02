@@ -793,18 +793,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: mk
+    // mk
     static let mk = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Ајет на денот",
+        galeriAciklama: "Ајет и превод на неговото значење, секој ден нов по сабах.",
+        etiket: "АЈЕТ НА ДЕНОТ",
+        uygulamayiAcin: "Отворете ја апликацијата за да го видите ајетот на денот",
+        ornekSigmiyor: "Денешниот ајет не собира во оваа големина. Допрете за да го прочитате.",
+        ornekAcin: "Отворете",
+        ornekArapcaKaynagi: "Арапски: Tanzil",
+        ornekMeal: "навистина, по секоја тешкотија доаѓа олеснување!",
+        ornekKisaKunye: "Куран 94:6",
+        ornekMealKaynagi: "a group of Macedonian scholars, QuranEnc 1.0.1"
     )
 
     static let tablo: [String: GununAyetiYerelMetinleri] = [
