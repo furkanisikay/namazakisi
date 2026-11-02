@@ -488,11 +488,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Nie, jeszcze nie jest oznaczona."
     )
 
-    // ÇEVİRİ: ja (other)
+    // ja (other)
     static let ja = OtomasyonMetinleri(
-        kalanDakika: ["other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["other": "{ad}はあと{n}分で始まります。"],
+        evetKilindi: "はい、礼拝済みです。",
+        hayirKilinmadi: "いいえ、まだ記録されていません。"
     )
 
     // ÇEVİRİ: gu (one/other)

@@ -1,12 +1,12 @@
-// ÇEVİRİ: ja — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/** 数字と単位の間に空白を入れない（"5分"、"1時間5分"）。Japoncada çoğul yalnız other. */
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: '時間', dk: '分', sn: '秒' },
   birimli: '{n}{birim}',
   parcali: '{once}{sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ other: '{n}時間' }),
+  dakika: cogul({ other: '{n}分' }),
+  saniye: cogul({ other: '{n}秒' }),
 };

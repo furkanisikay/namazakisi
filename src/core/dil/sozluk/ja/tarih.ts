@@ -1,14 +1,13 @@
-// ÇEVİRİ: ja — İngilizce iskelet, çevrilince bu satır silinir
-// Tarih kalıbı Çince deseni: `uzun` "{yil}年{ay}{gun}日", `aylar` "1月"…"12月" → "2026年11月2日"; `gunAdiYil` "{yil}年 {gunAdi}".
 import type { Sozluk } from '../tr';
 
+/** CLDR ja: "2026年11月2日", gün "月曜日"; takvim başlığı "2026年11月". */
 export const tarih: Sozluk['tarih'] = {
-  gunler: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  gunlerKisa: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  aylar: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarYalin: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarKisa: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  haftaHarfleri: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-  uzun: '{gun} {ay} {yil}',
-  gunAdiYil: '{gunAdi}, {yil}',
+  gunler: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
+  gunlerKisa: ['日', '月', '火', '水', '木', '金', '土'],
+  aylar: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+  aylarYalin: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+  aylarKisa: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+  haftaHarfleri: ['月', '火', '水', '木', '金', '土', '日'],
+  uzun: '{yil}年{ay}{gun}日',
+  gunAdiYil: '{yil}年 {gunAdi}',
 };

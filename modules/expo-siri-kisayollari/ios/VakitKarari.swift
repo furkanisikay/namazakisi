@@ -1683,31 +1683,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Otwórz aplikację"
     )
 
-    // ÇEVİRİ: ja
+    // ja
     public static let ja = VakitMetinleri(
         dil: "ja",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "ファジュル", "ogle": "ズフル", "ikindi": "アスル", "aksam": "マグリブ", "yatsi": "イシャー"],
+        gunes: "日の出",
+        konumYok: "礼拝時間を計算できるよう、アプリを開いて現在地を設定してください。",
+        veriEski: "礼拝時間が古くなっています。更新するにはアプリを一度開いてください。",
+        girisBugun: "{saat}に",
+        girisYarin: "明日の{saat}に",
+        suAnVakti: "今は{ad}の時間です。",
+        suAnVaktiCikis: "今は{ad}の時間です。{saat}に終わります。",
+        siradakiNamaz: "次の礼拝は{ad}で、{giris}始まります。",
+        isaretlendi: "{ad}を礼拝済みにしました。{dua}。",
+        zatenKilindi: "{ad}はすでに礼拝済みです。",
+        vakitYok: "今は記録する礼拝がありません。",
+        vakitYokSiradaki: "今は記録する礼拝がありません。次は{ad}で、{giris}始まります。",
+        onay: "{ad}を礼拝済みにしますか？",
+        vakitDegisti: "礼拝時間が変わったため、何も記録されませんでした。もう一度お試しください。",
+        kabulDuasi: "アッラーが受け入れてくださいますように",
+        kildim: "礼拝しました",
+        kilindi: "礼拝済み",
+        kontrolKildim: "{ad}・礼拝しました",
+        kontrolKilindi: "{ad}は礼拝済み",
+        kontrolVakitYok: "記録する礼拝なし",
+        uygulamayiAcin: "アプリを開く"
     )
 
     // ÇEVİRİ: gu

@@ -1,18 +1,17 @@
-/* ÇEVİRİ: ja */
 // W5 — App Intents metinleri (cihaz diliyle cozulur). Anahtar = koddaki Turkce gelistirme
 // dili metni; kodda metin degisirse anahtar BURADA da degisir (aksi halde Turkce gorunur).
 // plugins/withSiriKisayollari.js prebuild'de ios/<Proje>/Supporting/<dil>.lproj/ altina kopyalar.
 // App Shortcut ifadeleri: her ifade ${applicationName} icermek ZORUNDADIR.
 
 // NamazKisayollari.swift
-"${applicationName} sıradaki namaz ne zaman" = "When is the next prayer in ${applicationName}";
-"${applicationName} sıradaki namaz" = "${applicationName} next prayer";
-"${applicationName} ile sıradaki namazı söyle" = "Tell me the next prayer with ${applicationName}";
-"${applicationName} namaz vakti" = "${applicationName} prayer time";
-"${applicationName} şu anki vakti kıldım" = "I've prayed the current prayer in ${applicationName}";
-"${applicationName} namazımı kıldım" = "I've prayed in ${applicationName}";
-"${applicationName} ile vakti kıldım olarak işaretle" = "Mark the current prayer as prayed in ${applicationName}";
-"${applicationName} kıbleyi aç" = "Open the Qibla in ${applicationName}";
-"${applicationName} ile kıbleyi göster" = "Show the Qibla with ${applicationName}";
-"${applicationName} günün ayeti görseli" = "${applicationName} verse of the day image";
-"${applicationName} ile günün ayeti görselini hazırla" = "Make the verse of the day image with ${applicationName}";
+"${applicationName} sıradaki namaz ne zaman" = "${applicationName}で次の礼拝はいつ";
+"${applicationName} sıradaki namaz" = "${applicationName}の次の礼拝";
+"${applicationName} ile sıradaki namazı söyle" = "${applicationName}で次の礼拝を教えて";
+"${applicationName} namaz vakti" = "${applicationName}の礼拝時間";
+"${applicationName} şu anki vakti kıldım" = "${applicationName}で現在の礼拝をしました";
+"${applicationName} namazımı kıldım" = "${applicationName}で礼拝しました";
+"${applicationName} ile vakti kıldım olarak işaretle" = "${applicationName}で現在の礼拝を礼拝済みにして";
+"${applicationName} kıbleyi aç" = "${applicationName}でキブラを開いて";
+"${applicationName} ile kıbleyi göster" = "${applicationName}でキブラを表示して";
+"${applicationName} günün ayeti görseli" = "${applicationName}の今日のアーヤの画像";
+"${applicationName} ile günün ayeti görselini hazırla" = "${applicationName}で今日のアーヤの画像を作って";

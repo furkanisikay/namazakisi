@@ -750,18 +750,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: ""
     )
 
-    // ÇEVİRİ: ja
+    // ja
     static let ja = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "今日のアーヤ",
+        galeriAciklama: "毎日ファジュルに変わる、アーヤとその訳。",
+        etiket: "今日のアーヤ",
+        uygulamayiAcin: "今日のアーヤを見るにはアプリを開いてください",
+        ornekSigmiyor: "今日のアーヤはこのサイズに収まりません。タップして読んでください。",
+        ornekAcin: "開く",
+        ornekArapcaKaynagi: "アラビア語：Tanzil",
+        ornekMeal: "本当に、苦と共にこそ楽あり。",
+        ornekKisaKunye: "クルアーン 94:6",
+        ornekMealKaynagi: "Saeed Sato、QuranEnc 1.0.13"
     )
 
     // ÇEVİRİ: gu

@@ -1,96 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ja — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- English. Terms: docs/ajan/coklu-dil.md glossary + src/core/dil/sozluk/en. -->
+<!-- 日本語. Terimler: src/core/dil/sozluk/ja. -->
 <resources>
     <!-- Dil kodu: çekirdeklere (cekirdek/TvDili) verilen dil; kaynak sisteminin seçtiği values-xx ile AYNI olsun diye kaynaktan okunur. -->
     <string name="dil_kodu">ja</string>
     <string name="app_name">Namaz Akışı</string>
-    <string name="ekran_koruyucu_adi">Prayer times board</string>
-    <string name="ayarlar">Settings</string>
+    <string name="ekran_koruyucu_adi">礼拝時間ボード</string>
+    <string name="ayarlar">設定</string>
     <!-- Pano (ui/PanoEkrani) -->
-    <string name="pano_kalan_erisim">%2$s left until %1$s</string>
-    <string name="pano_vaktine">Until %1$s</string>
-    <string name="pano_vaktine_kalan">%1$s in %2$s</string>
-    <string name="pano_kerahat_vakti">Makruh time</string>
-    <string name="pano_bitis">ends %1$s</string>
-    <string name="pano_kerahat_erisim">Makruh time, %1$s, ends %2$s. %3$s</string>
-    <string name="pano_cumaya">Jumu\'ah in %1$s</string>
-    <string name="pano_cikis_geldi">time to leave</string>
-    <string name="pano_cikis">leave at %1$s</string>
-    <string name="pano_cuma_cikis_geldi_erisim">It\'s time to leave for Jumu\'ah</string>
-    <string name="pano_cuma_cikis_erisim">Leave for Jumu\'ah at %1$s</string>
-    <string name="pano_bugun_cuma">Today is Jumu\'ah</string>
-    <string name="pano_ogle">Dhuhr %1$s</string>
-    <string name="pano_bugun_cuma_erisim">Today is Jumu\'ah. The Jumu\'ah prayer is at Dhuhr time, %1$s</string>
-    <string name="pano_ayarlar_erisim">Settings: add a phone, location, connected phones</string>
-    <string name="pano_simdiki_vakit">current prayer time</string>
-    <string name="pano_siradaki_vakit">next prayer time</string>
-    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: "Add your phone", "Enter code", "I'll choose the city myself", "Add". -->
-    <string name="kodla_girin">Enter code</string>
-    <string name="ili_kendim_secin">I\'ll choose the city myself</string>
-    <string name="yeniden_deneyin">Try again</string>
-    <string name="telefon_varsayilan">Phone</string>
-    <string name="esleme_ekleniyor">Adding %1$s</string>
-    <string name="esleme_gonderiyor">Your phone is sending its location and status…</string>
-    <string name="esleme_tamamlanamadi">Pairing couldn\'t be completed</string>
-    <string name="esleme_saklanamadi">This TV can\'t store the connection key securely. You can enter your location with a code or choose your city.</string>
-    <string name="telefonunuzu_ekleyin">Add your phone</string>
-    <string name="esleme_alt">Prayer times for your location; the prayers you\'ve prayed appear too.</string>
-    <string name="esleme_adim1">Open Namaz Akışı on your phone</string>
-    <string name="esleme_adim2">Settings › My devices › Add a TV</string>
-    <string name="esleme_adim3">Point your phone\'s camera at the code</string>
-    <string name="esleme_ayni_wifi">Your phone and TV must be on the same Wi-Fi network.</string>
-    <string name="esleme_onay_soru">Add this phone?</string>
-    <string name="esleme_onay_aciklama">The added phone can send its location and the prayers it marks to this TV.</string>
-    <string name="ekleyin">Add</string>
-    <string name="hayir">No</string>
-    <string name="esleme_eklendi">%1$s added</string>
-    <string name="konumunuz_geldi">Your location arrived</string>
-    <string name="konuma_gore_hesaplanacak">Prayer times will be calculated for this location.</string>
-    <string name="qr_konum_alindi">Location received</string>
-    <string name="qr_kodu">Pairing code to scan with your phone</string>
-    <string name="ag_yok">The TV isn\'t connected to a network</string>
-    <string name="ag_yok_aciklama">You can continue by entering the 7-digit code from your phone or choosing your city.</string>
+    <string name="pano_kalan_erisim">%1$sまで残り%2$s</string>
+    <string name="pano_vaktine">%1$sまで</string>
+    <string name="pano_vaktine_kalan">%1$sまであと%2$s</string>
+    <string name="pano_kerahat_vakti">礼拝が禁じられた時間</string>
+    <string name="pano_bitis">%1$sに終了</string>
+    <string name="pano_kerahat_erisim">礼拝が禁じられた時間、%1$s、%2$sに終了。%3$s</string>
+    <string name="pano_cumaya">金曜礼拝まであと%1$s</string>
+    <string name="pano_cikis_geldi">出発の時間</string>
+    <string name="pano_cikis">%1$sに出発</string>
+    <string name="pano_cuma_cikis_geldi_erisim">金曜礼拝に出発する時間です</string>
+    <string name="pano_cuma_cikis_erisim">%1$sに金曜礼拝へ出発</string>
+    <string name="pano_bugun_cuma">今日は金曜礼拝の日です</string>
+    <string name="pano_ogle">ズフル %1$s</string>
+    <string name="pano_bugun_cuma_erisim">今日は金曜礼拝の日です。金曜礼拝はズフルの時間、%1$sです</string>
+    <string name="pano_ayarlar_erisim">設定：スマートフォンの追加、場所、接続したスマートフォン</string>
+    <string name="pano_simdiki_vakit">現在の礼拝時間</string>
+    <string name="pano_siradaki_vakit">次の礼拝時間</string>
+    <!-- Eşleştirme (ui/EslemeEkrani). Etiketler telefondaki JS rehberiyle birebir: 「スマートフォンを追加」「コードを入力」「都市を自分で選ぶ」「追加」. -->
+    <string name="kodla_girin">コードを入力</string>
+    <string name="ili_kendim_secin">都市を自分で選ぶ</string>
+    <string name="yeniden_deneyin">再試行</string>
+    <string name="telefon_varsayilan">スマートフォン</string>
+    <string name="esleme_ekleniyor">%1$sを追加中</string>
+    <string name="esleme_gonderiyor">スマートフォンが場所と状態を送っています…</string>
+    <string name="esleme_tamamlanamadi">ペアリングを完了できませんでした</string>
+    <string name="esleme_saklanamadi">このテレビは接続キーを安全に保存できません。コードで場所を入力するか、都市を選んでください。</string>
+    <string name="telefonunuzu_ekleyin">スマートフォンを追加</string>
+    <string name="esleme_alt">現在地の礼拝時間と、礼拝した記録も表示されます。</string>
+    <string name="esleme_adim1">スマートフォンでNamaz Akışıを開きます</string>
+    <string name="esleme_adim2">設定 › マイデバイス › テレビを追加</string>
+    <string name="esleme_adim3">スマートフォンのカメラをコードに向けます</string>
+    <string name="esleme_ayni_wifi">スマートフォンとテレビが同じWi-Fiネットワークにつながっている必要があります。</string>
+    <string name="esleme_onay_soru">このスマートフォンを追加しますか？</string>
+    <string name="esleme_onay_aciklama">追加したスマートフォンは、場所と記録した礼拝をこのテレビに送れます。</string>
+    <string name="ekleyin">追加</string>
+    <string name="hayir">いいえ</string>
+    <string name="esleme_eklendi">%1$sを追加しました</string>
+    <string name="konumunuz_geldi">場所が届きました</string>
+    <string name="konuma_gore_hesaplanacak">礼拝時間はこの場所で計算されます。</string>
+    <string name="qr_konum_alindi">場所を受け取りました</string>
+    <string name="qr_kodu">スマートフォンで読み取るペアリング用コード</string>
+    <string name="ag_yok">テレビがネットワークにつながっていません</string>
+    <string name="ag_yok_aciklama">スマートフォンの7桁のコードを入力するか、都市を選んで続けられます。</string>
     <!-- Kodla konum (ui/KodGirisEkrani) -->
-    <string name="kod_baslik">Enter the code from your phone</string>
-    <string name="kod_yol">On your phone: Settings › My devices › Add a TV</string>
-    <string name="kod_hatali">The code didn\'t match. Check the 7 digits on your phone; fix a wrong digit with “%1$s”.</string>
-    <string name="kod_rakamli_kumanda">If your remote has number keys, you can also type with them.</string>
-    <string name="kod_bos_hane">empty digit</string>
-    <string name="kod_sil">Delete</string>
-    <string name="kod_sil_aciklama">Delete the last digit</string>
-    <string name="kod_geri">Back</string>
-    <string name="vazgecin">Cancel</string>
+    <string name="kod_baslik">スマートフォンのコードを入力</string>
+    <string name="kod_yol">スマートフォンで：設定 › マイデバイス › テレビを追加</string>
+    <string name="kod_hatali">コードが一致しませんでした。スマートフォンの7桁を確認し、間違った数字は「%1$s」で直してください。</string>
+    <string name="kod_rakamli_kumanda">リモコンに数字ボタンがある場合は、それでも入力できます。</string>
+    <string name="kod_bos_hane">空の桁</string>
+    <string name="kod_sil">削除</string>
+    <string name="kod_sil_aciklama">最後の数字を削除</string>
+    <string name="kod_geri">戻る</string>
+    <string name="vazgecin">キャンセル</string>
     <!-- İl seçimi (ui/IlSecimEkrani), ekran koruyucu (ui/PanoDreamServisi). İl/şehir adı VERİDİR, çevrilmez. -->
-    <string name="il_secin">Choose your city</string>
-    <string name="il_merkezine_gore">Prayer times are calculated for the city center.</string>
-    <string name="il_secili">%1$s, selected</string>
-    <string name="dream_il_yok">To see the prayer times board, open the Namaz Akışı app and choose your city.</string>
+    <string name="il_secin">都市を選択</string>
+    <string name="il_merkezine_gore">礼拝時間は都市の中心で計算されます。</string>
+    <string name="il_secili">%1$s、選択中</string>
+    <string name="dream_il_yok">礼拝時間ボードを見るには、Namaz Akışıアプリを開いて都市を選んでください。</string>
     <!-- TV ayarları (ui/TvAyarlarEkrani) -->
-    <string name="ayar_konum">Location: %1$s</string>
-    <string name="ayar_konum_yok">No location chosen</string>
-    <string name="ayar_telefon_ekleyin">Add a phone</string>
-    <string name="ayar_konumu_kodla">Enter location with a code</string>
-    <string name="ayar_bagli_telefonlar">Phones connected to this TV</string>
-    <string name="ayar_telefon_yok">No phone added yet. Use “%1$s” on the left and scan the code that appears.</string>
-    <string name="kaldirin">Remove</string>
-    <string name="ayar_ne_gonderir">What do phones send?</string>
-    <string name="ayar_madde_konum">Location: prayer times follow it</string>
-    <string name="ayar_madde_namazlar">Prayers marked, for those who choose</string>
-    <string name="ayar_madde_sifreli">Encrypted, only on your home network</string>
-    <string name="son_haber_yok">No information yet</string>
-    <string name="son_haber_az_once">Just now</string>
+    <string name="ayar_konum">場所：%1$s</string>
+    <string name="ayar_konum_yok">場所が選ばれていません</string>
+    <string name="ayar_telefon_ekleyin">スマートフォンを追加</string>
+    <string name="ayar_konumu_kodla">コードで場所を入力</string>
+    <string name="ayar_bagli_telefonlar">このテレビに接続したスマートフォン</string>
+    <string name="ayar_telefon_yok">まだスマートフォンが追加されていません。左の「%1$s」を使って、表示されたコードを読み取ってください。</string>
+    <string name="kaldirin">削除</string>
+    <string name="ayar_ne_gonderir">スマートフォンは何を送りますか？</string>
+    <string name="ayar_madde_konum">場所：礼拝時間はこれに従います</string>
+    <string name="ayar_madde_namazlar">記録した礼拝（選んだ方のみ）</string>
+    <string name="ayar_madde_sifreli">暗号化され、自宅のネットワーク内のみ</string>
+    <string name="son_haber_yok">まだ情報はありません</string>
+    <string name="son_haber_az_once">たった今</string>
     <plurals name="son_haber_dk">
-        <item quantity="other">%1$d min ago</item>
+        <item quantity="other">%1$d分前</item>
     </plurals>
     <plurals name="son_haber_saat">
-        <item quantity="other">%1$d h ago</item>
+        <item quantity="other">%1$d時間前</item>
     </plurals>
     <plurals name="son_haber_gun">
-        <item quantity="other">%1$d days ago</item>
+        <item quantity="other">%1$d日前</item>
     </plurals>
-    <string name="kaldir_soru">Remove %1$s?</string>
-    <string name="kaldir_aciklama">This phone will no longer be able to send information to the TV. To add it again, you need to scan the QR code again.</string>
+    <string name="kaldir_soru">%1$sを削除しますか？</string>
+    <string name="kaldir_aciklama">このスマートフォンはテレビに情報を送れなくなります。もう一度追加するには、QRコードを再び読み取る必要があります。</string>
     <!-- Veri yedekleri (veri/UyeDeposu): telefon ad göndermezse. -->
-    <string name="telefondaki_konum">Your phone\'s location</string>
+    <string name="telefondaki_konum">スマートフォンの場所</string>
 </resources>

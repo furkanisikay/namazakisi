@@ -1,61 +1,60 @@
-// ÇEVİRİ: ja — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı Japoncada: zamirsiz kibar kısa istek "〜してください" (Microsoft ja); 〜しなさい,
+ * "！" yok. Secde karşılığı YAZILMAZ ("namaza dur" = "礼拝に立ってください"). Başlıkta süre bitişik
+ * "{dk}分": "マグリブ・655分経過" ilk 16 karaktere sığar.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad}・{dk}分経過・礼拝の時間です ⏰',
+    giris2: '{ad}・{dk}分経過・礼拝を遅らせないでください ⚠️',
+    giris3: '{ad}・{dk}分経過・礼拝が待っています 🔥',
+    giris4: '{ad}・{dk}分経過・礼拝に立ってください 🚨',
+    erken3: '{ad}・残り{dk}分・礼拝が待っています 🔥',
+    erken4: '{ad}・残り{dk}分・礼拝に立ってください 🚨',
+    cikis1: '{ad}・残り{dk}分 ⏰',
+    cikis2: '{ad}・{dk}分・時間が迫っています ⚠️',
+    cikis3: '{ad}・{dk}分・時間が過ぎようとしています 🔥',
+    cikis4: '{ad}・{dk}分・まもなく時間切れです 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['礼拝の時間になりました。機会があるうちに礼拝してください。', '時間に余裕があるうちに礼拝してください。後回しにしないでください。'],
+    s2: ['先延ばしにするほど重くなります。礼拝を最後まで残さないでください。', '時間が進んでいます。今、礼拝してください。'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      '遅らせるほど、逃してしまう時が近づきます。今すぐ礼拝してください。',
+      '「後で礼拝しよう」と言わないでください。今、礼拝できます。',
+      '数分後に「ああすればよかった」と言うより、今立ち上がってください。',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['これ以上礼拝を遅らせないでください。今すぐ礼拝に立ってください。', '手を止めて、礼拝に立ってください。'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: '時間が迫り始めました。機会があるうちに礼拝してください。',
+    s2: '礼拝を最後まで残さないでください。今が礼拝に良い時です。',
+    s3: 'まもなく時間が終わります。今ならまだ礼拝できます。',
+    s4: '礼拝したなら「礼拝しました」を押してください。まだなら、今すぐ礼拝に立ってください。',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: '礼拝を遅らせないでください。今すぐ礼拝に立ってください。（{dk}分経過）',
+    giris2: '時間が進んでいます。礼拝を最後まで残さないでください。（{dk}分経過）',
+    giris1: cogul({ other: '礼拝の時間になってから{n}分経ちました。' }),
+    erken4: '礼拝を遅らせないでください。今すぐ礼拝に立ってください。（残り{dk}分）',
+    cikis4: 'まもなく時間切れです。今すぐ礼拝に立ってください。（残り{dk}分）',
+    cikis2: '時間が迫っています。礼拝を最後まで残さないでください。（残り{dk}分）',
+    cikis1: cogul({ other: '礼拝時間の終わりまで残り{n}分です。' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad}・寝る前に礼拝してください ⏰',
+    govde: '静かな時間まであと{dk}分です。寝る前にイシャーを礼拝してください。',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: '時間が迫り始めました。機会があるうちに礼拝してください。',
+    sonaBirakma: '礼拝を最後まで残さないでください。今が礼拝に良い時です。',
+    fisilti: '「後で礼拝しよう」と言わないでください。まもなく時間が終わります。今ならまだ礼拝できます。',
+    omur: '時間が過ぎていきます。この礼拝を時間内に行う機会はまだあります。',
+    keske: '数分後に「ああすればよかった」と言うより、今立ち上がってください。',
+    namazaDur: '礼拝したなら「礼拝しました」を押してください。まだなら、今すぐ礼拝に立ってください。',
+    sonDakika: '最後の数分です。手を止めて、礼拝に立ってください。',
   },
 };

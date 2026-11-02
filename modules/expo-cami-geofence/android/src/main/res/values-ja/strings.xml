@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: ja — İngilizce iskelet, çevrilince bu satır silinir -->
 <resources>
-    <string name="camigeofence_kanal_durum_ad">At the mosque</string>
-    <string name="camigeofence_kanal_durum_aciklama">A quiet notice when you\'re detected at a mosque</string>
-    <string name="camigeofence_kanal_soru_ad">After leaving the mosque</string>
-    <string name="camigeofence_kanal_soru_aciklama">A question so you can mark your prayer after you leave the mosque</string>
+    <string name="camigeofence_kanal_durum_ad">モスクにいます</string>
+    <string name="camigeofence_kanal_durum_aciklama">モスクにいると検出されたときの控えめなお知らせ</string>
+    <string name="camigeofence_kanal_soru_ad">モスクを出た後</string>
+    <string name="camigeofence_kanal_soru_aciklama">モスクを出た後に礼拝を記録できるようにするための確認</string>
 
-    <string name="camigeofence_govde_mod_sessiz">Prayer mode is on. Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_mod">Prayer mode is on.</string>
-    <string name="camigeofence_govde_sessiz">Reminders will arrive silently.</string>
-    <string name="camigeofence_govde_normal">Reminders will arrive as usual.</string>
-    <string name="camigeofence_eylem_modu_kapat">Turn off mode</string>
-    <string name="camigeofence_eylem_cami_degil">Not a mosque</string>
+    <string name="camigeofence_govde_mod_sessiz">礼拝モードがオンです。リマインダーは音なしで届きます。</string>
+    <string name="camigeofence_govde_mod">礼拝モードがオンです。</string>
+    <string name="camigeofence_govde_sessiz">リマインダーは音なしで届きます。</string>
+    <string name="camigeofence_govde_normal">リマインダーはいつもどおり届きます。</string>
+    <string name="camigeofence_eylem_modu_kapat">モードをオフ</string>
+    <string name="camigeofence_eylem_cami_degil">モスクではない</string>
 
-    <string name="camigeofence_soru_baslik">Are you at the mosque?</string>
-    <string name="camigeofence_soru_govde">You\'re near %1$s. We\'re not sure, so we\'re asking you.</string>
-    <string name="camigeofence_varsayilan_ad">Mosque</string>
-    <string name="camigeofence_eylem_namaz_modunu_ac">Turn on Prayer mode</string>
-    <string name="camigeofence_eylem_evet_camideyim">Yes, I\'m at the mosque</string>
-    <string name="camigeofence_eylem_hayir">No</string>
+    <string name="camigeofence_soru_baslik">モスクにいますか？</string>
+    <string name="camigeofence_soru_govde">%1$sの近くにいます。確実ではないため、確認しています。</string>
+    <string name="camigeofence_varsayilan_ad">モスク</string>
+    <string name="camigeofence_eylem_namaz_modunu_ac">礼拝モードをオン</string>
+    <string name="camigeofence_eylem_evet_camideyim">はい、モスクにいます</string>
+    <string name="camigeofence_eylem_hayir">いいえ</string>
 
-    <string name="camigeofence_kildiniz_mi">Have you prayed %1$s?</string>
-    <string name="camigeofence_kildiniz_mi_govde">You can mark it with a single tap.</string>
-    <string name="camigeofence_eylem_kildim">I\'ve prayed</string>
-    <string name="camigeofence_namaz_imsak">Fajr</string>
-    <string name="camigeofence_namaz_ogle">Dhuhr</string>
-    <string name="camigeofence_namaz_ikindi">Asr</string>
-    <string name="camigeofence_namaz_aksam">Maghrib</string>
-    <string name="camigeofence_namaz_yatsi">Isha</string>
-    <string name="camigeofence_namaz_cuma">Jumu\'ah</string>
+    <string name="camigeofence_kildiniz_mi">%1$sを礼拝しましたか？</string>
+    <string name="camigeofence_kildiniz_mi_govde">ワンタップで記録できます。</string>
+    <string name="camigeofence_eylem_kildim">礼拝しました</string>
+    <string name="camigeofence_namaz_imsak">ファジュル</string>
+    <string name="camigeofence_namaz_ogle">ズフル</string>
+    <string name="camigeofence_namaz_ikindi">アスル</string>
+    <string name="camigeofence_namaz_aksam">マグリブ</string>
+    <string name="camigeofence_namaz_yatsi">イシャー</string>
+    <string name="camigeofence_namaz_cuma">金曜礼拝</string>
 
-    <string name="camigeofence_mod_kural_adi">Prayer</string>
-    <string name="camigeofence_mod_tetik_aciklama">Namaz Akışı turns it on during the Jumu\'ah sermon, at the mosque or when a prayer time begins</string>
+    <string name="camigeofence_mod_kural_adi">礼拝</string>
+    <string name="camigeofence_mod_tetik_aciklama">金曜礼拝のフトバの間、モスクにいるとき、または礼拝時間になったときにNamaz Akışıがオンにします</string>
 </resources>

@@ -1,12 +1,12 @@
 {
-  "NSLocationWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are. Your location stays on your device.",
-  "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location is used to calculate prayer times accurately for where you are and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSLocationAlwaysUsageDescription": "Your location is used to update prayer times automatically when you change cities and, if At the mosque is on, to turn on Prayer mode when you enter a mosque. Your location stays on your device.",
-  "NSCameraUsageDescription": "Your camera is used to show the Qibla direction over the camera view and to scan the pairing code on your TV. Images are not saved and never leave your device.",
-  "NSCalendarsUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSCalendarsFullAccessUsageDescription": "Calendar access is used to add prayer times to your calendar and, if you turn it on, to check whether events in your calendar overlap a prayer time. Your calendar data stays on your device.",
-  "NSLocalNetworkUsageDescription": "The app connects to the TV on your local network to send your prayer times and the prayers you've marked to it. The data is encrypted and travels only between the two devices.",
-  "NSAlarmKitUsageDescription": "Reminder steps where you choose “Real alarm” are set as alarms, so you hear them even when your phone is on silent or a Focus is on.",
-  "\"Vakti kıldım\"": "I've prayed",
-  "\"Kıble\"": "Qibla"
+  "NSLocationWhenInUseUsageDescription": "現在地は、その場所の礼拝時間を正確に計算するために使います。現在地はデバイス内にとどまります。",
+  "NSLocationAlwaysAndWhenInUseUsageDescription": "現在地は、その場所の礼拝時間を正確に計算するため、また「モスクにいます」がオンの場合はモスクに入ったときに礼拝モードをオンにするために使います。現在地はデバイス内にとどまります。",
+  "NSLocationAlwaysUsageDescription": "現在地は、都市が変わったときに礼拝時間を自動で更新するため、また「モスクにいます」がオンの場合はモスクに入ったときに礼拝モードをオンにするために使います。現在地はデバイス内にとどまります。",
+  "NSCameraUsageDescription": "カメラは、カメラの映像にキブラの方向を表示するためと、テレビのペアリング用コードを読み取るために使います。映像は保存されず、デバイスの外に出ることはありません。",
+  "NSCalendarsUsageDescription": "カレンダーへのアクセスは、礼拝時間をカレンダーに追加するため、またオンにした場合はカレンダーの予定が礼拝時間と重なるかを確認するために使います。カレンダーのデータはデバイス内にとどまります。",
+  "NSCalendarsFullAccessUsageDescription": "カレンダーへのアクセスは、礼拝時間をカレンダーに追加するため、またオンにした場合はカレンダーの予定が礼拝時間と重なるかを確認するために使います。カレンダーのデータはデバイス内にとどまります。",
+  "NSLocalNetworkUsageDescription": "アプリはローカルネットワーク上のテレビに接続し、礼拝時間と記録した礼拝を送ります。データは暗号化され、2台のデバイスの間だけでやり取りされます。",
+  "NSAlarmKitUsageDescription": "「本物のアラーム」を選んだリマインダーの手順はアラームとして設定されるため、スマートフォンがマナーモードのときや集中モードがオンのときでも聞こえます。",
+  "\"Vakti kıldım\"": "礼拝しました",
+  "\"Kıble\"": "キブラ"
 }

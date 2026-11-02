@@ -829,19 +829,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", następna modlitwa"
     )
 
-    // ÇEVİRİ: ja
+    // ja
     static let ja = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "都市を選択してください",
+        ilMerkezi: "礼拝時間は県の中心地で計算されます。選択は後から変更できます。",
+        ilSecErisim: "{il}、選択",
+        kalan: "{ad}までの残り時間",
+        kalanErisim: "{ad}までの残り時間：{sure}",
+        konumuDegistirin: "場所を変更",
+        kerahatSuruyor: "礼拝が禁じられた時間：{tur}、{bitis}に終了。{aciklama}",
+        siradakiKerahat: "次の礼拝が禁じられた時間：{tur} {bas}～{bit}",
+        cumaBilgisi: "今日は金曜日です。金曜礼拝はズフルの時間に行います（{giris}に開始）。",
+        suAnkiEk: "、現在の礼拝",
+        siradakiEk: "、次の礼拝"
     )
 
     // ÇEVİRİ: gu
