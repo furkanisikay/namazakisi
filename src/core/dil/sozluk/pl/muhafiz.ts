@@ -1,61 +1,71 @@
-// ÇEVİRİ: pl — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * İbadete çağrı kaydı: zamirsiz 2. tekil kısa emir ("Odprawiaj modlitwę", MZR 17:78), "!" yok.
+ * "Secdeye kapan" karşılığı ("padnij na twarz") YAZILMAZ → "stań do modlitwy" (namaza durmak).
+ * Başlıkta süre "{dk} min" ve sayı önce: "Maghrib · 655 min" bilekliğin ilk 16 karakterine yakın;
+ * "minęło/zostało" sayıdan SONRA.
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} min od początku · czas modlitwy ⏰',
+    giris2: '{ad} · {dk} min od początku · nie odkładaj modlitwy ⚠️',
+    giris3: '{ad} · {dk} min od początku · modlitwa czeka 🔥',
+    giris4: '{ad} · {dk} min od początku · STAŃ DO MODLITWY 🚨',
+    erken3: '{ad} · {dk} min zostało · modlitwa czeka 🔥',
+    erken4: '{ad} · {dk} min zostało · STAŃ DO MODLITWY 🚨',
+    cikis1: '{ad} · {dk} min zostało ⏰',
+    cikis2: '{ad} · {dk} min · czasu coraz mniej ⚠️',
+    cikis3: '{ad} · {dk} min · czas ucieka 🔥',
+    cikis4: '{ad} · {dk} min · CZAS SIĘ KOŃCZY 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Nadszedł czas modlitwy; odprawiaj ją, póki masz okazję.', 'Odprawiaj modlitwę, póki czas jest po Twojej stronie; nie zostawiaj jej na później.'],
+    s2: ['Im dłużej odkładasz, tym trudniej; nie zostawiaj modlitwy na koniec.', 'Czas płynie — odprawiaj modlitwę teraz.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Im dłużej zwlekasz, tym bliżej do jej opuszczenia; odprawiaj modlitwę teraz.',
+      'Nie mów „pomodlę się później”; możesz odprawić modlitwę teraz.',
+      'Wstań teraz, zamiast za kilka minut mówić „gdybym tylko”.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Nie odkładaj już modlitwy — stań do modlitwy teraz.', 'Odłóż to, co robisz, i stań do modlitwy.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Czasu zaczyna brakować; odprawiaj modlitwę, póki masz okazję.',
+    s2: 'Nie zostawiaj modlitwy na koniec; teraz jest dobry moment na modlitwę.',
+    s3: 'Czas prawie minął; wciąż możesz teraz odprawić modlitwę.',
+    s4: 'Jeśli modlitwa jest odprawiona, dotknij „Odprawiono”; jeśli nie, stań do modlitwy teraz.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", few: "It's been {n} minutes since prayer time began.", many: "It's been {n} minutes since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', few: '{n} minutes left until the prayer time ends.', many: '{n} minutes left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'NIE ODKŁADAJ MODLITWY. Stań do modlitwy teraz. (minęło {dk} min)',
+    giris2: 'Czas płynie; nie zostawiaj modlitwy na koniec. (minęło {dk} min)',
+    giris1: cogul({
+      one: 'Od początku czasu modlitwy minęła {n} minuta.',
+      few: 'Od początku czasu modlitwy minęły {n} minuty.',
+      many: 'Od początku czasu modlitwy minęło {n} minut.',
+      other: 'Od początku czasu modlitwy minęło {n} minuty.',
+    }),
+    erken4: 'Nie odkładaj modlitwy; stań do modlitwy teraz. (zostało {dk} min)',
+    cikis4: 'CZAS SIĘ KOŃCZY. Stań do modlitwy teraz. (zostało {dk} min)',
+    cikis2: 'Czasu coraz mniej; nie zostawiaj modlitwy na koniec. (zostało {dk} min)',
+    cikis1: cogul({
+      one: 'Do końca czasu modlitwy została {n} minuta.',
+      few: 'Do końca czasu modlitwy zostały {n} minuty.',
+      many: 'Do końca czasu modlitwy zostało {n} minut.',
+      other: 'Do końca czasu modlitwy zostało {n} minuty.',
+    }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · odpraw przed snem ⏰',
+    govde: 'Cisza nocna zaczyna się za {dk} min; odpraw Isza, zanim pójdziesz spać.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Czasu zaczyna brakować; odprawiaj modlitwę, póki masz okazję.',
+    sonaBirakma: 'Nie zostawiaj modlitwy na koniec; teraz jest dobry moment na modlitwę.',
+    fisilti: 'Nie mów „pomodlę się później”; czas prawie minął, możesz odprawić modlitwę teraz.',
+    omur: 'Czas mija; wciąż możesz odprawić tę modlitwę w jej czasie.',
+    keske: 'Wstań teraz, zamiast za kilka minut mówić „gdybym tylko”.',
+    namazaDur: 'Jeśli modlitwa jest odprawiona, dotknij „Odprawiono”; jeśli nie, stań do modlitwy teraz.',
+    sonDakika: 'Ostatnie minuty. Odłóż to, co robisz, i stań do modlitwy.',
   },
 };

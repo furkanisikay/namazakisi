@@ -2587,30 +2587,32 @@ object TvDiliSd : TvDili {
     override val iftaraKalan = "Time left until iftar"
 }
 
-// ÇEVİRİ: pl
+// pl
 // CLDR pl: one = 1; few = …2–4 (…12–14 hariç); many = gerisi (0, 5–21, 25…) — JS `cogul.ts > lehce`; tarihte ay ilgi hâlinde.
-// `aylar` yalnız tarihte kullanılır → tarih içi biçim (ilgi hâli, "2 listopada").
+// `aylar` yalnız tarihte kullanılır → tarih içi biçim (ilgi hâli, "2 listopada"). Terimler JS `sozluk/pl`.
 object TvDiliPl : TvDili {
     override val kod = "pl"
     override fun vakitAdi(vakit: Vakit) = when (vakit) {
-        Vakit.IMSAK -> "Fajr"
-        Vakit.GUNES -> "Sunrise"
-        Vakit.OGLE -> "Dhuhr"
+        Vakit.IMSAK -> "Fadżr"
+        Vakit.GUNES -> "Wschód słońca"
+        Vakit.OGLE -> "Zuhr"
         Vakit.IKINDI -> "Asr"
         Vakit.AKSAM -> "Maghrib"
-        Vakit.YATSI -> "Isha"
+        Vakit.YATSI -> "Isza"
     }
-    override val cuma = "Jumu'ah"
+    override val cuma = "Dżumu’a"
+
+    /** Tarih içinde (ilgi hâli, "2 listopada"); tek başına ay adı kullanılmaz. */
     override val aylar = listOf(
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December",
+        "stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca",
+        "lipca", "sierpnia", "września", "października", "listopada", "grudnia",
     )
-    override val gunler = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+    override val gunler = listOf("Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela")
     override fun tarih(gun: Int, ay: String, yil: Int, gunAdi: String) = "$gunAdi, $gun $ay $yil"
 
-    override val birimSa = "h"
+    override val birimSa = "godz."
     override val birimDk = "min"
-    override val birimSn = "s"
+    override val birimSn = "sek."
     override val birimAyirici = " "
     override val parcaAyirici = " "
     /** CLDR pl (JS `cogul.ts > lehce`; tam sayı). */
@@ -2622,37 +2624,37 @@ object TvDiliPl : TvDili {
     }
 
     override fun saatSesli(n: Int) = when (cogulKategorisi(n)) {
-        "one" -> "$n hour"
-        "few" -> "$n hours"
-        "many" -> "$n hours"
-        else -> "$n hours"
+        "one" -> "$n godzina"
+        "few" -> "$n godziny"
+        "many" -> "$n godzin"
+        else -> "$n godziny"
     }
     override fun dakikaSesli(n: Int) = when (cogulKategorisi(n)) {
-        "one" -> "$n minute"
-        "few" -> "$n minutes"
-        "many" -> "$n minutes"
-        else -> "$n minutes"
+        "one" -> "$n minuta"
+        "few" -> "$n minuty"
+        "many" -> "$n minut"
+        else -> "$n minuty"
     }
-    override val birDakikadanAz = "less than 1 minute"
+    override val birDakikadanAz = "mniej niż minuta"
 
     override fun kerahatAdi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Sunrise"
-        Kerahat.Tur.ISTIVA -> "Zenith"
-        Kerahat.Tur.GURUB -> "Sunset"
+        Kerahat.Tur.SURUK -> "Wschód słońca"
+        Kerahat.Tur.ISTIVA -> "Zenit"
+        Kerahat.Tur.GURUB -> "Zachód słońca"
     }
 
     override fun kerahatAciklamasi(tur: Kerahat.Tur) = when (tur) {
-        Kerahat.Tur.SURUK -> "Praying is makruh until the sun has risen well."
-        Kerahat.Tur.ISTIVA -> "Praying is makruh while the sun is at its zenith."
-        Kerahat.Tur.GURUB -> "Praying is makruh while the sun is setting."
+        Kerahat.Tur.SURUK -> "Modlitwa jest niezalecana, dopóki słońce wyraźnie nie wzejdzie."
+        Kerahat.Tur.ISTIVA -> "Modlitwa jest niezalecana, gdy słońce jest w zenicie."
+        Kerahat.Tur.GURUB -> "Modlitwa jest niezalecana, gdy słońce zachodzi."
     }
 
-    override fun bant(ad: String, dk: Long) = "Time for $ad is running short · $dk min"
-    override val kabulDuasi = "May Allah accept it"
-    override val iftarSelami = "Blessed iftar"
-    override val cumaSelami = "Jumu'ah Mubarak"
-    override val sahuraKalan = "Time left for suhoor"
-    override val iftaraKalan = "Time left until iftar"
+    override fun bant(ad: String, dk: Long) = "Czas modlitwy $ad się kończy · $dk min"
+    override val kabulDuasi = "Niech Allah przyjmie"
+    override val iftarSelami = "Błogosławionego iftaru"
+    override val cumaSelami = "Błogosławionego piątku"
+    override val sahuraKalan = "Do końca suhur"
+    override val iftaraKalan = "Do iftaru"
 }
 
 // ÇEVİRİ: ja

@@ -814,19 +814,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", next prayer"
     )
 
-    // ÇEVİRİ: pl
+    // pl
     static let pl = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Wybierz miasto",
+        ilMerkezi: "Czasy modlitw są obliczane dla centrum prowincji. Wybór możesz później zmienić.",
+        ilSecErisim: "{il}, wybierz",
+        kalan: "Pozostało do {ad}",
+        kalanErisim: "Pozostało do {ad}: {sure}",
+        konumuDegistirin: "Zmień lokalizację",
+        kerahatSuruyor: "Czas niezalecany: {tur}, koniec {bitis}. {aciklama}",
+        siradakiKerahat: "Następny czas niezalecany: {tur} {bas}–{bit}",
+        cumaBilgisi: "Dziś jest piątek. Modlitwa piątkowa jest odprawiana w czasie Zuhr (początek {giris}).",
+        suAnkiEk: ", bieżąca modlitwa",
+        siradakiEk: ", następna modlitwa"
     )
 
     // ÇEVİRİ: ja

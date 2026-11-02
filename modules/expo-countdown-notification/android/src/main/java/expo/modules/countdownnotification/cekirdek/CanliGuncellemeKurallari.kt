@@ -144,8 +144,8 @@ object CanliGuncellemeKurallari {
         "tt" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: sd
         "sd" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
-        // ÇEVİRİ: pl
-        "pl" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // pl
+        "pl" to KisaBirimler("godz.", "min", birimAyirici = " ", parcaAyirici = " "),
         // ÇEVİRİ: ja
         "ja" to KisaBirimler("h", "min", birimAyirici = "", parcaAyirici = ""),
         // ÇEVİRİ: gu

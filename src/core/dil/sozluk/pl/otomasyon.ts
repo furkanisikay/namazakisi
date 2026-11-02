@@ -1,10 +1,10 @@
-// ÇEVİRİ: pl — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
+/** Anahtar kelime başlıkta geçmeli ("Zuhr — nadszedł czas"); Türkçe değer ayrıca sabittir. */
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'nadszedł czas',
+  vakitGirdiBasligi: '{ad} — nadszedł czas',
+  herhangiVakit: 'Gdy nadchodzi czas dowolnej modlitwy',
+  yalnizVakit: 'Tylko gdy nadchodzi czas modlitwy {ad}',
+  camide: 'Gdy wykryto obecność w meczecie (przy włączonej funkcji „W meczecie”)',
 };

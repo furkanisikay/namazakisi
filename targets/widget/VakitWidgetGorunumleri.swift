@@ -1281,29 +1281,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: pl
+    // pl
     static let pl = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Czas modlitwy",
+        galeriAciklama: "Bieżący czas modlitwy, czas do jego końca i dzisiejsze czasy modlitw.",
+        veriEski: "Otwórz aplikację, aby zaktualizować czasy modlitw",
+        konumYok: "Otwórz aplikację, aby ustawić lokalizację",
+        kilindiSiradaki: "{ad} odprawiona · {sonraki} {saat}",
+        adCikis: "{ad} · koniec {saat}",
+        siradakiAdSaat: "Następna {ad} {saat}",
+        vaktiCikisErisim: "Czas modlitwy {ad}, koniec {saat}",
+        siradakiErisim: "Następna {ad}, {saat}",
+        cikisSaat: "Koniec {saat}",
+        bitisSaat: "Koniec {saat}",
+        kilindiBaslik: "{ad} odprawiona",
+        siradaki: "Następna",
+        siradakiAd: "Następna {ad}",
+        kildimErisim: "Modlitwa {ad} odprawiona",
+        gunSatiriKilindi: ", odprawiona",
+        bitti: "Zakończona",
+        vakitCikti: "Czas modlitwy minął",
+        kabulAlt: "{ad} odprawiona",
+        kontrolAdi: "Odprawiono",
+        kontrolAciklama: "Oznacza bieżącą modlitwę jako odprawioną."
     )
 
     // ÇEVİRİ: ja

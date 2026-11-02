@@ -1,15 +1,14 @@
-// ÇEVİRİ: pl — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Dalej',
+  vazgecin: 'Anuluj',
+  kapatin: 'Zamknij',
+  ayarlariAcin: 'Otwórz ustawienia',
+  simdilikGecin: 'Pomiń na razie',
+  tekrarDeneyin: 'Spróbuj ponownie',
+  evet: 'Tak',
+  hayir: 'Nie',
+  ayrintilariAcar: 'Otwiera szczegóły',
   marka: 'Namaz Akışı',
 };

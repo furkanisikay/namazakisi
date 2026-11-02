@@ -736,18 +736,18 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
     )
 
-    // ÇEVİRİ: pl
+    // pl (mealsiz: yalnız Arapça metin ve künye)
     static let pl = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
-        ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        galeriAdi: "Werset dnia",
+        galeriAciklama: "Werset Koranu po arabsku, zmieniany codziennie o Fadżr.",
+        etiket: "WERSET DNIA",
+        uygulamayiAcin: "Otwórz aplikację, aby zobaczyć werset dnia",
+        ornekSigmiyor: "Dzisiejszy werset nie mieści się w tym rozmiarze. Dotknij, aby go przeczytać.",
+        ornekAcin: "Otwórz",
+        ornekArapcaKaynagi: "Tekst arabski: Tanzil",
+        ornekMeal: "",
+        ornekKisaKunye: "Koran 94:6",
+        ornekMealKaynagi: ""
     )
 
     // ÇEVİRİ: ja
