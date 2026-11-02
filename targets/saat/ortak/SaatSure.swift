@@ -418,12 +418,12 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
-    // ÇEVİRİ: ku (one/other)
+    // ku (one/other; sayıdan sonra ad tekil: "2 saet")
     public static let ku = SaatSureMetinleri(
-        birimSa: "h", birimDk: "min", birimSn: "s",
-        saat: ["one": "{n} hour", "other": "{n} hours"],
-        dakika: ["one": "{n} minute", "other": "{n} minutes"],
-        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimSa: "st", birimDk: "d", birimSn: "sn",
+        saat: ["one": "{n} saet", "other": "{n} saet"],
+        dakika: ["one": "{n} deqîqe", "other": "{n} deqîqe"],
+        saniye: ["one": "{n} çirke", "other": "{n} çirke"],
         birimAyirici: " ", parcaAyirici: " "
     )
 

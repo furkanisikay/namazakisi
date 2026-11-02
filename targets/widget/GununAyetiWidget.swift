@@ -680,18 +680,19 @@ struct GununAyetiYerelMetinleri {
         ornekMealKaynagi: "Rowwad Translation Center, QuranEnc 1.0.2"
     )
 
-    // ÇEVİRİ: ku
+    // ku — Kurmancî için Latin meal yok (QuranEnc `kurmanji_ismail` Arap harfli Behdinî; sahip kararı: mealsiz)
+    // → `ornekMeal` ve `ornekMealKaynagi` boş (uydurma çeviri yok), yalnız Arapça.
     static let ku = GununAyetiYerelMetinleri(
-        galeriAdi: "Verse of the day",
-        galeriAciklama: "A verse and its translation that changes every day at Fajr.",
-        etiket: "VERSE OF THE DAY",
-        uygulamayiAcin: "Open the app to see the verse of the day",
-        ornekSigmiyor: "Today's verse doesn't fit this size. Tap to read it.",
-        ornekAcin: "Open",
-        ornekArapcaKaynagi: "Arabic: Tanzil",
-        ornekMeal: "Indeed, with hardship [will be] ease.",
+        galeriAdi: "Ayeta rojê",
+        galeriAciklama: "Ayetek bi nivîsa Erebî, her roj di dema Sibê de diguhere.",
+        etiket: "AYETA ROJÊ",
+        uygulamayiAcin: "Ji bo dîtina ayeta rojê sepanê vekin",
+        ornekSigmiyor: "Ayeta îro di vê mezinahiyê de cih nagire. Ji bo xwendinê bitikînin.",
+        ornekAcin: "Vekin",
+        ornekArapcaKaynagi: "Erebî: Tanzil",
+        ornekMeal: "",
         ornekKisaKunye: "Quran 94:6",
-        ornekMealKaynagi: "Noor International Center, QuranEnc 1.1.2"
+        ornekMealKaynagi: ""
     )
 
     // tk — QuranEnc türkmen terjimesi ýok: ornekMeal boş → diňe arapça tekst (ar emsali)

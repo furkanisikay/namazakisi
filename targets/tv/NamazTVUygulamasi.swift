@@ -754,19 +754,19 @@ struct TvArayuzMetinleri {
         siradakiEk: ", επόμενη προσευχή"
     )
 
-    // ÇEVİRİ: ku
+    // ku
     static let ku = TvArayuzMetinleri(
-        sehrinizSecin: "Select your city",
-        ilMerkezi: "Prayer times are calculated for the province center. You can change your choice later.",
-        ilSecErisim: "{il}, select",
-        kalan: "Time left until {ad}",
-        kalanErisim: "Time left until {ad}: {sure}",
-        konumuDegistirin: "Change location",
-        kerahatSuruyor: "Makruh time: {tur}, ends {bitis}. {aciklama}",
-        siradakiKerahat: "Next makruh time: {tur} {bas}–{bit}",
-        cumaBilgisi: "Today is Friday. Jumu'ah is prayed at Dhuhr time (begins {giris}).",
-        suAnkiEk: ", current prayer",
-        siradakiEk: ", next prayer"
+        sehrinizSecin: "Bajarê xwe hilbijêrin",
+        ilMerkezi: "Demên nimêjê ji bo navenda parêzgehê têne hesabkirin. Hûn dikarin hilbijartina xwe paşê biguherînin.",
+        ilSecErisim: "{il}, hilbijêrin",
+        kalan: "Dema mayî heta {ad}",
+        kalanErisim: "Dema mayî heta {ad}: {sure}",
+        konumuDegistirin: "Cih biguherînin",
+        kerahatSuruyor: "Dema mekrûh: {tur}, di {bitis} de diqede. {aciklama}",
+        siradakiKerahat: "Dema mekrûh a din: {tur} {bas}–{bit}",
+        cumaBilgisi: "Îro roja înê ye. Nimêja înê di dema Nîvro de tê kirin (di {giris} de dest pê dike).",
+        suAnkiEk: ", nimêja niha",
+        siradakiEk: ", nimêja din"
     )
 
     // tk

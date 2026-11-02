@@ -186,8 +186,8 @@ enum NamazAlarmCekirdegi {
         "sr": "Зауставите",
         // el
         "el": "Διακοπή",
-        // ÇEVİRİ: ku
-        "ku": "Stop",
+        // ku
+        "ku": "Rawestînin",
         // tk
         "tk": "Sakla",
         // tt

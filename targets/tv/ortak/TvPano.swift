@@ -729,18 +729,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: ku (`aylar` tarih içi biçimdir: izafet, "2ê mijdara")
+    // ku (`aylar` tarih içi biçimdir: izafet, "2ê mijdara")
     public static let ku = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        vakitAdlari: ["imsak": "Sibe", "gunes": "Rojhilat", "ogle": "Nîvro", "ikindi": "Esir", "aksam": "Êvar", "yatsi": "Eşa"],
+        cuma: "Înî",
+        aylar: ["rêbendana", "sibata", "adara", "nîsana", "gulana", "hezîrana", "tîrmeha", "tebaxa", "îlona", "cotmeha", "mijdara", "berfanbara"],
+        gunler: ["Duşem", "Sêşem", "Çarşem", "Pêncşem", "Înî", "Şemî", "Yekşem"],
+        tarih: "{gunAdi}, {gun}ê {ay} {yil}an",
+        kerahatAdlari: ["suruk": "Hilatina rojê", "istiva": "Nîvê rojê", "gurub": "Rojavabûn"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Heta ku roj baş hiltê nimêj mekrûh e.",
+            "istiva": "Dema roj li navenda ezmên be nimêj mekrûh e.",
+            "gurub": "Dema roj ava dibe nimêj mekrûh e.",
         ]
     )
 

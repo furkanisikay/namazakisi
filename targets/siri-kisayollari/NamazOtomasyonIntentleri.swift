@@ -453,11 +453,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Όχι, δεν έχει σημειωθεί ακόμη."
     )
 
-    // ÇEVİRİ: ku (one/other)
+    // ku (one/other)
     static let ku = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} piştî {n} deqîqeyê dest pê dike.", "other": "{ad} piştî {n} deqîqeyan dest pê dike."],
+        evetKilindi: "Erê, wekî kirî hatiye nîşankirin.",
+        hayirKilinmadi: "Na, hîn nehatiye nîşankirin."
     )
 
     // tk (one/other; san bilen at ýeke sanda)

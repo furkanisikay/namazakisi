@@ -1548,31 +1548,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Άνοιγμα εφαρμογής"
     )
 
-    // ÇEVİRİ: ku
+    // ku
     public static let ku = VakitMetinleri(
         dil: "ku",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Sibe", "ogle": "Nîvro", "ikindi": "Esir", "aksam": "Êvar", "yatsi": "Eşa"],
+        gunes: "Rojhilat",
+        konumYok: "Sepanê vekin û cihê xwe saz bikin da ku demên nimêjê bên hesabkirin.",
+        veriEski: "Demên nimêjê kevn in. Ji bo nûkirinê sepanê carekê vekin.",
+        girisBugun: "di {saat} de",
+        girisYarin: "sibê di {saat} de",
+        suAnVakti: "Niha dema {ad} ye.",
+        suAnVaktiCikis: "Niha dema {ad} ye; di {saat} de diqede.",
+        siradakiNamaz: "Nimêja din {ad} e, {giris}.",
+        isaretlendi: "{ad} wekî kirî hate nîşankirin. {dua}.",
+        zatenKilindi: "{ad} berê wekî kirî hatiye nîşankirin.",
+        vakitYok: "Niha nimêjeke ku bê nîşankirin tune.",
+        vakitYokSiradaki: "Niha nimêjeke ku bê nîşankirin tune. Ya din {ad} e, {giris}.",
+        onay: "{ad} wekî kirî were nîşankirin?",
+        vakitDegisti: "Dema nimêjê guherî, ji ber vê tiştek nehate nîşankirin. Dîsa biceribînin.",
+        kabulDuasi: "Xwedê qebûl bike",
+        kildim: "Min nimêj kir",
+        kilindi: "Hat kirin",
+        kontrolKildim: "{ad} · Min nimêj kir",
+        kontrolKilindi: "{ad} hat kirin",
+        kontrolVakitYok: "Nimêjeke ji bo nîşankirinê tune",
+        uygulamayiAcin: "Sepanê vekin"
     )
 
     // tk — Türkmen dili (beta); terminler src/core/dil/sozluk/tk (Okadym / Okaldy, hitap "siz")

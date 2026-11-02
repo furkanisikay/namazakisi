@@ -1181,29 +1181,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Σημειώνει την τρέχουσα προσευχή ως τελεσμένη."
     )
 
-    // ÇEVİRİ: ku
+    // ku
     static let ku = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Dema nimêjê",
+        galeriAciklama: "Dema nimêjê ya niha, dema mayî heta ku biqede û demên nimêjê yên îro.",
+        veriEski: "Ji bo nûkirina demên nimêjê sepanê vekin",
+        konumYok: "Ji bo sazkirina cihê xwe sepanê vekin",
+        kilindiSiradaki: "{ad} hat kirin · {sonraki} {saat}",
+        adCikis: "{ad} · diqede {saat}",
+        siradakiAdSaat: "Ya din {ad} {saat}",
+        vaktiCikisErisim: "Dema {ad}, diqede {saat}",
+        siradakiErisim: "Ya din {ad}, {saat}",
+        cikisSaat: "Diqede {saat}",
+        bitisSaat: "Diqede {saat}",
+        kilindiBaslik: "{ad} hat kirin",
+        siradaki: "Ya din",
+        siradakiAd: "Ya din {ad}",
+        kildimErisim: "Min nimêja {ad} kir",
+        gunSatiriKilindi: ", hat kirin",
+        bitti: "Qediya",
+        vakitCikti: "Dema nimêjê qediya",
+        kabulAlt: "{ad} hat kirin",
+        kontrolAdi: "Min nimêj kir",
+        kontrolAciklama: "Nimêja niha wekî kirî nîşan dike."
     )
 
     // tk — Türkmen dili (beta); terminler src/core/dil/sozluk/tk
