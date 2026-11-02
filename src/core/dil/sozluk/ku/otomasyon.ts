@@ -1,10 +1,9 @@
-// ÇEVİRİ: ku — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const otomasyon: Sozluk['otomasyon'] = {
-  vakitGirdiEki: 'time has begun',
-  vakitGirdiBasligi: '{ad} time has begun',
-  herhangiVakit: 'When any prayer time begins',
-  yalnizVakit: 'Only when {ad} time begins',
-  camide: "When you're detected at a mosque (with At the mosque on)",
+  vakitGirdiEki: 'dema nimêjê hat',
+  vakitGirdiBasligi: '{ad}: dema nimêjê hat',
+  herhangiVakit: 'Gava dema her nimêjekê were',
+  yalnizVakit: 'Tenê gava dema {ad} were',
+  camide: 'Gava ku hûn li mizgeftê bên naskirin (dema Li mizgeftê vekirî be)',
 };

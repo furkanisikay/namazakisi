@@ -1,12 +1,11 @@
-// ÇEVİRİ: ku — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 export const sure: Sozluk['sure'] = {
-  kisa: { sa: 'h', dk: 'min', sn: 's' },
+  kisa: { sa: 'st', dk: 'd', sn: 'sn' },
   birimli: '{n} {birim}',
   parcali: '{once} {sonra}',
-  saat: cogul({ one: '{n} hour', other: '{n} hours' }),
-  dakika: cogul({ one: '{n} minute', other: '{n} minutes' }),
-  saniye: cogul({ one: '{n} second', other: '{n} seconds' }),
+  saat: cogul({ one: '{n} saet', other: '{n} saet' }),
+  dakika: cogul({ one: '{n} deqîqe', other: '{n} deqîqe' }),
+  saniye: cogul({ one: '{n} çirke', other: '{n} çirke' }),
 };

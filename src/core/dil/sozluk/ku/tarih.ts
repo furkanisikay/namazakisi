@@ -1,14 +1,13 @@
-// ÇEVİRİ: ku — İngilizce iskelet, çevrilince bu satır silinir
 // `aylar` tarih içi izafet hâli (CLDR "2ê mijdara 2026an"), `aylarYalin` takvim başlığı yalın ("Mijdar 2026").
 import type { Sozluk } from '../tr';
 
 export const tarih: Sozluk['tarih'] = {
-  gunler: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  gunlerKisa: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  aylar: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarYalin: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  aylarKisa: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  haftaHarfleri: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-  uzun: '{gun} {ay} {yil}',
+  gunler: ['Yekşem', 'Duşem', 'Sêşem', 'Çarşem', 'Pêncşem', 'Înî', 'Şemî'],
+  gunlerKisa: ['Yşm', 'Dşm', 'Sşm', 'Çşm', 'Pşm', 'Înî', 'Şem'],
+  aylar: ['rêbendana', 'sibata', 'adara', 'nîsana', 'gulana', 'hezîrana', 'tîrmeha', 'tebaxa', 'îlona', 'cotmeha', 'mijdara', 'berfanbara'],
+  aylarYalin: ['Rêbendan', 'Sibat', 'Adar', 'Nîsan', 'Gulan', 'Hezîran', 'Tîrmeh', 'Tebax', 'Îlon', 'Cotmeh', 'Mijdar', 'Berfanbar'],
+  aylarKisa: ['rbn', 'sbt', 'adr', 'nsn', 'gln', 'hzr', 'trm', 'tbx', 'îln', 'cot', 'mjd', 'brf'],
+  haftaHarfleri: ['Dş', 'Sş', 'Çş', 'Pş', 'În', 'Şm', 'Yş'],
+  uzun: '{gun}ê {ay} {yil}an',
   gunAdiYil: '{gunAdi}, {yil}',
 };

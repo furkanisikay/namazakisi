@@ -1,15 +1,14 @@
-// ÇEVİRİ: ku — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const ortak: Sozluk['ortak'] = {
-  devamEdin: 'Continue',
-  vazgecin: 'Cancel',
-  kapatin: 'Close',
-  ayarlariAcin: 'Open settings',
-  simdilikGecin: 'Skip for now',
-  tekrarDeneyin: 'Try again',
-  evet: 'Yes',
-  hayir: 'No',
-  ayrintilariAcar: 'Opens details',
+  devamEdin: 'Bidomînin',
+  vazgecin: 'Betal bikin',
+  kapatin: 'Bigirin',
+  ayarlariAcin: 'Mîhengan vekin',
+  simdilikGecin: 'Niha derbas bikin',
+  tekrarDeneyin: 'Dîsa biceribînin',
+  evet: 'Erê',
+  hayir: 'Na',
+  ayrintilariAcar: 'Hûrguliyan vedike',
   marka: 'Namaz Akışı',
 };

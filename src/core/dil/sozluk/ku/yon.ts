@@ -1,10 +1,9 @@
-// ÇEVİRİ: ku — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 export const yon: Sozluk['yon'] = {
-  baslik: 'Text direction will change',
-  aciklama: 'The language you chose is written in a different direction. The app needs to restart for the screens to switch to it.',
-  simdiBaslat: 'Restart now',
-  sonra: 'Later',
-  bekliyor: 'The text direction will change when the app restarts.',
+  baslik: 'Rêya nivîsê dê biguhere',
+  aciklama: 'Zimanê ku we hilbijart bi rêyeke din tê nivîsîn. Ji bo ku dîmen derbasî wê bibin, divê sepan ji nû ve dest pê bike.',
+  simdiBaslat: 'Niha ji nû ve dest pê bikin',
+  sonra: 'Paşê',
+  bekliyor: 'Gava sepan ji nû ve dest pê bike, rêya nivîsê dê biguhere.',
 };
