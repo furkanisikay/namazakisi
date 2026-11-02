@@ -1,35 +1,34 @@
-// ÇEVİRİ: tk — İngilizce iskelet, çevrilince bu satır silinir
 import type { Sozluk } from '../tr';
 
 /**
- * İngilizce konuşan Müslümanların yerleşik kalıpları (çeviri değil). Kandil ve hicrî yılbaşı
- * selamı yalnız Türkiye geleneğinde söylenir (`selam.ts > GELENEK_SELAMI_DILLERI`); buradaki
- * karşılıklar tip bütünlüğü içindir.
+ * Türkmen musulmanlarynyň namazdan soň we baýramlarda aýdýan adaty sözleri (terjime däl):
+ * "Alla kabul etsin", "Kabul bolsun", "Namazyňyz kabul bolsun"; baýramda "… gutly bolsun".
+ * Öwgi, "!" we okalmadyk namaza höküm ýok. Ýerli okyjy barlamaly (çeşme bilen tassyklanmady).
  */
 export const samimiyet: Sozluk['samimiyet'] = {
-  kurulumBittiSelami: 'May it be blessed.',
-  kabulDualari: ['May Allah accept it', 'May it be accepted', 'May Allah accept it', 'May our Lord accept it'],
-  kabulDuasi: 'May Allah accept it',
-  ekSabah: 'Have a blessed morning',
-  ekYatsi: 'Have a blessed night',
-  tamGunAna: 'May Allah accept it',
-  tamGunAlt: 'You completed all five prayers today.',
-  kazaKabul: 'One {vakit} qada was deducted from your log. {dua}.',
+  kurulumBittiSelami: 'Haýyrly bolsun.',
+  kabulDualari: ['Alla kabul etsin', 'Kabul bolsun', 'Alla kabul etsin', 'Namazyňyz kabul bolsun'],
+  kabulDuasi: 'Alla kabul etsin',
+  ekSabah: 'Ertiriňiz haýyrly bolsun',
+  ekYatsi: 'Gijäňiz rahat bolsun',
+  tamGunAna: 'Alla kabul etsin',
+  tamGunAlt: 'Şu gün bäş wagt namazy tamamladyňyz.',
+  kazaKabul: 'Depderiňizden bir {vakit} kazasy aýryldy. {dua}.',
   kandilGeceleri: {
-    regaib: 'Blessed night of Raghaib',
-    mirac: "Blessed Isra and Mi'raj",
-    berat: "Blessed night of Bara'ah",
-    mevlid: 'Blessed Mawlid',
+    regaib: 'Regaýyp gijäňiz mübärek bolsun',
+    mirac: 'Miraj gijäňiz mübärek bolsun',
+    berat: 'Berat gijäňiz mübärek bolsun',
+    mevlid: 'Mewlit gijäňiz mübärek bolsun',
   },
   selamlar: {
-    sahur: 'Blessed suhoor',
-    bayram: 'Eid Mubarak',
-    iftar: 'Blessed iftar',
-    kadir: 'Blessed Laylat al-Qadr',
-    arefe: 'Blessed eve of Eid',
-    hicriYilbasi: 'Blessed Islamic New Year',
-    cuma: "Jumu'ah Mubarak",
-    ramazan: 'Ramadan Mubarak',
-    sabah: 'Have a blessed morning',
+    sahur: 'Selälligiňiz haýyrly bolsun',
+    bayram: 'Baýramyňyz gutly bolsun',
+    iftar: 'Agzyaçaryňyz haýyrly bolsun',
+    kadir: 'Gadyr gijäňiz mübärek bolsun',
+    arefe: 'Arapa güniňiz mübärek bolsun',
+    hicriYilbasi: 'Hijri täze ýylyňyz mübärek bolsun',
+    cuma: 'Juma güniňiz mübärek bolsun',
+    ramazan: 'Oraza aýyňyz mübärek bolsun',
+    sabah: 'Ertiriňiz haýyrly bolsun',
   },
 };

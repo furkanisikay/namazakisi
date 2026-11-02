@@ -1,40 +1,53 @@
-// ÇEVİRİ: tk — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
+/**
+ * Nafile namazlaryň atlary arap sözünden türkmen ýazuwyna geçirildi (çeşme bilen tassyklanmady): Duha, Ewwabin, Tehejjüd.
+ * Wagt orun tutujysyna (`{son}`, `{saat}`) goşulma ýelmenmeýär: çekim sana görä üýtgeýär ("5:30-da", "5:20-de"),
+ * şonuň üçin "sagat {son} bolanda", "{son} bolýança" kalyby.
+ */
 export const nafile: Sozluk['nafile'] = {
-  adlar: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
-  kucuk: { kusluk: 'Duha', evvabin: 'Awwabin', teheccud: 'Tahajjud' },
+  adlar: { kusluk: 'Duha', evvabin: 'Ewwabin', teheccud: 'Tehejjüd' },
+  kucuk: { kusluk: 'duha', evvabin: 'ewwabin', teheccud: 'tehejjüd' },
   aciklamalar: {
     kusluk:
-      'Starts about 45 minutes after sunrise and lasts until 10 minutes before Dhuhr. Ishraq is its earliest time; the most virtuous is after the first quarter of the day has passed.',
-    evvabin: 'Prayed after Maghrib, until Isha time.',
-    teheccud: 'Prayed after sleeping and waking following Isha, until Fajr time. Its most virtuous time is the last third of the night.',
+      'Gün dogandan takmynan 45 minut soň başlaýar we öýle wagtynyň girmegine 10 minut galýança dowam edýär. Işrak onuň iň irki wagtydyr; iň fazyletlisi günüň ilkinji çärýeginden soňdur.',
+    evvabin: 'Agşamdan soň, ýassy wagty girýänçä okalýar.',
+    teheccud: 'Ýassydan soň ýatyp turandan soň, ertir wagty girýänçä okalýar. Iň fazyletli wagty gijäniň soňky üçden biridir.',
   },
-  bilgiBugun: '{aciklama}\n\nToday: {bas} – {son}',
-  enFaziletli: ' · most virtuous after {saat}',
-  sonUcteBir: ' · last third {saat}',
-  durumAktif: 'Time has begun · ends {saat}',
-  durumNafile: 'Nafl · {bas}–{son}',
+  bilgiBugun: '{aciklama}\n\nŞu gün: {bas} – {son}',
+  enFaziletli: ' · iň fazyletlisi {saat} bolandan soň',
+  sonUcteBir: ' · soňky üçden bir {saat}',
+  durumAktif: 'Wagt girdi · gutarýan wagty {saat}',
+  durumNafile: 'Nafile · {bas}–{son}',
   bildirim: {
-    kuslukBaslik: 'Duha time',
-    kuslukSuruyor: 'Duha time is on; you can pray until {son}.',
-    kuslukGirdi: 'Duha time has begun. A good moment for two rakats; it lasts until {son}.',
+    kuslukBaslik: 'Duha wagty',
+    kuslukSuruyor: 'Duha wagty dowam edýär; sagat {son} bolýança okap bilersiň.',
+    kuslukGirdi: 'Duha wagty girdi. Iki rekagat üçin gowy pursat; sagat {son} bolýança dowam edýär.',
     kuslukBitiyor: cogul({
-      one: '{n} minute left in Duha time. A good moment for two rakats; it lasts until {son}.',
-      other: '{n} minutes left in Duha time. A good moment for two rakats; it lasts until {son}.',
+      one: 'Duha wagtynyň gutarmagyna {n} minut galdy. Iki rekagat üçin gowy pursat; sagat {son} bolýança dowam edýär.',
+      other: 'Duha wagtynyň gutarmagyna {n} minut galdy. Iki rekagat üçin gowy pursat; sagat {son} bolýança dowam edýär.',
     }),
-    evvabinBaslik: 'Awwabin',
-    evvabinSuruyor: 'There is still time for Awwabin. Isha begins at {son}.',
-    evvabinGirdi: 'After Maghrib, a good moment for Awwabin. Isha begins at {son}.',
-    evvabinKalan: cogul({ one: '{n} minute left for Awwabin. Isha begins at {son}.', other: '{n} minutes left for Awwabin. Isha begins at {son}.' }),
-    teheccudBaslik: 'Tahajjud time',
-    uyandirSonUcte: 'Get up; the last third of the night has begun. Fajr begins at {son}.',
-    uyandirKalan: cogul({ one: 'Get up; {n} minute left until Fajr. Fajr begins at {son}.', other: 'Get up; {n} minutes left until Fajr. Fajr begins at {son}.' }),
-    sonUcteBaslik: 'The last third of the night',
-    sonUcteGovde: 'The most blessed hours for Tahajjud. Fajr begins at {son}.',
-    teheccudKalan: cogul({ one: '{n} minute left until Fajr. A good time for Tahajjud.', other: '{n} minutes left until Fajr. A good time for Tahajjud.' }),
+    evvabinBaslik: 'Ewwabin',
+    evvabinSuruyor: 'Ewwabin üçin entek wagt bar. Ýassy sagat {son} bolanda girýär.',
+    evvabinGirdi: 'Agşamdan soň Ewwabin üçin gowy pursat. Ýassy sagat {son} bolanda girýär.',
+    evvabinKalan: cogul({
+      one: 'Ewwabin üçin {n} minut galdy. Ýassy sagat {son} bolanda girýär.',
+      other: 'Ewwabin üçin {n} minut galdy. Ýassy sagat {son} bolanda girýär.',
+    }),
+    teheccudBaslik: 'Tehejjüd wagty',
+    uyandirSonUcte: 'Tur; gijäniň soňky üçden biri başlandy. Ertir namazy sagat {son} bolanda girýär.',
+    uyandirKalan: cogul({
+      one: 'Tur; ertir namazyna {n} minut galdy. Ertir namazy sagat {son} bolanda girýär.',
+      other: 'Tur; ertir namazyna {n} minut galdy. Ertir namazy sagat {son} bolanda girýär.',
+    }),
+    sonUcteBaslik: 'Gijäniň soňky üçden biri',
+    sonUcteGovde: 'Tehejjüd üçin iň bereketli sagatlar. Ertir namazy sagat {son} bolanda girýär.',
+    teheccudKalan: cogul({
+      one: 'Ertir namazyna {n} minut galdy. Tehejjüd üçin gowy wagt.',
+      other: 'Ertir namazyna {n} minut galdy. Tehejjüd üçin gowy wagt.',
+    }),
   },
-  uyandirmaKanali: 'Tahajjud wake-up',
-  uyandirmaKanaliAciklama: 'Wakes you for the night prayer; rings even in silent mode',
+  uyandirmaKanali: 'Tehejjüd oýarmasy',
+  uyandirmaKanaliAciklama: 'Gijeki namaz üçin oýarýar; sessiz tertipde-de jyňňyrdaýar',
 };

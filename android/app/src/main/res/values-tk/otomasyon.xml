@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ÇEVİRİ: tk — İngilizce iskelet, çevrilince bu satır silinir -->
-<!-- Tasker / MacroDroid / Automate eklentisi (İngilizce). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
+<!-- Tasker / MacroDroid / Automate eklentisi (Türkmence). Eklenti etiketleri host uygulamada CİHAZ dilinde çözülür. -->
 <resources>
-  <string name="otomasyon_eylem_etiket">Namaz Akışı: I\'ve prayed</string>
-  <string name="otomasyon_kosul_etiket">Namaz Akışı: Prayer time status</string>
-  <string name="otomasyon_olay_etiket">Namaz Akışı: Prayer time event</string>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Okadym</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Namaz wagty ýagdaýy</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Namaz wagty wakasy</string>
 
   <!-- Eklenti düzenleme pencereleri (otomasyon/OtomasyonDuzenleActivity) — kibar "siz". -->
-  <string name="otomasyon_bilgi_baslik">This setting is added from an automation app</string>
-  <string name="otomasyon_bilgi_tarayici">Browsers can\'t get permanent permission. Add it from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_bilgi_eklenti">Add it by choosing \"Namaz Akışı\" from the plugin list of an app such as Tasker, MacroDroid or Automate.</string>
-  <string name="otomasyon_engelli_baslik">%1$s is blocked</string>
-  <string name="otomasyon_engelli_mesaj">You blocked this app from marking your prayers before. You can allow it in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_baslik">Use with %1$s?</string>
-  <string name="otomasyon_izin_kosul">%1$s can learn when a prayer time begins, when it\'s ending and when you\'re at a mosque, and run your automations. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_kildim">%1$s can mark the current prayer as prayed with the automation you set up. You can change your decision in Namaz Akışı under Settings &gt; \"Apps that can mark I\'ve prayed\".</string>
-  <string name="otomasyon_izin_ver">Allow</string>
-  <string name="otomasyon_engelle">Block</string>
-  <string name="otomasyon_vazgec">Cancel</string>
-  <string name="otomasyon_tamam">OK</string>
-  <string name="otomasyon_tur_baslik">When should it run?</string>
-  <string name="otomasyon_ileri">Next</string>
-  <string name="otomasyon_vakit_baslik">Which prayer?</string>
-  <string name="otomasyon_herhangi_vakit">Any prayer time</string>
-  <string name="otomasyon_kaydet">Save</string>
-  <string name="otomasyon_kosul_icinde">While it\'s a prayer time</string>
-  <string name="otomasyon_kosul_cikiyor">While a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_kosul_camide">While at a mosque</string>
-  <string name="otomasyon_olay_girdi">When a prayer time begins</string>
-  <string name="otomasyon_olay_cikiyor">When a prayer time is ending (%1$d min left, Prayer Guardian on)</string>
-  <string name="otomasyon_olay_camide">When you\'re detected at a mosque</string>
+  <string name="otomasyon_bilgi_baslik">Bu sazlama awtomatlaşdyrma programmasyndan goşulýar</string>
+  <string name="otomasyon_bilgi_tarayici">Brauzerler hemişelik rugsat alyp bilmeýär. Ony Tasker, MacroDroid ýa-da Automate ýaly programmanyň goşmaçalar sanawyndan goşuň.</string>
+  <string name="otomasyon_bilgi_eklenti">Tasker, MacroDroid ýa-da Automate ýaly programmanyň goşmaçalar sanawyndan “Namaz Akışı” saýlap goşuň.</string>
+  <string name="otomasyon_engelli_baslik">%1$s bökdeldi</string>
+  <string name="otomasyon_engelli_mesaj">Bu programmanyň namazlaryňyzy bellemegini öň bökdäpdiňiz. Oňa Namaz Akışı-da Sazlamalar &gt; “Okadym belleýän programmalar” bölüminde rugsat berip bilersiňiz.</string>
+  <string name="otomasyon_izin_baslik">%1$s bilen ulanylsynmy?</string>
+  <string name="otomasyon_izin_kosul">%1$s namaz wagtynyň haçan girýändigini, haçan çykýandygyny we haçan metjitdedigiňizi bilip, awtomatlaşdyrmalaryňyzy işledip biler. Kararyňyzy Namaz Akışı-da Sazlamalar &gt; “Okadym belleýän programmalar” bölüminde üýtgedip bilersiňiz.</string>
+  <string name="otomasyon_izin_kildim">%1$s sazlan awtomatlaşdyrmaňyz bilen häzirki namazy okaldy diýip belläp biler. Kararyňyzy Namaz Akışı-da Sazlamalar &gt; “Okadym belleýän programmalar” bölüminde üýtgedip bilersiňiz.</string>
+  <string name="otomasyon_izin_ver">Rugsat beriň</string>
+  <string name="otomasyon_engelle">Bökdäň</string>
+  <string name="otomasyon_vazgec">Ýatyryň</string>
+  <string name="otomasyon_tamam">Bolýar</string>
+  <string name="otomasyon_tur_baslik">Haçan işlesin?</string>
+  <string name="otomasyon_ileri">Indiki</string>
+  <string name="otomasyon_vakit_baslik">Haýsy namaz?</string>
+  <string name="otomasyon_herhangi_vakit">Islendik namaz wagty</string>
+  <string name="otomasyon_kaydet">Ýatda saklaň</string>
+  <string name="otomasyon_kosul_icinde">Namaz wagty dowam edýärkä</string>
+  <string name="otomasyon_kosul_cikiyor">Namaz wagty çykmakçy bolanda (%1$d min galanda, Namaz goragçysy açyk)</string>
+  <string name="otomasyon_kosul_camide">Metjitde bolanda</string>
+  <string name="otomasyon_olay_girdi">Namaz wagty girende</string>
+  <string name="otomasyon_olay_cikiyor">Namaz wagty çykmakçy bolanda (%1$d min galanda, Namaz goragçysy açyk)</string>
+  <string name="otomasyon_olay_camide">Metjitdedigiňiz anyklananda</string>
 </resources>

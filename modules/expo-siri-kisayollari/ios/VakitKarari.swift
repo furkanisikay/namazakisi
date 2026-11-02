@@ -1575,31 +1575,31 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Open the app"
     )
 
-    // ÇEVİRİ: tk
+    // tk — Türkmen dili (beta); terminler src/core/dil/sozluk/tk (Okadym / Okaldy, hitap "siz")
     public static let tk = VakitMetinleri(
         dil: "tk",
-        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        gunes: "Sunrise",
-        konumYok: "Open the app and set your location so prayer times can be calculated.",
-        veriEski: "Prayer times are out of date. Open the app once to update them.",
-        girisBugun: "at {saat}",
-        girisYarin: "tomorrow at {saat}",
-        suAnVakti: "It's {ad} time now.",
-        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
-        siradakiNamaz: "The next prayer is {ad} {giris}.",
-        isaretlendi: "{ad} is marked as prayed. {dua}.",
-        zatenKilindi: "{ad} is already marked as prayed.",
-        vakitYok: "There is no prayer to mark right now.",
-        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
-        onay: "Mark {ad} as prayed?",
-        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
-        kabulDuasi: "May Allah accept it",
-        kildim: "I've prayed",
-        kilindi: "Prayed",
-        kontrolKildim: "{ad} · I've prayed",
-        kontrolKilindi: "{ad} prayed",
-        kontrolVakitYok: "No prayer to mark",
-        uygulamayiAcin: "Open the app"
+        adlar: ["sabah": "Ertir", "ogle": "Öýle", "ikindi": "Ikindi", "aksam": "Agşam", "yatsi": "Ýassy"],
+        gunes: "Gün dogşy",
+        konumYok: "Namaz wagtlarynyň hasaplanmagy üçin programmany açyp, ýerleşişiňizi kesgitläň.",
+        veriEski: "Namaz wagtlary könelipdir. Täzelemek üçin programmany bir gezek açyň.",
+        girisBugun: "sagat {saat} bolanda",
+        girisYarin: "ertir sagat {saat} bolanda",
+        suAnVakti: "Häzir {ad} wagty.",
+        suAnVaktiCikis: "Häzir {ad} wagty; sagat {saat} bolanda gutarýar.",
+        siradakiNamaz: "Indiki namaz {ad}, {giris}.",
+        isaretlendi: "{ad} okaldy diýip bellendi. {dua}.",
+        zatenKilindi: "{ad} eýýäm okaldy diýip bellenen.",
+        vakitYok: "Häzir belläp boljak namaz ýok.",
+        vakitYokSiradaki: "Häzir belläp boljak namaz ýok. Indiki namaz {ad}, {giris}.",
+        onay: "{ad} okaldy diýip bellensinmi?",
+        vakitDegisti: "Namaz wagty üýtgedi, şonuň üçin hiç zat bellenmedi. Gaýtadan synanyşyň.",
+        kabulDuasi: "Alla kabul etsin",
+        kildim: "Okadym",
+        kilindi: "Okaldy",
+        kontrolKildim: "{ad} · Okadym",
+        kontrolKilindi: "{ad} okaldy",
+        kontrolVakitYok: "Belläp boljak namaz ýok",
+        uygulamayiAcin: "Programmany açyň"
     )
 
     // tt — Tatarca (beta, Kiril): JS `sozluk/tt` (vakit adları ДУМ РТ; "Kıldım" = «Укыдым», "Kılındı" = «Укылды»).

@@ -460,11 +460,11 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "No, it isn't marked yet."
     )
 
-    // ÇEVİRİ: tk (one/other)
+    // tk (one/other; san bilen at ýeke sanda)
     static let tk = OtomasyonMetinleri(
-        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
-        evetKilindi: "Yes, it's marked as prayed.",
-        hayirKilinmadi: "No, it isn't marked yet."
+        kalanDakika: ["one": "{ad} wagty {n} minutdan girýär.", "other": "{ad} wagty {n} minutdan girýär."],
+        evetKilindi: "Hawa, okaldy diýip bellenen.",
+        hayirKilinmadi: "Ýok, entek bellenmedi."
     )
 
     // tt (other)

@@ -1,61 +1,60 @@
-// ÇEVİRİ: tk — İngilizce iskelet, çevrilince bu satır silinir
 import { cogul } from '../../tipler';
 import type { Sozluk } from '../tr';
 
 /**
- * İbadete çağrı kaydı İngilizcede: doğrudan, kısa emir, "please" yok. "Prostrate" YAZILMAZ
- * (Türkçedeki "secdeye kapan" yasağının ikizi) → "stand for prayer". Başlıkta süre birimi
- * "m": "Maghrib · 655m" ilk 16 karaktere sığar ("min" sığmazdı).
+ * Namaz goragçysy: ybadata çagyryş "sen" + buýruk (az/uz/kk/ky emsali). "Sejde et" ÝAZYLMAÝAR → "namaza dur".
+ * Gijikdirmek ≠ terk etmek: gijä galana höküm ýok. Sözbaşy öňden okalýar: wagt ady + wagt ilkinji 16 harpda
+ * ("Agşam · 15 min").
  */
 export const muhafiz: Sozluk['muhafiz'] = {
   baslik: {
-    giris1: "{ad} · {dk}m in · it's prayer time ⏰",
-    giris2: "{ad} · {dk}m in · don't delay your prayer ⚠️",
-    giris3: '{ad} · {dk}m in · your prayer is waiting 🔥',
-    giris4: '{ad} · {dk}m in · STAND FOR PRAYER 🚨',
-    erken3: '{ad} · {dk}m left · your prayer is waiting 🔥',
-    erken4: '{ad} · {dk}m left · STAND FOR PRAYER 🚨',
-    cikis1: '{ad} · {dk}m left ⏰',
-    cikis2: '{ad} · {dk}m · time is running short ⚠️',
-    cikis3: '{ad} · {dk}m · time is slipping away 🔥',
-    cikis4: '{ad} · {dk}m · TIME IS ENDING 🚨',
+    giris1: '{ad} · {dk} min geçdi · wagt girdi ⏰',
+    giris2: '{ad} · {dk} min geçdi · namazyňy gijikdirme ⚠️',
+    giris3: '{ad} · {dk} min geçdi · namaz saňa garaşýar 🔥',
+    giris4: '{ad} · {dk} min geçdi · NAMAZA DUR 🚨',
+    erken3: '{ad} · {dk} min galdy · namaz saňa garaşýar 🔥',
+    erken4: '{ad} · {dk} min galdy · NAMAZA DUR 🚨',
+    cikis1: '{ad} · {dk} min galdy ⏰',
+    cikis2: '{ad} · {dk} min · wagt daralýar ⚠️',
+    cikis3: '{ad} · {dk} min · wagt gaçýar 🔥',
+    cikis4: '{ad} · {dk} min · WAGT ÇYKÝAR 🚨',
   },
   girisHavuzu: {
-    s1: ["It's prayer time; pray while you have the chance.", "Pray while time is on your side; don't leave it for later."],
-    s2: ["The longer you put it off, the heavier it gets; don't leave your prayer to the end.", 'Time is moving on — pray now.'],
+    s1: ['Namaz wagty girdi; pursat barka oka.', 'Wagt seniň peýdaňa işleýärkä oka, soňa galmasyn.'],
+    s2: ['Yza süýşürdigiňçe agyrlaşýar; namazy soňa goýma.', 'Wagt geçýär — namazyňy häzir oka.'],
     s3: [
-      'The longer you delay, the closer you come to missing it; pray now.',
-      'Don\'t say "I\'ll pray later"; you can pray now.',
-      'Get up now rather than saying "if only" in a few minutes.',
+      'Namazy gijikdirdigiňçe gaçyrmaga ýakynlaşýarsyň; häziriň özünde oka.',
+      '"Soň okaryn" diýme; häzir okap bilersiň.',
+      'Birnäçe minutdan "kaşgä" diýmegiň ýerine häzir tur.',
     ],
-    s4: ["Don't delay your prayer any longer — stand for prayer now.", 'Put down what you are doing and stand for prayer.'],
+    s4: ['Namazy mundan artyk gijikdirme — häziriň özünde namaza dur.', 'Elindäkini goý-da, namaza dur.'],
   },
   govde: {
-    s1: 'Time is starting to run short; pray while you have the chance.',
-    s2: "Don't leave your prayer to the end; now is a good time to pray.",
-    s3: 'Time is almost up; you can still pray now.',
-    s4: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
+    s1: 'Wagt daralyp başlady; pursat barka oka.',
+    s2: 'Namazyňy soňa goýma; häzir okamak üçin gowy wagt.',
+    s3: 'Wagt gutarmakçy; entek häzir okap bilersiň.',
+    s4: 'Okan bolsaň, "Okadym" düwmesine bas; okamadyk bolsaň, häziriň özünde namaza dur.',
   },
   serit: {
-    giris4: "DON'T DELAY YOUR PRAYER! Stand for prayer now! ({dk} min passed)",
-    giris2: "Time is moving on; don't leave your prayer to the end. ({dk} min passed)",
-    giris1: cogul({ one: "It's been {n} minute since prayer time began.", other: "It's been {n} minutes since prayer time began." }),
-    erken4: "Don't delay your prayer; stand for prayer now! ({dk} min left)",
-    cikis4: 'TIME IS ENDING! Stand for prayer now! ({dk} min left)',
-    cikis2: "Time is running short; don't leave your prayer to the end. ({dk} min left)",
-    cikis1: cogul({ one: '{n} minute left until the prayer time ends.', other: '{n} minutes left until the prayer time ends.' }),
+    giris4: 'NAMAZYŇY GIJIKDIRME. Häziriň özünde namaza dur. ({dk} min geçdi)',
+    giris2: 'Wagt geçýär; namazyňy soňa goýma. ({dk} min geçdi)',
+    giris1: cogul({ one: 'Namaz wagty girenden bäri {n} minut geçdi.', other: 'Namaz wagty girenden bäri {n} minut geçdi.' }),
+    erken4: 'Namazyňy gijikdirme; häziriň özünde namaza dur. ({dk} min galdy)',
+    cikis4: 'WAGT ÇYKÝAR. Häziriň özünde namaza dur. ({dk} min galdy)',
+    cikis2: 'Wagt daralýar; namazyňy soňa goýma. ({dk} min galdy)',
+    cikis1: cogul({ one: 'Namaz wagtynyň çykmagyna {n} minut galdy.', other: 'Namaz wagtynyň çykmagyna {n} minut galdy.' }),
   },
   geceCapasi: {
-    baslik: '{ad} · pray before you sleep ⏰',
-    govde: 'Quiet hours start in {dk} min; pray Isha before you go to bed.',
+    baslik: '{ad} · ýatmazdan öň oka ⏰',
+    govde: '{dk} minutdan sessiz sagatlar başlaýar; ýatmazdan öň ýassy namazyny oka.',
   },
   icerik: {
-    firsat: 'Time is starting to run short; pray while you have the chance.',
-    sonaBirakma: "Don't leave your prayer to the end; now is a good time to pray.",
-    fisilti: 'Don\'t say "I\'ll pray later"; time is almost up, you can pray now.',
-    omur: 'Time is passing; you still have the chance to pray this prayer on time.',
-    keske: 'Get up now rather than saying "if only" in a few minutes.',
-    namazaDur: 'If you\'ve prayed, tap "I\'ve prayed"; if not, stand for prayer now.',
-    sonDakika: 'The last minutes. Put down what you are doing and stand for prayer.',
+    firsat: 'Wagt daralyp başlady; pursat barka oka.',
+    sonaBirakma: 'Namazyňy soňa goýma; häzir okamak üçin gowy wagt.',
+    fisilti: '"Soň okaryn" diýme; wagt gutarmakçy, häzir okap bilersiň.',
+    omur: 'Wagt geçýär; bu namazy wagtynda okamaga entek mümkinçiligiň bar.',
+    keske: 'Birnäçe minutdan "kaşgä" diýmegiň ýerine häzir tur.',
+    namazaDur: 'Okan bolsaň, "Okadym" düwmesine bas; okamadyk bolsaň, häziriň özünde namaza dur.',
+    sonDakika: 'Soňky minutlar. Elindäkini goý-da, namaza dur.',
   },
 };

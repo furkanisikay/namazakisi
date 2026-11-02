@@ -744,18 +744,18 @@ public struct TvPanoMetinleri: Equatable {
         ]
     )
 
-    // ÇEVİRİ: tk
+    // tk — aý ady senäniň içinde kiçi harp bilen (CLDR "2 noýabr 2026")
     public static let tk = TvPanoMetinleri(
-        vakitAdlari: ["imsak": "Fajr", "gunes": "Sunrise", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
-        cuma: "Jumu'ah",
-        aylar: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        gunler: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        vakitAdlari: ["imsak": "Ertir", "gunes": "Gün dogşy", "ogle": "Öýle", "ikindi": "Ikindi", "aksam": "Agşam", "yatsi": "Ýassy"],
+        cuma: "Juma",
+        aylar: ["ýanwar", "fewral", "mart", "aprel", "maý", "iýun", "iýul", "awgust", "sentýabr", "oktýabr", "noýabr", "dekabr"],
+        gunler: ["Duşenbe", "Sişenbe", "Çarşenbe", "Penşenbe", "Anna", "Şenbe", "Ýekşenbe"],
         tarih: "{gunAdi}, {gun} {ay} {yil}",
-        kerahatAdlari: ["suruk": "Sunrise", "istiva": "Zenith", "gurub": "Sunset"],
+        kerahatAdlari: ["suruk": "Gün dogşy", "istiva": "Günortan", "gurub": "Gün ýaşmasy"],
         kerahatAciklamalari: [
-            "suruk": "Praying is makruh until the sun has risen well.",
-            "istiva": "Praying is makruh while the sun is at its zenith.",
-            "gurub": "Praying is makruh while the sun is setting.",
+            "suruk": "Gün gowy galýança namaz okamak mekruhdyr.",
+            "istiva": "Gün iň ýokary nokatda durka namaz okamak mekruhdyr.",
+            "gurub": "Gün ýaşyp barýarka namaz okamak mekruhdyr.",
         ]
     )
 

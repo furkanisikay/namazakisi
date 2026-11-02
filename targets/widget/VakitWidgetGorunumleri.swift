@@ -1206,29 +1206,29 @@ struct WidgetMetinleri: Equatable {
         kontrolAciklama: "Marks the current prayer as prayed."
     )
 
-    // ÇEVİRİ: tk
+    // tk — Türkmen dili (beta); terminler src/core/dil/sozluk/tk
     static let tk = WidgetMetinleri(
-        galeriAdi: "Prayer time",
-        galeriAciklama: "The current prayer time, the time left until it ends and today's prayer times.",
-        veriEski: "Open the app to update prayer times",
-        konumYok: "Open the app to set your location",
-        kilindiSiradaki: "{ad} prayed · {sonraki} {saat}",
-        adCikis: "{ad} · ends {saat}",
-        siradakiAdSaat: "Next {ad} {saat}",
-        vaktiCikisErisim: "{ad} time, ends {saat}",
-        siradakiErisim: "Next {ad}, {saat}",
-        cikisSaat: "Ends {saat}",
-        bitisSaat: "Ends {saat}",
-        kilindiBaslik: "{ad} prayed",
-        siradaki: "Next",
-        siradakiAd: "Next {ad}",
-        kildimErisim: "I've prayed {ad}",
-        gunSatiriKilindi: ", prayed",
-        bitti: "Ended",
-        vakitCikti: "Prayer time is over",
-        kabulAlt: "{ad} prayed",
-        kontrolAdi: "I've prayed",
-        kontrolAciklama: "Marks the current prayer as prayed."
+        galeriAdi: "Namaz wagty",
+        galeriAciklama: "Häzirki namaz wagty, onuň gutarmagyna galan wagt we şu günki namaz wagtlary.",
+        veriEski: "Namaz wagtlaryny täzelemek üçin programmany açyň",
+        konumYok: "Ýerleşişiňizi kesgitlemek üçin programmany açyň",
+        kilindiSiradaki: "{ad} okaldy · {sonraki} {saat}",
+        adCikis: "{ad} · gutarýar {saat}",
+        siradakiAdSaat: "Indiki {ad} {saat}",
+        vaktiCikisErisim: "{ad} wagty, gutarýar {saat}",
+        siradakiErisim: "Indiki {ad}, {saat}",
+        cikisSaat: "Gutarýar {saat}",
+        bitisSaat: "Gutarýar {saat}",
+        kilindiBaslik: "{ad} okaldy",
+        siradaki: "Indiki",
+        siradakiAd: "Indiki {ad}",
+        kildimErisim: "{ad} namazyny okadym",
+        gunSatiriKilindi: ", okaldy",
+        bitti: "Gutardy",
+        vakitCikti: "Namaz wagty gutardy",
+        kabulAlt: "{ad} okaldy",
+        kontrolAdi: "Okadym",
+        kontrolAciklama: "Häzirki namazy okaldy diýip belleýär."
     )
 
     // tt
