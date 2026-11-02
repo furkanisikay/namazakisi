@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.70.1** · Mağazada: Google Play: **0.70.1** · App Store: **0.41.1**
+Kaynak koddaki sürüm: **0.70.1** · Mağazada: Google Play: **0.70.1** · App Store: **0.70.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -39,14 +39,16 @@ Kaynak koddaki sürüm: **0.70.1** · Mağazada: Google Play: **0.70.1** · App 
 **App Store**
 
 <p>
-  <img src="docs/ekran-goruntuleri/magaza/ios/01-ana-ekran.webp" width="180" alt="Ana ekran" title="Ana ekran">
-  <img src="docs/ekran-goruntuleri/magaza/ios/02-muhafiz-zaman-seridi.webp" width="180" alt="Muhafız zaman şeridi" title="Muhafız zaman şeridi">
-  <img src="docs/ekran-goruntuleri/magaza/ios/03-adim-detay.webp" width="180" alt="Adım detay" title="Adım detay">
-  <img src="docs/ekran-goruntuleri/magaza/ios/04-seri.webp" width="180" alt="Seri" title="Seri">
-  <img src="docs/ekran-goruntuleri/magaza/ios/05-kible.webp" width="180" alt="Kıble" title="Kıble">
-  <img src="docs/ekran-goruntuleri/magaza/ios/06-akis-onizleme.webp" width="180" alt="Akış önizleme" title="Akış önizleme">
-  <img src="docs/ekran-goruntuleri/magaza/ios/07-kaza.webp" width="180" alt="Kaza" title="Kaza">
-  <img src="docs/ekran-goruntuleri/magaza/ios/08-istatistik.webp" width="180" alt="İstatistik" title="İstatistik">
+  <img src="docs/ekran-goruntuleri/magaza/ios/01-muhafiz.webp" width="180" alt="Muhafız" title="Muhafız">
+  <img src="docs/ekran-goruntuleri/magaza/ios/02-sabah.webp" width="180" alt="Sabah" title="Sabah">
+  <img src="docs/ekran-goruntuleri/magaza/ios/03-takvim.webp" width="180" alt="Takvim" title="Takvim">
+  <img src="docs/ekran-goruntuleri/magaza/ios/04-camide.webp" width="180" alt="Camide" title="Camide">
+  <img src="docs/ekran-goruntuleri/magaza/ios/05-saat.webp" width="180" alt="Saat" title="Saat">
+  <img src="docs/ekran-goruntuleri/magaza/ios/06-bilek.webp" width="180" alt="Bilek" title="Bilek">
+  <img src="docs/ekran-goruntuleri/magaza/ios/07-kible.webp" width="180" alt="Kıble" title="Kıble">
+  <img src="docs/ekran-goruntuleri/magaza/ios/08-kaza.webp" width="180" alt="Kaza" title="Kaza">
+  <img src="docs/ekran-goruntuleri/magaza/ios/09-cihazlar.webp" width="180" alt="Cihazlar" title="Cihazlar">
+  <img src="docs/ekran-goruntuleri/magaza/ios/10-gizlilik.webp" width="180" alt="Gizlilik" title="Gizlilik">
 </p>
 
 **Google Play — Wear OS**
@@ -360,7 +362,7 @@ Kareler mağazadaki listelerle (Google Play, App Store) ve uygulamanın ekran g�
 | Cihaz | Durum |
 |---|---|
 | 📱 Android telefon, tablet ve katlanabilir | [Google Play](https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi) · 0.70.1 |
-| 🍏 iPhone | [App Store](https://apps.apple.com/tr/app/id6813061360) · 0.41.1 |
+| 🍏 iPhone | [App Store](https://apps.apple.com/tr/app/id6813061360) · 0.70.1 |
 | ⌚ Wear OS saat | Google Play'de yayında (telefon uygulamasıyla birlikte) |
 | 📺 Android TV | Google Play |
 | ⌚ Apple Watch | App Store (iPhone uygulamasıyla birlikte) |

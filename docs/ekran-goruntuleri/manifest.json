@@ -2,7 +2,7 @@
   "aciklama": "Otomatik uretilir (scripts/belge-gorselleri.js). Elle duzenlemeyin.",
   "magaza": {
     "appStore": {
-      "surum": "0.41.1"
+      "surum": "0.70.1"
     },
     "googlePlay": {
       "uretim": "0.70.1",
@@ -50,36 +50,44 @@
     "magaza-ios": {
       "ogeler": [
         {
-          "dosya": "01-ana-ekran.webp",
-          "kimlik": "360:/image/thumb/PurpleSource221/v4/8c/68/1f/8c681f05-5d7e-b8cf-7299-35c09b677a0c/01-ana-ekran.png"
+          "dosya": "01-muhafiz.webp",
+          "kimlik": "360:/image/thumb/PurpleSource221/v4/d2/45/8a/d2458a90-b794-75d7-16d3-eaffefc4750e/01-muhafiz.png"
         },
         {
-          "dosya": "02-muhafiz-zaman-seridi.webp",
-          "kimlik": "360:/image/thumb/PurpleSource211/v4/47/68/eb/4768eb8d-bc01-ef54-9ac7-a38e24aa66c9/02-muhafiz-zaman-seridi.png"
+          "dosya": "02-sabah.webp",
+          "kimlik": "360:/image/thumb/PurpleSource221/v4/79/38/27/79382794-636a-72b1-fa99-5f8856721982/02-sabah.png"
         },
         {
-          "dosya": "03-adim-detay.webp",
-          "kimlik": "360:/image/thumb/PurpleSource211/v4/0f/84/77/0f84776c-4567-5e89-8fe3-a1bf57ff6006/03-adim-detay.png"
+          "dosya": "03-takvim.webp",
+          "kimlik": "360:/image/thumb/PurpleSource211/v4/24/8e/7a/248e7ae5-69a9-54ca-e13e-ac969f162d8b/03-takvim.png"
         },
         {
-          "dosya": "04-seri.webp",
-          "kimlik": "360:/image/thumb/PurpleSource211/v4/fe/ff/ee/feffee99-4c4a-7b11-97f5-395b0c673dd1/04-seri.png"
+          "dosya": "04-camide.webp",
+          "kimlik": "360:/image/thumb/PurpleSource211/v4/79/cd/1b/79cd1b11-1d1f-6464-2aa9-e136992493ea/04-camide.png"
         },
         {
-          "dosya": "05-kible.webp",
-          "kimlik": "360:/image/thumb/PurpleSource211/v4/62/03/b5/6203b5f1-8da5-36e0-8ceb-515900764399/05-kible.png"
+          "dosya": "05-saat.webp",
+          "kimlik": "360:/image/thumb/PurpleSource211/v4/c5/96/70/c596700a-9f45-897b-e423-12a631682b04/05-saat.png"
         },
         {
-          "dosya": "06-akis-onizleme.webp",
-          "kimlik": "360:/image/thumb/PurpleSource221/v4/e4/20/aa/e420aa34-972e-a678-82fb-bfd35013af55/06-akis-onizleme.png"
+          "dosya": "06-bilek.webp",
+          "kimlik": "360:/image/thumb/PurpleSource221/v4/b0/60/4d/b0604dc0-4fc6-b5be-6abc-195af509cab2/06-bilek.png"
         },
         {
-          "dosya": "07-kaza.webp",
-          "kimlik": "360:/image/thumb/PurpleSource211/v4/98/b4/27/98b427b8-9f25-fcc4-5bde-7fbc5e694d76/07-kaza.png"
+          "dosya": "07-kible.webp",
+          "kimlik": "360:/image/thumb/PurpleSource221/v4/d7/58/c4/d758c4a3-7a42-7c9c-18e0-362f4b356b8e/07-kible.png"
         },
         {
-          "dosya": "08-istatistik.webp",
-          "kimlik": "360:/image/thumb/PurpleSource211/v4/62/a2/5d/62a25d38-a07b-1811-2333-c548502eaf31/08-istatistik.png"
+          "dosya": "08-kaza.webp",
+          "kimlik": "360:/image/thumb/PurpleSource211/v4/05/8c/df/058cdf9f-a587-9c02-39e5-80d288652f97/08-kaza.png"
+        },
+        {
+          "dosya": "09-cihazlar.webp",
+          "kimlik": "360:/image/thumb/PurpleSource221/v4/3f/30/a2/3f30a2a7-9aa7-b8e9-a2f0-cecd9132bef0/09-cihazlar.png"
+        },
+        {
+          "dosya": "10-gizlilik.webp",
+          "kimlik": "360:/image/thumb/PurpleSource221/v4/3c/ab/aa/3cabaaad-364b-c4d6-af7e-461ec156332e/10-gizlilik.png"
         }
       ]
     },
