@@ -59,15 +59,15 @@ class CanliGuncellemeKurallariTest {
 
     @Test
     fun kisaBirimler_herArayuzDilindeVar() {
-        // Native dil tablosu düzeni (docs/ajan/coklu-dil.md): kırk beş dil, boş birim yok.
+        // Native dil tablosu düzeni (docs/ajan/coklu-dil.md): elli dört dil, boş birim yok.
         val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn",
-            "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el")
+            "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk")
         assertEquals(diller, k.KISA_BIRIMLER.keys.toList())
         for (d in diller) {
             val (sa, dk) = k.KISA_BIRIMLER.getValue(d)
             assertTrue(d, sa.isNotBlank() && dk.isNotBlank())
             // Boşluklu dillerin çıktısı eski sabit boşluklu biçimle birebir (JS `sure.test.ts` ikizi).
-            if (d != "zh" && d != "ko") assertEquals(d, "1 $sa 5 $dk", k.kisaMetin(65 * 60_000L, d))
+            if (d != "zh" && d != "ko" && d != "ja") assertEquals(d, "1 $sa 5 $dk", k.kisaMetin(65 * 60_000L, d))
         }
     }
 
@@ -84,8 +84,12 @@ class CanliGuncellemeKurallariTest {
         assertEquals("" to " ", ko.birimAyirici to ko.parcaAyirici)
         assertEquals("12${ko.dk}", k.kisaMetin(12 * 60_000L, "ko"))
         assertEquals("1${ko.sa} 5${ko.dk}", k.kisaMetin(65 * 60_000L, "ko"))
+        // Japonca Çince gibi bitişik (iskelette de; JS `sozluk/ja/sure.ts`).
+        val ja = k.KISA_BIRIMLER.getValue("ja")
+        assertEquals("" to "", ja.birimAyirici to ja.parcaAyirici)
+        assertEquals("1${ja.sa}5${ja.dk}", k.kisaMetin(65 * 60_000L, "ja"))
         // Diğer diller tek boşluk taşır.
-        for ((d, b) in k.KISA_BIRIMLER) if (d != "zh" && d != "ko") assertEquals(d, " " to " ", b.birimAyirici to b.parcaAyirici)
+        for ((d, b) in k.KISA_BIRIMLER) if (d != "zh" && d != "ko" && d != "ja") assertEquals(d, " " to " ", b.birimAyirici to b.parcaAyirici)
     }
 
     @Test

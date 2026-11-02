@@ -250,21 +250,32 @@ public enum GununAyetiKarari {
             + gelecek.map { GununAyetiGirdisi(ms: $0.baslangicMs, kayit: $0) }
     }
 
-    /// Serif tasarimda (New York; Android'de Noto Serif) OLMAYAN yazilar: Tamil, Malayalam, Tay,
-    /// Hangil, Ge'ez, Han (CJK) ve CJK/tam genislik noktalama. Kotlin ikizi
+    /// Serif tasarimda (New York; Android'de Noto Serif) OLMAYAN yazilar: Gucarati, Tamil, Malayalam,
+    /// Tay, Hangil, Ge'ez, Han (CJK), kana (Hiragana, Katakana) ve CJK/tam genislik noktalama. Kotlin ikizi
     /// `GununAyetiKurallari.SERIFSIZ_ARALIKLAR` (ayni araliklar, ayni sira).
     public static let serifsizAraliklar: [ClosedRange<UInt32>] = [
-        0x0B80...0x0BFF, 0x0D00...0x0D7F, 0x0E00...0x0E7F, 0x1100...0x11FF, 0x1200...0x139F,
-        0x2D80...0x2DDF, 0x3000...0x303F, 0x3130...0x318F, 0x3400...0x4DBF, 0x4E00...0x9FFF,
-        0xA960...0xA97F, 0xAB00...0xAB2F, 0xAC00...0xD7FF, 0xF900...0xFAFF, 0xFF00...0xFFEF,
+        0x0A80...0x0AFF, 0x0B80...0x0BFF, 0x0D00...0x0D7F, 0x0E00...0x0E7F, 0x1100...0x11FF, 0x1200...0x139F,
+        0x2D80...0x2DDF, 0x3000...0x303F, 0x3040...0x30FF, 0x3130...0x318F, 0x31F0...0x31FF, 0x3400...0x4DBF,
+        0x4E00...0x9FFF, 0xA960...0xA97F, 0xAB00...0xAB2F, 0xAC00...0xD7FF, 0xF900...0xFAFF, 0xFF00...0xFFEF,
     ]
 
-    /// Meal serif yazi tipiyle mi cizilir? Ge'ez (Amharca), Tamil, Malayalam, Tay, Korece ve Cince
+    /// Meal serif yazi tipiyle mi cizilir? Ge'ez (Amharca), Gucarati, Tamil, Malayalam, Tay, Korece, Cince ve Japonca (kanji, kana)
     /// yazilarinda serif tasarim yok → sistem tasarimi; aksi halde Latin noktalama serif, harfler
     /// sistem yedeginden karisik cizilirdi. Vietnamca (Latin + yigilmis ses isareti) serif kalir.
     /// Kotlin ikizi `GununAyetiKurallari.mealSerifMi`.
     public static func mealSerifMi(_ meal: String) -> Bool {
         return !meal.unicodeScalars.contains { s in serifsizAraliklar.contains { $0.contains(s.value) } }
+    }
+
+    /// Kisayollar duvar kagidi gorselinin govdesi: meal; meali olmayan dilde (ar ve mealsiz diller ku, tk,
+    /// tt, sd, pl) kisa kunye (gorsel Arapca CIZMEZ, ana uygulamada Arapca font yok).
+    public static func gorselGovdesi(_ kayit: GununAyetiKaydi) -> String {
+        kayit.meal ?? kayit.kisaKunye
+    }
+
+    /// Widget ve erisim etiketinin govdesi: meal; meali olmayan dilde Arapca metin.
+    public static func widgetGovdesi(_ kayit: GununAyetiKaydi) -> String {
+        kayit.meal ?? kayit.ar
     }
 
     /// Kunye satiri: "kisaKunye · mealKaynagi" (+ Arapca cizildiyse " · Arapça: Tanzil").

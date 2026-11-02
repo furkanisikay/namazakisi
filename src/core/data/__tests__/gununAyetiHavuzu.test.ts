@@ -131,6 +131,27 @@ describe('günün ayeti havuzu', () => {
   });
 });
 
+describe('üreticinin meal temizliği (scripts/icerik/gunun-ayeti-uret.js)', () => {
+  const { notNumarasiz, mealGerekce } = require('../../../../scripts/icerik/gunun-ayeti-uret');
+
+  it('Japonca (sahip kararı 2026-11-02): sözlük işareti "*" ve not numarası silinir, tam genişlik parantez kalır', () => {
+    expect(notNumarasiz('ja', 'アッラー*は…[1]')).toBe('アッラーは…');
+    expect(notNumarasiz('ja', '（預言者よ、）アッラー*以外に[2]')).toBe('（預言者よ、）アッラー以外に');
+    expect(mealGerekce(notNumarasiz('ja', 'アッラー*は…[1]'))).toEqual([]);
+    // Yıldız kuralı YALNIZ Japoncada: diğer dillerde "*" dipnot işaretidir, meal alınmaz.
+    expect(notNumarasiz('en', 'God* is…')).toBe('God* is…');
+    expect(mealGerekce('God* is…')).toContain('dipnot');
+  });
+
+  it('Makedoncada not numarası, Gucaratça/Bulgarca/Makedoncada baştaki ayet numarası silinir (her yazının rakamı)', () => {
+    expect(notNumarasiz('gu', '૨૫૫. અલ્લાહ')).toBe('અલ્લાહ');
+    expect(notNumarasiz('bg', '255. Аллах')).toBe('Аллах');
+    expect(notNumarasiz('mk', '255. Аллах[1] е')).toBe('Аллах е');
+    // Kümede olmayan dilde numara silinmez (meal elenir).
+    expect(notNumarasiz('sr', '255. Аллах')).toBe('255. Аллах');
+  });
+});
+
 describe('sûre adları', () => {
   it('114 sûrenin hepsinin boş olmayan Türkçe adı var', () => {
     expect(SURE_ADLARI_TR).toHaveLength(114);

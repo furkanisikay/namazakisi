@@ -86,6 +86,16 @@ const SABAH_SESI_ADLARI = {
     hr: 'Sabahski ezan',
     sr: 'Сабахски езан',
     el: 'Αζάν Φατζρ',
+    // Dalga 11: sözlük henüz İngilizce iskelet; adlar o dilin yerleşik yazımıyla (yerli okuyucuyla DOĞRULANMADI).
+    ku: 'Banga sibê',
+    tk: 'Ertir azany',
+    tt: 'Иртәнге азан',
+    sd: 'فجر جي اذان',
+    pl: 'Adhan Fadżr',
+    ja: 'ファジュルのアザーン',
+    gu: 'ફજરની અઝાન',
+    bg: 'Сутрешен езан',
+    mk: 'Сабахски езан',
 };
 
 /** Kare dilindeki sabah sesi adi (bilinmeyen dil → Turkce). */

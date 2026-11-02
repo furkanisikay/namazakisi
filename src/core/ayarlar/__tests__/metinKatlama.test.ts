@@ -78,6 +78,19 @@ describe('aramaIcinKatla', () => {
     expect(aramaIcinKatla('ҚҢҮҰӘӨҺ')).toBe('қңүұәөһ');
   });
 
+  it('dalga 11: Tatarca, Bulgarca, Makedonca Kiril ve Lehçe ł büyük/küçük harf duyarsız', () => {
+    // Tatarca ә ө ү җ ң һ (U+0460–04FF bloğu: çift kod noktası büyük).
+    expect(aramaIcinKatla('ӘӨҮҖҢҺ')).toBe('әөүҗңһ');
+    expect(aramaIcinKatla('НАМАЗ ВАКЫТЛАРЫ')).toBe(aramaIcinKatla('намаз вакытлары'));
+    // Makedonca ѓ ќ ѕ: Ѓ/Ќ NFD'de Г/К + U+0301 → aksansız tabana iner (iki yazım da aynı katlanır).
+    expect(aramaIcinKatla('ЃЌЅ')).toBe(aramaIcinKatla('ѓќѕ'));
+    expect(aramaIcinKatla('ЏЉЊЈ')).toBe('џљњј');
+    expect(aramaIcinKatla('ЩЪЬЮЯ')).toBe('щъьюя');
+    // Lehçe: ą ć ę ń ó ś ź ż NFD ile, ł/Ł ayrışmaz → sabit eşleme.
+    expect(aramaIcinKatla('ŁĄCZE ŚWIĘTO')).toBe(aramaIcinKatla('łącze święto'));
+    expect(aramaIcinKatla('Ł')).toBe('l');
+  });
+
   it('Yunan büyük harf, tonos ve son harf sigması katlanır', () => {
     expect(aramaIcinKatla('ΠΡΟΣΕΥΧΗ')).toBe(aramaIcinKatla('προσευχή'));
     expect(aramaIcinKatla('Ρυθμίσεις')).toBe('ρυθμισεισ');

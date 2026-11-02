@@ -12,7 +12,10 @@ const SAYILAR = [
 ];
 
 /** Uygulama kodunun ICU yerel ayarı: Portekizce Avrupa normudur (çıplak `pt` ICU'da Brezilya, 0 tekil). */
-const ICU_YERELI: Record<string, string> = { pt: 'pt-PT' };
+// Tatarca CLDR çoğul tablosunda YOK (CLDR 49 `language_plural_rules`, 2026-11-02): ICU `tt`'yi kök kurala
+// (yalnız `other`) düşürmez, Node `Intl.PluralRules('tt')` `en-US`'ye düşer (one/other) → karşılaştırma kök
+// davranışı taşıyan bir yerelle (`ja`, yalnız other) yapılır. Android `<plurals>` de `tt`'de kökten düşer.
+const ICU_YERELI: Record<string, string> = { pt: 'pt-PT', tt: 'ja' };
 
 describe.each(COGUL_DILLERI)('%s çoğul kuralı', (dil) => {
   it('ICU ile aynı', () => {
@@ -65,4 +68,16 @@ it('Avrupa dalgası: pt (pt-PT)/it one/many/other, sv/el one/other, uk Rusça, h
   expect([0, 1, 2, 19, 20, 100, 101, 119, 120, 1000000].map((n) => cogulKategorisi('ro', n))).toEqual([
     'few', 'one', 'few', 'few', 'other', 'other', 'few', 'few', 'other', 'other',
   ]);
+});
+
+it('dalga 11: ku/tk/bg/sd one/other, gu 0 ve 1 tekil, ja/tt yalnız other, pl one/few/many, mk …1 tekil', () => {
+  for (const dil of ['ku', 'tk', 'bg', 'sd']) expect([0, 1, 2, 21].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'one', 'other', 'other']);
+  expect([0, 1, 2].map((n) => cogulKategorisi('gu', n))).toEqual(['one', 'one', 'other']);
+  for (const dil of ['ja', 'tt']) expect([0, 1, 2].map((n) => cogulKategorisi(dil, n))).toEqual(['other', 'other', 'other']);
+  // Lehçe: 1 one; …2–4 (…12–14 hariç) few; gerisi (0, 5–21, 25, 1.000.000) many.
+  expect([0, 1, 2, 4, 5, 12, 14, 21, 22, 25, 104, 112, 1000000].map((n) => cogulKategorisi('pl', n))).toEqual([
+    'many', 'one', 'few', 'few', 'many', 'many', 'many', 'many', 'few', 'many', 'few', 'many', 'many',
+  ]);
+  // Makedonca: son hanesi 1 (11 hariç) one; gerisi other.
+  expect([0, 1, 2, 11, 21, 101, 111].map((n) => cogulKategorisi('mk', n))).toEqual(['other', 'one', 'other', 'other', 'one', 'one', 'other']);
 });

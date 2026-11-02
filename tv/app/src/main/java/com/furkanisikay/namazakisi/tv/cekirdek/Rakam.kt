@@ -24,7 +24,7 @@ data class TvRakam(
 
 object RakamKarari {
     /** Dil → yerel rakam sistemi (`rakam.ts > YEREL_RAKAMLAR`). */
-    private val YEREL = mapOf("ar" to "arab", "bn" to "beng", "fa" to "arabext", "ps" to "arabext", "ckb" to "arab")
+    private val YEREL = mapOf("ar" to "arab", "bn" to "beng", "fa" to "arabext", "ps" to "arabext", "ckb" to "arab", "sd" to "arab")
 
     /** Dil başına ülke → sistem (`RAKAM_ULKE_VARSAYILANLARI`; Mağrip Batı rakamı yazar). */
     private val ULKE = mapOf("ar" to setOf("DZ", "MA", "TN", "LY", "MR", "EH").associateWith { "latn" })

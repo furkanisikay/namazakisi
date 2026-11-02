@@ -46,7 +46,7 @@ object CanliGuncellemeKurallari {
     /**
      * Kısa süre birimleri, arayüz diline göre (JS `sozluk/<dil>/sure.ts > kisa`).
      * Bilinmeyen dil Türkçeye düşer. Yeni dil: buraya bir satır + JS sözlüğü. Sıra tr, en,
-     * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
+     * id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk; çevrilmemiş dil İngilizcenin kopyasıdır (`// ÇEVİRİ: <kod>`).
      */
     internal val KISA_BIRIMLER: Map<String, KisaBirimler> = mapOf(
         "tr" to KisaBirimler("sa", "dk"),
@@ -136,6 +136,24 @@ object CanliGuncellemeKurallari {
         "sr" to KisaBirimler("ч", "мин", birimAyirici = " ", parcaAyirici = " "),
         // el
         "el" to KisaBirimler("ώ.", "λ.", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: ku
+        "ku" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: tk
+        "tk" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: tt
+        "tt" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: sd
+        "sd" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: pl
+        "pl" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: ja
+        "ja" to KisaBirimler("h", "min", birimAyirici = "", parcaAyirici = ""),
+        // ÇEVİRİ: gu
+        "gu" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: bg
+        "bg" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
+        // ÇEVİRİ: mk
+        "mk" to KisaBirimler("h", "min", birimAyirici = " ", parcaAyirici = " "),
     )
 
     /**

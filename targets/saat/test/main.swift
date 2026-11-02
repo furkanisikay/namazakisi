@@ -581,7 +581,9 @@ do {
     esitMi([koSure.birimAyirici, koSure.parcaAyirici], ["", " "], "ko birim bitisik, parca bosluklu")
     esitMi(SaatSure.sesli(kalanMs: (3600 + 60) * 1000, dil: "ko"),
            CogulKurali.sec(koSure.saat, "ko", 1) + " " + CogulKurali.sec(koSure.dakika, "ko", 1), "ko sesli bosluklu")
-    for (d, m) in SaatSureMetinleri.tablo where d != "zh" && d != "ko" {
+    // Japonca Cince gibi bitisik (iskelette de; JS `sozluk/ja/sure.ts`).
+    esitMi([SaatSureMetinleri.ja.birimAyirici, SaatSureMetinleri.ja.parcaAyirici], ["", ""], "ja ayiraclar bos")
+    for (d, m) in SaatSureMetinleri.tablo where d != "zh" && d != "ko" && d != "ja" {
         esitMi([m.birimAyirici, m.parcaAyirici], [" ", " "], "\(d) ayiraclar tek bosluk")
     }
     esitMi(Samimiyet.kabulDuasi("en"), "May Allah accept it", "en kabul duasi")
@@ -624,7 +626,7 @@ do {
         }
         return sonuc
     }
-    let kodlar = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el"]
+    let kodlar = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk"]
     esitMi(Set(SaatMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatMetinleri her dil")
     esitMi(Set(SaatSureMetinleri.tablo.keys), Set(kodlar), "saat tablolari: SaatSureMetinleri her dil")
     esitMi(Set(KibleMetinleri.tablo.keys), Set(kodlar), "saat tablolari: KibleMetinleri her dil")

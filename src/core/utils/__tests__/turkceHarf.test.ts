@@ -18,6 +18,20 @@ describe('dilBuyukHarf', () => {
         expect(dilBuyukHarf('reminders', 'en')).toBe('REMINDERS');
         expect(dilBuyukHarf('hatırlatmalar', 'tr')).toBe('HATIRLATMALAR');
     });
+    it('Kurmancî ve Türkmencede Türkçe i eşlemesi YOK: i → I (CLDR ku/tk alfabesinde ı ve İ yok)', () => {
+        // Kurmancî (Hawar): a b c ç d e ê f g h i î j k l m n o p q r s ş t u û v w x y z.
+        expect(dilBuyukHarf('bîranîn û şîret', 'ku')).toBe('BÎRANÎN Û ŞÎRET');
+        expect(dilBuyukHarf('nimêja êvarê', 'ku')).toBe('NIMÊJA ÊVARÊ');
+        // Türkmence: a b ç d e ä f g h i j ž k l m n ň o ö p r s ş t u ü w y ý z.
+        expect(dilBuyukHarf('ýatsy namazy', 'tk')).toBe('ÝATSY NAMAZY');
+        expect(dilBuyukHarf('ikindi', 'tk')).toBe('IKINDI');
+    });
+    it('Kiril (Tatarca, Bulgarca, Makedonca) ve Lehçe harfleri büyür', () => {
+        expect(dilBuyukHarf('әөүҗңһ', 'tt')).toBe('ӘӨҮҖҢҺ');
+        expect(dilBuyukHarf('ѓќѕџљњј', 'mk')).toBe('ЃЌЅЏЉЊЈ');
+        expect(dilBuyukHarf('ъьющ', 'bg')).toBe('ЪЬЮЩ');
+        expect(dilBuyukHarf('ąćęłńóśźż', 'pl')).toBe('ĄĆĘŁŃÓŚŹŻ');
+    });
     it('Yunancada tümü büyük yazımda vurgu düşer, çift nokta kalır', () => {
         expect(dilBuyukHarf('Υπενθυμίσεις', 'el')).toBe('ΥΠΕΝΘΥΜΙΣΕΙΣ');
         expect(dilBuyukHarf('Πόσο να σας υπενθυμίζουμε;', 'el')).toBe('ΠΟΣΟ ΝΑ ΣΑΣ ΥΠΕΝΘΥΜΙΖΟΥΜΕ;');

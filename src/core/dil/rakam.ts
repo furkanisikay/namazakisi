@@ -8,6 +8,7 @@
  *  - 2026-10-27 Bengalce: Bangladeş ve Hindistan dahil HER ülkede Bengalce rakam.
  *  - 2026-10-27 Farsça ve Peştuca Fars rakamıyla (`arabext`) başlar; Soranî Kürtçesi Doğu Arap
  *    (`arab`, CLDR ckb varsayılanı). Uygurcada yerel rakam yok (Batı, seçici YOK).
+ *  - 2026-11-02 Sindhçe Doğu Arap rakamıyla (`arab`, CLDR `sd` varsayılanı) başlar.
  *  - Urducada Batı rakamı (Pakistan uygulamaları gibi; seçici YOK). Diğer diller değişmez.
  * Yerel rakamı olan her dilde kullanıcı Ayarlar > Dil'den değiştirebilir ("Ülkeye göre" /
  * yerel / Batı).
@@ -46,6 +47,7 @@ const YEREL_RAKAMLAR: Partial<Record<DilKodu, YerelRakamSistemi>> = {
   fa: 'arabext',
   ps: 'arabext',
   ckb: 'arab',
+  sd: 'arab',
 };
 
 /** Rakam seçicisi gösterilen diller (seçim yalnız bunlarda geçerlidir). */

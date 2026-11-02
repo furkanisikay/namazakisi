@@ -39,6 +39,9 @@ export function gunNumarasi(namazGunu: string): number {
 
 const mealDiliMi = (dil: DilKodu): dil is DilKodu & MealDili => dil in GUNUN_AYETI_KAYNAKLARI.mealler;
 
+/** Dilin günün ayeti meali var mı? Yoksa (ar ve mealsiz diller: ku, tk, tt, sd, pl) yalnız Arapça gösterilir. */
+export const dilinMealiVar = (dil: DilKodu): boolean => mealDiliMi(dil);
+
 const dilHavuzlari = new Map<DilKodu, readonly GununAyetiKaydi[]>();
 
 /**

@@ -12,10 +12,10 @@ import { kalanSureParcalari, kalanSureSesli } from '../../utils/kalanSureParcala
 afterEach(() => aktifDilSifirla());
 
 /**
- * En az bir ayıracı boşluksuz diller: Çince ikisi de bitişik, Korece yalnız sayı–birim
+ * En az bir ayıracı boşluksuz diller: Çince ve Japonca ikisi de bitişik, Korece yalnız sayı–birim
  * bitişik ("5분"), parçalar boşluklu ("1시간 5분").
  */
-const BITISIK: readonly DilKodu[] = ['zh', 'ko'];
+const BITISIK: readonly DilKodu[] = ['zh', 'ko', 'ja'];
 const BOSLUKLU = DILLER.map((d) => d.kod).filter((k) => !BITISIK.includes(k));
 
 /** Kalıplar gelmeden ÖNCEKİ çekirdek (sabit boşluk) — yalnız karşılaştırma için. */
@@ -86,6 +86,16 @@ describe('boşluksuz dil (Çince)', () => {
     aktifDiliKur('zh');
     const s = sozluk('zh').sure;
     expect(kalanSureSesli('01:09:09')).toBe(`${sayili(s.saat, 1, {}, 'zh')}${sayili(s.dakika, 9, {}, 'zh')}`);
+  });
+});
+
+describe('boşluksuz dil (Japonca, iskelette de bitişik)', () => {
+  it('sayı ile birim ve parçalar arasında boşluk yok', () => {
+    const k = sozluk('ja').sure.kisa;
+    expect(birimAyiraci('ja')).toBe('');
+    expect(parcaAyiraci('ja')).toBe('');
+    expect(dakikaKisa(65, 'ja')).toBe(`1${k.sa}5${k.dk}`);
+    expect(birimli(5, '分', 'ja')).toBe('5分');
   });
 });
 

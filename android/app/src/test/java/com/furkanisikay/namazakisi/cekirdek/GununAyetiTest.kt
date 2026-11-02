@@ -56,6 +56,34 @@ class GununAyetiTest {
         assertTrue(GununAyetiKurallari.mealSerifMi("O, voi, cei care credeţi! Căutaţi ajutor întru răbdare şi Rugăciune."))
     }
 
+    @Test
+    fun gucaratiVeKanaSistemYazitipineDuserBulgarcaMakedoncaSerifKalir() {
+        // Dalga 11 (fontTools cmap, 2026-11-02): Noto Serif'te Gucarati (U+0A80–0AFF), Hiragana ve Katakana
+        // (U+3040–30FF) YOK. gujarati_omari 1:5, japanese_saeedsato (kanji'siz kana parçası da sistem yazı tipi).
+        assertFalse(GununAyetiKurallari.mealSerifMi("અમે ફકત તારી જ બંદગી કરીએ છીએ"))
+        assertFalse(GununAyetiKurallari.mealSerifMi("あなただけを"))
+        assertFalse(GununAyetiKurallari.mealSerifMi("アッラー"))
+        assertFalse(GununAyetiKurallari.mealSerifMi("（預言者よ、）"))
+        // Bulgarca ve Makedonca Kiril (ѓ ќ ѕ џ љ њ ј dahil) Noto Serif'te var.
+        assertTrue(GununAyetiKurallari.mealSerifMi("Наистина, с тегобата идва облекчение."))
+        assertTrue(GununAyetiKurallari.mealSerifMi("Навистина, со тешкотијата има олеснување ѓ ќ ѕ џ љ њ."))
+    }
+
+    @Test
+    fun mealsizDildeArapcaVeKunye() {
+        // Mealsiz dil (ku, tk, tt, sd, pl; sahip kararı 2026-11-02): widget ve duvar kâğıdı yalnız Arapça çizer,
+        // ekran okuyucu Arapçayı ve "Arapça: Tanzil" kaynaklı künyeyi duyar; duvar kâğıdı ayardan bağımsız Arapça.
+        val mealsiz = yuk.plan.last()
+        assertNull(mealsiz.meal)
+        val erisim = GununAyetiKurallari.erisimMetni(mealsiz, yuk.metin)
+        assertTrue(erisim, erisim.contains(mealsiz.ar))
+        assertTrue(erisim, erisim.contains("Arapça: Tanzil"))
+        assertTrue(GununAyetiKurallari.duvardaArapca(mealsiz, DuvarAyari(arapca = false)))
+        for (b in AyetBoyutu.values()) {
+            assertTrue(b.name, AyetDuzenSecici.adaylar(b, AyetIcerigi.MEAL, mealVar = false).all { it.duzen == AyetDuzeni.HAT })
+        }
+    }
+
     // --- Yük çözümü -------------------------------------------------------------------
 
     @Test

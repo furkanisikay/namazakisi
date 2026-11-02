@@ -5,7 +5,7 @@
  * (widget, bildirim kanalı, saat) üretilmeden dil açılırsa ekranlar yarım çevrili görünür.
  * Gözden geçirilmemiş çeviri `beta: true` taşır (seçicide rozet).
  */
-export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi' | 'pt' | 'it' | 'sv' | 'uk' | 'ro' | 'hr' | 'sr' | 'el';
+export type DilKodu = 'tr' | 'en' | 'id' | 'de' | 'fr' | 'bs' | 'ru' | 'ms' | 'ar' | 'ur' | 'es' | 'nl' | 'sq' | 'hi' | 'bn' | 'fa' | 'ps' | 'ckb' | 'ug' | 'az' | 'uz' | 'kk' | 'ky' | 'tg' | 'sw' | 'ha' | 'am' | 'om' | 'so' | 'ff' | 'yo' | 'zh' | 'ta' | 'ml' | 'th' | 'ko' | 'vi' | 'pt' | 'it' | 'sv' | 'uk' | 'ro' | 'hr' | 'sr' | 'el' | 'ku' | 'tk' | 'tt' | 'sd' | 'pl' | 'ja' | 'gu' | 'bg' | 'mk';
 
 export interface DilTanimi {
   kod: DilKodu;
@@ -71,6 +71,19 @@ export const DILLER: readonly DilTanimi[] = [
   { kod: 'hr', yerelAd: 'Hrvatski', yon: 'ltr', ttsDili: 'hr-HR', beta: true, secilebilir: true },
   { kod: 'sr', yerelAd: 'Српски', yon: 'ltr', ttsDili: 'sr-RS', beta: true, secilebilir: true },
   { kod: 'el', yerelAd: 'Ελληνικά', yon: 'ltr', ttsDili: 'el-GR', beta: true, secilebilir: true },
+  // Dalga 11 (kapalı iskelet). Kurmancî uygulama içinde `ku` (Android, iOS ve CLDR Kurmancîyi `ku`
+  // olarak taşır; `kmr` kodlu `values-b+kmr`/`kmr.lproj` klasörünü `ku` cihazı seçmez), yalnız Latin
+  // (Hawar); Soranî (`ckb`) ayrı dildir. Sindhçe Pakistan normunda Arap harfli, sağdan sola, yerel
+  // rakam `arab` (CLDR `sd` varsayılanı). Japoncada sayı ile birim bitişik (Çince gibi).
+  { kod: 'ku', yerelAd: 'Kurdî (Kurmancî)', yon: 'ltr', ttsDili: 'ku-TR', beta: true, secilebilir: false },
+  { kod: 'tk', yerelAd: 'Türkmen dili', yon: 'ltr', ttsDili: 'tk-TM', beta: true, secilebilir: false }, // dil-haric: dilin kendi adı (CLDR tk)
+  { kod: 'tt', yerelAd: 'Татар', yon: 'ltr', ttsDili: 'tt-RU', beta: true, secilebilir: false },
+  { kod: 'sd', yerelAd: 'سنڌي', yon: 'rtl', ttsDili: 'sd-PK', beta: true, secilebilir: false },
+  { kod: 'pl', yerelAd: 'Polski', yon: 'ltr', ttsDili: 'pl-PL', beta: true, secilebilir: false },
+  { kod: 'ja', yerelAd: '日本語', yon: 'ltr', ttsDili: 'ja-JP', beta: true, secilebilir: false },
+  { kod: 'gu', yerelAd: 'ગુજરાતી', yon: 'ltr', ttsDili: 'gu-IN', beta: true, secilebilir: false },
+  { kod: 'bg', yerelAd: 'Български', yon: 'ltr', ttsDili: 'bg-BG', beta: true, secilebilir: false },
+  { kod: 'mk', yerelAd: 'Македонски', yon: 'ltr', ttsDili: 'mk-MK', beta: true, secilebilir: false },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';
@@ -87,14 +100,15 @@ export function dilKoduMu(x: unknown): x is DilKodu {
  * Seçilebilirliğe BAKMAZ. Çincenin bütün yerel ayarları (Android `zh_CN`/`zh_TW_#Hant`, iOS
  * `zh-Hans-CN`/`zh-Hant-HK`) `zh`'dir: uygulama yalnız Basitleştirilmiş Çince taşır. Aynı kural:
  * bütün Portekizce yerel ayarları (pt-BR, pt-PT, pt-MZ, pt-AO) `pt` (Avrupa normu), Latin Sırpça
- * cihaz (`sr-Latn-RS`, Android `sr_RS_#Latn`) `sr` (Kiril arayüz).
+ * cihaz (`sr-Latn-RS`, Android `sr_RS_#Latn`) `sr` (Kiril arayüz). Kurmancî: `ku`, `ku-TR`, `kmr`,
+ * `kmr-Latn` `ku`'dur; Arap harfli `ku-Arab`/`ku-IQ` cihaz da `ku` alır (uygulamada Kurmancî yalnız Latin).
  * Büyük/küçük harf dönüşümü yapılmaz (yerel kimlikler zaten küçük harfle başlar).
  */
 export function yerelAyarDili(yerel: string | null | undefined): DilKodu | null {
   if (!yerel) return null;
-  // Java `Locale` Endonezceyi eski ISO kodu "in" ile verir (Android `in_ID`).
+  // Java `Locale` Endonezceyi eski ISO kodu "in" ile verir (Android `in_ID`); Kurmancînin ISO 639-3 kodu `kmr` → `ku`.
   const ham = yerel.split(/[-_]/)[0];
-  const kod = ham === 'in' ? 'id' : ham;
+  const kod = ham === 'in' ? 'id' : ham === 'kmr' ? 'ku' : ham;
   return dilKoduMu(kod) ? kod : null;
 }
 

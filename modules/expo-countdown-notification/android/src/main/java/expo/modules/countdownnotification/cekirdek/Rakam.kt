@@ -7,7 +7,7 @@ package expo.modules.countdownnotification.cekirdek
  * İKİZ: uygulama modülündeki `com.furkanisikay.namazakisi.cekirdek.Rakam` (kural ve gerekçe
  * orada). Modül uygulama sınıflarını göremediği için kopya; biri değişirse ikisini birlikte
  * değiştir. Değeri JS yazar (`ArayuzDili.TERCIH_RAKAM_SISTEMI`, ÇÖZÜLMÜŞ: "arab", "arabext", "beng"
- * ya da yok); yalnız arayüz dilinin kendi yerel sistemiyle eşleşirse uygulanır (Arapçada ve Soranîde
+ * ya da yok); yalnız arayüz dilinin kendi yerel sistemiyle eşleşirse uygulanır (Arapçada, Soranîde ve Sindhçede
  * "arab", Farsça ve Peştucada "arabext", Bengalcede "beng"), diğer dillerde çıktı BİREBİR aynı.
  */
 object Rakam {
@@ -26,7 +26,7 @@ object Rakam {
     const val BENG_SIFIR = '০'
 
     /** Dil kökü → yerel rakam sistemi (TEK eşleme; listede olmayan dil Batı rakamı yazar). */
-    private val YEREL = mapOf("ar" to ARAB, "bn" to BENG, "fa" to ARABEXT, "ps" to ARABEXT, "ckb" to ARAB)
+    private val YEREL = mapOf("ar" to ARAB, "bn" to BENG, "fa" to ARABEXT, "ps" to ARABEXT, "ckb" to ARAB, "sd" to ARAB)
 
     private val SIFIRLAR = mapOf(ARAB to DOGU_SIFIR, ARABEXT to ARABEXT_SIFIR, BENG to BENG_SIFIR)
 

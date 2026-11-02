@@ -113,7 +113,8 @@ it('İngilizce seçilince ekran İngilizce çizilir, notlar görünür; özel me
   await waitFor(() => expect(e.getByText('Turkish')).toBeTruthy());
   expect(e.getByText(/only Quran translations are shown/)).toBeTruthy();
   expect(e.getByText(/Beta translations/)).toBeTruthy();
-  expect(turkceKalanlar(e.toJSON() as never, ['Dil\\b', 'Cihaz', 'Hazır']).filter((m) => !/^(Türkçe|Français)(\. (Turkish|French)( · Beta)?)?$/.test(m))).toEqual([]);
+  // Dil adları kendi dillerinde yazılır: "Türkmen dili" Türkçe harf taşır ama Türkçe kalıntı değildir.
+  expect(turkceKalanlar(e.toJSON() as never, ['Dil\\b', 'Cihaz', 'Hazır']).filter((m) => !/^(Türkçe|Français|Türkmen dili)(\. (Turkish|French|Turkmen)( · Beta)?)?$/.test(m))).toEqual([]);
   expect(mockSay).toHaveBeenCalledTimes(1);
   expect(e.queryByText('Read-aloud texts you wrote')).toBeNull();
 });

@@ -70,6 +70,15 @@ const MEALLER = {
   hr: 'croatian_rwwad',
   sr: 'serbian_rwwad',
   el: 'greek_rwwad',
+  // Dalga 11 (sahip kararı 2026-11-02). Meali olan dört dil; ja: `japanese_saeedsato` sözlük işareti
+  // olarak sözcük sonuna "*" koyar ("アッラー*") → Japoncada yalnız "*" silinir (`YILDIZ_SILINEN`).
+  // MEALSİZ beş dil (günün ayeti yalnız Arapça + künye; `MEALLER`'e GİRMEZ): ku (QuranEnc'te Latin harfli
+  // Kurmancî meal yok; `kurmanji_ismail` Arap harfli Behdinan Kurmancîsidir, alınmaz), tk, tt, sd, pl
+  // (QuranEnc'te hiç meal yok; Tanzil mealleri "yalnız ticari olmayan kullanım" lisansıyla kullanılmaz).
+  ja: 'japanese_saeedsato',
+  gu: 'gujarati_omari',
+  bg: 'bulgarian_translation',
+  mk: 'macedonian_group',
 };
 
 /** Liste API'sinde görünmeyen çevirilerin QuranEnc başlığı (sitedeki kartta yazdığı gibi). */
@@ -87,20 +96,30 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   italian_rwwad: 'Italian Translation - Rowwad Translation Center',
   ukrainian_yakubovych: 'Ukrainian Translation - Mikhailo Yakubovych',
   greek_rwwad: 'Greek Translation - Rowwad Translation Center',
+  // Bulgarca liste API'sinde yok (`translations/list/bg` boş); QuranEnc kartı çevirmen adı yazmaz.
+  bulgarian_translation: 'Bulgarian Translation',
 };
 
 /**
  * Not numarası silinen diller ve desen — `gunun-ayeti-uret.js > NOT_NUMARASI_SILINEN` ile AYNI
- * (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Portekizce ve Ukraynaca 2026-11-01; Bengalce rakam "[১]").
+ * (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Portekizce ve Ukraynaca 2026-11-01; Japonca ve Makedonca 2026-11-02; Bengalce rakam "[১]").
  */
-const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha', 'pt', 'uk']);
+const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha', 'pt', 'uk', 'ja', 'mk']);
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
 /** Gömülü numara kalıpları (`gunun-ayeti-uret.js > DIPNOT`, `BASTA_NUMARA`, `SONDA_NUMARA` ile aynı). */
 /** Ayet numarası silinen diller (`gunun-ayeti-uret.js > AYET_NUMARASI_SILINEN` ile AYNI). */
 /** NFC'ye birleştirilen diller (`gunun-ayeti-uret.js > NFC_DILLER` ile AYNI; gerekçe orada). */
 const NFC_DILLER = new Set(['yo']);
-const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so']);
+// Gucaratça (Gucarati rakamı "૨૫૫."), Bulgarca ve Makedonca ("255.") da her ayeti numaralı (sahip kararı 2026-10-27).
+const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so', 'gu', 'bg', 'mk']);
+/**
+ * Yıldızı silinen diller (sahip kararı 2026-11-02, yalnız Japonca): `japanese_saeedsato` sözlük işareti
+ * olarak sözcük sonuna "*" koyar ("アッラー*"); işaret silinir, metnin geri kalanı (tam genişlik
+ * parantezler "（…）" dahil) birebir kalır. Diğer dillerde "*" dipnot işaretidir, meal alınmaz.
+ */
+const YILDIZ_SILINEN = new Set(['ja']);
+const YILDIZ = /\*/g;
 const NUMARALI = [
   /\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]|\*/u,
   /^\s*\p{Nd}+\s*[.)]\s/u,
@@ -156,6 +175,7 @@ async function main() {
       // Urducada ve Bengalcede yalnız "[1]" / "[১]" türü not numarası silinir (gunun-ayeti-uret.js).
       if (NFC_DILLER.has(dil)) result.translation = result.translation.normalize('NFC');
       if (NOT_NUMARASI_SILINEN.has(dil)) result.translation = result.translation.replace(NOT_NUMARASI, '').trim();
+      if (YILDIZ_SILINEN.has(dil)) result.translation = result.translation.replace(YILDIZ, '');
       if (AYET_NUMARASI_SILINEN.has(dil)) {
         result.translation = result.translation
           .replace(/^\s*\p{Nd}+\s*[.)]\s*/u, '')

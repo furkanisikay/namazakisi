@@ -14,6 +14,7 @@ import {
 import { SEYTANLA_MUCADELE_ICERIGI, uygunIcerikleriBul } from '../../data/SeytanlaMucadeleIcerigi';
 import { VAKIT_BILDIRIM_ICERIKLERI } from '../../data/VakitBildirimIcerikleri';
 import { AYET_MEALLERI } from '../../data/ayetMealleri';
+import { cumaNassi } from '../../utils/cumaYardimcisi';
 
 const VAKITLER = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] as const;
 const YONLER = ['cikisaDogru', 'girisindenItibaren'] as const;
@@ -75,4 +76,21 @@ it('İngilizce havuzlarda hadis yok; ayet QuranEnc metniyle birebir ve künyeli'
 
 it('her seviyede her vakit için en az bir içerik kalır (hadis düşünce havuz boşalmaz)', () => {
   for (const vakit of VAKITLER) for (const s of SEVIYELER) expect(uygunIcerikleriBul(vakit, s).length).toBeGreaterThan(0);
+});
+
+it('mealsiz dillerde (ku, tk, tt, sd, pl) ayet ve hadis düşer, havuz yine boşalmaz; cuma nassı boş', () => {
+  for (const dil of ['ku', 'tk', 'tt', 'sd', 'pl'] as const) {
+    aktifDiliKur(dil);
+    expect(AYET_MEALLERI[dil]).toBeUndefined();
+    expect(cumaNassi()).toBe('');
+    for (const vakit of VAKITLER) {
+      expect(VAKIT_BILDIRIM_ICERIKLERI[vakit].length).toBeGreaterThan(0);
+      expect(VAKIT_BILDIRIM_ICERIKLERI[vakit].every((i) => !i.kaynak)).toBe(true);
+      for (const s of SEVIYELER) {
+        const havuz = uygunIcerikleriBul(vakit, s);
+        expect(havuz.length).toBeGreaterThan(0);
+        expect(havuz.every((i) => i.tur !== 'ayet' && i.tur !== 'hadis')).toBe(true);
+      }
+    }
+  }
 });

@@ -99,7 +99,7 @@ enum OtomasyonMetni {
 }
 
 /// Otomasyon cevaplarinin dil tablosu. Duzen: dil basina bir `static let`, sira tr, en, id,
-/// de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
+/// de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk; cevrilmemis dil Ingilizcenin kopyasidir (`// ÇEVİRİ: <kod>`).
 /// `kalanDakika` CLDR kategorisi ("one", "few", "many", "other"; `CogulKurali`) → kalip;
 /// eksik kategori "other"a duser. Yer tutucular `{ad}`, `{n}`.
 struct OtomasyonMetinleri {
@@ -453,6 +453,69 @@ struct OtomasyonMetinleri {
         hayirKilinmadi: "Όχι, δεν έχει σημειωθεί ακόμη."
     )
 
+    // ÇEVİRİ: ku (one/other)
+    static let ku = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+    // ÇEVİRİ: tk (one/other)
+    static let tk = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+    // ÇEVİRİ: tt (other)
+    static let tt = OtomasyonMetinleri(
+        kalanDakika: ["other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+    // ÇEVİRİ: sd (one/other)
+    static let sd = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+    // ÇEVİRİ: pl (one/few/many/other)
+    static let pl = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "few": "{ad} begins in {n} minutes.", "many": "{ad} begins in {n} minutes.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+    // ÇEVİRİ: ja (other)
+    static let ja = OtomasyonMetinleri(
+        kalanDakika: ["other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+    // ÇEVİRİ: gu (one/other)
+    static let gu = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+    // ÇEVİRİ: bg (one/other)
+    static let bg = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
+    // ÇEVİRİ: mk (one/other)
+    static let mk = OtomasyonMetinleri(
+        kalanDakika: ["one": "{ad} begins in {n} minute.", "other": "{ad} begins in {n} minutes."],
+        evetKilindi: "Yes, it's marked as prayed.",
+        hayirKilinmadi: "No, it isn't marked yet."
+    )
+
     static let tablo: [String: OtomasyonMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
@@ -461,6 +524,7 @@ struct OtomasyonMetinleri {
         "sw": sw, "ha": ha, "am": am, "om": om, "so": so, "ff": ff, "yo": yo,
         "zh": zh, "ta": ta, "ml": ml, "th": th, "ko": ko, "vi": vi,
         "pt": pt, "it": it, "sv": sv, "uk": uk, "ro": ro, "hr": hr, "sr": sr, "el": el,
+        "ku": ku, "tk": tk, "tt": tt, "sd": sd, "pl": pl, "ja": ja, "gu": gu, "bg": bg, "mk": mk,
     ]
 
     static func dil(_ kod: String) -> OtomasyonMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

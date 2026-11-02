@@ -2,7 +2,7 @@
 # Emulatoru kare hattinin diline alir ve paket servisi kararli hale gelene kadar bekler.
 # Kare hatlari `adb wait-for-device`'tan hemen sonra, APK kurmadan once cagirir.
 #
-# Dil: TOHUM_DIL (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el) → cihaz dili; bilinmeyen kod tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
+# Dil: TOHUM_DIL (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk) → cihaz dili; bilinmeyen kod tr-TR (saat/TV `values-en` tasidigi icin Turkce turda
 # cihaz Turkce olmali). `-change-locale` emulator secenegi KULLANILMAZ: acilistan hemen sonra
 # framework'u yeniden baslatir ve emulator-runner'in kendi kilit acma adimi (`input keyevent 82`)
 # "Broken pipe" ile duser — o adim kapatilamaz. Burada dil, acilis tamamlandiktan sonra root ile
@@ -27,6 +27,10 @@ case "${TOHUM_DIL:-tr}" in
   # pt/it/sv/uk/ro/hr/sr/el seçicide kapalıdır (kare hattı işareti açar). Portekizce Avrupa normu (pt-PT);
   # Sırpça KİRİL: betik açık yazılır (sr-Latn cihaz values-sr'yi seçmez, Türkçe values/'e düşer).
   pt) HEDEF="pt-PT" ;; it) HEDEF="it-IT" ;; sv) HEDEF="sv-SE" ;; uk) HEDEF="uk-UA" ;; ro) HEDEF="ro-RO" ;; hr) HEDEF="hr-HR" ;; sr) HEDEF="sr-Cyrl-RS" ;; el) HEDEF="el-GR" ;;
+  # ku/tk/tt/sd/pl/ja/gu/bg/mk seçicide kapalıdır (kare hattı işareti açar). Kurmancî `ku` (values-ku; kmr değil),
+  # Sindhçe Pakistan normu (Arap harfli, sağdan sola). Sistem dili `persist.sys.locale` ile yazılır: dilin
+  # sistem ayarlarındaki listede olması gerekmez, kaynak seçimi BCP-47 etiketinden yapılır.
+  ku) HEDEF="ku-TR" ;; tk) HEDEF="tk-TM" ;; tt) HEDEF="tt-RU" ;; sd) HEDEF="sd-PK" ;; pl) HEDEF="pl-PL" ;; ja) HEDEF="ja-JP" ;; gu) HEDEF="gu-IN" ;; bg) HEDEF="bg-BG" ;; mk) HEDEF="mk-MK" ;;
   *) HEDEF="tr-TR" ;;
 esac
 

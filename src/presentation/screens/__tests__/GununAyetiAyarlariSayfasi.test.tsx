@@ -8,6 +8,7 @@ import { Linking, Platform } from 'react-native';
 import { GununAyetiAyarlariSayfasi } from '../GununAyetiAyarlariSayfasi';
 import { VARSAYILAN_DUVAR_AYARI } from '../../../core/icerik/gununAyetiYuku';
 import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
+import { aktifDiliKur, aktifDilSifirla } from '../../../core/dil/aktifDil';
 
 const mockServis = {
     duvarAyariOku: jest.fn(),
@@ -139,6 +140,24 @@ describe('GununAyetiAyarlariSayfasi', () => {
             fireEvent.press(e.getByTestId('gunun-ayeti-kisayollar'));
             expect(ac).toHaveBeenCalledWith('shortcuts://');
             expect(mockServis.duvarAyariOku).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('meal', () => {
+        afterEach(() => {
+            act(() => aktifDilSifirla());
+            jest.restoreAllMocks();
+        });
+
+        it.each(['android', 'ios'] as const)('%s: meali olmayan dilde (sd) "meal yok" bilgi satırı görünür, meali olan dilde görünmez', async (os) => {
+            jest.replaceProperty(Platform, 'OS', os);
+            const tr = render(<GununAyetiAyarlariSayfasi />);
+            await tr.findByText('Ana ekrana widget ekleyin');
+            expect(tr.queryByTestId('gunun-ayeti-meal-yok')).toBeNull();
+            tr.unmount();
+            act(() => aktifDiliKur('sd'));
+            const sd = render(<GununAyetiAyarlariSayfasi />);
+            expect(await sd.findByTestId('gunun-ayeti-meal-yok')).toBeTruthy();
         });
     });
 

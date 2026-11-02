@@ -83,6 +83,15 @@ const MEALLER = {
   hr: 'croatian_rwwad',
   sr: 'serbian_rwwad',
   el: 'greek_rwwad',
+  // Dalga 11 (sahip kararı 2026-11-02). Meali olan dört dil; ja: `japanese_saeedsato` sözlük işareti
+  // olarak sözcük sonuna "*" koyar ("アッラー*") → Japoncada yalnız "*" silinir (`YILDIZ_SILINEN`).
+  // MEALSİZ beş dil (günün ayeti yalnız Arapça + künye; `MEALLER`'e GİRMEZ): ku (QuranEnc'te Latin harfli
+  // Kurmancî meal yok; `kurmanji_ismail` Arap harfli Behdinan Kurmancîsidir, alınmaz), tk, tt, sd, pl
+  // (QuranEnc'te hiç meal yok; Tanzil mealleri "yalnız ticari olmayan kullanım" lisansıyla kullanılmaz).
+  ja: 'japanese_saeedsato',
+  gu: 'gujarati_omari',
+  bg: 'bulgarian_translation',
+  mk: 'macedonian_group',
 };
 
 /**
@@ -103,6 +112,8 @@ const LISTEDE_OLMAYAN_BASLIKLAR = {
   italian_rwwad: 'Italian Translation - Rowwad Translation Center',
   ukrainian_yakubovych: 'Ukrainian Translation - Mikhailo Yakubovych',
   greek_rwwad: 'Greek Translation - Rowwad Translation Center',
+  // Bulgarca liste API'sinde yok (`translations/list/bg` boş); QuranEnc kartı çevirmen adı yazmaz.
+  bulgarian_translation: 'Bulgarian Translation',
 };
 
 const TANZIL_URL = 'https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt-2&agree=true';
@@ -187,12 +198,12 @@ const ref = (sure, ayet) => `${sure}:${ayet}`;
  */
 /** Kural 1 ve 2 tek meal için: sığar ve dipnot işareti / baştaki ayet numarası taşımaz. */
 /**
- * Not numarası silinen diller (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Portekizce ve Ukraynaca 2026-11-01): mealde
+ * Not numarası silinen diller (sahip kararı 2026-10-26, Urduca; Bengalce 2026-10-27; Kırgızca 2026-10-30; Hausa 2026-10-31; Portekizce ve Ukraynaca 2026-11-01; Japonca ve Makedonca 2026-11-02): mealde
  * ayetlerin çoğu "[1]" / "[১]" (Bengalce rakam) gibi dipnot numarası taşır; dipnot gösterilmediği
  * için yalnız numara silinir, meal sözcükleri birebir kalır. Diğer dillerde numaralı meal alınmaz
  * (`mealUygun`). `ayet-mealleri-uret.js` aynı kümeyi ve deseni kullanır.
  */
-const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha', 'pt', 'uk']);
+const NOT_NUMARASI_SILINEN = new Set(['ur', 'bn', 'ky', 'ha', 'pt', 'uk', 'ja', 'mk']);
 /** Dipnot numarası, herhangi bir yazının rakamıyla ("[12]", "[১২]", "[१२]"); `\p{Nd}` + `u`. */
 // Köşeli ayraç içinde görünmez biçim karakteri olabilir (bengali_zakaria 3:96 "[\u200c১]").
 const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
@@ -208,11 +219,20 @@ const NOT_NUMARASI = /\s*\[[\p{Cf}\s]*\p{Nd}+[\p{Cf}\s]*\]/gu;
  * `ayet-mealleri-uret.js > NFC_DILLER` ile AYNI.
  */
 const NFC_DILLER = new Set(['yo']);
-const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so']);
+// Gucaratça (Gucarati rakamı "૨૫૫."), Bulgarca ve Makedonca ("255.") da her ayeti numaralı (sahip kararı 2026-10-27).
+const AYET_NUMARASI_SILINEN = new Set(['es', 'ug', 'so', 'gu', 'bg', 'mk']);
+/**
+ * Yıldızı silinen diller (sahip kararı 2026-11-02, yalnız Japonca): `japanese_saeedsato` sözlük işareti
+ * olarak sözcük sonuna "*" koyar ("アッラー*"); işaret silinir, metnin geri kalanı (tam genişlik
+ * parantezler "（…）" dahil) birebir kalır. Diğer dillerde "*" dipnot işaretidir, meal alınmaz.
+ */
+const YILDIZ_SILINEN = new Set(['ja']);
+const YILDIZ = /\*/g;
 const BASTAKI_AYET_NO = /^\s*\p{Nd}+\s*[.)]\s*/u;
 const SONDAKI_AYET_NO = /\s*\(\p{Nd}+\)(\s*[.।]?)\s*$/u;
 function notNumarasiz(dil, metin) {
   let m = NOT_NUMARASI_SILINEN.has(dil) ? metin.replace(NOT_NUMARASI, '').trim() : metin;
+  if (YILDIZ_SILINEN.has(dil)) m = m.replace(YILDIZ, '');
   if (AYET_NUMARASI_SILINEN.has(dil)) m = m.replace(BASTAKI_AYET_NO, '').replace(SONDAKI_AYET_NO, '$1').trim();
   // Baştaki/sondaki boşluk metin değildir (kurdish_bamoki her ayeti "\n" ile bitirir); sözcüklere dokunulmaz.
   return m.trim();
@@ -510,7 +530,11 @@ export const GUNUN_AYETI_HAVUZU: readonly GununAyetiKaydi[] = ${JSON.stringify(h
   console.log(`${path.relative(KOK, HEDEF)} yazıldı`);
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+// Nöbetçi testi (`src/core/data/__tests__/gununAyetiHavuzu.test.ts`) temizleme kuralını betikten alır.
+module.exports = { notNumarasiz, mealGerekce };
+if (require.main === module) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}

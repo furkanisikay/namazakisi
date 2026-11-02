@@ -12,7 +12,7 @@ import org.junit.Test
  * (ör. `$ad`) düşürmesin diye işaretçi değerlerle çağrılır.
  */
 class SaatDilTablolariTest {
-    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el")
+    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk")
     private val isaretciler = listOf("<AD>", "<SAAT>", "<SURE>", "<S>", "<D>", "987", "986", "985")
 
     private fun metinler(d: SaatDili): Map<String, String> = linkedMapOf(
@@ -117,10 +117,27 @@ class SaatDilTablolariTest {
     }
 
     @Test
+    fun dalga11CogulKategorileri() {
+        val sayilar = listOf(0L, 1L, 2L, 4L, 5L, 12L, 14L, 21L, 22L, 25L, 104L, 111L)
+        // CLDR pl (JS `cogul.ts > lehce`): 1 tekil; …2–4 (…12–14 hariç) few; gerisi many.
+        assertEquals(
+            listOf("many", "one", "few", "few", "many", "many", "many", "many", "few", "many", "few", "many"),
+            sayilar.map { SaatDiliPl.cogulKategorisi(it) },
+        )
+        // CLDR mk (JS `cogul.ts > makedonca`): son hanesi 1 (11 hariç) tekil; gerisi other.
+        assertEquals(
+            listOf("other", "one", "other", "other", "other", "other", "other", "one", "other", "other", "other", "other"),
+            sayilar.map { SaatDiliMk.cogulKategorisi(it) },
+        )
+        // ja ve tt yalnız other: sesli süre her sayıda çoğul kalıp.
+        for (dil in listOf(SaatDiliJa, SaatDiliTt)) assertEquals(dil.saatSesli(1L).removePrefix("1"), dil.saatSesli(2L).removePrefix("2"))
+    }
+
+    @Test
     fun sayiBirimBoslugu_dildenGelir() {
         // JS `sure.birimli` / `sure.parcali` ikizi: boşluklu dillerde çıktı eski sabit boşluklu
         // biçimle birebir; boşluksuz dil (Çince) bitişik yazar.
-        for (k in kodlar.filter { it != "zh" && it != "ko" }) {
+        for (k in kodlar.filter { it != "zh" && it != "ko" && it != "ja" }) {
             val d = saatDili(k)
             assertEquals(k, " " to " ", d.birimAyirici to d.parcaAyirici)
             assertEquals(k, "1 ${d.birimSa} 12 ${d.birimDk}", VakitHesabi.kalanMetni(72 * 60_000L, k))
@@ -134,6 +151,11 @@ class SaatDilTablolariTest {
         assertEquals(zh.saatSesli(1) + zh.dakikaSesli(5), VakitHesabi.kalanSesliMetni(65 * 60_000L, "zh"))
         val sayac = AnaEkranKarari.sayac(3_725_000L, "zh")
         assertTrue(!sayac.birimBosluklu && !sayac.parcaBosluklu)
+        // Japonca Çince gibi bitişik (iskelette de; JS `sozluk/ja/sure.ts`).
+        val ja = saatDili("ja")
+        assertEquals("" to "", ja.birimAyirici to ja.parcaAyirici)
+        assertEquals("1${ja.birimSa}12${ja.birimDk}", VakitHesabi.kalanMetni(72 * 60_000L, "ja"))
+        assertEquals(ja.saatSesli(1) + ja.dakikaSesli(5), VakitHesabi.kalanSesliMetni(65 * 60_000L, "ja"))
         // Korece yalnız sayı–birim bitişik, parçalar boşluklu ("5분", "1시간 5분").
         val ko = saatDili("ko")
         assertEquals("" to " ", ko.birimAyirici to ko.parcaAyirici)

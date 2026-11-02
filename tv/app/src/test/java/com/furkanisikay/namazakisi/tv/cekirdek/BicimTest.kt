@@ -63,5 +63,9 @@ class BicimTest {
         assertEquals("5${zh.birimSa}2${zh.birimDk}", Bicim.kalanKisa(5 * sa + 2 * dk, "zh"))
         assertEquals("18${zh.birimDk}05${zh.birimSn}", Bicim.kalanKisa(18 * dk + 5 * sn, "zh"))
         assertEquals(zh.saatSesli(1) + zh.dakikaSesli(16), Bicim.kalanSesli(sa + 16 * dk, "zh"))
+        // Japonca Çince gibi bitişik (iskelette de; JS `sozluk/ja/sure.ts`).
+        val ja = tvDili("ja")
+        assertEquals("" to "", ja.birimAyirici to ja.parcaAyirici)
+        assertEquals("5${ja.birimSa}2${ja.birimDk}", Bicim.kalanKisa(5 * sa + 2 * dk, "ja"))
     }
 }

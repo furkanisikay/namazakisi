@@ -51,8 +51,13 @@ describe('rakamSistemiCoz', () => {
     expect(rakamSecimiGecerliMi('tr', 'latn')).toBe(false);
   });
 
-  it('dil → yerel rakam eşlemesi TEK yerde: Arapça, Bengalce, Farsça, Peştuca, Soranî', () => {
-    expect([...RAKAM_SECIMLI_DILLER].sort()).toEqual(['ar', 'bn', 'ckb', 'fa', 'ps']);
+  it('dil → yerel rakam eşlemesi TEK yerde: Arapça, Bengalce, Farsça, Peştuca, Soranî, Sindhçe', () => {
+    expect([...RAKAM_SECIMLI_DILLER].sort()).toEqual(['ar', 'bn', 'ckb', 'fa', 'ps', 'sd']);
+    // Sindhçe CLDR varsayılanı Doğu Arap rakamı (Node `Intl.NumberFormat('sd')` → ١٢٬٣٤٥.٦).
+    expect(dilYerelRakami('sd')).toBe('arab');
+    expect(rakamSistemiCoz('sd', undefined, 'PK')).toBe('arab');
+    expect(rakamSistemiCoz('sd', 'latn', 'PK')).toBe('latn');
+    expect(rakamSecimiGecerliMi('sd', 'arabext')).toBe(false);
     expect(dilYerelRakami('ar')).toBe('arab');
     expect(dilYerelRakami('bn')).toBe('beng');
     expect(dilYerelRakami('fa')).toBe('arabext');

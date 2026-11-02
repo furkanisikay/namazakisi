@@ -46,6 +46,10 @@ describe('YonServisi', () => {
   it('saf çekirdek: yön DILLER kaydından', () => {
     expect(sagdanSolaMi('ar')).toBe(true);
     expect(sagdanSolaMi('ur')).toBe(true);
+    // Sindhçe Pakistan normu (Arap harfli) sağdan sola; Kurmancî yalnız Latin, Soranî sağdan sola.
+    expect(sagdanSolaMi('sd')).toBe(true);
+    expect(sagdanSolaMi('ku')).toBe(false);
+    expect(sagdanSolaMi('ckb')).toBe(true);
     expect(sagdanSolaMi('tr')).toBe(false);
     expect(sagdanSolaMi('xx')).toBe(false);
   });

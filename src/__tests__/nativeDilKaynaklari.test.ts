@@ -66,6 +66,16 @@ const COGUL: Record<string, string[]> = {
   hr: ['one', 'few', 'other'],
   sr: ['one', 'few', 'other'],
   el: ['one', 'other'],
+  ku: ['one', 'other'],
+  tk: ['one', 'other'],
+  // Tatarca CLDR çoğul tablosunda yok → ICU kökü (yalnız other); Android `<plurals>` seçimi de kökten düşer.
+  tt: ['other'],
+  sd: ['one', 'other'],
+  pl: ['one', 'few', 'many', 'other'],
+  ja: ['other'],
+  gu: ['one', 'other'],
+  bg: ['one', 'other'],
+  mk: ['one', 'other'],
 };
 
 function resDizinleri(): string[] {

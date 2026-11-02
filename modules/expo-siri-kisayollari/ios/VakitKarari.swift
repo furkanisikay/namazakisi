@@ -69,8 +69,8 @@ public enum SiriKildimKarari: Equatable {
 /// yeni ornek + `tablo` eslemesi + `desteklenenler`'e kod (`docs/ajan/coklu-dil.md`).
 public enum ArayuzDili {
     public static let varsayilan = "tr"
-    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el).
-    public static let desteklenenler: [String] = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el"]
+    /// Tablo duzeni sirasiyla (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk).
+    public static let desteklenenler: [String] = ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk"]
 
     /// "en", "en-US", "de_DE" → kok kod; bilinmeyen ya da bos kod → "tr". Eski Endonezce
     /// kodu "in" (Java/Android mirasi) "id" sayilir; iOS'ta Endonezce zaten "id"dir.
@@ -78,6 +78,7 @@ public enum ArayuzDili {
         guard let kod, !kod.isEmpty else { return varsayilan }
         var dil = String(kod.split(whereSeparator: { $0 == "-" || $0 == "_" }).first ?? "")
         if dil == "in" { dil = "id" }
+        if dil == "kmr" { dil = "ku" }  // Kurmanci ISO 639-3 → uygulamanin Kurmanci kodu
         return desteklenenler.contains(dil) ? dil : varsayilan
     }
 }
@@ -86,7 +87,7 @@ public enum ArayuzDili {
 /// `saat/cekirdek/Rakam.kt` ikizi; esleme JS `core/dil/rakam.ts > YEREL_RAKAMLAR`). JS COZULMUS
 /// degeri App Group'a yazar (`SiriDeposu.rakamSistemiAnahtari`: yerel rakamin CLDR adi "arab" /
 /// "arabext" / "beng" ya da yok); kayit YALNIZ arayuz/cevap dilinin KENDI yerel sistemiyse uygulanir
-/// (Arapcada ve Soranide "arab", Farsca ve Pestucada "arabext", Bengalcede "beng"), diger her dilde
+/// (Arapcada, Soranide ve Sindhcede "arab", Farsca ve Pestucada "arabext", Bengalcede "beng"), diger her dilde
 /// (Turkce dahil) cikti BIREBIR ayni kalir.
 ///
 /// Kural: cekirdek metni Bati rakamiyla URETIR (fikstur, kimlik, veri ayni); donusum yalniz
@@ -102,7 +103,7 @@ public enum RakamSistemi {
     public static let latn = "latn"
 
     /// Dil koku → yerel rakam sistemi (TEK esleme; listede olmayan dil Bati rakami yazar).
-    static let yerel: [String: String] = ["ar": arab, "bn": beng, "fa": arabext, "ps": arabext, "ckb": arab]
+    static let yerel: [String: String] = ["ar": arab, "bn": beng, "fa": arabext, "ps": arabext, "ckb": arab, "sd": arab]
 
     /// Yerel sistemin sifirinin kod noktasi (dizi Unicode'da ardisik).
     static let sifirlar: [String: UInt32] = [arab: 0x0660, arabext: 0x06F0, beng: 0x09E6]
@@ -160,13 +161,15 @@ public enum RakamSistemi {
 
 /// CLDR cogul kategorisi ("zero", "one", "two", "few", "many", "other") — JS
 /// `src/core/dil/cogul.ts` ikizi (tamsayi icin); Urduca, Felemenkce, Arnavutca, Pestuca, Sorani,
-/// Uygurca ve Orta Asya dilleri (ur, nl, sq, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, om, so, ta, ml, sv, el) `default` dalindadir (one/other).
+/// Uygurca ve Orta Asya dilleri (ur, nl, sq, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, om, so, ta, ml, sv, el, ku, tk, sd, bg) `default` dalindadir (one/other).
 /// Cogul metin tablolari kategori → kalip tasir; dilde olmayan kategori "other"a duser.
 public enum CogulKurali {
     public static func kategori(_ dil: String, _ n: Int) -> String {
         let i = abs(n)
         switch ArayuzDili.coz(dil) {
-        case "id", "ms", "yo", "zh", "th", "ko", "vi": return "other"
+        case "id", "ms", "yo", "zh", "th", "ko", "vi", "ja", "tt":
+            // Tatarca CLDR cogul tablosunda yok → ICU koku (yalniz other); `cogul.ts > hepDiger`.
+            return "other"
         case "es", "pt", "it":
             // `cogul.ts > ispanyolca`: yalniz 1 tekil (0 cogul); 1.000.000 katlari "many" (pt = pt-PT kurali).
             if i == 1 { return "one" }
@@ -175,7 +178,7 @@ public enum CogulKurali {
             // `cogul.ts > rumence`: 1 tekil; 0 ve …01–…19 (1 haric) "few"; gerisi "other" (20, 100, 120…).
             if i == 1 { return "one" }
             return (i == 0 || (1...19).contains(i % 100)) ? "few" : "other"
-        case "hi", "bn", "fa", "am", "ff":
+        case "hi", "bn", "fa", "am", "ff", "gu":
             // `cogul.ts > sifirBir`: 0 ve 1 tekil.
             return (i == 0 || i == 1) ? "one" : "other"
         case "fr":
@@ -187,6 +190,14 @@ public enum CogulKurali {
             if s10 == 1 && s100 != 11 { return "one" }
             if (2...4).contains(s10) && !(12...14).contains(s100) { return "few" }
             return ["ru", "uk"].contains(ArayuzDili.coz(dil)) ? "many" : "other"
+        case "pl":
+            // `cogul.ts > lehce`: 1 tekil; …2–4 (…12–14 haric) "few"; gerisi "many" (0, 5–21, 25…).
+            if i == 1 { return "one" }
+            let s10 = i % 10, s100 = i % 100
+            return ((2...4).contains(s10) && !(12...14).contains(s100)) ? "few" : "many"
+        case "mk":
+            // `cogul.ts > makedonca`: son hanesi 1 (11 haric) tekil; gerisi "other".
+            return (i % 10 == 1 && i % 100 != 11) ? "one" : "other"
         case "ar":
             // `cogul.ts > arapca`: 0, 1, 2, …03–…10, …11–…99, kalani other (100, 101, 102…).
             let s100 = i % 100
@@ -281,7 +292,7 @@ public struct VakitAdlari: Equatable {
 /// Yer tutucular `{ad}`, `{saat}`, `{giris}`, `{dua}` — `bicim` doldurur.
 ///
 /// Duzen (ceviri ajanlari icin): dil basina bir `static let`, sira tr, en, id, de, fr, bs,
-/// ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el; cevrilmemis dilin ornegi Ingilizcenin birebir kopyasidir ve `// ÇEVİRİ: <kod>`
+/// ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk; cevrilmemis dilin ornegi Ingilizcenin birebir kopyasidir ve `// ÇEVİRİ: <kod>`
 /// satiriyla baslar; Ozbekce ornegi Latin, Kazakca Kiril yazilir (`docs/ajan/coklu-dil.md > Alfabe`).
 /// Nobetci: `test/main.swift` (her dil Turkceyle ayni yer tutucular).
 public struct VakitMetinleri: Equatable {
@@ -1537,6 +1548,249 @@ public struct VakitMetinleri: Equatable {
         uygulamayiAcin: "Άνοιγμα εφαρμογής"
     )
 
+    // ÇEVİRİ: ku
+    public static let ku = VakitMetinleri(
+        dil: "ku",
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Sunrise",
+        konumYok: "Open the app and set your location so prayer times can be calculated.",
+        veriEski: "Prayer times are out of date. Open the app once to update them.",
+        girisBugun: "at {saat}",
+        girisYarin: "tomorrow at {saat}",
+        suAnVakti: "It's {ad} time now.",
+        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
+        siradakiNamaz: "The next prayer is {ad} {giris}.",
+        isaretlendi: "{ad} is marked as prayed. {dua}.",
+        zatenKilindi: "{ad} is already marked as prayed.",
+        vakitYok: "There is no prayer to mark right now.",
+        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
+        onay: "Mark {ad} as prayed?",
+        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
+        kabulDuasi: "May Allah accept it",
+        kildim: "I've prayed",
+        kilindi: "Prayed",
+        kontrolKildim: "{ad} · I've prayed",
+        kontrolKilindi: "{ad} prayed",
+        kontrolVakitYok: "No prayer to mark",
+        uygulamayiAcin: "Open the app"
+    )
+
+    // ÇEVİRİ: tk
+    public static let tk = VakitMetinleri(
+        dil: "tk",
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Sunrise",
+        konumYok: "Open the app and set your location so prayer times can be calculated.",
+        veriEski: "Prayer times are out of date. Open the app once to update them.",
+        girisBugun: "at {saat}",
+        girisYarin: "tomorrow at {saat}",
+        suAnVakti: "It's {ad} time now.",
+        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
+        siradakiNamaz: "The next prayer is {ad} {giris}.",
+        isaretlendi: "{ad} is marked as prayed. {dua}.",
+        zatenKilindi: "{ad} is already marked as prayed.",
+        vakitYok: "There is no prayer to mark right now.",
+        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
+        onay: "Mark {ad} as prayed?",
+        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
+        kabulDuasi: "May Allah accept it",
+        kildim: "I've prayed",
+        kilindi: "Prayed",
+        kontrolKildim: "{ad} · I've prayed",
+        kontrolKilindi: "{ad} prayed",
+        kontrolVakitYok: "No prayer to mark",
+        uygulamayiAcin: "Open the app"
+    )
+
+    // ÇEVİRİ: tt
+    public static let tt = VakitMetinleri(
+        dil: "tt",
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Sunrise",
+        konumYok: "Open the app and set your location so prayer times can be calculated.",
+        veriEski: "Prayer times are out of date. Open the app once to update them.",
+        girisBugun: "at {saat}",
+        girisYarin: "tomorrow at {saat}",
+        suAnVakti: "It's {ad} time now.",
+        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
+        siradakiNamaz: "The next prayer is {ad} {giris}.",
+        isaretlendi: "{ad} is marked as prayed. {dua}.",
+        zatenKilindi: "{ad} is already marked as prayed.",
+        vakitYok: "There is no prayer to mark right now.",
+        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
+        onay: "Mark {ad} as prayed?",
+        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
+        kabulDuasi: "May Allah accept it",
+        kildim: "I've prayed",
+        kilindi: "Prayed",
+        kontrolKildim: "{ad} · I've prayed",
+        kontrolKilindi: "{ad} prayed",
+        kontrolVakitYok: "No prayer to mark",
+        uygulamayiAcin: "Open the app"
+    )
+
+    // ÇEVİRİ: sd
+    public static let sd = VakitMetinleri(
+        dil: "sd",
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Sunrise",
+        konumYok: "Open the app and set your location so prayer times can be calculated.",
+        veriEski: "Prayer times are out of date. Open the app once to update them.",
+        girisBugun: "at {saat}",
+        girisYarin: "tomorrow at {saat}",
+        suAnVakti: "It's {ad} time now.",
+        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
+        siradakiNamaz: "The next prayer is {ad} {giris}.",
+        isaretlendi: "{ad} is marked as prayed. {dua}.",
+        zatenKilindi: "{ad} is already marked as prayed.",
+        vakitYok: "There is no prayer to mark right now.",
+        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
+        onay: "Mark {ad} as prayed?",
+        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
+        kabulDuasi: "May Allah accept it",
+        kildim: "I've prayed",
+        kilindi: "Prayed",
+        kontrolKildim: "{ad} · I've prayed",
+        kontrolKilindi: "{ad} prayed",
+        kontrolVakitYok: "No prayer to mark",
+        uygulamayiAcin: "Open the app"
+    )
+
+    // ÇEVİRİ: pl
+    public static let pl = VakitMetinleri(
+        dil: "pl",
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Sunrise",
+        konumYok: "Open the app and set your location so prayer times can be calculated.",
+        veriEski: "Prayer times are out of date. Open the app once to update them.",
+        girisBugun: "at {saat}",
+        girisYarin: "tomorrow at {saat}",
+        suAnVakti: "It's {ad} time now.",
+        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
+        siradakiNamaz: "The next prayer is {ad} {giris}.",
+        isaretlendi: "{ad} is marked as prayed. {dua}.",
+        zatenKilindi: "{ad} is already marked as prayed.",
+        vakitYok: "There is no prayer to mark right now.",
+        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
+        onay: "Mark {ad} as prayed?",
+        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
+        kabulDuasi: "May Allah accept it",
+        kildim: "I've prayed",
+        kilindi: "Prayed",
+        kontrolKildim: "{ad} · I've prayed",
+        kontrolKilindi: "{ad} prayed",
+        kontrolVakitYok: "No prayer to mark",
+        uygulamayiAcin: "Open the app"
+    )
+
+    // ÇEVİRİ: ja
+    public static let ja = VakitMetinleri(
+        dil: "ja",
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Sunrise",
+        konumYok: "Open the app and set your location so prayer times can be calculated.",
+        veriEski: "Prayer times are out of date. Open the app once to update them.",
+        girisBugun: "at {saat}",
+        girisYarin: "tomorrow at {saat}",
+        suAnVakti: "It's {ad} time now.",
+        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
+        siradakiNamaz: "The next prayer is {ad} {giris}.",
+        isaretlendi: "{ad} is marked as prayed. {dua}.",
+        zatenKilindi: "{ad} is already marked as prayed.",
+        vakitYok: "There is no prayer to mark right now.",
+        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
+        onay: "Mark {ad} as prayed?",
+        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
+        kabulDuasi: "May Allah accept it",
+        kildim: "I've prayed",
+        kilindi: "Prayed",
+        kontrolKildim: "{ad} · I've prayed",
+        kontrolKilindi: "{ad} prayed",
+        kontrolVakitYok: "No prayer to mark",
+        uygulamayiAcin: "Open the app"
+    )
+
+    // ÇEVİRİ: gu
+    public static let gu = VakitMetinleri(
+        dil: "gu",
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Sunrise",
+        konumYok: "Open the app and set your location so prayer times can be calculated.",
+        veriEski: "Prayer times are out of date. Open the app once to update them.",
+        girisBugun: "at {saat}",
+        girisYarin: "tomorrow at {saat}",
+        suAnVakti: "It's {ad} time now.",
+        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
+        siradakiNamaz: "The next prayer is {ad} {giris}.",
+        isaretlendi: "{ad} is marked as prayed. {dua}.",
+        zatenKilindi: "{ad} is already marked as prayed.",
+        vakitYok: "There is no prayer to mark right now.",
+        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
+        onay: "Mark {ad} as prayed?",
+        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
+        kabulDuasi: "May Allah accept it",
+        kildim: "I've prayed",
+        kilindi: "Prayed",
+        kontrolKildim: "{ad} · I've prayed",
+        kontrolKilindi: "{ad} prayed",
+        kontrolVakitYok: "No prayer to mark",
+        uygulamayiAcin: "Open the app"
+    )
+
+    // ÇEVİRİ: bg
+    public static let bg = VakitMetinleri(
+        dil: "bg",
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Sunrise",
+        konumYok: "Open the app and set your location so prayer times can be calculated.",
+        veriEski: "Prayer times are out of date. Open the app once to update them.",
+        girisBugun: "at {saat}",
+        girisYarin: "tomorrow at {saat}",
+        suAnVakti: "It's {ad} time now.",
+        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
+        siradakiNamaz: "The next prayer is {ad} {giris}.",
+        isaretlendi: "{ad} is marked as prayed. {dua}.",
+        zatenKilindi: "{ad} is already marked as prayed.",
+        vakitYok: "There is no prayer to mark right now.",
+        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
+        onay: "Mark {ad} as prayed?",
+        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
+        kabulDuasi: "May Allah accept it",
+        kildim: "I've prayed",
+        kilindi: "Prayed",
+        kontrolKildim: "{ad} · I've prayed",
+        kontrolKilindi: "{ad} prayed",
+        kontrolVakitYok: "No prayer to mark",
+        uygulamayiAcin: "Open the app"
+    )
+
+    // ÇEVİRİ: mk
+    public static let mk = VakitMetinleri(
+        dil: "mk",
+        adlar: ["sabah": "Fajr", "ogle": "Dhuhr", "ikindi": "Asr", "aksam": "Maghrib", "yatsi": "Isha"],
+        gunes: "Sunrise",
+        konumYok: "Open the app and set your location so prayer times can be calculated.",
+        veriEski: "Prayer times are out of date. Open the app once to update them.",
+        girisBugun: "at {saat}",
+        girisYarin: "tomorrow at {saat}",
+        suAnVakti: "It's {ad} time now.",
+        suAnVaktiCikis: "It's {ad} time now; it ends at {saat}.",
+        siradakiNamaz: "The next prayer is {ad} {giris}.",
+        isaretlendi: "{ad} is marked as prayed. {dua}.",
+        zatenKilindi: "{ad} is already marked as prayed.",
+        vakitYok: "There is no prayer to mark right now.",
+        vakitYokSiradaki: "There is no prayer to mark right now. Next is {ad} {giris}.",
+        onay: "Mark {ad} as prayed?",
+        vakitDegisti: "The prayer time changed, so nothing was marked. Try again.",
+        kabulDuasi: "May Allah accept it",
+        kildim: "I've prayed",
+        kilindi: "Prayed",
+        kontrolKildim: "{ad} · I've prayed",
+        kontrolKilindi: "{ad} prayed",
+        kontrolVakitYok: "No prayer to mark",
+        uygulamayiAcin: "Open the app"
+    )
+
     /// Dil kodu → tablo (sira `ArayuzDili.desteklenenler`).
     public static let tablo: [String: VakitMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
@@ -1546,6 +1800,7 @@ public struct VakitMetinleri: Equatable {
         "sw": sw, "ha": ha, "am": am, "om": om, "so": so, "ff": ff, "yo": yo,
         "zh": zh, "ta": ta, "ml": ml, "th": th, "ko": ko, "vi": vi,
         "pt": pt, "it": it, "sv": sv, "uk": uk, "ro": ro, "hr": hr, "sr": sr, "el": el,
+        "ku": ku, "tk": tk, "tt": tt, "sd": sd, "pl": pl, "ja": ja, "gu": gu, "bg": bg, "mk": mk,
     ]
 
     /// Dil koduna gore metinler ("en-US" → Ingilizce; bilinmeyen → Turkce). Kullanicinin

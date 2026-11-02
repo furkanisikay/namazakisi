@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, Image, Linking, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
-import { aktifNamazGunu, gununAyetiGorunumu, gununAyetiKaydi, isoGun } from '../../core/icerik/gununAyeti';
+import { aktifNamazGunu, dilinMealiVar, gununAyetiGorunumu, gununAyetiKaydi, isoGun } from '../../core/icerik/gununAyeti';
 import {
   VARSAYILAN_DUVAR_AYARI,
   koordinatImsakKaynagi,
@@ -41,6 +41,7 @@ export const GununAyetiAyarlariSayfasi: React.FC = () => {
   const renkler = useRenkler();
   const s = useMetin();
   const m = s.gununAyeti;
+  const dil = useAktifDil();
   const kart = { backgroundColor: renkler.kartArkaplan, borderRadius: 24, overflow: 'hidden' as const };
   // Android: başlatıcı destekliyorsa widget tek dokunuşla eklenir (sistemin onay penceresi);
   // desteklemiyorsa yalnız elle ekleme tarifi kalır.
@@ -106,6 +107,8 @@ export const GununAyetiAyarlariSayfasi: React.FC = () => {
           <Text style={{ marginLeft: 8, fontSize: 15, fontWeight: '600', color: '#FFFFFF' }}>{m.ayar.widgetEkleDugme}</Text>
         </TouchableOpacity>
       ) : null}
+      {/* Meali olmayan dilde widget (ve Android duvar kâğıdı) yalnız Arapça metni çizer: sessiz sapma bırakılmaz. */}
+      {dilinMealiVar(dil) ? null : <NotSatiri testID="gunun-ayeti-meal-yok" metin={m.sayfa.mealYok} style={{ marginTop: 12 }} />}
 
       <BolumBasligi metin={m.ayar.duvarBolum} style={{ marginTop: 24 }} />
       {Platform.OS === 'android' ? <AndroidDuvarKagidi /> : <IosKisayolRehberi />}

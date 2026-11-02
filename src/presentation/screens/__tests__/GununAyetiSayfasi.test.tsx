@@ -8,6 +8,7 @@ import { I18nManager, Linking, Share, StyleSheet } from 'react-native';
 import { GununAyetiSayfasi, ayetPaylasimMetni } from '../GununAyetiSayfasi';
 import { aktifNamazGunu, gununAyetiGorunumu, gununAyetiKaydi, isoGun } from '../../../core/icerik/gununAyeti';
 import { ingilizceyeGec, turkceKalanlar } from '../../../__tests__/yardimci/ingilizceDenetimi';
+import { aktifDiliKur, aktifDilSifirla, sozluk } from '../../../core/dil/aktifDil';
 
 const mockNavigate = jest.fn();
 jest.mock('../../../core/theme', () => ({
@@ -87,6 +88,24 @@ describe('GununAyetiSayfasi', () => {
         const satirlar = ayetPaylasimMetni(a).split('\n');
         expect(satirlar[0]).toBe(a.ar);
         expect(satirlar.slice(-2)).toEqual([a.kisaKunye, a.mealKaynagi]);
+    });
+
+    it('mealsiz dilde (ku, sd) Arapça metin, künye ve "meal yok" satırı çizilir; paylaşımda meal satırı yok', () => {
+        for (const dil of ['ku', 'sd'] as const) {
+            act(() => aktifDiliKur(dil));
+            try {
+                const a = gununAyetiGorunumu(gununAyetiKaydi(isoGun(aktifNamazGunu(new Date(), () => null)), dil), dil);
+                expect(a.meal).toBeNull();
+                const e = render(<GununAyetiSayfasi />);
+                expect(e.getAllByText(a.ar).length).toBeGreaterThan(0);
+                expect(e.getAllByText(a.tamKunye).length).toBeGreaterThan(0);
+                expect(e.getByText(sozluk(dil).gununAyeti.sayfa.mealYok)).toBeTruthy();
+                expect(ayetPaylasimMetni(a).split('\n')).toEqual([a.ar, '', a.kisaKunye]);
+                e.unmount();
+            } finally {
+                act(() => aktifDilSifirla());
+            }
+        }
     });
 
     describe('İngilizce', () => {

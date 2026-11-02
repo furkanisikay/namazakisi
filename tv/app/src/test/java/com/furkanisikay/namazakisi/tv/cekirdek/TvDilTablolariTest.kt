@@ -11,7 +11,7 @@ import org.junit.Test
  * parametreleri kullanır (işaretçi değerlerle çağrılır).
  */
 class TvDilTablolariTest {
-    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el")
+    private val kodlar = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk")
     private val isaretciler = listOf("<AD>", "<AY>", "<GUN>", "987", "2468")
 
     private fun metinler(d: TvDili): Map<String, String> = linkedMapOf(
@@ -81,5 +81,22 @@ class TvDilTablolariTest {
                 sayilar.map { kategori(it) },
             )
         }
+    }
+
+    @Test
+    fun dalga11CogulKategorileri() {
+        val sayilar = listOf(0, 1, 2, 4, 5, 12, 14, 21, 22, 25, 104, 111)
+        // CLDR pl (JS `cogul.ts > lehce`): 1 tekil; …2–4 (…12–14 hariç) few; gerisi many.
+        assertEquals(
+            listOf("many", "one", "few", "few", "many", "many", "many", "many", "few", "many", "few", "many"),
+            sayilar.map { TvDiliPl.cogulKategorisi(it) },
+        )
+        // CLDR mk (JS `cogul.ts > makedonca`): son hanesi 1 (11 hariç) tekil; gerisi other.
+        assertEquals(
+            listOf("other", "one", "other", "other", "other", "other", "other", "one", "other", "other", "other", "other"),
+            sayilar.map { TvDiliMk.cogulKategorisi(it) },
+        )
+        // ja ve tt yalnız other: sesli süre her sayıda çoğul kalıp.
+        for (dil in listOf(TvDiliJa, TvDiliTt)) assertEquals(dil.saatSesli(1).removePrefix("1"), dil.saatSesli(2).removePrefix("2"))
     }
 }

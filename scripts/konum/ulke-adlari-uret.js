@@ -36,6 +36,9 @@ const ICU_YEREL = { uz: 'uz-Cyrl', pt: 'pt-PT' };
 const tablo = {};
 for (const dil of diller) {
   const dn = new Intl.DisplayNames([ICU_YEREL[dil] ?? dil], { type: 'region', fallback: 'none' });
+  // ICU'da verisi olmayan dil sessizce başka yerele (en-US) düşer: İngilizce adlar o dilin adı sanılmasın.
+  const cozulen = dn.resolvedOptions().locale.split('-')[0];
+  if (cozulen !== dil) throw new Error(`${dil}: ICU bölge adı verisi yok (${cozulen} yereline düştü)`);
   tablo[dil] = {};
   for (const kod of sirali) {
     const ad = dn.of(kod);

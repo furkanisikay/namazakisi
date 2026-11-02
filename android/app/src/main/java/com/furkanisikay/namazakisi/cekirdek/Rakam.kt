@@ -7,7 +7,7 @@ package com.furkanisikay.namazakisi.cekirdek
  * Seçimi JS çözer (`core/dil/rakam.ts > rakamSistemiCoz`: açık seçim → ülke → dil) ve
  * ÇÖZÜLMÜŞ değeri yazar: `namazakisi_dil/rakam_sistemi` = yerel rakamın CLDR adı ("arab" Doğu
  * Arap, "arabext" Fars, "beng" Bengalce) ya da anahtar yok (Batı). Native taraf kaydı YALNIZ arayüz
- * dilinin kendi yerel sistemiyle eşleşirse uygular ([YEREL]: Arapçada ve Soranîde "arab", Farsça ve
+ * dilinin kendi yerel sistemiyle eşleşirse uygular ([YEREL]: Arapçada, Soranîde ve Sindhçede "arab", Farsça ve
  * Peştucada "arabext", Bengalcede "beng"); diğer
  * her durumda (Türkçe dahil, dil değişimiyle yazım yarışında da) çıktı BİREBİR aynı kalır.
  *
@@ -39,7 +39,7 @@ object Rakam {
     const val BENG_SIFIR = '০'
 
     /** Dil kökü → yerel rakam sistemi (TEK eşleme; listede olmayan dil Batı rakamı yazar). */
-    private val YEREL = mapOf("ar" to ARAB, "bn" to BENG, "fa" to ARABEXT, "ps" to ARABEXT, "ckb" to ARAB)
+    private val YEREL = mapOf("ar" to ARAB, "bn" to BENG, "fa" to ARABEXT, "ps" to ARABEXT, "ckb" to ARAB, "sd" to ARAB)
 
     /** Yerel sistem → sıfır rakamı (dizi Unicode'da ardışık). */
     private val SIFIRLAR = mapOf(ARAB to DOGU_SIFIR, ARABEXT to ARABEXT_SIFIR, BENG to BENG_SIFIR)
@@ -50,7 +50,7 @@ object Rakam {
     /** Dilin yerel rakam sistemi ("arab", "beng") ya da null (yalnız Batı rakamı). */
     fun yerelSistem(dil: String?): String? = YEREL[kok(dil)]
 
-    /** Arayüz dilinin yerel rakamı (dolayısıyla rakam seçimi) var mı? (Arapça, Bengalce, Farsça, Peştuca, Soranî) */
+    /** Arayüz dilinin yerel rakamı (dolayısıyla rakam seçimi) var mı? (Arapça, Bengalce, Farsça, Peştuca, Soranî, Sindhçe) */
     fun yerelRakamli(dil: String?): Boolean = yerelSistem(dil) != null
 
     /**

@@ -154,10 +154,14 @@ esitMi(TvKerahat.Tur.gurub.aciklama("en"), "Praying is makruh while the sun is s
 esitMi(TvKerahat.Tur.suruk.ad("tr"), TvKerahat.Tur.suruk.ad, "tr kerahat adi")
 esitMi(TvDili.coz("xx-XX"), "tr", "desteklenmeyen dil Turkce")
 esitMi(TvDili.coz(nil), "tr", "dil yok Turkce")
+// Kurmanci: uygulama kodu "ku"; ISO 639-3 "kmr" de "ku". Sorani ayri dil.
+esitMi(TvDili.coz("kmr-Latn"), "ku", "Kurmanci kmr → ku")
+esitMi(TvDili.coz("ku-TR"), "ku", "Kurmanci ku-TR → ku")
+esitMi(TvDili.coz("ckb-IQ"), "ckb", "Sorani ckb ayri")
 
 // MARK: - 4c) Native dil tablolari (W4) — on dokuz dil, Turkce tablo eski sabitlerle ayni
 
-esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el"], "dil: tablo sirasi")
+esitMi(TvDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk"], "dil: tablo sirasi")
 esitMi(TvDili.coz("ar-SA"), "ar", "dil: ar-SA → ar")
 esitMi(TvDili.coz("de-DE"), "de", "dil: de-DE → de")
 esitMi(TvDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")

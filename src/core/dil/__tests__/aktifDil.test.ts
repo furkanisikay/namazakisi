@@ -37,7 +37,7 @@ it('cihaz dili yalnız SEÇİLEBİLİR dilse kullanılır (yarım dil kendiliği
     expect(yerelAyarDili(yerel)).toBe('zh');
     expect(cihazDilindenSec(yerel)).toBe(zh.secilebilir ? 'zh' : null);
   }
-  expect(yerelAyarDili('ja-JP')).toBeNull();
+  expect(yerelAyarDili('he-IL')).toBeNull();
   expect(yerelAyarDili('in_ID')).toBe('id');
   // Portekizcenin bütün cihaz dilleri (Brezilya dahil) Avrupa normlu `pt`'dir; İngilizceye düşmez.
   const pt = DILLER.find((d) => d.kod === 'pt')!;
@@ -50,6 +50,17 @@ it('cihaz dili yalnız SEÇİLEBİLİR dilse kullanılır (yarım dil kendiliği
   for (const yerel of ['sr-Latn-RS', 'sr_RS_#Latn', 'sr-Cyrl-RS', 'sr_RS', 'sr-ME', 'sr']) {
     expect(yerelAyarDili(yerel)).toBe('sr');
     expect(cihazDilindenSec(yerel)).toBe(sr.secilebilir ? 'sr' : null);
+  }
+  // Kurmancî: uygulama kodu `ku`; ISO 639-3 `kmr` de `ku`'dur. Arap harfli cihaz (`ku-Arab`, `ku-IQ`) da `ku`
+  // alır (uygulamada Kurmancî yalnız Latin). Soranî (`ckb`) ayrı dildir, `ku`'ya düşmez.
+  const ku = DILLER.find((d) => d.kod === 'ku')!;
+  for (const yerel of ['ku', 'ku-TR', 'ku_TR', 'kmr', 'kmr-Latn', 'kmr_TR', 'ku-Latn-TR', 'ku-Arab', 'ku-IQ']) {
+    expect(yerelAyarDili(yerel)).toBe('ku');
+    expect(cihazDilindenSec(yerel)).toBe(ku.secilebilir ? 'ku' : null);
+  }
+  expect(yerelAyarDili('ckb-IQ')).toBe('ckb');
+  for (const [yerel, kod] of [['tk-TM', 'tk'], ['tt-RU', 'tt'], ['sd-PK', 'sd'], ['sd-Arab-PK', 'sd'], ['pl_PL', 'pl'], ['ja-JP', 'ja'], ['gu-IN', 'gu'], ['bg_BG', 'bg'], ['mk-MK', 'mk']] as const) {
+    expect(yerelAyarDili(yerel)).toBe(kod);
   }
 });
 

@@ -22,7 +22,7 @@ public struct SaatSureParcasi: Equatable {
 /// Sure metinleri — dil basina bir ornek (JS `sozluk/<dil>/sure.ts` ikizi: `kisa` birimleri ve
 /// `saat/dakika/saniye` cogullari). Cogul kaliplari CLDR kategorisi ("one", "few", "many",
 /// "other"; `CogulKurali`) → kalip, yer tutucu `{n}`; eksik kategori "other"a duser.
-/// Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el; cevrilmemis dil Ingilizce kopya
+/// Duzen: sira tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk; cevrilmemis dil Ingilizce kopya
 /// (`// ÇEVİRİ: <kod>`).
 public struct SaatSureMetinleri: Equatable {
     public let birimSa: String
@@ -418,6 +418,87 @@ public struct SaatSureMetinleri: Equatable {
         birimAyirici: " ", parcaAyirici: " "
     )
 
+    // ÇEVİRİ: ku (one/other)
+    public static let ku = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["one": "{n} hour", "other": "{n} hours"],
+        dakika: ["one": "{n} minute", "other": "{n} minutes"],
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
+    )
+
+    // ÇEVİRİ: tk (one/other)
+    public static let tk = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["one": "{n} hour", "other": "{n} hours"],
+        dakika: ["one": "{n} minute", "other": "{n} minutes"],
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
+    )
+
+    // ÇEVİRİ: tt (other)
+    public static let tt = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["other": "{n} hours"],
+        dakika: ["other": "{n} minutes"],
+        saniye: ["other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
+    )
+
+    // ÇEVİRİ: sd (one/other)
+    public static let sd = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["one": "{n} hour", "other": "{n} hours"],
+        dakika: ["one": "{n} minute", "other": "{n} minutes"],
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
+    )
+
+    // ÇEVİRİ: pl (one/few/many/other)
+    public static let pl = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["one": "{n} hour", "few": "{n} hours", "many": "{n} hours", "other": "{n} hours"],
+        dakika: ["one": "{n} minute", "few": "{n} minutes", "many": "{n} minutes", "other": "{n} minutes"],
+        saniye: ["one": "{n} second", "few": "{n} seconds", "many": "{n} seconds", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
+    )
+
+    // ÇEVİRİ: ja (other)
+    public static let ja = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["other": "{n} hours"],
+        dakika: ["other": "{n} minutes"],
+        saniye: ["other": "{n} seconds"],
+        birimAyirici: "", parcaAyirici: ""
+    )
+
+    // ÇEVİRİ: gu (one/other)
+    public static let gu = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["one": "{n} hour", "other": "{n} hours"],
+        dakika: ["one": "{n} minute", "other": "{n} minutes"],
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
+    )
+
+    // ÇEVİRİ: bg (one/other)
+    public static let bg = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["one": "{n} hour", "other": "{n} hours"],
+        dakika: ["one": "{n} minute", "other": "{n} minutes"],
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
+    )
+
+    // ÇEVİRİ: mk (one/other)
+    public static let mk = SaatSureMetinleri(
+        birimSa: "h", birimDk: "min", birimSn: "s",
+        saat: ["one": "{n} hour", "other": "{n} hours"],
+        dakika: ["one": "{n} minute", "other": "{n} minutes"],
+        saniye: ["one": "{n} second", "other": "{n} seconds"],
+        birimAyirici: " ", parcaAyirici: " "
+    )
+
     public static let tablo: [String: SaatSureMetinleri] = [
         "tr": tr, "en": en, "id": id, "de": de, "fr": fr, "bs": bs, "ru": ru, "ms": ms,
         "ar": ar, "ur": ur, "es": es, "nl": nl, "sq": sq, "hi": hi, "bn": bn,
@@ -426,6 +507,7 @@ public struct SaatSureMetinleri: Equatable {
         "sw": sw, "ha": ha, "am": am, "om": om, "so": so, "ff": ff, "yo": yo,
         "zh": zh, "ta": ta, "ml": ml, "th": th, "ko": ko, "vi": vi,
         "pt": pt, "it": it, "sv": sv, "uk": uk, "ro": ro, "hr": hr, "sr": sr, "el": el,
+        "ku": ku, "tk": tk, "tt": tt, "sd": sd, "pl": pl, "ja": ja, "gu": gu, "bg": bg, "mk": mk,
     ]
 
     public static func dil(_ kod: String?) -> SaatSureMetinleri { tablo[ArayuzDili.coz(kod)] ?? tr }

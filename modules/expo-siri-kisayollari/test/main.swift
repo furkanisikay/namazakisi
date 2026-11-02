@@ -425,6 +425,9 @@ esitMi(ArayuzDili.coz("en_GB"), "en", "dil: en_GB → en")
 // Portekizce Avrupa normu: Brezilya dahil butun pt-* → pt; Latin Sirpca cihaz → Kiril sr.
 for yerel in ["pt-BR", "pt_PT", "pt-MZ", "pt-AO"] { esitMi(ArayuzDili.coz(yerel), "pt", "dil: \(yerel) → pt") }
 for yerel in ["sr-Latn-RS", "sr_RS", "sr-Cyrl-RS"] { esitMi(ArayuzDili.coz(yerel), "sr", "dil: \(yerel) → sr") }
+// Kurmanci: uygulama kodu "ku"; ISO 639-3 "kmr" ve Arap harfli cihaz (ku-Arab, ku-IQ) da "ku". Sorani ayri dil.
+for yerel in ["ku", "ku-TR", "kmr", "kmr-Latn", "ku-Arab", "ku-IQ"] { esitMi(ArayuzDili.coz(yerel), "ku", "dil: \(yerel) → ku") }
+esitMi(ArayuzDili.coz("ckb-IQ"), "ckb", "dil: ckb-IQ → ckb")
 esitMi(ArayuzDili.coz("xx"), "tr", "dil: desteklenmeyen → Turkce")
 esitMi(VakitKarari.gorunenAd("ogle"), "Öğle", "varsayilan dil Turkce")
 esitMi(VakitKarari.gorunenAd("sabah", dil: "en"), "Fajr", "en: sabah → Fajr")
@@ -534,6 +537,28 @@ esitMi(GununAyetiKarari.mealSerifMi("സത്യവിശ്വാസികള�
 esitMi(GununAyetiKarari.mealSerifMi("โอ้บรรดาผู้ศรัทธาทั้งหลาย จงขอการช่วยเหลือ"), false, "ayet: Tayca meal serif degil")
 esitMi(GununAyetiKarari.mealSerifMi("믿는 자들이여! 인내심과 예배로써 도움을 요청하라."), false, "ayet: Korece meal serif degil")
 esitMi(GununAyetiKarari.mealSerifMi("Hỡi những người có đức tin, các ngươi hãy cầu xin sự giúp đỡ"), true, "ayet: Vietnamca meal serif")
+// Dalga 11: Gucarati ve kana (Hiragana, Katakana) serif tasarimda yok (fontTools cmap, 2026-11-02); Bulgarca ve
+// Makedonca Kiril (ѓ ќ ѕ dahil) serif kalir.
+esitMi(GununAyetiKarari.mealSerifMi("અમે ફકત તારી જ બંદગી કરીએ છીએ"), false, "ayet: Gucaratca meal serif degil")
+esitMi(GununAyetiKarari.mealSerifMi("あなただけを"), false, "ayet: Hiragana serif degil")
+esitMi(GununAyetiKarari.mealSerifMi("アッラー"), false, "ayet: Katakana serif degil")
+esitMi(GununAyetiKarari.mealSerifMi("（預言者よ、）"), false, "ayet: Japonca tam genislik parantez serif degil")
+esitMi(GununAyetiKarari.mealSerifMi("Наистина, с тегобата идва облекчение."), true, "ayet: Bulgarca meal serif")
+esitMi(GununAyetiKarari.mealSerifMi("Навистина, со тешкотијата има олеснување ѓ ќ ѕ."), true, "ayet: Makedonca meal serif")
+// Mealsiz dil (ku, tk, tt, sd, pl; sahip karari 2026-11-02): widget Arapca, Kisayollar gorseli kisa kunye cizer.
+let mealsizHam = """
+{"v":1,"dil":"sd","metin":{"etiket":"VERSE OF THE DAY","sigmiyor":"x","acin":"Open","arapcaKaynagi":"Arabic: Tanzil"},
+ "plan":[{"gun":"2026-11-02","baslangicMs":1000,"ref":"94:6","ar":"إِنَّ مَعَ ٱلۡعُسۡرِ يُسۡرٗا","meal":null,"kisaKunye":"Quran 94:6","mealKaynagi":null}]}
+"""
+if let mealsiz = GununAyetiKarari.coz(mealsizHam), let k = mealsiz.plan.first {
+    esitMi(k.meal, nil, "ayet mealsiz: meal yok")
+    esitMi(GununAyetiKarari.widgetGovdesi(k), "إِنَّ مَعَ ٱلۡعُسۡرِ يُسۡرٗا", "ayet mealsiz: widget Arapca cizer")
+    esitMi(GununAyetiKarari.gorselGovdesi(k), "Quran 94:6", "ayet mealsiz: Kisayollar gorseli kisa kunye")
+    esitMi(GununAyetiKarari.kunyeSatiri(k, metin: mealsiz.metin, arapcaVar: true), "Quran 94:6 · Arabic: Tanzil", "ayet mealsiz: kunye Arapca kaynagiyla")
+    esitMi(GununAyetiKarari.kunyeSatiri(k, metin: mealsiz.metin, arapcaVar: false), "Quran 94:6", "ayet mealsiz: gorsel kunyesi")
+} else {
+    hatalar.append("ayet: mealsiz yuk cozulemedi")
+}
 if let ayet = GununAyetiKarari.coz(ayetHam) {
     let refler: ([GununAyetiGirdisi]) -> [String] = { $0.map { "\($0.ms)=\($0.kayit.ref)" } }
     esitMi(ayet.metin.etiket, "GÜNÜN AYETİ", "ayet: metin cozulur")
@@ -590,7 +615,7 @@ func yerTutucuImzasi(_ deger: Any) -> [String: String] {
     return sonuc
 }
 
-esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el"], "dil: tablo sirasi")
+esitMi(ArayuzDili.desteklenenler, ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk"], "dil: tablo sirasi")
 esitMi(ArayuzDili.coz("in"), "id", "dil: eski Endonezce kodu in → id")
 esitMi(ArayuzDili.coz("de-DE"), "de", "dil: de-DE → de")
 esitMi(ArayuzDili.coz("ms_MY"), "ms", "dil: ms_MY → ms")
@@ -645,6 +670,18 @@ esitMi([1, 2, 5, 11, 21].map { CogulKurali.kategori("uk", $0) }, ["one", "few", 
 for dil in ["hr", "sr"] {
     esitMi([1, 2, 5, 11, 21].map { CogulKurali.kategori(dil, $0) }, ["one", "few", "other", "other", "one"], "cogul: \(dil)")
 }
+// Dalga 11: ku/tk/sd/bg one/other; gu 0 ve 1 tekil; ja/tt yalniz other; pl one/few/many; mk …1 tekil.
+for dil in ["ku", "tk", "sd", "bg"] {
+    esitMi([0, 1, 2, 21].map { CogulKurali.kategori(dil, $0) }, ["other", "one", "other", "other"], "cogul: \(dil)")
+}
+esitMi([0, 1, 2].map { CogulKurali.kategori("gu", $0) }, ["one", "one", "other"], "cogul: gu")
+for dil in ["ja", "tt"] {
+    esitMi([0, 1, 2].map { CogulKurali.kategori(dil, $0) }, ["other", "other", "other"], "cogul: \(dil)")
+}
+esitMi([0, 1, 2, 4, 5, 12, 14, 21, 22, 25, 104, 112, 1_000_000].map { CogulKurali.kategori("pl", $0) },
+       ["many", "one", "few", "few", "many", "many", "many", "many", "few", "many", "few", "many", "many"], "cogul: pl")
+esitMi([0, 1, 2, 11, 21, 101, 111].map { CogulKurali.kategori("mk", $0) },
+       ["other", "one", "other", "other", "one", "one", "other"], "cogul: mk")
 esitMi([0, 1, 2, 19, 20, 100, 101, 119, 120, 1_000_000].map { CogulKurali.kategori("ro", $0) },
        ["few", "one", "few", "few", "other", "other", "few", "few", "other", "other"], "cogul: ro")
 esitMi(CogulKurali.sec(["one": "{n} minute", "other": "{n} minutes"], "ru", 5), "5 minutes", "cogul: eksik kategori other'a duser")
@@ -710,7 +747,7 @@ esitMi(RakamSistemi.etkin(dil: "bn-BD", kayitli: " beng "), "beng", "rakam: bn-B
 esitMi(RakamSistemi.etkin(dil: "bn", kayitli: nil), "latn", "rakam: bn + kayit yok → Bati")
 esitMi(RakamSistemi.etkin(dil: "bn", kayitli: "arab"), "latn", "rakam: bn + arab → Bati")
 esitMi(RakamSistemi.doguMu(dil: "bn", kayitli: "beng"), false, "rakam: bn Dogu Arap degil")
-for dil in ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "", "xx"] {
+for dil in ["tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", "", "xx"] {
     esitMi(RakamSistemi.etkin(dil: dil, kayitli: "arab"), "latn", "rakam: \(dil) arab kaydini yok sayar")
     esitMi(RakamSistemi.etkin(dil: dil, kayitli: "beng"), "latn", "rakam: \(dil) beng kaydini yok sayar")
     esitMi(RakamSistemi.etkin(dil: dil, kayitli: "arabext"), "latn", "rakam: \(dil) arabext kaydini yok sayar")

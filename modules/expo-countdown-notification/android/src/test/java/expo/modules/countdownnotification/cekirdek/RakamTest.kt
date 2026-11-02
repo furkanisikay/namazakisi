@@ -6,7 +6,7 @@ import org.junit.Test
 
 /**
  * Uygulama modülündeki `RakamTest`'in ikizi: sayaç/Live Update metinleri seçimi yalnız yerel
- * rakamlı dilde (Arapça, Bengalce, Farsça, Peştuca, Soranî) ve yalnız dilin kendi sistemiyle uygular.
+ * rakamlı dilde (Arapça, Bengalce, Farsça, Peştuca, Soranî, Sindhçe) ve yalnız dilin kendi sistemiyle uygular.
  */
 class RakamTest {
     @Test
@@ -15,7 +15,7 @@ class RakamTest {
         assertEquals('0', Rakam.sifir("ar", null))
         assertEquals('0', Rakam.sifir("ar", "latn"))
         assertEquals('0', Rakam.sifir("ar", "beng"))
-        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", null)) {
+        for (dil in listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ur", "es", "nl", "sq", "hi", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "pl", "ja", "gu", "bg", "mk", null)) {
             assertEquals("$dil", '0', Rakam.sifir(dil, "arab"))
             assertEquals("$dil", '0', Rakam.sifir(dil, "beng"))
             assertEquals("$dil", '0', Rakam.sifir(dil, "arabext"))

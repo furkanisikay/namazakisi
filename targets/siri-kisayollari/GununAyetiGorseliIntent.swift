@@ -17,7 +17,7 @@ internal import ExpoSiriKisayollari
 // ARAPCA CIZILMEZ: duvar kagidinda Arapca varsayilan KAPALI (sahip karari) ve iOS yukun
 // `duvar` ayarini yok sayar → ana uygulamaya Arapca font paketlenmez. Meal ekranin
 // %36–%80 bandinda (saat ve alt kenar disi), kunye + meal kaynagi satiri ZORUNLU.
-// Meal yoksa (meali olmayan dil; bugun tr/en ikisinde de var) govde kisa kunyedir.
+// Meal yoksa (meali olmayan dil: ar, ku, tk, tt, sd, pl) govde kisa kunyedir (`GununAyetiKarari.gorselGovdesi`).
 // Metinler: etiket ve kunye yukte etkin dilde; hata metinleri cihaz dilinde (`.lproj`).
 @available(iOS 16.0, *)
 struct GununAyetiGorseliIntent: AppIntent {
@@ -107,9 +107,9 @@ private struct DuvarGorunumu: View {
                     .font(.system(size: g * 0.032, weight: .semibold))
                     .tracking(g * 0.004)
                     .foregroundStyle(Self.yesil)
-                Text(kayit.meal ?? kayit.kisaKunye)
-                    // Ge'ez, Tamil, Malayalam, Tay, Korece ve Cince meal sistem tasariminda (serif tasarimda bu yazilar yok).
-                    .font(.system(size: g * 0.062, weight: .regular, design: GununAyetiKarari.mealSerifMi(kayit.meal ?? kayit.kisaKunye) ? .serif : .default))
+                Text(GununAyetiKarari.gorselGovdesi(kayit))
+                    // Ge'ez, Gucarati, Tamil, Malayalam, Tay, Korece, Cince ve Japonca meal sistem tasariminda (serif tasarimda bu yazilar yok).
+                    .font(.system(size: g * 0.062, weight: .regular, design: GununAyetiKarari.mealSerifMi(GununAyetiKarari.gorselGovdesi(kayit)) ? .serif : .default))
                     .lineSpacing(g * 0.012)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.white)

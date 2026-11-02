@@ -40,10 +40,11 @@ const TURKCE_HARF_HARITASI: Record<string, string> = {
 };
 
 /**
- * Ayrışmayan (NFD'de işaret çıkmayan) çizgili d: Vietnamca/Boşnakça "đ" aksansız "d" yazılır.
+ * Ayrışmayan (NFD'de işaret çıkmayan) çizgili harfler: Vietnamca/Boşnakça "đ" aksansız "d", Lehçe "ł" "l"
+ * yazılır (Ł/ł büyük-küçük çifti Latin Genişletilmiş'tedir, ASCII katlaması görmez).
  * Tipografik kesme işaretleri (’ ‘ ʼ) düz `'` sayılır: Vietnamca "‘Asr", "Qur’an"; Hausa ʼy.
  */
-const EK_HARF_HARITASI: Record<string, string> = { Đ: 'd', đ: 'd', '’': "'", '‘': "'", ʼ: "'" };
+const EK_HARF_HARITASI: Record<string, string> = { Đ: 'd', đ: 'd', Ł: 'l', ł: 'l', '’': "'", '‘': "'", ʼ: "'" };
 
 /**
  * Malayalamca eski chillu yazımı (ünsüz + virama + ZWJ, ör. "ര്‍") atomik chillu harfine

@@ -18,16 +18,21 @@ object MetinDili {
     const val TR = "tr"
     const val EN = "en"
 
-    /** Sıra tablo düzeniyle aynı (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el). */
-    val DESTEKLENENLER = listOf(TR, EN, "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el")
+    /** Sıra tablo düzeniyle aynı (tr, en, id, de, fr, bs, ru, ms, ar, ur, es, nl, sq, hi, bn, fa, ps, ckb, ug, az, uz, kk, ky, tg, sw, ha, am, om, so, ff, yo, zh, ta, ml, th, ko, vi, pt, it, sv, uk, ro, hr, sr, el, ku, tk, tt, sd, pl, ja, gu, bg, mk). */
+    val DESTEKLENENLER = listOf(TR, EN, "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk")
 
     /**
      * "en", "en-US", "de_DE" → kök kod; desteklenmeyen ya da boş → "tr". Java/Android eski
-     * Endonezce kodu "in" (`java.util.Locale` "id"yi "in"e çevirir) "id" sayılır.
+     * Endonezce kodu "in" (`java.util.Locale` "id"yi "in"e çevirir) "id" sayılır; Kurmancînin ISO 639-3
+     * kodu "kmr" uygulamanın Kurmancî kodu "ku" sayılır (Arap harfli "ku-Arab" cihaz da "ku": yalnız Latin).
      */
     fun coz(kod: String?): String {
         val kok = kod?.trim()?.substringBefore('-')?.substringBefore('_')
-        val normal = if (kok == "in") "id" else kok
+        val normal = when (kok) {
+            "in" -> "id"
+            "kmr" -> "ku"
+            else -> kok
+        }
         return if (normal != null && normal in DESTEKLENENLER) normal else TR
     }
 
@@ -77,6 +82,15 @@ object MetinDili {
         "hr" -> CEKIRDEK_HR
         "sr" -> CEKIRDEK_SR
         "el" -> CEKIRDEK_EL
+        "ku" -> CEKIRDEK_KU
+        "tk" -> CEKIRDEK_TK
+        "tt" -> CEKIRDEK_TT
+        "sd" -> CEKIRDEK_SD
+        "pl" -> CEKIRDEK_PL
+        "ja" -> CEKIRDEK_JA
+        "gu" -> CEKIRDEK_GU
+        "bg" -> CEKIRDEK_BG
+        "mk" -> CEKIRDEK_MK
         else -> CEKIRDEK_TR
     }
 

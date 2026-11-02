@@ -65,6 +65,40 @@ it('meal kaynağı olan dil yalnız meali sığan ayetlerden seçer; meali hep d
   }
 });
 
+it('mealsiz diller (ku, tk, tt, sd, pl; sahip kararı 2026-11-02): bütün havuz, meal ve meal künyesi yok, Arapça künye', () => {
+  for (const dil of ['ku', 'tk', 'tt', 'sd', 'pl'] as const) {
+    expect(dilHavuzu(dil)).toBe(GUNUN_AYETI_HAVUZU);
+    for (let g = 0; g < 30; g++) {
+      const gun = new Date(Date.UTC(2026, 0, 1 + g)).toISOString().slice(0, 10);
+      const kayit = gununAyetiKaydi(gun, dil);
+      const gorunum = gununAyetiGorunumu(kayit, dil);
+      expect(gorunum.meal).toBeNull();
+      expect(gorunum.mealKaynagi).toBeNull();
+      expect(gorunum.ar).toBe(kayit.ar);
+      expect(gorunum.kisaKunye).toContain(kayit.ref);
+      // Künye Arapça kaynağını yazar (meal kaynağı olmadan).
+      expect(gorunum.tamKunye).toContain(kayit.ref);
+      expect(gorunum.tamKunye).not.toContain('QuranEnc');
+    }
+  }
+  // Plan yükü (widget, duvar kâğıdı) her kayıtta `meal: null` taşır.
+  const plan = gununAyetiPlani(new Date(2026, 10, 2, 12), imsak6, 3, 'sd');
+  expect(plan.length).toBeGreaterThan(0);
+  for (const p of plan) expect(p.meal).toBeNull();
+});
+
+it('meali olan dalga 11 dilleri (ja, gu, bg, mk) kendi havuzundan seçer; Japonca mealde "*" ve not numarası yok', () => {
+  for (const dil of ['ja', 'gu', 'bg', 'mk'] as const) {
+    expect(dilHavuzu(dil).length).toBeGreaterThan(100);
+    const gorunum = gununAyetiGorunumu(gununAyetiKaydi('2026-11-02', dil), dil);
+    expect(gorunum.meal).toBeTruthy();
+    expect(gorunum.mealKaynagi).toMatch(/QuranEnc \d/);
+  }
+  for (const k of dilHavuzu('ja')) expect(k.mealler.ja).not.toMatch(/[*]|\[\p{Nd}+\]/u);
+  // Baştaki ayet numarası silinir (Gucarati rakamı "૨૫૫." dahil).
+  for (const dil of ['gu', 'bg', 'mk'] as const) for (const k of dilHavuzu(dil)) expect(k.mealler[dil]).not.toMatch(/^\s*\p{Nd}+\s*[.)]/u);
+});
+
 it('plan süren günden başlar, başlangıçlar imsak ve artan sırada', () => {
   const plan = gununAyetiPlani(new Date(2026, 9, 24, 3, 0), imsak6, 3, 'tr');
   expect(plan.map((p) => p.gun)).toEqual(['2026-10-23', '2026-10-24', '2026-10-25']);

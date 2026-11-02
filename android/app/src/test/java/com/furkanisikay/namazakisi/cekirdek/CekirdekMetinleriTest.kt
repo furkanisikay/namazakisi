@@ -11,7 +11,7 @@ import org.junit.Test
  * eşlemesi ve Endonezce "in" takma adı. Türkçe çıktı fikstür testlerinde kilitlidir.
  */
 class CekirdekMetinleriTest {
-    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el")
+    private val diller = listOf("tr", "en", "id", "de", "fr", "bs", "ru", "ms", "ar", "ur", "es", "nl", "sq", "hi", "bn", "fa", "ps", "ckb", "ug", "az", "uz", "kk", "ky", "tg", "sw", "ha", "am", "om", "so", "ff", "yo", "zh", "ta", "ml", "th", "ko", "vi", "pt", "it", "sv", "uk", "ro", "hr", "sr", "el", "ku", "tk", "tt", "sd", "pl", "ja", "gu", "bg", "mk")
     private val yerTutucu = Regex("""\{\w+\}""")
 
     private fun alanlar(m: CekirdekMetinleri): Map<String, String> =
@@ -61,6 +61,17 @@ class CekirdekMetinleriTest {
             assertEquals(yerel, "sr", MetinDili.coz(yerel))
         }
         assertSame(CEKIRDEK_PT, MetinDili.metinler("pt_BR"))
+    }
+
+    @Test
+    fun kurmanciYerelAyarlari() {
+        // Kurmancî: uygulama kodu "ku"; ISO 639-3 "kmr" ve Arap harfli cihaz (ku-Arab, ku_IQ) da "ku" (yalnız Latin).
+        for (yerel in listOf("ku", "ku_TR", "ku-TR", "kmr", "kmr-Latn", "kmr_TR", "ku-Arab", "ku_IQ")) {
+            assertEquals(yerel, "ku", MetinDili.coz(yerel))
+        }
+        // Soranî ayrı dildir.
+        assertEquals("ckb", MetinDili.coz("ckb_IQ"))
+        assertSame(CEKIRDEK_KU, MetinDili.metinler("kmr"))
     }
 
     @Test
