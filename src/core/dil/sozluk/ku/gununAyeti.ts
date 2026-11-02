@@ -60,7 +60,7 @@ export const gununAyeti: Sozluk['gununAyeti'] = {
       'Li ser iPhone, sepan nikarin wêneyê dîwêr bi xwe biguherînin. Sepana Shortcuts dikare her sibe vê ji we re bike; hûn carekê saz dikin.',
     ucAdim: 'Sê gav',
     adim1:
-      'Di sepana Shortcuts de kurteriyeke nû çêkin. Pêşî çalakiya “Verse of the day image” zêde bikin, paşê çalakiya ku wêneya dîwêr datîne (li “Wallpaper” bigerin).',
+      'Di sepana Shortcuts de kurteriyeke nû çêkin. Pêşî çalakiya “Wêneyê ayeta rojê” zêde bikin, paşê çalakiya ku wêneya dîwêr datîne (li “Wallpaper” bigerin).',
     kisayollariAcin: 'Shortcuts vekin',
     adim2: 'Di Shortcuts de, li tabloya Automation, otomasyoneke nû ya Time of Day çêkin û demekê piştî Sibê hilbijêrin (wekî mînak 07:30).',
     adim3: 'Run Immediately hilbijêrin û kurteriya ku we zêde kir girê bidin.',
