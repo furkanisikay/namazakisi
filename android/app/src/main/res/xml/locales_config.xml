@@ -50,4 +50,13 @@
   <locale android:name="hr"/>
   <locale android:name="sr"/>
   <locale android:name="el"/>
+  <locale android:name="ku"/>
+  <locale android:name="tk"/>
+  <locale android:name="tt"/>
+  <locale android:name="sd"/>
+  <locale android:name="pl"/>
+  <locale android:name="ja"/>
+  <locale android:name="gu"/>
+  <locale android:name="bg"/>
+  <locale android:name="mk"/>
 </locale-config>

@@ -75,15 +75,15 @@ export const DILLER: readonly DilTanimi[] = [
   // olarak taşır; `kmr` kodlu `values-b+kmr`/`kmr.lproj` klasörünü `ku` cihazı seçmez), yalnız Latin
   // (Hawar); Soranî (`ckb`) ayrı dildir. Sindhçe Pakistan normunda Arap harfli, sağdan sola, yerel
   // rakam `arab` (CLDR `sd` varsayılanı). Japoncada sayı ile birim bitişik (Çince gibi).
-  { kod: 'ku', yerelAd: 'Kurdî (Kurmancî)', yon: 'ltr', ttsDili: 'ku-TR', beta: true, secilebilir: false },
-  { kod: 'tk', yerelAd: 'Türkmen dili', yon: 'ltr', ttsDili: 'tk-TM', beta: true, secilebilir: false }, // dil-haric: dilin kendi adı (CLDR tk)
-  { kod: 'tt', yerelAd: 'Татар', yon: 'ltr', ttsDili: 'tt-RU', beta: true, secilebilir: false },
-  { kod: 'sd', yerelAd: 'سنڌي', yon: 'rtl', ttsDili: 'sd-PK', beta: true, secilebilir: false },
-  { kod: 'pl', yerelAd: 'Polski', yon: 'ltr', ttsDili: 'pl-PL', beta: true, secilebilir: false },
-  { kod: 'ja', yerelAd: '日本語', yon: 'ltr', ttsDili: 'ja-JP', beta: true, secilebilir: false },
-  { kod: 'gu', yerelAd: 'ગુજરાતી', yon: 'ltr', ttsDili: 'gu-IN', beta: true, secilebilir: false },
-  { kod: 'bg', yerelAd: 'Български', yon: 'ltr', ttsDili: 'bg-BG', beta: true, secilebilir: false },
-  { kod: 'mk', yerelAd: 'Македонски', yon: 'ltr', ttsDili: 'mk-MK', beta: true, secilebilir: false },
+  { kod: 'ku', yerelAd: 'Kurdî (Kurmancî)', yon: 'ltr', ttsDili: 'ku-TR', beta: true, secilebilir: true },
+  { kod: 'tk', yerelAd: 'Türkmen dili', yon: 'ltr', ttsDili: 'tk-TM', beta: true, secilebilir: true }, // dil-haric: dilin kendi adı (CLDR tk)
+  { kod: 'tt', yerelAd: 'Татар', yon: 'ltr', ttsDili: 'tt-RU', beta: true, secilebilir: true },
+  { kod: 'sd', yerelAd: 'سنڌي', yon: 'rtl', ttsDili: 'sd-PK', beta: true, secilebilir: true },
+  { kod: 'pl', yerelAd: 'Polski', yon: 'ltr', ttsDili: 'pl-PL', beta: true, secilebilir: true },
+  { kod: 'ja', yerelAd: '日本語', yon: 'ltr', ttsDili: 'ja-JP', beta: true, secilebilir: true },
+  { kod: 'gu', yerelAd: 'ગુજરાતી', yon: 'ltr', ttsDili: 'gu-IN', beta: true, secilebilir: true },
+  { kod: 'bg', yerelAd: 'Български', yon: 'ltr', ttsDili: 'bg-BG', beta: true, secilebilir: true },
+  { kod: 'mk', yerelAd: 'Македонски', yon: 'ltr', ttsDili: 'mk-MK', beta: true, secilebilir: true },
 ];
 
 export const VARSAYILAN_DIL: DilKodu = 'tr';
