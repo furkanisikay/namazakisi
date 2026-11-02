@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +52,7 @@ import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -61,6 +63,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.LayoutDirection
 import com.furkanisikay.namazakisi.tv.cekirdek.Sigdirma
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -216,7 +219,9 @@ fun KodGirisEkrani(
             }
             Spacer(Modifier.height(32.dp))
 
-            // Kutular → katlanınca iğne.
+            // Kutular → katlanınca iğne. Kod her dilde soldan sağa dolar (sağdan sola arayüzde de;
+            // telefondaki kodla aynı sıra), katlanma kaydırması da soldan sağa sıraya göre hesaplanır.
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
             Box(Modifier.fillMaxWidth().height(150.dp), contentAlignment = Alignment.Center) {
                 Row(
                     Modifier.graphicsLayer {
@@ -246,6 +251,7 @@ fun KodGirisEkrani(
                 if (igne.value > 0f || halka.value > 0f) {
                     Canvas(Modifier.size(150.dp)) { igneCiz(igne.value, halka.value, Renkler.birincil, Renkler.birincil) }
                 }
+            }
             }
 
             Spacer(Modifier.height(18.dp))
@@ -331,6 +337,8 @@ private fun TusTakimi(
         }
     }
     val kucukBoy = kucuk.boy
+    // Tuş takımı telefon tuş takımı gibi her dilde soldan sağa (1 sol üstte); kutularla aynı yön.
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         for ((si, satir) in satirlar.withIndex()) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -344,6 +352,7 @@ private fun TusTakimi(
             Tus("0", "0", { onRakam('0') }, Modifier)
             Tus(geriEtiketi, stringResource(R.string.vazgecin), onVazgec, Modifier, boy = kucukBoy, satir = kucuk.satir)
         }
+    }
     }
 }
 

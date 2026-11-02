@@ -298,7 +298,8 @@ export const TelevizyonSayfasi: React.FC = () => {
                                         fontVariant: ['tabular-nums'],
                                     }}
                                 >
-                                    {koduBicimle(kod)}
+                                    {/* LTR yalıtımı: sağdan sola paragrafta iki yönlü kural "168 4892"yi "4892 168" dizerdi. */}
+                                    {`⁦${koduBicimle(kod)}⁩`}
                                 </Text>
                             </>
                         ) : (

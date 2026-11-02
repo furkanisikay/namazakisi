@@ -68,7 +68,8 @@ describe('TelevizyonSayfasi (v2)', () => {
 
     it('ağsız yedek kodu gösterir', () => {
         const { getByTestId } = render(<TelevizyonSayfasi />);
-        expect(getByTestId('tv-konum-kodu').props.children).toBe('167 6907');
+        // LTR yalıtımı (U+2066…U+2069): sağdan sola arayüzde iki grup yer değiştirmez.
+        expect(getByTestId('tv-konum-kodu').props.children).toBe('\u2066167 6907\u2069');
     });
 
     it('okut düğmesinde uzun metin esner ve ortalanır (iki satıra kırılınca ikon dışarı taşmaz)', () => {

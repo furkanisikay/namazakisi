@@ -788,11 +788,14 @@ export const CamiHaritasi: React.FC<Props> = ({ c }) => {
                     </View>
                 )}
 
-                {/* Atıf — MapLibre "i" düğmesine ek olarak daima görünür */}
-                <View className="absolute left-3 bottom-2 px-2 py-0.5" style={etiketKutusu} pointerEvents="none">
-                    <Text className="text-[10px]" style={{ color: renkler.metinIkincil }}>
-                        {mh.atif}
-                    </Text>
+                {/* Atıf — MapLibre "i" düğmesine ek olarak daima görünür. Native "i" sağdan sola arayüzde de
+                    sağ altta kalır (harita SOLDAN_SAGA); etiket de soldan sağa katmanda solda durur, üstüne binmez. */}
+                <View style={[StyleSheet.absoluteFill, SOLDAN_SAGA]} pointerEvents="none">
+                    <View className="absolute left-3 bottom-2 px-2 py-0.5" style={etiketKutusu}>
+                        <Text className="text-[10px]" style={{ color: renkler.metinIkincil }}>
+                            {mh.atif}
+                        </Text>
+                    </View>
                 </View>
             </View>
 
