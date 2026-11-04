@@ -82,7 +82,7 @@ const OzellikKarti: React.FC<OzellikKartiProps> = ({ ozellik, acik, onTogglePres
                         {ozellik.baslik}
                     </Text>
                     <Text className="text-[11px] mt-0.5" style={{ color: renkler.metinIkincil }}>
-                        {tarihFormatla(ozellik.tarih)}  ·  v{ozellik.surum}
+                        {tarihFormatla(ozellik.tarih)}  ·  <Text rakamKoru>v{ozellik.surum}</Text>
                     </Text>
                 </View>
                 <Animated.View style={{ transform: [{ rotate: okDonus }] }}>

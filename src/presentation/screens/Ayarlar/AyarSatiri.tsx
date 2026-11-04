@@ -25,6 +25,8 @@ interface AyarSatiriOrtakProps {
   ikon: React.ReactNode;
   baslik: string;
   ozet: string;
+  /** Özet yerel rakama çevrilmez (sürüm satırı; metin kapısı `rakamKoru`). */
+  ozetRakamKoru?: boolean;
 }
 
 export interface AyarSatiriNavigasyonProps extends AyarSatiriOrtakProps {
@@ -78,7 +80,7 @@ export const AyarSatiri: React.FC<AyarSatiriProps> = (props) => {
           </View>
         )}
       </View>
-      <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+      <Text rakamKoru={props.ozetRakamKoru} className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
         {ozet}
       </Text>
     </View>

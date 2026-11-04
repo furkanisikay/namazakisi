@@ -79,6 +79,8 @@ export interface GununAyetiGorunumu {
   mealKaynagi: string | null;
   /** Sayfadaki tam künye (Arapça kaynağı dahil). */
   tamKunye: string;
+  /** Künyedeki QuranEnc sürümü ("1.0.4"); çizimde yerel rakama çevrilmez. Meal yoksa `null`. */
+  mealSurumu: string | null;
 }
 
 export function gununAyetiGorunumu(kayit: GununAyetiKaydi, dil: DilKodu = aktifDil()): GununAyetiGorunumu {
@@ -94,6 +96,7 @@ export function gununAyetiGorunumu(kayit: GununAyetiKaydi, dil: DilKodu = aktifD
     kisaKunye: bicim(m.kisaKunye, { sure: dil === 'tr' ? sureAdiTr(kayit.sure) : m.kuran, ref: kayit.ref }),
     mealKaynagi: yayimci ? bicim(m.mealKaynagi, yayimci) : null,
     tamKunye: yayimci ? bicim(m.sayfaKunye, { ref: kayit.ref, ...yayimci }) : `${kayit.ref} · ${m.arapcaKaynagi}`,
+    mealSurumu: yayimci ? yayimci.surum : null,
   };
 }
 

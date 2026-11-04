@@ -28,6 +28,7 @@ import { NotSatiri } from '../components/ortak/NotSatiri';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { AyetGorseli, ayetGorseliniPaylas, useArapcaYaziTipi } from '../components/gununAyeti/AyetGorseli';
 import { sagaYasliMetin } from '../components/common/yon';
+import { surumuKoru } from '../components/metin/surumuKoru';
 
 type Navigasyon = { navigate: (ekran: string) => void };
 
@@ -148,7 +149,7 @@ export const GununAyetiSayfasi: React.FC = () => {
         ) : (
           <NotSatiri metin={m.sayfa.mealYok} style={{ marginTop: 14 }} />
         )}
-        <Text style={{ fontSize: 12, lineHeight: 17, marginTop: 16, color: renkler.metinIkincil }}>{ayet.tamKunye}</Text>
+        <Text style={{ fontSize: 12, lineHeight: 17, marginTop: 16, color: renkler.metinIkincil }}>{surumuKoru(ayet.tamKunye, ayet.mealSurumu)}</Text>
       </View>
 
       <View style={{ flexDirection: 'row', marginTop: 12 }}>

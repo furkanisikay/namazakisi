@@ -17,6 +17,7 @@ import { KOYU_TEMA, useRenkler } from '../../../core/theme';
 import type { GununAyetiGorunumu } from '../../../core/icerik/gununAyeti';
 import { useMetin } from '../../hooks/useMetin';
 import { sagaYasliMetin } from '../common/yon';
+import { surumuKoru } from '../metin/surumuKoru';
 
 /** Paketteki Arapça yazı tipi (OFL 1.1, `assets/fonts/OFL.txt`). */
 export const ARAPCA_YAZI_TIPI = 'AmiriQuran';
@@ -63,7 +64,7 @@ export const AyetGorseli = React.forwardRef<View, Props>(({ ayet, tur, yaziTipi 
           <Text style={{ fontSize: 11, fontWeight: '700', letterSpacing: 1.5, color: koyu.metinIkincil }}>{m.etiket}</Text>
           <Text style={{ fontSize: 19, lineHeight: 28, marginTop: 12, color: koyu.metin }}>{ayet.meal ?? ayet.kisaKunye}</Text>
           <Text style={{ fontSize: 12, marginTop: 14, color: koyu.metinIkincil }}>
-            {ayet.mealKaynagi ? `${ayet.kisaKunye} · ${ayet.mealKaynagi}` : ayet.kisaKunye}
+            {ayet.mealKaynagi ? surumuKoru(`${ayet.kisaKunye} · ${ayet.mealKaynagi}`, ayet.mealSurumu) : ayet.kisaKunye}
           </Text>
         </View>
       </View>
@@ -94,7 +95,7 @@ export const AyetGorseli = React.forwardRef<View, Props>(({ ayet, tur, yaziTipi 
         {ayet.ar}
       </Text>
       {ayet.meal ? <Text style={{ fontSize: 16, lineHeight: 24, marginTop: 12, color: renkler.metin }}>{ayet.meal}</Text> : null}
-      <Text style={{ fontSize: 12, lineHeight: 17, marginTop: 14, color: renkler.metinIkincil }}>{ayet.tamKunye}</Text>
+      <Text style={{ fontSize: 12, lineHeight: 17, marginTop: 14, color: renkler.metinIkincil }}>{surumuKoru(ayet.tamKunye, ayet.mealSurumu)}</Text>
       <Text style={{ fontSize: 12, fontWeight: '700', marginTop: 10, color: renkler.birincil }}>{s.ortak.marka}</Text>
     </View>
   );

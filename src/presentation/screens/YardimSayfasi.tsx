@@ -71,6 +71,7 @@ export const YardimSayfasi: React.FC = () => {
                         ikon={<FontAwesome5 name="info-circle" size={20} color={ikon} solid />}
                         baslik={s.genel.ekranlar.Hakkinda}
                         ozet={hakkindaOzeti(UYGULAMA.VERSIYON, guncellemeMevcut)}
+                        ozetRakamKoru
                         onPress={() => navigation.navigate('Hakkinda')}
                     />
                 </View>
